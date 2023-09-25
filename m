@@ -2,93 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F517AE238
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 01:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C847AE2AF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 01:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbjIYXZy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Sep 2023 19:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
+        id S229751AbjIYX5S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Sep 2023 19:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232712AbjIYXZx (ORCPT
+        with ESMTP id S229460AbjIYX5R (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Sep 2023 19:25:53 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93F711C
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 16:25:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695684343; x=1696289143; i=quwenruo.btrfs@gmx.com;
- bh=BmzK8Q/p7wvSEnNd9jPF4JXB4RkdPextNWVaTj+on/A=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=H5xWoduUaHnLxZZ73d+U+cF789U3MkkrJ6OdLpy77y3SvHchMkZqYk47JwOojybuln82KtTMXjv
- 6EKbL9Enwb+U+ImnfzvaQ2/im6YjSjHdZihc47cumqc9ta7Jwk01jF6iuylydhjBS/3D4Fx6nm+/0
- B7LDJCoJY4QkbjkvhfBcI4xm7eI3A+tJkVykZHtPZEItnXTIpDJrKm2kGXcQxSr4uH2IFWrHHxFpu
- vopirp5bKXwTOXNXLoWhsB/RhzzRv81deG3A0Qd8mTJLZ3vp3faARwrB9yN+MxcV5HIzS1A/xU1p4
- palnWg55mPBHeKTgZpyOQ6Jkz1HQIkUJS/gQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.17.112.24] ([173.244.62.19]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MSKyI-1rDcwo3VX6-00SjYL; Tue, 26
- Sep 2023 01:25:43 +0200
-Message-ID: <61403da7-b355-4edc-91af-e5966dd80411@gmx.com>
-Date:   Tue, 26 Sep 2023 08:55:40 +0930
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: RAID1 parent transid failed
+        Mon, 25 Sep 2023 19:57:17 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1695EFB
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 16:57:11 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38PNEO3J018796;
+        Mon, 25 Sep 2023 23:57:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=yUXna6bdPRlamYGxzY3CUgIgPL0waOFBwE1B/+y7C4w=;
+ b=MoC2bXLA3d5vrYv0Fi5wYVhElvcLXOClfPKK0wSWJvrnMCMfqfie388xcU+ZB7cKDaSx
+ XvZK0j4gvC1EUq5qbsKuHLoOFJXiLo4FoqG32jiSFv5mQpARe1jyMzLGbJr26KWdIeoE
+ e9qLOqcIMuMSyGB1aFfnOJX2E//oMtu0q2W7rU3JTGAmciFay7rfxmuivdj+U0tQPfB+
+ hqf3TStAzMflztcew5sKB/t3G/+sf93rY6BmUMpD4dQ0OpeOWRFmKL/iRff1yGNZxOxJ
+ k4vvF7/LRDwduL2y9hUJmj+39VXAef7/uLWCxNtydP/DdaiK1TXD+qMsugG4VfetWqEp 8A== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9qwbd5sj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Sep 2023 23:57:07 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38PMgTLc030607;
+        Mon, 25 Sep 2023 23:57:06 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pf536k7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Sep 2023 23:57:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nF1orieuzlr4RB168VOgEJ2wn5pEPCdfIzrDa/PlifEULdPYwYrr53VubkHjyHbporXfOTpDcgSQ6Wetdg3ZAPyGm8PPeVza1FWr1rGFvDOaRK+Lc8Ifxn3v58MzjT95CGqD1QX+Ivr02+qaxMe1AXCErGZb0xG/lewW+PF+1HxC8VBUymQHqcRLlR2PCBfayuSf059VR2x6MA+uUcbMj5a3SmgngmiVb1ghPmk6vzJXsb3C8Hime2uBRJRGYpkMz8IZQnLQnbJIQmn0HS2T5b6nQ8ydQsohZZS+SMAay9LB/UMAWRMyKjLXnSZk5mAKI4FPAlG7C5ps7tQ7nYNy1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yUXna6bdPRlamYGxzY3CUgIgPL0waOFBwE1B/+y7C4w=;
+ b=gTx12jzdQxCUpYchqIjF06+l9g1FqYW+4gurQzibjV/km+UE+zcbvACJu00Ck13shsl/qxpqE5x88PRt73ZxOL7gXiO27xVCf/g3LEke1sLIkhpXgSYS7EDHBKHoCTGQ6cMPos2eacZX+p2blvwXJOv7q9r9IVmSZ28w+Lo6Dk5TvefWpa+599SndCNcjqxCCP0TsNs4pHQt08/JFbEOr76WnKYvdM60g5UxHz6opQknHSFjt7gr8HmhEDAjnsTSk0z54MuqZNYjsZ1C6x7fGzlRwZaRQSuZpVHIo3udCLQwUZSqMyJYS6CZgvS+MRZNxlxX9sJtfVhvExMxE7gycA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yUXna6bdPRlamYGxzY3CUgIgPL0waOFBwE1B/+y7C4w=;
+ b=IlPwVwEzv5MjsdHVVgxP4zidc5w8EGRo44RiOaTiuiTWAXoT7IGYC5qqzBSAxRQZ+atH0ez5gkUDShZcCExFpx2oIeJ/6ACEsSGZlZ5DPd/B5IJVEdqPkxITW5GxSAx/f4hUlq5dClfkDXlxQoQa6APpEXkazCK0UgEQdqFne9E=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by BL3PR10MB6233.namprd10.prod.outlook.com (2603:10b6:208:38c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Mon, 25 Sep
+ 2023 23:57:04 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6813.017; Mon, 25 Sep 2023
+ 23:57:04 +0000
+Message-ID: <757517d8-2f79-4897-7d43-5c12fd6274bd@oracle.com>
+Date:   Tue, 26 Sep 2023 07:56:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH 0/2 v2] btrfs: reject device with CHANGING_FSID_V2 flag
+To:     dsterba@suse.cz
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1695244296.git.anand.jain@oracle.com>
+ <20230925165806.GR13697@twin.jikos.cz>
 Content-Language: en-US
-To:     Shaun Hills <shaunhills@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAHvAn9gAP1rnQrL=ibwjWGS7fORCg3R=YEwZM9mHzPFQjEE_uA@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAHvAn9gAP1rnQrL=ibwjWGS7fORCg3R=YEwZM9mHzPFQjEE_uA@mail.gmail.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20230925165806.GR13697@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tQ1mogGNFp2R15aOOJO4aio7yJgtC5CflqYBx1g/FGDLOizNhic
- 7WQLs6ndu79xuxxva1fPCDb7OMplVHiGGcPkEjsDhQnrv1IdjVNpq9funcVkXQtOvTdIAGi
- g9oVYs6lQa1eo5A9LzkjOT4YwWr0mKzEHgF2lZBvdUGWtCDsZ2ZkJrPx4OCRX8h2HNa2j5j
- yncTOtliIypI0XLop+0IQ==
-UI-OutboundReport: notjunk:1;M01:P0:J9wVU8Xzt0U=;QIWHI9FKaJR7o+vz+lU00ibSc4A
- aq53t6tOQqab36o930+/Z3I0Qz8QoLEh4D8sGv8rDj71Yg0WA3L5wGSsfJOUFteYg0eeo/XGz
- cJo6p4KaxR8tXyAbezi2qr+Df+p63NbnYuYUO8VxjYcHmsmu1kTxVTx7ncZCBF+lnq/j74lgW
- ORnDm8c76/WnbX0spmU8wJUgTGY/OamfSbc+hoxi9IfJklhAstJXOh8GhkPrnaMCe+aLwSCDB
- aL+6c4wS7GljipeNVnBfTF48cqJR6X3cG50+sfAArFNFG3Xotg+P4EQvUVZsu2MUd/mzd5AoZ
- L+4brbz9eSM1uGMiLdkdswn4BKaYyfvPRyOWd2k3/ByR2lDOGwUdYhoYA6M8/EGu+5KkSzNS6
- T1+gHPVH4peZwNykiweghN115v4L3UM/4GKw/OALBicUxQC0M6XAHWHUbBBIIqyRYzg+35JiW
- qfinpAkae0n0dCn3A8YKcOu8dXh13oYcQ0TsSP8r4RoSFaXQRXfWPv7Zgrw9szSmPN/50Y/0G
- Aa9DKbdaZxHsM1Gb0f4mAGWPowc/JMX2h8Hl4uFvwV86Xr00MeenJ9nRrt9aqRITxGbulYu4T
- 3D2Kx2c9ANK2x+3q3jL+ilnw7oPJjwOH+c07EIDPr5CNUqs1wHBuoG12fxsp+1dJ7bpjHyZ5d
- XlWsS+MZqTSY4bqM5+j6mLE6KJjUJXubj95Y7+vzkdtBfnm/F0KVCWCsX/8sunvtqfXyaRr1j
- 3p6vXkXof1xeBgV6vzCtAOp1vHGJGRamIqvD8PVfAdrlvOaVn41W7w67u9qnopEFM7uJ1jsZM
- 3Zctbfj4Tzt9l9sxwF2Ld0DjHAMQgzh1esJof/FjI7KJrPlOtWiTbZYqORtXhOKhn/FfcLQrW
- 3o0jpTOPZFCmGUHLMSUg3w+m1bDzkvyV0yjMdHwhQ9KPSDlZfozSYoTxiSv8J+Mb1osrXl8cb
- wXQBop0qUDclYBsJudPl9vzcmDQ=
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR06CA0017.apcprd06.prod.outlook.com
+ (2603:1096:4:186::15) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|BL3PR10MB6233:EE_
+X-MS-Office365-Filtering-Correlation-Id: d9b9a3b1-ae0a-40fc-cf64-08dbbe231e13
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ymFERH5eHILyvvPS6w1GiXVnvvKxpVpVGB57rFzjcgoQ7Xie2sx9R/bNBGW5/lkl+rOnNs7UaI2IWQ8SXK5ARCblJPtPPJShQnyHQ7OXtvBWpSSqBBP+awM6sdX2uI8WGFWpgtSjQY96o4mswjACTbecD2M5/4rKN8ZrzutTUBRbNjq9nJ/moQLeWW7C02BN4kTs5kF5Gd2ouTCvB+LyS9Koedu5qzZCDQSPr9q2+UaArXMkD77l8+q+C95rUEQoqrl+aCI8N1loMJuoKnCO0aCJDWad6GySkf7h9J5vUaCf/fkPkDH5Pe7gErfpU7jRy+aUUhxI4gghkFCQBQc+8X0jKXo3EhNvYS3y5SfKkbL+QaDwLrk3EjfD6WFQV/TO55cBEToAxv6DBTys5+lOOEDqh3WWEyxs/tFMGBJf3K/+nWtdynYF7cVE4K0LDDqi9ivm80PMzrfVede3qGGZJO/vlcX3TaDgUePbrL0k3jIA89BQalEFaPWGfPBTySLrnw6MS6zO0Tnt5KwiozvKhStX0tl8SfVlpFA6muGpdFGr3eVTwfNyP+COlYH9LNmOEMgwkVMoh5dlxusN5krtAuBy16Z9JFMCx1Fm3cFgK6qrHkvmBnS2P0msiHO9IV+UHgCG5sicis2400tJch7LQg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39860400002)(136003)(346002)(366004)(230922051799003)(1800799009)(451199024)(186009)(31686004)(53546011)(6666004)(6486002)(6506007)(38100700002)(86362001)(36756003)(2906002)(31696002)(44832011)(8676002)(66556008)(5660300002)(478600001)(41300700001)(83380400001)(966005)(2616005)(8936002)(6512007)(4326008)(66946007)(316002)(26005)(6916009)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M3FPSmlScGxCUE8wU1hGRHIrQ3YyS1J6cDU2dUdHTXRZd0ozVXpIZ3IyZUl6?=
+ =?utf-8?B?WDF1QW5QQUpYOG9EVkVYNTZsS3dRci9DUEduajVaYXFadkppSm91QVR4Z2xw?=
+ =?utf-8?B?L2NKNjdXdlk1OWxJdU9lZ3NmWk12MjBkZXByRk55UXZzWlc0NzJsVlVEV2po?=
+ =?utf-8?B?d2wrdUZhVExDb1EzVFlnU2RReEFheGVDeTdnaUJjUkk1WU9JY05WVlpQVEJY?=
+ =?utf-8?B?SUhpSVVJU2IwYzBsMFp6WndpcXJDZXM1aXM0WmNwTkFjei9uam9xck44RURN?=
+ =?utf-8?B?amw2b1hGM1NWSFdyWXpZaHg0Q1piSmFlZ0F2L0ZEZlYrN0Y4eU5ZeW9xVS8y?=
+ =?utf-8?B?VDBkUm9Iam1RUnlKNTA5TFhXT09qQzhFYmZwWCtMS01kRk5QOFlQbWNZVVA5?=
+ =?utf-8?B?VHdhTVNBemZHVFJYNUM1NUVxMW5nb1hock5jL1EzNzd0cGdHeEk5Y3VtREUz?=
+ =?utf-8?B?SEZ0VEk5VGpVMUc3d1BtMlF4V0REbFdFbVdlenk1dnFnT2lzM2Q4aUlqR00x?=
+ =?utf-8?B?MEozaXNEdkdjRExLWmZvQnpyQkFOVXdiMlNqeGZEYkRheW9NZUtwLyt5bW9D?=
+ =?utf-8?B?QmtzUE5vY0pUOEhSbk9EckZVRW9tWWlDQ2dYRUZNT2tINkdLWUEvcWRmc3pi?=
+ =?utf-8?B?ZHVybVNUaTh0WTR3Wmw5UGJhQ0ttQ29GOTFOTHNQV1ZoSy8yT2hiMEtFVkho?=
+ =?utf-8?B?bzFWa2toZ2U0ditXTEEyd29vU2NFTCt6OVExYk1meVZPWExFVW5rU2tBYWo3?=
+ =?utf-8?B?YWNlU1hQOGdtRVRmbmg4NWpPMGo3MDgzTTZzTlZiVTRtMTBjT0VObmJpZE9s?=
+ =?utf-8?B?ZSs3T1hFQTNUTElrbERuR29oT3l1aSs1Szg3Wk9MaWtpY29obm5qMUtHaHho?=
+ =?utf-8?B?eGJEUktUUmdrVXZVV28xY01IMjAzbWN5ckJ0c3RGcGg3cmowN2puZ2xtUExY?=
+ =?utf-8?B?aFFVUEE4TzBHOC9uM0J4bmZVeHhDQ3QzcjJmR3lVU2orMlBnWDV0MC9GbWVU?=
+ =?utf-8?B?Z2xGUDZ2V25acmFWQ1oxUHhBbldCSm43Wm9TRktKbHhMK0ZtbzNmY2FQVDdC?=
+ =?utf-8?B?RFhPZGtpeGtoU2NzaEVPN0xKU21sV24yTVpndUFqOVlrL3ltRWxqandXYW9O?=
+ =?utf-8?B?S28wK3hNeXhpSzkwd1lvVHVFOUlLQjJRQ3pyZFdxRkZLdGhWSFc3Rmt2S2N2?=
+ =?utf-8?B?TjVPSFpJSVAvNFVwaHl1aHVjQjRzLzEzQmtyL2VxajB5UEx4MUU1YlU2b2VF?=
+ =?utf-8?B?bzVYOGFzM2swMFBpUVpHVXJMUlhxZGh3SVhDN1ZlR0xYVWJTbUkyWTNTeGsz?=
+ =?utf-8?B?T1JpcDhFdUwyNmFNUndpTkxCbEhDWUU3MXoxcHZBbTJQTmMrREdvbjd4Q0s4?=
+ =?utf-8?B?dXRKNG9GaFFhb1BiOXlNUmE3SEROYm5KNXRBVkQvVTc4UHRUTlJQUy9kdGdn?=
+ =?utf-8?B?em5qdzdBNjBUNzZlOVBTQ2crQ1gxZVM3OTM4UElubUxPR1JHT0tvZzgxS1o4?=
+ =?utf-8?B?MUVnbWN1SXYwTkE3QmxVRzgrVktFZWZRMWtxeTZMMks1VDlmMUNGSVQ3MEhN?=
+ =?utf-8?B?bkFRKzdnSzVNNHNJN0g1dDA4QkRua2k2RHgwTDFoNkh3N1NRdFF1WTFscEE1?=
+ =?utf-8?B?UC8zWjFhTXBUMFVlTnkvVHZKd2FYbmViK0hlRmxJaExFR1JoUk1qa0Y5MUlH?=
+ =?utf-8?B?bFZMUFZoUmdqMHJkYVM3NUZEZXNwWmhEV2h1YXZLRkJDZzV6ZmJHWE13YkxN?=
+ =?utf-8?B?ZjViU0hTNXd3VHAyTzVuRHY1TEZTTzVPWmplS1g0SDJGZmM0RGVNamlCQmt4?=
+ =?utf-8?B?VTlqYUlBQUVTQ2s3QWZxSTh3dWgyMjRteEJiZzZNNDJuUXdvVkluU0V0MXdD?=
+ =?utf-8?B?ZEM1M1ZVY2tCeXVYVDZRSUh3UDFKRGdkUHR0a215R3I5T2Q5ckY2TVVHUXEx?=
+ =?utf-8?B?eHFHRHZ6bm13V0IzNUNvdkRXaXFUS2RXT0J0S1VtUTF1MTBENkZtZmdSQy93?=
+ =?utf-8?B?UGl4K3lyR0hzYU93S1U0RXNTMGtydGpZSkNOd3RIK1hER2xpQmlvQjVKQ2E2?=
+ =?utf-8?B?N3BUWGI1bGR1eEZ1MThPUmNLSVozTkIzRkZTOGE4T0ZZanhESGdJSTRYOGNo?=
+ =?utf-8?Q?WMBpxnGZj/LQqV4G5TK7w0Vq5?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 5VHnTrC7sWn048HS/Dd2r/wApoXyRexYW2r+y1WWLta/qONE1njnlJZBmk+b+1k7d4TP1mScXN4J8rLH4uuVy1rK/WxfnsM3GJFzWDmLU7+6uFULHw7i/1C2FCY0SIga1YiDxi/3dPbe2L/y1fRBH/eCu5DDEJSrDP4GG5hbQ+94EZSXQcCsgUK8gPp6aOWAahKlwGcqMM/CDimFE5+O/E9771Z1DXghdiCi842AkP71XPt5CBPFIecXKZH5ahOMY2YCM7COotwYdhfQ5zWO/6ZU3dWpyff0WlcaPD51yTSIBqb/EjcNE7fiEww4YSC+CwDcRzcFb0dWlS4EzS8VD/VbQm/f16dOTuNy5mRKU33NmbuqwlqBK+ZWK/Or9nuGLizKXDf7bAj1tveyYj8+G7gdRPvxd+ZTsmylsm2TPOrbGUBIrwpJyRtVNMdfQtlTYumOjagg96+CLpSqVo6xbjg95H/ChYVms4tRk6tQYE+oaOmQ/joMUMx+BXszIjHBuZmReSNKU1SIhIcQ9H/c6SRmY0CSx5bxUf3958P5llk+ioL+TaC2jAzYP9M0YpjrylYYchgF04EGGhS+s+wJba+M1Db53Hh4sy18v515tUV1pz9DaaMGbIMf1Qu20e8G4xLshmBo9+Lbe/PK3Hqa9n1AWX7qP3NdesfLkwZfFa+psnCc789nB9Dkxk2Yqcz5QGQSKsF1o01JphhQrODmsxgK/BWS53IdanSX+CZwz8vMIPCYEfwanCSS5JWyxem8QOdGHRlbFy8VkwUE0OY1VDvffZ2uwrU/LssuIAUGKUs=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9b9a3b1-ae0a-40fc-cf64-08dbbe231e13
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 23:57:04.4257
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9rxCVud3FEGogxnUUUi1IhnTi0pOxzuOewwG3mnLBu7Revb7KJzFg3Gx9CG5+T+VvCSX6KWyMyIq2Isg9Gz2kw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR10MB6233
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-25_19,2023-09-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309250185
+X-Proofpoint-GUID: DZ8cGBTwjOcSQxtu9BwlNfVVcmYgl7ID
+X-Proofpoint-ORIG-GUID: DZ8cGBTwjOcSQxtu9BwlNfVVcmYgl7ID
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -97,133 +159,53 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/9/26 08:47, Shaun Hills wrote:
-> Hello,
->
-> I have a RAID1 BTRFS volume on my Ubuntu home NAS with 3x4TB SATA
-> disks. It has been running successfully for some years. But I run an
-> hourly script to check its health that just started reporting errors
-> last night. Script does this:
->
-> /usr/bin/btrfs device stats --check /mnt/btrfs | grep -vE ' 0$'
->
-> # if grep returns 0 i.e. success i.e. a match
-> if [ $? =3D 0 ]; then
->      echo "Subject: Alert - BTRFS degradation reported on $(hostname)"
-> | sendmail <address redacted>
-> fi
->
-> What it started getting back:
->
-> [/dev/sdd].write_io_errs    93877
-> [/dev/sdd].read_io_errs     556
-> [/dev/sdd].corruption_errs  569
->
-> Looks like /dev/sdd might be failing. Though I haven't 100% ruled out
-> a SATA controller problem because an ext4 disk on the box was also
-> showing some odd behaviour.
->
-> I rebooted and ended up in Ubuntu "emergency mode". journalctl -xb
-> showed some problems with mounting the BTRFS and ext4 disks; don't
-> remember exact messages.
->
-> A further reboot brought everything back seeimgly OK, ext4 fsck is OK,
-> but when digging deeper I have worrying BTRFS errors:
->
-> sudo btrfs check --force --readonly /dev/sdb1
+On 26/09/2023 00:58, David Sterba wrote:
+> On Thu, Sep 21, 2023 at 05:51:12AM +0800, Anand Jain wrote:
+>> v2: Splits the patch into two parts: one for the new code to reject
+>> devices with CHANGING_FSID_V2 and the second to remove the unused code.
+>>
+>> The btrfs-progs code to reunite devices with the CHANGING_FSID_V2 flag,
+>> which is ported from the kernel, can be found in the following btrfs-progs
+>> patchset:
+>>
+>>   [PATCH 0/4 v4] btrfs-progs: recover from failed metadata_uuid port kernel
+>>      btrfs-progs: tune use the latest bdev in fs_devices for super_copy
+>>      btrfs-progs: add support to fix superblock with CHANGING_FSID_V2 flag
+>>      btrfs-progs: recover from the failed btrfstune -m|M
+>>      btrfs-progs: test btrfstune -m|M ability to fix previous failures
+>>
+>> Furthermore, when the kernel stops supporting the CHANGING_FSID_V2 flag,
+>> we will need to update the btrfs-progs test case accordingly:
+>>
+>>      btrfs-progs: misc-tests/034-metadata-uuid remove kernel support
+>>
+>> v1:
+>> https://lore.kernel.org/linux-btrfs/02d59bdd7a8b778deb17e300354558498db59376.1692178060.git.anand.jain@oracle.com
+>>
+>>
+>> Anand Jain (2):
+>>    btrfs: reject device with CHANGING_FSID_V2
+>>    btrfs: remove unused code related to the CHANGING_FSID_V2 flag
+> 
 
-=2D-force is only recommended if your fs is mounted RO.
 
-Or any transid mismatch can happen due to the race between btrfs check
-and kernel.
+> Added to misc-next, thanks.
 
-> Opening filesystem to check...
-> WARNING: filesystem mounted, continuing because of --force
-> parent transid verify failed on 15182296121344 wanted 2311287 found 2310=
-777
-> parent transid verify failed on 15182153809920 wanted 2311286 found 2311=
-267
-> parent transid verify failed on 15182088847360 wanted 2311286 found 2311=
-267
-> parent transid verify failed on 15182164918272 wanted 2311286 found 2311=
-267
-> parent transid verify failed on 15182318321664 wanted 2311286 found 2311=
-267
-> parent transid verify failed on 15182164983808 wanted 2311286 found 2311=
-267
-> parent transid verify failed on 15182319714304 wanted 2311286 found 2311=
-267
-> parent transid verify failed on 15182319845376 wanted 2311286 found 2311=
-267
-> parent transid verify failed on 15182396751872 wanted 2311328 found 2310=
-808
-> ^C
-> (truncated for brevity)
->
-> Luckily I can still mount the volume, and am currently running btrfs
-> scrub (hasn't completed yet).
+> I've updated the 2nd patch with some
+> historical background.
 
-For mounted fs, scrub is more recommended, but for a full, more
-comprehensive result, it's strongly recommended to go "btrfs check
-=2D-readonly" on an unmounted fs.
+Now much more complete! Thanks.
 
->
-> I *did* have backups, but in a case of bad timing I got rid of them a
-> few weeks ago :( - offsite company I lost confidence in. New backups
-> by shipping snapshots to an offsite server are being worked on but not
-> done yet.
->
-> I'm going to buy an external USB disk and try copying all the data
-> off. After getting the data off I will probably also try replacing
-> /dev/sdd.
->
-> At this stage I have two questions:
->
-> 1) Is there a command I should use to maximise chances of
-> success/minimise problems/check for errors when copying data, or is
-> something like rsync -av OK?
+> The temp-fsid patch now does not apply cleanly,
+> I'll do a refresh on top of this series. Once it's in for-next, please
+> have a look. Thanks.
 
-No special requirement. If you hit an EIO, and you're using btrfs RAID1,
-it really means a problem.
-Otherwise btrfs would try to fix the problem all by itself.
+Sure. But, temp-fsid v4 still has a subvol mount bug, as reported
+before. I have a fix that is in-memory only. I am trying to get a
+reasonable list of fstests passed before sending it out. Guilherme
+can add the super-block flag on top of this, although it is not
+mandatory from the btrfs internals pov. I will send out the
+in-memory based temp-fsid soon I get the fstests (with some fix)
+working today.
 
->
-> 2) Is there anything else I should be trying to correct the transid
-> verify error? Quite a lot of info on the Internet is a few years old,
-> and this seems like the sort of error where it pays to be careful.
-
-I'd say it's more like a false alert due to the forced check on a RW
-mounted fs.
-
-But still, your sdd doesn't look good at all.
-
-Thanks,
-Qu
-
->
-> thanks
->
-> =3D=3D=3D
-> Info asked for by the mailing list:
->
-> uname -a
-> Linux storage 5.15.0-84-generic #93-Ubuntu SMP Tue Sep 5 17:16:10 UTC
-> 2023 x86_64 x86_64 x86_64 GNU/Linux
->
-> btrfs --version
-> btrfs-progs v5.16.2
->
-> btrfs fi show
-> Label: none  uuid: ab1359a8-98ae-4f6d-a581-fbfa40ef633f
->          Total devices 3 FS bytes used 4.79TiB
->          devid    1 size 3.64TiB used 3.34TiB path /dev/sdd
->          devid    2 size 3.64TiB used 3.34TiB path /dev/sdb1
->          devid    3 size 3.64TiB used 3.34TiB path /dev/sda
->
-> btrfs fi df /mnt/btrfs
-> Data, RAID1: total=3D5.00TiB, used=3D4.78TiB
-> System, RAID1: total=3D32.00MiB, used=3D768.00KiB
-> Metadata, RAID1: total=3D6.00GiB, used=3D5.84GiB
-> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
->
-> dmesg > dmesg.log (attached)
+Thanks, Anand
