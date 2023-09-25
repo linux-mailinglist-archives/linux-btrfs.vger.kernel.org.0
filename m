@@ -2,114 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DEE17ADDF5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 19:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF7A7ADEC3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 20:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjIYRrv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Sep 2023 13:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
+        id S231450AbjIYSbV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Sep 2023 14:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjIYRru (ORCPT
+        with ESMTP id S230117AbjIYSbU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Sep 2023 13:47:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CA2E8;
-        Mon, 25 Sep 2023 10:47:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2E92C433C8;
-        Mon, 25 Sep 2023 17:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695664063;
-        bh=Kd5DB5lD9N9X5cbnp5J7jsLmId4kH+fDVReORU0+IDc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZcB+V3TgdH6MzxVKhGXICVICPUyFCbPYSuXdFtbe6jVmY0Ja+qbPuCs8ALEe4gf8u
-         09dfdya+O/JKqgJKTwNr7DHo+S3P4pAGLVahnxLmMqqyHJqiMAhmF7j+2WaQQ2O1S2
-         AQDZoc9RCfn3lxnYbGOnmJat99ll720ebys7FCs0HokP9EyQLkYX4sQ3JX+Wos79wB
-         GTBbiMaWb3imtinrQaCeLWyF6ZuKzMB5ZqVh2q4wuTNct3fnjiaAzuzC+PvbSrHTAz
-         zwCGl9LakzazBi6/SsaKMmhDKm0AwlhaIRncuN1SXbpQmYiaxnGa0X0rpSry0EPUS9
-         5Hj2lE8NGoBbA==
-Date:   Mon, 25 Sep 2023 13:47:42 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>, clm@fb.com,
-        linux-btrfs@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.5 13/41] btrfs: do not block starts waiting on
- previous transaction commit
-Message-ID: <ZRHHvrAf/3BIO4E+@sashalap>
-References: <20230924131529.1275335-1-sashal@kernel.org>
- <20230924131529.1275335-13-sashal@kernel.org>
- <20230925130112.GK13697@suse.cz>
+        Mon, 25 Sep 2023 14:31:20 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E45E95
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 11:31:13 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id CB0AC3200947;
+        Mon, 25 Sep 2023 14:31:10 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Mon, 25 Sep 2023 14:31:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+        :content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1695666670; x=1695753070; bh=G5xZIgMutn
+        9i9f836/dr6QuYj4QT7x6/+oRcyN9uoCc=; b=Jqc8qur5IHszRaGN1hjpdNOr6Y
+        iis3dap1oTpQTeBVfEL+C7EzcJxMu7WvxM4DbQRVrd3tUugvqX2LpNo+RXWxVMWe
+        I5LblAL2idYJGvJC/+/w3n6I5JlsNr9wA8lRRGivVYKPelSwasIA/dUNqEzIs7ZY
+        EnZhLImCqYF/IBtZrmZ/4Fz6X95cnDDMp94vSaaKzCYpeZZFSfgYwl29XVKoiFQp
+        AjtdW/XRZUzIirHCPNQj6bb3kADrt0r/hZfAKblW/RrCKvMbQqAZUpntySL+fmIr
+        9xaIcU0x8qHkx5c5BoLpfSEBFfJkQcw2qBby+I2oCAipcUf7a3VwN8/lQLmQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:date:feedback-id:feedback-id:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; t=1695666670; x=1695753070; bh=G5xZIgMutn9i9f836/dr6QuYj4QT
+        7x6/+oRcyN9uoCc=; b=eEBZKD6sGVqYv0jAA8v0DpFJVckD+rw6pvAv/axsDyxe
+        TqLdv/25TZJC7Tp7Gf0uDQgA7gNpHEMQEulpjmDw+etRnIK4SE/grEgJJpCRel1B
+        mbeICaLAixTxf0ZSf+X7FrGoSyXWt03GbUUvt0bgKgiGDPXzSkn4jZVwsCpJA3/U
+        1zuWX6OJjnn/Wkb1MVmfw0cs2VDp6ndoBcnmrUi7KEf0oyZRYgoN/Nqu/VUCbUwE
+        b/DGyHfUePlpkIw7zjDPV+LjlEOOKYyErQ9qqKzd0xXVxeOL32pGspUU63LHWCbW
+        JBCRpZNhkkZZcX3rgNnH/F3HDHTtEHQXVMf3BIIqpw==
+X-ME-Sender: <xms:7tERZTTB_9qGpsnsNWz4o7ogo6C_-ZXqZr3BOkkbPwSp1t5cGdNkmw>
+    <xme:7tERZUwXYIJfQoVaBatxe2PsTRdT2HrM_OqSA2pGo4AYIr-pBvQe936bjBO_gKMpv
+    iZYUkJ6OHzncIZMots>
+X-ME-Received: <xmr:7tERZY2LSDGHQJrG85tZatJ1Ih13buxcV7fqrw_rw4KrBN5oJGI5hzqPh-HUixYhWOc7AOSlOYSya75ZT0QGEwIxLQc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudelgedguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhepieeltdffhffhvddtfeegvdeiteelieejjeeitdfhfe
+    egkeehveehkeejleekgeeknecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    hrrdhioh
+X-ME-Proxy: <xmx:7tERZTCFI1oAQQONJhPbXnvgBWvOgjo5b1Dt4znC9i_Qyi5bmHCXUA>
+    <xmx:7tERZciZTO8qKC6Vtb5e_EtoC13_z-0SGm_AKEs9mQ3QBlDFHdgvsg>
+    <xmx:7tERZXrGDWsAVo_hcYdEmqaNqYUd3I5CZQpsnnDKc1UY1EffyQVpWg>
+    <xmx:7tERZUKttE_RDS9jnfBC1MS_BHNC94khOAs3ZEF4kCJtN5ytO5hvjw>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Sep 2023 14:31:09 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: qgroup: fix use-after-free in btrfs_qgroup_inherit
+Date:   Mon, 25 Sep 2023 11:32:07 -0700
+Message-ID: <26e6880fa1dabf3771519fb86ed96b15e6b292a6.1695666651.git.boris@bur.io>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20230925130112.GK13697@suse.cz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 03:01:12PM +0200, David Sterba wrote:
->On Sun, Sep 24, 2023 at 09:15:01AM -0400, Sasha Levin wrote:
->> From: Josef Bacik <josef@toxicpanda.com>
->>
->> [ Upstream commit 77d20c685b6baeb942606a93ed861c191381b73e ]
->>
->> Internally I got a report of very long stalls on normal operations like
->> creating a new file when auto relocation was running.  The reporter used
->> the 'bpf offcputime' tracer to show that we would get stuck in
->> start_transaction for 5 to 30 seconds, and were always being woken up by
->> the transaction commit.
->>
->> Using my timing-everything script, which times how long a function takes
->> and what percentage of that total time is taken up by its children, I
->> saw several traces like this
->>
->> 1083 took 32812902424 ns
->>         29929002926 ns 91.2110% wait_for_commit_duration
->>         25568 ns 7.7920e-05% commit_fs_roots_duration
->>         1007751 ns 0.00307% commit_cowonly_roots_duration
->>         446855602 ns 1.36182% btrfs_run_delayed_refs_duration
->>         271980 ns 0.00082% btrfs_run_delayed_items_duration
->>         2008 ns 6.1195e-06% btrfs_apply_pending_changes_duration
->>         9656 ns 2.9427e-05% switch_commit_roots_duration
->>         1598 ns 4.8700e-06% btrfs_commit_device_sizes_duration
->>         4314 ns 1.3147e-05% btrfs_free_log_root_tree_duration
->>
->> Here I was only tracing functions that happen where we are between
->> START_COMMIT and UNBLOCKED in order to see what would be keeping us
->> blocked for so long.  The wait_for_commit() we do is where we wait for a
->> previous transaction that hasn't completed it's commit.  This can
->> include all of the unpin work and other cleanups, which tends to be the
->> longest part of our transaction commit.
->>
->> There is no reason we should be blocking new things from entering the
->> transaction at this point, it just adds to random latency spikes for no
->> reason.
->>
->> Fix this by adding a PREP stage.  This allows us to properly deal with
->> multiple committers coming in at the same time, we retain the behavior
->> that the winner waits on the previous transaction and the losers all
->> wait for this transaction commit to occur.  Nothing else is blocked
->> during the PREP stage, and then once the wait is complete we switch to
->> COMMIT_START and all of the same behavior as before is maintained.
->>
->> Reviewed-by: Filipe Manana <fdmanana@suse.com>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> Reviewed-by: David Sterba <dsterba@suse.com>
->> Signed-off-by: David Sterba <dsterba@suse.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->Please postpone adding this patch to stable trees until 6.6 is
->released. Thanks.
+If a new subvolume under simple quota uses the auto inherit feature, it
+will free the temporary auto inherit struct before freeing
+qlist_prealloc. The latter reads the inherit struct to see how much to
+free, so this is a UAF.
 
-Ack.
+Fix it by freeing the inherit struct after the btrfs_qgroup_list.
 
+This can be reproduced by running a simple quotas test with KASAN
+enabled. The test is not yet in upstream fstests, but can be found in
+this patch:
+https://lore.kernel.org/fstests/a7f4e4db-37a5-3685-4621-99b05343a864@oracle.com/T/#u
+
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Closes: https://lore.kernel.org/r/202309230501.FnBPmnOv-lkp@intel.com/
+Fixes: 356d8a464995 ("btrfs: qgroup: simple quota auto hierarchy for nested subvolumes")
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/qgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index ff470afeea7c..1a486d8a7b5a 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3310,13 +3310,13 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 		mutex_unlock(&fs_info->qgroup_ioctl_lock);
+ 	if (need_rescan)
+ 		qgroup_mark_inconsistent(fs_info);
+-	if (free_inherit)
+-		kfree(inherit);
+ 	if (qlist_prealloc) {
+ 		for (int i = 0; i < inherit->num_qgroups; i++)
+ 			kfree(qlist_prealloc[i]);
+ 		kfree(qlist_prealloc);
+ 	}
++	if (free_inherit)
++		kfree(inherit);
+ 	kfree(prealloc);
+ 	return ret;
+ }
 -- 
-Thanks,
-Sasha
+2.42.0
+
