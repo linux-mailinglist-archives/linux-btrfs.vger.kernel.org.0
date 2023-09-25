@@ -2,46 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C4C7AE095
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 23:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065FB7AE0A4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Sep 2023 23:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbjIYVOk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Sep 2023 17:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
+        id S233166AbjIYVWK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Sep 2023 17:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjIYVOj (ORCPT
+        with ESMTP id S233059AbjIYVWJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Sep 2023 17:14:39 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74897103
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 14:14:31 -0700 (PDT)
+        Mon, 25 Sep 2023 17:22:09 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CB611B
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 14:22:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695676468; x=1696281268; i=quwenruo.btrfs@gmx.com;
- bh=3iGACLxPC/Yt840lh+L3yg4vhC1Ex/8K3JCauF+m9Kg=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=XUdT0lMyOlH81rTXcbizxvAur7QpDTEhq6TCPdywCQ4CtqwtaDMlz7GhtCTqYpljSz8kYR3h1cH
- H3vE1v0FK/LCLX9JLikTXK9MWYzKs+606Fg1d7AXmUEDfBXjKtxl2FIeXjY9/fRwLUt9yGRwF5GCZ
- tuyhhxuuugA3/VanFA3QQWGSgrCzzHW5BzxcngxMwnm3L5MuHA6IePCD3X5S/qJP1Hinc88XTEN3s
- LxkuRcoFBaEn/6H76U2rsF7Teukg//N+LmBmdWmirZ7KW1pVh1GIApWHw9ki6wAz+VL+f9V3lA5Xz
- kfToLrJvA3uR16OSPfsbqLKG67quLId0Y+Zw==
+ t=1695676919; x=1696281719; i=quwenruo.btrfs@gmx.com;
+ bh=dKNjUWFrd89+xCSN6z0t9Owk0jKS59EVLuaPPuxWdCE=;
+ h=X-UI-Sender-Class:Date:Subject:From:To:References:In-Reply-To;
+ b=lEBhXPCCQdLRnXyVwrk1S3pxbRgmXKeEhg1maCwS2WYLn0x4Ugwao8QjwKmxGGPDPTJEA23GPTN
+ xJ/VfbTxX0lRqvAgIOwBTEy9qCOGrqjbbbgD5/XO7fviYpiHaNO1dbuKgkopeoowOtoY02EmqVeiB
+ rQwHynMHYcg1zkTpDoH5SSzEAcT6uQLDxVoFKe95T0nZEt7Y7dbDja22AFy5uy/Fdz5JnNcviTF5F
+ HafqvpIIqhePwcZY74WoqdYcSzaL+U8l5pSLDcLdQ6kqNKAn0qBZYFP7SAW3+6yAIP9U2n+gmQlzz
+ dOAoeW2SE2FOhsiGelvfwZN9kDcukueiojPw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M2f5T-1qoSTs3sDf-004Fyg; Mon, 25
- Sep 2023 23:14:28 +0200
-Message-ID: <ceb9440b-a280-43ae-9e3f-162a18648a10@gmx.com>
-Date:   Tue, 26 Sep 2023 06:44:24 +0930
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MLzBj-1r28lL2cyn-00Hy39; Mon, 25
+ Sep 2023 23:21:59 +0200
+Message-ID: <620ca0c7-8152-4251-8f23-6b1cf0959de5@gmx.com>
+Date:   Tue, 26 Sep 2023 06:51:55 +0930
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] btrfs: introduce "abort=" groups for more strict
- error handling
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1695350405.git.wqu@suse.com>
- <20230922145513.GF13697@twin.jikos.cz>
- <25c4f01f-a355-43b9-ab22-725353dc6380@suse.com>
- <20230925163740.GQ13697@twin.jikos.cz>
+Subject: Re: btrfstune --convert-to-block-group-tree segfaulted. now
+ filesystem is unmountable
 Content-Language: en-US
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+To:     Konstantinos Skarlatos <k.skarlatos@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <3c93d0b5-a8cb-ebe3-f8d6-76ea6340f23e@gmail.com>
+ <0b7b9bd4-9b0c-467c-be20-b7d6b613e5d3@gmx.com>
+ <31319035-f0cf-0882-321e-ad50ccfd5e40@gmail.com>
+ <81f63d28-a2be-47b6-9dd3-32735be73101@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -66,138 +66,182 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20230925163740.GQ13697@twin.jikos.cz>
+In-Reply-To: <81f63d28-a2be-47b6-9dd3-32735be73101@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Vw5U5xGzeQk3yl+j7zfuojakDoLxN7XsoUJLW7lRtsYbeh+BFf9
- o7PHXHleIZyPIZ7VJ2zfsPHdupRK7K2FQpqz8DvoWwIAbmnswjo4JkDGrpypCMsPPY7P83/
- vuXFRXF58hjYUVD857nctPFwBpZStNVYamcSbk6vSHR0uim8S2ac9oik+NL4yOijq3gJHWO
- P6zRHs8hObHW1eH0yGv6g==
-UI-OutboundReport: notjunk:1;M01:P0:UcyeyH8FnkA=;2bboxI5JUZrIHOIdyF1NOjliqer
- BlIGcF6ZACivYIqBJqygxMeFrypX55Jod6IgC+pnuWy8q6L/qp/6+Q7TxWkPijtuyNS2//04o
- 00mpi6yh/RkXY2lerKDc/yxu65W/w+Uloib9A6uekyb/grVy9vglDt+BWCQlXUOXZQi/Dyl+I
- DJKTBqA+/5zk9pwnNx8Re1Pa+QFjwtYiXIWm/w0juzYoQeOlbnvqBEEl49Ro/SEdvjxg6+QFd
- NiDKyt6IP1IGxMcNOAKeCD2XroARDdN/r92RAw5ii4TNmkoinhoaKOOQ5c05kg6Fjiuz7yaTX
- 70sHukvnGl4e137fmgMC0YQ6neQaok/5JyquHLwNTVUmdpu9/1rjj4wyOYRynsdnMptyVXvZn
- eSN195oj4ptNm3yG8u+yWR2WcBx+7Gifo7T/YTq8GCAEscxjaOrw3E+ZWYiVFBzQ/NwuLotkw
- f6YI/4MBojezT24VELK8a1OmTwjsLOuE41SukWSGaJWg8r/3aYPFkND+fmhEalDXxuFKlOXr4
- 0/aPF0qJ19Ro2aAatvj6sP9eypa7wbE+4NnpLYu2Z0iiQf0UN0zrq5qViohL4GoR68zZM1kBj
- 3ZUfpI0Y3g6ODkw9Slbu91423YgHS1prqBlD0mVXFgA2T513yaNc8jgDoyZo+YKJTmefGF/nn
- eSnAPT+FHBVijx7QJmQQMUow5pPj9zoN1CqIEPCSXuLaIx88w8fsWGM18uZ33Qpl12BRHYrdR
- zKHtjSFaexkYYtWKyj6NsfyoFaLaFhsoGVjvutAk32vIoHb7fOXu+R4eFb5blW5jiqg8sM3qX
- 1TaMb/j1xHyrkHUwkuNf8REgFhJQXoNcqjKzEJa72H48HoH+9wclt1dowwKUf/WI6LPTQOO5K
- 22HFcAB3USP9PaoyPXpuU3yT3Y12B2LxsW+Ni5A7C4JGveVlMv2OWwjFLRBxKYVC2w7jfUR+M
- 4P4upRdN7L33ogxmGsJAyo/vcJE=
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:D72wuIlW7kgAQAo2lP3mpISXf3u+gYVDjmtH+LH1snFQlTntYpM
+ PM97VldOrkR7AHxYKHwtC9yKKVRzoul4yupq0HBRe4jdP7w8Y8JvaDYHEis2j+YXtelt5sN
+ lNSsug7w5Y8+hPLAwGY4paa6VqOMbrLOeJJEBFIgMl1b9IAOfLMsFfXzzqKDYgOgmIl+Uv2
+ 9f8hXxyTK5YCh5uDEuZDQ==
+UI-OutboundReport: notjunk:1;M01:P0:yU7/OM9mMaU=;QAwORRXLzq5ot/OQ3ZPuwsG2uGK
+ hy+MUM2ZB3a/5DBfmYHB33rhpNnN2HVh0abRz4yP3TxR+Ct4dSdQyzL4T6XO4eqfJxnFLafMf
+ k6DEg7LNwfke6BLHTqUwvsZMF90tvMf0FMw5orRyn7Ft/E2l5MLsl2dpLwMf7+yncLZwYii9Q
+ D9oje1cDIjSk5XTvJXYYdLF7y8BsL6F8ANc36cXSbDao3TcBbGgJ4W1dr6NPJLU90QR4rO1+o
+ +wQqYpQY7qREQUu2OIbm8uvqAYhgeZEInpLClxdBUmC0FDsyxmF6pZw4FS4/ZDOqvD/5ICUrM
+ BdF/DCselsnCdSG8GJAZplTShdFID5NAkXCMe+5RKvPAD5eb7qi0QTg823/1hPjihy2BzBWU8
+ NNi6F20wlciiTi0k+Ab9HpcPaaZEhfYkMUVbecGPhp659rM0Vpmi70qXynNXTW3AiAROnrt3e
+ 4bTDUU2ay4pdw5AZKOAfWkOuMpOoliA/wt8wuyOipPnlCPuEYL2dOB+Am2R7r+7sJtj2Oqyfw
+ ByfhHLL7t2cwaCzC2JD6h+s3VzOmEqUQj3TqAM/1DcEJWf7NbLKRoaackfplMk7mKV2yaVsln
+ HKshqjR0168y0OAfQCb1wLqBEHodEJoTX7ubGGvWIvTEgD6f1juhF0IL+xr8jlS38p4MyzTT8
+ SsFl69B5WCXZJB48/g6d/xpnzkCWWwoBbYQ+wZaUpTDDBX73XX6B2O01vtrnVZefvGdrhs3Rt
+ y1o4JzJ4Pof2gkD2QJpGeoG9j2Bk7YTCN+sx2C1EITgfJ+IxPkkQEACUMiCk4lvhphcUNqdDD
+ 2MlTiBTTWptbNoMC/hWKX3cSIKdmRL2A1EcmeerU7/0zmg86VsuU0x9cbNufUUDLaVbKU/XU/
+ Q7Lj23UE0JhfVMHRB/P+GDpfTDpGp4fz4Uyfb4WEiipJTKm775/xCluSr7Kiebqd+7MPlTx/0
+ XQa2mDc0leeiLljmsxeXpVztsso=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/9/26 02:07, David Sterba wrote:
-> On Sat, Sep 23, 2023 at 06:46:26AM +0930, Qu Wenruo wrote:
->> On 2023/9/23 00:25, David Sterba wrote:
->>> On Fri, Sep 22, 2023 at 12:25:18PM +0930, Qu Wenruo wrote:
->>>> On the other hand, I totally understand if just a single sector faile=
-d
->>>> to be write and we mark the whole fs read-only, it can be super
->>>> frustrating for regular end users, thus we can not make it the defaul=
-t
->>>> behavior.
->>>
->>> I can't imagine a realistic scenario where a user would like this
->>> behaviour, one EIO takes down whole filesystem could make sense only f=
-or
->>> some testing environments.
->>
->> I doubt, for some environment with expensive hardware, one may not even
->> expect any -EIO for valid operations.
->> If that happens, it may mean bad firmware or bad hardware, neither is a
->> good thing especially if they paid extra money for the fancy hardware o=
-r
->> the support fee.
->
-> So the semantics we'd need is like "fail on first error of <type>" where
-> we can define a set of errors, like EIO, superblock write erorr or
-> something related to devices.
-
-The "set of errors" would be very specific, thus -EIO is not a good idea
-AFAIK.
-
->
->>>> So here we introduce a mount option group "abort=3D", and make the
->>>> following errors more noisy and abort early if specified by the user.
->>>
->>> Default andswer for a new mount option is 'no', here we also have one
->>> that is probably doing the same, 'fatal_errors', so if you really want
->>> to do that by a mount option then please use this one.
->>
->> Or I can go sysfs interface and put it under some debug directory.
->
-> For a prototype it's much more convenient until we understand what's the
-> actual usecase.
-
-Well, not that convenient, as we need to expand the mount option bits to
-U64, or on 32bit systems we're going to cause problems due to the fact
-that we're go beyond 32 mount options. (the first patch)
-
->
->>>
->>>>     This new "rescue=3Dsuper" may be more frequently used considering=
- how
->>>>     loose our existing tolerance is.
->>>>
->>>> - Any data writeback failure
->>>>     This is only for the data writeback at btrfs bio layer.
->>>>     This means, if a data sector is going to be written to a RAID1 ch=
-unk,
->>>>     and one mirror failed, we still consider the writeback succeeded.
->>>>
->>>> There would be another one for btrfs bio layer, but I have found
->>>> something weird in the code, thus it would only be introduced after I
->>>> solved the problem there, meanwhile we can discuss on the usefulness =
-of
->>>> this patchset.
->>>
->>> We can possibly enhance the error checking with additional knobs and
->>> checkpoints that will have to survive or detect specific testing, but =
-as
->>> mount options it's not very flexible. We can possibly do it via sysfs =
-or
->>> BPF but this may not be the proper interface anyway.
->>
->> I think sysfs would be better, but not familiar enough with BPF to
->> determine if it's any better or worse.
->
-> BPF is probably a bad idea, I mentioned only as a potential way, it's
-> another extensible interface.
->
-> What you suggest looks like the forced shutdown of filesystem. This can
-> be done internally or externally (ioctl). I haven't looked at the
-> interface to what extent it's configurable, but let's say there's a
-> bitmask set by admin and the filesystem checks that in case a given type
-> of error happens. Then forced shutown would be like a transaction abort,
-> followed by read-only. We have decent support for that but with the
-> shutdown some kind of audit would have to happen anyway, namely for the
-> EIO type of errors. Specific context like super block write error would
-> be relatively easy.
-
-I'm not sure if I understand the bitmask thing correctly.
-
-The idea of the series is to catch certain types of error which are by
-default ignored/handled gracefully.
-The bitmask looks a little too generic, what we want is to catch
-specific error at certain call sites (thus I can understand why you
-mention ebpf).
-
-Thus we can not just simple use a bitmask to handle all the generic
-errors, but add checks into the route we're interested in.
-
-Thanks,
-Qu
+DQoNCk9uIDIwMjMvOS8yMyAwNzoxNiwgUXUgV2VucnVvIHdyb3RlOg0KPiANCj4gDQo+IE9uIDIw
+MjMvOS8yMiAxOTowMiwgS29uc3RhbnRpbm9zIFNrYXJsYXRvcyB3cm90ZToNCj4+IEhlbGxvIFF1
+LA0KPj4gdGhhbmsgeW91IGZvciB5b3VyIHF1aWNrIGFuc3dlciENCj4+IHVzaW5nIHlvdXIgcGF0
+Y2gsIGkgbm93IGdldCB0aGlzOg0KPj4NCj4+IOKdryAuL2J0cmZzdHVuZSAtLWNvbnZlcnQtdG8t
+YmxvY2stZ3JvdXAtdHJlZSAvZGV2L3NkYQ0KPj4gRVJST1I6IENvcnJ1cHRlZCBmcywgbm8gdmFs
+aWQgTUVUQURBVEEgYmxvY2sgZ3JvdXAgZm91bmQNCj4gDQo+IE1pbmQgdG8gZHVtcCB0aGUgaW52
+b2x2ZWQgdHJlZXMgYnk6DQo+IA0KPiAgwqAjIGJ0cmZzIGlucyBkdW1wLXRyZWUgLXQgZXh0ZW50
+IC9kZXYvc2RhDQoNCkhvdyBzdHVwaWQgSSdtLi4uIFRoYXQgdHJlZSBjYW4gYmUgc3VwZXIgbGFy
+Z2UuDQoNCldvdWxkIHlvdSBtaW5kIHRvIGR1bXAgaXQgdXNpbmcgdGhlIGZvbGxvd2luZyBjb21t
+YW5kPw0KDQogICMgYnRyZnMgaW5zIGR1bXAtdHJlZSAtdCBleHRlbnQgdGVzdC5pbWcgfFwNCiAg
+ICBncmVwICJpdGVtIC4qIEJMT0NLX0dST1VQX0lURU0gIg0KDQpUaGlzIHNob3VsZCBncmVhdGx5
+IHJlZHVjZSB0aGUgc2l6ZSB3aGlsZSBzdGlsbCBnZXQgd2hhdCBJIG5lZWQuDQoNClRoYW5rcywN
+ClF1DQo+IA0KPiBBbmQNCj4gDQo+ICDCoCMgYnRyZnMgaW5zIGR1bXAtdHJlZSAtdCAxMSAvZGV2
+L3NkYQ0KPiANCj4gDQo+IENvbnNpZGVyaW5nIHRoZSBjb2RlIGNvbnZlcnRpbmcgYSBibG9jayBn
+cm91cCwgdGhlcmUgc2hvdWxkIG5ldmVyIGJlIGEgDQo+IG1pc3NpbmcgYmxvY2sgZ3JvdXAgKGVp
+dGhlciBpbiB0aGUgb2xkIG9yIHRoZSBuZXcgdHJlZSkuDQo+IEkgdGhpbmsgdGhlcmUgbWF5IGJl
+IHNvbWV0aGluZyB3cm9uZyB3aXRoIHRoZSBjb2RlIHJlYWRpbmcgYm90aCB0cmVlcy4NCj4gDQo+
+IFRoYW5rcywNCj4gUXUNCj4+IEVSUk9SOiBmYWlsZWQgdG8gZGVsZXRlIGJsb2NrIGdyb3VwIGl0
+ZW0gZnJvbSB0aGUgb2xkIHJvb3Q6IC0xMTcNCj4+IEVSUk9SOiBmYWlsZWQgdG8gY29udmVydCB0
+aGUgZmlsZXN5c3RlbSB0byBibG9jayBncm91cCB0cmVlIGZlYXR1cmUNCj4+IEVSUk9SOiBidHJm
+c3R1bmUgZmFpbGVkDQo+PiBleHRlbnQgYnVmZmVyIGxlYWs6IHN0YXJ0IDE3ODI1NTc2NjMyMzIw
+IGxlbiAxNjM4NA0KPj4NCj4+IE9uIDIyLzA5LzIwMjMgMTI6MDYgz4AuzrwuLCBRdSBXZW5ydW8g
+d3JvdGU6DQo+Pj4NCj4+Pg0KPj4+IE9uIDIwMjMvOS8yMSAyMjo1NywgS29uc3RhbnRpbm9zIFNr
+YXJsYXRvcyB3cm90ZToNCj4+Pj4gSGkgYWxsLA0KPj4+PiBpIHRyaWVkIHRvIGNvbnZlcnQgbXkg
+QlRSRlMgZmlsZXN5c3RlbSB0byBibG9jay1ncm91cC10cmVlIGJ1dCBpdA0KPj4+PiBzZWdmYXVs
+dGVkIGFuZCBub3cgdGhlIGZzIGlzIG5vdCBtb3VudGFibGUuDQo+Pj4+DQo+Pj4+IOKdryBidHJm
+c3R1bmUgLS1jb252ZXJ0LXRvLWJsb2NrLWdyb3VwLXRyZWUgL2Rldi9zZGENCj4+Pj4gWzFdwqDC
+oMKgIDE3NDA0NyBzZWdtZW50YXRpb24gZmF1bHQgKGNvcmUgZHVtcGVkKcKgIGJ0cmZzdHVuZQ0K
+Pj4+PiAtLWNvbnZlcnQtdG8tYmxvY2stZ3JvdXAtdHJlZSAvZGV2L3NkYQ0KPj4+Pg0KPj4+Pg0K
+Pj4+PiBbMjUzMTcxNS4xOTA4MDJdIGJ0cmZzdHVuZVsxNzQwNDddOiBzZWdmYXVsdCBhdCAxZiBp
+cCAwMDAwNTVlYzQwOWZkMTk4DQo+Pj4+IHNwIDAwMDA3ZmZkMGE3NzJlYjAgZXJyb3IgNCBpbiBi
+dHJmc3R1bmVbNTVlYzQwOWQ2MDAwKzZhMDAwXSBsaWtlbHkgb24NCj4+Pj4gQ1BVIDMgKGNvcmUg
+Miwgc29ja2V0IDApDQo+Pj4+IFsyNTMxNzE1LjE5MDgxOF0gQ29kZTogNDAgMDAgZjMgMGYgMWUg
+ZmEgNDEgNTYgNDEgNTUgNDkgODkgZmQgNDEgNTQgNDkNCj4+Pj4gODkgZjQgNTUgODkgZDUgNTMg
+NDggOGIgNWYgNjggNDkgODkgZWUgNDggODUgZGIgNzQgM2YgNDggOGQgNzQgMzUgMDAgMGYNCj4+
+Pj4gMWYgMDAgPDQ4PiA4YiA0MyAyMCA0OCA4YiA0YiAyOCA0OCAwMSBjMSA0OSAzOSBjYyAwZiA4
+MyA4YyAwMCAwMCAwMA0KPj4+PiA0OCAzOQ0KPj4+Pg0KPj4+PiBbMTc0MTMxXTogUHJvY2VzcyAx
+NzQwNDcgKGJ0cmZzdHVuZSkgb2YgdXNlciAwIGR1bXBlZCBjb3JlLg0KPj4+Pg0KPj4+PiDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgU3RhY2sgdHJhY2Ugb2Yg
+DQo+Pj4+IHRocmVhZA0KPj4+PiAxNzQwNDc6DQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjMA0KPj4+PiAweDAwMDA1NWVjNDA5ZmQxOTgNCj4+Pj4g
+YWxsb2NfZXh0ZW50X2J1ZmZlciAoYnRyZnN0dW5lICsgMHgzNDE5OCkNCj4+Pj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICMxDQo+Pj4+IDB4MDAwMDU1ZWM0
+MDllZTRmNQ0KPj4+PiByZWFkX3RyZWVfYmxvY2sgKGJ0cmZzdHVuZSArIDB4MjU0ZjUpDQo+Pj4+
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjMg0KPj4+PiAw
+eDAwMDA1NWVjNDA5ZGI1YTYNCj4+Pj4gcmVhZF9ub2RlX3Nsb3QgKGJ0cmZzdHVuZSArIDB4MTI1
+YTYpDQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAj
+Mw0KPj4+PiAweDAwMDA1NWVjNDA5ZTZlMmQNCj4+Pj4gbi9hIChidHJmc3R1bmUgKyAweDFkZTJk
+KQ0KPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIzQN
+Cj4+Pj4gMHgwMDAwNTVlYzQwOWU4YTRkDQo+Pj4+IG4vYSAoYnRyZnN0dW5lICsgMHgxZmE0ZCkN
+Cj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICM1DQo+
+Pj4+IDB4MDAwMDU1ZWM0MDlkZWYwMQ0KPj4+PiBidHJmc19zZWFyY2hfc2xvdCAoYnRyZnN0dW5l
+ICsgMHgxNWYwMSkNCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgICM2DQo+Pj4+IDB4MDAwMDU1ZWM0MDllOWM3OQ0KPj4+PiBidHJmc19pbnNlcnRfZW1w
+dHlfaXRlbXMgKGJ0cmZzdHVuZSArIDB4MjBjNzkpDQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjNw0KPj4+PiAweDAwMDA1NWVjNDBhMDA5MGMNCj4+
+Pj4gbi9hIChidHJmc3R1bmUgKyAweDM3OTBjKQ0KPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIzgNCj4+Pj4gMHgwMDAwNTVlYzQwYTA1MTg1DQo+Pj4+
+IG4vYSAoYnRyZnN0dW5lICsgMHgzYzE4NSkNCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgICM5DQo+Pj4+IDB4MDAwMDU1ZWM0MGEwNWM3NQ0KPj4+PiBh
+ZGRfdG9fZnJlZV9zcGFjZV90cmVlIChidHJmc3R1bmUgKyAweDNjYzc1KQ0KPj4+DQo+Pj4gVGhl
+cmUgc2VlbXMgdG8gYmUgc29tZXRoaW5nIHdyb25nIHdpdGggZnJlZSBzcGFjZSB0cmVlIGNvZGUg
+aGVyZS4NCj4+PiBOb3Qgc3VyZSB3aGljaCBwYXJ0IGlzIGNhdXNpbmcgdGhlIHByb2JsZW0sIHRo
+ZSBmc3Qgb3IgdGhlIGNvbnZlcnNpb24NCj4+PiBwYXJ0Lg0KPj4+DQo+Pj4+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjMTANCj4+Pj4gMHgwMDAwNTVlYzQw
+YTNlYzQ5DQo+Pj4+IG4vYSAoYnRyZnN0dW5lICsgMHg3NWM0OSkNCj4+Pj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICMxMQ0KPj4+PiAweDAwMDA1NWVjNDA5
+ZmI1MmENCj4+Pj4gYnRyZnNfcnVuX2RlbGF5ZWRfcmVmcyAoYnRyZnN0dW5lICsgMHgzMjUyYSkN
+Cj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICMxMg0K
+Pj4+PiAweDAwMDA1NWVjNDBhMTMwOTENCj4+Pj4gYnRyZnNfY29tbWl0X3RyYW5zYWN0aW9uIChi
+dHJmc3R1bmUgKyAweDRhMDkxKQ0KPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgIzEzDQo+Pj4+IDB4MDAwMDU1ZWM0MDlkY2ZkZA0KPj4+PiBjb252ZXJ0
+X3RvX2JnX3RyZWUgKGJ0cmZzdHVuZSArIDB4MTNmZGQpDQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjMTQNCj4+Pj4gMHgwMDAwNTVlYzQwOWQ2NDBh
+DQo+Pj4+IG1haW4gKGJ0cmZzdHVuZSArIDB4ZDQwYSkNCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICMxNQ0KPj4+PiAweDAwMDA3ZjQ0YWNlMjdjZDAN
+Cj4+Pj4gbi9hIChsaWJjLnNvLjYgKyAweDI3Y2QwKQ0KPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIzE2DQo+Pj4+IDB4MDAwMDdmNDRhY2UyN2Q4YQ0K
+Pj4+PiBfX2xpYmNfc3RhcnRfbWFpbiAobGliYy5zby42ICsgMHgyN2Q4YSkNCj4+Pj4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICMxNw0KPj4+PiAweDAwMDA1
+NWVjNDA5ZDdkYjUNCj4+Pj4gX3N0YXJ0IChidHJmc3R1bmUgKyAweGVkYjUpDQo+Pj4+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBFTEYgb2JqZWN0IGJpbmFy
+eQ0KPj4+PiBhcmNoaXRlY3R1cmU6IEFNRCB4ODYtNjQNCj4+Pj4NCj4+Pj4NCj4+Pj4g4p2vIGJ0
+cmZzdHVuZSAtLWNvbnZlcnQtZnJvbS1ibG9jay1ncm91cC10cmVlIC9kZXYvc2RhDQo+Pj4+IEVS
+Uk9SOiBmaWxlc3lzdGVtIGRvZXNuJ3QgaGF2ZSBibG9jay1ncm91cC10cmVlIGZlYXR1cmUNCj4+
+Pj4NCj4+Pj4NCj4+Pj4g4p2vIG1vdW50IC9kZXYvc2RhIC9zdG9yYWdlL2J0cmZzIC1vIHJvDQo+
+Pj4+IG1vdW50OiAvc3RvcmFnZS9idHJmczogd3JvbmcgZnMgdHlwZSwgYmFkIG9wdGlvbiwgYmFk
+IHN1cGVyYmxvY2sgb24NCj4+Pj4gL2Rldi9zZGEsIG1pc3NpbmcgY29kZXBhZ2Ugb3IgaGVscGVy
+IHByb2dyYW0sIG9yIG90aGVyIGVycm9yLg0KPj4+PiDCoMKgwqDCoMKgwqDCoMKgIGRtZXNnKDEp
+IG1heSBoYXZlIG1vcmUgaW5mb3JtYXRpb24gYWZ0ZXIgZmFpbGVkIG1vdW50IHN5c3RlbQ0KPj4+
+PiBjYWxsLg0KPj4+Pg0KPj4+PiBTZXAgMTkgMTc6MTg6MjMgZWxzaW5raSBrZXJuZWw6IEJUUkZT
+IGluZm8gKGRldmljZSBzZGEpOiB1c2luZyBjcmMzMmMNCj4+Pj4gKGNyYzMyYy1nZW5lcmljKSBj
+aGVja3N1bSBhbGdvcml0aG0NCj4+Pj4gU2VwIDE5IDE3OjE4OjIzIGVsc2lua2kga2VybmVsOiBC
+VFJGUyBlcnJvciAoZGV2aWNlIHNkYSk6IHVucmVjb2duaXplZA0KPj4+PiBvciB1bnN1cHBvcnRl
+ZCBzdXBlciBmbGFnOiAyNzQ4Nzc5MDY5NDQNCj4+Pj4gU2VwIDE5IDE3OjE4OjIzIGVsc2lua2kg
+a2VybmVsOiBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYSk6IHN1cGVyYmxvY2sNCj4+Pj4gY29udGFp
+bnMgZmF0YWwgZXJyb3JzDQo+Pj4+IFNlcCAxOSAxNzoxODoyMyBlbHNpbmtpIGtlcm5lbDogQlRS
+RlMgZXJyb3IgKGRldmljZSBzZGEpOiBvcGVuX2N0cmVlDQo+Pj4+IGZhaWxlZA0KPj4+Pg0KPj4+
+Pg0KPj4+PiDina8gYnRyZnN0dW5lIC0tY29udmVydC10by1ibG9jay1ncm91cC10cmVlIC9kZXYv
+c2RhDQo+Pj4+IEVSUk9SOiBmYWlsZWQgdG8gZmluZCBibG9jayBncm91cCBmb3IgYnl0ZW5yIDIw
+MTk2Mjg1MzQ5ODg4DQo+Pj4NCj4+PiBUaGlzIGlzIHRoZSBjb3JyZWN0IHdheSB0byByZXN1bWUg
+dGhlIGZhaWxlZCBjb252ZXJzaW9uLg0KPj4+DQo+Pj4gQnV0IGJ5IHNvbWVob3cgdGhlIGJsb2Nr
+IGdyb3VwIGl0ZW0gc2VlbXMgdG8gYmUgbWlzc2luZyBmcm9tIGJvdGggb2xkDQo+Pj4gYW5kIG5l
+dyB0cmVlcy4NCj4+Pg0KPj4+IE1pbmQgdG8gdGVzdCBpZiB0aGUgYXR0YWNoZWQgcGF0Y2ggY2Fu
+IGhlbHA/DQo+Pj4NCj4+Pg0KPj4+DQo+Pj4+IEVSUk9SOiBmYWlsZWQgdG8gY29udmVydCB0aGUg
+ZmlsZXN5c3RlbSB0byBibG9jayBncm91cCB0cmVlIGZlYXR1cmUNCj4+Pj4gZXh0ZW50IGJ1ZmZl
+ciBsZWFrOiBzdGFydCAxNzgyNTU3NjYzMjMyMCBsZW4gMTYzODQNCj4+Pj4NCj4+Pj4g4p2vIGJ0
+cmZzIGZpbGVzeXN0ZW0gc2hvdw0KPj4+PiBMYWJlbDogbm9uZcKgIHV1aWQ6IDVhNTgzZDM1LTNl
+YjItNDEwYi05MDQ0LTFhYzg3YTA2MjI0Nw0KPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgVG90YWwg
+ZGV2aWNlcyAzIEZTIGJ5dGVzIHVzZWQgOS41M1RpQg0KPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAg
+ZGV2aWTCoMKgwqAgMSBzaXplIDMuNjRUaUIgdXNlZCAzLjY0VGlCIHBhdGggL2Rldi9zZGENCj4+
+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGRldmlkwqDCoMKgIDIgc2l6ZSAzLjY0VGlCIHVzZWQgMy42
+NFRpQiBwYXRoIC9kZXYvc2RjDQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBkZXZpZMKgwqDCoCAz
+IHNpemUgMy42NFRpQiB1c2VkIDMuNjRUaUIgcGF0aCAvZGV2L3NkZA0KPj4+Pg0KPj4+PiDina8g
+YnRyZnMgY2hlY2sgLS1tb2RlIGxvd21lbSAvZGV2L3NkYQ0KPj4+PiBPcGVuaW5nIGZpbGVzeXN0
+ZW0gdG8gY2hlY2suLi4NCj4+Pj4gQ2hlY2tpbmcgZmlsZXN5c3RlbSBvbiAvZGV2L3NkYQ0KPj4+
+PiBVVUlEOiA1YTU4M2QzNS0zZWIyLTQxMGItOTA0NC0xYWM4N2EwNjIyNDcNCj4+Pj4gWzEvN10g
+Y2hlY2tpbmcgcm9vdCBpdGVtcw0KPj4+PiBbMi83XSBjaGVja2luZyBleHRlbnRzDQo+Pj4+IEVS
+Uk9SOiBjaHVuayBbMjAxOTczNTkwOTE3MTIgMjAxOTg0MzI4MzM1MzYpIGRvZXNuJ3QgaGF2ZSBy
+ZWxhdGVkIGJsb2NrDQo+Pj4+IGdyb3VwIGl0ZW0NCj4+PiBbLi4uXT4gRVJST1I6IGNodW5rIFsy
+MDY3NDA4ODMzNzQwOCAyMDY3NDA5NjcyNjAxNikgZG9lc24ndCBoYXZlDQo+Pj4gcmVsYXRlZCBi
+bG9jaw0KPj4+PiBncm91cCBpdGVtDQo+Pj4NCj4+PiBUaGlzIHNob3dzIG1vc3Qgb2YgdGhlIGJs
+b2NrIGdyb3VwcyBoYXZlIGJlZW4gY29udmVydGVkLg0KPj4+IEhvcGUgdGhlIHBhdGNoIGNhbiBm
+aW5pc2ggdGhlIGNvbnZlcnNpb24uDQo+Pj4NCj4+PiBUaGFua3MsDQo+Pj4gUXUNCj4+Pj4NCj4+
+Pj4NCj4+Pj4gbXkgc3lzdGVtIHNwZWNzIGFyZToNCj4+Pj4gQU1EIFBoZW5vbSh0bSkgSUkgWDQg
+OTY1IFByb2Nlc3NvciBAMzQwME1Ieg0KPj4+PiA4R0IgUkFNDQo+Pj4+DQo+Pj4+IOKdryB1bmFt
+ZSAtcg0KPj4+PiA2LjQuOS1hcmNoMS0xDQo+Pj4+DQo+Pj4+DQo+Pg0K
