@@ -2,87 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE197AF0CD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 18:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E727AF16A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 18:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234935AbjIZQdy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Sep 2023 12:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
+        id S231549AbjIZQ7u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Sep 2023 12:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjIZQdx (ORCPT
+        with ESMTP id S231506AbjIZQ7i (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Sep 2023 12:33:53 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E973BF
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 09:33:46 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1FB121F8B5;
-        Tue, 26 Sep 2023 16:33:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695746025;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YSHnZzYR24MW7lpOelCCaxoZTQ3dJUlSojwmar12Tk0=;
-        b=bpwMtKWfgQkOTybPBgsURe+L77NwdX3T6CKb8NRd7/CyBpKJiZCIckox78Jx+7xBJCf1bk
-        d9biPs4NYDQu6VUCeVADIxVLUdsyZetzzbBVnLA3AeLk7YLOSMP7H54e0pinufbsCr3YfK
-        GFkTuk3ir9UqIbON41fztgXS+BcyoGw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695746025;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YSHnZzYR24MW7lpOelCCaxoZTQ3dJUlSojwmar12Tk0=;
-        b=ZLrP5pmNNnGNDaNQorLhmPM80OeSDPaQbgAqlZmwAkrJPraMPm+JcD0YAoLGfeKjqRU5kp
-        fbqKWkuy/t4yy8Aw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F173E1390B;
-        Tue, 26 Sep 2023 16:33:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XmjnOegHE2WeIwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 26 Sep 2023 16:33:44 +0000
-Date:   Tue, 26 Sep 2023 18:27:07 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     fdmanana@kernel.org, oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-btrfs@vger.kernel.org, ltp@lists.linux.it
-Subject: Re: [PATCH 7/8] btrfs: use extent_io_tree_release() to empty dirty
- log pages
-Message-ID: <20230926162707.GT13697@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <459c0d25abdfecdc7c57192fa656c6abda11af31.1695333278.git.fdmanana@suse.com>
- <202309261438.d1bebb50-oliver.sang@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202309261438.d1bebb50-oliver.sang@intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+        Tue, 26 Sep 2023 12:59:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15DBE5;
+        Tue, 26 Sep 2023 09:59:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4D337C433C8;
+        Tue, 26 Sep 2023 16:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695747572;
+        bh=eV+pYjMbZToeyN+5N8F2hnT8qT++qhYzZsLNtmdWcIQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=qdLeG/y47pihhLLAVQCaJbtE5h8j9YMsES+7OjGLSpp+ewKVl6v62MK3rDuJ5IgvG
+         UxQk8wsFavzO1Apu9L0kkAUZ6t5LUcv46WnU8DJwuK9XLVdn2+1+FvCSEqarzlGJEW
+         q/VYQtNpD6I10Qjo/K/i1sC6M1dw4JyGV3mW0Z3eGBk967BOwo6rTM5ot2GtG2BUm6
+         XBEbSAh037YVWzkzwBXRRhtsvWxekr3UMS7iB94UnS45tf11o+QtQN2+FWKFdKY4lJ
+         4xmVl8nQRv4mvZqrSbFpvzSToAFnC3+iyciBtEu5d8RCbmJXKerDIefx3mdewtoMux
+         V2TUxnQPzrQZg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3AC34C64459;
+        Tue, 26 Sep 2023 16:59:32 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 6.6-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1695744160.git.dsterba@suse.com>
+References: <cover.1695744160.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1695744160.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.6-rc3-tag
+X-PR-Tracked-Commit-Id: b4c639f699349880b7918b861e1bd360442ec450
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: cac405a3bfa21a6e17089ae2f355f34594bfb543
+Message-Id: <169574757222.7314.9849736636854970419.pr-tracker-bot@kernel.org>
+Date:   Tue, 26 Sep 2023 16:59:32 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 02:25:06PM +0800, kernel test robot wrote:
-> Hello,
-> 
-> kernel test robot noticed "BUG:sleeping_function_called_from_invalid_context_at_fs/btrfs/extent-io-tree.c" on:
-> 
-> commit: 84b23544b95acd2e4c05fc473816d19b749fe17b ("[PATCH 7/8] btrfs: use extent_io_tree_release() to empty dirty log pages")
-> url: https://github.com/intel-lab-lkp/linux/commits/fdmanana-kernel-org/btrfs-make-extent-state-merges-more-efficient-during-insertions/20230922-184038
-> base: https://git.kernel.org/cgit/linux/kernel/git/kdave/linux.git for-next
-> patch link: https://lore.kernel.org/all/459c0d25abdfecdc7c57192fa656c6abda11af31.1695333278.git.fdmanana@suse.com/
-> patch subject: [PATCH 7/8] btrfs: use extent_io_tree_release() to empty dirty log pages
+The pull request you sent on Tue, 26 Sep 2023 18:22:00 +0200:
 
-Known and fixed in the git branch.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.6-rc3-tag
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/cac405a3bfa21a6e17089ae2f355f34594bfb543
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
