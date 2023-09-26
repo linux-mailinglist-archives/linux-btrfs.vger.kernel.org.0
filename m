@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F271D7AED1F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 14:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524D77AED20
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 14:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbjIZMpf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Sep 2023 08:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33950 "EHLO
+        id S234696AbjIZMpg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Sep 2023 08:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234690AbjIZMpe (ORCPT
+        with ESMTP id S234691AbjIZMpe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 26 Sep 2023 08:45:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C337EB
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1622C9
         for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 05:45:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F6AEC433C8
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 12:45:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3223CC433C7
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 12:45:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695732326;
-        bh=pF+CXgmXfvaQDaasfUm0D4BdJew5V7IE40NHsaoZ4rU=;
+        s=k20201202; t=1695732327;
+        bh=5hRu3KrrRJv3CpO5Cj3Ym9PfH7hIqgLUDM6h9wszXhQ=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=r9/vp/lHmUUGhC7TENMW5ak5ggYZbJ+e6O6tYx8KnQdDt+k1kazJVuFkRTP8bnnOy
-         GjObViutm97Doyfdjo++lj8RmCSlcJSHQ3R43R17r+Ttg9wjKNWeTw2MMN+VhZGIcT
-         RdE4KNbAjtC6owjLjOXBGk0gwhqvk5GZKACWv3KpArCU1IxF9k1u8GT8zXhNg8MbD6
-         WMIpmzZIdUlEDJGY6qkYwXvSDqU78oJgxKySmFxEj7hHZD/VNbZ0yFxN49hNRBW+en
-         aBrNqUFWubYNCzFGUbswp9JJTnKYqEd2Hg+5L3/vPihHp0335u++iRjrrrM+nKhjVd
-         AsmQCZO//7xPg==
+        b=nfrVn8dRhL5NfKxYutQyBVtv6Fbm/OXBZQUFac9opY3oZ8r+7PCrKsGJ717VSzhic
+         bq4hhbh3JRZ6dBG3vJz5r4uZjOVHcw769E6Sx5GzadReWMxuq3ZoXXlGr6vwQsuLK9
+         lXTUnm4NNLH70qtgWpuZgXbCgg+OwDsIFlfoCdVmhrTCoHeRuX4QTpmgrDxalSpjeA
+         Dz9giGKV+qQ9z1rGkZMuusJsYZiZ34W5u9BQ9IZzZEnW0idqh8PDQw6vhdfJq4ro0Y
+         2o7vT22TMgeX9IvS1SV1xM7r/7kVPthxpkPJBvHcwnkK+6PV2js381r5fHal37XK8F
+         OCke4ZcRmklHQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/8] btrfs: error out when reallocating block for defrag using a stale transaction
-Date:   Tue, 26 Sep 2023 13:45:15 +0100
-Message-Id: <c8083f9239853dc397beda6a3dc97c93da62137b.1695731842.git.fdmanana@suse.com>
+Subject: [PATCH 4/8] btrfs: remove noinline attribute from btrfs_cow_block()
+Date:   Tue, 26 Sep 2023 13:45:16 +0100
+Message-Id: <8ee8102f8cb59c53efbc93ae7bfd129a28c76b19.1695731843.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1695731838.git.fdmanana@suse.com>
 References: <cover.1695731838.git.fdmanana@suse.com>
@@ -49,68 +49,27 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At btrfs_realloc_node() we have these checks to verify we are not using a
-stale transaction (a past transaction with an unblocked state or higher),
-and the only thing we do is to trigger two WARN_ON(). This however is a
-critical problem, highly unexpected and if it happens it's most likely due
-to a bug, so we should error out and turn the fs into error state so that
-such issue is much more easily noticed if it's triggered.
-
-The problem is critical because in btrfs_realloc_node() we COW tree blocks,
-and using such stale transaction will lead to not persisting the extent
-buffers used for the COW operations, as allocating tree block adds the
-range of the respective extent buffers to the ->dirty_pages iotree of the
-transaction, and a stale transaction, in the unlocked state or higher,
-will not flush dirty extent buffers anymore, therefore resulting in not
-persisting the tree block and resource leaks (not cleaning the dirty_pages
-iotree for example).
-
-So do the following changes:
-
-1) Return -EUCLEAN if we find a stale transaction;
-
-2) Turn the fs into error state, with error -EUCLEAN, so that no
-   transaction can be committed, and generate a stack trace;
-
-3) Combine both conditions into a single if statement, as both are related
-   and have the same error message;
-
-4) Mark the check as unlikely, since this is not expected to ever happen.
+It's pointless to have the noiline attribute for btrfs_cow_block(), as the
+function is exported and widely used. So remove it.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ fs/btrfs/ctree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 4eef1a7d1db6..8619172bcba1 100644
+index 8619172bcba1..602da318ba11 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -817,8 +817,22 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
- 	int progress_passed = 0;
- 	struct btrfs_disk_key disk_key;
- 
--	WARN_ON(trans->transaction != fs_info->running_transaction);
--	WARN_ON(trans->transid != fs_info->generation);
-+	/*
-+	 * COWing must happen through a running transaction, which always
-+	 * matches the current fs generation (it's a transaction with a state
-+	 * less than TRANS_STATE_UNBLOCKED). If it doesn't, then turn the fs
-+	 * into error state to prevent the commit of any transaction.
-+	 */
-+	if (unlikely(trans->transaction != fs_info->running_transaction ||
-+		     trans->transid != fs_info->generation)) {
-+		btrfs_handle_fs_error(fs_info, -EUCLEAN,
-+"unexpected transaction when attempting to reallocate parent %llu for root %llu, transaction %llu running transaction %llu fs generation %llu",
-+				      parent->start, btrfs_root_id(root),
-+				      trans->transid,
-+				      fs_info->running_transaction->transid,
-+				      fs_info->generation);
-+		return -EUCLEAN;
-+	}
- 
- 	parent_nritems = btrfs_header_nritems(parent);
- 	blocksize = fs_info->nodesize;
+@@ -672,7 +672,7 @@ static inline int should_cow_block(struct btrfs_trans_handle *trans,
+  * This version of it has extra checks so that a block isn't COWed more than
+  * once per transaction, as long as it hasn't been written yet
+  */
+-noinline int btrfs_cow_block(struct btrfs_trans_handle *trans,
++int btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 		    struct btrfs_root *root, struct extent_buffer *buf,
+ 		    struct extent_buffer *parent, int parent_slot,
+ 		    struct extent_buffer **cow_ret,
 -- 
 2.40.1
 
