@@ -2,162 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 803587AF20E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 19:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14817AF21A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 20:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbjIZR6Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Sep 2023 13:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
+        id S235323AbjIZSDV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Sep 2023 14:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbjIZR6P (ORCPT
+        with ESMTP id S235301AbjIZSDU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Sep 2023 13:58:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75AE9F
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 10:58:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68F6CC433C8
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 17:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695751088;
-        bh=dpNjbHu3kuWxnKPd8w9WnOrRL+6KCmgwo1ah9b6h8ck=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SRTU7IcfRE7+2BHfK39vSqEaUMgrX8NO9v7l5PoOt1BK2Wmcd8aZ8gmrVQKahFTs0
-         vhu0VjoAdVCsChy8BjDanl11Crls3TxPstx4WGwYSGI09kUHudyGGopRColWcQltxV
-         twSFr8IJ6ORJWsSXtcqQE0b1Qo/bDRfGBmvc5lSR2F/NMzWiiBKlbssH+PE7M8VCfn
-         3I8oZH/s4FztrBiUXwYzKQr/ediu8zZdzzdNW+KxRmWgKWdjDYRl+0PzxMp31+1QcL
-         X1U+uL/hJmgIzsrrHuQjnSyt0nmlhCiX607XunawPmV8HXNW1mbkGVg+5CWoar04cZ
-         T852moMDyE3Ng==
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6c4a25f6390so5099207a34.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 10:58:08 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyMOisBfiuj2sJkZS4e8VbW420okaGqweVBTLoUQThv1h9zoLEy
-        uAEjLq0kV7VUfWtFhx2065M0dnPeIu/DKCXtsOQ=
-X-Google-Smtp-Source: AGHT+IGkuU4hMioJc197MoIwBJ5FxaTXzvtHZEYpRUqFXYFJSUbEPwgAeagzC2bCf7Axc7tRRb+1iHk4gY+gdCJI5vE=
-X-Received: by 2002:a05:6870:2314:b0:1bf:77e2:95cc with SMTP id
- w20-20020a056870231400b001bf77e295ccmr12894913oao.17.1695751087623; Tue, 26
- Sep 2023 10:58:07 -0700 (PDT)
+        Tue, 26 Sep 2023 14:03:20 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9000124
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 11:03:12 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-65af8d30b33so29327616d6.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 11:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1695751391; x=1696356191; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WHOM6S388KJvwFqokXWA615UUFzLeMQLny+zps3lA8c=;
+        b=QpTLormUBChBXCdWKEv8pcjeQoMc13ZyJLBjpI5FBh5KVFUZjFVU5HOqkNiviysXtg
+         TDseapZlyb/Z3AQqQ2lOWPj/EBVx8BU0ptrBrLccCjE08osjk+oyGT+/AgKvsI/wjxkh
+         6Lj39PkANmAylEdIuahbh9e35uh8X4PcrsgnnAxNGxLsCYE0JLcIccoYwJtjuzBltq7w
+         Zi7+0DpJFNv1gkQEb1xJw6y58JxFEhsCuItyOqE92eTNfB0AhbaV+oPGq7bJ5cJmEs1L
+         ISerTtv8DuQZjVU2NoGNmQPrwSHUm71WjOgplcq+eDSH4PIs2sN58+/jM42xPp/WrPha
+         BX8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695751391; x=1696356191;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WHOM6S388KJvwFqokXWA615UUFzLeMQLny+zps3lA8c=;
+        b=SIWYBAaMB6WjPnt7za2yKn6cGOE2NMt/8C2RBfsfutl12H3XYqo+t9bC/Rafh2LeCA
+         4442eJjsPWmxzkvNRg8VU3GI9cXVhDSyhvxex9gN5Y9wsltxIaSakfAyrxtFCNsBLgUB
+         C59A59kN6RoofQVKrBY4U/nIS0BLzylzDa8DclJVSKlxWN76Lz1eR9B1TX+YRZaN1q2y
+         UlFnkObU+zaPXWi6sw74+qswAqAaN8RQFYBWLwF25JglkGhIiA352kw7b/bd6EBUaaal
+         LaM5D/YbXRtBW3ovP54ZjSyN1jTtX8qCTgqKW+CPjVLDzrg6IgYLdImSqMCpFUdZT8aH
+         OeQw==
+X-Gm-Message-State: AOJu0YzJF6mRfcLQPzpKofgm7kao/3xMFQaoGH3mjwkWyxa6uV6pja0E
+        zBuciHjmkgbAQP5vPiuvKaOmNLxfW7o7/8wR4LYGHQ==
+X-Google-Smtp-Source: AGHT+IH+6EMpDxABlT0IpUA8lYBqo0sKvwOQOujEXmCAb6T9R6kporWo3WGtNo6GLwyCfE7sVdvAGQ==
+X-Received: by 2002:ad4:5e8e:0:b0:65b:4f2:13fa with SMTP id jl14-20020ad45e8e000000b0065b04f213famr4604105qvb.2.1695751391610;
+        Tue, 26 Sep 2023 11:03:11 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id u18-20020a0cb412000000b0065896b9fb15sm1675930qve.29.2023.09.26.11.03.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Sep 2023 11:03:11 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        ebiggers@kernel.org, linux-fscrypt@vger.kernel.org,
+        ngompa13@gmail.com
+Subject: [PATCH 00/35] btrfs: add fscrypt support
+Date:   Tue, 26 Sep 2023 14:01:26 -0400
+Message-ID: <cover.1695750478.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <cover.1695731838.git.fdmanana@suse.com> <a678551d318d5dd9835ad9800dfb41c787654dd1.1695731841.git.fdmanana@suse.com>
- <20230926173130.GU13697@twin.jikos.cz>
-In-Reply-To: <20230926173130.GU13697@twin.jikos.cz>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 26 Sep 2023 18:57:31 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4i=zNmR0QfjxeN8JYsGKiqaXb3qp9TjqbAVZEKu_dZhw@mail.gmail.com>
-Message-ID: <CAL3q7H4i=zNmR0QfjxeN8JYsGKiqaXb3qp9TjqbAVZEKu_dZhw@mail.gmail.com>
-Subject: Re: [PATCH 1/8] btrfs: error out when COWing block using a stale transaction
-To:     dsterba@suse.cz
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 6:38=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
-e:
->
-> On Tue, Sep 26, 2023 at 01:45:13PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > At btrfs_cow_block() we have these checks to verify we are not using a
-> > stale transaction (a past transaction with an unblocked state or higher=
-),
-> > and the only thing we do is to trigger a WARN with a message and a stac=
-k
-> > trace. This however is a critical problem, highly unexpected and if it
-> > happens it's most likely due to a bug, so we should error out and turn =
-the
-> > fs into error state so that such issue is much more easily noticed if i=
-t's
-> > triggered.
-> >
-> > The problem is critical because using such stale transaction will lead =
-to
-> > not persisting the extent buffer used for the COW operation, as allocat=
-ing
-> > a tree block adds the range of the respective extent buffer to the
-> > ->dirty_pages iotree of the transaction, and a stale transaction, in th=
-e
-> > unlocked state or higher, will not flush dirty extent buffers anymore,
-> > therefore resulting in not persisting the tree block and resource leaks
-> > (not cleaning the dirty_pages iotree for example).
-> >
-> > So do the following changes:
-> >
-> > 1) Return -EUCLEAN if we find a stale transaction;
-> >
-> > 2) Turn the fs into error state, with error -EUCLEAN, so that no
-> >    transaction can be committed, and generate a stack trace;
-> >
-> > 3) Combine both conditions into a single if statement, as both are rela=
-ted
-> >    and have the same error message;
-> >
-> > 4) Mark the check as unlikely, since this is not expected to ever happe=
-n.
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >  fs/btrfs/ctree.c | 24 ++++++++++++++++--------
-> >  1 file changed, 16 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> > index 56d2360e597c..dff2e07ba437 100644
-> > --- a/fs/btrfs/ctree.c
-> > +++ b/fs/btrfs/ctree.c
-> > @@ -686,14 +686,22 @@ noinline int btrfs_cow_block(struct btrfs_trans_h=
-andle *trans,
-> >               btrfs_err(fs_info,
-> >                       "COW'ing blocks on a fs root that's being dropped=
-");
-> >
-> > -     if (trans->transaction !=3D fs_info->running_transaction)
-> > -             WARN(1, KERN_CRIT "trans %llu running %llu\n",
-> > -                    trans->transid,
-> > -                    fs_info->running_transaction->transid);
-> > -
-> > -     if (trans->transid !=3D fs_info->generation)
-> > -             WARN(1, KERN_CRIT "trans %llu running %llu\n",
-> > -                    trans->transid, fs_info->generation);
-> > +     /*
-> > +      * COWing must happen through a running transaction, which always
-> > +      * matches the current fs generation (it's a transaction with a s=
-tate
-> > +      * less than TRANS_STATE_UNBLOCKED). If it doesn't, then turn the=
- fs
-> > +      * into error state to prevent the commit of any transaction.
-> > +      */
-> > +     if (unlikely(trans->transaction !=3D fs_info->running_transaction=
- ||
-> > +                  trans->transid !=3D fs_info->generation)) {
-> > +             btrfs_handle_fs_error(fs_info, -EUCLEAN,
->
-> Can this be a transaction abort? The helper btrfs_handle_fs_error() is
-> from times before we had the abort mechanism and should not be used in
-> new code when the abort can be done. There are cases where transaction
-> is not available (like superblock commit), but these are exceptions.
+Hello,
 
-The handle we have here is for a stale transaction - not the one
-currently running (if there's any).
-That's why the btrfs_handle_fs_error() call instead.
+This is the newly reworked fscrypt support for btrfs.  There have been a few
+things changed since Sweet Tea's last post[1], and my RFC[2].  The changes from
+Sweet Tea's patchset are mostly related to the fscrypt changes, but I'll detail
+them here
 
->
-> > +"unexpected transaction when attempting to COW block %llu on root %llu=
-, transaction %llu running transaction %llu fs generation %llu",
-> > +                                   buf->start, btrfs_root_id(root),
-> > +                                   trans->transid,
-> > +                                   fs_info->running_transaction->trans=
-id,
-> > +                                   fs_info->generation);
-> > +             return -EUCLEAN;
-> > +     }
-> >
-> >       if (!should_cow_block(trans, root, buf)) {
-> >               *cow_ret =3D buf;
-> > --
-> > 2.40.1
+- We have a fscrypt_extent_info struct that simply has the blk key in it and a
+  nonce.
+- We have a stripped down on disk context that just has what we need for
+  extents.  At this time we only care about the nonce, everything else is
+  supposed to match the owning inode.
+- I've disabled everything except bog standard v2 policies to limit the
+  complexity.
+- Added the necessary hooks we needed for checksumming the encrypted bios.
+- Reworked the on-disk stuff to be better described and accessed through
+  helpers.
+- Plumbed through the fscrypt_extent_info through everything to simplify the
+  API calls we need from fscrypt.
+- Instead of handling async key free'ing in fscrypt, handle the case where we're
+  freeing extent_maps under the lock in a safe way.  This is cleaner than
+  pushing this into fscrypt.
+- Fixed a few things that fsstress uncovered in testing.
+
+Changes to the fscrypt code since my RFC
+
+- Took Eric's advice and added the policy and key to the extent context, this
+  way if we want to in the future we could handle key changing.
+- Added a helper to give us the fscrypt extent info context size.  We need the
+  size ahead of time to setup the item properly.
+- Fixed the blk crypto fallback not actually working with our process_bio
+  callback.  Added a policy flag to make sure the checks work properly.
+- Added some documentation.
+
+Things left to do
+
+- I still have to update fstests to deal with v2 only policies.  I haven't
+  touched fstests at all yet, I've merely done my own rough testing with
+  fsstress.
+- Update the btrfs-progs patches.  This needs to be done to get the fstests
+  stuff to work as well.
+- fsverity still isn't encrypted.  I'm going to hit that next, it should be
+  straightforward enough.
+
+This is based on for-next from Dave's tree [3], but in case that moves between
+now and then you can see my current branch here [4].  Thanks,
+
+Josef
+
+[1] https://lore.kernel.org/linux-fscrypt/cover.1693630890.git.sweettea-kernel@dorminy.me/
+[2] https://lore.kernel.org/linux-btrfs/cover.1694738282.git.josef@toxicpanda.com/
+[3] https://github.com/kdave/btrfs-devel/tree/for-next
+[4] https://github.com/josefbacik/linux/tree/fscrypt
+
+Josef Bacik (20):
+  fscrypt: rename fscrypt_info => fscrypt_inode_info
+  fscrypt: add per-extent encryption support
+  fscrypt: disable all but standard v2 policies for extent encryption
+  blk-crypto: add a process bio callback
+  fscrypt: add documentation about extent encryption
+  btrfs: add infrastructure for safe em freeing
+  btrfs: add fscrypt_info and encryption_type to ordered_extent
+  btrfs: plumb through setting the fscrypt_info for ordered extents
+  btrfs: populate the ordered_extent with the fscrypt context
+  btrfs: keep track of fscrypt info and orig_start for dio reads
+  btrfs: add an optional encryption context to the end of file extents
+  btrfs: pass through fscrypt_extent_info to the file extent helpers
+  btrfs: pass the fscrypt_info through the replace extent infrastructure
+  btrfs: implement the fscrypt extent encryption hooks
+  btrfs: setup fscrypt_extent_info for new extents
+  btrfs: populate ordered_extent with the orig offset
+  btrfs: set the bio fscrypt context when applicable
+  btrfs: add a bio argument to btrfs_csum_one_bio
+  btrfs: add orig_logical to btrfs_bio
+  btrfs: implement process_bio cb for fscrypt
+
+Omar Sandoval (7):
+  fscrypt: expose fscrypt_nokey_name
+  btrfs: disable various operations on encrypted inodes
+  btrfs: start using fscrypt hooks
+  btrfs: add inode encryption contexts
+  btrfs: add new FEATURE_INCOMPAT_ENCRYPT flag
+  btrfs: adapt readdir for encrypted and nokey names
+  btrfs: implement fscrypt ioctls
+
+Sweet Tea Dorminy (8):
+  btrfs: disable verity on encrypted inodes
+  btrfs: handle nokey names.
+  btrfs: add encryption to CONFIG_BTRFS_DEBUG
+  btrfs: add get_devices hook for fscrypt
+  btrfs: turn on inlinecrypt mount option for encrypt
+  btrfs: set file extent encryption excplicitly
+  btrfs: add fscrypt_info and encryption_type to extent_map
+  btrfs: explicitly track file extent length for replace and drop
+
+ Documentation/filesystems/fscrypt.rst |  36 ++
+ block/blk-crypto-fallback.c           |  28 ++
+ block/blk-crypto-profile.c            |   2 +
+ block/blk-crypto.c                    |   6 +-
+ fs/btrfs/Makefile                     |   1 +
+ fs/btrfs/accessors.h                  |  50 +++
+ fs/btrfs/bio.c                        |  45 ++-
+ fs/btrfs/bio.h                        |   6 +
+ fs/btrfs/btrfs_inode.h                |   3 +-
+ fs/btrfs/compression.c                |   6 +
+ fs/btrfs/ctree.h                      |   4 +
+ fs/btrfs/defrag.c                     |  10 +-
+ fs/btrfs/delayed-inode.c              |  29 +-
+ fs/btrfs/delayed-inode.h              |   6 +-
+ fs/btrfs/dir-item.c                   | 108 +++++-
+ fs/btrfs/dir-item.h                   |  11 +-
+ fs/btrfs/extent_io.c                  |  81 ++++-
+ fs/btrfs/extent_io.h                  |   3 +
+ fs/btrfs/extent_map.c                 | 106 +++++-
+ fs/btrfs/extent_map.h                 |  12 +
+ fs/btrfs/file-item.c                  |  17 +-
+ fs/btrfs/file-item.h                  |   7 +-
+ fs/btrfs/file.c                       |  16 +-
+ fs/btrfs/fs.h                         |   3 +-
+ fs/btrfs/fscrypt.c                    | 326 ++++++++++++++++++
+ fs/btrfs/fscrypt.h                    |  95 +++++
+ fs/btrfs/inode.c                      | 476 ++++++++++++++++++++------
+ fs/btrfs/ioctl.c                      |  41 ++-
+ fs/btrfs/ordered-data.c               |  26 +-
+ fs/btrfs/ordered-data.h               |  21 +-
+ fs/btrfs/reflink.c                    |   8 +
+ fs/btrfs/root-tree.c                  |   8 +-
+ fs/btrfs/root-tree.h                  |   2 +-
+ fs/btrfs/super.c                      |  17 +
+ fs/btrfs/sysfs.c                      |   6 +
+ fs/btrfs/tree-checker.c               |  66 +++-
+ fs/btrfs/tree-log.c                   |  26 +-
+ fs/btrfs/verity.c                     |   3 +
+ fs/crypto/crypto.c                    |  23 +-
+ fs/crypto/fname.c                     |  45 +--
+ fs/crypto/fscrypt_private.h           |  87 ++++-
+ fs/crypto/hooks.c                     |   2 +-
+ fs/crypto/inline_crypt.c              | 100 +++++-
+ fs/crypto/keyring.c                   |   4 +-
+ fs/crypto/keysetup.c                  | 190 +++++++++-
+ fs/crypto/keysetup_v1.c               |  14 +-
+ fs/crypto/policy.c                    |  70 +++-
+ include/linux/blk-crypto-profile.h    |   7 +
+ include/linux/blk-crypto.h            |   9 +-
+ include/linux/fs.h                    |   4 +-
+ include/linux/fscrypt.h               | 123 ++++++-
+ include/uapi/linux/btrfs.h            |   1 +
+ include/uapi/linux/btrfs_tree.h       |  35 +-
+ 53 files changed, 2144 insertions(+), 287 deletions(-)
+ create mode 100644 fs/btrfs/fscrypt.c
+ create mode 100644 fs/btrfs/fscrypt.h
+
+-- 
+2.41.0
+
