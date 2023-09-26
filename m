@@ -2,215 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9D67AF244
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 20:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793887AF228
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 20:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235518AbjIZSDx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Sep 2023 14:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57826 "EHLO
+        id S235537AbjIZSD4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Sep 2023 14:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235505AbjIZSDw (ORCPT
+        with ESMTP id S235507AbjIZSDw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 26 Sep 2023 14:03:52 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9BF8139
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 11:03:43 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-7740c8509c8so547569085a.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 11:03:43 -0700 (PDT)
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E06199
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 11:03:45 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-77411614b57so563399585a.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 11:03:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1695751423; x=1696356223; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1695751424; x=1696356224; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OwrRby3JuIEpR+SgdzK5LtEWcKJElnROXAnAJyrScoA=;
-        b=eqBXkP409BcBlLZz3fFrS4uMew8J9OZ4EkXa6WTTcC2H8sCxc3UAFfJjewUplddroj
-         sU/p2lKgS/4EneUlu1qUx12NabQRHRaHldJa4p9aOQ9az2hEHYPa3i/nMmZ5+Qhizi6P
-         PFhSmQsrd0/w0KNDQ047BbeMCM1HovsznG2mm4RlcuSmVf7je9+91qvW180BBQZqWxbr
-         Pg+GUO3KE4ZSk6xBvg/5Ub3Tq7Ppu1o1ar5pVPfbRfVzg3TLPI+ZnHANncJvue0HB/uw
-         cJm8iXIbJIYxcc6RXh1w5Pww5e0Ma7UBLpZsjNj+ksX8CMLGXu7rQE5dmBB93zHMCXPa
-         rIpQ==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iU+yqzE93SLheknXkqHCW6CWGb25h7xURuXQP4ILGfc=;
+        b=FitFNo7z0c+sdDn5Hu4ZCk76uiOYriw0lfd9CliCHSIM65Xp83asNgKnVY/2FO5Str
+         yspbLHvVQ6TBYneV/9R7hpwp6EjMMPgGWf29rGlGcCQAqe2hWLy1GfDMIcvhyFlD3oYa
+         E66RDPPRW4Vcq15rjRvh3G3H2BxFP8LA2idbrj3/XnMqjHQhVgfGeuFYOWkaMFt6OBqV
+         oqaGALyADmfd+2VfKKI/GwBZQ1kebKMQOkKyU3tetGC4l31SfoOO0Cdy5L1YqzPIHTj+
+         peKI30zxKBr9yLYvOchIwCzkxBah2wA8D7Qj52AH2TjBYQgXSZ/bwSRTmV8q4qmMzm2R
+         Ly8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695751423; x=1696356223;
+        d=1e100.net; s=20230601; t=1695751424; x=1696356224;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OwrRby3JuIEpR+SgdzK5LtEWcKJElnROXAnAJyrScoA=;
-        b=tLecVNtPiBA+zRoKqI+8Pm+abEOZpJvBlhcYN6TEPXF4fFQnxsU03f2AjLFvOqr6iZ
-         lfuzqWiedbRlaqokJQBgRm5eHYWpU6gJGhvRngSahUy5c7+uESLN06YFUD+lLHVLHnKN
-         CGRssAjapX7lUWPcuSiwIDWmzMz399D5Lwl0uUOpjyJ5W/x2qapXNXtdrZLg/6p3NwbK
-         qyg0D1I/J1iinQm8xXWBrv+vvjw9NWyYfLSp+vkyEWY7Gt2f0/1fgNYdO+RvUoCE/vAF
-         rekhZazZ9u9nXPmrWXpnXO4xIX6fjCjpwpn5hFU3uWZbiIo7a9BJ9HkaDnTPymnDVcWF
-         c52w==
-X-Gm-Message-State: AOJu0YzPIAlJ9aRdZJ4O/vrdgJpdZ3s4qxAs1w0YHOGpbguum5ckU92N
-        dFFGG95B+z/rrSBZmlrc/dc8nxNV+Ms+ZTkJjYP64Q==
-X-Google-Smtp-Source: AGHT+IFj6ikmk5dC+Oqkr7M9gXs4XiIq6UIM/mXgwpr2f/nYv65aT34BqgU13jj4cpkx2rg3+Jfqzw==
-X-Received: by 2002:a0c:f1cd:0:b0:647:406b:4b06 with SMTP id u13-20020a0cf1cd000000b00647406b4b06mr9147405qvl.57.1695751422707;
-        Tue, 26 Sep 2023 11:03:42 -0700 (PDT)
+        bh=iU+yqzE93SLheknXkqHCW6CWGb25h7xURuXQP4ILGfc=;
+        b=X/6BzTjgMC/JOWUhdM6N8FhpYzatcuJR1l196GhUtMpB2jD2EEihoOTPOzAq9iUDym
+         x0MUpFnW+ZFO7OZPdVdJAanDkjS/qCi4H29fyFdy2v3Y22LNAphnlvcgOnwHZt9bgnM1
+         gWD3VIHgCq8nZ27K4+0AJGy3rG0auhYkEIQnrpskaB9O6uGpGijljXV+RB9x3y784R3S
+         F1fazkyZda6HXnF9UJJZ4PDkDyKHKMyPh1qu3iZHXSWUBhO9qmwwT5qZg+8gEu3BXeqf
+         4vmx7ZuttUh4v+Scsm4yNU+2eGwpZ9+Tsle2OW1MHALjG1RljVO1N3mHdigRjHWc/hHB
+         5VrA==
+X-Gm-Message-State: AOJu0YwwK2mBhJ5S5G1/mq4l/oJOFlM6HTWLNrTYMAuAojD9LopX6RHN
+        Dp0dFqoP7ONdUioQbf4ezK1bvpzFSQ3tylTaaow6RQ==
+X-Google-Smtp-Source: AGHT+IGI5tYeGzJTzE1gjCvkgwROGvRINBt7eG7oMlPlbIY45mUT3z5P+P1AsXhjzCy9duz8r7Bq7g==
+X-Received: by 2002:a05:620a:4488:b0:770:ff48:e23c with SMTP id x8-20020a05620a448800b00770ff48e23cmr13366758qkp.57.1695751423938;
+        Tue, 26 Sep 2023 11:03:43 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id b19-20020a0ccd13000000b00646e0411e8csm2210298qvm.30.2023.09.26.11.03.42
+        by smtp.gmail.com with ESMTPSA id c24-20020ae9e218000000b007682af2c8aasm4899509qkc.126.2023.09.26.11.03.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Sep 2023 11:03:42 -0700 (PDT)
+        Tue, 26 Sep 2023 11:03:43 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         ebiggers@kernel.org, linux-fscrypt@vger.kernel.org,
         ngompa13@gmail.com
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 26/35] btrfs: explicitly track file extent length for replace and drop
-Date:   Tue, 26 Sep 2023 14:01:52 -0400
-Message-ID: <37a0e86c3fd7e96ccee4d72e30f2a9dbaff653c4.1695750478.git.josef@toxicpanda.com>
+Subject: [PATCH 27/35] btrfs: pass through fscrypt_extent_info to the file extent helpers
+Date:   Tue, 26 Sep 2023 14:01:53 -0400
+Message-ID: <6e5e0cd828e4756620cddd30727ceb557e6e3532.1695750478.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1695750478.git.josef@toxicpanda.com>
 References: <cover.1695750478.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Now that we have the fscrypt_extnet_info in all of the supporting
+structures, pass this through and set the file extent encryption bit
+accordingly from the supporting structures.  In subsequent patches code
+will be added to populate these appropriately.
 
-With the advent of storing fscrypt contexts with each encrypted extent,
-extents will have a variable length depending on encryption status.
-Make sure the replace and drop file extent item helpers encode this
-information so that everything gets updated properly.
-
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h    | 2 ++
- fs/btrfs/file.c     | 4 ++--
- fs/btrfs/inode.c    | 7 +++++--
- fs/btrfs/reflink.c  | 1 +
- fs/btrfs/tree-log.c | 5 +++--
- 5 files changed, 13 insertions(+), 6 deletions(-)
+ fs/btrfs/inode.c    | 18 +++++++++++-------
+ fs/btrfs/tree-log.c |  2 +-
+ 2 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 2758fbae7e39..5b0cccdab92a 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -339,6 +339,8 @@ struct btrfs_replace_extent_info {
- 	u64 file_offset;
- 	/* Pointer to a file extent item of type regular or prealloc. */
- 	char *extent_buf;
-+	/* The length of @extent_buf */
-+	u32 extent_buf_size;
- 	/*
- 	 * Set to true when attempting to replace a file range with a new extent
- 	 * described by this structure, set to false when attempting to clone an
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 8dcc5ae9c9e1..70a801b90d13 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2262,14 +2262,14 @@ static int btrfs_insert_replace_extent(struct btrfs_trans_handle *trans,
- 	key.type = BTRFS_EXTENT_DATA_KEY;
- 	key.offset = extent_info->file_offset;
- 	ret = btrfs_insert_empty_item(trans, root, path, &key,
--				      sizeof(struct btrfs_file_extent_item));
-+				      extent_info->extent_buf_size);
- 	if (ret)
- 		return ret;
- 	leaf = path->nodes[0];
- 	slot = path->slots[0];
- 	write_extent_buffer(leaf, extent_info->extent_buf,
- 			    btrfs_item_ptr_offset(leaf, slot),
--			    sizeof(struct btrfs_file_extent_item));
-+			    extent_info->extent_buf_size);
- 	extent = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
- 	ASSERT(btrfs_file_extent_type(leaf, extent) != BTRFS_FILE_EXTENT_INLINE);
- 	btrfs_set_file_extent_offset(leaf, extent, extent_info->data_offset);
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 89cb09a40f58..6a835967684d 100644
+index 6a835967684d..fdb7c9e1c210 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -2899,6 +2899,7 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
- 	u64 num_bytes = btrfs_stack_file_extent_num_bytes(stack_fi);
- 	u64 ram_bytes = btrfs_stack_file_extent_ram_bytes(stack_fi);
- 	struct btrfs_drop_extents_args drop_args = { 0 };
-+	size_t fscrypt_context_size = 0;
- 	int ret;
+@@ -2883,7 +2883,9 @@ int btrfs_writepage_cow_fixup(struct page *page)
+ }
  
- 	path = btrfs_alloc_path();
-@@ -2918,7 +2919,7 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
- 	drop_args.start = file_pos;
- 	drop_args.end = file_pos + num_bytes;
- 	drop_args.replace_extent = true;
--	drop_args.extent_item_size = sizeof(*stack_fi);
-+	drop_args.extent_item_size = sizeof(*stack_fi) + fscrypt_context_size;
- 	ret = btrfs_drop_extents(trans, root, inode, &drop_args);
- 	if (ret)
- 		goto out;
-@@ -2929,7 +2930,7 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
- 		ins.type = BTRFS_EXTENT_DATA_KEY;
+ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+-				       struct btrfs_inode *inode, u64 file_pos,
++				       struct btrfs_inode *inode,
++				       struct fscrypt_extent_info *fscrypt_info,
++				       u64 file_pos,
+ 				       struct btrfs_file_extent_item *stack_fi,
+ 				       const bool update_inode_bytes,
+ 				       u64 qgroup_reserved)
+@@ -3015,8 +3017,7 @@ static int insert_ordered_extent_file_extent(struct btrfs_trans_handle *trans,
+ 	btrfs_set_stack_file_extent_num_bytes(&stack_fi, num_bytes);
+ 	btrfs_set_stack_file_extent_ram_bytes(&stack_fi, ram_bytes);
+ 	btrfs_set_stack_file_extent_compression(&stack_fi, oe->compress_type);
+-	btrfs_set_stack_file_extent_encryption(&stack_fi,
+-					       BTRFS_ENCRYPTION_NONE);
++	btrfs_set_stack_file_extent_encryption(&stack_fi, oe->encryption_type);
+ 	/* Other encoding is reserved and always 0 */
  
- 		ret = btrfs_insert_empty_item(trans, root, path, &ins,
--					      sizeof(*stack_fi));
-+					      sizeof(*stack_fi) + fscrypt_context_size);
+ 	/*
+@@ -3030,8 +3031,9 @@ static int insert_ordered_extent_file_extent(struct btrfs_trans_handle *trans,
+ 			     test_bit(BTRFS_ORDERED_TRUNCATED, &oe->flags);
+ 
+ 	return insert_reserved_file_extent(trans, BTRFS_I(oe->inode),
+-					   oe->file_offset, &stack_fi,
+-					   update_inode_bytes, oe->qgroup_rsv);
++					   oe->fscrypt_info, oe->file_offset,
++					   &stack_fi, update_inode_bytes,
++					   oe->qgroup_rsv);
+ }
+ 
+ /*
+@@ -9662,6 +9664,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
+ 				       struct btrfs_trans_handle *trans_in,
+ 				       struct btrfs_inode *inode,
+ 				       struct btrfs_key *ins,
++				       struct fscrypt_extent_info *fscrypt_info,
+ 				       u64 file_offset)
+ {
+ 	struct btrfs_file_extent_item stack_fi;
+@@ -9683,6 +9686,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
+ 	btrfs_set_stack_file_extent_ram_bytes(&stack_fi, len);
+ 	btrfs_set_stack_file_extent_compression(&stack_fi, BTRFS_COMPRESS_NONE);
+ 	btrfs_set_stack_file_extent_encryption(&stack_fi,
++					       fscrypt_info ? BTRFS_ENCRYPTION_FSCRYPT :
+ 					       BTRFS_ENCRYPTION_NONE);
+ 	/* Other encoding is reserved and always 0 */
+ 
+@@ -9691,7 +9695,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
+ 		return ERR_PTR(qgroup_released);
+ 
+ 	if (trans) {
+-		ret = insert_reserved_file_extent(trans, inode,
++		ret = insert_reserved_file_extent(trans, inode, fscrypt_info,
+ 						  file_offset, &stack_fi,
+ 						  true, qgroup_released);
  		if (ret)
- 			goto out;
- 	}
-@@ -9671,6 +9672,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
- 	u64 len = ins->offset;
- 	int qgroup_released;
- 	int ret;
-+	size_t fscrypt_context_size = 0;
+@@ -9785,7 +9789,7 @@ static int __btrfs_prealloc_file_range(struct inode *inode, int mode,
  
- 	memset(&stack_fi, 0, sizeof(stack_fi));
- 
-@@ -9703,6 +9705,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
- 	extent_info.data_len = len;
- 	extent_info.file_offset = file_offset;
- 	extent_info.extent_buf = (char *)&stack_fi;
-+	extent_info.extent_buf_size = sizeof(stack_fi) + fscrypt_context_size;
- 	extent_info.is_new_extent = true;
- 	extent_info.update_times = true;
- 	extent_info.qgroup_reserved = qgroup_released;
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index 3c66630d87ee..f5440ae447a4 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -500,6 +500,7 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
- 			clone_info.data_len = datal;
- 			clone_info.file_offset = new_key.offset;
- 			clone_info.extent_buf = buf;
-+			clone_info.extent_buf_size = size;
- 			clone_info.is_new_extent = false;
- 			clone_info.update_times = !no_time_update;
- 			ret = btrfs_replace_file_extents(BTRFS_I(inode), path,
+ 		last_alloc = ins.offset;
+ 		trans = insert_prealloc_file_extent(trans, BTRFS_I(inode),
+-						    &ins, cur_offset);
++						    &ins, NULL, cur_offset);
+ 		/*
+ 		 * Now that we inserted the prealloc extent we can finally
+ 		 * decrement the number of reservations in the block group.
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index f6f45a0f1b1e..d659547c9900 100644
+index d659547c9900..40dd5c652f0e 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -4630,6 +4630,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
- 	u64 extent_offset = em->start - em->orig_start;
+@@ -4631,7 +4631,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
  	u64 block_len;
  	int ret;
-+	size_t fscrypt_context_size = 0;
- 	u8 encryption = BTRFS_ENCRYPTION_NONE;
+ 	size_t fscrypt_context_size = 0;
+-	u8 encryption = BTRFS_ENCRYPTION_NONE;
++	u8 encryption = em->encryption_type;
  
  	btrfs_set_stack_file_extent_generation(&fi, trans->transid);
-@@ -4672,7 +4673,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
- 		drop_args.start = em->start;
- 		drop_args.end = em->start + em->len;
- 		drop_args.replace_extent = true;
--		drop_args.extent_item_size = sizeof(fi);
-+		drop_args.extent_item_size = sizeof(fi) + fscrypt_context_size;
- 		ret = btrfs_drop_extents(trans, log, inode, &drop_args);
- 		if (ret)
- 			return ret;
-@@ -4684,7 +4685,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
- 		key.offset = em->start;
- 
- 		ret = btrfs_insert_empty_item(trans, log, path, &key,
--					      sizeof(fi));
-+					      sizeof(fi) + fscrypt_context_size);
- 		if (ret)
- 			return ret;
- 	}
+ 	if (test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
 -- 
 2.41.0
 
