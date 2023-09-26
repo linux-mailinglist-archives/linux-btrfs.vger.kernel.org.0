@@ -2,210 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C847AE2AF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 01:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40AFF7AE39F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Sep 2023 04:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbjIYX5S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Sep 2023 19:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
+        id S232506AbjIZCSn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Sep 2023 22:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjIYX5R (ORCPT
+        with ESMTP id S229501AbjIZCSm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Sep 2023 19:57:17 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1695EFB
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Sep 2023 16:57:11 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38PNEO3J018796;
-        Mon, 25 Sep 2023 23:57:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=yUXna6bdPRlamYGxzY3CUgIgPL0waOFBwE1B/+y7C4w=;
- b=MoC2bXLA3d5vrYv0Fi5wYVhElvcLXOClfPKK0wSWJvrnMCMfqfie388xcU+ZB7cKDaSx
- XvZK0j4gvC1EUq5qbsKuHLoOFJXiLo4FoqG32jiSFv5mQpARe1jyMzLGbJr26KWdIeoE
- e9qLOqcIMuMSyGB1aFfnOJX2E//oMtu0q2W7rU3JTGAmciFay7rfxmuivdj+U0tQPfB+
- hqf3TStAzMflztcew5sKB/t3G/+sf93rY6BmUMpD4dQ0OpeOWRFmKL/iRff1yGNZxOxJ
- k4vvF7/LRDwduL2y9hUJmj+39VXAef7/uLWCxNtydP/DdaiK1TXD+qMsugG4VfetWqEp 8A== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9qwbd5sj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Sep 2023 23:57:07 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38PMgTLc030607;
-        Mon, 25 Sep 2023 23:57:06 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pf536k7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Sep 2023 23:57:06 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nF1orieuzlr4RB168VOgEJ2wn5pEPCdfIzrDa/PlifEULdPYwYrr53VubkHjyHbporXfOTpDcgSQ6Wetdg3ZAPyGm8PPeVza1FWr1rGFvDOaRK+Lc8Ifxn3v58MzjT95CGqD1QX+Ivr02+qaxMe1AXCErGZb0xG/lewW+PF+1HxC8VBUymQHqcRLlR2PCBfayuSf059VR2x6MA+uUcbMj5a3SmgngmiVb1ghPmk6vzJXsb3C8Hime2uBRJRGYpkMz8IZQnLQnbJIQmn0HS2T5b6nQ8ydQsohZZS+SMAay9LB/UMAWRMyKjLXnSZk5mAKI4FPAlG7C5ps7tQ7nYNy1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yUXna6bdPRlamYGxzY3CUgIgPL0waOFBwE1B/+y7C4w=;
- b=gTx12jzdQxCUpYchqIjF06+l9g1FqYW+4gurQzibjV/km+UE+zcbvACJu00Ck13shsl/qxpqE5x88PRt73ZxOL7gXiO27xVCf/g3LEke1sLIkhpXgSYS7EDHBKHoCTGQ6cMPos2eacZX+p2blvwXJOv7q9r9IVmSZ28w+Lo6Dk5TvefWpa+599SndCNcjqxCCP0TsNs4pHQt08/JFbEOr76WnKYvdM60g5UxHz6opQknHSFjt7gr8HmhEDAjnsTSk0z54MuqZNYjsZ1C6x7fGzlRwZaRQSuZpVHIo3udCLQwUZSqMyJYS6CZgvS+MRZNxlxX9sJtfVhvExMxE7gycA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 25 Sep 2023 22:18:42 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B22FBF;
+        Mon, 25 Sep 2023 19:18:35 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50444e756deso8674331e87.0;
+        Mon, 25 Sep 2023 19:18:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yUXna6bdPRlamYGxzY3CUgIgPL0waOFBwE1B/+y7C4w=;
- b=IlPwVwEzv5MjsdHVVgxP4zidc5w8EGRo44RiOaTiuiTWAXoT7IGYC5qqzBSAxRQZ+atH0ez5gkUDShZcCExFpx2oIeJ/6ACEsSGZlZ5DPd/B5IJVEdqPkxITW5GxSAx/f4hUlq5dClfkDXlxQoQa6APpEXkazCK0UgEQdqFne9E=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by BL3PR10MB6233.namprd10.prod.outlook.com (2603:10b6:208:38c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Mon, 25 Sep
- 2023 23:57:04 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6813.017; Mon, 25 Sep 2023
- 23:57:04 +0000
-Message-ID: <757517d8-2f79-4897-7d43-5c12fd6274bd@oracle.com>
-Date:   Tue, 26 Sep 2023 07:56:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH 0/2 v2] btrfs: reject device with CHANGING_FSID_V2 flag
-To:     dsterba@suse.cz
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1695244296.git.anand.jain@oracle.com>
- <20230925165806.GR13697@twin.jikos.cz>
-Content-Language: en-US
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20230925165806.GR13697@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR06CA0017.apcprd06.prod.outlook.com
- (2603:1096:4:186::15) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=gmail.com; s=20230601; t=1695694714; x=1696299514; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4KuS89SBhEXeXzlKRw6X2z13KjFZujBz1QSgTzHEcIY=;
+        b=hgK2p8M8Y4cjQvO5YfXK9DUmODnkdaD/V2bBke5VxQUmodjUSMf0jSBEtYL5RpcL5e
+         nARIzgn4+Ul9dxwgO3HGLmBC3/XqYO8ptkYAonzm+kmK+p/N7JBK9x2g3VwmMV+euNTO
+         RxOW0InrBOJ8eAOlSBYbB2JvI+zDQ1UToUSIn4tpvexJdMeG/2GG94+mO6jHTE8Eixxc
+         EHqKlwZMMhb8nPDGB3RrpiR1NtMfOKSb7WkR7ZxMllR+5gi+FoNRaAg/PZPa+OEszMY7
+         Lnrl2d4X+0Rzl3Hvf274c6al4498+NrQH4PzGOpiE4/q7STU3BbW4HsOgb9fecqlbdAi
+         WmaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695694714; x=1696299514;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4KuS89SBhEXeXzlKRw6X2z13KjFZujBz1QSgTzHEcIY=;
+        b=XzZ8vBWBmBfBkXcK2IqQBcCcr9GQ1WH5ucE35OSGbfOfZLksPzHqWaH0PBR36MU333
+         bJtjXK3AGpg8qsTi2Z5TGA3ZLIMsQAsQEsErbb/IFZ034r5AgdpETJ/NinIgUXoEP2td
+         M5FRlmZPuM9PNzmm+b/B+mT++nC8au9Xa/F639oyv6YZHScpVRuaY5RdTtTszJKIOeuK
+         4yBQ7uaZdZd3r2Mksn3zdAR4BeeRxtFpQdXtFJqm6O0IKpvN4rl93KRqsJTyQveiifWw
+         FffB9LDUQT4ZT89t/xWEbGKcumw69ubl6DYnz2Ja4RhZ2p4ui1tQc/ci3TnwcmCetLzS
+         8d0w==
+X-Gm-Message-State: AOJu0YxU1zk1r+0T7NObEKLAvLE+yMKZrPjQTimpcHLCTWrONPktqKDP
+        hBkNfPrJ7Z8E5MXoqrhXByzSrMXIGyJgxk6sFjVAtVPW1sAzubFp
+X-Google-Smtp-Source: AGHT+IHSp+t9UpOYNLMa0pwCyGliV1Qx/xcE6Nr4KYbQeHWU7QGxkI24IwCRcolAfk+g83n0z4FuSexkPVP8EfMnGeA=
+X-Received: by 2002:a2e:9dd4:0:b0:2c0:298d:32df with SMTP id
+ x20-20020a2e9dd4000000b002c0298d32dfmr7311986ljj.9.1695694713282; Mon, 25 Sep
+ 2023 19:18:33 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|BL3PR10MB6233:EE_
-X-MS-Office365-Filtering-Correlation-Id: d9b9a3b1-ae0a-40fc-cf64-08dbbe231e13
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ymFERH5eHILyvvPS6w1GiXVnvvKxpVpVGB57rFzjcgoQ7Xie2sx9R/bNBGW5/lkl+rOnNs7UaI2IWQ8SXK5ARCblJPtPPJShQnyHQ7OXtvBWpSSqBBP+awM6sdX2uI8WGFWpgtSjQY96o4mswjACTbecD2M5/4rKN8ZrzutTUBRbNjq9nJ/moQLeWW7C02BN4kTs5kF5Gd2ouTCvB+LyS9Koedu5qzZCDQSPr9q2+UaArXMkD77l8+q+C95rUEQoqrl+aCI8N1loMJuoKnCO0aCJDWad6GySkf7h9J5vUaCf/fkPkDH5Pe7gErfpU7jRy+aUUhxI4gghkFCQBQc+8X0jKXo3EhNvYS3y5SfKkbL+QaDwLrk3EjfD6WFQV/TO55cBEToAxv6DBTys5+lOOEDqh3WWEyxs/tFMGBJf3K/+nWtdynYF7cVE4K0LDDqi9ivm80PMzrfVede3qGGZJO/vlcX3TaDgUePbrL0k3jIA89BQalEFaPWGfPBTySLrnw6MS6zO0Tnt5KwiozvKhStX0tl8SfVlpFA6muGpdFGr3eVTwfNyP+COlYH9LNmOEMgwkVMoh5dlxusN5krtAuBy16Z9JFMCx1Fm3cFgK6qrHkvmBnS2P0msiHO9IV+UHgCG5sicis2400tJch7LQg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39860400002)(136003)(346002)(366004)(230922051799003)(1800799009)(451199024)(186009)(31686004)(53546011)(6666004)(6486002)(6506007)(38100700002)(86362001)(36756003)(2906002)(31696002)(44832011)(8676002)(66556008)(5660300002)(478600001)(41300700001)(83380400001)(966005)(2616005)(8936002)(6512007)(4326008)(66946007)(316002)(26005)(6916009)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M3FPSmlScGxCUE8wU1hGRHIrQ3YyS1J6cDU2dUdHTXRZd0ozVXpIZ3IyZUl6?=
- =?utf-8?B?WDF1QW5QQUpYOG9EVkVYNTZsS3dRci9DUEduajVaYXFadkppSm91QVR4Z2xw?=
- =?utf-8?B?L2NKNjdXdlk1OWxJdU9lZ3NmWk12MjBkZXByRk55UXZzWlc0NzJsVlVEV2po?=
- =?utf-8?B?d2wrdUZhVExDb1EzVFlnU2RReEFheGVDeTdnaUJjUkk1WU9JY05WVlpQVEJY?=
- =?utf-8?B?SUhpSVVJU2IwYzBsMFp6WndpcXJDZXM1aXM0WmNwTkFjei9uam9xck44RURN?=
- =?utf-8?B?amw2b1hGM1NWSFdyWXpZaHg0Q1piSmFlZ0F2L0ZEZlYrN0Y4eU5ZeW9xVS8y?=
- =?utf-8?B?VDBkUm9Iam1RUnlKNTA5TFhXT09qQzhFYmZwWCtMS01kRk5QOFlQbWNZVVA5?=
- =?utf-8?B?VHdhTVNBemZHVFJYNUM1NUVxMW5nb1hock5jL1EzNzd0cGdHeEk5Y3VtREUz?=
- =?utf-8?B?SEZ0VEk5VGpVMUc3d1BtMlF4V0REbFdFbVdlenk1dnFnT2lzM2Q4aUlqR00x?=
- =?utf-8?B?MEozaXNEdkdjRExLWmZvQnpyQkFOVXdiMlNqeGZEYkRheW9NZUtwLyt5bW9D?=
- =?utf-8?B?QmtzUE5vY0pUOEhSbk9EckZVRW9tWWlDQ2dYRUZNT2tINkdLWUEvcWRmc3pi?=
- =?utf-8?B?ZHVybVNUaTh0WTR3Wmw5UGJhQ0ttQ29GOTFOTHNQV1ZoSy8yT2hiMEtFVkho?=
- =?utf-8?B?bzFWa2toZ2U0ditXTEEyd29vU2NFTCt6OVExYk1meVZPWExFVW5rU2tBYWo3?=
- =?utf-8?B?YWNlU1hQOGdtRVRmbmg4NWpPMGo3MDgzTTZzTlZiVTRtMTBjT0VObmJpZE9s?=
- =?utf-8?B?ZSs3T1hFQTNUTElrbERuR29oT3l1aSs1Szg3Wk9MaWtpY29obm5qMUtHaHho?=
- =?utf-8?B?eGJEUktUUmdrVXZVV28xY01IMjAzbWN5ckJ0c3RGcGg3cmowN2puZ2xtUExY?=
- =?utf-8?B?aFFVUEE4TzBHOC9uM0J4bmZVeHhDQ3QzcjJmR3lVU2orMlBnWDV0MC9GbWVU?=
- =?utf-8?B?Z2xGUDZ2V25acmFWQ1oxUHhBbldCSm43Wm9TRktKbHhMK0ZtbzNmY2FQVDdC?=
- =?utf-8?B?RFhPZGtpeGtoU2NzaEVPN0xKU21sV24yTVpndUFqOVlrL3ltRWxqandXYW9O?=
- =?utf-8?B?S28wK3hNeXhpSzkwd1lvVHVFOUlLQjJRQ3pyZFdxRkZLdGhWSFc3Rmt2S2N2?=
- =?utf-8?B?TjVPSFpJSVAvNFVwaHl1aHVjQjRzLzEzQmtyL2VxajB5UEx4MUU1YlU2b2VF?=
- =?utf-8?B?bzVYOGFzM2swMFBpUVpHVXJMUlhxZGh3SVhDN1ZlR0xYVWJTbUkyWTNTeGsz?=
- =?utf-8?B?T1JpcDhFdUwyNmFNUndpTkxCbEhDWUU3MXoxcHZBbTJQTmMrREdvbjd4Q0s4?=
- =?utf-8?B?dXRKNG9GaFFhb1BiOXlNUmE3SEROYm5KNXRBVkQvVTc4UHRUTlJQUy9kdGdn?=
- =?utf-8?B?em5qdzdBNjBUNzZlOVBTQ2crQ1gxZVM3OTM4UElubUxPR1JHT0tvZzgxS1o4?=
- =?utf-8?B?MUVnbWN1SXYwTkE3QmxVRzgrVktFZWZRMWtxeTZMMks1VDlmMUNGSVQ3MEhN?=
- =?utf-8?B?bkFRKzdnSzVNNHNJN0g1dDA4QkRua2k2RHgwTDFoNkh3N1NRdFF1WTFscEE1?=
- =?utf-8?B?UC8zWjFhTXBUMFVlTnkvVHZKd2FYbmViK0hlRmxJaExFR1JoUk1qa0Y5MUlH?=
- =?utf-8?B?bFZMUFZoUmdqMHJkYVM3NUZEZXNwWmhEV2h1YXZLRkJDZzV6ZmJHWE13YkxN?=
- =?utf-8?B?ZjViU0hTNXd3VHAyTzVuRHY1TEZTTzVPWmplS1g0SDJGZmM0RGVNamlCQmt4?=
- =?utf-8?B?VTlqYUlBQUVTQ2s3QWZxSTh3dWgyMjRteEJiZzZNNDJuUXdvVkluU0V0MXdD?=
- =?utf-8?B?ZEM1M1ZVY2tCeXVYVDZRSUh3UDFKRGdkUHR0a215R3I5T2Q5ckY2TVVHUXEx?=
- =?utf-8?B?eHFHRHZ6bm13V0IzNUNvdkRXaXFUS2RXT0J0S1VtUTF1MTBENkZtZmdSQy93?=
- =?utf-8?B?UGl4K3lyR0hzYU93S1U0RXNTMGtydGpZSkNOd3RIK1hER2xpQmlvQjVKQ2E2?=
- =?utf-8?B?N3BUWGI1bGR1eEZ1MThPUmNLSVozTkIzRkZTOGE4T0ZZanhESGdJSTRYOGNo?=
- =?utf-8?Q?WMBpxnGZj/LQqV4G5TK7w0Vq5?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 5VHnTrC7sWn048HS/Dd2r/wApoXyRexYW2r+y1WWLta/qONE1njnlJZBmk+b+1k7d4TP1mScXN4J8rLH4uuVy1rK/WxfnsM3GJFzWDmLU7+6uFULHw7i/1C2FCY0SIga1YiDxi/3dPbe2L/y1fRBH/eCu5DDEJSrDP4GG5hbQ+94EZSXQcCsgUK8gPp6aOWAahKlwGcqMM/CDimFE5+O/E9771Z1DXghdiCi842AkP71XPt5CBPFIecXKZH5ahOMY2YCM7COotwYdhfQ5zWO/6ZU3dWpyff0WlcaPD51yTSIBqb/EjcNE7fiEww4YSC+CwDcRzcFb0dWlS4EzS8VD/VbQm/f16dOTuNy5mRKU33NmbuqwlqBK+ZWK/Or9nuGLizKXDf7bAj1tveyYj8+G7gdRPvxd+ZTsmylsm2TPOrbGUBIrwpJyRtVNMdfQtlTYumOjagg96+CLpSqVo6xbjg95H/ChYVms4tRk6tQYE+oaOmQ/joMUMx+BXszIjHBuZmReSNKU1SIhIcQ9H/c6SRmY0CSx5bxUf3958P5llk+ioL+TaC2jAzYP9M0YpjrylYYchgF04EGGhS+s+wJba+M1Db53Hh4sy18v515tUV1pz9DaaMGbIMf1Qu20e8G4xLshmBo9+Lbe/PK3Hqa9n1AWX7qP3NdesfLkwZfFa+psnCc789nB9Dkxk2Yqcz5QGQSKsF1o01JphhQrODmsxgK/BWS53IdanSX+CZwz8vMIPCYEfwanCSS5JWyxem8QOdGHRlbFy8VkwUE0OY1VDvffZ2uwrU/LssuIAUGKUs=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9b9a3b1-ae0a-40fc-cf64-08dbbe231e13
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2023 23:57:04.4257
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9rxCVud3FEGogxnUUUi1IhnTi0pOxzuOewwG3mnLBu7Revb7KJzFg3Gx9CG5+T+VvCSX6KWyMyIq2Isg9Gz2kw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR10MB6233
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-25_19,2023-09-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 phishscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309250185
-X-Proofpoint-GUID: DZ8cGBTwjOcSQxtu9BwlNfVVcmYgl7ID
-X-Proofpoint-ORIG-GUID: DZ8cGBTwjOcSQxtu9BwlNfVVcmYgl7ID
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+From:   Yikebaer Aizezi <yikebaer61@gmail.com>
+Date:   Tue, 26 Sep 2023 10:18:21 +0800
+Message-ID: <CALcu4rb4XP1G=BM9c-Za-p26qN=itbhfU6esn5SfHjuZn8pz-A@mail.gmail.com>
+Subject: WARNING in btrfs_space_info_update_bytes_may_use
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
+
+When using Healer to fuzz the Latest Linux-6.6-rc3,  the following crash
+was triggered.
+
+HEAD commit: 6465e260f48790807eef06b583b38ca9789b6072 ( Linux 6.6-rc3=EF=BC=
+=89
+git tree: upstream
+
+console output:
+https://drive.google.com/file/d/1JlSPfRbqIlpTkYG9_W2ClYiTOORXlnj4/view?usp=
+=3Ddrive_link
+kernel config:https://drive.google.com/file/d/1CFQ24OVix2RivZgCj1ie4QPJUoL8=
+rtbD/view?usp=3Ddrive_link
+C reproducer:https://drive.google.com/file/d/1cqwuczXJYPG6KSJjzB_Er6QrS7iJn=
+pVc/view?usp=3Ddrive_link
+Syzlang reproducer:
+https://drive.google.com/file/d/1-Mp-cztmSoKVGXm_kfNlA_FUgV3zT4f5/view?usp=
+=3Ddrive_link
 
 
-On 26/09/2023 00:58, David Sterba wrote:
-> On Thu, Sep 21, 2023 at 05:51:12AM +0800, Anand Jain wrote:
->> v2: Splits the patch into two parts: one for the new code to reject
->> devices with CHANGING_FSID_V2 and the second to remove the unused code.
->>
->> The btrfs-progs code to reunite devices with the CHANGING_FSID_V2 flag,
->> which is ported from the kernel, can be found in the following btrfs-progs
->> patchset:
->>
->>   [PATCH 0/4 v4] btrfs-progs: recover from failed metadata_uuid port kernel
->>      btrfs-progs: tune use the latest bdev in fs_devices for super_copy
->>      btrfs-progs: add support to fix superblock with CHANGING_FSID_V2 flag
->>      btrfs-progs: recover from the failed btrfstune -m|M
->>      btrfs-progs: test btrfstune -m|M ability to fix previous failures
->>
->> Furthermore, when the kernel stops supporting the CHANGING_FSID_V2 flag,
->> we will need to update the btrfs-progs test case accordingly:
->>
->>      btrfs-progs: misc-tests/034-metadata-uuid remove kernel support
->>
->> v1:
->> https://lore.kernel.org/linux-btrfs/02d59bdd7a8b778deb17e300354558498db59376.1692178060.git.anand.jain@oracle.com
->>
->>
->> Anand Jain (2):
->>    btrfs: reject device with CHANGING_FSID_V2
->>    btrfs: remove unused code related to the CHANGING_FSID_V2 flag
-> 
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
 
-
-> Added to misc-next, thanks.
-
-> I've updated the 2nd patch with some
-> historical background.
-
-Now much more complete! Thanks.
-
-> The temp-fsid patch now does not apply cleanly,
-> I'll do a refresh on top of this series. Once it's in for-next, please
-> have a look. Thanks.
-
-Sure. But, temp-fsid v4 still has a subvol mount bug, as reported
-before. I have a fix that is in-memory only. I am trying to get a
-reasonable list of fstests passed before sending it out. Guilherme
-can add the super-block flag on top of this, although it is not
-mandatory from the btrfs internals pov. I will send out the
-in-memory based temp-fsid soon I get the fstests (with some fix)
-working today.
-
-Thanks, Anand
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8100 at fs/btrfs/space-info.h:198
+btrfs_space_info_update_bytes_may_use+0x448/0x590
+fs/btrfs/space-info.h:198
+Modules linked in:
+CPU: 1 PID: 8100 Comm: syz-executor.3 Not tainted 6.6.0-rc3-g6465e260f487 #=
+2
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:btrfs_space_info_update_bytes_may_use+0x448/0x590
+fs/btrfs/space-info.h:198
+Code: fd e9 69 fc ff ff e8 a7 8e f7 fd 49 89 ed 4c 89 e6 49 f7 dd 4c
+89 ef e8 76 8a f7 fd 4d 39 e5 0f 86 7c fd ff ff e8 88 8e f7 fd <0f> 0b
+45 31 e4 e9 75 fd ff ff e8 79 8e f7 fd 48 8d 7b 18 be ff ff
+RSP: 0018:ffffc90002f6fad8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88802642a800 RCX: 0000000000000000
+RDX: ffff8880152c0000 RSI: ffffffff838a4bc8 RDI: 0000000000000006
+RBP: ffffffffffa80000 R08: 0000000000000006 R09: 0000000000580000
+R10: 000000000057c000 R11: 0000000000000001 R12: 000000000057c000
+R13: 0000000000580000 R14: ffff88802642a860 R15: 0000000000000004
+FS:  000055555745a480(0000) GS:ffff888135c00000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2c321000 CR3: 000000001840f000 CR4: 0000000000750ee0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:230 [inline]
+ block_rsv_release_bytes fs/btrfs/block-rsv.c:154 [inline]
+ btrfs_block_rsv_release+0x4ab/0x5e0 fs/btrfs/block-rsv.c:293
+ btrfs_release_global_block_rsv+0x22/0x2e0 fs/btrfs/block-rsv.c:443
+ btrfs_free_block_groups+0xb9d/0x13d0 fs/btrfs/block-group.c:4380
+ close_ctree+0x548/0xda0 fs/btrfs/disk-io.c:4413
+ generic_shutdown_super+0x15d/0x3c0 fs/super.c:693
+ kill_anon_super+0x36/0x60 fs/super.c:1292
+ btrfs_kill_super+0x38/0x50 fs/btrfs/super.c:2144
+ deactivate_locked_super+0x94/0x170 fs/super.c:481
+ deactivate_super+0xad/0xd0 fs/super.c:514
+ cleanup_mnt+0x2ae/0x3d0 fs/namespace.c:1254
+ task_work_run+0x164/0x250 kernel/task_work.c:180
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x215/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:296
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fdc5389070b
+Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 90 f3 0f 1e fa 31 f6
+e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d
+00 f0 ff ff 77 05 c3 0f 1f 40 00 48 c7 c2 b0 ff ff ff f7 d8
+RSP: 002b:00007ffdcf04dcd8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fdc5389070b
+RDX: 00007fdc53828280 RSI: 000000000000000a RDI: 00007ffdcf04dd90
+RBP: 00007ffdcf04dd90 R08: 0000000000000000 R09: 00007ffdcf04db60
+R10: 000055555745ba0b R11: 0000000000000246 R12: 00007fdc538ef312
+R13: 00007ffdcf04ee70 R14: 000055555745b970 R15: 00007ffdcf04ee60
+ </TASK>
