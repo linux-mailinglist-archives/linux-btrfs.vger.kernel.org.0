@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 252AE7B0274
+	by mail.lfdr.de (Postfix) with ESMTP id 727027B0275
 	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 13:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbjI0LJl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Sep 2023 07:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39630 "EHLO
+        id S231332AbjI0LJm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Sep 2023 07:09:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbjI0LJj (ORCPT
+        with ESMTP id S231338AbjI0LJl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:09:39 -0400
+        Wed, 27 Sep 2023 07:09:41 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0016FF3
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 04:09:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C914C433C9
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 11:09:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A36F3
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 04:09:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20988C433C8
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 11:09:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695812978;
-        bh=9VQznsWxF/PxU66NqC4TRTUhiTvHXSQOtRbDqf/5TAo=;
+        s=k20201202; t=1695812979;
+        bh=YyyPLRaX/inRThsFeWmL3NyDzvZJrl9mFe2+xteW14k=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=mxmmQg+mVsPbSb/gOcH4TzTHwnGkzOZKOax88ME8bsvPpmeer6m9DGSRY24akY268
-         puqsY78At4Hej0Fh+CHQbvGsbgHeK0x6fKQ/l2/2Ih53woTp3Szp2T/zs7eyQCgHX7
-         drHBVR/wEXaxm0OvhnyEjdL3qUAq7v5ooapEap5u2p+XY6/F/xMzCkMBDlfVNIkMiS
-         kDaNmhSDb2T+DAlS4EQFt0KlU7KGEN6XMwdN29Wy1FAqWoxWvUYq/xnYxIOA3Lr1SK
-         JlEs54P5n4XaCoKVZKekIqLG1hOFov2+OXb3ffE/HgBrmvcVBgQ/rZ5JVaoUoEtU+A
-         i3EpUrsNb0KBA==
+        b=fVuznosQV8cY/VA1aaGY+7stKwjr8n829yt9Bpm1pnNjenxuoNp4e9eHFKC7rmc7r
+         I3XEXFOfB8mjbWQyy7J5YE/O7Po0+d9k1njvnkEK64k7137BbFHD4EZnI/pSNV3xuS
+         unUeu3cT2v2jtieocKxMRt6AHCng0/1TpbKMSBkREabMLfdLY1VOrWb5CezmcIzS8V
+         Iovj1B8Kl39TtAmsRjjOxGhrCbhY/5yYHBOJWlkVACMLTUNfE1lFoZ10u5K1r2LPJe
+         Ahn3NH/ameC4RWqSs3redHdikR3K9n4U62o6zEwtkYElNBDkQEubesI9o7V5OIPKxk
+         ZhC32fhYdJz3Q==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 6/8] btrfs: rename and export __btrfs_cow_block()
-Date:   Wed, 27 Sep 2023 12:09:26 +0100
-Message-Id: <a87a24d96edd5e382c5bd728437b9d242a211519.1695812791.git.fdmanana@suse.com>
+Subject: [PATCH v2 7/8] btrfs: export comp_keys() from ctree.c as btrfs_comp_keys()
+Date:   Wed, 27 Sep 2023 12:09:27 +0100
+Message-Id: <222b6f1bd38e4317f1d26e47a79da563db359927.1695812791.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1695812791.git.fdmanana@suse.com>
 References: <cover.1695812791.git.fdmanana@suse.com>
@@ -48,96 +48,169 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Rename and export __btrfs_cow_block() as btrfs_force_cow_block(). This is
-to allow to move defrag specific code out of ctree.c and into defrag.c in
-one of the next patches.
+Export comp_keys() out of ctree.c, as btrfs_comp_keys(), so that in a
+later patch we can move out defrag specific code from ctree.c into
+defrag.c.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 30 +++++++++++++++---------------
- fs/btrfs/ctree.h |  7 +++++++
- 2 files changed, 22 insertions(+), 15 deletions(-)
+ fs/btrfs/ctree.c | 44 +++++++-------------------------------------
+ fs/btrfs/ctree.h | 31 +++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+), 37 deletions(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 8d29b9e09286..005f0e1f98b3 100644
+index 005f0e1f98b3..b25b42ebcc2b 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -507,13 +507,13 @@ static noinline int update_ref_for_cow(struct btrfs_trans_handle *trans,
-  * bytes the allocator should try to find free next to the block it returns.
-  * This is just a hint and may be ignored by the allocator.
-  */
--static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
--			     struct btrfs_root *root,
--			     struct extent_buffer *buf,
--			     struct extent_buffer *parent, int parent_slot,
--			     struct extent_buffer **cow_ret,
--			     u64 search_start, u64 empty_size,
--			     enum btrfs_lock_nesting nest)
-+int btrfs_force_cow_block(struct btrfs_trans_handle *trans,
-+			  struct btrfs_root *root,
-+			  struct extent_buffer *buf,
-+			  struct extent_buffer *parent, int parent_slot,
-+			  struct extent_buffer **cow_ret,
-+			  u64 search_start, u64 empty_size,
-+			  enum btrfs_lock_nesting nest)
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_disk_key disk_key;
-@@ -668,7 +668,7 @@ static inline int should_cow_block(struct btrfs_trans_handle *trans,
+@@ -743,36 +743,6 @@ static int close_blocks(u64 blocknr, u64 other, u32 blocksize)
+ 	return 0;
  }
  
+-#ifdef __LITTLE_ENDIAN
+-
+-/*
+- * Compare two keys, on little-endian the disk order is same as CPU order and
+- * we can avoid the conversion.
+- */
+-static int comp_keys(const struct btrfs_disk_key *disk_key,
+-		     const struct btrfs_key *k2)
+-{
+-	const struct btrfs_key *k1 = (const struct btrfs_key *)disk_key;
+-
+-	return btrfs_comp_cpu_keys(k1, k2);
+-}
+-
+-#else
+-
+-/*
+- * compare two keys in a memcmp fashion
+- */
+-static int comp_keys(const struct btrfs_disk_key *disk,
+-		     const struct btrfs_key *k2)
+-{
+-	struct btrfs_key k1;
+-
+-	btrfs_disk_key_to_cpu(&k1, disk);
+-
+-	return btrfs_comp_cpu_keys(&k1, k2);
+-}
+-#endif
+-
  /*
-- * cows a single block, see __btrfs_cow_block for the real work.
-+ * COWs a single block, see btrfs_force_cow_block() for the real work.
-  * This version of it has extra checks so that a block isn't COWed more than
-  * once per transaction, as long as it hasn't been written yet
+  * same as comp_keys only with two btrfs_key's
   */
-@@ -721,8 +721,8 @@ int btrfs_cow_block(struct btrfs_trans_handle *trans,
- 	 * Also We don't care about the error, as it's handled internally.
+@@ -845,7 +815,7 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
+ 		int close = 1;
+ 
+ 		btrfs_node_key(parent, &disk_key, i);
+-		if (!progress_passed && comp_keys(&disk_key, progress) < 0)
++		if (!progress_passed && btrfs_comp_keys(&disk_key, progress) < 0)
+ 			continue;
+ 
+ 		progress_passed = 1;
+@@ -958,7 +928,7 @@ int btrfs_bin_search(struct extent_buffer *eb, int first_slot,
+ 			tmp = &unaligned;
+ 		}
+ 
+-		ret = comp_keys(tmp, key);
++		ret = btrfs_comp_keys(tmp, key);
+ 
+ 		if (ret < 0)
+ 			low = mid + 1;
+@@ -1995,7 +1965,7 @@ static int search_leaf(struct btrfs_trans_handle *trans,
+ 			 * the extent buffer's header and we have recently accessed
+ 			 * the header's level field.
+ 			 */
+-			ret = comp_keys(&first_key, key);
++			ret = btrfs_comp_keys(&first_key, key);
+ 			if (ret < 0) {
+ 				/*
+ 				 * The first key is smaller than the key we want
+@@ -2504,7 +2474,7 @@ static int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
  	 */
- 	btrfs_qgroup_trace_subtree_after_cow(trans, root, buf);
--	ret = __btrfs_cow_block(trans, root, buf, parent,
--				 parent_slot, cow_ret, search_start, 0, nest);
-+	ret = btrfs_force_cow_block(trans, root, buf, parent, parent_slot,
-+				    cow_ret, search_start, 0, nest);
+ 	if (path->slots[0] < btrfs_header_nritems(path->nodes[0])) {
+ 		btrfs_item_key(path->nodes[0], &found_key, path->slots[0]);
+-		ret = comp_keys(&found_key, &orig_key);
++		ret = btrfs_comp_keys(&found_key, &orig_key);
+ 		if (ret == 0) {
+ 			if (path->slots[0] > 0) {
+ 				path->slots[0]--;
+@@ -2519,7 +2489,7 @@ static int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
+ 	}
  
- 	trace_btrfs_cow_block(root, buf, *cow_ret);
- 
-@@ -873,11 +873,11 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
- 			search_start = last_block;
- 
- 		btrfs_tree_lock(cur);
--		err = __btrfs_cow_block(trans, root, cur, parent, i,
--					&cur, search_start,
--					min(16 * blocksize,
--					    (end_slot - i) * blocksize),
--					BTRFS_NESTING_COW);
-+		err = btrfs_force_cow_block(trans, root, cur, parent, i,
-+					    &cur, search_start,
-+					    min(16 * blocksize,
-+						(end_slot - i) * blocksize),
-+					    BTRFS_NESTING_COW);
- 		if (err) {
- 			btrfs_tree_unlock(cur);
- 			free_extent_buffer(cur);
+ 	btrfs_item_key(path->nodes[0], &found_key, 0);
+-	ret = comp_keys(&found_key, &key);
++	ret = btrfs_comp_keys(&found_key, &key);
+ 	/*
+ 	 * We might have had an item with the previous key in the tree right
+ 	 * before we released our path. And after we released our path, that
+@@ -2710,7 +2680,7 @@ void btrfs_set_item_key_safe(struct btrfs_trans_handle *trans,
+ 	slot = path->slots[0];
+ 	if (slot > 0) {
+ 		btrfs_item_key(eb, &disk_key, slot - 1);
+-		if (unlikely(comp_keys(&disk_key, new_key) >= 0)) {
++		if (unlikely(btrfs_comp_keys(&disk_key, new_key) >= 0)) {
+ 			btrfs_print_leaf(eb);
+ 			btrfs_crit(fs_info,
+ 		"slot %u key (%llu %u %llu) new key (%llu %u %llu)",
+@@ -2724,7 +2694,7 @@ void btrfs_set_item_key_safe(struct btrfs_trans_handle *trans,
+ 	}
+ 	if (slot < btrfs_header_nritems(eb) - 1) {
+ 		btrfs_item_key(eb, &disk_key, slot + 1);
+-		if (unlikely(comp_keys(&disk_key, new_key) <= 0)) {
++		if (unlikely(btrfs_comp_keys(&disk_key, new_key) <= 0)) {
+ 			btrfs_print_leaf(eb);
+ 			btrfs_crit(fs_info,
+ 		"slot %u key (%llu %u %llu) new key (%llu %u %llu)",
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 0c059f20533d..c685952a544c 100644
+index c685952a544c..7b69abb5009c 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -484,6 +484,13 @@ int btrfs_cow_block(struct btrfs_trans_handle *trans,
- 		    struct extent_buffer *parent, int parent_slot,
- 		    struct extent_buffer **cow_ret,
- 		    enum btrfs_lock_nesting nest);
-+int btrfs_force_cow_block(struct btrfs_trans_handle *trans,
-+			  struct btrfs_root *root,
-+			  struct extent_buffer *buf,
-+			  struct extent_buffer *parent, int parent_slot,
-+			  struct extent_buffer **cow_ret,
-+			  u64 search_start, u64 empty_size,
-+			  enum btrfs_lock_nesting nest);
- int btrfs_copy_root(struct btrfs_trans_handle *trans,
- 		      struct btrfs_root *root,
- 		      struct extent_buffer *buf,
+@@ -9,6 +9,7 @@
+ #include <linux/pagemap.h>
+ #include "locking.h"
+ #include "fs.h"
++#include "accessors.h"
+ 
+ struct btrfs_trans_handle;
+ struct btrfs_transaction;
+@@ -461,6 +462,36 @@ int btrfs_bin_search(struct extent_buffer *eb, int first_slot,
+ 		     const struct btrfs_key *key, int *slot);
+ 
+ int __pure btrfs_comp_cpu_keys(const struct btrfs_key *k1, const struct btrfs_key *k2);
++
++#ifdef __LITTLE_ENDIAN
++
++/*
++ * Compare two keys, on little-endian the disk order is same as CPU order and
++ * we can avoid the conversion.
++ */
++static inline int btrfs_comp_keys(const struct btrfs_disk_key *disk_key,
++				  const struct btrfs_key *k2)
++{
++	const struct btrfs_key *k1 = (const struct btrfs_key *)disk_key;
++
++	return btrfs_comp_cpu_keys(k1, k2);
++}
++
++#else
++
++/* Compare two keys in a memcmp fashion. */
++static inline int btrfs_comp_keys(const struct btrfs_disk_key *disk,
++				  const struct btrfs_key *k2)
++{
++	struct btrfs_key k1;
++
++	btrfs_disk_key_to_cpu(&k1, disk);
++
++	return btrfs_comp_cpu_keys(&k1, k2);
++}
++
++#endif
++
+ int btrfs_previous_item(struct btrfs_root *root,
+ 			struct btrfs_path *path, u64 min_objectid,
+ 			int type);
 -- 
 2.40.1
 
