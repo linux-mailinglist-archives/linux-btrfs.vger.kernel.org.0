@@ -2,270 +2,333 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CBD7B0D84
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 22:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D187B0E67
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 23:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbjI0UoQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Sep 2023 16:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47388 "EHLO
+        id S229464AbjI0V5Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Sep 2023 17:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjI0UoP (ORCPT
+        with ESMTP id S229460AbjI0V5Y (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Sep 2023 16:44:15 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890E1D6
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 13:44:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695847450; x=1696452250; i=quwenruo.btrfs@gmx.com;
- bh=X2AAg7FtTrKm2VL6C6Vom4qdsouf8b3HaTdlh7ZE2jk=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=a2cxsyW5RMSOEMpBp8Ul9JxPZW5LTY0fs8G6n5nuPPxVHD+lT6pDYZ4rwXkf8136Jp91okFazxs
- DTcZI/e9xJ5EuMn0+dcrw7Z78ZyKPtOIl3AiZk5cL7Xt50p1cfI1ILjfPP/B2BRVpcV5KQubQxhTq
- lxAc7CS4kqyHwsmS6Qz3FIhhJD5hJDI+lDvJJDe8MyArsHnEOYQTLDJK9eY7OhJO5pqjSQ2zlhxGI
- RBbCKjeUhM0+ZVudDQSjRrzNXRvYpQwkWiilFrfWbl3uM2fqB++rBKaxG5IgrRoqREFVMos2UO9Vq
- MzFNOFiCtkEm6Rgvy3q2KCjM7XsxWHFNTrqg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MLiCo-1r3GnZ1mIi-00HbAl; Wed, 27
- Sep 2023 22:44:10 +0200
-Message-ID: <5986bd50-d7c0-41ff-a4d8-a90f4edadaca@gmx.com>
-Date:   Thu, 28 Sep 2023 06:14:05 +0930
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+        Wed, 27 Sep 2023 17:57:24 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0C0FB
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 14:57:22 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4054f790190so110544145e9.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 14:57:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695851841; x=1696456641; darn=vger.kernel.org;
+        h=content-language:content-transfer-encoding:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C8UcNE7WpJNzoucJVd9mzuEISgOkE40JhABaY8jhGMo=;
+        b=bUp6VQ6SIWzoEMBLmbJwmqYPCwpVEJqAjVQCMs7krZxF6KLq9DYL4rVuhmMMSzsusS
+         g5HF7+brq6I+Qpd8leBTcwfjBLBoX3/FwI0iiJsIh+y9M59l2g4bLCsV/5Vc4PXovg1l
+         DFm3pkho+c8vRraW/z2CLFfokJw6P8DhJbS46pwfunofh3i8VWPBi98lnUEiHEkOVB75
+         7soGAXq9dp2AZfR4VzG5UaTlPzTWGKFbiNHMy1AuBS+6TKbT50jH4ibwscyzl2XMLko2
+         mHjOGQv6Hjnc9pephFbo77Oth9mo2070UUZpmTpd5uQu3xgpUjSDe7O4Jgjp7IbLhLJk
+         +9RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695851841; x=1696456641;
+        h=content-language:content-transfer-encoding:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C8UcNE7WpJNzoucJVd9mzuEISgOkE40JhABaY8jhGMo=;
+        b=o37Fjdgd6zUhoaZ7QM5yL8az97VdgjaHt1ebqRGcrRDZsX2aWwjEW8qBW+kymZAmSd
+         CUuSiVEFoTrRZd0tNPPcExM7ApzoScktm6wmcL3YJqbJY5GpCCTpjhzzL2Lvsd8igxS/
+         kpXmm4FPT4AGFznM3OwJTuaOE9+VAsxP/dA3tyUBvt613fNSrJfh+JoA72OWBlZy2DLe
+         nTDmod5QbiOLDhM+P9xT1goguCTDaQBQKLlNGGO2CtYrQiRKNhDx8eHLV2XipHuePe2V
+         7/1JKd5mWvV5saH8zo1poqRQFSQvYKUI3Xcbo45D3B+O555bZMotLD8ezoVmlcR5Y876
+         7QTQ==
+X-Gm-Message-State: AOJu0YzsL5ZIwb9w5+DnuMTOvjpCcTK6rP6dVbp66hWlEUJA1JeD8TcJ
+        4GWRWNGVA8K2wju/kCWpumkq8croZNwWuA==
+X-Google-Smtp-Source: AGHT+IFb6aJQv9zqRLQqM7SHeE1wnvUe4gwFYwnK+JFRoNYJq7h7f03mTTYMgykcfJqP96Z+BjWrDA==
+X-Received: by 2002:a1c:7904:0:b0:401:daf2:2737 with SMTP id l4-20020a1c7904000000b00401daf22737mr3070193wme.30.1695851840343;
+        Wed, 27 Sep 2023 14:57:20 -0700 (PDT)
+Received: from [192.168.1.121] (athedsl-4558735.home.otenet.gr. [94.70.91.151])
+        by smtp.googlemail.com with ESMTPSA id y1-20020a05600c364100b003fefe70ec9csm2747634wmq.10.2023.09.27.14.57.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Sep 2023 14:57:19 -0700 (PDT)
 Subject: Re: btrfstune --convert-to-block-group-tree segfaulted. now
  filesystem is unmountable
-Content-Language: en-US
-To:     Konstantinos Skarlatos <k.skarlatos@gmail.com>,
-        linux-btrfs@vger.kernel.org
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
 References: <3c93d0b5-a8cb-ebe3-f8d6-76ea6340f23e@gmail.com>
  <0b7b9bd4-9b0c-467c-be20-b7d6b613e5d3@gmx.com>
  <31319035-f0cf-0882-321e-ad50ccfd5e40@gmail.com>
  <81f63d28-a2be-47b6-9dd3-32735be73101@gmx.com>
  <620ca0c7-8152-4251-8f23-6b1cf0959de5@gmx.com>
  <07e9fd50-ca9d-cebf-31e9-402da6812d1d@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <07e9fd50-ca9d-cebf-31e9-402da6812d1d@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:EQca3jpIUPlzpWkhO8dcuZBAqY8ZCgK6GMM0lOMc3pyonGqsudI
- Kzp2TYTinJdxTmI9cR817lPEU/yYSLDBlEMFp5Ai1EGBItdGfQygPS8A9SBg2rq7trgmrIQ
- BL+Lb5VbfDT/nJawCmQlWa7/7wqpz8bTAVMK50LfP/Hq3B3h3T7ZoX7MwIy7aGT/3gRAkIc
- 9ZJ+031lWwwm63ty0gUcA==
-UI-OutboundReport: notjunk:1;M01:P0:OZUtWFiiRwY=;ylncrYCwBZzI4+HdMui6MWL0F4z
- +kwPgpJF1K/bNSDYFpGT64Ym3nFuIorh5FROvGYtpAIhz+4i6DwBY/lEto8Er6FbJcCiomA2b
- tEAQvN/lCd9cie/SoX8Y0OUIdPNG41PGxEuW+KLqOrC059E5tvfu2APYInWbqyvKUJrmFrI5k
- E00ck1rew8PRJbhvg8tVzpsBtWoJFMy7IiVL7+aB7DycR1Dt+N/wMlv0URXak+t1G4U/x8Mfa
- h7TZh8AlxRtpThBZk5m1ipJJP/xc5q9pMvCY1ymnen1jjshyARev4nuzehyshbMfGimpWOOSw
- voYXy+fp1sAAlTwcq6EGsFU8yBA0ShH407rrOSJ8Z0R/rRMswZ0kbnp3GS0tCNGb1kZeDCsWj
- LkHEaVzWMqKiw8MsyoBc2xMIBgl+DkOAmdq/pbD0679DFm+M6l+95R2uVvhoCEWOJ65PUPABe
- hHklF9cKhcBNPoMPE1In32N0wckhxDzMcFkEnE1dc/UWGmtlqVndDLkNcOiAhsrQV3pNL6kEI
- +6rE12PWI8GnKM6pqbRBRqqdYUH22N9g5Qw7zPB7k6OKFFidwVZgWFT4JMqzWYPpRo9lf+iqp
- kieF5WtZ3KFTvJoJ3b9OxLyc5IrTI5vT/0YnbXMLHNJymbvNOETXgfiMS9ju0esEE9yLWmrR1
- ZShaFWleZjfW3DweBSz/iJPt5KZwFW9YwQS0lIbpsqb35cn+CsrYNB4F1DGZIQ9f3QQk5G2k5
- ehui09k7CzRXCshTkkIeB6NJfW9mzinHNR1ehcC83rHTrPZuBjnA1oByzBXQ5LwpJ03n6nDLB
- a77FV2fgmEonQm1cB8+IiohAYICXYGnqZgkRsffpcFvBU4cGTDKBVogfTitWcTeK+ROrI8UVy
- 7vzRm/zjEIaDkHsRynwPquDRBvgIHexglCLI85n1ErTKhSEx/SpRQ+zQYLqJhbW5uJhztZDl9
- yCYsPw==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+ <5986bd50-d7c0-41ff-a4d8-a90f4edadaca@gmx.com>
+From:   Konstantinos Skarlatos <k.skarlatos@gmail.com>
+Message-ID: <2c2c5520-08e3-b477-0f94-20fd7d86b517@gmail.com>
+Date:   Thu, 28 Sep 2023 00:57:19 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
+MIME-Version: 1.0
+In-Reply-To: <5986bd50-d7c0-41ff-a4d8-a90f4edadaca@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjMvOS8yOCAwMDowNSwgS29uc3RhbnRpbm9zIFNrYXJsYXRvcyB3cm90ZToNCj4g
-DQo+IE9uIDI2LzA5LzIwMjMgMTI6MjEgz4DOvCwgUXUgV2VucnVvIHdyb3RlOg0KPj4NCj4+DQo+
-PiBPbiAyMDIzLzkvMjMgMDc6MTYsIFF1IFdlbnJ1byB3cm90ZToNCj4+Pg0KPj4+DQo+Pj4gT24g
-MjAyMy85LzIyIDE5OjAyLCBLb25zdGFudGlub3MgU2thcmxhdG9zIHdyb3RlOg0KPj4+PiBIZWxs
-byBRdSwNCj4+Pj4gdGhhbmsgeW91IGZvciB5b3VyIHF1aWNrIGFuc3dlciENCj4+Pj4gdXNpbmcg
-eW91ciBwYXRjaCwgaSBub3cgZ2V0IHRoaXM6DQo+Pj4+DQo+Pj4+IOKdryAuL2J0cmZzdHVuZSAt
-LWNvbnZlcnQtdG8tYmxvY2stZ3JvdXAtdHJlZSAvZGV2L3NkYQ0KPj4+PiBFUlJPUjogQ29ycnVw
-dGVkIGZzLCBubyB2YWxpZCBNRVRBREFUQSBibG9jayBncm91cCBmb3VuZA0KPj4+DQo+Pj4gTWlu
-ZCB0byBkdW1wIHRoZSBpbnZvbHZlZCB0cmVlcyBieToNCj4+Pg0KPj4+ICDCoMKgIyBidHJmcyBp
-bnMgZHVtcC10cmVlIC10IGV4dGVudCAvZGV2L3NkYQ0KPj4NCj4+IEhvdyBzdHVwaWQgSSdtLi4u
-IFRoYXQgdHJlZSBjYW4gYmUgc3VwZXIgbGFyZ2UuDQo+Pg0KPj4gV291bGQgeW91IG1pbmQgdG8g
-ZHVtcCBpdCB1c2luZyB0aGUgZm9sbG93aW5nIGNvbW1hbmQ/DQo+Pg0KPj4gIMKgIyBidHJmcyBp
-bnMgZHVtcC10cmVlIC10IGV4dGVudCB0ZXN0LmltZyB8XA0KPj4gIMKgwqAgZ3JlcCAiaXRlbSAu
-KiBCTE9DS19HUk9VUF9JVEVNICINCj4+DQo+PiBUaGlzIHNob3VsZCBncmVhdGx5IHJlZHVjZSB0
-aGUgc2l6ZSB3aGlsZSBzdGlsbCBnZXQgd2hhdCBJIG5lZWQuDQo+Pg0KPj4gVGhhbmtzLA0KPj4g
-UXUNCj4gSGkgUXUsDQo+IEhlcmUgYXJlIHRoZSB0d28gZHVtcHMgLSBtdWNoIHNtYWxsZXIgbm93
-IDopDQo+IA0KPiBidHJmcyBpbnMgZHVtcC10cmVlIC10IDExIC9kZXYvc2RhwqAgPiBkdW1wMi50
-eHQNCj4gYnRyZnMgaW5zIGR1bXAtdHJlZSAtdCBleHRlbnQgL2Rldi9zZGEgfCBncmVwICJpdGVt
-IC4qIEJMT0NLX0dST1VQX0lURU0NCj4gIiA+IGR1bXAzLnR4dA0KDQpHb29kIG5ld3MsIHRoZSBi
-bG9jayBncm91cHMgaXRlbXMgYXJlIHN0aWxsIHRoZXJlIGZvciB0aGUgb2xkIGV4dGVudCANCnRy
-ZWUuIE9ubHkgdGhlIGRhdGEgYmxvY2sgZ3JvdXAgaXRlbXMgKHdoaWNoIGhhdmUgYSBsYXJnZXIg
-Ynl0ZW5yKSBhcmUgDQpjb252ZXJ0ZWQgdG8gYmxvY2sgZ3JvdXAgdHJlZS4NCkFuZCB0aGUgY29u
-dmVyc2lvbiBpcyBpbmRlZWQgaW4gYnl0ZW5yIG9yZGVyIGNvcnJlY3RseS4NCg0KSSdsbCBuZWVk
-IHRvIGludmVzdGlnYXRlIHRoZSByZWFzb24gd2h5IG9wZW5fY3RyZWUoKSBkb2Vzbid0IHJlYWQg
-dGhlIA0Kb2xkIGJsb2NrIGdyb3VwIGl0ZW1zIGZyb20gdGhlIG9sZCB0cmVlLg0KDQpUaGFua3Ms
-DQpRdQ0KPiANCj4gS2luZCByZWdhcmRzLA0KPiBLb25zdGFudGlub3MgU2thcmxhdG9zDQo+Pj4N
-Cj4+PiBBbmQNCj4+Pg0KPj4+ICDCoMKgIyBidHJmcyBpbnMgZHVtcC10cmVlIC10IDExIC9kZXYv
-c2RhDQo+Pj4NCj4+Pg0KPj4+IENvbnNpZGVyaW5nIHRoZSBjb2RlIGNvbnZlcnRpbmcgYSBibG9j
-ayBncm91cCwgdGhlcmUgc2hvdWxkIG5ldmVyIGJlDQo+Pj4gYSBtaXNzaW5nIGJsb2NrIGdyb3Vw
-IChlaXRoZXIgaW4gdGhlIG9sZCBvciB0aGUgbmV3IHRyZWUpLg0KPj4+IEkgdGhpbmsgdGhlcmUg
-bWF5IGJlIHNvbWV0aGluZyB3cm9uZyB3aXRoIHRoZSBjb2RlIHJlYWRpbmcgYm90aCB0cmVlcy4N
-Cj4+Pg0KPj4+IFRoYW5rcywNCj4+PiBRdQ0KPj4+PiBFUlJPUjogZmFpbGVkIHRvIGRlbGV0ZSBi
-bG9jayBncm91cCBpdGVtIGZyb20gdGhlIG9sZCByb290OiAtMTE3DQo+Pj4+IEVSUk9SOiBmYWls
-ZWQgdG8gY29udmVydCB0aGUgZmlsZXN5c3RlbSB0byBibG9jayBncm91cCB0cmVlIGZlYXR1cmUN
-Cj4+Pj4gRVJST1I6IGJ0cmZzdHVuZSBmYWlsZWQNCj4+Pj4gZXh0ZW50IGJ1ZmZlciBsZWFrOiBz
-dGFydCAxNzgyNTU3NjYzMjMyMCBsZW4gMTYzODQNCj4+Pj4NCj4+Pj4gT24gMjIvMDkvMjAyMyAx
-MjowNiDPgC7OvC4sIFF1IFdlbnJ1byB3cm90ZToNCj4+Pj4+DQo+Pj4+Pg0KPj4+Pj4gT24gMjAy
-My85LzIxIDIyOjU3LCBLb25zdGFudGlub3MgU2thcmxhdG9zIHdyb3RlOg0KPj4+Pj4+IEhpIGFs
-bCwNCj4+Pj4+PiBpIHRyaWVkIHRvIGNvbnZlcnQgbXkgQlRSRlMgZmlsZXN5c3RlbSB0byBibG9j
-ay1ncm91cC10cmVlIGJ1dCBpdA0KPj4+Pj4+IHNlZ2ZhdWx0ZWQgYW5kIG5vdyB0aGUgZnMgaXMg
-bm90IG1vdW50YWJsZS4NCj4+Pj4+Pg0KPj4+Pj4+IOKdryBidHJmc3R1bmUgLS1jb252ZXJ0LXRv
-LWJsb2NrLWdyb3VwLXRyZWUgL2Rldi9zZGENCj4+Pj4+PiBbMV3CoMKgwqAgMTc0MDQ3IHNlZ21l
-bnRhdGlvbiBmYXVsdCAoY29yZSBkdW1wZWQpwqAgYnRyZnN0dW5lDQo+Pj4+Pj4gLS1jb252ZXJ0
-LXRvLWJsb2NrLWdyb3VwLXRyZWUgL2Rldi9zZGENCj4+Pj4+Pg0KPj4+Pj4+DQo+Pj4+Pj4gWzI1
-MzE3MTUuMTkwODAyXSBidHJmc3R1bmVbMTc0MDQ3XTogc2VnZmF1bHQgYXQgMWYgaXANCj4+Pj4+
-PiAwMDAwNTVlYzQwOWZkMTk4DQo+Pj4+Pj4gc3AgMDAwMDdmZmQwYTc3MmViMCBlcnJvciA0IGlu
-IGJ0cmZzdHVuZVs1NWVjNDA5ZDYwMDArNmEwMDBdDQo+Pj4+Pj4gbGlrZWx5IG9uDQo+Pj4+Pj4g
-Q1BVIDMgKGNvcmUgMiwgc29ja2V0IDApDQo+Pj4+Pj4gWzI1MzE3MTUuMTkwODE4XSBDb2RlOiA0
-MCAwMCBmMyAwZiAxZSBmYSA0MSA1NiA0MSA1NSA0OSA4OSBmZCA0MQ0KPj4+Pj4+IDU0IDQ5DQo+
-Pj4+Pj4gODkgZjQgNTUgODkgZDUgNTMgNDggOGIgNWYgNjggNDkgODkgZWUgNDggODUgZGIgNzQg
-M2YgNDggOGQgNzQgMzUNCj4+Pj4+PiAwMCAwZg0KPj4+Pj4+IDFmIDAwIDw0OD4gOGIgNDMgMjAg
-NDggOGIgNGIgMjggNDggMDEgYzEgNDkgMzkgY2MgMGYgODMgOGMgMDAgMDAgMDANCj4+Pj4+PiA0
-OCAzOQ0KPj4+Pj4+DQo+Pj4+Pj4gWzE3NDEzMV06IFByb2Nlc3MgMTc0MDQ3IChidHJmc3R1bmUp
-IG9mIHVzZXIgMCBkdW1wZWQgY29yZS4NCj4+Pj4+Pg0KPj4+Pj4+ICDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgU3RhY2sgdHJhY2Ugb2YNCj4+Pj4+PiB0aHJl
-YWQNCj4+Pj4+PiAxNzQwNDc6DQo+Pj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCAjMA0KPj4+Pj4+IDB4MDAwMDU1ZWM0MDlmZDE5OA0KPj4+Pj4+IGFs
-bG9jX2V4dGVudF9idWZmZXIgKGJ0cmZzdHVuZSArIDB4MzQxOTgpDQo+Pj4+Pj4gIMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjMQ0KPj4+Pj4+IDB4MDAwMDU1
-ZWM0MDllZTRmNQ0KPj4+Pj4+IHJlYWRfdHJlZV9ibG9jayAoYnRyZnN0dW5lICsgMHgyNTRmNSkN
-Cj4+Pj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICMy
-DQo+Pj4+Pj4gMHgwMDAwNTVlYzQwOWRiNWE2DQo+Pj4+Pj4gcmVhZF9ub2RlX3Nsb3QgKGJ0cmZz
-dHVuZSArIDB4MTI1YTYpDQo+Pj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCAjMw0KPj4+Pj4+IDB4MDAwMDU1ZWM0MDllNmUyZA0KPj4+Pj4+IG4vYSAo
-YnRyZnN0dW5lICsgMHgxZGUyZCkNCj4+Pj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgICM0DQo+Pj4+Pj4gMHgwMDAwNTVlYzQwOWU4YTRkDQo+Pj4+Pj4g
-bi9hIChidHJmc3R1bmUgKyAweDFmYTRkKQ0KPj4+Pj4+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIzUNCj4+Pj4+PiAweDAwMDA1NWVjNDA5ZGVmMDENCj4+
-Pj4+PiBidHJmc19zZWFyY2hfc2xvdCAoYnRyZnN0dW5lICsgMHgxNWYwMSkNCj4+Pj4+PiAgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICM2DQo+Pj4+Pj4gMHgw
-MDAwNTVlYzQwOWU5Yzc5DQo+Pj4+Pj4gYnRyZnNfaW5zZXJ0X2VtcHR5X2l0ZW1zIChidHJmc3R1
-bmUgKyAweDIwYzc5KQ0KPj4+Pj4+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgIzcNCj4+Pj4+PiAweDAwMDA1NWVjNDBhMDA5MGMNCj4+Pj4+PiBuL2EgKGJ0
-cmZzdHVuZSArIDB4Mzc5MGMpDQo+Pj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCAjOA0KPj4+Pj4+IDB4MDAwMDU1ZWM0MGEwNTE4NQ0KPj4+Pj4+IG4v
-YSAoYnRyZnN0dW5lICsgMHgzYzE4NSkNCj4+Pj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgICM5DQo+Pj4+Pj4gMHgwMDAwNTVlYzQwYTA1Yzc1DQo+Pj4+
-Pj4gYWRkX3RvX2ZyZWVfc3BhY2VfdHJlZSAoYnRyZnN0dW5lICsgMHgzY2M3NSkNCj4+Pj4+DQo+
-Pj4+PiBUaGVyZSBzZWVtcyB0byBiZSBzb21ldGhpbmcgd3Jvbmcgd2l0aCBmcmVlIHNwYWNlIHRy
-ZWUgY29kZSBoZXJlLg0KPj4+Pj4gTm90IHN1cmUgd2hpY2ggcGFydCBpcyBjYXVzaW5nIHRoZSBw
-cm9ibGVtLCB0aGUgZnN0IG9yIHRoZSBjb252ZXJzaW9uDQo+Pj4+PiBwYXJ0Lg0KPj4+Pj4NCj4+
-Pj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICMxMA0K
-Pj4+Pj4+IDB4MDAwMDU1ZWM0MGEzZWM0OQ0KPj4+Pj4+IG4vYSAoYnRyZnN0dW5lICsgMHg3NWM0
-OSkNCj4+Pj4+PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICMxMQ0KPj4+Pj4+IDB4MDAwMDU1ZWM0MDlmYjUyYQ0KPj4+Pj4+IGJ0cmZzX3J1bl9kZWxheWVk
-X3JlZnMgKGJ0cmZzdHVuZSArIDB4MzI1MmEpDQo+Pj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjMTINCj4+Pj4+PiAweDAwMDA1NWVjNDBhMTMwOTEN
-Cj4+Pj4+PiBidHJmc19jb21taXRfdHJhbnNhY3Rpb24gKGJ0cmZzdHVuZSArIDB4NGEwOTEpDQo+
-Pj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjMTMN
-Cj4+Pj4+PiAweDAwMDA1NWVjNDA5ZGNmZGQNCj4+Pj4+PiBjb252ZXJ0X3RvX2JnX3RyZWUgKGJ0
-cmZzdHVuZSArIDB4MTNmZGQpDQo+Pj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCAjMTQNCj4+Pj4+PiAweDAwMDA1NWVjNDA5ZDY0MGENCj4+Pj4+PiBt
-YWluIChidHJmc3R1bmUgKyAweGQ0MGEpDQo+Pj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjMTUNCj4+Pj4+PiAweDAwMDA3ZjQ0YWNlMjdjZDANCj4+
-Pj4+PiBuL2EgKGxpYmMuc28uNiArIDB4MjdjZDApDQo+Pj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAjMTYNCj4+Pj4+PiAweDAwMDA3ZjQ0YWNlMjdk
-OGENCj4+Pj4+PiBfX2xpYmNfc3RhcnRfbWFpbiAobGliYy5zby42ICsgMHgyN2Q4YSkNCj4+Pj4+
-PiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICMxNw0KPj4+
-Pj4+IDB4MDAwMDU1ZWM0MDlkN2RiNQ0KPj4+Pj4+IF9zdGFydCAoYnRyZnN0dW5lICsgMHhlZGI1
-KQ0KPj4+Pj4+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-RUxGIG9iamVjdCBiaW5hcnkNCj4+Pj4+PiBhcmNoaXRlY3R1cmU6IEFNRCB4ODYtNjQNCj4+Pj4+
-Pg0KPj4+Pj4+DQo+Pj4+Pj4g4p2vIGJ0cmZzdHVuZSAtLWNvbnZlcnQtZnJvbS1ibG9jay1ncm91
-cC10cmVlIC9kZXYvc2RhDQo+Pj4+Pj4gRVJST1I6IGZpbGVzeXN0ZW0gZG9lc24ndCBoYXZlIGJs
-b2NrLWdyb3VwLXRyZWUgZmVhdHVyZQ0KPj4+Pj4+DQo+Pj4+Pj4NCj4+Pj4+PiDina8gbW91bnQg
-L2Rldi9zZGEgL3N0b3JhZ2UvYnRyZnMgLW8gcm8NCj4+Pj4+PiBtb3VudDogL3N0b3JhZ2UvYnRy
-ZnM6IHdyb25nIGZzIHR5cGUsIGJhZCBvcHRpb24sIGJhZCBzdXBlcmJsb2NrIG9uDQo+Pj4+Pj4g
-L2Rldi9zZGEsIG1pc3NpbmcgY29kZXBhZ2Ugb3IgaGVscGVyIHByb2dyYW0sIG9yIG90aGVyIGVy
-cm9yLg0KPj4+Pj4+ICDCoMKgwqDCoMKgwqDCoMKgIGRtZXNnKDEpIG1heSBoYXZlIG1vcmUgaW5m
-b3JtYXRpb24gYWZ0ZXIgZmFpbGVkIG1vdW50IHN5c3RlbQ0KPj4+Pj4+IGNhbGwuDQo+Pj4+Pj4N
-Cj4+Pj4+PiBTZXAgMTkgMTc6MTg6MjMgZWxzaW5raSBrZXJuZWw6IEJUUkZTIGluZm8gKGRldmlj
-ZSBzZGEpOiB1c2luZyBjcmMzMmMNCj4+Pj4+PiAoY3JjMzJjLWdlbmVyaWMpIGNoZWNrc3VtIGFs
-Z29yaXRobQ0KPj4+Pj4+IFNlcCAxOSAxNzoxODoyMyBlbHNpbmtpIGtlcm5lbDogQlRSRlMgZXJy
-b3IgKGRldmljZSBzZGEpOg0KPj4+Pj4+IHVucmVjb2duaXplZA0KPj4+Pj4+IG9yIHVuc3VwcG9y
-dGVkIHN1cGVyIGZsYWc6IDI3NDg3NzkwNjk0NA0KPj4+Pj4+IFNlcCAxOSAxNzoxODoyMyBlbHNp
-bmtpIGtlcm5lbDogQlRSRlMgZXJyb3IgKGRldmljZSBzZGEpOiBzdXBlcmJsb2NrDQo+Pj4+Pj4g
-Y29udGFpbnMgZmF0YWwgZXJyb3JzDQo+Pj4+Pj4gU2VwIDE5IDE3OjE4OjIzIGVsc2lua2kga2Vy
-bmVsOiBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYSk6IG9wZW5fY3RyZWUNCj4+Pj4+PiBmYWlsZWQN
-Cj4+Pj4+Pg0KPj4+Pj4+DQo+Pj4+Pj4g4p2vIGJ0cmZzdHVuZSAtLWNvbnZlcnQtdG8tYmxvY2st
-Z3JvdXAtdHJlZSAvZGV2L3NkYQ0KPj4+Pj4+IEVSUk9SOiBmYWlsZWQgdG8gZmluZCBibG9jayBn
-cm91cCBmb3IgYnl0ZW5yIDIwMTk2Mjg1MzQ5ODg4DQo+Pj4+Pg0KPj4+Pj4gVGhpcyBpcyB0aGUg
-Y29ycmVjdCB3YXkgdG8gcmVzdW1lIHRoZSBmYWlsZWQgY29udmVyc2lvbi4NCj4+Pj4+DQo+Pj4+
-PiBCdXQgYnkgc29tZWhvdyB0aGUgYmxvY2sgZ3JvdXAgaXRlbSBzZWVtcyB0byBiZSBtaXNzaW5n
-IGZyb20gYm90aCBvbGQNCj4+Pj4+IGFuZCBuZXcgdHJlZXMuDQo+Pj4+Pg0KPj4+Pj4gTWluZCB0
-byB0ZXN0IGlmIHRoZSBhdHRhY2hlZCBwYXRjaCBjYW4gaGVscD8NCj4+Pj4+DQo+Pj4+Pg0KPj4+
-Pj4NCj4+Pj4+PiBFUlJPUjogZmFpbGVkIHRvIGNvbnZlcnQgdGhlIGZpbGVzeXN0ZW0gdG8gYmxv
-Y2sgZ3JvdXAgdHJlZSBmZWF0dXJlDQo+Pj4+Pj4gZXh0ZW50IGJ1ZmZlciBsZWFrOiBzdGFydCAx
-NzgyNTU3NjYzMjMyMCBsZW4gMTYzODQNCj4+Pj4+Pg0KPj4+Pj4+IOKdryBidHJmcyBmaWxlc3lz
-dGVtIHNob3cNCj4+Pj4+PiBMYWJlbDogbm9uZcKgIHV1aWQ6IDVhNTgzZDM1LTNlYjItNDEwYi05
-MDQ0LTFhYzg3YTA2MjI0Nw0KPj4+Pj4+ICDCoMKgwqDCoMKgwqDCoMKgwqAgVG90YWwgZGV2aWNl
-cyAzIEZTIGJ5dGVzIHVzZWQgOS41M1RpQg0KPj4+Pj4+ICDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2
-aWTCoMKgwqAgMSBzaXplIDMuNjRUaUIgdXNlZCAzLjY0VGlCIHBhdGggL2Rldi9zZGENCj4+Pj4+
-PiAgwqDCoMKgwqDCoMKgwqDCoMKgIGRldmlkwqDCoMKgIDIgc2l6ZSAzLjY0VGlCIHVzZWQgMy42
-NFRpQiBwYXRoIC9kZXYvc2RjDQo+Pj4+Pj4gIMKgwqDCoMKgwqDCoMKgwqDCoCBkZXZpZMKgwqDC
-oCAzIHNpemUgMy42NFRpQiB1c2VkIDMuNjRUaUIgcGF0aCAvZGV2L3NkZA0KPj4+Pj4+DQo+Pj4+
-Pj4g4p2vIGJ0cmZzIGNoZWNrIC0tbW9kZSBsb3dtZW0gL2Rldi9zZGENCj4+Pj4+PiBPcGVuaW5n
-IGZpbGVzeXN0ZW0gdG8gY2hlY2suLi4NCj4+Pj4+PiBDaGVja2luZyBmaWxlc3lzdGVtIG9uIC9k
-ZXYvc2RhDQo+Pj4+Pj4gVVVJRDogNWE1ODNkMzUtM2ViMi00MTBiLTkwNDQtMWFjODdhMDYyMjQ3
-DQo+Pj4+Pj4gWzEvN10gY2hlY2tpbmcgcm9vdCBpdGVtcw0KPj4+Pj4+IFsyLzddIGNoZWNraW5n
-IGV4dGVudHMNCj4+Pj4+PiBFUlJPUjogY2h1bmsgWzIwMTk3MzU5MDkxNzEyIDIwMTk4NDMyODMz
-NTM2KSBkb2Vzbid0IGhhdmUgcmVsYXRlZA0KPj4+Pj4+IGJsb2NrDQo+Pj4+Pj4gZ3JvdXAgaXRl
-bQ0KPj4+Pj4gWy4uLl0+IEVSUk9SOiBjaHVuayBbMjA2NzQwODgzMzc0MDggMjA2NzQwOTY3MjYw
-MTYpIGRvZXNuJ3QgaGF2ZQ0KPj4+Pj4gcmVsYXRlZCBibG9jaw0KPj4+Pj4+IGdyb3VwIGl0ZW0N
-Cj4+Pj4+DQo+Pj4+PiBUaGlzIHNob3dzIG1vc3Qgb2YgdGhlIGJsb2NrIGdyb3VwcyBoYXZlIGJl
-ZW4gY29udmVydGVkLg0KPj4+Pj4gSG9wZSB0aGUgcGF0Y2ggY2FuIGZpbmlzaCB0aGUgY29udmVy
-c2lvbi4NCj4+Pj4+DQo+Pj4+PiBUaGFua3MsDQo+Pj4+PiBRdQ0KPj4+Pj4+DQo+Pj4+Pj4NCj4+
-Pj4+PiBteSBzeXN0ZW0gc3BlY3MgYXJlOg0KPj4+Pj4+IEFNRCBQaGVub20odG0pIElJIFg0IDk2
-NSBQcm9jZXNzb3IgQDM0MDBNSHoNCj4+Pj4+PiA4R0IgUkFNDQo+Pj4+Pj4NCj4+Pj4+PiDina8g
-dW5hbWUgLXINCj4+Pj4+PiA2LjQuOS1hcmNoMS0xDQo+Pj4+Pj4NCj4+Pj4+Pg0KPj4+Pg0KPiAN
-Cj4gDQo=
+
+On 27/9/2023 11:44 μ.μ., Qu Wenruo wrote:
+>
+>
+> On 2023/9/28 00:05, Konstantinos Skarlatos wrote:
+>>
+>> On 26/09/2023 12:21 πμ, Qu Wenruo wrote:
+>>>
+>>>
+>>> On 2023/9/23 07:16, Qu Wenruo wrote:
+>>>>
+>>>>
+>>>> On 2023/9/22 19:02, Konstantinos Skarlatos wrote:
+>>>>> Hello Qu,
+>>>>> thank you for your quick answer!
+>>>>> using your patch, i now get this:
+>>>>>
+>>>>> ❯ ./btrfstune --convert-to-block-group-tree /dev/sda
+>>>>> ERROR: Corrupted fs, no valid METADATA block group found
+>>>>
+>>>> Mind to dump the involved trees by:
+>>>>
+>>>>    # btrfs ins dump-tree -t extent /dev/sda
+>>>
+>>> How stupid I'm... That tree can be super large.
+>>>
+>>> Would you mind to dump it using the following command?
+>>>
+>>>   # btrfs ins dump-tree -t extent test.img |\
+>>>     grep "item .* BLOCK_GROUP_ITEM "
+>>>
+>>> This should greatly reduce the size while still get what I need.
+>>>
+>>> Thanks,
+>>> Qu
+>> Hi Qu,
+>> Here are the two dumps - much smaller now :)
+>>
+>> btrfs ins dump-tree -t 11 /dev/sda  > dump2.txt
+>> btrfs ins dump-tree -t extent /dev/sda | grep "item .* BLOCK_GROUP_ITEM
+>> " > dump3.txt
+>
+> Good news, the block groups items are still there for the old extent 
+> tree. Only the data block group items (which have a larger bytenr) are 
+> converted to block group tree.
+> And the conversion is indeed in bytenr order correctly.
+>
+> I'll need to investigate the reason why open_ctree() doesn't read the 
+> old block group items from the old tree.
+
+Thanks Qu for the good news!
+
+
+kind regards,
+
+
+>
+> Thanks,
+> Qu
+>>
+>> Kind regards,
+>> Konstantinos Skarlatos
+>>>>
+>>>> And
+>>>>
+>>>>    # btrfs ins dump-tree -t 11 /dev/sda
+>>>>
+>>>>
+>>>> Considering the code converting a block group, there should never be
+>>>> a missing block group (either in the old or the new tree).
+>>>> I think there may be something wrong with the code reading both trees.
+>>>>
+>>>> Thanks,
+>>>> Qu
+>>>>> ERROR: failed to delete block group item from the old root: -117
+>>>>> ERROR: failed to convert the filesystem to block group tree feature
+>>>>> ERROR: btrfstune failed
+>>>>> extent buffer leak: start 17825576632320 len 16384
+>>>>>
+>>>>> On 22/09/2023 12:06 π.μ., Qu Wenruo wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 2023/9/21 22:57, Konstantinos Skarlatos wrote:
+>>>>>>> Hi all,
+>>>>>>> i tried to convert my BTRFS filesystem to block-group-tree but it
+>>>>>>> segfaulted and now the fs is not mountable.
+>>>>>>>
+>>>>>>> ❯ btrfstune --convert-to-block-group-tree /dev/sda
+>>>>>>> [1]    174047 segmentation fault (core dumped) btrfstune
+>>>>>>> --convert-to-block-group-tree /dev/sda
+>>>>>>>
+>>>>>>>
+>>>>>>> [2531715.190802] btrfstune[174047]: segfault at 1f ip
+>>>>>>> 000055ec409fd198
+>>>>>>> sp 00007ffd0a772eb0 error 4 in btrfstune[55ec409d6000+6a000]
+>>>>>>> likely on
+>>>>>>> CPU 3 (core 2, socket 0)
+>>>>>>> [2531715.190818] Code: 40 00 f3 0f 1e fa 41 56 41 55 49 89 fd 41
+>>>>>>> 54 49
+>>>>>>> 89 f4 55 89 d5 53 48 8b 5f 68 49 89 ee 48 85 db 74 3f 48 8d 74 35
+>>>>>>> 00 0f
+>>>>>>> 1f 00 <48> 8b 43 20 48 8b 4b 28 48 01 c1 49 39 cc 0f 83 8c 00 00 00
+>>>>>>> 48 39
+>>>>>>>
+>>>>>>> [174131]: Process 174047 (btrfstune) of user 0 dumped core.
+>>>>>>>
+>>>>>>> Stack trace of
+>>>>>>> thread
+>>>>>>> 174047:
+>>>>>>> #0
+>>>>>>> 0x000055ec409fd198
+>>>>>>> alloc_extent_buffer (btrfstune + 0x34198)
+>>>>>>> #1
+>>>>>>> 0x000055ec409ee4f5
+>>>>>>> read_tree_block (btrfstune + 0x254f5)
+>>>>>>> #2
+>>>>>>> 0x000055ec409db5a6
+>>>>>>> read_node_slot (btrfstune + 0x125a6)
+>>>>>>> #3
+>>>>>>> 0x000055ec409e6e2d
+>>>>>>> n/a (btrfstune + 0x1de2d)
+>>>>>>> #4
+>>>>>>> 0x000055ec409e8a4d
+>>>>>>> n/a (btrfstune + 0x1fa4d)
+>>>>>>> #5
+>>>>>>> 0x000055ec409def01
+>>>>>>> btrfs_search_slot (btrfstune + 0x15f01)
+>>>>>>> #6
+>>>>>>> 0x000055ec409e9c79
+>>>>>>> btrfs_insert_empty_items (btrfstune + 0x20c79)
+>>>>>>> #7
+>>>>>>> 0x000055ec40a0090c
+>>>>>>> n/a (btrfstune + 0x3790c)
+>>>>>>> #8
+>>>>>>> 0x000055ec40a05185
+>>>>>>> n/a (btrfstune + 0x3c185)
+>>>>>>> #9
+>>>>>>> 0x000055ec40a05c75
+>>>>>>> add_to_free_space_tree (btrfstune + 0x3cc75)
+>>>>>>
+>>>>>> There seems to be something wrong with free space tree code here.
+>>>>>> Not sure which part is causing the problem, the fst or the 
+>>>>>> conversion
+>>>>>> part.
+>>>>>>
+>>>>>>> #10
+>>>>>>> 0x000055ec40a3ec49
+>>>>>>> n/a (btrfstune + 0x75c49)
+>>>>>>> #11
+>>>>>>> 0x000055ec409fb52a
+>>>>>>> btrfs_run_delayed_refs (btrfstune + 0x3252a)
+>>>>>>> #12
+>>>>>>> 0x000055ec40a13091
+>>>>>>> btrfs_commit_transaction (btrfstune + 0x4a091)
+>>>>>>> #13
+>>>>>>> 0x000055ec409dcfdd
+>>>>>>> convert_to_bg_tree (btrfstune + 0x13fdd)
+>>>>>>> #14
+>>>>>>> 0x000055ec409d640a
+>>>>>>> main (btrfstune + 0xd40a)
+>>>>>>> #15
+>>>>>>> 0x00007f44ace27cd0
+>>>>>>> n/a (libc.so.6 + 0x27cd0)
+>>>>>>> #16
+>>>>>>> 0x00007f44ace27d8a
+>>>>>>> __libc_start_main (libc.so.6 + 0x27d8a)
+>>>>>>> #17
+>>>>>>> 0x000055ec409d7db5
+>>>>>>> _start (btrfstune + 0xedb5)
+>>>>>>> ELF object binary
+>>>>>>> architecture: AMD x86-64
+>>>>>>>
+>>>>>>>
+>>>>>>> ❯ btrfstune --convert-from-block-group-tree /dev/sda
+>>>>>>> ERROR: filesystem doesn't have block-group-tree feature
+>>>>>>>
+>>>>>>>
+>>>>>>> ❯ mount /dev/sda /storage/btrfs -o ro
+>>>>>>> mount: /storage/btrfs: wrong fs type, bad option, bad superblock on
+>>>>>>> /dev/sda, missing codepage or helper program, or other error.
+>>>>>>>           dmesg(1) may have more information after failed mount 
+>>>>>>> system
+>>>>>>> call.
+>>>>>>>
+>>>>>>> Sep 19 17:18:23 elsinki kernel: BTRFS info (device sda): using 
+>>>>>>> crc32c
+>>>>>>> (crc32c-generic) checksum algorithm
+>>>>>>> Sep 19 17:18:23 elsinki kernel: BTRFS error (device sda):
+>>>>>>> unrecognized
+>>>>>>> or unsupported super flag: 274877906944
+>>>>>>> Sep 19 17:18:23 elsinki kernel: BTRFS error (device sda): 
+>>>>>>> superblock
+>>>>>>> contains fatal errors
+>>>>>>> Sep 19 17:18:23 elsinki kernel: BTRFS error (device sda): 
+>>>>>>> open_ctree
+>>>>>>> failed
+>>>>>>>
+>>>>>>>
+>>>>>>> ❯ btrfstune --convert-to-block-group-tree /dev/sda
+>>>>>>> ERROR: failed to find block group for bytenr 20196285349888
+>>>>>>
+>>>>>> This is the correct way to resume the failed conversion.
+>>>>>>
+>>>>>> But by somehow the block group item seems to be missing from both 
+>>>>>> old
+>>>>>> and new trees.
+>>>>>>
+>>>>>> Mind to test if the attached patch can help?
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>> ERROR: failed to convert the filesystem to block group tree feature
+>>>>>>> extent buffer leak: start 17825576632320 len 16384
+>>>>>>>
+>>>>>>> ❯ btrfs filesystem show
+>>>>>>> Label: none  uuid: 5a583d35-3eb2-410b-9044-1ac87a062247
+>>>>>>>            Total devices 3 FS bytes used 9.53TiB
+>>>>>>>            devid    1 size 3.64TiB used 3.64TiB path /dev/sda
+>>>>>>>            devid    2 size 3.64TiB used 3.64TiB path /dev/sdc
+>>>>>>>            devid    3 size 3.64TiB used 3.64TiB path /dev/sdd
+>>>>>>>
+>>>>>>> ❯ btrfs check --mode lowmem /dev/sda
+>>>>>>> Opening filesystem to check...
+>>>>>>> Checking filesystem on /dev/sda
+>>>>>>> UUID: 5a583d35-3eb2-410b-9044-1ac87a062247
+>>>>>>> [1/7] checking root items
+>>>>>>> [2/7] checking extents
+>>>>>>> ERROR: chunk [20197359091712 20198432833536) doesn't have related
+>>>>>>> block
+>>>>>>> group item
+>>>>>> [...]> ERROR: chunk [20674088337408 20674096726016) doesn't have
+>>>>>> related block
+>>>>>>> group item
+>>>>>>
+>>>>>> This shows most of the block groups have been converted.
+>>>>>> Hope the patch can finish the conversion.
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Qu
+>>>>>>>
+>>>>>>>
+>>>>>>> my system specs are:
+>>>>>>> AMD Phenom(tm) II X4 965 Processor @3400MHz
+>>>>>>> 8GB RAM
+>>>>>>>
+>>>>>>> ❯ uname -r
+>>>>>>> 6.4.9-arch1-1
+>>>>>>>
+>>>>>>>
+>>>>>
+>>
+>>
