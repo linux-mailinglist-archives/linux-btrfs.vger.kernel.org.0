@@ -2,69 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2AE7B02F7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 13:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3588D7B06A6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 16:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbjI0LaY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Sep 2023 07:30:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
+        id S232220AbjI0OUZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Sep 2023 10:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbjI0LaX (ORCPT
+        with ESMTP id S232226AbjI0OTq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:30:23 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68705F3
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 04:30:22 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qlSkE-0003a8-UQ; Wed, 27 Sep 2023 13:30:18 +0200
-Message-ID: <40003db4-6414-4446-aca1-a4808519aa45@leemhuis.info>
-Date:   Wed, 27 Sep 2023 13:30:18 +0200
+        Wed, 27 Sep 2023 10:19:46 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF477CD4
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 07:19:40 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c18b0569b6so549201fa.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 07:19:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695824379; x=1696429179; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Wwk46okUDVQfnnelgDDAXJI2PyNHcNwKe3ka13udWbU=;
+        b=DeI+ndmzygXiV26g14+sM5/i8LsgL9CgDy9VB19Br8mLYRZAuIXT5fRRQQG6dlR8uL
+         ZHHEpTz9ZokFgwqp34n75yS1PY5jIPS2kExh12XhknOQ2eKCYOv28dsCXeJAXJsi1HEl
+         F2Zx2jmfkSiekVnLkJ+WFP/RjHCF0P4hSSv/TEmiFoZUevCIhKJiTrNv3PuTvlSLSujz
+         Wf0VyalzJuC9m/i5NNQ2Jq1nDpP2QrA8a1dJThFB6+d4PeMeHZ2KUcdfKMEpuuI5ak06
+         ZG9/SXQPZ7P5UXbdQF7zqfmdxHWvYx4R5uZ/etWrlX8CR5WPQ2foeStaY5DOJOnP6vcl
+         LLCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695824379; x=1696429179;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wwk46okUDVQfnnelgDDAXJI2PyNHcNwKe3ka13udWbU=;
+        b=OYHkachzc+tnKbs3YUl3Tduna3bbP7l+vhG9Jn4m/e43RXqk+RoKccQ33YpKmnIHoR
+         i/DbJMzZqNdOnSbSCS5q5KolqstUe5yB7wOh+4wr1qhBrJxLU1QHiKVFDxJA2sM3vJvL
+         mMbb8zjsxVnNrrOmUvfWPcEZkuqU67bqEwJ7/8sdFBWDeFgeK2rd+W0PCl5X/kQUgUh8
+         z60coihc8mqGLtT8Y1rFu6OkYH5dVYosdZbDHtx/mm5PygGJbd7LKCN01TUr/RiR+0Jy
+         UEc3TA+AtkuQHA7H5/NIcCMUGXdAYZ3+hPtWU0xbcq1Un5tadwZL9quZg9f1zbC6PfTi
+         IEtQ==
+X-Gm-Message-State: AOJu0Yydg67JIDnkStzgr+SDkvVoP0AXRV26Emp5Qx7mv6VFWO8AHa6k
+        Xq6qB39fO+Q2mDFuwQPuJbvG1w==
+X-Google-Smtp-Source: AGHT+IExVCqrFIxKzo43T8FMa/9T5rz6/xdccYRyI4cqxFk27k3RqgKqbk6x0v1Y5TMyg8NtKFdEkg==
+X-Received: by 2002:a05:651c:3cf:b0:2b6:cd7f:5ea8 with SMTP id f15-20020a05651c03cf00b002b6cd7f5ea8mr1801740ljp.1.1695824378667;
+        Wed, 27 Sep 2023 07:19:38 -0700 (PDT)
+Received: from [172.20.13.88] ([45.147.210.162])
+        by smtp.gmail.com with ESMTPSA id mh2-20020a170906eb8200b00992b2c55c67sm9370253ejb.156.2023.09.27.07.19.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 07:19:37 -0700 (PDT)
+Message-ID: <9cc59d88-4b77-4e56-ae54-737baca1d435@kernel.dk>
+Date:   Wed, 27 Sep 2023 08:19:36 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs write-bandwidth performance regression of 6.5-rc4/rc3
-Content-Language: en-US, de-DE
-To:     Chris Mason <clm@meta.com>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Wang Yugui <wangyugui@e16-tech.com>
-References: <4108c514-77ff-a247-d6e1-2c12a5dea295@leemhuis.info>
- <706df63f-ec5b-457a-b0ab-2d18816e3911@leemhuis.info>
- <20230912072057.C1F5.409509F4@e16-tech.com>
- <34cbea07-8049-4089-a0cc-79d6c423c4f5@leemhuis.info>
- <6ba3e137-ba01-4f29-b0f2-bfc9afcffce8@leemhuis.info>
- <9b98c3c1-2915-2a04-e27a-defb739832a0@meta.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <9b98c3c1-2915-2a04-e27a-defb739832a0@meta.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v4 0/29] block: Make blkdev_get_by_*() return handle
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+        Alasdair Kergon <agk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anna Schumaker <anna@kernel.org>, Chao Yu <chao@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, Gao Xiang <xiang@kernel.org>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Joern Engel <joern@lazybastard.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-mm@kvack.org,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-xfs@vger.kernel.org,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Minchan Kim <minchan@kernel.org>, ocfs2-devel@oss.oracle.com,
+        reiserfs-devel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Song Liu <song@kernel.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        target-devel@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        xen-devel@lists.xenproject.org
+References: <20230818123232.2269-1-jack@suse.cz>
+Content-Language: en-US
+In-Reply-To: <20230818123232.2269-1-jack@suse.cz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1695814222;f2b72d26;
-X-HE-SMSGID: 1qlSkE-0003a8-UQ
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 26.09.23 19:18, Chris Mason wrote:
-> On 9/26/23 6:55 AM, Thorsten Leemhuis wrote:
->> Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
->> for once, to make this easily accessible to everyone.
->>
->> Christoph, I'm sorry to annoy you, but things look stalled here: it
->> seems the Btrfs developer don't care or simply have no idea what might
->> be causing this. So how do we get this running again? Or was some
->> progress made and I just missed it?
-> 
-> I've been trying to reproduce with the hardware I have on hand, but
-> unfortunately it all loves the change.  I'll take another pass.
+On Wed, Sep 27, 2023 at 3:34?AM Jan Kara <jack@suse.cz> wrote:
+>
+> Hello,
+>
+> this is a v3 of the patch series which implements the idea of blkdev_get_by_*()
 
-Many thx! Ciao, Thorsten
+v4?
+
+> calls returning bdev_handle which is then passed to blkdev_put() [1]. This
+> makes the get and put calls for bdevs more obviously matching and allows us to
+> propagate context from get to put without having to modify all the users
+> (again!). In particular I need to propagate used open flags to blkdev_put() to
+> be able count writeable opens and add support for blocking writes to mounted
+> block devices. I'll send that series separately.
+>
+> The series is based on Btrfs tree's for-next branch [2] as of today as the
+> series depends on Christoph's changes to btrfs device handling.  Patches have
+> passed some reasonable testing - I've tested block changes, md, dm, bcache,
+> xfs, btrfs, ext4, swap. More testing or review is always welcome. Thanks! I've
+> pushed out the full branch to:
+>
+> git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git bdev_handle
+>
+> to ease review / testing. Christian, can you pull the patches to your tree
+> to get some exposure in linux-next as well? Thanks!
+
+For the block bits:
+
+Acked-by: Jens Axboe <axboe@kernel.dk>
+
+-- 
+Jens Axboe
+
