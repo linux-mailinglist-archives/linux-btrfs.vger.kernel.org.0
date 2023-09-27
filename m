@@ -2,272 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 125487AF9DE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 07:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCBF7AFA49
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 07:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbjI0FQ4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Sep 2023 01:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
+        id S229919AbjI0FrY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Sep 2023 01:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjI0FQN (ORCPT
+        with ESMTP id S229909AbjI0Fqx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Sep 2023 01:16:13 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597B94234
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Sep 2023 21:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1695790422; x=1696395222; i=quwenruo.btrfs@gmx.com;
- bh=21qOmgf8DiJ9HyZcUmHmMG4DgkJ0Yw8htj9GgTD/sc0=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=BKzXp5BImH1jIH4MuFHHoZwIPEZ1vmmwBiLqOUw0fdZhIDmq54qvn78tS5V0uAX6fVz82KikdNQ
- +Ezj00s/5lWDgEHdOuYRWMnnqiuHBDMeyyfOCNgs17UnmhEjOP2so0nOVFuTy7w4YgGqf7qRB3Zuy
- F+X1dHWUWIAcGXTwSZSQUhT4R9TOVxo4ausZtKlRl7XCoxQTr9pGsSaZ2YranDxPn7b8V3L0+QCco
- ISXnBJ+kQOU0/v7SLvhWHrBdBOJT1V4CONH2gX7cODnKFPSFGXtclPFmREAu1iagDe1AW3LEOBxxC
- spEKnHUGAWhKsuh6/SwTDJahptjUqcH94IZQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M9Wuq-1qi2d72zsS-005cBY; Wed, 27
- Sep 2023 06:53:42 +0200
-Message-ID: <4cb27e5b-2903-4079-8e72-d9db2f19ced7@gmx.com>
-Date:   Wed, 27 Sep 2023 14:23:38 +0930
+        Wed, 27 Sep 2023 01:46:53 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC37FCFB;
+        Tue, 26 Sep 2023 22:36:58 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c328b53aeaso92557875ad.2;
+        Tue, 26 Sep 2023 22:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695793018; x=1696397818; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=C5K+YRG5hEOKPK/kmH64oQd5ruJEAzi5Tg3xBRrxYzk=;
+        b=B0K7lAp1JwVX/J0r3BdSJrcoFedWjtfaWNKJzid9PR34woY9v4ezw0mAHT2AB4+7P8
+         62vL5ue4nmE9mwsugbR9QTv/PL6AhRxVILcRmhqqE0T0WP7pSWZJlG/3WOftiAQgCoJn
+         6++cBrymicbP1lJOZ4ILf6D9h5gz64lkAmrTUMQuaXMz6YGDwoNL1NqlIC66MnR3h16/
+         7MFcP7pvbo2u8jMOvQPwTTq4YxU6zEYDSSlhE9MjgMVEoH0ZMt3I3te6gkl8BKdkivqc
+         r58DDkbj28f+JhESGxWP+GtVv7w9bVZfOXJLqRGUR6PaqHDrEj5DqaBA1HeahtQaidm1
+         8eEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695793018; x=1696397818;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C5K+YRG5hEOKPK/kmH64oQd5ruJEAzi5Tg3xBRrxYzk=;
+        b=WhDcjHwswPgkZhdLUEe79jxZG9Az3Reh/hpVHv+olc+lz++iX1VA+OcIuYSwBb14mA
+         tLdG9t9NGzMMXMPcslxMayraj/IkQYB6pNwmZlNt2Q0JquNLR741WVuXuyEAAVTTNzw9
+         iDAWbwhXmCKJvp9Tb7SV5Tk9irnAeAev73c3TbguKxxSFlmzm0mz3MQJNi4ybJF2Ol3v
+         5BBzJMl6ogRKs0IjI23v+Mm1xWTtta/ORzptCAVCMegjQ28Hbq2n2FdZHKYwbrlaHNef
+         cJxvtQ1ZYevnK+jhlY2GLSccPRRZWOvt5cNMrLY2CYiNFNx1x6vH1V7KPKjjRYeUUGI2
+         ikrA==
+X-Gm-Message-State: AOJu0YxAlnD7/XYvATR0VO0pikeJRmxSNYQfo1LTFN7A1hoX/6qEfc6t
+        Ld6vA32AcEtduoFu/TwzJD4=
+X-Google-Smtp-Source: AGHT+IFN4heEvUer+8gFJIklOaZkFFkAm1hR3qOkt+vqDOUafnU5Y4o6XGI+3Aqa5UhYIYKD317NGA==
+X-Received: by 2002:a17:902:e549:b0:1bf:2e5c:7367 with SMTP id n9-20020a170902e54900b001bf2e5c7367mr1042791plf.42.1695793018271;
+        Tue, 26 Sep 2023 22:36:58 -0700 (PDT)
+Received: from ?IPV6:ddf2:f99b:21f4::3? ([2401:5a0:1000:1e::a])
+        by smtp.gmail.com with ESMTPSA id jh1-20020a170903328100b001c60635c13esm7558557plb.115.2023.09.26.22.36.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Sep 2023 22:36:57 -0700 (PDT)
+Message-ID: <b290c417-de1b-4af8-9f5e-133abb79580d@gmail.com>
+Date:   Wed, 27 Sep 2023 13:36:52 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Deleting large amounts of data causes system freeze due to OOM.
-To:     fdavidl073rnovn@tutanota.com
-Cc:     Qu Wenruo <wqu@suse.com>, Linux Btrfs <linux-btrfs@vger.kernel.org>
-References: <NeBMdyL--3-9@tutanota.com>
- <4b8a10e4-4df8-4d96-9c6f-fbbe85c64575@suse.com> <NeGkwyI--3-9@tutanota.com>
- <bb668050-7d43-467f-8648-8bc5f2c314f1@gmx.com> <NeKx2tK--3-9@tutanota.com>
- <NfJJCdh--3-9@tutanota.com>
+From:   dianlujitao@gmail.com
+Subject: Re: Fwd: kernel bug when performing heavy IO operations
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Filesystem Development <linux-fsdevel@vger.kernel.org>
+References: <f847bc14-8f53-0547-9082-bb3d1df9ae96@gmail.com>
+ <ZOrG5698LPKTp5xM@casper.infradead.org>
+ <7d8b4679-5cd5-4ba1-9996-1a239f7cb1c5@gmail.com>
+ <ZOs5j93aAmZhrA/G@casper.infradead.org>
 Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <NfJJCdh--3-9@tutanota.com>
+In-Reply-To: <ZOs5j93aAmZhrA/G@casper.infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9bwhY5mFhUiHal3DVjYVWwyvM1reUeSTvWuxh8BSPawNI9XPB0v
- 8s3cOvarjLgrRhQD/TXdFKs63FXRhEo017OB2CUY/A9EOPqGfjVs4mrOx0cYcPDBahOpXLk
- CQfh4zPMY+mYWsnxRB0eb0voP7hhIdtSYIAjq8hiy+0ehXJT8LbBGPbO6T+13Ypd6qMOy5p
- CnGtwNa7cnP0mW9Avp7Wg==
-UI-OutboundReport: notjunk:1;M01:P0:afL+o5opzf4=;tNgwbcPqE/fHOksr4LMRsWGNqKy
- 5eWDUg6LcReC5Cfn/EEdKdKgfnZRrHOZdLoLhLR+GdPxexTOWu1Bj430HdYKsY33hxriIJu7f
- 1tl7V3Qu/fAR0vQg7ttCtfQLAK/ycSO+VwH436Gx2gK+27fk3C6ObKIe4I7oyN4c4hELhcPL/
- 2qPpgld12np+1Ca7lsLdnotcfx84iXWtKqsAkyPsiq/tQCBr4OOLKUNME4SCQsXNQIOV8wmLH
- oCXsyh3dMCoQnURf/wJVWpUsP8VS+NpZFAunlXbGbSW+Wu8B1/f3WH5xK8dJIjuT+qtKkmlil
- xjcEf1CyHZJ4gIu0t8PC0Yi4PRocu+i9VSlZX8gAVnJa8zAig48mQntS7TIQvKoWvCLdBEfGf
- yGQsRW8oR1Ag5Qels9sRMYQYPTscLGgV7UTsq9hAtsKSesHpQ5MQa+R/b1nlOr62ZGDPkT7sk
- Ypfe4zYlkRaLUzn6cAGbcJLGa2EdBGLlRrtJEI2bqqfNHljc7gU++KlZQLiTvDLL5ENKQKy+V
- doS/pqzNuicsJSV5m0P/ag0IYAdmWAcMqithfITL3uj6DNu3/U4PDhqDnTqFIwUoo7Mr+zBx3
- +o8xNra4WHY2KU31QfaLTOJv4o0s3Y/fYDEYsypR3dISC05kJTto+Pqi2Wr0zM2QrAIXqH4cC
- ITGOOmm3fDL6kio/rJ+eEn+/sZnlnhT4IlJdQkxrxwL1i9DlJJ77Td6PtCcxwtfupWLHnGonz
- +c7Xn/gWSzGRQTRmHpJLjMeDMERL7NsQEV9ju0SFP2mrLlkpFKePkKQpU0FXYkcsvLgidLnOq
- z7FXvxW4IicCKef6YdiyceItv4wKy/LZ/rr3Il4chwHfxmZ3G9U83enllNzCFHUlgWITL2AC8
- rY156EbWQUaeKAC8wrn5i3C/DYErwc9fT1I/2K9qNIcJeR0IZjjffvl88uxhvDhrzoeTdhVPW
- dbvdqg==
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello, I got some logs with 6.5.4 kernel from the official linux package 
+of Arch, no zen patches this time. Full dmesg is uploaded to 
+https://fars.ee/F1yM and below is a small snippet for your convenience, 
+from which PG_offline is no longer set:
 
+[177850.039441] BUG: Bad page map in process ld.lld pte:8000000edacc4025 
+pmd:147f96067
+[177850.039454] page:000000007415dd6c refcount:22 mapcount:-237 
+mapping:00000000b0c37ca6 index:0x1075 pfn:0xedacc4
+[177850.039460] memcg:ffff9289345d4000
+[177850.039463] aops:btrfs_aops [btrfs] ino:fb2b838 dentry name:"lld"
+[177850.039592] flags: 
+0xaffff9800002056(referenced|uptodate|lru|workingset|private|node=1|zone=2|lastcpupid=0xffff)
+[177850.039597] page_type: 0xffffff12(buddy|0x6d)
+[177850.039602] raw: 0affff9800002056 ffffe7623b6b3148 ffffe7623b6b3088 
+ffff928202a9fc10
+[177850.039605] raw: 0000000000001075 0000000000000001 00000016ffffff12 
+ffff9289345d4000
+[177850.039607] page dumped because: bad pte
+[177850.039608] addr:0000000001275000 vm_flags:08000071 
+anon_vma:0000000000000000 mapping:ffff928202a9fc10 index:1075
+[177850.039612] file:lld fault:filemap_fault mmap:btrfs_file_mmap 
+[btrfs] read_folio:btrfs_read_folio [btrfs]
+[177850.039846] CPU: 40 PID: 2060138 Comm: ld.lld Tainted: G           
+OE      6.5.4-arch2-1 #1 a30a3b4701899b64bf6025fd97642e50bf2dcad4
+[177850.039851] Hardware name: JGINYUE X99-8D3/2.5G Server/X99-8D3/2.5G 
+Server, BIOS 5.11 06/30/2022
+[177850.039853] Call Trace:
+[177850.039857]  <TASK>
+[177850.039864]  dump_stack_lvl+0x47/0x60
+[177850.039871]  print_bad_pte+0x1bc/0x280
+[177850.039879]  ? page_remove_rmap+0x8d/0x260
+[177850.039885]  unmap_page_range+0xa96/0x1150
+[177850.039894]  unmap_vmas+0xf8/0x190
+[177850.039900]  exit_mmap+0xe4/0x310
+[177850.039909]  __mmput+0x3e/0x130
+[177850.039916]  do_exit+0x31c/0xb20
+[177850.039920]  ? futex_wait_queue+0x63/0x90
+[177850.039927]  do_group_exit+0x31/0x80
+[177850.039932]  get_signal+0x9a5/0x9e0
+[177850.039941]  arch_do_signal_or_restart+0x3e/0x270
+[177850.039947]  exit_to_user_mode_prepare+0x185/0x1e0
+[177850.039955]  syscall_exit_to_user_mode+0x1b/0x40
+[177850.039962]  do_syscall_64+0x6c/0x90
+[177850.039969]  ? do_futex+0x128/0x190
+[177850.039973]  ? __x64_sys_futex+0x129/0x1e0
+[177850.039977]  ? switch_fpu_return+0x50/0xe0
+[177850.039986]  ? syscall_exit_to_user_mode+0x2b/0x40
+[177850.039991]  ? do_syscall_64+0x6c/0x90
+[177850.039996]  ? exc_page_fault+0x7f/0x180
+[177850.040002]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+[177850.040009] RIP: 0033:0x7f1851e164ae
+[177850.040056] Code: Unable to access opcode bytes at 0x7f1851e16484.
+[177850.040058] RSP: 002b:00007f18227fbd30 EFLAGS: 00000246 ORIG_RAX: 
+00000000000000ca
+[177850.040063] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 
+00007f1851e164ae
+[177850.040066] RDX: 0000000000000000 RSI: 0000000000000189 RDI: 
+0000000005818134
+[177850.040068] RBP: 0000000000000000 R08: 0000000000000000 R09: 
+00000000ffffffff
+[177850.040070] R10: 0000000000000000 R11: 0000000000000246 R12: 
+0000000000000000
+[177850.040072] R13: 00000000058180e0 R14: 0000000000000000 R15: 
+0000000005818134
+[177850.040078]  </TASK>
+[177850.040112] Disabling lock debugging due to kernel taint
 
-On 2023/9/27 11:16, fdavidl073rnovn@tutanota.com wrote:
->
-> Sep 14, 2023, 23:08 by fdavidl073rnovn@tutanota.com:
->
->>
->> Sep 14, 2023, 05:12 by quwenruo.btrfs@gmx.com:
->>
->>>
->>>
->>> On 2023/9/14 13:08, fdavidl073rnovn@tutanota.com wrote:
->>>
->>>> Sep 13, 2023, 05:55 by wqu@suse.com:
->>>>
+在 2023/8/27 19:54, Matthew Wilcox 写道:
+> On Sun, Aug 27, 2023 at 12:34:54PM +0800, dianlujitao wrote:
+>> 在 2023/8/27 11:45, Matthew Wilcox 写道:
+>>> On Sun, Aug 27, 2023 at 10:20:51AM +0700, Bagas Sanjaya wrote:
+>>>>> When the IO load is heavy (compiling AOSP in my case), there's a chance to crash the kernel, the only way to recover is to perform a hard reset. Logs look like follows:
 >>>>>
->>>>>
->>>>> On 2023/9/13 11:58, fdavidl073rnovn@tutanota.com wrote:
->>>>>
->>>>>> Dear Btrfs Mailing List,
->>>>>>
->>>>>> Full disclosure I reported this on kernel.org but am hoping to get =
-more exposure on the mailing list.
->>>>>>
->>>>>> When I delete several terabytes of data memory usage increases unti=
-l the system becomes entirely unresponsive. This has been an issue for sev=
-eral kernel version since at least 5.19 and continues to be an issue up to=
- 6.5.2-artix1-1. This is on an older computer with several hard drives, ei=
-ght gigabytes of memory, and a four core x86_64 cpu. Slabtop output right =
-before the system becomes unresponsive shows about four gigabytes used by =
-khugepaged_mm_slot and three used by btrfs_extent_map. This happens in ove=
-r the span of a couple minutes and during this time btrfs-transaction is u=
-sing a moderate amount of cpu time.
->>>>>>
->>>>>
->>>>> This looks exactly like something caused by btrfs qgroup.
->>>>>
->>>>> Could you try to disable qgroup to see if it helps?
->>>>> The amount of CPU time and IO of qgroup overhead is directly related=
- to the amount of extent being updated.
->>>>>
->>>>> For normal writes the IO itself would take most of the CPU/memory th=
-us qgroup is not a big deal.
->>>>> But for massive snapshots drop or file deletion qgroup can be too la=
-rge to be handled in just one transaction.
->>>>>
->>>>> For now you can disable the qgroup as a workaround.
->>>>>
->>>>> Thanks,
->>>>> Qu
->>>>>
->>>> I've never enabled quotas and my most recent attempt using the single=
- profile for data was on kernel 6.4 so they would have been disabled by de=
-fault. Running "btrfs qgroup show [path]" returns "ERROR: can't list qgrou=
-ps: quotas not enabled".
->>>>
+>>>>> 8月 25 13:52:23 arch-pc kernel: BUG: Bad page map in process tmux: client  pte:8000000462500025 pmd:b99c98067
+>>>>> 8月 25 13:52:23 arch-pc kernel: page:00000000460fa108 refcount:4 mapcount:-256 mapping:00000000612a1864 index:0x16 pfn:0x462500
+>>>>> 8月 25 13:52:23 arch-pc kernel: memcg:ffff8a1056ed0000
+>>>>> 8月 25 13:52:23 arch-pc kernel: aops:btrfs_aops [btrfs] ino:9c4635 dentry name:"locale-archive"
+>>>>> 8月 25 13:52:23 arch-pc kernel: flags: 0x2ffff5800002056(referenced|uptodate|lru|workingset|private|node=0|zone=2|lastcpupid=0xffff)
+>>>>> 8月 25 13:52:23 arch-pc kernel: page_type: 0xfffffeff(offline)
+>>> This is interesting.  PG_offline is set.
 >>>
->>> OK, at least we can rule out qgroup.
+>>> $ git grep SetPageOffline
+>>> arch/powerpc/platforms/powernv/memtrace.c:              __SetPageOffline(pfn_to_page(pfn));
+>>> drivers/hv/hv_balloon.c:                        __SetPageOffline(pg);
+>>> drivers/hv/hv_balloon.c:                        __SetPageOffline(pg + j);
+>>> drivers/misc/vmw_balloon.c:             __SetPageOffline(page + i);
+>>> drivers/virtio/virtio_mem.c:            __SetPageOffline(page);
+>>> drivers/xen/balloon.c:  __SetPageOffline(page);
+>>> include/linux/balloon_compaction.h:     __SetPageOffline(page);
+>>> include/linux/balloon_compaction.h:     __SetPageOffline(page);
 >>>
->>> Mind to provide more info? Including:
+>>> But there's no indication that this kernel is running under a
+>>> hypervisor:
 >>>
->>> - How many files are involved?
->>> A large file vs a ton of small files have very different workloads.
->>> Any values on the average file size would also help.
+>>>>> 8月 25 13:52:23 arch-pc kernel: Hardware name: JGINYUE X99-8D3/2.5G Server/X99-8D3/2.5G Server, BIOS 5.11 06/30/2022
+>> Yes, I'm running on bare metal hardware.
+>>> So I'd agree with Artem, this looks like bad RAM.
 >>>
->>> - Is the fs using v1 or v2 space cache?
->>> - Do the deleted files have any snapshot/reflink?
->>> - Is there any other processes reading the to-be-deleted files?
->>>
->>> One of my concern is the btrfs_extent_map usage, that's mostly used by
->>> regular files as an in-memory cache so that they don't need to lookup
->>> the tree on-disk.
->>>
->>> I just checked the code, evicting an inode won't trigger
->>> btrfs_extent_map usage, it's mostly read/write triggering such
->>> btrfs_extent_map usage.
->>>
->>> Thus there must be something else causing the unexpected
->>> btrfs_extent_map usage.
->>>
->>> Thanks,
->>> Qu
->>>
->>>>
->>>> Sincerely,
->>>> David
->>>>
->> On my latest attempt using the single profile there is about fifteen te=
-rabytes total of space used, around eight hundred and fifty thousand files=
-, over 9000 directories, and there are three very large files (two two ter=
-abyte and one four terabyte). There are also about two terabytes of compre=
-ssed files using zstd at a fifty percent ratio.
-
-The compression is the easily way to create tons of small file extents
-(the limit of a compressed extent is only 128K).
-
-Furthermore, each file extent would need an in-memory structure (struct
-extent_map, for a debug kernel, it's 122 bytes) to cache the contents.
-
-Thus for a 8TiB file with all compressed file extents at their max size
-(pretty common if it's only for backup).
-Then we still have 512M file extents.
-
-Just multiple that by 122, you can see how this go crazy.
-
-But still, if you're only deleting the file, the result shouldn't go
-this crazy, as deleting itself won't try to read the file extents thus
-no such cache.
-
-However as long as we start doing read/write, the cache can go very
-large, especially if you use compress, and only get released when the
-whole inode get released from kernel.
-
-On the other hand, if you go uncompressed data, the maximum file extent
-size is enlarged to 128M (a 1024x increase), thus a huge reduce in the
-number of extents.
-
-In the long run I guess we need some way to release the extent_map when
-low on memory.
-But for now, I'm afraid I don't have better suggestion other than
-turning off compression and defrag the compressed files using newer
-kernel (v6.2 and newer).
-
-In v6.2, there is a patch to prevent defrag from populating the extent
-map cache, thus it won't take all the memory just by defrag.
-And with all those files converted from compression, I believe the
-situation would be greatly improved.
-
-Thanks,
-Qu
-
-
->>
->> The device is using space cache version two, there are no reflink or sn=
-apshots as far as I know and nothing else is reading or happening when thi=
-s occurs. The system idles at about three hundred megabytes of memory used=
- with negligible cpu activity before this happens.
->>
->> For some context the device is currently mounted with compress-force=3D=
-zstd:3 and noatime. The data currently on the device was transferred via s=
-end-receive version two (and was already compressed) as a snapshot but it =
-is the only copy of it on the disk so I am not sure if that counts as a sn=
-apshot. I do not think the snapshot is related because I have deleted a si=
-ngle four terabyte file (from the snapshot) as a test and the memory usage=
- went from about three hundred megabytes to over a gigabyte before going b=
-ack down. I assume that was the same thing but the system just did not run=
- out of memory.
->>
->> Sincerely,
->> David
->>
->>
-> To follow up on this I've tried creating a ten terabyte file then deleti=
-ng it then tried creating approximately ten terabytes of files randomly be=
-tween one and thirty two megabytes then deleting that folder. I tried this=
- both at the root of the btrfs device and inside a subvolume. Each trial d=
-id increase the memory usage by up to one gigabyte at points but did not c=
-ause the system to run out of memory.
->
-> I still believe the cause is that requests are being queued faster than =
-they're completed until there is no memory left so my current thought is t=
-hat this either has something to do with nested directories or my real bac=
-kup is significantly more fragmented. I think either of those possibilitie=
-s might cause significantly more=C2=A0 seeks for the harddrives and slow d=
-own how fast operations are completed causing them to pile up.
->
-> I might try to put together something to make nested directories with lo=
-ts of small files and delete that but otherwise I am out of ideas (I canno=
-t think how I could properly replicate fragmentation easily). If you have =
-any thoughts or things you think it'd be worthwhile to test I would love t=
-o hear them.
->
-> Sincerely,
-> David
+>> I ran memtest86+ 6.20 for a cycle and it passed. However, could an OOM
+>> trigger the bug? e.g., kernel bug fired before the OOM killer has a
+>> chance to start? Just a guess because the last log entry in journalctl
+>> before "BUG" is an hour earlier.
+> The problem is that OOM doesn't SetPageOffline.  The only things that
+> do are hypervisor guest drivers.  So we've got a random bit being
+> cleared, and either that's a stray write which happens to land in
+> the struct page in question, or it's bad hardware.  Since it's a
+> single bit that's being cleared, bad hardware is the most likely
+> explanation, but it's not impossible for there to be a bug that's
+> doing this.  The problem is that it could be almost anything ...
