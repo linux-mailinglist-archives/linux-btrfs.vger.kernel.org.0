@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B347B0B41
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 19:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EA17B0B42
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 19:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbjI0Rp5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Sep 2023 13:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
+        id S229476AbjI0Rp7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Sep 2023 13:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjI0Rp4 (ORCPT
+        with ESMTP id S229473AbjI0Rp6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Sep 2023 13:45:56 -0400
+        Wed, 27 Sep 2023 13:45:58 -0400
 Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42A311D
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 10:45:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8536BF5
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 10:45:57 -0700 (PDT)
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 063EB32009AE;
-        Wed, 27 Sep 2023 13:45:53 -0400 (EDT)
+        by mailout.west.internal (Postfix) with ESMTP id AA7D6320094C;
+        Wed, 27 Sep 2023 13:45:56 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 27 Sep 2023 13:45:54 -0400
+  by compute2.internal (MEProxy); Wed, 27 Sep 2023 13:45:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1695836753; x=
-        1695923153; bh=yFWx4Cwk0irAiOCFjO+5YbO/UedhaVkn1He3LKXHkN4=; b=G
-        GtYeAwvEKFPcdPs+lp0b5Qy1k09VHUqokjwL4btIyG8ygWepTTiNNSPyWsIBitOD
-        P3QG6UWW0M3xIMbUDuWLfDr8eOxQ6vDgSXLX/atpzRRmTM71GBj6n8nXHJRwim7S
-        lAd69wozRIOHK/YO29QzfCnUJQgjRm1S6bApigrLvznSO+I2DFUQ+On3u9HlvwYa
-        hotrFcLQrZwPj8pb/cD7lzlbDLWCsJNLokfNWxCfPI9349lraU8BViJbMHXAkZjG
-        OleX9HJ/W52PcSuUsf7kwKLw9cAhoVAvBuAOa0T7X7i77DSC5aPfVeIJStHuV9ay
-        jfbT6o13sbxFrkMJYcZTA==
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1695836756; x=
+        1695923156; bh=GQZL2z8JNLswgRqQXPROAzG4h6fcUbinjS35PqXh9MA=; b=u
+        +hhppwIE3i1wWCcdYU4UBEs2lab4sh0OpaPraepSR+EIbkjjytuKaXoTjWfumkBs
+        Ua05YG7lOf2+MbyWUfPQIYW+ZDQ/J2wpzwNDUt9sgv9UKCxs101sGWBUANK+hhQ1
+        kLI09ZJpeObEvzAg4EOIcr1qTTfmy2HIu1R3F/IrsueM6jlXgzwXEgzG/aFcJue5
+        P5H9APoTF4PEJb0PD2Nv8PsRAUalb+VltB1CEUao3xUYG8V+dHHv0yYmca4iNWSk
+        TaHFPURU5zU/24eZs3l1To8Yb0ZgIdC570BkwNECew6LoYs8Y/bvrLiOZeBtKwfq
+        /cHWl/OxJuSxjUsYczngw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; t=1695836753; x=1695923153; bh=y
-        FWx4Cwk0irAiOCFjO+5YbO/UedhaVkn1He3LKXHkN4=; b=h47dPcX6I2iBmFxmE
-        r4dlU27wEnY0d4MxFFBdkGVITT8tkZ9McF3VPehdb0hSZJ78o4huaMd2uVseFBJh
-        JtWtEFeLsN8Cd9sjIx7xHS1nx64G6U58VDj2lnlRuHYi4KsEiLTzlwreurIA3LYw
-        JGu3/WB9Hrc2w1S686o8LTQvzrJZEhli+hNDDM4OyOwcMlpxUOxSJgWXYeI1OyxX
-        qmoid6ArWSPI97TFaOsswxJWqaC9ZaUrsGentWwZLt7g0oyYgiY8RxcyBMsyTuA7
-        X8L+vhLXtCb5sbN5waKD7a3ai9sBfdCNYyLY4OdghfLzEtqGsIk1rmBGtM+4dsGd
-        ISYUw==
-X-ME-Sender: <xms:UWoUZQX2qR5ELLdJfBcQTVRl7zRYjQB5HYd_I5piFD3Jhbf0QsKMHg>
-    <xme:UWoUZUla-CuGQ227z8JOMcfoqzQNs8vJdYWncMffJwvs8uMRJ9436HD8yJLmMF8kM
-    u1GPjIpcY__Hv-hk0o>
-X-ME-Received: <xmr:UWoUZUZfiFpzxAH5SJScBysk9AW88MuNpO3ZCz8wrgKuot5WaVBSB6vsqe9IPHRNmAYaRs5lJXqTP-6fyH2_jTKyDY0>
+        :x-me-sender:x-sasl-enc; s=fm2; t=1695836756; x=1695923156; bh=G
+        QZL2z8JNLswgRqQXPROAzG4h6fcUbinjS35PqXh9MA=; b=bmmOQsWeyB00TfAKI
+        Z6Vdt10r+zj9p7Bw3fZBGQclzt++xI8/tUdtbzjmXFtaG6reUl+rDji2WKShNxlP
+        PMLhEs1qkDglrnJJgqXK0yx76oDZAP5pYXfAOWGMmJ1Beg96kEz7p3zPE/XtkWyT
+        6XnSPnkP6uMlehApmcwGYf0Tn0fZhmc7R4wuxlzy6lfEXQiPPebindSaNn1ydcq9
+        CgudoNKCYZx5I9OEKkW+kgogkOByy0BSY6FzmVFXy8AtR3IJlb7CZyyLyIqfDPUJ
+        6dLuvEDlTukzIgMO24/6sq7qGJYOonPf19SuTyPbFiqUgoiwNI+tMUdF7d99tZ00
+        KHAVA==
+X-ME-Sender: <xms:VGoUZdIKN3a9oW_qcp-rgduw1yvnNTvZHkvY2jEqU4xQcdmucRbshg>
+    <xme:VGoUZZJjtiZ8tmdT5tXJ5gWX1yUyBOlFzOGcvV-_Kn94xiFCKpWUx1V7izQay4tnT
+    CrOcehg3fWjbONEutA>
+X-ME-Received: <xmr:VGoUZVvpFbfcjr-uBg8y0t-48mJoRbmvioW-GWz505CrkLoarRUVswtI4D4-56IjA1uFE31d9yroVdd4OcJesFKJ7NI>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdeggdehgecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
@@ -55,18 +55,18 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdeggdehgecutefuodetggdote
     oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
     ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
     rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:UWoUZfXgFN8dxhVGayfzjEv35XavSIH8qEyKvn9_amjEJh0Gx9M8Jg>
-    <xmx:UWoUZamqH9Ja2BgqE1K7Qj6YjonhCA-IaFDJU874CL0qFouuLr6q6w>
-    <xmx:UWoUZUccgk0mC8ysRpyf1noP0zhiFeC64zgfHfAKKCJWG8Ym3fWU5Q>
-    <xmx:UWoUZRvfK8b7x08WiZ1fHQ6iWAbnx4EMW_TId_apfksEi22geYhgWw>
+X-ME-Proxy: <xmx:VGoUZeaJw_JJYCFm8RAzS-se3G0nq_4TI1g_xBNb8jsKDGeNAOj2hA>
+    <xmx:VGoUZUYfctv4IsJMy6tKIinn3lJ9GimpkMCikcV137FSyMN5WlWKNA>
+    <xmx:VGoUZSDRHgERrwU91R-ykIbZVdlFDTjW6lbNEdIFddsQQyA4_e9NeA>
+    <xmx:VGoUZdC2Np3iGP2fTtSDEwOHEPfPZx_C0DTg0Pl0e07Izs-0v62Neg>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Sep 2023 13:45:52 -0400 (EDT)
+ 27 Sep 2023 13:45:55 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 1/8] btrfs-progs: document squotas
-Date:   Wed, 27 Sep 2023 10:46:42 -0700
-Message-ID: <dbf0cd9665b3c8576225f2d9daa047f7d6fa9f1d.1695836680.git.boris@bur.io>
+Subject: [PATCH v3 2/8] btrfs-progs: simple quotas kernel definitions
+Date:   Wed, 27 Sep 2023 10:46:43 -0700
+Message-ID: <88ca4f96ddc75dcb52f15b9b175bb31f6f6a331f.1695836680.git.boris@bur.io>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1695836680.git.boris@bur.io>
 References: <cover.1695836680.git.boris@bur.io>
@@ -81,120 +81,141 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Document the new options in btrfs quota and mkfs.btrfs. Also, add a
-section to the long form qgroups document about squotas.
+Copy over structs, accessors, and constants for simple quotas
 
 Signed-off-by: Boris Burkov <boris@bur.io>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- Documentation/btrfs-quota.rst    |  7 +++-
- Documentation/ch-quota-intro.rst | 59 ++++++++++++++++++++++++++++++++
- Documentation/mkfs.btrfs.rst     |  6 ++++
- 3 files changed, 71 insertions(+), 1 deletion(-)
+ kernel-shared/accessors.h       |  9 +++++++++
+ kernel-shared/ctree.h           |  6 ++++--
+ kernel-shared/uapi/btrfs.h      |  1 +
+ kernel-shared/uapi/btrfs_tree.h | 16 +++++++++++++++-
+ 4 files changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/btrfs-quota.rst b/Documentation/btrfs-quota.rst
-index 04d53ef53..2103130fd 100644
---- a/Documentation/btrfs-quota.rst
-+++ b/Documentation/btrfs-quota.rst
-@@ -47,9 +47,14 @@ SUBCOMMAND
- disable <path>
-         Disable subvolume quota support for a filesystem.
+diff --git a/kernel-shared/accessors.h b/kernel-shared/accessors.h
+index 539c20d09..ab8c2d337 100644
+--- a/kernel-shared/accessors.h
++++ b/kernel-shared/accessors.h
+@@ -379,9 +379,13 @@ static inline u32 btrfs_extent_inline_ref_size(int type)
+ 	if (type == BTRFS_EXTENT_DATA_REF_KEY)
+ 		return sizeof(struct btrfs_extent_data_ref) +
+ 		       offsetof(struct btrfs_extent_inline_ref, offset);
++	if (type == BTRFS_EXTENT_OWNER_REF_KEY)
++		return sizeof(struct btrfs_extent_inline_ref);
+ 	return 0;
+ }
  
--enable <path>
-+enable [options] <path>
-         Enable subvolume quota support for a filesystem.
++BTRFS_SETGET_FUNCS(extent_owner_ref_root_id, struct btrfs_extent_owner_ref, root_id, 64);
++
+ /* struct btrfs_node */
+ BTRFS_SETGET_FUNCS(key_blockptr, struct btrfs_key_ptr, blockptr, 64);
+ BTRFS_SETGET_FUNCS(key_generation, struct btrfs_key_ptr, generation, 64);
+@@ -979,6 +983,9 @@ BTRFS_SETGET_FUNCS(qgroup_status_flags, struct btrfs_qgroup_status_item,
+ 		   flags, 64);
+ BTRFS_SETGET_FUNCS(qgroup_status_rescan, struct btrfs_qgroup_status_item,
+ 		   rescan, 64);
++BTRFS_SETGET_FUNCS(qgroup_status_enable_gen, struct btrfs_qgroup_status_item,
++		   enable_gen, 64);
++
+ BTRFS_SETGET_STACK_FUNCS(stack_qgroup_status_generation,
+ 			 struct btrfs_qgroup_status_item, generation, 64);
+ BTRFS_SETGET_STACK_FUNCS(stack_qgroup_status_version,
+@@ -987,6 +994,8 @@ BTRFS_SETGET_STACK_FUNCS(stack_qgroup_status_flags,
+ 			 struct btrfs_qgroup_status_item, flags, 64);
+ BTRFS_SETGET_STACK_FUNCS(stack_qgroup_status_rescan,
+ 			 struct btrfs_qgroup_status_item, rescan, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_qgroup_status_enable_gen,
++			 struct btrfs_qgroup_status_item, enable_gen, 64);
  
-+        ``Options``
-+
-+	-s|--simple
-+		use simple quotas (squotas) instead of qgroups
-+
- rescan [options] <path>
-         Trash all qgroup numbers and scan the metadata again with the current config.
+ /* btrfs_qgroup_info_item */
+ BTRFS_SETGET_FUNCS(qgroup_info_generation, struct btrfs_qgroup_info_item,
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index 59533879b..bdfebd665 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -103,7 +103,8 @@ static inline u32 __BTRFS_LEAF_DATA_SIZE(u32 nodesize)
+ 	 BTRFS_FEATURE_INCOMPAT_RAID1C34 |		\
+ 	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID |		\
+ 	 BTRFS_FEATURE_INCOMPAT_ZONED |			\
+-	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2)
++	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2 | \
++	 BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA)
+ #else
+ #define BTRFS_FEATURE_INCOMPAT_SUPP			\
+ 	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
+@@ -118,7 +119,8 @@ static inline u32 __BTRFS_LEAF_DATA_SIZE(u32 nodesize)
+ 	 BTRFS_FEATURE_INCOMPAT_NO_HOLES |		\
+ 	 BTRFS_FEATURE_INCOMPAT_RAID1C34 |		\
+ 	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID |		\
+-	 BTRFS_FEATURE_INCOMPAT_ZONED)
++	 BTRFS_FEATURE_INCOMPAT_ZONED | \
++	 BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA)
+ #endif
  
-diff --git a/Documentation/ch-quota-intro.rst b/Documentation/ch-quota-intro.rst
-index 1c1228f86..094a510cd 100644
---- a/Documentation/ch-quota-intro.rst
-+++ b/Documentation/ch-quota-intro.rst
-@@ -188,3 +188,62 @@ but some snapshots for backup purposes are being created by the system.  The
- user's snapshots should be accounted to the user, not the system.  The solution
- is similar to the one from section *Accounting snapshots to the user*, but do
- not assign system snapshots to user's qgroup.
-+
-+Simple Quotas (squotas)
-+^^^^^^^^^^^^^^^^^^^^^^^
-+
-+As detailed in this document, qgroups can handle many complex extent sharing
-+and unsharing scenarios while maintaining an accurate count of exclusive and
-+shared usage. However, this flexibility comes at a cost: many of the
-+computations are global, in the sense that we must count up the number of trees
-+referring to an extent after its references change. This can slow down
-+transaction commits and lead to unacceptable latencies, especially in cases
-+where snapshots scale up.
-+
-+To work around this limitation of qgroups, btrfs also supports a second set of
-+quota semantics: simple quotas or squotas. Squotas fully share the qgroups API
-+and hierarchical model, but do not track shared vs. exclusive usage. Instead,
-+they account all extents to the subvolume that first allocated it. With a bit
-+of new bookkeeping, this allows all accounting decisions to be local to the
-+allocation or freeing operation that deals with the extents themselves, and
-+fully avoids the complex and costly back-reference resolutions.
-+
-+``Example``
-+
-+To illustrate the difference between squotas and qgroups, consider the following
-+basic example assuming a nodesize of 16KiB.
-+
-+1. create subvolume 256
-+2. rack up 1GiB of data and metadata usage in 256
-+3. snapshot 256, creating subvolume 257
-+4. CoW 512MiB of the data and metadata in 257
-+5. delete everything in 256
-+
-+At each step, qgroups would have the following accounting:
-+1. 0/256: 16KiB excl 0 shared
-+2. 0/256: 1GiB excl 0 shared
-+3. 0/256: 0 excl 1GiB shared; 0/257: 0 excl 1GiB shared
-+4. 0/256: 512MiB excl 512MiB shared; 0/257: 512MiB excl 512MiB shared
-+5. 0/256: 16KiB excl 0 shared; 0/257: 1GiB excl 0 shared
-+
-+Whereas under squotas, the accounting would look like:
-+1. 0/256: 16KiB excl 16KiB shared
-+2. 0/256: 1GiB excl 1GiB shared
-+3. 0/256: 1GiB excl 1GiB shared; 0/257: 16KiB excl 16KiB shared
-+4. 0/256: 1GiB excl 1GiB shared; 0/257: 512MiB excl 512MiB shared
-+5. 0/256: 512MiB excl 512MiB shared; 0/257: 512MiB excl 512MiB shared
-+
-+Note that since the original snapshotted 512MiB are still referenced by 257,
-+they cannot be freed from 256, even after 256 is emptied, or even deleted.
-+
-+``Summary``
-+
-+If you want some of power and flexibility of quotas for tracking and limiting
-+subvolume usage, but want to avoid the performance penalty of accurately
-+tracking extent ownership lifecycles, then squotas can be a useful option.
-+
-+Furthermore, squotas is targeted at use cases where the original extent is
-+immutable, like image snapshotting for container startup, in which case we avoid
-+these awkward scenarios where a subvolume is empty or deleted but still has
-+significant extents accounted to it. However, as long as you are aware of the
-+accounting semantics, they can handle mutable original extents.
-diff --git a/Documentation/mkfs.btrfs.rst b/Documentation/mkfs.btrfs.rst
-index 1fca7448b..da8e708ae 100644
---- a/Documentation/mkfs.btrfs.rst
-+++ b/Documentation/mkfs.btrfs.rst
-@@ -326,6 +326,12 @@ block-group-tree
-         enabled at *mkfs* time is possible, see :doc:`btrfstune`. Online
-         conversion is not possible.
+ /*
+diff --git a/kernel-shared/uapi/btrfs.h b/kernel-shared/uapi/btrfs.h
+index 85b04f89a..7e0078a5d 100644
+--- a/kernel-shared/uapi/btrfs.h
++++ b/kernel-shared/uapi/btrfs.h
+@@ -356,6 +356,7 @@ _static_assert(sizeof(struct btrfs_ioctl_fs_info_args) == 1024);
+ #define BTRFS_FEATURE_INCOMPAT_RAID1C34		(1ULL << 11)
+ #define BTRFS_FEATURE_INCOMPAT_ZONED		(1ULL << 12)
+ #define BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2	(1ULL << 13)
++#define BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA	(1ULL << 16)
  
-+squota
-+	(kernel support since X.X)
-+
-+	Enable simple quota support (squotas). This is an alternative to qgroups with
-+	a smaller performance impact but no notion of shared vs. exclusive usage.
-+
- .. _mkfs-section-profiles:
+ struct btrfs_ioctl_feature_flags {
+ 	__u64 compat_flags;
+diff --git a/kernel-shared/uapi/btrfs_tree.h b/kernel-shared/uapi/btrfs_tree.h
+index ad555e705..29cf2f3d3 100644
+--- a/kernel-shared/uapi/btrfs_tree.h
++++ b/kernel-shared/uapi/btrfs_tree.h
+@@ -227,6 +227,8 @@
  
- BLOCK GROUPS, CHUNKS, RAID
+ #define BTRFS_SHARED_DATA_REF_KEY	184
+ 
++#define BTRFS_EXTENT_OWNER_REF_KEY	188
++
+ /*
+  * block groups give us hints into the extent allocation trees.  Which
+  * blocks are free etc etc
+@@ -783,6 +785,10 @@ struct btrfs_shared_data_ref {
+ 	__le32 count;
+ } __attribute__ ((__packed__));
+ 
++struct btrfs_extent_owner_ref {
++	__le64 root_id;
++} __attribute__ ((__packed__));
++
+ struct btrfs_extent_inline_ref {
+ 	__u8 type;
+ 	__le64 offset;
+@@ -1199,10 +1205,12 @@ static inline __u16 btrfs_qgroup_level(__u64 qgroupid)
+  * Turning qouta off and on again makes it inconsistent, too.
+  */
+ #define BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT	(1ULL << 2)
++#define BTRFS_QGROUP_STATUS_FLAG_SIMPLE_MODE	(1ULL << 3)
+ 
+ #define BTRFS_QGROUP_STATUS_FLAGS_MASK	(BTRFS_QGROUP_STATUS_FLAG_ON |		\
+ 					 BTRFS_QGROUP_STATUS_FLAG_RESCAN |	\
+-					 BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT)
++					 BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT |	\
++					 BTRFS_QGROUP_STATUS_FLAG_SIMPLE_MODE)
+ 
+ #define BTRFS_QGROUP_STATUS_VERSION        1
+ 
+@@ -1224,6 +1232,12 @@ struct btrfs_qgroup_status_item {
+ 	 * of the scan. It contains a logical address
+ 	 */
+ 	__le64 rescan;
++
++	/*
++	 * Used by simple quotas to ignore old extent deletions
++	 * Present iff incompat flag SIMPLE_QUOTA is set
++	 */
++	__le64 enable_gen;
+ } __attribute__ ((__packed__));
+ 
+ struct btrfs_qgroup_info_item {
 -- 
 2.42.0
 
