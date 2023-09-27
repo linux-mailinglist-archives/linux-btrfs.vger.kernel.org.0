@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB04E7B0272
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 13:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28187B0273
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 13:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbjI0LJi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Sep 2023 07:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        id S231334AbjI0LJj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Sep 2023 07:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbjI0LJh (ORCPT
+        with ESMTP id S231329AbjI0LJi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:09:37 -0400
+        Wed, 27 Sep 2023 07:09:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0992FC
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 04:09:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18110C433C9
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 11:09:35 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3327F3
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 04:09:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A520C433C8
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 11:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695812976;
-        bh=HjMVyyMqEKFpRlBfsuVkYOfwZFe4txQVDiQ7r+hmpA0=;
+        s=k20201202; t=1695812977;
+        bh=IdInY2600PhoiYLbimc4gGLO52J0bK/Rxxyqp7I2uas=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=OyGP1+D2Dk+jXz3m8y74k3icpNVBsEVzHkkiV4Ki56vYv2MruEhW1Qekmpq1GYJSI
-         3nsXMEIL85TITJzrw2PnoXPmaJ5Du/r7YhVJnMIYFa7iPTJkxNVaxGtLrI7Q5j+So6
-         dFbXeOYiS7pIQDx6m+GhB9YKNLXndfRbQKNM3B5lCxaMloPZbje8MDBUuF6Y59pOSB
-         o4iIenEtMjxSAUAiJds7LYO12b+rXC8LH4mKgQMlGa+M8XTmYPTzGp5ppxqYw8g8np
-         KbwGU2XTCeBzbv3zEE2IeiHhXE+j3m0D3JBfEHYtNm2Luqd53m4sgR08YKWCzF7E9+
-         GHsayX5FIV9jQ==
+        b=u1XxXXi4LTuhcG/jrjw0Ooo60EAXZlQ0i84Hrm3uv5HRv2S/07rrE0tng89y+HSSm
+         efCJJGIWCTmIXJMFt+YHeXZTp6dhBx3VXpOPg6Y4mFzIvMe+W7bA+NoTnWvyMdK6X/
+         SiiyqvBcDI55aWwxc5+BkwNkV397y3MnRoKhb7i+JtdgMp6oJLByPWi5iWcj6Q3Nia
+         rUc8JcD4273ZmJ0x8aWIXP6YDAfvenl9/VQaPAVHbqL7o/lFCguyaLHnaRp+YKnKsN
+         G6ZicUbUnlg+jRVQrlEJtjqdZohfZe+LDTo5ApqdQioB8ABrLKK795m/hU9RAjRMXi
+         Se3VL6PkiGP1A==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/8] btrfs: remove noinline attribute from btrfs_cow_block()
-Date:   Wed, 27 Sep 2023 12:09:24 +0100
-Message-Id: <7b53170a99a48a6c6085be3f8629b4eb753ab53e.1695812791.git.fdmanana@suse.com>
+Subject: [PATCH v2 5/8] btrfs: use round_down() to align block offset at btrfs_cow_block()
+Date:   Wed, 27 Sep 2023 12:09:25 +0100
+Message-Id: <ec568a627d58773eb088b3ad5b1417d8ce540a9d.1695812791.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1695812791.git.fdmanana@suse.com>
 References: <cover.1695812791.git.fdmanana@suse.com>
@@ -48,8 +48,10 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-It's pointless to have the noiline attribute for btrfs_cow_block(), as the
-function is exported and widely used. So remove it.
+At btrfs_cow_block() we can use round_down() to align the extent buffer's
+logical offset to the start offset of a metadata block group, instead of
+the less easy to read set of bitwise operations (two plus one subtraction).
+So replace the bitwise operations with a round_down() call.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
@@ -57,18 +59,18 @@ Signed-off-by: Filipe Manana <fdmanana@suse.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 2a51cac7f21d..a05c9204928e 100644
+index a05c9204928e..8d29b9e09286 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -672,7 +672,7 @@ static inline int should_cow_block(struct btrfs_trans_handle *trans,
-  * This version of it has extra checks so that a block isn't COWed more than
-  * once per transaction, as long as it hasn't been written yet
-  */
--noinline int btrfs_cow_block(struct btrfs_trans_handle *trans,
-+int btrfs_cow_block(struct btrfs_trans_handle *trans,
- 		    struct btrfs_root *root, struct extent_buffer *buf,
- 		    struct extent_buffer *parent, int parent_slot,
- 		    struct extent_buffer **cow_ret,
+@@ -712,7 +712,7 @@ int btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 		return 0;
+ 	}
+ 
+-	search_start = buf->start & ~((u64)SZ_1G - 1);
++	search_start = round_down(buf->start, SZ_1G);
+ 
+ 	/*
+ 	 * Before CoWing this block for later modification, check if it's
 -- 
 2.40.1
 
