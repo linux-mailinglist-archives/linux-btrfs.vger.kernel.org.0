@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DF57B0F7E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Sep 2023 01:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171DF7B0F7F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Sep 2023 01:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbjI0XNn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Sep 2023 19:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
+        id S230020AbjI0XNp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Sep 2023 19:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjI0XNm (ORCPT
+        with ESMTP id S229959AbjI0XNo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Sep 2023 19:13:42 -0400
+        Wed, 27 Sep 2023 19:13:44 -0400
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577C8F4;
-        Wed, 27 Sep 2023 16:13:41 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id C735A5C290F;
-        Wed, 27 Sep 2023 19:13:40 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 27 Sep 2023 19:13:40 -0400
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1324DF4;
+        Wed, 27 Sep 2023 16:13:43 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8399B5C290D;
+        Wed, 27 Sep 2023 19:13:42 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 27 Sep 2023 19:13:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1695856420; x=
-        1695942820; bh=j+KD/sriX+e/wWHTpgo0NBnggBDG5I8dvFVim9K0Vrc=; b=V
-        YxG2yI/3XOa0Ind2FBUSR3z0FIOzhH2p1lC9G2aFBOiUd0rxUIcspGdW960NutVH
-        rA+jLuzhOSaeII0LTcm9tfoGHiSlbxY4r4Jlfz0BETZWsPr8SqS9MzksQt+Kdemx
-        hi+PEDqEpKqOMo606unxWAvG8bOI7NIBQPIrVltaMRYecOpexxsEvqksAxQ152V7
-        GdOZHtt+szHLZoI4UC2ZclD7hrwzhdzc0iqHGzrInYsG0EIVP3Rb2jHBikXfJY84
-        jp1YhxdCEPvEWkSMfmAzkvpKEug6mRudw388pEr8yMP5fnbdjNvDNKJ6TEsNowRm
-        aALuBD5Umc6h4PfIXvZ/Q==
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1695856422; x=
+        1695942822; bh=sRfaRBBkQ04rg2h5cwv6Nv4bH+399vIqUwVvDWHbYBs=; b=s
+        Qy8AeD0kybNmmh33JoIG6zNwKIRfnNkWjNJ/SJ02V4SqPwMLD3Hfxga0rsFW8aVv
+        VlIDG2fWbq6aPh6okDPOkID5X/qu0vWy0lhk3rNKHEMN3FDu1j9lLTrxyUSHFjRB
+        wNITMrQiu8lB7BAhwsolLAIVdS3H34yJ3enmeSPrJjKoVMKGZ2Tx62K+n4k6j8fT
+        2sWWZ0LSdhvdcJQsnJOkrkEVhiJqtYqmhSV0HpCsbKn1lRuQVfxatTi0nabLW6GL
+        bvHqzM6clinFIqSQ0skuIiXq5Ma+jC+HYRE7TYyDFttNPEHex9yJjPzpX3fm9d/m
+        p15X03Pjynl2MUtie+J2w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; t=1695856420; x=1695942820; bh=j
-        +KD/sriX+e/wWHTpgo0NBnggBDG5I8dvFVim9K0Vrc=; b=FCM/PSDxPpaonLtLx
-        D1AhmvuAxQxdLo2neJNBZv2Uqy9OskTHdV72/jPxLCS8wJE5ubHh0Nw0TH1bnBFM
-        fazjbcvRQD1Jo5sOFj1VBhVz+U2JO3YUCCPq67pjPwyL7NL+pn4sgiSh6E8NaH82
-        1nfg+Vk+dRbFetLT2g8zFeqklKsSMgeQhiqaOG2DrpD4HfGho6fPjHC3Q4nozoo6
-        /ymu4HklEkaxNeLvt18IRwkau2jfA+4dywRRS4dvz0THcjLT/E2n5cqFr5OIPROb
-        DcEXks/kQ7RVvTcYjyXXci8VjnVUFpdqxHimEjThuVoZZlNEoTQpInMKgG0ESQEs
-        /INaA==
-X-ME-Sender: <xms:JLcUZQdcn-dHfnUMYaMP6N1fasMT72T-OyaOUxGJPho3iP0sBZA6SQ>
-    <xme:JLcUZSOV8vvQimgwUbtiMlYyHCRmpShOBPw7ZjWiBBPMZxZimI321HyUJ99JSN2vI
-    WAY55qS7z6l-HKaxdM>
-X-ME-Received: <xmr:JLcUZRhK6wUBktyngEPkj-StTed8fZr942XFfaolcvUTi41vawv-O6PhvEis2VQJ_sBJwMppF_8CbzQV51c_0P34rKc>
+        :x-me-sender:x-sasl-enc; s=fm2; t=1695856422; x=1695942822; bh=s
+        RfaRBBkQ04rg2h5cwv6Nv4bH+399vIqUwVvDWHbYBs=; b=UgfCJLkKxnJDWcN5J
+        lz2PHdrQ2kdl8sINhwOP2LiOY0ustMlDOuUfyELHEm7Dr4GZivFPK0k/pXBAEqMT
+        16dAUo+h8ly0cwx37EjoLa/XcoHrQcHR6kbpBkLyg0TYydr0W3OwTPwy6ktL7ykI
+        ZGIIxcxZZ6MjxhZcx4bZV9afehdSVbvs1XA6gDs5/6NldcPIpKz/AfGZXkEV1zBE
+        3xMdJFR0Jx848n9xjjbqS3/OeiuDac1DQukCgrjzqV1jf+u2XlIfZjivy6DMhKIS
+        TWaoyVdrYaFruZBKAPd/nlhCZEGmGujOQnqdlQb9D9QjndqC+1+4O7ZO2GNtEhx2
+        HWSng==
+X-ME-Sender: <xms:JrcUZRNsV8z2yIv2LJc55UN1eAH7iFWSm-AY0cm4q-0WgLY9LYrXJA>
+    <xme:JrcUZT8yzO9UpXmfuZICIsQVIYn4mLNy2ISinPCSCbFCAtMzARKUUTQoHy7hisVYp
+    D4PNc0lef8TAmBCC9s>
+X-ME-Received: <xmr:JrcUZQRXinq-J5Q3ubXlMl1VnHiEYPO_VnLQlsNqSIZ2c9A3ysw-VK4IX_p2_yEUh1ZRkg1j8sizgpq9v6-13DMgV_E>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdehgddulecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
@@ -55,19 +55,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdehgddulecutefuodetggdote
     oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
     ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
     rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:JLcUZV-Iw0y54aXl_VMAnqu2ZwcGozefV32rWmtVMeLpQOIOuh4C9w>
-    <xmx:JLcUZcsunrGDwbkfziv7mnsvTVfsV28mgCPBh4YmF3eDygSyOtXJJg>
-    <xmx:JLcUZcHqbmxgse_LQx82L0J5VhVq0nQ3ZrcGFODvQZ35dV2J5F5Wzw>
-    <xmx:JLcUZZWg-SiWGVlMUJR5N3XiChqY8INfwN1FbZJUunj2H2od3Lc5bA>
+X-ME-Proxy: <xmx:JrcUZdsQqGvh42MocTrteIXRp5T9RYW8lQQ23Hh5I1uytfDcNENf8Q>
+    <xmx:JrcUZZez24W4A_zEIkslAaVj0yUUIfIm51B_Lw4BeW1Bz8JKxJbpLA>
+    <xmx:JrcUZZ29_2NlDTio6sOwQbPD2_TSKjk_fK4_hrNOvWXsuqVeaa2zKA>
+    <xmx:JrcUZZE8INPFR9jp-jg6Q5y23YU2MLMwi84kCM0rc69oSfs5hTF0tQ>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Sep 2023 19:13:40 -0400 (EDT)
+ 27 Sep 2023 19:13:41 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         fstests@vger.kernel.org
-Subject: [PATCH v3 1/6] common: refactor sysfs_attr functions
-Date:   Wed, 27 Sep 2023 16:14:33 -0700
-Message-ID: <0714f6b21000181ab43d3085903859b8ae1e1a32.1695856385.git.boris@bur.io>
+Subject: [PATCH v3 2/6] btrfs: quota mode helpers
+Date:   Wed, 27 Sep 2023 16:14:34 -0700
+Message-ID: <3c6f4cd053ccd2deb8ee459f5b0e5eb6fd877487.1695856385.git.boris@bur.io>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1695856385.git.boris@bur.io>
 References: <cover.1695856385.git.boris@bur.io>
@@ -83,181 +83,61 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Expand the has/get/require functions to allow passing a dev by
-parameter, and implement the test_dev specific one in terms of the new
-generic one.
+To facilitate skipping tests depending on the qgroup mode after mkfs,
+add support for figuring out the mode. This cannot just rely on the new
+sysfs file, since it might not be present on older kernels.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- common/rc | 127 +++++++++++++++++++++++++++++++++++-------------------
- 1 file changed, 82 insertions(+), 45 deletions(-)
+ common/btrfs | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/common/rc b/common/rc
-index 1618ded54..c3cd53546 100644
---- a/common/rc
-+++ b/common/rc
-@@ -4689,47 +4689,33 @@ run_fsx()
- 	rm -f $tmp.fsx
+diff --git a/common/btrfs b/common/btrfs
+index c9903a413..37796cc6e 100644
+--- a/common/btrfs
++++ b/common/btrfs
+@@ -689,3 +689,41 @@ _require_btrfs_scratch_logical_resolve_v2()
+ 	fi
+ 	_scratch_unmount
  }
- 
--# Test for the existence of a sysfs entry at /sys/fs/$FSTYP/DEV/$ATTR
-+_require_statx()
-+{
-+	$here/src/stat_test --check-statx ||
-+	_notrun "This test requires the statx system call"
-+}
 +
-+# Get the path to the sysfs directory for the fs on a device
- #
- # Only one argument is needed:
--#  - attr: path name under /sys/fs/$FSTYP/DEV
-+#  - dev: mounted block device for the fs
- #
- # Usage example:
--#   _require_fs_sysfs error/fail_at_unmount
--_has_fs_sysfs()
-+#   _fs_sysfs_dname /dev/mapper/scratch-dev
-+_fs_sysfs_dname()
- {
--	local attr=$1
--	local dname
++_qgroup_mode()
++{
 +	local dev=$1
 +
 +	if [ ! -b "$dev" ]; then
-+		_fail "Usage: _fs_sysfs_dname <mounted_device>"
-+	fi
- 
- 	case "$FSTYP" in
- 	btrfs)
--		dname=$(findmnt -n -o UUID $TEST_DEV) ;;
-+		findmnt -n -o UUID ${dev} ;;
- 	*)
--		dname=$(_short_dev $TEST_DEV) ;;
-+		_short_dev $dev ;;
- 	esac
--
--	if [ -z "$attr" -o -z "$dname" ];then
--		_fail "Usage: _require_fs_sysfs <sysfs_attr_path>"
--	fi
--
--	test -e /sys/fs/${FSTYP}/${dname}/${attr}
--}
--
--# Require the existence of a sysfs entry at /sys/fs/$FSTYP/DEV/$ATTR
--_require_fs_sysfs()
--{
--	_has_fs_sysfs "$@" && return
--
--	local attr=$1
--	local dname=$(_short_dev $TEST_DEV)
--
--	_notrun "This test requires /sys/fs/${FSTYP}/${dname}/${attr}"
--}
--
--_require_statx()
--{
--	$here/src/stat_test --check-statx ||
--	_notrun "This test requires the statx system call"
- }
- 
- # Write "content" into /sys/fs/$FSTYP/$DEV/$ATTR
-@@ -4753,13 +4739,7 @@ _set_fs_sysfs_attr()
- 		_fail "Usage: _set_fs_sysfs_attr <mounted_device> <attr> <content>"
- 	fi
- 
--	local dname
--	case "$FSTYP" in
--	btrfs)
--		dname=$(findmnt -n -o UUID ${dev}) ;;
--	*)
--		dname=$(_short_dev $dev) ;;
--	esac
-+	local dname=$(_fs_sysfs_dname $dev)
- 
- 	echo "$content" > /sys/fs/${FSTYP}/${dname}/${attr}
- }
-@@ -4781,17 +4761,74 @@ _get_fs_sysfs_attr()
- 		_fail "Usage: _get_fs_sysfs_attr <mounted_device> <attr>"
- 	fi
- 
--	local dname
--	case "$FSTYP" in
--	btrfs)
--		dname=$(findmnt -n -o UUID ${dev}) ;;
--	*)
--		dname=$(_short_dev $dev) ;;
--	esac
-+	local dname=$(_fs_sysfs_dname $dev)
- 
- 	cat /sys/fs/${FSTYP}/${dname}/${attr}
- }
- 
-+# Test for the existence of a sysfs entry at /sys/fs/$FSTYP/$DEV/$ATTR
-+#
-+# All arguments are necessary, and in this order:
-+#  - dev: device name, e.g. $SCRATCH_DEV
-+#  - attr: path name under /sys/fs/$FSTYP/$dev
-+#
-+# Usage example:
-+#   _has_fs_sysfs_attr /dev/mapper/scratch-dev error/fail_at_unmount
-+_has_fs_sysfs_attr()
-+{
-+	local dev=$1
-+	local attr=$2
-+
-+	if [ ! -b "$dev" -o -z "$attr" ];then
-+		_fail "Usage: _get_fs_sysfs_attr <mounted_device> <attr>"
++		_fail "Usage: _qgroup_mode <mounted_device>"
 +	fi
 +
-+	local dname=$(_fs_sysfs_dname $dev)
-+
-+	test -e /sys/fs/${FSTYP}/${dname}/${attr}
++	if _has_fs_sysfs_attr $dev /qgroups/mode; then
++		_get_fs_sysfs_attr $dev qgroups/mode
++	else
++		echo "disabled"
++	fi
 +}
 +
-+# Require the existence of a sysfs entry at /sys/fs/$FSTYP/$DEV/$ATTR
-+# All arguments are necessary, and in this order:
-+#  - dev: device name, e.g. $SCRATCH_DEV
-+#  - attr: path name under /sys/fs/$FSTYP/$dev
-+#
-+# Usage example:
-+#   _require_fs_sysfs_attr /dev/mapper/scratch-dev error/fail_at_unmount
-+_require_fs_sysfs_attr()
++_check_regular_qgroup()
 +{
-+	_has_fs_sysfs_attr "$@" && return
-+
-+	local dev=$1
-+	local attr=$2
-+	local dname=$(_fs_sysfs_dname $dev)
-+
-+	_notrun "This test requires /sys/fs/${FSTYP}/${dname}/${attr}"
++	_qgroup_mode "$@" | grep -q 'qgroup'
 +}
 +
-+# Test for the existence of a sysfs entry at /sys/fs/$FSTYP/DEV/$ATTR
-+#
-+# Only one argument is needed:
-+#  - attr: path name under /sys/fs/$FSTYP/DEV
-+#
-+# Usage example:
-+#   _has_fs_sysfs error/fail_at_unmount
-+_has_fs_sysfs()
++_require_scratch_qgroup()
 +{
-+	_has_fs_sysfs_attr $TEST_DEV "$@"
++	_scratch_mkfs >>$seqres.full 2>&1
++	_scratch_mount
++	_run_btrfs_util_prog quota enable $SCRATCH_MNT
++	_check_regular_qgroup $SCRATCH_DEV || _notrun "not running normal qgroups"
++	_scratch_unmount
 +}
 +
-+# Require the existence of a sysfs entry at /sys/fs/$FSTYP/DEV/$ATTR
-+_require_fs_sysfs()
++_require_scratch_enable_simple_quota()
 +{
-+	_has_fs_sysfs "$@" && return
-+
-+	local attr=$1
-+	local dname=$(_short_dev $TEST_DEV)
-+
-+	_notrun "This test requires /sys/fs/${FSTYP}/${dname}/${attr}"
++    _scratch_mkfs >>$seqres.full 2>&1
++    _scratch_mount
++	_qgroup_mode $SCRATCH_DEV | grep 'squota' && _notrun "cannot enable simple quota; on by default"
++    $BTRFS_UTIL_PROG quota enable --simple $SCRATCH_MNT || _notrun "simple quotas not available"
++	_scratch_unmount
 +}
-+
- # Generic test for specific filesystem feature.
- # Currently only implemented to test overlayfs features.
- _require_scratch_feature()
 -- 
 2.42.0
 
