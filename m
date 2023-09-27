@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A367D7B026F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 13:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0348A7B0270
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 13:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbjI0LJf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Sep 2023 07:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
+        id S231305AbjI0LJg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Sep 2023 07:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbjI0LJe (ORCPT
+        with ESMTP id S231303AbjI0LJf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:09:34 -0400
+        Wed, 27 Sep 2023 07:09:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E4BF3
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 04:09:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EF3EC433C9
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 11:09:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6416F3
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 04:09:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12033C433CA
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 11:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695812973;
-        bh=q7yQ6e2JXCB4C5QiIheTP+2bbdAPtmpuWgT6Rqkt5Ig=;
+        s=k20201202; t=1695812974;
+        bh=xXuWEQOi3gdc7GHIrTSkVszM4BD0dUjzQcYv8cXbhaY=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=MYFPmjWLa1JbeLKoqX9BqC4GI2QyYCvDtfixALl9sR9BG5vJskp6KE/NXjE7+urUO
-         GRIbfhLRNfjgUMwpgIM9eBE8So1cpexNOfkD09/y4VbTySfKh0gt89tU3yhBGDPA2D
-         idqTMONoQfdcqJ9vkjhvgzwCbhXAVXTtxBL3/iQ/mVFPXJWEodPwhvoxpPTGuh66Te
-         bU83jHfSJL5I2QyzQuoN7BvmEkAIYkquNFQr/fU3JyPxO8KQEcF0/iJAV5Ic8FrxSk
-         TxyHmKTkOOyM5hu1NpFZam2HNB49RKpKoQfgaq56DtZA743eGacVihLDtK8tXM+XFk
-         0udsE5vjRNesw==
+        b=r1KrrJ+I1ReLn0LG7alVJRScQ0VrUO8xKjqJYg7rusiAJzX/L2z3zN/yx+vwpyGi/
+         bMCJp3JARGCTjkFiA+qQe94j0ImlwCpOc8vVJ2AyHyqk67OP06A9R71zbgYMq8FYWt
+         qzReP/W/KkcvfDtpR3swshR5sOaxryhHUEV4NzK3dLgb1jkPxeLJHOwg/E422jJlLF
+         8/xnf5NLSNizQRFIX1LpQxqQSaTmOeidGHrpAUU++VXTS0N8RjGdSQM2ckDhfzr0xs
+         SqMhKsN2VeaW1s/WnlStBVgprpQoahtIeEuPB7KN4X/v2A0ZJMP5iYjwnrd1Yvhk8C
+         xOLBvBu3OeifA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 1/8] btrfs: error out when COWing block using a stale transaction
-Date:   Wed, 27 Sep 2023 12:09:21 +0100
-Message-Id: <d4915befa17ac6ae67831877116f5c4b8002c099.1695812791.git.fdmanana@suse.com>
+Subject: [PATCH v2 2/8] btrfs: error when COWing block from a root that is being deleted
+Date:   Wed, 27 Sep 2023 12:09:22 +0100
+Message-Id: <1ca7eb533712b99bea8e5e00141176df15270b3b.1695812791.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1695812791.git.fdmanana@suse.com>
 References: <cover.1695812791.git.fdmanana@suse.com>
@@ -48,74 +48,50 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At btrfs_cow_block() we have these checks to verify we are not using a
-stale transaction (a past transaction with an unblocked state or higher),
-and the only thing we do is to trigger a WARN with a message and a stack
-trace. This however is a critical problem, highly unexpected and if it
-happens it's most likely due to a bug, so we should error out and turn the
-fs into error state so that such issue is much more easily noticed if it's
-triggered.
+At btrfs_cow_block() we check if the block being COWed belongs to a root
+that is being deleted and if so we log an error message. However this is
+an unexpected case and it indicates a bug somewhere, so we should return
+an error and abort the transaction. So change this in the following ways:
 
-The problem is critical because using such stale transaction will lead to
-not persisting the extent buffer used for the COW operation, as allocating
-a tree block adds the range of the respective extent buffer to the
-->dirty_pages iotree of the transaction, and a stale transaction, in the
-unlocked state or higher, will not flush dirty extent buffers anymore,
-therefore resulting in not persisting the tree block and resource leaks
-(not cleaning the dirty_pages iotree for example).
+1) Abort the transaction with -EUCLEAN, so that if the issue ever happens
+   it can easily be noticed;
 
-So do the following changes:
+2) Change the logged message level from error to critical, and change the
+   message itself to print the block's logical address and the ID of the
+   root;
 
-1) Return -EUCLEAN if we find a stale transaction;
+3) Return -EUCLEAN to the caller;
 
-2) Turn the fs into error state, with error -EUCLEAN, so that no
-   transaction can be committed, and generate a stack trace;
-
-3) Combine both conditions into a single if statement, as both are related
-   and have the same error message;
-
-4) Mark the check as unlikely, since this is not expected to ever happen.
+4) As this is an unexpected scenario, that should never happen, mark the
+   check as unlikely, allowing the compiler to potentially generate better
+   code.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+ fs/btrfs/ctree.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 56d2360e597c..29b887ffe682 100644
+index 29b887ffe682..e3382542f642 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -686,14 +686,22 @@ noinline int btrfs_cow_block(struct btrfs_trans_handle *trans,
- 		btrfs_err(fs_info,
- 			"COW'ing blocks on a fs root that's being dropped");
+@@ -682,9 +682,13 @@ noinline int btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 	u64 search_start;
+ 	int ret;
  
--	if (trans->transaction != fs_info->running_transaction)
--		WARN(1, KERN_CRIT "trans %llu running %llu\n",
--		       trans->transid,
--		       fs_info->running_transaction->transid);
--
--	if (trans->transid != fs_info->generation)
--		WARN(1, KERN_CRIT "trans %llu running %llu\n",
--		       trans->transid, fs_info->generation);
-+	/*
-+	 * COWing must happen through a running transaction, which always
-+	 * matches the current fs generation (it's a transaction with a state
-+	 * less than TRANS_STATE_UNBLOCKED). If it doesn't, then turn the fs
-+	 * into error state to prevent the commit of any transaction.
-+	 */
-+	if (unlikely(trans->transaction != fs_info->running_transaction ||
-+		     trans->transid != fs_info->generation)) {
+-	if (test_bit(BTRFS_ROOT_DELETING, &root->state))
+-		btrfs_err(fs_info,
+-			"COW'ing blocks on a fs root that's being dropped");
++	if (unlikely(test_bit(BTRFS_ROOT_DELETING, &root->state))) {
 +		btrfs_abort_transaction(trans, -EUCLEAN);
 +		btrfs_crit(fs_info,
-+"unexpected transaction when attempting to COW block %llu on root %llu, transaction %llu running transaction %llu fs generation %llu",
-+			   buf->start, btrfs_root_id(root), trans->transid,
-+			   fs_info->running_transaction->transid,
-+			   fs_info->generation);
++		   "attempt to COW block %llu on root %llu that is being deleted",
++			   buf->start, btrfs_root_id(root));
 +		return -EUCLEAN;
 +	}
  
- 	if (!should_cow_block(trans, root, buf)) {
- 		*cow_ret = buf;
+ 	/*
+ 	 * COWing must happen through a running transaction, which always
 -- 
 2.40.1
 
