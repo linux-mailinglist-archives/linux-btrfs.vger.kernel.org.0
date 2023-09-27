@@ -2,71 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7CC7B0B47
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 19:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D177B0B48
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 19:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbjI0RqN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Sep 2023 13:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50064 "EHLO
+        id S229570AbjI0RqP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Sep 2023 13:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjI0RqM (ORCPT
+        with ESMTP id S229473AbjI0RqO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Sep 2023 13:46:12 -0400
+        Wed, 27 Sep 2023 13:46:14 -0400
 Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A831A7
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 10:46:11 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 4A1453200A31;
-        Wed, 27 Sep 2023 13:46:10 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B81E5
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 10:46:13 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id EADD83200906;
+        Wed, 27 Sep 2023 13:46:12 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 27 Sep 2023 13:46:10 -0400
+  by compute1.internal (MEProxy); Wed, 27 Sep 2023 13:46:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1695836769; x=
-        1695923169; bh=EAJzeNrebYA4fz8wK/r/eveCHdguJ+mKDlTqNvzszqw=; b=B
-        iE/HyrvSk7rdOxRt3rjM4qV3ixRoFqAn0LX6A0LGsb1IWpFRgP2rVMEbcHgAmkT1
-        5NfxVKzSVkfYP481jDbJdXGZe1RJmeK3bxpfUkAFoL+3f6CDK5OvqvbYJz3jvE6c
-        yMzIgAfDC1/Tk1QhqEGBANFuY9W/tF6G71Qnt3mCuGbpZsKgFyevzHxibA4oL85B
-        t45ara6B4174DpIp4LDyfY28tEqvx2ae44SsIaVc1mRAQL8+ecGFThg89RfITrfO
-        kbj5HGZQKCPHdTxjXvVktJHExnysLELMDbhwHERvplWgrMebvqgIuiPDwZwBlYiO
-        5SQ0OoypdXYcUFipR7h/A==
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1695836772; x=
+        1695923172; bh=juJf4adaoKEs10sartKuic/L0xAj1EhjuXtIUizOzC0=; b=H
+        WVqo1bc2zEGUn1Fpu9iSuokuTZr3+y54QOZt0SjAtAJR4+rklGYgO5TGrjdcaFN5
+        1KqkiBBFIKYZqpG+ENr0guRjTwriXxlA0TbZj2KesalizFMQQWgX2hQI2URxD0ko
+        XWiKKDJcafMWHTSoE2JTDTyRh9HLo1gB9FU/jRNBDDVWCjljEhvh7/M4AF7BbMd7
+        OTUUp1qsvF2UAj6yjuBio/yP6zJuhqAkOb5hPnwFB3cpFungVleOQtWxZ+OXXcOu
+        +/YjjFaOiTi5wi2EcmCxrDK+Sl4FtYdOdXvYUQ2j3L9SJxxKE3puESEjUoNR4bri
+        zPQabRk0huWzUEHgVRTxA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; t=1695836769; x=1695923169; bh=E
-        AJzeNrebYA4fz8wK/r/eveCHdguJ+mKDlTqNvzszqw=; b=ZGjW0WjvoReljf/Qf
-        +FJIHav0meCqMJMTMqzmBTvnBZxmmquwWFb0vZmr3jPsFmtsHVvNG0eQas9FgRBU
-        Aj4QAAzmdmVvaP03L8aydXTacq9vC8gNTH0e75Kfns/KdhFJUwXAROZde6bnYicW
-        nqR4UhbrMNxaxekpBWcMela1PfZ5KJLsuc/YKTz66oxSgYKOV865wkAIlfuyaUif
-        h1i3G4KxyzVPx7OrVeLSANIKWZj/KqvSt/lhA1fPGLHdmihk6AlUrUHe0VyeeXPV
-        /zUW+LoL8qD7ZR5HFKPWdoppV9uaUPF4h5m8Tlf/P9KXPrdgIS3ZbjDWe2ZdctGa
-        nhh9A==
-X-ME-Sender: <xms:YWoUZZCcyUOK9cr7Ej0-PuBymw2_d9NV8exbDj17DqVlcoKVCSf81A>
-    <xme:YWoUZXglN3x7c7N-gtoROjKUM8bg83oFaJ9trgcINLjSiBgYQV3PmexxkfDfGGL3u
-    phavdYlm4DQO0Aaf9Q>
-X-ME-Received: <xmr:YWoUZUkcJQFgqXK10JY68n1OJWOaZvOVZKxdNNeWBbU1zXISgNCjcfygbZsqCKnXMnxvukZ6ZjL8oZI5tw9oELSVm08>
+        :x-me-sender:x-sasl-enc; s=fm2; t=1695836772; x=1695923172; bh=j
+        uJf4adaoKEs10sartKuic/L0xAj1EhjuXtIUizOzC0=; b=gZdc8fXaZ3l/mLd0/
+        WS77Zp5PYmh/8T2jDR9es0fxeLLeqPo1XHKpTQI2V8r/sRytLHX7cxkVj7/tszWK
+        NhY5dbwCiRIyU6d5p3e7W2xM9dUyr5w3ZEcFtUhh8Ac4gsYRx7FlQjVvQaE6MjoC
+        Fbf1YGVE5QW3LZiYNPRRlaUQivr6z/XnlqVmNJHUY7aPk9+CT4GPnFS4aXud8SXY
+        3SmHDUm8U50ybMzCvgkS5oQyDLvW0QkiQfqh9ZEj/U82y4T91iGZCM8boBSoSZ/A
+        4EK8N6d/727qqrmkLCUTk/G0qsKJam6OTz4flbA5Rnf3HoyDkLPGhuLM/5ffOl0v
+        ljSpw==
+X-ME-Sender: <xms:ZGoUZULjYpYaSsDDTypmayZdKlWMms6frYTw0krTgw9hz9fh0M3y8Q>
+    <xme:ZGoUZUIrFuXAe9fmSjmu6MUYyziblRMwYUgkSTscApatVUpHgHgNCfvTnnwgwu6JA
+    MVFPOB_IbQWET7p4zc>
+X-ME-Received: <xmr:ZGoUZUsPholp3hz4qLwcyVDI92h5I7ACQUHRawp_q0pBGUTUVkTV16BLIDS_jzblGHkcAZChS86xJ0r5sVpooMfdGsE>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdeggdehgecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
     ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
     oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
-    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehm
     rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:YWoUZTwNZno6hVBGmIqY3coXa53xlBkRGboY3dVJleLLAjTbyirRFw>
-    <xmx:YWoUZeRO60S0akuP_QVxlVnnkn1C6ltmyxVGn0bPEJtWbpyzL6ONrg>
-    <xmx:YWoUZWYLKLTbhlbPWzcqdY5SGiQT_MR2X9MclZcd3MNoVVpSMFZahw>
-    <xmx:YWoUZX4ZNMgNbPDaFzFHJbtvchchRReti7gbGlSwxIFT9tGCSofv1A>
+X-ME-Proxy: <xmx:ZGoUZRZR2WfBhreiqxCmHFQXAqVrEtX_nslKAo1NMGkjzHGaSNAEJA>
+    <xmx:ZGoUZbYO7YbzwMR3SU3tq9qemWFZu4fMDSTnQekl6ll6U3QJQKUCbg>
+    <xmx:ZGoUZdBj1VIZ9ESztTx4y5qZ6WsbKW7vAUfTEmX18Y0fo112f2aFLg>
+    <xmx:ZGoUZcCq6_AdyY5cKdHTuzgP22ybM2md-SemOSvV1wPc5SYq5s0rTw>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Sep 2023 13:46:09 -0400 (EDT)
+ 27 Sep 2023 13:46:11 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 7/8] btrfs-progs: simple quotas enable cmd
-Date:   Wed, 27 Sep 2023 10:46:48 -0700
-Message-ID: <aab56bfb675a0ce87e9d4b4d18b354880262f139.1695836680.git.boris@bur.io>
+Subject: [PATCH v3 8/8] btrfs-progs: tree-checker: handle owner ref items
+Date:   Wed, 27 Sep 2023 10:46:49 -0700
+Message-ID: <be0468769998d0bccc6262890ec879ba26976fbd.1695836680.git.boris@bur.io>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1695836680.git.boris@bur.io>
 References: <cover.1695836680.git.boris@bur.io>
@@ -81,109 +81,29 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add a --simple flag to btrfs quota enable. If set, this enables simple
-quotas instead of full qgroups by using the new ioctl command value.
+Add the new OWNER_REF inline items to the tree-checker extent item
+checking code. We could somehow validate the root id for being a valid
+fstree id, but just skipping it seems fine as well.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- cmds/quota.c               | 39 ++++++++++++++++++++++++++++++--------
- kernel-shared/uapi/btrfs.h |  2 ++
- 2 files changed, 33 insertions(+), 8 deletions(-)
+ kernel-shared/tree-checker.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/cmds/quota.c b/cmds/quota.c
-index cd874f9ed..a7d032a03 100644
---- a/cmds/quota.c
-+++ b/cmds/quota.c
-@@ -34,17 +34,13 @@ static const char * const quota_cmd_group_usage[] = {
- 	NULL
- };
- 
--static int quota_ctl(int cmd, int argc, char **argv)
-+static int quota_ctl(int cmd, char *path)
- {
- 	int ret = 0;
- 	int fd;
--	char *path = argv[1];
- 	struct btrfs_ioctl_quota_ctl_args args;
- 	DIR *dirstream = NULL;
- 
--	if (check_argc_exact(argc, 2))
--		return -1;
--
- 	memset(&args, 0, sizeof(args));
- 	args.cmd = cmd;
- 
-@@ -67,16 +63,40 @@ static const char * const cmd_quota_enable_usage[] = {
- 	"Any data already present on the filesystem will not count towards",
- 	"the space usage numbers. It is recommended to enable quota for a",
- 	"filesystem before writing any data to it.",
-+	"",
-+	"-s|--simple	simple qgroups account ownership by extent lifetime rather than backref walks",
- 	NULL
- };
- 
- static int cmd_quota_enable(const struct cmd_struct *cmd, int argc, char **argv)
- {
- 	int ret;
-+	int ctl_cmd = BTRFS_QUOTA_CTL_ENABLE;
- 
--	clean_args_no_options(cmd, argc, argv);
-+	optind = 0;
-+	while (1) {
-+		static const struct option long_options[] = {
-+			{"simple", no_argument, NULL, 's'},
-+			{NULL, 0, NULL, 0}
-+		};
-+		int c;
- 
--	ret = quota_ctl(BTRFS_QUOTA_CTL_ENABLE, argc, argv);
-+		c = getopt_long(argc, argv, "s", long_options, NULL);
-+		if (c < 0)
+diff --git a/kernel-shared/tree-checker.c b/kernel-shared/tree-checker.c
+index 107975891..2f834cf33 100644
+--- a/kernel-shared/tree-checker.c
++++ b/kernel-shared/tree-checker.c
+@@ -1477,6 +1477,8 @@ static int check_extent_item(struct extent_buffer *leaf,
+ 			}
+ 			inline_refs += btrfs_shared_data_ref_count(leaf, sref);
+ 			break;
++		case BTRFS_EXTENT_OWNER_REF_KEY:
 +			break;
-+
-+		switch (c) {
-+		case 's':
-+			ctl_cmd = BTRFS_QUOTA_CTL_ENABLE_SIMPLE_QUOTA;
-+			break;
-+		default:
-+			usage_unknown_option(cmd, argv);
-+		}
-+	}
-+	if (check_argc_exact(argc - optind, 1))
-+		return -1;
-+
-+	ret = quota_ctl(ctl_cmd, argv[optind]);
- 
- 	if (ret < 0)
- 		usage(cmd, 1);
-@@ -97,7 +117,10 @@ static int cmd_quota_disable(const struct cmd_struct *cmd,
- 
- 	clean_args_no_options(cmd, argc, argv);
- 
--	ret = quota_ctl(BTRFS_QUOTA_CTL_DISABLE, argc, argv);
-+	if (check_argc_exact(argc, 2))
-+		return -1;
-+
-+	ret = quota_ctl(BTRFS_QUOTA_CTL_DISABLE, argv[1]);
- 
- 	if (ret < 0)
- 		usage(cmd, 1);
-diff --git a/kernel-shared/uapi/btrfs.h b/kernel-shared/uapi/btrfs.h
-index 7e0078a5d..11ffd54d4 100644
---- a/kernel-shared/uapi/btrfs.h
-+++ b/kernel-shared/uapi/btrfs.h
-@@ -786,9 +786,11 @@ struct btrfs_ioctl_get_dev_stats {
- };
- _static_assert(sizeof(struct btrfs_ioctl_get_dev_stats) == 1032);
- 
-+/* cmd values */
- #define BTRFS_QUOTA_CTL_ENABLE	1
- #define BTRFS_QUOTA_CTL_DISABLE	2
- #define BTRFS_QUOTA_CTL_RESCAN__NOTUSED	3
-+#define BTRFS_QUOTA_CTL_ENABLE_SIMPLE_QUOTA 4
- struct btrfs_ioctl_quota_ctl_args {
- 	__u64 cmd;
- 	__u64 status;
+ 		default:
+ 			extent_err(leaf, slot, "unknown inline ref type: %u",
+ 				   inline_type);
 -- 
 2.42.0
 
