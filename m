@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 727027B0275
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 13:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFF47B0276
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Sep 2023 13:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbjI0LJm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Sep 2023 07:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39638 "EHLO
+        id S231336AbjI0LJo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Sep 2023 07:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231338AbjI0LJl (ORCPT
+        with ESMTP id S231338AbjI0LJn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Sep 2023 07:09:41 -0400
+        Wed, 27 Sep 2023 07:09:43 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A36F3
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 04:09:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20988C433C8
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 11:09:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C31FC
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 04:09:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24110C433C7
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Sep 2023 11:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695812979;
-        bh=YyyPLRaX/inRThsFeWmL3NyDzvZJrl9mFe2+xteW14k=;
+        s=k20201202; t=1695812980;
+        bh=XTbdoSy00JeUbfgv/yL//oL71qKtzbyxub9ZayWREZI=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=fVuznosQV8cY/VA1aaGY+7stKwjr8n829yt9Bpm1pnNjenxuoNp4e9eHFKC7rmc7r
-         I3XEXFOfB8mjbWQyy7J5YE/O7Po0+d9k1njvnkEK64k7137BbFHD4EZnI/pSNV3xuS
-         unUeu3cT2v2jtieocKxMRt6AHCng0/1TpbKMSBkREabMLfdLY1VOrWb5CezmcIzS8V
-         Iovj1B8Kl39TtAmsRjjOxGhrCbhY/5yYHBOJWlkVACMLTUNfE1lFoZ10u5K1r2LPJe
-         Ahn3NH/ameC4RWqSs3redHdikR3K9n4U62o6zEwtkYElNBDkQEubesI9o7V5OIPKxk
-         ZhC32fhYdJz3Q==
+        b=dC2NCFyScb8XERn0jmyDuLLyFBMU9yhLdU9HH3L43A7HcrojfEcd/VPz5e9cB+EUJ
+         j871hJbfhR7EkkKEVHXm6gi3/ZUQFpoPUWY3Rf54CxtjZe60f/D8MuOebAk0LXOeN5
+         nwCOfyqjMGKFrBWq2W623ZGB1s4xtkJ6c/LjKy6M6dEfM5YdT0VcvwxHKF2RvpwZuC
+         kMkDZEk9DUKyH5CApJtBXt2Mx0mOD15G6sPlHbFtGuuKfsieVr8bzvB05O2TAmuKtc
+         AcQbE+M/kEEIbgJqTQki/Rd5LwqAqJ/liOJFKVs0b7EPzx3cRcNmHvK+5mmovOldLR
+         W4fJ+gJZPF5YA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 7/8] btrfs: export comp_keys() from ctree.c as btrfs_comp_keys()
-Date:   Wed, 27 Sep 2023 12:09:27 +0100
-Message-Id: <222b6f1bd38e4317f1d26e47a79da563db359927.1695812791.git.fdmanana@suse.com>
+Subject: [PATCH v2 8/8] btrfs: move btrfs_realloc_node() from ctree.c into defrag.c
+Date:   Wed, 27 Sep 2023 12:09:28 +0100
+Message-Id: <72d4a7745616671bb920f33aaead10cca69138d1.1695812791.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1695812791.git.fdmanana@suse.com>
 References: <cover.1695812791.git.fdmanana@suse.com>
@@ -48,169 +48,298 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Export comp_keys() out of ctree.c, as btrfs_comp_keys(), so that in a
-later patch we can move out defrag specific code from ctree.c into
-defrag.c.
+btrfs_realloc_node() is only used by the defrag code. Nowadays we have a
+defrag.c file, so move it, and its helper close_blocks(), into defrag.c.
+
+During the move also do a few minor cosmetic changes:
+
+1) Change the return value of close_blocks() from int to bool;
+
+2) Use SZ_32K instead of 32768 at close_blocks();
+
+3) Make some variables const in btrfs_realloc_node(), 'blocksize' and
+   'end_slot';
+
+4) Get rid of 'parent_nritems' variable, in both places where it was
+   used it could be replaced by calling btrfs_header_nritems(parent);
+
+5) Change the type of a couple variables from int to bool;
+
+6) Rename variable 'err' to 'ret', as that's the most common name we
+   use to track the return value of a function;
+
+7) Move some variables from the top scope to the scope of the for loop
+   where they are used.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 44 +++++++-------------------------------------
- fs/btrfs/ctree.h | 31 +++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+), 37 deletions(-)
+ fs/btrfs/ctree.c  | 112 ----------------------------------------------
+ fs/btrfs/ctree.h  |   4 --
+ fs/btrfs/defrag.c | 106 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 106 insertions(+), 116 deletions(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 005f0e1f98b3..b25b42ebcc2b 100644
+index b25b42ebcc2b..954524316281 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -743,36 +743,6 @@ static int close_blocks(u64 blocknr, u64 other, u32 blocksize)
- 	return 0;
+@@ -730,19 +730,6 @@ int btrfs_cow_block(struct btrfs_trans_handle *trans,
  }
+ ALLOW_ERROR_INJECTION(btrfs_cow_block, ERRNO);
  
--#ifdef __LITTLE_ENDIAN
--
 -/*
-- * Compare two keys, on little-endian the disk order is same as CPU order and
-- * we can avoid the conversion.
+- * helper function for defrag to decide if two blocks pointed to by a
+- * node are actually close by
 - */
--static int comp_keys(const struct btrfs_disk_key *disk_key,
--		     const struct btrfs_key *k2)
+-static int close_blocks(u64 blocknr, u64 other, u32 blocksize)
 -{
--	const struct btrfs_key *k1 = (const struct btrfs_key *)disk_key;
--
--	return btrfs_comp_cpu_keys(k1, k2);
+-	if (blocknr < other && other - (blocknr + blocksize) < 32768)
+-		return 1;
+-	if (blocknr > other && blocknr - (other + blocksize) < 32768)
+-		return 1;
+-	return 0;
 -}
--
--#else
--
--/*
-- * compare two keys in a memcmp fashion
-- */
--static int comp_keys(const struct btrfs_disk_key *disk,
--		     const struct btrfs_key *k2)
--{
--	struct btrfs_key k1;
--
--	btrfs_disk_key_to_cpu(&k1, disk);
--
--	return btrfs_comp_cpu_keys(&k1, k2);
--}
--#endif
 -
  /*
   * same as comp_keys only with two btrfs_key's
   */
-@@ -845,7 +815,7 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
- 		int close = 1;
+@@ -763,105 +750,6 @@ int __pure btrfs_comp_cpu_keys(const struct btrfs_key *k1, const struct btrfs_ke
+ 	return 0;
+ }
  
- 		btrfs_node_key(parent, &disk_key, i);
--		if (!progress_passed && comp_keys(&disk_key, progress) < 0)
-+		if (!progress_passed && btrfs_comp_keys(&disk_key, progress) < 0)
- 			continue;
- 
- 		progress_passed = 1;
-@@ -958,7 +928,7 @@ int btrfs_bin_search(struct extent_buffer *eb, int first_slot,
- 			tmp = &unaligned;
- 		}
- 
--		ret = comp_keys(tmp, key);
-+		ret = btrfs_comp_keys(tmp, key);
- 
- 		if (ret < 0)
- 			low = mid + 1;
-@@ -1995,7 +1965,7 @@ static int search_leaf(struct btrfs_trans_handle *trans,
- 			 * the extent buffer's header and we have recently accessed
- 			 * the header's level field.
- 			 */
--			ret = comp_keys(&first_key, key);
-+			ret = btrfs_comp_keys(&first_key, key);
- 			if (ret < 0) {
- 				/*
- 				 * The first key is smaller than the key we want
-@@ -2504,7 +2474,7 @@ static int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
- 	 */
- 	if (path->slots[0] < btrfs_header_nritems(path->nodes[0])) {
- 		btrfs_item_key(path->nodes[0], &found_key, path->slots[0]);
--		ret = comp_keys(&found_key, &orig_key);
-+		ret = btrfs_comp_keys(&found_key, &orig_key);
- 		if (ret == 0) {
- 			if (path->slots[0] > 0) {
- 				path->slots[0]--;
-@@ -2519,7 +2489,7 @@ static int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
- 	}
- 
- 	btrfs_item_key(path->nodes[0], &found_key, 0);
--	ret = comp_keys(&found_key, &key);
-+	ret = btrfs_comp_keys(&found_key, &key);
- 	/*
- 	 * We might have had an item with the previous key in the tree right
- 	 * before we released our path. And after we released our path, that
-@@ -2710,7 +2680,7 @@ void btrfs_set_item_key_safe(struct btrfs_trans_handle *trans,
- 	slot = path->slots[0];
- 	if (slot > 0) {
- 		btrfs_item_key(eb, &disk_key, slot - 1);
--		if (unlikely(comp_keys(&disk_key, new_key) >= 0)) {
-+		if (unlikely(btrfs_comp_keys(&disk_key, new_key) >= 0)) {
- 			btrfs_print_leaf(eb);
- 			btrfs_crit(fs_info,
- 		"slot %u key (%llu %u %llu) new key (%llu %u %llu)",
-@@ -2724,7 +2694,7 @@ void btrfs_set_item_key_safe(struct btrfs_trans_handle *trans,
- 	}
- 	if (slot < btrfs_header_nritems(eb) - 1) {
- 		btrfs_item_key(eb, &disk_key, slot + 1);
--		if (unlikely(comp_keys(&disk_key, new_key) <= 0)) {
-+		if (unlikely(btrfs_comp_keys(&disk_key, new_key) <= 0)) {
- 			btrfs_print_leaf(eb);
- 			btrfs_crit(fs_info,
- 		"slot %u key (%llu %u %llu) new key (%llu %u %llu)",
+-/*
+- * this is used by the defrag code to go through all the
+- * leaves pointed to by a node and reallocate them so that
+- * disk order is close to key order
+- */
+-int btrfs_realloc_node(struct btrfs_trans_handle *trans,
+-		       struct btrfs_root *root, struct extent_buffer *parent,
+-		       int start_slot, u64 *last_ret,
+-		       struct btrfs_key *progress)
+-{
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+-	struct extent_buffer *cur;
+-	u64 blocknr;
+-	u64 search_start = *last_ret;
+-	u64 last_block = 0;
+-	u64 other;
+-	u32 parent_nritems;
+-	int end_slot;
+-	int i;
+-	int err = 0;
+-	u32 blocksize;
+-	int progress_passed = 0;
+-	struct btrfs_disk_key disk_key;
+-
+-	/*
+-	 * COWing must happen through a running transaction, which always
+-	 * matches the current fs generation (it's a transaction with a state
+-	 * less than TRANS_STATE_UNBLOCKED). If it doesn't, then turn the fs
+-	 * into error state to prevent the commit of any transaction.
+-	 */
+-	if (unlikely(trans->transaction != fs_info->running_transaction ||
+-		     trans->transid != fs_info->generation)) {
+-		btrfs_abort_transaction(trans, -EUCLEAN);
+-		btrfs_crit(fs_info,
+-"unexpected transaction when attempting to reallocate parent %llu for root %llu, transaction %llu running transaction %llu fs generation %llu",
+-			   parent->start, btrfs_root_id(root), trans->transid,
+-			   fs_info->running_transaction->transid,
+-			   fs_info->generation);
+-		return -EUCLEAN;
+-	}
+-
+-	parent_nritems = btrfs_header_nritems(parent);
+-	blocksize = fs_info->nodesize;
+-	end_slot = parent_nritems - 1;
+-
+-	if (parent_nritems <= 1)
+-		return 0;
+-
+-	for (i = start_slot; i <= end_slot; i++) {
+-		int close = 1;
+-
+-		btrfs_node_key(parent, &disk_key, i);
+-		if (!progress_passed && btrfs_comp_keys(&disk_key, progress) < 0)
+-			continue;
+-
+-		progress_passed = 1;
+-		blocknr = btrfs_node_blockptr(parent, i);
+-		if (last_block == 0)
+-			last_block = blocknr;
+-
+-		if (i > 0) {
+-			other = btrfs_node_blockptr(parent, i - 1);
+-			close = close_blocks(blocknr, other, blocksize);
+-		}
+-		if (!close && i < end_slot) {
+-			other = btrfs_node_blockptr(parent, i + 1);
+-			close = close_blocks(blocknr, other, blocksize);
+-		}
+-		if (close) {
+-			last_block = blocknr;
+-			continue;
+-		}
+-
+-		cur = btrfs_read_node_slot(parent, i);
+-		if (IS_ERR(cur))
+-			return PTR_ERR(cur);
+-		if (search_start == 0)
+-			search_start = last_block;
+-
+-		btrfs_tree_lock(cur);
+-		err = btrfs_force_cow_block(trans, root, cur, parent, i,
+-					    &cur, search_start,
+-					    min(16 * blocksize,
+-						(end_slot - i) * blocksize),
+-					    BTRFS_NESTING_COW);
+-		if (err) {
+-			btrfs_tree_unlock(cur);
+-			free_extent_buffer(cur);
+-			break;
+-		}
+-		search_start = cur->start;
+-		last_block = cur->start;
+-		*last_ret = search_start;
+-		btrfs_tree_unlock(cur);
+-		free_extent_buffer(cur);
+-	}
+-	return err;
+-}
+-
+ /*
+  * Search for a key in the given extent_buffer.
+  *
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index c685952a544c..7b69abb5009c 100644
+index 7b69abb5009c..5d1380425185 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -9,6 +9,7 @@
- #include <linux/pagemap.h>
- #include "locking.h"
- #include "fs.h"
-+#include "accessors.h"
+@@ -554,10 +554,6 @@ int btrfs_search_slot_for_read(struct btrfs_root *root,
+ 			       const struct btrfs_key *key,
+ 			       struct btrfs_path *p, int find_higher,
+ 			       int return_any);
+-int btrfs_realloc_node(struct btrfs_trans_handle *trans,
+-		       struct btrfs_root *root, struct extent_buffer *parent,
+-		       int start_slot, u64 *last_ret,
+-		       struct btrfs_key *progress);
+ void btrfs_release_path(struct btrfs_path *p);
+ struct btrfs_path *btrfs_alloc_path(void);
+ void btrfs_free_path(struct btrfs_path *p);
+diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+index 53544787c348..4e062c72ee4c 100644
+--- a/fs/btrfs/defrag.c
++++ b/fs/btrfs/defrag.c
+@@ -337,6 +337,112 @@ int btrfs_run_defrag_inodes(struct btrfs_fs_info *fs_info)
+ 	return 0;
+ }
  
- struct btrfs_trans_handle;
- struct btrfs_transaction;
-@@ -461,6 +462,36 @@ int btrfs_bin_search(struct extent_buffer *eb, int first_slot,
- 		     const struct btrfs_key *key, int *slot);
- 
- int __pure btrfs_comp_cpu_keys(const struct btrfs_key *k1, const struct btrfs_key *k2);
-+
-+#ifdef __LITTLE_ENDIAN
++/*
++ * Helper function for defrag to decide if two blocks pointed to by a node are
++ * actually close by.
++ */
++static bool close_blocks(u64 blocknr, u64 other, u32 blocksize)
++{
++	if (blocknr < other && other - (blocknr + blocksize) < SZ_32K)
++		return true;
++	if (blocknr > other && blocknr - (other + blocksize) < SZ_32K)
++		return true;
++	return false;
++}
 +
 +/*
-+ * Compare two keys, on little-endian the disk order is same as CPU order and
-+ * we can avoid the conversion.
++ * This is used by the defrag code to go through all the leaves pointed to by a
++ * node and reallocate them so that disk order is close to key order.
 + */
-+static inline int btrfs_comp_keys(const struct btrfs_disk_key *disk_key,
-+				  const struct btrfs_key *k2)
++static int btrfs_realloc_node(struct btrfs_trans_handle *trans,
++			      struct btrfs_root *root,
++			      struct extent_buffer *parent,
++			      int start_slot, u64 *last_ret,
++			      struct btrfs_key *progress)
 +{
-+	const struct btrfs_key *k1 = (const struct btrfs_key *)disk_key;
++	struct btrfs_fs_info *fs_info = root->fs_info;
++	const u32 blocksize = fs_info->nodesize;
++	const int end_slot = btrfs_header_nritems(parent) - 1;
++	u64 search_start = *last_ret;
++	u64 last_block = 0;
++	int ret = 0;
++	bool progress_passed = false;
 +
-+	return btrfs_comp_cpu_keys(k1, k2);
++	/*
++	 * COWing must happen through a running transaction, which always
++	 * matches the current fs generation (it's a transaction with a state
++	 * less than TRANS_STATE_UNBLOCKED). If it doesn't, then turn the fs
++	 * into error state to prevent the commit of any transaction.
++	 */
++	if (unlikely(trans->transaction != fs_info->running_transaction ||
++		     trans->transid != fs_info->generation)) {
++		btrfs_abort_transaction(trans, -EUCLEAN);
++		btrfs_crit(fs_info,
++"unexpected transaction when attempting to reallocate parent %llu for root %llu, transaction %llu running transaction %llu fs generation %llu",
++			   parent->start, btrfs_root_id(root), trans->transid,
++			   fs_info->running_transaction->transid,
++			   fs_info->generation);
++		return -EUCLEAN;
++	}
++
++	if (btrfs_header_nritems(parent) <= 1)
++		return 0;
++
++	for (int i = start_slot; i <= end_slot; i++) {
++		struct extent_buffer *cur;
++		struct btrfs_disk_key disk_key;
++		u64 blocknr;
++		u64 other;
++		bool close = true;
++
++		btrfs_node_key(parent, &disk_key, i);
++		if (!progress_passed && btrfs_comp_keys(&disk_key, progress) < 0)
++			continue;
++
++		progress_passed = true;
++		blocknr = btrfs_node_blockptr(parent, i);
++		if (last_block == 0)
++			last_block = blocknr;
++
++		if (i > 0) {
++			other = btrfs_node_blockptr(parent, i - 1);
++			close = close_blocks(blocknr, other, blocksize);
++		}
++		if (!close && i < end_slot) {
++			other = btrfs_node_blockptr(parent, i + 1);
++			close = close_blocks(blocknr, other, blocksize);
++		}
++		if (close) {
++			last_block = blocknr;
++			continue;
++		}
++
++		cur = btrfs_read_node_slot(parent, i);
++		if (IS_ERR(cur))
++			return PTR_ERR(cur);
++		if (search_start == 0)
++			search_start = last_block;
++
++		btrfs_tree_lock(cur);
++		ret = btrfs_force_cow_block(trans, root, cur, parent, i,
++					    &cur, search_start,
++					    min(16 * blocksize,
++						(end_slot - i) * blocksize),
++					    BTRFS_NESTING_COW);
++		if (ret) {
++			btrfs_tree_unlock(cur);
++			free_extent_buffer(cur);
++			break;
++		}
++		search_start = cur->start;
++		last_block = cur->start;
++		*last_ret = search_start;
++		btrfs_tree_unlock(cur);
++		free_extent_buffer(cur);
++	}
++	return ret;
 +}
 +
-+#else
-+
-+/* Compare two keys in a memcmp fashion. */
-+static inline int btrfs_comp_keys(const struct btrfs_disk_key *disk,
-+				  const struct btrfs_key *k2)
-+{
-+	struct btrfs_key k1;
-+
-+	btrfs_disk_key_to_cpu(&k1, disk);
-+
-+	return btrfs_comp_cpu_keys(&k1, k2);
-+}
-+
-+#endif
-+
- int btrfs_previous_item(struct btrfs_root *root,
- 			struct btrfs_path *path, u64 min_objectid,
- 			int type);
+ /*
+  * Defrag all the leaves in a given btree.
+  * Read all the leaves and try to get key order to
 -- 
 2.40.1
 
