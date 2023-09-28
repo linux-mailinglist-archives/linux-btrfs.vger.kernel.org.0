@@ -2,80 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 469AB7B28B1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Sep 2023 01:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC28B7B28D4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Sep 2023 01:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbjI1XQK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Sep 2023 19:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48978 "EHLO
+        id S230246AbjI1XcU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Sep 2023 19:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231890AbjI1XQJ (ORCPT
+        with ESMTP id S229541AbjI1XcT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Sep 2023 19:16:09 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBAA19E;
-        Thu, 28 Sep 2023 16:16:07 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id DE3D65C0130;
-        Thu, 28 Sep 2023 19:16:06 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 28 Sep 2023 19:16:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1695942966; x=
-        1696029366; bh=IJ1AtBs/+gvrd7LgN9ORPYT44X0HNrNvDB6Q80vzeH0=; b=a
-        vn9i9ZJSaXN5/v1SKAEVoaaSoSOBTpnRvp2Ri2mEtbezx+PM53rr6ho+yiGfJQey
-        zdCNWh/FVsjm/a6d9QWSnQqMBWxAVNv5wzvJkt2ZHcsvBPhSoJRzoL1P1t2A+7OI
-        9E2CaQcuqaSHBtXyQPsITZ5p4QxDR/lhD7/KTpJwVljfB9qEiQqY+DQ8l9COxlCd
-        lR4w1ae7CygMlt3WlanqF2KNCnmzsD5j0qEJ1hFwGJg8d/e1WY1i2BGO8O/jTHg6
-        62h+HvDQ7wrR6co7Rfupt8aD29/JfhTuR+jzWbpabt3R0Z3gF+bxj+oubq0lHXmA
-        XDUasKCI3GkEkhPcuTZSg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:date:feedback-id:feedback-id:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; t=1695942966; x=1696029366; bh=I
-        J1AtBs/+gvrd7LgN9ORPYT44X0HNrNvDB6Q80vzeH0=; b=ijXznA//kwP/7awba
-        jzMomBpmPqRlm2oI5Etw0+UQInknyAWnOqVkLtvoqhRxMjqLyiCcmmdyZWcOn4jw
-        UbapNzAmAy3+gLqy2WuGBtjziOzh8ZobBt8ubQk40OKD/9z0KNIbC7X2hQOn6d3L
-        mX9MJ3W3zRfojOCWvuks6akpzj2i4B9R97StmFnoxCYvD3/6ntr7W3qlyEvrbCKt
-        SnwSVTMGmnwkWtY02H9NjiKR6SL2kku92LGeoPfWY5M0bWRyStvPdd1Z7mriotY0
-        jUGM8M59S091jt5iH8OgDnUJCdYq5s4wgZPGD0fEeW4tKlaeGR3XTc8C23MtX5fx
-        xxhoA==
-X-ME-Sender: <xms:NgkWZXz0ieIj4ygiocnQ02JNGUG2xQyRMB42Sge5KPHMVqm38kISAA>
-    <xme:NgkWZfScqpidFatTHqGOn6Lzg4mWr8ol9I65eZ-xdY534ONh6yGWQGaAQijlHH99C
-    Gku_FIhs_zAZCDyEyU>
-X-ME-Received: <xmr:NgkWZRVk-Ik9X5GbfL2hmZ1mRYSzwBB2KgU493NDgQukAV59eCz39mAcbsusFoq-VrKILealp2dD2sc2y9SUomWTjhU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtddugddvudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejffevvd
-    ehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:NgkWZRjn7KbDM2t9J7weBZQO1ZYrf87LLCdXMdBovX8J7kvtrYcNpA>
-    <xmx:NgkWZZC54QCuUHXfKcPvGD-4KiQ5LRcNpxi7osUv20ECcLIEKipG9Q>
-    <xmx:NgkWZaL-eZ79yc_f5roLKC2D-pn_-vXvLnXbdYdz0NlbcYRLyKHwPQ>
-    <xmx:NgkWZW694BE-Q18tpBBKnyvmnRF_bPF3qdrKogPp7hgy6vBVurMu0A>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 28 Sep 2023 19:16:06 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fstests@vger.kernel.org
-Subject: [PATCH v4 6/6] btrfs: skip squota incompatible tests
-Date:   Thu, 28 Sep 2023 16:16:48 -0700
-Message-ID: <32ac4b162efb7356eb02398446f9cc082344436f.1695942727.git.boris@bur.io>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1695942727.git.boris@bur.io>
-References: <cover.1695942727.git.boris@bur.io>
+        Thu, 28 Sep 2023 19:32:19 -0400
+Received: from w1.tutanota.de (w1.tutanota.de [81.3.6.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71375139
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Sep 2023 16:32:18 -0700 (PDT)
+Received: from tutadb.w10.tutanota.de (unknown [192.168.1.10])
+        by w1.tutanota.de (Postfix) with ESMTP id F3B57FBFBA7;
+        Thu, 28 Sep 2023 23:32:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1695943936;
+        s=s1; d=tutanota.com;
+        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
+        bh=te5bRIKgbAl6RNKM4T82tMacB+UdJpV7nGqfLtftHxs=;
+        b=eNV6/66ImQm9b6WUws0V1q5zXMd9mEqkblO+b3mPD2EKdzls1HueEDOy3Ivvs43K
+        ZC8BzWwJDcPj90BRifnyYhDpuhxpjizDJ1LaJTOEE9kGuAwp3IHZflHyVkjmzhvf0hG
+        qA79T4vtuFbQ1gISnOgn/0fCrh2F8OKwQCzwUmJbBo+khEGnBYoCEIVbKLrc2I5a06+
+        O+NyrBb6I2L6e1F/OwpN3wRz4oTAICMb+KdTEvwpPsHgRu9y9xl06xRq+LtKsSs00Gh
+        kWeviGTGGlkzuWPF5z8ff7CjSS21bmXjFfOANyAsNHvnQ6HFhNhHaXcH1Dmz1eT7lIO
+        OWgrQOAN9g==
+Date:   Fri, 29 Sep 2023 01:32:16 +0200 (CEST)
+From:   fdavidl073rnovn@tutanota.com
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, Linux Btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <NfT7gZI--3-9@tutanota.com>
+In-Reply-To: <4cb27e5b-2903-4079-8e72-d9db2f19ced7@gmx.com>
+References: <NeBMdyL--3-9@tutanota.com> <4b8a10e4-4df8-4d96-9c6f-fbbe85c64575@suse.com> <NeGkwyI--3-9@tutanota.com> <bb668050-7d43-467f-8648-8bc5f2c314f1@gmx.com> <NeKx2tK--3-9@tutanota.com> <NfJJCdh--3-9@tutanota.com> <4cb27e5b-2903-4079-8e72-d9db2f19ced7@gmx.com>
+Subject: Re: Deleting large amounts of data causes system freeze due to OOM.
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,62 +49,56 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-These tests cannot succeed if mkfs enable squotas, as they either test
-the specifics of qgroups behavior or they test *enabling* squotas. Skip
-these in squota mode.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- tests/btrfs/017 | 1 +
- tests/btrfs/057 | 1 +
- tests/btrfs/091 | 3 ++-
- 3 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tests/btrfs/017 b/tests/btrfs/017
-index 622071018..496cc7df1 100755
---- a/tests/btrfs/017
-+++ b/tests/btrfs/017
-@@ -22,6 +22,7 @@ _begin_fstest auto quick qgroup
- 
- _supported_fs btrfs
- _require_scratch
-+_require_scratch_qgroup
- _require_cloner
- 
- # Currently in btrfs the node/leaf size can not be smaller than the page
-diff --git a/tests/btrfs/057 b/tests/btrfs/057
-index 782d854a0..e932a6572 100755
---- a/tests/btrfs/057
-+++ b/tests/btrfs/057
-@@ -15,6 +15,7 @@ _begin_fstest auto quick
- # real QA test starts here
- _supported_fs btrfs
- _require_scratch
-+_require_qgroup_rescan
- 
- _scratch_mkfs_sized $((1024 * 1024 * 1024)) >> $seqres.full 2>&1
- 
-diff --git a/tests/btrfs/091 b/tests/btrfs/091
-index f2cd00b2e..a71e03406 100755
---- a/tests/btrfs/091
-+++ b/tests/btrfs/091
-@@ -19,6 +19,7 @@ _begin_fstest auto quick qgroup
- _supported_fs btrfs
- _require_scratch
- _require_cp_reflink
-+_require_scratch_qgroup
- 
- # use largest node/leaf size (64K) to allow the test to be run on arch with
- # page size > 4k.
-@@ -35,7 +36,7 @@ _run_btrfs_util_prog subvolume create $SCRATCH_MNT/subv2
- _run_btrfs_util_prog subvolume create $SCRATCH_MNT/subv3
- 
- _run_btrfs_util_prog quota enable $SCRATCH_MNT
--_run_btrfs_util_prog quota rescan -w $SCRATCH_MNT
-+_qgroup_rescan $SCRATCH_MNT
- 
- $XFS_IO_PROG -f -c "pwrite 0 256K" $SCRATCH_MNT/subv1/file1 | _filter_xfs_io
- cp --reflink $SCRATCH_MNT/subv1/file1 $SCRATCH_MNT/subv2/file1
--- 
-2.42.0
+Sep 27, 2023, 04:53 by quwenruo.btrfs@gmx.com:
 
+>
+> The compression is the easily way to create tons of small file extents
+> (the limit of a compressed extent is only 128K).
+>
+> Furthermore, each file extent would need an in-memory structure (struct
+> extent_map, for a debug kernel, it's 122 bytes) to cache the contents.
+>
+> Thus for a 8TiB file with all compressed file extents at their max size
+> (pretty common if it's only for backup).
+> Then we still have 512M file extents.
+>
+> Just multiple that by 122, you can see how this go crazy.
+>
+> But still, if you're only deleting the file, the result shouldn't go
+> this crazy, as deleting itself won't try to read the file extents thus
+> no such cache.
+>
+> However as long as we start doing read/write, the cache can go very
+> large, especially if you use compress, and only get released when the
+> whole inode get released from kernel.
+>
+> On the other hand, if you go uncompressed data, the maximum file extent
+> size is enlarged to 128M (a 1024x increase), thus a huge reduce in the
+> number of extents.
+>
+> In the long run I guess we need some way to release the extent_map when
+> low on memory.
+> But for now, I'm afraid I don't have better suggestion other than
+> turning off compression and defrag the compressed files using newer
+> kernel (v6.2 and newer).
+>
+> In v6.2, there is a patch to prevent defrag from populating the extent
+> map cache, thus it won't take all the memory just by defrag.
+> And with all those files converted from compression, I believe the
+> situation would be greatly improved.
+>
+> Thanks,
+> Qu
+>
+The backup itself is gone and will need to be re-sent. If I'm understanding things properly then by mounting the btrfs device for the backup without compression and enforcing send protocol one it should be written uncompressed which will avoid the issue correct?
+
+I was also looking at the source code and it seems relatively straight forward to change BTRFS_MAX_COMPRESSED and BTRFS_MAX_UNCOMPRESSED to SZ_128M or somewhere in between like SZ_8M. Do you have any thoughts on how well that might work?
+
+Do you have any idea on how complicated the long term fix is or when it might added? v6.8 maybe?
+
+Thank you for your prompt responses. Sending the backup again will take some days but I will email you to tell you if disabling compression fixes the issue.
+
+Sincerely,
+David
