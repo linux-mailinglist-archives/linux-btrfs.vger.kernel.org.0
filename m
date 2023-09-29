@@ -2,236 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F198A7B2FD4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Sep 2023 12:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950A07B30C5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Sep 2023 12:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbjI2KRQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Sep 2023 06:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
+        id S233074AbjI2Knl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Sep 2023 06:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232786AbjI2KRP (ORCPT
+        with ESMTP id S232630AbjI2Knj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Sep 2023 06:17:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C48C0;
-        Fri, 29 Sep 2023 03:17:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C55EAC433C7;
-        Fri, 29 Sep 2023 10:16:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695982632;
-        bh=P0eff07RhtpS5UOcz3JkNsf+Ld6yeT/W26VJM0WDCPo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=XzS9mEvGo34Ng6IbV0phy7oFkBghevr6TXQtKuvgCZiNk6sipSIK1ybdV8fiZNmJi
-         ryG2oocKEqZZKJ0Qpanb9xZf3XPiR4Bq6wmT9EMmf0fleXLKV9fNEg9/bkdRQXUeb0
-         6CCRA5VO7ZThmTCkkfWYanznw4Z3cZqE/s5mMA3tjLRXwYn9bn1bqt+qj2Mv3mg9Lj
-         pTssK95Hwcb1T8QjlazVp2JhItPwZmMqN2Vq1pnJqTnlHDG5dK0bcBFAZ33vjsFaWl
-         leIqxKSfZkutf2lGQF/4jFFb0IVmQg0er/lH6TmX4JwaSuIbh4XkLnYFCd3nLSRRA6
-         40ODyX835zJVA==
-Message-ID: <d52b4330cd26e8ef9b2999281b05e50bd7106b3a.camel@kernel.org>
-Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete
- integers
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Mattia Dongili <malattia@linux.it>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Brad Warrum <bwarrum@linux.ibm.com>,
-        Ritu Agarwal <rituagar@linux.ibm.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Sterba <dsterba@suse.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Ian Kent <raven@themaw.net>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Bob Copeland <me@bobcopeland.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Anders Larsen <al@alarsen.net>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Evgeniy Dushistov <dushistov@mail.ru>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
-        linux-afs@lists.infradead.org, autofs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, linux-efi@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
-        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
-        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
-        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org,
-        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        bpf@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Date:   Fri, 29 Sep 2023 06:16:57 -0400
-In-Reply-To: <20230929-yuppie-unzweifelhaft-434bf13bc964@brauner>
-References: <20230928110554.34758-1-jlayton@kernel.org>
-         <20230928110554.34758-2-jlayton@kernel.org>
-         <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com>
-         <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
-         <20230929-yuppie-unzweifelhaft-434bf13bc964@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 29 Sep 2023 06:43:39 -0400
+Received: from mail-oo1-f77.google.com (mail-oo1-f77.google.com [209.85.161.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEF91AA
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Sep 2023 03:43:37 -0700 (PDT)
+Received: by mail-oo1-f77.google.com with SMTP id 006d021491bc7-57b66da7116so21451772eaf.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Sep 2023 03:43:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695984217; x=1696589017;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k0ftxZRR5u+Fvflo+SQNZa7Ogy6FSoMC45kKGa40Oj0=;
+        b=ZoTNbiddjw+l9lPJPqFHUtVztz8y5xzCSrLBsmfbaf5XFL88tU8LexuE+o4Y14r8R+
+         JLWGCQj66cOQI+Uhxd4T7i0kchFDYjqe5bdU+yX2xCHTRh3FyoBrz80l7GtTJrzWZzXv
+         veNTOR7lLksHZWNt+vHDesm51qR7/XDUlPTWlBYKUXwfOziiBEVSKmZEiWPLFe0YjaBc
+         jc1HUUQ+NV/vkI2G33n/tuZbw4rTMRYWzk2KcH82ToepEZDmQW3DMKPi2nNBg9LrTPuE
+         T+xVw5ogNju4bnwEHZyBP9rJBKtwVo/hXBLKEVdk+ZPSXaRt3ge1An/jG7ug3TzeMMLg
+         4t6g==
+X-Gm-Message-State: AOJu0Yx/kGGrxjvkcGDQF3YQG1HXX5GVxIv/3n8e5YrHjDXkLNzmJPdU
+        9sU/igKgPJRtBJWLZ5zVR+ZJMg8lC+4SjNtzsYo8pbTzKE2y
+X-Google-Smtp-Source: AGHT+IH4SU/YcrZppsDmDzIoAB+uZ0KZRE8blWJFXuH26oF5tBSz3yDBf4aQ0vtzx+us5clXTRW+zOJRamP298VftAUO7CE3c4Cv
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a4a:2c0f:0:b0:57b:7849:1a4d with SMTP id
+ o15-20020a4a2c0f000000b0057b78491a4dmr1191984ooo.0.1695984217191; Fri, 29 Sep
+ 2023 03:43:37 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 03:43:37 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cf826706067d18fd@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_release_global_block_rsv
+From:   syzbot <syzbot+10e8dae9863cb83db623@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 2023-09-29 at 11:44 +0200, Christian Brauner wrote:
-> > It is a lot of churn though.
->=20
-> I think that i_{a,c,m}time shouldn't be accessed directly by
-> filesystems same as no filesystem should really access i_{g,u}id which
-> we also provide i_{g,u}id_{read,write}() accessors for. The mode is
-> another example where really most often should use helpers because of all
-> the set*id stripping that we need to do (and the bugs that we had
-> because of this...).
->=20
-> The interdependency between ctime and mtime is enough to hide this in
-> accessors. The other big advantage is simply grepability. So really I
-> would like to see this change even without the type switch.
->=20
-> In other words, there's no need to lump the two changes together. Do the
-> conversion part and we can argue about the switch to discrete integers
-> separately.
->=20
-> The other adavantage is that we have a cycle to see any possible
-> regression from the conversion.
->=20
-> Thoughts anyone?
+Hello,
 
-That works for me, and sort of what I was planning anyway. I mostly just
-did the change to timestamp storage to see what it would look like
-afterward.
+syzbot found the following issue on:
 
-FWIW, I'm planning to do a v2 patchbomb early next week, with the
-changes that Chuck suggested (specific helpers for fetching the _sec and
-_nsec fields). For now, I'll drop the change from timespec64 to discrete
-fields. We can do that in a separate follow-on set.
---=20
-Jeff Layton <jlayton@kernel.org>
+HEAD commit:    8a511e7efc5a Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=133af832680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d594086f139d167
+dashboard link: https://syzkaller.appspot.com/bug?extid=10e8dae9863cb83db623
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/943dcd094ce2/disk-8a511e7e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8647d59633ee/vmlinux-8a511e7e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9c6b0fed6523/bzImage-8a511e7e.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+10e8dae9863cb83db623@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5077 at fs/btrfs/block-rsv.c:451 btrfs_release_global_block_rsv+0x279/0x2e0 fs/btrfs/block-rsv.c:451
+Modules linked in:
+CPU: 0 PID: 5077 Comm: syz-executor.0 Not tainted 6.6.0-rc2-syzkaller-00414-g8a511e7efc5a #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+RIP: 0010:btrfs_release_global_block_rsv+0x279/0x2e0 fs/btrfs/block-rsv.c:451
+Code: ff e8 bb ff ef fd 0f 0b e9 c9 fe ff ff e8 af ff ef fd 0f 0b e9 fe fe ff ff e8 a3 ff ef fd 0f 0b e9 33 ff ff ff e8 97 ff ef fd <0f> 0b e9 68 ff ff ff e8 8b ff ef fd 0f 0b 5b 5d e9 82 ff ef fd e8
+RSP: 0018:ffffc90003c7fb78 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88807a310000 RCX: 0000000000000000
+RDX: ffff888026559dc0 RSI: ffffffff8397c729 RDI: 0000000000000007
+RBP: 000000000000e000 R08: 0000000000000007 R09: 0000000000000000
+R10: 000000000000e000 R11: 0000000000000001 R12: dffffc0000000000
+R13: 0000000000000001 R14: ffff888067b4a160 R15: ffff888067b4a000
+FS:  000055555730c480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005557ad94b4e8 CR3: 000000003865f000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ btrfs_free_block_groups+0xbb6/0x13d0 fs/btrfs/block-group.c:4380
+ close_ctree+0x8c4/0xdd0 fs/btrfs/disk-io.c:4413
+ generic_shutdown_super+0x161/0x3c0 fs/super.c:693
+ kill_anon_super+0x3a/0x60 fs/super.c:1292
+ btrfs_kill_super+0x3b/0x50 fs/btrfs/super.c:2144
+ deactivate_locked_super+0x9a/0x170 fs/super.c:481
+ deactivate_super+0xde/0x100 fs/super.c:514
+ cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
+ task_work_run+0x14d/0x240 kernel/task_work.c:180
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x215/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
+ do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7faf3687de17
+Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffe2bf9fec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007faf3687de17
+RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffe2bf9ff80
+RBP: 00007ffe2bf9ff80 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffe2bfa1040
+R13: 00007faf368c73b9 R14: 00000000001a2e26 R15: 0000000000000018
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
