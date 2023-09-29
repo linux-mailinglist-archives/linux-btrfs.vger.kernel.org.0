@@ -2,117 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F33B07B3910
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Sep 2023 19:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 479407B384E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Sep 2023 19:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbjI2Rmk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Sep 2023 13:42:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
+        id S233439AbjI2RDQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Sep 2023 13:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233397AbjI2Rmj (ORCPT
+        with ESMTP id S233215AbjI2RDO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:42:39 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3FD1B0;
-        Fri, 29 Sep 2023 10:42:37 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 750623200912;
-        Fri, 29 Sep 2023 13:42:34 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 29 Sep 2023 13:42:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1696009353; x=
-        1696095753; bh=RmFn27W4xJ6QCZjRU+J2koBQk2XmNSs2EABRQgbdEyE=; b=K
-        qDTaDiTKC2EI6B2JmmCHoMKBT2bBID0bZUQErYyL5hxChWz3v1hTaGF3dhO0sG0t
-        MDYQfMfKxVzlVP89QRFbgEZKZyFpbsU96PhXNqaZaQsRVDtlykvOvS96Y2hjPDzB
-        VQvK5n9R669dTu9jS/jTzrqU+RDenoBI+q4efx/RESkGr903j6rcNDKHk8wi1TYF
-        1wWn1KCMn0v2N4XyfD5vDJGJ8qWb7zYSUPIiAGD1mDvJSXEUQrylopDv3cv+MyAg
-        qq8Gm8VqH9ji6Nmi63iCEYYIh/cerKQIQBAaFe6gfFZkqhV+pKiczSyMu4v37G6t
-        +rYK9SaEFp7r2VJhgJIuQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:date:feedback-id:feedback-id:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; t=1696009353; x=1696095753; bh=R
-        mFn27W4xJ6QCZjRU+J2koBQk2XmNSs2EABRQgbdEyE=; b=bB7hRpC7mxZt9+aYk
-        iClj+0eeixFmdSzpJglAXKqfQp2MDrMIP9KkRHj9NTka8iosOdNhYv1XB5rAMmef
-        Z7OWgjw2KLidFZghvkjY9puEkkq8EwZ3x/kuDCo+vDF14PepWboDudAjdN+KrMx7
-        Wvc2hWg5MK+miqgYA9k6DZZj7L5DCaSO4f3tPTEQ8RQmFIQDQbVjj2ektm2WxPXs
-        86+3HrPhU35iPPSOyvo09gjXYxRt+GOcYJQHtu8LgY+loMhDXxZPRmcJs7A15ooq
-        ItxD+dCgCO6vDt0WsbjSLGitgs6OeyvBTCyih8LA456k0aDjWVApckYeQuKk+bSY
-        nkUvw==
-X-ME-Sender: <xms:iQwXZcLip4uqQumuXl_mnrtFDSNKnE2_n7gg9FGcxwCcnbrYu4RXMQ>
-    <xme:iQwXZcL0A9sBk2bL7nGz2ooTEB4LC8LMepdDzYYZaPDxwm_Q4mf4gI4Wo_P5sqnuF
-    ncOPo1Td6PKs1nWwWI>
-X-ME-Received: <xmr:iQwXZcvazaStMqpChEjvy8tvt-SBOhpjxt6j2IvpdGuqiTHaJYp4yof0SwawCpKPbzRPWjXhXMSZZ6VTWJuiPMuI9_s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtddvgdduudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
-    ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
-    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:iQwXZZb2PyAJ73Zn2TqQlO1ArUL03ZloSi8hLoNFijWP9FhL_cDBCg>
-    <xmx:iQwXZTaGUtUiXypZomdJw0FStLPyYXcTBxYNxHziT_96JYTW2PWiLA>
-    <xmx:iQwXZVBFZgfdpvFkS8u5r8aeRSuW--Z8sqRhp1aYtfko0cZSHHMX2A>
-    <xmx:iQwXZSnkl22Sojl9pZvUIgFefvu-Ta8A1gZpxndtaxqYuqwKmXALsg>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 29 Sep 2023 13:42:33 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fstests@vger.kernel.org, anand.jain@oracle.com
-Subject: [PATCH] btrfs: fix rescan helper
-Date:   Fri, 29 Sep 2023 10:43:30 -0700
-Message-ID: <d51adc803f344fb0bb5e63243e94f94f287ac2c0.1696009118.git.boris@bur.io>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <ea2c732f-68be-74b1-f05e-218ebaa2b359@oracle.com>
-References: <ea2c732f-68be-74b1-f05e-218ebaa2b359@oracle.com>
+        Fri, 29 Sep 2023 13:03:14 -0400
+X-Greylist: delayed 1506 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 29 Sep 2023 10:03:13 PDT
+Received: from tmeaug.com (tmeaug.com [89.117.123.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6981A7
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Sep 2023 10:03:13 -0700 (PDT)
+Received: from tmeaug.com (unknown [104.148.56.178])
+        by tmeaug.com (Postfix) with ESMTPSA id 4CC7526B055
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Sep 2023 17:33:40 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tmeaug.com; s=default;
+        t=1696005220; h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=Mw3R3LnW5FKs1MeylEZR+iCJf6D/hz/6jzDEuTuR1qQ=;
+        b=ZL/pL71KOU23Zl1ZxPaAI7E+/52hW5vpVE7nGuAiEFZOu2s4vYHpDDcuWESJFZ4oTpTKrR
+        Z2pnQFSr/tL0t2rcQ1moVWoOYYqxWJ8pty3g0vE2yFnPle5PU5Vtv7+EQZqhx4pRYPhe/F
+        pN/rCDD9jSJaDnl4BbVHBOTRmdOscII=
+Reply-To: Ms Zara Abdo <zarabduo@gmail.com>
+From:   Ms Zara Abdo <dbthan@tmeaug.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Did you receive my letter ?
+Date:   29 Sep 2023 16:33:30 -0700
+Message-ID: <20230929163330.99CB2917F8C5B67D@tmeaug.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_60,DATE_IN_FUTURE_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_FORGED_REPLYTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [89.117.123.130 listed in list.dnswl.org]
+        *  1.5 BAYES_60 BODY: Bayes spam probability is 60 to 80%
+        *      [score: 0.7345]
+        *  1.9 DATE_IN_FUTURE_06_12 Date: is 6 to 12 hours after Received:
+        *      date
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.0 SPF_HELO_PASS SPF: HELO matches SPF record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-rescan -w silently handles the case where a rescan is already running.
-rescan -W works even in squota mode, so it is insufficient to implement
-the requires. Therefore, preface the rescan -w with rescan -W, which
-should reliably trigger a real rescan start.
+can you please confirm recipt of my letter ?
 
-This results in an extra log line reliably appearing in stdout, so also
-redirect the output to $seqres.full.
-
-btrfs/022 and btrfs/057 now pass with and without mkfs -O squota.
-
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- common/btrfs | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/common/btrfs b/common/btrfs
-index 34fa3a157..eff8e8386 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -724,7 +724,10 @@ _require_qgroup_rescan()
- 	_scratch_mkfs >>$seqres.full 2>&1
- 	_scratch_mount
- 	_run_btrfs_util_prog quota enable $SCRATCH_MNT
--	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT ||  _notrun "not able to run quota rescan"
-+	# Wait for the first rescan.
-+	$BTRFS_UTIL_PROG quota rescan -W $SCRATCH_MNT || _notrun "not able to wait on a quota rescan"
-+	# Make sure we can start a rescan.
-+	$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full || _notrun "not able to run quota rescan"
- 	_scratch_unmount
- }
- 
--- 
-2.42.0
-
+Ms Zara
