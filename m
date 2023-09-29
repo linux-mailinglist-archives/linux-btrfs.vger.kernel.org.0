@@ -2,225 +2,341 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 856AC7B2F37
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Sep 2023 11:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652787B2F31
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Sep 2023 11:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232982AbjI2Jdh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Sep 2023 05:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
+        id S232915AbjI2Jdb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Sep 2023 05:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232932AbjI2Jdf (ORCPT
+        with ESMTP id S232887AbjI2Jda (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:33:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39543195;
-        Fri, 29 Sep 2023 02:33:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9F8C433C8;
-        Fri, 29 Sep 2023 09:32:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695980011;
-        bh=5rEQjJQmUmhQcZE/S/zbC0z+O4aP1HcivNZvR+uMTdw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j3Z7MPGXgH3qxJhUlGKswKaevoMz5lRlYfLKv517rB572Uft036HOzVnh6y+Fta2y
-         IoP7pRk6lJWa27fv+jFujIlmXsGfS+YQww12NsbvPCYDl6f8XCPE+CtURkcHaeicsG
-         yrkS/+0BXoBXAhDuBIWkGS4iWyGcgZc4uj5K1I6XTsFJQGfVSUCd06bbdxYUiSeitY
-         kWvaORdHP4IXSdIX2Ck5PihMbYV+j7YqPan4YQc6tbETcfSrUPTc518VDuKuEt3jeG
-         gYpsCzcJzJ2TfBOID0I9Ah10OPTMXVGJPcaLChcuIuOHlJVeXlo8F4Hi+JnhGg6W4h
-         6HAwcZKgDftHQ==
-Date:   Fri, 29 Sep 2023 11:32:49 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        David Sterba <dsterba@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Mattia Dongili <malattia@linux.it>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Brad Warrum <bwarrum@linux.ibm.com>,
-        Ritu Agarwal <rituagar@linux.ibm.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Sterba <dsterba@suse.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Ian Kent <raven@themaw.net>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Bob Copeland <me@bobcopeland.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Anders Larsen <al@alarsen.net>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Evgeniy Dushistov <dushistov@mail.ru>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
-        linux-afs@lists.infradead.org, autofs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, linux-efi@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
-        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
-        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
-        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org,
-        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Subject: Re: [PATCH 87/87] fs: move i_blocks up a few places in struct inode
-Message-ID: <20230929-keimt-umspannen-bfd12d2c2033@brauner>
-References: <20230928110554.34758-1-jlayton@kernel.org>
- <20230928110554.34758-3-jlayton@kernel.org>
- <CAHk-=wij_42Q9WHY898r-gugmT5c-1JJKRh3C+nTUd1hc1aeqQ@mail.gmail.com>
+        Fri, 29 Sep 2023 05:33:30 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690E6193
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Sep 2023 02:33:27 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9b275afb6abso100301666b.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Sep 2023 02:33:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695980006; x=1696584806; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0Kc/LN95kqE5xKM07tW/UhRHnLlPLilbH4Ha+h3QBkg=;
+        b=Jo1Gx/8DsyPJEyGZp8ozclHYLEvlCIdEUsbx2oUI3b2GbgrLDkoNlLFf0Ci/DuS7so
+         EedThCqdCa4/yFevCvWyDS3q7VGsHdASPKf8nWT9qbOeu48tvvVWNn0FzkKvX8fmtAI3
+         XSsW7dI7S1wg3ZDfPnvsBDgFiq1RrTYqgxAS/tKFQ7lqYojb0v1l04GkEjQdj6qY9T6G
+         lHpWuqpDBpb/SJrMg8/TyhjlynmhG9o0iW/iMaWFIWAPDBcwTQp+i8NRJ7kxbRUXSQUF
+         FkadZcN+RdjtCjVnhvJHdoZxSE4h+viwywzsMJm61uWygnu6mrurvwlqmqYM1Sdw1ZOg
+         Rtdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695980006; x=1696584806;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0Kc/LN95kqE5xKM07tW/UhRHnLlPLilbH4Ha+h3QBkg=;
+        b=q6UdmOVIBOeO1mhWBV99y2J0ypOABj6nPma8Y8asIjCFJYsI76AcgCLmgQdhoCSyPi
+         JMndYuecl0x27hxxMq8ZqcHJitggOecYiqPoCVtwzZquiMzdcoNSKuusZPATW5+oqDHp
+         AQOC/c2dIVncTSkLSGaAJjC3eNiyR/lIrS3N3vCJ1/QLGW25QOUKFb+EloDI6wCez8OG
+         veIvJ+60sX3iRGsh8+xqzM1kMae083Gnlza1cLim1c0rfN9wVjYOsAVZ95lKv/4lpgAn
+         pCU1WWm4oski68X+WFVCyYDFxxuMqmVqSws49EpkY1u+TyZMLBMgY1ygnWkjLqNejbb3
+         y19w==
+X-Gm-Message-State: AOJu0YwH7mb1y0f8czFgxUP+XW31G/LlOBG9AzDtYCAHwg1qqSD26h/n
+        JjuPQ322WJEY4/yr40rZv08=
+X-Google-Smtp-Source: AGHT+IH801HgouJmt4bwfM8/MKNVybytcynli6rhnxrUmSWe84BVQCMgfGq38pYncbE/j8k85mNlvQ==
+X-Received: by 2002:a17:907:2717:b0:9a2:143e:a070 with SMTP id w23-20020a170907271700b009a2143ea070mr3446055ejk.20.1695980005502;
+        Fri, 29 Sep 2023 02:33:25 -0700 (PDT)
+Received: from [192.168.3.88] (ppp-94-68-116-207.home.otenet.gr. [94.68.116.207])
+        by smtp.googlemail.com with ESMTPSA id ey6-20020a1709070b8600b009b2b7333c8bsm3417841ejc.81.2023.09.29.02.33.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 02:33:24 -0700 (PDT)
+Message-ID: <c9fa7f88-5f3b-04f8-b18d-7d8490299538@gmail.com>
+Date:   Fri, 29 Sep 2023 12:33:19 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wij_42Q9WHY898r-gugmT5c-1JJKRh3C+nTUd1hc1aeqQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] btrfs-progs: fix failed resume due to bad search
+Content-Language: el-en, en-US
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <840a9a762a3a0b8365d79dd7c23d812d95761dcf.1695855009.git.wqu@suse.com>
+ <fc926390-38ea-f764-4377-25576b872b31@gmail.com>
+ <e834fd8a-3c10-4b5c-9121-9812f460f73c@gmx.com>
+From:   Konstantinos Skarlatos <k.skarlatos@gmail.com>
+In-Reply-To: <e834fd8a-3c10-4b5c-9121-9812f460f73c@gmx.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 10:41:34AM -0700, Linus Torvalds wrote:
-> On Thu, 28 Sept 2023 at 04:06, Jeff Layton <jlayton@kernel.org> wrote:
-> >
-> > Move i_blocks up above the i_lock, which moves the new 4 byte hole to
-> > just after the timestamps, without changing the size of the structure.
-> 
-> I'm sure others have mentioned this, but 'struct inode' is marked with
-> __randomize_layout, so the actual layout may end up being very
-> different.
-> 
-> I'm personally not convinced the whole structure randomization is
-> worth it - it's easy enough to figure out for any distro kernel since
-> the seed has to be the same across machines for modules to work, so
-> even if the seed isn't "public", any layout is bound to be fairly
-> easily discoverable.
-> 
-> So the whole randomization only really works for private kernel
-> builds, and it adds this kind of pain where "optimizing" the structure
-> layout is kind of pointless depending on various options.
-> 
-> I certainly *hope* no distro enables that pointless thing, but it's a worry.
+On 29/09/2023 12:56 π.μ., Qu Wenruo wrote:
+>
+>
+> On 2023/9/29 00:23, Konstantinos Skarlatos wrote:
+>> Hi Qu, thanks for your patch. I just tried it on a clean btrfs-progs
+>> tree with my filesystem:
+>>
+>> ❯ ./btrfstune --convert-to-block-group-tree /dev/sda
+>> [1]    796483 segmentation fault (core dumped)  ./btrfstune
+>> --convert-to-block-group-tree /dev/sda
+>
+> Mind to enable debug build by "make D=1" for btrfs-progs, and go with
+> gdb to show the crash callback?
+>
+> I assume it could be the same crash from your initial report.
+>
+> Thanks,
+> Qu
+>
 
-They don't last we checked. Just last cycle we moved stuff in struct
-file around to optimize things and we explicitly said we don't give a
-damn about struct randomization. Anyone who enables this will bleed
-performance pretty badly, I would reckon.
+Hi Qu, i hope i am doing this correctly...
+
+
+❯ gdb -ex=r --args ./btrfstune --convert-to-block-group-tree /dev/sda
+GNU gdb (GDB) 13.2
+Copyright (C) 2023 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later
+<http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-pc-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from ./btrfstune...
+Starting program: /root/btrfs-progs/btrfstune
+--convert-to-block-group-tree /dev/sda
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.archlinux.org>
+Enable debuginfod for this session? (y or [n]) y
+Debuginfod has been enabled.
+To make this setting permanent, add 'set debuginfod enabled on' to .gdbinit.
+Downloading separate debug info for /lib64/ld-linux-x86-64.so.2
+Downloading separate debug info for system-supplied DSO at 0x7ffff7fc8000
+Downloading separate debug info for /usr/lib/libuuid.so.1
+Downloading separate debug info for /usr/lib/libblkid.so.1
+Downloading separate debug info for /usr/lib/libudev.so.1
+Downloading separate debug info for /usr/lib/libc.so.6
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib/libthread_db.so.1".
+Downloading separate debug info for /usr/lib/libcap.so.2
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00005555555c6600 in cache_tree_comp_range (node=0xffffffffff000f0f,
+data=0x7fffffffd780) at common/extent-cache.c:40
+40              if (entry->start + entry->size <= range->start)
+(gdb)
+
+
+
+
+>>
+>> Sep 28 17:46:17 elsinki kernel: btrfstune[796483]: segfault at
+>> ffffffffff000f2f ip 0000564b6c2107aa sp 00007ffdc8ad25c8 error 5 in
+>> btrfstune[564b6c1d1000+5b000] likely on CPU 3 (core 2, socket 0)
+>> Sep 28 17:46:17 elsinki kernel: Code: ff 48 8b 34 24 48 8d 3d 5a d8 01
+>> 00 b8 00 00 00 00 e8 5a 37 00 00 48 8b 33 bf 0a 00 00 00 e8 1d 0c fc ff
+>> eb a8 e8 86 0a fc ff <48> 8b 4f 20 48 8b 56 08 48 89 c8 48 03 47 28 48
+>> 89 c7 b8 01 00 00
+>> Sep 28 17:46:17 elsinki systemd[1]: Created slice Slice
+>> /system/systemd-coredump.
+>> Sep 28 17:46:17 elsinki systemd[1]: Started Process Core Dump (PID
+>> 796493/UID 0).
+>> Sep 28 17:46:21 elsinki systemd-coredump[796494]: [🡕] Process 796483
+>> (btrfstune) of user 0 dumped core.
+>>
+>>                                                    Stack trace of thread
+>> 796483:
+>>                                                    #0 0x0000564b6c2107aa
+>> n/a (/root/btrfs-progs/btrfstune + 0x4d7aa)
+>>                                                    ELF object binary
+>> architecture: AMD x86-64
+>> Sep 28 17:46:21 elsinki systemd[1]: systemd-coredump@0-796493-0.service:
+>> Deactivated successfully.
+>> Sep 28 17:46:21 elsinki systemd[1]: systemd-coredump@0-796493-0.service:
+>> Consumed 4.248s CPU time.
+>>
+>>
+>> On 28/9/2023 1:50 π.μ., Qu Wenruo wrote:
+>>> [BUG]
+>>> There is a bug report that when converting to bg tree crashed, the
+>>> resulted fs is unable to be resumed.
+>>>
+>>> This problems comes with the following error messages:
+>>>
+>>>    ./btrfstune --convert-to-block-group-tree /dev/sda
+>>>    ERROR: Corrupted fs, no valid METADATA block group found
+>>>    ERROR: failed to delete block group item from the old root: -117
+>>>    ERROR: failed to convert the filesystem to block group tree feature
+>>>    ERROR: btrfstune failed
+>>>    extent buffer leak: start 17825576632320 len 16384
+>>>
+>>> [CAUSE]
+>>> When resuming a interrupted conversion, we go through
+>>> read_converting_block_groups() to handle block group items in both
+>>> extent and block group trees.
+>>>
+>>> However for the block group items in the extent tree, there are several
+>>> problems involved:
+>>>
+>>> - Uninitialized @key inside read_old_block_groups_from_root()
+>>>    Here we only set @key.type, not setting @key.objectid for the
+>>> initial
+>>>    search.
+>>>
+>>>    Thus if we're unlukcy, we can got (u64)-1 as key.objectid, and exit
+>>>    the search immediately.
+>>>
+>>> - Wrong search direction
+>>>    The conversion is converting block groups in descending order,
+>>> but the
+>>>    block groups read is in ascending order.
+>>>    Meaning if we start from the last converted block group, we would at
+>>>    most read one block group.
+>>>
+>>> [FIX]
+>>> To fix the problems, this patch would just remove
+>>> read_old_block_groups_from_root() function completely.
+>>>
+>>> As for the conversion, we ensured the block group item is either in the
+>>> old extent or the new block group tree.
+>>> Thus there is no special handling needed reading block groups.
+>>>
+>>> We only need to read all block groups from both trees, using the same
+>>> read_old_block_groups_from_root() function.
+>>>
+>>> Reported-by: Konstantinos Skarlatos <k.skarlatos@gmail.com>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>> To Konstantinos:
+>>>
+>>> The bug I fixed here can explain all the failures you hit (the initial
+>>> one and the one after the quick diff).
+>>>
+>>> Please verify if this helps and report back (without the quick diff in
+>>> the original thread).
+>>>
+>>> We may have other corner cases to go, but I believe the patch itself is
+>>> necessary no matter what, as the deleted code is really
+>>> over-engineered and buggy.
+>>> ---
+>>>   kernel-shared/extent-tree.c | 79
+>>> +------------------------------------
+>>>   1 file changed, 1 insertion(+), 78 deletions(-)
+>>>
+>>> diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
+>>> index 7022643a9843..4d6bf2b228e9 100644
+>>> --- a/kernel-shared/extent-tree.c
+>>> +++ b/kernel-shared/extent-tree.c
+>>> @@ -2852,83 +2852,6 @@ out:
+>>>       return ret;
+>>>   }
+>>> -/*
+>>> - * Helper to read old block groups items from specified root.
+>>> - *
+>>> - * The difference between this and read_block_groups_from_root() is,
+>>> - * we will exit if we have already read the last bg in the old root.
+>>> - *
+>>> - * This is to avoid wasting time finding bg items which should be
+>>> in the
+>>> - * new root.
+>>> - */
+>>> -static int read_old_block_groups_from_root(struct btrfs_fs_info
+>>> *fs_info,
+>>> -                       struct btrfs_root *root)
+>>> -{
+>>> -    struct btrfs_path path = {0};
+>>> -    struct btrfs_key key;
+>>> -    struct cache_extent *ce;
+>>> -    /* The last block group bytenr in the old root. */
+>>> -    u64 last_bg_in_old_root;
+>>> -    int ret;
+>>> -
+>>> -    if (fs_info->last_converted_bg_bytenr != (u64)-1) {
+>>> -        /*
+>>> -         * We know the last converted bg in the other tree, load the
+>>> chunk
+>>> -         * before that last converted as our last bg in the tree.
+>>> -         */
+>>> -        ce = search_cache_extent(&fs_info->mapping_tree.cache_tree,
+>>> -                     fs_info->last_converted_bg_bytenr);
+>>> -        if (!ce || ce->start != fs_info->last_converted_bg_bytenr) {
+>>> -            error("no chunk found for bytenr %llu",
+>>> -                  fs_info->last_converted_bg_bytenr);
+>>> -            return -ENOENT;
+>>> -        }
+>>> -        ce = prev_cache_extent(ce);
+>>> -        /*
+>>> -         * We should have previous unconverted chunk, or we have
+>>> -         * already finished the convert.
+>>> -         */
+>>> -        ASSERT(ce);
+>>> -
+>>> -        last_bg_in_old_root = ce->start;
+>>> -    } else {
+>>> -        last_bg_in_old_root = (u64)-1;
+>>> -    }
+>>> -
+>>> -    key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
+>>> -
+>>> -    while (true) {
+>>> -        ret = find_first_block_group(root, &path, &key);
+>>> -        if (ret > 0) {
+>>> -            ret = 0;
+>>> -            goto out;
+>>> -        }
+>>> -        if (ret != 0) {
+>>> -            goto out;
+>>> -        }
+>>> -        btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
+>>> -
+>>> -        ret = read_one_block_group(fs_info, &path);
+>>> -        if (ret < 0 && ret != -ENOENT)
+>>> -            goto out;
+>>> -
+>>> -        /* We have reached last bg in the old root, no need to
+>>> continue */
+>>> -        if (key.objectid >= last_bg_in_old_root)
+>>> -            break;
+>>> -
+>>> -        if (key.offset == 0)
+>>> -            key.objectid++;
+>>> -        else
+>>> -            key.objectid = key.objectid + key.offset;
+>>> -        key.offset = 0;
+>>> -        btrfs_release_path(&path);
+>>> -    }
+>>> -    ret = 0;
+>>> -out:
+>>> -    btrfs_release_path(&path);
+>>> -    return ret;
+>>> -}
+>>> -
+>>>   /* Helper to read all block groups items from specified root. */
+>>>   static int read_block_groups_from_root(struct btrfs_fs_info *fs_info,
+>>>                          struct btrfs_root *root)
+>>> @@ -2989,7 +2912,7 @@ static int read_converting_block_groups(struct
+>>> btrfs_fs_info *fs_info)
+>>>           return ret;
+>>>       }
+>>> -    ret = read_old_block_groups_from_root(fs_info, old_root);
+>>> +    ret = read_block_groups_from_root(fs_info, old_root);
+>>>       if (ret < 0) {
+>>>           error("failed to load block groups from the old root: %d",
+>>> ret);
+>>>           return ret;
+
