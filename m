@@ -2,218 +2,656 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A31957B43B3
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Sep 2023 23:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF847B43E8
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Sep 2023 23:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233926AbjI3VH6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 30 Sep 2023 17:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+        id S233981AbjI3VW5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 30 Sep 2023 17:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbjI3VH5 (ORCPT
+        with ESMTP id S231436AbjI3VW4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 30 Sep 2023 17:07:57 -0400
-Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F3AE1
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Sep 2023 14:07:54 -0700 (PDT)
-Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1bf2e81ce63so2296677fac.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Sep 2023 14:07:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696108073; x=1696712873;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=otBfQrmQDL+mpXNdIPmqhYy3fKzQRiuiQTggjywq8j0=;
-        b=ciQ33Y7qqm24H/xXS0UV+ecjk1jdysctUjmy/XYiceIoAB14ejT/wwzDzBwQwHH9KT
-         K1sqOpd8fxIa+K16uh4MQ9TnsreC1/fXASMkvCPsqhjDTw/UmK9m36xOPWxJuHw2IMW6
-         h5aINXZA/3FE6Gh/3hhIhATioH0quCGBhISXl+Myv2FQjX3+gb1HcgVPtohw+DrPYB4a
-         U8HuRDMwVlAVCaophWqMy7KHu21iLUVWO8S+IUBs0jSaGX8k18loTYzXCcD5nnDos1Yc
-         gSX55jYJH3FL2F6f55yTuYat1op+YbVAgDczYHP0V2DE7e4GYEZHfoQme+p16ICN792W
-         Nwdw==
-X-Gm-Message-State: AOJu0YwBbgi955ywcsD1nmKsrEjqsoMtuKp+mBru8XCdyK5/llbZA7/r
-        6OUP0bHWdE8rXDNm7vNHr2OHtfxQgLSexwAUyW+zOfXfgsy3
-X-Google-Smtp-Source: AGHT+IFOvNgeG3dQrAOoJ+6fGQ3TqQPdqxyP8FCTLhsT4NtzUFaqusiKhGBPbaUvkcUlYX5Zu67Av/X92QgG6sZbfG/pl+G/EuJO
+        Sat, 30 Sep 2023 17:22:56 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF476DD
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Sep 2023 14:22:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+ t=1696108967; x=1696713767; i=quwenruo.btrfs@gmx.com;
+ bh=rhlzcBq1NQkgtLOqYvFoZQ1w3BIzrQsUwbtyTCFNSiw=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=CD282jCvkmp2Zvy2DvmV/I5LgXusi+8Yctkt3i+KSWQ1rf4IUOgjJr2hMq29+FSDewuEfKpmE2a
+ vPmzKqhBhxFm/4O5OnNZDFN15coqIGbs7lbG5tGKC4voZljyzGBGrs0ZtOzwtaV10BobPiEanZ/sg
+ y4Q2HeKkYEINzaCdLXbcnwgCKlmCojl1KbkZsTyfX/ZJt5UF4BYd/38Fp61O6FKnpBsj3Q5a8SgKZ
+ DD6mTIR7Va8tMccH5e66s0DMHNKHoToAUAyH//Ir2ceJFgYOyMqLGh0etmnTH887uPBO8yJqu7Ul6
+ LtLGJe2dvsf+6jq325FC1J3/q04PmttxFZfA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7zBb-1rifag4AWh-0152ra; Sat, 30
+ Sep 2023 23:22:46 +0200
+Content-Type: multipart/mixed; boundary="------------ssFPKEgTjNR19u6TJoMHMBBg"
+Message-ID: <17ed25c0-9a96-456b-a998-6e7d8e5ad113@gmx.com>
+Date:   Sun, 1 Oct 2023 07:52:41 +1030
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:5a8d:b0:1dc:e0e3:228b with SMTP id
- dt13-20020a0568705a8d00b001dce0e3228bmr3163046oab.0.1696108073623; Sat, 30
- Sep 2023 14:07:53 -0700 (PDT)
-Date:   Sat, 30 Sep 2023 14:07:53 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003aa943060699ef0c@google.com>
-Subject: [syzbot] [btrfs?] KASAN: stack-out-of-bounds Read in btrfs_buffered_write
-From:   syzbot <syzbot+e5c1bab304c63c107418@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs-progs: fix failed resume due to bad search
+To:     Konstantinos Skarlatos <k.skarlatos@gmail.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <840a9a762a3a0b8365d79dd7c23d812d95761dcf.1695855009.git.wqu@suse.com>
+ <fc926390-38ea-f764-4377-25576b872b31@gmail.com>
+ <e834fd8a-3c10-4b5c-9121-9812f460f73c@gmx.com>
+ <c9fa7f88-5f3b-04f8-b18d-7d8490299538@gmail.com>
+ <a59ee960-f493-47d5-918d-4386a4deecd3@gmx.com>
+ <a7404485-0a85-49c2-afb8-769ad112dd8b@gmail.com>
+ <cd390b15-7d42-41be-afc6-22c6fa22671d@gmx.com>
+ <35bc07b9-2e6c-0848-661c-8e991cb5479a@gmail.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <35bc07b9-2e6c-0848-661c-8e991cb5479a@gmail.com>
+X-Provags-ID: V03:K1:226YOTUJaxzgPIMn0P1crBOeyLXNZAMhZJipQj0eBOoGpRjTta5
+ r1trUiDf/7TMjWf3B1Lshk5jhmtuc4atM9d0S19I1/vh9bJs7gYkRezv9cMErUfBlmNlmna
+ yVfeN3MRAJix+tamk3oKW5P8Lq+7yj4US6lkw37kFZMeGqnP2jWVp5b8yJ5SrvJLi50wYmq
+ /DuKwNFRWqNAMqPRvEXzQ==
+UI-OutboundReport: notjunk:1;M01:P0:E5YyIdI48Nw=;zB+G+ukb5I/bkx/rPT9X9fB7Ths
+ yC/wQ9UfGSJwa1Y7mB0VyyFC8M+lXJnRXNQTcd80kdja6gbkej2L/M4ILhN8lyWfkTFdMCS2p
+ cm7h60haT7Papuy8P7Q2bdluOI/xXYprHI/AkgZyyAOEKHj6HWgm2dPl7rP6cPlLXPntAj9pI
+ 5AIZHWkBCd3Ub+UtkysFD88eIPZhJFL/VzVUQ2rwBXaB8b+z3hDvTpV9KTXWaAJI5RGkRYKnG
+ ObYqZdYCC2TpTJOcVq2WGn8Mg6iQoCWJp7ZqrKMiIlzkq0da76/8I9QJT9UIppWp2Ttzxy+ov
+ varECt/+k1kE4c6mffR8tmfglcJexfyjhkj+fhYsUjgC6qP9K0xSeBPOsQ+t8WOE55JV+mi7Q
+ L4b2ZfqhLvt2NrRYidQA9/kprJROviPZOlIK2s2Y+UhReOVLXZYMr3QQlbm3IcV/2gZoFkogs
+ zkeV270p4EvN6O+icdY8TdLJSBMc4FZSVhw8mbHbrzcWRPtFxWyIgnyLp8wdWkUFPD/cQSjB/
+ AMMttdRwfogR23xLWtpG1D757FrsCKvcY5jbe7/uweiWgH8luylw4Nha48laPmmoQG/9Nf03A
+ hpAfftFb1ry+KrC+hrFBGLjklDCI16fw7GsYoOQWzjVpBDRt/STch6ACP4zWTmICIR77SMHMw
+ QP1tt2cLN70OCP+tAL95AEDKKbOkJx/HO9xh4FoP4cUN06I9rcJN7EQrsQUkUfnlm+z68UriQ
+ MN1s6gWnGlju5oHCPhLwLJkDTY76lw51CLMxtGAHNzK6zV3HbZ+bDlD9XEX+twNfAwz4h1fZD
+ iLpKrX0oefq6sOWXnlxyZrd7AlbgN4ApabJvDYZRSjwDBunVsKn4kUEAOsGgCHIgJ9QX56OBD
+ nBn6ApbuuVdmEhfTN8hW8CTBapvKTA4mQYJoXbE9sxhRXi2YvPDNn0gkGOwuia/ZN/GWjgwBz
+ XVJZiBUWDg+w7nknILwuijMLZYI=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    df964ce9ef9f Add linux-next specific files for 20230929
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13c348e6680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=880c828d75e38e1b
-dashboard link: https://syzkaller.appspot.com/bug?extid=e5c1bab304c63c107418
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/fe7244c6057d/disk-df964ce9.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/48cdc7f3b2c0/vmlinux-df964ce9.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ce7c93a66da9/bzImage-df964ce9.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e5c1bab304c63c107418@syzkaller.appspotmail.com
-
-BTRFS info (device loop5): auto enabling async discard
-==================================================================
-BUG: KASAN: stack-out-of-bounds in iterate_bvec include/linux/iov_iter.h:116 [inline]
-BUG: KASAN: stack-out-of-bounds in __copy_from_iter_mc+0x30a/0x3f0 lib/iov_iter.c:262
-Read of size 4 at addr ffffc9000a0ff574 by task syz-executor.5/8451
-
-CPU: 0 PID: 8451 Comm: syz-executor.5 Not tainted 6.6.0-rc3-next-20230929-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- iterate_bvec include/linux/iov_iter.h:116 [inline]
- __copy_from_iter_mc+0x30a/0x3f0 lib/iov_iter.c:262
- __copy_from_iter lib/iov_iter.c:271 [inline]
- copy_page_from_iter_atomic+0x471/0x11e0 lib/iov_iter.c:504
- btrfs_copy_from_user+0xe7/0x310 fs/btrfs/file.c:61
- btrfs_buffered_write+0xabe/0x12d0 fs/btrfs/file.c:1337
- btrfs_do_write_iter+0xa56/0x1120 fs/btrfs/file.c:1686
- __kernel_write_iter+0x261/0x7e0 fs/read_write.c:517
- dump_emit_page fs/coredump.c:888 [inline]
- dump_user_range+0x299/0x790 fs/coredump.c:915
- elf_core_dump+0x2700/0x3900 fs/binfmt_elf.c:2142
- do_coredump+0x2c97/0x3fc0 fs/coredump.c:764
- get_signal+0x2434/0x2790 kernel/signal.c:2890
- arch_do_signal_or_restart+0x90/0x7f0 arch/x86/kernel/signal.c:309
- exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
- exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
- do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:87
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f2fa447cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f2fa51250c8 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
-RAX: ffffffffffffffe5 RBX: 00007f2fa459bf80 RCX: 00007f2fa447cae9
-RDX: 0000000100000000 RSI: 0000000000000000 RDI: 0000000000000004
-RBP: 00007f2fa44c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f2fa459bf80 R15: 00007ffd70b99bd8
- </TASK>
-
-The buggy address belongs to stack of task syz-executor.5/8451
- and is located at offset 108 in frame:
- dump_user_range+0x0/0x790 fs/coredump.c:482
-
-This frame has 3 objects:
- [48, 56) 'pos'
- [80, 96) 'bvec'
- [112, 152) 'iter'
-
-The buggy address belongs to the virtual mapping at
- [ffffc9000a0f8000, ffffc9000a101000) created by:
- kernel_clone+0xfd/0x920 kernel/fork.c:2902
-
-The buggy address belongs to the physical page:
-page:ffffea0001fce280 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7f38a
-memcg:ffff8880291b7482
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000000000 00000001ffffffff ffff8880291b7482
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x102dc2(GFP_HIGHUSER|__GFP_NOWARN|__GFP_ZERO), pid 8450, tgid 8450 (syz-executor.5), ts 363006042687, free_ts 362824161389
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1534
- prep_new_page mm/page_alloc.c:1541 [inline]
- get_page_from_freelist+0x98f/0x32a0 mm/page_alloc.c:3333
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4589
- alloc_pages+0x1a9/0x270 mm/mempolicy.c:2304
- vm_area_alloc_pages mm/vmalloc.c:3063 [inline]
- __vmalloc_area_node mm/vmalloc.c:3139 [inline]
- __vmalloc_node_range+0x8f3/0x1bf0 mm/vmalloc.c:3320
- alloc_thread_stack_node kernel/fork.c:309 [inline]
- dup_task_struct kernel/fork.c:1118 [inline]
- copy_process+0x13e3/0x74b0 kernel/fork.c:2327
- kernel_clone+0xfd/0x920 kernel/fork.c:2902
- __do_sys_clone3+0x1f1/0x260 kernel/fork.c:3203
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1134 [inline]
- free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2383
- free_unref_page_list+0xe6/0xb30 mm/page_alloc.c:2564
- release_pages+0x32a/0x14e0 mm/swap.c:1042
- __folio_batch_release+0x77/0xe0 mm/swap.c:1062
- folio_batch_release include/linux/pagevec.h:83 [inline]
- mapping_try_invalidate+0x39a/0x480 mm/truncate.c:535
- invalidate_bdev+0xb1/0xd0 block/bdev.c:87
- btrfs_close_bdev+0x11a/0x170 fs/btrfs/volumes.c:1017
- btrfs_close_one_device fs/btrfs/volumes.c:1041 [inline]
- close_fs_devices fs/btrfs/volumes.c:1086 [inline]
- close_fs_devices+0x200/0x980 fs/btrfs/volumes.c:1073
- btrfs_close_devices+0x91/0x610 fs/btrfs/volumes.c:1102
- btrfs_free_fs_info+0x4b/0x410 fs/btrfs/disk-io.c:1237
- deactivate_locked_super+0xbc/0x1a0 fs/super.c:484
- deactivate_super+0xde/0x100 fs/super.c:517
- cleanup_mnt+0x222/0x3d0 fs/namespace.c:1256
- task_work_run+0x14d/0x240 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x215/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
-
-Memory state around the buggy address:
- ffffc9000a0ff400: f1 f1 f1 00 00 00 00 00 00 f3 f3 f3 f3 00 00 00
- ffffc9000a0ff480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffffc9000a0ff500: 00 f1 f1 f1 f1 f1 f1 00 f2 f2 f2 00 00 f2 f2 00
-                                                             ^
- ffffc9000a0ff580: 00 00 00 00 f3 f3 f3 f3 f3 00 00 00 00 00 00 00
- ffffc9000a0ff600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+This is a multi-part message in MIME format.
+--------------ssFPKEgTjNR19u6TJoMHMBBg
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On 2023/9/30 22:31, Konstantinos Skarlatos wrote:
+>
+> On 30/9/2023 1:25 =CF=80.=CE=BC., Qu Wenruo wrote:
+>>
+>>
+>> On 2023/9/29 21:01, Konstantinos Skarlatos wrote:
+>>> On 29/09/2023 1:54 =CE=BC.=CE=BC., Qu Wenruo wrote:
+>>>>
+>>>>
+>>>> On 2023/9/29 19:03, Konstantinos Skarlatos wrote:
+>>>>> On 29/09/2023 12:56 =CF=80.=CE=BC., Qu Wenruo wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 2023/9/29 00:23, Konstantinos Skarlatos wrote:
+>>>>>>> Hi Qu, thanks for your patch. I just tried it on a clean btrfs-pro=
+gs
+>>>>>>> tree with my filesystem:
+>>>>>>>
+>>>>>>> =E2=9D=AF ./btrfstune --convert-to-block-group-tree /dev/sda
+>>>>>>> [1]=C2=A0=C2=A0=C2=A0 796483 segmentation fault (core dumped) ./bt=
+rfstune
+>>>>>>> --convert-to-block-group-tree /dev/sda
+>>>>>>
+>>>>>> Mind to enable debug build by "make D=3D1" for btrfs-progs, and go =
+with
+>>>>>> gdb to show the crash callback?
+>>>>>>
+>>>>>> I assume it could be the same crash from your initial report.
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Qu
+>>>>>>
+>>>>>
+>>>>> Hi Qu, i hope i am doing this correctly...
+>>>>>
+>>>>>
+>>>>> =E2=9D=AF gdb -ex=3Dr --args ./btrfstune --convert-to-block-group-tr=
+ee /dev/sda
+>>>>> GNU gdb (GDB) 13.2
+>>>>> Copyright (C) 2023 Free Software Foundation, Inc.
+>>>>> License GPLv3+: GNU GPL version 3 or later
+>>>>> <http://gnu.org/licenses/gpl.html>
+>>>>> This is free software: you are free to change and redistribute it.
+>>>>> There is NO WARRANTY, to the extent permitted by law.
+>>>>> Type "show copying" and "show warranty" for details.
+>>>>> This GDB was configured as "x86_64-pc-linux-gnu".
+>>>>> Type "show configuration" for configuration details.
+>>>>> For bug reporting instructions, please see:
+>>>>> <https://www.gnu.org/software/gdb/bugs/>.
+>>>>> Find the GDB manual and other documentation resources online at:
+>>>>> <http://www.gnu.org/software/gdb/documentation/>.
+>>>>>
+>>>>> For help, type "help".
+>>>>> Type "apropos word" to search for commands related to "word"...
+>>>>> Reading symbols from ./btrfstune...
+>>>>> Starting program: /root/btrfs-progs/btrfstune
+>>>>> --convert-to-block-group-tree /dev/sda
+>>>>>
+>>>>> This GDB supports auto-downloading debuginfo from the following URLs=
+:
+>>>>> =C2=A0=C2=A0=C2=A0 <https://debuginfod.archlinux.org>
+>>>>> Enable debuginfod for this session? (y or [n]) y
+>>>>> Debuginfod has been enabled.
+>>>>> To make this setting permanent, add 'set debuginfod enabled on' to
+>>>>> .gdbinit.
+>>>>> Downloading separate debug info for /lib64/ld-linux-x86-64.so.2
+>>>>> Downloading separate debug info for system-supplied DSO at
+>>>>> 0x7ffff7fc8000
+>>>>> Downloading separate debug info for /usr/lib/libuuid.so.1
+>>>>> Downloading separate debug info for /usr/lib/libblkid.so.1
+>>>>> Downloading separate debug info for /usr/lib/libudev.so.1
+>>>>> Downloading separate debug info for /usr/lib/libc.so.6
+>>>>> [Thread debugging using libthread_db enabled]
+>>>>> Using host libthread_db library "/usr/lib/libthread_db.so.1".
+>>>>> Downloading separate debug info for /usr/lib/libcap.so.2
+>>>>>
+>>>>> Program received signal SIGSEGV, Segmentation fault.
+>>>>> 0x00005555555c6600 in cache_tree_comp_range (node=3D0xffffffffff000f=
+0f,
+>>>>> data=3D0x7fffffffd780) at common/extent-cache.c:40
+>>>>> 40=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 if (entry->start + entry->size <=3D range->start)
+>>>>> (gdb)
+>>>>
+>>>> That's great, what about the output from "bt" command?
+>>>>
+>>>
+>>> Hi Qu, this is what i get:
+>>>
+>>> Program received signal SIGSEGV, Segmentation fault.
+>>> 0x00005555555c6600 in cache_tree_comp_range (node=3D0xffffffffff000f0f=
+,
+>>> data=3D0x7fffffffd780) at common/extent-cache.c:40
+>>> 40=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 if (entry->start + entry->size <=3D range->start)
+>>> (gdb) bt
+>>> #0=C2=A0 0x00005555555c6600 in cache_tree_comp_range
+>>> (node=3D0xffffffffff000f0f, data=3D0x7fffffffd780) at
+>>> common/extent-cache.c:40
+>>> #1=C2=A0 0x00005555555ce458 in rb_search (root=3D0x555555667358,
+>>> key=3D0x7fffffffd780, comp=3D0x5555555c65d8 <cache_tree_comp_range>,
+>>> next_ret=3D0x0) at common/rbtree-utils.c:59
+>>
+>> Indeed we're back to the initial crash you reported.
+>>
+>> The root cause is the @node pointer, which is not valid.
+>>
+>> I'm not sure why, but we got an invalid node inside the rb tree, which
+>> leads to the crash.
+>>
+>> Considering this is a rare one, I'll need more time to dig into the
+>> original crash.
+>> I'm afraid with this bug still here, we will not be able to do anything=
+,
+>> neither reverting back or continuing the conversion.
+>>
+>> Thanks,
+>> Qu
+>
+> Hello Qu,
+>
+> does that mean that the filesystem is not recoverable?
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+I'm not sure, unfortunately.
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+One thing I'm afraid of is, there may be no space left and cause
+something wrong.
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+>
+> I can keep it for a while if you need it for further debugging.
 
-If you want to undo deduplication, reply with:
-#syz undup
+Considering the turn-over time, please try this diff (upon this patch)
+as the last try.
+
+As I don't have any clue why the crash can happen, thus I go with my
+last guess on the possible ENOSPC.
+
+If this doesn't work, feel free to reformat the fs.
+
+Thanks,
+Qu
+
+> Kind regards,
+>
+>
+>>> #2=C2=A0 0x00005555555c6964 in lookup_cache_extent (tree=3D0x555555667=
+358,
+>>> start=3D17820099854336, size=3D16384) at common/extent-cache.c:145
+>>> #3=C2=A0 0x0000555555597cac in alloc_extent_buffer (fs_info=3D0x555555=
+6672f0,
+>>> bytenr=3D17820099854336, blocksize=3D16384) at kernel-shared/extent_io=
+.c:262
+>>> #4=C2=A0 0x000055555558253b in btrfs_find_create_tree_block
+>>> (fs_info=3D0x5555556672f0, bytenr=3D17820099854336) at
+>>> kernel-shared/disk-io.c:232
+>>> #5=C2=A0 0x0000555555582cdb in read_tree_block (fs_info=3D0x5555556672=
+f0,
+>>> bytenr=3D17820099854336, owner_root=3D10, parent_transid=3D1833250, le=
+vel=3D0,
+>>> first_key=3D0x0)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 at kernel-shared/disk-io.c:439
+>>> #6=C2=A0 0x00005555555776bd in read_node_slot (fs_info=3D0x5555556672f=
+0,
+>>> parent=3D0x55557571ba60, slot=3D154) at kernel-shared/ctree.c:850
+>>> #7=C2=A0 0x000055555557a644 in push_leaf_right (trans=3D0x555567b3d140=
+,
+>>> root=3D0x5555558da740, path=3D0x5555757f0d30, data_size=3D25, empty=3D=
+0) at
+>>> kernel-shared/ctree.c:1965
+>>> #8=C2=A0 0x000055555557b7d1 in split_leaf (trans=3D0x555567b3d140,
+>>> root=3D0x5555558da740, ins_key=3D0x7fffffffdc50, path=3D0x5555757f0d30=
+,
+>>> data_size=3D25, extend=3D0)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 at kernel-shared/ctree.c:2338
+>>> #9=C2=A0 0x0000555555578fc0 in btrfs_search_slot (trans=3D0x555567b3d1=
+40,
+>>> root=3D0x5555558da740, key=3D0x7fffffffdc50, p=3D0x5555757f0d30, ins_l=
+en=3D25,
+>>> cow=3D1) at kernel-shared/ctree.c:1399
+>>> #10 0x000055555557ca7d in btrfs_insert_empty_items
+>>> (trans=3D0x555567b3d140, root=3D0x5555558da740, path=3D0x5555757f0d30,
+>>> cpu_key=3D0x7fffffffdc50, data_size=3D0x7fffffffdb6c, nr=3D1)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 at kernel-shared/ctree.c:2758
+>>> #11 0x000055555559eb70 in btrfs_insert_empty_item (trans=3D0x555567b3d=
+140,
+>>> root=3D0x5555558da740, path=3D0x5555757f0d30, key=3D0x7fffffffdc50,
+>>> data_size=3D0)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 at ./kernel-shared/ctree.h:1019
+>>> #12 0x000055555559ff9a in convert_free_space_to_extents
+>>> (trans=3D0x555567b3d140, block_group=3D0x55555fcc7780, path=3D0x555575=
+7f0d30)
+>>> at kernel-shared/free-space-tree.c:465
+>>> #13 0x00005555555a01ed in update_free_space_extent_count
+>>> (trans=3D0x555567b3d140, block_group=3D0x55555fcc7780, path=3D0x555575=
+7f0d30,
+>>> new_extents=3D1)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 at kernel-shared/free-space-tree.c:525
+>>> #14 0x00005555555a07ae in modify_free_space_bitmap
+>>> (trans=3D0x555567b3d140, block_group=3D0x55555fcc7780, path=3D0x555575=
+7f0d30,
+>>> start=3D17592699748352, size=3D16384, remove=3D0)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 at kernel-shared/free-space-tree.c:707
+>>> #15 0x00005555555a0ff2 in __add_to_free_space_tree
+>>> (trans=3D0x555567b3d140, block_group=3D0x55555fcc7780, path=3D0x555575=
+7f0d30,
+>>> start=3D17592699748352, size=3D16384)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 at kernel-shared/free-space-tree.c:997
+>>> #16 0x00005555555a10ad in add_to_free_space_tree (trans=3D0x555567b3d1=
+40,
+>>> start=3D17592699748352, size=3D16384) at
+>>> kernel-shared/free-space-tree.c:1028
+>>> #17 0x0000555555591db8 in __free_extent (trans=3D0x555567b3d140,
+>>> bytenr=3D17592699748352, num_bytes=3D16384, parent=3D0, root_objectid=
+=3D2,
+>>> owner_objectid=3D0, owner_offset=3D0,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 refs_to_drop=3D1) at kernel-shared/extent-tre=
+e.c:2130
+>>> #18 0x000055555559651c in run_delayed_tree_ref (trans=3D0x555567b3d140=
+,
+>>> fs_info=3D0x5555556672f0, node=3D0x55556bf11090, extent_op=3D0x0,
+>>> insert_reserved=3D0)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 at kernel-shared/extent-tree.c:3906
+>>> #19 0x00005555555965b1 in run_one_delayed_ref (trans=3D0x555567b3d140,
+>>> fs_info=3D0x5555556672f0, node=3D0x55556bf11090, extent_op=3D0x0,
+>>> insert_reserved=3D0)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 at kernel-shared/extent-tree.c:3926
+>>> #20 0x00005555555967de in btrfs_run_delayed_refs (trans=3D0x555567b3d1=
+40,
+>>> nr=3D18446744073709551615) at kernel-shared/extent-tree.c:4010
+>>> #21 0x00005555555afbd1 in btrfs_commit_transaction
+>>> (trans=3D0x555567b3d140, root=3D0x55555567bd70) at
+>>> kernel-shared/transaction.c:210
+>>> #22 0x0000555555566b19 in convert_to_bg_tree (fs_info=3D0x5555556672f0=
+) at
+>>> tune/convert-bgt.c:112
+>>> #23 0x00005555555647bb in main (argc=3D3, argv=3D0x7fffffffe298) at
+>>> tune/main.c:393
+>>> (gdb)
+>>>
+>>>
+>>>
+>>>> Thanks,
+>>>> Qu
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>>>>
+>>>>>>> Sep 28 17:46:17 elsinki kernel: btrfstune[796483]: segfault at
+>>>>>>> ffffffffff000f2f ip 0000564b6c2107aa sp 00007ffdc8ad25c8 error 5 i=
+n
+>>>>>>> btrfstune[564b6c1d1000+5b000] likely on CPU 3 (core 2, socket 0)
+>>>>>>> Sep 28 17:46:17 elsinki kernel: Code: ff 48 8b 34 24 48 8d 3d 5a
+>>>>>>> d8 01
+>>>>>>> 00 b8 00 00 00 00 e8 5a 37 00 00 48 8b 33 bf 0a 00 00 00 e8 1d 0c
+>>>>>>> fc ff
+>>>>>>> eb a8 e8 86 0a fc ff <48> 8b 4f 20 48 8b 56 08 48 89 c8 48 03 47
+>>>>>>> 28 48
+>>>>>>> 89 c7 b8 01 00 00
+>>>>>>> Sep 28 17:46:17 elsinki systemd[1]: Created slice Slice
+>>>>>>> /system/systemd-coredump.
+>>>>>>> Sep 28 17:46:17 elsinki systemd[1]: Started Process Core Dump (PID
+>>>>>>> 796493/UID 0).
+>>>>>>> Sep 28 17:46:21 elsinki systemd-coredump[796494]: [=F0=9F=A1=95] P=
+rocess 796483
+>>>>>>> (btrfstune) of user 0 dumped core.
+>>>>>>>
+>>>>>>> Stack trace of
+>>>>>>> thread
+>>>>>>> 796483:
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #0
+>>>>>>> 0x0000564b6c2107aa
+>>>>>>> n/a (/root/btrfs-progs/btrfstune + 0x4d7aa)
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ELF object
+>>>>>>> binary
+>>>>>>> architecture: AMD x86-64
+>>>>>>> Sep 28 17:46:21 elsinki systemd[1]:
+>>>>>>> systemd-coredump@0-796493-0.service:
+>>>>>>> Deactivated successfully.
+>>>>>>> Sep 28 17:46:21 elsinki systemd[1]:
+>>>>>>> systemd-coredump@0-796493-0.service:
+>>>>>>> Consumed 4.248s CPU time.
+>>>>>>>
+>>>>>>>
+>>>>>>> On 28/9/2023 1:50 =CF=80.=CE=BC., Qu Wenruo wrote:
+>>>>>>>> [BUG]
+>>>>>>>> There is a bug report that when converting to bg tree crashed, th=
+e
+>>>>>>>> resulted fs is unable to be resumed.
+>>>>>>>>
+>>>>>>>> This problems comes with the following error messages:
+>>>>>>>>
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 ./btrfstune --convert-to-block-group-tre=
+e /dev/sda
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 ERROR: Corrupted fs, no valid METADATA b=
+lock group found
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 ERROR: failed to delete block group item=
+ from the old root:
+>>>>>>>> -117
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 ERROR: failed to convert the filesystem =
+to block group tree
+>>>>>>>> feature
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 ERROR: btrfstune failed
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 extent buffer leak: start 17825576632320=
+ len 16384
+>>>>>>>>
+>>>>>>>> [CAUSE]
+>>>>>>>> When resuming a interrupted conversion, we go through
+>>>>>>>> read_converting_block_groups() to handle block group items in bot=
+h
+>>>>>>>> extent and block group trees.
+>>>>>>>>
+>>>>>>>> However for the block group items in the extent tree, there are
+>>>>>>>> several
+>>>>>>>> problems involved:
+>>>>>>>>
+>>>>>>>> - Uninitialized @key inside read_old_block_groups_from_root()
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 Here we only set @key.type, not setting =
+@key.objectid for the
+>>>>>>>> initial
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 search.
+>>>>>>>>
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 Thus if we're unlukcy, we can got (u64)-=
+1 as key.objectid, and
+>>>>>>>> exit
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 the search immediately.
+>>>>>>>>
+>>>>>>>> - Wrong search direction
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 The conversion is converting block group=
+s in descending order,
+>>>>>>>> but the
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 block groups read is in ascending order.
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 Meaning if we start from the last conver=
+ted block group, we
+>>>>>>>> would at
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 most read one block group.
+>>>>>>>>
+>>>>>>>> [FIX]
+>>>>>>>> To fix the problems, this patch would just remove
+>>>>>>>> read_old_block_groups_from_root() function completely.
+>>>>>>>>
+>>>>>>>> As for the conversion, we ensured the block group item is either
+>>>>>>>> in the
+>>>>>>>> old extent or the new block group tree.
+>>>>>>>> Thus there is no special handling needed reading block groups.
+>>>>>>>>
+>>>>>>>> We only need to read all block groups from both trees, using the
+>>>>>>>> same
+>>>>>>>> read_old_block_groups_from_root() function.
+>>>>>>>>
+>>>>>>>> Reported-by: Konstantinos Skarlatos <k.skarlatos@gmail.com>
+>>>>>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>>>>>> ---
+>>>>>>>> To Konstantinos:
+>>>>>>>>
+>>>>>>>> The bug I fixed here can explain all the failures you hit (the
+>>>>>>>> initial
+>>>>>>>> one and the one after the quick diff).
+>>>>>>>>
+>>>>>>>> Please verify if this helps and report back (without the quick
+>>>>>>>> diff in
+>>>>>>>> the original thread).
+>>>>>>>>
+>>>>>>>> We may have other corner cases to go, but I believe the patch
+>>>>>>>> itself is
+>>>>>>>> necessary no matter what, as the deleted code is really
+>>>>>>>> over-engineered and buggy.
+>>>>>>>> ---
+>>>>>>>> =C2=A0=C2=A0=C2=A0 kernel-shared/extent-tree.c | 79
+>>>>>>>> +------------------------------------
+>>>>>>>> =C2=A0=C2=A0=C2=A0 1 file changed, 1 insertion(+), 78 deletions(-=
+)
+>>>>>>>>
+>>>>>>>> diff --git a/kernel-shared/extent-tree.c
+>>>>>>>> b/kernel-shared/extent-tree.c
+>>>>>>>> index 7022643a9843..4d6bf2b228e9 100644
+>>>>>>>> --- a/kernel-shared/extent-tree.c
+>>>>>>>> +++ b/kernel-shared/extent-tree.c
+>>>>>>>> @@ -2852,83 +2852,6 @@ out:
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>>>>>>> =C2=A0=C2=A0=C2=A0 }
+>>>>>>>> -/*
+>>>>>>>> - * Helper to read old block groups items from specified root.
+>>>>>>>> - *
+>>>>>>>> - * The difference between this and
+>>>>>>>> read_block_groups_from_root() is,
+>>>>>>>> - * we will exit if we have already read the last bg in the old
+>>>>>>>> root.
+>>>>>>>> - *
+>>>>>>>> - * This is to avoid wasting time finding bg items which should b=
+e
+>>>>>>>> in the
+>>>>>>>> - * new root.
+>>>>>>>> - */
+>>>>>>>> -static int read_old_block_groups_from_root(struct btrfs_fs_info
+>>>>>>>> *fs_info,
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 stru=
+ct btrfs_root *root)
+>>>>>>>> -{
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 struct btrfs_path path =3D {0};
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 struct btrfs_key key;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 struct cache_extent *ce;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 /* The last block group bytenr in the old roo=
+t. */
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 u64 last_bg_in_old_root;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 int ret;
+>>>>>>>> -
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 if (fs_info->last_converted_bg_bytenr !=3D (u=
+64)-1) {
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * We know the l=
+ast converted bg in the other tree,
+>>>>>>>> load the
+>>>>>>>> chunk
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * before that l=
+ast converted as our last bg in the tree.
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ce =3D
+>>>>>>>> search_cache_extent(&fs_info->mapping_tree.cache_tree,
+>>>>>>>> - fs_info->last_converted_bg_bytenr);
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!ce || ce->start =
+!=3D
+>>>>>>>> fs_info->last_converted_bg_bytenr) {
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 error("no chunk found for bytenr %llu",
+>>>>>>>> - fs_info->last_converted_bg_bytenr);
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 return -ENOENT;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ce =3D prev_cache_ext=
+ent(ce);
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * We should hav=
+e previous unconverted chunk, or we have
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * already finis=
+hed the convert.
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ASSERT(ce);
+>>>>>>>> -
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 last_bg_in_old_root =
+=3D ce->start;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 } else {
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 last_bg_in_old_root =
+=3D (u64)-1;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 }
+>>>>>>>> -
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 key.type =3D BTRFS_BLOCK_GROUP_ITEM_KEY;
+>>>>>>>> -
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 while (true) {
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D find_first_bl=
+ock_group(root, &path, &key);
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret > 0) {
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 ret =3D 0;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 goto out;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret !=3D 0) {
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 goto out;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_item_key_to_cpu=
+(path.nodes[0], &key, path.slots[0]);
+>>>>>>>> -
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D read_one_bloc=
+k_group(fs_info, &path);
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0 && ret !=
+=3D -ENOENT)
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 goto out;
+>>>>>>>> -
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* We have reached la=
+st bg in the old root, no need to
+>>>>>>>> continue */
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (key.objectid >=3D=
+ last_bg_in_old_root)
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 break;
+>>>>>>>> -
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (key.offset =3D=3D=
+ 0)
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 key.objectid++;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 key.objectid =3D key.objectid + key.offset;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.offset =3D 0;
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_release_path(&p=
+ath);
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 }
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 ret =3D 0;
+>>>>>>>> -out:
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 btrfs_release_path(&path);
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 return ret;
+>>>>>>>> -}
+>>>>>>>> -
+>>>>>>>> =C2=A0=C2=A0=C2=A0 /* Helper to read all block groups items from =
+specified
+>>>>>>>> root. */
+>>>>>>>> =C2=A0=C2=A0=C2=A0 static int read_block_groups_from_root(struct =
+btrfs_fs_info
+>>>>>>>> *fs_info,
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 struct btrfs_root *root)
+>>>>>>>> @@ -2989,7 +2912,7 @@ static int
+>>>>>>>> read_converting_block_groups(struct
+>>>>>>>> btrfs_fs_info *fs_info)
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 return ret;
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>>>>> -=C2=A0=C2=A0=C2=A0 ret =3D read_old_block_groups_from_root(fs_in=
+fo, old_root);
+>>>>>>>> +=C2=A0=C2=A0=C2=A0 ret =3D read_block_groups_from_root(fs_info, =
+old_root);
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0) {
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 error("failed to load block groups from the old
+>>>>>>>> root: %d",
+>>>>>>>> ret);
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 return ret;
+>>>>>
+>>>
+
+--------------ssFPKEgTjNR19u6TJoMHMBBg
+Content-Type: text/plain; charset=UTF-8; name="diff"
+Content-Disposition: attachment; filename="diff"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL3R1bmUvY29udmVydC1iZ3QuYyBiL3R1bmUvY29udmVydC1iZ3QuYwpp
+bmRleCA3N2NiYTM5MzBhZTEuLjE5NmUwZjgxYTE3NiAxMDA2NDQKLS0tIGEvdHVuZS9jb252
+ZXJ0LWJndC5jCisrKyBiL3R1bmUvY29udmVydC1iZ3QuYwpAQCAtMjgsNyArMjgsNyBAQAog
+I2luY2x1ZGUgInR1bmUvdHVuZS5oIgogCiAvKiBBZnRlciB0aGlzIG1hbnkgYmxvY2sgZ3Jv
+dXBzIHdlIG5lZWQgdG8gY29tbWl0IHRyYW5zYWN0aW9uLiAqLwotI2RlZmluZSBCTE9DS19H
+Uk9VUF9CQVRDSAk2NAorI2RlZmluZSBCTE9DS19HUk9VUF9CQVRDSAk0CiAKIGludCBjb252
+ZXJ0X3RvX2JnX3RyZWUoc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8pCiB7Cg==
+
+--------------ssFPKEgTjNR19u6TJoMHMBBg--
