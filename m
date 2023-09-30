@@ -2,253 +2,504 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 526F87B3FC6
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Sep 2023 11:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715307B4060
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Sep 2023 15:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234027AbjI3JqP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 30 Sep 2023 05:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49468 "EHLO
+        id S234083AbjI3NBs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 30 Sep 2023 09:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233237AbjI3JqO (ORCPT
+        with ESMTP id S230516AbjI3NBr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 30 Sep 2023 05:46:14 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CDB193;
-        Sat, 30 Sep 2023 02:46:10 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38U3OHbV003773;
-        Sat, 30 Sep 2023 09:46:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=NKxRgfY0O6mZha9/vChgWOtIIQKAzDFTWK4XUQ2RhOM=;
- b=QzZmY45uWyBqOBGvm3HlqCCIiNil8qOTj/GoZie+5QQWUxcmLaitzhse0lP70rm6kixN
- OZWJ15ftdey1GXaIMGjok7Vx+FINCZlJAMcV53xbcoDb8k5fZdtfhTlO4qq+RrASpQ7g
- YQI8AinxuRRVvnGF/konYCwJcILRYLUt/dpuZT5Vv6xGUMR5KOBPDlJewW+cJIH5Nb5E
- mB0yO2E/Ahc5q7W1Q47a6WQlaY8JQE84sVczCFmwy1VH+QTzs17z9f0mRfUgNBMzTkYT
- xJN7+ZsXkgH1aTiEPyEA005u1dG3keRhRDovIjOekiMsIl2H1DWh2pbs9f36CHVRWIcG cQ== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tebqdr9pa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 30 Sep 2023 09:46:05 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38U5bCuh035742;
-        Sat, 30 Sep 2023 09:46:04 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2177.outbound.protection.outlook.com [104.47.59.177])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tea431y0r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 30 Sep 2023 09:46:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TCj9qctZ0i4CLHv2mVWXf5rtQfoujobpjmQLaR0QIrfhkFcYpxNP4r+une9Pqia0kQ0GeZ9l02YqTuuqNi2MZKKQ3typIH7sjaQ1T7bdXVHVIrRnc1K9gZz3zZ4UgLJa914lUwIy2Mvy1G5IEV3gKojmoyU2lIzPhqEbBj/SiABWm9sv541Y44piGb484tzSybKaSVFjNH1vkNsfMrpMYvZMfypCmPDPDwabD1BETsOJHvdLKI3BTIEj2r0UXB67kZiChETFgErdfvgeELCGb0ifYYbXbBTBrihUYoqpWxD4ve1komRUUP1+fSvCaYq9Twupwkd/OY/K508RXR9dwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NKxRgfY0O6mZha9/vChgWOtIIQKAzDFTWK4XUQ2RhOM=;
- b=CnOmpifHPcpLR/KyyUB24dMph8q4gmahcbRppioA7FyRLvQTl+ZQKBp7JOUgmjA/CmQbZRqBRJBjXumt7srTl8rtB6UQQ+uSSP1GtctSVv/mOWOs46zsiUg9ih3YAm+tJftTz0s5uxS/G59SzCqBe6Dk41yaUpFeC+KKilxz5wmWhaVVxHFHrfAjgE1jMusCn6Ufp0BpsOJ1c/zw8Q45G27OsTfuRsQShthgYj3/yEo7fIDNPJFQ8MuxJoyw1mgRc7kCOMj1rTFL2Gut9HtrakZvmAd+7vjzEtojEslgdFxcXCo43QR8N26WDkUj5NAykt5mRjfeEouYdLZv3KYu+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Sat, 30 Sep 2023 09:01:47 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C9CFA
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Sep 2023 06:01:44 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4054496bde3so132757285e9.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Sep 2023 06:01:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NKxRgfY0O6mZha9/vChgWOtIIQKAzDFTWK4XUQ2RhOM=;
- b=xWh/D1qntlCz7rI2uXNo7G2JdGylk+W0c7Z/NG+Eo9sgEfnX+GG/YDLN762OzRb9kZqTq0lf1majsocOsQkPUMNMDtLAl2n8ZicPhFCPlF3/OCUo/fm2cuXK725ksEWvlbfrqEv3rRq0/uXT07WwiqMLviwLveSuVgV3iqBlS9U=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by BY5PR10MB4372.namprd10.prod.outlook.com (2603:10b6:a03:207::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25; Sat, 30 Sep
- 2023 09:46:02 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6813.017; Sat, 30 Sep 2023
- 09:46:02 +0000
-Message-ID: <59124721-0e07-7b5f-d650-d58d9ce9fcb2@oracle.com>
-Date:   Sat, 30 Sep 2023 17:45:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v4 0/6] btrfs: simple quotas fstests
-To:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, fstests@vger.kernel.org
-References: <cover.1695942727.git.boris@bur.io>
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <cover.1695942727.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0018.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::7) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=gmail.com; s=20230601; t=1696078902; x=1696683702; darn=vger.kernel.org;
+        h=content-language:content-transfer-encoding:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gLaxE585BudwV60xabhk/F0PYq9mDFlzSQSdPvEWQS0=;
+        b=IkdH7M/31NHBOTaUyp8Y7HAWCzSEGNKuJzvzWs0gW67WE4TTS91r4vLuPC4PMZ1TN+
+         3o8KY2kNd3zeTqD/phljtgRPCGIguKpFcLYaKs7YLxhvtSLgzSvHAFjd0OTIOviwPx5U
+         rjaZm0PhUSRzUsXC/FTWlsMPdJwP5bQMDXjTDkHJALs7XORkKPGlM4ei1gsfKrfR+ihM
+         7O1+Y5+nNzxzWQXB+A5FcUFgUh4VACu87Gg3P64yrM+UtXmufrE4x9EVLvX4f4BziQ5Z
+         4DOw+Y8xIYOsu4qclZM/JSDgCasw7TI+5MyXhxM9ebICauge5B4OoagJlu2UCQYcQm0f
+         J5bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696078902; x=1696683702;
+        h=content-language:content-transfer-encoding:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gLaxE585BudwV60xabhk/F0PYq9mDFlzSQSdPvEWQS0=;
+        b=fRO2PSfkPPO6SQz+S3LTAGXKvuwyyREtxxTZSRmxYKRmhGQTe4Ys2mM9Ekq/LP3yBs
+         8dl1kEn1S8ZYIgmciPksDcx8uP6xRa9spO5NOOjlBKCB/gT7i6wBP1k7H7NvrLGk8H0X
+         Nz+gZ9e2Q1cZ3mBXrFkkkeAvZMMIC6dVmbrEmQvfneFoexwhvmp0Fjwakpv7EwbN+v+5
+         8UYuJzv4bjB6ojkDe9JINBO6BgNxz/F/NezM8wqZZKH6xNLefatzrYDboMWRRQsjVaUy
+         pYU2vnCCktl5EuQ9gmdl/GYLesVOcDsVMmK2QRItm2mTfmYH0nSE4JW80hgH7mDADght
+         o+Qw==
+X-Gm-Message-State: AOJu0Ywi/2Gy6gZS3FMn37KMJoQDkMi7pFUWutAu7HXYxRL1CrjD6mK4
+        SClaozzRkFhnFmL3tevDj5WKw2MGPhkZbw==
+X-Google-Smtp-Source: AGHT+IEa2UeDNsen3Blqxg/WmKwE9IZdR/ON1SFT0Rnwi83xSCLEVYjvJyVzO5cf3GTUfbSRwa1hhA==
+X-Received: by 2002:a7b:c44f:0:b0:402:ee71:29 with SMTP id l15-20020a7bc44f000000b00402ee710029mr6018824wmi.10.1696078901821;
+        Sat, 30 Sep 2023 06:01:41 -0700 (PDT)
+Received: from [192.168.1.121] (athedsl-161999.home.otenet.gr. [85.75.176.109])
+        by smtp.googlemail.com with ESMTPSA id 17-20020a05600c029100b004064cd71aa8sm3373445wmk.34.2023.09.30.06.01.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 30 Sep 2023 06:01:41 -0700 (PDT)
+Subject: Re: [PATCH] btrfs-progs: fix failed resume due to bad search
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <840a9a762a3a0b8365d79dd7c23d812d95761dcf.1695855009.git.wqu@suse.com>
+ <fc926390-38ea-f764-4377-25576b872b31@gmail.com>
+ <e834fd8a-3c10-4b5c-9121-9812f460f73c@gmx.com>
+ <c9fa7f88-5f3b-04f8-b18d-7d8490299538@gmail.com>
+ <a59ee960-f493-47d5-918d-4386a4deecd3@gmx.com>
+ <a7404485-0a85-49c2-afb8-769ad112dd8b@gmail.com>
+ <cd390b15-7d42-41be-afc6-22c6fa22671d@gmx.com>
+From:   Konstantinos Skarlatos <k.skarlatos@gmail.com>
+Message-ID: <35bc07b9-2e6c-0848-661c-8e991cb5479a@gmail.com>
+Date:   Sat, 30 Sep 2023 16:01:39 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|BY5PR10MB4372:EE_
-X-MS-Office365-Filtering-Correlation-Id: bf1966e9-65e1-430e-9101-08dbc19a0ed6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eU3RunJ4mntz54ZMJz1XkzxkLD2rqPDytUXMzmiO5NHzqKL8uXzUnXM9yGmvY3B2ql/ruz/1ZsU1mJdnc/MQAIA1CmFzwquR82wgYwMMaHKQcXYLdYrJUYCZWSCeCXOuHPM55df6EdErWs6CGVpzWWs4pbrWqc2ttkqoyIa3ZDedrqxwB2o12SsRe3xgsfNYrLYg6Du+MqAJshdnSFIbxXqiv6zQ3dlhZttZbECk8ubdrdG7X4/30GRDjdS0+4j5XlnK2V8VNVgHBuSMIn/muDi0Tdt9xH+dJ1pPAUlywI7s4lqXBgaYrccQIvYUXCe6I764faJzQ5zuNRPOf5QyVaNCvjGDaLzW/IMNWgUstm3l4bY7I3LpxF+MH8+QNIwIaFzeN54mEolZ3JkBGo3eVh7lprkMVmcMJZCEy9ebU3KCYq89FOKVlnfQYAVuVoy4A3Z9K9Dh09iq9CnJQuof5pVkWEHvSH5T/mYT+Lw/kTKhHG2YJlt2C/FzSFaNhs9GBZS63f6bh/4gZygXfYncq8yGR6izhA9ahVo9nHyrWI2DpsVu3peGMMu+imKyPggcJQXgPsFZ0HVGg5vlCghExhIHWQ8Vk1PGWLOVIfxZyLQFOtYPPEoE7Qzp4BKJUZBABLAvKOBeSw8AX2MlWPGogJ/NMSMmR6tYokgvT/tqoFs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(396003)(39860400002)(366004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(316002)(66556008)(66476007)(66946007)(44832011)(5660300002)(31686004)(41300700001)(966005)(8676002)(38100700002)(83380400001)(478600001)(31696002)(6512007)(15650500001)(86362001)(2906002)(8936002)(36756003)(6486002)(6506007)(6666004)(2616005)(26005)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SGFueTMyY3hzM3dRRjA3b2hDMGdzT2RGVXFzd0cwbTdyck1YdXdIQTYzQ1do?=
- =?utf-8?B?bzdjWkNaTmpTb2tQVEQzMFdadG5EQkxHbng1U1hqMnpYSEF5V28xUFdlZmpZ?=
- =?utf-8?B?dko5THlqM1MvdmU0TTNPTmxnVHJ5ekxlZzI5WHI2ZGZLblk5RWpIUVVRNkYy?=
- =?utf-8?B?Ymd0VGxNK3FyQUgvSTRtNVRSOUZwbTJ4S1VqUmhEeVJuRmJPRU5wQit4TGor?=
- =?utf-8?B?UlpPZnB2Y3pLT2c5QTZHdWd0YjhsdSt6amR0c1h6ZHlPdEM2QTljRjJGNVV2?=
- =?utf-8?B?Q3RNeGMrYnFrTmM2MjBwS0ZsV3dqWmtLTmtVcGxnR2ZiQi8vdzZEVVVrRUdZ?=
- =?utf-8?B?UTN1RFVHa3RWS05Uckp1dy9DQWJJc0VNbU5TWFNkQTB6UTBUUkJqQi9qaU1F?=
- =?utf-8?B?TEZTMjJOd3RSeHFaL0wzL0hzbU5jekJyUlpiWFUzam5iZDVaNEJTeDRlbGtt?=
- =?utf-8?B?UCtQYTlpanphcENHTmQvV01wRmRpdGNoQ3BQOWdKVzFHcGhkU3FyemJkRktp?=
- =?utf-8?B?MFhyNndqWFVyNjkyLy9WTGtLb1hneCs5d2daR0xYdU8rb2RuSlA3RlFRYVBy?=
- =?utf-8?B?VEp6VFliWlRDbVpXUHFjTVowZWFQS1JEd2FUeTNEanllbUNkRmNXUnJpc0Jq?=
- =?utf-8?B?d09HNHFXM3RHc01oK1crRXQ1YkVVcCtNaWVuZFk3cGhvTU14akN1aDN0WU1i?=
- =?utf-8?B?VU9Yd1NlaGdnYVJmRDdndHREUVI4Nm4ySzMwVUlYbnNlaWFBS21oVXRKeXhW?=
- =?utf-8?B?aEZFVUI2ampVNXlsS0E2U2ZPTUhocU1pZFA4bXRDMCtGUHFxZDg2Mit3VWs5?=
- =?utf-8?B?Z1VlZ3pvMWhIRTRVQ0QrSXF0U3FqSTR1TzUrd3JJUDEvNU4zRFRSMGQvTEh0?=
- =?utf-8?B?UlZMSE1FWXVCdnB5SmlGSTg3ZlZmMG1zTjRMRzVBTkpvTC9kSGdLaC9PVDFt?=
- =?utf-8?B?b3FSS0IzV0k1cHZhT1RrcjV4WmVQQ05yWXJHbTV2cVNHdE1NQXFPQmxBc3Rq?=
- =?utf-8?B?NTVPK2Y2aFRpMFJnaGYrWCtmSzVDRVJuVnB3Z1RXdjcxWXZpN05iUDJEdkpQ?=
- =?utf-8?B?LzZWNzMvRkpVckE1R0VvVVFNTU5hWVZwdWtoS01jT2Y3Vkp2aXJWVUVjcFZG?=
- =?utf-8?B?dklkZUFCSFhQU1lBd2hHd0lBM2QyMThNRUlwNm55Y1Z4NzFxREFyU2hBT0dh?=
- =?utf-8?B?WStlbnE4alp2bTdqUEYyUUVia01nZVlCUlhGNlExOU9oTjA3VlI4RkdRd0x6?=
- =?utf-8?B?Zm5ac2ZIYnR5UndSWHR5YldvNHBPUVNXaGlOVytyVE9RL01ieWpmU1lYMVlB?=
- =?utf-8?B?VWNlZFFJS2pYNC9QMjk4WVdjWituVTR5WTFtNkN1YXZBZUk3NUU0ZE05YjNq?=
- =?utf-8?B?aERhVzJCaEduOExhRjVwempqTFcvSW52ZEppN2FUdU5wY2ZUMUNyRUxoZVhs?=
- =?utf-8?B?MFk2dktUUHpMT2NwaWx0bjNwTzVqQXFRYzJqVmRoRGVzTUNPUUVralA2Rk80?=
- =?utf-8?B?OXJ0dmdRL0FuZHBpZ1JENzRybnprSmR6QU8xSkdPSkc0MCtRWTAwaEtCcHl4?=
- =?utf-8?B?S2oxY3p5elE0elVjSW5NaHZKQTNIRWg5K0VaNEgzL2pjMDBLVDNidFVnUHFB?=
- =?utf-8?B?QXZCa2Y4R1NkOFl3bkRTVTc5SFg1TW4vN3c4UkdnZy9MV3JKOFJZOVFCUC9U?=
- =?utf-8?B?REg0Qms0c1lybW9tdklQWndNbHo5TWtIYThlU2x6QXV0clpEdVB4RnBnZHJj?=
- =?utf-8?B?amlDQ0w4WEQxSGg2U051QWJOOUFxRHpXVUtvUk1GbGNsMzJpci8xWmRsQXBB?=
- =?utf-8?B?K3ZIRDZUalVQbjFKMWZ0OU9OamlQQjRPMW9lWU1WbWJDZm95MWpaeHhEOGd1?=
- =?utf-8?B?QzE5aFNsN3hkRW9OaFBZVXE5MmZHRUo2NWZHSkVJSUM3STVGdzIvNjFZRWxK?=
- =?utf-8?B?Qm4zNTBwdU0xNEZoYjBTUUNlbmlzRVgvazkrdEhWOEZCZDlQYXlvNWxKTnYr?=
- =?utf-8?B?VXd0Q0VzRlhSb0VveFBFRy9pcHdUdU1oWXMxVTFQUkZSaWsvSkYzYkQ3eWdN?=
- =?utf-8?B?bDJNcWM1a1lVdzhScVp5TWtWZGpqZWFWdzQyZUttWi9qQ1E0alk5TUhyekxv?=
- =?utf-8?B?UmVBcU5MUHN6WUJzaTF0SCtEYXJvWHBZRUUreEtyN0t4b20ySHdOMCs1MGg5?=
- =?utf-8?B?ckE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: yLdmTeJ5HXxBX8ymwvq8NuDHiiCFgmFpkp+LZ6sQ6lgDEl50oLMwF9FzDkiRuHtwD7yb+rsUmJKfjcNm6RpKZ5BP43ZQa+evSE8QzgI25gmpnG5aHB1fHnvJfuhGtKBC9xP6f3wT+sH6ymbjKsnWgj6yPUNfoMZvrqU//rp1TVLrkUtjeksBdibkPtwoyhzOvi8p5p6uVLDYfDP1aHzVpA2r7ahOzZFnGaUBHeRMICLNEBaq1aREgR9A0FNJbgBOdrbvtvsFGJgRz90ZD7364dkDY3kNgHVCK4LUVTHbIstFcYKFBz8pbIGRx8zOBENipGznLSFed87O/iyBeJ392Z/K0PVcyXYV457tsa0qesVQNQfDwIz/DZQBZ3nq0+Qmr4/OO9Q/uPqPz1d83TDSbs3399zOaEYA8MevYW76arQc1yFKb+2ZIGUVa7QDYSWC8Ttj40dHYx9fpWC2X2oZnOiH9vOD9H+riI4Xz3wevfYgU7h9dZJEHsFIPjKd6RFkqtRCBapWO/XTu3dtezVW+Cw3oL9NHlhIRRDRqzrho02nou5N4GI5x1p+DJlthPcLq84K+MPyoiqfRTqUB3GQfD/K3J013uk7Xw4eLIz78mbLOjQTy8ViGAZsc0iNC87aRJEF5L0tZqZwr8Q4AubsI6S+sABxD/B9Aars8eOu1B8cvGSGmuFmAdrF0vemrIgjg1C5SkmXTHAu4OSsVmy67XtH/cx87qmmRNrsEnM9rHj/FQDUgxRySW0ELmwe88msFKnsO072PuYuyZr21DPhhAgBe1odjuDuuj8iYs6dXVI=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf1966e9-65e1-430e-9101-08dbc19a0ed6
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2023 09:46:02.4156
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: msPEGwGxCHd3ijENgdQzCP73MVmbpOrlI75NsW/15QCSc4Z0nKL0vlR6TSt70vVsRLabYBpVGICZDB9qPN1LeA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4372
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-30_08,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
- phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309300078
-X-Proofpoint-GUID: bf843oV8LabUFzatfZAphWWP-JOmmYdD
-X-Proofpoint-ORIG-GUID: bf843oV8LabUFzatfZAphWWP-JOmmYdD
+In-Reply-To: <cd390b15-7d42-41be-afc6-22c6fa22671d@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 29/09/2023 07:16, Boris Burkov wrote:
-> Add a new test for specific squota scenarios (btrfs/301)
-> 
-> Also made modifications for passing existing qgroups tests when possible
-> and for passing all tests with simple quota enabled via mkfs and with
-> squota-aware `btrfs check`. Since this required reading sysfs files of
-> scratch fses, did a bit of refactoring to make those checks target a
-> device rather than assuming TEST_DEV.
-> 
-> btrfs/301 depends on the kernel patchset:
-> https://lore.kernel.org/linux-btrfs/cover.1694563454.git.boris@bur.io/
-> and the btrfs-progs patchset:
-> https://lore.kernel.org/linux-btrfs/cover.1695836680.git.boris@bur.io/
-> (and config appropriate binaries to use squota-aware versions)
-> ---
-> Changelog:
-> v4:
-> - fix rescan helper bug
-> - fix broken tab/spaces in squota helper
-> - cleanup comments
-> - improve test names, add some comments
-> - switch to remount commit=1 for forcing cleaner
-> - fix group list for 301
-> - use reflink helpers
-> - output errors to 301.out (and have expected ones there waiting)
-> - cleanup "/dev/ksmg" writes I missed when grepping for /dev/kmsg
-> - cleanup variable names
-> - proper fio/btrfs/xfs_io requires
-> - read nodesize from dump_super
-> - sync before dump_tree
-> - documented all calls to sync
-> v3:
-> - change btrfs/400 to btrfs/301
-> v2:
-> - new sysfs helpers in common
-> - better gating for the new squota test
-> - fix various formatting issues
-> - get rid of noisy dmesg logging
-> 
-> 
-> Boris Burkov (6):
->    common: refactor sysfs_attr functions
->    btrfs: quota mode helpers
->    btrfs/301: new test for simple quotas
->    btrfs: quota rescan helpers
->    btrfs: use new rescan wrapper
->    btrfs: skip squota incompatible tests
-> 
->   common/btrfs        |  56 ++++++
->   common/rc           | 127 ++++++++-----
->   tests/btrfs/017     |   1 +
->   tests/btrfs/022     |   1 +
->   tests/btrfs/028     |   2 +-
->   tests/btrfs/057     |   1 +
->   tests/btrfs/091     |   3 +-
->   tests/btrfs/104     |   2 +-
->   tests/btrfs/123     |   2 +-
->   tests/btrfs/126     |   2 +-
->   tests/btrfs/139     |   2 +-
->   tests/btrfs/153     |   2 +-
->   tests/btrfs/171     |   6 +-
->   tests/btrfs/179     |   2 +-
->   tests/btrfs/180     |   2 +-
->   tests/btrfs/190     |   2 +-
->   tests/btrfs/193     |   2 +-
->   tests/btrfs/210     |   2 +-
->   tests/btrfs/224     |   6 +-
->   tests/btrfs/230     |   2 +-
->   tests/btrfs/232     |   2 +-
->   tests/btrfs/301     | 435 ++++++++++++++++++++++++++++++++++++++++++++
->   tests/btrfs/301.out |  18 ++
->   23 files changed, 615 insertions(+), 65 deletions(-)
->   create mode 100755 tests/btrfs/301
->   create mode 100644 tests/btrfs/301.out
-> 
 
-All test cases modified here run fine on a system with PAGESIZE=64K,
-except for btrfs/153 with and without MKFS_OPTIONS="-O squota".
-btrfs/153 is successful on kernel v5.15 (I haven't tried other kernels)
+On 30/9/2023 1:25 π.μ., Qu Wenruo wrote:
+>
+>
+> On 2023/9/29 21:01, Konstantinos Skarlatos wrote:
+>> On 29/09/2023 1:54 μ.μ., Qu Wenruo wrote:
+>>>
+>>>
+>>> On 2023/9/29 19:03, Konstantinos Skarlatos wrote:
+>>>> On 29/09/2023 12:56 π.μ., Qu Wenruo wrote:
+>>>>>
+>>>>>
+>>>>> On 2023/9/29 00:23, Konstantinos Skarlatos wrote:
+>>>>>> Hi Qu, thanks for your patch. I just tried it on a clean btrfs-progs
+>>>>>> tree with my filesystem:
+>>>>>>
+>>>>>> ❯ ./btrfstune --convert-to-block-group-tree /dev/sda
+>>>>>> [1]    796483 segmentation fault (core dumped) ./btrfstune
+>>>>>> --convert-to-block-group-tree /dev/sda
+>>>>>
+>>>>> Mind to enable debug build by "make D=1" for btrfs-progs, and go with
+>>>>> gdb to show the crash callback?
+>>>>>
+>>>>> I assume it could be the same crash from your initial report.
+>>>>>
+>>>>> Thanks,
+>>>>> Qu
+>>>>>
+>>>>
+>>>> Hi Qu, i hope i am doing this correctly...
+>>>>
+>>>>
+>>>> ❯ gdb -ex=r --args ./btrfstune --convert-to-block-group-tree /dev/sda
+>>>> GNU gdb (GDB) 13.2
+>>>> Copyright (C) 2023 Free Software Foundation, Inc.
+>>>> License GPLv3+: GNU GPL version 3 or later
+>>>> <http://gnu.org/licenses/gpl.html>
+>>>> This is free software: you are free to change and redistribute it.
+>>>> There is NO WARRANTY, to the extent permitted by law.
+>>>> Type "show copying" and "show warranty" for details.
+>>>> This GDB was configured as "x86_64-pc-linux-gnu".
+>>>> Type "show configuration" for configuration details.
+>>>> For bug reporting instructions, please see:
+>>>> <https://www.gnu.org/software/gdb/bugs/>.
+>>>> Find the GDB manual and other documentation resources online at:
+>>>> <http://www.gnu.org/software/gdb/documentation/>.
+>>>>
+>>>> For help, type "help".
+>>>> Type "apropos word" to search for commands related to "word"...
+>>>> Reading symbols from ./btrfstune...
+>>>> Starting program: /root/btrfs-progs/btrfstune
+>>>> --convert-to-block-group-tree /dev/sda
+>>>>
+>>>> This GDB supports auto-downloading debuginfo from the following URLs:
+>>>>     <https://debuginfod.archlinux.org>
+>>>> Enable debuginfod for this session? (y or [n]) y
+>>>> Debuginfod has been enabled.
+>>>> To make this setting permanent, add 'set debuginfod enabled on' to
+>>>> .gdbinit.
+>>>> Downloading separate debug info for /lib64/ld-linux-x86-64.so.2
+>>>> Downloading separate debug info for system-supplied DSO at
+>>>> 0x7ffff7fc8000
+>>>> Downloading separate debug info for /usr/lib/libuuid.so.1
+>>>> Downloading separate debug info for /usr/lib/libblkid.so.1
+>>>> Downloading separate debug info for /usr/lib/libudev.so.1
+>>>> Downloading separate debug info for /usr/lib/libc.so.6
+>>>> [Thread debugging using libthread_db enabled]
+>>>> Using host libthread_db library "/usr/lib/libthread_db.so.1".
+>>>> Downloading separate debug info for /usr/lib/libcap.so.2
+>>>>
+>>>> Program received signal SIGSEGV, Segmentation fault.
+>>>> 0x00005555555c6600 in cache_tree_comp_range (node=0xffffffffff000f0f,
+>>>> data=0x7fffffffd780) at common/extent-cache.c:40
+>>>> 40              if (entry->start + entry->size <= range->start)
+>>>> (gdb)
+>>>
+>>> That's great, what about the output from "bt" command?
+>>>
+>>
+>> Hi Qu, this is what i get:
+>>
+>> Program received signal SIGSEGV, Segmentation fault.
+>> 0x00005555555c6600 in cache_tree_comp_range (node=0xffffffffff000f0f,
+>> data=0x7fffffffd780) at common/extent-cache.c:40
+>> 40              if (entry->start + entry->size <= range->start)
+>> (gdb) bt
+>> #0  0x00005555555c6600 in cache_tree_comp_range
+>> (node=0xffffffffff000f0f, data=0x7fffffffd780) at 
+>> common/extent-cache.c:40
+>> #1  0x00005555555ce458 in rb_search (root=0x555555667358,
+>> key=0x7fffffffd780, comp=0x5555555c65d8 <cache_tree_comp_range>,
+>> next_ret=0x0) at common/rbtree-utils.c:59
+>
+> Indeed we're back to the initial crash you reported.
+>
+> The root cause is the @node pointer, which is not valid.
+>
+> I'm not sure why, but we got an invalid node inside the rb tree, which
+> leads to the crash.
+>
+> Considering this is a rare one, I'll need more time to dig into the
+> original crash.
+> I'm afraid with this bug still here, we will not be able to do anything,
+> neither reverting back or continuing the conversion.
+>
+> Thanks,
+> Qu
 
-btrfs/153 2s ... - output mismatch (see 
-/xfstests-dev/results//btrfs/153.out.bad)
-     --- tests/btrfs/153.out	2021-07-13 08:07:54.096971521 -0400
-     +++ /xfstests-dev/results//btrfs/153.out.bad	2023-09-30 
-05:33:53.560640258 -0400
-     @@ -1,2 +1,3 @@
-      QA output created by 153
-     +pwrite: Disk quota exceeded
-      Silence is golden
-     ...
-     (Run 'diff -u /xfstests-dev/tests/btrfs/153.out 
-/xfstests-dev/results//btrfs/153.out.bad'  to see the entire diff)
+Hello Qu,
+
+does that mean that the filesystem is not recoverable?
+
+I can keep it for a while if you need it for further debugging.
+
+Kind regards,
 
 
-Thanks, Anand
-
+>> #2  0x00005555555c6964 in lookup_cache_extent (tree=0x555555667358,
+>> start=17820099854336, size=16384) at common/extent-cache.c:145
+>> #3  0x0000555555597cac in alloc_extent_buffer (fs_info=0x5555556672f0,
+>> bytenr=17820099854336, blocksize=16384) at kernel-shared/extent_io.c:262
+>> #4  0x000055555558253b in btrfs_find_create_tree_block
+>> (fs_info=0x5555556672f0, bytenr=17820099854336) at
+>> kernel-shared/disk-io.c:232
+>> #5  0x0000555555582cdb in read_tree_block (fs_info=0x5555556672f0,
+>> bytenr=17820099854336, owner_root=10, parent_transid=1833250, level=0,
+>> first_key=0x0)
+>>      at kernel-shared/disk-io.c:439
+>> #6  0x00005555555776bd in read_node_slot (fs_info=0x5555556672f0,
+>> parent=0x55557571ba60, slot=154) at kernel-shared/ctree.c:850
+>> #7  0x000055555557a644 in push_leaf_right (trans=0x555567b3d140,
+>> root=0x5555558da740, path=0x5555757f0d30, data_size=25, empty=0) at
+>> kernel-shared/ctree.c:1965
+>> #8  0x000055555557b7d1 in split_leaf (trans=0x555567b3d140,
+>> root=0x5555558da740, ins_key=0x7fffffffdc50, path=0x5555757f0d30,
+>> data_size=25, extend=0)
+>>      at kernel-shared/ctree.c:2338
+>> #9  0x0000555555578fc0 in btrfs_search_slot (trans=0x555567b3d140,
+>> root=0x5555558da740, key=0x7fffffffdc50, p=0x5555757f0d30, ins_len=25,
+>> cow=1) at kernel-shared/ctree.c:1399
+>> #10 0x000055555557ca7d in btrfs_insert_empty_items
+>> (trans=0x555567b3d140, root=0x5555558da740, path=0x5555757f0d30,
+>> cpu_key=0x7fffffffdc50, data_size=0x7fffffffdb6c, nr=1)
+>>      at kernel-shared/ctree.c:2758
+>> #11 0x000055555559eb70 in btrfs_insert_empty_item (trans=0x555567b3d140,
+>> root=0x5555558da740, path=0x5555757f0d30, key=0x7fffffffdc50, 
+>> data_size=0)
+>>      at ./kernel-shared/ctree.h:1019
+>> #12 0x000055555559ff9a in convert_free_space_to_extents
+>> (trans=0x555567b3d140, block_group=0x55555fcc7780, path=0x5555757f0d30)
+>> at kernel-shared/free-space-tree.c:465
+>> #13 0x00005555555a01ed in update_free_space_extent_count
+>> (trans=0x555567b3d140, block_group=0x55555fcc7780, path=0x5555757f0d30,
+>> new_extents=1)
+>>      at kernel-shared/free-space-tree.c:525
+>> #14 0x00005555555a07ae in modify_free_space_bitmap
+>> (trans=0x555567b3d140, block_group=0x55555fcc7780, path=0x5555757f0d30,
+>> start=17592699748352, size=16384, remove=0)
+>>      at kernel-shared/free-space-tree.c:707
+>> #15 0x00005555555a0ff2 in __add_to_free_space_tree
+>> (trans=0x555567b3d140, block_group=0x55555fcc7780, path=0x5555757f0d30,
+>> start=17592699748352, size=16384)
+>>      at kernel-shared/free-space-tree.c:997
+>> #16 0x00005555555a10ad in add_to_free_space_tree (trans=0x555567b3d140,
+>> start=17592699748352, size=16384) at 
+>> kernel-shared/free-space-tree.c:1028
+>> #17 0x0000555555591db8 in __free_extent (trans=0x555567b3d140,
+>> bytenr=17592699748352, num_bytes=16384, parent=0, root_objectid=2,
+>> owner_objectid=0, owner_offset=0,
+>>      refs_to_drop=1) at kernel-shared/extent-tree.c:2130
+>> #18 0x000055555559651c in run_delayed_tree_ref (trans=0x555567b3d140,
+>> fs_info=0x5555556672f0, node=0x55556bf11090, extent_op=0x0,
+>> insert_reserved=0)
+>>      at kernel-shared/extent-tree.c:3906
+>> #19 0x00005555555965b1 in run_one_delayed_ref (trans=0x555567b3d140,
+>> fs_info=0x5555556672f0, node=0x55556bf11090, extent_op=0x0,
+>> insert_reserved=0)
+>>      at kernel-shared/extent-tree.c:3926
+>> #20 0x00005555555967de in btrfs_run_delayed_refs (trans=0x555567b3d140,
+>> nr=18446744073709551615) at kernel-shared/extent-tree.c:4010
+>> #21 0x00005555555afbd1 in btrfs_commit_transaction
+>> (trans=0x555567b3d140, root=0x55555567bd70) at
+>> kernel-shared/transaction.c:210
+>> #22 0x0000555555566b19 in convert_to_bg_tree (fs_info=0x5555556672f0) at
+>> tune/convert-bgt.c:112
+>> #23 0x00005555555647bb in main (argc=3, argv=0x7fffffffe298) at
+>> tune/main.c:393
+>> (gdb)
+>>
+>>
+>>
+>>> Thanks,
+>>> Qu
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>>>
+>>>>>> Sep 28 17:46:17 elsinki kernel: btrfstune[796483]: segfault at
+>>>>>> ffffffffff000f2f ip 0000564b6c2107aa sp 00007ffdc8ad25c8 error 5 in
+>>>>>> btrfstune[564b6c1d1000+5b000] likely on CPU 3 (core 2, socket 0)
+>>>>>> Sep 28 17:46:17 elsinki kernel: Code: ff 48 8b 34 24 48 8d 3d 5a 
+>>>>>> d8 01
+>>>>>> 00 b8 00 00 00 00 e8 5a 37 00 00 48 8b 33 bf 0a 00 00 00 e8 1d 0c
+>>>>>> fc ff
+>>>>>> eb a8 e8 86 0a fc ff <48> 8b 4f 20 48 8b 56 08 48 89 c8 48 03 47 
+>>>>>> 28 48
+>>>>>> 89 c7 b8 01 00 00
+>>>>>> Sep 28 17:46:17 elsinki systemd[1]: Created slice Slice
+>>>>>> /system/systemd-coredump.
+>>>>>> Sep 28 17:46:17 elsinki systemd[1]: Started Process Core Dump (PID
+>>>>>> 796493/UID 0).
+>>>>>> Sep 28 17:46:21 elsinki systemd-coredump[796494]: [🡕] Process 
+>>>>>> 796483
+>>>>>> (btrfstune) of user 0 dumped core.
+>>>>>>
+>>>>>> Stack trace of
+>>>>>> thread
+>>>>>> 796483:
+>>>>>>                                                      #0
+>>>>>> 0x0000564b6c2107aa
+>>>>>> n/a (/root/btrfs-progs/btrfstune + 0x4d7aa)
+>>>>>>                                                      ELF object 
+>>>>>> binary
+>>>>>> architecture: AMD x86-64
+>>>>>> Sep 28 17:46:21 elsinki systemd[1]:
+>>>>>> systemd-coredump@0-796493-0.service:
+>>>>>> Deactivated successfully.
+>>>>>> Sep 28 17:46:21 elsinki systemd[1]:
+>>>>>> systemd-coredump@0-796493-0.service:
+>>>>>> Consumed 4.248s CPU time.
+>>>>>>
+>>>>>>
+>>>>>> On 28/9/2023 1:50 π.μ., Qu Wenruo wrote:
+>>>>>>> [BUG]
+>>>>>>> There is a bug report that when converting to bg tree crashed, the
+>>>>>>> resulted fs is unable to be resumed.
+>>>>>>>
+>>>>>>> This problems comes with the following error messages:
+>>>>>>>
+>>>>>>>      ./btrfstune --convert-to-block-group-tree /dev/sda
+>>>>>>>      ERROR: Corrupted fs, no valid METADATA block group found
+>>>>>>>      ERROR: failed to delete block group item from the old root: 
+>>>>>>> -117
+>>>>>>>      ERROR: failed to convert the filesystem to block group tree
+>>>>>>> feature
+>>>>>>>      ERROR: btrfstune failed
+>>>>>>>      extent buffer leak: start 17825576632320 len 16384
+>>>>>>>
+>>>>>>> [CAUSE]
+>>>>>>> When resuming a interrupted conversion, we go through
+>>>>>>> read_converting_block_groups() to handle block group items in both
+>>>>>>> extent and block group trees.
+>>>>>>>
+>>>>>>> However for the block group items in the extent tree, there are
+>>>>>>> several
+>>>>>>> problems involved:
+>>>>>>>
+>>>>>>> - Uninitialized @key inside read_old_block_groups_from_root()
+>>>>>>>      Here we only set @key.type, not setting @key.objectid for the
+>>>>>>> initial
+>>>>>>>      search.
+>>>>>>>
+>>>>>>>      Thus if we're unlukcy, we can got (u64)-1 as key.objectid, and
+>>>>>>> exit
+>>>>>>>      the search immediately.
+>>>>>>>
+>>>>>>> - Wrong search direction
+>>>>>>>      The conversion is converting block groups in descending order,
+>>>>>>> but the
+>>>>>>>      block groups read is in ascending order.
+>>>>>>>      Meaning if we start from the last converted block group, we
+>>>>>>> would at
+>>>>>>>      most read one block group.
+>>>>>>>
+>>>>>>> [FIX]
+>>>>>>> To fix the problems, this patch would just remove
+>>>>>>> read_old_block_groups_from_root() function completely.
+>>>>>>>
+>>>>>>> As for the conversion, we ensured the block group item is either
+>>>>>>> in the
+>>>>>>> old extent or the new block group tree.
+>>>>>>> Thus there is no special handling needed reading block groups.
+>>>>>>>
+>>>>>>> We only need to read all block groups from both trees, using the 
+>>>>>>> same
+>>>>>>> read_old_block_groups_from_root() function.
+>>>>>>>
+>>>>>>> Reported-by: Konstantinos Skarlatos <k.skarlatos@gmail.com>
+>>>>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>>>>> ---
+>>>>>>> To Konstantinos:
+>>>>>>>
+>>>>>>> The bug I fixed here can explain all the failures you hit (the
+>>>>>>> initial
+>>>>>>> one and the one after the quick diff).
+>>>>>>>
+>>>>>>> Please verify if this helps and report back (without the quick
+>>>>>>> diff in
+>>>>>>> the original thread).
+>>>>>>>
+>>>>>>> We may have other corner cases to go, but I believe the patch
+>>>>>>> itself is
+>>>>>>> necessary no matter what, as the deleted code is really
+>>>>>>> over-engineered and buggy.
+>>>>>>> ---
+>>>>>>>     kernel-shared/extent-tree.c | 79
+>>>>>>> +------------------------------------
+>>>>>>>     1 file changed, 1 insertion(+), 78 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/kernel-shared/extent-tree.c
+>>>>>>> b/kernel-shared/extent-tree.c
+>>>>>>> index 7022643a9843..4d6bf2b228e9 100644
+>>>>>>> --- a/kernel-shared/extent-tree.c
+>>>>>>> +++ b/kernel-shared/extent-tree.c
+>>>>>>> @@ -2852,83 +2852,6 @@ out:
+>>>>>>>         return ret;
+>>>>>>>     }
+>>>>>>> -/*
+>>>>>>> - * Helper to read old block groups items from specified root.
+>>>>>>> - *
+>>>>>>> - * The difference between this and 
+>>>>>>> read_block_groups_from_root() is,
+>>>>>>> - * we will exit if we have already read the last bg in the old 
+>>>>>>> root.
+>>>>>>> - *
+>>>>>>> - * This is to avoid wasting time finding bg items which should be
+>>>>>>> in the
+>>>>>>> - * new root.
+>>>>>>> - */
+>>>>>>> -static int read_old_block_groups_from_root(struct btrfs_fs_info
+>>>>>>> *fs_info,
+>>>>>>> -                       struct btrfs_root *root)
+>>>>>>> -{
+>>>>>>> -    struct btrfs_path path = {0};
+>>>>>>> -    struct btrfs_key key;
+>>>>>>> -    struct cache_extent *ce;
+>>>>>>> -    /* The last block group bytenr in the old root. */
+>>>>>>> -    u64 last_bg_in_old_root;
+>>>>>>> -    int ret;
+>>>>>>> -
+>>>>>>> -    if (fs_info->last_converted_bg_bytenr != (u64)-1) {
+>>>>>>> -        /*
+>>>>>>> -         * We know the last converted bg in the other tree, 
+>>>>>>> load the
+>>>>>>> chunk
+>>>>>>> -         * before that last converted as our last bg in the tree.
+>>>>>>> -         */
+>>>>>>> -        ce = 
+>>>>>>> search_cache_extent(&fs_info->mapping_tree.cache_tree,
+>>>>>>> - fs_info->last_converted_bg_bytenr);
+>>>>>>> -        if (!ce || ce->start != 
+>>>>>>> fs_info->last_converted_bg_bytenr) {
+>>>>>>> -            error("no chunk found for bytenr %llu",
+>>>>>>> - fs_info->last_converted_bg_bytenr);
+>>>>>>> -            return -ENOENT;
+>>>>>>> -        }
+>>>>>>> -        ce = prev_cache_extent(ce);
+>>>>>>> -        /*
+>>>>>>> -         * We should have previous unconverted chunk, or we have
+>>>>>>> -         * already finished the convert.
+>>>>>>> -         */
+>>>>>>> -        ASSERT(ce);
+>>>>>>> -
+>>>>>>> -        last_bg_in_old_root = ce->start;
+>>>>>>> -    } else {
+>>>>>>> -        last_bg_in_old_root = (u64)-1;
+>>>>>>> -    }
+>>>>>>> -
+>>>>>>> -    key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
+>>>>>>> -
+>>>>>>> -    while (true) {
+>>>>>>> -        ret = find_first_block_group(root, &path, &key);
+>>>>>>> -        if (ret > 0) {
+>>>>>>> -            ret = 0;
+>>>>>>> -            goto out;
+>>>>>>> -        }
+>>>>>>> -        if (ret != 0) {
+>>>>>>> -            goto out;
+>>>>>>> -        }
+>>>>>>> -        btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
+>>>>>>> -
+>>>>>>> -        ret = read_one_block_group(fs_info, &path);
+>>>>>>> -        if (ret < 0 && ret != -ENOENT)
+>>>>>>> -            goto out;
+>>>>>>> -
+>>>>>>> -        /* We have reached last bg in the old root, no need to
+>>>>>>> continue */
+>>>>>>> -        if (key.objectid >= last_bg_in_old_root)
+>>>>>>> -            break;
+>>>>>>> -
+>>>>>>> -        if (key.offset == 0)
+>>>>>>> -            key.objectid++;
+>>>>>>> -        else
+>>>>>>> -            key.objectid = key.objectid + key.offset;
+>>>>>>> -        key.offset = 0;
+>>>>>>> -        btrfs_release_path(&path);
+>>>>>>> -    }
+>>>>>>> -    ret = 0;
+>>>>>>> -out:
+>>>>>>> -    btrfs_release_path(&path);
+>>>>>>> -    return ret;
+>>>>>>> -}
+>>>>>>> -
+>>>>>>>     /* Helper to read all block groups items from specified 
+>>>>>>> root. */
+>>>>>>>     static int read_block_groups_from_root(struct btrfs_fs_info
+>>>>>>> *fs_info,
+>>>>>>>                            struct btrfs_root *root)
+>>>>>>> @@ -2989,7 +2912,7 @@ static int 
+>>>>>>> read_converting_block_groups(struct
+>>>>>>> btrfs_fs_info *fs_info)
+>>>>>>>             return ret;
+>>>>>>>         }
+>>>>>>> -    ret = read_old_block_groups_from_root(fs_info, old_root);
+>>>>>>> +    ret = read_block_groups_from_root(fs_info, old_root);
+>>>>>>>         if (ret < 0) {
+>>>>>>>             error("failed to load block groups from the old 
+>>>>>>> root: %d",
+>>>>>>> ret);
+>>>>>>>             return ret;
+>>>>
+>>
