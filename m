@@ -2,242 +2,218 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FFB7B4128
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Sep 2023 16:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31957B43B3
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Sep 2023 23:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234331AbjI3Ou7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 30 Sep 2023 10:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48792 "EHLO
+        id S233926AbjI3VH6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 30 Sep 2023 17:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234317AbjI3Ou6 (ORCPT
+        with ESMTP id S231351AbjI3VH5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 30 Sep 2023 10:50:58 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB1CB7;
-        Sat, 30 Sep 2023 07:50:55 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5046bf37daeso14337382e87.1;
-        Sat, 30 Sep 2023 07:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696085453; x=1696690253; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=laSU2ptF5dJtGJTOfsu2vTDoKsI4bo31YwsLIpMZHsY=;
-        b=MwDUKEd6QG0EtvDSCKf1uxGsuk6yCPhM15PYIYhqDJOgasuaT7+4Oh6GiJZ/vmFugy
-         lmSCSLc0F+hG3ukOAM3WdNdBnEAtspfwfQIzIK1Wl+hsYj7CnlRK1SN0CwP2toV4bow4
-         LCG2gYB2ozawxJ9b/KfUJbxAn6Xa7t4YEVAl9uocXX1Jw3qs6c/EXfaIr8Rz78OCo8KR
-         46YxdeGs8zmcFe+Db4BddvMZE57ZBrJ3u+0YeAZwI0lUMX0nfUrsuM9wr1T+Cx+4tFCh
-         43LmQPeSUyLxSTkiFSJ67LGdePIyZblA6OKDAQ/vyk5/2yD5+W+J95PEpgI6GVNdDKdn
-         9Sww==
+        Sat, 30 Sep 2023 17:07:57 -0400
+Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F3AE1
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Sep 2023 14:07:54 -0700 (PDT)
+Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1bf2e81ce63so2296677fac.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Sep 2023 14:07:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696085453; x=1696690253;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=laSU2ptF5dJtGJTOfsu2vTDoKsI4bo31YwsLIpMZHsY=;
-        b=T8inobxiaergECByFFZ1CXDbC3XpIp10sjfxquseZvUOFeu2160pvxp0AzdP6cwpsW
-         2kGV7KJk9GIz1Oj9AnixG0avheyT4r8wY1P+7mDouL4LbpFsN872mecuBdlfe7NvnDab
-         GVoo3WnsccIQpZ/XcHAdxWvc0C/REEi9X+IEwN2c1ii0X+WC4DGXGa6GwNPTKxqdIBet
-         A334oKWX3Ex4J8ygtgZKUbCrnpRs8SMDnD0/WXU+7QCJl4wyW29GabzCdhVuOYa/0CGr
-         fQvavOmh3je7pojydXHqJ+BKy6MuKRDfSGS4f/Azl+4tfeMHRvqFQCuuvAwXMD6ztg51
-         hRKA==
-X-Gm-Message-State: AOJu0YwxCCE2ZdXfvn+fN9bDB86YP0y09EvvFI143pYlVp4qXIMaSumB
-        jxSh19bFZGCMwTmkGL2yJGIgODIRi2Yhl2GhGJQ=
-X-Google-Smtp-Source: AGHT+IFKxuEfsWI2Hoye015VefDxXDDWWovJHhYR0GsRnul5m9+uvo7GWv6zNWozBrWHqGB+PwbJIGFbA8W5CapoIHU=
-X-Received: by 2002:a05:6512:124a:b0:503:5cd:998b with SMTP id
- fb10-20020a056512124a00b0050305cd998bmr7557694lfb.28.1696085453195; Sat, 30
- Sep 2023 07:50:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696108073; x=1696712873;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=otBfQrmQDL+mpXNdIPmqhYy3fKzQRiuiQTggjywq8j0=;
+        b=ciQ33Y7qqm24H/xXS0UV+ecjk1jdysctUjmy/XYiceIoAB14ejT/wwzDzBwQwHH9KT
+         K1sqOpd8fxIa+K16uh4MQ9TnsreC1/fXASMkvCPsqhjDTw/UmK9m36xOPWxJuHw2IMW6
+         h5aINXZA/3FE6Gh/3hhIhATioH0quCGBhISXl+Myv2FQjX3+gb1HcgVPtohw+DrPYB4a
+         U8HuRDMwVlAVCaophWqMy7KHu21iLUVWO8S+IUBs0jSaGX8k18loTYzXCcD5nnDos1Yc
+         gSX55jYJH3FL2F6f55yTuYat1op+YbVAgDczYHP0V2DE7e4GYEZHfoQme+p16ICN792W
+         Nwdw==
+X-Gm-Message-State: AOJu0YwBbgi955ywcsD1nmKsrEjqsoMtuKp+mBru8XCdyK5/llbZA7/r
+        6OUP0bHWdE8rXDNm7vNHr2OHtfxQgLSexwAUyW+zOfXfgsy3
+X-Google-Smtp-Source: AGHT+IFOvNgeG3dQrAOoJ+6fGQ3TqQPdqxyP8FCTLhsT4NtzUFaqusiKhGBPbaUvkcUlYX5Zu67Av/X92QgG6sZbfG/pl+G/EuJO
 MIME-Version: 1.0
-References: <20230928110554.34758-1-jlayton@kernel.org> <20230928110554.34758-2-jlayton@kernel.org>
- <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com> <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
- <20230928171943.GK11439@frogsfrogsfrogs> <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org>
- <636661.1695969129@warthog.procyon.org.uk>
-In-Reply-To: <636661.1695969129@warthog.procyon.org.uk>
-From:   Steve French <smfrench@gmail.com>
-Date:   Sat, 30 Sep 2023 09:50:41 -0500
-Message-ID: <CAH2r5ms14hPaz=Ex2a=Dj0Hz3XxYLRKFj_rHHekznTbNJ_wABQ@mail.gmail.com>
-Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete integers
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Anders Larsen <al@alarsen.net>,
-        Carlos Llamas <cmllamas@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mattia Dongili <malattia@linux.it>,
-        Hugh Dickins <hughd@google.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Paulo Alcantara <pc@manguebit.com>, linux-xfs@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        James Morris <jmorris@namei.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        devel@lists.orangefs.org, Shyam Prasad N <sprasad@microsoft.com>,
-        linux-um@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Jiri Olsa <jolsa@kernel.org>, Jan Kara <jack@suse.com>,
-        Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-trace-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Kleikamp <shaggy@kernel.org>, linux-mm@kvack.org,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        linux-s390@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>, codalist@coda.cs.cmu.edu,
-        Iurii Zaikin <yzaikin@google.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Todd Kjos <tkjos@android.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, selinux@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Yue Hu <huyue2@coolpad.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Martijn Coenen <maco@android.com>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Hao Luo <haoluo@google.com>, Tony Luck <tony.luck@intel.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, Nicolas Pitre <nico@fluxnic.net>,
-        linux-ntfs-dev@lists.sourceforge.net,
-        Muchun Song <muchun.song@linux.dev>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>, gfs2@lists.linux.dev,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Brad Warrum <bwarrum@linux.ibm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        linux-efi@vger.kernel.org,
-        Martin Brandenburg <martin@omnibond.com>,
-        ocfs2-devel@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
-        platform-driver-x86@vger.kernel.org, Chris Mason <clm@fb.com>,
-        linux-mtd@lists.infradead.org, linux-hardening@vger.kernel.org,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-afs@lists.infradead.org, Ian Kent <raven@themaw.net>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        linux-rdma@vger.kernel.org, coda@cs.cmu.edu,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, autofs@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mark Gross <markgross@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Eric Paris <eparis@parisplace.org>, ceph-devel@vger.kernel.org,
-        Gao Xiang <xiang@kernel.org>, Jan Harkes <jaharkes@cs.cmu.edu>,
-        linux-nfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Song Liu <song@kernel.org>, samba-technical@lists.samba.org,
-        Steve French <sfrench@samba.org>, Jeremy Kerr <jk@ozlabs.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Bob Peterson <rpeterso@redhat.com>,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        ntfs3@lists.linux.dev, linux-erofs@lists.ozlabs.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        jfs-discussion@lists.sourceforge.net, Jan Kara <jack@suse.cz>,
-        Neil Brown <neilb@suse.de>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Bob Copeland <me@bobcopeland.com>,
-        KP Singh <kpsingh@kernel.org>, linux-unionfs@vger.kernel.org,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Fasheh <mark@fasheh.com>, Dai Ngo <Dai.Ngo@oracle.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-serial@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        Evgeniy Dushistov <dushistov@mail.ru>,
-        linux-cifs@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Chao Yu <chao@kernel.org>, apparmor@lists.ubuntu.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        Tom Talpey <tom@talpey.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Ritu Agarwal <rituagar@linux.ibm.com>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        v9fs@lists.linux.dev, David Sterba <dsterba@suse.cz>,
-        linux-security-module@vger.kernel.org,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        linux-karma-devel@lists.sourceforge.net,
-        linux-btrfs@vger.kernel.org, Joel Becker <jlbec@evilplan.org>
+X-Received: by 2002:a05:6870:5a8d:b0:1dc:e0e3:228b with SMTP id
+ dt13-20020a0568705a8d00b001dce0e3228bmr3163046oab.0.1696108073623; Sat, 30
+ Sep 2023 14:07:53 -0700 (PDT)
+Date:   Sat, 30 Sep 2023 14:07:53 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003aa943060699ef0c@google.com>
+Subject: [syzbot] [btrfs?] KASAN: stack-out-of-bounds Read in btrfs_buffered_write
+From:   syzbot <syzbot+e5c1bab304c63c107418@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 3:06=E2=80=AFAM David Howells via samba-technical
-<samba-technical@lists.samba.org> wrote:
->
->
-> Jeff Layton <jlayton@kernel.org> wrote:
->
-> > Correct. We'd lose some fidelity in currently stored timestamps, but as
-> > Linus and Ted pointed out, anything below ~100ns granularity is
-> > effectively just noise, as that's the floor overhead for calling into
-> > the kernel. It's hard to argue that any application needs that sort of
-> > timestamp resolution, at least with contemporary hardware.
->
-> Albeit with the danger of making Steve French very happy;-), would it mak=
-e
-> sense to switch internally to Microsoft-style 64-bit timestamps with thei=
-r
-> 100ns granularity?
+Hello,
 
-100ns granularity does seem to make sense and IIRC was used by various
-DCE standards in the 90s and 2000s (not just used for SMB2/SMB3 protocol an=
-d
-various Windows filesystems)
+syzbot found the following issue on:
+
+HEAD commit:    df964ce9ef9f Add linux-next specific files for 20230929
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13c348e6680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=880c828d75e38e1b
+dashboard link: https://syzkaller.appspot.com/bug?extid=e5c1bab304c63c107418
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/fe7244c6057d/disk-df964ce9.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/48cdc7f3b2c0/vmlinux-df964ce9.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ce7c93a66da9/bzImage-df964ce9.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e5c1bab304c63c107418@syzkaller.appspotmail.com
+
+BTRFS info (device loop5): auto enabling async discard
+==================================================================
+BUG: KASAN: stack-out-of-bounds in iterate_bvec include/linux/iov_iter.h:116 [inline]
+BUG: KASAN: stack-out-of-bounds in __copy_from_iter_mc+0x30a/0x3f0 lib/iov_iter.c:262
+Read of size 4 at addr ffffc9000a0ff574 by task syz-executor.5/8451
+
+CPU: 0 PID: 8451 Comm: syz-executor.5 Not tainted 6.6.0-rc3-next-20230929-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ iterate_bvec include/linux/iov_iter.h:116 [inline]
+ __copy_from_iter_mc+0x30a/0x3f0 lib/iov_iter.c:262
+ __copy_from_iter lib/iov_iter.c:271 [inline]
+ copy_page_from_iter_atomic+0x471/0x11e0 lib/iov_iter.c:504
+ btrfs_copy_from_user+0xe7/0x310 fs/btrfs/file.c:61
+ btrfs_buffered_write+0xabe/0x12d0 fs/btrfs/file.c:1337
+ btrfs_do_write_iter+0xa56/0x1120 fs/btrfs/file.c:1686
+ __kernel_write_iter+0x261/0x7e0 fs/read_write.c:517
+ dump_emit_page fs/coredump.c:888 [inline]
+ dump_user_range+0x299/0x790 fs/coredump.c:915
+ elf_core_dump+0x2700/0x3900 fs/binfmt_elf.c:2142
+ do_coredump+0x2c97/0x3fc0 fs/coredump.c:764
+ get_signal+0x2434/0x2790 kernel/signal.c:2890
+ arch_do_signal_or_restart+0x90/0x7f0 arch/x86/kernel/signal.c:309
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
+ do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:87
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f2fa447cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f2fa51250c8 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+RAX: ffffffffffffffe5 RBX: 00007f2fa459bf80 RCX: 00007f2fa447cae9
+RDX: 0000000100000000 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 00007f2fa44c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f2fa459bf80 R15: 00007ffd70b99bd8
+ </TASK>
+
+The buggy address belongs to stack of task syz-executor.5/8451
+ and is located at offset 108 in frame:
+ dump_user_range+0x0/0x790 fs/coredump.c:482
+
+This frame has 3 objects:
+ [48, 56) 'pos'
+ [80, 96) 'bvec'
+ [112, 152) 'iter'
+
+The buggy address belongs to the virtual mapping at
+ [ffffc9000a0f8000, ffffc9000a101000) created by:
+ kernel_clone+0xfd/0x920 kernel/fork.c:2902
+
+The buggy address belongs to the physical page:
+page:ffffea0001fce280 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7f38a
+memcg:ffff8880291b7482
+flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000000000000 00000001ffffffff ffff8880291b7482
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x102dc2(GFP_HIGHUSER|__GFP_NOWARN|__GFP_ZERO), pid 8450, tgid 8450 (syz-executor.5), ts 363006042687, free_ts 362824161389
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1534
+ prep_new_page mm/page_alloc.c:1541 [inline]
+ get_page_from_freelist+0x98f/0x32a0 mm/page_alloc.c:3333
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4589
+ alloc_pages+0x1a9/0x270 mm/mempolicy.c:2304
+ vm_area_alloc_pages mm/vmalloc.c:3063 [inline]
+ __vmalloc_area_node mm/vmalloc.c:3139 [inline]
+ __vmalloc_node_range+0x8f3/0x1bf0 mm/vmalloc.c:3320
+ alloc_thread_stack_node kernel/fork.c:309 [inline]
+ dup_task_struct kernel/fork.c:1118 [inline]
+ copy_process+0x13e3/0x74b0 kernel/fork.c:2327
+ kernel_clone+0xfd/0x920 kernel/fork.c:2902
+ __do_sys_clone3+0x1f1/0x260 kernel/fork.c:3203
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1134 [inline]
+ free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2383
+ free_unref_page_list+0xe6/0xb30 mm/page_alloc.c:2564
+ release_pages+0x32a/0x14e0 mm/swap.c:1042
+ __folio_batch_release+0x77/0xe0 mm/swap.c:1062
+ folio_batch_release include/linux/pagevec.h:83 [inline]
+ mapping_try_invalidate+0x39a/0x480 mm/truncate.c:535
+ invalidate_bdev+0xb1/0xd0 block/bdev.c:87
+ btrfs_close_bdev+0x11a/0x170 fs/btrfs/volumes.c:1017
+ btrfs_close_one_device fs/btrfs/volumes.c:1041 [inline]
+ close_fs_devices fs/btrfs/volumes.c:1086 [inline]
+ close_fs_devices+0x200/0x980 fs/btrfs/volumes.c:1073
+ btrfs_close_devices+0x91/0x610 fs/btrfs/volumes.c:1102
+ btrfs_free_fs_info+0x4b/0x410 fs/btrfs/disk-io.c:1237
+ deactivate_locked_super+0xbc/0x1a0 fs/super.c:484
+ deactivate_super+0xde/0x100 fs/super.c:517
+ cleanup_mnt+0x222/0x3d0 fs/namespace.c:1256
+ task_work_run+0x14d/0x240 kernel/task_work.c:180
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x215/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
+
+Memory state around the buggy address:
+ ffffc9000a0ff400: f1 f1 f1 00 00 00 00 00 00 f3 f3 f3 f3 00 00 00
+ ffffc9000a0ff480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffc9000a0ff500: 00 f1 f1 f1 f1 f1 f1 00 f2 f2 f2 00 00 f2 f2 00
+                                                             ^
+ ffffc9000a0ff580: 00 00 00 00 f3 f3 f3 f3 f3 00 00 00 00 00 00 00
+ ffffc9000a0ff600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
 
 
---=20
-Thanks,
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Steve
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
