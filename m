@@ -2,275 +2,652 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 858ED7B4560
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Oct 2023 07:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FC77B4786
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Oct 2023 15:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234293AbjJAFjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Oct 2023 01:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
+        id S234956AbjJANJs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Oct 2023 09:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjJAFjX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Oct 2023 01:39:23 -0400
-X-Greylist: delayed 2207 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 30 Sep 2023 22:39:18 PDT
-Received: from mx08-006a4e02.pphosted.com (mx08-006a4e02.pphosted.com [143.55.148.243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD9FC5;
-        Sat, 30 Sep 2023 22:39:18 -0700 (PDT)
-Received: from pps.filterd (m0316693.ppops.net [127.0.0.1])
-        by mx08-006a4e02.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3913gioS006695;
-        Sun, 1 Oct 2023 07:02:18 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iram.es; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to:content-transfer-encoding; s=dkim3;
-         bh=5JgHwkJ5bZA+PRufvniyMuRJN1Jr6719sKCuadOAMmw=; b=hDNmwqgug1An
-        fvwB2cRTfoutFDu+tai+5nrTyDJGpD0Pkv+UoD9dDHnHHIAd09gz+r02mse1Cs9K
-        ZCgOca/WGL5QjFanXXswWHZ9gsDFv9HUsGVbSl0NWG9zgx7F1IrS1vcyAC4I2TBu
-        vtCiSXblwT2BOKB168GcAoNAG3zywK5ZIdX9TFP4bHS8GBFExgd9NXibijGF4eid
-        NlYGioPXJRFaYlb2eKu0casy5f5iNW/FoS1c0RbxZP9tWhnpwN4+plV0Uq3PyrZu
-        vjfbiPtJ7zPzKAVMjvhFWJMgaNJzLRSZANzAdWFrm7A8N1ie1vidQt1Dp6QldrsP
-        8q3fZB20SA==
-Received: from sim.rediris.es (mta-out04.sim.rediris.es [130.206.24.46])
-        by mx08-006a4e02.pphosted.com (PPS) with ESMTPS id 3tewvarrd8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 01 Oct 2023 07:02:17 +0200 (MEST)
-Received: from sim.rediris.es (localhost.localdomain [127.0.0.1])
-        by sim.rediris.es (Postfix) with ESMTPS id 0AB0D182CCF;
-        Sun,  1 Oct 2023 07:02:16 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by sim.rediris.es (Postfix) with ESMTP id 86FFB182CCC;
-        Sun,  1 Oct 2023 07:02:15 +0200 (CEST)
-X-Amavis-Modified: Mail body modified (using disclaimer) -
- mta-out04.sim.rediris.es
-Received: from sim.rediris.es ([127.0.0.1])
- by localhost (mta-out04.sim.rediris.es [127.0.0.1]) (amavis, port 10026)
- with ESMTP id qO51DSuhuoLH; Sun,  1 Oct 2023 07:02:14 +0200 (CEST)
-Received: from gp-workstation.iram.es (haproxy01.sim.rediris.es [130.206.24.69])
-        by sim.rediris.es (Postfix) with ESMTPA id 96282180084;
-        Sun,  1 Oct 2023 07:01:58 +0200 (CEST)
-Date:   Sun, 1 Oct 2023 07:01:56 +0200
-From:   Gabriel Paubert <paubert@iram.es>
-To:     Steve French <smfrench@gmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Anders Larsen <al@alarsen.net>,
-        Carlos Llamas <cmllamas@google.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Mattia Dongili <malattia@linux.it>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        James Morris <jmorris@namei.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        devel@lists.orangefs.org, Shyam Prasad N <sprasad@microsoft.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, linux-um@lists.infradead.org,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kr oah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Jan Kara <jack@suse.com>,
-        Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        samba-technical@lists.samba.org,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        linux-s390@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>, codalist@coda.cs.cmu.edu,
-        Iurii Zaikin <yzaikin@google.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        linux-trace-kernel@vger.kernel.org, Todd Kjos <tkjos@android.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, selinux@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        ocfs2-devel@lists.linux.dev, Yue Hu <huyue2@coolpad.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Martijn Coenen <maco@android.com>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Hao Luo <haoluo@google.com>, Tony Luck <tony.luck@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        linux-ntfs-dev@lists.sourceforge.net,
-        Muchun Song <muchun.song@linux.dev>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Anna Schumaker <anna@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Brad Warrum <bwarrum@linux.ibm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        linux-efi@vger.kernel.org,
-        Martin Brandenburg <martin@omnibond.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        platform-driver-x86@vger.kernel.or.g,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Chris Mason <clm@fb.com>, linux-mtd@lists.infradead.org,
-        linux-hardening@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-afs@lists.infradead.org, Ian Kent <raven@themaw.net>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Miklos Szeredi <miklos@szeredi.hu>, linux-rdma@vger.kernel.org,
-        coda@cs.cmu.edu,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, autofs@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mark Gross <markgross@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Eric Paris <eparis@parisplace.org>, ceph-devel@vger.kernel.org,
-        Gao Xiang <xiang@kernel.org>, gfs2@lists.linux.dev,
-        linux-nfs@vger.kernel.org, linux-ext4@vger.ker.nel.org,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Song Liu <song@kernel.org>, Jeff Layton <jlayton@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        linux-xfs@vger.kernel.org, Jeremy Kerr <jk@ozlabs.org>,
-        Bob Peterson <rpeterso@redhat.com>,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        ntfs3@lists.linux.dev, linux-erofs@lists.ozlabs.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        jfs-discussion@lists.sourceforge.net, Jan Kara <jack@suse.cz>,
-        Neil Brown <neilb@suse.de>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        Bob Copeland <me@bobcopeland.com>,
-        KP Singh <kpsingh@kernel.org>, David Sterba <dsterba@suse.cz>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-mm@kvack.org, Andreas Dilger <adilger.kernel@dilger.ca>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Mark Fasheh <mark@fasheh.com>, Dai Ngo <Dai.Ngo@oracle.com>,
-        Steve French <sfrench@samba.org>, linux-serial@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Evgeniy Dushistov <dushistov@mail.ru>,
-        linux-cifs@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Chao Yu <chao@kernel.org>, apparmor@lists.ubuntu.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        Tom Talpey <tom@talpey.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Ritu Agarwal <rituagar@linux.ibm.com>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Netdev <netdev@vger.kernel.org>, v9fs@li.sts.linux.dev,
-        linux-unionfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Johannes Thumshirn <jth@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-karma-devel@lists.sourceforge.net,
-        linux-btrfs@vger.kernel.org, Joel Becker <jlbec@evilplan.org>
-Subject: [OT] Re: [PATCH 86/87] fs: switch timespec64 fields in inode to
- discrete integers
-Message-ID: <20231001050156.GA3366643@gp-workstation.iram.es>
-References: <20230928110554.34758-1-jlayton@kernel.org>
- <20230928110554.34758-2-jlayton@kernel.org>
- <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com>
- <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
- <20230928171943.GK11439@frogsfrogsfrogs>
- <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org>
- <636661.1695969129@warthog.procyon.org.uk>
- <CAH2r5ms14hPaz=Ex2a=Dj0Hz3XxYLRKFj_rHHekznTbNJ_wABQ@mail.gmail.com>
+        with ESMTP id S229716AbjJANJr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Oct 2023 09:09:47 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124A19C
+        for <linux-btrfs@vger.kernel.org>; Sun,  1 Oct 2023 06:09:44 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-401d6f6b2e0so12443915e9.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 01 Oct 2023 06:09:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696165782; x=1696770582; darn=vger.kernel.org;
+        h=content-language:content-transfer-encoding:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dViOtm1VjSbEIFzJ0pIS8WsZ+Nq3g9fLAl2r+DN9vYk=;
+        b=OufJCYGqLK66rTOb00CQH06bfA4G6KjbgGA6g7F6CaekHuiapgPZcu+RuXst+sr6/z
+         PjFO2JspDmdHhbsuiHZ0qwSyNeu6IZIOqrEvonn2hBqbDsSGn/7Gpep9j6eNguhJS7ev
+         ih2Lm7i/8GqknH7jouSTVuXnpeY3j51yjB6ps0b2zs3drzpyWX+Z8fiT/sqhAkQgLadp
+         /BbVFoOge2TerK8tk0nZmOCmlfFzsVgigmeZC8S6nltL4xNUbCLwrw8VSyuY9daIMJvM
+         7HF/WdCRndGXUfOotFaAgYTULbYtbt4iFm9KyahY2b0AewiJwW/zyy9jDgBvREUoLiFo
+         wVwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696165782; x=1696770582;
+        h=content-language:content-transfer-encoding:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dViOtm1VjSbEIFzJ0pIS8WsZ+Nq3g9fLAl2r+DN9vYk=;
+        b=jnS2quRxHxCNDf+65sKQoPhNAV0X++xy0cth/1jcTqNngho8D5nvG/AV3yq53jW1Qc
+         iTIeIH36Q6noP75jv0affQHxTkb0P3dJcZ9yv6crWzzdGnyJtEMZmZq5hL/mDEmBQEB+
+         yCSDLVgmznhy4JS+m+gpYMrVzdmYCU4MMMptY4c2RTJyVSIqIDrG6r/sW+mAD+ufO7PS
+         RBMnM/vKWXAZOz3x/Lx248ySu/ixqskg529/Brtca86HyEF9lILofrC577TCL/4s0DGB
+         DHH/EsqF+yvKNAJLQiLAImiZeXNbShkMFQXH6RFWtg4borS+oU98ParHmYN6oKSqMUXg
+         Zz5A==
+X-Gm-Message-State: AOJu0Yzj5Vx0x9BGMS6ptg5vmcZlFFqZTPZRVtQCIUQ3S62heK8AS7V9
+        FyMtJqLBP3LRXeVbRXRoYvODb4QeGe8J+w==
+X-Google-Smtp-Source: AGHT+IGTrPfYz9Qx+auF8QmBp7d/TOdPDpoZ5SAjrjjsACdw1zOiy3AQfOTzDPxrnxxlzWubVEKvNA==
+X-Received: by 2002:adf:f083:0:b0:319:6b56:94d9 with SMTP id n3-20020adff083000000b003196b5694d9mr7365873wro.2.1696165781974;
+        Sun, 01 Oct 2023 06:09:41 -0700 (PDT)
+Received: from [192.168.1.121] (athedsl-161999.home.otenet.gr. [85.75.176.109])
+        by smtp.googlemail.com with ESMTPSA id d12-20020adf9c8c000000b00324887a13f7sm7563001wre.0.2023.10.01.06.09.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 01 Oct 2023 06:09:41 -0700 (PDT)
+Subject: Re: [PATCH] btrfs-progs: fix failed resume due to bad search
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <840a9a762a3a0b8365d79dd7c23d812d95761dcf.1695855009.git.wqu@suse.com>
+ <fc926390-38ea-f764-4377-25576b872b31@gmail.com>
+ <e834fd8a-3c10-4b5c-9121-9812f460f73c@gmx.com>
+ <c9fa7f88-5f3b-04f8-b18d-7d8490299538@gmail.com>
+ <a59ee960-f493-47d5-918d-4386a4deecd3@gmx.com>
+ <a7404485-0a85-49c2-afb8-769ad112dd8b@gmail.com>
+ <cd390b15-7d42-41be-afc6-22c6fa22671d@gmx.com>
+ <35bc07b9-2e6c-0848-661c-8e991cb5479a@gmail.com>
+ <17ed25c0-9a96-456b-a998-6e7d8e5ad113@gmx.com>
+From:   Konstantinos Skarlatos <k.skarlatos@gmail.com>
+Message-ID: <c7856278-f7c0-6ed5-1535-8013f1e658d1@gmail.com>
+Date:   Sun, 1 Oct 2023 16:09:39 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAH2r5ms14hPaz=Ex2a=Dj0Hz3XxYLRKFj_rHHekznTbNJ_wABQ@mail.gmail.com>
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-ORIG-GUID: 7g7M4VduddtlWYRAuFdJHm-pjLCEd0SM
-X-Proofpoint-GUID: 7g7M4VduddtlWYRAuFdJHm-pjLCEd0SM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-01_02,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=salida_notspam policy=salida score=0 bulkscore=0 impostorscore=0
- mlxlogscore=544 suspectscore=0 malwarescore=0 mlxscore=0 spamscore=0
- adultscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1011
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2309180000 definitions=main-2310010040
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_RDNS_DYNAMIC_FP,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <17ed25c0-9a96-456b-a998-6e7d8e5ad113@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 09:50:41AM -0500, Steve French wrote:
-> On Fri, Sep 29, 2023 at 3:06=E2=80=AFAM David Howells via samba-technic=
-al
-> <samba-technical@lists.samba.org> wrote:
-> >
-> >
-> > Jeff Layton <jlayton@kernel.org> wrote:
-> >
-> > > Correct. We'd lose some fidelity in currently stored timestamps, bu=
-t as
-> > > Linus and Ted pointed out, anything below ~100ns granularity is
-> > > effectively just noise, as that's the floor overhead for calling in=
-to
-> > > the kernel. It's hard to argue that any application needs that sort=
- of
-> > > timestamp resolution, at least with contemporary hardware.
-> >
-> > Albeit with the danger of making Steve French very happy;-), would it=
- make
-> > sense to switch internally to Microsoft-style 64-bit timestamps with =
-their
-> > 100ns granularity?
->=20
-> 100ns granularity does seem to make sense and IIRC was used by various
-> DCE standards in the 90s and 2000s (not just used for SMB2/SMB3 protoco=
-l and
-> various Windows filesystems)
 
-Historically it probably comes from VMS, where system time and file
-timestamps were a 64 bit integer counting in 100ns units starting on MJD
-2400000.5 (Nov 17th 1858).
-
-Gabriel
-
->=20
->=20
-> --=20
+On 1/10/2023 12:22 π.μ., Qu Wenruo wrote:
+>
+>
+> On 2023/9/30 22:31, Konstantinos Skarlatos wrote:
+>>
+>> On 30/9/2023 1:25 π.μ., Qu Wenruo wrote:
+>>>
+>>>
+>>> On 2023/9/29 21:01, Konstantinos Skarlatos wrote:
+>>>> On 29/09/2023 1:54 μ.μ., Qu Wenruo wrote:
+>>>>>
+>>>>>
+>>>>> On 2023/9/29 19:03, Konstantinos Skarlatos wrote:
+>>>>>> On 29/09/2023 12:56 π.μ., Qu Wenruo wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2023/9/29 00:23, Konstantinos Skarlatos wrote:
+>>>>>>>> Hi Qu, thanks for your patch. I just tried it on a clean 
+>>>>>>>> btrfs-progs
+>>>>>>>> tree with my filesystem:
+>>>>>>>>
+>>>>>>>> ❯ ./btrfstune --convert-to-block-group-tree /dev/sda
+>>>>>>>> [1]    796483 segmentation fault (core dumped) ./btrfstune
+>>>>>>>> --convert-to-block-group-tree /dev/sda
+>>>>>>>
+>>>>>>> Mind to enable debug build by "make D=1" for btrfs-progs, and go 
+>>>>>>> with
+>>>>>>> gdb to show the crash callback?
+>>>>>>>
+>>>>>>> I assume it could be the same crash from your initial report.
+>>>>>>>
+>>>>>>> Thanks,
+>>>>>>> Qu
+>>>>>>>
+>>>>>>
+>>>>>> Hi Qu, i hope i am doing this correctly...
+>>>>>>
+>>>>>>
+>>>>>> ❯ gdb -ex=r --args ./btrfstune --convert-to-block-group-tree 
+>>>>>> /dev/sda
+>>>>>> GNU gdb (GDB) 13.2
+>>>>>> Copyright (C) 2023 Free Software Foundation, Inc.
+>>>>>> License GPLv3+: GNU GPL version 3 or later
+>>>>>> <http://gnu.org/licenses/gpl.html>
+>>>>>> This is free software: you are free to change and redistribute it.
+>>>>>> There is NO WARRANTY, to the extent permitted by law.
+>>>>>> Type "show copying" and "show warranty" for details.
+>>>>>> This GDB was configured as "x86_64-pc-linux-gnu".
+>>>>>> Type "show configuration" for configuration details.
+>>>>>> For bug reporting instructions, please see:
+>>>>>> <https://www.gnu.org/software/gdb/bugs/>.
+>>>>>> Find the GDB manual and other documentation resources online at:
+>>>>>> <http://www.gnu.org/software/gdb/documentation/>.
+>>>>>>
+>>>>>> For help, type "help".
+>>>>>> Type "apropos word" to search for commands related to "word"...
+>>>>>> Reading symbols from ./btrfstune...
+>>>>>> Starting program: /root/btrfs-progs/btrfstune
+>>>>>> --convert-to-block-group-tree /dev/sda
+>>>>>>
+>>>>>> This GDB supports auto-downloading debuginfo from the following 
+>>>>>> URLs:
+>>>>>>     <https://debuginfod.archlinux.org>
+>>>>>> Enable debuginfod for this session? (y or [n]) y
+>>>>>> Debuginfod has been enabled.
+>>>>>> To make this setting permanent, add 'set debuginfod enabled on' to
+>>>>>> .gdbinit.
+>>>>>> Downloading separate debug info for /lib64/ld-linux-x86-64.so.2
+>>>>>> Downloading separate debug info for system-supplied DSO at
+>>>>>> 0x7ffff7fc8000
+>>>>>> Downloading separate debug info for /usr/lib/libuuid.so.1
+>>>>>> Downloading separate debug info for /usr/lib/libblkid.so.1
+>>>>>> Downloading separate debug info for /usr/lib/libudev.so.1
+>>>>>> Downloading separate debug info for /usr/lib/libc.so.6
+>>>>>> [Thread debugging using libthread_db enabled]
+>>>>>> Using host libthread_db library "/usr/lib/libthread_db.so.1".
+>>>>>> Downloading separate debug info for /usr/lib/libcap.so.2
+>>>>>>
+>>>>>> Program received signal SIGSEGV, Segmentation fault.
+>>>>>> 0x00005555555c6600 in cache_tree_comp_range 
+>>>>>> (node=0xffffffffff000f0f,
+>>>>>> data=0x7fffffffd780) at common/extent-cache.c:40
+>>>>>> 40              if (entry->start + entry->size <= range->start)
+>>>>>> (gdb)
+>>>>>
+>>>>> That's great, what about the output from "bt" command?
+>>>>>
+>>>>
+>>>> Hi Qu, this is what i get:
+>>>>
+>>>> Program received signal SIGSEGV, Segmentation fault.
+>>>> 0x00005555555c6600 in cache_tree_comp_range (node=0xffffffffff000f0f,
+>>>> data=0x7fffffffd780) at common/extent-cache.c:40
+>>>> 40              if (entry->start + entry->size <= range->start)
+>>>> (gdb) bt
+>>>> #0  0x00005555555c6600 in cache_tree_comp_range
+>>>> (node=0xffffffffff000f0f, data=0x7fffffffd780) at
+>>>> common/extent-cache.c:40
+>>>> #1  0x00005555555ce458 in rb_search (root=0x555555667358,
+>>>> key=0x7fffffffd780, comp=0x5555555c65d8 <cache_tree_comp_range>,
+>>>> next_ret=0x0) at common/rbtree-utils.c:59
+>>>
+>>> Indeed we're back to the initial crash you reported.
+>>>
+>>> The root cause is the @node pointer, which is not valid.
+>>>
+>>> I'm not sure why, but we got an invalid node inside the rb tree, which
+>>> leads to the crash.
+>>>
+>>> Considering this is a rare one, I'll need more time to dig into the
+>>> original crash.
+>>> I'm afraid with this bug still here, we will not be able to do 
+>>> anything,
+>>> neither reverting back or continuing the conversion.
+>>>
+>>> Thanks,
+>>> Qu
+>>
+>> Hello Qu,
+>>
+>> does that mean that the filesystem is not recoverable?
+>
+> I'm not sure, unfortunately.
+>
+> One thing I'm afraid of is, there may be no space left and cause
+> something wrong.
+>
+>>
+>> I can keep it for a while if you need it for further debugging.
+>
+> Considering the turn-over time, please try this diff (upon this patch)
+> as the last try.
+>
+> As I don't have any clue why the crash can happen, thus I go with my
+> last guess on the possible ENOSPC.
+>
+> If this doesn't work, feel free to reformat the fs.
+>
 > Thanks,
->=20
-> Steve
- 
+> Qu
 
+
+Hi Qu,
+
+i applied the patch over your previous patch and i got another seg fault :(
+
+the latest df i have from my logs is:
+
+Filesystem     1M-blocks     Used Available Use% Mounted on
+
+/dev/sda        11446344 10109559    748884  94% /storage/btrfs
+
+
+Starting program: /root/btrfs-progs/btrfstune 
+--convert-to-block-group-tree /dev/sda
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+   <https://debuginfod.archlinux.org>
+Enable debuginfod for this session? (y or [n]) y
+Debuginfod has been enabled.
+To make this setting permanent, add 'set debuginfod enabled on' to .gdbinit.
+Downloading separate debug info for /lib64/ld-linux-x86-64.so.2
+Downloading separate debug info for system-supplied DSO at 0x7ffff7fc8000
+Downloading separate debug info for /usr/lib/libc.so.6
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7c9cd77 in malloc () from /usr/lib/libc.so.6
+(gdb) bt
+#0  0x00007ffff7c9cd77 in malloc () from /usr/lib/libc.so.6
+#1  0x000055555558ccd8 in btrfs_alloc_delayed_extent_op () at 
+./kernel-shared/delayed-ref.h:165
+#2  0x0000555555592cd1 in alloc_tree_block (trans=0x555567d491d0, 
+root=0x5555558da6d0, num_bytes=16384, root_objectid=10, 
+generation=1833253, flags=0,
+     key=0x7fffffffd9e0, level=0, empty_size=0, 
+hint_byte=17820097789952, search_end=18446744073709551615, 
+ins=0x7fffffffd930) at kernel-shared/extent-tree.c:2500
+#3  0x0000555555592f82 in btrfs_alloc_tree_block (trans=0x555567d491d0, 
+root=0x5555558da6d0, blocksize=16384, root_objectid=10, 
+key=0x7fffffffd9e0, level=0,
+     hint=17820097789952, empty_size=0, nest=BTRFS_NESTING_NORMAL) at 
+kernel-shared/extent-tree.c:2564
+#4  0x000055555557ba8e in split_leaf (trans=0x555567d491d0, 
+root=0x5555558da6d0, ins_key=0x7fffffffdc40, path=0x55556a180e90, 
+data_size=25, extend=0)
+     at kernel-shared/ctree.c:2405
+#5  0x0000555555578fc0 in btrfs_search_slot (trans=0x555567d491d0, 
+root=0x5555558da6d0, key=0x7fffffffdc40, p=0x55556a180e90, ins_len=25, 
+cow=1)
+     at kernel-shared/ctree.c:1399
+#6  0x000055555557ca7d in btrfs_insert_empty_items 
+(trans=0x555567d491d0, root=0x5555558da6d0, path=0x55556a180e90, 
+cpu_key=0x7fffffffdc40,
+     data_size=0x7fffffffdb5c, nr=1) at kernel-shared/ctree.c:2758
+#7  0x000055555559eb70 in btrfs_insert_empty_item (trans=0x555567d491d0, 
+root=0x5555558da6d0, path=0x55556a180e90, key=0x7fffffffdc40, data_size=0)
+     at ./kernel-shared/ctree.h:1019
+#8  0x000055555559ff9a in convert_free_space_to_extents 
+(trans=0x555567d491d0, block_group=0x55555fcc7710, path=0x55556a180e90)
+     at kernel-shared/free-space-tree.c:465
+#9  0x00005555555a01ed in update_free_space_extent_count 
+(trans=0x555567d491d0, block_group=0x55555fcc7710, path=0x55556a180e90, 
+new_extents=1)
+     at kernel-shared/free-space-tree.c:525
+#10 0x00005555555a07ae in modify_free_space_bitmap 
+(trans=0x555567d491d0, block_group=0x55555fcc7710, path=0x55556a180e90, 
+start=17592699748352, size=16384,
+     remove=0) at kernel-shared/free-space-tree.c:707
+#11 0x00005555555a0ff2 in __add_to_free_space_tree 
+(trans=0x555567d491d0, block_group=0x55555fcc7710, path=0x55556a180e90, 
+start=17592699748352, size=16384)
+     at kernel-shared/free-space-tree.c:997
+#12 0x00005555555a10ad in add_to_free_space_tree (trans=0x555567d491d0, 
+start=17592699748352, size=16384) at kernel-shared/free-space-tree.c:1028
+#13 0x0000555555591db8 in __free_extent (trans=0x555567d491d0, 
+bytenr=17592699748352, num_bytes=16384, parent=0, root_objectid=2, 
+owner_objectid=0,
+     owner_offset=0, refs_to_drop=1) at kernel-shared/extent-tree.c:2130
+#14 0x000055555559651c in run_delayed_tree_ref (trans=0x555567d491d0, 
+fs_info=0x5555556672f0, node=0x5555695d3570, extent_op=0x0, 
+insert_reserved=0)
+     at kernel-shared/extent-tree.c:3906
+#15 0x00005555555965b1 in run_one_delayed_ref (trans=0x555567d491d0, 
+fs_info=0x5555556672f0, node=0x5555695d3570, extent_op=0x0, 
+insert_reserved=0)
+     at kernel-shared/extent-tree.c:3926
+#16 0x00005555555967de in btrfs_run_delayed_refs (trans=0x555567d491d0, 
+nr=18446744073709551615) at kernel-shared/extent-tree.c:4010
+#17 0x00005555555afbd1 in btrfs_commit_transaction 
+(trans=0x555567d491d0, root=0x55555567bc90) at 
+kernel-shared/transaction.c:210
+#18 0x0000555555566b19 in convert_to_bg_tree (fs_info=0x5555556672f0) at 
+tune/convert-bgt.c:112
+#19 0x00005555555647bb in main (argc=3, argv=0x7fffffffe288) at 
+tune/main.c:393
+
+Kind regards,
+
+
+>
+>> Kind regards,
+>>
+>>
+>>>> #2  0x00005555555c6964 in lookup_cache_extent (tree=0x555555667358,
+>>>> start=17820099854336, size=16384) at common/extent-cache.c:145
+>>>> #3  0x0000555555597cac in alloc_extent_buffer (fs_info=0x5555556672f0,
+>>>> bytenr=17820099854336, blocksize=16384) at 
+>>>> kernel-shared/extent_io.c:262
+>>>> #4  0x000055555558253b in btrfs_find_create_tree_block
+>>>> (fs_info=0x5555556672f0, bytenr=17820099854336) at
+>>>> kernel-shared/disk-io.c:232
+>>>> #5  0x0000555555582cdb in read_tree_block (fs_info=0x5555556672f0,
+>>>> bytenr=17820099854336, owner_root=10, parent_transid=1833250, level=0,
+>>>> first_key=0x0)
+>>>>      at kernel-shared/disk-io.c:439
+>>>> #6  0x00005555555776bd in read_node_slot (fs_info=0x5555556672f0,
+>>>> parent=0x55557571ba60, slot=154) at kernel-shared/ctree.c:850
+>>>> #7  0x000055555557a644 in push_leaf_right (trans=0x555567b3d140,
+>>>> root=0x5555558da740, path=0x5555757f0d30, data_size=25, empty=0) at
+>>>> kernel-shared/ctree.c:1965
+>>>> #8  0x000055555557b7d1 in split_leaf (trans=0x555567b3d140,
+>>>> root=0x5555558da740, ins_key=0x7fffffffdc50, path=0x5555757f0d30,
+>>>> data_size=25, extend=0)
+>>>>      at kernel-shared/ctree.c:2338
+>>>> #9  0x0000555555578fc0 in btrfs_search_slot (trans=0x555567b3d140,
+>>>> root=0x5555558da740, key=0x7fffffffdc50, p=0x5555757f0d30, ins_len=25,
+>>>> cow=1) at kernel-shared/ctree.c:1399
+>>>> #10 0x000055555557ca7d in btrfs_insert_empty_items
+>>>> (trans=0x555567b3d140, root=0x5555558da740, path=0x5555757f0d30,
+>>>> cpu_key=0x7fffffffdc50, data_size=0x7fffffffdb6c, nr=1)
+>>>>      at kernel-shared/ctree.c:2758
+>>>> #11 0x000055555559eb70 in btrfs_insert_empty_item 
+>>>> (trans=0x555567b3d140,
+>>>> root=0x5555558da740, path=0x5555757f0d30, key=0x7fffffffdc50,
+>>>> data_size=0)
+>>>>      at ./kernel-shared/ctree.h:1019
+>>>> #12 0x000055555559ff9a in convert_free_space_to_extents
+>>>> (trans=0x555567b3d140, block_group=0x55555fcc7780, 
+>>>> path=0x5555757f0d30)
+>>>> at kernel-shared/free-space-tree.c:465
+>>>> #13 0x00005555555a01ed in update_free_space_extent_count
+>>>> (trans=0x555567b3d140, block_group=0x55555fcc7780, 
+>>>> path=0x5555757f0d30,
+>>>> new_extents=1)
+>>>>      at kernel-shared/free-space-tree.c:525
+>>>> #14 0x00005555555a07ae in modify_free_space_bitmap
+>>>> (trans=0x555567b3d140, block_group=0x55555fcc7780, 
+>>>> path=0x5555757f0d30,
+>>>> start=17592699748352, size=16384, remove=0)
+>>>>      at kernel-shared/free-space-tree.c:707
+>>>> #15 0x00005555555a0ff2 in __add_to_free_space_tree
+>>>> (trans=0x555567b3d140, block_group=0x55555fcc7780, 
+>>>> path=0x5555757f0d30,
+>>>> start=17592699748352, size=16384)
+>>>>      at kernel-shared/free-space-tree.c:997
+>>>> #16 0x00005555555a10ad in add_to_free_space_tree 
+>>>> (trans=0x555567b3d140,
+>>>> start=17592699748352, size=16384) at
+>>>> kernel-shared/free-space-tree.c:1028
+>>>> #17 0x0000555555591db8 in __free_extent (trans=0x555567b3d140,
+>>>> bytenr=17592699748352, num_bytes=16384, parent=0, root_objectid=2,
+>>>> owner_objectid=0, owner_offset=0,
+>>>>      refs_to_drop=1) at kernel-shared/extent-tree.c:2130
+>>>> #18 0x000055555559651c in run_delayed_tree_ref (trans=0x555567b3d140,
+>>>> fs_info=0x5555556672f0, node=0x55556bf11090, extent_op=0x0,
+>>>> insert_reserved=0)
+>>>>      at kernel-shared/extent-tree.c:3906
+>>>> #19 0x00005555555965b1 in run_one_delayed_ref (trans=0x555567b3d140,
+>>>> fs_info=0x5555556672f0, node=0x55556bf11090, extent_op=0x0,
+>>>> insert_reserved=0)
+>>>>      at kernel-shared/extent-tree.c:3926
+>>>> #20 0x00005555555967de in btrfs_run_delayed_refs 
+>>>> (trans=0x555567b3d140,
+>>>> nr=18446744073709551615) at kernel-shared/extent-tree.c:4010
+>>>> #21 0x00005555555afbd1 in btrfs_commit_transaction
+>>>> (trans=0x555567b3d140, root=0x55555567bd70) at
+>>>> kernel-shared/transaction.c:210
+>>>> #22 0x0000555555566b19 in convert_to_bg_tree 
+>>>> (fs_info=0x5555556672f0) at
+>>>> tune/convert-bgt.c:112
+>>>> #23 0x00005555555647bb in main (argc=3, argv=0x7fffffffe298) at
+>>>> tune/main.c:393
+>>>> (gdb)
+>>>>
+>>>>
+>>>>
+>>>>> Thanks,
+>>>>> Qu
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>>>
+>>>>>>>> Sep 28 17:46:17 elsinki kernel: btrfstune[796483]: segfault at
+>>>>>>>> ffffffffff000f2f ip 0000564b6c2107aa sp 00007ffdc8ad25c8 error 
+>>>>>>>> 5 in
+>>>>>>>> btrfstune[564b6c1d1000+5b000] likely on CPU 3 (core 2, socket 0)
+>>>>>>>> Sep 28 17:46:17 elsinki kernel: Code: ff 48 8b 34 24 48 8d 3d 5a
+>>>>>>>> d8 01
+>>>>>>>> 00 b8 00 00 00 00 e8 5a 37 00 00 48 8b 33 bf 0a 00 00 00 e8 1d 0c
+>>>>>>>> fc ff
+>>>>>>>> eb a8 e8 86 0a fc ff <48> 8b 4f 20 48 8b 56 08 48 89 c8 48 03 47
+>>>>>>>> 28 48
+>>>>>>>> 89 c7 b8 01 00 00
+>>>>>>>> Sep 28 17:46:17 elsinki systemd[1]: Created slice Slice
+>>>>>>>> /system/systemd-coredump.
+>>>>>>>> Sep 28 17:46:17 elsinki systemd[1]: Started Process Core Dump (PID
+>>>>>>>> 796493/UID 0).
+>>>>>>>> Sep 28 17:46:21 elsinki systemd-coredump[796494]: [🡕] Process 
+>>>>>>>> 796483
+>>>>>>>> (btrfstune) of user 0 dumped core.
+>>>>>>>>
+>>>>>>>> Stack trace of
+>>>>>>>> thread
+>>>>>>>> 796483:
+>>>>>>>> #0
+>>>>>>>> 0x0000564b6c2107aa
+>>>>>>>> n/a (/root/btrfs-progs/btrfstune + 0x4d7aa)
+>>>>>>>> ELF object
+>>>>>>>> binary
+>>>>>>>> architecture: AMD x86-64
+>>>>>>>> Sep 28 17:46:21 elsinki systemd[1]:
+>>>>>>>> systemd-coredump@0-796493-0.service:
+>>>>>>>> Deactivated successfully.
+>>>>>>>> Sep 28 17:46:21 elsinki systemd[1]:
+>>>>>>>> systemd-coredump@0-796493-0.service:
+>>>>>>>> Consumed 4.248s CPU time.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> On 28/9/2023 1:50 π.μ., Qu Wenruo wrote:
+>>>>>>>>> [BUG]
+>>>>>>>>> There is a bug report that when converting to bg tree crashed, 
+>>>>>>>>> the
+>>>>>>>>> resulted fs is unable to be resumed.
+>>>>>>>>>
+>>>>>>>>> This problems comes with the following error messages:
+>>>>>>>>>
+>>>>>>>>>      ./btrfstune --convert-to-block-group-tree /dev/sda
+>>>>>>>>>      ERROR: Corrupted fs, no valid METADATA block group found
+>>>>>>>>>      ERROR: failed to delete block group item from the old root:
+>>>>>>>>> -117
+>>>>>>>>>      ERROR: failed to convert the filesystem to block group tree
+>>>>>>>>> feature
+>>>>>>>>>      ERROR: btrfstune failed
+>>>>>>>>>      extent buffer leak: start 17825576632320 len 16384
+>>>>>>>>>
+>>>>>>>>> [CAUSE]
+>>>>>>>>> When resuming a interrupted conversion, we go through
+>>>>>>>>> read_converting_block_groups() to handle block group items in 
+>>>>>>>>> both
+>>>>>>>>> extent and block group trees.
+>>>>>>>>>
+>>>>>>>>> However for the block group items in the extent tree, there are
+>>>>>>>>> several
+>>>>>>>>> problems involved:
+>>>>>>>>>
+>>>>>>>>> - Uninitialized @key inside read_old_block_groups_from_root()
+>>>>>>>>>      Here we only set @key.type, not setting @key.objectid for 
+>>>>>>>>> the
+>>>>>>>>> initial
+>>>>>>>>>      search.
+>>>>>>>>>
+>>>>>>>>>      Thus if we're unlukcy, we can got (u64)-1 as 
+>>>>>>>>> key.objectid, and
+>>>>>>>>> exit
+>>>>>>>>>      the search immediately.
+>>>>>>>>>
+>>>>>>>>> - Wrong search direction
+>>>>>>>>>      The conversion is converting block groups in descending 
+>>>>>>>>> order,
+>>>>>>>>> but the
+>>>>>>>>>      block groups read is in ascending order.
+>>>>>>>>>      Meaning if we start from the last converted block group, we
+>>>>>>>>> would at
+>>>>>>>>>      most read one block group.
+>>>>>>>>>
+>>>>>>>>> [FIX]
+>>>>>>>>> To fix the problems, this patch would just remove
+>>>>>>>>> read_old_block_groups_from_root() function completely.
+>>>>>>>>>
+>>>>>>>>> As for the conversion, we ensured the block group item is either
+>>>>>>>>> in the
+>>>>>>>>> old extent or the new block group tree.
+>>>>>>>>> Thus there is no special handling needed reading block groups.
+>>>>>>>>>
+>>>>>>>>> We only need to read all block groups from both trees, using the
+>>>>>>>>> same
+>>>>>>>>> read_old_block_groups_from_root() function.
+>>>>>>>>>
+>>>>>>>>> Reported-by: Konstantinos Skarlatos <k.skarlatos@gmail.com>
+>>>>>>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>>>>>>> ---
+>>>>>>>>> To Konstantinos:
+>>>>>>>>>
+>>>>>>>>> The bug I fixed here can explain all the failures you hit (the
+>>>>>>>>> initial
+>>>>>>>>> one and the one after the quick diff).
+>>>>>>>>>
+>>>>>>>>> Please verify if this helps and report back (without the quick
+>>>>>>>>> diff in
+>>>>>>>>> the original thread).
+>>>>>>>>>
+>>>>>>>>> We may have other corner cases to go, but I believe the patch
+>>>>>>>>> itself is
+>>>>>>>>> necessary no matter what, as the deleted code is really
+>>>>>>>>> over-engineered and buggy.
+>>>>>>>>> ---
+>>>>>>>>>     kernel-shared/extent-tree.c | 79
+>>>>>>>>> +------------------------------------
+>>>>>>>>>     1 file changed, 1 insertion(+), 78 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/kernel-shared/extent-tree.c
+>>>>>>>>> b/kernel-shared/extent-tree.c
+>>>>>>>>> index 7022643a9843..4d6bf2b228e9 100644
+>>>>>>>>> --- a/kernel-shared/extent-tree.c
+>>>>>>>>> +++ b/kernel-shared/extent-tree.c
+>>>>>>>>> @@ -2852,83 +2852,6 @@ out:
+>>>>>>>>>         return ret;
+>>>>>>>>>     }
+>>>>>>>>> -/*
+>>>>>>>>> - * Helper to read old block groups items from specified root.
+>>>>>>>>> - *
+>>>>>>>>> - * The difference between this and
+>>>>>>>>> read_block_groups_from_root() is,
+>>>>>>>>> - * we will exit if we have already read the last bg in the old
+>>>>>>>>> root.
+>>>>>>>>> - *
+>>>>>>>>> - * This is to avoid wasting time finding bg items which 
+>>>>>>>>> should be
+>>>>>>>>> in the
+>>>>>>>>> - * new root.
+>>>>>>>>> - */
+>>>>>>>>> -static int read_old_block_groups_from_root(struct btrfs_fs_info
+>>>>>>>>> *fs_info,
+>>>>>>>>> -                       struct btrfs_root *root)
+>>>>>>>>> -{
+>>>>>>>>> -    struct btrfs_path path = {0};
+>>>>>>>>> -    struct btrfs_key key;
+>>>>>>>>> -    struct cache_extent *ce;
+>>>>>>>>> -    /* The last block group bytenr in the old root. */
+>>>>>>>>> -    u64 last_bg_in_old_root;
+>>>>>>>>> -    int ret;
+>>>>>>>>> -
+>>>>>>>>> -    if (fs_info->last_converted_bg_bytenr != (u64)-1) {
+>>>>>>>>> -        /*
+>>>>>>>>> -         * We know the last converted bg in the other tree,
+>>>>>>>>> load the
+>>>>>>>>> chunk
+>>>>>>>>> -         * before that last converted as our last bg in the 
+>>>>>>>>> tree.
+>>>>>>>>> -         */
+>>>>>>>>> -        ce =
+>>>>>>>>> search_cache_extent(&fs_info->mapping_tree.cache_tree,
+>>>>>>>>> - fs_info->last_converted_bg_bytenr);
+>>>>>>>>> -        if (!ce || ce->start !=
+>>>>>>>>> fs_info->last_converted_bg_bytenr) {
+>>>>>>>>> -            error("no chunk found for bytenr %llu",
+>>>>>>>>> - fs_info->last_converted_bg_bytenr);
+>>>>>>>>> -            return -ENOENT;
+>>>>>>>>> -        }
+>>>>>>>>> -        ce = prev_cache_extent(ce);
+>>>>>>>>> -        /*
+>>>>>>>>> -         * We should have previous unconverted chunk, or we have
+>>>>>>>>> -         * already finished the convert.
+>>>>>>>>> -         */
+>>>>>>>>> -        ASSERT(ce);
+>>>>>>>>> -
+>>>>>>>>> -        last_bg_in_old_root = ce->start;
+>>>>>>>>> -    } else {
+>>>>>>>>> -        last_bg_in_old_root = (u64)-1;
+>>>>>>>>> -    }
+>>>>>>>>> -
+>>>>>>>>> -    key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
+>>>>>>>>> -
+>>>>>>>>> -    while (true) {
+>>>>>>>>> -        ret = find_first_block_group(root, &path, &key);
+>>>>>>>>> -        if (ret > 0) {
+>>>>>>>>> -            ret = 0;
+>>>>>>>>> -            goto out;
+>>>>>>>>> -        }
+>>>>>>>>> -        if (ret != 0) {
+>>>>>>>>> -            goto out;
+>>>>>>>>> -        }
+>>>>>>>>> -        btrfs_item_key_to_cpu(path.nodes[0], &key, 
+>>>>>>>>> path.slots[0]);
+>>>>>>>>> -
+>>>>>>>>> -        ret = read_one_block_group(fs_info, &path);
+>>>>>>>>> -        if (ret < 0 && ret != -ENOENT)
+>>>>>>>>> -            goto out;
+>>>>>>>>> -
+>>>>>>>>> -        /* We have reached last bg in the old root, no need to
+>>>>>>>>> continue */
+>>>>>>>>> -        if (key.objectid >= last_bg_in_old_root)
+>>>>>>>>> -            break;
+>>>>>>>>> -
+>>>>>>>>> -        if (key.offset == 0)
+>>>>>>>>> -            key.objectid++;
+>>>>>>>>> -        else
+>>>>>>>>> -            key.objectid = key.objectid + key.offset;
+>>>>>>>>> -        key.offset = 0;
+>>>>>>>>> -        btrfs_release_path(&path);
+>>>>>>>>> -    }
+>>>>>>>>> -    ret = 0;
+>>>>>>>>> -out:
+>>>>>>>>> -    btrfs_release_path(&path);
+>>>>>>>>> -    return ret;
+>>>>>>>>> -}
+>>>>>>>>> -
+>>>>>>>>>     /* Helper to read all block groups items from specified
+>>>>>>>>> root. */
+>>>>>>>>>     static int read_block_groups_from_root(struct btrfs_fs_info
+>>>>>>>>> *fs_info,
+>>>>>>>>>                            struct btrfs_root *root)
+>>>>>>>>> @@ -2989,7 +2912,7 @@ static int
+>>>>>>>>> read_converting_block_groups(struct
+>>>>>>>>> btrfs_fs_info *fs_info)
+>>>>>>>>>             return ret;
+>>>>>>>>>         }
+>>>>>>>>> -    ret = read_old_block_groups_from_root(fs_info, old_root);
+>>>>>>>>> +    ret = read_block_groups_from_root(fs_info, old_root);
+>>>>>>>>>         if (ret < 0) {
+>>>>>>>>>             error("failed to load block groups from the old
+>>>>>>>>> root: %d",
+>>>>>>>>> ret);
+>>>>>>>>>             return ret;
+>>>>>>
+>>>>
