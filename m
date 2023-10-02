@@ -2,102 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD9F7B5886
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Oct 2023 18:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026BA7B5925
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Oct 2023 19:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238456AbjJBQ1l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Oct 2023 12:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
+        id S238633AbjJBRG4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Oct 2023 13:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238069AbjJBQ1k (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Oct 2023 12:27:40 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3635283
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 Oct 2023 09:27:37 -0700 (PDT)
+        with ESMTP id S238523AbjJBRGz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Oct 2023 13:06:55 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48A5B8
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 Oct 2023 10:06:50 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id ED85F21863;
-        Mon,  2 Oct 2023 16:27:35 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3065121864;
+        Mon,  2 Oct 2023 17:06:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696264055;
+        t=1696266409;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kcu7eYwPW3WHuqrzUzPvrzexQXROezYbnpOLHQriC5M=;
-        b=N1KrcCykrXCA+sXi5ds15KgzKC2UXJMgpqMLskAFusZXA88Y25wYtK66fK6vWS9YdbC3UT
-        36NhTIObkeyNWwMPTNu3BH1JRWIhIU2O1DM3k/k1rWQ4TRs0yEzaHkEzsqckaXTDpqtzeY
-        YWMSkeO+dYEUoIF1GB5p+X55Yc9fLko=
+        bh=G78RpVQG2LJ2/LSMVgpZ4YJ9XAPBy+Il+Hjq3mZ9XFg=;
+        b=AFHe/6LUVwbWRW82HWkhImsAb6TPDFDJZ1HsBDXp+eMzw2HSNDKABTFqF/jY/+OM+g3Nf6
+        2ffrT9FTF5jseATded8ob+m0EBmDT9TkVejvqELY9n6EjiixWHEtQsqEWiqiYwmA44OLQQ
+        /imyR+QduEEx4SU2Z1stG/ARL7cVWGk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696264055;
+        s=susede2_ed25519; t=1696266409;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kcu7eYwPW3WHuqrzUzPvrzexQXROezYbnpOLHQriC5M=;
-        b=fWmKdhRh9Oc5EuTCZqoPwT6w6TRiKOAIrWy7fNQ9z1cxnhV1+Ym2ij8Lcd8Ut9cNtMJwiO
-        W6psoHqKZ4/i3JDg==
+        bh=G78RpVQG2LJ2/LSMVgpZ4YJ9XAPBy+Il+Hjq3mZ9XFg=;
+        b=e3jpX0lKlutkJkhRTggJMB+KYKE0nGMQNysnVERFdBAdCoPBYajZ7mrpWKdnxMl0A5GbBM
+        7LYeW5KI+tL5WnAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CE71B13456;
-        Mon,  2 Oct 2023 16:27:35 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 142FA13434;
+        Mon,  2 Oct 2023 17:06:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id VeqLMXfvGmUmIgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 02 Oct 2023 16:27:35 +0000
-Date:   Mon, 2 Oct 2023 18:20:54 +0200
+        id fsodBKn4GmX+NAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 02 Oct 2023 17:06:49 +0000
+Date:   Mon, 2 Oct 2023 19:00:07 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v3 0/8] btrfs-progs: simple quotas
-Message-ID: <20231002162054.GU13697@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
+Subject: Re: [PATCH 0/4 v4] btrfs-progs: recover from failed metadata_uuid
+ port kernel
+Message-ID: <20231002170007.GV13697@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1695836680.git.boris@bur.io>
+References: <cover.1694749532.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1695836680.git.boris@bur.io>
+In-Reply-To: <cover.1694749532.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 10:46:41AM -0700, Boris Burkov wrote:
-> btrfs-progs changes for supporting simple quotas. Notably:
-> btrfs quota can enable squota via ioctl
-> mkfs can create an fs with squota enabled
-> btrfstune can enable squota
-> btrfs inspect commands dump squota fields
-> btrfs check validates and repairs squota invariants
+On Fri, Sep 15, 2023 at 12:08:55PM +0800, Anand Jain wrote:
+> v4:
+> Remove the patch that has already been merged.
+> Update the commit log of 1/4 as per David's review comment (Thanks).
+> No code changes.
 > 
-> ---
-> Changelog:
 > v3:
-> * rebase
-> * update enum values to match kernel changes
-> v2:
-> * fixed messed up list numbering in doc
-> * fixed broken formatting
-> * used new command in enable ioctl instead of status value
-> * introduced new qgroup status flag to mkfs/tune
+> This current patchset contains the remaining unmerged patches and
+> addresses the reported bug:
 > 
-> Boris Burkov (8):
->   btrfs-progs: document squotas
->   btrfs-progs: simple quotas kernel definitions
->   btrfs-progs: simple quotas dump commands
->   btrfs-progs: simple quotas fsck
->   btrfs-progs: simple quotas mkfs
->   btrfs-progs: simple quotas btrfstune
->   btrfs-progs: simple quotas enable cmd
->   btrfs-progs: tree-checker: handle owner ref items
+>  bug report: https://github.com/kdave/btrfs-progs/actions/runs/5956097489/job/16156138260
+> 
+> In v3 of this patchset, btrfs_fs_devices::inconsistent_super variable
+> added, which helps determine whether all the devices in the fs_devices
+> share the same fsid and metadata_uuid.
+> 
+> v2:
+> The earlier revision, v2, of this patchset consisted of 16 patches, out of
+> which 12 have already been merged into the devel branch.
+> 
+>  v2: https://patchwork.kernel.org/project/linux-btrfs/list/?series=776027
+> 
+> Anand Jain (4):
+>   btrfs-progs: tune use the latest bdev in fs_devices for super_copy
+>   btrfs-progs: add support to fix superblock with CHANGING_FSID_V2 flag
+>   btrfs-progs: recover from the failed btrfstune -m|M
+>   btrfs-progs: test btrfstune -m|M ability to fix previous failures
 
-I've added the series to devel so we can do proper testing, however
-there are several style and convention problems, like the command line
-opiton names or long/short style. It'll be fixed in the branch.
+Added to devel, thanks.
