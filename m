@@ -2,224 +2,229 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE9E7B6682
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Oct 2023 12:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6197B681B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Oct 2023 13:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbjJCKeO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Oct 2023 06:34:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
+        id S240514AbjJCLjL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Oct 2023 07:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbjJCKeO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Oct 2023 06:34:14 -0400
-Received: from out28-66.mail.aliyun.com (out28-66.mail.aliyun.com [115.124.28.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149EBAD
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Oct 2023 03:34:09 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436271|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.285689-0.00366355-0.710647;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.Ut2BwYT_1696329246;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Ut2BwYT_1696329246)
-          by smtp.aliyun-inc.com;
-          Tue, 03 Oct 2023 18:34:07 +0800
-Date:   Tue, 03 Oct 2023 18:34:07 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Arsenii Skvortsov <ettavolt@gmail.com>
-Subject: Re: [PATCH v2] btrfs-progs: receive: cannot find clone source subvol when receiving in reverse direction
+        with ESMTP id S239955AbjJCLjK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Oct 2023 07:39:10 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D678E
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 Oct 2023 04:39:07 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7b0a569e2f5so354971241.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Oct 2023 04:39:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696333146; x=1696937946; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=EP6JQjokd4QLiWRCT4qZBHIkxabIZClePgIWaHNCnd0=;
+        b=ITTN+ZnNHSSQxa0gQyDWhMh0UWh7DH21lvNeHoTC8aH4dTflTB0vPrfBXNOEb7j6tZ
+         y146cKKFh/jxYr1FJB/ZD73OdGKA0LFy/sH3YnzTccCALNdU8mYL74MM41wQ646gcS7B
+         ktJdLUaV6ynhzdmzCRAdBv4v0Mn2cs9dA3iFRePmKYBkuzIb1dQR1dD92/tljMt9Rlto
+         OQao2UCZuuJPFkXWd6U8YFJU7B/r+qbmnEvLTjq5bPHljrJiepT+T2zI4emuSY6XvoP7
+         rAyXuWFVUweIXUOyLBMrtT0eqID+HUg9JbIk3rI6hj1Z6YXeRhWgXv7ZReZ4mqvqbsBV
+         GTTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696333146; x=1696937946;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EP6JQjokd4QLiWRCT4qZBHIkxabIZClePgIWaHNCnd0=;
+        b=L7V/lieEu9jkdy1jbQIN4uZ1DZksrTDsRFuHCBqHlT2awgJrkhPSOzr6Vm4vzltn32
+         M26VassJNVAF9U+7KvGutnAbPYi7Q9tXeICs1KcdH+RbW4zolaOpPRcdAYh+F/26FrN9
+         6s3YbGwrP1OwKIuiQ5qviDU/zmIo3MjJuZ0VPZfYRt3dHHHlK5ab4hHizmZ9KPeBKGjM
+         uNxO+8xEnWgrVCDMsQfpu+WtOEii3FZi7DEjYYDkJYGJU7jsh0ifxFYkbSv59JW4UODv
+         rehP7BgY8Xh0Oj9eEeGcypF3afvw1JuXDmFK7FxKwd1mZ4iBDVrf2eCjYJAAcOw2V0EG
+         frsA==
+X-Gm-Message-State: AOJu0YwSZdeWj784h9ft21xQuPbxAxayr5OG6snvUXgBeOnAdEqdXlBD
+        P6YZQYr7KoR/k8TSFd2AF63eWG8fCU4=
+X-Google-Smtp-Source: AGHT+IEC3wyrhEin8MSmUQAe4MSsP9zXq6PSHHryyyOU3OE3goqAEnf8yfU3Ba4la+SRqfgGnl0COw==
+X-Received: by 2002:ac5:ca8a:0:b0:49b:289a:cc4a with SMTP id u10-20020ac5ca8a000000b0049b289acc4amr11506411vkk.3.1696333146344;
+        Tue, 03 Oct 2023 04:39:06 -0700 (PDT)
+Received: from [192.168.213.18] ([70.26.37.202])
+        by smtp.gmail.com with ESMTPSA id o25-20020ac841d9000000b0041969bc2e4csm367994qtm.32.2023.10.03.04.39.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 04:39:05 -0700 (PDT)
+Message-ID: <e874329ab3b7d7227dcd6ddd3670f596dcb7200c.camel@gmail.com>
+Subject: Re: [PATCH v2] btrfs-progs: receive: cannot find clone source
+ subvol when receiving in reverse direction
+From:   Arsenii Skvortsov <ettavolt@gmail.com>
+To:     Wang Yugui <wangyugui@e16-tech.com>
 Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <ce4f7788f24442cd6f4779baee1992bb1978b85c.camel@gmail.com>
+Date:   Tue, 03 Oct 2023 07:38:56 -0400
+In-Reply-To: <20231003183407.C63E.409509F4@e16-tech.com>
 References: <ce4f7788f24442cd6f4779baee1992bb1978b85c.camel@gmail.com>
-Message-Id: <20231003183407.C63E.409509F4@e16-tech.com>
+         <20231003183407.C63E.409509F4@e16-tech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.81.04 [en]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-
-> process_clone only searches the received_uuid, but could exist in an earlier
-> uuid that isn't the received_uuid.  Mirror what process_snapshot does and search
-> both the received_uuid and if that fails look up by normal uuid.
-> 
-> Fixes: https://github.com/kdave/btrfs-progs/issues/606
-> 
-> Signed-off-by: Arsenii Skvortsov <ettavolt@gmail.com>
-
-Is this patch yet not merged in btrfs-progs devel branch?
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2023/10/03
-
-
-> ---
->  cmds/receive.c                               | 28 +++---
->  tests/misc-tests/058-reverse-receive/test.sh | 98 ++++++++++++++++++++
->  2 files changed, 115 insertions(+), 11 deletions(-)
->  create mode 100755 tests/misc-tests/058-reverse-receive/test.sh
-> 
-> diff --git a/cmds/receive.c b/cmds/receive.c
-> index d16dc0a..763c2af 100644
-> --- a/cmds/receive.c
-> +++ b/cmds/receive.c
-> @@ -222,6 +222,19 @@ out:
->  	return ret;
->  }
->  
-> +static struct subvol_info *search_source_subvol(struct subvol_uuid_search *s,
-> +			const u8 *subvol_uuid, u64 transid)
-> +{
-> +	struct subvol_info *found;
-> +	found = subvol_uuid_search(s, 0, subvol_uuid, transid, NULL,
-> +			subvol_search_by_received_uuid);
-> +	if (IS_ERR_OR_NULL(found)) {
-> +		found = subvol_uuid_search(s, 0, subvol_uuid, transid, NULL,
-> +				subvol_search_by_uuid);
-> +	}
-> +	return found;
-> +}
-> +
->  static int process_snapshot(const char *path, const u8 *uuid, u64 ctransid,
->  			    const u8 *parent_uuid, u64 parent_ctransid,
->  			    void *user)
-> @@ -284,14 +297,8 @@ static int process_snapshot(const char *path, const u8 *uuid, u64 ctransid,
->  	memset(&args_v2, 0, sizeof(args_v2));
->  	strncpy_null(args_v2.name, path);
->  
-> -	parent_subvol = subvol_uuid_search(rctx->mnt_fd, 0, parent_uuid,
-> -					   parent_ctransid, NULL,
-> -					   subvol_search_by_received_uuid);
-> -	if (IS_ERR_OR_NULL(parent_subvol)) {
-> -		parent_subvol = subvol_uuid_search(rctx->mnt_fd, 0, parent_uuid,
-> -						   parent_ctransid, NULL,
-> -						   subvol_search_by_uuid);
-> -	}
-> +	parent_subvol = search_source_subvol(rctx->mnt_fd, parent_uuid,
-> +			parent_ctransid);
->  	if (IS_ERR_OR_NULL(parent_subvol)) {
->  		if (!parent_subvol)
->  			ret = -ENOENT;
-> @@ -746,9 +753,8 @@ static int process_clone(const char *path, u64 offset, u64 len,
->  		   BTRFS_UUID_SIZE) == 0) {
->  		subvol_path = rctx->cur_subvol_path;
->  	} else {
-> -		si = subvol_uuid_search(rctx->mnt_fd, 0, clone_uuid, clone_ctransid,
-> -					NULL,
-> -					subvol_search_by_received_uuid);
-> +		si = search_source_subvol(rctx->mnt_fd, clone_uuid,
-> +				clone_ctransid);
->  		if (IS_ERR_OR_NULL(si)) {
->  			char uuid_str[BTRFS_UUID_UNPARSED_SIZE];
->  
-> diff --git a/tests/misc-tests/058-reverse-receive/test.sh b/tests/misc-tests/058-reverse-receive/test.sh
-> new file mode 100755
-> index 0000000..6eff560
-> --- /dev/null
-> +++ b/tests/misc-tests/058-reverse-receive/test.sh
-> @@ -0,0 +1,98 @@
-> +#!/bin/bash
-> +#
-> +# Receive in reverse direction must not throw an error if it can find an earlier "sent" parent.
-> +# In general, shows a backup+sync setup between two (or more) PCs with an external drive.
-> +
-> +source "$TEST_TOP/common"
-> +
-> +check_prereq mkfs.btrfs
-> +check_prereq btrfs
-> +check_global_prereq dd
-> +
-> +declare -a roots
-> +i_pc1=1
-> +# An external drive used to backup and carry profile.
-> +i_ext=2
-> +i_pc2=3
-> +roots[$i_pc1]="$TEST_MNT/pc1"
-> +roots[$i_ext]="$TEST_MNT/external"
-> +roots[$i_pc2]="$TEST_MNT/pc2"
-> +
-> +setup_root_helper
-> +mkdir -p ${roots[@]}
-> +setup_loopdevs 3
-> +prepare_loopdevs
-> +for i in `seq 3`; do
-> +	TEST_DEV=${loopdevs[$i]}
-> +    TEST_MNT="${roots[$i]}"
-> +    run_check_mkfs_test_dev
-> +    run_check_mount_test_dev
-> +    run_check $SUDO_HELPER mkdir -p "$TEST_MNT/.snapshots"
-> +done
-> +
-> +run_check_update_file()
-> +{
-> +    run_check $SUDO_HELPER cp --reflink ${roots[$1]}/profile/$2 ${roots[$1]}/profile/staging
-> +    run_check $SUDO_HELPER dd if=/dev/urandom conv=notrunc bs=4K count=4 oseek=$3 "of=${roots[$1]}/profile/staging"
-> +    run_check $SUDO_HELPER mv ${roots[$1]}/profile/staging ${roots[$1]}/profile/$2
-> +}
-> +run_check_copy_snapshot_with_diff()
-> +{
-> +    _mktemp_local send.data
-> +    run_check $SUDO_HELPER "$TOP/btrfs" send -f send.data -p "${roots[$1]}/.snapshots/$2" "${roots[$1]}/.snapshots/$3"
-> +    run_check $SUDO_HELPER "$TOP/btrfs" receive -f send.data "${roots[$4]}/.snapshots"
-> +}
-> +run_check_backup_profile()
-> +{
-> +    run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot -r "${roots[$1]}/profile" "${roots[$1]}/.snapshots/$3"
-> +    run_check_copy_snapshot_with_diff $1 $2 $3 $i_ext
-> +    # Don't keep old snapshot in pc
-> +    run_check $SUDO_HELPER "$TOP/btrfs" subvolume delete "${roots[$1]}/.snapshots/$2"
-> +}
-> +run_check_restore_profile()
-> +{
-> +    run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot "${roots[$1]}/.snapshots/$2" "${roots[$1]}/profile"
-> +}
-> +run_check_copy_fresh_backup_and_replace_profile()
-> +{
-> +    run_check_copy_snapshot_with_diff $i_ext $2 $3 $1
-> +    # IRL, it would be a nice idea to make a backup snapshot before deleting.
-> +    run_check $SUDO_HELPER "$TOP/btrfs" subvolume delete "${roots[$1]}/profile"
-> +    run_check_restore_profile $1 $3
-> +    # Don't keep old snapshot in pc
-> +    run_check $SUDO_HELPER "$TOP/btrfs" subvolume delete "${roots[$1]}/.snapshots/$2"
-> +}
-> +
-> +
-> +run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "${roots[$i_pc1]}/profile"
-> +run_check $SUDO_HELPER dd if=/dev/urandom bs=4K count=16 "of=${roots[$i_pc1]}/profile/day1"
-> +run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot -r "${roots[$i_pc1]}/profile" "${roots[$i_pc1]}/.snapshots/day1"
-> +_mktemp_local send.data
-> +run_check $SUDO_HELPER "$TOP/btrfs" send -f send.data "${roots[$i_pc1]}/.snapshots/day1"
-> +run_check $SUDO_HELPER "$TOP/btrfs" receive -f send.data "${roots[$i_ext]}/.snapshots"
-> +
-> +run_check_update_file $i_pc1 day1 2
-> +run_check_backup_profile $i_pc1 day1 day2
-> +
-> +_mktemp_local send.data
-> +run_check $SUDO_HELPER "$TOP/btrfs" send -f send.data "${roots[$i_ext]}/.snapshots/day2"
-> +run_check $SUDO_HELPER "$TOP/btrfs" receive -f send.data "${roots[$i_pc2]}/.snapshots"
-> +run_check_restore_profile $i_pc2 day2
-> +run_check_update_file $i_pc2 day1 3
-> +run_check_backup_profile $i_pc2 day2 day3
-> +
-> +run_check_update_file $i_pc2 day1 4
-> +run_check_backup_profile $i_pc2 day3 day4
-> +
-> +run_check_copy_fresh_backup_and_replace_profile $i_pc1 day2 day4
-> +run_check_update_file $i_pc1 day1 5
-> +run_check_backup_profile $i_pc1 day4 day5
-> +
-> +run_check_copy_fresh_backup_and_replace_profile $i_pc2 day4 day5
-> +run_check_update_file $i_pc2 day1 6
-> +run_check_backup_profile $i_pc2 day5 day6
-> +
-> +run_check_umount_test_dev ${loopdevs[@]}
-> +rmdir ${roots[@]}
-> +rm -f send.data
-> +cleanup_loopdevs
-> -- 
-> 2.41.0
-
+T24gVHVlLCAyMDIzLTEwLTAzIGF0IDE4OjM0ICswODAwLCBXYW5nIFl1Z3VpIHdyb3RlOgo+IEhp
+LAo+IAo+ID4gcHJvY2Vzc19jbG9uZSBvbmx5IHNlYXJjaGVzIHRoZSByZWNlaXZlZF91dWlkLCBi
+dXQgY291bGQgZXhpc3QgaW4gYW4gZWFybGllcgo+ID4gdXVpZCB0aGF0IGlzbid0IHRoZSByZWNl
+aXZlZF91dWlkLsKgIE1pcnJvciB3aGF0IHByb2Nlc3Nfc25hcHNob3QgZG9lcyBhbmQgc2VhcmNo
+Cj4gPiBib3RoIHRoZSByZWNlaXZlZF91dWlkIGFuZCBpZiB0aGF0IGZhaWxzIGxvb2sgdXAgYnkg
+bm9ybWFsIHV1aWQuCj4gPiAKPiA+IEZpeGVzOiBodHRwczovL2dpdGh1Yi5jb20va2RhdmUvYnRy
+ZnMtcHJvZ3MvaXNzdWVzLzYwNgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBBcnNlbmlpIFNrdm9y
+dHNvdiA8ZXR0YXZvbHRAZ21haWwuY29tPgo+IAo+IElzIHRoaXMgcGF0Y2ggeWV0IG5vdCBtZXJn
+ZWQgaW4gYnRyZnMtcHJvZ3MgZGV2ZWwgYnJhbmNoPwoKQUZBSUssIGl0IGlzIG5vdC4gVGhlcmUg
+aXMgbm8gYWN0aXZpdHkgaW4gdGhlIFBSIGFuZCBubyByZXBseSB0byB0aGlzIHYyIG1lc3NhZ2Uu
+Cgo+IEJlc3QgUmVnYXJkcwo+IFdhbmcgWXVndWkgKHdhbmd5dWd1aUBlMTYtdGVjaC5jb20pCj4g
+MjAyMy8xMC8wMwo+IAo+IAo+ID4gLS0tCj4gPiDCoGNtZHMvcmVjZWl2ZS5jwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgMjggKysr
+LS0tCj4gPiDCoHRlc3RzL21pc2MtdGVzdHMvMDU4LXJldmVyc2UtcmVjZWl2ZS90ZXN0LnNoIHwg
+OTggKysrKysrKysrKysrKysrKysrKysKPiA+IMKgMiBmaWxlcyBjaGFuZ2VkLCAxMTUgaW5zZXJ0
+aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCj4gPiDCoGNyZWF0ZSBtb2RlIDEwMDc1NSB0ZXN0cy9t
+aXNjLXRlc3RzLzA1OC1yZXZlcnNlLXJlY2VpdmUvdGVzdC5zaAo+ID4gCj4gPiBkaWZmIC0tZ2l0
+IGEvY21kcy9yZWNlaXZlLmMgYi9jbWRzL3JlY2VpdmUuYwo+ID4gaW5kZXggZDE2ZGMwYS4uNzYz
+YzJhZiAxMDA2NDQKPiA+IC0tLSBhL2NtZHMvcmVjZWl2ZS5jCj4gPiArKysgYi9jbWRzL3JlY2Vp
+dmUuYwo+ID4gQEAgLTIyMiw2ICsyMjIsMTkgQEAgb3V0Ogo+ID4gwqDCoMKgwqDCoMKgwqDCoHJl
+dHVybiByZXQ7Cj4gPiDCoH0KPiA+IMKgCj4gPiArc3RhdGljIHN0cnVjdCBzdWJ2b2xfaW5mbyAq
+c2VhcmNoX3NvdXJjZV9zdWJ2b2woc3RydWN0IHN1YnZvbF91dWlkX3NlYXJjaCAqcywKPiA+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY29uc3QgdTggKnN1
+YnZvbF91dWlkLCB1NjQgdHJhbnNpZCkKPiA+ICt7Cj4gPiArwqDCoMKgwqDCoMKgwqBzdHJ1Y3Qg
+c3Vidm9sX2luZm8gKmZvdW5kOwo+ID4gK8KgwqDCoMKgwqDCoMKgZm91bmQgPSBzdWJ2b2xfdXVp
+ZF9zZWFyY2gocywgMCwgc3Vidm9sX3V1aWQsIHRyYW5zaWQsIE5VTEwsCj4gPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHN1YnZvbF9zZWFyY2hfYnlfcmVj
+ZWl2ZWRfdXVpZCk7Cj4gPiArwqDCoMKgwqDCoMKgwqBpZiAoSVNfRVJSX09SX05VTEwoZm91bmQp
+KSB7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZm91bmQgPSBzdWJ2b2xfdXVp
+ZF9zZWFyY2gocywgMCwgc3Vidm9sX3V1aWQsIHRyYW5zaWQsIE5VTEwsCj4gPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzdWJ2
+b2xfc2VhcmNoX2J5X3V1aWQpOwo+ID4gK8KgwqDCoMKgwqDCoMKgfQo+ID4gK8KgwqDCoMKgwqDC
+oMKgcmV0dXJuIGZvdW5kOwo+ID4gK30KPiA+ICsKPiA+IMKgc3RhdGljIGludCBwcm9jZXNzX3Nu
+YXBzaG90KGNvbnN0IGNoYXIgKnBhdGgsIGNvbnN0IHU4ICp1dWlkLCB1NjQgY3RyYW5zaWQsCj4g
+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+Y29uc3QgdTggKnBhcmVudF91dWlkLCB1NjQgcGFyZW50X2N0cmFuc2lkLAo+ID4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHZvaWQgKnVzZXIp
+Cj4gPiBAQCAtMjg0LDE0ICsyOTcsOCBAQCBzdGF0aWMgaW50IHByb2Nlc3Nfc25hcHNob3QoY29u
+c3QgY2hhciAqcGF0aCwgY29uc3QgdTggKnV1aWQsIHU2NCBjdHJhbnNpZCwKPiA+IMKgwqDCoMKg
+wqDCoMKgwqBtZW1zZXQoJmFyZ3NfdjIsIDAsIHNpemVvZihhcmdzX3YyKSk7Cj4gPiDCoMKgwqDC
+oMKgwqDCoMKgc3RybmNweV9udWxsKGFyZ3NfdjIubmFtZSwgcGF0aCk7Cj4gPiDCoAo+ID4gLcKg
+wqDCoMKgwqDCoMKgcGFyZW50X3N1YnZvbCA9IHN1YnZvbF91dWlkX3NlYXJjaChyY3R4LT5tbnRf
+ZmQsIDAsIHBhcmVudF91dWlkLAo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcGFyZW50
+X2N0cmFuc2lkLCBOVUxMLAo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3Vidm9sX3Nl
+YXJjaF9ieV9yZWNlaXZlZF91dWlkKTsKPiA+IC3CoMKgwqDCoMKgwqDCoGlmIChJU19FUlJfT1Jf
+TlVMTChwYXJlbnRfc3Vidm9sKSkgewo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oHBhcmVudF9zdWJ2b2wgPSBzdWJ2b2xfdXVpZF9zZWFyY2gocmN0eC0+bW50X2ZkLCAwLCBwYXJl
+bnRfdXVpZCwKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBw
+YXJlbnRfY3RyYW5zaWQsIE5VTEwsCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgc3Vidm9sX3NlYXJjaF9ieV91dWlkKTsKPiA+IC3CoMKgwqDCoMKgwqDCoH0K
+PiA+ICvCoMKgwqDCoMKgwqDCoHBhcmVudF9zdWJ2b2wgPSBzZWFyY2hfc291cmNlX3N1YnZvbChy
+Y3R4LT5tbnRfZmQsIHBhcmVudF91dWlkLAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqBwYXJlbnRfY3RyYW5zaWQpOwo+ID4gwqDCoMKgwqDCoMKgwqDC
+oGlmIChJU19FUlJfT1JfTlVMTChwYXJlbnRfc3Vidm9sKSkgewo+ID4gwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqBpZiAoIXBhcmVudF9zdWJ2b2wpCj4gPiDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXQgPSAtRU5PRU5UOwo+ID4gQEAgLTc0
+Niw5ICs3NTMsOCBAQCBzdGF0aWMgaW50IHByb2Nlc3NfY2xvbmUoY29uc3QgY2hhciAqcGF0aCwg
+dTY0IG9mZnNldCwgdTY0IGxlbiwKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBCVFJGU19VVUlEX1NJWkUpID09IDApIHsKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgc3Vidm9sX3BhdGggPSByY3R4LT5jdXJfc3Vidm9sX3BhdGg7Cj4gPiDCoMKgwqDC
+oMKgwqDCoMKgfSBlbHNlIHsKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzaSA9
+IHN1YnZvbF91dWlkX3NlYXJjaChyY3R4LT5tbnRfZmQsIDAsIGNsb25lX3V1aWQsIGNsb25lX2N0
+cmFuc2lkLAo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoE5VTEwsCj4gPiAtwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgc3Vidm9sX3NlYXJjaF9ieV9yZWNlaXZlZF91dWlkKTsKPiA+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqBzaSA9IHNlYXJjaF9zb3VyY2Vfc3Vidm9sKHJjdHgtPm1udF9m
+ZCwgY2xvbmVfdXVpZCwKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNsb25lX2N0cmFuc2lkKTsKPiA+IMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKElTX0VSUl9PUl9OVUxMKHNpKSkgewo+ID4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY2hhciB1dWlkX3N0cltC
+VFJGU19VVUlEX1VOUEFSU0VEX1NJWkVdOwo+ID4gwqAKPiA+IGRpZmYgLS1naXQgYS90ZXN0cy9t
+aXNjLXRlc3RzLzA1OC1yZXZlcnNlLXJlY2VpdmUvdGVzdC5zaCBiL3Rlc3RzL21pc2MtdGVzdHMv
+MDU4LXJldmVyc2UtcmVjZWl2ZS90ZXN0LnNoCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDc1NQo+ID4g
+aW5kZXggMDAwMDAwMC4uNmVmZjU2MAo+ID4gLS0tIC9kZXYvbnVsbAo+ID4gKysrIGIvdGVzdHMv
+bWlzYy10ZXN0cy8wNTgtcmV2ZXJzZS1yZWNlaXZlL3Rlc3Quc2gKPiA+IEBAIC0wLDAgKzEsOTgg
+QEAKPiA+ICsjIS9iaW4vYmFzaAo+ID4gKyMKPiA+ICsjIFJlY2VpdmUgaW4gcmV2ZXJzZSBkaXJl
+Y3Rpb24gbXVzdCBub3QgdGhyb3cgYW4gZXJyb3IgaWYgaXQgY2FuIGZpbmQgYW4gZWFybGllciAi
+c2VudCIgcGFyZW50Lgo+ID4gKyMgSW4gZ2VuZXJhbCwgc2hvd3MgYSBiYWNrdXArc3luYyBzZXR1
+cCBiZXR3ZWVuIHR3byAob3IgbW9yZSkgUENzIHdpdGggYW4gZXh0ZXJuYWwgZHJpdmUuCj4gPiAr
+Cj4gPiArc291cmNlICIkVEVTVF9UT1AvY29tbW9uIgo+ID4gKwo+ID4gK2NoZWNrX3ByZXJlcSBt
+a2ZzLmJ0cmZzCj4gPiArY2hlY2tfcHJlcmVxIGJ0cmZzCj4gPiArY2hlY2tfZ2xvYmFsX3ByZXJl
+cSBkZAo+ID4gKwo+ID4gK2RlY2xhcmUgLWEgcm9vdHMKPiA+ICtpX3BjMT0xCj4gPiArIyBBbiBl
+eHRlcm5hbCBkcml2ZSB1c2VkIHRvIGJhY2t1cCBhbmQgY2FycnkgcHJvZmlsZS4KPiA+ICtpX2V4
+dD0yCj4gPiAraV9wYzI9Mwo+ID4gK3Jvb3RzWyRpX3BjMV09IiRURVNUX01OVC9wYzEiCj4gPiAr
+cm9vdHNbJGlfZXh0XT0iJFRFU1RfTU5UL2V4dGVybmFsIgo+ID4gK3Jvb3RzWyRpX3BjMl09IiRU
+RVNUX01OVC9wYzIiCj4gPiArCj4gPiArc2V0dXBfcm9vdF9oZWxwZXIKPiA+ICtta2RpciAtcCAk
+e3Jvb3RzW0BdfQo+ID4gK3NldHVwX2xvb3BkZXZzIDMKPiA+ICtwcmVwYXJlX2xvb3BkZXZzCj4g
+PiArZm9yIGkgaW4gYHNlcSAzYDsgZG8KPiA+ICvCoMKgwqDCoMKgwqDCoFRFU1RfREVWPSR7bG9v
+cGRldnNbJGldfQo+ID4gK8KgwqDCoCBURVNUX01OVD0iJHtyb290c1skaV19Igo+ID4gK8KgwqDC
+oCBydW5fY2hlY2tfbWtmc190ZXN0X2Rldgo+ID4gK8KgwqDCoCBydW5fY2hlY2tfbW91bnRfdGVz
+dF9kZXYKPiA+ICvCoMKgwqAgcnVuX2NoZWNrICRTVURPX0hFTFBFUiBta2RpciAtcCAiJFRFU1Rf
+TU5ULy5zbmFwc2hvdHMiCj4gPiArZG9uZQo+ID4gKwo+ID4gK3J1bl9jaGVja191cGRhdGVfZmls
+ZSgpCj4gPiArewo+ID4gK8KgwqDCoCBydW5fY2hlY2sgJFNVRE9fSEVMUEVSIGNwIC0tcmVmbGlu
+ayAke3Jvb3RzWyQxXX0vcHJvZmlsZS8kMiAke3Jvb3RzWyQxXX0vcHJvZmlsZS9zdGFnaW5nCj4g
+PiArwqDCoMKgIHJ1bl9jaGVjayAkU1VET19IRUxQRVIgZGQgaWY9L2Rldi91cmFuZG9tIGNvbnY9
+bm90cnVuYyBicz00SyBjb3VudD00IG9zZWVrPSQzICJvZj0ke3Jvb3RzWyQxXX0vcHJvZmlsZS9z
+dGFnaW5nIgo+ID4gK8KgwqDCoCBydW5fY2hlY2sgJFNVRE9fSEVMUEVSIG12ICR7cm9vdHNbJDFd
+fS9wcm9maWxlL3N0YWdpbmcgJHtyb290c1skMV19L3Byb2ZpbGUvJDIKPiA+ICt9Cj4gPiArcnVu
+X2NoZWNrX2NvcHlfc25hcHNob3Rfd2l0aF9kaWZmKCkKPiA+ICt7Cj4gPiArwqDCoMKgIF9ta3Rl
+bXBfbG9jYWwgc2VuZC5kYXRhCj4gPiArwqDCoMKgIHJ1bl9jaGVjayAkU1VET19IRUxQRVIgIiRU
+T1AvYnRyZnMiIHNlbmQgLWYgc2VuZC5kYXRhIC1wICIke3Jvb3RzWyQxXX0vLnNuYXBzaG90cy8k
+MiIKPiA+ICIke3Jvb3RzWyQxXX0vLnNuYXBzaG90cy8kMyIKPiA+ICvCoMKgwqAgcnVuX2NoZWNr
+ICRTVURPX0hFTFBFUiAiJFRPUC9idHJmcyIgcmVjZWl2ZSAtZiBzZW5kLmRhdGEgIiR7cm9vdHNb
+JDRdfS8uc25hcHNob3RzIgo+ID4gK30KPiA+ICtydW5fY2hlY2tfYmFja3VwX3Byb2ZpbGUoKQo+
+ID4gK3sKPiA+ICvCoMKgwqAgcnVuX2NoZWNrICRTVURPX0hFTFBFUiAiJFRPUC9idHJmcyIgc3Vi
+dm9sdW1lIHNuYXBzaG90IC1yICIke3Jvb3RzWyQxXX0vcHJvZmlsZSIgIiR7cm9vdHNbJDFdfS8u
+c25hcHNob3RzLyQzIgo+ID4gK8KgwqDCoCBydW5fY2hlY2tfY29weV9zbmFwc2hvdF93aXRoX2Rp
+ZmYgJDEgJDIgJDMgJGlfZXh0Cj4gPiArwqDCoMKgICMgRG9uJ3Qga2VlcCBvbGQgc25hcHNob3Qg
+aW4gcGMKPiA+ICvCoMKgwqAgcnVuX2NoZWNrICRTVURPX0hFTFBFUiAiJFRPUC9idHJmcyIgc3Vi
+dm9sdW1lIGRlbGV0ZSAiJHtyb290c1skMV19Ly5zbmFwc2hvdHMvJDIiCj4gPiArfQo+ID4gK3J1
+bl9jaGVja19yZXN0b3JlX3Byb2ZpbGUoKQo+ID4gK3sKPiA+ICvCoMKgwqAgcnVuX2NoZWNrICRT
+VURPX0hFTFBFUiAiJFRPUC9idHJmcyIgc3Vidm9sdW1lIHNuYXBzaG90ICIke3Jvb3RzWyQxXX0v
+LnNuYXBzaG90cy8kMiIgIiR7cm9vdHNbJDFdfS9wcm9maWxlIgo+ID4gK30KPiA+ICtydW5fY2hl
+Y2tfY29weV9mcmVzaF9iYWNrdXBfYW5kX3JlcGxhY2VfcHJvZmlsZSgpCj4gPiArewo+ID4gK8Kg
+wqDCoCBydW5fY2hlY2tfY29weV9zbmFwc2hvdF93aXRoX2RpZmYgJGlfZXh0ICQyICQzICQxCj4g
+PiArwqDCoMKgICMgSVJMLCBpdCB3b3VsZCBiZSBhIG5pY2UgaWRlYSB0byBtYWtlIGEgYmFja3Vw
+IHNuYXBzaG90IGJlZm9yZSBkZWxldGluZy4KPiA+ICvCoMKgwqAgcnVuX2NoZWNrICRTVURPX0hF
+TFBFUiAiJFRPUC9idHJmcyIgc3Vidm9sdW1lIGRlbGV0ZSAiJHtyb290c1skMV19L3Byb2ZpbGUi
+Cj4gPiArwqDCoMKgIHJ1bl9jaGVja19yZXN0b3JlX3Byb2ZpbGUgJDEgJDMKPiA+ICvCoMKgwqAg
+IyBEb24ndCBrZWVwIG9sZCBzbmFwc2hvdCBpbiBwYwo+ID4gK8KgwqDCoCBydW5fY2hlY2sgJFNV
+RE9fSEVMUEVSICIkVE9QL2J0cmZzIiBzdWJ2b2x1bWUgZGVsZXRlICIke3Jvb3RzWyQxXX0vLnNu
+YXBzaG90cy8kMiIKPiA+ICt9Cj4gPiArCj4gPiArCj4gPiArcnVuX2NoZWNrICRTVURPX0hFTFBF
+UiAiJFRPUC9idHJmcyIgc3Vidm9sdW1lIGNyZWF0ZSAiJHtyb290c1skaV9wYzFdfS9wcm9maWxl
+Igo+ID4gK3J1bl9jaGVjayAkU1VET19IRUxQRVIgZGQgaWY9L2Rldi91cmFuZG9tIGJzPTRLIGNv
+dW50PTE2ICJvZj0ke3Jvb3RzWyRpX3BjMV19L3Byb2ZpbGUvZGF5MSIKPiA+ICtydW5fY2hlY2sg
+JFNVRE9fSEVMUEVSICIkVE9QL2J0cmZzIiBzdWJ2b2x1bWUgc25hcHNob3QgLXIgIiR7cm9vdHNb
+JGlfcGMxXX0vcHJvZmlsZSIKPiA+ICIke3Jvb3RzWyRpX3BjMV19Ly5zbmFwc2hvdHMvZGF5MSIK
+PiA+ICtfbWt0ZW1wX2xvY2FsIHNlbmQuZGF0YQo+ID4gK3J1bl9jaGVjayAkU1VET19IRUxQRVIg
+IiRUT1AvYnRyZnMiIHNlbmQgLWYgc2VuZC5kYXRhICIke3Jvb3RzWyRpX3BjMV19Ly5zbmFwc2hv
+dHMvZGF5MSIKPiA+ICtydW5fY2hlY2sgJFNVRE9fSEVMUEVSICIkVE9QL2J0cmZzIiByZWNlaXZl
+IC1mIHNlbmQuZGF0YSAiJHtyb290c1skaV9leHRdfS8uc25hcHNob3RzIgo+ID4gKwo+ID4gK3J1
+bl9jaGVja191cGRhdGVfZmlsZSAkaV9wYzEgZGF5MSAyCj4gPiArcnVuX2NoZWNrX2JhY2t1cF9w
+cm9maWxlICRpX3BjMSBkYXkxIGRheTIKPiA+ICsKPiA+ICtfbWt0ZW1wX2xvY2FsIHNlbmQuZGF0
+YQo+ID4gK3J1bl9jaGVjayAkU1VET19IRUxQRVIgIiRUT1AvYnRyZnMiIHNlbmQgLWYgc2VuZC5k
+YXRhICIke3Jvb3RzWyRpX2V4dF19Ly5zbmFwc2hvdHMvZGF5MiIKPiA+ICtydW5fY2hlY2sgJFNV
+RE9fSEVMUEVSICIkVE9QL2J0cmZzIiByZWNlaXZlIC1mIHNlbmQuZGF0YSAiJHtyb290c1skaV9w
+YzJdfS8uc25hcHNob3RzIgo+ID4gK3J1bl9jaGVja19yZXN0b3JlX3Byb2ZpbGUgJGlfcGMyIGRh
+eTIKPiA+ICtydW5fY2hlY2tfdXBkYXRlX2ZpbGUgJGlfcGMyIGRheTEgMwo+ID4gK3J1bl9jaGVj
+a19iYWNrdXBfcHJvZmlsZSAkaV9wYzIgZGF5MiBkYXkzCj4gPiArCj4gPiArcnVuX2NoZWNrX3Vw
+ZGF0ZV9maWxlICRpX3BjMiBkYXkxIDQKPiA+ICtydW5fY2hlY2tfYmFja3VwX3Byb2ZpbGUgJGlf
+cGMyIGRheTMgZGF5NAo+ID4gKwo+ID4gK3J1bl9jaGVja19jb3B5X2ZyZXNoX2JhY2t1cF9hbmRf
+cmVwbGFjZV9wcm9maWxlICRpX3BjMSBkYXkyIGRheTQKPiA+ICtydW5fY2hlY2tfdXBkYXRlX2Zp
+bGUgJGlfcGMxIGRheTEgNQo+ID4gK3J1bl9jaGVja19iYWNrdXBfcHJvZmlsZSAkaV9wYzEgZGF5
+NCBkYXk1Cj4gPiArCj4gPiArcnVuX2NoZWNrX2NvcHlfZnJlc2hfYmFja3VwX2FuZF9yZXBsYWNl
+X3Byb2ZpbGUgJGlfcGMyIGRheTQgZGF5NQo+ID4gK3J1bl9jaGVja191cGRhdGVfZmlsZSAkaV9w
+YzIgZGF5MSA2Cj4gPiArcnVuX2NoZWNrX2JhY2t1cF9wcm9maWxlICRpX3BjMiBkYXk1IGRheTYK
+PiA+ICsKPiA+ICtydW5fY2hlY2tfdW1vdW50X3Rlc3RfZGV2ICR7bG9vcGRldnNbQF19Cj4gPiAr
+cm1kaXIgJHtyb290c1tAXX0KPiA+ICtybSAtZiBzZW5kLmRhdGEKPiA+ICtjbGVhbnVwX2xvb3Bk
+ZXZzCj4gPiAtLSAKPiA+IDIuNDEuMAo+IAo+IAoK
 
