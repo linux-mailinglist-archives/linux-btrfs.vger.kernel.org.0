@@ -2,42 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB517B79E4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Oct 2023 10:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42AB77B79FC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Oct 2023 10:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239265AbjJDISf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Oct 2023 04:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
+        id S232850AbjJDI0N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Oct 2023 04:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232743AbjJDISe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Oct 2023 04:18:34 -0400
+        with ESMTP id S232674AbjJDI0M (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Oct 2023 04:26:12 -0400
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EAD83
-        for <linux-btrfs@vger.kernel.org>; Wed,  4 Oct 2023 01:18:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10F183;
+        Wed,  4 Oct 2023 01:26:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1696407508; x=1697012308; i=quwenruo.btrfs@gmx.com;
- bh=lmB8BAxVsjfYPNhwrOkahZXgZH5qcYAoqocQYjHZoHE=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=QTS3DQfG9g0+NB6vWHu9BfNPA6BfSVCV71rZr14YfMzYOlDix4zmlbU6+8mJaSRZ0a9gEY1yDub
- hzrMzsYMnqIF5LOEJOV5J55NXjIGS6zr7/QyeZ0FSj4BzJTrBwKQi0EwdaHFy+clX1cP383JHvC8I
- VoQMGN84EqdQRVuiNKE5j/0V5LXG7TjaorMefrDAXE5WPazqDponqnuvs7UpKIC9s6RWWbD0iXCvM
- 6DULv5RXH59By4UQqagMoS7Yj+xD9O5MSNDg6BBBHNYK9+MYhPlSccTtPS5/V9IVPLehbRcavXN70
- k3aXCTi+xwYSYSOu7SBsSCmFqTeCikuNQEHw==
+ t=1696407952; x=1697012752; i=quwenruo.btrfs@gmx.com;
+ bh=1vE4u9fiIhwSlNsGs4guEc8aXdvfJd6/n8ClKyaJRsQ=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=TMC0VBT+kFDxSNgePcDhGsYgmG8UFol3ltJROOJRzAmnSa8sPi7vGHNpBTkDk6uIxUye96vF0cm
+ SgDJxg4j8oRYiPhLmgpFNmO9YdtBepOlEHC47NrOCKMB1SOW72xsM7NxNEXBErwnUqVAm6hHPzVe1
+ SO1MwIITwKfeg0BMFK8SuUp68Oi7OLTBq1ySx8kBl338cRX2uAflSe4pI0SCNV+ZARpTKVg4h/JOV
+ Q734NkST4DUmvWDcCEN6TxK0/kut9S1XdnXEOnn4UBb3P+mbju4zPVburyJmoFcNs0CngE35eucqE
+ czOyQstYFBL0RxtWwsA/T6Pxrszl6303ndmg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1McYCl-1rJhL52IcX-00cywD; Wed, 04
- Oct 2023 10:18:27 +0200
-Message-ID: <6c80ca77-1db7-4feb-8349-7ccd8e96819b@gmx.com>
-Date:   Wed, 4 Oct 2023 18:48:23 +1030
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MUXpK-1rEO3L2CTw-00QRjh; Wed, 04
+ Oct 2023 10:25:52 +0200
+Message-ID: <55caa26c-3448-492c-b139-32c756556b34@gmx.com>
+Date:   Wed, 4 Oct 2023 18:55:45 +1030
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Filesystem corruption after convert-to-block-group-tree
+Subject: Re: [PATCH v3 0/4] btrfs: RAID stripe tree updates
 Content-Language: en-US
-To:     Alexander Duscheleit <alexander.duscheleit@sweevo.net>,
-        linux-btrfs@vger.kernel.org
-References: <3b73ff33-34f9-4a98-a73b-19d91f845343@gmx.com>
- <49144585162c9dc5a403c442154ecf54f5446aca@sweevo.net>
- <418ca57f8e70d044bfc8f0822557d91f4aa7dc07@sweevo.net>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Qu Wenru <wqu@suse.com>, Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231004-rst-updates-v3-0-7729c4474ade@wdc.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -63,26 +65,28 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <418ca57f8e70d044bfc8f0822557d91f4aa7dc07@sweevo.net>
+In-Reply-To: <20231004-rst-updates-v3-0-7729c4474ade@wdc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Hob3uGqepbuV/wj9cQ3hs7kLJfFIxNuQFj53B+w8dW+yXuur6+j
- NWW8wYdeVEBi+s5ISnM4xWhSG5IQili+CtUvuDmodcSjwE2Kl7YotCLLHqSRX27ybt9wmyy
- laQof0DW+5T2N305IshNS+UXXiy/iKKbtvx/LsVqkWzhw2lh04THf6iONBe6fYRmmpMoTDU
- qTbMyuTQl3Me9XrWJ2ddA==
-UI-OutboundReport: notjunk:1;M01:P0:gUNHDJ0x77M=;e29MKE1//Mk4DGoP9x7vVgsX93H
- SuRm6hnYP1Xy8KVX1vc64PDl1FIhxGmk6WOvagJ9WLo0bRymQYyixFpBOHfN7pXngmlq56X2f
- +eXA0VyokY3o0RbMh1S31KiuOBBmfLTMxqlw5bD9y9z4bOwr9Hou+BhdYefiJMaYVL1mQl+x/
- Kkoy4TtWi4fUBxkmFIBXE2ny++kJCdtkPDxr0LwYGnJIuSDCe3t+psMZ4rFf1uN95v695ooJE
- xSE6QNAcRySrJ79O2Ayp7vtdv8YNWRgpEs+7yy6BRbrq3rL85yhap+JBk1cuuyq//dsMRjqMZ
- wiOz32YZMvlMsu5m68iZN7G/qrmxHAkRXtvYvW9I9YjEZQh+ATTOfkj1gsMMbTuUDadJLM+j5
- fR4v9mX41FecqRdJFzkbRkkHRXgQKBCarabU77TE2hl7qRHU+H9hWsXo/SwYmqCRBzGDPA7XV
- Ckqw/cpVSevstdPxjLqfCrfFncYaqTFoJHQJik8obNmLTpjeQVTrRn6vUw5TraHw28qNVYvRA
- S/6ZH5t2lh+l4ltiOjguDgXAu7O1OO3THqIDFSfswLeHT3/AFF4+c4AKLdegNGYNDrX28QNLX
- jDIz0VAAAj9fq7MSNBrnXFb3ZLS6MpoGKPcZ1bEaQ82tbTKBaDKVjFhwt/z8TXDEB+DlcSurb
- rHYg/UfN1Zk/uMw/o/Iknq5ndDAhE/laSEpFcdvMIN4N451w2AElRGd5eTFlikF0BV5eVFTO9
- HAP2Ex2mDPS0o4tNWUdipHjlKVDhKDHFu6IQWhJabJcQRQrViA92aeztm61LKANRPwzDzP2hk
- 23
+X-Provags-ID: V03:K1:nusI1HBJB1QeBJJ6h9xeqiHQx3vEWK+I+Z6bOwVU64lzVOl26Fh
+ PbzD/nmfgfLhzrV6VeUV9Qlu+14FEv1fz2V6j51jE9K+1+OCe28KrrECMhazIkTb9q+qr+V
+ HRZrFhArDJeZDzsnvU8gFzcSiYt/v0o6CUydVZPWldxIAy3uCDlK4OQaurEdlqQOALdy/S9
+ tEnmvxNFFWESiKjlhjHjw==
+UI-OutboundReport: notjunk:1;M01:P0:QpJZva4wmk0=;QZA7xoqwAmwCFIS6vR7L4qrIiy1
+ Y8rMDsJ3GHR/KkdNsjXVIRb7mg7LwL9N2JoQOE6gKS7DUGMjM260n15HyTFtQB73yO0WNVyd/
+ fkAKgpSHOCyr6hLfJ0+YN4qyGF/FTqx3Rlepo5nx2pilCMpH3hfLd+bIFWHJdO9huxVjzgGGQ
+ F41MaQicB/bE3lcFsaecqk1sphEgqx7nLL3GCBPUodD2O2LVFO2O49J5oR+QkUvaQUEHquj07
+ NBl04KQUBMeWcNa+4A/iBsUlEqPrbcw8It4okxOdkoiRn81wyg1QJQDdrVkZXXmOM8EwQpkzu
+ ulPmZ0/6acaLgOB9qoJ3hCnN6t3izxhXRMlTUOqElX4ZVCtuXi+rjyYbfpWhcyFnbjsB11Oq3
+ ZGpFosqI/d9vL+byADfi8MwtuMRhX0u70IwcC/UxL62RVPjsdJ0VUFswPR39SDO+YAV7oLfIs
+ yv6rBcJChSNMDjwOSfeCMLWtII3oMs5AbfEOgq7oCvcWTzGGtfIcBQiufOFyfGZ4DiNXDjQpi
+ BG4UrrCWZ1GNHOexbk/lf4PQKEumqjt7HP+Er2Q9sDlSeB6KpQQjNzbYVwXwpE7wTx8yeIo9i
+ axa82XlZX1M4K6p4kmQkgEPUZs0aVMv0SJ1rzZng2epxPHnRtNZQRFgvnThtwGJPFHCvvkddL
+ D2gQkW6+LuFIkcQc2LsdgBCOKuHuHGwsYPcxVRiPVgIAhzkaqMAGxsv3aPio5CPuFuvUXVBMj
+ mFtH6QiyDPcwgu768DKo1mbFMv3lA24k01yvJDsJ/PUg3c/rQN9ZbE6yuP/xcAsw7XDTOsG6e
+ lkpOrXzjv4/Phowck/j2OJmH3qtxZ+HOt+5A2i2uQRMXmrKzddZC8wwOfV5ATopz78blsSNao
+ xELDoKAlRxViPMvJGdxHBdVFUV1HI6MR/CXYRdgowx44BFRYShIC11CQ2jjwHYH8J1aE4tTUE
+ V/+tIQbhn1f9BW58FM+ukp0OD8g=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -96,145 +100,53 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/10/4 18:12, Alexander Duscheleit wrote:
-> 4 October 2023 at 05:27, "Qu Wenruo" <quwenruo.btrfs@gmx.com> wrote:
+On 2023/10/4 18:26, Johannes Thumshirn wrote:
+> This batch of RST updates contains the on-disk format changes Qu
+> suggested. It drastically simplifies the write and path, especially for
+> RAID10.
 >
->>
->> On 2023/10/4 09:47, Alexander Duscheleit wrote:
->>
->>>
->>> Hi all,
->>>   earlier today I tried to convert my BTRFS filesystem to block-group-=
-tree and the operation seemed successful at first glance.
->>>   (I unmounted, converted and mounted the fs without any error.)
->>>   Some time later I tried to access a file and got an I/O error.
->>>
->>
->> The error from the dmesg shows a level mismatch in block group tree.
->>
->> However the block group tree itself is always fully read at each mount,
->> thus it means at your first mount, the block group tree is good, or you
->> can not even mount the fs (unless go with -o rescue=3Dall).
->>
->> So I'm afraid the corruption is not caused by the conversion, but
->> something else, after your initial mount.
->>
->> I'm more interested in what happened between the initial mount and "som=
-e
->> time later".
->
-> As far as I can tell, nothing. The array contains mostly media files, bu=
-t
-> also some minor backups (borg-backup). I didn't put any new media on it
-> during the time in question and no backups were running.
->
-> After the conversion I mounted the fs, restartet nfs, re-mounted the nfs
-> share on the htpc and then left it alone. I didn't do any operations on =
-it
-> besides a ls to confirm it's "there".
-> I noticed the error when I wanted to play some media file and the player=
- threw
-> an error. >
->>
->>>
->>> after some updates, reboots and troubleshooting I ended up in the foll=
-owing situation:
->>>
->>>   The fs cannot be mounted normally, but it mounts (consistently) with
->>>   -o rescue=3Dall,ro (see attached dmesg.log).
->>>
->>>   No data _appears_ to be missing or corrupt.
->>>
->>>   btrfs-find-root throws many errors concerning corrupt leaf blocks bu=
-t does find the curren tree root. (Again, see attached log.)
->>>
->>>   Is there any way to bring this fs back to a useable state without st=
-arting over from scratch?
->>>
->>
->> It looks like block group tree is corrupted, but without a full "btrfs
->> check --read-only" it's hard to say.
->
-> # btrfs check --readonly /dev/sdb1
-> Opening filesystem to check...
-> parent transid verify failed on 7868411314176 wanted 41293 found 41370
-> parent transid verify failed on 7868411314176 wanted 41293 found 41370
-> parent transid verify failed on 7868411314176 wanted 41293 found 41370
-> parent transid verify failed on 7868411314176 wanted 41293 found 41370
-> parent transid verify failed on 7868411314176 wanted 41293 found 41370
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D7868939862016 item=3D336 pare=
-nt level=3D1 child bytenr=3D7868411314176 child level=3D1
+> Instead of recording all strides of a striped RAID into one stripe tree
+> entry, we create multiple entries per stride. This allows us to remove t=
+he
+> length in the stride as we can use the length from the key. Using this
+> method RAID10 becomes RAID1 and RAID0 becomes single from the point of
+> view of the stripe tree.
 
-OK, this mean is way worse than I initially thought.
+Great the idea can simplify the code.
+So I'm very glad I can provide some help on RST.
 
-With your dump tree (the only working one), this means one extent tree
-block has written into the location owned by block group tree.
+Although one concern is about the compatibility, but I guess since rst
+is still covered under experimental flags for progs, we can more or less
+ignore the compatibility for now?
 
-This breaks the very basis of btrfs metadata COW, thus a huge break to
-the fs.
-
-Unfortunately btrfs progs is not clever enough to ignore the block
-groups tree corruption and continue, thus no further corruption analyze
-from btrfs check.
-
- From this stage, it's really hard to pin down the cause.
-I can only recommend to salvage data first using "-o rescue=3Dall,ro" for =
-now.
+The other concern is, how would those patches be merged, would David
+just fold them, and we can check the misc-next, or there would be
+another branch for us to view the code?
 
 Thanks,
 Qu
-
-> ERROR: failed to read block groups: Input/output error
-> ERROR: cannot open file system
 >
->>
->> Extra dump on the bg tree can also help (needs both stderr and stdout):
->>
->> # btrfs ins dump-tree -t 11 <device>
+> ---
+> - Link to first batch: https://lore.kernel.org/r/20230918-rst-updates-v1=
+-0-17686dc06859@wdc.com
+> - Link to second batch: https://lore.kernel.org/r/20230920-rst-updates-v=
+2-0-b4dc154a648f@wdc.com
 >
-> yields "ERROR: cannot print block group tree, invalid pointer" for each =
-of the 4 devices.
+> ---
+> Johannes Thumshirn (4):
+>        btrfs: change RST write
+>        btrfs: remove stride length check on read
+>        btrfs: remove raid stride length in tree printer
+>        btrfs: remove stride length from on-disk format
 >
->>
->> # btrfs ins dump-tree -b 7868411314176 <device>
+>   fs/btrfs/accessors.h            |   2 -
+>   fs/btrfs/print-tree.c           |   5 +-
+>   fs/btrfs/raid-stripe-tree.c     | 173 ++------------------------------=
+--------
+>   include/uapi/linux/btrfs_tree.h |   2 -
+>   4 files changed, 7 insertions(+), 175 deletions(-)
+> ---
+> base-commit: 8d3aed36ee6cac09c7bd6bee6ad67dc2a35615af
+> change-id: 20230915-rst-updates-8c55784ca4ef
 >
-> Attached
->
->>
->> BTW, btrfs-find-root is not that useful, thus it should only be adviced
->> by developers, but at least it does no harm.
->>
->> Thanks,
->> Qu
->>
->>>
->>> System Data:
->>>   # uname -a
->>>   Linux hera 6.5.5-arch1-1 #1 SMP PREEMPT_DYNAMIC Sat, 23 Sep 2023 22:=
-55:13 +0000 x86_64 GNU/Linux
->>>
->>>   # btrfs --version
->>>   btrfs-progs v6.5.1
->>>
->>>   (Note: The conversion to block group tree was done with btrfs-progs =
-6.3.3 and Kernel 6.4.12.arch1-1)
->>>
->>>   # btrfs fi show
->>>   Label: 'hera-storage' uuid: a71011f9-d79c-40e8-85fb-60b6f2af0637
->>>   Total devices 4 FS bytes used 8.36TiB
->>>   devid 1 size 4.55TiB used 4.19TiB path /dev/sdb1
->>>   devid 2 size 4.55TiB used 4.19TiB path /dev/sdd1
->>>   devid 3 size 4.55TiB used 4.19TiB path /dev/sdc1
->>>   devid 4 size 4.55TiB used 4.19TiB path /dev/sde1
->>>
->>>   # btrfs fi df /mnt/btrfs_storage
->>>   Data, RAID10: total=3D8.34TiB, used=3D8.34TiB
->>>   System, RAID1C4: total=3D8.00MiB, used=3D912.00KiB
->>>   Metadata, RAID1C4: total=3D24.00GiB, used=3D23.93GiB
->>>   GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
->>>
->>
->
-> Thanks,
-> Alex
+> Best regards,
