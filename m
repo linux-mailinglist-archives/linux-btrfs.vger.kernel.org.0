@@ -2,233 +2,308 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 129A97B74DA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Oct 2023 01:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF317B7637
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Oct 2023 03:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234028AbjJCX1S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Oct 2023 19:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
+        id S239633AbjJDBU4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Oct 2023 21:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjJCX1S (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Oct 2023 19:27:18 -0400
-X-Greylist: delayed 583 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 03 Oct 2023 16:27:14 PDT
-Received: from mail.sweevo.net (unknown [185.193.158.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FBEAF
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Oct 2023 16:27:14 -0700 (PDT)
-Received: from authenticated-user (mail.sweevo.net [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-        (No client certificate requested)
-        by mail.sweevo.net (Postfix) with ESMTPSA id 2AA3F2B3E811
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Oct 2023 23:17:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sweevo.net; s=mail;
-        t=1696375050;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=3LSJuz91h3qA2saNzBTd9Vprs2/a+xgZX+FYqPn1dCQ=;
-        b=b3N6TimP2dSDAeCVCJC9Equ0rA8+D9gMopF/vYPBdUjDRN3H+Efyo+oqjJxMHRzZSVRvFF
-        64EdhAekqQhaS5NmKIgbaviy+9Gt4z1NrpQKPoRAd7Uann1QkWi5RNYLRVrr+beFcjdJor
-        VdOoIXXJHqQutSHOXDctV7a3qvmo24M=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=sweevo.net;
-        s=mail; t=1696375050;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=3LSJuz91h3qA2saNzBTd9Vprs2/a+xgZX+FYqPn1dCQ=;
-        b=p+XAx8X25Ayn3x2b2iybXfu4CaifC1AG7Dtu/QV1vgT7mcQVG7qqx6aeXclAW4fEMJYKJ1
-        LVoZWBpds0w2HYjD0lcGysRO3OcalBIQG/sH0gzbKnr7gQ8+qKYUcRaIliEkwlsZoZi2nv
-        eQkleni83kDgMQ1aOIvA3zHoW+tqVIc=
-ARC-Authentication-Results: i=1;
-        mail.sweevo.net;
-        auth=pass smtp.mailfrom=alexander.duscheleit@sweevo.net
-ARC-Seal: i=1; s=mail; d=sweevo.net; t=1696375050; a=rsa-sha256; cv=none;
-        b=LC31IG2JX1MB7vFFxFshI2WfnnA7DLJ6ptmypYB7nKvn3zXCJmi3bK9SO67xdA7tbD5I6N
-        UPgG6UKNHyuruUAg3/iEG6wixvCvkHiafokRedDi/pEUuNkiYybFV54VfS//VW+QTFVJBV
-        Uj9YQ6M5HRpyt5jCwGxeoSsV8PzemY8=
+        with ESMTP id S232262AbjJDBUz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Oct 2023 21:20:55 -0400
+Received: from mail-oa1-f78.google.com (mail-oa1-f78.google.com [209.85.160.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F76AB
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 Oct 2023 18:20:50 -0700 (PDT)
+Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-1dd25fa2a2cso2314309fac.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Oct 2023 18:20:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696382450; x=1696987250;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0Z7Wm/Qlb7bXo3BfpGcBcHWS4b/ykjWkuu5nwBzEuuM=;
+        b=C4qWvNyYmjrLtE3FS+hUMRkYN1XgvgNspv2gDrT2tVybY3TtXvR4vVv4X5u/Mmq9Qv
+         DiJEax+QJ5GNc9o5Lqpm1nHqsI+mBvslqPKeHxa9F1gK41D0y/Fwn5E69aCWE2Uou9U6
+         yvCFVHeSzytgJAQFW5TbnHrr64JbjDkCwuzUIMGp4pEaODiMLiuT3jkfy2CRSL9XP45P
+         xhYLziDyoXsyiZf7bGyv00B34KY/OC6xo/HdQM6DtYFWvkj8dbtSOFXu7+/6fqCrPEHi
+         kPzrU4XUn7ZizpCZl3JCyUMU0Jo56zUZQvIlQc0eII6CSKyQumUycB0V4OkB3NJPw+9u
+         eNSg==
+X-Gm-Message-State: AOJu0YyPdO7YT7cFSeeDdaEguraUgLb7Yf38ZkN+RcGXgM4rEjabOWUA
+        1boJCpVSH4Bz6gafIZgxVNQl0h4WVfz/XASZGJ8GIw0xhoJn
+X-Google-Smtp-Source: AGHT+IFZD4kFhP+psborcucj6J2PKY0Sc5plWg0iUXqapgr1ygQLWshGIb266vhqMV1uKFBY5p7S6TpV5aBvakGzUJzweRAvCnQo
 MIME-Version: 1.0
-Date:   Tue, 03 Oct 2023 23:17:30 +0000
-Content-Type: multipart/mixed;
- boundary="0db4ef7b-84d4-42d3-97d8-aef567c9cb2c-1"
-From:   "Alexander Duscheleit" <alexander.duscheleit@sweevo.net>
-Message-ID: <49144585162c9dc5a403c442154ecf54f5446aca@sweevo.net>
-TLS-Required: No
-Subject: Filesystem corruption after convert-to-block-group-tree
-To:     linux-btrfs@vger.kernel.org
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:e502:b0:1e1:15ca:2aa1 with SMTP id
+ y2-20020a056870e50200b001e115ca2aa1mr457003oag.11.1696382449661; Tue, 03 Oct
+ 2023 18:20:49 -0700 (PDT)
+Date:   Tue, 03 Oct 2023 18:20:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000050bbd30606d9d1eb@google.com>
+Subject: [syzbot] [btrfs?] INFO: task hung in btrfs_page_mkwrite
+From:   syzbot <syzbot+bdcacd75b712b0147ca7@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---0db4ef7b-84d4-42d3-97d8-aef567c9cb2c-1
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
-earlier today I tried to convert my BTRFS filesystem to block-group-tree =
-and the operation seemed successful at first glance.
-(I unmounted, converted and mounted the fs without any error.)
-Some time later I tried to access a file and got an I/O error.
+syzbot found the following issue on:
 
-after some updates, reboots and troubleshooting I ended up in the followi=
-ng situation:
+HEAD commit:    e81a2dabc3f3 Merge tag 'kbuild-fixes-v6.6-2' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16751e92680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=12da82ece7bf46f9
+dashboard link: https://syzkaller.appspot.com/bug?extid=bdcacd75b712b0147ca7
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-The fs cannot be mounted normally, but it mounts (consistently) with
--o rescue=3Dall,ro (see attached dmesg.log).
+Unfortunately, I don't have any reproducer for this issue yet.
 
-No data _appears_ to be missing or corrupt.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b9e2f8a9b7db/disk-e81a2dab.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b4bc70c999ec/vmlinux-e81a2dab.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/541a5ce45216/bzImage-e81a2dab.xz
 
-btrfs-find-root throws many errors concerning corrupt leaf blocks but doe=
-s find the curren tree root. (Again, see attached log.)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bdcacd75b712b0147ca7@syzkaller.appspotmail.com
 
-Is there any way to bring this fs back to a useable state without startin=
-g over from scratch?
+INFO: task syz-executor.0:18661 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc3-syzkaller-00252-ge81a2dabc3f3 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:24808 pid:18661 ppid:18152  flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x196c/0x4af0 kernel/sched/core.c:6695
+ schedule+0xc3/0x180 kernel/sched/core.c:6771
+ io_schedule+0x8c/0x100 kernel/sched/core.c:9026
+ folio_wait_bit_common+0x881/0x12a0 mm/filemap.c:1301
+ btrfs_page_mkwrite+0x4a4/0xd10 fs/btrfs/inode.c:8133
+ do_page_mkwrite+0x197/0x470 mm/memory.c:2931
+ wp_page_shared mm/memory.c:3291 [inline]
+ do_wp_page+0xf87/0x4190 mm/memory.c:3376
+ handle_pte_fault mm/memory.c:4994 [inline]
+ __handle_mm_fault mm/memory.c:5119 [inline]
+ handle_mm_fault+0x1b45/0x62b0 mm/memory.c:5284
+ do_user_addr_fault arch/x86/mm/fault.c:1413 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+ exc_page_fault+0x2ac/0x860 arch/x86/mm/fault.c:1561
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+RIP: 0033:0x7f95b6c5db98
+RSP: 002b:00007ffd69f5d688 EFLAGS: 00010202
+RAX: 0000000020000000 RBX: 00007ffd69f5d798 RCX: 00617363762f7665
+RDX: 000000000000000a RSI: 7363762f7665642f RDI: 0000000020000000
+RBP: 0000000000000032 R08: 00007f95b6c00000 R09: 00007ffd69fbd0b0
+R10: 00007ffd69fbd080 R11: 0000000000069702 R12: 00007f95b6825730
+R13: fffffffffffffffe R14: 00007f95b6800000 R15: 00007f95b6825738
+ </TASK>
+INFO: task syz-executor.0:18703 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc3-syzkaller-00252-ge81a2dabc3f3 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:23688 pid:18703 ppid:18152  flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x196c/0x4af0 kernel/sched/core.c:6695
+ schedule+0xc3/0x180 kernel/sched/core.c:6771
+ wait_on_state fs/btrfs/extent-io-tree.c:719 [inline]
+ wait_extent_bit+0x50c/0x670 fs/btrfs/extent-io-tree.c:763
+ lock_extent+0x1c0/0x270 fs/btrfs/extent-io-tree.c:1755
+ btrfs_page_mkwrite+0x5bd/0xd10 fs/btrfs/inode.c:8143
+ do_page_mkwrite+0x197/0x470 mm/memory.c:2931
+ wp_page_shared mm/memory.c:3291 [inline]
+ do_wp_page+0xf87/0x4190 mm/memory.c:3376
+ handle_pte_fault mm/memory.c:4994 [inline]
+ __handle_mm_fault mm/memory.c:5119 [inline]
+ handle_mm_fault+0x1b45/0x62b0 mm/memory.c:5284
+ do_user_addr_fault arch/x86/mm/fault.c:1413 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+ exc_page_fault+0x2ac/0x860 arch/x86/mm/fault.c:1561
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+RIP: 0010:rep_movs_alternative+0x33/0x70 arch/x86/lib/copy_user_64.S:58
+Code: 40 83 f9 08 73 21 85 c9 74 0f 8a 06 88 07 48 ff c7 48 ff c6 48 ff c9 75 f1 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 8b 06 <48> 89 07 48 83 c6 08 48 83 c7 08 83 e9 08 74 df 83 f9 08 73 e8 eb
+RSP: 0018:ffffc9000da57550 EFLAGS: 00050206
+RAX: 0000000000000000 RBX: 0000000020000298 RCX: 0000000000000038
+RDX: 0000000000000000 RSI: ffffc9000da57600 RDI: 0000000020000260
+RBP: ffffc9000da576b0 R08: ffffc9000da57637 R09: 1ffff92001b4aec6
+R10: dffffc0000000000 R11: fffff52001b4aec7 R12: 0000000000000038
+R13: ffffc9000da57600 R14: 0000000020000260 R15: ffffc9000da57600
+ copy_user_generic arch/x86/include/asm/uaccess_64.h:112 [inline]
+ raw_copy_to_user arch/x86/include/asm/uaccess_64.h:133 [inline]
+ _copy_to_user+0x86/0xa0 lib/usercopy.c:41
+ copy_to_user include/linux/uaccess.h:191 [inline]
+ fiemap_fill_next_extent+0x235/0x410 fs/ioctl.c:145
+ emit_last_fiemap_cache fs/btrfs/extent_io.c:2506 [inline]
+ extent_fiemap+0x1b9c/0x1fe0 fs/btrfs/extent_io.c:3033
+ btrfs_fiemap+0x178/0x1e0 fs/btrfs/inode.c:7815
+ ioctl_fiemap fs/ioctl.c:220 [inline]
+ do_vfs_ioctl+0x19ea/0x2b40 fs/ioctl.c:811
+ __do_sys_ioctl fs/ioctl.c:869 [inline]
+ __se_sys_ioctl+0x81/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f95b6c7cae9
+RSP: 002b:00007f95ae3dd0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f95b6d9c050 RCX: 00007f95b6c7cae9
+RDX: 0000000020000240 RSI: 00000000c020660b RDI: 0000000000000004
+RBP: 00007f95b6cc847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f95b6d9c050 R15: 00007ffd69f5d5a8
+ </TASK>
+INFO: task syz-executor.0:18705 blocked for more than 144 seconds.
+      Not tainted 6.6.0-rc3-syzkaller-00252-ge81a2dabc3f3 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:26472 pid:18705 ppid:18152  flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x196c/0x4af0 kernel/sched/core.c:6695
+ schedule+0xc3/0x180 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6830
+ rwsem_down_write_slowpath+0xee6/0x13a0 kernel/locking/rwsem.c:1178
+ __down_write_common+0x1aa/0x200 kernel/locking/rwsem.c:1306
+ inode_lock include/linux/fs.h:802 [inline]
+ btrfs_inode_lock+0x4d/0xd0 fs/btrfs/inode.c:377
+ btrfs_buffered_write+0x230/0x1380 fs/btrfs/file.c:1200
+ btrfs_do_write_iter+0x2bb/0x1190 fs/btrfs/file.c:1683
+ do_iter_write+0x84f/0xde0 fs/read_write.c:860
+ iter_file_splice_write+0x86d/0x1010 fs/splice.c:736
+ do_splice_from fs/splice.c:933 [inline]
+ direct_splice_actor+0xea/0x1c0 fs/splice.c:1142
+ splice_direct_to_actor+0x376/0x9e0 fs/splice.c:1088
+ do_splice_direct+0x2ac/0x3f0 fs/splice.c:1194
+ do_sendfile+0x623/0x1070 fs/read_write.c:1254
+ __do_sys_sendfile64 fs/read_write.c:1322 [inline]
+ __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1308
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f95b6c7cae9
+RSP: 002b:00007f95ae3bc0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f95b6d9c120 RCX: 00007f95b6c7cae9
+RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000004
+RBP: 00007f95b6cc847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f95b6d9c120 R15: 00007ffd69f5d5a8
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/29:
+ #0: ffffffff8d32c420 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:303 [inline]
+ #0: ffffffff8d32c420 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:749 [inline]
+ #0: ffffffff8d32c420 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6613
+2 locks held by getty/4789:
+ #0: ffff88814add90a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90002f062f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b1/0x1dc0 drivers/tty/n_tty.c:2206
+3 locks held by syz-executor.5/5079:
+ #0: ffff88814be82410 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:403
+ #1: ffff888078b8d400 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:837 [inline]
+ #1: ffff888078b8d400 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: do_unlinkat+0x26a/0x950 fs/namei.c:4383
+ #2: ffff888043a1c000 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
+ #2: ffff888043a1c000 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: vfs_unlink+0xe4/0x5f0 fs/namei.c:4321
+3 locks held by syz-executor.0/18661:
+ #0: ffff88807dba3aa0 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:165 [inline]
+ #0: ffff88807dba3aa0 (&mm->mmap_lock){++++}-{3:3}, at: get_mmap_lock_carefully mm/memory.c:5311 [inline]
+ #0: ffff88807dba3aa0 (&mm->mmap_lock){++++}-{3:3}, at: lock_mm_and_find_vma+0x32/0x2d0 mm/memory.c:5371
+ #1: ffff888035ad2508 (sb_pagefaults#4){.+.+}-{0:0}, at: do_page_mkwrite+0x197/0x470 mm/memory.c:2931
+ #2: ffff888076f02008 (&ei->i_mmap_lock){++++}-{3:3}, at: btrfs_page_mkwrite+0x49c/0xd10 fs/btrfs/inode.c:8132
+4 locks held by syz-executor.0/18703:
+ #0: ffff888076f02180 (&sb->s_type->i_mutex_key#24){++++}-{3:3}, at: inode_lock_shared include/linux/fs.h:812 [inline]
+ #0: ffff888076f02180 (&sb->s_type->i_mutex_key#24){++++}-{3:3}, at: btrfs_inode_lock+0x60/0xd0 fs/btrfs/inode.c:369
+ #1: ffff88807dba3aa0 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:165 [inline]
+ #1: ffff88807dba3aa0 (&mm->mmap_lock){++++}-{3:3}, at: get_mmap_lock_carefully mm/memory.c:5311 [inline]
+ #1: ffff88807dba3aa0 (&mm->mmap_lock){++++}-{3:3}, at: lock_mm_and_find_vma+0x32/0x2d0 mm/memory.c:5371
+ #2: ffff888035ad2508 (sb_pagefaults#4){.+.+}-{0:0}, at: do_page_mkwrite+0x197/0x470 mm/memory.c:2931
+ #3: ffff888076f02008 (&ei->i_mmap_lock){++++}-{3:3}, at: btrfs_page_mkwrite+0x49c/0xd10 fs/btrfs/inode.c:8132
+2 locks held by syz-executor.0/18705:
+ #0: ffff888035ad2410 (sb_writers#16){.+.+}-{0:0}, at: do_sendfile+0x600/0x1070 fs/read_write.c:1253
+ #1: ffff888076f02180 (&sb->s_type->i_mutex_key#24){++++}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
+ #1: ffff888076f02180 (&sb->s_type->i_mutex_key#24){++++}-{3:3}, at: btrfs_inode_lock+0x4d/0xd0 fs/btrfs/inode.c:377
+2 locks held by syz-executor.0/18746:
+ #0: ffff88814be82410 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:403
+ #1: ffff888076cc0e00 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:837 [inline]
+ #1: ffff888076cc0e00 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: do_unlinkat+0x26a/0x950 fs/namei.c:4383
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 29 Comm: khungtaskd Not tainted 6.6.0-rc3-syzkaller-00252-ge81a2dabc3f3 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x498/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x310 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xfa9/0xff0 kernel/hung_task.c:379
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 4567 Comm: kworker/u4:21 Not tainted 6.6.0-rc3-syzkaller-00252-ge81a2dabc3f3 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Workqueue: bat_events batadv_nc_worker
+RIP: 0010:lockdep_hardirqs_on_prepare+0x1e0/0x7a0
+Code: 4c 89 7c 24 18 48 8b 44 24 10 4c 8b b0 b8 0a 00 00 48 8d b8 a0 0a 00 00 48 89 f8 48 c1 e8 03 80 3c 10 00 74 05 e8 b0 d1 7b 00 <48> 8b 5c 24 10 4c 89 b3 a0 0a 00 00 48 c7 c7 80 b1 0a 8b e8 28 d0
+RSP: 0018:ffffc90003aef980 EFLAGS: 00000046
+RAX: 1ffff110080988c4 RBX: 1ffff9200075df38 RCX: ffffffff91ef3303
+RDX: dffffc0000000000 RSI: ffffffff8b599c80 RDI: ffff8880404c4620
+RBP: ffffc90003aefa28 R08: ffffffff8e9a7e2f R09: 1ffffffff1d34fc5
+R10: dffffc0000000000 R11: fffffbfff1d34fc6 R12: dffffc0000000000
+R13: 1ffff9200075df50 R14: 08cd28cef2c003d5 R15: 1ffff9200075df34
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000028 CR3: 000000007e679000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ trace_hardirqs_on+0x28/0x40 kernel/trace/trace_preemptirq.c:61
+ __local_bh_enable_ip+0x168/0x1f0 kernel/softirq.c:386
+ spin_unlock_bh include/linux/spinlock.h:396 [inline]
+ batadv_nc_purge_paths+0x309/0x3a0 net/batman-adv/network-coding.c:471
+ batadv_nc_worker+0x365/0x610 net/batman-adv/network-coding.c:722
+ process_one_work kernel/workqueue.c:2630 [inline]
+ process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
+ worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
 
 
-System Data:
-# uname -a
-Linux hera 6.5.5-arch1-1 #1 SMP PREEMPT_DYNAMIC Sat, 23 Sep 2023 22:55:13=
- +0000 x86_64 GNU/Linux
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-# btrfs --version=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20
-btrfs-progs=20v6.5.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-(Note: The conversion to block group tree was done with btrfs-progs 6.3.3=
- and Kernel 6.4.12.arch1-1)
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-# btrfs fi show=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
-Label:=20'hera-storage'  uuid: a71011f9-d79c-40e8-85fb-60b6f2af0637
-	Total devices 4 FS bytes used 8.36TiB
-	devid    1 size 4.55TiB used 4.19TiB path /dev/sdb1
-	devid    2 size 4.55TiB used 4.19TiB path /dev/sdd1
-	devid    3 size 4.55TiB used 4.19TiB path /dev/sdc1
-	devid    4 size 4.55TiB used 4.19TiB path /dev/sde1
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-# btrfs fi df /mnt/btrfs_storage=20
-Data,=20RAID10: total=3D8.34TiB, used=3D8.34TiB
-System, RAID1C4: total=3D8.00MiB, used=3D912.00KiB
-Metadata, RAID1C4: total=3D24.00GiB, used=3D23.93GiB
-GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
---0db4ef7b-84d4-42d3-97d8-aef567c9cb2c-1
-Content-Type: text/x-log; name="dmesg.log"
-Content-Disposition: attachment; filename="dmesg.log"
-Content-Transfer-Encoding: base64
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
-ClsgICAgMy4zMDEwNTJdIEJ0cmZzIGxvYWRlZCwgem9uZWQ9eWVzLCBmc3Zlcml0eT15ZXMK
-WyAgICAzLjMwMjMxNV0gQlRSRlM6IGRldmljZSBsYWJlbCBoZXJhLXN5c3RlbSBkZXZpZCAx
-IHRyYW5zaWQgMjU4NTU5MCAvZGV2L3NkYTMgc2Nhbm5lZCBieSAodWRldi13b3JrZXIpICgx
-NDMpClsgICAgMy4zMTMxMjJdIEJUUkZTOiBkZXZpY2UgbGFiZWwgaGVyYS1zdG9yYWdlIGRl
-dmlkIDMgdHJhbnNpZCA0MTMwMiAvZGV2L3NkYzEgc2Nhbm5lZCBieSAodWRldi13b3JrZXIp
-ICgxNDUpClsgICAgMy4zMzU2NzVdIEJUUkZTOiBkZXZpY2UgbGFiZWwgaGVyYS1zdG9yYWdl
-IGRldmlkIDEgdHJhbnNpZCA0MTMwMiAvZGV2L3NkYjEgc2Nhbm5lZCBieSAodWRldi13b3Jr
-ZXIpICgxNDIpClsgICAgMy4zODgyMjRdIEJUUkZTOiBkZXZpY2UgbGFiZWwgaGVyYS1zdG9y
-YWdlIGRldmlkIDQgdHJhbnNpZCA0MTMwMiAvZGV2L3NkZTEgc2Nhbm5lZCBieSAodWRldi13
-b3JrZXIpICgxMzEpClsgICAgMy4zOTQyNTldIEJUUkZTOiBkZXZpY2UgbGFiZWwgaGVyYS1z
-dG9yYWdlIGRldmlkIDIgdHJhbnNpZCA0MTMwMiAvZGV2L3NkZDEgc2Nhbm5lZCBieSAodWRl
-di13b3JrZXIpICgxNDUpCgpbICAgIDMuNTM2NjU4XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2Rh
-Myk6IHVzaW5nIGNyYzMyYyAoY3JjMzJjLWludGVsKSBjaGVja3N1bSBhbGdvcml0aG0KWyAg
-ICAzLjUzNjY3MF0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYTMpOiB1c2luZyBmcmVlIHNwYWNl
-IHRyZWUKWyAgICAzLjU1NDg2NV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYTMpOiBlbmFibGlu
-ZyBzc2Qgb3B0aW1pemF0aW9ucwpbICAgIDMuNTU0ODY4XSBCVFJGUyBpbmZvIChkZXZpY2Ug
-c2RhMyk6IGF1dG8gZW5hYmxpbmcgYXN5bmMgZGlzY2FyZAoKWyAgICA0LjIxNjMwMl0gQlRS
-RlMgaW5mbyAoZGV2aWNlIHNkYTM6IHN0YXRlIE0pOiBmb3JjZSB6c3RkIGNvbXByZXNzaW9u
-LCBsZXZlbCAzCgpbICA2NzguOTA5NjAyXSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiMSk6IHVz
-aW5nIHh4aGFzaDY0ICh4eGhhc2g2NC1nZW5lcmljKSBjaGVja3N1bSBhbGdvcml0aG0KWyAg
-Njc4LjkwOTYxMV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjEpOiBmb3JjZSB6c3RkIGNvbXBy
-ZXNzaW9uLCBsZXZlbCAzClsgIDY3OC45MDk2MTRdIEJUUkZTIGluZm8gKGRldmljZSBzZGIx
-KTogdXNpbmcgZnJlZSBzcGFjZSB0cmVlClsgIDY3OS43MzQ2NThdIEJUUkZTIGVycm9yIChk
-ZXZpY2Ugc2RiMSk6IGxldmVsIHZlcmlmeSBmYWlsZWQgb24gbG9naWNhbCA3ODY4NDExMzE0
-MTc2IG1pcnJvciAyIHdhbnRlZCAwIGZvdW5kIDEKWyAgNjc5Ljc1NDU2OV0gQlRSRlMgZXJy
-b3IgKGRldmljZSBzZGIxKTogbGV2ZWwgdmVyaWZ5IGZhaWxlZCBvbiBsb2dpY2FsIDc4Njg0
-MTEzMTQxNzYgbWlycm9yIDEgd2FudGVkIDAgZm91bmQgMQpbICA2NzkuNzcwNzY2XSBCVFJG
-UyBlcnJvciAoZGV2aWNlIHNkYjEpOiBsZXZlbCB2ZXJpZnkgZmFpbGVkIG9uIGxvZ2ljYWwg
-Nzg2ODQxMTMxNDE3NiBtaXJyb3IgMyB3YW50ZWQgMCBmb3VuZCAxClsgIDY3OS44NDM5NjZd
-IEJUUkZTIGVycm9yIChkZXZpY2Ugc2RiMSk6IGxldmVsIHZlcmlmeSBmYWlsZWQgb24gbG9n
-aWNhbCA3ODY4NDExMzE0MTc2IG1pcnJvciA0IHdhbnRlZCAwIGZvdW5kIDEKWyAgNjc5Ljg0
-NDAyMl0gQlRSRlMgZXJyb3IgKGRldmljZSBzZGIxKTogZmFpbGVkIHRvIHJlYWQgYmxvY2sg
-Z3JvdXBzOiAtNQpbICA2NzkuODQ3NjY3XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYjEpOiBv
-cGVuX2N0cmVlIGZhaWxlZApbICA2OTYuMDI3Mzg5XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2Ri
-MSk6IHVzaW5nIHh4aGFzaDY0ICh4eGhhc2g2NC1nZW5lcmljKSBjaGVja3N1bSBhbGdvcml0
-aG0KWyAgNjk2LjAyNzM5OV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjEpOiBmb3JjZSB6c3Rk
-IGNvbXByZXNzaW9uLCBsZXZlbCAzClsgIDY5Ni4wMjc0MDVdIEJUUkZTIGluZm8gKGRldmlj
-ZSBzZGIxKTogZW5hYmxpbmcgYWxsIG9mIHRoZSByZXNjdWUgb3B0aW9ucwpbICA2OTYuMDI3
-NDA2XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiMSk6IGlnbm9yaW5nIGRhdGEgY3N1bXMKWyAg
-Njk2LjAyNzQwN10gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjEpOiBpZ25vcmluZyBiYWQgcm9v
-dHMKWyAgNjk2LjAyNzQwOV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYjEpOiBkaXNhYmxpbmcg
-bG9nIHJlcGxheSBhdCBtb3VudCB0aW1lClsgIDY5Ni4wMjc0MTBdIEJUUkZTIGluZm8gKGRl
-dmljZSBzZGIxKTogdXNpbmcgZnJlZSBzcGFjZSB0cmVlClsgIDY5Ni4zNDUwMDhdIEJUUkZT
-IGVycm9yIChkZXZpY2Ugc2RiMTogc3RhdGUgQyk6IGxldmVsIHZlcmlmeSBmYWlsZWQgb24g
-bG9naWNhbCA3ODY4NDExMzE0MTc2IG1pcnJvciAzIHdhbnRlZCAwIGZvdW5kIDEKWyAgNjk2
-LjM0NTczMV0gQlRSRlMgZXJyb3IgKGRldmljZSBzZGIxOiBzdGF0ZSBDKTogbGV2ZWwgdmVy
-aWZ5IGZhaWxlZCBvbiBsb2dpY2FsIDc4Njg0MTEzMTQxNzYgbWlycm9yIDEgd2FudGVkIDAg
-Zm91bmQgMQpbICA2OTYuMzQ1OTY0XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYjE6IHN0YXRl
-IEMpOiBsZXZlbCB2ZXJpZnkgZmFpbGVkIG9uIGxvZ2ljYWwgNzg2ODQxMTMxNDE3NiBtaXJy
-b3IgMiB3YW50ZWQgMCBmb3VuZCAxClsgIDY5Ni4zNDY2MTZdIEJUUkZTIGVycm9yIChkZXZp
-Y2Ugc2RiMTogc3RhdGUgQyk6IGxldmVsIHZlcmlmeSBmYWlsZWQgb24gbG9naWNhbCA3ODY4
-NDExMzE0MTc2IG1pcnJvciA0IHdhbnRlZCAwIGZvdW5kIDEK
---0db4ef7b-84d4-42d3-97d8-aef567c9cb2c-1
-Content-Type: text/plain; name="find-root.log"
-Content-Disposition: attachment; filename="find-root.log"
-Content-Transfer-Encoding: base64
-
-cGFyZW50IHRyYW5zaWQgdmVyaWZ5IGZhaWxlZCBvbiA3ODY4NDExMzE0MTc2IHdhbnRlZCA0
-MTI5MyBmb3VuZCA0MTM3MApwYXJlbnQgdHJhbnNpZCB2ZXJpZnkgZmFpbGVkIG9uIDc4Njg0
-MTEzMTQxNzYgd2FudGVkIDQxMjkzIGZvdW5kIDQxMzcwCnBhcmVudCB0cmFuc2lkIHZlcmlm
-eSBmYWlsZWQgb24gNzg2ODQxMTMxNDE3NiB3YW50ZWQgNDEyOTMgZm91bmQgNDEzNzAKcGFy
-ZW50IHRyYW5zaWQgdmVyaWZ5IGZhaWxlZCBvbiA3ODY4NDExMzE0MTc2IHdhbnRlZCA0MTI5
-MyBmb3VuZCA0MTM3MApFUlJPUjogZmFpbGVkIHRvIHJlYWQgYmxvY2sgZ3JvdXBzOiBJbnB1
-dC9vdXRwdXQgZXJyb3IKY29ycnVwdCBsZWFmOiBibG9jaz0yMzA5MTE2ODg3MDQgc2xvdD05
-IGV4dGVudCBieXRlbnI9NTgxNjgzMzU3Mjg2NCBsZW49MTYzODQgaW52YWxpZCBnZW5lcmF0
-aW9uLCBoYXZlIDQxMzQxIGV4cGVjdCAoMCwgNDEzMDNdCmNvcnJ1cHQgbGVhZjogYmxvY2s9
-MjMwOTExNjg4NzA0IHNsb3Q9OSBleHRlbnQgYnl0ZW5yPTU4MTY4MzM1NzI4NjQgbGVuPTE2
-Mzg0IGludmFsaWQgZ2VuZXJhdGlvbiwgaGF2ZSA0MTM0MSBleHBlY3QgKDAsIDQxMzAzXQoK
-WyAuLi5tYW55IG1vcmUgb2YgdGhlc2UgXQoKY29ycnVwdCBsZWFmOiBibG9jaz03ODY4NTY3
-NzY0OTkyIHNsb3Q9MSBleHRlbnQgYnl0ZW5yPTkzOTYzNjI1MTAzMzYgbGVuPTE2Mzg0IGlu
-dmFsaWQgZ2VuZXJhdGlvbiwgaGF2ZSA0MTM1NSBleHBlY3QgKDAsIDQxMzAzXQpjb3JydXB0
-IGxlYWY6IHJvb3Q9MSBibG9jaz03ODY4NTY4NDAzOTY4IHNsb3Q9MCwgaW52YWxpZCByb290
-IGdlbmVyYXRpb24sIGhhdmUgNDEzNjggZXhwZWN0ICgwLCA0MTMwM10KY29ycnVwdCBsZWFm
-OiByb290PTEgYmxvY2s9Nzg2ODU2ODQwMzk2OCBzbG90PTAsIGludmFsaWQgcm9vdCBnZW5l
-cmF0aW9uLCBoYXZlIDQxMzY4IGV4cGVjdCAoMCwgNDEzMDNdCmNvcnJ1cHQgbGVhZjogcm9v
-dD0xIGJsb2NrPTc4Njg1Njg0MDM5Njggc2xvdD0wLCBpbnZhbGlkIHJvb3QgZ2VuZXJhdGlv
-biwgaGF2ZSA0MTM2OCBleHBlY3QgKDAsIDQxMzAzXQpjb3JydXB0IGxlYWY6IHJvb3Q9MSBi
-bG9jaz03ODY4NTY4NDAzOTY4IHNsb3Q9MCwgaW52YWxpZCByb290IGdlbmVyYXRpb24sIGhh
-dmUgNDEzNjggZXhwZWN0ICgwLCA0MTMwM10KY29ycnVwdCBsZWFmOiBibG9jaz03ODY4NTY4
-NDY5NTA0IHNsb3Q9NjUgZXh0ZW50IGJ5dGVucj0zMDUwNzAwOCBsZW49MTYzODQgaW52YWxp
-ZCBnZW5lcmF0aW9uLCBoYXZlIDQxMzA4IGV4cGVjdCAoMCwgNDEzMDNdCgpbIC4uLm1vcmUg
-b2YgdGhlc2UgXQoKY29ycnVwdCBsZWFmOiBibG9jaz03ODY4NTcwNDUxOTY4IHNsb3Q9MTEg
-ZXh0ZW50IGJ5dGVucj03ODY4NDI0NjgzNTIwIGxlbj0xNjM4NCBpbnZhbGlkIGdlbmVyYXRp
-b24sIGhhdmUgNDEzMzYgZXhwZWN0ICgwLCA0MTMwM10KY29ycnVwdCBsZWFmOiByb290PTEg
-YmxvY2s9Nzg2ODU3MDQ2ODM1MiBzbG90PTAsIGludmFsaWQgcm9vdCBnZW5lcmF0aW9uLCBo
-YXZlIDQxMzY5IGV4cGVjdCAoMCwgNDEzMDNdCmNvcnJ1cHQgbGVhZjogcm9vdD0xIGJsb2Nr
-PTc4Njg1NzA0NjgzNTIgc2xvdD0wLCBpbnZhbGlkIHJvb3QgZ2VuZXJhdGlvbiwgaGF2ZSA0
-MTM2OSBleHBlY3QgKDAsIDQxMzAzXQpjb3JydXB0IGxlYWY6IHJvb3Q9MSBibG9jaz03ODY4
-NTcwNDY4MzUyIHNsb3Q9MCwgaW52YWxpZCByb290IGdlbmVyYXRpb24sIGhhdmUgNDEzNjkg
-ZXhwZWN0ICgwLCA0MTMwM10KY29ycnVwdCBsZWFmOiByb290PTEgYmxvY2s9Nzg2ODU3MDQ2
-ODM1MiBzbG90PTAsIGludmFsaWQgcm9vdCBnZW5lcmF0aW9uLCBoYXZlIDQxMzY5IGV4cGVj
-dCAoMCwgNDEzMDNdCmNvcnJ1cHQgbGVhZjogYmxvY2s9Nzg2ODU3MDQ4NDczNiBzbG90PTY1
-IGV4dGVudCBieXRlbnI9MzA1MDcwMDggbGVuPTE2Mzg0IGludmFsaWQgZ2VuZXJhdGlvbiwg
-aGF2ZSA0MTMwOCBleHBlY3QgKDAsIDQxMzAzXQpjb3JydXB0IGxlYWY6IGJsb2NrPTc4Njg1
-NzA0ODQ3MzYgc2xvdD02NSBleHRlbnQgYnl0ZW5yPTMwNTA3MDA4IGxlbj0xNjM4NCBpbnZh
-bGlkIGdlbmVyYXRpb24sIGhhdmUgNDEzMDggZXhwZWN0ICgwLCA0MTMwM10KY29ycnVwdCBs
-ZWFmOiBibG9jaz03ODY4NTcwNDg0NzM2IHNsb3Q9NjUgZXh0ZW50IGJ5dGVucj0zMDUwNzAw
-OCBsZW49MTYzODQgaW52YWxpZCBnZW5lcmF0aW9uLCBoYXZlIDQxMzA4IGV4cGVjdCAoMCwg
-NDEzMDNdCmNvcnJ1cHQgbGVhZjogYmxvY2s9Nzg2ODU3MDQ4NDczNiBzbG90PTY1IGV4dGVu
-dCBieXRlbnI9MzA1MDcwMDggbGVuPTE2Mzg0IGludmFsaWQgZ2VuZXJhdGlvbiwgaGF2ZSA0
-MTMwOCBleHBlY3QgKDAsIDQxMzAzXQpTdXBlcmJsb2NrIHRoaW5rcyB0aGUgZ2VuZXJhdGlv
-biBpcyA0MTMwMgpTdXBlcmJsb2NrIHRoaW5rcyB0aGUgbGV2ZWwgaXMgMApGb3VuZCB0cmVl
-IHJvb3QgYXQgNzg2ODk4NjY1NDcyMCBnZW4gNDEzMDIgbGV2ZWwgMApXZWxsIGJsb2NrIDc4
-Njg4ODExNDE3NjAoZ2VuOiA0MTI5NSBsZXZlbDogMCkgc2VlbXMgZ29vZCwgYnV0IGdlbmVy
-YXRpb24vbGV2ZWwgZG9lc24ndCBtYXRjaCwgd2FudCBnZW46IDQxMzAyIGxldmVsOiAwCgpb
-IC4uLm1vcmUgXQoKV2VsbCBibG9jayAyMzA5OTg2ODc3NDQoZ2VuOiA0MTIzNSBsZXZlbDog
-MCkgc2VlbXMgZ29vZCwgYnV0IGdlbmVyYXRpb24vbGV2ZWwgZG9lc24ndCBtYXRjaCwgd2Fu
-dCBnZW46IDQxMzAyIGxldmVsOiAwCldlbGwgYmxvY2sgNDg2ODAxNDA4KGdlbjogNDEyMzMg
-bGV2ZWw6IDApIHNlZW1zIGdvb2QsIGJ1dCBnZW5lcmF0aW9uL2xldmVsIGRvZXNuJ3QgbWF0
-Y2gsIHdhbnQgZ2VuOiA0MTMwMiBsZXZlbDogMApXZWxsIGJsb2NrIDQwMzM0MTMxMihnZW46
-IDQxMjMyIGxldmVsOiAwKSBzZWVtcyBnb29kLCBidXQgZ2VuZXJhdGlvbi9sZXZlbCBkb2Vz
-bid0IG1hdGNoLCB3YW50IGdlbjogNDEzMDIgbGV2ZWw6IDAKV2VsbCBibG9jayAzNzc2MDM1
-NzE3MTIwKGdlbjogNDA3OTEgbGV2ZWw6IDApIHNlZW1zIGdvb2QsIGJ1dCBnZW5lcmF0aW9u
-L2xldmVsIGRvZXNuJ3QgbWF0Y2gsIHdhbnQgZ2VuOiA0MTMwMiBsZXZlbDogMAo=
---0db4ef7b-84d4-42d3-97d8-aef567c9cb2c-1--
+If you want to undo deduplication, reply with:
+#syz undup
