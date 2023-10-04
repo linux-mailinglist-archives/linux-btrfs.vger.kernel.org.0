@@ -2,78 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F171C7B7933
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Oct 2023 09:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F6F7B798F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Oct 2023 10:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241644AbjJDH4g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Oct 2023 03:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
+        id S241495AbjJDIHM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Oct 2023 04:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232790AbjJDH4b (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Oct 2023 03:56:31 -0400
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E10A7;
-        Wed,  4 Oct 2023 00:56:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1696406188; x=1727942188;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=dfxEmiitU7sG/JHVT8Owzk/9e9RSoVO37pAJFjGfI8U=;
-  b=fDU1qJh99wywnS1oE8VmnXI8zLvC3TuRr3M89Ko41hokpojP//DBvowX
-   q+4S9XbLxySboYB54uryrKhHK6Rpy0KrtzgHCfGMbAbMk3v3VY2bZeITd
-   aAv7DRCwjPEshv1NDIgFt56OWWUSyEEe5SSed6tZ+DToc6/Cr2QR4sO7T
-   Osqxl3qIHOsGLKeRx3YyRERq0ZI4Qz3/o87J0d9gO87+uP4C7+Bsv8HRQ
-   67rW0rO6qB90jOiBaUzFacalh4cheSvGvsv/koID3Ic3l4HXjhn25Yslu
-   sa76YHeegHMGMTQVlyWE/EP/Hsqave3pgjdkkTbDTfuUIcdkE+XFMKr0+
-   Q==;
-X-CSE-ConnectionGUID: SONxoOqNTSiNChR+QWqYmw==
-X-CSE-MsgGUID: CsyGpB5VQryE5hgB4ycYKA==
-X-IronPort-AV: E=Sophos;i="6.03,199,1694707200"; 
-   d="scan'208";a="351024176"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Oct 2023 15:56:27 +0800
-IronPort-SDR: KJYwXBMtsvDy2SLJtp0BEncQKjTzJfMK1Xz9fYmsUcivFm9YnykudaecVRnkd8Vm6cd0PU4FLV
- KLv01gZDf17otO6VTOwB7cYUN+5AZ/u4eCi3eJFKt/aMedWg1qEHUp35AwG1y1eRNQJBlXf9qp
- xSJKfS6rghsIXoCMyIqGgzhTOgKVWAwxZOSZrsv1BH4inJSzB8CMSLEDA+oGSPpqRVz4ZDwDth
- D//GNVgFa2Q7xQqQvuRn+fTSfszHIwR481Hwywsg0ZhkbTgE2pk9CY5ogK9KxsxGSbIva0M7Hv
- JEg=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Oct 2023 00:03:06 -0700
-IronPort-SDR: 88I+pvM7gpFB+3mWbzpar/sEOU2uc5ulMuQCzqyPrRtyCzCxsojQtmbRKuWHM3zxjamBZXcdpt
- a33m9yWOOdhBCOBACh8DYRtDwAH3NMK+O97rUQqn4BfYUZsxmm5QFJeQgB1BY8l5L7+cPyZ0NC
- Sc3nqrWLJw6x+yKLPjOHTF7bgouZHClg4n7GEe7EgSANWJPQksKkeSJOfxLgnJC1z8J9jS7FXN
- PoVAn5LCv2QDGJw7oK2MJuXMwsHPJwE3NxSYVwHTTHzR5U0zjQM+Tu3Z6Ma1VVK/iVTK42pyvE
- eZc=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip01.wdc.com with ESMTP; 04 Oct 2023 00:56:27 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Date:   Wed, 04 Oct 2023 00:56:19 -0700
-Subject: [PATCH v3 4/4] btrfs: remove stride length from on-disk format
+        with ESMTP id S232760AbjJDIHM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Oct 2023 04:07:12 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7870183;
+        Wed,  4 Oct 2023 01:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+ t=1696406821; x=1697011621; i=quwenruo.btrfs@gmx.com;
+ bh=Dg4+f8T1b5xuQWELdWHF6gUguPOne4D1W+nJb4+6L54=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=CcMcHiSnBz9VPjMM5CARvuDLDN20iAj3MvCdWo3gZw+Adrt49DmeMY5upLNvqQYTy0EFuQ36pHJ
+ tSpJeQxzJNKQuc68xyR18hxeTV8EnAnlI8WZhMDUuq3MZsc59yNOxezsMIJuBxERhOMT2kMoZqFQp
+ EV3bmYgpr7/kZ2GZKTfpyP6B0QwaYOSEDNzynb4cGdktdijRluWovccXGewrmS873gy9aBxTYSxFf
+ 0QcsjeYJa15a885YpXJPGVQDtHETFKFIpZ50RsliPeQIg41LIY96x6kr8WhZUP55IzASK211a1CqK
+ K6sqEtOtIpA8ZwfCDqB4X7cxlNkqdl/jCvPw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mirna-1rHlQ02B64-00esWN; Wed, 04
+ Oct 2023 10:07:01 +0200
+Message-ID: <1ce41890-e4f8-43dd-9a1c-23b2b0912349@gmx.com>
+Date:   Wed, 4 Oct 2023 18:36:56 +1030
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231004-rst-updates-v3-4-7729c4474ade@wdc.com>
-References: <20231004-rst-updates-v3-0-7729c4474ade@wdc.com>
-In-Reply-To: <20231004-rst-updates-v3-0-7729c4474ade@wdc.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Qu Wenru <wqu@suse.com>, Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696406180; l=1791;
- i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
- bh=dfxEmiitU7sG/JHVT8Owzk/9e9RSoVO37pAJFjGfI8U=;
- b=s6VAEOI6hGci33EzTXGqgS6KT3PosuQjrI0B71UqwFPeITDPjpcu89WQNJjMWdbvYyu3BQoAc
- EeB+Sie1ELjAaA+sDBZ9QPjAt7yrcs0v/B6yW9hXGGQgV9+CLW7n5NT
-X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
- pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] fstests: make some tests that use fsstress easier to
+ debug
+Content-Language: en-US
+To:     fdmanana@kernel.org, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <cover.1696333874.git.fdmanana@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <cover.1696333874.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:2t6g5KgXFVmmiGAaUzjkjezr418f2ymRrTRV+cuJRKXJ8UJH6vq
+ wliNFJoV4n0Hxh39A0z1dwwcXqLU4cS7u8F8h+PgI9NShOz8AWz8Roz2MIIT8DSBV0cLPpU
+ 9hYfWshUyRYGI4rCNTllTvXCDJIDjnmeCSaXclNpXJyyV8iuBBobKzGwxUEF6ERpMq4+lpZ
+ f4VaWGq64fpzJD7dizu0w==
+UI-OutboundReport: notjunk:1;M01:P0:exZZf2Kxiz8=;Z0Q/YbJiXUtzxIuOuqK9bo+uJp3
+ ZeBMmohX0h6boGJaIVoL5DQh8h+xDLJ6ku/8fXfP8wm739DwacCD6E0jzYBu0jjgHNrSkY/Eq
+ fqTgCvLDHIHTV0+0M0HwvaPIMD8seVx19GnDJalLSusiSgDIqpd8pj7dJzmpvxoU8YdW+ghs1
+ XmFZlTWzzrGbpbDHZ3PVOzZh1NQd4C9jl0AdqTCoMdkzfTJvQmWWaglpWLT8ZYCPinrfTdet7
+ RcR4OFC+OuUg15LodZPi3IRQJ0NXcahTTLGNCrhvZwp8IlZb6hdxvuwEUWquXsexeVQpxKexm
+ JxdJWLbu5sHlOGExSSwJfde2TfkHlnc8noYivk1qGhNDksUPsGUXzZTg2AoAcuc5At/UzwWhR
+ MeB3l1+n4KeeHciDzbc8thsEK1rXkxJtZtk8HPVt1V2G6xe77R5wNOTHOJb+AbzsFEyU3b5tA
+ QkYv7JotMO9ELSp2DZnkyIMPSFu4YTt9rXWJSTVoQmdSSBq/kQRWO+kfE1/DJKMdF7Ye9MruT
+ whYsxmojlhn/S8yK2SFGeBcuPC4apeoNSphwP17LmYPgmDxXLXFECN6JqXZAVt8rNfCMD/dUB
+ /Ws5zuB9YPwIahh0Hw4ZtEmaM4Je6ep+LHFWW0791fQuG/G/zpFl2EF2hlLeK/xxtcJ56jGiE
+ SRm31N/b9huZWI0n/mStg34cTEOZWll5c7qInjQVJNT4DpwIy/VtZERoKExmKw+8aIuczcqEP
+ Ck7YbnFhmKkfgW4Tr3tmwuuLZtu+/atMUE5nNzWgaDpNQblMFoa/IqID7wdp8RDvbsQadvOR0
+ NBP6Y/LDAAL2wZ7ZhSSL6pvsXNsFXyKH6F6tlXp0TFuVptVCr8/KGTh7j3g/PcVfAiUNhraH8
+ z4X7urBWv9iom5GBbM/vL/UrDGg76/81cUxnZTrMNOc/llJdd68jajZ1Nl5Jc+mz+inxD5rUc
+ Rk39YyIQnOtYQBcTkCQENYYhye0=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,43 +95,65 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/accessors.h            | 2 --
- include/uapi/linux/btrfs_tree.h | 2 --
- 2 files changed, 4 deletions(-)
 
-diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-index b780d9087490..aa0844535644 100644
---- a/fs/btrfs/accessors.h
-+++ b/fs/btrfs/accessors.h
-@@ -309,12 +309,10 @@ BTRFS_SETGET_STACK_FUNCS(stack_timespec_nsec, struct btrfs_timespec, nsec, 32);
- BTRFS_SETGET_FUNCS(stripe_extent_encoding, struct btrfs_stripe_extent, encoding, 8);
- BTRFS_SETGET_FUNCS(raid_stride_devid, struct btrfs_raid_stride, devid, 64);
- BTRFS_SETGET_FUNCS(raid_stride_physical, struct btrfs_raid_stride, physical, 64);
--BTRFS_SETGET_FUNCS(raid_stride_length, struct btrfs_raid_stride, length, 64);
- BTRFS_SETGET_STACK_FUNCS(stack_stripe_extent_encoding,
- 			 struct btrfs_stripe_extent, encoding, 8);
- BTRFS_SETGET_STACK_FUNCS(stack_raid_stride_devid, struct btrfs_raid_stride, devid, 64);
- BTRFS_SETGET_STACK_FUNCS(stack_raid_stride_physical, struct btrfs_raid_stride, physical, 64);
--BTRFS_SETGET_STACK_FUNCS(stack_raid_stride_length, struct btrfs_raid_stride, length, 64);
- 
- /* struct btrfs_dev_extent */
- BTRFS_SETGET_FUNCS(dev_extent_chunk_tree, struct btrfs_dev_extent, chunk_tree, 64);
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index 9fafcaebf44d..c25fc9614594 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -737,8 +737,6 @@ struct btrfs_raid_stride {
- 	__le64 devid;
- 	/* The physical location on disk. */
- 	__le64 physical;
--	/* The length of stride on this disk. */
--	__le64 length;
- } __attribute__ ((__packed__));
- 
- /* The stripe_extent::encoding, 1:1 mapping of enum btrfs_raid_types. */
 
--- 
-2.41.0
+On 2023/10/3 22:27, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> Some tests that use fsstress are harder to debug than necessary because =
+they
+> redirect fsstress' stdout to /dev/null instead of $seqres.full. This mea=
+ns we
+> have no way of knowing the seed used by fsstress which often helps to tr=
+igger
+> a bug/failure. More details on the change logs of each patch.
 
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+
+>
+> Filipe Manana (2):
+>    fstests: redirect fsstress' stdout to $seqres.full instead of /dev/nu=
+ll
+>    btrfs/192: use append operator to output log replay results to $seqre=
+s.full
+>
+>   tests/btrfs/028   | 2 +-
+>   tests/btrfs/049   | 2 +-
+>   tests/btrfs/060   | 2 +-
+>   tests/btrfs/061   | 2 +-
+>   tests/btrfs/062   | 2 +-
+>   tests/btrfs/063   | 2 +-
+>   tests/btrfs/064   | 2 +-
+>   tests/btrfs/065   | 2 +-
+>   tests/btrfs/066   | 2 +-
+>   tests/btrfs/067   | 2 +-
+>   tests/btrfs/068   | 2 +-
+>   tests/btrfs/069   | 2 +-
+>   tests/btrfs/070   | 2 +-
+>   tests/btrfs/071   | 2 +-
+>   tests/btrfs/072   | 2 +-
+>   tests/btrfs/073   | 2 +-
+>   tests/btrfs/074   | 2 +-
+>   tests/btrfs/136   | 2 +-
+>   tests/btrfs/192   | 4 ++--
+>   tests/btrfs/232   | 2 +-
+>   tests/btrfs/261   | 2 +-
+>   tests/btrfs/286   | 2 +-
+>   tests/ext4/057    | 2 +-
+>   tests/ext4/307    | 2 +-
+>   tests/generic/068 | 2 +-
+>   tests/generic/269 | 2 +-
+>   tests/generic/409 | 2 +-
+>   tests/generic/410 | 2 +-
+>   tests/generic/411 | 2 +-
+>   tests/generic/589 | 2 +-
+>   tests/xfs/051     | 2 +-
+>   tests/xfs/057     | 2 +-
+>   tests/xfs/297     | 2 +-
+>   tests/xfs/305     | 2 +-
+>   tests/xfs/538     | 2 +-
+>   35 files changed, 36 insertions(+), 36 deletions(-)
+>
