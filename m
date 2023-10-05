@@ -2,178 +2,197 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 737A87BA2F5
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Oct 2023 17:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371E27BA2C7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Oct 2023 17:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233943AbjJEPti (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Oct 2023 11:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
+        id S232670AbjJEPqY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Oct 2023 11:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234395AbjJEPst (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Oct 2023 11:48:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568F665B9
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 Oct 2023 07:29:19 -0700 (PDT)
+        with ESMTP id S229877AbjJEPpN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Oct 2023 11:45:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B876EBA
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Oct 2023 08:00:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696516158;
+        s=mimecast20190719; t=1696518033;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Zxq28Ot4hQwMCF4bplBPtW8AxzWQ0vN05e7Cv8VyD/o=;
-        b=YQDQqAp4S+AdwA0iIZISRXs4gSEjaSlFyaplY+OyXjxKB7LQMMeb1KC2/G1EX6NCm85Rb3
-        t5yH5LO0RTH+yMsINPYHb7Fzv/K4vPG5FG8k46Bnp8RK7zGpXp0hd94l6JXj84M3nWtS01
-        ucLfnNvH4ZFxUtMRRTNaQOlVFUUKZXk=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=D3zIQ/1SCg3FfbT6wGlhNivHrXgwo5pS8sAzvvJNfMM=;
+        b=NEDk86N0opjfgc5yoofSz7VGdFTLkXY9f4hH+4gA5/nrefjaWg+2hadtoItKU25EIaiF2n
+        a78nXvK/58bCu0kogjT/dICnfY/gvEAPaJ/ixirYv2pzCI/7TMAl02eIj35zPERHGS8t/O
+        SXkXIuY239AFDdHcYOBDpmPDwaHq/bo=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-124-TD5ShqXzNWm6kBTkHepp2w-1; Thu, 05 Oct 2023 10:29:17 -0400
-X-MC-Unique: TD5ShqXzNWm6kBTkHepp2w-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1c60cf79e3eso8806835ad.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Oct 2023 07:29:17 -0700 (PDT)
+ us-mta-443-xUs5PYM5O_epY1gCfhxGNg-1; Thu, 05 Oct 2023 11:00:31 -0400
+X-MC-Unique: xUs5PYM5O_epY1gCfhxGNg-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2773b534dd2so914366a91.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Oct 2023 08:00:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696516156; x=1697120956;
+        d=1e100.net; s=20230601; t=1696518031; x=1697122831;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Zxq28Ot4hQwMCF4bplBPtW8AxzWQ0vN05e7Cv8VyD/o=;
-        b=fy1qRZIBeKwLK4eo1+La4kHnqMZdOKNiEXafIFBDxXok4dFc3bgftmGC0TT71cGwHi
-         Cgz8rLNXp7v1u9N2qHRU3KoW/wdCrxv9VkKInWtOo8QmNgKt3qe3v+QHevCymwOosUkE
-         bta88tTT9ihL2J3NyR5w1VIvTFSxzJEGcHSoPcoDkmB4ZzHJffGchGdWlqp5Wh6uRQEK
-         2jAK4xNTOoFK4nuBw5m+nnMZMyIVWmDqNT+nKSrYiVrsg7GgtC8JJliKQRVJAKuCZfW1
-         vSY6G8yK5naS7pDCXMxJ8zV6qN4/VUYYzBfzg9Vl5XzJdL6ylrczqUrOAAVi/EdMsEKl
-         XP3g==
-X-Gm-Message-State: AOJu0Yzwh/6erRRATxqW309nwO6ZNRTe7Sm2nQZ/JAWSgV0Wk5eSruB3
-        7HD+PpMiZjmm5gxClZRpMkzOL4Ioi4EUULt1B3tT41N3+WBBoYsVfuoJnjkE1p+/Afr38XKkAu6
-        3fIrTesyrq/tMGY9jx/mrCeK9W6oU7p6Llw==
-X-Received: by 2002:a17:902:868e:b0:1c3:3c91:61cc with SMTP id g14-20020a170902868e00b001c33c9161ccmr5211779plo.13.1696516155918;
-        Thu, 05 Oct 2023 07:29:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE53o4JP2TBiTaPeQRG8/tta0j+byJTSdO49sEKd7wj58kFkDI9sKcJFpgaVu+GoZDmUGfGTw==
-X-Received: by 2002:a17:902:868e:b0:1c3:3c91:61cc with SMTP id g14-20020a170902868e00b001c33c9161ccmr5211763plo.13.1696516155581;
-        Thu, 05 Oct 2023 07:29:15 -0700 (PDT)
+        bh=D3zIQ/1SCg3FfbT6wGlhNivHrXgwo5pS8sAzvvJNfMM=;
+        b=S5r1bBlc3UTQxR7xyovHTtiz0Ih0X4xq0wdwM7gP4OTmcOAjnVb0haCM3QPLylCRph
+         6VLuy9MfddSZVZwbRcJCTUpgftORTIo5TLZs45ZWx0FDfYG3EOHdFRVCtJjOqsVit3Eq
+         t/r/TBrMo7NWBdLgRfHtj+RUpAdqmB3IO11uzdXBD4nHQbnBxSSXphlD+i0J68nRdeb3
+         zZmNGQMBKmX6ISckECZF8FFVxhz7sa26EJTzH5YKPL1hG+uEB9BaYWAEQOiWnUoPNqN5
+         +qR7BQF3OqLrA3ncT1aiQh97jb3m5n4+Yx1YcuFQoSGD8UNog0jKe7qfKL6QGji2ZBVw
+         Ssmw==
+X-Gm-Message-State: AOJu0YxdncE6x/OrI6FcQINYRiK+HZ5v84iQYO+Af1rfw1++k3mGIk+q
+        hGN20/GYNH+AIOVMD1xUF62jlNQ4PKZbbeB80ZaSyp8kcwyI7gG7jqnrbQL5PkUjrIqsUZM1wrG
+        pHX7tCow2jVJ49TPKhTRZyEo=
+X-Received: by 2002:a17:90a:950e:b0:274:8be8:f767 with SMTP id t14-20020a17090a950e00b002748be8f767mr5094797pjo.15.1696518030799;
+        Thu, 05 Oct 2023 08:00:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IETeYL9O1wsJpWTBbvvTlpJLtGxJP4zqFXH5Ea2u+4VLmh2S777TOYUuf+kdatxSTpSflRYgg==
+X-Received: by 2002:a17:90a:950e:b0:274:8be8:f767 with SMTP id t14-20020a17090a950e00b002748be8f767mr5094776pjo.15.1696518030474;
+        Thu, 05 Oct 2023 08:00:30 -0700 (PDT)
 Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id ja10-20020a170902efca00b001c731b62403sm1736412plb.218.2023.10.05.07.29.14
+        by smtp.gmail.com with ESMTPSA id ev7-20020a17090aeac700b00274922d4b38sm1702506pjb.27.2023.10.05.08.00.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Oct 2023 07:29:15 -0700 (PDT)
-Date:   Thu, 5 Oct 2023 22:29:11 +0800
+        Thu, 05 Oct 2023 08:00:29 -0700 (PDT)
+Date:   Thu, 5 Oct 2023 23:00:26 +0800
 From:   Zorro Lang <zlang@redhat.com>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs test scan but not register the single device fs
-Message-ID: <20231005142911.edxcwtwnvywq4dn6@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <7f8e18168419ce6f89faddd3eea2611b53dac67d.1695891643.git.anand.jain@oracle.com>
+Subject: Re: [GIT PULL] fstests: btrfs changes for for-next v2023.10.05
+Message-ID: <20231005150026.s32nmpkskpzozmzp@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <35b9a0c0-1a83-4b63-a494-9b66198f8000@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7f8e18168419ce6f89faddd3eea2611b53dac67d.1695891643.git.anand.jain@oracle.com>
+In-Reply-To: <35b9a0c0-1a83-4b63-a494-9b66198f8000@oracle.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 05:01:30PM +0800, Anand Jain wrote:
-> Recently, in the kernel commit 0d9436739af2 ("btrfs: scan but don't
-> register device on single device filesystem"), we adopted an approach
-> where we scan the device to validate it. However, we do not register
-> it in the kernel memory since it is not required to be remembered.
+On Thu, Oct 05, 2023 at 06:54:46PM +0800, Anand Jain wrote:
 > 
-> However, the seed device should continue to be registered because
-> otherwise, the mount operation for the sprout device will fail.
+> Zorro,
 > 
-> This patch ensures that we honor the mount requirements and do not break
-> anything while making changes in this part of the code.
+> These patches have undergone testing and are now prepared for merging, based
+> on your for-next branch.
+
+Thanks Anand, I've merged these changes onto my for-next branch. Sorry, I'm
+just back from a holiday, I'll try to make a new fstests release this weekend.
+
+Thanks,
+Zorro
+
 > 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  tests/btrfs/298     | 53 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/298.out |  2 ++
->  2 files changed, 55 insertions(+)
+> 
+> The following changes since commit 2fddeb5c79ff16bf37e1f1d809bd94b360c27801:
+> 
+>   btrfs/287: filter snapshot IDs to avoid failures when using some features
+> (2023-09-23 22:13:11 +0800)
+> 
+> are available in the Git repository at:
+> 
+>   https://github.com/asj/fstests.git staged-20231005
+> 
+> for you to fetch changes up to 9750f8d42560a459c89071c6a0bd68bdb467fa49:
+> 
+>   btrfs/295: skip on zoned device as we cannot corrupt it directly
+> (2023-10-05 17:37:39 +0800)
+> 
+> ----------------------------------------------------------------
+> Anand Jain (1):
+>       btrfs test scan but not register the single device fs
+> 
+> Boris Burkov (6):
+>       common: refactor sysfs_attr functions
+>       btrfs: quota mode helpers
+>       btrfs/301: new test for simple quotas
+>       btrfs: quota rescan helpers
+>       btrfs: use new rescan wrapper
+>       btrfs: skip squota incompatible tests
+> 
+> Filipe Manana (2):
+>       fstests: redirect fsstress' stdout to $seqres.full instead of
+> /dev/null
+>       btrfs/192: use append operator to output log replay results to
+> $seqres.full
+> 
+> Naohiro Aota (3):
+>       btrfs/283: skip if we cannot write into one extent
+>       btrfs/076: fix file_size variable
+>       btrfs/295: skip on zoned device as we cannot corrupt it directly
+> 
+>  common/btrfs        |  64 ++++++++++++++++
+>  common/rc           | 127 ++++++++++++++++++++-----------
+>  tests/btrfs/017     |   1 +
+>  tests/btrfs/022     |   1 +
+>  tests/btrfs/028     |   4 +-
+>  tests/btrfs/049     |   2 +-
+>  tests/btrfs/057     |   1 +
+>  tests/btrfs/060     |   2 +-
+>  tests/btrfs/061     |   2 +-
+>  tests/btrfs/062     |   2 +-
+>  tests/btrfs/063     |   2 +-
+>  tests/btrfs/064     |   2 +-
+>  tests/btrfs/065     |   2 +-
+>  tests/btrfs/066     |   2 +-
+>  tests/btrfs/067     |   2 +-
+>  tests/btrfs/068     |   2 +-
+>  tests/btrfs/069     |   2 +-
+>  tests/btrfs/070     |   2 +-
+>  tests/btrfs/071     |   2 +-
+>  tests/btrfs/072     |   2 +-
+>  tests/btrfs/073     |   2 +-
+>  tests/btrfs/074     |   2 +-
+>  tests/btrfs/076     |   2 +-
+>  tests/btrfs/091     |   3 +-
+>  tests/btrfs/104     |   2 +-
+>  tests/btrfs/123     |   2 +-
+>  tests/btrfs/126     |   2 +-
+>  tests/btrfs/136     |   2 +-
+>  tests/btrfs/139     |   2 +-
+>  tests/btrfs/153     |   2 +-
+>  tests/btrfs/171     |   6 +-
+>  tests/btrfs/179     |   2 +-
+>  tests/btrfs/180     |   2 +-
+>  tests/btrfs/190     |   2 +-
+>  tests/btrfs/192     |   4 +-
+>  tests/btrfs/193     |   2 +-
+>  tests/btrfs/210     |   2 +-
+>  tests/btrfs/224     |   6 +-
+>  tests/btrfs/230     |   2 +-
+>  tests/btrfs/232     |   4 +-
+>  tests/btrfs/261     |   2 +-
+>  tests/btrfs/283     |   8 ++
+>  tests/btrfs/286     |   2 +-
+>  tests/btrfs/295     |   2 +
+>  tests/btrfs/298     |  53 +++++++++++++
+>  tests/btrfs/298.out |   2 +
+>  tests/btrfs/301     | 444 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/301.out |  18 +++++
+>  tests/ext4/057      |   2 +-
+>  tests/ext4/307      |   2 +-
+>  tests/generic/068   |   2 +-
+>  tests/generic/269   |   2 +-
+>  tests/generic/409   |   2 +-
+>  tests/generic/410   |   2 +-
+>  tests/generic/411   |   2 +-
+>  tests/generic/589   |   2 +-
+>  tests/xfs/051       |   2 +-
+>  tests/xfs/057       |   2 +-
+>  tests/xfs/297       |   2 +-
+>  tests/xfs/305       |   2 +-
+>  tests/xfs/538       |   2 +-
+>  61 files changed, 734 insertions(+), 102 deletions(-)
 >  create mode 100755 tests/btrfs/298
 >  create mode 100644 tests/btrfs/298.out
+>  create mode 100755 tests/btrfs/301
+>  create mode 100644 tests/btrfs/301.out
 > 
-> diff --git a/tests/btrfs/298 b/tests/btrfs/298
-> new file mode 100755
-> index 000000000000..1d10d27c1354
-> --- /dev/null
-> +++ b/tests/btrfs/298
-> @@ -0,0 +1,53 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2023 Oracle.  All Rights Reserved.
-> +#
-> +# FS QA Test 298
-> +#
-> +#   Check if the device scan registers for a single-device seed and drops
-> +#  it from the kernel if it is eventually marked as non-seed.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick seed
-> +
-> +_supported_fs btrfs
-> +_require_command "$BTRFS_TUNE_PROG" btrfstune
-> +_require_scratch_dev_pool 2
-> +_scratch_dev_pool_get 1
-> +_spare_dev_get
-> +
-> +$WIPEFS_PROG -a $SCRATCH_DEV
-
-_require_command "$WIPEFS_PROG" wipefs
-
-> +$WIPEFS_PROG -a $SPARE_DEV
-> +
-> +echo "#setup seed sprout device" >> $seqres.full
-> +_scratch_mkfs "-b 300M" >> $seqres.full 2>&1
-
-Better to with "|| _fail "....."", if we give specific options to _scratch_mkfs.
-
-Others look good to me, if no more review points from others, I'll merge
-this patch with above changes, and with
-
-Reviewed-by: Zorro Lang <zlang@redhat.com>
-
-> +$BTRFS_TUNE_PROG -S 1 $SCRATCH_DEV
-> +_scratch_mount >> $seqres.full 2>&1
-> +$BTRFS_UTIL_PROG device add $SPARE_DEV $SCRATCH_MNT
-> +_scratch_unmount
-> +$BTRFS_UTIL_PROG device scan --forget
-> +
-> +echo "#Scan seed device and check using mount" >> $seqres.full
-> +$BTRFS_UTIL_PROG device scan $SCRATCH_DEV >> $seqres.full
-> +_mount $SPARE_DEV $SCRATCH_MNT
-> +umount $SCRATCH_MNT
-> +
-> +echo "#check again, ensures seed device still in kernel" >> $seqres.full
-> +_mount $SPARE_DEV $SCRATCH_MNT
-> +umount $SCRATCH_MNT
-> +
-> +echo "#Now scan of non-seed device makes kernel forget" >> $seqres.full
-> +$BTRFS_TUNE_PROG -f -S 0 $SCRATCH_DEV >> $seqres.full 2>&1
-> +$BTRFS_UTIL_PROG device scan $SCRATCH_DEV >> $seqres.full
-> +
-> +echo "#Sprout mount must fail for missing seed device" >> $seqres.full
-> +_mount $SPARE_DEV $SCRATCH_MNT > /dev/null 2>&1
-> +[[ $? == 32 ]] || _fail "mount failed to fail"
-> +
-> +_spare_dev_put
-> +_scratch_dev_pool_put
-> +
-> +# success, all done
-> +echo Silence is golden
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/298.out b/tests/btrfs/298.out
-> new file mode 100644
-> index 000000000000..634342678f11
-> --- /dev/null
-> +++ b/tests/btrfs/298.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 298
-> +Silence is golden
-> -- 
-> 2.39.3
 > 
 
