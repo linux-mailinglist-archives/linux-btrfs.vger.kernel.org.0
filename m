@@ -2,126 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 430C07BA29E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Oct 2023 17:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B017B9E55
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Oct 2023 16:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233665AbjJEPmZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Oct 2023 11:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
+        id S229767AbjJEODq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Oct 2023 10:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234163AbjJEPmJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Oct 2023 11:42:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 550EB1FC01;
-        Thu,  5 Oct 2023 07:57:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7460C433C7;
-        Thu,  5 Oct 2023 03:09:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696475379;
-        bh=hiVA8PcTMa3N1KnvuxxVLVJWzq2JJuH5+TvMi9NajNY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NTLENRzR0Mm8d8yUp2nI8REk89Dq7XVRk23IGQDOYwNWaRpIlNOyDnN6NpFtbF6MP
-         lM3Pxs2hYwKxlBbdxtKFRLe8zGCTi5ZdgF6Gl7Phb0t6/xlxZonsaU8v7J/pfr0Uwr
-         AOw6titvBu6PurzAmUbpsfCnPb6xIOJo7xzXvCR8CT6oux+TN5d09L5B0AldhPxB6i
-         vgfd3Yu5DbwO+mDkcuqHjDLDrEsK/4j/dmDSvs/QOww9pXp36ywlzRvjfQhJuqTOVs
-         5Le4zphOMMbrNzCyOWzUZ1bfQjpocaj19g4wz/BmmVsCKwyFhOu6sX0LPzfnw4XFWh
-         vzltChfmBOkyg==
-Date:   Wed, 4 Oct 2023 23:09:35 -0400
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        sweettea-kernel@dorminy.me
-Subject: Re: Master key removal semantics
-Message-ID: <20231005030935.GB1688@quark.localdomain>
-References: <20231004164412.GA363973@localhost.localdomain>
+        with ESMTP id S230031AbjJEODU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Oct 2023 10:03:20 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8082D59E5
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Oct 2023 22:48:59 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so875786a12.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Oct 2023 22:48:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696484938; x=1697089738; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oDVdWICwavrWQ8UAVYhe8ynFXsBBW1vVQ7W08zgiq24=;
+        b=MYfiLuYwDBOCedc9q8/Xo4M5ib4aKIm9EukXNk9FaNClvdg7W8kDOQwb0Oj8yKkLBh
+         bhuL4piG0IYLbgAyKJF+Om2+yiu3D6ZJOtkmI6AzY305gc75Puq61UnAoUaWd4E0d4wi
+         Vvh+Jd7CGe1QxzqXmzVmAD0+WPVMs4eP8oi+gC+AxTvznNrGDmnBPFBtxbee4o6xWemz
+         97ryxVCJDBi8tTizwSzb6Pro3GEWUciPpiTvJ5zwkLhbRTwmEd8Q+xTZfljR/EWXGyOj
+         FHRCtAugM9x45iUECGhtAlr18dnWfRPIaOmX9nyESk+Dxss9XSnlcK7HoVPM9yf5DjSa
+         7u6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696484938; x=1697089738;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oDVdWICwavrWQ8UAVYhe8ynFXsBBW1vVQ7W08zgiq24=;
+        b=e8wWoyrSmOVKkKAdkgH6tkGujGQitTDN3NqIsZ5JzZhKwKLX3fikC7ZFFK10gu9wwY
+         ZvFZfS3FgRb1GpHkQPlLUi501wHpHvckv3I3y1dGqBFOeJTQILzln6UUc0459AW04W0h
+         WJuDpdEn/Pxr0T43AITdktSpJ/aYHYvtMOMQhyrpqolYX8GkWQWGeNGTiBkR/dXhLFHb
+         e3TAVw8z8QxWL2iCTFoOloI+S+jdjeEWMlXy33803X88QrApwLY4R8jrWq+21+BcT12C
+         uIwL7CmOfqxwmhPlX2ehiOjtnQmlHuO5IO/pbLmsQ+ezAeyGI2/8Z6o6y742RmMbtab3
+         xWYA==
+X-Gm-Message-State: AOJu0Yx7pps96PPKmwCWdEPlneEiVUtDI9a6ZmcN9LkzMMbgER4UYBnV
+        MB4A6ofpcPVXXmKq+02fbtCLQIt+DZo4RdTzf4BQuf5bA9c=
+X-Google-Smtp-Source: AGHT+IE1ovbrfw7QXlMKBlSimDskXMUW5hbr025vXML3QV5pFjNLblytgUilJ4lKP5J+hGCZnreodCzyUtYQuS7E7p4=
+X-Received: by 2002:aa7:db45:0:b0:533:520:a5a8 with SMTP id
+ n5-20020aa7db45000000b005330520a5a8mr3798027edt.29.1696484937599; Wed, 04 Oct
+ 2023 22:48:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004164412.GA363973@localhost.localdomain>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a54:2e12:0:b0:22f:305d:661b with HTTP; Wed, 4 Oct 2023
+ 22:48:57 -0700 (PDT)
+Reply-To: ninacoulibaly03@hotmail.com
+From:   nina coulibaly <coulibalynina09@gmail.com>
+Date:   Thu, 5 Oct 2023 05:48:57 +0000
+Message-ID: <CABeZed48QdeV72Uq2hyDpFJhxG0psfBzDg=a9ddazGSi1m3tLg@mail.gmail.com>
+Subject: from nina coulibaly
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=7.2 required=5.0 tests=BAYES_50,DEAR_NOBODY,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5031]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [coulibalynina09[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [coulibalynina09[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [ninacoulibaly03[at]hotmail.com]
+        * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:533 listed in]
+        [list.dnswl.org]
+        *  2.3 DEAR_NOBODY RAW: Message contains Dear but with no name
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  2.8 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 12:44:12PM -0400, Josef Bacik wrote:
-> Hello,
-> 
-> While getting the fstests stuff nailed down to deal with btrfs I ran into
-> failures with generic/595, specifically the multi-threaded part.
-> 
-> In one thread we have a loop adding and removing the master key.
-> 
-> In the other thread we have us trying to echo a character into a flie in the
-> encrypted side, and if it succeeds we echo a character into a temporary file,
-> and then after the runtime has elapsed we compare these two files to make sure
-> they match.
-> 
-> The problem with this is that btrfs derives the per-extent key from the master
-> key at writeout time.  Everybody else has their content key derived at flie open
-> time, so they don't need the master key to be around once the file is opened, so
-> any writes that occur while that file is held open are allowed to happen.
-> 
-> Sweet Tea had some changes around soft unloading the master key to handle this
-> case.  Basically we allow the master key to stick around by anybody who may need
-> it who is currently open, and then any new users get denied.  Once all the
-> outstanding open files are closed the master key is unloaded.
-> 
-> This keeps the semantics of what happens for everybody else.
-> 
-> What is currently happening with my version of the patchset, which didn't bring
-> in those patches, is that you get an ENOKEY at writeout time if you remove the
-> key.  The fstest fails because even tho we let you write to the file sometimes,
-> it doesn't necessarily mean it'll make it to disk.
-> 
-> If we want to keep the semantics of "when userspace tells us to throw away the
-> master key, we absolutely throw the master key away" then I can just make
-> adjustments to the fstests test and call what I have good enough.
-> 
-> If we want to have the semantics of "when userspace tells us to throw away the
-> master key we'll make it unavailable for any new users, but existing open files
-> operate as normal" then I can pull in Sweet Tea's soft removal patches and call
-> it good enough.
-> 
-> There's a third option that is a bit of a middle ground with varying degrees of
-> raciness.  We could sync the file system before we do the removal just to narrow
-> the window where we could successfully write to a file but get an ENOKEY at
-> writeout time.  We could freeze the filesystem to make sure it's sync'ed and
-> allow any current writers to complete, this would be a stronger version of the
-> first option, again just narrows the window.  Neither of these cases help if the
-> file is being held open.  If we wanted to fully deal with the file being held
-> open case we could set a flag, sync, then remove the key.  Then we add a new
-> fscrypt_prep_write() hook that filesystems could optionally use, obviously just
-> btrfs for now, that we'd stick in the write path that would check for this flag
-> or if the master key had been removed so we can deny dirtying when the key is
-> removed.
-> 
-> At this point I don't have strong opinions, it's easier for me to just leave it
-> like it is and change fstests.  Anything else is a change in the semantics of
-> how the master key is handled, and that's not really a decision I feel
-> comfortable making for everybody.  Once we nail this detail down I can send the
-> updated version of all the patches and we can start talking about inclusion.
-> Thanks,
+Dear,
 
-There is already a sync just before the master key removal.  See
-try_to_lock_evicted_files().  It's racy, of course, as you noticed.
+I am interested to invest with you in your country with total trust
+and i hope you will give me total support, sincerity and commitment.
+Please get back to me as soon as possible so that i can give you my
+proposed details of funding and others.
 
-The "soft removal" is what I recommended earlier.  See
-https://lore.kernel.org/r/20230703181745.GA1194@sol.localdomain and
-https://lore.kernel.org/r/20230704002854.GA860@sol.localdomain.  I think it's
-probably still the way to go, but I was a bit confused by the way that Sweet Tea
-had implemented it.  Maybe it can be simplified?
+Best Regards.
 
-I've been pretty busy this week; I'll take a look at your latest patches soon.
-I've gone ahead and tweaked your patch "fscrypt: rename fscrypt_info =>
-fscrypt_inode_info" a bit and applied it to the fscrypt tree for 6.7 so that we
-can get it out of the way; let me know if that's okay.  I've just sent out the
-version that I applied.  BTW, I also applied my patchset "fscrypt: add support
-for data_unit_size < fs_block_size" recently, so you'll need to rebase onto the
-fscrypt tree anyway.  Sorry for the churn, but that feature is apparently
-something that people need...
-
-- Eric
+Mrs Nina Coulibaly
