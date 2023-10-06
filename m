@@ -2,51 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F677BB282
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Oct 2023 09:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD587BB922
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Oct 2023 15:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbjJFHoh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Oct 2023 03:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
+        id S232421AbjJFNeg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Oct 2023 09:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbjJFHoW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Oct 2023 03:44:22 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B92F19AB
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Oct 2023 00:42:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=wMkonyOaI7v85lBfq7h50QkQ2JzpXhOYJFn9VjALeto=; b=fcxTvqI1H1nylDcx2JbNHd0yGg
-        WX9I0XyXZah5Pyl1EIqoopAa0kC2KRDDrzSmplV4ow5pA6K0rOkuLroJJHqq4N3pVXhZ80ZWuOpCv
-        qXV0QaD8LIZGc+yY/tzsPIYkyfVQjI0bSG0jLCJOXdG+6CH8zgKlTE+W5afWCOwPVzmK9OObUn5IG
-        ab9B1IJXjbnz1206dUWK+5869wTjp2WrNoC9pLuMSFiql/92SyThN4iiQwpr6NXpwSSbj3gxbEBQQ
-        SOP1XW+gAbcncRkoE6s/o+uZJKb8g3BLGcKbY2tXZlob1lqL1E4FKCglUrBrybLxW9yIVs8ZYYMRT
-        N3vAwgxw==;
-Received: from cpe90-146-105-192.liwest.at ([90.146.105.192] helo=[192.168.178.99])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1qofTR-00CTAM-GJ; Fri, 06 Oct 2023 09:42:13 +0200
-Message-ID: <55f1b487-af24-8f67-8e72-37d493c5025c@igalia.com>
-Date:   Fri, 6 Oct 2023 09:42:12 +0200
+        with ESMTP id S232417AbjJFNef (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Oct 2023 09:34:35 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377E595;
+        Fri,  6 Oct 2023 06:34:34 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DC7651F45F;
+        Fri,  6 Oct 2023 13:34:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1696599272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hTL0BamYDOnnqQ9SM6lUuG4nmeHU2Ka02gJ7n7S/EZI=;
+        b=UHdObYVPNTnac2reylDMJUMns/y7DXmW68mD5W6a81Vj5txW8IndZfeJBCGA5krpH7Nppu
+        d+OXtgTw3S7L1ikWkk11Ejwv7WfUGYzh23b53tAuesj0Ulexikovead3yMJ0UwsI/RiLX6
+        ukWK/OY5iK4OrOKA9VEEduU9DlKNf0M=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id ABA282C142;
+        Fri,  6 Oct 2023 13:34:32 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 61F1CDA8C1; Fri,  6 Oct 2023 15:27:50 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.6-rc5
+Date:   Fri,  6 Oct 2023 15:27:47 +0200
+Message-ID: <cover.1696529195.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 0/2] btrfs: support cloned-device mount capability
-Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1695826320.git.anand.jain@oracle.com>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <cover.1695826320.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,24 +51,46 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Anand / David, I was out at a conference and some holidays, so missed
-this patch. Is this a replacement of the temp-fsid approach?
+Hi,
 
-So, to clarify a bit the inner workings of this patch: we don't have the
-temp-fsid superblock flag anymore? Also, we can mount multiple
-partitions holding the same filesystem at the same time, given the
-nature of the patch (that generates the random fsid based on devt as per
-my superficial understanding) - right? And we don't use the
-metadata_uuid field here anymore, i.e., we kinda "lose" the original fsid?
+please pull a few more fixes. Thanks.
 
-If that approaches is considered better than mine and works fine for the
-Steam Deck use case, I'm glad in having that! But I would like at least
-to understand why it was preferred over the temp-fsid one, and what are
-the differences we can expect (need a flag to mkfs or can use btrfstune
-for that, for example).
+- reject unknown mount options
 
-Thanks in advance,
+- adjust transaction abort error message level
 
+- fix one more build warning with -Wmaybe-uninitialized
 
-Guilherme
+- proper error handling in several COW-related cases
 
+----------------------------------------------------------------
+The following changes since commit b4c639f699349880b7918b861e1bd360442ec450:
+
+  btrfs: initialize start_slot in btrfs_log_prealloc_extents (2023-09-21 18:52:23 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.6-rc4-tag
+
+for you to fetch changes up to e36f94914021e58ee88a8856c7fdf35adf9c7ee1:
+
+  btrfs: error out when reallocating block for defrag using a stale transaction (2023-10-04 01:04:33 +0200)
+
+----------------------------------------------------------------
+Filipe Manana (4):
+      btrfs: always print transaction aborted messages with an error level
+      btrfs: error out when COWing block using a stale transaction
+      btrfs: error when COWing block from a root that is being deleted
+      btrfs: error out when reallocating block for defrag using a stale transaction
+
+Josef Bacik (1):
+      btrfs: fix some -Wmaybe-uninitialized warnings in ioctl.c
+
+Qu Wenruo (1):
+      btrfs: reject unknown mount options early
+
+ fs/btrfs/ctree.c       | 52 +++++++++++++++++++++++++++++++++++++-------------
+ fs/btrfs/ioctl.c       |  4 ++--
+ fs/btrfs/super.c       |  4 ++++
+ fs/btrfs/transaction.h |  4 ++--
+ 4 files changed, 47 insertions(+), 17 deletions(-)
