@@ -2,193 +2,452 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1B47BC392
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Oct 2023 03:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7AF7BC43E
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Oct 2023 04:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234009AbjJGBUu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Oct 2023 21:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57858 "EHLO
+        id S234087AbjJGCpe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Oct 2023 22:45:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233269AbjJGBUs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Oct 2023 21:20:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DBCB6;
-        Fri,  6 Oct 2023 18:20:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696641646; x=1728177646;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=+1oX3XmrPhIs7No+iF1tjIPtK+bWfLRDJG2REwgaIHw=;
-  b=ZHSNO9buqMrMb5hLjhPlWEyDPcu8fIX1SeucAPp2c/JHpCpKxM4n6pTq
-   zBX+LqQJmI7J0ROd8Reg0ocu21jVx2nSGATxtCy7qE2jhnOb6JqXCHsme
-   VTnWe6rzEqygA9ttZQs4WXrGTuNGobulxrRDQ+vpDp0ubqVWhVmkF8RQ2
-   4BhxereHGlqkQ0GQVETgkcPyrAwilyxarz+99rI3r1WIkzbhvsIL86Mt7
-   S+bTKD6P3iTcAAD8XH+njrgPJuApBgUmzBA69/ZAiiqoFCeth9XfXMjWe
-   MQI0eAUfcyxb+RwlOK5xauo5uvWGySQlvqXe5jyuhTqeM02YGIxQoHTGp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="374206670"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="374206670"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2023 18:20:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10855"; a="999555513"
-X-IronPort-AV: E=Sophos;i="6.03,204,1694761200"; 
-   d="scan'208";a="999555513"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Oct 2023 18:20:45 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 6 Oct 2023 18:20:44 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Fri, 6 Oct 2023 18:20:44 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.109)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Fri, 6 Oct 2023 18:20:44 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h4TPCWv2d+FSnDAJVpBrZ1PanlPUF4ngdcez0ftomWcFtlJ1nPUfAIIUNinEa/9YdekoqXuhvUI/xt+LUyu1Qr2GT5jMGW6AHjbjxSp9uWzWjLY82KsYqNRt6tU7vhKpyZmP9ni0km1jD7crw41uVdvzT5znMUBevsCGSfcPfIASAzbYube0ixmT3vFCo49snSoxwzfa9SiXF21OUwQt1Pf8sIpNesPZl4zuV4JRrv0xsgYBkRfqm3CyhXeDbctJ/5gQyQORqv425GE/WDW8KDJ2BvCGFzOtcd5kU44DzxY+RxUQ3xBF19irwBmRlkyr9Q+6QqeuLAdTBAoblQpK8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Jy2FqbYiJ0yKu54RsK17Hw03zcn+SR8GNFrl2PbKwpg=;
- b=CYYt1ANuxwPRDlVlFtr7WsNJlpbrAIIcsVRBm5CXmCUM8HEEaHyGxekVsD7Qb5AWTeMOQhU0nATv0yHswlCCXDvo7q+jCuHR5VuYQpoMOVDJue4mnvZotYyGE0CkOyId8FtcHsnAVBZ/hFwhJX92gLoh4T7VCbs9hXFZkJW+eSAcbpE2TR3w9Q0EfRsJ+zpLVU9YDnQYqzCjkcTECALqPW9Y7Iqj0aKp3OWYJDJGZIEzkPT6F4pCsuWaqddmM80bk7Z5/PxgxIPraoFquXMwlaarUV4t70FZ/cvBw/C8TNaKi9pdpryiYgWnNVY5f3toZb4mhJQ5VQpDPTf6Aohn7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
- by CH0PR11MB5235.namprd11.prod.outlook.com (2603:10b6:610:e2::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.34; Sat, 7 Oct
- 2023 01:20:41 +0000
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::d35:d16b:4ee3:77e5]) by CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::d35:d16b:4ee3:77e5%7]) with mapi id 15.20.6838.030; Sat, 7 Oct 2023
- 01:20:41 +0000
-Date:   Sat, 7 Oct 2023 09:15:44 +0800
-From:   kernel test robot <yujie.liu@intel.com>
-To:     Josef Bacik <josef@toxicpanda.com>, <linux-btrfs@vger.kernel.org>,
-        <kernel-team@fb.com>, <ebiggers@kernel.org>,
-        <linux-fscrypt@vger.kernel.org>, <ngompa13@gmail.com>
-CC:     <oe-kbuild-all@lists.linux.dev>,
-        Omar Sandoval <osandov@osandov.com>,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: Re: [PATCH 13/35] btrfs: adapt readdir for encrypted and nokey names
-Message-ID: <202310050449.35KiNskt-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <e405fffae735ea6a250c58bd7ad199281f111f9a.1695750478.git.josef@toxicpanda.com>
-X-ClientProxiedBy: SI1PR02CA0021.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::14) To CY5PR11MB6392.namprd11.prod.outlook.com
- (2603:10b6:930:37::15)
+        with ESMTP id S233755AbjJGCpd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Oct 2023 22:45:33 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CF5BE;
+        Fri,  6 Oct 2023 19:45:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+ t=1696646717; x=1697251517; i=quwenruo.btrfs@gmx.com;
+ bh=7YLR19AXu4kyJKF6NHz6RbhznCooNisw1PcSyiAeicI=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=ofHKDZKNB3GElfVtD2sY3AEm9Du7Ma8f3lsi1ELvNrWmYKOJz9ZVn4ExRKvM2gt1rvmGcXteIfN
+ 6h2pEgLxpVrR42AuN9tr0ezTraPs2YTnTDskOc0V4yGWRWyde4SKE64YhG4cPNVDIzf55pt3v6Cnl
+ xwCOxAvENW6FC6gn6pJuTAjChBUCPvWnth25eSEb0aTmCHTgbH5hEyKla/2av1kx3T1WPD6O4cHsO
+ z4oGrsjryH8JklC67vgoCQoFgotHgtvlG1I1VSuIoNjiPFTO0faLAJS0h8VCSCY+PGdG0bj4qFrSm
+ J8Hpth0qgJ96+rVB2p7kmVzM6MyXr/HvcaVg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIMfc-1qlhe405wK-00EJn7; Sat, 07
+ Oct 2023 04:45:17 +0200
+Message-ID: <b82e99c6-af98-4896-894b-dde6e43ca7dc@gmx.com>
+Date:   Sat, 7 Oct 2023 13:15:10 +1030
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|CH0PR11MB5235:EE_
-X-MS-Office365-Filtering-Correlation-Id: 179b9d2b-98e8-4897-fac2-08dbc6d39f46
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o4s4pkynxHwNe7ENUktoB9yMC5ZcFyPuPLDTeAGYh/lCYii5OATyvEEOtRD6W7x3hPRVQZAK2PW8kw9uF+W0OsjFe39fzjMtayOja3eOC1PMcuOvVcDrw6FJSlVstoq8zgS90CTX1VjRWgb1mCe8m/eAl7TDRCeFum6BNzZspjDAc3k2Dpa0y+NFyKqUOXQvmK6nzPkEZoWorMpDv+xYOqfItBGJrSYbo66l8okPdri1QJzzXJpEbV/Yz4ijitEDJvz3+WOuLjhO3iWQKrplD+kWEaeZ8QgxOHtx9oFJxwCeZmdBbxY+566wqoJt2YV54cYi/T1W2cLH/3kvejBXIM7ZTa610mLthMCIM1SIiNej5Ocbdim94dngSSRfIGNzugcvwTeOIqVWPmlQ47VwRiMjwWNG6IrTzVuaqfBSWhl6vErkywRhicHxNGAPp/ItH1UQI9J4V237qMaxoEqL8VPIFNAefsVxEbPKaU9fq2Nsiljb8o/u2SkHXiHzN3YNrBOFvAyKjUBWmlKIJnBRPHyO6EhqwyV2aDjdSNta4eV1omSvq0Vptc5eNTEYylfCNheboLudcjv/6rtgb3FyvGIQOGl3GOni6EQ8f/D0B8/bloJvKdPBZkRKxqBfBcOz
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(366004)(346002)(136003)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(38100700002)(66476007)(316002)(1076003)(6506007)(41300700001)(6512007)(2906002)(36756003)(66556008)(83380400001)(5660300002)(26005)(4326008)(8936002)(8676002)(2616005)(54906003)(82960400001)(966005)(6486002)(66946007)(86362001)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uX0bHvuAfEbTZAdYnCstRsdNycOBmHpX/ITNSkwq0MALwL6n1Op2ezrum9JZ?=
- =?us-ascii?Q?qvE/exd4Heb4dfvHF+qe0qcU8JZ/fvKsKU3o7rwd/vTGERIQPo2ijD0dQwGE?=
- =?us-ascii?Q?s/9KUTnGL+APwJDyXkR5ZiRg4cPBc2jDV0UhCy13d+yl10YtxLmmonFJvVO+?=
- =?us-ascii?Q?ABsXTHyczZSqmBlAZyeDEAiSXqOxbIbi/4zdY7qpQL7A2N2OIQeKIlHwhojB?=
- =?us-ascii?Q?JCGVruhx5kmKK4ZxF/oSE2OsYVwrMueHbvay3IhwuVwDXHAPo5xQAJoxZ2fJ?=
- =?us-ascii?Q?pA/gJmxSg7LoisDasDuHDwi2iDNesCeHyjKUOXt+r1xfo/JFkryk2L9A7Sk7?=
- =?us-ascii?Q?ddME29Kc2zxcBB4hO+xb3RF9ha450T1EDWmD/R5MjZie6g7kSHeyo1Z7tnlU?=
- =?us-ascii?Q?2onXVUgpWN89H5u95RiBrVsWJAlT5O/OYEP8zWIf36+wRsMGJtTfSTwGueN9?=
- =?us-ascii?Q?6+uVVO0qUtVYuNoc6x4wCBHWkpjNLaw+1+a9wjzGkcNcExyHf8Uxpph0q7Xj?=
- =?us-ascii?Q?0DuU+dPMWv0DyatIrcFMb8Wv2Q+VgfuwG7ZAsHa8eoILHlVsSWbCmswyn4uQ?=
- =?us-ascii?Q?BhsoFyP1v4GOT8f567+rwVFNGIuS/GdjbyHIB6SY2jNSs5VdJZr3/pp72SJj?=
- =?us-ascii?Q?r8U49baOWsy/TvnDKbfPkskpNgUdMUPZWU7EiJa6naxC9Jj9s4scJxei7vh0?=
- =?us-ascii?Q?UnNWbRBJ0m6h691G+AIYEJwsfcGUX+J3qypgk4WFMANcGRzjhp/mkPQScCn0?=
- =?us-ascii?Q?hf/cJwFqhlMd4v42JcWYdekest55mZ9yAlmK+xkDlqmcbNp8bfVk25ovRL/W?=
- =?us-ascii?Q?UCe6JQzjuPpDXDMab7rPMC8h7/HCO5JisBQv4TOiaGFP+cVJLJbeF6FhaHDi?=
- =?us-ascii?Q?becwcsKxlk6r1L9RBJJRv3I7WHmfxO5nNwxKOjyzs0ahIvVnxjuXw0OjFuYL?=
- =?us-ascii?Q?3zoSms9sOm3iXlusOgLVQlGttvMu0/0ilIXPveM2IQmbUDjhAXTaNJxubQ8T?=
- =?us-ascii?Q?4K6RuQGZjLtMU0oRucd9J8hImNQ9t6apikVeHLCkrTGrRwa68yDvOB3of8NI?=
- =?us-ascii?Q?n/ekb1rML5Rr1KaYkJl+1MTYPpybLya6I4E06/Qd0mSoIlOETy4mJ1JU/WZ7?=
- =?us-ascii?Q?YwnL3V5CDcL4Xf/XCpLBvUmAc4mUho9e68IcAihiIKZMwGUMFHD6dEaLmHIN?=
- =?us-ascii?Q?gGnw+sb58wVETYk1WSdsfD/HXXLsWuMKnTnY4cryup2l4TV2CtgnCjp1I8fU?=
- =?us-ascii?Q?Sd80ZoPUwHHlrXeD34Dy3zk0s/IOD3A7ns1MTXSBkGnA0JQk1wDROW73W78J?=
- =?us-ascii?Q?S49DMHUCpkFDpyYatTA3GtTq8cDxHF1QKTKN/rN/ud6ZmnqwXP/KnDPbLzpX?=
- =?us-ascii?Q?+H6cscpAyDWNJE5kblIL7cp4bkKoteWO896ZHtihJdiOh18pXfy62vdMaQ8L?=
- =?us-ascii?Q?RButZwUcwK/dyMLM/e/uq0RMfBdnCxf0YrzZ4A0oLeG6TI8RyBaINQTLmfe3?=
- =?us-ascii?Q?LLiyqnI2G1L++Kvug0D/BZEv+pkQynRHJ4+LPhl5lpKFED2K/hdZ2uTNb+Yu?=
- =?us-ascii?Q?W3oRGUNyZbRayzgJF4i2SCdl/WEgDBtUjPhJrpr+?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 179b9d2b-98e8-4897-fac2-08dbc6d39f46
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2023 01:20:41.7949
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eMukxZGa26A0otbcKBIWv/HlqVciw71SeZFva7DB9uE88BM5BmkgrO41LcjGXP1SN9uc+E4eGlNETo1whImI1Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5235
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] fstests: add configuration option for executing post
+ mkfs commands
+Content-Language: en-US
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <cover.1695543976.git.anand.jain@oracle.com>
+ <eff4da60fe7a6ce56851d5fc706b5f2f2d772c56.1695543976.git.anand.jain@oracle.com>
+ <dfc4cece-d809-4b5b-93f7-7251ba3a492a@gmx.com>
+ <5485cd32-2308-c9c5-4c97-9ff6c74c64dd@oracle.com>
+ <0a8d40fc-501e-4d85-903a-83d9b3508bf5@gmx.com>
+ <20231006060932.GD21283@frogsfrogsfrogs>
+ <1f23346d-ad61-412f-b59d-1f76e2d1df6c@gmx.com>
+ <ZSCGUUtCY5AsmWaO@dread.disaster.area>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <ZSCGUUtCY5AsmWaO@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/kqfkdEN/CCpf4UbyGj84PIvOMufJY8QWEjnNThN6UiAgPmTcUb
+ f30bw7Hn6Ct6THzc9spDeZCFzZ6zOzQV5msYqv/WXT3daKUHQ1bfMfkNYedNLI/q0Hh/y2J
+ 415DaNWXiCuYeKb0dVrC8d6RDPjEyah11zw1OlV9LhV6A22iT0Vryum4lYj73GZhdT7F06m
+ TwAbFLWFtt92bPeYZ/5DA==
+UI-OutboundReport: notjunk:1;M01:P0:xMRdAWTOLXg=;1whhovPvaM+ryQNXoKjvHV7ylwa
+ aXL0WWtwfCH5j9/Y11IxZGmTAfEFzLChOtjEuLN5ST4FbbHX+M48HngGfARuSWWEpl2cYfPLm
+ RSBPtmWyBMKNgsRtebc/YyK1ILO5Paii+7TIfF0lyVlNwjaEVjexLuaygoFZhXSgXOKj38yd5
+ 3LSEbGpgiRhtyvm6yjJFHA9IClYZSlkVEitcOw+RNUJmifNqEGLxMuWxA6hIOCqotB47U6eYh
+ 7MVsGtuIHrOQuyUB1w79xklAhq8p3njS7PUWL21YsvuZrRi9bJ7ecM/W2dqbi8ZPzaDAW0Ntg
+ MKBwIZyFOJ8jtMn15Uq3n4QPFtHfDy1m5huXRgTYoA1ldrwOvfvLaQgla7zbI2hKq+Ixj10/n
+ NCpZphtykDiKtDON0eaIWBVsWf/Nl2FJRgIdXGCeBfq6eb1eJOip3uah9JSBPV180IJ9G3B87
+ NZcKonE7YmIwcFRO4sp27stunkziPcA2kqeAuQLcLwDOTb+nb8gh6PzSQibMbTvuUupuPiqwV
+ W/KasyHNyR/K14O14Ttlvqmnj5C4aFfb8nICttOr/U8+9XNdAJEcNbk7L8HFUZYKRu2vF5rCO
+ jwvGDSh0J4sedKZpzj8QE0iYZGd41poGbDbK9X8vpG/UPAeB02IzEtC23Bg/Hsu1DGsweTev3
+ nbV639wajy9XEoJVmbS/9VnnXojAvLeX3zXFTgO0s/LXwU67ehNLb9q3qs16FN7KSN0G+vsrr
+ 5ZNEBjGwqG+ZIRqRtKJMQNEFmWoHPfXI8Dh5BATg4MB81UvUISS84lmp5AgW9/VeRdrE0ToMR
+ 4AnQjNOXSXyb75dHTJrLqhDhef2tD4OSI9JI+6keXM8ZtkHQsld5D/Y6zyOKYb/iHqbTPbcT5
+ ch1xTgqi48C19EpBp1AeGt6WWtiM3SBQqCymbfCx0ixlYlg/rgBxPIaAN1uQdxOewYs+kuwm+
+ M8o46t6NeBYyLfm6+2CbUAsqtwY=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Josef,
 
-kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on kdave/for-next]
-[cannot apply to axboe-block/for-next linus/master v6.6-rc4 next-20231004]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On 2023/10/7 08:42, Dave Chinner wrote:
+> On Fri, Oct 06, 2023 at 05:16:31PM +1030, Qu Wenruo wrote:
+>> However for the whole btrfs/fstests combination, we have several
+>> features which can not be easily integrated into fstests.
+>>
+>> The biggest example is multi-device management.
+>>
+>> For now, only some btrfs specific test cases are utilizing
+>> SCRATCH_DEV_POOL to cover multi-device functionality (including all the
+>> RAID and seed support).
+>> This means way less coverage for seed and btrfs RAID, all generic group
+>> would not utilize btrfs RAID/seed functionality at all.
+>
+> IOWs, you are saying that the btrfs device setup code in fstests is
+> functionally deficient.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Josef-Bacik/fscrypt-rename-fscrypt_info-fscrypt_inode_info/20230927-020531
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/e405fffae735ea6a250c58bd7ad199281f111f9a.1695750478.git.josef%40toxicpanda.com
-patch subject: [PATCH 13/35] btrfs: adapt readdir for encrypted and nokey names
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+It always needs the test case to utilize the pool, and choose mkfs
+profiles, to proper enable different profiles.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <yujie.liu@intel.com>
-| Closes: https://lore.kernel.org/r/202310050449.35KiNskt-lkp@intel.com/
+For seed device, it need the test case to enable seed feature, then add
+a new device to allow seed sprout.
 
-includecheck warnings: (new ones prefixed by >>)
->> fs/btrfs/fscrypt.c: ioctl.h is included more than once.
+Thus none of the generic group can utilize them.
 
-vim +8 fs/btrfs/fscrypt.c
+>
+>>
+>> For a better coverage, or for more complex setup (maybe dm-dust for XFS
+>> log device?), I am not that convinced if the current plain mkfs options
+>> is good enough.
+>
+> We already know mkfs alone isn't sufficent - that's why we have
+> filesystem specific mkfs fucntions for any filesystem that needs to
+> do something more complex than run mkfs....
 
-     2	
-     3	#include <linux/iversion.h>
-     4	#include "ctree.h"
-     5	#include "accessors.h"
-     6	#include "btrfs_inode.h"
-     7	#include "disk-io.h"
-   > 8	#include "ioctl.h"
-     9	#include "fs.h"
-    10	#include "fscrypt.h"
-  > 11	#include "ioctl.h"
-    12	#include "messages.h"
-    13	#include "root-tree.h"
-    14	#include "transaction.h"
-    15	#include "xattr.h"
-    16	
+Still not enough for above seed sprout, or to utilize the pool by default.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Sure, you can go the existing environment variables, but that would lead
+to other problems explained later.
 
+>
+> i.e. we already have infrastructure that we use to solve this
+> problem - there are example implementations that you can look at to
+> follow.
+>
+>>
+>> Thus I'm more interested in exploring the possibility to "out-source"
+>> those basic functionality (from mkfs to check) to outside scripts, as
+>> we're not that far away to hit the limits of the existing framework. (A=
+t
+>> least for btrfs)
+>
+> The whole idea that we set up devices for testing via magic,
+> undocumented, private external scripts is antithetical to the
+> purpose of fstests. The device model used in fstests is that you tell it
+> what configuration you want, and it does all the work to set them up
+> that way. This allows tests to override or skip incompatible
+> configurations based on known config variables, etc.
+
+Nope, the "private/closed-source" is only optional.
+
+We would still provide something like this:
+
+mkfs.avail/
+|- xfs.sh
+|- xfs_external_log.sh
+|- btrfs_single.sh
+|- btrfs_multi.sh
+
+fsck.avail/
+|- xfs.sh
+|- btrfs_check_data_csum.sh
+|- btrfs.sh
+
+mount.avail/
+|- xfs.sh
+|- btrfs.sh
+|- btrfs_compression.sh
+
+config/
+|- mkfs.sh -> ../mkfs.avail/btrfs_single.sh
+|- check.sh -> ../fsck.avail/btrfs.sh
+|- mount.sh -> ../mount.avail/btrfs_compression.sh
+
+Those basic ones in *.avail/ should still be open-sourced, and managed
+by fstests.
+
+It's end users' freedom to open or hide their scripts, but if they
+choose to hide, then all the reproducibility problem and maintenance
+burden are all on their own.
+
+>
+> It also allows -everyone- to test complex configurations without
+> needing to share private, external scripts or knowing any of the
+> intricate details needed to set up that configuration. External
+> scripts are like proprietary code - it only works if you have some
+> magic secret sauce that nobody else knows about.
+
+Aren't there more than enough undocumented environment variables already
+in common/config?
+
+It's no different than those separate scripts, and I can also argue
+those scripts would have a better naming than `common/config` or
+`common/rc`.
+
+>
+> If it's hard to set something up in fstests, then *fix that
+> problem*. If you are adding code in environment variables and
+> hacking in environment varaibles to run that code, then the -code
+> itself- should be in fstests.
+
+It's not possible unless we're going to update every generic test cases
+to let them specify whatever special setup they want to use for btrfs.
+
+As mentioned, for seed devices, we always need to add a device to do the
+sprout, and for multi-devices, we need to specify the number of devices
+and profiles at least.
+
+Meanwhile generic tests just go "_scratch_mkfs" and "_scratch_mount",
+unless we can override them, it's not that simple.
+
+And if we want to override them, then I see no reason not to go external
+scripts to override those functions.
+At least much cleaner than export whatever complex environment variables
+and involved parsers for them.
+
+>
+> Having the code in fstests means that anyone can add
+> "BTRFS_SCRATCH_UUID=3D'<uuid>' to their config file to change uuids
+> for the devices being tested. They don't need to know waht magic
+> command is needed to do this, when it needs to be set, what changes
+> elsewhere in fstests they need to watch out for, which tests is
+> might conflict with, etc.
+>
+> Hiding this in some custom script means it can't be easily
+> documented,
+
+Nor are those special environment variables.
+The "SCRATCH_DEV_POOL" is already not that well documented in
+"common/config".
+
+
+Complexity is unavoidable, but if we want to make simple things complex
+or simple is what we can choose.
+
+> can't be easily or widely replicated,
+
+If your setup is using some complex LVM/DM setup, and you just share
+your config as:
+
+SCRATCH_DEV=3D"/dev/dm-2"
+TEST_DEV=3D"/dev/dm-3"
+
+I don't see it's any different.
+
+In fact, if they share a script like "mkfs.avail/xfs_complex_lvm.sh", it
+would be much more clear.
+
+
+This just shows another point, your existing simpleness is based on the
+point that you rely on dm/fs layer to do a lot setup work already.
+
+That's already not part of the fstests, and all the problems can also
+apply here.
+
+> it can't be
+> discovered by reading the fstests code, and it isn't obvious to
+> -anyone- that it is part of the btrfs test matrix that needs to be
+> exercised.
+
+Nor the dm setup case either.
+
+And I already said, the external scripts can be part of fstests.
+But I also allow end users to hide their scripts for whatever reasons,
+it would be recommended for them to open-source (and merged if we see a
+real wide benefits), for maintenance or reproducibility reasons, but
+that's not mandatory.
+
+>
+> IOWs, it's just really bad QA architecture to externalise random
+> parts of the test environment configuration.  If the configuration
+> needs to be tested, then the infrastructure should support that
+> directly and it should be easily discoverable and used by people
+> largely unfamiliar with btrfs volume management (i.e. typical distro
+> QA environment).
+
+I won't be surprised that "mkfs.avail/btrfs_single.sh" is more readable
+than jumping between "common/config", "common/btrfs", "common/rc" or
+whatever other files.
+
+>
+>>> I suppose the problem there is that mkfs.btrfs won't itself create a
+>>> filesystem with the metadata_uuid field that doesn't match the other
+>>> uuid?
+>>
+>> That's not a big deal, we (at least me) are very open to add this mkfs
+>> feature.
+>>
+>> But there are other limits, like the fsck part.
+>>
+>> For now, btrfs follows the behavior of other fses, just check the
+>> correctness of the metadata, and ignore the correctness of data.
+>>
+>> But remember btrfs has data checksum by default, thus it can easily
+>> verify the data too, and we have the extra switch ("--check-data-csum"
+>> option) to enable that for "btrfs check".
+>
+> Which is yet another arguement for the code being in fstests and
+> controlled by an environment variable.
+>
+> This is *exactly* the case for the LARGE_SCRATCH_DEV stuff that ext4
+> and XFS support in the mkfs routines. On the XFS side we have
+> LARGE_SCRATCH_DEV checks in -both- the XFS mkfs and check/repair
+> functions to handle this configuration correctly.
+
+If LARGE_SCRATCH_DEV feature also implies verifying data checksum during
+fsck, I'm strongly wondering if any end user would be happy when fsck a
+10TB fs and waiting hours, just after a unexpected powerloss.
+
+I can also go with cases like compression feature, bounding a feature to
+mkfs flag or offline tuning, is not flex nor end user friendly.
+
+Yes, for some cases, paired fs features are good, especially for
+fstests, but sometimes it's not.
+
+(Although for the very initial intention of this patchset, I still
+believe we need "mkfs.btrfs --metadata-uuid" option, that problem itself
+is not worthy all the hassle)
+
+That's why we allow end users to choose if they want to verify data
+checksum at fsck time, just as an example.
+
+>
+> IOWs, what you want to do is add a config variable for
+> BTFS_SCRATCH_CHECK_DATA, and trigger off that in all btrfs specific
+> functions that need to add, modify or check data checksums.
+
+Yes, for this check-data-csum case, it's possible to go environment
+variables.
+
+But more and more variables are just also going undocumented, just as
+you worried for external scripts.
+
+>
+>> For now we're not going to enable the "--check-data-csum" option nor we
+>> have the ability to teach fstests how to change the behavior.
+>
+> We most certainly do have the ability to do this in fstests, and
+> quite easily.
+>
+> Another example is the USE_EXTERNAL variable that tells XFS and ext4
+> that external log devices (and rt devices for XFS) are to be used.
+> This has hooks all over mkfs, mount, check, repair, xfs_db, quota
+> and fs population functions so that they all specify devices
+> appropriately.
+>
+> That is, this config variable directly modifies the command lines
+> used for these operations - it is an even better example of FS
+> specific device configuration driving by config variables than
+> LARGE_SCRATCH_DEV.  This model will work just fine for stuff like
+> the --check-data-csum btrfs specific check option being talked about
+> here, and the only thing that needs to change is the btrfs specific
+> check/repair functions...
+
+I have already explained, sometimes end users really want to choose
+between checking just several megabytes of metadata, and checking
+several terabytes of data.
+
+Thus paired and on-disk flags is not always the best solution for real
+world usage.
+
+>
+>> Thus I'm taking the chance to explore any way to "out-source" those
+>> mkfs/fsck functionality, even this means other fses may not even bother
+>> as the current framework just works good enough for them.
+>
+> And as I said above, that's the wrong model for fstests - it means
+> that a typical QA environment is not going to be able to test
+> complex things because the people running the tests do not know how
+> to write these complex "out-sourced" scripts to configure the test
+> environment.
+
+See my "TEST_DEV=3D/dev/dm-3" vs "mkfs.avail/xfs_lvm_luks.sh" case.
+
+>
+> Having all the code in fstests and triggering it via a config
+> variable is the right way to do this sort of thing. It works for
+> everyone and it's easy to replicate the test environment and
+> configurations for reproduction of issues that are found.
+
+Mentioned already, the script can be managed by fstests, either as an
+example (need users to modify a little) or guaranteed/recommended test
+combinations.
+
+>
+> If the test envirnoment is dependent on private scripts for
+> configuration and reproduction of issues, then how do other people
+> reproduce the problems you might find? Yeah, you have to share all
+> your scripts for everyone to run, and at that point the code
+> actually needs to be in fstests itself because it's proven to be a
+> useful test configuration that everyone should be running....
+
+The existing one is already dependent on the black box block device
+provided by end users.
+
+>
+>> But IIRC, even f2fs is gaining multi-device support, I believe this is
+>> not a btrfs specific thing, but a framework limitation.
+>
+> The scratch dev pool was an easy extension to support multi-device
+> btrfs filesystems done in the really early days when there was
+> almost zero btrfs specific test coverage in fstests. I'm not
+> surprised that it has warts and may not do everything that btrfs
+> developers might need these days.
+>
+> However, we don't need custom hooks to externalise scripts - we
+> already have a working model for config driven filesystem specific
+> device configuration. I don't see that there is any major common
+> infrastructure change needed, most of what I'm hearing is that the
+> btrfs specific device configuration needs to catch up with how other
+> filesystems have been testing complex device configurations....
+
+External scripts make overriding _scratch_mkfs() and fsck much easier,
+and can still be managed by fstests.
+
+The idea of "external" scripts is to make simple things simple, if your
+setup/fs doesn't need complex setup, your mount.sh/mkfs.sh/check.sh
+would just be one line for your fs.
+
+Meanwhile if you want to go complex, you have all the freedom, while not
+to make other code complex/bloated.
+
+We can even move a lot of notrun checks into the special scripts, making
+most test cases just to care about their workload on a very basic setup.
+Let the complex setup to check if they are really suitable for that test
+case.
+
+Sure there would be some complexity in the communication, but I still
+believe this would make most test cases/infrastructure simpler.
+
+Thanks,
+Qu
+
+>
+> Cheers,
+>
+> Dave.
