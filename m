@@ -2,264 +2,226 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8067BC4C8
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Oct 2023 07:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6FE7BC5EE
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Oct 2023 10:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbjJGFTs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 7 Oct 2023 01:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
+        id S1343746AbjJGICa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 Oct 2023 04:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233915AbjJGFTq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 Oct 2023 01:19:46 -0400
-X-Greylist: delayed 318 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 06 Oct 2023 22:19:44 PDT
-Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39D85BF
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Oct 2023 22:19:44 -0700 (PDT)
-X-Envelope-Mail-From: zblaxell@waya.furryterror.org
-X-Envelope-Mail-From: zblaxell@waya.furryterror.org
-Received: from waya.furryterror.org (waya.vpn7.hungrycats.org [10.132.226.63])
-        by drax.kayaks.hungrycats.org (Postfix) with ESMTP id 74112A7CC2D;
-        Sat,  7 Oct 2023 01:14:29 -0400 (EDT)
-Received: from zblaxell by waya.furryterror.org with local (Exim 4.94.2)
-        (envelope-from <zblaxell@waya.furryterror.org>)
-        id 1qoze1-0008JU-4x; Sat, 07 Oct 2023 01:14:29 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix stripe length calculation for non-zoned data chunk allocation
-Date:   Sat,  7 Oct 2023 01:14:21 -0400
-Message-Id: <20231007051421.19657-2-ce3g8jdj@umail.furryterror.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231007051421.19657-1-ce3g8jdj@umail.furryterror.org>
-References: <20231007051421.19657-1-ce3g8jdj@umail.furryterror.org>
+        with ESMTP id S1343601AbjJGIC2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 Oct 2023 04:02:28 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACE9CA
+        for <linux-btrfs@vger.kernel.org>; Sat,  7 Oct 2023 01:02:27 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39745b0t027230;
+        Sat, 7 Oct 2023 08:02:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=qilKGYUIQWYg+6M03r31XSjT0lVtZD0HW5VqnxuJpxE=;
+ b=hW4vI7eIzgZp/oJ5SY0SEp4h6wy/BxM9tsz1yhXyaHOVrOS2kX6I2ABcQ1PVkV2KTIbd
+ 8bsqYypYe5yeoHE+y6hPtr52E8gnn7qF+eDTqRiLJ3r/ioRb0YxLHK+v30C74zXYLL7o
+ 8gfGMY5aoX4uUTyZcWZ4f63MFCu2BgYNLzmZOLYmAVqNoURJMZUuH1g2719i1bL/zEMf
+ odO8LhjRc0Y2mhyqk6IBzEehlwJq9n3iEjjPQSWNj3QdGZLtUnLFrD1zFq/VpJ1N7MCR
+ X/X2QeTN2Yk5rLErtLhaiIHJ1wuWkp9WucPD31YNw0WuGBpmabxBb7BS4lJxgvfWFsUC zg== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tjwx209sa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 07 Oct 2023 08:02:15 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3976KVFI014929;
+        Sat, 7 Oct 2023 08:02:14 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tjws30c0w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 07 Oct 2023 08:02:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CBUNTk6gzBnSWnxyk5kdGXZNv3MRIwFuYH5N+fVrHUdWXrdVKdpGSzEutKWeIgcl76ofyFbG5F1bFT8nVT3NYFhiFPXkuz4MYqobWdu2bv2YE+mn/PE3JQSYtidsrn9byMMZa7EmpgBJ1UsPEowBpmqqVWp+AD9FPEsVezq/Dc4wRinzN5JK61XwR+/vZT+uVend09XP9GFLsHJusrnabwSNaX81ONEwOPxs4Bjg5GcowJkq5pSv/2L4pXAGMrhStTB2KXLXjUfW+XP32zYOD+lLAphZzAM3dYkt5HCl0L3hNEtF7FGmoLon6bnMeNuyoEgh6zKG1g0Atx3A02GdsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qilKGYUIQWYg+6M03r31XSjT0lVtZD0HW5VqnxuJpxE=;
+ b=GLxsc4WU9RwpAmYIfwFNvlg+CXhne/yMgSTH3Gp+pfSWg+YKU1sfIG1XbbXSxDSNVJ9jB7+tqaf4l+kYSWuJVOUVVhf64rjYm2UADuQ8tEuQFlyGvukwePWsbzh+QYbEBTn6eGYS7HYW2YjVe2W3Dvc3oL5MOfbUuBRI6v+qRdcAIoylbt30h6hyqskyGxd5lmnxJvsmfBPZsNxYi6je5IiMraSbnnMaPBqP6Vx8clPSye0eiQGRQpXF27k1MH0QdM/BPCrosr1t2VKxfNoWM6yRAEsxUPs5RJRz4Y296tih3ECiyX2vuNbxBcZKrd2i/HRhafyCB1yje4GF5MTYnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qilKGYUIQWYg+6M03r31XSjT0lVtZD0HW5VqnxuJpxE=;
+ b=q5z0cKUmIp3aUVq1FTpfvCx1s0PxzmOQP86m10ylTqyyKz5n/g2US6tv8tQ8jgu2eXDevn8H5uVA/czZFLrBF+lv61DhSa7ODaqBCDHeMVC2Kse8scmzWDJh/N6ArUGj0M9vIHwk9+IZ2SEFybgwuRANavdKU5p9+2mvCjW9LtQ=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by SJ0PR10MB4751.namprd10.prod.outlook.com (2603:10b6:a03:2db::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.37; Sat, 7 Oct
+ 2023 08:02:11 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6838.033; Sat, 7 Oct 2023
+ 08:02:09 +0000
+Message-ID: <dfc68882-ac04-4b11-9ac6-505341e0517c@oracle.com>
+Date:   Sat, 7 Oct 2023 13:31:58 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] btrfs: support cloned-device mount capability
+Content-Language: en-US
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1695826320.git.anand.jain@oracle.com>
+ <55f1b487-af24-8f67-8e72-37d493c5025c@igalia.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <55f1b487-af24-8f67-8e72-37d493c5025c@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA0PR01CA0035.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:81::6) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SJ0PR10MB4751:EE_
+X-MS-Office365-Filtering-Correlation-Id: d0e4b11a-f2b1-4e42-e3cc-08dbc70bb4d1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u4ciZrnwkbizfc7AbpJNE3TpXbl3vsB0m1rm+u9IGfgdrrVTDDjvsMbTBi4PEMvjUr0QrfHrycR2fhxhYB8XOuA2TEld3ysZudOTb8m17q66MDbDaXz22vomcLBYkmtWgWX7fbnLCInlavlD68POnqRzGxst1Up0T9FidLsR2gZMubCF4VF+IOoWjr+69yLg0tRvSfJx5HjYbI5FGzUDfK4gB7vu6hS9vX9IoWQXgOtrUWeyuTOlzyxVqtgMudnG3lS6SrjPB3z2vRl3z1HOGugST7ggHtZSx0Lwzs0J89A9N8DrFWcp5vOiQH0qemsG0lns9spexl0fvaBuwr2pKPQ+4kSi3dE69UfSeOTtXDwJC9yhp2sbaILe1n3SfKaZ9u5R5NXNdm9VEpALAG07N/mu3/YUwLAahn4gtd21ecerWuA3QGmopHLbEmBMk1a6/sUep8yNvmudEZwZ4oaB7Ey4hgyRWOQXxBnUM6dFrdAtVG6feeaoDbEoby4hZU4RbcFFz/PuPk++ETm1UcoWzON99O0L736GR7uSr953udXEfo7HZIs9tgS6gZ1Q70Ev9Tu1K2Q4pizhi9xCG3ZvyTGqdZf1NzHKSKItEk1nhdgPzX33H8yMAhKab1MDsR5lr2TgU1aQqiI7nycW+Vex1g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(376002)(346002)(39860400002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(31686004)(6666004)(6506007)(6486002)(478600001)(53546011)(6512007)(38100700002)(86362001)(31696002)(316002)(83380400001)(2906002)(41300700001)(2616005)(66946007)(36756003)(66556008)(5660300002)(66476007)(110136005)(4326008)(8676002)(44832011)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Sk1rK3lHKzY3WTFBdkNRMDdESDQ0bWtaZm5DdWJpNUMwZDV4ekQ0Z0JBVGVv?=
+ =?utf-8?B?NFRrblVCbUlmaktiMFZpQnBJUkMwMVdWTXFZL3gwWjlrRFltcUw4Njh0aDBl?=
+ =?utf-8?B?L0JCSTZVOXByNTRWV3lQWTh3WnV4Z0ZnQzVUNkVBSXBzSDZVc1ludVE2Mmdr?=
+ =?utf-8?B?YlBSOGhVZmVvdzNmOFh4a3R3UC9ZcGo3Nm5CVXRYdGZaeTJlMEp6cy82LytM?=
+ =?utf-8?B?dFJhTG9RWnZqZndaYldHb2FoY1R3TUpIem1Ma24reElUT3Zzd0JOb09laDk5?=
+ =?utf-8?B?WXdxeGs3dFUrV1VjbjZwL1ZCbDMyWktwKzV1RGRKRTRGUmdmUHpsSk1PSitk?=
+ =?utf-8?B?Q2Y0K3F0SFRRQ2JPdHpLVTFucWRzK29kVU1jSUxycDBqcXFoMUl4LzhIT0ZZ?=
+ =?utf-8?B?TTY4K2wwYmk4UHNhbXZBR2dhMGp3dWlPWisrUU02L25VdkorenJOZk5vbnZ4?=
+ =?utf-8?B?OUkyN1czUjFSTGVPQStBakdDb1pPWXhHS3NSUDJWdG1wUGlBM2JuOTJLRHMz?=
+ =?utf-8?B?ZFlET1QwdXJ5cW54UVhXeXZ5VURsaXlISTZaSmhpTGJaR0grbmFibUpVdXRw?=
+ =?utf-8?B?R2VNOC9xeGh6T3llZDZVZm1VTVhud2xuT3NFY1MwTTFjOTkvdkhyc2c4SC9G?=
+ =?utf-8?B?Q01TcitiOExjVlp3R2p3V3U0YklHcjBhQUdjSjlEZTVGcWFuaE1FTmRkcGFz?=
+ =?utf-8?B?NWlDUFlTU2R5SGhsUlNaZnBER3RBaXRaUXhRRTBIZVB0dGhwd0lGWDNCaW5o?=
+ =?utf-8?B?elMzSXltZG1EdkF2dW16QnJNNlRQeER0cU56OUk1cGNaQk1yVzU4c2lwZ045?=
+ =?utf-8?B?SHY0WFRZaytCTGlCaS9CZHh5QXpVcEU3eC9zS1J1SllPMHU4UUFmcEV4dVhG?=
+ =?utf-8?B?bFoyRzVNcW1XSTEwdmpSQXZLMjBEZnhqSXFUdmFOSzlnbkZMR05GcjY2dk5S?=
+ =?utf-8?B?R2djZGNkY3JPQnVOcDlHWk9hSG9jakZIc0ZPSmNrUEV3WmJqMkRwcDN2WStq?=
+ =?utf-8?B?cGEyU0kzTzNiVDZLdzVYeFdvZ2tNQUVhY0UzOUtqNXJVcHIvTEVHeUdrYkpF?=
+ =?utf-8?B?STVsSG96STBVOVZJSlRPV0luMGkzdFNmT21ZcXFZdG4zY2xkaU5Cbjg1MnZn?=
+ =?utf-8?B?TGJ1citxaVQvNm1FOVRNMzNBTzZacVZ6YnVVcTlQTFc0WjVVRGppZGxoRkx2?=
+ =?utf-8?B?UFJHWDVvUVBWNEo5WlgvVm1NVFRCNndHMkJSRXh5dlZNcE9aMmZ1MUVpaVBD?=
+ =?utf-8?B?b09XY3Awd1ZKeWhNVmVWbDFZUnVVUEh6Rzc3a2wxNERaYjlxQ2hjMjJvQm8y?=
+ =?utf-8?B?K1hua2xVeXNrV2ZaQUMyWnBsK1ptQkRiVHdBS1c4aWp3YWtHbG82dEVTUnlR?=
+ =?utf-8?B?djltRUUwTS9kUU02UDZRTEV4V3RJZ2s4OGZrbk5nUVhLd0doTGd4SUVxS2Zn?=
+ =?utf-8?B?S003Nk96a3pUMjlRaXZ4c3ExVUhSTng2VEZzQ3p3S3AvbHhVeU1pNm1nY3gx?=
+ =?utf-8?B?V1VnQ1o5S1dWeXcrRlpRK3hnY2lra2xJSms3VkxneDFwMGRzMDNBNXdQM0lC?=
+ =?utf-8?B?TndqS1RSVks0SmE3MGgxSkFJUnp3ZHBNSWszMmFVRFdJYjgrRVZMbHdBbjdS?=
+ =?utf-8?B?bHBnRVdMTEZiZ0VCK0QrQWFEczh2cTNyRWhtTi9HWDNTUHA1cW9nVkp6QmlY?=
+ =?utf-8?B?ZFFpTHZvT2o5aCs3dG4wOWJYRThZQy9QK1gxS1F1b29KeFIwOGdnaWVac3FP?=
+ =?utf-8?B?cHBWTkd0WGJlbHlyc2RRbWhCYkRZdFpRSXBYWW5UTWdxR1VSMkxyaWlFQ0pG?=
+ =?utf-8?B?dUVKdjFlYnVxY0piTXZUSlAvYVZ3TlVVdWlIR0d5T2ZzZXZPS0tpdHFacEx3?=
+ =?utf-8?B?M3JyWHNhWDJlLy8rR3cwQ1NPM0hrWXBtTTRYcHVHZVRJRWgySGp5cEhyK3dW?=
+ =?utf-8?B?OHJNUlc3Mm92L21CbUtuU2JOZlpHUUxOKy9VZTl5aWtacWNzK1c1RFovZCsy?=
+ =?utf-8?B?YzNqU2loSW1PUEdEeXBLSGdFSXNoUGt3NWlYQkpQTGdsWHB6SzJ2THJHbHYx?=
+ =?utf-8?B?MlY0RkFLKzhyWEdpd3JOcU9aMjkxTGc1dUpuYXpZeTBza3gvV2prd3RPODVv?=
+ =?utf-8?B?c1pZbHVldXVaQjVvdVEwZnRoT3N3ZzZQMHh3bHRrWHVjd1hmVmFBQUJlSjd2?=
+ =?utf-8?Q?t8jLHfTUSrLpnotcUWAp1tEs5lx+8Ykqa2mj2btMCaX+?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: UG7dGQnCITl1Db2sb4YO1RUZ0CFJlxKPiaNjuiyXa/0sBT2AM45DTX2vQeEW/BK74etg9ZY3X62bx/lxHzy5GGxRZ4bIkYf6hscfkdmPASc+KaTf9bpgRnv0WhAOiKRvRTPZDqe3VWy/SSnRSLD7J6xGgWQKrcePIKTAZxzimquw0h2y0erEG5UwxWH84WuAFKo7WV3cTSXHYQ5l1qNCav6TgWgVxyN9slFRhyTtRefFkWXgHy0HvHVynGsnhtkz5ssFDraADhn+lg7NB0Le1+kxhvjX698VtDVY5Qof5O26syPYKKEJfjClI18yIYygfhtM7jZBYRwz7xH1xoH1/HGt0ZRYpgLNkPI8KilE+Upfm6/AwkC9WxHcjMBNJnxfnLwaMVyiyMxBXHpw9r6y3D2qrJj24lheF1QLOhqO7bKerSrxvhmpsurZsncNrd31PGoZlyle8xVQZVWk6F99/ka2qrmyjRkw0Q+vkLqkMf9TaprAyw4iEG4ma2reZHKFLn8gzBzmjv0dcHmVu93ZqiTFPDF8KLNCDEnSdoLCjzIbKx39/8OclpOORwYpMMGb9MDXoufVK76yossExHirLxhMOc7krrbqtfoUXanJLjRVrElgUZpNVFHyM6WgKf1wd643BcC+557HAjAKeKy/PVjITmSAhUccU4p5N+Tl5jrLf/jczdlTRtPA2BKQzj2D0FCnZ6eklwiJ2f2ZtnIcMyy7ay9kHK+9vYS3wOTyoTX2gqmbKQjkrWjqZ287ghBXhzCE40ouG6x81gmHdz2XkeABPR44yM0C5jGdjOabDsa4tKU4SyKnkgZe5lEnpsEb
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0e4b11a-f2b1-4e42-e3cc-08dbc70bb4d1
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2023 08:02:09.8615
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kOBDhsFw1yigTtBD+jcfPXVMw2OYqbDt1UqDIq4Q4nRDjZErkAYHRSPVZ3qwl2xNQ6suq2Jp+hVZLyD1zqPb8Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4751
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-07_05,2023-10-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310070069
+X-Proofpoint-GUID: gcVaSf9MFsU97ZDkNyLQQssFXZtdyqx7
+X-Proofpoint-ORIG-GUID: gcVaSf9MFsU97ZDkNyLQQssFXZtdyqx7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit f6fca3917b4d "btrfs: store chunk size in space-info struct"
-broke data chunk allocations on non-zoned multi-device filesystems when
-using default chunk_size.  Commit 5da431b71d4b "btrfs: fix the max chunk
-size and stripe length calculation" partially fixed that, and this patch
-completes the fix for that case.
 
-After commit f6fca3917b4d and 5da431b71d4b, the sequence of events for
-a data chunk allocation on a non-zoned filesystem is:
 
-        1.  btrfs_create_chunk calls init_alloc_chunk_ctl, which copies
-        space_info->chunk_size (default 10 GiB) to ctl->max_stripe_len
-        unmodified.  Before f6fca3917b4d, ctl->max_stripe_len value was
-        1 GiB for non-zoned data chunks and not configurable.
+On 10/6/23 15:42, Guilherme G. Piccoli wrote:
+> Hi Anand / David, I was out at a conference and some holidays, so missed
+> this patch. Is this a replacement of the temp-fsid approach?
+> 
+> So, to clarify a bit the inner workings of this patch: we don't have the
+> temp-fsid superblock flag anymore? 
 
-        2.  btrfs_create_chunk calls gather_device_info which consumes
-        and produces more fields of chunk_ctl.
+While btrfs doesn't need this superblock flag internally, we may
+consider adding it for improved usability with other Btrfs features.
 
-        3.  gather_device_info multiplies ctl->max_stripe_len by
-        ctl->dev_stripes (which is 1 in all cases except dup)
-        and calls find_free_dev_extent with that number as num_bytes.
+> Also, we can mount multiple
+> partitions holding the same filesystem at the same time, given the
+> nature of the patch (that generates the random fsid based on devt as per
+> my superficial understanding) - right?
 
-        4.  find_free_dev_extent locates the first dev_extent hole on
-        a device which is at least as large as num_bytes.  With default
-        max_chunk_size from f6fca3917b4d, it finds the first hole which is
-        longer than 10 GiB, or the largest hole if that hole is shorter
-        than 10 GiB.  This is different from the pre-f6fca3917b4d
-        behavior, where num_bytes is 1 GiB, and find_free_dev_extent
-        may choose a different hole.
+Indeed, devt remains unique to the partition we've utilized for a
+similar purpose prior to this patch. Are there any devices lacking
+a distinct devt value?
 
-        5.  gather_device_info repeats step 4 with all devices to find
-        the first or largest dev_extent hole that can be allocated on
-        each device.
 
-        6.  gather_device_info sorts the device list by the hole size
-        on each device, using total unallocated space on each device to
-        break ties, then returns to btrfs_create_chunk with the list.
+> And we don't use the
+> metadata_uuid field here anymore,
 
-        7.  btrfs_create_chunk calls decide_stripe_size_regular.
+Btrfs has always assigned fs_devices::metadata_uuid to either fsid
+or metadata_uuid.
 
-        8.  decide_stripe_size_regular finds the largest stripe_len that
-        fits across the first nr_devs device dev_extent holes that were
-        found by gather_device_info (and satisfies other constraints
-        on stripe_len that are not relevant here).
 
-        9.  decide_stripe_size_regular caps the length of the stripe it
-        computed at 1 GiB.  This cap appeared in 5da431b71d4b to correct
-        one of the other regressions introduced in f6fca3917b4d.
+> i.e., we kinda "lose" the original fsid?
 
-        10.  btrfs_create_chunk creates a new chunk with the above
-        computed size and number of devices.
+How? Have you tested to confirm?
 
-At step 4, gather_device_info() has found a location where stripe up to
-10 GiB in length could be allocated on several devices, and selected
-which devices should have a dev_extent allocated on them, but at step
-9, only 1 GiB of the space that was found on each device can be used.
-This mismatch causes new suboptimal chunk allocation cases that did not
-occur in pre-f6fca3917b4d kernels.
 
-Consider a filesystem using raid1 profile with 3 devices.  After some
-balances, device 1 has 10x 1 GiB unallocated space, while devices 2
-and 3 have 1x 10 GiB unallocated space, i.e. the same total amount of
-space, but distributed across different numbers of dev_extent holes.
-For visualization, let's ignore all the chunks that were allocated before
-this point, and focus on the remaining holes:
+> If that approaches is considered better than mine and works fine for the
+> Steam Deck use case, 
+> I'm glad in having that! 
 
-        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10x 1 GiB unallocated)
-        Device 2:  [__________] (10 GiB contig unallocated)
-        Device 3:  [__________] (10 GiB contig unallocated)
+As you have a use case to verify, can you indeed confirm whether
+it works?
 
-Before f6fca3917b4d, the allocator would fill these optimally by
-allocating chunks with dev_extents on devices 1 and 2 ([12]), 1 and 3
-([13]), or 2 and 3 ([23]):
+> But I would like at least
+> to understand why it was preferred over the temp-fsid one, and what are
+> the differences we can expect (need a flag to mkfs or can use btrfstune
+> for that, for example).
 
-        [after 0 chunk allocations]
-        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10 GiB)
-        Device 2:  [__________] (10 GiB)
-        Device 3:  [__________] (10 GiB)
+The in-memory disk-super hack in the original patch is essentially a
+workaround. This led to the necessity of restricting devices using
+metadata_uuid from being used as temp-fsid device. A more appropriate
+approach is to enhance device_list_add() to intelligently manage
+duplicate disk-super entries by checking devt and permitting them
+to mount if unique. This solution deviates from the original patch
+and simultaneously addresses the subvol-mount corruption issue
+observed in the original implementation.
 
-        [after 1 chunk allocation]
-        Device 1:  [12] [_] [_] [_] [_] [_] [_] [_] [_] [_]
-        Device 2:  [12] [_________] (9 GiB)
-        Device 3:  [__________] (10 GiB)
+The additional adjustments [1], such as sysfs interface, the constraints
+on device additions, and the limitations on seed devices, are
+supplementary patches essential to the comprehensive solution.
 
-        [after 2 chunk allocations]
-        Device 1:  [12] [13] [_] [_] [_] [_] [_] [_] [_] [_] (8 GiB)
-        Device 2:  [12] [_________] (9 GiB)
-        Device 3:  [13] [_________] (9 GiB)
+   [1] [PATCH 0/4] btrfs: sysfs and unsupported temp-fsid features for 
+clones
 
-        [after 3 chunk allocations]
-        Device 1:  [12] [13] [12] [_] [_] [_] [_] [_] [_] [_] (7 GiB)
-        Device 2:  [12] [12] [________] (8 GiB)
-        Device 3:  [13] [_________] (9 GiB)
+However, the superblock temp-fsid flag isn't inherently necessary
+within btrfs internals. Nevertheless, it can be considered for addition
+if it makes the usability of other btrfs features with temp-fsid more 
+seamless.
 
-        [...]
-
-        [after 12 chunk allocations]
-        Device 1:  [12] [13] [12] [13] [12] [13] [12] [13] [_] [_] (2 GiB)
-        Device 2:  [12] [12] [23] [23] [12] [12] [23] [23] [__] (2 GiB)
-        Device 3:  [13] [13] [23] [23] [13] [23] [13] [23] [__] (2 GiB)
-
-        [after 13 chunk allocations]
-        Device 1:  [12] [13] [12] [13] [12] [13] [12] [13] [12] [_] (1 GiB)
-        Device 2:  [12] [12] [23] [23] [12] [12] [23] [23] [12] [_] (1 GiB)
-        Device 3:  [13] [13] [23] [23] [13] [23] [13] [23] [__] (2 GiB)
-
-        [after 14 chunk allocations]
-        Device 1:  [12] [13] [12] [13] [12] [13] [12] [13] [12] [13] (full)
-        Device 2:  [12] [12] [23] [23] [12] [12] [23] [23] [12] [_] (1 GiB)
-        Device 3:  [13] [13] [23] [23] [13] [23] [13] [23] [13] [_] (1 GiB)
-
-        [after 15 chunk allocations]
-        Device 1:  [12] [13] [12] [13] [12] [13] [12] [13] [12] [13] (full)
-        Device 2:  [12] [12] [23] [23] [12] [12] [23] [23] [12] [23] (full)
-        Device 3:  [13] [13] [23] [23] [13] [23] [13] [23] [13] [23] (full)
-
-This allocates all of the space with no waste.  The sorting function used
-by gather_device_info considers free space holes above 1 GiB in length
-to be equal to 1 GiB, so once find_free_dev_extent locates a sufficiently
-long hole on each device, all the holes appear equal in the sort, and the
-comparison falls back to sorting devices by total free space.  This keeps
-usable space on each device equal so they can all be filled completely.
-
-After f6fca3917b4d, the allocator prefers the devices with larger holes
-over the devices with more free space, so it makes bad allocation choices:
-
-        [after 1 chunk allocation]
-        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10 GiB)
-        Device 2:  [23] [_________] (9 GiB)
-        Device 3:  [23] [_________] (9 GiB)
-
-        [after 2 chunk allocations]
-        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10 GiB)
-        Device 2:  [23] [23] [________] (8 GiB)
-        Device 3:  [23] [23] [________] (8 GiB)
-
-        [after 3 chunk allocations]
-        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10 GiB)
-        Device 2:  [23] [23] [23] [_______] (7 GiB)
-        Device 3:  [23] [23] [23] [_______] (7 GiB)
-
-        [...]
-
-        [after 9 chunk allocations]
-        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10 GiB)
-        Device 2:  [23] [23] [23] [23] [23] [23] [23] [23] [23] [_] (1 GiB)
-        Device 3:  [23] [23] [23] [23] [23] [23] [23] [23] [23] [_] (1 GiB)
-
-        [after 10 chunk allocations]
-        Device 1:  [12] [_] [_] [_] [_] [_] [_] [_] [_] [_] (9 GiB)
-        Device 2:  [23] [23] [23] [23] [23] [23] [23] [23] [12] (full)
-        Device 3:  [23] [23] [23] [23] [23] [23] [23] [23] [_] (1 GiB)
-
-        [after 11 chunk allocations]
-        Device 1:  [12] [13] [_] [_] [_] [_] [_] [_] [_] [_] (8 GiB)
-        Device 2:  [23] [23] [23] [23] [23] [23] [23] [23] [12] (full)
-        Device 3:  [23] [23] [23] [23] [23] [23] [23] [23] [13] (full)
-
-No further allocations are possible, with 8 GiB wasted (4 GiB of data
-space).  The sort in gather_device_info now considers free space in
-holes longer than 1 GiB to be distinct, so it will prefer devices 2 and
-3 over device 1 until all but 1 GiB is allocated on devices 2 and 3.
-At that point, with only 1 GiB unallocated on every device, the largest
-hole length on each device is equal at 1 GiB, so the sort finally moves
-to ordering the devices with the most free space, but by this time it
-is too late to make use of the free space on device 1.
-
-Note that it's possible to contrive a case where the pre-f6fca3917b4d
-allocator fails the same way, but these cases generally have extensive
-dev_extent fragmentation as a precondition (e.g. many holes of 768M
-in length on one device, and few holes 1 GiB in length on the others).
-With the regression in f6fca3917b4d, bad chunk allocation can occur even
-under optimal conditions, when all dev_extent holes are exact multiples
-of stripe_len in length, as in the example above.
-
-Also note that post-f6fca3917b4d kernels do treat dev_extent holes
-larger than 10 GiB as equal, so the bad behavior won't show up on a
-freshly formatted filesystem; however, as the filesystem ages and fills
-up, and holes ranging from 1 GiB to 10 GiB in size appear, the problem
-can show up as a failure to balance after adding or removing devices,
-or an unexpected shortfall in available space due to unequal allocation.
-
-To fix the regression and make data chunk allocation work
-again, set ctl->max_stripe_len back to the original SZ_1G, or
-space_info->chunk_size if that's smaller (the latter can happen if the
-user set space_info->chunk_size to less than 1 GiB via sysfs, or it's
-a 32 MiB system chunk with a hardcoded chunk_size and stripe_len).
-
-While researching the background of the earler commits, I found that an
-identical fix was already proposed at:
-
-        https://lore.kernel.org/linux-btrfs/de83ac46-a4a3-88d3-85ce-255b7abc5249@gmx.com/
-
-The previous review missed one detail:  ctl->max_stripe_len is used
-before decide_stripe_size_regular() is called, when it is too late for
-the changes in that function to have any effect.  ctl->max_stripe_len is
-not used directly by decide_stripe_size_regular(), but the parameter
-does heavily influence the per-device free space data presented to
-the function.
-
-Fixes: f6fca3917b4d "btrfs: store chunk size in space-info struct"
-Signed-off-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
----
- fs/btrfs/volumes.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 669c6ed04b86..0f5a8d2d6712 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5161,7 +5161,7 @@ static void init_alloc_chunk_ctl_policy_regular(
- 	ASSERT(space_info);
- 
- 	ctl->max_chunk_size = READ_ONCE(space_info->chunk_size);
--	ctl->max_stripe_size = ctl->max_chunk_size;
-+	ctl->max_stripe_size = min_t(u64, ctl->max_chunk_size, SZ_1G);
- 
- 	if (ctl->type & BTRFS_BLOCK_GROUP_SYSTEM)
- 		ctl->devs_max = min_t(int, ctl->devs_max, BTRFS_MAX_DEVS_SYS_CHUNK);
--- 
-2.30.2
-
+Thanks, Anand
