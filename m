@@ -2,36 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3038E7BC4C9
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Oct 2023 07:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8067BC4C8
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Oct 2023 07:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233993AbjJGFTr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 7 Oct 2023 01:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
+        id S234118AbjJGFTs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 Oct 2023 01:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233675AbjJGFTp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 Oct 2023 01:19:45 -0400
+        with ESMTP id S233915AbjJGFTq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 Oct 2023 01:19:46 -0400
+X-Greylist: delayed 318 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 06 Oct 2023 22:19:44 PDT
 Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39C6BBD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39D85BF
         for <linux-btrfs@vger.kernel.org>; Fri,  6 Oct 2023 22:19:44 -0700 (PDT)
 X-Envelope-Mail-From: zblaxell@waya.furryterror.org
 X-Envelope-Mail-From: zblaxell@waya.furryterror.org
 Received: from waya.furryterror.org (waya.vpn7.hungrycats.org [10.132.226.63])
-        by drax.kayaks.hungrycats.org (Postfix) with ESMTP id 83010A7CC29;
-        Sat,  7 Oct 2023 01:14:25 -0400 (EDT)
+        by drax.kayaks.hungrycats.org (Postfix) with ESMTP id 74112A7CC2D;
+        Sat,  7 Oct 2023 01:14:29 -0400 (EDT)
 Received: from zblaxell by waya.furryterror.org with local (Exim 4.94.2)
         (envelope-from <zblaxell@waya.furryterror.org>)
-        id 1qozdx-00086Y-4t; Sat, 07 Oct 2023 01:14:25 -0400
+        id 1qoze1-0008JU-4x; Sat, 07 Oct 2023 01:14:29 -0400
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix stripe length calculation for non-zoned data chunks
-Date:   Sat,  7 Oct 2023 01:14:20 -0400
-Message-Id: <20231007051421.19657-1-ce3g8jdj@umail.furryterror.org>
+Subject: [PATCH] btrfs: fix stripe length calculation for non-zoned data chunk allocation
+Date:   Sat,  7 Oct 2023 01:14:21 -0400
+Message-Id: <20231007051421.19657-2-ce3g8jdj@umail.furryterror.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231007051421.19657-1-ce3g8jdj@umail.furryterror.org>
+References: <20231007051421.19657-1-ce3g8jdj@umail.furryterror.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,HEXHASH_WORD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,158 +43,223 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Commit f6fca3917b4d "btrfs: store chunk size in space-info struct"
-introduces several regressions.  One of these is the regression fixed
-by 5da431b71d4b "btrfs: fix the max chunk size and stripe length
-calculation".  Another is fixed by my patch, which turns out to be
-identical to a patch that was previously proposed, but its importance
-was missed.
+broke data chunk allocations on non-zoned multi-device filesystems when
+using default chunk_size.  Commit 5da431b71d4b "btrfs: fix the max chunk
+size and stripe length calculation" partially fixed that, and this patch
+completes the fix for that case.
 
-There are some remaining problems with those commits (and a few adjacent
-ones) which I'm not going to touch, but I am going to rant about them
-a little.
+After commit f6fca3917b4d and 5da431b71d4b, the sequence of events for
+a data chunk allocation on a non-zoned filesystem is:
 
-5da431b71d4b broke the one use case that f6fca3917b4d was intended to
-support:  metadata chunks larger than 1 GiB.  Between the two commits,
-metadata chunks could have stripe_len > 1 GiB, but 5da431b71d4b imposes
-a maximum stripe_len == 1 GiB, effectively capping the metadata chunk
-size at the original 1 GiB and defeating f6fca3917b4d.
+        1.  btrfs_create_chunk calls init_alloc_chunk_ctl, which copies
+        space_info->chunk_size (default 10 GiB) to ctl->max_stripe_len
+        unmodified.  Before f6fca3917b4d, ctl->max_stripe_len value was
+        1 GiB for non-zoned data chunks and not configurable.
 
-Currently it's still possible to create metadata chunks with smaller
-stripe_len than 1 GiB, and maybe there's a corner case (especially
-on smaller filesystems) where that could still be useful.  It's also
-possible to force data chunks to be created with a smaller-than-1-GiB
-stripe_len which would be useful if the 10% heuristic wasn't good enough
-for a particular small-filesystem workload.  But all of this paragraph
-is just an implementation looking for a use case--if 50 GiB filesystems
-have these kinds of problems, the practical solution is more likely to
-be found in using mixed_bg instead of separate data and metadata.
+        2.  btrfs_create_chunk calls gather_device_info which consumes
+        and produces more fields of chunk_ctl.
 
-IMHO f6fca3917b4d should be reverted without making any attempt to fix
-its remaining problems.  f6fca3917b4d was a terrible approach for its
-ostensible goal, for two reasons:
+        3.  gather_device_info multiplies ctl->max_stripe_len by
+        ctl->dev_stripes (which is 1 in all cases except dup)
+        and calls find_free_dev_extent with that number as num_bytes.
 
-1.  The simpler reason is that the feature allows a device to have
-dev_extents of varying sizes.  That's usually a bad thing all by itself,
-particularly on large filesystems, and even worse when striped profiles
-(raid0/10/5/6) are used.
+        4.  find_free_dev_extent locates the first dev_extent hole on
+        a device which is at least as large as num_bytes.  With default
+        max_chunk_size from f6fca3917b4d, it finds the first hole which is
+        longer than 10 GiB, or the largest hole if that hole is shorter
+        than 10 GiB.  This is different from the pre-f6fca3917b4d
+        behavior, where num_bytes is 1 GiB, and find_free_dev_extent
+        may choose a different hole.
 
-It's a useful constraint to disallow a larger filesystem to allocate any
-stripe_len that is not exactly 1 GiB (or a constant size used across the
-entire FS) for any reason.  The short stripe at the end of the device
-isn't worth massive filesystem fragmentation to use, and the 32M hole
-left behind when a system chunk is relocated can lead to chaos after a
-few drive upgrades.
+        5.  gather_device_info repeats step 4 with all devices to find
+        the first or largest dev_extent hole that can be allocated on
+        each device.
 
-Over the course of a large filesystem's lifetime, its devices may be
-replaced, upgraded, and rebalanced many times.  If the filesystem is
-using a striped profile which tries to allocate a stripe on every device
-in the filesystem, then variation in dev_extent sizes will result in
-_explosive_ dev_extent fragmentation as the filesystem fills up.  Some of
-my filesystems have reached the point where almost 10% of the filesystem
-cannot be used because the majority of chunks are smaller than 128 MiB,
-or even nr_devs * 1 MiB.  It can take _years_ of balancing to fix a
-mess that takes only a few months to create.
+        6.  gather_device_info sorts the device list by the hole size
+        on each device, using total unallocated space on each device to
+        break ties, then returns to btrfs_create_chunk with the list.
 
-Even the existing system chunk stripe_len of 32 MiB, and the partial
-dev_extent at the end of a device that is not an exact multiple of 1
-GiB, are both bad.  We should get rid of all the existing cases where
-stripe_len != SZ_1G on filesystems above some size (say 1 TiB or larger),
-and definitely not add any new ones.
+        7.  btrfs_create_chunk calls decide_stripe_size_regular.
 
+        8.  decide_stripe_size_regular finds the largest stripe_len that
+        fits across the first nr_devs device dev_extent holes that were
+        found by gather_device_info (and satisfies other constraints
+        on stripe_len that are not relevant here).
 
-2.  The other reason is that it is better for ENOSPC avoidance to have
-more small metadata chunks than fewer large ones.
+        9.  decide_stripe_size_regular caps the length of the stripe it
+        computed at 1 GiB.  This cap appeared in 5da431b71d4b to correct
+        one of the other regressions introduced in f6fca3917b4d.
 
-Balance, scrub, and discard all lock block groups to prevent modification
-while they're running.  This means that a filesystem can be in a state
-where it has enough space for the global reserve, but can't use some
-of the space because balance, scrub, or discard is running, so when
-it's time to use the space, surprise, it's not available after all.
+        10.  btrfs_create_chunk creates a new chunk with the above
+        computed size and number of devices.
 
-If the filesystem only has one metadata block group (e.g. because it's
-a huge block group allocated with the use of the configurable chunk_size
-feature), then during scrub, discard, or balance, it must abruptly double
-its metadata allocation, or hit ENOSPC.
+At step 4, gather_device_info() has found a location where stripe up to
+10 GiB in length could be allocated on several devices, and selected
+which devices should have a dev_extent allocated on them, but at step
+9, only 1 GiB of the space that was found on each device can be used.
+This mismatch causes new suboptimal chunk allocation cases that did not
+occur in pre-f6fca3917b4d kernels.
 
-My favorite example of this is trying to replace a small but full device
-with a larger one, where the small device has no unallocated space
-and only one metadata block group.  The replace fails because replace
-(like scrub) locks the only metadata block group, no new metadata block
-groups are possible, and the filesystem becomes read-only during the
-next metadata update due to lack of space.  The replace can proceed if
-the user balances away one data block group to create a new unallocated
-space, then allocates a metadata block group, then starts the replace
-again, because now there are two metadata block groups with free space
-and replace can't lock both at the same time.  We have to explain this
-to new users (and occasionally to old ones!) a few times a year.
+Consider a filesystem using raid1 profile with 3 devices.  After some
+balances, device 1 has 10x 1 GiB unallocated space, while devices 2
+and 3 have 1x 10 GiB unallocated space, i.e. the same total amount of
+space, but distributed across different numbers of dev_extent holes.
+For visualization, let's ignore all the chunks that were allocated before
+this point, and focus on the remaining holes:
 
-A 2-device raid1 needs 5 block groups containing a total of 512 MiB of
-allocated but unused metadata space in the worst case:  balance, discard,
-and 2 scrub threads can lock up to 4 block groups, and without counting
-free space from those, there must be one or more block groups remaining
-with a total of 512M of free space for the global reserve.  If the block
-groups are 1 GiB, in the worst case, the filesystem needs to keep 4.5
-GiB of unused metadata space allocated.  On a smaller filesystem, less
-than 1.0 GiB is needed due to smaller block groups and smaller global
-reserve.  If the block groups are 5 GiB each, in the worst case 20.5
-GiB of allocated but unused metadata space is needed to avoid ENOSPC.
-This gets worse on filesystems with more devices, as each device comes
-with a scrub thread to lock another block group in the worst case,
-e.g. a 8-device filesystem with 5 GiB metadata block groups could require
-50.5 GiB of reserved metadata space, but only 10.5 GiB if it used 1 GiB
-metadata block groups.
+        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10x 1 GiB unallocated)
+        Device 2:  [__________] (10 GiB contig unallocated)
+        Device 3:  [__________] (10 GiB contig unallocated)
 
-fstrim, device remove and device replace also lock block groups, but
-they can't run concurrently with balance, discard, and scrub.  If space
-is reserved for the latter three operations, then it is also available
-to the former three.
+Before f6fca3917b4d, the allocator would fill these optimally by
+allocating chunks with dev_extents on devices 1 and 2 ([12]), 1 and 3
+([13]), or 2 and 3 ([23]):
 
-A better solution for reserving metadata space is to keep the metadata
-block groups the same size, but increase their number.  Metadata block
-group reclaim should sort block groups by available free space, then
-exclude the highest N block groups from the total (N = nr_devs + 1 (for
-balance) + 1 (for discard or fstrim) and count the total free space
-that is left.  Block groups should not be removed if it would bring
-non-excluded free space below the global reserve amount.  As metadata
-block groups fill up, empty block groups should be added to increase
-space above the global reserve.
+        [after 0 chunk allocations]
+        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10 GiB)
+        Device 2:  [__________] (10 GiB)
+        Device 3:  [__________] (10 GiB)
 
+        [after 1 chunk allocation]
+        Device 1:  [12] [_] [_] [_] [_] [_] [_] [_] [_] [_]
+        Device 2:  [12] [_________] (9 GiB)
+        Device 3:  [__________] (10 GiB)
 
-3.  (bonus reason!)  the chunk_size parameter isn't a very useful thing
-to control from sysfs.  There's a fundamental unit conformability error
-when trying to map chunk_size (a number of logical bytes in virtual
-address space) to stripe_len (a number of physical bytes in device
-address space).  The third term in the conversion equation between
-these units--number of data-bearing devices--is not a constant across
-the filesystem.  Without more information, the implementation can't
-guess the user's intent as nr_devs changes from one chunk to another,
-so it's always going to be wrong in at least one useful case.
+        [after 2 chunk allocations]
+        Device 1:  [12] [13] [_] [_] [_] [_] [_] [_] [_] [_] (8 GiB)
+        Device 2:  [12] [_________] (9 GiB)
+        Device 3:  [13] [_________] (9 GiB)
 
-Earlier versions of f6fca3917b4d on the mailing list did try to set
-stripe_len, but then seemed to get confused about what max_stripe_len
-and max_chunk_size do, and the result was several bugs.
+        [after 3 chunk allocations]
+        Device 1:  [12] [13] [12] [_] [_] [_] [_] [_] [_] [_] (7 GiB)
+        Device 2:  [12] [12] [________] (8 GiB)
+        Device 3:  [13] [_________] (9 GiB)
 
-It would be better to control nr_devs, stripe_len, and chunk_size
-separately as ranged sysfs parameters (i.e. with max and min values).
-Control over these parameters can be a useful tool for a user who knows
-what they're doing.  A user might have a big filesystem where longer
-stripe_len is desirable (so there are fewer block groups to manage,
-as long as the change is made early and all block groups have the same
-stripe_len), or a legacy filesystem with a lot of unusable small holes
-due to dev_extent fragmentation (where it would be better for btrfs to
-fail to allocate at all than to create a tiny block group that can't
-hold larger extents), or a huge array of many devices with bandwidth
-constraints (where maybe chunks with more than 6 stripes are undesirable).
-Or even all of these at the same time (long narrow block groups with
-no tiny fragments allowed).  If this is going to exposed via sysfs at
-all, there should be a different, more useful set of sysfs knobs, with
-different semantics than the ones f6fca3917b4d had.
+        [...]
 
+        [after 12 chunk allocations]
+        Device 1:  [12] [13] [12] [13] [12] [13] [12] [13] [_] [_] (2 GiB)
+        Device 2:  [12] [12] [23] [23] [12] [12] [23] [23] [__] (2 GiB)
+        Device 3:  [13] [13] [23] [23] [13] [23] [13] [23] [__] (2 GiB)
 
-I am especially disappointed that 19fc516a516f "btrfs: sysfs: export
-chunk size in space infos" explicitly disallows changing the chunk size
-(and therefore the stripe_len) of system chunks, with no rationale that
-I can find.  It would be very useful to make system chunks be 1 GiB long,
-so they match the size of other block group types, making no fragmentation
-of dev_extents possible.
+        [after 13 chunk allocations]
+        Device 1:  [12] [13] [12] [13] [12] [13] [12] [13] [12] [_] (1 GiB)
+        Device 2:  [12] [12] [23] [23] [12] [12] [23] [23] [12] [_] (1 GiB)
+        Device 3:  [13] [13] [23] [23] [13] [23] [13] [23] [__] (2 GiB)
+
+        [after 14 chunk allocations]
+        Device 1:  [12] [13] [12] [13] [12] [13] [12] [13] [12] [13] (full)
+        Device 2:  [12] [12] [23] [23] [12] [12] [23] [23] [12] [_] (1 GiB)
+        Device 3:  [13] [13] [23] [23] [13] [23] [13] [23] [13] [_] (1 GiB)
+
+        [after 15 chunk allocations]
+        Device 1:  [12] [13] [12] [13] [12] [13] [12] [13] [12] [13] (full)
+        Device 2:  [12] [12] [23] [23] [12] [12] [23] [23] [12] [23] (full)
+        Device 3:  [13] [13] [23] [23] [13] [23] [13] [23] [13] [23] (full)
+
+This allocates all of the space with no waste.  The sorting function used
+by gather_device_info considers free space holes above 1 GiB in length
+to be equal to 1 GiB, so once find_free_dev_extent locates a sufficiently
+long hole on each device, all the holes appear equal in the sort, and the
+comparison falls back to sorting devices by total free space.  This keeps
+usable space on each device equal so they can all be filled completely.
+
+After f6fca3917b4d, the allocator prefers the devices with larger holes
+over the devices with more free space, so it makes bad allocation choices:
+
+        [after 1 chunk allocation]
+        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10 GiB)
+        Device 2:  [23] [_________] (9 GiB)
+        Device 3:  [23] [_________] (9 GiB)
+
+        [after 2 chunk allocations]
+        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10 GiB)
+        Device 2:  [23] [23] [________] (8 GiB)
+        Device 3:  [23] [23] [________] (8 GiB)
+
+        [after 3 chunk allocations]
+        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10 GiB)
+        Device 2:  [23] [23] [23] [_______] (7 GiB)
+        Device 3:  [23] [23] [23] [_______] (7 GiB)
+
+        [...]
+
+        [after 9 chunk allocations]
+        Device 1:  [_] [_] [_] [_] [_] [_] [_] [_] [_] [_] (10 GiB)
+        Device 2:  [23] [23] [23] [23] [23] [23] [23] [23] [23] [_] (1 GiB)
+        Device 3:  [23] [23] [23] [23] [23] [23] [23] [23] [23] [_] (1 GiB)
+
+        [after 10 chunk allocations]
+        Device 1:  [12] [_] [_] [_] [_] [_] [_] [_] [_] [_] (9 GiB)
+        Device 2:  [23] [23] [23] [23] [23] [23] [23] [23] [12] (full)
+        Device 3:  [23] [23] [23] [23] [23] [23] [23] [23] [_] (1 GiB)
+
+        [after 11 chunk allocations]
+        Device 1:  [12] [13] [_] [_] [_] [_] [_] [_] [_] [_] (8 GiB)
+        Device 2:  [23] [23] [23] [23] [23] [23] [23] [23] [12] (full)
+        Device 3:  [23] [23] [23] [23] [23] [23] [23] [23] [13] (full)
+
+No further allocations are possible, with 8 GiB wasted (4 GiB of data
+space).  The sort in gather_device_info now considers free space in
+holes longer than 1 GiB to be distinct, so it will prefer devices 2 and
+3 over device 1 until all but 1 GiB is allocated on devices 2 and 3.
+At that point, with only 1 GiB unallocated on every device, the largest
+hole length on each device is equal at 1 GiB, so the sort finally moves
+to ordering the devices with the most free space, but by this time it
+is too late to make use of the free space on device 1.
+
+Note that it's possible to contrive a case where the pre-f6fca3917b4d
+allocator fails the same way, but these cases generally have extensive
+dev_extent fragmentation as a precondition (e.g. many holes of 768M
+in length on one device, and few holes 1 GiB in length on the others).
+With the regression in f6fca3917b4d, bad chunk allocation can occur even
+under optimal conditions, when all dev_extent holes are exact multiples
+of stripe_len in length, as in the example above.
+
+Also note that post-f6fca3917b4d kernels do treat dev_extent holes
+larger than 10 GiB as equal, so the bad behavior won't show up on a
+freshly formatted filesystem; however, as the filesystem ages and fills
+up, and holes ranging from 1 GiB to 10 GiB in size appear, the problem
+can show up as a failure to balance after adding or removing devices,
+or an unexpected shortfall in available space due to unequal allocation.
+
+To fix the regression and make data chunk allocation work
+again, set ctl->max_stripe_len back to the original SZ_1G, or
+space_info->chunk_size if that's smaller (the latter can happen if the
+user set space_info->chunk_size to less than 1 GiB via sysfs, or it's
+a 32 MiB system chunk with a hardcoded chunk_size and stripe_len).
+
+While researching the background of the earler commits, I found that an
+identical fix was already proposed at:
+
+        https://lore.kernel.org/linux-btrfs/de83ac46-a4a3-88d3-85ce-255b7abc5249@gmx.com/
+
+The previous review missed one detail:  ctl->max_stripe_len is used
+before decide_stripe_size_regular() is called, when it is too late for
+the changes in that function to have any effect.  ctl->max_stripe_len is
+not used directly by decide_stripe_size_regular(), but the parameter
+does heavily influence the per-device free space data presented to
+the function.
+
+Fixes: f6fca3917b4d "btrfs: store chunk size in space-info struct"
+Signed-off-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+---
+ fs/btrfs/volumes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 669c6ed04b86..0f5a8d2d6712 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5161,7 +5161,7 @@ static void init_alloc_chunk_ctl_policy_regular(
+ 	ASSERT(space_info);
+ 
+ 	ctl->max_chunk_size = READ_ONCE(space_info->chunk_size);
+-	ctl->max_stripe_size = ctl->max_chunk_size;
++	ctl->max_stripe_size = min_t(u64, ctl->max_chunk_size, SZ_1G);
+ 
+ 	if (ctl->type & BTRFS_BLOCK_GROUP_SYSTEM)
+ 		ctl->devs_max = min_t(int, ctl->devs_max, BTRFS_MAX_DEVS_SYS_CHUNK);
+-- 
+2.30.2
 
