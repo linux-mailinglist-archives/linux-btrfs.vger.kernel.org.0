@@ -2,452 +2,188 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7AF7BC43E
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Oct 2023 04:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BB17BC4A1
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Oct 2023 06:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234087AbjJGCpe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Oct 2023 22:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
+        id S1343527AbjJGEUz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 Oct 2023 00:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233755AbjJGCpd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Oct 2023 22:45:33 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CF5BE;
-        Fri,  6 Oct 2023 19:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1696646717; x=1697251517; i=quwenruo.btrfs@gmx.com;
- bh=7YLR19AXu4kyJKF6NHz6RbhznCooNisw1PcSyiAeicI=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=ofHKDZKNB3GElfVtD2sY3AEm9Du7Ma8f3lsi1ELvNrWmYKOJz9ZVn4ExRKvM2gt1rvmGcXteIfN
- 6h2pEgLxpVrR42AuN9tr0ezTraPs2YTnTDskOc0V4yGWRWyde4SKE64YhG4cPNVDIzf55pt3v6Cnl
- xwCOxAvENW6FC6gn6pJuTAjChBUCPvWnth25eSEb0aTmCHTgbH5hEyKla/2av1kx3T1WPD6O4cHsO
- z4oGrsjryH8JklC67vgoCQoFgotHgtvlG1I1VSuIoNjiPFTO0faLAJS0h8VCSCY+PGdG0bj4qFrSm
- J8Hpth0qgJ96+rVB2p7kmVzM6MyXr/HvcaVg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIMfc-1qlhe405wK-00EJn7; Sat, 07
- Oct 2023 04:45:17 +0200
-Message-ID: <b82e99c6-af98-4896-894b-dde6e43ca7dc@gmx.com>
-Date:   Sat, 7 Oct 2023 13:15:10 +1030
+        with ESMTP id S1343492AbjJGEUy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 Oct 2023 00:20:54 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214CCBE;
+        Fri,  6 Oct 2023 21:20:51 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 627BE60155;
+        Sat,  7 Oct 2023 06:20:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1696652448; bh=wHUA1f0W6FCQC1zHhDmW2yQT88G4LC7ETYGV2emjjHU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=erI+azZ7gYg7xZhyTDAfGhMFsB9zHRQHcGZDcv2Ggu2WhG3D0Y3viYz6iMcdFzDd1
+         j5ZnA4bHAPG2ypOs6QvYsZ6Tao63fdMH6SseQGFYExPsRTWCYgT8xA90udMbxtKfJp
+         /c835Kus87iOHRJJh1EZMQbzxBDAz2EKn1GUE/1On30qIzaJB2Srled3PWy4Xdix4d
+         GB0b/2FsYgcHPTlxn5HafjEWcvSNSGR2lBJQ8oZQUP9CPaHU87c2R394TJ/gwHW1p7
+         m0cQnclgJuCqblW2/5qg2KU21w88DOCqApjhL79FjMjJelnQ9jDYRxL0dIdSFZmcFO
+         DPRqm7iQK86ew==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 5W_wY54THf8Z; Sat,  7 Oct 2023 06:20:45 +0200 (CEST)
+Received: from [192.168.1.3] (78-2-88-19.adsl.net.t-com.hr [78.2.88.19])
+        by domac.alu.hr (Postfix) with ESMTPSA id BDCD260152;
+        Sat,  7 Oct 2023 06:20:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1696652445; bh=wHUA1f0W6FCQC1zHhDmW2yQT88G4LC7ETYGV2emjjHU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=r7BdE/Spv+l9iIwWm2SF9TnaBehjqgWYorw6phzkSdf9oUST31ZrIpdQ+4TyKD3SF
+         IecEsyY0/cSbV6g+uJ/r/d3VJao7DbK9VmrLXk9X5/qCdj1/qid83pCCVahJXaGvXN
+         wb6s97+WxzF+IwM4ysstsDZ7bMsMev0edi1REchHm2DkNe70P2/AArmK2vdXNCA0wz
+         JaBrPOUx2flNdRaRf2WoaDNgcywltsw8lcu1GAA2XCngOgmaIydj7l6XuAe+VyHvOV
+         rwIrIjX+ER3ejf36RYj3rkqBnShXn5dV9urrMY/oNeBr810mh3JwgQBEu3ZOKxUVqI
+         8UMz/T5brnqnA==
+Message-ID: <7054f1cc-c02f-4f48-9d73-36040b70fa0c@alu.unizg.hr>
+Date:   Sat, 7 Oct 2023 06:20:43 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] fstests: add configuration option for executing post
- mkfs commands
+Subject: Re: BUG: KCSAN: data-race in btrfs_sync_log [btrfs] /
+ btrfs_update_inode [btrfs]
 Content-Language: en-US
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <cover.1695543976.git.anand.jain@oracle.com>
- <eff4da60fe7a6ce56851d5fc706b5f2f2d772c56.1695543976.git.anand.jain@oracle.com>
- <dfc4cece-d809-4b5b-93f7-7251ba3a492a@gmx.com>
- <5485cd32-2308-c9c5-4c97-9ff6c74c64dd@oracle.com>
- <0a8d40fc-501e-4d85-903a-83d9b3508bf5@gmx.com>
- <20231006060932.GD21283@frogsfrogsfrogs>
- <1f23346d-ad61-412f-b59d-1f76e2d1df6c@gmx.com>
- <ZSCGUUtCY5AsmWaO@dread.disaster.area>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ZSCGUUtCY5AsmWaO@dread.disaster.area>
+To:     dsterba@suse.cz
+Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org
+References: <01c15818-5765-408b-aff0-6c68b8c2a874@alu.unizg.hr>
+ <20231006162649.GL28758@twin.jikos.cz>
+From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+Autocrypt: addr=mirsad.todorovac@alu.unizg.hr; keydata=
+ xjMEYp0QmBYJKwYBBAHaRw8BAQdAI14D1/OE3jLBYycg8HaOJOYrvEaox0abFZtJf3vagyLN
+ Nk1pcnNhZCBHb3JhbiBUb2Rvcm92YWMgPG1pcnNhZC50b2Rvcm92YWNAYWx1LnVuaXpnLmhy
+ PsKPBBMWCAA3FiEEdCs8n09L2Xwp/ytk6p9/SWOJhIAFAmKdEJgFCQ0oaIACGwMECwkIBwUV
+ CAkKCwUWAgMBAAAKCRDqn39JY4mEgIf/AP9hx09nve6VH6D/F3m5jRT5m1lzt5YzSMpxLGGU
+ vGlI4QEAvOvGI6gPCQMhuQQrOfRr1CnnTXeaXHhlp9GaZEW45QzOOARinRCZEgorBgEEAZdV
+ AQUBAQdAqJ1CxZGdTsiS0cqW3AvoufnWUIC/h3W2rpJ+HUxm61QDAQgHwn4EGBYIACYWIQR0
+ KzyfT0vZfCn/K2Tqn39JY4mEgAUCYp0QmQUJDShogAIbDAAKCRDqn39JY4mEgIMnAQDPKMJJ
+ fs8+QnWS2xx299NkVTRsZwfg54z9NIvH5L3HiAD9FT3zfHfvQxIViWEzcj0q+FLWoRkOh02P
+ Ny0lWTyFlgc=
+Organization: Academy of Fine Arts, University of Zagreb
+In-Reply-To: <20231006162649.GL28758@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/kqfkdEN/CCpf4UbyGj84PIvOMufJY8QWEjnNThN6UiAgPmTcUb
- f30bw7Hn6Ct6THzc9spDeZCFzZ6zOzQV5msYqv/WXT3daKUHQ1bfMfkNYedNLI/q0Hh/y2J
- 415DaNWXiCuYeKb0dVrC8d6RDPjEyah11zw1OlV9LhV6A22iT0Vryum4lYj73GZhdT7F06m
- TwAbFLWFtt92bPeYZ/5DA==
-UI-OutboundReport: notjunk:1;M01:P0:xMRdAWTOLXg=;1whhovPvaM+ryQNXoKjvHV7ylwa
- aXL0WWtwfCH5j9/Y11IxZGmTAfEFzLChOtjEuLN5ST4FbbHX+M48HngGfARuSWWEpl2cYfPLm
- RSBPtmWyBMKNgsRtebc/YyK1ILO5Paii+7TIfF0lyVlNwjaEVjexLuaygoFZhXSgXOKj38yd5
- 3LSEbGpgiRhtyvm6yjJFHA9IClYZSlkVEitcOw+RNUJmifNqEGLxMuWxA6hIOCqotB47U6eYh
- 7MVsGtuIHrOQuyUB1w79xklAhq8p3njS7PUWL21YsvuZrRi9bJ7ecM/W2dqbi8ZPzaDAW0Ntg
- MKBwIZyFOJ8jtMn15Uq3n4QPFtHfDy1m5huXRgTYoA1ldrwOvfvLaQgla7zbI2hKq+Ixj10/n
- NCpZphtykDiKtDON0eaIWBVsWf/Nl2FJRgIdXGCeBfq6eb1eJOip3uah9JSBPV180IJ9G3B87
- NZcKonE7YmIwcFRO4sp27stunkziPcA2kqeAuQLcLwDOTb+nb8gh6PzSQibMbTvuUupuPiqwV
- W/KasyHNyR/K14O14Ttlvqmnj5C4aFfb8nICttOr/U8+9XNdAJEcNbk7L8HFUZYKRu2vF5rCO
- jwvGDSh0J4sedKZpzj8QE0iYZGd41poGbDbK9X8vpG/UPAeB02IzEtC23Bg/Hsu1DGsweTev3
- nbV639wajy9XEoJVmbS/9VnnXojAvLeX3zXFTgO0s/LXwU67ehNLb9q3qs16FN7KSN0G+vsrr
- 5ZNEBjGwqG+ZIRqRtKJMQNEFmWoHPfXI8Dh5BATg4MB81UvUISS84lmp5AgW9/VeRdrE0ToMR
- 4AnQjNOXSXyb75dHTJrLqhDhef2tD4OSI9JI+6keXM8ZtkHQsld5D/Y6zyOKYb/iHqbTPbcT5
- ch1xTgqi48C19EpBp1AeGt6WWtiM3SBQqCymbfCx0ixlYlg/rgBxPIaAN1uQdxOewYs+kuwm+
- M8o46t6NeBYyLfm6+2CbUAsqtwY=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/10/7 08:42, Dave Chinner wrote:
-> On Fri, Oct 06, 2023 at 05:16:31PM +1030, Qu Wenruo wrote:
->> However for the whole btrfs/fstests combination, we have several
->> features which can not be easily integrated into fstests.
+On 10/6/2023 6:26 PM, David Sterba wrote:
+> On Thu, Sep 21, 2023 at 10:15:49PM +0200, Mirsad Todorovac wrote:
+>> Hi,
 >>
->> The biggest example is multi-device management.
+>> On the vanilla 6.6-rc2 torvalds kernel KCSAN reported this data-race:
 >>
->> For now, only some btrfs specific test cases are utilizing
->> SCRATCH_DEV_POOL to cover multi-device functionality (including all the
->> RAID and seed support).
->> This means way less coverage for seed and btrfs RAID, all generic group
->> would not utilize btrfs RAID/seed functionality at all.
->
-> IOWs, you are saying that the btrfs device setup code in fstests is
-> functionally deficient.
-
-It always needs the test case to utilize the pool, and choose mkfs
-profiles, to proper enable different profiles.
-
-For seed device, it need the test case to enable seed feature, then add
-a new device to allow seed sprout.
-
-Thus none of the generic group can utilize them.
-
->
+>> [ 2690.990793] ==================================================================
+>> [ 2690.991470] BUG: KCSAN: data-race in btrfs_sync_log [btrfs] / btrfs_update_inode [btrfs]
 >>
->> For a better coverage, or for more complex setup (maybe dm-dust for XFS
->> log device?), I am not that convinced if the current plain mkfs options
->> is good enough.
->
-> We already know mkfs alone isn't sufficent - that's why we have
-> filesystem specific mkfs fucntions for any filesystem that needs to
-> do something more complex than run mkfs....
-
-Still not enough for above seed sprout, or to utilize the pool by default.
-
-Sure, you can go the existing environment variables, but that would lead
-to other problems explained later.
-
->
-> i.e. we already have infrastructure that we use to solve this
-> problem - there are example implementations that you can look at to
-> follow.
->
+>> [ 2690.992804] write to 0xffff88811b57faf8 of 4 bytes by task 40555 on cpu 20:
+>> [ 2690.992815] btrfs_sync_log (/home/marvin/linux/kernel/torvalds2/fs/btrfs/tree-log.c:2964) btrfs
+>> [ 2690.993484] btrfs_sync_file (/home/marvin/linux/kernel/torvalds2/fs/btrfs/file.c:1954) btrfs
+>> [ 2690.994149] vfs_fsync_range (/home/marvin/linux/kernel/torvalds2/fs/sync.c:188)
+>> [ 2690.994161] __x64_sys_fsync (/home/marvin/linux/kernel/torvalds2/./include/linux/file.h:45 /home/marvin/linux/kernel/torvalds2/fs/sync.c:213 /home/marvin/linux/kernel/torvalds2/fs/sync.c:220 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218)
+>> [ 2690.994172] do_syscall_64 (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:50 /home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:80)
+>> [ 2690.994186] entry_SYSCALL_64_after_hwframe (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:120)
 >>
->> Thus I'm more interested in exploring the possibility to "out-source"
->> those basic functionality (from mkfs to check) to outside scripts, as
->> we're not that far away to hit the limits of the existing framework. (A=
-t
->> least for btrfs)
->
-> The whole idea that we set up devices for testing via magic,
-> undocumented, private external scripts is antithetical to the
-> purpose of fstests. The device model used in fstests is that you tell it
-> what configuration you want, and it does all the work to set them up
-> that way. This allows tests to override or skip incompatible
-> configurations based on known config variables, etc.
-
-Nope, the "private/closed-source" is only optional.
-
-We would still provide something like this:
-
-mkfs.avail/
-|- xfs.sh
-|- xfs_external_log.sh
-|- btrfs_single.sh
-|- btrfs_multi.sh
-
-fsck.avail/
-|- xfs.sh
-|- btrfs_check_data_csum.sh
-|- btrfs.sh
-
-mount.avail/
-|- xfs.sh
-|- btrfs.sh
-|- btrfs_compression.sh
-
-config/
-|- mkfs.sh -> ../mkfs.avail/btrfs_single.sh
-|- check.sh -> ../fsck.avail/btrfs.sh
-|- mount.sh -> ../mount.avail/btrfs_compression.sh
-
-Those basic ones in *.avail/ should still be open-sourced, and managed
-by fstests.
-
-It's end users' freedom to open or hide their scripts, but if they
-choose to hide, then all the reproducibility problem and maintenance
-burden are all on their own.
-
->
-> It also allows -everyone- to test complex configurations without
-> needing to share private, external scripts or knowing any of the
-> intricate details needed to set up that configuration. External
-> scripts are like proprietary code - it only works if you have some
-> magic secret sauce that nobody else knows about.
-
-Aren't there more than enough undocumented environment variables already
-in common/config?
-
-It's no different than those separate scripts, and I can also argue
-those scripts would have a better naming than `common/config` or
-`common/rc`.
-
->
-> If it's hard to set something up in fstests, then *fix that
-> problem*. If you are adding code in environment variables and
-> hacking in environment varaibles to run that code, then the -code
-> itself- should be in fstests.
-
-It's not possible unless we're going to update every generic test cases
-to let them specify whatever special setup they want to use for btrfs.
-
-As mentioned, for seed devices, we always need to add a device to do the
-sprout, and for multi-devices, we need to specify the number of devices
-and profiles at least.
-
-Meanwhile generic tests just go "_scratch_mkfs" and "_scratch_mount",
-unless we can override them, it's not that simple.
-
-And if we want to override them, then I see no reason not to go external
-scripts to override those functions.
-At least much cleaner than export whatever complex environment variables
-and involved parsers for them.
-
->
-> Having the code in fstests means that anyone can add
-> "BTRFS_SCRATCH_UUID=3D'<uuid>' to their config file to change uuids
-> for the devices being tested. They don't need to know waht magic
-> command is needed to do this, when it needs to be set, what changes
-> elsewhere in fstests they need to watch out for, which tests is
-> might conflict with, etc.
->
-> Hiding this in some custom script means it can't be easily
-> documented,
-
-Nor are those special environment variables.
-The "SCRATCH_DEV_POOL" is already not that well documented in
-"common/config".
-
-
-Complexity is unavoidable, but if we want to make simple things complex
-or simple is what we can choose.
-
-> can't be easily or widely replicated,
-
-If your setup is using some complex LVM/DM setup, and you just share
-your config as:
-
-SCRATCH_DEV=3D"/dev/dm-2"
-TEST_DEV=3D"/dev/dm-3"
-
-I don't see it's any different.
-
-In fact, if they share a script like "mkfs.avail/xfs_complex_lvm.sh", it
-would be much more clear.
-
-
-This just shows another point, your existing simpleness is based on the
-point that you rely on dm/fs layer to do a lot setup work already.
-
-That's already not part of the fstests, and all the problems can also
-apply here.
-
-> it can't be
-> discovered by reading the fstests code, and it isn't obvious to
-> -anyone- that it is part of the btrfs test matrix that needs to be
-> exercised.
-
-Nor the dm setup case either.
-
-And I already said, the external scripts can be part of fstests.
-But I also allow end users to hide their scripts for whatever reasons,
-it would be recommended for them to open-source (and merged if we see a
-real wide benefits), for maintenance or reproducibility reasons, but
-that's not mandatory.
-
->
-> IOWs, it's just really bad QA architecture to externalise random
-> parts of the test environment configuration.  If the configuration
-> needs to be tested, then the infrastructure should support that
-> directly and it should be easily discoverable and used by people
-> largely unfamiliar with btrfs volume management (i.e. typical distro
-> QA environment).
-
-I won't be surprised that "mkfs.avail/btrfs_single.sh" is more readable
-than jumping between "common/config", "common/btrfs", "common/rc" or
-whatever other files.
-
->
->>> I suppose the problem there is that mkfs.btrfs won't itself create a
->>> filesystem with the metadata_uuid field that doesn't match the other
->>> uuid?
+>> [ 2690.994203] read to 0xffff88811b57faf8 of 4 bytes by task 5338 on cpu 21:
+>> [ 2690.994214] btrfs_update_inode (/home/marvin/linux/kernel/torvalds2/fs/btrfs/transaction.h:175 /home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:4016) btrfs
+>> [ 2690.994877] btrfs_finish_one_ordered (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:4028 /home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3139) btrfs
+>> [ 2690.995541] btrfs_finish_ordered_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3230) btrfs
+>> [ 2690.996205] finish_ordered_fn (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:304) btrfs
+>> [ 2690.996871] btrfs_work_helper (/home/marvin/linux/kernel/torvalds2/fs/btrfs/async-thread.c:314) btrfs
+>> [ 2690.997539] process_one_work (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2630)
+>> [ 2690.997551] worker_thread (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2697 /home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2784)
+>> [ 2690.997562] kthread (/home/marvin/linux/kernel/torvalds2/kernel/kthread.c:388)
+>> [ 2690.997571] ret_from_fork (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/process.c:147)
+>> [ 2690.997583] ret_from_fork_asm (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:312)
 >>
->> That's not a big deal, we (at least me) are very open to add this mkfs
->> feature.
+>> [ 2690.997598] value changed: 0x00000004 -> 0x00000005
 >>
->> But there are other limits, like the fsck part.
+>> [ 2690.997613] Reported by Kernel Concurrency Sanitizer on:
+>> [ 2690.997621] CPU: 21 PID: 5338 Comm: kworker/u65:7 Tainted: G             L     6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0 #41
+>> [ 2690.997633] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+>> [ 2690.997640] Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
+>> [ 2690.998311] ==================================================================
 >>
->> For now, btrfs follows the behavior of other fses, just check the
->> correctness of the metadata, and ignore the correctness of data.
+>> fs/btrfs/tree-log.c
+>> -------------------------------------
+>> 2948         /*
+>> 2949          * We _must_ update under the root->log_mutex in order to make sure we
+>> 2950          * have a consistent view of the log root we are trying to commit at
+>> 2951          * this moment.
+>> 2952          *
+>> 2953          * We _must_ copy this into a local copy, because we are not holding the
+>> 2954          * log_root_tree->log_mutex yet.  This is important because when we
+>> 2955          * commit the log_root_tree we must have a consistent view of the
+>> 2956          * log_root_tree when we update the super block to point at the
+>> 2957          * log_root_tree bytenr.  If we update the log_root_tree here we'll race
+>> 2958          * with the commit and possibly point at the new block which we may not
+>> 2959          * have written out.
+>> 2960          */
+>> 2961         btrfs_set_root_node(&log->root_item, log->node);
+>> 2962         memcpy(&new_root_item, &log->root_item, sizeof(new_root_item));
+>> 2963
+>> 2964 →       root->log_transid++;
+>> 2965         log->log_transid = root->log_transid;
+>> 2966         root->log_start_pid = 0;
+>> 2967         /*
+>> 2968          * IO has been started, blocks of the log tree have WRITTEN flag set
+>> 2969          * in their headers. new modifications of the log will be written to
+>> 2970          * new positions. so it's safe to allow log writers to go in.
+>> 2971          */
+>> 2972         mutex_unlock(&root->log_mutex);
 >>
->> But remember btrfs has data checksum by default, thus it can easily
->> verify the data too, and we have the extra switch ("--check-data-csum"
->> option) to enable that for "btrfs check".
->
-> Which is yet another arguement for the code being in fstests and
-> controlled by an environment variable.
->
-> This is *exactly* the case for the LARGE_SCRATCH_DEV stuff that ext4
-> and XFS support in the mkfs routines. On the XFS side we have
-> LARGE_SCRATCH_DEV checks in -both- the XFS mkfs and check/repair
-> functions to handle this configuration correctly.
+>> fs/btrfs/transaction.h
+>> ----------------------------------
+>> 170 static inline void btrfs_set_inode_last_trans(struct btrfs_trans_handle *trans,
+>> 171                                               struct btrfs_inode *inode)
+>> 172 {
+>> 173         spin_lock(&inode->lock);
+>> 174         inode->last_trans = trans->transaction->transid;
+>> 175         inode->last_sub_trans = inode->root->log_transid;
+>> 176         inode->last_log_commit = inode->last_sub_trans - 1;
+>> 177         spin_unlock(&inode->lock);
+>> 178 }
+>>
+>> I am not certain whether the reader and writer side contend for the same lock, but it
+>> seems that on the safe side would be putting the reader into READ_ONCE() to get a consistent
+>> value?:
+> 
+> Filipe send a series adding the READ_ONCE/WRITE_ONCE annotations for the
+> log_transid (and more):
+> https://lore.kernel.org/linux-btrfs/cover.1696415673.git.fdmanana@suse.com/
+> 
+> This will appear in linux-next soon.
 
-If LARGE_SCRATCH_DEV feature also implies verifying data checksum during
-fsck, I'm strongly wondering if any end user would be happy when fsck a
-10TB fs and waiting hours, just after a unexpected powerloss.
+That looks promising and I will test whether it pleases KCSAN in my setup
+(it looks like it should). I consider filesystem data integrity a paramount.
 
-I can also go with cases like compression feature, bounding a feature to
-mkfs flag or offline tuning, is not flex nor end user friendly.
+If you found this bug report helpful, consider adding:
 
-Yes, for some cases, paired fs features are good, especially for
-fstests, but sometimes it's not.
+Reported-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
 
-(Although for the very initial intention of this patchset, I still
-believe we need "mkfs.btrfs --metadata-uuid" option, that problem itself
-is not worthy all the hassle)
+Best regards,
+Mirsad Todorovac
 
-That's why we allow end users to choose if they want to verify data
-checksum at fsck time, just as an example.
+-- 
+Mirsad Todorovac
+Sistem inženjer
+Grafički fakultet | Akademija likovnih umjetnosti
+Sveučilište u Zagrebu
 
->
-> IOWs, what you want to do is add a config variable for
-> BTFS_SCRATCH_CHECK_DATA, and trigger off that in all btrfs specific
-> functions that need to add, modify or check data checksums.
-
-Yes, for this check-data-csum case, it's possible to go environment
-variables.
-
-But more and more variables are just also going undocumented, just as
-you worried for external scripts.
-
->
->> For now we're not going to enable the "--check-data-csum" option nor we
->> have the ability to teach fstests how to change the behavior.
->
-> We most certainly do have the ability to do this in fstests, and
-> quite easily.
->
-> Another example is the USE_EXTERNAL variable that tells XFS and ext4
-> that external log devices (and rt devices for XFS) are to be used.
-> This has hooks all over mkfs, mount, check, repair, xfs_db, quota
-> and fs population functions so that they all specify devices
-> appropriately.
->
-> That is, this config variable directly modifies the command lines
-> used for these operations - it is an even better example of FS
-> specific device configuration driving by config variables than
-> LARGE_SCRATCH_DEV.  This model will work just fine for stuff like
-> the --check-data-csum btrfs specific check option being talked about
-> here, and the only thing that needs to change is the btrfs specific
-> check/repair functions...
-
-I have already explained, sometimes end users really want to choose
-between checking just several megabytes of metadata, and checking
-several terabytes of data.
-
-Thus paired and on-disk flags is not always the best solution for real
-world usage.
-
->
->> Thus I'm taking the chance to explore any way to "out-source" those
->> mkfs/fsck functionality, even this means other fses may not even bother
->> as the current framework just works good enough for them.
->
-> And as I said above, that's the wrong model for fstests - it means
-> that a typical QA environment is not going to be able to test
-> complex things because the people running the tests do not know how
-> to write these complex "out-sourced" scripts to configure the test
-> environment.
-
-See my "TEST_DEV=3D/dev/dm-3" vs "mkfs.avail/xfs_lvm_luks.sh" case.
-
->
-> Having all the code in fstests and triggering it via a config
-> variable is the right way to do this sort of thing. It works for
-> everyone and it's easy to replicate the test environment and
-> configurations for reproduction of issues that are found.
-
-Mentioned already, the script can be managed by fstests, either as an
-example (need users to modify a little) or guaranteed/recommended test
-combinations.
-
->
-> If the test envirnoment is dependent on private scripts for
-> configuration and reproduction of issues, then how do other people
-> reproduce the problems you might find? Yeah, you have to share all
-> your scripts for everyone to run, and at that point the code
-> actually needs to be in fstests itself because it's proven to be a
-> useful test configuration that everyone should be running....
-
-The existing one is already dependent on the black box block device
-provided by end users.
-
->
->> But IIRC, even f2fs is gaining multi-device support, I believe this is
->> not a btrfs specific thing, but a framework limitation.
->
-> The scratch dev pool was an easy extension to support multi-device
-> btrfs filesystems done in the really early days when there was
-> almost zero btrfs specific test coverage in fstests. I'm not
-> surprised that it has warts and may not do everything that btrfs
-> developers might need these days.
->
-> However, we don't need custom hooks to externalise scripts - we
-> already have a working model for config driven filesystem specific
-> device configuration. I don't see that there is any major common
-> infrastructure change needed, most of what I'm hearing is that the
-> btrfs specific device configuration needs to catch up with how other
-> filesystems have been testing complex device configurations....
-
-External scripts make overriding _scratch_mkfs() and fsck much easier,
-and can still be managed by fstests.
-
-The idea of "external" scripts is to make simple things simple, if your
-setup/fs doesn't need complex setup, your mount.sh/mkfs.sh/check.sh
-would just be one line for your fs.
-
-Meanwhile if you want to go complex, you have all the freedom, while not
-to make other code complex/bloated.
-
-We can even move a lot of notrun checks into the special scripts, making
-most test cases just to care about their workload on a very basic setup.
-Let the complex setup to check if they are really suitable for that test
-case.
-
-Sure there would be some complexity in the communication, but I still
-believe this would make most test cases/infrastructure simpler.
-
-Thanks,
-Qu
-
->
-> Cheers,
->
-> Dave.
+System engineer
+Faculty of Graphic Arts | Academy of Fine Arts
+University of Zagreb, Republic of Croatia
+tel. +385 (0)1 3711 451
+mob. +385 91 57 88 355
