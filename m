@@ -2,76 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BB17BC4A1
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Oct 2023 06:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3038E7BC4C9
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Oct 2023 07:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343527AbjJGEUz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 7 Oct 2023 00:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
+        id S233993AbjJGFTr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 Oct 2023 01:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343492AbjJGEUy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 Oct 2023 00:20:54 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214CCBE;
-        Fri,  6 Oct 2023 21:20:51 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 627BE60155;
-        Sat,  7 Oct 2023 06:20:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1696652448; bh=wHUA1f0W6FCQC1zHhDmW2yQT88G4LC7ETYGV2emjjHU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=erI+azZ7gYg7xZhyTDAfGhMFsB9zHRQHcGZDcv2Ggu2WhG3D0Y3viYz6iMcdFzDd1
-         j5ZnA4bHAPG2ypOs6QvYsZ6Tao63fdMH6SseQGFYExPsRTWCYgT8xA90udMbxtKfJp
-         /c835Kus87iOHRJJh1EZMQbzxBDAz2EKn1GUE/1On30qIzaJB2Srled3PWy4Xdix4d
-         GB0b/2FsYgcHPTlxn5HafjEWcvSNSGR2lBJQ8oZQUP9CPaHU87c2R394TJ/gwHW1p7
-         m0cQnclgJuCqblW2/5qg2KU21w88DOCqApjhL79FjMjJelnQ9jDYRxL0dIdSFZmcFO
-         DPRqm7iQK86ew==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 5W_wY54THf8Z; Sat,  7 Oct 2023 06:20:45 +0200 (CEST)
-Received: from [192.168.1.3] (78-2-88-19.adsl.net.t-com.hr [78.2.88.19])
-        by domac.alu.hr (Postfix) with ESMTPSA id BDCD260152;
-        Sat,  7 Oct 2023 06:20:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1696652445; bh=wHUA1f0W6FCQC1zHhDmW2yQT88G4LC7ETYGV2emjjHU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=r7BdE/Spv+l9iIwWm2SF9TnaBehjqgWYorw6phzkSdf9oUST31ZrIpdQ+4TyKD3SF
-         IecEsyY0/cSbV6g+uJ/r/d3VJao7DbK9VmrLXk9X5/qCdj1/qid83pCCVahJXaGvXN
-         wb6s97+WxzF+IwM4ysstsDZ7bMsMev0edi1REchHm2DkNe70P2/AArmK2vdXNCA0wz
-         JaBrPOUx2flNdRaRf2WoaDNgcywltsw8lcu1GAA2XCngOgmaIydj7l6XuAe+VyHvOV
-         rwIrIjX+ER3ejf36RYj3rkqBnShXn5dV9urrMY/oNeBr810mh3JwgQBEu3ZOKxUVqI
-         8UMz/T5brnqnA==
-Message-ID: <7054f1cc-c02f-4f48-9d73-36040b70fa0c@alu.unizg.hr>
-Date:   Sat, 7 Oct 2023 06:20:43 +0200
+        with ESMTP id S233675AbjJGFTp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 Oct 2023 01:19:45 -0400
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39C6BBD
+        for <linux-btrfs@vger.kernel.org>; Fri,  6 Oct 2023 22:19:44 -0700 (PDT)
+X-Envelope-Mail-From: zblaxell@waya.furryterror.org
+X-Envelope-Mail-From: zblaxell@waya.furryterror.org
+Received: from waya.furryterror.org (waya.vpn7.hungrycats.org [10.132.226.63])
+        by drax.kayaks.hungrycats.org (Postfix) with ESMTP id 83010A7CC29;
+        Sat,  7 Oct 2023 01:14:25 -0400 (EDT)
+Received: from zblaxell by waya.furryterror.org with local (Exim 4.94.2)
+        (envelope-from <zblaxell@waya.furryterror.org>)
+        id 1qozdx-00086Y-4t; Sat, 07 Oct 2023 01:14:25 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix stripe length calculation for non-zoned data chunks
+Date:   Sat,  7 Oct 2023 01:14:20 -0400
+Message-Id: <20231007051421.19657-1-ce3g8jdj@umail.furryterror.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BUG: KCSAN: data-race in btrfs_sync_log [btrfs] /
- btrfs_update_inode [btrfs]
-Content-Language: en-US
-To:     dsterba@suse.cz
-Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org
-References: <01c15818-5765-408b-aff0-6c68b8c2a874@alu.unizg.hr>
- <20231006162649.GL28758@twin.jikos.cz>
-From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-Autocrypt: addr=mirsad.todorovac@alu.unizg.hr; keydata=
- xjMEYp0QmBYJKwYBBAHaRw8BAQdAI14D1/OE3jLBYycg8HaOJOYrvEaox0abFZtJf3vagyLN
- Nk1pcnNhZCBHb3JhbiBUb2Rvcm92YWMgPG1pcnNhZC50b2Rvcm92YWNAYWx1LnVuaXpnLmhy
- PsKPBBMWCAA3FiEEdCs8n09L2Xwp/ytk6p9/SWOJhIAFAmKdEJgFCQ0oaIACGwMECwkIBwUV
- CAkKCwUWAgMBAAAKCRDqn39JY4mEgIf/AP9hx09nve6VH6D/F3m5jRT5m1lzt5YzSMpxLGGU
- vGlI4QEAvOvGI6gPCQMhuQQrOfRr1CnnTXeaXHhlp9GaZEW45QzOOARinRCZEgorBgEEAZdV
- AQUBAQdAqJ1CxZGdTsiS0cqW3AvoufnWUIC/h3W2rpJ+HUxm61QDAQgHwn4EGBYIACYWIQR0
- KzyfT0vZfCn/K2Tqn39JY4mEgAUCYp0QmQUJDShogAIbDAAKCRDqn39JY4mEgIMnAQDPKMJJ
- fs8+QnWS2xx299NkVTRsZwfg54z9NIvH5L3HiAD9FT3zfHfvQxIViWEzcj0q+FLWoRkOh02P
- Ny0lWTyFlgc=
-Organization: Academy of Fine Arts, University of Zagreb
-In-Reply-To: <20231006162649.GL28758@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,HEXHASH_WORD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,111 +39,159 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/6/2023 6:26 PM, David Sterba wrote:
-> On Thu, Sep 21, 2023 at 10:15:49PM +0200, Mirsad Todorovac wrote:
->> Hi,
->>
->> On the vanilla 6.6-rc2 torvalds kernel KCSAN reported this data-race:
->>
->> [ 2690.990793] ==================================================================
->> [ 2690.991470] BUG: KCSAN: data-race in btrfs_sync_log [btrfs] / btrfs_update_inode [btrfs]
->>
->> [ 2690.992804] write to 0xffff88811b57faf8 of 4 bytes by task 40555 on cpu 20:
->> [ 2690.992815] btrfs_sync_log (/home/marvin/linux/kernel/torvalds2/fs/btrfs/tree-log.c:2964) btrfs
->> [ 2690.993484] btrfs_sync_file (/home/marvin/linux/kernel/torvalds2/fs/btrfs/file.c:1954) btrfs
->> [ 2690.994149] vfs_fsync_range (/home/marvin/linux/kernel/torvalds2/fs/sync.c:188)
->> [ 2690.994161] __x64_sys_fsync (/home/marvin/linux/kernel/torvalds2/./include/linux/file.h:45 /home/marvin/linux/kernel/torvalds2/fs/sync.c:213 /home/marvin/linux/kernel/torvalds2/fs/sync.c:220 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218 /home/marvin/linux/kernel/torvalds2/fs/sync.c:218)
->> [ 2690.994172] do_syscall_64 (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:50 /home/marvin/linux/kernel/torvalds2/arch/x86/entry/common.c:80)
->> [ 2690.994186] entry_SYSCALL_64_after_hwframe (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:120)
->>
->> [ 2690.994203] read to 0xffff88811b57faf8 of 4 bytes by task 5338 on cpu 21:
->> [ 2690.994214] btrfs_update_inode (/home/marvin/linux/kernel/torvalds2/fs/btrfs/transaction.h:175 /home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:4016) btrfs
->> [ 2690.994877] btrfs_finish_one_ordered (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:4028 /home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3139) btrfs
->> [ 2690.995541] btrfs_finish_ordered_io (/home/marvin/linux/kernel/torvalds2/fs/btrfs/inode.c:3230) btrfs
->> [ 2690.996205] finish_ordered_fn (/home/marvin/linux/kernel/torvalds2/fs/btrfs/ordered-data.c:304) btrfs
->> [ 2690.996871] btrfs_work_helper (/home/marvin/linux/kernel/torvalds2/fs/btrfs/async-thread.c:314) btrfs
->> [ 2690.997539] process_one_work (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2630)
->> [ 2690.997551] worker_thread (/home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2697 /home/marvin/linux/kernel/torvalds2/kernel/workqueue.c:2784)
->> [ 2690.997562] kthread (/home/marvin/linux/kernel/torvalds2/kernel/kthread.c:388)
->> [ 2690.997571] ret_from_fork (/home/marvin/linux/kernel/torvalds2/arch/x86/kernel/process.c:147)
->> [ 2690.997583] ret_from_fork_asm (/home/marvin/linux/kernel/torvalds2/arch/x86/entry/entry_64.S:312)
->>
->> [ 2690.997598] value changed: 0x00000004 -> 0x00000005
->>
->> [ 2690.997613] Reported by Kernel Concurrency Sanitizer on:
->> [ 2690.997621] CPU: 21 PID: 5338 Comm: kworker/u65:7 Tainted: G             L     6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0 #41
->> [ 2690.997633] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
->> [ 2690.997640] Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
->> [ 2690.998311] ==================================================================
->>
->> fs/btrfs/tree-log.c
->> -------------------------------------
->> 2948         /*
->> 2949          * We _must_ update under the root->log_mutex in order to make sure we
->> 2950          * have a consistent view of the log root we are trying to commit at
->> 2951          * this moment.
->> 2952          *
->> 2953          * We _must_ copy this into a local copy, because we are not holding the
->> 2954          * log_root_tree->log_mutex yet.  This is important because when we
->> 2955          * commit the log_root_tree we must have a consistent view of the
->> 2956          * log_root_tree when we update the super block to point at the
->> 2957          * log_root_tree bytenr.  If we update the log_root_tree here we'll race
->> 2958          * with the commit and possibly point at the new block which we may not
->> 2959          * have written out.
->> 2960          */
->> 2961         btrfs_set_root_node(&log->root_item, log->node);
->> 2962         memcpy(&new_root_item, &log->root_item, sizeof(new_root_item));
->> 2963
->> 2964 →       root->log_transid++;
->> 2965         log->log_transid = root->log_transid;
->> 2966         root->log_start_pid = 0;
->> 2967         /*
->> 2968          * IO has been started, blocks of the log tree have WRITTEN flag set
->> 2969          * in their headers. new modifications of the log will be written to
->> 2970          * new positions. so it's safe to allow log writers to go in.
->> 2971          */
->> 2972         mutex_unlock(&root->log_mutex);
->>
->> fs/btrfs/transaction.h
->> ----------------------------------
->> 170 static inline void btrfs_set_inode_last_trans(struct btrfs_trans_handle *trans,
->> 171                                               struct btrfs_inode *inode)
->> 172 {
->> 173         spin_lock(&inode->lock);
->> 174         inode->last_trans = trans->transaction->transid;
->> 175         inode->last_sub_trans = inode->root->log_transid;
->> 176         inode->last_log_commit = inode->last_sub_trans - 1;
->> 177         spin_unlock(&inode->lock);
->> 178 }
->>
->> I am not certain whether the reader and writer side contend for the same lock, but it
->> seems that on the safe side would be putting the reader into READ_ONCE() to get a consistent
->> value?:
-> 
-> Filipe send a series adding the READ_ONCE/WRITE_ONCE annotations for the
-> log_transid (and more):
-> https://lore.kernel.org/linux-btrfs/cover.1696415673.git.fdmanana@suse.com/
-> 
-> This will appear in linux-next soon.
+Commit f6fca3917b4d "btrfs: store chunk size in space-info struct"
+introduces several regressions.  One of these is the regression fixed
+by 5da431b71d4b "btrfs: fix the max chunk size and stripe length
+calculation".  Another is fixed by my patch, which turns out to be
+identical to a patch that was previously proposed, but its importance
+was missed.
 
-That looks promising and I will test whether it pleases KCSAN in my setup
-(it looks like it should). I consider filesystem data integrity a paramount.
+There are some remaining problems with those commits (and a few adjacent
+ones) which I'm not going to touch, but I am going to rant about them
+a little.
 
-If you found this bug report helpful, consider adding:
+5da431b71d4b broke the one use case that f6fca3917b4d was intended to
+support:  metadata chunks larger than 1 GiB.  Between the two commits,
+metadata chunks could have stripe_len > 1 GiB, but 5da431b71d4b imposes
+a maximum stripe_len == 1 GiB, effectively capping the metadata chunk
+size at the original 1 GiB and defeating f6fca3917b4d.
 
-Reported-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Currently it's still possible to create metadata chunks with smaller
+stripe_len than 1 GiB, and maybe there's a corner case (especially
+on smaller filesystems) where that could still be useful.  It's also
+possible to force data chunks to be created with a smaller-than-1-GiB
+stripe_len which would be useful if the 10% heuristic wasn't good enough
+for a particular small-filesystem workload.  But all of this paragraph
+is just an implementation looking for a use case--if 50 GiB filesystems
+have these kinds of problems, the practical solution is more likely to
+be found in using mixed_bg instead of separate data and metadata.
 
-Best regards,
-Mirsad Todorovac
+IMHO f6fca3917b4d should be reverted without making any attempt to fix
+its remaining problems.  f6fca3917b4d was a terrible approach for its
+ostensible goal, for two reasons:
 
--- 
-Mirsad Todorovac
-Sistem inženjer
-Grafički fakultet | Akademija likovnih umjetnosti
-Sveučilište u Zagrebu
+1.  The simpler reason is that the feature allows a device to have
+dev_extents of varying sizes.  That's usually a bad thing all by itself,
+particularly on large filesystems, and even worse when striped profiles
+(raid0/10/5/6) are used.
 
-System engineer
-Faculty of Graphic Arts | Academy of Fine Arts
-University of Zagreb, Republic of Croatia
-tel. +385 (0)1 3711 451
-mob. +385 91 57 88 355
+It's a useful constraint to disallow a larger filesystem to allocate any
+stripe_len that is not exactly 1 GiB (or a constant size used across the
+entire FS) for any reason.  The short stripe at the end of the device
+isn't worth massive filesystem fragmentation to use, and the 32M hole
+left behind when a system chunk is relocated can lead to chaos after a
+few drive upgrades.
+
+Over the course of a large filesystem's lifetime, its devices may be
+replaced, upgraded, and rebalanced many times.  If the filesystem is
+using a striped profile which tries to allocate a stripe on every device
+in the filesystem, then variation in dev_extent sizes will result in
+_explosive_ dev_extent fragmentation as the filesystem fills up.  Some of
+my filesystems have reached the point where almost 10% of the filesystem
+cannot be used because the majority of chunks are smaller than 128 MiB,
+or even nr_devs * 1 MiB.  It can take _years_ of balancing to fix a
+mess that takes only a few months to create.
+
+Even the existing system chunk stripe_len of 32 MiB, and the partial
+dev_extent at the end of a device that is not an exact multiple of 1
+GiB, are both bad.  We should get rid of all the existing cases where
+stripe_len != SZ_1G on filesystems above some size (say 1 TiB or larger),
+and definitely not add any new ones.
+
+
+2.  The other reason is that it is better for ENOSPC avoidance to have
+more small metadata chunks than fewer large ones.
+
+Balance, scrub, and discard all lock block groups to prevent modification
+while they're running.  This means that a filesystem can be in a state
+where it has enough space for the global reserve, but can't use some
+of the space because balance, scrub, or discard is running, so when
+it's time to use the space, surprise, it's not available after all.
+
+If the filesystem only has one metadata block group (e.g. because it's
+a huge block group allocated with the use of the configurable chunk_size
+feature), then during scrub, discard, or balance, it must abruptly double
+its metadata allocation, or hit ENOSPC.
+
+My favorite example of this is trying to replace a small but full device
+with a larger one, where the small device has no unallocated space
+and only one metadata block group.  The replace fails because replace
+(like scrub) locks the only metadata block group, no new metadata block
+groups are possible, and the filesystem becomes read-only during the
+next metadata update due to lack of space.  The replace can proceed if
+the user balances away one data block group to create a new unallocated
+space, then allocates a metadata block group, then starts the replace
+again, because now there are two metadata block groups with free space
+and replace can't lock both at the same time.  We have to explain this
+to new users (and occasionally to old ones!) a few times a year.
+
+A 2-device raid1 needs 5 block groups containing a total of 512 MiB of
+allocated but unused metadata space in the worst case:  balance, discard,
+and 2 scrub threads can lock up to 4 block groups, and without counting
+free space from those, there must be one or more block groups remaining
+with a total of 512M of free space for the global reserve.  If the block
+groups are 1 GiB, in the worst case, the filesystem needs to keep 4.5
+GiB of unused metadata space allocated.  On a smaller filesystem, less
+than 1.0 GiB is needed due to smaller block groups and smaller global
+reserve.  If the block groups are 5 GiB each, in the worst case 20.5
+GiB of allocated but unused metadata space is needed to avoid ENOSPC.
+This gets worse on filesystems with more devices, as each device comes
+with a scrub thread to lock another block group in the worst case,
+e.g. a 8-device filesystem with 5 GiB metadata block groups could require
+50.5 GiB of reserved metadata space, but only 10.5 GiB if it used 1 GiB
+metadata block groups.
+
+fstrim, device remove and device replace also lock block groups, but
+they can't run concurrently with balance, discard, and scrub.  If space
+is reserved for the latter three operations, then it is also available
+to the former three.
+
+A better solution for reserving metadata space is to keep the metadata
+block groups the same size, but increase their number.  Metadata block
+group reclaim should sort block groups by available free space, then
+exclude the highest N block groups from the total (N = nr_devs + 1 (for
+balance) + 1 (for discard or fstrim) and count the total free space
+that is left.  Block groups should not be removed if it would bring
+non-excluded free space below the global reserve amount.  As metadata
+block groups fill up, empty block groups should be added to increase
+space above the global reserve.
+
+
+3.  (bonus reason!)  the chunk_size parameter isn't a very useful thing
+to control from sysfs.  There's a fundamental unit conformability error
+when trying to map chunk_size (a number of logical bytes in virtual
+address space) to stripe_len (a number of physical bytes in device
+address space).  The third term in the conversion equation between
+these units--number of data-bearing devices--is not a constant across
+the filesystem.  Without more information, the implementation can't
+guess the user's intent as nr_devs changes from one chunk to another,
+so it's always going to be wrong in at least one useful case.
+
+Earlier versions of f6fca3917b4d on the mailing list did try to set
+stripe_len, but then seemed to get confused about what max_stripe_len
+and max_chunk_size do, and the result was several bugs.
+
+It would be better to control nr_devs, stripe_len, and chunk_size
+separately as ranged sysfs parameters (i.e. with max and min values).
+Control over these parameters can be a useful tool for a user who knows
+what they're doing.  A user might have a big filesystem where longer
+stripe_len is desirable (so there are fewer block groups to manage,
+as long as the change is made early and all block groups have the same
+stripe_len), or a legacy filesystem with a lot of unusable small holes
+due to dev_extent fragmentation (where it would be better for btrfs to
+fail to allocate at all than to create a tiny block group that can't
+hold larger extents), or a huge array of many devices with bandwidth
+constraints (where maybe chunks with more than 6 stripes are undesirable).
+Or even all of these at the same time (long narrow block groups with
+no tiny fragments allowed).  If this is going to exposed via sysfs at
+all, there should be a different, more useful set of sysfs knobs, with
+different semantics than the ones f6fca3917b4d had.
+
+
+I am especially disappointed that 19fc516a516f "btrfs: sysfs: export
+chunk size in space infos" explicitly disallows changing the chunk size
+(and therefore the stripe_len) of system chunks, with no rationale that
+I can find.  It would be very useful to make system chunks be 1 GiB long,
+so they match the size of other block group types, making no fragmentation
+of dev_extents possible.
+
