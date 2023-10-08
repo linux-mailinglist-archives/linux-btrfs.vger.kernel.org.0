@@ -2,64 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 989767BCD79
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Oct 2023 11:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0D67BCE97
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Oct 2023 15:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344552AbjJHJRe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 8 Oct 2023 05:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
+        id S234348AbjJHNgJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 8 Oct 2023 09:36:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344549AbjJHJRd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 8 Oct 2023 05:17:33 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65365BA
-        for <linux-btrfs@vger.kernel.org>; Sun,  8 Oct 2023 02:17:32 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c364fb8a4cso30867285ad.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 08 Oct 2023 02:17:32 -0700 (PDT)
+        with ESMTP id S234338AbjJHNgH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 8 Oct 2023 09:36:07 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CF4CA;
+        Sun,  8 Oct 2023 06:36:04 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-690bd59322dso2686575b3a.3;
+        Sun, 08 Oct 2023 06:36:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696756651; x=1697361451; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=F9DQlvd3k99P2AHDDStyFhNyOUtajCeUWyctk7cKSHo=;
-        b=KcMp65Rs2ShipnW+QsmCHMmd/dtuVy9exMhSJMv75DyRTQ3dzfPG2Mvng1XcLcwnAz
-         X1TtLCUuvU2OKktgY7Ang0z2UOkWmk5md6FHtM9ys9a/Ca8IEYest8Rr4FyUTIcBuYt2
-         PNdX8Eq7bHkDVEtmTfqQz/UCvLBS7GI2VYLAdoUS7dPDvHAHAHweXink80FwxtMx72CV
-         /mGdvBJMB6BrSEaiB+dYdM688nnzJQq1xzfoWFtZu3mLoMCs4hb50g19NYmOAUQE85yq
-         yK49Z9arXDXtn/LS6ZfGJV/N9lhmFjY07ovQIX0WvFva0lU4DuFM0X/VWRao6wpRdhsl
-         dBJw==
+        d=gmail.com; s=20230601; t=1696772164; x=1697376964; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f3C2YJQ++TrMtt8XMmFcOgeObKioQb8RQl5GTEnxRYY=;
+        b=RD+MvbIActNUU6C32NN7LXAnWwec3JOFxU4hxQqobWWZARAw4uv4FRkomIAfBpIdp6
+         Ch/KBx5Q8qh0XB6ctIdRRESgq2OhFwN7YnjSoJucaswdkP6a8GDypwP8waAZ/iL7emjp
+         4JUe/N2dJkltOSuYZPOhWZYtEtiGwiNr1ewtMWZNW4QZJZn7bS5OxHyDW2sw5lKCf1Mg
+         Qxe7NPBd3HDv+C3vg8qGIJeSReZzfx3CaOd9jw/hQugW8zyXjgsnUTlOpO9tkD6BKPAt
+         XUXWQP6Pe8d2Sk9/7cT8N8Ictv1ZtlUZ3IloImpDscpEA+qYUD5z013s7t5kpFtyMfuB
+         /k9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696756651; x=1697361451;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F9DQlvd3k99P2AHDDStyFhNyOUtajCeUWyctk7cKSHo=;
-        b=HmCVJiSfm4UToLGSTliMxJsRN+w3cGkOZds2E0nOkVSROBGClovpqxoRdBMiAocrKy
-         esmNHsMKDoDO9rQ1EnVXIKs1mhcNddDbLsSwu3AJF+xdkaGNhHxfArAikiEUc7LfURNE
-         jwskW4J7XyS8yz+LmuDQMqJ1nt1LSRB/pqVkUngjnM/uIgHjfKB36Yd8I96kaBKnzJSU
-         9CzSOpm5vmWIHW3M3F43y+2BLi3RaeHEcx/gLEMfl2ulE59qw6p9e6uA2oM6kLd4SVMR
-         MffhfIX4a8zJPfIFK3bTFEYraA0+vxKzuKYJ+w/ViXVYpFBmpwPIBLAL8kgFqchxtMYa
-         pMMQ==
-X-Gm-Message-State: AOJu0YyPbLnAculOqkSB5YHTOyhYclkgsPCQlKu6tRpTqOjG8T20HJW5
-        uu58t6JF4J37mkzvIFPhk4RnfuW4DMV7nQ==
-X-Google-Smtp-Source: AGHT+IExF2voVEP5meEi/OFas4XMzB7czyTnmWHi9q5QJs8KySdUIHA6sI2gozGbcCyi6vbg6IQquA==
-X-Received: by 2002:a17:902:9885:b0:1c6:117b:7086 with SMTP id s5-20020a170902988500b001c6117b7086mr12197155plp.5.1696756651431;
-        Sun, 08 Oct 2023 02:17:31 -0700 (PDT)
-Received: from sidong.. ([61.83.209.48])
-        by smtp.gmail.com with ESMTPSA id 10-20020a170902c20a00b001ae0152d280sm7127020pll.193.2023.10.08.02.17.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Oct 2023 02:17:30 -0700 (PDT)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Sidong Yang <realwakka@gmail.com>
-Subject: [PATCH] btrfs-progs: qgroup: check null in comparing paths
-Date:   Sun,  8 Oct 2023 09:17:17 +0000
-Message-Id: <20231008091717.27049-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1696772164; x=1697376964;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f3C2YJQ++TrMtt8XMmFcOgeObKioQb8RQl5GTEnxRYY=;
+        b=hu9x85SFw/MFu0pIiUgFf237EmRgr52hcZlqwj3uXRI/539Z+Q5rBt8dzyGVtifT/6
+         JSiTJhufq3AURA8aQtloMSDdHNDtv2+QIGDrXqYSvgG9YVpV0M57HRTHd4Cw/Ks8P5sh
+         f3XLH51yJZBz+dLZ1oQ4vZ0eaKDmB/xDoTKxzrWzF1epnkvPUvVBsE1a1i1kWCJaFvSy
+         iTbe59VADBxE9OyfFeXcdlU8RI85gzk5lwPmvVlKYSi9pt3zAyuhnG2/LUzYo2VTPTcw
+         M416wMWdLJPhiOlPXL9hpnw6GMkdcE5BLkQdJ/tiX0iiLeoTlib91FeMdgy2MS/ZOlDi
+         CesA==
+X-Gm-Message-State: AOJu0Yx1MGPLbFP412ErbYrPADQ+bsUjSzLhyO8ies6Ao8MTPnjYoXyU
+        oPv+Tv2IgFXHK00dOe5Wxf0=
+X-Google-Smtp-Source: AGHT+IE68Y3LKvsBHUpJMMPK95SwkQZkayPN1x8wuVejOFs8DLxHeGXOIQXhpO8YVH0QOtDaUZSm6w==
+X-Received: by 2002:a05:6a20:8e0c:b0:15a:7d2:7594 with SMTP id y12-20020a056a208e0c00b0015a07d27594mr13164508pzj.11.1696772164136;
+        Sun, 08 Oct 2023 06:36:04 -0700 (PDT)
+Received: from ?IPV6:ddf2:f99b:21f4::3? ([2403:18c0:3:961::])
+        by smtp.gmail.com with ESMTPSA id s17-20020a170902ea1100b001bc676df6a9sm3373726plg.132.2023.10.08.06.36.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Oct 2023 06:36:03 -0700 (PDT)
+Message-ID: <162d90ab-e538-402e-90f1-304183bf6e76@gmail.com>
+Date:   Sun, 8 Oct 2023 21:35:58 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: kernel bug when performing heavy IO operations
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Filesystem Development <linux-fsdevel@vger.kernel.org>
+References: <f847bc14-8f53-0547-9082-bb3d1df9ae96@gmail.com>
+ <ZOrG5698LPKTp5xM@casper.infradead.org>
+ <7d8b4679-5cd5-4ba1-9996-1a239f7cb1c5@gmail.com>
+ <ZOs5j93aAmZhrA/G@casper.infradead.org>
+ <b290c417-de1b-4af8-9f5e-133abb79580d@gmail.com>
+ <ZRPXlfGFWiCNZ6sh@casper.infradead.org>
+Content-Language: en-US
+From:   dianlujitao@gmail.com
+In-Reply-To: <ZRPXlfGFWiCNZ6sh@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,36 +82,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch fixes a bug that could occur when comparing paths in showing
-qgroups list. Old code doesn't check it and the bug occur when there is
-stale qgroup its path is null. This patch checkes whether it is null and
-return without comparing paths.
+The problem does not occur with 6.1.56 lts kernel, not that old as you 
+expected.
 
-Issue: #687
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
----
- cmds/qgroup.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/cmds/qgroup.c b/cmds/qgroup.c
-index d9104d1a..265c4910 100644
---- a/cmds/qgroup.c
-+++ b/cmds/qgroup.c
-@@ -486,6 +486,14 @@ static int comp_entry_with_path(struct btrfs_qgroup *entry1,
- 	if (ret)
- 		goto out;
- 
-+	if (!p1) {
-+		ret = p2 ? 1 : 0;
-+		goto out;
-+	} else if (!p2) {
-+		ret = -1;
-+		goto out;
-+	}
-+
- 	while (*p1 && *p2) {
- 		if (*p1 != *p2)
- 			break;
--- 
-2.34.1
-
+在 2023/9/27 15:19, Matthew Wilcox 写道:
+> On Wed, Sep 27, 2023 at 01:36:52PM +0800, dianlujitao@gmail.com wrote:
+>> Hello, I got some logs with 6.5.4 kernel from the official linux package of
+>> Arch, no zen patches this time. Full dmesg is uploaded to
+>> https://fars.ee/F1yM and below is a small snippet for your convenience, from
+>> which PG_offline is no longer set:
+>>
+>> [177850.039441] BUG: Bad page map in process ld.lld pte:8000000edacc4025
+>> pmd:147f96067
+>> [177850.039454] page:000000007415dd6c refcount:22 mapcount:-237
+>> mapping:00000000b0c37ca6 index:0x1075 pfn:0xedacc4
+> It still looks like memory corruption to me.  If you go back to an older
+> kernel (say 5.10 or 5.15) does the problem go away?  It's not really
+> dispositive either way, since a newer kernel might drive the hardware
+> closer to the edge, but it might give some clue.
