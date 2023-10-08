@@ -2,44 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D047BCB18
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Oct 2023 02:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7757BCB0E
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Oct 2023 02:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234518AbjJHAwJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 7 Oct 2023 20:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34808 "EHLO
+        id S234475AbjJHAvo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 7 Oct 2023 20:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234212AbjJHAvj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 Oct 2023 20:51:39 -0400
+        with ESMTP id S234462AbjJHAvX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 7 Oct 2023 20:51:23 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263F010D2;
-        Sat,  7 Oct 2023 17:50:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CD0BC433C7;
-        Sun,  8 Oct 2023 00:50:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA1610C6;
+        Sat,  7 Oct 2023 17:50:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1A67C43140;
+        Sun,  8 Oct 2023 00:50:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696726229;
-        bh=rpXJMwlvqNMOE2HibuasM4ZXv2uXXSc6z2Yn8Lo40js=;
+        s=k20201202; t=1696726230;
+        bh=EkHoCInJwksWFH4F14Ao5+S5PAaPJwPimOj1qvbbhLc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jMOGGT3t7GdcLt523edqAsERM+EXe/jYhR1en8B8ZZykqReB9zJEneHR9CibTkB/A
-         fA9uMle66sP+q4Z17+W1veuuBysUF4KkhXRZ6ph0TaXQYx0BqZ/GJVoPXGsPRLw/LW
-         JjQcq6I+DHSsmyo3VB1wzbousXEQ6tS3gMWNm1BmLsB0OwhrHYXAJ5rnX50dToJ6fl
-         7MwcN35dQ6aZBRWproHgEj0/hDTQKpIFNcnUOZf6K1KacSJiqbPKheXr2Yq7drUw31
-         ux6uLzOPHt1Ug/K76K++xq0wU0NTN68bWQjlIxm2FKhnu2AwQNepe68PyRa4DYbk97
-         4LVyBDTdOpW8g==
+        b=Vb4uVprR4c5BHTfNLkrlZHsrauYjluAS9cvaLwOXHjb8uio2MuE1BfPOH0TQReJzh
+         mwwzhQKoyzwyr90vNkK20rZPnyTkEUZlhKb5kdVTSikYzIKwGZ43c0P5WlRdg2Nhx4
+         J8v6NHBFYadc/V267xnx8Fgcihe+AgwnJC1HUhBicwL/xAwJW9Q3wWDotAmwc35ak+
+         5bzsxYcLi32Nhq5bfFOUBMm1HJYBm4lS6qCW64Ybp4FWmBsRCkCobtLBW2etvsNDq0
+         GP9RMOy1mZ7FpRLMZm+vJWxLGwx0rRNtVKYql5rG1HsoVtFF1vNIh1Ob3I6DSmVvds
+         TC2eYB9zEY5Ug==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
+Cc:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 2/8] btrfs: return -EUCLEAN for delayed tree ref with a ref count not equals to 1
-Date:   Sat,  7 Oct 2023 20:50:18 -0400
-Message-Id: <20231008005024.3768418-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 3/8] btrfs: initialize start_slot in btrfs_log_prealloc_extents
+Date:   Sat,  7 Oct 2023 20:50:19 -0400
+Message-Id: <20231008005024.3768418-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231008005024.3768418-1-sashal@kernel.org>
 References: <20231008005024.3768418-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.257
@@ -54,48 +54,52 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 1bf76df3fee56d6637718e267f7c34ed70d0c7dc ]
+[ Upstream commit b4c639f699349880b7918b861e1bd360442ec450 ]
 
-When running a delayed tree reference, if we find a ref count different
-from 1, we return -EIO. This isn't an IO error, as it indicates either a
-bug in the delayed refs code or a memory corruption, so change the error
-code from -EIO to -EUCLEAN. Also tag the branch as 'unlikely' as this is
-not expected to ever happen, and change the error message to print the
-tree block's bytenr without the parenthesis (and there was a missing space
-between the 'block' word and the opening parenthesis), for consistency as
-that's the style we used everywhere else.
+Jens reported a compiler warning when using
+CONFIG_CC_OPTIMIZE_FOR_SIZE=y that looks like this
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+  fs/btrfs/tree-log.c: In function ‘btrfs_log_prealloc_extents’:
+  fs/btrfs/tree-log.c:4828:23: warning: ‘start_slot’ may be used
+  uninitialized [-Wmaybe-uninitialized]
+   4828 |                 ret = copy_items(trans, inode, dst_path, path,
+	|                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   4829 |                                  start_slot, ins_nr, 1, 0);
+	|                                  ~~~~~~~~~~~~~~~~~~~~~~~~~
+  fs/btrfs/tree-log.c:4725:13: note: ‘start_slot’ was declared here
+   4725 |         int start_slot;
+	|             ^~~~~~~~~~
+
+The compiler is incorrect, as we only use this code when ins_len > 0,
+and when ins_len > 0 we have start_slot properly initialized.  However
+we generally find the -Wmaybe-uninitialized warnings valuable, so
+initialize start_slot to get rid of the warning.
+
+Reported-by: Jens Axboe <axboe@kernel.dk>
+Tested-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent-tree.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/btrfs/tree-log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index a9191a0d2f4c9..f47316edcf423 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1681,12 +1681,12 @@ static int run_delayed_tree_ref(struct btrfs_trans_handle *trans,
- 		parent = ref->parent;
- 	ref_root = ref->root;
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 926b1d34e55cc..f75333d7b78a5 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -4283,7 +4283,7 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
+ 	struct extent_buffer *leaf;
+ 	int slot;
+ 	int ins_nr = 0;
+-	int start_slot;
++	int start_slot = 0;
+ 	int ret;
  
--	if (node->ref_mod != 1) {
-+	if (unlikely(node->ref_mod != 1)) {
- 		btrfs_err(trans->fs_info,
--	"btree block(%llu) has %d references rather than 1: action %d ref_root %llu parent %llu",
-+	"btree block %llu has %d references rather than 1: action %d ref_root %llu parent %llu",
- 			  node->bytenr, node->ref_mod, node->action, ref_root,
- 			  parent);
--		return -EIO;
-+		return -EUCLEAN;
- 	}
- 	if (node->action == BTRFS_ADD_DELAYED_REF && insert_reserved) {
- 		BUG_ON(!extent_op || !extent_op->update_flags);
+ 	if (!(inode->flags & BTRFS_INODE_PREALLOC))
 -- 
 2.40.1
 
