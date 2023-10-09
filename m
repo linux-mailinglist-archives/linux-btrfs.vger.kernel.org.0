@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 121787BD265
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 05:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1397BD266
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 05:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345036AbjJIDeg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 8 Oct 2023 23:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
+        id S1345043AbjJIDej (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 8 Oct 2023 23:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344903AbjJIDef (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 8 Oct 2023 23:34:35 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54161A6
-        for <linux-btrfs@vger.kernel.org>; Sun,  8 Oct 2023 20:34:33 -0700 (PDT)
+        with ESMTP id S1344903AbjJIDei (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 8 Oct 2023 23:34:38 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F3DA3
+        for <linux-btrfs@vger.kernel.org>; Sun,  8 Oct 2023 20:34:36 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 039262184E
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 03:34:32 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F07F51F891
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 03:34:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1696822472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1696822473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DU/sXgBR2SNCq6Z8AXjtQZHb3Jkek8I9OsEe3xwaTik=;
-        b=Yfo0dgDByWwl2u9Y0s6xnGaLArMcmTKYdY8M1VmkLcR4WF+O0KtSkd7wE5hdj6R6j17F9J
-        tKGJeQPnWoXQMVXbk2K9oMqblHmzip7qdMd+e7ExXNi8ANRN/D6L0jqztT0GZvizjd+pnw
-        /7S5Id23I5F/lKYSmWHAiMxL4ALscII=
+        bh=ENHIiWvAJgIpJoJoQKB6rj4+tEyD7WkDTR4HHnco4DY=;
+        b=P39Onn/9aaDjU4nBk/wi8t5fXfGiWp00DiQwahj50uoM1uRtKE5hyqWLHmD+pDDxJAKqP8
+        ptceUdhx/fE7qH1rzY8ejmy37l7sMcM8zKcrd5j7aL5cKwNzwz3G6mYKErIaFOIkVMKUal
+        gj4m4GpPVJbmh1Amei3YSiQiTPn7C54=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD1C1138F1
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 03:34:30 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BB353138F1
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 03:34:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id oDf+GsZ0I2X8PQAAMHmgww
+        id wEV6Fsh0I2X8PQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Oct 2023 03:34:30 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Oct 2023 03:34:32 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs-progs: mkfs/rootdir: add the missing xattr for the rootdir inode
-Date:   Mon,  9 Oct 2023 14:04:08 +1030
-Message-ID: <e1291beb0f3aead7d491e879f7348c4ef58f01e4.1696822345.git.wqu@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: tests/mkfs: make sure rootdir got its xattr copied
+Date:   Mon,  9 Oct 2023 14:04:09 +1030
+Message-ID: <3daf7ed97305f5482800e28c960e3b5c2ed222b3.1696822345.git.wqu@suse.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1696822345.git.wqu@suse.com>
 References: <cover.1696822345.git.wqu@suse.com>
@@ -59,55 +59,70 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When using "mkfs.btrfs" with "--rootdir" option, the top level inode
-(rootdir) will not get the same xattr from the source dir:
+The new test case would:
 
-  mkdir -p source_dir/
-  touch source_dir/file
-  setfattr -n user.rootdir_xattr source_dir/
-  setfattr -n user.regular_xattr source_dir/file
-  mkfs.btrfs -f --rootdir source_dir $dev
-  mount $dev $mnt
-  getfattr $mnt
-  # Nothing <<<
-  getfattr $mnt/file
-  # file: $mnt/file
-  user.regular_xattr <<<
+- Create a dir as source dir for --rootdir
+- Add xattr for that source dir
+- Create a file inside that source dir
+- Add xattr for that file
+- Run "mkfs.btrfs --rootdir" with that source dir
+- Mount the created fs
+- Make sure the following xattr exists:
+  * Xattr for the rootdir
+  * Xattr for that file inside the mount point
 
-[CAUSE]
-In function traverse_directory(), we only call add_xattr_item() for all
-the child inodes, not really for the rootdir inode itself, leading to
-the missing xattr items.
-
-[FIX]
-Also call add_xattr_item() for the rootdir inode.
-
-Issue: #688
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- mkfs/rootdir.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ tests/mkfs-tests/027-rootdir-xattr/test.sh | 40 ++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+ create mode 100755 tests/mkfs-tests/027-rootdir-xattr/test.sh
 
-diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-index a413a31eb2d6..f6328c9df2ec 100644
---- a/mkfs/rootdir.c
-+++ b/mkfs/rootdir.c
-@@ -466,6 +466,14 @@ static int traverse_directory(struct btrfs_trans_handle *trans,
- 	dir_entry->inum = parent_inum;
- 	list_add_tail(&dir_entry->list, &dir_head->list);
- 
-+	ret = add_xattr_item(trans, root, btrfs_root_dirid(&root->root_item),
-+			     dir_name);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to add xattr item for the top level inode: %m");
-+		goto fail_no_dir;
-+	}
+diff --git a/tests/mkfs-tests/027-rootdir-xattr/test.sh b/tests/mkfs-tests/027-rootdir-xattr/test.sh
+new file mode 100755
+index 000000000000..bff9dc71d8e0
+--- /dev/null
++++ b/tests/mkfs-tests/027-rootdir-xattr/test.sh
+@@ -0,0 +1,40 @@
++#!/bin/bash
++# Test if the source dir has xattr, "mkfs.btrfs --rootdir" would properly copy
++# that xattr to the rootdir inode.
 +
- 	root_dir_key.objectid = btrfs_root_dirid(&root->root_item);
- 	root_dir_key.offset = 0;
- 	root_dir_key.type = BTRFS_INODE_ITEM_KEY;
++source "$TEST_TOP/common" || exit
++
++setup_root_helper
++prepare_test_dev
++
++check_global_prereq setfattr
++check_global_prereq getfattr
++
++# Here we don't want to use /tmp, as it's pretty common /tmp is tmpfs, which
++# doesn't support xattr.
++# Instead we go $TEST_TOP/btrfs-progs-mkfs-tests-027.XXXXXX/ instead.
++src_dir=$(mktemp -d --tmpdir=$TEST_TOP btrfs-progs-mkfs-tests-027.XXXXXX)
++run_mayfail setfattr -n user.rootdir "$src_dir"
++if [ $? -ne 0 ]; then
++	rm -rf -- "$src_dir"
++	_not_run "unable to set xattr to temporaray directory"
++fi
++run_check touch "$src_dir/foobar"
++run_check setfattr -n user.foobar "$src_dir/foobar"
++
++run_check_mkfs_test_dev --rootdir "$src_dir"
++run_check_mount_test_dev
++
++attr=$(run_check_stdout getfattr -n user.rootdir --absolute-names "$src_dir")
++if ! echo $attr | grep -q "user.rootdir" ; then
++	rm -rf -- "$src_dir"
++	_fail "no rootdir xattr found"
++fi
++
++attr=$(run_check_stdout getfattr -n user.foobar --absolute-names "$src_dir/foobar")
++if ! echo $attr | grep -q "user.foobar" ; then
++	rm -rf -- "$src_dir"
++	_fail "no regular file xattr found"
++fi
++
++rm -rf -- "$src_dir"
 -- 
 2.42.0
 
