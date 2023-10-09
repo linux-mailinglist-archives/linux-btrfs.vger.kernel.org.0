@@ -2,121 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ECC7BE7F1
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 19:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7327BE896
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 19:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377886AbjJIR3b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Oct 2023 13:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
+        id S1377041AbjJIRre (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Oct 2023 13:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377428AbjJIR3a (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Oct 2023 13:29:30 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AD1B7
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 10:29:27 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-69af8a42066so2586734b3a.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Oct 2023 10:29:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696872567; x=1697477367; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xmOFJ7BPS0CGwUS7ZxzIQam3KgDjrxQW8SgccLQm/wg=;
-        b=W+LO7eJ8NduQhx2ab6yej00MuKZEMBVFNWOA1bgBDXr4JtClsqXJMmUfcmdhqSN53M
-         uoeDjownN2FPtlyFRi0yd+dRy7P+BoAxwB1Ppps/92TJi4sLYl3MOa2CTpAmjnFZhGqV
-         ai9SGZJl5n9BpTmZd5B0cyLb8P/6YSsvIy4fw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696872567; x=1697477367;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xmOFJ7BPS0CGwUS7ZxzIQam3KgDjrxQW8SgccLQm/wg=;
-        b=CERr6CU+FYPrpMmaw98Ly6Q8CnEaWdp/2/QZcO/5TeU+go08IA7Gu3ZRcYTX9N8LiI
-         VnbheHUYqWDweEZh+37vIR9vfn7PAdLIba/hjlNNXDSDyrWCuZOpM0LL+eE1/RTSzLTc
-         AOKTXTydbiTsGi08+iZ4RbaSMaKSjCW0Fj2SzsWfj7Z1gluv0mm7ONYcaKZuBs1VZZjR
-         R/F7RHe0e02j2T2y8GYkRgaBP08OPaF/AENQSFl0Iyi6RsuZN57AwoWdjDhN3R/vFH01
-         TEt8V5dPnmoXNJ/fQS3v+ufKv2ekmU7b6mhFZo16G4KkW1vxH+qwGTvOnhL6eXfCKt4B
-         U9iQ==
-X-Gm-Message-State: AOJu0YwiEHd4a7PTOGM/iiaqT5Jt7fVr3mbqEhCkjGUbq6EtMtM8UwKE
-        4RtspFm6UrwU3uINim8ldojPgxzp4H/OTiwBo/o=
-X-Google-Smtp-Source: AGHT+IGZBkYyLr1mAtcevkwX0r0BAUIUeuDmh/qvFnx7ofbkwmEk9cxHjoRpI21wTaFaYWBooUAtNQ==
-X-Received: by 2002:a05:6a20:7f9a:b0:140:a25:1c1d with SMTP id d26-20020a056a207f9a00b001400a251c1dmr17552800pzj.51.1696872567107;
-        Mon, 09 Oct 2023 10:29:27 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id i73-20020a636d4c000000b0057c29fec795sm6126977pgc.37.2023.10.09.10.29.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Oct 2023 10:29:26 -0700 (PDT)
-Date:   Mon, 9 Oct 2023 10:29:25 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Nick Terrell <terrelln@fb.com>,
-        syzbot <syzbot+1f2eb3e8cd123ffce499@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [syzbot] [zstd] UBSAN: array-index-out-of-bounds in
- FSE_decompress_wksp_body_bmi2
-Message-ID: <202310091025.4939AEBC9@keescook>
-References: <00000000000049964e06041f2cbf@google.com>
- <20231007210556.GA174883@sol.localdomain>
+        with ESMTP id S233372AbjJIRre (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Oct 2023 13:47:34 -0400
+X-Greylist: delayed 398 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 09 Oct 2023 10:47:32 PDT
+Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B50391
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 10:47:32 -0700 (PDT)
+Received: (wp-smtpd smtp.tlen.pl 18777 invoked from network); 9 Oct 2023 19:40:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
+          t=1696873250; bh=QZyP8wKrTcJG2FYOx8Z5U8/f0kTs/1pfVf+UPHcYYRc=;
+          h=From:To:Subject;
+          b=IoEP4gmHups1PasCdW0eBMnPaIma0jyofMhYxrze9+vcJ7Jr1rzhKTD3JcKMY2L3r
+           ivJ1dI4NASJGRxNHfCYMIBVz6NnPQEIoDGi93ciGJA/lwCdaoH1HttC299iyRFCEZZ
+           RvphpLH89dMokkI+z7d4yG4DKWXz45dH0V2AKg3s=
+Received: from 89-67-68-22.dynamic.chello.pl (HELO [192.168.0.165]) (pe3no@o2.pl@[89.67.68.22])
+          (envelope-sender <pe3no@o2.pl>)
+          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-SHA encrypted SMTP
+          for <linux-btrfs@vger.kernel.org>; 9 Oct 2023 19:40:50 +0200
+Message-ID: <65243B1F.6040302@o2.pl>
+Date:   Mon, 09 Oct 2023 19:40:47 +0200
+From:   "pe3no@o2.pl" <pe3no@o2.pl>
+User-Agent: Mozilla-Thunderbird 2.0.0.24 (X11/20100329)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231007210556.GA174883@sol.localdomain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+To:     linux-btrfs@vger.kernel.org
+Subject: BTRFS /dev/md0 recovery - mounted RW, after being hibernated.
+References: <937af4c3d97d4c3d93721a08029fa7a4@grupawp.pl>
+In-Reply-To: <937af4c3d97d4c3d93721a08029fa7a4@grupawp.pl>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+X-WP-MailID: 08350ce6ec93b4b810d17a6bc1a21ae8
+X-WP-AV: skaner antywirusowy Poczty o2
+X-WP-SPAM: NO 0000002 [kRHT]                               
+X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        GB_FREEMAIL_DISPTO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 02:05:56PM -0700, Eric Biggers wrote:
-> Hi Nick,
-> 
-> On Wed, Aug 30, 2023 at 12:49:53AM -0700, syzbot wrote:
-> > UBSAN: array-index-out-of-bounds in lib/zstd/common/fse_decompress.c:345:30
-> > index 33 is out of range for type 'FSE_DTable[1]' (aka 'unsigned int[1]')
-> 
-> Zstandard needs to be converted to use C99 flex-arrays instead of length-1
-> arrays.  https://github.com/facebook/zstd/pull/3785 would fix this in upstream
-> Zstandard, though it doesn't work well with the fact that upstream Zstandard
-> supports C90.  Not sure how you want to handle this.
+Hello Dear BTRFS Friends, nice to meet you!
 
-For the kernel, we just need:
+Would it be possible to get BTRFS Developer/s help to recover my 
+important data from BTRFS /dev/md0, please?
+By mistake, it was mounted RW after being hibernated. I was not able to 
+backup the data before, so I strongly need to recover it, with your 
+Great Help, please!
 
-diff --git a/lib/zstd/common/fse_decompress.c b/lib/zstd/common/fse_decompress.c
-index a0d06095be83..b11e87fff261 100644
---- a/lib/zstd/common/fse_decompress.c
-+++ b/lib/zstd/common/fse_decompress.c
-@@ -312,7 +312,7 @@ size_t FSE_decompress_wksp(void* dst, size_t dstCapacity, const void* cSrc, size
- 
- typedef struct {
-     short ncount[FSE_MAX_SYMBOL_VALUE + 1];
--    FSE_DTable dtable[1]; /* Dynamically sized */
-+    FSE_DTable dtable[]; /* Dynamically sized */
- } FSE_DecompressWksp;
- 
- 
-And if upstream wants to stay C89 compat, perhaps:
+I would  also like to ask a new BTRFS Feature which would prevent the 
+possibility to mount a BTRFS partition RW, if it was previously hibernated.
+I can specify it in more in detail and get involved into testing, if needed.
 
-#if __STDC_VERSION__ >= 199901L
-# define __FLEX_ARRAY_DIM	/*C99*/
-#else
-# define __FLEX_ARRAY_DIM	0
-#endif
-
-and then use __FLEX_ARRAY_DIM as needed (and keep the other "-1" changes
-in the github commit):
-
- typedef struct {
-     short ncount[FSE_MAX_SYMBOL_VALUE + 1];
--    FSE_DTable dtable[1]; /* Dynamically sized */
-+    FSE_DTable dtable[__FLEX_ARRAY_DIM]; /* Dynamically sized */
- } FSE_DecompressWksp;
- 
-
--- 
-Kees Cook
+Thank you in advance for help and kind regards~~Piotrek~~pe3no
