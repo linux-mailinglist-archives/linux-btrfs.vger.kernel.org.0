@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE277BE41C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 17:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7370A7BE41E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 17:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376586AbjJIPNa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Oct 2023 11:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43110 "EHLO
+        id S1376725AbjJIPNc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Oct 2023 11:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376488AbjJIPNY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Oct 2023 11:13:24 -0400
+        with ESMTP id S1376614AbjJIPN2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Oct 2023 11:13:28 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3616B9;
-        Mon,  9 Oct 2023 08:13:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A13121;
+        Mon,  9 Oct 2023 08:13:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696864394; x=1728400394;
+  t=1696864395; x=1728400395;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7i3ajq8w9Jvfj033rvnxtzh/FOZ1MH5dwoazmxDInTE=;
-  b=CAhezGn1+QNcpDY0mCMeCA7YpmrzouL/MYnGd9VCw0t/6+DwQkQ9u+CN
-   6vGXinjoctNkFZeF6ia+y7LzcqEvWf+YEYq9UIr+EHEirRoa0hqGPNnCc
-   SU2duPw8M8t7wVIo7saGUfJKpXZOnu9CknbM1KOqBgoA2RidghzWMOMf4
-   sX5fgfAlieUwLzFiz2ckDqFehRQE97Dxz6aALEG0PTBwh2yGKG3vVCc6O
-   0YN3wRb4Q1jX4ybvd5cH6GHkgFyNIVWhxZjD4r3W+3TLTynTJAgkf/bxC
-   Gdq5UV11YCYBdBRK2gN3Iddg2U0+JT8mDzdHKLmnGmJGs1QF7lGM4t3Gq
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="369231996"
+  bh=zgE2DVjnrK9Ua23Mm6yXXtMfOQugvJtkZv+vhYbFMW0=;
+  b=OBkZzbeZWd7+BYULv4X66lVfu+7SX0/O53agb0yAlNbYKaof04zQ3Q45
+   mBr9PWGvcArWgrgNr3bapz4sOCFhkBOa5RSg9xjYHbvbDrK3G80elmJCO
+   joNbUpRcdEHyklEAGlFziBNdQyvWM6EDf/zlQzYQoOfBvnvYzPaYp4M/Q
+   BOeX9ZCYr0R4KQ98lpEfJSy+NK35sGwvkynKj+f2PIfi1mA7HWosZzF6F
+   NmpRujhQhEi4RQkCn+yqpO7wxaFH2Oc77TlZAV7j7a3MMuonxWXmwAAXF
+   QTda1B6DyXlUua2FL6JYUUU4kTw0j+uxPEGwm0uyhkTGKfxDBR3nmo+N2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="369232032"
 X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="369231996"
+   d="scan'208";a="369232032"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 08:13:07 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 08:13:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="869287938"
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="869287947"
 X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="869287938"
+   d="scan'208";a="869287947"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Oct 2023 08:13:04 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 09 Oct 2023 08:13:07 -0700
 From:   Alexander Lobakin <aleksander.lobakin@intel.com>
 To:     Yury Norov <yury.norov@gmail.com>
 Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -52,9 +52,9 @@ Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
         dm-devel@redhat.com, ntfs3@lists.linux.dev,
         linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 01/14] bitops: add missing prototype check
-Date:   Mon,  9 Oct 2023 17:10:13 +0200
-Message-ID: <20231009151026.66145-2-aleksander.lobakin@intel.com>
+Subject: [PATCH 02/14] bitops: make BYTES_TO_BITS() treewide-available
+Date:   Mon,  9 Oct 2023 17:10:14 +0200
+Message-ID: <20231009151026.66145-3-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231009151026.66145-1-aleksander.lobakin@intel.com>
 References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
@@ -70,32 +70,76 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit 8238b4579866 ("wait_on_bit: add an acquire memory barrier") added
-a new bitop, test_bit_acquire(), with proper wrapping to try optimize it
-at compile-time, but missed the list of bitops used for checking their
-prototypes a bit below.
-The functions added have consistent prototypes, so that no more changes
-are required and no functional changes take place.
+Avoid open-coding that simple expression each time by moving
+BYTES_TO_BITS() from the probes code to <linux/bitops.h> to export
+it to the rest of the kernel.
+Simplify the macro while at it. `BITS_PER_LONG / sizeof(long)` always
+equals to %BITS_PER_BYTE, regardless of the target architecture.
+Do the same for the tools ecosystem as well (incl. its version of
+bitops.h).
 
-Fixes: 8238b4579866 ("wait_on_bit: add an acquire memory barrier")
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/linux/bitops.h | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/bitops.h         | 2 ++
+ kernel/trace/trace_probe.c     | 2 --
+ tools/include/linux/bitops.h   | 2 ++
+ tools/perf/util/probe-finder.c | 2 --
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 2ba557e067fe..f7f5a783da2a 100644
+index f7f5a783da2a..e0cd09eb91cd 100644
 --- a/include/linux/bitops.h
 +++ b/include/linux/bitops.h
-@@ -80,6 +80,7 @@ __check_bitop_pr(__test_and_set_bit);
- __check_bitop_pr(__test_and_clear_bit);
- __check_bitop_pr(__test_and_change_bit);
- __check_bitop_pr(test_bit);
-+__check_bitop_pr(test_bit_acquire);
+@@ -21,6 +21,8 @@
+ #define BITS_TO_U32(nr)		__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(u32))
+ #define BITS_TO_BYTES(nr)	__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(char))
  
- #undef __check_bitop_pr
++#define BYTES_TO_BITS(nb)	((nb) * BITS_PER_BYTE)
++
+ extern unsigned int __sw_hweight8(unsigned int w);
+ extern unsigned int __sw_hweight16(unsigned int w);
+ extern unsigned int __sw_hweight32(unsigned int w);
+diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+index 4dc74d73fc1d..2b743c1e37db 100644
+--- a/kernel/trace/trace_probe.c
++++ b/kernel/trace/trace_probe.c
+@@ -1053,8 +1053,6 @@ parse_probe_arg(char *arg, const struct fetch_type *type,
+ 	return ret;
+ }
  
+-#define BYTES_TO_BITS(nb)	((BITS_PER_LONG * (nb)) / sizeof(long))
+-
+ /* Bitfield type needs to be parsed into a fetch function */
+ static int __parse_bitfield_probe_arg(const char *bf,
+ 				      const struct fetch_type *t,
+diff --git a/tools/include/linux/bitops.h b/tools/include/linux/bitops.h
+index f18683b95ea6..bc6600466e7b 100644
+--- a/tools/include/linux/bitops.h
++++ b/tools/include/linux/bitops.h
+@@ -20,6 +20,8 @@
+ #define BITS_TO_U32(nr)		DIV_ROUND_UP(nr, BITS_PER_TYPE(u32))
+ #define BITS_TO_BYTES(nr)	DIV_ROUND_UP(nr, BITS_PER_TYPE(char))
+ 
++#define BYTES_TO_BITS(nb)	((nb) * BITS_PER_BYTE)
++
+ extern unsigned int __sw_hweight8(unsigned int w);
+ extern unsigned int __sw_hweight16(unsigned int w);
+ extern unsigned int __sw_hweight32(unsigned int w);
+diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+index f171360b0ef4..35f66c12ad8a 100644
+--- a/tools/perf/util/probe-finder.c
++++ b/tools/perf/util/probe-finder.c
+@@ -304,8 +304,6 @@ static int convert_variable_location(Dwarf_Die *vr_die, Dwarf_Addr addr,
+ 	return ret2;
+ }
+ 
+-#define BYTES_TO_BITS(nb)	((nb) * BITS_PER_LONG / sizeof(long))
+-
+ static int convert_variable_type(Dwarf_Die *vr_die,
+ 				 struct probe_trace_arg *tvar,
+ 				 const char *cast, bool user_access)
 -- 
 2.41.0
 
