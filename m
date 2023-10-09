@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A08F7BE428
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 17:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D555E7BE42F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 17:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344471AbjJIPNm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Oct 2023 11:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43110 "EHLO
+        id S1376523AbjJIPNp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Oct 2023 11:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376666AbjJIPNf (ORCPT
+        with ESMTP id S1376478AbjJIPNf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Oct 2023 11:13:35 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3302FD;
-        Mon,  9 Oct 2023 08:13:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6DF119;
+        Mon,  9 Oct 2023 08:13:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696864404; x=1728400404;
+  t=1696864406; x=1728400406;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=6Yna5gTXo7UZceq8nYgGY6hXKf64iK95iaaag7rQQik=;
-  b=c6beRt/GgOnihtoIH4HWRvzuc3XgIdIK7qEAwX59ticBUffy3jQi2UgF
-   WP6uTAvtyJrGS1Kes3NxAcBFtdf2iPidaBOjJY44XB/nOrXhST9px9Htf
-   bSrhM5ChOfpBnOMHMqQY9HMS6buS8jrZyS4CFKVtlU9A6+1Hk2vDZi/lP
-   L2I6Hx1BKtT2yMK3j1NyXZVjIKgp25uRezpmPCxmYQ9vQpLJJZttUK/m5
-   K8NtQxG7uILbjOl8Lr8AfuNZkJmRJhcogpwTw6REoQD6DafnrngVVfBrE
-   cFNj/ON6QMiAQzfI6bj7po2fAVoMwZHX8uk3xzlylPSVexEsc6hNV/RZn
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="369232096"
+  bh=Mw29f1QIt7U37r6p+V4Yyfpi9cV1+O/PtDoSzXpXBFY=;
+  b=O6L/5LimJBecOPUb4EF/dGVcLKyAGaVBau+lEDMdGu8azVl1/I/UL5iD
+   S5ZtwtzDc+dDoBLUE+WV6Jict+wfwaxQLEep5Gf1Nt0C3I2Taxe/QHpzq
+   h3VOqSa+jMRMWRgr+lTgPx0qPF4DdkjQz8RVra+zZxjCiE+CTvBtSDnDh
+   Vqw1X8qnFRfgyp7HACSe336PGvni1ycubSRQOqvbXuVbtW0v4bR+8Kb09
+   QbdyEH6lNHDJ9m5xS9iu47pIwbcVNSJjaFYGoSwYQqrOdI0icdJj1Dijt
+   +5oWyygg6pCjVSswIlQufZvDmIVpymoPl28grYCa44Xq5SQlS1KtfYkRO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="369232116"
 X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="369232096"
+   d="scan'208";a="369232116"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 08:13:18 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 08:13:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="869287975"
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="869287992"
 X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="869287975"
+   d="scan'208";a="869287992"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Oct 2023 08:13:14 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 09 Oct 2023 08:13:18 -0700
 From:   Alexander Lobakin <aleksander.lobakin@intel.com>
 To:     Yury Norov <yury.norov@gmail.com>
 Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -52,9 +52,9 @@ Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
         dm-devel@redhat.com, ntfs3@lists.linux.dev,
         linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 04/14] linkmode: convert linkmode_{test,set,clear,mod}_bit() to macros
-Date:   Mon,  9 Oct 2023 17:10:16 +0200
-Message-ID: <20231009151026.66145-5-aleksander.lobakin@intel.com>
+Subject: [PATCH 05/14] s390/cio: rename bitmap_size() -> idset_bitmap_size()
+Date:   Mon,  9 Oct 2023 17:10:17 +0200
+Message-ID: <20231009151026.66145-6-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231009151026.66145-1-aleksander.lobakin@intel.com>
 References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
@@ -70,75 +70,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since commit b03fc1173c0c ("bitops: let optimize out non-atomic bitops
-on compile-time constants"), the non-atomic bitops are macros which can
-be expanded by the compilers into compile-time expressions, which will
-result in better optimized object code. Unfortunately, turned out that
-passing `volatile` to those macros discards any possibility of
-optimization, as the compilers then don't even try to look whether
-the passed bitmap is known at compilation time. In addition to that,
-the mentioned linkmode helpers are marked with `inline`, not
-`__always_inline`, meaning that it's not guaranteed some compiler won't
-uninline them for no reason, which will also effectively prevent them
-from being optimized (it's a well-known thing the compilers sometimes
-uninline `2 + 2`).
-Convert linkmode_*_bit() from inlines to macros. Their calling
-convention are 1:1 with the corresponding bitops, so that it's not even
-needed to enumerate and map the arguments, only the names. No changes in
-vmlinux' object code (compiled by LLVM for x86_64) whatsoever, but that
-doesn't necessarily means the change is meaningless.
+bitmap_size() is a pretty generic name and one may want to use it for
+a generic bitmap API function. At the same time, its logic is not
+"generic", i.e. it's not just `nbits -> size of bitmap in bytes`
+converter as it would be expected from its name.
+Add the prefix 'idset_' used throughout the file where the function
+resides.
 
 Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/linux/linkmode.h | 27 ++++-----------------------
- 1 file changed, 4 insertions(+), 23 deletions(-)
+idset_new() really wants its vmalloc() + memset() pair to be replaced
+with vzalloc().
+---
+ drivers/s390/cio/idset.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/linkmode.h b/include/linux/linkmode.h
-index 15e0e0209da4..f231e2edbfa5 100644
---- a/include/linux/linkmode.h
-+++ b/include/linux/linkmode.h
-@@ -38,10 +38,10 @@ static inline int linkmode_andnot(unsigned long *dst, const unsigned long *src1,
- 	return bitmap_andnot(dst, src1, src2,  __ETHTOOL_LINK_MODE_MASK_NBITS);
- }
+diff --git a/drivers/s390/cio/idset.c b/drivers/s390/cio/idset.c
+index 45f9c0736be4..0a1105a483bf 100644
+--- a/drivers/s390/cio/idset.c
++++ b/drivers/s390/cio/idset.c
+@@ -16,7 +16,7 @@ struct idset {
+ 	unsigned long bitmap[];
+ };
  
--static inline void linkmode_set_bit(int nr, volatile unsigned long *addr)
--{
--	__set_bit(nr, addr);
--}
-+#define linkmode_test_bit	test_bit
-+#define linkmode_set_bit	__set_bit
-+#define linkmode_clear_bit	__clear_bit
-+#define linkmode_mod_bit	__assign_bit
- 
- static inline void linkmode_set_bit_array(const int *array, int array_size,
- 					  unsigned long *addr)
-@@ -52,25 +52,6 @@ static inline void linkmode_set_bit_array(const int *array, int array_size,
- 		linkmode_set_bit(array[i], addr);
- }
- 
--static inline void linkmode_clear_bit(int nr, volatile unsigned long *addr)
--{
--	__clear_bit(nr, addr);
--}
--
--static inline void linkmode_mod_bit(int nr, volatile unsigned long *addr,
--				    int set)
--{
--	if (set)
--		linkmode_set_bit(nr, addr);
--	else
--		linkmode_clear_bit(nr, addr);
--}
--
--static inline int linkmode_test_bit(int nr, const volatile unsigned long *addr)
--{
--	return test_bit(nr, addr);
--}
--
- static inline int linkmode_equal(const unsigned long *src1,
- 				 const unsigned long *src2)
+-static inline unsigned long bitmap_size(int num_ssid, int num_id)
++static inline unsigned long idset_bitmap_size(int num_ssid, int num_id)
  {
+ 	return BITS_TO_LONGS(num_ssid * num_id) * sizeof(unsigned long);
+ }
+@@ -25,11 +25,12 @@ static struct idset *idset_new(int num_ssid, int num_id)
+ {
+ 	struct idset *set;
+ 
+-	set = vmalloc(sizeof(struct idset) + bitmap_size(num_ssid, num_id));
++	set = vmalloc(sizeof(struct idset) +
++		      idset_bitmap_size(num_ssid, num_id));
+ 	if (set) {
+ 		set->num_ssid = num_ssid;
+ 		set->num_id = num_id;
+-		memset(set->bitmap, 0, bitmap_size(num_ssid, num_id));
++		memset(set->bitmap, 0, idset_bitmap_size(num_ssid, num_id));
+ 	}
+ 	return set;
+ }
+@@ -41,7 +42,8 @@ void idset_free(struct idset *set)
+ 
+ void idset_fill(struct idset *set)
+ {
+-	memset(set->bitmap, 0xff, bitmap_size(set->num_ssid, set->num_id));
++	memset(set->bitmap, 0xff,
++	       idset_bitmap_size(set->num_ssid, set->num_id));
+ }
+ 
+ static inline void idset_add(struct idset *set, int ssid, int id)
 -- 
 2.41.0
 
