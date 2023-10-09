@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC6B7BE438
+	by mail.lfdr.de (Postfix) with ESMTP id EFBAB7BE43A
 	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 17:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376541AbjJIPOK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Oct 2023 11:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
+        id S1376812AbjJIPOL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Oct 2023 11:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376495AbjJIPNp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Oct 2023 11:13:45 -0400
+        with ESMTP id S1377005AbjJIPNq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Oct 2023 11:13:46 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4E1107;
-        Mon,  9 Oct 2023 08:13:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55317C6;
+        Mon,  9 Oct 2023 08:13:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696864412; x=1728400412;
+  t=1696864415; x=1728400415;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=bqgDsoa1BRXJuvxgsgl17/J0vD/b9uhc2mRnMLP/Gq4=;
-  b=mbW6cRFpHRJGH5CaMUpvEQi2exvYxDRc1wOr7kYkXx/W02bqFCvm8LbN
-   jiqSgufNJRGxJEkP0XZ0MVA1/KGXPspOODhJmHap7uJg40wne1bdwAjHs
-   ufg1naMZC+GTPjRZUgAX0a/IQhm+/igIN3ZU+2W78b4OyuNnE43Wbo5+D
-   a9c0dHvAQgnl5kaVi9v4ZXjahO6K4AOoM63WtfnKQvQmF41jvCLlw5qqp
-   fjZBVxB1sRBdjRses2wuAN0duI2QNEPbkBRdsPaxNWFqP4Idz7dtG+omZ
-   kelTXizJn/00n2U3N9b2S2Z1gnL9EQw8XJAxlgUKYu1C/TQ+2MN/rOhlz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="369232165"
+  bh=qZMyF6TDtCKn2j7MBSZqcT5w2Tsjobk9HIX7JwHcMVA=;
+  b=PCmpo63rTrk5KVCZeDp4qVwaMdHtGifBQQJCc/vfUQvvgMvXhVqIqxA7
+   NTeUsbtXSkHte6rTfyqsDUknHWeS9m+SnucFW5EZkOStAzp/WaUUoW5To
+   7Bv/jU0ImFqeReEG/Bj2U1HYlXZefc19Q7DP3//KeKovbfTxoG/+884Sc
+   SV3AuktK93d88OkX/UgH899v8qLoVtzhX6kJVG0+V/ZHLTO6XQrz5Zyj6
+   XO+v1Unze8JexpuB7fEMqe7oXL6p3lxSMkAB+jGSu1tgUIlUzvoGA7SIE
+   F5ehPHpu8J5ZGaSp/3zpcmluOil12VoCXNwpaJJYAqgDSqwJAg7+H7YOJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="369232223"
 X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="369232165"
+   d="scan'208";a="369232223"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 08:13:25 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2023 08:13:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="869288023"
+X-IronPort-AV: E=McAfee;i="6600,9927,10858"; a="869288032"
 X-IronPort-AV: E=Sophos;i="6.03,210,1694761200"; 
-   d="scan'208";a="869288023"
+   d="scan'208";a="869288032"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Oct 2023 08:13:22 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 09 Oct 2023 08:13:25 -0700
 From:   Alexander Lobakin <aleksander.lobakin@intel.com>
 To:     Yury Norov <yury.norov@gmail.com>
 Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -52,9 +52,9 @@ Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
         dm-devel@redhat.com, ntfs3@lists.linux.dev,
         linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 06/14] fs/ntfs3: rename bitmap_size() -> ntfs3_bitmap_size()
-Date:   Mon,  9 Oct 2023 17:10:18 +0200
-Message-ID: <20231009151026.66145-7-aleksander.lobakin@intel.com>
+Subject: [PATCH 07/14] btrfs: rename bitmap_set_bits() -> btrfs_bitmap_set_bits()
+Date:   Mon,  9 Oct 2023 17:10:19 +0200
+Message-ID: <20231009151026.66145-8-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231009151026.66145-1-aleksander.lobakin@intel.com>
 References: <20231009151026.66145-1-aleksander.lobakin@intel.com>
@@ -70,120 +70,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-bitmap_size() is a pretty generic name and one may want to use it for
-a generic bitmap API function. At the same time, its logic is
-NTFS-specific, as it aligns to the sizeof(u64), not the sizeof(long)
-(although it uses ideologically right ALIGN() instead of division).
-Add the prefix 'ntfs3_' used for that FS (not just 'ntfs_' to not mix
-it with the legacy module).
+bitmap_set_bits() does not start with the FS' prefix and may collide
+with a new generic helper one day. It operates with the FS-specific
+types, so there's no change those two could do the same thing.
+Just add the prefix to exclude such possible conflict.
 
 Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- fs/ntfs3/bitmap.c  |  4 ++--
- fs/ntfs3/fsntfs.c  |  2 +-
- fs/ntfs3/index.c   | 11 ++++++-----
- fs/ntfs3/ntfs_fs.h |  2 +-
- fs/ntfs3/super.c   |  2 +-
- 5 files changed, 11 insertions(+), 10 deletions(-)
+ fs/btrfs/free-space-cache.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
-index 107e808e06ea..a2e18f13e93a 100644
---- a/fs/ntfs3/bitmap.c
-+++ b/fs/ntfs3/bitmap.c
-@@ -653,7 +653,7 @@ int wnd_init(struct wnd_bitmap *wnd, struct super_block *sb, size_t nbits)
- 	wnd->total_zeroes = nbits;
- 	wnd->extent_max = MINUS_ONE_T;
- 	wnd->zone_bit = wnd->zone_end = 0;
--	wnd->nwnd = bytes_to_block(sb, bitmap_size(nbits));
-+	wnd->nwnd = bytes_to_block(sb, ntfs3_bitmap_size(nbits));
- 	wnd->bits_last = nbits & (wbits - 1);
- 	if (!wnd->bits_last)
- 		wnd->bits_last = wbits;
-@@ -1345,7 +1345,7 @@ int wnd_extend(struct wnd_bitmap *wnd, size_t new_bits)
- 		return -EINVAL;
- 
- 	/* Align to 8 byte boundary. */
--	new_wnd = bytes_to_block(sb, bitmap_size(new_bits));
-+	new_wnd = bytes_to_block(sb, ntfs3_bitmap_size(new_bits));
- 	new_last = new_bits & (wbits - 1);
- 	if (!new_last)
- 		new_last = wbits;
-diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-index 33afee0f5559..7a14d2347f27 100644
---- a/fs/ntfs3/fsntfs.c
-+++ b/fs/ntfs3/fsntfs.c
-@@ -522,7 +522,7 @@ static int ntfs_extend_mft(struct ntfs_sb_info *sbi)
- 	ni->mi.dirty = true;
- 
- 	/* Step 2: Resize $MFT::BITMAP. */
--	new_bitmap_bytes = bitmap_size(new_mft_total);
-+	new_bitmap_bytes = ntfs3_bitmap_size(new_mft_total);
- 
- 	err = attr_set_size(ni, ATTR_BITMAP, NULL, 0, &sbi->mft.bitmap.run,
- 			    new_bitmap_bytes, &new_bitmap_bytes, true, NULL);
-diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-index 124c6e822623..ab53a4b6ddf8 100644
---- a/fs/ntfs3/index.c
-+++ b/fs/ntfs3/index.c
-@@ -1453,8 +1453,8 @@ static int indx_create_allocate(struct ntfs_index *indx, struct ntfs_inode *ni,
- 
- 	alloc->nres.valid_size = alloc->nres.data_size = cpu_to_le64(data_size);
- 
--	err = ni_insert_resident(ni, bitmap_size(1), ATTR_BITMAP, in->name,
--				 in->name_len, &bitmap, NULL, NULL);
-+	err = ni_insert_resident(ni, ntfs3_bitmap_size(1), ATTR_BITMAP,
-+				 in->name, in->name_len, &bitmap, NULL, NULL);
- 	if (err)
- 		goto out2;
- 
-@@ -1515,8 +1515,9 @@ static int indx_add_allocate(struct ntfs_index *indx, struct ntfs_inode *ni,
- 	if (bmp) {
- 		/* Increase bitmap. */
- 		err = attr_set_size(ni, ATTR_BITMAP, in->name, in->name_len,
--				    &indx->bitmap_run, bitmap_size(bit + 1),
--				    NULL, true, NULL);
-+				    &indx->bitmap_run,
-+				    ntfs3_bitmap_size(bit + 1), NULL, true,
-+				    NULL);
- 		if (err)
- 			goto out1;
- 	}
-@@ -2089,7 +2090,7 @@ static int indx_shrink(struct ntfs_index *indx, struct ntfs_inode *ni,
- 	if (in->name == I30_NAME)
- 		ni->vfs_inode.i_size = new_data;
- 
--	bpb = bitmap_size(bit);
-+	bpb = ntfs3_bitmap_size(bit);
- 	if (bpb * 8 == nbits)
- 		return 0;
- 
-diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-index 629403ede6e5..93333156aac6 100644
---- a/fs/ntfs3/ntfs_fs.h
-+++ b/fs/ntfs3/ntfs_fs.h
-@@ -961,7 +961,7 @@ static inline bool run_is_empty(struct runs_tree *run)
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 27fad70451aa..94249b5ee447 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -1909,9 +1909,9 @@ static inline void bitmap_clear_bits(struct btrfs_free_space_ctl *ctl,
+ 		ctl->free_space -= bytes;
  }
  
- /* NTFS uses quad aligned bitmaps. */
--static inline size_t bitmap_size(size_t bits)
-+static inline size_t ntfs3_bitmap_size(size_t bits)
+-static void bitmap_set_bits(struct btrfs_free_space_ctl *ctl,
+-			    struct btrfs_free_space *info, u64 offset,
+-			    u64 bytes)
++static void btrfs_bitmap_set_bits(struct btrfs_free_space_ctl *ctl,
++				  struct btrfs_free_space *info, u64 offset,
++				  u64 bytes)
  {
- 	return ALIGN((bits + 7) >> 3, 8);
- }
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index cfec5e0c7f66..b1fb6efe7084 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -1285,7 +1285,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	unsigned long start, count, end;
+ 	int extent_delta = 1;
+@@ -2247,7 +2247,7 @@ static u64 add_bytes_to_bitmap(struct btrfs_free_space_ctl *ctl,
  
- 	/* Check bitmap boundary. */
- 	tt = sbi->used.bitmap.nbits;
--	if (inode->i_size < bitmap_size(tt)) {
-+	if (inode->i_size < ntfs3_bitmap_size(tt)) {
- 		ntfs_err(sb, "$Bitmap is corrupted.");
- 		err = -EINVAL;
- 		goto put_inode_out;
+ 	bytes_to_set = min(end - offset, bytes);
+ 
+-	bitmap_set_bits(ctl, info, offset, bytes_to_set);
++	btrfs_bitmap_set_bits(ctl, info, offset, bytes_to_set);
+ 
+ 	return bytes_to_set;
+ 
 -- 
 2.41.0
 
