@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C74807BD29E
+	by mail.lfdr.de (Postfix) with ESMTP id 207047BD29C
 	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 06:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345075AbjJIEra (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Oct 2023 00:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40220 "EHLO
+        id S1345073AbjJIEr3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Oct 2023 00:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345068AbjJIEr2 (ORCPT
+        with ESMTP id S1345066AbjJIEr2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Oct 2023 00:47:28 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E17FA6
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF18A4
         for <linux-btrfs@vger.kernel.org>; Sun,  8 Oct 2023 21:47:26 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0677221883
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 04:47:23 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E75D51F38C
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 04:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1696826843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1696826844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TM25PUacKvsJZL1iZYXFoaHQOMoYGPVsCX2ZgmCa+Ls=;
-        b=rOVjbiUl7blyddK7+VdW4w5jHfHg2Yi9xddcPiPAi06v3P8mBFowFrlPqQ5mGNAhuX3PnA
-        QXLtSzGfJpMIwziyUSM2I3y/0zl5ximMvYrp1oSwpz9msexJKIvDJsOe8l2kR7ka7SP0ML
-        BLeHEK5zxADoW/2UT6TFjDNC7CBa/PY=
+        bh=OkuFGR+HFVavMC5o9pG6m1aw6ZKLc8DP5zLr+vCWvUo=;
+        b=n/BD9+MUD6ElCEAFLT10MhdDpn3mQHjeW6+/iIiE/MDo9LMkDVkI/HTEEoRnCkhL0nkS/O
+        0gr2uiPfayxKMQ9ChO7en93Bxz+X72qx22XHhDf+Z19uzOjgCydTIwe9rVWGOlLXScTs4e
+        GJXP8eTU0P6M7b1ykJCIu/BpTiQ1NkU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D25E713586
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 04:47:21 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BCA0313586
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 04:47:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id CFjOHNmFI2VSVQAAMHmgww
+        id iFR6F9uFI2VSVQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Oct 2023 04:47:21 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Oct 2023 04:47:23 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs-progs: move clear-cache.[ch] from check to common directory
-Date:   Mon,  9 Oct 2023 15:16:59 +1030
-Message-ID: <ea481febfdd13de99682e86ce6bc4c8a475cdead.1696826531.git.wqu@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: move inode cache removal to rescue group
+Date:   Mon,  9 Oct 2023 15:17:00 +1030
+Message-ID: <1d5cc97d664fc10c0244ff2c255f2fc4bbf58dfa.1696826531.git.wqu@suse.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1696826531.git.wqu@suse.com>
 References: <cover.1696826531.git.wqu@suse.com>
@@ -59,130 +59,156 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The clear-cache functionality is not shared by several commands:
+The option "--clear-ino-cache" is not really that suitable for "btrfs
+check" group.
 
-- btrfs check
-  For --clear-cache and --clear-ino-cache.
+Let's move it to "btrfs rescue" group to fix those small hiccups, just
+like the existing "btrfs rescue fix-device-size" command.
 
-- btrfstune
-  Mostly for block-group-tree feature conversion.
+For now, "btrfs check --clear-ino-cache" would still work, with one
+extra warning referring to "btrfs rescue clear-ino-cache".
+This is mostly to reduce the surprise, and keep script users (I doubt if
+there is any though) happy for now.
 
-- btrfs-convert
-  To enable the now default v2 space cache.
+In the next or two releases, we would fully remove the support in "btrfs
+check" group.
 
-Thus it's no longer proper to keep clea-cache.[ch] under check/
-directory, move them to common/ directory.
+Another small change is, in the documents, we refer to the feature as
+"inode map", which doesn't match with the mount option documents.
+Since we're here, unify them to "inode cache" feature.
 
+Issue: #669
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- Makefile                        | 6 +++---
- check/main.c                    | 2 +-
- {check => common}/clear-cache.c | 2 +-
- {check => common}/clear-cache.h | 0
- convert/main.c                  | 2 +-
- tune/main.c                     | 2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
- rename {check => common}/clear-cache.c (99%)
- rename {check => common}/clear-cache.h (100%)
+ Documentation/btrfs-check.rst  |  5 +++-
+ Documentation/btrfs-rescue.rst |  6 ++++
+ check/main.c                   |  1 +
+ cmds/rescue.c                  | 52 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 63 insertions(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index e5817f1456a2..345c8efc8249 100644
---- a/Makefile
-+++ b/Makefile
-@@ -242,7 +242,7 @@ cmds_objects = cmds/subvolume.o cmds/subvolume-list.o \
- 	       cmds/inspect-dump-super.o cmds/inspect-tree-stats.o cmds/filesystem-du.o \
- 	       cmds/reflink.o \
- 	       mkfs/common.o check/mode-common.o check/mode-lowmem.o \
--	       check/clear-cache.o
-+	       common/clear-cache.o
+diff --git a/Documentation/btrfs-check.rst b/Documentation/btrfs-check.rst
+index cf8de9fcc888..3c5f96f1951f 100644
+--- a/Documentation/btrfs-check.rst
++++ b/Documentation/btrfs-check.rst
+@@ -84,8 +84,11 @@ SAFE OR ADVISORY OPTIONS
+         See also the *clear_cache* mount option.
  
- libbtrfs_objects = \
- 		kernel-lib/rbtree.o	\
-@@ -262,12 +262,12 @@ libbtrfsutil_objects = libbtrfsutil/errors.o libbtrfsutil/filesystem.o \
- 		       libbtrfsutil/stubs.o
- convert_objects = convert/main.o convert/common.o convert/source-fs.o \
- 		  convert/source-ext2.o convert/source-reiserfs.o \
--		  mkfs/common.o check/clear-cache.o
-+		  mkfs/common.o common/clear-cache.o
- mkfs_objects = mkfs/main.o mkfs/common.o mkfs/rootdir.o
- image_objects = image/main.o image/sanitize.o image/image-create.o image/common.o \
- 		image/image-restore.o
- tune_objects = tune/main.o tune/seeding.o tune/change-uuid.o tune/change-metadata-uuid.o \
--	       tune/convert-bgt.o tune/change-csum.o check/clear-cache.o tune/quota.o
-+	       tune/convert-bgt.o tune/change-csum.o common/clear-cache.o tune/quota.o
- all_objects = $(objects) $(cmds_objects) $(libbtrfs_objects) $(convert_objects) \
- 	      $(mkfs_objects) $(image_objects) $(tune_objects) $(libbtrfsutil_objects)
+ --clear-ino-cache
+-        remove leftover items pertaining to the deprecated inode map feature
++        remove leftover items pertaining to the deprecated `inode cache` feature
  
++	.. warning::
++		This option is deprecated, please use `btrfs rescue clear-ino-cache`
++		instead, this option would be removed in the future eventually.
+ 
+ DANGEROUS OPTIONS
+ -----------------
+diff --git a/Documentation/btrfs-rescue.rst b/Documentation/btrfs-rescue.rst
+index 39d250cefa48..e99aa4ad8a7e 100644
+--- a/Documentation/btrfs-rescue.rst
++++ b/Documentation/btrfs-rescue.rst
+@@ -50,6 +50,12 @@ fix-device-size <device>
+ 
+                 WARNING: CPU: 3 PID: 439 at fs/btrfs/ctree.h:1559 btrfs_update_device+0x1c5/0x1d0 [btrfs]
+ 
++clear-ino-cache <device>
++        Remove leftover items pertaining to the deprecated `inode cache` feature.
++
++	The `inode cache` feature (enabled by mount option "inode_cache") is
++	fully removed in v5.11 kernel.
++
+ clear-uuid-tree <device>
+         Clear UUID tree, so that kernel can re-generate it at next read-write
+         mount.
 diff --git a/check/main.c b/check/main.c
-index be27ee5f2415..1174939fd6eb 100644
+index 1174939fd6eb..7760511b85d9 100644
 --- a/check/main.c
 +++ b/check/main.c
-@@ -58,6 +58,7 @@
+@@ -10242,6 +10242,7 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 	}
+ 
+ 	if (clear_ino_cache) {
++		warning("--clear-ino-cache option is deprecated, please use \"btrfs rescue clear-ino-cache\" instead.")
+ 		ret = clear_ino_cache_items(gfs_info);
+ 		err = ret;
+ 		goto close_out;
+diff --git a/cmds/rescue.c b/cmds/rescue.c
+index be6f5016d5a9..38f4e1423434 100644
+--- a/cmds/rescue.c
++++ b/cmds/rescue.c
+@@ -34,6 +34,7 @@
+ #include "common/utils.h"
  #include "common/help.h"
  #include "common/open-utils.h"
- #include "common/string-utils.h"
 +#include "common/clear-cache.h"
  #include "cmds/commands.h"
- #include "mkfs/common.h"
- #include "check/common.h"
-@@ -66,7 +67,6 @@
- #include "check/mode-original.h"
- #include "check/mode-lowmem.h"
- #include "check/qgroup-verify.h"
--#include "check/clear-cache.h"
+ #include "cmds/rescue.h"
  
- /* Global context variables */
- struct btrfs_fs_info *gfs_info;
-diff --git a/check/clear-cache.c b/common/clear-cache.c
-similarity index 99%
-rename from check/clear-cache.c
-rename to common/clear-cache.c
-index d83d9b2fcda8..d57313b783c0 100644
---- a/check/clear-cache.c
-+++ b/common/clear-cache.c
-@@ -33,7 +33,7 @@
- #include "common/messages.h"
- #include "check/repair.h"
- #include "check/mode-common.h"
--#include "check/clear-cache.h"
-+#include "common/clear-cache.h"
+@@ -405,6 +406,56 @@ out:
+ }
+ static DEFINE_SIMPLE_COMMAND(rescue_clear_uuid_tree, "clear-uuid-tree");
  
- /*
-  * Number of free space cache inodes to delete in one transaction.
-diff --git a/check/clear-cache.h b/common/clear-cache.h
-similarity index 100%
-rename from check/clear-cache.h
-rename to common/clear-cache.h
-diff --git a/convert/main.c b/convert/main.c
-index 5d7c1e1d99d6..c9e50c036f92 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -119,9 +119,9 @@
- #include "common/box.h"
- #include "common/open-utils.h"
- #include "common/extent-tree-utils.h"
-+#include "common/clear-cache.h"
- #include "cmds/commands.h"
- #include "check/repair.h"
--#include "check/clear-cache.h"
- #include "mkfs/common.h"
- #include "convert/common.h"
- #include "convert/source-fs.h"
-diff --git a/tune/main.c b/tune/main.c
-index 08dedce26cb5..4aef76748343 100644
---- a/tune/main.c
-+++ b/tune/main.c
-@@ -37,9 +37,9 @@
- #include "common/string-utils.h"
- #include "common/help.h"
- #include "common/box.h"
-+#include "common/clear-cache.h"
- #include "cmds/commands.h"
- #include "tune/tune.h"
--#include "check/clear-cache.h"
++static const char * const cmd_rescue_clear_ino_cache_usage[] = {
++	"btrfs rescue clear-ino-cache <device>",
++	"remove leftover items pertaining to the deprecated inode cache feature",
++	NULL
++};
++
++static int cmd_rescue_clear_ino_cache(const struct cmd_struct *cmd,
++				      int argc, char **argv)
++{
++	struct open_ctree_args oca = { 0 };
++	struct btrfs_fs_info *fs_info;
++	char *devname;
++	int ret;
++
++	clean_args_no_options(cmd, argc, argv);
++
++	if (check_argc_exact(argc, 2))
++		return 1;
++
++	devname = argv[optind];
++	ret = check_mounted(devname);
++	if (ret < 0) {
++		errno = -ret;
++		error("could not check mount status: %m");
++		goto out;
++	} else if (ret) {
++		error("%s is currently mounted", devname);
++		ret = -EBUSY;
++		goto out;
++	}
++	oca.filename = devname;
++	oca.flags = OPEN_CTREE_WRITES;
++	fs_info = open_ctree_fs_info(&oca);
++	if (!fs_info) {
++		error("could not open btrfs");
++		ret = -EIO;
++		goto out;
++	}
++	ret = clear_ino_cache_items(fs_info);
++	if (ret < 0) {
++		errno = -ret;
++		error("failed to clear ino cache: %m");
++	} else {
++		pr_verbose(LOG_DEFAULT, "Successfully cleared ino cache");
++	}
++out:
++	return !!ret;
++}
++static DEFINE_SIMPLE_COMMAND(rescue_clear_ino_cache, "clear-ino-cache");
++
+ static const char rescue_cmd_group_info[] =
+ "toolbox for specific rescue operations";
  
- static char *device;
- static int force = 0;
+@@ -416,6 +467,7 @@ static const struct cmd_group rescue_cmd_group = {
+ 		&cmd_struct_rescue_fix_device_size,
+ 		&cmd_struct_rescue_create_control_device,
+ 		&cmd_struct_rescue_clear_uuid_tree,
++		&cmd_struct_rescue_clear_ino_cache,
+ 		NULL
+ 	}
+ };
 -- 
 2.42.0
 
