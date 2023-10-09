@@ -2,52 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E98537BEBEA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 22:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CC77BEBEE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Oct 2023 22:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377753AbjJIUtA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Oct 2023 16:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
+        id S1377918AbjJIUvT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Oct 2023 16:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378034AbjJIUsx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Oct 2023 16:48:53 -0400
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2054.outbound.protection.outlook.com [40.107.15.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02509C5
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 13:48:51 -0700 (PDT)
+        with ESMTP id S1377082AbjJIUvR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Oct 2023 16:51:17 -0400
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2086.outbound.protection.outlook.com [40.107.241.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016CF9E
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 Oct 2023 13:51:14 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VK3UB3f9so4tw4nyBdAgJIzX9gd8d/NGm3VhakiAFG8liNE3jetm4LbJtqySkKajLPGXHM7Sh8XwLzyaf5X58Gn/ozNtbd2606X4V3QCB1BQo+mCcuRciFwJzMBY9B1bPHymDT/WR9y9lPo9Mf4KxCvE1wsmB/TrAGi4vdzC6FH9Vvqgzwmw/X7gFvIU5YDw3Bl1hrl7rbOt3DmGyKmQ7fjxJfDsSq2ORybWJkw4cUMWVq+nxjcH9KtEK6iHI0bqZCjHjsw1slFRQVxo6dJfFmIzK0Sf59Xih7iPrqnmgLsC+9M3dROzH5dkvyyoWKRMoOkiGcA7b4M+sxeo50WDeQ==
+ b=cO5soYy8sLJIdDdHTz1inRxgKJhatQa1cMPhnVp+HRMGvT9HiAkvrvXZpP1XpqsDcQSxEy6gum12y3pi2bLYx6DXfgS0YHV26tkJFrcuB7LRy1Pt6IeP56SuhFOYmd53dmNu6yoUb8Nfhg42mSvCRsxPcgWihbyATMlT3Ejq7zTgTnKWOf/j6bqykWW71jxKP9H21vP3Oh+NrbDt6QUgRb08bs5unPCh3rVy13gAe/jMzRNK111Y1713/iislvmd+tEjKjKnNx+qF8gwKciynHBPbq3qSrnVOWtuIuZ/I/yZvTa1nVXyJRRP6zd1x80IvfMEV1V+C4VNb4xBsyA/sg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DoHgQo+qmvHLd8dSX1NQLbXhv3fwNywnb2xB+aeGem8=;
- b=VIJazbIkvpwXPF1XY6vQHbEORICsm2Dd2HlQRxnz+cBZ7YgyP4A/rB/Bwy1eMMFnjF7q1NrXbJD+zGBryYPEVhF3n9PBI+Pu/IZYIDKY7ciIjEgE4BFWKAd3QwsGZceaO5uHZj51F8HdlN4mQn++mUyJR26TT8koSbscPrgP9ZFdNM3fyTJcb5E604HseBzCxnyUF/YsubUxW7DtAWIztEw3nGKT0Hf0jPiKKNMViQlfceKpkmzsIzSIdhnnFBl2MODTMBHyGLAoPpLxnuSNi2AzmxR7rDKAjbCIl7sgOCoyJga85O4S9MvcWqzR3CmJK2Mtu1oOxCFMoURKIeI3DA==
+ bh=7WGQdWtezDeNuWakvhihrJKHUBPNvyBoYoNjY4p0b8Q=;
+ b=HMJLMb9SdnYdsSV/n1mM99j8HiwiBdd+w4Jos6MQxYOg295tMax/UgS/D6mdrbpjy5dxh28Lt7JJBXbu/SRUYN7Bto9RQl1InbSKC6EZJh2j00o6CD+jvks/G3O1hORik9spq+IFkde4lfZgcQkZXXLW9/d5nOeKTnPnJiicYWFHyp9FLovBGPJ7CUi/iUgKn1/jcd/zvR1KV/oEn3Q1GB3A6vUcW1yAeQ4b7dXMqjhcTYHBKU2tdlBHjVBsXjA7PMDhYOOk0Z47yTql8V8AkaT9/R4Tk8pLTTiXrtC1lMZpoggngf29/tngGGuuzPeMatOACLrvOw0khQLKI2y9Zw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DoHgQo+qmvHLd8dSX1NQLbXhv3fwNywnb2xB+aeGem8=;
- b=s4RjfKO6LkpDuSyWI+R4pGtZHqhxOh4Bj45f52Ok1F6qNm1r9v3cKLwBDBx5WAEGz899rr2NT6zh48JzVWQxuqA0TbpCXUxbBMijowKGk+NtaDmbhHkl+XOwHIbfvEA8MhtxCq8M1O1shW7JGjNQn5MTZvXXke3WVsvtqnwSIFChAbjUN+5KA3960E1jgHGjONJ5wQDipAoB9fT9gLwwpf4Y6EGxQmdXb2m2iVGHYuIifGhmwQIR+1osKDaP2vdJPSfRhL3StoSLB2EyiPwf66gSVYnfyIUrHOz5psDIc4kXH8OEVWIXejNiZpgteF9V0X/3YhUiFaZyuzU2A84nYQ==
+ bh=7WGQdWtezDeNuWakvhihrJKHUBPNvyBoYoNjY4p0b8Q=;
+ b=xn1l89KIDr7lFgf3W8Jacou2Rttlvtggqoxzdl99Mp3CijCn5T/KcvqcUX34P7mLYxdPVS0sdyFip98HWWpzXD5uFyYtLI7Q6q7UtRAKvbic3iDnwaSNNyBQsSS/daUTMJvJzNYN21Lwd0a1XYpz8bnE7p6X6tfdx7SbHLPPyHngWSIKxRfYdpREedZN4b1WKPunpvQKUeI5pjKz2p1adXFCWuc93tixWKFBvKQFUR3XdSF3kacl9QmrZZjWr/Qo/y6E0GD++mY4/OfftKoz5MjlwQ0047TCHQlVw8n3+p0FiDAKrVLX5DJrDAiZePpfqz17HVyeLzFtz9/cjr/m6A==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from AS8PR04MB8465.eurprd04.prod.outlook.com (2603:10a6:20b:348::19)
- by DBBPR04MB7564.eurprd04.prod.outlook.com (2603:10a6:10:1f7::5) with
+ by AM0PR04MB6819.eurprd04.prod.outlook.com (2603:10a6:208:17f::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Mon, 9 Oct
- 2023 20:48:49 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.36; Mon, 9 Oct
+ 2023 20:51:12 +0000
 Received: from AS8PR04MB8465.eurprd04.prod.outlook.com
  ([fe80::21dc:8a5f:80a7:ad6b]) by AS8PR04MB8465.eurprd04.prod.outlook.com
  ([fe80::21dc:8a5f:80a7:ad6b%6]) with mapi id 15.20.6838.033; Mon, 9 Oct 2023
- 20:48:49 +0000
-Message-ID: <cdfbc6c3-d43e-456f-9616-441c3b50a1dd@suse.com>
-Date:   Tue, 10 Oct 2023 07:18:36 +1030
+ 20:51:12 +0000
+Message-ID: <9f582ea7-d75b-43f8-9381-649c6bbbf622@suse.com>
+Date:   Tue, 10 Oct 2023 07:20:58 +1030
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: perform stripe tree lookup for scrub
+Subject: Re: [PATCH 2/2] btrfs-progs: move inode cache removal to rescue group
 Content-Language: en-US
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.cz>
+To:     dsterba@suse.cz
 Cc:     linux-btrfs@vger.kernel.org
-References: <4895772fd73872ee2cc23d152e50db28a5ca5bbc.1696867165.git.johannes.thumshirn@wdc.com>
+References: <cover.1696826531.git.wqu@suse.com>
+ <1d5cc97d664fc10c0244ff2c255f2fc4bbf58dfa.1696826531.git.wqu@suse.com>
+ <20231009142314.GP28758@twin.jikos.cz>
 From:   Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -73,69 +74,69 @@ Autocrypt: addr=wqu@suse.com; keydata=
  bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
  AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
  ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <4895772fd73872ee2cc23d152e50db28a5ca5bbc.1696867165.git.johannes.thumshirn@wdc.com>
+In-Reply-To: <20231009142314.GP28758@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MEWP282CA0099.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:220:1cf::7) To AS8PR04MB8465.eurprd04.prod.outlook.com
+X-ClientProxiedBy: MEWP282CA0151.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:220:1d7::20) To AS8PR04MB8465.eurprd04.prod.outlook.com
  (2603:10a6:20b:348::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|DBBPR04MB7564:EE_
-X-MS-Office365-Filtering-Correlation-Id: c5acff3a-2b5c-409f-4652-08dbc90923af
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8465:EE_|AM0PR04MB6819:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5d099ca0-0b38-4090-16f4-08dbc90978a7
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 85lN3OsoibcWwCgHt+NdwAy9aAyKODFGm9hIIxTHa78mBhSIDURH0V9vHui+9E/3Qupu7FmuIpGwmA0t7pMzcUMEBx1/a7jsywR97Ih9lbdglvH9IwEKBRAbpAiDA558gd/3p0ossmmOtXSueciyzJCK6G+1cp6n+uF71cKl83sNd9fJFEbQQnE358IZv0bgY8HFSoAhZ+KLBralFUowF88l+HUXFIrhdkVRmfPFoEoP3XpRLZocYL3z9xkn7yvyns8OlLKnotirGEghkUCeHhzeKcFsERToMq0iqlOO1ocoFHvpGUyzwbIQ2+LqPGe6v5HWXR2T2wEt7YVSEme7K9io0MCKJkCZ37asdMrT5t4X2tUqk6RUS3Jz0BADuF3+uR64T6xtgAEl2ujdb9xD9LhFznyZTivpcrINEPiah9LEiZXXANVE48xxwV/8LqSGrrK1gRLRwDWXSoF4PtNsmx0X+zEZs+29oU3GMGLQCBJ41ZUd0T7PcMT4PY1hx0fD1JnnVx0vz1cZyVCkNAV3DQq3N77udnxfbwCjx+y4PzG3i50LE2MZ3tmbFovzinVIqtnm9pCOeisz2D551vggUppQT9nwQ1894H2Sp5GmnKy23g6kLjldQsrn0RQ/VYDnMg8YFla68txenNYuHZnLHJqQAlmXgutratgAN1It25p4cvbYiLabfDHiSclbV+swWi+5aPDBW9yvppaKL7Yc2Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(346002)(396003)(376002)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(316002)(41300700001)(31686004)(110136005)(66476007)(8676002)(4326008)(8936002)(66946007)(66556008)(6506007)(5660300002)(6486002)(26005)(36756003)(86362001)(38100700002)(31696002)(6666004)(2906002)(83380400001)(6512007)(478600001)(2616005)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 7u5Bm4vbAG0BNbH/8c5iszXiWUck1T2K6RTtfoFmNTnBDid5bP4UEBH6dLHQmkQvkfKWB38HeHy3WuJrLCn50obztpE9jzHOMUGJ/D/r4tOsF8zGb4QuYIgsXrn5Zs9JEqFA/s98K5wgMNSWaaJ4/ODoR8rAHRXF+h1nS1qfGQfWx9Iksq2T0SX5WO0tMVNyt1kqhcHp7ReNoCtJ4Xk/v+qtPDsANx/hTvC21mEe7GWKvozalcofnZoPRvsJtYU7ZC/Suhoafty8ymPgpq69MhZDlWw7j4UP5H+ro2Gn31HBzorjSORIlT5iagXt5Rp86YfpvGpx0mbmWnQzogf8hlaAjMTuLBEWp7Z9mrgeV6hYvolbsRWud6zzmKyTVN8xZdjqZUzXlY5OitN36LP3XU6+xvuiUB2HO66pl+fF6NCGY2ZczFYQGhOeDoFxKCGTDvebzkVVQ7XtXJ0NRdo5U7zb8cu4muFBe8pcupV9vizgIGDRDq0hprJfRr8Lb3iZsvFxUgFh0VuKS0yRxPZSnVari1IIYI5T14Yrw4sQ3C71jpiXYs9Tnssle8/e5M6rDYBm4rSMRnICm/0FBD7beIRmKc4TQLXty20wZPdJRIfxtiEwJSLDT/bhEYnJRG7awCfWVpxTxm7v9EFYkPy2gGp+xGN3MOROdG4I98fmTB0U8C0kbB29ZlaBXKlWhDuCLdiKV5yQgzpZeMy6EOXAJw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8465.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(366004)(396003)(39860400002)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(31686004)(2616005)(26005)(53546011)(86362001)(36756003)(38100700002)(31696002)(83380400001)(4326008)(6506007)(6666004)(6512007)(478600001)(8676002)(2906002)(6486002)(8936002)(41300700001)(6916009)(5660300002)(316002)(66946007)(66476007)(66556008)(151823002)(45980500001)(43740500002)(309714004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QTB2WDhwR1dXZGphczZEWmk0cyt3T1NnYlNvcmhJc3JPMkN2OWt5V0F5S2xG?=
- =?utf-8?B?Z3c1UnMzU3h2Y2xtQldOUEJJYURTWi9oWHRnQ1ZhQXAxYmVuSU03cUE1Nzc3?=
- =?utf-8?B?aE9uZVJtQysrUUxMVlZKV0N3TzM4ZWlLVFlCVVVlVklkNTlSd0I0dUwrSll0?=
- =?utf-8?B?VUtaMmM1ZXI5VzhSWWdhdk56ZHh4UkR6dXU4am1GZDZoUDdyK1BXbEhpd3Uv?=
- =?utf-8?B?MW1jTW5adzhnMmg1RVdiV3FGM2pnWWsvNjZBd3BKUWdMSGpldlFDb29NeVpw?=
- =?utf-8?B?dzIyR2FVa2hkSXFKYkJPU0VjbDVrTVNrUDlqaG02RlZVdHdBcEpsd3B1L2dZ?=
- =?utf-8?B?YUEzZjhvdkRpcmRSc2NTVzlnUW13blNqcVRMT3dUZTdwNlVzcnZRZWkwZitF?=
- =?utf-8?B?cUVmYXpSY00rN0VzaC9hTG10M0R0bllCNERyeDdueDUxbkFFdUE1UWR4ZzZY?=
- =?utf-8?B?endZQmJXRGE4Q3cyWlNQVzc5Ky9iTkhkZTErMG1rdHEwdFlEc3ZLWk8wSGV2?=
- =?utf-8?B?ZW0wd2EzYkdycUIxamlkQlE0YTd4eVorUWQrSmZTdWU5OXEzdEY4blFZMTlF?=
- =?utf-8?B?dzB6c1hyK1IrZjhVb09pUThNWGNJUnVGMllxcE9vTGQ3M01ac2h4T1hBcE1W?=
- =?utf-8?B?cnNqTzJqNk5lTXo2T0EzdUlkQzNxeVo1V0kxR1NyQUhwRGFONVg4YjlEKzJW?=
- =?utf-8?B?Q2JHbmN5T21OZlRGVXE2Qm1tc1pmbGNKbVZEdjAveXdMNDFla2dVQmpQK2Na?=
- =?utf-8?B?ZTd6dTUrQnFpdDBUV2pFZTlaVGFtUTNFUFpoQUZnclQyUGYrbFhyVmxldGpB?=
- =?utf-8?B?Q0dpL09saUEyN3RlNnQrVkNTZ2lIQWk1dy95Z1BDSmxPT0ZCZFBSdkxhdCtI?=
- =?utf-8?B?ak5VZ2hLQU1zeXNJaUpKNGNpUDcrSk9oc05ib1FJZUZhbXhoYmorSE16dVIy?=
- =?utf-8?B?WkNGRFFsVTZsN2IzU2RSS2dKV2wxYW4zM3J5R2hsMTNSRzRoRGo0VzRCZnYy?=
- =?utf-8?B?bExHOGc5N1NvRitnMmw4OEU4eVNtS3dpdFE0blVyeW1rZDI4cFdpd2c3SXpT?=
- =?utf-8?B?MHMyNkZZMFgzelFXd1hRNnhLZGJLa3REWDlDbFFKSktIa1doUVJEM3ZsRExx?=
- =?utf-8?B?R1dpVElMWWVlVnRPdW9ITzBuOEVYS3U2ZmduS3pmUXpWWjZDTDdqTFpGM0N2?=
- =?utf-8?B?L2F0VTZScTA1V0Y5QWliSnN2VmpkN05BdHJkRXNNK0VjVU5qREFOeCtVRFc5?=
- =?utf-8?B?M1pPZEtiMS9uV1BEWkMzTjIzRWM2Uld6Q2ljbVQ4SW1hdFRPZGQrcUdrQzg4?=
- =?utf-8?B?U2RZeFpuTUZ4ZTdMV281SVYvYVVNOWRSRWtVTzkzTUc3Z0dJYWt3K3JHYUsx?=
- =?utf-8?B?bUNwQlhSY2E4K2gzbk1FZ2lVRUYwemJCN09SWUVid21ibmw0VHYwY1dxVGtP?=
- =?utf-8?B?Q0pjV0lhY3FpbmZtMm9JYjd1V09TRDVmNHRoTGZZREswYmxxcWJkV2dqWUtj?=
- =?utf-8?B?aWgrZnVlWHVhNHhIeE5jakw0bFlCb3VrWWZTS2tuaDJuS0ZpU2tnVzg4cVds?=
- =?utf-8?B?eUliQlNtUUlYdHFUb0FDZ09Za284RUpTTjhGeElCakFZNnRpT1FOYlFSNkVV?=
- =?utf-8?B?c2RzQnZvMHhhQjBFVVVkZXRIdlpEbEFudXZjWktIMHJiRDBSTW5kR2pPRzlB?=
- =?utf-8?B?elpIYVE4ZzUyNEl0dTV3NFA0ZWJjenNWT2FPZy9MQlY3M0FjNHZ6d3Fid2JE?=
- =?utf-8?B?cjk4MXpyVmsrNTBjNzNVUW0yTzNEQWJjNFZVRzJnUU9OVGJqZzVWSW1YL3hB?=
- =?utf-8?B?TE42cjg5ZFQrS1hWRGdVVUMxV0FTdmg2d3VlMUlvcm9FUnJvc3dIUDhxTkxo?=
- =?utf-8?B?OVRRbzRBUG40TC9EaENmS1pRTUxGUWllYytzV3JSRExHR2NrN1FmaStwdGxQ?=
- =?utf-8?B?VklGS202UmRleDQyNjI3WVNPek1HVUlNMEtMN0dBbGd6RUVVRXppTjZ6MEJ5?=
- =?utf-8?B?QWFWMDVlY3dod3hGU3ovd2NPSlg2Z0dSY29WUGdRMU1Vd3NndmZDWHkwM2Zq?=
- =?utf-8?B?RG5ZaTNCMjA5R2JYNlNvV1pKbGR1VEdnQ08zQmlONkM4NUo1N1JYUUxQcStR?=
- =?utf-8?Q?+GvE=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T3g0bFpqbmhkTVQyZ0FTTDc5MnJuNDYxdkxWU3ZDVEdwRFdVcHJsdjJPUThm?=
+ =?utf-8?B?em56L0pmdHNhTFFEV0p2dWVNUWlQKy9OUjBBNDVpMkdNVGtuMXMyV2s0UXl5?=
+ =?utf-8?B?b2ZXK2JDK2JmV0JQWFVMK2wzYUN1Z3F6eGxaZnFkR0lUMFZsbjVZaFNjWldp?=
+ =?utf-8?B?WEhMZTRpUXIzZ09Mc2NRdTlVOGhJV3hMMTMrVXE1VGIvbHdQS3Q1L2xlcDJF?=
+ =?utf-8?B?OW9lMDV0YkVwSmhHSHBFbEk0V0dNUERCRDZjcktFZGpuMjdDVEp2UnJWQk5Y?=
+ =?utf-8?B?UlRsTnI2dlVKSzcyZXcyelNFOHNuUDFDNFRoNlJycDdCZGZsNXpXbGVOc2gy?=
+ =?utf-8?B?Q3dqM1Y1QjJ3a1JaTGt3S2ZwZDMxaFNOUXdKUG9ZUEZsMnZCZmI1dUpzVXJ3?=
+ =?utf-8?B?MnVzYjlmOGRNU1NtZU9zTW1mSkVnbFNFMVBiQlVXcHF3b1NMZ1BIM0RLalZH?=
+ =?utf-8?B?VU5iTTZNZnlKeEpZMmRzQnM4UmkvanQrRVpQdnNJZFJBNkhRMkttb0d1bS9B?=
+ =?utf-8?B?ajZ0YU81MHZHWUNUZmp5YWk0dTgxMzAxVkRFc3YxNFZyMHZvNmNxWittNWph?=
+ =?utf-8?B?OW54QXZsN09PZmQ4ekZtaDB0OUhiRlN1T2w4RjFPeU4rZG5Sd2RQVXliWGNa?=
+ =?utf-8?B?N205bnlwZHhaWHVJWGcydUp3S3VmZms0cjh1VmtqR0ZTVjZVR2luUHFSYm05?=
+ =?utf-8?B?V0R2dHhiMXdsZmcvWEh1b3BPbFkxSmpCeWJRMU9mZW1hbDJRZThmYUlDSkhl?=
+ =?utf-8?B?YnN3QTZZanZ6cFVKU2FlUVR3SkQ0ZnpSM011TGdLUjdwSm1sVG5nTDVObUda?=
+ =?utf-8?B?VUlQTGRSeUxtYkFPL2QwdWFmTjVNWFBXQTI1ZlUyNFd3RDFHcnB1ZG1mREZS?=
+ =?utf-8?B?TE15L1ZqaC94ekY0ZHIxQWxnM3c2T1JrcEEwSWlBbFROY2VxTEtjNWVGdGEv?=
+ =?utf-8?B?eTlJV2MzZWZYb3FYM254U2FGN3RMU2NYY1RrNlJiT3AxRnFScHA3bjk0N3Ar?=
+ =?utf-8?B?SGc0Rk5kSm5XdzR3d2tDeUpmQWVWb1lNWkRHK0lVMlRSUDQrVFZaSjgwUWw5?=
+ =?utf-8?B?VVhKNnZtVUZmeXpJM3FKSk5iY1RrSFFIUXZRVzkrZ1RIb0xZM2NVK1prdWQ5?=
+ =?utf-8?B?UWlaNFFhZU9HcDFPU2trMWl1Wko4VDRPbFFNeHJxUzNhcGhhakdZZTZ1bHpx?=
+ =?utf-8?B?Qm9wdU5OSUdMbkVqc0FrdXRaUDJjWE5sZUhXZ3pJQTViN01CSzNweXBZdzhW?=
+ =?utf-8?B?YUF3aFVSdTBVcStoRVRJalBGa0MvNlhlQUN0djVZc3dEMDRPNXVDUTBYT2VK?=
+ =?utf-8?B?ek16ZElpY2laMW5rOEdScm1NMUJqRGpjdUJhT2FKTjRqTkJuVjVxZHlhUE5K?=
+ =?utf-8?B?cG5DWHRsdHdySGNjazRmQ2dVdEdWT20xRlBPak5wdnlpa3FvMmtZSTRIRHBI?=
+ =?utf-8?B?OUZVZkNNLzEvWlhlTW1vY3BMd044QU9mdHlYRXJ6bUdsRGNWY1ZqNUhleThx?=
+ =?utf-8?B?eFJPOGdtemZKYjNRenFsR0d0TVFZWmw3QlJkQ1NUSzVvU2htblZHeE93Z2NK?=
+ =?utf-8?B?NDEvdlRudEdEc2xwZGZwZHRLR2tHcko5V0orVStUWGZRWGE0bFlMUFArTGhr?=
+ =?utf-8?B?VDYvSEdJNFFHcUVyZ2VFWWliWmI1blU1T1ozaE4yWithTzBEYXNPcHFVeE90?=
+ =?utf-8?B?OGs3WHN1V3RFK1BDZHdjTWE4Qll4cEFWSEMrQWZlT2NkblIwc2g0Z3pENk1S?=
+ =?utf-8?B?R2JoSE83WVMrQlphTnlzaHNSelNXZWRpa1VGTGJBa0FJR3VRYzEyRU81U3dL?=
+ =?utf-8?B?TElza3BlemVscE0xL05jd3ovTVpGYnp2bGFhMTFPTlVsSFdPV3I1SDdhYUNx?=
+ =?utf-8?B?M2pKV0hUcFJmQVhVNy9qSzlUWm9VV2t0d2lzblVaRUlJa3IrL3ZlUkZRb0ZV?=
+ =?utf-8?B?TDNoOGZXZXlSV3BuUmp3OENXSHBMYkE2ZnJ2dy8vQ2I5S1RZNE9Sbm1iT3N6?=
+ =?utf-8?B?bVQ0WGhXeEJCeW8wWnlZY294eHRGelNLQ3hlNmlWamlDV0NhNXphaDkrT1gr?=
+ =?utf-8?B?MzVrODNzcEh3Q2huaFUxdEFTemJQNDl0NTM5OXdmWDgyQUE1aFpBczY3K3Iw?=
+ =?utf-8?Q?AKQo=3D?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5acff3a-2b5c-409f-4652-08dbc90923af
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d099ca0-0b38-4090-16f4-08dbc90978a7
 X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8465.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 20:48:49.4506
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2023 20:51:12.2783
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: x+tRks7ZBTuP/+M7L+qc3ixfPRN1zziyamFeCRzaNbE3R9WSfjW9Nh5fP9u4uMEB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7564
+X-MS-Exchange-CrossTenant-UserPrincipalName: g/iAcJsP+2T6emitgi/M3R41GvxzP9GcJHmKgjy0xQpyNnUpkS8Da4UUO2h4Hjgi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6819
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
@@ -148,90 +149,172 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/10/10 02:30, Johannes Thumshirn wrote:
-> In case we're scrubbing a filesystem which uses the RAID stripe tree for
-> multi-device logical to physical address translation, perform an extra
-> block mapping step to get the real on0disk stripe length from the stripe
-> tree when scrubbing the sectors.
+On 2023/10/10 00:53, David Sterba wrote:
+> On Mon, Oct 09, 2023 at 03:17:00PM +1030, Qu Wenruo wrote:
+>> The option "--clear-ino-cache" is not really that suitable for "btrfs
+>> check" group.
+>>
+>> Let's move it to "btrfs rescue" group to fix those small hiccups, just
+>> like the existing "btrfs rescue fix-device-size" command.
+>>
+>> For now, "btrfs check --clear-ino-cache" would still work, with one
+>> extra warning referring to "btrfs rescue clear-ino-cache".
+>> This is mostly to reduce the surprise, and keep script users (I doubt if
+>> there is any though) happy for now.
+>>
+>> In the next or two releases, we would fully remove the support in "btrfs
+>> check" group.
+>>
+>> Another small change is, in the documents, we refer to the feature as
+>> "inode map", which doesn't match with the mount option documents.
+>> Since we're here, unify them to "inode cache" feature.
+>>
+>> Issue: #669
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > 
-> This prevents a double completion of the btrfs_bio caused by splitting the
-> underlying bio and ultimately a use-after-free.
-
-My concern is still the same, why we hit double endio calls in the first 
-place?
-
-In the bio layer, if the bbio->inode is NULL, the real endio would only 
-be called when all the split bios finished, thus it doesn't seem to 
-cause double endio calls.
-
-Mind to explain it more?
+> Please don't forget to add the new command to btrfs-completion. I've
+> noticed 2 more were missing so it's done in a separate commit.
 > 
-> Cc: Qu Wenru <wqu@suse.com>
-> Fixes: 0708614f9c28 ("btrfs: scrub: implement raid stripe tree support")
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->   fs/btrfs/scrub.c | 26 ++++++++++++++++++++++----
->   1 file changed, 22 insertions(+), 4 deletions(-)
+>> ---
+>>   Documentation/btrfs-check.rst  |  5 +++-
+>>   Documentation/btrfs-rescue.rst |  6 ++++
+>>   check/main.c                   |  1 +
+>>   cmds/rescue.c                  | 52 ++++++++++++++++++++++++++++++++++
+>>   4 files changed, 63 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/btrfs-check.rst b/Documentation/btrfs-check.rst
+>> index cf8de9fcc888..3c5f96f1951f 100644
+>> --- a/Documentation/btrfs-check.rst
+>> +++ b/Documentation/btrfs-check.rst
+>> @@ -84,8 +84,11 @@ SAFE OR ADVISORY OPTIONS
+>>           See also the *clear_cache* mount option.
+>>   
+>>   --clear-ino-cache
+>> -        remove leftover items pertaining to the deprecated inode map feature
+>> +        remove leftover items pertaining to the deprecated `inode cache` feature
+>>   
+>> +	.. warning::
+>> +		This option is deprecated, please use `btrfs rescue clear-ino-cache`
+>> +		instead, this option would be removed in the future eventually.
+>>   
+>>   DANGEROUS OPTIONS
+>>   -----------------
+>> diff --git a/Documentation/btrfs-rescue.rst b/Documentation/btrfs-rescue.rst
+>> index 39d250cefa48..e99aa4ad8a7e 100644
+>> --- a/Documentation/btrfs-rescue.rst
+>> +++ b/Documentation/btrfs-rescue.rst
+>> @@ -50,6 +50,12 @@ fix-device-size <device>
+>>   
+>>                   WARNING: CPU: 3 PID: 439 at fs/btrfs/ctree.h:1559 btrfs_update_device+0x1c5/0x1d0 [btrfs]
+>>   
+>> +clear-ino-cache <device>
+>> +        Remove leftover items pertaining to the deprecated `inode cache` feature.
+>> +
+>> +	The `inode cache` feature (enabled by mount option "inode_cache") is
+>> +	fully removed in v5.11 kernel.
+>> +
+>>   clear-uuid-tree <device>
+>>           Clear UUID tree, so that kernel can re-generate it at next read-write
+>>           mount.
+>> diff --git a/check/main.c b/check/main.c
+>> index 1174939fd6eb..7760511b85d9 100644
+>> --- a/check/main.c
+>> +++ b/check/main.c
+>> @@ -10242,6 +10242,7 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+>>   	}
+>>   
+>>   	if (clear_ino_cache) {
+>> +		warning("--clear-ino-cache option is deprecated, please use \"btrfs rescue clear-ino-cache\" instead.")
 > 
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index c477a14f1281..2ac574bde350 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1640,6 +1640,7 @@ static void scrub_submit_extent_sector_read(struct scrub_ctx *sctx,
->   {
->   	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
->   	struct btrfs_bio *bbio = NULL;
-> +	u64 stripe_len = BTRFS_STRIPE_LEN;
->   	int mirror = stripe->mirror_num;
->   	int i;
->   
-> @@ -1651,8 +1652,9 @@ static void scrub_submit_extent_sector_read(struct scrub_ctx *sctx,
->   
->   		/* The current sector cannot be merged, submit the bio. */
->   		if (bbio &&
-> -		    ((i > 0 && !test_bit(i - 1, &stripe->extent_sector_bitmap)) ||
-> -		     bbio->bio.bi_iter.bi_size >= BTRFS_STRIPE_LEN)) {
-> +		    ((i > 0 &&
-> +		      !test_bit(i - 1, &stripe->extent_sector_bitmap)) ||
-> +		     bbio->bio.bi_iter.bi_size >= stripe_len)) {
->   			ASSERT(bbio->bio.bi_iter.bi_size);
->   			atomic_inc(&stripe->pending_io);
->   			btrfs_submit_bio(bbio, mirror);
-> @@ -1660,10 +1662,26 @@ static void scrub_submit_extent_sector_read(struct scrub_ctx *sctx,
->   		}
->   
->   		if (!bbio) {
-> +			struct btrfs_io_stripe io_stripe = {};
-> +			struct btrfs_io_context *bioc = NULL;
-> +			const u64 logical = stripe->logical +
-> +					    (i << fs_info->sectorsize_bits);
-> +			int err;
-> +
->   			bbio = btrfs_bio_alloc(stripe->nr_sectors, REQ_OP_READ,
->   					       fs_info, scrub_read_endio, stripe);
-> -			bbio->bio.bi_iter.bi_sector = (stripe->logical +
-> -				(i << fs_info->sectorsize_bits)) >> SECTOR_SHIFT;
-> +			bbio->bio.bi_iter.bi_sector = logical >> SECTOR_SHIFT;
-> +
-> +			io_stripe.is_scrub = true;
-> +			err = btrfs_map_block(fs_info, BTRFS_MAP_READ, logical,
-> +					      &stripe_len, &bioc, &io_stripe,
-> +					      &mirror);
+> No "." at the end of the text and the ";" is missing, does not
+> compile.
 
-Another thing is, I noticed that for zoned devices, we still go through 
-the repair path, just skip the writeback and rely on relocation to repair.
+My bad, I noticed the warning is missing thus added it in the last minute...
 
-In that case, would scrub_stripe_submit_repair_read() need the same 
-treatment or can be completely skipped instead?
+Do I need to resend or you have already fixed it during merge?
 
 Thanks,
 Qu
-> +			btrfs_put_bioc(bioc);
-> +			if (err) {
-> +				btrfs_bio_end_io(bbio,
-> +						 errno_to_blk_status(err));
-> +				return;
-> +			}
->   		}
->   
->   		__bio_add_page(&bbio->bio, page, fs_info->sectorsize, pgoff);
+> 
+>>   		ret = clear_ino_cache_items(gfs_info);
+>>   		err = ret;
+>>   		goto close_out;
+>> diff --git a/cmds/rescue.c b/cmds/rescue.c
+>> index be6f5016d5a9..38f4e1423434 100644
+>> --- a/cmds/rescue.c
+>> +++ b/cmds/rescue.c
+>> @@ -34,6 +34,7 @@
+>>   #include "common/utils.h"
+>>   #include "common/help.h"
+>>   #include "common/open-utils.h"
+>> +#include "common/clear-cache.h"
+>>   #include "cmds/commands.h"
+>>   #include "cmds/rescue.h"
+>>   
+>> @@ -405,6 +406,56 @@ out:
+>>   }
+>>   static DEFINE_SIMPLE_COMMAND(rescue_clear_uuid_tree, "clear-uuid-tree");
+>>   
+>> +static const char * const cmd_rescue_clear_ino_cache_usage[] = {
+>> +	"btrfs rescue clear-ino-cache <device>",
+>> +	"remove leftover items pertaining to the deprecated inode cache feature",
+>> +	NULL
+>> +};
+>> +
+>> +static int cmd_rescue_clear_ino_cache(const struct cmd_struct *cmd,
+>> +				      int argc, char **argv)
+>> +{
+>> +	struct open_ctree_args oca = { 0 };
+>> +	struct btrfs_fs_info *fs_info;
+>> +	char *devname;
+>> +	int ret;
+>> +
+>> +	clean_args_no_options(cmd, argc, argv);
+>> +
+>> +	if (check_argc_exact(argc, 2))
+>> +		return 1;
+>> +
+>> +	devname = argv[optind];
+>> +	ret = check_mounted(devname);
+>> +	if (ret < 0) {
+>> +		errno = -ret;
+>> +		error("could not check mount status: %m");
+>> +		goto out;
+>> +	} else if (ret) {
+>> +		error("%s is currently mounted", devname);
+>> +		ret = -EBUSY;
+>> +		goto out;
+>> +	}
+>> +	oca.filename = devname;
+>> +	oca.flags = OPEN_CTREE_WRITES;
+>> +	fs_info = open_ctree_fs_info(&oca);
+>> +	if (!fs_info) {
+>> +		error("could not open btrfs");
+>> +		ret = -EIO;
+>> +		goto out;
+>> +	}
+>> +	ret = clear_ino_cache_items(fs_info);
+>> +	if (ret < 0) {
+>> +		errno = -ret;
+>> +		error("failed to clear ino cache: %m");
+>> +	} else {
+>> +		pr_verbose(LOG_DEFAULT, "Successfully cleared ino cache");
+>> +	}
+>> +out:
+>> +	return !!ret;
+>> +}
+>> +static DEFINE_SIMPLE_COMMAND(rescue_clear_ino_cache, "clear-ino-cache");
+>> +
+>>   static const char rescue_cmd_group_info[] =
+>>   "toolbox for specific rescue operations";
+>>   
+>> @@ -416,6 +467,7 @@ static const struct cmd_group rescue_cmd_group = {
+>>   		&cmd_struct_rescue_fix_device_size,
+>>   		&cmd_struct_rescue_create_control_device,
+>>   		&cmd_struct_rescue_clear_uuid_tree,
+>> +		&cmd_struct_rescue_clear_ino_cache,
+>>   		NULL
+>>   	}
+>>   };
+>> -- 
+>> 2.42.0
