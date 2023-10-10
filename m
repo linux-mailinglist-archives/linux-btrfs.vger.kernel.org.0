@@ -2,69 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6A47C412A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 22:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C547C4122
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 22:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbjJJU0q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Oct 2023 16:26:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54252 "EHLO
+        id S234402AbjJJU0f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Oct 2023 16:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234466AbjJJU03 (ORCPT
+        with ESMTP id S231825AbjJJU03 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 10 Oct 2023 16:26:29 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E65599
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:26:24 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d849df4f1ffso6436973276.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:26:24 -0700 (PDT)
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE90EB
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:26:25 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7bbcc099fso16801307b3.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969583; x=1697574383; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969584; x=1697574384; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fqxbcnQrbhAM79ZT2haRQaI7x72trapZ/1y8f7sxESs=;
-        b=aS+N6wlx+xKjokk7uje7jRN+GUm9S32+PZl4PCyqodSss5ROHhjsxHKsnHLbmVdvBT
-         Lpv8aF0yPcv57/PdTu8W5AdU7EXU6ascZIXSTazTC5pawmzJjGXoAzdneEawIqf/pp+A
-         MVtjSN/YA8wnF25MU6VQS8EyDLc4QHb7ZthTjzOr7bBQFG2DVFAunEqNpA3v3VPAdl0n
-         UCy/ZGWUyqistraaqgbIxX6DFBDxrXClMA2rw/+ir9L8D6FuvadAjNfl7BqYlzD6A1ol
-         qVWuh4XLUDJZweSpaIy+64miGup3zOmb0zQ/ss7U9ELFfQefpDetIPkRdJQ6kAceEX7L
-         rr+g==
+        bh=M2VMrA1lI9Q4ecQ5bc5FJJXlOR+SulDDfBaPoTgzRVE=;
+        b=qHBR6KTb5/EJuFj244Q9gGY7llosCXyLMr2HggcN28lQ3AiDdEmQBmvamMx0L9EWab
+         Q22kpdWE66SlTK4XB3BSpR4VJ+ZSK8o+M5eBt3CkUiUkBSCl++aKLcjXKn0V27HfOtEi
+         64iW+31QJBmLQU2rMTzlCG6SReVYQE6euKGQX8i2eY3Q761eOhNIb0cBq7cq8XnkSNny
+         wY+0XYkR4jBKc3v1PbzhvG3ALHj4SMKMlAIYEWEKxi/9Vt99dZEH5v1/lFrxDKIBFQnh
+         7INt3Di28T44YPz6KtnjlD9Z2UuRWa+vAp3s7Q3w81wRl4FrhVG32moGy6uUqsrzmdhQ
+         X/Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696969583; x=1697574383;
+        d=1e100.net; s=20230601; t=1696969584; x=1697574384;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fqxbcnQrbhAM79ZT2haRQaI7x72trapZ/1y8f7sxESs=;
-        b=suH1W+AoSVGuLAWvn4OWLXV8uM2XVvGhIj9HL0VDx0dHTZEDUnh8yT1jyinDRZSsUJ
-         fBrFuvzNyBV0zBD09hE+IrTH68sbo8X/JJkhw6oMRwtsmrRiqrIeNZvw4UGOqtp4Zcql
-         Jc7njzFV/nT61J4ilEoyjJOBbiy56mV9byf6TCLR6g5Toi2U4aMKiw8EQttD4Fhm4h+0
-         AlT/9yI7OKO/dadjWizoRsi84IWIvOfN9Eh3pf26mSokvbMuA4wP+F+uR5p940f6Bnc/
-         +0KPL92J+4mAa1/dNn7hnk+DL9e10j+fcWVZH0T1XWysDG555ZkMJR5jU9ZYcF4f5U8A
-         jHzQ==
-X-Gm-Message-State: AOJu0YwVtkxnOVYV5r6a6bKUiFFaB3dI1eRrGM96+/ui2jm3spCyJ6Me
-        lojsdX4AEBKFObBb5HrNo7izfg==
-X-Google-Smtp-Source: AGHT+IGw4kxDsOt6fa8BJi9L1FMTAuWa4xVaYHP5ZOTb9sMQ5tRzZ10wUFt1F7QiR+ugdbA5JanIRA==
-X-Received: by 2002:a25:eb04:0:b0:d89:47d6:b4f9 with SMTP id d4-20020a25eb04000000b00d8947d6b4f9mr16849727ybs.23.1696969583309;
-        Tue, 10 Oct 2023 13:26:23 -0700 (PDT)
+        bh=M2VMrA1lI9Q4ecQ5bc5FJJXlOR+SulDDfBaPoTgzRVE=;
+        b=Y1YuQAuzpWOXPtYlAFWf+ncEWi9uLh2Ol03Y08VBt5o1K0eYzLmMLJ70JzMVDTGwnr
+         6qXyHIOckQIMWw7cBvFVd9ZZZi8rnm/GaCU0mLx73uFJmtzLito1Sav45yshQWnqHV46
+         Tb5CQCC03DIRo/PiPvqgG/LbDfZ5r87df2pxOjt4uulzCJ//1fexPNFRUQlg3VTc4xkb
+         bjNFSontYStG/t/nFUOQTuYWu4rUfgL8h6jxQ681GXzLNNJGIcurU218HypFlSuh1pqd
+         W/XVA7AJ6wDBV+URcpzZj0nFY7mSYSfss6B4wjl7LRig3eMA9tEWyQKqDwBPLFgExQ4Z
+         hvZg==
+X-Gm-Message-State: AOJu0Yys7P50jgRpWhmWp5yfXwelGmcABauc2X31p3RMo4NINbHbIbOt
+        05MPzzVGFB3XXJHjqsvCYIf36Q==
+X-Google-Smtp-Source: AGHT+IG+BJZqKItphUjRYVNLo/YE1loYz+1+fzWvZ+O4HVoM+QGspAsPD6MkeRRtOJichHcdzorz5g==
+X-Received: by 2002:a0d:ef43:0:b0:595:be7:a38 with SMTP id y64-20020a0def43000000b005950be70a38mr20627894ywe.49.1696969584182;
+        Tue, 10 Oct 2023 13:26:24 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 85-20020a250d58000000b00d9a54e9b742sm748139ybn.55.2023.10.10.13.26.22
+        by smtp.gmail.com with ESMTPSA id i84-20020a819157000000b005a7bfec6c34sm701856ywg.46.2023.10.10.13.26.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 13:26:22 -0700 (PDT)
+        Tue, 10 Oct 2023 13:26:23 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 05/12] common/verity: explicitly don't allow btrfs encryption
-Date:   Tue, 10 Oct 2023 16:25:58 -0400
-Message-ID: <24a79bf71c105ebcff42868cdc7938022ca145d1.1696969376.git.josef@toxicpanda.com>
+Subject: [PATCH 06/12] btrfs: add simple test of reflink of encrypted data
+Date:   Tue, 10 Oct 2023 16:25:59 -0400
+Message-ID: <723b5972c3d2d917acc23bf65eb3a5e5feba5ecc.1696969376.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1696969376.git.josef@toxicpanda.com>
 References: <cover.1696969376.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -73,30 +73,101 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-Currently btrfs encryption doesn't support verity, but it is planned to
-one day. To be explicit about the lack of support, add a custom error
-message to the combination.
+Make sure that we succeed at reflinking encrypted data.
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Test deliberately numbered with a high number so it won't conflict with
+tests between now and merge.
 ---
- common/verity | 4 ++++
- 1 file changed, 4 insertions(+)
+ tests/btrfs/613     | 59 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/613.out | 13 ++++++++++
+ 2 files changed, 72 insertions(+)
+ create mode 100755 tests/btrfs/613
+ create mode 100644 tests/btrfs/613.out
 
-diff --git a/common/verity b/common/verity
-index 03d175ce..4e601a81 100644
---- a/common/verity
-+++ b/common/verity
-@@ -224,6 +224,10 @@ _scratch_mkfs_encrypted_verity()
- 		# features with -O.  Instead -O must be supplied multiple times.
- 		_scratch_mkfs -O encrypt -O verity
- 		;;
-+	btrfs)
-+		# currently verity + encryption is not supported
-+		_notrun "btrfs doesn't currently support verity + encryption"
-+		;;
- 	*)
- 		_notrun "$FSTYP not supported in _scratch_mkfs_encrypted_verity"
- 		;;
+diff --git a/tests/btrfs/613 b/tests/btrfs/613
+new file mode 100755
+index 00000000..0288016e
+--- /dev/null
++++ b/tests/btrfs/613
+@@ -0,0 +1,59 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
++#
++# FS QA Test 613
++#
++# Check if reflinking one encrypted file on btrfs succeeds.
++#
++. ./common/preamble
++_begin_fstest auto encrypt
++
++# Import common functions.
++. ./common/encrypt
++. ./common/filter
++. ./common/reflink
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++
++_require_test
++_require_scratch
++_require_cp_reflink
++_require_scratch_encryption -v 2
++_require_command "$KEYCTL_PROG" keyctl
++
++_scratch_mkfs_encrypted &>> $seqres.full
++_scratch_mount
++
++dir=$SCRATCH_MNT/dir
++mkdir $dir
++_set_encpolicy $dir $TEST_KEY_IDENTIFIER
++_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
++echo "Creating and reflinking a file"
++$XFS_IO_PROG -t -f -c "pwrite 0 33k" $dir/test > /dev/null
++cp --reflink=always $dir/test $dir/test2
++
++echo "Can't reflink encrypted and unencrypted"
++cp --reflink=always $dir/test $SCRATCH_MNT/fail |& _filter_scratch
++
++echo "Diffing the file and its copy"
++diff $dir/test $dir/test2
++
++echo "Verifying the files are reflinked"
++_verify_reflink $dir/test $dir/test2
++
++echo "Diffing the files after remount"
++_scratch_cycle_mount
++_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
++diff $dir/test $dir/test2
++
++echo "Diffing the files after key remove"
++_rm_enckey $SCRATCH_MNT $TEST_KEY_IDENTIFIER
++diff $dir/test $dir/test2 |& _filter_scratch
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/613.out b/tests/btrfs/613.out
+new file mode 100644
+index 00000000..4895d6dd
+--- /dev/null
++++ b/tests/btrfs/613.out
+@@ -0,0 +1,13 @@
++QA output created by 613
++Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
++Creating and reflinking a file
++Can't reflink encrypted and unencrypted
++cp: failed to clone 'SCRATCH_MNT/fail' from 'SCRATCH_MNT/dir/test': Invalid argument
++Diffing the file and its copy
++Verifying the files are reflinked
++Diffing the files after remount
++Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
++Diffing the files after key remove
++Removed encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
++diff: SCRATCH_MNT/dir/test: No such file or directory
++diff: SCRATCH_MNT/dir/test2: No such file or directory
 -- 
 2.41.0
 
