@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB477C413B
+	by mail.lfdr.de (Postfix) with ESMTP id D5F0F7C413C
 	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 22:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230141AbjJJU2l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Oct 2023 16:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
+        id S234466AbjJJU2m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Oct 2023 16:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234442AbjJJU2k (ORCPT
+        with ESMTP id S229448AbjJJU2k (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 10 Oct 2023 16:28:40 -0400
 Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430DAAC
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:28:38 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d90da64499cso6665004276.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:28:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41006AF
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:28:39 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d81d09d883dso6680555276.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:28:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969717; x=1697574517; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969718; x=1697574518; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7TiFA2tlBh5ynC20r8LqCQ79wIpbpnZvS1/ifeJfrw0=;
-        b=kuyGk9NT1Ma25pohl9uta0T3A1FDE62p3r4ZxR6oJeffEeG4SO2LqOokpOFlN4UDZG
-         npzCgzLDbg5QVESymd9BHR/GE2Lk5X41r9ys8CKWnmQwXunvi11TgnLDxW912yT3jdIU
-         3STKkcQWa2NrNV2287NiCxONy9IrpxOGm7WsTttm5w8YzMQSBO0QPR3gnGgFnjF6ycrx
-         3QSkYzDLlv9aruryjaLETw16E0EeicPaV3MoRKfOGJ4rb/KhUwBBKq2S0JKYJPoVi/jJ
-         kqDGo0MLZl/eOIHpEDHgIAuLsGhWU2JfCEF1iQXl/9i6CTnYPvKGtWUgj0wePlUgx0V5
-         rbcA==
+        bh=4LzDGmpMBZ38H2nIF78o0VPhtObXIvEqVfGZY9bSPdI=;
+        b=OYYPG6dBiQmDEuqQWn6UZJ53aIrk0+dkAVMK8aHV6UmD3sA6/Z/4DkCGidiVYLqNXk
+         A9Lte02U0rwCq7ZMbqAhSoL6Za8qI8NjxDEP+5T1CL6RRFYjW8PNavv3wKLbyxv22YVS
+         iHc2C1hRTu8HKRtT2fa88Iy34BC6ZE8gJh6pRrvXbeEl6fxiBNcemkW6cFjmgdI4rN1L
+         3vdjlVIzFCaJst+s12cOTW9xGuPxTBcNyLx5ykWuP45TCHffyoKPv2P0lAAC4U3Msan6
+         Cn5z7hF1e2YqJKHbwi5BcrD/X8a5BiPYrUwjCchpRDO49blhVDB3Pb0cROo9gNjtC5rC
+         Hc3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696969717; x=1697574517;
+        d=1e100.net; s=20230601; t=1696969718; x=1697574518;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7TiFA2tlBh5ynC20r8LqCQ79wIpbpnZvS1/ifeJfrw0=;
-        b=d7958N5IEi60drgEBcjYNtD5wAu+6Q9WOhFtkyjXleP9Epw+aLZz3oy8d4zT3Py3HK
-         vCQnVu/FxxJ+021IFwGdi/kBdYJKQ535vOCy2kruqYsaBnt5lr9W9i68+EqCaeX9pji2
-         oPPh7GIAT9/eNhTyGvq2fvM/QMS2PAbf8RSA0knMryTMuzcj/V5Y/yxKJPa+7HN9dWzp
-         0MiG+c38H0WDjkgeSI8gFypjhtiMR9ewS8RiczG3QIrAIW28ZoROW91j1qeiEqI2dW6s
-         +kkTS3uU8xbZ8G7gJzMTpZUB2hjCZapzHQfqzqHjjQWSNaFT+Te3S8KxhyhjInp170BC
-         FYTg==
-X-Gm-Message-State: AOJu0YwUmXOgr0lNVWxtKINHPchfmO7eKhLiCmtcwhLsISLMM8VxdZgH
-        L9iwvLYt2H7Rhd5iEbj7UaeL/NGv4P8KxJbMHU9LAA==
-X-Google-Smtp-Source: AGHT+IEQis5Oy/EdWfgdP1tJ4QrBpBf7n2iH0lvxAjmkiO6ZSBR0lTJr2kgjMs0sj2r/JMahYcmVLw==
-X-Received: by 2002:a25:9302:0:b0:d9a:36f6:fa61 with SMTP id f2-20020a259302000000b00d9a36f6fa61mr4287494ybo.42.1696969717378;
-        Tue, 10 Oct 2023 13:28:37 -0700 (PDT)
+        bh=4LzDGmpMBZ38H2nIF78o0VPhtObXIvEqVfGZY9bSPdI=;
+        b=hPV4gmp+gOWDF0X31Dlox2nr4yev2XL3GJqcRh2otgQsPGXuuOd7aa61OkgkxuNN9R
+         UoebuMYc2jmESFul9eHu8Xss5ZSTxI//KViJVFVabYdpzrLHyz+FgBhIKNNeR954/mGv
+         R4ANyfRFvW68ASjBSgSXNGTjZDX4nY9kRmqo5obGF2ttOndA3fYawpPTRqNHWZcVRQLS
+         oSJzlj7Gozm5JY6uxqbUN53+GzZ5YTZBdHdpe3P4KfhywOgmve1Z7xzcNjqrWAb4hWGR
+         HYuA0laN034SlyxhUJ3b9iuk93Kv0AB8E5SyEaSxye5M7c3znQ5AkSfAxwc3GyrMKSI5
+         FPUQ==
+X-Gm-Message-State: AOJu0YwY+2Pj2Q4UIKrHWBuahnF41pzdKzyNxHB/sGe5OOayQs5YZole
+        zWI5iyC7jJyuXaGY0/vKAlegy1WpdHJ4gh5Hkp0HXA==
+X-Google-Smtp-Source: AGHT+IGgQJwBQyhuK7PXD6nKqfhqsJT5koHkeOnNj7pV5vmE40+FTvdpJIQtWQVF3UyV6aSoN02fLA==
+X-Received: by 2002:a25:a029:0:b0:d74:62df:e802 with SMTP id x38-20020a25a029000000b00d7462dfe802mr16776448ybh.0.1696969718361;
+        Tue, 10 Oct 2023 13:28:38 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id b33-20020a25aea1000000b00d8179f577basm4011322ybj.49.2023.10.10.13.28.36
+        by smtp.gmail.com with ESMTPSA id t29-20020a252d1d000000b00d746487d6f7sm615737ybt.35.2023.10.10.13.28.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 13:28:37 -0700 (PDT)
+        Tue, 10 Oct 2023 13:28:38 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 7/8] btrfs-progs: escape unprintable characters in names
-Date:   Tue, 10 Oct 2023 16:28:24 -0400
-Message-ID: <4db28c419c3fbd6337034e9ae25d3fb234b81a41.1696969632.git.josef@toxicpanda.com>
+Subject: [PATCH 8/8] btrfs-progs: check: update inline extent length checking
+Date:   Tue, 10 Oct 2023 16:28:25 -0400
+Message-ID: <5741808b5b32ad9d7671f59fbfc8524867407c3d.1696969632.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1696969632.git.josef@toxicpanda.com>
 References: <cover.1696969632.git.josef@toxicpanda.com>
@@ -72,68 +72,67 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-There are several item types which have an associated name: inode refs
-and dir items. While they could always be unprintable, the advent of
-encryption makes it much more likely that the names contain characters
-outside the normal ASCII range. As such, it's useful to print the
-characters outside normal ASCII in hex format.
+As part of the encryption changes, encrypted inline file extents record
+their actual data length in ram_bytes, like compressed inline file
+extents, while the item's length records the actual size. As such,
+encrypted inline extents must be treated like compressed ones for
+inode length consistency checking.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 ---
- kernel-shared/print-tree.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ check/main.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index 38086275..9aa1ce16 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -30,6 +30,19 @@
- #include "kernel-shared/file-item.h"
- #include "common/utils.h"
+diff --git a/check/main.c b/check/main.c
+index e841ae9c..a8c4c7cf 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -1642,7 +1642,7 @@ static int process_file_extent(struct btrfs_root *root,
+ 	u64 mask = gfs_info->sectorsize - 1;
+ 	u32 max_inline_size = min_t(u32, gfs_info->sectorsize,
+ 				BTRFS_MAX_INLINE_DATA_SIZE(gfs_info));
+-	u8 compression;
++	u8 compression, encryption;
+ 	int extent_type;
+ 	int ret;
  
-+static void print_name(const char *buf, size_t len)
-+{
-+	size_t i;
-+	printf("name: ");
-+	for(i = 0; i < len; i++) {
-+		if (buf[i] >= ' ' && buf[i] <= '~')
-+			printf("%c", buf[i]);
-+		else
-+			printf("\\x%02hhx", buf[i]);
-+	}
-+	printf("\n");
-+}
-+
- static void print_dir_item_type(struct extent_buffer *eb,
-                                 struct btrfs_dir_item *di)
- {
-@@ -79,7 +92,7 @@ static void print_dir_item(struct extent_buffer *eb, u32 size,
- 		} else {
- 			read_extent_buffer(eb, namebuf,
- 					(unsigned long)(di + 1), len);
--			printf("\t\tname: %.*s\n", len, namebuf);
-+			print_name(namebuf, len);
- 		}
+@@ -1667,25 +1667,25 @@ static int process_file_extent(struct btrfs_root *root,
+ 	fi = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
+ 	extent_type = btrfs_file_extent_type(eb, fi);
+ 	compression = btrfs_file_extent_compression(eb, fi);
++	encryption = btrfs_file_extent_encryption(eb, fi);
  
- 		if (data_len) {
-@@ -137,7 +150,7 @@ static void print_inode_extref_item(struct extent_buffer *eb, u32 size,
+ 	if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
+-		num_bytes = btrfs_file_extent_ram_bytes(eb, fi);
+-		if (num_bytes == 0)
++		u64 num_decoded_bytes = btrfs_file_extent_ram_bytes(eb, fi);
++		u64 num_disk_bytes =  btrfs_file_extent_inline_item_len(eb, slot);
++		if (num_decoded_bytes == 0)
+ 			rec->errors |= I_ERR_BAD_FILE_EXTENT;
+-		if (compression) {
+-			if (btrfs_file_extent_inline_item_len(eb, slot) >
+-			    max_inline_size ||
+-			    num_bytes > gfs_info->sectorsize)
++		if (compression || encryption) {
++			if (num_disk_bytes > max_inline_size ||
++			    num_decoded_bytes > gfs_info->sectorsize)
+ 				rec->errors |= I_ERR_FILE_EXTENT_TOO_LARGE;
  		} else {
- 			read_extent_buffer(eb, namebuf,
- 					(unsigned long)extref->name, len);
--			printf("name: %.*s\n", len, namebuf);
-+			print_name(namebuf, len);
+-			if (num_bytes > max_inline_size)
++			if (num_decoded_bytes > max_inline_size)
+ 				rec->errors |= I_ERR_FILE_EXTENT_TOO_LARGE;
+-			if (btrfs_file_extent_inline_item_len(eb, slot) !=
+-			    num_bytes)
++			if (num_disk_bytes != num_decoded_bytes)
+ 				rec->errors |= I_ERR_INLINE_RAM_BYTES_WRONG;
  		}
- 
- 		len = sizeof(*extref) + name_len;
-@@ -167,7 +180,7 @@ static void print_inode_ref_item(struct extent_buffer *eb, u32 size,
- 		} else {
- 			read_extent_buffer(eb, namebuf,
- 					(unsigned long)(ref + 1), len);
--			printf("name: %.*s\n", len, namebuf);
-+			print_name(namebuf, len);
- 		}
- 		len = sizeof(*ref) + name_len;
- 		ref = (struct btrfs_inode_ref *)((char *)ref + len);
+-		rec->found_size += num_bytes;
+-		num_bytes = (num_bytes + mask) & ~mask;
++		rec->found_size += num_decoded_bytes;
++		num_bytes = (num_decoded_bytes + mask) & ~mask;
+ 	} else if (extent_type == BTRFS_FILE_EXTENT_REG ||
+ 		   extent_type == BTRFS_FILE_EXTENT_PREALLOC) {
+ 		num_bytes = btrfs_file_extent_num_bytes(eb, fi);
 -- 
 2.41.0
 
