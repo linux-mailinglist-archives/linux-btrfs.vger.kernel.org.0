@@ -2,140 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D37AD7C4130
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 22:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3082D7C4134
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 22:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbjJJU0l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Oct 2023 16:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
+        id S231888AbjJJU2c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Oct 2023 16:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234632AbjJJU0g (ORCPT
+        with ESMTP id S234410AbjJJU2c (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Oct 2023 16:26:36 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25C3E3
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:26:31 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5a7c08b7744so13659217b3.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:26:31 -0700 (PDT)
+        Tue, 10 Oct 2023 16:28:32 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257CA91
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:28:31 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d9a3d4b9456so2034874276.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:28:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969591; x=1697574391; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TYV6W3/su+yQdVC08/W92yX/IiZTkZ+W2IG1K67YFEE=;
-        b=CPK4WauFk1tak6CV4zolZKCy2JoVv3UUf4yWBpQfTiBhaILnk+HeLUugwYR8nYSbVI
-         7CeUnXcXyOt4UiHr9lmuNXveqR/1ixvdEdQ3cFbkkf0UuNyp/izAqT/UB/NPkFOcIguz
-         8vILIO+nbjucFHTxOfZsG/25fd6saUXsSvFJck9uYp8GK4UaT6wm0XkTXIM+J38m4ViR
-         Pbz4H7jfOFBQRuklnOGR7MxR9R5F031vYM1wUTPJgRETZxJHXEZ/N1kole5je1IB9mmA
-         db3L87VU5hmk2mnxVBae68d1mJwCPMb73kRE76k9oJdJPZsbogxg7G90Tdssfhg+KIef
-         XOBQ==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969710; x=1697574510; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PqwCs/b1Hsgp1Ma3VQ+7VTt8mxOnnVCxTaIq0g2mA4E=;
+        b=Q/3axBs0U/lxF7+wlzatZgwJXEdeg+R6o4Csp878tYeEniUiKwcmffEs9YKK5LCALW
+         4WNFRjgCPZq+HvY4SOmMENT5Ek+eZjBhOVtVFTPKPFYudQeDxR/l104jl5xBJ7ySl2UX
+         Pb64uFJs9Pep1WMw5YADmMis0zZ1M8YuWl4GGO39AN1nd6iS5sw1+4gnRnuz8qQfcw/S
+         ew6Yj0rvW+ffVObD81WzMgt6j6PNxZl2Q9jyNg9sL/oSCgtD0H4fVnItBBGHL/L8aEbx
+         hsrqnltn1bYCHzax2aKYcVa/hTbaym1uGqmdDEfPCSu/ZzyzNvwuAhpPjd1osyYxpvNZ
+         FjAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696969591; x=1697574391;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TYV6W3/su+yQdVC08/W92yX/IiZTkZ+W2IG1K67YFEE=;
-        b=F0KPgvMh2QS8yok3Tg6ElBCLg9a5ksusKdAe0YBbfymKZr6s9RnjMC/i3rQ1h5HG4z
-         mz1GS+7c74NSTzeg8yoDWNfzAYCsu7mRh7Lwosmx+ZrbB2lgaWfcvEwRfyTdscANycyQ
-         lztMl6ohEYlbqgqG2mkAJXONfg7eI2hhus0dmtJSWpzW9zrnsLEAJGVJD5vjA4EWvvzr
-         47n55fKWd9zubhB7aO5HDZTZzRUomVdDcdQ/b7/pbb1mALE8lj66ZXRlyYFJbB29CIXW
-         rCzJm487KJQaKBi3w3iPpSaSzKGOk2uNV+dL5lnclLLjK5SqPHvN+zk4CM01tlhjxqZQ
-         2ybg==
-X-Gm-Message-State: AOJu0YwX6bE7jKtxzw36rPZ85WsZ5m0fKVDTVTwDqFZx0rDFplApSfhX
-        VxAXwSTYV6DW+CGx79b/6o7M9g==
-X-Google-Smtp-Source: AGHT+IGvgRhnxM8rs8Q4ccehZoHcRELzxu4LMU2pLr32V5AjQW8wniDsc5M8y0GOBrzOZ5UXLUl+cw==
-X-Received: by 2002:a0d:ea90:0:b0:5a1:db12:d782 with SMTP id t138-20020a0dea90000000b005a1db12d782mr19988174ywe.44.1696969590781;
-        Tue, 10 Oct 2023 13:26:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696969710; x=1697574510;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PqwCs/b1Hsgp1Ma3VQ+7VTt8mxOnnVCxTaIq0g2mA4E=;
+        b=uWHnTca3qnBoe3BUNAlca7s0cmgrOcaM7iUJoprMlp49IP9ZVRyK9t6ittTPDQhFAO
+         92zC5ox172YeZdCin0bCmrZdWnjqFD/eOfarlGUv/eqzo9sB9274cdmGxMKZUrJ89NMF
+         1EIg92ZlVhk5m1dgm3gJl6oOuSIOFGZCREjENcDQBO+ukuPwlvrVgjssB+mGReCL0PRg
+         Owj34PxRYa0FATZH8OGomh34/dnscT/8g84ValOGkFpZZ7VFUWa8ry45s81nRTt0fBfo
+         M1p2+VUbHu872i+6YFL9Q7oji8T8G2Rnnc70I3kx6UU8q2FlJZuDG9AF6FsNZD+j33qF
+         P/ZA==
+X-Gm-Message-State: AOJu0YwtakwDTPFAwuyRTySXjxMvcOdekw9EkvhhA28e7w0mNlUbxnX+
+        xkvh+uSNnliuGn+9cPItF0LuwDJ/1Gj3uyVPP/sMJg==
+X-Google-Smtp-Source: AGHT+IE4asq2ZLei7OwkYG1LL19duDJU8U2vgaXwcyPBupMGV9o2PnB9exj5Z8cyoZljd1HT0fOYOQ==
+X-Received: by 2002:a05:6902:46:b0:d84:e73a:6ac9 with SMTP id m6-20020a056902004600b00d84e73a6ac9mr18329753ybh.24.1696969710191;
+        Tue, 10 Oct 2023 13:28:30 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id c4-20020a81df04000000b0059b1e1b6e5dsm4581610ywn.91.2023.10.10.13.26.30
+        by smtp.gmail.com with ESMTPSA id z4-20020a254c04000000b00d9a36ded1besm1055489yba.6.2023.10.10.13.28.29
+        for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 13:26:30 -0700 (PDT)
+        Tue, 10 Oct 2023 13:28:29 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH 12/12] fstest: add a fsstress+fscrypt test
-Date:   Tue, 10 Oct 2023 16:26:05 -0400
-Message-ID: <936037a6c2bcf5553145862c5358e175621983b0.1696969376.git.josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/8] btrfs-progs: add fscrypt support
+Date:   Tue, 10 Oct 2023 16:28:17 -0400
+Message-ID: <cover.1696969632.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1696969376.git.josef@toxicpanda.com>
-References: <cover.1696969376.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I noticed we don't run fsstress with fscrypt in any of our tests, and
-this was helpful in uncovering a couple of symlink related corner cases
-for the btrfs support work.  Add a basic test that creates a encrypted
-directory and runs fsstress in that directory.
+Hello,
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- tests/generic/736     | 38 ++++++++++++++++++++++++++++++++++++++
- tests/generic/736.out |  3 +++
- 2 files changed, 41 insertions(+)
- create mode 100644 tests/generic/736
- create mode 100644 tests/generic/736.out
+These patches have been updated to reflect the new on-disk format that comes
+along with the updated fscrypt support patches.  The only new change that I've
+added is a fix around the maximum inline extent size, which is more of a general
+thing that needed to be updated, but was exposed by the fscrypt support.
+Thanks,
 
-diff --git a/tests/generic/736 b/tests/generic/736
-new file mode 100644
-index 00000000..0ef37d7e
---- /dev/null
-+++ b/tests/generic/736
-@@ -0,0 +1,38 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2023 Meta
-+#
-+# FS QA Test No. generic/5736
-+#
-+# Run fscrypt on an encrypted directory
-+#
-+
-+. ./common/preamble
-+_begin_fstest auto quick encrypt
-+echo
-+
-+# Import common functions.
-+. ./common/filter
-+. ./common/encrypt
-+
-+# real QA test starts here
-+_supported_fs generic
-+_require_scratch_encryption -v 2
-+
-+_scratch_mkfs_encrypted &>> $seqres.full
-+_scratch_mount
-+
-+dir=$SCRATCH_MNT/dir
-+mkdir $dir
-+
-+_set_encpolicy $dir $TEST_KEY_IDENTIFIER
-+_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-+
-+args=$(_scale_fsstress_args -p 4 -n 10000 -p 2 $FSSTRESS_AVOID -d $dir)
-+echo "Run fsstress $args" >>$seqres.full
-+
-+$FSSTRESS_PROG $args >> $seqres.full
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/736.out b/tests/generic/736.out
-new file mode 100644
-index 00000000..022754df
---- /dev/null
-+++ b/tests/generic/736.out
-@@ -0,0 +1,3 @@
-+QA output created by 736
-+
-+Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
+Josef
+
+Josef Bacik (1):
+  btrfs-progs: check: fix max inline extent size
+
+Sweet Tea Dorminy (7):
+  btrfs-progs: add new FEATURE_INCOMPAT_ENCRYPT flag
+  btrfs-progs: start tracking extent encryption context info
+  btrfs-progs: add inode encryption contexts
+  btrfs-progs: interpret encrypted file extents.
+  btrfs-progs: handle fscrypt context items
+  btrfs-progs: escape unprintable characters in names
+  btrfs-progs: check: update inline extent length checking
+
+ check/main.c                    | 38 +++++++++++--------
+ kernel-shared/accessors.h       | 48 ++++++++++++++++++++++++
+ kernel-shared/ctree.h           |  3 +-
+ kernel-shared/print-tree.c      | 62 +++++++++++++++++++++++++++++--
+ kernel-shared/tree-checker.c    | 66 ++++++++++++++++++++++++++++-----
+ kernel-shared/uapi/btrfs.h      |  1 +
+ kernel-shared/uapi/btrfs_tree.h | 27 +++++++++++++-
+ 7 files changed, 215 insertions(+), 30 deletions(-)
+
 -- 
 2.41.0
 
