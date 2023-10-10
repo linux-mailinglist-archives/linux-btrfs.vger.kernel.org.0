@@ -2,69 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B39397C021D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 19:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAF27C028A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 19:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbjJJRCU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Oct 2023 13:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
+        id S233571AbjJJRZU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Oct 2023 13:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233484AbjJJRCT (ORCPT
+        with ESMTP id S232417AbjJJRZT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Oct 2023 13:02:19 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C9C97
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 10:02:16 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9959A1F45E;
-        Tue, 10 Oct 2023 17:02:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696957334;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zJco9WMUyu6ORJOsTjlqSky/9umvquWGmNXCYCCrugI=;
-        b=YBjFlM6YAByx/Hp4LlPFQ4NhA8T+dwVDOUqL8SNCqzNwODGKMCPZxutAdjgveup7muH7cY
-        aBdEdmqIHGHNGocp5VZsT3esYkNRBZ7zcICeMZ/E+fj7SMf9l0Y75/poblTBkmnBQ+fMEk
-        d9FD5eR73+nRsJBZpIf0VaFOArwTq/Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696957334;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zJco9WMUyu6ORJOsTjlqSky/9umvquWGmNXCYCCrugI=;
-        b=xHTq8KZD4b4POlKTbz7DxCAO4xCuTkMPrfsPUTV+9qwk1eAXyq9vp2q5XIDZANLbeKTrFu
-        q5Lhk62IFKPdyjDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7CFBE1348E;
-        Tue, 10 Oct 2023 17:02:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id tlDXHZaDJWVmQgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 10 Oct 2023 17:02:14 +0000
-Date:   Tue, 10 Oct 2023 18:55:28 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: introduce a basic metadata free space
- reservation check
-Message-ID: <20231010165528.GD2211@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <6081e57fe6f43b3ab44c883814c6a197513c66c0.1696489737.git.wqu@suse.com>
+        Tue, 10 Oct 2023 13:25:19 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20209E
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 10:25:17 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 538E71F460;
+        Tue, 10 Oct 2023 17:25:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1696958716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=/Fv24+j+mWJp1dS8eMIimoGO42mEyH4jO0XlmClWhqs=;
+        b=TPig3nqxOjoly3J99zzk+rDQwQol7XgPkHF6QxUZca5hmStN1Oj95O7+tCTjOaPRY5/7N1
+        5fdHwnxB4nr4onJhf1ZWfe1WGjgmTjKdrsXrOBxOzUeCWjaYhXcfrI6V0qb6FhNxmeEyR1
+        KxtCX+QACkcl0w0OZBGR5U6WW1HAJpE=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 21E052C4B9;
+        Tue, 10 Oct 2023 17:25:16 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9CBC5DA898; Tue, 10 Oct 2023 19:18:31 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: open code timespec64 in struct btrfs_inode
+Date:   Tue, 10 Oct 2023 19:18:27 +0200
+Message-ID: <20231010171827.11968-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6081e57fe6f43b3ab44c883814c6a197513c66c0.1696489737.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,51 +49,135 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 05, 2023 at 05:40:04PM +1030, Qu Wenruo wrote:
-> Unlike kernel, in btrfs-progs btrfs_start_transaction() never checks if
-> there is enough metadata space.
-> 
-> This can lead to very dangerous situation where there is no metadata
-> space left at all, deadlocking future tree operations.
-> 
-> This patch introuce a very basic version of metadata/system free space
-> check by:
-> 
-> - Check if there is enough metadata/system space left
->   If there is enough, go as usual.
-> 
-> - If there is not enough space left, try allocating a new chunk
-> 
-> - Recheck if the new space can meet our demand
->   If not, return ERR_PTR(-ENOSPC).
->   Otherwise, allocate a new trans handle to the caller.
-> 
-> This is possible thanks to the simplified transaction model in
-> btrfs-progs:
-> 
-> - We don't allow joining a transaction
->   This means we don't need to handle complex cases like data ordered
->   extents, which needs to reserve space first, then join the current
->   transaction and use the reserved blocks.
-> 
-> - We don't allow multiple trans handlers for one transaction
->   Since btrfs-progs is single threaded, we always start a transaction
->   and then commit it.
-> 
-> However there is a feature that must be an exception for the new
-> metadata/system free space check:
-> 
-> - btrfs check --init-extent-tree
->   As all the meta/system free space check is based on the space info,
->   which is loaded from block group items.
->   Thus when rebuilding extent tree, we can no longer have an accurate
->   view, thus we have to disable the feature for the whole execution if
->   we're rebuilding the extent tree.
-> 
-> For now, there is no regression exposed during the self tests, but I
-> really hope this can be an extra safenet to prevent causing ENOSPC
-> deadlock from btrfs-progs.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+The type of timespec64::tv_nsec is 'unsigned long', while we have only
+u32 for on-disk and in-memory. This wastes a few bytes in btrfs_inode.
+Add separate members for sec and nsec with the corresponding type width.
+This creates a 4 byte hole in btrfs_inode which can be utilized in the
+future.
 
-Added to devel, thanks.
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/btrfs_inode.h   |  3 ++-
+ fs/btrfs/delayed-inode.c | 12 ++++--------
+ fs/btrfs/inode.c         | 26 ++++++++++++--------------
+ 3 files changed, 18 insertions(+), 23 deletions(-)
+
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index bebb5921b922..5572ae52444e 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -253,7 +253,8 @@ struct btrfs_inode {
+ 	struct btrfs_delayed_node *delayed_node;
+ 
+ 	/* File creation time. */
+-	struct timespec64 i_otime;
++	u64 i_otime_sec;
++	u32 i_otime_nsec;
+ 
+ 	/* Hook into fs_info->delayed_iputs */
+ 	struct list_head delayed_iput;
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 4f364e242341..c640f87038a6 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1847,10 +1847,8 @@ static void fill_stack_inode_item(struct btrfs_trans_handle *trans,
+ 	btrfs_set_stack_timespec_nsec(&inode_item->ctime,
+ 				      inode_get_ctime(inode).tv_nsec);
+ 
+-	btrfs_set_stack_timespec_sec(&inode_item->otime,
+-				     BTRFS_I(inode)->i_otime.tv_sec);
+-	btrfs_set_stack_timespec_nsec(&inode_item->otime,
+-				     BTRFS_I(inode)->i_otime.tv_nsec);
++	btrfs_set_stack_timespec_sec(&inode_item->otime, BTRFS_I(inode)->i_otime_sec);
++	btrfs_set_stack_timespec_nsec(&inode_item->otime, BTRFS_I(inode)->i_otime_nsec);
+ }
+ 
+ int btrfs_fill_inode(struct inode *inode, u32 *rdev)
+@@ -1899,10 +1897,8 @@ int btrfs_fill_inode(struct inode *inode, u32 *rdev)
+ 	inode_set_ctime(inode, btrfs_stack_timespec_sec(&inode_item->ctime),
+ 			btrfs_stack_timespec_nsec(&inode_item->ctime));
+ 
+-	BTRFS_I(inode)->i_otime.tv_sec =
+-		btrfs_stack_timespec_sec(&inode_item->otime);
+-	BTRFS_I(inode)->i_otime.tv_nsec =
+-		btrfs_stack_timespec_nsec(&inode_item->otime);
++	BTRFS_I(inode)->i_otime_sec = btrfs_stack_timespec_sec(&inode_item->otime);
++	BTRFS_I(inode)->i_otime_nsec = btrfs_stack_timespec_nsec(&inode_item->otime);
+ 
+ 	inode->i_generation = BTRFS_I(inode)->generation;
+ 	BTRFS_I(inode)->index_cnt = (u64)-1;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 6f67ac612c6e..b388505c91cc 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3771,10 +3771,8 @@ static int btrfs_read_locked_inode(struct inode *inode,
+ 	inode_set_ctime(inode, btrfs_timespec_sec(leaf, &inode_item->ctime),
+ 			btrfs_timespec_nsec(leaf, &inode_item->ctime));
+ 
+-	BTRFS_I(inode)->i_otime.tv_sec =
+-		btrfs_timespec_sec(leaf, &inode_item->otime);
+-	BTRFS_I(inode)->i_otime.tv_nsec =
+-		btrfs_timespec_nsec(leaf, &inode_item->otime);
++	BTRFS_I(inode)->i_otime_sec = btrfs_timespec_sec(leaf, &inode_item->otime);
++	BTRFS_I(inode)->i_otime_nsec = btrfs_timespec_nsec(leaf, &inode_item->otime);
+ 
+ 	inode_set_bytes(inode, btrfs_inode_nbytes(leaf, inode_item));
+ 	BTRFS_I(inode)->generation = btrfs_inode_generation(leaf, inode_item);
+@@ -3944,10 +3942,8 @@ static void fill_inode_item(struct btrfs_trans_handle *trans,
+ 	btrfs_set_token_timespec_nsec(&token, &item->ctime,
+ 				      inode_get_ctime(inode).tv_nsec);
+ 
+-	btrfs_set_token_timespec_sec(&token, &item->otime,
+-				     BTRFS_I(inode)->i_otime.tv_sec);
+-	btrfs_set_token_timespec_nsec(&token, &item->otime,
+-				      BTRFS_I(inode)->i_otime.tv_nsec);
++	btrfs_set_token_timespec_sec(&token, &item->otime, BTRFS_I(inode)->i_otime_sec);
++	btrfs_set_token_timespec_nsec(&token, &item->otime, BTRFS_I(inode)->i_otime_nsec);
+ 
+ 	btrfs_set_token_inode_nbytes(&token, item, inode_get_bytes(inode));
+ 	btrfs_set_token_inode_generation(&token, item,
+@@ -5609,7 +5605,8 @@ static struct inode *new_simple_dir(struct inode *dir,
+ 	inode->i_mode = S_IFDIR | S_IRUGO | S_IWUSR | S_IXUGO;
+ 	inode->i_mtime = inode_set_ctime_current(inode);
+ 	inode->i_atime = dir->i_atime;
+-	BTRFS_I(inode)->i_otime = inode->i_mtime;
++	BTRFS_I(inode)->i_otime_sec = inode->i_mtime.tv_sec;
++	BTRFS_I(inode)->i_otime_nsec = inode->i_mtime.tv_nsec;
+ 	inode->i_uid = dir->i_uid;
+ 	inode->i_gid = dir->i_gid;
+ 
+@@ -6286,7 +6283,8 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
+ 
+ 	inode->i_mtime = inode_set_ctime_current(inode);
+ 	inode->i_atime = inode->i_mtime;
+-	BTRFS_I(inode)->i_otime = inode->i_mtime;
++	BTRFS_I(inode)->i_otime_sec = inode->i_mtime.tv_sec;
++	BTRFS_I(inode)->i_otime_nsec = inode->i_mtime.tv_nsec;
+ 
+ 	/*
+ 	 * We're going to fill the inode item now, so at this point the inode
+@@ -8487,8 +8485,8 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
+ 
+ 	ei->delayed_node = NULL;
+ 
+-	ei->i_otime.tv_sec = 0;
+-	ei->i_otime.tv_nsec = 0;
++	ei->i_otime_sec = 0;
++	ei->i_otime_nsec = 0;
+ 
+ 	inode = &ei->vfs_inode;
+ 	extent_map_tree_init(&ei->extent_tree);
+@@ -8642,8 +8640,8 @@ static int btrfs_getattr(struct mnt_idmap *idmap,
+ 	u32 bi_ro_flags = BTRFS_I(inode)->ro_flags;
+ 
+ 	stat->result_mask |= STATX_BTIME;
+-	stat->btime.tv_sec = BTRFS_I(inode)->i_otime.tv_sec;
+-	stat->btime.tv_nsec = BTRFS_I(inode)->i_otime.tv_nsec;
++	stat->btime.tv_sec = BTRFS_I(inode)->i_otime_sec;
++	stat->btime.tv_nsec = BTRFS_I(inode)->i_otime_nsec;
+ 	if (bi_flags & BTRFS_INODE_APPEND)
+ 		stat->attributes |= STATX_ATTR_APPEND;
+ 	if (bi_flags & BTRFS_INODE_COMPRESS)
+-- 
+2.41.0
+
