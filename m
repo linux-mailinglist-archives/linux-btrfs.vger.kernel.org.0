@@ -2,288 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F32A97C4125
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 22:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71007C412E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 22:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234256AbjJJU0g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Oct 2023 16:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
+        id S234421AbjJJU0p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Oct 2023 16:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234284AbjJJU0a (ORCPT
+        with ESMTP id S234546AbjJJU0a (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 10 Oct 2023 16:26:30 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFB3F5
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:26:25 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a7c93507d5so10302127b3.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:26:25 -0700 (PDT)
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D983D102
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:26:26 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-59e88a28b98so2222637b3.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:26:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969585; x=1697574385; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696969586; x=1697574386; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WjlHOtrmj3j+aDuwQDOJPd6FNzCtXK4lP83KMVMNQ78=;
-        b=NuOA82EblV9VoFsJrz8LU/0QooeSrjOEKcAvBaH+20hPlXvuQXGOOuhO748m0ZbyaE
-         I/K6amYHbwigIgU/ypBQIEBPWM4V36xdl1hhAQ2b1ghgm8hqFHHrmMsPIUsTETQcnwB+
-         GohYUuW5A9rViUk3Bs3trcZP5sC4VNt6QAgITFo6OZ5VnCG4vXNej7/IzZz/o54vWBbO
-         4Mbd1DILvGkZvYE0CC/heXzLj6dEPRXSV6ee3RnpmlsI5WWbFG4KVCUMsnWZIRBQAXdR
-         NyJfskiDl3cc0LlHQJr2EtUyjacObWv7A6Konjotprp5/SxiBu2BQfGPVXRKBwKLOwNE
-         fohA==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3hzSgDT0gSoCBX2kCWh7EzeVvXJNhVaEv2jbeDNylHU=;
+        b=PaIPiU64zkb7shF8XRz5d7OP0jz+m0uJYV++VIBdawswqF3loG3st5JpPf+xDoUJKM
+         66MzEdLcFWPwpn47x0icvbvOqIBDA1TamkiVxOvbAuZa0l21Zxf2rUelb7RrBgV50Ida
+         MK8+dEpvUwQqTX+ccyIbk7UTpE9AU8SEClXuVxw8Lxms3HEZ6S3gvy4kkApZ/CBrd+8E
+         6xWfUakK303goQePALyJDI+rKT54jpThCrZmEZe/8MLXkG96voVKd2KiyIDD/vvCOCH5
+         URE3EMTDt3VhuMw7qziw1U5pwMxf0V94lzmnEcYd8Z1fsIjNbZaCIORdc9MwQFQ95JM3
+         s5kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696969585; x=1697574385;
+        d=1e100.net; s=20230601; t=1696969586; x=1697574386;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WjlHOtrmj3j+aDuwQDOJPd6FNzCtXK4lP83KMVMNQ78=;
-        b=j8mML87b5gfERdc6O/ng6HmGaJBqlSC61p8kVXcADkBhis9AK8qadhW0WqEfo2uIxn
-         /eBORukO6twr/wDaMIcGrG2jxwjDgAp0zhDxn0RO/3odiQMzzcWJ2Ahrgf7s/cuAEG4u
-         3OhH/I7g3gQ0CFaU4J3yFopNWu+mSUmfVaQTpbT4JETXqSz8Yg/q0iwo4tml1hPm+VEw
-         jp8qjnR71sX3w96aJhDhgWqRxZmE6QJmQDB7T+x51aogOzosqKsg2QLAnd7QT/bg87+v
-         xJwkfaExlg1FyFViR4+M7iHqK5tpvU8E9JsVckW5Xcc053HFVQoGVag6FudiID7YhxOr
-         zTKA==
-X-Gm-Message-State: AOJu0Yz/brQz6UHr4skwq9AEr2woBNXaiZivoyHChnQdxSFTvalvxfi/
-        LDnJI19/ROgg5PaczsgRlwq2qg==
-X-Google-Smtp-Source: AGHT+IFYUeWvqGAdezAeV0PC8Dt/mEZnTIfBKHtUm1+6ewgo2L71xr6Nj3WRQlnyyO/HOQuYGigcZQ==
-X-Received: by 2002:a81:8782:0:b0:577:51cd:1b4a with SMTP id x124-20020a818782000000b0057751cd1b4amr21451628ywf.41.1696969585060;
+        bh=3hzSgDT0gSoCBX2kCWh7EzeVvXJNhVaEv2jbeDNylHU=;
+        b=q4PjYtzbnD8i2WUCLOol2wQVPhwamEmvIPOINNgAGQm9G8+oX8GXKlGb+XOK0NBZoA
+         VsIJL3uIMlWeSLHMJBzr0VJuilmOKUinfcHugrEWBvogMzLT0hhZh2vgew9I1yj+AnCH
+         z08LP0AHLL6wfNsDfVqXdjSmc7Nce7WJbb2VbfPin4a4kbm53V8/q4KOdjv/3LYDmV4U
+         cZlj3Ettqmo+t0J19Tfpzk/nnstQYVduJonURnPjeqBeDODGWXCtlleOabTzmilKBxGw
+         03RwthmuxruY4643CXa+r+0w2ySRs2BOiV3rr7/zHlg+MbaM2QvEIfUYeTeiELzh/jD0
+         W6+w==
+X-Gm-Message-State: AOJu0YxfISxHQ7EHJAnQPjM7bsDkfnvEyx4bTiNczkRsTdUBzC1v5IOZ
+        N8svx3jzA6OatL63/bjJIMITZQ==
+X-Google-Smtp-Source: AGHT+IEADGedsJ+tD+z1v+BkL/Fj36MMKWHXc5DgD5MLY74OYK5q9bScHx6p5oY7kR3DiomxEx51DA==
+X-Received: by 2002:a81:4e10:0:b0:56c:e480:2b2b with SMTP id c16-20020a814e10000000b0056ce4802b2bmr10786812ywb.12.1696969585964;
         Tue, 10 Oct 2023 13:26:25 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id m12-20020a819e0c000000b00594fff48796sm4588587ywj.75.2023.10.10.13.26.24
+        by smtp.gmail.com with ESMTPSA id p20-20020a0de614000000b005a7bbd713ddsm824658ywe.108.2023.10.10.13.26.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 13:26:24 -0700 (PDT)
+        Tue, 10 Oct 2023 13:26:25 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
         linux-btrfs@vger.kernel.org
-Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 07/12] btrfs: test snapshotting encrypted subvol
-Date:   Tue, 10 Oct 2023 16:26:00 -0400
-Message-ID: <9a17afb133849c2321bb98c07c48cff2aaf1d87a.1696969376.git.josef@toxicpanda.com>
+Subject: [PATCH 08/12] fstests: properly test for v1 encryption policies in encrypt tests
+Date:   Tue, 10 Oct 2023 16:26:01 -0400
+Message-ID: <c77a1a8ca09b2738f432d586177801a579a775e4.1696969376.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1696969376.git.josef@toxicpanda.com>
 References: <cover.1696969376.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        UPPERCASE_75_100 autolearn=no autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+With btrfs adding fscrypt support we're limiting the usage to plain v2
+policies only.  This means we need to update the _require's for
+generic/593 that tests both v1 and v2 policies.  The other sort of tests
+will be split into two tests in later patches.
 
-Make sure that snapshots of encrypted data are readable and writeable.
-
-Test deliberately high-numbered to not conflict.
-
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- tests/btrfs/614     |  76 ++++++++++++++++++++++++++++++
- tests/btrfs/614.out | 111 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 187 insertions(+)
- create mode 100755 tests/btrfs/614
- create mode 100644 tests/btrfs/614.out
+ common/encrypt    | 2 ++
+ tests/generic/593 | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/tests/btrfs/614 b/tests/btrfs/614
-new file mode 100755
-index 00000000..87dd27f9
---- /dev/null
-+++ b/tests/btrfs/614
-@@ -0,0 +1,76 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
-+#
-+# FS QA Test 614
-+#
-+# Try taking a snapshot of an encrypted subvolume. Make sure the snapshot is
-+# still readable. Rewrite part of the subvol with the same data; make sure it's
-+# still readable.
-+#
-+. ./common/preamble
-+_begin_fstest auto encrypt
-+
-+# Import common functions.
-+. ./common/encrypt
-+. ./common/filter
-+
-+# real QA test starts here
-+_supported_fs btrfs
-+
-+_require_test
-+_require_scratch
-+_require_scratch_encryption -v 2
-+_require_command "$KEYCTL_PROG" keyctl
-+
-+_scratch_mkfs_encrypted &>> $seqres.full
-+_scratch_mount
-+
-+udir=$SCRATCH_MNT/reference
-+dir=$SCRATCH_MNT/subvol
-+dir2=$SCRATCH_MNT/subvol2
-+$BTRFS_UTIL_PROG subvolume create $dir >> $seqres.full
-+mkdir $udir
-+
-+_set_encpolicy $dir $TEST_KEY_IDENTIFIER
-+_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-+
-+# get files with lots of extents by using backwards writes.
-+for j in `seq 0 50`; do
-+	for i in `seq 20 -1 1`; do
-+		$XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
-+		$dir/foo-$j >> $seqres.full | _filter_xfs_io
-+		$XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
-+		$udir/foo-$j >> $seqres.full | _filter_xfs_io
-+	done
-+done
-+
-+$BTRFS_UTIL_PROG subvolume snapshot $dir $dir2 | _filter_scratch
-+
-+_scratch_remount
-+_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-+sleep 30
-+echo "Diffing $dir and $dir2"
-+diff $dir $dir2
-+
-+echo "Rewriting $dir2 partly"
-+# rewrite half of each file in the snapshot
-+for j in `seq 0 50`; do
-+	for i in `seq 10 -1 1`; do
-+		$XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
-+		$dir2/foo-$j >> $seqres.full | _filter_xfs_io
-+	done
-+done
-+
-+echo "Diffing $dir and $dir2"
-+diff $dir $dir2
-+
-+echo "Dropping key and diffing"
-+_rm_enckey $SCRATCH_MNT $TEST_KEY_IDENTIFIER
-+diff $dir $dir2 |& _filter_scratch | _filter_nokey_filenames
-+
-+$BTRFS_UTIL_PROG subvolume delete $dir > /dev/null 2>&1
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/614.out b/tests/btrfs/614.out
-new file mode 100644
-index 00000000..390807e8
---- /dev/null
-+++ b/tests/btrfs/614.out
-@@ -0,0 +1,111 @@
-+QA output created by 614
-+Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
-+Create a snapshot of 'SCRATCH_MNT/subvol' in 'SCRATCH_MNT/subvol2'
-+Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
-+Diffing /mnt/scratch/subvol and /mnt/scratch/subvol2
-+Rewriting /mnt/scratch/subvol2 partly
-+Diffing /mnt/scratch/subvol and /mnt/scratch/subvol2
-+Dropping key and diffing
-+Removed encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
-+NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKEY_NAME NOKEY_NAME
+diff --git a/common/encrypt b/common/encrypt
+index 1372af66..120ca612 100644
+--- a/common/encrypt
++++ b/common/encrypt
+@@ -59,6 +59,8 @@ _require_scratch_encryption()
+ 	# policy required by the test.
+ 	if [ $# -ne 0 ]; then
+ 		_require_encryption_policy_support $SCRATCH_MNT "$@"
++	else
++		_require_encryption_policy_support $SCRATCH_MNT -v 1
+ 	fi
+ 
+ 	_scratch_unmount
+diff --git a/tests/generic/593 b/tests/generic/593
+index 2dda5d76..7907236c 100755
+--- a/tests/generic/593
++++ b/tests/generic/593
+@@ -17,6 +17,7 @@ _begin_fstest auto quick encrypt
+ 
+ # real QA test starts here
+ _supported_fs generic
++_require_scratch_encryption -v 1
+ _require_scratch_encryption -v 2
+ _require_command "$KEYCTL_PROG" keyctl
+ 
 -- 
 2.41.0
 
