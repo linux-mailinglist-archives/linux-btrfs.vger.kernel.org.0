@@ -2,130 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ADB7C4180
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 22:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E3C7C417E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 22:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234670AbjJJUla (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Oct 2023 16:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
+        id S234686AbjJJUlc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Oct 2023 16:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbjJJUlR (ORCPT
+        with ESMTP id S234588AbjJJUlT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Oct 2023 16:41:17 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9A2B9
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:41:15 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a7db1f864bso2045347b3.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:41:15 -0700 (PDT)
+        Tue, 10 Oct 2023 16:41:19 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D778E
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:41:16 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a7af20c488so21279327b3.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 13:41:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696970474; x=1697575274; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1696970475; x=1697575275; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+KUH5mNaG/0p3sTE3eYcJAqpZYp281vwXEU6Fc+b6FA=;
-        b=MmEi2Bkd4s74MRjhtIe9mifO0KP1gY1hkG0hopRTxIdzxllbREKwWP2ADJyzrjuf3R
-         +QNyD3SgoQfV5YaLX5Ctfqpo2Id4axgXXKvjV54yKYGnbnsXG791Tz0BWr5kP0W3v3qR
-         2ZxzdPfy7Z/9cHotxJ02aSbtqIT75LsDEHXM384a5MVWc2SUikdnWjIPIQ/BxSsFmqd/
-         BQxapjemMKR1RSDyPdJsUa9ozCFDK+fNf+qdLtz07uo1cvHKN2EzTVVpRK1a77EdO8RK
-         WgQuDw02KptqUMuRnp5SdJ6pdMPGQD5qI1LA3sLIMZEvApvdwROFdEoNN6SB8jjgmE2K
-         WJDg==
+        bh=1X/0Zt7z+oOh2YdMAkIlfw4aC9CST8nDgU19CDUdTeo=;
+        b=teVsTdd4szHuSRdAaNWifrVhPc0k+riHYOoxOIcXixJ1Pi3Td8JeeeCXNo4q9g5WUn
+         v1AKOcL2oFVDu9/8hxxFVtbIRuqpUoQsoNQzTZVcu9ssfciuMfaDx3JEKgLZARSmr6Yt
+         JbmPBz8CAp6q7Op9jn2+UXVkiBZGqNb+b4I3DGV774kVSXdU+/dFkAY6uQDwa1QuU5Z6
+         8Tx00Zq6u5vUYat5llAyLrRANOrrQqMOn/MKcB8/D+c4uLtoKzunrelxVxiZ4whDSBMz
+         yv6/ro5N+jE7wepdeNgiVWcX3wf6KR+JqX3l7v4ohjZ2tZOML2LpT4GFMErikp88/FOd
+         FeJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696970474; x=1697575274;
+        d=1e100.net; s=20230601; t=1696970475; x=1697575275;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+KUH5mNaG/0p3sTE3eYcJAqpZYp281vwXEU6Fc+b6FA=;
-        b=WuHvhT/06iky764rnAEN7lgGP/KWyRWDa2MfK4+S3/aj211X44//10cu9Cp/OTlKAz
-         33ghoB06sxZ4FLdeoDTN5mfv47uo6Er9hYn8bwvUd/DIsO9UYRSzRLYRcPOngaLa4SBL
-         fsqKj+s/3obmfJmoeDqdYUm7CO/2HqLiJWp4ahXyHXZGK6ppoErnWWfDSCSGooPoeipx
-         U1jVxIWLBsgLjNctyrFtb21ms6VUfHB+yB1bKJf/lSLHolrdZtGBN17H8/DGGQUYt9R4
-         pcSUYdSBPI1cPFm66SIxM6FlZ2EWQkcoZp/KZ/zST3SMP3Iln57j2B1PH6/zshnmQq+/
-         5hWA==
-X-Gm-Message-State: AOJu0YweCGyFp7x/mozQH0z6RsnmtearPb/lX1TVh+9z2BHM1KP592ou
-        omPANiLFYrv3obiG9QElBtUaag==
-X-Google-Smtp-Source: AGHT+IHC9JiRGUt26OePCahGfMDDSIiFv4sUcCxpJvzEUqoZ3GRPMxdbMObItrQ/CkLQU5uAfJFHGg==
-X-Received: by 2002:a0d:f003:0:b0:59b:4f2d:231 with SMTP id z3-20020a0df003000000b0059b4f2d0231mr21085500ywe.45.1696970474597;
-        Tue, 10 Oct 2023 13:41:14 -0700 (PDT)
+        bh=1X/0Zt7z+oOh2YdMAkIlfw4aC9CST8nDgU19CDUdTeo=;
+        b=VebNOGNvGXM9i/JFzue/rSmQTQDd31OeTjkDfHenMcanRzyf+hsekB578yjQUD5NOe
+         fnVeURSyZ8QlSxn0UAYkcL3SC00JJKdrsx4JLanApaJz4oGSZEjO1i8QbOoGrJef/koc
+         4bMRkznGu7iY9pw9Eg62yFNG5hXQatwLf86ZR7WfqI1Y4avsBZqSfpVgogT0Eg/tclrw
+         NGkfvIpk7DZHkMw57sQ3TIC7Nu9+bqooq9p0/71Wrdoo5yUnCKpYUkeuZN3klnA7y8JA
+         RIl/iMfcU01GPeDLHGHOYzzu7512J0HwYSS06EEFGzdP1Jj1dW3EMQcaN7bbutmRfOG1
+         dZag==
+X-Gm-Message-State: AOJu0Yzk24NoFXtKVlEvLqi5A8ZumwNLW3Nh1inaJFOR61BxEwgY5Ofj
+        AzrtvTdawF0x/k14f77Y/WPG2Q==
+X-Google-Smtp-Source: AGHT+IF2iWI7A9wE0CIU+MsdZuyW9o5G9Md2jSIowPav1/vMVNXMclVs/CcYmtHAA5wT5BpHhVF6Aw==
+X-Received: by 2002:a0d:d546:0:b0:58f:a19f:2b79 with SMTP id x67-20020a0dd546000000b0058fa19f2b79mr20759539ywd.9.1696970475587;
+        Tue, 10 Oct 2023 13:41:15 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id s67-20020a815e46000000b0059b50f126fbsm4676785ywb.114.2023.10.10.13.41.14
+        by smtp.gmail.com with ESMTPSA id x132-20020a817c8a000000b005925c896bc3sm4700587ywc.53.2023.10.10.13.41.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Oct 2023 13:41:14 -0700 (PDT)
+        Tue, 10 Oct 2023 13:41:15 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-fscrypt@vger.kernel.org, ebiggers@kernel.org,
         linux-btrfs@vger.kernel.org
-Cc:     Omar Sandoval <osandov@osandov.com>,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v2 09/36] btrfs: disable various operations on encrypted inodes
-Date:   Tue, 10 Oct 2023 16:40:24 -0400
-Message-ID: <a7b9e13bca63d9c1c33f7107b23473c65c8e07a4.1696970227.git.josef@toxicpanda.com>
+Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH v2 10/36] btrfs: disable verity on encrypted inodes
+Date:   Tue, 10 Oct 2023 16:40:25 -0400
+Message-ID: <f61fb12657e5b29a27c73dc3b5bd175aaf4269ee.1696970227.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1696970227.git.josef@toxicpanda.com>
 References: <cover.1696970227.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@osandov.com>
+From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-Initially, only normal data extents will be encrypted. This change
-forbids various other bits:
-- allows reflinking only if both inodes have the same encryption status
-- disable inline data on encrypted inodes
+Right now there isn't a way to encrypt things that aren't either
+filenames in directories or data on blocks on disk with extent
+encryption, so for now, disable verity usage with encryption on btrfs.
 
-Signed-off-by: Omar Sandoval <osandov@osandov.com>
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c   | 3 ++-
- fs/btrfs/reflink.c | 7 +++++++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ fs/btrfs/verity.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index c9317c047587..4806ff34224a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -630,7 +630,8 @@ static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 size,
- 	 * compressed) data fits in a leaf and the configured maximum inline
- 	 * size.
- 	 */
--	if (size < i_size_read(&inode->vfs_inode) ||
-+	if (IS_ENCRYPTED(&inode->vfs_inode) ||
-+	    size < i_size_read(&inode->vfs_inode) ||
- 	    size > fs_info->sectorsize ||
- 	    data_len > BTRFS_MAX_INLINE_DATA_SIZE(fs_info) ||
- 	    data_len > fs_info->max_inline)
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index fabd856e5079..3c66630d87ee 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
+diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
+index 66e2270b0dae..92536913df04 100644
+--- a/fs/btrfs/verity.c
++++ b/fs/btrfs/verity.c
+@@ -588,6 +588,9 @@ static int btrfs_begin_enable_verity(struct file *filp)
  
- #include <linux/blkdev.h>
-+#include <linux/fscrypt.h>
- #include <linux/iversion.h>
- #include "ctree.h"
- #include "fs.h"
-@@ -809,6 +810,12 @@ static int btrfs_remap_file_range_prep(struct file *file_in, loff_t pos_in,
- 		ASSERT(inode_in->i_sb == inode_out->i_sb);
- 	}
+ 	ASSERT(inode_is_locked(file_inode(filp)));
  
-+	/*
-+	 * Can only reflink encrypted files if both files are encrypted.
-+	 */
-+	if (IS_ENCRYPTED(inode_in) != IS_ENCRYPTED(inode_out))
++	if (IS_ENCRYPTED(&inode->vfs_inode))
 +		return -EINVAL;
 +
- 	/* Don't make the dst file partly checksummed */
- 	if ((BTRFS_I(inode_in)->flags & BTRFS_INODE_NODATASUM) !=
- 	    (BTRFS_I(inode_out)->flags & BTRFS_INODE_NODATASUM)) {
+ 	if (test_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &inode->runtime_flags))
+ 		return -EBUSY;
+ 
 -- 
 2.41.0
 
