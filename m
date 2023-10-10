@@ -2,113 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1786D7BFE65
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 15:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E066F7BFFE6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Oct 2023 17:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbjJJNti (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Oct 2023 09:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
+        id S232979AbjJJPC1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Oct 2023 11:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbjJJNth (ORCPT
+        with ESMTP id S233089AbjJJPC0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Oct 2023 09:49:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0B691
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 06:49:35 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A562621883;
-        Tue, 10 Oct 2023 13:49:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696945774;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e2qv4XJhlNecCvg0cEatpZgAToBBFEZU8e45DsZgn6k=;
-        b=KulYYqrFI94DaKaVGr4idCFnPrElfyLdu3lSwTaM8IFZAeimSHCePUJDAJJ/X8Qg/0TM6u
-        cYF5m/5dr9MRirZmyUvvYvkPoLcgnh5uWSq85P3rHahbJLIkFTbJTiOkGrB+gjkB62YXiv
-        MNpr6Xjw5M1tcQVFR+pZj2Qq6C5USOc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696945774;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e2qv4XJhlNecCvg0cEatpZgAToBBFEZU8e45DsZgn6k=;
-        b=Bi+xfJLrEBcnAzaIo7zA8nwZuipdJJDOZsUwYuLx+KmsTJMjqy75zD9qTV+sfO8nYXSC+4
-        l6hXiuIJsTnlkZAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6CBDB1358F;
-        Tue, 10 Oct 2023 13:49:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id sKrOGW5WJWX4cgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 10 Oct 2023 13:49:34 +0000
-Date:   Tue, 10 Oct 2023 15:42:48 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.cz>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: perform stripe tree lookup for scrub
-Message-ID: <20231010134248.GC2211@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <4895772fd73872ee2cc23d152e50db28a5ca5bbc.1696867165.git.johannes.thumshirn@wdc.com>
- <cdfbc6c3-d43e-456f-9616-441c3b50a1dd@suse.com>
- <77b7ae4f-d353-46ee-9b35-f7eb64bba110@wdc.com>
+        Tue, 10 Oct 2023 11:02:26 -0400
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C103A7
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 08:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1696950145; x=1728486145;
+  h=from:to:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=bDilZiuld1IBCKzQ2aMzg/NcVsHX9AVVObjjvg7eBCY=;
+  b=tp5FVUtho0qQMpoZBe95YA1TGinm+5BRG2T+3EGRb75xbbc2nuXPPO8z
+   EoY36E6kVqHOUUPdeI9gUZ4bS3vwzM39WitPbop6qVn6V5SNKYTcYVCKF
+   njgsSJ0AcZKsibX1auOS3YPLX9hiZj6y/DiIkHm84xEk42npQzS7kz8EK
+   E=;
+X-IronPort-AV: E=Sophos;i="6.03,213,1694736000"; 
+   d="scan'208";a="363357630"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-fad5e78e.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2023 15:02:23 +0000
+Received: from EX19MTAUEB002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2c-m6i4x-fad5e78e.us-west-2.amazon.com (Postfix) with ESMTPS id 605E3A0C45
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Oct 2023 15:02:22 +0000 (UTC)
+Received: from EX19D030UEC004.ant.amazon.com (10.252.137.217) by
+ EX19MTAUEB002.ant.amazon.com (10.252.135.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Tue, 10 Oct 2023 15:02:22 +0000
+Received: from EX19D030UEC003.ant.amazon.com (10.252.137.182) by
+ EX19D030UEC004.ant.amazon.com (10.252.137.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Tue, 10 Oct 2023 15:02:21 +0000
+Received: from EX19D030UEC003.ant.amazon.com ([fe80::6222:63e7:9834:7b89]) by
+ EX19D030UEC003.ant.amazon.com ([fe80::6222:63e7:9834:7b89%3]) with mapi id
+ 15.02.1118.037; Tue, 10 Oct 2023 15:02:21 +0000
+From:   "Ospan, Abylay" <aospan@amazon.com>
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: btrfs_extent_map memory consumption results in "Out of memory"
+Thread-Topic: btrfs_extent_map memory consumption results in "Out of memory"
+Thread-Index: Adn7hypl09BTxineSnqUNneAxmdLqQ==
+Date:   Tue, 10 Oct 2023 15:02:21 +0000
+Message-ID: <13f94633dcf04d29aaf1f0a43d42c55e@amazon.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.106.178.24]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <77b7ae4f-d353-46ee-9b35-f7eb64bba110@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 08:37:10AM +0000, Johannes Thumshirn wrote:
-> On 09.10.23 22:48, Qu Wenruo wrote:
-> > 
-> > 
-> > On 2023/10/10 02:30, Johannes Thumshirn wrote:
-> >> In case we're scrubbing a filesystem which uses the RAID stripe tree for
-> >> multi-device logical to physical address translation, perform an extra
-> >> block mapping step to get the real on0disk stripe length from the stripe
-> >> tree when scrubbing the sectors.
-> >>
-> >> This prevents a double completion of the btrfs_bio caused by splitting the
-> >> underlying bio and ultimately a use-after-free.
-> > 
-> > My concern is still the same, why we hit double endio calls in the first
-> > place?
-> > 
-> > In the bio layer, if the bbio->inode is NULL, the real endio would only
-> > be called when all the split bios finished, thus it doesn't seem to
-> > cause double endio calls.
-> > 
-> > Mind to explain it more?
-> 
-> 
-> Hmm indeed you're right. The patch probably only masks the UAF. On the 
-> other hand, there's no point in submitting a bio for a range that needs 
-> to be split, if we can avoid it.
-> 
-> Regarding the UAF, the KASAN report points to an object allocated by 
-> btrfs_bio_alloc() in scrub_submit_extent_sector_read(), so it's the bbio.
-> 
-> Let me check if changing bbio->pending_ios from atomic_t to refcount_t 
-> does give some hints here.
-> 
-> Still I think the patch is still useful regardless of the UAF.
+Greetings Btrfs development team!
 
-I had merged the fixup yesterday before Qu replied, as I read it's not
-entirely wrong as the RST is improved incrementally but please let me
-know if you'd like to revert this change.
+I would like to express my gratitude for your outstanding work on Btrfs. Ho=
+wever, I recently experienced an 'out of memory' issue as described below.
+
+Steps to reproduce:
+
+1. Run FIO test on a btrfs partition with random write on a 300GB file:
+
+cat <<EOF >> rand.fio=20
+[global]
+name=3Dfio-rand-write
+filename=3Dfio-rand-write
+rw=3Drandwrite
+bs=3D4K
+direct=3D1
+numjobs=3D16
+time_based
+runtime=3D90000
+
+[file1]
+size=3D300G
+ioengine=3Dlibaio
+iodepth=3D16
+EOF
+
+fio rand.fio
+
+2. Monitor slab consumption with "slabtop -s -a"
+
+  OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
+25820620 23138538  89%    0.14K 922165       28   3688660K btrfs_extent_map
+
+3. Observe oom-killer:
+[49689.294138] ip invoked oom-killer: gfp_mask=3D0xc2cc0(GFP_KERNEL|__GFP_N=
+OWARN|__GFP_COMP|__GFP_NOMEMALLOC), order=3D3, oom_score_adj=3D0
+...
+[49689.294425] Unreclaimable slab info:
+[49689.294426] Name                      Used          Total=09
+[49689.329363] btrfs_extent_map     3207098KB    3375622KB
+...
+
+Memory usage by btrfs_extent_map gradually increases until it reaches a cri=
+tical point, causing the system to run out of memory.
+
+Test environment: Intel CPU, 8GB RAM (To expedite the reproduction of this =
+issue, I also conducted tests within QEMU with a restricted amount of memor=
+y).=20
+Linux kernel tested: LTS 5.15.133, and mainline 6.6-rc5
+
+Quick review of the 'fs/btrfs/extent_map.c' code reveals no built-in limita=
+tions on memory allocation for extents mapping.
+Are there any known workarounds or alternative solutions to mitigate this i=
+ssue?
+
+Thank you!
+
+--
+Abylay Ospan
+
+
