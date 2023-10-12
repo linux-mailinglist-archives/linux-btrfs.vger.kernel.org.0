@@ -2,205 +2,282 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DA97C77D5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Oct 2023 22:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF477C77E2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Oct 2023 22:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347385AbjJLUX5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Oct 2023 16:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
+        id S1442643AbjJLU0G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Oct 2023 16:26:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442760AbjJLUXz (ORCPT
+        with ESMTP id S1442502AbjJLU0F (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Oct 2023 16:23:55 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABF1BB;
-        Thu, 12 Oct 2023 13:23:54 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39CIAgqv029693;
-        Thu, 12 Oct 2023 13:23:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-id :
- content-type : content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=1zwU7DcgxQmVnElD7sMqR40Qi3pGNtyzFb2I2XY8QMo=;
- b=EESR4x9lfDcKvsjtUejXR6FFw34ZLRHKoKh6T4P+qC6jLoERQX0c1p/xtvtYgfq/tBQG
- Re4yHQrHprxzvYilaYL2Mwmkm/Csy5/+L5vg5VNEQg/B29teD0atU35h3s6XHNGl0rbJ
- Rbaus8eOO8lZYzesgKsewD7SjRUn42v5esktsSDhVvnCW04mMk+fubUsqHg/I4QPx+0t
- sRSuTfMQ3e422AX6zDhV+1hPowhBFBUDHS9/o5adOEb19ur3CdxehhqY5iak++uWMEJu
- o8u97cck3TKT6v75llYNs0asjss0uekfgtlGAi2kDovV0VLbGIzbe5VZhkWWWYqPUpuD fw== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3tpbryrfw8-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 Oct 2023 13:23:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hWGfoPHYquecm1YKKV09gystuK6Kqs5Vc6A8IS4vgT7cfkBuIc1EPrhZ5YPB2WxM4oE6Kc+bouRcWI2/vXXfeQLRDc0gg0SKOY24QH/g/cT+kTk61Cay/FGmLerozdfweOD1t4IHHuD8A1yM66zfmSmYbxHzWYhqlv280xii0iLSX1V3CMGOWR4+OXZwC03o/UbFjn/Fu8CPusMBmnElYNGoOrRh2QKe7D/0IuWavScVu/18+BsrkWEvJWrTbdWJiv2vKOl3sf3F3khDssSkaJFmUdlthiH30MDvpLpoMy+/Agg8BeEQ8XuV5GHAzAylbmlLH+dB6iTkPUngQIULPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1zwU7DcgxQmVnElD7sMqR40Qi3pGNtyzFb2I2XY8QMo=;
- b=MpdSPt7RO0CqE6OImEG+mhRbx5qmXbQAZ6iAaHzqfoJ1qTv4/70JkMkeV5zbCHl3oO+pHnBPnzl8tT3R9CXTRWc6MPPHai+4Q6MfYLzw2CXw136nyZmVPlhJU8D0MV0nREtNiWqmrE8tiSHX7qOXUNpVsWpN4qvO8tXm0Dju9pfAUTAyQGwsQl8haL+SLaDQxDO7A34zmD0Lj/rlRvwAIwIQnsoiJGc404+mlYS9zIqm9bLTeo+wBDULH7pcv8JzSHnoDpBveJS3WKHIgnvkxuQ5++PpDNwkMF7oyQQ7Zvp7jO4WMs4pZuFucQ6h4Bpu20cdZTx7xNGr4Js8NhMMdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com (2603:10b6:a03:1f9::18)
- by SA0PR15MB3982.namprd15.prod.outlook.com (2603:10b6:806:88::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.45; Thu, 12 Oct
- 2023 20:23:51 +0000
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::60e6:62d8:ca42:402f]) by BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::60e6:62d8:ca42:402f%3]) with mapi id 15.20.6863.043; Thu, 12 Oct 2023
- 20:23:51 +0000
-From:   Nick Terrell <terrelln@meta.com>
-To:     Kees Cook <keescook@chromium.org>
-CC:     Nick Terrell <terrelln@meta.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        syzbot <syzbot+1f2eb3e8cd123ffce499@syzkaller.appspotmail.com>,
-        Chris Mason <clm@meta.com>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: Re: [syzbot] [zstd] UBSAN: array-index-out-of-bounds in
- FSE_decompress_wksp_body_bmi2
-Thread-Topic: [syzbot] [zstd] UBSAN: array-index-out-of-bounds in
- FSE_decompress_wksp_body_bmi2
-Thread-Index: AQHZ+WIW2tZXKI1VfkS0RwXdr6keRLBBuYeAgATf4ACAAATqgIAAAuQA
-Date:   Thu, 12 Oct 2023 20:23:51 +0000
-Message-ID: <176F983D-1160-4163-93DE-553AE89E8D3E@meta.com>
-References: <00000000000049964e06041f2cbf@google.com>
- <20231007210556.GA174883@sol.localdomain> <202310091025.4939AEBC9@keescook>
- <19E42116-8FE3-4C4B-8D26-E9B47B0B9AC5@meta.com>
- <202310121311.4B9DD96E51@keescook>
-In-Reply-To: <202310121311.4B9DD96E51@keescook>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BY5PR15MB3667:EE_|SA0PR15MB3982:EE_
-x-ms-office365-filtering-correlation-id: 2a659a25-3d0f-4fa3-dc1b-08dbcb6125f9
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: t/45SMdZ0l6AKuwk93Ahwcukrk3FEHUjMX/A9LL+mpIqBLkm+HXPK7ayvKo1znayM7iRN3swiioTx4Xx1vrG0vQnJuuWBLkAX2AUemcRs2/YPVeUrlHrdpEWZCC5tOJPbjalczkxkA+0WzvDRrKDGjQWfC1cY/D7r6XJmTZsyqm4iqsU8R8Y4YXH3HTapuntKYFVbnu2RSY1Cah1dMifN+c05gd/Js9eladYbL8pV4hG9wq2sqLZ0n88DOncl9Ht23qxe7xIP4ADSQHM5bAi77+QGLmUHTHowBiqT/tjnWR65NDMDPLvD/4iqHsFfCPSG4/0MiQ57h8bOJ79NyO5is+Y/6D1mr4Dw6bArAS4LKieelJ4YGUbj0xmJdjntjIrWi1ETHzcC1Ozes3ngwmw3GOtoV0ZwQC5FDZn6+Yy1n9NpBMl4IjhhZD3L9Mpd/R3Zds/Bqc/PkmlfHEz9WaXXEsUwBPixqjr9nIH4iAJzjYd9OLDGANO3OhHt9j2gwBPt84U/Gfs7H/Sce3JEItZCbERoFTM/wNsebwPBNx+JuVe64sCygbpikaDAB7lee7dVXWlbnIQ385slQq5dQ1yvBB3B0BYzxly5VLefOvzMjIRGtev7mS399moJCtK1MEMvz5L+WKhS/jn30OF+bGPKQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3667.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(376002)(346002)(39860400002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(6506007)(53546011)(83380400001)(38100700002)(38070700005)(122000001)(6512007)(86362001)(7416002)(33656002)(2906002)(5660300002)(8936002)(966005)(4326008)(8676002)(6486002)(71200400001)(316002)(6916009)(66946007)(76116006)(66476007)(66556008)(91956017)(36756003)(64756008)(54906003)(41300700001)(66446008)(2616005)(478600001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?REZEd3dKdktGNUgvYnRZUTl0elQybGZLT2ZDTXJUMkNsVnRiSmd1eW9hUVhz?=
- =?utf-8?B?MWxHR2J1Z1dwSmxyb2ZwMkZ1aWN5SHFWUWFsYzh2dVRLcHZTRjlzOFMxU2oz?=
- =?utf-8?B?T3pLZ0owYnAzWHRKSUVubUo2NGtOdWs3MDlMUDFhbUtiM0dMVitwMHBWdnBY?=
- =?utf-8?B?N2cvWThOMzVqaWw0TElSVitaaXN6RWZkemxSZFUrZFErcStFM244R2tIR1B5?=
- =?utf-8?B?YjNsQ0NEeXFrVjZjdlhPcUJXekM3UUdFaWhWWkZIRVAxZjE4S2F1U2w0dzlF?=
- =?utf-8?B?d1NuenFXUGQ4NjAyaVJKWUNFZk0yMU9jYmlZVUNGMmxCU3l3ci9sYkljcEFG?=
- =?utf-8?B?T1gwQndwNlowdlhVQ0FxTHRKSk1ZNkFlbk1mdWY4TGMxckZPNUc1YXFMRWVi?=
- =?utf-8?B?OEZvOGs4aG9KakJZdk9aVHJUR0pHaG1ycVNxL1dFVkhZelpDS3BzTlNVcUxj?=
- =?utf-8?B?OExDUDM0VE4vZlY1amhmUGVINHBlV1FaYzRiN2o1MUZkSG1VZUQ3cy91WUgr?=
- =?utf-8?B?azdQRSsrM1ZDN1RaVERreUcxREFkR25oKzVhYlZUdVBJMXVIQjczdUZnNnFR?=
- =?utf-8?B?QmtCTi9Bcm10cm5KbWZGVDZtU3FUdmZMc3ZmTjR0bUFXZGQ3d1AvTVVsdmhM?=
- =?utf-8?B?WXdEbHNxRjlKVE5CaFJQc3JRMHE2MGJNRGVaK1ZHeDdWeUY0K0JScXczTkRH?=
- =?utf-8?B?dGErMStFMTZINVVhSkRSYkxZZnhSVkFUS28zK2thckdYaDZ0Y2lXYm5RTm9S?=
- =?utf-8?B?SUIrUHhrcHNXZUpLL2lBUk5XUXhPYkVJUFF3WGg0Yzl6d2FaSW1PbUV3SnFF?=
- =?utf-8?B?dGg3NTh4RWVrU3I4Y2laMlZIc0dRR0JXb1UzMFJHTnBmbnF1bnd6ejlqenZF?=
- =?utf-8?B?eXNBRWtMN243SWhtV0FYTXM1YlBnVVNycXh1Mzk0VlNYUUlPYnJnZ01NVHdG?=
- =?utf-8?B?TVZBbHNDMzErRWJEUDZCdWZJOGZ0ZWJtT2RaZTkzc3I5WUY0cm52eFQyczhz?=
- =?utf-8?B?T0g5L1prUEhhakZ4cHFUY2JENU41cDh1THJrbXFvbEVQb01CK2d5RGNiUjkv?=
- =?utf-8?B?UkVFUVJma2ZjNWM1NHhkMml5ejZaSUc2RTUwMlZhTEQ3TEFtU0JRb0FUSEJo?=
- =?utf-8?B?ekV1cGs5YlhSdDFlcXFwVTk0clNEQUQ0bDdNNVB2WWp3bENoSldHUzFhTVA3?=
- =?utf-8?B?c25JSkZpelFNM3FkY1l0M1U3L01Wa1QrVEdDTDMvbmdnNnhrRFNETTBSdlBi?=
- =?utf-8?B?bGoxc0xMWWNSMkp2L25ab2k4K3dYZGRmYndnT2tHZVlCKzFEdnlqajdaVTRX?=
- =?utf-8?B?ZGZHMzMyL1BoVE9DNk5BRGJWWXZkd1NaTGRpdjlXMm5LTzgzM0YrRGxjbXF5?=
- =?utf-8?B?U0FSaEcvVDVDK3ppa2RpdzVuRFd6QXNNRVNYcjE0RmJQQ0RtdUJLUXRuTkFk?=
- =?utf-8?B?cnZwQXQxY0VTS1l2YllMRzlXZThFWFk4VlBCUkxKZWY4YWZod1pyVmlUR2cw?=
- =?utf-8?B?Z2VkZnNQUklvQkE1ZkJIV0FIK3BhbDVnNVEyNVZmSUt6RDVaU2ZUQlE4NHlV?=
- =?utf-8?B?cXdwVy9XczdqVG4rMWgxR1NkdjFBQnl2d1dSK1NRYWNXZ3I4dkJlUFUzQ1hR?=
- =?utf-8?B?cGFOSlpnSVNGWUZlNWlsUjhBVVFQdVQ4UVZnQi9jaXNpM2EvbjJZS2NlWG1D?=
- =?utf-8?B?c0hNNTc0VGRwd3psV0lqL2NHOGYzWVRwSndGbEo2NzBjNExpb2NXdEJrSjhi?=
- =?utf-8?B?cllqZHVzRG92QVZkbTVGNWYwRjlHa3VzaUhuTld5Z1I5SXdsM012d2tMY1BS?=
- =?utf-8?B?YjVOUHBQTUxqUlVjSVp2c05kclhrZlE0aTdnUXptL0k5SGZTN21IMTR1U253?=
- =?utf-8?B?OGkrdThkQmZiVUY1RHdmZERrYjRZQTVicFFqcTZuR2VqNXBnNmkrOTB5NkI3?=
- =?utf-8?B?cnV6eUZvUGpEdXM0Z1BjL3h3dElueFFOWnhyenRWU1V6TjkzOFIyR0hFa0JH?=
- =?utf-8?B?REVIZytFVlA1a3J0aWd1L2hGQXVJSExDbmlFR0tDNDB0dS9RaDNlZnoyTmdF?=
- =?utf-8?B?TzFWMW1RZnZXZ1hycThIcjA5OVZBMWo1NHptOXRiaFFSS0UwUitkd1VvbDNU?=
- =?utf-8?B?ck1ZZWVOY2czTE1IV2hkWjFDa01SQWVFeEVrRCs1c291a1JYcWlNSER2VExo?=
- =?utf-8?Q?FS1azLeeYUYJnky5CJnBOlA=3D?=
-Content-ID: <CD2A50B0070B2A4D85AADD15DB652571@namprd15.prod.outlook.com>
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3667.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a659a25-3d0f-4fa3-dc1b-08dbcb6125f9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Oct 2023 20:23:51.1835
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wPcUArgS0dolpQkmiQ734TJlIMyXZN983d1QILVOm9oKCIIYQMCW8Fi1bN8W8gprBbaydV6pIDjz4QeQn4O77w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3982
-X-Proofpoint-GUID: i428Sl-G7adq8z4XnjpLG_-6kF3Q7fP8
-X-Proofpoint-ORIG-GUID: i428Sl-G7adq8z4XnjpLG_-6kF3Q7fP8
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 12 Oct 2023 16:26:05 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5960ABE
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 13:26:03 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c746bc3bceso3783125ad.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 13:26:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697142363; x=1697747163; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:content-language:reply-to:to
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8Nqtu2MXdMyWmDzNlMZsVHtnUFpqBZDqhmlf2cnnujo=;
+        b=SIc3l/l9s4WEzZVxdrfcsVUAYg3IoGsM0XKCXtDrD5R92WZZiejdM/jFAYMBRXe28v
+         rdQS1XX+W6ZiDbvr0jZCHAGSTY1rLXpGFl1KJN1VZlXV5lzYb41xAVBxqUyqzV0U31CK
+         uv65JJK35u4aBm1bGs2jehYu+1Kyha3CGeg9JWK0XHn8JpJHli1M6k/mySXHKTIKpGGg
+         7mnRhXBBXdzoLT1V8zJBCz4MpcIL8DXMD4r1ZSlehdET2jWBrH7YZKtMA2oikY6EgaIF
+         zEfL1t4iRXLsyvfmekOW2xvsuqQq2qAdbJ9CBZBGJb0J9lkkcyv8A5wp/bTU4pyldSxx
+         oDXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697142363; x=1697747163;
+        h=content-transfer-encoding:subject:from:content-language:reply-to:to
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8Nqtu2MXdMyWmDzNlMZsVHtnUFpqBZDqhmlf2cnnujo=;
+        b=jkwp1eSTe8N2lqacmRyYE25kGsxU1uL7rw+r6HZodY3AJaCOBp3sj523cgZ4t9IQk6
+         pDoqRaApkUNUj6FcRXDRKVxWf7Kpfv8PBW0WlcvKyDQJp6kqLmiBX/J0dHyt3W74A7kw
+         y/h4DGO+g6sBMdABPaVprUAkbNNbnD3NfIRiQTXizqk/OxMmRWh5DgmBQw48bPcS220g
+         uPq3H2fRUsDD9xV7ftLmxRAAs7ZpGUaWrdEGhnj7LMwXcirfCn4EEl/dZojlTrOSeP3P
+         vEgSRqsUAMrxUNV/8BqMfGRkByFn/1QZAPiPRZh3je5qmAPCrFNOe+Kqs1YVwF+4qRpG
+         +Wsw==
+X-Gm-Message-State: AOJu0YyOKl1HB6ZYNCZ4+AbuDEvQrM0jktbYJfFk6YP+CWJlDByfDFng
+        U0WerueM3+jdH2ulTwQlnK4Di9K87Z5G+Q==
+X-Google-Smtp-Source: AGHT+IGDiSD3tFwHpUo6q1DmSp2yjj6A5s6Y107zZUyOALIwW9RBy1P9h/fai0tF5fKSLd44n7dNIw==
+X-Received: by 2002:a17:90b:4b04:b0:27d:1593:2b08 with SMTP id lx4-20020a17090b4b0400b0027d15932b08mr4295816pjb.0.1697142362472;
+        Thu, 12 Oct 2023 13:26:02 -0700 (PDT)
+Received: from [192.168.1.2] (97-120-87-19.ptld.qwest.net. [97.120.87.19])
+        by smtp.googlemail.com with ESMTPSA id r59-20020a17090a43c100b0027476c68cc3sm2449718pjg.22.2023.10.12.13.26.02
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Oct 2023 13:26:02 -0700 (PDT)
+Message-ID: <2a56e458-88eb-43bc-94bf-9b5a4886d90f@gmail.com>
+Date:   Thu, 12 Oct 2023 13:24:48 -0700
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-12_12,2023-10-12_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+To:     linux-btrfs@vger.kernel.org
+Reply-To: jlpoole56@gmail.com
+Content-Language: en-US
+From:   "John L. Poole" <jlpoole56@gmail.com>
+Subject: SanDisk Extreme Pro w/btrfs Frozen: nodiscard per Western Digital
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCj4gT24gT2N0IDEyLCAyMDIzLCBhdCA0OjEzIFBNLCBLZWVzIENvb2sgPGtlZXNjb29rQGNo
-cm9taXVtLm9yZz4gd3JvdGU6DQo+IA0KPiAhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwNCj4gIFRoaXMgTWVzc2FnZSBJ
-cyBGcm9tIGFuIEV4dGVybmFsIFNlbmRlcg0KPiANCj4gfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0hDQo+IA0KPiBPbiBU
-aHUsIE9jdCAxMiwgMjAyMyBhdCAwNzo1NTo1NVBNICswMDAwLCBOaWNrIFRlcnJlbGwgd3JvdGU6
-DQo+PiANCj4+PiBPbiBPY3QgOSwgMjAyMywgYXQgMToyOSBQTSwgS2VlcyBDb29rIDxrZWVzY29v
-a0BjaHJvbWl1bS5vcmc+IHdyb3RlOg0KPj4+IA0KPj4+ICEtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfA0KPj4+IFRoaXMg
-TWVzc2FnZSBJcyBGcm9tIGFuIEV4dGVybmFsIFNlbmRlcg0KPj4+IA0KPj4+IHwtLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-IQ0KPj4+IA0KPj4+IE9uIFNhdCwgT2N0IDA3LCAyMDIzIGF0IDAyOjA1OjU2UE0gLTA3MDAsIEVy
-aWMgQmlnZ2VycyB3cm90ZToNCj4+Pj4gSGkgTmljaywNCj4+Pj4gDQo+Pj4+IE9uIFdlZCwgQXVn
-IDMwLCAyMDIzIGF0IDEyOjQ5OjUzQU0gLTA3MDAsIHN5emJvdCB3cm90ZToNCj4+Pj4+IFVCU0FO
-OiBhcnJheS1pbmRleC1vdXQtb2YtYm91bmRzIGluIGxpYi96c3RkL2NvbW1vbi9mc2VfZGVjb21w
-cmVzcy5jOjM0NTozMA0KPj4+Pj4gaW5kZXggMzMgaXMgb3V0IG9mIHJhbmdlIGZvciB0eXBlICdG
-U0VfRFRhYmxlWzFdJyAoYWthICd1bnNpZ25lZCBpbnRbMV0nKQ0KPj4+PiANCj4+Pj4gWnN0YW5k
-YXJkIG5lZWRzIHRvIGJlIGNvbnZlcnRlZCB0byB1c2UgQzk5IGZsZXgtYXJyYXlzIGluc3RlYWQg
-b2YgbGVuZ3RoLTENCj4+Pj4gYXJyYXlzLiAgaHR0cHM6Ly9naXRodWIuY29tL2ZhY2Vib29rL3pz
-dGQvcHVsbC8zNzg1IHdvdWxkIGZpeCB0aGlzIGluIHVwc3RyZWFtDQo+Pj4+IFpzdGFuZGFyZCwg
-dGhvdWdoIGl0IGRvZXNuJ3Qgd29yayB3ZWxsIHdpdGggdGhlIGZhY3QgdGhhdCB1cHN0cmVhbSBa
-c3RhbmRhcmQNCj4+Pj4gc3VwcG9ydHMgQzkwLiAgTm90IHN1cmUgaG93IHlvdSB3YW50IHRvIGhh
-bmRsZSB0aGlzLg0KPj4+IA0KPj4+IEZvciB0aGUga2VybmVsLCB3ZSBqdXN0IG5lZWQ6DQo+Pj4g
-DQo+Pj4gZGlmZiAtLWdpdCBhL2xpYi96c3RkL2NvbW1vbi9mc2VfZGVjb21wcmVzcy5jIGIvbGli
-L3pzdGQvY29tbW9uL2ZzZV9kZWNvbXByZXNzLmMNCj4+PiBpbmRleCBhMGQwNjA5NWJlODMuLmIx
-MWU4N2ZmZjI2MSAxMDA2NDQNCj4+PiAtLS0gYS9saWIvenN0ZC9jb21tb24vZnNlX2RlY29tcHJl
-c3MuYw0KPj4+ICsrKyBiL2xpYi96c3RkL2NvbW1vbi9mc2VfZGVjb21wcmVzcy5jDQo+Pj4gQEAg
-LTMxMiw3ICszMTIsNyBAQCBzaXplX3QgRlNFX2RlY29tcHJlc3Nfd2tzcCh2b2lkKiBkc3QsIHNp
-emVfdCBkc3RDYXBhY2l0eSwgY29uc3Qgdm9pZCogY1NyYywgc2l6ZQ0KPj4+IA0KPj4+IHR5cGVk
-ZWYgc3RydWN0IHsNCj4+PiAgICBzaG9ydCBuY291bnRbRlNFX01BWF9TWU1CT0xfVkFMVUUgKyAx
-XTsNCj4+PiAtICAgIEZTRV9EVGFibGUgZHRhYmxlWzFdOyAvKiBEeW5hbWljYWxseSBzaXplZCAq
-Lw0KPj4+ICsgICAgRlNFX0RUYWJsZSBkdGFibGVbXTsgLyogRHluYW1pY2FsbHkgc2l6ZWQgKi8N
-Cj4+PiB9IEZTRV9EZWNvbXByZXNzV2tzcDsNCj4+IA0KPj4gVGhhbmtzIEVyaWMgYW5kIEtlZXMg
-Zm9yIHRoZSByZXBvcnQgYW5kIHRoZSBmaXghIEkgYW0gd29ya2luZyBvbiBwdXR0aW5nIHRoaXMN
-Cj4+IHBhdGNoIHVwIG5vdywganVzdCBuZWVkIHRvIHRlc3QgdGhlIGZpeCBteXNlbGYgdG8gZW5z
-dXJlIEkgY2FuIHJlcHJvZHVjZSB0aGUNCj4+IGlzc3VlIGFuZCB0aGUgZml4Lg0KPj4gDQo+PiBJ
-biB5b3VyIG9waW5pb24gZG9lcyB0aGlzIHdvcnRoIHRyeWluZyB0byBnZXQgdGhpcyBwYXRjaCBp
-bnRvIHY2LjYsIG9yIHNob3VsZCBpdA0KPj4gd2FpdCBmb3IgdjYuNz8NCj4gDQo+IEZvciBhbGwg
-dGhlc2UgZmxleCBhcnJheSBjb252ZXJzaW9ucyB3ZSdyZSBtb3N0bHkgb24gYSAic2xvdyBhbmQg
-c3RlYWR5Ig0KPiByb3V0ZSwgc28gdGhlcmUncyBubyBydXNoIHJlYWxseS4gSSB0aGluayB3YWl0
-aW5nIGZvciB2Ni43IGlzIGZpbmUuIElmDQo+IGFueW9uZSBlbmRzIHVwIHdhbnRpbmcgdG8gYmFj
-a3BvcnQgaXQsIGl0IHNob3VsZCBiZSBwcmV0dHkgY2xlYW4NCj4gSSBpbWFnaW5lLg0KDQpTb3Vu
-ZHMgZ29vZCwgdGhhbmtzIGZvciB0aGUgY29udGV4dCENCg0KSeKAmWxsIG1ha2Ugc3VyZSB0aGUg
-Zml4IGdldHMgYmFja3BvcnRlZC4gRXJpYyBCaWdnZXJzIGFscmVhZHkgaGFzIGEgUFIgdXAhIFsw
-XQ0KDQpbMF0gaHR0cHM6Ly9naXRodWIuY29tL2ZhY2Vib29rL3pzdGQvcHVsbC8zNzg1DQoNCj4g
-VGhhbmtzIGZvciBnZXR0aW5nIGl0IGFsbCBsYW5kZWQhIDopDQo+IA0KPiAtS2Vlcw0KPiANCj4g
-LS0gDQo+IEtlZXMgQ29vaw0KDQoNCg==
+** Issue: I have 3 SanDisk Extreme Pro micro SD cards using btrfs
+which are readable, but not writable; they are frozen.
+
+** Background:  I purchased from Amazon (1) 5 SanDisk Extreme Pro (64GB)
+microSDXC(tm) UHS-I cards in August, 2023.  They have been used
+to test/build-out the GenPi64 Gentoo Linux for the Raspberry Pi(2).
+I selected the Extreme Pro series because they had faster I/O ratings.
+This is the first time I have used the Extreme Pro series, previously,
+I have used other cards including the SanDisk Ultra and I have not
+experienced any problems.
+
+The GenPi64 image uses the btrfs file system.  /etc/fstab has:
+
+PARTUUID="426c28a1-02"  /       btrfs   noatime, [LINE BREAK]
+compress=zstd,ssd,discard,x-systemd.growfs      0       0
+
+During my build-out I ran into the problem that my session's file
+changes did not persist on reboots.  I'd install a Gentoo package
+with "emerge", and/or I'd create/edit a file, and after reboot
+those changes were missing.  Although dmesg revealed some warnings,
+there was nothing in the start-up post or system to suggests there was
+any problem.  So a non-technical user would not be alerted to any
+problems and on reboot suddenly and without fanfare learn that
+the files from the previous session are not saved.  This would be btrfs
+doing its job: not integrating that last set of changes
+because it detected a corruption.
+
+My build-out has been on a Raspberry Pi 4B with 8 MB(3) and
+the Raspberry Pi forums suggest that the SD card I/O has a
+limitation of 50 MBs/second.(4)
+
+What seemed to trigger the problem was when I emerged the package
+sys-kernel/raspberrypi-sources.  During the processing, there are over 1 GB
+of files that are to be staged and the emerge would fail during the final
+transfer of those files.
+
+Here's a lsblk output:
+
+eos /tmp # date; lsblk --output 
+NAME,FSSIZE,FSUSED,FSTYPE,FSVER,LABEL,UUID,MODE,STATE,DISC-ALN
+Thu Oct 12 10:44:29 PDT 2023
+NAME        FSSIZE FSUSED FSTYPE FSVER LABEL 
+UUID                                 MODE       STATE DISC-ALN
+mmcblk0 brw-rw----              0
++-mmcblk0p1               vfat   FAT16 
+932D-ABE2                            brw-rw----        3145728
++-mmcblk0p2  59.2G   2.2G btrfs d15fd42d-7572-4d9f-b5fb-eadbe3d70d5c 
+brw-rw----              0
+
+I do not know what DISC-ALN means other than "discard alignment
+offset" which "lsblk --help" tells me, but share the following.
+The GenPi64 image that I burned was a 4GB file. When I boot up,
+there is a script at boot-up which will expand the root (btrfs)
+file system to use up any available space on the card, hence a one-time
+expansion occurs changing the root file system from its less than
+4 GB size to 59.2 GB. The DISC-ALN value for the vfat system,
+3145728, concerns me since the vfat is suppose to be 256 MBs.
+I'm just wondering if that 3145728 value is somewhat in interference
+with the expanded btrfs system and may be contributing to the frozen
+read-only mode of the card.
+
+I began to use the "emerge sys-kernel/raspberrypi-sources" as a test
+which would cause the SD card to become unwritable.
+
+I opened a ticket with Western Digital and their response was:
+
+     [--- start response ---]
+
+     Please also refer to the following command to run BEFORE doing any
+     major writes to card after installing OS.
+
+     Using the appropriate format command can avoid the Read-Only mode
+     issue. File system format tools such as mkfs and mke2fs
+     have the nodiscard flag.
+
+     Format SanDisk card with ext4 FS:
+
+       Linux Host is needed
+       Native microSD/SD support.
+       Discard feature supported on Host and card
+       Use the nodiscard flag.
+       Command: $ mkfs.ext4 -E nodiscard -F /dev/mmcblk0p1
+     [--- end response ---]
+
+I altered my /etc/fstab on a newly burned enhanced image and changed
+"discard" to "nodiscard" and I successfully installed
+"sys-kernel/raspberrypi-sources".  Furthermore, subsequent activity on
+the image seems normal and it appears the mount specification of "nodiscard"
+has solved my problem... for a micro disk not already frozen.
+
+Western Digital has offered to replace whatever disks with like kind; I had
+suggested they simply provide me Ultras and refund the price difference, but
+they insist that they can only provide Extreme Pro replacements.
+Therefore, I am stuck with five Extreme Pro Cards that have
+a propensity to become unusable.
+
+I thought I would try to resurrect the three frozen cards before
+resolving my open ticket with Western Digital.  To that end and
+working with the principal developer of the GenPi64 project, we devised 
+these
+steps to test whether the cards could be salvaged:
+
+     # need to be root to write to card
+     su
+     # create a test file of 512 zeros
+     date; time dd if=/dev/zero of=/tmp/1_block-512_zeros.raw count=1
+     # write test file to card
+     date; time dd if=/tmp/1_block-512_zeros.raw  of=/dev/mmcblk0
+     # copy the first 512 bytes out to a file
+     date; time dd if=/dev/mmcblk0 of=/tmp/1_block-512_from_card_A.raw 
+count=1
+     # view the files with hexdump abbreviate with head
+     hexdump 1_block-512_from_card_A.raw |head -n 1
+     hexdump 1_block-512_zeros.raw | head -n 1
+
+     eos /tmp #      # create a test file of 512 zeros
+     date; time dd if=/dev/zero of=/tmp/1_block-512_zeros.raw count=1
+     Thu Oct 12 10:26:11 PDT 2023
+     1+0 records in
+     1+0 records out
+     512 bytes copied, 8.6744e-05 s, 5.9 MB/s
+
+     real    0m0.001s
+     user    0m0.000s
+     sys     0m0.001s
+     eos /tmp #      # write test file to card
+     date; time dd if=/tmp/1_block-512_zeros.raw  of=/dev/mmcblk0
+     Thu Oct 12 10:26:23 PDT 2023
+     1+0 records in
+     1+0 records out
+     512 bytes copied, 0.0211458 s, 24.2 kB/s
+
+     real    0m0.023s
+     user    0m0.002s
+     sys     0m0.000s
+     eos /tmp #      # copy the first 512 bytes out to a file
+     date; time dd if=/dev/mmcblk0 of=/tmp/1_block-512_from_card_A.raw 
+count=1
+     Thu Oct 12 10:26:34 PDT 2023
+     1+0 records in
+     1+0 records out
+     512 bytes copied, 0.0202807 s, 25.2 kB/s
+
+     real    0m0.022s
+     user    0m0.002s
+     sys     0m0.000s
+     eos /tmp #      # view the files with hexdump abbreviate with head
+     hexdump 1_block-512_from_card_A.raw |head -n 1
+     hexdump 1_block-512_zeros.raw | head -n 1
+     0000000 b8fa 1000 d08e 00bc b8b0 0000 d88e c08e
+     0000000 0000 0000 0000 0000 0000 0000 0000 0000
+     eos /tmp #
+
+The above shows that my attempts to write to the card fail; both
+rows should be zeros.
+
+Moreover, I've tried using fdisk and deleting the partitions and
+writing my changes and fdisk appears to execute the task without
+error or warning, yet the partitions persist and were not deleted.
+
+There are currently pending 3 class action lawsuits against Western Digital
+over their SSD drives where customers would experience lost data. (5)
+
+Western Digital has a web page "Format Using Linux, Raspberry Pi,
+or Android Host Results in Read Only Mode on a SanDisk SD or
+microSD Memory Card "(6).
+
+** Questions:
+
+1) Is there some way to write to the card, or some tools I can use
+so I can resurrect the cards and restore them to normal use?
+2) It looks like the use "discard" for SanDisk Extreme Pro cards causes
+problems?  I am told btrfs uses discard by default.
+3) Is there some assay anyone wants to suggest I try to see if I can trigger
+the read-only condition such as I have stumbled upon three times?
+I have 2 cards that I can still write to.  I am willing to try anything 
+someone
+suggests that would help shed light onto this problem.  I was hoping to
+garner the attention of an engineer from Western Digital.
+
+Before I accept Western Digital's offer to replace the cards, I'd like 
+to know
+what is happening or what is causing them to lock up.  I do not
+want to encounter the problem again. What is troubling is that
+an inexperienced user will not detect anything wrong until after a 
+reboot when they
+discover everything from the previous session did not persist. This
+kind of media failure could discourage the use of the btrfs based image.
+
+Thank you,
+
+John Poole
+
+-----------------------
+
+Footnotes
+(1) 
+https://www.amazon.com/SanDisk-Extreme-microSDTM-Adapter-SDSQXCU-064G-GN6MA/dp/B09X7BYSFG/ref=sr_1_2?crid=20PTT2TLYVAVM&keywords=SanDisk+Extreme+Pro+%2864GB%29+micro+sd&qid=1697127725&sprefix=sandisk+extreme+pro+64gb+micro+sd%2Caps%2C133&sr=8-2
+(2) https://github.com/GenPi64
+(3) Specs on Raspberry Pi 4B: 
+https://www.raspberrypi.com/documentation/computers/raspberry-pi.html.
+(4) "SD micro limitations in Raspberry Pi hardware?" at
+https://forums.raspberrypi.com/viewtopic.php?t=356431
+(5) 
+https://arstechnica.com/gadgets/2023/08/sandisk-extreme-ssds-are-worthless-multiple-lawsuits-against-wd-say/
+(6) 
+https://support-en.wd.com/app/answers/detailweb/a_id/50076/~/format-using-linux%2C-raspberry-pi%2C-or-android-host-results-in-read-only-mode-on 
+
+
