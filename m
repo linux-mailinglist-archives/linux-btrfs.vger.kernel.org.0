@@ -2,119 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 146F77C7039
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Oct 2023 16:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00E47C70DF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Oct 2023 17:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343912AbjJLOZM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Oct 2023 10:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40206 "EHLO
+        id S1379089AbjJLPCi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Oct 2023 11:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235194AbjJLOZL (ORCPT
+        with ESMTP id S1346441AbjJLPCh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Oct 2023 10:25:11 -0400
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FE791
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 07:25:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1697120709; x=1728656709;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version:subject;
-  bh=VPF5W8YfQEYAtlgQo4D2mzy6VQjPdft9jugaeJkA6I8=;
-  b=T2enpgKcCQyHlRZAlO3tepuuNJ3b7B/ffFgFrZVQzu/mNYki0bAUB0V3
-   98IQW/1EBM+f/vdAEAshxuitpFaEcIb/0mpa9RZKUWl2fD7/6tAkHJTrd
-   T6E0zNasSy2/HsGOQZzYaFMAV250HzWzHrVD1GMQEh/lPLVEo00jJDpVS
-   E=;
-X-IronPort-AV: E=Sophos;i="6.03,219,1694736000"; 
-   d="scan'208";a="35402977"
-Subject: RE: btrfs_extent_map memory consumption results in "Out of memory"
-Thread-Topic: btrfs_extent_map memory consumption results in "Out of memory"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2023 14:25:07 +0000
-Received: from EX19MTAUEC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com (Postfix) with ESMTPS id E67D060AC1;
-        Thu, 12 Oct 2023 14:25:06 +0000 (UTC)
-Received: from EX19D030UEC001.ant.amazon.com (10.252.137.253) by
- EX19MTAUEC001.ant.amazon.com (10.252.135.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Thu, 12 Oct 2023 14:24:53 +0000
-Received: from EX19D030UEC003.ant.amazon.com (10.252.137.182) by
- EX19D030UEC001.ant.amazon.com (10.252.137.253) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Thu, 12 Oct 2023 14:24:53 +0000
-Received: from EX19D030UEC003.ant.amazon.com ([fe80::6222:63e7:9834:7b89]) by
- EX19D030UEC003.ant.amazon.com ([fe80::6222:63e7:9834:7b89%3]) with mapi id
- 15.02.1118.037; Thu, 12 Oct 2023 14:24:53 +0000
-From:   "Ospan, Abylay" <aospan@amazon.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Thread-Index: Adn7hypl09BTxineSnqUNneAxmdLqQACeriAAAcD1ZAABXSYgABUtGjQ
-Date:   Thu, 12 Oct 2023 14:24:53 +0000
-Message-ID: <2f2975861b0a4857ae12f114003517ec@amazon.com>
-References: <13f94633dcf04d29aaf1f0a43d42c55e@amazon.com>
- <ZSVyFaWA5KZ0nTEN@debian0.Home> <ddb589008e7a4419b67134be7ae90f8b@amazon.com>
- <CAL3q7H4AEvZGNZyx8Yd4XD0AQMojQ3ifp-wmpcN9mEtxWpTOOQ@mail.gmail.com>
-In-Reply-To: <CAL3q7H4AEvZGNZyx8Yd4XD0AQMojQ3ifp-wmpcN9mEtxWpTOOQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.106.239.32]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 12 Oct 2023 11:02:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9AECA
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 08:02:35 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D540821881;
+        Thu, 12 Oct 2023 15:02:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1697122953;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t9iSbRtx50qJwbUVx1nawp0G61o9lE7UAnWN3zPf2Ww=;
+        b=jyqx3ACf3MsIewszAfOVIHAyzPtdKtnxDs6gJpBsW0sijBhHcQhfBHCTPaR+FGtTQU/o9E
+        mdEwPsVFBjiAdQyYEUJFgE5Hwm71A+N/HJ6XNXP5ltGvXltQE6GDexHspodBMNg6CFX8Pv
+        y9bjH4bweJ64MZOGc2sqOk9pZTUyEPM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1697122953;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t9iSbRtx50qJwbUVx1nawp0G61o9lE7UAnWN3zPf2Ww=;
+        b=4Q3n1a7VlqPMAGPQZs6M34jttKWGBWyk0V3MCRbcIv3AnEixBf0xzl80SwuRI55S5KValy
+        fRMEafwEp5QCeXCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF0D3139F9;
+        Thu, 12 Oct 2023 15:02:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Ex/0KYkKKGWKKAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Thu, 12 Oct 2023 15:02:33 +0000
+Date:   Thu, 12 Oct 2023 16:55:46 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Su Yue <l@damenly.org>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: reject unknown mount options correctly
+Message-ID: <20231012145546.GG2211@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <a6a954a1f1c7d612104279c62916f49e47ba5811.1697085884.git.wqu@suse.com>
+ <cyxk1i2x.fsf@damenly.org>
+ <f72ce467-b8c8-4373-a0ab-23e0631a5b27@gmx.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f72ce467-b8c8-4373-a0ab-23e0631a5b27@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+         ARC_NA(0.00)[];
+         HAS_REPLYTO(0.30)[dsterba@suse.cz];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[4];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLYTO_ADDR_EQ_FROM(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         FREEMAIL_ENVRCPT(0.00)[gmx.com];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         FREEMAIL_TO(0.00)[gmx.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-0.00)[20.50%]
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-SGkgRmlsaXBlLA0KDQo+ID4gSSB3YXMganVzdCB3b25kZXJpbmcgYWJvdXQgImRpcmVjdCBJTyB3
-cml0ZXMiLCBzbyBJIHJhbiBhIHF1aWNrIHRlc3QgYnkgZnVsbHkNCj4gcmVtb3ZpbmcgZmlvJ3Mg
-Y29uZmlnIG9wdGlvbiAiZGlyZWN0PTEiIChkZWZhdWx0IHZhbHVlIGlzIGZhbHNlKS4NCj4gPiBV
-bmZvcnR1bmF0ZWx5LCBJJ20gc3RpbGwgZXhwZXJpZW5jaW5nIHRoZSBzYW1lIG9vbS1raWxsOg0K
-PiA+DQo+ID4gWyA0ODQzLjkzNjg4MV0NCj4gPiBvb20tDQo+IGtpbGw6Y29uc3RyYWludD1DT05T
-VFJBSU5UX05PTkUsbm9kZW1hc2s9KG51bGwpLGNwdXNldD0vLG1lbXNfYWxsbw0KPiA+IHdlZD0w
-LGdsb2JhbF9vb20sdGFza19tZW1jZz0vLHRhc2s9ZmlvLHBpZD02NDksdWlkPTANCj4gPiBbIDQ4
-NDMuOTM5MDAxXSBPdXQgb2YgbWVtb3J5OiBLaWxsZWQgcHJvY2VzcyA2NDkgKGZpbykNCj4gPiB0
-b3RhbC12bToyMTY4NjhrQiwgYW5vbi1yc3M6ODk2a0IsIGZpbGUtcnNzOjEyOGtCLCBzaG1lbS1y
-c3M6MjE3NmtCLA0KPiA+IFVJRDowIHBndGFibGVzOjEwMGtCIG9vbV9zY29yZV9hMCBbIDUzMDYu
-MjEwMDgyXSB0bXV4OiBzZXJ2ZXIgaW52b2tlZA0KPiBvb20ta2lsbGVyOiBnZnBfbWFzaz0weDE0
-MGNjYShHRlBfSElHSFVTRVJfTU9WQUJMRXxfX0dGUF9DT01QKSwNCj4gb3JkZXI9MCwgb29tX3Nj
-b3JlX2Fkaj0wIC4uLg0KPiA+IFsgNTMwNi4yNDA5NjhdIFVucmVjbGFpbWFibGUgc2xhYiBpbmZv
-Og0KPiA+IFsgNTMwNi4yNDEyNzFdIE5hbWUgICAgICAgICAgICAgICAgICAgICAgVXNlZCAgICAg
-ICAgICBUb3RhbA0KPiA+IFsgNTMwNi4yNDI3MDBdIGJ0cmZzX2V4dGVudF9tYXAgICAgICAgMjYw
-OTNLQiAgICAgIDI2MDkzS0INCj4gPg0KPiA+IEhlcmUncyBteSB1cGRhdGVkIGZpbyBjb25maWc6
-DQo+ID4gW2dsb2JhbF0NCj4gPiBuYW1lPWZpby1yYW5kLXdyaXRlDQo+ID4gZmlsZW5hbWU9Zmlv
-LXJhbmQtd3JpdGUNCj4gPiBydz1yYW5kd3JpdGUNCj4gPiBicz00Sw0KPiA+IG51bWpvYnM9MQ0K
-PiA+IHRpbWVfYmFzZWQNCj4gPiBydW50aW1lPTkwMDAwDQo+ID4NCj4gPiBbZmlsZTFdDQo+ID4g
-c2l6ZT0zRw0KPiA+IGlvZGVwdGg9MQ0KPiA+DQo+ID4gInNsYWJ0b3AgLXMgLWEiIG91dHB1dDoN
-Cj4gPiAgIE9CSlMgQUNUSVZFICBVU0UgT0JKIFNJWkUgIFNMQUJTIE9CSi9TTEFCIENBQ0hFIFNJ
-WkUgTkFNRQ0KPiA+IDIwNjA4MCAyMDYwODAgMTAwJSAgICAwLjE0SyAgIDczNjAgICAgICAgMjgg
-ICAgIDI5NDQwSyBidHJmc19leHRlbnRfbWFwDQo+ID4NCj4gPiBJIGFjY2VsZXJhdGVkIG15IHRl
-c3RpbmcgYnkgcnVubmluZyBmaW8gdGVzdCBpbnNpZGUgYSBRRU1VIFZNIHdpdGggYSBsaW1pdGVk
-DQo+IGFtb3VudCBvZiBSQU0gKDE0ME1CKToNCj4gPg0KPiA+IHFlbXUta3ZtDQo+ID4gICAta2Vy
-bmVsIGJ6SW1hZ2UudjYuNiBcDQo+ID4gICAtbSAxNDBNICBcDQo+ID4gICAtZHJpdmUgZmlsZT1y
-b290ZnMuYnRyZnMsZm9ybWF0PXJhdyxpZj1ub25lLGlkPWRyaXZlMA0KPiA+IC4uLg0KPiA+DQo+
-ID4gSXQgYXBwZWFycyB0aGF0IHRoaXMgaXNzdWUgbWF5IG5vdCBiZSBsaW1pdGVkIHRvIGRpcmVj
-dCBJTyB3cml0ZXMgYWxvbmU/DQo+IA0KPiBJbiB0aGUgYnVmZmVyZWQgSU8gY2FzZSBpdCdzIHR5
-cGljYWxseSBtdWNoIGxlc3MgbGlrZWx5IHRvIGhhcHBlbi4NCj4gDQo+IFRoZSByZWFzb24gd2h5
-IGl0IGhhcHBlbnMgaW4geW91ciB0ZXN0IGl0J3MgYmVjYXVzZSB0aGUgVk0gaGFzIHZlcnkgbGl0
-dGxlIFJBTSwNCj4gMTQwTSwgd2hpY2ggaXMgdmVyeSB1bmxpa2VseSB0byBmaW5kIGluIHRoZSBy
-ZWFsIHdvcmxkIG5vd2FkYXlzLiANCg0KSSBpbmNyZWFzZWQgdGhlIG1lbW9yeSB0byA4R0IgYW5k
-IHJhbiB0aGUgdGVzdCBvdmVybmlnaHQgd2l0aG91dCBhbnkgT09NIGVycm9ycy4gR2xhZCBtZW1v
-cnkgbWFuYWdlbWVudCBtZWNoYW5pc20gd29ya3MgYXMgZXhwZWN0ZWQhDQoNCj4gUGFnZXMgY2Fu
-IG9ubHkNCj4gYmUgcmVsZWFzZWQgd2hlbiB0aGV5IGFyZSBub3QgZGlydHkgYW5kIG5vdCB1bmRl
-ciB3cml0ZWJhY2ssIGFuZCBpbiB0aGlzIGNhc2UNCj4gdGhlcmUncyBubyBmc3luYywgc28gdGhl
-IGFtb3VudCBvZiBkaXJ0eSBwYWdlcyAob3IgdW5kZXIgd3JpdGViYWNrKQ0KPiBhY2N1bXVsYXRl
-cyB2ZXJ5IHF1aWNrbHkuDQo+IElmIHBhZ2VzIGNhbiBub3QgYmUgcmVsZWFzZWQsIGV4dGVudCBt
-YXBzIGNhbiBub3QgYmUgcmVsZWFzZWQgZWl0aGVyLg0KPiANCj4gSWYgeW91IGFkZCAiZnN5bmM9
-MSIgdG8geW91ciBmaW8gdGVzdCwgdGhpbmdzIHNob3VsZCBjaGFuZ2UgZHJhbWF0aWNhbGx5Lg0K
-PiANCj4gVGhhbmtzLg0KPiANCj4gKEFuZCBidHcsIHRyeSB0byBhdm9pZCB0b3AgcG9zdGluZyBp
-ZiBwb3NzaWJsZSwgYXMgdGhhdCBtYWtlcyB0aGUgdGhyZWFkIGhhcmRlcg0KPiB0byBmb2xsb3cu
-KQ0KTXkgYXBvbG9naWVzIGZvciB0aGUgdG9wIHBvc3RpbmcuDQoNClRoYW5rcyBmb3IgeW91ciBo
-ZWxwIQ0KDQotLQ0KQWJ5bGF5IE9zcGFuDQo=
+On Thu, Oct 12, 2023 at 05:37:32PM +1030, Qu Wenruo wrote:
+> On 2023/10/12 16:31, Su Yue wrote:
+> >
+> > On Thu 12 Oct 2023 at 15:14, Qu Wenruo <wqu@suse.com> wrote:
+> >
+> >> [BUG]
+> >> The following script would allow invalid mount options to be specified
+> >> (although such invalid options would just be ignored):
+> >>
+> >>  # mkfs.btrfs -f $dev
+> >>  # mount $dev $mnt1        <<< Successful mount expected
+> >>  # mount $dev $mnt2 -o junk    <<< Failed mount expected
+> >>  # echo $?
+> >>  0
+> >>
+> >> [CAUSE]
+> >> During the mount progress, btrfs_mount_root() would go different paths
+> >> depending on if there is already a mounted btrfs for it:
+> >>
+> >>     s = sget();
+> >>     if (s->s_root) {
+> >>         /* do the cleanups and reuse the existing super */
+> >>     } else {
+> >>         /* do the real mount */
+> >>         error = btrfs_fill_super();
+> >>     }
+> >>
+> >> Inside btrfs_fill_super() we call open_ctree() and then
+> >> btrfs_parse_options(), which would reject all the invalid options.
+> >>
+> >> But if we got the other path, we won't really call
+> >> btrfs_parse_options(), thus we just ignore the mount options completely.
+> >>
+> >> [FIX]
+> >> Instead of pure cleanups, if we found an existing mounted btrfs, we
+> >> still do a very basic mount options check, to reject unknown mount
+> >> options.
+> >>
+> >> Inside btrfs_mount_root(), we have already called
+> >> security_sb_eat_lsm_opts(), which would have already stripe the security
+> >> mount options, thus if we hit an error, it must be an invalid one.
+> >>
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >> ---
+> >> This would be the proper fix for the recently reverted commit
+> >> 5f521494cc73 ("btrfs: reject unknown mount options early").
+> >>
+> > I'm a noob about selinux though. Better to draft a new fstest case to
+> > avoid further regression?
+> 
+> For SELinux enabled environment, any test would fail, thus I wonder if
+> we really need a dedicated one.
+> 
+> But as an Arch fanboy, my VM completely failed to catch it, nor even has
+> the needed user space tools by default...
+> 
+> For the invalid options rejection, we could definitely have one test
+> case for it.
+
+We'll need coverage tests for mount option parsing before we do the
+conversion to fs_context. The fstests do a lot of mounts so it is
+somehow tested but we'll need to test the parser regardless of the
+MKFS_OPTIONS, e.g. try to mount with the selnux options, combined with
+or without a subvolume, remounts etc.
