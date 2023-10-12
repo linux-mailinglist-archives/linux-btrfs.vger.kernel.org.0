@@ -2,76 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C6B7C6807
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Oct 2023 10:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C47E7C69E4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Oct 2023 11:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235434AbjJLIb2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Oct 2023 04:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43052 "EHLO
+        id S235568AbjJLJnE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Oct 2023 05:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233712AbjJLIb1 (ORCPT
+        with ESMTP id S229762AbjJLJnC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Oct 2023 04:31:27 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B34290
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 01:31:25 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AF22821884
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 08:31:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1697099483; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=s0zaTgrVEMa8EBOAfnwc0ZOXOSYXLFPfgrjGnSPkT0Y=;
-        b=O8dsBmBnn3dc/AOqpJFWOkM54koV28raY+feMWGR/D1ckXoq+iVjIBunpsWE0h+vzkmW3x
-        ZH2FCUFF/RCZapGmlVmk4ImeFWcy0jzZKRy9fJT40LkIE74I5SZoTlR9m37U2op/ojgkJz
-        71XtOuVYVgJOmb4A1hNsNNfIWftBros=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CAA0F139F9
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 08:31:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id nY6bINquJ2W2TgAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 08:31:22 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: mkfs: do not enlarge the target block device
-Date:   Thu, 12 Oct 2023 19:01:04 +1030
-Message-ID: <8ce8ead459b46a5b6849077ee50cf526418263da.1697099461.git.wqu@suse.com>
-X-Mailer: git-send-email 2.42.0
+        Thu, 12 Oct 2023 05:43:02 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A2391
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 02:43:00 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40572aeb73cso8119305e9.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 02:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697103779; x=1697708579; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BHzUG3KG/eLX+tQ6CVjg3fSs3TGh4qhPLNWOVCZfljQ=;
+        b=RufdTUbWBmdcKlPoMEnJScb391/ZXiCKalYPbljVJU3tYmjuG5iqfVDxRRjYcglCJ1
+         ZoCuatx5xuAcZfVTQ74W8abFF3MDxMPeLM0WdEyLHRC9Nc5UvfY5FfFpxs1LwqzCqcZr
+         a32TcsC9z7fjQLKsUNtHgq5tMCs4YefWVl2fHVcA5yV21vUtJJ0cHKz+BmywltTuGahe
+         MF/sVdIQ8sYoXCogiKI+YQj+3qbPou7GnPZg+MbniG332ANYIlPuBMx6xOqi0HQaIIRH
+         v+qLgDZEy6U+AqW/45GWgu2QSeuAUAn45pPxNkPj1/41SeAPgGrQCbB5glK2Ynd5D1rX
+         iE8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697103779; x=1697708579;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BHzUG3KG/eLX+tQ6CVjg3fSs3TGh4qhPLNWOVCZfljQ=;
+        b=VU12F16C06MdUxPypTSNjO4r+x0+IQdNUhV0eeCual63ydV7SOguN61pjMJHRho3n1
+         5VziFsyOZHm0tH1vBNFMPjvyEKBFkABsWbtye3fkQIdBSJImNx498ZfA9yghkLNGiWK8
+         Ahcv51wKPaXMGm8s9IgYmN+vxnzNqW34Lg91Vv25fNhYHot3G4bMHiIwGzkj8hFZGdWG
+         Yyd/+JsqCCmq9jgUTk7qlCAhLeA77awxZIUTSg7y6/9OxQw85DA8VHWQMVE/mpzatfXt
+         8pZKhQr/ElyFuBmhOvD8DZWwuhK6GMXHADMcyyzIJ3b+VAyhpzsziWv29InkSa/s8WJv
+         HQOg==
+X-Gm-Message-State: AOJu0Yyq0fAcEPOT0R5DNr7AZ+KO1h7zNpuwJE36Vk++e3vKGuyVsMl8
+        sBhJ8pO3xpeluAhvjA5aaZXlhA==
+X-Google-Smtp-Source: AGHT+IGk0wIPTIZeyYH2T4fl1g6pwNLVcvlBW+S1aM+ZDTz5C7asBiHdruKBDKex0lJyzF2ybiKYjA==
+X-Received: by 2002:a7b:cd0a:0:b0:405:3dbc:8821 with SMTP id f10-20020a7bcd0a000000b004053dbc8821mr19997461wmj.22.1697103779372;
+        Thu, 12 Oct 2023 02:42:59 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id 9-20020a05600c020900b003feea62440bsm19005198wmi.43.2023.10.12.02.42.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Oct 2023 02:42:59 -0700 (PDT)
+Date:   Thu, 12 Oct 2023 12:42:55 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Chris Mason <clm@fb.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] btrfs: clean up an error code in btrfs_insert_raid_extent()
+Message-ID: <ce098f42-f12c-4bc2-b37f-2f35c572eecf@moroto.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: 0.90
-X-Spamd-Result: default: False [0.90 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         MIME_GOOD(-0.10)[text/plain];
-         TO_DN_NONE(0.00)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-         RCPT_COUNT_ONE(0.00)[1];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         MID_CONTAINS_FROM(1.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,72 +69,29 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When running mkfs.btrfs with --rootdir on a block device, and the source
-directory contains a sparse file, whose size is larger than the block
-size, then mkfs.btrfs would fail:
+It's more obvious to return a literal zero instead of "return ret;".
+Plus Smatch complains that ret could be uninitialized if the
+ordered_extent->bioc_list list is empty and this silences that
+warning.
 
-  # lsblk  /dev/test/test
-  NAME      MAJ:MIN RM SIZE RO TYPE MOUNTPOINTS
-  test-test 253:0    0  10G  0 lvm
-  # mkdir -p /tmp/output
-  # truncate -s 20G /tmp/output/file
-  # mkfs.btrfs -f --rootdir /tmp/output /dev/test/test
-  # sudo mkfs.btrfs  -f /dev/test/scratch1  --rootdir /tmp/output/
-  btrfs-progs v6.3.3
-  See https://btrfs.readthedocs.io for more information.
-
-  ERROR: unable to zero the output file
-
-[CAUSE]
-Mkfs.btrfs would try to zero out the target file according to the total
-size of the directory.
-
-However the directory size is calculated using the file size, not the
-real bytes taken by the file, thus for such sparse file with holes only,
-it would still take 20G.
-
-Then we would use that 20G size to zero out the target file, but if the
-target file is a block device, we would fail as we can not enlarge a block
-device.
-
-[FIX]
-When zeroing the file, we only enlarge it if the target is a regular
-file.
-Otherwise we warn about the size and continue.
-
-Please note that, since "mkfs.btrfs --rootdir" doesn't handle sparse
-file any differently from regular file, above case would still fail due
-to ENOSPC, as will write zeros into the target file inside the fs.
-
-Proper handling for sparse files would need a new series of patch to
-address.
-
-Issue: #653
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- mkfs/main.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ fs/btrfs/raid-stripe-tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mkfs/main.c b/mkfs/main.c
-index 5abf7605326c..7d0ffac309e8 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -1567,8 +1567,12 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 			block_count = device_get_partition_size_fd_stat(fd, &statbuf);
- 		source_dir_size = btrfs_mkfs_size_dir(source_dir, sectorsize,
- 				min_dev_size, metadata_profile, data_profile);
--		if (block_count < source_dir_size)
--			block_count = source_dir_size;
-+		if (block_count < source_dir_size) {
-+			if (S_ISREG(statbuf.st_mode))
-+				block_count = source_dir_size;
-+			else
-+				warning("the target device is smaller than the source directory, mkfs may fail");
-+		}
- 		ret = zero_output_file(fd, block_count);
- 		if (ret) {
- 			error("unable to zero the output file");
+diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
+index 944e8f1862aa..9589362acfbf 100644
+--- a/fs/btrfs/raid-stripe-tree.c
++++ b/fs/btrfs/raid-stripe-tree.c
+@@ -145,7 +145,7 @@ int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
+ 		btrfs_put_bioc(bioc);
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ int btrfs_get_raid_extent_offset(struct btrfs_fs_info *fs_info,
 -- 
-2.42.0
+2.39.2
 
