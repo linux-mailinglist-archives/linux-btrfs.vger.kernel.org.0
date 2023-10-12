@@ -2,96 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C47E7C69E4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Oct 2023 11:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC967C702E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Oct 2023 16:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235568AbjJLJnE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Oct 2023 05:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
+        id S235731AbjJLOTm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Oct 2023 10:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbjJLJnC (ORCPT
+        with ESMTP id S231217AbjJLOTl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Oct 2023 05:43:02 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A2391
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 02:43:00 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40572aeb73cso8119305e9.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 02:43:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697103779; x=1697708579; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BHzUG3KG/eLX+tQ6CVjg3fSs3TGh4qhPLNWOVCZfljQ=;
-        b=RufdTUbWBmdcKlPoMEnJScb391/ZXiCKalYPbljVJU3tYmjuG5iqfVDxRRjYcglCJ1
-         ZoCuatx5xuAcZfVTQ74W8abFF3MDxMPeLM0WdEyLHRC9Nc5UvfY5FfFpxs1LwqzCqcZr
-         a32TcsC9z7fjQLKsUNtHgq5tMCs4YefWVl2fHVcA5yV21vUtJJ0cHKz+BmywltTuGahe
-         MF/sVdIQ8sYoXCogiKI+YQj+3qbPou7GnPZg+MbniG332ANYIlPuBMx6xOqi0HQaIIRH
-         v+qLgDZEy6U+AqW/45GWgu2QSeuAUAn45pPxNkPj1/41SeAPgGrQCbB5glK2Ynd5D1rX
-         iE8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697103779; x=1697708579;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BHzUG3KG/eLX+tQ6CVjg3fSs3TGh4qhPLNWOVCZfljQ=;
-        b=VU12F16C06MdUxPypTSNjO4r+x0+IQdNUhV0eeCual63ydV7SOguN61pjMJHRho3n1
-         5VziFsyOZHm0tH1vBNFMPjvyEKBFkABsWbtye3fkQIdBSJImNx498ZfA9yghkLNGiWK8
-         Ahcv51wKPaXMGm8s9IgYmN+vxnzNqW34Lg91Vv25fNhYHot3G4bMHiIwGzkj8hFZGdWG
-         Yyd/+JsqCCmq9jgUTk7qlCAhLeA77awxZIUTSg7y6/9OxQw85DA8VHWQMVE/mpzatfXt
-         8pZKhQr/ElyFuBmhOvD8DZWwuhK6GMXHADMcyyzIJ3b+VAyhpzsziWv29InkSa/s8WJv
-         HQOg==
-X-Gm-Message-State: AOJu0Yyq0fAcEPOT0R5DNr7AZ+KO1h7zNpuwJE36Vk++e3vKGuyVsMl8
-        sBhJ8pO3xpeluAhvjA5aaZXlhA==
-X-Google-Smtp-Source: AGHT+IGk0wIPTIZeyYH2T4fl1g6pwNLVcvlBW+S1aM+ZDTz5C7asBiHdruKBDKex0lJyzF2ybiKYjA==
-X-Received: by 2002:a7b:cd0a:0:b0:405:3dbc:8821 with SMTP id f10-20020a7bcd0a000000b004053dbc8821mr19997461wmj.22.1697103779372;
-        Thu, 12 Oct 2023 02:42:59 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id 9-20020a05600c020900b003feea62440bsm19005198wmi.43.2023.10.12.02.42.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Oct 2023 02:42:59 -0700 (PDT)
-Date:   Thu, 12 Oct 2023 12:42:55 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Chris Mason <clm@fb.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] btrfs: clean up an error code in btrfs_insert_raid_extent()
-Message-ID: <ce098f42-f12c-4bc2-b37f-2f35c572eecf@moroto.mountain>
+        Thu, 12 Oct 2023 10:19:41 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9C391
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Oct 2023 07:19:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1697120379; x=1728656379;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SiTLYGODgZJjd7cC1u5TZCl3ucS5QPlYyzC5g+mCNs8=;
+  b=n+YqRANX8lrzdoDCqR6GxxC2I5DVxehZkQQEVVUHil2c24YjrPmowyrB
+   6pnDDt131xRXpgDJ+JZe2rVQxA6igMLYstHgfNZIU0yegg3t7GjUBPs8B
+   BUuBF/D1slJSZNvBNoeN5knzdCbE67MSp0BVqmPtJddNCI0B2zjLeKMhu
+   c6whNh8Bcn3hDPyRyv+RrYHvecyDUPVgNijOe4/uOOfW82bXva8LND7r4
+   llzh+i0wDvz8IIeX0FSY8vQ7zvfWxlkaXkeKwjCFMpKziENH12gtXY5kn
+   EVdDz9FpGj/rIlBuhqTBwpRhlLBwPVw+ofshnyj5udRB9rGwYREAYezam
+   w==;
+X-CSE-ConnectionGUID: OWt+l8evRcmVQ2JfDYa+pg==
+X-CSE-MsgGUID: RnqlcpnHSOaS4yj6Tv5rVg==
+X-IronPort-AV: E=Sophos;i="6.03,219,1694707200"; 
+   d="scan'208";a="351743176"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Oct 2023 22:19:39 +0800
+IronPort-SDR: Am7EgW791mf0TAxzN4eXQV0Jiud9cD2rPmUJ4sgAiN/7JE9AWYaDJ8lV/JjfxdLQLzHYoamiJf
+ BHo79Muzx/ey4rVgF4MeV+z0jKocig8LeSUsrzOwbGX4EPfrhTTxVQBzc3hFOJlfDGaJ0iCGYl
+ G8FRiPp7Vf9s+B5gnk2sCxmM6z/QPG+0mJasploAvr1CIB7EtUJb269eDUHU+bsmHfyScAGa11
+ Lox6n/JJD+89U8sQCLCugU/gZ996OHg+VZoIuIAwxn5GDgXrh26Ish1uxRcqdSs9h07OT9uqHd
+ MUc=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Oct 2023 06:31:47 -0700
+IronPort-SDR: ZuLFASOGZcwA113QpaTeyu+ZOUWbdKZZywgfjA2qqFo+B/JyHEB8DQHUS6atMWxO/Lvlr8EX8A
+ 3xvlLapOthq8YnrckDjoFwMZLbzWc2O/1RwN3FYKRSNXnjyHmTUlGiC68xVoIS3jP2Ik6a1mzv
+ 0TJVCjTCZaDSaZ+bflY/EAL954Q8fD4S1T9nDg0uxKAMY13TGXJTjqggsnN6+pGH9oIgD0YWOI
+ tkaBJvAHrWS77QCZjzflXLXc81iowf1EJjB/PxgnRsiK04tmVWeM0VJ6rLJ0g2Hh+GrXvFPdGG
+ qLw=
+WDCIronportException: Internal
+Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.25])
+  by uls-op-cesaip02.wdc.com with ESMTP; 12 Oct 2023 07:19:39 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH 0/2] btrfs-progs: zoned: check existence of SB zone, not LBA
+Date:   Thu, 12 Oct 2023 23:19:28 +0900
+Message-ID: <cover.1697104952.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It's more obvious to return a literal zero instead of "return ret;".
-Plus Smatch complains that ret could be uninitialized if the
-ordered_extent->bioc_list list is empty and this silences that
-warning.
+Running btrfs check can fail on a certain zoned decice setup (e.g,
+zone size = 128MB, device size = 16GB):
 
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- fs/btrfs/raid-stripe-tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+(from generic/330)
+yes|/usr/local/bin/btrfs check --repair --force /dev/nullb1
+[1/7] checking root items
+Fixed 0 roots.
+[2/7] checking extents
+ERROR: zoned: failed to read zone info of 4096 and 4097: Invalid argument
+ERROR: failed to write super block for devid 1: write error: Input/output error
+failed to write new super block err -5
+failed to repair damaged filesystem, aborting
 
-diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-index 944e8f1862aa..9589362acfbf 100644
---- a/fs/btrfs/raid-stripe-tree.c
-+++ b/fs/btrfs/raid-stripe-tree.c
-@@ -145,7 +145,7 @@ int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
- 		btrfs_put_bioc(bioc);
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- int btrfs_get_raid_extent_offset(struct btrfs_fs_info *fs_info,
+This happens because write_dev_supers() is comparing the original
+superblock location vs the device size to check if it can write out a
+superblock copy or not.
+
+For the above example, since the first copy location (64MB) < device size
+(16GB), it tries to write out the copy. But, the copy must be written into
+zone 4096 (512G / zone size (128M) = 4096), which is out of the device.
+
+To address the issue, this series introduces check_sb_location() to check
+if a SB copy can be written out.
+
+The patch 1 is a preparation to factor out logic of converting the original
+superblock location to SB log writing superblock zone. And, the second one
+implements check_sb_location() to write_dev_supers().
+
+Naohiro Aota (2):
+  btrfs-progs: zoned: introduce sb_bytenr_to_sb_zone()
+  btrfs-progs: zoned: check SB zone existence properly
+
+ kernel-shared/disk-io.c |  9 ++++++++-
+ kernel-shared/zoned.c   | 36 ++++++++++++++++++++++++------------
+ kernel-shared/zoned.h   |  6 ++++++
+ 3 files changed, 38 insertions(+), 13 deletions(-)
+
 -- 
-2.39.2
+2.42.0
 
