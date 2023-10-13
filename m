@@ -2,70 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 499297C88E2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Oct 2023 17:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853FC7C8921
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Oct 2023 17:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232428AbjJMPkK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Oct 2023 11:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
+        id S232470AbjJMPvw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Oct 2023 11:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbjJMPkJ (ORCPT
+        with ESMTP id S232041AbjJMPvu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Oct 2023 11:40:09 -0400
+        Fri, 13 Oct 2023 11:51:50 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F18B7
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 08:40:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F578BD
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 08:51:47 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C6A7321A11;
-        Fri, 13 Oct 2023 15:40:05 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0890B21A0D;
+        Fri, 13 Oct 2023 15:51:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697211605;
+        t=1697212306;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=yolwvWY/RqlZK+htKKETp/DSXyLozUiRyUJnXtJyQHs=;
-        b=2kjBTF+6/Em0pMbDeTMSIg51Al4eGYkFYKzepegRMAB7njMrx7sU1uKydKptRxfcjnXq0T
-        rZtQNbe0tkuzLRW0DPLiOjNeGyoxozY41TowniRXwprtc3gHOktlR/i/S1hg+YeGtanfPc
-        ZlGl6wavUF97GTRr+wO6G4WkZ4xlywQ=
+        bh=Cr+MPTI5aTI+jIy28WTdwEPi/Nuv+gWCbFFjimwDm08=;
+        b=xKIuneF5yJ/m7eX/Y0NuJnRCEGBK3l3Ab320CPKd3NtE880WxJ3VLXr1njh0BulrfYHxJ4
+        Fy4P2BCwWVqyjywPIxOGqdHUZTWUqIqA6MQSYF0nMD2q1kTHqeO/K5KEGsZv3WHh8bugLB
+        FREhpaqBcEvpDiGhhqxSCVGck/0V+Lo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697211605;
+        s=susede2_ed25519; t=1697212306;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=yolwvWY/RqlZK+htKKETp/DSXyLozUiRyUJnXtJyQHs=;
-        b=JlleoEw7a3sBl6t8H1bJhDfiMjQ3dz2cPeVNEtLgpTenMNWPOkVKdZwdsvAIpwX54qTGUy
-        T6y/r4C2+ScoR/DQ==
+        bh=Cr+MPTI5aTI+jIy28WTdwEPi/Nuv+gWCbFFjimwDm08=;
+        b=llSVu3Uzz4LbJ7n50CXzOm/rtFQCYH0aByuJA90f+s/b+5tQF1689HZ7INqZCBGuH6OTtj
+        9SLxoo2Qf2EfFTCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 990DF138EF;
-        Fri, 13 Oct 2023 15:40:05 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD999138EF;
+        Fri, 13 Oct 2023 15:51:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9L+UI9VkKWUzVAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 13 Oct 2023 15:40:05 +0000
-Date:   Fri, 13 Oct 2023 17:33:18 +0200
+        id 4cnNNJFnKWWgWQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 13 Oct 2023 15:51:45 +0000
+Date:   Fri, 13 Oct 2023 17:44:58 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: use u64 for buffer sizes in the tree search ioctls
-Message-ID: <20231013153317.GN2211@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: remove duplicate btrfs_clear_buffer_dirty()
+ prototype from disk-io.h
+Message-ID: <20231013154458.GO2211@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <44cfbc3f3ee2465d776ce6926c6f1cece2511325.1697187887.git.fdmanana@suse.com>
+References: <603adbf6d55ba4f872bdd7be383fdfb8ecd7bddc.1697196979.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <44cfbc3f3ee2465d776ce6926c6f1cece2511325.1697187887.git.fdmanana@suse.com>
+In-Reply-To: <603adbf6d55ba4f872bdd7be383fdfb8ecd7bddc.1697196979.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Authentication-Results: smtp-out1.suse.de;
         none
 X-Spam-Level: 
-X-Spam-Score: -3.96
-X-Spamd-Result: default: False [-3.96 / 50.00];
+X-Spam-Score: -6.70
+X-Spamd-Result: default: False [-6.70 / 50.00];
          ARC_NA(0.00)[];
          HAS_REPLYTO(0.30)[dsterba@suse.cz];
          RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -82,7 +83,7 @@ X-Spamd-Result: default: False [-3.96 / 50.00];
          MIME_TRACE(0.00)[0:+];
          RCVD_COUNT_TWO(0.00)[2];
          RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.16)[69.19%]
+         BAYES_HAM(-2.90)[99.58%]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -92,24 +93,13 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 10:05:48AM +0100, fdmanana@kernel.org wrote:
+On Fri, Oct 13, 2023 at 12:38:32PM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> In the tree search v2 ioctl we use the type size_t, which is an unsigned
-> long, to track the buffer size in the local variable 'buf_size'. An
-> unsigned long is 32 bits wide on a 32 bits architecture. The buffer size
-> defined in struct btrfs_ioctl_search_args_v2 is a u64, so when we later
-> try to copy the local variable 'buf_size' to the argument struct, when
-> the search returns -EOVERFLOW, we copy only 32 bits which will be a
-> problem on big endian systems.
+> The prototype for btrfs_clear_buffer_dirty() is declared in both disk-io.h
+> and extent_io.h, but the function is defined at extent_io.c. So remove the
+> prototype declaration from disk-io.h.
 > 
-> Fix this by using a u64 type for the buffer sizes, not only at
-> btrfs_ioctl_tree_search_v2(), but also everywhere down the call chain
-> so that we can use the u64 at btrfs_ioctl_tree_search_v2().
-> 
-> Fixes: cc68a8a5a433 ("btrfs: new ioctl TREE_SEARCH_V2")
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Link: https://lore.kernel.org/linux-btrfs/ce6f4bd6-9453-4ffe-ba00-cee35495e10f@moroto.mountain/
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Added to misc-next, thanks.
