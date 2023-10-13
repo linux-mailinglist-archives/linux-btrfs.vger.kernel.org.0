@@ -2,228 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E4D7C8DAB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Oct 2023 21:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07B47C8DF5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Oct 2023 21:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbjJMTS0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Oct 2023 15:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
+        id S231707AbjJMTzO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Oct 2023 15:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbjJMTSZ (ORCPT
+        with ESMTP id S229830AbjJMTzN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Oct 2023 15:18:25 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060B3C2
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 12:18:24 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7ad24b3aaso30374067b3.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 12:18:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1697224703; x=1697829503; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XBWM1qlpSrZpsszAg/fWEPXwDgCm2PQ32NWuScvqex4=;
-        b=WjQ9iGebwSCc4797cNKxvqZz4jd9IjsWwG12CdyeHfcmpgQNLZLJ346ESIU0MU7hQQ
-         TpoLtZo/GctRMhPrOy14GG2s5rUDt0jy1F6B2Da9t4PVEJl4w9xcVgRGSluLYvQ/Ogo/
-         582qIMljoDDZXam2WhfuP17kwH+0DHLwhdYgLvVl/63LWDFJve3bNdwEqQy5VHq90bKN
-         c2Q7RRDken/eWGoXebu3q/QYul2cJfBy31MwnsNhvGYccTvm6i1wdP/2BCw0r2m9vm55
-         omYl1PLzYGtg+jhlOE9qQBChLE1AFGY9H736LdgMA5CcFMeDQFkDhLL0fuO5/EXNDPhK
-         ldMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697224703; x=1697829503;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XBWM1qlpSrZpsszAg/fWEPXwDgCm2PQ32NWuScvqex4=;
-        b=EO7rWAhBaB04J26x6vB0w69myIcYsoyJviHvVGRAI7AAGwgzDBj+3KyQgVyj/E5rks
-         c5bl8LOGcSX+hV7Lx8nGvxENA30DYaK5jAkTj3mVC9elwSRQduAiADbYtsAYFXM4P+fS
-         5iNdh7EjvJoeELVjnPLuNZBNKg7YIKIShZ8cXD49huB3W4uNSwKPyaEw/tgyQqtzTiO/
-         mn8Dx0a70z9OTnGlamkbeqzJNt9X3kAf6a2Qx+h4utCjhKPxyamIl4K9SICp2Z1q5sYo
-         AZqKMXEDZe/7D3tFnlb5jzylKkm8LlSWPlZqDcR8cE1+KA/3F6dtDaZBfo2EpLEFGf4V
-         O+qA==
-X-Gm-Message-State: AOJu0YxrN3udA4Jl0wmLhTcCndCNM+UuzXivPtwzDV1va+SaEVw6xf0C
-        WhtIn2VkVvM/dX0NhcMDvVqnd02cEcxs9X0Hz2/9dw==
-X-Google-Smtp-Source: AGHT+IEY4k16vh/HKY/25F7fiys54oLAGwB5bp4HnbmSi3PccVjIS4wWoEj+T9dF2wPNy8aVeG8KXA==
-X-Received: by 2002:a0d:d3c5:0:b0:583:3c7e:7749 with SMTP id v188-20020a0dd3c5000000b005833c7e7749mr28901298ywd.41.1697224703069;
-        Fri, 13 Oct 2023 12:18:23 -0700 (PDT)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id a200-20020a0dd8d1000000b005a247c18403sm889395ywe.37.2023.10.13.12.18.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Oct 2023 12:18:22 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: get correct owning_root when dropping snapshot
-Date:   Fri, 13 Oct 2023 15:18:17 -0400
-Message-ID: <2bd997ea59e43e8f7db0f8fd8c8f3d85d0ff0c06.1697224683.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 13 Oct 2023 15:55:13 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F2DAD
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 12:55:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
+ t=1697226908; x=1697831708; i=quwenruo.btrfs@gmx.com;
+ bh=iZW3jcGoWyqKzx++HEt2EWyYYjZOon1lr2nTd5wEZH4=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=R0lO4Frnz1Q/vFjv6FRMKHS3QRzHVMlLSYaKKdKsQNL8H+FChnmX8jdUFq+6XW03oM2WP2ju3/I
+ l/sLek9lxNaDHEBmghn5l1ajCfi22+80qAryuYNGMQQ+MBQSsk7f19j3qEbi3MDqIJEfiieot7TVY
+ yMUZSPw24WwD8KhyMMb/s+NWX64mno010u6C6AtUd85HKqF4TnrZ7n8IZwmLGwDySj628NjkoYxS6
+ wf4x0HfKt8CB5g/4VvktTnOfYnYTPX4F1ncKQSMY/mFxVtzSqIw/hwEK1+aAmGyT9Wb5iv62KpcmL
+ MxYFBTKLB66IwCXWL6sv6lVH0SnUsOWWz4wQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MPog5-1rDkka1Bbv-00Mv9c; Fri, 13
+ Oct 2023 21:55:07 +0200
+Message-ID: <9be61664-edfa-4771-b9cc-e3333d0fdbe8@gmx.com>
+Date:   Sat, 14 Oct 2023 06:25:03 +1030
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] btrfs-progs: mkfs/rootdir: copy missing attributes
+ for the rootdir inode
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <cover.1697057301.git.wqu@suse.com>
+ <d33e5e10e92a0c8c2a82005eba1da47927bf286a.1697057301.git.wqu@suse.com>
+ <20231013155553.GQ2211@twin.jikos.cz>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20231013155553.GQ2211@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Hel/dGj2fonX0gy0WyBfkbNI8zmWv5hTOvLnbpoSpB0us65naNK
+ IGqNzzyTkycjlBvQ+uk5Ipj2glozPcx1kjtfCAElNhOSMoWaUox5/zTV+kpahNtAP2az2G+
+ XGw63a5/pPFshW5LJ6gBykAb6EvqqdLfUCgmJ//fg6yZy/T1GJuMGNmPL8gh+Fq1/UBli3u
+ pVhTtB17DyR0W7H0RFjoQ==
+UI-OutboundReport: notjunk:1;M01:P0:Vf2qyxDMg3Q=;F2Lu3sxB01mK9ZYmWvhzeSs9lw9
+ 6xmXe37eYcnxPIVJoD+GYXweXuplDtXpe+Xg4aOaGX2qC5OEcL1v/GTInPofe/Ss+3laT43zD
+ MpVqT7d1Aa1/V4gl+kPPgkH19X7ZUbr73AawJp+SRjGBerjVvwpLN/WaGZeDV3GwxAXtCS6l2
+ CFt4pFBja7Zg+Z4nZs1IjYTdOhE3D0+X71/tvvOpDF7HWnjdzfocG8XqzY1uSRFjREceBDKkw
+ NS51l/A+gCyonSlrLWy0nGgWYztsBJ/MLhgMl8fUwe8wgGjEzYkXz20cPdOeElucmcC3qb6tV
+ J7m+Ycs4yYG9+ZWS3FuQl3ipiqRcT47iVQaM3xyziqErDRWFzvapFgc8qcWWpFX20emelglLp
+ poXCo4N+S19Zdwomf6C1aKDmVdGElg1t2+5cabDxZBb5VDGR9aBGZl2G14fKLvGSuIQ/R+MLX
+ 69c9dj3rqUmjU8z3YHQM0G4xb1nx5wlpc05OgzZP2eDk7NZgvsEqQQPho2FEMZPW3ekmq1iWE
+ u1UFYwHf9Dp8SiXnmzgqZFjJjApT/fP+wDR/fpD+jZWq9jkGKwsM5UwSCno1bHurup+0SwEVM
+ UAk8g3gOcqcpuWCaugRNQxNaI8tqcgOpumdK9VrrWzUr+CoRBS+oe6t3f1aUeSrtIOFfqMwhI
+ GggdHt4I25MWNsTETgeKHDBgVdaazkA4i4SSZ6VPmvqD0d52cv1toVR82+mLZjA2C+ZL7OdDU
+ Nlz1LBEasJ/5I1TJ9fCQKZZEzLKC76jeiwyKTTkw2kvg2jlGG2qQlu4k0BnBEDayGoLWaMnsQ
+ cuKOkEpYQp+O14GJ+mBn8vWSSX09v8spShTcoYtFZGws+9GLOkAzqysFIuIK/KLtgqv/CVFoK
+ qf3BhTFbzhzSgXWXDM3KbnQdq++iD0ApbKiJfX1LT8g5gNC/9oVCxzeZxBPYvMh+CCskQ3y6m
+ U3tIkqb6cV1ruGhtgeE1WfBdUC4=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dave reported a bug where we were aborting the transaction while trying
-to cleanup the squota reservation for an extent.
 
-This turned out to be because we're doing btrfs_header_owner(next) in
-do_walk_down when we decide to free the block.  However in this code
-block we haven't explicitly read next, so it could be stale.  We would
-then get whatever garbage happened to be in the pages at this point.
 
-Fix this by saving the owner_root when we do the
-btrfs_lookup_extent_info().  We always do this in do_walk_down, it is
-how we make the decision of whether or not to delete the block.  This is
-cheap because we've already done the extent item lookup at this point,
-so it's straightforward to just grab the owner root as well.
+On 2023/10/14 02:25, David Sterba wrote:
+> On Thu, Oct 12, 2023 at 07:19:25AM +1030, Qu Wenruo wrote:
+>> [BUG]
+>> When using "mkfs.btrfs" with "--rootdir" option, the top level inode
+>> (rootdir) will not get the same xattr from the source dir:
+>>
+>>    mkdir -p source_dir/
+>>    touch source_dir/file
+>>    setfattr -n user.rootdir_xattr source_dir/
+>>    setfattr -n user.regular_xattr source_dir/file
+>>    mkfs.btrfs -f --rootdir source_dir $dev
+>>    mount $dev $mnt
+>>    getfattr $mnt
+>>    # Nothing <<<
+>>    getfattr $mnt/file
+>>    # file: $mnt/file
+>>    user.regular_xattr <<<
+>>
+>> [CAUSE]
+>> In function traverse_directory(), we only call add_xattr_item() for all
+>> the child inodes, not really for the rootdir inode itself, leading to
+>> the missing xattr items.
+>>
+>> Not only xattr, in fact we also miss the uid/gid/timestamps/mode for th=
+e
+>> rootdir inode.
+>>
+>> [FIX]
+>> Extract a dedicated function, copy_rootdir_inode(), to handle every
+>> needed attributes for the rootdir inode, including:
+>>
+>> - xattr
+>> - uid
+>> - gid
+>> - mode
+>> - timestamps
+>>
+>> Issue: #688
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   mkfs/rootdir.c | 88 ++++++++++++++++++++++++++++++++++++++-----------=
+-
+>>   1 file changed, 67 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
+>> index a413a31eb2d6..24e26cdf50e0 100644
+>> --- a/mkfs/rootdir.c
+>> +++ b/mkfs/rootdir.c
+>> @@ -429,6 +429,69 @@ end:
+>>   	return ret;
+>>   }
+>>
+>> +static int copy_rootdir_inode(struct btrfs_trans_handle *trans,
+>> +			      struct btrfs_root *root, const char *dir_name)
+>> +{
+>> +	u64 root_dir_inode_size;
+>> +	struct btrfs_inode_item *inode_item;
+>> +	struct btrfs_path path =3D { 0 };
+>> +	struct btrfs_key key;
+>> +	struct extent_buffer *leaf;
+>> +	struct stat st;
+>> +	int ret;
+>> +
+>> +	ret =3D stat(dir_name, &st);
+>
+> According to the v3 changelog this should be lstat(), right?
 
-Then we can use this when deleting the metadata block without needing to
-force a read of the extent buffer to find the owner.
+It should be stat(), not lstat() of v2.
 
-This fixes the problem that Dave reported.
+The reason is, the end user may pass a softlink pointing to a directory.
+In that case, lstat() would not follow the softlink.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/ctree.c       |  2 +-
- fs/btrfs/extent-tree.c | 25 +++++++++++++++++--------
- fs/btrfs/extent-tree.h |  3 ++-
- 3 files changed, 20 insertions(+), 10 deletions(-)
+>
+>> +	if (ret < 0) {
+>> +		ret =3D -errno;
+>> +		error("lstat failed for direcotry %s: $m", dir_name);
+>                         ^^^^^
+>
+> like here.
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index c0c5f2239820..14cefeaf9622 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -421,7 +421,7 @@ static noinline int update_ref_for_cow(struct btrfs_trans_handle *trans,
- 	if (btrfs_block_can_be_shared(root, buf)) {
- 		ret = btrfs_lookup_extent_info(trans, fs_info, buf->start,
- 					       btrfs_header_level(buf), 1,
--					       &refs, &flags);
-+					       &refs, &flags, NULL);
- 		if (ret)
- 			return ret;
- 		if (unlikely(refs == 0)) {
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index c8e5b4715b49..0455935ff558 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -102,7 +102,8 @@ int btrfs_lookup_data_extent(struct btrfs_fs_info *fs_info, u64 start, u64 len)
-  */
- int btrfs_lookup_extent_info(struct btrfs_trans_handle *trans,
- 			     struct btrfs_fs_info *fs_info, u64 bytenr,
--			     u64 offset, int metadata, u64 *refs, u64 *flags)
-+			     u64 offset, int metadata, u64 *refs, u64 *flags,
-+			     u64 *owning_root)
- {
- 	struct btrfs_root *extent_root;
- 	struct btrfs_delayed_ref_head *head;
-@@ -114,6 +115,7 @@ int btrfs_lookup_extent_info(struct btrfs_trans_handle *trans,
- 	u32 item_size;
- 	u64 num_refs;
- 	u64 extent_flags;
-+	u64 owner = 0;
- 	int ret;
- 
- 	/*
-@@ -167,6 +169,8 @@ int btrfs_lookup_extent_info(struct btrfs_trans_handle *trans,
- 					    struct btrfs_extent_item);
- 			num_refs = btrfs_extent_refs(leaf, ei);
- 			extent_flags = btrfs_extent_flags(leaf, ei);
-+			owner = btrfs_get_extent_owner_root(fs_info, leaf,
-+							    path->slots[0]);
- 		} else {
- 			ret = -EUCLEAN;
- 			btrfs_err(fs_info,
-@@ -226,6 +230,8 @@ int btrfs_lookup_extent_info(struct btrfs_trans_handle *trans,
- 		*refs = num_refs;
- 	if (flags)
- 		*flags = extent_flags;
-+	if (owning_root)
-+		*owning_root = owner;
- out_free:
- 	btrfs_free_path(path);
- 	return ret;
-@@ -5234,7 +5240,7 @@ static noinline void reada_walk_down(struct btrfs_trans_handle *trans,
- 		/* We don't lock the tree block, it's OK to be racy here */
- 		ret = btrfs_lookup_extent_info(trans, fs_info, bytenr,
- 					       wc->level - 1, 1, &refs,
--					       &flags);
-+					       &flags, NULL);
- 		/* We don't care about errors in readahead. */
- 		if (ret < 0)
- 			continue;
-@@ -5301,7 +5307,8 @@ static noinline int walk_down_proc(struct btrfs_trans_handle *trans,
- 		ret = btrfs_lookup_extent_info(trans, fs_info,
- 					       eb->start, level, 1,
- 					       &wc->refs[level],
--					       &wc->flags[level]);
-+					       &wc->flags[level],
-+					       NULL);
- 		BUG_ON(ret == -ENOMEM);
- 		if (ret)
- 			return ret;
-@@ -5391,6 +5398,7 @@ static noinline int do_walk_down(struct btrfs_trans_handle *trans,
- 	u64 bytenr;
- 	u64 generation;
- 	u64 parent;
-+	u64 owner_root = 0;
- 	struct btrfs_tree_parent_check check = { 0 };
- 	struct btrfs_key key;
- 	struct btrfs_ref ref = { 0 };
-@@ -5434,7 +5442,8 @@ static noinline int do_walk_down(struct btrfs_trans_handle *trans,
- 
- 	ret = btrfs_lookup_extent_info(trans, fs_info, bytenr, level - 1, 1,
- 				       &wc->refs[level - 1],
--				       &wc->flags[level - 1]);
-+				       &wc->flags[level - 1],
-+				       &owner_root);
- 	if (ret < 0)
- 		goto out_unlock;
- 
-@@ -5567,8 +5576,7 @@ static noinline int do_walk_down(struct btrfs_trans_handle *trans,
- 		find_next_key(path, level, &wc->drop_progress);
- 
- 		btrfs_init_generic_ref(&ref, BTRFS_DROP_DELAYED_REF, bytenr,
--				       fs_info->nodesize, parent,
--				       btrfs_header_owner(next));
-+				       fs_info->nodesize, parent, owner_root);
- 		btrfs_init_tree_ref(&ref, level - 1, root->root_key.objectid,
- 				    0, false);
- 		ret = btrfs_free_extent(trans, &ref);
-@@ -5635,7 +5643,8 @@ static noinline int walk_up_proc(struct btrfs_trans_handle *trans,
- 			ret = btrfs_lookup_extent_info(trans, fs_info,
- 						       eb->start, level, 1,
- 						       &wc->refs[level],
--						       &wc->flags[level]);
-+						       &wc->flags[level],
-+						       NULL);
- 			if (ret < 0) {
- 				btrfs_tree_unlock_rw(eb, path->locks[level]);
- 				path->locks[level] = 0;
-@@ -5880,7 +5889,7 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
- 			ret = btrfs_lookup_extent_info(trans, fs_info,
- 						path->nodes[level]->start,
- 						level, 1, &wc->refs[level],
--						&wc->flags[level]);
-+						&wc->flags[level], NULL);
- 			if (ret < 0) {
- 				err = ret;
- 				goto out_end_trans;
-diff --git a/fs/btrfs/extent-tree.h b/fs/btrfs/extent-tree.h
-index 0716f65d9753..2e066035ccee 100644
---- a/fs/btrfs/extent-tree.h
-+++ b/fs/btrfs/extent-tree.h
-@@ -99,7 +99,8 @@ u64 btrfs_cleanup_ref_head_accounting(struct btrfs_fs_info *fs_info,
- int btrfs_lookup_data_extent(struct btrfs_fs_info *fs_info, u64 start, u64 len);
- int btrfs_lookup_extent_info(struct btrfs_trans_handle *trans,
- 			     struct btrfs_fs_info *fs_info, u64 bytenr,
--			     u64 offset, int metadata, u64 *refs, u64 *flags);
-+			     u64 offset, int metadata, u64 *refs, u64 *flags,
-+			     u64 *owner_root);
- int btrfs_pin_extent(struct btrfs_trans_handle *trans, u64 bytenr, u64 num,
- 		     int reserved);
- int btrfs_pin_extent_for_log_replay(struct btrfs_trans_handle *trans,
--- 
-2.41.0
+I'll update it along with other fixes to address the comments.
 
+Thanks,
+Qu
+>
+>> +		return ret;
+>> +	}
