@@ -2,42 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCAD7C84AB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Oct 2023 13:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15127C8663
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Oct 2023 15:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231567AbjJMLjR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Oct 2023 07:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
+        id S231846AbjJMNHb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Oct 2023 09:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbjJMLiy (ORCPT
+        with ESMTP id S231400AbjJMNHa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Oct 2023 07:38:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A177CD47
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 04:38:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43F03C433C7
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 11:38:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697197115;
-        bh=QvZDJYhVW6OuD/tXcwt6kMy5nbFXDPjbRl4EAV4luH8=;
-        h=From:To:Subject:Date:From;
-        b=p2Nv7e3G1DSpC2xwOWUmKcXq/HCRRygoMIThV3/6QSqvJw5//Ilpg25rKxCxEjhO+
-         Y6hjShGIe2Tgu4eDsjGJrvehQPSYK8l6bzJ2jJHV5jF+JDhYEj3jLYB7w0um91Ww0n
-         U0r3RyhbYZ+lg3XiBhWsszYqx55z0ku7rckTk7TswrYSHzaSCP+LBM6xyYrTi0Oiet
-         nkxay5ziJgJGJnrDneX3TMQ6gzx9LjxQLttRDRXlL80+Nbzfmjt5OHWlyWtgPQRK/P
-         4yyI5u6LMfGzpxnnxh7Jcas4/XPRK9hQfZNCrEnAJfIPlcd9erY2Ot+uYkm57f6j4C
-         VL8I1Ll12WI6Q==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove duplicate btrfs_clear_buffer_dirty() prototype from disk-io.h
-Date:   Fri, 13 Oct 2023 12:38:32 +0100
-Message-Id: <603adbf6d55ba4f872bdd7be383fdfb8ecd7bddc.1697196979.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 13 Oct 2023 09:07:30 -0400
+Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84F191
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 06:07:28 -0700 (PDT)
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 2A6EF7DD41A;
+        Fri, 13 Oct 2023 15:07:26 +0200 (CEST)
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     linux-btrfs@vger.kernel.org,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Tim Cuthbertson <ratcheer@gmail.com>
+Subject: Re: Scrub of my nvme SSD has slowed by about 2/3
+Date:   Fri, 13 Oct 2023 15:07:25 +0200
+Message-ID: <2727176.mvXUDI8C0e@lichtvoll.de>
+In-Reply-To: <4f5fee23-2ccb-41a2-a64c-1675bc378ff5@gmx.com>
+References: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
+ <2169630.irdbgypaU6@lichtvoll.de>
+ <4f5fee23-2ccb-41a2-a64c-1675bc378ff5@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,30 +47,27 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+Hello Qu, hello,
 
-The prototype for btrfs_clear_buffer_dirty() is declared in both disk-io.h
-and extent_io.h, but the function is defined at extent_io.c. So remove the
-prototype declaration from disk-io.h.
+Qu Wenruo - 09.09.23, 00:03:38 CEST:
+> > Scrubbing "/home" with 304.61GiB (interestingly both back then with
+> > 6.4
+> > and now with 6.5.2):
+> > 
+> > - 6.4: 966.84MiB/s
+> > - 6.5.2:  748.02MiB/s
+> > 
+> > I expected an improvement.
+> > 
+> > Same Lenovo ThinkPad T14 AMD Gen 1 with AMD Ryzen 7 PRO 4750U, 32 GiB
+> > RAM and 2TB Samsung 980 Pro NVME SSD as before.
+> 
+> The fixes didn't arrive until v6.6.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/disk-io.h | 2 --
- 1 file changed, 2 deletions(-)
+Thank you for making scrub fast again: /home with 1.88GiB/s ;) on 6.5.6.
 
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index 50dab8f639dc..e589359e6a68 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -37,8 +37,6 @@ struct extent_buffer *btrfs_find_create_tree_block(
- 						struct btrfs_fs_info *fs_info,
- 						u64 bytenr, u64 owner_root,
- 						int level);
--void btrfs_clear_buffer_dirty(struct btrfs_trans_handle *trans,
--			      struct extent_buffer *buf);
- void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info);
- int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info);
- int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
+Best,
 -- 
-2.40.1
+Martin
+
 
