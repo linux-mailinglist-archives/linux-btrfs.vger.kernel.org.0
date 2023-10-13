@@ -2,44 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A15127C8663
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Oct 2023 15:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D367C873A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Oct 2023 15:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbjJMNHb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Oct 2023 09:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        id S231950AbjJMNx1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 13 Oct 2023 09:53:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbjJMNHa (ORCPT
+        with ESMTP id S229968AbjJMNx0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Oct 2023 09:07:30 -0400
-Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84F191
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 06:07:28 -0700 (PDT)
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 2A6EF7DD41A;
-        Fri, 13 Oct 2023 15:07:26 +0200 (CEST)
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     linux-btrfs@vger.kernel.org,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Tim Cuthbertson <ratcheer@gmail.com>
-Subject: Re: Scrub of my nvme SSD has slowed by about 2/3
-Date:   Fri, 13 Oct 2023 15:07:25 +0200
-Message-ID: <2727176.mvXUDI8C0e@lichtvoll.de>
-In-Reply-To: <4f5fee23-2ccb-41a2-a64c-1675bc378ff5@gmx.com>
-References: <CAAKzf7=yS9vnf5zNid1CyvN19wyAgPz5o9sJP0vBqN6LReqXVg@mail.gmail.com>
- <2169630.irdbgypaU6@lichtvoll.de>
- <4f5fee23-2ccb-41a2-a64c-1675bc378ff5@gmx.com>
+        Fri, 13 Oct 2023 09:53:26 -0400
+X-Greylist: delayed 525 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 13 Oct 2023 06:53:24 PDT
+Received: from vps.thesusis.net (vps.thesusis.net [IPv6:2600:1f18:60b9:2f00:6f85:14c6:952:bad3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E3EAD
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 06:53:24 -0700 (PDT)
+Received: by vps.thesusis.net (Postfix, from userid 1000)
+        id D3FE61447E2; Fri, 13 Oct 2023 09:44:38 -0400 (EDT)
+From:   Phillip Susi <phill@thesusis.net>
+To:     jlpoole56@gmail.com, linux-btrfs@vger.kernel.org
+Subject: Re: SanDisk Extreme Pro w/btrfs Frozen: nodiscard per Western Digital
+In-Reply-To: <2a56e458-88eb-43bc-94bf-9b5a4886d90f@gmail.com>
+References: <2a56e458-88eb-43bc-94bf-9b5a4886d90f@gmail.com>
+Date:   Fri, 13 Oct 2023 09:44:38 -0400
+Message-ID: <874jiuhc1l.fsf@vps.thesusis.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,27 +37,24 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello Qu, hello,
+"John L. Poole" <jlpoole56@gmail.com> writes:
 
-Qu Wenruo - 09.09.23, 00:03:38 CEST:
-> > Scrubbing "/home" with 304.61GiB (interestingly both back then with
-> > 6.4
-> > and now with 6.5.2):
-> > 
-> > - 6.4: 966.84MiB/s
-> > - 6.5.2:  748.02MiB/s
-> > 
-> > I expected an improvement.
-> > 
-> > Same Lenovo ThinkPad T14 AMD Gen 1 with AMD Ryzen 7 PRO 4750U, 32 GiB
-> > RAM and 2TB Samsung 980 Pro NVME SSD as before.
-> 
-> The fixes didn't arrive until v6.6.
+> PARTUUID="426c28a1-02"  /       btrfs   noatime, [LINE BREAK]
+> compress=zstd,ssd,discard,x-systemd.growfs      0       0
+                                            ^^^^^  ^^^^^^
+What are these goofy characters?  They just show as solid blocks to me.
 
-Thank you for making scrub fast again: /home with 1.88GiB/s ;) on 6.5.6.
+>        Use the nodiscard flag.
+>        Command: $ mkfs.ext4 -E nodiscard -F /dev/mmcblk0p1
+>      [--- end response ---]
 
-Best,
--- 
-Martin
+I wonder why they say to use nodiscard?
 
+>      # create a test file of 512 zeros
+>      date; time dd if=/dev/zero of=/tmp/1_block-512_zeros.raw count=1
+>      # write test file to card
+>      date; time dd if=/tmp/1_block-512_zeros.raw  of=/dev/mmcblk0
+
+Rather than copy /dev/zero to a file, then that file to /dev/mmcblk0,
+you could just dd directly from /dev/zero to /dev/mmcblk0.
 
