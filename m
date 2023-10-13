@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A390E7C8995
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Oct 2023 18:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879127C8B08
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Oct 2023 18:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232529AbjJMQCq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Oct 2023 12:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        id S232499AbjJMQVV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Oct 2023 12:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232535AbjJMQCo (ORCPT
+        with ESMTP id S231846AbjJMQVH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Oct 2023 12:02:44 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE073BD
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 09:02:42 -0700 (PDT)
+        Fri, 13 Oct 2023 12:21:07 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B57F112
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Oct 2023 09:20:08 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5055521A15;
-        Fri, 13 Oct 2023 16:02:41 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B0ACE1FDA2;
+        Fri, 13 Oct 2023 16:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697212961;
+        t=1697214006;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=CdctSqwb267kNsJf1XaVL0+OJbmTWk3h90JMH9zBexo=;
-        b=T2uyF53fGZ7AXHYxuglWU7HvjryWDR0k9pu3bOfyzPyjTphRnyf1Ya7CYsnBEoGPgbyGu/
-        9XAYfYo+LsIDhcuxmANUNChqv/qEN9aBAGN/9gaysVu05qCfQzk/Fsrf0sHDX4uHsgm3gP
-        fF6BNcOEk37g5mBgV+IektfQMhJMmQw=
+        bh=qI/52+G0MXIoq+d2056xs1Y/8TWzF5cv/jUtHkw5vvM=;
+        b=12HTw5cZBxRi5l8Nnuzyxx+wWD4IiC49A1KqgT3/37siHC9Bxe006R4qziIKNNJ1lFA15I
+        sWaDevtKjaL27P/+t6+tpxw/+fbHocGOvteS2KZ30nvjkDpXuQcP3ExhSbMvwlb4B8ieL5
+        FF+LkagFfKl2hAANhjNKsXiZoYb3M6U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697212961;
+        s=susede2_ed25519; t=1697214006;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=CdctSqwb267kNsJf1XaVL0+OJbmTWk3h90JMH9zBexo=;
-        b=JvWcPMUlvoOybN19DxAdLjvGH01WuJRnaIrCLfEKUkH7Z31KwyuOMNOY/B3O5MVRIw4KiB
-        Okn5zV46eWWi4MDg==
+        bh=qI/52+G0MXIoq+d2056xs1Y/8TWzF5cv/jUtHkw5vvM=;
+        b=3q5No+JEpllvX3Xsh0JacwOf275WYafYDErhQhSKoNsGFYmpyFznQl5GQ5s9Qn8BWJSC0J
+        4YZ82R9MekMjKTBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2940B1358F;
-        Fri, 13 Oct 2023 16:02:41 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B29A1358F;
+        Fri, 13 Oct 2023 16:20:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id krbuCCFqKWXzXgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 13 Oct 2023 16:02:41 +0000
-Date:   Fri, 13 Oct 2023 17:55:53 +0200
+        id BKFAITZuKWVdZwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 13 Oct 2023 16:20:06 +0000
+Date:   Fri, 13 Oct 2023 18:13:18 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH v3 1/2] btrfs-progs: mkfs/rootdir: copy missing
  attributes for the rootdir inode
-Message-ID: <20231013155553.GQ2211@twin.jikos.cz>
+Message-ID: <20231013161318.GR2211@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1697057301.git.wqu@suse.com>
  <d33e5e10e92a0c8c2a82005eba1da47927bf286a.1697057301.git.wqu@suse.com>
@@ -63,7 +63,7 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <d33e5e10e92a0c8c2a82005eba1da47927bf286a.1697057301.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
+Authentication-Results: smtp-out2.suse.de;
         none
 X-Spam-Level: 
 X-Spam-Score: -3.80
@@ -84,7 +84,7 @@ X-Spamd-Result: default: False [-3.80 / 50.00];
          MIME_TRACE(0.00)[0:+];
          RCVD_COUNT_TWO(0.00)[2];
          RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.00)[36.41%]
+         BAYES_HAM(-0.00)[14.80%]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -155,15 +155,50 @@ On Thu, Oct 12, 2023 at 07:19:25AM +1030, Qu Wenruo wrote:
 > +	int ret;
 > +
 > +	ret = stat(dir_name, &st);
-
-According to the v3 changelog this should be lstat(), right?
-
 > +	if (ret < 0) {
 > +		ret = -errno;
 > +		error("lstat failed for direcotry %s: $m", dir_name);
-                       ^^^^^
-
-like here.
-
 > +		return ret;
 > +	}
+> +
+> +	ret = add_xattr_item(trans, root, btrfs_root_dirid(&root->root_item),
+> +			     dir_name);
+> +	if (ret < 0) {
+> +		errno = -ret;
+> +		error("failed to add xattr item for the top level inode: %m");
+> +		return ret;
+> +	}
+> +
+> +	key.objectid = btrfs_root_dirid(&root->root_item);
+> +	key.offset = 0;
+> +	key.type = BTRFS_INODE_ITEM_KEY;
+> +	ret = btrfs_lookup_inode(trans, root, &path, &key, 1);
+> +	if (ret > 0)
+> +		ret = -ENOENT;
+> +	if (ret) {
+> +		error("failed to lookup root dir: %d", ret);
+> +		goto error;
+> +	}
+> +
+> +	leaf = path.nodes[0];
+> +	inode_item = btrfs_item_ptr(leaf, path.slots[0],
+> +				    struct btrfs_inode_item);
+> +
+> +	root_dir_inode_size = calculate_dir_inode_size(dir_name);
+> +	btrfs_set_inode_size(leaf, inode_item, root_dir_inode_size);
+> +
+> +	/* Unlike fill_inode_item, we only need to copy part of the attributes. */
+> +	btrfs_set_inode_uid(leaf, inode_item, st.st_uid);
+> +	btrfs_set_inode_gid(leaf, inode_item, st.st_gid);
+> +	btrfs_set_inode_mode(leaf, inode_item, st.st_mode);
+> +	btrfs_set_timespec_sec(leaf, &inode_item->atime, st.st_atime);
+> +	btrfs_set_timespec_nsec(leaf, &inode_item->atime, 0);
+> +	btrfs_set_timespec_sec(leaf, &inode_item->ctime, st.st_ctime);
+> +	btrfs_set_timespec_nsec(leaf, &inode_item->ctime, 0);
+> +	btrfs_set_timespec_sec(leaf, &inode_item->mtime, st.st_mtime);
+> +	btrfs_set_timespec_nsec(leaf, &inode_item->mtime, 0);
+> +	btrfs_set_timespec_sec(leaf, &inode_item->otime, 0);
+> +	btrfs_set_timespec_nsec(leaf, &inode_item->otime, 0);
+
+We should put something sensible to the otime, either current time, real
+otime or at least mtime/ctime as a fallback.
