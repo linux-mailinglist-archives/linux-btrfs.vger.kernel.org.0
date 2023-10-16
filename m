@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6417CB257
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Oct 2023 20:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B0B7CB26B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Oct 2023 20:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234187AbjJPSW4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Oct 2023 14:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
+        id S233987AbjJPSWz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Oct 2023 14:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234174AbjJPSWm (ORCPT
+        with ESMTP id S233985AbjJPSWm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 16 Oct 2023 14:22:42 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9591B19F
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 11:22:34 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7bbcc099fso61069157b3.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 11:22:34 -0700 (PDT)
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693AF12C
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 11:22:35 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-66d0f945893so40715396d6.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 11:22:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1697480553; x=1698085353; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1697480554; x=1698085354; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=S7o7qRJqT7WXIHnR39I2blCqbRVV+PPhUWMOckSNH4U=;
-        b=Y8BnnFCX2aAmlOhNvWJ24TPOUqzzC8xTRos1jjaBTrRieIo1Zw1zP3CeL6OZMc2RlK
-         HYPkc2bb66+fUxmLiiHEWDJzcIiTnBHg+yqYTYKJNFmTwI3BUTWc5b107zrsVad2BBE5
-         t9icytDDVZbwkbp+G+wrCwnlstfRwQ4pbFNaKyhg1jF3qOa132HakNwD8A/d3FqBfAdG
-         pWNRM/9vDVFPn4wFHzl/bIph+xURtTaJT4i81zzp7K9ESUkArguRFaYaA92gUtht0asw
-         2nGxMPRnAgMbRnDJSR/6XzZqRV4ldT8R5Kpt24RBpCsT/kavvlLudoVjcRPI0PZpbnug
-         lF5Q==
+        bh=L4BaCdes/ph+FBDRPrYEBu7SdLjcMrWxDC5DvBg0S2c=;
+        b=FiDrOsHhsPiAAGfyvLIBX5jkk88ZfjL4sYoUj0aUNVltU89koBNoSu0dSJTXQyavIz
+         NxnGTq6pX+xY7dKB8OQ3DLONNip4UH7dD6XAUACBYUM/0WWfzWXLTNV/svuMv2CpmFMg
+         GMu2kRgiMiSo9b3MGrj40m6d0NAW6GPbYz/TjUH+2jorvueWXs2YcYLVK8AaWot25sP8
+         ZSzFkU8oTNXyXqESdtpixyHfG2Yeab+vfR7oovSLrxC9IRUQs9nroouVLEVpUbSumQB/
+         Lc+qnf7F8mSdTpW5TdMhrIHCmu+3meEJEDj5Jg/WiO0J9LAVRyaFT9wspsncK7HdqiuC
+         6iVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697480553; x=1698085353;
+        d=1e100.net; s=20230601; t=1697480554; x=1698085354;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S7o7qRJqT7WXIHnR39I2blCqbRVV+PPhUWMOckSNH4U=;
-        b=mt93XoVSjq3fNjyxbKMJ+diIcls4wXGFX8zHV5hrPnHmc7Hvczxp4gXEqAQT47gDAw
-         +CA67iAUAhZrtngaMKxGDT5P1zRxq3UczEKAlQZznB/+KXHpSxMMFa2n03ydZRKydyIB
-         kTmYEFdqytKFnld6j9eSwFEkGrympzrXoE93RQG9A6SYd+0nUHUW9haJvN7E8IKRBqus
-         DOnEVOAp0dZAOGBYOJCyetuZfAxPTWxKcNuLRpWLUm+/zezxaC/YxYymwWeSLvx8c0iU
-         0jY1eva+4geVd5BiBdgCoHOmeg7DYfiZeXA8buGX0JiMMDgFmK8Jb//WUaMTcwO7RkYM
-         dTTg==
-X-Gm-Message-State: AOJu0YyoIIT5BJO7N6skCGC2H9Ivy+yhwzp+TEx1yyt1+efst61fgdGN
-        VuwPbUImeYZDSrob/nk/sKLuiFjKHN4eRmYbrFnh+w==
-X-Google-Smtp-Source: AGHT+IHFxGDfKKp6eNUVdsAGGtGfa9kGKAjg6/PaLYxH+d6j2gOolyPzK6Ceh66eYj/3ydzCdjxmww==
-X-Received: by 2002:a0d:d787:0:b0:5a7:bbc2:4e12 with SMTP id z129-20020a0dd787000000b005a7bbc24e12mr19131995ywd.4.1697480553223;
-        Mon, 16 Oct 2023 11:22:33 -0700 (PDT)
+        bh=L4BaCdes/ph+FBDRPrYEBu7SdLjcMrWxDC5DvBg0S2c=;
+        b=cceJEIfb0C0zjQ9VtAxTNeENQ713UI+PEW0U7iG/V/JgMfmX0SY3u0MjkLZMqF3m0+
+         zPuRhtQNs8lOSfm+Jm/n0zCTTYmD3CoMXuCzN8rxDqUM1brfhaUUvD7Su/V+ACFZLzkf
+         KpGsQxctiXtp1/eUBzBFXRf5oCQJV9hKn/ZFP0WMp5HOCLiZf11m6GcvQYhsH+JZaoVb
+         x8Fg021rvYyLwI+bBTewMq8WydYrxlZ8fCTqhgw7oTosL87cViw2Tpp95y18EwW4cLvz
+         AxKUqdHhMvVbcGa/Cc2oj7p2l0Rs8+31eK0SmttnSRbAUT9ZLp/fhCPn7hkR/h7jGWf7
+         8UqA==
+X-Gm-Message-State: AOJu0YxUVwNmwtGXKKMbuLSx0wFfjX6qoqkSltSoCC0TfPRPlVFZPOls
+        Ui5TTsYxfscMehCC0D58KP3sjcMFmtESgKJF/P0cbA==
+X-Google-Smtp-Source: AGHT+IFPDE2TVlypRn4CLLnuAoV6mAufreAgr6Kt6GfkV14F7eOmnLiPNxbjewGaBLtNaOsqdBBwJw==
+X-Received: by 2002:a05:6214:27c7:b0:66d:2369:2c51 with SMTP id ge7-20020a05621427c700b0066d23692c51mr412087qvb.6.1697480554375;
+        Mon, 16 Oct 2023 11:22:34 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id et8-20020a056214176800b0065af657ddf7sm3573520qvb.144.2023.10.16.11.22.32
+        by smtp.gmail.com with ESMTPSA id l11-20020ad44bcb000000b0063d5d173a51sm3671732qvw.50.2023.10.16.11.22.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 11:22:32 -0700 (PDT)
+        Mon, 16 Oct 2023 11:22:34 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 31/34] btrfs: set the bio fscrypt context when applicable
-Date:   Mon, 16 Oct 2023 14:21:38 -0400
-Message-ID: <f204e876be747330802293c418cb3f7a3f184a1b.1697480198.git.josef@toxicpanda.com>
+Subject: [PATCH v3 32/34] btrfs: add a bio argument to btrfs_csum_one_bio
+Date:   Mon, 16 Oct 2023 14:21:39 -0400
+Message-ID: <67d76ef8a4b16f582c8c9b45243274462ca0ace1.1697480198.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1697480198.git.josef@toxicpanda.com>
 References: <cover.1697480198.git.josef@toxicpanda.com>
@@ -69,327 +69,65 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that we have the fscrypt_info plumbed through everywhere, add the
-code to setup the bio encryption context from the extent context.
-
-We use the per-extent fscrypt_extent_info for encryption/decryption.
-We use the offset into the extent as the lblk for fscrypt.  So the start
-of the extent has the lblk of 0, 4k into the extent has the lblk of 4k,
-etc.  This is done to allow things like relocation to continue to work
-properly.
+We only ever needed the bbio in btrfs_csum_one_bio, since that has the
+bio embedded in it.  However with encryption we'll have a different bio
+with the encrypted data in it, and the original bbio.  Update
+btrfs_csum_one_bio to take the bio we're going to csum as an argument,
+which will allow us to csum the encrypted bio and stuff the csums into
+the corresponding bbio to be used later when the IO completes.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/compression.c |  6 ++++
- fs/btrfs/extent_io.c   | 63 +++++++++++++++++++++++++++++++++++++++++-
- fs/btrfs/fscrypt.c     | 36 ++++++++++++++++++++++++
- fs/btrfs/fscrypt.h     | 22 +++++++++++++++
- fs/btrfs/inode.c       | 10 +++++++
- 5 files changed, 136 insertions(+), 1 deletion(-)
+ fs/btrfs/bio.c       | 2 +-
+ fs/btrfs/file-item.c | 3 +--
+ fs/btrfs/file-item.h | 2 +-
+ 3 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 19b22b4653c8..3f586ee40b94 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -36,6 +36,7 @@
- #include "zoned.h"
- #include "file-item.h"
- #include "super.h"
-+#include "fscrypt.h"
- 
- static struct bio_set btrfs_compressed_bioset;
- 
-@@ -301,6 +302,9 @@ void btrfs_submit_compressed_write(struct btrfs_ordered_extent *ordered,
- 	cb->bbio.ordered = ordered;
- 	btrfs_add_compressed_bio_pages(cb);
- 
-+	btrfs_set_bio_crypt_ctx_from_extent(&cb->bbio.bio, inode,
-+					    ordered->fscrypt_info, 0);
-+
- 	btrfs_submit_bio(&cb->bbio, 0);
- }
- 
-@@ -504,6 +508,8 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio)
- 	cb->compress_type = em->compress_type;
- 	cb->orig_bbio = bbio;
- 
-+	btrfs_set_bio_crypt_ctx_from_extent(&cb->bbio.bio, inode,
-+					    em->fscrypt_info, 0);
- 	free_extent_map(em);
- 
- 	cb->nr_pages = DIV_ROUND_UP(compressed_len, PAGE_SIZE);
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index c4265826278d..2251417106ea 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -37,6 +37,7 @@
- #include "dev-replace.h"
- #include "super.h"
- #include "transaction.h"
-+#include "fscrypt.h"
- 
- static struct kmem_cache *extent_buffer_cache;
- 
-@@ -103,6 +104,10 @@ struct btrfs_bio_ctrl {
- 	blk_opf_t opf;
- 	btrfs_bio_end_io_t end_io_func;
- 	struct writeback_control *wbc;
-+
-+	/* This is set for reads and we have encryption. */
-+	struct fscrypt_extent_info *fscrypt_info;
-+	u64 orig_start;
- };
- 
- static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
-@@ -707,10 +712,31 @@ static bool btrfs_bio_is_contig(struct btrfs_bio_ctrl *bio_ctrl,
- 				struct page *page, u64 disk_bytenr,
- 				unsigned int pg_offset)
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 4f3b693a16b1..90e4d4709fa3 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -533,7 +533,7 @@ static blk_status_t btrfs_bio_csum(struct btrfs_bio *bbio)
  {
--	struct bio *bio = &bio_ctrl->bbio->bio;
-+	struct inode *inode = page->mapping->host;
-+	struct btrfs_bio *bbio = bio_ctrl->bbio;
-+	struct bio *bio = &bbio->bio;
- 	struct bio_vec *bvec = bio_last_bvec_all(bio);
- 	const sector_t sector = disk_bytenr >> SECTOR_SHIFT;
- 
-+	if (IS_ENCRYPTED(inode)) {
-+		u64 file_offset = page_offset(page) + pg_offset;
-+		u64 offset = 0;
-+		struct fscrypt_extent_info *fscrypt_info = NULL;
-+
-+		/* bio_ctrl->fscrypt_info is only set in the READ case. */
-+		if (bio_ctrl->fscrypt_info) {
-+			offset = file_offset - bio_ctrl->orig_start;
-+			fscrypt_info = bio_ctrl->fscrypt_info;
-+		} else if (bbio->ordered) {
-+			fscrypt_info = bbio->ordered->fscrypt_info;
-+			offset = file_offset - bbio->ordered->orig_offset;
-+		}
-+
-+		if (!btrfs_mergeable_encrypted_bio(bio, inode, fscrypt_info,
-+						   offset))
-+			return false;
-+	}
-+
- 	if (bio_ctrl->compress_type != BTRFS_COMPRESS_NONE) {
- 		/*
- 		 * For compression, all IO should have its logical bytenr set
-@@ -741,6 +767,8 @@ static void alloc_new_bio(struct btrfs_inode *inode,
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_bio *bbio;
-+	struct fscrypt_extent_info *fscrypt_info = NULL;
-+	u64 offset = 0;
- 
- 	bbio = btrfs_bio_alloc(BIO_MAX_VECS, bio_ctrl->opf, fs_info,
- 			       bio_ctrl->end_io_func, NULL);
-@@ -760,6 +788,8 @@ static void alloc_new_bio(struct btrfs_inode *inode,
- 					ordered->file_offset +
- 					ordered->disk_num_bytes - file_offset);
- 			bbio->ordered = ordered;
-+			fscrypt_info = ordered->fscrypt_info;
-+			offset = file_offset - ordered->orig_offset;
- 		}
- 
- 		/*
-@@ -770,7 +800,13 @@ static void alloc_new_bio(struct btrfs_inode *inode,
- 		 */
- 		bio_set_dev(&bbio->bio, fs_info->fs_devices->latest_dev->bdev);
- 		wbc_init_bio(bio_ctrl->wbc, &bbio->bio);
-+	} else {
-+		fscrypt_info = bio_ctrl->fscrypt_info;
-+		offset = file_offset - bio_ctrl->orig_start;
- 	}
-+
-+	btrfs_set_bio_crypt_ctx_from_extent(&bbio->bio, inode, fscrypt_info,
-+					    offset);
+ 	if (bbio->bio.bi_opf & REQ_META)
+ 		return btree_csum_one_bio(bbio);
+-	return btrfs_csum_one_bio(bbio);
++	return btrfs_csum_one_bio(bbio, &bbio->bio);
  }
  
  /*
-@@ -1004,6 +1040,8 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 		bool force_bio_submit = false;
- 		u64 disk_bytenr;
- 
-+		bio_ctrl->fscrypt_info = NULL;
-+
- 		ASSERT(IS_ALIGNED(cur, fs_info->sectorsize));
- 		if (cur >= last_byte) {
- 			iosize = PAGE_SIZE - pg_offset;
-@@ -1078,6 +1116,22 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 		if (prev_em_start)
- 			*prev_em_start = em->start;
- 
-+		/*
-+		 * We use the extent offset for the IV when decrypting the page,
-+		 * so we have to set the extent_offset based on the orig_start
-+		 * for this extent.  Also save the fscrypt_info so the bio ctx
-+		 * can be set properly.  If this inode isn't encrypted this
-+		 * won't do anything.
-+		 *
-+		 * If we're compressed we'll handle all of this in
-+		 * btrfs_submit_compressed_read.
-+		 */
-+		if (compress_type == BTRFS_COMPRESS_NONE) {
-+			bio_ctrl->orig_start = em->orig_start;
-+			bio_ctrl->fscrypt_info =
-+				fscrypt_get_extent_info(em->fscrypt_info);
-+		}
-+
- 		free_extent_map(em);
- 		em = NULL;
- 
-@@ -1089,6 +1143,9 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 			end_page_read(page, true, cur, iosize);
- 			cur = cur + iosize;
- 			pg_offset += iosize;
-+
-+			/* This shouldn't be set, but clear it just in case. */
-+			fscrypt_put_extent_info(bio_ctrl->fscrypt_info);
- 			continue;
- 		}
- 		/* the get_extent function already copied into the page */
-@@ -1097,6 +1154,9 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 			end_page_read(page, true, cur, iosize);
- 			cur = cur + iosize;
- 			pg_offset += iosize;
-+
-+			/* This shouldn't be set, but clear it just in case. */
-+			fscrypt_put_extent_info(bio_ctrl->fscrypt_info);
- 			continue;
- 		}
- 
-@@ -1109,6 +1169,7 @@ static int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 			submit_one_bio(bio_ctrl);
- 		submit_extent_page(bio_ctrl, disk_bytenr, page, iosize,
- 				   pg_offset);
-+		fscrypt_put_extent_info(bio_ctrl->fscrypt_info);
- 		cur = cur + iosize;
- 		pg_offset += iosize;
- 	}
-diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index 7a7272cb83ec..726cb6121934 100644
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -262,6 +262,42 @@ size_t btrfs_fscrypt_extent_context_size(struct btrfs_inode *inode)
- 		fscrypt_extent_context_size(&inode->vfs_inode);
- }
- 
-+void btrfs_set_bio_crypt_ctx_from_extent(struct bio *bio,
-+					 struct btrfs_inode *inode,
-+					 struct fscrypt_extent_info *fi,
-+					 u64 logical_offset)
-+{
-+	if (!fi)
-+		return;
-+
-+	/*
-+	 * fscrypt uses bytes >> s_blocksize_bits for the block numbers, so we
-+	 * have to adjust everything based on our sectorsize so that the DUN
-+	 * calculations are correct.
-+	 */
-+	logical_offset = div64_u64(logical_offset,
-+				   inode->root->fs_info->sectorsize);
-+	fscrypt_set_bio_crypt_ctx_from_extent(bio, &inode->vfs_inode, fi,
-+					      logical_offset, GFP_NOFS);
-+}
-+
-+bool btrfs_mergeable_encrypted_bio(struct bio *bio, struct inode *inode,
-+				   struct fscrypt_extent_info *fi,
-+				   u64 logical_offset)
-+{
-+	if (!fi)
-+		return true;
-+
-+	/*
-+	 * fscrypt uses bytes >> s_blocksize_bits for the block numbers, so we
-+	 * have to adjust everything based on our sectorsize so that the DUN
-+	 * calculations are correct.
-+	 */
-+	logical_offset = div64_u64(logical_offset,
-+				   BTRFS_I(inode)->root->fs_info->sectorsize);
-+	return fscrypt_mergeable_extent_bio(bio, inode, fi, logical_offset);
-+}
-+
- const struct fscrypt_operations btrfs_fscrypt_ops = {
- 	.has_per_extent_encryption = 1,
- 	.get_context = btrfs_fscrypt_get_context,
-diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
-index 2882a4a9d978..756375ade0b6 100644
---- a/fs/btrfs/fscrypt.h
-+++ b/fs/btrfs/fscrypt.h
-@@ -28,6 +28,13 @@ int btrfs_fscrypt_save_extent_info(struct btrfs_inode *inode,
- 				   struct btrfs_path *path,
- 				   struct fscrypt_extent_info *fi);
- size_t btrfs_fscrypt_extent_context_size(struct btrfs_inode *inode);
-+void btrfs_set_bio_crypt_ctx_from_extent(struct bio *bio,
-+					 struct btrfs_inode *inode,
-+					 struct fscrypt_extent_info *fi,
-+					 u64 logical_offset);
-+bool btrfs_mergeable_encrypted_bio(struct bio *bio, struct inode *inode,
-+				   struct fscrypt_extent_info *fi,
-+				   u64 logical_offset);
- 
- #else
- static inline int btrfs_fscrypt_save_extent_info(struct btrfs_inode *inode,
-@@ -66,6 +73,21 @@ static inline size_t btrfs_fscrypt_extent_context_size(struct btrfs_inode *inode
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 35036fab58c4..d925d6d98bf4 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -730,13 +730,12 @@ int btrfs_lookup_csums_bitmap(struct btrfs_root *root, struct btrfs_path *path,
+ /*
+  * Calculate checksums of the data contained inside a bio.
+  */
+-blk_status_t btrfs_csum_one_bio(struct btrfs_bio *bbio)
++blk_status_t btrfs_csum_one_bio(struct btrfs_bio *bbio, struct bio *bio)
  {
- 	return 0;
- }
-+
-+static inline void btrfs_set_bio_crypt_ctx_from_extent(struct bio *bio,
-+						       struct btrfs_inode *inode,
-+						       struct fscrypt_extent_info *fi,
-+						       u64 logical_offset)
-+{
-+}
-+
-+static inline bool btrfs_mergeable_encrypted_bio(struct bio *bio,
-+						 struct inode *inode,
-+						 struct fscrypt_extent_info *fi,
-+						 u64 logical_offset)
-+{
-+	return true;
-+}
- #endif /* CONFIG_FS_ENCRYPTION */
- 
- extern const struct fscrypt_operations btrfs_fscrypt_ops;
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 1b844a27a0d1..4f5bcfb5c0c1 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7895,6 +7895,8 @@ static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *bio,
- 	struct btrfs_dio_private *dip =
- 		container_of(bbio, struct btrfs_dio_private, bbio);
- 	struct btrfs_dio_data *dio_data = iter->private;
-+	struct fscrypt_extent_info *fscrypt_info = NULL;
-+	u64 offset = 0;
- 
- 	btrfs_bio_init(bbio, BTRFS_I(iter->inode)->root->fs_info,
- 		       btrfs_dio_end_io, bio->bi_private);
-@@ -7916,6 +7918,9 @@ static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *bio,
- 	if (iter->flags & IOMAP_WRITE) {
- 		int ret;
- 
-+		offset = file_offset - dio_data->ordered->orig_offset;
-+		fscrypt_info = dio_data->ordered->fscrypt_info;
-+
- 		ret = btrfs_extract_ordered_extent(bbio, dio_data->ordered);
- 		if (ret) {
- 			btrfs_finish_ordered_extent(dio_data->ordered, NULL,
-@@ -7925,8 +7930,13 @@ static void btrfs_dio_submit_io(const struct iomap_iter *iter, struct bio *bio,
- 			iomap_dio_bio_end_io(bio);
- 			return;
- 		}
-+	} else {
-+		fscrypt_info = dio_data->fscrypt_info;
-+		offset = file_offset - dio_data->orig_start;
- 	}
- 
-+	btrfs_set_bio_crypt_ctx_from_extent(&bbio->bio, bbio->inode,
-+					    fscrypt_info, offset);
- 	btrfs_submit_bio(bbio, 0);
- }
- 
+ 	struct btrfs_ordered_extent *ordered = bbio->ordered;
+ 	struct btrfs_inode *inode = bbio->inode;
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+-	struct bio *bio = &bbio->bio;
+ 	struct btrfs_ordered_sum *sums;
+ 	char *data;
+ 	struct bvec_iter iter;
+diff --git a/fs/btrfs/file-item.h b/fs/btrfs/file-item.h
+index bb79014024bd..e52d5d71d533 100644
+--- a/fs/btrfs/file-item.h
++++ b/fs/btrfs/file-item.h
+@@ -51,7 +51,7 @@ int btrfs_lookup_file_extent(struct btrfs_trans_handle *trans,
+ int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
+ 			   struct btrfs_root *root,
+ 			   struct btrfs_ordered_sum *sums);
+-blk_status_t btrfs_csum_one_bio(struct btrfs_bio *bbio);
++blk_status_t btrfs_csum_one_bio(struct btrfs_bio *bbio, struct bio *bio);
+ blk_status_t btrfs_alloc_dummy_sum(struct btrfs_bio *bbio);
+ int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
+ 			     struct list_head *list, int search_commit,
 -- 
 2.41.0
 
