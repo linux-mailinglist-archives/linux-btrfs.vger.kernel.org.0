@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FE97CB25C
+	by mail.lfdr.de (Postfix) with ESMTP id 2F29D7CB25B
 	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Oct 2023 20:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234189AbjJPSW2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Oct 2023 14:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
+        id S234134AbjJPSWa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Oct 2023 14:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234149AbjJPSWT (ORCPT
+        with ESMTP id S234122AbjJPSWT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 16 Oct 2023 14:22:19 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95189F0
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 11:22:16 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-774141bb415so292032685a.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 11:22:16 -0700 (PDT)
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48A3102
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 11:22:17 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-4195fddd6d7so40974771cf.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 11:22:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1697480535; x=1698085335; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1697480537; x=1698085337; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Cn/5d23+Piiaq9wfrRh434zM+tA72DN+x3v+pwhuqj8=;
-        b=uq8ZhMCPcJr6rRMPF5HyYF0LbiA2rO3rQqoXej8oHEa4zpzD7C+1XR6QGDgrf0LJzG
-         1PnE1g9xq4iDZ9zIxQs9ZPJiJzJ1SY2GMxhBPE9AJz2HFtnmCur7Bb9Ew6MNxOOQ1GDI
-         BcAsFkN9m2K2U0g0kW2/1bvVyTvDC2g9FTmR9yp7nN5gXXeUuWZPpShIcFKE5R++J3gw
-         9A53tGTwRnH91fO0SSrygsSjEEZpLD4hnXMMZVREOcvWrBgkRKrpg0Zj+YHaFRzs4A5Z
-         DYbETliVlS3qKxCKYeyiGcX8lyxlOzke/yjhVZGlNm9kUOhCrtzZtj+Nawj4rKeNuCY0
-         t05Q==
+        bh=HGWYV12KzrT/LkDMZjyuAcPQCUxRjfQ2Kc6Alzssq0w=;
+        b=Jqp1a8+++GYG3DkG+zjX1FQMitBmLLKMMyrPzFBK3jTryaFlyICWqA7lSefOmEAv7c
+         yRa8QiqTwCROJ9nRz9TBCSktcDyK1hbeGJGvGGwpkxY43cg6AYOX9Zm8HGLHSKJUscxG
+         MhoNuKQFvOaTwJDeYqEzNNoqds1Wso3Q5WFct4ZAPm0TA8faa84UbLZl4wFtwdHEFkdf
+         gKdSxtp2AbycRpwuVBhHEmm+/NtxnSyWa/hnPr0bsRzRJz01Gl46biXqj7RPsePjJtYA
+         9PLsAGTlS4tHMeC6xn8siwgthhwp108hGgq5VgOwt/EUYNzv+oRSPF6Zz3nGJ1AklDMU
+         a/Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697480535; x=1698085335;
+        d=1e100.net; s=20230601; t=1697480537; x=1698085337;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Cn/5d23+Piiaq9wfrRh434zM+tA72DN+x3v+pwhuqj8=;
-        b=IOuEyqWHwLZbLjZbQLMY0CisSkLbYkrTTfRmbDsBBCXhpbtUwaxvNFVnw4cZ/U5EpJ
-         2/3Kif+svZnEFhScFLVucT4CkYYQ9VDXETHnT4OGTqTp2jXCfR8fkIaJoKtfY1AGuG89
-         2r+UYmbPv6yX3XvSvYrPoGCBxxjWYzCXudAiuvxotnD7+XxYi4dPgGskjNN7+QWzWeXA
-         jmViBeg748XYmxIEZigOh/Zgil93Z2w/FlFILZ33NsraZHzI4aPmFGjFLVQpOxKLcHWH
-         PYTaHmczW740ztm4s/P5GuYgZpf0gZoMHl+iPsaPz8FQdHvHY8QqyND4Y2zo9HmqrYJ2
-         Qz2Q==
-X-Gm-Message-State: AOJu0YzP0xF08pr7UADhFAp8EFWKI3Q5dvV9SnCXlfZ+HJ2H6k0sG8dv
-        BuKmPsdEKArM5Oi20DlEAq9G8q6ZdjuKsvOJrjU+9A==
-X-Google-Smtp-Source: AGHT+IFs82ZmaHGhlSJ4huGmFqllCxJ4+yO9pWjPj9PeYxwmlGkqpYcdalgbsGZbdS/J1et4lnufZw==
-X-Received: by 2002:a05:620a:13cc:b0:777:27a5:d1e with SMTP id g12-20020a05620a13cc00b0077727a50d1emr16186008qkl.41.1697480535554;
-        Mon, 16 Oct 2023 11:22:15 -0700 (PDT)
+        bh=HGWYV12KzrT/LkDMZjyuAcPQCUxRjfQ2Kc6Alzssq0w=;
+        b=k3TNabjwmCXAGQVzeXXUlFZf6KaGYK8HrXy13qr7nxWI4uatWEjv60RgdWzTko46jU
+         LgyHrodet7rAgQyNBdL1dkYDmb2N1/JRZ+IE09tHqSEClGLOwdGI1y1d9XINNytN3GHq
+         TE0S5UPhqKq0xDWcHSQxQ6waM+X9GpFskbtQUOWLuudCIWvoI9ywN6s0LC/x3UIek9O0
+         l/SI7ksc9zN9mNF20X1eKL1HNrq6hnbrDLHiNPjszud8hMn1fQivS5u+PBQBckZ7/fdc
+         Ztsc391H1khTY7lwt7/tcgJJ4cbYtZaidJgBZcdArE8H2gNduPhbG914XrmmzBR2Mf2I
+         nryw==
+X-Gm-Message-State: AOJu0Ywxg1XWHwETi0IfAC3MUpTGi9YIyJLIoh6OXHRN6iBZcr70Kyst
+        WwHWRqaJJELRny+J2lok8gzZuW8SKIsINlOBJDlBSA==
+X-Google-Smtp-Source: AGHT+IFpFBQCpz/L+PsOJixkB9x+OaNEV4rgMgl+mw13b77Ny7LoazhjHpan/seXmhWcFX5bOYMwsQ==
+X-Received: by 2002:a05:622a:1a04:b0:41b:4c0:cbf4 with SMTP id f4-20020a05622a1a0400b0041b04c0cbf4mr351009qtb.7.1697480536766;
+        Mon, 16 Oct 2023 11:22:16 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id m9-20020ae9e009000000b007671678e325sm3211350qkk.88.2023.10.16.11.22.15
+        by smtp.gmail.com with ESMTPSA id jk3-20020a05622a748300b0041aff9339a2sm3165070qtb.22.2023.10.16.11.22.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Oct 2023 11:22:15 -0700 (PDT)
+        Mon, 16 Oct 2023 11:22:16 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v3 16/34] btrfs: add get_devices hook for fscrypt
-Date:   Mon, 16 Oct 2023 14:21:23 -0400
-Message-ID: <26a91a3212f824a20ce5dd1b768305923fe2529b.1697480198.git.josef@toxicpanda.com>
+Subject: [PATCH v3 17/34] btrfs: turn on inlinecrypt mount option for encrypt
+Date:   Mon, 16 Oct 2023 14:21:24 -0400
+Message-ID: <fbf339ef97adb23db4c93f3bb067d90216198f78.1697480198.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1697480198.git.josef@toxicpanda.com>
 References: <cover.1697480198.git.josef@toxicpanda.com>
@@ -72,74 +72,55 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-Since extent encryption requires inline encryption, even though we
-expect to use the inlinecrypt software fallback most of the time, we
-need to enumerate all the devices in use by btrfs.
+fscrypt's extent encryption requires the use of inline encryption or the
+software fallback that the block layer provides; it is rather
+complicated to allow software encryption with extent encryption due to
+the timing of memory allocations. Thus, if btrfs has ever had a
+encrypted file, or when encryption is enabled on a directory, update the
+mount flags to include inlinecrypt.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/fscrypt.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ fs/btrfs/ioctl.c |  3 +++
+ fs/btrfs/super.c | 10 ++++++++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index 9103da28af7e..2d037b105b5f 100644
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -11,7 +11,9 @@
- #include "ioctl.h"
- #include "messages.h"
- #include "root-tree.h"
-+#include "super.h"
- #include "transaction.h"
-+#include "volumes.h"
- #include "xattr.h"
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index c56986031870..69ab0d7e393f 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -4587,6 +4587,9 @@ long btrfs_ioctl(struct file *file, unsigned int
+ 		 * state persists.
+ 		 */
+ 		btrfs_set_fs_incompat(fs_info, ENCRYPT);
++		if (!(inode->i_sb->s_flags & SB_INLINECRYPT)) {
++			inode->i_sb->s_flags |= SB_INLINECRYPT;
++		}
+ 		return fscrypt_ioctl_set_policy(file, (const void __user *)arg);
+ 	}
+ 	case FS_IOC_GET_ENCRYPTION_POLICY:
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 1e4b536476cd..4fb6ce1767f3 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1120,6 +1120,16 @@ static int btrfs_fill_super(struct super_block *sb,
+ 		return err;
+ 	}
  
- /*
-@@ -178,8 +180,43 @@ static bool btrfs_fscrypt_empty_dir(struct inode *inode)
- 	return inode->i_size == BTRFS_EMPTY_DIR_SIZE;
- }
- 
-+static struct block_device **btrfs_fscrypt_get_devices(struct super_block *sb,
-+						       unsigned int *num_devs)
-+{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
-+	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	int nr_devices = fs_devices->open_devices;
-+	struct block_device **devs;
-+	struct btrfs_device *device;
-+	int i = 0;
-+
-+	devs = kmalloc_array(nr_devices, sizeof(*devs), GFP_NOFS | GFP_NOWAIT);
-+	if (!devs)
-+		return ERR_PTR(-ENOMEM);
-+
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
-+		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA,
-+						&device->dev_state) ||
-+		    !device->bdev ||
-+		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
-+			continue;
-+
-+		devs[i++] = device->bdev;
-+
-+		if (i >= nr_devices)
-+			break;
-+
++	if (btrfs_fs_incompat(fs_info, ENCRYPT)) {
++		if (IS_ENABLED(CONFIG_FS_ENCRYPTION_INLINE_CRYPT)) {
++			sb->s_flags |= SB_INLINECRYPT;
++		} else {
++			btrfs_err(fs_info, "encryption not supported");
++			err = -EINVAL;
++			goto fail_close;
++		}
 +	}
-+	rcu_read_unlock();
 +
-+	*num_devs = i;
-+	return devs;
-+}
-+
- const struct fscrypt_operations btrfs_fscrypt_ops = {
- 	.get_context = btrfs_fscrypt_get_context,
- 	.set_context = btrfs_fscrypt_set_context,
- 	.empty_dir = btrfs_fscrypt_empty_dir,
-+	.get_devices = btrfs_fscrypt_get_devices,
- };
+ 	inode = btrfs_iget(sb, BTRFS_FIRST_FREE_OBJECTID, fs_info->fs_root);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
 -- 
 2.41.0
 
