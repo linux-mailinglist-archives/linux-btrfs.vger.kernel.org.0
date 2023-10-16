@@ -2,47 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAE07CB0BF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Oct 2023 18:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2FC7CB18E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Oct 2023 19:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234602AbjJPQ6P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Oct 2023 12:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48866 "EHLO
+        id S233725AbjJPRs3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Oct 2023 13:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234598AbjJPQ5n (ORCPT
+        with ESMTP id S231611AbjJPRs1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:57:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB161706;
-        Mon, 16 Oct 2023 09:55:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697475314; x=1729011314;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=iMvW9Pd7slcD9HuUM6knbeG8rQ/qVzk1d8EzAuKBzzI=;
-  b=dP5tinsnt3hf06gP2zn+spHDS1ZFM/2gYGBz5srZBYCssxbRp7At8nR/
-   uUC+MtQBoUwCR55rgdLCWQbzfjbgJ2bhn/UobUPjH4EK5EPbj7oA3wSha
-   01J2IB/4ifJUXMx7N7zVYatymZcMr29Pz84MN096DtGsSu9V8WGTTJY/J
-   wOzsBSELy0R5jzzUn3lna7nmYqpLu4vJB7qIFzdQhDf4ciWrZ9CSMj+u2
-   R7tQdd1I7Khqh/8Qc/YwIfAmy/cYZGyiQkPWvM5AgMYMghjK8w335ubwc
-   OLKTxFSrBj7l59b+FR0QgJwJHhXZpdZC8mYTWDOlbs3+4k9Cr8qWHFNnd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="364937356"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="364937356"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:55:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="826084575"
-X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="826084575"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Oct 2023 09:55:09 -0700
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mon, 16 Oct 2023 13:48:27 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062099F;
+        Mon, 16 Oct 2023 10:48:26 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9a7a3e17d1so5600259276.2;
+        Mon, 16 Oct 2023 10:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697478505; x=1698083305; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Gni6mzvaBaFKxuMxn9hZgE2UC6/dQHw9AadxVgtVNo=;
+        b=hrNRjp3Y8049a1H5L///I9LZfu0qTi+gWkje9FexowkWG2OadlQHJoBSUB5+RyAcHR
+         tABGr97G0FYH6oYe/B0u1wgMc+gW16JOvhvk62PUIXkvGiYDljewxwrN7PqFb0e/XMGg
+         ijWpx0SYdRk68w1sPBG6H7fD4BK48LJdV5SNJw8gbKj9u5+yhqOS1mEBzZhl8CAZD2NN
+         CbFVEUE1q8fsgUHHhVTUQAVee/RBgfyvdLUjBb8qqJ3nH8WMZ+Y69R0+yrLK0vWhlwVS
+         BU/8bjRUHmMJ2SF2+sAfHzkuprXvPnSZv10lGllwNcLMtWzovJGhSRk/fwGdzy1I+C/x
+         EjQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697478505; x=1698083305;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Gni6mzvaBaFKxuMxn9hZgE2UC6/dQHw9AadxVgtVNo=;
+        b=k/iMZGgIYr0oRy/BuAYRdz8RqbSEgxCbW6P7dM9g7dUcZu7u+iiT0InZgS+jhkGgyz
+         zjYYKQfpmEdBnNi7i8bIIQjG9bnNdLy1RB4K4PB2XDn1URyaiQSUD5fvTjqjQ9BYkWHY
+         nzRUg01Y0uK4o68mMRejhEVekUu2/4/UVyT2jOtAZcvd8Wk+zCB671vAWuBxNqSCzCqc
+         YcfKc2rgQeLUISgwUHh+vj2DG2X+bWGqP1zchGlOFTfiaslilW8mgsd/Fy9xrxbJoreA
+         0yWYplHtBCTMJXH3bzPTsiZ1eE8wMrAKWbATHUbF586AmtRx5XoEDqFX6x2DACKci3oh
+         934Q==
+X-Gm-Message-State: AOJu0YyR935g6RMJ3bseCFJCQuIi9vnC1+OfRh+BooZSVgVRk7bVoLqM
+        O3mnbg1hFlHj1BZarT0BfF8=
+X-Google-Smtp-Source: AGHT+IFxhp5Fg6dD0ShGrsQoX3lKB8P2VZfUuC29sX4UXOWErGVDVNAevi+hJU45YX1WEraFAAwehQ==
+X-Received: by 2002:a25:3742:0:b0:d9a:4a5f:415d with SMTP id e63-20020a253742000000b00d9a4a5f415dmr18010718yba.0.1697478505154;
+        Mon, 16 Oct 2023 10:48:25 -0700 (PDT)
+Received: from localhost ([2607:fb90:be80:2b9:64a5:5a0e:5435:bd4])
+        by smtp.gmail.com with ESMTPSA id q17-20020a25f911000000b00d20d4ffbbdbsm2775571ybe.0.2023.10.16.10.48.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Oct 2023 10:48:24 -0700 (PDT)
+Date:   Mon, 16 Oct 2023 10:48:23 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Alexander Potapenko <glider@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -53,17 +63,18 @@ Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
         dm-devel@redhat.com, ntfs3@lists.linux.dev,
         linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 13/13] lib/bitmap: add tests for IP tunnel flags conversion helpers
-Date:   Mon, 16 Oct 2023 18:52:47 +0200
-Message-ID: <20231016165247.14212-14-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231016165247.14212-1-aleksander.lobakin@intel.com>
+Subject: Re: [PATCH v2 09/13] bitmap: make bitmap_{get,set}_value8() use
+ bitmap_{read,write}()
+Message-ID: <ZS13Z8Ls69lEBYib@yury-ThinkPad>
 References: <20231016165247.14212-1-aleksander.lobakin@intel.com>
+ <20231016165247.14212-10-aleksander.lobakin@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016165247.14212-10-aleksander.lobakin@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,161 +82,83 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that there are helpers for converting IP tunnel flags between the
-old __be16 format and the bitmap format, make sure they work as expected
-by adding a couple of tests to the bitmap testing suite. The helpers are
-all inline, so no dependencies on the related CONFIG_* (or a standalone
-module) are needed.
+On Mon, Oct 16, 2023 at 06:52:43PM +0200, Alexander Lobakin wrote:
+> Now that we have generic bitmap_read() and bitmap_write(), which are
+> inline and try to take care of non-bound-crossing and aligned cases
+> to keep them optimized, collapse bitmap_{get,set}_value8() into
+> simple wrappers around the former ones.
+> bloat-o-meter shows no difference in vmlinux and -2 bytes for
+> gpio-pca953x.ko, which says the code doesn't get optimized worse.
 
-Cover three possible cases:
+That's just amazing!
 
-1. No bits past BIT(15) are set, VTI/SIT bits are not set. This
-   conversion is almost a direct assignment.
-2. No bits past BIT(15) are set, but VTI/SIT bit is set. During the
-   conversion, it must be transformed into BIT(16) in the bitmap,
-   but still compatible with the __be16 format.
-3. The bitmap has bits past BIT(15) set (not the VTI/SIT one). The
-   result will be truncated.
-   Note that currently __IP_TUNNEL_FLAG_NUM is 17 (incl. special),
-   which means that the result of this case is currently
-   semi-false-positive. When BIT(17) is finally here, it will be
-   adjusted accordingly.
+bloat-o-meter itself doesn't say on optimization, but in this case
+I think that BITS_PER_BYTE passed at compile time allows to generate
+just as good code with the generic bitmap_write/read().
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- lib/test_bitmap.c | 105 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 105 insertions(+)
+Acked-by: Yury Norov <yury.norov@gmail.com>
 
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index a005fcd70ed7..2981277ed8d4 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -14,6 +14,8 @@
- #include <linux/string.h>
- #include <linux/uaccess.h>
- 
-+#include <net/ip_tunnels.h>
-+
- #include "../tools/testing/selftests/kselftest_module.h"
- 
- #define EXP1_IN_BITS	(sizeof(exp1) * 8)
-@@ -1387,6 +1389,108 @@ static void __init test_bitmap_write_perf(void)
- 
- #undef TEST_BIT_LEN
- 
-+struct ip_tunnel_flags_test {
-+	const u16	*src_bits;
-+	const u16	*exp_bits;
-+	u8		src_num;
-+	u8		exp_num;
-+	__be16		exp_val;
-+	bool		exp_comp:1;
-+};
-+
-+#define IP_TUNNEL_FLAGS_TEST(src, comp, eval, exp) {	\
-+	.src_bits	= (src),			\
-+	.src_num	= ARRAY_SIZE(src),		\
-+	.exp_comp	= (comp),			\
-+	.exp_val	= (eval),			\
-+	.exp_bits	= (exp),			\
-+	.exp_num	= ARRAY_SIZE(exp),		\
-+}
-+
-+/* These are __be16-compatible and can be compared as is */
-+static const u16 ip_tunnel_flags_1[] __initconst = {
-+	IP_TUNNEL_KEY_BIT,
-+	IP_TUNNEL_STRICT_BIT,
-+	IP_TUNNEL_ERSPAN_OPT_BIT,
-+};
-+
-+/*
-+ * Due to the previous flags design limitation, setting either
-+ * ``IP_TUNNEL_CSUM_BIT`` (on Big Endian) or ``IP_TUNNEL_DONT_FRAGMENT_BIT``
-+ * (on Little) also sets VTI/ISATAP bit. In the bitmap implementation, they
-+ * correspond to ``BIT(16)``, which is bigger than ``U16_MAX``, but still is
-+ * backward-compatible.
-+ */
-+#ifdef __BIG_ENDIAN
-+#define IP_TUNNEL_CONFLICT_BIT	IP_TUNNEL_CSUM_BIT
-+#else
-+#define IP_TUNNEL_CONFLICT_BIT	IP_TUNNEL_DONT_FRAGMENT_BIT
-+#endif
-+
-+static const u16 ip_tunnel_flags_2_src[] __initconst = {
-+	IP_TUNNEL_CONFLICT_BIT,
-+};
-+
-+static const u16 ip_tunnel_flags_2_exp[] __initconst = {
-+	IP_TUNNEL_CONFLICT_BIT,
-+	IP_TUNNEL_SIT_ISATAP_BIT,
-+};
-+
-+/* Bits 17 and higher are not compatible with __be16 flags */
-+static const u16 ip_tunnel_flags_3_src[] __initconst = {
-+	IP_TUNNEL_VXLAN_OPT_BIT,
-+	17,
-+	18,
-+	20,
-+};
-+
-+static const u16 ip_tunnel_flags_3_exp[] __initconst = {
-+	IP_TUNNEL_VXLAN_OPT_BIT,
-+};
-+
-+static const struct ip_tunnel_flags_test ip_tunnel_flags_test[] __initconst = {
-+	IP_TUNNEL_FLAGS_TEST(ip_tunnel_flags_1, true,
-+			     cpu_to_be16(BIT(IP_TUNNEL_KEY_BIT) |
-+					 BIT(IP_TUNNEL_STRICT_BIT) |
-+					 BIT(IP_TUNNEL_ERSPAN_OPT_BIT)),
-+			     ip_tunnel_flags_1),
-+	IP_TUNNEL_FLAGS_TEST(ip_tunnel_flags_2_src, true, VTI_ISVTI,
-+			     ip_tunnel_flags_2_exp),
-+	IP_TUNNEL_FLAGS_TEST(ip_tunnel_flags_3_src,
-+			     /*
-+			      * This must be set to ``false`` once
-+			      * ``__IP_TUNNEL_FLAG_NUM`` goes above 17.
-+			      */
-+			     true,
-+			     cpu_to_be16(BIT(IP_TUNNEL_VXLAN_OPT_BIT)),
-+			     ip_tunnel_flags_3_exp),
-+};
-+
-+static void __init test_ip_tunnel_flags(void)
-+{
-+	for (u32 i = 0; i < ARRAY_SIZE(ip_tunnel_flags_test); i++) {
-+		typeof(*ip_tunnel_flags_test) *test = &ip_tunnel_flags_test[i];
-+		IP_TUNNEL_DECLARE_FLAGS(src) = { };
-+		IP_TUNNEL_DECLARE_FLAGS(exp) = { };
-+		IP_TUNNEL_DECLARE_FLAGS(out);
-+
-+		for (u32 j = 0; j < test->src_num; j++)
-+			__set_bit(test->src_bits[j], src);
-+
-+		for (u32 j = 0; j < test->exp_num; j++)
-+			__set_bit(test->exp_bits[j], exp);
-+
-+		ip_tunnel_flags_from_be16(out, test->exp_val);
-+
-+		expect_eq_uint(test->exp_comp,
-+			       ip_tunnel_flags_is_be16_compat(src));
-+		expect_eq_uint((__force u16)test->exp_val,
-+			       (__force u16)ip_tunnel_flags_to_be16(src));
-+
-+		__ipt_flag_op(expect_eq_bitmap, exp, out);
-+	}
-+}
-+
- static void __init selftest(void)
- {
- 	test_zero_clear();
-@@ -1405,6 +1509,7 @@ static void __init selftest(void)
- 	test_bitmap_read_write();
- 	test_bitmap_read_perf();
- 	test_bitmap_write_perf();
-+	test_ip_tunnel_flags();
- 
- 	test_find_nth_bit();
- 	test_for_each_set_bit();
--- 
-2.41.0
-
+> Suggested-by: Yury Norov <yury.norov@gmail.com>
+> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> ---
+>  include/linux/bitmap.h | 38 +++++---------------------------------
+>  1 file changed, 5 insertions(+), 33 deletions(-)
+> 
+> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> index 2020cb534ed7..c2680f67bc4e 100644
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@ -572,39 +572,6 @@ static inline void bitmap_from_u64(unsigned long *dst, u64 mask)
+>  	bitmap_from_arr64(dst, &mask, 64);
+>  }
+>  
+> -/**
+> - * bitmap_get_value8 - get an 8-bit value within a memory region
+> - * @map: address to the bitmap memory region
+> - * @start: bit offset of the 8-bit value; must be a multiple of 8
+> - *
+> - * Returns the 8-bit value located at the @start bit offset within the @src
+> - * memory region.
+> - */
+> -static inline unsigned long bitmap_get_value8(const unsigned long *map,
+> -					      unsigned long start)
+> -{
+> -	const size_t index = BIT_WORD(start);
+> -	const unsigned long offset = start % BITS_PER_LONG;
+> -
+> -	return (map[index] >> offset) & 0xFF;
+> -}
+> -
+> -/**
+> - * bitmap_set_value8 - set an 8-bit value within a memory region
+> - * @map: address to the bitmap memory region
+> - * @value: the 8-bit value; values wider than 8 bits may clobber bitmap
+> - * @start: bit offset of the 8-bit value; must be a multiple of 8
+> - */
+> -static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
+> -				     unsigned long start)
+> -{
+> -	const size_t index = BIT_WORD(start);
+> -	const unsigned long offset = start % BITS_PER_LONG;
+> -
+> -	map[index] &= ~(0xFFUL << offset);
+> -	map[index] |= value << offset;
+> -}
+> -
+>  /**
+>   * bitmap_read - read a value of n-bits from the memory region
+>   * @map: address to the bitmap memory region
+> @@ -676,6 +643,11 @@ static inline void bitmap_write(unsigned long *map,
+>  	map[index + 1] |= (value >> space);
+>  }
+>  
+> +#define bitmap_get_value8(map, start)			\
+> +	bitmap_read(map, start, BITS_PER_BYTE)
+> +#define bitmap_set_value8(map, value, start)		\
+> +	bitmap_write(map, value, start, BITS_PER_BYTE)
+> +
+>  #endif /* __ASSEMBLY__ */
+>  
+>  #endif /* __LINUX_BITMAP_H */
+> -- 
+> 2.41.0
