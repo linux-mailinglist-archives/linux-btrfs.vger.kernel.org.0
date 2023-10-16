@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 026687C9E4A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Oct 2023 06:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA247C9E49
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Oct 2023 06:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbjJPEjz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Oct 2023 00:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
+        id S231594AbjJPEjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Oct 2023 00:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231605AbjJPEjw (ORCPT
+        with ESMTP id S231510AbjJPEjX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Oct 2023 00:39:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F55E3
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Oct 2023 21:39:46 -0700 (PDT)
+        Mon, 16 Oct 2023 00:39:23 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39763E3
+        for <linux-btrfs@vger.kernel.org>; Sun, 15 Oct 2023 21:39:18 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 80F2721C1B
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 04:39:15 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D083F1FDCC
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 04:39:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1697431155; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1697431156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ryX1DZEU18eRXd46qs/4kFiVXZkETA0AuES9jJSdSN4=;
-        b=PleuDlgAgEVQqTQEYIlfzVId3VJnbraMAlKfYxY0GjdvEwy8RzFIHniNZncJPm1H05LHRE
-        esWNszIPTkjLEzpf4YyzyprX0AkgZID1y4uc+W+cn1j1CvSHkUtO0W6mOeT3lguX2CO2Nx
-        +/BXxDTjmphO8m8EtiHzQtUfVezDay4=
+        bh=OBjraN6mtFK/01tErLFa8SE7SFAU4huUsB9udr8y+u8=;
+        b=Rk/A6yhDY6a3OqRGu4o6w0Dh+A5tmpnKOC2Q8TJwbDF6jHR/k1V7c3hBG4WKTGjCihZsFr
+        3fQP87WvIPe/YZiDdC1fR8QqHkn/FYdYlmfVPjUj4mKR9CCvYtV/3EuZI4cCe8tvbLQsWx
+        t7uJp7sP+kMcp/laGbumnvKMs1taXoQ=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ACE94138EF
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 04:39:14 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 067C6138EF
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 04:39:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id MLfQGnK+LGUaFgAAMHmgww
+        id uCnhLXO+LGUaFgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 04:39:14 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Oct 2023 04:39:15 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/6] btrfs-progs: enhance btrfs_create_root() function
-Date:   Mon, 16 Oct 2023 15:08:49 +1030
-Message-ID: <c8cab2a10f5ea3bc5b0be609cab56c7978715d74.1697430866.git.wqu@suse.com>
+Subject: [PATCH 4/6] btrfs-progs: use a unified btrfs_make_subvol() implementation
+Date:   Mon, 16 Oct 2023 15:08:50 +1030
+Message-ID: <7b951f3a0619880f35f2490e2e251eb35e2f2292.1697430866.git.wqu@suse.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1697430866.git.wqu@suse.com>
 References: <cover.1697430866.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
+Authentication-Results: smtp-out2.suse.de;
         none
 X-Spam-Level: 
 X-Spam-Score: -2.10
@@ -84,251 +84,408 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch does the following changes:
+To create a subvolume there are several different helpers:
 
-- Remove the @fs_info parameter
-  It can be fetched from @trans.
+- create_subvol() from convert/main.c
+  This relies one using an empty fs_root tree to copy its root item.
+  But otherwise has a pretty well wrapper btrfs_ake_root_dir() helper to
+  handle the inode item/ref insertion.
 
-- Update a comment
-  Now the function can update fs_info pointers for not only quota tree,
-  but also block group tree.
+- create_data_reloc_tree() from mkfs/main.c
+  This is already pretty usable for generic subvolume creation, the only
+  bad code is the open-coded rootdir setup.
 
-- Error out immediately if the @objectid is invalid
+So here this patch introduce a better version with all the benefit from
+the above implementations:
 
-- Use btrfs_create_tree() to handle the root item/node creation
+- Move btrfs_make_root_dir() into kernel-shared/root-tree.[ch]
 
-- Do not update fs_info root pointers before the root fully created
-  This is to prevent an use-after-free if we failed to insert the root
-  item.
-
-- Add subvolume and data reloc tree into the fs roots cache
-  This is to prevent eb leak on root->node.
+- Implement a unified btrfs_make_subvol() to replace above two implementations
+  It would go with btrfs_create_root(), and btrfs_make_root_dir() to
+  remove duplicated code, and return a btrfs_root pointer for caller
+  to utilize.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- kernel-shared/ctree.c | 106 ++++++++++++++++++------------------------
- kernel-shared/ctree.h |   3 +-
- mkfs/main.c           |   2 +-
- tune/convert-bgt.c    |   3 +-
- tune/quota.c          |   2 +-
- 5 files changed, 48 insertions(+), 68 deletions(-)
+ convert/main.c            | 55 +++++--------------------
+ kernel-shared/ctree.h     |  4 ++
+ kernel-shared/root-tree.c | 86 +++++++++++++++++++++++++++++++++++++++
+ mkfs/common.c             | 39 ------------------
+ mkfs/common.h             |  2 -
+ mkfs/main.c               | 78 +++--------------------------------
+ 6 files changed, 107 insertions(+), 157 deletions(-)
 
-diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-index 61cf125cc136..38c41135d438 100644
---- a/kernel-shared/ctree.c
-+++ b/kernel-shared/ctree.c
-@@ -26,8 +26,10 @@
- #include "kernel-shared/print-tree.h"
- #include "kernel-shared/tree-checker.h"
- #include "kernel-shared/volumes.h"
-+#include "kernel-shared/messages.h"
- #include "common/internal.h"
- #include "common/messages.h"
-+#include "common/rbtree-utils.h"
+diff --git a/convert/main.c b/convert/main.c
+index 73740fe26d55..453e2c003c20 100644
+--- a/convert/main.c
++++ b/convert/main.c
+@@ -915,44 +915,6 @@ out:
+ 	return ret;
+ }
  
- static int split_node(struct btrfs_trans_handle *trans, struct btrfs_root
- 		      *root, struct btrfs_path *path, int level);
-@@ -331,57 +333,17 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
-  *
-  * NOTE: Doesn't support tree with non-zero offset, like data reloc tree.
-  */
--int btrfs_create_root(struct btrfs_trans_handle *trans,
--		      struct btrfs_fs_info *fs_info, u64 objectid)
-+int btrfs_create_root(struct btrfs_trans_handle *trans, u64 objectid)
- {
--	struct extent_buffer *node;
+-static int create_subvol(struct btrfs_trans_handle *trans,
+-			 struct btrfs_root *root, u64 root_objectid)
+-{
+-	struct extent_buffer *tmp;
 -	struct btrfs_root *new_root;
--	struct btrfs_disk_key disk_key;
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct extent_buffer *node = NULL;
-+	struct btrfs_root *new_root = NULL;
- 	struct btrfs_key location;
--	struct btrfs_root_item root_item = { 0 };
+-	struct btrfs_key key;
+-	struct btrfs_root_item root_item;
 -	int ret;
 -
--	new_root = malloc(sizeof(*new_root));
--	if (!new_root)
--		return -ENOMEM;
--
--	btrfs_setup_root(new_root, fs_info, objectid);
--	if (!is_fstree(objectid))
--		set_bit(BTRFS_ROOT_TRACK_DIRTY, &new_root->state);
--	add_root_to_dirty_list(new_root);
--
--	new_root->objectid = objectid;
--	new_root->root_key.objectid = objectid;
--	new_root->root_key.type = BTRFS_ROOT_ITEM_KEY;
--	new_root->root_key.offset = 0;
--
--	node = btrfs_alloc_tree_block(trans, new_root, fs_info->nodesize,
--				      objectid, &disk_key, 0, 0, 0,
--				      BTRFS_NESTING_NORMAL);
--	if (IS_ERR(node)) {
--		ret = PTR_ERR(node);
--		error("failed to create root node for tree %llu: %d (%m)",
--		      objectid, ret);
+-	ret = btrfs_copy_root(trans, root, root->node, &tmp,
+-			      root_objectid);
+-	if (ret)
 -		return ret;
--	}
--	new_root->node = node;
 -
--	memset_extent_buffer(node, 0, 0, sizeof(struct btrfs_header));
--	btrfs_set_header_bytenr(node, node->start);
--	btrfs_set_header_generation(node, trans->transid);
--	btrfs_set_header_backref_rev(node, BTRFS_MIXED_BACKREF_REV);
--	btrfs_set_header_owner(node, objectid);
--	write_extent_buffer_fsid(node, fs_info->fs_devices->metadata_uuid);
--	write_extent_buffer_chunk_tree_uuid(node, fs_info->chunk_tree_uuid);
--	btrfs_set_header_nritems(node, 0);
--	btrfs_set_header_level(node, 0);
--	ret = btrfs_inc_ref(trans, new_root, node, 0);
--	if (ret < 0)
--		goto free;
-+	int ret = 0;
- 
- 	/*
- 	 * Special tree roots may need to modify pointers in @fs_info
--	 * Only quota is supported yet.
-+	 * Only quota and block group trees are supported yet.
- 	 */
- 	switch (objectid) {
- 	case BTRFS_QUOTA_TREE_OBJECTID:
-@@ -390,8 +352,6 @@ int btrfs_create_root(struct btrfs_trans_handle *trans,
- 			ret = -EEXIST;
- 			goto free;
- 		}
--		fs_info->quota_root = new_root;
--		fs_info->quota_enabled = 1;
- 		break;
- 	case BTRFS_BLOCK_GROUP_TREE_OBJECTID:
- 		if (fs_info->block_group_root) {
-@@ -399,9 +359,7 @@ int btrfs_create_root(struct btrfs_trans_handle *trans,
- 			ret = -EEXIST;
- 			goto free;
- 		}
--		fs_info->block_group_root = new_root;
- 		break;
--
- 	/*
- 	 * Essential trees can't be created by this function, yet.
- 	 * As we expect such skeleton exists, or a lot of functions like
-@@ -414,27 +372,51 @@ int btrfs_create_root(struct btrfs_trans_handle *trans,
- 		ret = -EEXIST;
- 		goto free;
- 	default:
--		/* Subvolume trees don't need special handling */
--		if (is_fstree(objectid))
-+		/*
-+		 * Subvolume trees don't need special handling.
-+		 * In progs we also treat DATA_RELOC tree just as a subvolume.
-+		 */
-+		if (is_fstree(objectid) || objectid == BTRFS_DATA_RELOC_TREE_OBJECTID)
- 			break;
- 		/* Other special trees are not supported yet */
- 		ret = -ENOTTY;
- 		goto free;
- 	}
--	btrfs_mark_buffer_dirty(node);
--	btrfs_set_root_bytenr(&root_item, btrfs_header_bytenr(node));
--	btrfs_set_root_level(&root_item, 0);
+-	memcpy(&root_item, &root->root_item, sizeof(root_item));
+-	btrfs_set_root_bytenr(&root_item, tmp->start);
+-	btrfs_set_root_level(&root_item, btrfs_header_level(tmp));
 -	btrfs_set_root_generation(&root_item, trans->transid);
--	btrfs_set_root_dirid(&root_item, 0);
--	btrfs_set_root_refs(&root_item, 1);
--	btrfs_set_root_used(&root_item, fs_info->nodesize);
-+
- 	location.objectid = objectid;
- 	location.type = BTRFS_ROOT_ITEM_KEY;
- 	location.offset = 0;
-+	new_root = btrfs_create_tree(trans, fs_info, &location);
-+	if (IS_ERR(new_root)) {
-+		ret = PTR_ERR(new_root);
+-	free_extent_buffer(tmp);
+-
+-	key.objectid = root_objectid;
+-	key.type = BTRFS_ROOT_ITEM_KEY;
+-	key.offset = trans->transid;
+-	ret = btrfs_insert_root(trans, root->fs_info->tree_root,
+-				&key, &root_item);
+-
+-	key.offset = (u64)-1;
+-	new_root = btrfs_read_fs_root(root->fs_info, &key);
+-	if (!new_root || IS_ERR(new_root)) {
+-		error("unable to fs read root: %lu", PTR_ERR(new_root));
+-		return PTR_ERR(new_root);
+-	}
+-
+-	ret = btrfs_make_root_dir(trans, new_root, BTRFS_FIRST_FREE_OBJECTID);
+-
+-	return ret;
+-}
+-
+ /*
+  * New make_btrfs() has handle system and meta chunks quite well.
+  * So only need to add remaining data chunks.
+@@ -1012,6 +974,7 @@ static int make_convert_data_block_groups(struct btrfs_trans_handle *trans,
+ static int init_btrfs(struct btrfs_mkfs_config *cfg, struct btrfs_root *root,
+ 			 struct btrfs_convert_context *cctx, u32 convert_flags)
+ {
++	struct btrfs_root *created_root;
+ 	struct btrfs_key location;
+ 	struct btrfs_trans_handle *trans;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+@@ -1057,15 +1020,19 @@ static int init_btrfs(struct btrfs_mkfs_config *cfg, struct btrfs_root *root,
+ 			     BTRFS_FIRST_FREE_OBJECTID);
+ 
+ 	/* subvol for fs image file */
+-	ret = create_subvol(trans, root, CONV_IMAGE_SUBVOL_OBJECTID);
+-	if (ret < 0) {
+-		error("failed to create subvolume image root: %d", ret);
++	created_root = btrfs_create_subvol(trans, CONV_IMAGE_SUBVOL_OBJECTID);
++	if (IS_ERR(created_root)) {
++		ret = PTR_ERR(created_root);
 +		errno = -ret;
-+		error("failed to create new tree for rootid %lld: %m", objectid);
-+		return ret;
-+	}
++		error("failed to create subvolume image root: %m");
+ 		goto err;
+ 	}
+ 	/* subvol for data relocation tree */
+-	ret = create_subvol(trans, root, BTRFS_DATA_RELOC_TREE_OBJECTID);
+-	if (ret < 0) {
+-		error("failed to create DATA_RELOC root: %d", ret);
++	created_root = btrfs_create_subvol(trans, BTRFS_DATA_RELOC_TREE_OBJECTID);
++	if (IS_ERR(created_root)) {
++		ret = PTR_ERR(created_root);
++		errno = -ret;
++		error("failed to create DATA_RELOC root: %m");
+ 		goto err;
+ 	}
  
--	ret = btrfs_insert_root(trans, fs_info->tree_root, &location, &root_item);
--	if (ret < 0)
--		goto free;
-+	add_root_to_dirty_list(new_root);
-+
-+	switch (objectid) {
-+	case BTRFS_QUOTA_TREE_OBJECTID:
-+		fs_info->quota_root = new_root;
-+		fs_info->quota_enabled = 1;
-+		break;
-+	case BTRFS_BLOCK_GROUP_TREE_OBJECTID:
-+		fs_info->block_group_root = new_root;
-+		break;
-+	default:
-+		/*
-+		 * We need to add subvolume trees to its rb tree, or we will
-+		 * leak root->node.
-+		 */
-+		ASSERT(is_fstree(objectid) ||
-+		       objectid == BTRFS_DATA_RELOC_TREE_OBJECTID);
-+		ret = rb_insert(&fs_info->fs_root_tree, &new_root->rb_node,
-+				btrfs_fs_roots_compare_roots);
-+		if (ret < 0)
-+			goto free;
-+		set_bit(BTRFS_ROOT_SHAREABLE, &new_root->state);
-+	}
- 	return ret;
- 
- free:
 diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index a10a30e36b94..1dda40e96a60 100644
+index 1dda40e96a60..ea459464063d 100644
 --- a/kernel-shared/ctree.h
 +++ b/kernel-shared/ctree.h
-@@ -988,8 +988,7 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
- 		      struct btrfs_root *root,
- 		      struct extent_buffer *buf,
- 		      struct extent_buffer **cow_ret, u64 new_root_objectid);
--int btrfs_create_root(struct btrfs_trans_handle *trans,
--		      struct btrfs_fs_info *fs_info, u64 objectid);
-+int btrfs_create_root(struct btrfs_trans_handle *trans, u64 objectid);
- void btrfs_extend_item(struct btrfs_path *path, u32 data_size);
- void btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end);
- int btrfs_split_item(struct btrfs_trans_handle *trans,
+@@ -1134,6 +1134,10 @@ int btrfs_update_root(struct btrfs_trans_handle *trans, struct btrfs_root
+ 		      *item);
+ int btrfs_find_last_root(struct btrfs_root *root, u64 objectid, struct
+ 			 btrfs_root_item *item, struct btrfs_key *key);
++int btrfs_make_root_dir(struct btrfs_trans_handle *trans,
++			struct btrfs_root *root, u64 objectid);
++struct btrfs_root *btrfs_create_subvol(struct btrfs_trans_handle *trans,
++				       u64 objectid);
+ /* dir-item.c */
+ int btrfs_insert_dir_item(struct btrfs_trans_handle *trans, struct btrfs_root
+ 			  *root, const char *name, int name_len, u64 dir,
+diff --git a/kernel-shared/root-tree.c b/kernel-shared/root-tree.c
+index 33f9e4697b18..1fe7d535fdc7 100644
+--- a/kernel-shared/root-tree.c
++++ b/kernel-shared/root-tree.c
+@@ -19,12 +19,15 @@
+ #include "kerncompat.h"
+ #include <errno.h>
+ #include <string.h>
++#include <time.h>
+ #include "kernel-lib/bitops.h"
+ #include "kernel-shared/accessors.h"
+ #include "kernel-shared/extent_io.h"
+ #include "kernel-shared/uapi/btrfs_tree.h"
+ #include "kernel-shared/ctree.h"
+ #include "kernel-shared/disk-io.h"
++#include "kernel-shared/transaction.h"
++#include "common/messages.h"
+ 
+ int btrfs_find_last_root(struct btrfs_root *root, u64 objectid,
+ 			struct btrfs_root_item *item, struct btrfs_key *key)
+@@ -224,3 +227,86 @@ int btrfs_add_root_ref(struct btrfs_trans_handle *trans,
+ 	btrfs_free_path(path);
+ 	return ret;
+ }
++
++int btrfs_make_root_dir(struct btrfs_trans_handle *trans,
++			struct btrfs_root *root, u64 objectid)
++{
++	int ret;
++	struct btrfs_inode_item inode_item;
++	time_t now = time(NULL);
++
++	memset(&inode_item, 0, sizeof(inode_item));
++	btrfs_set_stack_inode_generation(&inode_item, trans->transid);
++	btrfs_set_stack_inode_size(&inode_item, 0);
++	btrfs_set_stack_inode_nlink(&inode_item, 1);
++	btrfs_set_stack_inode_nbytes(&inode_item, root->fs_info->nodesize);
++	btrfs_set_stack_inode_mode(&inode_item, S_IFDIR | 0755);
++	btrfs_set_stack_timespec_sec(&inode_item.atime, now);
++	btrfs_set_stack_timespec_nsec(&inode_item.atime, 0);
++	btrfs_set_stack_timespec_sec(&inode_item.ctime, now);
++	btrfs_set_stack_timespec_nsec(&inode_item.ctime, 0);
++	btrfs_set_stack_timespec_sec(&inode_item.mtime, now);
++	btrfs_set_stack_timespec_nsec(&inode_item.mtime, 0);
++	btrfs_set_stack_timespec_sec(&inode_item.otime, now);
++	btrfs_set_stack_timespec_nsec(&inode_item.otime, 0);
++
++	if (root->fs_info->tree_root == root)
++		btrfs_set_super_root_dir(root->fs_info->super_copy, objectid);
++
++	ret = btrfs_insert_inode(trans, root, objectid, &inode_item);
++	if (ret)
++		goto error;
++
++	ret = btrfs_insert_inode_ref(trans, root, "..", 2, objectid, objectid, 0);
++	if (ret)
++		goto error;
++
++	btrfs_set_root_dirid(&root->root_item, objectid);
++	ret = 0;
++error:
++	return ret;
++}
++
++struct btrfs_root *btrfs_create_subvol(struct btrfs_trans_handle *trans,
++				       u64 objectid)
++{
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++	struct btrfs_root *root;
++	struct btrfs_key key;
++	int ret;
++
++	ret = btrfs_create_root(trans, objectid);
++	if (ret < 0) {
++		errno = -ret;
++		error("failed to create root %lld: %m", objectid);
++		return ERR_PTR(ret);
++	}
++	key.objectid = objectid;
++	key.type = BTRFS_ROOT_ITEM_KEY;
++	key.offset = 0;
++
++	root = btrfs_read_fs_root(fs_info, &key);
++	if (IS_ERR(root)) {
++		ret = PTR_ERR(root);
++		errno = -ret;
++		error("failed to read created subvolume %lld: %m", objectid);
++		return ERR_PTR(ret);
++	}
++
++	ret = btrfs_make_root_dir(trans, root, BTRFS_FIRST_FREE_OBJECTID);
++	if (ret < 0) {
++		errno = -ret;
++		error("failed to update root dir for root %llu",
++		      root->root_key.objectid);
++		return ERR_PTR(ret);
++	}
++	ret = btrfs_update_root(trans, trans->fs_info->tree_root,
++				&root->root_key, &root->root_item);
++	if (ret < 0) {
++		errno = -ret;
++		error("failed to update root %llu",
++		      root->root_key.objectid);
++		return ERR_PTR(ret);
++	}
++	return root;
++}
+diff --git a/mkfs/common.c b/mkfs/common.c
+index d400413c7d41..34798f79026b 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -752,45 +752,6 @@ out:
+ 	return ret;
+ }
+ 
+-int btrfs_make_root_dir(struct btrfs_trans_handle *trans,
+-			struct btrfs_root *root, u64 objectid)
+-{
+-	int ret;
+-	struct btrfs_inode_item inode_item;
+-	time_t now = time(NULL);
+-
+-	memset(&inode_item, 0, sizeof(inode_item));
+-	btrfs_set_stack_inode_generation(&inode_item, trans->transid);
+-	btrfs_set_stack_inode_size(&inode_item, 0);
+-	btrfs_set_stack_inode_nlink(&inode_item, 1);
+-	btrfs_set_stack_inode_nbytes(&inode_item, root->fs_info->nodesize);
+-	btrfs_set_stack_inode_mode(&inode_item, S_IFDIR | 0755);
+-	btrfs_set_stack_timespec_sec(&inode_item.atime, now);
+-	btrfs_set_stack_timespec_nsec(&inode_item.atime, 0);
+-	btrfs_set_stack_timespec_sec(&inode_item.ctime, now);
+-	btrfs_set_stack_timespec_nsec(&inode_item.ctime, 0);
+-	btrfs_set_stack_timespec_sec(&inode_item.mtime, now);
+-	btrfs_set_stack_timespec_nsec(&inode_item.mtime, 0);
+-	btrfs_set_stack_timespec_sec(&inode_item.otime, now);
+-	btrfs_set_stack_timespec_nsec(&inode_item.otime, 0);
+-
+-	if (root->fs_info->tree_root == root)
+-		btrfs_set_super_root_dir(root->fs_info->super_copy, objectid);
+-
+-	ret = btrfs_insert_inode(trans, root, objectid, &inode_item);
+-	if (ret)
+-		goto error;
+-
+-	ret = btrfs_insert_inode_ref(trans, root, "..", 2, objectid, objectid, 0);
+-	if (ret)
+-		goto error;
+-
+-	btrfs_set_root_dirid(&root->root_item, objectid);
+-	ret = 0;
+-error:
+-	return ret;
+-}
+-
+ /*
+  * Btrfs minimum size calculation is complicated, it should include at least:
+  * 1. system group size
+diff --git a/mkfs/common.h b/mkfs/common.h
+index 06ddc926390f..659529b90f6e 100644
+--- a/mkfs/common.h
++++ b/mkfs/common.h
+@@ -98,8 +98,6 @@ struct btrfs_mkfs_config {
+ };
+ 
+ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg);
+-int btrfs_make_root_dir(struct btrfs_trans_handle *trans,
+-			struct btrfs_root *root, u64 objectid);
+ u64 btrfs_min_dev_size(u32 nodesize, int mixed, u64 meta_profile,
+ 		       u64 data_profile);
+ int test_minimum_size(const char *file, u64 min_dev_size);
 diff --git a/mkfs/main.c b/mkfs/main.c
-index 7d0ffac309e8..9584386da4ca 100644
+index 9584386da4ca..42aa68b7ecf4 100644
 --- a/mkfs/main.c
 +++ b/mkfs/main.c
-@@ -1006,7 +1006,7 @@ static int setup_quota_root(struct btrfs_fs_info *fs_info)
- 		error_msg(ERROR_MSG_START_TRANS, "%m");
- 		return ret;
+@@ -705,75 +705,6 @@ static void update_chunk_allocation(struct btrfs_fs_info *fs_info,
  	}
--	ret = btrfs_create_root(trans, fs_info, BTRFS_QUOTA_TREE_OBJECTID);
-+	ret = btrfs_create_root(trans, BTRFS_QUOTA_TREE_OBJECTID);
- 	if (ret < 0) {
- 		error("failed to create quota root: %d (%m)", ret);
- 		goto fail;
-diff --git a/tune/convert-bgt.c b/tune/convert-bgt.c
-index dd3a8c750604..a027e50b79a0 100644
---- a/tune/convert-bgt.c
-+++ b/tune/convert-bgt.c
-@@ -54,8 +54,7 @@ int convert_to_bg_tree(struct btrfs_fs_info *fs_info)
- 	if (btrfs_super_flags(sb) & BTRFS_SUPER_FLAG_CHANGING_BG_TREE)
- 		goto iterate_bgs;
+ }
  
--	ret = btrfs_create_root(trans, fs_info,
--				BTRFS_BLOCK_GROUP_TREE_OBJECTID);
-+	ret = btrfs_create_root(trans, BTRFS_BLOCK_GROUP_TREE_OBJECTID);
- 	if (ret < 0) {
- 		error("failed to create block group root: %d", ret);
- 		goto error;
-diff --git a/tune/quota.c b/tune/quota.c
-index a14f453078d5..5896a61e61d6 100644
---- a/tune/quota.c
-+++ b/tune/quota.c
-@@ -107,7 +107,7 @@ int enable_quota(struct btrfs_fs_info *fs_info, bool simple)
- 		return ret;
+-static int create_data_reloc_tree(struct btrfs_trans_handle *trans)
+-{
+-	struct btrfs_fs_info *fs_info = trans->fs_info;
+-	struct btrfs_inode_item *inode;
+-	struct btrfs_root *root;
+-	struct btrfs_path path = { 0 };
+-	struct btrfs_key key = {
+-		.objectid = BTRFS_DATA_RELOC_TREE_OBJECTID,
+-		.type = BTRFS_ROOT_ITEM_KEY,
+-	};
+-	u64 ino = BTRFS_FIRST_FREE_OBJECTID;
+-	char *name = "..";
+-	int ret;
+-
+-	root = btrfs_create_tree(trans, fs_info, &key);
+-	if (IS_ERR(root)) {
+-		ret = PTR_ERR(root);
+-		goto out;
+-	}
+-	/* Update dirid as created tree has default dirid 0 */
+-	btrfs_set_root_dirid(&root->root_item, ino);
+-	ret = btrfs_update_root(trans, fs_info->tree_root, &root->root_key,
+-				&root->root_item);
+-	if (ret < 0)
+-		goto out;
+-
+-	/* Cache this tree so it can be cleaned up at close_ctree() */
+-	ret = rb_insert(&fs_info->fs_root_tree, &root->rb_node,
+-			btrfs_fs_roots_compare_roots);
+-	if (ret < 0)
+-		goto out;
+-
+-	/* Insert INODE_ITEM */
+-	ret = btrfs_new_inode(trans, root, ino, 0755 | S_IFDIR);
+-	if (ret < 0)
+-		goto out;
+-
+-	/* then INODE_REF */
+-	ret = btrfs_insert_inode_ref(trans, root, name, strlen(name), ino, ino,
+-				     0);
+-	if (ret < 0)
+-		goto out;
+-
+-	/* Update nlink of that inode item */
+-	key.objectid = ino;
+-	key.type = BTRFS_INODE_ITEM_KEY;
+-	key.offset = 0;
+-
+-	ret = btrfs_search_slot(trans, root, &key, &path, 0, 1);
+-	if (ret > 0) {
+-		ret = -ENOENT;
+-		btrfs_release_path(&path);
+-		goto out;
+-	}
+-	if (ret < 0) {
+-		btrfs_release_path(&path);
+-		goto out;
+-	}
+-	inode = btrfs_item_ptr(path.nodes[0], path.slots[0],
+-			       struct btrfs_inode_item);
+-	btrfs_set_inode_nlink(path.nodes[0], inode, 1);
+-	btrfs_mark_buffer_dirty(path.nodes[0]);
+-	btrfs_release_path(&path);
+-	return 0;
+-out:
+-	btrfs_abort_transaction(trans, ret);
+-	return ret;
+-}
+-
+ static int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid,
+ 			       u8 type, u64 subvol_id_cpu)
+ {
+@@ -1138,6 +1069,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ {
+ 	char *file;
+ 	struct btrfs_root *root;
++	struct btrfs_root *data_reloc_root;
+ 	struct btrfs_fs_info *fs_info;
+ 	struct btrfs_trans_handle *trans;
+ 	struct open_ctree_args oca = { 0 };
+@@ -1887,9 +1819,11 @@ raid_groups:
+ 		goto out;
  	}
  
--	ret = btrfs_create_root(trans, fs_info, BTRFS_QUOTA_TREE_OBJECTID);
-+	ret = btrfs_create_root(trans, BTRFS_QUOTA_TREE_OBJECTID);
- 	if (ret < 0) {
- 		error("failed to create quota root: %d (%m)", ret);
- 		goto fail;
+-	ret = create_data_reloc_tree(trans);
+-	if (ret) {
+-		error("unable to create data reloc tree: %d", ret);
++	data_reloc_root = btrfs_create_subvol(trans, BTRFS_DATA_RELOC_TREE_OBJECTID);
++	if (IS_ERR(data_reloc_root)) {
++		ret = PTR_ERR(data_reloc_root);
++		errno = -ret;
++		error("unable to create data reloc tree: %m");
+ 		goto out;
+ 	}
+ 
 -- 
 2.42.0
 
