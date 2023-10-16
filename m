@@ -2,43 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E687CB0C7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Oct 2023 18:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAE07CB0BF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Oct 2023 18:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234609AbjJPQ6V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Oct 2023 12:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
+        id S234602AbjJPQ6P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Oct 2023 12:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234586AbjJPQ5e (ORCPT
+        with ESMTP id S234598AbjJPQ5n (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Oct 2023 12:57:34 -0400
+        Mon, 16 Oct 2023 12:57:43 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E058710D3;
-        Mon, 16 Oct 2023 09:55:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB161706;
+        Mon, 16 Oct 2023 09:55:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697475309; x=1729011309;
+  t=1697475314; x=1729011314;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=JgZclxzvXH6brVhcVWQRFhTS/icokSmMXi/raH9oYiU=;
-  b=B2WtAZ4c7enfATtwLInqTx/GodfkMbcqKeJv12JDZUTTd2AnQRxP0X7J
-   4yB+1vOeJ1WgUODEIvux2Cl/d5ejiXde4m0zkfVa40zawk4FvJVOW0R9u
-   k4h6RwW1ZXH3L6FnLyXLC4Cmlr6bhjIiNCkHrr0s3aU3YB4tsAhWV8orJ
-   1hrTTfADOEXHNhAUOLyu2efW6o0Efa9XjJ3ViodBG2RAD/XkVUxFRKFgR
-   FQWrGxiHjP00I6u0sWWPbBilSI8ggAaz1eKHsA0TE6Cy1wYjbLBejUCTI
-   BDuwjloe5AVSP+cV/cgByxOx36yDFPJx2axZXIqwj3VN+WXIL9C7Uijnl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="364937331"
+  bh=iMvW9Pd7slcD9HuUM6knbeG8rQ/qVzk1d8EzAuKBzzI=;
+  b=dP5tinsnt3hf06gP2zn+spHDS1ZFM/2gYGBz5srZBYCssxbRp7At8nR/
+   uUC+MtQBoUwCR55rgdLCWQbzfjbgJ2bhn/UobUPjH4EK5EPbj7oA3wSha
+   01J2IB/4ifJUXMx7N7zVYatymZcMr29Pz84MN096DtGsSu9V8WGTTJY/J
+   wOzsBSELy0R5jzzUn3lna7nmYqpLu4vJB7qIFzdQhDf4ciWrZ9CSMj+u2
+   R7tQdd1I7Khqh/8Qc/YwIfAmy/cYZGyiQkPWvM5AgMYMghjK8w335ubwc
+   OLKTxFSrBj7l59b+FR0QgJwJHhXZpdZC8mYTWDOlbs3+4k9Cr8qWHFNnd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="364937356"
 X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="364937331"
+   d="scan'208";a="364937356"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:55:09 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2023 09:55:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="826084549"
+X-IronPort-AV: E=McAfee;i="6600,9927,10865"; a="826084575"
 X-IronPort-AV: E=Sophos;i="6.03,229,1694761200"; 
-   d="scan'208";a="826084549"
+   d="scan'208";a="826084575"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Oct 2023 09:55:06 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 16 Oct 2023 09:55:09 -0700
 From:   Alexander Lobakin <aleksander.lobakin@intel.com>
 To:     Yury Norov <yury.norov@gmail.com>
 Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -53,9 +53,9 @@ Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         netdev@vger.kernel.org, linux-btrfs@vger.kernel.org,
         dm-devel@redhat.com, ntfs3@lists.linux.dev,
         linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 12/13] lib/bitmap: add compile-time test for __assign_bit() optimization
-Date:   Mon, 16 Oct 2023 18:52:46 +0200
-Message-ID: <20231016165247.14212-13-aleksander.lobakin@intel.com>
+Subject: [PATCH v2 13/13] lib/bitmap: add tests for IP tunnel flags conversion helpers
+Date:   Mon, 16 Oct 2023 18:52:47 +0200
+Message-ID: <20231016165247.14212-14-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231016165247.14212-1-aleksander.lobakin@intel.com>
 References: <20231016165247.14212-1-aleksander.lobakin@intel.com>
@@ -71,58 +71,161 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit dc34d5036692 ("lib: test_bitmap: add compile-time
-optimization/evaluations assertions") initially missed __assign_bit(),
-which led to that quite a time passed before I realized it doesn't get
-optimized at compilation time. Now that it does, add test for that just
-to make sure nothing will break one day.
-To make things more interesting, use bitmap_complement() and
-bitmap_full(), thus checking their compile-time evaluation as well. And
-remove the misleading comment mentioning the workaround removed recently
-in favor of adding the whole file to GCov exceptions.
+Now that there are helpers for converting IP tunnel flags between the
+old __be16 format and the bitmap format, make sure they work as expected
+by adding a couple of tests to the bitmap testing suite. The helpers are
+all inline, so no dependencies on the related CONFIG_* (or a standalone
+module) are needed.
 
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Cover three possible cases:
+
+1. No bits past BIT(15) are set, VTI/SIT bits are not set. This
+   conversion is almost a direct assignment.
+2. No bits past BIT(15) are set, but VTI/SIT bit is set. During the
+   conversion, it must be transformed into BIT(16) in the bitmap,
+   but still compatible with the __be16 format.
+3. The bitmap has bits past BIT(15) set (not the VTI/SIT one). The
+   result will be truncated.
+   Note that currently __IP_TUNNEL_FLAG_NUM is 17 (incl. special),
+   which means that the result of this case is currently
+   semi-false-positive. When BIT(17) is finally here, it will be
+   adjusted accordingly.
+
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- lib/test_bitmap.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ lib/test_bitmap.c | 105 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 105 insertions(+)
 
 diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index 910457662322..a005fcd70ed7 100644
+index a005fcd70ed7..2981277ed8d4 100644
 --- a/lib/test_bitmap.c
 +++ b/lib/test_bitmap.c
-@@ -1193,14 +1193,7 @@ static void __init test_bitmap_const_eval(void)
- 	 * in runtime.
- 	 */
+@@ -14,6 +14,8 @@
+ #include <linux/string.h>
+ #include <linux/uaccess.h>
  
--	/*
--	 * Equals to `unsigned long bitmap[1] = { GENMASK(6, 5), }`.
--	 * Clang on s390 optimizes bitops at compile-time as intended, but at
--	 * the same time stops treating @bitmap and @bitopvar as compile-time
--	 * constants after regular test_bit() is executed, thus triggering the
--	 * build bugs below. So, call const_test_bit() there directly until
--	 * the compiler is fixed.
--	 */
-+	/* Equals to `unsigned long bitmap[1] = { GENMASK(6, 5), }` */
- 	bitmap_clear(bitmap, 0, BITS_PER_LONG);
- 	if (!test_bit(7, bitmap))
- 		bitmap_set(bitmap, 5, 2);
-@@ -1232,6 +1225,15 @@ static void __init test_bitmap_const_eval(void)
- 	/* ~BIT(25) */
- 	BUILD_BUG_ON(!__builtin_constant_p(~var));
- 	BUILD_BUG_ON(~var != ~BIT(25));
++#include <net/ip_tunnels.h>
 +
-+	/* ~BIT(25) | BIT(25) == ~0UL */
-+	bitmap_complement(&var, &var, BITS_PER_LONG);
-+	__assign_bit(25, &var, true);
-+
-+	/* !(~(~0UL)) == 1 */
-+	res = bitmap_full(&var, BITS_PER_LONG);
-+	BUILD_BUG_ON(!__builtin_constant_p(res));
-+	BUILD_BUG_ON(!res);
- }
+ #include "../tools/testing/selftests/kselftest_module.h"
  
- /*
+ #define EXP1_IN_BITS	(sizeof(exp1) * 8)
+@@ -1387,6 +1389,108 @@ static void __init test_bitmap_write_perf(void)
+ 
+ #undef TEST_BIT_LEN
+ 
++struct ip_tunnel_flags_test {
++	const u16	*src_bits;
++	const u16	*exp_bits;
++	u8		src_num;
++	u8		exp_num;
++	__be16		exp_val;
++	bool		exp_comp:1;
++};
++
++#define IP_TUNNEL_FLAGS_TEST(src, comp, eval, exp) {	\
++	.src_bits	= (src),			\
++	.src_num	= ARRAY_SIZE(src),		\
++	.exp_comp	= (comp),			\
++	.exp_val	= (eval),			\
++	.exp_bits	= (exp),			\
++	.exp_num	= ARRAY_SIZE(exp),		\
++}
++
++/* These are __be16-compatible and can be compared as is */
++static const u16 ip_tunnel_flags_1[] __initconst = {
++	IP_TUNNEL_KEY_BIT,
++	IP_TUNNEL_STRICT_BIT,
++	IP_TUNNEL_ERSPAN_OPT_BIT,
++};
++
++/*
++ * Due to the previous flags design limitation, setting either
++ * ``IP_TUNNEL_CSUM_BIT`` (on Big Endian) or ``IP_TUNNEL_DONT_FRAGMENT_BIT``
++ * (on Little) also sets VTI/ISATAP bit. In the bitmap implementation, they
++ * correspond to ``BIT(16)``, which is bigger than ``U16_MAX``, but still is
++ * backward-compatible.
++ */
++#ifdef __BIG_ENDIAN
++#define IP_TUNNEL_CONFLICT_BIT	IP_TUNNEL_CSUM_BIT
++#else
++#define IP_TUNNEL_CONFLICT_BIT	IP_TUNNEL_DONT_FRAGMENT_BIT
++#endif
++
++static const u16 ip_tunnel_flags_2_src[] __initconst = {
++	IP_TUNNEL_CONFLICT_BIT,
++};
++
++static const u16 ip_tunnel_flags_2_exp[] __initconst = {
++	IP_TUNNEL_CONFLICT_BIT,
++	IP_TUNNEL_SIT_ISATAP_BIT,
++};
++
++/* Bits 17 and higher are not compatible with __be16 flags */
++static const u16 ip_tunnel_flags_3_src[] __initconst = {
++	IP_TUNNEL_VXLAN_OPT_BIT,
++	17,
++	18,
++	20,
++};
++
++static const u16 ip_tunnel_flags_3_exp[] __initconst = {
++	IP_TUNNEL_VXLAN_OPT_BIT,
++};
++
++static const struct ip_tunnel_flags_test ip_tunnel_flags_test[] __initconst = {
++	IP_TUNNEL_FLAGS_TEST(ip_tunnel_flags_1, true,
++			     cpu_to_be16(BIT(IP_TUNNEL_KEY_BIT) |
++					 BIT(IP_TUNNEL_STRICT_BIT) |
++					 BIT(IP_TUNNEL_ERSPAN_OPT_BIT)),
++			     ip_tunnel_flags_1),
++	IP_TUNNEL_FLAGS_TEST(ip_tunnel_flags_2_src, true, VTI_ISVTI,
++			     ip_tunnel_flags_2_exp),
++	IP_TUNNEL_FLAGS_TEST(ip_tunnel_flags_3_src,
++			     /*
++			      * This must be set to ``false`` once
++			      * ``__IP_TUNNEL_FLAG_NUM`` goes above 17.
++			      */
++			     true,
++			     cpu_to_be16(BIT(IP_TUNNEL_VXLAN_OPT_BIT)),
++			     ip_tunnel_flags_3_exp),
++};
++
++static void __init test_ip_tunnel_flags(void)
++{
++	for (u32 i = 0; i < ARRAY_SIZE(ip_tunnel_flags_test); i++) {
++		typeof(*ip_tunnel_flags_test) *test = &ip_tunnel_flags_test[i];
++		IP_TUNNEL_DECLARE_FLAGS(src) = { };
++		IP_TUNNEL_DECLARE_FLAGS(exp) = { };
++		IP_TUNNEL_DECLARE_FLAGS(out);
++
++		for (u32 j = 0; j < test->src_num; j++)
++			__set_bit(test->src_bits[j], src);
++
++		for (u32 j = 0; j < test->exp_num; j++)
++			__set_bit(test->exp_bits[j], exp);
++
++		ip_tunnel_flags_from_be16(out, test->exp_val);
++
++		expect_eq_uint(test->exp_comp,
++			       ip_tunnel_flags_is_be16_compat(src));
++		expect_eq_uint((__force u16)test->exp_val,
++			       (__force u16)ip_tunnel_flags_to_be16(src));
++
++		__ipt_flag_op(expect_eq_bitmap, exp, out);
++	}
++}
++
+ static void __init selftest(void)
+ {
+ 	test_zero_clear();
+@@ -1405,6 +1509,7 @@ static void __init selftest(void)
+ 	test_bitmap_read_write();
+ 	test_bitmap_read_perf();
+ 	test_bitmap_write_perf();
++	test_ip_tunnel_flags();
+ 
+ 	test_find_nth_bit();
+ 	test_for_each_set_bit();
 -- 
 2.41.0
 
