@@ -2,66 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B2F7CC51F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Oct 2023 15:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564357CC539
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Oct 2023 15:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343938AbjJQNte (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Oct 2023 09:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
+        id S1343892AbjJQNye (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Oct 2023 09:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232644AbjJQNtd (ORCPT
+        with ESMTP id S1343584AbjJQNyd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Oct 2023 09:49:33 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA76F0
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Oct 2023 06:49:31 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a87ac9d245so27118147b3.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Oct 2023 06:49:31 -0700 (PDT)
+        Tue, 17 Oct 2023 09:54:33 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68301ED
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Oct 2023 06:54:32 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7c7262d5eso72024327b3.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Oct 2023 06:54:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1697550570; x=1698155370; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1697550871; x=1698155671; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jb7UFpPZArWftbXhbJJf4z6MpND+8qI0D+AxnGViw4w=;
-        b=FeWic8TLteKNRMthncl0Gqlsc2BojpjGyEG4e4t5GWnZ23eDdSJdBOM52T2ua6FM6I
-         2S4Eqhgs6rqGdpj7lQ2Ucex4/zn2Bl9vwcPdxKSEZBV/rskIdJgEaoLMIgCINDWZlhFr
-         1v3IWdxNj/LDZsem/AjwP4MdIb/g+0FumaFKvv+rR1CDDhWWareGUFiSSLFJR0LfduFi
-         Z5Lw3StxAQKpFD9cy8hFQVhHJQt5+W5UG2Eev4FvX4jM1s20FNLi7gttog88bCVxCkJ6
-         VNVtatU4ojlMfHTGVlvmjI5cxqCIHWzVSTGHewBDoyP9P7rC62nXnCDwa7acvz+0Hl4Q
-         G/ug==
+        bh=cy6FOaCUU0ckseasar9yfGgGDiBCGI1o602L1ckHnq0=;
+        b=lq44u6ksOAdgek7qrSzRGqe/jQiT/Ecb5O69TZqMb6lYg84kwW2wE+ZyKsmy6W+bKB
+         r9cwj6SQIb2b5Bx4b9socQkBWp/dqVDITgpftf4vQ4JKg5ZJcfmsDxxL6vU3M4Egjcns
+         4eatxE7KA/pbuRRfDQH48qYH+9Pio87mPViU+PXngT4+RuIXZU211wGdYSWpWQzMSm7d
+         w6Mran7N1gEO8hEvqYLl1gG0tfkD+Nwlvntr10+UHxPcm6jZtITJN/+CNcv3msEeLniH
+         n6zwxOr3tMygqOeKqzcdJx+6AbOZNjNMPO4T8XDqtrxhjevo4k8XPjHlXRcxlbMlkMC1
+         0GMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697550570; x=1698155370;
+        d=1e100.net; s=20230601; t=1697550871; x=1698155671;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jb7UFpPZArWftbXhbJJf4z6MpND+8qI0D+AxnGViw4w=;
-        b=me2jKRhKLKGIAQegV7ZGd4NLg3UO93WT7z+eezipQbDebqc1IvobOrgNMfQ6pWCZKz
-         IXTV85ZyuIqpoAuWjWShltgAVPPfIYS9OIzecZh6rpu1AVvqeKBhCACVT0k6NF1+bCgQ
-         ca7+TlsLOOfy8yPXWr64mPhpYLTJ6FNvM1m7v2zGbcnV3gH4EMaV2sTKUFbQQ9cYDO+a
-         k2Vmo57R3QEtMHyqLrG6G3PPgMA8PuEADSEzskbI+ae5pwqrDsVnmaMz4WMuUgYb5DGR
-         +AfHAl0yBfohD92XgXxYfLOJK7Qs4j+ZUpFyrpVw1xAel0pCA++KqISCGHstnW+yMsga
-         tHcQ==
-X-Gm-Message-State: AOJu0YyJnNExfgSXIwxM26CNerEHxYq5AUZsCmtECSafiQ9Fh7TYTvoJ
-        nxvwygVNdKexdVAOwR2eZZADz2QpIPvFsX8NoLHpXw==
-X-Google-Smtp-Source: AGHT+IF2D1k751vNKUjEnzdFe0xepOJZQ7Px1tchmCyYELGKew1B/PJpjnE1k1sa9ef3WUCBu3a+AQ==
-X-Received: by 2002:a81:8341:0:b0:5a7:c6bd:7ac0 with SMTP id t62-20020a818341000000b005a7c6bd7ac0mr2761768ywf.13.1697550570231;
-        Tue, 17 Oct 2023 06:49:30 -0700 (PDT)
+        bh=cy6FOaCUU0ckseasar9yfGgGDiBCGI1o602L1ckHnq0=;
+        b=DpHNsmOCHagFZMqqV9wRpcGtHIvYAzy+dLPvhPzAK3ULc522e51pE0cA+JuwNU/Ese
+         c3W+BLofTgv0hn3Uu/onyQw1i2RiMloY5dNoaZoJSg0zLOvuGBxDieBzOJ2qnoBjb3jF
+         nckGCU41JZBM4F/4iPeFs7Up+0VdsYeNQ23hLnGlxMLJHLvhfLkcVSuy+GpESdrP0amc
+         Sqew0b6VWNL8+nsj/OWdnlup1qQcHopX1C2hkAsudVh4DWifQWVT6H4bFEQFXk6eR5vd
+         /plT+yTf22e+v7jAXC9w6PMFIkWwI5H/wCHRbgKx5vWyTCkYyGm2bvYsUWJnL25mJ73p
+         q8qQ==
+X-Gm-Message-State: AOJu0Yw0MA04651/2K9erAqS67H5Lj7vY8cKufVRqVkfNh6U/fqO8jJp
+        uLTdpvjQhMsCeJbgV9XU2j4EqocnCxqmdD43Sz8dug==
+X-Google-Smtp-Source: AGHT+IHi0IpYkXfZN+HD9AATkZJ3vafkohL1sGdm3gfdb6uNLp9VakjN56nSe6oiFLfiFTMRDk+rTw==
+X-Received: by 2002:a81:8341:0:b0:5a7:c6bd:7ac0 with SMTP id t62-20020a818341000000b005a7c6bd7ac0mr2775449ywf.13.1697550871513;
+        Tue, 17 Oct 2023 06:54:31 -0700 (PDT)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id o63-20020a0dfe42000000b0059a34cfa2a5sm620059ywf.67.2023.10.17.06.49.29
+        by smtp.gmail.com with ESMTPSA id n189-20020a0de4c6000000b005777a2c356asm623080ywe.65.2023.10.17.06.54.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Oct 2023 06:49:29 -0700 (PDT)
-Date:   Tue, 17 Oct 2023 09:49:29 -0400
+        Tue, 17 Oct 2023 06:54:30 -0700 (PDT)
+Date:   Tue, 17 Oct 2023 09:54:30 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/6] btrfs-progs: use a unified btrfs_make_subvol()
- implementation
-Message-ID: <20231017134929.GA2350212@perftesting>
+Subject: Re: [PATCH 5/6] btrfs-progs: mkfs: introduce experimental --subvol
+ option
+Message-ID: <20231017135430.GB2350212@perftesting>
 References: <cover.1697430866.git.wqu@suse.com>
- <7b951f3a0619880f35f2490e2e251eb35e2f2292.1697430866.git.wqu@suse.com>
+ <bcb175042cb8b4036f532269235af02e10a69de5.1697430866.git.wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7b951f3a0619880f35f2490e2e251eb35e2f2292.1697430866.git.wqu@suse.com>
+In-Reply-To: <bcb175042cb8b4036f532269235af02e10a69de5.1697430866.git.wqu@suse.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -71,144 +71,49 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 03:08:50PM +1030, Qu Wenruo wrote:
-> To create a subvolume there are several different helpers:
+On Mon, Oct 16, 2023 at 03:08:51PM +1030, Qu Wenruo wrote:
+> Although mkfs.btrfs supports --rootdir to fill the target filesystem, it
+> doesn't have the ability to create any subvolume.
 > 
-> - create_subvol() from convert/main.c
->   This relies one using an empty fs_root tree to copy its root item.
->   But otherwise has a pretty well wrapper btrfs_ake_root_dir() helper to
->   handle the inode item/ref insertion.
+> This patch introduce a very basic version of --subvol for mkfs.btrfs,
+> the limits are:
 > 
-> - create_data_reloc_tree() from mkfs/main.c
->   This is already pretty usable for generic subvolume creation, the only
->   bad code is the open-coded rootdir setup.
+> - No co-operation with --rootdir
+>   This requires --rootdir to have extra handling for any existing
+>   inodes.
+>   (Currently --rootdir assumes the fs tree is completely empty)
 > 
-> So here this patch introduce a better version with all the benefit from
-> the above implementations:
+> - No multiple --subvol options supports
+>   This requires us to collect and sort all the paths and start creating
+>   subvolumes from the shortest path.
+>   Furthermore this requires us to create subvolume under another
+>   subvolume.
 > 
-> - Move btrfs_make_root_dir() into kernel-shared/root-tree.[ch]
+> For now, this patch focus on the basic checks on the provided subvolume
+> path, to wipe out any invalid things like ".." or something like "//////".
 > 
-> - Implement a unified btrfs_make_subvol() to replace above two implementations
->   It would go with btrfs_create_root(), and btrfs_make_root_dir() to
->   remove duplicated code, and return a btrfs_root pointer for caller
->   to utilize.
+> We support something like "//dir1/dir2///subvol///" just like VFS path
+> (duplicated '/' would just be ignored).
 > 
+> Issue: #42
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  convert/main.c            | 55 +++++--------------------
->  kernel-shared/ctree.h     |  4 ++
->  kernel-shared/root-tree.c | 86 +++++++++++++++++++++++++++++++++++++++
->  mkfs/common.c             | 39 ------------------
->  mkfs/common.h             |  2 -
->  mkfs/main.c               | 78 +++--------------------------------
->  6 files changed, 107 insertions(+), 157 deletions(-)
+>  mkfs/main.c    |  23 ++++++++
+>  mkfs/rootdir.c | 157 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  mkfs/rootdir.h |   1 +
+>  3 files changed, 181 insertions(+)
 > 
-> diff --git a/convert/main.c b/convert/main.c
-> index 73740fe26d55..453e2c003c20 100644
-> --- a/convert/main.c
-> +++ b/convert/main.c
-> @@ -915,44 +915,6 @@ out:
->  	return ret;
->  }
->  
-> -static int create_subvol(struct btrfs_trans_handle *trans,
-> -			 struct btrfs_root *root, u64 root_objectid)
-> -{
-> -	struct extent_buffer *tmp;
-> -	struct btrfs_root *new_root;
-> -	struct btrfs_key key;
-> -	struct btrfs_root_item root_item;
-> -	int ret;
-> -
-> -	ret = btrfs_copy_root(trans, root, root->node, &tmp,
-> -			      root_objectid);
-> -	if (ret)
-> -		return ret;
-> -
-> -	memcpy(&root_item, &root->root_item, sizeof(root_item));
-> -	btrfs_set_root_bytenr(&root_item, tmp->start);
-> -	btrfs_set_root_level(&root_item, btrfs_header_level(tmp));
-> -	btrfs_set_root_generation(&root_item, trans->transid);
-> -	free_extent_buffer(tmp);
-> -
-> -	key.objectid = root_objectid;
-> -	key.type = BTRFS_ROOT_ITEM_KEY;
-> -	key.offset = trans->transid;
-> -	ret = btrfs_insert_root(trans, root->fs_info->tree_root,
-> -				&key, &root_item);
-> -
-> -	key.offset = (u64)-1;
-> -	new_root = btrfs_read_fs_root(root->fs_info, &key);
-> -	if (!new_root || IS_ERR(new_root)) {
-> -		error("unable to fs read root: %lu", PTR_ERR(new_root));
-> -		return PTR_ERR(new_root);
-> -	}
-> -
-> -	ret = btrfs_make_root_dir(trans, new_root, BTRFS_FIRST_FREE_OBJECTID);
-> -
-> -	return ret;
-> -}
-> -
->  /*
->   * New make_btrfs() has handle system and meta chunks quite well.
->   * So only need to add remaining data chunks.
-> @@ -1012,6 +974,7 @@ static int make_convert_data_block_groups(struct btrfs_trans_handle *trans,
->  static int init_btrfs(struct btrfs_mkfs_config *cfg, struct btrfs_root *root,
->  			 struct btrfs_convert_context *cctx, u32 convert_flags)
->  {
-> +	struct btrfs_root *created_root;
->  	struct btrfs_key location;
->  	struct btrfs_trans_handle *trans;
->  	struct btrfs_fs_info *fs_info = root->fs_info;
-> @@ -1057,15 +1020,19 @@ static int init_btrfs(struct btrfs_mkfs_config *cfg, struct btrfs_root *root,
->  			     BTRFS_FIRST_FREE_OBJECTID);
->  
->  	/* subvol for fs image file */
-> -	ret = create_subvol(trans, root, CONV_IMAGE_SUBVOL_OBJECTID);
-> -	if (ret < 0) {
-> -		error("failed to create subvolume image root: %d", ret);
-> +	created_root = btrfs_create_subvol(trans, CONV_IMAGE_SUBVOL_OBJECTID);
-> +	if (IS_ERR(created_root)) {
-> +		ret = PTR_ERR(created_root);
-> +		errno = -ret;
-> +		error("failed to create subvolume image root: %m");
->  		goto err;
->  	}
->  	/* subvol for data relocation tree */
-> -	ret = create_subvol(trans, root, BTRFS_DATA_RELOC_TREE_OBJECTID);
-> -	if (ret < 0) {
-> -		error("failed to create DATA_RELOC root: %d", ret);
-> +	created_root = btrfs_create_subvol(trans, BTRFS_DATA_RELOC_TREE_OBJECTID);
-> +	if (IS_ERR(created_root)) {
-> +		ret = PTR_ERR(created_root);
-> +		errno = -ret;
-> +		error("failed to create DATA_RELOC root: %m");
->  		goto err;
->  	}
->  
-> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-> index 1dda40e96a60..ea459464063d 100644
-> --- a/kernel-shared/ctree.h
-> +++ b/kernel-shared/ctree.h
-> @@ -1134,6 +1134,10 @@ int btrfs_update_root(struct btrfs_trans_handle *trans, struct btrfs_root
->  		      *item);
->  int btrfs_find_last_root(struct btrfs_root *root, u64 objectid, struct
->  			 btrfs_root_item *item, struct btrfs_key *key);
-> +int btrfs_make_root_dir(struct btrfs_trans_handle *trans,
-> +			struct btrfs_root *root, u64 objectid);
-> +struct btrfs_root *btrfs_create_subvol(struct btrfs_trans_handle *trans,
-> +				       u64 objectid);
->  /* dir-item.c */
->  int btrfs_insert_dir_item(struct btrfs_trans_handle *trans, struct btrfs_root
->  			  *root, const char *name, int name_len, u64 dir,
-> diff --git a/kernel-shared/root-tree.c b/kernel-shared/root-tree.c
-> index 33f9e4697b18..1fe7d535fdc7 100644
-> --- a/kernel-shared/root-tree.c
-> +++ b/kernel-shared/root-tree.c
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index 42aa68b7ecf4..6bf30b758572 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -434,6 +434,9 @@ static const char * const mkfs_usage[] = {
+>  	"Creation:",
+>  	OPTLINE("-b|--byte-count SIZE", "set size of each device to SIZE (filesystem size is sum of all device sizes)"),
+>  	OPTLINE("-r|--rootdir DIR", "copy files from DIR to the image root directory"),
+> +#if EXPERIMENTAL
 
-We're moving towards a world where kernel-shared will be an exact-ish copy of
-the kernel code.  Please put helpers like this in common/, I did this for
-several of the extent tree related helpers we need for fsck, this is a good fit
-for that.  Thanks,
+I assume you're doing EXPERIMENTAL because you want to un-gate it once you
+remove all the restrictions?  Thanks,
 
 Josef
