@@ -2,120 +2,215 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BCB57CE009
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Oct 2023 16:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1C87CE4CE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Oct 2023 19:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345842AbjJROfw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Oct 2023 10:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
+        id S231153AbjJRRle (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Oct 2023 13:41:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345836AbjJROf2 (ORCPT
+        with ESMTP id S229998AbjJRRld (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Oct 2023 10:35:28 -0400
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7661BF0
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Oct 2023 07:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ds6Q1tcYx1XaQOpl4qN33taCaA6/V4SHsQRZcc/9YLI=; b=JqpLXnyauDrrhiGUpmQshDa2KD
-        bq/VnTLl/1zhgrVZc4ExXcB+ipFJlrGjAgyJo5xzhWm+hSiS1pEvO28vjujeQUE7evXD4oEKsqndj
-        hRzvj/23JAsDlfSYud9ZGym7HjmsxJyz3uvJSDeBxrAc+FZhimPCKeu4cNcNgDhUBYL763QQJq8EE
-        sHLL8DGty9DCVUTkxayU21A6Sjmaksfb3Jl7kRH5qGNDjjaFsz6UfrrIvcrvILYgdLQbqPiOXbUIc
-        tdUXPGYo3JOjoxOcTAFkyUC08s72OzCD7v8m/N+Dmm6oVQjRZxV07Pkn0Rcd2B0kXnQ6Wrnm+Pf5L
-        EfLgofPQ==;
-Received: from 210.red-80-36-22.staticip.rima-tde.net ([80.36.22.210] helo=[10.0.20.175])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1qt7KP-001pNq-Nt; Wed, 18 Oct 2023 16:15:17 +0200
-Message-ID: <2a729b71-3f30-d99a-7129-4e13841d180d@igalia.com>
-Date:   Wed, 18 Oct 2023 16:15:17 +0200
+        Wed, 18 Oct 2023 13:41:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E45116;
+        Wed, 18 Oct 2023 10:41:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76D2FC433C8;
+        Wed, 18 Oct 2023 17:41:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697650891;
+        bh=kOWxubIvgkUuX1LHF9Uvd3PXOcCevsiFIHXsUMPyfII=;
+        h=From:Subject:Date:To:Cc:From;
+        b=HmbULKUSdAVTYh0NKXFEKevWhFCUwYFMuL4ZE6MnHrMRc//1huWLlflMoK0S8D7HT
+         RpsmiCca/5mXfeyTb19e8+kl8UJFzEghrdotH3KvXYHZLUsXcKKlbUVfvdQyMx62z6
+         34Xsrh7WT/00XDtz5t6InI84zeLOx7tPeu8rJA9Rwn1Zx9HeCyi0I3fC4LOiYur/fE
+         JDN4Vyc3XcT+ERm/aUw1zN6TI4Le3vB5HM60CU8WN2sV4b/rcSCzdsY2aZvIqYa99Z
+         sjX65S2Oku9xYqAVYGzUC0sAqceFqJ82GaotgiDmurcJyHeCgtRQvu9Ale3NAijBbP
+         rOv1uoNIL4Tnw==
+From:   Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH RFC 0/9] fs: multigrain timestamps (redux)
+Date:   Wed, 18 Oct 2023 13:41:07 -0400
+Message-Id: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 0/2] btrfs: support cloned-device mount capability
-Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <cover.1695826320.git.anand.jain@oracle.com>
- <55f1b487-af24-8f67-8e72-37d493c5025c@igalia.com>
- <dfc68882-ac04-4b11-9ac6-505341e0517c@oracle.com>
-From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <dfc68882-ac04-4b11-9ac6-505341e0517c@oracle.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIALMYMGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDA0Mz3dz0kszcVN20VOPURHPTZLM0U0sloOKCotS0zAqwQdFKQW7OSrG
+ 1tQAHBm97XQAAAA==
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5629; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=kOWxubIvgkUuX1LHF9Uvd3PXOcCevsiFIHXsUMPyfII=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlMBjAuucpyDoopVPNBPSV5kIUK51y3+JkIuJbJ
+ MfA0arDDZaJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZTAYwAAKCRAADmhBGVaC
+ FRcGD/4gWTfDUlUYR99pZVwm1+RHd3+PX9zlbEqYbvDvs6/aA8B9q7koy4wlyncLKHzM5nrgYHf
+ rFzENOpzsSadkGkDajVLKfFaQ7akLUv8uZiji9WsSoT+e1AyWZj0DskG0JKmYteynPzh30YyJL0
+ KHzsJ7pfrumiZBtdXtMJAa8Skoueq0gWV/7oshhybg6JEOMLOQ+4ANJDMsIfpb6+sHdFitMACRF
+ q4gKZPjsX7FZIx1dd0SQdMlRjw4An+JYEwgjP3bkdy7XTjz6sW5sitQstxEDS/JaxZ6XIIL7xqB
+ OO/Jkxmo5/vSa05/4RVeplhTkAh1uV5n4LuWsjuh+Q8bON7Zv4VKdYJP8r9WBL/5zQwCPpHM2SO
+ c5eE9cT+BmXGcJIzAw52UsXAbp0LO+gYHlR+G7q+I5GEVg2+g6LFRoxL0+OpYvIWcycfYQps5NH
+ XnbuDRwrAVg96y3GpdKaOGuEzu1Sm5CLNXS0jYorIwAossaz50WdaaVRJxMjPRinrp+sP8fv7+l
+ h2X/0Yla61mKX6fZZArxV7sA9uEGbMcZPQcXRw5DW7EhjKh1QbyGwF46sawjrX93/UoxFvWEHso
+ iVcm5rVdVOTBwEy9iFhY241oVCW3E7NtCZ/SNf/hiaRQFTl/Sn7Q3aluI/ogOfLPa0eG+eRYdo8
+ H373khRmD98lzxQ==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 07/10/2023 10:01, Anand Jain wrote:
-> [...]
+The VFS always uses coarse-grained timestamps when updating the
+ctime and mtime after a change. This has the benefit of allowing
+filesystems to optimize away a lot metadata updates, down to around 1
+per jiffy, even when a file is under heavy writes.
 
-Hi Anand, thanks for your response and apologies for my delay.
+Unfortunately, this coarseness has always been an issue when we're
+exporting via NFSv3, which relies on timestamps to validate caches. A
+lot of changes can happen in a jiffy, so timestamps aren't sufficient to
+help the client decide to invalidate the cache.
 
+Even with NFSv4, a lot of exported filesystems don't properly support a
+change attribute and are subject to the same problems with timestamp
+granularity. Other applications have similar issues with timestamps (e.g
+backup applications).
 
->> Also, we can mount multiple
->> partitions holding the same filesystem at the same time, given the
->> nature of the patch (that generates the random fsid based on devt as per
->> my superficial understanding) - right?
-> 
-> Indeed, devt remains unique to the partition we've utilized for a
-> similar purpose prior to this patch. Are there any devices lacking
-> a distinct devt value?
-> 
+If we were to always use fine-grained timestamps, that would improve the
+situation, but that becomes rather expensive, as the underlying
+filesystem would have to log a lot more metadata updates.
 
-Not that I'm aware of, it was more of a curiosity.
+What we need is a way to only use fine-grained timestamps when they are
+being actively queried. The idea is to use an unused bit in the ctime's
+tv_nsec field to mark when the mtime or ctime has been queried via
+getattr. Once that has been marked, the next m/ctime update will use a
+fine-grained timestamp.
 
+The original merge of multigrain timestamps for v6.6 had to be reverted,
+as a file with a coarse-grained timestamp could incorrectly appear to be
+modified before a file with a fine-grained timestamp, when that wasn't
+the case.
 
->> i.e., we kinda "lose" the original fsid?
-> 
-> How? Have you tested to confirm?
+This revision solves that problem by making it so that when a
+fine-grained timespec64 is handed out, that that value becomes the floor
+for further coarse-grained timespec64 fetches. This requires new
+timekeeper interfaces with a potential downside: when a file is
+stamped with a fine-grained timestamp, it has to (briefly) take the
+global timekeeper spinlock.
 
-Oh no, not literally I meant. When we go with the temp-fsid approach as
-you implemented, the kernel doesn't inform the real fsid. But that's not
-an issue at all, more of a curiosity...
+Because of that, this set takes greater pains to avoid issuing new
+fine-grained timestamps when possible. A fine-grained timestamp is now
+only required if the current mtime or ctime have been fetched for a
+getattr, and the next coarse-grained tick has not happened yet. For any
+other case, a coarse-grained timestamp is fine, and that is done using
+the seqcount.
 
-I just tested misc-next and your approach seems to be working fine!
+In order to get some hard numbers about how often the lock would be
+taken, I've added a couple of percpu counters and a debugfs file for
+tracking both types of multigrain timekeeper fetches.
 
+With this, I did a kdevops fstests run on xfs (CRC mode). I ran "make
+fstests-baseline" and then immediately grabbed the counter values, and
+calcuated the percentage:
 
-> 
->> If that approaches is considered better than mine and works fine for the
->> Steam Deck use case, 
->> I'm glad in having that! 
-> 
-> As you have a use case to verify, can you indeed confirm whether
-> it works?
+$ time make fstests-baseline
+real    324m17.337s
+user    27m23.213s
+sys     2m40.313s
 
-It does work! I'll test more in the Steam Deck, but so far seems to be
-addressing fine the use case we have...
+fine            3059498
+coarse          383848171
+pct fine        .79075661
 
+Next I did a kdevops fstests run with NFS. One server serving 3 clients
+(v4.2, v4.0 and v3). Again, timed "make fstests-baseline" and then
+grabbed the multigrain counters from the NFS server:
 
-> [...] 
->> But I would like at least
->> to understand why it was preferred over the temp-fsid one, and what are
->> the differences we can expect (need a flag to mkfs or can use btrfstune
->> for that, for example).
-> 
-> The in-memory disk-super hack in the original patch is essentially a
-> workaround. This led to the necessity of restricting devices using
-> metadata_uuid from being used as temp-fsid device. A more appropriate
-> approach is to enhance device_list_add() to intelligently manage
-> duplicate disk-super entries by checking devt and permitting them
-> to mount if unique. This solution deviates from the original patch
-> and simultaneously addresses the subvol-mount corruption issue
-> observed in the original implementation.
-> 
+$ time make fstests-baseline
+real    181m57.585s
+user    16m8.266s
+sys     1m45.864s
 
-OK, makes sense Anand.
-Thanks,
+fine            8137657
+coarse          44726007
+pct fine        15.393668
 
+We can't run as many tests on nfs as xfs, so the run is shorter. nfsd is
+a very getattr-heavy workload, and the clients aggressively coalesce
+writes, so this is probably something of a pessimal case for number of
+fine-grained timestamps over time.
 
-Guilherme
+At this point I'm mainly wondering whether (briefly) taking the
+timekeeper spinlock in this codepath is unreasonable. It does very
+little work under it, so I'm hoping the impact would be unmeasurable for
+most workloads.
+
+Side Q: what's the best tool for measuring spinlock contention? It'd be
+interesting to see how often (and how long) we end up spinning on this
+lock under different workloads.
+
+Note that some of the patches in the series are virtually identical to
+the ones before. I stripped the prior Reviewed-by/Acked-by tags though
+since the underlying infrastructure has changed a bit.
+
+Comments and suggestions welcome.
+
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+Jeff Layton (9):
+      fs: switch timespec64 fields in inode to discrete integers
+      timekeeping: new interfaces for multigrain timestamp handing
+      timekeeping: add new debugfs file to count multigrain timestamps
+      fs: add infrastructure for multigrain timestamps
+      fs: have setattr_copy handle multigrain timestamps appropriately
+      xfs: switch to multigrain timestamps
+      ext4: switch to multigrain timestamps
+      btrfs: convert to multigrain timestamps
+      tmpfs: add support for multigrain timestamps
+
+ fs/attr.c                           |  52 ++++++++++++++--
+ fs/btrfs/file.c                     |  25 ++------
+ fs/btrfs/super.c                    |   5 +-
+ fs/ext4/super.c                     |   2 +-
+ fs/inode.c                          |  70 ++++++++++++++++++++-
+ fs/stat.c                           |  41 ++++++++++++-
+ fs/xfs/libxfs/xfs_trans_inode.c     |   6 +-
+ fs/xfs/xfs_iops.c                   |  10 +--
+ fs/xfs/xfs_super.c                  |   2 +-
+ include/linux/fs.h                  |  85 ++++++++++++++++++--------
+ include/linux/timekeeper_internal.h |   2 +
+ include/linux/timekeeping.h         |   4 ++
+ kernel/time/timekeeping.c           | 117 ++++++++++++++++++++++++++++++++++++
+ mm/shmem.c                          |   2 +-
+ 14 files changed, 352 insertions(+), 71 deletions(-)
+---
+base-commit: 12cd44023651666bd44baa36a5c999698890debb
+change-id: 20231016-mgtime-fe3ea75c6f59
+
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
