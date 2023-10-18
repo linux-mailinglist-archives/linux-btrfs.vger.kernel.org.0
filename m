@@ -2,132 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 780637CEA49
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Oct 2023 23:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4201A7CEB72
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Oct 2023 00:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbjJRVwu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Oct 2023 17:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44416 "EHLO
+        id S229695AbjJRWpN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Oct 2023 18:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjJRVwt (ORCPT
+        with ESMTP id S229487AbjJRWpM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Oct 2023 17:52:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E541A98;
-        Wed, 18 Oct 2023 14:52:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1335C433C7;
-        Wed, 18 Oct 2023 21:52:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697665967;
-        bh=TvWB9COV3obY2cRmOb+aflk7pQdFiGa+OAaSrwETeEg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=o6Q0dDst3pq/rMdgcEn29wGOr+tB/JTAgagUCnU56jV7OWRmJc2hkL3p9bHJkpAk5
-         bBi0Z6MGrjmsLyeAMt2TCWzNkWQmkZanzskokbXQ4JY1Hek5WHmBttXyjyTwnJrQvQ
-         BF5sIw6EON3aFSB+xQ+qbTxzcUZ0IR5ZVw5Vx+/YxRH0ZTZgBdtkm6sh/qjWIdz7AP
-         6tOdFsB64ry67vRYl2pUxG6vDUpPUIm2wMinWfSYg/1MigQVuYNI0W7C6ZPBBjUAS0
-         1j0o76eqA7TBI8aa+lP7BHgSNwMRRzxrphVbke3vh7niZzVFyi874ON8uDsDkVKwiP
-         P1a4eT4ra12zA==
-Message-ID: <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Wed, 18 Oct 2023 17:52:43 -0400
-In-Reply-To: <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
-         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
-         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
-         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
-         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 18 Oct 2023 18:45:12 -0400
+Received: from w1.tutanota.de (w1.tutanota.de [81.3.6.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B727B114
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Oct 2023 15:45:09 -0700 (PDT)
+Received: from tutadb.w10.tutanota.de (unknown [192.168.1.10])
+        by w1.tutanota.de (Postfix) with ESMTP id CC97BFBF947;
+        Wed, 18 Oct 2023 22:45:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1697669107;
+        s=s1; d=tutanota.com;
+        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:Sender;
+        bh=8A05PQXmS1R+hxHkGv0HSAD2arPNADCbuePEv+iVC3s=;
+        b=FTcer1mPG4xyjWMSPkYoT3qt+loWPVeYQtvtxN2wezgvTp0p5Be4h4acTa52cE7D
+        sQHBTvilm/KJamLmefL1bwrYblzAtJpB+d7GNKxpTxux0ErHrrrWSEKyO5J6TvfmC0W
+        vwK71OA7KxG3HT6DkdE6TlH6diFNXg55qC8ylCrjXBQpfNuvbdTy7MAoakUyO3PF9nn
+        AVVC9ri+bij11nJYViMth5JkUEO0up+mffVhITzmLApibdMpHTzJruWQ2wtrxDqKNhT
+        crsWCZOdTr2mHjZR1i1v77sy6JUwz4AqFZyOLPpHUoUrC6B40eEjLZ2QecXDJ+fr4op
+        clvH1UpRNg==
+Date:   Thu, 19 Oct 2023 00:45:07 +0200 (CEST)
+From:   fdavidl073rnovn@tutanota.com
+To:     Fdmanana <fdmanana@gmail.com>, Aospan <aospan@amazon.com>
+Cc:     Linux Btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <Nh3u2MJ--3-9@tutanota.com>
+Subject: RE: btrfs_extent_map memory consumption results in "Out of memory"
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 2023-10-18 at 14:31 -0700, Linus Torvalds wrote:
-> On Wed, 18 Oct 2023 at 13:47, Jeff Layton <jlayton@kernel.org> wrote:
-> >=20
-> > >         old_ctime_nsec &=3D ~I_CTIME_QUERIED;
-> > >         if (ts64.tv_nsec > old_ctime_nsec + inode->i_sb->s_time_gran)
-> > >                 return ts64;
-> > >=20
-> >=20
-> > Does that really do what you expect here? current_time will return a
-> > value that has already been through timestamp_truncate.
->=20
-> Yeah, you're right.
->=20
-> I think you can actually remove the s_time_gran addition. Both the
-> old_ctime_nsec and the current ts64,tv_nsec are already rounded, so
-> just doing
->=20
->         if (ts64.tv_nsec > old_ctime_nsec)
->                 return ts64;
->=20
-> would already guarantee that it's different enough.
->=20
-
-Yep, and that's basically what inode_set_ctime_current does (though it
-does a timespec64 comparison).
-
-> > current_mgtime is calling ktime_get_real_ts64, which is an existing
-> > interface that does not take the global spinlock and won't advance the
-> > global offset. That call should be quite cheap.
->=20
-> Ahh, I did indeed mis-read that as the new one with the lock.
->=20
-> I did react to the fact that is_mgtime(inode) itself is horribly
-> expensive if it's not cached (following three quite possibly cold
-> pointers), which was part of that whole "look at I_CTIME_QUERIED
-> instead".
+>Hi Filipe,
 >
-> I see the pointer chasing as a huge VFS timesink in all my profiles,
-> although usually it's the disgusting security pointer (because selinux
-> creates separate security nodes for each inode, even when the contents
-> are often identical). So I'm a bit sensitive to "follow several
-> pointers from 'struct inode'" patterns from looking at too many
-> instruction profiles.
+>> > I was just wondering about "direct IO writes", so I ran a quick test b=
+y fully
+>> removing fio's config option "direct=3D1" (default value is false).
+>> > Unfortunately, I'm still experiencing the same oom-kill:
+>> >
+>> > [ 4843.936881]
+>> > oom-
+>> kill:constraint=3DCONSTRAINT_NONE,nodemask=3D(null),cpuset=3D/,mems_allo
+>> > wed=3D0,global_oom,task_memcg=3D/,task=3Dfio,pid=3D649,uid=3D0
+>> > [ 4843.939001] Out of memory: Killed process 649 (fio)
+>> > total-vm:216868kB, anon-rss:896kB, file-rss:128kB, shmem-rss:2176kB,
+>> > UID:0 pgtables:100kB oom_score_a0 [ 5306.210082] tmux: server invoked
+>> oom-killer: gfp_mask=3D0x140cca(GFP_HIGHUSER_MOVABLE|__GFP_COMP),
+>> order=3D0, oom_score_adj=3D0 ...
+>> > [ 5306.240968] Unreclaimable slab info:
+>> > [ 5306.241271] Name=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ Used=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total
+>> > [ 5306.242700] btrfs_extent_map=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 26=
+093KB=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 26093KB
+>> >
+>> > Here's my updated fio config:
+>> > [global]
+>> > name=3Dfio-rand-write
+>> > filename=3Dfio-rand-write
+>> > rw=3Drandwrite
+>> > bs=3D4K
+>> > numjobs=3D1
+>> > time_based
+>> > runtime=3D90000
+>> >
+>> > [file1]
+>> > size=3D3G
+>> > iodepth=3D1
+>> >
+>> > "slabtop -s -a" output:
+>> >=C2=A0=C2=A0 OBJS ACTIVE=C2=A0 USE OBJ SIZE=C2=A0 SLABS OBJ/SLAB CACHE =
+SIZE NAME
+>> > 206080 206080 100%=C2=A0=C2=A0=C2=A0 0.14K=C2=A0=C2=A0 7360=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 28=C2=A0=C2=A0=C2=A0=C2=A0 29440K btrfs_extent_=
+map
+>> >
+>> > I accelerated my testing by running fio test inside a QEMU VM with a l=
+imited
+>> amount of RAM (140MB):
+>> >
+>> > qemu-kvm
+>> >=C2=A0=C2=A0 -kernel bzImage.v6.6 \
+>> >=C2=A0=C2=A0 -m 140M=C2=A0 \
+>> >=C2=A0=C2=A0 -drive file=3Drootfs.btrfs,format=3Draw,if=3Dnone,id=3Ddri=
+ve0
+>> > ...
+>> >
+>> > It appears that this issue may not be limited to direct IO writes alon=
+e?
+>>=C2=A0
+>> In the buffered IO case it's typically much less likely to happen.
+>>=C2=A0
+>> The reason why it happens in your test it's because the VM has very litt=
+le RAM,
+>> 140M, which is very unlikely to find in the real world nowadays.=C2=A0
+>
+>I increased the memory to 8GB and ran the test overnight without any OOM e=
+rrors. Glad memory management mechanism works as expected!
+>
+>> Pages can only
+>> be released when they are not dirty and not under writeback, and in this=
+ case
+>> there's no fsync, so the amount of dirty pages (or under writeback)
+>> accumulates very quickly.
+>> If pages can not be released, extent maps can not be released either.
+>>=C2=A0
+>> If you add "fsync=3D1" to your fio test, things should change dramatical=
+ly.
+>>=C2=A0
+>> Thanks.
+>>=C2=A0
+>> (And btw, try to avoid top posting if possible, as that makes the thread=
+ harder
+>> to follow.)
+>My apologies for the top posting.
+>
+>Thanks for your help!
+>
+>--
+>Abylay Ospan
 
-That's a very good point. I'll see if I can get rid of that (and maybe
-some other mgtime flag checks) before I send the next version.=20
-
-Back to your earlier point though:
-
-Is a global offset really a non-starter? I can see about doing something
-per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as cheap
-as ktime_get_coarse_ts64. I don't see the downside there for the non-
-multigrain filesystems to call that.
-
-On another note: maybe I need to put this behind a Kconfig option
-initially too?
---=20
-Jeff Layton <jlayton@kernel.org>
+I did not see if you were using compression mentioned anywhere in the email=
+ chain but the extent map issue appears to be compounded significantly by c=
+ompression. I've run into it under normal loads deleting snapshots on real =
+machines with only 8gb of memory. https://www.spinics.net/lists/linux-btrfs=
+/msg139657.html
+Sincerely,
+David
