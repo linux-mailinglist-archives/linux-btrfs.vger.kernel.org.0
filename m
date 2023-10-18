@@ -2,230 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F065E7CDD70
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Oct 2023 15:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787A87CDD71
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Oct 2023 15:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbjJRNhx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Oct 2023 09:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        id S231637AbjJRNiE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Oct 2023 09:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjJRNhw (ORCPT
+        with ESMTP id S231549AbjJRNiD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Oct 2023 09:37:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05154BA
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Oct 2023 06:37:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8F35121A5E;
-        Wed, 18 Oct 2023 13:37:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1697636268;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ck1r7zmZ3fy3aK4NqCPnFBi2JIOCRtt0TSNmxbpA06c=;
-        b=Dd7vARNZUQr7+z3kWXZ0FXVWPc0rqiiMEIkau27r7Y+el6Uy3qDor4YwiZ5f4ngM6mhF24
-        6L8YCNNkk8oMn0hW/PFm9sBriXfrxaKVdcHDKJgA5rJXeRTLRXyNtemJRTMR4zUZxdcM7j
-        XpitxsVPfcT81v+phHH0e5eq28anyfI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1697636268;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ck1r7zmZ3fy3aK4NqCPnFBi2JIOCRtt0TSNmxbpA06c=;
-        b=0WKdvijdAlkA4AGgNhv3z4g98D8IQguiRQO0wG38JILEeNsDQjn8vNxtZnBdcy/VcHjcMC
-        WY7I5fIUzFa2DICg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 56D8B13915;
-        Wed, 18 Oct 2023 13:37:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id kEGSFKzfL2UPPQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 18 Oct 2023 13:37:48 +0000
-Date:   Wed, 18 Oct 2023 15:30:57 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     Graham Cobb <g.btrfs@cobb.uk.net>,
-        Goffredo Baroncelli <kreijack@libero.it>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3] btrfs-progs: cmds: subvolume: add -p option on
- creating subvol
-Message-ID: <20231018133057.GC26353@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20220220031254.58297-1-realwakka@gmail.com>
+        Wed, 18 Oct 2023 09:38:03 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68EAC83
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Oct 2023 06:38:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Opwz1qyq3pqjVSIDEkZ+pFNTKwYh/PiliWssJ/Ia6Q0=; b=ZiWigBb0/js0kiXuyOQbkG6e00
+        l2NDo+1ARsbERdH80LICmyX85ow71D6WriI1jshx9B8oOYWyCEOLrjxH9P3tgyK1gSdQfnAKKZmdz
+        K+zf14fu7D7WLEE4VaRs1uoWRx1OyDXMJrbYTqON6Ul2wK5JUPuh+M3pktP79vew14m69yiGi2qIo
+        OvIOvbr3Qqc+OOW9Hm8JRjjAhMPCcP5ET5OfmTrLFUCursBrjnrXpPqnH3hXCnnOG8KQ82MzGJeMS
+        8rhSpLTnuKt4EPYmf5WCq5HC8qs/85HEenHHtaabc4KVP31piIfP+6HGrS0H4VoLsC3Gl9OUk3aL0
+        nvzO+DeQ==;
+Received: from 210.red-80-36-22.staticip.rima-tde.net ([80.36.22.210] helo=[10.0.20.175])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qt6kF-001opZ-Az; Wed, 18 Oct 2023 15:37:55 +0200
+Message-ID: <179437dc-8be2-2ff1-e8c5-a322c29f13da@igalia.com>
+Date:   Wed, 18 Oct 2023 15:37:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220220031254.58297-1-realwakka@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -6.80
-X-Spamd-Result: default: False [-6.80 / 50.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.30)[dsterba@suse.cz];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[4];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com,libero.it];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         FREEMAIL_TO(0.00)[gmail.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         FREEMAIL_CC(0.00)[cobb.uk.net,libero.it,vger.kernel.org]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 0/4] btrfs: sysfs and unsupported temp-fsid features for
+ clones
+To:     dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>
+References: <cover.1696431315.git.anand.jain@oracle.com>
+ <20231006150755.GH28758@twin.jikos.cz>
+ <9cfb8122-4956-4032-b9ab-2eea8bb19415@oracle.com>
+ <dfb5e1fd-6eb3-b0bd-d5c6-0f5f9179eec4@igalia.com>
+ <a17167c2-fea3-4f48-b381-d72585b35845@oracle.com>
+ <20231009235910.GY28758@twin.jikos.cz>
+Content-Language: en-US
+From:   "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <20231009235910.GY28758@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Feb 20, 2022 at 03:12:54AM +0000, Sidong Yang wrote:
-> This patch resolves github issue #429. This patch adds an option that
-> create parent directories when it creates subvolumes on nonexisting
-> parents. This option tokenizes dstdir and checks each paths whether
-> it's existing directory and make directory for creating subvolume.
+On 10/10/2023 01:59, David Sterba wrote:
+> On Mon, Oct 09, 2023 at 01:37:22PM +0530, Anand Jain wrote:
+>>>> Can Guilherme send an RFC patch for feedback from others and
+>>>> copy suggested-by. Because, I haven't found a compelling reason
+>>>> for the restriction, except to improve the user experience.
+>>
+>> My comments about the superblock flag are above.
+>>
+>> User experiences are subjective, so we need others to comment;
+>> an RFC will help.
 > 
-> Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> ---
-> v2: fixed the case using realpath() that path nonexists, added
-> description on docs.
-> v3: added longopt, used strncpy_null than strcpy, use perm 0777
-
-I've noticed the issue and this patch, sorry for the delay, now added to
-devel.
-
-> ---
->  Documentation/btrfs-subvolume.rst |  5 +++-
->  cmds/subvolume.c                  | 41 ++++++++++++++++++++++++++++++-
->  2 files changed, 44 insertions(+), 2 deletions(-)
+> A few things changed, the incompat bit was supposed to prevent
+> accidentally duplicated fsids but with your recent changes this is safe.
+> This would need to let Guilherme check if the A/B use case still works
+> but this seems to be so as I'm reading the changelog.
 > 
-> diff --git a/Documentation/btrfs-subvolume.rst b/Documentation/btrfs-subvolume.rst
-> index 4591d4bb..2c138154 100644
-> --- a/Documentation/btrfs-subvolume.rst
-> +++ b/Documentation/btrfs-subvolume.rst
-> @@ -49,7 +49,7 @@ do not affect the files in the original subvolume.
->  SUBCOMMAND
->  -----------
->  
-> -create [-i <qgroupid>] [<dest>/]<name>
-> +create [options] [<dest>/]<name>
->          Create a subvolume *name* in *dest*.
->  
->          If *dest* is not given, subvolume *name* will be created in the current
-> @@ -61,6 +61,9 @@ create [-i <qgroupid>] [<dest>/]<name>
->                  Add the newly created subvolume to a qgroup. This option can be given multiple
->                  times.
->  
-> +        -p|--parents
-> +                Make any missing parent directories for each argument.
-> +
->  delete [options] [<subvolume> [<subvolume>...]], delete -i|--subvolid <subvolid> <path>
->          Delete the subvolume(s) from the filesystem.
->  
-> diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-> index fbf56566..9c13839e 100644
-> --- a/cmds/subvolume.c
-> +++ b/cmds/subvolume.c
-> @@ -88,6 +88,7 @@ static const char * const cmd_subvol_create_usage[] = {
->  	"",
->  	"-i <qgroupid>  add the newly created subvolume to a qgroup. This",
->  	"               option can be given multiple times.",
-> +	"-p|--parents   make any missing parent directories for each argument.",
->  	HELPINFO_INSERT_GLOBALS,
->  	HELPINFO_INSERT_QUIET,
->  	NULL
-> @@ -105,10 +106,18 @@ static int cmd_subvol_create(const struct cmd_struct *cmd,
->  	char	*dst;
->  	struct btrfs_qgroup_inherit *inherit = NULL;
->  	DIR	*dirstream = NULL;
-> +	bool create_parents = false;
->  
->  	optind = 0;
->  	while (1) {
-> -		int c = getopt(argc, argv, "c:i:");
-> +		int c;
-> +		static const struct option long_options[] = {
-> +			{NULL, required_argument, NULL, 'i'},
+> In a controlled environment the incompat bit will not bring much value
+> other than yet another sanity check preventing some user error, but
+> related only to the multiple devices.
 
-Plain short options don't need the long option definition.
+Hi David and Anand, I've manage to test misc-next of today, that
+includes both this patchset as well as the "support cloned-device mount
+capability​" one.
 
-> +			{"parents", no_argument, NULL, 'p'},
-> +			{NULL, 0, NULL, 0}
-> +		};
-> +
-> +		c = getopt_long(argc, argv, "i:p", long_options, NULL);
->  		if (c < 0)
->  			break;
->  
-> @@ -127,6 +136,9 @@ static int cmd_subvol_create(const struct cmd_struct *cmd,
->  				goto out;
->  			}
->  			break;
-> +		case 'p':
-> +			create_parents = true;
-> +			break;
->  		default:
->  			usage_unknown_option(cmd, argv);
->  		}
-> @@ -167,6 +179,33 @@ static int cmd_subvol_create(const struct cmd_struct *cmd,
->  		goto out;
->  	}
->  
-> +	if (create_parents) {
-> +		char p[PATH_MAX] = {0};
-> +		char dstdir_dup[PATH_MAX];
-> +		char *token;
-> +
-> +		strncpy_null(dstdir_dup, dstdir);
-> +		if (dstdir_dup[0] == '/')
-> +			strcat(p, "/");
-> +
-> +		token = strtok(dstdir_dup, "/");
-> +		while(token) {
-> +			strcat(p, token);
-> +			res = path_is_dir(p);
-> +			if (res == -ENOENT) {
-> +				if (mkdir(p, 0777)) {
+It seems to be working fine for our use case, though I'll test a bit
+more on Deck. I was able to mount the same filesystem (spread in 2 nvme
+devices) at the same time, in any order...the second one always get the
+temp-fsid. Tested also re-mounting the devices on other locations, and
+it seems all consistent, with no error observed.
 
-The exact error values from mkfs should be reported, so I used the 'res'
-value for that.
+I also question the value of the incompat flag, not seeing much use for
+that..looping Qu Wenruo as they first suggested this flag-based
+approach, in case there is some more feedback...
 
-> +					error("failed to make dir: %s", p);
-> +					goto out;
-> +				}
-> +			} else if (res <= 0) {
-> +				error("failed to check dir: %s", p);				
+Anyway, thanks for your improved approach Anand and to David: is it
+expected to land on 6.7?
+Cheers,
 
-Here also it's good to print the exact error, not just the path.
 
-> +				goto out;
-> +			}
-> +			strcat(p, "/");
-> +			token = strtok(NULL, "/");
-> +		}
-> +	}
-> +
->  	fddst = btrfs_open_dir(dstdir, &dirstream, 1);
->  	if (fddst < 0)
->  		goto out;
-> -- 
-> 2.25.1
+Guilherme
