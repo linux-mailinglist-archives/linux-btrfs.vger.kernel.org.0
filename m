@@ -2,140 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A2C7D0142
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Oct 2023 20:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D297D0498
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Oct 2023 00:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346301AbjJSSUg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Oct 2023 14:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
+        id S235571AbjJSWAu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Oct 2023 18:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345562AbjJSSUf (ORCPT
+        with ESMTP id S235556AbjJSWAt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Oct 2023 14:20:35 -0400
-X-Greylist: delayed 60 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 19 Oct 2023 11:20:32 PDT
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8B511D
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 11:20:32 -0700 (PDT)
-Received: from [192.168.1.27] ([84.220.171.3])
-        by smtp-18.iol.local with ESMTPA
-        id tXcHqABdiBe2ftXcHqVCDI; Thu, 19 Oct 2023 20:19:29 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1697739569; bh=vke+fIxxN6kIiUJATCE8VTJ4jXxnXFF3ecvOuPEuHrI=;
-        h=From;
-        b=LS4Y3wNrhTbxwX3BwBgqDyNr5P1WAunO3FyduNxK73Y2/jKcsbFJW1MR7PHdyCZrT
-         Elt7o/GsqAlZrJ7hLcqiGgeVyaS9bdCeIG5rMBBFLirv9Q+hG3PbfJuaQVsnvL+hLp
-         Msxc1xEW10u+uKm2xQu1LDSltRLdw3ePZPWv/MYkEP2Yu7X553aWUMDwc8iW0omF4+
-         P3phpGXyr8tyOoi97+8AuhclzVMEriU7DqthXgzfYHSQ8677kRamYQeaK7+rquTxII
-         gBiEwfHQleipJeHob3TDmRluBfYsecTvQLEqW7OSfDs5SBzuVvWnYx2tPAGU0aPFAL
-         em08BQtBhhjIA==
-X-CNFS-Analysis: v=2.4 cv=HJQFVKhv c=1 sm=1 tr=0 ts=65317331 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=Asz2sHXNxNX3RrL5zgEA:9 a=QEXdDO2ut3YA:10
-Message-ID: <7f605a3d-9386-42e3-affc-a3120646f238@libero.it>
-Date:   Thu, 19 Oct 2023 20:19:29 +0200
+        Thu, 19 Oct 2023 18:00:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D683115;
+        Thu, 19 Oct 2023 15:00:46 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1697752844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=o2kQGRnjkpW8NV5UEGIjy6i2Lw5zLDk1wI9xtQ0It5Y=;
+        b=OFtLhVmdGAGajfdsQU77o4un/tVAdYcM7cfwt20W9su0nN9zUiglcL5C4pDEb4q88MJzLO
+        x5HDKpnT1/1lsSU8vKySCq1RLS7VJye3ei4+VMtw0uCD0w7qgUgZRlBSUcaicBnbHq4OQM
+        mqC4nMnW3ootEGH3Z7j1ETk8ZUrXdgmgAMC4DzuoxhllzQY4nnoXxM5gbzdAXXNXSWD5Sa
+        lHnIfI/VC1YvapORPfXS8oxP8OeBmd70rwTvUJoTfYU3S+x3sfwVydywAwIgsgZgP0p9N5
+        3FVR3vXv1ON8t+fn6QllxjFsOKixj4rzsRVi/dN/W6MmEfKFJhO4iRcGMvCxFA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1697752844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=o2kQGRnjkpW8NV5UEGIjy6i2Lw5zLDk1wI9xtQ0It5Y=;
+        b=WY4r1ywqpIX7pjSgKhtd/YMTG9q7nuDraudwOpgvLzXDgf0mNyLuwtbpuWmgdtYAMHYJV3
+        PfofEjkkaGKIMBCg==
+To:     Jeff Layton <jlayton@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+In-Reply-To: <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
+Date:   Fri, 20 Oct 2023 00:00:43 +0200
+Message-ID: <87o7gu2rxw.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH 0/6] btrfs-progs: mkfs: introduce an experimental --subvol
- option
-Content-Language: en-US
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1697430866.git.wqu@suse.com>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <cover.1697430866.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfJoghQ9PqyXEyN3VFWRbMRIhpc/ZbHipFytO+dJP35rrt6PTECxsoFwI7agAPjM1NW0JLVn0jVjZwRNdA/mbrxo+kER3KugcFtOqJlTLQ9hpsgJOB6YW
- WxhK1LT7qEYtHrwGYsX+sfVqooZQ7DhzCBSOqHqqhqBUbA9k/2YmoniHZBuz9scrNFMWWBjNLQDRPE3HFoaD8NwkFhkginKwnvI+PWm47TuKlB/XtABjEylC
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
-On 16/10/2023 06.38, Qu Wenruo wrote:
-> Issue #42 (good number by the way) is suggesting a very useful feature
-> for rootfs image creation.
-> 
-> Currently we only support "mkfs.btrfs --rootdir" to fill the fs tree
-> with target directory, but there has no btrfs specific features
-> involved.
-> 
-> If we can create certain paths as subvolumes, not pure directories, it
-> can be very useful to create the whole btrfs image just by "mkfs.btrfs"
-> 
-> This series is the first step torwards this idea.
-> 
-> Now we have a new experimental option "--subvol" for mkfs.btrfs, but
-> with the following limits:
+Jeff!
 
+On Wed, Oct 18 2023 at 13:41, Jeff Layton wrote:
+> +void ktime_get_mg_fine_ts64(struct timespec64 *ts)
+> +{
+> +	struct timekeeper *tk = &tk_core.timekeeper;
+> +	unsigned long flags;
+> +	u32 nsecs;
+> +
+> +	WARN_ON(timekeeping_suspended);
+> +
+> +	raw_spin_lock_irqsave(&timekeeper_lock, flags);
+> +	write_seqcount_begin(&tk_core.seq);
 
-I have a suggestion and an enhancement request:
-- why not use --mk-subvol? to me it seems more clear that a subvolume will be created
-- add another option like --mk-default-subvolume that:
-	- create a subvolume
-	- make it the default.
+Depending on the usage scenario, this will end up as a scalability issue
+which affects _all_ of timekeeping.
 
-The use case is the following: in btrfs it is easy make a snapshot, and move/rename/delete
-subvolumes and snapshot. The only exception is the subvolid=5 (or /). You cannot delete it.
-So if you want to do a snapshot of / and then rollback to this snapshot, it is complicated
-because you cannot remove the original subvolume.
+The usage of timekeeper_lock and the sequence count has been carefully
+crafted to be as non-contended as possible. We went a great length to
+optimize that because the ktime_get*() functions are really hotpath all
+over the place.
 
-Starting from a subvolume different from subvolid=5 makes this easier.
-  
-> 
-> - No co-operation with --rootdir
->    This requires --rootdir to have extra handling for any existing
->    inodes.
->    (Currently --rootdir assumes the fs tree is completely empty)
-> 
-> - No multiple --subvol options supports
->    This requires us to collect and sort all the paths and start creating
->    subvolumes from the shortest path.
->    Furthermore this requires us to create subvolume under another
->    subvolume.
-> 
-> Each limit would need a new series of patches to address, but this
-> series would already provide a working but not-that-useful
-> implementation of "--subvol" option, along with a basic test case for
-> it.
-> 
-> Qu Wenruo (6):
->    btrfs-progs: enhance btrfs_mkdir() function
->    btrfs-progs: enhance and rename btrfs_mksubvol() function
->    btrfs-progs: enhance btrfs_create_root() function
->    btrfs-progs: use a unified btrfs_make_subvol() implementation
->    btrfs-progs: mkfs: introduce experimental --subvol option
->    btrfs-progs: mkfs-tests: introduce a test case to verify --subvol
->      option
-> 
->   convert/main.c                             |  60 ++------
->   kernel-shared/ctree.c                      | 106 ++++++--------
->   kernel-shared/ctree.h                      |  12 +-
->   kernel-shared/inode.c                      | 129 ++++++++++++-----
->   kernel-shared/root-tree.c                  |  86 +++++++++++
->   mkfs/common.c                              |  39 -----
->   mkfs/common.h                              |   2 -
->   mkfs/main.c                                | 103 ++++----------
->   mkfs/rootdir.c                             | 157 +++++++++++++++++++++
->   mkfs/rootdir.h                             |   1 +
->   tests/mkfs-tests/031-subvol-option/test.sh |  39 +++++
->   tune/convert-bgt.c                         |   3 +-
->   tune/quota.c                               |   2 +-
->   13 files changed, 473 insertions(+), 266 deletions(-)
->   create mode 100755 tests/mkfs-tests/031-subvol-option/test.sh
-> 
-> --
-> 2.42.0
-> 
+Exposing such an interface which wreckages that is a recipe for disaster
+down the road. It might be a non-issue today, but once we hit the
+bottleneck of that global lock, we are up the creek without a
+paddle. Well not really, but all we can do then is fall back to
+ktime_get_real(). So let me ask the obvious question:
 
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+     Why don't we do that right away?
 
+Many moons ago when we added ktime_get_real_coarse() the main reason was
+that reading the time from the underlying hardware was insanely
+expensive.
+
+Many moons later this is not true anymore, except for the stupid case
+where the BIOS wreckaged the TSC, but that's a hopeless case for
+performance no matter what. Optimizing for that would be beyond stupid.
+
+I'm well aware that ktime_get_real_coarse() is still faster than
+ktime_get_real() in micro-benchmarks, i.e. 5ns vs. 15ns on the four
+years old laptop I'm writing this.
+
+Many moons ago it was in the ballpark of 40ns vs. 5us due to TSC being
+useless and even TSC read was way more expensive (factor 8-10x IIRC) in
+comparison. That really mattered for FS, but does todays overhead still
+make a difference in the real FS use case scenario?
+
+I'm not in the position of running meaningful FS benchmarks to analyze
+that, but I think the delta between ktime_get_real_coarse() and
+ktime_get_real() on contemporary hardware is small enough that it
+justifies this question.
+
+The point is that both functions have pretty much the same D-cache
+pattern because they access the same data in the very same
+cacheline. The only difference is the actual TSC read and the extra
+conversion, but that's it. The TSC read has been massively optimized by
+the CPU vendors. I know that the ARM64 counter has been optimized too,
+though I have no idea about PPC64 and S390, but I would be truly
+surprised if they didn't optimize the hell out of it because time read
+is really used heavily both in kernel and user space.
+
+Does anyone have numbers on contemporary hardware to shed some light on
+that in the context of FS and the problem at hand?
+
+Thanks,
+
+        tglx
