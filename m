@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B67817D04CE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Oct 2023 00:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989237D04D6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Oct 2023 00:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346658AbjJSWar (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Oct 2023 18:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41066 "EHLO
+        id S1346664AbjJSWas (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Oct 2023 18:30:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346649AbjJSWam (ORCPT
+        with ESMTP id S1346653AbjJSWan (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Oct 2023 18:30:42 -0400
+        Thu, 19 Oct 2023 18:30:43 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5609D124
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 15:30:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1251CA
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 15:30:40 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EE7F221A0C
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 22:30:37 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 43E2321A0D
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 22:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1697754637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1697754639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vMZ29utL5aVOVmDuUJaedR09JS3Eg4CyW3g2n5raYYE=;
-        b=VTf18f2y4jkTzOIgxTSMPW3QpeIlUifFXeQmwJUdfc+F5zL+A/xaVqshfyPL8mqhZktQWW
-        ESJAwit9mkMMAOs+pZwEBdriO+yTVE4oqxxFAfDFmwJyT86iRVjur2gYGUIZ08MVsVhI+8
-        n6NNcCuM8BFa+MnnvO7TflNVOh+YO5w=
+        bh=xF8jCIr+2bikASD6zQzQRnXYXK9A3NZMpdc6Np/ogr8=;
+        b=BMuITTZx4f/UplvPh9ZJ9inDG9UrtBG5tsgaWd9UP8rW2NhjY2uTg0TVAlK0NAW87kmRLr
+        k7zJz0xprUkSVrqlVPXJM9UnZgjKDHZR90/ZVAY5oUC0EXQCflbAoG4IvPY0jba2e4iX7l
+        9XqGd2VoieKF5lM0sHrskjyWt3Qd2UE=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D0B01357F
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 22:30:36 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 73EA11357F
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 22:30:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id eBU7NwyuMWXzWgAAMHmgww
+        id SIHZDA6uMWXzWgAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 22:30:36 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 22:30:38 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 8/9] btrfs-progs: mkfs: introduce experimental --subvol option
-Date:   Fri, 20 Oct 2023 09:00:07 +1030
-Message-ID: <9a662ec107f96350c8b97131bb2094f16352fd65.1697754500.git.wqu@suse.com>
+Subject: [PATCH v2 9/9] btrfs-progs: mkfs-tests: introduce a test case to verify --subvol option
+Date:   Fri, 20 Oct 2023 09:00:08 +1030
+Message-ID: <d97df89c85038dfb0393eec0a93039d64f443b40.1697754500.git.wqu@suse.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1697754500.git.wqu@suse.com>
 References: <cover.1697754500.git.wqu@suse.com>
@@ -54,8 +54,8 @@ Content-Transfer-Encoding: 8bit
 Authentication-Results: smtp-out1.suse.de;
         none
 X-Spam-Level: 
-X-Spam-Score: -2.10
-X-Spamd-Result: default: False [-2.10 / 50.00];
+X-Spam-Score: -0.99
+X-Spamd-Result: default: False [-0.99 / 50.00];
          ARC_NA(0.00)[];
          RCVD_VIA_SMTP_AUTH(0.00)[];
          FROM_HAS_DN(0.00)[];
@@ -74,7 +74,7 @@ X-Spamd-Result: default: False [-2.10 / 50.00];
          MIME_TRACE(0.00)[0:+];
          RCVD_COUNT_TWO(0.00)[2];
          RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
+         BAYES_HAM(-1.89)[94.38%]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -85,298 +85,68 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Although mkfs.btrfs supports --rootdir to fill the target filesystem, it
-doesn't have the ability to create any subvolume.
+This test case would try the following combinations:
 
-This patch introduce a very basic version of --subvol for mkfs.btrfs,
-the limits are:
+- Valid cases
+  * subvolume directly under fs tree
+  * subvolume with several parent directories
+  * subvolume path with unnecessary too many duplicated '/'s
 
-- No co-operation with --rootdir
-  This requires --rootdir to have extra handling for any existing
-  inodes.
-  (Currently --rootdir assumes the fs tree is completely empty)
+- Invalid cases
+  * subvolume path without any filename, e.g. "/////"
+  * subvolume path with ".."
 
-- No multiple --subvol options supports
-  This requires us to collect and sort all the paths and start creating
-  subvolumes from the shortest path.
-  Furthermore this requires us to create subvolume under another
-  subvolume.
-
-For now, this patch focus on the basic checks on the provided subvolume
-path, to wipe out any invalid things like ".." or something like "//////".
-
-We support something like "//dir1/dir2///subvol///" just like VFS path
-(duplicated '/' would just be ignored).
-
-Issue: #42
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- mkfs/main.c    |  25 ++++++++
- mkfs/rootdir.c | 157 +++++++++++++++++++++++++++++++++++++++++++++++++
- mkfs/rootdir.h |   1 +
- 3 files changed, 183 insertions(+)
+ tests/mkfs-tests/031-subvol-option/test.sh | 39 ++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100755 tests/mkfs-tests/031-subvol-option/test.sh
 
-diff --git a/mkfs/main.c b/mkfs/main.c
-index e5201fbc9c31..c0fdf6e94a3c 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -436,6 +436,9 @@ static const char * const mkfs_usage[] = {
- 	"Creation:",
- 	OPTLINE("-b|--byte-count SIZE", "set size of each device to SIZE (filesystem size is sum of all device sizes)"),
- 	OPTLINE("-r|--rootdir DIR", "copy files from DIR to the image root directory"),
-+#if EXPERIMENTAL
-+	OPTLINE("--subvol SUBVOL_NAME", "create a subvolume and all its parent directory"),
-+#endif
- 	OPTLINE("--shrink", "(with --rootdir) shrink the filled filesystem to minimal size"),
- 	OPTLINE("-K|--nodiscard", "do not perform whole device TRIM"),
- 	OPTLINE("-f|--force", "force overwrite of existing filesystem"),
-@@ -1110,6 +1113,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	char *label = NULL;
- 	int nr_global_roots = sysconf(_SC_NPROCESSORS_ONLN);
- 	char *source_dir = NULL;
-+	char *subvol = NULL;
- 
- 	cpu_detect_flags();
- 	hash_init_accel();
-@@ -1123,6 +1127,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 			GETOPT_VAL_CHECKSUM,
- 			GETOPT_VAL_GLOBAL_ROOTS,
- 			GETOPT_VAL_DEVICE_UUID,
-+			GETOPT_VAL_SUBVOL,
- 		};
- 		static const struct option long_options[] = {
- 			{ "byte-count", required_argument, NULL, 'b' },
-@@ -1151,6 +1156,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 			{ "shrink", no_argument, NULL, GETOPT_VAL_SHRINK },
- #if EXPERIMENTAL
- 			{ "num-global-roots", required_argument, NULL, GETOPT_VAL_GLOBAL_ROOTS },
-+			{ "subvol", required_argument, NULL, GETOPT_VAL_SUBVOL},
- #endif
- 			{ "help", no_argument, NULL, GETOPT_VAL_HELP },
- 			{ NULL, 0, NULL, 0}
-@@ -1283,6 +1289,10 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 				btrfs_warn_experimental("Feature: num-global-roots is part of exten-tree-v2");
- 				nr_global_roots = (int)arg_strtou64(optarg);
- 				break;
-+			case GETOPT_VAL_SUBVOL:
-+				btrfs_warn_experimental("Option --subvol is still experimental");
-+				subvol = optarg;
-+				break;
- 			case GETOPT_VAL_HELP:
- 			default:
- 				usage(&mkfs_cmd, c != GETOPT_VAL_HELP);
-@@ -1319,6 +1329,11 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 		goto error;
- 	}
- 
-+	if (source_dir && subvol) {
-+		error("--subvol is not yet supported with --rootdir");
-+		goto error;
-+	}
+diff --git a/tests/mkfs-tests/031-subvol-option/test.sh b/tests/mkfs-tests/031-subvol-option/test.sh
+new file mode 100755
+index 000000000000..eedd257b746e
+--- /dev/null
++++ b/tests/mkfs-tests/031-subvol-option/test.sh
+@@ -0,0 +1,39 @@
++#!/bin/bash
++# Verify "mkfs.btrfs --subvol" option can handle valid and invalid subvolume
++# paths correctly
 +
- 	if (*fs_uuid) {
- 		uuid_t dummy_uuid;
- 
-@@ -1875,6 +1890,16 @@ raid_groups:
- 		goto out;
- 	}
- 
-+	/* Create the subvolumes. */
-+	if (subvol) {
-+		ret = btrfs_make_subvolume_at(fs_info, subvol);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to create subvolume \"%s\": %m", subvol);
-+			goto out;
-+		}
-+	}
++source "$TEST_TOP/common" || exit
 +
- 	if (source_dir) {
- 		pr_verbose(LOG_DEFAULT, "Rootdir from:       %s\n", source_dir);
- 		ret = btrfs_mkfs_fill_dir(source_dir, root);
-diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-index 4ae9f435a7b7..8d32ca4be77d 100644
---- a/mkfs/rootdir.c
-+++ b/mkfs/rootdir.c
-@@ -36,6 +36,8 @@
- #include "kernel-shared/disk-io.h"
- #include "kernel-shared/transaction.h"
- #include "kernel-shared/file-item.h"
-+#include "kernel-shared/messages.h"
-+#include "common/inode.h"
- #include "common/internal.h"
- #include "common/messages.h"
- #include "common/path-utils.h"
-@@ -1012,3 +1014,158 @@ int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_ret,
- 	}
- 	return ret;
- }
++check_prereq mkfs.btrfs
++check_prereq btrfs
 +
-+/*
-+ * Create a subvolume at the path specififed by @full_path.
-+ *
-+ * The @full_path always starts at fs_tree root.
-+ * All the parent directories would be created.
-+ */
-+int btrfs_make_subvolume_at(struct btrfs_fs_info *fs_info, const char *full_path)
-+{
-+	struct btrfs_root *root = fs_info->fs_root;
-+	struct btrfs_root *subvol;
-+	struct btrfs_trans_handle *trans;
-+	u64 parent_ino = btrfs_root_dirid(&root->root_item);
-+	u64 subvolid;
-+	char *dump = strdup(full_path);
-+	char *orig = dump;
-+	char *filename;
-+	int nr_filenames = 0;
-+	int cur_filename = 0;
-+	int ret = 0;
++setup_root_helper
++prepare_test_dev
 +
-+	if (!dump)
-+		return -ENOMEM;
++# Make sure we have enabled experimental features
++output=$(run_check_stdout "$TOP/mkfs.btrfs" --help 2>&1 | grep -- --subvol)
 +
-+	/*
-+	 * Get the number of valid filenames, this is to determine
-+	 * if we're at the last filename (and needs to create a subvolume
-+	 * other than a direcotry).
-+	 */
-+	while ((filename = strsep(&dump, "/")) != NULL) {
-+		if (strlen(filename) == 0)
-+			continue;
-+		if (!strcmp(filename, "."))
-+			continue;
-+		if (!strcmp(filename, "..")) {
-+			error("can not use \"..\" for subvolume path");
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+		if (strlen(filename) > NAME_MAX) {
-+			error("direcotry name \"%s\" is too long, limit is %d",
-+			      filename, NAME_MAX);
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+		nr_filenames++;
-+	}
-+	free(orig);
-+	orig = NULL;
-+	dump = NULL;
++if [ -z "$output" ]; then
++	_not_run "experimental features are not enabled"
++fi
 +
-+	/* Just some garbage full of '/'. */
-+	if (nr_filenames == 0) {
-+		error("'%s' contains no valid subvolume name", full_path);
-+		ret = -EINVAL;
-+		goto out;
-+	}
++# Valid case, simple subvolume directly under fs root.
++run_check_mkfs_test_dev --subvol "subv"
++run_check "$TOP/btrfs" check $TEST_DEV
 +
-+	dump = strdup(full_path);
-+	orig = dump;
++# Valid case, subvolume with several parent directories.
++run_check_mkfs_test_dev --subvol "dir1/dir2/dir3/subv"
++run_check "$TOP/btrfs" check $TEST_DEV
 +
-+	while ((filename = strsep(&dump, "/")) != NULL) {
-+		u64 child_ino = 0;
++# Valid case, subvolume with several parent directories, and
++# unnecessarily too many '/'s
++run_check_mkfs_test_dev --subvol "////dir1/dir2//dir3/dir4/////subv////"
++run_check "$TOP/btrfs" check $TEST_DEV
 +
-+		if (strlen(filename) == 0)
-+			continue;
-+		if (!strcmp(filename, "."))
-+			continue;
-+		ASSERT(strcmp(filename, ".."));
++# Invalid case, subvolume path contains no filename
++run_mustfail "invalid subvolume without filename should fail" \
++	"$TOP/mkfs.btrfs" -f --subvol "//////" $TEST_DEV
 +
-+		if (cur_filename == nr_filenames - 1)
-+			break;
-+		/*
-+		 * Need to modify the following items:
-+		 * - Parent inode item
-+		 *   Increase the size
-+		 *
-+		 * - Parent 1x DIR_INDEX and 1x DIR_ITEM items
-+		 *
-+		 * - New child inode item
-+		 * - New child inode ref
-+		 */
-+		trans = btrfs_start_transaction(root, 4);
-+		if (IS_ERR(trans)) {
-+			errno = -ret;
-+			error("failed to start transaction: %m");
-+			ret = PTR_ERR(trans);
-+			goto out;
-+		}
-+		ret = btrfs_mkdir(trans, root, filename, strlen(filename),
-+				  parent_ino, &child_ino, 0755);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to create direcotry %s in root %lld: %m",
-+			      filename, root->root_key.objectid);
-+			goto out;
-+		}
-+		ret = btrfs_commit_transaction(trans, root);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to commit trans for direcotry %s in root %lld: %m",
-+			      filename, root->root_key.objectid);
-+			goto out;
-+		}
-+		parent_ino = child_ino;
-+		cur_filename++;
-+	}
-+	if (!filename) {
-+		ret = -EUCLEAN;
-+		error("No valid subvolume name found");
-+		goto out;
-+	}
-+
-+	/* Create the final subvolume. */
-+	trans = btrfs_start_transaction(fs_info->tree_root, 4);
-+	if (IS_ERR(trans)) {
-+		errno = -ret;
-+		error("failed to start transaction for subvolume creation %s: %m",
-+		      filename);
-+		goto out;
-+	}
-+	ret = btrfs_find_free_objectid(NULL, fs_info->tree_root,
-+				       BTRFS_FIRST_FREE_OBJECTID, &subvolid);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to find a free objectid for subvolume %s: %m",
-+		      filename);
-+		goto out;
-+	}
-+	subvol = btrfs_create_subvol(trans, subvolid);
-+	if (IS_ERR(subvol)) {
-+		ret = PTR_ERR(subvol);
-+		errno = -ret;
-+		error("failed to create subvolume %s: %m",
-+		      filename);
-+		goto out;
-+	}
-+
-+	ret = btrfs_add_link(trans, subvol, btrfs_root_dirid(&subvol->root_item),
-+			     fs_info->fs_root, parent_ino,
-+			     filename, strlen(filename), NULL, false);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to link subvol %s: %m", filename);
-+		goto out;
-+	}
-+	ret = btrfs_commit_transaction(trans, fs_info->tree_root);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to commit transaction: %m");
-+	}
-+out:
-+	free(orig);
-+	return ret;
-+}
-diff --git a/mkfs/rootdir.h b/mkfs/rootdir.h
-index 8d5f6896c3d9..1b21f30e80b5 100644
---- a/mkfs/rootdir.h
-+++ b/mkfs/rootdir.h
-@@ -41,5 +41,6 @@ u64 btrfs_mkfs_size_dir(const char *dir_name, u32 sectorsize, u64 min_dev_size,
- 			u64 meta_profile, u64 data_profile);
- int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_ret,
- 			 bool shrink_file_size);
-+int btrfs_make_subvolume_at(struct btrfs_fs_info *fs_info, const char *full_path);
- 
- #endif
++# Invalid case, subvolume path contains ".."
++run_mustfail "invalid subvolume without filename should fail" \
++	"$TOP/mkfs.btrfs" -f --subvol "../subvol" $TEST_DEV
 -- 
 2.42.0
 
