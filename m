@@ -2,40 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 542897CF4A1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Oct 2023 12:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A7D7CF6CE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Oct 2023 13:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345176AbjJSKG1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Oct 2023 06:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S1345397AbjJSL3L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Oct 2023 07:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345188AbjJSKG0 (ORCPT
+        with ESMTP id S1345364AbjJSL3I (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Oct 2023 06:06:26 -0400
+        Thu, 19 Oct 2023 07:29:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E0F12A;
-        Thu, 19 Oct 2023 03:06:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A3CEC433C8;
-        Thu, 19 Oct 2023 10:06:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4449110C7;
+        Thu, 19 Oct 2023 04:28:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18A89C433C7;
+        Thu, 19 Oct 2023 11:28:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697709984;
-        bh=2RHW6eQDtzw4Pa0BgCifdvVOWoLALmZaQF83z6YwPfI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EYR6qWBprpUKwMl/NbUgsFFrfZ30Z2z4aSkED33FK0T+DOPokoJcRGgXIqXa3VA9f
-         MPlCt6Gt9B4dFh2KR0ksZI+xYZSyCvU0niYPyerYf7bYuOIRp9VP9txdEVFDpAk0LX
-         +y9sBW1+ehwnJDl3nSBwmzXjbOz+zx8qAvIn77xbExVIRa3DgugKEqKh+tO5mnEg6h
-         bjXaIF/ZR5B8UVpQgZNcPyENyNoWAk1VvBAe912H3a4wQaZva+yZsHWy5KJ2W3rhCh
-         bB0lKIeDiauev1NHm+OO5ukSIjKu8O99AGE0FQ4Fy4TjT4y8zyPDxGLhgSirTZX9wP
-         YkJ5rQLvRW/yg==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs/298: fix failure when added device supports trim
-Date:   Thu, 19 Oct 2023 11:06:14 +0100
-Message-Id: <ee1d17b6f4956c0638cb7faa6f9c92b7bf3c25ac.1697709904.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.40.1
+        s=k20201202; t=1697714932;
+        bh=frnWz1sFRBQuYonb5RmQwPk5jf/lF7GP4WLN8JSXa7M=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=HBA7HSvGoIRn7e8pKkbEW9dLvkhR6UbP9YryXoyb0yOjeGBF3+t2/uXVAqhO8+5XZ
+         g0zjGzFjnXF/LfXiIIdiO8O+s2WH1DbOU5PxZHMy5BGmXDF1pxMFXw5belLfcYtN7H
+         99/gEqDLZv0OG5nrh2/sMZTcmW/PdfrhuOSXelnXPQnJC1BordF3CwVUQNbDT7FTNG
+         nn177O3fNCLQE2ooDHVnWEyFQh2gHAsFOuYPrlz1K/YrfOpU/ht9vUd3N/Bwu8Bm8m
+         10CRzoGlUcfNESgswU4BLKxSdAsGBM5bqEhUzQbS/iUBrFcZX0/oc11HUt7teGBqNa
+         7K8NLvWb7IZrw==
+Message-ID: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Thu, 19 Oct 2023 07:28:48 -0400
+In-Reply-To: <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
+         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
+         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
+         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -45,54 +74,58 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
+> > Back to your earlier point though:
+> >=20
+> > Is a global offset really a non-starter? I can see about doing somethin=
+g
+> > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as cheap
+> > as ktime_get_coarse_ts64. I don't see the downside there for the non-
+> > multigrain filesystems to call that.
+>=20
+> I have to say that this doesn't excite me. This whole thing feels a bit
+> hackish. I think that a change version is the way more sane way to go.
+>=20
 
-A btrfs device add command issues a trim on the device if the device
-supports trim, and then it outputs a message to stdout informing that it
-performed a trim. If that happens it breaks the golden output and the
-test fails like this:
+What is it about this set that feels so much more hackish to you? Most
+of this set is pretty similar to what we had to revert. Is it just the
+timekeeper changes? Why do you feel those are a problem?
 
-   $ ./check btrfs/298
-   FSTYP         -- btrfs
-   PLATFORM      -- Linux/x86_64 debian0 6.6.0-rc3-btrfs-next-139+ #1 SMP PREEMPT_DYNAMIC Tue Oct  3 13:52:02 WEST 2023
-   MKFS_OPTIONS  -- /dev/sdc
-   MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
+> >=20
+> > On another note: maybe I need to put this behind a Kconfig option
+> > initially too?
+>=20
+> So can we for a second consider not introducing fine-grained timestamps
+> at all. We let NFSv3 live with the cache problem it's been living with
+> forever.
+>=20
+> And for NFSv4 we actually do introduce a proper i_version for all
+> filesystems that matter to it.
+>=20
+> What filesystems exactly don't expose a proper i_version and what does
+> prevent them from adding one or fixing it?
 
-   btrfs/298       - output mismatch (see /home/fdmanana/git/hub/xfstests/results//btrfs/298.out.bad)
-       --- tests/btrfs/298.out	2023-10-18 23:29:06.029292800 +0100
-       +++ /home/fdmanana/git/hub/xfstests/results//btrfs/298.out.bad	2023-10-19 10:54:29.693210881 +0100
-       @@ -1,2 +1,3 @@
-        QA output created by 298
-       +Performing full device TRIM /dev/sdd (100.00GiB) ...
-        Silence is golden
-       ...
-       (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/298.out /home/fdmanana/git/hub/xfstests/results//btrfs/298.out.bad'  to see the entire diff)
-   Ran: btrfs/298
-   Failures: btrfs/298
-   Failed 1 of 1 tests
+Certainly we can drop this series altogether if that's the consensus.
 
-Fix this by redirecting the device add's stdout to the $seqres.full file.
-Any device add errors are sent to stderr, so we'll notice if errors happen
-due to possible future regressions, as it will break the golden output.
+The main exportable filesystem that doesn't have a suitable change
+counter now is XFS. Fixing it will require an on-disk format change to
+accommodate a new version counter that doesn't increment on atime
+updates. This is something the XFS folks were specifically looking to
+avoid, but maybe that's the simpler option.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/298 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There is also bcachefs which I don't think has a change attr yet. They'd
+also likely need a on-disk format change, but hopefully that's a easier
+thing to do there since it's a brand new filesystem.
 
-diff --git a/tests/btrfs/298 b/tests/btrfs/298
-index d5536cf3..0cea81d0 100755
---- a/tests/btrfs/298
-+++ b/tests/btrfs/298
-@@ -25,7 +25,7 @@ _scratch_mkfs "-b 300M" >> $seqres.full 2>&1 || \
- 	_fail "Fail to make SCRATCH_DEV with -b 300M"
- $BTRFS_TUNE_PROG -S 1 $SCRATCH_DEV
- _scratch_mount >> $seqres.full 2>&1
--$BTRFS_UTIL_PROG device add $SPARE_DEV $SCRATCH_MNT
-+$BTRFS_UTIL_PROG device add $SPARE_DEV $SCRATCH_MNT >> $seqres.full
- _scratch_unmount
- $BTRFS_UTIL_PROG device scan --forget
- 
--- 
-2.40.1
+There are a smattering of lesser-used local filesystems (f2fs, nilfs2,
+etc.) that have no i_version support. Multigrain timestamps would make
+it simple to add better change attribute support there, but they can (in
+principle) all undergo an on-disk format change too if they decide to
+add one.
 
+Then there are filesystems like ntfs that are exportable, but where we
+can't extend the on-disk format. Those could probably benefit from
+multigrain timestamps, but those are much lower priority. Not many
+people sharing their NTFS filesystem via NFS anyway.
+--=20
+Jeff Layton <jlayton@kernel.org>
