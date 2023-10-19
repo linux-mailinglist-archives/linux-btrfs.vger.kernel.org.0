@@ -2,130 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A7D7CF6CE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Oct 2023 13:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A117CF77E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Oct 2023 13:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345397AbjJSL3L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Oct 2023 07:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        id S235252AbjJSLw2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Oct 2023 07:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345364AbjJSL3I (ORCPT
+        with ESMTP id S235292AbjJSLwZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Oct 2023 07:29:08 -0400
+        Thu, 19 Oct 2023 07:52:25 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4449110C7;
-        Thu, 19 Oct 2023 04:28:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18A89C433C7;
-        Thu, 19 Oct 2023 11:28:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB6B12D
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 04:52:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C1BCC433C8
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 11:52:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697714932;
-        bh=frnWz1sFRBQuYonb5RmQwPk5jf/lF7GP4WLN8JSXa7M=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=HBA7HSvGoIRn7e8pKkbEW9dLvkhR6UbP9YryXoyb0yOjeGBF3+t2/uXVAqhO8+5XZ
-         g0zjGzFjnXF/LfXiIIdiO8O+s2WH1DbOU5PxZHMy5BGmXDF1pxMFXw5belLfcYtN7H
-         99/gEqDLZv0OG5nrh2/sMZTcmW/PdfrhuOSXelnXPQnJC1BordF3CwVUQNbDT7FTNG
-         nn177O3fNCLQE2ooDHVnWEyFQh2gHAsFOuYPrlz1K/YrfOpU/ht9vUd3N/Bwu8Bm8m
-         10CRzoGlUcfNESgswU4BLKxSdAsGBM5bqEhUzQbS/iUBrFcZX0/oc11HUt7teGBqNa
-         7K8NLvWb7IZrw==
-Message-ID: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Thu, 19 Oct 2023 07:28:48 -0400
-In-Reply-To: <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
-         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
-         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
-         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
-         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
-         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
-         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        s=k20201202; t=1697716342;
+        bh=nwLQczFFct0Yj+JdkvnZnEapENyT1KYTyL5wyT2Op4U=;
+        h=From:To:Subject:Date:From;
+        b=W2I8lJ0cyAPgf2Jb20E9Xze15cxbRER8PThQfSmWudbjyta+hUT31cB2Iq92wJI3/
+         cDBGd4UFSytJx37de/6Aec+TlURf5gG6Cc5EBh7i02zlGl6RgoxM2RkFsSMpa3Iaxn
+         gBgdhETKYvEPus67V8OY1rl0cEfSeUBsOiWpMmLYK8C05RmXbSXUcZG1ay2ZKuDYPt
+         +nY0RT1bXfMZJUHCUXaTqCkXpaUB49Q8QCxnV/GVBhpZl6YxiplAR52hiNus1YmbA4
+         BpLfIFFRCeQCipyDhDA7dHJUCYRexjY468GVIv7ZAFELEjw0OSRdlx3i+YQ6AorVVv
+         +78cP/NXjZnaw==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: remove log_extents_lock and logged_list from struct btrfs_root
+Date:   Thu, 19 Oct 2023 12:52:18 +0100
+Message-Id: <ab9b3104c0c49f8605cf7c4e57b1370a350a11ef.1697716246.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
-> > Back to your earlier point though:
-> >=20
-> > Is a global offset really a non-starter? I can see about doing somethin=
-g
-> > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as cheap
-> > as ktime_get_coarse_ts64. I don't see the downside there for the non-
-> > multigrain filesystems to call that.
->=20
-> I have to say that this doesn't excite me. This whole thing feels a bit
-> hackish. I think that a change version is the way more sane way to go.
->=20
+From: Filipe Manana <fdmanana@suse.com>
 
-What is it about this set that feels so much more hackish to you? Most
-of this set is pretty similar to what we had to revert. Is it just the
-timekeeper changes? Why do you feel those are a problem?
+The logged_list[2] and log_extents_lock[2] members of struct btrfs_root
+are no longer used, their last use was removed in commit 5636cf7d6dc8
+("btrfs: remove the logged extents infrastructure"). So remove these
+fields. This reduces the size of struct btrfs_root, on a release kernel,
+from 1392 bytes down to 1352 bytes.
 
-> >=20
-> > On another note: maybe I need to put this behind a Kconfig option
-> > initially too?
->=20
-> So can we for a second consider not introducing fine-grained timestamps
-> at all. We let NFSv3 live with the cache problem it's been living with
-> forever.
->=20
-> And for NFSv4 we actually do introduce a proper i_version for all
-> filesystems that matter to it.
->=20
-> What filesystems exactly don't expose a proper i_version and what does
-> prevent them from adding one or fixing it?
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/ctree.h   | 3 ---
+ fs/btrfs/disk-io.c | 4 ----
+ 2 files changed, 7 deletions(-)
 
-Certainly we can drop this series altogether if that's the consensus.
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index c8f1d2d7c46c..4dfa20e2f39a 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -224,9 +224,6 @@ struct btrfs_root {
+ 
+ 	struct list_head root_list;
+ 
+-	spinlock_t log_extents_lock[2];
+-	struct list_head logged_list[2];
+-
+ 	spinlock_t inode_lock;
+ 	/* red-black tree that keeps track of in-memory inodes */
+ 	struct rb_root inode_tree;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 401ea09ae4b8..350e1b02cc8e 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -650,14 +650,10 @@ static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
+ 	INIT_LIST_HEAD(&root->ordered_extents);
+ 	INIT_LIST_HEAD(&root->ordered_root);
+ 	INIT_LIST_HEAD(&root->reloc_dirty_list);
+-	INIT_LIST_HEAD(&root->logged_list[0]);
+-	INIT_LIST_HEAD(&root->logged_list[1]);
+ 	spin_lock_init(&root->inode_lock);
+ 	spin_lock_init(&root->delalloc_lock);
+ 	spin_lock_init(&root->ordered_extent_lock);
+ 	spin_lock_init(&root->accounting_lock);
+-	spin_lock_init(&root->log_extents_lock[0]);
+-	spin_lock_init(&root->log_extents_lock[1]);
+ 	spin_lock_init(&root->qgroup_meta_rsv_lock);
+ 	mutex_init(&root->objectid_mutex);
+ 	mutex_init(&root->log_mutex);
+-- 
+2.40.1
 
-The main exportable filesystem that doesn't have a suitable change
-counter now is XFS. Fixing it will require an on-disk format change to
-accommodate a new version counter that doesn't increment on atime
-updates. This is something the XFS folks were specifically looking to
-avoid, but maybe that's the simpler option.
-
-There is also bcachefs which I don't think has a change attr yet. They'd
-also likely need a on-disk format change, but hopefully that's a easier
-thing to do there since it's a brand new filesystem.
-
-There are a smattering of lesser-used local filesystems (f2fs, nilfs2,
-etc.) that have no i_version support. Multigrain timestamps would make
-it simple to add better change attribute support there, but they can (in
-principle) all undergo an on-disk format change too if they decide to
-add one.
-
-Then there are filesystems like ntfs that are exportable, but where we
-can't extend the on-disk format. Those could probably benefit from
-multigrain timestamps, but those are much lower priority. Not many
-people sharing their NTFS filesystem via NFS anyway.
---=20
-Jeff Layton <jlayton@kernel.org>
