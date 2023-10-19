@@ -2,39 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C137CF89B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Oct 2023 14:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67367CF8A5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Oct 2023 14:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345478AbjJSMTk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Oct 2023 08:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
+        id S1345443AbjJSMYO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Oct 2023 08:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345442AbjJSMTj (ORCPT
+        with ESMTP id S233195AbjJSMYN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Oct 2023 08:19:39 -0400
+        Thu, 19 Oct 2023 08:24:13 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CDDAB
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 05:19:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16105C433CA
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Oct 2023 12:19:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C74A3;
+        Thu, 19 Oct 2023 05:24:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1654EC433C8;
+        Thu, 19 Oct 2023 12:24:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697717977;
-        bh=NBRuM95DyCsyNahvDpLshlxlrGDw1RInQWmJjl47EiU=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=QfLz7pRkxOCAcBwom621Bzhpog7PA2gnJmG416Awl3d1FlNcYLyrOczzUWEIXVPIl
-         Z1ce3QpuqL7NBflB8/9wlD/2nEAQ998TXaO3A9IgowJorThQtUYnDxeZuUFZF2PS6F
-         Qoph3Q1bnKhjCKPoI0vnrKntrtV5oJdR+7TnW2MmI92f4A8k9doP8fMBhz4i831xWM
-         eSQyQri/q42a5BJC5cUmLsIxWXTZ0VB9I8p6KwY7dzgvkfQhf5eURnU/FrryiwqxsJ
-         lDKqT0juDz6KXnNqgwGe7S4DulmR6A9tUs4G0i41EyZp4WScZvlwzqNmE6AXVRs326
-         PmQm1UXLmgtuw==
+        s=k20201202; t=1697718251;
+        bh=jVv88ycSKk1t4XZAyebfgY8YDB4MbBZTE/cuELqnjgw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Fo4LlXdGg4PQwU1zxww6tWngkVXt0J63I3E7k9mobvYOhBTdUyc+WSmKL5F8+++7m
+         q7NWxqB6IwHNyxspFft/3zD3FTcnlVd8Pg5h2fTEVwkWhZygQyOmUCQsK2P6pxVo8U
+         1VJ/jDQ/ErsFHOVASMA7HRbS7iA5nlxGNB5SXfSwO2F9A9geY/TS5N0DKwEXbj7p7F
+         4xhF08y7UAKKmDtCDxAR05Jj7S6TkFsGSlyz3nedzsRRJ9/39ZVFrDRjOjxl9OlGv3
+         AoGC/+sFas6p9A3dNcKcGZtSw74ayOZ83FEx7jcZj9UtA0If+GZj93oYBIRwJhFf3Z
+         BV6zzml3JEE5Q==
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: make the logic from btrfs_block_can_be_shared() easier to read
-Date:   Thu, 19 Oct 2023 13:19:30 +0100
-Message-Id: <99a667b6a8cc9f221c18c5b185f5dac2ed6dad18.1697716427.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1697716427.git.fdmanana@suse.com>
-References: <cover.1697716427.git.fdmanana@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: test snapshoting a subvolume that was just created
+Date:   Thu, 19 Oct 2023 13:23:49 +0100
+Message-Id: <3149ccc2900f5574a046e675a6db79b019af2bac.1697718086.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -48,75 +47,99 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The logic in btrfs_block_can_be_shared() is hard to follow as we have a
-lot of conditions in a single if statement including a subexpression with
-a logical or and two nested if statements inside the main if statement.
+Test that snapshoting a new subvolume (created in the current transaction)
+that has a btree with a height > 1, works and does not result in a fs
+corruption.
 
-Make this easier to read by using separate if statements that return
-immediately when we find a condition that determines if a block can be
-or can not be shared.
+This exercises a regression introduced in kernel 6.5 by the kernel commit:
+
+  1b53e51a4a8f ("btrfs: don't commit transaction for every subvol create")
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 40 ++++++++++++++++++++++++----------------
- 1 file changed, 24 insertions(+), 16 deletions(-)
+ tests/btrfs/302     | 61 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/302.out |  4 +++
+ 2 files changed, 65 insertions(+)
+ create mode 100755 tests/btrfs/302
+ create mode 100644 tests/btrfs/302.out
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 3cc3ec472497..788f0dd90f8a 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -374,27 +374,35 @@ bool btrfs_block_can_be_shared(struct btrfs_trans_handle *trans,
- 			       struct btrfs_root *root,
- 			       struct extent_buffer *buf)
- {
-+	const u64 buf_gen = btrfs_header_generation(buf);
+diff --git a/tests/btrfs/302 b/tests/btrfs/302
+new file mode 100755
+index 00000000..13b60f9d
+--- /dev/null
++++ b/tests/btrfs/302
+@@ -0,0 +1,61 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 302
++#
++# Test that snapshoting a new subvolume (created in the current transaction)
++# that has a btree with a height > 1, works and does not result in a filesystem
++# corruption.
++#
++# This exercises a regression introduced in kernel 6.5 by the kernel commit:
++#
++#    1b53e51a4a8f ("btrfs: don't commit transaction for every subvol create")
++#
++. ./common/preamble
++_begin_fstest auto quick snapshot subvol
 +
- 	/*
- 	 * Tree blocks not in shareable trees and tree roots are never shared.
- 	 * If a block was allocated after the last snapshot and the block was
- 	 * not allocated by tree relocation, we know the block is not shared.
- 	 */
--	if (test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
--	    buf != root->node &&
--	    (btrfs_header_generation(buf) <=
--	     btrfs_root_last_snapshot(&root->root_item) ||
--	     btrfs_header_flag(buf, BTRFS_HEADER_FLAG_RELOC))) {
--		if (buf != root->commit_root)
--			return true;
--		/*
--		 * An extent buffer that used to be the commit root may still be
--		 * shared because the tree height may have increased and it
--		 * became a child of a higher level root. This can happen when
--		 * snapshoting a subvolume created in the current transaction.
--		 */
--		if (btrfs_header_generation(buf) == trans->transid)
--			return true;
--	}
++. ./common/filter
 +
-+	if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
-+		return false;
++_supported_fs btrfs
++_require_scratch
++_require_fssum
 +
-+	if (buf == root->node)
-+		return false;
++_fixed_by_kernel_commit xxxxxxxxxxxx \
++	"btrfs: fix unwritten extent buffer after snapshoting a new subvolume"
 +
-+	if (buf_gen > btrfs_root_last_snapshot(&root->root_item) &&
-+	    !btrfs_header_flag(buf, BTRFS_HEADER_FLAG_RELOC))
-+		return false;
++# Use a filesystem with a 64K node size so that we have the same node size on
++# every machine regardless of its page size (on x86_64 default node size is 16K
++# due to the 4K page size, while on PPC it's 64K by default). This way we can
++# make sure we are able to create a btree for the subvolume with a height of 2.
++_scratch_mkfs -n 64K >> $seqres.full 2>&1 || _fail "mkfs failed"
++_scratch_mount
 +
-+	if (buf != root->commit_root)
-+		return true;
++$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol | _filter_scratch
 +
-+	/*
-+	 * An extent buffer that used to be the commit root may still be shared
-+	 * because the tree height may have increased and it became a child of a
-+	 * higher level root. This can happen when snapshoting a subvolume
-+	 * created in the current transaction.
-+	 */
-+	if (buf_gen == trans->transid)
-+		return true;
- 
- 	return false;
- }
++# Create a few empty files on the subvolume, this bumps its btree height to 2
++# (root node at level 1 and 2 leaves).
++for ((i = 1; i <= 300; i++)); do
++	echo -n > $SCRATCH_MNT/subvol/file_$i
++done
++
++# Create a checksum of the subvolume's content.
++fssum_file="$SCRATCH_MNT/checksum.fssum"
++$FSSUM_PROG -A -f -w $fssum_file $SCRATCH_MNT/subvol
++
++# Now create a snapshot of the subvolume and make it accessible from within the
++# subvolume.
++$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol \
++		 $SCRATCH_MNT/subvol/snap | _filter_scratch
++
++# Now unmount and mount again the fs. We want to verify we are able to read all
++# metadata for the snapshot from disk (no IO failures, etc).
++_scratch_cycle_mount
++
++# The snapshot's content should match the subvolume's content before we created
++# the snapshot.
++$FSSUM_PROG -r $fssum_file $SCRATCH_MNT/subvol/snap
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/302.out b/tests/btrfs/302.out
+new file mode 100644
+index 00000000..8770aefc
+--- /dev/null
++++ b/tests/btrfs/302.out
+@@ -0,0 +1,4 @@
++QA output created by 302
++Create subvolume 'SCRATCH_MNT/subvol'
++Create a readonly snapshot of 'SCRATCH_MNT/subvol' in 'SCRATCH_MNT/subvol/snap'
++OK
 -- 
 2.40.1
 
