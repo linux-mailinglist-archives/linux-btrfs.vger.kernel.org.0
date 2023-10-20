@@ -2,54 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F15757D0D07
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Oct 2023 12:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C207D0F76
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Oct 2023 14:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376746AbjJTKXl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Oct 2023 06:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
+        id S1377372AbjJTMMw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Oct 2023 08:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376596AbjJTKXl (ORCPT
+        with ESMTP id S1376941AbjJTMMv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Oct 2023 06:23:41 -0400
+        Fri, 20 Oct 2023 08:12:51 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB6FD45;
-        Fri, 20 Oct 2023 03:23:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE398C433C8;
-        Fri, 20 Oct 2023 10:23:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA919E;
+        Fri, 20 Oct 2023 05:12:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB3EAC433C7;
+        Fri, 20 Oct 2023 12:12:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697797417;
-        bh=g4qUJ9Smj0zNwg8INGdYpPR6dJJTsnSXD/QBmWulOIQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VqUN8VQM6zSS3xJY23qQUyzpyoRIRaK9ILEHxNHCihkEOCQDXZI3svkua4Wryhjxf
-         A+Su+kamHiRQzdG35Hp9+t3FIERTVaSyjZuvUDw1iqrijLE7j+7uZYW7OLoBwR9bSU
-         bKLHqPEiahBnOTZmN1LT+wQhf8RZIAQo3jbHhvvpA+V7hWIMdpFdTWbN5ypW+b3z6p
-         jle6deKLkcA+HFsTyQwDDC59K3VL8Stj6qq2Yy4PnpdQ3QPOyIT38p+eSFWp0m1O5X
-         AeFKe+O1F45AW0VcOeBVop8ZgstPZroKoHtE7Bv7SFa1XaJadPhZZ1q0TH/CZJGY0o
-         f030lZfHQ61RA==
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-9c41e95efcbso96152166b.3;
-        Fri, 20 Oct 2023 03:23:37 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzccwBn8G94m3W7IQDyciXuxD92OkwDEfbAY8Y6kqSKmHQU2QXE
-        GZsY66FMAfoTkiZNCDaGPAL3GbTU8g6pt+uh/eg=
-X-Google-Smtp-Source: AGHT+IHyKmiTiC1hlE2oCJ1IfM/Ytoggtds1sL0JACFSp217Ug7ulgJmvE9XuGcKSPCtH7CE35Yoou7B7SdDt1BSMVI=
-X-Received: by 2002:a17:907:9492:b0:9ae:82b4:e306 with SMTP id
- dm18-20020a170907949200b009ae82b4e306mr1086284ejc.62.1697797415930; Fri, 20
- Oct 2023 03:23:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231018194658.3703329-1-zlang@kernel.org> <20231019143143.GC11391@frogsfrogsfrogs>
- <20231019181126.gu4g37sess2bmw6a@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-In-Reply-To: <20231019181126.gu4g37sess2bmw6a@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 20 Oct 2023 11:22:58 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5qSATSW8T6oejqtjQgAAY6oLEygUKCy6zMV+xKgMOJ+A@mail.gmail.com>
-Message-ID: <CAL3q7H5qSATSW8T6oejqtjQgAAY6oLEygUKCy6zMV+xKgMOJ+A@mail.gmail.com>
-Subject: Re: [PATCH] fstests: filter out fsstress error output
-To:     Zorro Lang <zlang@redhat.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Zorro Lang <zlang@kernel.org>, fstests@vger.kernel.org,
-        fdmanana@suse.com, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        s=k20201202; t=1697803969;
+        bh=kB1Zjc2tT/Kiij0RZHUaSZTbaKT3uaV6kt0MZRqO3ao=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=u1KeUXawoYyG3rdDy6jdJTAMa6CBiujADoCmEXdNuYkXyu9MLmAhCs59XHfewH69Z
+         1YZtXxAjuumkL12vc+r8XM0XyYBZEzhXynSZ8iHJcmV+MiHV1Js0QSa9/YPOzeTCNg
+         ddC9z/urYYAvgVu/TEDRRvWgEO9YYF+FZ8oYuLQg7R8KKucqjObvftSldeq5NRaMUN
+         ySFtaBhZ3Ud0vLczoN7hL8eQ5kMDVN+Cbtg1oCUsjPsRtKmaAHvc+K9G3jPnZvPiyH
+         hVMKjWAP6YVlcCH6eSZNXNhEobwTgcvkSLHsZetlLf5JFxGLWQYlbapQu1DCjW/MN1
+         iu2/HSTHJb02A==
+Message-ID: <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Fri, 20 Oct 2023 08:12:45 -0400
+In-Reply-To: <ZTGncMVw19QVJzI6@dread.disaster.area>
+References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
+         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
+         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
+         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+         <ZTGncMVw19QVJzI6@dread.disaster.area>
+Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -60,594 +78,177 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 7:12=E2=80=AFPM Zorro Lang <zlang@redhat.com> wrote=
-:
->
-> On Thu, Oct 19, 2023 at 07:31:43AM -0700, Darrick J. Wong wrote:
-> > On Thu, Oct 19, 2023 at 03:46:58AM +0800, Zorro Lang wrote:
-> > > The f55e46d6 ("fstests: redirect fsstress' stdout to $seqres.full
-> > > instead of /dev/null") did lots of changes as below:
-> > >
-> > >   -$FSSTRESS_PROG $args >/dev/null 2>&1 &
-> > >   +$FSSTRESS_PROG $args >>$seqres.full &
-> > >
-> > > Although it's good to replace /dev/null with $seqres.full, but the
-> > > change also removed the "2>&1", that againsts the original behavior.
-> > > Some test cases might want to ignore fsstress error output, but now
-> > > the error output breaks the gardon image. For example:
-> > >
-> > >   FSTYP         -- xfs (non-debug)
-> > >   PLATFORM      -- Linux/s390x xxx-xxx-xxx
-> > >   MKFS_OPTIONS  -- -f -m crc=3D1,finobt=3D1,reflink=3D1,rmapbt=3D1,bi=
-gtime=3D1,inobtcount=3D1 -b size=3D1024 /dev/loop1
-> > >   MOUNT_OPTIONS -- -o context=3Dsystem_u:object_r:root_t:s0 /dev/loop=
-1 /mnt/fstests/SCRATCH_DIR
-> > >
-> > >   generic/269       - output mismatch (see /var/lib/xfstests/results/=
-/generic/269.out.bad)
-> > >       --- tests/generic/269.out     2023-10-17 22:32:46.162110249 -04=
-00
-> > >       +++ /var/lib/xfstests/results//generic/269.out.bad    2023-10-1=
-7 23:07:45.752145653 -0400
-> > >       @@ -3,3 +3,60 @@
-> > >        Run fsstress
-> > >
-> > >        Run dd writers in parallel
-> > >       +p36: No such file or directory
-> > >       +p41: No such file or directory
-> > >       +p42: No such file or directory
-> > >       +p43: No such file or directory
-> > >       ...
-> > >
-> > > The generic/269 hopes to run fsstress with ENOSPC error, so it
-> > > redirects stderr to /dev/null. But now it fails.
-> > >
-> > > The f55e46d6 ("fstests: redirect fsstress' stdout to $seqres.full
-> > > instead of /dev/null") only wants to redirect stdout, so we'd better
-> > > to keep stderr output to /dev/null, if a case hopes to do that.
-> > >
-> > > Fixes: f55e46d6 ("fstests: redirect fsstress' stdout to $seqres.full =
-instead of /dev/null")
-> > > Signed-off-by: Zorro Lang <zlang@kernel.org>
-> > > ---
-> > >
-> > > Hi,
-> > >
-> > > This patch only trys to bring "2>&1" back, if case has it at beginnin=
-g. To make
-> > > sure we don't break the original behavior of these cases.
-> > >
-> > > If some of below cases really want to remove the "2>&1", better to do=
- that in
-> > > another patch, and show a proper reason.
-> > >
-> > > Thanks,
-> > > Zorro
-> > >
-> > >  tests/btrfs/028   | 2 +-
-> > >  tests/btrfs/049   | 2 +-
-> > >  tests/btrfs/060   | 2 +-
-> > >  tests/btrfs/061   | 2 +-
-> > >  tests/btrfs/062   | 2 +-
-> > >  tests/btrfs/063   | 2 +-
-> > >  tests/btrfs/064   | 2 +-
-> > >  tests/btrfs/065   | 2 +-
-> > >  tests/btrfs/066   | 2 +-
-> > >  tests/btrfs/067   | 2 +-
-> > >  tests/btrfs/068   | 2 +-
-> > >  tests/btrfs/069   | 2 +-
-> > >  tests/btrfs/070   | 2 +-
-> > >  tests/btrfs/071   | 2 +-
-> > >  tests/btrfs/072   | 2 +-
-> > >  tests/btrfs/073   | 2 +-
-> > >  tests/btrfs/074   | 2 +-
-> > >  tests/btrfs/136   | 2 +-
-> > >  tests/btrfs/192   | 2 +-
-> > >  tests/btrfs/232   | 2 +-
-> > >  tests/btrfs/261   | 2 +-
-> > >  tests/btrfs/286   | 2 +-
-> > >  tests/ext4/057    | 2 +-
-> > >  tests/ext4/307    | 2 +-
-> > >  tests/generic/068 | 2 +-
-> > >  tests/generic/269 | 2 +-
-> > >  tests/xfs/051     | 2 +-
-> >
-> > These two changes (269, 051) duplicates
-> > https://lore.kernel.org/fstests/169687550821.3948976.689216161600839359=
-4.stgit@frogsfrogsfrogs/T/#m613d9379a026fcae5357650af09d5d0725d324f5
->
-> Thanks for fixing it.
->
-> >
-> > AFAICT the other generic and xfs tests aren't setting up fsstress to hi=
-t
-> > errors, so we should be dumping them to the golden output because that'=
+On Fri, 2023-10-20 at 09:02 +1100, Dave Chinner wrote:
+> On Thu, Oct 19, 2023 at 07:28:48AM -0400, Jeff Layton wrote:
+> > On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
+> > > > Back to your earlier point though:
+> > > >=20
+> > > > Is a global offset really a non-starter? I can see about doing some=
+thing
+> > > > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as c=
+heap
+> > > > as ktime_get_coarse_ts64. I don't see the downside there for the no=
+n-
+> > > > multigrain filesystems to call that.
+> > >=20
+> > > I have to say that this doesn't excite me. This whole thing feels a b=
+it
+> > > hackish. I think that a change version is the way more sane way to go=
+.
+> > >=20
+> >=20
+> > What is it about this set that feels so much more hackish to you? Most
+> > of this set is pretty similar to what we had to revert. Is it just the
+> > timekeeper changes? Why do you feel those are a problem?
+> >=20
+> > > >=20
+> > > > On another note: maybe I need to put this behind a Kconfig option
+> > > > initially too?
+> > >=20
+> > > So can we for a second consider not introducing fine-grained timestam=
+ps
+> > > at all. We let NFSv3 live with the cache problem it's been living wit=
+h
+> > > forever.
+> > >=20
+> > > And for NFSv4 we actually do introduce a proper i_version for all
+> > > filesystems that matter to it.
+> > >=20
+> > > What filesystems exactly don't expose a proper i_version and what doe=
 s
-> > a sign that something has gone very wrong.
-> >
-> > I suppose prior to f55e46d629 ("fstests: redirect fsstress' stdout to
-> > $seqres.full instead of /dev/null") we'd discard the error messages.
-> >
-> > OTOH I've now run the generic and xfs tests with stderr going to the
-> > .out file and none of them complain, so I'd prefer to see those tests
-> > stay the way they are now.
->
-> OK, due to that commit affects btrfs specific cases more, besides btrfs p=
-art
-> there're only below 5 cases removed the "2>&1":
->
-> ext4/057
-> ext4/307
-> generic/068
-> generic/269
-> xfs/051
->
-> As we've reviewed generic and xfs part, and will fix generic/269 and xfs/=
-051,
-> and those two ext4 cases look good without the "2>&1". So *if btrfs list =
-feels
-> good without the stderr filter*, I can drop this patch.
+> > > prevent them from adding one or fixing it?
+> >=20
+> > Certainly we can drop this series altogether if that's the consensus.
+> >=20
+> > The main exportable filesystem that doesn't have a suitable change
+> > counter now is XFS. Fixing it will require an on-disk format change to
+> > accommodate a new version counter that doesn't increment on atime
+> > updates. This is something the XFS folks were specifically looking to
+> > avoid, but maybe that's the simpler option.
+>=20
+> And now we have travelled the full circle.
+>=20
 
-The stderr filter is not needed for the btrfs tests.
-None of them expects errors from fsstress, so we want the tests to
-fail in case fsstress faisl.
+LOL, yes!
 
-Thanks.
+> The problem NFS has with atime updates on XFS is a result of
+> the default behaviour of relatime - it *always* forces a persistent
+> atime update after mtime has changed. Hence a read-after-write
+> operation will trigger an atime update because atime is older than
+> mtime. This is what causes XFS to run a transaction (i.e. a
+> persistent atime update) and that bumps iversion.
+>=20
 
+Those particular atime updates are not a problem. If we're updating the
+mtime and ctime anyway, then bumping the change attribute is OK.
+
+The problem is that relatime _also_ does an on-disk update once a day
+for just an atime update. On XFS, this means that the change attribute
+also gets bumped and the clients invalidate their caches all at once.
+
+That doesn't sound like a big problem at first, but what if you're
+sharing a multi-gigabyte r/o file between multiple clients? This sort of
+thing is fairly common on render-farm workloads, and all of your clients
+will end up invalidating their caches once once a day if you're serving
+from XFS.
+
+> lazytime does not behave this way - it delays all persistent
+> timestamp updates until the next persistent change or until the
+> lazytime aggregation period expires (24 hours). Hence with lazytime,
+> read-after-write operations do not trigger a persistent atime
+> update, and so XFS does not run a transaction to update atime. Hence
+> i_version does not get bumped, and NFS behaves as expected.
+>=20
+
+Similar problem here. Once a day, NFS clients will invalidate the cache
+on any static content served from XFS.
+
+> IOWs, what the NFS server actually wants from the filesytsems is for
+> lazy timestamp updates to always be used on read operations. It does
+> not want persistent timestamp updates that change on-disk state. The
+> recent "redefinition" of when i_version should change effectively
+> encodes this - i_version should only change when a persistent
+> metadata or data change is made that also changes [cm]time.
 >
-> Thanks,
-> Zorro
+> Hence the simple, in-memory solution to this problem is for NFS to
+> tell the filesysetms that it needs to using lazy (in-memory) atime
+> updates for the given operation rather than persistent atime updates.
 >
-> >
-> > --D
-> >
-> > >  tests/xfs/057     | 2 +-
-> > >  tests/xfs/297     | 2 +-
-> > >  tests/xfs/305     | 2 +-
-> > >  tests/xfs/538     | 2 +-
-> > >  31 files changed, 31 insertions(+), 31 deletions(-)
-> > >
-> > > diff --git a/tests/btrfs/028 b/tests/btrfs/028
-> > > index d860974e..c4853e06 100755
-> > > --- a/tests/btrfs/028
-> > > +++ b/tests/btrfs/028
-> > > @@ -35,7 +35,7 @@ args=3D`_scale_fsstress_args -z \
-> > >     -f fsync=3D10 -n 100000 -p 2 \
-> > >     -d $SCRATCH_MNT/stress_dir`
-> > >  echo "Run fsstress $args" >>$seqres.full
-> > > -$FSSTRESS_PROG $args >>$seqres.full &
-> > > +$FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >  fsstress_pid=3D$!
-> > >
-> > >  echo "Start balance" >>$seqres.full
-> > > diff --git a/tests/btrfs/049 b/tests/btrfs/049
-> > > index c48e4087..e5f37ccd 100755
-> > > --- a/tests/btrfs/049
-> > > +++ b/tests/btrfs/049
-> > > @@ -42,7 +42,7 @@ args=3D`_scale_fsstress_args -z \
-> > >     -f write=3D10 -f creat=3D10 \
-> > >     -n 1000 -p 2 -d $SCRATCH_MNT/stress_dir`
-> > >  echo "Run fsstress $args" >>$seqres.full
-> > > -$FSSTRESS_PROG $args >>$seqres.full
-> > > +$FSSTRESS_PROG $args >>$seqres.full 2>&1
-> > >
-> > >  # Start and pause balance to ensure it will be restored on remount
-> > >  echo "Start balance" >>$seqres.full
-> > > diff --git a/tests/btrfs/060 b/tests/btrfs/060
-> > > index a0184891..5c10fc51 100755
-> > > --- a/tests/btrfs/060
-> > > +++ b/tests/btrfs/060
-> > > @@ -38,7 +38,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     echo -n "Start balance worker: " >>$seqres.full
-> > > diff --git a/tests/btrfs/061 b/tests/btrfs/061
-> > > index c1010413..407066e3 100755
-> > > --- a/tests/btrfs/061
-> > > +++ b/tests/btrfs/061
-> > > @@ -36,7 +36,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     echo -n "Start balance worker: " >>$seqres.full
-> > > diff --git a/tests/btrfs/062 b/tests/btrfs/062
-> > > index 818a0156..dacf56db 100755
-> > > --- a/tests/btrfs/062
-> > > +++ b/tests/btrfs/062
-> > > @@ -37,7 +37,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     echo -n "Start balance worker: " >>$seqres.full
-> > > diff --git a/tests/btrfs/063 b/tests/btrfs/063
-> > > index 2f771baf..88d0ed21 100755
-> > > --- a/tests/btrfs/063
-> > > +++ b/tests/btrfs/063
-> > > @@ -36,7 +36,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     echo -n "Start balance worker: " >>$seqres.full
-> > > diff --git a/tests/btrfs/064 b/tests/btrfs/064
-> > > index e9b46ce6..cad78248 100755
-> > > --- a/tests/btrfs/064
-> > > +++ b/tests/btrfs/064
-> > > @@ -46,7 +46,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     # Start both balance and replace in the background.
-> > > diff --git a/tests/btrfs/065 b/tests/btrfs/065
-> > > index c4b6aafe..d388f1e1 100755
-> > > --- a/tests/btrfs/065
-> > > +++ b/tests/btrfs/065
-> > > @@ -46,7 +46,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     # make sure the stop sign is not there
-> > > diff --git a/tests/btrfs/066 b/tests/btrfs/066
-> > > index a29034bb..ecb35f38 100755
-> > > --- a/tests/btrfs/066
-> > > +++ b/tests/btrfs/066
-> > > @@ -38,7 +38,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     # make sure the stop sign is not there
-> > > diff --git a/tests/btrfs/067 b/tests/btrfs/067
-> > > index 709db155..d9808177 100755
-> > > --- a/tests/btrfs/067
-> > > +++ b/tests/btrfs/067
-> > > @@ -39,7 +39,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     # make sure the stop sign is not there
-> > > diff --git a/tests/btrfs/068 b/tests/btrfs/068
-> > > index 15fd41db..321bb4d2 100755
-> > > --- a/tests/btrfs/068
-> > > +++ b/tests/btrfs/068
-> > > @@ -39,7 +39,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     # make sure the stop sign is not there
-> > > diff --git a/tests/btrfs/069 b/tests/btrfs/069
-> > > index 139dde48..4a65c7e5 100755
-> > > --- a/tests/btrfs/069
-> > > +++ b/tests/btrfs/069
-> > > @@ -44,7 +44,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     echo -n "Start replace worker: " >>$seqres.full
-> > > diff --git a/tests/btrfs/070 b/tests/btrfs/070
-> > > index 54aa275c..b823d95b 100755
-> > > --- a/tests/btrfs/070
-> > > +++ b/tests/btrfs/070
-> > > @@ -45,7 +45,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     echo -n "Start replace worker: " >>$seqres.full
-> > > diff --git a/tests/btrfs/071 b/tests/btrfs/071
-> > > index 6ebbd8cc..ff16d5ac 100755
-> > > --- a/tests/btrfs/071
-> > > +++ b/tests/btrfs/071
-> > > @@ -44,7 +44,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     echo -n "Start replace worker: " >>$seqres.full
-> > > diff --git a/tests/btrfs/072 b/tests/btrfs/072
-> > > index 4b6b6fb5..3eda8dfb 100755
-> > > --- a/tests/btrfs/072
-> > > +++ b/tests/btrfs/072
-> > > @@ -37,7 +37,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     echo -n "Start scrub worker: " >>$seqres.full
-> > > diff --git a/tests/btrfs/073 b/tests/btrfs/073
-> > > index b1604f94..d3264f3b 100755
-> > > --- a/tests/btrfs/073
-> > > +++ b/tests/btrfs/073
-> > > @@ -36,7 +36,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     echo -n "Start scrub worker: " >>$seqres.full
-> > > diff --git a/tests/btrfs/074 b/tests/btrfs/074
-> > > index 9b22c620..3d08415c 100755
-> > > --- a/tests/btrfs/074
-> > > +++ b/tests/btrfs/074
-> > > @@ -37,7 +37,7 @@ run_test()
-> > >
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $SCR=
-ATCH_MNT/stressdir`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >
-> > >     echo -n "Start defrag worker: " >>$seqres.full
-> > > diff --git a/tests/btrfs/136 b/tests/btrfs/136
-> > > index 70e836a5..fd637f33 100755
-> > > --- a/tests/btrfs/136
-> > > +++ b/tests/btrfs/136
-> > > @@ -39,7 +39,7 @@ populate_data(){
-> > >     mkdir -p $data_path
-> > >     args=3D`_scale_fsstress_args -p 20 -n 100 $FSSTRESS_AVOID -d $dat=
-a_path`
-> > >     echo "Run fsstress $args" >>$seqres.full
-> > > -   $FSSTRESS_PROG $args >>$seqres.full &
-> > > +   $FSSTRESS_PROG $args >>$seqres.full 2>&1 &
-> > >     fsstress_pid=3D$!
-> > >     wait $fsstress_pid
-> > >  }
-> > > diff --git a/tests/btrfs/192 b/tests/btrfs/192
-> > > index 00ea1478..0d926635 100755
-> > > --- a/tests/btrfs/192
-> > > +++ b/tests/btrfs/192
-> > > @@ -140,7 +140,7 @@ pid1=3D$!
-> > >  delete_workload &
-> > >  pid2=3D$!
-> > >
-> > > -"$FSSTRESS_PROG" $fsstress_args >> $seqres.full &
-> > > +"$FSSTRESS_PROG" $fsstress_args >> $seqres.full 2>&1 &
-> > >  sleep $runtime
-> > >
-> > >  "$KILLALL_PROG" -q "$FSSTRESS_PROG" &> /dev/null
-> > > diff --git a/tests/btrfs/232 b/tests/btrfs/232
-> > > index 84c39c07..8ac0ce7c 100755
-> > > --- a/tests/btrfs/232
-> > > +++ b/tests/btrfs/232
-> > > @@ -25,7 +25,7 @@ writer()
-> > >
-> > >     while true; do
-> > >             args=3D`_scale_fsstress_args -p 20 -n 1000 $FSSTRESS_AVOI=
-D -d $SCRATCH_MNT/stressdir`
-> > > -           $FSSTRESS_PROG $args >> $seqres.full
-> > > +           $FSSTRESS_PROG $args >> $seqres.full 2>&1
-> > >     done
-> > >  }
-> > >
-> > > diff --git a/tests/btrfs/261 b/tests/btrfs/261
-> > > index 58fa8e75..9968c694 100755
-> > > --- a/tests/btrfs/261
-> > > +++ b/tests/btrfs/261
-> > > @@ -36,7 +36,7 @@ prepare_fs()
-> > >     # Then use fsstress to generate some extra contents.
-> > >     # Disable setattr related operations, as it may set NODATACOW whi=
-ch will
-> > >     # not allow us to use btrfs checksum to verify the content.
-> > > -   $FSSTRESS_PROG -f setattr=3D0 -d $SCRATCH_MNT -w -n 3000 >> $seqr=
-es.full
-> > > +   $FSSTRESS_PROG -f setattr=3D0 -d $SCRATCH_MNT -w -n 3000 >> $seqr=
-es.full 2>&1
-> > >     sync
-> > >
-> > >     # Save the fssum of this fs
-> > > diff --git a/tests/btrfs/286 b/tests/btrfs/286
-> > > index 71f6d4bd..ab4f9b24 100755
-> > > --- a/tests/btrfs/286
-> > > +++ b/tests/btrfs/286
-> > > @@ -36,7 +36,7 @@ workload()
-> > >     # Use nodatasum mount option, so all data won't have checksum.
-> > >     _scratch_mount -o nodatasum
-> > >
-> > > -   $FSSTRESS_PROG -p 10 -n 200 -d $SCRATCH_MNT >> $seqres.full
-> > > +   $FSSTRESS_PROG -p 10 -n 200 -d $SCRATCH_MNT >> $seqres.full 2>&1
-> > >     sync
-> > >
-> > >     # Generate fssum for later verification, here we only care
-> > > diff --git a/tests/ext4/057 b/tests/ext4/057
-> > > index 6babedb2..b6d19339 100755
-> > > --- a/tests/ext4/057
-> > > +++ b/tests/ext4/057
-> > > @@ -42,7 +42,7 @@ _scratch_mount
-> > >
-> > >  # Begin fsstress while modifying UUID
-> > >  fsstress_args=3D$(_scale_fsstress_args -d $SCRATCH_MNT -p 15 -n 9999=
-99)
-> > > -$FSSTRESS_PROG $fsstress_args >> $seqres.full &
-> > > +$FSSTRESS_PROG $fsstress_args >> $seqres.full 2>&1 &
-> > >  fsstress_pid=3D$!
-> > >
-> > >  for n in $(seq 1 20); do
-> > > diff --git a/tests/ext4/307 b/tests/ext4/307
-> > > index 8b1cfc9e..75a8bff0 100755
-> > > --- a/tests/ext4/307
-> > > +++ b/tests/ext4/307
-> > > @@ -21,7 +21,7 @@ _workout()
-> > >     out=3D$SCRATCH_MNT/fsstress.$$
-> > >     args=3D`_scale_fsstress_args -p4 -n999 -f setattr=3D1 $FSSTRESS_A=
-VOID -d $out`
-> > >     echo "fsstress $args" >> $seqres.full
-> > > -   $FSSTRESS_PROG $args >> $seqres.full
-> > > +   $FSSTRESS_PROG $args >> $seqres.full 2>&1
-> > >     find $out -type f > $out.list
-> > >     cat $out.list | xargs  md5sum > $out.md5sum
-> > >     usage=3D`du -sch $out | tail -n1 | gawk '{ print $1 }'`
-> > > diff --git a/tests/generic/068 b/tests/generic/068
-> > > index af527fee..b2967d13 100755
-> > > --- a/tests/generic/068
-> > > +++ b/tests/generic/068
-> > > @@ -57,7 +57,7 @@ touch $tmp.running
-> > >        # We do both read & write IO - not only is this more realistic=
-,
-> > >        # but it also potentially tests atime updates
-> > >        FSSTRESS_ARGS=3D`_scale_fsstress_args -d $STRESS_DIR -p $procs=
- -n $nops $FSSTRESS_AVOID`
-> > > -      $FSSTRESS_PROG $FSSTRESS_ARGS >>$seqres.full
-> > > +      $FSSTRESS_PROG $FSSTRESS_ARGS >>$seqres.full 2>&1
-> > >      done
-> > >
-> > >      rm -r $STRESS_DIR/*
-> > > diff --git a/tests/generic/269 b/tests/generic/269
-> > > index b852f6bf..eddca10d 100755
-> > > --- a/tests/generic/269
-> > > +++ b/tests/generic/269
-> > > @@ -23,7 +23,7 @@ _workout()
-> > >     out=3D$SCRATCH_MNT/fsstress.$$
-> > >     args=3D`_scale_fsstress_args -p128 -n999999999 -f setattr=3D1 $FS=
-STRESS_AVOID -d $out`
-> > >     echo "fsstress $args" >> $seqres.full
-> > > -   $FSSTRESS_PROG $args >> $seqres.full &
-> > > +   $FSSTRESS_PROG $args >> $seqres.full 2>&1 &
-> > >     pid=3D$!
-> > >     echo "Run dd writers in parallel"
-> > >     for ((i=3D0; i < num_iterations; i++))
-> > > diff --git a/tests/xfs/051 b/tests/xfs/051
-> > > index 1c670964..eca67bb8 100755
-> > > --- a/tests/xfs/051
-> > > +++ b/tests/xfs/051
-> > > @@ -38,7 +38,7 @@ _scratch_mount
-> > >
-> > >  # Start a workload and shutdown the fs. The subsequent mount will re=
-quire log
-> > >  # recovery.
-> > > -$FSSTRESS_PROG -n 9999 -p 2 -w -d $SCRATCH_MNT >> $seqres.full &
-> > > +$FSSTRESS_PROG -n 9999 -p 2 -w -d $SCRATCH_MNT >> $seqres.full 2>&1 =
-&
-> > >  sleep 5
-> > >  _scratch_shutdown -f
-> > >  $KILLALL_PROG -q $FSSTRESS_PROG
-> > > diff --git a/tests/xfs/057 b/tests/xfs/057
-> > > index 6af14c80..9b52da79 100755
-> > > --- a/tests/xfs/057
-> > > +++ b/tests/xfs/057
-> > > @@ -56,7 +56,7 @@ _scratch_mkfs_sized $((1024 * 1024 * 500)) >> $seqr=
-es.full 2>&1 ||
-> > >  _scratch_mount
-> > >
-> > >  # populate the fs with some data and cycle the mount to reset the lo=
-g head/tail
-> > > -$FSSTRESS_PROG -d $SCRATCH_MNT -z -fcreat=3D1 -p 4 -n 100000 >> $seq=
-res.full
-> > > +$FSSTRESS_PROG -d $SCRATCH_MNT -z -fcreat=3D1 -p 4 -n 100000 >> $seq=
-res.full 2>&1
-> > >  _scratch_cycle_mount || _fail "cycle mount failed"
-> > >
-> > >  # Pin the tail and start a file removal workload. File removal tends=
- to
-> > > diff --git a/tests/xfs/297 b/tests/xfs/297
-> > > index 1d101876..cd7bccb2 100755
-> > > --- a/tests/xfs/297
-> > > +++ b/tests/xfs/297
-> > > @@ -39,7 +39,7 @@ _scratch_mount
-> > >  STRESS_DIR=3D"$SCRATCH_MNT/testdir"
-> > >  mkdir -p $STRESS_DIR
-> > >
-> > > -$FSSTRESS_PROG -d $STRESS_DIR -n 100 -p 1000 $FSSTRESS_AVOID >>$seqr=
-es.full &
-> > > +$FSSTRESS_PROG -d $STRESS_DIR -n 100 -p 1000 $FSSTRESS_AVOID >>$seqr=
-es.full 2>&1 &
-> > >
-> > >  # Freeze/unfreeze file system randomly
-> > >  echo "Start freeze/unfreeze randomly" | tee -a $seqres.full
-> > > diff --git a/tests/xfs/305 b/tests/xfs/305
-> > > index d8a6712e..a93576bc 100755
-> > > --- a/tests/xfs/305
-> > > +++ b/tests/xfs/305
-> > > @@ -36,7 +36,7 @@ _exercise()
-> > >     _qmount
-> > >     mkdir -p $QUOTA_DIR
-> > >
-> > > -   $FSSTRESS_PROG -d $QUOTA_DIR -n 1000000 -p 100 $FSSTRESS_AVOID >>=
-$seqres.full &
-> > > +   $FSSTRESS_PROG -d $QUOTA_DIR -n 1000000 -p 100 $FSSTRESS_AVOID >>=
-$seqres.full 2>&1 &
-> > >     sleep 10
-> > >     $XFS_QUOTA_PROG -x -c "disable -$type" $SCRATCH_DEV
-> > >     sleep 5
-> > > diff --git a/tests/xfs/538 b/tests/xfs/538
-> > > index 0b5772a1..d36673a9 100755
-> > > --- a/tests/xfs/538
-> > > +++ b/tests/xfs/538
-> > > @@ -63,7 +63,7 @@ $FSSTRESS_PROG -d $SCRATCH_MNT \
-> > >             -f readv=3D0 \
-> > >             -f stat=3D0 \
-> > >             -f aread=3D0 \
-> > > -           -f dread=3D0 >> $seqres.full
-> > > +           -f dread=3D0 >> $seqres.full 2>&1
-> > >
-> > >  # success, all done
-> > >  status=3D0
-> > > --
-> > > 2.41.0
-> > >
-> >
->
+> We already need to modify how atime updates work for io_uring -
+> io_uring needs atime updates to be guaranteed non-blocking similar
+> to updating mtime in the write IO path. If a persistent timestamp
+> change needs to be run, then the timestamp update needs to return
+> -EAGAIN rather than (potentially) blocking so the entire operation
+> can be punted to a context that can block.
+>=20
+> This requires control flags to be passed to the core atime handling
+> functions.  If a filesystem doesn't understand/support the flags, it
+> can just ignore it and do the update however it was going to do it.
+> It won't make anything work incorrectly, just might do something
+> that is not ideal.
+>=20
+> With this new "non-blocking update only" flag for io_uring and a
+> new "non-persistent update only" flag for NFS, we have a very
+> similar conditional atime update requirements from two completely
+> independent in-kernel applications.
+>=20
+> IOWs, this can be solved quite simply by having the -application-
+> define the persistence semantics of the operation being performed.
+> Add a RWF_LAZYTIME/IOCB_LAZYTIME flag for read IO that is being
+> issued from the nfs daemon (i.e. passed to vfs_iter_read()) and then
+> the vfs/filesystem can do exactly the right thing for the IO being
+> issued.
+>=20
+> This is what io_uring does with IOCB_NOWAIT to tell the filesystems
+> that the IO must be non-blocking, and it's the key we already use
+> for non-blocking mtime updates and will use to trigger non-blocking
+> atime updates....
+>=20
+> I also know of cases where a per-IO RWF_LAZYTIME flag would be
+> beneficial - large databases are already using lazytime mount
+> options so that their data IO doesn't take persistent mtime update
+> overhead hits on every write IO.....
+>=20
+
+I don't think that trying to do something "special" for activity that is
+initiated by the NFS server solves anything. Bear in mind that NFS
+clients care about locally-initiated activity too.
+
+The bottom line is that we don't want to be foisting a cache
+invalidation on the clients just because someone read a file, or did
+some similar activity like a readdir or readlink. The lazytime/relatime
+options may mitigate the problem, but they're not a real solution.
+
+What NFS _really_ wants is a proper change counter that doesn't
+increment on read(like) operations. In practice, that comes down to just
+not incrementing it on atime updates.
+
+btrfs, ext4 and tmpfs have this (now). xfs does not because its change
+attribute is incremented when an atime update is logged, and that is
+evidently something that cannot be changed without an on-disk format
+change.
+
+> > There is also bcachefs which I don't think has a change attr yet. They'=
+d
+> > also likely need a on-disk format change, but hopefully that's a easier
+> > thing to do there since it's a brand new filesystem.
+>=20
+> It's not a "brand new filesystem". It's been out there for quite a
+> long while, and it has many users that would be impacted by on-disk
+> format changes at this point in it's life. on-disk format changes
+> are a fairly major deal for filesystems, and if there is any way we
+> can avoid them we should.
+
+
+Sure. It's new to me though. It's also not yet merged into mainline.
+
+I'd _really_ like to see a proper change counter added before it's
+merged, or at least space in the on-disk inode reserved for one until we
+can get it plumbed in. That would suck for the current users, I suppose,
+but at least that userbase is small now. Once it's merged, there will be
+a lot more people using it and it becomes just that much more difficult.
+
+I suppose bcachefs could try to hold out for the multigrain timestamp
+work too, but that may not ever make it in.
+--=20
+Jeff Layton <jlayton@kernel.org>
