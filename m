@@ -2,157 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0814B7D1D38
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Oct 2023 15:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAEC7D1D85
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Oct 2023 16:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbjJUNZA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 21 Oct 2023 09:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        id S231325AbjJUOm0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 21 Oct 2023 10:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJUNY7 (ORCPT
+        with ESMTP id S231177AbjJUOmZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 21 Oct 2023 09:24:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D196D68
-        for <linux-btrfs@vger.kernel.org>; Sat, 21 Oct 2023 06:24:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697894653;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U0ygw2vvEBmj2jhW78qox0ZhQRRmHMkEb8zFhHYSiKg=;
-        b=XbvLWxmalZmaU/vsc3/GRtfCSEZkysYY6PUbGLpmkHR4bzT4tbMJ2Z5GTP1awhmv5e/sVW
-        d9oWUgL6Y4aMQTgTN0ewLbnoMKUxyRRyUvKTnzOUb1y6wvQIW3V+BfjOyneSv+LnvIb4fu
-        vpK34mq8HwYTrhOZRBwqp+bzkrjGwlU=
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
- [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-336-CCJgnEfCNhiAit8S1T4aUQ-1; Sat, 21 Oct 2023 09:24:06 -0400
-X-MC-Unique: CCJgnEfCNhiAit8S1T4aUQ-1
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1e96efd9ae0so2634836fac.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 21 Oct 2023 06:24:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697894646; x=1698499446;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U0ygw2vvEBmj2jhW78qox0ZhQRRmHMkEb8zFhHYSiKg=;
-        b=hSNXHNbuf+3sDF8Y3bFOmK1JfYriwfNMCYWuj5DRIFB3EH34hB9ixaLxPLvvAWw/3d
-         55J4xiwdBaaZum0RCQAZQV65tI3ENenjTgj6znyBdsh+Et3HP7D7gGvjjOSyxzUgjOkQ
-         lYQD/xcLVa5LugssrPUoi0MWnqMpQMIupe6ao5g2Y11kTnUFIVNskxXfyNAtwcXk8kj2
-         Ym8RAB+TNNmHUqE2raheh9Bujnb5ij4E7hvQgq3LQIWFQkBgmCdAMQiKrHw1XKmjr6Xj
-         1IxqXeJydiKqp8yEdjIAy9FbFV4nBDK102eJepwt8CMELJTJBOWgIrh/nlJsuN5Hw279
-         MUZw==
-X-Gm-Message-State: AOJu0YwTDOjqxiBxDUog91rvFHh+302J5IxYQ3Zj2bGRtXC7w4FxUncQ
-        KSpUHzi0Gzoh8TQm6/sm8fevXlDA42wMi0ZeP2MSo1R52NKcpTq/loOp1USkEAkJ4qaEk/zqBru
-        3zIJWJKm3vToxrIfoFf2y99x3fEycVlIwQA==
-X-Received: by 2002:a05:6870:1210:b0:1ea:7bd1:c48d with SMTP id 16-20020a056870121000b001ea7bd1c48dmr5266314oan.49.1697894645724;
-        Sat, 21 Oct 2023 06:24:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG0ExB7lqubcClDzjRYkJ+7/1PvDeQ8lcoK+G5SLNe7kv5os2l2O4azFA6ATS0OOI0Iin0t6g==
-X-Received: by 2002:a05:6870:1210:b0:1ea:7bd1:c48d with SMTP id 16-20020a056870121000b001ea7bd1c48dmr5266293oan.49.1697894645399;
-        Sat, 21 Oct 2023 06:24:05 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id p15-20020aa7860f000000b0068fe9c7b199sm3237488pfn.105.2023.10.21.06.24.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 06:24:05 -0700 (PDT)
-Date:   Sat, 21 Oct 2023 21:24:01 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH] btrfs/298: add test for showing qgroups include staled
- sorted by path
-Message-ID: <20231021132401.yczjnm34fk7lwpco@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20231009143123.9588-1-realwakka@gmail.com>
+        Sat, 21 Oct 2023 10:42:25 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B3DD52
+        for <linux-btrfs@vger.kernel.org>; Sat, 21 Oct 2023 07:42:23 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2DBAB1FD63
+        for <linux-btrfs@vger.kernel.org>; Sat, 21 Oct 2023 14:42:21 +0000 (UTC)
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id E89992C21E
+        for <linux-btrfs@vger.kernel.org>; Sat, 21 Oct 2023 14:42:20 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 28B1DDA8A7; Sat, 21 Oct 2023 16:35:30 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Btrfs progs release 6.5.3
+Date:   Sat, 21 Oct 2023 16:35:28 +0200
+Message-ID: <20231021143530.7730-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009143123.9588-1-realwakka@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=softfail (smtp-out2.suse.de: 149.44.160.134 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         MIME_GOOD(-0.10)[text/plain];
+         PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         R_SPF_SOFTFAIL(0.60)[~all];
+         RCPT_COUNT_ONE(0.00)[1];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         TO_DN_NONE(0.00)[];
+         VIOLATED_DIRECT_SPF(3.50)[];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MID_CONTAINS_FROM(1.00)[];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         FORGED_SENDER(0.30)[dsterba@suse.com,dsterba@suse.cz];
+         RCVD_NO_TLS_LAST(0.10)[];
+         R_DKIM_NA(0.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         FROM_NEQ_ENVFROM(0.10)[dsterba@suse.com,dsterba@suse.cz];
+         BAYES_HAM(-0.23)[72.55%]
+X-Spam-Score: 15.00
+X-Rspamd-Queue-Id: 2DBAB1FD63
+X-Spam: Yes
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 02:31:23PM +0000, Sidong Yang wrote:
-> Test for showing qgroups include a staled qgroup list sorted by path.
-> It crashed without checking qgroup has empty path. It fixed by the
-> following commit in btrfs-progs:
-> 
-> cd7f1e48 ("btrfs-progs: qgroup: check null in comparing paths")
-> 
-> Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> ---
->  tests/btrfs/298     | 34 ++++++++++++++++++++++++++++++++++
->  tests/btrfs/298.out |  2 ++
->  2 files changed, 36 insertions(+)
->  create mode 100755 tests/btrfs/298
->  create mode 100644 tests/btrfs/298.out
-> 
-> diff --git a/tests/btrfs/298 b/tests/btrfs/298
-> new file mode 100755
-> index 00000000..5457423d
-> --- /dev/null
-> +++ b/tests/btrfs/298
-> @@ -0,0 +1,34 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2023 Sidong Yang.  All Rights Reserved.
-> +#
-> +# FS QA Test 298
-> +#
-> +# Test that showing qgourps list includes a staled qgroup without crash.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick qgroup
-> +
-> + . ./common/filter
-> +
-> +_supported_fs btrfs
-> +_require_test
-> +_require_scratch
-> +
-> +_scratch_mkfs > /dev/null 2>&1
-> +_scratch_mount
-> +
-> +# Create stale qgroup with creating and deleting a subvolume.
-> +$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT >> $seqres.full
-> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
-> +$BTRFS_UTIL_PROG subvolume delete $SCRATCH_MNT/a >> $seqres.full
-> +
-> +# Show qgroups list with sorting path without crash.
-> +$BTRFS_UTIL_PROG qgroup show --sort path $SCRATCH_MNT >> $seqres.full
-> +
-> +_scratch_unmount
+Hi,
 
-Is the umount a necessary part of this test? If not, this step isn't needed.
-The SCRATCH_DEV will be unmounted later.
+btrfs-progs version 6.5.3 have been released.  There are bugfixes and some new
+options or commands, update is recommended.
 
-Others looks good to me. I don't mind merging this case, if btrfs list
-feels good to take time to run it in fstests. If no objection from btrfs, then:
+Changelog:
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
+   * mkfs:
+      * add short aliases for -O specification, block-group-tree (bgt),
+        free-space-tree (fst), raid-stripe-tree (rst)
+      * don't try to resize the image (namely when backed by file) when --rootdir
+        contains sparse file larger than the image
+      * also copy xattr/permissions/ugid/timestamps of the top --rootdir directory
+      * add new option --device-uuid to let user specify exact uuid of the
+        device item (only for single device filesystems)
+   * check:
+      * on zoned devices, use correct super block offsets when repairing
+      * check inline extent refs order
+   * subvolume create: add new option --parent to create missing path
+     components of the given path (like mkdir -p)
+   * rescue clear-ino-cache: new command moved from 'btrfs check' implementing
+     the same as option --clear-ino-cache (to be deprecated and removed in the
+     future)
+   * dump-tree: allow '-' in tree identifier names for option -t
+   * btrfstune:
+      * drop short option and add long option to enable squota
+      * tune space reservation and batch size for block-group-tree conversion
+   * scrub status: print correct value of "Bytes scrubbed" for unfinished runs
+   * qgroup show: fix crash when attempting to print path of stale qgroups
+   * experimental features:
+      * move build of raid-stripe-tree out for testing but it's still considered
+        experimental
+   * other:
+      * shell completion updates
+      * sync raid-stripe-tree code with kernel
+      * build fixes
+      * new and updated tests
 
-Thanks,
-Zorro
-
-> +
-> +# success, all done
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/298.out b/tests/btrfs/298.out
-> new file mode 100644
-> index 00000000..63434267
-> --- /dev/null
-> +++ b/tests/btrfs/298.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 298
-> +Silence is golden
-> -- 
-> 2.34.1
-> 
-
+Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+Release: https://github.com/kdave/btrfs-progs/releases/tag/v6.5.2
