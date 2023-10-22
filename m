@@ -2,42 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F117D2617
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Oct 2023 23:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050F17D261C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Oct 2023 23:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232648AbjJVV3t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 Oct 2023 17:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42412 "EHLO
+        id S232724AbjJVVdV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 Oct 2023 17:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjJVV3t (ORCPT
+        with ESMTP id S229500AbjJVVdU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Oct 2023 17:29:49 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647FEDD
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Oct 2023 14:29:45 -0700 (PDT)
+        Sun, 22 Oct 2023 17:33:20 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509FA93
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Oct 2023 14:33:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-        s=s31663417; t=1698010182; x=1698614982; i=quwenruo.btrfs@gmx.com;
-        bh=oATrbZOkYimtTM8cyjp1pq+HconionTI9h5Imw7pSyc=;
+        s=s31663417; t=1698010394; x=1698615194; i=quwenruo.btrfs@gmx.com;
+        bh=5iv8AYq88lZF4PaM6Mh2ay8Xo6EN9/86YuOjPJ4rgoE=;
         h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=l1gevCmhKpFVTh86aY9uiJqWoZj42Md50KAukby9ahWaWuAkN9w1kRFYfpckDEuC
-         imEEdzhk6nQem06nepp3aHdtLsuCJywY5SK8iZz6GHP6dzC1q4LClVGjbb6l5FZ5I
-         Hv/jlIMZvpHAZErrjz9eUdR3wJg6Q15ZlNr3s38vcmL9vYx3hnDIgn70HIFMlFMNK
-         wBWh0x+VYKUfTHA5mq2/zbAJRDx6Reh46duVO7pdYjEoVlS70q0NoCP35Wzg3G9d8
-         4K0A4oos9FY0ieGOfXHc8/b2mR7q4yp141LvRO4jyvqeOloP0WkLBNr5qFR1HsxnW
-         UyHmRVAwAmux9gDz9Q==
+        b=FOaTE5y+9WyORt7D+XKco/bkPIm7zkYlr8DbUL/fM+D/zZRGRfmGiHWQEjrnPb9T
+         ARmW3zd52Bz/+kaW1yVcAOPz1dSBiTdVTZ+IfbJ/EfhAVCDTaLvEgtZHniG3yhwdj
+         z+rpuMLKfrE0hXV6mbMovTBCmg9tQt0TXbK57WundYK4f8piKCKQ/7dSW1bFysBYX
+         Iin0trlyE1taTdfGhTyIbei7PbMGSIjAuD7iXs8j5bSNuLiMghPWKwrSuZL31O0Mw
+         72EnRwWigv2/ZI818bwE3yfHSodhRaH2LAaLXG1EpsCYIWq78TsTIEfORgN/IXuYp
+         lhqG+gNCHmnssKoYsQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MpUUw-1rHeyf3ePc-00pr7c; Sun, 22
- Oct 2023 23:29:42 +0200
-Message-ID: <c6c6a985-9817-46ef-85c6-e9fd6baa9478@gmx.com>
-Date:   Mon, 23 Oct 2023 07:59:38 +1030
+Received: from [172.16.0.117] ([218.215.59.251]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MowKi-1rIDFn3kXW-00qRFN; Sun, 22
+ Oct 2023 23:33:14 +0200
+Message-ID: <9760a471-6473-4c11-a807-ded4bb2833e2@gmx.com>
+Date:   Mon, 23 Oct 2023 08:03:11 +1030
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: fs readonly after few minutes
+Subject: Re: BTRF: no free space
 Content-Language: en-US
-To:     nzb_tuxxx <nzb_tuxxx@proton.me>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <o9XJJu0qMzbW4Iiu4eBNXZZscccGRCC0lpf_tUMBA7Mlxmlba4yfx27_7W29DfGvZAByVGSyul3dxcPwpLrPBWiUx0B-AJU-L-vyKKMyjO8=@proton.me>
+To:     Reindl Harald <h.reindl@thelounge.net>, linux-btrfs@vger.kernel.org
+References: <2856c6f2-8d3c-412b-a012-a8151a4b1392@thelounge.net>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -63,32 +62,32 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <o9XJJu0qMzbW4Iiu4eBNXZZscccGRCC0lpf_tUMBA7Mlxmlba4yfx27_7W29DfGvZAByVGSyul3dxcPwpLrPBWiUx0B-AJU-L-vyKKMyjO8=@proton.me>
+In-Reply-To: <2856c6f2-8d3c-412b-a012-a8151a4b1392@thelounge.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LSzV1Edc99RwkRoFTjv6i5aGfx8488XwiGhnCMNwB0xY4D86kn5
- iRk1xiglxZ7GV/ewhCtcxzW0vkuXGmJV7VnG3eyQgQIfWRCpKHfICdD2CIZ74mchmNOn/4M
- 9Zv6AdB16vke8aYJeUipAUVLQs5smzehX1SrdHU53h9k5erwpozVGKywfOvn55vH6Ax5ZDZ
- NH4ZGEXL2mA4CDgcpZvig==
-UI-OutboundReport: notjunk:1;M01:P0:NJZFuNS0UDQ=;vSial9WdFUiVo9VBAcV3WZnHE7w
- XKRUe8Cxe9+60rgQQWJjaC9acLcSSetm7QMDY5JP08JuttlSA8haDrt8f6dwYdqYPupnsWdDz
- eY3aNsWy9b3NIGy9eKLddILLnHyWHy0+qXQnGS2WDYBWDDe+0N1aBa3t0Mclh2TEZ7xGRMHrI
- po1gZrWCypqGHfMXcbUz2Ud5Bxf8R+8t3/qSwVhn5MbhgJ+gUG8HE2B/QpVsxINxgVnDfSlk0
- x4L5ZR0OnKYBe50JQ5fpRNjcXCA7W5hOSMz+sijrXVL1PGvX7R//pWu5VpsFsw4JvZc+9HVC9
- Z/1PRg0HkZrRv1XvVzGEwgDONBEPfU6BAtSlthBKyvb0QclPyE72gWomBqnnq8a2uWa7GunbM
- i++S6/tpLc/Pf1wnsYjOf2749X7rnmJFKcsnFSXEAlYSkwQ8ohvwwjLxyHbU+ZCvVTnoSFwkS
- Ulpg4G/kjW+5n2RHSGoI3AFCLWXYVYenEsXqqPHFnitEU1j9Lo4iafSLyn3crAzECOosJjMFK
- GowDalnUiwQ1rlGVw+jwBTeNmHqcl06sfX9+bS6hVCGNAInklOyCAAfzkZPBsavhTIPtaf/7x
- iEVFKqGik24Z9MvDK8+pqNWI2cU8oZAP+2e9qLEYAD8na7fE5CFZwRuRwKudoj+1ItY4nApzP
- VNzN/C/waEgmHYSdlp1dHxTRQojTFF4l9NoxwcmvOQpEOVQQSPbu+KCtzX5+IgzNUyr7f+OrU
- iPsxHnDQmTJGlCWa31uSavH25GMwh7bNwXUKJIAmereylTneojsVbn8Q3TtVFg9dpfzY//YZN
- yyoxWdWorlmcfZ9/9nGDMGfl+DhJqAt5/6+012JQc+BGqXhRJqkg+5TiR0HsYB40vaL2QmTKO
- u2TPNJLpN0loTlY6BTm4qfWfrggWS2k1rtE99sfaVWwoHjMWWaV1lRp09mi+68iAIcfoswlQg
- X+gKw+uejqZvVUkakCgBcwe/Rc4=
+X-Provags-ID: V03:K1:pBSJMAY5dzrBViPgENQV+vksv+O2jSvaF/YMGXt3EJiBZYM9obD
+ BuxgRHp+251DHunL87pKwSnl+O+0hZniFBWVZec2LE/JNP4q+wlvHHTtPqoY/twkI4zfhuq
+ N3yVe5/79xk1vGV2uadVNkLhriaeMhKJlZjYIXy1b7pOtOOmXDkONJn4MfT9QNpqcLmlQgB
+ zP2QeHfozkhWWjvq5lmjA==
+UI-OutboundReport: notjunk:1;M01:P0:oCqDzczoIvo=;aHFah/wTnINhytwyGG6cDLTfQ81
+ RhJORPEgEItY91T41ZRWMv13HN2DnVoLJBTRVXH+ukBeMXtwgTubX66nd6TzNGhMeLCpl1QnJ
+ rRzCwstR7b2LKxN8ZMisa7NPtJAxMQQuVha01GfnpKCsPMsrDLmo0nr2iCxmz7c+riSUZvXgR
+ mig2Z/MyzaRy9lcPocT7Ww8h7jlSbAymczkRf26F1T6JgWLoLVatVpCdkr0s4/zl34gC5DfpO
+ EXJs+xySKpt2fLNNd+td5wQM6L5bqIY6uK6l0ipZZDwDH8tIEmKhHybTu5mo8yP5Oay5aYGd4
+ 6g9vjofCPD14wtvlIguJJf6ax8E7VnX/b3t2I142RkAjFkkzQj9PXRIA7T38ydJCFdBY91YRi
+ YvkgVtlmzkdCSGRV8z7TzRxkp90tVSbW2XvtDA78IEllGyq7Jqj0cVkDOjb1xMaughSrSlCRi
+ VxPHWiyoTFM8TyxSbH1MiN9cVnt2HWJvIrDWkuglocT00+RZky2OPLq5xW+m3SEKF+UPJddU1
+ Hp1iOuGEbnjgi3T7nrkwjnl0VRfYfNBY/A6gVZh83lrHeJjGTJKdyX5QxvYcBp1lVFjpPqw++
+ rNWRkZdAT1YxBC8IzVNzLQ+9Wn9/oSLWO+Xh8yuFiq42RjssB21LMduLdbQ18ul9qPBiQzeTf
+ WtqbS2Hv8S35ZrhYpS5Xna1Hcjp+SoZ03Pixvas40XYlWZBwwul6urQHlWdZkZM2VvjB6GK5E
+ C0lPqx/b5E9ngYaP9sGSa9EqHp2U75LcZLLaINLvAynGbyL15VcLUWJuUrNv4COK7K6DVXJdD
+ sHw35TShwAXEXo+Xt4XUkWmSWlKOQUFio8zB0M03ycm3CQpuQhY8zbNf9fWO5+f3UZSuwPYbL
+ Mk0CSB6AozNPyTOCuYTOui4F8UTW6Ky9w+dKvt1B+Ew3wWC09t88cnKyicObpxhOiBYFQ0plh
+ 62N4XDHx43Up7zv3OQ1TQ67R5RI=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -97,146 +96,70 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/10/23 03:47, nzb_tuxxx wrote:
-> hello,
+On 2023/10/22 21:13, Reindl Harald wrote:
+> this is a *new* filesystem and somewhere in the middle of the night at
+> 10% usage a large rsync stopped because BTRF thinks the filesystem is
+> full - how is this possible in 2023?
 >
-> my root btrfs fs mounts to readonly after a few minutes uptime. any idea=
-s? thanks.
+> Metadata, DUP: total=3D1.00GiB, used=3D945.61MiB
+
+Metadata is already exhausted.
+
+Thus no way to start balance.
+
 >
-> Linux T14s 6.1.55-1-MANJARO #1 SMP PREEMPT_DYNAMIC Sat Sep 23 12:13:56 U=
-TC 2023 x86_64 GNU/Linux
+> -----------------
 >
-> btrfs-progs v6.5.2
+> defaults,noatime,compress-force=3Dzstd:15,ssd,ssd_spread,nodiscard,nobar=
+rier,noexec,nosuid,nodev,commit=3D60
 >
-> Label: none =C2=A0uuid: a9754b40-2b24-4756-84de-9286a3eee35a=C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 Total devices 1 FS bytes used 571.27GiB
->  =C2=A0 =C2=A0 =C2=A0 =C2=A0 devid =C2=A0 =C2=A01 size 1.82TiB used 591.=
-02GiB path /dev/nvme0n1p2
+> adding "clear_cache" which solved such issues in the past eve refuses to
+> mount it
 >
-> Data, single: total=3D585.01GiB, used=3D568.73GiB
-> System, DUP: total=3D8.00MiB, used=3D80.00KiB
-> Metadata, DUP: total=3D3.00GiB, used=3D2.55GiB
-> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+> [root@arrakisvm:~]$ mount /mnt/fileserver-backup/
+> mount: /mnt/fileserver-backup: mount(2) system call failed: No space
+> left on device.
 >
-> [ 6029.069758] Hardware name: LENOVO 20UH001QGE/20UH001QGE, BIOS R1CET76=
-W(1.45 ) 07/31/2023
-> [ 6029.069758] RIP: 0010:__btrfs_free_extent.cold+0x91e/0xa24 [btrfs]
-> [ 6029.069798] Code: 50 e8 ad dd ff ff e9 20 ff ff ff bf fe ff ff ff e8 =
-1c ed ff ff 84 c0 74 67 be fe ff ff ff 48 c7
-> c7 60 62 76 c0 e8 5d 62 36 ed <0f> 0b c6 44 24 14 01 44 8b 44 24 14 48 8=
-b 7c 24 08 b9 fe ff ff ff
-> [ 6029.069799] RSP: 0018:ffffa53f02f67c40 EFLAGS: 00010282
-> [ 6029.069800] RAX: 0000000000000000 RBX: 0000004315d84000 RCX: 00000000=
-00000027
-> [ 6029.069801] RDX: ffff8e456fa21668 RSI: 0000000000000001 RDI: ffff8e45=
-6fa21660
-> [ 6029.069802] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffa53f=
-02f67ab8
-> [ 6029.069802] R10: 0000000000000003 R11: ffffffffaf8cc7c8 R12: 00000000=
-00000001
-> [ 6029.069803] R13: 0000000000000000 R14: 00000000000001b5 R15: ffff8e40=
-174201c0
-> [ 6029.069804] FS: =C2=A00000000000000000(0000) GS:ffff8e456fa00000(0000=
-) knlGS:0000000000000000
-> [ 6029.069805] CS: =C2=A00010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 6029.069806] CR2: 0000557e4481c000 CR3: 00000001f5010000 CR4: 00000000=
-00350ee0
-> [ 6029.069807] Call Trace:
-> [ 6029.069808] =C2=A0<TASK>
-> [ 6029.069808] =C2=A0? __btrfs_free_extent.cold+0x91e/0xa24 [btrfs 6809b=
-4e7eeb39a12924341f62dfed6044ab567f0]
-> [ 6029.069847] =C2=A0? __warn+0x7d/0xd0
-> [ 6029.069848] =C2=A0? __btrfs_free_extent.cold+0x91e/0xa24 [btrfs 6809b=
-4e7eeb39a12924341f62dfed6044ab567f0]
-> [ 6029.069887] =C2=A0? report_bug+0xe6/0x150
-> [ 6029.069888] =C2=A0? handle_bug+0x3c/0x80
-> [ 6029.069890] =C2=A0? exc_invalid_op+0x17/0x70
-> [ 6029.069892] =C2=A0? asm_exc_invalid_op+0x1a/0x20
-> [ 6029.069894] =C2=A0? __btrfs_free_extent.cold+0x91e/0xa24 [btrfs 6809b=
-4e7eeb39a12924341f62dfed6044ab567f0]
-> [ 6029.069934] =C2=A0__btrfs_run_delayed_refs+0x2be/0x1080 [btrfs 6809b4=
-e7eeb39a12924341f62dfed6044ab567f0]
-> [ 6029.069972] =C2=A0? psi_task_switch+0xd6/0x230
-> [ 6029.069974] =C2=A0? __switch_to_asm+0x3e/0x60
-> [ 6029.069976] =C2=A0? finish_task_switch.isra.0+0x94/0x2f0
-> [ 6029.069978] =C2=A0btrfs_run_delayed_refs+0x62/0x1b0 [btrfs 6809b4e7ee=
-b39a12924341f62dfed6044ab567f0]
-> [ 6029.070015] =C2=A0btrfs_commit_transaction+0x66/0xc60 [btrfs 6809b4e7=
-eeb39a12924341f62dfed6044ab567f0]
-> [ 6029.070052] =C2=A0? start_transaction+0xc3/0x5f0 [btrfs 6809b4e7eeb39=
-a12924341f62dfed6044ab567f0]
-> [ 6029.070089] =C2=A0transaction_kthread+0x141/0x1b0 [btrfs 6809b4e7eeb3=
-9a12924341f62dfed6044ab567f0]
-> [ 6029.070125] =C2=A0? btrfs_cleanup_transaction.isra.0+0x5e0/0x5e0 [btr=
-fs 6809b4e7eeb39a12924341f62dfed6044ab567f0]
-> [ 6029.070161] =C2=A0kthread+0xde/0x110
-> [ 6029.070163] =C2=A0? kthread_complete_and_exit+0x20/0x20
-> [ 6029.070164] =C2=A0ret_from_fork+0x22/0x30
-> [ 6029.070168] =C2=A0</TASK>
-> [ 6029.070168] ---[ end trace 0000000000000000 ]---
-> [ 6029.070169] BTRFS: error (device nvme0n1p2: state A) in __btrfs_free_=
-extent:3072: errno=3D-2 No such entry
-> [ 6029.070172] BTRFS info (device nvme0n1p2: state EA): forced readonly
-> [ 6029.070173] BTRFS error (device nvme0n1p2: state EA): failed to run d=
-elayed ref for logical 288129302528 num_byte
-> s 16384 type 182 action 2 ref_mod 1: -2
-> [ 6029.070175] BTRFS: error (device nvme0n1p2: state EA) in btrfs_run_de=
-layed_refs:2149: errno=3D-2 No such entry
+> -----------------
 >
+> [root@arrakisvm:~]$ df
+> Filesystem=C2=A0=C2=A0=C2=A0=C2=A0 Type=C2=A0=C2=A0 Size=C2=A0 Used Avai=
+l Use% Mounted on
+> /dev/sdd1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs=C2=A0 2.0T=C2=A0 209G=C2=
+=A0=C2=A0=C2=A0=C2=A0 0 100% /mnt/fileserver-backup
 >
-> btrfs check --readonly /dev/nvme0n1p2
-> Opening filesystem to check...
-> Checking filesystem on /dev/nvme0n1p2
-> UUID: a9754b40-2b24-4756-84de-9286a3eee35a
-> [1/7] checking root items
-> [2/7] checking extents
-> tree extent[288129302528, 16384] parent 626657099776 has no backref item=
- in extent tree
-> tree extent[288129302528, 16384] parent 557937623040 has no tree block f=
-ound
+> [root@arrakisvm:~]$ btrfs fi df /mnt/fileserver-backup
+> Data, single: total=3D1.95TiB, used=3D207.05GiB
 
-This is the cause of that RO flip.
+Is this after you deleted some files? Or exactly where the situation is
+when the ENOSPC happens?
 
-Tree block has incorrect backref, thus above btrfs_run_delayed_refs()
-can not update the backref and results transaction abort.
+If it's the latter case, it looks like a kernel bug that we're
+over-allocating data chunks, and we need to investigate.
+But please provide the initial 'btrfs fi df' output for that case.
 
-Furthermore, this looks like a bitflip of your hardware memory:
-
-626657099776 =3D 0x91e7ac8000
-557937623040 =3D 0x81e7ac8000
-
-Exactly one bit flipped.
-
-Please verify your hardware memory by memtest, and repair the offending
-stick if possible.
-
-Only after the physical memory is fully verified, then you can run
-"btrfs check --repair" on the unmounted fs.
-
-This problem is repairable by btrfs-check.
-
-> incorrect global backref count on 288129302528 found 9 wanted 8
-> backpointer mismatch on [288129302528 16384]
-> ERROR: errors found in extent allocation tree or chunk allocation
-> [3/7] checking free space tree
-> [4/7] checking fs roots
-> root 257 inode 2898321 errors 1, no inode item
-> unresolved ref dir 8303 index 334 namelen 36 name 7c03a3d8-ad08-4634-9a1=
-4-09a3d6bc5866 filetype 2 errors 5, no dir item, no inode ref
-> unresolved ref dir 8303 index 334 namelen 36 name 9e2e9865-2cd5-44b9-971=
-e-e5912c0c3357 filetype 2 errors 2, no dir index
-
-This is another minor problem, but should not cause any transaction abort.
-
-And it's also fixable.
+If it's the former case and you're trying to make up enough space, I'm
+afraid you have to delete more data until one continous 1G chunk is
+freed up, then you can do balance to free up most of the space.
 
 Thanks,
 Qu
-> ERROR: errors found in fs roots
-> found 613545406464 bytes used, error(s) found
-> total csum bytes: 589807276
-> total tree bytes: 2773516288
-> total fs tree bytes: 1971666944
-> total extent tree bytes: 100712448
-> btree space waste bytes: 478904078
-> file data blocks allocated: 1129657352192 referenced 722378301440
+
+> System, DUP: total=3D8.00MiB, used=3D224.00KiB
+> Metadata, DUP: total=3D1.00GiB, used=3D945.61MiB
+> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+>
+> [root@arrakisvm:~]$ btrfs balance start -dusage=3D5 /mnt/fileserver-back=
+up
+> ERROR: error during balancing '/mnt/fileserver-backup': No space left on
+> device
+>
+> [root@arrakisvm:~]$ dmesg
+> [Sun Oct 22 12:31:52 2023] BTRFS info (device sdd1): balance: start
+> -dusage=3D5
+> [Sun Oct 22 12:31:54 2023] BTRFS info (device sdd1): 496 enospc errors
+> during balance
+> [Sun Oct 22 12:31:54 2023] BTRFS info (device sdd1): balance: ended with
+> status: -28
+>
+>
