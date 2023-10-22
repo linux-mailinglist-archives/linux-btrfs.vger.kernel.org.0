@@ -2,116 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAEC7D1D85
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Oct 2023 16:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BE57D20C6
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Oct 2023 04:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbjJUOm0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 21 Oct 2023 10:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
+        id S229623AbjJVCk5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 21 Oct 2023 22:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231177AbjJUOmZ (ORCPT
+        with ESMTP id S229478AbjJVCk4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 21 Oct 2023 10:42:25 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B3DD52
-        for <linux-btrfs@vger.kernel.org>; Sat, 21 Oct 2023 07:42:23 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2DBAB1FD63
-        for <linux-btrfs@vger.kernel.org>; Sat, 21 Oct 2023 14:42:21 +0000 (UTC)
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E89992C21E
-        for <linux-btrfs@vger.kernel.org>; Sat, 21 Oct 2023 14:42:20 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 28B1DDA8A7; Sat, 21 Oct 2023 16:35:30 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs progs release 6.5.3
-Date:   Sat, 21 Oct 2023 16:35:28 +0200
-Message-ID: <20231021143530.7730-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.41.0
+        Sat, 21 Oct 2023 22:40:56 -0400
+Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78FCEDF
+        for <linux-btrfs@vger.kernel.org>; Sat, 21 Oct 2023 19:40:54 -0700 (PDT)
+Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1e9a324c12fso3533985fac.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 21 Oct 2023 19:40:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697942454; x=1698547254;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uU8lb1l1yKfhs7iHHIqOMOJAFdCISWoOXZEw6aTB7b4=;
+        b=U7+C/7oWRRB7tx8oztXGIgtO18jcZ2XEXP1mgpu4qN8X0+zTQ3MLu4ZnMOIHdgtaKp
+         SUt2RW3lYHXQgPcn+ORntLWJlBQRG1aY6sNbrMUuLNbmQ8PwO4A0XP1Zk4D4JHu+niAg
+         ECoQQdWc+pMYpTyc10B+KqTuG5e22Esxy4EhEIImD7FtauBm6GT+livL6Shyf5ddxyCI
+         jrRsVjPMjNBaHjQlrMWTooA6XAualagCxKmgA5EfObEvLmJT18SyQlXEmza6eMHazEj+
+         OS/DA/NalmFSo9VmKQ3mMfx7AvP0YVOr345ZyYtSUaRy5wbCZv633Q4nekQ4o9wPH5z6
+         dMJQ==
+X-Gm-Message-State: AOJu0YxbPLTpkHNY9y/bPgjMhe0JX+1AWXJBOUGueiVA94yojzz1jve6
+        FphSszUVfIAzcYozp/RXtOIHJJQAj8OxxRt+MOJrwFxdXt4y
+X-Google-Smtp-Source: AGHT+IFHZ6P7o+3eMU28/NkHHkQTYEEHjSvBSzx432SAOF7tvLU7F4B1w1hLQmsTWuE5/cSvMxyb5JkINrs9wcT8EwARUgU91GPM
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++++++++++++
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
-        spf=softfail (smtp-out2.suse.de: 149.44.160.134 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [15.00 / 50.00];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         MIME_GOOD(-0.10)[text/plain];
-         PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.60)[~all];
-         RCPT_COUNT_ONE(0.00)[1];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         TO_DN_NONE(0.00)[];
-         VIOLATED_DIRECT_SPF(3.50)[];
-         MX_GOOD(-0.01)[];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         MID_CONTAINS_FROM(1.00)[];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         FORGED_SENDER(0.30)[dsterba@suse.com,dsterba@suse.cz];
-         RCVD_NO_TLS_LAST(0.10)[];
-         R_DKIM_NA(0.20)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         FROM_NEQ_ENVFROM(0.10)[dsterba@suse.com,dsterba@suse.cz];
-         BAYES_HAM(-0.23)[72.55%]
-X-Spam-Score: 15.00
-X-Rspamd-Queue-Id: 2DBAB1FD63
-X-Spam: Yes
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:5692:b0:1ea:1bc4:d06b with SMTP id
+ p18-20020a056870569200b001ea1bc4d06bmr2659490oao.10.1697942453878; Sat, 21
+ Oct 2023 19:40:53 -0700 (PDT)
+Date:   Sat, 21 Oct 2023 19:40:53 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d005440608450810@google.com>
+Subject: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (4)
+From:   syzbot <syzbot+b2869947e0c9467a41b6@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=1.0 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,PLING_QUERY,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Hello,
 
-btrfs-progs version 6.5.3 have been released.  There are bugfixes and some new
-options or commands, update is recommended.
+syzbot found the following issue on:
 
-Changelog:
+HEAD commit:    78124b0c1d10 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1557da89680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f27cd6e68911e026
+dashboard link: https://syzkaller.appspot.com/bug?extid=b2869947e0c9467a41b6
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137ac45d680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e4640b680000
 
-   * mkfs:
-      * add short aliases for -O specification, block-group-tree (bgt),
-        free-space-tree (fst), raid-stripe-tree (rst)
-      * don't try to resize the image (namely when backed by file) when --rootdir
-        contains sparse file larger than the image
-      * also copy xattr/permissions/ugid/timestamps of the top --rootdir directory
-      * add new option --device-uuid to let user specify exact uuid of the
-        device item (only for single device filesystems)
-   * check:
-      * on zoned devices, use correct super block offsets when repairing
-      * check inline extent refs order
-   * subvolume create: add new option --parent to create missing path
-     components of the given path (like mkdir -p)
-   * rescue clear-ino-cache: new command moved from 'btrfs check' implementing
-     the same as option --clear-ino-cache (to be deprecated and removed in the
-     future)
-   * dump-tree: allow '-' in tree identifier names for option -t
-   * btrfstune:
-      * drop short option and add long option to enable squota
-      * tune space reservation and batch size for block-group-tree conversion
-   * scrub status: print correct value of "Bytes scrubbed" for unfinished runs
-   * qgroup show: fix crash when attempting to print path of stale qgroups
-   * experimental features:
-      * move build of raid-stripe-tree out for testing but it's still considered
-        experimental
-   * other:
-      * shell completion updates
-      * sync raid-stripe-tree code with kernel
-      * build fixes
-      * new and updated tests
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/bd512de820ae/disk-78124b0c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a47a437b1d4f/vmlinux-78124b0c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3ae8b966bcd7/Image-78124b0c.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/d5d514495f15/mount_0.gz
 
-Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
-Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
-Release: https://github.com/kdave/btrfs-progs/releases/tag/v6.5.2
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b2869947e0c9467a41b6@syzkaller.appspotmail.com
+
+BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+turning off the locking correctness validator.
+CPU: 0 PID: 5571 Comm: kworker/u4:8 Not tainted 6.6.0-rc6-syzkaller-g78124b0c1d10 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Workqueue: btrfs-cache btrfs_work_helper
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
+ show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ dump_stack+0x1c/0x28 lib/dump_stack.c:113
+ lookup_chain_cache_add kernel/locking/lockdep.c:3815 [inline]
+ validate_chain kernel/locking/lockdep.c:3836 [inline]
+ __lock_acquire+0x1c60/0x75e8 kernel/locking/lockdep.c:5136
+ lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:351 [inline]
+ __clear_extent_bit+0x1b4/0xaf0 fs/btrfs/extent-io-tree.c:596
+ clear_extent_bit fs/btrfs/extent-io-tree.h:146 [inline]
+ clear_extent_bits fs/btrfs/extent-io-tree.h:158 [inline]
+ btrfs_free_excluded_extents fs/btrfs/block-group.c:840 [inline]
+ caching_thread+0x18bc/0x1b64 fs/btrfs/block-group.c:909
+ btrfs_work_helper+0x340/0x1504 fs/btrfs/async-thread.c:314
+ process_one_work+0x694/0x1204 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x938/0xef4 kernel/workqueue.c:2784
+ kthread+0x288/0x310 kernel/kthread.c:388
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
+BTRFS info (device loop0): qgroup scan completed (inconsistency flag cleared)
+BTRFS info (device loop0): qgroup scan completed (inconsistency flag cleared)
+BTRFS info (device loop0): qgroup scan completed (inconsistency flag cleared)
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
