@@ -2,105 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB137D3A22
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Oct 2023 16:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97ABF7D3A02
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Oct 2023 16:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbjJWO55 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Oct 2023 10:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
+        id S234047AbjJWOqU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Oct 2023 10:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233807AbjJWOow (ORCPT
+        with ESMTP id S233929AbjJWOqD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:44:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49717269D;
-        Mon, 23 Oct 2023 07:43:33 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 731642188D;
-        Mon, 23 Oct 2023 14:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698072211;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3mWnimA+rB45DdXIO//K0LJL74BS6+rPPoMNkuJC8w4=;
-        b=C6qrs4g0jsDTg/6TjxWrP2fI0tkZUezsEVX5EraDP83B9ZInndNT3opR3YA/aF4lTpEF6N
-        aGY2OpJHJMZmRIZqm1tdh1N+DEk53L7NbXtq5gbPrRMEfDKLYg2euxd8RXJ/Dyn8OFmrMF
-        q5cV+n9DAXfJ455zH4C3YdIs/XEXqkY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698072211;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3mWnimA+rB45DdXIO//K0LJL74BS6+rPPoMNkuJC8w4=;
-        b=IVdZCgiSzyXjHkb8KY2QiZabkPJ/NYpnPHJVjtkdaw5LEgBoTmgi3WGlOittza//ekkulb
-        CrAHXdpfja+VplDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3E00A139C2;
-        Mon, 23 Oct 2023 14:43:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id OyF7DpOGNmVLdwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 23 Oct 2023 14:43:31 +0000
-Date:   Mon, 23 Oct 2023 16:36:37 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Aleksandr Nogikh <nogikh@google.com>
-Cc:     syzbot <syzbot+b2869947e0c9467a41b6@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (4)
-Message-ID: <20231023143637.GI26353@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <000000000000d005440608450810@google.com>
- <20231023130830.GG26353@twin.jikos.cz>
- <CANp29Y4VNqAX0oPiGy557ubwQKjhWVbwjT7xdCBGLricJPJ5Yg@mail.gmail.com>
+        Mon, 23 Oct 2023 10:46:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBF719BF;
+        Mon, 23 Oct 2023 07:45:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF8D9C433C8;
+        Mon, 23 Oct 2023 14:45:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698072325;
+        bh=91a8VTs5JN9FYOXvxMQyestaa0PVYwRW42Ibsjs911E=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=lw4U4lAm7e7JjW7Twvx7dgnksnYjCafBZjdBtHp7UbNsZHBlltPUjwfAD3JJFobKK
+         YIclYbYbnUXV5wDd2QspXHH9j3ucue+ZaTh8WNKSNUeTT/zLjHvLj66WkoBv8ulyOf
+         /Qv0AVua2uCdW5bGV8Cx4N0ZBEiJ+F4c4V294klGZ4ucUjKrlazSO4ZiZLDV/8FzNB
+         yLpgjO9W+9YWCxRVa7jC03OI5RCnXRFtulL6oqaHgwpyiygr5K7T2jXwtye9F11REE
+         kyv23w34L5LNcObGEo7dvTpRRTVoq1aV70DkpmXFK+3I1AVp4x103QxLNAhdlZnnU/
+         zeSwwb9tkPHlA==
+Message-ID: <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Mon, 23 Oct 2023 10:45:21 -0400
+In-Reply-To: <ZTWfX3CqPy9yCddQ@dread.disaster.area>
+References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
+         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
+         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
+         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+         <ZTGncMVw19QVJzI6@dread.disaster.area>
+         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+         <ZTWfX3CqPy9yCddQ@dread.disaster.area>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANp29Y4VNqAX0oPiGy557ubwQKjhWVbwjT7xdCBGLricJPJ5Yg@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -8.30
-X-Spamd-Result: default: False [-8.30 / 50.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.30)[dsterba@suse.cz];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=f27cd6e68911e026];
-         TAGGED_RCPT(0.00)[b2869947e0c9467a41b6];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         REPLY(-4.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BAYES_HAM(-3.00)[100.00%];
-         SUBJECT_HAS_QUESTION(0.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         SUBJECT_HAS_EXCLAIM(0.00)[];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PLING_QUERY,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,50 +79,171 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 03:30:16PM +0200, Aleksandr Nogikh wrote:
-> On Mon, Oct 23, 2023 at 3:15 PM David Sterba <dsterba@suse.cz> wrote:
-> >
-> > On Sat, Oct 21, 2023 at 07:40:53PM -0700, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    78124b0c1d10 Merge branch 'for-next/core' into for-kernelci
-> > > git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1557da89680000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=f27cd6e68911e026
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=b2869947e0c9467a41b6
-> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > > userspace arch: arm64
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137ac45d680000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e4640b680000
-> > >
-> > > Downloadable assets:
-> > > disk image: https://storage.googleapis.com/syzbot-assets/bd512de820ae/disk-78124b0c.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/a47a437b1d4f/vmlinux-78124b0c.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/3ae8b966bcd7/Image-78124b0c.gz.xz
-> > > mounted in repro: https://storage.googleapis.com/syzbot-assets/d5d514495f15/mount_0.gz
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+b2869947e0c9467a41b6@syzkaller.appspotmail.com
-> > >
-> > > BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-> >
-> > #syz invalid
-> >
-> > This is a frequent warning, can be worked around by increasing
-> > CONFIG_LOCKDEP_CHAINS_BITS in config (18 could be a good value but may
-> > still not be enough).
-> 
-> By invalidating a frequently occurring issue we only cause syzbot to
-> report it once again, so it's better to keep the report open until the
-> root cause is resolved. There'll likely be a report (5) soon.
+On Mon, 2023-10-23 at 09:17 +1100, Dave Chinner wrote:
+> On Fri, Oct 20, 2023 at 08:12:45AM -0400, Jeff Layton wrote:
+> > On Fri, 2023-10-20 at 09:02 +1100, Dave Chinner wrote:
+> > > On Thu, Oct 19, 2023 at 07:28:48AM -0400, Jeff Layton wrote:
+> > > > On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
+> > > > > > Back to your earlier point though:
+> > > > > >=20
+> > > > > > Is a global offset really a non-starter? I can see about doing =
+something
+> > > > > > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly =
+as cheap
+> > > > > > as ktime_get_coarse_ts64. I don't see the downside there for th=
+e non-
+> > > > > > multigrain filesystems to call that.
+> > > > >=20
+> > > > > I have to say that this doesn't excite me. This whole thing feels=
+ a bit
+> > > > > hackish. I think that a change version is the way more sane way t=
+o go.
+> > > > >=20
+> > > >=20
+> > > > What is it about this set that feels so much more hackish to you? M=
+ost
+> > > > of this set is pretty similar to what we had to revert. Is it just =
+the
+> > > > timekeeper changes? Why do you feel those are a problem?
+> > > >=20
+> > > > > >=20
+> > > > > > On another note: maybe I need to put this behind a Kconfig opti=
+on
+> > > > > > initially too?
+> > > > >=20
+> > > > > So can we for a second consider not introducing fine-grained time=
+stamps
+> > > > > at all. We let NFSv3 live with the cache problem it's been living=
+ with
+> > > > > forever.
+> > > > >=20
+> > > > > And for NFSv4 we actually do introduce a proper i_version for all
+> > > > > filesystems that matter to it.
+> > > > >=20
+> > > > > What filesystems exactly don't expose a proper i_version and what=
+ does
+> > > > > prevent them from adding one or fixing it?
+> > > >=20
+> > > > Certainly we can drop this series altogether if that's the consensu=
+s.
+> > > >=20
+> > > > The main exportable filesystem that doesn't have a suitable change
+> > > > counter now is XFS. Fixing it will require an on-disk format change=
+ to
+> > > > accommodate a new version counter that doesn't increment on atime
+> > > > updates. This is something the XFS folks were specifically looking =
+to
+> > > > avoid, but maybe that's the simpler option.
+> > >=20
+> > > And now we have travelled the full circle.
+> > >=20
+> >=20
+> > LOL, yes!
+> >=20
+> > > The problem NFS has with atime updates on XFS is a result of
+> > > the default behaviour of relatime - it *always* forces a persistent
+> > > atime update after mtime has changed. Hence a read-after-write
+> > > operation will trigger an atime update because atime is older than
+> > > mtime. This is what causes XFS to run a transaction (i.e. a
+> > > persistent atime update) and that bumps iversion.
+> > >=20
+> >=20
+> > Those particular atime updates are not a problem. If we're updating the
+> > mtime and ctime anyway, then bumping the change attribute is OK.
+> >=20
+> > The problem is that relatime _also_ does an on-disk update once a day
+> > for just an atime update. On XFS, this means that the change attribute
+> > also gets bumped and the clients invalidate their caches all at once.
+> >=20
+> > That doesn't sound like a big problem at first, but what if you're
+> > sharing a multi-gigabyte r/o file between multiple clients? This sort o=
+f
+> > thing is fairly common on render-farm workloads, and all of your client=
+s
+> > will end up invalidating their caches once once a day if you're serving
+> > from XFS.
+>=20
+> So we have noatime inode and mount options for such specialised
+> workloads that cannot tolerate cached ever being invalidated, yes?
+>=20
+> > > lazytime does not behave this way - it delays all persistent
+> > > timestamp updates until the next persistent change or until the
+> > > lazytime aggregation period expires (24 hours). Hence with lazytime,
+> > > read-after-write operations do not trigger a persistent atime
+> > > update, and so XFS does not run a transaction to update atime. Hence
+> > > i_version does not get bumped, and NFS behaves as expected.
+> > >=20
+> >=20
+> > Similar problem here. Once a day, NFS clients will invalidate the cache
+> > on any static content served from XFS.
+>=20
+> Lazytime has /proc/sys/vm/dirtytime_expire_seconds to change the
+> interval that triggers persistent time changes. That could easily be
+> configured to be longer than a day for workloads that care about
+> this sort of thing. Indeed, we could just set up timestamps that NFS
+> says "do not make persistent" to only be persisted when the inode is
+> removed from server memory rather than be timed out by background
+> writeback....
+>=20
+> -----
+>=20
+> All I'm suggesting is that rather than using mount options for
+> noatime-like behaviour for NFSD accesses, we actually have the nfsd
+> accesses say "we'd like pure atime updates without iversion, please".
+>=20
+> Keep in mind that XFS does actually try to avoid bumping i_version
+> on pure timestamp updates - we carved that out a long time ago (see
+> the difference in XFS_ILOG_CORE vs XFS_ILOG_TIMESTAMP in
+> xfs_vn_update_time() and xfs_trans_log_inode()) so that we could
+> optimise fdatasync() to ignore timestamp updates that occur as a
+> result of pure data overwrites.
+>=20
+> Hence XFS only bumps i_version for pure timestamp updates if the
+> iversion queried flag is set. IOWs, XFS it is actually doing exactly
+> what the VFS iversion implementation is telling it to do with
+> timestamp updates for non-core inode metadata updates.
+>=20
+> That's the fundamental issue here: nfsd has set VFS state that tells
+> the filesystem to "bump iversion on next persistent inode change",
+> but the nfsd then runs operations that can change non-critical
+> persistent inode state in "query-only" operations. It then expects
+> filesystems to know that it should ignore the iversion queried state
+> within this context.  However, without external behavioural control
+> flags, filesystems cannot know that an isolated metadata update has
+> context specific iversion behavioural constraints.
 
-The root cause is somewhere in lockdep and not easy to fix so we'll have
-to see the duplicate reports or
+> Hence fixing this is purely a VFS/nfsd i_version implementation
+> problem - if the nfsd is running a querying operation, it should
+> tell the filesystem that it should ignore iversion query state. If
+> nothing the application level cache cares about is being changed
+> during the query operation, it should tell the filesystem to ignore
+> iversion query state because it is likely the nfsd query itself will
+> set it (or have already set it itself in the case of compound
+> operations).
+>=20
+> This does not need XFS on-disk format changes to fix. This does not
+> need changes to timestamp infrastructure to fix. We just need the
+> nfsd application to tell us that we should ignore the vfs i_version
+> query state when we update non-core inode metadata within query
+> operation contexts.
+>=20
 
-> We keep CONFIG_LOCKDEP_CHAINS_BITS at 16 for arm64 because (at least
-> in 2022) the kernel used not to boot on GCE arm64 VMs with
-> CONFIG_LOCKDEP_CHAINS_BITS=18. Maybe it's time to try it once more.
 
-yeah, you can increase the config value.
+I think you're missing the point of the problem I'm trying to solve.
+I'm not necessarily trying to guard nfsd against its own accesses. The
+reads that trigger an eventual atime update could come from anywhere --
+nfsd, userland accesses, etc.
+
+If you are serving an XFS filesystem, with the (default) relatime mount
+option, then you are guaranteed that the clients will invalidate their
+cache of a file once per day, assuming that at least one read was issued
+against the file during that day.
+
+That read will cause an eventual atime bump to be logged, at which point
+the change attribute will change. The client will then assume that it
+needs to invalidate its cache when it sees that change.
+
+Changing how nfsd does its own accesses won't fix anything, because the
+problematic atime bump can come from any sort of read access.
+--=20
+Jeff Layton <jlayton@kernel.org>
