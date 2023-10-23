@@ -2,106 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D03F7D3A3B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Oct 2023 17:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01BC7D3A62
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Oct 2023 17:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229569AbjJWPC0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Oct 2023 11:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55768 "EHLO
+        id S230158AbjJWPKm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Oct 2023 11:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjJWPC0 (ORCPT
+        with ESMTP id S229498AbjJWPKl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:02:26 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008EF83
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Oct 2023 08:02:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 938661FE17;
-        Mon, 23 Oct 2023 15:02:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698073342;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uDSJgu8A5abKiiIAE3xyF4tMLm/8QDBDWFQz5Cogg4U=;
-        b=P04lGeKfGYiyWsEkbaWBBaB8Yiby/qc91OYf305FJi2vKwegGbQXSHmeiSwxrxwxub3StK
-        NtYSmBX3n6nM//ZDZB+e9B7snOPAXW9mDKWC/3D7dssP5idhhUtHc+MQKyspmHor9zqqZH
-        jthP7V7pTLJVV0+TYBAhzQ43oFHm/VE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698073342;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uDSJgu8A5abKiiIAE3xyF4tMLm/8QDBDWFQz5Cogg4U=;
-        b=w8Up9gmI9VUfpIpMsFRi/VNsXUxOISYbGuyYgieyEuusTglZWfHDa+oioSck1Qk4jAH9Vs
-        oIvysoB2gmHzZQBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 70721139C2;
-        Mon, 23 Oct 2023 15:02:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8seqGv6KNmXYAgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 23 Oct 2023 15:02:22 +0000
-Date:   Mon, 23 Oct 2023 16:55:29 +0200
-From:   David Sterba <dsterba@suse.cz>
+        Mon, 23 Oct 2023 11:10:41 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EC590
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Oct 2023 08:10:34 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59b5484fbe6so35673077b3.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Oct 2023 08:10:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1698073833; x=1698678633; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KT/yC7uPar1/8Ex9cQ/S9J2X1+tzCHBSayZxtj5rwtA=;
+        b=S18kDEOj6zG/riOsexBU/GJAOiI0WmxUg1KXoqZlH3+ZP+rHf5MUyZ3uC9ozEzZU7g
+         SzHvvHgEXWeP+T0CToHBGm6wy9hT5Pi/BqUnh7lh8VA3cFz0kNDoW0Q+BU/1p0G4z8WG
+         rw8TlVZ+AY6IlCudc1WtgfTZg7u1mKRGY8mRegBlYPJ2ivGkptez394Ntp7BIzSkPR5k
+         G9oGQB29PFc0vQTtoWpNjKtpsW0BZQBVEr2hmuIRYIzBbeLIvLuX/wbIXXpB/KtSPZT7
+         qlXUzToEHvGq6sUtUGnmkIkJ9ZU944OqSaN7zjEQ0iBFKp8S5HTBYuk75+UKK7jVSZZl
+         utcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698073833; x=1698678633;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KT/yC7uPar1/8Ex9cQ/S9J2X1+tzCHBSayZxtj5rwtA=;
+        b=LrPSsC8Tfw4QUoYIafh0qSZUxrqHll6sVSgGqAhvlVFCOPnMiyQUbgjY5J1yvH5au3
+         FiGWk+7Y9lCB49bt9FEZt8s8B/nxi+zcWp9X0Ib+x0DBJe0T1XjKzsyOcbGbtvKkfcao
+         JJsr3yevbZqfUlk47LOcwNBgr8CotZYCHFcCazVIGADLKDk9y1S8+tKIZc9EdpzvMQxH
+         +b+lawE96Sn9+HN4K1zKrvFesgmEjGNkHS/AyEpYm+Wu27IowknMlKC/Y+SgqE2Ism4J
+         V5tF7z7drp95ow/YpF5fP+2IqgSte0LiYiTnf4hVcH0PL6itY/xUzb3lGkILdkmd7TCj
+         M18w==
+X-Gm-Message-State: AOJu0YxN6oACsF/NHOKdErMVf+l70lReq/s50iUG+gG++w0ZDj9cyY/8
+        J2fF2m9NAoQQtH5QkWrts1KocA==
+X-Google-Smtp-Source: AGHT+IFikmGkJ7Nzuv7LRFMijQJRvhXqDUCUJXPVUuEPr4RZpR/9XtNJFAPFSsvg+ch/pYzgZToz+Q==
+X-Received: by 2002:a0d:e347:0:b0:5a8:1d75:65c3 with SMTP id m68-20020a0de347000000b005a81d7565c3mr10397114ywe.13.1698073833709;
+        Mon, 23 Oct 2023 08:10:33 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id d5-20020a0ddb05000000b005a80102fe3bsm3227059ywe.13.2023.10.23.08.10.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 08:10:33 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 11:10:31 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
 To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove log_extents_lock and logged_list from
- struct btrfs_root
-Message-ID: <20231023145529.GK26353@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <ab9b3104c0c49f8605cf7c4e57b1370a350a11ef.1697716246.git.fdmanana@suse.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: test snapshoting a subvolume that was just created
+Message-ID: <20231023151031.GA2798160@perftesting>
+References: <3149ccc2900f5574a046e675a6db79b019af2bac.1697718086.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ab9b3104c0c49f8605cf7c4e57b1370a350a11ef.1697716246.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -6.11
-X-Spamd-Result: default: False [-6.11 / 50.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.30)[dsterba@suse.cz];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         TO_DN_NONE(0.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWO(0.00)[2];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-2.31)[96.76%]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <3149ccc2900f5574a046e675a6db79b019af2bac.1697718086.git.fdmanana@suse.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 12:52:18PM +0100, fdmanana@kernel.org wrote:
+On Thu, Oct 19, 2023 at 01:23:49PM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> The logged_list[2] and log_extents_lock[2] members of struct btrfs_root
-> are no longer used, their last use was removed in commit 5636cf7d6dc8
-> ("btrfs: remove the logged extents infrastructure"). So remove these
-> fields. This reduces the size of struct btrfs_root, on a release kernel,
-> from 1392 bytes down to 1352 bytes.
+> Test that snapshoting a new subvolume (created in the current transaction)
+> that has a btree with a height > 1, works and does not result in a fs
+> corruption.
+> 
+> This exercises a regression introduced in kernel 6.5 by the kernel commit:
+> 
+>   1b53e51a4a8f ("btrfs: don't commit transaction for every subvol create")
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Added to misc-next, thanks.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
