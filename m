@@ -2,88 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2D47D3F86
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Oct 2023 20:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7EF7D3FA8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Oct 2023 20:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbjJWSte (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Oct 2023 14:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
+        id S229794AbjJWS6I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Oct 2023 14:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjJWStd (ORCPT
+        with ESMTP id S229491AbjJWS6H (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Oct 2023 14:49:33 -0400
+        Mon, 23 Oct 2023 14:58:07 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88588127
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Oct 2023 11:49:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC06B6
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Oct 2023 11:58:06 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 039F51FD80;
-        Mon, 23 Oct 2023 18:49:30 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5DDAD1FD80;
+        Mon, 23 Oct 2023 18:58:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698086970;
+        t=1698087484;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Vcyzo9rT5KRYVMAzbC/vK/mq70r5GzOzj9SOHEA4S6I=;
-        b=qm0+nbZBjuyxNLDhN2cjhcsOC5za2fV/oqimV91Af3GlTv4x8y1QJxoTk1qTjpLZjl9DfZ
-        ncR/rYZlDUtcG6Wr//kDv07O1nu/U4+BmW52s8kez4f7oLTe34ira+tbkBXDALlblKIHSt
-        vDMtDgcGNxfFqcLP6PK/URkXUsyeAyA=
+        bh=VoROHhhitq94s4FTjxFGlU2Ucx47iBjoH07NquNcGUQ=;
+        b=R0IrMsuJSHj2/gixWtcUjLJ8Q4JxbTuA220zglQTpX0PqqYfOqjUEYQk79fxRhDLvO9Ot2
+        dNv09op/SO0/waWaoZyPUwH2VPC16xWdR6qZ+HO0V9+gvMuj297NzB7pECFIszlr3rT0YA
+        0hjC+8DbvNHnpkqeVqcCjA/3F3uNUx4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698086970;
+        s=susede2_ed25519; t=1698087484;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Vcyzo9rT5KRYVMAzbC/vK/mq70r5GzOzj9SOHEA4S6I=;
-        b=dDo/jx+dZZydzTOPL5mhr6wIm5uosX5I9totwQOLHE+95Ws1YJMq76PAE5/ZkC2ODaV3mC
-        ngrbRxundKebbOAQ==
+        bh=VoROHhhitq94s4FTjxFGlU2Ucx47iBjoH07NquNcGUQ=;
+        b=lHy76xQWp5v3pGwCy89rG4Ze8orr1FSNO85KctWl/imt8inZFf1C5Jvr6h5SxNLz0cCj/4
+        HJ2pDnOeL15WlFDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C5D6B139C2;
-        Mon, 23 Oct 2023 18:49:29 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 41CA0139C2;
+        Mon, 23 Oct 2023 18:58:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id /mZ3LznANmX2dAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 23 Oct 2023 18:49:29 +0000
-Date:   Mon, 23 Oct 2023 20:42:36 +0200
+        id hnBTDzzCNmXKeAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 23 Oct 2023 18:58:04 +0000
+Date:   Mon, 23 Oct 2023 20:51:10 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: fix a corruption after snapshoting a new
- subvolume
-Message-ID: <20231023184236.GM26353@twin.jikos.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-dev-docs: add document for RAID stripe tree
+Message-ID: <20231023185110.GN26353@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1697716427.git.fdmanana@suse.com>
+References: <20230918140515.2597127-1-johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1697716427.git.fdmanana@suse.com>
+In-Reply-To: <20230918140515.2597127-1-johannes.thumshirn@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Authentication-Results: smtp-out2.suse.de;
         none
 X-Spam-Level: 
-X-Spam-Score: -5.62
-X-Spamd-Result: default: False [-5.62 / 50.00];
+X-Spam-Score: -6.09
+X-Spamd-Result: default: False [-6.09 / 50.00];
          ARC_NA(0.00)[];
          HAS_REPLYTO(0.30)[dsterba@suse.cz];
          RCVD_VIA_SMTP_AUTH(0.00)[];
          FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[3];
+         TO_DN_SOME(0.00)[];
          TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
          MIME_GOOD(-0.10)[text/plain];
          REPLYTO_ADDR_EQ_FROM(0.00)[];
-         TO_DN_NONE(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
          DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
          NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWO(0.00)[2];
          FROM_EQ_ENVFROM(0.00)[];
          MIME_TRACE(0.00)[0:+];
          RCVD_COUNT_TWO(0.00)[2];
          RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-1.82)[93.95%]
+         BAYES_HAM(-2.29)[96.68%]
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
@@ -94,26 +93,14 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 01:19:27PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Mon, Sep 18, 2023 at 07:05:11AM -0700, Johannes Thumshirn wrote:
+> Add a document describing the layout and functionallity of the newly
+> introduced RAID Stripe Tree.
 > 
-> Starting with kernel 6.5, we no longer commit the transaction used to
-> create a subvolume when we finish creating the subvolume. This behaviour
-> was introduced for performance reasons and done with commit 1b53e51a4a8f
-> ("btrfs: don't commit transaction for every subvol create"). However this
-> allows for a corruption if we snapshot a subvolume created in the current
-> transaction, where basically we get a snapshot root that points to an
-> extent buffer that was not written. This makes attempt to read the extent
-> buffer later to fail, either with the infamous "parent transid verify
-> failed ..." error or with checksum failures.
-> 
-> More details on the changelog of the first patch, and the remaining patches
-> are just cleanups.
-> 
-> Filipe Manana (3):
->   btrfs: fix unwritten extent buffer after snapshoting a new subvolume
->   btrfs: use bool for return type of btrfs_block_can_be_shared()
->   btrfs: make the logic from btrfs_block_can_be_shared() easier to read
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Thanks for catching it and for the fix, patch has been meanwhile merged
-to 6.6-rc7 so it'll be in the next stable update.
+I've added the document to btrfs-progs, the btrfs-dev-docs repo is not
+much updated nor visible. The development documenation could be next to
+the user documentation on the rtfd.io site. As this is .txt I haven't
+reformatted it to RST, for publishing on web this needs to be done
+first. Thanks.
