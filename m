@@ -2,109 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 476DA7D2949
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Oct 2023 06:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2C37D2ABF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Oct 2023 08:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbjJWETc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Oct 2023 00:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52204 "EHLO
+        id S229513AbjJWGza (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Oct 2023 02:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjJWETb (ORCPT
+        with ESMTP id S229450AbjJWGz3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Oct 2023 00:19:31 -0400
-X-Greylist: delayed 92 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 22 Oct 2023 21:19:27 PDT
-Received: from omta037.useast.a.cloudfilter.net (omta037.useast.a.cloudfilter.net [44.202.169.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA537F5;
-        Sun, 22 Oct 2023 21:19:27 -0700 (PDT)
-Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
-        by cmsmtp with ESMTPS
-        id uleKqckAjWcCIumO3qb9Bo; Mon, 23 Oct 2023 04:17:55 +0000
-Received: from 162-240-83-27.unifiedlayer.com ([137.59.148.200])
-        by cmsmtp with ESMTPS
-        id umO1qoa5ZTbebumO2q7k56; Mon, 23 Oct 2023 04:17:54 +0000
-X-Authority-Analysis: v=2.4 cv=E8LeGIRl c=1 sm=1 tr=0 ts=6535f3f2
- a=MgGYFET5X96nYrQ76toljg==:117 a=32wkWZdPouleh9wPFPhphQ==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=kj9zAlcOel0A:10 a=bhdUkHdE2iEA:10 a=lUDAUsI-kUQA:10
- a=9m64_h_j2zU8ieQoq-sA:9 a=CjuIK1q_8ugA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=35686686.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Sender:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Dm1nus89JLbD/65ItGQLhdR/UwQLhddPM+BxEJ7yOwM=; b=PUqKfgRig+pZKS3FGcmiR/SFev
-        Ir0wJh9Rn+3ERSG9EZWXUIwwkBhBvTv/K+zr7llwyUij7W7GrXeQNFseXy5ZGRehyQkV7Im/sBSnW
-        ZW1RFjZ+/Tmt25XwSXgiWJpXzn9YLh/NQXbe9Ptdr0cTtL6CdnKPOMgXgIuWtHCFsYSL83sNrr9fg
-        oCWirZBXSfna5czQWjJaNs3dSoQM4R9wDeQBrA9dVkXIm3Muig4FWV/lPBkQoPYlEStLLChltObtL
-        Sy2QtFxmR6xsbqZf2Wj8Nh1tmj6WCiUL+cPR6p4WRPDflwUWmUYHaLFemYk5AuO1grn5sP4MYGfeG
-        noqvYFUA==;
-Received: from md-hk-12.webhostbox.net ([137.59.148.200]:32260)
-        by md-hk-12.webhostbox.net with esmtpa (Exim 4.96.2)
-        (envelope-from <jc@35686686.com>)
-        id 1qukGq-002oZ1-1e;
-        Mon, 23 Oct 2023 07:32:20 +0530
-Received: from [181.214.94.88]
- by 35686686.com
- with HTTP (HTTP/1.1 POST); Mon, 23 Oct 2023 07:32:11 +0530
+        Mon, 23 Oct 2023 02:55:29 -0400
+Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96292EE
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Oct 2023 23:55:26 -0700 (PDT)
+Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: h.reindl@thelounge.net)
+        by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4SDQth4pk4zXRY;
+        Mon, 23 Oct 2023 08:55:24 +0200 (CEST)
+Message-ID: <78d67a9f-9b9f-436c-884a-9659864d7757@thelounge.net>
+Date:   Mon, 23 Oct 2023 08:55:24 +0200
 MIME-Version: 1.0
-Date:   Mon, 23 Oct 2023 10:02:11 +0800
-From:   jc@35686686.com
-To:     undisclosed-recipients:;
-Subject: LOAN SCHEME
-Reply-To: info@kafurinvestment.com
-Mail-Reply-To: info@kafurinvestment.com
-User-Agent: Roundcube Webmail/1.6.0
-Message-ID: <444dc5ecb83daa7b98458b69e615a708@35686686.com>
-X-Sender: jc@35686686.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: BTRF: no free space
+Content-Language: en-US
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <2856c6f2-8d3c-412b-a012-a8151a4b1392@thelounge.net>
+ <9760a471-6473-4c11-a807-ded4bb2833e2@gmx.com>
+From:   Reindl Harald <h.reindl@thelounge.net>
+Autocrypt: addr=h.reindl@thelounge.net; keydata=
+ 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
+ K4rYsjPimkSIVdrNM//wVKdCTbO+
+Organization: the lounge interactive design
+In-Reply-To: <9760a471-6473-4c11-a807-ded4bb2833e2@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - md-hk-12.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - 35686686.com
-X-BWhitelist: no
-X-Source-IP: 137.59.148.200
-X-Source-L: No
-X-Exim-ID: 1qukGq-002oZ1-1e
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: md-hk-12.webhostbox.net [137.59.148.200]:32260
-X-Source-Auth: jc@35686686.com
-X-Email-Count: 0
-X-Org:  HG=dishared_whb_net_legacy;ORG=directi;
-X-Source-Cap: ZmJkZXN4amc7Ymx1ZWhvc3Q7bWQtaGstMTIud2ViaG9zdGJveC5uZXQ=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfODYBkE0Ew/e76bFA5sYZIlzm61ztzqO4VdblE3rGKcPU99NL3B9NrOQxHnqENTmSMi32Ar5x+auiKKu2DYgyWGs5pp5akxInMwWM9CJGva8KRwo8tYv
- o2ss0WwK1mkntpNfBoSmANvtgNrRJXXIZUVGK4F1vu5PzrEktoX4dc59/WjrO34w7adxgTHBB0F5s/BAkdDgri4Pmy9aw0xliQoV6ve6xeb46FxSPrCx1vLE
- hMX3TWwvfNGU5+6UVt4T9X10pCiCWv66gK6Np7bi3fX7jteayBzVpUSuhDpKt8KBVzU7BNaBN6Pqr/HXniZE6y9m57//5cG9cR0xzfSAIzsKKsEUnUsqo4t8
- GedMoFmfj10f0GdwrDTxAjMqXY0Wi+32g7pazSCByimXAxKZjf/z0OVINkQwWD5D39E8CDBqkHKstJ5oTPracMH1631k0Ht5eTksnj53uyTWhpEd/9lzO3a+
- C5s3FpXY7cGcvGUw
-X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_50,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,SUBJ_ALL_CAPS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greetings:
 
-I am Mr. Faheem Badawi, working as a project facilitator for (Kafur 
-Project Management Services) also, with numerous investors worldwide. As 
-a means of widening our global portfolio we would like to know if you 
-have any project(s) requiring funding. We also offer business, personal 
-and home loans to finance new projects as well as expansion capital.
 
-For more updates on the mode of operation send a reply.
+Am 22.10.23 um 23:33 schrieb Qu Wenruo:
+> On 2023/10/22 21:13, Reindl Harald wrote:
+>> this is a *new* filesystem and somewhere in the middle of the night at
+>> 10% usage a large rsync stopped because BTRF thinks the filesystem is
+>> full - how is this possible in 2023?
+>>
+>> Metadata, DUP: total=1.00GiB, used=945.61MiB
+> 
+> Metadata is already exhausted. 
+> Thus no way to start balance.
 
-Waiting for your prompt response.
+pervert on a fresh 2 TB filesystem with 200 GB data in 2023 especially 
+because i found "btrfs filesystem resize -100M" as solution which worked 
+and afterwards balance was possible again
 
-Kind regards,
-Faheem Badawi.
-(Financial Advisory - KPMS)
+nearly as laughable as a small ext4 filesystem come swith defualts that 
+you get a warning it's not useable after 2038
