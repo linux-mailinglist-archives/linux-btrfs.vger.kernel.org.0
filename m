@@ -2,126 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 081D07D5C58
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Oct 2023 22:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 871D77D5C48
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Oct 2023 22:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344023AbjJXUXo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Oct 2023 16:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
+        id S1344267AbjJXUTX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Oct 2023 16:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343752AbjJXUXn (ORCPT
+        with ESMTP id S1343752AbjJXUTW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Oct 2023 16:23:43 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D18E8
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Oct 2023 13:23:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C803721C73;
-        Tue, 24 Oct 2023 20:23:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698179019;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cuzpuOThUCRn/A15vKeNH4hW91VzDigksxOUCk6k5k0=;
-        b=hML+tVQo4CIRW6pnUyilXl/CfprdiP56haSAveWth94vna4C9gxCsfM2UamERcAZ5Mjypy
-        LG1prl4G8k43f5i3LcbV5alM2kpfCxzvdQrgT/gEAJDJC0DpxDQDwAQfSpf14YH9jE775s
-        u7W4Ji9dlLoaRFHsmH2FMuoeFRBhqFU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698179019;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cuzpuOThUCRn/A15vKeNH4hW91VzDigksxOUCk6k5k0=;
-        b=sAWEYEnQM6vd++3TJtUSITC9GLAAAVwVmhEjGSKge6RjrDMp26ZN86ZEI8xyJRNQZlO0/m
-        vph9nzRDRqYsjEBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A2A601391C;
-        Tue, 24 Oct 2023 20:23:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id k4DyJssnOGV8WgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 24 Oct 2023 20:23:39 +0000
-Date:   Tue, 24 Oct 2023 22:16:45 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: move space cache removal to rescue group
-Message-ID: <20231024201645.GV26353@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <b64e4bc22f58a826d65aae73c2eed9ca029f1dca.1698139433.git.wqu@suse.com>
+        Tue, 24 Oct 2023 16:19:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A70CD7A;
+        Tue, 24 Oct 2023 13:19:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63283C433C7;
+        Tue, 24 Oct 2023 20:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698178760;
+        bh=/jXqC7vbvPCmettO3DV3ntCzZ6lqFawlTkTOPw+dpkg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=cNFVEaHU/JSGFWmYYSgGbEUwcbU6E57XzHmF6PqxxLbNxe6qOiw0skHlgT2FAmt4E
+         pi7vTvmXtMoxa+QN5NsjIdLL7cod+koC+MMTHlEpmPJUMjUC2aCFbd6V/QPJYLMFs8
+         HeGKpzhI7MJVwlt6Q6WqHDPcW/boyVT98qJk/U++wdAZeq1FkdpLsbC5n4rWR+02Sm
+         4Zz7+vBjkN7QlHu9uefsCd9OegvQAC62mZ6Y5yTZ4a6WJMK/LSFJN+jV5JHIiYtpq6
+         BfJsXaU5B0axY0tFkCUNbOVQ0CdE3cC5UHu6WxcIlleK2U9pGJasSUCR6GhHkowEoo
+         o0g7zaVbON3Zw==
+Message-ID: <62828738f237c3d972f71f8da150b3366eb3e1a0.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Tue, 24 Oct 2023 16:19:17 -0400
+In-Reply-To: <CAHk-=wibJqQGBXAr2S69FifUXdJJ=unAQT5ag0qRSQNxGk31Lw@mail.gmail.com>
+References: <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
+         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+         <ZTGncMVw19QVJzI6@dread.disaster.area>
+         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+         <ZTWfX3CqPy9yCddQ@dread.disaster.area>
+         <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+         <2c74660bc44557dba8391758535e4012cbea3724.camel@kernel.org>
+         <CAHk-=wibJqQGBXAr2S69FifUXdJJ=unAQT5ag0qRSQNxGk31Lw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b64e4bc22f58a826d65aae73c2eed9ca029f1dca.1698139433.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -7.86
-X-Spamd-Result: default: False [-7.86 / 50.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.30)[dsterba@suse.cz];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         REPLY(-4.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWO(0.00)[2];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.06)[60.82%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 07:53:57PM +1030, Qu Wenruo wrote:
-> The option "--clear-space-cache" is not really that suitable for "btrfs
-> check" group, as there are some concerns:
-> 
-> - Allowing transid mismatch
-> - No leaf item checks
-> 
->   Those behaviors are inherited from the default open ctree flags for
->   "btrfs check", which can be unsafe if the end user just wants to clear
->   the cache.
-> 
-> - Unclear if the the cache clearing would happen along with repair
-> 
->   Thankfully the clearing of space cache is done without any repair
-> 
-> Thus there is a proposal to move space cache removal to rescue group,
-> and this patch would do that exactly.
-> 
-> However this would lead to some behavior changes:
-> 
-> - Transid mismatch would be treated as error
-> - Leaf items size/offset would still be checked
-> 
->   If we hit any above error, we should just abort without doing any
->   write.
-> 
-> These change would increase the safety of the space cache removal, thus
-> I believe it's worthy to introduce such behavior change.
+On Tue, 2023-10-24 at 09:40 -1000, Linus Torvalds wrote:
+> On Tue, 24 Oct 2023 at 09:07, Jeff Layton <jlayton@kernel.org> wrote:
+> >=20
+> > The new flag idea is a good one. The catch though is that there are no
+> > readers of i_version in-kernel other than NFSD and IMA, so there would
+> > be no in-kernel users of I_VERSION_QUERIED_STRICT.
+>=20
+> I actually see that as an absolute positive.
+>=20
+> I think we should *conceptually* do those two flags, but then realize
+> that there are no users of the STRICT version, and just skip it.
+>=20
+> So practically speaking, we'd end up with just a weaker version of
+> I_VERSION_QUERIED that is that "I don't care about atime" case.
+>=20
 
-I haven't thought about the safety reasons above initially but I agree
-that it's better to let the normal checks happen before clearing the
-caches.
+To be clear, this is not kernel-wide behavior. Most filesystems already
+don't bump their i_version on atime updates. XFS is the only one that
+does. ext4 used to do that too, but we fixed that several months ago.
+I did try to just fix XFS in the same way, but the patch was NAK'ed.
+
+> I really can't find any use that would *want* to see i_version updates
+> for any atime updates. Ever.
+>=20
+> We may have had historical user interfaces for i_version, but I can't
+> find any currently.
+>=20
+> But to be very very clear: I've only done some random grepping, and I
+> may have missed something. I'm not dismissing Dave's worries, and he
+> may well be entirely correct.
+>=20
+> Somebody would need to do a much more careful check than my "I can't
+> find anything".
+
+Exactly. I'm not really an XFS guy, so I took those folks at their word
+that this was behavior that they just can't trivially change.
+
+None of the in-kernel callers that look at i_version want it to be
+incremented on atime-onlt updates, however. So IIRC, the objection was
+due to offline repair/analysis tools that depend this the value being
+incremented in a specific way.
+--=20
+Jeff Layton <jlayton@kernel.org>
