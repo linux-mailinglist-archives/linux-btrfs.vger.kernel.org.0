@@ -2,138 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 683CB7D4EC3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Oct 2023 13:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6E47D4EC6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Oct 2023 13:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbjJXLW0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Oct 2023 07:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
+        id S229829AbjJXLYA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Oct 2023 07:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbjJXLWV (ORCPT
+        with ESMTP id S231139AbjJXLX6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Oct 2023 07:22:21 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFFF128
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Oct 2023 04:22:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A348021845;
-        Tue, 24 Oct 2023 11:22:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698146538;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A7NHrO7kRS6xoWeuaSjQIHE7x8bo53stqDd+lXr/zRU=;
-        b=HWclyL4mG/Fh4WykhaGvxIxR5lqO82lWaDtki2lWkRxW4CGtVA5gnx28LUgPaqScgmRLvn
-        4CVEWgdlsaWSRVq9yUuVVCjpUgKNuXGmT/NPEO/5gE0apM5H8u8Ya3IWybLdUPXeWiwunX
-        PMAIM/3TbClKthvYz4sL5k9yvevR6Qw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698146538;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A7NHrO7kRS6xoWeuaSjQIHE7x8bo53stqDd+lXr/zRU=;
-        b=8Ue3CdPkQSHfkJmmlh4B53YhFhMDnQbN/6es94AIa6uCEMKRYtGP2dDFvupsDFHDlDigvo
-        647tLoDKR6zP9xAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 71C361391C;
-        Tue, 24 Oct 2023 11:22:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id fvvcGuqoN2XHQgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 24 Oct 2023 11:22:18 +0000
-Date:   Tue, 24 Oct 2023 13:15:24 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>
-Subject: Re: [PATCH 3/3] btrfs-progs: fsck-tests: add test image of
- out-of-order inline backref items
-Message-ID: <20231024111524.GO26353@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1697945679.git.wqu@suse.com>
- <e260e8432e3ae5e09d012dce6bd6f96ff0569649.1697945679.git.wqu@suse.com>
- <39c425f8-c403-4b92-9799-6bd957e0b796@oracle.com>
- <f2b92692-8d25-4448-9b7b-568665ee15b0@gmx.com>
+        Tue, 24 Oct 2023 07:23:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7344EFE;
+        Tue, 24 Oct 2023 04:23:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0917AC433C7;
+        Tue, 24 Oct 2023 11:23:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698146636;
+        bh=mTnMbIwuf8YWJ9V6rvZW9WCT2iE09mXnh5FhjRRjnIQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=o/Gu7yD/nzv+294NTHMBHsEME15Cmq+EBN4hjJOP2JLrSvgr2ktcTmX7NA62KUHmh
+         7ggTY3b1jbcOAelgzCEBzfAlCzrLfe6YO28NZBe6h0+8hXJth+/ljbC/kO16cV3/Q3
+         EBivKK+aUhfiqKVYdLcxN2DpVcRPMWOXXIV+9AL3P2XuTLZaAq4T9uFpuJlkWco0BU
+         h/alpN0M/0HvOwWXrLPppheje1NE1SO6WBaE1yP1M3ZmcIHhpN/o5aWZww7079tWR0
+         cPnaUJ2g0RQZuhqnYJt2scxSUD7uyLh2oMVMQpLAr0k32WgTU7PrJxpHHQrex4ScUu
+         LlK0zf9ZZzDvA==
+From:   fdmanana@kernel.org
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH v2] btrfs: test snapshotting a subvolume that was just created
+Date:   Tue, 24 Oct 2023 12:23:46 +0100
+Message-Id: <c0b651af75a999cb1356e64d936080b65067ae56.1698146559.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <3149ccc2900f5574a046e675a6db79b019af2bac.1697718086.git.fdmanana@suse.com>
+References: <3149ccc2900f5574a046e675a6db79b019af2bac.1697718086.git.fdmanana@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f2b92692-8d25-4448-9b7b-568665ee15b0@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.07
-X-Spamd-Result: default: False [-5.07 / 50.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.30)[dsterba@suse.cz];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmx.com];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         RCPT_COUNT_FIVE(0.00)[5];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         FREEMAIL_TO(0.00)[gmx.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-1.27)[89.79%]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 04:17:14PM +1030, Qu Wenruo wrote:
-> 
-> 
-> On 2023/10/24 15:58, Anand Jain wrote:
-> > 
-> > 
-> > 
-> >>   .../btrfs_image.xz                            | Bin 0 -> 2264 bytes
-> > 
-> > check_all_images() won't find  btrfs_image.xz image.
-> 
-> My bad, the filename should be default.img.xz.
-> 
-> David, mind to change that?
+From: Filipe Manana <fdmanana@suse.com>
 
-Renamed and pushed.
+Test that snapshotting a new subvolume (created in the current transaction)
+that has a btree with a height > 1, works and does not result in a fs
+corruption.
 
-> > 
-> > 
-> >          for image in $(find "$dir" \( -iname '*.img' -o \
-> >                                  -iname '*.img.xz' -o    \
-> >                                  -iname '*.raw' -o       \
-> >                                  -iname '*.raw.xz' \) | sort)
-> > 
-> > 
-> > 
-> > 
-> > 
-> > What's your plan to test lomem mode?
-> 
-> The usual way, you can check tests/common.local to see how lowmem mode 
-> should be utilized.
+This exercises a regression introduced in kernel 6.5 by the kernel commit:
 
-There are more ways how to run the lowmem mode tests, e.g.
-'make test-check-lowmem' that sets up the variables s needed.
+  1b53e51a4a8f ("btrfs: don't commit transaction for every subvol create")
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+---
+
+v2: Add git commit ID for the kernel fix, as it was merged yesterday into
+    Linus' tree. Also fixed a typo and included Josef's Reviewed-by tag.
+
+ tests/btrfs/302     | 61 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/302.out |  4 +++
+ 2 files changed, 65 insertions(+)
+ create mode 100755 tests/btrfs/302
+ create mode 100644 tests/btrfs/302.out
+
+diff --git a/tests/btrfs/302 b/tests/btrfs/302
+new file mode 100755
+index 00000000..f3e6044b
+--- /dev/null
++++ b/tests/btrfs/302
+@@ -0,0 +1,61 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 302
++#
++# Test that snapshotting a new subvolume (created in the current transaction)
++# that has a btree with a height > 1, works and does not result in a filesystem
++# corruption.
++#
++# This exercises a regression introduced in kernel 6.5 by the kernel commit:
++#
++#    1b53e51a4a8f ("btrfs: don't commit transaction for every subvol create")
++#
++. ./common/preamble
++_begin_fstest auto quick snapshot subvol
++
++. ./common/filter
++
++_supported_fs btrfs
++_require_scratch
++_require_fssum
++
++_fixed_by_kernel_commit eb96e221937a \
++	"btrfs: fix unwritten extent buffer after snapshotting a new subvolume"
++
++# Use a filesystem with a 64K node size so that we have the same node size on
++# every machine regardless of its page size (on x86_64 default node size is 16K
++# due to the 4K page size, while on PPC it's 64K by default). This way we can
++# make sure we are able to create a btree for the subvolume with a height of 2.
++_scratch_mkfs -n 64K >> $seqres.full 2>&1 || _fail "mkfs failed"
++_scratch_mount
++
++$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol | _filter_scratch
++
++# Create a few empty files on the subvolume, this bumps its btree height to 2
++# (root node at level 1 and 2 leaves).
++for ((i = 1; i <= 300; i++)); do
++	echo -n > $SCRATCH_MNT/subvol/file_$i
++done
++
++# Create a checksum of the subvolume's content.
++fssum_file="$SCRATCH_MNT/checksum.fssum"
++$FSSUM_PROG -A -f -w $fssum_file $SCRATCH_MNT/subvol
++
++# Now create a snapshot of the subvolume and make it accessible from within the
++# subvolume.
++$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol \
++		 $SCRATCH_MNT/subvol/snap | _filter_scratch
++
++# Now unmount and mount again the fs. We want to verify we are able to read all
++# metadata for the snapshot from disk (no IO failures, etc).
++_scratch_cycle_mount
++
++# The snapshot's content should match the subvolume's content before we created
++# the snapshot.
++$FSSUM_PROG -r $fssum_file $SCRATCH_MNT/subvol/snap
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/302.out b/tests/btrfs/302.out
+new file mode 100644
+index 00000000..8770aefc
+--- /dev/null
++++ b/tests/btrfs/302.out
+@@ -0,0 +1,4 @@
++QA output created by 302
++Create subvolume 'SCRATCH_MNT/subvol'
++Create a readonly snapshot of 'SCRATCH_MNT/subvol' in 'SCRATCH_MNT/subvol/snap'
++OK
+-- 
+2.40.1
+
