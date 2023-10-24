@@ -2,45 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 943827D5C8A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Oct 2023 22:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB287D5C91
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Oct 2023 22:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343896AbjJXUhG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Oct 2023 16:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44736 "EHLO
+        id S1343883AbjJXUpJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Oct 2023 16:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234576AbjJXUhF (ORCPT
+        with ESMTP id S232399AbjJXUpJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Oct 2023 16:37:05 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F78EA
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Oct 2023 13:37:02 -0700 (PDT)
+        Tue, 24 Oct 2023 16:45:09 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01C010CE
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Oct 2023 13:45:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-        s=s31663417; t=1698179819; x=1698784619; i=quwenruo.btrfs@gmx.com;
-        bh=Y0BsvOG5MQu0x3Eee3v75d2G3ghDuNeE67kPJzSVa0c=;
+        s=s31663417; t=1698180303; x=1698785103; i=quwenruo.btrfs@gmx.com;
+        bh=UEQIc16FyKx6Hlqwf7OB+6FaDkMK8WsfrdIsMRN0gds=;
         h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
          In-Reply-To;
-        b=KBNMnMLY15+W4LzH0OkKyBwwXW6B5Ev/x/pHjZnITdpG7VPcsWYWfo402AcOSxza
-         pM/Rt32wrrT8dxd56qJk5P3JhgDHA4YiYOjCQt5v+zuGvW6YaEegLFrSm11jKekbv
-         ca4VZ0UZppmCFLBm990e8Xl5yhz43E2pOEGPH8GpG8HhanHOaqonDMSpJVoxqmhOz
-         A/bQC6tVF6PAYpVXnThsiIBM+9trcTyFPBnG0MVwknCVVh69+Q7Ng1j8yUUIIjwJW
-         3oGRlbDXY+F/7329gjpkrly/qv+6f96A5FXR8W0Sqn3yNjDxgaCi65oD/a8JDgAJe
-         djQKg/ZdYsKKcmyv5Q==
+        b=ZjqIxWy9AuymaMGEORc+xomrxLohr6pKdPz+SCCSgTbNwIZT6/p+0DvxyNs2NyJi
+         /43KKyFwHdeOP5qzK6m2DVcXT4MqdLvZR++w+i8u320tyqB1cmLoMqcjngzAD3Kjv
+         dAMvVjSnL0bqN7t9ZEXUudKDcUUq0M40I4aPLCTPGgFXGT0v4u4+yK0bm+fQWDh5z
+         rY6xJuf+bmFNk4EKO2j6NJomSHxfWI6gCZsRgGYTPDviCGh6hR3CKV5ggf3Gp6FKD
+         tIUw5jmdoSfHQcx9b+68aZU4+JUBMu4ON+5cLG7jPMwlCcoNx0AcNgU51735TeuiB
+         IIJJqM2QZ2gK/qVnrw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [192.168.10.18] ([218.215.59.251]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MiJV6-1rRzbw37VG-00fP6I; Tue, 24
- Oct 2023 22:36:59 +0200
-Message-ID: <c78a3cb4-5a0c-442e-b712-a2f9294c0cb5@gmx.com>
-Date:   Wed, 25 Oct 2023 07:06:53 +1030
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MZTmO-1r1UPA3Iww-00WSQI; Tue, 24
+ Oct 2023 22:45:03 +0200
+Message-ID: <136e8bf5-3b77-4e66-be24-54cd7e14b83a@gmx.com>
+Date:   Wed, 25 Oct 2023 07:14:58 +1030
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: tree-checker: add type and sequence check for
- inline backrefs
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <23fbab97bd9dbce7869e858cb59d96a7238db57e.1698105469.git.wqu@suse.com>
- <20231024134827.GA2811083@perftesting>
+Subject: Re: [PATCH 4/6] btrfs-progs: use a unified btrfs_make_subvol()
+ implementation
 Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <cover.1697430866.git.wqu@suse.com>
+ <7b951f3a0619880f35f2490e2e251eb35e2f2292.1697430866.git.wqu@suse.com>
+ <20231017134929.GA2350212@perftesting>
+ <3df53251-41f6-4655-a0fe-a7baecb2a66d@gmx.com>
+ <20231017231128.GA26353@twin.jikos.cz>
+ <fd864ecf-5887-4b3f-94be-352b87fe29df@suse.com>
+ <20231024173806.GR26353@suse.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -66,32 +71,32 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20231024134827.GA2811083@perftesting>
+In-Reply-To: <20231024173806.GR26353@suse.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:U1hTTM5EhSwOpIcqKTSQbf9rk0iPxUC6jjHaoutHqfGQ7MJJ3sF
- yEmILoyKkLShoeVCeYCxEyFwiNyByC8n0B4NIpnAN8VAMMF8nyOsgtq5rPXaahvxnQmYUXI
- qa52qpFH7+iaoB4Ly4O8z/ImIYj2X8gxSWEoK7xH6Yqs7dvYgz1UJbgpCKH8AWLBG3wz0O7
- KzyPNUJXn/JZyPYsmM7Wg==
-UI-OutboundReport: notjunk:1;M01:P0:QWg3Ugl1ttc=;rRscFD0E7QvffMN69A9V4ffqz73
- dW2oyK4QOfyh/DYBzxG2Lv+i3CVOKYn7QKHrQYQvAJ5a/V+VEFs6P3dN34lodX0wIxvdrMw0i
- IJ42XaZnSSPE2vDQ6uz6zMFGW2Fb+qYoIfiqAEXRydjtBRsKjczS8BcomuT9yVrv5Z1YDj2jH
- JdBiDd54/POGAsYDu/rLRvVX65fjvhqU9vIJCTpHK7c9hzrUp4CzGuQSpfcqF2Rr3YEgFY+PI
- kr2AKB5i4Uo9ST+QflnusD+5tVmVsKHZ7L59aiylwBBEiRpHphK01Ct7/gYzGhXCEmgAK37v7
- O+esxBLtq4BioC/aj8F3j66u7zZcUb/c60k/tiin6vC417fQzhkuiP6KFU8EDEdlthwQjNxau
- +6hYG0ciMEJ1Dx3cCx5R/PSB0znexQK/y79M1vMPEYCngoTT2T4GDGzyVXRfqUrbLFnUPwMkj
- /6P4RyxUL/rhpn5RZAV7PTLugbAd0MlfRBX/IFBkh6R2tk6U53GrM6G59lkPch93HmM+pPgjw
- aojlDiVKbPKTlMfhz0HQbwFRrOB0wGQIMNNiBDugtdgoc3+3NfL8y427ZO79M0LCvbqlXIO3D
- iYBh28qOHJVWF0tUwke0R1DsmnExCANdEU3hxXZyWV/VCOLotH8Ma8dcNV7OmCL5KmYH9x3Oc
- TcwwaA/ex7FiKHCCX7O1BTsnnqevj996+KegV6853a0cd9gDSn9FsHDWH7EnKnPm6r1WnudtT
- rK6VAulLYf1357M+4urUjd8C8ADYsEdYmulw1cuKGNHEffx8XpOJ6qGomtl/GJPiOcqOFj+6d
- R7dx34QmiiE77uXzlYTJXBtBAW3aNN4vU86or7JIHZXkUK3rZ5uKPj9CBARKY5qGFZhAnU1L0
- jX0ogNmUGqNGXEl/1g5Z7murDiS4nvMH7zJCfjAD1nsQdtWdkbcGTmof2AqxJxyGPF7RCzCbY
- iDm0EUvcP23Hzgd5TmwMGl8Mpns=
+X-Provags-ID: V03:K1:J9oiSCcDpAdIRM82xtHJ7lACmA0F8bHnALIVURhW0kjcLMa/fuR
+ mEzI8I6A/v4d2R+W4yP+vfTqR5o0vVApg+xR4/dq5qfIXfPENh+avE7XDmR1Alfn973xzyX
+ CqtIBNxQgrpOq8gzQqq6xFF+CjcWpgwbyFe6NTIoyCrHWELPOMY8hhadNR4GAFKNIch0ayw
+ Ly061AN/s1vlOMgwr0tIA==
+UI-OutboundReport: notjunk:1;M01:P0:Demb8YgTrMc=;bZdYjaFyv0xetM0++crv/RQGLo7
+ wKpx8jTynkUql8EPvWAfkUMKH81IPD+tae1BZGqu3iLYtzBazS75vBsVbjQFqfQCCZRelLaCw
+ Hf0+FTldmlOVGEhQMxNvPM63rs/1q7ZnqxsbUzEG82/3RG/4e1nYGhrRPQ6VN8ETVJdbCahdX
+ j+5qJp5LiOCN6EEG0S3LGjNe3JcBdmWC46rrLpc5G1vKMokLMhkiWYgOfDhuYkbdj2I4QExUD
+ 3t9Dun1CKOEQWwC59XwWpK2gnlUIJhmqLQ/RL1zK0ydXAvtfjJspMR4NcoEt/bWYXUssNLjg/
+ 7rzToahjgsPZ0EWkveRHTO2Ybr4alPdqUvt7b6O3Pn7T+ZKcB3NwLQ/fjpSsaNf0vZ4HjPuYS
+ A2NLE25oang/rykA5bQPnzVHISfPt2O3k1pANFrh+n2DflJ4olmIEP/9JzizZIx2PmcU/pKST
+ PxfEt6QQEGsdsb++upRlZlxgigZG5BXWBmTV773gznmfAlz4JLS6guWMPRuBA7lSHjH9N+FZZ
+ rQCJiEfxLQYksoNdyZ41QX4o0UIyBfwu/sgaJdWCqIkof354RJ0Onx4yqEvm6+TRjcln1VN3d
+ cxTYSPdE1QcMcMP/veTCl8jl6jKkqNVN9kCrGkBQU8IwzVyRN2Bf8cy8VwQ8h+bBcC7/epJu0
+ A7LPyqFGlLptQ5GRRM4CtdRueuxB1Yrwcid4XdD/3IQgTkqN3N0ksxK+0b0IWo27kTrNEE1x3
+ IHSVGW6yUS/BontEC6J2gLGbj4F1pPilcff2qNTVvarsVvEFAxUccuk1I3kQYO6EfIhpNOn46
+ RgY1oFjRZXY87yVtOcIO0Jw5tC74qmOD/tDRetG6xWy75YX9w1caS9IaLlQbMVdC7Q5USmCri
+ guvCvWiHU35K3IOrWJUwAWGcc//x0Ld1uF2mu9b67KOnkyUopI7qIM25pMcsTRpToBfIb3TzJ
+ zjjIBQ==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -100,51 +105,69 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/10/25 00:18, Josef Bacik wrote:
-> On Tue, Oct 24, 2023 at 12:41:11PM +1030, Qu Wenruo wrote:
->> [BUG]
->> There is a bug report that ntfs2btrfs had a bug that it can lead to
->> transaction abort and the filesystem flips to read-only.
+On 2023/10/25 04:08, David Sterba wrote:
+> On Wed, Oct 18, 2023 at 10:20:57AM +1030, Qu Wenruo wrote:
+>>>>> We're moving towards a world where kernel-shared will be an exact-is=
+h copy of
+>>>>> the kernel code.  Please put helpers like this in common/, I did thi=
+s for
+>>>>> several of the extent tree related helpers we need for fsck, this is=
+ a good fit
+>>>>> for that.  Thanks,
+>>>>
+>>>> Sure, and this also reminds me to copy whatever we can from kernel.
+>>>
+>>> I do syncs from kernel before a release but all the low hanging fruit =
+is
+>>> probably gone so it needs targeted updates.
 >>
->> [CAUSE]
->> For inline backref items, kernel has a strict requirement for their
->> ordered, they must follow the following rules:
+>> For the immediate target it's btrfs_inode and involved VFS structures
+>> for inodes/dir entries.
 >>
->> - All btrfs_extent_inline_ref::type should be in an ascending order
+>> In progs we don't have a structure to locate a unique inode (need both
+>> rootid and ino number), nor to do any path resolution.
 >>
->> - Within the same type, the items should follow a descending order by
->>    their sequence number
+>> This makes it almost impossible to proper sync the code.
 >>
->>    For EXTENT_DATA_REF type, the sequence number is result from
->>    hash_extent_data_ref().
->>    For other types, their sequence numbers are
->>    btrfs_extent_inline_ref::offset.
->>
->> Thus if there is any code not following above rules, the resulted
->> inline backrefs can prevent the kernel to locate the needed inline
->> backref and lead to transaction abort.
->>
->> [FIX]
->> Ntrfs2btrfs has already fixed the problem, and btrfs-progs has added th=
-e
->> ability to detect such problems.
->>
->> For kernel, let's be more noisy and be more specific about the order, s=
-o
->> that the next time kernel hits such problem we would reject it in the
->> first place, without leading to transaction abort.
->>
->> Link: https://github.com/kdave/btrfs-progs/pull/622
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> But introduce btrfs_inode to btrfs-progs would also be a little
+>> overkilled, as we don't have that many users.
+>> (Only the new --rootdir with --subvol combination).
 >
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
->
-> Does fsck catch this?  If not can you update it so it does?  Thanks,
+> I have an idea for using this functionality, but you may not like it -
+> we could implement FUSE.
 
-Fsck is already catching that, and a progs selftest image is also added.
+In fact I really like it.
+
+> The missing code is exactly about inodes, path
+> resolution and subvolumes. You have the other project, with a different
+> license, although there's a lot shared code. You can keep it so u-boot
+> can do the sync and keep the read-only support. I'd like to have full
+> read-write support with subvolumes and devices (if there's ioctl pass
+> through), but it's not urgent. Having the basic inode/path support would
+> be good for mkfs even in a smaller scope.
+
+The existing blockage would be fsck.
+If we want FUSE, inode is super handy, but for fsck doing super low
+level fixes, it can be a burden instead.
+As it needs to repair INODE_REF/DIR_INDEX/DIR_ITEMs, sometimes even
+missing INODE_ITEMs, not sure how hard it would be to maintain both
+btrfs_inode and low-level code.
+
+
+There are one big limiting factor in FUSE, we can not control the device
+number, unlike kernel.
+This means even we implemented the subvolume code (like my btrfs-fuse
+project), there is no way to detect subvolume boundary.
+
+
+Then comes with some other super personal concerns:
+
+- Can we go Rust instead of C?
+
+- Can we have a less restrict license to maximize the possibility of
+   code share?
+   Well, I should ask this question to GRUB....
+   But a more hand-free license like MIT may really help for bootloaders.
 
 Thanks,
 Qu
-
->
-> Josef
