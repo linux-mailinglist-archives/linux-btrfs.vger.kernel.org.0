@@ -2,110 +2,216 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 823D67D5340
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Oct 2023 15:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8373E7D53D8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Oct 2023 16:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343754AbjJXNwy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Oct 2023 09:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
+        id S1343734AbjJXOYc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Oct 2023 10:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234760AbjJXNvH (ORCPT
+        with ESMTP id S1343562AbjJXOYb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:51:07 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2DE1709
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Oct 2023 06:48:30 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-777719639adso277599485a.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Oct 2023 06:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1698155309; x=1698760109; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8hQKcvJWyqotqDwpRk5uVqfEBmJ45eSGiDshV+vrsSQ=;
-        b=wremb9jIHK0X+OT9BrT8hKXvPIfMAZ61uEvBBT6audQLSHDUIP1X7XPon4eHYhHytg
-         d839iBYQJ2+5kDPHmS8k8D5A9dkW1VGDQeQZIXMki3mbDuOf/+tkFssz6BR25gLQ1CDs
-         DwRpo/NxV9RcIuJigqWUK4ZLVOoCnaL42B6pmpjsVWI3iVgMwqa275SIpNP6zefkAawl
-         TJLYKBCfb+wVMkLyqFq+1zaDEP6w2bE1IJKtGqHEtqQ3RRFNz9XkSMBdC046nNLM6ddF
-         Un6hqA+wWY1rDl2wJceZk0r/RsaOsandTMp7TZ9YmG9sq0yTEYjbltqJ13p3+F0gttfj
-         duTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698155309; x=1698760109;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8hQKcvJWyqotqDwpRk5uVqfEBmJ45eSGiDshV+vrsSQ=;
-        b=oUu8NAYzzffS4pjT2GK4qNIdo8MvjbUJub6CDO/i1GPH41a7JW7jAXWn5Q96EQvKoX
-         m1c1ZMVxyJWPuZaGL5pvDDqiU5xZ/PuGHP9YkmL1AWI2uVoDYjsQv7x7NvaT4BXIcwYt
-         /38KjCj00ZEUdXzLSIV1PAUOC0azw7fDTfSMAm6Z6Q51lxxq7xD4XIVETmL1tXmUXBg1
-         shP5/pyNHe6z6D4X3UIbn3vLWAKSpC59fZkpuNzY++UqVs8wAhOE87BasixYOrBE12sH
-         Tp88UCjgrbmce08KC02H4j/BCbiavSDDEYnnsuaFWzDYLSI+7NWlIvXgf6PULL8Wu9Iy
-         en8Q==
-X-Gm-Message-State: AOJu0YzD8nBRTP0uAWabcIIMV/Fhl91av20g/Unrw96ttnP7fP258Xe9
-        QB/TpC7wBNlnyAr3BmcdXweXoIfrzaKw9YGWWuRh1A==
-X-Google-Smtp-Source: AGHT+IFdgE6GgtL4JlDZHfI5TYgfStwcOsyReDeuQmo7GNN12CGwzQJ3DNiBB7dlULbVRB0J6zkH5w==
-X-Received: by 2002:a05:620a:6848:b0:774:cd4:4a58 with SMTP id ru8-20020a05620a684800b007740cd44a58mr11058072qkn.39.1698155309639;
-        Tue, 24 Oct 2023 06:48:29 -0700 (PDT)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id v8-20020a05620a122800b0076c96e571f3sm3453759qkj.26.2023.10.24.06.48.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 06:48:28 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 09:48:27 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: tree-checker: add type and sequence check for
- inline backrefs
-Message-ID: <20231024134827.GA2811083@perftesting>
-References: <23fbab97bd9dbce7869e858cb59d96a7238db57e.1698105469.git.wqu@suse.com>
+        Tue, 24 Oct 2023 10:24:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E83B6;
+        Tue, 24 Oct 2023 07:24:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 161ECC433C7;
+        Tue, 24 Oct 2023 14:24:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698157468;
+        bh=7s4owhTS2KWdPLIBnSmPESiU6Lmlr9CBB23zaMiuKo8=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=HIcNEkomyOMSom+TIflQWtM1yj31IzKvSV99wsuAM9Ems2egxYGi+XMdfPwJYutrD
+         GYeOu78X4F5rTATUVir3ssZR4gFcryc0oPeTydpOPsrU3LN+eOOp0xhO6DZYTjds+7
+         BN0YVN0YKh8LhIykqaw8RiwxQ+sMOByx7ypNDLqRAk5Tcmr3xnjiuD6whzGD8Czxvi
+         CB+4O2pvEK2XXx/vp7vEkV4OzMUDtNLCgUIlAtMH6G20hZ5nTK4HXE9iGcGtyNzdk/
+         QfNAxAAcWjNWVoYhKL7AYJgOeODO/rA3atgoHqxvRcgpEDFC+9uOB0vnTz1lWMSiB/
+         OMX51ENDmTLRw==
+Message-ID: <01ecb2b7876a4562570658b92f4c12cbc7ad2518.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Tue, 24 Oct 2023 10:24:24 -0400
+In-Reply-To: <ZTc8tClCRkfX3kD7@dread.disaster.area>
+References: <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+         <ZTGncMVw19QVJzI6@dread.disaster.area>
+         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+         <ZTWfX3CqPy9yCddQ@dread.disaster.area>
+         <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+         <ZTc8tClCRkfX3kD7@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23fbab97bd9dbce7869e858cb59d96a7238db57e.1698105469.git.wqu@suse.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 12:41:11PM +1030, Qu Wenruo wrote:
-> [BUG]
-> There is a bug report that ntfs2btrfs had a bug that it can lead to
-> transaction abort and the filesystem flips to read-only.
-> 
-> [CAUSE]
-> For inline backref items, kernel has a strict requirement for their
-> ordered, they must follow the following rules:
-> 
-> - All btrfs_extent_inline_ref::type should be in an ascending order
-> 
-> - Within the same type, the items should follow a descending order by
->   their sequence number
-> 
->   For EXTENT_DATA_REF type, the sequence number is result from
->   hash_extent_data_ref().
->   For other types, their sequence numbers are
->   btrfs_extent_inline_ref::offset.
-> 
-> Thus if there is any code not following above rules, the resulted
-> inline backrefs can prevent the kernel to locate the needed inline
-> backref and lead to transaction abort.
-> 
-> [FIX]
-> Ntrfs2btrfs has already fixed the problem, and btrfs-progs has added the
-> ability to detect such problems.
-> 
-> For kernel, let's be more noisy and be more specific about the order, so
-> that the next time kernel hits such problem we would reject it in the
-> first place, without leading to transaction abort.
-> 
-> Link: https://github.com/kdave/btrfs-progs/pull/622
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Tue, 2023-10-24 at 14:40 +1100, Dave Chinner wrote:
+> On Mon, Oct 23, 2023 at 02:18:12PM -1000, Linus Torvalds wrote:
+> > On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> wrote:
+> > >=20
+> > > The problem is the first read request after a modification has been
+> > > made. That is causing relatime to see mtime > atime and triggering
+> > > an atime update. XFS sees this, does an atime update, and in
+> > > committing that persistent inode metadata update, it calls
+> > > inode_maybe_inc_iversion(force =3D false) to check if an iversion
+> > > update is necessary. The VFS sees I_VERSION_QUERIED, and so it bumps
+> > > i_version and tells XFS to persist it.
+> >=20
+> > Could we perhaps just have a mode where we don't increment i_version
+> > for just atime updates?
+> >=20
+> > Maybe we don't even need a mode, and could just decide that atime
+> > updates aren't i_version updates at all?
+>=20
+> We do that already - in memory atime updates don't bump i_version at
+> all. The issue is the rare persistent atime update requests that
+> still happen - they are the ones that trigger an i_version bump on
+> XFS, and one of the relatime heuristics tickle this specific issue.
+>=20
+> If we push the problematic persistent atime updates to be in-memory
+> updates only, then the whole problem with i_version goes away....
+>=20
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+POSIX (more or less) states that if you're updating the inode for any
+reason other than an atime update, then you need to update the ctime.
+The NFSv4 spec (more or less) defines the change attribute as something
+that should show a change any time the ctime would change.
 
-Does fsck catch this?  If not can you update it so it does?  Thanks,
+Now, from mount(8) manpage, in the section on lazytime:
 
-Josef
+           The on-disk timestamps are updated only when:
+
+           =E2=80=A2   the inode needs to be updated for some change unrela=
+ted to file timestamps
+
+           =E2=80=A2   the application employs fsync(2), syncfs(2), or sync=
+(2)
+
+           =E2=80=A2   an undeleted inode is evicted from memory
+
+           =E2=80=A2   more than 24 hours have passed since the inode was w=
+ritten to disk.
+
+
+The first is not a problem for NFS. If we're updating the ctime or mtime
+or other attributes, then we _need_ to bump the change attribute
+(assuming that something has queried it and can tell a difference).
+
+The second is potentially an issue. If a file has an in-memory atime
+update and them someone calls sync(2), XFS will end up bumping the
+change attribute.
+
+Ditto for the third. If someone does a getattr and brings an inode back
+into core, then you're looking at a cache invalidation on the client.
+
+The fourth is also a problem, once a day your clients will end up
+invaliding their caches.
+
+You might think "so what? Once a day is no big deal!", but there are
+places that have built up cascading fscache setups across WANs to
+distribute large, read-mostly files. This is quite problematic in these
+sorts of setups as they end up seeing cache invalidations all over the
+place.
+
+noatime is a workaround, but it has its own problems and ugliness, and
+it sucks that XFS doesn't "just work" when served by NFS.
+
+
+> > Yes, yes, it's obviously technically a "inode modification", but does
+> > anybody actually *want* atime updates with no actual other changes to
+> > be version events?
+>=20
+> Well, yes, there was. That's why we defined i_version in the on disk
+> format this way well over a decade ago. It was part of some deep
+> dark magical HSM beans that allowed the application to combine
+> multiple scans for different inode metadata changes into a single
+> pass. atime changes was one of the things it needed to know about
+> for tiering and space scavenging purposes....
+>=20
+
+As Amir points out, is this still behavior that you're required to
+preserve? NFS serving is a bit more common than weird HSM stuff.=20
+
+Maybe newly created XFS filesystems could be made to update i_version in
+a way that nfsd expects? We could add a mkfs.xfs option to allow for the
+legacy behavior if required.
+
+> > Or maybe i_version can update, but callers of getattr() could have two
+> > bits for that STATX_CHANGE_COOKIE, one for "I care about atime" and
+> > one for others, and we'd pass that down to inode_query_version, and
+> > we'd have a I_VERSION_QUERIED and a I_VERSION_QUERIED_STRICT, and the
+> > "I care about atime" case ould set the strict one.
+>=20
+> This makes correct behaviour reliant on the applicaiton using the
+> query mechanism correctly. I have my doubts that userspace
+> developers will be able to understand the subtle difference between
+> the two options and always choose correctly....
+>=20
+> And then there's always the issue that we might end up with both
+> flags set and we get conflicting bug reports about how atime is not
+> behaving the way the applications want it to behave.
+>=20
+> > Then inode_maybe_inc_iversion() could - for atome updates - skip the
+> > version update *unless* it sees that I_VERSION_QUERIED_STRICT bit.
+> >=20
+> > Does that sound sane to people?
+>=20
+> I'd much prefer we just do the right thing transparently at the
+> filesystem level; all we need is for the inode to be flagged that it
+> should be doing in memory atime updates rather than persistent
+> updates.
+>=20
+> Perhaps the nfs server should just set a new S_LAZYTIME flag on
+> inodes it accesses similar to how we can set S_NOATIME on inodes to
+> elide atime updates altogether. Once set, the inode will behave that
+> way until it is reclaimed from memory....
+>=20
+
+
+Yeah, I think adding this sort of extra complexity on the query side is
+probably not what's needed.
+
+I'm also not crazy about trying to treat nfsd's accesses as special in
+some way. nfsd is really not doing anything special at all, other than
+querying for STATX_CHANGE_COOKIE.=20
+
+The problem is on the update side: nfsd expects the STATX_CHANGE_COOKIE
+to conform to certain behavior, and XFS simply does not (specifically
+around updates to the inode that only change the atime).
+
+--=20
+Jeff Layton <jlayton@kernel.org>
