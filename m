@@ -2,155 +2,213 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3DDF7D46A6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Oct 2023 06:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31F57D46DE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Oct 2023 07:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbjJXELF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Oct 2023 00:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35470 "EHLO
+        id S232051AbjJXFWZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Oct 2023 01:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232146AbjJXELA (ORCPT
+        with ESMTP id S229688AbjJXFWY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Oct 2023 00:11:00 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F4B11A
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Oct 2023 21:10:57 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5079f9675c6so6356977e87.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Oct 2023 21:10:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698120655; x=1698725455; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=R/DnLkXKcbtHeIdj2lNteiEcRFjQW0/FCeNT137Lkzs=;
-        b=H1znKBTvR8Dtpn1RvannnzT4eVrs+3dMxIZaC1Wj9QVCzSTtvguQaXDVvDiWR/ImXr
-         iV/IZ2Ra7f6Gwu2EgfX+fW/ekeTCtJiGi1SkF46h7/HG+oM/LeA6YqQ750mQ6oVmZLW2
-         358cLs0K2urRk0tB0K0VA5haX4+C5LgHDrEE8=
+        Tue, 24 Oct 2023 01:22:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08AA118
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Oct 2023 22:21:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698124896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WMiHPCeju+k1ed/Rv8ioAxDETw0X0WK9WfcuW+Vc8i8=;
+        b=PX5Bt4cRHFDbBMReBb9orYwPxV1s7vAYbdzCrFaJxHPvE0jVAO7duLCpGwWIYpclJnc+cW
+        GgwRxvH+y4wbvy5GpLw2q6WB1WEyAuK8rIWvQjVojeSueNUHyx1VSCJ2AVnIDRZyqGJAeK
+        wC+7WSMTd8x4pRWk1Zw5d3tsFrahv+E=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-632-5bBP-D-POs2uQzKo-Ae7Cw-1; Tue, 24 Oct 2023 01:21:35 -0400
+X-MC-Unique: 5bBP-D-POs2uQzKo-Ae7Cw-1
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5b7f3f47547so2540950a12.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Oct 2023 22:21:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698120655; x=1698725455;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R/DnLkXKcbtHeIdj2lNteiEcRFjQW0/FCeNT137Lkzs=;
-        b=JlLvtRrTLrR7oqIt7LK2qqlw2HTZXYT7sP4FNErzG1L4Us3scd+9ha+RREJTNexHVo
-         1CVHCChG1MFpr3ef/h3r1ECOO0rqqhLa2NWUm7KrNVYtYsz4iga7qKm9kmALj/xkCBA8
-         6I+QXzGVXjicrer5twH2HF4tZLN90ol7YPKeU/rRYF+byk49fzBSUsdUkoRqWSEiEh+Z
-         EdDrfGv8njm56WBIkVoTQz25z5xkOnjyDF2LX4ehXDGjzBDfFIF4BupoD+CIF7noA1KA
-         p10Hy3i9YmiJKWecbIsiDF6oLBS1NsiluYD14spRJQP0HgDW11DBW2ryfNLp3E9lhqTK
-         +0nw==
-X-Gm-Message-State: AOJu0YxZfeUquVi8qGEPN5pHDrgtxMw1RYxiaus+0cX7zNtJNGiLoSKE
-        rqZ8KFG0rDfp/yRqBm0tO9wK4Aa4n3UX+mhhEEeCaT1V
-X-Google-Smtp-Source: AGHT+IGV6WuDBYYegsVCmd5TnXPWhoO5DnGe24AciSDQuX+3rTiy17WhLhfoZ4dtxuFlV2CuZVgBOg==
-X-Received: by 2002:a05:6512:783:b0:507:c7ae:32cc with SMTP id x3-20020a056512078300b00507c7ae32ccmr7537587lfr.41.1698120654784;
-        Mon, 23 Oct 2023 21:10:54 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id e7-20020a05651236c700b00507a3b0eb34sm1953077lfs.264.2023.10.23.21.10.53
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 21:10:54 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso6372073e87.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Oct 2023 21:10:53 -0700 (PDT)
-X-Received: by 2002:a05:6402:274e:b0:53e:8e09:524d with SMTP id
- z14-20020a056402274e00b0053e8e09524dmr2329463edd.5.1698120632873; Mon, 23 Oct
- 2023 21:10:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698124894; x=1698729694;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WMiHPCeju+k1ed/Rv8ioAxDETw0X0WK9WfcuW+Vc8i8=;
+        b=DYqJZioC5Iuj75NqDDRG1r9vhacSoHUsHKN8bJ6HEUEtEsTYBuFD+lcok4W2/NtBrM
+         GMLTSHHs/qXKioKreJPidkoUtG8la9HATHTcRRlEgngUTyV19/eo5qNbKUrCLFitQfKE
+         dot+speVDLVTxqWEGxJVtVC5mJ/ljEJHZFhP5cDiRYuXeuzX6G1BmIw5tgrxQZdXFjVd
+         9xaZftSfUq3RPaWhVhv6H3GYIdqOms8CGW9iiDYMh+IW4vOzrbPI/ZmTXLPD/iSEI0g6
+         AXSlGIhO2AUayu10JriN8J37p17svfqoD9QPpX2k9zR580j6duu9sygljf9esqB+89uz
+         dZvg==
+X-Gm-Message-State: AOJu0YxIZ0AcUhw60nkWYTzy65LFY50w5AjVCUt9Z2UUxmHGmsl6ME8C
+        3usjllF8uQ1gMQdkY69bb00olQ0q+j6ZGoDu9MqU7exECt+CpeXGd0HsEPOq7zU9CgUIG2Hg1lz
+        EurFSiH3/k4Cu2le+HHmwAL4=
+X-Received: by 2002:a05:6a20:2443:b0:17b:cfee:9b9 with SMTP id t3-20020a056a20244300b0017bcfee09b9mr1693301pzc.41.1698124894148;
+        Mon, 23 Oct 2023 22:21:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGcORGa16DirHy1OXxAerQnRKqAIiI7YDlCaw384tAZC3UXjujMP6b83OMRRAj4TB8WkRB7fw==
+X-Received: by 2002:a05:6a20:2443:b0:17b:cfee:9b9 with SMTP id t3-20020a056a20244300b0017bcfee09b9mr1693289pzc.41.1698124893738;
+        Mon, 23 Oct 2023 22:21:33 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id f12-20020a17090274cc00b001c72f4334afsm6757404plt.20.2023.10.23.22.21.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 22:21:33 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 13:21:29 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     Bill O'Donnell <bodonnel@redhat.com>
+Cc:     fstests@vger.kernel.org, quwenruo.btrfs@gmx.com,
+        esandeen@redhat.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] fstests: generic/353 should accomodate other pwrite
+ behaviors
+Message-ID: <20231024052129.5ze2o3wmdolaro5w@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20230901161816.148854-1-bodonnel@redhat.com>
+ <20230929050651.7rlyclnxlmzrot3z@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <ZRbUQveXYWjhlvAN@redhat.com>
+ <ZTb2Xy4vTi6/RGQo@redhat.com>
 MIME-Version: 1.0
-References: <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
- <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
- <20231019-fluor-skifahren-ec74ceb6c63e@brauner> <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
- <ZTGncMVw19QVJzI6@dread.disaster.area> <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
- <ZTWfX3CqPy9yCddQ@dread.disaster.area> <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
- <ZTcBI2xaZz1GdMjX@dread.disaster.area> <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
- <ZTc8tClCRkfX3kD7@dread.disaster.area>
-In-Reply-To: <ZTc8tClCRkfX3kD7@dread.disaster.area>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 23 Oct 2023 18:10:15 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wjUWM8VVJxUYb=XfqvrS38ACS8RxK2ac9qGp9FDT=USkw@mail.gmail.com>
-Message-ID: <CAHk-=wjUWM8VVJxUYb=XfqvrS38ACS8RxK2ac9qGp9FDT=USkw@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTb2Xy4vTi6/RGQo@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, 23 Oct 2023 at 17:40, Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > Maybe we don't even need a mode, and could just decide that atime
-> > updates aren't i_version updates at all?
->
-> We do that already - in memory atime updates don't bump i_version at
-> all. The issue is the rare persistent atime update requests that
-> still happen - they are the ones that trigger an i_version bump on
-> XFS, and one of the relatime heuristics tickle this specific issue.
+On Mon, Oct 23, 2023 at 05:40:31PM -0500, Bill O'Donnell wrote:
+> ping?
 
-Yes, yes, but that's what I kind of allude to - maybe people still
-want the on-disk atime updates, but do they actually want the
-i_version updates just because they want more aggressive atime
-updates?
+Hi Bill,
 
-> > Or maybe i_version can update, but callers of getattr() could have two
-> > bits for that STATX_CHANGE_COOKIE, one for "I care about atime" and
-> > one for others, and we'd pass that down to inode_query_version, and
-> > we'd have a I_VERSION_QUERIED and a I_VERSION_QUERIED_STRICT, and the
-> > "I care about atime" case ould set the strict one.
->
-> This makes correct behaviour reliant on the applicaiton using the
-> query mechanism correctly. I have my doubts that userspace
-> developers will be able to understand the subtle difference between
-> the two options and always choose correctly....
+> 
+> On Fri, Sep 29, 2023 at 08:42:26AM -0500, Bill O'Donnell wrote:
+> > On Fri, Sep 29, 2023 at 01:06:51PM +0800, Zorro Lang wrote:
+> > > On Fri, Sep 01, 2023 at 11:18:16AM -0500, Bill O'Donnell wrote:
+> > > > xfs_io pwrite issues a series of block size writes, but there is no
+> > > > guarantee that the resulting extent(s) will be singular or contiguous.
+> > > > This behavior is acceptable, but the test is flawed in that it expects
+> > > > a single extent for a pwrite.
+> > > > 
+> > > > Modify test to use actual blocksize for pwrite and reflink. Also
+> > > > modify it to accommodate pwrite and reflink that produce different
+> > > > mapping results.
+> > > > 
+> > > > Signed-off-by: Bill O'Donnell <bodonnel@redhat.com>
+> > > > ---
+> > > 
+> > > This patch makes sense to me, but this case looks like a regression test
+> > > test for a known btrfs issue. But this test case doesn't point out which
+> > > bug/fix does it test for. So I don't know if the 64k blocksize is a
+> > > necessary condition to reproduce the bug.
+> > > 
+> > > If we can prove it still can reproduce that bug with this patch at least,
+> > > then it's good to me to merge it.
+> > 
+> > I'd like Qu to weigh in on this from the btrfs standpoint.
 
-I don't think we _have_ a user space interface.
+If there's still not any review points from Qu or other btrfs devels, I'll
+merge this patch in next release. Better to make sure if the 64k (multi-blocks)
+is a necessary condition for this case. What's the bug fix this case trying to
+cover?
 
-At least the STATX_CHANGE_COOKIE bit isn't exposed to user space at
-all. Not in the uapi headers, but not even in xstat():
+Thanks,
+Zorro
 
-        /* STATX_CHANGE_COOKIE is kernel-only for now */
-        tmp.stx_mask = stat->result_mask & ~STATX_CHANGE_COOKIE;
+> > 
+> > Thanks-
+> > Bill
+> > 
+> > > 
+> > > Thanks,
+> > > Zorro
+> > > 
+> > > >  tests/generic/353     | 29 ++++++++++++++++-------------
+> > > >  tests/generic/353.out | 15 +--------------
+> > > >  2 files changed, 17 insertions(+), 27 deletions(-)
+> > > > 
+> > > > diff --git a/tests/generic/353 b/tests/generic/353
+> > > > index 9a1471bd..c5639725 100755
+> > > > --- a/tests/generic/353
+> > > > +++ b/tests/generic/353
+> > > > @@ -29,31 +29,34 @@ _require_xfs_io_command "fiemap"
+> > > >  _scratch_mkfs > /dev/null 2>&1
+> > > >  _scratch_mount
+> > > >  
+> > > > -blocksize=64k
+> > > > +blocksize=$(_get_file_block_size $SCRATCH_MNT)
+> > > > +
+> > > >  file1="$SCRATCH_MNT/file1"
+> > > >  file2="$SCRATCH_MNT/file2"
+> > > > +extmap1="$SCRATCH_MNT/extmap1"
+> > > > +extmap2="$SCRATCH_MNT/extmap2"
+> > > >  
+> > > >  # write the initial file
+> > > > -_pwrite_byte 0xcdcdcdcd 0 $blocksize $file1 | _filter_xfs_io
+> > > > +_pwrite_byte 0xcdcdcdcd 0 $blocksize $file1 > /dev/null
+> > > >  
+> > > >  # reflink initial file
+> > > > -_reflink_range $file1 0 $file2 0 $blocksize | _filter_xfs_io
+> > > > +_reflink_range $file1 0 $file2 0 $blocksize > /dev/null
+> > > >  
+> > > >  # check their fiemap to make sure it's correct
+> > > > -echo "before sync:"
+> > > > -echo "$file1" | _filter_scratch
+> > > > -$XFS_IO_PROG -c "fiemap -v" $file1 | _filter_fiemap_flags
+> > > > -echo "$file2" | _filter_scratch
+> > > > -$XFS_IO_PROG -c "fiemap -v" $file2 | _filter_fiemap_flags
+> > > > +$XFS_IO_PROG -c "fiemap -v" $file1 | _filter_fiemap_flags > $extmap1
+> > > > +$XFS_IO_PROG -c "fiemap -v" $file2 | _filter_fiemap_flags > $extmap2
+> > > > +
+> > > > +cmp -s $extmap1 $extmap2 || echo "mismatched extent maps before sync"
+> > > >  
+> > > >  # sync and recheck, to make sure the fiemap doesn't change just
+> > > >  # due to sync
+> > > >  sync
+> > > > -echo "after sync:"
+> > > > -echo "$file1" | _filter_scratch
+> > > > -$XFS_IO_PROG -c "fiemap -v" $file1 | _filter_fiemap_flags
+> > > > -echo "$file2" | _filter_scratch
+> > > > -$XFS_IO_PROG -c "fiemap -v" $file2 | _filter_fiemap_flags
+> > > > +$XFS_IO_PROG -c "fiemap -v" $file1 | _filter_fiemap_flags > $extmap1
+> > > > +$XFS_IO_PROG -c "fiemap -v" $file2 | _filter_fiemap_flags > $extmap2
+> > > > +
+> > > > +cmp -s $extmap1 $extmap2 || echo "mismatched extent maps after sync"
+> > > > +
+> > > > +echo "Silence is golden"
+> > > >  
+> > > >  # success, all done
+> > > >  status=0
+> > > > diff --git a/tests/generic/353.out b/tests/generic/353.out
+> > > > index 4f6e0b92..16ba4f1f 100644
+> > > > --- a/tests/generic/353.out
+> > > > +++ b/tests/generic/353.out
+> > > > @@ -1,15 +1,2 @@
+> > > >  QA output created by 353
+> > > > -wrote 65536/65536 bytes at offset 0
+> > > > -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > > > -linked 65536/65536 bytes at offset 0
+> > > > -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > > > -before sync:
+> > > > -SCRATCH_MNT/file1
+> > > > -0: [0..127]: shared|last
+> > > > -SCRATCH_MNT/file2
+> > > > -0: [0..127]: shared|last
+> > > > -after sync:
+> > > > -SCRATCH_MNT/file1
+> > > > -0: [0..127]: shared|last
+> > > > -SCRATCH_MNT/file2
+> > > > -0: [0..127]: shared|last
+> > > > +Silence is golden
+> > > > -- 
+> > > > 2.41.0
+> > > > 
+> > > 
+> > 
+> 
 
-So the *only* users of STATX_CHANGE_COOKIE seem to be entirely
-in-kernel, unless there is something I'm missing where somebody uses
-i_version through some other interface (random ioctl?).
-
-End result: splitting STATX_CHANGE_COOKIE into a "I don't care about
-atime" and a "give me all change events" shouldn't possibly break
-anything that I can see.
-
-The only other uses of inode_query_iversion() seem to be the explicit
-directory optimizations (ie the "I'm caching the offset and don't want
-to re-check that it's valid unless required, so give me the inode
-version for the directory as a way to decide if I need to re-check"
-thing).
-
-And those *definitely* don't want i_version updates on any atime updates.
-
-There might be some other use of inode_query_iversion() that I missed,
-of course.  But from a quick look, it really looks to me like we can
-relax our i_version updates.
-
-              Linus
