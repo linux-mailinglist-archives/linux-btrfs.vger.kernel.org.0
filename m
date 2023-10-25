@@ -2,273 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DED217D6B69
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 14:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E527D6E0C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 16:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343929AbjJYMZp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Oct 2023 08:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
+        id S235033AbjJYNvA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Oct 2023 09:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343791AbjJYMZo (ORCPT
+        with ESMTP id S235046AbjJYNu5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:25:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DD419A;
-        Wed, 25 Oct 2023 05:25:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DCB4C433C7;
-        Wed, 25 Oct 2023 12:25:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698236739;
-        bh=CPfbQfAM1itjWCIx0nw3DPeg3BGsp7SHrr2xBrG+Ips=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ch094CrQN1hvWHJzxzq0IS9uCUYQiHYjKqCOkuwf4HlKsyJ2HZiCCxOkwAmYD4odl
-         qU39q/+5YQ9Jr14/taFrQ3L4M5PsQ4Hz+zO8fS2DDSTRPt3CEZ6KwdhSiyQLCVeOiH
-         RF9LRyGj9F9mr+PRazMgZ2g3+yBA+1FPMyTHo+wZGsBzOyZF2KhuTUFy+8BruFeIvn
-         Dne7XJuj38EA0kEHqAtmp0iW40c2AYLb5ZTPsxoUu1lsZHmzbAOOw+A8gBvPbArZFG
-         QJPDTq++2IQoHaUqYhyEMeZQku3OZ+hmiHdNkYVCjm2Xe309kQXDCFT4E5ZaojbH29
-         3Ye+PQ3PI6l7w==
-Message-ID: <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Wed, 25 Oct 2023 08:25:35 -0400
-In-Reply-To: <ZTjMRRqmlJ+fTys2@dread.disaster.area>
-References: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
-         <ZTGncMVw19QVJzI6@dread.disaster.area>
-         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
-         <ZTWfX3CqPy9yCddQ@dread.disaster.area>
-         <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
-         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
-         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-         <ZTc8tClCRkfX3kD7@dread.disaster.area>
-         <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
-         <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
-         <ZTjMRRqmlJ+fTys2@dread.disaster.area>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 25 Oct 2023 09:50:57 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E581C193;
+        Wed, 25 Oct 2023 06:50:53 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32d9effe314so3874748f8f.3;
+        Wed, 25 Oct 2023 06:50:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698241852; x=1698846652; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bdWLFJvjkN5xqchCHJQE5KjwjkwTlLwpf/JvggF+Xvc=;
+        b=VS7HmIQ/XB7lJsHcS0BHRfHgAMtOPQjZ9lo9s28jE7Eq53Izx4eaG/582MiL0IOGHx
+         UxjV7XRzckL5oQSdFSSzPD/Fpg3QN4R2ERWA8HtNwLdjNmJQqvXcHOVDlZba1HFCnSs2
+         mLnlT0Isn/1LFWXsFoYDD1gjTlWxelR4oqh/UyZBtafwO9ggNatzZZ/Lvx+KKhelB8iw
+         zKz6GTSiBhovYqmd6kyo5eDjxrLwyKDGSorhesuGCRl1pPywJAzZRD2ZbTDfXPWHWxOe
+         65cG68DiyaR0odZrX/clupPdUeyk4PLEH0IJ22AAfcysi6TBatYq+AWA/yfhe1xDSR+8
+         9/TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698241852; x=1698846652;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bdWLFJvjkN5xqchCHJQE5KjwjkwTlLwpf/JvggF+Xvc=;
+        b=i9LEg7/UJBUA5CXUID+zdXZIya8grAlSyeqzyaLUjthO88VMLVGK3mtBjuREamKzFn
+         x9DcOrXGWbma7tI9pkmPa1UyCtkfAm98KOYODgo5psYk2tpEfj/MGLRfL8ZhQXPurvbb
+         8o7SmhAcT2K0Lm9hzmSQYjOwjyKmrLcJjbdYkfWeOA54mefllP2DnX60ewGYN1lngmkk
+         nZP5t+EvPDpY3R3TFgbfYRHqUjapF/ql/jwTDspzY5YIwEOkX1xmdpixiuAP+XKrDhcx
+         JZjwhyR6B8pXTMyKeHnX+OGf/0Q1mC8TCoFRgW38MeR72W9IQHyui5hDivcYJoHO58k0
+         WJ/g==
+X-Gm-Message-State: AOJu0YwXMKVrS4FlHh/JUWN65smYhWLDZChXX5kHhTnRX+im1GvAFppV
+        SyK3VMjVNw7Q8tPjghu6/F8=
+X-Google-Smtp-Source: AGHT+IEhBTIo+Z148nVMLs51PxKVcuadUHcZTPXSi+vNJZjLH15bqvvIzsMcjKcJLvk4rVqhk9r5GA==
+X-Received: by 2002:a5d:6310:0:b0:32d:84c7:2f56 with SMTP id i16-20020a5d6310000000b0032d84c72f56mr12167341wru.21.1698241852036;
+        Wed, 25 Oct 2023 06:50:52 -0700 (PDT)
+Received: from amir-ThinkPad-T480.lan ([5.29.249.86])
+        by smtp.gmail.com with ESMTPSA id t8-20020adff048000000b0032dc2110d01sm12143673wro.61.2023.10.25.06.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 06:50:51 -0700 (PDT)
+From:   Amir Goldstein <amir73il@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christian Brauner <brauner@kernel.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH 0/3] fanotify support for btrfs sub-volumes
+Date:   Wed, 25 Oct 2023 16:50:45 +0300
+Message-Id: <20231025135048.36153-1-amir73il@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 2023-10-25 at 19:05 +1100, Dave Chinner wrote:
-> On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
-> > On Tue, 2023-10-24 at 10:08 +0300, Amir Goldstein wrote:
-> > > On Tue, Oct 24, 2023 at 6:40=E2=80=AFAM Dave Chinner <david@fromorbit=
-.com> wrote:
-> > > >=20
-> > > > On Mon, Oct 23, 2023 at 02:18:12PM -1000, Linus Torvalds wrote:
-> > > > > On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> =
-wrote:
-> > > > > >=20
-> > > > > > The problem is the first read request after a modification has =
-been
-> > > > > > made. That is causing relatime to see mtime > atime and trigger=
-ing
-> > > > > > an atime update. XFS sees this, does an atime update, and in
-> > > > > > committing that persistent inode metadata update, it calls
-> > > > > > inode_maybe_inc_iversion(force =3D false) to check if an iversi=
-on
-> > > > > > update is necessary. The VFS sees I_VERSION_QUERIED, and so it =
-bumps
-> > > > > > i_version and tells XFS to persist it.
-> > > > >=20
-> > > > > Could we perhaps just have a mode where we don't increment i_vers=
-ion
-> > > > > for just atime updates?
-> > > > >=20
-> > > > > Maybe we don't even need a mode, and could just decide that atime
-> > > > > updates aren't i_version updates at all?
-> > > >=20
-> > > > We do that already - in memory atime updates don't bump i_version a=
-t
-> > > > all. The issue is the rare persistent atime update requests that
-> > > > still happen - they are the ones that trigger an i_version bump on
-> > > > XFS, and one of the relatime heuristics tickle this specific issue.
-> > > >=20
-> > > > If we push the problematic persistent atime updates to be in-memory
-> > > > updates only, then the whole problem with i_version goes away....
-> > > >=20
-> > > > > Yes, yes, it's obviously technically a "inode modification", but =
-does
-> > > > > anybody actually *want* atime updates with no actual other change=
-s to
-> > > > > be version events?
-> > > >=20
-> > > > Well, yes, there was. That's why we defined i_version in the on dis=
-k
-> > > > format this way well over a decade ago. It was part of some deep
-> > > > dark magical HSM beans that allowed the application to combine
-> > > > multiple scans for different inode metadata changes into a single
-> > > > pass. atime changes was one of the things it needed to know about
-> > > > for tiering and space scavenging purposes....
-> > > >=20
-> > >=20
-> > > But if this is such an ancient mystical program, why do we have to
-> > > keep this XFS behavior in the present?
-> > > BTW, is this the same HSM whose DMAPI ioctls were deprecated
-> > > a few years back?
->=20
-> Drop the attitude, Amir.
->=20
-> That "ancient mystical program" is this:
->=20
-> https://buy.hpe.com/us/en/enterprise-solutions/high-performance-computing=
--solutions/high-performance-computing-storage-solutions/hpc-storage-solutio=
-ns/hpe-data-management-framework-7/p/1010144088
->=20
-> Yup, that product is backed by a proprietary descendent of the Irix
-> XFS code base XFS that is DMAPI enabled and still in use today. It's
-> called HPE XFS these days....
->=20
-> > > I mean, I understand that you do not want to change the behavior of
-> > > i_version update without an opt-in config or mount option - let the d=
-istro
-> > > make that choice.
-> > > But calling this an "on-disk format change" is a very long stretch.
->=20
-> Telling the person who created, defined and implemented the on disk
-> format that they don't know what constitutes a change of that
-> on-disk format seems kinda Dunning-Kruger to me....
->=20
-> There are *lots* of ways that di_changecount is now incompatible
-> with the VFS change counter. That's now defined as "i_version should
-> only change when [cm]time is changed".
->=20
-> di_changecount is defined to be a count of the number of changes
-> made to the attributes of the inode.  It's not just atime at issue
-> here - we bump di_changecount when make any inode change, including
-> background work that does not otherwise change timestamps. e.g.
-> allocation at writeback time, unwritten extent conversion, on-disk
-> EOF extension at IO completion, removal of speculative
-> pre-allocation beyond EOF, etc.
->=20
-> IOWs, di_changecount was never defined as a linux "i_version"
-> counter, regardless of the fact we originally we able to implement
-> i_version with it - all extra bumps to di_changecount were not
-> important to the users of i_version for about a decade.
->=20
-> Unfortunately, the new i_version definition is very much
-> incompatible with the existing di_changecount definition and that's
-> the underlying problem here. i.e. the problem is not that we bump
-> i_version on atime, it's that di_changecount is now completely
-> incompatible with the new i_version change semantics.
->=20
-> To implement the new i_version semantics exactly, we need to add a
-> new field to the inode to hold this information.
-> If we change the on disk format like this, then the atime
-> problems go away because the new field would not get updated on
-> atime updates. We'd still be bumping di_changecount on atime
-> updates, though, because that's what is required by the on-disk
-> format.
->=20
-> I'm really trying to avoid changing the on-disk format unless it
-> is absolutely necessary. If we can get the in-memory timestamp
-> updates to avoid tripping di_changecount updates then the atime
-> problems go away.
->=20
-> If we can get [cm]time sufficiently fine grained that we don't need
-> i_version, then we can turn off i_version in XFS and di_changecount
-> ends up being entirely internal. That's what was attempted with
-> generic multi-grain timestamps, but that hasn't worked.
->=20
-> Another options is for XFS to play it's own internal tricks with
-> [cm]time granularity and turn off i_version. e.g. limit external
-> timestamp visibility to 1us and use the remaining dozen bits of the
-> ns field to hold a change counter for updates within a single coarse
-> timer tick. This guarantees the timestamp changes within a coarse
-> tick for the purposes of change detection, but we don't expose those
-> bits to applications so applications that compare timestamps across
-> inodes won't get things back to front like was happening with the
-> multi-grain timestamps....
->=20
-> Another option is to work around the visible symptoms of the
-> semantic mismatch between i_version and di_changecount. The only
-> visible symptom we currently know about is the atime vs i_version
-> issue.  If people are happy for us to simply ignore VFS atime
-> guidelines (i.e. ignore realtime/lazytime) and do completely our own
-> stuff with timestamp update deferal, then that also solve the
-> immediate issues.
->=20
-> > > Does xfs_repair guarantee that changes of atime, or any inode changes
-> > > for that matter, update i_version? No, it does not.
-> > > So IMO, "atime does not update i_version" is not an "on-disk format c=
-hange",
-> > > it is a runtime behavior change, just like lazytime is.
-> >=20
-> > This would certainly be my preference. I don't want to break any
-> > existing users though.
->=20
-> That's why I'm trying to get some kind of consensus on what
-> rules and/or atime configurations people are happy for me to break
-> to make it look to users like there's a viable working change
-> attribute being supplied by XFS without needing to change the on
-> disk format.
->=20
+Jan,
 
-I agree that the only bone of contention is whether to count atime
-updates against the change attribute. I think we have consensus that all
-in-kernel users do _not_ want atime updates counted against the change
-attribute. The only real question is these "legacy" users of
-di_changecount.
+This patch set implements your suggestion [1] for handling fanotify
+events for filesystems with non-uniform f_fsid.
 
-> > Perhaps this ought to be a mkfs option? Existing XFS filesystems could
-> > still behave with the legacy behavior, but we could make mkfs.xfs build
-> > filesystems by default that work like NFS requires.
->=20
-> If we require mkfs to set a flag to change behaviour, then we're
-> talking about making an explicit on-disk format change to select the
-> optional behaviour. That's precisely what I want to avoid.
->=20
+With these changes, events report the fsid as it would be reported
+by statfs(2) on the same objet, i.e. the sub-volume's fsid for an inode
+in sub-volume.
 
-Right. The on-disk di_changecount would have a (subtly) different
-meaning at that point.
+This creates a small challenge to watching program, which needs to map
+from fsid in event to a stored mount_fd to use with open_by_handle_at(2).
+Luckily, for btrfs, fsid[0] is uniform and fsid[1] is per sub-volume.
 
-It's not a change that requires drastic retooling though. If we were to
-do this, we wouldn't need to grow the on-disk inode. Booting to an older
-kernel would cause the behavior to revert. That's sub-optimal, but not
-fatal.
+I have adapted fsnotifywatch tool [2] to be able to watch btrfs sb.
+The adapted tool detects the special case of btrfs (a bit hacky) and
+indexes the mount_fd to be used for open_by_handle_at(2) by fsid[0].
 
-What I don't quite understand is how these tools are accessing
-di_changecount?
+Note that this hackacry is not needed when the tool is watching a
+single filesystem (no need for mount_fd lookup table), because btrfs
+correctly decodes file handles from any sub-volume with mount_fd from
+any other sub-volume.
 
-XFS only accesses the di_changecount to propagate the value to and from
-the i_version, and there is nothing besides NFSD and IMA that queries
-the i_version value in-kernel. So, this must be done via some sort of
-userland tool that is directly accessing the block device (or some 3rd
-party kernel module).
+Christian is targeting the patches on vfs.f_fsid to the second part
+of the 6.7 merge window.
 
-In earlier discussions you alluded to some repair and/or analysis tools
-that depended on this counter. I took a quick look in xfsprogs, but I
-didn't see anything there. Is there a library or something that these
-tools use to get at this value?
---=20
-Jeff Layton <jlayton@kernel.org>
+If I get an ACK from you and from btrfs developers, perhaps these
+patches could also make it to 6.7.
+
+The btrfs patch could go independently via btrfs tree after the vfs
+patch is merged, as does the fanotify patch, but it is my preference
+to get ACKs and queue them all in the same vfs PR.
+
+Thanks,
+Amir.
+
+[1] https://lore.kernel.org/r/20230920110429.f4wkfuls73pd55pv@quack3/
+[2] https://github.com/amir73il/inotify-tools/commits/exportfs_encode_fid
+
+Amir Goldstein (3):
+  fs: define a new super operation to get fsid
+  btrfs: implement super operation to get fsid
+  fanotify: support reporting events with fid on btrfs sub-volumes
+
+ Documentation/filesystems/locking.rst |  2 ++
+ Documentation/filesystems/vfs.rst     |  4 ++++
+ fs/btrfs/super.c                      | 33 ++++++++++++++++++---------
+ fs/notify/fanotify/fanotify.c         | 28 +++++++++++++++++------
+ fs/notify/fanotify/fanotify_user.c    | 14 ++++++++----
+ fs/statfs.c                           | 14 ++++++++++++
+ include/linux/fs.h                    |  1 +
+ include/linux/statfs.h                |  2 ++
+ 8 files changed, 76 insertions(+), 22 deletions(-)
+
+-- 
+2.34.1
+
