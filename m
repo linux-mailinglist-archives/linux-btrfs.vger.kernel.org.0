@@ -2,170 +2,257 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBC87D606D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 05:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1265E7D647A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 10:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbjJYDRI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Oct 2023 23:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
+        id S234488AbjJYIFg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Oct 2023 04:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232654AbjJYDRA (ORCPT
+        with ESMTP id S234281AbjJYIFe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Oct 2023 23:17:00 -0400
-Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACF01734
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Oct 2023 20:16:49 -0700 (PDT)
-Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1d5f4d5d848so7170120fac.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Oct 2023 20:16:49 -0700 (PDT)
+        Wed, 25 Oct 2023 04:05:34 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38BAE116
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Oct 2023 01:05:30 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c434c33ec0so36815105ad.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Oct 2023 01:05:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698221129; x=1698825929; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=TiIdV9I/vN4NVgu/NUA15BW6zhATVMOiHC4HTyzCHqs=;
+        b=UTs0M7R4wts9o/uquvfK3s87E+x3YjsG+KRYaaleO19rL51Hsc3RU5x/Cx26E39mtm
+         +txrFU+WF9mLa+9lIHh7GCDa6HBeq1xSTOfbUi62fMKjXS8zbAqvQbovWtIILHXJW4d0
+         OjHtl42hpD5DgoAMUT1hTkwUl0N0lfbdwxZKyTP3O6HoDRtNjchLhRzGPNVmCr9AooUR
+         2cprVGjIbLbyaHEajJAr4ee6EfGgmPRM92IvS356y1DEpzIxnKTqhyvbnLYeYVTWXxHN
+         fAtr1cOIIppydKRBLQEJkTry01jqq3OopwEv7qYSnPgul7HXfNzmGgOPyI3m4V2Pzpey
+         jPfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698203809; x=1698808609;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=e9QVC5H4vkyCeuiGpwFNYN03ir9tniFF2RawB0o4s0A=;
-        b=bL5V2jxVLI2xJcihaMVwpyqGsVwPrMbolFqMSTE0zbcpdmJUg5e4ZgYRHGJCW9LJkl
-         /ez0pO0UWFGiUKIh9X0znWlwZs/rpGw5Zn0eTvwPXpOP/+Ap3K3By9biNgh2RsmwWOVP
-         gOolVYg2of37At9VLSQkX1lUWTsgZy1IiyA7QMgyzeCL1wqhMM4GPz9JhAH9UmPCXzwD
-         habOF8ePntPuD7n8ZUaMy/WAt4kQSFC+5hylJ7B3IESiiuLMhVVLW2B+/7qOhCo+K2AM
-         WAK9FQ0561UoiSSoO7Ffoyhbi4qX5fYjSifj7CrzfXfy30b2Eina3clVzFNF2FOYzBmC
-         cJiA==
-X-Gm-Message-State: AOJu0Yzpc4AWcOuIWtnjRX+YL+M4vIDpar4xpOQqg6BrLqp8u+eJM/k4
-        3Vz1vSnhfasHPdzjcR0YIz/X9kunXyFRPQPY1YTfY7haB0b4
-X-Google-Smtp-Source: AGHT+IHmWrlfanHyoztjRjoH3IuASudmYC42YG5zvsrOwCnvY9Rp/tctN/TY4Q6D2QnwOgFL69hmjmjHu5sXd6kug9GIOOLb6q/m
+        d=1e100.net; s=20230601; t=1698221129; x=1698825929;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TiIdV9I/vN4NVgu/NUA15BW6zhATVMOiHC4HTyzCHqs=;
+        b=uCR24iIqABU5uebzotwa4t/sBgFU9XM6PTAyivn4bdZ8WL0PYgL7venFgADCKQmD+Y
+         OIrutdktp2UTHlSz9xQz94jVp1Uvp3FTIfLShRESuAvwxsFJ5pFVghbrvkbsgKQi2OKp
+         LN1FgMfFKAhaO8xDfTMP4e1BMkAEPt7VktwTk2sKJos8ldxjhwk142ZhoP/NTqK9gnJE
+         qqoV3G12HFduVqFGBoHxwYMMQZgPEi7RcnhL97lB7YKtP5pX721enz9R+rRW6TVdNIhh
+         4hdc5atJbhTOiCPwNw//u5KAFtMZmS+quIoqZT7PCP5i5sA+5Rz/F6VgAXhi2sNzzcYl
+         9PIQ==
+X-Gm-Message-State: AOJu0YwbArUDNA+LOveCIU5QNm0eoxYkfL0tpOCNH5e5A6Eu4UWQa50j
+        HZJwEREl12Od/NQOyHlxfrQsrjEF1FoelKtF23Y=
+X-Google-Smtp-Source: AGHT+IF43YsoxJyfCmigF2ByrRCajkxHiglXcP/PVFXGzk0/EIpOE4fGDG8KrZpVCFCUqgg1CO+/2g==
+X-Received: by 2002:a17:902:f7cd:b0:1c6:30d1:7214 with SMTP id h13-20020a170902f7cd00b001c630d17214mr11982619plw.55.1698221129506;
+        Wed, 25 Oct 2023 01:05:29 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id u14-20020a170902e5ce00b001c61901ed2esm8529452plf.219.2023.10.25.01.05.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 01:05:28 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qvYtJ-003fEw-0V;
+        Wed, 25 Oct 2023 19:05:25 +1100
+Date:   Wed, 25 Oct 2023 19:05:25 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+Message-ID: <ZTjMRRqmlJ+fTys2@dread.disaster.area>
+References: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+ <ZTGncMVw19QVJzI6@dread.disaster.area>
+ <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+ <ZTWfX3CqPy9yCddQ@dread.disaster.area>
+ <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+ <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+ <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+ <ZTc8tClCRkfX3kD7@dread.disaster.area>
+ <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+ <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:7181:b0:1ea:5659:8ed5 with SMTP id
- d1-20020a056870718100b001ea56598ed5mr6617458oah.6.1698203808778; Tue, 24 Oct
- 2023 20:16:48 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 20:16:48 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c750b0060881e20e@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in remove_ticket
-From:   syzbot <syzbot+532944658f9546cd0135@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
+> On Tue, 2023-10-24 at 10:08 +0300, Amir Goldstein wrote:
+> > On Tue, Oct 24, 2023 at 6:40 AM Dave Chinner <david@fromorbit.com> wrote:
+> > > 
+> > > On Mon, Oct 23, 2023 at 02:18:12PM -1000, Linus Torvalds wrote:
+> > > > On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> wrote:
+> > > > > 
+> > > > > The problem is the first read request after a modification has been
+> > > > > made. That is causing relatime to see mtime > atime and triggering
+> > > > > an atime update. XFS sees this, does an atime update, and in
+> > > > > committing that persistent inode metadata update, it calls
+> > > > > inode_maybe_inc_iversion(force = false) to check if an iversion
+> > > > > update is necessary. The VFS sees I_VERSION_QUERIED, and so it bumps
+> > > > > i_version and tells XFS to persist it.
+> > > > 
+> > > > Could we perhaps just have a mode where we don't increment i_version
+> > > > for just atime updates?
+> > > > 
+> > > > Maybe we don't even need a mode, and could just decide that atime
+> > > > updates aren't i_version updates at all?
+> > > 
+> > > We do that already - in memory atime updates don't bump i_version at
+> > > all. The issue is the rare persistent atime update requests that
+> > > still happen - they are the ones that trigger an i_version bump on
+> > > XFS, and one of the relatime heuristics tickle this specific issue.
+> > > 
+> > > If we push the problematic persistent atime updates to be in-memory
+> > > updates only, then the whole problem with i_version goes away....
+> > > 
+> > > > Yes, yes, it's obviously technically a "inode modification", but does
+> > > > anybody actually *want* atime updates with no actual other changes to
+> > > > be version events?
+> > > 
+> > > Well, yes, there was. That's why we defined i_version in the on disk
+> > > format this way well over a decade ago. It was part of some deep
+> > > dark magical HSM beans that allowed the application to combine
+> > > multiple scans for different inode metadata changes into a single
+> > > pass. atime changes was one of the things it needed to know about
+> > > for tiering and space scavenging purposes....
+> > > 
+> > 
+> > But if this is such an ancient mystical program, why do we have to
+> > keep this XFS behavior in the present?
+> > BTW, is this the same HSM whose DMAPI ioctls were deprecated
+> > a few years back?
 
-syzbot found the following issue on:
+Drop the attitude, Amir.
 
-HEAD commit:    2030579113a1 Add linux-next specific files for 20231020
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1370ea89680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37404d76b3c8840e
-dashboard link: https://syzkaller.appspot.com/bug?extid=532944658f9546cd0135
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+That "ancient mystical program" is this:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+https://buy.hpe.com/us/en/enterprise-solutions/high-performance-computing-solutions/high-performance-computing-storage-solutions/hpc-storage-solutions/hpe-data-management-framework-7/p/1010144088
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a99a981e5d78/disk-20305791.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/073a5ba6a2a6/vmlinux-20305791.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c7c1a7107f7b/bzImage-20305791.xz
+Yup, that product is backed by a proprietary descendent of the Irix
+XFS code base XFS that is DMAPI enabled and still in use today. It's
+called HPE XFS these days....
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+532944658f9546cd0135@syzkaller.appspotmail.com
+> > I mean, I understand that you do not want to change the behavior of
+> > i_version update without an opt-in config or mount option - let the distro
+> > make that choice.
+> > But calling this an "on-disk format change" is a very long stretch.
 
-assertion failed: space_info->reclaim_size >= ticket->bytes, in fs/btrfs/space-info.c:436
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/space-info.c:436!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 18842 Comm: syz-executor.2 Not tainted 6.6.0-rc6-next-20231020-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:remove_ticket fs/btrfs/space-info.c:436 [inline]
-RIP: 0010:remove_ticket+0x1cf/0x240 fs/btrfs/space-info.c:431
-Code: 5f e9 f5 58 ed fd e8 f0 58 ed fd b9 b4 01 00 00 48 c7 c2 80 32 d9 8a 48 c7 c6 c0 32 d9 8a 48 c7 c7 20 33 d9 8a e8 a1 1c d0 fd <0f> 0b 48 89 ef e8 57 1f 44 fe e9 56 fe ff ff 48 89 ef e8 ea 1f 44
-RSP: 0018:ffffc900142a75e8 EFLAGS: 00010282
-RAX: 0000000000000059 RBX: ffffffffffffc000 RCX: ffffc900098f1000
-RDX: 0000000000000000 RSI: ffffffff816c4d42 RDI: 0000000000000005
-RBP: 000000000001c000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880286da000
-R13: ffff8880286da0e0 R14: ffffc900142c7738 R15: ffffc900133ef730
-FS:  00007fd63d5966c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005556cb3e3668 CR3: 0000000020c93000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_try_granting_tickets+0x2c6/0x450 fs/btrfs/space-info.c:468
- btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:232 [inline]
- block_rsv_release_bytes fs/btrfs/block-rsv.c:154 [inline]
- btrfs_block_rsv_release+0x5b3/0x6c0 fs/btrfs/block-rsv.c:295
- btrfs_delayed_refs_rsv_release+0xbb/0x130 fs/btrfs/delayed-ref.c:75
- btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:2038 [inline]
- __btrfs_run_delayed_refs+0x6c3/0x4020 fs/btrfs/extent-tree.c:2106
- btrfs_run_delayed_refs+0x1a6/0x320 fs/btrfs/extent-tree.c:2218
- btrfs_commit_transaction+0x783/0x3b20 fs/btrfs/transaction.c:2237
- btrfs_sync_fs+0x13b/0x780 fs/btrfs/super.c:1185
- sync_filesystem fs/sync.c:66 [inline]
- sync_filesystem+0x1c5/0x280 fs/sync.c:30
- btrfs_remount+0x1ff/0x17b0 fs/btrfs/super.c:1649
- legacy_reconfigure+0x119/0x180 fs/fs_context.c:685
- reconfigure_super+0x44f/0xb10 fs/super.c:1143
- do_remount fs/namespace.c:2884 [inline]
- path_mount+0x16ed/0x1ed0 fs/namespace.c:3656
- do_mount fs/namespace.c:3677 [inline]
- __do_sys_mount fs/namespace.c:3886 [inline]
- __se_sys_mount fs/namespace.c:3863 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3863
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fd63c87e1ea
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd63d595ee8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fd63d595f80 RCX: 00007fd63c87e1ea
-RDX: 0000000020000180 RSI: 0000000020000140 RDI: 0000000000000000
-RBP: 0000000020000180 R08: 00007fd63d595f80 R09: 00000000039600ac
-R10: 00000000039600ac R11: 0000000000000206 R12: 0000000020000140
-R13: 00007fd63d595f40 R14: 0000000000000000 R15: 0000000020000080
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:remove_ticket fs/btrfs/space-info.c:436 [inline]
-RIP: 0010:remove_ticket+0x1cf/0x240 fs/btrfs/space-info.c:431
-Code: 5f e9 f5 58 ed fd e8 f0 58 ed fd b9 b4 01 00 00 48 c7 c2 80 32 d9 8a 48 c7 c6 c0 32 d9 8a 48 c7 c7 20 33 d9 8a e8 a1 1c d0 fd <0f> 0b 48 89 ef e8 57 1f 44 fe e9 56 fe ff ff 48 89 ef e8 ea 1f 44
-RSP: 0018:ffffc900142a75e8 EFLAGS: 00010282
-RAX: 0000000000000059 RBX: ffffffffffffc000 RCX: ffffc900098f1000
-RDX: 0000000000000000 RSI: ffffffff816c4d42 RDI: 0000000000000005
-RBP: 000000000001c000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880286da000
-R13: ffff8880286da0e0 R14: ffffc900142c7738 R15: ffffc900133ef730
-FS:  00007fd63d5966c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005556cb3e3668 CR3: 0000000020c93000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Telling the person who created, defined and implemented the on disk
+format that they don't know what constitutes a change of that
+on-disk format seems kinda Dunning-Kruger to me....
 
+There are *lots* of ways that di_changecount is now incompatible
+with the VFS change counter. That's now defined as "i_version should
+only change when [cm]time is changed".
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+di_changecount is defined to be a count of the number of changes
+made to the attributes of the inode.  It's not just atime at issue
+here - we bump di_changecount when make any inode change, including
+background work that does not otherwise change timestamps. e.g.
+allocation at writeback time, unwritten extent conversion, on-disk
+EOF extension at IO completion, removal of speculative
+pre-allocation beyond EOF, etc.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+IOWs, di_changecount was never defined as a linux "i_version"
+counter, regardless of the fact we originally we able to implement
+i_version with it - all extra bumps to di_changecount were not
+important to the users of i_version for about a decade.
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Unfortunately, the new i_version definition is very much
+incompatible with the existing di_changecount definition and that's
+the underlying problem here. i.e. the problem is not that we bump
+i_version on atime, it's that di_changecount is now completely
+incompatible with the new i_version change semantics.
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+To implement the new i_version semantics exactly, we need to add a
+new field to the inode to hold this information.
+If we change the on disk format like this, then the atime
+problems go away because the new field would not get updated on
+atime updates. We'd still be bumping di_changecount on atime
+updates, though, because that's what is required by the on-disk
+format.
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+I'm really trying to avoid changing the on-disk format unless it
+is absolutely necessary. If we can get the in-memory timestamp
+updates to avoid tripping di_changecount updates then the atime
+problems go away.
 
-If you want to undo deduplication, reply with:
-#syz undup
+If we can get [cm]time sufficiently fine grained that we don't need
+i_version, then we can turn off i_version in XFS and di_changecount
+ends up being entirely internal. That's what was attempted with
+generic multi-grain timestamps, but that hasn't worked.
+
+Another options is for XFS to play it's own internal tricks with
+[cm]time granularity and turn off i_version. e.g. limit external
+timestamp visibility to 1us and use the remaining dozen bits of the
+ns field to hold a change counter for updates within a single coarse
+timer tick. This guarantees the timestamp changes within a coarse
+tick for the purposes of change detection, but we don't expose those
+bits to applications so applications that compare timestamps across
+inodes won't get things back to front like was happening with the
+multi-grain timestamps....
+
+Another option is to work around the visible symptoms of the
+semantic mismatch between i_version and di_changecount. The only
+visible symptom we currently know about is the atime vs i_version
+issue.  If people are happy for us to simply ignore VFS atime
+guidelines (i.e. ignore realtime/lazytime) and do completely our own
+stuff with timestamp update deferal, then that also solve the
+immediate issues.
+
+> > Does xfs_repair guarantee that changes of atime, or any inode changes
+> > for that matter, update i_version? No, it does not.
+> > So IMO, "atime does not update i_version" is not an "on-disk format change",
+> > it is a runtime behavior change, just like lazytime is.
+> 
+> This would certainly be my preference. I don't want to break any
+> existing users though.
+
+That's why I'm trying to get some kind of consensus on what
+rules and/or atime configurations people are happy for me to break
+to make it look to users like there's a viable working change
+attribute being supplied by XFS without needing to change the on
+disk format.
+
+> Perhaps this ought to be a mkfs option? Existing XFS filesystems could
+> still behave with the legacy behavior, but we could make mkfs.xfs build
+> filesystems by default that work like NFS requires.
+
+If we require mkfs to set a flag to change behaviour, then we're
+talking about making an explicit on-disk format change to select the
+optional behaviour. That's precisely what I want to avoid.
+
+-Dave.
+
+-- 
+Dave Chinner
+david@fromorbit.com
