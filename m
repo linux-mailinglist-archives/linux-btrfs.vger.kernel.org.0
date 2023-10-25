@@ -2,70 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A2F7D6E0F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 16:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DE67D70F4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 17:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234631AbjJYNvI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Oct 2023 09:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52242 "EHLO
+        id S235098AbjJYPcY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Oct 2023 11:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235046AbjJYNvG (ORCPT
+        with ESMTP id S235048AbjJYPcW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:51:06 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED271B5;
-        Wed, 25 Oct 2023 06:50:57 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32d9d8284abso3776957f8f.3;
-        Wed, 25 Oct 2023 06:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698241856; x=1698846656; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=91nAEvCKcJvzkrpWMMB/KXjz6VNwzA38eTclBHG/U2o=;
-        b=NAwL0g3Rzz0SXrGpvsvaDkHvG68uLjIjxbAx1yP0lhpmVgtoDpN7/i+3AAubnWhyap
-         5Sn88VHn+CgSNGi6bOZLs7DiwSTehRFkV9Ou+zESDIG8SSaLukORvvKtWvop/n8ozS7D
-         9tK+b6qDi1FVtJHQF7g9JSfcpPlSvDBBgaoClAQ3iVY9HvrlRqzGixPDIHpYjc1ALKqW
-         9B6ed1yOkinA0kzRgw22u3vOE4wLaee/vd/myrerxMEUIz2lh0i/lp5DsbO7M6acU9f8
-         y0a7jdsiOXSPKW9mvDINUsU/eI/0/p1KND+7Z6rTQiuBEYpy7Q0ANXXzlIxJrY2HrhzC
-         Xu2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698241856; x=1698846656;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=91nAEvCKcJvzkrpWMMB/KXjz6VNwzA38eTclBHG/U2o=;
-        b=tE6SiDzJERvScw1FSMCSpGwyyon9DOkbKv86rb+ueQy7/tPOz4nNlUf9gKlyhCTXLk
-         yWMO+JfG1hwHXFwRqbsXS5iNv4arkfvXgyzMb9PTzktNLEIstTuAbGxz7ul6baODoA8h
-         uNciPDaq7WAzB22bMZCFbIqFiyk9lDfno4LXmBzFdGCCTW642OASG4AcrO/VIedJbQn/
-         QFOsmj4s1vVtNaoryMtGK/PXaskn0uDXSGTX+MFm0jSRdDKm5vXLwiPi9N7gHwpRpaqP
-         fKlUOA7JdT9RmxhnY1BrcOG93F7ronrrUv55kmN4fVgXggyIdZLvProHz1/PZ64aP0qu
-         NlIQ==
-X-Gm-Message-State: AOJu0YwDahsrQU+AmBSSTdh/5m+/4DJSnifnF031BzDcvQUP+AfGgkDd
-        lB7cVxGaA9U0o6nWByb9+6M=
-X-Google-Smtp-Source: AGHT+IFDrYCgdccz69WUMHgXYj7KX+OhvzBcYbaetpCMZnVvqC94ZEPTrBCpnE/32qS2Q+Ktj/2j5w==
-X-Received: by 2002:adf:e7c6:0:b0:32d:a2d6:4058 with SMTP id e6-20020adfe7c6000000b0032da2d64058mr10569608wrn.62.1698241856136;
-        Wed, 25 Oct 2023 06:50:56 -0700 (PDT)
-Received: from amir-ThinkPad-T480.lan ([5.29.249.86])
-        by smtp.gmail.com with ESMTPSA id t8-20020adff048000000b0032dc2110d01sm12143673wro.61.2023.10.25.06.50.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 06:50:55 -0700 (PDT)
-From:   Amir Goldstein <amir73il@gmail.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Christian Brauner <brauner@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH 3/3] fanotify: support reporting events with fid on btrfs sub-volumes
-Date:   Wed, 25 Oct 2023 16:50:48 +0300
-Message-Id: <20231025135048.36153-4-amir73il@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231025135048.36153-1-amir73il@gmail.com>
-References: <20231025135048.36153-1-amir73il@gmail.com>
+        Wed, 25 Oct 2023 11:32:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F12184;
+        Wed, 25 Oct 2023 08:32:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E660C433C9;
+        Wed, 25 Oct 2023 15:32:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698247940;
+        bh=AVTx5lQPYgHLSGJTavoq8CVU+uCf50DO877w8nwruKw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IDiW4LCq64gwOm+NPf+IdH3/9FQ7h8d1HEV/pMTrn3hEOHM/hizw/2uNax/tWaIkF
+         Eeo+7pX+QI4CPV4RTlkfr6+3CwkO2vXWsnN2diDyVx3y7rs8Oc+sgoMn6IJdt6dgcf
+         3vEmmfr0tw4KWMBYURBVvbxEFdO9938DuhJzkC0C5ws1gGKcT45LcqWAuAFnAZk16a
+         9wgKk9mVTEOewdthjFnljrRu3kqmp1iWTf1pC6tAkoPTKPboD0Iatp0Q8ZksrwyIbN
+         h9fPGJulCjCybjbBupfHm/1YeZg4ajkdDATl3lqPXBFB9k8H3cecW1qH/wgLA+rMdr
+         z9p26TrVjnP5A==
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-9ba081173a3so919042966b.1;
+        Wed, 25 Oct 2023 08:32:20 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzyUJNjQS+WjmKenurqQ95r+v4xpOJPsvlhM7KPMrcAZqq/66y4
+        kYZda0ToOtor8IZdTcHrmgp2950pNqqBkWj4XJ0=
+X-Google-Smtp-Source: AGHT+IFBjoUUVvhkSZ016wtYSOPQNixEa20PoYMyEiijmi/iAUFVe89Ix6wUtRlXO1ywRbbWhMNwsORR5UjYc7NkhuI=
+X-Received: by 2002:a17:907:d86:b0:9be:b7da:72d6 with SMTP id
+ go6-20020a1709070d8600b009beb7da72d6mr12752191ejc.63.1698247938904; Wed, 25
+ Oct 2023 08:32:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+References: <39311089b30f9250ff7f7a0aabb70547616a4b3a.1698230869.git.anand.jain@oracle.com>
+In-Reply-To: <39311089b30f9250ff7f7a0aabb70547616a4b3a.1698230869.git.anand.jain@oracle.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Wed, 25 Oct 2023 16:31:42 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6Yg6bv1pKjA6dVjgr45Z=-YkDzcr3RzaV284d8uLxAdg@mail.gmail.com>
+Message-ID: <CAL3q7H6Yg6bv1pKjA6dVjgr45Z=-YkDzcr3RzaV284d8uLxAdg@mail.gmail.com>
+Subject: Re: [PATCH] fstests: btrfs/219 cloned-device mount capability update
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,121 +57,72 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Setting fanotify marks that report events with fid on btrfs sub-volumes
-is not supported, because in the case of btrfs sub-volumes, there is no
-uniform fsid that can be cached in the sb connector.
+On Wed, Oct 25, 2023 at 11:51=E2=80=AFAM Anand Jain <anand.jain@oracle.com>=
+ wrote:
+>
+> This test case originally checked for failed cloned device mounts, which
+> is no longer relevant after the commit a5b8a5f9f835 ("btrfs: support
+> cloned-device mount capability"). So removing the obsolete part.
+>
+> For older kernels without this commit, the test case still serves its cor=
+e
+> purpose.
+>
+> Additionally, add this test case back to the auto group which reverts the
+> commit e2e7b549380a ("fstests: btrfs/219: remove it from auto group") sin=
+ce
+> the previously missing kernel commit 5f58d783fd78 ("btrfs: free device in
+> btrfs_close_devices for a single device filesystem") has already been
+> integrated.
+>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202310251645.5fe5495a-oliver.sang@=
+intel.com
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  tests/btrfs/219 | 11 +----------
+>  1 file changed, 1 insertion(+), 10 deletions(-)
+>
+> diff --git a/tests/btrfs/219 b/tests/btrfs/219
+> index b747ce34fcc4..44296c119b0a 100755
+> --- a/tests/btrfs/219
+> +++ b/tests/btrfs/219
+> @@ -12,7 +12,7 @@
+>  #
+>
+>  . ./common/preamble
+> -_begin_fstest quick volume
+> +_begin_fstest auto quick volume
+>
+>  # Override the default cleanup function.
+>  _cleanup()
+> @@ -79,15 +79,6 @@ _mount $loop_dev $loop_mnt > /dev/null 2>&1 || \
+>         _fail "Failed to mount the second time"
+>  $UMOUNT_PROG $loop_mnt
+>
+> -# Now we definitely can't mount them at the same time, because we're sti=
+ll tied
+> -# to the limitation of one fs_devices per fsid.
+> -_btrfs_forget_or_module_reload
+> -
+> -_mount $loop_dev $loop_mnt > /dev/null 2>&1 || \
+> -       _fail "Failed to mount the third time"
+> -_mount -o loop $fs_img2 $loop_mnt1 > /dev/null 2>&1 && \
+> -       _fail "We were allowed to mount when we should have failed"
+> -
 
-If filesystem supports the cheap ->get_fsid() operation, do not use the
-cached fsid in connector and query fsid from inode on every event.
-This allows setting fanotify marks that report events with fid on btrfs
-sub-volumes.
+For kernels without the cloned-device feature, it's useful to still
+test this... We want to catch regressions on stable releases and
+downstream (distros).
+Rather than removing this code, I would rather run the code only if
+the kernel does not support the feature (file
+/sys/fs/btrfs/features/temp_fsid does not exist).
 
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
----
- fs/notify/fanotify/fanotify.c      | 28 +++++++++++++++++++++-------
- fs/notify/fanotify/fanotify_user.c | 14 ++++++++++----
- 2 files changed, 31 insertions(+), 11 deletions(-)
+Thanks.
 
-diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
-index 9dac7f6e72d2..25282ca0173d 100644
---- a/fs/notify/fanotify/fanotify.c
-+++ b/fs/notify/fanotify/fanotify.c
-@@ -535,6 +535,21 @@ static struct inode *fanotify_dfid_inode(u32 event_mask, const void *data,
- 	return dir;
- }
- 
-+/*
-+ * If @inode is available and if filesystem supports ->get_fsid(), return the
-+ * fsid associated with the inode.  Otherwise, return the pre cached fsid.
-+ */
-+static __kernel_fsid_t fanotify_inode_fsid(struct inode *inode,
-+					   __kernel_fsid_t *fsid)
-+{
-+	__kernel_fsid_t __fsid;
-+
-+	if (inode && inode_get_fsid(inode, &__fsid) == 0)
-+		return __fsid;
-+
-+	return *fsid;
-+}
-+
- static struct fanotify_event *fanotify_alloc_path_event(const struct path *path,
- 							unsigned int *hash,
- 							gfp_t gfp)
-@@ -586,8 +601,8 @@ static struct fanotify_event *fanotify_alloc_fid_event(struct inode *id,
- 		return NULL;
- 
- 	ffe->fae.type = FANOTIFY_EVENT_TYPE_FID;
--	ffe->fsid = *fsid;
--	*hash ^= fanotify_hash_fsid(fsid);
-+	ffe->fsid = fanotify_inode_fsid(id, fsid);
-+	*hash ^= fanotify_hash_fsid(&ffe->fsid);
- 	fanotify_encode_fh(&ffe->object_fh, id, fanotify_encode_fh_len(id),
- 			   hash, gfp);
- 
-@@ -627,8 +642,8 @@ static struct fanotify_event *fanotify_alloc_name_event(struct inode *dir,
- 		return NULL;
- 
- 	fne->fae.type = FANOTIFY_EVENT_TYPE_FID_NAME;
--	fne->fsid = *fsid;
--	*hash ^= fanotify_hash_fsid(fsid);
-+	fne->fsid = fanotify_inode_fsid(dir, fsid);
-+	*hash ^= fanotify_hash_fsid(&fne->fsid);
- 	info = &fne->info;
- 	fanotify_info_init(info);
- 	if (dir_fh_len) {
-@@ -691,9 +706,10 @@ static struct fanotify_event *fanotify_alloc_error_event(
- 	fee->fae.type = FANOTIFY_EVENT_TYPE_FS_ERROR;
- 	fee->error = report->error;
- 	fee->err_count = 1;
--	fee->fsid = *fsid;
- 
- 	inode = report->inode;
-+	fee->fsid = fanotify_inode_fsid(inode, fsid);
-+	*hash ^= fanotify_hash_fsid(&fee->fsid);
- 	fh_len = fanotify_encode_fh_len(inode);
- 
- 	/* Bad fh_len. Fallback to using an invalid fh. Should never happen. */
-@@ -702,8 +718,6 @@ static struct fanotify_event *fanotify_alloc_error_event(
- 
- 	fanotify_encode_fh(&fee->object_fh, inode, fh_len, NULL, 0);
- 
--	*hash ^= fanotify_hash_fsid(fsid);
--
- 	return &fee->fae;
- }
- 
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 0eb9622e8a9f..ed67e5f973ab 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -1570,16 +1570,22 @@ static int fanotify_test_fsid(struct dentry *dentry, __kernel_fsid_t *fsid)
- 		return -ENODEV;
- 
- 	/*
--	 * Make sure dentry is not of a filesystem subvolume (e.g. btrfs)
--	 * which uses a different fsid than sb root.
-+	 * If dentry is on a filesystem subvolume (e.g. btrfs), which uses a
-+	 * different fsid than sb root, then make sure that filesytem supports
-+	 * getting fsid from inode.
- 	 */
- 	err = vfs_get_fsid(dentry->d_sb->s_root, &root_fsid);
- 	if (err)
- 		return err;
- 
- 	if (root_fsid.val[0] != fsid->val[0] ||
--	    root_fsid.val[1] != fsid->val[1])
--		return -EXDEV;
-+	    root_fsid.val[1] != fsid->val[1]) {
-+		if (!dentry->d_sb->s_op->get_fsid)
-+			return -EXDEV;
-+
-+		/* Cache root fsid in case inode is not available on event */
-+		*fsid = root_fsid;
-+	}
- 
- 	return 0;
- }
--- 
-2.34.1
-
+>  _btrfs_rescan_devices
+>  # success, all done
+>  echo "Silence is golden"
+> --
+> 2.31.1
+>
