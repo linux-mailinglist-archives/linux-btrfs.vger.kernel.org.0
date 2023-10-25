@@ -2,132 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1D77D75B5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 22:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFC27D7656
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 23:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbjJYU3t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Oct 2023 16:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
+        id S230222AbjJYVHC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Oct 2023 17:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjJYU3s (ORCPT
+        with ESMTP id S230286AbjJYVHA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:29:48 -0400
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CD718B
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Oct 2023 13:29:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1698265782; x=1698524982;
-        bh=eh8FqFJ3iRnc8RZX7Fh9oxtknBlTiwtp+opRBlNGn8Q=;
-        h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=pVHR26Di1l9kAzdanoukxNQXtdLTncwI8jVNnrDNHGLTVd5h4u2gbsGB4ga5XqeOD
-         pJoiFlq34HIov4KNKle1qJnLKSyEFDY7Q/5H43rj765EbX9j2nTiXwt0+mp2SkZnaF
-         9b5A1d19DRhGywSONaldHzQ5yST6Fen8rH4s4+9+ZwELm0X5BbVftYHMG0Cf38BSEy
-         SksynH/zDet3Io1h4MvyvVQqWtIFcYSxDJDIApBEhP4O0qy/CfHAQmpM7zNcxyhAZv
-         plnavPwAwWXdyL4o+fr7sJU0gxK1dUnQQPTsK1YmvBdCMkH94tC3nyyWINqexRXSHP
-         WvNjwyIkR11sQ==
-Date:   Wed, 25 Oct 2023 20:29:31 +0000
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Peter Wedder <pwedder@protonmail.com>
-Subject: Balance on 5-disk RAID1 put all data on 2 disks, leaving the rest empty
-Message-ID: <erRZVkhSqirieFSNm0d1BF5BemFMyUSCjGKT73prpKS7KDydKhqAvNqA7Eham7bQXmmh0CCx0rep6EAKKi_0itDlOf94KZ1zRRZfip_My4M=@protonmail.com>
-Feedback-ID: 42199824:user:proton
+        Wed, 25 Oct 2023 17:07:00 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D7F13D
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Oct 2023 14:06:58 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-66d17fd450aso11097236d6.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Oct 2023 14:06:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1698268017; x=1698872817; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+ZytB5j+cqWISPSB2svmNjXmS7qMmv4D7nJ0QJibgwE=;
+        b=STiV4Ih9HEytD8mlaTSn3AA9rjFRK7OVjNTvoylJdftAcJ7C/8MdvjhfWvNqiO2M3/
+         bCENxkGJx6XsNZGxNu50U71RqoEHfNJuycxrx6BAAAtU4ntm5YnJz4ujSCWL6VuqhhpE
+         ZVixUhex2nKKEztoJQUrgEE27VLRoRdwLiG+XHCgnemBAt64mqsIKg+xo60iLDK0yd6e
+         b7KDy0awK3BY7vK1rWaRS+TuFion/cK20D8NgUcbAXfe9yDLMa4PaQSQEf2Bo57qOqBS
+         z9R+ODqz8RCMmwT5wOyRHYqir4szEn7gys8MeGUSccKGofkOpB0l34fF3svxFYoaFOsj
+         QFgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698268017; x=1698872817;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+ZytB5j+cqWISPSB2svmNjXmS7qMmv4D7nJ0QJibgwE=;
+        b=Tvlc7khQX7IZPya2b/zW1kTXPMZsjR3wm8ucLv6wJsXxfMYgAAOsxdGw069uolUPKr
+         nc8prz2oodch7HPx4/2uwo3e1yh1mXHLNeKk5oYO7bsSYe4QCXpIh9KyJRLFTq5DzPza
+         3+1WW/4yf4EuhC1KursKMM7TooDeujHyaeZfKkG1GSpHoocyLL2yJH7tiNnolL1B0VaO
+         NObPxKmEHto6eT0sKh1vkPt2qvJ3g5+B1wGq/snJ0jSvbY31YprSk4QwXSDn6aMEt/ZV
+         xXg/5aI/pmWeRfnnwHKEEVxPV4VC7Xv9kr1hRCxDmCsA7AGffAoq+9Ynlu/rVF2SahRh
+         tk+w==
+X-Gm-Message-State: AOJu0Yy8p3Ew31/XbBB34TBMdZLKccpsoBOeFVZ8z8fFf7aUKA3gT9Bt
+        Y1+9BV/Zk5u0ZbOXxiQzcNwU8w==
+X-Google-Smtp-Source: AGHT+IGcBa0TRZ5uW5atJ7v3fMab4ZQ6EkgZwGLsRQCLj8vifJJB+HBcIj1pl9b1b/ZUv28xfQYwPg==
+X-Received: by 2002:a05:6214:418a:b0:66d:327:bf8f with SMTP id ld10-20020a056214418a00b0066d0327bf8fmr1058030qvb.30.1698268017035;
+        Wed, 25 Oct 2023 14:06:57 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id jy20-20020a0562142b5400b0065d051fc445sm4716902qvb.55.2023.10.25.14.06.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 14:06:56 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 17:06:54 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
+        Christian Brauner <brauner@kernel.org>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
+Message-ID: <20231025210654.GA2892534@perftesting>
+References: <20231025135048.36153-1-amir73il@gmail.com>
+ <ZTk1ffCMDe9GrJjC@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTk1ffCMDe9GrJjC@infradead.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Wed, Oct 25, 2023 at 08:34:21AM -0700, Christoph Hellwig wrote:
+> On Wed, Oct 25, 2023 at 04:50:45PM +0300, Amir Goldstein wrote:
+> > Jan,
+> > 
+> > This patch set implements your suggestion [1] for handling fanotify
+> > events for filesystems with non-uniform f_fsid.
+> 
+> File systems nust never report non-uniform fsids (or st_dev) for that
+> matter.  btrfs is simply broken here and needs to be fixed.
 
-I had a RAID1 array on top of 4x4TB drives. Recently I removed one 4TB driv=
-e and added two 16TB drives to it. After running a full, unfiltered balance=
- on the array, I am left in a situation where all the 4TB drives are comple=
-tely empty, and all the data and metadata is on the 16TB drives. Is this no=
-rmal? I was expecting to have at least some data on the smaller drives.
+We keep going around and around on this so I'd like to get a set of steps laid
+out for us to work towards to resolve this once and for all.
 
-Using btrfs-progs v6.3.2 on kernel 6.3.11, Fedora Server 38.
+HYSTERICAL RAISINS (why we do st_dev)
+-------------------------------------
 
-# btrfs fi show
-Label: none  uuid: 6f6bf357-774d-4e1f-8cad-a2ed801533a8
-        Total devices 5 FS bytes used 5.57TiB
-        devid    1 size 3.64TiB used 0.00B path /dev/sde
-        devid    2 size 3.64TiB used 0.00B path /dev/sdd
-        devid    3 size 3.64TiB used 0.00B path /dev/sda
-        devid    5 size 14.55TiB used 5.58TiB path /dev/sdb
-        devid    6 size 14.55TiB used 5.58TiB path /dev/sdf
+Chris made this decision forever ago because things like rsync would screw up
+with snapshots and end up backing up the same thing over and over again.  We saw
+it was using st_dev (as were a few other standard tools) to distinguish between
+file systems, so we abused this to make userspace happy.
 
+The other nice thing this provided was a solution for the fact that we re-use
+inode numbers in the file system, as they're unique for the subvolume only.
 
-# btrfs device usage /media/raid1
-/dev/sde, ID: 1
-   Device size:             3.64TiB
-   Device slack:              0.00B
-   Unallocated:             3.64TiB
+PROBLEMS WE WANT TO SOLVE
+-------------------------
 
-/dev/sdd, ID: 2
-   Device size:             3.64TiB
-   Device slack:              0.00B
-   Unallocated:             3.64TiB
+1) Stop abusing st_dev.  We actually want this as btrfs developers because it's
+   kind of annoying to figure out which device is mounted when st_dev doesn't
+   map to any of the devices in /proc/mounts.
 
-/dev/sda, ID: 3
-   Device size:             3.64TiB
-   Device slack:              0.00B
-   Unallocated:             3.64TiB
+2) Give user space a way to tell it's on a subvolume, so it can not be confused
+   by the repeating inode numbers.
 
-/dev/sdb, ID: 5
-   Device size:            14.55TiB
-   Device slack:              0.00B
-   Data,RAID1:              5.58TiB
-   Metadata,RAID1:          8.00GiB
-   System,RAID1:           32.00MiB
-   Unallocated:             8.97TiB
+POSSIBLE SOLUTIONS
+------------------
 
-/dev/sdf, ID: 6
-   Device size:            14.55TiB
-   Device slack:              0.00B
-   Data,RAID1:              5.58TiB
-   Metadata,RAID1:          8.00GiB
-   System,RAID1:           32.00MiB
-   Unallocated:             8.97TiB
+1) A statx field for subvolume id.  The subvolume id's are unique to the file
+   system, so subvolume id + inode number is unique to the file system.  This is
+   a u64, so is nice and easy to export through statx.
+2) A statx field for the uuid/fsid of the file system.  I'd like this because
+   again, being able to easily stat a couple of files and tell they're on the
+   same file system is a valuable thing.  We have a per-fs uuid that we can
+   export here.
+3) A statx field for the uuid of the subvolume.  Our subvolumes have their own
+   unique uuid.  This could be an alternative for the subvolume id option, or an
+   addition.
 
-# btrfs filesystem usage /media/raid1
-Overall:
-    Device size:                  40.02TiB
-    Device allocated:             11.17TiB
-    Device unallocated:           28.85TiB
-    Device missing:                  0.00B
-    Device slack:                    0.00B
-    Used:                         11.14TiB
-    Free (estimated):             14.44TiB      (min: 14.44TiB)
-    Free (statfs, df):            12.62TiB
-    Data ratio:                       2.00
-    Metadata ratio:                   2.00
-    Global reserve:              512.00MiB      (used: 0.00B)
-    Multiple profiles:                  no
+Either 1 or 3 are necessary to give userspace a way to tell they've wandered
+into a different subvolume.  I'd like to have all 3, but I recognize that may be
+wishful thinking.  2 isn't necessary, but if we're going to go about messing
+with statx then I'd like to do it all at once, and I want this for the reasons
+stated above.
 
-Data,RAID1: Size:5.58TiB, Used:5.56TiB (99.71%)
-   /dev/sdb        5.58TiB
-   /dev/sdf        5.58TiB
+SEQUENCE OF EVENTS
+------------------
 
-Metadata,RAID1: Size:8.00GiB, Used:6.87GiB (85.93%)
-   /dev/sdb        8.00GiB
-   /dev/sdf        8.00GiB
+We do one of the statx changes, that rolls into a real kernel.  We run around
+and submit patches for rsync and anything else we can think of to take advantage
+of the statx feature.
 
-System,RAID1: Size:32.00MiB, Used:816.00KiB (2.49%)
-   /dev/sdb       32.00MiB
-   /dev/sdf       32.00MiB
+Then we wait, call it 2 kernel releases after the initial release.  Then we go
+and rip out the dev_t hack.
 
-Unallocated:
-   /dev/sde        3.64TiB
-   /dev/sdd        3.64TiB
-   /dev/sda        3.64TiB
-   /dev/sdb        8.97TiB
-   /dev/sdf        8.97TiB
+Does this sound like a reasonable path forward to resolve everybody's concerns?
+I feel like I'm missing some other argument here, but I'm currently on vacation
+and can't think of what it is nor have the energy to go look it up at the
+moment.  Thanks,
 
+Josef
