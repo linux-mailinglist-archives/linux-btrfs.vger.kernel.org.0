@@ -2,195 +2,222 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 929D07D7848
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Oct 2023 00:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9AB7D7856
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Oct 2023 01:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbjJYW5y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Oct 2023 18:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
+        id S229709AbjJYXCs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Oct 2023 19:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJYW5x (ORCPT
+        with ESMTP id S229723AbjJYXCr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Oct 2023 18:57:53 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E4D115
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Oct 2023 15:57:51 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53ebf429b4fso357556a12.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Oct 2023 15:57:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698274670; x=1698879470; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=au+FPuig5k+lPrQlpRTaaMDYkgX5B4VtECHua21n4XI=;
-        b=D3oU4ES6g2Ih4+0S0BkQ43d5+3ZQa9to/3JaXFjKocJlfTgGAchbEPuY7cRiXBvbJh
-         GWrWbSbCOtlv6CydGRMnwnpV/DWNoT4C6iQ7Uz7M+TfYcS4dNNZES/yBzX6KEQwCj77a
-         9paZhLNjEG6i/59N1UCZ85omKQCe0m1IxvCI5I2YWD6L9d27Eu4XX51otIlJGWVzFK4h
-         RPl+YP1acDMeYBRzbNYV5UtmG/Yh3CNkPquK973nq2Rpn7mqgbGs2Wb64TWzIYP0QXBE
-         Z/kpbXkeVJ0HQcjg9PHFfQ9p79P6Sw9UVPVij/Q1AzIZaIPdG4YSJV82F3oc1owYn+yS
-         haYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698274670; x=1698879470;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=au+FPuig5k+lPrQlpRTaaMDYkgX5B4VtECHua21n4XI=;
-        b=CjZ2HLOJ6bFTd79iWjjFMb0jE8f5kAtvTVd+TnxSXMnui+LiE9uyrXAWfXYwdVInBF
-         YZRdTrMGsx5r5rA30PnA1+ExrP/SzfZoxheF2oNY9XHDFMFweKNa3rfO+oOlf90k2A24
-         un7ML7Py16DZJ3X8QXPwDwVxFvvZhS9YJ34aXdWV8JhgYx9Om2PFgU0ws9UMrPBPHPqX
-         5RaEvRjDNS0mCnq2WTkYk0e+mTzjC5Xq2BWFgcLYsZReQ2Jw9AuTeCOHzoSmakMgWb3p
-         Y6TB7NTEBZybr7bSM0FrXM3WzK6cmNbU5jHTAzQH1rJrWc9nQtRFOH8GQZkJJcQ66qND
-         HJYg==
-X-Gm-Message-State: AOJu0YwC544ncM2LO6LT7aVQNiM85TxM2hZhXfyvnCF8iP8JpCi/Ml6V
-        aj/GwSDAdIgO+177RJW2lNyJMBqr2CUC+kTaAiE=
-X-Google-Smtp-Source: AGHT+IGU47JdMqos7fO6p5imxOdLw4B74QAjLAOxf+u0z6b8pjBuqRSaQG2hW/4pCt9lDCL0gjNUb8PHcjne7NHWbIw=
-X-Received: by 2002:a50:d094:0:b0:53e:df4:fe72 with SMTP id
- v20-20020a50d094000000b0053e0df4fe72mr11126100edd.32.1698274669569; Wed, 25
- Oct 2023 15:57:49 -0700 (PDT)
+        Wed, 25 Oct 2023 19:02:47 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D56129;
+        Wed, 25 Oct 2023 16:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+        s=s31663417; t=1698274945; x=1698879745; i=quwenruo.btrfs@gmx.com;
+        bh=t8QfgQrUAguQpNC3vJ8kXVDb9X8U3ZmEzWIIrF4UCEY=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=bUSQrAC9JWoDB2Xux12+hKJlkhHDHpyFNqqXf2QY0npAYeNBfkj0ZNaKpVXb+M5g
+         3daJ1cnfYwENu/bXO6/Jqm1kEcsjL82xasliEdo+r/0prOJDU+KQlXoHjEmi1WGcF
+         K8H/Yx7VcNLPvxak8zROD+WnI23maWkCnf68O3zmNcnGAYMKK1bBUcfjxOY8ww2TY
+         GLCciXmmXzkk/TyUe7hvw4+Tin8zP04gsPkvwgsZY4Ryi349XrKNsQLXryK7jTVsu
+         xlN7J0z+3H8MIA8fsDBtzwcb4CdVr9maExNKNLqc6I4pA+rLF202ThpN+aQAG1k1a
+         8FwYoJOYPRZROaFq5g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.101] ([122.151.37.21]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M8ykW-1qt0wY0z8o-0067vX; Thu, 26
+ Oct 2023 01:02:25 +0200
+Message-ID: <628a975f-11a1-47f9-b2f8-8cbcfa812ef6@gmx.com>
+Date:   Thu, 26 Oct 2023 09:32:11 +1030
 MIME-Version: 1.0
-References: <cover.1697430866.git.wqu@suse.com> <7b951f3a0619880f35f2490e2e251eb35e2f2292.1697430866.git.wqu@suse.com>
- <20231017134929.GA2350212@perftesting> <3df53251-41f6-4655-a0fe-a7baecb2a66d@gmx.com>
- <20231017231128.GA26353@twin.jikos.cz> <fd864ecf-5887-4b3f-94be-352b87fe29df@suse.com>
- <20231024173806.GR26353@suse.cz> <136e8bf5-3b77-4e66-be24-54cd7e14b83a@gmx.com>
- <20231025161832.GA21328@suse.cz>
-In-Reply-To: <20231025161832.GA21328@suse.cz>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Wed, 25 Oct 2023 18:57:12 -0400
-Message-ID: <CAEg-Je-za+TuA07H1qdKcnMfMBBUw7hb7-zhXgtg=KXgKr_XRQ@mail.gmail.com>
-Subject: Re: [PATCH 4/6] btrfs-progs: use a unified btrfs_make_subvol() implementation
-To:     dsterba@suse.cz
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
+        Christian Brauner <brauner@kernel.org>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20231025135048.36153-1-amir73il@gmail.com>
+ <ZTk1ffCMDe9GrJjC@infradead.org> <20231025210654.GA2892534@perftesting>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20231025210654.GA2892534@perftesting>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Provags-ID: V03:K1:5rr5bfMpKbBOuNyIaKoh13Iecfs2wIsxx4DUBu+zgfzgoB42g44
+ HDjgLVVI57JjWb5HFhdY7r+nbUgDfeNenSQr47GNpJP5yafylEzDGO+IjyDNwRuNLd5RW+b
+ ydDnJZNjbfMXHu7Np+NKZ2N0IrSyY04BdalxSaf25ph5iVb+9ydIKyZo5SoQ7X9ZfYRMEl4
+ k4SKNuZD2Gmn942O+sFpQ==
+UI-OutboundReport: notjunk:1;M01:P0:GMcuwDytY+w=;EqthME9VjzB69SNlV8u1l8FbAGf
+ S8fY9U4OMP0hE+0VCQRlPyERiuITFU9h113P0aZ3gvbEaSAtORi+TLjjUSISAz44VqweuR3e8
+ b79NJOL09C/s7yeH6d/hFto2GMei90srgb0IHsNdIb7Ry7SkJv7cHjaOvFjUd7efenaF5z8fL
+ O9yqj79n1Xc23PvTEDLZxawWnebS6FXbA+b/YvDATKDNoXzMMg09u+wjp6N/0QI5hspAa0KR2
+ JgLkD55ydcNPyHYLvyydUKbilARnh4BSoiTL9Tb/FOmACnJjz2WCgQjAA0wuyY+rVDdA5n928
+ gALmfPHY9us95PDDJdVBlf+5C7QMaMobMdwOFOel3Rhrh3iaokGHjziaKJYBk+1AieoTuLcbf
+ NMYhXDUnbBAjm2/UL0rtXVbFHCb4t88DZSmT39CAqKRUmmhdTPvYix3/nGywTlnSLWW3XeV4a
+ AnkduZ7JGwEI4WwCTYr+k0EEenhhVnzN68SJOTji+4gvs/Id44nHkQtQgNK7YFhKNJB2L4HNb
+ OxOrXBo+it2fvuM9YL3LpLt/xVWVaCN00wW1n9TRvzACKwLYT3clw4dN5PHe5xlAw7GvYZzcl
+ Q+XcRalJDKTMXOTPta+UAMO5gHYNYkfKjHZwboaKSw/sd1yUB/qiSJoD7K6ZBS029cVt1/tCw
+ PQRlSLTJw0GF6SAT8CkSIOoefUUoFrJlXhi3pWl+9Jn8kfiK2nhpnJMNuzRJkz2TWRhGL4Q0N
+ ETsaKwolQb8VTo6hyvOYq25vj88GszKEG4PvzOnyh+DWkRzhLjWHHOa0m65zsNhrFmQNLT1Z6
+ /TRTF/bKDw8LOE4WUgqLxp/fAqfT23saXVC0lT7mTejVNyJiKm5+ub6jMRn5aqybZqXS74oSO
+ I/V4LEny/VX3pzbh2ulPO+94nIELyARRP8hAVdSk+2MBZLVGqoZFRHG7rwZ968ck4MAeXr2yL
+ 89id1b3vpU667d2FyfdVJKi++qI=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 12:26=E2=80=AFPM David Sterba <dsterba@suse.cz> wro=
-te:
+
+
+On 2023/10/26 07:36, Josef Bacik wrote:
+> On Wed, Oct 25, 2023 at 08:34:21AM -0700, Christoph Hellwig wrote:
+>> On Wed, Oct 25, 2023 at 04:50:45PM +0300, Amir Goldstein wrote:
+>>> Jan,
+>>>
+>>> This patch set implements your suggestion [1] for handling fanotify
+>>> events for filesystems with non-uniform f_fsid.
+>>
+>> File systems nust never report non-uniform fsids (or st_dev) for that
+>> matter.  btrfs is simply broken here and needs to be fixed.
 >
-> On Wed, Oct 25, 2023 at 07:14:58AM +1030, Qu Wenruo wrote:
-> >
-> >
-> > On 2023/10/25 04:08, David Sterba wrote:
-> > > On Wed, Oct 18, 2023 at 10:20:57AM +1030, Qu Wenruo wrote:
-> > >>>>> We're moving towards a world where kernel-shared will be an exact=
--ish copy of
-> > >>>>> the kernel code.  Please put helpers like this in common/, I did =
-this for
-> > >>>>> several of the extent tree related helpers we need for fsck, this=
- is a good fit
-> > >>>>> for that.  Thanks,
-> > >>>>
-> > >>>> Sure, and this also reminds me to copy whatever we can from kernel=
-.
-> > >>>
-> > >>> I do syncs from kernel before a release but all the low hanging fru=
-it is
-> > >>> probably gone so it needs targeted updates.
-> > >>
-> > >> For the immediate target it's btrfs_inode and involved VFS structure=
-s
-> > >> for inodes/dir entries.
-> > >>
-> > >> In progs we don't have a structure to locate a unique inode (need bo=
-th
-> > >> rootid and ino number), nor to do any path resolution.
-> > >>
-> > >> This makes it almost impossible to proper sync the code.
-> > >>
-> > >> But introduce btrfs_inode to btrfs-progs would also be a little
-> > >> overkilled, as we don't have that many users.
-> > >> (Only the new --rootdir with --subvol combination).
-> > >
-> > > I have an idea for using this functionality, but you may not like it =
--
-> > > we could implement FUSE.
-> >
-> > In fact I really like it.
-> >
-> > > The missing code is exactly about inodes, path
-> > > resolution and subvolumes. You have the other project, with a differe=
-nt
-> > > license, although there's a lot shared code. You can keep it so u-boo=
-t
-> > > can do the sync and keep the read-only support. I'd like to have full
-> > > read-write support with subvolumes and devices (if there's ioctl pass
-> > > through), but it's not urgent. Having the basic inode/path support wo=
-uld
-> > > be good for mkfs even in a smaller scope.
-> >
-> > The existing blockage would be fsck.
-> > If we want FUSE, inode is super handy, but for fsck doing super low
-> > level fixes, it can be a burden instead.
-> > As it needs to repair INODE_REF/DIR_INDEX/DIR_ITEMs, sometimes even
-> > missing INODE_ITEMs, not sure how hard it would be to maintain both
-> > btrfs_inode and low-level code.
+> We keep going around and around on this so I'd like to get a set of step=
+s laid
+> out for us to work towards to resolve this once and for all.
 >
-> I'd have to look what exactly are the problems but yes check is special
-> in many ways. It could be possible to have an "enhanced" inode used in
-> check and regular inode everywhere else.
+> HYSTERICAL RAISINS (why we do st_dev)
+> -------------------------------------
 >
-> > There are one big limiting factor in FUSE, we can not control the devic=
+> Chris made this decision forever ago because things like rsync would scr=
+ew up
+> with snapshots and end up backing up the same thing over and over again.=
+  We saw
+> it was using st_dev (as were a few other standard tools) to distinguish =
+between
+> file systems, so we abused this to make userspace happy.
+>
+> The other nice thing this provided was a solution for the fact that we r=
+e-use
+> inode numbers in the file system, as they're unique for the subvolume on=
+ly.
+>
+> PROBLEMS WE WANT TO SOLVE
+> -------------------------
+>
+> 1) Stop abusing st_dev.  We actually want this as btrfs developers becau=
+se it's
+>     kind of annoying to figure out which device is mounted when st_dev d=
+oesn't
+>     map to any of the devices in /proc/mounts.
+>
+> 2) Give user space a way to tell it's on a subvolume, so it can not be c=
+onfused
+>     by the repeating inode numbers.
+>
+> POSSIBLE SOLUTIONS
+> ------------------
+>
+> 1) A statx field for subvolume id.  The subvolume id's are unique to the=
+ file
+>     system, so subvolume id + inode number is unique to the file system.=
+  This is
+>     a u64, so is nice and easy to export through statx.
+> 2) A statx field for the uuid/fsid of the file system.  I'd like this be=
+cause
+>     again, being able to easily stat a couple of files and tell they're =
+on the
+>     same file system is a valuable thing.  We have a per-fs uuid that we=
+ can
+>     export here.
+> 3) A statx field for the uuid of the subvolume.  Our subvolumes have the=
+ir own
+>     unique uuid.  This could be an alternative for the subvolume id opti=
+on, or an
+>     addition.
+
+No need for a full UUID, just a u64 is good enough.
+
+Although a full UUID for the subvolumes won't hurt and can reduce the
+need to call the btrfs specific ioctl just to receive the UUID.
+
+
+My concern is, such new members would not be utilized by any other fs,
+would it cause some compatibility problem?
+
+>
+> Either 1 or 3 are necessary to give userspace a way to tell they've wand=
+ered
+> into a different subvolume.  I'd like to have all 3, but I recognize tha=
+t may be
+> wishful thinking.  2 isn't necessary, but if we're going to go about mes=
+sing
+> with statx then I'd like to do it all at once, and I want this for the r=
+easons
+> stated above.
+>
+> SEQUENCE OF EVENTS
+> ------------------
+>
+> We do one of the statx changes, that rolls into a real kernel.  We run a=
+round
+> and submit patches for rsync and anything else we can think of to take a=
+dvantage
+> of the statx feature.
+
+My main concern is, how older programs could handle this? Like programs
+utilizing stat() only, and for whatever reasons they don't bother to add
+statx() support.
+(Can vary from lack of maintenance to weird compatibility reasons)
+
+Thus we still need such st_dev hack, until there is no real world
+programs utilizing vanilla stat() only.
+(Which everyone knows it's impossible)
+
+Thanks,
+Qu
+>
+> Then we wait, call it 2 kernel releases after the initial release.  Then=
+ we go
+> and rip out the dev_t hack. >
+> Does this sound like a reasonable path forward to resolve everybody's co=
+ncerns?
+> I feel like I'm missing some other argument here, but I'm currently on v=
+acation
+> and can't think of what it is nor have the energy to go look it up at th=
 e
-> > number, unlike kernel.
-> > This means even we implemented the subvolume code (like my btrfs-fuse
-> > project), there is no way to detect subvolume boundary.
+> moment.  Thanks,
 >
-> This could be a problem. We can set the inode number to 256 but
-> comparing two random files if they're in the same subvolume would
-> require traversing the whole path. This would not work with 'find -xdev'
-> and similar.
->
-
-Couldn't you use CUSE to create a btrfs-fuse device that could give
-you that information?
-
-> > Then comes with some other super personal concerns:
-> >
-> > - Can we go Rust instead of C?
->
-> I know rust on the very beginner level, and I don't think we have enough
-> rust knowledge in the developers group.  The language syntax or features
-> are still evolving, we'd lose the build support on any older distros or
-> distros that don't keep up with the versions. The C-rust
-> interoperability is good but it can become a burden. I'm peeking to the
-> kernel rust support from time to time and I can't comprehend what it's
-> doing.
->
-> > - Can we have a less restrict license to maximize the possibility of
-> >    code share?
->
-> The way it's now it's next to impossible. Sharing GPL code works among
-> GPL projects, anything else must be written from scratch. I don't know
-> how much you did that in the btrfs-fuse project
->
-> >    Well, I should ask this question to GRUB....
-> >    But a more hand-free license like MIT may really help for bootloader=
-s.
->
-> You can keep your btrfs-fuse to be the code base with loose license for
-> bootloaders, but you can't copy any code.
-
-There's also an independent implementation that's LGPLv3 (admittedly
-targeted at Windows, but it could still be useful):
-https://github.com/maharmstone/btrfs
-
-But even a full-fledged GPLv2 implementation would be fine if we could
-wrap it in FUSE+CUSE and as an EFI module.
-
-Most of the freakout is with the GNU v3 licenses (though I disagree
-with those who don't like them), and our stack is basically GNU v2.
-
-
-
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+> Josef
