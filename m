@@ -2,251 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B70677D6937
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 12:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3AB7D697B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 12:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234923AbjJYKmz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Oct 2023 06:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
+        id S234064AbjJYKuq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Oct 2023 06:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234941AbjJYKme (ORCPT
+        with ESMTP id S232076AbjJYKun (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Oct 2023 06:42:34 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36091BDB;
-        Wed, 25 Oct 2023 03:41:58 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-7789a4c01ddso371588885a.1;
-        Wed, 25 Oct 2023 03:41:58 -0700 (PDT)
+        Wed, 25 Oct 2023 06:50:43 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDF9BB;
+        Wed, 25 Oct 2023 03:50:37 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PAfJS2019987;
+        Wed, 25 Oct 2023 10:50:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=vUXWP03XJHTTJ1GIm3n/RjckZfSNqkFPGnEmezSxBWA=;
+ b=pObOmYt251wL2plQELGkUnkzIWAIBalZxf7G30UMqV78TbrsOAWdHGLQ+DbH+IZ6MzVh
+ KTrDQTxeu8Mf07/ykntiZaryHbDCmGttRnSmedZ5NBl8f7m9fkjt4dsQVhKs3PF99gPy
+ peNQYl9DvEL/G7AxGEn7oE7nyPYx2rUJSlRG1zJVdF9lpHXzwwaQxDgBkJOhNA+Ncrjb
+ 71gCaxYV/DJ9wHOCNi9PvcXg4v57LcAAb+uLxpPnngwbbCdsWpa+xd8nO/SYUP6WaMqm
+ p+ivXjjerT9tGlH9UPcyuw6649GlFcYmSKd3i4+8dna1nu2gpcRhcYAPAHwuSgEeXHP5 /Q== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv68tff0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Oct 2023 10:50:36 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39P9A5xa001528;
+        Wed, 25 Oct 2023 10:50:36 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tv53cymff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Oct 2023 10:50:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fqexDQD4RHE2lxsYzbgl3kRZgzTafd2NhB+CVySWodc3HqfQdvCo4KxJj9bCwObYm5XhjM8laPoFa5I2Y3o14X3vK5jqhXoCzcetLtwRV4/BqEKjAhTrWyzsYvzCheOfKfB5pCmBWebbckiyBJXUrK4g8ByQUUsf4xXLMz1BXxI96oljB6lEJCKlQxq/z8fXjWB/jOsJDWlneXp+ahckh/7x41XlRvj75+EO+iQSBHhtoSRvSaOH8e/f0TwROY2ODWFz5Xbqj/7Fue6Jt7uqvOTHghYRmeDHJ7VQO//GGPfvvV2kEcVQkS+O3RoIPkPJPE+QY9yAOKSAlLran354WA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vUXWP03XJHTTJ1GIm3n/RjckZfSNqkFPGnEmezSxBWA=;
+ b=imOsr/Ll3+vhdll+Zz3QjsalND1YOjTMsog7dTasHYciU9fE7iWh1suXhQj6U3wSaYPcDuFCn881kmviiKPvQvJPE1aHwMhUAFFpq8Cz002s+AaRZ2OfydjQKdCyr0u0PvHAAIdjnH2hSGr6p/MB+R0Rirg/t5aGW2supzubnFzkCMCokm/cJSVwUzh811YxZa6qtuyymLPzmxaLt78zTBvi3G1cui+r8n8Iqw+PxGIRzMJ7uYMB8eLFLZbQcwgXX0h78fG/iO4SNuDBhXsZWTkNWDOOuTRr8IjUVSsEo6yiOyaTyRmeiOOkyjy2BXnWz4HNWv8ixL0BHHR7KuXe8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698230518; x=1698835318; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=waqA3Wuu0WYamjZmXtBbHzp1YM3pbNgPBrZtQ2JTrdM=;
-        b=mbr2SmSV3miUD750RE7vqS+m+1hEZdPEg+6mKrAEl8ZnmcB4nHilOn8c/rioVIl95+
-         Hj1DdUTbL4O4itVTKd6AWlzbScI095b4XhMIvE6DFgCWlh+eBGQ2GCf7utKtn3TR/a0z
-         EHOLNyjEBLNxuCtYTMk6ADWTWQ3skeyyx1YafVSXgtnakWqqLkDT7cY8df9+L/Fe7EG+
-         LqAAUxqp6EIttGtA5HqQE5Xdf5F+y/R+23KcxbYErRXGoHvzwtw8owncSCFCdOUapzMQ
-         GtTMIKjK6XARd11b7fg61U/4a5ALJmwjG3ubFuwTj/Iyh7tHxRGffFsfx0Uf1kByaQ0Q
-         rYqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698230518; x=1698835318;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=waqA3Wuu0WYamjZmXtBbHzp1YM3pbNgPBrZtQ2JTrdM=;
-        b=SIWQU2Tj7xm6yMkFkZP1I4ws6fdNVn2WKW9C7B8dWQfOlxwnLL1Ewzr0knkNzN7kqx
-         pN/UnMm0QTV3+o9ycHscpWo7hRmiswKwCLechXCE20/GmvjNtEYnK9ynLAGPrRo2o1pA
-         mKzbIrWSNvNEVZ1VHSsup+H7TIXchUvZv01wg9aGLGIGs2ThvL6OrVK1523Z/ZQLxG68
-         NgCcf/tE15CphGJ3Rp+xcswDad7oS0HkRDouvOhVa6UyUQQDejWGn7tJzoti7Je+Hi6q
-         Xp2LrXEC02oNKS3VF5yhhFwHlnQAShNdINYBVYq82tEE12Of5hMkjndgDBnI193eR6jH
-         Ae8A==
-X-Gm-Message-State: AOJu0YzMNkqb7Qw6Cv8hukUc3hJH5BHhna2+Rolsj869sAQNCbP1oVus
-        lD63uccw8XLDRogH7rE9mU8Yqmwdzp/zLOSdI1U=
-X-Google-Smtp-Source: AGHT+IE1T4f/B4rMNL1sPJuZ3K0wNsQZDTWnBqxx6Z/H8yseAqJoiFBDHVNFekFm4dV4XwCG1j1ncqG33Ax+9qoCLa8=
-X-Received: by 2002:a05:620a:10a6:b0:76f:1a6b:571 with SMTP id
- h6-20020a05620a10a600b0076f1a6b0571mr14824898qkk.27.1698230517883; Wed, 25
- Oct 2023 03:41:57 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vUXWP03XJHTTJ1GIm3n/RjckZfSNqkFPGnEmezSxBWA=;
+ b=b0Qve8viDpHlYJuIzrRqrt76Jzz/LkJYYpMn3qOYxTuO7iwblcNEyCiT3hwOfvf8WuAva+kqZMz08bU7N6ZHpIcLxtUfJX7FAmvDzkw8AVgqLojx482qaU4S/U4UNmS2ubr5KgZGsf/tkHdXlLUkpaJ6CQ9+L7Fvjcmr+VjWye8=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by CO1PR10MB4545.namprd10.prod.outlook.com (2603:10b6:303:9a::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Wed, 25 Oct
+ 2023 10:50:33 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6886.034; Wed, 25 Oct 2023
+ 10:50:33 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] fstests: btrfs/219 cloned-device mount capability update
+Date:   Wed, 25 Oct 2023 18:49:13 +0800
+Message-ID: <39311089b30f9250ff7f7a0aabb70547616a4b3a.1698230869.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.42.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SGXP274CA0013.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::25)
+ To PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
 MIME-Version: 1.0
-References: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
- <ZTGncMVw19QVJzI6@dread.disaster.area> <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
- <ZTWfX3CqPy9yCddQ@dread.disaster.area> <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
- <ZTcBI2xaZz1GdMjX@dread.disaster.area> <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
- <ZTc8tClCRkfX3kD7@dread.disaster.area> <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
- <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org> <ZTjMRRqmlJ+fTys2@dread.disaster.area>
-In-Reply-To: <ZTjMRRqmlJ+fTys2@dread.disaster.area>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 25 Oct 2023 13:41:46 +0300
-Message-ID: <CAOQ4uxj7o4SVyDqXQp-vqjJptXdFpZ736ARjk=L8knc+gaSWXg@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CO1PR10MB4545:EE_
+X-MS-Office365-Filtering-Correlation-Id: 551e5f25-6557-4862-5711-08dbd548367e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OQC5JHDk2V6k16Vu+fy054k1UlfEK/SRYq+popaEQ0LORkHpM9c40BTt61zywZxObUyFR1v8/6Uw36XmjzUMGHTjI2Nmgy2Vn3T4MUE/YMc7WQx/r3xgTLbBZj7dtF1+blGvDEs3FxTk/hpL+4KZcmYM0QxV3a8LcgbsiwRvrxBAdhNFf9RNDBFvHmRTOxdgZs5hso75VnXrh7NiREHvplp+9oZv/T82kq593IWVD60N/SAstXtl6YvrZ9FUqJqh6XEdfPCGKtYhTuVofvBDcUTT6lCpWUTI/yh9OOodf/EFsnOscIGb/E5KgzuFo2plaMBuakpWuq5Pq7P5798ioUQvnQwYUaFJfVT3te7j3tvFvRzz4GR711pRdHfqj8SNcZD27YRnzQ3Ac9XmgqdBtmbnpfWCq8P6TXzJyD4znLCYDfsM09iZX1duEWjZhF8exLcNGfRgxk1EXYDcVILtQVIVzhSjxS2la7rbvwCrAZZrGvB6hTySIVhcjNFyNo1LYmhApK8Kr/aF7EWwQaSLp+hQVCOJqr6n8afljoadyA4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(346002)(366004)(396003)(376002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(2616005)(26005)(66476007)(83380400001)(316002)(66946007)(6916009)(6506007)(6512007)(6666004)(66556008)(6486002)(966005)(8936002)(478600001)(38100700002)(44832011)(8676002)(4326008)(41300700001)(2906002)(36756003)(86362001)(5660300002)(450100002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GG0+tpgjgQ8LGsgZCJoky8u9mWv5oo2ielzRniK7SqSzm40obB5Fk9mO6+HL?=
+ =?us-ascii?Q?RTRYLfmXDRFGYRFqJGps5X9XsXG/qy5YNlp5Lzp5/UZTyeDFbMoyiKCME3+P?=
+ =?us-ascii?Q?R6tSeiqBzeZ/RGHau01R6/phn5DFcrqJSLD2hnKwEXwTrekI9YFLm5cwyrI4?=
+ =?us-ascii?Q?4jkOQF3C5mbtJM65zWUiaaajshtH2VlRfUoOwPern17o4YZ5fqxhnywyjni6?=
+ =?us-ascii?Q?Ud46Op60GRUgIGmExoZ8mhlK5VfIc6MqCth1ogo13wsRLmVhdQOlTEuv03P6?=
+ =?us-ascii?Q?3F8RNIDk6qKiVq73+h/ZjfkdcytnUZFM1ayKNCILzTz15UOrjMCjdGk0kd8z?=
+ =?us-ascii?Q?U5dV/prS10cki8HzcIi014DFMTZiKZLlMS9oTe+KyKzATm0EYwnJ8VHbSXdt?=
+ =?us-ascii?Q?aUeqc5ohXmgXqhceQCUO+MyvkLJ8jPX+W+IgHQwvM65D+a0iX/KZ4mnLzryM?=
+ =?us-ascii?Q?aEhDDnp42AMlhWnrkhZo6O2gTTfcXea8DQaO/OhVUGrmBRk/AnA3J9CVNEAB?=
+ =?us-ascii?Q?5NpuI3s5Ku6ge5p+IKXe3fAwnIs0Gn7rEumVgt7BNK+8tDWnkYmKIUP3gVus?=
+ =?us-ascii?Q?hOGVuCHCTIFZlJjpuKr/D/Ks4LvXmVSX91Gw81KsP4FGT6Sxau2k+0G9EMoy?=
+ =?us-ascii?Q?W0wofOfhb277w0cFFXHjR0HWKUxjDqGGUglAClmzIoEm/aJ8ET7WcOxSLfBd?=
+ =?us-ascii?Q?aGkHLCYEy3pzfkOquB1DT6McVpVVeJGtdM4il7eKGgqovFFWxCAgZxsqRoXg?=
+ =?us-ascii?Q?CNNV3qkpr/IlVwn73MXQMeMNU279kyQFH19G6PW4LCKKcF5Y/q285mEx5NM6?=
+ =?us-ascii?Q?yjCCfkjBE5gsq/Fk4SzHjlRt1cOG5x8S46wR8wS/4qvuG5qUa6Q1nFSGj4UL?=
+ =?us-ascii?Q?h+F0VNKt8tXXMuKlpBTUc+AX0q6u9ZgcHL9V79IfHtiKI27J2UF7H+79bdmc?=
+ =?us-ascii?Q?J81AFNd7G0K0VCNzUfPDnlXqNAN8YgdEJzyLB7vcuGgulI4HXyjvE3cQdYMk?=
+ =?us-ascii?Q?NCVfcmVSr8a5BxPnHtegBwZGTMx0Gj6hOGDpAvpnwfsyto18tcldCzLir0R/?=
+ =?us-ascii?Q?HmZxCYjvvKBBjtbXe/+zuxoJWdZ/2DjuGI4p24aOUQQKvu71bsSDKWWhg8aO?=
+ =?us-ascii?Q?eTiDsvx3w8Wngy40TaBN/s06JWD5+8Ogp/M+kxNN9koZz8y7S9+4iRudeEps?=
+ =?us-ascii?Q?z+IB/Om6RMt7LmfO3e3rf2fuh+UKQNArT9oAzUekRJ4pPrF264DtlbFx4qFP?=
+ =?us-ascii?Q?U8cZP1PUlwTQcZgcGVFCPjwqK0cYzTMtMMgjVK/VgSVFPJlCX/vHqiuY6IaT?=
+ =?us-ascii?Q?9uH6PYuURXo6nurkSaCZbvmMI/Pb2mb49pgeyRBEZmtzKWumnJlQZ43ru8cO?=
+ =?us-ascii?Q?K6/O+MgwFl8W5YO5TZEUbJUbevtyfy/Bm3Band8oUTtI16GzFdq79NA3tJpH?=
+ =?us-ascii?Q?G5WFqG2qTeZpY/Lpsk3k0zpPNIbxY6TUKFnB+h6s1ORvAjUkbjqvDM4OQmHi?=
+ =?us-ascii?Q?6Nx1w+EnwiFZ5k1KgPqSm+M8SeJwvYSF1zEyOvy+F+3xbWWtDpptx2EEgsIG?=
+ =?us-ascii?Q?PHOI/55QzMF2a8eSwnmRbZWiX3KuLbFVMBp7Ki66?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: ab5xMF4qUzzJD5acTOQV4QkqL+bS71bHr0iHXoMXPv/7imMHiqW0rY57bYadYxdy2weUCcVVnt/0Q9gyJ03ikOgXoDDgGmAvvAa6FyWoUHHuU4vVQkwjttUYIcqj0wMWFnllH22WdIb0HUCx5j2GfPgh4DQISRiwFnIy+t6vzpwGyySa1uJ9kmoi56u/96tQVKyRnKI9SSa10p2CE8zZCfAPtdFaw4GEIdUet7oCrpLVK65ZcTke73MtpSEvNAQtUyrrpYIurMvEZIIZ3eucmZMcWB6yH+wOtAMV6GvA5PFLi/U06zVIqwfVB9/SCcPM79AT0Q3lJrhFDwuxGGxVon/dZ0GRBg0pvlQDqhXhL4kv0I3S0t+5VdmIVGufxgz6i4LB5NT54WvZAdDN/7qzHGL7Zgrx/jk9rO2Ks01PJWpydJYsmS/Go/dkRQF6BPsFv5Mt50WC/ikiOiu3BtwGToAUQ8QBe22wOuvML5bMn0xjd4samlbN+cmsKFk8OaynUHxdV4B2LT6Uq0xZgFBRjXz8/Sg7dL3BMuaIUPAIKZWElwab3RrxP+xwgXmsStG3XG2f1PceYsBgbtpHe/3t8jCDRb8vRgth4mqJN8fO43Y/zK4a+DA5WF8jMFYhfKfJAr+fptVpsFx2GBF7Ixe11AqZrVlSV87yCHRpLvzTHJjb2AXHqsfTmnlA0ck0QQm7tOfyKV05+nkjXv7IiHzn2VebUUuuxAhntWdpHVt8KH/T+SDhlN1SXQjIR6UNOJgIWyqz7FwaC0fj+3Kgvh3nzg==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 551e5f25-6557-4862-5711-08dbd548367e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 10:50:33.4577
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aivKDA3wqpZYcmxyIzeYLWSA6mPrH7fr6dp3jq1Jb6LTBmhfYYFYnHqkphnHCj5imn1BVj6HzQfIZ4un/1cbPw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4545
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_01,2023-10-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ adultscore=0 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310250093
+X-Proofpoint-ORIG-GUID: g0H98TVB5yveTNJ4nL7bRLGqiacHEe7h
+X-Proofpoint-GUID: g0H98TVB5yveTNJ4nL7bRLGqiacHEe7h
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 11:05=E2=80=AFAM Dave Chinner <david@fromorbit.com>=
- wrote:
->
-> On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
-> > On Tue, 2023-10-24 at 10:08 +0300, Amir Goldstein wrote:
-> > > On Tue, Oct 24, 2023 at 6:40=E2=80=AFAM Dave Chinner <david@fromorbit=
-.com> wrote:
-> > > >
-> > > > On Mon, Oct 23, 2023 at 02:18:12PM -1000, Linus Torvalds wrote:
-> > > > > On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> =
-wrote:
-> > > > > >
-> > > > > > The problem is the first read request after a modification has =
-been
-> > > > > > made. That is causing relatime to see mtime > atime and trigger=
-ing
-> > > > > > an atime update. XFS sees this, does an atime update, and in
-> > > > > > committing that persistent inode metadata update, it calls
-> > > > > > inode_maybe_inc_iversion(force =3D false) to check if an iversi=
-on
-> > > > > > update is necessary. The VFS sees I_VERSION_QUERIED, and so it =
-bumps
-> > > > > > i_version and tells XFS to persist it.
-> > > > >
-> > > > > Could we perhaps just have a mode where we don't increment i_vers=
-ion
-> > > > > for just atime updates?
-> > > > >
-> > > > > Maybe we don't even need a mode, and could just decide that atime
-> > > > > updates aren't i_version updates at all?
-> > > >
-> > > > We do that already - in memory atime updates don't bump i_version a=
-t
-> > > > all. The issue is the rare persistent atime update requests that
-> > > > still happen - they are the ones that trigger an i_version bump on
-> > > > XFS, and one of the relatime heuristics tickle this specific issue.
-> > > >
-> > > > If we push the problematic persistent atime updates to be in-memory
-> > > > updates only, then the whole problem with i_version goes away....
-> > > >
-> > > > > Yes, yes, it's obviously technically a "inode modification", but =
-does
-> > > > > anybody actually *want* atime updates with no actual other change=
-s to
-> > > > > be version events?
-> > > >
-> > > > Well, yes, there was. That's why we defined i_version in the on dis=
-k
-> > > > format this way well over a decade ago. It was part of some deep
-> > > > dark magical HSM beans that allowed the application to combine
-> > > > multiple scans for different inode metadata changes into a single
-> > > > pass. atime changes was one of the things it needed to know about
-> > > > for tiering and space scavenging purposes....
-> > > >
-> > >
-> > > But if this is such an ancient mystical program, why do we have to
-> > > keep this XFS behavior in the present?
-> > > BTW, is this the same HSM whose DMAPI ioctls were deprecated
-> > > a few years back?
->
-> Drop the attitude, Amir.
->
-> That "ancient mystical program" is this:
->
-> https://buy.hpe.com/us/en/enterprise-solutions/high-performance-computing=
--solutions/high-performance-computing-storage-solutions/hpc-storage-solutio=
-ns/hpe-data-management-framework-7/p/1010144088
->
+This test case originally checked for failed cloned device mounts, which
+is no longer relevant after the commit a5b8a5f9f835 ("btrfs: support
+cloned-device mount capability"). So removing the obsolete part.
 
-Sorry for the attitude Dave, I somehow got the impression that you
-were talking about a hypothetical old program that may be out of use.
-I believe that Jeff and Linus got the same impression...
+For older kernels without this commit, the test case still serves its core
+purpose.
 
-> Yup, that product is backed by a proprietary descendent of the Irix
-> XFS code base XFS that is DMAPI enabled and still in use today. It's
-> called HPE XFS these days....
->
+Additionally, add this test case back to the auto group which reverts the
+commit e2e7b549380a ("fstests: btrfs/219: remove it from auto group") since
+the previously missing kernel commit 5f58d783fd78 ("btrfs: free device in
+btrfs_close_devices for a single device filesystem") has already been
+integrated.
 
-What do you mean?
-Do you mean that the HPE product uses patched XFS?
-If so, why is that an upstream concern?
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202310251645.5fe5495a-oliver.sang@intel.com
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ tests/btrfs/219 | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-Upstream xfs indeed preserves di_dmstate,di_dmevmask, but it does
-not change those state members when file changes happen.
+diff --git a/tests/btrfs/219 b/tests/btrfs/219
+index b747ce34fcc4..44296c119b0a 100755
+--- a/tests/btrfs/219
++++ b/tests/btrfs/219
+@@ -12,7 +12,7 @@
+ #
+ 
+ . ./common/preamble
+-_begin_fstest quick volume
++_begin_fstest auto quick volume
+ 
+ # Override the default cleanup function.
+ _cleanup()
+@@ -79,15 +79,6 @@ _mount $loop_dev $loop_mnt > /dev/null 2>&1 || \
+ 	_fail "Failed to mount the second time"
+ $UMOUNT_PROG $loop_mnt
+ 
+-# Now we definitely can't mount them at the same time, because we're still tied
+-# to the limitation of one fs_devices per fsid.
+-_btrfs_forget_or_module_reload
+-
+-_mount $loop_dev $loop_mnt > /dev/null 2>&1 || \
+-	_fail "Failed to mount the third time"
+-_mount -o loop $fs_img2 $loop_mnt1 > /dev/null 2>&1 && \
+-	_fail "We were allowed to mount when we should have failed"
+-
+ _btrfs_rescan_devices
+ # success, all done
+ echo "Silence is golden"
+-- 
+2.31.1
 
-So if mounting an HPE XFS disk on with upstream kernel is not
-going to record DMAPI state changes, does it matter if upstream
-xfs does not update di_changecount on atime change?
-
-Maybe I did not understand the situation w.r.t HPE XFS.
-
-> > > I mean, I understand that you do not want to change the behavior of
-> > > i_version update without an opt-in config or mount option - let the d=
-istro
-> > > make that choice.
-> > > But calling this an "on-disk format change" is a very long stretch.
->
-> Telling the person who created, defined and implemented the on disk
-> format that they don't know what constitutes a change of that
-> on-disk format seems kinda Dunning-Kruger to me....
->
-
-OK. I will choose my words more carefully:
-
-I still do not understand, from everything that you have told us
-so far, including the mention of the specific product above,
-why not updating di_changecount on atime update constitutes
-an on-disk format change and not a runtime behavior change.
-
-You also did not address my comment that xfs_repair does not
-update di_changecount on any inode changes to the best of my
-code reading abilities.
-
-> There are *lots* of ways that di_changecount is now incompatible
-> with the VFS change counter. That's now defined as "i_version should
-> only change when [cm]time is changed".
->
-> di_changecount is defined to be a count of the number of changes
-> made to the attributes of the inode.  It's not just atime at issue
-> here - we bump di_changecount when make any inode change, including
-> background work that does not otherwise change timestamps. e.g.
-> allocation at writeback time, unwritten extent conversion, on-disk
-> EOF extension at IO completion, removal of speculative
-> pre-allocation beyond EOF, etc.
->
-
-I see.
-Does xfs update ctime on all those inode block map changes?
-
-> IOWs, di_changecount was never defined as a linux "i_version"
-> counter, regardless of the fact we originally we able to implement
-> i_version with it - all extra bumps to di_changecount were not
-> important to the users of i_version for about a decade.
->
-> Unfortunately, the new i_version definition is very much
-> incompatible with the existing di_changecount definition and that's
-> the underlying problem here. i.e. the problem is not that we bump
-> i_version on atime, it's that di_changecount is now completely
-> incompatible with the new i_version change semantics.
->
-> To implement the new i_version semantics exactly, we need to add a
-> new field to the inode to hold this information.
-> If we change the on disk format like this, then the atime
-> problems go away because the new field would not get updated on
-> atime updates. We'd still be bumping di_changecount on atime
-> updates, though, because that's what is required by the on-disk
-> format.
->
-
-I fully agree with you that we should avoid on-disk format change.
-This is exactly the reason that I'm insisting on the point of clarifying
-how exactly, this semantic change of di_changecount is going to
-break existing applications that run on upstream kernel.
-
-Thanks,
-Amir.
