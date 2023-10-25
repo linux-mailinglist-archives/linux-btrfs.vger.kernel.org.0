@@ -2,143 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D517D72CD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 20:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1D77D75B5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Oct 2023 22:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbjJYSDA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Oct 2023 14:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
+        id S229719AbjJYU3t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Oct 2023 16:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJYSC7 (ORCPT
+        with ESMTP id S229573AbjJYU3s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:02:59 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DDEE5;
-        Wed, 25 Oct 2023 11:02:57 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-41cc44736f2so399701cf.3;
-        Wed, 25 Oct 2023 11:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698256976; x=1698861776; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mUt/Ak32KyRE/CxwMT6mH08uSIb++k2Eovg2EcVvQiA=;
-        b=envLRNYxXi/KRiWJZ8ivE5p9GjsuqoRQX+IDWSpq3Y9UhXty/9HuHadyq5OfJV7NRv
-         ArvuMi+8QDf9zemta7HXHn+G9HKxtPMetiEIuCoebh9rMVJwyaee5l3kPF0UezyvXHN4
-         KWFes/fGrCp5w6RjGk/kbjLPNDQgT3B9ax/eX+oM3ViEKoLLEX1HKX9r5cV3ssrusAmJ
-         H4CQh2u6fCI5KpBdouUbrOWeo9efDMNgPSuYrQj2UFgj5X1isZApz/FZsX//hXV+BAUF
-         YoyBr+p+AttPOxlvGRLFx+Y3N4MABHvHAe1Y/Wema/dONzd7JRyb4SCFkkETIYj+tDdz
-         /gCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698256976; x=1698861776;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mUt/Ak32KyRE/CxwMT6mH08uSIb++k2Eovg2EcVvQiA=;
-        b=eXURsG94BolHAlsRFlx1KOS5GmpJ9fsHLRN4YBqmoxVFAHtd6kQJmF4PIuKU+nOyJF
-         dGZDa8B8sWLi9qyHH1WkpeRHKdJhnFgUPmhLcCmXh/zrWrISd7OiWiRZYQsIyEZPCHaK
-         6QKJW6aKpd+dR58dr81CJxArIw/mofuk1Q4GD0qc6FLFXcdFqA2wp0xyj3YCFZGX7Tpg
-         vrY7Bs9DzylAITclERt+XMDDpsYP7H7ky2WEB+1fWobk0VuZ5rIhZdnanJLq2lfXRLOp
-         f8DTygkZE1KGIWAOMCo1T4zktGLl5cjEDvSK/dI5D6/yg1xd99zCIfMg2akApV8mCpBO
-         ON/g==
-X-Gm-Message-State: AOJu0Yycx3wliWolVKlLnOyaZQV+gddYdXdyZ5le3NJHBPczsuIw3yvL
-        jwNiFCw3m2zyiG+RDHI0aISVuv9VHouEnA0pUfQ=
-X-Google-Smtp-Source: AGHT+IHVQA03QmPoGDRQA0xRLgQsYkDscvM9WRmvepXr5v0PCJUBKWbK69Tipff1ijZduB1z6VC2cq/K0i0/T5ro5Bg=
-X-Received: by 2002:ad4:5c4a:0:b0:66d:627e:24c0 with SMTP id
- a10-20020ad45c4a000000b0066d627e24c0mr21300439qva.38.1698256976394; Wed, 25
- Oct 2023 11:02:56 -0700 (PDT)
+        Wed, 25 Oct 2023 16:29:48 -0400
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CD718B
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Oct 2023 13:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1698265782; x=1698524982;
+        bh=eh8FqFJ3iRnc8RZX7Fh9oxtknBlTiwtp+opRBlNGn8Q=;
+        h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=pVHR26Di1l9kAzdanoukxNQXtdLTncwI8jVNnrDNHGLTVd5h4u2gbsGB4ga5XqeOD
+         pJoiFlq34HIov4KNKle1qJnLKSyEFDY7Q/5H43rj765EbX9j2nTiXwt0+mp2SkZnaF
+         9b5A1d19DRhGywSONaldHzQ5yST6Fen8rH4s4+9+ZwELm0X5BbVftYHMG0Cf38BSEy
+         SksynH/zDet3Io1h4MvyvVQqWtIFcYSxDJDIApBEhP4O0qy/CfHAQmpM7zNcxyhAZv
+         plnavPwAwWXdyL4o+fr7sJU0gxK1dUnQQPTsK1YmvBdCMkH94tC3nyyWINqexRXSHP
+         WvNjwyIkR11sQ==
+Date:   Wed, 25 Oct 2023 20:29:31 +0000
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From:   Peter Wedder <pwedder@protonmail.com>
+Subject: Balance on 5-disk RAID1 put all data on 2 disks, leaving the rest empty
+Message-ID: <erRZVkhSqirieFSNm0d1BF5BemFMyUSCjGKT73prpKS7KDydKhqAvNqA7Eham7bQXmmh0CCx0rep6EAKKi_0itDlOf94KZ1zRRZfip_My4M=@protonmail.com>
+Feedback-ID: 42199824:user:proton
 MIME-Version: 1.0
-References: <20231025135048.36153-1-amir73il@gmail.com> <CAOQ4uxg2uFz8bR37bwR_OwnDkq5C7NG+hoqu=7gwSC5Zjd4Ccg@mail.gmail.com>
-In-Reply-To: <CAOQ4uxg2uFz8bR37bwR_OwnDkq5C7NG+hoqu=7gwSC5Zjd4Ccg@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 25 Oct 2023 21:02:45 +0300
-Message-ID: <CAOQ4uxjJFyXUOP_46O9erdCEmwctBc8BVJU_jTzyX4d+m0gFyg@mail.gmail.com>
-Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
-To:     Jan Kara <jack@suse.cz>
-Cc:     Christian Brauner <brauner@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 8:17=E2=80=AFPM Amir Goldstein <amir73il@gmail.com>=
- wrote:
->
-> On Wed, Oct 25, 2023 at 4:50=E2=80=AFPM Amir Goldstein <amir73il@gmail.co=
-m> wrote:
-> >
-> > Jan,
-> >
-> > This patch set implements your suggestion [1] for handling fanotify
-> > events for filesystems with non-uniform f_fsid.
-> >
-> > With these changes, events report the fsid as it would be reported
-> > by statfs(2) on the same objet, i.e. the sub-volume's fsid for an inode
-> > in sub-volume.
-> >
-> > This creates a small challenge to watching program, which needs to map
-> > from fsid in event to a stored mount_fd to use with open_by_handle_at(2=
-).
-> > Luckily, for btrfs, fsid[0] is uniform and fsid[1] is per sub-volume.
-> >
-> > I have adapted fsnotifywatch tool [2] to be able to watch btrfs sb.
-> > The adapted tool detects the special case of btrfs (a bit hacky) and
-> > indexes the mount_fd to be used for open_by_handle_at(2) by fsid[0].
-> >
-> > Note that this hackacry is not needed when the tool is watching a
-> > single filesystem (no need for mount_fd lookup table), because btrfs
-> > correctly decodes file handles from any sub-volume with mount_fd from
-> > any other sub-volume.
->
-> Jan,
->
-> Now that I've implemented the userspace part of btrfs sb watch,
-> I realize that if userspace has to be aware of the fsid oddity of btrfs
-> anyway, maybe reporting the accurate fsid of the object in event is
-> not that important at all.
->
-> Facts:
-> 1. file_handle is unique across all sub-volumes and can be resolved
->     from any fd on any sub-volume
-> 2. fsid[0] can be compared to match an event to a btrfs sb, where any
->     fd can be used to resolve file_handle
-> 3. userspace needs to be aware of this fsid[0] fact if it watches more
->     than a single sb and userspace needs not care about the value of
->     fsid in event at all when watching a single sb
-> 4. even though fanotify never allowed setting sb mark on a path inside
->     btrfs sub-volume, it always reported events on inodes in sub-volumes
->     to btrfs sb watch - those events always carried the "wrong" fsid (i.e=
-.
->     the btrfs root volume fsid)
-> 5. we already agreed that setting up inode marks on inodes inside
->     sub-volume should be a no brainer
->
-> If we allow reporting either sub-vol fsid or root-vol fsid (exactly as
-> we do for inodes in sub-vol in current upstream),
+Hello,
 
-Another way to put it is that fsid in event describes the object
-that was used to setup the mark not the target object.
+I had a RAID1 array on top of 4x4TB drives. Recently I removed one 4TB driv=
+e and added two 16TB drives to it. After running a full, unfiltered balance=
+ on the array, I am left in a situation where all the 4TB drives are comple=
+tely empty, and all the data and metadata is on the 16TB drives. Is this no=
+rmal? I was expecting to have at least some data on the smaller drives.
 
-If an event is received via an inode/sb/mount mark, the fsid
-would always describe the fsid of the inode that was used to setup
-the mark and that is always the fsid that userspace would query
-statfs(2) at the time of calling the fanotify_mark(2) call.
+Using btrfs-progs v6.3.2 on kernel 6.3.11, Fedora Server 38.
 
-Maybe it is non trivial to document, but for a library that returns
-an opaque "watch descriptor", the "watch descriptor" can always
-be deduced from the event.
+# btrfs fi show
+Label: none  uuid: 6f6bf357-774d-4e1f-8cad-a2ed801533a8
+        Total devices 5 FS bytes used 5.57TiB
+        devid    1 size 3.64TiB used 0.00B path /dev/sde
+        devid    2 size 3.64TiB used 0.00B path /dev/sdd
+        devid    3 size 3.64TiB used 0.00B path /dev/sda
+        devid    5 size 14.55TiB used 5.58TiB path /dev/sdb
+        devid    6 size 14.55TiB used 5.58TiB path /dev/sdf
 
-Does this make sense?
 
-Thanks,
-Amir.
+# btrfs device usage /media/raid1
+/dev/sde, ID: 1
+   Device size:             3.64TiB
+   Device slack:              0.00B
+   Unallocated:             3.64TiB
+
+/dev/sdd, ID: 2
+   Device size:             3.64TiB
+   Device slack:              0.00B
+   Unallocated:             3.64TiB
+
+/dev/sda, ID: 3
+   Device size:             3.64TiB
+   Device slack:              0.00B
+   Unallocated:             3.64TiB
+
+/dev/sdb, ID: 5
+   Device size:            14.55TiB
+   Device slack:              0.00B
+   Data,RAID1:              5.58TiB
+   Metadata,RAID1:          8.00GiB
+   System,RAID1:           32.00MiB
+   Unallocated:             8.97TiB
+
+/dev/sdf, ID: 6
+   Device size:            14.55TiB
+   Device slack:              0.00B
+   Data,RAID1:              5.58TiB
+   Metadata,RAID1:          8.00GiB
+   System,RAID1:           32.00MiB
+   Unallocated:             8.97TiB
+
+# btrfs filesystem usage /media/raid1
+Overall:
+    Device size:                  40.02TiB
+    Device allocated:             11.17TiB
+    Device unallocated:           28.85TiB
+    Device missing:                  0.00B
+    Device slack:                    0.00B
+    Used:                         11.14TiB
+    Free (estimated):             14.44TiB      (min: 14.44TiB)
+    Free (statfs, df):            12.62TiB
+    Data ratio:                       2.00
+    Metadata ratio:                   2.00
+    Global reserve:              512.00MiB      (used: 0.00B)
+    Multiple profiles:                  no
+
+Data,RAID1: Size:5.58TiB, Used:5.56TiB (99.71%)
+   /dev/sdb        5.58TiB
+   /dev/sdf        5.58TiB
+
+Metadata,RAID1: Size:8.00GiB, Used:6.87GiB (85.93%)
+   /dev/sdb        8.00GiB
+   /dev/sdf        8.00GiB
+
+System,RAID1: Size:32.00MiB, Used:816.00KiB (2.49%)
+   /dev/sdb       32.00MiB
+   /dev/sdf       32.00MiB
+
+Unallocated:
+   /dev/sde        3.64TiB
+   /dev/sdd        3.64TiB
+   /dev/sda        3.64TiB
+   /dev/sdb        8.97TiB
+   /dev/sdf        8.97TiB
+
