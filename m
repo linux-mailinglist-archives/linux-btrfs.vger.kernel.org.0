@@ -2,77 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C62D57D8434
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Oct 2023 16:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B79F7D8645
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Oct 2023 17:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235017AbjJZOHB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Oct 2023 10:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
+        id S1345481AbjJZPwe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Oct 2023 11:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjJZOHB (ORCPT
+        with ESMTP id S1345050AbjJZPwd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Oct 2023 10:07:01 -0400
-X-Greylist: delayed 393 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 26 Oct 2023 07:06:58 PDT
-Received: from mail.itouring.de (mail.itouring.de [85.10.202.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4614E1AA;
-        Thu, 26 Oct 2023 07:06:58 -0700 (PDT)
-Received: from tux.applied-asynchrony.com (p5b2e826a.dip0.t-ipconnect.de [91.46.130.106])
-        by mail.itouring.de (Postfix) with ESMTPSA id 7FA36CF194E;
-        Thu, 26 Oct 2023 16:00:23 +0200 (CEST)
-Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
-        by tux.applied-asynchrony.com (Postfix) with ESMTP id 34BDBF01608;
-        Thu, 26 Oct 2023 16:00:23 +0200 (CEST)
-Subject: Re: [PATCH 6.5 211/285] btrfs: scrub: fix grouping of read IO
-To:     Sam James <sam@gentoo.org>, gregkh@linuxfoundation.org,
-        Qu Wenruo <wqu@suse.com>
-Cc:     dsterba@suse.com, patches@lists.linux.dev, stable@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <87fs1x1p93.fsf@gentoo.org>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <02e8fca0-43bd-ad60-6aec-6bcc74d594ee@applied-asynchrony.com>
-Date:   Thu, 26 Oct 2023 16:00:23 +0200
+        Thu, 26 Oct 2023 11:52:33 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E42AF;
+        Thu, 26 Oct 2023 08:52:31 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32d9b507b00so796707f8f.1;
+        Thu, 26 Oct 2023 08:52:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698335550; x=1698940350; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tLwv5flNVsiaVz0MGDwMlr7NgRA0cXHcqK+i79WYra0=;
+        b=k0N6GyBHqrVnmLx/vkFVPzK1hgv4qzryG5tY0YX2z9i3H//Kl27T0678nhUXWMtyaY
+         BH8RLt39z5nJa//9uzfh9ETZbgywaEQHSTJWnXY7DnKyxoblidcntFaIybNJbjssa3sC
+         liEOwPIkTFF9plFhFLIVriDm0dBQAf2nZqn05yMYM+NKgd0ciN8vCMWPVuig/JVlT2l6
+         RB0lWYx834daM8gcQS++1F87NaroTXioaoKFnnlr/kD9yutQFnBiH7doJ4bWysd+cGHe
+         hi2VKvIEG+XucHs38KS5jgnXhrT5STQ6/5qsg0l5dv6f6W0EwwZ+B98+PSoCefXgkBo1
+         CCPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698335550; x=1698940350;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tLwv5flNVsiaVz0MGDwMlr7NgRA0cXHcqK+i79WYra0=;
+        b=I8dj//XXAkhWF0SQ6j2+Ik3PZlhYfKzRZWYek3O1xAZ9GUK/WmHSZ+o8qnZnxdoo+/
+         nDhgJlvSOgAFhqPk0frkOVZSrYKbWLxaom14kgheD1lIg+EU1XMYBQseZGxQJd9uZBxk
+         zFFdZXzlvO+k64TFrun8QmHoUYS2YblacKP/yg0sjK9deeAt2GktxgrFH84q1debh3Sm
+         F9/hvObukuSloTcn7ILVswFyMEn5FaiSoY+h0OtHnCY6nPGEI+tHtZ7uk32j2cGJWDg7
+         edWAssvnFONY9Ko/HohMTgbJfVtzd4QRJeCrgkhnUIPg4bPyA7Fe5bBiGyoEyV8P5E3V
+         7rcg==
+X-Gm-Message-State: AOJu0Ywf9WTwCtCfOL3FZsdbDEpVaAZql7J41H6YQn0QIzyz53900acr
+        eU+OEWT8MLCBTf8NPBkJ6s8=
+X-Google-Smtp-Source: AGHT+IG8QNcu3SGG8ks1KMICgejWG+xzDqvXHl+PwS4mbbQHm3qsCOAf+I7IigIsvxvWX2Y7RGBdcA==
+X-Received: by 2002:adf:f487:0:b0:32d:a10d:90dd with SMTP id l7-20020adff487000000b0032da10d90ddmr31119wro.50.1698335549707;
+        Thu, 26 Oct 2023 08:52:29 -0700 (PDT)
+Received: from amir-ThinkPad-T480.lan ([5.29.249.86])
+        by smtp.gmail.com with ESMTPSA id n12-20020adfe78c000000b00326f0ca3566sm14609838wrm.50.2023.10.26.08.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Oct 2023 08:52:29 -0700 (PDT)
+From:   Amir Goldstein <amir73il@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christian Brauner <brauner@kernel.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v2 0/3] fanotify support for btrfs sub-volumes
+Date:   Thu, 26 Oct 2023 18:52:21 +0300
+Message-Id: <20231026155224.129326-1-amir73il@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <87fs1x1p93.fsf@gentoo.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2023-10-26 15:31, Sam James wrote:
-> 'btrfs: scrub: fix grouping of read IO' seems to intorduce a
-> -Wmaybe-uninitialized warning (which becomes fatal with the kernel's
-> passed -Werror=...) with 6.5.9:
-> 
-> ```
-> /var/tmp/portage/sys-kernel/gentoo-kernel-6.5.9/work/linux-6.5/fs/btrfs/scrub.c: In function ‘scrub_simple_mirror.isra’:
-> /var/tmp/portage/sys-kernel/gentoo-kernel-6.5.9/work/linux-6.5/fs/btrfs/scrub.c:2075:29: error: ‘found_logical’ may be used uninitialized [-Werror=maybe-uninitialized[https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wmaybe-uninitialized]]
->   2075 |                 cur_logical = found_logical + BTRFS_STRIPE_LEN;
-> /var/tmp/portage/sys-kernel/gentoo-kernel-6.5.9/work/linux-6.5/fs/btrfs/scrub.c:2040:21: note: ‘found_logical’ was declared here
->   2040 |                 u64 found_logical;
->        |                     ^~~~~~~~~~~~~
-> ```
+Jan,
 
-Good find! found_logical is passed by reference to queue_scrub_stripe(..) (inlined)
-where it is used without ever being set:
+As agreed on the review of v1 [1], we do not need any vfs changes
+to support fanotify on btrfs sub-volumes and we can enable setting
+marks on btrfs sub-volumes simply by caching the fsid in the mark
+object instead of the connector.
 
-...
-	/* Either >0 as no more extents or <0 for error. */
-	if (ret)
-		return ret;
-	if (found_logical_ret)
-		*found_logical_ret = stripe->logical;
-	sctx->cur_stripe++;
-...
+This is the would be man page update to clarify the meaning of fsid
+as it is reflected in this patch set:
 
-Something is missing here, and somehow I don't think it's just the top-level
-initialisation of found_logical.
+fsid
 
--h
+  This is a unique identifier of the filesystem containing the object
+  associated with the event.  It is a structure of type __kernel_fsid_t
+  and contains the same value reported in  f_fsid  when calling
+  statfs(2) with the same pathname argument that was used for
+  fanotify_mark(2).  Note that some filesystems (e.g., btrfs(5)) report
+  non-uniform values of f_fsid on different objects of the same filesystem.
+  In these cases, if fanotify_mark(2) is called several times with different
+  pathname values, the fsid value reported in events will match f_fsid
+  associated  with at least one of those pathname values.
+
+Thanks,
+Amir.
+
+[1] https://lore.kernel.org/r/CAOQ4uxg9wjESoCFNDADbneF0-nW4xVHHV3Rhhp=gJwAs=S83dQ@mail.gmail.com/
+
+Amir Goldstein (3):
+  fanotify: store fsid in mark instead of in connector
+  fanotify: report the most specific fsid for btrfs
+  fanotify: support setting marks in btrfs sub-volumes
+
+ fs/notify/fanotify/fanotify.c      | 21 ++++--------
+ fs/notify/fanotify/fanotify.h      | 10 ++++++
+ fs/notify/fanotify/fanotify_user.c | 31 ++++++++----------
+ fs/notify/mark.c                   | 52 +++++-------------------------
+ include/linux/fsnotify_backend.h   | 18 +++++------
+ 5 files changed, 47 insertions(+), 85 deletions(-)
+
+-- 
+2.34.1
+
