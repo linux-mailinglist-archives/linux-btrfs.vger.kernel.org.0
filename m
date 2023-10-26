@@ -2,70 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E237D7C7C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Oct 2023 07:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B027D8261
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Oct 2023 14:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbjJZFuL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Oct 2023 01:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
+        id S230413AbjJZMRk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Oct 2023 08:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbjJZFuK (ORCPT
+        with ESMTP id S229647AbjJZMRj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Oct 2023 01:50:10 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56B2187;
-        Wed, 25 Oct 2023 22:50:06 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-66cfd3a0e61so3815156d6.1;
-        Wed, 25 Oct 2023 22:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698299406; x=1698904206; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CeRsssLX7dJfUBNeIdDgiKFBegD9PBcBDM3KZdGAZHs=;
-        b=OdwvD1IkPzRsRe+G9dtWg0up68eJUi1QTrvJ1ngC9uKTkwfX1ZYhb4be0Qe19ljsSe
-         YtuSZ/pCgOBDLktV+WElFW6Kaehbb7KM6ckhT7CGiqpED9gFHZOfETCpAD7s2Tf5eT1N
-         EOr+bON/zp2nnwrjlvPxdZ1aZydnIVY5HYN3GxTbUgmp0fGwJM4oho6LnvZ6sRu5dz0x
-         wL7IlRtBkgUCbE/uXRa6JBO9StL/s0IoeWYyhea+IjIisb1gbkGIe0o7Q2/xS0admS3b
-         6KFDxwnXhIRuf/yzPriiDT76WsyqS6e5Tk6fyx4o+wuqdx5JEVG2Rna9GkBYHquiapgp
-         3Ygw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698299406; x=1698904206;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CeRsssLX7dJfUBNeIdDgiKFBegD9PBcBDM3KZdGAZHs=;
-        b=JhN+DWboF6g4KhoeRJjndsAiU3OdG4s0jEoc7A9qtVcmiIK41zuiVpBc3vFm6qlj/P
-         //Y063l93GDiWsb2Y/MrIEaquRDzRx+i2tVGk1KRE9mXm7LOSG0qUMEi+YXEsnm1o5X6
-         u0ptwhguNUSVVXS8Zi9erj9M3lbFYqTw6lsTGCKZ4nOXdh9QT9TFom7BygJoG7P1VmDJ
-         mMI8UsYmMEqgzn5IOnVk9qDQGF3Yr09cWgLE0RlSXPn8eJ1IkVTL0x9KckNkqr4mYDZm
-         URabknYesHrEOGRVRAayvfLxs53Uy6q2Deqvq77qhrvuVRjSUquabRmmFJ/lS2Vrpn4o
-         g/TQ==
-X-Gm-Message-State: AOJu0Yx1vKWGIZb104V7/y4ISHgKclHrJfI8oopm4NYytMMqcDUjgdvB
-        yxnGDaZAzZ4rfzSEjOwEGZ56okfo01pXLAtKBjk=
-X-Google-Smtp-Source: AGHT+IHHe80VCq7LPJqKZi989+2AwaWMuHLvdMzgUfWkrI/9aLUGbr0FD7Zxinv9IDha+XSDw3NCjy1US9CBynaAqxI=
-X-Received: by 2002:ad4:5c4a:0:b0:66d:627e:24c0 with SMTP id
- a10-20020ad45c4a000000b0066d627e24c0mr23492679qva.38.1698299405872; Wed, 25
- Oct 2023 22:50:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231025135048.36153-1-amir73il@gmail.com> <ZTk1ffCMDe9GrJjC@infradead.org>
- <20231025210654.GA2892534@perftesting> <628a975f-11a1-47f9-b2f8-8cbcfa812ef6@gmx.com>
-In-Reply-To: <628a975f-11a1-47f9-b2f8-8cbcfa812ef6@gmx.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 26 Oct 2023 08:49:54 +0300
-Message-ID: <CAOQ4uxjbXg5hqk8r1Lp24rdkeimXS2_tZppreAeabzO0k8G8yg@mail.gmail.com>
+        Thu, 26 Oct 2023 08:17:39 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFB1B9;
+        Thu, 26 Oct 2023 05:17:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4150521AB5;
+        Thu, 26 Oct 2023 12:17:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1698322655; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NR2l8V1cvlS3VC1AbzLrfqK8FhV3SgS3by08l7Z+82o=;
+        b=sSYCcZk+yDDgpOpA8yS+lH8BnKu8YNkFvdOYvTk1jgpiWEECkofxHK3vCxDvYkR16U/AEg
+        cPb14shKD5da1ZZ7V1woxchBwhccKpwvXdQoebCI4Dzn5FwhhyNbUb7mJBj8DSkjm/fY/e
+        VVXkEEi47QKTrg1aOdI0yBa0RC6T6hg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1698322655;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NR2l8V1cvlS3VC1AbzLrfqK8FhV3SgS3by08l7Z+82o=;
+        b=MDobBLbQnFMRjkinkoFjI6+BnCS5r61YLM8aSWSXMfDlB+94EnimpkUwUJrPOdvsS8nMHQ
+        5qatfUHS9lKjh3DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 302DE1358F;
+        Thu, 26 Oct 2023 12:17:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id mpC9C99YOmWtDgAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 26 Oct 2023 12:17:35 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 9446AA05BC; Thu, 26 Oct 2023 14:17:34 +0200 (CEST)
+Date:   Thu, 26 Oct 2023 14:17:34 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-        Christian Brauner <brauner@kernel.org>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Message-ID: <20231026121734.o4k7djftwdnectq4@quack3>
+References: <20231025135048.36153-1-amir73il@gmail.com>
+ <CAOQ4uxg2uFz8bR37bwR_OwnDkq5C7NG+hoqu=7gwSC5Zjd4Ccg@mail.gmail.com>
+ <CAOQ4uxjJFyXUOP_46O9erdCEmwctBc8BVJU_jTzyX4d+m0gFyg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxjJFyXUOP_46O9erdCEmwctBc8BVJU_jTzyX4d+m0gFyg@mail.gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -6.60
+X-Spamd-Result: default: False [-6.60 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,121 +101,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 2:02=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
->
->
->
-> On 2023/10/26 07:36, Josef Bacik wrote:
-> > On Wed, Oct 25, 2023 at 08:34:21AM -0700, Christoph Hellwig wrote:
-> >> On Wed, Oct 25, 2023 at 04:50:45PM +0300, Amir Goldstein wrote:
-> >>> Jan,
-> >>>
-> >>> This patch set implements your suggestion [1] for handling fanotify
-> >>> events for filesystems with non-uniform f_fsid.
-> >>
-> >> File systems nust never report non-uniform fsids (or st_dev) for that
-> >> matter.  btrfs is simply broken here and needs to be fixed.
+On Wed 25-10-23 21:02:45, Amir Goldstein wrote:
+> On Wed, Oct 25, 2023 at 8:17 PM Amir Goldstein <amir73il@gmail.com> wrote:
 > >
-> > We keep going around and around on this so I'd like to get a set of ste=
-ps laid
-> > out for us to work towards to resolve this once and for all.
+> > On Wed, Oct 25, 2023 at 4:50 PM Amir Goldstein <amir73il@gmail.com> wrote:
+> > >
+> > > Jan,
+> > >
+> > > This patch set implements your suggestion [1] for handling fanotify
+> > > events for filesystems with non-uniform f_fsid.
+> > >
+> > > With these changes, events report the fsid as it would be reported
+> > > by statfs(2) on the same objet, i.e. the sub-volume's fsid for an inode
+> > > in sub-volume.
+> > >
+> > > This creates a small challenge to watching program, which needs to map
+> > > from fsid in event to a stored mount_fd to use with open_by_handle_at(2).
+> > > Luckily, for btrfs, fsid[0] is uniform and fsid[1] is per sub-volume.
+> > >
+> > > I have adapted fsnotifywatch tool [2] to be able to watch btrfs sb.
+> > > The adapted tool detects the special case of btrfs (a bit hacky) and
+> > > indexes the mount_fd to be used for open_by_handle_at(2) by fsid[0].
+> > >
+> > > Note that this hackacry is not needed when the tool is watching a
+> > > single filesystem (no need for mount_fd lookup table), because btrfs
+> > > correctly decodes file handles from any sub-volume with mount_fd from
+> > > any other sub-volume.
 > >
-> > HYSTERICAL RAISINS (why we do st_dev)
-> > -------------------------------------
+> > Jan,
 > >
-> > Chris made this decision forever ago because things like rsync would sc=
-rew up
-> > with snapshots and end up backing up the same thing over and over again=
-.  We saw
-> > it was using st_dev (as were a few other standard tools) to distinguish=
- between
-> > file systems, so we abused this to make userspace happy.
+> > Now that I've implemented the userspace part of btrfs sb watch,
+> > I realize that if userspace has to be aware of the fsid oddity of btrfs
+> > anyway, maybe reporting the accurate fsid of the object in event is
+> > not that important at all.
 > >
-> > The other nice thing this provided was a solution for the fact that we =
-re-use
-> > inode numbers in the file system, as they're unique for the subvolume o=
-nly.
+> > Facts:
+> > 1. file_handle is unique across all sub-volumes and can be resolved
+> >     from any fd on any sub-volume
+> > 2. fsid[0] can be compared to match an event to a btrfs sb, where any
+> >     fd can be used to resolve file_handle
+> > 3. userspace needs to be aware of this fsid[0] fact if it watches more
+> >     than a single sb and userspace needs not care about the value of
+> >     fsid in event at all when watching a single sb
+> > 4. even though fanotify never allowed setting sb mark on a path inside
+> >     btrfs sub-volume, it always reported events on inodes in sub-volumes
+> >     to btrfs sb watch - those events always carried the "wrong" fsid (i.e.
+> >     the btrfs root volume fsid)
+> > 5. we already agreed that setting up inode marks on inodes inside
+> >     sub-volume should be a no brainer
 > >
-> > PROBLEMS WE WANT TO SOLVE
-> > -------------------------
-> >
-> > 1) Stop abusing st_dev.  We actually want this as btrfs developers beca=
-use it's
-> >     kind of annoying to figure out which device is mounted when st_dev =
-doesn't
-> >     map to any of the devices in /proc/mounts.
-> >
-> > 2) Give user space a way to tell it's on a subvolume, so it can not be =
-confused
-> >     by the repeating inode numbers.
-> >
-> > POSSIBLE SOLUTIONS
-> > ------------------
-> >
-> > 1) A statx field for subvolume id.  The subvolume id's are unique to th=
-e file
-> >     system, so subvolume id + inode number is unique to the file system=
-.  This is
-> >     a u64, so is nice and easy to export through statx.
-> > 2) A statx field for the uuid/fsid of the file system.  I'd like this b=
-ecause
-> >     again, being able to easily stat a couple of files and tell they're=
- on the
-> >     same file system is a valuable thing.  We have a per-fs uuid that w=
-e can
-> >     export here.
-> > 3) A statx field for the uuid of the subvolume.  Our subvolumes have th=
-eir own
-> >     unique uuid.  This could be an alternative for the subvolume id opt=
-ion, or an
-> >     addition.
->
-> No need for a full UUID, just a u64 is good enough.
->
-> Although a full UUID for the subvolumes won't hurt and can reduce the
-> need to call the btrfs specific ioctl just to receive the UUID.
->
->
-> My concern is, such new members would not be utilized by any other fs,
-> would it cause some compatibility problem?
->
-> >
-> > Either 1 or 3 are necessary to give userspace a way to tell they've wan=
-dered
-> > into a different subvolume.  I'd like to have all 3, but I recognize th=
-at may be
-> > wishful thinking.  2 isn't necessary, but if we're going to go about me=
-ssing
-> > with statx then I'd like to do it all at once, and I want this for the =
-reasons
-> > stated above.
-> >
-> > SEQUENCE OF EVENTS
-> > ------------------
-> >
-> > We do one of the statx changes, that rolls into a real kernel.  We run =
-around
-> > and submit patches for rsync and anything else we can think of to take =
-advantage
-> > of the statx feature.
->
-> My main concern is, how older programs could handle this? Like programs
-> utilizing stat() only, and for whatever reasons they don't bother to add
-> statx() support.
-> (Can vary from lack of maintenance to weird compatibility reasons)
->
-> Thus we still need such st_dev hack, until there is no real world
-> programs utilizing vanilla stat() only.
-> (Which everyone knows it's impossible)
->
+> > If we allow reporting either sub-vol fsid or root-vol fsid (exactly as
+> > we do for inodes in sub-vol in current upstream),
+> 
+> Another way to put it is that fsid in event describes the object
+> that was used to setup the mark not the target object.
+> 
+> If an event is received via an inode/sb/mount mark, the fsid
+> would always describe the fsid of the inode that was used to setup
+> the mark and that is always the fsid that userspace would query
+> statfs(2) at the time of calling the fanotify_mark(2) call.
+> 
+> Maybe it is non trivial to document, but for a library that returns
+> an opaque "watch descriptor", the "watch descriptor" can always
+> be deduced from the event.
+> 
+> Does this make sense?
 
-I agree it does not sound possible to change the world to know
-that the same st_dev,st_ino pair could belong to different objects.
+Yes, it makes sense if we always reported event with fsid of the object
+used for placing the mark. For filesystems with homogeneous fsid there's no
+difference, for btrfs it looks like the least surprising choice and works
+well for inode marks as well. The only catch is in the internal fsnotify
+implementation AFAICT - if we have multiple marks for the same btrfs
+superblock, each mark on different subvolume, then we should be reporting
+one event with different fsids for different marks. So we need to cache the
+fsid in the mark and not in the connector. But that should be easy to do.
 
-One such program btw is diff - it will skip the comparison if both
-objects have the same st_dev,st_ino even if they are actually
-different objects with different data (i.e. a file and its old snapshot).
-
-Thanks,
-Amir.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
