@@ -2,198 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E14C7D9C7E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Oct 2023 17:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100BC7D9CAF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Oct 2023 17:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbjJ0PFB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Oct 2023 11:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
+        id S1345686AbjJ0PMv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Oct 2023 11:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231669AbjJ0PFB (ORCPT
+        with ESMTP id S231340AbjJ0PMt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Oct 2023 11:05:01 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C7BC4
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 Oct 2023 08:04:58 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso327279066b.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 Oct 2023 08:04:58 -0700 (PDT)
+        Fri, 27 Oct 2023 11:12:49 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E156C4;
+        Fri, 27 Oct 2023 08:12:47 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39RDUsHj003823;
+        Fri, 27 Oct 2023 15:12:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=+W9EEcHiION1lTVcWeO6p6Cf7C1kTOdNdVNM97ASmAc=;
+ b=BZMkl4rGT8SkeLqL3MLQxESqkCnaxcUHPnYxZI9OgqZOCcon7B/OKqFcGkKXYETBq7Zm
+ nISJE2y9XVcy32Za+S8Ny4+uw0NYT5sEDabEZvoRus35dcbkr47GphZE+Gfj+W3uPPUk
+ xeLbIxR78TmHvb5RiqrbW1s3j6k24oAwwwFUez/yRSsOXIQXV3vCRSl058OumE0fUWQ7
+ quvj9o5MyNPuyMQBrUa7msos/ZqnPYE5JSfvjDaaxJQN92ZkpDX8yYBHPn+wcdAw/oM9
+ MP2v96ZrTsR3PiMJLFb08V15cwFzOC/JGQJRdZ/1if+oYIMSPZQeK9nVcIsx/eemuMak 9A== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tywtb9tym-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Oct 2023 15:12:16 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39RDUtoi009213;
+        Fri, 27 Oct 2023 15:12:15 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2041.outbound.protection.outlook.com [104.47.56.41])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tywqjvkef-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Oct 2023 15:12:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LcRrFJlOJr1msnorvwl9vmAIt+ottiESiQoOgTEUa1W5DmloLh81vMhFBFgEqI1nyLZ8iPgpG8/Hhm7cJJL1JcJ/bANhC2Ck7bsH6KLKhAbcpKsal/m8vZa7mUZ+47NTxjcVgIqKOFAWua5cbZIstDl4WTZStpHycOy74GTivCgUHejg2QScYibLLKFE2jqywN5utoeXeeBGa69oqUcsYEqB6zuovbd5JXGOlAA0HOERbT2xf1+3R7YdQNFIz5LGZNt6f+itSQ4++5uKGIFtS7voBI9FqJ/XDpNoRSlDwfCKwzb5SOXxz8mb4w1YJlIE6XXJF/IwiOsBG7uXd+uOoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+W9EEcHiION1lTVcWeO6p6Cf7C1kTOdNdVNM97ASmAc=;
+ b=jQBx/GaM9sQiQvJFXC12XsCW2SVi7Guf9Pqdsm5Vlx0SwebQlRyj4Y6lKuoiFTwxjdDJJdXRcDLItDjrW8HQtl20EcOMSEFDLFFoo2KNXrwgYW5Qoyd2eNWkTWslvSnDQhai7xNkuCP9cT/1AOcKyj4Bx056n1upB4FA7lVhA+0VuQM0XGbUYa+26YWi9PsTtmY9jZCSh3hqfv48U93ym6VDK0hCMhbNWxZYqN3Xzr42J/4v5F7O5LJBipVbhFZCHVOzqP/yFAr6EiRfc3QWa4K8rZKjcsfj0Kt2YaKd3dM0YFIYL0/Yc8IyHLHlqT7bkXI+uGTCqhQcEENV1+2p2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698419096; x=1699023896; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Uxzzm19NNglQuW/+K7VNjscbS97wXIRPx7RdEjcWRww=;
-        b=A7JH9hKQqyT2779YVF50CMBf5kUyG5pTUUtYCaYUDJxKn7Xmt60rJtAcLFYwojdEys
-         ngUyIq8Rr/QpwJwLnBw0aewsvklUz3s02+pHhazTUEguhj/kyNmXLy9Tf9xmpiT7ZCRC
-         czeKc64bDRuDmMhWJmM+ce/8QNTO+Z2AcAAUk2SKahxHDRxAqldh2hzpGH21lgHYZPTw
-         0KPJd9EfMv7goZykGW9Hw9rcA0lGOOVVmVg7WHGOruaTElFLeT+G0RpeCXvxRNp5fIeS
-         M3q32i0+/qwq4nOwuiQC6V5nvXfZeUhw6HgxDL1Kvh7d7eu/uYSqM+uC8Erv2Y0SFih2
-         DIhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698419096; x=1699023896;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Uxzzm19NNglQuW/+K7VNjscbS97wXIRPx7RdEjcWRww=;
-        b=vW48vJ6YRBQlNxIabRwWWEfXpLCuasO8iGRX1QMuAai4mhVQY+00PPMdAgdqmecaa7
-         PxxyNjbPE0VHIVspp2kGo/zof1/vqDY7r1YUp9csxf7YCyuqhEYBh5dBUalZCyKxyJpE
-         OY/iFTXAygXiWxgmlFDDw75ehgwOuKdlQqxlNl0ERvRswbHa0tc5V2tkZ96oosz9ab2M
-         80qSc56CQoqIKlGKgvjArfUJQkrOg3O/FAF6Zt5ylImICVE58h9J6gfBTWULU/EXu0Ad
-         ImYeekOnCdTs6YIfV3v/oehTmWbik6v3mECZPgi9Y09wWVtJUiyLNB6tBIlhEGJWj2fl
-         Zueg==
-X-Gm-Message-State: AOJu0YwMnmbzQeRseKvETcuCw5XVhz3+MqIZBeDx2Am+4vBzZLaJQ7UQ
-        T7z9znFifoIQ/jgsWlnEMHEBx+9F2LFiyMxNnT8D1IqD+5M=
-X-Google-Smtp-Source: AGHT+IGe+c4C93ySAxq+lo+INL+a3O+CdyigFOyllJoX+TJeNYB7Emfz82kxqOa5e/b/nMSQdCS6Q8XtsySBK2xZQfo=
-X-Received: by 2002:a17:907:cbc4:b0:9d0:6108:9944 with SMTP id
- vk4-20020a170907cbc400b009d061089944mr1464637ejc.43.1698419095931; Fri, 27
- Oct 2023 08:04:55 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+W9EEcHiION1lTVcWeO6p6Cf7C1kTOdNdVNM97ASmAc=;
+ b=wLsgSdoDL1Nuk7tLiu+sLv1eKSpt1fW4mVrvw3bFSXsRhQTbxQugvgziAOqJIbUoPeOWhLvoP7ZyJkURYMQ6a/nYFkmiHAzvZnKH4O2X3uZ/tkifg4Q2tGFGqAeMfMVVPWlscbdu0PLJ4W+PJE8aOJuoBLef3SVgZOL8wCXYEzE=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by PH0PR10MB5780.namprd10.prod.outlook.com (2603:10b6:510:149::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Fri, 27 Oct
+ 2023 15:12:13 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2bbc:60da:ba6c:f685%2]) with mapi id 15.20.6886.034; Fri, 27 Oct 2023
+ 15:12:13 +0000
+Message-ID: <1de4f2f7-793b-5d43-11ad-7da4e35cd1e7@oracle.com>
+Date:   Fri, 27 Oct 2023 23:12:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] fstests: btrfs/219 cloned-device mount capability update
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <39311089b30f9250ff7f7a0aabb70547616a4b3a.1698230869.git.anand.jain@oracle.com>
+ <CAL3q7H6Yg6bv1pKjA6dVjgr45Z=-YkDzcr3RzaV284d8uLxAdg@mail.gmail.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <CAL3q7H6Yg6bv1pKjA6dVjgr45Z=-YkDzcr3RzaV284d8uLxAdg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR02CA0014.apcprd02.prod.outlook.com
+ (2603:1096:3:17::26) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-From:   "Werner I." <theweio@gmail.com>
-Date:   Fri, 27 Oct 2023 17:04:44 +0200
-Message-ID: <CAFYMhu0VRKCZOFE3AUKpY6zRftqFTQ6dpsa4sVpYyBhxNHLTYQ@mail.gmail.com>
-Subject: Help with USB HD needed
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH0PR10MB5780:EE_
+X-MS-Office365-Filtering-Correlation-Id: e46169a7-b638-4e51-608b-08dbd6ff190c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KW/ph6pqLTmp06U8IEC2BMxfBhx5jLTS8t2MPXcvzJrVP1QZypLtpWnEOqvBPVJ8R/BPGPg4S60frdwpzCW+1I3AinZ5yPNp5W2O3GHiTgnvRr6eAPTEKStX+xEhirQ3rwpth/mYyW3E2gY2p2CDy+TifB6WLa2V0LdIn26TpRJJPLKsR3h1wLlE4g0g4mjjRo3fI2q8j44Qcav98GcCqH+OHDGALIA25YViE22uqmf2uUXbBSTZ2iX3VoQFF3wYUfnb1GzU6NiA1tWKj36WmI/wMYgY9/MI63qCArJIHlXvf6zXMecW/Zl3B44Yr4o5KSxAYr/yZ5LupBN1RcbfcRhCqaXewpDzxJHnTzgmUehpcgTv9iwf05BaGZKty6lGxVleeyjn6kvLeufXPeb3m9veG/PJVlLIW+9a6zaAh5z9UE++U0pDAqk6eGRIHRFOoyHI+lKcSFJOQAARF3PfyylVhhpdtWOkAEsfpw5OzJ5UvAgHAew+2hV1uXmV7qVCut4Uz2smphtJfjtRF7xBOzeCEQESTcn6nb3lrPhf5HmOlovtmPhRemIubw8+nU8qq466lf2JSrmE1iWuQwWyCK8q+yRojH+knwhnr4GQx2IZ8cAKDZGeET04L+nSh/cTdIAnKE/2ah4YXSR7UxRtQg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(376002)(366004)(346002)(396003)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(44832011)(6506007)(478600001)(6666004)(66556008)(2616005)(66946007)(66476007)(6512007)(86362001)(31696002)(6486002)(26005)(8936002)(8676002)(38100700002)(4326008)(6916009)(316002)(5660300002)(36756003)(41300700001)(2906002)(31686004)(4744005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RlRERmxaNDduTEx4ZEo4Q25VQkMrQmVRWWdwdmJ2T1UzU3BKQVhGbHZLRDdw?=
+ =?utf-8?B?Uy9LSE9QWlhvL3oxbEJPWnByZlAwWkxlY2hqY0tYNDZyT0wwNkhlSDFMWko0?=
+ =?utf-8?B?cDcxUldSQTZmWmtsNytBNkhKRE0wZlZSTjZ3ODFpOGhMY1dLN3l4Z2k2UDJZ?=
+ =?utf-8?B?V24xblZiVHZmRXNKS2lKTGFDcllZQW5pa003anRqcFBKalVFU05vSnFmR3lV?=
+ =?utf-8?B?bVJETXVYREQrOWhDN0J1c1h3V1RKMHRqUDJycUkrV1Z6YWwzZ0svWGI4eDEx?=
+ =?utf-8?B?eVZ4UThsREh6aUtIMUY2azMxTkl0Vkx3OWV5RlRrYXJnN3ROc2cxWmowb05T?=
+ =?utf-8?B?NUlUWmN2QnpKWFZESHZvc2lUTnlkaFRZZ2UyMmxXWGhUMmQyeWFXNWtPeXhz?=
+ =?utf-8?B?OEFiM1ZJeU1OMWVrMEtreWtINmNldmt4Zmpvb29JV3ZieUVwTnZxNm45SGpB?=
+ =?utf-8?B?Z1BXOUdVNnJaaHBRbHp5VXRFN1FIY0d5U3hlUnRMTHpST0lSNnMwdUtQMTRi?=
+ =?utf-8?B?VVlvTkhMS2N5RTlTMGNwODJmV1Mxa3JtNWgxUllLVnArK1BQYjU0b056R2tY?=
+ =?utf-8?B?cVgrRVRMM01JYWlUWCtaYnBSS1BNL01oWHZvREVmZ1RaM3Q5ZVBvajl0UHdN?=
+ =?utf-8?B?b3plbXFJUkRZaVpqWVYwOXJNbnJ2TU9wMVprM2ZuK3lIZXVYYy96eE9NVlZh?=
+ =?utf-8?B?dndZUjE5OUF3SmNHTWVXdHZBUS9Hc0tiMUlTMDhlZGNuV3lBeVd3c1NtRnVa?=
+ =?utf-8?B?UE95NDZTNzBYakVkaVlCbHg5S2l2bXRLQk9WZmNSQU5pOE8vNzh4MzVYeldn?=
+ =?utf-8?B?OWR6THVIWlpjTU9XcCtGOXVlM3MvdHZ2aXBiNlFsQUFyN2tVTmw5WWQ4ZnM5?=
+ =?utf-8?B?SFBXL0NmMENkakRLb3d1RmR3SnpBOFJvY1FEbGgwa3lreVNCSzh3N3cyeXlu?=
+ =?utf-8?B?MHlEVWxzMEdIWmZXV1g4U3VxYnd0dmVGTkNRQTAwQndyT0o2RFZ5MVZZd1gr?=
+ =?utf-8?B?cWFoYUhxSnBaMXBWa1VOaVVTQmRuK2RMZlVKM1JHTXVFWmdMNy9pTDVsWXZE?=
+ =?utf-8?B?a1dFak13NXNtd0MyQzRHUkJQbnRUT1JFMm9QZHdlaDFQVUtkTGVORFZ2anln?=
+ =?utf-8?B?S0lkcXc0blhjNkgzMUJqVDhTMWVSZkJOcHg0NlFYWEVzbDAwMzhrZ2hBVHVj?=
+ =?utf-8?B?SzNubTlJTTU5cW5YbWdxZ3FHWXJKVzBYZnU2dVloTWpiN2d0RkR6aDZSNkl6?=
+ =?utf-8?B?WFkrN1JIb1hHbG16SHNtRERaaHVDV045M0s2VW4vS1lncjNSZHJQRG9EZzFH?=
+ =?utf-8?B?V3I5eXRJV3hJRWpBRkJMazhrMjlVNXRkem1ZYnV0WWljM29ML2trc0tKTXU0?=
+ =?utf-8?B?aHRUSlEyMEhCVzlYN2E0amJLbDljRmMrOXh0ZWhRcCtxZERsN2tPby9JY2Yx?=
+ =?utf-8?B?VFhGcGgrbjEvZEdCbG1aM0dZeFhjTGQ0dkZJdHlpZWZBSXVDTGtqR085WExV?=
+ =?utf-8?B?T3hucUdtVm9vOHhoTnpXRXZHYndEYUZJNElWNEliVmJVaytYLzlMQ0lVWGI4?=
+ =?utf-8?B?UEFSUFo5S2dyaFZEYkVNbm9lOVdMdCthUTFDc2FKT1lnUDZUbEkrSU9tQkxL?=
+ =?utf-8?B?WDlobThzR0xWL1NpK2ZCVno4UUI3bzlOMFU0VkhiOEFFZFBaNEJEendCd3Y1?=
+ =?utf-8?B?Q3pBWlZ5dVdJOHFJWWFMdGllenB3dmk3bWpwVklNdkVaT3hHMEExWm81Rjg1?=
+ =?utf-8?B?Y3FsOVFjR0tpZkExbEtxVGxkME96TDJueDlXdkc3eEdORmxueE5HK21Ucnd3?=
+ =?utf-8?B?dlcraEhJUzkzRlNqZWZrMTF2RTZESjhWMHBDTUlkVlU5WU9ZRTB1YkMyZWow?=
+ =?utf-8?B?bG5jZUpPZEs1M2x5SDBpOVExSVErMGlzbTY3cFd1eFNoc2JnS0xKdlMyeG00?=
+ =?utf-8?B?a3kvTHJ5dXhQNVVHVyt0N1RWOUIxNmRUd3crTHNzUVNQamxScXRaYW90YkZ0?=
+ =?utf-8?B?Z2k0S1NqMGJXZ0dIWjJwbXEvSE9kcHc5cHZFUU9qTFk0dURlL0ZrTTBYemND?=
+ =?utf-8?B?QUd2a2lrd3RZTTI3dTRrUFB6c1dxQTM0OGRGUlp2eGplREl4YVhWZGNUVjc0?=
+ =?utf-8?Q?qXnf7YOMeXibRgZfwhijtqDX0?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: rKXiVQkPQzQ4J1wFfua2SLYKghACTGv5x7SKIbZdgPtD0jWMnTLWx1FeQXfrZGskio2uyShxNBmSwQXU64Fp/QTb5T7y/zfRjvjdbvOx9q2ZgMjzyzRgY+/jPY7NqC3EkOV1ZDpvyJzqowq5YzBCNh2tpqPmrJxoS6m7VkgvyoFJLIcQeEhF2UKILrMZYArx22bIxUdvf6gkScfaU+tdf+cDnt9y9obtQV5VXzc1qQIV1+ontViXCAiVSE+sFwE6+pmTEZTxCLuQZuBr6DM0TWQDcyHUzYOrROw4grt16puw4k9MwaCUbfEgD9yN+bRjk0KTKIvQihDETLT+k1GVLEJBTq5w0ASmH7y+5EYHEJuvKk9u2NUC2ARLvoNuUN/Riml/r/vZTqhh4T6gIP7rYUvJYyuJGXJFdw90xeag+FPE/aGX7WkSuU0kpkOsMz85+1KEe9QRSos8HR9Zf7tP/QxDII/PalwKTOmjPjC838r9y541wDBpMcu/3tlUwK4wPFugQjPyzBZ25nRZkQp1RuJAiot7rPHUDHJOPODCCGgXXhyqgVo/oM3KZaxjp/z6pSIcQ32fUgAIIlTC7tV1zOP8lOjrsFFxQF8pUYGtVUqV/J3SIb9gSAZrnF+QddUcGdoAjug+PeuG7qgXPBSYthBpBsCxHc0GYxKrxIIIhUyeEAM71IkvzmSDOXp6Wt1pXBEzpxlG6e5nqy4MI9Ijc5j+7sQEjB8yxY8iWFE0fBnV114XaNnDEde1joOdMX2MRyJ6oGRgbWCNw8z/zbKrlOW2P1KY+u7e0j+fIJR0/fM=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e46169a7-b638-4e51-608b-08dbd6ff190c
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2023 15:12:13.1702
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: o4cQIqxWzjzBlgdkbtEVwhz5d9CerQ8+Dy5tEy0SrvzphTmyHb8rkuDdiijzkAhhPN731p54e0kN3D9B5N19Aw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5780
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-27_13,2023-10-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2310270130
+X-Proofpoint-ORIG-GUID: GP2eXAmZSPTDaKMxQ7Vq5yBSb7Qp10Tf
+X-Proofpoint-GUID: GP2eXAmZSPTDaKMxQ7Vq5yBSb7Qp10Tf
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
 
-after a power outage one of my btrfs formatted USB HDs can't be mounted anymore.
-A btrfs check gives me:
-btrfs check /dev/sdb
-Opening filesystem to check...
-checksum verify failed on 2896434544640 wanted 0x49cf072e found 0x3837717b
-checksum verify failed on 2896434544640 wanted 0x49cf072e found 0x3837717b
-Csum didn't match
-ERROR: failed to read block groups: Input/output error
-ERROR: cannot open file system
+> For kernels without the cloned-device feature, it's useful to still
+> test this... We want to catch regressions on stable releases and
+> downstream (distros).
+> Rather than removing this code, I would rather run the code only if
+> the kernel does not support the feature (file
+> /sys/fs/btrfs/features/temp_fsid does not exist).
 
-I tried mounting it with rescue options to no avail.
-The data on it is not crucial but would be very nice to have back. I
-should have copies on an decommissioned server but that would be a
-pain to set up.
-Help would be very much appreciated. I did NOT use the repair command!
+Good idea. Added back in v2.
 
-Here is the output of the questionnaire from the wiki:
-Linux omvn100 6.2.16-11-bpo11-pve #1 SMP PREEMPT_DYNAMIC PVE
-6.2.16-11~bpo11+2 (2023-09-04T14:49Z) x86_64 GNU/Linux
-btrfs-progs v5.16.2
+Thanks, Anand
 
-Label: none  uuid: 1397d17c-5789-47a8-958c-c603f7b47365
-        Total devices 1 FS bytes used 13.19TiB
-        devid    1 size 16.37TiB used 13.21TiB path /dev/sda
-
-Label: none  uuid: 6d5c6ae1-86df-4863-9ef4-19d4e5bc05e7
-        Total devices 1 FS bytes used 3.59TiB
-        devid    1 size 4.55TiB used 3.60TiB path /dev/sdc
-
-Label: none  uuid: 359cd817-936a-4451-9dc7-e8ee7910a448
-        Total devices 1 FS bytes used 3.95TiB
-        devid    1 size 4.55TiB used 3.95TiB path /dev/sdb
-
-[    4.729108] BTRFS: device fsid 359cd817-936a-4451-9dc7-e8ee7910a448
-devid 1 transid 444227 /dev/sdb scanned by systemd-udevd (306)
-[    4.866283] BTRFS info (device sdb): using crc32c (crc32c-intel)
-checksum algorithm
-[    4.866291] BTRFS info (device sdb): disk space caching is enabled
-[    4.921450] BTRFS warning (device sdb): checksum verify failed on
-logical 2896434544640 mirror 1 wanted 0x49cf072e found 0x3837717b
-level 0
-[    4.921461] BTRFS error (device sdb): failed to read block groups: -5
-[    4.922819] BTRFS error (device sdb): open_ctree failed
-[    5.307709] BTRFS: device fsid 6d5c6ae1-86df-4863-9ef4-19d4e5bc05e7
-devid 1 transid 7866 /dev/sdc scanned by systemd-udevd (307)
-[    5.391947] BTRFS info (device sdc): using crc32c (crc32c-intel)
-checksum algorithm
-[    5.391954] BTRFS info (device sdc): using free space tree
-[    7.983815] r8169 0000:01:00.0 enp1s0: Link is Up - 1Gbps/Full -
-flow control rx/tx
-[    7.983825] IPv6: ADDRCONF(NETDEV_CHANGE): enp1s0: link becomes ready
-[    8.432017] audit: type=1326 audit(1698404351.369:2):
-auid=4294967295 uid=65534 gid=65534 ses=4294967295 subj=unconfined
-pid=777 comm="node" exe="/usr/local/bin/node" sig=0 arch=c000003e
-syscall=324 compat=0 ip=0x7fa3b2807152 code=0x50000
-[    8.805952] audit: type=1326 audit(1698404351.741:3):
-auid=4294967295 uid=65534 gid=65534 ses=4294967295 subj=unconfined
-pid=840 comm="node" exe="/usr/local/bin/node" sig=0 arch=c000003e
-syscall=324 compat=0 ip=0x7f9d7d23f152 code=0x50000
-[   26.539848] audit: type=1326 audit(1698404369.477:4):
-auid=4294967295 uid=65534 gid=65534 ses=4294967295 subj=unconfined
-pid=873 comm="node" exe="/usr/local/bin/node" sig=0 arch=c000003e
-syscall=324 compat=0 ip=0x7fcfd93d5152 code=0x50000
-[   54.280616] BTRFS info (device sdc): auto enabling async discard
-[   54.581643] Initializing XFRM netlink socket
-[   54.963182] br-ad8d222d3210: port 1(vethd61e22d) entered blocking state
-[   54.963187] br-ad8d222d3210: port 1(vethd61e22d) entered disabled state
-[   54.963270] device vethd61e22d entered promiscuous mode
-[   54.963609] br-ad8d222d3210: port 1(vethd61e22d) entered blocking state
-[   54.963613] br-ad8d222d3210: port 1(vethd61e22d) entered forwarding state
-[   54.963951] IPv6: ADDRCONF(NETDEV_CHANGE): br-ad8d222d3210: link
-becomes ready
-[   54.964030] br-ad8d222d3210: port 1(vethd61e22d) entered disabled state
-[   56.496029] eth0: renamed from veth003002b
-[   56.527852] IPv6: ADDRCONF(NETDEV_CHANGE): vethd61e22d: link becomes ready
-[   56.527880] br-ad8d222d3210: port 1(vethd61e22d) entered blocking state
-[   56.527883] br-ad8d222d3210: port 1(vethd61e22d) entered forwarding state
-[   94.658751] BTRFS: device fsid 359cd817-936a-4451-9dc7-e8ee7910a448
-devid 1 transid 444227 /dev/sdb scanned by mount (5159)
-[   94.660625] BTRFS info (device sdb): using crc32c (crc32c-intel)
-checksum algorithm
-[   94.660632] BTRFS info (device sdb): disk space caching is enabled
-[   94.715833] BTRFS warning (device sdb): checksum verify failed on
-logical 2896434544640 mirror 1 wanted 0x49cf072e found 0x3837717b
-level 0
-[   94.715843] BTRFS error (device sdb): failed to read block groups: -5
-[   94.717287] BTRFS error (device sdb): open_ctree failed
-[  500.689477] audit: type=1326 audit(1698404843.392:5):
-auid=4294967295 uid=65534 gid=65534 ses=4294967295 subj=unconfined
-pid=14849 comm="node" exe="/usr/local/bin/node" sig=0 arch=c000003e
-syscall=324 compat=0 ip=0x7ff8e0fc0152 code=0x50000
-[  914.697510] BTRFS: device fsid 359cd817-936a-4451-9dc7-e8ee7910a448
-devid 1 transid 444227 /dev/sdb scanned by mount (15368)
-[  914.699197] BTRFS info (device sdb): using crc32c (crc32c-intel)
-checksum algorithm
-[  914.699205] BTRFS warning (device sdb): 'recovery' is deprecated,
-use 'rescue=usebackuproot' instead
-[  914.699207] BTRFS info (device sdb): trying to use backup root at mount time
-[  914.699208] BTRFS info (device sdb): disk space caching is enabled
-[  914.754095] BTRFS warning (device sdb): checksum verify failed on
-logical 2896434544640 mirror 1 wanted 0x49cf072e found 0x3837717b
-level 0
-[  914.754106] BTRFS error (device sdb): failed to read block groups: -5
-[  914.755479] BTRFS error (device sdb): open_ctree failed
-[ 1339.551770] BTRFS: device fsid 359cd817-936a-4451-9dc7-e8ee7910a448
-devid 1 transid 444227 /dev/sdb scanned by mount (15754)
-[ 1339.553887] BTRFS info (device sdb): using crc32c (crc32c-intel)
-checksum algorithm
-[ 1339.553895] BTRFS warning (device sdb): 'recovery' is deprecated,
-use 'rescue=usebackuproot' instead
-[ 1339.553897] BTRFS info (device sdb): trying to use backup root at mount time
-[ 1339.553898] BTRFS info (device sdb): disk space caching is enabled
-[ 1339.608755] BTRFS warning (device sdb): checksum verify failed on
-logical 2896434544640 mirror 1 wanted 0x49cf072e found 0x3837717b
-level 0
-[ 1339.608765] BTRFS error (device sdb): failed to read block groups: -5
-[ 1339.610229] BTRFS error (device sdb): open_ctree failed
-[ 2650.074709] BTRFS: device fsid 359cd817-936a-4451-9dc7-e8ee7910a448
-devid 1 transid 444227 /dev/sdb scanned by mount (16646)
-[ 2650.076404] BTRFS info (device sdb): using crc32c (crc32c-intel)
-checksum algorithm
-[ 2650.076413] BTRFS info (device sdb): enabling all of the rescue options
-[ 2650.076414] BTRFS info (device sdb): ignoring data csums
-[ 2650.076414] BTRFS info (device sdb): ignoring bad roots
-[ 2650.076415] BTRFS info (device sdb): disabling log replay at mount time
-[ 2650.076416] BTRFS error (device sdb): nologreplay must be used with
-ro mount option
-[ 2650.076497] BTRFS error (device sdb): open_ctree failed
-
-If it's needed I can send a dull dmesg log later.
-
-Thank you,
-Werner
