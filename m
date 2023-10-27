@@ -2,130 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AE97D95CC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Oct 2023 12:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171297D960A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Oct 2023 13:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235158AbjJ0K6W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Oct 2023 06:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47158 "EHLO
+        id S1345726AbjJ0LLL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Oct 2023 07:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345692AbjJ0K6R (ORCPT
+        with ESMTP id S1345585AbjJ0LLK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Oct 2023 06:58:17 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63ECD1B6;
-        Fri, 27 Oct 2023 03:58:15 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B05721FEF2;
-        Fri, 27 Oct 2023 10:58:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698404293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DHt33JITK+CruVu/Kq7gOvJiMSgnxMBp3xqwVrdgGPg=;
-        b=LoprrsKmbQ0kuH7OEfyfF+SzxIJy5BVcK2aCJ4kDq7KzWLj3If0CsHtmMWErHSxGvWRgxK
-        DsniCnUOjbcqG4jJrEX+3wVDWRy5V9L5/5iemBBuX/7BHKP2JaHisyhIqkbyO5iEA39IGj
-        Y2mFJjxrPf/Q4z1lLasJDwOYLwUZ2KE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698404293;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DHt33JITK+CruVu/Kq7gOvJiMSgnxMBp3xqwVrdgGPg=;
-        b=1TiP4l4t+cpR6iPapZS0AzU3KDjbfia40Z002DIYgNpZSR9g2JMCoZRAQpiTnQi6dK4fzH
-        xS8H7gMNkOEN7BDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 937291358C;
-        Fri, 27 Oct 2023 10:58:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mQb5I8WXO2WODAAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 27 Oct 2023 10:58:13 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 080E2A05BC; Fri, 27 Oct 2023 12:58:13 +0200 (CEST)
-Date:   Fri, 27 Oct 2023 12:58:12 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
-Message-ID: <20231027105812.obhj2h6vllrwpmtc@quack3>
-References: <20231025135048.36153-1-amir73il@gmail.com>
- <ZTk1ffCMDe9GrJjC@infradead.org>
- <20231025170445.qks7etxtwivyqz22@quack3>
- <ZTtOOs4zZ1P/eDZn@infradead.org>
+        Fri, 27 Oct 2023 07:11:10 -0400
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E7F129
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Oct 2023 04:11:07 -0700 (PDT)
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1dd886536f2so2272249fac.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Oct 2023 04:11:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698405066; x=1699009866;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mHYFRDDqX2abVHCDP7I6KtrsG2bKXGwCJSHzhmv7Wxo=;
+        b=GiE6jJtWTu3N1BxfhP3njxpuIVBdj2PqIr44wk5EDdxd25+9e3lRWu5tag+oB4Quhp
+         UUc3CbMpo9cC+YjYsQxMMdwEpgxLd+uv7I8UasZbMzHDA3oCpTkFQgd17+dDKTZgEcsW
+         278HNcmb6CTcRzDELKEpY3MuZz1XjOnXa/NfEP4dtSSDruki17myXdPdo9wFLJul7yGV
+         IjjbOUwZX1AWVEdST/9Y296gBwOx9YjmLffjQR4KRyitoR1hcpKVVGjp1E8zMFXWvq9z
+         8J9uYAn4L7cuLrGuBRVnWYA2J5X4Vo2YCwxJcgicDysESvoy0DUZUvh6Ft9LuCVBw2Bf
+         Ky+g==
+X-Gm-Message-State: AOJu0YwmmWF3RkVQq8SQWYENTR+UxNnRe/YS6V+Ies9W1kMJy5gS0aEE
+        LNZOCx9Z4US4IyDVk2emuLs8IgRKDO/5O5NNbgA/AIwNqF90
+X-Google-Smtp-Source: AGHT+IErGGl8I9pZs0z5jYPnq5+PZghKlSw97pW/dZhAu9GU7YV8AuOLdJZErMMTBB9u98SHBxYwC4JDQv90suiNnnWoqaDZ+BeF
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTtOOs4zZ1P/eDZn@infradead.org>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.87
-X-Spamd-Result: default: False [-5.87 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-2.27)[96.59%];
-         FREEMAIL_CC(0.00)[suse.cz,gmail.com,kernel.org,fb.com,toxicpanda.com,suse.com,vger.kernel.org]
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:3645:b0:1e9:dbd8:b0bd with SMTP id
+ v5-20020a056870364500b001e9dbd8b0bdmr1101923oak.10.1698405066271; Fri, 27 Oct
+ 2023 04:11:06 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 04:11:06 -0700
+In-Reply-To: <0000000000006cb13705ee3184f9@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a8f4b30608b0be9c@google.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in create_pending_snapshot
+From:   syzbot <syzbot+d56e0d33caf7d1a02821@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, fdmanana@suse.com,
+        johannes.thumshirn@wdc.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu 26-10-23 22:44:26, Christoph Hellwig wrote:
-> On Wed, Oct 25, 2023 at 07:04:45PM +0200, Jan Kara wrote:
-> > Well, this is the discussion how btrfs should be presenting its subvolumes
-> > to VFS / userspace, isn't it?
-> 
-> Yes.  Which we've pressured to resolve forever, but it's been ignored.
-> 
-> > I never dived into that too closely but as
-> > far as I remember it was discussed to death without finding an acceptable
-> > (to all parties) solution? I guess having a different fsid per subvolume
-> > makes sense (and we can't change that given it is like that forever even if
-> > we wanted). Having different subvolumes share one superblock is more
-> > disputable but there were reasons for that as well. So I'm not sure how you
-> > imagine to resolve this...
-> 
-> We need to solve this out kernel wide, and right now the kernel doesn't
-> support different dev_t / fsids inside a single file syste at all.
-> SuSE hacks around that badly for limited user interfaces with the
-> horrible get_inode_dev method they've added, but this has been rejected
-> upstream for good reason.  What this series does is to add another
-> limited version of this through the backdoor.
+syzbot suspects this issue was fixed by commit:
 
-OK, I see. I agree adding ->get_fsid is just piling on top of the problems
-so I can see why you don't like it. Band aids are double-edged sword ;)
+commit df9f278239046719c91aeb59ec0afb1a99ee8b2b
+Author: Filipe Manana <fdmanana@suse.com>
+Date:   Tue Jun 13 15:42:16 2023 +0000
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+    btrfs: do not BUG_ON on failure to get dir index for new snapshot
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1584c385680000
+start commit:   0136d86b7852 Merge tag 'block-6.2-2023-02-03' of git://git..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5ea620bd01d9130d
+dashboard link: https://syzkaller.appspot.com/bug?extid=d56e0d33caf7d1a02821
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14657573480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16dd145d480000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: btrfs: do not BUG_ON on failure to get dir index for new snapshot
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
