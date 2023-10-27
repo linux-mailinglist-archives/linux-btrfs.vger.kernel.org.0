@@ -2,77 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AEF47D8FD9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Oct 2023 09:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FB27D905E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Oct 2023 09:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345540AbjJ0Haz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Oct 2023 03:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58928 "EHLO
+        id S235012AbjJ0Hwk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Oct 2023 03:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345560AbjJ0Haj (ORCPT
+        with ESMTP id S231388AbjJ0Hwj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Oct 2023 03:30:39 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A75D6A;
-        Fri, 27 Oct 2023 00:30:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=J6bGrCB4/rnJbNUoK7rjk8D6SEpjbkD0IcJAoKAw/ZA=; b=GSuH2Vb2MK6W0WG7iGQteJWCD3
-        wA5FnQ+hPzb9xB/i3sRiYGdwlJz85PjZZcRZr9e8mkdKGEESI/lsfyhRtbSwBmloCmkYBSVO//xBM
-        ZDOJRalDpqdnt6fsS+yt4tCefCe2osONoEcHac7WGK5gQjzFSC75aiYhlWSMb+a4J1qH2osB+kqT+
-        WVNYAL6C2GQwpH23PmR/W1A1IGudSBpWz9poA3nyTsQacoxvPZed397HR9miGAs2xQj0tZ2jsvOTq
-        4Ed7M7OsKYf7G0qvjrZsIRK35qEX0z6VqRsySnGh40Uj9dSB1Nmd4m2/ZQ1QKubb3RUeHN/GAPBuS
-        3IS9BywQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qwHIb-00FnEy-2g;
-        Fri, 27 Oct 2023 07:30:29 +0000
-Date:   Fri, 27 Oct 2023 00:30:29 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-        Christian Brauner <brauner@kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] fanotify support for btrfs sub-volumes
-Message-ID: <ZTtnFe2W9vB04z46@infradead.org>
-References: <20231026155224.129326-1-amir73il@gmail.com>
- <ZTtOz8mr1ENl0i9q@infradead.org>
- <CAOQ4uxjbXhXZmCLTJcXopQikYZg+XxSDa0Of90MBRgRbW5Bhxg@mail.gmail.com>
- <ZTtTy0wITtw2W2vU@infradead.org>
- <CAOQ4uxigdYYCWopKjonxww-be9Rxv9H3_KfcMe3SktXAKoXq4g@mail.gmail.com>
+        Fri, 27 Oct 2023 03:52:39 -0400
+Received: from mail.itouring.de (mail.itouring.de [85.10.202.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C0C196;
+        Fri, 27 Oct 2023 00:52:36 -0700 (PDT)
+Received: from tux.applied-asynchrony.com (p5b2e826a.dip0.t-ipconnect.de [91.46.130.106])
+        by mail.itouring.de (Postfix) with ESMTPSA id D7398CF194E;
+        Fri, 27 Oct 2023 09:52:34 +0200 (CEST)
+Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id 9A6D6F01600;
+        Fri, 27 Oct 2023 09:52:34 +0200 (CEST)
+Subject: Re: [PATCH 6.5 211/285] btrfs: scrub: fix grouping of read IO
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        Sam James <sam@gentoo.org>, gregkh@linuxfoundation.org
+Cc:     dsterba@suse.com, patches@lists.linux.dev, stable@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <87fs1x1p93.fsf@gentoo.org>
+ <02e8fca0-43bd-ad60-6aec-6bcc74d594ee@applied-asynchrony.com>
+ <740c38b1-60eb-41da-93e0-7d7671f0b3fc@suse.com>
+ <f5299d83-cff0-df11-9775-f3d0adc5d998@applied-asynchrony.com>
+ <b3cbb9a5-20d2-442d-82be-e5c129f4cf12@gmx.com>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <8b80b5bc-d782-1f56-8ba2-89b33a5dbfec@applied-asynchrony.com>
+Date:   Fri, 27 Oct 2023 09:52:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxigdYYCWopKjonxww-be9Rxv9H3_KfcMe3SktXAKoXq4g@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <b3cbb9a5-20d2-442d-82be-e5c129f4cf12@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 09:33:19AM +0300, Amir Goldstein wrote:
-> OK. You are blaming me for attempting to sneak in a broken feature
-> and I have blamed you for trying take my patches hostage to
-> promote your agenda.
-
-I'm not blaming you for anything.  But I absolutely reject spreading
-this broken behavior to core.  That's why there is hard NAK on this
-patchs. 
-
+On 2023-10-27 09:00, Qu Wenruo wrote:
 > 
-> If that is the case, fanotify will need to continue reporting the fsid's
-> exactly as the user observes them on the legacy btrfs filesystems.
-> The v2 patches I posted are required to make that possible.
+> 
+> On 2023/10/27 17:25, Holger Hoffstätte wrote:
+>> On 2023-10-26 23:01, Qu Wenruo wrote:
+>>>
+>>>
+>>> On 2023/10/27 00:30, Holger Hoffstätte wrote:
+>>>> On 2023-10-26 15:31, Sam James wrote:
+>>>>> 'btrfs: scrub: fix grouping of read IO' seems to intorduce a
+>>>>> -Wmaybe-uninitialized warning (which becomes fatal with the kernel's
+>>>>> passed -Werror=...) with 6.5.9:
+>>>>>
+>>>>> ```
+>>>>> /var/tmp/portage/sys-kernel/gentoo-kernel-6.5.9/work/linux-6.5/fs/btrfs/scrub.c: In function ‘scrub_simple_mirror.isra’:
+>>>>> /var/tmp/portage/sys-kernel/gentoo-kernel-6.5.9/work/linux-6.5/fs/btrfs/scrub.c:2075:29: error: ‘found_logical’ may be used uninitialized [-Werror=maybe-uninitialized[https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wmaybe-uninitialized]]
+>>>>>   2075 |                 cur_logical = found_logical +
+>>>>> BTRFS_STRIPE_LEN;
+>>>>> /var/tmp/portage/sys-kernel/gentoo-kernel-6.5.9/work/linux-6.5/fs/btrfs/scrub.c:2040:21: note: ‘found_logical’ was declared here
+>>>>>   2040 |                 u64 found_logical;
+>>>>>        |                     ^~~~~~~~~~~~~
+>>>>> ```
+>>>>
+>>>> Good find! found_logical is passed by reference to
+>>>> queue_scrub_stripe(..) (inlined)
+>>>> where it is used without ever being set:
+>>>>
+>>>> ...
+>>>>      /* Either >0 as no more extents or <0 for error. */
+>>>>      if (ret)
+>>>>          return ret;
+>>>>      if (found_logical_ret)
+>>>>          *found_logical_ret = stripe->logical;
+>>>>      sctx->cur_stripe++;
+>>>> ...
+>>>>
+>>>> Something is missing here, and somehow I don't think it's just the
+>>>> top-level
+>>>> initialisation of found_logical.
+>>>
+>>> This looks like a false alert for me.
+>>>
+>>> @found_logical is intentionally uninitialized to catch any
+>>> uninitialized usage by compiler.
+>>>
+>>> It would be set by queue_scrub_stripe() when there is any stripe found.
+>>
+>> Can you show me where the reference is set before the quoted if block?
+> 
+> Sure.
+> 
+> Firstly inside queue_scrub_stripe():
+> 
+> ```
+>          ret = scrub_find_fill_first_stripe(bg, &sctx->extent_path,
+>                                             &sctx->csum_path, dev, physical,
+>                                             mirror_num, logical, length,
+> stripe);
+>          /* Either >0 as no more extents or <0 for error. */
+>          if (ret)
+>                  return ret;
+>          if (found_logical_ret)
+>                  *found_logical_ret = stripe->logical;
+> ```
+> 
+> In this case, we would only set @found_logical_ret to the found stripe's
+> logical.
+> 
+> Either we got ret > 0, meaning no more extent in the chunk, or we got
+> some critical error.
+> 
+> Then back to scrub_simple_mirrors():
 
-The point is tht you simply can't use fanotify on a btrfs file system
-with the broken behavior.  That's what btrfs gets for doing this
-broken behavior to start with.
+I think I now understand the comment. This is a terrible foot gun, and in fact
+shows that this is not a false alert at all.
 
+Within queue_scrub_stripe() you are "possibly" using (checking) a reference that
+has not been initialized, neither in the caller nor within queue_scrub_stripe().
+To the compiler this reference may not exist yet (even if we know that it is on
+the stack..) and point to la-la land. The fact that the logic depends on ret
+always being != 0 is not visible to the compiler, so the warning is completely
+correct: 0 is a valid possible value for ret, so this potentially allows the
+uninitialized read to happen.
+
+What happens after that is not the point. You cannot safely check an uninitialized
+reference, even when the control flow "cannot happen" due to a data dependency.
+
+It seems to me the safest way forward is to simply initialize found_logical in the
+parent and remove the "if (found_logical_ret)" check, since it does nothing useful.
+Would that work?
+
+thanks,
+Holger
