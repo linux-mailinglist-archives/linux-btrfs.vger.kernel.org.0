@@ -2,115 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCB97D9736
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Oct 2023 14:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744A37D978A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Oct 2023 14:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345794AbjJ0MGQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Oct 2023 08:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56290 "EHLO
+        id S1345787AbjJ0MQM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Oct 2023 08:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345739AbjJ0MGP (ORCPT
+        with ESMTP id S1345420AbjJ0MQL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Oct 2023 08:06:15 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B2B10A
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 Oct 2023 05:06:13 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c9b70b9671so121145ad.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 Oct 2023 05:06:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698408372; x=1699013172; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MQHQ463K822d0eu3lSUzX50hYKP6nmOhDBx20ObjtTc=;
-        b=I2oYKKgAC1sTJYcIs5n2w/uDCwCmxUcLpbJVQBcv31qrGHWyQ45G8uWgU0EpzwU65i
-         /aktVLo94NjG1Ceq+VaSXNAWK2kxF92RUlFOuV4ljVloYQsWeRDwNMRIMrWEV051HUYV
-         GS7SSB+Es8bwa2ttJgjDDopbgmqvC20qTKAn50Vb1XujZyYA1QaTXfdoGdE6183ARW4k
-         Zsi1eGiP2T7JLgzTh0VW+cSb/+dhiV0+RuHyciakgJ10Fk3KeXtvDAk/jYarg4bG3roK
-         Lxbvv5oBH/azAgWljC3DBSVf/qOVt/vD9aJPwp9P/3TgQHxxYqrt2M81nXh9OKh5ofI7
-         wbDA==
+        Fri, 27 Oct 2023 08:16:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1C3C0
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Oct 2023 05:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698408930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lmcBpkcMtUzkFnS0Z4xfn2QsFi+vB2x0NJn50Z9ibvY=;
+        b=hEiKujsNacVnt/bYWn0oqQmO1jaHCO6Pbq4wslqkre+Qg1X9mdzDXa9nsK7+7WHLbJmX0o
+        JEimGvPTZyoXiOerKWc0xmaTgkmoPqBRJoHywcYvF/68c6RWuuzCK4DS5K95PgUZaZPdmD
+        8wmHCc8hPvGNi/hFfL8EBN0ssFY+9aY=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-314-IWDMgMGvPq-JCDQkGzpuTQ-1; Fri, 27 Oct 2023 08:15:29 -0400
+X-MC-Unique: IWDMgMGvPq-JCDQkGzpuTQ-1
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5b7f3f47547so1765022a12.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Oct 2023 05:15:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698408372; x=1699013172;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MQHQ463K822d0eu3lSUzX50hYKP6nmOhDBx20ObjtTc=;
-        b=ebU8iEjv/S6a+4smshMA3QID/oPv2idq5rpcyrotutIUPauuiKQVPxVTjNUc/EZ+Ky
-         o7cp8L/V5LHu5SlijHH8WhkIzm3NegKT3jvJzrNSrOiRvC4SWw3Atvr3IdjWRN8BpCVS
-         IBQ7mUoiGzeOylPQhBzmU2yychAg6pQzc+riuasMlwxXjgjNHt0J9cpnojO2hyVi8q5m
-         ULuxBV6Emr2/68C8YKN/+DltO63ja2YULH/M/Bv72VaCX2cQFr/S0fjJeOlR3++URIwE
-         Ib8n+/pkhfkzau49fQCI+jbsAOcZSmEl1yy88WckOrpB3cWzENQKufFJsu6nhrK+drdN
-         lpmQ==
-X-Gm-Message-State: AOJu0Yxe/G+9VGuaOR91yMGMlEm4NaxCwTFyxV3Q8ZzcbeDC4DtyDBch
-        o1Alfd8vnoMGZ94jV1Kg4u0TTwkNtDmhJmQe2o5K9A==
-X-Google-Smtp-Source: AGHT+IHaExLG43RBJIionRW/c9b84KpmLdtS6fNiD0MK5F1uxefsg3PebOwhWetdV53Pmmf6YDEOuPH/Hzj0pzzd92E=
-X-Received: by 2002:a17:902:ea0e:b0:1ca:209c:d7b9 with SMTP id
- s14-20020a170902ea0e00b001ca209cd7b9mr217852plg.2.1698408372181; Fri, 27 Oct
- 2023 05:06:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698408928; x=1699013728;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lmcBpkcMtUzkFnS0Z4xfn2QsFi+vB2x0NJn50Z9ibvY=;
+        b=EuwWT4Pl1BuOrBDsoK07rOZADP7ZhHJ4cUB7gkNgsVcJF0QqEzUFICTKNK0IF3gFQW
+         LpCsektFOoW3CxljgxKlHubgPKVxF5lXgify9vw8oPW0cZmna8Haw1BLtEOKQ3TyLGr4
+         fHgVhg0NAYu01agkzmhWrfOHiwh30/PyHI+L/Q8mNHfCmfFjQ5yX0NjDhDYZmEmA8jRG
+         Iodu/DoxN/vHkEW18VvacgnEY0ia6eMDtcpr2HcfTTEzjfMaoMQDPW+XjxVor9oI0OUO
+         AEuYZh7IrSsNAivtzVCA08iNMfee8Qsi0mZC3OdFD5XREt3iZfzn1iovvq5PbjmyPwQ9
+         oaVg==
+X-Gm-Message-State: AOJu0YwtlvWcIfX5lwZr7MLd+37wtwUid8aImzOaSydOOgKg4fetZyo/
+        W6k4uO+Kj6YMSxQ7QzAwMMRqnKtYUgU0d1V+Q9QiDBE8WsygPFJdN/LJvYk34oaLe8k8DGGzPLx
+        2V5oRkHdWVuMDZrGBlk0BJX0=
+X-Received: by 2002:a17:902:dcc5:b0:1cc:b3f:dd81 with SMTP id t5-20020a170902dcc500b001cc0b3fdd81mr1928419pll.67.1698408928352;
+        Fri, 27 Oct 2023 05:15:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHoLJf/9t+MxP2adSki0TQVAXmyVyTSsD8IcnwXQzAwyeGADdDb8gCK5sui/PYuTQpwtmJnPA==
+X-Received: by 2002:a17:902:dcc5:b0:1cc:b3f:dd81 with SMTP id t5-20020a170902dcc500b001cc0b3fdd81mr1928401pll.67.1698408928020;
+        Fri, 27 Oct 2023 05:15:28 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id ik30-20020a170902ab1e00b001cc2c7a30e0sm49063plb.159.2023.10.27.05.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Oct 2023 05:15:27 -0700 (PDT)
+Date:   Fri, 27 Oct 2023 20:15:24 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     fdmanana@kernel.org
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: test snapshotting a subvolume that was just
+ created
+Message-ID: <20231027121524.247ewzfnns3otte4@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <3149ccc2900f5574a046e675a6db79b019af2bac.1697718086.git.fdmanana@suse.com>
+ <c0b651af75a999cb1356e64d936080b65067ae56.1698146559.git.fdmanana@suse.com>
 MIME-Version: 1.0
-References: <20230704122727.17096-1-jack@suse.cz> <20230704125702.23180-1-jack@suse.cz>
- <20230822053523.GA8949@sol.localdomain> <20230822101154.7udsf4tdwtns2prj@quack3>
- <CANp29Y6uBuSzLXuCMGzVNZjT+xFqV4dtWKWb7GR7Opx__Diuzg@mail.gmail.com> <20231024111015.k4sbjpw5fa46k6il@quack3>
-In-Reply-To: <20231024111015.k4sbjpw5fa46k6il@quack3>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Fri, 27 Oct 2023 14:06:00 +0200
-Message-ID: <CANp29Y7kB5rYqmig3bmzGkCc9CVZk9d=LVEPx9_Z+binfwzqEw@mail.gmail.com>
-Subject: Re: [PATCH 1/6] block: Add config option to not allow writing to
- mounted devices
-To:     Jan Kara <jack@suse.cz>
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Kees Cook <keescook@google.com>,
-        Ted Tso <tytso@mit.edu>,
-        syzkaller <syzkaller@googlegroups.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0b651af75a999cb1356e64d936080b65067ae56.1698146559.git.fdmanana@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I see, thanks for sharing the details!
+On Tue, Oct 24, 2023 at 12:23:46PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Test that snapshotting a new subvolume (created in the current transaction)
+> that has a btree with a height > 1, works and does not result in a fs
+> corruption.
+> 
+> This exercises a regression introduced in kernel 6.5 by the kernel commit:
+> 
+>   1b53e51a4a8f ("btrfs: don't commit transaction for every subvol create")
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> 
+> v2: Add git commit ID for the kernel fix, as it was merged yesterday into
+>     Linus' tree. Also fixed a typo and included Josef's Reviewed-by tag.
 
-We'll set CONFIG_BLK_DEV_WRITE_MOUNTED=3Dn on syzbot once the series is
-in linux-next.
+Thanks for doing this!
 
-On Tue, Oct 24, 2023 at 1:10=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> Hi!
->
-> On Thu 19-10-23 11:16:55, Aleksandr Nogikh wrote:
-> > Thank you for the series!
-> >
-> > Have you already had a chance to push an updated version of it?
-> > I tried to search LKML, but didn't find anything.
-> >
-> > Or did you decide to put it off until later?
->
-> So there is preliminary series sitting in VFS tree that changes how block
-> devices are open. There are some conflicts with btrfs tree and bcachefs
-> merge that complicate all this (plus there was quite some churn in VFS
-> itself due to changing rules how block devices are open) so I didn't push
-> out the series that actually forbids opening of mounted block devices
-> because that would cause a "merge from hell" issues. I plan to push out t=
-he
-> remaining patches once the merge window closes and all the dependencies a=
-re
-> hopefully in a stable state. Maybe I can push out the series earlier base=
-d
-> on linux-next so that people can have a look at the current state.
->
->                                                                 Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+Reviewed-by: Zorro Lang <zlang@redhat.com>
+
+> 
+>  tests/btrfs/302     | 61 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/302.out |  4 +++
+>  2 files changed, 65 insertions(+)
+>  create mode 100755 tests/btrfs/302
+>  create mode 100644 tests/btrfs/302.out
+> 
+> diff --git a/tests/btrfs/302 b/tests/btrfs/302
+> new file mode 100755
+> index 00000000..f3e6044b
+> --- /dev/null
+> +++ b/tests/btrfs/302
+> @@ -0,0 +1,61 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 302
+> +#
+> +# Test that snapshotting a new subvolume (created in the current transaction)
+> +# that has a btree with a height > 1, works and does not result in a filesystem
+> +# corruption.
+> +#
+> +# This exercises a regression introduced in kernel 6.5 by the kernel commit:
+> +#
+> +#    1b53e51a4a8f ("btrfs: don't commit transaction for every subvol create")
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick snapshot subvol
+> +
+> +. ./common/filter
+> +
+> +_supported_fs btrfs
+> +_require_scratch
+> +_require_fssum
+> +
+> +_fixed_by_kernel_commit eb96e221937a \
+> +	"btrfs: fix unwritten extent buffer after snapshotting a new subvolume"
+> +
+> +# Use a filesystem with a 64K node size so that we have the same node size on
+> +# every machine regardless of its page size (on x86_64 default node size is 16K
+> +# due to the 4K page size, while on PPC it's 64K by default). This way we can
+> +# make sure we are able to create a btree for the subvolume with a height of 2.
+> +_scratch_mkfs -n 64K >> $seqres.full 2>&1 || _fail "mkfs failed"
+> +_scratch_mount
+> +
+> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol | _filter_scratch
+> +
+> +# Create a few empty files on the subvolume, this bumps its btree height to 2
+> +# (root node at level 1 and 2 leaves).
+> +for ((i = 1; i <= 300; i++)); do
+> +	echo -n > $SCRATCH_MNT/subvol/file_$i
+> +done
+> +
+> +# Create a checksum of the subvolume's content.
+> +fssum_file="$SCRATCH_MNT/checksum.fssum"
+> +$FSSUM_PROG -A -f -w $fssum_file $SCRATCH_MNT/subvol
+> +
+> +# Now create a snapshot of the subvolume and make it accessible from within the
+> +# subvolume.
+> +$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol \
+> +		 $SCRATCH_MNT/subvol/snap | _filter_scratch
+> +
+> +# Now unmount and mount again the fs. We want to verify we are able to read all
+> +# metadata for the snapshot from disk (no IO failures, etc).
+> +_scratch_cycle_mount
+> +
+> +# The snapshot's content should match the subvolume's content before we created
+> +# the snapshot.
+> +$FSSUM_PROG -r $fssum_file $SCRATCH_MNT/subvol/snap
+> +
+> +# success, all done
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/302.out b/tests/btrfs/302.out
+> new file mode 100644
+> index 00000000..8770aefc
+> --- /dev/null
+> +++ b/tests/btrfs/302.out
+> @@ -0,0 +1,4 @@
+> +QA output created by 302
+> +Create subvolume 'SCRATCH_MNT/subvol'
+> +Create a readonly snapshot of 'SCRATCH_MNT/subvol' in 'SCRATCH_MNT/subvol/snap'
+> +OK
+> -- 
+> 2.40.1
+> 
+
