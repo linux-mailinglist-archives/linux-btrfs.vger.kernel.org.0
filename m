@@ -2,177 +2,205 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B347DC197
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Oct 2023 22:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C097DC288
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Oct 2023 23:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbjJ3VHq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Oct 2023 17:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
+        id S232251AbjJ3WhU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Oct 2023 18:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjJ3VHo (ORCPT
+        with ESMTP id S232155AbjJ3WhS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Oct 2023 17:07:44 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4E7ED
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 14:07:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6E33E2188D
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 21:07:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1698700060; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=M6BrcOLNAKbsghhJeTyExgvY1BtZCBdC0Y9ZGXqWQ7o=;
-        b=l9ndTPzGL1xwF0HAACJLR7apVQp4L6wQws0ZuhZjw3E5ik75xqvfke01kk0/NQKBQlHonP
-        K0zqg71rEMjlT51xcJMypXR3JBnjkuhMptVQWybNlrDisL+uVTt3BW0MWZDW5D5SAK2jXc
-        eJE/pc1+LlnR9OLt1vZUvU455E/NpGU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 72CDA138F8
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 21:07:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5K3uCBsbQGUpGAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 21:07:39 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: do not utilize goto to implement delayed inode ref deletion
-Date:   Tue, 31 Oct 2023 07:37:20 +1030
-Message-ID: <e81eab657c200a78dd43747fb28e942289082f98.1698698978.git.wqu@suse.com>
-X-Mailer: git-send-email 2.42.0
+        Mon, 30 Oct 2023 18:37:18 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419F0110
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 15:37:15 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6b3c2607d9bso4445333b3a.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 15:37:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698705434; x=1699310234; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s3l/lL5wYf4n3GthHM0NoG2tR/ievkKXd51rX7QyzCg=;
+        b=YZJJRKmpYSheU+R2mseNAMbeGSdPJLFe40wCupbHYAd3o4QvZNI/n7SGn2r5cooFgq
+         2TEcO78mRTQJBTq7k2LqUtVvJres5aMQhj3nULXOrrdnw3Gj9/WT+z7z2ABtzED7KsbV
+         ekC9YAJYeG7FVFi/CvzzPWQPOAWd7xX/xs+NjEVXTta0c+tu9fOv2E6WvTvGDYo0G3A3
+         nk/n2nXjoAIwMY394rKnbmnbD9xeR0wGUW/4HzwyTv9RhbV1nF/lk2rhXLia5gW1lDor
+         Xwl91GIsakdFQ/xOsemb/k2wPINm34d+665mfEqcz2YTJlkO8PHNhrdA0s286qBDrOO7
+         /l3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698705434; x=1699310234;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s3l/lL5wYf4n3GthHM0NoG2tR/ievkKXd51rX7QyzCg=;
+        b=dAwplLOKdkMLj3O+wWnyoOM8k8sCVrKNtruzjvJZNCqBMQfvcCm4I1qToHNgxwhbqb
+         wPIBESUvinEwB7J2PdIdsMaDBFlVOqvosm890PYa0MERzuNbbf+9V/qVxJRryAvR6vjK
+         O0Va9+bOVJXtZsnmRGPWugsEJV6UOnlsGzeS/Xy3NNeZFhxkwqeiyx0WStNjWJk4mq2+
+         w9A2TBZSq3WomBT1GzIq+1XKp2vWWTTzSBnqVsOaEfD97OnU+oHj9GWhkMbSrzJiyh7N
+         zDQRH/ySceTnv2SUxNAbBIeKsnTqn4m7NNqaw3qgc1tehRVvXwlpClm5sYEYj28ooLrq
+         dPIg==
+X-Gm-Message-State: AOJu0YxrKzeH11HnzpMbnlu52K1Untt1jL++FuLs9apgpXCVcn8vyEQD
+        uEX7v2qBjsF7kZrdPRYWGVGdjA==
+X-Google-Smtp-Source: AGHT+IH220teegvrDu5BQvWXj+pfKEIBe9mpI/qNDn7XBuC5Q1LlqBFVtPwA3Li0K8x18IiaaOOLaQ==
+X-Received: by 2002:a05:6a21:6da1:b0:175:7085:ba18 with SMTP id wl33-20020a056a216da100b001757085ba18mr9996599pzb.58.1698705434041;
+        Mon, 30 Oct 2023 15:37:14 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id p11-20020a17090a2d8b00b002774d7e2fefsm2932pjd.36.2023.10.30.15.37.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 15:37:13 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qxasg-0066We-2r;
+        Tue, 31 Oct 2023 09:37:10 +1100
+Date:   Tue, 31 Oct 2023 09:37:10 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+Message-ID: <ZUAwFkAizH1PrIZp@dread.disaster.area>
+References: <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+ <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+ <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+ <ZTc8tClCRkfX3kD7@dread.disaster.area>
+ <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+ <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+ <ZTjMRRqmlJ+fTys2@dread.disaster.area>
+ <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
+ <ZTnNCytHLGoJY9ds@dread.disaster.area>
+ <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[PROBLEM]
-The function __btrfs_update_delayed_inode() is doing something not
-meeting the code standard of today:
+On Fri, Oct 27, 2023 at 06:35:58AM -0400, Jeff Layton wrote:
+> On Thu, 2023-10-26 at 13:20 +1100, Dave Chinner wrote:
+> > On Wed, Oct 25, 2023 at 08:25:35AM -0400, Jeff Layton wrote:
+> > > On Wed, 2023-10-25 at 19:05 +1100, Dave Chinner wrote:
+> > > > On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
+> > > In earlier discussions you alluded to some repair and/or analysis tools
+> > > that depended on this counter.
+> > 
+> > Yes, and one of those "tools" is *me*.
+> > 
+> > I frequently look at the di_changecount when doing forensic and/or
+> > failure analysis on filesystem corpses.  SOE analysis, relative
+> > modification activity, etc all give insight into what happened to
+> > the filesystem to get it into the state it is currently in, and
+> > di_changecount provides information no other metadata in the inode
+> > contains.
+> > 
+> > > I took a quick look in xfsprogs, but I
+> > > didn't see anything there. Is there a library or something that these
+> > > tools use to get at this value?
+> > 
+> > xfs_db is the tool I use for this, such as:
+> > 
+> > $ sudo xfs_db -c "sb 0" -c "a rootino" -c "p v3.change_count" /dev/mapper/fast
+> > v3.change_count = 35
+> > $
+> > 
+> > The root inode in this filesystem has a change count of 35. The root
+> > inode has 32 dirents in it, which means that no entries have ever
+> > been removed or renamed. This sort of insight into the past history
+> > of inode metadata is largely impossible to get any other way, and
+> > it's been the difference between understanding failure and having no
+> > clue more than once.
+> > 
+> > Most block device parsing applications simply write their own
+> > decoder that walks the on-disk format. That's pretty trivial to do,
+> > developers can get all the information needed to do this from the
+> > on-disk format specification documentation we keep on kernel.org...
+> > 
+> 
+> Fair enough. I'm not here to tell you that you guys that you need to
+> change how di_changecount works. If it's too valuable to keep it
+> counting atime-only updates, then so be it.
+> 
+> If that's the case however, and given that the multigrain timestamp work
+> is effectively dead, then I don't see an alternative to growing the on-
+> disk inode. Do you?
 
-	path->slots[0]++
-	if (path->slots[0] >= btrfs_header_nritems(leaf))
-		goto search;
-again:
-	if (!is_the_target_inode_ref())
-		goto out;
-	ret = btrfs_delete_item();
-	/* Some cleanup. */
-	return ret;
+Yes, I do see alternatives. That's what I've been trying
+(unsuccessfully) to describe and get consensus on. I feel like I'm
+being ignored and rail-roaded here, because nobody is even
+acknowledging that I'm proposing alternatives and keeps insisting
+that the only solution is a change of on-disk format.
 
-search:
-	ret = search_for_the_last_inode_ref();
-	goto again;
+So, I'll summarise the situation *yet again* in the hope that this
+time I won't get people arguing about atime vs i-version and what
+constitutes an on-disk format change because that goes nowhere and
+does nothing to determine which solution might be acceptible.
 
-With the tag named "again", it's pretty common to think it's a loop, but
-the truth is, we only need to do the search once, to locate the last
-(also the first, since there should only be one INODE_REF or
-INODE_EXTREF now) ref of the inode.
+The basic situation is this:
 
-[FIX]
-Instead of the weird jumps, just do them in a stream-lined fashion.
-This removes those weird tags, and add extra comments on why we can do
-the different searches.
+If XFS can ignore relatime or lazytime persistent updates for given
+situations, then *we don't need to make periodic on-disk updates of
+atime*. This makes the whole problem of "persistent atime update bumps
+i_version" go away because then we *aren't making persistent atime
+updates* except when some other persistent modification that bumps
+[cm]time occurs.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-CHANGELOG
-v2:
-- Move the leaf assignment into the if branch where we do the search
-  This is where the leaf get updated, no need to update @leaf
-  unconditionally which can be confusing.
+But I don't want to do this unconditionally - for systems not
+running anything that samples i_version we want relatime/lazytime
+to behave as they are supposed to and do periodic persistent updates
+as per normal. Principle of least surprise and all that jazz.
 
-This is just a cleanup while I was investigating a weird bug inside the
-same function.
+So we really need an indication for inodes that we should enable this
+mode for the inode. I have asked if we can have per-operation
+context flag to trigger this given the needs for io_uring to have
+context flags for timestamp updates to be added. 
 
-The bug is, the mentioned function returned -ENOENT and caused
-transaction abort.
-The weird part is, when that happened (btrfs_lookup_inode() failed) dump
-tree (only one case though) showed there is indeed no INODE_ITEM, but we
-still have the INODE_REF and even one EXTENT_DATA.
+I have asked if we can have an inode flag set by the VFS or
+application code for this. e.g. a flag set by nfsd whenever it accesses a
+given inode.
 
-Any clue would be very appreciated.
----
- fs/btrfs/delayed-inode.c | 46 ++++++++++++++++++++++------------------
- 1 file changed, 25 insertions(+), 21 deletions(-)
+I have asked if this inode flag can just be triggered if we ever see
+I_VERSION_QUERIED set or statx is used to retrieve a change cookie,
+and whether this is a reliable mechanism for setting such a flag.
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index c640f87038a6..0f8fa9751b5d 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1036,14 +1036,34 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 	if (!test_bit(BTRFS_DELAYED_NODE_DEL_IREF, &node->flags))
- 		goto out;
- 
--	path->slots[0]++;
--	if (path->slots[0] >= btrfs_header_nritems(leaf))
--		goto search;
--again:
-+	/*
-+	 * Now we're going to delete the INODE_REF/EXTREF, which should be
-+	 * the only one ref left.
-+	 * Check if the next item is an INODE_REF/EXTREF.
-+	 *
-+	 * But if we're the last item already, release and search for the last
-+	 * INODE_REF/EXTREF
-+	 */
-+	if (path->slots[0] + 1 >= btrfs_header_nritems(leaf)) {
-+		key.objectid = node->inode_id;
-+		key.type = BTRFS_INODE_EXTREF_KEY;
-+		key.offset = (u64)-1;
-+
-+		btrfs_release_path(path);
-+		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
-+		if (ret < 0)
-+			goto err_out;
-+		ASSERT(ret > 0);
-+		ASSERT(path->slots[0] > 0);
-+		ret = 0;
-+		path->slots[0]--;
-+		leaf = path->nodes[0];
-+	} else {
-+		path->slots[0]++;
-+	}
- 	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
- 	if (key.objectid != node->inode_id)
- 		goto out;
--
- 	if (key.type != BTRFS_INODE_REF_KEY &&
- 	    key.type != BTRFS_INODE_EXTREF_KEY)
- 		goto out;
-@@ -1070,22 +1090,6 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 		btrfs_abort_transaction(trans, ret);
- 
- 	return ret;
--
--search:
--	btrfs_release_path(path);
--
--	key.type = BTRFS_INODE_EXTREF_KEY;
--	key.offset = -1;
--
--	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
--	if (ret < 0)
--		goto err_out;
--	ASSERT(ret);
--
--	ret = 0;
--	leaf = path->nodes[0];
--	path->slots[0]--;
--	goto again;
- }
- 
- static inline int btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
+I have suggested mechanisms for using masked off bits of timestamps
+to encode sub-timestamp granularity change counts and keep them
+invisible to userspace and then not using i_version at all for XFS.
+This avoids all the problems that the multi-grain timestamp
+infrastructure exposed due to variable granularity of user visible
+timestamps and ordering across inodes with different granularity.
+This is potentially a general solution, too.
+
+So, yeah, there are *lots* of ways we can solve this problem without
+needing to change on-disk formats.
+
+-Dave.
 -- 
-2.42.0
-
+Dave Chinner
+david@fromorbit.com
