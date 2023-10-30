@@ -2,39 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C87797DB95A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Oct 2023 12:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A67377DB960
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Oct 2023 12:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbjJ3Lya (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Oct 2023 07:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
+        id S232887AbjJ3L5H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Oct 2023 07:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJ3Lya (ORCPT
+        with ESMTP id S232281AbjJ3L5G (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Oct 2023 07:54:30 -0400
+        Mon, 30 Oct 2023 07:57:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597F5C6
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 04:54:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 711E6C433C7
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 11:54:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC21C9
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 04:57:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71771C433C7;
+        Mon, 30 Oct 2023 11:57:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698666868;
-        bh=YwzH92maRTV4R0mivxBIuFx/EnM69qbK8ozXrkMC8K0=;
-        h=From:To:Subject:Date:From;
-        b=ZBZmP5lVK5FldG1jiUZagwt/RugB8lij1xnBW7vY/goiVlG/gCkh+O9w7yURZa/WD
-         vT+mTxD5bCB4DD28KXsrQtRqqg2erefUXdH/bheoG4bmN630ZbbS+mbuelsdFJR8XM
-         5D1dQrezX1hZzh4/2+aW06Tj/GhqvskyyVd6qVDKpNaNUOH6XjyzVUgYLu/PgDQd9U
-         zmST2apZs+al1RLr/v8EyTKw+ooy7X6Orho7tt9RoNvvhSn8/r8ywezRFTU2DJ3wB1
-         wum70RkB7dU/mg7tuZJaTnGN3nAd4Y5vjQQFKr/rS6IJSHDUjZj5JuabhAmPlx30Hs
-         cVq4ElP3Hlq/A==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix error pointer dereference after failure to allocate fs devices
-Date:   Mon, 30 Oct 2023 11:54:23 +0000
-Message-Id: <86c522f5e01e438b4a9cc16a0bda87a207d744e6.1698666319.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+        s=k20201202; t=1698667024;
+        bh=hd1qgtuV26DeBu9h2IiAdZfvDF9qBJkNbcP4WI3eRRc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AieiyQC6F33TXtohrQIk7u460Z4Av4P85xYb5ZX7HEp5xrQ4eimgTP8JQyYBE7GXg
+         7zrnzrj38pqjG9yWVK92yyfRhbQBXSob4DwKU2msTieRc5OX/mEw84+xik2JEDdqsx
+         Mj03Eo6F340KUtBZuE8zSDOKPizaFCV9ArS4pYvSMt6gzWaOeMeQ1BKwadi/DHA382
+         GrV6hD5mgq7QTzCWub56OOl/GCC9d0mhp8jOUm7ANKOBtS99XpF//LMmhOnb9CRABb
+         CXqfDlhwjaQobCKiul+i3q373cUMbFI2GZOp//YWjY/55u1/e0540gKkShWKz8LwwQ
+         +NOdi1WAGsLRQ==
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-53de8fc1ad8so7016689a12.0;
+        Mon, 30 Oct 2023 04:57:04 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxawHxGYn67ufr7EMPyyUqgOHAiUN3RxGQLM3WH/3MO3Wa7c/1I
+        DmfVsSMXs5OnJfbNqVP3l2pL+3b75UwZLViy1y4=
+X-Google-Smtp-Source: AGHT+IHeMXjcdPaZxrxehvdHY/F6V0qE5WfGJy0PHI3PTP6WLhm1zGuyxKZ04NDbbWnyPguSYf2AMKet/ntjIrfK948=
+X-Received: by 2002:a17:907:621c:b0:9b2:bb02:a543 with SMTP id
+ ms28-20020a170907621c00b009b2bb02a543mr6320414ejc.74.1698667022899; Mon, 30
+ Oct 2023 04:57:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1698418886.git.anand.jain@oracle.com> <cf97bf909b5a67464f5dcf2a802b7d80c79c472e.1698418886.git.anand.jain@oracle.com>
+ <CAL3q7H5d7MHHJFKkkcpg0Nt7naDbURVTpfzXDa8yMTVjxFy=hg@mail.gmail.com>
+ <4b206721-5bbf-4ed0-9604-fd1adb0f2729@oracle.com> <CAL3q7H5SPo2k1kqLgpPpRUuXCvr-7W5YcKEzHQ7WmBjJAn-kpA@mail.gmail.com>
+ <691b6ed8-1316-4a57-9789-99718041eea2@oracle.com>
+In-Reply-To: <691b6ed8-1316-4a57-9789-99718041eea2@oracle.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Mon, 30 Oct 2023 11:56:26 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4bZ0F_wU3xAQ92QzS9oc9DNPD1n7F04oLu3e0p8phdFA@mail.gmail.com>
+Message-ID: <CAL3q7H4bZ0F_wU3xAQ92QzS9oc9DNPD1n7F04oLu3e0p8phdFA@mail.gmail.com>
+Subject: Re: [PATCH 2/2 v2] fstests: btrfs/219 cloned-device mount capability update
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -45,41 +60,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Mon, Oct 30, 2023 at 11:52=E2=80=AFAM Anand Jain <anand.jain@oracle.com>=
+ wrote:
+>
+>
+> > Is it really worth doing this type of change?
+> > I mean it doesn't change the correctness of the test, doesn't make it
+> > more readable or
+> > maintainable, or even shorter... It seems pointless to me, no clear
+> > benefit of any sort.
+> >
+>
+>   It fixes the cleanup bug that, when a test case failed, it failed to
+>   remove the 2nd loop device.
 
-At device_list_add() we allocate a btrfs_fs_devices structure and then
-before checking if the allocation failed (pointer is ERR_PTR(-ENOMEM)),
-we dereference the error pointer in a memcpy() argument if the feature
-BTRFS_FEATURE_INCOMPAT_METADATA_UUID is enabled.
-Fix this by checking for an allocation error before trying the memcpy().
+Then that's a very strong reason to make it a separate patch and
+explain the bug, instead
+of sneaking it in with other different changes without being explicit about=
+ it.
 
-Fixes: f7361d8c3fc3 ("btrfs: sipmlify uuid parameters of alloc_fs_devices()")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/volumes.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thanks.
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 1fdfa9153e30..dd279241f78c 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -746,13 +746,13 @@ static noinline struct btrfs_device *device_list_add(const char *path,
- 
- 	if (!fs_devices) {
- 		fs_devices = alloc_fs_devices(disk_super->fsid);
-+		if (IS_ERR(fs_devices))
-+			return ERR_CAST(fs_devices);
-+
- 		if (has_metadata_uuid)
- 			memcpy(fs_devices->metadata_uuid,
- 			       disk_super->metadata_uuid, BTRFS_FSID_SIZE);
- 
--		if (IS_ERR(fs_devices))
--			return ERR_CAST(fs_devices);
--
- 		if (same_fsid_diff_dev) {
- 			generate_random_uuid(fs_devices->fsid);
- 			fs_devices->temp_fsid = true;
--- 
-2.40.1
-
+>
+> > I'm not suggesting a new test case.
+> >
+> > Remember the code you removed in v1?
+> > My suggestion was to instead of removing it, just surround it in the bo=
+dy of an
+> > if statement:
+> >
+> > if temp-fsid-feature-not-abailable; then
+> >     run that code you tried to remove in v1
+> > fi
+> >
+> > Isn't that a lot simpler and clear?
+>
+> Alright, I'll maintain the simplicity as mentioned above. Nevertheless,
+> implementing a thorough check for temp-fsid doesn't add much complexity
+> either.
+>
+>
+>
