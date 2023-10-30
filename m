@@ -2,195 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A0B7DB636
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Oct 2023 10:35:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096B17DB8F8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Oct 2023 12:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbjJ3JfY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Oct 2023 05:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51502 "EHLO
+        id S233057AbjJ3LbI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Oct 2023 07:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbjJ3JfX (ORCPT
+        with ESMTP id S232994AbjJ3LbH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Oct 2023 05:35:23 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C403C5
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 02:35:15 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3E08021CDA
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 09:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1698658514; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=v8oF0MzlcRkZaA5Cg67/cJ59xOKG+k6fFC/lekC0tzE=;
-        b=YDViJFby2HRu9ddwBCXvJ80kFUvJrw2K12mAKWh8b3vTT300xkoQ/XEfL4pGLpJML/KNk7
-        u8UMH6SCkAAzzQqVW4nq+mc6UHsQsEo/DHSC3D7ecVqLsu8NhFnx/iLNnRr63D+AiCTn/x
-        WHzUAwb+N9Q71ktHK0oyiI+dLtFLj8k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7C4BE138F8
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 09:35:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YT0EENF4P2U/DAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 09:35:13 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: do not utilize goto to implement delayed inode ref deletion
-Date:   Mon, 30 Oct 2023 20:04:55 +1030
-Message-ID: <bb0503f5f3838fed86bdabf8d15ce71561a307fd.1698658344.git.wqu@suse.com>
-X-Mailer: git-send-email 2.42.0
+        Mon, 30 Oct 2023 07:31:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819B8C1
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 04:31:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 287E8C433C8;
+        Mon, 30 Oct 2023 11:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698665462;
+        bh=KYR/g0PzDrXFW2TppOR89K4gNk7qHMMTMss8zDepMOU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=F8kNftBYWgi62aGw91ofR6PzT79fWuUeHJMUTMWF4pLNp5T4YCl5Odpb18vOOX3+b
+         N4tlmkX7Lntd9U/pOG/wU8I5E9PEDqz7Sa6wF+fEVrePiVPlpIPYArQ3WaqXYx38+I
+         ABEkKdDMvft1y3YTbRZi/m56VX8oRqmqHVPtvDr5Pf//MqerQ+EQTXLDgDCv0vt3S7
+         ZQH62YHtY4QM0xMA2QvT2voYcMAeecZMcC3vkVaJQeqgMv+2F97gJPtBS6yfezk5TX
+         fdA9IobYJShjSzn94H5P5ysYaQYxGY0GE1TGJLiFPZNJJDi9+xnCSicA2TWuJlTFey
+         0IbPETXuw9kNA==
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-9d10f94f70bso337083166b.3;
+        Mon, 30 Oct 2023 04:31:02 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yx2WfNX3NO0CMmWzlnp7KDs6TbwrwM21poPzAMor8avucgv1N02
+        ANGPMoNX0kjtV2vS1HDWqERxj5Yy9aQw54muW6c=
+X-Google-Smtp-Source: AGHT+IHW+2U7Z598pMFliBVqQZIhbbH4KV6npbiFmo8RtyP2KwTijXo1V2HKa1tjaFUIxxI0hX5OuRRqctB0jQ7apeg=
+X-Received: by 2002:a17:907:930a:b0:9ba:3af4:333e with SMTP id
+ bu10-20020a170907930a00b009ba3af4333emr7649251ejc.14.1698665460580; Mon, 30
+ Oct 2023 04:31:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -2.10
-X-Spamd-Result: default: False [-2.10 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         MIME_GOOD(-0.10)[text/plain];
-         TO_DN_NONE(0.00)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-         RCPT_COUNT_ONE(0.00)[1];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         MID_CONTAINS_FROM(1.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1698418886.git.anand.jain@oracle.com> <cf97bf909b5a67464f5dcf2a802b7d80c79c472e.1698418886.git.anand.jain@oracle.com>
+ <CAL3q7H5d7MHHJFKkkcpg0Nt7naDbURVTpfzXDa8yMTVjxFy=hg@mail.gmail.com> <4b206721-5bbf-4ed0-9604-fd1adb0f2729@oracle.com>
+In-Reply-To: <4b206721-5bbf-4ed0-9604-fd1adb0f2729@oracle.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Mon, 30 Oct 2023 11:30:23 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5SPo2k1kqLgpPpRUuXCvr-7W5YcKEzHQ7WmBjJAn-kpA@mail.gmail.com>
+Message-ID: <CAL3q7H5SPo2k1kqLgpPpRUuXCvr-7W5YcKEzHQ7WmBjJAn-kpA@mail.gmail.com>
+Subject: Re: [PATCH 2/2 v2] fstests: btrfs/219 cloned-device mount capability update
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[PROBLEM]
-The function __btrfs_update_delayed_inode() is doing something not
-meeting the code standard of today:
+On Mon, Oct 30, 2023 at 3:29=E2=80=AFAM Anand Jain <anand.jain@oracle.com> =
+wrote:
+>
+>
+>
+>
+> >> +
+> >> +       # The variables are set before the test case can fail.
+> >
+> > What if the _require_* statements fail?
+> > Then the variables won't be defined...
+>
+> Oh, yes indeed. It was fixed in v3 by moving the variable definition
+> before the 'require' statement.
 
-	path->slots[0]++
-	if (path->slots[0] >= btrfs_header_nritems(leaf))
-		goto search;
-again:
-	if (!is_the_target_inode_ref())
-		goto out;
-	ret = btrfs_delete_item();
-	/* Some cleanup. */
-	return ret;
+Is it really worth doing this type of change?
+I mean it doesn't change the correctness of the test, doesn't make it
+more readable or
+maintainable, or even shorter... It seems pointless to me, no clear
+benefit of any sort.
 
-search:
-	ret = search_for_the_last_inode_ref();
-	goto again;
+>
+>
+> >> +       $UMOUNT_PROG ${loop_mnt1} &> /dev/null
+> >> +       $UMOUNT_PROG ${loop_mnt2} &> /dev/null
+> >> +
+> >> +       _destroy_loop_device $loop_dev1 &> /dev/null
+> >> +       _destroy_loop_device $loop_dev2 &> /dev/null
+> >> +
+> >> +       rm -rf $fs_img1 &> /dev/null
+> >> +       rm -rf $fs_img2 &> /dev/null
+> >> +
+> >> +       rm -rf $loop_mnt1 &> /dev/null
+> >> +       rm -rf $loop_mnt2 &> /dev/null
+> >
+> > Also please for simplicity and clarity don't mix this type of change
+> > with the actual purpose of the patch,
+> > to make the test succeed on a kernel with the temp-fsid feature.
+> >
+> > You're mixing 3 different changes in the same patch...
+>
+> >> -loop_mnt=3D$TEST_DIR/$seq.mnt
+> >> -loop_mnt1=3D$TEST_DIR/$seq.mnt1
+> >> -fs_img1=3D$TEST_DIR/$seq.img1
+> >> -fs_img2=3D$TEST_DIR/$seq.img2
+> >> +loop_mnt1=3D$TEST_DIR/$seq/mnt1
+> >> +loop_mnt2=3D$TEST_DIR/$seq/mnt2
+> >> +fs_img1=3D$TEST_DIR/$seq/img1
+> >> +fs_img2=3D$TEST_DIR/$seq/img2
+> >
+> > So this is the other unrelated change, renaming all these variables...
+> > This is making the diff larger to follow as this has nothing to do
+> > with the goal of making the test succeed on a kernel with the
+> > temp-fsid feature.
+>
+>
+> Sure. I'll move these changes to a new patch in v3.
+>
+>
+> >> +_mount $loop_dev2 $loop_mnt2 > /dev/null 2>&1
+> >> +
+> >> +if [ $? =3D=3D 0 ]; then
+> >> +       # On temp-fsid supported kernels, mounting cloned device will =
+be successfull.
+> >> +       if _has_fs_sysfs_attr $loop_dev2 temp_fsid; then
+> >> +               temp_fsid=3D$(_get_fs_sysfs_attr ${loop_dev2} temp_fsi=
+d)
+> >> +               if [ $temp_fsid =3D=3D 0 ]; then
+> >> +                       _fail "Cloned devices mounted without temp_fsi=
+d"
+> >> +               fi
+> >
+>
+> Hmm. It is exactly testing what happens with and without the temp-fsid
+> feature.
+>
+> > This is too complex. Why not just surround the existing code in an if
+> > statement like this:
+> >
+> > if "sysfs-file-for-temp-fsid  does not exist" then
+> >       run this code that fails with a temp-fsid enabled kernel
+> > fi
+> >
+>
+> Your suggestion will test what to expect when there is no 'temp-fsid.'
+>
+> However, if 'temp-fsid' is present, we expect its sysfs temp_fsid
+> to be set to 1, which I believe is a straightforward verification.
+>
+> And do you think adding more comments will make it simpler?
+> Such as:
+> # If the second mount is successful, then check if 'temp-fsid'
+> # is in the kernel. If it's present, verify that it outputs 1.
+>
+> Or, Are you suggesting we postpone confirming the correct operation of
+> 'temp-fsid' for another test case? However, I believe in thoroughly
+> verifying it wherever it's used, as this approach promotes a better
+> understanding of what to anticipate. No?
 
-With the tag named "again", it's pretty common to think it's a loop, but
-the truth is, we only need to do the search once, to locate the last
-(also the first, since there should only be one INODE_REF or
-INODE_EXTREF now) ref of the inode.
+I'm not suggesting a new test case.
 
-[FIX]
-Instead of the weird jumps, just do them in a stream-lined fashion.
-This removes those weird tags, and add extra comments on why we can do
-the different searches.
+Remember the code you removed in v1?
+My suggestion was to instead of removing it, just surround it in the body o=
+f an
+if statement:
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-This is just a cleanup while I was investigating a weird bug inside the
-same function.
+if temp-fsid-feature-not-abailable; then
+   run that code you tried to remove in v1
+fi
 
-The bug is, the mentioned function returned -ENOENT and caused
-transaction abort.
-The weird part is, when that happened (btrfs_lookup_inode() failed) dump
-tree (only one case though) showed there is indeed no INODE_ITEM, but we
-still have the INODE_REF and even one EXTENT_DATA.
+Isn't that a lot simpler and clear?
 
-Any clue would be very appreciated.
----
- fs/btrfs/delayed-inode.c | 46 ++++++++++++++++++++++------------------
- 1 file changed, 25 insertions(+), 21 deletions(-)
+Thanks.
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index c640f87038a6..efbbe5e0ee6e 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1036,14 +1036,34 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 	if (!test_bit(BTRFS_DELAYED_NODE_DEL_IREF, &node->flags))
- 		goto out;
- 
--	path->slots[0]++;
--	if (path->slots[0] >= btrfs_header_nritems(leaf))
--		goto search;
--again:
-+	/*
-+	 * Now we're going to delete the INODE_REF/EXTREF, which should be
-+	 * the only one ref left.
-+	 * Check if the next item is an INODE_REF/EXTREF.
-+	 *
-+	 * But if we're the last item already, release and search for the last
-+	 * INODE_REF/EXTREF
-+	 */
-+	if (path->slots[0] + 1 >= btrfs_header_nritems(leaf)) {
-+		key.objectid = node->inode_id;
-+		key.type = BTRFS_INODE_EXTREF_KEY;
-+		key.offset = (u64)-1;
-+
-+		btrfs_release_path(path);
-+		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
-+		if (ret < 0)
-+			goto err_out;
-+		ASSERT(ret > 0);
-+		ASSERT(path->slots[0] > 0);
-+		ret = 0;
-+		path->slots[0]--;
-+	} else {
-+		path->slots[0]++;
-+	}
-+	leaf = path->nodes[0];
- 	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
- 	if (key.objectid != node->inode_id)
- 		goto out;
--
- 	if (key.type != BTRFS_INODE_REF_KEY &&
- 	    key.type != BTRFS_INODE_EXTREF_KEY)
- 		goto out;
-@@ -1070,22 +1090,6 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 		btrfs_abort_transaction(trans, ret);
- 
- 	return ret;
--
--search:
--	btrfs_release_path(path);
--
--	key.type = BTRFS_INODE_EXTREF_KEY;
--	key.offset = -1;
--
--	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
--	if (ret < 0)
--		goto err_out;
--	ASSERT(ret);
--
--	ret = 0;
--	leaf = path->nodes[0];
--	path->slots[0]--;
--	goto again;
- }
- 
- static inline int btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
--- 
-2.42.0
-
+>
+> I will await your response before sending v3. Thx.
+>
+> Thanks, Anand
+>
