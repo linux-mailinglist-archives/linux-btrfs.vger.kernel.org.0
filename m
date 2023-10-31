@@ -2,52 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B453A7DCADF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Oct 2023 11:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C5D7DCB5D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Oct 2023 12:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236219AbjJaKbS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Oct 2023 06:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
+        id S1343973AbjJaLFB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Oct 2023 07:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236311AbjJaKbK (ORCPT
+        with ESMTP id S233770AbjJaLFA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Oct 2023 06:31:10 -0400
+        Tue, 31 Oct 2023 07:05:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C93B10B
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 03:31:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 154E0C433C8
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 10:31:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E0EE4;
+        Tue, 31 Oct 2023 04:04:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7655DC433C8;
+        Tue, 31 Oct 2023 11:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698748267;
-        bh=LPj1M3FHhLoMvbheFim4kAJXst7ayeqKElo0X/lyabw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iL0bAU8+tA1FuC0QgkAnjfj3PEB1dLOByNye7TohA6kp+1dpZ5f8AQhjTvKJWrZ88
-         4WD7DpsTrF0bCORInu5ynZm5BX4uRGYlVdG4jm1B45hBgfaoSp6q+WibWU9prXtVyX
-         6+ntYuKIGBFxwu7yIpnovPC4bY/uzIUjUVotNcgarqlHIycsE58ZgE52biCgKd4bnv
-         iaZ9XLZt3FvEOzVlKTRRTgVjo7MAuVbddh4ZppQSvNtDShTAcKOvhuPTBBkHL5TV/x
-         NHBGCLutpbbK/F8Y73d0DBrspeqvyPDG5Z+USTmDG2Z8YL27VRkAD8Wv/9mYVfoeE0
-         +8vHjUMBfUA3g==
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5435336ab0bso2321883a12.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 03:31:07 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwKwv97jQkzZnBgMbCcAqI6FiRcFhR5zYhPHL8qYG1dfbeap9Ti
-        NYZdk0RhcUUZAmXqM5H297BsVuHUA/mgcHOOfD0=
-X-Google-Smtp-Source: AGHT+IFyaHZf7cylNFlqYgwNzW6Y3uHLqhOGwu12K2h/BEZAtHe9eDxYnIW0UU6KkpQHdP7y3XPqLr9/yWmfLdMzsH8=
-X-Received: by 2002:a17:907:2da4:b0:9b2:7b89:8199 with SMTP id
- gt36-20020a1709072da400b009b27b898199mr11391947ejc.53.1698748265487; Tue, 31
- Oct 2023 03:31:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <e81eab657c200a78dd43747fb28e942289082f98.1698698978.git.wqu@suse.com>
-In-Reply-To: <e81eab657c200a78dd43747fb28e942289082f98.1698698978.git.wqu@suse.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 31 Oct 2023 10:30:28 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5i_t0EmsSCE7vafBk7n+D2BM0XP5UpN4BJsboBMLiSZQ@mail.gmail.com>
-Message-ID: <CAL3q7H5i_t0EmsSCE7vafBk7n+D2BM0XP5UpN4BJsboBMLiSZQ@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: do not utilize goto to implement delayed inode
- ref deletion
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        s=k20201202; t=1698750297;
+        bh=seof9F/T3buCREfnRaM8n/SGCO7U8Q7G81Pbh+MqLSc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=B0/jmFqpkWT9SLBYRDZGYIX/pJjNs4MsJ8bvvsaA4U4aW11phg5v1ZDR7id8JsNUd
+         zw7wKFBCoOozkUMgXREp3NScaoG75PhGVvyT0DRWC4CndqXfatxmQYN7afSYzvYzxl
+         Ew7aofGgt6KnA+bRoHMQRacfMT4SYz6jJClpQc4An/W3pqbp0PvDWQ0UFMhO3l6/uK
+         KlW1kzDr8H8qNnylIjSfelxj+IdLb9WebVPPRYxrpln//fJ9fD57xi8zLr4p9dCDnG
+         V9CUqL2LTaeMvAOIBUYTnePoIIgDRfOTBSgaPm/0Vsr0resDDxv6fsqVKLu0+aoWQe
+         uU5kVJIfA5VRg==
+Message-ID: <d5965ba7ed012433a9914ba38a6046f2ddb015ac.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Tue, 31 Oct 2023 07:04:53 -0400
+In-Reply-To: <ZUAwFkAizH1PrIZp@dread.disaster.area>
+References: <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+         <ZTc8tClCRkfX3kD7@dread.disaster.area>
+         <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+         <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+         <ZTjMRRqmlJ+fTys2@dread.disaster.area>
+         <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
+         <ZTnNCytHLGoJY9ds@dread.disaster.area>
+         <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+         <ZUAwFkAizH1PrIZp@dread.disaster.area>
+Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -58,136 +80,144 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 9:07=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
->
-> [PROBLEM]
-> The function __btrfs_update_delayed_inode() is doing something not
-> meeting the code standard of today:
->
->         path->slots[0]++
->         if (path->slots[0] >=3D btrfs_header_nritems(leaf))
->                 goto search;
-> again:
->         if (!is_the_target_inode_ref())
->                 goto out;
->         ret =3D btrfs_delete_item();
->         /* Some cleanup. */
->         return ret;
->
-> search:
->         ret =3D search_for_the_last_inode_ref();
->         goto again;
->
-> With the tag named "again", it's pretty common to think it's a loop, but
-> the truth is, we only need to do the search once, to locate the last
-> (also the first, since there should only be one INODE_REF or
-> INODE_EXTREF now) ref of the inode.
->
-> [FIX]
-> Instead of the weird jumps, just do them in a stream-lined fashion.
-> This removes those weird tags, and add extra comments on why we can do
-> the different searches.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Tue, 2023-10-31 at 09:37 +1100, Dave Chinner wrote:
+> On Fri, Oct 27, 2023 at 06:35:58AM -0400, Jeff Layton wrote:
+> > On Thu, 2023-10-26 at 13:20 +1100, Dave Chinner wrote:
+> > > On Wed, Oct 25, 2023 at 08:25:35AM -0400, Jeff Layton wrote:
+> > > > On Wed, 2023-10-25 at 19:05 +1100, Dave Chinner wrote:
+> > > > > On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
+> > > > In earlier discussions you alluded to some repair and/or analysis t=
+ools
+> > > > that depended on this counter.
+> > >=20
+> > > Yes, and one of those "tools" is *me*.
+> > >=20
+> > > I frequently look at the di_changecount when doing forensic and/or
+> > > failure analysis on filesystem corpses.  SOE analysis, relative
+> > > modification activity, etc all give insight into what happened to
+> > > the filesystem to get it into the state it is currently in, and
+> > > di_changecount provides information no other metadata in the inode
+> > > contains.
+> > >=20
+> > > > I took a quick look in xfsprogs, but I
+> > > > didn't see anything there. Is there a library or something that the=
+se
+> > > > tools use to get at this value?
+> > >=20
+> > > xfs_db is the tool I use for this, such as:
+> > >=20
+> > > $ sudo xfs_db -c "sb 0" -c "a rootino" -c "p v3.change_count" /dev/ma=
+pper/fast
+> > > v3.change_count =3D 35
+> > > $
+> > >=20
+> > > The root inode in this filesystem has a change count of 35. The root
+> > > inode has 32 dirents in it, which means that no entries have ever
+> > > been removed or renamed. This sort of insight into the past history
+> > > of inode metadata is largely impossible to get any other way, and
+> > > it's been the difference between understanding failure and having no
+> > > clue more than once.
+> > >=20
+> > > Most block device parsing applications simply write their own
+> > > decoder that walks the on-disk format. That's pretty trivial to do,
+> > > developers can get all the information needed to do this from the
+> > > on-disk format specification documentation we keep on kernel.org...
+> > >=20
+> >=20
+> > Fair enough. I'm not here to tell you that you guys that you need to
+> > change how di_changecount works. If it's too valuable to keep it
+> > counting atime-only updates, then so be it.
+> >=20
+> > If that's the case however, and given that the multigrain timestamp wor=
+k
+> > is effectively dead, then I don't see an alternative to growing the on-
+> > disk inode. Do you?
+>=20
+> Yes, I do see alternatives. That's what I've been trying
+> (unsuccessfully) to describe and get consensus on. I feel like I'm
+> being ignored and rail-roaded here, because nobody is even
+> acknowledging that I'm proposing alternatives and keeps insisting
+> that the only solution is a change of on-disk format.
+>=20
+> So, I'll summarise the situation *yet again* in the hope that this
+> time I won't get people arguing about atime vs i-version and what
+> constitutes an on-disk format change because that goes nowhere and
+> does nothing to determine which solution might be acceptible.
+>=20
+> The basic situation is this:
+>=20
+> If XFS can ignore relatime or lazytime persistent updates for given
+> situations, then *we don't need to make periodic on-disk updates of
+> atime*. This makes the whole problem of "persistent atime update bumps
+> i_version" go away because then we *aren't making persistent atime
+> updates* except when some other persistent modification that bumps
+> [cm]time occurs.
+>=20
+> But I don't want to do this unconditionally - for systems not
+> running anything that samples i_version we want relatime/lazytime
+> to behave as they are supposed to and do periodic persistent updates
+> as per normal. Principle of least surprise and all that jazz.
+>=20
+> So we really need an indication for inodes that we should enable this
+> mode for the inode. I have asked if we can have per-operation
+> context flag to trigger this given the needs for io_uring to have
+> context flags for timestamp updates to be added.=20
+>=20
+> I have asked if we can have an inode flag set by the VFS or
+> application code for this. e.g. a flag set by nfsd whenever it accesses a
+> given inode.
+>=20
+> I have asked if this inode flag can just be triggered if we ever see
+> I_VERSION_QUERIED set or statx is used to retrieve a change cookie,
+> and whether this is a reliable mechanism for setting such a flag.
+>=20
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Ok, so to make sure I understand what you're proposing:
 
-Looks good, thanks.
+This would be a new inode flag that would be set in conjunction with
+I_VERSION_QUERIED (but presumably is never cleared)? When XFS sees this
+flag set, it would skip sending the atime to disk.
 
-> ---
-> CHANGELOG
-> v2:
-> - Move the leaf assignment into the if branch where we do the search
->   This is where the leaf get updated, no need to update @leaf
->   unconditionally which can be confusing.
->
-> This is just a cleanup while I was investigating a weird bug inside the
-> same function.
->
-> The bug is, the mentioned function returned -ENOENT and caused
-> transaction abort.
-> The weird part is, when that happened (btrfs_lookup_inode() failed) dump
-> tree (only one case though) showed there is indeed no INODE_ITEM, but we
-> still have the INODE_REF and even one EXTENT_DATA.
->
-> Any clue would be very appreciated.
-> ---
->  fs/btrfs/delayed-inode.c | 46 ++++++++++++++++++++++------------------
->  1 file changed, 25 insertions(+), 21 deletions(-)
->
-> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> index c640f87038a6..0f8fa9751b5d 100644
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1036,14 +1036,34 @@ static int __btrfs_update_delayed_inode(struct bt=
-rfs_trans_handle *trans,
->         if (!test_bit(BTRFS_DELAYED_NODE_DEL_IREF, &node->flags))
->                 goto out;
->
-> -       path->slots[0]++;
-> -       if (path->slots[0] >=3D btrfs_header_nritems(leaf))
-> -               goto search;
-> -again:
-> +       /*
-> +        * Now we're going to delete the INODE_REF/EXTREF, which should b=
-e
-> +        * the only one ref left.
-> +        * Check if the next item is an INODE_REF/EXTREF.
-> +        *
-> +        * But if we're the last item already, release and search for the=
- last
-> +        * INODE_REF/EXTREF
-> +        */
-> +       if (path->slots[0] + 1 >=3D btrfs_header_nritems(leaf)) {
-> +               key.objectid =3D node->inode_id;
-> +               key.type =3D BTRFS_INODE_EXTREF_KEY;
-> +               key.offset =3D (u64)-1;
-> +
-> +               btrfs_release_path(path);
-> +               ret =3D btrfs_search_slot(trans, root, &key, path, -1, 1)=
-;
-> +               if (ret < 0)
-> +                       goto err_out;
-> +               ASSERT(ret > 0);
-> +               ASSERT(path->slots[0] > 0);
-> +               ret =3D 0;
-> +               path->slots[0]--;
-> +               leaf =3D path->nodes[0];
-> +       } else {
-> +               path->slots[0]++;
-> +       }
->         btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
->         if (key.objectid !=3D node->inode_id)
->                 goto out;
-> -
->         if (key.type !=3D BTRFS_INODE_REF_KEY &&
->             key.type !=3D BTRFS_INODE_EXTREF_KEY)
->                 goto out;
-> @@ -1070,22 +1090,6 @@ static int __btrfs_update_delayed_inode(struct btr=
-fs_trans_handle *trans,
->                 btrfs_abort_transaction(trans, ret);
->
->         return ret;
-> -
-> -search:
-> -       btrfs_release_path(path);
-> -
-> -       key.type =3D BTRFS_INODE_EXTREF_KEY;
-> -       key.offset =3D -1;
-> -
-> -       ret =3D btrfs_search_slot(trans, root, &key, path, -1, 1);
-> -       if (ret < 0)
-> -               goto err_out;
-> -       ASSERT(ret);
-> -
-> -       ret =3D 0;
-> -       leaf =3D path->nodes[0];
-> -       path->slots[0]--;
-> -       goto again;
->  }
->
->  static inline int btrfs_update_delayed_inode(struct btrfs_trans_handle *=
-trans,
-> --
-> 2.42.0
->
+Given that you want to avoid on-disk changes, I assume this flag will
+not be stored on disk. What happens after the NFS server reboots?
+
+Consider:
+
+1/ NFS server queries for the i_version and we set the
+I_NO_ATIME_UPDATES_ON_DISK flag (or whatever) in conjunction with
+I_VERSION_QUERIED. Some atime updates occur and the i_version isn't
+bumped (as you'd expect).
+
+2/ The server then reboots.
+
+3/ Server comes back up, and some local task issues a read against the
+inode. I_NO_ATIME_UPDATES_ON_DISK never had a chance to be set after the
+reboot, so that atime update ends up incrementing the i_version counter.
+
+4/ client cache invalidation occurs even though there was no write to
+the file
+
+This might reduce some of the spurious i_version bumps, but I don't see
+how it can eliminate them entirely.
+
+> I have suggested mechanisms for using masked off bits of timestamps
+> to encode sub-timestamp granularity change counts and keep them
+> invisible to userspace and then not using i_version at all for XFS.
+> This avoids all the problems that the multi-grain timestamp
+> infrastructure exposed due to variable granularity of user visible
+> timestamps and ordering across inodes with different granularity.
+> This is potentially a general solution, too.
+>=20
+
+I don't really understand this at all, but trying to do anything with
+fine-grained timestamps will just run into a lot of the same problems we
+hit with the multigrain work. If you still see this as a path forward,
+maybe you can describe it more detail?
+
+
+> So, yeah, there are *lots* of ways we can solve this problem without
+> needing to change on-disk formats.
+>=20
+
+--=20
+Jeff Layton <jlayton@kernel.org>
