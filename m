@@ -2,409 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 469977DD0B4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Oct 2023 16:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3657DD0B6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Oct 2023 16:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345083AbjJaPkB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Oct 2023 11:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39030 "EHLO
+        id S1345078AbjJaPkf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Oct 2023 11:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345048AbjJaPkA (ORCPT
+        with ESMTP id S1345067AbjJaPke (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Oct 2023 11:40:00 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A78E4;
-        Tue, 31 Oct 2023 08:39:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAF6CC433C8;
-        Tue, 31 Oct 2023 15:39:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698766796;
-        bh=q6qDhLG1BHd16Qr5i45po+R3KGdPCDDX+MO+gWEawlE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=n7LYVvt9cOCebrmC3hDl54tnPRGLe3r1fjPpPx1fT7Pc1kzNu+AHr8aqTufwNoaPX
-         8SERRGzjCIGTJZ/QCHFVu3Cq5lKoZ7Yi+M5bX0dxfSvtNhdtqT8B2zi6r4iXm1t/JS
-         laEIAPbdPsyBhCV7pcwA85DhSJFk2pGRMVUJmGgWJmZfWUvYFPkoYDtaPSsSK3Xzml
-         B+/kF5cHaFqOsA4Muo4J3G/TAV1eDI+jSnAUZNxGYPR0NZ/6Bl+gETZi9rkMivcg77
-         KQIFUAPgns2fs7l16NgmZwEsyD5WxiF+uAN2c4PU/mM0tinHEANuebZUkw4+XJDoli
-         co0aClEebosag==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9be02fcf268so861202266b.3;
-        Tue, 31 Oct 2023 08:39:56 -0700 (PDT)
-X-Gm-Message-State: AOJu0Ywx6V6IZDE0gYM3tD9gOsnDxOwivLudrghHuE86D2i33epAIM2m
-        kXYo20OVe9mYPplqxQJHayCN0WSegqEarAVruHY=
-X-Google-Smtp-Source: AGHT+IGkIvv+M/TLtJuUOGMtBLrWo+1PZCja3VehbOA3OYTijeiLOLLXukPH16eYqjt0/VPOSwLCwj4EHsSiUjLQ8ds=
-X-Received: by 2002:a17:907:720e:b0:9bd:c592:e0ce with SMTP id
- dr14-20020a170907720e00b009bdc592e0cemr10390261ejc.51.1698766795109; Tue, 31
- Oct 2023 08:39:55 -0700 (PDT)
+        Tue, 31 Oct 2023 11:40:34 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CE8C1
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 08:40:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=s31663417; t=1698766828; x=1699371628; i=jimis@gmx.net;
+        bh=1aGmaBOu2Kl7BuHDCBLcUaPM9iuuJjo6PXflPcaTvzA=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=K97I66VcVJZKROWaGygeF/whq68EESmHpCpg6gB4t8KnhvLS7bFMxhjLguroHUR+
+         Eldy7sW8/LGlrLpBMjgCjuCwAHxtMdrZNRE3zTOZrc2FXdGjSEEVLeR896XX12yfK
+         lmX0fL7TC4C9Fuf9LuEV3VRzJ00uU7fpEMaffq1Po2HL+m6wHWFrRc4LRLDc+Kjfd
+         JjvqfsUop0e2n1cc+35AVeQ2G9cKeyeK/4mH0704Mf/xRFM/l5crjpedbmX2FJOWi
+         72uieTtZmvmf0JHciwhy7w1QtDHSHzFI+2CgKQd+H5PSPwD/2+Wdv7lsxfGBXNfRz
+         v2VHkQ9//1SeMNwsgQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.9.70.65] ([185.55.107.82]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MDQic-1r8KR02o5u-00ATIp for
+ <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 16:40:28 +0100
+Date:   Tue, 31 Oct 2023 16:40:27 +0100 (CET)
+From:   Dimitrios Apostolou <jimis@gmx.net>
+To:     linux-btrfs@vger.kernel.org
+Subject: Slow speed when doing sequential read() with 8192 block size from
+ a compressed file
+Message-ID: <fd9ad68d-a87a-dce0-0087-40d43e66218b@gmx.net>
 MIME-Version: 1.0
-References: <cover.1696969376.git.josef@toxicpanda.com> <9a17afb133849c2321bb98c07c48cff2aaf1d87a.1696969376.git.josef@toxicpanda.com>
-In-Reply-To: <9a17afb133849c2321bb98c07c48cff2aaf1d87a.1696969376.git.josef@toxicpanda.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 31 Oct 2023 15:39:18 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5eg0Xs+-JYnHnh11ogUB=GSaCGT_C0a4QFVnj_--oFng@mail.gmail.com>
-Message-ID: <CAL3q7H5eg0Xs+-JYnHnh11ogUB=GSaCGT_C0a4QFVnj_--oFng@mail.gmail.com>
-Subject: Re: [PATCH 07/12] btrfs: test snapshotting encrypted subvol
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; format=flowed; charset=US-ASCII
+X-Provags-ID: V03:K1:Svcd6aEQBXG1d4T//HjPLUup/ZfuK+RcVwPRZdJ1ID9BhGgw3r8
+ SOv4gGb8F/8bbSoIygzqVAZPf7pISJvDHnDJdxowc3qnzlQ6appX8pCTQyT9uYcix6FJ4SI
+ 39U70WBnXNT6XabWFwtQxA0c3LJjaSaYQPeIDtnHw1fbcjlp7xd2BjFYhJ+dUKANShpCA4R
+ e6bjSLAai4EBtrcFuhnPA==
+UI-OutboundReport: notjunk:1;M01:P0:M0xR3oS4D9Y=;Q6E7VgJOgM7r6fyM9yag80YCa47
+ /WzIuVrdA3SpoirLSxCUrh3e+eWqyPllZQNrh6f+6+R5eTVmB+wgHc0YX4GsXrNuhS893j8cD
+ xNc+DbNUAizwCTBjOFL+aE/6qUl9cih+L7Ezgh1WeNC0J6TCKvbG8H4UIz5rOo4OG9hl7Heqb
+ HoXp1NGyZZ4GKYnEih/6bhE3f4iQWqLr/zoU880pZq/2v5f7Hf9th0c0w98MTgEj0BxwKpC8o
+ ByfLnBKAqO+dMsY7MMnmJ8b85dgV8t84sLEfChee8k2MzAhj9UaBfT0X+h1slafzrSlxwkyr5
+ b+hBgsQYJnqE33SpBnSQxVTMBtIRGhDTicJTN0BOQWzaVw+gk3d8gALpYXehf2hZ7nvoYaYRm
+ iLB0H1BCF2W1baHD8Le/alArYY2tAxyCR8wB7UsKiTcr6wOVYB1qpYI2G5aBn3xl9r4bPo9Tn
+ SepZm5u9nYoKyzc6faRlfsbUePDCln6xA05o8B1nvtqIjcKEI5WBwcSWmAqW8fJEc7zO1L8ch
+ 3ZdCvxUQ97cG8siUsbPYr9cLxoZ0IKEVTUkElLFkhWaZeyojs5+kjjNU/J6H5j79Cts247ynN
+ 65j1OwNY4SMhONdZDvYuzgE2FFGZ/AX80CmhApEklPuCghNG3StcjXipPsTTcXTEvE1YiK/7o
+ ou5VeA1EgGMit6dG5yZzIQ4dVLQea4ameQzPI7PkULkcZtZDUzviP+9QSZ122l+7ZvzWT5MDr
+ YRBrmgLqv45VS5A864FXI8yQFiKmsaTKrQKPxQcrADDrOpGTUqZ/jTOfOFLk/8+V3lTGPxyJT
+ uiAUHbEYZIObcMl6r9ou1MN1hsWDdw91E1wqg7oAxY4sItNMHJkiuvQWOMXMs9G3peFyII40q
+ ExhFOQHRYfJt0NJ83ADPbQcFScFsLx6RAoCqx6uoHTRJlg1/sAdREQQAm
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 9:26=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
-wrote:
->
-> From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
->
-> Make sure that snapshots of encrypted data are readable and writeable.
->
-> Test deliberately high-numbered to not conflict.
->
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> ---
->  tests/btrfs/614     |  76 ++++++++++++++++++++++++++++++
->  tests/btrfs/614.out | 111 ++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 187 insertions(+)
->  create mode 100755 tests/btrfs/614
->  create mode 100644 tests/btrfs/614.out
->
-> diff --git a/tests/btrfs/614 b/tests/btrfs/614
-> new file mode 100755
-> index 00000000..87dd27f9
-> --- /dev/null
-> +++ b/tests/btrfs/614
-> @@ -0,0 +1,76 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 614
-> +#
-> +# Try taking a snapshot of an encrypted subvolume. Make sure the snapsho=
-t is
-> +# still readable. Rewrite part of the subvol with the same data; make su=
-re it's
-> +# still readable.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto encrypt
+Hello list,
 
-Should be in the 'snapshot' and 'subvol' groups too, as it creates a
-snapshot and a subvolume.
-Also maybe in the 'quick' group too, see the comments further below.
+I have btrfs configured to do zstd:3 compression. Here is the simplest
+command I'm using to sequentially read a big file:
 
-> +
-> +# Import common functions.
-> +. ./common/encrypt
-> +. ./common/filter
-> +
-> +# real QA test starts here
-> +_supported_fs btrfs
-> +
-> +_require_test
+   # dd if=3DFILENAME of=3D/dev/null bs=3D8k
 
-The test device is not used, so this can go away.
+The device I/O speed limit had been measured at 200 MB/s. Using iostat
+while running the above command, I'm seeing much lower speeds, varying
+8-60 MB/s. CPU is not the bottleneck either, as the CPU is powerful enough
+to decompress zstd at much higher rates.
 
-> +_require_scratch
-> +_require_scratch_encryption -v 2
-> +_require_command "$KEYCTL_PROG" keyctl
-> +
-> +_scratch_mkfs_encrypted &>> $seqres.full
-> +_scratch_mount
-> +
-> +udir=3D$SCRATCH_MNT/reference
-> +dir=3D$SCRATCH_MNT/subvol
-> +dir2=3D$SCRATCH_MNT/subvol2
-> +$BTRFS_UTIL_PROG subvolume create $dir >> $seqres.full
-> +mkdir $udir
-> +
-> +_set_encpolicy $dir $TEST_KEY_IDENTIFIER
-> +_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-> +
-> +# get files with lots of extents by using backwards writes.
-> +for j in `seq 0 50`; do
-> +       for i in `seq 20 -1 1`; do
-> +               $XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
-> +               $dir/foo-$j >> $seqres.full | _filter_xfs_io
-> +               $XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
-> +               $udir/foo-$j >> $seqres.full | _filter_xfs_io
-> +       done
-> +done
-> +
-> +$BTRFS_UTIL_PROG subvolume snapshot $dir $dir2 | _filter_scratch
-> +
-> +_scratch_remount
-> +_add_enckey $SCRATCH_MNT "$TEST_RAW_KEY"
-> +sleep 30
+NOTE: Running the same command with an uncompressed file
+       saturates the device's bandwidth!
 
-What's the sleep for?
-Is the 30 seconds to wait for a transaction commit?
-If it is then I'd rather mount the fs with -o commit=3D3 (or some other
-low value) and then "sleep 3" to make the test run much faster.
-A comment explaining why the sleep is there, what is its purpose,
-should also be in place.
-
-> +echo "Diffing $dir and $dir2"
-> +diff $dir $dir2
-> +
-> +echo "Rewriting $dir2 partly"
-> +# rewrite half of each file in the snapshot
-> +for j in `seq 0 50`; do
-> +       for i in `seq 10 -1 1`; do
-> +               $XFS_IO_PROG -f -d -c "pwrite $(($i * 4096)) 4096" \
-> +               $dir2/foo-$j >> $seqres.full | _filter_xfs_io
-> +       done
-> +done
-> +
-> +echo "Diffing $dir and $dir2"
-> +diff $dir $dir2
-> +
-> +echo "Dropping key and diffing"
-> +_rm_enckey $SCRATCH_MNT $TEST_KEY_IDENTIFIER
-> +diff $dir $dir2 |& _filter_scratch | _filter_nokey_filenames
-> +
-> +$BTRFS_UTIL_PROG subvolume delete $dir > /dev/null 2>&1
-
-What's the purpose of this subvolume delete?
-It's ignoring stdout and stderr, so it doesn't care whether it
-succeeds or fails, and we
-don't do any tests/checks after it.
-
-Thanks.
+Is it a bug in Btrfs? Can you replicate these findings?
 
 
+Thanks in advance,
+Dimitris
 
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/614.out b/tests/btrfs/614.out
-> new file mode 100644
-> index 00000000..390807e8
-> --- /dev/null
-> +++ b/tests/btrfs/614.out
-> @@ -0,0 +1,111 @@
-> +QA output created by 614
-> +Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
-> +Create a snapshot of 'SCRATCH_MNT/subvol' in 'SCRATCH_MNT/subvol2'
-> +Added encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
-> +Diffing /mnt/scratch/subvol and /mnt/scratch/subvol2
-> +Rewriting /mnt/scratch/subvol2 partly
-> +Diffing /mnt/scratch/subvol and /mnt/scratch/subvol2
-> +Dropping key and diffing
-> +Removed encryption key with identifier 69b2f6edeee720cce0577937eb8a6751
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> +NOKEY_NAME: NOKEY_NAME/NOKEY_NAME/NOKEY_NAME: NOKEY_NAME NOKEY_NAME NOKE=
-Y_NAME NOKEY_NAME
-> --
-> 2.41.0
->
+P.S. Increasing the blocksize is not really possible, as this
+      is a contrived example that only replicates the behaviour of another
+      application.
+
