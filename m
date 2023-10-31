@@ -2,203 +2,278 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2886E7DC3CE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Oct 2023 02:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B40617DC3F2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Oct 2023 02:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234920AbjJaBM2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Oct 2023 21:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
+        id S230457AbjJaBmw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Oct 2023 21:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbjJaBM1 (ORCPT
+        with ESMTP id S230375AbjJaBmt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Oct 2023 21:12:27 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C6BD3
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 18:12:24 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39UMxGc7011946;
-        Tue, 31 Oct 2023 01:12:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=vSGBsNdU9tgJghu6GNpuCIYle72mM1UdiH3dMQAGdy4=;
- b=KbrPomdzBUI03cIiabNYpV8jVeOgkwYFljjL1/S2G5QCrUJZE415PrNL410fLEU0haHG
- ElpaYAhv32m5cag7o5QCPDvlbfI14RPSc6lPULpcoutfY2WbR9sZUhwEox1CuGGRocqD
- bYBryeMR3jhSWjVBE8BZveRZIGTIEsI27s0ogAbshfzgjy49WfFIal71yg5gy9VPNEKR
- MpUqbpMGPP7b9rYGWyVR0qoIbAnKuEfYyoNq0bI81md7Yg4mhRWWZ4K3ifW7tC/6CbwK
- yLhYi3LIMjl/53MAMCGmHEHYZWvqjtbAm6mQJ5ZNMZVZqS/kdCbVzfqi7WvZZqCdC02c nw== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u0rw24149-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Oct 2023 01:12:21 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39V0Aolm009110;
-        Tue, 31 Oct 2023 01:12:20 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u14x4w7f9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 31 Oct 2023 01:12:20 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xd6mXDmzxyng0T1PZxy8aqJMHSvE5GsjcQoDwmYisJGge7EVPyVrOc53duRzds4eld04S1KXFkTM2LsXFJG3DLPNLd6HUUMKFaglu70xO7OhOeejo/1imrOSsDb+fcP8YKQef41OTxXqWB1R12XPhmV6/W6n/N+MVGCzgUEyPcj92zK28EqRoiZ0+buKyhay3/l3KuOEGmrVOk4rYhmKaam3RDRCi/m7IeT/CkbEJnhafGOOd+oJxbHK8dgAcHLkeyn0oiiAPTMVlj36r1ngDtU51C5DPbn4OjvIIIn4RXJi9GWGpG/LbvoBEX9fq6PYxdEEb2/W4/KgY9vKAsmZ6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vSGBsNdU9tgJghu6GNpuCIYle72mM1UdiH3dMQAGdy4=;
- b=GqI7Opc+MKSGtzCSL2TApbtTB0q8D3Ue0mHPlBNOp9XV+0gfgoyWnMypTdDyvzErQuJnIyrL3QWGqNyZBVS1YPtQa5qhwBkhsWdOpyoNgdkYLmCPthgNE3H47VjFvVwmkxoKl4vs492GsMlt7KFyOLcqs7afwzo39duQ7o3D8W1W3AAO33PGcR3KkhlXbvNW+tKVC+c4T+W+KSO7tVdyULhsL1eX0RQg4w6xoBDiAoTgFDR0mwTmPZU5by+hxJ+tL4GPIuvq3GgSewdCG9aR71QXQtw7oc31fF+BTFct6c4e86JpEz+Ncc8z9/k0XpOVZ9NHOSoaP0pvDEzPgcaFQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 30 Oct 2023 21:42:49 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57A6D9
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 18:42:44 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6ba172c5f3dso4577676b3a.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Oct 2023 18:42:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vSGBsNdU9tgJghu6GNpuCIYle72mM1UdiH3dMQAGdy4=;
- b=NfH2eF1aVHvuP0ikT2ZJVETtzCSXPFr87JJ9Q9sVub96v+MBhxxhsssT2zgLRezpr8w+zVo6x+37ZO8B5atcb5zK/l6WLY362zlpZjsJiLWL7kV+/X3/WBXdlXgjeifL4PGLdkPoUNmUR8Ap7whR671FnRDPa4gW/pg3XWWFvXQ=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by CYYPR10MB7627.namprd10.prod.outlook.com (2603:10b6:930:be::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 31 Oct
- 2023 01:12:19 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::8732:b8be:e262:1fb]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::8732:b8be:e262:1fb%4]) with mapi id 15.20.6933.029; Tue, 31 Oct 2023
- 01:12:18 +0000
-Message-ID: <90389e48-1ce6-478d-8cb9-ec365fbea9d1@oracle.com>
-Date:   Tue, 31 Oct 2023 09:12:12 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix error pointer dereference after failure to
- allocate fs devices
-Content-Language: en-US
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <86c522f5e01e438b4a9cc16a0bda87a207d744e6.1698666319.git.fdmanana@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <86c522f5e01e438b4a9cc16a0bda87a207d744e6.1698666319.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0080.apcprd02.prod.outlook.com
- (2603:1096:4:90::20) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698716564; x=1699321364; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gq2lGFwF4bxRWBxtwu5w9sBzhD8p8IyhBLW9hVZaXvI=;
+        b=OsQu4Sp24Y//SSKVWnyXGhdFRfjp5JW3WpxBFovMlg8XnaYK3/RFSHkoKjWzX8f23A
+         UNdE/3AkGlRHCpunbJtimdQ+4KG2WDwP5LXjOtmh8vc5cdlysOpgS5JKaJZYt14Lzi6a
+         pALaXIjyk+UGeOpIrNUEkRO0V+2za2gygWKnglNE0Jvcf7fRR9xNZYoywmc/W2khrMWg
+         jrkb3qgo4+YUCA2GpFbFS/lsn0LbT/2v3fOGtmmCCCytx5sukT9G9LmXYzQt8ieRiaft
+         ECQP/yyliI3kh+ECxYzwtVcZDzcXzRQrzzJxpgJXfMM4yG2h20eFZp7HReJsfbcKWgfn
+         vUgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698716564; x=1699321364;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gq2lGFwF4bxRWBxtwu5w9sBzhD8p8IyhBLW9hVZaXvI=;
+        b=q0ABi1VSlmMTETobNpH08+lm8BYa1DIPXrlOtymJf3OMto78x5RcTDYcXepK5LWvNv
+         S+kH9wiIq60ZulN1YAHzK6WDMYXRMrztr+gm8FbNRuYvPve6XN+Qj3EmLH/2HuEKyO29
+         9w7egMVGqVEC+pWKbooiZrYNv/cQjKJHGxqlE81rUo2PFLnI82AA8ii2MG/ncv7OB0dU
+         ydNwjPArieV1DZlQetIEsrKQH/EQX5/XccUO5tagOenSisitZYOUCq5KPV3rB2sBeQcS
+         SvZb63MMFvF6DyXGpkVfLdfof2/BuHgXG1ozvWTy9H0PMaQD1ECsyL1nqTgdZyesmL5W
+         Rvdg==
+X-Gm-Message-State: AOJu0Yylh+SfOI9BvTBLuph8rGEFnSqF+GvDHBKxlambhhmtz4wNCFZ+
+        k58g/eLn35h5X9/28VLXjQMtiA==
+X-Google-Smtp-Source: AGHT+IGdn0+gqtPwjsc6S1RJPgTznnlDmnMp6k47wccNyrWTBrFDio/A8SFbOI5f2QToLrcb1QPM3A==
+X-Received: by 2002:a05:6a21:778a:b0:16b:7602:1837 with SMTP id bd10-20020a056a21778a00b0016b76021837mr10790249pzc.29.1698716564006;
+        Mon, 30 Oct 2023 18:42:44 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id y19-20020aa78553000000b00686b649cdd0sm142984pfn.86.2023.10.30.18.42.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Oct 2023 18:42:43 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qxdmB-0069xx-2l;
+        Tue, 31 Oct 2023 12:42:39 +1100
+Date:   Tue, 31 Oct 2023 12:42:39 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+Message-ID: <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
+References: <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+ <ZTc8tClCRkfX3kD7@dread.disaster.area>
+ <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+ <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+ <ZTjMRRqmlJ+fTys2@dread.disaster.area>
+ <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
+ <ZTnNCytHLGoJY9ds@dread.disaster.area>
+ <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+ <ZUAwFkAizH1PrIZp@dread.disaster.area>
+ <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CYYPR10MB7627:EE_
-X-MS-Office365-Filtering-Correlation-Id: 40e33ada-ecaf-4b2d-e8a6-08dbd9ae6d33
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tDw63o6kGtJp/v0McLxUBd6fx5k+Xs7K9SCgfV76uBNWyZjdjWSQs4oJpXF8eEmZZOs6ME7GWaw9juL5AiOlhb3AfJ543mB8oAinKaePpNxql1jAHqhKw1T8fXIWhS1rFOhnURfhjbItQ0HBouvit45YZKZTO+8Wg9xm5HSITjEyzIGRrDNxsc09ezu/dx4ODPMIuhU93LhglTg/xOOM24NEMfbAUAuDUx6RszWZw0zQdojf+vuJiQWQmUKGNxDggqV7qifAfnlXLFAkA8dn3hMNsGeE528zBdYFWpzugGV9yu1Po1g4oIa56ANTnrJyGF8M1TOTv2Y2vGZW6KNWjlejoKSEYQ4/9sw1yP9rKcx4DYFflmTSeGpWB80qZn7UVY0cH+sKyFYxsQpkpfy+ZOF2WCnfhb4uvXdOS9U1N3I5SZrfhu8qvpKo3DPXOGDI86Nk6JAiNQs1/3ji88GFkO3/tLq9WXv51ALP863YF2Dr/kQsuSq9vGHqXLpY8CcE21Z4NG4CsLrFaZl0pMjpqTE12mSAFK+AbmvoWgkaBRKd9vTe65wxXqHHEnI+eA0p0tk9edJthuoTbYM7S+RjjSkm2SfHxzPCqYR+c94E17OuRapfPdveiLDhiOm+WV+Mev9WZuxd7lYTDTmc2dndMA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(376002)(136003)(39860400002)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(38100700002)(83380400001)(2906002)(8936002)(8676002)(44832011)(6486002)(41300700001)(53546011)(31696002)(31686004)(5660300002)(316002)(6512007)(26005)(478600001)(6506007)(6666004)(66476007)(2616005)(86362001)(36756003)(66946007)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OFU5b0ZFQjg1ajErbWs5enVGMVg3RU1JWXJmMGRFSjBBelJlUDd6SjBUdURL?=
- =?utf-8?B?Yk5aZ1dVVEdDREhMdGxnMzBZWmxMSFNPL0JTa2tQYklqenlKckl3Y1dYY2dY?=
- =?utf-8?B?d04wR0hTUnhqZ1ZpOTlnTlhIL0hybFZlb3hES2I5NWJVeEZJTC9sSHB1eS9r?=
- =?utf-8?B?WTRpdUJjZk5VYk5xUmUzNlNmRFViYmhPcTc0cUQ2VStvOE1GekZVNnpNcnJw?=
- =?utf-8?B?L2F5RFpxWUYrMFBkekFvdkttVGtYRDBVT2hybThMZU5ETXBOSzdUbERzV1Ew?=
- =?utf-8?B?dEs1WUxyYlR5RW5JeTBPbTJ1SlhQbFE3L2N6SExWd0RURGMrQUprb20vNHdD?=
- =?utf-8?B?UUE2VmMwOHN4RWEwemRWWWNZOURBVkVUcm1LSUduQWhaOHFiRkFXN1pWQWdy?=
- =?utf-8?B?Q0IvNVFPZWQ2TTBrekFESlovaTNwcTMycStzS3VZNVI2L05uckFVUmJVOFdR?=
- =?utf-8?B?L0JXZ2NPc1pDMXBrSHY4R29LNExwNVZpYVdIMnh0d0dtTzdLSDU4aGNvMnVo?=
- =?utf-8?B?T0JLemhsdHlpZVBrL3oxdHFNc1hIRnc5VU5LeVFMYjBDdHZzbURaQWhxNHJi?=
- =?utf-8?B?c2FIc0RZdTlFSS9HUGhhVEpZdmFXS3YwaE1LMm03RUdqckRMblZkc01ZSXdr?=
- =?utf-8?B?S0lHZThBL1NobFlCZzdpc1hyUXQ5cHQ0MDZyTDc1U3ZuWTRmV3ZFVVlLYi94?=
- =?utf-8?B?dFoxODZyWWlIbkJSSWFsSlRvTDNjTklsbXdYVk9ZZTVPbkZJalh2bVV5cFhi?=
- =?utf-8?B?dWdDbW1laVkrdlBvZnlldGw5UmVXRHRqRThBS0h5bXRjWUNkdEYrVEpNUDVo?=
- =?utf-8?B?WlhCQkN5VHFLYWp0QkdnS1hLV0ltRlVUNSszVzV0QkliSGlJaWhKQVM1TDc4?=
- =?utf-8?B?d0RmbjdPdzFlWlJ5cUl4WnJVYlhrTk9lRUVtVm5rNDZDZlJGVVRNcTRkdW9B?=
- =?utf-8?B?UXo3RHY2TTNlVThCUDM2ODFkMThJVjJndHJGVXZSa2dKalVMcU5za1RBVmhX?=
- =?utf-8?B?QnE2cXc1OTNvKzZYbkY2V2hhQUI2SHg1Z1FTOVh5ZitwcUd2R3ZHYWw5ZUhh?=
- =?utf-8?B?bzlIemorekU5ZWJIbGFicWtpS1FkQlBUNXZrdHE0RjBmYXhKNnMzWXdRWnpX?=
- =?utf-8?B?ODU2VFhBZjVweDQ5aEhoR0t3VllSVE9iYnNwTGtLQnhZc0F6clVHQ0t0VUQr?=
- =?utf-8?B?WU94T0M4SU4ycUJJQzJDK3grU0hGeVFsYWxXSGNwcTBoU0VLc1N3enFTckVw?=
- =?utf-8?B?dk9OZGNMZzk3SXZ4TGVzSHIzZUxOK0JjUG1SZmRObWt6aGdrNTN6V0ZZT0pa?=
- =?utf-8?B?QzBQMG92R0lNWjR6djNqd09PekViS2NJdTdsVHg4QkJpM3lHdjl5OFVrTm1q?=
- =?utf-8?B?Vk1oalpmbXpFc2VVMmtlNk5CZkY5U3ZkOC81ZFhnd0dKcUNOTHQvcnV6dkQv?=
- =?utf-8?B?eXEwZVVIZyt0NlB2bHpzYWxwOVNoWFZRVmk4ZGNWRmNQSjRsWDBkLytXOFRY?=
- =?utf-8?B?aktFTHpiNWVxcXB3WGVPL3pWV3U3ZWU5RExENkoyZlpQeExnTk9VL3Z3QVA4?=
- =?utf-8?B?Y1VZSU90NnMva21DU2RSbXVIQ09DU3JOaHRRS1o5OTRWb0FsMmZTWGxYejJ3?=
- =?utf-8?B?RTg1NGdKVUI2U1lXbGZuTUgrUkw1TDZyYmkwa1JJa2g4V2ppMVcwWU9MTkM5?=
- =?utf-8?B?dVFLY1BUUzY0YnQyVVNFdVFmeXJOaXNzc1FMMFM5MlcyK2dIcTcwQjM2ZDY0?=
- =?utf-8?B?WUZtUUw3SjNpdnlQQ2hLbjF1bE1FNnZDekZiUDdTNjlLK0hxdkMvWkt1bE0r?=
- =?utf-8?B?dmV2SGVNWHBVTGM0TjNWc3FXa2E2elRJSTQxM1ZSWWV5S2xRMkg1ZkdwT0tX?=
- =?utf-8?B?U2IwT0t2ZWtoWWoyWXNUbTAzSWZmS3hnNXpjekM5d2svcko4QW5kMFdBTHJp?=
- =?utf-8?B?NEFxTGpxTEtqMjNJdXlOTXlKUGpQUFpyYmpkWmhiNzZQeTVqOXl5SDVYQ2Fl?=
- =?utf-8?B?V1RQb1pxZnhxQ0lzdHZsNm05RHZJZXVzMnB4RDNnWWdIV3Z5Y2s2YVBPOERp?=
- =?utf-8?B?YmRMbWZjcEJZbDh0b1B1c0wzYU9Ra3hVM09tL2hLdVc5Y3dFOHhySTUwSWd4?=
- =?utf-8?B?K0UwSHc3Z1l2RWpLQ2IwTHFJeURkZVRKa0JsZ1dNYmozUUtobm5EN2l4T3JR?=
- =?utf-8?B?aWc9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: aUMPqTi/vBrrNeKzM2uwhPT/+96t8rDGzmNwYo39hZfq1/xa63jDOFV/Qwgd4503GhlXLFsd39F31OJnEsFZxvksAzw4y8VUGSvDfL7LNKZBrE6pa/b7mZpCjNlVmU1S5ULrRy2ap9qdkEKiQg09sLES8sYSwyTFqNo5yIYm1dx5vRGjLZ9vwShCzbJTzysEXkxm+J0eeY5EvSNChPsTurU7r/zRY1ugCNCppFkt1v3L9dhm0+XAF0MvNXh09YtFo660Ac9tKxp/YiAP0xoj+w4IJKMPC257oX2jUx/1UwmIz/O8X44h57a8NRis28mQ9UOv7t0dNILTTlM+1GMQpS4BDhwGUPKZlbJOvmRrunaZSqNvGJiA+1+pm6aMCKHZo6cnL7jRtZhi3uqf5bxO2OWpGHlfpb6m6Dxdo7H/qLbws/udMY0OX6hxfPNnuUHtFY/xGvILKl+jl5UtZVVC5kfoCR8zfqUSK23RVwfsNYrSNLu90vyqhSlGqQyP3ZjHPZH0wbmKcPY8dNUuwbIg8hdHVeKXKtQUPiJzTsPqAElVlhGl21BYOGUKYJXLV+gu6RpqXQdFobL0uy+GQ4hOBLLmvBXihQPDnLpjtQiLRloazEJfxtGhbHXSQM/CVfV56X5m8T/2jBc/gs/qAKsaAl5mPp8Ls83nx9+Jmk0ER9WEl1uKDcQJVzZ67+z31tHo/eH7hO4hgni63L8UtL4nXSQm8hULp2qW1bo8Z2Py+dNPjsmyBRUtfK/BgNL4iiusMBtsvo/yTqHjUGZx15VSONLRTrpRpEQtm1z/jmCm/I0=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 40e33ada-ecaf-4b2d-e8a6-08dbd9ae6d33
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 01:12:18.6130
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hMwwiOArIzX2vPkQ+FC9Sz3NgrAlfl+H5ulIYn1xgC4EijUvYRJyCBj/2iWvBs84CdGVPUPQ3xYYdd+f21dWYQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR10MB7627
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-30_13,2023-10-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 mlxscore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2310310008
-X-Proofpoint-GUID: lV1-8MFb6EKiX1N7LmPXYaOr4QlScZlo
-X-Proofpoint-ORIG-GUID: lV1-8MFb6EKiX1N7LmPXYaOr4QlScZlo
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/30/23 19:54, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Mon, Oct 30, 2023 at 01:11:56PM -1000, Linus Torvalds wrote:
+> On Mon, 30 Oct 2023 at 12:37, Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > If XFS can ignore relatime or lazytime persistent updates for given
+> > situations, then *we don't need to make periodic on-disk updates of
+> > atime*. This makes the whole problem of "persistent atime update bumps
+> > i_version" go away because then we *aren't making persistent atime
+> > updates* except when some other persistent modification that bumps
+> > [cm]time occurs.
 > 
-> At device_list_add() we allocate a btrfs_fs_devices structure and then
-> before checking if the allocation failed (pointer is ERR_PTR(-ENOMEM)),
-> we dereference the error pointer in a memcpy() argument if the feature
-> BTRFS_FEATURE_INCOMPAT_METADATA_UUID is enabled.
-> Fix this by checking for an allocation error before trying the memcpy().
+> Well, I think this should be split into two independent questions:
 > 
-> Fixes: f7361d8c3fc3 ("btrfs: sipmlify uuid parameters of alloc_fs_devices()")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   fs/btrfs/volumes.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+>  (a) are relatime or lazytime atime updates persistent if nothing else changes?
+
+They only become persistent after 24 hours or, in the case of
+relatime, immediately persistent if mtime < atime (i.e. read after a
+modification). Those are the only times that the VFS triggers
+persistent writeback of atime, and it's the latter case (mtime <
+atime) that is the specific trigger that exposed the problem with
+atime bumping i_version in the first place.
+
+>  (b) do atime updates _ever_ update i_version *regardless* of relatime
+> or lazytime?
+>
+> and honestly, I think the best answer to (b) would be that "no,
+> i_version should simply not change for atime updates". And I think
+> that answer is what it is because no user of i_version seems to want
+> it.
+
+As I keep repeating: Repeatedly stating that "atime should not bump
+i_version" does not address the questions I'm asking *at all*.
+
+> Now, the reason it's a single question for you is that apparently for
+> XFS, the only thing that matters is "inode was written to disk" and
+> that "di_changecount" value is thus related to the persistence of
+> atime updates, but splitting di_changecount out to be a separate thing
+> from i_version seems to be on the table, so I think those two things
+> really could be independent issues.
+
+Wrong way around - we'd have to split i_version out from
+di_changecount. It's i_version that has changed semantics, not
+di_changecount, and di_changecount behaviour must remain unchanged.
+
+What I really don't want to do is implement a new i_version field in
+the XFS on-disk format. What this redefinition of i_version
+semantics has made clear is that i_version is *user defined
+metadata*, not internal filesystem metadata that is defined by the
+filesystem on-disk format.
+
+User defined persistent metadata *belongs in xattrs*, not in the
+core filesystem on-disk formats. If the VFS wants to define and
+manage i_version behaviour, smeantics and persistence independently
+of the filesystems that manage the persistent storage (as it clearly
+does!) then we should treat it just like any other VFS defined inode
+metadata (e.g. per inode objects like security constraints, ACLs,
+fsverity digests, fscrypt keys, etc). i.e. it should be in a named
+xattr, not directly implemented in the filesystem on-disk format
+deinfitions.
+
+Then the application can change the meaning of the metadata whenever
+and however it likes. Then filesystem developers just don't need
+to care about it at all because the VFS specific persistent metadata
+is not part of the on-disk format we need to maintain
+cross-platform forwards and backwards compatibility for.
+
+> > But I don't want to do this unconditionally - for systems not
+> > running anything that samples i_version we want relatime/lazytime
+> > to behave as they are supposed to and do periodic persistent updates
+> > as per normal. Principle of least surprise and all that jazz.
 > 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 1fdfa9153e30..dd279241f78c 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -746,13 +746,13 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->   
->   	if (!fs_devices) {
->   		fs_devices = alloc_fs_devices(disk_super->fsid);
-> +		if (IS_ERR(fs_devices))
-> +			return ERR_CAST(fs_devices);
-> +
->   		if (has_metadata_uuid)
->   			memcpy(fs_devices->metadata_uuid,
->   			       disk_super->metadata_uuid, BTRFS_FSID_SIZE);
->   
-> -		if (IS_ERR(fs_devices))
-> -			return ERR_CAST(fs_devices);
-> -
+> Well - see above: I think in a perfect world, we'd simply never change
+> i_version at all for any atime updates, and relatime/lazytime simply
+> wouldn't be an issue at all wrt i_version.
 
-Aiyo!
+Right, that's what I'd like, especially as the new definition of
+i_version - "only change when [cm]time changes" - means that the VFS
+i_version is really now just a glorified timestamp.
 
-Thank you for the fix. How were you able to identify this issue?
+> Wouldn't _that_ be the trule "least surprising" behavior? Considering
+> that nobody wants i_version to change for what are otherwise pure
+> reads (that's kind of the *definition* of atime, after all).
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+So, if you don't like the idea of us ignoring relatime/lazytime
+conditionally, are we allowed to simply ignore them *all the time*
+and do all timestamp updates in the manner that causes users the
+least amount of pain?
 
+I mean, relatime only exists because atime updates cause users pain.
+lazytime only exists because relatime doesn't address the pain that
+timestamp updates cause mixed read/write or pure O_DSYNC overwrite
+workloads pain. noatime is a pain because it loses all atime
+updates.
 
+There is no "one size is right for everyone", so why not just let
+filesystems do what is most efficient from an internal IO and
+persistence POV whilst still maintaining the majority of "expected"
+behaviours?
 
->   		if (same_fsid_diff_dev) {
->   			generate_random_uuid(fs_devices->fsid);
->   			fs_devices->temp_fsid = true;
+Keep in mind, though, that this is all moot if we can get rid of
+i_version entirely....
 
+> Now, the annoyance here is that *both* (a) and (b) then have that
+> impact of "i_version no longer tracks di_changecount".
+
+.... and what is annoying is that that the new i_version just a
+glorified ctime change counter. What we should be fixing is ctime -
+integrating this change counting into ctime would allow us to make
+i_version go away entirely. i.e. We don't need a persistent ctime
+change counter if the ctime has sufficient resolution or persistent
+encoding that it does not need an external persistent change
+counter.
+
+That was reasoning behind the multi-grain timestamps. While the mgts
+implementation was flawed, the reasoning behind it certainly isn't.
+We should be trying to get rid of i_version by integrating it into
+ctime updates, not arguing how atime vs i_version should work.
+
+> So I don't think the issue here is "i_version" per se. I think in a
+> vacuum, the best option of i_version is pretty obvious.  But if you
+> want i_version to track di_changecount, *then* you end up with that
+> situation where the persistence of atime matters, and i_version needs
+> to update whenever a (persistent) atime update happens.
+
+Yet I don't want i_version to track di_changecount.
+
+I want to *stop supporting i_version altogether* in XFS.
+
+I want i_version as filesystem internal metadata to die completely.
+
+I don't want to change the on disk format to add a new i_version
+field because we'll be straight back in this same siutation when the
+next i_version bug is found and semantics get changed yet again.
+
+Hence if we can encode the necessary change attributes into ctime,
+we can drop VFS i_version support altogether.  Then the "atime bumps
+i_version" problem also goes away because then we *don't use
+i_version*.
+
+But if we can't get the VFS to do this with ctime, at least we have
+the abstractions available to us (i.e. timestamp granularity and
+statx change cookie) to allow XFS to implement this sort of
+ctime-with-integrated-change-counter internally to the filesystem
+and be able to drop i_version support.... 
+
+[....]
+
+> This really is all *entirely* an artifact of that "bi_changecount" vs
+> "i_version" being tied together. You did seem to imply that you'd be
+> ok with having "bi_changecount" be split from i_version, ie from an
+> earlier email in this thread:
+> 
+>  "Now that NFS is using a proper abstraction (i.e. vfs_statx()) to get
+>   the change cookie, we really don't need to expose di_changecount in
+>   i_version at all - we could simply copy an internal di_changecount
+>   value into the statx cookie field in xfs_vn_getattr() and there
+>   would be almost no change of behaviour from the perspective of NFS
+>   and IMA at all"
+
+.... which is what I was talking about here.
+
+i.e. I was not talking about splitting i_version from di_changecount
+- I was talking about being able to stop supporting the VFS
+i_version counter entirely and still having NFS and IMA work
+correctly.
+
+Continually bring the argument back to "atime vs i_version" misses
+the bigger issues around this new i_version definition and
+implementation, and that the real solution should be to fix ctime
+updates to make i_version at the VFS level go away forever.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
