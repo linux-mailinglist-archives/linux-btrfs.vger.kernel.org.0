@@ -2,53 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5507DCCB8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Oct 2023 13:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FB17DCCC5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Oct 2023 13:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344090AbjJaMOQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Oct 2023 08:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56918 "EHLO
+        id S1344158AbjJaMOu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Oct 2023 08:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbjJaMOP (ORCPT
+        with ESMTP id S1344094AbjJaMOt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Oct 2023 08:14:15 -0400
+        Tue, 31 Oct 2023 08:14:49 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCB391
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 05:14:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 340FEC433C8
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 12:14:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBBC83
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 05:14:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7417CC433C8;
+        Tue, 31 Oct 2023 12:14:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698754453;
-        bh=aV9Qv0TestdllnH2WhfHJd4+W/7BN9Ltl9L0TNxD6Tg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tU7JsQEK2qo4bzbRyrgbL69beoSiym63yDTasQs6j8kyL+qRtwbsdLTdQZ1SFw1jV
-         xOspM84TMYq+3lONO+m9/gkNXpSbYZ/0LCT4nLCycieVmUVtL8nB+FCcv9qPmieQ2+
-         0aTCYJUVvm1MXdojzCo88KAM9W3ytEgxOelMQU9+RMwvp5IvjuM8Tznw9gUNl6G/9Z
-         EHGKfCEH5pIHPH4vp9LwZrONcE3PBnW7QbGKY8z2QBhWAQD3D+4K2sXrSCc+HEUpdM
-         neMDQMnKEYOt8bWbIYD6D2Ix5bN/y6VkqETvmM7brFoTkb3NAFPB1uIUyN2TJM6o2G
-         or6q6C9rm1bmg==
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-53dfc28a2afso9077895a12.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 05:14:13 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzMgE5phnS27F110L87mmSaa05GTMaUQE1Lzgs0Fdp++DW33ScO
-        ocx48VigQJs3CKL1Ei7bhxomVYmT2bj45CZ6T68=
-X-Google-Smtp-Source: AGHT+IEsFQ1p3UkNW/nzx+PPAteJkiLHZ8km2bmLZoggT/nPhb/WT4OJoGisEMzIHBlqMSG8qel6siCQSWdf8C+Zcvo=
-X-Received: by 2002:a17:906:eece:b0:9ce:96db:c83e with SMTP id
- wu14-20020a170906eece00b009ce96dbc83emr12055112ejb.42.1698754451619; Tue, 31
- Oct 2023 05:14:11 -0700 (PDT)
+        s=k20201202; t=1698754487;
+        bh=vX+0QLP82CXz0Olz5YIyT7NGlWqlICp11NlH2e8uzIk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EryOX9Fo7jfCX+o03f1JbdHs/duqVdXq+GD5CeI36Mxv82Ri04fPrmOLs+bGPPVAv
+         oLwfKLZ0DwbUkLyJvKVjiSYwZ9yJdUcQfM9jPZVEb2uCbV7EBGVaMYrOMzbDDKGCqk
+         phiQ6nyhEzqH6x6gN6EbQdHb01iAMSYgLkNs+FBoWPJ1jXsmNr/hlp31zZJr7UeRLQ
+         zBEcwE81i+ldfUTNE0XX/a9JYtCvEcZnbzKuwBqjLWbHz/OxTta3wzBJt+NiK6CcKz
+         i+BKOqDeWgy08+NeHb4mUxBhtSgiMFjTd+lTbaMqtoPqPhqRsPosKhyDfVhZ+uJpss
+         F+zecNRCGmdpg==
+Date:   Tue, 31 Oct 2023 13:14:42 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
+Message-ID: <20231031-faktor-wahlparty-5daeaf122c5e@brauner>
+References: <20231025135048.36153-1-amir73il@gmail.com>
+ <ZTk1ffCMDe9GrJjC@infradead.org>
+ <20231025210654.GA2892534@perftesting>
+ <ZTtOmWEx5neNKkez@infradead.org>
+ <20231027131726.GA2915471@perftesting>
+ <ZT+uxSEh+nTZ2DEY@infradead.org>
 MIME-Version: 1.0
-References: <86c522f5e01e438b4a9cc16a0bda87a207d744e6.1698666319.git.fdmanana@suse.com>
- <90389e48-1ce6-478d-8cb9-ec365fbea9d1@oracle.com>
-In-Reply-To: <90389e48-1ce6-478d-8cb9-ec365fbea9d1@oracle.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 31 Oct 2023 12:13:35 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H72s8V6X-LkzmukdceHA3T3Z2W-rpSo5hgceWHFu5-+JA@mail.gmail.com>
-Message-ID: <CAL3q7H72s8V6X-LkzmukdceHA3T3Z2W-rpSo5hgceWHFu5-+JA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix error pointer dereference after failure to
- allocate fs devices
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZT+uxSEh+nTZ2DEY@infradead.org>
 X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,59 +56,49 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 1:12=E2=80=AFAM Anand Jain <anand.jain@oracle.com> =
-wrote:
->
-> On 10/30/23 19:54, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > At device_list_add() we allocate a btrfs_fs_devices structure and then
-> > before checking if the allocation failed (pointer is ERR_PTR(-ENOMEM)),
-> > we dereference the error pointer in a memcpy() argument if the feature
-> > BTRFS_FEATURE_INCOMPAT_METADATA_UUID is enabled.
-> > Fix this by checking for an allocation error before trying the memcpy()=
-.
-> >
-> > Fixes: f7361d8c3fc3 ("btrfs: sipmlify uuid parameters of alloc_fs_devic=
-es()")
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >   fs/btrfs/volumes.c | 6 +++---
-> >   1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > index 1fdfa9153e30..dd279241f78c 100644
-> > --- a/fs/btrfs/volumes.c
-> > +++ b/fs/btrfs/volumes.c
-> > @@ -746,13 +746,13 @@ static noinline struct btrfs_device *device_list_=
-add(const char *path,
-> >
-> >       if (!fs_devices) {
-> >               fs_devices =3D alloc_fs_devices(disk_super->fsid);
-> > +             if (IS_ERR(fs_devices))
-> > +                     return ERR_CAST(fs_devices);
-> > +
-> >               if (has_metadata_uuid)
-> >                       memcpy(fs_devices->metadata_uuid,
-> >                              disk_super->metadata_uuid, BTRFS_FSID_SIZE=
-);
-> >
-> > -             if (IS_ERR(fs_devices))
-> > -                     return ERR_CAST(fs_devices);
-> > -
->
-> Aiyo!
->
-> Thank you for the fix. How were you able to identify this issue?
+> > A per-subvolume vfsmount means that /proc/mounts /proc/$PID/mountinfo becomes
 
-By reading code while working on a large change in volumes.c...
+So that part confuses me and I'd like to understand this a bit more.
 
->
-> Reviewed-by: Anand Jain <anand.jain@oracle.com>
->
->
->
-> >               if (same_fsid_diff_dev) {
-> >                       generate_random_uuid(fs_devices->fsid);
-> >                       fs_devices->temp_fsid =3D true;
->
+So everytime you create a subvolume what you're doing today is that you
+give it an anonymous device number stored in ->anon_dev which presumably
+is also stored on disk?
+
+Say I have a btrfs filesystem with 2 subvolumes on /dev/sda:
+
+/mnt/subvol1
+/mnt/subvol2
+
+What happens in the kernel right now I've mentiond in the mount api
+conversion patch for btrfs I sent out in June at [1] because I tweaked
+that behavior. Say I mount both subvolumes:
+
+mount /dev/sda -o subvol=subvol1 /vol1 # sb1@vfsmount1
+mount /dev/sda -o subvol=subvol2 /vol2 # sb1@vfsmount2
+
+It creates a superblock for /dev/sda. It then creates two vfsmounts: one
+for subvol1 and one for subvol2. So you end up with two subvolumes on
+the same superblock.
+
+So if you mount a subvolume today then you already get separate
+vfsmounts. To put it another way. If you start 10,000 containers each
+using a separate btrfs subvolume then you get 10,000 vfsmounts.
+
+So I don't yet understand the scaling argument if each subvolume has a
+vfsmount anyway because afaict that's already the case.
+
+Or is it that you want a separate superblock per subvolume? Because only
+if you allocate a new superblock you'll get clean device number
+handling, no? Or am I misunderstanding this?
+
+mount /dev/sda -o subvol=subvol1 /vol1 # sget_fc() -> sb1@vfsmount1
+mount /dev/sda -o subvol=subvol2 /vol2 # sget_fc() -> sb2@vfsmount2
+
+and mounting the same subvolume again somewhere else gives you the same
+superblock but on a different vfsmount:
+
+mount /dev/sda -o subvol=subvol1 /vol1 # sget_fc() -> sb1@vfsmount3
+
+Is that the proposal?
+
+[1]: https://lore.kernel.org/all/20230626-fs-btrfs-mount-api-v1-2-045e9735a00b@kernel.org
