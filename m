@@ -2,71 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5809C7DCE57
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Oct 2023 14:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B0B7DCE50
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Oct 2023 14:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344670AbjJaNyQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Oct 2023 09:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58724 "EHLO
+        id S1344698AbjJaNzQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Oct 2023 09:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344661AbjJaNyP (ORCPT
+        with ESMTP id S1344672AbjJaNzP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Oct 2023 09:54:15 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DE8DE
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 06:54:13 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0274D1F460;
-        Tue, 31 Oct 2023 13:54:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698760452;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nq3UyrmdKGWO243Cgc+ENrAaJPKgQiwXqr/OpU7RcKU=;
-        b=BQNEzCIR0Jr/zHHTa0Lq2z1TttwMFIbNb/0glLIbTZi4si2DcDrRcVPYjCZ9xEfmNQURrm
-        XYrcnUQZtx7Z6g7/l7hyVVH/jXQDQZFSLtHtAQBRvm19hRkZoH/SxZFXRfxyU1agVZiHKR
-        cGzyz5VsXCwvsoaVkeq57BVI7idGm54=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698760452;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nq3UyrmdKGWO243Cgc+ENrAaJPKgQiwXqr/OpU7RcKU=;
-        b=ddap0Hb0xo8O+5hwhKFHBQyQ5BsU46LtfI/KxkJQaUbpWy2B3YvEUNuLv/UUCWtZQ8jHHD
-        qHGKtY9FofedExCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C3E69138EF;
-        Tue, 31 Oct 2023 13:54:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mzrxLgMHQWXOfgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 31 Oct 2023 13:54:11 +0000
-Date:   Tue, 31 Oct 2023 14:47:14 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: make found_logical_ret parameter mandatory for
- function queue_scrub_stripe()
-Message-ID: <20231031134714.GC11264@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <4da50284fed071fea6d629f09d318f70a4e42c47.1698461922.git.wqu@suse.com>
+        Tue, 31 Oct 2023 09:55:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D377F9;
+        Tue, 31 Oct 2023 06:55:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 927C6C433C8;
+        Tue, 31 Oct 2023 13:55:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698760512;
+        bh=qIx7b2aoxjsw7TSGPFkMkmmuPqzNI4IGu1YwuirwcKE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=BlTYxX8bg/TyNm9k1G7hqu+6cgvScqLMmrYdwjXbvP2dLhoZwu81/Hd86RFZNrRU0
+         1xr5Y7vFw1ElqKWf1uTmJEmuJvF5L9j3yFfh7ymcf50H/LGvdULGaZ9r81Rim15VMH
+         4BUULsumVrnHeBwimSaTDD/NGbj2ueM3Eg/nxhkdFB1V+ajGM0vsdulmLTlFZNgwMn
+         vt13jgmtUQuW2BcVFTQDAsGHT0Gmcoujtaha2sh9SXpVB++uDD9vrm6H7Cx6inillP
+         sk1nXdn297tkqDQqx2pR+3iapmU6fN1aVLAWEUbQ/flcaA2j5xZmgzrdZMzAsb7osR
+         s91m60OYKHeag==
+Message-ID: <b0cd1f921c2c9d9e76cb324c6fa7c48747eafaed.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Tue, 31 Oct 2023 09:55:09 -0400
+In-Reply-To: <20231031-stark-klar-0bab5f9ab4dc@brauner>
+References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
+         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
+         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
+         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+         <20231031-stark-klar-0bab5f9ab4dc@brauner>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4da50284fed071fea6d629f09d318f70a4e42c47.1698461922.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,46 +77,72 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Oct 28, 2023 at 01:28:45PM +1030, Qu Wenruo wrote:
-> [BUG]
-> There is a compiling warning reported on commit ae76d8e3e135 ("btrfs:
-> scrub: fix grouping of read IO"), where gcc (14.0.0 20231022 experimental)
-> is reporting the following uninitialized variable:
-> 
->   fs/btrfs/scrub.c: In function ‘scrub_simple_mirror.isra’:
->   fs/btrfs/scrub.c:2075:29: error: ‘found_logical’ may be used uninitialized [-Werror=maybe-uninitialized[https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wmaybe-uninitialized]]
->    2075 |                 cur_logical = found_logical + BTRFS_STRIPE_LEN;
->   fs/btrfs/scrub.c:2040:21: note: ‘found_logical’ was declared here
->    2040 |                 u64 found_logical;
->         |                     ^~~~~~~~~~~~~
-> 
-> [CAUSE]
-> This is a false alert, as @found_logical is passed as parameter
-> @found_logical_ret of function queue_scrub_stripe().
-> 
-> As long as queue_scrub_stripe() returned 0, we would update
-> @found_logical_ret.
-> And if queue_scrub_stripe() returned >0 or <0, the caller would not
-> utilized @found_logical, thus there should be nothing wrong.
-> 
-> Although the triggering gcc is still experimental, it looks like the
-> extra check on "if (found_logical_ret)" can sometimes confuse the
-> compiler.
-> 
-> Meanwhile the only caller of queue_scrub_stripe() is always passing a
-> valid pointer, there is no need for such check at all.
-> 
-> [FIX]
-> Although the report itself is a false alert, we can still make it more
-> explicit by:
-> 
-> - Replace the check for @found_logical_ret with ASSERT()
-> 
-> - Initialize @found_logical to U64_MAX
-> 
-> - Add one extra ASSERT() to make sure @found_logical got updated
-> 
-> Link: https://lore.kernel.org/linux-btrfs/87fs1x1p93.fsf@gentoo.org/
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Tue, 2023-10-31 at 11:26 +0100, Christian Brauner wrote:
+> On Thu, Oct 19, 2023 at 07:28:48AM -0400, Jeff Layton wrote:
+> > On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
+> > > > Back to your earlier point though:
+> > > >=20
+> > > > Is a global offset really a non-starter? I can see about doing some=
+thing
+> > > > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly as c=
+heap
+> > > > as ktime_get_coarse_ts64. I don't see the downside there for the no=
+n-
+> > > > multigrain filesystems to call that.
+> > >=20
+> > > I have to say that this doesn't excite me. This whole thing feels a b=
+it
+> > > hackish. I think that a change version is the way more sane way to go=
+.
+> > >=20
+> >=20
+> > What is it about this set that feels so much more hackish to you? Most
+> > of this set is pretty similar to what we had to revert. Is it just the
+> > timekeeper changes? Why do you feel those are a problem?
+>=20
+> So I think that the multi-grain timestamp work was well intended but it
+> was ultimately a mistake. Because we added code that complicated
+> timestamp timestamp handling in the vfs to a point where the costs
+> clearly outweighed the benefits.
+>=20
+> And I don't think that this direction is worth going into. This whole
+> thread ultimately boils down to complicating generic infrastructure
+> quite extensively for nfs to handle exposing xfs without forcing an
+> on-disk format change. That's even fine.
+>=20
+> That's not a problem but in the same way I don't think the solution is
+> just stuffing this complexity into the vfs. IOW, if we make this a vfs
+> problem then at the lowest possible cost and not by changing how
+> timestamps work for everyone even if it's just internal.
 
-Added to misc-next, thanks.
+I'll point out that this last posting I did was an RFC. It was invasive
+to the timekeeping code, but I don't think that's a hard requirement for
+doing this.
+
+I do appreciate the feedback on this version of the series (particularly
+from Thomas who gave a great technical reason why this approach was
+wrong), but I don't think we necessarily have to give up on the whole
+idea because this particular implementation was too costly.
+
+The core idea for fixing the problem with the original series is sane,
+IMO. There is nothing wrong with simply making it that when we stamp a
+file with a fine-grained timestamp that we consider that a floor for all
+later timestamp updates. The only real question is how to keep that
+(global) fine-grained floor offset at a low cost. I think that's a
+solvable problem.
+
+I also believe that real, measurable fine-grained timestamp differences
+are worthwhile for other use cases beyond NFS. Everyone was pointing out
+the problems with lagging timestamps vs. make and rsync, but that's a
+double-edged sword. With the current always coarse-grained timestamps,
+the ordering of files written within the same jiffy can't be determined
+since their timestamps will be identical. We could conceivably change
+that with this series.
+
+That said, if this has no chance of ever being merged, then I won't
+bother working on it further, and we can try to pursue something that is
+(maybe) XFS-specific.
+
+Let me know, either way.
+--
+Jeff Layton <jlayton@kernel.org>
