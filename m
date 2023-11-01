@@ -2,91 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5D37DE06B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Nov 2023 12:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FB37DE57D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Nov 2023 18:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235299AbjKALi6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Nov 2023 07:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39620 "EHLO
+        id S1344449AbjKARni (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Nov 2023 13:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235212AbjKALi5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Nov 2023 07:38:57 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415F0F7;
-        Wed,  1 Nov 2023 04:38:55 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7afd45199so68560487b3.0;
-        Wed, 01 Nov 2023 04:38:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698838734; x=1699443534; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m59jZyxH1gZ4IkJNBzdNka8KVbsaoVT0nyeW9BoP3MY=;
-        b=AbceKytzbEm1fI6aJYaC1xgszi8ZaazKEewzYxEeIa1ryBQcvsQOrXMWoRCCtA1pZ9
-         xsRT6HfikEC13gutV14GgKFexrHw2ErdRcXEw++19GFKFn/iXSFPWGwtpeKOuMLORAzi
-         ImKVLOFcGgiDOvJXQ32c1gkFN1dQQzDLOsMu3J+UnF7O3wv8vr1GwiMK8t7yGT2YAA/1
-         x2fXufvwli5f4k3NfrLLRrTf0Uy6j+9QGZYKKngmgwzcwK8BEG6HM+qRZ01lphBr1EwC
-         L6OAQEEoL8mSAmPJ2a/3hyHMhcOyEbVTQRf1qzR64eVYw2+n0hcBKelPoQZiXZ9yrGdB
-         KLSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698838734; x=1699443534;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m59jZyxH1gZ4IkJNBzdNka8KVbsaoVT0nyeW9BoP3MY=;
-        b=LHuLGLA8sPOhw2N+B3J0HXaBHCsw8MH1HJbkNQinAYvMIvK0Wztp2A7OnjDfd0G3/e
-         oGQvx+++BBKadAQXF0fEQ25qFn2uaR7E7oUdXrQYLGCEErqZiRQZbCJcORCsaHFsWrrj
-         j99x9CRlXGGDPjEZqUnracHP9iMiDaOWAq9VKYEmzKwaqqqfeFphMFowsJPbOSldYyPe
-         C5vaRYCvi55jtgMei4TBIrEh28xNEcpB7t7EqFt4/zwMrGf39NER4jhZgbbQfjSFKqEr
-         AmBf/XONrEgGmHYQGnyK1qYKX+WpGl6QJ2P8624oiDB6rZqpcw8oKjomIPn2xcpwZynr
-         g9Cw==
-X-Gm-Message-State: AOJu0Yy4kgZCJ7nwc78gR/YwxCT+a6wRIpxzf3doDasep0DvBKOXx73Q
-        DW0nuY+B5+tVKC+2dwiz2pcj5VLL2R3g3K2bTmM=
-X-Google-Smtp-Source: AGHT+IGPiQGs2flMchmrpUm3exXHwdHaIxqaR1nEgkE1E5+9YOWUy0Mc758PsX3a/8WhBl38xRZWvkoZHjkiwWqRbg8=
-X-Received: by 2002:a81:ae09:0:b0:5a7:dad7:61dd with SMTP id
- m9-20020a81ae09000000b005a7dad761ddmr15318204ywh.20.1698838734410; Wed, 01
- Nov 2023 04:38:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZTjMRRqmlJ+fTys2@dread.disaster.area> <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
- <ZTnNCytHLGoJY9ds@dread.disaster.area> <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
- <ZUAwFkAizH1PrIZp@dread.disaster.area> <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
- <ZUBbj8XsA6uW8ZDK@dread.disaster.area> <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
- <3d6a4c21626e6bbb86761a6d39e0fafaf30a4a4d.camel@kernel.org>
- <ZUF4NTxQXpkJADxf@dread.disaster.area> <20231101101648.zjloqo5su6bbxzff@quack3>
-In-Reply-To: <20231101101648.zjloqo5su6bbxzff@quack3>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 1 Nov 2023 13:38:41 +0200
-Message-ID: <CAOQ4uxgGxtErFEcSdxoFDnZZ1XfmVKn2LT1dQcJqhNj5_rnC6A@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-To:     Jan Kara <jack@suse.cz>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        with ESMTP id S233957AbjKARnh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Nov 2023 13:43:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E4710E;
+        Wed,  1 Nov 2023 10:43:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7001621A3E;
+        Wed,  1 Nov 2023 17:43:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1698860606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gAPb7AUyS8Sa7nt7J0Gh+N9Q7PPxJ73EwS5LWyR+yVM=;
+        b=APcl+86OgTYkYFTAidJBzWL2x20ZzMNtZySekTI6YWTeppZB7Y4e7/WdgH+iOJMutGP3zu
+        Is8213PlPglYz+YI2u8WE6M3MKyBimVDHCbZ7gaUa0iWRAI8xXx8cCeqrheMpIRjBa/4Je
+        Z9EwxItfKVNdRNJRNm0E9PxJ+s1Ux/E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1698860606;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gAPb7AUyS8Sa7nt7J0Gh+N9Q7PPxJ73EwS5LWyR+yVM=;
+        b=acpl0gTtnUUfB0RLR987knsM3JWjNCcCaQIlp1lqN/WIm18XtbHrdBJUfLRa4ymF1R/Je5
+        erXEyBrAeLoIdsDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D6BF1348D;
+        Wed,  1 Nov 2023 17:43:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Z0fHFj6OQmUmYQAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 01 Nov 2023 17:43:26 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id DCEFBA0767; Wed,  1 Nov 2023 18:43:25 +0100 (CET)
+From:   Jan Kara <jack@suse.cz>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     <linux-fsdevel@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Kees Cook <keescook@google.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        <linux-xfs@vger.kernel.org>, Dmitry Vyukov <dvyukov@google.com>,
+        Jan Kara <jack@suse.cz>, linux-btrfs@vger.kernel.org,
         David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>
+Subject: [PATCH 4/7] btrfs: Do not restrict writes to btrfs devices
+Date:   Wed,  1 Nov 2023 18:43:09 +0100
+Message-Id: <20231101174325.10596-4-jack@suse.cz>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20231101173542.23597-1-jack@suse.cz>
+References: <20231101173542.23597-1-jack@suse.cz>
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1121; i=jack@suse.cz; h=from:subject; bh=pEwCsUz1St/xR0Od9vpX4Oa1kDf92xqHr2SB5l976Yo=; b=owGbwMvMwME4Z+4qdvsUh5uMp9WSGFKd+nSniFlMt2oqNUz5OS2/U2bLxGidPevbJ87jnfaswy5H WWlTJ6MxCwMjB4OsmCLL6siL2tfmGXVtDdWQgRnEygQyhYGLUwAmErmcg6E7l9vGnE2y5kiInuaXRk ONX2yCO/I8b98Se81raHnQ391Bcl3pL6/Q33lXDR2SU546nn/p/OhW88bZjWduTU1uuRtV326zrfBl okbCR24mwW3X0hd7N81oN8xcGz6F8Y44d8rKl6Ir9A/P5dX+0rP49Zm9lp4b/jpWvtyifEy9zlP6tS aHZsuf/ZVr7+fH3H8ucyIvKJNjY0PuzfZApy25Xnlh1ZO0+D72Tjsa31Gwr0N8cS17SNif8pSIQxqf vE8wR811a6yL4Z6YrO8ccCdgX2RKaaWxaqK15av25kZm/dmbf1/czBEV8cgs91FZTsxnVz6pvy+374 rola7g9p66++++vRG6b+xSbz0GAA==
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,56 +82,34 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 1, 2023 at 12:16=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Wed 01-11-23 08:57:09, Dave Chinner wrote:
-> > 5. When-ever the inode is persisted, the timestamp is copied to the
-> > on-disk structure and the current change counter is folded in.
-> >
-> >       This means the on-disk structure always contains the latest
-> >       change attribute that has been persisted, just like we
-> >       currently do with i_version now.
-> >
-> > 6. When-ever we read the inode off disk, we split the change counter
-> > from the timestamp and update the appropriate internal structures
-> > with this information.
-> >
-> >       This ensures that the VFS and userspace never see the change
-> >       counter implementation in the inode timestamps.
->
-> OK, but is this compatible with the current XFS behavior? AFAICS currentl=
-y
-> XFS sets sb->s_time_gran to 1 so timestamps currently stored on disk will
-> have some mostly random garbage in low bits of the ctime. Now if you look
-> at such inode with a kernel using this new scheme, stat(2) will report
-> ctime with low bits zeroed-out so if the ctime fetched in the old kernel =
-was
-> stored in some external database and compared to the newly fetched ctime,=
- it
-> will appear that ctime has gone backwards... Maybe we don't care but it i=
-s
-> a user visible change that can potentially confuse something.
+Btrfs device probing code needs adaptation so that it works when writes
+are restricted to its mounted devices. Since btrfs maintainer wants to
+merge these changes through btrfs tree and there are review bandwidth
+issues with that, let's not block all other filesystems and just not
+restrict writes to btrfs devices for now.
 
-See xfs_inode_has_bigtime() and auto-upgrade of inode format in
-xfs_inode_item_precommit().
+CC: linux-btrfs@vger.kernel.org
+CC: David Sterba <dsterba@suse.com>
+CC: Josef Bacik <josef@toxicpanda.com>
+CC: Chris Mason <clm@fb.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/btrfs/super.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-In the case of BIGTIME inode format, admin needs to opt-in to
-BIGTIME format conversion by setting an INCOMPAT_BIGTIME
-sb feature flag.
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 6ecf78d09694..0ceeb9517177 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1403,6 +1403,8 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
+ 			return ERR_PTR(error);
+ 	}
+ 
++	/* No support for restricting writes to btrfs devices yet... */
++	mode &= ~BLK_OPEN_RESTRICT_WRITES;
+ 	/*
+ 	 * Setup a dummy root and fs_info for test/set super.  This is because
+ 	 * we don't actually fill this stuff out until open_ctree, but we need
+-- 
+2.35.3
 
-I imagine that something similar (inode flag + sb flag) would need
-to be done for the versioned-timestamp, but I think that in that case,
-the feature flag could be RO_COMPAT - there is no harm in exposing
-made-up nsec lower bits if fs would be mounted read-only on an old
-kernel, is there?
-
-The same RO_COMPAT feature flag could also be used to determine
-s_time_gran, because IIUC, s_time_gran for timestamp updates
-is uniform across all inodes.
-
-I know that Dave said he wants to avoid changing on-disk format,
-but I am hoping that this well defined and backward compat with
-lazy upgrade, on-disk format change may be acceptable?
-
-Thanks,
-Amir.
