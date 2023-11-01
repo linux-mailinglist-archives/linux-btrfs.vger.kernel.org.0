@@ -2,218 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BD57DD95A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Nov 2023 00:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 376107DD973
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Nov 2023 01:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376694AbjJaXr1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Oct 2023 19:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
+        id S231977AbjKAAES (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Oct 2023 20:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344135AbjJaXr0 (ORCPT
+        with ESMTP id S231129AbjKAAEQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Oct 2023 19:47:26 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6B6E8
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 16:47:23 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b1ef786b7fso6242639b3a.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Oct 2023 16:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698796043; x=1699400843; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LL8tYW50Kf6aNPlxTNrj3Zv6ugWw5JL8Pwwf5RV47qU=;
-        b=zIBHlVEKP/FjOQzFg2UuJA/Q5DNFbiT+htmYaqlFA20JCJ5QrCBQm6N3xXgWoeLwds
-         4SsbXX+92XauhZQ+7rfUccSjn/3kypQEjdTpK5l9B8YrqXokQqrBDHEqOSWKJlO55vBQ
-         4bR5Hdf4rku9hz3U4PGPN6uR3/Zh230hxT3lYbq+yb/2sxawBAO8wp5Yb0TeekVEoSdj
-         TbR0PlszfLIFEz9xTE5RyZYcUv+gEEpmDFEUZ7UruPnGcfjDPEQpAtkJnd9V6iXcHEEl
-         sQeTAQb+P0hU9u/zveee1e0iZ3rZzIpnA4DpSzeY6fJRe5HYNgDhg4ejwBgtaaSdO+NL
-         uERw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698796043; x=1699400843;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LL8tYW50Kf6aNPlxTNrj3Zv6ugWw5JL8Pwwf5RV47qU=;
-        b=mBRmXIHvRMKgOfKWoox/oLvKH5FBtSiPmEv+z4ZxzAX82CYRfZlQpiq/UAmR7ya1Ft
-         E33FbLIyjYR7zuX5Lo7xGfF0szV2pyOxasb9JM+FvplXKJgcj/+4MJqIBD39dgjiOohS
-         7FURa7vTeWUjXI4RnaDBR95eenAAfnv9EoIIumFt7pSsOdSEWYfn+9AFVPP7YxO/GLWw
-         BtuaKpAzrx05CN6AKZiZhrK8UtUL88w1d6obwLf4Mw5f2Tv/11yx+fRrR5DUFa6Cx/BJ
-         LUF/ZkPRJDAF6gi+lKdJ8PZ+80d4/ggUnRlPViUQPF1CkmpM3yeb5NTqWA8bDuej1Tsi
-         g57w==
-X-Gm-Message-State: AOJu0YyevpJvwA56YGX611q+OBhOUgP3N9eZdoq1yJs3ce8V7PAJi8CS
-        J1au/XD5pllM+ozMbMjc8+Vgig==
-X-Google-Smtp-Source: AGHT+IG0Ny9Z2Xdu0995f1HPr5AykcrHAfoUPqFEd6JDhsfJl5wm1cwFJ4giSGoazkZucS2Diz+3Eg==
-X-Received: by 2002:a05:6a21:78a4:b0:16b:846a:11b1 with SMTP id bf36-20020a056a2178a400b0016b846a11b1mr17455016pzc.32.1698796043058;
-        Tue, 31 Oct 2023 16:47:23 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id c25-20020a637259000000b0058a9621f583sm1537767pgn.44.2023.10.31.16.47.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Oct 2023 16:47:22 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qxyS7-006YqP-22;
-        Wed, 01 Nov 2023 10:47:19 +1100
-Date:   Wed, 1 Nov 2023 10:47:19 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-Message-ID: <ZUGSB4DhY4mNazz6@dread.disaster.area>
-References: <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
- <ZTnNCytHLGoJY9ds@dread.disaster.area>
- <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
- <ZUAwFkAizH1PrIZp@dread.disaster.area>
- <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
- <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
- <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
- <3d6a4c21626e6bbb86761a6d39e0fafaf30a4a4d.camel@kernel.org>
- <ZUF4NTxQXpkJADxf@dread.disaster.area>
- <20231031230242.GC1205143@frogsfrogsfrogs>
+        Tue, 31 Oct 2023 20:04:16 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B2CED;
+        Tue, 31 Oct 2023 17:04:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+        s=s31663417; t=1698797028; x=1699401828; i=quwenruo.btrfs@gmx.com;
+        bh=gMOv1+3vWk4OkVxqo5WDf23IIgeLMSCbAOSTC/28Fxs=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=thGbe+XhJ9IS2CpLPtfcN4Dr7SqBH5ol29Auug0EWa6ac1S8YKPkHmijeXrshfDj
+         RhZAhEoCqLS5UQYv8HyntRHQ2TBewsjw2SBaNvCBC3aY2GVYO93VIfvrlDuXtN7oh
+         G3SwF58kfn8gC2MZWVpnVvkOPuMEV0DbwNtuC3tIv8HXc+zJtl7VF8AsBjNJis956
+         wLpfLbLfHIseHHAtkCtw+HaasmxKcPG4WQyiY2ZIjpFcbUQkNvqDyn+/bbDGv6CSx
+         Bn3n+y6jqseKbOGRs4ZS0XmN4vOu+Q6Pgg5nnncyE3/OzHhSVbRQYLZBklZFNeHHW
+         kNYrPrtGOqfWEXIRmw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MFsZ3-1rEm5c3Fnz-00HO5g; Wed, 01
+ Nov 2023 01:03:48 +0100
+Message-ID: <413e2e17-868a-4ce7-bafd-6c0018486465@gmx.com>
+Date:   Wed, 1 Nov 2023 10:33:41 +1030
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231031230242.GC1205143@frogsfrogsfrogs>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
+To:     Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20231025135048.36153-1-amir73il@gmail.com>
+ <ZTk1ffCMDe9GrJjC@infradead.org> <20231025210654.GA2892534@perftesting>
+ <ZTtOmWEx5neNKkez@infradead.org> <20231027131726.GA2915471@perftesting>
+ <ZT+uxSEh+nTZ2DEY@infradead.org>
+ <20231031-faktor-wahlparty-5daeaf122c5e@brauner>
+ <ZUDxli5HTwDP6fqu@infradead.org>
+ <20231031-anorak-sammeln-8b1c4264f0db@brauner>
+ <ZUE0CWQWdpGHm81L@infradead.org>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <ZUE0CWQWdpGHm81L@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:4lbyL8tDGy2Her4bnAZRbOQfW9TN54Yyl6iaMssl5x7lq+dNDTc
+ LctiC0LIkx3oRSU65OoyWazKG7NnL+lYNmveYH+vY8sd+284cq6Cwnh/BNevAkpdCAbpDd0
+ uMIft+3gE4TOEAOiSHV66eyj7pgbDc0BZA7rm5yJF27avBXrb+rpxH1DNGcpRMOiOWhjcZG
+ gmPK9nAkciE2QU5MFSk2Q==
+UI-OutboundReport: notjunk:1;M01:P0:pFn+bQL7J+c=;PB+Hd4aJVTTReF/xYjhWpcY/9QI
+ p17rK9z9bpRAeYMmjTfycalPIepvNPby+YcYXkgwNmLXRRBqmmHRkNQyv8HrbS3wZXlRcIwjs
+ UtmXhk2o+LRm0DSeOY5qPSZ/cHmuyhcW1cm+Z7SAO7v0EM0HchBGSED4L+q6Nn4qT3xAxCCKL
+ nInZpd7pq2BPa+UlRRzN0uxDeqGCyi2jr+84TGNmFySPnsVP+bvo98EjT0B+5fBZm67V2zehC
+ qlrAk9IGKs1p0q5cCR/6cpKSa364oSBvD4hexQ3ivi7Y0H0WhppWH+/v7JMipVYKdiWwyPii4
+ IlHAYSQVeM2m8YF7jpRziJL4mT9J6kfEW3IgHbkW4pWFsTK20JQAhyvFIdbfgDvFT86dPMBlS
+ w/2De0s4E3ZEgIna5iZtr33WffTQ3nRkelFd6BEG6DVxmzIB3Nu4aKouZmInINWsv8tzP0sJQ
+ 2sWDe+7PF4s+uOLzV4HGaE3GWtov5NzuVTkPevQEFLihVIYpvSaPczAGnqRk/SH7XraBCwlTw
+ TUjpWmg39oYplckFTlte/dW6pUZqe4c6kMezsicRPLjweGNlI3uNRMki7Ar5nC81560zmhcvs
+ tqf5ab78fgnoRhfTwy+IvsVYqp+vbCMKKpRn43jLxkKzMuGg+NuRZuYq2gHVT7bcCdgMET9KT
+ gcaEurLT/TO2OnfA5VbsDLBeC2GXqs7g/fMOn5yvSSZgA3spX9tUVVjBG2ygigjIncHdsTGPt
+ BsQ7ggRx+xMt6RXLeuSInQcDC+7rh+dopunuWxOMcsSiAePULpD2VpZ1ycNiQp0e1IkdKJoQ4
+ xxmRFtwlj82hLLw1qERloQCE6ql+9xRv3PDfb4MoSQar5BsuiCU6L6mJn1Mvx4ADF9K/BSrhr
+ yHO1i4TCFHYdaT4J5DQQ1T0jaul+djweMECSP813YonLBdU7KbTwu95PlqOVV+uiQ3syoa41g
+ EpfPKFoNq6VsCZwoFoipFBI8HGU=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 04:02:42PM -0700, Darrick J. Wong wrote:
-> On Wed, Nov 01, 2023 at 08:57:09AM +1100, Dave Chinner wrote:
-> > On Tue, Oct 31, 2023 at 07:29:18AM -0400, Jeff Layton wrote:
-> > > On Tue, 2023-10-31 at 09:03 +0200, Amir Goldstein wrote:
-> > > > On Tue, Oct 31, 2023 at 3:42 AM Dave Chinner <david@fromorbit.com> wrote:
-> > e.g. the current code flow for an atime update is:
-> > 
-> > touch_atime()
-> >   atime_needs_update()
-> >   <freeze/write protection>
-> >   inode_update_time(S_ATIME)
-> >     ->update_time(S_ATIME)
-> >       <filesystem atime update>
-> > 
-> > I'd much prefer this to be:
-> > 
-> > touch_atime()
-> >   if (->update_time(S_ATIME)) {
-> >     ->update_time(S_ATIME)
-> >       xfs_inode_update_time(S_ATIME)
-> >         if (atime_needs_update())
-> > 	  <filesystem atime update>
-> >   } else {
-> >     /* run the existing code */
-> >   }
-> > 
-> > Similarly we'd turn file_modified()/file_update_time() inside out,
-> > and this then allows the filesystem to add custom timestamp update
-> > checks alongside the VFS timestamp update checks.
-> > 
-> > It would also enable us to untangle the mess that is lazytime, where
-> > we have to implement ->update_time to catch lazytime updates and
-> > punt them back to generic_update_time(), which then has to check for
-> > lazytime again to determine how to dirty and queue the inode.
-> > Of course, generic_update_time() also does timespec_equal checks on
-> > timestamps to determine if times should be updated, and so we'd
-> > probably need overrides on that, too.
-> 
-> Hmm.  So would the VFS update the incore timestamps of struct inode in
-> whatever manner it wants?
 
-That's kind of what I want to avoid - i want the filesystem to
-direct the VFS as to the type of checks and modifications it can
-make.
 
-e.g. the timestamp comparisons and actions taken need to be
-different for a timestamp-with-integrated-change-counter setup. It
-doesn't fold neatly into inode_needs_update_time() - it becomes a
-branchy, unreadable mess trying to handle all the different
-situations.
+On 2023/11/1 03:36, Christoph Hellwig wrote:
+> On Tue, Oct 31, 2023 at 01:50:46PM +0100, Christian Brauner wrote:
+>> So this is effectively a request for:
+>>
+>> btrfs subvolume create /mnt/subvol1
+>>
+>> to create vfsmounts? IOW,
+>>
+>> mkfs.btrfs /dev/sda
+>> mount /dev/sda /mnt
+>> btrfs subvolume create /mnt/subvol1
+>> btrfs subvolume create /mnt/subvol2
+>>
+>> would create two new vfsmounts that are exposed in /proc/<pid>/mountinf=
+o
+>> afterwards?
+>
+> Yes.
+>
+>> That might be odd. Because these vfsmounts aren't really mounted, no?
+>
+> Why aren't they?
 
-Hence the VFS could provide two helpers - one for the existing
-timestamp format and one for the new integrated change counter
-timestamp. The filesystem can then select the right one to call.
+So did you mean that, if we have a btrfs with two subvolumes under the
+fs tree:
 
-And, further, filesystems that have lazytime enabled should be
-checking that early to determine what to do. Lazytime specific
-helpers would be useful here.
+  /subv1
+  /subv2
 
-> Could that include incrementing the lower
-> bits of i_ctime.tv_nsec for filesystems that advertise a non-1nsec
-> granularity but also set a flag that effectively means "but you can use
-> the lower tv_nsec bits if you want"?
+Then we mount the fs root, we should have subv1 and subv2 all showing up
+at mountinfo?
 
-Certainly. Similar to multi-grain timestamps, I don't see anything
-filesystem specific about this mechanism. I think that anyone saying
-"it's ok if it's internal to XFS" is still missing the point that
-i_version as a VFS construct needs to die.
+Can we make this more dynamic? Like only initializing the vfsmount if
+the subvolume tree got its first read?
 
-At most, i_version is only needed for filesystems that don't have
-nanosecond timestamp resolution in their on-disk format and so need
-some kind of external ctime change counter to provide fine-grained,
-sub-timestamp granularity change recording.
+>
+>> And so you'd be showing potentially hundreds of mounts in
+>> /proc/<pid>/mountinfo that you can't unmount?
+>
+> Why would you not allow them to be unmounted?
 
-> And perhaps after all that, the VFS should decide if a timestamp update
-> needs to be persisted (e.g. lazytime/nodiratime/poniesatime) and if so,
-> call ->update_time or __mark_inode_dirty?  Then XFS doesn't have to know
-> about all the timestamp persistence rules, it just has to follow
-> whatever the VFS tells it.
+This unmount may not make much sense, as:
 
-Sure. I'm not suggesting that the filesystem duplicate and encode
-all these rules itself.
+- It break the assumption all subvolumes can be access from fs tree
 
-I'm just saying that it seems completely backwards that the VFS
-encode all this generic logic to handle all these separate cases in
-a single code path and then provides a callout that allows the
-filesystem to override it's decisions (e.g. lazytime) and do
-something else.
+- We may re-initialize the vfsmount every time we read that subvolume
 
-The filesystem already knows exactly what specific subset of checks
-and updates need to be done so call ou tinto the filesystem first
-and then run the VFS helpers that do exactly what is needed for
-relatime, lazytime, using timestamps with integrated change
-counters, etc.
+But otherwise the vfsmount per-subvolume solution looks at least worthy
+a try to me.
 
-> > Sorting the lazytime mess for internal change counters really needs
-> > for all the timestamp updates to be handled in the filesystem, not
-> > bounced back and forward between the filesystem and VFS helpers as
-> > it currently is, hence I think we need to rework ->update_time to
-> > make this all work cleanly.
-> 
-> (Oh, I guess I proposed sort of the opposite of what you just said.)
-
-Not really, just seems you're thinking about how to code all the
-VFS helpers we'd need a bit differently...
-
-Cheers,
-
-Dav.e
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks,
+Qu
+>
+>> And even if you treat them as mounted what would unmounting mean?
+>
+> The code in btrfs_lookup_dentry that does a hand crafted version
+> of the file system / subvolume crossing (the location.type !=3D
+> BTRFS_INODE_ITEM_KEY one) would not be executed.
+>
