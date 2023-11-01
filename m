@@ -2,105 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 376107DD973
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Nov 2023 01:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67EFA7DDD8B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Nov 2023 09:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbjKAAES (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Oct 2023 20:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60136 "EHLO
+        id S231245AbjKAIIy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Nov 2023 04:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbjKAAEQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Oct 2023 20:04:16 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B2CED;
-        Tue, 31 Oct 2023 17:04:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-        s=s31663417; t=1698797028; x=1699401828; i=quwenruo.btrfs@gmx.com;
-        bh=gMOv1+3vWk4OkVxqo5WDf23IIgeLMSCbAOSTC/28Fxs=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=thGbe+XhJ9IS2CpLPtfcN4Dr7SqBH5ol29Auug0EWa6ac1S8YKPkHmijeXrshfDj
-         RhZAhEoCqLS5UQYv8HyntRHQ2TBewsjw2SBaNvCBC3aY2GVYO93VIfvrlDuXtN7oh
-         G3SwF58kfn8gC2MZWVpnVvkOPuMEV0DbwNtuC3tIv8HXc+zJtl7VF8AsBjNJis956
-         wLpfLbLfHIseHHAtkCtw+HaasmxKcPG4WQyiY2ZIjpFcbUQkNvqDyn+/bbDGv6CSx
-         Bn3n+y6jqseKbOGRs4ZS0XmN4vOu+Q6Pgg5nnncyE3/OzHhSVbRQYLZBklZFNeHHW
-         kNYrPrtGOqfWEXIRmw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MFsZ3-1rEm5c3Fnz-00HO5g; Wed, 01
- Nov 2023 01:03:48 +0100
-Message-ID: <413e2e17-868a-4ce7-bafd-6c0018486465@gmx.com>
-Date:   Wed, 1 Nov 2023 10:33:41 +1030
+        with ESMTP id S229490AbjKAIIx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Nov 2023 04:08:53 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F22198;
+        Wed,  1 Nov 2023 01:08:50 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a7af20c488so64963377b3.1;
+        Wed, 01 Nov 2023 01:08:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698826129; x=1699430929; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zgfbgSEobRatousrajtd1MKUo9GGvoyPH04y8/doDqo=;
+        b=bSmshpaHqz69KlnSBF23evOG2ixqxGimlctyYwj96sd1Os0sj2q0p9hi7rkx0gz5yk
+         +/FGVs7nPSQqpAK/L+fpVCwu+sOOs+XWabzheoecZC4sz5OboWOc/RN6TLnoDezuGyng
+         3Ku+3/8xsfMWgFcldahZszhGkzCUhis7bb+olWSgy2/7tI8jJWh3DkpnUtIt+Un5hl4/
+         HGaNMmgQwb3IFNlHanYSkzuKw/Jp1HX+dvVh1OqpB8UfopKo+H5b+w3qbdRyi+nTP/aU
+         cMGY9sod9V36+1tEBiYk3oIrx0cuFLjfXO82QCfsZL879W4NlE8jaAkMy75sbPE0xV3C
+         nGGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698826129; x=1699430929;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zgfbgSEobRatousrajtd1MKUo9GGvoyPH04y8/doDqo=;
+        b=e3kZjzbIjhYs4IQ5EO9QNH9fZmPrd4kseSyCmYku8ba++99kC/6NjULlqFUtvGxQ4m
+         a5PgdEafPdPrtOgYJmph+l4ny0IGhFLIIXiTQSnYjhO03gDLNbV5pt0ic55wP5vIN/ZC
+         p0gvWl3+StAgFxEJJOIPuukUWVg/TteZUVXUe+dWiJgVDUgWVSTu3oSS/MDgT/iUqfM3
+         MxaIsg3IZDIMM3Yc/tit2Y49koUcWJqmT0W4Tqp6sjetwTtCp5sPl/aLjKtYt+Xepx9z
+         ekEA28gKXRvfKHXtnHXBwPcdB8ecmCfEk5LELLYUB3yaNiE9PccMuW3yv+yfKf8Bn1Bn
+         5Bjg==
+X-Gm-Message-State: AOJu0Yx4veOE6HB3N0iw8LNFPExNv76VnDgvtjRGH7PAl/a8p4nI+oWs
+        fuIpnSDZ0Jum9egRu4CRxvtfhTSjd8g7sBpHhuA=
+X-Google-Smtp-Source: AGHT+IGRBUWRysQM9zIevnqz2kXSdSgC1kLwK+R6pM3Ky1i1gtJgobEMFWL1l8JxKMDWCm+cTvXeqLv8Z+MqOa/srO4=
+X-Received: by 2002:a81:4109:0:b0:5a7:aa16:6b05 with SMTP id
+ o9-20020a814109000000b005a7aa166b05mr13757515ywa.33.1698826129298; Wed, 01
+ Nov 2023 01:08:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
-To:     Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20231025135048.36153-1-amir73il@gmail.com>
- <ZTk1ffCMDe9GrJjC@infradead.org> <20231025210654.GA2892534@perftesting>
- <ZTtOmWEx5neNKkez@infradead.org> <20231027131726.GA2915471@perftesting>
- <ZT+uxSEh+nTZ2DEY@infradead.org>
- <20231031-faktor-wahlparty-5daeaf122c5e@brauner>
- <ZUDxli5HTwDP6fqu@infradead.org>
- <20231031-anorak-sammeln-8b1c4264f0db@brauner>
- <ZUE0CWQWdpGHm81L@infradead.org>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ZUE0CWQWdpGHm81L@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+ <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+ <ZTjMRRqmlJ+fTys2@dread.disaster.area> <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
+ <ZTnNCytHLGoJY9ds@dread.disaster.area> <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
+ <ZUAwFkAizH1PrIZp@dread.disaster.area> <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
+ <ZUBbj8XsA6uW8ZDK@dread.disaster.area> <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
+ <20231031231250.GA1205221@frogsfrogsfrogs>
+In-Reply-To: <20231031231250.GA1205221@frogsfrogsfrogs>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 1 Nov 2023 10:08:37 +0200
+Message-ID: <CAOQ4uxh0rBzNm=OK3DNPyiybm2Jdac4aLYKGHAeDZn_A1HGd0Q@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4lbyL8tDGy2Her4bnAZRbOQfW9TN54Yyl6iaMssl5x7lq+dNDTc
- LctiC0LIkx3oRSU65OoyWazKG7NnL+lYNmveYH+vY8sd+284cq6Cwnh/BNevAkpdCAbpDd0
- uMIft+3gE4TOEAOiSHV66eyj7pgbDc0BZA7rm5yJF27avBXrb+rpxH1DNGcpRMOiOWhjcZG
- gmPK9nAkciE2QU5MFSk2Q==
-UI-OutboundReport: notjunk:1;M01:P0:pFn+bQL7J+c=;PB+Hd4aJVTTReF/xYjhWpcY/9QI
- p17rK9z9bpRAeYMmjTfycalPIepvNPby+YcYXkgwNmLXRRBqmmHRkNQyv8HrbS3wZXlRcIwjs
- UtmXhk2o+LRm0DSeOY5qPSZ/cHmuyhcW1cm+Z7SAO7v0EM0HchBGSED4L+q6Nn4qT3xAxCCKL
- nInZpd7pq2BPa+UlRRzN0uxDeqGCyi2jr+84TGNmFySPnsVP+bvo98EjT0B+5fBZm67V2zehC
- qlrAk9IGKs1p0q5cCR/6cpKSa364oSBvD4hexQ3ivi7Y0H0WhppWH+/v7JMipVYKdiWwyPii4
- IlHAYSQVeM2m8YF7jpRziJL4mT9J6kfEW3IgHbkW4pWFsTK20JQAhyvFIdbfgDvFT86dPMBlS
- w/2De0s4E3ZEgIna5iZtr33WffTQ3nRkelFd6BEG6DVxmzIB3Nu4aKouZmInINWsv8tzP0sJQ
- 2sWDe+7PF4s+uOLzV4HGaE3GWtov5NzuVTkPevQEFLihVIYpvSaPczAGnqRk/SH7XraBCwlTw
- TUjpWmg39oYplckFTlte/dW6pUZqe4c6kMezsicRPLjweGNlI3uNRMki7Ar5nC81560zmhcvs
- tqf5ab78fgnoRhfTwy+IvsVYqp+vbCMKKpRn43jLxkKzMuGg+NuRZuYq2gHVT7bcCdgMET9KT
- gcaEurLT/TO2OnfA5VbsDLBeC2GXqs7g/fMOn5yvSSZgA3spX9tUVVjBG2ygigjIncHdsTGPt
- BsQ7ggRx+xMt6RXLeuSInQcDC+7rh+dopunuWxOMcsSiAePULpD2VpZ1ycNiQp0e1IkdKJoQ4
- xxmRFtwlj82hLLw1qERloQCE6ql+9xRv3PDfb4MoSQar5BsuiCU6L6mJn1Mvx4ADF9K/BSrhr
- yHO1i4TCFHYdaT4J5DQQ1T0jaul+djweMECSP813YonLBdU7KbTwu95PlqOVV+uiQ3syoa41g
- EpfPKFoNq6VsCZwoFoipFBI8HGU=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,64 +94,91 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2023/11/1 03:36, Christoph Hellwig wrote:
-> On Tue, Oct 31, 2023 at 01:50:46PM +0100, Christian Brauner wrote:
->> So this is effectively a request for:
->>
->> btrfs subvolume create /mnt/subvol1
->>
->> to create vfsmounts? IOW,
->>
->> mkfs.btrfs /dev/sda
->> mount /dev/sda /mnt
->> btrfs subvolume create /mnt/subvol1
->> btrfs subvolume create /mnt/subvol2
->>
->> would create two new vfsmounts that are exposed in /proc/<pid>/mountinf=
-o
->> afterwards?
+On Wed, Nov 1, 2023 at 1:12=E2=80=AFAM Darrick J. Wong <djwong@kernel.org> =
+wrote:
 >
-> Yes.
+> On Tue, Oct 31, 2023 at 09:03:57AM +0200, Amir Goldstein wrote:
+> > On Tue, Oct 31, 2023 at 3:42=E2=80=AFAM Dave Chinner <david@fromorbit.c=
+om> wrote:
+> > >
+> > [...]
+> > > .... and what is annoying is that that the new i_version just a
+> > > glorified ctime change counter. What we should be fixing is ctime -
+> > > integrating this change counting into ctime would allow us to make
+> > > i_version go away entirely. i.e. We don't need a persistent ctime
+> > > change counter if the ctime has sufficient resolution or persistent
+> > > encoding that it does not need an external persistent change
+> > > counter.
+> > >
+> > > That was reasoning behind the multi-grain timestamps. While the mgts
+> > > implementation was flawed, the reasoning behind it certainly isn't.
+> > > We should be trying to get rid of i_version by integrating it into
+> > > ctime updates, not arguing how atime vs i_version should work.
+> > >
+> > > > So I don't think the issue here is "i_version" per se. I think in a
+> > > > vacuum, the best option of i_version is pretty obvious.  But if you
+> > > > want i_version to track di_changecount, *then* you end up with that
+> > > > situation where the persistence of atime matters, and i_version nee=
+ds
+> > > > to update whenever a (persistent) atime update happens.
+> > >
+> > > Yet I don't want i_version to track di_changecount.
+> > >
+> > > I want to *stop supporting i_version altogether* in XFS.
+> > >
+> > > I want i_version as filesystem internal metadata to die completely.
+> > >
+> > > I don't want to change the on disk format to add a new i_version
+> > > field because we'll be straight back in this same siutation when the
+> > > next i_version bug is found and semantics get changed yet again.
+> > >
+> > > Hence if we can encode the necessary change attributes into ctime,
+> > > we can drop VFS i_version support altogether.  Then the "atime bumps
+> > > i_version" problem also goes away because then we *don't use
+> > > i_version*.
+> > >
+> > > But if we can't get the VFS to do this with ctime, at least we have
+> > > the abstractions available to us (i.e. timestamp granularity and
+> > > statx change cookie) to allow XFS to implement this sort of
+> > > ctime-with-integrated-change-counter internally to the filesystem
+> > > and be able to drop i_version support....
+> > >
+> >
+> > I don't know if it was mentioned before in one of the many threads,
+> > but there is another benefit of ctime-with-integrated-change-counter
+> > approach - it is the ability to extend the solution with some adaptatio=
+ns
+> > also to mtime.
+> >
+> > The "change cookie" is used to know if inode metadata cache should
+> > be invalidated and mtime is often used to know if data cache should
+> > be invalidated, or if data comparison could be skipped (e.g. rsync).
+> >
+> > The difference is that mtime can be set by user, so using lower nsec
+> > bits for modification counter would require to truncate the user set
+> > time granularity to 100ns - that is probably acceptable, but only as
+> > an opt-in behavior.
+> >
+> > The special value 0 for mtime-change-counter could be reserved for
+> > mtime that was set by the user or for upgrade of existing inode,
+> > where 0 counter means that mtime cannot be trusted as an accurate
+> > data modification-cookie.
 >
->> That might be odd. Because these vfsmounts aren't really mounted, no?
+> What about write faults on an mmap region?  The first ro->rw transition
+> results in an mtime update, but not again until the page gets cleaned.
 >
-> Why aren't they?
 
-So did you mean that, if we have a btrfs with two subvolumes under the
-fs tree:
+That problem is out of scope. As is the issue of whether mtime is updated
+before or after the data modification.
+For all practical matter, HSM (or any backup/sync software) could fsync
+data of file before testing its mtime.
+I am working on an additional mechanism (sb_start_write_srcu) which
+HSM can use to close the rest of the possible TOCTOU races.
 
-  /subv1
-  /subv2
-
-Then we mount the fs root, we should have subv1 and subv2 all showing up
-at mountinfo?
-
-Can we make this more dynamic? Like only initializing the vfsmount if
-the subvolume tree got its first read?
-
->
->> And so you'd be showing potentially hundreds of mounts in
->> /proc/<pid>/mountinfo that you can't unmount?
->
-> Why would you not allow them to be unmounted?
-
-This unmount may not make much sense, as:
-
-- It break the assumption all subvolumes can be access from fs tree
-
-- We may re-initialize the vfsmount every time we read that subvolume
-
-But otherwise the vfsmount per-subvolume solution looks at least worthy
-a try to me.
+The problem that modification-cookie needs to solve is the coarse grained
+mtime timestamp, very much like change-cookie for ctime and additionally
+it needs to solve the problem that HSM needs to know if the mtime
+timestamp was generated by the filesystem or set by the user.
 
 Thanks,
-Qu
->
->> And even if you treat them as mounted what would unmounting mean?
->
-> The code in btrfs_lookup_dentry that does a hand crafted version
-> of the file system / subvolume crossing (the location.type !=3D
-> BTRFS_INODE_ITEM_KEY one) would not be executed.
->
+Amir.
