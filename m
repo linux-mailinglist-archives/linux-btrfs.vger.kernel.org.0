@@ -2,219 +2,232 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DAE7DFC15
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Nov 2023 22:47:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B7C7DFC83
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Nov 2023 23:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377417AbjKBVrd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Nov 2023 17:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
+        id S1377518AbjKBWm1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Nov 2023 18:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjKBVrc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Nov 2023 17:47:32 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 588AF187
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Nov 2023 14:47:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-        s=s31663417; t=1698961641; x=1699566441; i=quwenruo.btrfs@gmx.com;
-        bh=W7qNv+fZBrtMV1D2BFiywBrQwm82+UCmWS/TxIJA5M8=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=q3jBs7xqZmAf3ki8WeQrODBahdlQWKPns6HFl+9RJ8OcyzyHR/6QZ9fvfRty3xg2
-         OeHTBtkvTh4/Po63YX6GdtHMMM/jGTB8aVJm4moffO4ZhuE7PePGanCrlWtF9u751
-         AiSyx53iWmGf+pIPtk3jwlYKjaWIsD519G/+owecTFMwilpdZZvYd80KR/nrVeZGa
-         fXxSsePYOYnEkwlcc5uAEqm1yuswDozrUVl5qt2GjbVJpBXEC6s2nVZx18W/WVaBf
-         +CzX8hTLG7d+J4iIeM10JEtlq0eplzsVplyNKOQNUIenm3eH0MFdvrhgTFef51eBR
-         LBK328JmxFjpLyRzQg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4hvR-1rP2VS03mx-011iwP; Thu, 02
- Nov 2023 22:47:21 +0100
-Message-ID: <751b2c6a-98dc-4fd4-b0c5-9ae8779f35e2@gmx.com>
-Date:   Fri, 3 Nov 2023 08:17:17 +1030
+        with ESMTP id S234733AbjKBWm0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Nov 2023 18:42:26 -0400
+Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33451134
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Nov 2023 15:42:19 -0700 (PDT)
+Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1dd886536f2so1958000fac.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Nov 2023 15:42:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698964938; x=1699569738;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aUE0m0u3bkGN6Ok4lWPaHRKmZgqc8pe3r019AW+ZRzY=;
+        b=AKIp3804fgV+9GP1y279XQLiBIGfME++7FNjOkz0rCQIs6qIwj3pU25ijaRAwTdpvd
+         1OQy6Xgfggqnv1IL3iOFUS/DYQ4NXyUFwbxbUAGkGzdH7nGqLnbByD0PItmncNd1Hcw8
+         pwTGsPd7lf89H0yiPWzUUPRdUikw2Pg9P62CY12ND+oWN0AuaSxDOLuloXkTi9MYg8B9
+         E51mcE66OKSm4dLvCf0xqghYa7oLUIopE/ifz+qQgyht2nodg1c1f+Q/2eoVIwhCdWHt
+         0nuuEiO42N4ISEuI4d6C2kUzT9R/+IbnFLjaRMAkORD5kbQBaLBHBWBh+Py0Xet2gXNf
+         CJCg==
+X-Gm-Message-State: AOJu0YwssO1vSsX7dEZUaBRtUtr7qyOGZcmclGHe9LbfP3LbJnWOIAGZ
+        jUJ38xEtLzpATdhYtg3nA0IDyfLK8xMR7JzmIA+Hh4jo+Y4L
+X-Google-Smtp-Source: AGHT+IGzT5zON+jrJVcbnN9E1PNHAPOemJPbLxQPnBf31p6Z2lUsOELno+kcBu7qRmjZPlgaHjl1FoegxKdPfXdMCaOacmGNDLhr
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: tree-checker: add type and sequence check for
- inline backrefs
-Content-Language: en-US
-To:     Boris Burkov <boris@bur.io>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <23fbab97bd9dbce7869e858cb59d96a7238db57e.1698105469.git.wqu@suse.com>
- <20231102190720.GA113907@zen.localdomain>
- <d69a339c-0cc2-4168-ac90-f6c1b91517b4@gmx.com>
- <20231102203529.GA119621@zen.localdomain>
- <12595173-fdc6-4e49-9e37-e97a6b7e8606@gmx.com>
- <20231102213430.GA123227@zen.localdomain>
- <1035a27a-a1a9-492b-8d4d-3634367fece8@gmx.com>
- <20231102214627.GA123395@zen.localdomain>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20231102214627.GA123395@zen.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6vljWR2D6Ri2ewerBLTu9EYN65Nzzy2ZZFcphCiu2Z6spmumO6I
- lFF7wo+sjf643PCyDIDgs6ek6ujanCBr4LCtrw66zJnv2hQv3zWE+njBgkZmSIVrrCyLIAG
- Ny+xjVcy7bwHJyEFYyyeegc72wIn1eCzqHhldHuUv+jI+fBF2sYaB63OPKKeeAtOmRIVhUZ
- 71Ajz4ERrLpJp/09htLOw==
-UI-OutboundReport: notjunk:1;M01:P0:yO8g23Nn6Tc=;4bVMlI+x44i24CAyR8d2CKs8kS0
- CszYWlUsfJId1iVj8quZZ2ooCdzC2x4vUrbr3KQU9EatZpB8rK0Cb6+F+md8ekBNlNkT97rCV
- EVLk3JA1Env9Gg4c4LDLQUlaTVm/pi3XtUtpg3unBCqr7XySu0hrVnCglLeS3sxYmp8sUveuD
- 3N5rLhwgOKs8BpKTdIVSTDRAgy6cXp9ofOsvpGeh+nG26gnkAYPHWvGX5fOHwRTJjMU+REVhG
- ULmV2LW63rYUkqAD2snKBEE5XC8oB2gzq1YHXl40Og+FnlGTMHshZzzT/m03qb4V0yvMCWWI0
- WiQrMu5L0b21QB8Axl5UvwMG8fSNm/DuCi9gq8r97GQJlFXAa4lLPb7M34P16fdd68SyQsd6n
- 86jZeirgx23pD1dwibR5taWdqIrWdbfSyDYLoO4lls+7dxll5rwuI9AIJey4rhtINWPD3Jc40
- eCLzc/xMOzDkbs407tpNHFe/7ix/biS7ti5oparmLbLf0kXuMXzkjgtLl9x54XcBDPs0PJhgs
- erLw700+xI6TIQsyHRPyZhbTxo3u83vP5YB9mjGZZzrvWmGQm8DeEPMCX/f6ejk5O+wjvJmVZ
- IKDvbECjwzAMNuNzyvQVE15wdLDc3a95Vfp3fleydJ9OsBWvk0v/lanTj4In2fd4lTBcym9lg
- GRzDv4VNPAC67eatsQKLHR4WfHXG1VDBXP55P5kMN6PMJIndX1apdsPcPTV7Es0iDQhQbgBdW
- vEArM/uGBusnKcx01XU60kSsQdgtJ6eRl+NK8Myy7VS0AutnmsE2PUDuJ1Wdq8uxiISzHI70L
- l1K2hRXC9RoNb3OTQK+suGyB8rGYK5IhQTx0tCLj4zQgxPEzpltOLT/YJaRjn+jVSoAsup72B
- /+wwYkBL3Pz5o6344WyWN7+3x/aOSUot7UwL+vnw07BLOUiZVFq2cVuYBxFMl0SMkC810fNYz
- LylgDsvn72lyOU41+cAcTjR8Hgg=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:c796:b0:1f0:36b6:ef37 with SMTP id
+ dy22-20020a056870c79600b001f036b6ef37mr1940783oab.4.1698964938570; Thu, 02
+ Nov 2023 15:42:18 -0700 (PDT)
+Date:   Thu, 02 Nov 2023 15:42:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a6429e0609331930@google.com>
+Subject: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in btrfs_qgroup_account_extent
+From:   syzbot <syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    4652b8e4f3ff Merge tag '6.7-rc-ksmbd-server-fixes' of git:..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=148ee8cf680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d855e3560c4c99c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=e0b615318f8fcfc01ceb
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/162622d42235/disk-4652b8e4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/62d46f58ffc9/vmlinux-4652b8e4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d1062e5866ab/bzImage-4652b8e4.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-use-after-free in __list_del_entry_valid_or_report+0x2f/0x130 lib/list_debug.c:49
+Read of size 8 at addr ffff888028fe7cb0 by task kworker/u4:5/741
+
+CPU: 0 PID: 741 Comm: kworker/u4:5 Not tainted 6.6.0-syzkaller-10396-g4652b8e4f3ff #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+Workqueue: btrfs-qgroup-rescan btrfs_work_helper
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:475
+ kasan_report+0x175/0x1b0 mm/kasan/report.c:588
+ __list_del_entry_valid_or_report+0x2f/0x130 lib/list_debug.c:49
+ __list_del_entry_valid include/linux/list.h:124 [inline]
+ __list_del_entry include/linux/list.h:215 [inline]
+ list_del_init include/linux/list.h:287 [inline]
+ qgroup_iterator_nested_clean fs/btrfs/qgroup.c:2623 [inline]
+ btrfs_qgroup_account_extent+0x18b/0x1150 fs/btrfs/qgroup.c:2883
+ qgroup_rescan_leaf fs/btrfs/qgroup.c:3543 [inline]
+ btrfs_qgroup_rescan_worker+0x1078/0x1c60 fs/btrfs/qgroup.c:3604
+ btrfs_work_helper+0x37c/0xbd0 fs/btrfs/async-thread.c:315
+ process_one_work kernel/workqueue.c:2630 [inline]
+ process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
+ worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+
+Allocated by task 15683:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ btrfs_quota_enable+0xee9/0x2060 fs/btrfs/qgroup.c:1209
+ btrfs_ioctl_quota_ctl+0x143/0x190 fs/btrfs/ioctl.c:3705
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Freed by task 15683:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook mm/slub.c:1826 [inline]
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0x263/0x3a0 mm/slub.c:3822
+ btrfs_remove_qgroup+0x764/0x8c0 fs/btrfs/qgroup.c:1787
+ btrfs_ioctl_qgroup_create+0x185/0x1e0 fs/btrfs/ioctl.c:3811
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Last potentially related work creation:
+ kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
+ __call_rcu_common kernel/rcu/tree.c:2667 [inline]
+ call_rcu+0x167/0xa70 kernel/rcu/tree.c:2781
+ kthread_worker_fn+0x4ba/0xa90 kernel/kthread.c:823
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
+ insert_work+0x3e/0x320 kernel/workqueue.c:1647
+ __queue_work+0xd00/0x1010 kernel/workqueue.c:1803
+ call_timer_fn+0x17a/0x5e0 kernel/time/timer.c:1700
+ expire_timers kernel/time/timer.c:1746 [inline]
+ __run_timers+0x67a/0x860 kernel/time/timer.c:2022
+ run_timer_softirq+0x67/0xf0 kernel/time/timer.c:2035
+ __do_softirq+0x2bf/0x93a kernel/softirq.c:553
+
+The buggy address belongs to the object at ffff888028fe7c00
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 176 bytes inside of
+ freed 512-byte region [ffff888028fe7c00, ffff888028fe7e00)
+
+The buggy address belongs to the physical page:
+page:ffffea0000a3f900 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x28fe4
+head:ffffea0000a3f900 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888012c41c80 dead000000000100 dead000000000122
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 3643, tgid 3643 (kworker/u4:10), ts 20275525292, free_ts 0
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
+ prep_new_page mm/page_alloc.c:1543 [inline]
+ get_page_from_freelist+0x31db/0x3360 mm/page_alloc.c:3170
+ __alloc_pages+0x255/0x670 mm/page_alloc.c:4426
+ alloc_slab_page+0x6a/0x160 mm/slub.c:1870
+ allocate_slab mm/slub.c:2017 [inline]
+ new_slab+0x84/0x2f0 mm/slub.c:2070
+ ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
+ __slab_alloc mm/slub.c:3322 [inline]
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x19d/0x270 mm/slub.c:3517
+ kmalloc_trace+0x2a/0xe0 mm/slab_common.c:1098
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ alloc_bprm+0x56/0x900 fs/exec.c:1514
+ kernel_execve+0x96/0xa10 fs/exec.c:1989
+ call_usermodehelper_exec_async+0x233/0x370 kernel/umh.c:110
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888028fe7b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888028fe7c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888028fe7c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                     ^
+ ffff888028fe7d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888028fe7d80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
-On 2023/11/3 08:16, Boris Burkov wrote:
-> On Fri, Nov 03, 2023 at 08:09:10AM +1030, Qu Wenruo wrote:
->>
->>
->> On 2023/11/3 08:04, Boris Burkov wrote:
->> [...]
->>>>
->>>>
->>>> Another thing to mention is, that EXTENT_OWNER_REF seems to be inline=
-d
->>>> only, has no keyed version.
->>>>
->>>> I have already come upon a rare corner case:
->>>>
->>>>     What if an EXTENT_ITEM is already so large that it can not add a =
-new
->>>>     inline ref?
->>>>
->>>> I guess this can only be a problem for converting, as for now squota =
-can
->>>> only be enabled at mkfs time, thus the new EXTENT_OWNER_REF can alway=
-s
->>>> be inlined.
->>>
->>> It's a good point, but the answer is slightly subtler. You can enable
->>> squota on a live fs, it just doesn't/can't do the O(extents)
->>> conversion for existing extents. The owner ref is created for all *new=
-*
->>> extent items, but when creating an extent item, you dictate the item
->>> size which leaves enough room for the inline refs (including the owner
->>> ref).
->>
->> Oh, that's way safer.
->>
->> Although I guess we may want btrfs-progs conversion support for an
->> unmounted btrfs in the future, in that case we may need to consider the
->> keyed version of EXTENT_OWNER_REF, to be able to handle an existing
->> large EXTENT_ITEM.
->
-> I would love that, except I couldn't think of a way to do it while
-> keeping the semantics of simple quotas, well.. simple :)
->
-> We just don't know what subvol an extent is from post-hoc, so any
-> conversion would be guessing. Reflinks are really opaque from this
-> perspective (and the reason for needing this unpleasant format changing
-> item at all).
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Oh, indeed I didn't take this into consideration.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-And it is indeed making simple quote complex, just forget this idea.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Thanks,
-Qu
->
-> I suppose "pick the first ref for conversion" could be reasonable and
-> useful for some (all?) users.
->
-> Current btrfstune for squotas just turns it on for the next mount
-> without converting extents.
->
->>
->> And of course, for the sake of consistency (since all the existing 4
->> types all can be inlined or keyed).
->
-> True.
->
->>
->> Thanks,
->> Qu
->>
->>>
->>>>
->>>> Thanks,
->>>> Qu
->>>>
->>>>>
->>>>> e.g., this works to fix it:
->>>>>
->>>>> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
->>>>> index 50fdc69fdddf..62150419c6d4 100644
->>>>> --- a/fs/btrfs/tree-checker.c
->>>>> +++ b/fs/btrfs/tree-checker.c
->>>>> @@ -1496,6 +1496,9 @@ static int check_extent_item(struct extent_buf=
-fer *leaf,
->>>>>     				   inline_type);
->>>>>     			return -EUCLEAN;
->>>>>     		}
->>>>> +
->>>>> +		if (last_type =3D=3D BTRFS_EXTENT_OWNER_REF_KEY)
->>>>> +			goto next;
->>>>>     		if (inline_type < last_type) {
->>>>>     			extent_err(leaf, slot,
->>>>>     				   "inline ref out-of-order: has type %u, prev type %u",
->>>>> @@ -1512,6 +1515,7 @@ static int check_extent_item(struct extent_buf=
-fer *leaf,
->>>>>     				   last_type, last_seq);
->>>>>     			return -EUCLEAN;
->>>>>     		}
->>>>> +next:
->>>>>     		last_type =3D inline_type;
->>>>>     		last_seq =3D seq;
->>>>>     		ptr +=3D btrfs_extent_inline_ref_size(inline_type);
->>>>>
->>>>>>
->>>>>> If so, can we fix it in the kernel first?
->>>>>>
->>>>>> Thanks,
->>>>>> Qu
->>>>>>>
->>>>>>> For a repro, btrfs/301 (available in the master fstests branch) fa=
-ils
->>>>>>> with the patch but passes without it.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
