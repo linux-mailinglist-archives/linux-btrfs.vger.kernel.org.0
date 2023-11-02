@@ -2,232 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B7C7DFC83
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Nov 2023 23:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3947DFCB0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Nov 2023 23:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377518AbjKBWm1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Nov 2023 18:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
+        id S1377485AbjKBW4H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Nov 2023 18:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234733AbjKBWm0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Nov 2023 18:42:26 -0400
-Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33451134
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Nov 2023 15:42:19 -0700 (PDT)
-Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1dd886536f2so1958000fac.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Nov 2023 15:42:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698964938; x=1699569738;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aUE0m0u3bkGN6Ok4lWPaHRKmZgqc8pe3r019AW+ZRzY=;
-        b=AKIp3804fgV+9GP1y279XQLiBIGfME++7FNjOkz0rCQIs6qIwj3pU25ijaRAwTdpvd
-         1OQy6Xgfggqnv1IL3iOFUS/DYQ4NXyUFwbxbUAGkGzdH7nGqLnbByD0PItmncNd1Hcw8
-         pwTGsPd7lf89H0yiPWzUUPRdUikw2Pg9P62CY12ND+oWN0AuaSxDOLuloXkTi9MYg8B9
-         E51mcE66OKSm4dLvCf0xqghYa7oLUIopE/ifz+qQgyht2nodg1c1f+Q/2eoVIwhCdWHt
-         0nuuEiO42N4ISEuI4d6C2kUzT9R/+IbnFLjaRMAkORD5kbQBaLBHBWBh+Py0Xet2gXNf
-         CJCg==
-X-Gm-Message-State: AOJu0YwssO1vSsX7dEZUaBRtUtr7qyOGZcmclGHe9LbfP3LbJnWOIAGZ
-        jUJ38xEtLzpATdhYtg3nA0IDyfLK8xMR7JzmIA+Hh4jo+Y4L
-X-Google-Smtp-Source: AGHT+IGzT5zON+jrJVcbnN9E1PNHAPOemJPbLxQPnBf31p6Z2lUsOELno+kcBu7qRmjZPlgaHjl1FoegxKdPfXdMCaOacmGNDLhr
+        with ESMTP id S229615AbjKBW4F (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Nov 2023 18:56:05 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F970184
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Nov 2023 15:56:02 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2JL2Lo006111;
+        Thu, 2 Nov 2023 22:55:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=/POpUP+fIgowiVjChRC9lYkv2jNVX1Y3/2NYTsc1zPw=;
+ b=fbwmcrxwxIRRxpQ/QRor4RUKbVC/IKNJHi0tijQG2D91FeVYqN7mOa63Fbp+tyCWcHY7
+ N47sfZlsyIZtDECNZGeE9SBl5ZT8GBxuTuPt1y05OHAtkHDq25W3tISbPc4pImIasBAN
+ YJ2IiVDadeemPOXHQLjKawfLadSJnDyy1nGctu+LoIQgTJEUWNb2THGwfmwom9Pg+ymt
+ dynnkfEJf9tjph23Jyp9OdXovoF6pedQ/a2ZQVOF/YCkA0mkVKyb8bDX3/Coz4+aplG3
+ bsEZAOMm/s3PiI+NP7ATwt4iMmRRCJ+bdhd7TDXqr6OwV5oP2YKSgfohASTjmLKCHiEG YA== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u0swtu144-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Nov 2023 22:55:58 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2LcS7f022605;
+        Thu, 2 Nov 2023 22:55:58 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u0rr9anqu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Nov 2023 22:55:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PcGyoNaJls+lqTlAuo/zzEAv+6SBoOxbjdShGPDdnrXo/UdtSnGmSIuEf+FndXmVVI1Qe1Cl18J+vohBk3X/5wfpkNJwoWEggwMzB6iQkLpbEgrg84LS8149EzUKVY8L/akZcA4jShjTFeLyKPi3hfVeFIOJb/jaeHXPiYitMIhJANy8+35zO6hiLHK5dkcfsjCqMikWljYsNvbrpJKAsaLaHl6FEqYB4LkWoepN44apva4P4lF2wvxAF+LecsvlioDo3GbIC00tSFxX/1LPQ7CJ3sBX5wE8aF9ric1SWqlWAkaRAPJLNv85t5wpfR1MMPrJcU/iSPp8RiuUTdJRbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/POpUP+fIgowiVjChRC9lYkv2jNVX1Y3/2NYTsc1zPw=;
+ b=eEYzLiJtaKUeFPXOnyfoatvGy9rb1HkwuX7jeiEqK/va5C4L/lGEzPBK5f81kL1/WJgJyXKrfiftvv5azDWgoaxbwW83tS2sNW3Ud65pw9oKSstiSPXW/qLWRPleKgR+wCw/UmjByxoD3yJf4gOLjqvxjcEyIHoi3XHAFveYy6JhksAPU7H5Nv9opad+C8vs/0QndjsmQ/cJ6jQh4t9zvoeWn1fPwrzJnOECJkV0vovsYFDqMGCHPYnMhaXXlolThUm3hcoqSBS07pZNQh3TaBuUO8eo22SKqqjZNjMhOy+UadJx0lZtskf3lfHCAQNW8RhiU7vlJLhjtL3+FL7v5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/POpUP+fIgowiVjChRC9lYkv2jNVX1Y3/2NYTsc1zPw=;
+ b=X012O9o2vMzjdkqC0P73Vc+fVefT/e7dKxljqpZM9CpD6zBBNpk8LpDr3e/1pCz1efeBKigdJDrXMMnPBvfWgrUFbAGFMbGhpmWcvk8gfjYKzvdTD+lVY+t4/XpI88KUgMvkrCXy0XRCQdiDdobXYBB3yagGxHuXc+qiKMVp1yU=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by CY5PR10MB5963.namprd10.prod.outlook.com (2603:10b6:930:2c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Thu, 2 Nov
+ 2023 22:55:56 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::8732:b8be:e262:1fb]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::8732:b8be:e262:1fb%4]) with mapi id 15.20.6954.021; Thu, 2 Nov 2023
+ 22:55:56 +0000
+Message-ID: <f5a58903-b6c8-4cfd-9328-ea8214ca3399@oracle.com>
+Date:   Fri, 3 Nov 2023 06:55:51 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC] btrfs: pick device with lowest devt for show_devname
+Content-Language: en-US
+To:     dsterba@suse.cz
+Cc:     linux-btrfs@vger.kernel.org
+References: <85226cf68d7a72a034f0c0895b96b2557169755b.1698917826.git.anand.jain@oracle.com>
+ <20231102202652.GK11264@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20231102202652.GK11264@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR02CA0011.apcprd02.prod.outlook.com
+ (2603:1096:3:17::23) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:c796:b0:1f0:36b6:ef37 with SMTP id
- dy22-20020a056870c79600b001f036b6ef37mr1940783oab.4.1698964938570; Thu, 02
- Nov 2023 15:42:18 -0700 (PDT)
-Date:   Thu, 02 Nov 2023 15:42:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a6429e0609331930@google.com>
-Subject: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in btrfs_qgroup_account_extent
-From:   syzbot <syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CY5PR10MB5963:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0a8bd581-436d-4d78-54da-08dbdbf6df0b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aLowZyQr+CTSSnB0NVNkWyFmzso2YFl9ZKlF7DyGzXmdqtvlmWFpGNF02S869ZP1PVjuz99xz+53G6gcPEC/I/YmxixtQscdIAylKAydP3uwOWpEFHSjS7WB62TNC3O2BsnyGcvOARfU8YxeFWGaJDIXFEVSS0myWPUtlZQc1KobIYCZNQ/yBwxxWrXQucTgg83e9x32C0CAprrOolG5MOHV+lNl14wVPEdY/BcAfH2qRlg2vioeA+GDajFXj0xlqV/igDkAIpQFogVSetH6kgUfk6W/H/gRT1n04Hnnofk6z/LjQ73XYcKEk5rv8qUf4/ET1hvJZsnIsXrNMCn6NoilQyBu5gaALA9KXC5dmWl6/QyxlK3mH0VO8A8x0O1UGRCxI1OA5TyfQrr/JTtfcDHhLz3ZofiC4bZoa7R7yXY+tqxxVptLUSknJLtoFSolvd1k/pt24tQNtEJf1VtlwWSRQ6pHVK69dN2GCDD97fpvkq/OPejWvp8ajfDy0Rnt3ORt4o4GI2gxaH6cdF/vCkCln/18m8qj3c6v4m0MDHB3/8AyCVjdtvs+td5/puXpUw2f4chCy5BcEi+uIX3mIqa/6Yx4KFaD1KHUu9aSWdNIAluyO+j7I0XNjZ/fdJCuX8BerDiAXNqlvGw/k2aicw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(396003)(346002)(136003)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(8936002)(31686004)(6512007)(6506007)(26005)(38100700002)(316002)(86362001)(36756003)(31696002)(2906002)(6486002)(83380400001)(2616005)(6666004)(8676002)(66946007)(53546011)(478600001)(66556008)(66476007)(6916009)(4326008)(44832011)(5660300002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MUFCL1ZGVlhFcExnM1lQUTRNbVFvSEZZWXhGaGZjYkNxdTB3MjJWRVJsQk0w?=
+ =?utf-8?B?aTM5VnAvSjc0MzZ0a1JacmszVkpMeU9ldW04VUhHZkxVYWx0Y2dycmltcTZO?=
+ =?utf-8?B?RnJBL0FjdzZHQkFoaDd0ZW9FZFEreEovTG9wSVJSbE55UzllSG9aRHFZNjBD?=
+ =?utf-8?B?U2dzS0RRSjMyVUNRRGpEeFNrSmNKbURhMDBpejREWXN0ZU9jQlVrc2lHZXlL?=
+ =?utf-8?B?UGIrOVlqbXVGQisxcEM0ZEpHNEFxOTFhWlFVc2o4Qks5NWRlZ0E0R3lIR29C?=
+ =?utf-8?B?ZDNBT1ZOR3gwZFNRREJTWkFlb2F5TlNXd2t3bE9Ic1BWdTd2eDlRNWdGczFh?=
+ =?utf-8?B?RFN4ZGJYQmJwK2Y1bWowMEdVZGx5NGtrOFMvUld5MnZBeklxQkNyZzRpVXpY?=
+ =?utf-8?B?MVp1eVRkd2hObGJ2QW0rUXJsMHNYaTJFOHdWaHBucndJNnN6RzY4Q25qV3Jp?=
+ =?utf-8?B?eFZFN25GdWMrRlNHNTcvRVQzOFR1L3k0RkdOL3N4dnlXaG5RTVh6NFNkMVJi?=
+ =?utf-8?B?U0N5NjNLeEZoTHZtUGZFVzlPTzNzVkdnR2pIVm1JKzJveGR6UVZRdXF0TG9T?=
+ =?utf-8?B?bG5SYmJxS0tQbDlFanhpUUNMS1BPdzlTTWZPV3BZOWp2cUVrc3NRSE5XUllQ?=
+ =?utf-8?B?dWdyeFFDYVNuam9PTE54T2FJT1R1OUVPbnJBR3AzNitSOStWMENqNk82ZTdD?=
+ =?utf-8?B?WXJmMjliWlRMaytadW9FdjJRV0FMK2EvLzhMQWVUZWU1MUtMejlVV08rZXdB?=
+ =?utf-8?B?SWh5OWV4NXJLdEdyU0hJZkdUVDUwOFl1ZFZQRzU1TzVPRFZuWTVBdGdFcE1M?=
+ =?utf-8?B?ZDgyNkpKdWw4QkZqSXRCdXYwVStPS1djWTJ3SVg0b1JhNmZvb2d2UmNwelRT?=
+ =?utf-8?B?YmxiQ0dRU1UwcG9lNUtRMUYxOXZiZ3JhSlZsbzExRzV3QWt1QlVyMHlFUUFl?=
+ =?utf-8?B?NFFTVUgrQVNFTUdhL2cxNHVPYlVRRHNTeWNZczdpWG45dnV6bzc0VE44ZWpt?=
+ =?utf-8?B?YUQvOE5CTUMxbFFBVCtQbEw4anlUcnhaMzBMbnZNZ0hqQmRXRXZVM2RmTDV4?=
+ =?utf-8?B?TTZwZThZM1JJdVpJUTFDL3hhS3dqUzRXL0NybFRGVHZBYlpwMTdIZUZWWENH?=
+ =?utf-8?B?Q2dBTmtUazdrNGxhWUNlcWxTUG9ZdXlWR1VuTGs2SUl4aWFRZEllSGxDMFJa?=
+ =?utf-8?B?S1JUbHpRNitRYnB4U1VXYS9MVDVuSG83R0wrUXJsdklaWWJrR1kvOVRKQzlz?=
+ =?utf-8?B?MUEyMm5oQ3hYZW9SeitsVjhva0dDWkhjdmpRWHNteUtudnJ3TEdyMzhjZGJB?=
+ =?utf-8?B?dmV2bm1iZVI2RnJQdXFUR29EZE1raDQwU1FneEZ5b2pid09QUmI5bnpQSXNW?=
+ =?utf-8?B?RFdNdzlGTS85UmdIRnZQbDhGd01uT3FmVUpseUg1RkllMk9QaVNWdjNCc0Mw?=
+ =?utf-8?B?bGw2eGRFbnBzbTNqdDFXdjZRZ09uRWhYZUhqMnRUTGxKYzlYcHlvdlJLTE5E?=
+ =?utf-8?B?cXFOVHJ2Zmt0YWNJM0hnODZSNGxZQ1duVzgxeFVla0RoNDNOK3k3NVlZa1BR?=
+ =?utf-8?B?eGxwajZPMlpUTFpIQ3dMK3pNYUZNTmxqTHRUQ3R1ejBMTzNMTFM4YnZIMDhG?=
+ =?utf-8?B?bEJZKzI0UHA3R1NQWVloaFZiWnp4SlZMVis1cnFWSG12VVVML3lvdTFmdUtZ?=
+ =?utf-8?B?SHBNS3c3QVUxWXBtd29xRk5yNHBDWHRCQ1I2aDllTVFtYnlPMENCMWlQaVhU?=
+ =?utf-8?B?ZGEwcnlvS2Y2V2RlTXpSNTVRQ0dwU2JCVklWenRCUjdoeGdxL3V4T2hhSG55?=
+ =?utf-8?B?RE1kRnA3Y1E4OW12NzFkcGt1My8zTTdHbzRoSnJXZ0pOMktYRm95akJqY29s?=
+ =?utf-8?B?N2xxTUg4ZkF4VDZzMlQ0Wk1adnBCYWw3ejFXcFJvVHJrQmNMeEdIQ0w4V2xM?=
+ =?utf-8?B?dUVlT0E2WnE5dFNieURHUmZtOE1LT2tlU2hHU1pOTngyQzZweHNDcmxWc3lX?=
+ =?utf-8?B?cjRpdHcyL0JQVkI1eFBtckNJL3RtVTZIdWFsRFA5TGxZMnEySHExS1ZvT3lD?=
+ =?utf-8?B?ZFM3Y2Z5Y2tkODN2WHVZTnVTVVFsOS9kNmJ2dHFod1FFOTgyQXdKMk5SV21D?=
+ =?utf-8?B?R2JJS3p6MDROZ25DWnQyM1Y5NC8wcE4zdSt0bmNKdnpPK0JNT1dwRml5cFRq?=
+ =?utf-8?B?TXc9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 95XweiCxVIYvNSYTdOaYgbcndFrwo8VrkteINQXoIrLdNcU/C0kiGzHZHYTKUGlFNQ5qKCHnPdKdIA0fIEAmt9OkZyPaQXm7NtPHfroqzNvPrl1Jb5M4YKo2tG5wwVHaecwmkwMrMmTZsqGjWoaWeY07AX5s/3cPdEQ+XxyxWA3CqR+2SbC65nO84FTArABimhOAbm3we8nBJvNojGXeqJ+bObT5EH1/6t0CD9jUqiiqc7SV100bp+oGEnenmnYJQVmRjSeUfUyAoJ86jmvfjPCnk5BUEYpJ7l1sINcAOQDMR0BCX8fvjib8lb1KC9WX36rot0lEUMIZ48wDt/kdx3zBSEYvOcvA2T7XRqrBj8CKc3SGatpSCReFGoi4L7YhqB04bzVFhtMYbsFp4pkpHJtz15JmpxWaChsSq4TjedvGxYmo8cYnKM++CdKygWOnUgP2TpTw3FSK7nUU7JK5/HIJl93pc0GMJBwtc9CV0iNyzPDVybvjcRcqhlrZgpRv+pOYrHUnm9TVHWg26120+he15XRRBev68Ri2ZmKcu7zxR6uM8/uQxAz0DHpG8HUFm0E4AYGaLKQ04WNS4xA8XSamfbxKyD9kFBNxgP2SP07/epAYRxu2uY1VNXpE2gAmW4gv/kTo3fP7/FxLw7L4EWP+THWMg4sUCpjSq3hlmAdVMJoxOciFx+aYIJBte8EE/gMTSvmLWV+EgZnT882w4YyvX5LgkDt3E4TaTBLUehDGLG3c0zdlWJYNh9N1HFQTADNFq38Ids6dc2i5BaOBetCMt78luDKGpm+W/Z0HO9A=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a8bd581-436d-4d78-54da-08dbdbf6df0b
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 22:55:55.6643
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Fwpb/DHuKSJaiRRNNRSkLwhxsaG6SkOd7X5CWTE85ByMYP7IyABX7vJv7sq8AiY75Vh3TTc9nBTs+D2Ka+aJQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB5963
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-02_10,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311020184
+X-Proofpoint-ORIG-GUID: QpmKblfJur6A6_prBAMKOIeEOFn_IC-T
+X-Proofpoint-GUID: QpmKblfJur6A6_prBAMKOIeEOFn_IC-T
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    4652b8e4f3ff Merge tag '6.7-rc-ksmbd-server-fixes' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=148ee8cf680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d855e3560c4c99c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=e0b615318f8fcfc01ceb
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/162622d42235/disk-4652b8e4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/62d46f58ffc9/vmlinux-4652b8e4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d1062e5866ab/bzImage-4652b8e4.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-use-after-free in __list_del_entry_valid_or_report+0x2f/0x130 lib/list_debug.c:49
-Read of size 8 at addr ffff888028fe7cb0 by task kworker/u4:5/741
-
-CPU: 0 PID: 741 Comm: kworker/u4:5 Not tainted 6.6.0-syzkaller-10396-g4652b8e4f3ff #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-Workqueue: btrfs-qgroup-rescan btrfs_work_helper
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x175/0x1b0 mm/kasan/report.c:588
- __list_del_entry_valid_or_report+0x2f/0x130 lib/list_debug.c:49
- __list_del_entry_valid include/linux/list.h:124 [inline]
- __list_del_entry include/linux/list.h:215 [inline]
- list_del_init include/linux/list.h:287 [inline]
- qgroup_iterator_nested_clean fs/btrfs/qgroup.c:2623 [inline]
- btrfs_qgroup_account_extent+0x18b/0x1150 fs/btrfs/qgroup.c:2883
- qgroup_rescan_leaf fs/btrfs/qgroup.c:3543 [inline]
- btrfs_qgroup_rescan_worker+0x1078/0x1c60 fs/btrfs/qgroup.c:3604
- btrfs_work_helper+0x37c/0xbd0 fs/btrfs/async-thread.c:315
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
- worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
- kthread+0x2d3/0x370 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-
-Allocated by task 15683:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:600 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- btrfs_quota_enable+0xee9/0x2060 fs/btrfs/qgroup.c:1209
- btrfs_ioctl_quota_ctl+0x143/0x190 fs/btrfs/ioctl.c:3705
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Freed by task 15683:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x263/0x3a0 mm/slub.c:3822
- btrfs_remove_qgroup+0x764/0x8c0 fs/btrfs/qgroup.c:1787
- btrfs_ioctl_qgroup_create+0x185/0x1e0 fs/btrfs/ioctl.c:3811
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Last potentially related work creation:
- kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
- __call_rcu_common kernel/rcu/tree.c:2667 [inline]
- call_rcu+0x167/0xa70 kernel/rcu/tree.c:2781
- kthread_worker_fn+0x4ba/0xa90 kernel/kthread.c:823
- kthread+0x2d3/0x370 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-Second to last potentially related work creation:
- kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
- insert_work+0x3e/0x320 kernel/workqueue.c:1647
- __queue_work+0xd00/0x1010 kernel/workqueue.c:1803
- call_timer_fn+0x17a/0x5e0 kernel/time/timer.c:1700
- expire_timers kernel/time/timer.c:1746 [inline]
- __run_timers+0x67a/0x860 kernel/time/timer.c:2022
- run_timer_softirq+0x67/0xf0 kernel/time/timer.c:2035
- __do_softirq+0x2bf/0x93a kernel/softirq.c:553
-
-The buggy address belongs to the object at ffff888028fe7c00
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 176 bytes inside of
- freed 512-byte region [ffff888028fe7c00, ffff888028fe7e00)
-
-The buggy address belongs to the physical page:
-page:ffffea0000a3f900 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x28fe4
-head:ffffea0000a3f900 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888012c41c80 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 3643, tgid 3643 (kworker/u4:10), ts 20275525292, free_ts 0
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0x31db/0x3360 mm/page_alloc.c:3170
- __alloc_pages+0x255/0x670 mm/page_alloc.c:4426
- alloc_slab_page+0x6a/0x160 mm/slub.c:1870
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2070
- ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x19d/0x270 mm/slub.c:3517
- kmalloc_trace+0x2a/0xe0 mm/slab_common.c:1098
- kmalloc include/linux/slab.h:600 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- alloc_bprm+0x56/0x900 fs/exec.c:1514
- kernel_execve+0x96/0xa10 fs/exec.c:1989
- call_usermodehelper_exec_async+0x233/0x370 kernel/umh.c:110
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888028fe7b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888028fe7c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888028fe7c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                     ^
- ffff888028fe7d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888028fe7d80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 11/3/23 04:26, David Sterba wrote:
+> On Thu, Nov 02, 2023 at 07:10:48PM +0800, Anand Jain wrote:
+>> In a non-single-device Btrfs filesystem, if Btrfs is already mounted and
+>> if you run the command 'mount -a,' it will fail and the command
+>> 'umount <device>' also fails. As below:
+>>
+>> ----------------
+>> $ cat /etc/fstab | grep btrfs
+>> UUID=12345678-1234-1234-1234-123456789abc /btrfs btrfs defaults,nofail 0 0
+>>
+>> $ mkfs.btrfs -qf --uuid 12345678-1234-1234-1234-123456789abc /dev/sda2 /dev/sda1
+>> $ mount --verbose -a
+>> /                        : ignored
+>> /btrfs                   : successfully mounted
+>>
+>> $ ls -l /dev/disk/by-uuid | grep 12345678-1234-1234-1234-123456789abc
+>> lrwxrwxrwx 1 root root 10 Nov  2 17:43 12345678-1234-1234-1234-123456789abc -> ../../sda1
+>>
+>> $ cat /proc/self/mounts | grep btrfs
+>> /dev/sda2 /btrfs btrfs rw,relatime,space_cache=v2,subvolid=5,subvol=/ 0 0
+>>
+>> $ findmnt --df /btrfs
+>> SOURCE    FSTYPE SIZE  USED AVAIL USE% TARGET
+>> /dev/sda2 btrfs    2G  5.8M  1.8G   0% /btrfs
+>>
+>> $ mount --verbose -a
+>> /                        : ignored
+>> mount: /btrfs: /dev/sda1 already mounted or mount point busy.
+>> $echo $?
+>> 32
+>>
+>> $ umount /dev/sda1
+>> umount: /dev/sda1: not mounted.
+>> $ echo $?
+>> 32
+>> ----------------
+>>
+>> I assume (RFC) this is because '/dev/disk/by-uuid,' '/proc/self/mounts,'
+>> and 'findmnt' do not all reference the same device, resulting in the
+>> 'mount -a' and 'umount' failures. However, an empirically found solution
+>> is to align them using a rule, such as the disk with the lowest 'devt,'
+>> for a multi-device Btrfs filesystem.
+>>
+>> I'm not yet sure (RFC) how to create a udev rule to point to the disk with
+>> the lowest 'devt,' as this kernel patch does, and I believe it is
+>> possible.
+>>
+>> And this would ensure that '/proc/self/mounts,' 'findmnt,' and
+>> '/dev/disk/by-uuid' all reference the same device.
+>>
+>> After applying this patch, the above test passes. Unfortunately,
+>> /dev/disk/by-uuid also points to the lowest 'devt' by chance, even though
+>> no rule has been set as of now. As shown below.
+> 
+> Does this mean the devid of the device shown in /proc/self/mount won't
+> be the lowest? Here the devid is the logical device number, while devt
+> is some internal identifier or at least not something I'd consider a
+> good identifier from user perspective.
+> 
+> The lowest devid has been there for a long time so I'd consider this as
+> behaviour change which can potentially break things.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+It's not the lowest devid, but rather the latest_bdev since commit
+6605fd2f394b ('btrfs: use latest_dev in btrfs_show_devname').
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+We need a rule for choosing a device in a multi-device filesystem that
+works both inside and outside the kernel. The major-minor (devt) is the
+only consistent option.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+OR Any other ideas?
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks, Anand
