@@ -2,204 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C3F7DF028
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Nov 2023 11:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B6D7DF0E2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Nov 2023 12:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346658AbjKBK3i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Nov 2023 06:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50648 "EHLO
+        id S1347240AbjKBLH4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Nov 2023 07:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345942AbjKBK3h (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Nov 2023 06:29:37 -0400
+        with ESMTP id S1346709AbjKBLHz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Nov 2023 07:07:55 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BE2128;
-        Thu,  2 Nov 2023 03:29:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE270C433C7;
-        Thu,  2 Nov 2023 10:29:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC545DE
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Nov 2023 04:07:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68060C433C8;
+        Thu,  2 Nov 2023 11:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698920974;
-        bh=Re2dqNuKfkORzyb2wUhHbpPQHZvYeU32o2iRAeDKELk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=VfC4xEgo6WkMO4eihMPrTH0TndVEUcC3iif+UuOMldW3locME58/MSs+rdhZ0esTY
-         ca1e3CquDqo8Oz1s+y3r/25OQjr0nH9agzlmoMG282uM5H7flQjxDCIcwA74lfE64q
-         x1GvEaUSHPuj6bPWY5KmYwWou5uCeMT7RxRPxXtFc83cT54IgyfV/Pqmn4hBZoF/TO
-         s6rAnmBEI2UBN+8vy3LVi32z1bYhhBYtWmeVPM+2VHwHJRWdUrGiS8LcyyewUdpwv7
-         nJugXB7iaxMHR7d0nuM8tBJdDEQUYFtSIxh3TXRyj8E45EJZmOM0EcI7G9LvqMgc2B
-         WNKJAiEY60Jog==
-Message-ID: <eeb7e312410a5d6e362d1ac377005c7eaaf72925.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>,
-        Trond Myklebust <trondmy@hammerspace.com>
-Cc:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "jack@suse.cz" <jack@suse.cz>, "clm@fb.com" <clm@fb.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "jstultz@google.com" <jstultz@google.com>,
-        "djwong@kernel.org" <djwong@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "chandan.babu@oracle.com" <chandan.babu@oracle.com>,
-        "hughd@google.com" <hughd@google.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "amir73il@gmail.com" <amir73il@gmail.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "jack@suse.de" <jack@suse.de>
-Date:   Thu, 02 Nov 2023 06:29:30 -0400
-In-Reply-To: <ZULfQIdN146eZodE@dread.disaster.area>
-References: <6df5ea54463526a3d898ed2bd8a005166caa9381.camel@kernel.org>
-         <ZUAwFkAizH1PrIZp@dread.disaster.area>
-         <CAHk-=wg4jyTxO8WWUc1quqSETGaVsPHh8UeFUROYNwU-fEbkJg@mail.gmail.com>
-         <ZUBbj8XsA6uW8ZDK@dread.disaster.area>
-         <CAOQ4uxgSRw26J+MPK-zhysZX9wBkXFRNx+n1bwnQwykCJ1=F4Q@mail.gmail.com>
-         <3d6a4c21626e6bbb86761a6d39e0fafaf30a4a4d.camel@kernel.org>
-         <ZUF4NTxQXpkJADxf@dread.disaster.area>
-         <20231101101648.zjloqo5su6bbxzff@quack3>
-         <CAHk-=wj6wy6tNUQm6EtgxfE_J229y1DthpCguqQfTej71yiJXw@mail.gmail.com>
-         <3ae88800184f03b152aba6e4a95ebf26e854dd63.camel@hammerspace.com>
-         <ZULfQIdN146eZodE@dread.disaster.area>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        s=k20201202; t=1698923272;
+        bh=vBZ6CoC27DKlXXWJLILSuWZxK3TJ0ywpD+ZBkYaJZtE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ys3UFDvrxSk/TgQWj3Z4ue146ufUssLjQ3jWQ9812Cf+TsSdnH7QVrcAN/GXw8R1H
+         XYrDoYD179s3rNuQHGdNzfVdhlXb5B54Oe0ityBLEdoolmhZve6qbgsk4IJmfcUf50
+         eHbK/lAZCbQqQPqZYMHM2lqMZVozFo7d9UVU8oKQWwyGPf1yRJAdQ07AY6foN/w6Xv
+         PWFd3O3NBHx4pdXQpy6ePxwLMQjlEHowZo8X4y2+ilXt6K91GbUsjPcxs6RDkPLwQo
+         Y1poKa1RP3sD7x6Te+ASVNZMZiLdRKyp+USEiDUxEQGqr3l7TXZn8M44IEuCQC9C4T
+         I8yGWFbXO92VQ==
+Date:   Thu, 2 Nov 2023 12:07:47 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Josef Bacik <josef@toxicpanda.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
+        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
+Message-ID: <20231102-schafsfell-denkzettel-08da41113e24@brauner>
+References: <20231027131726.GA2915471@perftesting>
+ <ZT+uxSEh+nTZ2DEY@infradead.org>
+ <20231031-faktor-wahlparty-5daeaf122c5e@brauner>
+ <ZUDxli5HTwDP6fqu@infradead.org>
+ <20231031-anorak-sammeln-8b1c4264f0db@brauner>
+ <ZUE0CWQWdpGHm81L@infradead.org>
+ <20231101-nutzwert-hackbeil-bbc2fa2898ae@brauner>
+ <590e421a-a209-41b6-ad96-33b3d1789643@gmx.com>
+ <20231101-neigen-storch-cde3b0671902@brauner>
+ <20231102051349.GA3292886@perftesting>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231102051349.GA3292886@perftesting>
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 2023-11-02 at 10:29 +1100, Dave Chinner wrote:
-> On Wed, Nov 01, 2023 at 09:34:57PM +0000, Trond Myklebust wrote:
-> > On Wed, 2023-11-01 at 10:10 -1000, Linus Torvalds wrote:
-> > > The above does not expose *any* changes to timestamps to users, and
-> > > should work across a wide variety of filesystems, without requiring
-> > > any special code from the filesystem itself.
-> > >=20
-> > > And now please all jump on me and say "No, Linus, that won't work,
-> > > because XYZ".
-> > >=20
-> > > Because it is *entirely* possible that I missed something truly
-> > > fundamental, and the above is completely broken for some obvious
-> > > reason that I just didn't think of.
-> > >=20
-> >=20
-> > My client writes to the file and immediately reads the ctime. A 3rd
-> > party client then writes immediately after my ctime read.
-> > A reboot occurs (maybe minutes later), then I re-read the ctime, and
-> > get the same value as before the 3rd party write.
-> >=20
-> > Yes, most of the time that is better than the naked ctime, but not
-> > across a reboot.
->=20
-> This sort of "crash immediately after 3rd party data write" scenario
-> has never worked properly, even with i_version.
->=20
-> The issue is that 3rd party (local) buffered writes or metadata
-> changes do not require any integrity or metadata stability
-> operations to be performed by the filesystem unless O_[D]SYNC is set
-> on the fd, RWF_[D]SYNC is set on the IO, or f{data}sync() is
-> performed on the file.
->=20
-> Hence no local filesystem currently persists i_version or ctime
-> outside of operations with specific data integrity semantics.
->=20
-> nfsd based modifications have application specific persistence
-> requirements and that is triggered by the nfsd calling
-> ->commit_metadata prior to returning the operation result to the
-> client. This is what persists i_version/timestamp changes that were
-> made during the nfsd operation - this persistence behaviour is not
-> driven by the local filesystem.
->=20
-> IOWs, this "change attribute failure" scenario is an existing
-> problem with the current i_version implementation.  It has always
-> been flawed in this way but this didn't matter a decade ago because
-> it's only purpose (and user) was nfsd and that had the required
-> persistence semantics to hide these flaws within the application's
-> context.
->
-> Now that we are trying to expose i_version as a "generic change
-> attribute", these persistence flaws get exposed because local
-> filesystem operations do not have the same enforced persistence
-> semantics as the NFS server.
->=20
-> This is another reason I want i_version to die.
->=20
-> What we need is a clear set of well defined semantics around statx
-> change attribute sampling. Correct crash-recovery/integrity behaviour
-> requires this rule:
->=20
->   If the change attribute has been sampled, then the next
->   modification to the filesystem that bumps change attribute *must*
->   persist the change attribute modification atomically with the
->   modification that requires it to change, or submit and complete
->   persistence of the change attribute modification before the
->   modification that requires it starts.
->=20
-> e.g. a truncate can bump the change attribute atomically with the
-> metadata changes in a transaction-based filesystem (ext4, XFS,
-> btrfs, bcachefs, etc).
->=20
-> Data writes are much harder, though. Some filesysetm structures can
-> write data and metadata in a single update e.g. log structured or
-> COW filesystems that can mix data and metadata like btrfs.
-> Journalling filesystems require ordering between journal writes and
-> the data writes to guarantee the change attribute is persistent
-> before we write the data. Non-journalling filesystems require inode
-> vs data write ordering.
->=20
-> Hence I strongly doubt that a persistent change attribute is best
-> implemented at the VFS - optimal, efficient implementations are
-> highly filesystem specific regardless of how the change attribute is
-> encoded in filesysetm metadata.
->=20
-> This is another reason I want to change how the inode timestamp code
-> is structured to call into the filesystem first rather than last.
-> Different filesystems will need to do different things to persist
-> a "ctime change counter" attribute correctly and efficiently -
-> it's not a one-size fits all situation....
+> Btw I'm working on this, mostly to show Christoph it doesn't do what he thinks
+> it does.
+> 
+> However I ran into some weirdness where I need to support the new mount API, so
+> that's what I've been doing since I wandered away from this thread.  I should
+> have that done tomorrow, and then I was going to do the S_AUTOMOUNT thing ontop
+> of that.
+> 
+> But I have the same questions as you Christian, I'm not entirely sure how this
+> is supposed to be better.  Even if they show up in /proc/mounts, it's not going
+> to do anything useful for the applications that don't check /proc/mounts to see
+> if they've wandered into a new mount.  I also don't quite understand how NFS
+> suddenly knows it's wandered into a new mount with a vfsmount.
 
-FWIW, the big danger for nfsd is is i_version rollback after a crash:
+So the subvolumes-as-vfsmount solution was implemented already a few
+years ago. I looked at that patchset and the crucial point in the
+solution was patch [1].
 
-We can end up handing out an i_version value to the client before it
-ever makes it to disk. If that happens, and the server crashes before it
-ever makes it to disk, then the client can see the old i_version when it
-queries it again (assuming the earlier write was lost).
+show_mountinfo() is called under namespace_sem (see fs/namespace.c).
+That thing is crucial for all mount namespaces, mount propagation and so
+on. We can't cause IO under that unless we want to allow to trivially
+deadlock the whole system by tricking us into talking to an unresponsive
+NFS server or similar. And all vfs_getattr*() flavours can legitimately
+cause IO even with AT_STATX_DONT_SYNC.
 
-That, in an of itself, is not a _huge_ problem for NFS clients. They'll
-typically just invalidate their cache if that occurs and reread any data
-they need.
+So exposing this via /proc/<pid>/mountinfo doesn't work. But that means
+even if you make it a separate vfsmount you need to epose the device
+information through another interface.
 
-The real danger is that you can have a write that occurs after the
-reboot that is different from the earlier one and hand out a change
-attribute that is a duplicate of the one viewed earlier. Now you have
-the same change attribute that refers to two different states of the
-file (and potential data corruption).
+But at that point we really need to ask if it makes sense to use
+vfsmounts per subvolume in the first place:
 
-We mitigate that today by factoring in the ctime on regular files when
-generating the change attribute (see nfsd4_change_attribute()). In
-theory, i_version rolling back + a clock jump backward could generate
-change attr collisions, even with that, but that's a bit harder to
-contrive so we mostly don't worry about it.
+(1) We pollute /proc/<pid>/mountinfo with a lot of mounts.
+(2) By calling ->getattr() from show_mountinfo() we open the whole
+    system up to deadlocks.
+(3) We change btrfs semantics drastically to the point where they need a
+    new mount, module, or Kconfig option.
+(4) We make (initial) lookup on btrfs subvolumes more heavyweight
+    because you need to create a mount for the subvolume.
 
-I'm all for coming up with a way to make this more resilient though. If
-we can offer the guarantee that you're proposing above, then that would
-be a very nice thing.
---=20
-Jeff Layton <jlayton@kernel.org>
+So right now, I don't see how we can make this work even if the concept
+doesn't seem necessarily wrong.
+
+Even if we were to go through with this and make each subvolume a
+vfsmount but then don't expose the ->getattr() device numbers in
+/proc/<pid>/mountinfo but instead add a separate retrieval method via
+statx() we'd be creating even more confusion for userspace by showing
+different device numbers in /proc/<pid>/mountinfo than in statx().
+
+[1]:
+
+Subject:        [PATCH 01/11] VFS: show correct dev num in mountinfo
+Date:	 	Wed, 28 Jul 2021 08:37:45 +1000
+Message-ID:	<162742546548.32498.10889023150565429936.stgit@noble.brown>
+
+/proc/$PID/mountinfo contains a field for the device number of the
+filesystem at each mount.
+
+This is taken from the superblock ->s_dev field, which is correct for
+every filesystem except btrfs.  A btrfs filesystem can contain multiple
+subvols which each have a different device number.  If (a directory
+within) one of these subvols is mounted, the device number reported in
+mountinfo will be different from the device number reported by stat().
+
+This confuses some libraries and tools such as, historically, findmnt.
+Current findmnt seems to cope with the strangeness.
+
+So instead of using ->s_dev, call vfs_getattr_nosec() and use the ->dev
+provided.  As there is no STATX flag to ask for the device number, we
+pass a request mask for zero, and also ask the filesystem to avoid
+syncing with any remote service.
+
+Signed-off-by: NeilBrown <neilb@suse.de>
+---
+ fs/proc_namespace.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
+index 392ef5162655..f342a0231e9e 100644
+--- a/fs/proc_namespace.c
++++ b/fs/proc_namespace.c
+@@ -138,10 +138,16 @@ static int show_mountinfo(struct seq_file *m, struct vfsmount *mnt)
+ 	struct mount *r = real_mount(mnt);
+ 	struct super_block *sb = mnt->mnt_sb;
+ 	struct path mnt_path = { .dentry = mnt->mnt_root, .mnt = mnt };
++	struct kstat stat;
+ 	int err;
+ 
++	/* We only want ->dev, and there is no STATX flag for that,
++	 * so ask for nothing and assume we get ->dev
++	 */
++	vfs_getattr_nosec(&mnt_path, &stat, 0, AT_STATX_DONT_SYNC);
++
+ 	seq_printf(m, "%i %i %u:%u ", r->mnt_id, r->mnt_parent->mnt_id,
+-		   MAJOR(sb->s_dev), MINOR(sb->s_dev));
++		   MAJOR(stat.dev), MINOR(stat.dev));
+ 	if (sb->s_op->show_path) {
+ 		err = sb->s_op->show_path(m, mnt->mnt_root);
+ 		if (err)
+
