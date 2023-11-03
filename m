@@ -2,117 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B88CC7E084E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Nov 2023 19:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3647E097B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Nov 2023 20:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233934AbjKCShp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Nov 2023 14:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57022 "EHLO
+        id S230346AbjKCTdy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Nov 2023 15:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbjKCSho (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Nov 2023 14:37:44 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0B6D47
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 Nov 2023 11:37:38 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 8832A5C0100;
-        Fri,  3 Nov 2023 14:37:37 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 03 Nov 2023 14:37:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-        :content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1699036657; x=1699123057; bh=X5GHwnNCuZ
-        mOSDtt7+tvXysu/XAD28WLwLD+pyUhark=; b=C26VT7S1rYMLaTkvctRjrxrVoK
-        9LjrNHa3FTBttoe1neldMWmBgHQtuhfhEGDi2qk/MwFvsvemlgAldDcWXwEZMFrs
-        qUjy5nil9xqihyO4QbCnxahVWNiS07g+sH8irNNy1AliFWx81jfAqZ6+/oCTspXi
-        JA0x6IpBHxrBPl/xbskn2poo+IMRKnDRTVadkr4Th5DlbLgNNscEpdrVDi4mfL+4
-        Fox89fhzjIByfzMuziU4KRPd2PZsxUx5hzBHK3X2VpkTei8su7cCn4kTsaT2ZysB
-        nZ7YDU8QM78OGahVw6Wmy50a8BKEqyWUQiQ/9aPUAwuxRl/tGpHwxo6egdpw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:date:feedback-id:feedback-id:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1699036657; x=1699123057; bh=X5GHwnNCuZmOSDtt7+tvXysu/XAD
-        28WLwLD+pyUhark=; b=s4HYZUMlNCNwNkNNrkdc16ANqsefwXIKepZPVhNuOVVJ
-        N/7MGut3DGcvmCJ1pDWZYBJDCFsogcM++7WBj2TMCfBLxGLvDZuWOrHY3rawqWVe
-        VXkc0gar1Sz0zLlVC53T/sGDfgpVyW+XdfKkxG6k2Dz6Yo9dxD9ye5jT32RgfU5+
-        Hvsyp4WVy8IyL1Mt0dXCcjt1Ezz8gFJki5L+q6hyAEi7ezDNJ+0x+2RJQ4ysEmx2
-        HoYCwHtxAaf596irJowE8xOt513JfYNH2bvPhARlISsIRZBvz3zsMVUmkAh7ZOSb
-        uAPXgiDUmJSX0z3jH3hHjRIVBeFS5UyuGjoRcSQN/A==
-X-ME-Sender: <xms:8T1FZTcfCT5jkKe-ULSshyHmlh8krU7P9YjdRfNI4HWb8HO1sLMXdw>
-    <xme:8T1FZZPQl1zm9ONSXryU4qrWt69zjGdJL6MgVTJmshJ8QXFIWuC57qd8DQZ1Zxtri
-    0KTOmbzUqsqJjKZpKg>
-X-ME-Received: <xmr:8T1FZcg47IrRK2iTZ9PcObJT0dLDVh6YtPj_NgLjAe1IqO5igV5yahBfkEL-wOtmQBRYktBzi_UBnqnhc-lX2KtDHhw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtkedguddufecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepieeltdffhffhvddtfeegvdeiteelieejjeeitdfhfe
-    egkeehveehkeejleekgeeknecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
-    hrrdhioh
-X-ME-Proxy: <xmx:8T1FZU9J225M9aLFXO0oNgYLlaBk28-DOsDzrFFKyAIfrYKao-FqHA>
-    <xmx:8T1FZfv0UopqenSyKmE9mY8STAm9qapclssj5QtZAkRo3yfPyHqkKg>
-    <xmx:8T1FZTFttm8tXfMK_6SVvIhaG2o2bLGiEGNucVjEN-eeWgJmP4HuYg>
-    <xmx:8T1FZd2m7DTgvTh-y0Opp52tGkmen6Tefh2ynuvjlcTA5DOx0Lk9Sg>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 3 Nov 2023 14:37:36 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs-progs: make OWNER_REF_KEY type value smallest among inline refs
-Date:   Fri,  3 Nov 2023 11:38:57 -0700
-Message-ID: <868ac4f8b351773d755e6518c6afa525371b1c56.1699036579.git.boris@bur.io>
-X-Mailer: git-send-email 2.42.0
+        with ESMTP id S230155AbjKCTdy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Nov 2023 15:33:54 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08618D47
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Nov 2023 12:33:51 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so2408979276.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 03 Nov 2023 12:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1699040030; x=1699644830; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MuRk4qKrvCLGQgSWJoX1TVe1J2sedwXgTYOXxYI2SGs=;
+        b=1wxZVXKLkO8BNIp//NUVfMyN3nvyUGfX7PY21K3I/man5fwe/1pcGGhljEbkNVkZX6
+         /idDqgZNXHqsyQIyI1pGJgblMZU2PlbXgUZzjoj0jX7u/Vg1UChasdtCBa+k0XHUv4si
+         wnmpQ8szz8I2ByrQdYf7qLFpu3ZC2D9a/B30XpoP8xhtnGyG2OCKnhXiqaxFdCz1PYEK
+         2fCV5z4+auVYwBCXYzkW3gGQPTQeo6swmdLxbqcYdQlVTsNBoHyGR9yONZqXi3w6ytKQ
+         dk+59W+DcPdHEfweinSfIJGPXEa7EE9t2kwzX4+51M1bBtTX4nxLTSS4BTe5pb2Qsa7s
+         +ogw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699040030; x=1699644830;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MuRk4qKrvCLGQgSWJoX1TVe1J2sedwXgTYOXxYI2SGs=;
+        b=T2EOzaTH7S2uoqApdtK3Y/eeRPNaPyXKZa4Ci5KZHNRHrakzYAGHvsbiD+EBRPBkNu
+         qw+CmWE37b36ByU18tNLBq/8nVQebVw0u6hKyZWB8EBdevEPAIM7zAHRwZZ7zIMcLRPd
+         vqrr/RePtVCbrhUogetFy5A+xv0kD1Au7tyD474dV8DRCNPvvDwQ/PD/ld6J53qtGgPg
+         lSGM7qV0wdq4V+ItV4daeEuhEKJ10sYBIPjWtn5LtH6NSehYxQ8yI20DKQtGEDfzJ/IS
+         rbmfPWmqRUYz4S5j9LAlOM99CUAsyUEZOWRNcwazMA6IW00j/b2QGNxfESUL9ZszUlwK
+         z4Ag==
+X-Gm-Message-State: AOJu0YwgdsRsh4p3RUQR3g/3DtkRkmmogH9J15Ke+mp0CdeVia83izZy
+        qs+3L9eBfFJgtfGFMj8C1NE0iwXx3FFEHVEeOqrzAQ==
+X-Google-Smtp-Source: AGHT+IHuNEadOtSELm0ylu4cJb6TJ2HPhr7xrN4k5j9QytIh6jaSInCLk8CUPygcaeve5A61v6WzQA==
+X-Received: by 2002:a25:77c5:0:b0:d9c:68d2:4f35 with SMTP id s188-20020a2577c5000000b00d9c68d24f35mr19720716ybc.37.1699040029882;
+        Fri, 03 Nov 2023 12:33:49 -0700 (PDT)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id x5-20020a257c05000000b00d7360e0b240sm1170659ybc.31.2023.11.03.12.33.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 12:33:49 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] fstests: require no compression for generic/352
+Date:   Fri,  3 Nov 2023 15:33:44 -0400
+Message-ID: <0c1f1f4f5606a7e8847e188c24561e24e104ed42.1699040020.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Companion patch to progs for the same change in the kernel. Inline refs
-are expected to have non-decreasing type value but owner ref violated
-this and got away with it via special parsing. Fix the inconsistency
-while it is still experimental.
+Our CI has been failing on this test for compression since 0fc226e7
+("fstests: generic/352 should accomodate other pwrite behaviors").  This
+is because we changed the size of the initial write down to 4k, and we
+write a repeatable pattern.  With compression on btrfs this results in
+an inline extent, and when you reflink an inline extent this just turns
+it into full on copies instead of a reflink.
 
-Link: https://lore.kernel.org/linux-btrfs/20231103134547.GA3548732@perftesting/T/#mca2c0e21ecb7a0da616dd09980b9f008c3c00f63
-Signed-off-by: Boris Burkov <boris@bur.io>
+As this isn't a bug with compression, it's just not well aligned with
+how compression interacts with the allocation of space, simply exclude
+this test from running when you have compression enabled.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/uapi/btrfs_tree.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tests/generic/352 | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel-shared/uapi/btrfs_tree.h b/kernel-shared/uapi/btrfs_tree.h
-index dd7593634..e2ac228bc 100644
---- a/kernel-shared/uapi/btrfs_tree.h
-+++ b/kernel-shared/uapi/btrfs_tree.h
-@@ -220,6 +220,9 @@
-  */
- #define BTRFS_METADATA_ITEM_KEY	169
+diff --git a/tests/generic/352 b/tests/generic/352
+index acc17dac..3a18f076 100755
+--- a/tests/generic/352
++++ b/tests/generic/352
+@@ -25,6 +25,10 @@ _supported_fs generic
+ _require_scratch_reflink
+ _require_xfs_io_command "fiemap"
  
-+/* Extent owner, used by squota. */
-+#define BTRFS_EXTENT_OWNER_REF_KEY	172
++# The size is too small, this will result in an inline extent and then reflink
++# will simply be a copy on btrfs, so exclude compression.
++ _require_no_compress
 +
- #define BTRFS_TREE_BLOCK_REF_KEY	176
+ _scratch_mkfs > /dev/null 2>&1
+ _scratch_mount
  
- #define BTRFS_EXTENT_DATA_REF_KEY	178
-@@ -230,9 +233,6 @@
- 
- #define BTRFS_SHARED_DATA_REF_KEY	184
- 
--/* Extent owner, used by squota. */
--#define BTRFS_EXTENT_OWNER_REF_KEY	188
--
- /*
-  * block groups give us hints into the extent allocation trees.  Which
-  * blocks are free etc etc
 -- 
-2.42.0
+2.41.0
 
