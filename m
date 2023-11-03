@@ -2,126 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4079E7E05BC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Nov 2023 16:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18547E06FA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Nov 2023 17:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbjKCPrL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Nov 2023 11:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55392 "EHLO
+        id S1345287AbjKCQsh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Nov 2023 12:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbjKCPrK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Nov 2023 11:47:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E3BA6
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 Nov 2023 08:47:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BF56C433C8;
-        Fri,  3 Nov 2023 15:47:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699026427;
-        bh=KeIiqguBYlSRF8vx5WKfpqQAOYEKESQgLTzJDzV/9G0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U3LiV0fIB07MkHAxmfMtxayrp1mb92tS2MjHIIFuuQPvD/C1T5UCjvr6Pno3tgTW2
-         +MBSp3c+SDdvmoOJDYuWQCz1kW+LIVaa5DByHF9+FWXinF/YzPG5cCzIhmfv8FLNqM
-         a6LB587DKSjP35vJT++8/p3R8Q1mONgCEqZ+e7uiFCPHONlp6On4Piyai21ydX+umT
-         cAuMxnFoi7S6Pbt84/ocM9xNIkVh4ZmAAEtFHU1iS7GovbjxNkWjpydhmo8ZI5MTcO
-         eY8+2NgQSZIGUT2IZYqhAtlCb1S1o3yjDlrH2/NfSA7+z0atnbGy37Zp5s/YAn2krA
-         EpMBmF82uN6Qw==
-Date:   Fri, 3 Nov 2023 16:47:02 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
-Message-ID: <20231103-kursleiter-proklamieren-aae0a02aa1a4@brauner>
-References: <20231031-faktor-wahlparty-5daeaf122c5e@brauner>
- <ZUDxli5HTwDP6fqu@infradead.org>
- <20231031-anorak-sammeln-8b1c4264f0db@brauner>
- <ZUE0CWQWdpGHm81L@infradead.org>
- <20231101-nutzwert-hackbeil-bbc2fa2898ae@brauner>
- <590e421a-a209-41b6-ad96-33b3d1789643@gmx.com>
- <20231101-neigen-storch-cde3b0671902@brauner>
- <20231102051349.GA3292886@perftesting>
- <20231102-schafsfell-denkzettel-08da41113e24@brauner>
- <ZUUDmu8fTB0hyCQR@infradead.org>
+        with ESMTP id S1344556AbjKCQsg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Nov 2023 12:48:36 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1DE125
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Nov 2023 09:48:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 01A2D1F388;
+        Fri,  3 Nov 2023 16:48:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1699030109;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0joV9BL9ir6oWKJsS78e2DFmkRAWjhGJr2PG9sxA42U=;
+        b=G800OOLn4FYJL4tLSUAF3mTfnJnGI7gIm25xdZOp+yO5vP1WzSvWbWRw7S70QBu5aJOFxo
+        vNzI+mWBDsgVs0/8wMniutXST17GtfeVLK1KkhW4fwKKfwfrRojVh87an/oHnpWnWBN01K
+        ckZ3G3wjx7XiMeHxHQRd9gW5j+xYnuM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1699030109;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0joV9BL9ir6oWKJsS78e2DFmkRAWjhGJr2PG9sxA42U=;
+        b=bJcHiA5cGKJKVDhDKV7O3iQiI0Lxg6oGv0tfMSxTvjpxfD+oWSyDrUAxR1chwc9Kxe2m/J
+        ccMHmQecRdhMF3Bw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C318313907;
+        Fri,  3 Nov 2023 16:48:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id b1vbLlwkRWXSUQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 03 Nov 2023 16:48:28 +0000
+Date:   Fri, 3 Nov 2023 17:41:29 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Su Yue <l@damenly.org>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: reject unknown mount options correctly
+Message-ID: <20231103164129.GM11264@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <a6a954a1f1c7d612104279c62916f49e47ba5811.1697085884.git.wqu@suse.com>
+ <cyxk1i2x.fsf@damenly.org>
+ <f72ce467-b8c8-4373-a0ab-23e0631a5b27@gmx.com>
+ <20231012145546.GG2211@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZUUDmu8fTB0hyCQR@infradead.org>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231012145546.GG2211@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 07:28:42AM -0700, Christoph Hellwig wrote:
-> On Thu, Nov 02, 2023 at 12:07:47PM +0100, Christian Brauner wrote:
-> > But at that point we really need to ask if it makes sense to use
-> > vfsmounts per subvolume in the first place:
+On Thu, Oct 12, 2023 at 04:55:46PM +0200, David Sterba wrote:
+> On Thu, Oct 12, 2023 at 05:37:32PM +1030, Qu Wenruo wrote:
+> > On 2023/10/12 16:31, Su Yue wrote:
+> > >>
+> > >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > >> ---
+> > >> This would be the proper fix for the recently reverted commit
+> > >> 5f521494cc73 ("btrfs: reject unknown mount options early").
+> > >>
+> > > I'm a noob about selinux though. Better to draft a new fstest case to
+> > > avoid further regression?
 > > 
-> > (1) We pollute /proc/<pid>/mountinfo with a lot of mounts.
-> > (2) By calling ->getattr() from show_mountinfo() we open the whole
-> >     system up to deadlocks.
-> > (3) We change btrfs semantics drastically to the point where they need a
-> >     new mount, module, or Kconfig option.
-> > (4) We make (initial) lookup on btrfs subvolumes more heavyweight
-> >     because you need to create a mount for the subvolume.
+> > For SELinux enabled environment, any test would fail, thus I wonder if
+> > we really need a dedicated one.
 > > 
-> > So right now, I don't see how we can make this work even if the concept
-> > doesn't seem necessarily wrong.
+> > But as an Arch fanboy, my VM completely failed to catch it, nor even has
+> > the needed user space tools by default...
+> > 
+> > For the invalid options rejection, we could definitely have one test
+> > case for it.
 > 
-> How else do you want to solve it?  Crossing a mount point is the
-> only legitimate boundary for changing st_dev and having a new inode
-> number space.  And we can't fix that retroactively.
+> We'll need coverage tests for mount option parsing before we do the
+> conversion to fs_context.
 
-I think the idea of using vfsmounts for this makes some sense if the
-goal is to retroactively justify and accommodate the idea that a
-subvolume is to be treated as equivalent to a separate device.
-
-I question that premise though. I think marking them with separate
-device numbers is bringing us nothing but pain at this point and this
-solution is basically bending the vfs to make that work somehow.
-
-And the worst thing is that I think that treating subvolumes like
-vfsmounts will hurt vfsmounts more than it will hurt subvolumes.
-
-Right now all that vfsmounts technically are is a topological
-abstraction on top of filesystem objects such as files, directories,
-sockets, even devices that are exposed as filesystems objects. None of
-them get to muck with core properties of what a vfsmount is though.
-
-Additionally, vfsmount are tied to a superblock and share the device
-numbers with the superblock they belong to.
-
-If we make subvolumes and vfsmounts equivalent we break both properties.
-And I think that's wrong or at least really ugly.
-
-And I already see that the suggested workaround for (2) will somehow end
-up being stashing device numbers in struct mount or struct vfsmount so
-we can show it in mountinfo and if that's the case I want to express a
-proactive nak for that solution.
-
-The way I see it is that a subvolume at the end is nothing but a
-subclass of directories a special one but whatever.
-
-I would feel much more comfortable if the two filesystems that expose
-these objects give us something like STATX_SUBVOLUME that userspace can
-raise in the request mask of statx().
-
-If userspace requests STATX_SUBVOLUME in the request mask, the two
-filesystems raise STATX_SUBVOLUME in the statx result mask and then also
-return the _real_ device number of the superblock and stop exposing that
-made up device number.
-
-This can be accompanied by a vfs ioctl that is identical for both btrfs
-and bcachefs and returns $whatever unique property to mark the inode
-space of the subvolume.
-
-And then we leave innocent vfs objects alone and we also avoid
-bringing in all that heavy vfsmount machinery on top of subvolumes.
+The conversion patches have been written and in testing, I think we
+don't need to fix the old parsing code. The problem is there but I don't
+see it as urgent, it's been there for a long time.
