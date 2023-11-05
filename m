@@ -2,79 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C20C47E12A5
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Nov 2023 09:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8B97E1385
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Nov 2023 14:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbjKEIkI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Nov 2023 03:40:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40214 "EHLO
+        id S230236AbjKENHa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Nov 2023 08:07:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjKEIkH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Nov 2023 03:40:07 -0500
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69D3DB
-        for <linux-btrfs@vger.kernel.org>; Sun,  5 Nov 2023 01:40:04 -0700 (PDT)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b2e44c8664so5289653b6e.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 05 Nov 2023 01:40:04 -0700 (PDT)
+        with ESMTP id S229486AbjKENHa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Nov 2023 08:07:30 -0500
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2575FE9
+        for <linux-btrfs@vger.kernel.org>; Sun,  5 Nov 2023 05:07:27 -0800 (PST)
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6ce322bbb63so3740633a34.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 05 Nov 2023 05:07:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699173604; x=1699778404;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ubi1y/nFwBKOxlg1T1iV5JNUkHex1InrNIEt964xeT4=;
-        b=ZuaI6KM5U8JzlsL4ACRClLFWy8J5PCW0+kUb76GXPnqJm/2pYMH9pOMkJqlgoxxtQH
-         FqewNC27SB6m6VsHmTjdBQvYdE09x/kKCleMWJz6HNtk0zxjrSZHgO/rGmC45z2etEjt
-         VkXdSj40IFvWF85be+Aw1MR1YnxWhN1ZNMldi1nMkVNKtDm/mElXG3wn8CxmrV2m97vU
-         TZpdIF3rFuIFFWrIz/i2nVmbnPzLJFf35mldz0dBeIjLWI+dEwkwksULh7+Sg7KswRDD
-         xQmz7X0fbUmsu0KGEvrKxZjaO8cIJFMVo7DPM6n2j7Ptwy0H+SkimCg/mN6kcvvsc6xZ
-         qUFw==
-X-Gm-Message-State: AOJu0Yx0NjwkI4b+3Ez5puk7kIw/Q7LhPFgmQ+KbgVkqXgp6vLQ9Fbwi
-        XDbx+HGg/QadfQNM4e9ZdSz3EmKXgMMpVGGgI+TkyKBMs/o0
-X-Google-Smtp-Source: AGHT+IGqts477963RT4MDh/f/hOQ8Is3TL1ul5XZfsXe70UO+SdEY8Tj3eLHmIToYNzq6fUjwsfSMcQJugLkZMJ9xfcI14GwIpl/
+        d=1e100.net; s=20230601; t=1699189646; x=1699794446;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=17+OiAdjnksb54atTiSO83QAo/t+7eezn3BKvlonFgc=;
+        b=AxE/wkA9+ScwIg0dqwiUpGnPz5Cmm8/qKlU6/7AYN2f4ucpom4AD9+wgWrPkVEQ55D
+         9b1y4Fb9LE3S5XZ9odJZATJm3p0NDz+5S0om5Ha1ZYDVfShjHDJD4Yn7e3g37DXmFoNN
+         wTMT0rlgl4ArkZj5VooVm+c0Jjrg3V+mzu6qrfDqnyUy4LOJhHaIVH9qTG0ifBqT9uUJ
+         igTKWqp+oJp3WjDmJDEcN46avq5h+UpNv6GAkUr8hvrP3+bJw6J0vdh5umc2fd1oUBZB
+         fA4e3kdZbT5CMovQj/y+ZqCPs+/CRAOKQkK0H9W3XqSVE0OoJuOIYLNr9RklesLU0Ip9
+         hftg==
+X-Gm-Message-State: AOJu0YyF8GdRCJH9FOp7Xm7jJvGiewAzlCVQtiOyh6yMgHns0WrHysuX
+        h6sEYCH9wrRH3Pq5tzl0knpAigZsEdBA5B6Vy1kSs7AlR166
+X-Google-Smtp-Source: AGHT+IFviFkSwvEhccN8YdDBniWK/osExJFWr3CT0VV7FYAEW4sdmB6lTIUGTtVIUtX5KSyiFnLqK7wi6Qw+zwPl3XZ1M+dOT/ap
 MIME-Version: 1.0
-X-Received: by 2002:a54:470b:0:b0:3b2:e214:9118 with SMTP id
- k11-20020a54470b000000b003b2e2149118mr8543741oik.4.1699173603875; Sun, 05 Nov
- 2023 01:40:03 -0700 (PDT)
-Date:   Sun, 05 Nov 2023 01:40:03 -0700
-In-Reply-To: <000000000000a6429e0609331930@google.com>
+X-Received: by 2002:a05:6830:3d09:b0:6bc:af19:1d22 with SMTP id
+ eu9-20020a0568303d0900b006bcaf191d22mr7671000otb.7.1699189646504; Sun, 05 Nov
+ 2023 05:07:26 -0800 (PST)
+Date:   Sun, 05 Nov 2023 05:07:26 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001222c4060963af3a@google.com>
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in btrfs_qgroup_account_extent
-From:   syzbot <syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com>
+Message-ID: <000000000000493bc20609676b0a@google.com>
+Subject: [syzbot] Monthly btrfs report (Nov 2023)
+From:   syzbot <syzbot+list60f60686fc15f64ee667@syzkaller.appspotmail.com>
 To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
         linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        wqu@suse.com
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has bisected this issue to:
+Hello btrfs maintainers/developers,
 
-commit dce28769a33a95425b007f00842d6e12ffa28f83
-Author: Qu Wenruo <wqu@suse.com>
-Date:   Sat Sep 2 00:13:57 2023 +0000
+This is a 31-day syzbot report for the btrfs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/btrfs
 
-    btrfs: qgroup: use qgroup_iterator_nested to in qgroup_update_refcnt()
+During the period, 3 new issues were detected and 0 were fixed.
+In total, 53 issues are still open and 42 have been fixed so far.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f01717680000
-start commit:   90b0c2b2edd1 Merge tag 'pinctrl-v6.7-1' of git://git.kerne..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16f01717680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12f01717680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4cc8c922092464e7
-dashboard link: https://syzkaller.appspot.com/bug?extid=e0b615318f8fcfc01ceb
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14cae708e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1354647b680000
+Some of the still happening issues:
 
-Reported-by: syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com
-Fixes: dce28769a33a ("btrfs: qgroup: use qgroup_iterator_nested to in qgroup_update_refcnt()")
+Ref  Crashes Repro Title
+<1>  5549    Yes   kernel BUG in close_ctree
+                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
+<2>  1540    Yes   WARNING in btrfs_space_info_update_bytes_may_use
+                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
+<3>  1026    Yes   WARNING in __kernel_write_iter
+                   https://syzkaller.appspot.com/bug?extid=12e098239d20385264d3
+<4>  373     Yes   WARNING in btrfs_block_rsv_release
+                   https://syzkaller.appspot.com/bug?extid=dde7e853812ed57835ea
+<5>  288     Yes   WARNING in lookup_inline_extent_backref
+                   https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
+<6>  212     Yes   WARNING in btrfs_remove_chunk
+                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
+<7>  206     Yes   WARNING in btrfs_chunk_alloc
+                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
+<8>  205     Yes   INFO: task hung in lock_extent
+                   https://syzkaller.appspot.com/bug?extid=eaa05fbc7563874b7ad2
+<9>  109     Yes   general protection fault in btrfs_orphan_cleanup
+                   https://syzkaller.appspot.com/bug?extid=2e15a1e4284bf8517741
+<10> 91      Yes   kernel BUG in insert_state_fast
+                   https://syzkaller.appspot.com/bug?extid=9ce4a36127ca92b59677
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
