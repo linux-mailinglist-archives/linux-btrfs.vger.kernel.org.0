@@ -2,100 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8664C7E142F
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Nov 2023 17:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CF67E1725
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Nov 2023 23:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbjKEQBV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Nov 2023 11:01:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
+        id S229897AbjKEWAP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Nov 2023 17:00:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKEQBU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Nov 2023 11:01:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7322AC5;
-        Sun,  5 Nov 2023 08:01:18 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD48BC433C7;
-        Sun,  5 Nov 2023 16:01:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699200077;
-        bh=Y/QGvldsfFeVsm2Z294hSS1CZkKLOo8YmVstYw2sTas=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fJyV+lP+JyNfCqDhjQj+PoyTO9m7OKlPTh4uMKsgiJZlDXEZCmDLqwMhPujARm45P
-         S8tiixlGitJkHbHUYJv+IS7vCrbdvc1LQmpxeGuI5Gnehq52E52ImsvscSt6p9q+Or
-         wktJX5r/LhDKfqqb2+gKgV+OLNK7+TTrFpPjMUko43aHMEapL6avOP8wSKAm9PI78+
-         dd4yfHCguC0NfEbC7n0H61rP0iJmbIUs9SV8VqX/sEakuYNx6G30hwigBkk7Lnu+hg
-         aP05onphmgGZs1YfJ/+v6d/u1dzgKTNdm8rZzVRUMCPwWHz29LTpFmUUWXy9fcHcn+
-         IO6sYJj3HINwg==
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-54366784377so5952613a12.3;
-        Sun, 05 Nov 2023 08:01:17 -0800 (PST)
-X-Gm-Message-State: AOJu0Yzeobn/0koBy536CmOBer5WeaMSbqLVKDAmj89R/huqTyGPHEUg
-        CoR1wAKC9QCGubIN73zqoB/4ebwkS+ljvN7gduo=
-X-Google-Smtp-Source: AGHT+IHRFck0v4TI/RrO/JF0loFnJ7/GPYUUQb85Fh6C/HGpOWDU+A1qDvFTH9poYCn+NVRZw8yyA/xh99BhqKNynU0=
-X-Received: by 2002:a17:907:5c4:b0:9d3:f436:61e5 with SMTP id
- wg4-20020a17090705c400b009d3f43661e5mr10811939ejb.29.1699200076401; Sun, 05
- Nov 2023 08:01:16 -0800 (PST)
+        with ESMTP id S229893AbjKEWAM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Nov 2023 17:00:12 -0500
+X-Greylist: delayed 5206 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 05 Nov 2023 14:00:09 PST
+Received: from SMTP-HCRC-200.brggroup.vn (unknown [42.112.212.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47265CC;
+        Sun,  5 Nov 2023 14:00:09 -0800 (PST)
+Received: from SMTP-HCRC-200.brggroup.vn (localhost [127.0.0.1])
+        by SMTP-HCRC-200.brggroup.vn (SMTP-CTTV) with ESMTP id 353F2191B1;
+        Mon,  6 Nov 2023 01:57:43 +0700 (+07)
+Received: from zimbra.hcrc.vn (unknown [192.168.200.66])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by SMTP-HCRC-200.brggroup.vn (SMTP-CTTV) with ESMTPS id 2E86C18FE9;
+        Mon,  6 Nov 2023 01:57:43 +0700 (+07)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra.hcrc.vn (Postfix) with ESMTP id C0FC41B8204A;
+        Mon,  6 Nov 2023 01:57:44 +0700 (+07)
+Received: from zimbra.hcrc.vn ([127.0.0.1])
+        by localhost (zimbra.hcrc.vn [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id HXeOkkoOtXGA; Mon,  6 Nov 2023 01:57:44 +0700 (+07)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra.hcrc.vn (Postfix) with ESMTP id 9243C1B8250F;
+        Mon,  6 Nov 2023 01:57:44 +0700 (+07)
+DKIM-Filter: OpenDKIM Filter v2.10.3 zimbra.hcrc.vn 9243C1B8250F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hcrc.vn;
+        s=64D43D38-C7D6-11ED-8EFE-0027945F1BFA; t=1699210664;
+        bh=WOZURJ77pkiMUL2pPLC14ifVPRvyTQIBEQmxuN1ezAA=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=V9mjfwKUtdjR/jzW3G5p+y9g7SfCCZDedHAHYeULWSd/YVmozbltabuxy6pDIoSz+
+         Xu1qlDmupV05CnxCgAldowCTtuc3ZCQyCy/Zi2q0PZ8yEQqgDG07N0b0IA9UJB2PS0
+         mTlR2SW97CCiJcJCq2jgNlO1kMOO/Caa9J3n70spwbTXCwz/MuLoH348RVZB4umxLE
+         lXopzof8ZGh4HkZwJv5tO7Ry9KSYuD794cXRNAPbEFU/VH00AbVmmhJ/+NB1Z2oaag
+         PmEvYDNNc3sYLe2E7JbPISAs/CwPCQYIy8FXbC+7Qq7JrnUcREVB9z43eLhcydONc0
+         OceqeDScJVIZw==
+X-Virus-Scanned: amavisd-new at hcrc.vn
+Received: from zimbra.hcrc.vn ([127.0.0.1])
+        by localhost (zimbra.hcrc.vn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Eck96ab-IFEO; Mon,  6 Nov 2023 01:57:44 +0700 (+07)
+Received: from [192.168.1.152] (unknown [51.179.100.52])
+        by zimbra.hcrc.vn (Postfix) with ESMTPSA id 3EA3B1B8204A;
+        Mon,  6 Nov 2023 01:57:37 +0700 (+07)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <000000000000a6429e0609331930@google.com> <0000000000001222c4060963af3a@google.com>
-In-Reply-To: <0000000000001222c4060963af3a@google.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Sun, 5 Nov 2023 16:00:39 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6Ah2U8aR+fPPxLAb7BcHF6qk9JgZhiQYGcQupHvDNuOQ@mail.gmail.com>
-Message-ID: <CAL3q7H6Ah2U8aR+fPPxLAb7BcHF6qk9JgZhiQYGcQupHvDNuOQ@mail.gmail.com>
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in btrfs_qgroup_account_extent
-To:     syzbot <syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        wqu@suse.com
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Description: Mail message body
+Subject: =?utf-8?b?4oKsIDEwMC4wMDAuMDAwPw==?=
+To:     Recipients <ch.31hamnghi@hcrc.vn>
+From:   ch.31hamnghi@hcrc.vn
+Date:   Sun, 05 Nov 2023 19:57:27 +0100
+Reply-To: joliushk@gmail.com
+Message-Id: <20231105185738.3EA3B1B8204A@zimbra.hcrc.vn>
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Nov 5, 2023 at 8:40=E2=80=AFAM syzbot
-<syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com> wrote:
->
-> syzbot has bisected this issue to:
->
-> commit dce28769a33a95425b007f00842d6e12ffa28f83
-> Author: Qu Wenruo <wqu@suse.com>
-> Date:   Sat Sep 2 00:13:57 2023 +0000
->
->     btrfs: qgroup: use qgroup_iterator_nested to in qgroup_update_refcnt(=
-)
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D14f0171768=
-0000
-> start commit:   90b0c2b2edd1 Merge tag 'pinctrl-v6.7-1' of git://git.kern=
-e..
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D16f0171768=
-0000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D12f0171768000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D4cc8c92209246=
-4e7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3De0b615318f8fcfc=
-01ceb
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D14cae708e80=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1354647b68000=
-0
->
-> Reported-by: syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com
-> Fixes: dce28769a33a ("btrfs: qgroup: use qgroup_iterator_nested to in qgr=
-oup_update_refcnt()")
+Goededag,
+Ik ben mevrouw Joanna Liu en een medewerker van Citi Bank Hong Kong.
+Kan ik =E2=82=AC 100.000.000 aan u overmaken? Kan ik je vertrouwen
 
-#syz fix: btrfs: fix race between accounting qgroup extents and
-removing a qgroup
 
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
+Ik wacht op jullie reacties
+Met vriendelijke groeten
+mevrouw Joanna Liu
+
