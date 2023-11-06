@@ -2,43 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D277E2E57
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Nov 2023 21:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF727E2E6C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Nov 2023 21:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233043AbjKFUln (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Nov 2023 15:41:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45162 "EHLO
+        id S232927AbjKFUv3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Nov 2023 15:51:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233065AbjKFUll (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Nov 2023 15:41:41 -0500
+        with ESMTP id S229755AbjKFUv1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Nov 2023 15:51:27 -0500
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FFDD76
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 Nov 2023 12:41:37 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B328110A
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Nov 2023 12:51:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-        s=s31663417; t=1699303295; x=1699908095; i=quwenruo.btrfs@gmx.com;
-        bh=KdIgo6uSSWQvOkCzyMHuCgIkLF0d56Jqyl0YhhiZrl8=;
+        s=s31663417; t=1699303878; x=1699908678; i=quwenruo.btrfs@gmx.com;
+        bh=BU/O8SrMzXEhhDUkBd4AGtOOK4T1nRgsJLuo8gZ9cRA=;
         h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=m79nohPcAdN9jDN88/zjZb47aQvlKBszshQ0uFkyp/M7eshMllO+fblMFb1wmSnv
-         A+2QzPA9m8Q2W0oDwJbk8/tquO0ZCZV+6evH003WC8wevvOdlJX1rnfK25n0EUHkQ
-         Lb5y0U/UzeuuN0TZoNGCN0dLqHgNKSVVIjlhx4o66tgl36TNcMRzoR9zgBy4Xo1NV
-         dV2bmt74MU497AbRUAl9go51z/NJO+nDJsIpI/Zd37YK4o6Edz0lfd5Y+kKsp7MSw
-         ZaV4/NeFDzs7pZhUC4pU82hyt/oA9+PiymJnQGjjxeOpDP93l+Hc9WEtPrMP7uCFl
-         hwn4c3PnY5o/UolTZA==
+        b=QNlpIoaP0B29AkFt+cbdVXGL17tBMGEJEkz78PlZAD4Hwv8Z5dAEoitIMK+ByU91
+         F7R8ioAHsDSEWqWWnBm+oLsp+TMtze53VPmzXRgrgd9u6j1quXXiziDNE41HJk9FC
+         hhhJwp0EZ8pcL3UH3SMiDtwytArvmhcM1exEXYBHfc1ZwTUVkIS9B+NNQFOfblpVa
+         SewvGj1VZmeVBojOzTns2O/HCiRh+llu+GpxZ5hN/Bhp1h8xsd7piPcp/CfiL1ayV
+         9p3RU6m7iPWlYJxSPI2LuCCCFBHaFVdL7ZGqvvTa11+KTOvjtOhue526s1wcUKdRL
+         klNtFQDpczAOABqYiQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mv2xU-1rHlp02Q1g-00r2xl; Mon, 06
- Nov 2023 21:41:35 +0100
-Message-ID: <803b59fa-f398-4522-a3d8-69b598a209f5@gmx.com>
-Date:   Tue, 7 Nov 2023 07:11:30 +1030
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbzuB-1rYd2I47El-00dVz0; Mon, 06
+ Nov 2023 21:51:18 +0100
+Message-ID: <990cf7ae-a14f-4c6f-8a1a-0a4e6078b58e@gmx.com>
+Date:   Tue, 7 Nov 2023 07:21:15 +1030
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Can btrfs repair this ?
-To:     Joe Salmeri <jmscdba@gmail.com>,
-        BTRFS Mailing-List <linux-btrfs@vger.kernel.org>
-References: <9de00454-0cd9-4d2d-aed4-23490f7dde83@gmail.com>
- <bbda4275-a07e-4921-a9c0-5a3d34801ef5@gmx.com>
- <de206814-ab47-40da-8e35-370ec3633bd5@gmail.com>
+Subject: Re: [PATCH] btrfs: fix qgroup record leaks when using simple quotas
 Content-Language: en-US
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <2431d473c04bede4387c081007d532758fcd2f28.1699301753.git.fdmanana@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -64,28 +61,28 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <de206814-ab47-40da-8e35-370ec3633bd5@gmail.com>
+In-Reply-To: <2431d473c04bede4387c081007d532758fcd2f28.1699301753.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Wn2WpnEK4YGxYpv6CRLJSGcYNNEelHtaNrem+Z/2FBF3GscQabM
- rIIj8tADhw6fLE365QDOG9rchcDLX2M865q/7NrXY5l3DRcP9b/5g5r5J0XiYrWQ1UA6m3r
- /0CZtG+M3JTEGlfxIMgErZfsV8GDgterS7dwdNdR2YewtoxyelxsyZLvlRDDK9NXkrupvxO
- hjzynjsrH0x5jt2d96W/w==
-UI-OutboundReport: notjunk:1;M01:P0:JyyK1imx6dA=;Q9NN+kVnfOP3LLWCItX/c5QY+yh
- vNfdQv2up7lMDfiXYVPBBpEaaOlCwyWHeQWv76HNpSVxktOeCl0NSOBxH2EUA1ZseP2Dt8ujM
- eK7eKf/MvfBNm7y6g8+6fiOcmxACwQg/sSs9R0fnglTUhifJsh8uAt0qqgDCxRrWqjoSvmCZV
- /QHkJV1unQ7ziZlfyk+RSx5ipGBoCQoKVc2NAWVx6XCcSRaF8Z5eadbLBUbgVmLFmPxNdvCb0
- TA8KnyLylwg7IVuPRbxmJ9m8hgwos9MDEhZtQGR8iEhr9mcD5idhwSHBnKO8v8XxLgN1xx/41
- RfbigxeRwbABG8huwLJsVHwhCofqZEsfscxONFv0UZNgzDq5eA0ykrdbhHoLvUklbfFLlvMpr
- 75ci3smZIbVk+tDuxHaiIZpFTEh1Td7ghu4B6op3k/luZlpWRdBdciwMIKmrvTit5xTfNqf+Q
- fA/wsbOcThKJ67jIYJc/oz/52idVmln5ekT7MHlEtATbc3e5t3XymdhLo1qhX9YdZXL9+DUzQ
- gaM3Bl3x3OrZEUDRY9k8EzVdWGnbd298GWWfoN2/Vl+J2FCiOaJtmt1BVrSJbA6qgmystDfAe
- 1hQZ2HbXeXkdsdVlfmgmdt3J/vGjVW0o02sfY8yJRH9PxK/sgpn0WwUYWdAfJ07xtLVfsVa1Z
- mzgXpjg4zZ4TWMlkTu6NGtEv0ufmaoX6F4+FhYlpTdj97vjo/liIP3xE8POJyMuhJbqE1OS2Y
- ioVos4t4aGXyjEXe4QYuwchEWvoR+4GYObfJjRUmLueUPZX9K1maC9ySOeFW1vdTNlgWFmFlt
- vTH1ehmc8k5XAEBbXRmQhVhjkF25aHdq8dYYMchF0PNM0U/49MDooGNS9y/82zYzq+dQ4LUfZ
- i15mYioITcoenTkRuHkZJT5S8HV2Ka8SPFfZg01NC+k0buQvf89CYXOrz7kBck04onSZXxI/9
- 6HBZRDedNRguZngPPYEI07e6WQM=
+X-Provags-ID: V03:K1:aRw0/lKGxxoLF/8JkRtw3O8IvCjRXh7W75L0Q1oyw5q2nH+6q3P
+ jHKWCiU7XkT5tg4Mq96QAHAABpVQBek42cqDmfmbBJ2JUoB4oHwNAW/cHK8pDvYLBdYhuk/
+ 4iMkDVdS5XWp1PZBCgatdKC+ZIw93aSPeaY4O9zSSuyuXUNTDD23NRmNV8ROh6HpHobRLU7
+ rxkMgZvWPEBJe6lv/bbVw==
+UI-OutboundReport: notjunk:1;M01:P0:2gMGg480oTU=;OOWtqTCRtWaltaAyxtmYofn/y7W
+ MwHKuhklNva/Ueavvf5VoOsXUOvjTPrr1gzjjwkkcJLqL7rs62Lil+vIdNxiypu7ufzoOa83w
+ 0K2Q1BZ5vVKH9x+CIgAJZiuIWCXCVecXrK5moQazeOVaPv1UxroIpZfbbGWBfb10U3Y2MNFs+
+ 8D3eN7o7jM7rffzDYWWDHcjmVgkeI6S32aaXEdC+o8vIMCKO6co8ApdWa0Gqhb8+kzP7ace1w
+ s0f0812UuV7nnVERTZa9dZhFpFnW7iRMfVAWB8umrnw+YbKF9OMzTKp9XWinzdfHI/0dB984K
+ qRnjzYLxOkkCxZGGYSTIClFuj9kHTr2u5TV6geqlDWh8EqBsA0HfwLunvRxv0Ssx8GBtLSDoo
+ EmwLdACHR+qV2PQ9wPhvkNvP6WGVHaXaUEz0sVhZRS+yeWR5xSZ+7Bnls87l7IYI6NWXbqDzB
+ jGIDfKZT7aNoohd8u2mXjVGXEtnQX+gia/77SXMINSATNHkQ53f9BBv40quSIddOPmpgz2J6D
+ X32nfES67DqQqodhTGcz33WwGVQ3h5STlueOpN64OEFH0hiAoaGWiZleIyoPTCvS+nq8CsI5M
+ UMLkczy24+w9UfPPCMVt5MltR6Bq70L8+k5MwdAtjWnEZ5iV1nEdFQRTQoUMBv2PHVz2Q+GOu
+ CU2R8gzVfITo6vdgJ9HaC703IyNveUOYPGY1Jk5mMJeRyc7ZGZkAfO/aSDawP8B32PKhevWLS
+ pAxHTs6KcSV6Az/Syu78UirAfDCi8s6OmqXbaj4E/eSi5tlt74FufMg2z89wD0W+HWhf2hV6E
+ HfA5S1dzCg1VYJjgNYXdg2hsg6PC8ZYGu09uUx/DPIkJAMSslXy9hcdZJaeCLuNLFAD0UcLYi
+ 2/lZSATIBStnOvAccaUDjXTB44kz82uLXw+qhY08BC29kX/TOx9xiVTVruYeHvjGLxUaacO1W
+ /7j/h6q/xH8zL8oQNR8tBEPbOCs=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -99,166 +96,77 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2023/11/7 06:26, Joe Salmeri wrote:
+On 2023/11/7 06:47, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> On 11/5/23 18:45, Qu Wenruo wrote:
->>
->>
->> On 2023/11/6 07:08, Joe Salmeri wrote:
->>> Hi,
->>>
->>> I was running openSUSE Tumbleweed build 20231001 when I first found th=
-is
->>> issue but updated to TW build 20231031 the other day and it still
->>> reports the same issue.
->>>
->>> Kernel 6.5.9-1 btrfsprogs 6.5.1-1.2 Device Samsung 860 EVO 500 GB
->>> Partion #5 root btrfs filesystem, no RAID or other drives
->>>
->>> I run "btrfs device stats /" about once a week and no problems are
->>> reported.
->>>
->>> I run "btrfs scrub start /"=C2=A0=C2=A0 regularly too and no problem a=
-re reported
->>>
->>> I ran "btrfs check --readonly --force /dev/sda5" the other day and got
->>> the following errors:
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Opening filesystem to=
- check...
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WARNING: filesystem m=
-ounted, continuing because of --force
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Checking filesystem o=
-n /dev/sda5
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 UUID: 7591d83f-f78e-4=
-02b-afe5-fab23dad0ffe
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [1/7] checking root i=
-tems
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [2/7] checking extent=
+> When using simple quotas we are not supposed to allocate qgroup records
+> when adding delayed references. However we allocate them if either mode
+> of quotas is enabled (the new simple one or the old one), but then we
+> never free them because running the accounting, which frees the records,
+> is only run when using the old quotas (at btrfs_qgroup_account_extents()=
+),
+> resulting in a memory leak of the records allocated when adding delayed
+> references.
+>
+> Fix this by allocating the records only if the old quotas mode is enable=
+d.
+> Also fix btrfs_qgroup_trace_extent_nolock() to return 1 if the old quota=
 s
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [3/7] checking free s=
-pace cache
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [4/7] checking fs roo=
-ts
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 root 262 inode 319967=
-35 errors 1, no inode item
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved ref dir 132030 index 769 namelen 36=
- name
->>> 02179466-b671-4313-8fa5-0eb87d716f92 filetype 2 errors 5, no dir item,
->>> no inode ref
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved ref dir 132030 index 769 namelen 36=
- name
->>> 77ef9cd4-0efe-46af-bf7f-47f582851e16 filetype 2 errors 2, no dir index
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ERROR: errors found i=
-n fs roots
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 found 33034690560 byt=
-es used, error(s) found
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 total csum bytes: 288=
-19244
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 total tree bytes: 986=
-251264
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 total fs tree bytes: =
-876134400
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 total extent tree byt=
-es: 62521344
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btree space waste byt=
-es: 277302161
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 file data blocks allo=
-cated: 141608800256
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 referenced 3905=
-4090240
->>>
->>> Running "find -inum 31996735" identifies the item is is complaining
->>> about as
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /usr/bin/find: File s=
-ystem loop detected;
->>> =E2=80=98./.snapshots/1/snapshot=E2=80=99 is part of the same file sys=
-tem loop as =E2=80=98.=E2=80=99.
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /usr/bin/find:
->>> =E2=80=98./home/denise/.config/skypeforlinux/blob_storage/02179466-b67=
-1-4313-8fa5-0eb87d716f92=E2=80=99: No such file or directory
->>>
->>> Running "ls -al /home/denise/.config/skypeforlinux/blob_storage/" also
->>> shows that this is correct item
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0 drwx------ 1 denise joe-denise =C2=A0=C2=A072=
- Nov =C2=A01 22:49 .
->>> =C2=A0=C2=A0=C2=A0=C2=A0 drwxr-xr-x 1 denise joe-denise 3.7K Nov =C2=
-=A01 20:07 ..
->>> =C2=A0=C2=A0=C2=A0=C2=A0 d????????? ? ? =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-? =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-? =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0?
->>> 02179466-b671-4313-8fa5-0eb87d716f92
->>>
->>> When I originally ran btrfs check there were actually a bunch of other
->>> items listed, however, I have timeline snapshots turned on for the
->>> /@home subvolume and all the other items were because of that item in
->>> each of the other snapshots.
->>>
->>> I removed all the other "home" snapshots and now btrfs check only
->>> reports that one item as shown above.
->>>
->>> I have heard that btrfs check --repair is generally not recommended bu=
-t
->>> I have been unable to find a way to have btrfs remove the item it is
->>> complaining about.
->>
->> --repair can fix the problem.
->>
->> But for your particular problem, please also do a memtest just in case.
->>
->> This problem looks like a bad hash, which may be caused by memory
->> bitflip.
->>
-> I ran the memtests last night multiple times and no problems reported.
+> mode is not enabled - meaning the caller has to free the record.
 >
-> I have heard that --repair usage is usually not recommended.
->
-> I cannot afford to have this system have to be rebuilt right now.
->
-> Is it definitely safe in this case ?=C2=A0=C2=A0 Otherwise, I would just=
- ignore it
-> since I know why it exists and that it is not a hw problem.
+> Fixes: 182940f4f4db ("btrfs: qgroup: add new quota mode for simple quota=
+s")
+> Reported-by: syzbot+d3ddc6dcc6386dea398b@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/linux-btrfs/00000000000004769106097f9a34@g=
+oogle.com/
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-At least from your output, it won't make things any worse.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
+> ---
+>   fs/btrfs/delayed-ref.c | 4 ++--
+>   fs/btrfs/qgroup.c      | 2 +-
+>   2 files changed, 3 insertions(+), 3 deletions(-)
 >
-> Since this is the root fs, I assume I have to boot a USB live
-> environment and do the repair from there or can it be done on the
-> mounted btrfs root fs with the --force option ?
+> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+> index 9223934d95f4..891ea2fa263c 100644
+> --- a/fs/btrfs/delayed-ref.c
+> +++ b/fs/btrfs/delayed-ref.c
+> @@ -1041,7 +1041,7 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_=
+handle *trans,
+>   		return -ENOMEM;
+>   	}
 >
->>
->>> I have tried rmdir, rm -rf, as well as find -inum 31996735 -delete and
->>> all report the same issue with not found.
->>>
->>> If I understand correctly, the parent directory entry ( so
->>> /home/denise/.config/skypeforlinux/blob_storage/ ) has the entry for
->>> /home/denise/.config/skypeforlinux/blob_storage/02179466-b671-4313-8fa=
-5-0eb87d716f92 with inode of 31996735 but it doesn't really exist.
->>>
->>> I do not consider this a HW issue because btrfs stats, scrub, and smar=
-t
->>> do not report any errors and I also track all the smart info ( health,
->>> reallocated sector, wear leveling, etc ) for SSDs and there are no
->>> errors reported and I am not having any other issues.
->>>
->>> I suspect that this occurred the other day when Skype crashed. The ite=
-m
->>> is not needed, I just cannot figure out how to remove it.
->>>
->>> So, is it possible for me to remove this item and if so how do I do it=
- ?
->>>
-> I find it interesting that interesting that I can remove a snapshot
-> which contains the item using the normal delete snapshot functionality
-> but that none of the built in tools have a way to do it.
+> -	if (btrfs_qgroup_enabled(fs_info) && !generic_ref->skip_qgroup) {
+> +	if (btrfs_qgroup_full_accounting(fs_info) && !generic_ref->skip_qgroup=
+) {
+>   		record =3D kzalloc(sizeof(*record), GFP_NOFS);
+>   		if (!record) {
+>   			kmem_cache_free(btrfs_delayed_tree_ref_cachep, ref);
+> @@ -1144,7 +1144,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_=
+handle *trans,
+>   		return -ENOMEM;
+>   	}
 >
+> -	if (btrfs_qgroup_enabled(fs_info) && !generic_ref->skip_qgroup) {
+> +	if (btrfs_qgroup_full_accounting(fs_info) && !generic_ref->skip_qgroup=
+) {
+>   		record =3D kzalloc(sizeof(*record), GFP_NOFS);
+>   		if (!record) {
+>   			kmem_cache_free(btrfs_delayed_data_ref_cachep, ref);
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index e48eba7e9379..ce446d9d7f23 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -1888,7 +1888,7 @@ int btrfs_qgroup_trace_extent_nolock(struct btrfs_=
+fs_info *fs_info,
+>   	u64 bytenr =3D record->bytenr;
 >
+>   	if (!btrfs_qgroup_full_accounting(fs_info))
+> -		return 0;
+> +		return 1;
 >
+>   	lockdep_assert_held(&delayed_refs->lock);
+>   	trace_btrfs_qgroup_trace_extent(fs_info, record);
