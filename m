@@ -2,46 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC107E309C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Nov 2023 00:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E675A7E30A9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Nov 2023 00:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233386AbjKFXGp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Nov 2023 18:06:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
+        id S233411AbjKFXHV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Nov 2023 18:07:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbjKFXGn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Nov 2023 18:06:43 -0500
+        with ESMTP id S233427AbjKFXHL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Nov 2023 18:07:11 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71D410CB;
-        Mon,  6 Nov 2023 15:06:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2F7DC433CD;
-        Mon,  6 Nov 2023 23:06:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD9810F0;
+        Mon,  6 Nov 2023 15:07:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 746FAC433C7;
+        Mon,  6 Nov 2023 23:07:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699311996;
-        bh=Bo87wL9VhFrRNiOYSH2yg5FwNyvse0izajz8/+8d0eU=;
+        s=k20201202; t=1699312024;
+        bh=PrcGE4hW1LYL/nBAdlm0ZDZZU8S2r+iUT56yCKjvy+c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q7Z3uO4wfy6LMXbUXFJf9HaNGfxYv8z6/Ra09e86sqb5iD+AmqaXW9T9c0BUwinwo
-         a1MnVoZHfKwS8iMrrAvf4Zc3SMgFVSRN6X0yyqkaagahSqrBUNcdty9U/3CqJt9Sv1
-         WRvBwatRxyKBPF2C5Y1mHx1pHznZCThEuhy3D0HgE+ADTh7ifZoqN80h1QJE7bJUC4
-         n3W9DliwHL/3wnbp0UyiztRJ48UuvGn2aHA5NNfbrNCMg5wk6ALn2klEfWWVgalgZ0
-         VWtTBRWpKjplZEYpdCvRcUuPQUORqGXhH6YAgKMNBUeLS3NqjuYe9Jkfrzxw+D8N4Q
-         TE15hYU5DYE9g==
+        b=iSFXLnkDINyWwdrO34FDAi1loPn56xXcc22IBieq/LO9Cp/uGx0OrxMuDuWG/bTz2
+         n//Ox9xWAF1N7uNk8satrSZE8uGLo4ja6vSxvfu8siQxztbJsvC8mJRFLFv4yveEgg
+         2AtVn8sThtbu97+l5hdKmJ7j2Vw34w2zsMhCbzankEiuqbnY96C3oi5hqp49i41TcI
+         qGNMt8WJVib6JyBGcFwLGnG5RXGo3jwll6RIyg9H7ODKRItZme30ZTFuna5KbTB9f/
+         NjhMHcxFjhT01tVJo/mLm2HgAdB96mg4EC4b5WRJAD6mxCBAy274tAtkLDAdQg3l4n
+         JDo+EEflZjddQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, anand.jain@oracle.com, wqu@suse.com,
         linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 3/5] btrfs: abort transaction on generation mismatch when marking eb as dirty
-Date:   Mon,  6 Nov 2023 18:06:09 -0500
-Message-ID: <20231106230622.3734225-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 3/5] btrfs: abort transaction on generation mismatch when marking eb as dirty
+Date:   Mon,  6 Nov 2023 18:06:40 -0500
+Message-ID: <20231106230651.3734359-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231106230622.3734225-1-sashal@kernel.org>
-References: <20231106230622.3734225-1-sashal@kernel.org>
+In-Reply-To: <20231106230651.3734359-1-sashal@kernel.org>
+References: <20231106230651.3734359-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6
+X-stable-base: Linux 6.5.10
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -104,10 +104,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  25 files changed, 205 insertions(+), 169 deletions(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index b2e5107b7cecc..5a97db9888107 100644
+index 5e7a19fca79c4..bf65f801d8439 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -2601,7 +2601,7 @@ static int insert_dev_extent(struct btrfs_trans_handle *trans,
+@@ -2587,7 +2587,7 @@ static int insert_dev_extent(struct btrfs_trans_handle *trans,
  	btrfs_set_dev_extent_chunk_offset(leaf, extent, chunk_offset);
  
  	btrfs_set_dev_extent_length(leaf, extent, num_bytes);
@@ -116,7 +116,7 @@ index b2e5107b7cecc..5a97db9888107 100644
  out:
  	btrfs_free_path(path);
  	return ret;
-@@ -3025,7 +3025,7 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
+@@ -3011,7 +3011,7 @@ static int update_block_group_item(struct btrfs_trans_handle *trans,
  						   cache->global_root_id);
  	btrfs_set_stack_block_group_flags(&bgi, cache->flags);
  	write_extent_buffer(leaf, &bgi, bi, sizeof(bgi));
@@ -126,7 +126,7 @@ index b2e5107b7cecc..5a97db9888107 100644
  	btrfs_release_path(path);
  	/*
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 617d4827eec26..118ad4d2cbbe2 100644
+index da519c1b6ad08..721577a30d0dd 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
 @@ -359,7 +359,7 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
@@ -138,7 +138,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	*cow_ret = cow;
  	return 0;
  }
-@@ -627,7 +627,7 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
+@@ -616,7 +616,7 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
  					cow->start);
  		btrfs_set_node_ptr_generation(parent, parent_slot,
  					      trans->transid);
@@ -147,7 +147,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  		if (last_ref) {
  			ret = btrfs_tree_mod_log_free_eb(buf);
  			if (ret) {
-@@ -643,7 +643,7 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
+@@ -632,7 +632,7 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
  	if (unlock_orig)
  		btrfs_tree_unlock(buf);
  	free_extent_buffer_stale(buf);
@@ -156,7 +156,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	*cow_ret = cow;
  	return 0;
  }
-@@ -1197,7 +1197,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+@@ -1186,7 +1186,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
  				goto out;
  			}
  			btrfs_set_node_key(parent, &right_key, pslot + 1);
@@ -165,7 +165,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  		}
  	}
  	if (btrfs_header_nritems(mid) == 1) {
-@@ -1255,7 +1255,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+@@ -1244,7 +1244,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
  			goto out;
  		}
  		btrfs_set_node_key(parent, &mid_key, pslot);
@@ -174,7 +174,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	}
  
  	/* update the path */
-@@ -1362,7 +1362,7 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
+@@ -1351,7 +1351,7 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
  				return ret;
  			}
  			btrfs_set_node_key(parent, &disk_key, pslot);
@@ -183,7 +183,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  			if (btrfs_header_nritems(left) > orig_slot) {
  				path->nodes[level] = left;
  				path->slots[level + 1] -= 1;
-@@ -1422,7 +1422,7 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
+@@ -1411,7 +1411,7 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
  				return ret;
  			}
  			btrfs_set_node_key(parent, &disk_key, pslot + 1);
@@ -192,7 +192,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  			if (btrfs_header_nritems(mid) <= orig_slot) {
  				path->nodes[level] = right;
-@@ -2678,7 +2678,8 @@ int btrfs_get_next_valid_item(struct btrfs_root *root, struct btrfs_key *key,
+@@ -2667,7 +2667,8 @@ int btrfs_get_next_valid_item(struct btrfs_root *root, struct btrfs_key *key,
   * higher levels
   *
   */
@@ -202,7 +202,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  			   struct btrfs_disk_key *key, int level)
  {
  	int i;
-@@ -2695,7 +2696,7 @@ static void fixup_low_keys(struct btrfs_path *path,
+@@ -2684,7 +2685,7 @@ static void fixup_low_keys(struct btrfs_path *path,
  						    BTRFS_MOD_LOG_KEY_REPLACE);
  		BUG_ON(ret < 0);
  		btrfs_set_node_key(t, key, tslot);
@@ -211,7 +211,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  		if (tslot != 0)
  			break;
  	}
-@@ -2707,10 +2708,11 @@ static void fixup_low_keys(struct btrfs_path *path,
+@@ -2696,10 +2697,11 @@ static void fixup_low_keys(struct btrfs_path *path,
   * This function isn't completely safe. It's the caller's responsibility
   * that the new key won't break the order
   */
@@ -224,7 +224,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	struct btrfs_disk_key disk_key;
  	struct extent_buffer *eb;
  	int slot;
-@@ -2748,9 +2750,9 @@ void btrfs_set_item_key_safe(struct btrfs_fs_info *fs_info,
+@@ -2737,9 +2739,9 @@ void btrfs_set_item_key_safe(struct btrfs_fs_info *fs_info,
  
  	btrfs_cpu_key_to_disk(&disk_key, new_key);
  	btrfs_set_item_key(eb, &disk_key, slot);
@@ -236,7 +236,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  }
  
  /*
-@@ -2881,8 +2883,8 @@ static int push_node_left(struct btrfs_trans_handle *trans,
+@@ -2870,8 +2872,8 @@ static int push_node_left(struct btrfs_trans_handle *trans,
  	}
  	btrfs_set_header_nritems(src, src_nritems - push_items);
  	btrfs_set_header_nritems(dst, dst_nritems + push_items);
@@ -247,7 +247,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  	return ret;
  }
-@@ -2957,8 +2959,8 @@ static int balance_node_right(struct btrfs_trans_handle *trans,
+@@ -2946,8 +2948,8 @@ static int balance_node_right(struct btrfs_trans_handle *trans,
  	btrfs_set_header_nritems(src, src_nritems - push_items);
  	btrfs_set_header_nritems(dst, dst_nritems + push_items);
  
@@ -258,7 +258,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  	return ret;
  }
-@@ -3007,7 +3009,7 @@ static noinline int insert_new_root(struct btrfs_trans_handle *trans,
+@@ -2996,7 +2998,7 @@ static noinline int insert_new_root(struct btrfs_trans_handle *trans,
  
  	btrfs_set_node_ptr_generation(c, 0, lower_gen);
  
@@ -267,7 +267,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  	old = root->node;
  	ret = btrfs_tree_mod_log_insert_root(root->node, c, false);
-@@ -3079,7 +3081,7 @@ static int insert_ptr(struct btrfs_trans_handle *trans,
+@@ -3068,7 +3070,7 @@ static int insert_ptr(struct btrfs_trans_handle *trans,
  	WARN_ON(trans->transid == 0);
  	btrfs_set_node_ptr_generation(lower, slot, trans->transid);
  	btrfs_set_header_nritems(lower, nritems + 1);
@@ -276,7 +276,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  	return 0;
  }
-@@ -3158,8 +3160,8 @@ static noinline int split_node(struct btrfs_trans_handle *trans,
+@@ -3147,8 +3149,8 @@ static noinline int split_node(struct btrfs_trans_handle *trans,
  	btrfs_set_header_nritems(split, c_nritems - mid);
  	btrfs_set_header_nritems(c, mid);
  
@@ -287,7 +287,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  	ret = insert_ptr(trans, path, &disk_key, split->start,
  			 path->slots[level + 1] + 1, level + 1);
-@@ -3325,15 +3327,15 @@ static noinline int __push_leaf_right(struct btrfs_trans_handle *trans,
+@@ -3314,15 +3316,15 @@ static noinline int __push_leaf_right(struct btrfs_trans_handle *trans,
  	btrfs_set_header_nritems(left, left_nritems);
  
  	if (left_nritems)
@@ -306,7 +306,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  	/* then fixup the leaf pointer in the path */
  	if (path->slots[0] >= left_nritems) {
-@@ -3545,14 +3547,14 @@ static noinline int __push_leaf_left(struct btrfs_trans_handle *trans,
+@@ -3534,14 +3536,14 @@ static noinline int __push_leaf_left(struct btrfs_trans_handle *trans,
  		btrfs_set_token_item_offset(&token, i, push_space);
  	}
  
@@ -324,7 +324,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  	/* then fixup the leaf pointer in the path */
  	if (path->slots[0] < push_items) {
-@@ -3683,8 +3685,8 @@ static noinline int copy_for_split(struct btrfs_trans_handle *trans,
+@@ -3672,8 +3674,8 @@ static noinline int copy_for_split(struct btrfs_trans_handle *trans,
  	if (ret < 0)
  		return ret;
  
@@ -335,7 +335,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	BUG_ON(path->slots[0] != slot);
  
  	if (mid <= slot) {
-@@ -3925,7 +3927,7 @@ static noinline int split_leaf(struct btrfs_trans_handle *trans,
+@@ -3914,7 +3916,7 @@ static noinline int split_leaf(struct btrfs_trans_handle *trans,
  			path->nodes[0] = right;
  			path->slots[0] = 0;
  			if (path->slots[1] == 0)
@@ -344,7 +344,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  		}
  		/*
  		 * We create a new leaf 'right' for the required ins_len and
-@@ -4024,7 +4026,8 @@ static noinline int setup_leaf_for_split(struct btrfs_trans_handle *trans,
+@@ -4013,7 +4015,8 @@ static noinline int setup_leaf_for_split(struct btrfs_trans_handle *trans,
  	return ret;
  }
  
@@ -354,7 +354,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  			       const struct btrfs_key *new_key,
  			       unsigned long split_offset)
  {
-@@ -4083,7 +4086,7 @@ static noinline int split_item(struct btrfs_path *path,
+@@ -4072,7 +4075,7 @@ static noinline int split_item(struct btrfs_path *path,
  	write_extent_buffer(leaf, buf + split_offset,
  			    btrfs_item_ptr_offset(leaf, slot),
  			    item_size - split_offset);
@@ -363,7 +363,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  	BUG_ON(btrfs_leaf_free_space(leaf) < 0);
  	kfree(buf);
-@@ -4117,7 +4120,7 @@ int btrfs_split_item(struct btrfs_trans_handle *trans,
+@@ -4106,7 +4109,7 @@ int btrfs_split_item(struct btrfs_trans_handle *trans,
  	if (ret)
  		return ret;
  
@@ -372,7 +372,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	return ret;
  }
  
-@@ -4127,7 +4130,8 @@ int btrfs_split_item(struct btrfs_trans_handle *trans,
+@@ -4116,7 +4119,8 @@ int btrfs_split_item(struct btrfs_trans_handle *trans,
   * off the end of the item or if we shift the item to chop bytes off
   * the front.
   */
@@ -382,7 +382,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  {
  	int slot;
  	struct extent_buffer *leaf;
-@@ -4203,11 +4207,11 @@ void btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
+@@ -4192,11 +4196,11 @@ void btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
  		btrfs_set_disk_key_offset(&disk_key, offset + size_diff);
  		btrfs_set_item_key(leaf, &disk_key, slot);
  		if (slot == 0)
@@ -396,7 +396,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  	if (btrfs_leaf_free_space(leaf) < 0) {
  		btrfs_print_leaf(leaf);
-@@ -4218,7 +4222,8 @@ void btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
+@@ -4207,7 +4211,8 @@ void btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from_end)
  /*
   * make the item pointed to by the path bigger, data_size is the added size.
   */
@@ -406,7 +406,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  {
  	int slot;
  	struct extent_buffer *leaf;
-@@ -4268,7 +4273,7 @@ void btrfs_extend_item(struct btrfs_path *path, u32 data_size)
+@@ -4257,7 +4262,7 @@ void btrfs_extend_item(struct btrfs_path *path, u32 data_size)
  	data_end = old_data;
  	old_size = btrfs_item_size(leaf, slot);
  	btrfs_set_item_size(leaf, slot, old_size + data_size);
@@ -415,7 +415,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  	if (btrfs_leaf_free_space(leaf) < 0) {
  		btrfs_print_leaf(leaf);
-@@ -4279,6 +4284,7 @@ void btrfs_extend_item(struct btrfs_path *path, u32 data_size)
+@@ -4268,6 +4273,7 @@ void btrfs_extend_item(struct btrfs_path *path, u32 data_size)
  /*
   * Make space in the node before inserting one or more items.
   *
@@ -423,7 +423,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
   * @root:	root we are inserting items to
   * @path:	points to the leaf/slot where we are going to insert new items
   * @batch:      information about the batch of items to insert
-@@ -4286,7 +4292,8 @@ void btrfs_extend_item(struct btrfs_path *path, u32 data_size)
+@@ -4275,7 +4281,8 @@ void btrfs_extend_item(struct btrfs_path *path, u32 data_size)
   * Main purpose is to save stack depth by doing the bulk of the work in a
   * function that doesn't call btrfs_search_slot
   */
@@ -433,7 +433,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  				   const struct btrfs_item_batch *batch)
  {
  	struct btrfs_fs_info *fs_info = root->fs_info;
-@@ -4306,7 +4313,7 @@ static void setup_items_for_insert(struct btrfs_root *root, struct btrfs_path *p
+@@ -4295,7 +4302,7 @@ static void setup_items_for_insert(struct btrfs_root *root, struct btrfs_path *p
  	 */
  	if (path->slots[0] == 0) {
  		btrfs_cpu_key_to_disk(&disk_key, &batch->keys[0]);
@@ -442,7 +442,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	}
  	btrfs_unlock_up_safe(path, 1);
  
-@@ -4365,7 +4372,7 @@ static void setup_items_for_insert(struct btrfs_root *root, struct btrfs_path *p
+@@ -4354,7 +4361,7 @@ static void setup_items_for_insert(struct btrfs_root *root, struct btrfs_path *p
  	}
  
  	btrfs_set_header_nritems(leaf, nritems + batch->nr);
@@ -451,7 +451,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  
  	if (btrfs_leaf_free_space(leaf) < 0) {
  		btrfs_print_leaf(leaf);
-@@ -4376,12 +4383,14 @@ static void setup_items_for_insert(struct btrfs_root *root, struct btrfs_path *p
+@@ -4365,12 +4372,14 @@ static void setup_items_for_insert(struct btrfs_root *root, struct btrfs_path *p
  /*
   * Insert a new item into a leaf.
   *
@@ -467,7 +467,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  				 struct btrfs_path *path,
  				 const struct btrfs_key *key,
  				 u32 data_size)
-@@ -4393,7 +4402,7 @@ void btrfs_setup_item_for_insert(struct btrfs_root *root,
+@@ -4382,7 +4391,7 @@ void btrfs_setup_item_for_insert(struct btrfs_root *root,
  	batch.total_data_size = data_size;
  	batch.nr = 1;
  
@@ -476,7 +476,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  }
  
  /*
-@@ -4419,7 +4428,7 @@ int btrfs_insert_empty_items(struct btrfs_trans_handle *trans,
+@@ -4408,7 +4417,7 @@ int btrfs_insert_empty_items(struct btrfs_trans_handle *trans,
  	slot = path->slots[0];
  	BUG_ON(slot < 0);
  
@@ -485,7 +485,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	return 0;
  }
  
-@@ -4444,7 +4453,7 @@ int btrfs_insert_item(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+@@ -4433,7 +4442,7 @@ int btrfs_insert_item(struct btrfs_trans_handle *trans, struct btrfs_root *root,
  		leaf = path->nodes[0];
  		ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
  		write_extent_buffer(leaf, data, ptr, data_size);
@@ -494,7 +494,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	}
  	btrfs_free_path(path);
  	return ret;
-@@ -4475,7 +4484,7 @@ int btrfs_duplicate_item(struct btrfs_trans_handle *trans,
+@@ -4464,7 +4473,7 @@ int btrfs_duplicate_item(struct btrfs_trans_handle *trans,
  		return ret;
  
  	path->slots[0]++;
@@ -503,7 +503,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	leaf = path->nodes[0];
  	memcpy_extent_buffer(leaf,
  			     btrfs_item_ptr_offset(leaf, path->slots[0]),
-@@ -4533,9 +4542,9 @@ int btrfs_del_ptr(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+@@ -4522,9 +4531,9 @@ int btrfs_del_ptr(struct btrfs_trans_handle *trans, struct btrfs_root *root,
  		struct btrfs_disk_key disk_key;
  
  		btrfs_node_key(parent, &disk_key, 0);
@@ -515,7 +515,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	return 0;
  }
  
-@@ -4632,7 +4641,7 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+@@ -4621,7 +4630,7 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
  			struct btrfs_disk_key disk_key;
  
  			btrfs_item_key(leaf, &disk_key, 0);
@@ -524,7 +524,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  		}
  
  		/*
-@@ -4697,11 +4706,11 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+@@ -4686,11 +4695,11 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
  				 * dirtied this buffer
  				 */
  				if (path->nodes[0] == leaf)
@@ -539,7 +539,7 @@ index 617d4827eec26..118ad4d2cbbe2 100644
  	}
  	return ret;
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index ff40acd63a374..06333a74d6c4c 100644
+index 9419f4e37a58c..c15fb3ec3c907 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
 @@ -518,7 +518,7 @@ int btrfs_previous_item(struct btrfs_root *root,
@@ -551,7 +551,7 @@ index ff40acd63a374..06333a74d6c4c 100644
  			     struct btrfs_path *path,
  			     const struct btrfs_key *new_key);
  struct extent_buffer *btrfs_root_node(struct btrfs_root *root);
-@@ -545,8 +545,10 @@ int btrfs_block_can_be_shared(struct btrfs_trans_handle *trans,
+@@ -544,8 +544,10 @@ int btrfs_block_can_be_shared(struct btrfs_root *root,
  			      struct extent_buffer *buf);
  int btrfs_del_ptr(struct btrfs_trans_handle *trans, struct btrfs_root *root,
  		  struct btrfs_path *path, int level, int slot);
@@ -564,7 +564,7 @@ index ff40acd63a374..06333a74d6c4c 100644
  int btrfs_split_item(struct btrfs_trans_handle *trans,
  		     struct btrfs_root *root,
  		     struct btrfs_path *path,
-@@ -610,7 +612,8 @@ struct btrfs_item_batch {
+@@ -609,7 +611,8 @@ struct btrfs_item_batch {
  	int nr;
  };
  
@@ -575,7 +575,7 @@ index ff40acd63a374..06333a74d6c4c 100644
  				 const struct btrfs_key *key,
  				 u32 data_size);
 diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 90aaedce1548a..16f9e5f474cca 100644
+index 142e0a0f6a9fe..5d3229b42b3e2 100644
 --- a/fs/btrfs/delayed-inode.c
 +++ b/fs/btrfs/delayed-inode.c
 @@ -1030,7 +1030,7 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
@@ -588,7 +588,7 @@ index 90aaedce1548a..16f9e5f474cca 100644
  	if (!test_bit(BTRFS_DELAYED_NODE_DEL_IREF, &node->flags))
  		goto out;
 diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index fff22ed55c428..fe6ba17a05099 100644
+index 5f10965fd72bf..5549cbd9bdf6a 100644
 --- a/fs/btrfs/dev-replace.c
 +++ b/fs/btrfs/dev-replace.c
 @@ -442,7 +442,7 @@ int btrfs_run_dev_replace(struct btrfs_trans_handle *trans)
@@ -641,10 +641,10 @@ index 082eb0e195981..9c07d5c3e5ad2 100644
  	return ret;
  }
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 68f60d50e1fd0..6b78517b1fd51 100644
+index 681594df7334f..1ae781f533582 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -867,7 +867,7 @@ struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
+@@ -872,7 +872,7 @@ struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
  	}
  
  	root->node = leaf;
@@ -653,7 +653,7 @@ index 68f60d50e1fd0..6b78517b1fd51 100644
  
  	root->commit_root = btrfs_root_node(root);
  	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
-@@ -942,7 +942,7 @@ int btrfs_alloc_log_tree_node(struct btrfs_trans_handle *trans,
+@@ -947,7 +947,7 @@ int btrfs_alloc_log_tree_node(struct btrfs_trans_handle *trans,
  
  	root->node = leaf;
  
@@ -662,7 +662,7 @@ index 68f60d50e1fd0..6b78517b1fd51 100644
  	btrfs_tree_unlock(root->node);
  
  	return 0;
-@@ -4423,7 +4423,8 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+@@ -4426,7 +4426,8 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
  	btrfs_close_devices(fs_info->fs_devices);
  }
  
@@ -672,7 +672,7 @@ index 68f60d50e1fd0..6b78517b1fd51 100644
  {
  	struct btrfs_fs_info *fs_info = buf->fs_info;
  	u64 transid = btrfs_header_generation(buf);
-@@ -4437,10 +4438,14 @@ void btrfs_mark_buffer_dirty(struct extent_buffer *buf)
+@@ -4440,10 +4441,14 @@ void btrfs_mark_buffer_dirty(struct extent_buffer *buf)
  	if (unlikely(test_bit(EXTENT_BUFFER_UNMAPPED, &buf->bflags)))
  		return;
  #endif
@@ -689,10 +689,10 @@ index 68f60d50e1fd0..6b78517b1fd51 100644
  #ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
  	/*
 diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index 02b645744a822..50dab8f639dcc 100644
+index b03767f4d7edf..e5bdb96912438 100644
 --- a/fs/btrfs/disk-io.h
 +++ b/fs/btrfs/disk-io.h
-@@ -104,7 +104,8 @@ static inline struct btrfs_root *btrfs_grab_root(struct btrfs_root *root)
+@@ -105,7 +105,8 @@ static inline struct btrfs_root *btrfs_grab_root(struct btrfs_root *root)
  }
  
  void btrfs_put_root(struct btrfs_root *root);
@@ -703,10 +703,10 @@ index 02b645744a822..50dab8f639dcc 100644
  			  int atomic);
  int btrfs_read_extent_buffer(struct extent_buffer *buf,
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index fc313fce5bbdc..91fe57e87583c 100644
+index 2cf8d646085c2..6ab349422f765 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -575,7 +575,7 @@ static noinline int insert_extent_data_ref(struct btrfs_trans_handle *trans,
+@@ -594,7 +594,7 @@ static noinline int insert_extent_data_ref(struct btrfs_trans_handle *trans,
  			btrfs_set_extent_data_ref_count(leaf, ref, num_refs);
  		}
  	}
@@ -715,7 +715,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  	ret = 0;
  fail:
  	btrfs_release_path(path);
-@@ -623,7 +623,7 @@ static noinline int remove_extent_data_ref(struct btrfs_trans_handle *trans,
+@@ -642,7 +642,7 @@ static noinline int remove_extent_data_ref(struct btrfs_trans_handle *trans,
  			btrfs_set_extent_data_ref_count(leaf, ref1, num_refs);
  		else if (key.type == BTRFS_SHARED_DATA_REF_KEY)
  			btrfs_set_shared_data_ref_count(leaf, ref2, num_refs);
@@ -724,7 +724,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  	}
  	return ret;
  }
-@@ -976,7 +976,7 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
+@@ -994,7 +994,7 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
   * helper to add new inline back ref
   */
  static noinline_for_stack
@@ -733,7 +733,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  				 struct btrfs_path *path,
  				 struct btrfs_extent_inline_ref *iref,
  				 u64 parent, u64 root_objectid,
-@@ -999,7 +999,7 @@ void setup_inline_extent_backref(struct btrfs_fs_info *fs_info,
+@@ -1017,7 +1017,7 @@ void setup_inline_extent_backref(struct btrfs_fs_info *fs_info,
  	type = extent_ref_type(parent, owner);
  	size = btrfs_extent_inline_ref_size(type);
  
@@ -742,7 +742,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  
  	ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_extent_item);
  	refs = btrfs_extent_refs(leaf, ei);
-@@ -1033,7 +1033,7 @@ void setup_inline_extent_backref(struct btrfs_fs_info *fs_info,
+@@ -1051,7 +1051,7 @@ void setup_inline_extent_backref(struct btrfs_fs_info *fs_info,
  	} else {
  		btrfs_set_extent_inline_ref_offset(leaf, iref, root_objectid);
  	}
@@ -751,7 +751,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  }
  
  static int lookup_extent_backref(struct btrfs_trans_handle *trans,
-@@ -1066,7 +1066,9 @@ static int lookup_extent_backref(struct btrfs_trans_handle *trans,
+@@ -1084,7 +1084,9 @@ static int lookup_extent_backref(struct btrfs_trans_handle *trans,
  /*
   * helper to update/remove inline back ref
   */
@@ -762,7 +762,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  				  struct btrfs_extent_inline_ref *iref,
  				  int refs_to_mod,
  				  struct btrfs_delayed_extent_op *extent_op)
-@@ -1174,9 +1176,9 @@ static noinline_for_stack int update_inline_extent_backref(struct btrfs_path *pa
+@@ -1192,9 +1194,9 @@ static noinline_for_stack int update_inline_extent_backref(struct btrfs_path *pa
  			memmove_extent_buffer(leaf, ptr, ptr + size,
  					      end - ptr - size);
  		item_size -= size;
@@ -774,7 +774,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  	return 0;
  }
  
-@@ -1206,9 +1208,10 @@ int insert_inline_extent_backref(struct btrfs_trans_handle *trans,
+@@ -1224,9 +1226,10 @@ int insert_inline_extent_backref(struct btrfs_trans_handle *trans,
  				   bytenr, num_bytes, root_objectid, path->slots[0]);
  			return -EUCLEAN;
  		}
@@ -787,7 +787,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  					    root_objectid, owner, offset,
  					    refs_to_add, extent_op);
  		ret = 0;
-@@ -1226,7 +1229,8 @@ static int remove_extent_backref(struct btrfs_trans_handle *trans,
+@@ -1244,7 +1247,8 @@ static int remove_extent_backref(struct btrfs_trans_handle *trans,
  
  	BUG_ON(!is_data && refs_to_drop != 1);
  	if (iref)
@@ -797,7 +797,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  	else if (is_data)
  		ret = remove_extent_data_ref(trans, root, path, refs_to_drop);
  	else
-@@ -1510,7 +1514,7 @@ static int __btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
+@@ -1528,7 +1532,7 @@ static int __btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
  	if (extent_op)
  		__run_delayed_extent_op(extent_op, leaf, item);
  
@@ -806,7 +806,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  	btrfs_release_path(path);
  
  	/* now insert the actual backref */
-@@ -1678,7 +1682,7 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
+@@ -1692,7 +1696,7 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
  	ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_extent_item);
  	__run_delayed_extent_op(extent_op, leaf, ei);
  
@@ -815,7 +815,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  out:
  	btrfs_free_path(path);
  	return err;
-@@ -3151,7 +3155,7 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+@@ -3164,7 +3168,7 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
  			}
  		} else {
  			btrfs_set_extent_refs(leaf, ei, refs);
@@ -824,7 +824,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  		}
  		if (found_extent) {
  			ret = remove_extent_backref(trans, extent_root, path,
-@@ -4659,7 +4663,7 @@ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
+@@ -4672,7 +4676,7 @@ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
  		btrfs_set_extent_data_ref_count(leaf, ref, ref_mod);
  	}
  
@@ -833,7 +833,7 @@ index fc313fce5bbdc..91fe57e87583c 100644
  	btrfs_free_path(path);
  
  	return alloc_reserved_extent(trans, ins->objectid, ins->offset);
-@@ -4734,7 +4738,7 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
+@@ -4747,7 +4751,7 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
  		btrfs_set_extent_inline_ref_offset(leaf, iref, ref->root);
  	}
  
@@ -919,7 +919,7 @@ index 1ce5dd1544995..45cae356e89ba 100644
  		btrfs_release_path(path);
  		cond_resched();
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 361535c71c0f5..23a145ca94573 100644
+index eae9175f2c29b..a407af38a9237 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
 @@ -368,7 +368,7 @@ int btrfs_drop_extents(struct btrfs_trans_handle *trans,
@@ -1037,7 +1037,7 @@ index 361535c71c0f5..23a145ca94573 100644
  
  		ret = btrfs_del_items(trans, root, path, del_slot, del_nr);
  		if (ret < 0) {
-@@ -2104,7 +2104,7 @@ static int fill_holes(struct btrfs_trans_handle *trans,
+@@ -2103,7 +2103,7 @@ static int fill_holes(struct btrfs_trans_handle *trans,
  		btrfs_set_file_extent_ram_bytes(leaf, fi, num_bytes);
  		btrfs_set_file_extent_offset(leaf, fi, 0);
  		btrfs_set_file_extent_generation(leaf, fi, trans->transid);
@@ -1046,7 +1046,7 @@ index 361535c71c0f5..23a145ca94573 100644
  		goto out;
  	}
  
-@@ -2112,7 +2112,7 @@ static int fill_holes(struct btrfs_trans_handle *trans,
+@@ -2111,7 +2111,7 @@ static int fill_holes(struct btrfs_trans_handle *trans,
  		u64 num_bytes;
  
  		key.offset = offset;
@@ -1055,7 +1055,7 @@ index 361535c71c0f5..23a145ca94573 100644
  		fi = btrfs_item_ptr(leaf, path->slots[0],
  				    struct btrfs_file_extent_item);
  		num_bytes = btrfs_file_extent_num_bytes(leaf, fi) + end -
-@@ -2121,7 +2121,7 @@ static int fill_holes(struct btrfs_trans_handle *trans,
+@@ -2120,7 +2120,7 @@ static int fill_holes(struct btrfs_trans_handle *trans,
  		btrfs_set_file_extent_ram_bytes(leaf, fi, num_bytes);
  		btrfs_set_file_extent_offset(leaf, fi, 0);
  		btrfs_set_file_extent_generation(leaf, fi, trans->transid);
@@ -1064,7 +1064,7 @@ index 361535c71c0f5..23a145ca94573 100644
  		goto out;
  	}
  	btrfs_release_path(path);
-@@ -2273,7 +2273,7 @@ static int btrfs_insert_replace_extent(struct btrfs_trans_handle *trans,
+@@ -2272,7 +2272,7 @@ static int btrfs_insert_replace_extent(struct btrfs_trans_handle *trans,
  	btrfs_set_file_extent_num_bytes(leaf, extent, replace_len);
  	if (extent_info->is_new_extent)
  		btrfs_set_file_extent_generation(leaf, extent, trans->transid);
@@ -1074,7 +1074,7 @@ index 361535c71c0f5..23a145ca94573 100644
  
  	ret = btrfs_inode_set_file_extent_range(inode, extent_info->file_offset,
 diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 27fad70451aad..8dd8ef760321e 100644
+index 8808004180759..6b7383ae5a70c 100644
 --- a/fs/btrfs/free-space-cache.c
 +++ b/fs/btrfs/free-space-cache.c
 @@ -195,7 +195,7 @@ static int __create_free_space_inode(struct btrfs_root *root,
@@ -1105,7 +1105,7 @@ index 27fad70451aad..8dd8ef760321e 100644
  
  	return 0;
 diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index c0e734082dcc4..7b598b070700e 100644
+index f169378e2ca6e..ae060a26e1191 100644
 --- a/fs/btrfs/free-space-tree.c
 +++ b/fs/btrfs/free-space-tree.c
 @@ -89,7 +89,7 @@ static int add_new_free_space_info(struct btrfs_trans_handle *trans,
@@ -1258,7 +1258,7 @@ index 4c322b720a80a..d3ff97374d48a 100644
  				/*
  				 * We have to bail so the last_size is set to
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 7814b9d654ce1..2c61f9da4ab48 100644
+index 0f4498dfa30c9..58e104f118f96 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
 @@ -573,7 +573,7 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
@@ -1270,7 +1270,7 @@ index 7814b9d654ce1..2c61f9da4ab48 100644
  	btrfs_release_path(path);
  
  	/*
-@@ -2912,7 +2912,7 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+@@ -3072,7 +3072,7 @@ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
  			btrfs_item_ptr_offset(leaf, path->slots[0]),
  			sizeof(struct btrfs_file_extent_item));
  
@@ -1279,7 +1279,7 @@ index 7814b9d654ce1..2c61f9da4ab48 100644
  	btrfs_release_path(path);
  
  	/*
-@@ -3981,7 +3981,7 @@ static noinline int btrfs_update_inode_item(struct btrfs_trans_handle *trans,
+@@ -4134,7 +4134,7 @@ static noinline int btrfs_update_inode_item(struct btrfs_trans_handle *trans,
  				    struct btrfs_inode_item);
  
  	fill_inode_item(trans, leaf, inode_item, &inode->vfs_inode);
@@ -1288,7 +1288,7 @@ index 7814b9d654ce1..2c61f9da4ab48 100644
  	btrfs_set_inode_last_trans(trans, inode);
  	ret = 0;
  failed:
-@@ -6310,7 +6310,7 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
+@@ -6476,7 +6476,7 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
  		}
  	}
  
@@ -1297,7 +1297,7 @@ index 7814b9d654ce1..2c61f9da4ab48 100644
  	/*
  	 * We don't need the path anymore, plus inheriting properties, adding
  	 * ACLs, security xattrs, orphan item or adding the link, will result in
-@@ -9446,7 +9446,7 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
+@@ -9630,7 +9630,7 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
  
  	ptr = btrfs_file_extent_inline_start(ei);
  	write_extent_buffer(leaf, symname, ptr, name_len);
@@ -1307,7 +1307,7 @@ index 7814b9d654ce1..2c61f9da4ab48 100644
  
  	d_instantiate_new(dentry, inode);
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 8e7d03bc1b565..5dbc3de66193e 100644
+index bf35b6fce8f07..74f6b1dff5a90 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
 @@ -663,7 +663,7 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
@@ -1329,7 +1329,7 @@ index 8e7d03bc1b565..5dbc3de66193e 100644
  
  	btrfs_set_fs_incompat(fs_info, DEFAULT_SUBVOL);
 diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index b99230db3c820..bdaebb9fc6899 100644
+index 2637d6b157ff9..74cabaa59be71 100644
 --- a/fs/btrfs/qgroup.c
 +++ b/fs/btrfs/qgroup.c
 @@ -622,7 +622,7 @@ static int add_qgroup_relation_item(struct btrfs_trans_handle *trans, u64 src,
@@ -1396,10 +1396,10 @@ index b99230db3c820..bdaebb9fc6899 100644
  	key.objectid = 0;
  	key.type = BTRFS_ROOT_REF_KEY;
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index c6d4bb8cbe299..4eaac3ae5c365 100644
+index 5f4ff7d5b5c19..4b7ced217d3e2 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -1181,7 +1181,7 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
+@@ -1180,7 +1180,7 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
  		}
  	}
  	if (dirty)
@@ -1408,7 +1408,7 @@ index c6d4bb8cbe299..4eaac3ae5c365 100644
  	if (inode)
  		btrfs_add_delayed_iput(BTRFS_I(inode));
  	return ret;
-@@ -1374,13 +1374,13 @@ int replace_path(struct btrfs_trans_handle *trans, struct reloc_control *rc,
+@@ -1373,13 +1373,13 @@ int replace_path(struct btrfs_trans_handle *trans, struct reloc_control *rc,
  		 */
  		btrfs_set_node_blockptr(parent, slot, new_bytenr);
  		btrfs_set_node_ptr_generation(parent, slot, new_ptr_gen);
@@ -1424,7 +1424,7 @@ index c6d4bb8cbe299..4eaac3ae5c365 100644
  
  		btrfs_init_generic_ref(&ref, BTRFS_ADD_DELAYED_REF, old_bytenr,
  				       blocksize, path->nodes[level]->start);
-@@ -2517,7 +2517,7 @@ static int do_relocation(struct btrfs_trans_handle *trans,
+@@ -2516,7 +2516,7 @@ static int do_relocation(struct btrfs_trans_handle *trans,
  						node->eb->start);
  			btrfs_set_node_ptr_generation(upper->eb, slot,
  						      trans->transid);
@@ -1433,7 +1433,7 @@ index c6d4bb8cbe299..4eaac3ae5c365 100644
  
  			btrfs_init_generic_ref(&ref, BTRFS_ADD_DELAYED_REF,
  					       node->eb->start, blocksize,
-@@ -3835,7 +3835,7 @@ static int __insert_orphan_inode(struct btrfs_trans_handle *trans,
+@@ -3831,7 +3831,7 @@ static int __insert_orphan_inode(struct btrfs_trans_handle *trans,
  	btrfs_set_inode_mode(leaf, item, S_IFREG | 0600);
  	btrfs_set_inode_flags(leaf, item, BTRFS_INODE_NOCOMPRESS |
  					  BTRFS_INODE_PREALLOC);
@@ -1512,7 +1512,7 @@ index 05b03f5eab83b..492d69d2fa737 100644
  
  /*
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index cbb17b5421317..9fb64af608d12 100644
+index a00e7a0bc713d..ad0d934991741 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
 @@ -504,9 +504,9 @@ static int overwrite_item(struct btrfs_trans_handle *trans,
@@ -1595,10 +1595,10 @@ index 7c7001f42b14c..5be74f9e47ebf 100644
  out:
  	btrfs_free_path(path);
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index b9ef6f54635ca..c26d3499a2892 100644
+index 5019e9244d2d2..1df496c809376 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -1894,7 +1894,7 @@ static int btrfs_add_dev_item(struct btrfs_trans_handle *trans,
+@@ -1908,7 +1908,7 @@ static int btrfs_add_dev_item(struct btrfs_trans_handle *trans,
  	ptr = btrfs_device_fsid(dev_item);
  	write_extent_buffer(leaf, trans->fs_info->fs_devices->metadata_uuid,
  			    ptr, BTRFS_FSID_SIZE);
@@ -1607,7 +1607,7 @@ index b9ef6f54635ca..c26d3499a2892 100644
  
  	ret = 0;
  out:
-@@ -2597,7 +2597,7 @@ static int btrfs_finish_sprout(struct btrfs_trans_handle *trans)
+@@ -2613,7 +2613,7 @@ static int btrfs_finish_sprout(struct btrfs_trans_handle *trans)
  		if (device->fs_devices->seeding) {
  			btrfs_set_device_generation(leaf, dev_item,
  						    device->generation);
@@ -1616,7 +1616,7 @@ index b9ef6f54635ca..c26d3499a2892 100644
  		}
  
  		path->slots[0]++;
-@@ -2895,7 +2895,7 @@ static noinline int btrfs_update_device(struct btrfs_trans_handle *trans,
+@@ -2911,7 +2911,7 @@ static noinline int btrfs_update_device(struct btrfs_trans_handle *trans,
  				     btrfs_device_get_disk_total_bytes(device));
  	btrfs_set_device_bytes_used(leaf, dev_item,
  				    btrfs_device_get_bytes_used(device));
@@ -1625,7 +1625,7 @@ index b9ef6f54635ca..c26d3499a2892 100644
  
  out:
  	btrfs_free_path(path);
-@@ -3483,7 +3483,7 @@ static int insert_balance_item(struct btrfs_fs_info *fs_info,
+@@ -3499,7 +3499,7 @@ static int insert_balance_item(struct btrfs_fs_info *fs_info,
  
  	btrfs_set_balance_flags(leaf, item, bctl->flags);
  
@@ -1634,7 +1634,7 @@ index b9ef6f54635ca..c26d3499a2892 100644
  out:
  	btrfs_free_path(path);
  	err = btrfs_commit_transaction(trans);
-@@ -7534,7 +7534,7 @@ static int update_dev_stat_item(struct btrfs_trans_handle *trans,
+@@ -7513,7 +7513,7 @@ static int update_dev_stat_item(struct btrfs_trans_handle *trans,
  	for (i = 0; i < BTRFS_DEV_STAT_VALUES_MAX; i++)
  		btrfs_set_dev_stats_value(eb, ptr, i,
  					  btrfs_dev_stat_read(device, i));
@@ -1644,7 +1644,7 @@ index b9ef6f54635ca..c26d3499a2892 100644
  out:
  	btrfs_free_path(path);
 diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-index 96828a13dd43d..b906f809650ef 100644
+index fc4b20c2688a0..c454b8ce6babe 100644
 --- a/fs/btrfs/xattr.c
 +++ b/fs/btrfs/xattr.c
 @@ -188,15 +188,15 @@ int btrfs_setxattr(struct btrfs_trans_handle *trans, struct inode *inode,
