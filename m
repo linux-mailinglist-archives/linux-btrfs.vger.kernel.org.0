@@ -2,54 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F13987E2E10
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Nov 2023 21:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D277E2E57
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Nov 2023 21:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbjKFUUT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Nov 2023 15:20:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
+        id S233043AbjKFUln (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Nov 2023 15:41:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbjKFUUR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Nov 2023 15:20:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A20D75;
-        Mon,  6 Nov 2023 12:20:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CDBAC433C8;
-        Mon,  6 Nov 2023 20:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699302014;
-        bh=ekujjvi8RS42//7/8F4SRHBAC5/p/7Prwv5G3MrhLrQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mJWrTK887hpU3DCPmEEplv5u2zbVfH05jpyFTqRoJrfAUC5w9AGNpvfT52YrsolZs
-         Wscxx/a/dBa45B53uLMeAOMR9UxFYciNL/LRLcfe2RWm+iKBr80a/xBLP81wxbDsEq
-         vQQKhvYc0HA5NqxRvmgm1L8BODTXS8anvgQyE6KPIX2cILDTtAP6uBpdOSaHZr2Xgs
-         7Q5rput9GqfNiSFWC9LAy4Z9EgKMWFTpeW+F1rQQbNoacfDmAuBYx5JQByN/Xcal58
-         gtdEMFtuqP7J9wFGSR3GugIAOt4GWy6J/MbhevBcwG86bAjoxE574pQBFZt9OqUh6X
-         jXo2+Pj73ZdkQ==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-9e1fb7faa9dso28284566b.2;
-        Mon, 06 Nov 2023 12:20:13 -0800 (PST)
-X-Gm-Message-State: AOJu0YxaJvMTEr5j4iIv87QSekyAduROougKgbksb1xX+b3vWZihDOAQ
-        f9oYAII2iwuUxzBQlQRwtP8N7ulROGcn5ihmgIQ=
-X-Google-Smtp-Source: AGHT+IF2tLpAh8ZaxZMrEekDHhrr1YK4Mgm0S0K26K6vFFfjn1sriLkmpvn9chTRaqerKcosZplVN6BYhrUA6QkxAIQ=
-X-Received: by 2002:a17:907:7255:b0:9c3:8242:e665 with SMTP id
- ds21-20020a170907725500b009c38242e665mr14289406ejc.8.1699302012434; Mon, 06
- Nov 2023 12:20:12 -0800 (PST)
+        with ESMTP id S233065AbjKFUll (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Nov 2023 15:41:41 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FFDD76
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Nov 2023 12:41:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+        s=s31663417; t=1699303295; x=1699908095; i=quwenruo.btrfs@gmx.com;
+        bh=KdIgo6uSSWQvOkCzyMHuCgIkLF0d56Jqyl0YhhiZrl8=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=m79nohPcAdN9jDN88/zjZb47aQvlKBszshQ0uFkyp/M7eshMllO+fblMFb1wmSnv
+         A+2QzPA9m8Q2W0oDwJbk8/tquO0ZCZV+6evH003WC8wevvOdlJX1rnfK25n0EUHkQ
+         Lb5y0U/UzeuuN0TZoNGCN0dLqHgNKSVVIjlhx4o66tgl36TNcMRzoR9zgBy4Xo1NV
+         dV2bmt74MU497AbRUAl9go51z/NJO+nDJsIpI/Zd37YK4o6Edz0lfd5Y+kKsp7MSw
+         ZaV4/NeFDzs7pZhUC4pU82hyt/oA9+PiymJnQGjjxeOpDP93l+Hc9WEtPrMP7uCFl
+         hwn4c3PnY5o/UolTZA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mv2xU-1rHlp02Q1g-00r2xl; Mon, 06
+ Nov 2023 21:41:35 +0100
+Message-ID: <803b59fa-f398-4522-a3d8-69b598a209f5@gmx.com>
+Date:   Tue, 7 Nov 2023 07:11:30 +1030
 MIME-Version: 1.0
-References: <00000000000004769106097f9a34@google.com>
-In-Reply-To: <00000000000004769106097f9a34@google.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Mon, 6 Nov 2023 20:19:35 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5u6fDxpmdOzS6EL1zC2N-Bvn1=srJFfC4TYkoDwndGRA@mail.gmail.com>
-Message-ID: <CAL3q7H5u6fDxpmdOzS6EL1zC2N-Bvn1=srJFfC4TYkoDwndGRA@mail.gmail.com>
-Subject: Re: [syzbot] [btrfs?] memory leak in btrfs_add_delayed_tree_ref
-To:     syzbot <syzbot+d3ddc6dcc6386dea398b@syzkaller.appspotmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: Can btrfs repair this ?
+To:     Joe Salmeri <jmscdba@gmail.com>,
+        BTRFS Mailing-List <linux-btrfs@vger.kernel.org>
+References: <9de00454-0cd9-4d2d-aed4-23490f7dde83@gmail.com>
+ <bbda4275-a07e-4921-a9c0-5a3d34801ef5@gmx.com>
+ <de206814-ab47-40da-8e35-370ec3633bd5@gmail.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <de206814-ab47-40da-8e35-370ec3633bd5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Provags-ID: V03:K1:Wn2WpnEK4YGxYpv6CRLJSGcYNNEelHtaNrem+Z/2FBF3GscQabM
+ rIIj8tADhw6fLE365QDOG9rchcDLX2M865q/7NrXY5l3DRcP9b/5g5r5J0XiYrWQ1UA6m3r
+ /0CZtG+M3JTEGlfxIMgErZfsV8GDgterS7dwdNdR2YewtoxyelxsyZLvlRDDK9NXkrupvxO
+ hjzynjsrH0x5jt2d96W/w==
+UI-OutboundReport: notjunk:1;M01:P0:JyyK1imx6dA=;Q9NN+kVnfOP3LLWCItX/c5QY+yh
+ vNfdQv2up7lMDfiXYVPBBpEaaOlCwyWHeQWv76HNpSVxktOeCl0NSOBxH2EUA1ZseP2Dt8ujM
+ eK7eKf/MvfBNm7y6g8+6fiOcmxACwQg/sSs9R0fnglTUhifJsh8uAt0qqgDCxRrWqjoSvmCZV
+ /QHkJV1unQ7ziZlfyk+RSx5ipGBoCQoKVc2NAWVx6XCcSRaF8Z5eadbLBUbgVmLFmPxNdvCb0
+ TA8KnyLylwg7IVuPRbxmJ9m8hgwos9MDEhZtQGR8iEhr9mcD5idhwSHBnKO8v8XxLgN1xx/41
+ RfbigxeRwbABG8huwLJsVHwhCofqZEsfscxONFv0UZNgzDq5eA0ykrdbhHoLvUklbfFLlvMpr
+ 75ci3smZIbVk+tDuxHaiIZpFTEh1Td7ghu4B6op3k/luZlpWRdBdciwMIKmrvTit5xTfNqf+Q
+ fA/wsbOcThKJ67jIYJc/oz/52idVmln5ekT7MHlEtATbc3e5t3XymdhLo1qhX9YdZXL9+DUzQ
+ gaM3Bl3x3OrZEUDRY9k8EzVdWGnbd298GWWfoN2/Vl+J2FCiOaJtmt1BVrSJbA6qgmystDfAe
+ 1hQZ2HbXeXkdsdVlfmgmdt3J/vGjVW0o02sfY8yJRH9PxK/sgpn0WwUYWdAfJ07xtLVfsVa1Z
+ mzgXpjg4zZ4TWMlkTu6NGtEv0ufmaoX6F4+FhYlpTdj97vjo/liIP3xE8POJyMuhJbqE1OS2Y
+ ioVos4t4aGXyjEXe4QYuwchEWvoR+4GYObfJjRUmLueUPZX9K1maC9ySOeFW1vdTNlgWFmFlt
+ vTH1ehmc8k5XAEBbXRmQhVhjkF25aHdq8dYYMchF0PNM0U/49MDooGNS9y/82zYzq+dQ4LUfZ
+ i15mYioITcoenTkRuHkZJT5S8HV2Ka8SPFfZg01NC+k0buQvf89CYXOrz7kBck04onSZXxI/9
+ 6HBZRDedNRguZngPPYEI07e6WQM=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,211 +97,168 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 5:59=E2=80=AFPM syzbot
-<syzbot+d3ddc6dcc6386dea398b@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    8f6f76a6a29f Merge tag 'mm-nonmm-stable-2023-11-02-14-08'=
- ..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D15169b8768000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D5ea2285f517f9=
-4d0
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd3ddc6dcc6386de=
-a398b
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for D=
-ebian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D179c2ecf680=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D149dff40e8000=
-0
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/dfead0cc157b/dis=
-k-8f6f76a6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/c2ab876430bc/vmlinu=
-x-8f6f76a6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/e9cd314888e8/b=
-zImage-8f6f76a6.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/4a497ff0ef=
-1a/mount_0.gz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+d3ddc6dcc6386dea398b@syzkaller.appspotmail.com
 
-#syz fix: btrfs: fix qgroup record leaks when using simple quotas
 
-https://lore.kernel.org/linux-btrfs/2431d473c04bede4387c081007d532758fcd2f2=
-8.1699301753.git.fdmanana@suse.com/
+On 2023/11/7 06:26, Joe Salmeri wrote:
+>
+> On 11/5/23 18:45, Qu Wenruo wrote:
+>>
+>>
+>> On 2023/11/6 07:08, Joe Salmeri wrote:
+>>> Hi,
+>>>
+>>> I was running openSUSE Tumbleweed build 20231001 when I first found th=
+is
+>>> issue but updated to TW build 20231031 the other day and it still
+>>> reports the same issue.
+>>>
+>>> Kernel 6.5.9-1 btrfsprogs 6.5.1-1.2 Device Samsung 860 EVO 500 GB
+>>> Partion #5 root btrfs filesystem, no RAID or other drives
+>>>
+>>> I run "btrfs device stats /" about once a week and no problems are
+>>> reported.
+>>>
+>>> I run "btrfs scrub start /"=C2=A0=C2=A0 regularly too and no problem a=
+re reported
+>>>
+>>> I ran "btrfs check --readonly --force /dev/sda5" the other day and got
+>>> the following errors:
+>>>
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Opening filesystem to=
+ check...
+>>>
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WARNING: filesystem m=
+ounted, continuing because of --force
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Checking filesystem o=
+n /dev/sda5
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 UUID: 7591d83f-f78e-4=
+02b-afe5-fab23dad0ffe
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [1/7] checking root i=
+tems
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [2/7] checking extent=
+s
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [3/7] checking free s=
+pace cache
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [4/7] checking fs roo=
+ts
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 root 262 inode 319967=
+35 errors 1, no inode item
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved ref dir 132030 index 769 namelen 36=
+ name
+>>> 02179466-b671-4313-8fa5-0eb87d716f92 filetype 2 errors 5, no dir item,
+>>> no inode ref
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved ref dir 132030 index 769 namelen 36=
+ name
+>>> 77ef9cd4-0efe-46af-bf7f-47f582851e16 filetype 2 errors 2, no dir index
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ERROR: errors found i=
+n fs roots
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 found 33034690560 byt=
+es used, error(s) found
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 total csum bytes: 288=
+19244
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 total tree bytes: 986=
+251264
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 total fs tree bytes: =
+876134400
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 total extent tree byt=
+es: 62521344
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btree space waste byt=
+es: 277302161
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 file data blocks allo=
+cated: 141608800256
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 referenced 3905=
+4090240
+>>>
+>>> Running "find -inum 31996735" identifies the item is is complaining
+>>> about as
+>>>
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /usr/bin/find: File s=
+ystem loop detected;
+>>> =E2=80=98./.snapshots/1/snapshot=E2=80=99 is part of the same file sys=
+tem loop as =E2=80=98.=E2=80=99.
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /usr/bin/find:
+>>> =E2=80=98./home/denise/.config/skypeforlinux/blob_storage/02179466-b67=
+1-4313-8fa5-0eb87d716f92=E2=80=99: No such file or directory
+>>>
+>>> Running "ls -al /home/denise/.config/skypeforlinux/blob_storage/" also
+>>> shows that this is correct item
+>>>
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 drwx------ 1 denise joe-denise =C2=A0=C2=A072=
+ Nov =C2=A01 22:49 .
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 drwxr-xr-x 1 denise joe-denise 3.7K Nov =C2=
+=A01 20:07 ..
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 d????????? ? ? =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+? =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+? =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0?
+>>> 02179466-b671-4313-8fa5-0eb87d716f92
+>>>
+>>> When I originally ran btrfs check there were actually a bunch of other
+>>> items listed, however, I have timeline snapshots turned on for the
+>>> /@home subvolume and all the other items were because of that item in
+>>> each of the other snapshots.
+>>>
+>>> I removed all the other "home" snapshots and now btrfs check only
+>>> reports that one item as shown above.
+>>>
+>>> I have heard that btrfs check --repair is generally not recommended bu=
+t
+>>> I have been unable to find a way to have btrfs remove the item it is
+>>> complaining about.
+>>
+>> --repair can fix the problem.
+>>
+>> But for your particular problem, please also do a memtest just in case.
+>>
+>> This problem looks like a bad hash, which may be caused by memory
+>> bitflip.
+>>
+> I ran the memtests last night multiple times and no problems reported.
+>
+> I have heard that --repair usage is usually not recommended.
+>
+> I cannot afford to have this system have to be rebuilt right now.
+>
+> Is it definitely safe in this case ?=C2=A0=C2=A0 Otherwise, I would just=
+ ignore it
+> since I know why it exists and that it is not a hw problem.
+
+At least from your output, it won't make things any worse.
+
+Thanks,
+Qu
 
 >
-> executing program
-> BUG: memory leak
-> unreferenced object 0xffff88810891e940 (size 64):
->   comm "syz-executor244", pid 5031, jiffies 4294941874 (age 13.150s)
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 e0 51 00 00 00 00 00  ..........Q.....
->   backtrace:
->     [<ffffffff816336ad>] kmemleak_alloc_recursive include/linux/kmemleak.=
-h:42 [inline]
->     [<ffffffff816336ad>] slab_post_alloc_hook mm/slab.h:766 [inline]
->     [<ffffffff816336ad>] slab_alloc_node mm/slub.c:3478 [inline]
->     [<ffffffff816336ad>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:35=
-17
->     [<ffffffff8157e505>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
->     [<ffffffff82135480>] kmalloc include/linux/slab.h:600 [inline]
->     [<ffffffff82135480>] kzalloc include/linux/slab.h:721 [inline]
->     [<ffffffff82135480>] btrfs_add_delayed_tree_ref+0x550/0x5b0 fs/btrfs/=
-delayed-ref.c:1045
->     [<ffffffff820874bb>] btrfs_alloc_tree_block+0x65b/0x7c0 fs/btrfs/exte=
-nt-tree.c:5153
->     [<ffffffff8206c15e>] btrfs_force_cow_block+0x1be/0xb30 fs/btrfs/ctree=
-.c:563
->     [<ffffffff8206cbf8>] btrfs_cow_block+0x128/0x3b0 fs/btrfs/ctree.c:741
->     [<ffffffff82073609>] btrfs_search_slot+0xa49/0x1770 fs/btrfs/ctree.c:=
-2095
->     [<ffffffff82074fa3>] btrfs_insert_empty_items+0x43/0xc0 fs/btrfs/ctre=
-e.c:4285
->     [<ffffffff820b8a34>] btrfs_create_new_inode+0x354/0xfe0 fs/btrfs/inod=
-e.c:6283
->     [<ffffffff820b99e7>] btrfs_create_common+0xf7/0x190 fs/btrfs/inode.c:=
-6511
->     [<ffffffff820b9c12>] btrfs_create+0x72/0x90 fs/btrfs/inode.c:6551
->     [<ffffffff816b673f>] lookup_open fs/namei.c:3477 [inline]
->     [<ffffffff816b673f>] open_last_lookups fs/namei.c:3546 [inline]
->     [<ffffffff816b673f>] path_openat+0x17df/0x1d60 fs/namei.c:3776
->     [<ffffffff816b78e1>] do_filp_open+0xd1/0x1c0 fs/namei.c:3809
->     [<ffffffff816906c4>] do_sys_openat2+0xf4/0x150 fs/open.c:1440
->     [<ffffffff81690ec5>] do_sys_open fs/open.c:1455 [inline]
->     [<ffffffff81690ec5>] __do_sys_open fs/open.c:1463 [inline]
->     [<ffffffff81690ec5>] __se_sys_open fs/open.c:1459 [inline]
->     [<ffffffff81690ec5>] __x64_sys_open+0xa5/0xf0 fs/open.c:1459
->     [<ffffffff84b5dd4f>] do_syscall_x64 arch/x86/entry/common.c:51 [inlin=
-e]
->     [<ffffffff84b5dd4f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c=
-:82
+> Since this is the root fs, I assume I have to boot a USB live
+> environment and do the repair from there or can it be done on the
+> mounted btrfs root fs with the --force option ?
 >
-> BUG: memory leak
-> unreferenced object 0xffff88810891e980 (size 64):
->   comm "syz-executor244", pid 5031, jiffies 4294941874 (age 13.150s)
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 69 00 00 00 00 00  ..........i.....
->   backtrace:
->     [<ffffffff816336ad>] kmemleak_alloc_recursive include/linux/kmemleak.=
-h:42 [inline]
->     [<ffffffff816336ad>] slab_post_alloc_hook mm/slab.h:766 [inline]
->     [<ffffffff816336ad>] slab_alloc_node mm/slub.c:3478 [inline]
->     [<ffffffff816336ad>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:35=
-17
->     [<ffffffff8157e505>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
->     [<ffffffff82135480>] kmalloc include/linux/slab.h:600 [inline]
->     [<ffffffff82135480>] kzalloc include/linux/slab.h:721 [inline]
->     [<ffffffff82135480>] btrfs_add_delayed_tree_ref+0x550/0x5b0 fs/btrfs/=
-delayed-ref.c:1045
->     [<ffffffff82083f81>] btrfs_free_tree_block+0x131/0x450 fs/btrfs/exten=
-t-tree.c:3432
->     [<ffffffff8206c678>] btrfs_force_cow_block+0x6d8/0xb30 fs/btrfs/ctree=
-.c:618
->     [<ffffffff8206cbf8>] btrfs_cow_block+0x128/0x3b0 fs/btrfs/ctree.c:741
->     [<ffffffff82073609>] btrfs_search_slot+0xa49/0x1770 fs/btrfs/ctree.c:=
-2095
->     [<ffffffff82074fa3>] btrfs_insert_empty_items+0x43/0xc0 fs/btrfs/ctre=
-e.c:4285
->     [<ffffffff820b8a34>] btrfs_create_new_inode+0x354/0xfe0 fs/btrfs/inod=
-e.c:6283
->     [<ffffffff820b99e7>] btrfs_create_common+0xf7/0x190 fs/btrfs/inode.c:=
-6511
->     [<ffffffff820b9c12>] btrfs_create+0x72/0x90 fs/btrfs/inode.c:6551
->     [<ffffffff816b673f>] lookup_open fs/namei.c:3477 [inline]
->     [<ffffffff816b673f>] open_last_lookups fs/namei.c:3546 [inline]
->     [<ffffffff816b673f>] path_openat+0x17df/0x1d60 fs/namei.c:3776
->     [<ffffffff816b78e1>] do_filp_open+0xd1/0x1c0 fs/namei.c:3809
->     [<ffffffff816906c4>] do_sys_openat2+0xf4/0x150 fs/open.c:1440
->     [<ffffffff81690ec5>] do_sys_open fs/open.c:1455 [inline]
->     [<ffffffff81690ec5>] __do_sys_open fs/open.c:1463 [inline]
->     [<ffffffff81690ec5>] __se_sys_open fs/open.c:1459 [inline]
->     [<ffffffff81690ec5>] __x64_sys_open+0xa5/0xf0 fs/open.c:1459
->     [<ffffffff84b5dd4f>] do_syscall_x64 arch/x86/entry/common.c:51 [inlin=
-e]
->     [<ffffffff84b5dd4f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c=
-:82
->
-> BUG: memory leak
-> unreferenced object 0xffff88810891ea00 (size 64):
->   comm "syz-executor244", pid 5031, jiffies 4294941874 (age 13.150s)
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 f0 51 00 00 00 00 00  ..........Q.....
->   backtrace:
->     [<ffffffff816336ad>] kmemleak_alloc_recursive include/linux/kmemleak.=
-h:42 [inline]
->     [<ffffffff816336ad>] slab_post_alloc_hook mm/slab.h:766 [inline]
->     [<ffffffff816336ad>] slab_alloc_node mm/slub.c:3478 [inline]
->     [<ffffffff816336ad>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:35=
-17
->     [<ffffffff8157e505>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
->     [<ffffffff82135480>] kmalloc include/linux/slab.h:600 [inline]
->     [<ffffffff82135480>] kzalloc include/linux/slab.h:721 [inline]
->     [<ffffffff82135480>] btrfs_add_delayed_tree_ref+0x550/0x5b0 fs/btrfs/=
-delayed-ref.c:1045
->     [<ffffffff820874bb>] btrfs_alloc_tree_block+0x65b/0x7c0 fs/btrfs/exte=
-nt-tree.c:5153
->     [<ffffffff8206c15e>] btrfs_force_cow_block+0x1be/0xb30 fs/btrfs/ctree=
-.c:563
->     [<ffffffff8206cbf8>] btrfs_cow_block+0x128/0x3b0 fs/btrfs/ctree.c:741
->     [<ffffffff82073609>] btrfs_search_slot+0xa49/0x1770 fs/btrfs/ctree.c:=
-2095
->     [<ffffffff82074fa3>] btrfs_insert_empty_items+0x43/0xc0 fs/btrfs/ctre=
-e.c:4285
->     [<ffffffff820b8a34>] btrfs_create_new_inode+0x354/0xfe0 fs/btrfs/inod=
-e.c:6283
->     [<ffffffff820b99e7>] btrfs_create_common+0xf7/0x190 fs/btrfs/inode.c:=
-6511
->     [<ffffffff820b9c12>] btrfs_create+0x72/0x90 fs/btrfs/inode.c:6551
->     [<ffffffff816b673f>] lookup_open fs/namei.c:3477 [inline]
->     [<ffffffff816b673f>] open_last_lookups fs/namei.c:3546 [inline]
->     [<ffffffff816b673f>] path_openat+0x17df/0x1d60 fs/namei.c:3776
->     [<ffffffff816b78e1>] do_filp_open+0xd1/0x1c0 fs/namei.c:3809
->     [<ffffffff816906c4>] do_sys_openat2+0xf4/0x150 fs/open.c:1440
->     [<ffffffff81690ec5>] do_sys_open fs/open.c:1455 [inline]
->     [<ffffffff81690ec5>] __do_sys_open fs/open.c:1463 [inline]
->     [<ffffffff81690ec5>] __se_sys_open fs/open.c:1459 [inline]
->     [<ffffffff81690ec5>] __x64_sys_open+0xa5/0xf0 fs/open.c:1459
->     [<ffffffff84b5dd4f>] do_syscall_x64 arch/x86/entry/common.c:51 [inlin=
-e]
->     [<ffffffff84b5dd4f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c=
-:82
+>>
+>>> I have tried rmdir, rm -rf, as well as find -inum 31996735 -delete and
+>>> all report the same issue with not found.
+>>>
+>>> If I understand correctly, the parent directory entry ( so
+>>> /home/denise/.config/skypeforlinux/blob_storage/ ) has the entry for
+>>> /home/denise/.config/skypeforlinux/blob_storage/02179466-b671-4313-8fa=
+5-0eb87d716f92 with inode of 31996735 but it doesn't really exist.
+>>>
+>>> I do not consider this a HW issue because btrfs stats, scrub, and smar=
+t
+>>> do not report any errors and I also track all the smart info ( health,
+>>> reallocated sector, wear leveling, etc ) for SSDs and there are no
+>>> errors reported and I am not having any other issues.
+>>>
+>>> I suspect that this occurred the other day when Skype crashed. The ite=
+m
+>>> is not needed, I just cannot figure out how to remove it.
+>>>
+>>> So, is it possible for me to remove this item and if so how do I do it=
+ ?
+>>>
+> I find it interesting that interesting that I can remove a snapshot
+> which contains the item using the normal delete snapshot functionality
+> but that none of the built in tools have a way to do it.
 >
 >
 >
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
