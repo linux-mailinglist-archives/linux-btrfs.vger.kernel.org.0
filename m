@@ -1,71 +1,71 @@
-Return-Path: <linux-btrfs+bounces-38-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-39-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6D8A7E5E3A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 20:09:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB9867E5E3F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 20:09:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAC801C20DF0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 19:09:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 184A91C2084E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 19:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0656374C0;
-	Wed,  8 Nov 2023 19:09:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CE24374DA;
+	Wed,  8 Nov 2023 19:09:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="z0/7VsqD"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="ETLBxNUH"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1D0A3715B
-	for <linux-btrfs@vger.kernel.org>; Wed,  8 Nov 2023 19:09:20 +0000 (UTC)
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B497210E
-	for <linux-btrfs@vger.kernel.org>; Wed,  8 Nov 2023 11:09:20 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-7789cb322deso413585a.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Nov 2023 11:09:20 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA09C3716E
+	for <linux-btrfs@vger.kernel.org>; Wed,  8 Nov 2023 19:09:22 +0000 (UTC)
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1EC2114
+	for <linux-btrfs@vger.kernel.org>; Wed,  8 Nov 2023 11:09:21 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-6705379b835so505866d6.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Nov 2023 11:09:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1699470559; x=1700075359; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1699470561; x=1700075361; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=y6zdQIel5R7Qiyn/LF1Av1t5wi6OCpF6lh425HLYYx4=;
-        b=z0/7VsqDPZ4LCLT6ruzh6d6oM8vPdoANJ/Tsw3bYf1+oXB5PeOsFWsdn9qqC/0AhiC
-         uCfY8z5TjmzaML77e5AjMpCssC0Tlg098k39N0O6Lliz12VkbSX4f7wFD7cKEPSoIkZl
-         usceA1rkb5K77uNxsFktz+bT+trWK38y919nUFy19CNDnr4v10k/DP1fLHyWxHJJrZeo
-         AiVHW6LZJQOqJF+J8vugHC+yACejCUIyef61GC2/qPq2hTNTGkljjDukikgoRRg067lH
-         S4gLMuNxHQRU4jPIpImOQS8GFghyxKkFMdNVmElW3KKoxGPLyziauUOskQy1SizpmECd
-         zifA==
+        bh=E6T94WyWk3Zy26jisioKXt/NF7e6EzHgDufMAJz5NuM=;
+        b=ETLBxNUHdVTmexOZP6TTpXB3ZCh7IFDBcExOLRAS6UIfHW9OA5FMwMlRuB8ObowxoD
+         keB4CtEn//glyy9HniLPhWe8wj6z2KPRJHqh0FpnCEpzgE340WLWVfZu9vIFfEXKWVY8
+         X75DV/lEplJ/IoK7S61lwmAHzHHk/YkHoRsI36meXzdrcxCu0S5kIo5NhRpCWtcQWCJI
+         Isud+vDq5ituDQVMPRfcfuFNSelH5rV0AayA9De7IBRbXXf3l+z8QVn/Eo/iPc0JHEMd
+         pTd6qTHWGhIRqDDtEbhZv7w7+se3ib9TBy+zVP3aSoa0yPuwqXTlWQZKhM1A/UnxCvao
+         jZWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699470559; x=1700075359;
+        d=1e100.net; s=20230601; t=1699470561; x=1700075361;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=y6zdQIel5R7Qiyn/LF1Av1t5wi6OCpF6lh425HLYYx4=;
-        b=Keg6bhJ7iSpJg9loRrO1j2o/oVuCMTcAHhZSuidv62D+p+WAR5VQgcdKhtsoW1qTF3
-         5X+olBy9tFZbX9MJX8b+nImR/ttOZTX/g3IWBH/rzF5qFxw0Yilykrs27YbatWwfhjyq
-         lN4S+KPPugEuJe69rVYY8lAoYIlltrAo0tXwjq3EWv8YCoQU2GQEKjAvZLdL5HeUmZua
-         STiLSIBOuLoEkshK6lnoKI1UpBv0s8LkZ8xv6YwtOM8+C7SodwU7e1RUHWT6sZu78VP5
-         zBnpfeL6EK4RdxMjnkRIbs1pjsnTdHn0ZRy4GiKYvBl/4ej88yfFsObDub+Ux3MlFoS6
-         xDKQ==
-X-Gm-Message-State: AOJu0YzTStW5CRv3+Rx7APbiSPAUF1IRYNE9LALusZ8NbVsw2UiNoOq4
-	gMyiS9aikVEuQclSMpyU6PH5iwOGyMyi/cMrHGB2xQ==
-X-Google-Smtp-Source: AGHT+IH0HF+YFFjzr7aPQoFQjdrKZYje720kOc+ldqKZljKweZuP0mOWDLzo/A1KK8U3JXCmfvj5ew==
-X-Received: by 2002:a05:620a:4250:b0:778:99d8:6adb with SMTP id w16-20020a05620a425000b0077899d86adbmr2598380qko.44.1699470559347;
-        Wed, 08 Nov 2023 11:09:19 -0800 (PST)
+        bh=E6T94WyWk3Zy26jisioKXt/NF7e6EzHgDufMAJz5NuM=;
+        b=nShQgxUM2AVoAKYqrjxyeMpCpd+Y4fWvJFj2AucMpyXo3Ym+obEL7pVB43CqQE9nIL
+         Bvs6DZVCPRa87aFwkMcE0dDS/QOUMBnwkSon35foFAq70MEXb2DnPRdyuzNSG3HZbvGv
+         COYYgIiU5zZlByxYMFr4Ks+9FAWUbJ80OgyNHcrlPQ3X+VZqGUDm1nisraMNSIrztNUw
+         jVSQickxXb5nJgfWBDCc2ai9GkucQWdxlFBRgpypQt93QC67YZIr5nbqR2EUyy8yuRKN
+         0offKTO9Aq0kz64Uq0AWBoLlml1WObEtrXX7RkyYrdBUN3TMYkeoGOz8yZn8HPOvNNua
+         tYHA==
+X-Gm-Message-State: AOJu0YwVczh7u9/XOmDXtfCathKTtB57YJc3v6Vw8XsDMaR2JWA6C/Cy
+	ubxvQ/EjY7Pi1Sfx0kiWAbpNBQfT6yTrZ1NB0EF5oA==
+X-Google-Smtp-Source: AGHT+IFQ5Al4R1ynU8qh+dArzZQGamLsItVMZzJYNvSe6+34TtUAm4YOYLMybaxb5tZt+MgR+gHe5g==
+X-Received: by 2002:a05:6214:d4c:b0:65b:2660:f58b with SMTP id 12-20020a0562140d4c00b0065b2660f58bmr3386025qvr.12.1699470560842;
+        Wed, 08 Nov 2023 11:09:20 -0800 (PST)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id r30-20020a05620a03de00b007759a81d88esm1332003qkm.50.2023.11.08.11.09.18
+        by smtp.gmail.com with ESMTPSA id l8-20020a056214104800b0065d89f4d537sm1367939qvr.45.2023.11.08.11.09.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 11:09:18 -0800 (PST)
+        Wed, 08 Nov 2023 11:09:20 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org,
 	brauner@kernel.org
-Subject: [PATCH v2 04/18] btrfs: move space cache settings into open_ctree
-Date: Wed,  8 Nov 2023 14:08:39 -0500
-Message-ID: <c1f4384e79a163e4aef516472a8d6574dc54545d.1699470345.git.josef@toxicpanda.com>
+Subject: [PATCH v2 05/18] btrfs: do not allow free space tree rebuild on extent tree v2
+Date: Wed,  8 Nov 2023 14:08:40 -0500
+Message-ID: <6a2c827b0ed8b24c3be1045ccac49b29e850118e.1699470345.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1699470345.git.josef@toxicpanda.com>
 References: <cover.1699470345.git.josef@toxicpanda.com>
@@ -77,139 +77,32 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently we pre-load the space cache settings in btrfs_parse_options,
-however when we switch to the new mount API the mount option parsing
-will happen before we have the super block loaded.  Add a helper to set
-the appropriate options based on the fs settings, this will allow us to
-have consistent free space cache settings.
-
-This also folds in the space cache related decisions we make for subpage
-sectorsize support, so all of this is done in one place.
+We currently don't allow these options to be set if we're extent tree v2
+via the mount option parsing.  However when we switch to the new mount
+API we'll no longer have the super block loaded, so won't be able to
+make this distinction at mount option parsing time.  Address this by
+checking for extent tree v2 at the point where we make the decision to
+rebuild the free space tree.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c | 17 ++++++-----------
- fs/btrfs/super.c   | 44 +++++++++++++++++++++++++++++++-------------
- fs/btrfs/super.h   |  1 +
- 3 files changed, 38 insertions(+), 24 deletions(-)
+ fs/btrfs/disk-io.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 27bbe0164425..b486cbec492b 100644
+index b486cbec492b..072c45811c41 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -3287,6 +3287,12 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	fs_info->csums_per_leaf = BTRFS_MAX_ITEM_SIZE(fs_info) / fs_info->csum_size;
- 	fs_info->stripesize = stripesize;
+@@ -2951,7 +2951,8 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
+ 	bool rebuild_free_space_tree = false;
  
-+	/*
-+	 * Handle the space caching options appropriately now that we have the
-+	 * super loaded and validated.
-+	 */
-+	btrfs_set_free_space_cache_settings(fs_info);
-+
- 	ret = btrfs_parse_options(fs_info, options, sb->s_flags);
- 	if (ret)
- 		goto fail_alloc;
-@@ -3298,17 +3304,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	if (sectorsize < PAGE_SIZE) {
- 		struct btrfs_subpage_info *subpage_info;
- 
--		/*
--		 * V1 space cache has some hardcoded PAGE_SIZE usage, and is
--		 * going to be deprecated.
--		 *
--		 * Force to use v2 cache for subpage case.
--		 */
--		btrfs_clear_opt(fs_info->mount_opt, SPACE_CACHE);
--		btrfs_set_and_info(fs_info, FREE_SPACE_TREE,
--			"forcing free space tree for sector size %u with page size %lu",
--			sectorsize, PAGE_SIZE);
--
- 		btrfs_warn(fs_info,
- 		"read-write for sector size %u with page size %lu is experimental",
- 			   sectorsize, PAGE_SIZE);
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 639601d346d0..aef7e67538a3 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -266,6 +266,31 @@ static bool check_options(struct btrfs_fs_info *info, unsigned long flags)
- 	return true;
- }
- 
-+void btrfs_set_free_space_cache_settings(struct btrfs_fs_info *fs_info)
-+{
-+	if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
-+		btrfs_set_opt(fs_info->mount_opt, FREE_SPACE_TREE);
-+	else if (btrfs_free_space_cache_v1_active(fs_info)) {
-+		if (btrfs_is_zoned(fs_info)) {
-+			btrfs_info(fs_info,
-+			"zoned: clearing existing space cache");
-+			btrfs_set_super_cache_generation(fs_info->super_copy, 0);
-+		} else {
-+			btrfs_set_opt(fs_info->mount_opt, SPACE_CACHE);
-+		}
-+	}
-+
-+	if (fs_info->sectorsize < PAGE_SIZE) {
-+		btrfs_clear_opt(fs_info->mount_opt, SPACE_CACHE);
-+		if (!btrfs_test_opt(fs_info, FREE_SPACE_TREE)) {
-+			btrfs_info(fs_info,
-+				   "forcing free space tree for sector size %u with page size %lu",
-+				   fs_info->sectorsize, PAGE_SIZE);
-+			btrfs_set_opt(fs_info->mount_opt, FREE_SPACE_TREE);
-+		}
-+	}
-+}
-+
- static int parse_rescue_options(struct btrfs_fs_info *info, const char *options)
- {
- 	char *opts;
-@@ -345,18 +370,6 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 	bool saved_compress_force;
- 	int no_compress = 0;
- 
--	if (btrfs_fs_compat_ro(info, FREE_SPACE_TREE))
--		btrfs_set_opt(info->mount_opt, FREE_SPACE_TREE);
--	else if (btrfs_free_space_cache_v1_active(info)) {
--		if (btrfs_is_zoned(info)) {
--			btrfs_info(info,
--			"zoned: clearing existing space cache");
--			btrfs_set_super_cache_generation(info->super_copy, 0);
--		} else {
--			btrfs_set_opt(info->mount_opt, SPACE_CACHE);
--		}
--	}
--
- 	/*
- 	 * Even the options are empty, we still need to do extra check
- 	 * against new flags
-@@ -649,8 +662,13 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 			 * compat_ro(FREE_SPACE_TREE) set, and we aren't going
- 			 * to allow v1 to be set for extent tree v2, simply
- 			 * ignore this setting if we're extent tree v2.
-+			 *
-+			 * For subpage blocksize we don't allow space cache v1,
-+			 * and we'll turn on v2, so we can skip the settings
-+			 * here as well.
- 			 */
--			if (btrfs_fs_incompat(info, EXTENT_TREE_V2))
-+			if (btrfs_fs_incompat(info, EXTENT_TREE_V2) ||
-+			    info->sectorsize < PAGE_SIZE)
- 				break;
- 			if (token == Opt_space_cache ||
- 			    strcmp(args[0].from, "v1") == 0) {
-diff --git a/fs/btrfs/super.h b/fs/btrfs/super.h
-index 8dbb909b364f..7c1cd7527e76 100644
---- a/fs/btrfs/super.h
-+++ b/fs/btrfs/super.h
-@@ -8,6 +8,7 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- int btrfs_sync_fs(struct super_block *sb, int wait);
- char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
- 					  u64 subvol_objectid);
-+void btrfs_set_free_space_cache_settings(struct btrfs_fs_info *fs_info);
- 
- static inline struct btrfs_fs_info *btrfs_sb(struct super_block *sb)
- {
+ 	if (btrfs_test_opt(fs_info, CLEAR_CACHE) &&
+-	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
++	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
++	    !btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
+ 		rebuild_free_space_tree = true;
+ 	} else if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
+ 		   !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID)) {
 -- 
 2.41.0
 
