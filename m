@@ -1,63 +1,75 @@
-Return-Path: <linux-btrfs+bounces-27-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-28-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F8417E5864
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 15:11:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 909D87E5A80
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 16:52:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5A6C1F2213E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 14:11:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C57728154C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 15:52:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 178C6199D2;
-	Wed,  8 Nov 2023 14:11:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A6030656;
+	Wed,  8 Nov 2023 15:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="P5VFqQdp"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="P6x3gkIM"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82DC9199B1;
-	Wed,  8 Nov 2023 14:11:34 +0000 (UTC)
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2EA1BFF;
-	Wed,  8 Nov 2023 06:11:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=K7XZ/PCjjaNlTSx1uvZEeWfiFmh9GzA/fiR0LPjADLE=; b=P5VFqQdpuB7VFQypF2JqJhL2Bj
-	sTqD9upQ5w56kiRB30RTOOYrehaEM4agINzTZPoycJUT/DUv8B6/a8POEzPl7+L7KUejZUgE8D6SL
-	AeFnEhmFmy36HkQBJM5z9OHjGs4UtUaSFHtMRUziXA6R91LxW6UKBhG8ih+5CgNGqT9BJovLDoLka
-	uSAYG+8J51dVRK7rmf4upIse/NPdahDYBNhjvhHZreV/cl2SADm2DXxQlBOQNYSA/zDZ0t6otGRxs
-	E2Fm8XfYIdkEYMuDVYQ9tDuV8KZiucrKkMd4HeO5ZOjxSGLnURKm5JvpGObuzNwAXNNqe0dsxPS+E
-	mCpgU7Aw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0jHE-003z7o-0Q;
-	Wed, 08 Nov 2023 14:11:28 +0000
-Date: Wed, 8 Nov 2023 06:11:28 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Qu Wenruo <quwenruo.btrfs@gmx.com>,
-	Amir Goldstein <amir73il@gmail.com>, Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
-Message-ID: <ZUuXEH8TvQRp8UKv@infradead.org>
-References: <ZUUDmu8fTB0hyCQR@infradead.org>
- <20231103-kursleiter-proklamieren-aae0a02aa1a4@brauner>
- <ZUibZgoQa9eNRsk4@infradead.org>
- <20231106-fragment-geweigert-1d80138523e5@brauner>
- <ZUjcI1SE+a2t8n1v@infradead.org>
- <20231106-unser-fiskus-9d1eba9fc64c@brauner>
- <ZUker5S8sZXnsvOl@infradead.org>
- <20231106224210.GA3812457@perftesting>
- <ZUs+HuQWZvDDVC7a@infradead.org>
- <20231108110814.noepnvrxdjmab6qj@quack3>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D1E3035B
+	for <linux-btrfs@vger.kernel.org>; Wed,  8 Nov 2023 15:52:24 +0000 (UTC)
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CDA1FEF
+	for <linux-btrfs@vger.kernel.org>; Wed,  8 Nov 2023 07:52:23 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-66fa16092c0so47820866d6.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Nov 2023 07:52:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1699458743; x=1700063543; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VpSU8b6e4/5zSa52UFxV5Lqhwn5geUvXphUDenPaLtw=;
+        b=P6x3gkIMpvigr15qgGDcEb/pirGVW7/O+ypiDPkpc/7/vzOegV5vMgOlHot6tmEwqL
+         NSt4OP9Pw4q52ZMuzmPMNUMLa0g/8NoGtZ5MwkQgLNEm9dHwbCpTIn94elAN/CAx9Va/
+         4Qy6/dszdUuEItMq6E6WgX/l69QPg1mvi4zamwzNflVonB6q3AjeugirUvGypL5VVySD
+         +xIkX8IrzCYCsk0y7ozhc4cpnvSPu0G6mevvsT6WnRwL1MLk5AD5L2qlrY3rOQK5jJ8p
+         +DEQkr0fv6Xg3i7SrTUaGS3iWPEd9+KocJ9aE64zxYqNz4UKxuNmtG+dlbM5ZBhzLHx/
+         qCJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699458743; x=1700063543;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VpSU8b6e4/5zSa52UFxV5Lqhwn5geUvXphUDenPaLtw=;
+        b=uZ96bUQ7vDHGyCB/gv7zFN2rla9qxSn4HopbRp8Tyo0mUq4v7z0UKOI3pZ27kbPRml
+         oB4tSu3f18rTC4DbUha6/ZWONFv+4qTC37UIm5rRh1uEXgpoaYP5RIFxNMEU01FbqnJJ
+         1v5gTIJoC5DMXVwCylyAxZzX/8zB72sxIIwog3fF2IQYHX6iyDlRiyz3IZsYdBVkj+Ec
+         KgewpF4N2LTqB9z6i7GEGGNc/mVlDQHpl4EUiz+FEhc5Sq2wIPYOj0fec5lrf/Tdon2E
+         MTtFmf5I5Rp0dY/7MbJxFEbTBo3gzZfeSxIJZAypIe4ENL3KqLG9Up07vut/furdb+TN
+         dWDQ==
+X-Gm-Message-State: AOJu0YxyB7xQqtPwzj7DKu8HRDj5UJ1HaoojslHXZcg6h+5G0Y8AZy0B
+	NC0BAZ2owSXyGBVclYXiAUV0gw==
+X-Google-Smtp-Source: AGHT+IFlCTcQbTlf3rMhvY4yZuLyhWoZ1K1k3LaIUXWbU1yQceXTZB7c8QH7IjArp1psru/DB9tIvQ==
+X-Received: by 2002:a05:6214:2029:b0:66d:4a22:d7cd with SMTP id 9-20020a056214202900b0066d4a22d7cdmr2161193qvf.60.1699458742750;
+        Wed, 08 Nov 2023 07:52:22 -0800 (PST)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id i5-20020ad44105000000b00671248b9cfcsm1190405qvp.67.2023.11.08.07.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 07:52:22 -0800 (PST)
+Date: Wed, 8 Nov 2023 10:52:21 -0500
+From: Josef Bacik <josef@toxicpanda.com>
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"kernel-team@fb.com" <kernel-team@fb.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"brauner@kernel.org" <brauner@kernel.org>
+Subject: Re: [PATCH 06/18] btrfs: split out ro->rw and rw->ro helpers into
+ their own functions
+Message-ID: <20231108155221.GA458562@perftesting>
+References: <cover.1699308010.git.josef@toxicpanda.com>
+ <bb944da42fc7d01832f72495ec07f9a82a133376.1699308010.git.josef@toxicpanda.com>
+ <1a5369c6-24e0-45dd-a867-5844e8171fb9@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -66,33 +78,25 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231108110814.noepnvrxdjmab6qj@quack3>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1a5369c6-24e0-45dd-a867-5844e8171fb9@wdc.com>
 
-On Wed, Nov 08, 2023 at 12:08:14PM +0100, Jan Kara wrote:
-> On Tue 07-11-23 23:51:58, Christoph Hellwig wrote:
-> > On Mon, Nov 06, 2023 at 05:42:10PM -0500, Josef Bacik wrote:
-> > > Again, this is where I'm confused, because this doesn't change anything, we're
-> > > still going to report st_dev as being different, which is what you hate.
-> > 
-> > It's not something I hate.  It's that changing it without a mount point
-> > has broken things and will probably still break things.
+On Tue, Nov 07, 2023 at 03:16:50PM +0000, Johannes Thumshirn wrote:
+> On 06.11.23 23:09, Josef Bacik wrote:
+> > +	if (btrfs_super_log_root(fs_info->super_copy) != 0) {
+> > +		btrfs_warn(fs_info,
+> > +			   "mount required to replay tree-log, cannot remount read-write");
+> > +		return -EINVAL;
+> > +	}
 > 
-> So let me maybe return to what has started this thread. For fanotify we
-> return <fsid, fhandle> pair with events to identify object where something
-> happened. The fact that fsid is not uniform for all inodes of a superblock
-> on btrfs is what triggered this series because we are then faced with the
-> problem that caching fsid per superblock for "superblock marks" (to save
-> CPU overhead when generating events) can lead to somewhat confusing results
-> on btrfs. Whether we have vfsmount in the places where inodes' st_dev /
-> fsid change is irrelevant for this fanotify issue. As far as I'm following
-> the discussion it seems the non-uniform fsids per superblock are going to
-> stay with us on btrfs so fanotify code should better accommodate them? At
-> least by making sure the behavior is somewhat consistent and documented...
+> I get that this is only a copy of the old code, but if you have to 
+> re-spin the series:
+> 
+> 	ret = btrfs_super_log_root(fs_info->super_copy);
+> 	if (ret) {
+> 		/* [...] */
+> 	}
 
-I'd say if you want fanotify to work properly you must not switch st_dev
-and diverge from the known behavior.  Just like your already do
-for tons of other things that use sb->s_dev or identifier derived
-from it as we've got plenty of those.
+This tells us the bytenr, it's not a return value.  Thanks,
 
+Josef
 
