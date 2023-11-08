@@ -1,84 +1,62 @@
-Return-Path: <linux-btrfs+bounces-24-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-25-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9EFA7E54B6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 12:08:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E32037E5857
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 15:07:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95350281494
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 11:08:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B3A31C20B2B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 14:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BEF15AEA;
-	Wed,  8 Nov 2023 11:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F0B199D0;
+	Wed,  8 Nov 2023 14:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="unFem2cK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DH1VEwWv"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YznPAv1w"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D67615487;
-	Wed,  8 Nov 2023 11:08:17 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0192186;
-	Wed,  8 Nov 2023 03:08:16 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 451F521961;
-	Wed,  8 Nov 2023 11:08:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1699441695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hZS+B8//QMaQSgI78OONfBo9LNrKqn5NiLMxYhvRm2s=;
-	b=unFem2cKKkZuf1IvjAC/XJZZ+tUoC+8pTslehcDgU01ButNW7Ge5T1UaHGEUq2gua1izBT
-	ybhS0WpczAGGBzsBL2lreIIKY841UoFEMxwHECrRVV4r2qw/GvYWLBe2fKaNnJZ3JL6GGA
-	JDBGG0p3EdqKkGDeTr5DQi4Uj+M/ghw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1699441695;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hZS+B8//QMaQSgI78OONfBo9LNrKqn5NiLMxYhvRm2s=;
-	b=DH1VEwWvUStngQr9pNfijtD6GPFZBUI9FCKqBQmpBUbmweHzeI8BZ9BHomqnkWtDd//sQg
-	+IDx9MmBoVhQnDCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 37E77138F2;
-	Wed,  8 Nov 2023 11:08:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id jrubDR9sS2VgBAAAMHmgww
-	(envelope-from <jack@suse.cz>); Wed, 08 Nov 2023 11:08:15 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C0250A07C0; Wed,  8 Nov 2023 12:08:14 +0100 (CET)
-Date: Wed, 8 Nov 2023 12:08:14 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Josef Bacik <josef@toxicpanda.com>,
-	Christian Brauner <brauner@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E27199AE;
+	Wed,  8 Nov 2023 14:07:19 +0000 (UTC)
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832151BF9;
+	Wed,  8 Nov 2023 06:07:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=IimMaOUsB14tLJS4rrX42jRRtjVBMc2RKLS/YqceDVs=; b=YznPAv1wCgV3XZEbwqo8ow1SCL
+	vxhYm+MCnsuHIyb/sqmOcVd/CzmPk4vBXuFuw6pD6f3vXfy7WMZu9N9XqUejAucvN2CeRPJI5LHyj
+	07STTWkju/bO1Mq3x8X0IQlMnMX5SFd2C5vEmjW8PEQJAJBdz+5RB9a0R1zUUEp/rBzgNmzN8oTkv
+	2CUPeb/rErqVGUYpgdNBFUVYdFmwgxPE9sfExSefCEYChZkUM5DV76v8LlEP72LiAGiqd79N69rWQ
+	f0WMtXiuO9ToGBgKNMjcBUfTcxuhifLD/Hrcd6oTaTREF7gz42AbBwjhRy2Ljb97XImRGFMZY81vM
+	i3I87V2A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1r0jD4-003ykg-0M;
+	Wed, 08 Nov 2023 14:07:10 +0000
+Date: Wed, 8 Nov 2023 06:07:10 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>,
 	Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	Josef Bacik <josef@toxicpanda.com>,
 	Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
 	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
 	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
-Message-ID: <20231108110814.noepnvrxdjmab6qj@quack3>
-References: <20231102-schafsfell-denkzettel-08da41113e24@brauner>
- <ZUUDmu8fTB0hyCQR@infradead.org>
- <20231103-kursleiter-proklamieren-aae0a02aa1a4@brauner>
- <ZUibZgoQa9eNRsk4@infradead.org>
- <20231106-fragment-geweigert-1d80138523e5@brauner>
- <ZUjcI1SE+a2t8n1v@infradead.org>
- <20231106-unser-fiskus-9d1eba9fc64c@brauner>
- <ZUker5S8sZXnsvOl@infradead.org>
- <20231106224210.GA3812457@perftesting>
- <ZUs+HuQWZvDDVC7a@infradead.org>
+Message-ID: <ZUuWDv1dQ+dlSd93@infradead.org>
+References: <49454bf2-af6e-4dcf-b9a1-22acbfdc756d@gmx.com>
+ <20231106-postfach-erhoffen-9a247559e10d@brauner>
+ <ZUjcgU9ItPg/foNB@infradead.org>
+ <20231106-datei-filzstift-c62abf899f8f@brauner>
+ <ZUkeBM1sik1daE1N@infradead.org>
+ <20231107-herde-konsens-7ee4644e8139@brauner>
+ <ZUs/Ja35dwo5i2e1@infradead.org>
+ <20231108-labil-holzplatten-bba8180011b4@brauner>
+ <ZUtC9Bw70LBFcSO+@infradead.org>
+ <20231108-regimekritisch-herstellen-bdd5e3a4d60a@brauner>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -87,30 +65,20 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZUs+HuQWZvDDVC7a@infradead.org>
+In-Reply-To: <20231108-regimekritisch-herstellen-bdd5e3a4d60a@brauner>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Tue 07-11-23 23:51:58, Christoph Hellwig wrote:
-> On Mon, Nov 06, 2023 at 05:42:10PM -0500, Josef Bacik wrote:
-> > Again, this is where I'm confused, because this doesn't change anything, we're
-> > still going to report st_dev as being different, which is what you hate.
+On Wed, Nov 08, 2023 at 09:22:33AM +0100, Christian Brauner wrote:
+> > 	/mnt/1/foo to /mnt/2/bar will get your dev 8 for /mnt/2/bar
+> > 
+> > So the device number changes at the mount point here, bind mount or not.
 > 
-> It's not something I hate.  It's that changing it without a mount point
-> has broken things and will probably still break things.
+> Yes, I know. But /mnt/2/ will have the device number of the
+> superblock/filesystem it belongs to and so will /mnt/1. Creating a
+> bind-mount won't suddenly change the device number and decoupling it
+> from the superblock it is a bind-mount of.
 
-So let me maybe return to what has started this thread. For fanotify we
-return <fsid, fhandle> pair with events to identify object where something
-happened. The fact that fsid is not uniform for all inodes of a superblock
-on btrfs is what triggered this series because we are then faced with the
-problem that caching fsid per superblock for "superblock marks" (to save
-CPU overhead when generating events) can lead to somewhat confusing results
-on btrfs. Whether we have vfsmount in the places where inodes' st_dev /
-fsid change is irrelevant for this fanotify issue. As far as I'm following
-the discussion it seems the non-uniform fsids per superblock are going to
-stay with us on btrfs so fanotify code should better accommodate them? At
-least by making sure the behavior is somewhat consistent and documented...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+It doesn't any more then just changing st_dev.  But at least it aligns
+to the boundary that such a change always aligned to in not just Linux
+but most (if not all?) Unix variants and thus where it is expected.
 
