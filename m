@@ -1,78 +1,121 @@
-Return-Path: <linux-btrfs+bounces-22-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-23-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38BA37E5257
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 10:03:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5764D7E5315
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 11:10:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 697821C20D84
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 09:03:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E0C92813EA
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Nov 2023 10:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A03DF43;
-	Wed,  8 Nov 2023 09:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D77B10A39;
+	Wed,  8 Nov 2023 10:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eXBfmcmk"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2Iz6USKq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nf4FVuiC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B56DDB7;
-	Wed,  8 Nov 2023 09:03:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92EBFC433C8;
-	Wed,  8 Nov 2023 09:03:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699434222;
-	bh=yZPwswZOAsJvBUrGtw1f+G5JjyO3i5Gz/Jxlh+Mv2Ek=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eXBfmcmkVYjm28MqUDzN7yGewkbP2xI7jvHCot+NjADACFfH9bdpTuknB4ay6Gc6Y
-	 UPfleMYARjjOLmRFV+33vqMTeaOvE582WtMfYYwTeoK2brG/ckxuZsSUdMAzEn1Jiy
-	 lGV8t+g4XBTzzBvwF18GNnVrvZZuahd5OGorzLSZ0XS9j3dTtSYiyA81k8+AZE9J8m
-	 yiiB6dptfged1n1oYYS/BVvxW3BZm1kF1flqJGMVIeHCzRr5Pu52FVLOxfN1AGhIA4
-	 +7BcKMk29DsS3KsSlqcKkt53GOTxrNjK2iV0BrZTHTFjr4bygZ3y9nL0CundUngyzB
-	 vfC9agpp4Eo1A==
-Date: Wed, 8 Nov 2023 10:03:38 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 14/18] btrfs: switch to the new mount API
-Message-ID: <20231108-staunen-zugang-dc611d903181@brauner>
-References: <cover.1699308010.git.josef@toxicpanda.com>
- <2a6839a7f8a7769e13d03f39064f96180fba7432.1699308010.git.josef@toxicpanda.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CAF21095F;
+	Wed,  8 Nov 2023 10:10:17 +0000 (UTC)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F451723;
+	Wed,  8 Nov 2023 02:10:16 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 98BEE21954;
+	Wed,  8 Nov 2023 10:10:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1699438215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PA9sqEeboC7whR130nl0EbzEaZqeDorxcklkHqfQ4h8=;
+	b=2Iz6USKqni61NRdIuziCAfulicKzRRghwXKI8I100BXv9/5Jl/pTJt7mxfw3T+I8ZRpxOF
+	NVB63t+GdphtxpHmsoii3fxVJm1VRewiHmf2XlAsUFtCoeHTnwi2uovVWUPt4Z8mjosPJs
+	2jS6ERtZ/W8U4N+vzp8peIseujORy+g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1699438215;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PA9sqEeboC7whR130nl0EbzEaZqeDorxcklkHqfQ4h8=;
+	b=nf4FVuiC8Q6sfSZPI+vB0VwAPk9NSLgBR8yWLl6yzhEc4uc+K0WvrGzCWWnifHvrySE7GI
+	+vitVfmVpnstuEAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89A01133F5;
+	Wed,  8 Nov 2023 10:10:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id fROPIYdeS2UDZgAAMHmgww
+	(envelope-from <jack@suse.cz>); Wed, 08 Nov 2023 10:10:15 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 2435FA07C0; Wed,  8 Nov 2023 11:10:15 +0100 (CET)
+Date: Wed, 8 Nov 2023 11:10:15 +0100
+From: Jan Kara <jack@suse.cz>
+To: Aleksandr Nogikh <nogikh@google.com>
+Cc: Jan Kara <jack@suse.cz>, Eric Biggers <ebiggers@kernel.org>,
+	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+	Christoph Hellwig <hch@infradead.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Kees Cook <keescook@google.com>,
+	Ted Tso <tytso@mit.edu>, syzkaller <syzkaller@googlegroups.com>,
+	Alexander Popov <alex.popov@linux.com>, linux-xfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH 1/6] block: Add config option to not allow writing to
+ mounted devices
+Message-ID: <20231108101015.hj3w6a7sq5x7x2s4@quack3>
+References: <20230704122727.17096-1-jack@suse.cz>
+ <20230704125702.23180-1-jack@suse.cz>
+ <20230822053523.GA8949@sol.localdomain>
+ <20230822101154.7udsf4tdwtns2prj@quack3>
+ <CANp29Y6uBuSzLXuCMGzVNZjT+xFqV4dtWKWb7GR7Opx__Diuzg@mail.gmail.com>
+ <20231024111015.k4sbjpw5fa46k6il@quack3>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2a6839a7f8a7769e13d03f39064f96180fba7432.1699308010.git.josef@toxicpanda.com>
+In-Reply-To: <20231024111015.k4sbjpw5fa46k6il@quack3>
 
->  static struct file_system_type btrfs_fs_type = {
-> -	.owner		= THIS_MODULE,
-> -	.name		= "btrfs",
-> -	.mount		= btrfs_mount,
-> -	.kill_sb	= btrfs_kill_super,
-> -	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA,
-> -};
-> -
-> -static struct file_system_type btrfs_root_fs_type = {
-> -	.owner		= THIS_MODULE,
-> -	.name		= "btrfs",
-> -	.mount		= btrfs_mount_root,
-> -	.kill_sb	= btrfs_kill_super,
-> -	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_ALLOW_IDMAP,
-> -};
-> +	.owner			= THIS_MODULE,
-> +	.name			= "btrfs",
-> +	.init_fs_context	= btrfs_init_fs_context,
-> +	.parameters		= btrfs_fs_parameters,
-> +	.kill_sb		= btrfs_kill_super,
-> +	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
+Hi!
 
-Just in case this was an accident. This patch seems to drop
-FS_BINARY_MOUNTDATA from fs_flags. 
+On Tue 24-10-23 13:10:15, Jan Kara wrote:
+> On Thu 19-10-23 11:16:55, Aleksandr Nogikh wrote:
+> > Thank you for the series!
+> > 
+> > Have you already had a chance to push an updated version of it?
+> > I tried to search LKML, but didn't find anything.
+> > 
+> > Or did you decide to put it off until later?
+> 
+> So there is preliminary series sitting in VFS tree that changes how block
+> devices are open. There are some conflicts with btrfs tree and bcachefs
+> merge that complicate all this (plus there was quite some churn in VFS
+> itself due to changing rules how block devices are open) so I didn't push
+> out the series that actually forbids opening of mounted block devices
+> because that would cause a "merge from hell" issues. I plan to push out the
+> remaining patches once the merge window closes and all the dependencies are
+> hopefully in a stable state. Maybe I can push out the series earlier based
+> on linux-next so that people can have a look at the current state.
+
+So patches are now in VFS tree [1] so they should be in linux-next as well.
+You should be able to start using the config option for syzbot runs :)
+
+								Honza
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/log/?h=vfs.super
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
