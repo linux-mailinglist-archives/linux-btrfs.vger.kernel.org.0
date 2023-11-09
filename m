@@ -1,54 +1,47 @@
-Return-Path: <linux-btrfs+bounces-56-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-57-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EC247E640D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Nov 2023 07:56:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 429F67E6641
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Nov 2023 10:07:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5337B20EDB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Nov 2023 06:56:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 144E5B20CD4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Nov 2023 09:07:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2113BD29A;
-	Thu,  9 Nov 2023 06:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29842111B2;
+	Thu,  9 Nov 2023 09:07:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mK0CLoLo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z+OaOBda"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0A702582;
-	Thu,  9 Nov 2023 06:55:58 +0000 (UTC)
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECE42704;
-	Wed,  8 Nov 2023 22:55:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=DSW2C9vVblA5qyfFf6Ad8TPAqUMUuRB8COUKYsKtrBc=; b=mK0CLoLo+ZE9prfKIeexNL+/0F
-	y+xe3JrBGdCqu3dArHQJsi+/0u1oYeKctGWbEhES2hDuPZK1wSsi7LBSSLlVLLp0gjOA0/uuoS5oD
-	lBUHdyGA3h6rME2qNmQYV2FeYp5YgTr0RR2JxlxxnrgDx/GkNyExDjA1AaX30VVFedo3cQddJsLXC
-	G1SWFYN1/oDo45HuFGdSigvLkozbKt1yO5NyV96Z7xF5MIecbls8HE4v5FivTDHfN7ykaSMfEEfzY
-	65geAGL/UOfVswksuCuayvp8DDJm/9aNC8wKXyFGO5tBWRb+7zS40iqFUqJ6g4mweqMUjOHCrK1Qf
-	fgigZMfA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1r0yxE-005RvC-2q;
-	Thu, 09 Nov 2023 06:55:52 +0000
-Date: Wed, 8 Nov 2023 22:55:52 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2685211182;
+	Thu,  9 Nov 2023 09:07:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C6CCC433C8;
+	Thu,  9 Nov 2023 09:07:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699520860;
+	bh=9QJk81gGMAQ5/sKxfhEhrKoP+doeq1VOeaBLWtULd0M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Z+OaOBdaLjrd3UwJbyqg4FAUfkyU5WXGtBpxXtmDQKDC3IwBFT49oPDdovE1N47EQ
+	 gMYcv2AsalIfjJJj04hT1UiMSGbKzaEaQAaCGF/0R7Fal5f4EXI9Y/71Ci3Ovbxv4n
+	 hSulABZPZSaMIgjvlDLW0Rc5lL296htTxSWl4f+d66/BgCdDKTcwTpOJC0ZDAAiP36
+	 Pd7Akutvf3CzAPSFOhl75xulViAxLwiHtOGDNvTSAPvh/jwA2hOH0X7I5jzefir0Q6
+	 CZvlzdNveOuwhQ/NP6v9/lKlais2ZPUygaCzQaM5e6rVAohdTFz4RoG4nXcdfBNhRU
+	 E2KFIBXEPhOBg==
+Date: Thu, 9 Nov 2023 10:07:35 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
 	Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
 	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
 	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
-Message-ID: <ZUyCeCW+BdkiaTLW@infradead.org>
-References: <ZUjcI1SE+a2t8n1v@infradead.org>
- <20231106-unser-fiskus-9d1eba9fc64c@brauner>
+Message-ID: <20231109-umher-entwachsen-78938c126820@brauner>
+References: <20231106-unser-fiskus-9d1eba9fc64c@brauner>
  <ZUker5S8sZXnsvOl@infradead.org>
  <20231106224210.GA3812457@perftesting>
  <20231107-leiden-drinnen-913c37d86f37@brauner>
@@ -57,27 +50,36 @@ References: <ZUjcI1SE+a2t8n1v@infradead.org>
  <ZUuWSVgRT3k/hanT@infradead.org>
  <20231108-atemwege-polterabend-694ca7612cf8@brauner>
  <20231108-herleiten-bezwangen-ffb2821f539e@brauner>
+ <ZUyCeCW+BdkiaTLW@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231108-herleiten-bezwangen-ffb2821f539e@brauner>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <ZUyCeCW+BdkiaTLW@infradead.org>
 
-On Wed, Nov 08, 2023 at 05:20:06PM +0100, Christian Brauner wrote:
-> This would also allow tools that want to to detect when they're crossing
-> into a new subvolume - be it on btrfs or bcachefs - and take appropriate
-> measures deciding what they want to do just relying on statx() without
-> any additional system calls.
+On Wed, Nov 08, 2023 at 10:55:52PM -0800, Christoph Hellwig wrote:
+> On Wed, Nov 08, 2023 at 05:20:06PM +0100, Christian Brauner wrote:
+> > This would also allow tools that want to to detect when they're crossing
+> > into a new subvolume - be it on btrfs or bcachefs - and take appropriate
+> > measures deciding what they want to do just relying on statx() without
+> > any additional system calls.
+> 
+> How?  If they want to only rely on Posix and not just he historical
+> unix/linux behavior they need to compare st_dev for the inode and it's
+> parent to see if it the Posix concept of a mount point (not to be
+> confused with the Linux concept of a mountpoint apparently) because
+> that allows the file system to use a new inode number namespace.
 
-How?  If they want to only rely on Posix and not just he historical
-unix/linux behavior they need to compare st_dev for the inode and it's
-parent to see if it the Posix concept of a mount point (not to be
-confused with the Linux concept of a mountpoint apparently) because
-that allows the file system to use a new inode number namespace.
+That doesn't work anymore. Both overlayfs and btrfs make this
+impossible or at least inconsistent.
 
+Tools that want to rely on that definition can continue to do so and
+really just ignore any of the new features. But tools that want to know
+about this and adjust behavior can really benefit from this. Just
+marking an inode as a subvolume root is worth it without committing to
+any filesystem specifics now that we have two of them.
 
