@@ -1,124 +1,164 @@
-Return-Path: <linux-btrfs+bounces-68-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-69-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B4D67E7BF7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 12:48:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEE4F7E7D80
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 16:46:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBF121C20C90
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 11:48:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33197B20BC8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 15:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7BC9182DE;
-	Fri, 10 Nov 2023 11:48:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4131DA56;
+	Fri, 10 Nov 2023 15:46:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="kGKyo7YU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NKGm2ReK"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB584168B0;
-	Fri, 10 Nov 2023 11:48:21 +0000 (UTC)
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1B631E4A;
-	Fri, 10 Nov 2023 03:48:20 -0800 (PST)
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AABUXtK023201;
-	Fri, 10 Nov 2023 03:48:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PPS06212021; bh=feAmthakErj4UOFOkEZXH1ohZ3TPcXzAn7ar+R3ELWU=; b=
-	kGKyo7YU7EZn2nuPeqV3P3nwUMu5wXpjYhLql8WGZJ43KtH0G5Rit85LJd5f0Y5J
-	FSJvXYhicOHqj4ZOFiMNcpypLB3aMtTQ9OmjJQTO+0FuTPp0oF3WQVFa47pSJeDD
-	zdGaXGsAzddRDu+zGlwEupBb6kwtUhSfYq3gq8cIBxCqyEHBE3XqjgvQBeyx3v6T
-	GquonGizdD3AF670VazJ3MCbsYllGrEaQO+ShlQQMxB68UOOWocHRIOVd7KTMPwl
-	RMKW7SysJuDbgrRLXXLvsoaaqJq7c2L5rUKe3tnfq9FpMQzOZKJTM+a1yBSDFgrF
-	47jZOL7v5h+LyO4LHwygEQ==
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3u7w2t30k5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Fri, 10 Nov 2023 03:48:10 -0800 (PST)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 10 Nov 2023 03:48:13 -0800
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.34 via Frontend Transport; Fri, 10 Nov 2023 03:48:10 -0800
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
-CC: <boris@bur.io>, <clm@fb.com>, <dsterba@suse.com>, <josef@toxicpanda.com>,
-        <linux-btrfs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>
-Subject: [PATCH] btrfs: fix warning in create_pending_snapshot
-Date: Fri, 10 Nov 2023 19:48:06 +0800
-Message-ID: <20231110114806.3366681-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <0000000000001959d30609bb5d94@google.com>
-References: <0000000000001959d30609bb5d94@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D7FE1DA30
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Nov 2023 15:46:29 +0000 (UTC)
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CC83B318
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Nov 2023 07:46:28 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-778927f2dd3so131914285a.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 Nov 2023 07:46:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699631188; x=1700235988; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/ADd/M3T42KSWSW0ZN0cddGMNEq9cR/QQFUnUqankSU=;
+        b=NKGm2ReK0F5AidpjXRUWCGyzBMN24XuZrNaoPlm0ZyyispsQGQF2zzYwbWIaFBIUO7
+         2+p8HEvujbv4ldFv8XvFuHEJiyMojyyufFmFRqjpHZhWk+YVF/G0u3LNhAxSVx06qZBl
+         WTXLhTUhjSZFZ81+dGRqIrLleHr5Q9Iuf0EuXDQ4Son0MelcYVQj0CRg9KHy48OE4bEx
+         pXJD104oFl7SK2df6i2Yi2e+JgDAuG/yYDV9R/rwU+y2lmp+iKVOVYBfTv6M2prKr9cw
+         g84ahGihMraax6dRW2xuIlam8KikTcRRsSOhE3jzqfEMFvYZrOZUYWme/CaMb1lnChh1
+         RIAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699631188; x=1700235988;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/ADd/M3T42KSWSW0ZN0cddGMNEq9cR/QQFUnUqankSU=;
+        b=dhd4bebuYi4+kM0fpSXgbARidZGFa5iv5x6AYoHg5SogQaVmwRg/AmchafCvy/4/xz
+         84kafs8wgiclqBT7KRxBWJIDIwF57seIzqR0OSXlECuPExM/ekQ9cynYywLvAedzhOwG
+         2tHEiulWi9aliyczne/erq/87YZIItboc9x7jQ/0rHSo9azCJayJIC/HxOxqLhGf5Lk1
+         E7lPO2XlsW+UwVmkhIuMAt5hIVIJSinACQQztYw0rEJA0kvlhxcV+V4UmlA/L/9aTA1d
+         mfxzqwHwpJEIu2V7EKrHSUvZNc1asKGwiO9DBcWmfIZE+pOEBFI4MqoqJjO7P0tJuaRv
+         FVZA==
+X-Gm-Message-State: AOJu0Yzqxq2bOzCzug91CnZEScOwoLR3g10hPZXYoWFJ6lYuGw6JmfNb
+	ln1VSab9a1xTtDXP7SBZ0BDfE6hnd4o=
+X-Google-Smtp-Source: AGHT+IHPlTXJjDYpaU0CtByLCh7dbv0Uyo9rwiBr+/tqoVKWwgS2v5TNXv6o3B6DGXTdneUvUGiwUQ==
+X-Received: by 2002:a05:620a:8c7:b0:76e:f496:1928 with SMTP id z7-20020a05620a08c700b0076ef4961928mr7106911qkz.72.1699631187866;
+        Fri, 10 Nov 2023 07:46:27 -0800 (PST)
+Received: from [192.168.1.1] (pool-100-16-13-166.bltmmd.fios.verizon.net. [100.16.13.166])
+        by smtp.gmail.com with ESMTPSA id pq10-20020a05620a84ca00b00774309d3e89sm775120qkn.7.2023.11.10.07.46.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 07:46:27 -0800 (PST)
+Message-ID: <b4162dad-af4a-4d45-b933-697739a3d80c@gmail.com>
+Date: Fri, 10 Nov 2023 10:46:26 -0500
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Btrfs progs release 6.6.1
+Content-Language: en-US
+To: dsterba@suse.cz
+Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20231105222046.19483-1-dsterba@suse.com>
+ <aa605999-708c-4b8c-a05c-78fd2cc6b5b2@gmail.com>
+ <be0c51ba-86bd-44e7-884a-6cfccfa76184@gmail.com>
+ <20231109143830.GT11264@twin.jikos.cz>
+From: Joe Salmeri <jmscdba@gmail.com>
+In-Reply-To: <20231109143830.GT11264@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: tjoSHBo47CL5QMVxWy5JUXO5hy0Yt9Yo
-X-Proofpoint-ORIG-GUID: tjoSHBo47CL5QMVxWy5JUXO5hy0Yt9Yo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-10_08,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- mlxlogscore=897 impostorscore=0 clxscore=1011 phishscore=0 bulkscore=0
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311060001 definitions=main-2311100096
 
-r0 = open(&(0x7f0000000080)='./file0\x00', 0x0, 0x0)
-ioctl$BTRFS_IOC_QUOTA_CTL(r0, 0xc0109428, &(0x7f0000000000)={0x1})
-r1 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000100)='blkio.bfq.time_recursive\x00', 0x275a, 0x0)
-ioctl$BTRFS_IOC_QGROUP_CREATE(r1, 0x4010942a, &(0x7f0000000640)={0x1, 0x100})
-r2 = openat(0xffffffffffffff9c, &(0x7f0000000500)='.\x00', 0x0, 0x0)
-ioctl$BTRFS_IOC_SNAP_CREATE(r0, 0x50009401, &(0x7f0000000a80)={{r2},
+On 11/9/23 09:38, David Sterba wrote:
+> On Sun, Nov 05, 2023 at 06:40:45PM -0500, Joe Salmeri wrote:
+>> Is there a way for btrfs to remove that directory entry which points to
+>> the inode that does not exist ?
+>>
+>> After I removed all the @home snapshots, that got rid of all of them
+>> items that btrfs check reports EXCEPT for the one in the @home subvolume
+>> so deleting a subvolume can remove the items, but I really don't want to
+>> have to delete and restore the @home subvolume to fix it.
+>>
+>> And since then btrfs has created new timeline snapshots for @home so
+>> those obviously have the same issue as the ones I deleted but that
+>> problem would go away if I can find a way to remove the offending item
+>> in the @home subvolume.
+>>
+>> Is there some way to remove that item ?
+>>
+>> Running "ls -al /home/denise/.config/skypeforlinux/blob_storage/" also
+>> shows that offending item:
+>>
+>>       drwx------ 1 denise joe-denise   72 Nov  1 22:49 .
+>>       drwxr-xr-x 1 denise joe-denise 3.7K Nov  1 20:07 ..
+>>       d????????? ? ?      ?             ?            ? 02179466-b671-4313-8fa5-0eb87d716f92
+>>
+>> I tried removing /home/denise/.config/skypeforlinux/blob_storage/ since
+>> that is the folder that contains the
+>> i02179466-b671-4313-8fa5-0eb87d716f92 directory item but that fails
+>>
+>>       rm -rf /home/denise/.config/skypeforlinux/blob_storage/
+>> /usr/bin/rm: cannot remove
+>> '/home/denise/.config/skypeforlinux/blob_storage/': Directory not empty
+> On a mounted filesystem this is not possible, also I'm not sure what
+> exactly is the problem there. It looks like the directory entry is valid
+> (thus it shows the file name) but the pointer to the inode is either
+> damaged (cosmic rays) or the inode is gone for some reason.
 
-From the logs, it can be seen that syz can execute to btrfs_ioctl_qgroup_create()
-through two paths.
-Syz enters btrfs_ioctl_qgroup_create() by calling ioctl$BTRFS_IOC_QGROUP_CREATE(
-r1, 0x4010942a,&(0x7f000000 640)={0x1, 0x100}) or ioctl$BTRFS_IOC_SNAP_CREATE(r0,
-0x50009401,&(0x7f000000 a80)={r2}," respectively;
+It seems to me that the issue is that this directory
 
-The most crucial thing is that when calling ioctl$BTRFS_IOC_QGROUP_CREATE,
-the passed parameter qgroupid value is 256, while BTRFS_FIRST_FREE_OBJECTID
-is also equal to 256, indicating that the passed parameter qgroupid is
-obviously incorrect.
+	/home/denise/.config/skypeforlinux/blob_storage/
 
-Reported-and-tested-by: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
-Fixes: 6ed05643ddb1 ("btrfs: create qgroup earlier in snapshot creation")
-Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
----
- fs/btrfs/ioctl.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Contains a directory entry for this child directory
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 752acff2c734..21cf7a7f18ab 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3799,6 +3799,11 @@ static long btrfs_ioctl_qgroup_create(struct file *file, void __user *arg)
- 		goto out;
- 	}
- 
-+	if (sa->create && sa->qgroupid == BTRFS_FIRST_FREE_OBJECTID) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
- 	trans = btrfs_join_transaction(root);
- 	if (IS_ERR(trans)) {
- 		ret = PTR_ERR(trans);
+	/home/denise/.config/skypeforlinux/blob_storage/02179466-b671-4313-8fa5-0eb87d716f92
+
+which has an inode number of 31996735 based on the btrfs check output
+
+     [4/7] checking fs roots
+     root 262 inode 31996735 errors 1, no inode item
+         unresolved ref dir 132030 index 769 namelen 36 name 
+02179466-b671-4313-8fa5-0eb87d716f92 filetype 2 errors 5, no dir item, 
+no inode ref
+         unresolved ref dir 132030 index 769 namelen 36 name 
+77ef9cd4-0efe-46af-bf7f-47f582851e16 filetype 2 errors 2, no dir index
+
+But that inode does not exist based on "find /home -inum 31996735"
+
+usr/bin/find: 
+‘/home/denise/.config/skypeforlinux/blob_storage/02179466-b671-4313-8fa5-0eb87d716f92’: 
+No such file or directory
+
+Therefore since the inode does not really exist nothing will allow 
+removal of the directory entry for
+
+	/home/denise/.config/skypeforlinux/blob_storage/02179466-b671-4313-8fa5-0eb87d716f92
+
+> The 'btrfs check' should be able to guess what's the extent of the
+> dirent/inode desynchronization and remove the entry eventually, but as
+> always 'check + repair' should be used with care and when absolutely
+> sure that it's not making the things worse. Some cross checks could be
+> possible, e.g. look up the relevant data in the tree dump.
+
+I have been reluctant to do btrfs --repair because of all the warnings about how it can make things worse.
+
+I would be nice if it would prompt before doing each repair step, but I have never run it before and suspect it probably does not do that.
+
+
 -- 
-2.25.1
+Regards,
+
+Joe
 
 
