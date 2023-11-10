@@ -1,125 +1,124 @@
-Return-Path: <linux-btrfs+bounces-67-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-68-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4931B7E7B68
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 11:31:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B4D67E7BF7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 12:48:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4336EB20F8C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 10:31:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBF121C20C90
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 11:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60EF11BDCF;
-	Fri, 10 Nov 2023 10:31:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7BC9182DE;
+	Fri, 10 Nov 2023 11:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gEgapIt3"
+	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="kGKyo7YU"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E017B1B281;
-	Fri, 10 Nov 2023 10:31:21 +0000 (UTC)
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21DB28B3A;
-	Fri, 10 Nov 2023 02:31:17 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-66cfd35f595so11047966d6.2;
-        Fri, 10 Nov 2023 02:31:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699612277; x=1700217077; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v4w0upfP4Gegx1Cltl9z8PvXz7R8ShmQI/s6tr6Y6o0=;
-        b=gEgapIt3BilFCDQBZQqpwnVHPl2x8Uxy0ZsPpckc8HaNIiQUFQKpKoeGtQMa177uyk
-         0TA9nS/viu4zuUFbFigeYFOrpyo4jtcOqeiM/3UKtJvyhXIsAJfVlDcs2DmAa/M+uxxz
-         5wFQznY3grYvJC8iCTyGtRe9xNJRTxoALaRMPxbFuQ1G94GnA/QHAfBs0Boa2vj3MgdW
-         PqVliQWHjIURN3OjD6dXK416E3jZ3PqOVJzGU2afXfNUol+3EMKo3ptBqesJwbrYHt+e
-         Byx9zrDh2MR9RhfrpPytjCFXVCQHCupAGB4gO5gOqdT1osX8UjP/eosFnfxOB9irYD+x
-         PeXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699612277; x=1700217077;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v4w0upfP4Gegx1Cltl9z8PvXz7R8ShmQI/s6tr6Y6o0=;
-        b=lFElBMso0ai92tvyrbrlJGNjStanD9apRqSE5YDZqz141mAXXubP0gmnXGQ3Bo97Re
-         145cfCO0muemtKYAjI5EEuOe87/6TumhlvTXUa3B/fzebWeock2L+LCipp8capCkGh8R
-         zSB+3gG2pftrKi7wLI86LhQC+edA2wxEtYbEx11gtDTEWVwkBGT1UpwfhGeW1JUUjcZC
-         59U8b6wWvGv1vy/Xdk3hP5JiLmMFlDgpLo/yDpiIZYF9545QjYc/6WgQtnpxKg2fH1xv
-         4fJ/uFkyaTBEgkRnvUtX5SvcRSkQw/QQaJXo1fQzLPgJeGesqE8yOL8nceomEYk2S7zN
-         0o2w==
-X-Gm-Message-State: AOJu0YykpOmsEiEgin3Cb1OaajJ0/toIEUMd7yknWxKjXJ1/IU1b6vsR
-	bXXTMnNyEhVZHMqhpPJ79kkJsCESbw3nt61mWIs=
-X-Google-Smtp-Source: AGHT+IEwJXEyD4ZuH8H+pGer0ELkw1c19ONVx2xJOuhAtrF7YqHiIFjcbbFgMdFGeaVb+NfgCN0QF2PvDOoJ8KkEcVI=
-X-Received: by 2002:a05:6214:4013:b0:66d:4569:9941 with SMTP id
- kd19-20020a056214401300b0066d45699941mr7832547qvb.45.1699612276930; Fri, 10
- Nov 2023 02:31:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB584168B0;
+	Fri, 10 Nov 2023 11:48:21 +0000 (UTC)
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1B631E4A;
+	Fri, 10 Nov 2023 03:48:20 -0800 (PST)
+Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AABUXtK023201;
+	Fri, 10 Nov 2023 03:48:10 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+	 h=from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PPS06212021; bh=feAmthakErj4UOFOkEZXH1ohZ3TPcXzAn7ar+R3ELWU=; b=
+	kGKyo7YU7EZn2nuPeqV3P3nwUMu5wXpjYhLql8WGZJ43KtH0G5Rit85LJd5f0Y5J
+	FSJvXYhicOHqj4ZOFiMNcpypLB3aMtTQ9OmjJQTO+0FuTPp0oF3WQVFa47pSJeDD
+	zdGaXGsAzddRDu+zGlwEupBb6kwtUhSfYq3gq8cIBxCqyEHBE3XqjgvQBeyx3v6T
+	GquonGizdD3AF670VazJ3MCbsYllGrEaQO+ShlQQMxB68UOOWocHRIOVd7KTMPwl
+	RMKW7SysJuDbgrRLXXLvsoaaqJq7c2L5rUKe3tnfq9FpMQzOZKJTM+a1yBSDFgrF
+	47jZOL7v5h+LyO4LHwygEQ==
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3u7w2t30k5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Fri, 10 Nov 2023 03:48:10 -0800 (PST)
+Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Fri, 10 Nov 2023 03:48:13 -0800
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
+ 15.1.2507.34 via Frontend Transport; Fri, 10 Nov 2023 03:48:10 -0800
+From: Lizhi Xu <lizhi.xu@windriver.com>
+To: <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
+CC: <boris@bur.io>, <clm@fb.com>, <dsterba@suse.com>, <josef@toxicpanda.com>,
+        <linux-btrfs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>
+Subject: [PATCH] btrfs: fix warning in create_pending_snapshot
+Date: Fri, 10 Nov 2023 19:48:06 +0800
+Message-ID: <20231110114806.3366681-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <0000000000001959d30609bb5d94@google.com>
+References: <0000000000001959d30609bb5d94@google.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231106224210.GA3812457@perftesting> <20231107-leiden-drinnen-913c37d86f37@brauner>
- <ZUs+MkCMkTPs4EtQ@infradead.org> <20231108-zertreten-disqualifikation-bd170f2e8afb@brauner>
- <ZUuWSVgRT3k/hanT@infradead.org> <20231108-atemwege-polterabend-694ca7612cf8@brauner>
- <20231108-herleiten-bezwangen-ffb2821f539e@brauner> <ZUyCeCW+BdkiaTLW@infradead.org>
- <20231109-umher-entwachsen-78938c126820@brauner> <ZUzvkQfqEYbjXCMd@infradead.org>
- <20231110-vorleben-unvorbereitet-fe3b302c5079@brauner>
-In-Reply-To: <20231110-vorleben-unvorbereitet-fe3b302c5079@brauner>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 10 Nov 2023 12:31:04 +0200
-Message-ID: <CAOQ4uxheWsR5EWtCvZq33r1+LLj6ANQLi9OJKYBpDP92a6ZTkw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] fanotify support for btrfs sub-volumes
-To: Christian Brauner <brauner@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Josef Bacik <josef@toxicpanda.com>, 
-	Qu Wenruo <quwenruo.btrfs@gmx.com>, Jan Kara <jack@suse.cz>, Chris Mason <clm@fb.com>, 
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: tjoSHBo47CL5QMVxWy5JUXO5hy0Yt9Yo
+X-Proofpoint-ORIG-GUID: tjoSHBo47CL5QMVxWy5JUXO5hy0Yt9Yo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-10_08,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 malwarescore=0 priorityscore=1501 adultscore=0
+ mlxlogscore=897 impostorscore=0 clxscore=1011 phishscore=0 bulkscore=0
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311060001 definitions=main-2311100096
 
-On Fri, Nov 10, 2023 at 11:33=E2=80=AFAM Christian Brauner <brauner@kernel.=
-org> wrote:
->
-> > you hit a mount point or another (nested) subvolume.  Can't comment
-> > on overlayfs.  But if it keeps mixing things forth and back what would
->
-> Overlayfs shows that this st_dev switching happens on things other than
-> btrfs. It has nothing to do with subvolumes.
+r0 = open(&(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$BTRFS_IOC_QUOTA_CTL(r0, 0xc0109428, &(0x7f0000000000)={0x1})
+r1 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000100)='blkio.bfq.time_recursive\x00', 0x275a, 0x0)
+ioctl$BTRFS_IOC_QGROUP_CREATE(r1, 0x4010942a, &(0x7f0000000640)={0x1, 0x100})
+r2 = openat(0xffffffffffffff9c, &(0x7f0000000500)='.\x00', 0x0, 0x0)
+ioctl$BTRFS_IOC_SNAP_CREATE(r0, 0x50009401, &(0x7f0000000a80)={{r2},
 
-IMO, overlayfs is a good example of Pragmatism.
+From the logs, it can be seen that syz can execute to btrfs_ioctl_qgroup_create()
+through two paths.
+Syz enters btrfs_ioctl_qgroup_create() by calling ioctl$BTRFS_IOC_QGROUP_CREATE(
+r1, 0x4010942a,&(0x7f000000 640)={0x1, 0x100}) or ioctl$BTRFS_IOC_SNAP_CREATE(r0,
+0x50009401,&(0x7f000000 a80)={r2}," respectively;
 
-On some filesystems, following POSIX standard verbatim is not possible.
-We care more about the users and about how the POSIX standard affects
-real life applications, than about actually following the standard.
+The most crucial thing is that when calling ioctl$BTRFS_IOC_QGROUP_CREATE,
+the passed parameter qgroupid value is 256, while BTRFS_FIRST_FREE_OBJECTID
+is also equal to 256, indicating that the passed parameter qgroupid is
+obviously incorrect.
 
-This table is complex, but it explains the tradeoffs that overlayfs
-does when following strict POSIX is not possible:
-https://docs.kernel.org/filesystems/overlayfs.html#inode-properties
+Reported-and-tested-by: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
+Fixes: 6ed05643ddb1 ("btrfs: create qgroup earlier in snapshot creation")
+Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+---
+ fs/btrfs/ioctl.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-In the Legacy case, where Uniform st_dev is not possible,
-overlayfs preserve these important *practical* rules:
-1. Unique st_dev,st_ino
-2. Uniform st_dev across all directories (non-persistent st_ino)
-3. Persistent st_ino for non-directories (non-uniform st_dev)
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 752acff2c734..21cf7a7f18ab 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3799,6 +3799,11 @@ static long btrfs_ioctl_qgroup_create(struct file *file, void __user *arg)
+ 		goto out;
+ 	}
+ 
++	if (sa->create && sa->qgroupid == BTRFS_FIRST_FREE_OBJECTID) {
++		ret = -EINVAL;
++		goto out;
++	}
++
+ 	trans = btrfs_join_transaction(root);
+ 	if (IS_ERR(trans)) {
+ 		ret = PTR_ERR(trans);
+-- 
+2.25.1
 
-Rule #2 is important for traversal boundaries (e.g. find -xdev, du -x)
-
-It's not mentioned in this table, but overlayfs f_fsid is and always
-was uniform. Since v6.6, overlayfs f_fsid is also unique among
-overlayfs instances.
-
-I don't know of a good way to stop a thread where all that needs
-to be said has been said, but my opinion is that this thread has lost
-focus a long time ago.
-
-I will post a new patch for fanotify with Jan's proposal to address
-Christoph's concerns:
-- no ->get_fsid() method
-- no sb/mount mark on btrfs subvol
-
-Thanks,
-Amir.
 
