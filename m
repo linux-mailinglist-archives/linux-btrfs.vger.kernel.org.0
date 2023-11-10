@@ -1,65 +1,43 @@
-Return-Path: <linux-btrfs+bounces-69-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-70-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEE4F7E7D80
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 16:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 05D3C7E8056
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 19:09:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33197B20BC8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 15:46:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DADBB20E85
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Nov 2023 18:09:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4131DA56;
-	Fri, 10 Nov 2023 15:46:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NKGm2ReK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8873A285;
+	Fri, 10 Nov 2023 18:09:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D7FE1DA30
-	for <linux-btrfs@vger.kernel.org>; Fri, 10 Nov 2023 15:46:29 +0000 (UTC)
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CC83B318
-	for <linux-btrfs@vger.kernel.org>; Fri, 10 Nov 2023 07:46:28 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-778927f2dd3so131914285a.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Nov 2023 07:46:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699631188; x=1700235988; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/ADd/M3T42KSWSW0ZN0cddGMNEq9cR/QQFUnUqankSU=;
-        b=NKGm2ReK0F5AidpjXRUWCGyzBMN24XuZrNaoPlm0ZyyispsQGQF2zzYwbWIaFBIUO7
-         2+p8HEvujbv4ldFv8XvFuHEJiyMojyyufFmFRqjpHZhWk+YVF/G0u3LNhAxSVx06qZBl
-         WTXLhTUhjSZFZ81+dGRqIrLleHr5Q9Iuf0EuXDQ4Son0MelcYVQj0CRg9KHy48OE4bEx
-         pXJD104oFl7SK2df6i2Yi2e+JgDAuG/yYDV9R/rwU+y2lmp+iKVOVYBfTv6M2prKr9cw
-         g84ahGihMraax6dRW2xuIlam8KikTcRRsSOhE3jzqfEMFvYZrOZUYWme/CaMb1lnChh1
-         RIAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699631188; x=1700235988;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/ADd/M3T42KSWSW0ZN0cddGMNEq9cR/QQFUnUqankSU=;
-        b=dhd4bebuYi4+kM0fpSXgbARidZGFa5iv5x6AYoHg5SogQaVmwRg/AmchafCvy/4/xz
-         84kafs8wgiclqBT7KRxBWJIDIwF57seIzqR0OSXlECuPExM/ekQ9cynYywLvAedzhOwG
-         2tHEiulWi9aliyczne/erq/87YZIItboc9x7jQ/0rHSo9azCJayJIC/HxOxqLhGf5Lk1
-         E7lPO2XlsW+UwVmkhIuMAt5hIVIJSinACQQztYw0rEJA0kvlhxcV+V4UmlA/L/9aTA1d
-         mfxzqwHwpJEIu2V7EKrHSUvZNc1asKGwiO9DBcWmfIZE+pOEBFI4MqoqJjO7P0tJuaRv
-         FVZA==
-X-Gm-Message-State: AOJu0Yzqxq2bOzCzug91CnZEScOwoLR3g10hPZXYoWFJ6lYuGw6JmfNb
-	ln1VSab9a1xTtDXP7SBZ0BDfE6hnd4o=
-X-Google-Smtp-Source: AGHT+IHPlTXJjDYpaU0CtByLCh7dbv0Uyo9rwiBr+/tqoVKWwgS2v5TNXv6o3B6DGXTdneUvUGiwUQ==
-X-Received: by 2002:a05:620a:8c7:b0:76e:f496:1928 with SMTP id z7-20020a05620a08c700b0076ef4961928mr7106911qkz.72.1699631187866;
-        Fri, 10 Nov 2023 07:46:27 -0800 (PST)
-Received: from [192.168.1.1] (pool-100-16-13-166.bltmmd.fios.verizon.net. [100.16.13.166])
-        by smtp.gmail.com with ESMTPSA id pq10-20020a05620a84ca00b00774309d3e89sm775120qkn.7.2023.11.10.07.46.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 07:46:27 -0800 (PST)
-Message-ID: <b4162dad-af4a-4d45-b933-697739a3d80c@gmail.com>
-Date: Fri, 10 Nov 2023 10:46:26 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED00163B4
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Nov 2023 18:09:19 +0000 (UTC)
+X-Greylist: delayed 419 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 10 Nov 2023 10:08:48 PST
+Received: from freki.datenkhaos.de (freki.datenkhaos.de [81.7.17.101])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E06B7709
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Nov 2023 10:08:47 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+	by freki.datenkhaos.de (Postfix) with ESMTP id AD2CD27195E5
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Nov 2023 19:00:34 +0100 (CET)
+Received: from freki.datenkhaos.de ([127.0.0.1])
+	by localhost (freki.datenkhaos.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id oUOVnJG0s8oZ for <linux-btrfs@vger.kernel.org>;
+	Fri, 10 Nov 2023 19:00:34 +0100 (CET)
+Received: from [192.168.10.6] (dynamic-077-183-024-204.77.183.pool.telefonica.de [77.183.24.204])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by freki.datenkhaos.de (Postfix) with ESMTPSA
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 Nov 2023 19:00:34 +0100 (CET)
+Message-ID: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
+Date: Fri, 10 Nov 2023 19:00:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -67,98 +45,59 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Btrfs progs release 6.6.1
+To: linux-btrfs@vger.kernel.org
 Content-Language: en-US
-To: dsterba@suse.cz
-Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20231105222046.19483-1-dsterba@suse.com>
- <aa605999-708c-4b8c-a05c-78fd2cc6b5b2@gmail.com>
- <be0c51ba-86bd-44e7-884a-6cfccfa76184@gmail.com>
- <20231109143830.GT11264@twin.jikos.cz>
-From: Joe Salmeri <jmscdba@gmail.com>
-In-Reply-To: <20231109143830.GT11264@twin.jikos.cz>
+From: Johannes Hirte <johannes.hirte@datenkhaos.de>
+Subject: checksum errors but files are readable and no disk errors
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 11/9/23 09:38, David Sterba wrote:
-> On Sun, Nov 05, 2023 at 06:40:45PM -0500, Joe Salmeri wrote:
->> Is there a way for btrfs to remove that directory entry which points to
->> the inode that does not exist ?
->>
->> After I removed all the @home snapshots, that got rid of all of them
->> items that btrfs check reports EXCEPT for the one in the @home subvolume
->> so deleting a subvolume can remove the items, but I really don't want to
->> have to delete and restore the @home subvolume to fix it.
->>
->> And since then btrfs has created new timeline snapshots for @home so
->> those obviously have the same issue as the ones I deleted but that
->> problem would go away if I can find a way to remove the offending item
->> in the @home subvolume.
->>
->> Is there some way to remove that item ?
->>
->> Running "ls -al /home/denise/.config/skypeforlinux/blob_storage/" also
->> shows that offending item:
->>
->>       drwx------ 1 denise joe-denise   72 Nov  1 22:49 .
->>       drwxr-xr-x 1 denise joe-denise 3.7K Nov  1 20:07 ..
->>       d????????? ? ?      ?             ?            ? 02179466-b671-4313-8fa5-0eb87d716f92
->>
->> I tried removing /home/denise/.config/skypeforlinux/blob_storage/ since
->> that is the folder that contains the
->> i02179466-b671-4313-8fa5-0eb87d716f92 directory item but that fails
->>
->>       rm -rf /home/denise/.config/skypeforlinux/blob_storage/
->> /usr/bin/rm: cannot remove
->> '/home/denise/.config/skypeforlinux/blob_storage/': Directory not empty
-> On a mounted filesystem this is not possible, also I'm not sure what
-> exactly is the problem there. It looks like the directory entry is valid
-> (thus it shows the file name) but the pointer to the inode is either
-> damaged (cosmic rays) or the inode is gone for some reason.
+Hello,
 
-It seems to me that the issue is that this directory
+I have a server with two 2T-disks that were running in a Btrfs-RAID1 
+setup. Recently I was running into the bug of btrfs-progs-6.6, so the 
+system didn't boot anymore. Because I don't have physical access to the 
+system, the only option I've had was a hard reset  remotely. After this 
+I noticed several checksum errors during scrub on different files. I was 
+able to delete those files, but the checksum errors persisted, now 
+without any file associated. In the end, I removed one disk (sdb1) from 
+the RAID. Because relocation doesn't work with checksum errors, I've 
+overwritten the first 10M of the partition and mounted the remaining 
+disk (sda1) degraded. After this, I created a new filesystem on sdb1 
+andI synced the whole sda1 to sdb1 via rsync. This worked without any 
+problems, although sda1 still shows the checksum errors. I'm running the 
+system from the second disk now with the newly created filesystem. But 
+now this FS shows checksum errors again. Two files are affected, both 
+are images for virtual servers. I'm able to read both files, I can copy 
+via dd without any error. But scrub says, there are checksum errors:
 
-	/home/denise/.config/skypeforlinux/blob_storage/
+[52622.939071] BTRFS error (device sdb1): unable to fixup (regular) 
+error at logical 1673331802112 on dev /dev/sdb1 physical 1648107257856
+[52622.939189] BTRFS warning (device sdb1): checksum error at logical 
+1673331802112 on dev /dev/sdb1, physical 1648107257856, root 1117, inode 
+832943, offset 566788096, length 4096, links 1 (path: 
+var/lib/libvirt/images/vserv03.img)
+[54629.309530] BTRFS error (device sdb1): unable to fixup (regular) 
+error at logical 2209355464704 on dev /dev/sdb1 physical 1884523397120
+[54629.309656] BTRFS warning (device sdb1): checksum error at logical 
+2209355464704 on dev /dev/sdb1, physical 1884523397120, root 1117, inode 
+832950, offset 9149956096, length 4096, links 1 (path: 
+var/lib/libvirt/images/vserv06.img)
+[54629.309666] BTRFS error (device sdb1): unable to fixup (regular) 
+error at logical 2209355464704 on dev /dev/sdb1 physical 1884523397120
+[54629.309719] BTRFS warning (device sdb1): checksum error at logical 
+2209355464704 on dev /dev/sdb1, physical 1884523397120, root 1117, inode 
+832950, offset 9149956096, length 4096, links 1 (path: 
+var/lib/libvirt/images/vserv06.img)
+[54760.218254] BTRFS info (device sdb1): scrub: finished on devid 1 with 
+status: 0
 
-Contains a directory entry for this child directory
-
-	/home/denise/.config/skypeforlinux/blob_storage/02179466-b671-4313-8fa5-0eb87d716f92
-
-which has an inode number of 31996735 based on the btrfs check output
-
-     [4/7] checking fs roots
-     root 262 inode 31996735 errors 1, no inode item
-         unresolved ref dir 132030 index 769 namelen 36 name 
-02179466-b671-4313-8fa5-0eb87d716f92 filetype 2 errors 5, no dir item, 
-no inode ref
-         unresolved ref dir 132030 index 769 namelen 36 name 
-77ef9cd4-0efe-46af-bf7f-47f582851e16 filetype 2 errors 2, no dir index
-
-But that inode does not exist based on "find /home -inum 31996735"
-
-usr/bin/find: 
-‘/home/denise/.config/skypeforlinux/blob_storage/02179466-b671-4313-8fa5-0eb87d716f92’: 
-No such file or directory
-
-Therefore since the inode does not really exist nothing will allow 
-removal of the directory entry for
-
-	/home/denise/.config/skypeforlinux/blob_storage/02179466-b671-4313-8fa5-0eb87d716f92
-
-> The 'btrfs check' should be able to guess what's the extent of the
-> dirent/inode desynchronization and remove the entry eventually, but as
-> always 'check + repair' should be used with care and when absolutely
-> sure that it's not making the things worse. Some cross checks could be
-> possible, e.g. look up the relevant data in the tree dump.
-
-I have been reluctant to do btrfs --repair because of all the warnings about how it can make things worse.
-
-I would be nice if it would prompt before doing each repair step, but I have never run it before and suspect it probably does not do that.
+So what is going on here? I'm planning to recreate the RAID1, but with 
+with checksum errors I don't want to go on. System is running kernel 
+6.5.11.
 
 
--- 
-Regards,
-
-Joe
+regards,
+   Johannes
 
 
