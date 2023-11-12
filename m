@@ -1,84 +1,71 @@
-Return-Path: <linux-btrfs+bounces-80-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-81-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C75F7E8DA1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Nov 2023 01:09:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D49007E8E5E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Nov 2023 05:49:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3DC5280DC7
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Nov 2023 00:09:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 623A6280D3F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Nov 2023 04:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37BB137C;
-	Sun, 12 Nov 2023 00:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C0F92F5E;
+	Sun, 12 Nov 2023 04:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="B6W7En86"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="PS2Wx/dr"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C81D7E
-	for <linux-btrfs@vger.kernel.org>; Sun, 12 Nov 2023 00:09:35 +0000 (UTC)
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BC99F
-	for <linux-btrfs@vger.kernel.org>; Sat, 11 Nov 2023 16:09:34 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-3576e74ae9dso13202235ab.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Nov 2023 16:09:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699747773; x=1700352573; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sx52Eoo1t3RSYl0VcVZHBcSkayTT1dQia9VUFNzWLq8=;
-        b=B6W7En869gEwd025/P0xKV4CdoBZd9dxe1iCCGqot+SBSNF53oBoRCsxut8+h+6gN9
-         hBsgVTobkHC64ye7xyGpZUzA6qYWIN86peVB85N79dnPZfKAzGpggIdQje5G1/00/+kk
-         SW7nwXO5xTGve9RhonTub6tMkUhuJ3le+9HHs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699747773; x=1700352573;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sx52Eoo1t3RSYl0VcVZHBcSkayTT1dQia9VUFNzWLq8=;
-        b=pKPN4AKKw0ppa1yD0QRoJYTom1iIPbHcOpXVZuZtkte9u7L8LuU+HrmKLHtHV9cmO5
-         wg2y6hKfxloUGD53sJ63wc0hYoe2vuIBlopedOZmhb5VYdx9mLCNIORYbECy5sDfH9nm
-         Gxz4SFmIwsgLe/EVsJB1JVt2gMpT8343QFFPeBFX9haf0lxhJ/pPlhS8LNr9v88rT+qP
-         S2OSgOH3S/Qzgd/XSASEvb6ZqDChE54rEGIiyImzb58yCxLwkbAoKsc3N3Ty2aQUIXnr
-         FQlQRMHZt4OCDZ7H4/i+zYXMveD9JjcuyQuaXfAGilZgG6AGj5Rp3ULFIne1ojT2Ex5m
-         lvPA==
-X-Gm-Message-State: AOJu0Yym+2xiHhMUEePsKSliGNlE6xx6hc/3SvFiECbvMOaG0iDMZWxI
-	FYZ7ozjKzdwi20iF++95mHvr5Q==
-X-Google-Smtp-Source: AGHT+IHeFDz8V+x0OmDmdGrXiFYA1+anw3kY/SO39Z1Pm+6KbUu18dQezHvD6BgEt3BcKtIz2SUtBw==
-X-Received: by 2002:a05:6e02:2143:b0:34a:a4a5:3f93 with SMTP id d3-20020a056e02214300b0034aa4a53f93mr4836609ilv.5.1699747773593;
-        Sat, 11 Nov 2023 16:09:33 -0800 (PST)
-Received: from sjg1.lan (c-73-14-173-85.hsd1.co.comcast.net. [73.14.173.85])
-        by smtp.gmail.com with ESMTPSA id l14-20020a92280e000000b003576ff2d8b1sm706804ilf.26.2023.11.11.16.09.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Nov 2023 16:09:33 -0800 (PST)
-From: Simon Glass <sjg@chromium.org>
-To: U-Boot Mailing List <u-boot@lists.denx.de>
-Cc: Tom Rini <trini@konsulko.com>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Heinrich Schuchardt <xypron.glpk@gmx.de>,
-	Simon Glass <sjg@chromium.org>,
-	Baruch Siach <baruch@tkos.co.il>,
-	Bin Meng <bmeng.cn@gmail.com>,
-	Evgeny Bachinin <EABachinin@sberdevices.ru>,
-	Fabio Estevam <festevam@gmail.com>,
-	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-	Marek Vasut <marek.vasut+renesas@mailbox.org>,
-	Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-	Michal Simek <michal.simek@amd.com>,
-	"NXP i.MX U-Boot Team" <uboot-imx@nxp.com>,
-	Qu Wenruo <wqu@suse.com>,
-	Stefano Babic <sbabic@denx.de>,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH 03/29] treewide: Tidy up semicolon after command macros
-Date: Sat, 11 Nov 2023 17:08:48 -0700
-Message-ID: <20231112000923.73568-4-sjg@chromium.org>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-In-Reply-To: <20231112000923.73568-1-sjg@chromium.org>
-References: <20231112000923.73568-1-sjg@chromium.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17B41FCC;
+	Sun, 12 Nov 2023 04:48:57 +0000 (UTC)
+X-Greylist: delayed 85368 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 11 Nov 2023 20:48:54 PST
+Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594CA273F;
+	Sat, 11 Nov 2023 20:48:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1699764532; bh=Nh9NEmXMKKSIzgHHFg3D8MirxmXG82ZjNkyrfeIx1BI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=PS2Wx/drBxAj9JLyZxBhsKwKnMtF86ZEog5jf8n0oFvwhWfP3/6Oz4eV00MhMiaJE
+	 Ey5gHB327whmyEn7ywK1MPypHRQapMHMMi1nrB129/GXmUP9Y+QWWe00dcn3cGyr9U
+	 cxo6a1wqVHSDYRX4KNwV8tTxhJJycrV6T2gIe+r4=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.56])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id C3100069; Sun, 12 Nov 2023 12:48:49 +0800
+X-QQ-mid: xmsmtpt1699764529tja0crvr6
+Message-ID: <tencent_B9A7767566563D4D376C96BE36524B147409@qq.com>
+X-QQ-XMAILINFO: NQR8mRxMnur9EjBHd0TTbrkbHuSYIBIWvF3vPA65b4MQu58idl4QdNiQjcrTAI
+	 85fAVZygykgle7SXAFWUEjenICHrZX4Wvv7sxUS1UE+AojnUas8H9EPjKBxapK6hIL6hizBSjrL/
+	 6/oRYJfoqw8qkNULAE2iz0LmQDb+tXI9sFDxgwsBLPzr1u2Cc0N3zEl4Mt2g3glAIMoPPuDT42Sq
+	 tYDmUnBiNd8bCWrdoLJt1Ui/SQiZKZJfythEXz5CKGJC/Qsjk1mjn9+xZLy12gv0DPH7Zi7dn7Sx
+	 KBsq7BgdsphqAejjdu6KdMwxgqOG6+RWEnUKrne7CiUcxQj7InTzcRLd1k1zN6NzIKl6t9640W+c
+	 XtqTqW1nbL51jWAekL4r96mBblIv+cY4ukz+N1jKaAFqQPyvuUhwEMDmWhqLF0eo4d7gMYcGhb1R
+	 fccMzF9QMfiW6ILlxlCFVKSnQHRhgKezZu9mDphSBqy1V6iCpmAIx4mFg0OWV/zwxvtb1VofTPiw
+	 3vmQjLMW8x3SVScdhQBe2gPbgzb0gS1i2Wcmvu64Ahrjs5RZNryPo+ArFQfuRRxY169SQmQP2m1U
+	 TiQpLrTuYKx//0HOO+WQI1UWYN9lbOi3q8eGVVEReyRkIGTJ1Euv+M5Eo5/fEY99MvB7x/l05ebH
+	 mhlkn6DaESjddbq/kXtm+LX5yEEXxeSqnj8HxiWHgeRf8VMx56FUZoOunu/GzZg6rsQDkiF9g1vn
+	 bjYSaG5N7zBf8+NJ1ivMpGSS4tOsN6o0dCWM5eMl3B0ZkDdt/DsvavOj1WOYxTi7nVmGwAZeNjA+
+	 UrLESRYondWaeQEuYVzJExZGdV6bcZLVC8hfp2taVK631rgkgwMa+/WBhtMbYmrl67RFe0uIT8b7
+	 LDxWnDSxYqDrj+nORsb7c6LZMGc7V31MYsGMi3w0Jt1++81kAP7YvOhbrFf9y/I/VAcRGkQnnmjf
+	 d4q+i5p/8=
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
+Cc: boris@bur.io,
+	clm@fb.com,
+	dsterba@suse.com,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH V2] btrfs: fix warning in create_pending_snapshot
+Date: Sun, 12 Nov 2023 12:48:50 +0800
+X-OQ-MSGID: <20231112044849.630843-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <0000000000001959d30609bb5d94@google.com>
+References: <0000000000001959d30609bb5d94@google.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -86,182 +73,111 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: ***
 
-The U_BOOT_CMD_COMPLETE() macro has a semicolon at the end, perhaps
-inadvertently. Some code has taken advantage of this.
+[syz logs]
+1.syz reported:
+open("./file0", O_RDONLY)               = 4
+ioctl(4, BTRFS_IOC_QUOTA_CTL, {cmd=BTRFS_QUOTA_CTL_ENABLE}) = 0
+openat(AT_FDCWD, "blkio.bfq.time_recursive", O_RDWR|O_CREAT|O_NOCTTY|O_TRUNC|O_APPEND|FASYNC|0x18, 000) = 5
+ioctl(5, BTRFS_IOC_QGROUP_CREATE, {create=1, qgroupid=256}) = 0
+openat(AT_FDCWD, ".", O_RDONLY)         = 6
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -17)
+WARNING: CPU: 0 PID: 5057 at fs/btrfs/transaction.c:1778 create_pending_snapshot+0x25f4/0x2b70 fs/btrfs/transaction.c:1778
+Modules linked in:
+CPU: 0 PID: 5057 Comm: syz-executor225 Not tainted 6.6.0-syzkaller-15365-g305230142ae0 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:create_pending_snapshot+0x25f4/0x2b70 fs/btrfs/transaction.c:1778
+Code: f8 fd 48 c7 c7 00 43 ab 8b 89 de e8 76 4b be fd 0f 0b e9 30 f3 ff ff e8 7a 8d f8 fd 48 c7 c7 00 43 ab 8b 89 de e8 5c 4b be fd <0f> 0b e9 f8 f6 ff ff e8 60 8d f8 fd 48 c7 c7 00 43 ab 8b 89 de e8
+RSP: 0018:ffffc90003abf580 EFLAGS: 00010246
+RAX: 10fb7cf24e10ea00 RBX: 00000000ffffffef RCX: ffff888023ea9dc0
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffc90003abf870 R08: ffffffff81547c82 R09: 1ffff11017305172
+R10: dffffc0000000000 R11: ffffed1017305173 R12: ffff888078ae2878
+R13: 00000000ffffffef R14: 0000000000000000 R15: ffff888078ae2818
+FS:  000055555667d380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6ff7bf2304 CR3: 0000000079f17000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ create_pending_snapshots+0x195/0x1d0 fs/btrfs/transaction.c:1967
+ btrfs_commit_transaction+0xf1c/0x3730 fs/btrfs/transaction.c:2440
+ create_snapshot+0x4a5/0x7e0 fs/btrfs/ioctl.c:845
+ btrfs_mksubvol+0x5d0/0x750 fs/btrfs/ioctl.c:995
+ btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1041
+ __btrfs_ioctl_snap_create+0x344/0x460 fs/btrfs/ioctl.c:1294
+ btrfs_ioctl_snap_create+0x13c/0x190 fs/btrfs/ioctl.c:1321
+ btrfs_ioctl+0xbbf/0xd40
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Tidy this up by dropping the semicolon from the macro and adding it to
-macro invocations as required.
+2. syz repro:
+r0 = open(&(0x7f0000000080)='./file0\x00', 0x0, 0x0)
+ioctl$BTRFS_IOC_QUOTA_CTL(r0, 0xc0109428, &(0x7f0000000000)={0x1})
+r1 = openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000100)='blkio.bfq.time_recursive\x00', 0x275a, 0x0)
+ioctl$BTRFS_IOC_QGROUP_CREATE(r1, 0x4010942a, &(0x7f0000000640)={0x1, 0x100})
+r2 = openat(0xffffffffffffff9c, &(0x7f0000000500)='.\x00', 0x0, 0x0)
+ioctl$BTRFS_IOC_SNAP_CREATE(r0, 0x50009401, &(0x7f0000000a80)={{r2},
 
-Signed-off-by: Simon Glass <sjg@chromium.org>
+[Analysis]
+1. ioctl$BTRFS_IOC_QGROUP_CREATE(r1, 0x4010942a, &(0x7f0000000640)={0x1, 0x100})
+After executing create qgroup, a qgroup of "qgroupid=256" will be created, 
+which corresponds to the file "blkio.bfq.time_recursive".
+
+2. ioctl$BTRFS_IOC_SNAP_CREATE(r0, 0x50009401, &(0x7f0000000a80)={{r2},
+Create snap is to create a subvolume for the file0.
+
+Therefore, the qgroup created for the file 'blkio.bfq.time_recursive' cannot 
+be used for file0.
+
+[Fix]
+After added new qgroup to qgroup tree, we need to sync free_objectid use
+the qgroupid, avoiding subvolume creation failure.
+
+Reported-and-tested-by: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
+Fixes: 6ed05643ddb1 ("btrfs: create qgroup earlier in snapshot creation")
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 ---
+ fs/btrfs/qgroup.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- board/freescale/common/vid.c | 2 +-
- board/xilinx/common/fru.c    | 2 +-
- board/xilinx/versal/cmds.c   | 2 +-
- board/xilinx/zynqmp/cmds.c   | 2 +-
- cmd/btrfs.c                  | 2 +-
- cmd/eeprom.c                 | 2 +-
- cmd/ext2.c                   | 4 ++--
- cmd/fs.c                     | 8 ++++----
- cmd/pinmux.c                 | 2 +-
- cmd/qfw.c                    | 2 +-
- include/command.h            | 2 +-
- 11 files changed, 15 insertions(+), 15 deletions(-)
-
-diff --git a/board/freescale/common/vid.c b/board/freescale/common/vid.c
-index 5ec3f2a76b19..fc5d400cfe18 100644
---- a/board/freescale/common/vid.c
-+++ b/board/freescale/common/vid.c
-@@ -793,4 +793,4 @@ U_BOOT_CMD(
- 	vdd_read, 1, 0, do_vdd_read,
- 	"read VDD",
- 	" - Read the voltage specified in mV"
--)
-+);
-diff --git a/board/xilinx/common/fru.c b/board/xilinx/common/fru.c
-index c916c3d6b4c8..12b21317496a 100644
---- a/board/xilinx/common/fru.c
-+++ b/board/xilinx/common/fru.c
-@@ -85,4 +85,4 @@ U_BOOT_CMD(
- 	fru, 8, 1, do_fru,
- 	"FRU table info",
- 	fru_help_text
--)
-+);
-diff --git a/board/xilinx/versal/cmds.c b/board/xilinx/versal/cmds.c
-index 9cc2cdcebf1c..2a74e49aedec 100644
---- a/board/xilinx/versal/cmds.c
-+++ b/board/xilinx/versal/cmds.c
-@@ -98,4 +98,4 @@ U_BOOT_LONGHELP(versal,
- U_BOOT_CMD(versal, 4, 1, do_versal,
- 	   "versal sub-system",
- 	   versal_help_text
--)
-+);
-diff --git a/board/xilinx/zynqmp/cmds.c b/board/xilinx/zynqmp/cmds.c
-index f1f3eff501e1..9524688f27d9 100644
---- a/board/xilinx/zynqmp/cmds.c
-+++ b/board/xilinx/zynqmp/cmds.c
-@@ -427,4 +427,4 @@ U_BOOT_CMD(
- 	zynqmp, 9, 1, do_zynqmp,
- 	"ZynqMP sub-system",
- 	zynqmp_help_text
--)
-+);
-diff --git a/cmd/btrfs.c b/cmd/btrfs.c
-index 98daea99e9ed..2843835d08b8 100644
---- a/cmd/btrfs.c
-+++ b/cmd/btrfs.c
-@@ -24,4 +24,4 @@ U_BOOT_CMD(btrsubvol, 3, 1, do_btrsubvol,
- 	"list subvolumes of a BTRFS filesystem",
- 	"<interface> <dev[:part]>\n"
- 	"     - List subvolumes of a BTRFS filesystem."
--)
-+);
-diff --git a/cmd/eeprom.c b/cmd/eeprom.c
-index 0b6ca8c505fb..322765ad02a0 100644
---- a/cmd/eeprom.c
-+++ b/cmd/eeprom.c
-@@ -435,4 +435,4 @@ U_BOOT_CMD(
- 	"The values which can be provided with the -l option are:\n"
- 	CONFIG_EEPROM_LAYOUT_HELP_STRING"\n"
- #endif
--)
-+);
-diff --git a/cmd/ext2.c b/cmd/ext2.c
-index 57a99516a6ac..a0ce0cf5796b 100644
---- a/cmd/ext2.c
-+++ b/cmd/ext2.c
-@@ -42,7 +42,7 @@ U_BOOT_CMD(
- 	"list files in a directory (default /)",
- 	"<interface> <dev[:part]> [directory]\n"
- 	"    - list files from 'dev' on 'interface' in a 'directory'"
--)
-+);
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index edb84cc03237..9be5a836c9c0 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -218,6 +218,7 @@ static struct btrfs_qgroup *add_qgroup_rb(struct btrfs_fs_info *fs_info,
+ 			p = &(*p)->rb_right;
+ 		} else {
+ 			kfree(prealloc);
++			prealloc = NULL;
+ 			return qgroup;
+ 		}
+ 	}
+@@ -1697,6 +1698,7 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+ 	struct btrfs_root *quota_root;
+ 	struct btrfs_qgroup *qgroup;
+ 	struct btrfs_qgroup *prealloc = NULL;
++	u64 objid;
+ 	int ret = 0;
  
- U_BOOT_CMD(
- 	ext2load,	6,	0,	do_ext2load,
-@@ -50,4 +50,4 @@ U_BOOT_CMD(
- 	"<interface> [<dev[:part]> [addr [filename [bytes [pos]]]]]\n"
- 	"    - load binary file 'filename' from 'dev' on 'interface'\n"
- 	"      to address 'addr' from ext2 filesystem."
--)
-+);
-diff --git a/cmd/fs.c b/cmd/fs.c
-index 6044f73af5b4..46cb43dcdb5b 100644
---- a/cmd/fs.c
-+++ b/cmd/fs.c
-@@ -39,7 +39,7 @@ U_BOOT_CMD(
- 	"      If 'bytes' is 0 or omitted, the file is read until the end.\n"
- 	"      'pos' gives the file byte position to start reading from.\n"
- 	"      If 'pos' is 0 or omitted, the file is read from the start."
--)
-+);
+ 	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_DISABLED)
+@@ -1727,6 +1729,8 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+ 	spin_lock(&fs_info->qgroup_lock);
+ 	qgroup = add_qgroup_rb(fs_info, prealloc, qgroupid);
+ 	spin_unlock(&fs_info->qgroup_lock);
++	while (prealloc && !btrfs_get_free_objectid(fs_info->tree_root, 
++				&objid) && objid <= qgroupid);
+ 	prealloc = NULL;
  
- static int do_save_wrapper(struct cmd_tbl *cmdtp, int flag, int argc,
- 			   char *const argv[])
-@@ -56,7 +56,7 @@ U_BOOT_CMD(
- 	"      'bytes' gives the size to save in bytes and is mandatory.\n"
- 	"      'pos' gives the file byte position to start writing to.\n"
- 	"      If 'pos' is 0 or omitted, the file is written from the start."
--)
-+);
- 
- static int do_ls_wrapper(struct cmd_tbl *cmdtp, int flag, int argc,
- 			 char *const argv[])
-@@ -70,7 +70,7 @@ U_BOOT_CMD(
- 	"<interface> [<dev[:part]> [directory]]\n"
- 	"    - List files in directory 'directory' of partition 'part' on\n"
- 	"      device type 'interface' instance 'dev'."
--)
-+);
- 
- static int do_ln_wrapper(struct cmd_tbl *cmdtp, int flag, int argc,
- 			 char *const argv[])
-@@ -84,7 +84,7 @@ U_BOOT_CMD(
- 	"<interface> <dev[:part]> target linkname\n"
- 	"    - create a symbolic link to 'target' with the name 'linkname' on\n"
- 	"      device type 'interface' instance 'dev'."
--)
-+);
- 
- static int do_fstype_wrapper(struct cmd_tbl *cmdtp, int flag, int argc,
- 			     char *const argv[])
-diff --git a/cmd/pinmux.c b/cmd/pinmux.c
-index f17cf4110d9f..105f01eaafff 100644
---- a/cmd/pinmux.c
-+++ b/cmd/pinmux.c
-@@ -178,4 +178,4 @@ U_BOOT_CMD(pinmux, CONFIG_SYS_MAXARGS, 1, do_pinmux,
- 	   "list                     - list UCLASS_PINCTRL devices\n"
- 	   "pinmux dev [pincontroller-name] - select pin-controller device\n"
- 	   "pinmux status [-a | pin-name]   - print pin-controller muxing [for all | for pin-name]\n"
--)
-+);
-diff --git a/cmd/qfw.c b/cmd/qfw.c
-index d6ecfa60d5a7..1b8c775ebf5a 100644
---- a/cmd/qfw.c
-+++ b/cmd/qfw.c
-@@ -121,4 +121,4 @@ U_BOOT_CMD(
- 	"    - list                             : print firmware(s) currently loaded\n"
- 	"    - cpus                             : print online cpu number\n"
- 	"    - load <kernel addr> <initrd addr> : load kernel and initrd (if any), and setup for zboot\n"
--)
-+);
-diff --git a/include/command.h b/include/command.h
-index 6262365e128f..5bd3ecbe8f91 100644
---- a/include/command.h
-+++ b/include/command.h
-@@ -390,7 +390,7 @@ int cmd_source_script(ulong addr, const char *fit_uname, const char *confname);
- #define U_BOOT_CMD_COMPLETE(_name, _maxargs, _rep, _cmd, _usage, _help, _comp) \
- 	ll_entry_declare(struct cmd_tbl, _name, cmd) =			\
- 		U_BOOT_CMD_MKENT_COMPLETE(_name, _maxargs, _rep, _cmd,	\
--						_usage, _help, _comp);
-+						_usage, _help, _comp)
- 
- #define U_BOOT_CMDREP_COMPLETE(_name, _maxargs, _cmd_rep, _usage,	\
- 			       _help, _comp)				\
+ 	ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
 -- 
-2.42.0.869.gea05f2083d-goog
+2.25.1
 
 
