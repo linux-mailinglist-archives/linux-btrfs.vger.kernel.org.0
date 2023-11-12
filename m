@@ -1,171 +1,206 @@
-Return-Path: <linux-btrfs+bounces-78-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-79-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51327E8CA3
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Nov 2023 21:49:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D9ED7E8DA0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Nov 2023 01:09:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 560421F20FA6
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Nov 2023 20:49:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D648280E09
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Nov 2023 00:09:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939A11D6BC;
-	Sat, 11 Nov 2023 20:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4891EA2;
+	Sun, 12 Nov 2023 00:09:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ZwRxKRMg"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Mvi8p/b2"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF0CB1B274;
-	Sat, 11 Nov 2023 20:48:49 +0000 (UTC)
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CC42D73;
-	Sat, 11 Nov 2023 12:48:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1699735704; x=1700340504; i=quwenruo.btrfs@gmx.com;
-	bh=TgFPOslhJOQ9qs98yLRjNcSGkGecPQbUrWbyHjijZdU=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=ZwRxKRMgIl1MWZzW6+omuPubI6dfNBN034QeH00rW/4OQnI8FJQCrjabePshr0Lq
-	 HaVibQI0xVVKaBAP8Ta/ELZyHXuLIarDKwuwyevy7biuv6RKx6TMasY2Bdxx9mI4E
-	 a7icdjopw1Z3wYJyOdPCoBtVEkKfYRfx7k9HR8VjWQ3EagC/Jh3PHKHDgkUt9ocEr
-	 3rOatIoZDJfB+CxZgRVGLqCxtLtF/vp/xhFVxBJXJQdqghFrBp+H6/IdEqCORL3M7
-	 gjXsbCanxYAXtbJlQi6yl7Z9R/m9M9fMHMvMbVEmrsE2Yyb5QkUYpK13VRtKNi1CR
-	 ScM9LSEwXYmxZGQAzg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MyKDU-1rKQDc0kCy-00yhg8; Sat, 11
- Nov 2023 21:48:24 +0100
-Message-ID: <ae67f48e-a1f3-4d45-8eca-fa42f0fcb5b8@gmx.com>
-Date: Sun, 12 Nov 2023 07:18:16 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E267E
+	for <linux-btrfs@vger.kernel.org>; Sun, 12 Nov 2023 00:09:31 +0000 (UTC)
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F189F
+	for <linux-btrfs@vger.kernel.org>; Sat, 11 Nov 2023 16:09:29 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7a66aa8ebb7so125780939f.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 11 Nov 2023 16:09:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699747769; x=1700352569; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zOZGm1DB+FSqqEEZWw12TzyzShs1slwAa9PWYXUZ83w=;
+        b=Mvi8p/b2vlIBy48qOS8OU71rQm4Gz0XoLavmJAS8DKS4dlF0XcuVkCrtK4KDfi5y63
+         BIAhZylXkJq/F2fNU20ePnW+CKu/XJU/p5m7oPiaO4GJe/2a0HneHyJOQI2mGRxj8Lij
+         QcL+6AwIdWVeIFTH42YiuBo7roHIE65r+5Qq8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699747769; x=1700352569;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zOZGm1DB+FSqqEEZWw12TzyzShs1slwAa9PWYXUZ83w=;
+        b=PM2zvMhml1chq9XlLGUHSAD4vMp1H/Gu4BNEZx61w6THoRb0ZpnS/TBLvjO05DqF4Y
+         SoMuWo3gizgAVGoy62sNh0kijhwS2rcz6P6zBh1Ped7V3OleFrhG0X2nhPWkNTej+P1L
+         3Xo6INkpCQxTKKiz98Djcp2MzNaUt7nYynq6POPtCN9eF7qzw5ptbxKD5ZH4IjRCvrfY
+         gXt1cVoPG/MgJ/+ew0R7Olw9I8p1N7IJQWsvSv6MSXWapjHITJF4GxC+U9bJjz270QOF
+         hACPEoJORhgQ7aKDb+0Fx1IFaaE8DFYEI1QigJNV1W4gHZV7A2o2hs7XVVV8ONzN+PUe
+         6JeQ==
+X-Gm-Message-State: AOJu0Yy1OA1JkacBsX82tPdXgUx/kWiby70Fl7uiyDi4+jUJ31ajTDB2
+	gF+Rbqt8BNvJDC9rgWN4jzQc1Q==
+X-Google-Smtp-Source: AGHT+IHgpvB2JmMn/QlhhT6LQxMxP7GoiTrv+rjW8vRtwpnHlZ+dZFSa6yvDa9pBoa2hiRPqJFzuKg==
+X-Received: by 2002:a05:6e02:1a22:b0:359:9efa:3afc with SMTP id g2-20020a056e021a2200b003599efa3afcmr4566531ile.7.1699747769140;
+        Sat, 11 Nov 2023 16:09:29 -0800 (PST)
+Received: from sjg1.lan (c-73-14-173-85.hsd1.co.comcast.net. [73.14.173.85])
+        by smtp.gmail.com with ESMTPSA id l14-20020a92280e000000b003576ff2d8b1sm706804ilf.26.2023.11.11.16.09.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Nov 2023 16:09:28 -0800 (PST)
+From: Simon Glass <sjg@chromium.org>
+To: U-Boot Mailing List <u-boot@lists.denx.de>
+Cc: Tom Rini <trini@konsulko.com>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Heinrich Schuchardt <xypron.glpk@gmx.de>,
+	Simon Glass <sjg@chromium.org>,
+	Albert Aribaud <albert.u.boot@aribaud.net>,
+	Baruch Siach <baruch@tkos.co.il>,
+	Bin Meng <bmeng.cn@gmail.com>,
+	Eddie James <eajames@linux.ibm.com>,
+	Evgeny Bachinin <EABachinin@sberdevices.ru>,
+	Fabio Estevam <festevam@gmail.com>,
+	Ivan Mikhaylov <fr0st61te@gmail.com>,
+	Jaehoon Chung <jh80.chung@samsung.com>,
+	Jerry Van Baren <vanbaren@cideas.com>,
+	Joe Hershberger <joe.hershberger@ni.com>,
+	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+	Marek Vasut <marek.vasut+renesas@mailbox.org>,
+	Marek Vasut <marex@denx.de>,
+	Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+	Michal Simek <michal.simek@amd.com>,
+	"NXP i.MX U-Boot Team" <uboot-imx@nxp.com>,
+	Peng Fan <peng.fan@nxp.com>,
+	Qu Wenruo <wqu@suse.com>,
+	Safae Ouajih <souajih@baylibre.com>,
+	Sean Anderson <sean.anderson@seco.com>,
+	Stefano Babic <sbabic@denx.de>,
+	Tobias Waldekranz <tobias@waldekranz.com>,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/29] bootm: Refactoring to reduce reliance on CMDLINE (part A)
+Date: Sat, 11 Nov 2023 17:08:45 -0700
+Message-ID: <20231112000923.73568-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] test 305230142ae0
-To: Edward Adam Davis <eadavis@qq.com>, willy@infradead.org
-Cc: boris@bur.io, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com,
- syzkaller-bugs@googlegroups.com
-References: <ZU8dS0dlOGOblbxf@casper.infradead.org>
- <tencent_82622979A3A74448177BF772E6D1736E4305@qq.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <tencent_82622979A3A74448177BF772E6D1736E4305@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+hLGTdZv3iptvCjS7ha0sAWDfEJNPI6Tt7PTlZss1eGzxUEnRDA
- 3Y3H3z9bpaGlJernznmFPWY6HDdNErxaot1rS+0Y/k/2EyRP1tnSLCmrHCMotDpZZyHrsa3
- 89UPcS+V+j5Nn7XmsivFDk2KBg1uwj+yiSunvkSbjdaiuD2rjsyKNO0duPLeU/lkE+9jcKj
- daTlkl/s972FmKs6f95gg==
-UI-OutboundReport: notjunk:1;M01:P0:/Bugbo+DcYE=;n3pcwbrm7CrlQo4cmn6tPc0Va5Y
- UCTKFhOLc4MojHJlLhKxbxU06JOe1wDFpunh4gqEnEwg34zY/epnipIxMC+fzXn/10wDRKzlu
- qFQ0TNZoIuXDA0PzaAJZDmrr2q2tc3024jFVUpZkSMQlZjTX95UF5sgvnkEvthdskBxqyH3r0
- EP5p/tdb9JzTqTKS39CHYrPmgLRLFMx9nnVLoGMTQMzGkFpSFN4uWWZ5Z5SLNnehEw9wQtbuE
- /mBGRSP+nbgfPJtsYBCIwkBZJx0fJrdO2oassDW0n1SUPQ0SnOQT7UJprKFGG1+UtHr29fTTW
- EUXU46AoeCLsieCGoF73MLb60UG2vdpgqcrGL0fcjWP0N0zdEKCO9o3YpS1wYZHt2Nj6Tymq1
- ECuYVUSn3XjtmXRuiDGBo64J118qKvmeIC5RP8F+3C4pXZ47lh4Sao9Jfj/s55Zbja26y48gy
- y792VobwF0kaDCIZg3IV1qncPgjqZdIPQn70LYkKAMDF7PI9fIk2aDNhNC7sxJjjVgbhKVLDj
- 8jgGBJ52RmAS7zpmD/LEh+ENFu2fzw4TXRs5XvTlXJ12Yab6wJ/jPOG9T3IgaplDfoHAhINri
- 8ICHA/8aTSi3Bz+uQyBnpwBi/u7psyGGhK3I1jBOj3QMnBo7ohZdNOoqbUXPrpwh0qfU3iGgU
- 6w6yAh9eIweq8PfAeqe9umJQxKPlh2NC2ETxXPdWBBhqkzIh0aoaPxqHUGyTB2/MUyOxSSaTR
- +lmPDT5pnhGVfJivjWtRbSv92TEESTs9Mgc7GJL3Yop1yaB0CmqdJhfP4gskkbJjuhAlMFzz3
- Uj5SrfdlkD5Jqf6xnqp3e8rEtBZfWeMMSyDcgGtDm6FQEnTzeEvz8kEdWxhvQMUnRYPMWx1o2
- JcmgF/2w1QMm/8BqFR74rcPTTd+IYqS2ABtE//RB2qeFfl6s49v9dZ8cXhH5kcHnCebEC3Qsi
- xfMTFdEjjFRZp22e4p9cyBXKG9c=
+Content-Transfer-Encoding: 8bit
+
+It would be useful to be able to boot an OS when CONFIG_CMDLINE is
+disabled. This could allow reduced code size.
+
+Standard boot provides a way to handle programmatic boot, without
+scripts, so such a feature is possible. The main impediment is the
+inability to use the booting features of U-Boot without a command line.
+So the solution is to avoid passing command arguments and the like to
+code in boot/
+
+A similar process has taken place with filesystems, for example, where
+we have (somewhat) separate Kconfig options for the filesystem commands
+and the filesystems themselves.
+
+This series starts the process of refactoring the bootm logic so that
+it can be called from standard boot without using the command line.
+Mostly it removes the use of argc, argv and cmdtbl from the internal
+logic.
+
+Some limited tidy-up is included, but this is kept to smaller patches,
+rather than trying to remove all #ifdefs etc. Some function comments
+are added, however.
+
+A simple programmatic boot is provided as a starting point.
+
+This work will likely take many series, so this is just the start.
+
+Size growth with this series for firefly-rk3288 (Thumb2) is:
+
+       arm: (for 1/1 boards) all +23.0 rodata -49.0 text +72.0
+
+This should be removed by:
+
+   https://source.denx.de/u-boot/custodians/u-boot-dm/-/issues/11
+
+but it is not included in this series as it is already large enough.
+
+No functional change is intended in this series.
 
 
+Simon Glass (29):
+  arm: x86: Drop discarding of command linker-lists
+  mmc: env: Unify the U_BOOT_ENV_LOCATION conditions
+  treewide: Tidy up semicolon after command macros
+  bootstd: Add missing header file from bootdev.h
+  bootstd: Introduce programmable boot
+  bootm: Drop arguments from bootm_start()
+  bootm: Simplify arguments for bootm_pre_load()
+  bootm: Move boot_get_kernel() higher in the file
+  image: Tidy up genimg_get_kernel_addr_fit()
+  bootm: Reduce arguments to boot_get_kernel()
+  image: Document error codes from fit_image_load()
+  bootm: Adjust boot_get_kernel() to return an error
+  bootm: Use the error return from boot_get_kernel()
+  bootstage: Drop BOOTSTAGE_ID_FIT_KERNEL_INFO
+  bootm: Move error printing out of boot_get_kernel()
+  bootm: Reduce arguments to boot_find_os()
+  bootm: Reduce arguments to boot_get_ramdisk()
+  fdt: Allow use of fdt_support inside if() statements
+  bootm: Drop #ifdef in bootm_find_images()
+  bootm: Pass image buffer to boot_get_fdt()
+  bootm: Reduce arguments to boot_get_fdt()
+  bootm: Reduce arguments to boot_get_fpga()
+  bootm: Reduce arguments to boot_get_loadables()
+  bootm: Simplify Android ramdisk addr in bootm_find_images()
+  bootm: efi: Drop special call to bootm_find_other()
+  bootm: optee: Drop special call to bootm_find_other()
+  bootm: Adjust the parameters of bootm_find_images()
+  bootm: Add a function to check overlap
+  bootm: Reduce arguments to bootm_find_other()
 
-On 2023/11/11 18:43, Edward Adam Davis wrote:
-> On Sat, 11 Nov 2023 06:20:59 +0000, Matthew Wilcox wrote:
->>> +++ b/fs/btrfs/disk-io.c
->>> @@ -4931,7 +4931,8 @@ int btrfs_get_free_objectid(struct btrfs_root *r=
-oot, u64 *objectid)
->>>   		goto out;
->>>   	}
->>>
->>> -	*objectid =3D root->free_objectid++;
->>> +	while (find_qgroup_rb(root->fs_info, root->free_objectid++));
->>> +	*objectid =3D root->free_objectid;
->>
->> This looks buggy to me.  Let's say that free_objectid is currently 3.
->>
->> Before, it would assign 3 to *objectid, and increment free_objectid to
->> 4.  After (assuming the loop terminates on first iteration), it will
->> increment free_objectid to 4, then assign 4 to *objectid.
->>
->> I think you meant to write:
->>
->> 	while (find_qgroup_rb(root->fs_info, root->free_objectid))
->> 		root->free_objectid++;
->> 	*objectid =3D root->free_objectid++;
-> Yes, your guess is correct.
->>
->> And the lesson here is that more compact code is not necessarily more
->> correct code.
->>
->> (I'm not making any judgement about whether this is the correct fix;
->> I don't understand btrfs well enough to have an opinion.  Just that
->> this is not an equivalent transformation)
-> I don't have much knowledge about btrfs too, but one thing is clear: the=
- qgroupid
-> taken by create_snapshot() is calculated from btrfs_get_free_ojectid().
-> At the same time, when calculating the new value in btrfs_get_free_oject=
-id(),
-> it is clearly unreasonable to not determine whether the new value exists=
- in the
-> qgroup_tree tree.
+ arch/arm/cpu/u-boot.lds      |   3 -
+ arch/x86/cpu/u-boot-64.lds   |   4 -
+ arch/x86/cpu/u-boot-spl.lds  |   4 -
+ arch/x86/cpu/u-boot.lds      |   4 -
+ board/freescale/common/vid.c |   2 +-
+ board/xilinx/common/fru.c    |   2 +-
+ board/xilinx/versal/cmds.c   |   2 +-
+ board/xilinx/zynqmp/cmds.c   |   2 +-
+ boot/Kconfig                 |  11 +
+ boot/Makefile                |   2 +
+ boot/bootm.c                 | 576 +++++++++++++++++++----------------
+ boot/bootm_os.c              |  16 -
+ boot/image-board.c           |  67 +---
+ boot/image-fdt.c             |  39 +--
+ boot/prog_boot.c             |  51 ++++
+ cmd/booti.c                  |   4 +-
+ cmd/bootz.c                  |   4 +-
+ cmd/btrfs.c                  |   2 +-
+ cmd/eeprom.c                 |   2 +-
+ cmd/ext2.c                   |   4 +-
+ cmd/fs.c                     |   8 +-
+ cmd/pinmux.c                 |   2 +-
+ cmd/qfw.c                    |   2 +-
+ common/main.c                |   9 +
+ env/mmc.c                    |   2 +-
+ include/bootdev.h            |   1 +
+ include/bootm.h              |  26 +-
+ include/bootstage.h          |   1 -
+ include/bootstd.h            |   9 +
+ include/command.h            |   2 +-
+ include/fdt_support.h        |   5 +-
+ include/image.h              | 127 ++++++--
+ 32 files changed, 550 insertions(+), 445 deletions(-)
+ create mode 100644 boot/prog_boot.c
 
-Nope, it's totally wrong.
+-- 
+2.42.0.869.gea05f2083d-goog
 
-Qgroupid is bound to subvolumeid, thus getting a different id for
-qgroupid is going to screw the whole thing up.
-
-> Perhaps there are other methods to obtain a new qgroupid, but before obt=
-aining
-> a new value, it is necessary to perform a duplicate value judgment on qg=
-roup_tree,
-> otherwise similar problems may still occur.
-
-If you don't really understand the context, the fix is never going to be
-correct.
-
-Thanks,
-Qu
-
->
-> edward
->
->
 
