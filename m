@@ -1,52 +1,52 @@
-Return-Path: <linux-btrfs+bounces-103-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-104-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A9217EA22C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 18:38:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD5E97EA22F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 18:38:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50FD51C209CB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 17:38:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96874280EE9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 17:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE02B23758;
-	Mon, 13 Nov 2023 17:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5342376A;
+	Mon, 13 Nov 2023 17:37:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bWFV7bmG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l3wCLEkQ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4131123743;
-	Mon, 13 Nov 2023 17:37:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320F523743;
+	Mon, 13 Nov 2023 17:37:52 +0000 (UTC)
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB7E19B1;
-	Mon, 13 Nov 2023 09:37:46 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DAB1728;
+	Mon, 13 Nov 2023 09:37:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699897066; x=1731433066;
+  t=1699897069; x=1731433069;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DtA/Z1IbwRhdE1Z9R1wqv+Q2gww15OYcKaj1wGIz64g=;
-  b=bWFV7bmG9JKWOR3kJ0McR6JRmxGOGdAlTetpaSpqMZMZGrEcZ9Z8EInh
-   W9dHTckVwQMZvIA2WwlJ9lReOHHNKB/xthjnyc4BdxxC+AG8KfFR8Hujb
-   ZuWq0vJXhuBzjkNXbM6X6ZUGzM4PQ5it/KrvZlg2SsZm9Izig8LB6pc28
-   1BNhn8ILe3yGKol0ND3bwzhI4RrVPHsc1T/LU2P4fu3v8X0YFBTy53EsN
-   BWvhTQNP6hEVfOslZmq8YHmLIoWyacVLv9QWl8kjHPZu1cemzYxIT4BS7
-   t1ewvpLTGbWqkwXCJyAq4vBLXm5FD4Hsiri/XytmoiSOXKxgiWhVliT3p
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="370671606"
+  bh=QmLTJQ3DGSbK+0NxwdNEeIapVkPN18QwsI1fWOyABbg=;
+  b=l3wCLEkQ+KK4P/xdLlmCEmnzeuR4CGMqhWy94bZRKPP8zZuQgIoIlYR6
+   lB2ohGO0abivQ9+Y1i96iu+w/9pnbgBtyZ/s3mmTMi0JT415kg3qbDu9f
+   CHNy1VDLMxBnpeNy6hkJiXIjfeuzV4OjrjUNj2q8g3AHBfcENw+FeALGW
+   1o7TPjaA/OEhPPZwyVu5dSEknBfHN8ZUhb1wn2wdpJMgN7XUZOaLvLXOX
+   SiEmkpI0l9bQzyEAShaMko5D+9pZabktmnYD8AUpxCBrhcCvbzxzw+nXt
+   0IXv7eT2C8jeIP87qS3b5nrqxByxqIP2Sv7pD/zHmKePcMWIeMypU9RbM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="370671621"
 X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="370671606"
+   d="scan'208";a="370671621"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 09:37:46 -0800
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 09:37:49 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="1095812704"
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="1095812714"
 X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="1095812704"
+   d="scan'208";a="1095812714"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmsmga005.fm.intel.com with ESMTP; 13 Nov 2023 09:37:42 -0800
+  by fmsmga005.fm.intel.com with ESMTP; 13 Nov 2023 09:37:46 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: Yury Norov <yury.norov@gmail.com>
 Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
@@ -60,11 +60,10 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	dm-devel@redhat.com,
 	ntfs3@lists.linux.dev,
 	linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	David Sterba <dsterba@suse.com>
-Subject: [PATCH v3 07/11] btrfs: rename bitmap_set_bits() -> btrfs_bitmap_set_bits()
-Date: Mon, 13 Nov 2023 18:37:13 +0100
-Message-ID: <20231113173717.927056-8-aleksander.lobakin@intel.com>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 08/11] tools: move alignment-related macros to new <linux/align.h>
+Date: Mon, 13 Nov 2023 18:37:14 +0100
+Message-ID: <20231113173717.927056-9-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231113173717.927056-1-aleksander.lobakin@intel.com>
 References: <20231113173717.927056-1-aleksander.lobakin@intel.com>
@@ -76,44 +75,82 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-bitmap_set_bits() does not start with the FS' prefix and may collide
-with a new generic helper one day. It operates with the FS-specific
-types, so there's no change those two could do the same thing.
-Just add the prefix to exclude such possible conflict.
+Currently, tools have *ALIGN*() macros scattered across the unrelated
+headers, as there are only 3 of them and they were added separately
+each time on an as-needed basis.
+Anyway, let's make it more consistent with the kernel headers and allow
+using those macros outside of the mentioned headers. Create
+<linux/align.h> inside the tools/ folder and include it where needed.
 
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Acked-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- fs/btrfs/free-space-cache.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tools/include/linux/align.h  | 11 +++++++++++
+ tools/include/linux/bitmap.h |  2 +-
+ tools/include/linux/mm.h     |  5 +----
+ 3 files changed, 13 insertions(+), 5 deletions(-)
+ create mode 100644 tools/include/linux/align.h
 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 6f93c9a2c3e3..8f4949f0b5e2 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -1913,9 +1913,9 @@ static inline void bitmap_clear_bits(struct btrfs_free_space_ctl *ctl,
- 		ctl->free_space -= bytes;
- }
+diff --git a/tools/include/linux/align.h b/tools/include/linux/align.h
+new file mode 100644
+index 000000000000..62e5582bbb1f
+--- /dev/null
++++ b/tools/include/linux/align.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _TOOLS_LINUX_ALIGN_H
++#define _TOOLS_LINUX_ALIGN_H
++
++#include <uapi/linux/const.h>
++
++#define ALIGN(x, a)		__ALIGN_KERNEL((x), (a))
++#define ALIGN_DOWN(x, a)	__ALIGN_KERNEL((x) - ((a) - 1), (a))
++#define IS_ALIGNED(x, a)	(((x) & ((typeof(x))(a) - 1)) == 0)
++
++#endif /* _TOOLS_LINUX_ALIGN_H */
+diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
+index f3566ea0f932..8c6852dba04f 100644
+--- a/tools/include/linux/bitmap.h
++++ b/tools/include/linux/bitmap.h
+@@ -3,6 +3,7 @@
+ #define _TOOLS_LINUX_BITMAP_H
  
--static void bitmap_set_bits(struct btrfs_free_space_ctl *ctl,
--			    struct btrfs_free_space *info, u64 offset,
--			    u64 bytes)
-+static void btrfs_bitmap_set_bits(struct btrfs_free_space_ctl *ctl,
-+				  struct btrfs_free_space *info, u64 offset,
-+				  u64 bytes)
- {
- 	unsigned long start, count, end;
- 	int extent_delta = 1;
-@@ -2251,7 +2251,7 @@ static u64 add_bytes_to_bitmap(struct btrfs_free_space_ctl *ctl,
+ #include <string.h>
++#include <linux/align.h>
+ #include <linux/bitops.h>
+ #include <linux/find.h>
+ #include <stdlib.h>
+@@ -126,7 +127,6 @@ static inline bool bitmap_and(unsigned long *dst, const unsigned long *src1,
+ #define BITMAP_MEM_ALIGNMENT (8 * sizeof(unsigned long))
+ #endif
+ #define BITMAP_MEM_MASK (BITMAP_MEM_ALIGNMENT - 1)
+-#define IS_ALIGNED(x, a) (((x) & ((typeof(x))(a) - 1)) == 0)
  
- 	bytes_to_set = min(end - offset, bytes);
+ static inline bool bitmap_equal(const unsigned long *src1,
+ 				const unsigned long *src2, unsigned int nbits)
+diff --git a/tools/include/linux/mm.h b/tools/include/linux/mm.h
+index f3c82ab5b14c..7a6b98f4e579 100644
+--- a/tools/include/linux/mm.h
++++ b/tools/include/linux/mm.h
+@@ -2,8 +2,8 @@
+ #ifndef _TOOLS_LINUX_MM_H
+ #define _TOOLS_LINUX_MM_H
  
--	bitmap_set_bits(ctl, info, offset, bytes_to_set);
-+	btrfs_bitmap_set_bits(ctl, info, offset, bytes_to_set);
++#include <linux/align.h>
+ #include <linux/mmzone.h>
+-#include <uapi/linux/const.h>
  
- 	return bytes_to_set;
+ #define PAGE_SHIFT		12
+ #define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
+@@ -11,9 +11,6 @@
  
+ #define PHYS_ADDR_MAX	(~(phys_addr_t)0)
+ 
+-#define ALIGN(x, a)			__ALIGN_KERNEL((x), (a))
+-#define ALIGN_DOWN(x, a)		__ALIGN_KERNEL((x) - ((a) - 1), (a))
+-
+ #define PAGE_ALIGN(addr) ALIGN(addr, PAGE_SIZE)
+ 
+ #define __va(x) ((void *)((unsigned long)(x)))
 -- 
 2.41.0
 
