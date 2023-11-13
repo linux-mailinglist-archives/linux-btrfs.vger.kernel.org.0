@@ -1,131 +1,71 @@
-Return-Path: <linux-btrfs+bounces-94-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-95-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BF797EA1B9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 18:15:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D67017EA1C1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 18:16:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71A841C20931
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 17:15:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90F1C280E4C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 17:16:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A609E224D1;
-	Mon, 13 Nov 2023 17:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135A3224D2;
+	Mon, 13 Nov 2023 17:16:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qvjKC+B1";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8b6jc596"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JhvE/T8p"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E297D200D1
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Nov 2023 17:15:02 +0000 (UTC)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9949099
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Nov 2023 09:15:01 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 56EC61F6E6;
-	Mon, 13 Nov 2023 17:15:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1699895700;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XPoBPoZW7iPtDi0LnMUFeB8K0MVArnBnkGVyma26QS8=;
-	b=qvjKC+B1nZRVWBAPY0VFFTaGqBhjkinC7KTHmkkUmBu5XS4Wvgh4lO/41bir+oZ0MOtrav
-	4X8ObwuGe2q7klU8szC5Ym/iDG9RxWTu4MDkqrlrkudRGoYHK76WzkAprQrB0p/HqKuqeu
-	F1ctJyGuzmQUI4B30sjr3fnEtIkaUfY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1699895700;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XPoBPoZW7iPtDi0LnMUFeB8K0MVArnBnkGVyma26QS8=;
-	b=8b6jc596LGE26D9CZjk9MZeiHsJzy75YrgSuZ0/oDefPUCqAz9SiIsEWRFrndUHyzC10/9
-	ZdGWTJs1VVXNVHCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3639C1358C;
-	Mon, 13 Nov 2023 17:15:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id wA6SDJRZUmW9BAAAMHmgww
-	(envelope-from <dsterba@suse.cz>); Mon, 13 Nov 2023 17:15:00 +0000
-Date: Mon, 13 Nov 2023 18:07:55 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org,
-	syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
-Subject: Re: [PATCH] btrfs: do not abort transaction if there is already an
- existing qgroup
-Message-ID: <20231113170755.GW11264@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <b305a5b0228b40fc62923b0133957c72468600de.1699649085.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4C0224C3
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Nov 2023 17:16:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7F879C433C8;
+	Mon, 13 Nov 2023 17:16:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699895779;
+	bh=Rbfv91x+BKBH2FbFB6c3iwawLdkT0jy5zhy29xwzIc8=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=JhvE/T8pPlsRU+aZ5YwzL4znZ+bW73PH+7MKCjSMUARCZSgzINmGFWh9wpNVK3j0N
+	 ZSSlmnNv3ELnIexK4P7RwkBdsKPcN2oSBMMzAP6MLpxvNVIv2iYvHwGo1hhiG4Qd98
+	 v6J8yATlXPAcrSar6Q5sR6NOhAXVH61QnzQHZlg7PJWRYhKJ+k1B8YdcVOcxScW3ib
+	 YLVd5ZMCdZmAOCRDRZqxAyh1mavE4iyZpBR4M1FVXSUToWFUg9xcTYZtAOo2FCgDhe
+	 I+ljP61V2xZ+WBjVQQq68yChqKCYCc4nErXz30VX25tX3QNs6W/oX+2Vw6a8UzDQos
+	 rQZ2qZo9G5IFQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6D9E1C04DD9;
+	Mon, 13 Nov 2023 17:16:19 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs updates for 6.7-rc2
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1699891630.git.dsterba@suse.com>
+References: <cover.1699891630.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1699891630.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.7-rc1-tag
+X-PR-Tracked-Commit-Id: d3933152442b7f94419e9ea71835d71b620baf0e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9bacdd8996c77c42ca004440be610692275ff9d0
+Message-Id: <169989577944.20902.9323359004196842840.pr-tracker-bot@kernel.org>
+Date: Mon, 13 Nov 2023 17:16:19 +0000
+To: David Sterba <dsterba@suse.com>
+Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b305a5b0228b40fc62923b0133957c72468600de.1699649085.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 
-On Sat, Nov 11, 2023 at 07:14:57AM +1030, Qu Wenruo wrote:
-> [BUG]
-> Syzbot reported a regression that after commit 6ed05643ddb1 ("btrfs:
-> create qgroup earlier in snapshot creation") we can trigger transaction
-> abort during subvolume creation:
-> 
->   ------------[ cut here ]------------
->   BTRFS: Transaction aborted (error -17)
->   WARNING: CPU: 0 PID: 5057 at fs/btrfs/transaction.c:1778 create_pending_snapshot+0x25f4/0x2b70 fs/btrfs/transaction.c:1778
->   Modules linked in:
->   CPU: 0 PID: 5057 Comm: syz-executor225 Not tainted 6.6.0-syzkaller-15365-g305230142ae0 #0
->   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
->   RIP: 0010:create_pending_snapshot+0x25f4/0x2b70 fs/btrfs/transaction.c:1778
->   Call Trace:
->    <TASK>
->    create_pending_snapshots+0x195/0x1d0 fs/btrfs/transaction.c:1967
->    btrfs_commit_transaction+0xf1c/0x3730 fs/btrfs/transaction.c:2440
->    create_snapshot+0x4a5/0x7e0 fs/btrfs/ioctl.c:845
->    btrfs_mksubvol+0x5d0/0x750 fs/btrfs/ioctl.c:995
->    btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1041
->    __btrfs_ioctl_snap_create+0x344/0x460 fs/btrfs/ioctl.c:1294
->    btrfs_ioctl_snap_create+0x13c/0x190 fs/btrfs/ioctl.c:1321
->    btrfs_ioctl+0xbbf/0xd40
->    vfs_ioctl fs/ioctl.c:51 [inline]
->    __do_sys_ioctl fs/ioctl.c:871 [inline]
->    __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
->    do_syscall_x64 arch/x86/entry/common.c:51 [inline]
->    do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
->    entry_SYSCALL_64_after_hwframe+0x63/0x6b
->   RIP: 0033:0x7f2f791127b9
->    </TASK>
-> 
-> [CAUSE]
-> The error number is -EEXIST, which can happen for qgroup if there is
-> already an existing qgroup and then we're trying to create a subvolume
-> for it.
-> 
-> [FIX]
-> In that case, we can continue creating the subvolume, although it may
-> lead to qgroup inconsistency, it's not so critical to abort the current
-> transaction.
-> 
-> So in this case, we can just ignore the non-critical errors, mostly -EEXIST
-> (there is already a qgroup).
-> 
-> Reported-by: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
-> Fixes: 6ed05643ddb1 ("btrfs: create qgroup earlier in snapshot creation")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+The pull request you sent on Mon, 13 Nov 2023 17:22:47 +0100:
 
-With the changelog fixups added to misc-next, thanks.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.7-rc1-tag
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9bacdd8996c77c42ca004440be610692275ff9d0
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
