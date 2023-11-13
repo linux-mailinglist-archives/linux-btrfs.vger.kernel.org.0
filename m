@@ -1,140 +1,131 @@
-Return-Path: <linux-btrfs+bounces-93-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-94-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D68997EA143
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 17:30:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BF797EA1B9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 18:15:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CE21B20A0F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 16:30:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71A841C20931
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Nov 2023 17:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41773224CA;
-	Mon, 13 Nov 2023 16:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A609E224D1;
+	Mon, 13 Nov 2023 17:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UaZYMI7f"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qvjKC+B1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8b6jc596"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4F62224C0
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Nov 2023 16:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E297D200D1
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Nov 2023 17:15:02 +0000 (UTC)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9654EDB;
-	Mon, 13 Nov 2023 08:29:54 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-	by smtp-out2.suse.de (Postfix) with ESMTP id 4CAF01F854;
-	Mon, 13 Nov 2023 16:29:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1699892993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=FhLEf7PwUl5m1a6zkQ/7/27iUHODDboH6M40W8JHdbg=;
-	b=UaZYMI7fmc5dY6+fAUmur29QFSk+cLMFaOLXgt8dnhHZwFF8MMWjv4dDSujWTHtnExnPCj
-	F4e9Y2GaSfvuPYGa/KPjzxmCXabr411j3h5tqTC2sT8mjM2xfIWhYyXF7jt9FRjlyXAZz0
-	gIgr9ijskWfttixffU8GmjQ3FHYvov8=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-	by relay2.suse.de (Postfix) with ESMTP id 2C2D22C1BA;
-	Mon, 13 Nov 2023 16:29:53 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-	id 7F7C4DA86C; Mon, 13 Nov 2023 17:22:49 +0100 (CET)
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs updates for 6.7-rc2
-Date: Mon, 13 Nov 2023 17:22:47 +0100
-Message-ID: <cover.1699891630.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.42.1
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9949099
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 Nov 2023 09:15:01 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 56EC61F6E6;
+	Mon, 13 Nov 2023 17:15:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1699895700;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XPoBPoZW7iPtDi0LnMUFeB8K0MVArnBnkGVyma26QS8=;
+	b=qvjKC+B1nZRVWBAPY0VFFTaGqBhjkinC7KTHmkkUmBu5XS4Wvgh4lO/41bir+oZ0MOtrav
+	4X8ObwuGe2q7klU8szC5Ym/iDG9RxWTu4MDkqrlrkudRGoYHK76WzkAprQrB0p/HqKuqeu
+	F1ctJyGuzmQUI4B30sjr3fnEtIkaUfY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1699895700;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XPoBPoZW7iPtDi0LnMUFeB8K0MVArnBnkGVyma26QS8=;
+	b=8b6jc596LGE26D9CZjk9MZeiHsJzy75YrgSuZ0/oDefPUCqAz9SiIsEWRFrndUHyzC10/9
+	ZdGWTJs1VVXNVHCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3639C1358C;
+	Mon, 13 Nov 2023 17:15:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id wA6SDJRZUmW9BAAAMHmgww
+	(envelope-from <dsterba@suse.cz>); Mon, 13 Nov 2023 17:15:00 +0000
+Date: Mon, 13 Nov 2023 18:07:55 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org,
+	syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
+Subject: Re: [PATCH] btrfs: do not abort transaction if there is already an
+ existing qgroup
+Message-ID: <20231113170755.GW11264@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <b305a5b0228b40fc62923b0133957c72468600de.1699649085.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b305a5b0228b40fc62923b0133957c72468600de.1699649085.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 
-Hi,
+On Sat, Nov 11, 2023 at 07:14:57AM +1030, Qu Wenruo wrote:
+> [BUG]
+> Syzbot reported a regression that after commit 6ed05643ddb1 ("btrfs:
+> create qgroup earlier in snapshot creation") we can trigger transaction
+> abort during subvolume creation:
+> 
+>   ------------[ cut here ]------------
+>   BTRFS: Transaction aborted (error -17)
+>   WARNING: CPU: 0 PID: 5057 at fs/btrfs/transaction.c:1778 create_pending_snapshot+0x25f4/0x2b70 fs/btrfs/transaction.c:1778
+>   Modules linked in:
+>   CPU: 0 PID: 5057 Comm: syz-executor225 Not tainted 6.6.0-syzkaller-15365-g305230142ae0 #0
+>   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+>   RIP: 0010:create_pending_snapshot+0x25f4/0x2b70 fs/btrfs/transaction.c:1778
+>   Call Trace:
+>    <TASK>
+>    create_pending_snapshots+0x195/0x1d0 fs/btrfs/transaction.c:1967
+>    btrfs_commit_transaction+0xf1c/0x3730 fs/btrfs/transaction.c:2440
+>    create_snapshot+0x4a5/0x7e0 fs/btrfs/ioctl.c:845
+>    btrfs_mksubvol+0x5d0/0x750 fs/btrfs/ioctl.c:995
+>    btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1041
+>    __btrfs_ioctl_snap_create+0x344/0x460 fs/btrfs/ioctl.c:1294
+>    btrfs_ioctl_snap_create+0x13c/0x190 fs/btrfs/ioctl.c:1321
+>    btrfs_ioctl+0xbbf/0xd40
+>    vfs_ioctl fs/ioctl.c:51 [inline]
+>    __do_sys_ioctl fs/ioctl.c:871 [inline]
+>    __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+>    do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>    do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+>    entry_SYSCALL_64_after_hwframe+0x63/0x6b
+>   RIP: 0033:0x7f2f791127b9
+>    </TASK>
+> 
+> [CAUSE]
+> The error number is -EEXIST, which can happen for qgroup if there is
+> already an existing qgroup and then we're trying to create a subvolume
+> for it.
+> 
+> [FIX]
+> In that case, we can continue creating the subvolume, although it may
+> lead to qgroup inconsistency, it's not so critical to abort the current
+> transaction.
+> 
+> So in this case, we can just ignore the non-critical errors, mostly -EEXIST
+> (there is already a qgroup).
+> 
+> Reported-by: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
+> Fixes: 6ed05643ddb1 ("btrfs: create qgroup earlier in snapshot creation")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-please pull the following fixes that accumulated in the past weeks.
-
-- fix potential overflow in returned value from SEARCH_TREE_V2 ioctl on
-  32bit architecture
-
-- zoned mode fixes
-
-  - drop unnecessary write pointer check for RAID0/RAID1/RAID10
-    profiles, now it works because of raid-stripe-tree
-
-  - wait for finishing the zone when direct IO needs a new allocation
-
-- simple quota fixes
-
-  - pass correct owning root pointer when cleaning up an aborted
-    transaction
-
-  - fix leaking some structures when processing delayed refs
-
-  - change key type number of BTRFS_EXTENT_OWNER_REF_KEY, reorder it
-    before inline refs that are supposed to be sorted, keeping the
-    original number would complicate a lot of things; this change needs
-    an updated version of btrfs-progs to work and filesystems need to be
-    recreated
-
-- fix error pointer dereference after failure to allocate fs devices
-
-- fix race between accounting qgroup extents and removing a qgroup
-
-----------------------------------------------------------------
-The following changes since commit c6e8f898f56fae2cb5bc4396bec480f23cd8b066:
-
-  btrfs: open code timespec64 in struct btrfs_inode (2023-10-12 16:44:19 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.7-rc1-tag
-
-for you to fetch changes up to d3933152442b7f94419e9ea71835d71b620baf0e:
-
-  btrfs: make OWNER_REF_KEY type value smallest among inline refs (2023-11-09 14:02:12 +0100)
-
-----------------------------------------------------------------
-Boris Burkov (1):
-      btrfs: make OWNER_REF_KEY type value smallest among inline refs
-
-Dan Carpenter (1):
-      btrfs: directly return 0 on no error code in btrfs_insert_raid_extent()
-
-Filipe Manana (4):
-      btrfs: use u64 for buffer sizes in the tree search ioctls
-      btrfs: fix error pointer dereference after failure to allocate fs devices
-      btrfs: fix race between accounting qgroup extents and removing a qgroup
-      btrfs: fix qgroup record leaks when using simple quotas
-
-Josef Bacik (1):
-      btrfs: get correct owning_root when dropping snapshot
-
-Naohiro Aota (2):
-      btrfs: zoned: drop no longer valid write pointer check
-      btrfs: zoned: wait for data BG to be finished on direct IO allocation
-
-Qu Wenruo (1):
-      btrfs: make found_logical_ret parameter mandatory for function queue_scrub_stripe()
-
- fs/btrfs/ctree.c                |  2 +-
- fs/btrfs/delayed-ref.c          |  4 ++--
- fs/btrfs/extent-tree.c          | 25 +++++++++++++++++--------
- fs/btrfs/extent-tree.h          |  3 ++-
- fs/btrfs/inode.c                |  7 +++++++
- fs/btrfs/ioctl.c                | 10 +++++-----
- fs/btrfs/qgroup.c               | 10 ++++++++--
- fs/btrfs/raid-stripe-tree.c     |  2 +-
- fs/btrfs/scrub.c                | 10 +++++++---
- fs/btrfs/volumes.c              |  6 +++---
- fs/btrfs/zoned.c                |  7 -------
- include/uapi/linux/btrfs_tree.h | 24 ++++++++++++++++--------
- 12 files changed, 69 insertions(+), 41 deletions(-)
+With the changelog fixups added to misc-next, thanks.
 
