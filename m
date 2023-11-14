@@ -1,218 +1,186 @@
-Return-Path: <linux-btrfs+bounces-124-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-125-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 974107EABAB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 09:34:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B749F7EAEA6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 12:13:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03731B20BAE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 08:34:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D62151C20400
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 11:13:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1A2E125AB;
-	Tue, 14 Nov 2023 08:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AA02377B;
+	Tue, 14 Nov 2023 11:13:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KFiZMNRI"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="B2ae2dNn";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="xdt5peIg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2575BE60;
-	Tue, 14 Nov 2023 08:34:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 306B5C433C8;
-	Tue, 14 Nov 2023 08:34:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699950881;
-	bh=/ZPh84xGNHaChkwC9/BKraA3PiWHlPqYWr4xuPZnq1Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=KFiZMNRIhr1deVzG/AqaASx+11Z3cKa88YF+cRWuV4KmrAYpCNTN3TZRyBfc7FYha
-	 +LqHqMNxv39MXJyXsSuhsf0t7AODDqPojkQ/Q8MJ6UJKn+QrySXPat9E682WlPClp6
-	 xQRB4/mBkPyT/UA0hz3J0eDGChp34GpAmpCdevsVTqon+lw0i9aWq18Gik6Xox3txZ
-	 Hpur4ChPQ5Rf7b8MCw72B1jwLRt7t693lG8lm9C5/+zOW3GexITH/cwaOHj7rCVEhY
-	 R1bYyvgwk/6Fk0Hl4TKffm/9lkLwf7xN/H5OmC8yeAN8k6bn9IXtjAUzP+a0NaWyQc
-	 HyK9H6gSauwAg==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-9e62b14c9eeso563418166b.2;
-        Tue, 14 Nov 2023 00:34:41 -0800 (PST)
-X-Gm-Message-State: AOJu0Ywq7uQ+kfGBEAZnDo3n5dn56DPg+GwWiN7oLcesj5qbwc2Yjpdh
-	AdxuSlbI+sfjnwGKkQVHI5ugZWby47aoxP/WZk0=
-X-Google-Smtp-Source: AGHT+IE0E8YvCbmdETt2XZR2wIMsqWOrTZ2Yjps9vBTlR689saqDcSlKQgqvJffxBHzdh+5L0klTnPMp/amfhzVTwjQ=
-X-Received: by 2002:a17:906:234d:b0:9d3:f436:6809 with SMTP id
- m13-20020a170906234d00b009d3f4366809mr6562591eja.39.1699950879545; Tue, 14
- Nov 2023 00:34:39 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E9C224CE
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 Nov 2023 11:13:28 +0000 (UTC)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E508712C
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 Nov 2023 03:13:23 -0800 (PST)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AEAxHKB020258;
+	Tue, 14 Nov 2023 11:13:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : from : to : cc : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=MTF6T80EQl3/eY4xEGt0iJkQNYvJA8GSx8SwtVOXmKE=;
+ b=B2ae2dNnNQ074qveR/AY2jPyW4MIH7Njt74Z+k5qyAzfeU6mZzVTMa6/8PzPAJsGc2hQ
+ KFPxe0DbLhXQpjTq99NN8VOST7WtfOxR0j7R51eAUenJtsPZ98XCtQRNRB7amiph/ixt
+ hx6c7fkTeGYEX/PhOl7k6UItJGlJzUmbH2jUgzBZsRiMzI8SCZgoQsQUlDkcI3wsD60I
+ 0wvOIKat5t55xpegNdyo87YogJA+m57vbVHMhG7JExmSuGafjHOezzJmTrWLYxlRkvbR
+ bXTgWHc8RC5Kx5+KH2+krasQb3V/nBF3eimcpWQdj2l/Qbl+R8Apwc9OSgP9TNNPQvug ow== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ua2stn9rg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 14 Nov 2023 11:13:15 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AEB6K4O030206;
+	Tue, 14 Nov 2023 11:13:14 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uaxj1u53u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 14 Nov 2023 11:13:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=il6jDcgIkCSdKtaNDYnImUzQmN0DeSGX0sP9bWRw9rswcrQRDHPnAffQC4Fvhlyu7diW05yWVFn/h6Xk7vJqFALVMNiLTAnFeso0haxXaPHys1pn9tIn+nN/a5i/Shq3B8DwGwxZSvjGc62DG95fcPp3c+T6LcQeWeMddTHf+PIj/hwBmomat8/8U17dgQurShUKIl0audAOCZgXsw6zK7n3gh0ztdjVtOEqr4QXQ3Ob2HZGa9RGwB14emDJrUDjj4chlErfIsSX0u/RCZNcuprmDO23chyxbMIF1eze8cCLow2vf0WPQzcoJ2F9lTOjG93doZCqRmUcDSBsUsCWzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MTF6T80EQl3/eY4xEGt0iJkQNYvJA8GSx8SwtVOXmKE=;
+ b=WLGlo3QrbSYvudi+e0dQjG5b6EKnrAI4oPLts2dDM5XScq5t3ly2IR1xKYTf+QvbU0zFEsyXK2VklVH+t0Ke+ovo8v741qHd0auHaI+KdLzUXYWanzOMifX1nmv9OfpliEFU/QcrXPL4qfN44H5vrK77xaUHw+l9/ZlsvufDEQm1r81FpoWPOFpJroS//KHf2BA0q7VP2Y2rYY/mhSDDznEs6nnbF9thiV+kyxp/oCyD7Imh4u3XATXyf/YT6ux6TIkOtfys7LZZoYqtN+yLi3p0uT4BMkG87RrDajYkqUChliZeJE1hLBXo+7fWRAosag5fdYLPZii+kZj0GfUt4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MTF6T80EQl3/eY4xEGt0iJkQNYvJA8GSx8SwtVOXmKE=;
+ b=xdt5peIg4RmGHwMLnMzK+IcBBcfNYczsNj+9+0En5dn6CLEUHHJr/ZGoZvyXsvcf4HfAZz4T0wtl5Tp7mJ9PbQ8ufoUn2PrYuNGNfKno7vI2LaGl4sQMNvuikK2E1GeSle1a4r1hiSs2yyI0/YHDxfeibJc7xhDhYLj5QVl5GkQ=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by PH7PR10MB5814.namprd10.prod.outlook.com (2603:10b6:510:125::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Tue, 14 Nov
+ 2023 11:12:49 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::50e0:d39c:37b5:27c1]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::50e0:d39c:37b5:27c1%4]) with mapi id 15.20.6977.019; Tue, 14 Nov 2023
+ 11:12:49 +0000
+Message-ID: <80c99e71-363d-4e7d-860e-fc20a6c21492@oracle.com>
+Date: Tue, 14 Nov 2023 19:12:43 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: add dmesg output when mounting and unmounting
+Content-Language: en-US
+From: Anand Jain <anand.jain@oracle.com>
+To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <215e7eea95459d1b0cc4fd9ce522dc7c8f5d4e02.1698873846.git.wqu@suse.com>
+ <20231113174502.GX11264@twin.jikos.cz>
+ <83b7280d-6396-45c2-aa5e-fcd1f6f44963@gmx.com>
+ <20231113210933.GY11264@twin.jikos.cz>
+ <bfe5ce35-1bbf-4eb9-982d-30d52bec90fe@oracle.com>
+In-Reply-To: <bfe5ce35-1bbf-4eb9-982d-30d52bec90fe@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR04CA0214.apcprd04.prod.outlook.com
+ (2603:1096:4:187::17) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231114025913.83171-1-wqu@suse.com>
-In-Reply-To: <20231114025913.83171-1-wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 14 Nov 2023 08:34:02 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7+S65_0dSsoSjHpJwCwNZOD96+7HfEAO25Va5h0GzHUQ@mail.gmail.com>
-Message-ID: <CAL3q7H7+S65_0dSsoSjHpJwCwNZOD96+7HfEAO25Va5h0GzHUQ@mail.gmail.com>
-Subject: Re: [PATCH v2] fstests: btrfs: test snapshot creation with existing qgroup
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB5814:EE_
+X-MS-Office365-Filtering-Correlation-Id: c2d183df-b66f-48d2-94af-08dbe502a328
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	dSecbQmSCPCCFB+ybooUFpvQhwNruPQDMUvWzChXilHF/ViSF19RMLHAOF+gmVrvrA31TSkG27Y1r8q74s3THagvGqRZm/lm+58vqiQPVfoAOgr1VC2yUEvZNm9EGo3RFFsrMkztBbfJciVo0PYnVgObpGnRdqruCvf5E2T9b3/byN23QNvVAe/228VoC7KzPsLUW3g+1Yo/gsSqL/2JbAXXNI/Yahdqg1+qsP1DQDzKw6/S81M9aiONb9Bw/gq6FsnzB/13UnoZifr3xRHqWbBvboQ4cyQM4MtIeh4MqG802l7K2Pv5YhBd8Pc0UKCUhNE7y1+yO6o8t+XXnGpteV7zX0IdtAsyU+5pKQw5ybMfI2lnonBDJy1QAanAEuzxJOb/tE9xtDR3jS1Ep+tiaDpouFYWUbfGZtCQore58becNqC9/h3mdGoLh5ie/zGqYq4kpg4XZu/mD5xa7chGZcQ3YmEWp0BdRzU4kb3KpIaIwDCqiO91y5ribzUiJdeSqy/cCUx8zCf8Hvj45sHwF2h6B7TPtS0JOXng7ue1Xyojwk61uYBN5Qluuy5aypSva+BzM8u7k7MPSLLRuAod7jkYDROoPF14b18OizP9uWGEg+93+7VS19lOyQU6oeTy3HoT6XHK5/mSeG3v0eZbNA==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(396003)(366004)(376002)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(26005)(38100700002)(86362001)(5660300002)(2616005)(31686004)(6512007)(6506007)(53546011)(31696002)(478600001)(6486002)(36756003)(6666004)(66946007)(316002)(66556008)(6916009)(66476007)(2906002)(8676002)(8936002)(4326008)(44832011)(41300700001)(558084003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?a2p5Q1labXVyWHJzcTdDU1lzb1ZLbTRRS2ZXVTI4RHFxcGtGSjVDK0tLUXAv?=
+ =?utf-8?B?eHhZUy9pZjRKVkRuU1V2cUQzYzg4ek5nZHJqbUhpUzdtaElFZ3cxUXREbUxB?=
+ =?utf-8?B?SnVWNmpyZEx6dzJ4RVdKNWtkMDEwSWsvVXl0VmRyeGtJVzJCVFBzR2ZleGUx?=
+ =?utf-8?B?alArZnhveTlhN1B3ZmhQdDMrMEhhcnNiQjNqMDgra1Z4NWh0elVJU2d1ckhE?=
+ =?utf-8?B?MkhkckppRmh2OFFYOXBzbTBEbjJPZE1yNE5mZklQUjMrR2JVQzZpUkJyemRi?=
+ =?utf-8?B?UkpuNkJjRjQ2aFhmZkFqT1JCSUJ0MW16VXJQb0lkRUJvalpqZlphQ1RyNHpS?=
+ =?utf-8?B?K2ZKSjZ2Y0RMbkdDSUpxZnQwSkpldmpHZkRSNFlVSUJYNGJ2UUFkMjdvekt2?=
+ =?utf-8?B?QzUrYmxIS0JqMFFtalRiV0NVWU95bmw2ZXlrL25ydTlCV1RIQUZVS1cyYmo5?=
+ =?utf-8?B?VWpHWHdydGg2WitWV21IK0VwTlljcnJZNWJoK0pWL2wyNUV2STdOcVI0YmdB?=
+ =?utf-8?B?VDhlOXRkRHhjSU5jdVBEOC9EK2VQTnIwOG5ZZ3kwOWZGeWJOeEZhWTVLWVl1?=
+ =?utf-8?B?VDZUaVlLUU14MXVNeEx5N0hvMnFBUlQvL3F0WU9ZTW8wZ0VHQzlvNEs1c3Z3?=
+ =?utf-8?B?NEVnN2hzYVB3UUlwZE4zaXoyYkMwUHBrTFNLWFBsZ1ljTEZEV1o3ZW5jeXp4?=
+ =?utf-8?B?VUpRYjhYK0F5UzNKNmpIdis0UE9VWmtTQmhaT0o0RUdhaVAvRTdlZHAxbFJq?=
+ =?utf-8?B?enpYZDAvUTRsWkE5KzFFbnBUc0p4UzBON3MzanIrT2prbW5qRDdUS002WEdu?=
+ =?utf-8?B?ZWhqTk95c09paFlodG9xRG1qd3IzZjBWNmU1OGRJQ1JNNFRsczhzR0s2QWNS?=
+ =?utf-8?B?aTNXVlB5WHNScHNlbll5MkxOeitGS2JwZnFUalRBMzZ6dWx1Nm0vemNoRnZZ?=
+ =?utf-8?B?bm81c0N1OEJLMVpCZlE4NnYreEhzQkNrNzEwc1JiVmhvd0JRVEhtWVlUc0p1?=
+ =?utf-8?B?K3MySVVjSnJBL212Z280VnVveXBacGdEd05pOUpZaERXdzdQc1JNYXhELzQx?=
+ =?utf-8?B?NWpZa200WU5XVUlVMkQyanl5dXZucE5HcWNJekJuMzBDOWQxbUZKQW1yQTlw?=
+ =?utf-8?B?NkxJK2R3bGE3QlduVlNYdkpuSGRmeDlpcFNjOFIyZE51MUZDNHdMNVpmSkRu?=
+ =?utf-8?B?aFNZWDNtVVNRWFcybjFoZWw1TTRwMmZrTUpOekR1OHNpWnFkZjM3MElmZklY?=
+ =?utf-8?B?Yis5ejdrRWlQaWVZeEtFVG1rWjE0TW5uanFYaTNjQ3o1UzliZDBScWpka0oz?=
+ =?utf-8?B?aVNCcm5FdGVkcWZTdjAxaC9hbGh5dFRMZGFHVkI4Qk02QmQ5b3YrRUoxTkRU?=
+ =?utf-8?B?eEFnMmNBWVJudDQxNXFNclA3Y2hiOHUzRnpneTVJci9xeUhSaUdmbFdMMWQr?=
+ =?utf-8?B?bzJqMXdENU9jalZxMG5TbXZSVElIZDFhNmQvWVBlRG9QQU96V2lhekVQdjFW?=
+ =?utf-8?B?TzhHRGdXeHQ4SHF2QmxnK2RMK2svMmQxU3ZCR3dOSFZYcnNkekExZmJkSk1n?=
+ =?utf-8?B?eXhGUDl4dUFFQi91cFZQNW00SldjT1I4OW10RTJlOTNwVnJtU0U5QVoyS2s4?=
+ =?utf-8?B?Z0l2TXlRTHpkUUozYmtheGtxK1BPTTJnTXlFRXcxMEN6OHVlSGdLRW9LVkhF?=
+ =?utf-8?B?by9sK3dKQ2pKSDR4WDVWNjNHVTg1WnNtVE8rZXNLU1NNRzM0RHRBZGF3U2Vl?=
+ =?utf-8?B?elZPUEpOR0JyS1pJK0RId2h1QlBGcmkwWXR6OTdnWHM4a2IyZ1pKUjhPOVZv?=
+ =?utf-8?B?aTJtQ2p2S09CY1JVQ2JWNk9XaDQ5a05lK2pTMzlyYUtKMmQ3dzBOcThrSWE5?=
+ =?utf-8?B?cnJtbnJLUytvTXpUMU9XaWpaSUxlb2x5OVNmQWM0eWk1ZUJCRlcvMjVQY3RV?=
+ =?utf-8?B?Q1ViVWlsRzFTTU9HMUF6eG1KS2xlMHRpSHFuZEhzNGFxUUNKSWJLQW5OTS9h?=
+ =?utf-8?B?UC96NmdEZHZabk5DbmdJTXFqNzA3QmdRSmxSUmExWjJOOUdmK2FXbmtGRlZs?=
+ =?utf-8?B?WjV1dnNvc2dLK2kvejZOMXRLdXNpaVkxS0s3ajlRcE5iRGZBZ2RlREhpRE1s?=
+ =?utf-8?Q?+KaZxl0plhBhjA8MZDLzCIQdV?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	U38IhL0/z013THOnMTe1J9QHJzyuK+Ruq6pif2wuW4l3xUGolN61QqN/uxjgNnLpY5SPqcj6KhRivePS+i70xm3ggs+GwOP+5FvwBMYq1Bi6WwDmFMAVpF0+g4b8xwhNVbwM0U7dBhLxufol+8TtP/GX3lBn9zAg7h+NhiqBGxBL5RVCTF6jEVYlAuI3iUf2N8IVlyhInVgQGrHyBJXyWuY00invxYUJf1FXK8eAdJfCfaNMB4t/75a50wdOx0xDIm3NQFqa0g8FmAUWieelNSVVGgbLU6iu+yfjwF1aqDh5mQKjXgMnXwj25iq6slboO4xV9oMzcZDdnbskHGwUPCrPLPYBmLh4QVZDcwWCWOrYZGO9Gz2l0Oo8OXDjFgXfCiofAvdlq9hlCQb0qLbYb4dbyA16rHn2e3PFlV94E9Bf4DZBbmf1tzS9sS1k6hILOnnk1eZWcdwwbBHkHe5bLJM/38T8ZOBdUXMsNOZGiD6Vxrt2YplOeHKQt32O8GG7nf6OMtJVNPZXPQohrkDeQrSgPnHLTyE9n40bR/eUNhR4buXeX0+9QAafcm4TQhkRDefvs5iuU8tM5iCju3xHRgsozjGJBwA3fpt7mmxhqnx70CuvDlvWmKmf6y8QSja7msb36WlEC2+3qZ/4jEG6uKi+GbWrBWaR57J1Ex6KK1SG2qMpEX2kdxdssFuqbYfmPA5h9J8/5bZk+nvPUiYv1v12tHwSwPs9mCoSXhwSSWPrRWhs7O6ureFxdNrjhTxNAGgoD8luzLvBurr5OPPVGfKCzMF2/I2G5ffhqTqtv0aNgYPEfCr3yAllYtY3lSmnVAErSdWjwil2hMbuXg/CDw==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2d183df-b66f-48d2-94af-08dbe502a328
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 11:12:49.7312
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iCuF3q7i8qItQ1GP+aCo3h9iZX1n8u7UmcHcd8f8pPgki+E/ns6Pb9jjyxhDulLNaDIbMSlo8DfD3mHZ8cp+Dw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB5814
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-14_10,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 malwarescore=0 phishscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311140087
+X-Proofpoint-GUID: 3IbTfCCNRFQ5g2MQz94J1beM5fWLamVd
+X-Proofpoint-ORIG-GUID: 3IbTfCCNRFQ5g2MQz94J1beM5fWLamVd
 
-On Tue, Nov 14, 2023 at 2:59=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> [BUG]
-> There is a sysbot regression report about transaction abort during
-> snapshot creation, which is caused by the new timing of qgroup creation
-> and too strict error check.
->
-> [FIX]
-> The proper fix is already submitted, with the title "btrfs: do not abort
-> transaction if there is already an existing qgroup".
->
-> [TEST]
-> The new test case would reproduce the regression by:
->
-> - Create a subvolume and a snapshot of it
->
-> - Record the subvolumeid of the snapshot
->
-> - Re-create the fs
->   Since btrfs won't reuse the subvolume id, we have to re-create the fs.
->
-> - Enable quota and create a qgroup with the same subvolumeid
->
-> - Create a subvolume and a snapshot of it
->   For unpatched and affected kernel (thankfully no release is affected),
->   the snapshot creation would fail due to aborted transaction.
->
-> - Make sure the subvolume id doesn't change for the snapshot
->   There is one very hacky attempt to fix it by avoiding using the
->   subvolume id, which is completely wrong and would be caught by this
->   extra check.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+On misc-next:
 
-Now it looks good, thanks.
+     3212 btrfs_info(fs_info, "frist mount of filesystem %pU", 
+disk_super->fsid);
 
-> ---
-> Changelog:
-> v2:
-> - Add to 'snapshot' and 'subvol' groups
->
-> - Remove one unnecessary sync
->   The sync after qgroup creation is not needed, the qgroup id conflicts
->   doesn't need qgroup tree to be committed anyway.
->
-> - Remove one unnecessary unmount
->   The final scratch unmount is not needed as the framework would unmount
->   it automatically.
-> ---
->  tests/btrfs/303     | 77 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/303.out |  2 ++
->  2 files changed, 79 insertions(+)
->  create mode 100755 tests/btrfs/303
->  create mode 100644 tests/btrfs/303.out
->
-> diff --git a/tests/btrfs/303 b/tests/btrfs/303
-> new file mode 100755
-> index 00000000..b9d6c61d
-> --- /dev/null
-> +++ b/tests/btrfs/303
-> @@ -0,0 +1,77 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 303
-> +#
-> +# A regression test to make sure snapshot creation won't cause transacti=
-on
-> +# abort if there is already an existing qgroup.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick snapshot subvol qgroup
-> +
-> +. ./common/filter
-> +
-> +_supported_fs btrfs
-> +_require_scratch
-> +
-> +_fixed_by_kernel_commit xxxxxxxxxxxx \
-> +       "btrfs: do not abort transaction if there is already an existing =
-qgroup"
-> +
-> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
-> +_scratch_mount
-> +
-> +# Create the first subvolume and get its id.
-> +# This subvolume id should not change no matter if there is an existing
-> +# qgroup for it.
-> +$BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/subvol" >> $seqres.full
-> +$BTRFS_UTIL_PROG subvolume snapshot "$SCRATCH_MNT/subvol" \
-> +       "$SCRATCH_MNT/snapshot">> $seqres.full
-> +
-> +init_subvolid=3D$(_btrfs_get_subvolid "$SCRATCH_MNT" "snapshot")
-> +
-> +if [ -z "$init_subvolid" ]; then
-> +       _fail "Unable to get the subvolid of the first snapshot"
-> +fi
-> +
-> +echo "Subvolumeid: ${init_subvolid}" >> $seqres.full
-> +
-> +_scratch_unmount
-> +
-> +# Re-create the fs, as btrfs won't reuse the subvolume id.
-> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "2nd mkfs failed"
-> +_scratch_mount
-> +
-> +$BTRFS_UTIL_PROG quota enable "$SCRATCH_MNT" >> $seqres.full
-> +$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT" >> $seqres.full
-> +
-> +# Create a qgroup for the first subvolume, this would make the later
-> +# subvolume creation to find an existing qgroup, and abort transaction.
-> +$BTRFS_UTIL_PROG qgroup create 0/"$init_subvolid" "$SCRATCH_MNT" >> $seq=
-res.full
-> +
-> +# Now create the first snapshot, which should have the same subvolid no =
-matter
-> +# if the quota is enabled.
-> +$BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/subvol" >> $seqres.full
-> +$BTRFS_UTIL_PROG subvolume snapshot "$SCRATCH_MNT/subvol" \
-> +       "$SCRATCH_MNT/snapshot" >> $seqres.full
-> +
-> +# Either the snapshot create failed and transaction is aborted thus no
-> +# snapshot here, or we should be able to create the snapshot.
-> +new_subvolid=3D$(_btrfs_get_subvolid "$SCRATCH_MNT" "snapshot")
-> +
-> +echo "Subvolumeid: ${new_subvolid}" >> $seqres.full
-> +
-> +if [ -z "$new_subvolid" ]; then
-> +       _fail "Unable to get the subvolid of the first snapshot"
-> +fi
-> +
-> +# Make sure the subvolumeid for the first snapshot didn't change.
-> +if [ "$new_subvolid" -ne "$init_subvolid" ]; then
-> +       _fail "Subvolumeid for the first snapshot changed, has ${new_subv=
-olid} expect ${init_subvolid}"
-> +fi
-> +
-> +echo "Silence is golden"
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/303.out b/tests/btrfs/303.out
-> new file mode 100644
-> index 00000000..d48808e6
-> --- /dev/null
-> +++ b/tests/btrfs/303.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 303
-> +Silence is golden
-> --
-> 2.42.0
->
->
+Has typo error.
+
+
+
+On 11/14/23 08:38, Anand Jain wrote:
+> 
+> looks good.
+> 
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
