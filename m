@@ -1,44 +1,41 @@
-Return-Path: <linux-btrfs+bounces-134-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-137-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E96127EB7A4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 21:18:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01E117EBFED
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Nov 2023 11:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EB6EB20B88
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 20:18:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C78028130A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Nov 2023 10:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA1C35F0D;
-	Tue, 14 Nov 2023 20:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="biTGIHZs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA51FD518;
+	Wed, 15 Nov 2023 10:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDA4535F00
-	for <linux-btrfs@vger.kernel.org>; Tue, 14 Nov 2023 20:18:24 +0000 (UTC)
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8ACF5
-	for <linux-btrfs@vger.kernel.org>; Tue, 14 Nov 2023 12:18:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1699993095; x=1700597895; i=quwenruo.btrfs@gmx.com;
-	bh=kq+FwCdQ+cU5Uy4bSpEM0iSRSWg5JfoYc38vZCafthk=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=biTGIHZssWh8OpkxCzzDdKVPo5tnk4gIxLdW3eOMIYGp5ruKwuR3RoROjcY92A0w
-	 V5LrT9FE27eAyWBj8YUtnQJo7a2yM5EtG0NSCxVpWgcJpyNKS26RiqcPP5rwj2bdP
-	 Td1hoxO1aeeRzlTwM9HOIWIOCKY9hoTkrRGUrJoly/s/T9U0Xiq36zrmUXLzfaPB4
-	 /snO7GwGsrXjkUk5miTql9zDHLyxWwi+vdear6AHlsBS5lPMUjzHqS9B0Cryy9EmD
-	 n25isDPjTO97vGusnJEYIbigkPdZb4xsf4DtcpceG/68nz0ZdcuhwikuVYJ6HAR36
-	 70uwTikgvUQkWCR5HQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1Ygt-1r4NZd3XAp-0032zZ; Tue, 14
- Nov 2023 21:18:15 +0100
-Message-ID: <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
-Date: Wed, 15 Nov 2023 06:48:11 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C6F946F
+	for <linux-btrfs@vger.kernel.org>; Wed, 15 Nov 2023 10:05:21 +0000 (UTC)
+Received: from freki.datenkhaos.de (freki.datenkhaos.de [81.7.17.101])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7AC101
+	for <linux-btrfs@vger.kernel.org>; Wed, 15 Nov 2023 02:05:19 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+	by freki.datenkhaos.de (Postfix) with ESMTP id 1168D2746F7B;
+	Wed, 15 Nov 2023 00:26:49 +0100 (CET)
+Received: from freki.datenkhaos.de ([127.0.0.1])
+	by localhost (freki.datenkhaos.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id EEqc99qnsq49; Wed, 15 Nov 2023 00:26:33 +0100 (CET)
+Received: from [192.168.10.1] (unknown [89.14.91.255])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by freki.datenkhaos.de (Postfix) with ESMTPSA;
+	Wed, 15 Nov 2023 00:26:33 +0100 (CET)
+Message-ID: <73af45c5-b565-44b4-971c-c03b131907be@datenkhaos.de>
+Date: Wed, 15 Nov 2023 00:26:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -47,167 +44,114 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: checksum errors but files are readable and no disk errors
-To: Johannes Hirte <johannes.hirte@datenkhaos.de>, linux-btrfs@vger.kernel.org
+Content-Language: en-US
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
 References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
  <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
- <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
+From: Johannes Hirte <johannes.hirte@datenkhaos.de>
+In-Reply-To: <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BflfrIfsjeJRpgf+Y01NnN5H65EL6T9Uv/qPvJrQklynALi4bWm
- BhQu9asPjLOfOGIUQVwjtvVeeWF3r8XvAE71CSkXCiguP+Nr5+0DyxOk2RzdJsLx2wk1mRS
- aqMKpOCef1h8nA5hdY2lmoMNN8umnptoQo7Ww2nk+TEEPnfTaB0J02zyNFzeA339ajUC5bx
- Om/gS5ek4lPNtuvpFDpgA==
-UI-OutboundReport: notjunk:1;M01:P0:K8EwUdq4E88=;g0RobGumSb6al1ytlQTr+W5b9T+
- BFXOMw6vURtOCIxqTi1glimsuuT/n6E+4UmfiAyDYWnC9D37ytp9Bg9Qk4c79wQZ0C0FpVkaM
- XEdP3GOfVBqXQgKHOxscc+Ud9heWxbljX5uJV55FVJPbViOAKnMKYs05UTFB6oUW7ceJHKt31
- USsE394AofpulUVvdK0AlB+sYod9PzCdjejJYx+iUWSW4IpttWxhQXF9RvDGi67ujYyYoT7Is
- ewkxxb9ISVt6q1yXsuGn8aVEzniUI7ZFmBy35ArgzVcLZyZu/0VGUjgDHNvTf+YvP2xtzoZiL
- 81waLp4YGedwOyRgHXX3/ODrJ9fHciNHOdW/fpgelb2vRaW43vsmyTKLN/HLr/XjY4iMC10dM
- apZG0DvtHJNMw5O79y2l9qkCLNCHYVEWHj9BQleWESCJIT0sh/bmsy2g/IamMOQJsYdDhXvOa
- f6K2mSDEUiScz2sghyibg7uYukTRjjsMSB/Wvg08sbVOWpEryh5kRvUZ4HWQ03/AOFgkIkvs0
- 2skqymWXo1NsUoPcxZlo/FQY0tqSKgvIuWKeA/o4IIIolVkuzlidkDkCHRoHyXpZ7fEno4d17
- 64olN5taUDWbmS1l2aZ30IyGJ3dFIt7GqIhuKAXHfR7D1J4QKmqCrAFN9j8PBKPevv09dvmrI
- Od4e8u0h0+RVFld0wccjJ5FwVHogCR8GzW+x1yLYuFDr1moN7MIrBqN9bzQkx2MCboHi998Fu
- +bHG9BB0acTWpp4udzdbiymz82c2MI6hZqtQt3IXgOYNfRUW5GU3MVGQEVzxufGIP8kqJJj01
- JybPRH8mgnjVwqL5dlF4MKvI0lnKiv7InB16UlZ8Gsm6J1bV/JqfksGVeP+jMPWti6dcx5i4w
- ZKfa/8vfFF5+u3cZXwrSDgfdBye60QHBdbkqFZ19PquqLTOpfDWuccnWfcnCrkKh00uyZMWHe
- K5z8LoHixf0vLMlKOtQr/gpANgQ=
+Content-Transfer-Encoding: 8bit
 
 
-
-On 2023/11/15 03:10, Johannes Hirte wrote:
->
-> On 12.11.23 08:51, Qu Wenruo wrote:
->>
->>
->> On 2023/11/11 04:30, Johannes Hirte wrote:
->>> Hello,
->>>
->>> I have a server with two 2T-disks that were running in a Btrfs-RAID1
->>> setup. Recently I was running into the bug of btrfs-progs-6.6, so the
->>> system didn't boot anymore. Because I don't have physical access to th=
-e
->>> system, the only option I've had was a hard reset=C2=A0 remotely. Afte=
-r this
->>> I noticed several checksum errors during scrub on different files. I w=
-as
->>> able to delete those files, but the checksum errors persisted, now
->>> without any file associated. In the end, I removed one disk (sdb1) fro=
-m
->>> the RAID. Because relocation doesn't work with checksum errors, I've
->>> overwritten the first 10M of the partition and mounted the remaining
->>> disk (sda1) degraded. After this, I created a new filesystem on sdb1
->>> andI synced the whole sda1 to sdb1 via rsync. This worked without any
->>> problems, although sda1 still shows the checksum errors. I'm running t=
-he
->>> system from the second disk now with the newly created filesystem. But
->>> now this FS shows checksum errors again. Two files are affected, both
->>> are images for virtual servers. I'm able to read both files, I can cop=
-y
->>> via dd without any error. But scrub says, there are checksum errors:
->>
->> It can be some csum error in the non-referenced part of the file extent=
-s
->> (caused by COW).
->>
->> In that case, you can try to defrag the offending file (and sync). As
->> long as there no reflinked nor snapshot for that file, scrub should no
->> longer report error for it.
->>
-> You're right, and interestingly defrag of one file fixed the other too.
->> For the cause of the error, the most common one is page modification
->> during writeback, which is super common doing DirectIO while modify the
->> page half way.
->> (Which I guess is common for some VM workload? As I have seen several
->> reports like this)
->>
->>>
->>> [52622.939071] BTRFS error (device sdb1): unable to fixup (regular)
->>> error at logical 1673331802112 on dev /dev/sdb1 physical 1648107257856
->>> [52622.939189] BTRFS warning (device sdb1): checksum error at logical
->>> 1673331802112 on dev /dev/sdb1, physical 1648107257856, root 1117, ino=
-de
->>> 832943, offset 566788096, length 4096, links 1 (path:
->>> var/lib/libvirt/images/vserv03.img)
->>> [54629.309530] BTRFS error (device sdb1): unable to fixup (regular)
->>> error at logical 2209355464704 on dev /dev/sdb1 physical 1884523397120
->>> [54629.309656] BTRFS warning (device sdb1): checksum error at logical
->>> 2209355464704 on dev /dev/sdb1, physical 1884523397120, root 1117, ino=
-de
->>> 832950, offset 9149956096, length 4096, links 1 (path:
->>> var/lib/libvirt/images/vserv06.img)
->>> [54629.309666] BTRFS error (device sdb1): unable to fixup (regular)
->>> error at logical 2209355464704 on dev /dev/sdb1 physical 1884523397120
->>> [54629.309719] BTRFS warning (device sdb1): checksum error at logical
->>> 2209355464704 on dev /dev/sdb1, physical 1884523397120, root 1117, ino=
-de
->>> 832950, offset 9149956096, length 4096, links 1 (path:
->>> var/lib/libvirt/images/vserv06.img)
->>> [54760.218254] BTRFS info (device sdb1): scrub: finished on devid 1 wi=
-th
->>> status: 0
->>>
->>> So what is going on here? I'm planning to recreate the RAID1, but with
->>> with checksum errors I don't want to go on. System is running kernel
->>> 6.5.11.
->>
->> Since you can read the file without problem, you are totally fine to
->> ignore it.
->>
->> Despite the above defrag method, you can also copy the offending file t=
-o
->> other locations (just do not use reflink), then delete the old offendin=
-g
->> file (from all snapshots and reflinks), and copy the new one back.
->>
->>
->> BTW, it's recommended to check if your VM is using directIO for that
->> file, which is known to lead to false csum mismatch alerts.
->
-> On the original RAID1 I've had errors on other files too, e.g. kernel
-> source files. Deleting those didn't got rid of the errors. They stayed
-> without associated files. I'll check if qemu is using directIO. I
-> haven't configured this but it could be a default setting now. How
-> useful is it to deactivate CoW for those files?
-
-Disabling COW is recommended for those VM files, as it implies to
-disable csum, and reduce fragmentation.
-
-But please keep in mind that, disabling COW is not ensured to have effect.
-Something like having a snapshot would mandatory COW.
-
-Thanks,
-Qu
->
-> regards,
->  =C2=A0 Johannes
+On 12.11.23 08:51, Qu Wenruo wrote:
 >
 >
+> On 2023/11/11 04:30, Johannes Hirte wrote:
+>> Hello,
+>>
+>> I have a server with two 2T-disks that were running in a Btrfs-RAID1
+>> setup. Recently I was running into the bug of btrfs-progs-6.6, so the
+>> system didn't boot anymore. Because I don't have physical access to the
+>> system, the only option I've had was a hard reset  remotely. After this
+>> I noticed several checksum errors during scrub on different files. I was
+>> able to delete those files, but the checksum errors persisted, now
+>> without any file associated. In the end, I removed one disk (sdb1) from
+>> the RAID. Because relocation doesn't work with checksum errors, I've
+>> overwritten the first 10M of the partition and mounted the remaining
+>> disk (sda1) degraded. After this, I created a new filesystem on sdb1
+>> andI synced the whole sda1 to sdb1 via rsync. This worked without any
+>> problems, although sda1 still shows the checksum errors. I'm running the
+>> system from the second disk now with the newly created filesystem. But
+>> now this FS shows checksum errors again. Two files are affected, both
+>> are images for virtual servers. I'm able to read both files, I can copy
+>> via dd without any error. But scrub says, there are checksum errors:
+>
+> It can be some csum error in the non-referenced part of the file extents
+> (caused by COW).
+>
+> In that case, you can try to defrag the offending file (and sync). As
+> long as there no reflinked nor snapshot for that file, scrub should no
+> longer report error for it.
+>
+> For the cause of the error, the most common one is page modification
+> during writeback, which is super common doing DirectIO while modify the
+> page half way.
+> (Which I guess is common for some VM workload? As I have seen several
+> reports like this)
+>
+>>
+>> [52622.939071] BTRFS error (device sdb1): unable to fixup (regular)
+>> error at logical 1673331802112 on dev /dev/sdb1 physical 1648107257856
+>> [52622.939189] BTRFS warning (device sdb1): checksum error at logical
+>> 1673331802112 on dev /dev/sdb1, physical 1648107257856, root 1117, inode
+>> 832943, offset 566788096, length 4096, links 1 (path:
+>> var/lib/libvirt/images/vserv03.img)
+>> [54629.309530] BTRFS error (device sdb1): unable to fixup (regular)
+>> error at logical 2209355464704 on dev /dev/sdb1 physical 1884523397120
+>> [54629.309656] BTRFS warning (device sdb1): checksum error at logical
+>> 2209355464704 on dev /dev/sdb1, physical 1884523397120, root 1117, inode
+>> 832950, offset 9149956096, length 4096, links 1 (path:
+>> var/lib/libvirt/images/vserv06.img)
+>> [54629.309666] BTRFS error (device sdb1): unable to fixup (regular)
+>> error at logical 2209355464704 on dev /dev/sdb1 physical 1884523397120
+>> [54629.309719] BTRFS warning (device sdb1): checksum error at logical
+>> 2209355464704 on dev /dev/sdb1, physical 1884523397120, root 1117, inode
+>> 832950, offset 9149956096, length 4096, links 1 (path:
+>> var/lib/libvirt/images/vserv06.img)
+>> [54760.218254] BTRFS info (device sdb1): scrub: finished on devid 1 with
+>> status: 0
+>>
+>> So what is going on here? I'm planning to recreate the RAID1, but with
+>> with checksum errors I don't want to go on. System is running kernel
+>> 6.5.11.
+>
+> Since you can read the file without problem, you are totally fine to
+> ignore it.
+>
+> Despite the above defrag method, you can also copy the offending file to
+> other locations (just do not use reflink), then delete the old offending
+> file (from all snapshots and reflinks), and copy the new one back.
+>
+>
+> BTW, it's recommended to check if your VM is using directIO for that
+> file, which is known to lead to false csum mismatch alerts.
+
+Yes, it seems that all affected images were configured to io="native". 
+This means linux legacy aio was used.
+
+But now I have another interesting situation:
+I've disabled CoW for /var/lib/libvirt/images. After this, I've noticed 
+another csum error there:
+
+[441535.134445] BTRFS error (device sdb1): unable to fixup (regular) 
+error at logical 1641807872 on dev /dev/sdb1 physical 2723938304
+[441535.134563] BTRFS warning (device sdb1): checksum error at logical 
+1641807872 on dev /dev/sdb1, physical 2723938304, root 1117, inode 
+832940, offset 65449984, length 4096, links 1 (path: 
+var/lib/libvirt/images/vserv02-storage1.img)
+
+and tried defrag. Now I have a dangling csum error again:
+
+[442824.777685] BTRFS info (device sdb1): scrub: started on devid 1
+[442834.428949] BTRFS error (device sdb1): unable to fixup (regular) 
+error at logical 1641807872 on dev /dev/sdb1 physical 2723938304
+
+Same logical address, same physical address but now no file is 
+associated. Looks similar to when I deleted files with csum errors. It 
+looks like those csum errors get persisted.
+
+regards,
+   Johannes
+
 
