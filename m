@@ -1,261 +1,213 @@
-Return-Path: <linux-btrfs+bounces-133-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-134-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBE487EB68C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 19:43:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E96127EB7A4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 21:18:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80FAC28136C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 18:43:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EB6EB20B88
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 20:18:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E6733CF5;
-	Tue, 14 Nov 2023 18:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA1C35F0D;
+	Tue, 14 Nov 2023 20:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yx1q809n";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VZXg4bLa"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="biTGIHZs"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B048B33CC6;
-	Tue, 14 Nov 2023 18:43:00 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAA0F0;
-	Tue, 14 Nov 2023 10:42:59 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 82C9421BD5;
-	Tue, 14 Nov 2023 18:42:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1699987377;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wRq1xbyM4C5MmPxC/WtmQpu8C8x9/omYZNqYfVPmHuY=;
-	b=yx1q809nV9KgQ7sKf7rlj2fqnwWGpwO/qiBPulIoQFtnZ9+FUH5/oU1QDA2OKj4/P6oYNR
-	RSFBkeukE0oywZ+S3YltJAye72yDotK27EKa0bcTthBWVuIGNpEfi97Fz+SJa65XszzlgG
-	n+ectDuh2aCrdXRHxQKZ4zB+NfNgIBA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1699987377;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wRq1xbyM4C5MmPxC/WtmQpu8C8x9/omYZNqYfVPmHuY=;
-	b=VZXg4bLatWwSKDTikgVE3H3fDRO84c6efkTZUyMwS1B+Afh2ZL61mgmlwBedv48X7gVTKo
-	+MSsArqcG08GVHAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 483E113416;
-	Tue, 14 Nov 2023 18:42:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id fULZELG/U2WSMQAAMHmgww
-	(envelope-from <dsterba@suse.cz>); Tue, 14 Nov 2023 18:42:57 +0000
-Date: Tue, 14 Nov 2023 19:35:51 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org, brauner@kernel.org
-Subject: Re: [PATCH v2 12/18] btrfs: add get_tree callback for new mount API
-Message-ID: <20231114183550.GH11264@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1699470345.git.josef@toxicpanda.com>
- <1dea0813411eb5c08ddcdefcdae006e751dd15eb.1699470345.git.josef@toxicpanda.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDA4535F00
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 Nov 2023 20:18:24 +0000 (UTC)
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8ACF5
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 Nov 2023 12:18:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1699993095; x=1700597895; i=quwenruo.btrfs@gmx.com;
+	bh=kq+FwCdQ+cU5Uy4bSpEM0iSRSWg5JfoYc38vZCafthk=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=biTGIHZssWh8OpkxCzzDdKVPo5tnk4gIxLdW3eOMIYGp5ruKwuR3RoROjcY92A0w
+	 V5LrT9FE27eAyWBj8YUtnQJo7a2yM5EtG0NSCxVpWgcJpyNKS26RiqcPP5rwj2bdP
+	 Td1hoxO1aeeRzlTwM9HOIWIOCKY9hoTkrRGUrJoly/s/T9U0Xiq36zrmUXLzfaPB4
+	 /snO7GwGsrXjkUk5miTql9zDHLyxWwi+vdear6AHlsBS5lPMUjzHqS9B0Cryy9EmD
+	 n25isDPjTO97vGusnJEYIbigkPdZb4xsf4DtcpceG/68nz0ZdcuhwikuVYJ6HAR36
+	 70uwTikgvUQkWCR5HQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1Ygt-1r4NZd3XAp-0032zZ; Tue, 14
+ Nov 2023 21:18:15 +0100
+Message-ID: <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
+Date: Wed, 15 Nov 2023 06:48:11 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1dea0813411eb5c08ddcdefcdae006e751dd15eb.1699470345.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -6.80
-X-Spamd-Result: default: False [-6.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-3.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-1.00)[-1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-
-On Wed, Nov 08, 2023 at 02:08:47PM -0500, Josef Bacik wrote:
-> This is the actual mounting callback for the new mount API.  Implement
-> this using our current fill super as a guideline, making the appropriate
-> adjustments for the new mount API.
-> 
-> Our old mount operation had two fs_types, one to handle the actual
-> opening, and the one that we called to handle the actual opening and
-> then did the subvol lookup for returning the actual root dentry.  This
-> is mirrored here, but simply with different behaviors for ->get_tree.
-> We use the existence of ->s_fs_info to tell which part we're in.  The
-> initial call allocates the fs_info, then call mount_fc() with a
-> duplicated fc to do the actual open_ctree part.  Then we take that
-> vfsmount and use it to look up our subvolume that we're mounting and
-> return that as our s_root.  This idea was taken from Christians attempt
-> to convert us to the new mount api.
-> 
-> References: https://lore.kernel.org/all/20230626-fs-btrfs-mount-api-v1-2-045e9735a00b@kernel.org/
-> Reviewed-by: Christian Brauner <brauner@kernel.org>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/super.c | 210 ++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 206 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index b5067cf637a2..4ace42e08bff 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -95,6 +95,7 @@ struct btrfs_fs_context {
->  	unsigned long mount_opt;
->  	unsigned long compress_type:4;
->  	unsigned int compress_level;
-> +	refcount_t refs;
->  };
->  
->  enum {
-> @@ -2833,6 +2834,181 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
->  	return 0;
->  }
->  
-> +static int btrfs_fc_test_super(struct super_block *s, struct fs_context *fc)
-> +{
-> +	struct btrfs_fs_info *p = fc->s_fs_info;
-
-That's a confusing variable name
-
-> +	struct btrfs_fs_info *fs_info = btrfs_sb(s);
-> +
-> +	return fs_info->fs_devices == p->fs_devices;
-> +}
-> +
-> +static int btrfs_get_tree_super(struct fs_context *fc)
-> +{
-> +	struct btrfs_fs_info *fs_info = fc->s_fs_info;
-> +	struct btrfs_fs_context *ctx = fc->fs_private;
-> +	struct btrfs_fs_devices *fs_devices = NULL;
-> +	struct block_device *bdev;
-> +	struct btrfs_device *device;
-> +	struct super_block *s;
-
-Please use 'sb' for super block.
-
-> +	blk_mode_t mode = sb_open_mode(fc->sb_flags);
-> +	int ret;
-> +
-> +	btrfs_ctx_to_info(fs_info, ctx);
-> +	mutex_lock(&uuid_mutex);
-> +
-> +	/*
-> +	 * With 'true' passed to btrfs_scan_one_device() (mount time) we expect
-> +	 * either a valid device or an error.
-> +	 */
-> +	device = btrfs_scan_one_device(fc->source, mode, true);
-> +	ASSERT(device != NULL);
-> +	if (IS_ERR(device)) {
-> +		mutex_unlock(&uuid_mutex);
-> +		return PTR_ERR(device);
-> +	}
-> +
-> +	fs_devices = device->fs_devices;
-> +	fs_info->fs_devices = fs_devices;
-> +
-> +	ret = btrfs_open_devices(fs_devices, mode, &btrfs_fs_type);
-> +	mutex_unlock(&uuid_mutex);
-
-Regarding the previous comments about mount and scanning, here the
-device is scanned and opened in one go, so all the other devices are
-expected to be scanned independently from before.
-
-This is not a prolbem, although it allows to something race in between
-the mount option scanning and here and call 'forget' on the devices.
-We've seen udev to race with mkfs to register the device, which is not a
-problem here, but if there's something calling 'forget' automatically
-then it will be.
-
-Since systemd started to mess with background mounts and scans we can
-never ber sure what's going to happen when triggered by system events.
+User-Agent: Mozilla Thunderbird
+Subject: Re: checksum errors but files are readable and no disk errors
+To: Johannes Hirte <johannes.hirte@datenkhaos.de>, linux-btrfs@vger.kernel.org
+References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
+ <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
+ <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:BflfrIfsjeJRpgf+Y01NnN5H65EL6T9Uv/qPvJrQklynALi4bWm
+ BhQu9asPjLOfOGIUQVwjtvVeeWF3r8XvAE71CSkXCiguP+Nr5+0DyxOk2RzdJsLx2wk1mRS
+ aqMKpOCef1h8nA5hdY2lmoMNN8umnptoQo7Ww2nk+TEEPnfTaB0J02zyNFzeA339ajUC5bx
+ Om/gS5ek4lPNtuvpFDpgA==
+UI-OutboundReport: notjunk:1;M01:P0:K8EwUdq4E88=;g0RobGumSb6al1ytlQTr+W5b9T+
+ BFXOMw6vURtOCIxqTi1glimsuuT/n6E+4UmfiAyDYWnC9D37ytp9Bg9Qk4c79wQZ0C0FpVkaM
+ XEdP3GOfVBqXQgKHOxscc+Ud9heWxbljX5uJV55FVJPbViOAKnMKYs05UTFB6oUW7ceJHKt31
+ USsE394AofpulUVvdK0AlB+sYod9PzCdjejJYx+iUWSW4IpttWxhQXF9RvDGi67ujYyYoT7Is
+ ewkxxb9ISVt6q1yXsuGn8aVEzniUI7ZFmBy35ArgzVcLZyZu/0VGUjgDHNvTf+YvP2xtzoZiL
+ 81waLp4YGedwOyRgHXX3/ODrJ9fHciNHOdW/fpgelb2vRaW43vsmyTKLN/HLr/XjY4iMC10dM
+ apZG0DvtHJNMw5O79y2l9qkCLNCHYVEWHj9BQleWESCJIT0sh/bmsy2g/IamMOQJsYdDhXvOa
+ f6K2mSDEUiScz2sghyibg7uYukTRjjsMSB/Wvg08sbVOWpEryh5kRvUZ4HWQ03/AOFgkIkvs0
+ 2skqymWXo1NsUoPcxZlo/FQY0tqSKgvIuWKeA/o4IIIolVkuzlidkDkCHRoHyXpZ7fEno4d17
+ 64olN5taUDWbmS1l2aZ30IyGJ3dFIt7GqIhuKAXHfR7D1J4QKmqCrAFN9j8PBKPevv09dvmrI
+ Od4e8u0h0+RVFld0wccjJ5FwVHogCR8GzW+x1yLYuFDr1moN7MIrBqN9bzQkx2MCboHi998Fu
+ +bHG9BB0acTWpp4udzdbiymz82c2MI6hZqtQt3IXgOYNfRUW5GU3MVGQEVzxufGIP8kqJJj01
+ JybPRH8mgnjVwqL5dlF4MKvI0lnKiv7InB16UlZ8Gsm6J1bV/JqfksGVeP+jMPWti6dcx5i4w
+ ZKfa/8vfFF5+u3cZXwrSDgfdBye60QHBdbkqFZ19PquqLTOpfDWuccnWfcnCrkKh00uyZMWHe
+ K5z8LoHixf0vLMlKOtQr/gpANgQ=
 
 
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (!(fc->sb_flags & SB_RDONLY) && fs_devices->rw_devices == 0) {
-> +		ret = -EACCES;
-> +		goto error;
-> +	}
-> +
-> +	bdev = fs_devices->latest_dev->bdev;
-> +
-> +	/*
-> +	 * If successful, this will transfer the fs_info into the super block,
-> +	 * and fc->s_fs_info will be NULL.  However if there's an existing
-> +	 * super, we'll still have fc->s_fs_info populated.  If we error
-> +	 * completely out it'll be cleaned up when we drop the fs_context,
-> +	 * otherwise it's tied to the lifetime of the super_block.
-> +	 *
-> +	 * Adding this comment because I was horribly confused about the error
-> +	 * handling from here on out.
 
-The last sentence does not need to be there, that we add comments to
-avoid confusion is kind of implicit.
+On 2023/11/15 03:10, Johannes Hirte wrote:
+>
+> On 12.11.23 08:51, Qu Wenruo wrote:
+>>
+>>
+>> On 2023/11/11 04:30, Johannes Hirte wrote:
+>>> Hello,
+>>>
+>>> I have a server with two 2T-disks that were running in a Btrfs-RAID1
+>>> setup. Recently I was running into the bug of btrfs-progs-6.6, so the
+>>> system didn't boot anymore. Because I don't have physical access to th=
+e
+>>> system, the only option I've had was a hard reset=C2=A0 remotely. Afte=
+r this
+>>> I noticed several checksum errors during scrub on different files. I w=
+as
+>>> able to delete those files, but the checksum errors persisted, now
+>>> without any file associated. In the end, I removed one disk (sdb1) fro=
+m
+>>> the RAID. Because relocation doesn't work with checksum errors, I've
+>>> overwritten the first 10M of the partition and mounted the remaining
+>>> disk (sda1) degraded. After this, I created a new filesystem on sdb1
+>>> andI synced the whole sda1 to sdb1 via rsync. This worked without any
+>>> problems, although sda1 still shows the checksum errors. I'm running t=
+he
+>>> system from the second disk now with the newly created filesystem. But
+>>> now this FS shows checksum errors again. Two files are affected, both
+>>> are images for virtual servers. I'm able to read both files, I can cop=
+y
+>>> via dd without any error. But scrub says, there are checksum errors:
+>>
+>> It can be some csum error in the non-referenced part of the file extent=
+s
+>> (caused by COW).
+>>
+>> In that case, you can try to defrag the offending file (and sync). As
+>> long as there no reflinked nor snapshot for that file, scrub should no
+>> longer report error for it.
+>>
+> You're right, and interestingly defrag of one file fixed the other too.
+>> For the cause of the error, the most common one is page modification
+>> during writeback, which is super common doing DirectIO while modify the
+>> page half way.
+>> (Which I guess is common for some VM workload? As I have seen several
+>> reports like this)
+>>
+>>>
+>>> [52622.939071] BTRFS error (device sdb1): unable to fixup (regular)
+>>> error at logical 1673331802112 on dev /dev/sdb1 physical 1648107257856
+>>> [52622.939189] BTRFS warning (device sdb1): checksum error at logical
+>>> 1673331802112 on dev /dev/sdb1, physical 1648107257856, root 1117, ino=
+de
+>>> 832943, offset 566788096, length 4096, links 1 (path:
+>>> var/lib/libvirt/images/vserv03.img)
+>>> [54629.309530] BTRFS error (device sdb1): unable to fixup (regular)
+>>> error at logical 2209355464704 on dev /dev/sdb1 physical 1884523397120
+>>> [54629.309656] BTRFS warning (device sdb1): checksum error at logical
+>>> 2209355464704 on dev /dev/sdb1, physical 1884523397120, root 1117, ino=
+de
+>>> 832950, offset 9149956096, length 4096, links 1 (path:
+>>> var/lib/libvirt/images/vserv06.img)
+>>> [54629.309666] BTRFS error (device sdb1): unable to fixup (regular)
+>>> error at logical 2209355464704 on dev /dev/sdb1 physical 1884523397120
+>>> [54629.309719] BTRFS warning (device sdb1): checksum error at logical
+>>> 2209355464704 on dev /dev/sdb1, physical 1884523397120, root 1117, ino=
+de
+>>> 832950, offset 9149956096, length 4096, links 1 (path:
+>>> var/lib/libvirt/images/vserv06.img)
+>>> [54760.218254] BTRFS info (device sdb1): scrub: finished on devid 1 wi=
+th
+>>> status: 0
+>>>
+>>> So what is going on here? I'm planning to recreate the RAID1, but with
+>>> with checksum errors I don't want to go on. System is running kernel
+>>> 6.5.11.
+>>
+>> Since you can read the file without problem, you are totally fine to
+>> ignore it.
+>>
+>> Despite the above defrag method, you can also copy the offending file t=
+o
+>> other locations (just do not use reflink), then delete the old offendin=
+g
+>> file (from all snapshots and reflinks), and copy the new one back.
+>>
+>>
+>> BTW, it's recommended to check if your VM is using directIO for that
+>> file, which is known to lead to false csum mismatch alerts.
+>
+> On the original RAID1 I've had errors on other files too, e.g. kernel
+> source files. Deleting those didn't got rid of the errors. They stayed
+> without associated files. I'll check if qemu is using directIO. I
+> haven't configured this but it could be a default setting now. How
+> useful is it to deactivate CoW for those files?
 
-> +	 */
-> +	s = sget_fc(fc, btrfs_fc_test_super, set_anon_super_fc);
-> +	if (IS_ERR(s)) {
-> +		ret = PTR_ERR(s);
-> +		goto error;
-> +	}
-> +
-> +	if (s->s_root) {
-> +		btrfs_close_devices(fs_devices);
-> +		if ((fc->sb_flags ^ s->s_flags) & SB_RDONLY)
-> +			ret = -EBUSY;
-> +	} else {
-> +		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
-> +		shrinker_debugfs_rename(&s->s_shrink, "sb-btrfs:%s", s->s_id);
+Disabling COW is recommended for those VM files, as it implies to
+disable csum, and reduce fragmentation.
 
-In 6.7-rc1 there's a change do allocate shrinkers dynamically so this
-will need to be adjusted
+But please keep in mind that, disabling COW is not ensured to have effect.
+Something like having a snapshot would mandatory COW.
 
-		shrinker_debugfs_rename(s->s_shrink, ...
-
-> +		btrfs_sb(s)->bdev_holder = &btrfs_fs_type;
-> +		ret = btrfs_fill_super(s, fs_devices, NULL);
-> +	}
-> +
-> +	if (ret) {
-> +		deactivate_locked_super(s);
-> +		return ret;
-> +	}
-> +
-> +	fc->root = dget(s->s_root);
-> +	return 0;
-> +
-> +error:
-> +	btrfs_close_devices(fs_devices);
-> +	return ret;
-> +}
+Thanks,
+Qu
+>
+> regards,
+>  =C2=A0 Johannes
+>
+>
 
