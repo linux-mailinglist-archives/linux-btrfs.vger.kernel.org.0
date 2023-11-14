@@ -1,216 +1,277 @@
-Return-Path: <linux-btrfs+bounces-122-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-123-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E3D97EAB19
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 08:55:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34A207EABA6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 09:32:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9747FB20A2F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 07:55:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEA91281097
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Nov 2023 08:32:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34469125D6;
-	Tue, 14 Nov 2023 07:55:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6D111C84;
+	Tue, 14 Nov 2023 08:32:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="LVHu9AXg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WXTVavJJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3075F947E
-	for <linux-btrfs@vger.kernel.org>; Tue, 14 Nov 2023 07:55:17 +0000 (UTC)
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2080.outbound.protection.outlook.com [40.107.105.80])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C5ADD
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 Nov 2023 23:55:15 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mt3aaMDsrhiwaF92JMr2vPm1QnP1sKdjyrZBmptfG2UixI79QqLR2SRaPLmfnAedksVMApEfGCYBLb3VcmC7fPJ5vbR7nGgt5yIUJTqRtznrf1DvLhMtuCGEipfWEblnkGl1U54Zn+RJJTWL2W9lSiBxGJI/n1jmI1FO6I1/URh7XlLFvc8KfLMKHRg4wrsTSQo8K/gRm259HUQxLzgouxNaCQibCS+BafzOHQPohRFApJiSjgUfWvq7OFFHX2XeNF+X3R7ElL94b03sFZL1OFFoE/+yT/0GEcz1O9LdX7r7o94VsLfrZf1+7CYKwZsrCzcP1TSjmZdPgEL8kuPKDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3jXxvDcMEcv3pBmRYnEbaxo7nLLexk6RSBhbd3RUM9Q=;
- b=TaFdOdCbnOnIvY5zhsmodU924G0laR0Yg2BBSPy8vIqQ38lU6BG2N23t/Mgw312Ycw8dA0GvSaQEtvTUxHkAOxcp9sFFXjZaaqeY6+BF5WYn910fv2x92ZsOLlNVrMAMVI37SPoZsVnM6Rftmmq3MRC60GIZ1jsHQHVZ+PQr7teF9Cry8cIjUC43q4wuQrn+Gjdyi/8dRM1L52Zmu/jGph5OdaTbiWK6UAoF8jhWdsjugfdb5rmVG5wjygZjYcUKmbX1oGlmVwHpdF7Mm+k9ZiFTmYpWzc54IwQuOvMCGhfbQrSSZXLmMWE0fIRdBGH3+GTlNRWToegits7IF6hJeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3jXxvDcMEcv3pBmRYnEbaxo7nLLexk6RSBhbd3RUM9Q=;
- b=LVHu9AXgy1sB8jRKSCvhHKGhnAPU3wUo0tJBD19+yq4ZTF8HH4LwLOsIBXQ6rTPb6ANKZk1LByzRrw9x01DsU2MgogGznRa9x/u3QZm61rErDQieENDqEAhcPKMtot/weNv/CODer8Rc4Yzo3QWTe7YFpkuFx+PHiZfeIPHGv8n9LlhcIicSpz0uo34JJVbo+C8Vs3r/6Rb4U2KgmI3LO8vboFNNJLFrZJIjcJJTBZeZYdlXUbZdnzXZMuEp+FaQLV9yiy1hS0gWIVvYmrF3M47UuZK2z74UcPQep4Cwxx2qB5YAXzgZ87DlgzXi02L/uG9kx++K8xzUdNZtrPUsqw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from DB9PR04MB8478.eurprd04.prod.outlook.com (2603:10a6:10:2c4::13)
- by DBAPR04MB7239.eurprd04.prod.outlook.com (2603:10a6:10:1a8::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17; Tue, 14 Nov
- 2023 07:55:12 +0000
-Received: from DB9PR04MB8478.eurprd04.prod.outlook.com
- ([fe80::c7:a650:9dc8:4972]) by DB9PR04MB8478.eurprd04.prod.outlook.com
- ([fe80::c7:a650:9dc8:4972%4]) with mapi id 15.20.7002.015; Tue, 14 Nov 2023
- 07:55:12 +0000
-Message-ID: <79fd5ac9-5a06-4305-85d9-25481d621eb0@suse.com>
-Date: Tue, 14 Nov 2023 18:25:03 +1030
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: do not abort transaction if there is already an
- existing qgroup
-Content-Language: en-US
-To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Cc: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
-References: <b305a5b0228b40fc62923b0133957c72468600de.1699649085.git.wqu@suse.com>
- <64b1dc37-4286-4e42-8074-0be96315efcf@oracle.com>
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <64b1dc37-4286-4e42-8074-0be96315efcf@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MEWP282CA0169.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:220:1cd::14) To DB9PR04MB8478.eurprd04.prod.outlook.com
- (2603:10a6:10:2c4::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51136BE4A;
+	Tue, 14 Nov 2023 08:32:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA04AC433CA;
+	Tue, 14 Nov 2023 08:32:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699950766;
+	bh=kZdud6AVCyCWChUZv9D4hp5roB/YtUbXhBY9OfJdqdI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=WXTVavJJaU3rprfZ5aD3ge9vs0pgGwiRbTZzRQM+UrtZYFgIv82xxnvLZymjyVEjw
+	 gkfcicXo9OqfGx8J8nalKuWukIbHfOZ5lG0zOutvpD3pVfqerRxk6DmHv/esjNi1x5
+	 B3Y7rFkCmgBmSAykLkzQuUsqAoqhgxPu32JxCWOiexmRFOdXdoy+4au4CkIq+02ZH5
+	 S1w7lXNYWkT05N/mHNa31FUhTFG7zG9olGSBbMCEmyd8XnMlaqFAAusVOrQO8HGAq8
+	 ClxS8jehlGLDNzlBbbwHpxqWKGiC/mYNO8uHSLCrYXtxSVg8brWklMKhGoPithxmCe
+	 wfz/g3g4tT/mA==
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-9dd3f4a0f5aso796961366b.1;
+        Tue, 14 Nov 2023 00:32:46 -0800 (PST)
+X-Gm-Message-State: AOJu0YwkYEpSsNTwvFEZwfCD1mLMw0AN2R5ZQE1ufC6+92YVElJbidIz
+	OOu8KzHackW0s5x9Dfcd+P3K+UPuPKwWHvoxZQk=
+X-Google-Smtp-Source: AGHT+IFDQq7m9Rww7c/sORBwkNjCyJe4GSoW+eVgywpJYbE4R3aa9Q0vV7i8VxCJ0fsf7fCx8dN9BKLsZL/GhkmC+z4=
+X-Received: by 2002:a17:906:33ce:b0:9e5:31c4:f5f8 with SMTP id
+ w14-20020a17090633ce00b009e531c4f5f8mr6241786eja.53.1699950765153; Tue, 14
+ Nov 2023 00:32:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB8478:EE_|DBAPR04MB7239:EE_
-X-MS-Office365-Filtering-Correlation-Id: 66a4ab98-c5f7-4ee6-942b-08dbe4e707c3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	smJd281ngOQCbsnW6slUJZyp9MWlpE/oMFs/eyb3TYwbp3gyNHssAb437jVly6aCJCluMLlMNE+Q/Lb5ZO61Bu8ZeiskCAhcbEZAHyehKKstpvr4toMHtrYcSdmP9OqohgF9Dl0Pb7/sJhbFriFq4mcjGvjqJsO9I96AVyvwfKxh8NuhO7QzwSbpMkO0x8z1sDdSTmBMcEucgbJdCoMr2ssCM0ZgJzCmN+T7zq+dmMX2CrpWU4aKABdaxDIXkUCg+y7o2S4ha99qwerDapjIx+gcehXfEOOgrqmNwKjwREHqdTO+uEne3WulbtZUKtLyg2hsA+4xhfsOtLDbaNvt6mawXsnFdZ9//QYdzn0HTypib5D0HIQqWg9S/hqIt3xp02yjB9M+ccozLHqVAMS20P5cxCWNjq7VU8fw6uVHxP9hfYI1ZHjnZ5XeIL0TwK+TV8sKj1sehyocdjZWRz2zb9oPqBVsEWkxdj3nN8nGr8DDDDfmiMlG8kp6QM3Cu3L10YdlxBJgTTvDt7gME/pwc2UW94jmkJjEzc5N3W3xU3JDhuRG2cqaZW6MdOOSVKmqmgK7q42QSqiNwt8MO2D/aGOMbucxD0KsMwkJtG334gAVB/5btBzodsg/l7FBJ+YOh0qt3H4uGTbiV769MR6rqQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB8478.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(376002)(396003)(346002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(26005)(6506007)(53546011)(6666004)(2616005)(6512007)(83380400001)(5660300002)(4326008)(8936002)(8676002)(41300700001)(2906002)(6486002)(478600001)(316002)(66476007)(66556008)(66946007)(31696002)(86362001)(36756003)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?TGljdlNDQ2t0Y1lFVnJubVgrV2Q5UWZySjRySW1LM1pLdEs3Rm1NOUFjODUy?=
- =?utf-8?B?OTZIMS9Qb3c1eHQyd2w5TXF6OUVzdWRMaTI0d0UydTY1ZzlMWjZQNFFoYk1C?=
- =?utf-8?B?OThpT0lnUXRaNHRzR21WdW1QRVIwdWs5Q0V5anNxSGFEemVIdnBlYTZPQ3p2?=
- =?utf-8?B?bDArSjA1bWlEM3ozajRZR3JMMlUwNkxpTTJ5alJPcDBUSEc0dDQ2RDdOZU4y?=
- =?utf-8?B?M2xqbUhMK0wwMUtEZFoxejlrdFA0QlN4N1F4bERtRThkUFdVOC9BZnVwc3lC?=
- =?utf-8?B?SWpKTm9pcmQxM1B2QVpBb2lSQU5MODZIRUtjUThmd3VRRlo5M0NxLzM0aVlI?=
- =?utf-8?B?ZTk1RlJIT05jejdicEZYUCticnNkRHd0WjZvUXc4Z0pmSnY2R3NJSlZ6bEFY?=
- =?utf-8?B?L3hhZjVPZGZzTmpOeEhNMk45NWN1M3dTQUwyaWlUQUlmQnRSYlVSc3hHc3Fi?=
- =?utf-8?B?QjVuTGN5bjJGM1krY3lhNGVEc1Izdm05WXJhZ1R6NXZmeVBlL3pmeTMvSzEz?=
- =?utf-8?B?TW81cGZZdXc0WHVyRlIwSmUrVW9UU3Avcmc2VjNKczFhdW0rbnFTbE9RWE1U?=
- =?utf-8?B?SXNPcUV1NGhSbmpUYVF6c3UwcmxJc2p0ME9xZFdJd1FiZGRrTTYyN1R4cXBP?=
- =?utf-8?B?ZnYrZ0Qzb3FESVZNT2VXTUJGVUoxV1dsVXVYZ1diQmlUNG5LRHc2UE9vaHM0?=
- =?utf-8?B?aWRlKzAxdE5mYWVOcUV1b1BmdzBzL0U5MVdSUmloT25ZSU5KLy9MN25YSVUy?=
- =?utf-8?B?SHQ0VDJXc1BPTm9PRnpFdVRmR3EyZ3RrNWZRaXNJeENKajRKTnhyaURyU0hK?=
- =?utf-8?B?VGladHMxTTdRc2ROZFZnZGlJcE1Kc3VKNC9QL0xCazg4WVowZ0dvMWNmdGs2?=
- =?utf-8?B?N3hOVDZFN0Z1UGlrRU5QV2wxTU12U2tvUUx3a3pKazJ3Ti9ERHdSR1lib3g0?=
- =?utf-8?B?L3hOOVJWUG14aDdZeUh5alBhbEx3Zi9STnJlTkRhRWdMVFhDQWZvTGJhUC80?=
- =?utf-8?B?WXArTFJBRFRkT2k5czdFNGVyR3pqemc2dEVyWFlpdmdRMmZGWmN6Yy9jTGhw?=
- =?utf-8?B?M1BsdkVMRkxrY3NGWENVTzNLbWFRanFRN09wQktrOHplWkt1Rmt1ZjhqMGxt?=
- =?utf-8?B?aUVkc2xrWlVibENkeWdEc1ZsTE5YTE51M3dPbXdHUjh6d3l4WG9HUzVWMEtv?=
- =?utf-8?B?Q29weERPSzlobU1pcDBjb2cxRXM4VU9LNTBydUdGaGp4RW9zdU9LcW13ei9J?=
- =?utf-8?B?RDlsaEl0NlRyak84cjdZYmlrUVRMSXh3SzcvNzRZcWZkaE8xTlpvVmgxemFZ?=
- =?utf-8?B?aHFXVUFJTE5tblFPaGtLZXdlalpTNnVQb0IvenJyU255OFJ0dXpoandwREVh?=
- =?utf-8?B?MzBJRjRTTW52RHJJZ2J6cFpvbEFneEJtR0NlS3I3SEdrUi8zd0JOYTM2a1VH?=
- =?utf-8?B?U25zUGdWOXBLSUFXV0kxcThmOUY4dXhJcUt1TnRRNXFVNW0zMzg0YnhVclY1?=
- =?utf-8?B?eVhZcGdsYmVRVXpzOUFVUlFPRjdsWjMyVmRRRjdDYThzT2tUMGl4b2lDUndr?=
- =?utf-8?B?STRVWFVtYkJpR3FWMVprdkk3YVQzTG9SQUF6NE12NCs4RDhqZHdrODhQWFdL?=
- =?utf-8?B?WEFzVVd4MHp4OTVaRUNRTFpRODhDVEJvU3p1NGNFL3VCSzNRK2lIMjhaTmFv?=
- =?utf-8?B?OUk3dklPT0FMZkVnSVk5ODlJSGwrbm1OYUpJakxyRmtmelhLaHRwK0NVdG1M?=
- =?utf-8?B?U09hYmVLWUx6ZmFjbklKK3hwajZQdFF1SW02QmJlZDBrU1loSm1BdTl2NDNr?=
- =?utf-8?B?S3Y2K1o3UWZoSnhsajlUWFdvWWN5RXIxbWc1UEJXNCs4aFZsRktWQ0RWZVpF?=
- =?utf-8?B?ODMrb29kK0R6Y2ZQWTJtOU5XaUNpamxkZVRpdDc4YUF5SDFrUHRQTFVzdGlm?=
- =?utf-8?B?Qm4zL2NaeDZOMlZ0Q0NXYU1yRDFQcytXb2U5UEg0ZlFQSE9UVzA2WU0wOVpI?=
- =?utf-8?B?L2l5MjMxMG9VSi9SWXJqTDllcmxOWFpPVHAySUNSWWdrbHRCczY4YnVFaVNp?=
- =?utf-8?B?WlEyV0dZYjVqR2JtVlhBTGpRS2RDdFFta3VqUHA1ZytNYWZ1L0NpRkw4TmJy?=
- =?utf-8?Q?yCrM=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66a4ab98-c5f7-4ee6-942b-08dbe4e707c3
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB8478.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 07:55:12.3636
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VgM6K7Cdmhbckox66Rq98q2pMHj/Hljaj3QRwZT7ujBsBIW8sCeOYyqmy0psJD3T
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7239
+References: <20231112233325.103250-1-wqu@suse.com> <CAL3q7H5so2=7MojMydXZfxQPCYmFrcNMvqA8fBxtKfEZ5hhsNA@mail.gmail.com>
+ <4407b54a-30c6-4ee8-b2bc-bcfdb668e441@gmx.com>
+In-Reply-To: <4407b54a-30c6-4ee8-b2bc-bcfdb668e441@gmx.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 14 Nov 2023 08:32:08 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4=Zz3Mb0ZcqmzRogE2nvF4_Wc=jULniDANHCbO4QYZhw@mail.gmail.com>
+Message-ID: <CAL3q7H4=Zz3Mb0ZcqmzRogE2nvF4_Wc=jULniDANHCbO4QYZhw@mail.gmail.com>
+Subject: Re: [PATCH] fstests: btrfs: test snapshot creation with existing qgroup
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Nov 14, 2023 at 2:56=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
+>
+>
+>
+> On 2023/11/14 00:03, Filipe Manana wrote:
+> > On Sun, Nov 12, 2023 at 11:33=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote=
+:
+> >>
+> >> [BUG]
+> >> There is a sysbot regression report about transaction abort during
+> >> snapshot creation, which is caused by the new timing of qgroup creatio=
+n
+> >> and too strict error check.
+> >>
+> >> [FIX]
+> >> The proper fix is already submitted, with the title "btrfs: do not abo=
+rt
+> >> transaction if there is already an existing qgroup".
+> >>
+> >> [TEST]
+> >> The new test case would reproduce the regression by:
+> >>
+> >> - Create a subvolume and a snapshot of it
+> >>
+> >> - Record the subvolumeid of the snapshot
+> >>
+> >> - Re-create the fs
+> >>    Since btrfs won't reuse the subvolume id, we have to re-create the =
+fs.
+> >>
+> >> - Enable quota and create a qgroup with the same subvolumeid
+> >>
+> >> - Create a subvolume and a snapshot of it
+> >>    For unpatched and affected kernel (thankfully no release is affecte=
+d),
+> >>    the snapshot creation would fail due to aborted transaction.
+> >>
+> >> - Make sure the subvolume id doesn't change for the snapshot
+> >>    There is one very hacky attempt to fix it by avoiding using the
+> >>    subvolume id, which is completely wrong and would be caught by this
+> >>    extra check.
+> >>
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >> ---
+> >>   tests/btrfs/303     | 80 +++++++++++++++++++++++++++++++++++++++++++=
+++
+> >>   tests/btrfs/303.out |  2 ++
+> >>   2 files changed, 82 insertions(+)
+> >>   create mode 100755 tests/btrfs/303
+> >>   create mode 100644 tests/btrfs/303.out
+> >>
+> >> diff --git a/tests/btrfs/303 b/tests/btrfs/303
+> >> new file mode 100755
+> >> index 00000000..fe924496
+> >> --- /dev/null
+> >> +++ b/tests/btrfs/303
+> >> @@ -0,0 +1,80 @@
+> >> +#! /bin/bash
+> >> +# SPDX-License-Identifier: GPL-2.0
+> >> +# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
+> >> +#
+> >> +# FS QA Test 303
+> >> +#
+> >> +# A regression test to make sure snapshot creation won't cause transa=
+ction
+> >> +# abort if there is already an existing qgroup.
+> >> +#
+> >> +. ./common/preamble
+> >> +_begin_fstest auto quick qgroup
+> >
+> > Also 'snapshot' and 'subvol' groups.
+> >
+> >> +
+> >> +. ./common/filter
+> >> +
+> >> +_supported_fs btrfs
+> >> +_require_scratch
+> >> +
+> >> +_fixed_by_kernel_commit xxxxxxxxxxxx \
+> >> +       "btrfs: do not abort transaction if there is already an existi=
+ng qgroup"
+> >> +
+> >> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
+> >> +_scratch_mount
+> >> +
+> >> +# Create the first subvolume and get its id.
+> >> +# This subvolume id should not change no matter if there is an existi=
+ng
+> >> +# qgroup for it.
+> >> +$BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/subvol" >> $seqres.fu=
+ll
+> >> +$BTRFS_UTIL_PROG subvolume snapshot "$SCRATCH_MNT/subvol" \
+> >> +       "$SCRATCH_MNT/snapshot">> $seqres.full
+> >> +
+> >> +init_subvolid=3D$(_btrfs_get_subvolid "$SCRATCH_MNT" "snapshot")
+> >> +
+> >> +if [ -z "$init_subvolid" ]; then
+> >> +       _fail "Unable to get the subvolid of the first snapshot"
+> >> +fi
+> >> +
+> >> +echo "Subvolumeid: ${init_subvolid}" >> $seqres.full
+> >> +
+> >> +_scratch_unmount
+> >> +
+> >> +# Re-create the fs, as btrfs won't reuse the subvolume id.
+> >> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "2nd mkfs failed"
+> >> +_scratch_mount
+> >> +
+> >> +$BTRFS_UTIL_PROG quota enable "$SCRATCH_MNT" >> $seqres.full
+> >> +$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT" >> $seqres.full
+> >> +
+> >> +# Create a qgroup for the first subvolume, this would make the later
+> >> +# subvolume creation to find an existing qgroup, and abort transactio=
+n.
+> >> +$BTRFS_UTIL_PROG qgroup create 0/"$init_subvolid" "$SCRATCH_MNT" >> $=
+seqres.full
+> >> +sync
+> >
+> > This sync is not needed. An unpatched kernel still fails, and a
+> > patched kernel passes this test without the sync.
+> >
+> > Also, please always comment on why a sync is needed.
+> > In this case it can be removed because it's redundant.
+>
+> Would address all comments, but here I'm a little curious about the
+> "sync" comment principle.
+>
+> I totally understand for this particular case the "sync" is unnecessary,
+> the qgroup item doesn't need to be committed, thus it's totally
+> reasonable to remove this sync.
+>
+> But I'm wondering is there any other reasons why we should avoid
+> unnecessary "sync"s?
 
+It's a principle of clarity and simplicity.
 
-On 2023/11/14 15:43, Anand Jain wrote:
-> 
-> 
->> [CAUSE]
->> The error number is -EEXIST, which can happen for qgroup if there is
->> already an existing qgroup and then we're trying to create a subvolume
->> for it.
->>
-> 
-> We were able to create a qgroup for which the snapshot ID did not exist.
-> Shouldn't that have failed in the first place?
+Adding a comment like "Make the qgroup item persisted in the qgroup
+btree, commit the current transaction",
+makes it clear why the sync is needed, what it accomplishes.
 
-We allowed it from the very beginning, even had interfaces to allow end 
-users to modify them directly.
+It makes the test easier to read for other people, and easier to maintain.
 
-But nowadays, you can no longer change the numbers out of the kernel, 
-thus the newly created 0 level qgroups can only have 0 as their rfer/excl.
+In this case it's a simplicity principle also because if it's not
+needed, it's better to not be there, otherwise it just makes it
+confusing and longer than necessary.
 
-Thus it won't cause any problem, some may even consider it as a way to 
-"preallocate" qgroups.
+> Like slowing down the test or just to improve our awareness and avoid
+> sync-happy guys?
 
-Thanks,
-Qu
-> 
-> Thanks, Anand
-> 
->> [FIX]
->> In that case, we can continue creating the subvolume, although it may
->> lead to qgroup inconsistency, it's not so critical to abort the current
->> transaction.
->>
->> So in this case, we can just ignore the non-critical errors, mostly 
->> -EEXIST
->> (there is already a qgroup).
->>
->> Reported-by: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
->> Fixes: 6ed05643ddb1 ("btrfs: create qgroup earlier in snapshot creation")
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/transaction.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
->> index 9694a3ca1739..7af9665bebae 100644
->> --- a/fs/btrfs/transaction.c
->> +++ b/fs/btrfs/transaction.c
->> @@ -1774,7 +1774,7 @@ static noinline int 
->> create_pending_snapshot(struct btrfs_trans_handle *trans,
->>       btrfs_release_path(path);
->>       ret = btrfs_create_qgroup(trans, objectid);
->> -    if (ret) {
->> +    if (ret && ret != -EEXIST) {
->>           btrfs_abort_transaction(trans, ret);
->>           goto fail;
->>       }
-> 
+My comment is not about performance.
+I run tests in a VM dedicated to that, so adding a sync will at most
+increase run time by a few milliseconds - that's insignificant and
+therefore I don't care.
+All I care about is that the test is clear and has no unnecessary
+steps - be it a sync or something else.
+
+Thanks.
+
+>
+> Thanks,
+> Qu
+> >
+> >> +
+> >> +# Now create the first snapshot, which should have the same subvolid =
+no matter
+> >> +# if the quota is enabled.
+> >> +$BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/subvol" >> $seqres.fu=
+ll
+> >> +$BTRFS_UTIL_PROG subvolume snapshot "$SCRATCH_MNT/subvol" \
+> >> +       "$SCRATCH_MNT/snapshot">> $seqres.full
+> >> +
+> >> +# Either the snapshot create failed and transaction is aborted thus n=
+o
+> >> +# snapshot here, or we should be able to create the snapshot.
+> >> +new_subvolid=3D$(_btrfs_get_subvolid "$SCRATCH_MNT" "snapshot")
+> >> +
+> >> +echo "Subvolumeid: ${new_subvolid}" >> $seqres.full
+> >> +
+> >> +if [ -z "$new_subvolid" ]; then
+> >> +       _fail "Unable to get the subvolid of the first snapshot"
+> >> +fi
+> >> +
+> >> +# Make sure the subvolumeid for the first snapshot didn't change.
+> >> +if [ "$new_subvolid" -ne "$init_subvolid" ]; then
+> >> +       _fail "Subvolumeid for the first snapshot changed, has ${new_s=
+ubvolid} expect ${init_subvolid}"
+> >> +fi
+> >> +
+> >> +_scratch_unmount
+> >
+> > This explicit unmount is not needed, the fstests framework
+> > automatically does that.
+> >
+> > Otherwise it looks fine, thanks.
+> >
+> >> +
+> >> +echo "Silence is golden"
+> >> +
+> >> +# success, all done
+> >> +status=3D0
+> >> +exit
+> >> diff --git a/tests/btrfs/303.out b/tests/btrfs/303.out
+> >> new file mode 100644
+> >> index 00000000..d48808e6
+> >> --- /dev/null
+> >> +++ b/tests/btrfs/303.out
+> >> @@ -0,0 +1,2 @@
+> >> +QA output created by 303
+> >> +Silence is golden
+> >> --
+> >> 2.42.0
+> >>
+> >>
+> >
 
