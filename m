@@ -1,106 +1,100 @@
-Return-Path: <linux-btrfs+bounces-151-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-152-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 702017EE2B8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 15:24:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0433E7EE2DA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 15:31:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FD7E1C20A13
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 14:24:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF73428157B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 14:31:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B54B321A9;
-	Thu, 16 Nov 2023 14:24:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E19934555;
+	Thu, 16 Nov 2023 14:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DYS5m2HL"
+	dkim=pass (2048-bit key) header.d=georgianit.com header.i=@georgianit.com header.b="lX6qwspy";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="yxgC9rZi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B417C4;
-	Thu, 16 Nov 2023 06:23:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=dgZYG76MUgPHX67tQhnkUTmVuk0UMwkw1IreH1RBeME=; b=DYS5m2HLHoY//Tuy5RMME89zll
-	oXwSQYYlbXkvfFm2iQ/PoV3DrK+KxyjHJp9qSez3cEJDNrFkpzzliOw11VIdnyVPAYna1DAN8ovoy
-	RVPskZbnE8TRDtt1ptf80glV4/0kDKIolfhVvU8q2ilfPg75Fu3l1Z/JmDkv06cod7YM1lcu3Fsa3
-	2X4DBQumiAoky4S8QPU4HW1/2reoxLoV6t9Ec1qmzA0sDlhpCV/tOfNBm/WDD96H4SyUQvXEuZPeB
-	jMkzrbdzBTGsqmojF8EgYM/lrlpnW83VXsT7Y9eeSYBAT371cxUOl6OwbWdonZatCw4vugfRr6gTT
-	JHI8nVSQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1r3dHY-003SWQ-0b; Thu, 16 Nov 2023 14:23:48 +0000
-Date: Thu, 16 Nov 2023 14:23:47 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
-	Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Mixed page compact code and (higher order) folios for filemap
-Message-ID: <ZVYl8z5A1ucf/GYt@casper.infradead.org>
-References: <ec608bc8-e07b-49e6-a01e-487e691220f5@gmx.com>
- <ZVWjBVISMbP/UvGY@casper.infradead.org>
- <0e995d32-a984-4b65-b9e3-67fc62cc2596@gmx.com>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F6B187
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Nov 2023 06:31:04 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id 0DC7D5C015B
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Nov 2023 09:31:02 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 16 Nov 2023 09:31:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+	 h=cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+	1700145062; x=1700231462; bh=7sfmZ+4XGYj5O5ragY6Mw7yON4NqigBluxb
+	72zFgEBI=; b=lX6qwspytfzYTQM94nfhrBBOymz8ZX9QqhN8Pq97IW6M7WZu/RG
+	cReSkyJr/pwCIT4LaCOVZt8XoMay8kUFrDlCu/bXoYyed49ETiwke+Ob3xj3+ewA
+	6LsZsQB5jgW2jtkZeopdHbiplizJt8YXzG2Wwf37ltg2sA2Koe/S8487JeiT4myl
+	f+olM2lFQXoaCNmdgWEx813DjD18GRF+dq0zdQATVtAmFCYyPFiHBcLqECh8+1QB
+	MabPW33b34NTNJzgDelxtyjO8rI8ZvH3YnmuEDFJTVH3vOun0sQ42DkTqARrvVky
+	WOMQ63IJlS0aIL761uesdsOQoZV9FZ69FCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700145062; x=
+	1700231462; bh=7sfmZ+4XGYj5O5ragY6Mw7yON4NqigBluxb72zFgEBI=; b=y
+	xgC9rZizCkJ5wz9HcHprvgi/19UictqL/8VO3TjmP7ujtZMGG5Y/NEBS07KRCw+V
+	ER7fIsSGYIiB/j41A59Mn6j27czKm6kLpjsmSodEtoen8w86j9bVgn1myaeXETbn
+	peuS1+sAGXEyb+P6F2yRVbmBBJlWvE0bffiJo53zT4sSii/TivcA4S5AhHkO2+QN
+	ZyuMj8D95Bfkfx8kgbNwKjl7l9rjZcr9BbJy37DP4EKXbHM1SchmWjjuubZmyWIv
+	ngdh4FeFQIUPxOFZNtQvLMjbqoAPAf6kXIcSO0YLb9HeTIe1h1FWV+TaihXaemwZ
+	sTgN8/8N6JTC1j5/eyerQ==
+X-ME-Sender: <xms:pSdWZeX6beZwa2kd_C_iANYpAk-LyIbqCgONDVI6Md8llw8CeuYZ6A>
+    <xme:pSdWZamtTxXBL28hYcVCQVW3XXxQfUqGlHd3X25BCXux1ZGaPxnkFQDwPbsQWNK48
+    T9YX5qAJ2TslO8U8g>
+X-ME-Received: <xmr:pSdWZSYfH0aZQqNOhg9z04a4r4vpGg0L0GUik4S-BuDOaEIKrmWBBHS2vBdZOPYRFUtDuYn_8aRjrut9dAyn001GbyA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudefkedgieegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefuvfhfhffkffgfgggjtgfgsehtje
+    ertddtfeejnecuhfhrohhmpeftvghmihcuifgruhhvihhnuceorhgvmhhisehgvghorhhg
+    ihgrnhhithdrtghomheqnecuggftrfgrthhtvghrnhephffgfeeutddtudfhudejkeejud
+    evledtudeufffhhfeukeejkeekiedtfffhffeinecuvehluhhsthgvrhfuihiivgeptden
+    ucfrrghrrghmpehmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomh
+X-ME-Proxy: <xmx:pSdWZVXTJ8Ft6w1NiT1uIl-LwLYOy9kZ6UG_D2opZ5HXl6QN2zBFxg>
+    <xmx:pSdWZYkdc8o143h1uCNTrB7qCO4qX82_1w38iQg2uorZljNqTbB6Rw>
+    <xmx:pSdWZadFvyhx8GA6Jv3H_Q4Dy9OdEcKYnV96PNKdboeYvx8QORK4Ug>
+    <xmx:pidWZaSMUryuQwVi7tmrUqWgs3mQMbewxDV-P-ZFMdMepkwM2jf3Bw>
+Feedback-ID: i10c840cd:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <linux-btrfs@vger.kernel.org>; Thu, 16 Nov 2023 09:31:01 -0500 (EST)
+Subject: Re: checksum errors but files are readable and no disk errors
+To: linux-btrfs@vger.kernel.org
+References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
+ <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
+ <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
+ <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
+From: Remi Gauvin <remi@georgianit.com>
+Message-ID: <5f6ff1cd-dd64-b88d-e814-39ba3b23395a@georgianit.com>
+Date: Thu, 16 Nov 2023 09:30:59 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e995d32-a984-4b65-b9e3-67fc62cc2596@gmx.com>
+In-Reply-To: <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 
-On Thu, Nov 16, 2023 at 04:00:40PM +1030, Qu Wenruo wrote:
-> On 2023/11/16 15:35, Matthew Wilcox wrote:
-> > On Thu, Nov 16, 2023 at 02:11:00PM +1030, Qu Wenruo wrote:
-> > > E.g. if I allocated a folio with order 2, attached some private data to
-> > > the folio, then call filemap_add_folio().
-> > > 
-> > > Later some one called find_lock_page() and hit the 2nd page of that folio.
-> > > 
-> > > I believe the regular IO is totally fine, but what would happen for the
-> > > page->private of that folio?
-> > > Would them all share the same value of the folio_attach_private()? Or
-> > > some different values?
-> > 
-> > Well, there's no magic ...
-> > 
-> > If you call find_lock_page(), you get back the precise page.  If you
-> > call page_folio() on that page, you get back the folio that you stored.
-> > If you then dereference folio->private, you get the pointer that you
-> > passed to folio_attach_private().
-> > 
-> > If you dereference page->private, *that is a bug*.  You might get
-> > NULL, you might get garbage.  Just like dereferencing page->index or
-> > page->mapping on tail pages.  page_private() will also do the wrong thing
-> > (we could fix that to embed a call to page_folio() ... it hasn't been
-> > necessary before now, but if it'll help convert btrfs, then let's do it).
-> 
-> That would be great. The biggest problem I'm hitting so far is the page
-> cache for metadata.
-> 
-> We're using __GFP_NOFAIL for the current per-page allocation, but IIRC
-> __GFP_NOFAIL is ignored for higher order (>2 ?) folio allocation.
-> And we may want that per-page allocation as the last resort effort
-> allocation anyway.
-> 
-> Thus I'm checking if there is something we can do here.
-> 
-> But I guess we can always go folio_private() instead as a workaround for
-> now?
+On 2023-11-14 3:18 p.m., Qu Wenruo wrote:
+>
+> Disabling COW is recommended for those VM files, as it implies to
+> disable csum, and reduce fragmentation. 
 
-I don't understand enough about what you're doing to offer useful
-advice.  Is this for bs>PS or is it arbitrary large folios for better
-performance?  If the latter, you can always fall back to order-0 folios.
-If the former, well, we need to adjust a few things anyway to handle
-filesystems with a minimum order ...
 
-In general, you should be using folio_private().  page->private and
-page_private() will be removed eventually.
-
-The GFP_NOFAIL warning is:
-
-        WARN_ON_ONCE((gfp_flags & __GFP_NOFAIL) && (order > 1));
+Doesn't disabling COW on BTRFS RAID1 Still result in inconsistent
+mirrors with unclean shutdowns?
 
 
