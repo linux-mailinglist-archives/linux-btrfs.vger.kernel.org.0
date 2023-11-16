@@ -1,113 +1,223 @@
-Return-Path: <linux-btrfs+bounces-144-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-145-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FE677EDA6F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 04:41:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 090347EDA9B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 05:11:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59A971C20BA0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 03:41:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6267E280E89
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 04:11:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42594C15D;
-	Thu, 16 Nov 2023 03:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088BDC2CC;
+	Thu, 16 Nov 2023 04:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="mAn8vrBe"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lBMm8ada"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCC592;
-	Wed, 15 Nov 2023 19:41:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1700106066; x=1700710866; i=quwenruo.btrfs@gmx.com;
-	bh=UkrNH5Uw952M64CQ9vQvRyb/hL41cq2JySdN8YWu7jk=;
-	h=X-UI-Sender-Class:Date:To:From:Subject;
-	b=mAn8vrBec3s9uYl/ckXkP3wXBb9nogLXNY38AzGHFd6stDTchAVvTGb6ez7dRLJm
-	 +ZWFWk07S9n4U+sSeP0jL0qMqnzTCumJlcmgG8Zrhe4Sbf8t9r2gpyM06ZnKpcO4R
-	 owYKl+LX+0Ep4f3WbMVOBwRd7ZNLd4P54Sq+WKvYYaoIbtrNhLYwc02VJLbdmAedR
-	 57Cr5lvhgRuUfGykzPpH0h3aaUegQ38/BUkC2BjdmhPP3OLUeI2ceYd/Bw49fit/T
-	 6cXZPP+O3wcGOJRCjw2X7yIdS2/bFlsJoiNn4Y9csLO8Uivee63tizHk2nid5K5Q5
-	 UflIt0ldS6TbYsKQUg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mof5H-1ritkO1yaP-00p7m1; Thu, 16
- Nov 2023 04:41:06 +0100
-Message-ID: <ec608bc8-e07b-49e6-a01e-487e691220f5@gmx.com>
-Date: Thu, 16 Nov 2023 14:11:00 +1030
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248ED194
+	for <linux-btrfs@vger.kernel.org>; Wed, 15 Nov 2023 20:11:18 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7affff20d38so13254839f.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Nov 2023 20:11:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1700107877; x=1700712677; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=asXP4V5YoZAPdMymETvSzKr3a+LSYs95xd4SQKfHIKs=;
+        b=lBMm8adaISU40P+X6o8+FU4nVPGg7Zu4Lxbk3gNp1aBcMm0sQZ1/OW56VxU2cD02+P
+         RxT54W3g2lZehafV3ujYh0dpCvELeESikwaEjZIRA4efQbEz5BD7rVH/XJlUOsUvWtWk
+         2tz6CPfHcYpt32SvSKXxBZXPqBjFoQ1SFZ9EE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700107877; x=1700712677;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=asXP4V5YoZAPdMymETvSzKr3a+LSYs95xd4SQKfHIKs=;
+        b=jWaUqSHuKyJMoCPFpaFI+b/N2z9MFrCV0aLYuMhIBpJNyjq4e3ZX/k9ZF8qSBbpzwl
+         +2EIxDGCDitq4lPOGIQ4l2AefFOS3UuAVrmKNE8ToHKG1rOqZVztubyMAM3BvqWF2RT6
+         7OsUzGdyesaXBKgjtKvvQpwXRwLVkCOqQ3LCdPynl+W1VuPkxvxBrHX4zFgCTcETO9vr
+         R7c91A/92/Zs3MZW5Ty0em6jIPXEx54CMkCLTl+B4d5/cPQJJKbfLAoAt+ZmV473g/HB
+         3rB1RsefOWIY5QUbU4vxS1M5HM8HZMGfXFRrmmnEb0NS9iagapl9hBFG2UTaCVe6opfQ
+         BmCw==
+X-Gm-Message-State: AOJu0YyoGvaX2zlk1Xbsy8EZn5gHgkr3GtAR8yfYE3EpIu20nSialIrF
+	LzEVTL/03JFm7ZwrHegZIAmL7Q==
+X-Google-Smtp-Source: AGHT+IGJTuE4H/HvKTph7N+MKnM1YPUdSmrUCx6suqiyN0o4IkQqZE1p5BYOFIuCHlSFgwfxwV71Lg==
+X-Received: by 2002:a05:6602:164a:b0:7a6:a3b1:b45c with SMTP id y10-20020a056602164a00b007a6a3b1b45cmr21658253iow.14.1700107877472;
+        Wed, 15 Nov 2023 20:11:17 -0800 (PST)
+Received: from sjg1.lan (c-73-14-173-85.hsd1.co.comcast.net. [73.14.173.85])
+        by smtp.gmail.com with ESMTPSA id f3-20020a02a803000000b0045a1063713asm1307527jaj.130.2023.11.15.20.11.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 20:11:17 -0800 (PST)
+From: Simon Glass <sjg@chromium.org>
+To: U-Boot Mailing List <u-boot@lists.denx.de>
+Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Heinrich Schuchardt <xypron.glpk@gmx.de>,
+	Tom Rini <trini@konsulko.com>,
+	Simon Glass <sjg@chromium.org>,
+	Albert Aribaud <albert.u.boot@aribaud.net>,
+	Alexander Gendin <agendin@matrox.com>,
+	Baruch Siach <baruch@tkos.co.il>,
+	Bin Meng <bmeng.cn@gmail.com>,
+	Eddie James <eajames@linux.ibm.com>,
+	Evgeny Bachinin <EABachinin@sberdevices.ru>,
+	Fabio Estevam <festevam@gmail.com>,
+	Ivan Mikhaylov <fr0st61te@gmail.com>,
+	Jaehoon Chung <jh80.chung@samsung.com>,
+	Jerry Van Baren <vanbaren@cideas.com>,
+	Joe Hershberger <joe.hershberger@ni.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+	Marek Vasut <marek.vasut+renesas@mailbox.org>,
+	Marek Vasut <marex@denx.de>,
+	Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+	Michal Simek <michal.simek@amd.com>,
+	"NXP i.MX U-Boot Team" <uboot-imx@nxp.com>,
+	Peng Fan <peng.fan@nxp.com>,
+	Qu Wenruo <wqu@suse.com>,
+	Safae Ouajih <souajih@baylibre.com>,
+	Sean Anderson <sean.anderson@seco.com>,
+	Sean Anderson <seanga2@gmail.com>,
+	Stefano Babic <sbabic@denx.de>,
+	Stephen Carlson <stcarlso@linux.microsoft.com>,
+	This contributor prefers not to receive mails <noreply@example.com>,
+	Tim Harvey <tharvey@gateworks.com>,
+	Tobias Waldekranz <tobias@waldekranz.com>,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 00/32] bootm: Refactoring to reduce reliance on CMDLINE (part A)
+Date: Wed, 15 Nov 2023 21:10:00 -0700
+Message-ID: <20231116041043.362055-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Linux Memory Management List <linux-mm@kvack.org>,
- Linux FS Devel <linux-fsdevel@vger.kernel.org>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Mixed page compact code and (higher order) folios for filemap
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3CPIkdjItB0ds/VQJKDcaZzszsZslVZuBKebZPr7psRBBrp6nIo
- QPmW9bTJ9ZyTwtBGvEsC+WSaP92D31eMRAxvVf9SOELuq5Ev7I6X5W1kEnOHCGWUnymSTZe
- SZ//LbBkGLAqSva5083z2iHNwZe68edy2ZL0TW431P4VOIjEfWJmvlILBASc2nVqRGXug3E
- H/PxBQ6mD3XWCrDyMqXJQ==
-UI-OutboundReport: notjunk:1;M01:P0:k/j83dEg+iQ=;SYuIA2+IEpT+GlhzKaqTl6G+SZU
- +T2KJN0hxRsUxxLvOwinnZ/+WWW2GNRJ0WgZNzJNzXlLylMRRbi+wbRIvm1kzX02ou5DQ7LlF
- 4apO86/30MKmOrUqdJln4HuRBCHT2StgRMqghWT0mbZFE3WPCatYtyXlmzl9F+0AX1bf7tk7L
- yKoVO99v8L6HBrl8i9LSABkBnb2QVa3BENJ/WPAeYGiey0myE8OKuC+iRuc/r1Hv0npHZRYV2
- BbRA45VHd5QIuxJE++A+HcfJpW5eKnCkPtytXimm3hGZWyS9nd8WmASo2jbRRNo4wbvMkeUXF
- 7DlDyMUWfiWfYjAczEr/xZ4uv493obXZgoUZBAXrR3uhyc2dmWbf3KjS/SpcdXTIA8ahmtgsp
- sfQZzmQ3JqoJXWSVvewEQC7DfFZs/bHClR55lrR3fdXUlWKI5QnbiujiMGwcotpkyRDEGaFzl
- LaBzE9IuF2kHp8vD92PuO0khXAMPKhOqkMypMJOZERz1K1p7MJ8/gP2RXcO4iYRtTrhmbjuhn
- jyj5utwNy3eUkbxb1gUvB6HMO8eu/+zbU7WtXlehg11aLaQ/5Ix/Yodh1qrY85ywQXexYzHlH
- /9MpVBo9cM9/GBGu0vhxLYsZYlFaRnucF9SO0K3W05TF+aowzdTVgsjdyfIVFM2URg24/enRz
- nBcPtcu99gqcDXUuY2eZS+glHNqzWU4Z96v0LM+tuuVWPq3TSMNAa2llECRa2do8Rlr6lByI4
- MCbld9MsVaHEmLbQN3jM6xnm/L/F274Mlim+zsNguP2QRn20980X+6rwJWxujzBa8+3heo+de
- XECyret8vYHguu7Nby/PuSKnTU96wK8Wcj3Lsc5xGdeKK3ugXMP4CliTetRtx6b2aUayEPVSi
- YUnyCcKTLdPu9D8HzkjM8IHexapfPpu/MsBBNus2OXNsVUClcuG6xbkRXS/XiJukotAPFwk9z
- +nXUmj7TLY6MEfVnAlnPH/oHQr4=
+Content-Transfer-Encoding: 8bit
 
-Hi guys,
+It would be useful to be able to boot an OS when CONFIG_CMDLINE is
+disabled. This could allow reduced code size.
 
-I'm wondering if there is any pitfalls when mixing the legacy page based
-code with higher order (order >=3D 1) folios.
+Standard boot provides a way to handle programmatic boot, without
+scripts, so such a feature is possible. The main impediment is the
+inability to use the booting features of U-Boot without a command line.
+So the solution is to avoid passing command arguments and the like to
+code in boot/
 
-E.g. if I allocated a folio with order 2, attached some private data to
-the folio, then call filemap_add_folio().
+A similar process has taken place with filesystems, for example, where
+we have (somewhat) separate Kconfig options for the filesystem commands
+and the filesystems themselves.
 
-Later some one called find_lock_page() and hit the 2nd page of that folio.
+This series starts the process of refactoring the bootm logic so that
+it can be called from standard boot without using the command line.
+Mostly it removes the use of argc, argv and cmdtbl from the internal
+logic.
 
-I believe the regular IO is totally fine, but what would happen for the
-page->private of that folio?
-Would them all share the same value of the folio_attach_private()? Or
-some different values?
+Some limited tidy-up is included, but this is kept to smaller patches,
+rather than trying to remove all #ifdefs etc. Some function comments
+are added, however.
 
-Thanks,
-Qu
+A simple programmatic boot is provided as a starting point.
+
+This work will likely take many series, so this is just the start.
+
+Size growth with this series for firefly-rk3288 (Thumb2) is:
+
+       arm: (for 1/1 boards) all +23.0 rodata -49.0 text +72.0
+
+This should be removed by:
+
+   https://source.denx.de/u-boot/custodians/u-boot-dm/-/issues/11
+
+but it is not included in this series as it is already large enough.
+
+No functional change is intended in this series.
+
+Changes in v2:
+- Add new patch to adjust position of unmap_sysmem() in boot_get_kernel()
+- Add new patch to obtain command arguments
+- Fix 'boot_find_os' typo
+- Pass in the command name
+- Use the command table to provide the command name, instead of "bootm"
+
+Simon Glass (32):
+  arm: x86: Drop discarding of command linker-lists
+  README: Correct docs for CONFIG_SPL_BUILD
+  mmc: env: Unify the U_BOOT_ENV_LOCATION conditions
+  treewide: Tidy up semicolon after command macros
+  bootstd: Add missing header file from bootdev.h
+  bootstd: Introduce programmable boot
+  bootm: Drop arguments from bootm_start()
+  bootm: Simplify arguments for bootm_pre_load()
+  bootm: Move boot_get_kernel() higher in the file
+  image: Tidy up genimg_get_kernel_addr_fit()
+  bootm: Reduce arguments to boot_get_kernel()
+  image: Document error codes from fit_image_load()
+  bootm: Adjust boot_get_kernel() to return an error
+  bootm: Adjust position of unmap_sysmem() in boot_get_kernel()
+  bootm: Use the error return from boot_get_kernel()
+  bootstage: Drop BOOTSTAGE_ID_FIT_KERNEL_INFO
+  bootm: Move error printing out of boot_get_kernel()
+  bootm: Reduce arguments to bootm_find_os()
+  bootm: Reduce arguments to boot_get_ramdisk()
+  fdt: Allow use of fdt_support inside if() statements
+  bootm: Drop #ifdef in bootm_find_images()
+  bootm: Pass image buffer to boot_get_fdt()
+  bootm: Reduce arguments to boot_get_fdt()
+  bootm: Reduce arguments to boot_get_fpga()
+  bootm: Reduce arguments to boot_get_loadables()
+  bootm: Simplify Android ramdisk addr in bootm_find_images()
+  bootm: efi: Drop special call to bootm_find_other()
+  bootm: optee: Drop special call to bootm_find_other()
+  bootm: Adjust the parameters of bootm_find_images()
+  bootm: Add a function to check overlap
+  bootm: Reduce arguments to bootm_find_other()
+  RFC: command: Introduce functions to obtain command arguments
+
+ README                       |  26 +-
+ arch/arm/cpu/u-boot.lds      |   3 -
+ arch/x86/cpu/u-boot-64.lds   |   4 -
+ arch/x86/cpu/u-boot-spl.lds  |   4 -
+ arch/x86/cpu/u-boot.lds      |   4 -
+ board/freescale/common/vid.c |   2 +-
+ board/xilinx/common/fru.c    |   2 +-
+ board/xilinx/versal/cmds.c   |   2 +-
+ board/xilinx/zynqmp/cmds.c   |   2 +-
+ boot/Kconfig                 |  11 +
+ boot/Makefile                |   2 +
+ boot/bootm.c                 | 577 +++++++++++++++++++----------------
+ boot/bootm_os.c              |  16 -
+ boot/image-board.c           |  67 +---
+ boot/image-fdt.c             |  39 +--
+ boot/prog_boot.c             |  51 ++++
+ cmd/booti.c                  |   4 +-
+ cmd/bootz.c                  |   4 +-
+ cmd/btrfs.c                  |   2 +-
+ cmd/disk.c                   |   4 +-
+ cmd/eeprom.c                 |   2 +-
+ cmd/ext2.c                   |   4 +-
+ cmd/fs.c                     |   8 +-
+ cmd/fuse.c                   |   2 +-
+ cmd/mmc.c                    |   2 +-
+ cmd/pinmux.c                 |   2 +-
+ cmd/qfw.c                    |   2 +-
+ common/main.c                |   9 +
+ drivers/misc/gsc.c           |   6 +-
+ env/mmc.c                    |   2 +-
+ fs/fs.c                      |   4 +-
+ include/bootdev.h            |   1 +
+ include/bootm.h              |  26 +-
+ include/bootstage.h          |   1 -
+ include/bootstd.h            |   9 +
+ include/command.h            |  35 ++-
+ include/fdt_support.h        |   5 +-
+ include/image.h              | 127 ++++++--
+ test/cmd_ut.c                |   2 +-
+ 39 files changed, 612 insertions(+), 463 deletions(-)
+ create mode 100644 boot/prog_boot.c
+
+-- 
+2.43.0.rc0.421.g78406f8d94-goog
+
 
