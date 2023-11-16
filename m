@@ -1,139 +1,180 @@
-Return-Path: <linux-btrfs+bounces-159-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-160-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27EB37EE833
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 21:17:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08AB87EE85B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 21:33:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 586E01C2042E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 20:17:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 392021C20A39
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 20:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690B846553;
-	Thu, 16 Nov 2023 20:17:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599D845BE4;
+	Thu, 16 Nov 2023 20:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aEIWJp9g";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KQLkOjdE"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="caV8eIDq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA93F1A7;
-	Thu, 16 Nov 2023 12:17:03 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DB8042050A;
-	Thu, 16 Nov 2023 20:17:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1700165821;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p68fCcxQIS+Z2kIB9kk+gfIMOuRKaJTdSJTEFA3jvzs=;
-	b=aEIWJp9g36J1OtigwfhepU+GDYxMThoja07yXh6aLHiHe1RGtkXTJktFUdaPxoegls28J5
-	7mETEL3kgJID42kDUbl939Qgd9oFij1B8HlTTmBd463lebK6X4gkdYRiEUhmek1zmz2eJR
-	AFPePQLkg0DyuUFFbG0A9dcz9dLNmJ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1700165821;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p68fCcxQIS+Z2kIB9kk+gfIMOuRKaJTdSJTEFA3jvzs=;
-	b=KQLkOjdEpATQdOLHHeu4IntgKVUpk4kUZGD6EoTB7DGiZ2eNLjOqAErw9Uov5gDho8LqGj
-	wkf99XRFEFPSIzAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AE2A1139C4;
-	Thu, 16 Nov 2023 20:17:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id CJm/Kb14VmXFbgAAMHmgww
-	(envelope-from <dsterba@suse.cz>); Thu, 16 Nov 2023 20:17:01 +0000
-Date: Thu, 16 Nov 2023 21:09:55 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-	brauner@kernel.org
-Subject: Re: [PATCH v2 05/18] btrfs: do not allow free space tree rebuild on
- extent tree v2
-Message-ID: <20231116200955.GK11264@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1699470345.git.josef@toxicpanda.com>
- <6a2c827b0ed8b24c3be1045ccac49b29e850118e.1699470345.git.josef@toxicpanda.com>
- <6bbfbf34-aa74-4501-b36d-317022f3bc1b@oracle.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3CE98;
+	Thu, 16 Nov 2023 12:33:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1700166790; x=1700771590; i=quwenruo.btrfs@gmx.com;
+	bh=UlvD9PGn5EeAgcPVj3AcH8dAHCrhpIHllLBvL/VBHYI=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=caV8eIDqv77+t5yf1R+qL3gPGVm7UtEQbHggxWjltJ7OwKxXAWzdRSp2CWRr2AV1
+	 vmvl1SEsT8rouM6KEKI3jeZINRpuuikTIaFuNuN+W0obTrCJOjhSv7v0M3yUSbor8
+	 rRX6cadkqzxqkYsfBqml5NlOK8C/DqOuAeWvK3Pqk+gCwxj6FOHmrCCJhA9UZO5ZH
+	 2PpP5VAt+ntXLSdP+lLDcGIBSmj3cr2szGXzR/fhHv8q21zrBuP5MeqXsPNV1RuPU
+	 oaFV6p134sny4zXrN+FS9wlCW7jQKYMQ2x3UuRyFcyUTJgqEA77KwomavJRdAak92
+	 Qb/KW6l9YaaLIM7KSg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5VHG-1rRNuu06zS-016yo6; Thu, 16
+ Nov 2023 21:33:10 +0100
+Message-ID: <d46dbdc2-4a30-4ead-90f8-b4902cfa0bed@gmx.com>
+Date: Fri, 17 Nov 2023 07:03:05 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6bbfbf34-aa74-4501-b36d-317022f3bc1b@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
+User-Agent: Mozilla Thunderbird
+Subject: Re: Mixed page compact code and (higher order) folios for filemap
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <ec608bc8-e07b-49e6-a01e-487e691220f5@gmx.com>
+ <ZVWjBVISMbP/UvGY@casper.infradead.org>
+ <0e995d32-a984-4b65-b9e3-67fc62cc2596@gmx.com>
+ <ZVYl8z5A1ucf/GYt@casper.infradead.org>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <ZVYl8z5A1ucf/GYt@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:YbJJwv2+okE+hE7lAW+u9uGdt53aKIAgQi8cFjbAluqpRWh+6tK
+ D1v4hz2EKbT5hvBEOg6+mm0hL5HuXEfSZ5Y3BH29EUfFTbWvPcM+aOYieHKH85eoInqetF9
+ QanlaqLcGr/w87iiiBe+WzSdw10TtJvAN700ATn22AekTBT2RYiqbeJsGHsoRKphNwex4xo
+ dr/m5H6RlCs/BwysT1w7g==
+UI-OutboundReport: notjunk:1;M01:P0:Ks3hQPZkQlM=;aPd0+8KTwZ3c36UlGrnFKjzRmCJ
+ H8jnqixkouhYYRU0HehBqG1Jk4Wcd8oh8urPClK/bMXLpWh31mvSZplG0PVtKoc9n4ioIB2mk
+ IGMjqoonoKY6WnwBzV32Q33QNw61PpDT8VcM2jlzrnkQgbdQ8vk3fb2lv5sEz3W+tHeVkpc3H
+ VciLlr0W5eoJQoRK9Jq+cM4m1G53QLo3MY6mwLVshIcdYCiWefzHLqiIRyqO6yT3s0HIcxJtJ
+ ayFIJoWAnXuZS8h8L4HydbOZSl2zFFVsMSZatyhRG+ZJMIorx/gRgE+IDaCvh4LT1YaiTS+4+
+ lfL9hNzHUUV6Dz16LyMZ1le0VtT7DWU7f/ugB2zut4s362ScHUxIiRLsnV6X+IyL5EWnrSlu6
+ u+xgIUXt+1NGPXpQWWbd5Tt7PQeajzBe1ofk4jZxPrbTR+CdSHVTTgWzKkWpeBpctBeuuHYfi
+ 2bM3PubyaxdrhWaAzQwIOqWaPZSCZai2BJRQ14wpvsWC5PXarLEAbGhNS5GKeS+mWsdE3tJeV
+ O5bGJujuDqv0FvMl9u8LGZ/Zag31EC6lw0RuslqA9kG15qbvofZTWVcWMzBgIh7GddBU/mOSy
+ eIgyVxnBxVAfY8YZUWXgi4TMJ8chlzCLBKWWxbXZyc+/TzgqgV3wVs7lRK5KXzd0aTt87MuFQ
+ aPezneywrUvSRmhUb5P3cdJwgJOfFtXmSfERRiuAT/0D6QDS9WjvG2Z1f7nz8p2Z+aDv/uANr
+ 7zh18MwHOmnhUKg6ziqLZT2sMdDesTxlRA6yatfJrNZeIQ5aJCmq4nVOMeiLhFxDMbPtgZOOS
+ sBhfXt7BdCkfa3Jl3PKeHg03vZSVkXGdX60ERQxKQPW1nGVbpE9jiZfhAZ5JYP1oM+Z/udKtM
+ 32Oru+cJoFiZP+wQtbF0RYhhT9rzNF9XPSO8iWMv8bcbdtt5CaiAiHEH2sidblTuAanJYMlXu
+ 61HhJNXFaHoPBc9AuRH+XTt+uOI=
 
-On Wed, Nov 15, 2023 at 05:49:48PM +0800, Anand Jain wrote:
-> On 11/9/23 03:08, Josef Bacik wrote:
-> > We currently don't allow these options to be set if we're extent tree v2
-> > via the mount option parsing.  However when we switch to the new mount
-> > API we'll no longer have the super block loaded, so won't be able to
-> > make this distinction at mount option parsing time.  Address this by
-> > checking for extent tree v2 at the point where we make the decision to
-> > rebuild the free space tree.
-> > 
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
-> >   fs/btrfs/disk-io.c | 3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> > index b486cbec492b..072c45811c41 100644
-> > --- a/fs/btrfs/disk-io.c
-> > +++ b/fs/btrfs/disk-io.c
-> > @@ -2951,7 +2951,8 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
-> >   	bool rebuild_free_space_tree = false;
-> >   
-> >   	if (btrfs_test_opt(fs_info, CLEAR_CACHE) &&
-> > -	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
-> > +	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
-> > +	    !btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
-> >   		rebuild_free_space_tree = true;
-> >   	} else if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
-> >   		   !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID)) {
-> 
-> If there is v3 you can consider to add a comment similar to that
-> is in btrfs_parse_options().
-> Also, IMO, it is a good idea to include a btrfs_info() statement
-> to indicate that the clear_cache option is ignored.
 
-Agreed, we have a lot of verbosity around the mount options, if some
-option combination is invalid or not working as expected a message
-should pe printed.
+
+On 2023/11/17 00:53, Matthew Wilcox wrote:
+> On Thu, Nov 16, 2023 at 04:00:40PM +1030, Qu Wenruo wrote:
+>> On 2023/11/16 15:35, Matthew Wilcox wrote:
+>>> On Thu, Nov 16, 2023 at 02:11:00PM +1030, Qu Wenruo wrote:
+>>>> E.g. if I allocated a folio with order 2, attached some private data =
+to
+>>>> the folio, then call filemap_add_folio().
+>>>>
+>>>> Later some one called find_lock_page() and hit the 2nd page of that f=
+olio.
+>>>>
+>>>> I believe the regular IO is totally fine, but what would happen for t=
+he
+>>>> page->private of that folio?
+>>>> Would them all share the same value of the folio_attach_private()? Or
+>>>> some different values?
+>>>
+>>> Well, there's no magic ...
+>>>
+>>> If you call find_lock_page(), you get back the precise page.  If you
+>>> call page_folio() on that page, you get back the folio that you stored=
+.
+>>> If you then dereference folio->private, you get the pointer that you
+>>> passed to folio_attach_private().
+>>>
+>>> If you dereference page->private, *that is a bug*.  You might get
+>>> NULL, you might get garbage.  Just like dereferencing page->index or
+>>> page->mapping on tail pages.  page_private() will also do the wrong th=
+ing
+>>> (we could fix that to embed a call to page_folio() ... it hasn't been
+>>> necessary before now, but if it'll help convert btrfs, then let's do i=
+t).
+>>
+>> That would be great. The biggest problem I'm hitting so far is the page
+>> cache for metadata.
+>>
+>> We're using __GFP_NOFAIL for the current per-page allocation, but IIRC
+>> __GFP_NOFAIL is ignored for higher order (>2 ?) folio allocation.
+>> And we may want that per-page allocation as the last resort effort
+>> allocation anyway.
+>>
+>> Thus I'm checking if there is something we can do here.
+>>
+>> But I guess we can always go folio_private() instead as a workaround fo=
+r
+>> now?
+>
+> I don't understand enough about what you're doing to offer useful
+> advice.  Is this for bs>PS or is it arbitrary large folios for better
+> performance?
+
+The ultimate goal is to make nodesize (metadata block size) > PAGE_SIZE
+case to go higher order folio by default, for better performance.
+
+But use order 0 folios if we failed get higher order folios.
+
+The current problem is the metadata allocation  here is always going
+page based, and using page->private.
+
+>  If the latter, you can always fall back to order-0 folios.
+> If the former, well, we need to adjust a few things anyway to handle
+> filesystems with a minimum order ...
+>
+> In general, you should be using folio_private().  page->private and
+> page_private() will be removed eventually.
+
+OK, that sounds good, we can do the cleanup first inside btrfs.
+
+Thanks,
+Qu
+>
+> The GFP_NOFAIL warning is:
+>
+>          WARN_ON_ONCE((gfp_flags & __GFP_NOFAIL) && (order > 1));
+>
 
