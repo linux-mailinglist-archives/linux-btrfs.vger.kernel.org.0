@@ -1,295 +1,146 @@
-Return-Path: <linux-btrfs+bounces-148-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-149-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B87B7EDB1E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 06:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD2E27EDB3C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 06:31:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FFE3280F9F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 05:19:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1394280F83
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 05:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73503C8E7;
-	Thu, 16 Nov 2023 05:19:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CB0BD260;
+	Thu, 16 Nov 2023 05:31:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DMxL1vZ+"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="gyK60bdB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2393818D
-	for <linux-btrfs@vger.kernel.org>; Wed, 15 Nov 2023 21:19:27 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D4DF1204FF
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Nov 2023 05:19:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1700111964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Ux9s3EC7C0rb94NG23bXtaDDNeuJ6LWBJeK9s9WWznk=;
-	b=DMxL1vZ+7b8lTT4lFvwocFNThJX7usSkYKCpueZMo0FPLWyirkNJRRrUiSGiBSfUIZF26n
-	R3z3LdZ72V5oYprOphIQmfnDCBYhAdHjJpAzIORTouLHqMuSRuROQmzxQS0VA+VUf85irz
-	k2GerulVAVVzONUADGc82vkDfub2YXw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 12DF1138F4
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Nov 2023 05:19:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id Cnq5MFumVWUeDAAAMHmgww
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Nov 2023 05:19:23 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC] btrfs: allow extent buffer helpers to skip cross-page handling
-Date: Thu, 16 Nov 2023 15:49:06 +1030
-Message-ID: <721bab821198fc9b49d2795b2028ed6c436ab886.1700111928.git.wqu@suse.com>
-X-Mailer: git-send-email 2.42.1
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FA8192;
+	Wed, 15 Nov 2023 21:30:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1700112645; x=1700717445; i=quwenruo.btrfs@gmx.com;
+	bh=zQw6AOP7elWK4IMv8HNJSBRADYXZAlVWj1ySdu5STTA=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=gyK60bdB8UL2KqH4/G6kjTxzSze8tX9R8usZytsawqVdxUOebju3zlPVjywDBjtP
+	 K2KuFe6HprNoQzHsB5c7LgUzesIBC5tpN75wnUctdi3txx9r3H9E9E7Jomq1pTaGm
+	 W0rOhhrj6VxZ93BLU0CaiK4cjxGJw0645pvhvph4DgQZvE4wdbweK8lzlc3lakwql
+	 G96Mmhr81OQUk71qfmKRXnsf0G2TBH0a3hhfMu6p8cFSeOY0WQ9UG3eo5FtqLgntv
+	 A/owQT+OfSWaWetohHimCKYwztSXsTG5tOm/Go5d/6TyaqD/X2ZoUm8hWy1z9wqmx
+	 dMUQZKp4kMNRtzq/Lw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N7zFZ-1rPgj12JFL-014yKT; Thu, 16
+ Nov 2023 06:30:45 +0100
+Message-ID: <0e995d32-a984-4b65-b9e3-67fc62cc2596@gmx.com>
+Date: Thu, 16 Nov 2023 16:00:40 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Score: 1.71
-X-Spamd-Result: default: False [1.71 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 TO_DN_NONE(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.19)[-0.974];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
+User-Agent: Mozilla Thunderbird
+Subject: Re: Mixed page compact code and (higher order) folios for filemap
+Content-Language: en-US
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <ec608bc8-e07b-49e6-a01e-487e691220f5@gmx.com>
+ <ZVWjBVISMbP/UvGY@casper.infradead.org>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <ZVWjBVISMbP/UvGY@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:LdqkW1uFCwxASREPu6BpsAt+z+8+f/DwgLg+hqmiLwfUrtSt+5Z
+ iJfb9lRmnQlGZutI7qJu3S1M3lzJ7iefXWlsz2vm6ZuvYI+9psQJ9xa4VByKJjjRz9+D4X+
+ kOiuBurEs9skSbo760cFrjobMw/hhDFv8F3OwVvjTb+WNLvAW46pbgDn/sdspTHzZxb7ClC
+ XW8IRGwL2vyvSoo/S3Qfw==
+UI-OutboundReport: notjunk:1;M01:P0:4VMy7aLTtwE=;rWKNSIckSrF7UN1Q9Q+dkccCadn
+ y+AjbRXelodZJLBBR1bVxZQJQ5ynk/0aIyjE2IctaUjgQJOa4ZnsT5KTQI81TsQaT2BvCHBSX
+ MX9e4D/VtpS0Iqe1VuDP9+IYDmAGIB3jdHPOZHl9hJg7YxcCQ745gLPHTIRwrgGqhVIPUiDhG
+ CvK7fMzbsM56FbsTEmMHeqRpA7l9Um4lBEugfn9etO+KcoSLCTGSUfXt/ltNgFLbPVZYq4Dr3
+ f64TpR7Ns0hzrKWSJ3/4j5lSpjN+t4107J2n3k8RqJuLGE5SE9gKW4Dc+fm+I80PvTST9sYRB
+ FdmgipaizZTZnOdplRm5riJW+H/xFgT68jKHa8Gj1GTwpQfo89UvZJs0MOZOcDs+fOYMtV0+W
+ 64HH1FZZuRFjOHT14k7Hds0rxu//2+gKRTb0KT8kQ2fSTGmdmCqA1FqL3zp2Qon2m0j93hLzf
+ jCVglMXkG3g1kRuIIUKFp67WDkZ77eKzvcv72LCds7neQ9eyeM1HjNJ921eb2mZesVQGsVrBf
+ FxQFdYq9xJCOxYLT0IPDpSfrhjnBCczCe1fUZjaZGAvgaORodPvFipOxHal62/SFKrShcOQ51
+ vg3Oq9MLolpyY0CQ02KiMuDUXbH2dm9EuD/Z2Wu+tks+TG1r9RUG2YHCxgeoXIzPpj0+v9zIx
+ jLefUhszZPUiwlfEzMaF/XC5NWHQk6DmoWhTVvNQUdH5I1/sOlewwLZOe/e7NHpeZaINhXpY+
+ /AQQ1kGcAQ7Dq62yw43Zxa9L3lakOkPNzbWOK4C+ENCsE4UjZsMQacnPNfH5HPXBoN3g6GSlH
+ pRrWnd1RcYDhC3s2VLlYxPGE7SjfRxxK6gP5Nh+3gRm5dj/fHeUyrVGg3vvm7lycL2HNT34lv
+ DciZ8rbALg0l9dVrvBeUgfHRid+oeghCwb9vlAzDzWmS4gtjlNKN4aiinzqn2p1hSTt8bJv43
+ S0BQsoupAFD1oL72I6xKEUFie7g=
 
-Currently btrfs extent buffer helpers are doing all the cross-page
-handling, as there is no guarantee that all those eb pages are
-contiguous.
 
-However on systems with enough memory, there is a very high chance the
-page cache for btree_inode are allocated with physically contiguous
-pages.
 
-In that case, we can skip all the complex cross-page handling, thus
-speeding up the code.
+On 2023/11/16 15:35, Matthew Wilcox wrote:
+> On Thu, Nov 16, 2023 at 02:11:00PM +1030, Qu Wenruo wrote:
+>> E.g. if I allocated a folio with order 2, attached some private data to
+>> the folio, then call filemap_add_folio().
+>>
+>> Later some one called find_lock_page() and hit the 2nd page of that fol=
+io.
+>>
+>> I believe the regular IO is totally fine, but what would happen for the
+>> page->private of that folio?
+>> Would them all share the same value of the folio_attach_private()? Or
+>> some different values?
+>
+> Well, there's no magic ...
+>
+> If you call find_lock_page(), you get back the precise page.  If you
+> call page_folio() on that page, you get back the folio that you stored.
+> If you then dereference folio->private, you get the pointer that you
+> passed to folio_attach_private().
+>
+> If you dereference page->private, *that is a bug*.  You might get
+> NULL, you might get garbage.  Just like dereferencing page->index or
+> page->mapping on tail pages.  page_private() will also do the wrong thin=
+g
+> (we could fix that to embed a call to page_folio() ... it hasn't been
+> necessary before now, but if it'll help convert btrfs, then let's do it)=
+.
 
-This patch adds a new member, extent_buffer::addr, which is only set to
-non-NULL if all the extent buffer pages are physically contiguous.
+That would be great. The biggest problem I'm hitting so far is the page
+cache for metadata.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Reason for RFC:
+We're using __GFP_NOFAIL for the current per-page allocation, but IIRC
+__GFP_NOFAIL is ignored for higher order (>2 ?) folio allocation.
+And we may want that per-page allocation as the last resort effort
+allocation anyway.
 
-This change would increase the code size for all extent buffer helpers,
-and since there one more branch introduced, it may even slow down the
-system if most ebs do not have physically contiguous pages.
+Thus I'm checking if there is something we can do here.
 
-But I still believe this is worthy trying, as my previous attempt to
-use virtually contiguous pages are rejected due to possible slow down in
-vm_map() call.
+But I guess we can always go folio_private() instead as a workaround for
+now?
 
-I don't have convincing benchmark yet, but so far no obvious performance
-drop observed either.
----
- fs/btrfs/disk-io.c   |  9 +++++++-
- fs/btrfs/extent_io.c | 55 ++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/extent_io.h |  7 ++++++
- 3 files changed, 70 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 5ac6789ca55f..7fc78171a262 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -80,8 +80,16 @@ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
- 	char *kaddr;
- 	int i;
- 
-+	memset(result, 0, BTRFS_CSUM_SIZE);
- 	shash->tfm = fs_info->csum_shash;
- 	crypto_shash_init(shash);
-+
-+	if (buf->addr) {
-+		crypto_shash_digest(shash, buf->addr + offset_in_page(buf->start) + BTRFS_CSUM_SIZE,
-+				    buf->len - BTRFS_CSUM_SIZE, result);
-+		return;
-+	}
-+
- 	kaddr = page_address(buf->pages[0]) + offset_in_page(buf->start);
- 	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
- 			    first_page_part - BTRFS_CSUM_SIZE);
-@@ -90,7 +98,6 @@ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
- 		kaddr = page_address(buf->pages[i]);
- 		crypto_shash_update(shash, kaddr, PAGE_SIZE);
- 	}
--	memset(result, 0, BTRFS_CSUM_SIZE);
- 	crypto_shash_final(shash, result);
- }
- 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 03cef28d9e37..004b0ba6b1c7 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3476,6 +3476,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
- 	struct btrfs_subpage *prealloc = NULL;
- 	u64 lockdep_owner = owner_root;
-+	bool page_contig = true;
- 	int uptodate = 1;
- 	int ret;
- 
-@@ -3562,6 +3563,14 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 
- 		WARN_ON(btrfs_page_test_dirty(fs_info, p, eb->start, eb->len));
- 		eb->pages[i] = p;
-+
-+		/*
-+		 * Check if the current page is physically contiguous with previous eb
-+		 * page.
-+		 */
-+		if (i && eb->pages[i - 1] + 1 != p)
-+			page_contig = false;
-+
- 		if (!btrfs_page_test_uptodate(fs_info, p, eb->start, eb->len))
- 			uptodate = 0;
- 
-@@ -3575,6 +3584,9 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	}
- 	if (uptodate)
- 		set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
-+	/* All pages are physically contiguous, can skip cross page handling. */
-+	if (page_contig)
-+		eb->addr = page_address(eb->pages[0]) + offset_in_page(eb->start);
- again:
- 	ret = radix_tree_preload(GFP_NOFS);
- 	if (ret) {
-@@ -4009,6 +4021,11 @@ void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
- 		return;
- 	}
- 
-+	if (eb->addr) {
-+		memcpy(dstv, eb->addr + start, len);
-+		return;
-+	}
-+
- 	offset = get_eb_offset_in_page(eb, start);
- 
- 	while (len > 0) {
-@@ -4040,6 +4057,12 @@ int read_extent_buffer_to_user_nofault(const struct extent_buffer *eb,
- 	WARN_ON(start > eb->len);
- 	WARN_ON(start + len > eb->start + eb->len);
- 
-+	if (eb->addr) {
-+		if (copy_to_user_nofault(dstv, eb->addr + start, len))
-+			ret = EFAULT;
-+		return ret;
-+	}
-+
- 	offset = get_eb_offset_in_page(eb, start);
- 
- 	while (len > 0) {
-@@ -4075,6 +4098,9 @@ int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
- 	if (check_eb_range(eb, start, len))
- 		return -EINVAL;
- 
-+	if (eb->addr)
-+		return memcmp(ptrv, eb->addr + start, len);
-+
- 	offset = get_eb_offset_in_page(eb, start);
- 
- 	while (len > 0) {
-@@ -4144,6 +4170,14 @@ static void __write_extent_buffer(const struct extent_buffer *eb,
- 	if (check_eb_range(eb, start, len))
- 		return;
- 
-+	if (eb->addr) {
-+		if (use_memmove)
-+			memmove(eb->addr + start, srcv, len);
-+		else
-+			memcpy(eb->addr + start, srcv, len);
-+		return;
-+	}
-+
- 	offset = get_eb_offset_in_page(eb, start);
- 
- 	while (len > 0) {
-@@ -4176,6 +4210,11 @@ static void memset_extent_buffer(const struct extent_buffer *eb, int c,
- {
- 	unsigned long cur = start;
- 
-+	if (eb->addr) {
-+		memset(eb->addr + start, c, len);
-+		return;
-+	}
-+
- 	while (cur < start + len) {
- 		unsigned long index = get_eb_page_index(cur);
- 		unsigned int offset = get_eb_offset_in_page(eb, cur);
-@@ -4403,6 +4442,17 @@ void memcpy_extent_buffer(const struct extent_buffer *dst,
- 	    check_eb_range(dst, src_offset, len))
- 		return;
- 
-+	if (dst->addr) {
-+		const bool use_memmove = areas_overlap(src_offset,
-+						       dst_offset, len);
-+
-+		if (use_memmove)
-+			memmove(dst->addr + dst_offset, dst->addr + src_offset, len);
-+		else
-+			memcpy(dst->addr + dst_offset, dst->addr + src_offset, len);
-+		return;
-+	}
-+
- 	while (cur_off < len) {
- 		unsigned long cur_src = cur_off + src_offset;
- 		unsigned long pg_index = get_eb_page_index(cur_src);
-@@ -4435,6 +4485,11 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
- 		return;
- 	}
- 
-+	if (dst->addr) {
-+		memmove(dst->addr + dst_offset, dst->addr + src_offset, len);
-+		return;
-+	}
-+
- 	while (len > 0) {
- 		unsigned long src_i;
- 		size_t cur;
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 2171057a4477..a88374ad248f 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -77,6 +77,13 @@ struct extent_buffer {
- 	unsigned long len;
- 	unsigned long bflags;
- 	struct btrfs_fs_info *fs_info;
-+
-+	/*
-+	 * The address where the eb can be accessed without any cross-page handling.
-+	 * This can be NULL if not possible.
-+	 */
-+	void *addr;
-+
- 	spinlock_t refs_lock;
- 	atomic_t refs;
- 	int read_mirror;
--- 
-2.42.1
-
+Thanks,
+Qu
 
