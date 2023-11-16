@@ -1,84 +1,113 @@
-Return-Path: <linux-btrfs+bounces-157-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-158-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 898C77EE7B3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 20:50:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 604987EE7BD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 20:58:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CD8AB20B85
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 19:50:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 020091F2310F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Nov 2023 19:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8384495F1;
-	Thu, 16 Nov 2023 19:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA3A3067B;
+	Thu, 16 Nov 2023 19:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="FMUPvLuU"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lAzTHXui";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Bgrvguq5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB30118D
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 Nov 2023 11:50:22 -0800 (PST)
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-18.iol.local with ESMTPA
-	id 3iNXrlGaSEwsU3iNXr0POJ; Thu, 16 Nov 2023 20:50:19 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-	t=1700164219; bh=+7AnQ6dMF0Q3vxkmEBCIb01D2p/jnFl1w4W0bLjIypo=;
-	h=From;
-	b=FMUPvLuUBnLot71PAvZMVfXFFARiAci8jeHVLXZjKpPcbEsHxta3wi1HPKHVm5nvy
-	 vPV9E3ixxVVjQ4AUjVaJqz3gYaE1t2HkdMSXtjyWlf2UDw8P1TbURXJiHfb4B2TLtn
-	 26NFAADXIBj7upoNZCxNEgChs0FWJP/BDZ9hMNqQN9iuMet7mjzX9kJWXUvYib1edw
-	 snmVszytBm/A6UvrBtZHw2RHAETdV+OZSNQpxDnY3OuAjuesr0dknekaVRAcdtSxOw
-	 rYWR1iQoUBWaKCXkdYe0Pa2b93kczGOUZuFym/jExbYeHfa8T8V0cueFPXmjQ0Vk/h
-	 TKaahBakjsw+g==
-X-CNFS-Analysis: v=2.4 cv=N6vvVUxB c=1 sm=1 tr=0 ts=6556727b cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=IH2DhHoWs26R0i4y0UAA:9 a=QEXdDO2ut3YA:10
-Message-ID: <5e33baee-80ef-421c-9e88-d1d541461469@libero.it>
-Date: Thu, 16 Nov 2023 20:50:19 +0100
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA907196
+	for <linux-btrfs@vger.kernel.org>; Thu, 16 Nov 2023 11:57:53 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5821321D89;
+	Thu, 16 Nov 2023 19:57:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1700164672;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dAYyZoAd+3m5icgDGMKvsHn63+LM2v14uprvsvleon8=;
+	b=lAzTHXuiuWn8vZn/uWWtW/HDDVbgKSfITn9ZXh1V3vLl86RcPrRWb4bL7p0pyHBkTg7Ye7
+	Pqnkl09WLB+/pJSY2d1g4HUINzC/6W3CvRonGkHuq40a128Q8WYoZ5LB0s66TP5S8FCgVk
+	QhAyjj9IhQXz/rBNwY8ty6sPDaBaEKo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1700164672;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dAYyZoAd+3m5icgDGMKvsHn63+LM2v14uprvsvleon8=;
+	b=Bgrvguq5IBvZDDBEEI7TOhd86dAU9v9dNey8aBWiiJ82/Y+Wu4osoCHqnNdGCXGVMROhIU
+	bAGegC8HIDoYJ7AA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 38A571377E;
+	Thu, 16 Nov 2023 19:57:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id BIUWDUB0VmWYZQAAMHmgww
+	(envelope-from <dsterba@suse.cz>); Thu, 16 Nov 2023 19:57:52 +0000
+Date: Thu, 16 Nov 2023 20:50:45 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: David Sterba <dsterba@suse.com>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/2] btrfs: use page alloc/free wrapeprs for compression
+ pages
+Message-ID: <20231116195045.GJ11264@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1700067287.git.dsterba@suse.com>
+ <9f861f8b25f74779dacf17c862b947efd59634a9.1700067287.git.dsterba@suse.com>
+ <724779b3-c542-4f9f-842c-cebc8a445843@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: checksum errors but files are readable and no disk errors
-Content-Language: en-US
-To: Remi Gauvin <remi@georgianit.com>, linux-btrfs@vger.kernel.org
-References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
- <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
- <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
- <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
- <5f6ff1cd-dd64-b88d-e814-39ba3b23395a@georgianit.com>
-From: Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <5f6ff1cd-dd64-b88d-e814-39ba3b23395a@georgianit.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfDDadl4iWZeaqWeOVjkj1D4pSESWrQQtFqrrLH5sGzb9wPqzIEo//8NOpL8NxDf9RGVd42WxoWMRUxIlUMDvSSbNON50lwgXiko9SBopi3psOM9bGhAj
- Odje123n9AhPOgQTo3DVxIyHmaDPQVE2yr0HTMR/0jLXr+XZANCW5c79Zpcw4JyZdz3X7AXfUnmKWViV9n84tn3PV3tK/9EQCk8ecStYdu8gIKkDmYth/zen
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <724779b3-c542-4f9f-842c-cebc8a445843@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.62
+X-Spamd-Result: default: False [-2.62 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 TO_DN_EQ_ADDR_SOME(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.999];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.62)[92.60%]
 
-On 16/11/2023 15.30, Remi Gauvin wrote:
-> On 2023-11-14 3:18 p.m., Qu Wenruo wrote:
->>
->> Disabling COW is recommended for those VM files, as it implies to
->> disable csum, and reduce fragmentation.
+On Thu, Nov 16, 2023 at 09:15:57AM +0000, Johannes Thumshirn wrote:
+> On 15.11.23 18:06, David Sterba wrote:
+> > +void btrfs_free_compr_page(struct page *page)
+> > +{
+> > +	ASSERT(page_ref_count(page) == 1);
+> > +	put_page(page);
 > 
-> 
-> Doesn't disabling COW on BTRFS RAID1 Still result in inconsistent
-> mirrors with unclean shutdowns?
-> 
+> Out of curiosity, why the ASSERT()?
 
-Unfortunately True,
-nocow means nocsum, then the system cannot tell which is the good copy.
-
-
-BR
-  
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
+To verify that it's the last reference and put_page is going to free it
+, so we don't put an actually used page into the cache.
 
