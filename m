@@ -1,119 +1,108 @@
-Return-Path: <linux-btrfs+bounces-168-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-169-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5830E7EF79D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 19:56:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23C0D7EF7AE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 20:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00CB61F2279E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 18:56:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB693281303
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 19:08:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E586433D4;
-	Fri, 17 Nov 2023 18:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF1A43AAB;
+	Fri, 17 Nov 2023 19:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="IrJ+7tLm"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="xoDiHc4m"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B658FE6
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 Nov 2023 10:56:10 -0800 (PST)
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-18.iol.local with ESMTPA
-	id 440erw4l5EwsU440er8Oa8; Fri, 17 Nov 2023 19:56:09 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-	t=1700247369; bh=ZeUZjX5WLzxmO8vMGeGxP6V3yGGUw1xoocDb1qNqsYI=;
-	h=From;
-	b=IrJ+7tLmyhBDMM7FjU3XP3z6uJ0I5u2OY/1lD7Y4mtaQ3cHHKq/gPybHeQCAHcvwR
-	 dvnDUrceigPsHJlClBY4DtfmQAFFqtjh26zhgnJykQinbT0NiEd7FXKBLiX7IaKJOz
-	 mWIB/O3gOfd+t0UjhdL6lq0jtfVcwPyapE461mvALAbkUMLpDWeo5/zxROfaFTaUGb
-	 JYW0TnIg4CRRDrFX+bulbR43tGCxzePNyRh64YZJPa/TWYKIXlv3/cpKLbsGuE9mFv
-	 Kr53arSqAdMx8AFXuEdrqCS80BZhwrHZ4VCGa7eRTKvTkF9HJSb4ieN8LAoTBzU9+/
-	 rFbDmjrHpf+Jw==
-X-CNFS-Analysis: v=2.4 cv=N6vvVUxB c=1 sm=1 tr=0 ts=6557b749 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=JBwH_H3BnaK8NAcj7AwA:9 a=QEXdDO2ut3YA:10
-Message-ID: <4bf1d0d4-6fc3-434f-8166-7a628d48d52f@libero.it>
-Date: Fri, 17 Nov 2023 19:56:08 +0100
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF35CE
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 Nov 2023 11:08:10 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5c85e8fdd2dso9769647b3.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Nov 2023 11:08:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700248090; x=1700852890; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=naEDjPKqD+RM/QbLCu0hYTGsY+tCSuuq3neRV09hx54=;
+        b=xoDiHc4mrKRkkejKOuPCZcmYCy1zCCWafW2HNrXS46Gg2kEQJGUG2bosehXfT/Vdiv
+         /8Alh72Rx0SXmqNnXelHRdTy0E2IkJIBwIV3NgHJst4opBqy4KEUCba72C/qu8JVUrd7
+         4oNTkyWYa4Dm3F9E1DL83aoEkhQztnyiLAvfawDOcE/4L60VJrflBePGwx2U+dOJbPL1
+         e8lqC/WEg9psERNBb76SIOwRjNS4a/ueqfglJtxb0EM5IVNbi8XtwE230kkBEdNp8T8Y
+         uAC5EAO7qw5wbN8wt9bG2wGWTWRcpI7/n/35hx2b1+mEcemFv/WqsE+qLSEbqTzDr8J+
+         o4Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700248090; x=1700852890;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=naEDjPKqD+RM/QbLCu0hYTGsY+tCSuuq3neRV09hx54=;
+        b=U1NhQ7j0UthkYJ+Y5PwqrEt3/d8I7CIkrmy/w7e5QIyDVxUTDHjHLi2ik1wPnXAc6p
+         Nd4rDaAk+IQWS31Qq0bHJ1chAJptXpHvq/ExMadoGrF3xZswFicbpNeM/eqGOlrnthP1
+         puDxYL5ze5vkj166suay87BJOHy2USuzjZNDFLdiCxZzVY+eg04SEPABiQDpweezxMCX
+         EbyR5eXAUPq6NMW76M12uD159Vz00lgtAuh5x+kPGmg/HWcvNRTpnxU8QN75YIKqBFk/
+         ni3DcmLGp1rf4NI/GpWiMRVtl3lNNB6KKTKTiCww6Wyymnhwuutm3Gb2mQ1YlyxMIO6u
+         /30Q==
+X-Gm-Message-State: AOJu0Yxe5xMURpY7f+JJpnhHkv52Ac3apBZ6Ro8LkaOHp4wg51J6GS69
+	hMp1+BpDa0tMvwrhshLiaCclUvrrlh88xYL0+PC0uSR9
+X-Google-Smtp-Source: AGHT+IGsmnbsgqTF6zyg9o3fGs8gZQRtL+wKR8Z0RT/8FTz5QWOt4v5VdsVELWidtLfRMZVU8/OOKg==
+X-Received: by 2002:a81:470a:0:b0:5a8:e6f4:4b6c with SMTP id u10-20020a81470a000000b005a8e6f44b6cmr541654ywa.25.1700248090071;
+        Fri, 17 Nov 2023 11:08:10 -0800 (PST)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id s184-20020a0de9c1000000b00565271801b6sm640770ywe.59.2023.11.17.11.08.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 11:08:09 -0800 (PST)
+Date: Fri, 17 Nov 2023 14:08:07 -0500
+From: Josef Bacik <josef@toxicpanda.com>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: migrate to use folio private instead of page
+ private
+Message-ID: <20231117190807.GA1513185@perftesting>
+References: <b4097d7c5a887a0e9d8bdedd9cd112aadb716d58.1700193251.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: checksum errors but files are readable and no disk errors
-Content-Language: en-US
-To: Remi Gauvin <remi@georgianit.com>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
- <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
- <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
- <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
- <5f6ff1cd-dd64-b88d-e814-39ba3b23395a@georgianit.com>
- <5e33baee-80ef-421c-9e88-d1d541461469@libero.it>
- <59b6ad3e-c16e-4a29-abd4-4d6f57047155@libero.it>
- <65b3acc5-0aff-a7e8-142b-4ad40c60f3dd@georgianit.com>
-From: Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <65b3acc5-0aff-a7e8-142b-4ad40c60f3dd@georgianit.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfGxp1bcXMUPlbqihPkiN80jBW7bQqcSGNm+WGBcIBo03qIHRx/jf3bpNeP0UUGZ497qyUFOr+QoludejVR1ozkjwFI2C+QKobJcr0lHoE2xh7ST5/h0J
- FOO3nRhK60TtYlfIR79u313YGsNR5tr1V6467iaI7YsuLH/op0QCZiYuaHJky6CBb56nMFXvTgFy6a9VNeysGcGt2U1CQZcF5ckPmxWqRvxMGWtN1lLmCrmW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b4097d7c5a887a0e9d8bdedd9cd112aadb716d58.1700193251.git.wqu@suse.com>
 
-On 16/11/2023 22.42, Remi Gauvin wrote:
-> On 2023-11-16 4:12 p.m., Goffredo Baroncelli wrote:
->>
->>
->> If we remove the COW (and thus the CSUM), there is no guarantee that
->> the data
->> is sync between the two copies in case of unclean shutdown.
->> In case of dis-agreement between the copies, there is no CSUM to help
->> to understand
->> which is the good copy.
->>
->> The metadata are still COW and CSUM protected.
+On Fri, Nov 17, 2023 at 02:24:14PM +1030, Qu Wenruo wrote:
+> As a cleanup and preparation for future folio migration, this patch
+> would replace all page->private to folio version.
+> This includes:
 > 
+> - PagePrivate()
+>   -> folio_test_private()
 > 
-> The Complaint I have is the reckless disregard with which BTRFS allows
-> (and as in this case, is often suggested) to use BTRFS Raid 1 *without*
-> Cow.  in the case of an unclean shutdown, if there was data being
-> written to a NoCow file, it is very likely that the files writes will be
-> interrupted at a different point, resulting in the two Raid copies being
-> *different*.
+> - page->private
+>   -> folio_get_private()
 > 
-> By itself, BTRFS does not detect this condition.  Even if you were to
-> manually scrub, it *still* won't compare the two Mirrors to ensure that
-> the file contents are the same on both copies.  The exact data that is
-> read back will depend on which drive is being read from.
+> - attach_page_private()
+>   -> folio_attach_private()
 > 
-> If this is still the case, I would suggest that a workload that requires
-> disabling COW on BTRFS, it would also be necessary to replace BTRFS Raid
-> with MD.
+> - detach_page_private()
+>   -> folio_detach_private()
 > 
+> Since we're here, also remove the forced cast on page->private, since
+> it's (void *) already, we don't really need to do the cast.
+> 
+> For now even if we missed some call sites, it won't cause any problem
+> yet, as we're only using order 0 folio (single page), thus all those
+> folio/page flags should be synced.
+> 
+> But for the future conversion to utilize higher order folio, the page
+> <-> folio flag sync is no longer guaranteed, thus we have to migrate to
+> utilize folio flags.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-If you want that the two copies are synced, you need cow. If you want the
-checksum you need cow. However cow is slow and causes an high fragmentation when
-there are short writes + sync.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Even if I understand your disappointment, what are the alternatives ?
-- MD (as suggested by you) have the same problem, the two copies
-   may be out of sync (unless you journal the data, but this is also slow).
-- ZFS ? I don't know how it perform bad/good in these scenarios. I suspect
-   that it is a bit better due to its tiering structure.
-- Reading the two copies and syncing these when different, choosing randomically
-   a good copy ? This would avoid that reading two times the same data
-   gives a different data due to which copy is picked. Which is not very good either.
+Thanks,
 
-
-> 
-> 
-> 
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
+Josef
 
