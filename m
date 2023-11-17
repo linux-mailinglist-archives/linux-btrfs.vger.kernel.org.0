@@ -1,122 +1,119 @@
-Return-Path: <linux-btrfs+bounces-167-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-168-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EAF37EF3C0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 14:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5830E7EF79D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 19:56:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE3041F2629C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 13:37:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00CB61F2279E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 18:56:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE6932C65;
-	Fri, 17 Nov 2023 13:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E586433D4;
+	Fri, 17 Nov 2023 18:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FJ3q580j"
+	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="IrJ+7tLm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1067ED4B;
-	Fri, 17 Nov 2023 05:37:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=nx/Pv1PYCiC9DG1C8Yjkw4xazpeJGYAfjvQtO3Qtn20=; b=FJ3q580jGlZInbLHGdhlB9N7Pt
-	F4s+C3nz+JJa8kXLtlM+K+3eW0mA/wJUsjVhbtInuZthow4RkWUn0AJbwxu+dV7Mq8IhHONUMDMN3
-	dkojxw82g6DS3T0bDLhQWwbrkTvPrbvFvpyO+RtrMjUASW/uYKwzppeBGukUJ91mbq+BlEBFjt166
-	iWwZgHMMq6EqWBUxVSeTQWl+mapiZQNweeKDIGZC1xJut34LCdpu8RUQMGYKzlp2FrgzpTQ8/G0tC
-	Zp1+1uYo9sxks7F8FIAEVjNYnnVB7+5Bv8spiyOEV/VKeB/8FnqMvKee62WT4upc0il49AAeiMEhB
-	P+5Bqfrw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1r3z1m-009g3V-Ul; Fri, 17 Nov 2023 13:36:59 +0000
-Date: Fri, 17 Nov 2023 13:36:58 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
-	Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Mixed page compact code and (higher order) folios for filemap
-Message-ID: <ZVdseuGiGlvatD5/@casper.infradead.org>
-References: <ec608bc8-e07b-49e6-a01e-487e691220f5@gmx.com>
- <ZVWjBVISMbP/UvGY@casper.infradead.org>
- <0e995d32-a984-4b65-b9e3-67fc62cc2596@gmx.com>
- <ZVYl8z5A1ucf/GYt@casper.infradead.org>
- <9ecbebd3-4dc1-4560-9616-1af861c376e1@gmx.com>
+Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B658FE6
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 Nov 2023 10:56:10 -0800 (PST)
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-18.iol.local with ESMTPA
+	id 440erw4l5EwsU440er8Oa8; Fri, 17 Nov 2023 19:56:09 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+	t=1700247369; bh=ZeUZjX5WLzxmO8vMGeGxP6V3yGGUw1xoocDb1qNqsYI=;
+	h=From;
+	b=IrJ+7tLmyhBDMM7FjU3XP3z6uJ0I5u2OY/1lD7Y4mtaQ3cHHKq/gPybHeQCAHcvwR
+	 dvnDUrceigPsHJlClBY4DtfmQAFFqtjh26zhgnJykQinbT0NiEd7FXKBLiX7IaKJOz
+	 mWIB/O3gOfd+t0UjhdL6lq0jtfVcwPyapE461mvALAbkUMLpDWeo5/zxROfaFTaUGb
+	 JYW0TnIg4CRRDrFX+bulbR43tGCxzePNyRh64YZJPa/TWYKIXlv3/cpKLbsGuE9mFv
+	 Kr53arSqAdMx8AFXuEdrqCS80BZhwrHZ4VCGa7eRTKvTkF9HJSb4ieN8LAoTBzU9+/
+	 rFbDmjrHpf+Jw==
+X-CNFS-Analysis: v=2.4 cv=N6vvVUxB c=1 sm=1 tr=0 ts=6557b749 cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=JBwH_H3BnaK8NAcj7AwA:9 a=QEXdDO2ut3YA:10
+Message-ID: <4bf1d0d4-6fc3-434f-8166-7a628d48d52f@libero.it>
+Date: Fri, 17 Nov 2023 19:56:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ecbebd3-4dc1-4560-9616-1af861c376e1@gmx.com>
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: checksum errors but files are readable and no disk errors
+Content-Language: en-US
+To: Remi Gauvin <remi@georgianit.com>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
+ <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
+ <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
+ <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
+ <5f6ff1cd-dd64-b88d-e814-39ba3b23395a@georgianit.com>
+ <5e33baee-80ef-421c-9e88-d1d541461469@libero.it>
+ <59b6ad3e-c16e-4a29-abd4-4d6f57047155@libero.it>
+ <65b3acc5-0aff-a7e8-142b-4ad40c60f3dd@georgianit.com>
+From: Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <65b3acc5-0aff-a7e8-142b-4ad40c60f3dd@georgianit.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfGxp1bcXMUPlbqihPkiN80jBW7bQqcSGNm+WGBcIBo03qIHRx/jf3bpNeP0UUGZ497qyUFOr+QoludejVR1ozkjwFI2C+QKobJcr0lHoE2xh7ST5/h0J
+ FOO3nRhK60TtYlfIR79u313YGsNR5tr1V6467iaI7YsuLH/op0QCZiYuaHJky6CBb56nMFXvTgFy6a9VNeysGcGt2U1CQZcF5ckPmxWqRvxMGWtN1lLmCrmW
 
-On Fri, Nov 17, 2023 at 09:10:10AM +1030, Qu Wenruo wrote:
-> On 2023/11/17 00:53, Matthew Wilcox wrote:
-> > On Thu, Nov 16, 2023 at 04:00:40PM +1030, Qu Wenruo wrote:
-> > > On 2023/11/16 15:35, Matthew Wilcox wrote:
-> > > > On Thu, Nov 16, 2023 at 02:11:00PM +1030, Qu Wenruo wrote:
-> > > > > E.g. if I allocated a folio with order 2, attached some private data to
-> > > > > the folio, then call filemap_add_folio().
-> > > > > 
-> > > > > Later some one called find_lock_page() and hit the 2nd page of that folio.
-> > > > > 
-> > > > > I believe the regular IO is totally fine, but what would happen for the
-> > > > > page->private of that folio?
-> > > > > Would them all share the same value of the folio_attach_private()? Or
-> > > > > some different values?
-> > > > 
-> > > > Well, there's no magic ...
-> > > > 
-> > > > If you call find_lock_page(), you get back the precise page.  If you
-> > > > call page_folio() on that page, you get back the folio that you stored.
-> > > > If you then dereference folio->private, you get the pointer that you
-> > > > passed to folio_attach_private().
-> > > > 
-> > > > If you dereference page->private, *that is a bug*.  You might get
-> > > > NULL, you might get garbage.  Just like dereferencing page->index or
-> > > > page->mapping on tail pages.  page_private() will also do the wrong thing
-> > > > (we could fix that to embed a call to page_folio() ... it hasn't been
-> > > > necessary before now, but if it'll help convert btrfs, then let's do it).
-> > > 
-> > > That would be great. The biggest problem I'm hitting so far is the page
-> > > cache for metadata.
-> > > 
-> > > We're using __GFP_NOFAIL for the current per-page allocation, but IIRC
-> > > __GFP_NOFAIL is ignored for higher order (>2 ?) folio allocation.
-> > > And we may want that per-page allocation as the last resort effort
-> > > allocation anyway.
-> > > 
-> > > Thus I'm checking if there is something we can do here.
-> > > 
-> > > But I guess we can always go folio_private() instead as a workaround for
-> > > now?
-> > 
-> > I don't understand enough about what you're doing to offer useful
-> > advice.  Is this for bs>PS or is it arbitrary large folios for better
-> > performance?  If the latter, you can always fall back to order-0 folios.
-> > If the former, well, we need to adjust a few things anyway to handle
-> > filesystems with a minimum order ...
-> > 
-> > In general, you should be using folio_private().  page->private and
-> > page_private() will be removed eventually.
+On 16/11/2023 22.42, Remi Gauvin wrote:
+> On 2023-11-16 4:12 p.m., Goffredo Baroncelli wrote:
+>>
+>>
+>> If we remove the COW (and thus the CSUM), there is no guarantee that
+>> the data
+>> is sync between the two copies in case of unclean shutdown.
+>> In case of dis-agreement between the copies, there is no CSUM to help
+>> to understand
+>> which is the good copy.
+>>
+>> The metadata are still COW and CSUM protected.
 > 
-> Just another question.
 > 
-> What about flags like PageDirty? Are they synced with folio?
+> The Complaint I have is the reckless disregard with which BTRFS allows
+> (and as in this case, is often suggested) to use BTRFS Raid 1 *without*
+> Cow.  in the case of an unclean shutdown, if there was data being
+> written to a NoCow file, it is very likely that the files writes will be
+> interrupted at a different point, resulting in the two Raid copies being
+> *different*.
+> 
+> By itself, BTRFS does not detect this condition.  Even if you were to
+> manually scrub, it *still* won't compare the two Mirrors to ensure that
+> the file contents are the same on both copies.  The exact data that is
+> read back will depend on which drive is being read from.
+> 
+> If this is still the case, I would suggest that a workload that requires
+> disabling COW on BTRFS, it would also be necessary to replace BTRFS Raid
+> with MD.
+> 
 
-Yes.  You can SetPageDirty() in one function and then folio_test_dirty()
-in another.  Eventually all the PageFoo() functions will be removed,
-except PageHWPoison and PageAnonExclusive.
+If you want that the two copies are synced, you need cow. If you want the
+checksum you need cow. However cow is slow and causes an high fragmentation when
+there are short writes + sync.
 
-> The declaration goes PF_HEAD for policy, thus for order 0 it makes no
-> difference, but for higher order folios, we should switch to pure folio
-> based operations other than mixing page and folios?
+Even if I understand your disappointment, what are the alternatives ?
+- MD (as suggested by you) have the same problem, the two copies
+   may be out of sync (unless you journal the data, but this is also slow).
+- ZFS ? I don't know how it perform bad/good in these scenarios. I suspect
+   that it is a bit better due to its tiering structure.
+- Reading the two copies and syncing these when different, choosing randomically
+   a good copy ? This would avoid that reading two times the same data
+   gives a different data due to which copy is picked. Which is not very good either.
 
-Every function in btrfs should be folio based.  There should be nothing
-in btrfs that deals with pages.  Take a look at iomap's buffered I/O
-paths for hints -- there's a per-block dirty and uptodate bit, but other
-than that, everything is done with folios.
+
+> 
+> 
+> 
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
 
