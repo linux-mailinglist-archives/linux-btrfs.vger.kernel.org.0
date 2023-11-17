@@ -1,53 +1,74 @@
-Return-Path: <linux-btrfs+bounces-172-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-173-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 457B77EFB20
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 23:01:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A05EE7EFB8B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 23:44:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F46EB20BEB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 22:01:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDCF21C20AF4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 22:43:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D61A3446B1;
-	Fri, 17 Nov 2023 22:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B116E46535;
+	Fri, 17 Nov 2023 22:43:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="DwLf5aBb"
+	dkim=pass (2048-bit key) header.d=georgianit.com header.i=@georgianit.com header.b="HtGDp2si";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="wNJJvE71"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B1DD4B
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 Nov 2023 14:00:57 -0800 (PST)
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-16.iol.local with ESMTPA
-	id 46tTrOrLYGKAA46tTrUUlE; Fri, 17 Nov 2023 23:00:56 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-	t=1700258456; bh=/VH+D+NeGEopdM8AwdUuA68h+g5sDw4ETvQD6dj5bvM=;
-	h=From;
-	b=DwLf5aBbe02013PjqTSs02CSlUyA6r4uPIf0T2G9EYah3N2L7tZxWHCFmegqnxD7q
-	 mpnRKUWf/YHPlJlgDu9ksN3Xy5vcEFNM9jdz0c7Kt7HG5z7nmPaESPgxKtMeWsQ/es
-	 wcdrS4u8pZ+nN9aHUGbwZD8k/7CaLuLkXRVzYZJGZIBmoX3OWRdQiPLF0J23bNrGqT
-	 SgrRXfHAeNjdtXUdmyn5NWN6IU4+XIJdmtfPgb/oH74FVX3kZHUxudtlNYAcnLhZwi
-	 6hKS7QEzrWiBifYVo679XruA9UWgpqA1p55MQWKigMJQ/LMWYRS0Zle3Giy1Apak1F
-	 z0Q3/IQmzpTLA==
-X-CNFS-Analysis: v=2.4 cv=OoOJiQzt c=1 sm=1 tr=0 ts=6557e298 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=jrBqA5t7BCvrIOjTMHUA:9 a=QEXdDO2ut3YA:10
-Message-ID: <cecd43db-da2c-4558-b343-4faabacdf0d8@inwind.it>
-Date: Fri, 17 Nov 2023 23:00:55 +0100
-Precedence: bulk
-X-Mailing-List: linux-btrfs@vger.kernel.org
-List-Id: <linux-btrfs.vger.kernel.org>
-List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8092FD4D
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 Nov 2023 14:43:52 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id 218675C01B1
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 Nov 2023 17:43:50 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 17 Nov 2023 17:43:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+	 h=cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+	1700261030; x=1700347430; bh=vph3+VEBQuD8BntEMwGK8EvDXD2r2yCr9wq
+	znBQY0RA=; b=HtGDp2siUJ3obwGYGPzPh57Q/upA2Ks4+N2BbVa3EHbZysdaGF/
+	TYWJ/e9faYfQz1DsTdtBILMk0VsLQlOK7ZL2gWYo07MG0cDEj287V/Cb6NroyUk5
+	AKICbq2iFx+lXNMMUizaYhitpSzU8xpo3D3A+N44RqRnqziI/4HiwoF+fXJYf/Tk
+	AFRBwZu3RRGpU6KiGIvSx6/79iGpWIZetEn8RJlRFm15u5Tm1E9Md8ytOr/ymX3V
+	8AChciqmQmJ4H56tRfFw2VBspJ7CmLyVfY85O2Ya8WulnGdf5v8NrR5CZMzejDfU
+	qUmXUs4mDViSofrLI6iwCpZ+aNKUfc8/kpw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700261030; x=
+	1700347430; bh=vph3+VEBQuD8BntEMwGK8EvDXD2r2yCr9wqznBQY0RA=; b=w
+	NJJvE71nSeK/uYpaJf6ym8nXuef46UdQwRfVrXUMYY4glbtK2nDZk5A++EBd3xdz
+	RV7pkCK1IhMNcrj3yKz4C+WItg1ZrPXK+NCYcZELcvGVi24+pWz7sqwwjqPQd2KQ
+	MEvOFz59rzUSPgPX9tsfkzxH1NmIgOV0BpJoHCAbSglQsFyJJDzdIkvBRphJZ4Vs
+	e7NWGQLmNrzgXDIR31ybi+WgtinoT/0GLLSRSi7Bw220O98+rqE3uJkZoqKCtLN9
+	cJ939EEAm6+5dFyRWLm8vnX0USU0h0dZafT67CQpPUHOni0YjDfMtc+5JcUjjVkB
+	517W39gADASnUmevdX5cw==
+X-ME-Sender: <xms:pexXZbVR36dOWiaXgeZJZwo1jpkHWXDvpylarWPtLGzLW0nWDvw-9w>
+    <xme:pexXZTmEUK5E7FcAvMN_nS-8-_xO1VRVUrdqB9qZQaZUujXg40F2S4sTnWjoJCZBB
+    woT0UW7GHfrM3saGA>
+X-ME-Received: <xmr:pexXZXba_9ifbRMb6DnfthFiv9GvnDBGxBUdsopgtt3PMDoUKXJpzDkNOFR9WQKaQOxgGuN-ytgNg3aBekGDTKTUXks>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegtddgudeifecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtgfesth
+    ekredttdefjeenucfhrhhomheptfgvmhhiucfirghuvhhinhcuoehrvghmihesghgvohhr
+    ghhirghnihhtrdgtohhmqeenucggtffrrghtthgvrhhnpefhtdeuheegveehtedtheejff
+    fgteffueduteehhfevffetvefhvdffudduudeivdenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpehrvghmihesghgvohhrghhirghnihhtrdgtoh
+    hm
+X-ME-Proxy: <xmx:pexXZWV04UCJbeo13AgE8DSf9HbO6FwEwacdxzKXD1SpAWpPNGJVkQ>
+    <xmx:pexXZVkR8U3J9Spm6XoZ6UDm5HXYihZ0wTGf7juWmRDXMR_pXQicAw>
+    <xmx:pexXZTf1LHIaW_O3DO1y_4AmMrxQnaGSff1SzmR60o4VU2_SHpcWrg>
+    <xmx:puxXZTSlgW2PuCHvXBXtlXUMZrX7QfMXeYmh0tmuHzW_LkmrpRHN9A>
+Feedback-ID: i10c840cd:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <linux-btrfs@vger.kernel.org>; Fri, 17 Nov 2023 17:43:49 -0500 (EST)
 Subject: Re: checksum errors but files are readable and no disk errors
-Content-Language: en-US
-To: Remi Gauvin <remi@georgianit.com>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
+To: linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
  <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
  <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
@@ -58,67 +79,48 @@ References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
  <65b3acc5-0aff-a7e8-142b-4ad40c60f3dd@georgianit.com>
  <4bf1d0d4-6fc3-434f-8166-7a628d48d52f@libero.it>
  <9f955c4a-82be-98cc-6f61-ee5469c32ba2@georgianit.com>
-From: Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <9f955c4a-82be-98cc-6f61-ee5469c32ba2@georgianit.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <cecd43db-da2c-4558-b343-4faabacdf0d8@inwind.it>
+From: Remi Gauvin <remi@georgianit.com>
+Message-ID: <5e4b13ab-2b8b-7115-be9c-c7f332982407@georgianit.com>
+Date: Fri, 17 Nov 2023 17:43:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+Precedence: bulk
+X-Mailing-List: linux-btrfs@vger.kernel.org
+List-Id: <linux-btrfs.vger.kernel.org>
+List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <cecd43db-da2c-4558-b343-4faabacdf0d8@inwind.it>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfK4o15Sp5NgBVUTQT8lirATsqaCl+qe+mYpthTvtU26m8y/gWVfwwvvrp4BOtPCikHqtjkPzoVhDmwSpKK9ha1FhRzHWbib7JJlFC8LdWuDAHmCn/NzI
- 0RP2DMqTOFUiBdkxq5AcnzlyOlIqxazaZoUyNOZp0Sdy/7Wx+wmqMzmXztM2pGIkaWcCLBDmRDWgjgGPYbVYNUcoyLhRFvnnUpo75wOS3iuPJ6Y3QONVmwRJ
+Content-Language: en-US
 
-On 17/11/2023 22.25, Remi Gauvin wrote:
-> On 2023-11-17 1:56 p.m., Goffredo Baroncelli wrote:
->>
->> Even if I understand your disappointment, what are the alternatives ?
->> - MD (as suggested by you) have the same problem, the two copies
->>    may be out of sync (unless you journal the data, but this is also slow).
-> 
-> No,, MD, (and any other Raid Implementation I have ever heard of,), will
-> have a mechanism of detecting unclean shutdown, and will immediately
-> re-synchronize the mirrors.  (This can be fast if using something like
-> write intent bitmap, or it might have to scan and re-sync the entire
-> drive, but mirrored drives are never left out of sync deliberately.)
-> While the drive is out of sync, 1 drive will be considered canonically
-> correct.  (ie, will only read from one drive unless there's a read failure.)
-> 
+On 2023-11-17 5:00 p.m., Goffredo Baroncelli wrote:
+> I think that we should put everything in the right order:
+>
+> - COW:
+>     preserve data and metadata even after an unclean shutdown
+>
+> - BTRFS with NOCOW:
+>     preserve metadata even after an unclean shutdown
+>     data may be wrong
+>     depending by which disk is read, the data may be different 
 
-I think that we should put everything in the right order:
+ 
 
-- COW:
-	preserve data and metadata even after an unclean shutdown
+But what happens, for example, in the case of a virtual machine image,
+an automatic filesystem repair on the guest reads data that looks good,
+but a later read runs into corrupt or incomplete data?
 
-- BTRFS with NOCOW:
-	preserve metadata even after an unclean shutdown
-	data may be wrong
-	depending by which disk is read, the data may be different
+I admit that I do not understand the intricacies of how this plays out
+in the read world.  Maybe the reason no one seems to care about this
+issue is that it is unlikely to ever actually be an issue in reality...
+(although, in the artificial tests I have done by disconnecting drives,
+it is a *big* issue).  It just seems really bizarre to me to that you
+can have a raid implementation that doesn't keep mirrors synchronized,
+and has no mechanism to synchronize them, (other than user manually
+starting a full balance operation.)
 
-- EXT4 + MD (with a bitmap)
-	preserve metadata even after an unclean shutdown
-	data may be wrong
-
-
-So yes EXT4+MD (with a bitmap) is slightly better than a BTRFS without COW.
->>
->> - Reading the two copies and syncing these when different, choosing
->> randomically
->>    a good copy ? This would avoid that reading two times the same data
->>    gives a different data due to which copy is picked. Which is not
->> very good either.
->>
-> 
-> That is what Raid does (classically.)..  Yes, data corruption will
-> happen to a file is a write is interrupted.. (that can't be helped
-> without cow, or data journalling of some kind.)  But you don't end up
-> with different random corruptions.
-> 
-
-
-
-
-> 
-> 
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
 
