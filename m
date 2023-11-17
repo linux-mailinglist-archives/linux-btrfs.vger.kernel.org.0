@@ -1,108 +1,135 @@
-Return-Path: <linux-btrfs+bounces-169-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-170-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23C0D7EF7AE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 20:08:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC8C7EF7B6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 20:10:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB693281303
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 19:08:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7562C1C2030B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Nov 2023 19:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF1A43AAB;
-	Fri, 17 Nov 2023 19:08:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D6C433DD;
+	Fri, 17 Nov 2023 19:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="xoDiHc4m"
+	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="F9IqGU4e"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF35CE
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 Nov 2023 11:08:10 -0800 (PST)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5c85e8fdd2dso9769647b3.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Nov 2023 11:08:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700248090; x=1700852890; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=naEDjPKqD+RM/QbLCu0hYTGsY+tCSuuq3neRV09hx54=;
-        b=xoDiHc4mrKRkkejKOuPCZcmYCy1zCCWafW2HNrXS46Gg2kEQJGUG2bosehXfT/Vdiv
-         /8Alh72Rx0SXmqNnXelHRdTy0E2IkJIBwIV3NgHJst4opBqy4KEUCba72C/qu8JVUrd7
-         4oNTkyWYa4Dm3F9E1DL83aoEkhQztnyiLAvfawDOcE/4L60VJrflBePGwx2U+dOJbPL1
-         e8lqC/WEg9psERNBb76SIOwRjNS4a/ueqfglJtxb0EM5IVNbi8XtwE230kkBEdNp8T8Y
-         uAC5EAO7qw5wbN8wt9bG2wGWTWRcpI7/n/35hx2b1+mEcemFv/WqsE+qLSEbqTzDr8J+
-         o4Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700248090; x=1700852890;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=naEDjPKqD+RM/QbLCu0hYTGsY+tCSuuq3neRV09hx54=;
-        b=U1NhQ7j0UthkYJ+Y5PwqrEt3/d8I7CIkrmy/w7e5QIyDVxUTDHjHLi2ik1wPnXAc6p
-         Nd4rDaAk+IQWS31Qq0bHJ1chAJptXpHvq/ExMadoGrF3xZswFicbpNeM/eqGOlrnthP1
-         puDxYL5ze5vkj166suay87BJOHy2USuzjZNDFLdiCxZzVY+eg04SEPABiQDpweezxMCX
-         EbyR5eXAUPq6NMW76M12uD159Vz00lgtAuh5x+kPGmg/HWcvNRTpnxU8QN75YIKqBFk/
-         ni3DcmLGp1rf4NI/GpWiMRVtl3lNNB6KKTKTiCww6Wyymnhwuutm3Gb2mQ1YlyxMIO6u
-         /30Q==
-X-Gm-Message-State: AOJu0Yxe5xMURpY7f+JJpnhHkv52Ac3apBZ6Ro8LkaOHp4wg51J6GS69
-	hMp1+BpDa0tMvwrhshLiaCclUvrrlh88xYL0+PC0uSR9
-X-Google-Smtp-Source: AGHT+IGsmnbsgqTF6zyg9o3fGs8gZQRtL+wKR8Z0RT/8FTz5QWOt4v5VdsVELWidtLfRMZVU8/OOKg==
-X-Received: by 2002:a81:470a:0:b0:5a8:e6f4:4b6c with SMTP id u10-20020a81470a000000b005a8e6f44b6cmr541654ywa.25.1700248090071;
-        Fri, 17 Nov 2023 11:08:10 -0800 (PST)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id s184-20020a0de9c1000000b00565271801b6sm640770ywe.59.2023.11.17.11.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 11:08:09 -0800 (PST)
-Date: Fri, 17 Nov 2023 14:08:07 -0500
-From: Josef Bacik <josef@toxicpanda.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: migrate to use folio private instead of page
- private
-Message-ID: <20231117190807.GA1513185@perftesting>
-References: <b4097d7c5a887a0e9d8bdedd9cd112aadb716d58.1700193251.git.wqu@suse.com>
+Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670FACE
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 Nov 2023 11:10:35 -0800 (PST)
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-16.iol.local with ESMTPA
+	id 44EYrNz3zGKAA44EZrU1AZ; Fri, 17 Nov 2023 20:10:31 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+	t=1700248231; bh=OnTq4zaIkK+gOih5kWf6JjLxMP2xlrNMTHMg4tVwu+o=;
+	h=From;
+	b=F9IqGU4eZCmCVYUfcPWJIFT1FbALEadTDXL7BpRzOEfa/8Fcd38OaBMdvkudG4Yuv
+	 iOFvTOzRiYcsUzzpAtSW372RlFudQ+lZDAnmXMvLQoGoFYyYLga5JqrYNQWYQJzMrH
+	 IZIYOjiotEW4bLCR3QHjXeaaA4BYcLwGnZyQ1F5KyoUkmo3QsmFYy7DWayXz1FquhV
+	 Bp0m5KsHzMIMloAukjMcfjH50Q0KYX7EDoFHanP6A/JeinrTWb3m2AEaOGVGlQardf
+	 lxvc2srnVZZN2at2o1Egb/xinCSotGuihH11n8R0VTLv9gJ6WjKSNk5uSQi/KCLPHS
+	 4yiopKXBwn7Zw==
+X-CNFS-Analysis: v=2.4 cv=OoOJiQzt c=1 sm=1 tr=0 ts=6557baa7 cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=LPPgUBR8ukhsxVunpBsA:9 a=QEXdDO2ut3YA:10
+Message-ID: <31ab3d6b-5a15-4cec-8ad8-b928c6502b9c@inwind.it>
+Date: Fri, 17 Nov 2023 20:10:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b4097d7c5a887a0e9d8bdedd9cd112aadb716d58.1700193251.git.wqu@suse.com>
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: checksum errors but files are readable and no disk errors
+Content-Language: en-US
+To: Christoph Anton Mitterer <calestyo@scientia.org>,
+ linux-btrfs@vger.kernel.org
+References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
+ <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
+ <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
+ <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
+ <5f6ff1cd-dd64-b88d-e814-39ba3b23395a@georgianit.com>
+ <5e33baee-80ef-421c-9e88-d1d541461469@libero.it>
+ <15a0b5f85425163e39edb7f2c5d9878a847754e7.camel@scientia.org>
+From: Goffredo Baroncelli <kreijack@inwind.it>
+In-Reply-To: <15a0b5f85425163e39edb7f2c5d9878a847754e7.camel@scientia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfIcNWxosOxWDhvqA60Sbvtn4nhYgv2NQIQuEEi4pZ8LmQ9RHSqMMSKpNUDOrqztjT9N0596Psj0hY4SRPCCc6enRHENvx2htdXp/zLbEzXO7FgcoyJTL
+ phxczMIynDkSMBIxpt91snr5NrTdMEMLqJllbZoTOsylwcVHiP8aVdU/NUEchIUzec9eaDD4AvHcrLW999BdPjm1nYcW1ovbac3ehq88cVr//cgjSXL8VQOd
 
-On Fri, Nov 17, 2023 at 02:24:14PM +1030, Qu Wenruo wrote:
-> As a cleanup and preparation for future folio migration, this patch
-> would replace all page->private to folio version.
-> This includes:
+On 16/11/2023 22.25, Christoph Anton Mitterer wrote:
+> On Thu, 2023-11-16 at 20:50 +0100, Goffredo Baroncelli wrote:
+>> nocow means nocsum, then the system cannot tell which is the good
+>> copy.
 > 
-> - PagePrivate()
->   -> folio_test_private()
+> What I never understood:
 > 
-> - page->private
->   -> folio_get_private()
+> When doing nowdatacow, then one cannot have data csums, because it
+> couldn't update both csum and data atomically, right?
 > 
-> - attach_page_private()
->   -> folio_attach_private()
+> But doesn't that only matter in case of a crash (and then one wouldn't
+> know whether it's the data or the csum that's good)?
 > 
-> - detach_page_private()
->   -> folio_detach_private()
-> 
-> Since we're here, also remove the forced cast on page->private, since
-> it's (void *) already, we don't really need to do the cast.
-> 
-> For now even if we missed some call sites, it won't cause any problem
-> yet, as we're only using order 0 folio (single page), thus all those
-> folio/page flags should be synced.
-> 
-> But for the future conversion to utilize higher order folio, the page
-> <-> folio flag sync is no longer guaranteed, thus we have to migrate to
-> utilize folio flags.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> And shouldn't it be possible to be made work properly in all cases
+> where no crash is involved?
+> So for all cases where corruptions might occur, except for the single
+> case of a crash, one could still have the benefits of checksumming.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+I am not sure to fully understand what you wrote. However:
 
-Thanks,
+- COW has bad performance when there are small writes + sync
+- CSUM need COW
+- COW alone is enough to guarantee the consistency in case of unclean
+   shutdown
+- CSUM protects from corruption due to external causes (e.g. cosmic rays).
 
-Josef
+In VM scenario, it is suggested to disable COW to avoid fragmentation and to
+increase the speed.
+This (the disabling of COW) causes a possible out of sync of data of the two copies
+of a RAID1 filesystem.
+Worse, because NOCOW means NOCSUM, it is impossible to say which copy is good.
+
+Let me to do a counter example: the case COW and NOCSUM, doesn't suffer of
+the problems related to the unclean shutdown.
+
+In case of raid1/dup/raid10, COW is enough to guarantee consistency in case
+of unsafe shutdown.
+
+> 
+> 
+> If so, I don't quite get why it's not made possible for nodatacow. The
+> worst thing that - in my naive understanding - is, that on a crash I
+> wouldn't know whether the data or the csum is correct.
+> But that's that's anyway the case with nodatacow and a crash.
+> 
+> So one would only need a way, that, after a crash, allows people to
+> choose whether they want to ignore the csum and take the data as is, or
+> rather get an EIO if the csum doesn't match.
+> 
+> 
+> And again, naively thought: since we do have the generations...
+> couldn't such a tool, just work on all data that has a recent
+> generation, or if that doesn't work, on all data that is nodatasum?
+> 
+> 
+> At least the last time I've checked, most typical users of notdatasums
+> (VM images, DBs) either don't support their own checksumming at all,
+> don't have it enabled per default, or have only some level of
+> checksumming.
+> 
+> 
+> 
+> Cheers,
+> Chris.
+> 
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
 
