@@ -1,115 +1,227 @@
-Return-Path: <linux-btrfs+bounces-182-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-183-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E03037F0154
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 18:37:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 521087F02F6
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 22:06:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8923B1F22CAF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 17:37:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C04CB20A93
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 21:06:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD8519BB4;
-	Sat, 18 Nov 2023 17:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED6D1DFC9;
+	Sat, 18 Nov 2023 21:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="BDizo5ip"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gYOk+fi4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F7512B
-	for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 09:37:45 -0800 (PST)
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-16.iol.local with ESMTPA
-	id 4PGIrW0VKGKAA4PGJrYQQ1; Sat, 18 Nov 2023 18:37:43 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-	t=1700329063; bh=7cNHLX2ctIC1eGxo5wFlFE6XPAWSg6xJHx1guGloBJo=;
-	h=From;
-	b=BDizo5ipOvCGWRNqY4W+rCioCQH1JGNyxH6IW/9Sxn+OO1rLSfsmugD0JkLmV6I/S
-	 LY1RvyTMjA5YvYjwE06+Ko+INpWrr0JG/Kmt+ZKggLzXBe0Dp2pwlhFkioIf4IrnTw
-	 4oFPtfJgDLEo8LOlRZ/vk9tPv7mxq1xYm7o63E4LDJe42R2Om+2Fyhk6PBazhaHT7n
-	 lLttpNMbPsnnzqEtjiT+O2KUwuvSBtJp1HkoDUagsnyQfSUn0r2VklVKMJ0uZ+jDfX
-	 HrGx26Mpm2wcsHKz2AJdkyaHoKZfQbprORvYkUXv7ULAAVxgs9ZO+XgiEQenK97I0E
-	 axhtKl7sGVpDA==
-X-CNFS-Analysis: v=2.4 cv=OoOJiQzt c=1 sm=1 tr=0 ts=6558f667 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=4jqkTvAoAAAA:8 a=_QNhIW5Djb-r_eV3oGYA:9 a=QEXdDO2ut3YA:10
- a=Hh_HAVYRK2TLt7S9I1XE:22
-Message-ID: <4820ef14-f09c-47b5-8d91-7489a93bb041@inwind.it>
-Date: Sat, 18 Nov 2023 18:37:42 +0100
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C5811D
+	for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 13:05:53 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7a956887c20so125080339f.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 13:05:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1700341553; x=1700946353; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CnUlKHEMUW8hNVFr2uUIldtuqY3ev6XDCaZO0iwKWuE=;
+        b=gYOk+fi4yyDMPxJIHlcPAClokkrPk8DBmZVfZq1O7HCSkHxLLCs0GXK3DWVhJgMzdj
+         WFyxHzmlnw8RT7E0aIN57UzOq5bORZC8lTasGP0x5ZqRbAobeDRVV8N66BXd1wcZ5YMl
+         jSfV8GJQPqV1cvVKtLPQNrBS7dtDCzr6+IOyA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700341553; x=1700946353;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CnUlKHEMUW8hNVFr2uUIldtuqY3ev6XDCaZO0iwKWuE=;
+        b=lnIrNzAps7YPG7MDgeWa+nG74h/3L797sfwCQkUB8Ks1ihtoAsdWXPwGW/z7ig+6/G
+         FnaRArPRYbnYZGN6jInblLZSRzPF+PVOfB1ssl1lUyHompZzU0Ge1Wn/b+qjmtv4V9z7
+         qf2+/gNqBPaLNK6CbZVgCrXjB/jSo9/MRuU0A90YBS9LfyN0OSqOgqJNoczJcnd+csRv
+         FswOZIeUTaPtkGLvCeUldzQEDnqIszAYjmgPmQEbElF0xHOAqciqhJxWicO72U4WqWRm
+         sHpJUompKyKufZ+YBrKh4ZSHHjQVqI2zZdtuJNLydONX0LQRWEbp1Pq5tRiEuO1HZNWR
+         4uXg==
+X-Gm-Message-State: AOJu0YzT8A7NqM8Z0pRtOh5yHaM3yEX+MrcgQwdAWcEkDNm6jxSoen2C
+	UkRWx4GiLy3Fl/U0v8UcFvpmrA==
+X-Google-Smtp-Source: AGHT+IGEZ5OsDcml53MiAEJ6J2NEcVqZW/BxWDM3z/rMBsrgk12N1FX8EonfO3GSWfVqiPFKg1lTCA==
+X-Received: by 2002:a5d:9389:0:b0:7ab:ec1f:f4a2 with SMTP id c9-20020a5d9389000000b007abec1ff4a2mr3621118iol.8.1700341552976;
+        Sat, 18 Nov 2023 13:05:52 -0800 (PST)
+Received: from sjg1.lan (c-73-14-173-85.hsd1.co.comcast.net. [73.14.173.85])
+        by smtp.gmail.com with ESMTPSA id eq11-20020a0566384e2b00b00464001012c7sm1126731jab.129.2023.11.18.13.05.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Nov 2023 13:05:52 -0800 (PST)
+From: Simon Glass <sjg@chromium.org>
+To: U-Boot Mailing List <u-boot@lists.denx.de>
+Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Tom Rini <trini@konsulko.com>,
+	Heinrich Schuchardt <xypron.glpk@gmx.de>,
+	Simon Glass <sjg@chromium.org>,
+	Albert Aribaud <albert.u.boot@aribaud.net>,
+	Alexander Gendin <agendin@matrox.com>,
+	Baruch Siach <baruch@tkos.co.il>,
+	Bin Meng <bmeng.cn@gmail.com>,
+	Eddie James <eajames@linux.ibm.com>,
+	Evgeny Bachinin <EABachinin@sberdevices.ru>,
+	Fabio Estevam <festevam@gmail.com>,
+	Ivan Mikhaylov <fr0st61te@gmail.com>,
+	Jaehoon Chung <jh80.chung@samsung.com>,
+	Jerry Van Baren <vanbaren@cideas.com>,
+	Joe Hershberger <joe.hershberger@ni.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+	Marek Vasut <marek.vasut+renesas@mailbox.org>,
+	Marek Vasut <marex@denx.de>,
+	Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+	Michal Simek <michal.simek@amd.com>,
+	"NXP i.MX U-Boot Team" <uboot-imx@nxp.com>,
+	Peng Fan <peng.fan@nxp.com>,
+	Qu Wenruo <wqu@suse.com>,
+	Safae Ouajih <souajih@baylibre.com>,
+	Sean Anderson <sean.anderson@seco.com>,
+	Sean Anderson <seanga2@gmail.com>,
+	Stefano Babic <sbabic@denx.de>,
+	Stephen Carlson <stcarlso@linux.microsoft.com>,
+	This contributor prefers not to receive mails <noreply@example.com>,
+	Tim Harvey <tharvey@gateworks.com>,
+	Tobias Waldekranz <tobias@waldekranz.com>,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 00/32] bootm: Refactoring to reduce reliance on CMDLINE (part A)
+Date: Sat, 18 Nov 2023 14:04:48 -0700
+Message-ID: <20231118210547.577026-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: checksum errors but files are readable and no disk errors
-To: remi@georgianit.com, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
- <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
- <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
- <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
- <5f6ff1cd-dd64-b88d-e814-39ba3b23395a@georgianit.com>
- <5e33baee-80ef-421c-9e88-d1d541461469@libero.it>
- <59b6ad3e-c16e-4a29-abd4-4d6f57047155@libero.it>
- <65b3acc5-0aff-a7e8-142b-4ad40c60f3dd@georgianit.com>
- <4bf1d0d4-6fc3-434f-8166-7a628d48d52f@libero.it>
- <9f955c4a-82be-98cc-6f61-ee5469c32ba2@georgianit.com>
- <cecd43db-da2c-4558-b343-4faabacdf0d8@inwind.it>
- <CA+H1V9xqZT7L0tj3JTyJscXLKw-tpSE0qNULbg4hn0wYq4fhxw@mail.gmail.com>
- <CA+H1V9xA8_3-BYkhR2ip0v1_-bKxWY1hHW1kRwoxhaCNu88PYQ@mail.gmail.com>
- <95096727-a472-4c0b-a16d-de53b0f66ff6@libero.it>
- <60fb34fb-ebfe-408b-b787-c62c6a1b5cd9@app.fastmail.com>
-Content-Language: en-US
-From: Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <60fb34fb-ebfe-408b-b787-c62c6a1b5cd9@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfPjnplpyINfj3bZB0fquSqK14oWKSVuS0V8DTnSTZBrF6cDGdaEaGoqxFcxJsDTSgXGPyALQAv9dWifVVEdQulZrULPlFDUunC61xhUhTFANKXxzEyqg
- Q+slBot9cR4EF0GdKYvh1JDUJjBHAZ+IjUBHzv+tq42nXzn9CwPQPuD+zwbHXQ5+ZGc66vhyahipovsFhS2tJXszHqJVKbA8WJ84eE5rR3NbtAUnOM4r+PCP
+Content-Transfer-Encoding: 8bit
 
-On 18/11/2023 17.33, remi@georgianit.com wrote:
-> 
-> 
-> On Sat, Nov 18, 2023, at 3:22 AM, Goffredo Baroncelli wrote:
-> 
->>
->> dm-integrity+dm-raid is not different from the default BTRFS config
->> (COW+CSUM). The point is how bad it performs.
->>
->> It is not a binary evaluation, it is a trade off between reliability
->> and performance.
-> 
-> But this thread wasn't about performance.  It was about BTRFS CSUM being in such bad state, turning it off (at least for some files) is the only suggestion for preventing spurious errors.
+It would be useful to be able to boot an OS when CONFIG_CMDLINE is
+disabled. This could allow reduced code size.
 
-There are several topics touched in this thread.
-Regarding the unclean shutdown it is valid the table above.
+Standard boot provides a way to handle programmatic boot, without
+scripts, so such a feature is possible. The main impediment is the
+inability to use the booting features of U-Boot without a command line.
+So the solution is to avoid passing command arguments and the like to
+code in boot/
 
-Regarding the directio and btrfs, from a pure technical point it
-is near impossible to have a reliable checksum without
-buffering of the data, thus invalidating the directio concept.
+A similar process has taken place with filesystems, for example, where
+we have (somewhat) separate Kconfig options for the filesystem commands
+and the filesystems themselves.
 
-The problem of the directio and checksum is that the program
-is in the position to change the data during the checksum
-computing. This invalidating the checksum.
+This series starts the process of refactoring the bootm logic so that
+it can be called from standard boot without using the command line.
+Mostly it removes the use of argc, argv and cmdtbl from the internal
+logic.
 
-ZFS, until the last version, lied about the directio: he
-allowed an open(O_DIRECT), but in fact it buffered the
-data.
+Some limited tidy-up is included, but this is kept to smaller patches,
+rather than trying to remove all #ifdefs etc. Some function comments
+are added, however.
 
-dm-integrity has a journal, so my assumption is that it
-journals the data before writing on the platter.
+A simple programmatic boot is provided as a starting point.
 
-BTRFS instead *tries* to satisfy the O_DIRECT requirements but
-it is not able to guarantee the checksum reliability.
+This work will likely take many series, so this is just the start.
 
-IMHO O_DIRECT should be allowed only for NOCSUM files. I
-wrote a POC few years ago about that.
+Size growth with this series for firefly-rk3288 (Thumb2) is:
+
+       arm: (for 1/1 boards) all +23.0 rodata -49.0 text +72.0
+
+This should be removed by:
+
+   https://source.denx.de/u-boot/custodians/u-boot-dm/-/issues/11
+
+but it is not included in this series as it is already large enough.
+
+No functional change is intended in this series.
+
+Changes in v3:
+- Add a panic if programmatic boot fails
+- Drop RFC tag
+
+Changes in v2:
+- Add new patch to adjust position of unmap_sysmem() in boot_get_kernel()
+- Add new patch to obtain command arguments
+- Fix 'boot_find_os' typo
+- Pass in the command name
+- Use the command table to provide the command name, instead of "bootm"
+
+Simon Glass (32):
+  arm: x86: Drop discarding of command linker-lists
+  README: Correct docs for CONFIG_SPL_BUILD
+  mmc: env: Unify the U_BOOT_ENV_LOCATION conditions
+  treewide: Tidy up semicolon after command macros
+  bootstd: Add missing header file from bootdev.h
+  bootm: Drop arguments from bootm_start()
+  bootm: Simplify arguments for bootm_pre_load()
+  bootm: Move boot_get_kernel() higher in the file
+  image: Tidy up genimg_get_kernel_addr_fit()
+  bootm: Reduce arguments to boot_get_kernel()
+  image: Document error codes from fit_image_load()
+  bootm: Adjust boot_get_kernel() to return an error
+  bootm: Adjust position of unmap_sysmem() in boot_get_kernel()
+  bootm: Use the error return from boot_get_kernel()
+  bootstage: Drop BOOTSTAGE_ID_FIT_KERNEL_INFO
+  bootm: Move error printing out of boot_get_kernel()
+  bootm: Reduce arguments to bootm_find_os()
+  bootm: Reduce arguments to boot_get_ramdisk()
+  fdt: Allow use of fdt_support inside if() statements
+  bootm: Drop #ifdef in bootm_find_images()
+  bootm: Pass image buffer to boot_get_fdt()
+  bootm: Reduce arguments to boot_get_fdt()
+  bootm: Reduce arguments to boot_get_fpga()
+  bootm: Reduce arguments to boot_get_loadables()
+  bootm: Simplify Android ramdisk addr in bootm_find_images()
+  bootm: efi: Drop special call to bootm_find_other()
+  bootm: optee: Drop special call to bootm_find_other()
+  bootm: Adjust the parameters of bootm_find_images()
+  bootm: Add a function to check overlap
+  bootm: Reduce arguments to bootm_find_other()
+  bootstd: Introduce programmatic boot
+  command: Introduce functions to obtain command arguments
+
+ README                       |  26 +-
+ arch/arm/cpu/u-boot.lds      |   3 -
+ arch/x86/cpu/u-boot-64.lds   |   4 -
+ arch/x86/cpu/u-boot-spl.lds  |   4 -
+ arch/x86/cpu/u-boot.lds      |   4 -
+ board/freescale/common/vid.c |   2 +-
+ board/xilinx/common/fru.c    |   2 +-
+ board/xilinx/versal/cmds.c   |   2 +-
+ board/xilinx/zynqmp/cmds.c   |   2 +-
+ boot/Kconfig                 |  12 +
+ boot/Makefile                |   2 +
+ boot/bootm.c                 | 577 +++++++++++++++++++----------------
+ boot/bootm_os.c              |  16 -
+ boot/image-board.c           |  67 +---
+ boot/image-fdt.c             |  39 +--
+ boot/prog_boot.c             |  51 ++++
+ cmd/booti.c                  |   4 +-
+ cmd/bootz.c                  |   4 +-
+ cmd/btrfs.c                  |   2 +-
+ cmd/disk.c                   |   4 +-
+ cmd/eeprom.c                 |   2 +-
+ cmd/ext2.c                   |   4 +-
+ cmd/fs.c                     |   8 +-
+ cmd/fuse.c                   |   2 +-
+ cmd/mmc.c                    |   2 +-
+ cmd/pinmux.c                 |   2 +-
+ cmd/qfw.c                    |   2 +-
+ common/main.c                |  11 +
+ drivers/misc/gsc.c           |   6 +-
+ env/mmc.c                    |   2 +-
+ fs/fs.c                      |   4 +-
+ include/bootdev.h            |   1 +
+ include/bootm.h              |  26 +-
+ include/bootstage.h          |   1 -
+ include/bootstd.h            |   9 +
+ include/command.h            |  35 ++-
+ include/fdt_support.h        |   5 +-
+ include/image.h              | 127 ++++++--
+ test/cmd_ut.c                |   2 +-
+ 39 files changed, 615 insertions(+), 463 deletions(-)
+ create mode 100644 boot/prog_boot.c
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+2.43.0.rc0.421.g78406f8d94-goog
 
 
