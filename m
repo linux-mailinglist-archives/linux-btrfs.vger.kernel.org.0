@@ -1,93 +1,79 @@
-Return-Path: <linux-btrfs+bounces-183-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-184-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 521087F02F6
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 22:06:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7081C7F02F7
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 22:06:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C04CB20A93
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 21:06:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F3961F22890
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 21:06:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED6D1DFC9;
-	Sat, 18 Nov 2023 21:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307C61E528;
+	Sat, 18 Nov 2023 21:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gYOk+fi4"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Xtc5R5/2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C5811D
-	for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 13:05:53 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7a956887c20so125080339f.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 13:05:53 -0800 (PST)
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B6D11D
+	for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 13:05:59 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7a67b9cd230so109725739f.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 13:05:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700341553; x=1700946353; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CnUlKHEMUW8hNVFr2uUIldtuqY3ev6XDCaZO0iwKWuE=;
-        b=gYOk+fi4yyDMPxJIHlcPAClokkrPk8DBmZVfZq1O7HCSkHxLLCs0GXK3DWVhJgMzdj
-         WFyxHzmlnw8RT7E0aIN57UzOq5bORZC8lTasGP0x5ZqRbAobeDRVV8N66BXd1wcZ5YMl
-         jSfV8GJQPqV1cvVKtLPQNrBS7dtDCzr6+IOyA=
+        d=chromium.org; s=google; t=1700341559; x=1700946359; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mASGmFyEkW4ixY7jRUY6SiuQtJh25Z/gT6XdeDfpHDs=;
+        b=Xtc5R5/2N7btYvWdQeITVUkKQysKrhoFseF+Ia/VsGKb4/yq4UMcYrjITy0mx85ve8
+         SB00TBDLOx1JMhQ5EULH/5qiM65SLTmZL5P0HjaUjEJaxCie2gvNPk3w63ER7sla7f/1
+         xpjpJ+MUWOvXnI37FKHFNMPQOdypf31bvCkLA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700341553; x=1700946353;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CnUlKHEMUW8hNVFr2uUIldtuqY3ev6XDCaZO0iwKWuE=;
-        b=lnIrNzAps7YPG7MDgeWa+nG74h/3L797sfwCQkUB8Ks1ihtoAsdWXPwGW/z7ig+6/G
-         FnaRArPRYbnYZGN6jInblLZSRzPF+PVOfB1ssl1lUyHompZzU0Ge1Wn/b+qjmtv4V9z7
-         qf2+/gNqBPaLNK6CbZVgCrXjB/jSo9/MRuU0A90YBS9LfyN0OSqOgqJNoczJcnd+csRv
-         FswOZIeUTaPtkGLvCeUldzQEDnqIszAYjmgPmQEbElF0xHOAqciqhJxWicO72U4WqWRm
-         sHpJUompKyKufZ+YBrKh4ZSHHjQVqI2zZdtuJNLydONX0LQRWEbp1Pq5tRiEuO1HZNWR
-         4uXg==
-X-Gm-Message-State: AOJu0YzT8A7NqM8Z0pRtOh5yHaM3yEX+MrcgQwdAWcEkDNm6jxSoen2C
-	UkRWx4GiLy3Fl/U0v8UcFvpmrA==
-X-Google-Smtp-Source: AGHT+IGEZ5OsDcml53MiAEJ6J2NEcVqZW/BxWDM3z/rMBsrgk12N1FX8EonfO3GSWfVqiPFKg1lTCA==
-X-Received: by 2002:a5d:9389:0:b0:7ab:ec1f:f4a2 with SMTP id c9-20020a5d9389000000b007abec1ff4a2mr3621118iol.8.1700341552976;
-        Sat, 18 Nov 2023 13:05:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700341559; x=1700946359;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mASGmFyEkW4ixY7jRUY6SiuQtJh25Z/gT6XdeDfpHDs=;
+        b=RxZbKilfUfViUf4aYhLaXWw1RkZZbLl8ic4kmlShFm/9nCiWCBkWPGOyAUSz2hObkH
+         aruXE4zc0/eZSqTd0Csy0tNT1uwADJWw4qXKiZfBOVklUmjaucInw1FW1PagC8JvbdHk
+         pV35hrfDMqkWTQdeO/XVvMPsJAf0yLcK/GZHdezuXtdx5+BZ/lKvEjk6tJrCrTlZch0l
+         JO1cEsDh/D9X1Em2DtxTDHMwjE0jj0QKlGCpFmvhg6scMsoiL8hayeKZdu2HJi+982AA
+         Ct9Fy5IpH1HeKR2i2mD35vKwOIq7ePsylHuN0TxNje+/l/MuNdyjJ30oDcJW6uIqIjZq
+         AQ9g==
+X-Gm-Message-State: AOJu0YwzcjZfD7zl2tHDONdS/Afc+u/qq0A+4kZ54lhb0e3zt3TxrGlW
+	H6Riz9eOkLll9YSsKSCRc9Vb3w==
+X-Google-Smtp-Source: AGHT+IGfi5fRlTUYpGBbR17vj4VGPmh/ZbYgM1v8sy8CXY+7P88DwwLuUqxg3qf9924VSHJvjmv6og==
+X-Received: by 2002:a05:6602:641c:b0:77e:3598:e516 with SMTP id gn28-20020a056602641c00b0077e3598e516mr5235812iob.2.1700341559282;
+        Sat, 18 Nov 2023 13:05:59 -0800 (PST)
 Received: from sjg1.lan (c-73-14-173-85.hsd1.co.comcast.net. [73.14.173.85])
-        by smtp.gmail.com with ESMTPSA id eq11-20020a0566384e2b00b00464001012c7sm1126731jab.129.2023.11.18.13.05.51
+        by smtp.gmail.com with ESMTPSA id eq11-20020a0566384e2b00b00464001012c7sm1126731jab.129.2023.11.18.13.05.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 13:05:52 -0800 (PST)
+        Sat, 18 Nov 2023 13:05:59 -0800 (PST)
 From: Simon Glass <sjg@chromium.org>
 To: U-Boot Mailing List <u-boot@lists.denx.de>
 Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>,
 	Tom Rini <trini@konsulko.com>,
 	Heinrich Schuchardt <xypron.glpk@gmx.de>,
 	Simon Glass <sjg@chromium.org>,
-	Albert Aribaud <albert.u.boot@aribaud.net>,
-	Alexander Gendin <agendin@matrox.com>,
 	Baruch Siach <baruch@tkos.co.il>,
 	Bin Meng <bmeng.cn@gmail.com>,
-	Eddie James <eajames@linux.ibm.com>,
 	Evgeny Bachinin <EABachinin@sberdevices.ru>,
 	Fabio Estevam <festevam@gmail.com>,
-	Ivan Mikhaylov <fr0st61te@gmail.com>,
-	Jaehoon Chung <jh80.chung@samsung.com>,
-	Jerry Van Baren <vanbaren@cideas.com>,
-	Joe Hershberger <joe.hershberger@ni.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
 	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
 	Marek Vasut <marek.vasut+renesas@mailbox.org>,
-	Marek Vasut <marex@denx.de>,
 	Mattijs Korpershoek <mkorpershoek@baylibre.com>,
 	Michal Simek <michal.simek@amd.com>,
 	"NXP i.MX U-Boot Team" <uboot-imx@nxp.com>,
-	Peng Fan <peng.fan@nxp.com>,
 	Qu Wenruo <wqu@suse.com>,
-	Safae Ouajih <souajih@baylibre.com>,
-	Sean Anderson <sean.anderson@seco.com>,
-	Sean Anderson <seanga2@gmail.com>,
 	Stefano Babic <sbabic@denx.de>,
-	Stephen Carlson <stcarlso@linux.microsoft.com>,
-	This contributor prefers not to receive mails <noreply@example.com>,
-	Tim Harvey <tharvey@gateworks.com>,
-	Tobias Waldekranz <tobias@waldekranz.com>,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 00/32] bootm: Refactoring to reduce reliance on CMDLINE (part A)
-Date: Sat, 18 Nov 2023 14:04:48 -0700
-Message-ID: <20231118210547.577026-1-sjg@chromium.org>
+Subject: [PATCH v3 04/32] treewide: Tidy up semicolon after command macros
+Date: Sat, 18 Nov 2023 14:04:52 -0700
+Message-ID: <20231118210547.577026-5-sjg@chromium.org>
 X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
+In-Reply-To: <20231118210547.577026-1-sjg@chromium.org>
+References: <20231118210547.577026-1-sjg@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -96,131 +82,184 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It would be useful to be able to boot an OS when CONFIG_CMDLINE is
-disabled. This could allow reduced code size.
+The U_BOOT_CMD_COMPLETE() macro has a semicolon at the end, perhaps
+inadvertently. Some code has taken advantage of this.
 
-Standard boot provides a way to handle programmatic boot, without
-scripts, so such a feature is possible. The main impediment is the
-inability to use the booting features of U-Boot without a command line.
-So the solution is to avoid passing command arguments and the like to
-code in boot/
+Tidy this up by dropping the semicolon from the macro and adding it to
+macro invocations as required.
 
-A similar process has taken place with filesystems, for example, where
-we have (somewhat) separate Kconfig options for the filesystem commands
-and the filesystems themselves.
+Signed-off-by: Simon Glass <sjg@chromium.org>
+Reviewed-by: Tom Rini <trini@konsulko.com>
+Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+---
 
-This series starts the process of refactoring the bootm logic so that
-it can be called from standard boot without using the command line.
-Mostly it removes the use of argc, argv and cmdtbl from the internal
-logic.
+(no changes since v1)
 
-Some limited tidy-up is included, but this is kept to smaller patches,
-rather than trying to remove all #ifdefs etc. Some function comments
-are added, however.
+ board/freescale/common/vid.c | 2 +-
+ board/xilinx/common/fru.c    | 2 +-
+ board/xilinx/versal/cmds.c   | 2 +-
+ board/xilinx/zynqmp/cmds.c   | 2 +-
+ cmd/btrfs.c                  | 2 +-
+ cmd/eeprom.c                 | 2 +-
+ cmd/ext2.c                   | 4 ++--
+ cmd/fs.c                     | 8 ++++----
+ cmd/pinmux.c                 | 2 +-
+ cmd/qfw.c                    | 2 +-
+ include/command.h            | 2 +-
+ 11 files changed, 15 insertions(+), 15 deletions(-)
 
-A simple programmatic boot is provided as a starting point.
-
-This work will likely take many series, so this is just the start.
-
-Size growth with this series for firefly-rk3288 (Thumb2) is:
-
-       arm: (for 1/1 boards) all +23.0 rodata -49.0 text +72.0
-
-This should be removed by:
-
-   https://source.denx.de/u-boot/custodians/u-boot-dm/-/issues/11
-
-but it is not included in this series as it is already large enough.
-
-No functional change is intended in this series.
-
-Changes in v3:
-- Add a panic if programmatic boot fails
-- Drop RFC tag
-
-Changes in v2:
-- Add new patch to adjust position of unmap_sysmem() in boot_get_kernel()
-- Add new patch to obtain command arguments
-- Fix 'boot_find_os' typo
-- Pass in the command name
-- Use the command table to provide the command name, instead of "bootm"
-
-Simon Glass (32):
-  arm: x86: Drop discarding of command linker-lists
-  README: Correct docs for CONFIG_SPL_BUILD
-  mmc: env: Unify the U_BOOT_ENV_LOCATION conditions
-  treewide: Tidy up semicolon after command macros
-  bootstd: Add missing header file from bootdev.h
-  bootm: Drop arguments from bootm_start()
-  bootm: Simplify arguments for bootm_pre_load()
-  bootm: Move boot_get_kernel() higher in the file
-  image: Tidy up genimg_get_kernel_addr_fit()
-  bootm: Reduce arguments to boot_get_kernel()
-  image: Document error codes from fit_image_load()
-  bootm: Adjust boot_get_kernel() to return an error
-  bootm: Adjust position of unmap_sysmem() in boot_get_kernel()
-  bootm: Use the error return from boot_get_kernel()
-  bootstage: Drop BOOTSTAGE_ID_FIT_KERNEL_INFO
-  bootm: Move error printing out of boot_get_kernel()
-  bootm: Reduce arguments to bootm_find_os()
-  bootm: Reduce arguments to boot_get_ramdisk()
-  fdt: Allow use of fdt_support inside if() statements
-  bootm: Drop #ifdef in bootm_find_images()
-  bootm: Pass image buffer to boot_get_fdt()
-  bootm: Reduce arguments to boot_get_fdt()
-  bootm: Reduce arguments to boot_get_fpga()
-  bootm: Reduce arguments to boot_get_loadables()
-  bootm: Simplify Android ramdisk addr in bootm_find_images()
-  bootm: efi: Drop special call to bootm_find_other()
-  bootm: optee: Drop special call to bootm_find_other()
-  bootm: Adjust the parameters of bootm_find_images()
-  bootm: Add a function to check overlap
-  bootm: Reduce arguments to bootm_find_other()
-  bootstd: Introduce programmatic boot
-  command: Introduce functions to obtain command arguments
-
- README                       |  26 +-
- arch/arm/cpu/u-boot.lds      |   3 -
- arch/x86/cpu/u-boot-64.lds   |   4 -
- arch/x86/cpu/u-boot-spl.lds  |   4 -
- arch/x86/cpu/u-boot.lds      |   4 -
- board/freescale/common/vid.c |   2 +-
- board/xilinx/common/fru.c    |   2 +-
- board/xilinx/versal/cmds.c   |   2 +-
- board/xilinx/zynqmp/cmds.c   |   2 +-
- boot/Kconfig                 |  12 +
- boot/Makefile                |   2 +
- boot/bootm.c                 | 577 +++++++++++++++++++----------------
- boot/bootm_os.c              |  16 -
- boot/image-board.c           |  67 +---
- boot/image-fdt.c             |  39 +--
- boot/prog_boot.c             |  51 ++++
- cmd/booti.c                  |   4 +-
- cmd/bootz.c                  |   4 +-
- cmd/btrfs.c                  |   2 +-
- cmd/disk.c                   |   4 +-
- cmd/eeprom.c                 |   2 +-
- cmd/ext2.c                   |   4 +-
- cmd/fs.c                     |   8 +-
- cmd/fuse.c                   |   2 +-
- cmd/mmc.c                    |   2 +-
- cmd/pinmux.c                 |   2 +-
- cmd/qfw.c                    |   2 +-
- common/main.c                |  11 +
- drivers/misc/gsc.c           |   6 +-
- env/mmc.c                    |   2 +-
- fs/fs.c                      |   4 +-
- include/bootdev.h            |   1 +
- include/bootm.h              |  26 +-
- include/bootstage.h          |   1 -
- include/bootstd.h            |   9 +
- include/command.h            |  35 ++-
- include/fdt_support.h        |   5 +-
- include/image.h              | 127 ++++++--
- test/cmd_ut.c                |   2 +-
- 39 files changed, 615 insertions(+), 463 deletions(-)
- create mode 100644 boot/prog_boot.c
-
+diff --git a/board/freescale/common/vid.c b/board/freescale/common/vid.c
+index 5ec3f2a76b19..fc5d400cfe18 100644
+--- a/board/freescale/common/vid.c
++++ b/board/freescale/common/vid.c
+@@ -793,4 +793,4 @@ U_BOOT_CMD(
+ 	vdd_read, 1, 0, do_vdd_read,
+ 	"read VDD",
+ 	" - Read the voltage specified in mV"
+-)
++);
+diff --git a/board/xilinx/common/fru.c b/board/xilinx/common/fru.c
+index c916c3d6b4c8..12b21317496a 100644
+--- a/board/xilinx/common/fru.c
++++ b/board/xilinx/common/fru.c
+@@ -85,4 +85,4 @@ U_BOOT_CMD(
+ 	fru, 8, 1, do_fru,
+ 	"FRU table info",
+ 	fru_help_text
+-)
++);
+diff --git a/board/xilinx/versal/cmds.c b/board/xilinx/versal/cmds.c
+index 9cc2cdcebf1c..2a74e49aedec 100644
+--- a/board/xilinx/versal/cmds.c
++++ b/board/xilinx/versal/cmds.c
+@@ -98,4 +98,4 @@ U_BOOT_LONGHELP(versal,
+ U_BOOT_CMD(versal, 4, 1, do_versal,
+ 	   "versal sub-system",
+ 	   versal_help_text
+-)
++);
+diff --git a/board/xilinx/zynqmp/cmds.c b/board/xilinx/zynqmp/cmds.c
+index f1f3eff501e1..9524688f27d9 100644
+--- a/board/xilinx/zynqmp/cmds.c
++++ b/board/xilinx/zynqmp/cmds.c
+@@ -427,4 +427,4 @@ U_BOOT_CMD(
+ 	zynqmp, 9, 1, do_zynqmp,
+ 	"ZynqMP sub-system",
+ 	zynqmp_help_text
+-)
++);
+diff --git a/cmd/btrfs.c b/cmd/btrfs.c
+index 98daea99e9ed..2843835d08b8 100644
+--- a/cmd/btrfs.c
++++ b/cmd/btrfs.c
+@@ -24,4 +24,4 @@ U_BOOT_CMD(btrsubvol, 3, 1, do_btrsubvol,
+ 	"list subvolumes of a BTRFS filesystem",
+ 	"<interface> <dev[:part]>\n"
+ 	"     - List subvolumes of a BTRFS filesystem."
+-)
++);
+diff --git a/cmd/eeprom.c b/cmd/eeprom.c
+index 0b6ca8c505fb..322765ad02a0 100644
+--- a/cmd/eeprom.c
++++ b/cmd/eeprom.c
+@@ -435,4 +435,4 @@ U_BOOT_CMD(
+ 	"The values which can be provided with the -l option are:\n"
+ 	CONFIG_EEPROM_LAYOUT_HELP_STRING"\n"
+ #endif
+-)
++);
+diff --git a/cmd/ext2.c b/cmd/ext2.c
+index 57a99516a6ac..a0ce0cf5796b 100644
+--- a/cmd/ext2.c
++++ b/cmd/ext2.c
+@@ -42,7 +42,7 @@ U_BOOT_CMD(
+ 	"list files in a directory (default /)",
+ 	"<interface> <dev[:part]> [directory]\n"
+ 	"    - list files from 'dev' on 'interface' in a 'directory'"
+-)
++);
+ 
+ U_BOOT_CMD(
+ 	ext2load,	6,	0,	do_ext2load,
+@@ -50,4 +50,4 @@ U_BOOT_CMD(
+ 	"<interface> [<dev[:part]> [addr [filename [bytes [pos]]]]]\n"
+ 	"    - load binary file 'filename' from 'dev' on 'interface'\n"
+ 	"      to address 'addr' from ext2 filesystem."
+-)
++);
+diff --git a/cmd/fs.c b/cmd/fs.c
+index 6044f73af5b4..46cb43dcdb5b 100644
+--- a/cmd/fs.c
++++ b/cmd/fs.c
+@@ -39,7 +39,7 @@ U_BOOT_CMD(
+ 	"      If 'bytes' is 0 or omitted, the file is read until the end.\n"
+ 	"      'pos' gives the file byte position to start reading from.\n"
+ 	"      If 'pos' is 0 or omitted, the file is read from the start."
+-)
++);
+ 
+ static int do_save_wrapper(struct cmd_tbl *cmdtp, int flag, int argc,
+ 			   char *const argv[])
+@@ -56,7 +56,7 @@ U_BOOT_CMD(
+ 	"      'bytes' gives the size to save in bytes and is mandatory.\n"
+ 	"      'pos' gives the file byte position to start writing to.\n"
+ 	"      If 'pos' is 0 or omitted, the file is written from the start."
+-)
++);
+ 
+ static int do_ls_wrapper(struct cmd_tbl *cmdtp, int flag, int argc,
+ 			 char *const argv[])
+@@ -70,7 +70,7 @@ U_BOOT_CMD(
+ 	"<interface> [<dev[:part]> [directory]]\n"
+ 	"    - List files in directory 'directory' of partition 'part' on\n"
+ 	"      device type 'interface' instance 'dev'."
+-)
++);
+ 
+ static int do_ln_wrapper(struct cmd_tbl *cmdtp, int flag, int argc,
+ 			 char *const argv[])
+@@ -84,7 +84,7 @@ U_BOOT_CMD(
+ 	"<interface> <dev[:part]> target linkname\n"
+ 	"    - create a symbolic link to 'target' with the name 'linkname' on\n"
+ 	"      device type 'interface' instance 'dev'."
+-)
++);
+ 
+ static int do_fstype_wrapper(struct cmd_tbl *cmdtp, int flag, int argc,
+ 			     char *const argv[])
+diff --git a/cmd/pinmux.c b/cmd/pinmux.c
+index f17cf4110d9f..105f01eaafff 100644
+--- a/cmd/pinmux.c
++++ b/cmd/pinmux.c
+@@ -178,4 +178,4 @@ U_BOOT_CMD(pinmux, CONFIG_SYS_MAXARGS, 1, do_pinmux,
+ 	   "list                     - list UCLASS_PINCTRL devices\n"
+ 	   "pinmux dev [pincontroller-name] - select pin-controller device\n"
+ 	   "pinmux status [-a | pin-name]   - print pin-controller muxing [for all | for pin-name]\n"
+-)
++);
+diff --git a/cmd/qfw.c b/cmd/qfw.c
+index d6ecfa60d5a7..1b8c775ebf5a 100644
+--- a/cmd/qfw.c
++++ b/cmd/qfw.c
+@@ -121,4 +121,4 @@ U_BOOT_CMD(
+ 	"    - list                             : print firmware(s) currently loaded\n"
+ 	"    - cpus                             : print online cpu number\n"
+ 	"    - load <kernel addr> <initrd addr> : load kernel and initrd (if any), and setup for zboot\n"
+-)
++);
+diff --git a/include/command.h b/include/command.h
+index 6262365e128f..5bd3ecbe8f91 100644
+--- a/include/command.h
++++ b/include/command.h
+@@ -390,7 +390,7 @@ int cmd_source_script(ulong addr, const char *fit_uname, const char *confname);
+ #define U_BOOT_CMD_COMPLETE(_name, _maxargs, _rep, _cmd, _usage, _help, _comp) \
+ 	ll_entry_declare(struct cmd_tbl, _name, cmd) =			\
+ 		U_BOOT_CMD_MKENT_COMPLETE(_name, _maxargs, _rep, _cmd,	\
+-						_usage, _help, _comp);
++						_usage, _help, _comp)
+ 
+ #define U_BOOT_CMDREP_COMPLETE(_name, _maxargs, _cmd_rep, _usage,	\
+ 			       _help, _comp)				\
 -- 
 2.43.0.rc0.421.g78406f8d94-goog
 
