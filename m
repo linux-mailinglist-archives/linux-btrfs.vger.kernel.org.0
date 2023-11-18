@@ -1,75 +1,52 @@
-Return-Path: <linux-btrfs+bounces-181-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-182-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75F9B7F0153
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 18:36:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E03037F0154
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 18:37:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33514280E52
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 17:36:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8923B1F22CAF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 17:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB751944C;
-	Sat, 18 Nov 2023 17:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD8519BB4;
+	Sat, 18 Nov 2023 17:37:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=georgianit.com header.i=@georgianit.com header.b="X1jARLvj";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tVSSptA7"
+	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="BDizo5ip"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858A3194
-	for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 09:36:31 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 213095C016A;
-	Sat, 18 Nov 2023 12:36:29 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sat, 18 Nov 2023 12:36:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
-	 h=cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-	1700328989; x=1700415389; bh=gm+oFRDbhUNgKJWAhonNmnxc3/a+HcpCrai
-	K+haGbU8=; b=X1jARLvj5ULda4xKGVf/r78tRR4KV4gHbQPil5BZMN6mz6uqRru
-	dTFIG0iQEvnRmsv7aSxojyNiMdhthYxvZ8ZPjoVWsMUgeclpq4Q4iO+wFu2jWac7
-	MmGsHUd/wVicBwjV2MhwYNGweBGA6CPvvfTtgY67N4/SAJbqKLILZiCsoIVg+5f+
-	5gjvrGqOk6z5RMaYf/g5nbiDSEEv9DILbC6IqK0wtJSiogN6fzjZKwjtq4jcc01x
-	QHjvahr3Yq3V4gE0hwjzdQyOKRloHcrKThdnhSoMN3DS8PtbUOJM3cXHq3Equokz
-	CxTLzCd/3hp7CaO2ApYWf1Nw7HfpRUAVAeQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700328989; x=
-	1700415389; bh=gm+oFRDbhUNgKJWAhonNmnxc3/a+HcpCraiK+haGbU8=; b=t
-	VSSptA7sERhOuLpp1i3/IKyAHAN9gzEKCjMIBJBcnxjzPCIE9ymqdR4fRrDG6g4/
-	sUiGpJkEfLMy2xi3cAjPlIi1ySEtdf1/s7P80aWnyh5LvGJ/RAzD0h/PUiLOKBqL
-	Qrb7SFRL5yqzIUxm4GQ+hfwhvUGGVIiQt5uYAm+TCZ5t5/xvBUU+q4JAcnMhDIgZ
-	3YOM19mz3LlaXQk43DpYs1g04RA15jCuyRVdK9W4nJLR0F8konbfEgQI6OiWWUnZ
-	YBQMPMzYT6kO0idQ5k2GcBh4Q74HPf9B/JNM0tvvxZV9WhLLoI6Fw5TeL7Vi7Ikg
-	z+DOpABuB38XgB6Md+WIA==
-X-ME-Sender: <xms:HPZYZUt13oqSso0hPcq3XRNL_UfNFFhx96vf8A8aw-JkZt3aV1aBEQ>
-    <xme:HPZYZRdvM3EYmDIH-EmaY0UwD4il5aTM6-6OawaowKHuVXBDevZQX1qPmjwnEYjw2
-    cYT8ywomCtk67N1aw>
-X-ME-Received: <xmr:HPZYZfxOSbuCnrWYPIBqy9k5xylhU0hr1n2hwthQoXTrjirvCcftRslWL5Dp-EQrxYG--Ze_pMBzfFcKg4TvfzEANsU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegvddguddtudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefuhffvfhfkffgfgggjtgfgsehtkeertddtfeejnecuhfhrohhmpeftvghm
-    ihcuifgruhhvihhnuceorhgvmhhisehgvghorhhgihgrnhhithdrtghomheqnecuggftrf
-    grthhtvghrnhepleeukedthfegieevfeekkeeggfffvdeifffftdelgfekveekveethffg
-    udejhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprhgvmhhisehgvghorhhgihgrnhhithdrtghomh
-X-ME-Proxy: <xmx:HPZYZXN1YDiqayfQMYhO5lDqM0SnLUeahO5to2QteMJOCqVTNIhDGQ>
-    <xmx:HPZYZU8Y3-aY31Ovymv6QYI8HoFCMbgy6qNVb3hhJ3JflLQh771xEw>
-    <xmx:HPZYZfXvjigS7cJje6RYPOscAPNcCtB4YkVa31DV8xeY5v1v6UT3dw>
-    <xmx:HfZYZZHPOsOqAfrwnArozC67xaVa5oIIZzbO51Sq47e2gDkRs_aj3A>
-Feedback-ID: i10c840cd:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 18 Nov 2023 12:36:28 -0500 (EST)
+Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F7512B
+	for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 09:37:45 -0800 (PST)
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-16.iol.local with ESMTPA
+	id 4PGIrW0VKGKAA4PGJrYQQ1; Sat, 18 Nov 2023 18:37:43 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+	t=1700329063; bh=7cNHLX2ctIC1eGxo5wFlFE6XPAWSg6xJHx1guGloBJo=;
+	h=From;
+	b=BDizo5ipOvCGWRNqY4W+rCioCQH1JGNyxH6IW/9Sxn+OO1rLSfsmugD0JkLmV6I/S
+	 LY1RvyTMjA5YvYjwE06+Ko+INpWrr0JG/Kmt+ZKggLzXBe0Dp2pwlhFkioIf4IrnTw
+	 4oFPtfJgDLEo8LOlRZ/vk9tPv7mxq1xYm7o63E4LDJe42R2Om+2Fyhk6PBazhaHT7n
+	 lLttpNMbPsnnzqEtjiT+O2KUwuvSBtJp1HkoDUagsnyQfSUn0r2VklVKMJ0uZ+jDfX
+	 HrGx26Mpm2wcsHKz2AJdkyaHoKZfQbprORvYkUXv7ULAAVxgs9ZO+XgiEQenK97I0E
+	 axhtKl7sGVpDA==
+X-CNFS-Analysis: v=2.4 cv=OoOJiQzt c=1 sm=1 tr=0 ts=6558f667 cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=4jqkTvAoAAAA:8 a=_QNhIW5Djb-r_eV3oGYA:9 a=QEXdDO2ut3YA:10
+ a=Hh_HAVYRK2TLt7S9I1XE:22
+Message-ID: <4820ef14-f09c-47b5-8d91-7489a93bb041@inwind.it>
+Date: Sat, 18 Nov 2023 18:37:42 +0100
+Precedence: bulk
+X-Mailing-List: linux-btrfs@vger.kernel.org
+List-Id: <linux-btrfs.vger.kernel.org>
+List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
 Subject: Re: checksum errors but files are readable and no disk errors
-From: Remi Gauvin <remi@georgianit.com>
-To: kreijack@inwind.it, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+To: remi@georgianit.com, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
  <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
  <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
@@ -85,27 +62,54 @@ References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
  <CA+H1V9xA8_3-BYkhR2ip0v1_-bKxWY1hHW1kRwoxhaCNu88PYQ@mail.gmail.com>
  <95096727-a472-4c0b-a16d-de53b0f66ff6@libero.it>
  <60fb34fb-ebfe-408b-b787-c62c6a1b5cd9@app.fastmail.com>
-Message-ID: <b77ace10-e8de-6fdf-712e-91cecfeadc08@georgianit.com>
-Date: Sat, 18 Nov 2023 12:36:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-Precedence: bulk
-X-Mailing-List: linux-btrfs@vger.kernel.org
-List-Id: <linux-btrfs.vger.kernel.org>
-List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <60fb34fb-ebfe-408b-b787-c62c6a1b5cd9@app.fastmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+From: Goffredo Baroncelli <kreijack@inwind.it>
+In-Reply-To: <60fb34fb-ebfe-408b-b787-c62c6a1b5cd9@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfPjnplpyINfj3bZB0fquSqK14oWKSVuS0V8DTnSTZBrF6cDGdaEaGoqxFcxJsDTSgXGPyALQAv9dWifVVEdQulZrULPlFDUunC61xhUhTFANKXxzEyqg
+ Q+slBot9cR4EF0GdKYvh1JDUJjBHAZ+IjUBHzv+tq42nXzn9CwPQPuD+zwbHXQ5+ZGc66vhyahipovsFhS2tJXszHqJVKbA8WJ84eE5rR3NbtAUnOM4r+PCP
 
-On 2023-11-18 11:33 a.m., remi@georgianit.com wrote:
->
+On 18/11/2023 17.33, remi@georgianit.com wrote:
+> 
+> 
+> On Sat, Nov 18, 2023, at 3:22 AM, Goffredo Baroncelli wrote:
+> 
+>>
+>> dm-integrity+dm-raid is not different from the default BTRFS config
+>> (COW+CSUM). The point is how bad it performs.
+>>
+>> It is not a binary evaluation, it is a trade off between reliability
+>> and performance.
+> 
 > But this thread wasn't about performance.  It was about BTRFS CSUM being in such bad state, turning it off (at least for some files) is the only suggestion for preventing spurious errors.
->
-I'm sorry.. I was extrapolating a bit too much.  The error in question
-was a known side effect and not really a problem.  I still suggest that
-disabling COW on BTRFS raid for important files is a bad idea.
+
+There are several topics touched in this thread.
+Regarding the unclean shutdown it is valid the table above.
+
+Regarding the directio and btrfs, from a pure technical point it
+is near impossible to have a reliable checksum without
+buffering of the data, thus invalidating the directio concept.
+
+The problem of the directio and checksum is that the program
+is in the position to change the data during the checksum
+computing. This invalidating the checksum.
+
+ZFS, until the last version, lied about the directio: he
+allowed an open(O_DIRECT), but in fact it buffered the
+data.
+
+dm-integrity has a journal, so my assumption is that it
+journals the data before writing on the platter.
+
+BTRFS instead *tries* to satisfy the O_DIRECT requirements but
+it is not able to guarantee the checksum reliability.
+
+IMHO O_DIRECT should be allowed only for NOCSUM files. I
+wrote a POC few years ago about that.
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
 
