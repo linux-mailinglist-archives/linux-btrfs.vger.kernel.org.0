@@ -1,80 +1,75 @@
-Return-Path: <linux-btrfs+bounces-180-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-181-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC3B7F0127
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 17:34:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75F9B7F0153
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 18:36:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28C48B20AC2
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 16:34:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33514280E52
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 17:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 534DF4F886;
-	Sat, 18 Nov 2023 16:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FB751944C;
+	Sat, 18 Nov 2023 17:36:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=georgianit.com header.i=@georgianit.com header.b="0jww+iFV";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bHMXw+iV"
+	dkim=pass (2048-bit key) header.d=georgianit.com header.i=@georgianit.com header.b="X1jARLvj";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tVSSptA7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A319E1
-	for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 08:34:37 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id E42545C01C4;
-	Sat, 18 Nov 2023 11:34:33 -0500 (EST)
-Received: from imap45 ([10.202.2.95])
-  by compute2.internal (MEProxy); Sat, 18 Nov 2023 11:34:33 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858A3194
+	for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 09:36:31 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id 213095C016A;
+	Sat, 18 Nov 2023 12:36:29 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Sat, 18 Nov 2023 12:36:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
-	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm3; t=1700325273; x=1700411673; bh=ju
-	Ar1v2JCDycVo7/OBi7lOoa0iau35ar8waEf3Xp8bY=; b=0jww+iFVemUQbJhC/k
-	eVbA6eImPUZDay5rCYdktwd+YLXWn9yYTWzNdyABTkisgpQffoHIEp1rxnc/9eKt
-	gvWufr88oMW5EQFQY3ewT+cVeaf2RvZ0Zf/YmklKD48yXrg0gdvd4y3pBngd4XEp
-	2YmNw+EzhDpXP5dt1XmvipV7bOzP6/o7Oa/ZQLHq1g5qkdZoe6//91N3D8ySL1DY
-	Oda6qFSdumc+hVmNTr2o1ehx//TJgZ1k66veB7SGJQ5bMqfjVmZG8lhelZvwcQdw
-	xW1fh/1yMKGndsxgyXd3O4reRfA1LUT0mU1qLi7104q6ycZt8SI5zZ9JzlkOLu/m
-	7Kaw==
+	 h=cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+	1700328989; x=1700415389; bh=gm+oFRDbhUNgKJWAhonNmnxc3/a+HcpCrai
+	K+haGbU8=; b=X1jARLvj5ULda4xKGVf/r78tRR4KV4gHbQPil5BZMN6mz6uqRru
+	dTFIG0iQEvnRmsv7aSxojyNiMdhthYxvZ8ZPjoVWsMUgeclpq4Q4iO+wFu2jWac7
+	MmGsHUd/wVicBwjV2MhwYNGweBGA6CPvvfTtgY67N4/SAJbqKLILZiCsoIVg+5f+
+	5gjvrGqOk6z5RMaYf/g5nbiDSEEv9DILbC6IqK0wtJSiogN6fzjZKwjtq4jcc01x
+	QHjvahr3Yq3V4gE0hwjzdQyOKRloHcrKThdnhSoMN3DS8PtbUOJM3cXHq3Equokz
+	CxTLzCd/3hp7CaO2ApYWf1Nw7HfpRUAVAeQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1700325273; x=1700411673; bh=juAr1v2JCDycV
-	o7/OBi7lOoa0iau35ar8waEf3Xp8bY=; b=bHMXw+iV9I7j9ylMlZ/llPE6nummX
-	hBkBdiFn6Qe7dFZyRE9dJ0zZVRgcZf3JYjcVrrztTQZwYRWdWarzFG7+hrSzoKys
-	W/36OlX0YNtDViucq9ehR3DqZfbSaeF56ytptDr35XRuZ+xmCpRrv/Gx+epa3Cs5
-	mY8ZSJIeHPQ/bYMg+NSVD7hI5x53TV2DFur4KxzPwcfS00+9vXhvo4zE9RwjUlI1
-	hVI7B62MoFWQuqKI1tFd6cPyQuzkYYAhSzlSJFnDZoXoKcxfeJuk7e2GMap4sLrT
-	OgV1ttBgBhlJ5Ebop4p+BeHTlajd1TUeqw2pOQgPmnCbH9O+Ih8PXEN0A==
-X-ME-Sender: <xms:medYZTK3Ck0xioOxMJWRKYRKTe0eP3ZN0P0OekmEld-82pqAE_O2EQ>
-    <xme:medYZXIINfRQ_F60fA6PhlN_8K4Yg-jrCJ6SfyCBpAtp2KeYfmJbxvpgAgvE3FylC
-    arHenskY73LzfB4mg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegvddgkeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomheprhgvmhhi
-    sehgvghorhhgihgrnhhithdrtghomhenucggtffrrghtthgvrhhnpeeugfefvefgudffke
-    duhfelvdeifeeflefgkeegleffvdekledvkefgvddujeffgeenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrvghmihesghgvohhrghhirghnih
-    htrdgtohhm
-X-ME-Proxy: <xmx:medYZbtcozzXZOee1E7iKjwYtrobXe0EBASKAXJuJr0nGauHJ4oj6w>
-    <xmx:medYZcbpJYLoX4aWJ7dwpGabvsi0ioNWdId788JeSFo3yjwqmuKvfA>
-    <xmx:medYZaYx-OzXAT2U1l1_1LyDVCryxNLpLCdFUBMvjdxkNdGK7iQV9Q>
-    <xmx:medYZY0XU-HpbuSw8cTlHnuBDfF2lKJaE5bnB-ZiM0DPKgWheDVPpQ>
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700328989; x=
+	1700415389; bh=gm+oFRDbhUNgKJWAhonNmnxc3/a+HcpCraiK+haGbU8=; b=t
+	VSSptA7sERhOuLpp1i3/IKyAHAN9gzEKCjMIBJBcnxjzPCIE9ymqdR4fRrDG6g4/
+	sUiGpJkEfLMy2xi3cAjPlIi1ySEtdf1/s7P80aWnyh5LvGJ/RAzD0h/PUiLOKBqL
+	Qrb7SFRL5yqzIUxm4GQ+hfwhvUGGVIiQt5uYAm+TCZ5t5/xvBUU+q4JAcnMhDIgZ
+	3YOM19mz3LlaXQk43DpYs1g04RA15jCuyRVdK9W4nJLR0F8konbfEgQI6OiWWUnZ
+	YBQMPMzYT6kO0idQ5k2GcBh4Q74HPf9B/JNM0tvvxZV9WhLLoI6Fw5TeL7Vi7Ikg
+	z+DOpABuB38XgB6Md+WIA==
+X-ME-Sender: <xms:HPZYZUt13oqSso0hPcq3XRNL_UfNFFhx96vf8A8aw-JkZt3aV1aBEQ>
+    <xme:HPZYZRdvM3EYmDIH-EmaY0UwD4il5aTM6-6OawaowKHuVXBDevZQX1qPmjwnEYjw2
+    cYT8ywomCtk67N1aw>
+X-ME-Received: <xmr:HPZYZfxOSbuCnrWYPIBqy9k5xylhU0hr1n2hwthQoXTrjirvCcftRslWL5Dp-EQrxYG--Ze_pMBzfFcKg4TvfzEANsU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegvddguddtudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefuhffvfhfkffgfgggjtgfgsehtkeertddtfeejnecuhfhrohhmpeftvghm
+    ihcuifgruhhvihhnuceorhgvmhhisehgvghorhhgihgrnhhithdrtghomheqnecuggftrf
+    grthhtvghrnhepleeukedthfegieevfeekkeeggfffvdeifffftdelgfekveekveethffg
+    udejhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprhgvmhhisehgvghorhhgihgrnhhithdrtghomh
+X-ME-Proxy: <xmx:HPZYZXN1YDiqayfQMYhO5lDqM0SnLUeahO5to2QteMJOCqVTNIhDGQ>
+    <xmx:HPZYZU8Y3-aY31Ovymv6QYI8HoFCMbgy6qNVb3hhJ3JflLQh771xEw>
+    <xmx:HPZYZfXvjigS7cJje6RYPOscAPNcCtB4YkVa31DV8xeY5v1v6UT3dw>
+    <xmx:HfZYZZHPOsOqAfrwnArozC67xaVa5oIIZzbO51Sq47e2gDkRs_aj3A>
 Feedback-ID: i10c840cd:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 8A63D272007B; Sat, 18 Nov 2023 11:34:33 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1108-g3a29173c6d-fm-20231031.005-g3a29173c
-Precedence: bulk
-X-Mailing-List: linux-btrfs@vger.kernel.org
-List-Id: <linux-btrfs.vger.kernel.org>
-List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-Id: <60fb34fb-ebfe-408b-b787-c62c6a1b5cd9@app.fastmail.com>
-In-Reply-To: <95096727-a472-4c0b-a16d-de53b0f66ff6@libero.it>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 18 Nov 2023 12:36:28 -0500 (EST)
+Subject: Re: checksum errors but files are readable and no disk errors
+From: Remi Gauvin <remi@georgianit.com>
+To: kreijack@inwind.it, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
  <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
  <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
@@ -89,22 +84,28 @@ References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
  <CA+H1V9xqZT7L0tj3JTyJscXLKw-tpSE0qNULbg4hn0wYq4fhxw@mail.gmail.com>
  <CA+H1V9xA8_3-BYkhR2ip0v1_-bKxWY1hHW1kRwoxhaCNu88PYQ@mail.gmail.com>
  <95096727-a472-4c0b-a16d-de53b0f66ff6@libero.it>
-Date: Sat, 18 Nov 2023 11:33:59 -0500
-From: remi@georgianit.com
-To: kreijack@inwind.it, "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Subject: Re: checksum errors but files are readable and no disk errors
-Content-Type: text/plain
+ <60fb34fb-ebfe-408b-b787-c62c6a1b5cd9@app.fastmail.com>
+Message-ID: <b77ace10-e8de-6fdf-712e-91cecfeadc08@georgianit.com>
+Date: Sat, 18 Nov 2023 12:36:26 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+Precedence: bulk
+X-Mailing-List: linux-btrfs@vger.kernel.org
+List-Id: <linux-btrfs.vger.kernel.org>
+List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <60fb34fb-ebfe-408b-b787-c62c6a1b5cd9@app.fastmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 
-
-
-On Sat, Nov 18, 2023, at 3:22 AM, Goffredo Baroncelli wrote:
-
+On 2023-11-18 11:33 a.m., remi@georgianit.com wrote:
 >
-> dm-integrity+dm-raid is not different from the default BTRFS config
-> (COW+CSUM). The point is how bad it performs.
+> But this thread wasn't about performance.  It was about BTRFS CSUM being in such bad state, turning it off (at least for some files) is the only suggestion for preventing spurious errors.
 >
-> It is not a binary evaluation, it is a trade off between reliability
-> and performance.
+I'm sorry.. I was extrapolating a bit too much.  The error in question
+was a known side effect and not really a problem.  I still suggest that
+disabling COW on BTRFS raid for important files is a bad idea.
 
-But this thread wasn't about performance.  It was about BTRFS CSUM being in such bad state, turning it off (at least for some files) is the only suggestion for preventing spurious errors.
 
