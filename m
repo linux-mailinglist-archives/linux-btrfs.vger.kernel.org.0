@@ -1,109 +1,117 @@
-Return-Path: <linux-btrfs+bounces-178-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-179-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 876497EFE83
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 09:27:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58E217EFEA3
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 10:10:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF0DC1C20953
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 08:27:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58EEE280CE4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 09:10:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E07107A6;
-	Sat, 18 Nov 2023 08:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAAB107A3;
+	Sat, 18 Nov 2023 09:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="wxlqs1fI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BZ2VTDsV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACF1D6A
-	for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 00:27:31 -0800 (PST)
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-18.iol.local with ESMTPA
-	id 4Gfpr1D5fEwsU4GfprBaFi; Sat, 18 Nov 2023 09:27:29 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-	t=1700296049; bh=R6ZHhhg/zbbqWtnlZXf/ejc/6P86YzDkKOL9firK5Aw=;
-	h=From;
-	b=wxlqs1fIDqIUGPwfxQLHO0+FgGZeCFXZ56SMWSYH6MZGVQ1LKGlX3rb1CrqhKwdT5
-	 /grSWkC+01snbythDFznrCso+0XNBleyGq/3A2Z2Q0zpw5A9i5D6tJpGWaCDCqss2l
-	 3ofknT63rZKnq8I/HDZI9NwSvORU/LBWyrv6YU775fpDe34aukUihp/keSoq4kEwrW
-	 ZBrEWX9yKlN7JHiu0ItsvtnwX8p8m+X0fFS1IDiSbP/6W+Zz2gfinvgxNJwP21VTzf
-	 bETDmkIVzuufxjL9xosxi5ypop84z2eFwZRn1uZzoAl8Asnbdir0GwMeGZCsWjd83r
-	 16VQF5LJF8Mag==
-X-CNFS-Analysis: v=2.4 cv=N6vvVUxB c=1 sm=1 tr=0 ts=65587571 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=Ax1kiV2oZS2EjBD9PdMA:9 a=QEXdDO2ut3YA:10
-Message-ID: <7d574364-0b4b-40e0-a8ac-12fc37b4f336@libero.it>
-Date: Sat, 18 Nov 2023 09:27:29 +0100
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0944ED6D;
+	Sat, 18 Nov 2023 01:10:19 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c184b3bbc4so2147112a12.1;
+        Sat, 18 Nov 2023 01:10:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700298618; x=1700903418; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DgBxE/ugFyl092H9J0iO9taumdI7C9DtObSl7itfE5Q=;
+        b=BZ2VTDsVVaoTD8MTtz4O55MrJBW8VOsNF2AE4zWu8xofBO/4GTNKVQAHguST46H7tq
+         XbZ+GfkHq1SRHjnL5cPGWcrgUxbEPtrEN2yHVvp+uEpfU2tbuR62fnk8i/11I1xD/eJl
+         F3WafN1K+ky5FzgHY761OueJmqQec2Q6dVoy5sAs5jwG/71OXUnCVXYLPgOsbvYEAb0z
+         4j1RBOJA9Oei5X2JUxsnT7/vYjP/CY9KRwVafEHVDS8l5lhsv843XzJxw1d02BTbK8Fl
+         hZyWE5wa3HhSdmVFPo2NmDUZIodkYwPKXiuQh6ktfDuA4Ccp4WOElUz0Aswhg3izZacO
+         V30w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700298618; x=1700903418;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DgBxE/ugFyl092H9J0iO9taumdI7C9DtObSl7itfE5Q=;
+        b=BPiyy3NWnFnC2p/zZesR1unB+66h3Nngzbxl+n4Mo5b5YeESOUO3EtPntbokI3K7m0
+         51dfeADVBbodhYyDjZF5OoyoWvM5M/HPTnFTpOtv9+bFugIfdqBZ8lUYWOzYSWWDFN7E
+         AnmwTEP+O3m/K79iuTgz0g541CffNm2k8xRQbYK7kYR0b6HxqvWJpPMtdp7KkObAx1fc
+         9aw3R6JBdjQOqsuYrdQxkXUIQkWRg7q0deGx1NmI3wrTABzH/h3Ydu2Aa06HeRlJeU22
+         t/rYsvi2H7kg+RTndhSjwJm70nTD5+ZyKKxQqPIRASNu0RjET9j3ne4SAYE/fqudDTeu
+         gm0A==
+X-Gm-Message-State: AOJu0YyPDVduaOvcQS74AAzOsxFftpy1+9/qmq5FWOVZxe34DoHjkiXh
+	/RA0OmRlrCPBRnC04EAqB/k=
+X-Google-Smtp-Source: AGHT+IHAjtEOF/rmYOaUe+ODWsp0dqRq+tCEuYpytFyN6PRshL42r7YuuwKybEcC/ACWVjggOp4AOg==
+X-Received: by 2002:a05:6a20:7faa:b0:186:664b:44a6 with SMTP id d42-20020a056a207faa00b00186664b44a6mr2489534pzj.48.1700298618376;
+        Sat, 18 Nov 2023 01:10:18 -0800 (PST)
+Received: from brag-vm.. ([59.182.202.200])
+        by smtp.gmail.com with ESMTPSA id fj17-20020a056a003a1100b006cb4379061esm1112105pfb.205.2023.11.18.01.10.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Nov 2023 01:10:18 -0800 (PST)
+From: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+To: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com
+Cc: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com
+Subject: [PATCH v2] btrfs: ref-verify: fix memory leaks
+Date: Sat, 18 Nov 2023 14:40:12 +0530
+Message-Id: <20231118091012.14818-1-bragathemanick0908@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: checksum errors but files are readable and no disk errors
-Content-Language: en-US
-To: Remi Gauvin <remi@georgianit.com>,
- linux-btrfs <linux-btrfs@vger.kernel.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>
-References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
- <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
- <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
- <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
- <5f6ff1cd-dd64-b88d-e814-39ba3b23395a@georgianit.com>
- <5e33baee-80ef-421c-9e88-d1d541461469@libero.it>
- <59b6ad3e-c16e-4a29-abd4-4d6f57047155@libero.it>
- <65b3acc5-0aff-a7e8-142b-4ad40c60f3dd@georgianit.com>
- <4bf1d0d4-6fc3-434f-8166-7a628d48d52f@libero.it>
- <9f955c4a-82be-98cc-6f61-ee5469c32ba2@georgianit.com>
- <cecd43db-da2c-4558-b343-4faabacdf0d8@inwind.it>
- <5e4b13ab-2b8b-7115-be9c-c7f332982407@georgianit.com>
-From: Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <5e4b13ab-2b8b-7115-be9c-c7f332982407@georgianit.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfBp1OTp8PJUCSvizaNXx2En4fQpFBP4xQZxi05e6PPY+BMX5kff0e0KIDtzJVorsNvV04vCEizANrCTMwFLYE78KC7M/21Vsb/QTFwsH7sPerhg3VGsS
- tPVYHaDFqwCQYrfERpvoX/Mercso1QEeYpUUIEHbDgxk5X2O6VjGTmk2TIXEAJ3TulobW7jwjFWYFhUYn7S5czjsGEcKVlwKU5vFlMRwkpD4dDpRXs+JlPL2
- 0xZXpZNZLqcbc+Qp4Qs3/F6yVRYSqKTEAe2swDT1ZqU=
 
-On 17/11/2023 23.43, Remi Gauvin wrote:
-> On 2023-11-17 5:00 p.m., Goffredo Baroncelli wrote:
->> I think that we should put everything in the right order:
->>
->> - COW:
->>      preserve data and metadata even after an unclean shutdown
->>
->> - BTRFS with NOCOW:
->>      preserve metadata even after an unclean shutdown
->>      data may be wrong
->>      depending by which disk is read, the data may be different
-> 
->   
-> 
-> But what happens, for example, in the case of a virtual machine image,
-> an automatic filesystem repair on the guest reads data that looks good,
-> but a later read runs into corrupt or incomplete data?
+In btrfs_ref_tree_mod(), when !parent 're' was allocated
+through kmalloc(). In the following code, if an error occurs,
+the execution will be redirected to 'out' or 'out_unlock' and
+the function will be exited. However, on some of the paths,
+'re' are not deallocated and may lead to memory leaks.
 
-As replayed in another thread, it is not a binary evaluation, but it is
-a tradeoff between performance and reliability.
+For example : lookup_block_entry() for 'be' returns null, the
+out label will be invoked. During that flow ref and ra was
+freed but not re, which can potentially lead to memleak
 
-> 
-> It just seems really bizarre to me to that you
-> can have a raid implementation that doesn't keep mirrors synchronized,
-> and has no mechanism to synchronize them, (other than user manually
-> starting a full balance operation.)
-> 
-This is an interesting point: extend scrub to support also the NOCSUM
-case with multiple copies: if the checksum mismatch, copy from the first
-mirror to the others.
+Reported-and-tested-by: syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=d66de4cbf532749df35f
+Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+---
+V1 -> V2: 're' shouldn't be freed after it added to rbtree
 
-  
-> 
+ fs/btrfs/ref-verify.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
+index 1f62976bee82..6486f0d7e993 100644
+--- a/fs/btrfs/ref-verify.c
++++ b/fs/btrfs/ref-verify.c
+@@ -794,6 +794,7 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
+ 			dump_ref_action(fs_info, ra);
+ 			kfree(ref);
+ 			kfree(ra);
++			kfree(re);
+ 			goto out_unlock;
+ 		} else if (be->num_refs == 0) {
+ 			btrfs_err(fs_info,
+@@ -803,6 +804,7 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
+ 			dump_ref_action(fs_info, ra);
+ 			kfree(ref);
+ 			kfree(ra);
++			kfree(re);
+ 			goto out_unlock;
+ 		}
+ 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+2.34.1
 
 
