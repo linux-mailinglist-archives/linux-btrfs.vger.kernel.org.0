@@ -1,104 +1,87 @@
-Return-Path: <linux-btrfs+bounces-189-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-190-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98FC57F0791
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Nov 2023 17:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 830587F085C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Nov 2023 19:42:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B8AD280FE6
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Nov 2023 16:41:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BD0F280D36
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Nov 2023 18:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F09914297;
-	Sun, 19 Nov 2023 16:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DEB612F;
+	Sun, 19 Nov 2023 18:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF10C4
-	for <linux-btrfs@vger.kernel.org>; Sun, 19 Nov 2023 08:41:19 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BEAC2
+	for <linux-btrfs@vger.kernel.org>; Sun, 19 Nov 2023 10:42:01 -0800 (PST)
 Received: from 127.0.0.1 (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
 	(No client certificate requested)
-	by mail.lichtvoll.de (Postfix) with ESMTPSA id 13E6E816F5D
-	for <linux-btrfs@vger.kernel.org>; Sun, 19 Nov 2023 17:41:18 +0100 (CET)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id 3EC368172F4
+	for <linux-btrfs@vger.kernel.org>; Sun, 19 Nov 2023 19:41:59 +0100 (CET)
 Authentication-Results: mail.lichtvoll.de;
 	auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
 From: Martin Steigerwald <martin@lichtvoll.de>
 To: linux-btrfs@vger.kernel.org
 Subject: Re: parent transid verify failed + level verify failed
-Date: Sun, 19 Nov 2023 17:41:17 +0100
-Message-ID: <4896535.31r3eYUQgx@lichtvoll.de>
-In-Reply-To: <9221302.CDJkKcVGEf@lichtvoll.de>
-References: <9221302.CDJkKcVGEf@lichtvoll.de>
+Date: Sun, 19 Nov 2023 19:41:58 +0100
+Message-ID: <4868643.GXAFRqVoOG@lichtvoll.de>
+In-Reply-To: <4896535.31r3eYUQgx@lichtvoll.de>
+References:
+ <9221302.CDJkKcVGEf@lichtvoll.de> <4896535.31r3eYUQgx@lichtvoll.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Martin Steigerwald - 19.11.23, 12:34:44 CET:
-> After having used linux-6.7-rc1 almost rc2, git commit
-> 791c8ab095f71327899023223940dd52257a4173 in order to test out BCacheFS,
-> back on 6.6.1 after two attempts of non working hibernation and a
-> strange experience with GRUB presenting its command prompt instead of a
-> boot menu=B9, I now got this funny stuff:
->=20
-> [ 1849.408572] BTRFS error (device dm-1: state EA): parent transid
-> verify failed on logical 1178386432 mirror 1 wanted 538478 found 538901
+Martin Steigerwald - 19.11.23, 17:41:17 CET:
+> / was not mountable anymore after booting into GRML. Made image with dd
+> and restored from backup onto a newly created BTRFS.
 
-=46inally recovered.
+I at least have a possible explanation.
 
-/ was not mountable anymore after booting into GRML. Made image with dd=20
-and restored from backup onto a newly created BTRFS.
+Yesterday I experienced 6.7-almost-rc2 not hibernating correctly, but 
+instead hanging with black screen. I rebooted into 6.6.1. Last thing I did 
+was remove 6.7-almost-rc2 and hibernate.
 
-/home also had errors. Did not take a chance. Scrubbed it, updated a=20
-backup with good old rsync, recreated filesystem and restored from updated=
-=20
-backup.
+In the morning I was greeted by GRUB command line prompt for a reason I do 
+not understand yet either. I recovered from this with two GRML sessions. 
+For that at least I unlocked LUKS and mounted / and /boot in GRML. If my 
+memory is correct after I fixed booting up in these two GRML sessions, 
+kernel 6.6.1 resumed from hibernation. That does make some session as in 
+the GRML session I did not touch the swap volume. So I bet the hibernation 
+image was not invalidated. However that would explain the corruption on / 
+filesystem. Cause it was mounted in between and then the kernel resumed 
+from a hibernation image with outdated in-memory data structures for 
+BTRFS.
 
-Another filesystem with larger files that only sees user space writes when =
-I=20
-write something to it, has been okay.
+If my memory and analysis is correct this would easily explain the 
+corruption on /. Still not sure what happened to /home. I think I did not 
+touch it on attempting to repair GRUB. However I am not 100% sure about 
+that.
 
-I have the following diagnostic data:
+Would be interesting to know whether diagnostic data would fit that 
+explanation.
 
-1) For /: dd image on external SSD with BTRFS, thus I can snapshot and/or=20
-ref-link copy it around and run various diagnostic stuff on it, btrfs check=
-=20
-output (no repair), scrub was okay.
+In case that is correct, then I think it would be good that in case I ever 
+need to fix up GRUB again I also activate swap volume within GRML in the 
+hope to invalidate the hibernation image. But I am not completely sure 
+whether activating swap would be enough for that.
 
-2) For /home: btrfs check output (no repair), scrub was okay.
-
-3) I think I have some dmesg output from what caused the root filesystem=20
-going read only, but I think that is the output I already posted.
-
-SMART status of 2TB Samsung 980 Pro disk okay. I do not assume that there=20
-is anything wrong with the device.
-
-On what caused the corruption? No idea. Could be something wrong with that=
-=20
-6.7-almost-rc kernel, could be some corruption that happened on failed=20
-hibernation attempts, could have to do something with BCacheFS albeit I=20
-doubt it. Anyway, I am back on 6.6.1 for now and will not touch 6.7 kernel=
-=20
-again on this laptop before I am confident that it is is safe.
-
-About diagnostic data: Willing to post more after the weekend. Just let me=
-=20
-know what you need. Of course I am not willing to upload complete dd image=
-=20
-somewhere, even not with just the operating system filesystem, but I can=20
-run stuff on it and provide output. Otherwise you can have any of the btrfs=
-=20
-check output.
+> /home also had errors. Did not take a chance. Scrubbed it, updated a
+> backup with good old rsync, recreated filesystem and restored from
+> updated backup.
 
 Best,
-=2D-=20
+-- 
 Martin
 
 
