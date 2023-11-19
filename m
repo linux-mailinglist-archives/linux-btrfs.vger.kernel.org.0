@@ -1,143 +1,129 @@
-Return-Path: <linux-btrfs+bounces-185-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-186-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 196D87F038C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Nov 2023 00:16:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8BD17F0487
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Nov 2023 07:06:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A73EA280F6B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Nov 2023 23:16:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 780EB1F223C3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 Nov 2023 06:06:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7295F2031D;
-	Sat, 18 Nov 2023 23:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418585685;
+	Sun, 19 Nov 2023 06:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A76B6
-	for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 15:16:45 -0800 (PST)
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 9DF0980C88;
-	Sat, 18 Nov 2023 23:16:44 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
-	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id E6E5C8249E;
-	Sat, 18 Nov 2023 23:16:43 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1700349404; a=rsa-sha256;
-	cv=none;
-	b=gfhjz4wZ/Az9HzvQAJ6cG1CwKhg10f/s4sXW4jSayS4+u/6dNtpXeVa1uY5OR5VEolWSjZ
-	oM2tsGhnxWgw43+9s7JpDPDlJ4IHx9op5oDSzy9avUIKYPO+XziwXCMpvbE/ghPSCv864M
-	GcyPe7HJ4dXOz/PLhRLjkSe+4dAjO/u5O2Z4s9Q4sGO+BH3dNj41seO2kUwHKx25BDI5Zn
-	3Xf4JVU/1wljHzahaylzn/XHDlaH915XkZ9DVeT6NE9jsXPxt4N6wLC06QfV6cP9MUlaLd
-	XEhD2Oh4qvPgxOVcv6ZcMo55AqflAjIEwKACVJeEHBt/i5EsO9wKwEYj/rO4ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1700349404;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I4vwd+o84aeSiGoh6Bt78uPagJMd2PbmpKo2PzGvhZ8=;
-	b=EaIKmIZ6IQzvXMCRtc/pGyhWUbalhQBITnNNDBNHAoot7C+BtptzfazCQdgl1mPeMc85a0
-	Gwc7xrkAEZlD2hSGKZ8JfOUEuO43N/VO7H7DMjny6/CCOBbuFa5FPin2qGMe5wfkVyTslS
-	/cE8vb36VFAI6TZMB7Iw0FJWSRqyF13+6gmzS4hlEVeFRS0/jaSzRq4Hs3oyxKW5rh/G38
-	I1ds7DMMccBOkUbVCUD9mjXrkyMwkAeGPYTuMgRrRYMa6s9gRstzasiA5W/opvj2A5ogoP
-	9uJh0yHNdYJqyu6BXuaqDB/5FwdjXBo6ExTuirRZrHCkvRHELo7cgHuv7IHLYw==
-ARC-Authentication-Results: i=1;
-	rspamd-55bcb54c45-zzrns;
-	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Power-Language: 2160c98a7fc98850_1700349404459_3916543011
-X-MC-Loop-Signature: 1700349404459:3435357110
-X-MC-Ingress-Time: 1700349404459
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-	by 100.117.100.100 (trex/6.9.2);
-	Sat, 18 Nov 2023 23:16:44 +0000
-Received: from p5b0ed26e.dip0.t-ipconnect.de ([91.14.210.110]:47750 helo=heisenberg.fritz.box)
-	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <calestyo@scientia.org>)
-	id 1r4UYK-0008FE-1o;
-	Sat, 18 Nov 2023 23:16:42 +0000
-Message-ID: <e713409c7a72e0b2f8ccca5a99b71115df0a694b.camel@scientia.org>
-Subject: Re: checksum errors but files are readable and no disk errors
-From: Christoph Anton Mitterer <calestyo@scientia.org>
-To: kreijack@inwind.it, linux-btrfs@vger.kernel.org
-Date: Sun, 19 Nov 2023 00:16:36 +0100
-In-Reply-To: <31ab3d6b-5a15-4cec-8ad8-b928c6502b9c@inwind.it>
-References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
-	 <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
-	 <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
-	 <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
-	 <5f6ff1cd-dd64-b88d-e814-39ba3b23395a@georgianit.com>
-	 <5e33baee-80ef-421c-9e88-d1d541461469@libero.it>
-	 <15a0b5f85425163e39edb7f2c5d9878a847754e7.camel@scientia.org>
-	 <31ab3d6b-5a15-4cec-8ad8-b928c6502b9c@inwind.it>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1-1 
+Received: from mail-pl1-f205.google.com (mail-pl1-f205.google.com [209.85.214.205])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A779E0
+	for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 22:06:25 -0800 (PST)
+Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1cc391ca417so50368075ad.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Nov 2023 22:06:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700373985; x=1700978785;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jcoToEzIjuWlVRlkxDJCBRksQxV3S4p7gMxTk5svtkc=;
+        b=ABffw3z2MD9iKi13aHnwuq4/v7sBcy8H63cOSfEiuycTUNP2NlDj+ZB5PJIaMq1WC1
+         vd7jJ99WUH6PkJcOz94Pgql5Fh2dnam3d6crR2I4VgtVaJmxSDJ+ykkEaIz5o3c+CPP/
+         q06D7qfa0Hm2TEt8ZqneKWioZM8QgVj9oRR0SB5eP6pIjgyBkiOcAn4uTrfkMm8juoCk
+         kg275+8Va4fwPPy/TOTUHnBajYxecRY+yP6e1fbaBvo6KHuE1nlG9Ae2jOYWhCzg0Enm
+         KGas2Ne8vL5U/iEmqnAaDYHvmiVwZfEM4CCn5NDhwqggrKF0zSDvN1aFf4okXRJnFCGS
+         ANOw==
+X-Gm-Message-State: AOJu0YyBSmuuMmsiDNtDy4Lk57i9z9ZYo9+Okic7GRqdIlhMo24wuSCY
+	BtJEkiCfis39gab6ulBxNBkRCZu8sft+c+bXogJKHFI6G/ad
+X-Google-Smtp-Source: AGHT+IEkhDf27h6ff96lsYOl/JSI6lud4gtxp1uFAw4oaayEo4mz0Cu+FpmN4COtiC2ITydC6LWX/pZI8MixiQGTMZVvoRpoxLlu
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-AuthUser: calestyo@scientia.org
+X-Received: by 2002:a17:903:4282:b0:1cc:47d4:492c with SMTP id
+ ju2-20020a170903428200b001cc47d4492cmr1094677plb.11.1700373985144; Sat, 18
+ Nov 2023 22:06:25 -0800 (PST)
+Date: Sat, 18 Nov 2023 22:06:24 -0800
+In-Reply-To: <000000000000cf826706067d18fd@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005eb612060a7b2b01@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_release_global_block_rsv
+From: syzbot <syzbot+10e8dae9863cb83db623@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 2023-11-17 at 20:10 +0100, Goffredo Baroncelli wrote:
-> I am not sure to fully understand what you wrote. However:
->=20
-> - COW has bad performance when there are small writes + sync
+syzbot has found a reproducer for the following issue on:
 
-Clear.
+HEAD commit:    23dfa043f6d5 Merge tag 'i2c-for-6.7-rc2' of git://git.kern..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=123446f4e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d05dd66e2eb2c872
+dashboard link: https://syzkaller.appspot.com/bug?extid=10e8dae9863cb83db623
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17722e24e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11201350e80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/9653b0ce60b2/disk-23dfa043.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/edbde0f08008/vmlinux-23dfa043.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5490b400b0f9/bzImage-23dfa043.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/5b312257ba2d/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+10e8dae9863cb83db623@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5065 at fs/btrfs/block-rsv.c:459 btrfs_release_global_block_rsv+0x24f/0x270 fs/btrfs/block-rsv.c:459
+Modules linked in:
+CPU: 0 PID: 5065 Comm: syz-executor138 Not tainted 6.7.0-rc1-syzkaller-00304-g23dfa043f6d5 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+RIP: 0010:btrfs_release_global_block_rsv+0x24f/0x270 fs/btrfs/block-rsv.c:459
+Code: 0f 0b 90 e9 e6 fe ff ff e8 4e d0 d6 fd 90 0f 0b 90 e9 10 ff ff ff e8 40 d0 d6 fd 90 0f 0b 90 e9 3a ff ff ff e8 32 d0 d6 fd 90 <0f> 0b 90 e9 6b ff ff ff e8 24 d0 d6 fd 90 0f 0b 90 eb 8d 66 2e 0f
+RSP: 0018:ffffc90003c779f8 EFLAGS: 00010293
+RAX: ffffffff83b7ae7e RBX: 000000000005e000 RCX: ffff888075723b80
+RDX: 0000000000000000 RSI: 000000000005e000 RDI: 0000000000000000
+RBP: 0000000000000001 R08: ffffffff83b7ade4 R09: 1ffff110280edd00
+R10: dffffc0000000000 R11: ffffed10280edd01 R12: ffff88814076e000
+R13: ffff88814076e058 R14: ffff88801ed3c418 R15: dffffc0000000000
+FS:  0000555556ab23c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055f2b88cc448 CR3: 000000001ab8c000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_free_block_groups+0xc39/0x1070 fs/btrfs/block-group.c:4366
+ close_ctree+0x75a/0xd40 fs/btrfs/disk-io.c:4389
+ generic_shutdown_super+0x13a/0x2c0 fs/super.c:696
+ kill_anon_super+0x3b/0x70 fs/super.c:1295
+ btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2097
+ deactivate_locked_super+0xc1/0x130 fs/super.c:484
+ cleanup_mnt+0x426/0x4c0 fs/namespace.c:1256
+ task_work_run+0x24a/0x300 kernel/task_work.c:180
+ ptrace_notify+0x2cd/0x380 kernel/signal.c:2399
+ ptrace_report_syscall include/linux/ptrace.h:411 [inline]
+ ptrace_report_syscall_exit include/linux/ptrace.h:473 [inline]
+ syscall_exit_work kernel/entry/common.c:251 [inline]
+ syscall_exit_to_user_mode_prepare kernel/entry/common.c:278 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
+ syscall_exit_to_user_mode+0x168/0x2a0 kernel/entry/common.c:296
+ do_syscall_64+0x52/0x110 arch/x86/entry/common.c:88
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f7262b90fa7
+Code: 08 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffd1c915058 EFLAGS: 00000202 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f7262b90fa7
+RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffd1c915110
+RBP: 00007ffd1c915110 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000202 R12: 00007ffd1c9161c0
+R13: 0000555556ab3700 R14: 431bde82d7b634db R15: 00007ffd1c916164
+ </TASK>
 
 
-> - CSUM need COW
-
-Not clear.
-
-Why can't we e.g. calculate the csum, write it and write the data (or
-vice versa)?
-
-Yes, it won't be atomic, ... but isn't that only a problem in case of
-crash where one is already written but not the other?
-(Maybe that's the point where I misunderstand things)
-
-And in such crash scenario (with nodatacow and the current no csum) we
-won't be anyway sure whether that particular data block would be
-completely old, completely new, or anything in between.
-
-So the only case where we'd loose something is, when the data was
-actually written, but the csum was not (and we'd get a false positive).
-Yet, we'd get the csum protection for all other cases (bit rot, cosmic
-rays, etc.).
-
-If that's the case, I'd rather be able to have a notdatacow+csum mode,
-where I live with the fact that things may be uncertain in the case of
-a crash (with I on my systems experience typically very rarely).
-
-What would however be needed is a way to manually recover from
-data/csum difference. That could be a scrub (which allows one to choose
-whether to simply re-calculate the data or consider such data damaged),
-could be a mount option, etc..
-
-
-
-So I guess my main point/question is:
-
-Why can't we have nodatacow + csum, other than for the case of a crash.
-
-And if that's the only case that would pose problems, is that really
-worth it or shouldn't it be users choice.
-
-
-Cheers,
-Chris.
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
