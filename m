@@ -1,40 +1,39 @@
-Return-Path: <linux-btrfs+bounces-205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-206-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B5A97F1DFC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 21:25:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DA257F1E02
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 21:33:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BBDB1C211DE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 20:25:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA9BDB2139C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 20:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD98D374E0;
-	Mon, 20 Nov 2023 20:25:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9716374E3;
+	Mon, 20 Nov 2023 20:33:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="PRllUffr"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="HH8SJMOw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8717C7
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Nov 2023 12:25:42 -0800 (PST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08064C3
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 Nov 2023 12:33:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1700511940; x=1701116740; i=quwenruo.btrfs@gmx.com;
-	bh=bc6netv4urZODj2PyMPV3kP8R/zLZcobC7wRRyWelz4=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=PRllUffr/9+5jSkVRAKQfdC4mKWDW8QkA9OblDacO+Zo/frA6wODdEoHSb2a5aGZ
-	 HX/zbKI2EYo3dlzJ8KXAc4+A4DrCdOAWrmep6udqNcrhcUqIIqb59RCBQp9qq1yhj
-	 Cf3z7Dld+NJhej/3uPMogfvW3a5isMsYOqfQHrC2SqEMBu1FrVaO8/52bhbVrYiIU
-	 0fXe4xbKz3HuPPGnWL8LQPQdcz2HazEEWQxOrra4XVxrrd9IWyMYobu38znTPrk55
-	 qo98y2KGNgZXjUj3I5gEXe5B2wDUyu1p5c/wF/+XIp4c0N5Ox0KbDc4PxKQFs0Dqn
-	 zYYR6Dq2JOzjZdqixg==
+	s=s31663417; t=1700512404; x=1701117204; i=quwenruo.btrfs@gmx.com;
+	bh=PX2d76sxbffIoqRvd6yRUJwSIKpVuo7hGEnauEZg//w=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=HH8SJMOwwGYmnVh5y4mEm7COTlOeuOonJvEX9ZhCbMbm6zahZCIHaLkHiAUhNbwn
+	 vFJ6sVvR6Y6zKDSdHLqh4Gp1v66hLNmp66oTIj7nMlCKBXTD/kli2/WeDo8jFshme
+	 nJMK8kUqb+QyrHPULM0N9V8/9ha9VkeY8FU5DSCV2+/ZzTPLA+AzME5SO3FNcy9ye
+	 2bhFoW5mdwOpSBibKcq30/AVb/9TXEBndIHh5Z8iFv4L6oyaE/N3trJbAAqVCSSLO
+	 Cvc0hCFATHAoSyAyEOA88WOZ/Mespb8Bo6fkoQBa/LxEJGeS0XPdcBo+OnqWBr3TR
+	 dV9y8wPnSD3taC6Oow==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mlf4S-1rmWHJ26N8-00ioI0; Mon, 20
- Nov 2023 21:25:40 +0100
-Message-ID: <a73faeae-1925-4894-9512-7a049ff8353b@gmx.com>
-Date: Tue, 21 Nov 2023 06:55:35 +1030
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Msq2E-1rKNQZ1jfk-00tBoF; Mon, 20
+ Nov 2023 21:33:24 +0100
+Message-ID: <687fae90-5cc1-4d1d-aff6-3d83cef15c59@gmx.com>
+Date: Tue, 21 Nov 2023 07:03:20 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -42,13 +41,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC] btrfs: allow extent buffer helpers to skip cross-page
- handling
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <721bab821198fc9b49d2795b2028ed6c436ab886.1700111928.git.wqu@suse.com>
- <20231120170015.GM11264@twin.jikos.cz>
+Subject: Re: checksum errors but files are readable and no disk errors
 Content-Language: en-US
+To: Phillip Susi <phill@thesusis.net>,
+ Johannes Hirte <johannes.hirte@datenkhaos.de>, linux-btrfs@vger.kernel.org
+References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
+ <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
+ <87ttpgz3qp.fsf@vps.thesusis.net>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -74,214 +73,79 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20231120170015.GM11264@twin.jikos.cz>
+In-Reply-To: <87ttpgz3qp.fsf@vps.thesusis.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Sp09LahtgtVggcbjKVcOYRGJIUU5+UMGKvIvjxI4lw0bcJ4DYBb
- 2Lp5yrF/qOk5szJYUlbQcScidQjArQJQB39yaAVehFwKLlUEn/nnPh1XkbspN2SjE3IJeIK
- baBiwkD2o4sCBqXAVvYH5vJZZdCAceF9JAjYmilgrNMb0Vt6yVzkNAdQWS+yZQXvAmUS+Ie
- 6IgRCo6GyNFvZCNa0kjSQ==
-UI-OutboundReport: notjunk:1;M01:P0:5bJeMTpYqss=;rUZQckHp4/+DdadFGwFbxe8wSBA
- CST7FPvA4tZUkkRVAaROTLjAPfZ/NZeGClvKoZWyAT8U8op6XY7C1ArlGq0NoPf1CsKPqTxIq
- lpT165nT55yEkNZkGmpBdchThAJGdgbD47zUqlWc5PUZDUtVGiedaC47InsXYe66mAjvvv1fE
- mRhoLZo8YACrY/cx+WkIiMxSuUQFg8Z8Tq5QIiBDRRmJgZSsr9Nuze8q3xSI6dAkl0Y8G/anL
- PvTfQ1e4b8PzSxxEpwmtiVhvE91PkdPB1vHa8Hjer3J+/CSwgcn2LUjHEK+EUmmUhIwXgghIC
- iaQ8CA1kZ7MlKrRlGf6B8rV6IrJjugEgj5keX3apYxYUmHXfz+dZCVdACgAFK6DI2bVH6t6lQ
- +okYOmAbQueQ3WU8ZrxctuahGenelwhsEjEyS7yrqU7bYGFCwwSY/sh8hThH5i/Y3w1WqDGE/
- goA0Q0+6sPMEkD5k58eQNpG1rQH4mxYvlYHkBzUrpR1shgnLM4dp51Ozu5WdlAc9LpNU9TjcW
- eWsvvrJELhW4FRzUswTDeHELMQkVSQUuP9C3RaRDsgfN2haAyY5cEroHG6/C3y8frrFifa0+/
- FgpyrqnHcw2yL3iiqfcnxU0vGhUK897y59G62NdSyc7nw/tnNRnVlmREu+9N+mF8MKcRvlmcE
- Yx2wv7MXMfrEeF07Rug7BZFJfZqUzeiORQSes6Q39HHZGWf3pzBjFb7VEweRHgiPNNOt3r/Fs
- m5EfYQOADkVzRpluc+ujc5tAXsvibZgWQYipZRUr7FLpeENHZvH6fg5tUPyWDd2BgSp1LXfH6
- BlYjKG2mAHxrLn4SJG7FHSSBxV3F1L5LCK/PlK0+GNnqNHQisMPkjk083RMD8sEU2huHvb7FO
- t22nQZ0m920MWXIrM0F/srDG9taYCpGQlVrQCHdAo2sKQ6XuAG3I+ctt8C1Wg3x5yOPcZpmD/
- ckAc7gPFLe+WZNFOEPeKMrC6dAw=
+X-Provags-ID: V03:K1:4PLhi1TJmBgaVLuCdhvr8QnAh1bbDa7szJCeYWJG8qxnF2xHCKl
+ PzCGZaMNmjm5XV9MUPFajOyRBBED1HVaFVQTcr+oo3AeVphOq5Flh4ARLQGdM73Qo5v71fl
+ 8r4IkQU3H/27mZZo1+Rn8XYuekGOtd7ulGxt1CWZph9EktivOsoujQRvMPJQJJnMulmst7v
+ tLynxdmeMc1Hecy1QUdTw==
+UI-OutboundReport: notjunk:1;M01:P0:WBxZdg8PHo8=;7Drq0WSJCwESzG9MNyQt++igGfy
+ n1lzfDebFGB75d/2lw7y8svxrmQwSJzitRYQQx0VQWEqkDgYBs3YzcZ32q31GDybzTFas5e/6
+ GELN99wyMIwzmRoIDQFn98cP2UaVjD8VlgzEMiUkcThB9e2BDHesZFe05bXMvAaVb1D+6X5TG
+ RJudCKqIWIZkSA/OMFibpUEeZPbQMJa5IJJcYinETNdva4kf41vgKrWKLrgAh1y9dHsec8/Og
+ 1hliUWbyeixZBWL/HKE6qvQmwxgqlQoRo5v/O/8Io+F0ekur0SS118yeNoiiBzXq/QpRThhMV
+ o6rc1ijOEQqW1qxvZ2AXZssS5hHTsydVIWTLhZH6GbjwXkZNM4umpILwVQ4NpdqKJ2PcpOFsy
+ A/WMkNVmfFE8QI2OoRB3+RFwlmCAXjJdG47g6ZNmhXR7rYR0/gz61GuohsugM0ks2AzCtS1YN
+ Po7IHW5CyG3BSp9sApGtZYXBMca4ievg031hQkcYa9ZXjOkIERZRx4NFib1ZqPP+JGGri0Dbj
+ HsqdOuX2GsFuCJYvPf9qZWyTlPkY/XLacltfcPrJPRNiV9nN6ZwQXM2kMpHVbufnd8urbnjYv
+ 5HsNHw5ojH+WJ4stQBiuGElfgR+Tiz56XcA6XSVQ2l1CxodWwvnhAQNYFZ9wtG9TwAPPVTHFq
+ sgKY08GZFJvLT+3RC/HypnPWh9Pvlm4XYVMozWb2ANnAfiodARYSq5+vcpwoBJnRecSMJj0Mb
+ w05XbF93A1J5EwtOnTZgYOSr+8ZpPW5t06Jq36o/p2D4Sr7I7BrmWDlGH7+PvXh1TiDb3t+x1
+ hxB/k1iseHbLu54j9qieUw5O2xkFJV9lxqAJ/Cu7NzLFd4LCXFIk2XtFoaH76M2bmAuDv19C9
+ hsW8T+pGn7+nlMWrmuBpQXkOnTqTGoa/u9mKIJQWkieXw+ifi8rd5a00cJnw+AsqkTVZwiaXt
+ KnRAGC4EOCACd2CkI+LxZ11mL/8=
 
 
 
-On 2023/11/21 03:30, David Sterba wrote:
-> On Thu, Nov 16, 2023 at 03:49:06PM +1030, Qu Wenruo wrote:
->> Currently btrfs extent buffer helpers are doing all the cross-page
->> handling, as there is no guarantee that all those eb pages are
->> contiguous.
->>
->> However on systems with enough memory, there is a very high chance the
->> page cache for btree_inode are allocated with physically contiguous
->> pages.
->>
->> In that case, we can skip all the complex cross-page handling, thus
->> speeding up the code.
->>
->> This patch adds a new member, extent_buffer::addr, which is only set to
->> non-NULL if all the extent buffer pages are physically contiguous.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> Reason for RFC:
->>
->> This change would increase the code size for all extent buffer helpers,
->> and since there one more branch introduced, it may even slow down the
->> system if most ebs do not have physically contiguous pages.
->>
->> But I still believe this is worthy trying, as my previous attempt to
->> use virtually contiguous pages are rejected due to possible slow down i=
-n
->> vm_map() call.
->>
->> I don't have convincing benchmark yet, but so far no obvious performanc=
-e
->> drop observed either.
->> ---
->>   fs/btrfs/disk-io.c   |  9 +++++++-
->>   fs/btrfs/extent_io.c | 55 +++++++++++++++++++++++++++++++++++++++++++=
-+
->>   fs/btrfs/extent_io.h |  7 ++++++
->>   3 files changed, 70 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->> index 5ac6789ca55f..7fc78171a262 100644
->> --- a/fs/btrfs/disk-io.c
->> +++ b/fs/btrfs/disk-io.c
->> @@ -80,8 +80,16 @@ static void csum_tree_block(struct extent_buffer *bu=
-f, u8 *result)
->>   	char *kaddr;
->>   	int i;
->>
->> +	memset(result, 0, BTRFS_CSUM_SIZE);
->>   	shash->tfm =3D fs_info->csum_shash;
->>   	crypto_shash_init(shash);
->> +
->> +	if (buf->addr) {
->> +		crypto_shash_digest(shash, buf->addr + offset_in_page(buf->start) + =
-BTRFS_CSUM_SIZE,
->> +				    buf->len - BTRFS_CSUM_SIZE, result);
->> +		return;
->> +	}
->> +
->>   	kaddr =3D page_address(buf->pages[0]) + offset_in_page(buf->start);
->>   	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
->>   			    first_page_part - BTRFS_CSUM_SIZE);
->> @@ -90,7 +98,6 @@ static void csum_tree_block(struct extent_buffer *buf=
-, u8 *result)
->>   		kaddr =3D page_address(buf->pages[i]);
->>   		crypto_shash_update(shash, kaddr, PAGE_SIZE);
->>   	}
->> -	memset(result, 0, BTRFS_CSUM_SIZE);
+On 2023/11/21 04:49, Phillip Susi wrote:
+> Qu Wenruo <quwenruo.btrfs@gmx.com> writes:
 >
-> This is not related to the contig pages but the result buffer for
-> checksum should be always cleared before storing the digest.
-
-This just get moved before the branch, as that clearing is shared for
-both cross-page and contig cases.
-
+>> For the cause of the error, the most common one is page modification
+>> during writeback, which is super common doing DirectIO while modify the
+>> page half way.
+>> (Which I guess is common for some VM workload? As I have seen several
+>> reports like this)
 >
->>   	crypto_shash_final(shash, result);
->>   }
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 03cef28d9e37..004b0ba6b1c7 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -3476,6 +3476,7 @@ struct extent_buffer *alloc_extent_buffer(struct =
-btrfs_fs_info *fs_info,
->>   	struct address_space *mapping =3D fs_info->btree_inode->i_mapping;
->>   	struct btrfs_subpage *prealloc =3D NULL;
->>   	u64 lockdep_owner =3D owner_root;
->> +	bool page_contig =3D true;
->>   	int uptodate =3D 1;
->>   	int ret;
->>
->> @@ -3562,6 +3563,14 @@ struct extent_buffer *alloc_extent_buffer(struct=
- btrfs_fs_info *fs_info,
->>
->>   		WARN_ON(btrfs_page_test_dirty(fs_info, p, eb->start, eb->len));
->>   		eb->pages[i] =3D p;
->> +
->> +		/*
->> +		 * Check if the current page is physically contiguous with previous =
-eb
->> +		 * page.
->> +		 */
->> +		if (i && eb->pages[i - 1] + 1 !=3D p)
->> +			page_contig =3D false;
->
-> This hasn't been fixed from last time, this has almost zero chance to
-> succeed once the system is up for some time.
+> How is it common for applications to modify the page during directIO,
 
-I have the same counter argument as the last time.
+If you really want some proof, I can add double csum verification for
+direct IO.
 
-If so, transparent huge page should not work, thus I strongly doubt
-about above statement.
+In fact just recently fsstress has a bug that leads to the exact
+situation due to uring got interrupted by signal, and caused page
+modification.
+(https://www.spinics.net/lists/fstests/msg23274.html)
 
-> Page addresses returned
-> from allocator are random. What I was suggesting is to use alloc_page()
-> with the given order (16K pages are 2).
+Exactly caught by btrfs csum, and initially thought to be a bug of
+btrfs, but turns out to be a bug of fsstress.
 
-Nope, this patch is not intended to do that at all.
+Considering how many different ways we have to do IO (and equally how
+many ways to screw up), I'm not surprised by it at all.
 
-This is just the preparation for the incoming changes.
-In fact alloc_page() with order needs more than those changes, it would
-only come after all the preparation, including:
+> which is explicitly NOT ALLOWED and will result in bad things happening
+> no matter what FS you are using or if you are using md.
 
-- Change how we allocate  pages for eb
-   It has to go allocation in one-go, then attaching those pages to
-   filemap.
+So we all know a program should not SEGV during "normal" usage, but
+there are tons of crash report in the world.
 
-- Extra changes to how concurrent eb allocation
-
-- Folio flags related changes
-   Remember a lot of folio flags are not applied to all its pages.
-
->
-> This works for all eb sizes we need, the prolematic one could be for 64K
-> because this is order 4 and PAGE_ALLOC_COSTLY_ORDER is 3, so this would
-> cost more on the MM side. But who uses 64K node size on x8_64.
-
-As long as you still want per-page allocation as fallback, this patch
-itself is still required.
-
-All the higher order allocation is only going to be an optimization or
-fast path.
-
-Furthermore, I found this suggestion is conflicting with your previous
-statement on contig pages.
-If you say the system can no longer provides contig pages after some
-uptime, then all above higher order page allocation should all fail.
-
->
->> --- a/fs/btrfs/extent_io.h
->> +++ b/fs/btrfs/extent_io.h
->> @@ -77,6 +77,13 @@ struct extent_buffer {
->>   	unsigned long len;
->>   	unsigned long bflags;
->>   	struct btrfs_fs_info *fs_info;
->> +
->> +	/*
->> +	 * The address where the eb can be accessed without any cross-page ha=
-ndling.
->> +	 * This can be NULL if not possible.
->> +	 */
->> +	void *addr;
->
-> So this is a remnant of the vm_map, we would not need to store the
-> address in case all the pages are contiguous, it would be the address of
-> pages[0]. That it's contiguous could be tracked as a bit in the flags.
-
-It's the indicator of whether the pages are contig.
-
-Or you have to check all the pages' address then determine if we go fast
-path everytime, which is too slow afaik.
+"NOT ALLOWED" is not good enough for real world.
 
 Thanks,
 Qu
 
+>  Even with md,
+> if you modify the page under direct write, the original may have already
+> been written to one disk, then the other disk gets the (partially)
+> updated version, and md has no way of knowing this.  It will detect it
+> if you do a scrub I guess, but it doesn't know which is the "good"
+> copy.  At least with btrfs csums one disk might contain the original,
+> uncorrupted data with the good csum and then that will be used.
 >
->> +
->>   	spinlock_t refs_lock;
->>   	atomic_t refs;
->>   	int read_mirror;
->> --
->> 2.42.1
->>
->
+> Even with ext4 on a single disk, this behavior will result in a corrupt
+> file that is neither the original, nor fully modified version.  If qemu
+> is doing this, then that's a bug in qemu that needs to be fixed.  Then
+> again, if qemu is submitting a block for write to disk while the guest
+> OS modifies it, then maybe the bug is in the guest OS, as it should not
+> be modifying a page that is under write.
 
