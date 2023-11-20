@@ -1,80 +1,189 @@
-Return-Path: <linux-btrfs+bounces-210-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-211-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 166F97F1E8B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 22:11:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 628B67F1F60
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 22:42:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C00D91F2303D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 21:11:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02C8DB218CA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 21:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03F5136B19;
-	Mon, 20 Nov 2023 21:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="abZo0xON"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B10638F99;
+	Mon, 20 Nov 2023 21:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9E9CF
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 Nov 2023 13:11:47 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4079ed65582so18224335e9.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 Nov 2023 13:11:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700514705; x=1701119505; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pilji3VfdnaXa7Xtgj8molN3fG4jkmBjYOn49QI89ZY=;
-        b=abZo0xONSmSPKfEsBs5MyIngeVaBE/F5E7QCNcU4mmfyvh2WrFrfoIbz22sI7WDSQv
-         ILdyqeqpMvi8H6sgAlk0caRqvsdnkBCehVpgmHS3uj7GdbIGe71zOyKTOconJBLJhWwR
-         pUOjGS02uKjRkC/CgRjDnSB/CqA1oJws/ARBBFRh2FDoYfePVPqDZOyqiUFx8YxQqOM5
-         GNWhf73UGh+2FWNIY8YYISI3uBCvpW1q9Ejgn3rouHXxMQ59SkiYWR05ghT3zJRBS9pX
-         /5WAJRMilRAEoGdzGZBtsQr7Vd9L733KBgn34UtAPTt2FEmqivR8DIuzvriJ9N5//rnF
-         V0Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700514705; x=1701119505;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pilji3VfdnaXa7Xtgj8molN3fG4jkmBjYOn49QI89ZY=;
-        b=TnE6bPcv7x4oAH9N5vGJmmzaUTdeZtqnczgVrdVhPN4aoTcwhIs2wVHGCPvaZOSszW
-         xxwW8pxiFHJ1PWqkODixsLPeZcboekI6aXbpoPGqZtlsO7J8bpi0BdgKuJVL4bGFPZDA
-         WKXA1Grc5L/3sv4XHw7/oOgHg4YiV8nHptzRpGO6iEAyPlFVC9clcfXKQVOzdrV3+YWD
-         DxdOgImZ5EPjnCF+l/MMCRSfGFk/FIVHBjblRqnf6s9SD3xjtdxx+Xg31ldhG+vF9OqT
-         rj/+7pm4Y8ZFohF1OEJDhPR6Yyz8izoyRV9Q5yoLNfA8TMnzo3/IjLqZ4iVL7QqlMapD
-         ISqg==
-X-Gm-Message-State: AOJu0YzKTU9LX7Dmnah7KL4iQeqPEMALsbJluSlUUIK3XrKmxkeu6rbW
-	gxAAKX3lJeW41iyt8KELWQichICdog8=
-X-Google-Smtp-Source: AGHT+IFGb0Gf+N4OcikIO8aO5+LAm1koSdTrmM19+4m1HJVUMK+YbypkHjjxScltKICbRwHDxbzUXw==
-X-Received: by 2002:a05:600c:1c14:b0:405:3ae6:2413 with SMTP id j20-20020a05600c1c1400b004053ae62413mr7011085wms.25.1700514705446;
-        Mon, 20 Nov 2023 13:11:45 -0800 (PST)
-Received: from solpc.. (67.pool90-171-92.dynamic.orange.es. [90.171.92.67])
-        by smtp.gmail.com with ESMTPSA id l22-20020a05600c4f1600b00407752bd834sm14709296wmq.1.2023.11.20.13.11.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 13:11:45 -0800 (PST)
-From: =?UTF-8?q?Joan=20Bruguera=20Mic=C3=B3?= <joanbrugueram@gmail.com>
-To: Arsenii Skvortsov <ettavolt@gmail.com>
-Cc: linux-btrfs@vger.kernel.org,
-	Wang Yugui <wangyugui@e16-tech.com>
-Subject: Re: [PATCH v2] btrfs-progs: receive: cannot find clone source subvol when receiving in reverse direction
-Date: Mon, 20 Nov 2023 21:11:22 +0000
-Message-ID: <20231120211123.916332-1-joanbrugueram@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <ce4f7788f24442cd6f4779baee1992bb1978b85c.camel@gmail.com>
-References: <ce4f7788f24442cd6f4779baee1992bb1978b85c.camel@gmail.com>
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A317CCB
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 Nov 2023 13:42:14 -0800 (PST)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id EDEFDC1A56;
+	Mon, 20 Nov 2023 21:42:13 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 06339C2850;
+	Mon, 20 Nov 2023 21:42:12 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1700516533; a=rsa-sha256;
+	cv=none;
+	b=mpL4tqJT45ySIfKxXZbEzzZ1a6cuKuKgO0PS6oCsLU9JEj9kkXwnImpNLT6LjkihUF+HF7
+	FaD1g3nHVUeSxY9G4QE4uSWdCHe8XyYj0GHqkLrdea3gfawYJGGrv11AmXQuyg5EA9L6Gr
+	L+zK8jxOfsUTeQSvjA15lKR0HInlBy+r9C+56BgHSbKy1DD1PwZvmSzvhwvLBrIfUjgwVU
+	Qpjz+rweloyFlxuqB9yWeIrJdOS8LfF0Jb7AYtiL4m9Hb45AmrMp7Ub0Ir8pLn9k5/ZW4j
+	PTTUMEYXcUERaf1LuToAX4ekmOY3/1YGD+sCk/sJmJJiH16lR33yzyzCSSrVMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1700516533;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0gurHv0y2HjzUZN41tkdAmAsjtFWK+WtturOVElT+kM=;
+	b=XeOcTykPAZuWVZolWYrvTmKDv1cHlY4SfMYus1QLCMN/1h4O70naZJwTpqIqaxgByDp3ia
+	DLhJhJQHmVgg+YmEvZ2ITW2RtioV2HVVLkdlwVxBm7NRl5D9WJAZlQOOCCaxrGzjbXUgkZ
+	hNjT7U+/PPL1EHZS+IA4EmGIVeGrV94LgGzZ+8VId6hg+/d7jizamku4CIll/dVfsSQ5pM
+	1h/J2zAHwHgEy8CiJnkrFh45PIe8oA3meTDUGU9Y5wyK8be5fBRmpkFdCbX6cbOsh+0L4D
+	+iCrYVcujIcZNq0FEam/OxaH5SIVwF3xQB3HoMuivghqNepKpm7BrvlVPH51OA==
+ARC-Authentication-Results: i=1;
+	rspamd-55bcb54c45-4htpw;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Hook-Tank: 6915aa6106c6b97a_1700516533554_671479697
+X-MC-Loop-Signature: 1700516533554:2668184088
+X-MC-Ingress-Time: 1700516533554
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+	by 100.122.31.6 (trex/6.9.2);
+	Mon, 20 Nov 2023 21:42:13 +0000
+Received: from p5b0ed26e.dip0.t-ipconnect.de ([91.14.210.110]:50214 helo=heisenberg.fritz.box)
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <calestyo@scientia.org>)
+	id 1r5C1u-0002cL-30;
+	Mon, 20 Nov 2023 21:42:11 +0000
+Message-ID: <c9177935a9ec6bc1b51ba43b84984b8ad2b524be.camel@scientia.org>
+Subject: Re: checksum errors but files are readable and no disk errors
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: kreijack@inwind.it, linux-btrfs@vger.kernel.org
+Date: Mon, 20 Nov 2023 22:42:05 +0100
+In-Reply-To: <398d34db-e8a6-4116-af6c-ef325944a7d7@inwind.it>
+References: <6b6aafe0-811e-4619-91c3-36700e387cec@datenkhaos.de>
+	 <6a87d788-5f4c-4cb0-8351-233ab924129c@gmx.com>
+	 <47f08d62-3fa2-4baf-9425-17d1f119ef8d@datenkhaos.de>
+	 <fa4814bc-6f59-46f8-bd1a-d79f4020a2fa@gmx.com>
+	 <5f6ff1cd-dd64-b88d-e814-39ba3b23395a@georgianit.com>
+	 <5e33baee-80ef-421c-9e88-d1d541461469@libero.it>
+	 <15a0b5f85425163e39edb7f2c5d9878a847754e7.camel@scientia.org>
+	 <31ab3d6b-5a15-4cec-8ad8-b928c6502b9c@inwind.it>
+	 <e713409c7a72e0b2f8ccca5a99b71115df0a694b.camel@scientia.org>
+	 <398d34db-e8a6-4116-af6c-ef325944a7d7@inwind.it>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1-1 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-AuthUser: calestyo@scientia.org
 
-The first parameter of `search_source_subvol` should be changed from a
-`struct subvol_uuid_search *` to an `int`, which I suggest naming `mnt_fd`,
-otherwise this generates some integer <->pointer conversion warnings.
+Hey.
 
-(Note that there are two different declarations of `subvol_uuid_search` in
- btrfs-progs, which probably caused the confusion with the typings).
+
+On Sun, 2023-11-19 at 12:24 +0100, Goffredo Baroncelli wrote:
+> How you can understand if:
+> - the data mismatch due to cosmic ray, or
+> - the data mismatch due to incomplete write
+
+Not at all... but the question is: Does that even matter?
+
+*If* it's actually the case, that correctness of csums cannot be
+guaranteed *only* in the case of a crash (is it?) then it doesn't
+matter unless on actually has a crash (which may be even never the
+case).
+
+And for all other cases, i.e. when there is no crash, but still invalid
+csum, we would be able to notice any silent data corruption (especially
+broken memory seems often the reason and btrfs a good checker for that
+;-) ).
+So if the above assumption is true, nodatacow + csums would give us
+protection for all kinds of corruption, except when we have a crash.
+
+
+No, what if we do have a crash?
+Data and csum will likely not match, yes.
+But again: So what? Even without the non-matching csum we couldn't be
+sure that the data is valid.
+
+
+>=20
+> This thread born by the fact that in case of directio, it is
+> impossible to guarantee that csum are correct.
+
+Admittedly I've jumped on the train when I saw that csum and nodatacow
+was discussion O:-)
+
+>  Now we are discussing
+> to add another set of cases to made the csum less reliable.
+
+I don't see how it would become less reliable.
+If we'd optionally(!) allow csums for nodatacow, nothing would change
+in the datacow case... and csums wouldn't be made less reliable for the
+nodatacow case either, as currently there are no csums at all.
+
+It would seem to me that the opposite is the case: we get more
+reliability for the nodatacow case - except for that one case when
+there is a crash.
+
+But even in case of a crash we don't loose reliability, cause even
+without the csum we'd have no clue whether the data was fully written,
+partially or not at all.
+So even there we'd only improve things by giving an indicator that data
+*might* be corrupt (which includes of course the possibility of a false
+positive).
+
+
+> However I understood your point: allow a set of cases were the user
+> may
+> allow to lost data (which may be lost anyway); after a crash the
+> system should be able to do a scrub for the last written data and
+> recompute the csum were possible.
+
+So is there any chance to actually get this as a feature?
+
+I.e. allow people to do nodatacow but have it *not* to imply nodatasum?
+People should still be able to do nodatacow AND nodatasum (and it could
+even be made the default).
+But it would be nice to have nodatacow+datasum as an option... + some
+way[0] to "fix" EIO blocks, that result from a crash.
+
+
+> I think that there is a generic complexity due to the fact that now
+> the system is able to write data when it want. With a change like
+> we are discussing, the system should collect all the write and before
+> updating the disk, it has to log what is updating.
+
+You mean collect all data, just to do the csum-"correcting"[1]
+scrub=C2=A0faster?
+
+
+Thanks,
+Chris.
+
+
+[0] A good tool, would perhaps allow a user to inspect the blocks that
+would currently give EIO and decide whether they're broken or whether
+the csum should be simply-reset (under the assumption the data is
+correct). "inspection" here could be as simple as an easy way to find
+out which files reference an affected block so that the user can (if
+desired) check if they look sound.
+
+[1] We shouldn't call it correcting csums, since we cannot know whether
+the data is even correct. It's more a csum "re-setting".
 
