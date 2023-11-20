@@ -1,457 +1,287 @@
-Return-Path: <linux-btrfs+bounces-204-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A36697F1D90
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 20:53:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B5A97F1DFC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 21:25:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 209BB1F25317
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 19:53:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BBDB1C211DE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Nov 2023 20:25:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC67737145;
-	Mon, 20 Nov 2023 19:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD98D374E0;
+	Mon, 20 Nov 2023 20:25:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="UXACml2P";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OdA0mpKd"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="PRllUffr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EA592;
-	Mon, 20 Nov 2023 11:53:01 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id EBC8E5C0ABF;
-	Mon, 20 Nov 2023 14:52:57 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 20 Nov 2023 14:52:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-	1700509977; x=1700596377; bh=+AWNJrGXrrAethsmDsGzlF4mvdYF9sp19fg
-	iz7FAD5k=; b=UXACml2Pye7oSVgGAPS4X33U9U6sEmjJUJrc5n6d81x5+u9ZrED
-	DfTQnDcTsY6dn02mhe0CNIco9Dhq9rJOHDmgaWRaG3PdqBolM/B6fkMoCpTWda92
-	4OG4E2H148eoTN9k6qlG1xljXoymuaWSDrziyZi/k4SWsGfH6MrwwugxgxtBHF2z
-	rsSBnkcS+Su5uH2BBGrba1KUE8YkTT2iaR27fwxDZJL6MC9vGp1i1I6AKa7JW6G9
-	JYZYX5+HCyJ+lFjccKL6FiUSii8QIXe7c6wSus8YVudJPjqPZOJpeX//RtBRWkX2
-	LJPv7hlAiRW+obSHsyddQ5bzFa4QR0RQvWQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1700509977; x=1700596377; bh=+AWNJrGXrrAethsmDsGzlF4mvdYF9sp19fg
-	iz7FAD5k=; b=OdA0mpKdgOhwvZmIUShaCZFzmDcLXk2v4PrkX8jx5TCtbOTQrdV
-	9xWy3Iw8g41hfhmGwEFn+1AvyLbvFKKkwKPwNbUz0DMMpB5knBCoJ+GNTdkbDAQS
-	GaM2xZVkZE8MOJ4jWbvbSiJK/v/PFy5EvWFy1kR6PInOlD0AD/DJsCtRBDT7WOlO
-	hvkLETfNTvfdbiJE5RSllcmgBLwyHNnzGxaxnSeUjoX2J1zN4QXUvMZ6GMIRCxjq
-	XBra3V4hRnxJW9eOGCr1glatj/U2s0zunwEGuRvKs1OQlO1RaABjnzoun/4FWB2z
-	47Y5ic7rcbL7UPzG4sRNXTK1Mg3qixDnrqQ==
-X-ME-Sender: <xms:GblbZR6SnhipjzxhXetLvlNWvrzwQyl44qx4cYQ7o741fSwzgRxF3w>
-    <xme:GblbZe5GafJ_IHhfF_UhKTgim0BgHUZQQH1cH89oCXRKqjQFb5fHn0ptTiEFvIYIv
-    2xN9g0xuEKvxm3xPjE>
-X-ME-Received: <xmr:GblbZYdfVYuzpnrgsbYy8rH_Iuvng7G5o3FmSk676pX2tGMIoBzqZpPAuom_CIyZBX3iH_03S40YqcA6rd5K0hOg5GI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegjedguddtfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepueho
-    rhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrh
-    hnpedulefhtdfhteduvdethfeftdeitdethedvtdekvdeltddvveegtdeuuddtiedtieen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrih
-    hssegsuhhrrdhioh
-X-ME-Proxy: <xmx:GblbZaJihG4cnkaEhtHVOVPO0Z7huj88Uq3xm-zuBcZeZ5oryMBu3Q>
-    <xmx:GblbZVJPl6SCrUbzjKMCmx2aiPJikHRA-4hDWZhqyK0_SppksnH5pQ>
-    <xmx:GblbZTwOL8Jde19zezxkP__WJmYdHxNniFvWbPPzmXqnOYywj1TmjA>
-    <xmx:GblbZcU0alNXQfPPAU-FUaU_se5ZH1TxXuI4kFOj1UdtotSlXZpdoA>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 20 Nov 2023 14:52:57 -0500 (EST)
-Date: Mon, 20 Nov 2023 11:53:50 -0800
-From: Boris Burkov <boris@bur.io>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-	fstests@vger.kernel.org
-Subject: Re: [PATCH 1/2] btrfs/301: fix hardcoded subvolids
-Message-ID: <20231120195350.GA262427@zen.localdomain>
-References: <cover.1700505679.git.boris@bur.io>
- <da0104f52b8253be8b905f77ce467acaf6afc9cd.1700505679.git.boris@bur.io>
- <CAL3q7H5XcFeFFTYjm84y+uc_Jz2eUSzcfq9OyxX3cs=gv2UDfw@mail.gmail.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8717C7
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 Nov 2023 12:25:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1700511940; x=1701116740; i=quwenruo.btrfs@gmx.com;
+	bh=bc6netv4urZODj2PyMPV3kP8R/zLZcobC7wRRyWelz4=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=PRllUffr/9+5jSkVRAKQfdC4mKWDW8QkA9OblDacO+Zo/frA6wODdEoHSb2a5aGZ
+	 HX/zbKI2EYo3dlzJ8KXAc4+A4DrCdOAWrmep6udqNcrhcUqIIqb59RCBQp9qq1yhj
+	 Cf3z7Dld+NJhej/3uPMogfvW3a5isMsYOqfQHrC2SqEMBu1FrVaO8/52bhbVrYiIU
+	 0fXe4xbKz3HuPPGnWL8LQPQdcz2HazEEWQxOrra4XVxrrd9IWyMYobu38znTPrk55
+	 qo98y2KGNgZXjUj3I5gEXe5B2wDUyu1p5c/wF/+XIp4c0N5Ox0KbDc4PxKQFs0Dqn
+	 zYYR6Dq2JOzjZdqixg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mlf4S-1rmWHJ26N8-00ioI0; Mon, 20
+ Nov 2023 21:25:40 +0100
+Message-ID: <a73faeae-1925-4894-9512-7a049ff8353b@gmx.com>
+Date: Tue, 21 Nov 2023 06:55:35 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H5XcFeFFTYjm84y+uc_Jz2eUSzcfq9OyxX3cs=gv2UDfw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC] btrfs: allow extent buffer helpers to skip cross-page
+ handling
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <721bab821198fc9b49d2795b2028ed6c436ab886.1700111928.git.wqu@suse.com>
+ <20231120170015.GM11264@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20231120170015.GM11264@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Sp09LahtgtVggcbjKVcOYRGJIUU5+UMGKvIvjxI4lw0bcJ4DYBb
+ 2Lp5yrF/qOk5szJYUlbQcScidQjArQJQB39yaAVehFwKLlUEn/nnPh1XkbspN2SjE3IJeIK
+ baBiwkD2o4sCBqXAVvYH5vJZZdCAceF9JAjYmilgrNMb0Vt6yVzkNAdQWS+yZQXvAmUS+Ie
+ 6IgRCo6GyNFvZCNa0kjSQ==
+UI-OutboundReport: notjunk:1;M01:P0:5bJeMTpYqss=;rUZQckHp4/+DdadFGwFbxe8wSBA
+ CST7FPvA4tZUkkRVAaROTLjAPfZ/NZeGClvKoZWyAT8U8op6XY7C1ArlGq0NoPf1CsKPqTxIq
+ lpT165nT55yEkNZkGmpBdchThAJGdgbD47zUqlWc5PUZDUtVGiedaC47InsXYe66mAjvvv1fE
+ mRhoLZo8YACrY/cx+WkIiMxSuUQFg8Z8Tq5QIiBDRRmJgZSsr9Nuze8q3xSI6dAkl0Y8G/anL
+ PvTfQ1e4b8PzSxxEpwmtiVhvE91PkdPB1vHa8Hjer3J+/CSwgcn2LUjHEK+EUmmUhIwXgghIC
+ iaQ8CA1kZ7MlKrRlGf6B8rV6IrJjugEgj5keX3apYxYUmHXfz+dZCVdACgAFK6DI2bVH6t6lQ
+ +okYOmAbQueQ3WU8ZrxctuahGenelwhsEjEyS7yrqU7bYGFCwwSY/sh8hThH5i/Y3w1WqDGE/
+ goA0Q0+6sPMEkD5k58eQNpG1rQH4mxYvlYHkBzUrpR1shgnLM4dp51Ozu5WdlAc9LpNU9TjcW
+ eWsvvrJELhW4FRzUswTDeHELMQkVSQUuP9C3RaRDsgfN2haAyY5cEroHG6/C3y8frrFifa0+/
+ FgpyrqnHcw2yL3iiqfcnxU0vGhUK897y59G62NdSyc7nw/tnNRnVlmREu+9N+mF8MKcRvlmcE
+ Yx2wv7MXMfrEeF07Rug7BZFJfZqUzeiORQSes6Q39HHZGWf3pzBjFb7VEweRHgiPNNOt3r/Fs
+ m5EfYQOADkVzRpluc+ujc5tAXsvibZgWQYipZRUr7FLpeENHZvH6fg5tUPyWDd2BgSp1LXfH6
+ BlYjKG2mAHxrLn4SJG7FHSSBxV3F1L5LCK/PlK0+GNnqNHQisMPkjk083RMD8sEU2huHvb7FO
+ t22nQZ0m920MWXIrM0F/srDG9taYCpGQlVrQCHdAo2sKQ6XuAG3I+ctt8C1Wg3x5yOPcZpmD/
+ ckAc7gPFLe+WZNFOEPeKMrC6dAw=
 
-On Mon, Nov 20, 2023 at 07:45:01PM +0000, Filipe Manana wrote:
-> On Mon, Nov 20, 2023 at 6:44 PM Boris Burkov <boris@bur.io> wrote:
-> >
-> > Hardcoded subvolids break noholes test runs, so change the test to use
-> > _btrfs_get_subvolid instead of assuming 256, 257, etc...
-> 
-> How exactly does no-holes affect the assigned IDs to subvolumes?
-> It's a default feature for quite a while and the test passes with it
-> and without it (-O ^no-holes).
-> 
-> Aren't you confusing this with enabling or disabling features that add
-> some tree?
-> Like disabling the free space tree (which is a default for quite a
-> while now), for example.
 
-Yes I am. Josef reported this to me and I misread the name of his
-configuration that was failing. For completeness it was one that doesn't
-use free space tree, like you say.
 
-> 
-> For me it fails with -O ^free-space-tree, and it fails even with this
-> patch applied:
+On 2023/11/21 03:30, David Sterba wrote:
+> On Thu, Nov 16, 2023 at 03:49:06PM +1030, Qu Wenruo wrote:
+>> Currently btrfs extent buffer helpers are doing all the cross-page
+>> handling, as there is no guarantee that all those eb pages are
+>> contiguous.
+>>
+>> However on systems with enough memory, there is a very high chance the
+>> page cache for btree_inode are allocated with physically contiguous
+>> pages.
+>>
+>> In that case, we can skip all the complex cross-page handling, thus
+>> speeding up the code.
+>>
+>> This patch adds a new member, extent_buffer::addr, which is only set to
+>> non-NULL if all the extent buffer pages are physically contiguous.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> Reason for RFC:
+>>
+>> This change would increase the code size for all extent buffer helpers,
+>> and since there one more branch introduced, it may even slow down the
+>> system if most ebs do not have physically contiguous pages.
+>>
+>> But I still believe this is worthy trying, as my previous attempt to
+>> use virtually contiguous pages are rejected due to possible slow down i=
+n
+>> vm_map() call.
+>>
+>> I don't have convincing benchmark yet, but so far no obvious performanc=
+e
+>> drop observed either.
+>> ---
+>>   fs/btrfs/disk-io.c   |  9 +++++++-
+>>   fs/btrfs/extent_io.c | 55 +++++++++++++++++++++++++++++++++++++++++++=
++
+>>   fs/btrfs/extent_io.h |  7 ++++++
+>>   3 files changed, 70 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index 5ac6789ca55f..7fc78171a262 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -80,8 +80,16 @@ static void csum_tree_block(struct extent_buffer *bu=
+f, u8 *result)
+>>   	char *kaddr;
+>>   	int i;
+>>
+>> +	memset(result, 0, BTRFS_CSUM_SIZE);
+>>   	shash->tfm =3D fs_info->csum_shash;
+>>   	crypto_shash_init(shash);
+>> +
+>> +	if (buf->addr) {
+>> +		crypto_shash_digest(shash, buf->addr + offset_in_page(buf->start) + =
+BTRFS_CSUM_SIZE,
+>> +				    buf->len - BTRFS_CSUM_SIZE, result);
+>> +		return;
+>> +	}
+>> +
+>>   	kaddr =3D page_address(buf->pages[0]) + offset_in_page(buf->start);
+>>   	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
+>>   			    first_page_part - BTRFS_CSUM_SIZE);
+>> @@ -90,7 +98,6 @@ static void csum_tree_block(struct extent_buffer *buf=
+, u8 *result)
+>>   		kaddr =3D page_address(buf->pages[i]);
+>>   		crypto_shash_update(shash, kaddr, PAGE_SIZE);
+>>   	}
+>> -	memset(result, 0, BTRFS_CSUM_SIZE);
+>
+> This is not related to the contig pages but the result buffer for
+> checksum should be always cleared before storing the digest.
 
-And didn't reproduce it, since he proposed the fix, which seemed
-"straightforward" enough to me.
+This just get moved before the branch, as that clearing is shared for
+both cross-page and contig cases.
 
-> 
-> $ MKFS_OPTIONS="-O ^free-space-tree" ./check btrfs/301
-> FSTYP         -- btrfs
-> PLATFORM      -- Linux/x86_64 debian0 6.6.0-rc5-btrfs-next-140+ #1 SMP
-> PREEMPT_DYNAMIC Thu Oct 19 16:55:42 WEST 2023
-> MKFS_OPTIONS  -- -O ^free-space-tree /dev/sdb
-> MOUNT_OPTIONS -- /dev/sdb /home/fdmanana/btrfs-tests/scratch_1
-> 
-> btrfs/301 70s ... - output mismatch (see
-> /home/fdmanana/git/hub/xfstests/results//btrfs/301.out.bad)
->     --- tests/btrfs/301.out 2023-10-18 23:29:06.029292800 +0100
->     +++ /home/fdmanana/git/hub/xfstests/results//btrfs/301.out.bad
-> 2023-11-20 19:33:04.988824928 +0000
->     @@ -13,6 +13,16 @@
->      fallocate: Disk quota exceeded
->      pwrite: Disk quota exceeded
->      enable mature
->     +ERROR: unable to limit requested quota group: No such file or directory
->     +/home/fdmanana/git/hub/xfstests/tests/btrfs/301: line 373: [:
-> -lt: unary operator expected
->     +captured usage from before enable  >= 134217728
->     +/home/fdmanana/git/hub/xfstests/tests/btrfs/301: line 377: [:
-> -lt: unary operator expected
->     ...
->     (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/301.out
-> /home/fdmanana/git/hub/xfstests/results//btrfs/301.out.bad'  to see
-> the entire diff)
-> Ran: btrfs/301
-> Failures: btrfs/301
-> Failed 1 of 1 tests
-> 
-> I see variables like subvid below being declared as global in one
-> function and then used in other functions.
+>
+>>   	crypto_shash_final(shash, result);
+>>   }
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 03cef28d9e37..004b0ba6b1c7 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -3476,6 +3476,7 @@ struct extent_buffer *alloc_extent_buffer(struct =
+btrfs_fs_info *fs_info,
+>>   	struct address_space *mapping =3D fs_info->btree_inode->i_mapping;
+>>   	struct btrfs_subpage *prealloc =3D NULL;
+>>   	u64 lockdep_owner =3D owner_root;
+>> +	bool page_contig =3D true;
+>>   	int uptodate =3D 1;
+>>   	int ret;
+>>
+>> @@ -3562,6 +3563,14 @@ struct extent_buffer *alloc_extent_buffer(struct=
+ btrfs_fs_info *fs_info,
+>>
+>>   		WARN_ON(btrfs_page_test_dirty(fs_info, p, eb->start, eb->len));
+>>   		eb->pages[i] =3D p;
+>> +
+>> +		/*
+>> +		 * Check if the current page is physically contiguous with previous =
+eb
+>> +		 * page.
+>> +		 */
+>> +		if (i && eb->pages[i - 1] + 1 !=3D p)
+>> +			page_contig =3D false;
+>
+> This hasn't been fixed from last time, this has almost zero chance to
+> succeed once the system is up for some time.
 
-I tried to test that they get populated correctly (confused why it works
-sometimes...)
+I have the same counter argument as the last time.
 
-But clearly it's broken in general and I'll do something more robust. I
-think the basic problem is I call prepare() in each test function, so I
-wanted prepare to set the global state, without making each test lookup
-the subvolid. But it's not the end of the world to have the tests get it
-one way or the other.
+If so, transparent huge page should not work, thus I strongly doubt
+about above statement.
 
-> Maybe there's something wrong with that... it would be cleaner to make
-> the variable local and pass the subvolume id as an argument to other
-> functions.
-> 
-> Thanks.
+> Page addresses returned
+> from allocator are random. What I was suggesting is to use alloc_page()
+> with the given order (16K pages are 2).
 
-Thanks for catching the mistake.
+Nope, this patch is not intended to do that at all.
 
-> 
-> >
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >  tests/btrfs/301 | 138 ++++++++++++++++++++++++------------------------
-> >  1 file changed, 70 insertions(+), 68 deletions(-)
-> >
-> > diff --git a/tests/btrfs/301 b/tests/btrfs/301
-> > index 7a0b4c0e1..5bb6b16a6 100755
-> > --- a/tests/btrfs/301
-> > +++ b/tests/btrfs/301
-> > @@ -172,25 +172,27 @@ prepare()
-> >         _scratch_mount
-> >         enable_quota "s"
-> >         $BTRFS_UTIL_PROG subvolume create $subv >> $seqres.full
-> > -       set_subvol_limit 256 $limit
-> > -       check_subvol_usage 256 0
-> > +       subvid=$(_btrfs_get_subvolid $SCRATCH_MNT subv)
-> > +       set_subvol_limit $subvid $limit
-> > +       check_subvol_usage $subvid 0
-> >
-> >         # Create a bunch of little filler files to generate several levels in
-> >         # the btree, to make snapshotting sharing scenarios complex enough.
-> >         $FIO_PROG $prep_fio_config --output=$fio_out
-> > -       check_subvol_usage 256 $total_fill
-> > +       check_subvol_usage $subvid $total_fill
-> >
-> >         # Create a single file whose extents we will explicitly share/unshare.
-> >         do_write $subv/f $ext_sz
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> >  }
-> >
-> >  prepare_snapshotted()
-> >  {
-> >         prepare
-> >         $BTRFS_UTIL_PROG subvolume snapshot $subv $snap >> $seqres.full
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > -       check_subvol_usage 257 0
-> > +       snapid=$(_btrfs_get_subvolid $SCRATCH_MNT snap)
-> 
-> Make the variable local please.
-> 
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $snapid 0
-> >  }
-> >
-> >  prepare_nested()
-> > @@ -198,13 +200,13 @@ prepare_nested()
-> >         prepare
-> >         $BTRFS_UTIL_PROG qgroup create 1/100 $SCRATCH_MNT
-> >         $BTRFS_UTIL_PROG qgroup limit $limit 1/100 $SCRATCH_MNT
-> > -       $BTRFS_UTIL_PROG qgroup assign 0/256 1/100 $SCRATCH_MNT >> $seqres.full
-> > +       $BTRFS_UTIL_PROG qgroup assign 0/$subvid 1/100 $SCRATCH_MNT >> $seqres.full
-> >         $BTRFS_UTIL_PROG subvolume create $nested >> $seqres.full
-> >         do_write $nested/f $ext_sz
-> > -       check_subvol_usage 257 $ext_sz
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > -       local subv_usage=$(get_subvol_usage 256)
-> > -       local nested_usage=$(get_subvol_usage 257)
-> > +       check_subvol_usage $snapid $ext_sz
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> > +       local subv_usage=$(get_subvol_usage $subvid)
-> > +       local nested_usage=$(get_subvol_usage $snapid)
-> >         check_qgroup_usage 1/100 $(($subv_usage + $nested_usage))
-> >  }
-> >
-> > @@ -214,8 +216,8 @@ basic_accounting()
-> >         echo "basic accounting"
-> >         prepare
-> >         rm $subv/f
-> > -       check_subvol_usage 256 $total_fill
-> > -       cycle_mount_check_subvol_usage 256 $total_fill
-> > +       check_subvol_usage $subvid $total_fill
-> > +       cycle_mount_check_subvol_usage $subvid $total_fill
-> >         do_write $subv/tmp 512M
-> >         rm $subv/tmp
-> >         do_write $subv/tmp 512M
-> > @@ -245,19 +247,19 @@ snapshot_accounting()
-> >         echo "snapshot accounting"
-> >         prepare_snapshotted
-> >         touch $snap/f
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $snapid 0
-> >         do_write $snap/f $ext_sz
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > -       check_subvol_usage 257 $ext_sz
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $snapid $ext_sz
-> >         rm $snap/f
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $snapid 0
-> >         rm $subv/f
-> > -       check_subvol_usage 256 $total_fill
-> > -       check_subvol_usage 257 0
-> > -       cycle_mount_check_subvol_usage 256 $total_fill
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid $total_fill
-> > +       check_subvol_usage $snapid 0
-> > +       cycle_mount_check_subvol_usage $subvid $total_fill
-> > +       check_subvol_usage $snapid 0
-> >         _scratch_unmount
-> >  }
-> >
-> > @@ -267,14 +269,14 @@ delete_snapshot_src_ref()
-> >         echo "delete src ref first"
-> >         prepare_snapshotted
-> >         rm $subv/f
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $snapid 0
-> >         rm $snap/f
-> >         trigger_cleaner
-> > -       check_subvol_usage 256 $total_fill
-> > -       check_subvol_usage 257 0
-> > -       cycle_mount_check_subvol_usage 256 $total_fill
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid $total_fill
-> > +       check_subvol_usage $snapid 0
-> > +       cycle_mount_check_subvol_usage $subvid $total_fill
-> > +       check_subvol_usage $snapid 0
-> >         _scratch_unmount
-> >  }
-> >
-> > @@ -284,13 +286,13 @@ delete_snapshot_ref()
-> >         echo "delete snapshot ref first"
-> >         prepare_snapshotted
-> >         rm $snap/f
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $snapid 0
-> >         rm $subv/f
-> > -       check_subvol_usage 256 $total_fill
-> > -       check_subvol_usage 257 0
-> > -       cycle_mount_check_subvol_usage 256 $total_fill
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid $total_fill
-> > +       check_subvol_usage $snapid 0
-> > +       cycle_mount_check_subvol_usage $subvid $total_fill
-> > +       check_subvol_usage $snapid 0
-> >         _scratch_unmount
-> >  }
-> >
-> > @@ -300,18 +302,18 @@ delete_snapshot_src()
-> >         echo "delete snapshot src first"
-> >         prepare_snapshotted
-> >         $BTRFS_UTIL_PROG subvolume delete $subv >> $seqres.full
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $snapid 0
-> >         rm $snap/f
-> >         trigger_cleaner
-> > -       check_subvol_usage 256 $total_fill
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid $total_fill
-> > +       check_subvol_usage $snapid 0
-> >         $BTRFS_UTIL_PROG subvolume delete $snap >> $seqres.full
-> >         trigger_cleaner
-> > -       check_subvol_usage 256 0
-> > -       check_subvol_usage 257 0
-> > -       cycle_mount_check_subvol_usage 256 0
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid 0
-> > +       check_subvol_usage $snapid 0
-> > +       cycle_mount_check_subvol_usage $subvid 0
-> > +       check_subvol_usage $snapid 0
-> >         _scratch_unmount
-> >  }
-> >
-> > @@ -321,12 +323,12 @@ delete_snapshot()
-> >         echo "delete snapshot first"
-> >         prepare_snapshotted
-> >         $BTRFS_UTIL_PROG subvolume delete $snap >> $seqres.full
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $snapid 0
-> >         $BTRFS_UTIL_PROG subvolume delete $subv >> $seqres.full
-> >         trigger_cleaner
-> > -       check_subvol_usage 256 0
-> > -       check_subvol_usage 257 0
-> > +       check_subvol_usage $subvid 0
-> > +       check_subvol_usage $snapid 0
-> >         _scratch_unmount
-> >  }
-> >
-> > @@ -337,16 +339,16 @@ nested_accounting()
-> >         echo "nested accounting"
-> >         prepare_nested
-> >         rm $subv/f
-> > -       check_subvol_usage 256 $total_fill
-> > -       check_subvol_usage 257 $ext_sz
-> > -       local subv_usage=$(get_subvol_usage 256)
-> > -       local nested_usage=$(get_subvol_usage 257)
-> > +       check_subvol_usage $subvid $total_fill
-> > +       check_subvol_usage $snapid $ext_sz
-> > +       local subv_usage=$(get_subvol_usage $subvid)
-> > +       local nested_usage=$(get_subvol_usage $snapid)
-> >         check_qgroup_usage 1/100 $(($subv_usage + $nested_usage))
-> >         rm $nested/f
-> > -       check_subvol_usage 256 $total_fill
-> > -       check_subvol_usage 257 0
-> > -       subv_usage=$(get_subvol_usage 256)
-> > -       nested_usage=$(get_subvol_usage 257)
-> > +       check_subvol_usage $subvid $total_fill
-> > +       check_subvol_usage $snapid 0
-> > +       subv_usage=$(get_subvol_usage $subvid)
-> > +       nested_usage=$(get_subvol_usage $snapid)
-> >         check_qgroup_usage 1/100 $(($subv_usage + $nested_usage))
-> >         do_enospc_falloc $nested/large_falloc 2G
-> >         do_enospc_write $nested/large 2G
-> > @@ -365,21 +367,21 @@ enable_mature()
-> >         # we did before enabling.
-> >         sync
-> >         enable_quota "s"
-> > -       set_subvol_limit 256 $limit
-> > +       set_subvol_limit $subvid $limit
-> >         _scratch_cycle_mount
-> > -       usage=$(get_subvol_usage 256)
-> > +       usage=$(get_subvol_usage $subvid)
-> >         [ $usage -lt $ext_sz ] || \
-> >                 echo "captured usage from before enable $usage >= $ext_sz"
-> >         do_write $subv/g $ext_sz
-> > -       usage=$(get_subvol_usage 256)
-> > +       usage=$(get_subvol_usage $subvid)
-> >         [ $usage -lt $ext_sz ] && \
-> >                 echo "failed to capture usage after enable $usage < $ext_sz"
-> > -       check_subvol_usage 256 $ext_sz
-> > +       check_subvol_usage $subvid $ext_sz
-> >         rm $subv/f
-> > -       check_subvol_usage 256 $ext_sz
-> > +       check_subvol_usage $subvid $ext_sz
-> >         _scratch_cycle_mount
-> >         rm $subv/g
-> > -       check_subvol_usage 256 0
-> > +       check_subvol_usage $subvid 0
-> >         _scratch_unmount
-> >  }
-> >
-> > @@ -394,7 +396,7 @@ reflink_accounting()
-> >                 _cp_reflink $subv/f $subv/f.i
-> >         done
-> >         # Confirm that there is no additional data usage from the reflinks.
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> >         _scratch_unmount
-> >  }
-> >
-> > @@ -404,11 +406,11 @@ delete_reflink_src_ref()
-> >         echo "delete reflink src ref"
-> >         prepare
-> >         _cp_reflink $subv/f $subv/f.link
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> >         rm $subv/f
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> >         rm $subv/f.link
-> > -       check_subvol_usage 256 $(($total_fill))
-> > +       check_subvol_usage $subvid $(($total_fill))
-> >         _scratch_unmount
-> >  }
-> >
-> > @@ -418,11 +420,11 @@ delete_reflink_ref()
-> >         echo "delete reflink ref"
-> >         prepare
-> >         _cp_reflink $subv/f $subv/f.link
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> >         rm $subv/f.link
-> > -       check_subvol_usage 256 $(($total_fill + $ext_sz))
-> > +       check_subvol_usage $subvid $(($total_fill + $ext_sz))
-> >         rm $subv/f
-> > -       check_subvol_usage 256 $(($total_fill))
-> > +       check_subvol_usage $subvid $(($total_fill))
-> >         _scratch_unmount
-> >  }
-> >
-> > --
-> > 2.42.0
-> >
-> >
+This is just the preparation for the incoming changes.
+In fact alloc_page() with order needs more than those changes, it would
+only come after all the preparation, including:
+
+- Change how we allocate  pages for eb
+   It has to go allocation in one-go, then attaching those pages to
+   filemap.
+
+- Extra changes to how concurrent eb allocation
+
+- Folio flags related changes
+   Remember a lot of folio flags are not applied to all its pages.
+
+>
+> This works for all eb sizes we need, the prolematic one could be for 64K
+> because this is order 4 and PAGE_ALLOC_COSTLY_ORDER is 3, so this would
+> cost more on the MM side. But who uses 64K node size on x8_64.
+
+As long as you still want per-page allocation as fallback, this patch
+itself is still required.
+
+All the higher order allocation is only going to be an optimization or
+fast path.
+
+Furthermore, I found this suggestion is conflicting with your previous
+statement on contig pages.
+If you say the system can no longer provides contig pages after some
+uptime, then all above higher order page allocation should all fail.
+
+>
+>> --- a/fs/btrfs/extent_io.h
+>> +++ b/fs/btrfs/extent_io.h
+>> @@ -77,6 +77,13 @@ struct extent_buffer {
+>>   	unsigned long len;
+>>   	unsigned long bflags;
+>>   	struct btrfs_fs_info *fs_info;
+>> +
+>> +	/*
+>> +	 * The address where the eb can be accessed without any cross-page ha=
+ndling.
+>> +	 * This can be NULL if not possible.
+>> +	 */
+>> +	void *addr;
+>
+> So this is a remnant of the vm_map, we would not need to store the
+> address in case all the pages are contiguous, it would be the address of
+> pages[0]. That it's contiguous could be tracked as a bit in the flags.
+
+It's the indicator of whether the pages are contig.
+
+Or you have to check all the pages' address then determine if we go fast
+path everytime, which is too slow afaik.
+
+Thanks,
+Qu
+
+>
+>> +
+>>   	spinlock_t refs_lock;
+>>   	atomic_t refs;
+>>   	int read_mirror;
+>> --
+>> 2.42.1
+>>
+>
 
