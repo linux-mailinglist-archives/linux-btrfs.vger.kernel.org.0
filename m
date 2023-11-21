@@ -1,98 +1,197 @@
-Return-Path: <linux-btrfs+bounces-248-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-250-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 097747F308B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 15:20:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A06E37F3255
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 16:26:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3005B1C21A74
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 14:20:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F205CB21C94
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 15:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A5154FAC;
-	Tue, 21 Nov 2023 14:20:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4178058101;
+	Tue, 21 Nov 2023 15:26:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="pSWkUxVl"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nZVbhIsA";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3Lbn/sTl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2648B10CB
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 Nov 2023 06:20:00 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-daf7ed42ea6so5461464276.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Nov 2023 06:20:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700576399; x=1701181199; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3y23FWuz6PW8S0smY6WbbhGEXrCcP+R/szjSRN7aCT8=;
-        b=pSWkUxVlXFRA34cTwHEW5S8dLdvaOlMauGOpQrsISGIIVVqn337RdkCOF1uqxE28D4
-         5q5J9sxipOmy203ltWSkS6XyIbSx7jKpMN67zeoqAG4/tch9bdZAUi/FN2Z6kxpCIk9B
-         XTtRmPSe6pMEzSVIDVSgV09BSS0IT/5Qrlk1WTHI/8RqZxKJH8kbs7BILZPIRjik36jl
-         XJFYpbvBVVcri5hGS6noJpeP307ZTKBDPcpZMfXUOpC9b/1cfCCcihGkXWnEj7CsTdGn
-         7CruFkgYfulRRt6G86cly53oAGbL298KViJo5zABeIXeP1gi/lx9ArRyFvsbRhRobZeR
-         Bskg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700576399; x=1701181199;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3y23FWuz6PW8S0smY6WbbhGEXrCcP+R/szjSRN7aCT8=;
-        b=ZPZ4wIXQ8zoazujd7MvyyrGRnQm3VvXXP7g5ZBcp5ydxL3mZsNWJnTawCW5IdwRQa/
-         z+MKsMggVL/NvXeLxKO1FO5HpB3cd6+nQLhzxSVvgZ44aAnQ/qzTS+pTn8K47HdDGtSY
-         0u6SlOMhjoH53IV7wyfnXZN7V3VAn1RS5F+vU6lHM/ttifK3fAuNbx4WA0zMm03k76W1
-         Lr/Ig83XQ3UpjtZ4gARM3rGo80W7o2YbXdf59Lz1/LFxvvp/4MzmO4sF76GH3Z32+DJK
-         bSEJt38Ij0F4upPtdL3cKMawrwhytualIhHLH56msGOBFkhbCanSAYSGHyWU3shN8Erb
-         +c6w==
-X-Gm-Message-State: AOJu0YwFNv4n7N7TbNd4kjMX/KVbjheJXBH8TEsYpajhTOYcqdkUrEGh
-	Jlf/QLOhw+cNkc6fiT/Tki2W84cFXRH3oIyo80mgcQNo
-X-Google-Smtp-Source: AGHT+IG5DWqsbXiH9pgFAk7q7UR5i7wyXZN3ItzEAQNEvuTk8K0wItke4fzX4RrSaX/85x7oSg2NnQ==
-X-Received: by 2002:a05:690c:2a85:b0:5b3:26e1:320c with SMTP id ek5-20020a05690c2a8500b005b326e1320cmr4372562ywb.40.1700576399323;
-        Tue, 21 Nov 2023 06:19:59 -0800 (PST)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id h4-20020a0df704000000b00559fb950d9fsm3033400ywf.45.2023.11.21.06.19.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 06:19:59 -0800 (PST)
-Date: Tue, 21 Nov 2023 09:19:58 -0500
-From: Josef Bacik <josef@toxicpanda.com>
-To: David Sterba <dsterba@suse.com>
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC96123
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 Nov 2023 07:26:44 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D41E1218FA;
+	Tue, 21 Nov 2023 15:26:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1700580402;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=h0byYdch5FVCPuyxD0G0j96Lq2BSAWZ//n2oPGxyo5k=;
+	b=nZVbhIsAyV/jpZVcsvb1+ohUFb52qZGRj7Sxk0BuppLiZdQBJQyEtCnTpjoVhcRYYpzbaY
+	aLfkVobnDGO4bt690ZjRf2Bj3i5k9LR8upcQVMd3oE9rCgp8zrKrIP+CjcKguOcdpVSgjZ
+	bC2hQwV29F8xoDkr0//UHwv49LV23c4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1700580402;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=h0byYdch5FVCPuyxD0G0j96Lq2BSAWZ//n2oPGxyo5k=;
+	b=3Lbn/sTlRBndZtIq1r8zi8ooDiYePGSXT4OnSHBTY6IsPD6h7HpLe3uzEsmYvSv03RKbay
+	L7aNZEw94EzlgdAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A3BF8139FD;
+	Tue, 21 Nov 2023 15:26:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 88gnJzLMXGVKdQAAMHmgww
+	(envelope-from <dsterba@suse.cz>); Tue, 21 Nov 2023 15:26:42 +0000
+Date: Tue, 21 Nov 2023 16:19:33 +0100
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/5] Reduce size of extent_io_tree, remove fs_info
-Message-ID: <20231121141958.GB1667963@perftesting>
-References: <cover.1700572232.git.dsterba@suse.com>
+Subject: Re: [PATCH 7/8] btrfs: use a dedicated data structure for chunk maps
+Message-ID: <20231121151933.GR11264@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1700573313.git.fdmanana@suse.com>
+ <777320fd09dfc68a89180723bf5d7368dab06299.1700573314.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1700572232.git.dsterba@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <777320fd09dfc68a89180723bf5d7368dab06299.1700573314.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 TO_DN_NONE(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.985];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
 
-On Tue, Nov 21, 2023 at 02:20:12PM +0100, David Sterba wrote:
-> We have the fs_info pointer in extent_io_tree for the trace points as
-> the inode is not always set. This is a bit wasteful and extent_io_tree
-> is also embedded in other structures. The tree owner can be used to
-> determine if the inode is expected to be non-NULL, otherwise we can
-> store the fs_info pointer.
+On Tue, Nov 21, 2023 at 01:38:38PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> I tried to do it in the cleanest way, union and access wrappers, it's
-> IMO worth the space savings:
+> Currently we abuse the extent_map structure for two purposes:
 > 
-> - btrfs_inode		1104 -> 1088
-> - btrfs_device		 520 ->  512
-> - btrfs_root		1360 -> 1344
-> - btrfs_transaction	 456 ->  440
-> - btrfs_fs_info		3600 -> 3592
-> - reloc_control		1520 -> 1512
+> 1) To actually represent extents for inodes;
+> 2) To represent chunk mappings.
 > 
-> The btrfs_inode structure is getting closer to the 1024 size where it
-> would pack better in the slab pages.
->
+> This is odd and has several disadvantages:
+> 
+> 1) To create a chunk map, we need to do two memory allocations: one for
+>    an extent_map structure and another one for a map_lookup structure, so
+>    more potential for an allocation failure and more complicated code to
+>    manage and link two structures;
+> 
+> 2) For a chunk map we actually only use 3 fields (24 bytes) of the
+>    respective extent map structure: the 'start' field to have the logical
+>    start address of the chunk, the 'len' field to have the chunk's size,
+>    and the 'orig_block_len' field to contain the chunk's stripe size.
+> 
+>    Besides wasting a memory, it's also odd and not intuitive at all to
+>    have the stripe size in a field named 'orig_block_len'.
+> 
+>    We are also using 'block_len' of the extent_map structure to contain
+>    the chunk size, so we have 2 fields for the same value, 'len' and
+>    'block_len', which is pointless;
+> 
+> 3) When an extent map is associated to a chunk mapping, we set the bit
+>    EXTENT_FLAG_FS_MAPPING on its flags and then make its member named
+>    'map_lookup' point to the associated map_lookup structure. This means
+>    that for an extent map associated to an inode extent, we are not using
+>    this 'map_lookup' pointer, so wasting 8 bytes (on a 64 bits platform);
+> 
+> 4) Extent maps associated to a chunk mapping are never merged or split so
+>    it's pointless to use the existing extent map infrastructure.
+> 
+> So add a dedicated data structure named 'btrfs_chunk_map' to represent
+> chunk mappings, this is basically the existing map_lookup structure with
+> some extra fields:
+> 
+> 1) 'start' to contain the chunk logical address;
+> 2) 'chunk_len' to contain the chunk's length;
+> 3) 'stripe_size' for the stripe size;
+> 4) 'rb_node' for insertion into a rb tree;
+> 5) 'refs' for reference counting.
+> 
+> This way we do a single memory allocation for chunk mappings and we don't
+> waste memory for them with unused/unnecessary fields from an extent_map.
+> 
+> We also save 8 bytes from the extent_map structure by removing the
+> 'map_lookup' pointer, so the size of struct extent_map is reduced from
+> 144 bytes down to 136 bytes, and we can now have 30 extents map per 4K
+> page instead of 28.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/block-group.c            | 165 ++++-----
+>  fs/btrfs/block-group.h            |   6 +-
+>  fs/btrfs/dev-replace.c            |  28 +-
+>  fs/btrfs/disk-io.c                |   7 +-
+>  fs/btrfs/extent_map.c             |  46 ---
+>  fs/btrfs/extent_map.h             |   4 -
+>  fs/btrfs/fs.h                     |   3 +-
+>  fs/btrfs/inode.c                  |  25 +-
+>  fs/btrfs/raid56.h                 |   2 +-
+>  fs/btrfs/scrub.c                  |  39 +--
+>  fs/btrfs/tests/btrfs-tests.c      |   3 +-
+>  fs/btrfs/tests/btrfs-tests.h      |   1 +
+>  fs/btrfs/tests/extent-map-tests.c |  40 +--
+>  fs/btrfs/volumes.c                | 540 ++++++++++++++++++------------
+>  fs/btrfs/volumes.h                |  45 ++-
+>  fs/btrfs/zoned.c                  |  24 +-
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+I see a lot of errors when compiling zoned.c, there are still map_lookup
+structures. Do you have the zoned mode config option enabled?
 
-Thanks,
-
-Josef 
+  CC [M]  fs/btrfs/zoned.o                                                                                
+fs/btrfs/zoned.c:1293:40: warning: ‘struct map_lookup’ declared inside parameter list will not be visible outside of this definition or declaration
+ 1293 |                                 struct map_lookup *map)                                                                                                                                                      
+      |                                        ^~~~~~~~~~              
+fs/btrfs/zoned.c: In function ‘btrfs_load_zone_info’:                                                     
+fs/btrfs/zoned.c:1296:42: error: invalid use of undefined type ‘struct map_lookup’                                                                                                                                   
+ 1296 |         struct btrfs_device *device = map->stripes[zone_idx].dev;                 
+      |                                          ^~                                                       
+fs/btrfs/zoned.c:1302:29: error: invalid use of undefined type ‘struct map_lookup’                        
+ 1302 |         info->physical = map->stripes[zone_idx].physical;                         
+      |                             ^~                                                                                                                                                                               
+fs/btrfs/zoned.c: At top level:                                                                           
+fs/btrfs/zoned.c:1396:46: warning: ‘struct map_lookup’ declared inside parameter list will not be visible outside of this definition or declaration
+ 1396 |                                       struct map_lookup *map,                                                                                                                                                
+      |                                              ^~~~~~~~~~                            
+fs/btrfs/zoned.c: In function ‘btrfs_load_block_group_dup’:           
+fs/btrfs/zoned.c:1402:17: error: invalid use of undefined type ‘struct map_lookup’
+ 1402 |         if ((map->type & BTRFS_BLOCK_GROUP_DATA) && !fs_info->stripe_root) {       
+      |                 ^~
+...
 
