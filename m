@@ -1,42 +1,42 @@
-Return-Path: <linux-btrfs+bounces-241-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-242-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A9787F2E7D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 14:39:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDE2E7F2E7E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 14:39:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06091281788
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 13:39:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E377B21C68
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 13:39:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC6C51C5E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FE3524A5;
 	Tue, 21 Nov 2023 13:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F1It8V+M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fgSFxvKA"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0C051C55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B5F51C5A
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 Nov 2023 13:38:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 271EBC433C7
 	for <linux-btrfs@vger.kernel.org>; Tue, 21 Nov 2023 13:38:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 293CDC433C8
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 Nov 2023 13:38:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700573926;
-	bh=jRFgdklcY3i5Qwqq4KpgUszv34f7bSCIkf7WXoWZBU0=;
+	s=k20201202; t=1700573927;
+	bh=uhPLVsyl1/BwiVE4F42E2HQMoDjtF+iHhk+p6xUTiR8=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=F1It8V+MbhqHk/wP369Q3z3bkGsNVsvvfUmUTttMNg+POZG4XhEO3EF1T1Y/As1p6
-	 M5KlEbCARsJWrtA8ekh7MAIyd3Jm08HX9fUK3qulXc3RaXUhPtywDGx8YAZLUoZeYG
-	 yCIA4YEIknwymmfhYJ+fd7ed9igRDQBqwiCWejIw0aXqZ6oQAxU6vXWFLRkYtr4Qpi
-	 B2XW2d5w0tJwh9oprb0NNYJltfRi+yjt7S6XoIROB2U+0eFvCkBKgiSpvDTuOf2Hek
-	 JnZ4ebxGtl9ET+T9GI6WYMbe3d2lKZPKOWOCoy+23+SGLL24ejJubgrvaA+1knnofh
-	 /pWvyh8sPHkGg==
+	b=fgSFxvKACTNxdLaf2kRYfRcAaE04GqjQrp1LmU8xtol3gqKDSOEgTdwcBQNitZpcF
+	 AaBTOBSqClf4WwsVJdM/M7PEYOhUKaFgqj7LbtS2FjFqsgbTc405Rlu3CuzrSo1RiB
+	 lTJsibSEu3QTpX3QnuVMkgSwz0Uac4cneEJGzr8UYdtMzJhJ6nlZCZYRkF33m79Y8X
+	 4KAN8wqFgZuzxC4Hwq5LG9fjnYfHsBRCsY8ryYjf+5Kv4iIkqabgWsU7miwiiRDkiJ
+	 zTQzTtcjGC39o2sWoMCs3L08dkaKbXtcB4xYOyaw5plb2Om1aTPVvXYV2ZAJ91nAzS
+	 KH4MON2rxEPrQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/8] btrfs: mark sanity checks when getting chunk map as unlikely
-Date: Tue, 21 Nov 2023 13:38:34 +0000
-Message-Id: <38d4c787bace59d3956c26089f21227db4d32bbd.1700573314.git.fdmanana@suse.com>
+Subject: [PATCH 4/8] btrfs: split assert into two different asserts when removing block group
+Date: Tue, 21 Nov 2023 13:38:35 +0000
+Message-Id: <8c8238bb0a638ecea8f27b9b2e4c6cc1017bd987.1700573314.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1700573313.git.fdmanana@suse.com>
 References: <cover.1700573313.git.fdmanana@suse.com>
@@ -50,38 +50,34 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When getting a chunk map, at btrfs_get_chunk_map(), we do some sanity
-checks to verify that we found an extent map and that it includes the
-requested logical address. These are never expected to fail, so mark
-them as unlikely to make it more clear as well as to allow a compiler
-to generate more efficient code.
+When starting a transaction to remove a block group we have one ASSERT
+that checks we found an extent map and that the extent map's start offset
+matches the desired chunk offset. In case one of the conditions fails, we
+get a stack trace that point to the respective line of code, however we
+can't tell which condition failed: either there's no extent map or we got
+one with an unexpected start offset. To make such an issue easier to debug
+and analyse, split the assertion into two, one for each condition. This
+was actually triggered during development of another upcoming change.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/volumes.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/block-group.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 3b61c47306c0..9c4b52d29d6b 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -3002,14 +3002,14 @@ struct extent_map *btrfs_get_chunk_map(struct btrfs_fs_info *fs_info,
- 	em = lookup_extent_mapping(em_tree, logical, length);
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 6e5dc68ff661..fca653cc977c 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1303,7 +1303,8 @@ struct btrfs_trans_handle *btrfs_start_trans_remove_block_group(
+ 	read_lock(&em_tree->lock);
+ 	em = lookup_extent_mapping(em_tree, chunk_offset, 1);
  	read_unlock(&em_tree->lock);
+-	ASSERT(em && em->start == chunk_offset);
++	ASSERT(em != NULL);
++	ASSERT(em->start == chunk_offset);
  
--	if (!em) {
-+	if (unlikely(!em)) {
- 		btrfs_crit(fs_info,
- 			   "unable to find chunk map for logical %llu length %llu",
- 			   logical, length);
- 		return ERR_PTR(-EINVAL);
- 	}
- 
--	if (em->start > logical || em->start + em->len <= logical) {
-+	if (unlikely(em->start > logical || em->start + em->len <= logical)) {
- 		btrfs_crit(fs_info,
- 			   "found a bad chunk map, wanted %llu-%llu, found %llu-%llu",
- 			   logical, logical + length, em->start, em->start + em->len);
+ 	/*
+ 	 * We need to reserve 3 + N units from the metadata space info in order
 -- 
 2.40.1
 
