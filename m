@@ -1,66 +1,66 @@
-Return-Path: <linux-btrfs+bounces-269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-270-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FC737F37CD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 22:01:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CEE97F37DC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 22:11:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC53328272C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 21:01:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 610B81C20E0A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Nov 2023 21:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FE95103C;
-	Tue, 21 Nov 2023 21:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03C154666;
+	Tue, 21 Nov 2023 21:11:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="mIQkeTVN"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RAz38oaQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="e1DCWCvz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028E51A2
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 Nov 2023 13:01:44 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-db057de2b77so5550612276.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Nov 2023 13:01:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700600503; x=1701205303; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=c0Mtot4o4Iv50p8GRxRR7oxPOP/8FQ0rT3lW5lbuUPw=;
-        b=mIQkeTVNt1mdhwm3zoA2sJz0xAwwQeRKKz09vJod5/Fuw5SOTDcdKzNVm7GmZ2qyar
-         PRwzI4bs7UmFX4w0LOV6renVazu2QJQcYIdifsSXVHxECSZDKQTmSvITduEZe6oqj3EU
-         /37tkWEH2UCThcjVjFUqf83lbL2m3hHQ9Y0bup7mZTSpd9ecPk43yTLcULOOiiwLSRvx
-         kwKHGpyOLTxpi2sbd24dnCsUsqE7/PVyVmmadrmT9r1O+6aSPXKSwKKjNg6W1ca10kJj
-         msTM1rKHp73CRJi+co8MUqhg2cXziRbJuIAfuVfe842yJbkEEWtslvDejpB/5Vna+YyQ
-         SoAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700600503; x=1701205303;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c0Mtot4o4Iv50p8GRxRR7oxPOP/8FQ0rT3lW5lbuUPw=;
-        b=A4JjeChUgdewXeUMikRyLlsaW69MLBVAQhzak1cvsvlh/8VMLwVmK4vdvh9AsBENOM
-         RvLtPwWNrkNMFG0g2gsjgu0ZKOGcwN55nEV7nBzKwOVHmVZ48I1OozbXCHNONaaQ/nrP
-         4CNum7dZfkTYf8DERWCL4ZgRDu8rKeXgHPR+qBphMaK9PBFdLIaD66CHw0XGkpRfn3DT
-         VZfAqcl0kzEC7GOwsE49Sj0xUIHLuYRnXLQODR0h+4rs77/URCbAucD+az1tyPjd/793
-         Rv/xnhhBg1GxBZG9972ds6Xq0PnhLCiUlgVP3hZ1A4fl/EIFhZ2mRuagmA3dKjOFo3tS
-         zz3A==
-X-Gm-Message-State: AOJu0Ywyi1LHrx45EQGZw/5Wqm3hAM/VDT0jwpc3pJdVm6MwKGhq6d52
-	+I5orAGljD4s5+weC+P/O/ZbRYEx6zFEUxuh5DGTXKUr
-X-Google-Smtp-Source: AGHT+IEHLwu5bZxVyWPESADsP4NWmSI7NnvdTQNabAOLg5JOWUP+SZt4Lrcs9tIEgRerSnc77E9Aig==
-X-Received: by 2002:a25:e797:0:b0:da0:37c8:9f00 with SMTP id e145-20020a25e797000000b00da037c89f00mr164010ybh.36.1700600502794;
-        Tue, 21 Nov 2023 13:01:42 -0800 (PST)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id m204-20020a2558d5000000b00da07d9e47b4sm939035ybb.55.2023.11.21.13.01.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 13:01:42 -0800 (PST)
-Date: Tue, 21 Nov 2023 16:01:41 -0500
-From: Josef Bacik <josef@toxicpanda.com>
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Christoph Hellwig <hch@lst.de>, Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH 0/5] btrfs: zoned: remove extent_buffer redirtying
-Message-ID: <20231121210141.GB1675377@perftesting>
-References: <20231121-josef-generic-163-v1-0-049e37185841@wdc.com>
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD1219E
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 Nov 2023 13:10:59 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 56B81218B8;
+	Tue, 21 Nov 2023 21:10:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1700601058;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FhHC58l8yW7/xxNMU6Av2czXsy3OOGSANJR0Yc7Mxy0=;
+	b=RAz38oaQIwQarhkdh4CWuEEYsxIsbwb2wPQYamGkPhQY8M6tbNwNOlHJjQJZwkiyiFGCBL
+	Ff9Pvxs7ZM7xFMcrmNfM2BXJfm9gC0oyhBIGOop4WPCdyrJJY0je/+8XgCmAZ1Ma9aNBS8
+	0HrE1xEaQ5ZxybycH1fFDrABiJpP35s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1700601058;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FhHC58l8yW7/xxNMU6Av2czXsy3OOGSANJR0Yc7Mxy0=;
+	b=e1DCWCvzLRGivbMZkEL0BHuZD9qSKsixmzjrznJvlFMC+YL0Gb7ifmxMqlJfyAK2eGUOPp
+	VY2xxbwsPHvB4qDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 34392138E3;
+	Tue, 21 Nov 2023 21:10:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id mX/rC+IcXWUVHAAAMHmgww
+	(envelope-from <dsterba@suse.cz>); Tue, 21 Nov 2023 21:10:58 +0000
+Date: Tue, 21 Nov 2023 22:03:48 +0100
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/8] btrfs: add a btrfs_chunk_map structure and
+ preparatory cleanups
+Message-ID: <20231121210348.GW11264@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1700573313.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -69,32 +69,50 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231121-josef-generic-163-v1-0-049e37185841@wdc.com>
+In-Reply-To: <cover.1700573313.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.94
+X-Spamd-Result: default: False [-3.94 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 TO_DN_NONE(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.94)[99.75%]
 
-On Tue, Nov 21, 2023 at 08:32:29AM -0800, Johannes Thumshirn wrote:
-> Since the beginning of zoned mode, I've promised Josef to get rid of the
-> extent_buffer redirtying, but never actually got around to doing so.
+On Tue, Nov 21, 2023 at 01:38:31PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Then 2 weeks ago our CI has hit an ASSERT() in this area and I started to look
-> into it again. After some discussion with Christoph we came to the conclusion
-> to finally take the time and get rid of the extent_buffer redirtying once and
-> for all.
+> The following are some cleanups and introducing a dedicated data structure
+> for representing chunk maps, in order to make code simpler and use less
+> memory - this is achieved in patch 7/8. This patchset is also preparatory
+> work for some upcoming changes to extent maps.
 > 
-> Patch one renames EXTENT_BUFFER_NO_CHECK into EXTENT_BUFFER_CANCELLED, because
-> this fits the new model somewhat better.
-> 
-> Number two sets the cancel bit instead of clearing the dirty bit from a zoned
-> extent_buffer.
-> 
-> Number three removes the last remaining bits of btrfs_redirty_list_add().
-> 
-> The last two patches in this series are just trivial cleanups I came across
-> while looking at the code.
->
+> Filipe Manana (8):
+>   btrfs: fix off-by-one when checking chunk map includes logical address
+>   btrfs: make error messages more clear when getting a chunk map
+>   btrfs: mark sanity checks when getting chunk map as unlikely
+>   btrfs: split assert into two different asserts when removing block group
+>   btrfs: unexport extent_map_block_end()
+>   btrfs: use btrfs_next_item() at scrub.c:find_first_extent_item()
+>   btrfs: use a dedicated data structure for chunk maps
+>   btrfs: remove stripe size local variable from insert_dev_extents()
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
-
-Josef 
+I have applied this to misc-next, withot the reordering in 7/8. This can
+be done later eventually.
 
