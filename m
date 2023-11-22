@@ -1,142 +1,208 @@
-Return-Path: <linux-btrfs+bounces-317-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-318-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49D3C7F5307
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 23:12:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96CFE7F5312
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 23:12:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 746AD1C20C2B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 22:12:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 239871F20D22
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 22:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B79721F607;
-	Wed, 22 Nov 2023 22:12:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yAG99R1E";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FLdxse5j"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4E9200CA;
+	Wed, 22 Nov 2023 22:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1363B9
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 14:12:27 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 49A5A21985;
-	Wed, 22 Nov 2023 22:12:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1700691146;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ASaksTAmvl5CcoekhEgGEIY7lKgt9PRq54fNd65hZxw=;
-	b=yAG99R1Ef7KSAaAPJkjYn69LH95e4ctatXKOmGizFp1vj5mv4wzobsWKg8Bgql3kD/tfPd
-	CLFSrXBheSPAkZgdcj0Xr7KtymeY9oN7Xkpi3PXR3UiJIlV2libcHvuILu4S3hcmHcaUjm
-	rWg8HdIBCae5Ox/I6NuFHNhVem6Nr2Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1700691146;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ASaksTAmvl5CcoekhEgGEIY7lKgt9PRq54fNd65hZxw=;
-	b=FLdxse5jF0ZsZzXHWfEDGe6fIQnWCCRrPkGoc1/5kXILLaSqCA7vUHy1mI4GBKJyf81DgE
-	IQqegQ+13uQo5SBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1024613467;
-	Wed, 22 Nov 2023 22:12:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id Fi4hA8p8XmUnPQAAMHmgww
-	(envelope-from <dsterba@suse.cz>); Wed, 22 Nov 2023 22:12:26 +0000
-Date: Wed, 22 Nov 2023 23:05:16 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC] btrfs: allow extent buffer helpers to skip
- cross-page handling
-Message-ID: <20231122220516.GF11264@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <721bab821198fc9b49d2795b2028ed6c436ab886.1700111928.git.wqu@suse.com>
- <20231122134642.GB11264@twin.jikos.cz>
- <c1c0dacb-8db5-4b6b-90f1-a71487fb44dd@gmx.com>
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961751B5
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 14:12:42 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so32019966b.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 14:12:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700691161; x=1701295961;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jawrr/5r4Mhd56Ot/pdvxEGuQ/lS8IZgu4zcsuNvL6s=;
+        b=RV6NN6qzJdbWXrjMzoazpzTDvWRiqF16/r+533JNyk2zAmQEMx2ePc1DzrPnDVeLzH
+         uqmqIXB40Pr2uHPwrHfKpXSVLFjDzg9XCzaUzbEK/yD3+mRC3IZZVQptX1jEaL7GTfbS
+         9eFnoCG0SsNzskiyT3d/iYTREsGY2XwuP8fcuNH0kRErlzq5Aa7bE0dbJUv1A2y7pLz/
+         EntNytDaYUfx1z6ad0PyxKMbkqsKYl9ctB0rQXjoIY7IAFtA7I0prNQszxgJPZNa0EN0
+         5B/2eaJbpyUjjkLnb2xZEacGMvJj/AC0wOu4e4N9twWlM+7WJwZoHAuZoWuiyabSSdii
+         7gLQ==
+X-Gm-Message-State: AOJu0YzfIbzzYvQs8VMHovfndyTKAwPRuhabN3QFPVe2gw7fTDzoHqZZ
+	ePW9heQnOZRSTjNm5+69fjcshkcwk0u31lSA
+X-Google-Smtp-Source: AGHT+IE60L7dZd7h2emfO7nNSTgKNckbmuBccQN0Su0sWlTCGpAKw4MiJwVVfVrNHRbse4jZkTEQYQ==
+X-Received: by 2002:a17:906:29e:b0:9fe:325b:5a25 with SMTP id 30-20020a170906029e00b009fe325b5a25mr2863108ejf.6.1700691160479;
+        Wed, 22 Nov 2023 14:12:40 -0800 (PST)
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
+        by smtp.gmail.com with ESMTPSA id n22-20020a170906689600b009fc22b3f619sm277235ejr.68.2023.11.22.14.12.40
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 14:12:40 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-548b54ed16eso369225a12.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 14:12:40 -0800 (PST)
+X-Received: by 2002:a17:906:3f45:b0:a04:47f5:f9cb with SMTP id
+ f5-20020a1709063f4500b00a0447f5f9cbmr2726766ejj.48.1700691159923; Wed, 22 Nov
+ 2023 14:12:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c1c0dacb-8db5-4b6b-90f1-a71487fb44dd@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.79
-X-Spamd-Result: default: False [-3.79 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 FREEMAIL_ENVRCPT(0.00)[gmx.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TO_DN_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.985];
-	 FREEMAIL_TO(0.00)[gmx.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.79)[99.10%]
+References: <cover.1700673401.git.josef@toxicpanda.com> <CAEg-Je-oQ4Eh4vyidHWM-X_ppwE=_aV0Ra7EmL59ZKNQoT18SQ@mail.gmail.com>
+ <20231122182946.GE11264@twin.jikos.cz>
+In-Reply-To: <20231122182946.GE11264@twin.jikos.cz>
+From: Neal Gompa <neal@gompa.dev>
+Date: Wed, 22 Nov 2023 17:12:02 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je_A+yuMc4XvM_e+4BKMu0wEDM6WFtKxaEiA2apJyuH2wQ@mail.gmail.com>
+Message-ID: <CAEg-Je_A+yuMc4XvM_e+4BKMu0wEDM6WFtKxaEiA2apJyuH2wQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/19] btrfs: convert to the new mount API
+To: dsterba@suse.cz
+Cc: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 23, 2023 at 06:31:41AM +1030, Qu Wenruo wrote:
-> 
-> 
-> On 2023/11/23 00:16, David Sterba wrote:
-> > On Thu, Nov 16, 2023 at 03:49:06PM +1030, Qu Wenruo wrote:
-> >> --- a/fs/btrfs/disk-io.c
-> >> +++ b/fs/btrfs/disk-io.c
-> >> @@ -80,8 +80,16 @@ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
-> >>   	char *kaddr;
-> >>   	int i;
-> >>
-> >> +	memset(result, 0, BTRFS_CSUM_SIZE);
-> >>   	shash->tfm = fs_info->csum_shash;
-> >>   	crypto_shash_init(shash);
-> >> +
-> >> +	if (buf->addr) {
-> >> +		crypto_shash_digest(shash, buf->addr + offset_in_page(buf->start) + BTRFS_CSUM_SIZE,
-> >> +				    buf->len - BTRFS_CSUM_SIZE, result);
-> >> +		return;
-> >> +	}
+On Wed, Nov 22, 2023 at 1:37=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
+e:
+>
+> On Wed, Nov 22, 2023 at 12:41:30PM -0500, Neal Gompa wrote:
+> > On Wed, Nov 22, 2023 at 12:18=E2=80=AFPM Josef Bacik <josef@toxicpanda.=
+com> wrote:
+> > >
+> > > v2->v3:
+> > > - Fixed up the various review comments from Dave and Anand.
+> > > - Added a patch to drop the deprecated mount options we currently hav=
+e.
+> > >
+> > > v1->v2:
+> > > - Fixed up some nits and paste errors.
+> > > - Fixed build failure with !ZONED.
+> > > - Fixed accidentally dropping BINARY_MOUNTDATA flag.
+> > > - Added Reviewed-by's collected up to this point.
+> > >
+> > > These have run through our CI a few times, they haven't introduced an=
+y
+> > > regressions.
+> > >
+> > > --- Original email ---
+> > > Hello,
+> > >
+> > > These patches convert us to use the new mount API.  Christian tried t=
+o do this a
+> > > few months ago, but ran afoul of our preference to have a bunch of sm=
+all
+> > > changes.  I started this series before I knew he had tried to convert=
+ us, so
+> > > there's a fair bit that's different, but I did copy his approach for =
+the remount
+> > > bit.  I've linked to the original patch where I took inspiration, Chr=
+istian let
+> > > me know if you want some other annotation for credit, I wasn't really=
+ sure the
+> > > best way to do that.
+> > >
+> > > There are a few preparatory patches in the beginning, and then cleanu=
+ps at the
+> > > end.  I took each call back one at a time to try and make it as small=
+ as
+> > > possible.  The resulting code is less, but the diffstat shows more in=
+sertions
+> > > that deletions.  This is because there are some big comment blocks ar=
+ound some
+> > > of the more subtle things that we're doing to hopefully make it more =
+clear.
+> > >
+> > > This is currently running through our CI.  I thought it was fine last=
+ week but
+> > > we had a bunch of new failures when I finished up the remount behavio=
+r.  However
+> > > today I discovered this was a regression in btrfs-progs, and I'm re-r=
+unning the
+> > > tests with the fixes.  If anything major breaks in the CI I'll resend=
+ with
+> > > fixes, but I'm pretty sure these patches will pass without issue.
+> > >
+> > > I utilized __maybe_unused liberally to make sure everything compiled =
+while
+> > > applied.  The only "big" patch is where I went and removed the old AP=
+I.  If
+> > > requested I can break that up a bit more, but I didn't think it was n=
+ecessary.
+> > > I did make sure to keep it in its own patch, so the switch to the new=
+ mount API
+> > > path only has things we need to support the new mount API, and then t=
+he next
+> > > patch removes the old code.  Thanks,
+> > >
+> > > Josef
+> > >
+> > > Christian Brauner (1):
+> > >   fs: indicate request originates from old mount api
+> > >
+> > > Josef Bacik (18):
+> > >   btrfs: split out the mount option validation code into its own help=
+er
+> > >   btrfs: set default compress type at btrfs_init_fs_info time
+> > >   btrfs: move space cache settings into open_ctree
+> > >   btrfs: do not allow free space tree rebuild on extent tree v2
+> > >   btrfs: split out ro->rw and rw->ro helpers into their own functions
+> > >   btrfs: add a NOSPACECACHE mount option flag
+> > >   btrfs: add fs_parameter definitions
+> > >   btrfs: add parse_param callback for the new mount api
+> > >   btrfs: add fs context handling functions
+> > >   btrfs: add reconfigure callback for fs_context
+> > >   btrfs: add get_tree callback for new mount API
+> > >   btrfs: handle the ro->rw transition for mounting different subovls
+> > >   btrfs: switch to the new mount API
+> > >   btrfs: move the device specific mount options to super.c
+> > >   btrfs: remove old mount API code
+> > >   btrfs: move one shot mount option clearing to super.c
+> > >   btrfs: set clear_cache if we use usebackuproot
+> > >   btrfs: remove code for inode_cache and recovery mount options
+> > >
+> > >  fs/btrfs/disk-io.c |   85 +-
+> > >  fs/btrfs/disk-io.h |    1 -
+> > >  fs/btrfs/fs.h      |   15 +-
+> > >  fs/btrfs/super.c   | 2357 +++++++++++++++++++++++-------------------=
+--
+> > >  fs/btrfs/super.h   |    5 +-
+> > >  fs/btrfs/zoned.c   |   16 +-
+> > >  fs/btrfs/zoned.h   |    6 +-
+> > >  fs/namespace.c     |   11 +
+> > >  8 files changed, 1263 insertions(+), 1233 deletions(-)
+> > >
+> > > --
+> > > 2.41.0
+> > >
 > >
-> > This duplicates the address and size
-> >> +
-> >>   	kaddr = page_address(buf->pages[0]) + offset_in_page(buf->start);
-> >>   	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
-> >>   			    first_page_part - BTRFS_CSUM_SIZE);
-> >> @@ -90,7 +98,6 @@ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
-> >>   		kaddr = page_address(buf->pages[i]);
-> >>   		crypto_shash_update(shash, kaddr, PAGE_SIZE);
-> >>   	}
-> >> -	memset(result, 0, BTRFS_CSUM_SIZE);
-> >>   	crypto_shash_final(shash, result);
-> >
-> > I'd like to have only one code doing the crypto_shash_ calls, so I'm
-> > suggesting this as the final code (the diff is not clear);
-> 
-> This looks good to me, mind to update it inside your branch?
+> > Looks like my r-b wasn't picked up for this revision, but looking over
+> > it, things seem to be fine.
+>
+> Honestly Neal, I don't know how I should interpret your Reviewed-by. You
+> don't contribute code or otherwise comment on other patches on the
+> technical level. If you as an involved user want to give feedback that
+> some feature is desired then it's fine to do so but the rev-by tag is
+> not the way to do that.
+>
+> https://docs.kernel.org/process/submitting-patches.html#using-reported-by=
+-tested-by-reviewed-by-suggested-by-and-fixes
 
-Thanks, yes I'll update it. As it's not a completely trivial change I'd
-like to get the confirmation first.
+If it helps, I put "Reviewed-by" on patch sets that I have downloaded
+and applied to a local build that I test and read to check to see that
+they make sense.
+
+If the patches make sense, build, and work for me, I'll send a
+"Reviewed-by" statement. I figured that would be sufficient for
+"Reviewed-by" statements. If there's something more you're expecting
+for that, then please let me know. It's pretty rare that I'd test code
+without at least looking at it and checking it over, so I don't feel
+"Tested-by" makes sense.
+
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
