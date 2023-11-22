@@ -1,64 +1,64 @@
-Return-Path: <linux-btrfs+bounces-307-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-308-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 745FD7F4E26
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 18:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F10EE7F4E27
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 18:19:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15DFFB21806
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 17:19:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81276B216D6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 17:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC0B58AA6;
-	Wed, 22 Nov 2023 17:18:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C14F58AAF;
+	Wed, 22 Nov 2023 17:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="zvCOagGX"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="WS1sE5Nl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4073C197
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:18:22 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so10189276.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:18:22 -0800 (PST)
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470561A4
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:18:23 -0800 (PST)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5cc589c0b90so10957617b3.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:18:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700673501; x=1701278301; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700673502; x=1701278302; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9f/7IJL9HuJi7e0J8Xeyt7VmGdh90l2ExAlFN14VjDU=;
-        b=zvCOagGX1Rrf0TbOPtOF8onkcz6rW7V5HPG8S08ZnNwQpadaOUV2CW5aMF7v9gN5fD
-         FB+5n/Qwzw5jcOna0Z0HMTF/0Nra0YAPdanUFbL9UpVGhVaiOAcoy2HKSuT1ie6YMk+t
-         0vLWxFjqIhDNtudDb7lHnJr3pLe43UgeOtUfSUiE9toi0spmANdv8jiLaFSIHQmGBG7t
-         azOvbq2GEvIA/XJFCbvDPYnzV8mWzwAr6rD+RPIZNo03xnwf7TsrzZO0JnjvLUFCQZMn
-         OWEib5DVbi9RaPBwb8VEwZgXBzUVhl6u3qQXzkrC/KyWehB7OL2Vbu9bYN0wmA3W/9C2
-         1Zfw==
+        bh=CAilSxqh1txTS7OyIFklNF4zhihXwft90BLRolkYYzE=;
+        b=WS1sE5NlaQuPT9JM0LLiVOXYDY87x3zNPT43zA8jUJuWcugQc9Z6xOZ5ze4wUxdZMa
+         pd+6spGYx0zUgmlEiNjkLNOtIWGQmKJu5XChZUPdMI7rnsKepsnXNpL6A4/mt3uQBeCu
+         Tp30QUk7tbQY2j8nWXBWmrvLqsSqA3rtA0rhMRlyxRLCWwiAW8qcCUP7PQ3K3d6wOj8G
+         Qlf6a763RBreFOHDVDNDgAqSelgwtiCDv/ikOM4GPD438qfcLys7f0SHZT/wy52Y/HUu
+         I1UXyoyW/m5vkMFYoQGI2qliPGZdMa5qF2Sf2KRjTED8jPg5OSvx0XZLOyyEwx/8dSuw
+         73/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700673501; x=1701278301;
+        d=1e100.net; s=20230601; t=1700673502; x=1701278302;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9f/7IJL9HuJi7e0J8Xeyt7VmGdh90l2ExAlFN14VjDU=;
-        b=UvPQwPxbEdkYp6v0E68Sj0ErGc+Z2jqv2AHmGa+yO3xgiOKxuzYh849K28aCIaNl/3
-         okd2Q7rNX6H3fwHTDv2siB/VGgEAFuGelBhMaQzl4dGH74g9Zn7VlTZvBeqpkUQIuSk5
-         6xXbJf3MZ/2gHSMOu5TDasZU76VjP3rNiwwnMW1FI/IWjyWKnoYt2AxB+cgFCq7DYUjK
-         ICpXNfv4GWameKHJLsjoB+7fgSX0imN5Tz+Z6Q8eE21kL9Jq6nXQ6Wpzk1Q9r2X+T9Yk
-         Jz51+ECeObx0z47L0dnrnPa7bshrcUQuFJdM+wt9iUx9vgV8kW8i2voKZitmdMw5bKg4
-         rGgg==
-X-Gm-Message-State: AOJu0Yx4rHq/GqxIv6gk7L8zZeZk/kOn1yn1QeEJ6x+R9A3V5fsxtOOK
-	XM+bTeuaE6sTABGfTfJRJ+iQEbK6Nxd7AXeh4DBmyPN+
-X-Google-Smtp-Source: AGHT+IFDbkBGOCVayyn3PCgTN/nhyKMLuFUowd19wl8yJnnGjAVJ/cZexlV9FpAYD1cX4jdmJYE4kw==
-X-Received: by 2002:a81:5e83:0:b0:5cb:57da:e607 with SMTP id s125-20020a815e83000000b005cb57dae607mr3175311ywb.30.1700673501252;
-        Wed, 22 Nov 2023 09:18:21 -0800 (PST)
+        bh=CAilSxqh1txTS7OyIFklNF4zhihXwft90BLRolkYYzE=;
+        b=TfqJwzhavnCi4310NiaUSRDTwN1RIRZe3RPGTxA1FdQBZL4W2vQze8XjpFq9A6MHkQ
+         Qi225bNxAmEP2UoE9f6uuzNY/BLK1ezNPzV2eCzAtVYmgs5yddLQ68VDQ13WUIUSaPe6
+         vXTKaMlKwptrwkZ5RG/7p97+7wNX13UV0CvvMrL8yDSddTokg/0f/TRv2TVTGognUeQG
+         sjuuBZuC0Ujz9kqsV+h6vEqB7pBjkRTUzpoWYcwO7bwHuFrgDPhxqFBnSQM65dWKSMGx
+         IwEvDRBXvm8McZsMPADHhJPu+D85ilGYjaecG9fgJdeMemN+q152a3YfyDvNcel5M/Qc
+         ZFFA==
+X-Gm-Message-State: AOJu0YyPUHI7MYeorCh48QmvH0OiiED+emojT/9Tn1h4hn7c7KDIAy3A
+	SUct6/bt+0ppCpFcLzaclOJ/wVHsMbvqMiTWpaMaNSAy
+X-Google-Smtp-Source: AGHT+IGI6BJKwDRgvPRB6aPNHMEu3cRKwkFEfcQA68SwlTsZH1kBb7C4KZLtN4E6Sbg7xePb62/fUg==
+X-Received: by 2002:a81:6c07:0:b0:5a9:30c3:c664 with SMTP id h7-20020a816c07000000b005a930c3c664mr3146076ywc.19.1700673502296;
+        Wed, 22 Nov 2023 09:18:22 -0800 (PST)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id m4-20020a0dfc04000000b005845e6f9b50sm3832508ywf.113.2023.11.22.09.18.20
+        by smtp.gmail.com with ESMTPSA id b1-20020a0dc001000000b005a4da74b869sm3846198ywd.139.2023.11.22.09.18.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 09:18:20 -0800 (PST)
+        Wed, 22 Nov 2023 09:18:21 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH v3 17/19] btrfs: move one shot mount option clearing to super.c
-Date: Wed, 22 Nov 2023 12:17:53 -0500
-Message-ID: <916760deedbcd13112c16879c42e4f657dd78f89.1700673401.git.josef@toxicpanda.com>
+Subject: [PATCH v3 18/19] btrfs: set clear_cache if we use usebackuproot
+Date: Wed, 22 Nov 2023 12:17:54 -0500
+Message-ID: <026c5b257818ffc5b29421f7e3b039a626936ea5.1700673401.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1700673401.git.josef@toxicpanda.com>
 References: <cover.1700673401.git.josef@toxicpanda.com>
@@ -70,103 +70,60 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There's no reason this has to happen in open_ctree, and in fact in the
-old mount API we had to call this from remount.  Move this to super.c,
-unexport it, and call it from both mount and reconfigure.
+We're currently setting this when we try to load the roots and we see
+that usebackuproot is set.  Instead set this at mount option parsing
+time.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c | 16 +---------------
- fs/btrfs/disk-io.h |  1 -
- fs/btrfs/super.c   | 15 +++++++++++++++
- 3 files changed, 16 insertions(+), 16 deletions(-)
+ fs/btrfs/disk-io.c |  3 ---
+ fs/btrfs/super.c   | 12 ++++++++++++
+ 2 files changed, 12 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 367bf31230df..c688eba0312f 100644
+index c688eba0312f..719245d73b99 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -2938,18 +2938,6 @@ static int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
- 	return err;
- }
+@@ -2622,9 +2622,6 @@ static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
+ 			 */
+ 			btrfs_set_super_log_root(sb, 0);
  
--/*
-- * Some options only have meaning at mount time and shouldn't persist across
-- * remounts, or be displayed. Clear these at the end of mount and remount
-- * code paths.
-- */
--void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
--{
--	btrfs_clear_opt(fs_info->mount_opt, USEBACKUPROOT);
--	btrfs_clear_opt(fs_info->mount_opt, CLEAR_CACHE);
--	btrfs_clear_opt(fs_info->mount_opt, NOSPACECACHE);
--}
+-			/* We can't trust the free space cache either */
+-			btrfs_set_opt(fs_info->mount_opt, CLEAR_CACHE);
 -
- /*
-  * Mounting logic specific to read-write file systems. Shared by open_ctree
-  * and btrfs_remount when remounting from read-only to read-write.
-@@ -3527,7 +3515,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	}
- 
- 	if (sb_rdonly(sb))
--		goto clear_oneshot;
-+		return 0;
- 
- 	ret = btrfs_start_pre_rw_mount(fs_info);
- 	if (ret) {
-@@ -3555,8 +3543,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	if (test_bit(BTRFS_FS_UNFINISHED_DROPS, &fs_info->flags))
- 		wake_up_process(fs_info->cleaner_kthread);
- 
--clear_oneshot:
--	btrfs_clear_oneshot_options(fs_info);
- 	return 0;
- 
- fail_qgroup:
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index e589359e6a68..9413726b329b 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -37,7 +37,6 @@ struct extent_buffer *btrfs_find_create_tree_block(
- 						struct btrfs_fs_info *fs_info,
- 						u64 bytenr, u64 owner_root,
- 						int level);
--void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info);
- int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info);
- int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
- 			   const struct btrfs_super_block *disk_sb);
+ 			btrfs_warn(fs_info, "try to load backup roots slot %d", i);
+ 			ret = read_backup_root(fs_info, i);
+ 			backup_index = ret;
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f5bf53f826ef..30603248b71c 100644
+index 30603248b71c..17fd0a438537 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -635,6 +635,19 @@ static int btrfs_parse_param(struct fs_context *fc,
- 	return 0;
- }
- 
-+/*
-+ * Some options only have meaning at mount time and shouldn't persist across
-+ * remounts, or be displayed. Clear these at the end of mount and remount
-+ * code paths.
-+ */
-+static void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
-+{
-+	btrfs_clear_opt(fs_info->mount_opt, USEBACKUPROOT);
-+	btrfs_clear_opt(fs_info->mount_opt, CLEAR_CACHE);
-+	btrfs_clear_opt(fs_info->mount_opt, NOSPACECACHE);
-+}
+@@ -456,6 +456,12 @@ static int btrfs_parse_param(struct fs_context *fc,
+ 			btrfs_warn(NULL,
+ 				   "'recovery' is deprecated, use 'rescue=usebackuproot' instead");
+ 			btrfs_set_opt(ctx->mount_opt, USEBACKUPROOT);
 +
++			/*
++			 * If we're loading the backup roots we can't trust the
++			 * space cache.
++			 */
++			btrfs_set_opt(ctx->mount_opt, CLEAR_CACHE);
+ 		}
+ 		break;
+ 	case Opt_nologreplay:
+@@ -554,6 +560,12 @@ static int btrfs_parse_param(struct fs_context *fc,
+ 		btrfs_warn(NULL,
+ 			   "'usebackuproot' is deprecated, use 'rescue=usebackuproot' instead");
+ 		btrfs_set_opt(ctx->mount_opt, USEBACKUPROOT);
 +
- static bool check_ro_option(struct btrfs_fs_info *fs_info,
- 			    unsigned long mount_opt, unsigned long opt,
- 			    const char *opt_name)
-@@ -1878,6 +1891,8 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 		return ret;
- 	}
- 
-+	btrfs_clear_oneshot_options(fs_info);
-+
- 	fc->root = dget(s->s_root);
- 	return 0;
- 
++		/*
++		 * If we're loading the backup roots we can't trust the space
++		 * cache.
++		 */
++		btrfs_set_opt(ctx->mount_opt, CLEAR_CACHE);
+ 		break;
+ 	case Opt_skip_balance:
+ 		btrfs_set_opt(ctx->mount_opt, SKIP_BALANCE);
 -- 
 2.41.0
 
