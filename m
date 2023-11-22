@@ -1,132 +1,148 @@
-Return-Path: <linux-btrfs+bounces-285-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-286-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16BEC7F4897
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 15:14:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC6E77F48D5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 15:23:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4750C1C20BC8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 14:14:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE2D91C20BA1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 14:23:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F19254C3CC;
-	Wed, 22 Nov 2023 14:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC8BB4E1BE;
+	Wed, 22 Nov 2023 14:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="px+PMdCp"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bKlSWV//";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Nm0p26Yv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78066101
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 06:14:05 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-daf7ed42ea6so6689128276.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 06:14:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700662444; x=1701267244; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s+jG/DXtywm5zS2rvVRrW+nESwNCAFBDKTE05oZq7NU=;
-        b=px+PMdCp6S9RQh9F2MxvnoANuvmmZ2rYBcpkqZGyO0+CrxlilQNqUmiWdiMsqi0nfE
-         j0v1wy/7+THNVeKkONRTMFIMoX47nQt1MmDf9E08TwevNHrv0+QUm9QUkPyo7EFapyYI
-         tHS3jlh7L5h+YnGBGeB7ZIACSsVsdYs5QqOS95q+e1CbhssA9XHW4c5eDAJ6zhYjFVB7
-         Top9+ygFG8+FWKVDebM/tN89c/CmULMmmrdJz/WdL2I+cnd8CGy1GVcx4IDK521pWOI3
-         PncZLcJlREutEHBgilQJ71Kln+3HNpZgw/FIhXg8o6WhHmQX7wn7oHlmn9fnKzOZHb7I
-         FR0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700662444; x=1701267244;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s+jG/DXtywm5zS2rvVRrW+nESwNCAFBDKTE05oZq7NU=;
-        b=b+ZfTgPQkC8wMP3tpnATxO7Fr1Z4K11V6+65F5kUVvMP0C0kc/Fal2TokhZdzUyRnR
-         OAQE9T2hHs+CHeH3DPlqS4InppCfIxiVolv80SO5AulK2cvVlDxYPTRu4FvF+ldZNLif
-         fOY0paHwhyswv5VB5W2QGFuOSk+IclByBbyUE3zdopGMDfglTYqcF3J++PdAAGBvOktz
-         rDyRsHVLjbUIBm11q5VWW2V3iBee01UkaIcY69PVm5kg6TrebdJ6L1QSvPZZMn8xp8fn
-         TvuNTkvJoVdcCZlehDH28O4DiaeULn4wNCjoezoD1iC/kaJkCqwbp5rT8DJIJKMV79TM
-         l1zg==
-X-Gm-Message-State: AOJu0YzR296cVjZ5z6K9Z3SOv2zQIleU3p4BsfHT5AlXuYzdx89d2vbT
-	TYZX9W4fYSPoQauxyooz7jR7aGN7+sOVsdxYt2hJczse
-X-Google-Smtp-Source: AGHT+IHJ7rOj0D8xc6E9lSk/UVIjFZPR9GXHjJWx5BTEg2jFXOinHALn7uGbzaoEyKCA+K8Kl94Vyg==
-X-Received: by 2002:a25:ae92:0:b0:db0:2945:4de with SMTP id b18-20020a25ae92000000b00db0294504demr2300669ybj.7.1700662444401;
-        Wed, 22 Nov 2023 06:14:04 -0800 (PST)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id u6-20020a25ab06000000b00da076458395sm1393048ybi.43.2023.11.22.06.14.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 06:14:04 -0800 (PST)
-Date: Wed, 22 Nov 2023 09:14:03 -0500
-From: Josef Bacik <josef@toxicpanda.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: refactor alloc_extent_buffer() to
- allocate-then-attach method
-Message-ID: <20231122141403.GD1733890@perftesting>
-References: <ffeb6b667a9ff0cf161f7dcd82899114782c0834.1700609426.git.wqu@suse.com>
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5391F112
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 06:23:22 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E24AC1F8D7;
+	Wed, 22 Nov 2023 14:23:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1700663001;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wtqZEx919DvSALOYcdGafgy7c/RdaRAHGSHGEJcmtDk=;
+	b=bKlSWV//5Z9jTbGSiocI24DmC6mWBmERzzQfCo6ntlMVuw83PDozBQSRnTjtJD5NIw8uaa
+	D1KePD1uNrlc8UUmPVT8nfBYXhPnZJH2krBNHojPaNtYIeJAv65HSYzv16be7s8RpyLFA2
+	LZFMdxwkIlKRng8m94a/0m4IeK76a2g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1700663001;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wtqZEx919DvSALOYcdGafgy7c/RdaRAHGSHGEJcmtDk=;
+	b=Nm0p26YvVzWkscDX5ewdlMlszUmdZj9gXy0A0RBF7G46901YhvXssq44APky1pfUN2Kjon
+	svGnsB5ZN3RoosDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CC7FF13461;
+	Wed, 22 Nov 2023 14:23:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 0zdQMdgOXmUaBgAAMHmgww
+	(envelope-from <dsterba@suse.cz>); Wed, 22 Nov 2023 14:23:20 +0000
+Date: Wed, 22 Nov 2023 15:16:11 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 7/8] btrfs: use a dedicated data structure for chunk maps
+Message-ID: <20231122141611.GC11264@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1700573313.git.fdmanana@suse.com>
+ <777320fd09dfc68a89180723bf5d7368dab06299.1700573314.git.fdmanana@suse.com>
+ <20231121182314.GU11264@twin.jikos.cz>
+ <CAL3q7H5-H2czrYap6XEBJeGDVkKDHJdLt3wCyD0VHFuPjEfLgQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ffeb6b667a9ff0cf161f7dcd82899114782c0834.1700609426.git.wqu@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H5-H2czrYap6XEBJeGDVkKDHJdLt3wCyD0VHFuPjEfLgQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
 
-On Wed, Nov 22, 2023 at 10:05:04AM +1030, Qu Wenruo wrote:
-> Currently alloc_extent_buffer() utilizes find_or_create_page() to
-> allocate one page a time for an extent buffer.
+On Wed, Nov 22, 2023 at 11:32:33AM +0000, Filipe Manana wrote:
+> On Tue, Nov 21, 2023 at 6:30 PM David Sterba <dsterba@suse.cz> wrote:
+> > On Tue, Nov 21, 2023 at 01:38:38PM +0000, fdmanana@kernel.org wrote:
+> >
+> > struct btrfs_chunk_map {
+> >         struct rb_node             rb_node __attribute__((__aligned__(8))); /*     0    24 */
+> >         refcount_t                 refs;                 /*    24     4 */
+> >
+> >         /* XXX 4 bytes hole, try to pack */
+> >
+> >         u64                        start;                /*    32     8 */
+> >         u64                        chunk_len;            /*    40     8 */
+> >         u64                        stripe_size;          /*    48     8 */
+> >         u64                        type;                 /*    56     8 */
+> >         /* --- cacheline 1 boundary (64 bytes) --- */
+> >         int                        io_align;             /*    64     4 */
+> >         int                        io_width;             /*    68     4 */
+> >         int                        num_stripes;          /*    72     4 */
+> >         int                        sub_stripes;          /*    76     4 */
+> >         int                        verified_stripes;     /*    80     4 */
+> >
+> >         /* XXX 4 bytes hole, try to pack */
+> >
+> >         struct btrfs_io_stripe     stripes[];            /*    88     0 */
+> >
+> >         /* size: 88, cachelines: 2, members: 12 */
+> >         /* sum members: 80, holes: 2, sum holes: 8 */
+> >         /* forced alignments: 1 */
+> >         /* last cacheline: 24 bytes */
+> > } __attribute__((__aligned__(8)));
+> >
+> > I could move verify_stripes after refs or move refs to start of the
+> > second cacheline between type and io_align. I suspect some cache
+> > bouncing could happen with refcount updates and tree traversal but it's
+> > a speculation and I don't think the effects would be measurable.
 > 
-> This method has the following disadvantages:
-> 
-> - find_or_create_page() is the legacy way of allocating new pages
->   With the new folio infrastructure, find_or_create_page() is just
->   redirected to filemap_get_folio().
-> 
-> - Lacks the way to support higher order (order >= 1) folios
->   As we can not yet let filemap to give us a higher order folio (yet).
-> 
-> This patch would change the workflow by the following way:
-> 
-> 		Old		   |		new
-> -----------------------------------+-------------------------------------
->                                    | ret = btrfs_alloc_page_array();
-> for (i = 0; i < num_pages; i++) {  | for (i = 0; i < num_pages; i++) {
->     p = find_or_create_page();     |     ret = filemap_add_folio();
->     /* Attach page private */      |     /* Reuse page cache if needed */
->     /* Reused eb if needed */      |
-> 				   |     /* Attach page private and
-> 				   |        reuse eb if needed */
-> 				   | }
-> 
-> By this we split the page allocation and private attaching into two
-> parts, allowing future updates to each part more easily, and migrate to
-> folio interfaces (especially for possible higher order folios).
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/extent_io.c | 173 +++++++++++++++++++++++++++++++------------
->  1 file changed, 126 insertions(+), 47 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 99cc16aed9d7..0ea65f248c15 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3084,6 +3084,14 @@ static bool page_range_has_eb(struct btrfs_fs_info *fs_info, struct page *page)
->  static void detach_extent_buffer_page(struct extent_buffer *eb, struct page *page)
->  {
->  	struct btrfs_fs_info *fs_info = eb->fs_info;
-> +	/*
-> +	 * We can no longer using page->mapping reliably, as some extent buffer
-> +	 * may not have any page mapped to btree_inode yet.
-> +	 * Furthermore we have to handle dummy ebs during selftests, where
-> +	 * btree_inode is not yet initialized.
-> +	 */
-> +	struct address_space *mapping = fs_info->btree_inode ?
-> +					fs_info->btree_inode->i_mapping : NULL;
+> I would prefer to have verified_stripes in the first cache line, right
+> below refs for example, so that
+> everything needed for map lookups and insertions is in the same cache line.
 
-I don't understand this, this should only happen if we managed to get
-PagePrivate set on the page, and in that case page->mapping is definitely
-reliable.  We shouldn't be getting in here with a page that hasn't actually been
-attached to the extent buffer, and if we are that needs to be fixed, we don't
-need to be dealing with that case in this way.  Thanks,
+Right, that makes sense.
 
-Josef
+> Do you want to squash such change in this patch? Or should I send it separately?
+
+I'll do the change, thanks.
 
