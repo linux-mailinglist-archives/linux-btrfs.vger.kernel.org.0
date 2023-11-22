@@ -1,158 +1,179 @@
-Return-Path: <linux-btrfs+bounces-310-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-312-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 669177F4E2B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 18:19:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60EA07F4E93
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 18:42:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDFC9B2112E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 17:19:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C5F12812FE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 17:42:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65FBB5B5DA;
-	Wed, 22 Nov 2023 17:18:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="G7PmPc8u"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D33325788A;
+	Wed, 22 Nov 2023 17:42:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE1B83
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:18:24 -0800 (PST)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5cbbe2cba33so19023467b3.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:18:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700673503; x=1701278303; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BiTjWmy4vJZo6BlhqNQcEYY6KSKiyt3LwZZttTCg/UE=;
-        b=G7PmPc8ude4xe7o8U/57d/bvVGthtSOhoTG8yTi3CD4FmgjSb+7azDJzfzUqIKEPKu
-         YB1Q/1shlznt9vSuvhb/PH3Lvm7jyrcSIlD814uGs+At1Ibnmc5H+MaMbm3b3XCUxjU/
-         eaWyrSkOk+F85QDWX50noZkZ6f3D7bkTEFFqy9YgywzpzVId1UESJc730eUmJVXDuW+q
-         fxE8sTb6S8eOEWoYO+rmne4LLOJwOJXh5ah8WXHYU3//0ZzqAJZ71cw4HVH/PD/mLtQu
-         1Vpcwdem/OHhTTEZVkzWQ/ZS44Z63xts4HAVJBXKnSgwJp7/D/YhHXuVmFPKqTti+gau
-         h98g==
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CD81B8
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:42:11 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-507be298d2aso9213601e87.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:42:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700673503; x=1701278303;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700674929; x=1701279729;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BiTjWmy4vJZo6BlhqNQcEYY6KSKiyt3LwZZttTCg/UE=;
-        b=jwAWwVNcoj4xIE8hDqznpbJ7ryxsEopyrmfQwJoERzWNHgZbbUs+QN/HJ1mS2UhhTK
-         ubrZchinhY17ofkjVeEiqadsJ75ulZvv8OrNmHi+FKhZLqhOT4U9PHpNDPegJyr1gM5U
-         H2C2B7Rbguxn05bTeNfstsxSojmWwmr8giC2X/2wfUAMtFscpxTenE/pjZ+9RfH9TZCL
-         4HI/aqL0mu2PMcUDJFwWlpwLDdNoGTIaULVD/OKmtw6aPnvZp5iTYzSlNaXOnZNsfM+q
-         yl/5poO+IgJnBg8DJMp9LPqZYrlIkP05wZkpy8EEhUllEO/H2yMNnoJKKu8eHOgqI0n6
-         rZLQ==
-X-Gm-Message-State: AOJu0YxzQsREbTNcFQZW/Nne8YqkLbSidBwlYjv6xW5D/v86FgXy1Ukl
-	NBe2kzV2Qk+KGH3QFsL2yOLUIHLt+oSKvD62onCG5sLJ
-X-Google-Smtp-Source: AGHT+IHFt2HnaSBdZqayOZ/jkrIrhK6onRuD2u0+HXeCZlT3pGRtSBS/PCdF45H3N1JkghPQDkNJDA==
-X-Received: by 2002:a81:5c07:0:b0:5ca:6e:35d3 with SMTP id q7-20020a815c07000000b005ca006e35d3mr2711501ywb.30.1700673503318;
-        Wed, 22 Nov 2023 09:18:23 -0800 (PST)
-Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id u65-20020a0deb44000000b005cd091e885dsm43713ywe.30.2023.11.22.09.18.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 09:18:22 -0800 (PST)
-From: Josef Bacik <josef@toxicpanda.com>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH v3 19/19] btrfs: remove code for inode_cache and recovery mount options
-Date: Wed, 22 Nov 2023 12:17:55 -0500
-Message-ID: <91c34f25266be07585b75fde0b580b9118f8786e.1700673401.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1700673401.git.josef@toxicpanda.com>
-References: <cover.1700673401.git.josef@toxicpanda.com>
+        bh=9FJAOAWkMpb4IpmberTNs9YGWOz1IenKDAtSkd5Nd3k=;
+        b=A7dC+rsdAQf33Kere4vPHWfJfWgvWhy5+wELs60tczvNKbs9F4MjJ6Wl+JVJj+Dike
+         7ETie1y2Bi1kevIJuPlDwIbj6I2gsbhkRMaF+7/slLma3PmF8SM9FIw4DDT5pG19IITm
+         26nuw8BPivkbXJvL2GsT/kF8hQmorZM39wCdHd474rZRja46HZfXniVLB035rAZw4wMi
+         QdAdaevtvO4/PBw6TnFl8AdVaCeOkJKXLTWrXrWepFtaaofQQpM/QRm1k7YuqgcT+djC
+         vM2L9I6RxszgYhktb4/LEP1x2GyME8dZCOeGnQ93QGC93L4XMVTYoXaVjFc3JdNP28ic
+         3fZA==
+X-Gm-Message-State: AOJu0Yyfbo53Z3TTStwZbWyqbFECP5jMHHaCZqRWz3Av8+paKRoRjnBO
+	Q3ZWugf0LPDeOy1tI/qBrCcOHpLIGFKOzw==
+X-Google-Smtp-Source: AGHT+IHzT8ZHiI7CiVv77dtsoRGH9gWMA3O0lYCZjaRnSWcwltqvtuchJllhvEcSJBFEWLJnPDK0tA==
+X-Received: by 2002:ac2:561a:0:b0:50a:5df2:f30f with SMTP id v26-20020ac2561a000000b0050a5df2f30fmr2265881lfd.43.1700674928822;
+        Wed, 22 Nov 2023 09:42:08 -0800 (PST)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id o14-20020a056512230e00b00501c51ab085sm1927351lfu.60.2023.11.22.09.42.08
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 09:42:08 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-507cee17b00so9202996e87.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:42:08 -0800 (PST)
+X-Received: by 2002:a05:6512:2397:b0:509:4424:2e0e with SMTP id
+ c23-20020a056512239700b0050944242e0emr2785913lfv.0.1700674928238; Wed, 22 Nov
+ 2023 09:42:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1700673401.git.josef@toxicpanda.com>
+In-Reply-To: <cover.1700673401.git.josef@toxicpanda.com>
+From: Neal Gompa <neal@gompa.dev>
+Date: Wed, 22 Nov 2023 12:41:30 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je-oQ4Eh4vyidHWM-X_ppwE=_aV0Ra7EmL59ZKNQoT18SQ@mail.gmail.com>
+Message-ID: <CAEg-Je-oQ4Eh4vyidHWM-X_ppwE=_aV0Ra7EmL59ZKNQoT18SQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/19] btrfs: convert to the new mount API
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We've deprecated these a while ago, go ahead and remove the code for
-them.
+On Wed, Nov 22, 2023 at 12:18=E2=80=AFPM Josef Bacik <josef@toxicpanda.com>=
+ wrote:
+>
+> v2->v3:
+> - Fixed up the various review comments from Dave and Anand.
+> - Added a patch to drop the deprecated mount options we currently have.
+>
+> v1->v2:
+> - Fixed up some nits and paste errors.
+> - Fixed build failure with !ZONED.
+> - Fixed accidentally dropping BINARY_MOUNTDATA flag.
+> - Added Reviewed-by's collected up to this point.
+>
+> These have run through our CI a few times, they haven't introduced any
+> regressions.
+>
+> --- Original email ---
+> Hello,
+>
+> These patches convert us to use the new mount API.  Christian tried to do=
+ this a
+> few months ago, but ran afoul of our preference to have a bunch of small
+> changes.  I started this series before I knew he had tried to convert us,=
+ so
+> there's a fair bit that's different, but I did copy his approach for the =
+remount
+> bit.  I've linked to the original patch where I took inspiration, Christi=
+an let
+> me know if you want some other annotation for credit, I wasn't really sur=
+e the
+> best way to do that.
+>
+> There are a few preparatory patches in the beginning, and then cleanups a=
+t the
+> end.  I took each call back one at a time to try and make it as small as
+> possible.  The resulting code is less, but the diffstat shows more insert=
+ions
+> that deletions.  This is because there are some big comment blocks around=
+ some
+> of the more subtle things that we're doing to hopefully make it more clea=
+r.
+>
+> This is currently running through our CI.  I thought it was fine last wee=
+k but
+> we had a bunch of new failures when I finished up the remount behavior.  =
+However
+> today I discovered this was a regression in btrfs-progs, and I'm re-runni=
+ng the
+> tests with the fixes.  If anything major breaks in the CI I'll resend wit=
+h
+> fixes, but I'm pretty sure these patches will pass without issue.
+>
+> I utilized __maybe_unused liberally to make sure everything compiled whil=
+e
+> applied.  The only "big" patch is where I went and removed the old API.  =
+If
+> requested I can break that up a bit more, but I didn't think it was neces=
+sary.
+> I did make sure to keep it in its own patch, so the switch to the new mou=
+nt API
+> path only has things we need to support the new mount API, and then the n=
+ext
+> patch removes the old code.  Thanks,
+>
+> Josef
+>
+> Christian Brauner (1):
+>   fs: indicate request originates from old mount api
+>
+> Josef Bacik (18):
+>   btrfs: split out the mount option validation code into its own helper
+>   btrfs: set default compress type at btrfs_init_fs_info time
+>   btrfs: move space cache settings into open_ctree
+>   btrfs: do not allow free space tree rebuild on extent tree v2
+>   btrfs: split out ro->rw and rw->ro helpers into their own functions
+>   btrfs: add a NOSPACECACHE mount option flag
+>   btrfs: add fs_parameter definitions
+>   btrfs: add parse_param callback for the new mount api
+>   btrfs: add fs context handling functions
+>   btrfs: add reconfigure callback for fs_context
+>   btrfs: add get_tree callback for new mount API
+>   btrfs: handle the ro->rw transition for mounting different subovls
+>   btrfs: switch to the new mount API
+>   btrfs: move the device specific mount options to super.c
+>   btrfs: remove old mount API code
+>   btrfs: move one shot mount option clearing to super.c
+>   btrfs: set clear_cache if we use usebackuproot
+>   btrfs: remove code for inode_cache and recovery mount options
+>
+>  fs/btrfs/disk-io.c |   85 +-
+>  fs/btrfs/disk-io.h |    1 -
+>  fs/btrfs/fs.h      |   15 +-
+>  fs/btrfs/super.c   | 2357 +++++++++++++++++++++++---------------------
+>  fs/btrfs/super.h   |    5 +-
+>  fs/btrfs/zoned.c   |   16 +-
+>  fs/btrfs/zoned.h   |    6 +-
+>  fs/namespace.c     |   11 +
+>  8 files changed, 1263 insertions(+), 1233 deletions(-)
+>
+> --
+> 2.41.0
+>
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/super.c | 35 -----------------------------------
- 1 file changed, 35 deletions(-)
+Looks like my r-b wasn't picked up for this revision, but looking over
+it, things seem to be fine.
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 17fd0a438537..8ce7c880e9ce 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -130,10 +130,6 @@ enum {
- 	Opt_ignoredatacsums,
- 	Opt_rescue_all,
- 
--	/* Deprecated options */
--	Opt_recovery,
--	Opt_inode_cache,
--
- 	/* Debugging options */
- 	Opt_enospc_debug,
- #ifdef CONFIG_BTRFS_DEBUG
-@@ -224,7 +220,6 @@ static const struct fs_parameter_spec btrfs_fs_parameters[] = {
- 	fsparam_string("device", Opt_device),
- 	fsparam_enum("fatal_errors", Opt_fatal_errors, btrfs_parameter_fatal_errors),
- 	fsparam_flag_no("flushoncommit", Opt_flushoncommit),
--	fsparam_flag_no("inode_cache", Opt_inode_cache),
- 	fsparam_string("max_inline", Opt_max_inline),
- 	fsparam_flag_no("barrier", Opt_barrier),
- 	fsparam_flag_no("datacow", Opt_datacow),
-@@ -255,10 +250,6 @@ static const struct fs_parameter_spec btrfs_fs_parameters[] = {
- 	__fsparam(NULL, "usebackuproot", Opt_usebackuproot, fs_param_deprecated,
- 		  NULL),
- 
--	/* Deprecated options */
--	__fsparam(NULL, "recovery", Opt_recovery,
--		  fs_param_neg_with_no|fs_param_deprecated, NULL),
--
- 	/* Debugging options */
- 	fsparam_flag_no("enospc_debug", Opt_enospc_debug),
- #ifdef CONFIG_BTRFS_DEBUG
-@@ -442,28 +433,6 @@ static int btrfs_parse_param(struct fs_context *fc,
- 		else
- 			btrfs_clear_opt(ctx->mount_opt, NOTREELOG);
- 		break;
--	case Opt_recovery:
--		/*
--		 * -o recovery used to be an alias for usebackuproot, and then
--		 * norecovery was an alias for nologreplay, hence the different
--		 * behaviors for negated and not.
--		 */
--		if (result.negated) {
--			btrfs_warn(NULL,
--				   "'norecovery' is deprecated, use 'rescue=nologreplay' instead");
--			btrfs_set_opt(ctx->mount_opt, NOLOGREPLAY);
--		} else {
--			btrfs_warn(NULL,
--				   "'recovery' is deprecated, use 'rescue=usebackuproot' instead");
--			btrfs_set_opt(ctx->mount_opt, USEBACKUPROOT);
--
--			/*
--			 * If we're loading the backup roots we can't trust the
--			 * space cache.
--			 */
--			btrfs_set_opt(ctx->mount_opt, CLEAR_CACHE);
--		}
--		break;
- 	case Opt_nologreplay:
- 		btrfs_warn(NULL,
- 			   "'nologreplay' is deprecated, use 'rescue=nologreplay' instead");
-@@ -534,10 +503,6 @@ static int btrfs_parse_param(struct fs_context *fc,
- 	case Opt_rescan_uuid_tree:
- 		btrfs_set_opt(ctx->mount_opt, RESCAN_UUID_TREE);
- 		break;
--	case Opt_inode_cache:
--		btrfs_warn(NULL,
--			   "the 'inode_cache' option is deprecated and has no effect since 5.11");
--		break;
- 	case Opt_clear_cache:
- 		btrfs_set_opt(ctx->mount_opt, CLEAR_CACHE);
- 		break;
--- 
-2.41.0
+Reviewed-by: Neal Gompa <neal@gompa.dev>
 
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
