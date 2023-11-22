@@ -1,190 +1,510 @@
-Return-Path: <linux-btrfs+bounces-288-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-289-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DBFD7F4B3C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 16:42:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 635A47F4C07
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 17:12:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5BF7B20DD8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 15:42:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86B321C2088A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 16:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C000358123;
-	Wed, 22 Nov 2023 15:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15EF74EB32;
+	Wed, 22 Nov 2023 16:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="JaIWyJqW";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="IJEYtdHY"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Vm9/0mow"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864AD26A5;
-	Wed, 22 Nov 2023 07:42:13 -0800 (PST)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AMF2cmp005999;
-	Wed, 22 Nov 2023 15:42:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=FISz3IhLaGHoRbezXV+xlOUTdfj5xoG8Tk7kn4RET20=;
- b=JaIWyJqWkM/M9htEOY5IScfokAo/3SnM7M39sH6g8wltff/qP+aIb/btgCyvwCK9Ifli
- UhQimLgHuGGbedLWY5jHrGh8lzCRSFCZ2K9ZL1bZ6T8SwNbyjSn886KNmen6OMHpx2xS
- HaBYmJiBfwXBPGHgz0Sl8K2RBbQAoRSP3kKGwKNP/xGxtAdcGiPiIUzlf3DAA8PdH4NW
- XrdDKwWfEF0RZ7nrRP3nJA8qzODux/ajDpVDtccObRTZcJEDjK0qEEyUpD1p3v+EahUp
- LAOjjTAvr2ZDsszyCa/ipvyLv1I1ERmFSa2yYDjB227vfR+xle1tu+CWwPqrS6SgQMdE gQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uentvfsjt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 22 Nov 2023 15:42:10 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AMEJc1A002365;
-	Wed, 22 Nov 2023 15:42:08 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uekq8x2pc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 22 Nov 2023 15:42:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MU1B7FMdPDdyHcrjOJG2WOkkpn2sMe+BpgbGzJl2gX8xpq/s3SXRQRvHGDWXzYniwrCZrOB7YhxtWKX5LkHmMYb1yL2J50nrcQKZUh2tnbwUzLGiek5SA08oxGJMTfkM5dCK6TdTih0iMcT2KmINcAxy0tRXTXccS+GEajq8PzVhaAKzFeE4gPBTciNYYGt3daq5rYqgV/le2tyHn92zlxWNOLNOSOVcS5kcWekxsSKZeFNlUcrV0Uldn6mtilhWwdV37dJ2qWBdtTmeLK7acWJUSbx377wPTTL8qWe8WcF7kQ6x795+U9pwR92jfcNXpcnuz6TFkDgB5nsGzSFEGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FISz3IhLaGHoRbezXV+xlOUTdfj5xoG8Tk7kn4RET20=;
- b=JDPGk99A1UvzXZavzCBSXD50awmfQoklQeGmhw0tTxzoypsKDY9U3DkAHyM02bqeB8saOp+zjIs6xldUq3Ex/e+j3V9n1kCfmMg6cuCguRJxc3REcSZbV/7q02qaf4llhHskSNeBAFNFrutzDwTyOCG8x+KHPDlDfj18o5ojTlfWQTSKWSvX37vhIDvDVV9RLMFlFimXrApInRh2/1mTNQ4+WcG7IzXUUlylq05goRPyWa6FHbdevVSckcTlFQzg0oV4vL7YZsBxPqRf8LS/HW+42cPm8/x/skPOrzY5c42+pBfVdYjyEBPWhbFw5anYEgUa0OBL/5B3TOHxkRp2Fg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC889F
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 08:12:13 -0800 (PST)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5cce5075bd6so2456477b3.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 08:12:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FISz3IhLaGHoRbezXV+xlOUTdfj5xoG8Tk7kn4RET20=;
- b=IJEYtdHYapUb4rxTUxQfqKIjceu5Jp3mnbf8IzEjje3s77RxGbCgO8XVyXtOcb7aVkXijXmF8OjGsAGUNs3sV2UhSZVmvMAoytdFnA5KVokQs4tlsfqxL7xyboT/SS4gQtMnLaLMG3M33CxX5UPWXsr2G3teMQFLZg19bgesMQA=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by IA1PR10MB6856.namprd10.prod.outlook.com (2603:10b6:208:423::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Wed, 22 Nov
- 2023 15:42:06 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2000:9c78:19f5:176a]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2000:9c78:19f5:176a%3]) with mapi id 15.20.7002.028; Wed, 22 Nov 2023
- 15:42:06 +0000
-Message-ID: <437e189e-475a-46d7-b7ea-a8d919d53032@oracle.com>
-Date: Wed, 22 Nov 2023 23:41:59 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/12] fstests: split generic/580 into two tests
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <cover.1696969376.git.josef@toxicpanda.com>
- <ecf95cca70aa11c64455893ea823ec8de0249cf5.1696969376.git.josef@toxicpanda.com>
- <7cba2927-5636-4039-9e76-f01a5b86c108@oracle.com>
- <20231108202550.GA548237@perftesting>
-Content-Language: en-US
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20231108202550.GA548237@perftesting>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0039.apcprd02.prod.outlook.com
- (2603:1096:3:18::27) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700669533; x=1701274333; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=36p1umQEgwFzXjxpCg2qYkrYWJtzRfqSTZF2V0uZ9Qs=;
+        b=Vm9/0mow5EfEczgNR1mwENb4Gl6MotWJtGnBhtFqtEzW+/W+GMleQgWuY2fxa/a/WU
+         iGbJFCIfxJ0mlee0D9wZ0+C6rr7+xdwJvCljTPK8I7dMasV+SqCuOxxzrALPV66KddXP
+         0JljZ6gGKjYNxlZDgEJ3wY9teaf8Smqmn/9ZzeLwBDfM9zqzQIu0dYlPU7HskNQa4t9K
+         YdgnqiW5xxQum1h+QU7F+bSwpOGkEKydC/udcHXgfNZ+P1iGFXNJtH7WIn743vsKTvrr
+         Woi8gSCmcz8KjjZ6DcCuvs/II1qcEwwtrzqHLKiXqVWPHQkfeiqt+oeDDu3IYBhjYRDl
+         cmDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700669533; x=1701274333;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=36p1umQEgwFzXjxpCg2qYkrYWJtzRfqSTZF2V0uZ9Qs=;
+        b=GkUkRHd5e58s2fZttm76Jv0smvtGKDIuY3UFmXd7rtwse/zjw3Fief6/czDGeJ49h6
+         ESSdBpQ8h1JB2fMflMdqwPeAa01dPXyGhutCHAIP9MBZLWOB4Kyal8zVKi24eopCo1aT
+         bcZHoxLUlzPA8bSsaE6Vy57aZ2E32w+Ixq5nO95sftouUa3b5mNxV7p4rueZHVBkRlp1
+         v2oH0s9x7KlUWr3+AFgFjTtOCzuqMkCINHrkvSlZGH9v2ubNsl0aoB779NUlk1d6QcXM
+         7YH6m1NBnGFbOIbtBKwznXzS8Eu6r20jH7wLGs1uSORnynRFZP4FdhhhWfInqAIAwefm
+         szfw==
+X-Gm-Message-State: AOJu0Yw64Swr4it7p17/8VC7z8e10qUcwl5eQr/adbMBFx3Knn5/TpDX
+	zM/1sI3kAsvDLWDvC2kj350oxA==
+X-Google-Smtp-Source: AGHT+IER5xR0hHjv+GvEmsiUE/FBwCwkvgNOaZpOqQBbOsucIGjtUYEMFvW1I1pPad8aIiDl/ZOi5w==
+X-Received: by 2002:a81:9a03:0:b0:5cc:5d7d:60e5 with SMTP id r3-20020a819a03000000b005cc5d7d60e5mr1772631ywg.23.1700669532896;
+        Wed, 22 Nov 2023 08:12:12 -0800 (PST)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id o81-20020a817354000000b005b37c6e01f9sm3777654ywc.90.2023.11.22.08.12.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 08:12:12 -0800 (PST)
+Date: Wed, 22 Nov 2023 11:12:11 -0500
+From: Josef Bacik <josef@toxicpanda.com>
+To: David Sterba <dsterba@suse.cz>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org, brauner@kernel.org
+Subject: Re: [PATCH v2 09/18] btrfs: add parse_param callback for the new
+ mount api
+Message-ID: <20231122161211.GA1740325@perftesting>
+References: <cover.1699470345.git.josef@toxicpanda.com>
+ <0a00937137f9b737e97284af572eab72fa02e594.1699470345.git.josef@toxicpanda.com>
+ <20231114181338.GF11264@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|IA1PR10MB6856:EE_
-X-MS-Office365-Filtering-Correlation-Id: e16ad86e-baf5-4e30-abef-08dbeb7194e1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	ZyFO477ZDO/kWVsRybsDgGpEuT/sDJue8p1y6kZpfPG22Xw1sooOl3EkzeiuxWMrwcvHmh3bPoFGwsEKZIAlSmISEKMK4Ps2IV88ZLOTqAdqcpvstXipCOuyD9NqIyqxLPi70zcOdv3eb0pTQXecwK7VCrxnX4W0cRcvgw7cRhhQ1Kb1qbVQRI+u1CgZHQ4OEZ8Ib0IN9Smp5tyKINEYok5k+gqQpesneL52AZnDCmVkr97nQ+HM4Ewg7pyE9Abdi2mWcgZ1u2bRRmqRTPIDw/SBuAjEJjye/HLOXJ5AXS0JF+DpJ9WYBFGFt9stoqe35hvq/519nV5AGMTpuKl6Il6MjlnM8bfMjq33yZYpdJJVqwK6ji/r7ezSYX/8vYWbaoz984C6ZzgXzkr4s/UnVoz9vx+HZNNeZf9DGVvKaI+jwt7f2U8TbWDB/f6qiVHjjM2Yyupuol6zHSrcWljj1ptOO4D7xyu+yYd7RbROam9VtYUItIooEnmmqQP90CTBMFE7zYe19h2I5RnNNC4iR8j3oZTZQLQnaCXlncN19tIYjJPYLjlB5nKR3Ima698sg8a3ilPjb/KgcuJMGP8gsWaAhDC5K/2iLbCBi/m6liuSb9hF9MP2miBOJBYUv7HFyQWI6b3Dvaf7BJJVgsjrQRI1d5aB3AFVBGNjbJr/TeM=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(396003)(366004)(39860400002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(6916009)(66476007)(66556008)(316002)(6666004)(36756003)(6512007)(2616005)(6486002)(26005)(478600001)(38100700002)(53546011)(31696002)(66946007)(86362001)(6506007)(44832011)(5660300002)(4744005)(2906002)(31686004)(8936002)(41300700001)(8676002)(4326008)(41533002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?UlowOFhEOEVSMmUramZ3b0ErWXVZSkYydzRUbVczYUNjelFReFQzZllyZmRt?=
- =?utf-8?B?KzluRkRsUjF0aUdtdU9tQVZHWHRNQjlNWE1WRTIrL1pCTUh5bTk2K1VRS2Jp?=
- =?utf-8?B?bVk2SzYyZ3pNT09ZOC9BZ2o5UUxaSVU3OVZ6SWRBMG1xblBFWGRJOFp3RTdj?=
- =?utf-8?B?bDJmQ05TT0hVTFRFaUloZkFvbUUzRkYydjV3U3craU1jOVV1TmRJdWIvVGMx?=
- =?utf-8?B?d1o2UG5kV3NXSVBZd0VTdkpITklJNlJtRGRFLzIrUTBNR2tseFhJdkRwLzBX?=
- =?utf-8?B?aWNxMUZSUE82dUxaNWZsWFQ3NTlzMHk5c25HeGIwSTJRcklXMllVWE5WaTUy?=
- =?utf-8?B?d1VLdWlvbUFFMk5JdHhWZUlxUjRTQ1hxYklhbzlOaUh0RTBJaDllaVVGL0s4?=
- =?utf-8?B?RXZ2dmlWeUo2d3Q5dW5OZXpMbDVXWm1WdDloSkwxSzlrUGdsV1FadG1ZN3Zo?=
- =?utf-8?B?bzJYaWdQaVFiRndsZmljUlkrQUVycUZ3T3dtWkFVOUhNeGxuaEFJN1A0OUZ0?=
- =?utf-8?B?cFZYdmxYdzd2VjJmZUo3c211bU5ZVnkvWkdiREFpZHNsNU9salQ4THZ3NUt5?=
- =?utf-8?B?cmVVNDBFTGROOVpLTkMzU3NtWHlscG4rZmlVSFJzc09PK3g4cTdCTVpqSHJl?=
- =?utf-8?B?ZENwSDJxQjhCTHFsblN0ZlJya3VTYWE3TzlEdEhYYlNTYk9mL2grT0NDUEZp?=
- =?utf-8?B?ZmYzdUNDTGFsTGhJZkllc2xBUFVxWitWNWg5c01BSGtYbGZsbVN6TlgvUFky?=
- =?utf-8?B?RjMrMGFSYkg1bit4ajgrWVlSU2lCVFZzT3FvVzduTER1Z2s0T0pOZnEyN3Yz?=
- =?utf-8?B?VURYUzVUVVVsaXBtcVpvSjJ0cEVnOEkrY1YxRFQ5NmFhcXRMdm8wbG1NbCtW?=
- =?utf-8?B?NFpJZFcwcFdBcUYwV0RvQ0lkaVlGdHI2NHdUbnMwN2IrNE5NZ3k4Y1ZMVzJL?=
- =?utf-8?B?bWRBMW5udjB3QnpGMVFpV2J1WUoyRVlhVW4vSUNYdmNoazVaZ0h6Y2w4VWpa?=
- =?utf-8?B?MTRoZ3M5M2tadFRJeGtwWnVVNjRvVlhOK0VTMHJVM0hOdGRiRmdSUGZoZzAv?=
- =?utf-8?B?Ynh5U0JrZ1hpenAyZWpBU051MTNUeTJHMnlFTHQ1eXJHRHFkWWZFd1B6bzlp?=
- =?utf-8?B?amJqV1Q3Y21HVHYzK0xxdXpjdjBacmJNZ0RSNU14T0lQckIvK0w5d3NUMDM5?=
- =?utf-8?B?bmwwSisxNFhNN0svNHhZd3h0SGprWkF0OTFYNVJDQWRhMmNKVzdzV1VCQ3pD?=
- =?utf-8?B?bFJKQ2ZybGt0ZG1xWG5BZ2VrWCtiYWF0UGcwdWFsM1BvcGI2L09DWWdLR1ov?=
- =?utf-8?B?QW93MHY0aFBsZ24rV2VTZDFtRC9zRzc4aGJrSDRBRFpHMDhncXpMb2g2RjVQ?=
- =?utf-8?B?K2F1UzZjeDZrV3JtWmxBTFpPRnNaMDNOZjFZQ2gxRTdsa3NBbHlhSCtyZVpX?=
- =?utf-8?B?enlXeEFSRks3KzIzdnFjemRyYU9uT2JRM3JwMGtPdUJYbmVldEU2VW5LczB4?=
- =?utf-8?B?ZE15WkR3Sy9XWWpJTTlvZ0JJQWhHVkVvQUYwb1hzcEw1QzRkdzBUVlBkb0N0?=
- =?utf-8?B?dzJ4R2s1ODI2L3A5MHlId29paDY3aUdGTGk3UkFERVlqVldZMmtySUtWcXRi?=
- =?utf-8?B?bG1EODNZV1dsYXlrVGFORmxzTENWTVMvdStoU3hxSms0MVJtQ0dvMzRWKzhz?=
- =?utf-8?B?RithVUFZV3ZRY1Z4SEN6RGN2ZlVLOWl6eTI5MXUyWEJkUWlzeHRKY1B3SWpU?=
- =?utf-8?B?MXpBNnNmdTd3UjJlKy80RGxsa0NTekltaDlaUUFLWVRqYlV3a2xjTEI5TUI0?=
- =?utf-8?B?ZkU0UTJscGF0OTR0dzUycmsyd2txWjArMTh5WUJYUW5WQzRLMjFKUi81Mllk?=
- =?utf-8?B?ZFdyMGk2ZmJKTDZ4TUYyQnZ4eUlEOERXSkRWeW5EUzhWTGdyUjlBUytiQXg4?=
- =?utf-8?B?OUNLNWM4S0I5b0dINnpRbGsyNkNwbzVwVHBacHVTbEdVRS9QL2VONFpWeWdw?=
- =?utf-8?B?bVlCYnNpZjJRTVhGQmFQT1pQYXFDQVMvcWprTjd6enlxblQ0QTBrVTFHU1U2?=
- =?utf-8?B?eVFXdmdQTXdZNVdySmJ1UElqQnBOeWNSNGdjRUVTbWd6a1FxckYvM3hkbzZk?=
- =?utf-8?Q?PNup6ZutH43dIBWVnxr9lUqAr?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	PqN7kpldc6toIfjZXSbSwFmTnQvJDA6o6bmJUYQgj7Uyd3hzkbi5/mc7JgFu23WejUKSIpynCf0l0g9oCEVolxD1IwUCATahIw8wpV3wvH1GgMs9knEZ67klsWhhWNv1HJXEhs+0srgLlUQi3qBMc/S7kMQkJDVzoUUWqc8hdS/9wJ085PMQaeYByxaTodlKoJnoh39tOejpMt9/SXlEZ2Hj5E6zeUTp7BmUA/OI3ejuLpAqOc2v9c15p6lJFRr+McYo//9117d/e/+u2ZY1TJTbBCyAvp2RjGWOOWfC+2oCKWPMhmRJpWuIaccDfA0tYhb85as+FKxK+UA+GhQpoM/7G+rUVNPdCXraflJ4aZnwcs96Fmy3+csGFSWTxl5n+XMHqUv2NpCc4mM33XtO0WfmXwBbu5YdMbH8AFM71sp3zdUM6fmhqDf3wTfbCkHUV5kiK7v6t2WILmEUXwuvUy/AK2LqyNPPSg3GoFSO/tg3nhY1S6WJc0YGn+XjnVrfQ7kfNdQHOYvWKw6257+KSBFR2AYp7gV4pc0roFa0Kb5FlzjEOLW8xOY4xfKyCQG1cIaTI/YCc6ppFNJu5Aze7zpm56572t5ZWVekybPfXlIZKoDFKcW2j4+ry547GW6L1B12Vt8AujYWGIPeyl9jJQiPJZFj+h2myiG5S/d73ettZBXIIx3iHrNx9ozInbtYafAu3eLAhjxMIj98+Njc6bEIaVaTFEPOJY3a0rBNvgRpyN8wwMBN2xDGWta1GFelDq3nK/7h3zyO6mlFKZLYHgWFg0MrW06Kpf5gCxUJERbSsdTgcbxHQ5cybll9c0VN
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e16ad86e-baf5-4e30-abef-08dbeb7194e1
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 15:42:06.7925
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZbeJjpcRfw9lPSC/KJeNOxWZc7gFb9MFl/MMT/thLSedtLXX5YYTeYj9yyhdpAO/Ube8/7hj+thpY5pOyX7GIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB6856
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-22_11,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 malwarescore=0
- spamscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311220112
-X-Proofpoint-ORIG-GUID: GzfKcktswhwDKo7YuXpdvfa3SLupg0Wh
-X-Proofpoint-GUID: GzfKcktswhwDKo7YuXpdvfa3SLupg0Wh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231114181338.GF11264@twin.jikos.cz>
 
-On 11/9/23 04:25, Josef Bacik wrote:
-> On Thu, Nov 02, 2023 at 07:42:50PM +0800, Anand Jain wrote:
->> On 10/11/23 04:26, Josef Bacik wrote:
->>> generic/580 tests both v1 and v2 encryption policies, however btrfs only
->>> supports v2 policies.  Split this into two tests so that we can get the
->>> v2 coverage for btrfs.
->>
->> Instead of duplicating the test cases for v1 and v2 encryption policies,
->> can we check the supported version and run them accordingly within a
->> single test case?
->>
->> The same applies 10 and 11/12 patches as well.
+On Tue, Nov 14, 2023 at 07:13:38PM +0100, David Sterba wrote:
+> On Wed, Nov 08, 2023 at 02:08:44PM -0500, Josef Bacik wrote:
+> > The parse_param callback handles one parameter at a time, take our
+> > existing mount option parsing loop and adjust it to handle one parameter
+> > at a time, and tie it into the fs_context_operations.
+> > 
+> > Create a btrfs_fs_context object that will store the various mount
+> > properties, we'll house this in fc->fs_private.  This is necessary to
+> > separate because remounting will use ->reconfigure, and we'll get a new
+> > copy of the parsed parameters, so we can no longer directly mess with
+> > the fs_info in this stage.
+> > 
+> > In the future we'll add this to the btrfs_fs_info and update the users
+> > to use the new context object instead.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> >  fs/btrfs/super.c | 390 +++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 390 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> > index 0e9cb9ed6508..2f7ee78edd11 100644
+> > --- a/fs/btrfs/super.c
+> > +++ b/fs/btrfs/super.c
+> > @@ -84,6 +84,19 @@ static void btrfs_put_super(struct super_block *sb)
+> >  	close_ctree(btrfs_sb(sb));
+> >  }
+> >  
+> > +/* Store the mount options related information. */
+> > +struct btrfs_fs_context {
+> > +	char *subvol_name;
+> > +	u64 subvol_objectid;
+> > +	u64 max_inline;
+> > +	u32 commit_interval;
+> > +	u32 metadata_ratio;
+> > +	u32 thread_pool_size;
+> > +	unsigned long mount_opt;
+> > +	unsigned long compress_type:4;
+> > +	unsigned int compress_level;
+> > +};
+> > +
+> >  enum {
+> >  	Opt_acl, Opt_noacl,
+> >  	Opt_clear_cache,
+> > @@ -348,6 +361,379 @@ static const struct fs_parameter_spec btrfs_fs_parameters[] __maybe_unused = {
+> >  	{}
+> >  };
+> >  
+> > +static int btrfs_parse_param(struct fs_context *fc,
+> > +			     struct fs_parameter *param)
+> > +{
+> > +	struct btrfs_fs_context *ctx = fc->fs_private;
+> > +	struct fs_parse_result result;
+> > +	int opt;
+> > +
+> > +	opt = fs_parse(fc, btrfs_fs_parameters, param, &result);
+> > +	if (opt < 0)
+> > +		return opt;
+> > +
+> > +	switch (opt) {
+> > +	case Opt_degraded:
+> > +		btrfs_set_opt(ctx->mount_opt, DEGRADED);
+> > +		break;
+> > +	case Opt_subvol_empty:
+> > +		/*
+> > +		 * This exists because we used to allow it on accident, so we're
+> > +		 * keeping it to maintain ABI.  See
+> > +		 * 37becec95ac31b209eb1c8e096f1093a7db00f32.
 > 
-> This will be awkward for file systems that support both, hence the split.  I
-> don't love suddenly generating a bunch of new tests, but this seems like the
-> better option since btrfs is the only file system that only supports v2, and
-> everybody else supports everything.  Thanks,
+> Please use the full patch reference 37becec95ac3 ("Btrfs: allow empty
+> subvol= again"), the subject itself explains why it's here.
 > 
-> Josef
+> > +		 */
+> > +		break;
+> > +	case Opt_subvol:
+> > +		kfree(ctx->subvol_name);
+> > +		ctx->subvol_name = kstrdup(param->string, GFP_KERNEL);
+> > +		if (!ctx->subvol_name)
+> > +			return -ENOMEM;
+> > +		break;
+> > +	case Opt_subvolid:
+> > +		ctx->subvol_objectid = result.uint_64;
+> > +
+> > +		/* subvoldi=0 means give me the original fs_tree. */
+> 
+>                    subvolid=0
+> 
+> > +		if (!ctx->subvol_objectid)
+> > +			ctx->subvol_objectid = BTRFS_FS_TREE_OBJECTID;
+> > +		break;
+> > +	case Opt_device: {
+> > +		struct btrfs_device *device;
+> > +		blk_mode_t mode = sb_open_mode(fc->sb_flags);
+> > +
+> > +		mutex_lock(&uuid_mutex);
+> > +		device = btrfs_scan_one_device(param->string, mode, false);
+> > +		mutex_unlock(&uuid_mutex);
+> 
+> So this changes how the device option and scan works. At this point the
+> option is in the simple lock/unlock sequence, while currently it's
+> scanning all devices under in one lock and then also opens all the
+> devices. This prevents any other scan to interrupt that so it's either
+> scanned right before (and filling the list) or after (which is a no-op).
+> 
+> Now it's open to the races, I haven't evaluated if this could be a
+> problem or not.
+> 
 
+Udev has been scanning our devices ahead of time for years, this is exactly how
+it exists currently.  I don't think anybody is actually using -o
+device=<whatever>, but if they are this gives them the same behavior that most
+people get with the udev rule and mount /dev/oneofthedisks /foo.
 
-Ok. That's fair.
+If we're really worried about it however I could allocate the strings and attach
+them to the context here, and then at mount time scan them all to give us the
+same behavior as we had before.
 
+> > +		if (IS_ERR(device))
+> > +			return PTR_ERR(device);
+> > +		break;
+> > +	}
+> > +	case Opt_datasum:
+> > +		if (result.negated) {
+> > +			btrfs_set_opt(ctx->mount_opt, NODATASUM);
+> > +		} else {
+> > +			btrfs_clear_opt(ctx->mount_opt, NODATACOW);
+> > +			btrfs_clear_opt(ctx->mount_opt, NODATASUM);
+> > +		}
+> > +		break;
+> > +	case Opt_datacow:
+> > +		if (result.negated) {
+> > +			btrfs_clear_opt(ctx->mount_opt, COMPRESS);
+> > +			btrfs_clear_opt(ctx->mount_opt, FORCE_COMPRESS);
+> > +			btrfs_set_opt(ctx->mount_opt, NODATACOW);
+> > +			btrfs_set_opt(ctx->mount_opt, NODATASUM);
+> > +		} else {
+> > +			btrfs_clear_opt(ctx->mount_opt, NODATACOW);
+> > +		}
+> > +		break;
+> > +	case Opt_compress_force:
+> > +	case Opt_compress_force_type:
+> > +		btrfs_set_opt(ctx->mount_opt, FORCE_COMPRESS);
+> > +		fallthrough;
+> > +	case Opt_compress:
+> > +	case Opt_compress_type:
+> > +		if (opt == Opt_compress ||
+> > +		    opt == Opt_compress_force ||
+> > +		    strncmp(param->string, "zlib", 4) == 0) {
+> > +			ctx->compress_type = BTRFS_COMPRESS_ZLIB;
+> > +			ctx->compress_level = BTRFS_ZLIB_DEFAULT_LEVEL;
+> > +			/*
+> > +			 * args[0] contains uninitialized data since
+> > +			 * for these tokens we don't expect any
+> > +			 * parameter.
+> > +			 */
+> 
+> Please reformat/realign comments that you copy or move
+> 
+> > +			if (opt != Opt_compress &&
+> > +			    opt != Opt_compress_force)
+> > +				ctx->compress_level =
+> > +					btrfs_compress_str2level(
+> > +								 BTRFS_COMPRESS_ZLIB,
+> > +								 param->string + 4);
+> 
+> This does not need to do newline after "("
+> 
+> > +			btrfs_set_opt(ctx->mount_opt, COMPRESS);
+> > +			btrfs_clear_opt(ctx->mount_opt, NODATACOW);
+> > +			btrfs_clear_opt(ctx->mount_opt, NODATASUM);
+> > +		} else if (strncmp(param->string, "lzo", 3) == 0) {
+> > +			ctx->compress_type = BTRFS_COMPRESS_LZO;
+> > +			ctx->compress_level = 0;
+> > +			btrfs_set_opt(ctx->mount_opt, COMPRESS);
+> > +			btrfs_clear_opt(ctx->mount_opt, NODATACOW);
+> > +			btrfs_clear_opt(ctx->mount_opt, NODATASUM);
+> > +		} else if (strncmp(param->string, "zstd", 4) == 0) {
+> > +			ctx->compress_type = BTRFS_COMPRESS_ZSTD;
+> > +			ctx->compress_level =
+> > +				btrfs_compress_str2level(
+> > +							 BTRFS_COMPRESS_ZSTD,
+> > +							 param->string + 4);
+> 
+> Same
+> 
+> > +			btrfs_set_opt(ctx->mount_opt, COMPRESS);
+> > +			btrfs_clear_opt(ctx->mount_opt, NODATACOW);
+> > +			btrfs_clear_opt(ctx->mount_opt, NODATASUM);
+> > +		} else if (strncmp(param->string, "no", 2) == 0) {
+> > +			ctx->compress_level = 0;
+> > +			ctx->compress_type = 0;
+> > +			btrfs_clear_opt(ctx->mount_opt, COMPRESS);
+> > +			btrfs_clear_opt(ctx->mount_opt, FORCE_COMPRESS);
+> > +		} else {
+> > +			btrfs_err(NULL, "unrecognized compression value %s",
+> > +				  param->string);
+> > +			return -EINVAL;
+> > +		}
+> > +		break;
+> > +	case Opt_ssd:
+> > +		if (result.negated) {
+> > +			btrfs_set_opt(ctx->mount_opt, NOSSD);
+> > +			btrfs_clear_opt(ctx->mount_opt, SSD);
+> > +			btrfs_clear_opt(ctx->mount_opt, SSD_SPREAD);
+> > +		} else {
+> > +			btrfs_set_opt(ctx->mount_opt, SSD);
+> > +			btrfs_clear_opt(ctx->mount_opt, NOSSD);
+> > +		}
+> > +		break;
+> > +	case Opt_ssd_spread:
+> > +		if (result.negated) {
+> > +			btrfs_clear_opt(ctx->mount_opt, SSD_SPREAD);
+> > +		} else {
+> > +			btrfs_set_opt(ctx->mount_opt, SSD);
+> > +			btrfs_set_opt(ctx->mount_opt, SSD_SPREAD);
+> > +			btrfs_clear_opt(ctx->mount_opt, NOSSD);
+> > +		}
+> > +		break;
+> > +	case Opt_barrier:
+> > +		if (result.negated)
+> > +			btrfs_set_opt(ctx->mount_opt, NOBARRIER);
+> > +		else
+> > +			btrfs_clear_opt(ctx->mount_opt, NOBARRIER);
+> > +		break;
+> > +	case Opt_thread_pool:
+> > +		if (result.uint_32 == 0) {
+> > +			btrfs_err(NULL, "invalid value 0 for thread_pool");
+> > +			return -EINVAL;
+> > +		}
+> > +		ctx->thread_pool_size = result.uint_32;
+> 
+> It's not in current code but we should eventually clamp the value,
+> num_online_cpus or similar.
+> 
+> > +		break;
+> > +	case Opt_max_inline:
+> > +		ctx->max_inline = memparse(param->string, NULL);
+> 
+> This does not match, the max_inline value is adjusted as
+> 
+>        if (info->max_inline) {
+>                info->max_inline = min_t(u64,
+>                        info->max_inline,
+>                        info->sectorsize);
+>        }
+> 
+> and it should be validated at the time we parse it, like other options.
+> 
 
+We can't do that with the current scheme, tho I did miss clam'ing it.  I've
+added the clamping part to the patch where we flip over to using the new mount
+API.
+
+> > +		break;
+> > +	case Opt_acl:
+> > +		if (result.negated) {
+> > +			fc->sb_flags &= ~SB_POSIXACL;
+> > +		} else {
+> > +#ifdef CONFIG_BTRFS_FS_POSIX_ACL
+> > +			fc->sb_flags |= SB_POSIXACL;
+> > +#else
+> > +			btrfs_err(NULL, "support for ACL not compiled in!");
+> > +			ret = -EINVAL;
+> > +			goto out;
+> > +#endif
+> > +		}
+> > +		/*
+> > +		 * VFS limits the ability to toggle ACL on and off via remount,
+> > +		 * despite every file system allowing this.  This seems to be an
+> > +		 * oversight since we all do, but it'll fail if we're
+> > +		 * remounting.  So don't set the mask here, we'll check it in
+> > +		 * btrfs_reconfigure and do the toggling ourselves.
+> > +		 */
+> > +		if (fc->purpose != FS_CONTEXT_FOR_RECONFIGURE)
+> > +			fc->sb_flags_mask |= SB_POSIXACL;
+> > +		break;
+> > +	case Opt_treelog:
+> > +		if (result.negated)
+> > +			btrfs_set_opt(ctx->mount_opt, NOTREELOG);
+> > +		else
+> > +			btrfs_clear_opt(ctx->mount_opt, NOTREELOG);
+> > +		break;
+> > +	case Opt_recovery:
+> > +		/*
+> > +		 * -o recovery used to be an alias for usebackuproot, and then
+> > +		 * norecovery was an alias for nologreplay, hence the different
+> > +		 * behaviors for negated and not.
+> > +		 */
+> > +		if (result.negated) {
+> > +			btrfs_warn(NULL,
+> > +				   "'norecovery' is deprecated, use 'rescue=nologreplay' instead");
+> > +			btrfs_set_opt(ctx->mount_opt, NOLOGREPLAY);
+> > +		} else {
+> > +			btrfs_warn(NULL,
+> > +				   "'recovery' is deprecated, use 'rescue=usebackuproot' instead");
+> > +			btrfs_set_opt(ctx->mount_opt, USEBACKUPROOT);
+> > +		}
+> > +		break;
+> > +	case Opt_nologreplay:
+> > +		btrfs_warn(NULL,
+> > +			   "'nologreplay' is deprecated, use 'rescue=nologreplay' instead");
+> > +		btrfs_set_opt(ctx->mount_opt, NOLOGREPLAY);
+> > +		break;
+> > +	case Opt_flushoncommit:
+> > +		if (result.negated)
+> > +			btrfs_clear_opt(ctx->mount_opt, FLUSHONCOMMIT);
+> > +		else
+> > +			btrfs_set_opt(ctx->mount_opt, FLUSHONCOMMIT);
+> > +		break;
+> > +	case Opt_ratio:
+> > +		ctx->metadata_ratio = result.uint_32;
+> > +		break;
+> > +	case Opt_discard:
+> > +		if (result.negated) {
+> > +			btrfs_clear_opt(ctx->mount_opt, DISCARD_SYNC);
+> > +			btrfs_clear_opt(ctx->mount_opt, DISCARD_ASYNC);
+> > +			btrfs_set_opt(ctx->mount_opt, NODISCARD);
+> > +		} else {
+> > +			btrfs_set_opt(ctx->mount_opt, DISCARD_SYNC);
+> > +			btrfs_clear_opt(ctx->mount_opt, DISCARD_ASYNC);
+> > +		}
+> > +		break;
+> > +	case Opt_discard_mode:
+> > +		switch (result.uint_32) {
+> > +		case Opt_discard_sync:
+> > +			btrfs_clear_opt(ctx->mount_opt, DISCARD_ASYNC);
+> > +			btrfs_set_opt(ctx->mount_opt, DISCARD_SYNC);
+> > +			break;
+> > +		case Opt_discard_async:
+> > +			btrfs_clear_opt(ctx->mount_opt, DISCARD_SYNC);
+> > +			btrfs_set_opt(ctx->mount_opt, DISCARD_ASYNC);
+> > +			break;
+> > +		default:
+> > +			btrfs_err(NULL, "unrecognized discard mode value %s",
+> > +				  param->key);
+> > +			return -EINVAL;
+> > +		}
+> > +		btrfs_clear_opt(ctx->mount_opt, NODISCARD);
+> > +		break;
+> > +	case Opt_space_cache:
+> > +		if (result.negated) {
+> > +			btrfs_set_opt(ctx->mount_opt, NOSPACECACHE);
+> > +			btrfs_clear_opt(ctx->mount_opt, SPACE_CACHE);
+> > +			btrfs_clear_opt(ctx->mount_opt, FREE_SPACE_TREE);
+> > +		} else {
+> > +			btrfs_clear_opt(ctx->mount_opt, FREE_SPACE_TREE);
+> > +			btrfs_set_opt(ctx->mount_opt, SPACE_CACHE);
+> > +		}
+> > +		break;
+> > +	case Opt_space_cache_version:
+> > +		switch (result.uint_32) {
+> > +		case Opt_space_cache_v1:
+> > +			btrfs_set_opt(ctx->mount_opt, SPACE_CACHE);
+> > +			btrfs_clear_opt(ctx->mount_opt, FREE_SPACE_TREE);
+> > +			break;
+> > +		case Opt_space_cache_v2:
+> > +			btrfs_clear_opt(ctx->mount_opt, SPACE_CACHE);
+> > +			btrfs_set_opt(ctx->mount_opt, FREE_SPACE_TREE);
+> > +			break;
+> > +		default:
+> > +			btrfs_err(NULL, "unrecognized space_cache value %s",
+> > +				  param->key);
+> > +			return -EINVAL;
+> > +		}
+> > +		break;
+> > +	case Opt_rescan_uuid_tree:
+> > +		btrfs_set_opt(ctx->mount_opt, RESCAN_UUID_TREE);
+> > +		break;
+> > +	case Opt_inode_cache:
+> > +		btrfs_warn(NULL,
+> > +			   "the 'inode_cache' option is deprecated and has no effect since 5.11");
+> > +		break;
+> > +	case Opt_clear_cache:
+> > +		btrfs_set_opt(ctx->mount_opt, CLEAR_CACHE);
+> > +		break;
+> > +	case Opt_user_subvol_rm_allowed:
+> > +		btrfs_set_opt(ctx->mount_opt, USER_SUBVOL_RM_ALLOWED);
+> > +		break;
+> > +	case Opt_enospc_debug:
+> > +		if (result.negated)
+> > +			btrfs_clear_opt(ctx->mount_opt, ENOSPC_DEBUG);
+> > +		else
+> > +			btrfs_set_opt(ctx->mount_opt, ENOSPC_DEBUG);
+> > +		break;
+> > +	case Opt_defrag:
+> > +		if (result.negated)
+> > +			btrfs_clear_opt(ctx->mount_opt, AUTO_DEFRAG);
+> > +		else
+> > +			btrfs_set_opt(ctx->mount_opt, AUTO_DEFRAG);
+> > +		break;
+> > +	case Opt_usebackuproot:
+> > +		btrfs_warn(NULL,
+> > +			   "'usebackuproot' is deprecated, use 'rescue=usebackuproot' instead");
+> > +		btrfs_set_opt(ctx->mount_opt, USEBACKUPROOT);
+> > +		break;
+> > +	case Opt_skip_balance:
+> > +		btrfs_set_opt(ctx->mount_opt, SKIP_BALANCE);
+> > +		break;
+> > +	case Opt_fatal_errors:
+> > +		switch (result.uint_32) {
+> > +		case Opt_fatal_errors_panic:
+> > +			btrfs_set_opt(ctx->mount_opt,
+> > +				      PANIC_ON_FATAL_ERROR);
+> 
+> Lines can be joined
+> 
+> > +			break;
+> > +		case Opt_fatal_errors_bug:
+> > +			btrfs_clear_opt(ctx->mount_opt,
+> > +					PANIC_ON_FATAL_ERROR);
+> 
+> Same
+> 
+> > +			break;
+> > +		default:
+> > +			btrfs_err(NULL, "unrecognized fatal_errors value %s",
+> > +				  param->key);
+> > +			return -EINVAL;
+> > +		}
+> > +		break;
+> > +	case Opt_commit_interval:
+> > +		ctx->commit_interval = result.uint_32;
+> > +		if (!ctx->commit_interval)
+> > +			ctx->commit_interval = BTRFS_DEFAULT_COMMIT_INTERVAL;
+> 
+> And the value of commit_interval is also adjusted in current code, this
+> should be done here as well.
+>
+
+It isn't adjusted, we just yell if it's above 300.  If you do -o
+commit_interval=0 it wants the default interval, which is what I've handled
+here.  Thanks,
+
+Josef
 
