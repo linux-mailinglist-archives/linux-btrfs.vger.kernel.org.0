@@ -1,142 +1,114 @@
-Return-Path: <linux-btrfs+bounces-277-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-278-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A32C87F44F2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 12:33:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24F757F47D0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 14:27:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0456FB210BB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 11:33:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5627B1C20AF8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 13:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E40756453;
-	Wed, 22 Nov 2023 11:33:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A7955773;
+	Wed, 22 Nov 2023 13:27:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gqJDTFfM"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hPDpkkem";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mp6//vQl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76135D52;
+	Wed, 22 Nov 2023 05:27:21 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1536451035
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 11:33:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95A02C433C7
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 11:33:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700652792;
-	bh=MIHEdJKieq7ZIKAUuMJ/6TVc497bMkNeoI1BrSJKA68=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=gqJDTFfM4HgGQdiD4HxDtwzjm8E/So+tgrWKvSdWg6/f8J8uqlii59leVZkc1nZtp
-	 UGD0DVUjPPT980I0Ah3MNP8gFIgWH4kWsucKoiQNYh7Ab09cWImlKq1QDyaO914I8B
-	 pdgJu/t7PlXNhqw/edL1gRi9mzMrxDRtrZwYzUMu+HHpgsiJFy3dXvgTnxNF+7QDTW
-	 Fx/TpDNlQeIk1T1HdzAldj49Z7sG0m82nxSFiNHCh7oQwXUCqq5Ua6Wyo4PjF8YfpU
-	 iY6LBuBdt3951Z4ZnsH0oAJEvdAc7MNOtbk/FLFUA/0Tn+S5upIUHOOt8P9lROGceo
-	 /FEIzHz5OefhQ==
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso910213266b.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 03:33:12 -0800 (PST)
-X-Gm-Message-State: AOJu0YysDYfPsfsFRgEfY94bWsIGLiiyeZyH0DykVmscujoh4T1Az8s8
-	ZhsfWTWHOMPXq2fWobEBKyu2qweVkKoD6D9aR0M=
-X-Google-Smtp-Source: AGHT+IFV6zjPTDZ4ArU2aYA3AS8uE/xmmZVrA7Zmx0V8+CaDd3b0b3z8GQLTvqDFBwgERjKGSn1kFZ2V7vBo0A/7poc=
-X-Received: by 2002:a17:906:717:b0:a00:9860:7fa7 with SMTP id
- y23-20020a170906071700b00a0098607fa7mr68249ejb.68.1700652791010; Wed, 22 Nov
- 2023 03:33:11 -0800 (PST)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2925C21921;
+	Wed, 22 Nov 2023 13:27:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1700659640;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=06UQgvsDM53FhAa50yA1PK2H2q0c8nNVYFtY8QHFOPk=;
+	b=hPDpkkemSi/LHTp/83GdAddL+tceDWiAUaJYsuNGU4bpa5N+xRZOoLGNkaAKE2shTFp2Q2
+	CyvvQfiDHQ4rierXtVcw+ZAxpxLVhx2gR2H8Zh+/PpNdgFqgb6IVlPZ7AHmdKi+pD/x7YJ
+	kk9XE3197KwPHg4FP4d9kQls2OEbpm0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1700659640;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=06UQgvsDM53FhAa50yA1PK2H2q0c8nNVYFtY8QHFOPk=;
+	b=mp6//vQlfM7M5vChcsh6kH92WmuRK5LTLD1uO1K+YyW17cFcV4fyHZ+gSOAQHz99AZHhFf
+	J7thqYdRx9Ys5BCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E61B313467;
+	Wed, 22 Nov 2023 13:27:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id vXxfN7cBXmVJagAAMHmgww
+	(envelope-from <dsterba@suse.cz>); Wed, 22 Nov 2023 13:27:19 +0000
+Date: Wed, 22 Nov 2023 14:20:10 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+	Naohiro Aota <Naohiro.Aota@wdc.com>
+Subject: Re: [PATCH 1/5] btrfs: rename EXTENT_BUFFER_NO_CHECK to
+ EXTENT_BUFFER_CANCELLED
+Message-ID: <20231122132010.GY11264@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20231121-josef-generic-163-v1-0-049e37185841@wdc.com>
+ <20231121-josef-generic-163-v1-1-049e37185841@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1700573313.git.fdmanana@suse.com> <777320fd09dfc68a89180723bf5d7368dab06299.1700573314.git.fdmanana@suse.com>
- <20231121182314.GU11264@twin.jikos.cz>
-In-Reply-To: <20231121182314.GU11264@twin.jikos.cz>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 22 Nov 2023 11:32:33 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5-H2czrYap6XEBJeGDVkKDHJdLt3wCyD0VHFuPjEfLgQ@mail.gmail.com>
-Message-ID: <CAL3q7H5-H2czrYap6XEBJeGDVkKDHJdLt3wCyD0VHFuPjEfLgQ@mail.gmail.com>
-Subject: Re: [PATCH 7/8] btrfs: use a dedicated data structure for chunk maps
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121-josef-generic-163-v1-1-049e37185841@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -5.11
+X-Spamd-Result: default: False [-5.11 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 REPLY(-4.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.11)[65.94%]
 
-On Tue, Nov 21, 2023 at 6:30=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
-e:
->
-> On Tue, Nov 21, 2023 at 01:38:38PM +0000, fdmanana@kernel.org wrote:
-> >  extern const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYP=
-ES];
-> >
-> > -struct map_lookup {
-> > +struct btrfs_chunk_map {
-> > +     struct rb_node rb_node;
-> > +     refcount_t refs;
-> > +     u64 start;
-> > +     u64 chunk_len;
-> > +     u64 stripe_size;
-> >       u64 type;
-> >       int io_align;
-> >       int io_width;
-> >       int num_stripes;
-> >       int sub_stripes;
-> > -     int verified_stripes; /* For mount time dev extent verification *=
-/
-> > +     /* For mount time dev extent verification. */
-> > +     int verified_stripes;
-> >       struct btrfs_io_stripe stripes[];
-> >  };
->
-> This results in two 4 byte holes:
->
-> struct btrfs_chunk_map {
->         struct rb_node             rb_node __attribute__((__aligned__(8))=
-); /*     0    24 */
->         refcount_t                 refs;                 /*    24     4 *=
-/
->
->         /* XXX 4 bytes hole, try to pack */
->
->         u64                        start;                /*    32     8 *=
-/
->         u64                        chunk_len;            /*    40     8 *=
-/
->         u64                        stripe_size;          /*    48     8 *=
-/
->         u64                        type;                 /*    56     8 *=
-/
->         /* --- cacheline 1 boundary (64 bytes) --- */
->         int                        io_align;             /*    64     4 *=
-/
->         int                        io_width;             /*    68     4 *=
-/
->         int                        num_stripes;          /*    72     4 *=
-/
->         int                        sub_stripes;          /*    76     4 *=
-/
->         int                        verified_stripes;     /*    80     4 *=
-/
->
->         /* XXX 4 bytes hole, try to pack */
->
->         struct btrfs_io_stripe     stripes[];            /*    88     0 *=
-/
->
->         /* size: 88, cachelines: 2, members: 12 */
->         /* sum members: 80, holes: 2, sum holes: 8 */
->         /* forced alignments: 1 */
->         /* last cacheline: 24 bytes */
-> } __attribute__((__aligned__(8)));
->
-> I could move verify_stripes after refs or move refs to start of the
-> second cacheline between type and io_align. I suspect some cache
-> bouncing could happen with refcount updates and tree traversal but it's
-> a speculation and I don't think the effects would be measurable.
+On Tue, Nov 21, 2023 at 08:32:30AM -0800, Johannes Thumshirn wrote:
+> EXTENT_BUFFER_CANCELLED better describes the state of the extent buffer,
+> namely its writeout has been cancelled.
 
-I would prefer to have verified_stripes in the first cache line, right
-below refs for example, so that
-everything needed for map lookups and insertions is in the same cache line.
-
-Do you want to squash such change in this patch? Or should I send it separa=
-tely?
-
-Thanks.
+I've read the patches a few times and still can't see how the meaning of
+'cancelled' fits. It's about cancelling write out yes, but I don't see
+anywhere explained why and why the eb is zeroed. This could be put next
+to the enum definition or to function that does the main part of the
+logic. You can also rename it to CANCELLED_WRITEOUT or use _ZONED_ in
+the name so it's clear that it has a special purpose etc, but as it is
+now I think it should be improved.
 
