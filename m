@@ -1,40 +1,40 @@
-Return-Path: <linux-btrfs+bounces-314-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-315-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 289C47F50FC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 21:00:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 345817F5103
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 21:01:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8345EB20B31
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 20:00:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E27EC281273
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 20:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C575B1E1;
-	Wed, 22 Nov 2023 20:00:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB2ED5C8EC;
+	Wed, 22 Nov 2023 20:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="d3L+vF0t"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="R8f6/uFo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8903A3
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 12:00:12 -0800 (PST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB211BE
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 12:01:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1700683209; x=1701288009; i=quwenruo.btrfs@gmx.com;
-	bh=GKM+MmIvDC61aFHst39vM8r/DfH+21MMGYPdBxHCkko=;
+	s=s31663417; t=1700683303; x=1701288103; i=quwenruo.btrfs@gmx.com;
+	bh=FOtDukj2MhTkJd5kY5uXAFCJHKS755slQR3Zi89Ld0k=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=d3L+vF0tGw9yPiraQTBzGB0ksy3nvuidmE6+VJVjajy20tgwhQS/WYspWMqJCiPR
-	 U1sFwevZatPIWLSztsaVwvaFnE4pdjGMLOtOBvpQKgQsBCEBBlcOfQyjkzfAOnU25
-	 FTBgogkOAfzax6kW6jziMYj7tMeyIZ4zsLDeQjo1VEr0JsAai2P5ea4uloHka+LKq
-	 16bd0SIqv68/xn9YSw/mRgrbXw+HXg8j3Ulc02KZReV7Wd/SabM2eAHQwepUb6K2e
-	 zN+l7fK4U/KzZunv85MBBLHi4NN/sEjcxw0MvCIbrJ/QYY6GcjlbLqCvKmbL1Y8uU
-	 9Wzyo3RP5KZzD9FqkQ==
+	b=R8f6/uFoS4c8B6pee4Bam+whIIyd+5IACZzg632tFo+N/00MhwPO2VcrSMHkyPGf
+	 /C3xnJgm+UyzK5m/n87qlHFju0ZN7h4cfLTMyO9Nd9HXzKPKwJq/2O/f4xAv2QOkf
+	 Ew3Y6FBgVkkbOIKEDiWcrW+azgNGxQO6x6XGOeiZpLtqv4+cyKHLWF3a3zKgesmOx
+	 WMV+qUGyh8wUmHTANK9z+mbGDZuI9h3SOfV0hr+WxTDfqw18F3MB6ShAYPWpfiYPB
+	 ChnbqXZmvLTyXAXjJ7K6DY9+Kr0hja+ZybccJkgBlJxvTXYJBCP2Vlhtnq1rEGqPP
+	 8JDHzR4E4+e4C9Irzw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MSbxD-1qv7k93hWL-00Sudw; Wed, 22
- Nov 2023 21:00:09 +0100
-Message-ID: <5e56826f-2463-42f3-8714-f4eb3e76dab7@gmx.com>
-Date: Thu, 23 Nov 2023 06:30:05 +1030
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MwQT9-1rMjVj33zB-00sJl2; Wed, 22
+ Nov 2023 21:01:43 +0100
+Message-ID: <c1c0dacb-8db5-4b6b-90f1-a71487fb44dd@gmx.com>
+Date: Thu, 23 Nov 2023 06:31:41 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -42,13 +42,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: refactor alloc_extent_buffer() to
- allocate-then-attach method
-To: Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <ffeb6b667a9ff0cf161f7dcd82899114782c0834.1700609426.git.wqu@suse.com>
- <20231122141403.GD1733890@perftesting>
+Subject: Re: [PATCH RFC] btrfs: allow extent buffer helpers to skip cross-page
+ handling
 Content-Language: en-US
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <721bab821198fc9b49d2795b2028ed6c436ab886.1700111928.git.wqu@suse.com>
+ <20231122134642.GB11264@twin.jikos.cz>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -74,111 +74,109 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20231122141403.GD1733890@perftesting>
+In-Reply-To: <20231122134642.GB11264@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/fanNhszcTRWllgDlpPM0L4UJP8FmVBwCFHYDkm055kia3wN0oi
- 2DlnSybU8QNfeT8slVZdO0JO4z8AVyGm2lsIUWoTa2J3T5aHqkK178xyS88VrNhkB6+0Pq3
- /yPX+f3Qgb7Ob/AMW2CnS+ymE44nRNJ/AaOhUxYqXZBusgj3czhGN4x/8bfQjvqCPkY6l36
- gJOJ4axbDhdPse6DDo7lw==
-UI-OutboundReport: notjunk:1;M01:P0:NgoTdZsXBSE=;JdP98gWVlVrmJU5r3xZqtUkkqPY
- h/yam4d4EJTYL5aZZF6JfiJ/aRO50vlOnBhy8MbEa/XDAwtS2LvCP/Pq9xGEBwGcQ02adlmyN
- 50FlPFbT+n7G67+YkaHlc7YlP0jsiLNcLBVed4hJaTvjDMgAYygiflt7RSHy/ZS+XwSOenHl8
- N1QnBgvnbTbsd02H7EPk2zh79DP98TKYxlmdmxH1y/Y/fkWMEF6wempkSjTMdUNjl3TwXDV1D
- eMBJYJAv5SDWquIlcbRymnCOV16BHrm/4zUDRxAWGfNUDDElBLUT/a31kVRwLxet+ZT2FhAVs
- E4Su1i/wv4oKgjkAcEuiBdWmQr8Axgj2joqgc4EZuhecTDtUL5Pp7gRUqazKbYM78Bj9ZBZR9
- HJcpxo4mH8sEjwvGXSsLjBLpv68Nh4OsKp+ejEmy7o9e6p645qfhUy+mH7iZjwm841dy5Z/De
- ybNotll2EyLxEdHdtu52cbNiKFh54jqHtX8C6ps+1jDLT4IHtTpVfQ5GoG3ayM+Oz3zMEzBUU
- 5hu9RF+6KfSZS0LhKEeO0bS1EpciVw7GzkunzSTgV7GJtisto9g8d4qDoUHolnp5XJADFtQUZ
- vQOaDtR9YiP/Bspln+x5SGPEkU5KcjeAdqEsPCBTEWt7YSi/YYSNxuonrfDOPD4XF4uF0yEUA
- 32lBC1b3w+JrOi2H+QIAY/K163MPL8CvM04PqPRQobUAB0SfUbmei36XwjchFM+TwvfeKNrVi
- s76vFfdqE6JO1zUbigsixwxnx2RCGZnvG0LgFbpiq6b/NEFYDxgdKUSIsiRMvGxsGQad1g6Ya
- c4F7SsRSvCSxzJU2imXt4PQZg8vo/7x7+PhR7rBGqzGhA6WDmAp0XNTgUlXpqk4S9P560Ict4
- KOly5qUDFEFRCXzQerGCCcaDL7nUIjvWwqb2WyhmGMLCTzq1TJZlgldHKJq4OZR1YDSByFSha
- pB/+7c2J6DM9UQlxxNkK0Qk5iG0=
+X-Provags-ID: V03:K1:dms0Rlp1yFlyeZbCiZZ2SdbSUYVGu+3ZkWJVXyC5OGU89Gdumlv
+ WBxxB017gBuKM6vIobGfo/WwmirOLHmEu7Y0N31NRnT/CjIBzHRZBHHWTOZQ2aLQD61p3Pt
+ RfYFhhw8Bmc9p1g43Tk0Tmg9FOwy/2sG6CZBl8WEiJ7w1PLPjB3F4Cp2ytm2xRpKJfupKHx
+ gA5MoDgYscRlOr7Qh8JOw==
+UI-OutboundReport: notjunk:1;M01:P0:S7U9TvFA4NE=;B+d51bx8AfXYTPX92LCVDwFSG1q
+ e+oOFDoosV4Y1TOUQYTyP2Vmcb3EHppy+a88aMfHzIrYqsURTKFd3gbNx+MERwHyv/sO4z34h
+ L0SsLIAY4ZtvDd5e4WBidVFWPp97IPSzUTFI2XJPxRzXJSeR1Zrj7bRezgivm4kz2ulIG0C5Q
+ NnLz2ntjt7WAKQJs0vtAAUA7pGgLWCD15OtRk0Vm/71FWLG67VDrtd93gwHFu1LV525p/p/cr
+ yc0V9gooPRVaPS1vZeiB3Q5gdmCED8cbn1PWic9DNDbIwXcigELXLSzHZpVb9ttyPy+QZmhuB
+ Uen78wNwKrAyapTmF6a/Lhe11IJToKOH9DaulI330mlaQsmWG2aNmm8hGoIXY1Y/HiJRWB7pD
+ Hg0DmZBBALcOUvYtlfm+Dk2DfA1sarYlB0LKk8voZXzCXu5tVkPXoxzlldFzOpIR8zXfEZdgd
+ 1baJUISwgRI1n0GDV7YapXs70d2PoKA26rD1M7YXgQF7ZBOI6WC+eKZB+j9h1TEtZv+SOKxQ3
+ x2KYeOjRWhDpvD5VPRcrk1Okoes+57jgQDFGKB6Y0H6qJ5uZ7HOlByBzw5k4kDUWT0FYSgWd0
+ 6HY1ROvAqR7bctP89ZamHMbzyYxwQVvghwNYRBNnnKdslW5i3q/tdfVrksG59q/vT/vWHUq2K
+ xaZQvL5jqhAxA+JeFOzxySUh9hYTGWuIipGEyMTwsYwX+AVqWnKiPzGr4jK9SzZVnHVD5Q2xO
+ WvcqRPFlKdF0hcEKqqlJCTUAXyhun4CCQ/Vd0RvxfGH6u2pcEoo+7ZQffiKeCUqvDCUbULw4L
+ JqPp3ZA4rGImtWHmMfq0w390Ezh5wnGVr0MeAew84Vzpj1Xk5lcozDuf5thYYyl5fhzY+JjIC
+ k0uA8MRa5Hnh1s80QaiIX5wb13ReS5T/L34aAxIC7l2YC+Jx/G83ytriRy4p9L57iPZqwOalI
+ V9tucJhU/h60yKbZxUowFyIgSRw=
 
 
 
-On 2023/11/23 00:44, Josef Bacik wrote:
-> On Wed, Nov 22, 2023 at 10:05:04AM +1030, Qu Wenruo wrote:
->> Currently alloc_extent_buffer() utilizes find_or_create_page() to
->> allocate one page a time for an extent buffer.
+On 2023/11/23 00:16, David Sterba wrote:
+> On Thu, Nov 16, 2023 at 03:49:06PM +1030, Qu Wenruo wrote:
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -80,8 +80,16 @@ static void csum_tree_block(struct extent_buffer *bu=
+f, u8 *result)
+>>   	char *kaddr;
+>>   	int i;
 >>
->> This method has the following disadvantages:
->>
->> - find_or_create_page() is the legacy way of allocating new pages
->>    With the new folio infrastructure, find_or_create_page() is just
->>    redirected to filemap_get_folio().
->>
->> - Lacks the way to support higher order (order >=3D 1) folios
->>    As we can not yet let filemap to give us a higher order folio (yet).
->>
->> This patch would change the workflow by the following way:
->>
->> 		Old		   |		new
->> -----------------------------------+-----------------------------------=
---
->>                                     | ret =3D btrfs_alloc_page_array();
->> for (i =3D 0; i < num_pages; i++) {  | for (i =3D 0; i < num_pages; i++=
-) {
->>      p =3D find_or_create_page();     |     ret =3D filemap_add_folio()=
-;
->>      /* Attach page private */      |     /* Reuse page cache if needed=
- */
->>      /* Reused eb if needed */      |
->> 				   |     /* Attach page private and
->> 				   |        reuse eb if needed */
->> 				   | }
->>
->> By this we split the page allocation and private attaching into two
->> parts, allowing future updates to each part more easily, and migrate to
->> folio interfaces (especially for possible higher order folios).
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/extent_io.c | 173 +++++++++++++++++++++++++++++++-----------=
--
->>   1 file changed, 126 insertions(+), 47 deletions(-)
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 99cc16aed9d7..0ea65f248c15 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -3084,6 +3084,14 @@ static bool page_range_has_eb(struct btrfs_fs_in=
-fo *fs_info, struct page *page)
->>   static void detach_extent_buffer_page(struct extent_buffer *eb, struc=
-t page *page)
->>   {
->>   	struct btrfs_fs_info *fs_info =3D eb->fs_info;
->> +	/*
->> +	 * We can no longer using page->mapping reliably, as some extent buff=
-er
->> +	 * may not have any page mapped to btree_inode yet.
->> +	 * Furthermore we have to handle dummy ebs during selftests, where
->> +	 * btree_inode is not yet initialized.
->> +	 */
->> +	struct address_space *mapping =3D fs_info->btree_inode ?
->> +					fs_info->btree_inode->i_mapping : NULL;
+>> +	memset(result, 0, BTRFS_CSUM_SIZE);
+>>   	shash->tfm =3D fs_info->csum_shash;
+>>   	crypto_shash_init(shash);
+>> +
+>> +	if (buf->addr) {
+>> +		crypto_shash_digest(shash, buf->addr + offset_in_page(buf->start) + =
+BTRFS_CSUM_SIZE,
+>> +				    buf->len - BTRFS_CSUM_SIZE, result);
+>> +		return;
+>> +	}
 >
-> I don't understand this, this should only happen if we managed to get
-> PagePrivate set on the page, and in that case page->mapping is definitel=
-y
-> reliable.  We shouldn't be getting in here with a page that hasn't actua=
-lly been
-> attached to the extent buffer, and if we are that needs to be fixed, we =
-don't
-> need to be dealing with that case in this way.  Thanks,
+> This duplicates the address and size
+>> +
+>>   	kaddr =3D page_address(buf->pages[0]) + offset_in_page(buf->start);
+>>   	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
+>>   			    first_page_part - BTRFS_CSUM_SIZE);
+>> @@ -90,7 +98,6 @@ static void csum_tree_block(struct extent_buffer *buf=
+, u8 *result)
+>>   		kaddr =3D page_address(buf->pages[i]);
+>>   		crypto_shash_update(shash, kaddr, PAGE_SIZE);
+>>   	}
+>> -	memset(result, 0, BTRFS_CSUM_SIZE);
+>>   	crypto_shash_final(shash, result);
+>
+> I'd like to have only one code doing the crypto_shash_ calls, so I'm
+> suggesting this as the final code (the diff is not clear);
 
-The problem is, with the new way of allocating pages first, then attach
-them to filemap, we can have a case where the extent buffer has 4 pages,
-but only the first page is attached to filemap of btree inode.
-
-In that case, we still want to lock the btree inode private, but
-page->mapping is still NULL for the remaining 3 pages.
+This looks good to me, mind to update it inside your branch?
 
 Thanks,
 Qu
 >
-> Josef
+>   74 static void csum_tree_block(struct extent_buffer *buf, u8 *result)
+>   75 {
+>   76         struct btrfs_fs_info *fs_info =3D buf->fs_info;
+>   77         int num_pages;
+>   78         u32 first_page_part;
+>   79         SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+>   80         char *kaddr;
+>   81         int i;
+>   82
+>   83         shash->tfm =3D fs_info->csum_shash;
+>   84         crypto_shash_init(shash);
+>   85
+>   86         if (buf->addr) {
+>   87                 /* Pages are contiguous, handle it as one big page.=
+ */
+>   88                 kaddr =3D buf->addr;
+>   89                 first_page_part =3D fs_info->nodesize;
+>   90                 num_pages =3D 1;
+>   91         } else {
+>   92                 kaddr =3D page_address(buf->pages[0]);
+>   93                 first_page_part =3D min_t(u32, PAGE_SIZE, fs_info->=
+nodesize);
+>   94                 num_pages =3D num_extent_pages(buf);
+>   95         }
+>   96         kaddr +=3D offset_in_page(buf->start) + BTRFS_CSUM_SIZE;
+>   97         first_page_part -=3D BTRFS_CSUM_SIZE;
+>   98
+>   99         crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
+> 100                             first_page_part - BTRFS_CSUM_SIZE);
+> 101
+> 102         for (i =3D 1; i < num_pages && INLINE_EXTENT_BUFFER_PAGES > =
+1; i++) {
+> 103                 kaddr =3D page_address(buf->pages[i]);
+> 104                 crypto_shash_update(shash, kaddr, PAGE_SIZE);
+> 105         }
+> 106         memset(result, 0, BTRFS_CSUM_SIZE);
+> 107         crypto_shash_final(shash, result);
+> 108 }
 >
 
