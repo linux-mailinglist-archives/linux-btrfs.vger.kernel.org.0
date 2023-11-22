@@ -1,65 +1,64 @@
-Return-Path: <linux-btrfs+bounces-306-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-304-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CEAB7F4E24
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 18:19:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EB407F4E23
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 18:19:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20F55281565
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 17:19:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F9B61C209E9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Nov 2023 17:19:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CC35B5CF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19E7B5B5A9;
 	Wed, 22 Nov 2023 17:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="FEGftSVd"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="KmJaX3pn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-x1144.google.com (mail-yw1-x1144.google.com [IPv6:2607:f8b0:4864:20::1144])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D86C11F
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:18:18 -0800 (PST)
-Received: by mail-yw1-x1144.google.com with SMTP id 00721157ae682-5cd0af4a7d3so917807b3.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:18:18 -0800 (PST)
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A22D83
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:18:19 -0800 (PST)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5cb8440a23cso23687337b3.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 Nov 2023 09:18:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700673497; x=1701278297; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700673498; x=1701278298; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QlsY8IVFRzozoVSPtDgNgEBZtdoSVYJjR60tr7DOIq0=;
-        b=FEGftSVdj6Mla0QWdcM7QaMAwoXQXcmzgUGGdyZz8l6g1e5RrX37m0B2Qz1ux4zXyh
-         zxqrFop0+/vYDzOgEeGK/YZnAL/DMVXo8Ah48hsUpmTDrM8aF4kueVDnS+TL1LHy/A6D
-         AaOPmLWLiRwx7L4pQHOHlKE9g/ABBoO/Xi6Fheh2MgDroO71D4bxPjzKXE/xYu/mBHNm
-         TeyPOqpQZqond+yOv3yfZJkKm2I8WfusQD/jiQTUU5xu/cj8FdLRYvPLG4+lfRTsXGtb
-         4+7BeZ+maDU7M8+IpdIVMicgCkS7EM62uZOjX0jGgBcccwNL2us/3EG76zopHuOGSHiL
-         QMzA==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5aAowW0B1vhc5svaJC1OJMk+SQsoJKCurL9XlqABdxg=;
+        b=KmJaX3pnL6oiqbCqAPKOEEuzR6C3SfmHhtxQLN8ZFw4FCglkZhitK6CwX2ZicfwyOZ
+         FxUhkx7NCbYS6El5ZFRMvFcGvAJRuXMetLGX8OT+xFTfMCWZdyboPUGexlsPbof55TPz
+         SX0y3F4g73UHOvr7EgAveXWmDbR9RxQxlpyqz9dZq8HFeYOEOjnJR0lNfNUww5Vtnw5Q
+         gJAUeX/OCasjS3U9FZu/4cZpkFcMLoqgC85yFSUvuYbbRk3fi83HnHuTLQEW8YyHDdKR
+         HYSHkYlP7IWonSnu3lgBhh6iec/8l0GgmNp2GcK66aF0SxFWi08GzyZS9SwUUYPZl6k4
+         SrHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700673497; x=1701278297;
+        d=1e100.net; s=20230601; t=1700673498; x=1701278298;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QlsY8IVFRzozoVSPtDgNgEBZtdoSVYJjR60tr7DOIq0=;
-        b=oXCHlqBAg/T8p8kBK24RSDR3mWxQ92tA7o80JJ7enBBbypp3JVR5rmOLU3Ow8UAEpv
-         tHBmdJc8k6fDhfpGEru46KyJ5Cebw95PDvXRA0zcueRfyYlhg+/4EswfBG0VRjLggrRm
-         8SCDZVSpPD6DZ0IE+uk1NPEkh7i63m2CfYGDi6+/y2/6wv5i7GTlFTZw0GTr0TFB/LAK
-         FMUkI8nnhrrz7vVP6UogEmwh0g8Iz6Q7lN7KduvjhERLMMyS20ZusULsuqv3GwB7JQxL
-         0f7hdCD2s0uM1vk8z7fQXIjGwhi+ExoDQa/c4H1dRW+cVTsKI1nC5FqVGAjfGM4+Mki9
-         ogjA==
-X-Gm-Message-State: AOJu0Yz3C9waNqigzIwztetniVdSw6zTYe5OSV2p/5AWGfUVMT7ABpl3
-	+rueW2SovioQ067vRcUnmnLaQ2PgiyjnHtt+dCiT8C9i7A4=
-X-Google-Smtp-Source: AGHT+IGUxA4U0CaH/a9KmvLVky1jm3N+Xg8hL4E49AhJLml6bM27yYx3GUABZUgBvOLPo9Rr+xI5QQ==
-X-Received: by 2002:a0d:dbc3:0:b0:5ca:f2ff:a346 with SMTP id d186-20020a0ddbc3000000b005caf2ffa346mr2786405ywe.13.1700673497062;
-        Wed, 22 Nov 2023 09:18:17 -0800 (PST)
+        bh=5aAowW0B1vhc5svaJC1OJMk+SQsoJKCurL9XlqABdxg=;
+        b=WOw+nf2c61VqQWYLuL946y0k28WcGlrqmYXCR6HtvfI9NcX8SXHQVz8i1IuqFyYheb
+         8wJ2pMQubCDZ3PRqz1dLc3vP6X0f+9gtm3EeIqNQraXBNMQz4ayqcGg5cYxak8+uhxyU
+         qN4AntcmKPyUL6eW19zOtPPjIjJkh28O2I/RQjnEjdaYs6rwgO3HewUex3SjJGwWN91o
+         p+7E1EtIXoNGemgG8dybpjwtC1kq/36XYe1pTjV0EMJLKr2nAwBOtPALqqf1UwdmowpM
+         zgcG4Z5W0clRkdNF0qckS2c/pytgOPRIJHqbKQC9LBDrkrzEpd2V0Fg7/1nTxx4uyC97
+         FTxQ==
+X-Gm-Message-State: AOJu0YzW/QG7Ua1A21mI9TnqTztl30kvl1gE1lJIANGyzc3+ytcPrNug
+	Cr/htHUR2aSceiO2coBY49nB+W0kM0Uay0PMG5kW7WfI
+X-Google-Smtp-Source: AGHT+IGC0Cbv0n/HR2mGWEj9MbZKVQB/pdZMl3RdYVEElESW0zW1NSSmWcylUqgcYDIb63WJw/5W8A==
+X-Received: by 2002:a81:b726:0:b0:5cc:d0bc:fc24 with SMTP id v38-20020a81b726000000b005ccd0bcfc24mr1286959ywh.22.1700673498206;
+        Wed, 22 Nov 2023 09:18:18 -0800 (PST)
 Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id h17-20020a81b411000000b00577269ba9e9sm3788052ywi.86.2023.11.22.09.18.16
+        by smtp.gmail.com with ESMTPSA id m2-20020a819c02000000b0057a44e20fb8sm3798134ywa.73.2023.11.22.09.18.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 09:18:16 -0800 (PST)
+        Wed, 22 Nov 2023 09:18:17 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Cc: Christian Brauner <brauner@kernel.org>
-Subject: [PATCH v3 13/19] btrfs: handle the ro->rw transition for mounting different subovls
-Date: Wed, 22 Nov 2023 12:17:49 -0500
-Message-ID: <72054b19620fda64c1d2052f99a848754891f34b.1700673401.git.josef@toxicpanda.com>
+Subject: [PATCH v3 14/19] btrfs: switch to the new mount API
+Date: Wed, 22 Nov 2023 12:17:50 -0500
+Message-ID: <cb60cc0f2284c0f0608be74c400486df21c1f6b6.1700673401.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1700673401.git.josef@toxicpanda.com>
 References: <cover.1700673401.git.josef@toxicpanda.com>
@@ -71,195 +70,254 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is an oddity that we've carried around since 0723a0473fb4 ("btrfs:
-allow mounting btrfs subvolumes with different ro/rw options") where
-we'll under the covers flip the file system to RW if you're mixing and
-matching ro/rw options with different subvol mounts.  The first mount is
-what the super gets setup as, so we'd handle this by remount the super
-as rw under the covers to facilitate this behavior.
+Now that we have all of the parts in place to use the new mount API,
+switch our fs_type to use the new callbacks.
 
-With the new mount API we can't really allow this, because user space
-has the ability to specify the super block settings, and the mount
-settings.  So if the user explicitly set the super block as read only,
-and then tried to mount a rw mount with the super block we'll reject
-this.  However the old API was less descriptive and thus we allowed this
-kind of behavior.
+There are a few things that have to be done at the same time because of
+the order of operations changes that come along with the new mount API.
+These must be done in the same patch otherwise things will go wrong.
 
-This patch preserves this behavior for the old api calls.  This is
-inspired by Christians work, and includes one of his comments, and thus
-is included in the link below.
+1. Export and use btrfs_check_options in open_ctree().  This is because
+   the options are done ahead of time, and we need to check them once we
+   have the feature flags loaded.
+2. Update the free space cache settings.  Since we're coming in with the
+   options already set we need to make sure we don't undo what the user
+   has asked for.
+3. Set our sb_flags at init_fs_context time, the fs_context stuff is
+   trying to manage the sb_flagss itself, so move that into
+   init_fs_context and out of the fill super part.
 
-Link: https://lore.kernel.org/all/20230626-fs-btrfs-mount-api-v1-2-045e9735a00b@kernel.org/
-Reviewed-by: Christian Brauner <brauner@kernel.org>
+Additionally I've marked the unused functions with __maybe_unused and
+will remove them in a future patch.
+
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/super.c | 133 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 132 insertions(+), 1 deletion(-)
+ fs/btrfs/disk-io.c | 11 ++++--
+ fs/btrfs/super.c   | 88 ++++++++++++++++++++++++++--------------------
+ fs/btrfs/super.h   |  2 ++
+ 3 files changed, 60 insertions(+), 41 deletions(-)
 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 3c72bc1d09a3..6df8dbea3581 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3308,14 +3308,21 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	 */
+ 	btrfs_set_free_space_cache_settings(fs_info);
+ 
+-	ret = btrfs_parse_options(fs_info, options, sb->s_flags);
+-	if (ret)
++	if (!btrfs_check_options(fs_info, &fs_info->mount_opt, sb->s_flags)) {
++		ret = -EINVAL;
+ 		goto fail_alloc;
++	}
+ 
+ 	ret = btrfs_check_features(fs_info, !sb_rdonly(sb));
+ 	if (ret < 0)
+ 		goto fail_alloc;
+ 
++	/*
++	 * At this point our mount options are validated, if we set ->max_inline
++	 * to something non-standard make sure we truncate it to sectorsize.
++	 */
++	fs_info->max_inline = min_t(u64, fs_info->max_inline, fs_info->sectorsize);
++
+ 	if (sectorsize < PAGE_SIZE) {
+ 		struct btrfs_subpage_info *subpage_info;
+ 
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 184d89c0edfd..c2b42f0e6a07 100644
+index c2b42f0e6a07..3bb77fb72f03 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -2489,13 +2489,15 @@ static int btrfs_reconfigure(struct fs_context *fc)
- 	struct btrfs_fs_context *ctx = fc->fs_private;
- 	struct btrfs_fs_context old_ctx;
- 	int ret = 0;
-+	bool mount_reconfigure = (fc->s_fs_info != NULL);
+@@ -307,7 +307,7 @@ static const struct constant_table btrfs_parameter_fragment[] = {
+ };
+ #endif
  
- 	btrfs_info_to_ctx(fs_info, &old_ctx);
+-static const struct fs_parameter_spec btrfs_fs_parameters[] __maybe_unused = {
++static const struct fs_parameter_spec btrfs_fs_parameters[] = {
+ 	fsparam_flag_no("acl", Opt_acl),
+ 	fsparam_flag("clear_cache", Opt_clear_cache),
+ 	fsparam_u32("commit", Opt_commit_interval),
+@@ -742,8 +742,8 @@ static bool check_ro_option(struct btrfs_fs_info *fs_info,
+ 	return false;
+ }
  
- 	sync_filesystem(sb);
+-static bool check_options(struct btrfs_fs_info *info, unsigned long *mount_opt,
+-			  unsigned long flags)
++bool btrfs_check_options(struct btrfs_fs_info *info, unsigned long *mount_opt,
++			 unsigned long flags)
+ {
+ 	bool ret = true;
+ 
+@@ -792,18 +792,6 @@ static bool check_options(struct btrfs_fs_info *info, unsigned long *mount_opt,
+  */
+ void btrfs_set_free_space_cache_settings(struct btrfs_fs_info *fs_info)
+ {
+-	if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
+-		btrfs_set_opt(fs_info->mount_opt, FREE_SPACE_TREE);
+-	else if (btrfs_free_space_cache_v1_active(fs_info)) {
+-		if (btrfs_is_zoned(fs_info)) {
+-			btrfs_info(fs_info,
+-			"zoned: clearing existing space cache");
+-			btrfs_set_super_cache_generation(fs_info->super_copy, 0);
+-		} else {
+-			btrfs_set_opt(fs_info->mount_opt, SPACE_CACHE);
+-		}
+-	}
+-
+ 	if (fs_info->sectorsize < PAGE_SIZE) {
+ 		btrfs_clear_opt(fs_info->mount_opt, SPACE_CACHE);
+ 		if (!btrfs_test_opt(fs_info, FREE_SPACE_TREE)) {
+@@ -813,6 +801,35 @@ void btrfs_set_free_space_cache_settings(struct btrfs_fs_info *fs_info)
+ 			btrfs_set_opt(fs_info->mount_opt, FREE_SPACE_TREE);
+ 		}
+ 	}
++
++	/*
++	 * At this point our mount options are populated, so we only mess with
++	 * these settings if we don't have any settings already.
++	 */
++	if (btrfs_test_opt(fs_info, FREE_SPACE_TREE))
++		return;
++
++	if (btrfs_is_zoned(fs_info) &&
++	    btrfs_free_space_cache_v1_active(fs_info)) {
++		btrfs_info(fs_info, "zoned: clearing existing space cache");
++		btrfs_set_super_cache_generation(fs_info->super_copy, 0);
++		return;
++	}
++
++	if (btrfs_test_opt(fs_info, SPACE_CACHE))
++		return;
++
++	if (btrfs_test_opt(fs_info, NOSPACECACHE))
++		return;
++
++	/*
++	 * At this point we don't have explicit options set by the user, set
++	 * them ourselves based on the state of the file system.
++	 */
++	if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
++		btrfs_set_opt(fs_info->mount_opt, FREE_SPACE_TREE);
++	else if (btrfs_free_space_cache_v1_active(fs_info))
++		btrfs_set_opt(fs_info->mount_opt, SPACE_CACHE);
+ }
+ 
+ static int parse_rescue_options(struct btrfs_fs_info *info, const char *options)
+@@ -1349,7 +1366,7 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 		}
+ 	}
+ out:
+-	if (!ret && !check_options(info, &info->mount_opt, new_flags))
++	if (!ret && !btrfs_check_options(info, &info->mount_opt, new_flags))
+ 		ret = -EINVAL;
+ 	return ret;
+ }
+@@ -1650,10 +1667,6 @@ static int btrfs_fill_super(struct super_block *sb,
+ #endif
+ 	sb->s_xattr = btrfs_xattr_handlers;
+ 	sb->s_time_gran = 1;
+-#ifdef CONFIG_BTRFS_FS_POSIX_ACL
+-	sb->s_flags |= SB_POSIXACL;
+-#endif
+-	sb->s_flags |= SB_I_VERSION;
+ 	sb->s_iflags |= SB_I_CGROUPWB;
+ 
+ 	err = super_setup_bdi(sb);
+@@ -1933,7 +1946,7 @@ static struct dentry *mount_subvol(const char *subvol_name, u64 subvol_objectid,
+  * Note: This is based on mount_bdev from fs/super.c with a few additions
+  *       for multiple device setup.  Make sure to keep it in sync.
+  */
+-static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
++static __maybe_unused struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
+ 		int flags, const char *device_name, void *data)
+ {
+ 	struct block_device *bdev = NULL;
+@@ -2066,7 +2079,7 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
+  *   3. Call mount_subvol() to get the dentry of subvolume. Since there is
+  *      "btrfs subvolume set-default", mount_subvol() is called always.
+  */
+-static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
++static __maybe_unused struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
+ 		const char *device_name, void *data)
+ {
+ 	struct vfsmount *mnt_root;
+@@ -2497,7 +2510,7 @@ static int btrfs_reconfigure(struct fs_context *fc)
  	set_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
  
--	if (!check_options(fs_info, &ctx->mount_opt, fc->sb_flags))
-+	if (!mount_reconfigure &&
-+	    !check_options(fs_info, &ctx->mount_opt, fc->sb_flags))
+ 	if (!mount_reconfigure &&
+-	    !check_options(fs_info, &ctx->mount_opt, fc->sb_flags))
++	    !btrfs_check_options(fs_info, &ctx->mount_opt, fc->sb_flags))
  		return -EINVAL;
  
  	ret = btrfs_check_features(fs_info, !(fc->sb_flags & SB_RDONLY));
-@@ -2898,6 +2900,133 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 	return ret;
+@@ -3165,7 +3178,7 @@ static const struct fs_context_operations btrfs_fs_context_ops = {
+ 	.free		= btrfs_free_fs_context,
+ };
+ 
+-static int __maybe_unused btrfs_init_fs_context(struct fs_context *fc)
++static int btrfs_init_fs_context(struct fs_context *fc)
+ {
+ 	struct btrfs_fs_context *ctx;
+ 
+@@ -3186,24 +3199,22 @@ static int __maybe_unused btrfs_init_fs_context(struct fs_context *fc)
+ 		ctx->commit_interval = BTRFS_DEFAULT_COMMIT_INTERVAL;
+ 	}
+ 
++#ifdef CONFIG_BTRFS_FS_POSIX_ACL
++	fc->sb_flags |= SB_POSIXACL;
++#endif
++	fc->sb_flags |= SB_I_VERSION;
++
+ 	return 0;
  }
  
-+/*
-+ * Christian wrote this long comment about what we're doing here, preserving it
-+ * so the history of this change is preserved.
-+ *
-+ * Ever since commit 0723a0473fb4 ("btrfs: allow * mounting btrfs subvolumes
-+ * with different ro/rw * options") the following works:
-+ *
-+ *        (i) mount /dev/sda3 -o subvol=foo,ro /mnt/foo
-+ *       (ii) mount /dev/sda3 -o subvol=bar,rw /mnt/bar
-+ *
-+ * which looks nice and innocent but is actually pretty * intricate and
-+ * deserves a long comment.
-+ *
-+ * On another filesystem a subvolume mount is close to * something like:
-+ *
-+ *	(iii) # create rw superblock + initial mount
-+ *	      mount -t xfs /dev/sdb /opt/
-+ *
-+ *	      # create ro bind mount
-+ *	      mount --bind -o ro /opt/foo /mnt/foo
-+ *
-+ *	      # unmount initial mount
-+ *	      umount /opt
-+ *
-+ * Of course, there's some special subvolume sauce and there's the fact that the
-+ * sb->s_root dentry is really swapped after mount_subtree(). But conceptually
-+ * it's very close and will help us understand the issue.
-+ *
-+ * The old mount api didn't cleanly distinguish between a mount being made ro
-+ * and a superblock being made ro.  The only way to change the ro state of
-+ * either object was by passing ms_rdonly. If a new mount was created via
-+ * mount(2) such as:
-+ *
-+ *      mount("/dev/sdb", "/mnt", "xfs", ms_rdonly, null);
-+ *
-+ * the MS_RDONLY flag being specified had two effects:
-+ *
-+ * (1) MNT_READONLY was raised -> the resulting mount got
-+ *     @mnt->mnt_flags |= MNT_READONLY raised.
-+ *
-+ * (2) MS_RDONLY was passed to the filesystem's mount method and the filesystems
-+ *     made the superblock ro. Note, how SB_RDONLY has the same value as
-+ *     ms_rdonly and is raised whenever MS_RDONLY is passed through mount(2).
-+ *
-+ * Creating a subtree mount via (iii) ends up leaving a rw superblock with a
-+ * subtree mounted ro.
-+ *
-+ * But consider the effect on the old mount api on btrfs subvolume mounting
-+ * which combines the distinct step in (iii) into a a single step.
-+ *
-+ * By issuing (i) both the mount and the superblock are turned ro. Now when (ii)
-+ * is issued the superblock is ro and thus even if the mount created for (ii) is
-+ * rw it wouldn't help. Hence, btrfs needed to transition the superblock from ro
-+ * to rw for (ii) which it did using an internal remount call (a bold
-+ * choice...).
-+ *
-+ * IOW, subvolume mounting was inherently messy due to the ambiguity of
-+ * MS_RDONLY in mount(2). Note, this ambiguity has mount(8) always translate
-+ * "ro" to MS_RDONLY. IOW, in both (i) and (ii) "ro" becomes MS_RDONLY when
-+ * passed by mount(8) to mount(2).
-+ *
-+ * Enter the new mount api. the new mount api disambiguates making a mount ro
-+ * and making a superblock ro.
-+ *
-+ * (3) To turn a mount ro the MOUNT_ATTR_ONLY flag can be used with either
-+ *     fsmount() or mount_setattr() this is a pure vfs level change for a
-+ *     specific mount or mount tree that is never seen by the filesystem itself.
-+ *
-+ * (4) To turn a superblock ro the "ro" flag must be used with
-+ *     fsconfig(FSCONFIG_SET_FLAG, "ro"). This option is seen by the filesytem
-+ *     in fc->sb_flags.
-+ *
-+ * This disambiguation has rather positive consequences.  Mounting a subvolume
-+ * ro will not also turn the superblock ro. Only the mount for the subvolume
-+ * will become ro.
-+ *
-+ * So, if the superblock creation request comes from the new mount api the
-+ * caller must've explicitly done:
-+ *
-+ *      fsconfig(FSCONFIG_SET_FLAG, "ro")
-+ *      fsmount/mount_setattr(MOUNT_ATTR_RDONLY)
-+ *
-+ * IOW, at some point the caller must have explicitly turned the whole
-+ * superblock ro and we shouldn't just undo it like we did for the old mount
-+ * api. In any case, it lets us avoid this nasty hack in the new mount api.
-+ *
-+ * Consequently, the remounting hack must only be used for requests originating
-+ * from the old mount api and should be marked for full deprecation so it can be
-+ * turned off in a couple of years.
-+ *
-+ * The new mount api has no reason to support this hack.
-+ */
-+static struct vfsmount *btrfs_reconfigure_for_mount(struct fs_context *fc)
-+{
-+	struct vfsmount *mnt;
-+	int ret;
-+	bool ro2rw = !(fc->sb_flags & SB_RDONLY);
-+
-+	/*
-+	 * We got an EBUSY because our SB_RDONLY flag didn't match the existing
-+	 * super block, so invert our setting here and re-try the mount so we
-+	 * can get our vfsmount.
-+	 */
-+	if (ro2rw)
-+		fc->sb_flags |= SB_RDONLY;
-+	else
-+		fc->sb_flags &= ~SB_RDONLY;
-+
-+	mnt = fc_mount(fc);
-+	if (IS_ERR(mnt))
-+		return mnt;
-+
-+	if (!fc->oldapi || !ro2rw)
-+		return mnt;
-+
-+	/* We need to convert to rw, call reconfigure */
-+	fc->sb_flags &= ~SB_RDONLY;
-+	down_write(&mnt->mnt_sb->s_umount);
-+	ret = btrfs_reconfigure(fc);
-+	up_write(&mnt->mnt_sb->s_umount);
-+	if (ret) {
-+		mntput(mnt);
-+		return ERR_PTR(ret);
-+	}
-+	return mnt;
-+}
-+
- static int btrfs_get_tree_subvol(struct fs_context *fc)
- {
- 	struct btrfs_fs_info *fs_info = NULL;
-@@ -2947,6 +3076,8 @@ static int btrfs_get_tree_subvol(struct fs_context *fc)
- 	fc->security = NULL;
+ static struct file_system_type btrfs_fs_type = {
+-	.owner		= THIS_MODULE,
+-	.name		= "btrfs",
+-	.mount		= btrfs_mount,
+-	.kill_sb	= btrfs_kill_super,
+-	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA,
+-};
+-
+-static struct file_system_type btrfs_root_fs_type = {
+-	.owner		= THIS_MODULE,
+-	.name		= "btrfs",
+-	.mount		= btrfs_mount_root,
+-	.kill_sb	= btrfs_kill_super,
+-	.fs_flags	= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_ALLOW_IDMAP,
+-};
++	.owner			= THIS_MODULE,
++	.name			= "btrfs",
++	.init_fs_context	= btrfs_init_fs_context,
++	.parameters		= btrfs_fs_parameters,
++	.kill_sb		= btrfs_kill_super,
++	.fs_flags		= FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_ALLOW_IDMAP,
++ };
  
- 	mnt = fc_mount(dup_fc);
-+	if (PTR_ERR_OR_ZERO(mnt) == -EBUSY)
-+		mnt = btrfs_reconfigure_for_mount(dup_fc);
- 	put_fs_context(dup_fc);
- 	if (IS_ERR(mnt))
- 		return PTR_ERR(mnt);
+ MODULE_ALIAS_FS("btrfs");
+ 
+@@ -3416,7 +3427,6 @@ static const struct super_operations btrfs_super_ops = {
+ 	.destroy_inode	= btrfs_destroy_inode,
+ 	.free_inode	= btrfs_free_inode,
+ 	.statfs		= btrfs_statfs,
+-	.remount_fs	= btrfs_remount,
+ 	.freeze_fs	= btrfs_freeze,
+ 	.unfreeze_fs	= btrfs_unfreeze,
+ };
+diff --git a/fs/btrfs/super.h b/fs/btrfs/super.h
+index 7c1cd7527e76..7f6577d69902 100644
+--- a/fs/btrfs/super.h
++++ b/fs/btrfs/super.h
+@@ -3,6 +3,8 @@
+ #ifndef BTRFS_SUPER_H
+ #define BTRFS_SUPER_H
+ 
++bool btrfs_check_options(struct btrfs_fs_info *info, unsigned long *mount_opt,
++			 unsigned long flags);
+ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 			unsigned long new_flags);
+ int btrfs_sync_fs(struct super_block *sb, int wait);
 -- 
 2.41.0
 
