@@ -1,122 +1,171 @@
-Return-Path: <linux-btrfs+bounces-331-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-332-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBABB7F671E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Nov 2023 20:29:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF25B7F688B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Nov 2023 21:51:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1928D1C204BF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Nov 2023 19:29:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B31C281826
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Nov 2023 20:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02AE34C3CA;
-	Thu, 23 Nov 2023 19:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 527521401F;
+	Thu, 23 Nov 2023 20:51:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KmKaxPPE";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="j5D5fes1"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Wb3h+y/6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E413C11F
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Nov 2023 11:29:45 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-	by smtp-out1.suse.de (Postfix) with ESMTP id 9CDE021994;
-	Thu, 23 Nov 2023 19:29:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1700767784;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HyVUsOHsK9pc93O15gMwhFmtijHgDvoZpvFJJ67na4k=;
-	b=KmKaxPPEGP5yDgV2agxYW93lw2KMN7fRUYHiB9zHlFZWXj+NVACRlUHB5DCSz5c/T0LQG9
-	S+dTA3DI+zMnzODcZpCq+CeC8xZW0FIaZ2wHoZ65mBue5Su7WUhJLn1I8cBakj4tX69+e/
-	RUTKO+Px6CQ/wgqq27UuXc5Xqt9KB5o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1700767784;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HyVUsOHsK9pc93O15gMwhFmtijHgDvoZpvFJJ67na4k=;
-	b=j5D5fes166MBJqsQwD+HY8WxYNvvgbf/3xg8Otb+JfLhaA0ew4Z/FIA0+TaRtEpshiHeoT
-	9IQ132l8FR5KN4CA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-	by relay2.suse.de (Postfix) with ESMTP id 907BE2C15F;
-	Thu, 23 Nov 2023 19:29:44 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-	id 5CCF6DA86C; Thu, 23 Nov 2023 20:22:35 +0100 (CET)
-Date: Thu, 23 Nov 2023 20:22:35 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs-progs: subvolume create: accept multiple
- arguments
-Message-ID: <20231123192235.GE31451@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1698903010.git.wqu@suse.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A95AD62
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 Nov 2023 12:51:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1700772669; x=1701377469; i=quwenruo.btrfs@gmx.com;
+	bh=KKQ5joMxb/WSiyEguQEqTffbhI+6iH9sO0vqE78e3PQ=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=Wb3h+y/6VFZST9FbhEfVcRIz+Ud6PCukLA0YM7nRk924Q1b0HRep3DK0ncnnIOOs
+	 hm8IrB8CcpuJBGEXjavSp+eA3jV8s1XF5P1XfRm65wtMnvOcRE9JyAJfppGhLXIEK
+	 YKCS34qeGUqPhXgCRTId1PwPw9WhkFmArygboAzISZAzivwD6Fpk2wbvhAVO2HSHL
+	 aP13f/deVxnHbzpiBm/GziPAlMgXgxzDprxOcFrkhlF3Tjifw3ssryfL7JiW9m/XV
+	 c2t3sYRKW8PDowborvsagHp7eM+WvLDCgXBn2g9z4Djlmj6qsm1ux9SxGvmv70X+L
+	 GHNfYMU0tx7UJSBSXw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mn2W5-1rmAaB1L9j-00kB2B; Thu, 23
+ Nov 2023 21:51:08 +0100
+Message-ID: <f2e23182-0f32-41e0-806b-c3b655362676@gmx.com>
+Date: Fri, 24 Nov 2023 07:21:04 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1698903010.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Bar: ++++++++++++++++
-Authentication-Results: smtp-out1.suse.de;
-	dkim=none;
-	dmarc=none;
-	spf=softfail (smtp-out1.suse.de: 149.44.160.134 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [16.42 / 50.00];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_SPAM_SHORT(3.00)[1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 DMARC_NA(1.20)[suse.cz];
-	 RWL_MAILSPIKE_GOOD(-1.00)[149.44.160.134:from];
-	 R_SPF_SOFTFAIL(4.60)[~all];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 VIOLATED_DIRECT_SPF(3.50)[];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_NO_TLS_LAST(0.10)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 R_DKIM_NA(2.20)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 BAYES_HAM(-0.87)[85.70%]
-X-Spam-Score: 16.42
-X-Rspamd-Queue-Id: 9CDE021994
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC] btrfs: allow extent buffer helpers to skip cross-page
+ handling
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <721bab821198fc9b49d2795b2028ed6c436ab886.1700111928.git.wqu@suse.com>
+ <20231122134642.GB11264@twin.jikos.cz>
+ <c1c0dacb-8db5-4b6b-90f1-a71487fb44dd@gmx.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <c1c0dacb-8db5-4b6b-90f1-a71487fb44dd@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:+kbGBaor2Ruum4i+mewksUPBtyzkbKDKldCzauL+4D8uVeN9hst
+ nE39V8bDT6vyxuUAongZa7Ozc5fML9B0xwC4nBdVQlyCR8zqmiMU5mYnjzswxqxJrhND+ZU
+ OLAmJPgJK24rEMga8fVmUMntwmgSFGcAZPCXQreGRghqrPV3qc7UqUDroa49tOLW6UcSzHc
+ WnLuzThzdgckihs3EVuNQ==
+UI-OutboundReport: notjunk:1;M01:P0:y8hEbveINgY=;BaMg+qZoRbHcEbDlyG5RBASmjqB
+ Ua+RQ7ymNXRMmlmmYV/bq32CgfWu9MscOVdqWH0r/EtDVV035sy7hr1z/D0ENi8S37DdKu3UU
+ Zrjwuu98aJrq+oN24yf+RAaVzmZR3QdTTxg3Kmb5oTWQwpQA0c4lQdsfjPdlSeAmSNLoz4ZNG
+ yKumSmuW+yDnwfJxQr+pT1l9QfGFjOMA8k4Yx7G5X4hVPqFAdKLDdsN543qkvt38+MA3CdzTL
+ inc5mXMrnxsAtociXIIfhxqcqs6iP+8A1zPGjyDwS8cXIEL5pJmu9wQDcU3RagK4nuI2NndmR
+ b9riP6vr2ucgdZwLFqEMNXztWc4v4qO9/xBASvlojnPbJ71N4/+Hw4llwxH2Iv8O5NqaRlvvA
+ 2BKUezs+n2cDi0gW9itinFNFFXAQweCoXE5zYNzz3H/51ygDwdwm8P0cuDor5xOoVuwfyYv1v
+ G+NeLIUxQ2mb83YMmN/W9oZgrTuxAcJFvQJwg0AGicc9gcxcMPvteeResBii0eX7IgjK5IdMO
+ FmlAy1spi48IQMplJCHiOJ1ehnRj7WVgKjxoptS9co2D4aKr8H4GUcBzFmmRP7/PYsXQNd6wM
+ h4eZnNnOppTQ5urS6xGjAq+sENUiVQBDvZUIv4PNdOtMiXHuPB9XL/RrSj7qTMLMWBlpPiqzo
+ Z0XNHY4HeHbCUgi2PCYQjCeJ1L5Kkhg6Pb6czf07dGv0qtbNE78VLd7c32zSx46JI1yoTBYMH
+ XKXZ8G6hkX46jJVut5NG6nFWkrub1ySAJO60Vkm+rhetwBw/lJsnZdDSamOwq5UfFB0KkduU2
+ 7TLguZr5CdK1h+voOQWgO8SWGCX0NFRp+BvemLdMaMlaMMmcxBRCNMD/eJ2ZegkiUJ7Y4ZRoi
+ OZqmGoTCKTQqDKU2oYsRr7lPsdjICItOaoPRhf2/pRmNp6kgrElfsgwJBQqIA0rbx8dyCaS4T
+ VfiqdG1pelFYlHACzTTZh+6DnXA=
 
-On Thu, Nov 02, 2023 at 04:03:47PM +1030, Qu Wenruo wrote:
-> This patchset adds the ability to accept multiple arguments for "btrfs
-> subvolume create" command, just like "mkdir".
-> 
-> And also we follow the error reporting part of "mkdir", any failure
-> would make the command to return 1 for error.
-> 
-> [PATCHSET STRUCTURE]
-> During the development, I found two missing error handling for strdup(),
-> thus here comes the first patch to fix them.
-> 
-> Then the 2nd patch implements the main part.
-> 
-> Finally the last patch is add the new test case for the error handling
-> part.
-> 
-> Qu Wenruo (3):
->   btrfs-progs: subvolume create: handle failure for strdup()
->   btrfs-progs: subvolume create: accept multiple arguments
->   btrfs-progs: cli-tests: add test case for subvolume create multiple
->     arguments
-
-Added to devel, thanks.
+DQoNCk9uIDIwMjMvMTEvMjMgMDY6MzEsIFF1IFdlbnJ1byB3cm90ZToNCj4gDQo+IA0KPiBPbiAy
+MDIzLzExLzIzIDAwOjE2LCBEYXZpZCBTdGVyYmEgd3JvdGU6DQo+PiBPbiBUaHUsIE5vdiAxNiwg
+MjAyMyBhdCAwMzo0OTowNlBNICsxMDMwLCBRdSBXZW5ydW8gd3JvdGU6DQo+Pj4gLS0tIGEvZnMv
+YnRyZnMvZGlzay1pby5jDQo+Pj4gKysrIGIvZnMvYnRyZnMvZGlzay1pby5jDQo+Pj4gQEAgLTgw
+LDggKzgwLDE2IEBAIHN0YXRpYyB2b2lkIGNzdW1fdHJlZV9ibG9jayhzdHJ1Y3QgZXh0ZW50X2J1
+ZmZlciANCj4+PiAqYnVmLCB1OCAqcmVzdWx0KQ0KPj4+IMKgwqDCoMKgwqAgY2hhciAqa2FkZHI7
+DQo+Pj4gwqDCoMKgwqDCoCBpbnQgaTsNCj4+Pg0KPj4+ICvCoMKgwqAgbWVtc2V0KHJlc3VsdCwg
+MCwgQlRSRlNfQ1NVTV9TSVpFKTsNCj4+PiDCoMKgwqDCoMKgIHNoYXNoLT50Zm0gPSBmc19pbmZv
+LT5jc3VtX3NoYXNoOw0KPj4+IMKgwqDCoMKgwqAgY3J5cHRvX3NoYXNoX2luaXQoc2hhc2gpOw0K
+Pj4+ICsNCj4+PiArwqDCoMKgIGlmIChidWYtPmFkZHIpIHsNCj4+PiArwqDCoMKgwqDCoMKgwqAg
+Y3J5cHRvX3NoYXNoX2RpZ2VzdChzaGFzaCwgYnVmLT5hZGRyICsgDQo+Pj4gb2Zmc2V0X2luX3Bh
+Z2UoYnVmLT5zdGFydCkgKyBCVFJGU19DU1VNX1NJWkUsDQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJ1Zi0+bGVuIC0gQlRSRlNfQ1NVTV9TSVpFLCByZXN1bHQp
+Ow0KPj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm47DQo+Pj4gK8KgwqDCoCB9DQo+Pg0KPj4gVGhp
+cyBkdXBsaWNhdGVzIHRoZSBhZGRyZXNzIGFuZCBzaXplDQo+Pj4gKw0KPj4+IMKgwqDCoMKgwqAg
+a2FkZHIgPSBwYWdlX2FkZHJlc3MoYnVmLT5wYWdlc1swXSkgKyBvZmZzZXRfaW5fcGFnZShidWYt
+PnN0YXJ0KTsNCj4+PiDCoMKgwqDCoMKgIGNyeXB0b19zaGFzaF91cGRhdGUoc2hhc2gsIGthZGRy
+ICsgQlRSRlNfQ1NVTV9TSVpFLA0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgZmlyc3RfcGFnZV9wYXJ0IC0gQlRSRlNfQ1NVTV9TSVpFKTsNCj4+PiBAQCAtOTAsNyArOTgs
+NiBAQCBzdGF0aWMgdm9pZCBjc3VtX3RyZWVfYmxvY2soc3RydWN0IGV4dGVudF9idWZmZXIgDQo+
+Pj4gKmJ1ZiwgdTggKnJlc3VsdCkNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAga2FkZHIgPSBwYWdl
+X2FkZHJlc3MoYnVmLT5wYWdlc1tpXSk7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIGNyeXB0b19z
+aGFzaF91cGRhdGUoc2hhc2gsIGthZGRyLCBQQUdFX1NJWkUpOw0KPj4+IMKgwqDCoMKgwqAgfQ0K
+Pj4+IC3CoMKgwqAgbWVtc2V0KHJlc3VsdCwgMCwgQlRSRlNfQ1NVTV9TSVpFKTsNCj4+PiDCoMKg
+wqDCoMKgIGNyeXB0b19zaGFzaF9maW5hbChzaGFzaCwgcmVzdWx0KTsNCj4+DQo+PiBJJ2QgbGlr
+ZSB0byBoYXZlIG9ubHkgb25lIGNvZGUgZG9pbmcgdGhlIGNyeXB0b19zaGFzaF8gY2FsbHMsIHNv
+IEknbQ0KPj4gc3VnZ2VzdGluZyB0aGlzIGFzIHRoZSBmaW5hbCBjb2RlICh0aGUgZGlmZiBpcyBu
+b3QgY2xlYXIpOw0KPiANCj4gVGhpcyBsb29rcyBnb29kIHRvIG1lLCBtaW5kIHRvIHVwZGF0ZSBp
+dCBpbnNpZGUgeW91ciBicmFuY2g/DQo+IA0KPiBUaGFua3MsDQo+IFF1DQo+Pg0KPj4gwqAgNzQg
+c3RhdGljIHZvaWQgY3N1bV90cmVlX2Jsb2NrKHN0cnVjdCBleHRlbnRfYnVmZmVyICpidWYsIHU4
+ICpyZXN1bHQpDQo+PiDCoCA3NSB7DQo+PiDCoCA3NsKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IGJ0
+cmZzX2ZzX2luZm8gKmZzX2luZm8gPSBidWYtPmZzX2luZm87DQo+PiDCoCA3N8KgwqDCoMKgwqDC
+oMKgwqAgaW50IG51bV9wYWdlczsNCj4+IMKgIDc4wqDCoMKgwqDCoMKgwqDCoCB1MzIgZmlyc3Rf
+cGFnZV9wYXJ0Ow0KPj4gwqAgNznCoMKgwqDCoMKgwqDCoMKgIFNIQVNIX0RFU0NfT05fU1RBQ0so
+c2hhc2gsIGZzX2luZm8tPmNzdW1fc2hhc2gpOw0KPj4gwqAgODDCoMKgwqDCoMKgwqDCoMKgIGNo
+YXIgKmthZGRyOw0KPj4gwqAgODHCoMKgwqDCoMKgwqDCoMKgIGludCBpOw0KPj4gwqAgODINCj4+
+IMKgIDgzwqDCoMKgwqDCoMKgwqDCoCBzaGFzaC0+dGZtID0gZnNfaW5mby0+Y3N1bV9zaGFzaDsN
+Cj4+IMKgIDg0wqDCoMKgwqDCoMKgwqDCoCBjcnlwdG9fc2hhc2hfaW5pdChzaGFzaCk7DQo+PiDC
+oCA4NQ0KPj4gwqAgODbCoMKgwqDCoMKgwqDCoMKgIGlmIChidWYtPmFkZHIpIHsNCj4+IMKgIDg3
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLyogUGFnZXMgYXJlIGNvbnRpZ3VvdXMs
+IGhhbmRsZSBpdCBhcyBvbmUgYmlnIA0KPj4gcGFnZS4gKi8NCj4+IMKgIDg4wqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAga2FkZHIgPSBidWYtPmFkZHI7DQo+PiDCoCA4OcKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGZpcnN0X3BhZ2VfcGFydCA9IGZzX2luZm8tPm5vZGVz
+aXplOw0KPj4gwqAgOTDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBudW1fcGFnZXMg
+PSAxOw0KPj4gwqAgOTHCoMKgwqDCoMKgwqDCoMKgIH0gZWxzZSB7DQo+PiDCoCA5MsKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGthZGRyID0gcGFnZV9hZGRyZXNzKGJ1Zi0+cGFnZXNb
+MF0pOw0KPj4gwqAgOTPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBmaXJzdF9wYWdl
+X3BhcnQgPSBtaW5fdCh1MzIsIFBBR0VfU0laRSwgDQo+PiBmc19pbmZvLT5ub2Rlc2l6ZSk7DQo+
+PiDCoCA5NMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG51bV9wYWdlcyA9IG51bV9l
+eHRlbnRfcGFnZXMoYnVmKTsNCj4+IMKgIDk1wqDCoMKgwqDCoMKgwqDCoCB9DQo+PiDCoCA5NsKg
+wqDCoMKgwqDCoMKgwqAga2FkZHIgKz0gb2Zmc2V0X2luX3BhZ2UoYnVmLT5zdGFydCkgKyBCVFJG
+U19DU1VNX1NJWkU7DQo+PiDCoCA5N8KgwqDCoMKgwqDCoMKgwqAgZmlyc3RfcGFnZV9wYXJ0IC09
+IEJUUkZTX0NTVU1fU0laRTsNCg0KVGhpcyBpcyBkZWNyZWFzaW5nIHRoZSBAZmlyc3RfcGFnZV9w
+YXJ0Lg0KDQo+PiDCoCA5OA0KPj4gwqAgOTnCoMKgwqDCoMKgwqDCoMKgIGNyeXB0b19zaGFzaF91
+cGRhdGUoc2hhc2gsIGthZGRyICsgQlRSRlNfQ1NVTV9TSVpFLA0KPj4gMTAwwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZmlyc3RfcGFnZV9w
+YXJ0IC0gQlRSRlNfQ1NVTV9TSVpFKTsNCg0KTWVhbndoaWxlIHdlJ3JlIHJlZHVjaW5nIHRoZSBz
+aXplIGFnYWluLCBhbmQgSSBndWVzcyB0aGlzIGlzIHRoZSBwcm9ibGVtIA0KY2F1c2luZyB0aGUg
+dGVzdCBmYWlsdXJlLg0KDQpBbHRob3VnaCBteSBpbml0aWFsIHZlcnNpb24gaXMgaW5kZWVkIGRv
+aW5nIGl0cyBvd24gc2l6ZSBjYWxjdWxhdGlvbiwgDQp0aGUgZXh0cmEgY2FsY3VsYXRpb24gaXMg
+bXVjaCBzaW1wbGVyIGFuZCBkb2VzIG5vdCBhZmZlY3QgdGhlIGV4aXN0aW5nIA0KcGF0aCAodGh1
+cyBhIGxpdHRsZSBzYWZlcikuDQoNCkknbSBmaW5lIHdpdGggZWl0aGVyIHdheS4NCg0KVGhhbmtz
+LA0KUXUNCg0KPj4gMTAxDQo+PiAxMDLCoMKgwqDCoMKgwqDCoMKgIGZvciAoaSA9IDE7IGkgPCBu
+dW1fcGFnZXMgJiYgSU5MSU5FX0VYVEVOVF9CVUZGRVJfUEFHRVMgPiANCj4+IDE7IGkrKykgew0K
+Pj4gMTAzwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAga2FkZHIgPSBwYWdlX2FkZHJl
+c3MoYnVmLT5wYWdlc1tpXSk7DQo+PiAxMDTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBjcnlwdG9fc2hhc2hfdXBkYXRlKHNoYXNoLCBrYWRkciwgUEFHRV9TSVpFKTsNCj4+IDEwNcKg
+wqDCoMKgwqDCoMKgwqAgfQ0KPj4gMTA2wqDCoMKgwqDCoMKgwqDCoCBtZW1zZXQocmVzdWx0LCAw
+LCBCVFJGU19DU1VNX1NJWkUpOw0KPj4gMTA3wqDCoMKgwqDCoMKgwqDCoCBjcnlwdG9fc2hhc2hf
+ZmluYWwoc2hhc2gsIHJlc3VsdCk7DQo+PiAxMDggfQ0KPj4NCj4gDQo=
 
