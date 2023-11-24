@@ -1,109 +1,141 @@
-Return-Path: <linux-btrfs+bounces-335-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-336-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD6C97F69B5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 01:17:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00B8D7F6B25
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 05:07:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C33B1F20EBB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 00:17:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 923A1B20D61
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 04:07:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F48C39F;
-	Fri, 24 Nov 2023 00:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JLOKpBfx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4074C23D9;
+	Fri, 24 Nov 2023 04:07:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2157F17E;
-	Fri, 24 Nov 2023 00:17:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9657AC433C7;
-	Fri, 24 Nov 2023 00:17:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700785053;
-	bh=+lidUqppJxg2JG9sU7HTiTcJePswNNaLiOHkaBxgCcs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=JLOKpBfxq++lt1+6jFL0ZZ0n6/J0b9mqKkmGZ1DiGpZ307jgiRLuxygK3wy11g80E
-	 zrk8+t1tKJmIoTs0t5RLzZwduYN+ugXJ156a2chSnjVdAouYp28hB1QIURsizYLMmv
-	 rO/QGMvd+ycQNodtDXklBcofc1WQao0C1sx7DmoCICLw9z478+70Bs4xTfkAlIZm1s
-	 tZGkd+skNo4+Wzh3aI3ug9XRcqrEUwoVPlSkWTHTFk7dMlpa0S3xM4DCVWkNo2qnm2
-	 0RFKDFerR685WegE8i9RFCrNxQDNO9pwJ981qaa+3jKcf/kY8j9yAkVka4L+ZH1nh1
-	 dqt7fGGX97GRQ==
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a04196fc957so194764966b.2;
-        Thu, 23 Nov 2023 16:17:33 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw+i4Y2L3KQSv2Cfts7nYoA76/ibLnCP17q5mIf6gKw5ZWdcW9N
-	ZDG5365+4Hyw4rBWwNVt4HSe4XGErH8/SyZ+Umc=
-X-Google-Smtp-Source: AGHT+IEcaOtWkKQy89/8U8PWKAmo0MrYE3Xc1MvOgz1GYhZvH1iyQh5ugiTKTuiWkWSzXeXnTMhAQi5N0Wk14ZRaC8A=
-X-Received: by 2002:a17:906:3915:b0:9ff:9db9:1da7 with SMTP id
- f21-20020a170906391500b009ff9db91da7mr664666eje.29.1700785051984; Thu, 23 Nov
- 2023 16:17:31 -0800 (PST)
+Received: from mail-pl1-f208.google.com (mail-pl1-f208.google.com [209.85.214.208])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02C1D53
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 Nov 2023 20:07:19 -0800 (PST)
+Received: by mail-pl1-f208.google.com with SMTP id d9443c01a7336-1ce65e930ceso16288125ad.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Nov 2023 20:07:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700798839; x=1701403639;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=h0vRuOm3bYedFbYqbLhxDQ5YfI/esjpwLN9DwiNIFQ8=;
+        b=U/ghY0AgTtY4pNcYBDBcKygWJ6CpQx8PjbreIe+lkCyhld5u659dy/rLh9wg/Nqvq6
+         jMXWnblKNZweT6qlaoXgy44M7kTSKovExdLDJTfce4kcOT4+/xUdS/eAOHT0aqDp/fCy
+         AvTyg0i/pYrul0uMCd2H9bvUEKuNItnHKisfVCQTNh8o6vGqYUTXonbLJ7KhTG3EI3aH
+         kj8fuofx+bsD8e+EfQ2xEeU5ORFafBczCaStb3dJhPx0XdB009dsXX3xemfq49104HAh
+         aj41kM5ofI4Nti0sF3SrSCRonR6BSTJR2aCPTr4219WqJRfsIy59ppJ0xlXaei80hAdq
+         lLVA==
+X-Gm-Message-State: AOJu0Yy9X2NwbBv9cKLVPHjsJF8G4CpUH5TQfR84eVUdRn5r0eH7z3H1
+	TPV7gy+wlN3n3LUWqYX4x71h3+wns67Xjy0YLXmNE6+BHPv4
+X-Google-Smtp-Source: AGHT+IHZRsewILwuiH0XfYhzpcc84TnIwHPhnSJafwQ5uSyAIc6bJMXvt5C0NCc/uA2o/BuZhV4Ek2XWQlFjz0aEbVOdqG/fV7zE
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231124000034.27522-1-dsterba@suse.com>
-In-Reply-To: <20231124000034.27522-1-dsterba@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 24 Nov 2023 00:16:55 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6C=FJL9cX2-uVo1AhnNAmMOGfFMkTEzHekL5OeW0OAXQ@mail.gmail.com>
-Message-ID: <CAL3q7H6C=FJL9cX2-uVo1AhnNAmMOGfFMkTEzHekL5OeW0OAXQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix 64bit compat send ioctl arguments not
- initializing version member
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+X-Received: by 2002:a17:903:22d2:b0:1cc:42bf:5c1f with SMTP id
+ y18-20020a17090322d200b001cc42bf5c1fmr380444plg.4.1700798839555; Thu, 23 Nov
+ 2023 20:07:19 -0800 (PST)
+Date: Thu, 23 Nov 2023 20:07:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000aa8c0c060ade165e@google.com>
+Subject: [syzbot] [btrfs?] memory leak in clear_state_bit
+From: syzbot <syzbot+81670362c283f3dd889c@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 24, 2023 at 12:08=E2=80=AFAM David Sterba <dsterba@suse.com> wr=
-ote:
->
-> When the send protocol versioning was added in 5.16 e77fbf990316
-> ("btrfs: send: prepare for v2 protocol"), the 32/64bit compat code was
-> not updated (added by 2351f431f727 ("btrfs: fix send ioctl on 32bit with
-> 64bit kernel")), missing the version struct member. The compat code is
-> probably rarely used, nobody reported any bugs.
->
-> Found by tool https://github.com/jirislaby/clang-struct .
->
-> Fixes: 2351f431f727 ("btrfs: fix send ioctl on 32bit with 64bit kernel")
+Hello,
 
-So this is not the correct commit, you copy-pasted the wrong one from
-the change log above, it should be:
+syzbot found the following issue on:
 
-e77fbf990316 ("btrfs: send: prepare for v2 protocol")
+HEAD commit:    98b1cc82c4af Linux 6.7-rc2
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1617a610e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f1b9d95ada516af
+dashboard link: https://syzkaller.appspot.com/bug?extid=81670362c283f3dd889c
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e5bdd4e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b506f0e80000
 
-With that fixed:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/6b6d520f592c/disk-98b1cc82.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c2cb6183fd56/vmlinux-98b1cc82.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/de520cfc8b93/bzImage-98b1cc82.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/97f709bf4312/mount_0.gz
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+81670362c283f3dd889c@syzkaller.appspotmail.com
 
-Thanks.
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+BUG: memory leak
+unreferenced object 0xffff888100812800 (size 64):
+  comm "syz-executor358", pid 5076, jiffies 4294970941 (age 12.950s)
+  hex dump (first 32 bytes):
+    00 00 48 00 00 00 00 00 ff ff 48 00 00 00 00 00  ..H.......H.....
+    60 b6 52 02 00 c9 ff ff 60 b6 52 02 00 c9 ff ff  `.R.....`.R.....
+  backtrace:
+    [<ffffffff816339bd>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff816339bd>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff816339bd>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff816339bd>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
+    [<ffffffff8157e845>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
+    [<ffffffff8215ec8b>] kmalloc include/linux/slab.h:600 [inline]
+    [<ffffffff8215ec8b>] ulist_add_merge fs/btrfs/ulist.c:210 [inline]
+    [<ffffffff8215ec8b>] ulist_add_merge+0xcb/0x2b0 fs/btrfs/ulist.c:198
+    [<ffffffff821b3964>] add_extent_changeset fs/btrfs/extent-io-tree.c:199 [inline]
+    [<ffffffff821b3964>] add_extent_changeset fs/btrfs/extent-io-tree.c:186 [inline]
+    [<ffffffff821b3964>] clear_state_bit+0xa4/0x1f0 fs/btrfs/extent-io-tree.c:559
+    [<ffffffff821b4b12>] __clear_extent_bit+0x432/0x840 fs/btrfs/extent-io-tree.c:731
+    [<ffffffff82169c7d>] __btrfs_qgroup_release_data+0x21d/0x4a0 fs/btrfs/qgroup.c:4123
+    [<ffffffff820e2737>] alloc_ordered_extent+0x57/0x2c0 fs/btrfs/ordered-data.c:159
+    [<ffffffff820e2dc8>] btrfs_alloc_ordered_extent+0x78/0x4f0 fs/btrfs/ordered-data.c:274
+    [<ffffffff820ab67a>] btrfs_create_dio_extent+0xba/0x1b0 fs/btrfs/inode.c:6953
+    [<ffffffff820c47ac>] btrfs_get_blocks_direct_write fs/btrfs/inode.c:7343 [inline]
+    [<ffffffff820c47ac>] btrfs_dio_iomap_begin+0xcbc/0x11a0 fs/btrfs/inode.c:7594
+    [<ffffffff81772039>] iomap_iter+0x219/0x590 fs/iomap/iter.c:91
+    [<ffffffff8177968b>] __iomap_dio_rw+0x2bb/0xd40 fs/iomap/direct-io.c:658
+    [<ffffffff820c4da3>] btrfs_dio_write+0x73/0xa0 fs/btrfs/inode.c:7798
+    [<ffffffff820cf774>] btrfs_direct_write fs/btrfs/file.c:1543 [inline]
+    [<ffffffff820cf774>] btrfs_do_write_iter+0x454/0x960 fs/btrfs/file.c:1684
+    [<ffffffff816924c4>] call_write_iter include/linux/fs.h:2020 [inline]
+    [<ffffffff816924c4>] do_iter_readv_writev+0x154/0x220 fs/read_write.c:735
+    [<ffffffff81693c4c>] do_iter_write+0xec/0x370 fs/read_write.c:860
 
-> CC: stable@vger.kernel.org # 6.1+
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->  fs/btrfs/ioctl.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index dfe257e1845b..4e50b62db2a8 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -4356,6 +4356,7 @@ static int _btrfs_ioctl_send(struct inode *inode, v=
-oid __user *argp, bool compat
->                 arg->clone_sources =3D compat_ptr(args32.clone_sources);
->                 arg->parent_root =3D args32.parent_root;
->                 arg->flags =3D args32.flags;
-> +               arg->version =3D args32.version;
->                 memcpy(arg->reserved, args32.reserved,
->                        sizeof(args32.reserved));
->  #else
-> --
-> 2.42.1
->
->
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
