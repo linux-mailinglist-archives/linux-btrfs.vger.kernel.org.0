@@ -1,43 +1,46 @@
-Return-Path: <linux-btrfs+bounces-333-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-334-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A22BE7F6999
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 00:54:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C297A7F69AC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 01:07:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33FD4B20EFE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Nov 2023 23:54:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DDF4281341
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 00:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64A014B5BF;
-	Thu, 23 Nov 2023 23:53:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC1039F;
+	Fri, 24 Nov 2023 00:07:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e8SWw7l0"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dL9wOegh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F65D4AF60
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Nov 2023 23:53:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E1E6C433C7
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Nov 2023 23:53:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700783635;
-	bh=s5EctTiJlckUJIYinvedj37AQ4PBzkjy54rIgM73yP4=;
-	h=From:To:Subject:Date:From;
-	b=e8SWw7l0cnkZ+wUtLWgY0CuiNeqBTJERKuyCAgY1UtLrhogl0fprcA8QDHeJ3xEKV
-	 syXHfniHPGfyOgYP83reVG5niCmFdhv68Sr4BirVAhB5iELkp86kDPOQUfsHpZawDX
-	 St3dih+NywG2+88VqDEN0O3fKrc1aj44klnJMYtJ1Aa1CtYGJbd4VHSc/53J/Rm0ip
-	 VEUOKH2OxocZfeC4lrTlh3wby1LP5euQc3j97mlPZ/BnIP4jevsVD0RCFTYCKqMWVs
-	 WDQ+2/CDlSYxdiKdmrYEg5MkCTdjhEy3PzRYnF/JuZb0GiN0UOKifmsTGIAZuJdOAp
-	 tD1rgPmRYPDxg==
-From: fdmanana@kernel.org
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199EDA3;
+	Thu, 23 Nov 2023 16:07:47 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+	by smtp-out1.suse.de (Postfix) with ESMTP id 8889921A42;
+	Fri, 24 Nov 2023 00:07:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1700784465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=1DNz5BgB2a5NvbFDDyPXdhdKTF7wD1DOf5f/xYzwvXk=;
+	b=dL9wOegh7D0O36IY8v+qmL0HoKCTPzy2FXmicKqpwvbgpJ63Ybz3WcvUPrlkHck3EIm4v9
+	UyI75ToNfwHcn9JnpraG51D1dfrwXa/T2JfPDlpJg0iaFwgzN5ymFTeXT9QGVEDuQEk3sk
+	k7Hc8IpZ9wrS0Ie5O+jFJ8OoO2Jm5kY=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+	by relay2.suse.de (Postfix) with ESMTP id 7D58D2C15C;
+	Fri, 24 Nov 2023 00:07:45 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+	id 3A82BDA86C; Fri, 24 Nov 2023 01:00:36 +0100 (CET)
+From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove no longer used EXTENT_MAP_DELALLOC block start value
-Date: Thu, 23 Nov 2023 23:53:51 +0000
-Message-Id: <29f711318957b5efb2005d5cf9a50fd7755cc4a9.1700783554.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+Cc: David Sterba <dsterba@suse.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] btrfs: fix 64bit compat send ioctl arguments not initializing version member
+Date: Fri, 24 Nov 2023 01:00:34 +0100
+Message-ID: <20231124000034.27522-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -45,80 +48,69 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++++++++++++++++++++++
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none;
+	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+	spf=softfail (smtp-out1.suse.de: 149.44.160.134 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [25.42 / 50.00];
+	 ARC_NA(0.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 BAYES_SPAM(0.42)[73.10%];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_SPAM_SHORT(3.00)[1.000];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 TO_DN_SOME(0.00)[];
+	 R_SPF_SOFTFAIL(4.60)[~all];
+	 RWL_MAILSPIKE_GOOD(-1.00)[149.44.160.134:from];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+	 VIOLATED_DIRECT_SPF(3.50)[];
+	 FORGED_SENDER(0.30)[dsterba@suse.com,dsterba@suse.cz];
+	 RCVD_NO_TLS_LAST(0.10)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_COUNT_TWO(0.00)[2];
+	 FROM_NEQ_ENVFROM(0.10)[dsterba@suse.com,dsterba@suse.cz]
+X-Spam-Score: 25.42
+X-Rspamd-Queue-Id: 8889921A42
 
-From: Filipe Manana <fdmanana@suse.com>
+When the send protocol versioning was added in 5.16 e77fbf990316
+("btrfs: send: prepare for v2 protocol"), the 32/64bit compat code was
+not updated (added by 2351f431f727 ("btrfs: fix send ioctl on 32bit with
+64bit kernel")), missing the version struct member. The compat code is
+probably rarely used, nobody reported any bugs.
 
-After commit ac3c0d36a2a2 ("btrfs: make fiemap more efficient and accurate
-reporting extent sharedness") we no longer need to create special extent
-maps during fiemap that have a block start with the EXTENT_MAP_DELALLOC
-value. So this block start value for extent maps is no longer used since
-then, therefore remove it.
+Found by tool https://github.com/jirislaby/clang-struct .
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Fixes: 2351f431f727 ("btrfs: fix send ioctl on 32bit with 64bit kernel")
+CC: stable@vger.kernel.org # 6.1+
+Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/defrag.c            | 3 +--
- fs/btrfs/extent_map.c        | 3 ---
- fs/btrfs/extent_map.h        | 2 --
- include/trace/events/btrfs.h | 3 +--
- 4 files changed, 2 insertions(+), 9 deletions(-)
+ fs/btrfs/ioctl.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index 5244561e2016..9bcb60c68c58 100644
---- a/fs/btrfs/defrag.c
-+++ b/fs/btrfs/defrag.c
-@@ -996,9 +996,8 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
- 		    em->len <= inode->root->fs_info->max_inline)
- 			goto next;
- 
--		/* Skip hole/delalloc/preallocated extents */
-+		/* Skip holes and preallocated extents. */
- 		if (em->block_start == EXTENT_MAP_HOLE ||
--		    em->block_start == EXTENT_MAP_DELALLOC ||
- 		    test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
- 			goto next;
- 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index c956b1ced69f..80f86503a5cd 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -212,9 +212,6 @@ static int mergable_maps(struct extent_map *prev, struct extent_map *next)
- 	if (!list_empty(&prev->list) || !list_empty(&next->list))
- 		return 0;
- 
--	ASSERT(next->block_start != EXTENT_MAP_DELALLOC &&
--	       prev->block_start != EXTENT_MAP_DELALLOC);
--
- 	if (extent_map_end(prev) == next->start &&
- 	    prev->flags == next->flags &&
- 	    ((next->block_start == EXTENT_MAP_HOLE &&
-diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-index bae14af197ef..66f8dd26487b 100644
---- a/fs/btrfs/extent_map.h
-+++ b/fs/btrfs/extent_map.h
-@@ -9,8 +9,6 @@
- #define EXTENT_MAP_LAST_BYTE ((u64)-4)
- #define EXTENT_MAP_HOLE ((u64)-3)
- #define EXTENT_MAP_INLINE ((u64)-2)
--/* used only during fiemap calls */
--#define EXTENT_MAP_DELALLOC ((u64)-1)
- 
- /* bits for the extent_map::flags field */
- enum {
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 856109048999..31da1456f953 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -265,8 +265,7 @@ DEFINE_EVENT(btrfs__inode, btrfs_inode_evict,
- 	__print_symbolic_u64(type,					\
- 		{ EXTENT_MAP_LAST_BYTE, "LAST_BYTE" 	},		\
- 		{ EXTENT_MAP_HOLE, 	"HOLE" 		},		\
--		{ EXTENT_MAP_INLINE, 	"INLINE" 	},		\
--		{ EXTENT_MAP_DELALLOC,	"DELALLOC" 	})
-+		{ EXTENT_MAP_INLINE,	"INLINE"	})
- 
- #define show_map_type(type)			\
- 	type, (type >= EXTENT_MAP_LAST_BYTE) ? "-" :  __show_map_type(type)
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index dfe257e1845b..4e50b62db2a8 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -4356,6 +4356,7 @@ static int _btrfs_ioctl_send(struct inode *inode, void __user *argp, bool compat
+ 		arg->clone_sources = compat_ptr(args32.clone_sources);
+ 		arg->parent_root = args32.parent_root;
+ 		arg->flags = args32.flags;
++		arg->version = args32.version;
+ 		memcpy(arg->reserved, args32.reserved,
+ 		       sizeof(args32.reserved));
+ #else
 -- 
-2.40.1
+2.42.1
 
 
