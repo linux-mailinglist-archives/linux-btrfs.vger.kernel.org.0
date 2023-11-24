@@ -1,112 +1,164 @@
-Return-Path: <linux-btrfs+bounces-342-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-344-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B98867F7654
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 15:26:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 404B67F765C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 15:32:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9E9D1C21059
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 14:26:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2FB3B2127E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 14:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77F72D61D;
-	Fri, 24 Nov 2023 14:26:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gXW/zJIs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TYYjjWoj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40C722E642;
+	Fri, 24 Nov 2023 14:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
-X-Greylist: delayed 158 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 06:26:40 PST
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7A619A5
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 06:26:40 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+X-Greylist: delayed 510 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 06:32:33 PST
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9684B19A2
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 06:32:33 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 691EE21A25;
-	Fri, 24 Nov 2023 14:26:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1700835999;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BqCARvyeQDhmu1LCLApgXiCzHExHPufpfccKha+uLqo=;
-	b=gXW/zJIs0qH9nhqn7Czvdz6pOWYfwjzSEzmnFiHpF/YOrvKK6N2TAQ0btlywaaCnXK+Vri
-	uj/LawV27VdUCMMLUAcFIcMgwjBNLb3iEx+SyJ+bCMoA1ZOAa9U7qhPHObxpkKW67shJUk
-	f9TTs5oxtULDZO9BlF4R4nwvP+wUvZo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1700835999;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BqCARvyeQDhmu1LCLApgXiCzHExHPufpfccKha+uLqo=;
-	b=TYYjjWojhk0ZRSt6+O5OkcPA1KUg2vB9D41crh4nqJTuzkR+0VxKXAOKaVLGf3pBBGi3TK
-	8c9MZsLuRngVuTDA==
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E5D6021D6D;
+	Fri, 24 Nov 2023 14:32:31 +0000 (UTC)
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 3770E132E2;
-	Fri, 24 Nov 2023 14:26:39 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B005A132E2;
+	Fri, 24 Nov 2023 14:32:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id trh7C5+yYGVDIwAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Fri, 24 Nov 2023 14:26:39 +0000
-Date: Fri, 24 Nov 2023 15:19:28 +0100
+	id cEy3Kf+zYGUXJQAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Fri, 24 Nov 2023 14:32:31 +0000
+Date: Fri, 24 Nov 2023 15:25:20 +0100
 From: David Sterba <dsterba@suse.cz>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove no longer used EXTENT_MAP_DELALLOC block
- start value
-Message-ID: <20231124141928.GB18929@twin.jikos.cz>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: free the allocated memory if
+ btrfs_alloc_page_array() failed
+Message-ID: <20231124142520.GC18929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <29f711318957b5efb2005d5cf9a50fd7755cc4a9.1700783554.git.fdmanana@suse.com>
+References: <0f34dd9fbefc379a65fe09074f975a199352d99e.1700796515.git.wqu@suse.com>
+ <CAL3q7H5PzUKeGjBCVP16zQjpbvA_f3KuRd2ucpGZMWJHV7z13A@mail.gmail.com>
+ <CAL3q7H4g=eD5y7DB6x8TW_S4D--2K9y4j5RKH37B-ZpAjfqctw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <29f711318957b5efb2005d5cf9a50fd7755cc4a9.1700783554.git.fdmanana@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H4g=eD5y7DB6x8TW_S4D--2K9y4j5RKH37B-ZpAjfqctw@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Bar: ++++++++++++++++
+X-Spam-Score: 16.58
+X-Rspamd-Server: rspamd1
+X-Rspamd-Queue-Id: E5D6021D6D
 Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Score: -2.42
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.42 / 50.00];
+	dkim=none;
+	dmarc=none;
+	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz
+X-Spamd-Result: default: False [16.58 / 50.00];
 	 ARC_NA(0.00)[];
 	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 MIME_GOOD(-0.10)[text/plain];
 	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 TO_DN_NONE(0.00)[];
+	 DMARC_NA(1.20)[suse.cz];
+	 R_SPF_SOFTFAIL(4.60)[~all:c];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 RCPT_COUNT_TWO(0.00)[2];
+	 BAYES_SPAM(5.10)[100.00%];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_SPAM_LONG(3.49)[0.997];
 	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 NEURAL_HAM_SHORT(-0.20)[-0.997];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
 	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.42)[91.08%]
+	 RCVD_TLS_ALL(0.00)[]
 
-On Thu, Nov 23, 2023 at 11:53:51PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Fri, Nov 24, 2023 at 12:47:37PM +0000, Filipe Manana wrote:
+> On Fri, Nov 24, 2023 at 11:50 AM Filipe Manana <fdmanana@kernel.org> wrote:
+> >
+> > On Fri, Nov 24, 2023 at 4:30 AM Qu Wenruo <wqu@suse.com> wrote:
+> > >
+> > > [BUG]
+> > > If btrfs_alloc_page_array() failed to allocate all pages but part of the
+> > > slots, then the partially allocated pages would be leaked in function
+> > > btrfs_submit_compressed_read().
+> > >
+> > > [CAUSE]
+> > > As explicitly stated, if btrfs_alloc_page_array() returned -ENOMEM,
+> > > caller is responsible to free the partially allocated pages.
+> > >
+> > > For the existing call sites, most of them are fine:
+> > >
+> > > - btrfs_raid_bio::stripe_pages
+> > >   Handled by free_raid_bio().
+> > >
+> > > - extent_buffer::pages[]
+> > >   Handled btrfs_release_extent_buffer_pages().
+> > >
+> > > - scrub_stripe::pages[]
+> > >   Handled by release_scrub_stripe().
+> > >
+> > > But there is one exception in btrfs_submit_compressed_read(), if
+> > > btrfs_alloc_page_array() failed, we didn't cleanup the array and freed
+> > > the array pointer directly.
+> > >
+> > > Initially there is still the error handling in commit dd137dd1f2d7
+> > > ("btrfs: factor out allocating an array of pages"), but later in commit
+> > > 544fe4a903ce ("btrfs: embed a btrfs_bio into struct compressed_bio"),
+> > > the error handling is removed, leading to the possible memory leak.
+> > >
+> > > [FIX]
+> > > This patch would add back the error handling first, then to prevent such
+> > > situation from happening again, also make btrfs_alloc_page_array() to
+> > > free the allocated pages as a extra safe net.
+> > >
+> > > Fixes: 544fe4a903ce ("btrfs: embed a btrfs_bio into struct compressed_bio")
+> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >
+> > Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> >
+> > Looks good, thanks.
 > 
-> After commit ac3c0d36a2a2 ("btrfs: make fiemap more efficient and accurate
-> reporting extent sharedness") we no longer need to create special extent
-> maps during fiemap that have a block start with the EXTENT_MAP_DELALLOC
-> value. So this block start value for extent maps is no longer used since
-> then, therefore remove it.
+> Well, just one comment, see below.
 > 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> >
+> > > ---
+> > >  fs/btrfs/compression.c |  4 ++++
+> > >  fs/btrfs/extent_io.c   | 10 +++++++---
+> > >  2 files changed, 11 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> > > index 19b22b4653c8..d6120741774b 100644
+> > > --- a/fs/btrfs/compression.c
+> > > +++ b/fs/btrfs/compression.c
+> > > @@ -534,6 +534,10 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio)
+> > >         return;
+> > >
+> > >  out_free_compressed_pages:
+> > > +       for (int i = 0; i < cb->nr_pages; i++) {
+> > > +               if (cb->compressed_pages[i])
+> > > +                       __free_page(cb->compressed_pages[i]);
+> > > +       }
+> 
+> So this hunk is not needed, because of the changes you did to
+> btrfs_alloc_page_array(), as now it always frees any allocated pages
+> on -ENOMEM.
 
-Added to misc-next, thanks.
+Right, I'll drop the hunk, thanks.
 
