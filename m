@@ -1,120 +1,74 @@
-Return-Path: <linux-btrfs+bounces-346-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-348-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFC2C7F78D3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 17:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90AEA7F798B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 17:41:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A272128130B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 16:22:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47AB828171A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 16:41:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC83234186;
-	Fri, 24 Nov 2023 16:22:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="svb9Q/R2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB19341A8;
+	Fri, 24 Nov 2023 16:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA591BE
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 08:22:00 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso23195a12.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 08:22:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700842919; x=1701447719; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M64ztmWBiARV+bGOkqq9YDeivw9HkSbLr9/sDMlRs+I=;
-        b=svb9Q/R28rG88XeCEoV0lfKZ3I9iQrd32uZDHauHkJ6Rnqp/YReWNaHgVR/cwvUihP
-         N9K/X3UkJ7vSlT9XsxfACtrpW13I3DJlI7lAr7cMw34g+FNBgICwcW4UKHB8yTeh1nnr
-         U/VWYrutjOw6pxBrJmK+ivtX3mOhnvVAmHZFsrDIVWYc3TU/6HOZyHtggv3NkLF0ZDvg
-         RO1Ah9C9zqx10iHVmxOtVCh7O+ctEPKJQlikVwK5rsdkmHtwvYzAVuZD2fYFgvIUH4eM
-         4ucogFYKy3brOzSs4oUn50F4hs8YXU58rpOymE9nMELGGkLOVxwicNWoL2KGACPFN0YQ
-         hmmQ==
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB511BC7
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 08:41:08 -0800 (PST)
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5bd18d54a48so2046235a12.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 08:41:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700842919; x=1701447719;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M64ztmWBiARV+bGOkqq9YDeivw9HkSbLr9/sDMlRs+I=;
-        b=WBr2WZ2FKXpdMeZ0IM0MDnHna8W51tM+EwlonZ5wV+/dW2tXGllHuIM5V5Nib5lypB
-         0+2wNU+VJN5HF18z0WPYLZA8tk7K1c/Sr6m7WB+YTe8WenNM7jAPbC3SlRK89GQDJ7br
-         sU6vUGXq9g7fAK5WUm2femZv9isqses7gnvcoPzZgXzPIwz7+A7syWedi/UsDJovRNdW
-         S/lw1Lg6fV7EmU7zQRJUTe5/M6HWZ62Zdm1MRpsoLgGAdtVeDoxTixY3iX5+vO15sF7Z
-         oBvNCLIbI+0cHNWBpVxRe6mHIDXsqO4dmeQo70ggNSkL2DZ3SYvkPp4e/6KejJBz53Li
-         xtpQ==
-X-Gm-Message-State: AOJu0Ywi8kGTNKc6jrp7Z19kvRify+oUoaYvs4Q0X5BHMn49pSBjxZgk
-	iYh62TZgoYJqNp7ex1HXhMIOS7QTM8fFBGOJz2CZEA==
-X-Google-Smtp-Source: AGHT+IHOeiCqx5ybJGDdPWiIWyOFgVXz//YKTM16O94xCOOn5kmMHZ2WfxY1jX/GPpN0CrU7+gR0RYsxj5OhmA7J/Hg=
-X-Received: by 2002:a05:6402:b83:b0:544:e249:be8f with SMTP id
- cf3-20020a0564020b8300b00544e249be8fmr359458edb.1.1700842918703; Fri, 24 Nov
- 2023 08:21:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700844068; x=1701448868;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zf3ri9xrbk3Wo2sorjp+QdDTuPFLBKHNR4Q6yiJudT8=;
+        b=E3FQfmapCf1Qqf8pQAOcdPcXOdVOWfGe4xkn2cvCV3Rlbkb5PgDSLAGRSC+R5oU4v7
+         2V8iad3EbvxJDbNXSe3juv0YqMt70HPOXyqPgDgexmortNBS8g6PmBhCpwYeZp/lfD04
+         veYO8ZljKnk641mBC1quTWLB5OoRE+U/GV8L+tE7VnggiUk2LtDovql1gtnZLLeKxWeM
+         gmT4QcEaCpOWgHXew2R9Q9eUdQSS9AMCVdwpRkSQMHXe+YbHTH4z9ZzzPelkUXDu5mGy
+         +XCgM3kngSo1uaFM0LA61NYdl8KcTu79bmJwXB9SXslVcJta0DHECgtfATftQoUf9ahQ
+         Zwig==
+X-Gm-Message-State: AOJu0Yx4hER3uwOEPWHlqgSq9VYWcU1SUE8uy2edZZldnbuZuSDl8kGk
+	Qzv4K61SB3mUb+DiVZx9LD3ag/i3E9E4pNUbra9uAKRyogTg
+X-Google-Smtp-Source: AGHT+IHLEITRzJFu9n2TX4LcYq/P2lezy8iiyCOTkf13yKoPE9EVcIP2UuQILHm4ztno9AlxVKk5LpEajnms8bro1J+d6/+Xo2h6
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000cf908705eaa8c5a7@google.com>
-In-Reply-To: <000000000000cf908705eaa8c5a7@google.com>
-From: Jann Horn <jannh@google.com>
-Date: Fri, 24 Nov 2023 17:21:20 +0100
-Message-ID: <CAG48ez0JNLENLRSaisWvaY7+o=CwGtP=ZcH_iBoSqW7qD-PU1Q@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in __kernel_write_iter
-To: syzbot <syzbot+12e098239d20385264d3@syzkaller.appspotmail.com>
-Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+X-Received: by 2002:a63:5765:0:b0:5bd:3e1c:c163 with SMTP id
+ h37-20020a635765000000b005bd3e1cc163mr544373pgm.1.1700844067709; Fri, 24 Nov
+ 2023 08:41:07 -0800 (PST)
+Date: Fri, 24 Nov 2023 08:41:07 -0800
+In-Reply-To: <CAG48ez0JNLENLRSaisWvaY7+o=CwGtP=ZcH_iBoSqW7qD-PU1Q@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000796831060ae89e3f@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in __kernel_write_iter
+From: syzbot <syzbot+12e098239d20385264d3@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, jannh@google.com, josef@toxicpanda.com, 
 	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 10, 2022 at 9:04=E2=80=AFAM syzbot
-<syzbot+12e098239d20385264d3@syzkaller.appspotmail.com> wrote:
-> HEAD commit:    a6afa4199d3d Merge tag 'mailbox-v6.1' of git://git.linaro=
-...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D110f6f0a88000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dd19f5d16783f9=
-01
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D12e098239d20385=
-264d3
-> compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da=
--1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/12e24d042ff9/dis=
-k-a6afa419.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/4862ae4e2edf/vmlinu=
-x-a6afa419.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+12e098239d20385264d3@syzkaller.appspotmail.com
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 20347 at fs/read_write.c:504 __kernel_write_iter+0x6=
-39/0x740
-[...]
->  __kernel_write fs/read_write.c:537 [inline]
->  kernel_write+0x1c5/0x340 fs/read_write.c:558
->  write_buf fs/btrfs/send.c:590 [inline]
->  send_header fs/btrfs/send.c:708 [inline]
->  send_subvol+0x1a7/0x4b60 fs/btrfs/send.c:7648
->  btrfs_ioctl_send+0x1e34/0x2340 fs/btrfs/send.c:8014
->  _btrfs_ioctl_send+0x2e8/0x420 fs/btrfs/ioctl.c:5233
->  btrfs_ioctl+0x5eb/0xc10
->  vfs_ioctl fs/ioctl.c:51 [inline]
+Hello,
 
-The issue here is that BTRFS_IOC_SEND looks up an fd with fget() and
-then writes into it with kernel_write(). Luckily the ioctl requires
-CAP_SYS_ADMIN, and also Linux >=3D5.8 bails out on __kernel_write() on a
-read-only file, so this has no security impact.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-I'm about to send a fix, let's have syzkaller check it beforehand:
+Reported-and-tested-by: syzbot+12e098239d20385264d3@syzkaller.appspotmail.com
 
-#syz test https://github.com/thejh/linux.git 573fd2562e0f
+Tested on:
+
+commit:         573fd256 btrfs: send: Ensure send_fd is writable
+git tree:       https://github.com/thejh/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1461aad0e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c7d33e2c9b952629
+dashboard link: https://syzkaller.appspot.com/bug?extid=12e098239d20385264d3
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
 
