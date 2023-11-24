@@ -1,45 +1,44 @@
-Return-Path: <linux-btrfs+bounces-338-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-339-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD4167F6BB9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 06:32:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C3E07F6D0F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 08:44:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF2F31C2093D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 05:32:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7246B2112D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 07:44:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB0CC4419;
-	Fri, 24 Nov 2023 05:32:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1DB38F63;
+	Fri, 24 Nov 2023 07:44:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
-X-Greylist: delayed 4077 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Nov 2023 21:32:13 PST
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D490D6C
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Nov 2023 21:32:13 -0800 (PST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B221D1B2
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 Nov 2023 23:44:37 -0800 (PST)
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8E91721B95
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 05:32:11 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E97A31FB86
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 07:44:35 +0000 (UTC)
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 83BBF13913
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 05:32:10 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DD148139E8
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 07:44:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 4E2uC1o1YGVsIwAAn2gu4w
+	id 0sTSIWJUYGWXOQAAn2gu4w
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 05:32:10 +0000
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 07:44:34 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: refactor alloc_extent_buffer() to allocate-then-attach method
-Date: Fri, 24 Nov 2023 16:01:51 +1030
-Message-ID: <7b49e51ebdd709e2e9359dbac6038f7804160f00.1700803777.git.wqu@suse.com>
+Subject: [PATCH v3] btrfs: refactor alloc_extent_buffer() to allocate-then-attach method
+Date: Fri, 24 Nov 2023 18:14:16 +1030
+Message-ID: <d07c880500b59aa457fb267491664aca0e6b4b32.1700811840.git.wqu@suse.com>
 X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -48,40 +47,40 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++++++++++++
-X-Spam-Score: 15.00
-X-Rspamd-Server: rspamd1
-X-Rspamd-Queue-Id: 8E91721B95
-Authentication-Results: smtp-out1.suse.de;
+X-Spamd-Bar: ++++++++++++++++++++++++++
+Authentication-Results: smtp-out2.suse.de;
 	dkim=none;
 	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
-	spf=fail (smtp-out1.suse.de: domain of wqu@suse.com does not designate 2a07:de40:b281:104:10:150:64:98 as permitted sender) smtp.mailfrom=wqu@suse.com
-X-Spamd-Result: default: False [15.00 / 50.00];
+	spf=fail (smtp-out2.suse.de: domain of wqu@suse.com does not designate 2a07:de40:b281:104:10:150:64:98 as permitted sender) smtp.mailfrom=wqu@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [26.57 / 50.00];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_SPF_FAIL(1.00)[-all];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
+	 BAYES_SPAM(5.10)[100.00%];
 	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 RCVD_COUNT_THREE(0.00)[3];
+	 R_MISSING_CHARSET(2.50)[];
 	 TO_DN_NONE(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
 	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.03)[-0.154];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 R_DKIM_NA(2.20)[];
 	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam: Yes
+	 ARC_NA(0.00)[];
+	 R_SPF_FAIL(1.00)[-all];
+	 FROM_HAS_DN(0.00)[];
+	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_SPAM_SHORT(2.97)[0.989];
+	 MIME_GOOD(-0.10)[text/plain];
+	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	 RCPT_COUNT_ONE(0.00)[1];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: 26.57
+X-Rspamd-Queue-Id: E97A31FB86
 
 Currently alloc_extent_buffer() utilizes find_or_create_page() to
 allocate one page a time for an extent buffer.
@@ -118,12 +117,16 @@ Changelog:
 v2:
 - Use the old "GFP_NOFS | __GFP_NOFAIL" flag for metadata page
   allocation
+
+v3:
+- Fix a missing "attached++" line
+  Which affects the error handling path.
 ---
- fs/btrfs/extent_io.c | 204 ++++++++++++++++++++++++++++++-------------
- 1 file changed, 145 insertions(+), 59 deletions(-)
+ fs/btrfs/extent_io.c | 205 ++++++++++++++++++++++++++++++-------------
+ 1 file changed, 146 insertions(+), 59 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index b645c3fb849c..03dbdad3273f 100644
+index b645c3fb849c..fcd7b4674d08 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
 @@ -668,24 +668,16 @@ static void end_bio_extent_readpage(struct btrfs_bio *bbio)
@@ -309,7 +312,7 @@ index b645c3fb849c..03dbdad3273f 100644
  	struct address_space *mapping = fs_info->btree_inode->i_mapping;
  	struct btrfs_subpage *prealloc = NULL;
  	u64 lockdep_owner = owner_root;
-@@ -3538,31 +3617,39 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+@@ -3538,31 +3617,40 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
  	if (fs_info->nodesize < PAGE_SIZE) {
  		prealloc = btrfs_alloc_subpage(fs_info, BTRFS_SUBPAGE_METADATA);
  		if (IS_ERR(prealloc)) {
@@ -343,14 +346,15 @@ index b645c3fb849c..03dbdad3273f 100644
 +			ASSERT(existing_eb);
 +			goto out;
  		}
- 
++		attached++;
++
 +		/*
 +		 * Only after attach_eb_page_to_filemap(), eb->pages[] is
 +		 * reliable, as we may choose to reuse the existing page cache
 +		 * and free the allocated page.
 +		 */
 +		eb_page = eb->pages[i];
-+
+ 
  		spin_lock(&mapping->private_lock);
 -		exists = grab_extent_buffer(fs_info, p);
 -		if (exists) {
@@ -367,7 +371,7 @@ index b645c3fb849c..03dbdad3273f 100644
  		ASSERT(!ret);
  		/*
  		 * To inform we have extra eb under allocation, so that
-@@ -3573,22 +3660,18 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+@@ -3573,22 +3661,18 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
  		 * detach_extent_buffer_page().
  		 * Thus needs no special handling in error path.
  		 */
@@ -394,7 +398,7 @@ index b645c3fb849c..03dbdad3273f 100644
  		/*
  		 * We can't unlock the pages just yet since the extent buffer
  		 * hasn't been properly inserted in the radix tree, this
-@@ -3599,15 +3682,15 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+@@ -3599,15 +3683,15 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
  	}
  	if (uptodate)
  		set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
@@ -414,7 +418,7 @@ index b645c3fb849c..03dbdad3273f 100644
  
  	spin_lock(&fs_info->buffer_lock);
  	ret = radix_tree_insert(&fs_info->buffer_radix,
-@@ -3615,9 +3698,9 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+@@ -3615,9 +3699,9 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
  	spin_unlock(&fs_info->buffer_lock);
  	radix_tree_preload_end();
  	if (ret == -EEXIST) {
@@ -427,7 +431,7 @@ index b645c3fb849c..03dbdad3273f 100644
  		else
  			goto again;
  	}
-@@ -3630,19 +3713,22 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+@@ -3630,19 +3714,22 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
  	 * btree_release_folio will correctly detect that a page belongs to a
  	 * live buffer and won't free them prematurely.
  	 */
