@@ -1,466 +1,167 @@
-Return-Path: <linux-btrfs+bounces-339-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-340-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C3E07F6D0F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 08:44:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB5747F7317
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 12:51:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7246B2112D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 07:44:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3377CB213D6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Nov 2023 11:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1DB38F63;
-	Fri, 24 Nov 2023 07:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2EFE2031B;
+	Fri, 24 Nov 2023 11:51:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fO1Ppxlq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B221D1B2
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 Nov 2023 23:44:37 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E97A31FB86
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 07:44:35 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DD148139E8
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 07:44:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 0sTSIWJUYGWXOQAAn2gu4w
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 07:44:34 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v3] btrfs: refactor alloc_extent_buffer() to allocate-then-attach method
-Date: Fri, 24 Nov 2023 18:14:16 +1030
-Message-ID: <d07c880500b59aa457fb267491664aca0e6b4b32.1700811840.git.wqu@suse.com>
-X-Mailer: git-send-email 2.42.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A33200B2
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 11:51:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35EF2C433C8
+	for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 11:51:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700826694;
+	bh=CkqgSFyUop0dJvUH8OW8l5peS9YqT4ozJcMLkclxAzo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=fO1PpxlqtyfwxEWneQrnksYigUbc6CvRGVPBCrteDO+8wKgSdAi5M1oUu99oxAeZo
+	 hvCfK0eF0MBu6Z4P5LQbHWZwKuTpsAbx9fTebSk4yUY4r6PJgiCycJ54XC1Ck5rpQQ
+	 j9ugiA24O+pcdYPqDpDz8donKphcyN6b5QXZ2T/Cde0thF8TdiPkWsG20bOSY/BR/6
+	 JydDFY2VjvFj0v4lacJleW6/uccDBWHnNQMZRww8eQuTciiUF0SMKuxqvN5KAZr4pg
+	 n57b1ofrdzEbMtI9HnUfBAg3o1wOO5pOcqJGz81KR3huK/oDvoPPp/vxWjkwATPdil
+	 KBbXFXLGfL5nw==
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a06e59384b6so205035866b.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Nov 2023 03:51:34 -0800 (PST)
+X-Gm-Message-State: AOJu0YxifsfcK3s5prIgsMcN2S5f4IDv/ufnLvj+veByG/wGPemMQQtR
+	JQMdCwyBVLFNUB9ApisidukdD/I2eH86zo2QJC4=
+X-Google-Smtp-Source: AGHT+IFL0BOCtPNe40H/7TIllwGUcd5hrdrOf2ueqeA1wqs/wqM7bQjaYrw4oiHUVHFLgf36WCAN5aCu0EBbP5FdHgc=
+X-Received: by 2002:a17:906:2306:b0:9e4:b664:baa8 with SMTP id
+ l6-20020a170906230600b009e4b664baa8mr1932134eja.7.1700826692573; Fri, 24 Nov
+ 2023 03:51:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: ++++++++++++++++++++++++++
-Authentication-Results: smtp-out2.suse.de;
-	dkim=none;
-	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
-	spf=fail (smtp-out2.suse.de: domain of wqu@suse.com does not designate 2a07:de40:b281:104:10:150:64:98 as permitted sender) smtp.mailfrom=wqu@suse.com
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [26.57 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_SPAM(5.10)[100.00%];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_DN_NONE(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 MX_GOOD(-0.01)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 R_DKIM_NA(2.20)[];
-	 MIME_TRACE(0.00)[0:+];
-	 ARC_NA(0.00)[];
-	 R_SPF_FAIL(1.00)[-all];
-	 FROM_HAS_DN(0.00)[];
-	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_SPAM_SHORT(2.97)[0.989];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: 26.57
-X-Rspamd-Queue-Id: E97A31FB86
+References: <0f34dd9fbefc379a65fe09074f975a199352d99e.1700796515.git.wqu@suse.com>
+In-Reply-To: <0f34dd9fbefc379a65fe09074f975a199352d99e.1700796515.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 24 Nov 2023 11:50:55 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5PzUKeGjBCVP16zQjpbvA_f3KuRd2ucpGZMWJHV7z13A@mail.gmail.com>
+Message-ID: <CAL3q7H5PzUKeGjBCVP16zQjpbvA_f3KuRd2ucpGZMWJHV7z13A@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: free the allocated memory if btrfs_alloc_page_array()
+ failed
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently alloc_extent_buffer() utilizes find_or_create_page() to
-allocate one page a time for an extent buffer.
+On Fri, Nov 24, 2023 at 4:30=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [BUG]
+> If btrfs_alloc_page_array() failed to allocate all pages but part of the
+> slots, then the partially allocated pages would be leaked in function
+> btrfs_submit_compressed_read().
+>
+> [CAUSE]
+> As explicitly stated, if btrfs_alloc_page_array() returned -ENOMEM,
+> caller is responsible to free the partially allocated pages.
+>
+> For the existing call sites, most of them are fine:
+>
+> - btrfs_raid_bio::stripe_pages
+>   Handled by free_raid_bio().
+>
+> - extent_buffer::pages[]
+>   Handled btrfs_release_extent_buffer_pages().
+>
+> - scrub_stripe::pages[]
+>   Handled by release_scrub_stripe().
+>
+> But there is one exception in btrfs_submit_compressed_read(), if
+> btrfs_alloc_page_array() failed, we didn't cleanup the array and freed
+> the array pointer directly.
+>
+> Initially there is still the error handling in commit dd137dd1f2d7
+> ("btrfs: factor out allocating an array of pages"), but later in commit
+> 544fe4a903ce ("btrfs: embed a btrfs_bio into struct compressed_bio"),
+> the error handling is removed, leading to the possible memory leak.
+>
+> [FIX]
+> This patch would add back the error handling first, then to prevent such
+> situation from happening again, also make btrfs_alloc_page_array() to
+> free the allocated pages as a extra safe net.
+>
+> Fixes: 544fe4a903ce ("btrfs: embed a btrfs_bio into struct compressed_bio=
+")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-This method has the following disadvantages:
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-- find_or_create_page() is the legacy way of allocating new pages
-  With the new folio infrastructure, find_or_create_page() is just
-  redirected to filemap_get_folio().
+Looks good, thanks.
 
-- Lacks the way to support higher order (order >= 1) folios
-  As we can not yet let filemap to give us a higher order folio (yet).
-
-This patch would change the workflow by the following way:
-
-		Old		   |		new
------------------------------------+-------------------------------------
-                                   | ret = btrfs_alloc_page_array();
-for (i = 0; i < num_pages; i++) {  | for (i = 0; i < num_pages; i++) {
-    p = find_or_create_page();     |     ret = filemap_add_folio();
-    /* Attach page private */      |     /* Reuse page cache if needed */
-    /* Reused eb if needed */      |
-				   |     /* Attach page private and
-				   |        reuse eb if needed */
-				   | }
-
-By this we split the page allocation and private attaching into two
-parts, allowing future updates to each part more easily, and migrate to
-folio interfaces (especially for possible higher order folios).
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Use the old "GFP_NOFS | __GFP_NOFAIL" flag for metadata page
-  allocation
-
-v3:
-- Fix a missing "attached++" line
-  Which affects the error handling path.
----
- fs/btrfs/extent_io.c | 205 ++++++++++++++++++++++++++++++-------------
- 1 file changed, 146 insertions(+), 59 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index b645c3fb849c..fcd7b4674d08 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -668,24 +668,16 @@ static void end_bio_extent_readpage(struct btrfs_bio *bbio)
- 	bio_put(bio);
- }
- 
--/*
-- * Populate every free slot in a provided array with pages.
-- *
-- * @nr_pages:   number of pages to allocate
-- * @page_array: the array to fill with pages; any existing non-null entries in
-- * 		the array will be skipped
-- *
-- * Return: 0        if all pages were able to be allocated;
-- *         -ENOMEM  otherwise, and the partially allocated pages would be freed.
-- */
--int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array)
-+static int alloc_page_array(unsigned int nr_pages, struct page **page_array,
-+			    gfp_t extra_gfp)
- {
- 	unsigned int allocated;
- 
- 	for (allocated = 0; allocated < nr_pages;) {
- 		unsigned int last = allocated;
- 
--		allocated = alloc_pages_bulk_array(GFP_NOFS, nr_pages, page_array);
-+		allocated = alloc_pages_bulk_array(GFP_NOFS | extra_gfp,
-+						   nr_pages, page_array);
- 
- 		if (allocated == nr_pages)
- 			return 0;
-@@ -708,6 +700,21 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array)
- 	return 0;
- }
- 
-+/*
-+ * Populate every free slot in a provided array with pages.
-+ *
-+ * @nr_pages:   number of pages to allocate
-+ * @page_array: the array to fill with pages; any existing non-null entries in
-+ *		the array will be skipped
-+ *
-+ * Return: 0        if all pages were able to be allocated;
-+ *         -ENOMEM  otherwise, and the partially allocated pages would be freed.
-+ */
-+int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array)
-+{
-+	return alloc_page_array(nr_pages, page_array, 0);
-+}
-+
- static bool btrfs_bio_is_contig(struct btrfs_bio_ctrl *bio_ctrl,
- 				struct page *page, u64 disk_bytenr,
- 				unsigned int pg_offset)
-@@ -3088,6 +3095,14 @@ static bool page_range_has_eb(struct btrfs_fs_info *fs_info, struct page *page)
- static void detach_extent_buffer_page(struct extent_buffer *eb, struct page *page)
- {
- 	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	/*
-+	 * We can no longer using page->mapping reliably, as some extent buffer
-+	 * may not have any page mapped to btree_inode yet.
-+	 * Furthermore we have to handle dummy ebs during selftests, where
-+	 * btree_inode is not yet initialized.
-+	 */
-+	struct address_space *mapping = fs_info->btree_inode ?
-+					fs_info->btree_inode->i_mapping : NULL;
- 	const bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
- 	struct folio *folio = page_folio(page);
- 
-@@ -3096,11 +3111,11 @@ static void detach_extent_buffer_page(struct extent_buffer *eb, struct page *pag
- 	 * be done under the private_lock.
- 	 */
- 	if (mapped)
--		spin_lock(&page->mapping->private_lock);
-+		spin_lock(&mapping->private_lock);
- 
- 	if (!folio_test_private(folio)) {
- 		if (mapped)
--			spin_unlock(&page->mapping->private_lock);
-+			spin_unlock(&mapping->private_lock);
- 		return;
- 	}
- 
-@@ -3124,7 +3139,7 @@ static void detach_extent_buffer_page(struct extent_buffer *eb, struct page *pag
- 			folio_detach_private(folio);
- 		}
- 		if (mapped)
--			spin_unlock(&page->mapping->private_lock);
-+			spin_unlock(&mapping->private_lock);
- 		return;
- 	}
- 
-@@ -3147,7 +3162,7 @@ static void detach_extent_buffer_page(struct extent_buffer *eb, struct page *pag
- 	if (!page_range_has_eb(fs_info, page))
- 		btrfs_detach_subpage(fs_info, page);
- 
--	spin_unlock(&page->mapping->private_lock);
-+	spin_unlock(&mapping->private_lock);
- }
- 
- /* Release all pages attached to the extent buffer */
-@@ -3478,16 +3493,80 @@ static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
- 	return 0;
- }
- 
-+/*
-+ * Return 0 if eb->pages[i] is attached to btree inode successfully.
-+ * Return >0 if there is already annother extent buffer for the range,
-+ * and @found_eb_ret would be updated.
-+ */
-+static int attach_eb_page_to_filemap(struct extent_buffer *eb, int i,
-+				     struct extent_buffer **found_eb_ret)
-+{
-+
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
-+	struct address_space *mapping = fs_info->btree_inode->i_mapping;
-+	const unsigned long index = eb->start >> PAGE_SHIFT;
-+	struct folio *existing_folio;
-+	int ret;
-+
-+	ASSERT(found_eb_ret);
-+
-+	/* Caller should ensure the page exists. */
-+	ASSERT(eb->pages[i]);
-+
-+retry:
-+	ret = filemap_add_folio(mapping, page_folio(eb->pages[i]), index + i,
-+			GFP_NOFS | __GFP_NOFAIL);
-+	if (!ret)
-+		return 0;
-+
-+	existing_folio = filemap_lock_folio(mapping, index + i);
-+	/* The page cache only exists for a very short time, just retry. */
-+	if (IS_ERR(existing_folio))
-+		goto retry;
-+
-+	/*
-+	 * For now, we should only have single-page folios for btree
-+	 * inode.
-+	 */
-+	ASSERT(folio_nr_pages(existing_folio) == 1);
-+
-+	if (fs_info->nodesize < PAGE_SIZE) {
-+		/*
-+		 * We're going to reuse the existing page, can
-+		 * drop our page and subpage structure now.
-+		 */
-+		__free_page(eb->pages[i]);
-+		eb->pages[i] = folio_page(existing_folio, 0);
-+	} else {
-+		struct extent_buffer *existing_eb;
-+
-+		existing_eb = grab_extent_buffer(fs_info,
-+					folio_page(existing_folio, 0));
-+		if (existing_eb) {
-+			/*
-+			 * The extent buffer still exists, we can use
-+			 * it directly.
-+			 */
-+			*found_eb_ret = existing_eb;
-+			folio_unlock(existing_folio);
-+			folio_put(existing_folio);
-+			return 1;
-+		}
-+		/* The extent buffer no longer exists, we can reuse the folio. */
-+		__free_page(eb->pages[i]);
-+		eb->pages[i] = folio_page(existing_folio, 0);
-+	}
-+	return 0;
-+}
-+
- struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 					  u64 start, u64 owner_root, int level)
- {
- 	unsigned long len = fs_info->nodesize;
- 	int num_pages;
--	int i;
--	unsigned long index = start >> PAGE_SHIFT;
-+	int attached = 0;
- 	struct extent_buffer *eb;
--	struct extent_buffer *exists = NULL;
--	struct page *p;
-+	struct extent_buffer *existing_eb = NULL;
- 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
- 	struct btrfs_subpage *prealloc = NULL;
- 	u64 lockdep_owner = owner_root;
-@@ -3538,31 +3617,40 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	if (fs_info->nodesize < PAGE_SIZE) {
- 		prealloc = btrfs_alloc_subpage(fs_info, BTRFS_SUBPAGE_METADATA);
- 		if (IS_ERR(prealloc)) {
--			exists = ERR_CAST(prealloc);
--			goto free_eb;
-+			ret = PTR_ERR(prealloc);
-+			goto out;
- 		}
- 	}
- 
--	for (i = 0; i < num_pages; i++, index++) {
--		p = find_or_create_page(mapping, index, GFP_NOFS|__GFP_NOFAIL);
--		if (!p) {
--			exists = ERR_PTR(-ENOMEM);
--			btrfs_free_subpage(prealloc);
--			goto free_eb;
-+	/* Alloc all pages. */
-+	ret = alloc_page_array(num_pages, eb->pages, __GFP_NOFAIL);
-+	if (ret < 0) {
-+		ret = -ENOMEM;
-+		btrfs_free_subpage(prealloc);
-+		goto out;
-+	}
-+
-+	/* Attach all pages to the filemap. */
-+	for (int i = 0; i < num_pages; i++) {
-+		struct page *eb_page;
-+
-+		ret = attach_eb_page_to_filemap(eb, i, &existing_eb);
-+		if (ret > 0) {
-+			ASSERT(existing_eb);
-+			goto out;
- 		}
-+		attached++;
-+
-+		/*
-+		 * Only after attach_eb_page_to_filemap(), eb->pages[] is
-+		 * reliable, as we may choose to reuse the existing page cache
-+		 * and free the allocated page.
-+		 */
-+		eb_page = eb->pages[i];
- 
- 		spin_lock(&mapping->private_lock);
--		exists = grab_extent_buffer(fs_info, p);
--		if (exists) {
--			spin_unlock(&mapping->private_lock);
--			unlock_page(p);
--			put_page(p);
--			mark_extent_buffer_accessed(exists, p);
--			btrfs_free_subpage(prealloc);
--			goto free_eb;
--		}
- 		/* Should not fail, as we have preallocated the memory */
--		ret = attach_extent_buffer_page(eb, p, prealloc);
-+		ret = attach_extent_buffer_page(eb, eb_page, prealloc);
- 		ASSERT(!ret);
- 		/*
- 		 * To inform we have extra eb under allocation, so that
-@@ -3573,22 +3661,18 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		 * detach_extent_buffer_page().
- 		 * Thus needs no special handling in error path.
- 		 */
--		btrfs_page_inc_eb_refs(fs_info, p);
-+		btrfs_page_inc_eb_refs(fs_info, eb_page);
- 		spin_unlock(&mapping->private_lock);
- 
--		WARN_ON(btrfs_page_test_dirty(fs_info, p, eb->start, eb->len));
--		eb->pages[i] = p;
--
-+		WARN_ON(btrfs_page_test_dirty(fs_info, eb_page, eb->start, eb->len));
- 		/*
- 		 * Check if the current page is physically contiguous with previous eb
- 		 * page.
- 		 */
--		if (i && eb->pages[i - 1] + 1 != p)
-+		if (i && eb->pages[i - 1] + 1 != eb_page)
- 			page_contig = false;
--
--		if (!btrfs_page_test_uptodate(fs_info, p, eb->start, eb->len))
-+		if (!btrfs_page_test_uptodate(fs_info, eb_page, eb->start, eb->len))
- 			uptodate = 0;
--
- 		/*
- 		 * We can't unlock the pages just yet since the extent buffer
- 		 * hasn't been properly inserted in the radix tree, this
-@@ -3599,15 +3683,15 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	}
- 	if (uptodate)
- 		set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
-+
- 	/* All pages are physically contiguous, can skip cross page handling. */
- 	if (page_contig)
- 		eb->addr = page_address(eb->pages[0]) + offset_in_page(eb->start);
-+
- again:
- 	ret = radix_tree_preload(GFP_NOFS);
--	if (ret) {
--		exists = ERR_PTR(ret);
--		goto free_eb;
--	}
-+	if (ret)
-+		goto out;
- 
- 	spin_lock(&fs_info->buffer_lock);
- 	ret = radix_tree_insert(&fs_info->buffer_radix,
-@@ -3615,9 +3699,9 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	spin_unlock(&fs_info->buffer_lock);
- 	radix_tree_preload_end();
- 	if (ret == -EEXIST) {
--		exists = find_extent_buffer(fs_info, start);
--		if (exists)
--			goto free_eb;
-+		existing_eb = find_extent_buffer(fs_info, start);
-+		if (existing_eb)
-+			goto out;
- 		else
- 			goto again;
- 	}
-@@ -3630,19 +3714,22 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	 * btree_release_folio will correctly detect that a page belongs to a
- 	 * live buffer and won't free them prematurely.
- 	 */
--	for (i = 0; i < num_pages; i++)
-+	for (int i = 0; i < num_pages; i++)
- 		unlock_page(eb->pages[i]);
- 	return eb;
- 
--free_eb:
-+out:
- 	WARN_ON(!atomic_dec_and_test(&eb->refs));
--	for (i = 0; i < num_pages; i++) {
--		if (eb->pages[i])
--			unlock_page(eb->pages[i]);
-+	for (int i = 0; i < attached; i++) {
-+		ASSERT(eb->pages[i]);
-+		unlock_page(eb->pages[i]);
- 	}
- 
- 	btrfs_release_extent_buffer(eb);
--	return exists;
-+	if (ret < 0)
-+		return ERR_PTR(ret);
-+	ASSERT(existing_eb);
-+	return existing_eb;
- }
- 
- static inline void btrfs_release_extent_buffer_rcu(struct rcu_head *head)
--- 
-2.42.1
-
+> ---
+>  fs/btrfs/compression.c |  4 ++++
+>  fs/btrfs/extent_io.c   | 10 +++++++---
+>  2 files changed, 11 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 19b22b4653c8..d6120741774b 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -534,6 +534,10 @@ void btrfs_submit_compressed_read(struct btrfs_bio *=
+bbio)
+>         return;
+>
+>  out_free_compressed_pages:
+> +       for (int i =3D 0; i < cb->nr_pages; i++) {
+> +               if (cb->compressed_pages[i])
+> +                       __free_page(cb->compressed_pages[i]);
+> +       }
+>         kfree(cb->compressed_pages);
+>  out_free_bio:
+>         bio_put(&cb->bbio.bio);
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 0ea65f248c15..e2c0c596bd46 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -676,8 +676,7 @@ static void end_bio_extent_readpage(struct btrfs_bio =
+*bbio)
+>   *             the array will be skipped
+>   *
+>   * Return: 0        if all pages were able to be allocated;
+> - *         -ENOMEM  otherwise, and the caller is responsible for freeing=
+ all
+> - *                  non-null page pointers in the array.
+> + *         -ENOMEM  otherwise, and the partially allocated pages would b=
+e freed.
+>   */
+>  int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_arr=
+ay)
+>  {
+> @@ -696,8 +695,13 @@ int btrfs_alloc_page_array(unsigned int nr_pages, st=
+ruct page **page_array)
+>                  * though alloc_pages_bulk_array() falls back to alloc_pa=
+ge()
+>                  * if  it could not bulk-allocate. So we must be out of m=
+emory.
+>                  */
+> -               if (allocated =3D=3D last)
+> +               if (allocated =3D=3D last) {
+> +                       for (int i =3D 0; i < allocated; i++) {
+> +                               __free_page(page_array[i]);
+> +                               page_array[i] =3D NULL;
+> +                       }
+>                         return -ENOMEM;
+> +               }
+>
+>                 memalloc_retry_wait(GFP_NOFS);
+>         }
+> --
+> 2.42.1
+>
+>
 
