@@ -1,68 +1,65 @@
-Return-Path: <linux-btrfs+bounces-396-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-397-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F4747FA686
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Nov 2023 17:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 550C17FA6A9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Nov 2023 17:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ACEE281AD6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Nov 2023 16:33:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1064D2818CB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Nov 2023 16:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5443374F5;
-	Mon, 27 Nov 2023 16:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E7036B0D;
+	Mon, 27 Nov 2023 16:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="3w8bJekj"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="abnoc1RP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80128D4B;
-	Mon, 27 Nov 2023 08:33:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=N2zDXv8N842SdWeP1QfvmzEvIcEsyQplx8msSV1RBzc=; b=3w8bJekjauD14xkhiSXsSeP1yp
-	9N3b2DKZZPdBt27xj1DIEE7RXLXZrvHxDKR2sRYD21pNAAIJ3vl1ZCKZ4NFvv5G6xjzqey6N1n0KK
-	ZrI0nakNUBsMEbW2Q4e4j1NRh5OeO1tyxIFUhlV8EaqwcQbah9MgH17+QPadh0DqL/pm4sqZ5f/vV
-	IH1EMWIP6up9ybGx4dw0MvcLdLRClPIEOMfWizJpOcO8WEMAVnlOuY5kgUVe2HK2Xt75AhDq2qkmf
-	jzAFQBFfr3qP/5tAASIdgOPBH9JmPj2A8s0x9fJ50RYVccYl2K4OsZZ71u82sMqjEZ1B5f5BIa6y8
-	Lia9qiAg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7eXO-0030D4-22;
-	Mon, 27 Nov 2023 16:32:46 +0000
-Date: Mon, 27 Nov 2023 08:32:46 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: Christoph Hellwig <hch@infradead.org>, ming.lei@redhat.com,
-	axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-	konishi.ryusuke@gmail.com, dchinner@redhat.com,
-	linux@weissschuh.net, min15.li@samsung.com, dlemoal@kernel.org,
-	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
-	p.raghav@samsung.com, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-	linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
-	yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH block/for-next v2 01/16] block: add a new helper to get
- inode from block_device
-Message-ID: <ZWTErvnMf7HiO1Wj@infradead.org>
-References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
- <20231127062116.2355129-2-yukuai1@huaweicloud.com>
- <ZWRDeQ4K8BiYnV+X@infradead.org>
- <6acdeece-7163-3219-95e2-827e54eadd0c@huaweicloud.com>
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86317101
+	for <linux-btrfs@vger.kernel.org>; Mon, 27 Nov 2023 08:40:14 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-db4422fff15so3507938276.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Nov 2023 08:40:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1701103213; x=1701708013; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kLdBwx2WSe0ICpV7nDipSMHgDr905koz80/5ezYqhhk=;
+        b=abnoc1RPAlF7eEgieO0soyK6qGBay8AHCe/CRpE9XAlKhyeEdUsGaoshxxvNbM/Cyl
+         BUxfWWAkTkQXNVQBkHXaBO8q9f3/4sdrUPIM5yNoio+FRLTYqJzIMulAIjE5cS1G1KKc
+         091YMvprp6lIvtIv+uWLCQCyv9ZrxOwgHIOST5PtxtNZ9STIW17T7BlWDUs50N2MmL38
+         ENwmNIxFOJ0ajFVKRB79uACCq4DTx2UVmO1dlZhQNR08C7ZA6NpNLDolsJgNPdFrO3LM
+         pqWPpKov+YAas3b/+dfnqX95rlFysEP40S21IqVKieN6XYN2hOGKRp/jCqNtSzNZFgeE
+         Z0iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701103213; x=1701708013;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kLdBwx2WSe0ICpV7nDipSMHgDr905koz80/5ezYqhhk=;
+        b=rC+dVFb2JovoYRem5z+wfvNrbvHh9FrHwx98kLh5B9JJ6Z0zGptKEwQRkEEnZDE68M
+         wN7/KwIv3WL3u9FFU4jlxHqw6S99zO7kvhzntj/PMCTFuf33aZ4ER+g4oL/RS+oxkxPV
+         qB9dIEM3ygwAsDWdxVaLeT+BSbMRLvCJ5sYYFCWNTY4Z8AaQduaIHXIBZDdmFWcQne5C
+         luiHhVUcTn4U3Elvf2FnSK4HbugI+zKA9ikz0YjDtklzxk840rBT8/i0kL6fNvVytFNg
+         4BIrSx/4yDMzeTnIOe9pouE7wSoK4wcXl/mGd4ugwTmHnlvUbo5ladSnqa1yItNiqGUl
+         0QSw==
+X-Gm-Message-State: AOJu0Yx3dzziqyAKvmgzAzeqU1Y4tn8MhHL3B2R5dHp5msAibiXhr32z
+	NDHmWHw+eKzY2PvioYxPyxM/zCz4Xr0Cx52jWI0W5qU3
+X-Google-Smtp-Source: AGHT+IFrbrwT1X9lnzw5Ozz+uG29668lotofZ9RN8kgpXpBnc/5hPqFRwJor0ULYI68Ymqott4ORQQ==
+X-Received: by 2002:a25:c741:0:b0:d9a:f7dc:d8c3 with SMTP id w62-20020a25c741000000b00d9af7dcd8c3mr11839714ybe.15.1701103213645;
+        Mon, 27 Nov 2023 08:40:13 -0800 (PST)
+Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id y10-20020a25320a000000b00d9ca7c2c8e2sm3156004yby.11.2023.11.27.08.40.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 08:40:13 -0800 (PST)
+Date: Mon, 27 Nov 2023 11:40:12 -0500
+From: Josef Bacik <josef@toxicpanda.com>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3] btrfs: refactor alloc_extent_buffer() to
+ allocate-then-attach method
+Message-ID: <20231127164012.GG2366036@perftesting>
+References: <d07c880500b59aa457fb267491664aca0e6b4b32.1700811840.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -71,34 +68,42 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6acdeece-7163-3219-95e2-827e54eadd0c@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <d07c880500b59aa457fb267491664aca0e6b4b32.1700811840.git.wqu@suse.com>
 
-On Mon, Nov 27, 2023 at 09:07:22PM +0800, Yu Kuai wrote:
-> 1) Is't okay to add a new helper to pass in bdev for following apis?
-
-
-For some we already have them (e.g. bdev_nr_bytes to read the bdev)
-size, for some we need to add them.  The big thing that seems to
-stick out is page cache API, and I think that is where we need to
-define maintainable APIs for file systems and others to use the
-block device page cache.  Probably only in folio versions and not
-pages once if we're touching the code anyay
-
-> 2) For the file fs/buffer.c, there are some special usage like
-> following that I don't think it's good to add a helper:
+On Fri, Nov 24, 2023 at 06:14:16PM +1030, Qu Wenruo wrote:
+> Currently alloc_extent_buffer() utilizes find_or_create_page() to
+> allocate one page a time for an extent buffer.
 > 
-> spin_lock(&bd_inode->i_mapping->private_lock);
+> This method has the following disadvantages:
 > 
-> Is't okay to move following apis from fs/buffer.c directly to
-> block/bdev.c?
+> - find_or_create_page() is the legacy way of allocating new pages
+>   With the new folio infrastructure, find_or_create_page() is just
+>   redirected to filemap_get_folio().
 > 
-> __find_get_block
-> bdev_getblk
+> - Lacks the way to support higher order (order >= 1) folios
+>   As we can not yet let filemap to give us a higher order folio (yet).
+> 
+> This patch would change the workflow by the following way:
+> 
+> 		Old		   |		new
+> -----------------------------------+-------------------------------------
+>                                    | ret = btrfs_alloc_page_array();
+> for (i = 0; i < num_pages; i++) {  | for (i = 0; i < num_pages; i++) {
+>     p = find_or_create_page();     |     ret = filemap_add_folio();
+>     /* Attach page private */      |     /* Reuse page cache if needed */
+>     /* Reused eb if needed */      |
+> 				   |     /* Attach page private and
+> 				   |        reuse eb if needed */
+> 				   | }
+> 
+> By this we split the page allocation and private attaching into two
+> parts, allowing future updates to each part more easily, and migrate to
+> folio interfaces (especially for possible higher order folios).
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-I'm not sure moving is a good idea, but we might end up the
-some kind of low-level access from buffer.c, be that special
-helpers, a separate header or something else.  Let's sort out
-the rest of the kernel first.
+Sorry I just noticed the updated version of this, I sent my comments in reply to
+an older version but they still hold true for this version.  Thanks,
 
+Josef
 
