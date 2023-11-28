@@ -1,114 +1,124 @@
-Return-Path: <linux-btrfs+bounces-402-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-403-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 600CA7FB36B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 09:00:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C97A7FB4A1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 09:45:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E67EAB20F68
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 08:00:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F0801C21092
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 08:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D953E14AAE;
-	Tue, 28 Nov 2023 08:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="Jjtowm6d"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F2F1A29B;
+	Tue, 28 Nov 2023 08:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F2098
-	for <linux-btrfs@vger.kernel.org>; Tue, 28 Nov 2023 00:00:08 -0800 (PST)
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-18.iol.local with ESMTPA
-	id 7t0orxUYFEwsU7t0orfDOV; Tue, 28 Nov 2023 09:00:06 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-	t=1701158406; bh=KzuS4NnVSW82FE5kJ/7HbPKFhvhaOZajAh+xDuFSPWw=;
-	h=From;
-	b=Jjtowm6d1Si1pO4UVsS69aE6KL04Qs7wlUcT8rEHuru+Gx4j5UXzt0Z/XCuJbRal4
-	 NyOjAZPNaicPmDupE8i37J2+k4rYEL2+u5OtCEQKSzeLQqkfZyVDUYoCJsWqtn2zaS
-	 hMucQwtHpz8hSoDjV7Vsv4bh4YB9+dVIuAVJDMmAuQ9qZVaXg71Y9QQbUlyzmYoYpp
-	 0VBI+yth9j+brzkOt5U1fCe+RdeB+hNDFqowHScBXU2IbaB+3s7ikyfOpg5JoPhj7O
-	 KVleVbskbaHQmDBkXQ6k7Aj/DrqO7LFeEjQJeB60ywsuN0qUKJU/rjvHdf8m8+LYNE
-	 wUEUNaWj4LLUg==
-X-CNFS-Analysis: v=2.4 cv=N6vvVUxB c=1 sm=1 tr=0 ts=65659e06 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=3T79VapDeQJY0rWtCmsA:9 a=l4mWaurpklBE37-4:21
- a=QEXdDO2ut3YA:10
-Message-ID: <2248a4d7-bbd0-4bf3-992a-c1e13c8f2c20@libero.it>
-Date: Tue, 28 Nov 2023 09:00:06 +0100
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4793A1739
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 Nov 2023 00:45:20 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E0E9F1F390;
+	Tue, 28 Nov 2023 08:45:18 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C7E2C139FC;
+	Tue, 28 Nov 2023 08:45:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id GtiqHJyoZWXSRAAAn2gu4w
+	(envelope-from <wqu@suse.com>); Tue, 28 Nov 2023 08:45:16 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: william.brown@suse.com
+Subject: [PATCH 0/3] btrfs-progs: subvolume-list: add qgroup sizes output
+Date: Tue, 28 Nov 2023 19:14:50 +1030
+Message-ID: <cover.1701160698.git.wqu@suse.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH RFC] btrfs: pick device with lowest devt for show_devname
-Content-Language: en-US
-To: Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org
-References: <85226cf68d7a72a034f0c0895b96b2557169755b.1698917826.git.anand.jain@oracle.com>
- <20231124161906.GE18929@twin.jikos.cz>
- <36171811-ed49-4427-a647-e052ec70faa0@oracle.com>
- <589d8650-26e8-4c0e-a602-bdb5ce427ed5@oracle.com>
-From: Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <589d8650-26e8-4c0e-a602-bdb5ce427ed5@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfNehpItlY/DcABM7zZPzp9yLg8wgFQKF8z6C8NpuCeqGxIugkxT/JFkyPy9sFqMNJN8OijoGbjBUwFoah0oLOlE8/URKfPFc0ZoUK7bFaFqO70rcSN1g
- 4uKp/HQecXnOFGivwurD4OC6Nm543nsG5HVwylsqxejk9fdjl3qIf4OvuJCdcmrxBcKx5FAraZt1YaHvzlGGJc5VC2kp9XfrlrqRW5uPyOTLiAiOWr2sW20t
- SFhnrZkpqH3Qkx3IVR/P2g==
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none;
+	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+	spf=fail (smtp-out2.suse.de: domain of wqu@suse.com does not designate 2a07:de40:b281:104:10:150:64:98 as permitted sender) smtp.mailfrom=wqu@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_SPF_FAIL(1.00)[-all];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_DN_NONE(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 MID_CONTAINS_FROM(1.00)[];
+	 NEURAL_HAM_LONG(-0.93)[-0.933];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: 15.00
+X-Rspamd-Queue-Id: E0E9F1F390
+X-Spam: Yes
 
-On 27/11/2023 12.48, Anand Jain wrote:
-> 
-> 
-> On 11/25/23 09:09, Anand Jain wrote:
-[...]
->> I am skeptical about whether we have a strong case to create a single
->> pseudo device per multi-device Btrfs filesystem, such as, for example
->> '/dev/btrfs/<fsid>-<random>/rootid=5' and which means pseudo device
->> will carry the btrfs-magic and the actual blk devices something else.
->>
->> OR for now, regarding the umount issue mentioned above, we just can
->> document it for the users to be aware of.
->>
->> Any feedback is greatly appreciated.
->>
-> 
-> How about if we display the devices list in the options, so that
-> user-land libs have something in the mount-table that tells all
-> the devices part of the fsid?
-> 
-> For example:
-> $ cat /proc/self/mounts | grep btrfs
-> 
-> /dev/sda1 /btrfs btrfs rw,relatime,space_cache=v2,subvolid=5,subvol=/,device=/dev/sda2,device=/dev/sdb3  0 0
-> 
+ZFS' management tool is way better received than btrfs-progs, one of the
+user-friendly point is the default `zpool list`, which includes the size
+of each subvolume.
 
-When I developed code to find a btrfs mount point from a disk, I had to
-consider all the devices involved and check if one is in /proc/self/mounts.
+I'm not sure how ZFS handles it, but for btrfs we need qgroups (or the
+faster but slightly less accurate squota) to get the accurate numbers.
 
-Putting the devices list as device=<xxx>,device=<yyy> doesn't change anything because
-the code has to manage a btrfs filesistem as "special" in any case.
-To get the map <btrfs-uuid> <-> <devices-list> I used libblkid.
+But considering a lot of distro is enabling qgroup by default for
+exactly the same reason, and during the years qgroup itself is also
+under a lot of optimization, I believe adding sizes output for `btrfs
+subvolume list` is an overall benefit for end uesrs.
 
-I think that a "saner" way to manage this issue, is to patch "mount" to
-consider the special needing of btrfs.
+This patch would do exactly so, the output example is:
 
-Pay attention to consider also events like, removing a device, adding a device:
-after these events how /dev/disk/by-uuid/ would be updated ?
+ # ./btrfs subv list -t /mnt/btrfs/
+ ID	gen	top level	rfer	excl	path
+ --	---	---------	----	----	----
+ 256	11	5		1064960	1064960	subvol1
+ 257	11	5		4210688	4210688	subvol2
 
-What about bcachefs ? Does it have the same issue ? If yes this may be
-a further reason to patch "mount" instead relying to a rule (pick the
-lowest devt) spread for all the projects (systemd, mount...).
+The extra columns are added depending on if qgroup is enabled, and we
+allow users to force such output, but if qgroup is not enabled and we're
+forced to output such sizes, a warning would be outputted and fill all
+the sizes value as 0.
 
-> Thanks.
-> 
+Thanks William Brown for the UI suggestion.
 
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+Although there are still some pitfalls, mentioned in the last patch.
+
+Qu Wenruo (3):
+  btrfs-progs: separate root attributes into a dedicated structure from
+    root_info
+  btrfs-progs: use root_attr structure to pass various attributes
+  btrfs-progs: subvolume-list: output qgroup sizes for subvolumes
+
+ Documentation/btrfs-subvolume.rst |  12 +-
+ cmds/subvolume-list.c             | 572 ++++++++++++++++++------------
+ 2 files changed, 349 insertions(+), 235 deletions(-)
+
+--
+2.42.1
 
 
