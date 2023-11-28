@@ -1,177 +1,163 @@
-Return-Path: <linux-btrfs+bounces-416-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-417-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02CE77FBF7D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 17:47:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6567FC069
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 18:40:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 346611C20C45
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 16:47:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A9E52809A8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 17:40:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677494F1F5;
-	Tue, 28 Nov 2023 16:47:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A78539AD7;
+	Tue, 28 Nov 2023 17:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="b1Pp+ndv"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A7ED5D;
-	Tue, 28 Nov 2023 08:47:28 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 067CB219A1;
-	Tue, 28 Nov 2023 16:47:27 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D1EA6133B5;
-	Tue, 28 Nov 2023 16:47:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id uh4GM54ZZmUUXgAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Tue, 28 Nov 2023 16:47:26 +0000
-Date: Tue, 28 Nov 2023 17:40:10 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: syzbot <syzbot+10d5b62a8d7046b86d22@syzkaller.appspotmail.com>,
-	clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_use_block_rsv
-Message-ID: <20231128164010.GM18929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <0000000000004d4716060af08a45@google.com>
- <531f8f07-6c4c-66bb-1d8e-7637222154af@oracle.com>
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10481D5B;
+	Tue, 28 Nov 2023 09:40:14 -0800 (PST)
+Received: from relay2.suse.de (unknown [149.44.160.134])
+	by smtp-out1.suse.de (Postfix) with ESMTP id 92E06219A6;
+	Tue, 28 Nov 2023 17:40:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1701193212; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=vAnAMESl/RBl5agN44vVIGlcM5QSzJDmBjb6iA6A5vA=;
+	b=b1Pp+ndv/UVUOUZq50Z7179KQ7WWCW7i1BKysBKsGD4JigbE46gU3Q/askHemVvPTC6vV2
+	XKF7pFlTHR1R5sLxbPOaR9p2vAJw3eZ7VGtDQEscH3ZC8n/dkrAHWqOMQoPihCxs5F0cho
+	YD9JocMe6yDGMyxq/BN613cgKzgv/Us=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+	by relay2.suse.de (Postfix) with ESMTP id 6211F2C152;
+	Tue, 28 Nov 2023 17:40:11 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+	id 78178DA86C; Tue, 28 Nov 2023 18:32:59 +0100 (CET)
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.7-rc4
+Date: Tue, 28 Nov 2023 18:32:56 +0100
+Message-ID: <cover.1701191460.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <531f8f07-6c4c-66bb-1d8e-7637222154af@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Bar: ++++++++
-X-Spam-Score: 9.00
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++++++++++++++++++
+X-Spam-Score: 21.50
 X-Rspamd-Server: rspamd1
 Authentication-Results: smtp-out1.suse.de;
 	dkim=none;
-	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz;
-	dmarc=none
-X-Rspamd-Queue-Id: 067CB219A1
-X-Spamd-Result: default: False [9.00 / 50.00];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_SPAM(0.00)[40.64%];
+	spf=pass (smtp-out1.suse.de: domain of dsterba@suse.cz designates 149.44.160.134 as permitted sender) smtp.mailfrom=dsterba@suse.cz;
+	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=suse.com (policy=quarantine)
+X-Rspamd-Queue-Id: 92E06219A6
+X-Spamd-Result: default: False [21.50 / 50.00];
+	 RDNS_NONE(1.00)[];
+	 SPAMHAUS_XBL(0.00)[149.44.160.134:from];
 	 TO_DN_SOME(0.00)[];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 R_SPF_SOFTFAIL(4.60)[~all];
-	 RCVD_COUNT_THREE(0.00)[3];
+	 R_MISSING_CHARSET(2.50)[];
+	 R_SPF_ALLOW(-0.20)[+ip4:149.44.0.0/16];
+	 RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+	 HFILTER_HELO_IP_A(1.00)[relay2.suse.de];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 HFILTER_HELO_NORES_A_OR_MX(0.30)[relay2.suse.de];
 	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-0.984];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 FROM_EQ_ENVFROM(0.00)[];
+	 FORGED_SENDER(0.30)[dsterba@suse.com,dsterba@suse.cz];
+	 RCVD_NO_TLS_LAST(0.10)[];
 	 R_DKIM_NA(2.20)[];
 	 MIME_TRACE(0.00)[0:+];
-	 SUBJECT_HAS_QUESTION(0.00)[];
+	 FROM_NEQ_ENVFROM(0.10)[dsterba@suse.com,dsterba@suse.cz];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RDNS_DNSFAIL(0.00)[];
 	 ARC_NA(0.00)[];
 	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305];
-	 TAGGED_RCPT(0.00)[10d5b62a8d7046b86d22];
+	 NEURAL_SPAM_SHORT(3.00)[1.000];
 	 MIME_GOOD(-0.10)[text/plain];
-	 DMARC_NA(1.20)[suse.cz];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 MID_CONTAINS_FROM(1.00)[];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
+	 RCVD_COUNT_TWO(0.00)[2];
+	 HFILTER_HOSTNAME_UNKNOWN(2.50)[]
 
-On Sun, Nov 26, 2023 at 06:59:41AM +0800, Anand Jain wrote:
-> 
-> 
-> On 25/11/2023 10:08, syzbot wrote:
-> > syzbot has bisected this issue to:
-> > 
-> > commit a5b8a5f9f8355d27a4f8d0afa93427f16d2f3c1e
-> > Author: Anand Jain <anand.jain@oracle.com>
-> > Date:   Thu Sep 28 01:09:47 2023 +0000
-> > 
-> >      btrfs: support cloned-device mount capability
-> > 
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1446d344e80000
-> > start commit:   d3fa86b1a7b4 Merge tag 'net-6.7-rc3' of git://git.kernel.o..
-> > git tree:       upstream
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=1646d344e80000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1246d344e80000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=10d5b62a8d7046b86d22
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1431040ce80000
-> > 
-> > Reported-by: syzbot+10d5b62a8d7046b86d22@syzkaller.appspotmail.com
-> > Fixes: a5b8a5f9f835 ("btrfs: support cloned-device mount capability")
-> > 
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-> 
-> It is completely strange that this issue bisects to the commit
-> a5b8a5f9f835 ('btrfs: support cloned-device mount capability').
-> I am unable to reproduce this as well.
+Hi,
 
-I think it's because of changed timing or it can be an inconclusive
-bisect. Things around space handling depend on timing, the test would
-need to be run a few times to be sure.
+there are a few fixes and message updates. Please pull, thanks.
 
-The report provides an image so it may be good to analyze if it's scaled
-properly or if the reproducer does something strange.
+- fixes:
 
-> -------------------
-> WARNING: CPU: 1 PID: 58 at fs/btrfs/block-rsv.c:523 
-> btrfs_use_block_rsv+0x60d/0x860 fs/btrfs/block-rsv.c:523
-> <snap>
-> Call Trace:
->   <TASK>
->   btrfs_alloc_tree_block+0x1e0/0x12c0 fs/btrfs/extent-tree.c:5114
->   btrfs_force_cow_block+0x3e5/0x19e0 fs/btrfs/ctree.c:563
->   btrfs_cow_block+0x2b6/0xb30 fs/btrfs/ctree.c:741
->   push_leaf_left+0x315/0x4d0 fs/btrfs/ctree.c:3485
->   split_leaf+0x9c3/0x13b0 fs/btrfs/ctree.c:3681
->   search_leaf fs/btrfs/ctree.c:1944 [inline]
->   btrfs_search_slot+0x24ba/0x2fd0 fs/btrfs/ctree.c:2131
->   btrfs_insert_empty_items+0xb6/0x1b0 fs/btrfs/ctree.c:4285
->   btrfs_insert_empty_item fs/btrfs/ctree.h:657 [inline]
->   insert_reserved_file_extent+0x7aa/0x950 fs/btrfs/inode.c:2907
->   insert_ordered_extent_file_extent fs/btrfs/inode.c:3005 [inline]
->   btrfs_finish_one_ordered+0x12dc/0x20d0 fs/btrfs/inode.c:3113
->   btrfs_work_helper+0x210/0xbf0 fs/btrfs/async-thread.c:315
->   process_one_work+0x886/0x15d0 kernel/workqueue.c:2630
->   process_scheduled_works kernel/workqueue.c:2703 [inline]
->   worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
->   kthread+0x2c6/0x3a0 kernel/kthread.c:388
->   ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->   ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-> -----------------
-> 
-> btrfs_use_block_rsv()
-> <snap>
->          /*
->           * The global reserve still exists to save us from ourselves, 
-> so don't
->           * warn_on if we are short on our delayed refs reserve.
->           */
->          if (block_rsv->type != BTRFS_BLOCK_RSV_DELREFS &&
->              btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
->                  static DEFINE_RATELIMIT_STATE(_rs,
->                                  DEFAULT_RATELIMIT_INTERVAL * 10,
->                                  /*DEFAULT_RATELIMIT_BURST*/ 1);
->                  if (__ratelimit(&_rs))
->                          WARN(1, KERN_DEBUG
->                                  "BTRFS: block rsv %d returned %d\n",
->                                  block_rsv->type, ret);
->          }
-> ----------
+  - for simple quotas, handle the case when a snapshot is created and
+    the target qgroup already exists
+
+  - fix a warning when file descriptor given to send ioctl is not writable
+
+  - fix off-by-one condition when checking chunk maps
+
+  - free pages when page array allocation fails during compression read,
+    other cases were handled
+
+  - fix memory leak on error handling path in ref-verify debugging feature
+
+  - copy missing struct member 'version' in 64/32bit compat send ioctl
+
+- other updates
+
+  - tree-checker verifies inline backref ordering
+
+  - print messages to syslog on first mount and last unmount
+
+  - update error messages when reading chunk maps
+
+----------------------------------------------------------------
+The following changes since commit d3933152442b7f94419e9ea71835d71b620baf0e:
+
+  btrfs: make OWNER_REF_KEY type value smallest among inline refs (2023-11-09 14:02:12 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.7-rc3-tag
+
+for you to fetch changes up to 0ac1d13a55eb37d398b63e6ff6db4a09a2c9128c:
+
+  btrfs: send: ensure send_fd is writable (2023-11-24 18:50:53 +0100)
+
+----------------------------------------------------------------
+Bragatheswaran Manickavel (1):
+      btrfs: ref-verify: fix memory leaks in btrfs_ref_tree_mod()
+
+David Sterba (1):
+      btrfs: fix 64bit compat send ioctl arguments not initializing version member
+
+Filipe Manana (2):
+      btrfs: fix off-by-one when checking chunk map includes logical address
+      btrfs: make error messages more clear when getting a chunk map
+
+Jann Horn (1):
+      btrfs: send: ensure send_fd is writable
+
+Qu Wenruo (4):
+      btrfs: tree-checker: add type and sequence check for inline backrefs
+      btrfs: do not abort transaction if there is already an existing qgroup
+      btrfs: add dmesg output for first mount and last unmount of a filesystem
+      btrfs: free the allocated memory if btrfs_alloc_page_array() fails
+
+ fs/btrfs/disk-io.c      |  1 +
+ fs/btrfs/extent_io.c    | 11 ++++++++---
+ fs/btrfs/ioctl.c        |  1 +
+ fs/btrfs/ref-verify.c   |  2 ++
+ fs/btrfs/send.c         |  2 +-
+ fs/btrfs/super.c        |  5 ++++-
+ fs/btrfs/transaction.c  |  2 +-
+ fs/btrfs/tree-checker.c | 39 +++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c      |  9 +++++----
+ 9 files changed, 62 insertions(+), 10 deletions(-)
 
