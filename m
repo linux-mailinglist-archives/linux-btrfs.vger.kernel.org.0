@@ -1,190 +1,177 @@
-Return-Path: <linux-btrfs+bounces-415-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-416-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF3A37FBF46
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 17:37:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02CE77FBF7D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 17:47:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14959B21643
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 16:37:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 346611C20C45
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 16:47:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81315E0CE;
-	Tue, 28 Nov 2023 16:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iRA5G4fE";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tt3GCzk8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677494F1F5;
+	Tue, 28 Nov 2023 16:47:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8376D51
-	for <linux-btrfs@vger.kernel.org>; Tue, 28 Nov 2023 08:37:09 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A7ED5D;
+	Tue, 28 Nov 2023 08:47:28 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1440E1F898;
-	Tue, 28 Nov 2023 16:37:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1701189428;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9JmirliJL04esr16ecH9UtadcJRBH6H6ixY+s96oDKY=;
-	b=iRA5G4fEsidgMxdy28uJFZAknBcRVx9+fJ4pAGwwp63uhZoRNBiOeO2/8msB0jBQVe512o
-	UG0NdBA+2ipw0VxU7GOEjdPP0ZEdfzflDd2bN6hqo01QTt+R4q3CFy/TutENiODYwYz6E1
-	nBuJvU8Hgkoa+wo64l820e1L/7zpF6k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1701189428;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9JmirliJL04esr16ecH9UtadcJRBH6H6ixY+s96oDKY=;
-	b=tt3GCzk8LPjgBb7piqlFwjdp542AnqdJK7j9xlgQz9uREonQ3RERoLvrotwY7AP/dMnkyg
-	1/PzKrWokHNrG5CA==
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 067CB219A1;
+	Tue, 28 Nov 2023 16:47:27 +0000 (UTC)
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E37F1133B5;
-	Tue, 28 Nov 2023 16:37:07 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D1EA6133B5;
+	Tue, 28 Nov 2023 16:47:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id s1MANzMXZmX9WgAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Tue, 28 Nov 2023 16:37:07 +0000
-Date: Tue, 28 Nov 2023 17:29:47 +0100
+	id uh4GM54ZZmUUXgAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Tue, 28 Nov 2023 16:47:26 +0000
+Date: Tue, 28 Nov 2023 17:40:10 +0100
 From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: free the allocated memory if
- btrfs_alloc_page_array() failed
-Message-ID: <20231128162947.GL18929@twin.jikos.cz>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: syzbot <syzbot+10d5b62a8d7046b86d22@syzkaller.appspotmail.com>,
+	clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_use_block_rsv
+Message-ID: <20231128164010.GM18929@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <0f34dd9fbefc379a65fe09074f975a199352d99e.1700796515.git.wqu@suse.com>
- <CAL3q7H5PzUKeGjBCVP16zQjpbvA_f3KuRd2ucpGZMWJHV7z13A@mail.gmail.com>
- <CAL3q7H4g=eD5y7DB6x8TW_S4D--2K9y4j5RKH37B-ZpAjfqctw@mail.gmail.com>
- <20231124142520.GC18929@twin.jikos.cz>
- <a3f718be-021e-4711-b934-a0d59d97a054@gmx.com>
+References: <0000000000004d4716060af08a45@google.com>
+ <531f8f07-6c4c-66bb-1d8e-7637222154af@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a3f718be-021e-4711-b934-a0d59d97a054@gmx.com>
+In-Reply-To: <531f8f07-6c4c-66bb-1d8e-7637222154af@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 ARC_NA(0.00)[];
+X-Spamd-Bar: ++++++++
+X-Spam-Score: 9.00
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none;
+	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz;
+	dmarc=none
+X-Rspamd-Queue-Id: 067CB219A1
+X-Spamd-Result: default: False [9.00 / 50.00];
 	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
+	 BAYES_SPAM(0.00)[40.64%];
 	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmx.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
 	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCPT_COUNT_FIVE(0.00)[5];
+	 R_SPF_SOFTFAIL(4.60)[~all];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FREEMAIL_TO(0.00)[gmx.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-0.984];
+	 RCPT_COUNT_SEVEN(0.00)[9];
 	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
 	 MIME_TRACE(0.00)[0:+];
+	 SUBJECT_HAS_QUESTION(0.00)[];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305];
+	 TAGGED_RCPT(0.00)[10d5b62a8d7046b86d22];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DMARC_NA(1.20)[suse.cz];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.00
+	 SUSPICIOUS_RECIPS(1.50)[]
 
-On Sat, Nov 25, 2023 at 07:16:07PM +1030, Qu Wenruo wrote:
-> On 2023/11/25 00:55, David Sterba wrote:
-> > On Fri, Nov 24, 2023 at 12:47:37PM +0000, Filipe Manana wrote:
-> >> On Fri, Nov 24, 2023 at 11:50 AM Filipe Manana <fdmanana@kernel.org> wrote:
-> >>>
-> >>> On Fri, Nov 24, 2023 at 4:30 AM Qu Wenruo <wqu@suse.com> wrote:
-> >>>>
-> >>>> [BUG]
-> >>>> If btrfs_alloc_page_array() failed to allocate all pages but part of the
-> >>>> slots, then the partially allocated pages would be leaked in function
-> >>>> btrfs_submit_compressed_read().
-> >>>>
-> >>>> [CAUSE]
-> >>>> As explicitly stated, if btrfs_alloc_page_array() returned -ENOMEM,
-> >>>> caller is responsible to free the partially allocated pages.
-> >>>>
-> >>>> For the existing call sites, most of them are fine:
-> >>>>
-> >>>> - btrfs_raid_bio::stripe_pages
-> >>>>    Handled by free_raid_bio().
-> >>>>
-> >>>> - extent_buffer::pages[]
-> >>>>    Handled btrfs_release_extent_buffer_pages().
-> >>>>
-> >>>> - scrub_stripe::pages[]
-> >>>>    Handled by release_scrub_stripe().
-> >>>>
-> >>>> But there is one exception in btrfs_submit_compressed_read(), if
-> >>>> btrfs_alloc_page_array() failed, we didn't cleanup the array and freed
-> >>>> the array pointer directly.
-> >>>>
-> >>>> Initially there is still the error handling in commit dd137dd1f2d7
-> >>>> ("btrfs: factor out allocating an array of pages"), but later in commit
-> >>>> 544fe4a903ce ("btrfs: embed a btrfs_bio into struct compressed_bio"),
-> >>>> the error handling is removed, leading to the possible memory leak.
-> >>>>
-> >>>> [FIX]
-> >>>> This patch would add back the error handling first, then to prevent such
-> >>>> situation from happening again, also make btrfs_alloc_page_array() to
-> >>>> free the allocated pages as a extra safe net.
-> >>>>
-> >>>> Fixes: 544fe4a903ce ("btrfs: embed a btrfs_bio into struct compressed_bio")
-> >>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >>>
-> >>> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> >>>
-> >>> Looks good, thanks.
-> >>
-> >> Well, just one comment, see below.
-> >>
-> >>>
-> >>>> ---
-> >>>>   fs/btrfs/compression.c |  4 ++++
-> >>>>   fs/btrfs/extent_io.c   | 10 +++++++---
-> >>>>   2 files changed, 11 insertions(+), 3 deletions(-)
-> >>>>
-> >>>> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> >>>> index 19b22b4653c8..d6120741774b 100644
-> >>>> --- a/fs/btrfs/compression.c
-> >>>> +++ b/fs/btrfs/compression.c
-> >>>> @@ -534,6 +534,10 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio)
-> >>>>          return;
-> >>>>
-> >>>>   out_free_compressed_pages:
-> >>>> +       for (int i = 0; i < cb->nr_pages; i++) {
-> >>>> +               if (cb->compressed_pages[i])
-> >>>> +                       __free_page(cb->compressed_pages[i]);
-> >>>> +       }
-> >>
-> >> So this hunk is not needed, because of the changes you did to
-> >> btrfs_alloc_page_array(), as now it always frees any allocated pages
-> >> on -ENOMEM.
-> >
-> > Right, I'll drop the hunk, thanks.
+On Sun, Nov 26, 2023 at 06:59:41AM +0800, Anand Jain wrote:
 > 
-> In that case you may also want to delete the following commit message:
 > 
->  > <<This patch would add back the error handling first, then>> to
-> prevent such
+> On 25/11/2023 10:08, syzbot wrote:
+> > syzbot has bisected this issue to:
+> > 
+> > commit a5b8a5f9f8355d27a4f8d0afa93427f16d2f3c1e
+> > Author: Anand Jain <anand.jain@oracle.com>
+> > Date:   Thu Sep 28 01:09:47 2023 +0000
+> > 
+> >      btrfs: support cloned-device mount capability
+> > 
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1446d344e80000
+> > start commit:   d3fa86b1a7b4 Merge tag 'net-6.7-rc3' of git://git.kernel.o..
+> > git tree:       upstream
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=1646d344e80000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1246d344e80000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=10d5b62a8d7046b86d22
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1431040ce80000
+> > 
+> > Reported-by: syzbot+10d5b62a8d7046b86d22@syzkaller.appspotmail.com
+> > Fixes: a5b8a5f9f835 ("btrfs: support cloned-device mount capability")
+> > 
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> 
+> It is completely strange that this issue bisects to the commit
+> a5b8a5f9f835 ('btrfs: support cloned-device mount capability').
+> I am unable to reproduce this as well.
 
-Updated, thanks.
+I think it's because of changed timing or it can be an inconclusive
+bisect. Things around space handling depend on timing, the test would
+need to be run a few times to be sure.
+
+The report provides an image so it may be good to analyze if it's scaled
+properly or if the reproducer does something strange.
+
+> -------------------
+> WARNING: CPU: 1 PID: 58 at fs/btrfs/block-rsv.c:523 
+> btrfs_use_block_rsv+0x60d/0x860 fs/btrfs/block-rsv.c:523
+> <snap>
+> Call Trace:
+>   <TASK>
+>   btrfs_alloc_tree_block+0x1e0/0x12c0 fs/btrfs/extent-tree.c:5114
+>   btrfs_force_cow_block+0x3e5/0x19e0 fs/btrfs/ctree.c:563
+>   btrfs_cow_block+0x2b6/0xb30 fs/btrfs/ctree.c:741
+>   push_leaf_left+0x315/0x4d0 fs/btrfs/ctree.c:3485
+>   split_leaf+0x9c3/0x13b0 fs/btrfs/ctree.c:3681
+>   search_leaf fs/btrfs/ctree.c:1944 [inline]
+>   btrfs_search_slot+0x24ba/0x2fd0 fs/btrfs/ctree.c:2131
+>   btrfs_insert_empty_items+0xb6/0x1b0 fs/btrfs/ctree.c:4285
+>   btrfs_insert_empty_item fs/btrfs/ctree.h:657 [inline]
+>   insert_reserved_file_extent+0x7aa/0x950 fs/btrfs/inode.c:2907
+>   insert_ordered_extent_file_extent fs/btrfs/inode.c:3005 [inline]
+>   btrfs_finish_one_ordered+0x12dc/0x20d0 fs/btrfs/inode.c:3113
+>   btrfs_work_helper+0x210/0xbf0 fs/btrfs/async-thread.c:315
+>   process_one_work+0x886/0x15d0 kernel/workqueue.c:2630
+>   process_scheduled_works kernel/workqueue.c:2703 [inline]
+>   worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
+>   kthread+0x2c6/0x3a0 kernel/kthread.c:388
+>   ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>   ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+> -----------------
+> 
+> btrfs_use_block_rsv()
+> <snap>
+>          /*
+>           * The global reserve still exists to save us from ourselves, 
+> so don't
+>           * warn_on if we are short on our delayed refs reserve.
+>           */
+>          if (block_rsv->type != BTRFS_BLOCK_RSV_DELREFS &&
+>              btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
+>                  static DEFINE_RATELIMIT_STATE(_rs,
+>                                  DEFAULT_RATELIMIT_INTERVAL * 10,
+>                                  /*DEFAULT_RATELIMIT_BURST*/ 1);
+>                  if (__ratelimit(&_rs))
+>                          WARN(1, KERN_DEBUG
+>                                  "BTRFS: block rsv %d returned %d\n",
+>                                  block_rsv->type, ret);
+>          }
+> ----------
 
