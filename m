@@ -1,54 +1,54 @@
-Return-Path: <linux-btrfs+bounces-404-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-406-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10EA57FB4A7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 09:45:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D1D7FB4AD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 09:45:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3012A1C21004
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 08:45:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56981B21B54
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 08:45:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F3C1BDF8;
-	Tue, 28 Nov 2023 08:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA43D2E3E5;
+	Tue, 28 Nov 2023 08:45:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ujTgZhTX"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gntnZtNb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E11194
-	for <linux-btrfs@vger.kernel.org>; Tue, 28 Nov 2023 00:45:24 -0800 (PST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A982119B3
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 Nov 2023 00:45:27 -0800 (PST)
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6B6F22191E;
-	Tue, 28 Nov 2023 08:45:23 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BD22E1F45A;
+	Tue, 28 Nov 2023 08:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1701161123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1701161125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HUgn9MC7LXRMWyQDfRAzXqZRA6B3sYYLUBVRIn+B4Xc=;
-	b=ujTgZhTXwCBvyhyEIJLHOlXQ5cKtZHJzKQ0hl2MFeJX7r+0MRv2QoxoLIEZjc2nLF27Zfs
-	snmwY3rmth1G+ViBYACzISDjdojjAL8SNOqWYtMSJAF7baxcUQjcjQuHp6i8f1HWrar0VU
-	FfL5sPMbygmGHXmi6A2NtNihUXNP7Y8=
+	bh=Fsnj9nQVCMr9teYvnU6MwYoDAnHfCRRjzopxhWAukq0=;
+	b=gntnZtNbUtZDx8g/duy07RREEABo2/KnQXBRMTb3na44PZ2lX4YPXnWZse8GdkjSX4rb0M
+	7FA+A7kUxwwq6KUGcLgCAw1w9xwCCGRk0eVwPJTLHG7F+XDbL9r5gtk9+MCPq8y0OklEZ3
+	ooyhQSss/dNmX4ieYYuMZ+RSrzofuOc=
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DF31C139FC;
-	Tue, 28 Nov 2023 08:45:21 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 18544139FC;
+	Tue, 28 Nov 2023 08:45:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id cBvgIKGoZWXSRAAAn2gu4w
-	(envelope-from <wqu@suse.com>); Tue, 28 Nov 2023 08:45:21 +0000
+	id CDptLaOoZWXSRAAAn2gu4w
+	(envelope-from <wqu@suse.com>); Tue, 28 Nov 2023 08:45:23 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: william.brown@suse.com
-Subject: [PATCH 2/3] btrfs-progs: use root_attr structure to pass various attributes
-Date: Tue, 28 Nov 2023 19:14:52 +1030
-Message-ID: <0d32a74f55755f42ccb96c80471f76abd6cdaaec.1701160698.git.wqu@suse.com>
+Subject: [PATCH 3/3] btrfs-progs: subvolume-list: output qgroup sizes for subvolumes
+Date: Tue, 28 Nov 2023 19:14:53 +1030
+Message-ID: <1ef88bdfed7ea8e0e05a3518d74921782213fd16.1701160698.git.wqu@suse.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <cover.1701160698.git.wqu@suse.com>
 References: <cover.1701160698.git.wqu@suse.com>
@@ -59,308 +59,353 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
+Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spam-Score: 9.00
-X-Spamd-Result: default: False [9.00 / 50.00];
+X-Spam-Score: 7.85
+X-Spamd-Result: default: False [7.85 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_SPAM(5.10)[99.99%];
 	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 R_MISSING_CHARSET(2.50)[];
-	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 TO_DN_NONE(0.00)[];
 	 BROKEN_CONTENT_TYPE(1.50)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 NEURAL_SPAM_SHORT(2.35)[0.783];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	 RCPT_COUNT_TWO(0.00)[2];
 	 MID_CONTAINS_FROM(1.00)[];
 	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[]
+	 MIME_TRACE(0.00)[0:~];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
 
-Currently for the following functions, we have at least 14 parameters,
-just to describle various attributes:
+Inspired by ZFS `zpool list`, which would output the sizes of each
+subvolume, we can do better for out "btrfs subvolume list" UI/UX.
 
-- update_root()
-- add_root()
-- add_root_backref()
+This patch would introduce the auto-detection and auto-output using
+qgroup sizes for subvolumes.
 
-With the recent introduce of root_attr structure, we can easily replace
-those parameters with a root_attr structure pointer.
+The output would look like this:
 
-Furthermore, since add_root() and update_root() are both updating the
-same structure, we can also extract a update_root_attr() helper, to
-remove the duplicated code.
+ # ./btrfs subv list -t /mnt/btrfs/
+ ID	gen	top level	rfer	excl	path
+ --	---	---------	----	----	----
+ 256	11	5		1064960	1064960	subvol1
+ 257	11	5		4210688	4210688	subvol2
+
+Unfortunately there would be some pitfalls:
+
+- No output for subvolume 5 (fs tree)
+  As we do not output subvolume 5 (fs tree) at all, thus if the end user
+  wants the size of fs tree, they would still be upset.
+
+- If qgroup is not enabled, the sizes would be omitted
+  This may lead to different outputs for different use cases and can
+  lead to some confusion.
+
+- Over simplified column name
+  As a developer get too used to qgroup, I don't have any better names for
+  the sizes right now.
+
+- Table output can easily be screwed up by the larger sizes
+  This requires some update to the table output to know the possible
+  longest values to adjust.
+  Which is definitely worthy some other patchsets to address.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- cmds/subvolume-list.c | 188 ++++++++++++++++--------------------------
- 1 file changed, 72 insertions(+), 116 deletions(-)
+ Documentation/btrfs-subvolume.rst |  12 ++-
+ cmds/subvolume-list.c             | 140 +++++++++++++++++++++++++++++-
+ 2 files changed, 150 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/btrfs-subvolume.rst b/Documentation/btrfs-subvolume.rst
+index eb116c4bdc95..8eaab5872d70 100644
+--- a/Documentation/btrfs-subvolume.rst
++++ b/Documentation/btrfs-subvolume.rst
+@@ -130,7 +130,7 @@ list [options] [-G [\+|-]<value>] [-C [+|-]<value>] [--sort=rootid,gen,ogen,path
+ 
+         For every subvolume the following information is shown by default:
+ 
+-        ID *ID* gen *generation* top level *parent_ID* path *path*
++        ID *ID* gen *generation* top level *parent_ID* [size (referenced) *rfer* size (exclusive) *excl*] path *path*
+ 
+         where *ID* is subvolume's (root)id, *generation* is an internal counter which is
+         updated every transaction, *parent_ID* is the same as the parent subvolume's id,
+@@ -138,6 +138,11 @@ list [options] [-G [\+|-]<value>] [-C [+|-]<value>] [--sort=rootid,gen,ogen,path
+         The subvolume's ID may be used by the subvolume set-default command,
+         or at mount time via the *subvolid=* option.
+ 
++	The sizes of a subvolume will only be outputted if qgroup is enabled,
++	as that's the only way to get accurate size of a subvolume.
++	The referenced size is the total bytes of every extent referred by that subvolume.
++	While the exclusive size is total bytes that is exclusive to that subvolume.
++
+         ``Options``
+ 
+         Path filtering:
+@@ -163,6 +168,11 @@ list [options] [-G [\+|-]<value>] [-C [+|-]<value>] [--sort=rootid,gen,ogen,path
+         -q
+                 print the parent UUID of the subvolume
+                 (*parent* here means subvolume of which this subvolume is a snapshot).
++
++	-Q
++		always print the qgroup sizes of the subvolume
++		If qgroup is not enabled, a warning would be outputted and all
++		qgroup sizes would be zero.
+         -R
+                 print the UUID of the sent subvolume, where the subvolume is the result of a receive operation.
+ 
 diff --git a/cmds/subvolume-list.c b/cmds/subvolume-list.c
-index e0a1c5d4f626..e05f7228b889 100644
+index e05f7228b889..28826571ab97 100644
 --- a/cmds/subvolume-list.c
 +++ b/cmds/subvolume-list.c
-@@ -535,54 +535,57 @@ static struct root_info *root_tree_search(struct rb_root *root_tree,
- 	return NULL;
+@@ -66,6 +66,7 @@ static const char * const cmd_subvolume_list_usage[] = {
+ 	OPTLINE("-g", "print the generation of the subvolume"),
+ 	OPTLINE("-u", "print the uuid of subvolumes (and snapshots)"),
+ 	OPTLINE("-q", "print the parent uuid of the snapshots"),
++	OPTLINE("-Q", "always print the qgroup size of each subvolume (instead of auto detect)"),
+ 	OPTLINE("-R", "print the uuid of the received snapshots"),
+ 	"",
+ 	"Type filtering:",
+@@ -131,6 +132,10 @@ struct root_attr {
+ 	/* creation time of this root in sec*/
+ 	time_t otime;
+ 
++	/* Qgroup accounting. */
++	u64 rfer;
++	u64 excl;
++
+ 	u8 uuid[BTRFS_UUID_SIZE];
+ 	u8 puuid[BTRFS_UUID_SIZE];
+ 	u8 ruuid[BTRFS_UUID_SIZE];
+@@ -195,6 +200,8 @@ enum btrfs_list_column_enum {
+ 	BTRFS_LIST_PUUID,
+ 	BTRFS_LIST_RUUID,
+ 	BTRFS_LIST_UUID,
++	BTRFS_LIST_QGROUP_RFER,
++	BTRFS_LIST_QGROUP_EXCL,
+ 	BTRFS_LIST_PATH,
+ 	BTRFS_LIST_ALL,
+ };
+@@ -286,6 +293,16 @@ static struct {
+ 		.column_name	= "UUID",
+ 		.need_print	= 0,
+ 	},
++	{
++		.name		= "rfer",
++		.column_name	= "RFER",
++		.need_print	= 0,
++	},
++	{
++		.name		= "excl",
++		.column_name	= "EXCL",
++		.need_print	= 0,
++	},
+ 	{
+ 		.name		= "path",
+ 		.column_name	= "Path",
+@@ -567,6 +584,10 @@ static void update_root_attr(struct root_attr *found,
+ 		found->ogen = new->root_offset;
+ 	if (new->otime)
+ 		found->otime = new->otime;
++	if (new->rfer)
++		found->rfer = new->rfer;
++	if (new->excl)
++		found->excl = new->excl;
+ 	if (new->uuid[0])
+ 		memcpy(&found->uuid, new->uuid, BTRFS_UUID_SIZE);
+ 	if (new->puuid[0])
+@@ -574,6 +595,7 @@ static void update_root_attr(struct root_attr *found,
+ 	if (new->ruuid[0])
+ 		memcpy(&found->ruuid, new->ruuid, BTRFS_UUID_SIZE);
+ 
++
  }
  
--static int update_root(struct rb_root *root_lookup,
--		       u64 root_id, u64 ref_tree, u64 root_offset, u64 flags,
--		       u64 dir_id, char *name, int name_len, u64 ogen, u64 gen,
--		       time_t otime, u8 *uuid, u8 *puuid, u8 *ruuid)
-+/* Update the root attributes of @found to @new, except the rootid. */
-+static void update_root_attr(struct root_attr *found,
-+			     const struct root_attr *new)
- {
--	struct root_info *ri;
--	struct root_attr *attrs;
-+	if (new->name && new->name_len > 0) {
-+		free(found->name);
+ static int update_root(struct rb_root *root_lookup,
+@@ -789,6 +811,88 @@ static int lookup_ino_path(int fd, struct root_info *ri)
+ 	return 0;
+ }
  
--	ri = root_tree_search(root_lookup, root_id);
--	if (!ri || ri->attrs.root_id != root_id)
--		return -ENOENT;
--
--	attrs = &ri->attrs;
--	if (name && name_len > 0) {
--		free(attrs->name);
--
--		attrs->name = malloc(name_len + 1);
--		if (!attrs->name) {
-+		found->name = malloc(new->name_len + 1);
-+		if (!found->name) {
- 			error_msg(ERROR_MSG_MEMORY, NULL);
- 			exit(1);
- 		}
--		strncpy(attrs->name, name, name_len);
--		attrs->name[name_len] = 0;
--		attrs->name_len = name_len;
-+		strncpy(found->name, new->name, new->name_len);
-+		found->name[new->name_len] = '\0';
-+		found->name_len = new->name_len;
- 	}
--	if (ref_tree)
--		attrs->ref_tree = ref_tree;
--	if (root_offset)
--		attrs->root_offset = root_offset;
--	if (flags)
--		attrs->flags = flags;
--	if (dir_id)
--		attrs->dir_id = dir_id;
--	if (gen)
--		attrs->gen = gen;
--	if (ogen)
--		attrs->ogen = ogen;
--	if (!attrs->ogen && root_offset)
--		attrs->ogen = root_offset;
--	if (otime)
--		attrs->otime = otime;
--	if (uuid)
--		memcpy(&attrs->uuid, uuid, BTRFS_UUID_SIZE);
--	if (puuid)
--		memcpy(&attrs->puuid, puuid, BTRFS_UUID_SIZE);
--	if (ruuid)
--		memcpy(&attrs->ruuid, ruuid, BTRFS_UUID_SIZE);
-+	if (new->ref_tree)
-+		found->ref_tree = new->ref_tree;
-+	if (new->root_offset)
-+		found->root_offset = new->root_offset;
-+	if (new->flags)
-+		found->flags = new->flags;
-+	if (new->dir_id)
-+		found->dir_id = new->dir_id;
-+	if (new->gen)
-+		found->gen = new->gen;
-+	if (new->ogen)
-+		found->ogen = new->ogen;
-+	if (!found->ogen && new->root_offset)
-+		found->ogen = new->root_offset;
-+	if (new->otime)
-+		found->otime = new->otime;
-+	if (new->uuid[0])
-+		memcpy(&found->uuid, new->uuid, BTRFS_UUID_SIZE);
-+	if (new->puuid[0])
-+		memcpy(&found->puuid, new->puuid, BTRFS_UUID_SIZE);
-+	if (new->ruuid[0])
-+		memcpy(&found->ruuid, new->ruuid, BTRFS_UUID_SIZE);
- 
++static int fill_qgroup_attrs(int fd, struct rb_root *root_lookup)
++{
++	struct btrfs_ioctl_search_args args = {
++		.key = {
++			.tree_id = BTRFS_QUOTA_TREE_OBJECTID,
++			.max_type = BTRFS_QGROUP_INFO_KEY,
++			.min_type = BTRFS_QGROUP_INFO_KEY,
++			.max_objectid = (u64)-1,
++			.max_offset = (u64)-1,
++			.max_transid = (u64)-1,
++			.nr_items = 4096,
++		},
++	};
++	struct btrfs_ioctl_search_key *sk = &args.key;
++	int ret;
++
++	while (1) {
++		unsigned long off = 0;
++
++		ret = ioctl(fd, BTRFS_IOC_TREE_SEARCH, &args);
++		if (ret < 0) {
++			if (errno == ENOENT)
++				ret = -ENOTTY;
++			else
++				ret = -errno;
++			goto out;
++		}
++		/* the ioctl returns the number of item it found in nr_items */
++		if (sk->nr_items == 0)
++			goto out;
++
++		for (int i = 0; i < sk->nr_items; i++) {
++			struct root_attr attr = { 0 };
++			struct btrfs_ioctl_search_header *sh;
++			struct btrfs_qgroup_info_item *info;
++			struct btrfs_key key;
++
++			sh = (struct btrfs_ioctl_search_header *)(args.buf + off);
++			off += sizeof(*sh);
++
++			key.objectid = btrfs_search_header_objectid(sh);
++			key.type = btrfs_search_header_type(sh);
++			key.offset = btrfs_search_header_offset(sh);
++
++			/* Skip unrealted items and higher level qgroups. */
++			if (key.type != BTRFS_QGROUP_INFO_KEY ||
++			    btrfs_qgroup_level(key.offset))
++				goto next;
++
++			info = (struct btrfs_qgroup_info_item *)(args.buf + off);
++
++			attr.root_id = key.offset;
++			attr.rfer = btrfs_stack_qgroup_info_rfer(info);
++			attr.excl = btrfs_stack_qgroup_info_excl(info);
++			ret = add_root(root_lookup, &attr);
++			if (ret < 0)
++				break;
++next:
++			off += btrfs_search_header_len(sh);
++
++			/*
++			 * record the mins in sk so we can make sure the
++			 * next search doesn't repeat this root
++			 */
++			sk->min_type = key.type;
++			sk->min_offset = key.offset;
++			sk->min_objectid = key.objectid;
++		}
++		sk->nr_items = 4096;
++		/*
++		 * this iteration is done, step forward one qgroup for the next
++		 * ioctl
++		 */
++		if (sk->min_offset < (u64)-1)
++			sk->min_offset++;
++		else
++			break;
++	}
++out:
++	return ret;
 +}
 +
-+static int update_root(struct rb_root *root_lookup,
-+		       struct root_attr const *new)
-+{
-+	struct root_info *ri;
-+
-+	ri = root_tree_search(root_lookup, new->root_id);
-+	if (!ri || ri->attrs.root_id != new->root_id)
-+		return -ENOENT;
-+
-+	update_root_attr(&ri->attrs, new);
- 	return 0;
- }
- 
-@@ -591,18 +594,12 @@ static int update_root(struct rb_root *root_lookup,
-  *	      into the lookup tree.
-  * attrs: the description for the new root.
-  */
--static int add_root(struct rb_root *root_lookup,
--		    u64 root_id, u64 ref_tree, u64 root_offset, u64 flags,
--		    u64 dir_id, char *name, int name_len, u64 ogen, u64 gen,
--		    time_t otime, u8 *uuid, u8 *puuid, u8 *ruuid)
-+static int add_root(struct rb_root *root_lookup, const struct root_attr *new)
+ static int list_subvol_search(int fd, struct rb_root *root_lookup)
  {
- 	struct root_info *ri;
--	struct root_attr *attrs;
  	int ret;
- 
--	ret = update_root(root_lookup, root_id, ref_tree, root_offset, flags,
--			  dir_id, name, name_len, ogen, gen, otime,
--			  uuid, puuid, ruuid);
-+	ret = update_root(root_lookup, new);
- 	if (!ret)
- 		return 0;
- 
-@@ -611,49 +608,14 @@ static int add_root(struct rb_root *root_lookup,
- 		error_msg(ERROR_MSG_MEMORY, NULL);
- 		exit(1);
- 	}
--	attrs = &ri->attrs;
--	attrs->root_id = root_id;
-+	ri->attrs.root_id = new->root_id;
- 
--	if (name && name_len > 0) {
--		attrs->name = malloc(name_len + 1);
--		if (!attrs->name) {
--			error_msg(ERROR_MSG_MEMORY, NULL);
--			exit(1);
--		}
--		strncpy(attrs->name, name, name_len);
--		attrs->name[name_len] = 0;
--		attrs->name_len = name_len;
--	}
--	if (ref_tree)
--		attrs->ref_tree = ref_tree;
--	if (dir_id)
--		attrs->dir_id = dir_id;
--	if (root_offset)
--		attrs->root_offset = root_offset;
--	if (flags)
--		attrs->flags = flags;
--	if (gen)
--		attrs->gen = gen;
--	if (ogen)
--		attrs->ogen = ogen;
--	if (!attrs->ogen && root_offset)
--		attrs->ogen = root_offset;
--	if (otime)
--		attrs->otime = otime;
--
--	if (uuid)
--		memcpy(&attrs->uuid, uuid, BTRFS_UUID_SIZE);
--
--	if (puuid)
--		memcpy(&attrs->puuid, puuid, BTRFS_UUID_SIZE);
--
--	if (ruuid)
--		memcpy(&attrs->ruuid, ruuid, BTRFS_UUID_SIZE);
-+	update_root_attr(&ri->attrs, new);
- 
- 	ret = root_tree_insert(root_lookup, ri);
- 	if (ret < 0) {
- 		errno = -ret;
--		error("failed to insert subvolume %llu to tree: %m", root_id);
-+		error("failed to insert subvolume %llu to tree: %m", new->root_id);
- 		exit(1);
- 	}
- 	return 0;
-@@ -666,8 +628,15 @@ static int add_root(struct rb_root *root_lookup,
- static int add_root_backref(struct rb_root *root_lookup, u64 root_id,
- 		u64 ref_tree, u64 dir_id, char *name, int name_len)
+@@ -1157,6 +1261,12 @@ static void print_subvolume_column(struct root_info *subv,
+ 			uuid_unparse(attrs->ruuid, uuidparse);
+ 		pr_verbose(LOG_DEFAULT, "%-36s", uuidparse);
+ 		break;
++	case BTRFS_LIST_QGROUP_RFER:
++		pr_verbose(LOG_DEFAULT, "%llu", attrs->rfer);
++		break;
++	case BTRFS_LIST_QGROUP_EXCL:
++		pr_verbose(LOG_DEFAULT, "%llu", attrs->excl);
++		break;
+ 	case BTRFS_LIST_PATH:
+ 		BUG_ON(!attrs->full_path);
+ 		pr_verbose(LOG_DEFAULT, "%s", attrs->full_path);
+@@ -1280,6 +1390,12 @@ static void print_subvol_json_key(struct format_ctx *fctx,
+ 	case BTRFS_LIST_UUID:
+ 		fmt_print(fctx, column_name, attrs->uuid);
+ 		break;
++	case BTRFS_LIST_QGROUP_RFER:
++		fmt_print(fctx, column_name, attrs->rfer);
++		break;
++	case BTRFS_LIST_QGROUP_EXCL:
++		fmt_print(fctx, column_name, attrs->excl);
++		break;
+ 	case BTRFS_LIST_PUUID:
+ 		fmt_print(fctx, column_name, attrs->puuid);
+ 		break;
+@@ -1363,6 +1479,7 @@ static int btrfs_list_subvols(int fd, struct rb_root *root_lookup)
  {
--	return add_root(root_lookup, root_id, ref_tree, 0, 0, dir_id, name,
--			name_len, 0, 0, 0, NULL, NULL, NULL);
-+	struct root_attr tmp = { 0 };
+ 	int ret;
+ 	struct rb_node *n;
++	bool qgroup_enabled = false;
+ 
+ 	ret = list_subvol_search(fd, root_lookup);
+ 	if (ret) {
+@@ -1370,6 +1487,17 @@ static int btrfs_list_subvols(int fd, struct rb_root *root_lookup)
+ 		return ret;
+ 	}
+ 
++	ret = fill_qgroup_attrs(fd, root_lookup);
++	/*
++	 * Qgroup is not enabled but the user is trying to output qgroup info
++	 * explicitly, give a warning at least.
++	 */
++	if (ret < 0 && (btrfs_list_columns[BTRFS_LIST_QGROUP_RFER].need_print ||
++			btrfs_list_columns[BTRFS_LIST_QGROUP_EXCL].need_print)) {
++		errno = -ret;
++		warning("qgroup output is not available: %m");
++	}
 +
-+	tmp.root_id = root_id;
-+	tmp.ref_tree = ref_tree;
-+	tmp.dir_id = dir_id;
-+	tmp.name = name;
-+	tmp.name_len = name_len;
-+
-+	return add_root(root_lookup, &tmp);
+ 	/*
+ 	 * now we have an rbtree full of root_info objects, but we need to fill
+ 	 * in their path names within the subvol that is referencing each one.
+@@ -1379,11 +1507,17 @@ static int btrfs_list_subvols(int fd, struct rb_root *root_lookup)
+ 		struct root_info *entry;
+ 
+ 		entry = to_root_info(n);
++		if (entry->attrs.rfer && entry->attrs.excl)
++			qgroup_enabled = true;
+ 		ret = lookup_ino_path(fd, entry);
+ 		if (ret && ret != -ENOENT)
+ 			return ret;
+ 		n = rb_next(n);
+ 	}
++	if (qgroup_enabled) {
++		btrfs_list_setup_print_column(BTRFS_LIST_QGROUP_RFER);
++		btrfs_list_setup_print_column(BTRFS_LIST_QGROUP_EXCL);
++	}
+ 
+ 	return 0;
  }
+@@ -1568,7 +1702,7 @@ static int cmd_subvolume_list(const struct cmd_struct *cmd, int argc, char **arg
+ 		};
  
- static void free_root_info(struct rb_node *node)
-@@ -832,9 +801,6 @@ static int list_subvol_search(int fd, struct rb_root *root_lookup)
- 	int name_len;
- 	char *name;
- 	u64 dir_id;
--	u64 gen = 0;
--	u64 ogen;
--	u64 flags;
- 	int i;
+ 		c = getopt_long(argc, argv,
+-				    "acdgopqsurRG:C:t", long_options, NULL);
++				    "acdgopqQsurRG:C:t", long_options, NULL);
+ 		if (c < 0)
+ 			break;
  
- 	root_lookup->rb_node = NULL;
-@@ -878,39 +844,29 @@ static int list_subvol_search(int fd, struct rb_root *root_lookup)
- 			} else if (sh.type == BTRFS_ROOT_ITEM_KEY &&
- 				   (sh.objectid >= BTRFS_FIRST_FREE_OBJECTID ||
- 				    sh.objectid == BTRFS_FS_TREE_OBJECTID)) {
--				time_t otime;
--				u8 uuid[BTRFS_UUID_SIZE];
--				u8 puuid[BTRFS_UUID_SIZE];
--				u8 ruuid[BTRFS_UUID_SIZE];
-+				struct root_attr tmp = { 0 };
- 
- 				ri = (struct btrfs_root_item *)(args.buf + off);
--				gen = btrfs_root_generation(ri);
--				flags = btrfs_root_flags(ri);
-+				tmp.root_id = sh.objectid;
-+				tmp.root_offset = sh.offset;
-+				tmp.gen = btrfs_root_generation(ri);
-+				tmp.flags = btrfs_root_flags(ri);
- 				if(sh.len >= sizeof(struct btrfs_root_item)) {
- 					/*
- 					 * The new full btrfs_root_item with
- 					 * timestamp and UUID.
-+					 *
-+					 * For older v0 root item, those info is
-+					 * not in root_item, and would remain 0.
- 					 */
--					otime = btrfs_stack_timespec_sec(&ri->otime);
--					ogen = btrfs_root_otransid(ri);
--					memcpy(uuid, ri->uuid, BTRFS_UUID_SIZE);
--					memcpy(puuid, ri->parent_uuid, BTRFS_UUID_SIZE);
--					memcpy(ruuid, ri->received_uuid, BTRFS_UUID_SIZE);
--				} else {
--					/*
--					 * The old v0 root item, which doesn't
--					 * have timestamp nor UUID.
--					 */
--					otime = 0;
--					ogen = 0;
--					memset(uuid, 0, BTRFS_UUID_SIZE);
--					memset(puuid, 0, BTRFS_UUID_SIZE);
--					memset(ruuid, 0, BTRFS_UUID_SIZE);
-+					tmp.otime = btrfs_stack_timespec_sec(&ri->otime);
-+					tmp.ogen = btrfs_root_otransid(ri);
-+					memcpy(tmp.uuid, ri->uuid, BTRFS_UUID_SIZE);
-+					memcpy(tmp.puuid, ri->parent_uuid, BTRFS_UUID_SIZE);
-+					memcpy(tmp.ruuid, ri->received_uuid, BTRFS_UUID_SIZE);
- 				}
- 
--				add_root(root_lookup, sh.objectid, 0,
--					 sh.offset, flags, 0, NULL, 0, ogen,
--					 gen, otime, uuid, puuid, ruuid);
-+				add_root(root_lookup, &tmp);
- 			}
- 
- 			off += sh.len;
+@@ -1609,6 +1743,10 @@ static int cmd_subvolume_list(const struct cmd_struct *cmd, int argc, char **arg
+ 		case 'q':
+ 			btrfs_list_setup_print_column(BTRFS_LIST_PUUID);
+ 			break;
++		case 'Q':
++			btrfs_list_setup_print_column(BTRFS_LIST_QGROUP_RFER);
++			btrfs_list_setup_print_column(BTRFS_LIST_QGROUP_EXCL);
++			break;
+ 		case 'R':
+ 			btrfs_list_setup_print_column(BTRFS_LIST_RUUID);
+ 			break;
 -- 
 2.42.1
 
