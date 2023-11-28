@@ -1,106 +1,107 @@
-Return-Path: <linux-btrfs+bounces-411-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-412-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B44E57FBDCE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 16:11:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D2877FBEC9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 17:00:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E65701C20C65
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 15:11:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBF0728263F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 16:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A085C5CD26;
-	Tue, 28 Nov 2023 15:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26CF81E4B4;
+	Tue, 28 Nov 2023 16:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marcan.st header.i=@marcan.st header.b="ogqIkfiD"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="waN+1Sxk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UmnB1fv2"
 X-Original-To: linux-btrfs@vger.kernel.org
-X-Greylist: delayed 575 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Nov 2023 07:11:37 PST
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D83D64
-	for <linux-btrfs@vger.kernel.org>; Tue, 28 Nov 2023 07:11:37 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4F4A0;
+	Tue, 28 Nov 2023 08:00:05 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: marcan@marcan.st)
-	by mail.marcansoft.com (Postfix) with ESMTPSA id 0671645F18;
-	Tue, 28 Nov 2023 15:01:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
-	t=1701183720; bh=75+rL0teZ8g+m52S+qdkHz3Z4j+DntaIdyqECmrs7X0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=ogqIkfiDct8lrw6p316x++V3cm5AyJHo/AJt2iSA2chDU2lC/fL9butVRBm4zPpGp
-	 eKeDcLk5I/8ghILKF0EBGCPzXEulht6wJ8DkupOsKg+SbDVIAs0q+dEuoeoOWxjtkR
-	 +Xud+2vwREeAGkfnFl8fceInM83bArIO7xbGSQtiQPIdXvdg1iXi5jbVFM/hfqVyNx
-	 rLxpHFcK4CSPAEUks5o2D8Qy0UgaMBWGftMvoA/wN3mxdkCqsNHy7N6PkndNlHg4ud
-	 msgWODB0/2uSHJrs1wxResix0aDHzBngBJpfxbe01aT35ZHCIx77NNN7Ur60aptE5C
-	 tg+vCUy7M9d3Q==
-Message-ID: <fb78d997-cb99-4b98-8042-bdcdbff22b88@marcan.st>
-Date: Wed, 29 Nov 2023 00:01:53 +0900
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FD6E21982;
+	Tue, 28 Nov 2023 16:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1701187204;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WP/XoFyHTFaJBnWFQyEgHYvMVQmUgOB2x/5RAdzmulI=;
+	b=waN+1SxkH3mS/26f0AFEWeXwKDgpGsSQSD8C6wHlOQyXWKjzQxl4PtPcHw9H7U73hCkJey
+	QwSRuO67dcku+ONBNM7HCkX5feP7qvXL6jeGv6ZZB4LVJu+HSOLv7HOQicWia4n9HR/Kuy
+	6EU2uuNfNnOkr48mNDBXvepQZUxxrlw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1701187204;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WP/XoFyHTFaJBnWFQyEgHYvMVQmUgOB2x/5RAdzmulI=;
+	b=UmnB1fv2aJPvxd4gcFAHAbKgeCflBXREiQkNV522VftNI6SWCqIwNFdpwNV9vZKXwTJlDx
+	MJJbsNYyeBAXNOCw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 3A29D133B5;
+	Tue, 28 Nov 2023 16:00:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id XMajDYQOZmUbUAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Tue, 28 Nov 2023 16:00:04 +0000
+Date: Tue, 28 Nov 2023 16:52:51 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] btrfs: return negative -EFAULT instead of positive
+Message-ID: <20231128155251.GI18929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <00bb6e21-484b-47d6-82fa-85c787d71a86@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/1] Enforce 4k sectorize by default for mkfs
-Content-Language: en-US
-To: Josef Bacik <josef@toxicpanda.com>, Neal Gompa <neal@gompa.dev>
-Cc: Linux BTRFS Development <linux-btrfs@vger.kernel.org>,
- Anand Jain <anand.jain@oracle.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
- Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.cz>,
- Sven Peter <sven@svenpeter.dev>, Davide Cavalca <davide@cavalca.name>,
- Jens Axboe <axboe@fb.com>, Asahi Lina <lina@asahilina.net>,
- Asahi Linux <asahi@lists.linux.dev>
-References: <20231116160235.2708131-1-neal@gompa.dev>
- <20231127160705.GC2366036@perftesting>
-From: Hector Martin <marcan@marcan.st>
-In-Reply-To: <20231127160705.GC2366036@perftesting>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00bb6e21-484b-47d6-82fa-85c787d71a86@moroto.mountain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.59 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[linaro.org:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.59)[98.16%]
+X-Spam-Score: -3.59
 
-
-
-On 2023/11/28 1:07, Josef Bacik wrote:
-> On Thu, Nov 16, 2023 at 11:02:23AM -0500, Neal Gompa wrote:
->> The Fedora Asahi SIG[0] is working on bringing up support for
->> Apple Silicon Macintosh computers through the Fedora Asahi Remix[1].
->>
->> Apple Silicon Macs are unusual in that they currently require 16k
->> page sizes, which means that the current default for mkfs.btrfs(8)
->> makes a filesystem that is unreadable on x86 PCs and most other ARM
->> PCs.
->>
->> This is now even more of a problem within Apple Silicon Macs as it is now
->> possible to nest 4K Fedora Linux VMs on 16K Fedora Asahi Remix machines to
->> enable performant x86 emulation[2] and the host storage needs to be compatible
->> for both environments.
->>
->> Thus, I'd like to see us finally make the switchover to 4k sectorsize
->> for new filesystems by default, regardless of page size.
->>
->> The initial test run by Hector Martin[3] at request of Qu Wenruo
->> looked promising[4], and we've been running with this behavior on
->> Fedora Linux since Fedora Linux 36 (at around 6.2) with no issues.
->>
+On Tue, Nov 28, 2023 at 05:40:33PM +0300, Dan Carpenter wrote:
+> There is a typo here and the '-' character was accidentally left off.
 > 
-> This is a good change and well documented.  This isn't being ignored, it's just
-> a policy change that we have to be conservative about considering.  We only in
-> the last 3 months have added a Apple Silicon machine to our testing
-> infrastructure (running Fedora Asahi fwiw) to make sure we're getting consistent
-> subpage-blocksize testing.  Generally speaking it's been fine, we've fixed a few
-> things and haven't broken anything, but it's still comes with some risks when
-> compared to the default of using the pagesize.
-> 
-> We will continue to discuss this amongst ourselves and figure out what we think
-> would be a reasonable timeframe to make this switch and let you know what we're
-> thinking ASAP.  Thanks,
+> Fixes: 2dc8b96809b2 ("btrfs: allow extent buffer helpers to skip cross-page handling")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Reminder that the Raspberry Pi 5 is also shipping with 16K pages by
-default now. The clock is ticking for an ever-growing stream of people
-upset that they can't mount/data-rescue/etc their rPi5 NAS disks from an
-x86 machine ;)
-
-- Hector
+Folded to the patch, thanks.
 
