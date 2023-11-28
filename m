@@ -1,98 +1,114 @@
-Return-Path: <linux-btrfs+bounces-401-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-402-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE0207FB18C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 06:49:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 600CA7FB36B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 09:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17830B211E5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 05:49:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E67EAB20F68
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Nov 2023 08:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2058D1171E;
-	Tue, 28 Nov 2023 05:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D953E14AAE;
+	Tue, 28 Nov 2023 08:00:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="zxF6+s0S"
+	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="Jjtowm6d"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D249C4;
-	Mon, 27 Nov 2023 21:48:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=piX6sU8uUfRdM3HI4C5o5RtKyEk7LebUsWmX5nAnS9s=; b=zxF6+s0SCn2mTM1F5sDGatwdiD
-	r+J5EdNg/JbVc8/TEwBGrSiUOrPltOv0SB5DHqEzye3x5UYQ3y43F+9CYP+YH9zZju4MAnIxN7jLr
-	52H6aTiRg9m6ogsTbJ455qxXjn6rKf3EheShZA+8TlQ0nbft+l3Lre4a0bU7FkEs+H18O/xb4HfZ2
-	DcIkdp3IB1Vc74yjq/SGmA7ZBc/H0ChYb2skCnNlw+1loprwzCvOOZXqJXWMJW983aVx/FvifwWE8
-	GXy6mVkavESjy4cQk0Ees741WqX1/u5t1i6oo5VnA69qG8fgQUNZnB/k4V2ZDGbJGb/SxQnB+AlVf
-	iSo+n9HA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1r7qxI-004BPZ-2N;
-	Tue, 28 Nov 2023 05:48:20 +0000
-Date: Mon, 27 Nov 2023 21:48:20 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: Christoph Hellwig <hch@infradead.org>, ming.lei@redhat.com,
-	axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-	konishi.ryusuke@gmail.com, dchinner@redhat.com,
-	linux@weissschuh.net, min15.li@samsung.com, dlemoal@kernel.org,
-	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
-	p.raghav@samsung.com, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-	linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
-	yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH block/for-next v2 01/16] block: add a new helper to get
- inode from block_device
-Message-ID: <ZWV/JBxrrGXzY0gr@infradead.org>
-References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
- <20231127062116.2355129-2-yukuai1@huaweicloud.com>
- <ZWRDeQ4K8BiYnV+X@infradead.org>
- <6acdeece-7163-3219-95e2-827e54eadd0c@huaweicloud.com>
- <ZWTErvnMf7HiO1Wj@infradead.org>
- <bc64da80-e9bd-84cb-f173-876623303131@huaweicloud.com>
+Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F2098
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 Nov 2023 00:00:08 -0800 (PST)
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-18.iol.local with ESMTPA
+	id 7t0orxUYFEwsU7t0orfDOV; Tue, 28 Nov 2023 09:00:06 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+	t=1701158406; bh=KzuS4NnVSW82FE5kJ/7HbPKFhvhaOZajAh+xDuFSPWw=;
+	h=From;
+	b=Jjtowm6d1Si1pO4UVsS69aE6KL04Qs7wlUcT8rEHuru+Gx4j5UXzt0Z/XCuJbRal4
+	 NyOjAZPNaicPmDupE8i37J2+k4rYEL2+u5OtCEQKSzeLQqkfZyVDUYoCJsWqtn2zaS
+	 hMucQwtHpz8hSoDjV7Vsv4bh4YB9+dVIuAVJDMmAuQ9qZVaXg71Y9QQbUlyzmYoYpp
+	 0VBI+yth9j+brzkOt5U1fCe+RdeB+hNDFqowHScBXU2IbaB+3s7ikyfOpg5JoPhj7O
+	 KVleVbskbaHQmDBkXQ6k7Aj/DrqO7LFeEjQJeB60ywsuN0qUKJU/rjvHdf8m8+LYNE
+	 wUEUNaWj4LLUg==
+X-CNFS-Analysis: v=2.4 cv=N6vvVUxB c=1 sm=1 tr=0 ts=65659e06 cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=3T79VapDeQJY0rWtCmsA:9 a=l4mWaurpklBE37-4:21
+ a=QEXdDO2ut3YA:10
+Message-ID: <2248a4d7-bbd0-4bf3-992a-c1e13c8f2c20@libero.it>
+Date: Tue, 28 Nov 2023 09:00:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bc64da80-e9bd-84cb-f173-876623303131@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH RFC] btrfs: pick device with lowest devt for show_devname
+Content-Language: en-US
+To: Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+References: <85226cf68d7a72a034f0c0895b96b2557169755b.1698917826.git.anand.jain@oracle.com>
+ <20231124161906.GE18929@twin.jikos.cz>
+ <36171811-ed49-4427-a647-e052ec70faa0@oracle.com>
+ <589d8650-26e8-4c0e-a602-bdb5ce427ed5@oracle.com>
+From: Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <589d8650-26e8-4c0e-a602-bdb5ce427ed5@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfNehpItlY/DcABM7zZPzp9yLg8wgFQKF8z6C8NpuCeqGxIugkxT/JFkyPy9sFqMNJN8OijoGbjBUwFoah0oLOlE8/URKfPFc0ZoUK7bFaFqO70rcSN1g
+ 4uKp/HQecXnOFGivwurD4OC6Nm543nsG5HVwylsqxejk9fdjl3qIf4OvuJCdcmrxBcKx5FAraZt1YaHvzlGGJc5VC2kp9XfrlrqRW5uPyOTLiAiOWr2sW20t
+ SFhnrZkpqH3Qkx3IVR/P2g==
 
-On Tue, Nov 28, 2023 at 09:35:56AM +0800, Yu Kuai wrote:
-> Thanks for the advice! In case I'm understanding correctly, do you mean
-> that all other fs/drivers that is using pages versions can safely switch
-> to folio versions now?
+On 27/11/2023 12.48, Anand Jain wrote:
+> 
+> 
+> On 11/25/23 09:09, Anand Jain wrote:
+[...]
+>> I am skeptical about whether we have a strong case to create a single
+>> pseudo device per multi-device Btrfs filesystem, such as, for example
+>> '/dev/btrfs/<fsid>-<random>/rootid=5' and which means pseudo device
+>> will carry the btrfs-magic and the actual blk devices something else.
+>>
+>> OR for now, regarding the umount issue mentioned above, we just can
+>> document it for the users to be aware of.
+>>
+>> Any feedback is greatly appreciated.
+>>
+> 
+> How about if we display the devices list in the options, so that
+> user-land libs have something in the mount-table that tells all
+> the devices part of the fsid?
+> 
+> For example:
+> $ cat /proc/self/mounts | grep btrfs
+> 
+> /dev/sda1 /btrfs btrfs rw,relatime,space_cache=v2,subvolid=5,subvol=/,device=/dev/sda2,device=/dev/sdb3  0 0
+> 
 
-If you never allocate a high-order folio pages are identical to folios.
-So yes, we can do folio based interfaces only, and also use that as
-an opportunity to convert over the callers.
+When I developed code to find a btrfs mount point from a disk, I had to
+consider all the devices involved and check if one is in /proc/self/mounts.
 
-> By the way, my orginal idea was trying to add a new field 'bd_flags'
-> in block_devcie, and then add a new bit so that bio_check_ro() will
-> only warn once for each partition. Now that this patchset will be quite
-> complex, I'll add a new bool field 'bd_ro_warned' to fix the above
-> problem first, and then add 'bd_flags' once this patchset is done.
+Putting the devices list as device=<xxx>,device=<yyy> doesn't change anything because
+the code has to manage a btrfs filesistem as "special" in any case.
+To get the map <btrfs-uuid> <-> <devices-list> I used libblkid.
 
-Yes, please do a minimal version if you can find space where the
-rmw cycles don't cause damage to neighbouring fields.  Or just leave
-the current set of warnings in if it's too hard.
+I think that a "saner" way to manage this issue, is to patch "mount" to
+consider the special needing of btrfs.
+
+Pay attention to consider also events like, removing a device, adding a device:
+after these events how /dev/disk/by-uuid/ would be updated ?
+
+What about bcachefs ? Does it have the same issue ? If yes this may be
+a further reason to patch "mount" instead relying to a rule (pick the
+lowest devt) spread for all the projects (systemd, mount...).
+
+> Thanks.
+> 
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
 
