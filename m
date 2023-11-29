@@ -1,94 +1,144 @@
-Return-Path: <linux-btrfs+bounces-432-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-436-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FBC77FD625
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Nov 2023 13:00:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A2647FD746
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Nov 2023 13:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D16DB1C2120F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Nov 2023 12:00:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7DAF28319C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Nov 2023 12:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590A81D552;
-	Wed, 29 Nov 2023 12:00:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1941DFE1;
+	Wed, 29 Nov 2023 12:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lR8pczz+"
+	dkim=pass (2048-bit key) header.d=marcan.st header.i=@marcan.st header.b="Bv9W7brZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2626FBA
+	for <linux-btrfs@vger.kernel.org>; Wed, 29 Nov 2023 04:58:45 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5693D12B72
-	for <linux-btrfs@vger.kernel.org>; Wed, 29 Nov 2023 12:00:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C8D1C433C8;
-	Wed, 29 Nov 2023 12:00:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701259241;
-	bh=n2nAGxbaM4bdUExVSTPbG6T9Ltt30lIhFwcPWN7vNO8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lR8pczz+YIOlEBwSdhbDA/LVQ12dQ2u9nO+Hghy/NF/HjnaDVkOfmyvbPCtzx7TKg
-	 tQWbDZW02R9WyulystAPJr+vQwm9E98sAFJv5kRXaIkXd+ZnPNAWfTEfzxWLqheHuM
-	 4XpHvHWTUBF6lNDHTpJYZlWvu2RQ8g81HvWYN5OM5uHsSub98AtYfGNS+Xi/NMqrw8
-	 uQL/2hZv4HFjz2qVRw77alR1CqHdnpi5FHjmogBrOj/ZkN8s1SdDRdkiqmdkbp9lAQ
-	 RCXD4F6J6Oa9zxjbVD6MCca/jPDdpkpwg1QIRtnAe+2uIjEcjJXTAe1YETnOo72cB4
-	 ySy5sSvZnSVWA==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Linux Kernel Functional Testing <lkft@linaro.org>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Qu Wenruo <wqu@suse.com>,
-	Anand Jain <anand.jain@oracle.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: fix btrfs_parse_param() build failure
-Date: Wed, 29 Nov 2023 13:00:29 +0100
-Message-Id: <20231129120036.3908495-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	(Authenticated sender: marcan@marcan.st)
+	by mail.marcansoft.com (Postfix) with ESMTPSA id 3E97D46CC5;
+	Wed, 29 Nov 2023 12:58:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
+	t=1701262722; bh=dvn/AHV4uV8LPPwOHZFferkVUsOTGQDImvgHa8sr44U=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=Bv9W7brZR73xkZYE4DRHPPgyh5FxeTnhqnjT79A/q6vCY86PdZVwRa/Cofs72HEIw
+	 UMcrJyT3VPVJtTUFjJGUtMo1jMGqU6b9Aq6fwa0NzAaznqxCzybW4yCv0+BpXJ0hal
+	 0woYoCWApzvo5uMfy6rVfq7wyTEOifxxCRyyuD2woV5L4C7siYRvqDysxYkKbSPKKM
+	 J0EXjuGvUjCVEeEQsucTDt7JS/SM6miw11zdg4Ntjm9uAcOFsqqajjvGoSJ/2aTYsi
+	 XizWw+HNjANV8AjWTor3iFID1Ohiul+DDU5AvPcszk042hLI5nudWE+UBt+rkpIn1j
+	 QUsCaW9Q+ZqQA==
+Message-ID: <aaee6d4f-4e89-4bc7-8a7e-03ffc8b81a34@marcan.st>
+Date: Wed, 29 Nov 2023 21:58:35 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/1] Enforce 4k sectorize by default for mkfs
+Content-Language: en-US
+To: Neal Gompa <neal@gompa.dev>, Qu Wenruo <wqu@suse.com>
+Cc: Josef Bacik <josef@toxicpanda.com>,
+ Linux BTRFS Development <linux-btrfs@vger.kernel.org>,
+ Anand Jain <anand.jain@oracle.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ David Sterba <dsterba@suse.cz>, Sven Peter <sven@svenpeter.dev>,
+ Davide Cavalca <davide@cavalca.name>, Jens Axboe <axboe@fb.com>,
+ Asahi Lina <lina@asahilina.net>, Asahi Linux <asahi@lists.linux.dev>
+References: <20231116160235.2708131-1-neal@gompa.dev>
+ <20231127160705.GC2366036@perftesting>
+ <fb78d997-cb99-4b98-8042-bdcdbff22b88@marcan.st>
+ <f229058e-4f5d-4bd0-9016-41b133688443@suse.com>
+ <CAEg-Je8r0K0k8UMcAafxXyrNuxJrxJbGhkwvo10pUw+rxhCa8g@mail.gmail.com>
+From: Hector Martin <marcan@marcan.st>
+In-Reply-To: <CAEg-Je8r0K0k8UMcAafxXyrNuxJrxJbGhkwvo10pUw+rxhCa8g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-With CONFIG_BTRFS_FS_POSIX_ACL disabled, the newly added function fails
-to build because of an apparent broken rebase:
 
-fs/btrfs/super.c: In function 'btrfs_parse_param':
-fs/btrfs/super.c:416:25: error: 'ret' undeclared (first use in this function); did you mean 'net'?
-  416 |                         ret = -EINVAL;
-      |                         ^~~
+On 2023/11/29 6:24, Neal Gompa wrote:
+> On Tue, Nov 28, 2023 at 2:57 PM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>>
+>>
+>> On 2023/11/29 01:31, Hector Martin wrote:
+>>>
+>>>
+>>> On 2023/11/28 1:07, Josef Bacik wrote:
+>>>> On Thu, Nov 16, 2023 at 11:02:23AM -0500, Neal Gompa wrote:
+>>>>> The Fedora Asahi SIG[0] is working on bringing up support for
+>>>>> Apple Silicon Macintosh computers through the Fedora Asahi Remix[1].
+>>>>>
+>>>>> Apple Silicon Macs are unusual in that they currently require 16k
+>>>>> page sizes, which means that the current default for mkfs.btrfs(8)
+>>>>> makes a filesystem that is unreadable on x86 PCs and most other ARM
+>>>>> PCs.
+>>>>>
+>>>>> This is now even more of a problem within Apple Silicon Macs as it is now
+>>>>> possible to nest 4K Fedora Linux VMs on 16K Fedora Asahi Remix machines to
+>>>>> enable performant x86 emulation[2] and the host storage needs to be compatible
+>>>>> for both environments.
+>>>>>
+>>>>> Thus, I'd like to see us finally make the switchover to 4k sectorsize
+>>>>> for new filesystems by default, regardless of page size.
+>>>>>
+>>>>> The initial test run by Hector Martin[3] at request of Qu Wenruo
+>>>>> looked promising[4], and we've been running with this behavior on
+>>>>> Fedora Linux since Fedora Linux 36 (at around 6.2) with no issues.
+>>>>>
+>>>>
+>>>> This is a good change and well documented.  This isn't being ignored, it's just
+>>>> a policy change that we have to be conservative about considering.  We only in
+>>>> the last 3 months have added a Apple Silicon machine to our testing
+>>>> infrastructure (running Fedora Asahi fwiw) to make sure we're getting consistent
+>>>> subpage-blocksize testing.  Generally speaking it's been fine, we've fixed a few
+>>>> things and haven't broken anything, but it's still comes with some risks when
+>>>> compared to the default of using the pagesize.
+>>>>
+>>>> We will continue to discuss this amongst ourselves and figure out what we think
+>>>> would be a reasonable timeframe to make this switch and let you know what we're
+>>>> thinking ASAP.  Thanks,
+>>>
+>>> Reminder that the Raspberry Pi 5 is also shipping with 16K pages by
+>>> default now. The clock is ticking for an ever-growing stream of people
+>>> upset that they can't mount/data-rescue/etc their rPi5 NAS disks from an
+>>> x86 machine ;)
+>>
+>> As long as they are using 5.15+ kernel, they should be able to mount and
+>> use their RPI NAS with disks from x86 machines.
+>>
+>> The change is only for the default mkfs options.
+>>
+> 
+> Right, and the thing is, it's fairly common for the disks to be
+> formatted from a Raspberry Pi. So until some kind of support for using
+> any sector size on any architecture regardless of page size lands,
+> this is going to be a big problem.
+> 
 
-Just return the error directly here instead of the incorrect unwinding.
+Yup, I meant what I said.
 
-Fixes: a7293bf27082 ("btrfs: add parse_param callback for the new mount api")
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/btrfs/super.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Someone sets up a rPi5 as a NAS, formats the disk from it, as you would
+normally when setting up such a thing from scratch. Later, the rPi stops
+working, as rPis often do. This person's data is now *completely
+inaccessible* until they find another Raspberry Pi 5 or an Apple Silicon
+laptop.
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 59fe4ffce6e7..022179a05d76 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -413,8 +413,7 @@ static int btrfs_parse_param(struct fs_context *fc,
- 			fc->sb_flags |= SB_POSIXACL;
- #else
- 			btrfs_err(NULL, "support for ACL not compiled in!");
--			ret = -EINVAL;
--			goto out;
-+			return -EINVAL;
- #endif
- 		}
- 		/*
--- 
-2.39.2
+This is going to be *common*. And since the 16K decision is made at
+format time, these people are going to be oblivious until they find
+themselves with an urgent need to acquire a Raspberry Pi 5 to access
+their data at all, and then they're going to be mad. So the longer you
+wait to flip the switch, the more people unaware of their own data's
+fragile accessibility condition you will build up, and the more upset
+people you're going to have even long after the change was finally made.
 
+- Hector
 
