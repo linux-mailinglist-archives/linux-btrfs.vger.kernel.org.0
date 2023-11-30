@@ -1,132 +1,126 @@
-Return-Path: <linux-btrfs+bounces-452-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-453-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AFB77FEEC8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 13:20:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11BE37FF333
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 16:08:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDB832820CD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 12:20:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A60A5B20FEB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 15:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B078B4644E;
-	Thu, 30 Nov 2023 12:20:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9996651C55;
+	Thu, 30 Nov 2023 15:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CElVPEvA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hdPUlOJi"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1BC9A
-	for <linux-btrfs@vger.kernel.org>; Thu, 30 Nov 2023 04:20:01 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50bbfad8758so1186004e87.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Nov 2023 04:20:01 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70709194;
+	Thu, 30 Nov 2023 07:08:15 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50bc053a9a7so1583591e87.1;
+        Thu, 30 Nov 2023 07:08:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701346800; x=1701951600; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/7mjrVNsEaLNwOvVK2FD2j2SAWjTzyJkz2BgJ8NxeYA=;
-        b=CElVPEvACow32SCCC0mNzlP5CDLqesOjPL3fF0jcyaBipg6P4o23yoREr8gco9Qf1G
-         abSRyTXt361cVxSIJFewc6+GBOAqDvEJA3Qm+DYypAmFTzPTbquk/+n82QRsIc9DyGgB
-         gDbQGfiZDl4d+jJdvoAe9U+bT//PnEsmOQs+vwSPMS6KVT0GTy6skDk8LP1Rpm98CqFi
-         5O4kELyo1oZ4EHarf4wrgOD16jqSKk4KP5AnNhJxndoU1vdpZTQ/OFgWBXdhskZegHR8
-         dyCeleIYDX5CTReieQekgBvHu/8CVQzrmH6scZS1DaRlCKEY/f63II9x5790vZAzmmdN
-         Jjqw==
+        d=gmail.com; s=20230601; t=1701356894; x=1701961694; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ij6He2n7VfO2PU5CQDDnpNgiB61sX85VSjvJ1Sw1Bmk=;
+        b=hdPUlOJiI/Ff2s7sQMMrhjFnfQbj5BZ+RruxmYyMpECMP6pggVNjA4g3xtBjkMMfI5
+         H97EJmHixZFVuQjiuEOqrovzqxOCQ2M0fcirnOV1m/7G0CUSdCSQp8/byR5JqTn5KF+t
+         Bom9sygTG5UmY5y9NgsaKLqUhvAOZJDh+HPj8vBKZXdWBcoxq3sQFe0vS/5XOr3xkNm+
+         UztkkLbvEFtcDciFNC2Nk4LLn7iBEQnl4t/9kiN7G4KZXYdZ/6eazjVm0KYEz7CdquBa
+         7uJpj/Ur/vMTLlFwLgiUdQtT27WdE8TqQKiDRRBSthQmopvpitIYExtlaQQqEx1FZ0PY
+         XkAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701346800; x=1701951600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/7mjrVNsEaLNwOvVK2FD2j2SAWjTzyJkz2BgJ8NxeYA=;
-        b=pbS6aaKy6d/C5/ezQSRI6OuWjBNeKUrMachS/6/+HY2Bzb72/zuEsw2olAbieAko3N
-         bVzmU8AbnnWPUH3lUbLcrd8IqCRqNgfzedaUh9BOpcuvWmLpa1IGncwj2QTEqjf144is
-         7FvFPNkpHVO5qsiHFtDc/VvFko9f3aeIixIePC9IFyutH3eravreFIuh9pBWj9T3F4c0
-         YWCFUuBSYtLGR7sMaKTF0Ifjl2g63fS7H7zw4Fs3RSDz4udSgy5Q21fFRPPXB3U9p8vz
-         mw5Qrnv5eXxkp2WSFu2WFnnBT2fsWGqpVlypjd3wdS4sMc5tK1zWr9tOeMFNREVISCDR
-         ttsQ==
-X-Gm-Message-State: AOJu0YzWzxRNlOrF/i0dkarMLpk9jt1FYvPgBth416TDaRt8R14JgmP6
-	SA/qkO8BuY6GHY1PYsHPZahb8DFPziL8LeVByHU=
-X-Google-Smtp-Source: AGHT+IFIsxynxyoQO42ZSOJIf+uX0nz95adJI1nHIwI6euD02dxx3exCnc7BpFSItnkPZ39o+RwdItdALCXTA4r9Ghg=
-X-Received: by 2002:ac2:495b:0:b0:50b:c13f:744f with SMTP id
- o27-20020ac2495b000000b0050bc13f744fmr4486639lfi.59.1701346799345; Thu, 30
- Nov 2023 04:19:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701356894; x=1701961694;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ij6He2n7VfO2PU5CQDDnpNgiB61sX85VSjvJ1Sw1Bmk=;
+        b=gvDI1WOLwJIAaULjAefnsovE6NUpIevOGZT435pC48JBHmzfsAKlkUl84fm5K+3Zfk
+         p2uM72xAJDjem/Y789ht8ErkQ0lPIYgwW9Hnt5zXi6puiSun9MKdBIEFGQaZpcqMFPR7
+         NdVnVEOl5QVVJBfTd9SWZXtWMZjl9GjIVE/6FBbP28HK/bidEy2iTJF3gALzZd0K//HF
+         sB/f8suMBfcBXOPZtC89fkly81y4TDJkeeiEgbN7/79yjEbjh8B7lphgQtLR/8Hde/B2
+         d9TbY+VV0xDSYK+gS6BpoKYxPXxkPt3/0w6SJfKkyXfaAyoA6f/kHgSykBgn3+/A+nZ0
+         bi4w==
+X-Gm-Message-State: AOJu0YzKAfwBqqlWR1G1X1Exfxbs24c+rhstLSTA6mDPSgTaTrjr5kvB
+	RQzaG19vay+iFm9tAbYPf/w=
+X-Google-Smtp-Source: AGHT+IFplBfPeB/2YfUE7slWK1oJxGIpl9P3JdyoKk2opcJrfaDpOQAztlmWLQTGZeiURAfWGrLRpA==
+X-Received: by 2002:a05:6512:1386:b0:50b:c96b:5e8 with SMTP id fc6-20020a056512138600b0050bc96b05e8mr3051182lfb.25.1701356893308;
+        Thu, 30 Nov 2023 07:08:13 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id o18-20020a05600c4fd200b0040b45282f88sm5865713wmq.36.2023.11.30.07.08.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 07:08:12 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] btrfs: remove shadowed declaration of variable i in for-loops
+Date: Thu, 30 Nov 2023 15:08:11 +0000
+Message-Id: <20231130150811.2208562-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <b87c95b697347980b008d8140ceec49590af4f5d.1701037103.git.wqu@suse.com>
- <20231127163236.GF2366036@perftesting> <84df53e7-7034-4aba-a35a-143960d626a3@gmx.com>
- <20231129160217.GT18929@twin.jikos.cz> <9e8ba9d7-34b2-4918-a4e9-2aaa3464d9ee@gmx.com>
-In-Reply-To: <9e8ba9d7-34b2-4918-a4e9-2aaa3464d9ee@gmx.com>
-From: Neal Gompa <ngompa13@gmail.com>
-Date: Thu, 30 Nov 2023 07:19:22 -0500
-Message-ID: <CAEg-Je_jRXoYY60Prf87S45Pzt4q6zDz53JaHT8XyPoG7OSMPg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: migrate extent_buffer::pages[] to folio
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>, 
-	linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 30, 2023 at 1:56=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
->
->
->
-> On 2023/11/30 02:32, David Sterba wrote:
-> > On Tue, Nov 28, 2023 at 08:47:33AM +1030, Qu Wenruo wrote:
-> >>
-> >>
-> >> On 2023/11/28 03:02, Josef Bacik wrote:
-> >>> On Mon, Nov 27, 2023 at 08:48:45AM +1030, Qu Wenruo wrote:
-> >>>> For now extent_buffer::pages[] are still only accept single page
-> >>>> pointer, thus we can migrate to folios pretty easily.
-> >>>>
-> >>>> As for single page, page and folio are 1:1 mapped.
-> >>>>
-> >>>> This patch would just do the conversion from struct page to struct
-> >>>> folio, providing the first step to higher order folio in the future.
-> >>>>
-> >>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >>>
-> >>> This doesn't apply to misc-next cleanly, so I can't do my normal revi=
-ew, but
-> >>> just swapping us over to the folio stuff in name everywhere is a valu=
-able first
-> >>> start.  I'd like to see this run through our testing infrastructure t=
-o make sure
-> >>> nothing got missed.  Once you can get it to apply cleanly somewhere a=
-nd validate
-> >>> nothing weird got broken you can add
-> >>>
-> >>> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> >>
-> >> Thanks, the failed apply is due to the fact that this relies on anothe=
-r
-> >> patch: "btrfs: refactor alloc_extent_buffer() to allocate-then-attach
-> >> method".
-> >
-> > V3 of the patch has a comment from Josef, please send an update so I ca=
-n
-> > apply both patches and we can start testing the folio conversion.
-> >
->
-> For the folio conversion, I'd like to add more cleanups, mostly related
-> to bio_add_page() -> bio_add_folio() and page flags conversion.
->
-> Those are pretty safe as long as we're only using order 0 pages.
->
-> But the more conversion I have done in this patch, the less I need to do
-> in the final patch introducing the higher order folios.
->
+The variable i is declared at the start of function btrfs_qgroup_inherit
+however there are two for-loops that redeclare the variable using a C99
+declaration, causes name shadowing. I believe there is no need for this
+local scoping of i in the loop, so replace the declaration in the loops
+with assignments.
 
-With higher order folio support, will we be able to support blocksize
-> pagesize?
+Cleans up clang scan build warnings:
 
+fs/btrfs/qgroup.c:3194:12: warning: declaration shadows a local variable [-Wshadow]
+ 3194 |                 for (int i = 0; i < inherit->num_qgroups; i++) {
+      |                          ^
+fs/btrfs/qgroup.c:3089:6: note: previous declaration is here
+ 3089 |         int i;
+      |             ^
+fs/btrfs/qgroup.c:3321:12: warning: declaration shadows a local variable [-Wshadow]
+ 3321 |                 for (int i = 0; i < inherit->num_qgroups; i++)
+      |                          ^
+fs/btrfs/qgroup.c:3089:6: note: previous declaration is here
+ 3089 |         int i;
+      |             ^
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ fs/btrfs/qgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index ce446d9d7f23..b1f93dbf468c 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3191,7 +3191,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 			ret = -ENOMEM;
+ 			goto out;
+ 		}
+-		for (int i = 0; i < inherit->num_qgroups; i++) {
++		for (i = 0; i < inherit->num_qgroups; i++) {
+ 			qlist_prealloc[i] = kzalloc(sizeof(struct btrfs_qgroup_list),
+ 						    GFP_NOFS);
+ 			if (!qlist_prealloc[i]) {
+@@ -3318,7 +3318,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 	if (need_rescan)
+ 		qgroup_mark_inconsistent(fs_info);
+ 	if (qlist_prealloc) {
+-		for (int i = 0; i < inherit->num_qgroups; i++)
++		for (i = 0; i < inherit->num_qgroups; i++)
+ 			kfree(qlist_prealloc[i]);
+ 		kfree(qlist_prealloc);
+ 	}
+-- 
+2.39.2
+
 
