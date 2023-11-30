@@ -1,39 +1,40 @@
-Return-Path: <linux-btrfs+bounces-455-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-456-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7D8B7FFD22
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 21:54:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C53A57FFD3C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 22:05:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D29B81C21246
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 20:54:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32BFCB2096F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 21:05:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E12553805;
-	Thu, 30 Nov 2023 20:54:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B2B55C18;
+	Thu, 30 Nov 2023 21:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="qOdgQvC0"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="JGO1hB7F"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D01510E3
-	for <linux-btrfs@vger.kernel.org>; Thu, 30 Nov 2023 12:54:34 -0800 (PST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5A9170D
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 Nov 2023 13:05:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1701377611; x=1701982411; i=quwenruo.btrfs@gmx.com;
-	bh=vDZwIkSZBZRn0JOhzppCFhxLlnaZ3BmuBoT88cyasOo=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=qOdgQvC0xL6mjEioquU6uc0dv5JWhchIwgEs+3mueQM3WLNhKHvYZPWy+0nNEzNw
-	 AaqSgh9lYOswjm8eVXorimDcFoo6cYCp2+ZY7piFSC89su6/X79DIOnMHzjfh+Ggd
-	 gqojXTPZrFIR1wahOCe3T14g8g6l1bUvsz6GstGxKo7PlWkoA3jXejwOcVD4KxP4b
-	 1tAPEhF6Xon07v9rZ8AErolVyKK98QQiv6JuHXpA1NWXIS6dyZ7WzOFJQZKR5iIkQ
-	 8Oa5/i92k+S88g1meX7vGXK9LjE/+qIuqIzmz/GvM2Ub7r4A1mlVRHi7SHsTXkZBF
-	 1OQMGb0Qw1jykM1l8Q==
+	s=s31663417; t=1701378298; x=1701983098; i=quwenruo.btrfs@gmx.com;
+	bh=4qB500sCrLCWF8aSqANofWE6YhiWvWLE//oB3BEwD18=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=JGO1hB7FQ12qMhebCj3o2hbD3oCeDvZDx4/TNPcEl4VS2JLgmpbtfB0T9ZHNCuj8
+	 k0GzDEETHlRC9f7PtOsUCTikgDIr0/RDvLjqzje+CraB0zeJwj9pmi9XvlTC3K86J
+	 E2g3DSwUoOtrHH6Xyt3Ouhp5bmEDWhiK00MBvA+c7Nb/auSuKft6xytPpATsfkZu+
+	 uxV9JmY8SDOLJuFRAeBoPn/YVB/L64UxpwtHpTEPbnMhkJR7eQqHuFPt/fnSz+XKj
+	 TnoJQDpeg9HEfRRHHYsLV44qp9BMuNUKlYBSMfbiOHScESKkeCYjfYOR6+7gpjy13
+	 JPIvW0teHZLkgjS10A==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MPGRz-1quhXC07gL-00Pasi; Thu, 30
- Nov 2023 21:53:31 +0100
-Message-ID: <ccec2d73-98a7-4e73-a9ee-9be0fc2e1c92@gmx.com>
-Date: Fri, 1 Dec 2023 07:23:27 +1030
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MeCtZ-1rjnjC2SoB-00bOZU; Thu, 30
+ Nov 2023 22:04:58 +0100
+Message-ID: <0895e527-84dc-481f-9413-71abcd0fdd03@gmx.com>
+Date: Fri, 1 Dec 2023 07:34:53 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -41,10 +42,17 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: BTRFS doesn't compress on the fly
+Subject: Re: [PATCH] btrfs: migrate extent_buffer::pages[] to folio
+To: Neal Gompa <ngompa13@gmail.com>
+Cc: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+ Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <b87c95b697347980b008d8140ceec49590af4f5d.1701037103.git.wqu@suse.com>
+ <20231127163236.GF2366036@perftesting>
+ <84df53e7-7034-4aba-a35a-143960d626a3@gmx.com>
+ <20231129160217.GT18929@twin.jikos.cz>
+ <9e8ba9d7-34b2-4918-a4e9-2aaa3464d9ee@gmx.com>
+ <CAEg-Je_jRXoYY60Prf87S45Pzt4q6zDz53JaHT8XyPoG7OSMPg@mail.gmail.com>
 Content-Language: en-US
-To: Gerhard Wiesinger <lists@wiesinger.com>, linux-btrfs@vger.kernel.org
-References: <ac521d3f-6575-4a72-a911-1991a2ca5f67@wiesinger.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -70,164 +78,102 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ac521d3f-6575-4a72-a911-1991a2ca5f67@wiesinger.com>
+In-Reply-To: <CAEg-Je_jRXoYY60Prf87S45Pzt4q6zDz53JaHT8XyPoG7OSMPg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gi+fN5pYxivg6IGdQcXClS554I5tpHmBbbNJ/ON/5GyuIFe0jN2
- r754QSnBb6v1wY7KivUZB+ySdUMfihjCncq+LyUafiAXVrueXsRoQ2iKyj4XU0pjVT+SxXu
- lp2QvwttZ24Q/1hpJvZBbykHyr3n7MufWFogT3uQh5iFuV3ZOVSSikfgm2BpuyaFtHfhSfu
- DcbbEjV0+HFLtjPqXqcwg==
-UI-OutboundReport: notjunk:1;M01:P0:/eBe9T0QFX0=;nYzHGRbRIh7Zn2y3GxyKdhG0jWT
- +n9+0m96EsLtBWF4MfeptZHvqUZ2kduUy6wiiso48NhjhtXKWLHYREHc8OTDw85vjhxOoW+Nu
- DhBh8CypQS2/Mmt6lPtqh7v+10iAAmnlvRy2kZOT8NHmFMtss2K+B3yXb8FXYNzVkH3sHtNdI
- waorsLj6BC8y44V2a/F1UbbE5Hn6tiQe2ZpwxZiE+OHX9rRbFWREYUtRfvJr38xwtQPeFA1sA
- tR5kaK8K9VTzL/V3ajPQk1PXIkXn9bpZTjiLgS2SNbLMTF23I4TIpXl3WZnaGt81EvmwQepTI
- Ghmx84lkPbvo/w5WuU7US0PnHmkOyBC8LKBXm/MlcECdZ9BDoB3IN0LZWNHtxx6WCkqa7/jUb
- XkqgbLxZnx4XaFkx4UdYQSluRTn7TW0rCHqkrfSvSe9cGf0rr4xVtVVpM9LPYSjJhcFDq/5dd
- GgZUuv6gssGIycR9pfSziFuyB83cvDuzjKLMJPS+xvEiklKnfzF8VqbYpcaoTf49QB33z3cYE
- 3OuzVaCPbDh16duAIANw/FLKIE247oRFHHawHcvffvOQAaN1pQ/TJ8pVLWNRMS9D08zpFpUid
- rgynTPUvYNseR3Vuqk+2XAksH1oHbLpCsvVetH48LZAmBMtzjZdNlTbni5GZmbNav1oFbjxzT
- ec7U8xW+zEFXV3z9PTYUrGY5T/AYLSLk51Np82N/Hlo0+MFcLaZft/lLM4uGDpxp9Ze0lSfTX
- GoIn9zESS7c7f+R+aDXbz6wrPbCLXiK9kwo1aN4fYour1m5bSV5bUCWM2mluymg6pLknY9fna
- Eh9knMSnPcNnnpx2fQgiqsSFMrGTUZpdgvQttSSzSkFlmOGw0GGt/mzU5atyCnC3vaMwfZvS3
- EWjKb6ywwRhxMooGRl3uYUfS4oQyppcliKuQCjs7VAIElI1ngPlz5ic+A/As2eRDdxpSureH8
- lx+xxzhZbH0Xgx1kbHHbpBnKbwY=
+X-Provags-ID: V03:K1:8kSaJJSIRc16rzcMMklWW+A+MzVp6e25gN/Ri3eEPvcJ9q8P973
+ Vrab8kXg0TmqwJh6CaaX2L+1jh8I+hOb7FhKlNgSx3/bGhfkpFMzTloZ0pIUvusPmdER3iy
+ 7MH5OXDi+N3Ode7flH2tMTpQb/QI2ER6c+tRswknGGD0L6IvbzgBw5UtXuG3XTu9gBi/4L4
+ NOeQZWUtzuBXXHS7jFNTg==
+UI-OutboundReport: notjunk:1;M01:P0:u9uDE5HLkDU=;a88GnA4/zMF8kvAkkx6w9QeLVyk
+ 3UDITYUXv8IASLSPf/DeeBuuUHW7ccSkWw4y1daSxFT2hgyTY5KPkME5Y8efGKxPVgezHJJgc
+ 70bpMTZq0HLt2FE1SXK7uiIiuj6iWxeMIFqfAKR5N+DseS+tiqMVzvtqoK7FVyqoVV4kLbtaz
+ j2Ua9m4tnhwgVhWgoy/GA3dJilsnyoSJDoVA6VCwcjUspvkvCc9mz6izlF4kpJMiKlq8U5MeB
+ aWHZx411wYkoAYJA+Q/AXAesgQAuEVYbeXLhhnHrPiQvj3NoJr2zM9xoV+mA0qcNXZPrtEjnQ
+ J8hKW62s2jb1Tr6JygL+3+D2MfkkguDm8bTn9/2kFySB+NXPa5SvH/10Y5V5JJ6Pd8djAbdQA
+ 7YpHkyBj5kwugtA7xnXgLemBciuN7gX0iR42cKdhuRVahB2aRJoNbLRUEZOiA4dN58uRsJ6+8
+ nG8LGH5DHLQaArZF+2CYeg6Apij9M+JiGNPqnOLZ07ksGU5b0NpvOXvlrPANhkI2vJHM9RtR6
+ fqmQ0njZl76/jeLCLwpNo6hOaS48nXN250H1+sgA4f5oKHOoLxXxDxwFXrmbO9ZhtiDHtA8nc
+ vmyoUI8UnXM6ZpMrbOs0bGIjBsrKukiZQ2lRW+siTX3NuakcE2DBonwOZxhDfWyGswhZVGyce
+ oLdfqMPrpC7BSk4O/1jdpKKP7b2iEEHWtPVyoBWAJKzDkaXGKbdisd9m6n6HOcDhRzKAJfqs8
+ xDzSlJisk0xbL04jITjWRxkktEUlyMfHFV+skqdTNF/Yr4L/WOcH7mWB3XKy4ANmiia59vx8o
+ bDT/ysMET9X+sCb8q2TcvIbwKX8VRAXGBrafoCWzYQwu1wIsO3SniGUU9Ropl0C6mArSNH0xX
+ zPy0OK0P8e9kerqMgmKj+FD8QUVvX/wEFNzfDXVWKvmxvghc3naOZKltPM0BXM/uMwEor0TLd
+ iGX2UOIDHbO5GNTB6Ot47fvO8Sk=
 
 
 
-On 2023/11/30 21:51, Gerhard Wiesinger wrote:
-> Dear All,
+On 2023/11/30 22:49, Neal Gompa wrote:
+> On Thu, Nov 30, 2023 at 1:56=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.co=
+m> wrote:
+>>
+>>
+>>
+>> On 2023/11/30 02:32, David Sterba wrote:
+>>> On Tue, Nov 28, 2023 at 08:47:33AM +1030, Qu Wenruo wrote:
+>>>>
+>>>>
+>>>> On 2023/11/28 03:02, Josef Bacik wrote:
+>>>>> On Mon, Nov 27, 2023 at 08:48:45AM +1030, Qu Wenruo wrote:
+>>>>>> For now extent_buffer::pages[] are still only accept single page
+>>>>>> pointer, thus we can migrate to folios pretty easily.
+>>>>>>
+>>>>>> As for single page, page and folio are 1:1 mapped.
+>>>>>>
+>>>>>> This patch would just do the conversion from struct page to struct
+>>>>>> folio, providing the first step to higher order folio in the future=
+.
+>>>>>>
+>>>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>>>
+>>>>> This doesn't apply to misc-next cleanly, so I can't do my normal rev=
+iew, but
+>>>>> just swapping us over to the folio stuff in name everywhere is a val=
+uable first
+>>>>> start.  I'd like to see this run through our testing infrastructure =
+to make sure
+>>>>> nothing got missed.  Once you can get it to apply cleanly somewhere =
+and validate
+>>>>> nothing weird got broken you can add
+>>>>>
+>>>>> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>>>>
+>>>> Thanks, the failed apply is due to the fact that this relies on anoth=
+er
+>>>> patch: "btrfs: refactor alloc_extent_buffer() to allocate-then-attach
+>>>> method".
+>>>
+>>> V3 of the patch has a comment from Josef, please send an update so I c=
+an
+>>> apply both patches and we can start testing the folio conversion.
+>>>
+>>
+>> For the folio conversion, I'd like to add more cleanups, mostly related
+>> to bio_add_page() -> bio_add_folio() and page flags conversion.
+>>
+>> Those are pretty safe as long as we're only using order 0 pages.
+>>
+>> But the more conversion I have done in this patch, the less I need to d=
+o
+>> in the final patch introducing the higher order folios.
+>>
 >
-> I created a new BTRFS volume with migrating an existing PostgreSQL
-> database on it. Versions are recent.
+> With higher order folio support, will we be able to support blocksize
 
-Does the data base directory has something like NODATACOW or NODATASUM set=
-?
-The other possibility is preallocation, for the first write on
-preallocated range, no matter if the compression is enabled, the write
-would be treated as NOCOW.
+It's the first step towards multi-page sectorsize.
 
->
-> Compression is not done on the fly although everything is IMHO
-> configured correctly to do so.
->
-> I need to run the following command that everything gets compressed:
-> btrfs filesystem defragment -r -v -czstd /var/lib/pgsql
->
-> Had also a problem that
-> chattr -R +c /var/lib/pgsql
-> didn't work for some files.
->
-> Find further details below.
->
-> Looks like a bug to me.
->
-> Any ideas?
->
-> Thanx.
->
-> Ciao,
-> Gerhard
->
-> uname -a
-> Linux myhostname 6.5.12-300.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Mon Nov
-> 20 22:44:24 UTC 2023 x86_64 GNU/Linux
->
-> btrfs --version
-> btrfs-progs v6.5.1
->
-> btrfs filesystem show
-> Label: 'database'=C2=A0 uuid: 6ad6ef90-30fa-4979-9509-99803f7545aa
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS bytes use=
-d 15.76GiB
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 si=
-ze 129.98GiB used 21.06GiB path /dev/mapper/datab
->
-> btrfs filesystem df /var/lib/pgsql
-> Data, single: total=3D19.00GiB, used=3D15.61GiB
-> System, DUP: total=3D32.00MiB, used=3D16.00KiB
-> Metadata, DUP: total=3D1.00GiB, used=3D151.92MiB
-> GlobalReserve, single: total=3D85.38MiB, used=3D0.00B
->
-> # Mounted via force
-> findmnt -vno OPTIONS /var/lib/pgsql
-> rw,relatime,compress-force=3Dzstd:3,space_cache=3Dv2,subvolid=3D5,subvol=
-=3D/'
->
-> # all files even have "c" attribute, set after creation of the filesyste=
-m
-> lsattr /var/lib/pgsql
-> --------c------------- /var/lib/pgsql/16
->
-> # Should be empty and is empty, so everything has the comressed
-> attribute (after creation and also all new files)
-> lsattr -R /var/lib/pgsql | grep -v "^/" | grep -v "^$" | grep -v
-> "^........c"
->
-> # Stays here at this compression level
-> compsize -x /var/lib/pgsql
-> Processed 5332 files, 575858 regular extents (591204 refs), 40 inline.
-> Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Perc=C2=A0=C2=A0=C2=A0=C2=A0 Di=
-sk Usage=C2=A0=C2=A0 Uncompressed Referenced
-> TOTAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 63%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 51G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 80G=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 80G
-> none=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 40G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 40G=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 40G
-> zstd=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 27%=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 10G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-40G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 40G
-> prealloc=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.0M=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.0M=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 5.5M
+But not yet there. We need MM (filemap) layer to provide a way to only
+allocate in certain folio size, which needs some API changes.
 
-Not sure if the preallocation is the cause, but maybe you can try
-disabling preallocation of postgresql?
+For now, we're working around it by doing the folio allocation all by
+ourselves then attach them into the filemap, and still allow single page
+allocation for metadata.
 
-As preallocation doesn't make that much sense on btrfs, there are too
-many cases that can break the preallocation.
-
->
-> # After running: btrfs filesystem defragment -r -v -czstd /var/lib/pgsql
-> compsize -x /var/lib/pgsql
-> Processed 5563 files, 664076 regular extents (664076 refs), 40 inline.
-> Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Perc=C2=A0=C2=A0=C2=A0=C2=A0 Di=
-sk Usage=C2=A0=C2=A0 Uncompressed Referenced
-> TOTAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 19%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 15G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 80G=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 80G
-> none=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 120K=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 120K=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 120K
-> zstd=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 19%=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 15G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-80G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 80G
->
-> # At the first time creating the filesystem I had also the problem that
-> I couln't change all attributes, didn't find a way to get rid of this.
-> Any ideas.
-> chattr -R +c /var/lib/pgsql
-> chattr: Invalid argument while setting flags on
-
-A lot of flags can only be set on empty files IIRC.
+That would not be possible for data without the help from filemap codes.
 
 Thanks,
 Qu
-
-> /var/lib/pgsql/16/data/base/1/2836
-> chattr: Invalid argument while setting flags on
-> /var/lib/pgsql/16/data/base/1/2840
-> chattr: Invalid argument while setting flags on
-> /var/lib/pgsql/16/data/base/1/2838
-> chattr: Invalid argument while setting flags on
-> /var/lib/pgsql/16/data/base/4/2836
-> chattr: Invalid argument while setting flags on
-> /var/lib/pgsql/16/data/base/4/2838
-> chattr: Invalid argument while setting flags on
-> /var/lib/pgsql/16/data/base/5/2836
-> chattr: Invalid argument while setting flags on
-> /var/lib/pgsql/16/data/base/5/2838
+>> pagesize?
 >
 >
 
