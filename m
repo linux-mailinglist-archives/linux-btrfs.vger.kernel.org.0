@@ -1,203 +1,150 @@
-Return-Path: <linux-btrfs+bounces-448-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-449-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CF997FE7B7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 04:39:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 357687FE968
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 07:56:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35C20B2124C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 03:39:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 673E51C20A33
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 06:56:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A024B134C3;
-	Thu, 30 Nov 2023 03:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9770618E01;
+	Thu, 30 Nov 2023 06:56:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="i5MbYcBH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D53AB94
-	for <linux-btrfs@vger.kernel.org>; Wed, 29 Nov 2023 19:39:28 -0800 (PST)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-548f0b7ab11so324642a12.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Nov 2023 19:39:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701315567; x=1701920367;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bQP1qqNba8IhD9QjDsAo6CwQPCHKTZzSvNK1nrtQJzI=;
-        b=KyupihA5oaw+d+i62SY+7zvqnD5yBX0rikJURATU+0Qwfhd837cGRVlcFchtnz9YfQ
-         P4YfBRePvxMTsDIoz5uAESVCCqzhjfMUS0acRsyiBpd6x2Npg9Czl6bMS9nTjQwa4SLj
-         7rfWytX5FtYAKZJadD+kXF3YJS9XgClC2hWf2FvKBE3SM/xrXuequ2Ald7RDl11fzDZg
-         DC1cxusJGJIkIY20xsDBqKgaPsiVbo3egLZlfq+RAqHS+l8aTeNbpItnL8A/Be4TqxAG
-         BpZy/yzZCtGpCzkuuYid5lbeMDG5tBaaLawsydmH1ez/Isbl5D3blfBrWpAEbjKLRk8A
-         3yHg==
-X-Gm-Message-State: AOJu0Yy8laZQ6ew7EX5Gs1wwWkcbgNPJz0fHCH5RAtIbb2iuc/om6yLM
-	4AaPGn+aJ8LkRPWH0w5FR2Gdwn3AFuHfSplM
-X-Google-Smtp-Source: AGHT+IEEjFgiJamEWlnxqp4rqM+PvVahG68oJwt6Pm7/JjWeOLdPodWRtWKKDlOblkqtzJP8AIh0hg==
-X-Received: by 2002:a05:6402:175c:b0:54a:f8d9:52fc with SMTP id v28-20020a056402175c00b0054af8d952fcmr13437349edx.31.1701315566726;
-        Wed, 29 Nov 2023 19:39:26 -0800 (PST)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id a7-20020aa7d907000000b0054b37719896sm107519edr.48.2023.11.29.19.39.26
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 19:39:26 -0800 (PST)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-54b545ec229so335350a12.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Nov 2023 19:39:26 -0800 (PST)
-X-Received: by 2002:a17:906:510:b0:9be:30c2:b8ff with SMTP id
- j16-20020a170906051000b009be30c2b8ffmr13359405eja.61.1701315565815; Wed, 29
- Nov 2023 19:39:25 -0800 (PST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C34E10DE
+	for <linux-btrfs@vger.kernel.org>; Wed, 29 Nov 2023 22:56:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1701327375; x=1701932175; i=quwenruo.btrfs@gmx.com;
+	bh=vli8Yy/etDa/dc6xFy+my+cjtsgObQgpDzYX5eEnSA8=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=i5MbYcBH5GyRHn33hLGHMM5W64isWKd6zg8k5zxPxsx/NRblvDv5FyMmkRINcoIK
+	 3L4bV/EQ30zwH9zqgF7L3vENCxDxddcrVhw/SvapNjZ0/FH+yDdmU5Q7ki6dlJZXV
+	 EPKHxXCudNgF3G40qAn2RWL2/nC8FvkevcwmhbdDJBv1SGajj+wvttn647+Ndf0/X
+	 xqelmmxP/5dtOuM3SjX/5fuudWqydspMK9nCjRFamvZBOs87DqSxrXKZadHoezLs8
+	 mtSkEItBqALJEGdnjoRQWYa47GdAkS0XGlxX11U7KPODzxo8skf0SGrB0jQ+SGIRE
+	 D6p9XKf7M7mUbGTK3w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MrQEn-1rfPMP3Mtb-00oaWl; Thu, 30
+ Nov 2023 07:56:15 +0100
+Message-ID: <9e8ba9d7-34b2-4918-a4e9-2aaa3464d9ee@gmx.com>
+Date: Thu, 30 Nov 2023 17:26:10 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231116160235.2708131-1-neal@gompa.dev> <20231127160705.GC2366036@perftesting>
- <fb78d997-cb99-4b98-8042-bdcdbff22b88@marcan.st> <f229058e-4f5d-4bd0-9016-41b133688443@suse.com>
- <CAEg-Je8r0K0k8UMcAafxXyrNuxJrxJbGhkwvo10pUw+rxhCa8g@mail.gmail.com>
- <aaee6d4f-4e89-4bc7-8a7e-03ffc8b81a34@marcan.st> <c87f6f12-15ef-4860-a3c8-7038c51eddb1@gmx.com>
-In-Reply-To: <c87f6f12-15ef-4860-a3c8-7038c51eddb1@gmx.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Wed, 29 Nov 2023 22:38:48 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je_fQ0Q832UkvrShG61Ff93ctQ8VE+M4PBbYXk0uuqpWxQ@mail.gmail.com>
-Message-ID: <CAEg-Je_fQ0Q832UkvrShG61Ff93ctQ8VE+M4PBbYXk0uuqpWxQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/1] Enforce 4k sectorize by default for mkfs
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Hector Martin <marcan@marcan.st>, Qu Wenruo <wqu@suse.com>, Josef Bacik <josef@toxicpanda.com>, 
-	Linux BTRFS Development <linux-btrfs@vger.kernel.org>, Anand Jain <anand.jain@oracle.com>, 
-	David Sterba <dsterba@suse.cz>, Sven Peter <sven@svenpeter.dev>, 
-	Davide Cavalca <davide@cavalca.name>, Jens Axboe <axboe@fb.com>, Asahi Lina <lina@asahilina.net>, 
-	Asahi Linux <asahi@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: migrate extent_buffer::pages[] to folio
+Content-Language: en-US
+To: dsterba@suse.cz
+Cc: Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs@vger.kernel.org
+References: <b87c95b697347980b008d8140ceec49590af4f5d.1701037103.git.wqu@suse.com>
+ <20231127163236.GF2366036@perftesting>
+ <84df53e7-7034-4aba-a35a-143960d626a3@gmx.com>
+ <20231129160217.GT18929@twin.jikos.cz>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20231129160217.GT18929@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-
-On Wed, Nov 29, 2023 at 3:28=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
->
->
->
-> On 2023/11/29 23:28, Hector Martin wrote:
-> >
-> >
-> > On 2023/11/29 6:24, Neal Gompa wrote:
-> >> On Tue, Nov 28, 2023 at 2:57=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote=
-:
-> >>>
-> >>>
-> >>>
-> >>> On 2023/11/29 01:31, Hector Martin wrote:
-> >>>>
-> >>>>
-> >>>> On 2023/11/28 1:07, Josef Bacik wrote:
-> >>>>> On Thu, Nov 16, 2023 at 11:02:23AM -0500, Neal Gompa wrote:
-> >>>>>> The Fedora Asahi SIG[0] is working on bringing up support for
-> >>>>>> Apple Silicon Macintosh computers through the Fedora Asahi Remix[1=
-].
-> >>>>>>
-> >>>>>> Apple Silicon Macs are unusual in that they currently require 16k
-> >>>>>> page sizes, which means that the current default for mkfs.btrfs(8)
-> >>>>>> makes a filesystem that is unreadable on x86 PCs and most other AR=
-M
-> >>>>>> PCs.
-> >>>>>>
-> >>>>>> This is now even more of a problem within Apple Silicon Macs as it=
- is now
-> >>>>>> possible to nest 4K Fedora Linux VMs on 16K Fedora Asahi Remix mac=
-hines to
-> >>>>>> enable performant x86 emulation[2] and the host storage needs to b=
-e compatible
-> >>>>>> for both environments.
-> >>>>>>
-> >>>>>> Thus, I'd like to see us finally make the switchover to 4k sectors=
-ize
-> >>>>>> for new filesystems by default, regardless of page size.
-> >>>>>>
-> >>>>>> The initial test run by Hector Martin[3] at request of Qu Wenruo
-> >>>>>> looked promising[4], and we've been running with this behavior on
-> >>>>>> Fedora Linux since Fedora Linux 36 (at around 6.2) with no issues.
-> >>>>>>
-> >>>>>
-> >>>>> This is a good change and well documented.  This isn't being ignore=
-d, it's just
-> >>>>> a policy change that we have to be conservative about considering. =
- We only in
-> >>>>> the last 3 months have added a Apple Silicon machine to our testing
-> >>>>> infrastructure (running Fedora Asahi fwiw) to make sure we're getti=
-ng consistent
-> >>>>> subpage-blocksize testing.  Generally speaking it's been fine, we'v=
-e fixed a few
-> >>>>> things and haven't broken anything, but it's still comes with some =
-risks when
-> >>>>> compared to the default of using the pagesize.
-> >>>>>
-> >>>>> We will continue to discuss this amongst ourselves and figure out w=
-hat we think
-> >>>>> would be a reasonable timeframe to make this switch and let you kno=
-w what we're
-> >>>>> thinking ASAP.  Thanks,
-> >>>>
-> >>>> Reminder that the Raspberry Pi 5 is also shipping with 16K pages by
-> >>>> default now. The clock is ticking for an ever-growing stream of peop=
-le
-> >>>> upset that they can't mount/data-rescue/etc their rPi5 NAS disks fro=
-m an
-> >>>> x86 machine ;)
-> >>>
-> >>> As long as they are using 5.15+ kernel, they should be able to mount =
-and
-> >>> use their RPI NAS with disks from x86 machines.
-> >>>
-> >>> The change is only for the default mkfs options.
-> >>>
-> >>
-> >> Right, and the thing is, it's fairly common for the disks to be
-> >> formatted from a Raspberry Pi. So until some kind of support for using
-> >> any sector size on any architecture regardless of page size lands,
-> >> this is going to be a big problem.
-> >>
-> >
-> > Yup, I meant what I said.
-> >
-> > Someone sets up a rPi5 as a NAS, formats the disk from it, as you would
-> > normally when setting up such a thing from scratch. Later, the rPi stop=
-s
-> > working, as rPis often do. This person's data is now *completely
-> > inaccessible* until they find another Raspberry Pi 5 or an Apple Silico=
-n
-> > laptop.
-> Got it.
->
-> I am putting too much trust on RPI, as my experience is pretty good so
-> far (just for VM hosting and running fstests), thus I though everyone
-> would just go x86->aarch64, at least for NAS hosting/VM testing...
->
-> >
-> > This is going to be *common*. And since the 16K decision is made at
-> > format time, these people are going to be oblivious until they find
-> > themselves with an urgent need to acquire a Raspberry Pi 5 to access
-> > their data at all, and then they're going to be mad. So the longer you
-> > wait to flip the switch, the more people unaware of their own data's
-> > fragile accessibility condition you will build up, and the more upset
-> > people you're going to have even long after the change was finally made=
-.
->
-> In that case, I'm totally fine to support the switch of default sector
-> size, sooner than later.
->
-> With Asahi already running 4K sector sizes, and I have not received any
-> death thread for the loss of one's data, I believe the prerequisite for
-> the switch is already here.
->
-> And even if there are hidden bugs, default to 4K is in fact going to
-> make it faster to get reports and fixed.
->
-
-For what it's worth, this change was applied at the Fedora level, so
-*all* architectures have been using 4k sectorize by default for some
-time now, including Fedora Asahi (ARM 16k) and Fedora POWER (64k).
+X-Provags-ID: V03:K1:5Oqf6L0O8/Uq0fH/4WbPj1zCXuwQBCC6bCehmeTio9i3J9S5/gf
+ fXOcwbmZGreAGjfNrVo3QjJ+55asMpr3ZGhURANysARKYwlcb3bXQbcDAunfDMdsnhPS1qo
+ NUf7J7cGN+8tvOyBoLDiQ1Rosxkn1kE2eS0AB1KAY4jweMbdVF2yY9t64qZCHsQ895t2/+Y
+ pY9Ahu8z8ceRvTQC3lBCA==
+UI-OutboundReport: notjunk:1;M01:P0:gDiOcPnHwC0=;iwfOetKO7dvC/l2mxG9n7OxWTkz
+ 3rmhDguabF/dxyPondnbXwc54pNo3WUUyq8zS89r+wIlcmM5NXLXJODeYPHdt7VvCo7O9fJNs
+ 9wKiXfbVNSnZs6P/ZS6k/5ATlZkDbaCZJ+/HopkEubCAu6vrcE1G9mwkpciL1MlwhYnQ1RQch
+ LngXrYfbeWw1XLgWSiyyryPK0guFidaUTO+mceM/wsZukZuea5TQpqLmlHXejKT4HjDBxNvb3
+ XuI6aSQkBY8YAtMw8hhcBVyLdQZoR7FzoRSMu8p5ABj0et1/Wh51HIBVqu33zQ9j6UYJdVTJL
+ hCvQjWEgrD8mDMoRi5Kk+KoPDzkLtxkHC49DTLyRyFWtIGvUsnqT4duPAhgV1rFjfXhDYoLBn
+ nbp2X1TwSDl/hrvrkx5pJGe562V9TFr+M6Kzqce8s9vZhaWHsIGrUtK21fvHTjwCexGKYzpGa
+ CxDI/38kts8YM+Lg598/ADGZVm5w2uC9vJqykL8VPRkX8BkDCy9qwtLQ/S0C7K8qxdwiKUVjH
+ pjdoix/VjS6dfAA17rsGcHOlVx8ZjzZfectQGfK1wFEgpU9owrXNQaJVtMazn5QKcG54og/Gj
+ Y8AjvYQrqWbIb4jxE5heLutds0v5qwhDTp9IEDh6nuTIW4bQSA7TRwSiYULGKgGTzZB72dYEv
+ 18M49xIBYbj+v0r4JXRnnfpRXa49HbP4fj26yFnNU+4YdmKsMOqNIvRRnhFGpwxMMo94XjN22
+ WaYQ/WVwkKcuUwOtEP0jOwp1rTPH6t4rjkgW8gAMEubp5Ahbx8vjYTPjcNJXqXrAWnb4NM7Zn
+ 25mHI0dKnxyPUFR0GMKTXw0kxe/y3hMjVpsqvtt6XBBApnV/HMrQzwurNi7AjEgcQQAsZRIFU
+ CMflzZ802pQ9kczujXt5j799/pX7xItcOQ6PeMKVn9lB55eEmpvvaVncd220nIQS1UbrCg1cz
+ 5z9PY3qwDkvi14kRSMM7EJ2IHK4=
 
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+
+On 2023/11/30 02:32, David Sterba wrote:
+> On Tue, Nov 28, 2023 at 08:47:33AM +1030, Qu Wenruo wrote:
+>>
+>>
+>> On 2023/11/28 03:02, Josef Bacik wrote:
+>>> On Mon, Nov 27, 2023 at 08:48:45AM +1030, Qu Wenruo wrote:
+>>>> For now extent_buffer::pages[] are still only accept single page
+>>>> pointer, thus we can migrate to folios pretty easily.
+>>>>
+>>>> As for single page, page and folio are 1:1 mapped.
+>>>>
+>>>> This patch would just do the conversion from struct page to struct
+>>>> folio, providing the first step to higher order folio in the future.
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>
+>>> This doesn't apply to misc-next cleanly, so I can't do my normal revie=
+w, but
+>>> just swapping us over to the folio stuff in name everywhere is a valua=
+ble first
+>>> start.  I'd like to see this run through our testing infrastructure to=
+ make sure
+>>> nothing got missed.  Once you can get it to apply cleanly somewhere an=
+d validate
+>>> nothing weird got broken you can add
+>>>
+>>> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>>
+>> Thanks, the failed apply is due to the fact that this relies on another
+>> patch: "btrfs: refactor alloc_extent_buffer() to allocate-then-attach
+>> method".
+>
+> V3 of the patch has a comment from Josef, please send an update so I can
+> apply both patches and we can start testing the folio conversion.
+>
+
+For the folio conversion, I'd like to add more cleanups, mostly related
+to bio_add_page() -> bio_add_folio() and page flags conversion.
+
+Those are pretty safe as long as we're only using order 0 pages.
+
+But the more conversion I have done in this patch, the less I need to do
+in the final patch introducing the higher order folios.
+
+Thanks,
+Qu
 
