@@ -1,192 +1,233 @@
-Return-Path: <linux-btrfs+bounces-454-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-455-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B90B7FF3FD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 16:53:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7D8B7FFD22
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 21:54:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8E66B20E5A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 15:53:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D29B81C21246
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Nov 2023 20:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6336E53806;
-	Thu, 30 Nov 2023 15:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E12553805;
+	Thu, 30 Nov 2023 20:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="qOdgQvC0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446CBD7F
-	for <linux-btrfs@vger.kernel.org>; Thu, 30 Nov 2023 07:53:20 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 51A2321B2E;
-	Thu, 30 Nov 2023 15:53:18 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EA76E13A5C;
-	Thu, 30 Nov 2023 15:53:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id d1AANu2vaGWSCQAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 30 Nov 2023 15:53:17 +0000
-Date: Thu, 30 Nov 2023 16:46:03 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: cache that we don't have security.capability set
-Message-ID: <20231130154603.GU18929@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <8a8b4385143d66feec39e3925a399c118846a686.1701281422.git.josef@toxicpanda.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D01510E3
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 Nov 2023 12:54:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1701377611; x=1701982411; i=quwenruo.btrfs@gmx.com;
+	bh=vDZwIkSZBZRn0JOhzppCFhxLlnaZ3BmuBoT88cyasOo=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=qOdgQvC0xL6mjEioquU6uc0dv5JWhchIwgEs+3mueQM3WLNhKHvYZPWy+0nNEzNw
+	 AaqSgh9lYOswjm8eVXorimDcFoo6cYCp2+ZY7piFSC89su6/X79DIOnMHzjfh+Ggd
+	 gqojXTPZrFIR1wahOCe3T14g8g6l1bUvsz6GstGxKo7PlWkoA3jXejwOcVD4KxP4b
+	 1tAPEhF6Xon07v9rZ8AErolVyKK98QQiv6JuHXpA1NWXIS6dyZ7WzOFJQZKR5iIkQ
+	 8Oa5/i92k+S88g1meX7vGXK9LjE/+qIuqIzmz/GvM2Ub7r4A1mlVRHi7SHsTXkZBF
+	 1OQMGb0Qw1jykM1l8Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MPGRz-1quhXC07gL-00Pasi; Thu, 30
+ Nov 2023 21:53:31 +0100
+Message-ID: <ccec2d73-98a7-4e73-a9ee-9be0fc2e1c92@gmx.com>
+Date: Fri, 1 Dec 2023 07:23:27 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a8b4385143d66feec39e3925a399c118846a686.1701281422.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Bar: ++++
-Authentication-Results: smtp-out1.suse.de;
-	dkim=none;
-	dmarc=none;
-	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [4.32 / 50.00];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 DMARC_NA(1.20)[suse.cz];
-	 R_SPF_SOFTFAIL(4.60)[~all];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_LONG(-0.87)[-0.872];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 R_DKIM_NA(2.20)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: 4.32
-X-Rspamd-Queue-Id: 51A2321B2E
+User-Agent: Mozilla Thunderbird
+Subject: Re: BTRFS doesn't compress on the fly
+Content-Language: en-US
+To: Gerhard Wiesinger <lists@wiesinger.com>, linux-btrfs@vger.kernel.org
+References: <ac521d3f-6575-4a72-a911-1991a2ca5f67@wiesinger.com>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <ac521d3f-6575-4a72-a911-1991a2ca5f67@wiesinger.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:gi+fN5pYxivg6IGdQcXClS554I5tpHmBbbNJ/ON/5GyuIFe0jN2
+ r754QSnBb6v1wY7KivUZB+ySdUMfihjCncq+LyUafiAXVrueXsRoQ2iKyj4XU0pjVT+SxXu
+ lp2QvwttZ24Q/1hpJvZBbykHyr3n7MufWFogT3uQh5iFuV3ZOVSSikfgm2BpuyaFtHfhSfu
+ DcbbEjV0+HFLtjPqXqcwg==
+UI-OutboundReport: notjunk:1;M01:P0:/eBe9T0QFX0=;nYzHGRbRIh7Zn2y3GxyKdhG0jWT
+ +n9+0m96EsLtBWF4MfeptZHvqUZ2kduUy6wiiso48NhjhtXKWLHYREHc8OTDw85vjhxOoW+Nu
+ DhBh8CypQS2/Mmt6lPtqh7v+10iAAmnlvRy2kZOT8NHmFMtss2K+B3yXb8FXYNzVkH3sHtNdI
+ waorsLj6BC8y44V2a/F1UbbE5Hn6tiQe2ZpwxZiE+OHX9rRbFWREYUtRfvJr38xwtQPeFA1sA
+ tR5kaK8K9VTzL/V3ajPQk1PXIkXn9bpZTjiLgS2SNbLMTF23I4TIpXl3WZnaGt81EvmwQepTI
+ Ghmx84lkPbvo/w5WuU7US0PnHmkOyBC8LKBXm/MlcECdZ9BDoB3IN0LZWNHtxx6WCkqa7/jUb
+ XkqgbLxZnx4XaFkx4UdYQSluRTn7TW0rCHqkrfSvSe9cGf0rr4xVtVVpM9LPYSjJhcFDq/5dd
+ GgZUuv6gssGIycR9pfSziFuyB83cvDuzjKLMJPS+xvEiklKnfzF8VqbYpcaoTf49QB33z3cYE
+ 3OuzVaCPbDh16duAIANw/FLKIE247oRFHHawHcvffvOQAaN1pQ/TJ8pVLWNRMS9D08zpFpUid
+ rgynTPUvYNseR3Vuqk+2XAksH1oHbLpCsvVetH48LZAmBMtzjZdNlTbni5GZmbNav1oFbjxzT
+ ec7U8xW+zEFXV3z9PTYUrGY5T/AYLSLk51Np82N/Hlo0+MFcLaZft/lLM4uGDpxp9Ze0lSfTX
+ GoIn9zESS7c7f+R+aDXbz6wrPbCLXiK9kwo1aN4fYour1m5bSV5bUCWM2mluymg6pLknY9fna
+ Eh9knMSnPcNnnpx2fQgiqsSFMrGTUZpdgvQttSSzSkFlmOGw0GGt/mzU5atyCnC3vaMwfZvS3
+ EWjKb6ywwRhxMooGRl3uYUfS4oQyppcliKuQCjs7VAIElI1ngPlz5ic+A/As2eRDdxpSureH8
+ lx+xxzhZbH0Xgx1kbHHbpBnKbwY=
 
-On Wed, Nov 29, 2023 at 01:10:31PM -0500, Josef Bacik wrote:
-> When profiling a workload I noticed we were constantly calling getxattr.
-> These were mostly coming from __remove_privs, which will lookup if
-> security.capability exists to remove it.  However instrumenting getxattr
-> showed we get called nearly constantly on an idle machine on a lot of
-> accesses.
-> 
-> These are wasteful and not free.  Other security LSM's have a way to
-> cache their results, but capability doesn't have this, so it's asking us
-> all the time for the xattr.
-> 
-> Fix this by setting a flag in our inode that it doesn't have a
-> security.capability xattr.  We set this on new inodes and after a failed
-> lookup of security.capability.  If we set this xattr at all we'll clear
-> the flag.
-> 
-> I haven't found a test in fsperf that this makes a visible difference
-> on, but I assume fs_mark related tests would show it clearly.  This is a
-> perf report output of the smallfiles100k run where it shows 20% of our
-> time spent in __remove_privs because we're looking up the non-existent
-> xattr.
-> 
-> --21.86%--btrfs_write_check.constprop.0
->   --21.62%--__file_remove_privs
->     --21.55%--security_inode_need_killpriv
->       --21.54%--cap_inode_need_killpriv
->         --21.53%--__vfs_getxattr
->           --20.89%--btrfs_getxattr
-> 
-> Obviously this is just CPU time in a mostly IO bound test, so the actual
-> effect of removing this callchain is minimal.  However in just normal
-> testing of an idle system tracing showed around 100 getxattr calls per
-> minute, and with this patch there are 0.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Added to misc-next, thanks.
 
-> ---
->  fs/btrfs/btrfs_inode.h |  1 +
->  fs/btrfs/inode.c       |  7 +++++
->  fs/btrfs/xattr.c       | 59 ++++++++++++++++++++++++++++++++++++++++--
->  3 files changed, 65 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-> index 5572ae52444e..de9f71743b6b 100644
-> --- a/fs/btrfs/btrfs_inode.h
-> +++ b/fs/btrfs/btrfs_inode.h
-> @@ -69,6 +69,7 @@ enum {
->  	BTRFS_INODE_VERITY_IN_PROGRESS,
->  	/* Set when this inode is a free space inode. */
->  	BTRFS_INODE_FREE_SPACE_INODE,
-> +	BTRFS_INODE_NO_CAP_XATTR,
+On 2023/11/30 21:51, Gerhard Wiesinger wrote:
+> Dear All,
+>
+> I created a new BTRFS volume with migrating an existing PostgreSQL
+> database on it. Versions are recent.
 
-I've added a comment
+Does the data base directory has something like NODATACOW or NODATASUM set=
+?
+The other possibility is preallocation, for the first write on
+preallocated range, no matter if the compression is enabled, the write
+would be treated as NOCOW.
 
->  };
->  
->  /* in memory btrfs inode */
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 096b3004a19f..f8647d8271b7 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -6225,6 +6225,13 @@ int btrfs_create_new_inode(struct btrfs_trans_handle *trans,
->  	BTRFS_I(inode)->generation = trans->transid;
->  	inode->i_generation = BTRFS_I(inode)->generation;
->  
-> +	/*
-> +	 * We don't have any capability xattrs set here yet, shortcut any
-> +	 * queries for the xattrs here.  If we add them later via the inode
-> +	 * security init path or any other path this flag will be cleared.
-> +	 */
-> +	set_bit(BTRFS_INODE_NO_CAP_XATTR, &BTRFS_I(inode)->runtime_flags);
-> +
->  	/*
->  	 * Subvolumes don't inherit flags from their parent directory.
->  	 * Originally this was probably by accident, but we probably can't
-> diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-> index 3cf236fb40a4..caf8de1158b9 100644
-> --- a/fs/btrfs/xattr.c
-> +++ b/fs/btrfs/xattr.c
-> @@ -382,6 +382,56 @@ static int btrfs_xattr_handler_set(const struct xattr_handler *handler,
->  	return btrfs_setxattr_trans(inode, name, buffer, size, flags);
->  }
->  
-> +static int btrfs_xattr_handler_get_security(const struct xattr_handler *handler,
-> +					    struct dentry *unused,
-> +					    struct inode *inode,
-> +					    const char *name, void *buffer,
-> +					    size_t size)
-> +{
-> +	int ret;
-> +	bool is_cap = false;
-> +
-> +	name = xattr_full_name(handler, name);
-> +
-> +	/*
-> +	 * security.capability doesn't cache the results, so calls into us
-> +	 * constantly to see if there's a capability xattr.  Cache the result
-> +	 * here in order to avoid wasting time doing lookups for xattrs we know
-> +	 * don't exist.
-> +	 */
-> +	if (!strcmp(name, XATTR_NAME_CAPS)) {
+>
+> Compression is not done on the fly although everything is IMHO
+> configured correctly to do so.
+>
+> I need to run the following command that everything gets compressed:
+> btrfs filesystem defragment -r -v -czstd /var/lib/pgsql
+>
+> Had also a problem that
+> chattr -R +c /var/lib/pgsql
+> didn't work for some files.
+>
+> Find further details below.
+>
+> Looks like a bug to me.
+>
+> Any ideas?
+>
+> Thanx.
+>
+> Ciao,
+> Gerhard
+>
+> uname -a
+> Linux myhostname 6.5.12-300.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Mon Nov
+> 20 22:44:24 UTC 2023 x86_64 GNU/Linux
+>
+> btrfs --version
+> btrfs-progs v6.5.1
+>
+> btrfs filesystem show
+> Label: 'database'=C2=A0 uuid: 6ad6ef90-30fa-4979-9509-99803f7545aa
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS bytes use=
+d 15.76GiB
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 si=
+ze 129.98GiB used 21.06GiB path /dev/mapper/datab
+>
+> btrfs filesystem df /var/lib/pgsql
+> Data, single: total=3D19.00GiB, used=3D15.61GiB
+> System, DUP: total=3D32.00MiB, used=3D16.00KiB
+> Metadata, DUP: total=3D1.00GiB, used=3D151.92MiB
+> GlobalReserve, single: total=3D85.38MiB, used=3D0.00B
+>
+> # Mounted via force
+> findmnt -vno OPTIONS /var/lib/pgsql
+> rw,relatime,compress-force=3Dzstd:3,space_cache=3Dv2,subvolid=3D5,subvol=
+=3D/'
+>
+> # all files even have "c" attribute, set after creation of the filesyste=
+m
+> lsattr /var/lib/pgsql
+> --------c------------- /var/lib/pgsql/16
+>
+> # Should be empty and is empty, so everything has the comressed
+> attribute (after creation and also all new files)
+> lsattr -R /var/lib/pgsql | grep -v "^/" | grep -v "^$" | grep -v
+> "^........c"
+>
+> # Stays here at this compression level
+> compsize -x /var/lib/pgsql
+> Processed 5332 files, 575858 regular extents (591204 refs), 40 inline.
+> Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Perc=C2=A0=C2=A0=C2=A0=C2=A0 Di=
+sk Usage=C2=A0=C2=A0 Uncompressed Referenced
+> TOTAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 63%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 51G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 80G=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 80G
+> none=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 40G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 40G=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 40G
+> zstd=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 27%=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 10G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+40G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 40G
+> prealloc=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.0M=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.0M=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 5.5M
 
-Please use "strcmp(...) == 0" everywhere, that way it reads as that the
-strings match and one does not flip the logic when there's
-"!strcmp(...)".
+Not sure if the preallocation is the cause, but maybe you can try
+disabling preallocation of postgresql?
+
+As preallocation doesn't make that much sense on btrfs, there are too
+many cases that can break the preallocation.
+
+>
+> # After running: btrfs filesystem defragment -r -v -czstd /var/lib/pgsql
+> compsize -x /var/lib/pgsql
+> Processed 5563 files, 664076 regular extents (664076 refs), 40 inline.
+> Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Perc=C2=A0=C2=A0=C2=A0=C2=A0 Di=
+sk Usage=C2=A0=C2=A0 Uncompressed Referenced
+> TOTAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 19%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 15G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 80G=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 80G
+> none=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 120K=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 120K=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 120K
+> zstd=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 19%=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 15G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+80G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 80G
+>
+> # At the first time creating the filesystem I had also the problem that
+> I couln't change all attributes, didn't find a way to get rid of this.
+> Any ideas.
+> chattr -R +c /var/lib/pgsql
+> chattr: Invalid argument while setting flags on
+
+A lot of flags can only be set on empty files IIRC.
+
+Thanks,
+Qu
+
+> /var/lib/pgsql/16/data/base/1/2836
+> chattr: Invalid argument while setting flags on
+> /var/lib/pgsql/16/data/base/1/2840
+> chattr: Invalid argument while setting flags on
+> /var/lib/pgsql/16/data/base/1/2838
+> chattr: Invalid argument while setting flags on
+> /var/lib/pgsql/16/data/base/4/2836
+> chattr: Invalid argument while setting flags on
+> /var/lib/pgsql/16/data/base/4/2838
+> chattr: Invalid argument while setting flags on
+> /var/lib/pgsql/16/data/base/5/2836
+> chattr: Invalid argument while setting flags on
+> /var/lib/pgsql/16/data/base/5/2838
+>
+>
 
