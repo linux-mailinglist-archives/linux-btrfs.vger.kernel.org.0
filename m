@@ -1,65 +1,65 @@
-Return-Path: <linux-btrfs+bounces-519-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-520-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C155F801611
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 23:16:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C875C801616
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 23:17:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F17E01C20ED9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 22:16:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2891AB212F4
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 22:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB1266718;
-	Fri,  1 Dec 2023 22:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB3D6672C;
+	Fri,  1 Dec 2023 22:12:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="iiXXfmFR"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="dDyXAWAr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0289410EF
-	for <linux-btrfs@vger.kernel.org>; Fri,  1 Dec 2023 14:12:45 -0800 (PST)
-Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-5d40c728fc4so10050447b3.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 01 Dec 2023 14:12:44 -0800 (PST)
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0439510D
+	for <linux-btrfs@vger.kernel.org>; Fri,  1 Dec 2023 14:12:46 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id 3f1490d57ef6-dafe04717baso992490276.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Dec 2023 14:12:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1701468764; x=1702073564; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1701468765; x=1702073565; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5v0XMPAwxYBm92FM0C0pU/Uz9MIFNdU5pAo7nP1a6gE=;
-        b=iiXXfmFRfENd23CP4W9p77HZ+NYMcmSVgMk0Nyb4qkh5EgToo7UutZjK7QnPRewDAj
-         RFDsawRKh2HxVwLRo4LwVfYRHdQIsn5TLD5WnVyaWfKqtpnB7ElUN7/S9bRruqeaMoQY
-         UNMfFzqLkJGocG3wc0hI+tWufmutS8YpZjEXcRGoj5V6Vk8e3I6UQD72d+XpyDzjgNit
-         50EsOgqm8AgemCEJEqF0pDQlwzPtNPI5CSKhpjLyyOopo4vv+cTRq03/jdX4oVsutLgE
-         qhaD1aVkRs7JBeLwCcUUd+clLzA1T6kya9U2lUEQZSjdzk5U/1AQ4ucy6vi8NJJBXxZo
-         iCpA==
+        bh=NcN10ZukHzvXtGLikAWaW+PN73UabSkdq95rYCkOREY=;
+        b=dDyXAWArS/r6i3q8gXSfP2sMZ1xMeV5n7EcKBeW0wxdbL0oUt7zJ78hHr92BNrNRoX
+         BcsbJYE0/fS1Jdl8npp8zxDoENPYOk8+vDQTKidThFx4F11S5qx+9X3Ftks+cFsbST5E
+         8ZKqO4XT0vLBeZrmeu+NTx5vbz28PUzn4Vxtz++vsnHXg6D46ZPQOsuP+Z0WCfEcv8M3
+         dyE1mhEUf1rW9MmvJd+8FjXqNzAusnroE5dM4PtaUKcbtaBDRNfGMAdoyzobqQGYGXEo
+         iaXzQbkdve618h79bhTc0e5zfruHt68cuujhuAXwoOF0go1iMSx476kvzrfj29APmCHJ
+         CRxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701468764; x=1702073564;
+        d=1e100.net; s=20230601; t=1701468765; x=1702073565;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5v0XMPAwxYBm92FM0C0pU/Uz9MIFNdU5pAo7nP1a6gE=;
-        b=YhTGEcNz6ug2wJijNJwknu12fvtBHurDwupRClO1ge7ZQy8l2T+v1ThwoO+jO798NQ
-         axlgQXg22xbj2/oA64BSlMGY1RSa2mMO6TwF0uwmlEjRN88r23XPlqWU2nsQiPUOjTJQ
-         zZPeqhwOfZYDCMQQEWJT50vUodUM+zmc8AchV773WP8gbQqqLIU3mTFL5YP/YUbPcuzC
-         6Rz9bZX12EL6IkVF8+2vVssa4KhjSopva8GxBJZFa4yFu0TMBdA4UtQrBKD6l17Q5lXz
-         4fqdFO4rKipUI6PHAieSPKhpRexO49coB9tu0cttPZ02uYu5DedcSz3Y4m2BIfuY1OoM
-         ICwQ==
-X-Gm-Message-State: AOJu0YzvewBdrChnmrHAV/i7Fe1SWeEVlL0om1sse15MCmXKpZo+KXb3
-	sC3HyLDL0VDXKYtQ/Hmeg9Bnm12wUka2j8jIQrl3gxwY
-X-Google-Smtp-Source: AGHT+IFkvM3XUrtssH9qZKSM42wRJBebPHfPbVTfdNsm9seGvGySxoGqGonv/o2sWC2ZwYE4uYErMg==
-X-Received: by 2002:a05:690c:1b:b0:5d7:1a33:5ae4 with SMTP id bc27-20020a05690c001b00b005d71a335ae4mr140740ywb.49.1701468764068;
-        Fri, 01 Dec 2023 14:12:44 -0800 (PST)
+        bh=NcN10ZukHzvXtGLikAWaW+PN73UabSkdq95rYCkOREY=;
+        b=V1F/C7svmKex8s0M7Qz8EK0tz/BbqRysJFCu6k5Y6t2FOlfSo6zB/vYdAFRkdvaNEe
+         g81877R7EM3mKu0lgKiVqk6jpqKSuYdfmlWiFvCJNmIsVSMRC4hxBM2gp02Kng8dyWjj
+         dozJ6vdY43FMONdUZlj4Jsisy7B75/EWT9XU3UWbBFZiAaZYPri14Leai+rhpDTSvw/5
+         QVvMGfBl2ZidmZSlc5pj/hOU6zZcjvM/EuUifu9RV6Z/i/sY60Ge5z0d8NShIHNLIh1F
+         Jkgx9lt3VDi4IfHlmfjC+3hYUbDzlzOrk8yyxdsIREa+oEVjbB4phcVhQWpU/30EpYUa
+         PCyw==
+X-Gm-Message-State: AOJu0Yyd1uzCBXbOef28XuXumU8TSKbP/94aYC44QRbZ4K2/jK66kRas
+	CePCO4XR5Vm6DfeXHKNHh4fYLdXXFWsbs/h3T//1L/JX
+X-Google-Smtp-Source: AGHT+IGRxL5QDtjRhHUSGIEwY5tp/SmY4vl8W5gVcz79mjyNqKo4FBLtFZK3vQmACXmbpwabqNbw/Q==
+X-Received: by 2002:a25:ccd5:0:b0:db7:dacf:6ff4 with SMTP id l204-20020a25ccd5000000b00db7dacf6ff4mr146647ybf.124.1701468765014;
+        Fri, 01 Dec 2023 14:12:45 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id q2-20020a815c02000000b005a23fc389d8sm1381537ywb.103.2023.12.01.14.12.43
+        by smtp.gmail.com with ESMTPSA id z17-20020a25bb11000000b00d8679407796sm615186ybg.48.2023.12.01.14.12.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 14:12:43 -0800 (PST)
+        Fri, 01 Dec 2023 14:12:44 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org
-Subject: [PATCH v4 37/46] btrfs: limit encrypted writes to 256 segments
-Date: Fri,  1 Dec 2023 17:11:34 -0500
-Message-ID: <f545b140b085b0278e4b67b776ec4aa57db734ac.1701468306.git.josef@toxicpanda.com>
+Subject: [PATCH v4 38/46] btrfs: implement process_bio cb for fscrypt
+Date: Fri,  1 Dec 2023 17:11:35 -0500
+Message-ID: <f87a5ad8085998d751665d34b794403973c51ae9.1701468306.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1701468305.git.josef@toxicpanda.com>
 References: <cover.1701468305.git.josef@toxicpanda.com>
@@ -71,142 +71,163 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-For the fallback encrypted writes it allocates a bounce buffer to
-encrypt, and if the bio is larger than 256 segments it splits the bio we
-send down.  This wreaks havoc on us because we need our actual original
-bio to be passed into the process_cb callback in order to get at our
-ordered extent.  With the split we'll get some cloned bio that has none
-of our information.  Handle this by returning the length we need to be
-truncated to and then splitting ourselves, which will handle giving us
-the correct btrfs_bio that we need.
+We are going to be checksumming the encrypted data, so we have to
+implement the ->process_bio fscrypt callback.  This will provide us with
+the original bio and the encrypted bio to do work on.  For WRITE's this
+will happen after the encrypted bio has been encrypted.  For READ's this
+will happen after the read has completed and before the decryption step
+is done.
+
+For write's this is straightforward, we can just pass in the encrypted
+bio to btrfs_csum_one_bio and then the csums will be added to the bbio
+as normal.
+
+For read's this is relatively straightforward, but requires some care.
+We assume (because that's how it works currently) that the encrypted bio
+match the original bio, this is important because we save the iter of
+the bio before we submit.  If this changes in the future we'll need a
+hook to give us the bi_iter of the decryption bio before it's submitted.
+We check the csums before decryption.  If it doesn't match we simply
+error out and we let the normal path handle the repair work.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/bio.c     | 29 ++++++++++++++++++++++++++++-
- fs/btrfs/fscrypt.c | 24 ++++++++++++++++++++++++
- fs/btrfs/fscrypt.h |  6 ++++++
- 3 files changed, 58 insertions(+), 1 deletion(-)
+ fs/btrfs/bio.c     | 34 +++++++++++++++++++++++++++++++++-
+ fs/btrfs/bio.h     |  3 +++
+ fs/btrfs/fscrypt.c | 29 +++++++++++++++++++++++++++++
+ 3 files changed, 65 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index 52f027877aaa..ef3f98b3ec3f 100644
+index ef3f98b3ec3f..494b3ba05f7a 100644
 --- a/fs/btrfs/bio.c
 +++ b/fs/btrfs/bio.c
-@@ -15,6 +15,7 @@
- #include "zoned.h"
- #include "file-item.h"
- #include "raid-stripe-tree.h"
-+#include "fscrypt.h"
+@@ -282,6 +282,34 @@ static struct btrfs_failed_bio *repair_one_sector(struct btrfs_bio *failed_bbio,
+ 	return fbio;
+ }
  
- static struct bio_set btrfs_bioset;
- static struct bio_set btrfs_clone_bioset;
-@@ -660,6 +661,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 	u64 logical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
- 	u64 length = bio->bi_iter.bi_size;
- 	u64 map_length = length;
-+	u64 max_bio_len = length;
- 	bool use_append = btrfs_use_zone_append(bbio);
- 	struct btrfs_io_context *bioc = NULL;
- 	struct btrfs_io_stripe smap;
-@@ -669,6 +671,31 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 	smap.is_scrub = !bbio->inode;
- 
- 	btrfs_bio_counter_inc_blocked(fs_info);
++blk_status_t btrfs_check_encrypted_read_bio(struct btrfs_bio *bbio,
++					    struct bio *enc_bio)
++{
++	struct btrfs_inode *inode = bbio->inode;
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++	u32 sectorsize = fs_info->sectorsize;
++	struct bvec_iter iter = bbio->saved_iter;
++	struct btrfs_device *dev = bbio->bio.bi_private;
++	u32 offset = 0;
 +
 +	/*
-+	 * The blk-crypto-fallback limits bio sizes to 256 segments, because it
-+	 * has no way of controlling the pages it gets for the bounce bio it
-+	 * submits.
-+	 *
-+	 * If we don't pre-split our bio blk-crypto-fallback will do it for us,
-+	 * and then call into our checksum callback with a random cloned bio
-+	 * that isn't a btrfs_bio.
-+	 *
-+	 * To account for this we must truncate the bio ourselves, so we need to
-+	 * get our length at 256 segments and return that.  We must do this
-+	 * before btrfs_map_block because the RAID5/6 code relies on having
-+	 * properly stripe aligned things, so we return the truncated length
-+	 * here so that btrfs_map_block() does the correct thing.  Further down
-+	 * we actually truncate map_length to map_bio_len because map_length
-+	 * will be set to whatever the mapping length is for the underlying
-+	 * geometry.  This will work properly with RAID5/6 as it will have
-+	 * already setup everything for the expected length, and everything else
-+	 * can handle with a truncated map_length.
++	 * We have to use a copy of iter in case there's an error,
++	 * btrfs_check_read_bio will handle submitting the repair bios.
 +	 */
-+	if (bio_has_crypt_ctx(bio))
-+		max_bio_len = btrfs_fscrypt_bio_length(bio, map_length);
++	while (iter.bi_size) {
++		struct bio_vec bv = bio_iter_iovec(enc_bio, iter);
 +
-+	map_length = max_bio_len;
- 	error = btrfs_map_block(fs_info, btrfs_op(bio), logical, &map_length,
- 				&bioc, &smap, &mirror_num);
- 	if (error) {
-@@ -684,7 +711,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 	if (bio_op(bio) == REQ_OP_WRITE && is_data_bbio(bbio))
- 		bbio->orig_logical = logical;
- 
--	map_length = min(map_length, length);
-+	map_length = min(map_length, max_bio_len);
- 	if (use_append)
- 		map_length = min(map_length, fs_info->max_zone_append_size);
- 
-diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index 726cb6121934..419b0f6d8629 100644
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -298,6 +298,30 @@ bool btrfs_mergeable_encrypted_bio(struct bio *bio, struct inode *inode,
- 	return fscrypt_mergeable_extent_bio(bio, inode, fi, logical_offset);
- }
- 
-+/*
-+ * The block crypto stuff allocates bounce buffers for encryption, so splits at
-+ * BIO_MAX_VECS worth of segments.  If we are larger than that number of
-+ * segments then we need to limit the size to the size that BIO_MAX_VECS covers.
-+ */
-+int btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length)
-+{
-+	unsigned int i = 0;
-+	struct bio_vec bv;
-+	struct bvec_iter iter;
-+	u64 segments_length = 0;
-+
-+	if (bio_op(bio) != REQ_OP_WRITE)
-+		return map_length;
-+
-+	bio_for_each_segment(bv, bio, iter) {
-+		segments_length += bv.bv_len;
-+		if (++i == BIO_MAX_VECS)
-+			return segments_length;
++		bv.bv_len = min(bv.bv_len, sectorsize);
++		if (!btrfs_data_csum_ok(bbio, dev, offset, &bv))
++			return BLK_STS_IOERR;
++		bio_advance_iter_single(enc_bio, &iter, sectorsize);
++		offset += sectorsize;
 +	}
 +
-+	return map_length;
++	bbio->csum_done = true;
++	return BLK_STS_OK;
 +}
 +
- const struct fscrypt_operations btrfs_fscrypt_ops = {
- 	.has_per_extent_encryption = 1,
- 	.get_context = btrfs_fscrypt_get_context,
-diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
-index 756375ade0b6..c4a327be0eeb 100644
---- a/fs/btrfs/fscrypt.h
-+++ b/fs/btrfs/fscrypt.h
-@@ -35,6 +35,7 @@ void btrfs_set_bio_crypt_ctx_from_extent(struct bio *bio,
- bool btrfs_mergeable_encrypted_bio(struct bio *bio, struct inode *inode,
- 				   struct fscrypt_extent_info *fi,
- 				   u64 logical_offset);
-+int btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length);
- 
- #else
- static inline int btrfs_fscrypt_save_extent_info(struct btrfs_inode *inode,
-@@ -88,6 +89,11 @@ static inline bool btrfs_mergeable_encrypted_bio(struct bio *bio,
+ static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *dev)
  {
- 	return true;
- }
-+
-+static inline u64 btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length)
-+{
-+	return map_length;
-+}
- #endif /* CONFIG_FS_ENCRYPTION */
+ 	struct btrfs_inode *inode = bbio->inode;
+@@ -307,6 +335,10 @@ static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *de
+ 	/* Clear the I/O error. A failed repair will reset it. */
+ 	bbio->bio.bi_status = BLK_STS_OK;
  
- extern const struct fscrypt_operations btrfs_fscrypt_ops;
++	/* This was an encrypted bio and we've already done the csum check. */
++	if (status == BLK_STS_OK && bbio->csum_done)
++		goto out;
++
+ 	while (iter->bi_size) {
+ 		struct bio_vec bv = bio_iter_iovec(&bbio->bio, *iter);
+ 
+@@ -317,7 +349,7 @@ static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *de
+ 		bio_advance_iter_single(&bbio->bio, iter, sectorsize);
+ 		offset += sectorsize;
+ 	}
+-
++out:
+ 	if (bbio->csum != bbio->csum_inline)
+ 		kfree(bbio->csum);
+ 
+diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+index 5d3f53dcd6d5..393ef32f5321 100644
+--- a/fs/btrfs/bio.h
++++ b/fs/btrfs/bio.h
+@@ -45,6 +45,7 @@ struct btrfs_bio {
+ 		struct {
+ 			u8 *csum;
+ 			u8 csum_inline[BTRFS_BIO_INLINE_CSUM_SIZE];
++			bool csum_done;
+ 			struct bvec_iter saved_iter;
+ 		};
+ 
+@@ -110,5 +111,7 @@ void btrfs_submit_repair_write(struct btrfs_bio *bbio, int mirror_num, bool dev_
+ int btrfs_repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 			    u64 length, u64 logical, struct page *page,
+ 			    unsigned int pg_offset, int mirror_num);
++blk_status_t btrfs_check_encrypted_read_bio(struct btrfs_bio *bbio,
++					    struct bio *enc_bio);
+ 
+ #endif
+diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
+index 419b0f6d8629..85b596711371 100644
+--- a/fs/btrfs/fscrypt.c
++++ b/fs/btrfs/fscrypt.c
+@@ -15,6 +15,7 @@
+ #include "transaction.h"
+ #include "volumes.h"
+ #include "xattr.h"
++#include "file-item.h"
+ 
+ /*
+  * From a given location in a leaf, read a name into a qstr (usually a
+@@ -214,6 +215,33 @@ static struct block_device **btrfs_fscrypt_get_devices(struct super_block *sb,
+ 	return devs;
+ }
+ 
++static blk_status_t btrfs_process_encrypted_bio(struct bio *orig_bio,
++						struct bio *enc_bio)
++{
++	struct btrfs_bio *bbio;
++
++	/*
++	 * If our bio is from the normal fs_bio_set then we know this is a
++	 * mirror split and we can skip it, we'll get the real bio on the last
++	 * mirror and we can process that one.
++	 */
++	if (orig_bio->bi_pool == &fs_bio_set)
++		return BLK_STS_OK;
++
++	bbio = btrfs_bio(orig_bio);
++
++	if (bio_op(orig_bio) == REQ_OP_READ) {
++		/*
++		 * We have ->saved_iter based on the orig_bio, so if the block
++		 * layer changes we need to notice this asap so we can update
++		 * our code to handle the new world order.
++		 */
++		ASSERT(orig_bio == enc_bio);
++		return btrfs_check_encrypted_read_bio(bbio, enc_bio);
++	}
++	return btrfs_csum_one_bio(bbio, enc_bio);
++}
++
+ int btrfs_fscrypt_load_extent_info(struct btrfs_inode *inode,
+ 				   struct extent_map *em,
+ 				   struct btrfs_fscrypt_ctx *ctx)
+@@ -328,4 +356,5 @@ const struct fscrypt_operations btrfs_fscrypt_ops = {
+ 	.set_context = btrfs_fscrypt_set_context,
+ 	.empty_dir = btrfs_fscrypt_empty_dir,
+ 	.get_devices = btrfs_fscrypt_get_devices,
++	.process_bio = btrfs_process_encrypted_bio,
+ };
 -- 
 2.41.0
 
