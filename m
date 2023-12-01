@@ -1,76 +1,80 @@
-Return-Path: <linux-btrfs+bounces-475-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-476-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 640C18014DC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 21:59:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 961228014DD
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 21:59:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FD43281D11
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 20:59:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CA4F1F20FFD
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 20:59:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E95C58AB5;
-	Fri,  1 Dec 2023 20:59:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03385914D;
+	Fri,  1 Dec 2023 20:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="oNor3wCw";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mzQG8Tly"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="blymQRDD";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bT6oGRcQ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4066212A
-	for <linux-btrfs@vger.kernel.org>; Fri,  1 Dec 2023 12:58:58 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FD110C2
+	for <linux-btrfs@vger.kernel.org>; Fri,  1 Dec 2023 12:59:00 -0800 (PST)
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id AA5C85C014F;
-	Fri,  1 Dec 2023 15:58:57 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 01 Dec 2023 15:58:57 -0500
+	by mailout.nyi.internal (Postfix) with ESMTP id 51BFF5C01C1;
+	Fri,  1 Dec 2023 15:59:00 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 01 Dec 2023 15:59:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
 	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:sender:subject
-	:subject:to:to; s=fm2; t=1701464337; x=1701550737; bh=Ol7Y2AeorX
-	abVlkh7Vu8uIt/Zle7CnLBXc+hvj4ChMA=; b=oNor3wCwXYYnDFOmMHLn5/bqXh
-	8vZiw880HK518KO780BM3adUmBCF6AFTyQT5rFJoNPdZYT1+cjZj3rNK9F9Ao0dI
-	+eZC5mCmu8w1CK8NYr4HxDY3Z7qIJ2XDC5mpDy4HAt+99jXJpyy/wnAiksQx3inH
-	23jhrp8FTAIVklsEXCqAcFVecHATnOL6+2d+H1Uu5fJrasSLI85tCHANWNoJhog3
-	LdRHBjck08XF0wsWkQ+wMwlgyg+HUG6Dt1MpBlOMUQ2fUGss4va2GKF8CmVTjGoc
-	JfoaE0tsf5Efy/QLokoJQ7yH+onYbLs4IWHYRr6dwsPTmEbt3VAHrf+E9qDA==
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:sender:subject:subject:to:to; s=fm2; t=1701464340; x=
+	1701550740; bh=0kJXEGAVBdGtZ+Gdv9T8tAWTrKEgtcGgN5Vv6HI3ORU=; b=b
+	lymQRDD27vEecbVyrahcAaETtTOwSK/dWY5fsKQ0T1jSSeSu8JZmeQ4AiPh3rr1s
+	pvrJo9u9WRQsSCKsUukO96tRzkGr+qdB+4x79n2mb7eGd2QpFq13F0je73pjLDQK
+	b0rhTro/RjDw/y+l97O8rMyRu7e/JLN94KiqczSTvSl/oK/3j8gMkF0s0vm0OPlm
+	OJPiyFKbHteBhXXDcnDyDofM/pFx9GQFsitrQvXOiQsbt0I1dvEznrGau27YR5k8
+	009krE+IiJEQ/CbCBKhVqVz4j+7hsctuQSYGeX+GY5W3UEkeoIRe2J2EhNYDq03e
+	uVPWj0P5tSze6zVM5edVA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:content-transfer-encoding:content-type
 	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:sender:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1701464337; x=1701550737; bh=Ol7Y2AeorXabVlkh7Vu8uIt/Zle7
-	CnLBXc+hvj4ChMA=; b=mzQG8Tly8XCf///7O2P7XCi66WdcLq1T4ZvfVGJ0kl0z
-	iMl/5KyI3bEtAeeFH/y/6Q+NX9RZOK6hkxy2Q1vCSPa5jv8pCvrvsfQckGw2Km6R
-	TXwiHznZyh105HwHnBWQVcoRxjE57qofC2r6chsOzxq81N3QAwdo1naKm731Uyvz
-	5VBKQrRwzcYIYVf7wR5baMuW31aIw9G4NIztp1dgUgx3/QC6zetfc6Bgsd3OnXMP
-	p+edPPu1BnymO6ymkLmLF4KnyOdC8bAGFw8E2FgzNsh4B91eSQVzMQaJwtmgTYZl
-	rBy24187LPKcQKnoiFRQ84iDCy0ivEgm63GVUc9+tg==
-X-ME-Sender: <xms:EUlqZUPphjULEzX_uIkinfJv5KtLdPihClqcw5FA44w1iZZY8Wmikw>
-    <xme:EUlqZa-fvWvn8LGpFcgIxOJYMSqiQinl3LsZNUx7Mrgc_xEJjLX8orP84tPLlG1U2
-    mHfQ1536kxuxu7812g>
-X-ME-Received: <xmr:EUlqZbSP6CvviaSzP9Sazsu1zMLmW6jGbtUSHXzAFFioXkez3i9iMWZZnC7326x-KAskNZdtRtNVe-CcFKulzz_Q_jw>
+	:in-reply-to:message-id:mime-version:references:reply-to:sender
+	:subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm1; t=1701464340; x=1701550740; bh=0
+	kJXEGAVBdGtZ+Gdv9T8tAWTrKEgtcGgN5Vv6HI3ORU=; b=bT6oGRcQIfO14LDAv
+	k9EIu5DlhFoJvfIPKCF+6tQPbwlvzfMFjWaAOUuW7zkhoPjak21e1XNGwXzuTHMs
+	+uS2c/9qQeX7K66G0LFGjYt+zzG+9pseb6X8HWd/IYxbhBZpSaRokAwdPqJumkWm
+	YrBixYY0hM2RPIYDHXNk25SfU/pQOxJCKs0un5/ueMi3rQibnDfGZvfE7i5HAlyI
+	1XuibR5LMI30s5BZrBUpK+jDD3zecaArJSl49MItGDJ2geDTV1S+2q7HMsBz36Lv
+	XjR2nDhbJcx8Terr9IP5om2o7BAtdT4+IDbwLE8xrjHuwg6kSWMy84h7Tj27qxG+
+	SMF/Q==
+X-ME-Sender: <xms:FElqZVxyexOzWtExQEY6b9H9Hfnh5t8cVw2F6v73Afgz2H8ExNoZiA>
+    <xme:FElqZVR1FLFXGoqEO51Fh3_ep4ynngYH8JcS02UoPBWp8vx0PD2-D7rslO51Ddahc
+    sefS_Ii9b34RpSYiwg>
+X-ME-Received: <xmr:FElqZfXE778rs3MbTtHl9russZNmfjm4Bky8XKep27DgieLS36uXBl_yl13wBIbQSTGpCE9ahuZhSCnQ7xf9Ox9J77w>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgudeggecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
-    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:EUlqZctT9HmRd4currP9NFdzl3NjVRM2obmfh2XaK4yzq8CtqHWx9A>
-    <xmx:EUlqZcfTt_XrMJEutyHCU0zK9snWV968fCxLV8KSLsbLqAAGSD9Org>
-    <xmx:EUlqZQ2S5BWCxCD00rNYcEWpOdpmeob9BKAKfWBVFLH_yMxid5f9QA>
-    <xmx:EUlqZUlvjNO5_ATk04suQF6mEp95lwUIfzxRJqMj5jJEjX8aOlMdFQ>
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
+    ertdertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
+    rdhioheqnecuggftrfgrthhtvghrnhepieeuffeuvdeiueejhfehiefgkeevudejjeejff
+    evvdehtddufeeihfekgeeuheelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:FElqZXhmynDtqStSFrSBExwJe9EVYvUAC9IBGAEC0dLsmFH9s1UM0g>
+    <xmx:FElqZXA1IaFjQE2d3omCljT41N1pkkeZPEfpIoHqOzNLXb7GFMSkOQ>
+    <xmx:FElqZQL9TFVka_lG_pb9PElqltRmAx7CiN7MFk4JJ29_TUz0IvR6zA>
+    <xmx:FElqZaqr8nNskLn1ukF1AG0h_f9ySiHzTud4W5FJK0cRPXPdqXuHUw>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 1 Dec 2023 15:58:57 -0500 (EST)
+ 1 Dec 2023 15:58:59 -0500 (EST)
 From: Boris Burkov <boris@bur.io>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 0/5] btrfs: qgroups rsv fixes
-Date: Fri,  1 Dec 2023 13:00:08 -0800
-Message-ID: <cover.1701464169.git.boris@bur.io>
+Subject: [PATCH 1/5] btrfs: free qgroup rsv on ioerr ordered_extent
+Date: Fri,  1 Dec 2023 13:00:09 -0800
+Message-ID: <301bc827ef330a961a95791e6c4d3dbe3e2a6108.1701464169.git.boris@bur.io>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <cover.1701464169.git.boris@bur.io>
+References: <cover.1701464169.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -79,32 +83,32 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series contains a number of related but relatively orthogonal fixes
-for various bugs in qgroup/squota reservation accounting. Most of these
-manifest as either rsv underflow WARNINGs (in qgroup_rsv_release) or as
-WARNINGs at umount for unreleased space.
+An ordered extent completing is a critical moment in qgroup rsv
+handling, as the ownership of the reservation is handed off from the
+ordered extent to the delayed ref. In the happy path we release (unlock)
+but do not free (decrement counter) the reservation, and the delayed ref
+drives the free. However, on an error, we don't create a delayed ref,
+since there is no ref to add. Therefore, free on the error path.
 
-With these fixes, I am able to get a fully clean '-g auto' fstests run
-on my setup and with -O squota in MKFS_OPTIONS.
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/ordered-data.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Boris Burkov (5):
-  btrfs: free qgroup rsv on ioerr ordered_extent
-  btrfs: fix qgroup_free_reserved_data int overflow
-  btrfs: free qgroup pertrans rsv on trans abort
-  btrfs: dont clear qgroup rsv bit in release_folio
-  btrfs: ensure releasing squota rsv on head refs
-
- fs/btrfs/delalloc-space.c |  2 +-
- fs/btrfs/disk-io.c        | 28 +++++++++++++++++++++++
- fs/btrfs/extent-tree.c    | 47 +++++++++++++++++++++++++++------------
- fs/btrfs/extent_io.c      |  3 ++-
- fs/btrfs/file.c           |  2 +-
- fs/btrfs/inode.c          | 16 ++++++-------
- fs/btrfs/ordered-data.c   | 10 +++++----
- fs/btrfs/qgroup.c         | 46 +++++++++++++++++++++++++-------------
- fs/btrfs/qgroup.h         |  8 +++----
- 9 files changed, 114 insertions(+), 48 deletions(-)
-
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index 574e8a55e24a..8d4ab5ecfa5d 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -599,7 +599,8 @@ void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
+ 			release = entry->disk_num_bytes;
+ 		else
+ 			release = entry->num_bytes;
+-		btrfs_delalloc_release_metadata(btrfs_inode, release, false);
++		btrfs_delalloc_release_metadata(btrfs_inode, release,
++						test_bit(BTRFS_ORDERED_IOERR, &entry->flags));
+ 	}
+ 
+ 	percpu_counter_add_batch(&fs_info->ordered_bytes, -entry->num_bytes,
 -- 
 2.42.0
 
