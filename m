@@ -1,65 +1,65 @@
-Return-Path: <linux-btrfs+bounces-505-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-506-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CF7E801600
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5E9F801601
 	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 23:15:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 881F61F21046
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61091281E1F
 	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 22:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22726646ED;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326D2646F0;
 	Fri,  1 Dec 2023 22:12:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="IstI/onB"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="oJhpZ1cd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D9510EA
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F6B128
 	for <linux-btrfs@vger.kernel.org>; Fri,  1 Dec 2023 14:12:25 -0800 (PST)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5d3d0f862f7so18587087b3.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 01 Dec 2023 14:12:24 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-db5e5647c24so801321276.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Dec 2023 14:12:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1701468744; x=1702073544; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1701468745; x=1702073545; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ECsbNqk7e25qCTyOZ0B1DCO4cPIk26VYu5GvEvu1st4=;
-        b=IstI/onBSksKYzVf6Mj3UZSbQZwivm11DLpFp27eunKOdKXw2LjXDDYu+owILpl8Jj
-         fCrLGxFa+1gY7kpE1B6Fkb3iA72e0uCxQjK05aCN1OA4hwvL89BFnzN5lAPCxkRrBeRo
-         zj0vkciHwmMue0+SSIe0vsIhahhEEXXLb2fwwKoXO8o3dDP4KYn7y+66Iiz+OdNEkNbQ
-         cnrfA1mS8lOnCsmscXoKaWAwhwQTR2yTzFusWNuCNGsL2r5Qsota8lKqD5TUoieVki9Q
-         AA/pUW96wMh5JYkJX+m3OwntkWtg8WGdaLo68pu7UfL3WjQyJPhoSUHq14TfVK+F70ty
-         FJMw==
+        bh=wVMEIuPyFk0UJVVDGNAANRB18O7eDV0fbcVAkCK7tns=;
+        b=oJhpZ1cdahfk4PB2leOlA3UBPvzrUhWRpVmKMphmXY909mnvdWhZhltXykJEpu7lgk
+         R1lB+vo+4zpO6/9uD4qaLtAI1HE76207LB2YWr5JYBUgH8bwClJ9jijC/bsNyAsfxUXa
+         +Hc5603CzDd+KFgm3wobKClMePrxoa0PHY55Lb2tgH3oA9e39o/Mnn8SFQ3E5WvD5qO3
+         QTn6Te2Xff6KUEmfCo28Zx7cVnh4FlCFav8o8Fw+TC2dADsbs8S/B2+RRNFnP5yLFj1K
+         VxXsz+8P5D9MFx1xo4YGfl7Z7o+LFjv9bw1Yc8jb+CdXJDV1WUiCCt8YoM1njeZDt6mV
+         crsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701468744; x=1702073544;
+        d=1e100.net; s=20230601; t=1701468745; x=1702073545;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ECsbNqk7e25qCTyOZ0B1DCO4cPIk26VYu5GvEvu1st4=;
-        b=vx/XB8fyiOGSqCR/KC+k/MjyVkiIJQkNRFj1V132p9yqxzrKhYH12tmjo+4I5bu2c6
-         84ATv5sDcQu4TmVAbBRIcOHdCheZTeoIFX14YZBLpFO+YEaYlxTZaiW8zZWS4BKhE0vu
-         ejW6eS9Q2sxqW7bPOB7AVnPe8xsBgHLL5h3BBpfx+bXRNMwi4XkeSB1sUOnHoc4JuWpb
-         UWMAswFvnoRmcLxFbOro9709x7QC3G1d7aJ/xovlZlCz7o5wAFA9eYmAA0AWbqe90AQj
-         GLXF3Fd0t3LiYl+scNYIiydUonUhtBs8/06EkAK/li+1DzNWmKqxccncNbNSiNlb2xUP
-         N/BQ==
-X-Gm-Message-State: AOJu0YxPwNPirfdkZ/TxHQxecFWi2LiRFV36qxL2OoV9cy69MDpa6IIP
-	l4sVeWiVN43q7EUCbFP/sznnqN9YQMlAFKO23YZ2bA==
-X-Google-Smtp-Source: AGHT+IFXRlEIXJmhzgWxdWPuqeivMeWTmnJ0wTj3kE6YB5CkE+oqtHmV9ymTBgNEXAmD8a8vidqtvw==
-X-Received: by 2002:a81:7845:0:b0:5d7:1940:b37a with SMTP id t66-20020a817845000000b005d71940b37amr168736ywc.70.1701468744098;
+        bh=wVMEIuPyFk0UJVVDGNAANRB18O7eDV0fbcVAkCK7tns=;
+        b=nWPQRyQ6sf1BOjPHNRHWryHMK5ubrmkUP6kKIRwGZc6SB9WT6av8dG8isSqSrSnuhP
+         /GmZ7tCAoSZA6znOVDQeqVJeO0ch1YdPxqtiqK1CpqUU/4Aw41pZF8sjuR/F4GPj7yxS
+         k0wSPIv2DinzU2kscLtzaeTL7HsPzZAPhIJI6udOxMF0xgcTVbZmbcNZ23U8aBZIIR4N
+         8A8G/iglbp+VCKZ5HTUYrkkPHeUvGwYkxgV9rNBghPFzHOzJDe2L4hgyxrtfse2KIKyw
+         grtm+VZPEh2xXNq+rzyh/FcPwsdRlM3fCSg5cKT8KK6gaU1cCMUdidzu5MRmkgSVDRQV
+         MKjw==
+X-Gm-Message-State: AOJu0YzewWMMMhV28yB9NkNUPTOF8/qnKxWpwipHqE46cEaU6J0DNmR9
+	J3n4kO5GdeeEPvGfgiNiVKAIsz8Mg1GaG6QlcyPrGw==
+X-Google-Smtp-Source: AGHT+IGL+TuLPtA3yVi7sUzk54735kxowGtQwrFaP3ucpcX739HW39tw7HQhc25cSM22SGGoQ6bbzA==
+X-Received: by 2002:a05:690c:368d:b0:5d7:1940:3efb with SMTP id fu13-20020a05690c368d00b005d719403efbmr153365ywb.44.1701468744993;
         Fri, 01 Dec 2023 14:12:24 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id u189-20020a8179c6000000b005d34a381f59sm1359711ywc.102.2023.12.01.14.12.23
+        by smtp.gmail.com with ESMTPSA id m20-20020a819c14000000b005a4da74b869sm695899ywa.139.2023.12.01.14.12.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 14:12:23 -0800 (PST)
+        Fri, 01 Dec 2023 14:12:24 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org
-Subject: [PATCH v4 23/46] btrfs: plumb through setting the fscrypt_info for ordered extents
-Date: Fri,  1 Dec 2023 17:11:20 -0500
-Message-ID: <7c9457e4e001b42fbb3f190334e954124765e50b.1701468306.git.josef@toxicpanda.com>
+Subject: [PATCH v4 24/46] btrfs: plumb the fscrypt extent context through create_io_em
+Date: Fri,  1 Dec 2023 17:11:21 -0500
+Message-ID: <f953f352d53ebe19368ec43f1e7ba46fffd8d320.1701468306.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1701468305.git.josef@toxicpanda.com>
 References: <cover.1701468305.git.josef@toxicpanda.com>
@@ -71,175 +71,106 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We're going to be getting fscrypt_info from the extent maps, update the
-helpers to take an fscrypt_info argument and use that to set the
-encryption type on the ordered extent.
+For prealloc extents we create an em, since we already have the context
+loaded from the original prealloc extent creation we need to
+pre-populate the extent map fscrypt info so it can be read properly
+later if the pages are evicted.  Add the argument for create_io_em and
+set it to NULL until we're ready to populate it properly.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c        | 20 +++++++++++---------
- fs/btrfs/ordered-data.c | 32 ++++++++++++++++++++------------
- fs/btrfs/ordered-data.h |  9 +++++----
- 3 files changed, 36 insertions(+), 25 deletions(-)
+ fs/btrfs/inode.c | 36 ++++++++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 16 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 5b1aea9f5f46..83d653376deb 100644
+index 83d653376deb..837d7a3969d1 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -1171,7 +1171,8 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
+@@ -140,11 +140,12 @@ static noinline int run_delalloc_cow(struct btrfs_inode *inode,
+ 				     struct page *locked_page, u64 start,
+ 				     u64 end, struct writeback_control *wbc,
+ 				     bool pages_dirty);
+-static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
+-				       u64 len, u64 orig_start, u64 block_start,
+-				       u64 block_len, u64 orig_block_len,
+-				       u64 ram_bytes, int compress_type,
+-				       int type);
++static struct extent_map *create_io_em(struct btrfs_inode *inode,
++				       struct fscrypt_extent_info *fscrypt_info,
++				       u64 start, u64 len, u64 orig_start,
++				       u64 block_start, u64 block_len,
++				       u64 orig_block_len, u64 ram_bytes,
++				       int compress_type, int type);
+ 
+ static int data_reloc_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
+ 					  u64 root, void *warn_ctx)
+@@ -1156,7 +1157,7 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
  	}
- 	free_extent_map(em);
  
--	ordered = btrfs_alloc_ordered_extent(inode, start,	/* file_offset */
-+	ordered = btrfs_alloc_ordered_extent(inode, NULL,
-+				       start,			/* file_offset */
- 				       async_extent->ram_size,	/* num_bytes */
- 				       async_extent->ram_size,	/* ram_bytes */
- 				       ins.objectid,		/* disk_bytenr */
-@@ -1434,9 +1435,10 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		}
- 		free_extent_map(em);
+ 	/* Here we're doing allocation and writeback of the compressed pages */
+-	em = create_io_em(inode, start,
++	em = create_io_em(inode, NULL, start,
+ 			  async_extent->ram_size,	/* len */
+ 			  start,			/* orig_start */
+ 			  ins.objectid,			/* block_start */
+@@ -1421,7 +1422,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 		extent_reserved = true;
  
--		ordered = btrfs_alloc_ordered_extent(inode, start, ram_size,
--					ram_size, ins.objectid, cur_alloc_size,
--					0, 1 << BTRFS_ORDERED_REGULAR,
-+		ordered = btrfs_alloc_ordered_extent(inode, NULL,
-+					start, ram_size, ram_size, ins.objectid,
-+					cur_alloc_size, 0,
-+					1 << BTRFS_ORDERED_REGULAR,
- 					BTRFS_COMPRESS_NONE);
- 		if (IS_ERR(ordered)) {
- 			ret = PTR_ERR(ordered);
-@@ -2167,7 +2169,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 			free_extent_map(em);
- 		}
+ 		ram_size = ins.offset;
+-		em = create_io_em(inode, start, ins.offset, /* len */
++		em = create_io_em(inode, NULL, start, ins.offset, /* len */
+ 				  start, /* orig_start */
+ 				  ins.objectid, /* block_start */
+ 				  ins.offset, /* block_len */
+@@ -2154,7 +2155,8 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 			u64 orig_start = found_key.offset - nocow_args.extent_offset;
+ 			struct extent_map *em;
  
--		ordered = btrfs_alloc_ordered_extent(inode, cur_offset,
-+		ordered = btrfs_alloc_ordered_extent(inode, NULL, cur_offset,
- 				nocow_args.num_bytes, nocow_args.num_bytes,
- 				nocow_args.disk_bytenr, nocow_args.num_bytes, 0,
- 				is_prealloc
-@@ -7058,7 +7060,7 @@ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
+-			em = create_io_em(inode, cur_offset, nocow_args.num_bytes,
++			em = create_io_em(inode, NULL, cur_offset,
++					  nocow_args.num_bytes,
+ 					  orig_start,
+ 					  nocow_args.disk_bytenr, /* block_start */
+ 					  nocow_args.num_bytes, /* block_len */
+@@ -7053,8 +7055,9 @@ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
+ 	struct btrfs_ordered_extent *ordered;
+ 
+ 	if (type != BTRFS_ORDERED_NOCOW) {
+-		em = create_io_em(inode, start, len, orig_start, block_start,
+-				  block_len, orig_block_len, ram_bytes,
++		em = create_io_em(inode, NULL, start, len, orig_start,
++				  block_start, block_len, orig_block_len,
++				  ram_bytes,
+ 				  BTRFS_COMPRESS_NONE, /* compress_type */
+ 				  type);
  		if (IS_ERR(em))
- 			goto out;
- 	}
--	ordered = btrfs_alloc_ordered_extent(inode, start, len, len,
-+	ordered = btrfs_alloc_ordered_extent(inode, NULL, start, len, len,
- 					     block_start, block_len, 0,
- 					     (1 << type) |
- 					     (1 << BTRFS_ORDERED_DIRECT),
-@@ -10543,9 +10545,9 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
- 	}
- 	free_extent_map(em);
- 
--	ordered = btrfs_alloc_ordered_extent(inode, start, num_bytes, ram_bytes,
--				       ins.objectid, ins.offset,
--				       encoded->unencoded_offset,
-+	ordered = btrfs_alloc_ordered_extent(inode, NULL, start,
-+				       num_bytes, ram_bytes, ins.objectid,
-+				       ins.offset, encoded->unencoded_offset,
- 				       (1 << BTRFS_ORDERED_ENCODED) |
- 				       (1 << BTRFS_ORDERED_COMPRESSED),
- 				       compression);
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 27350dd50828..ee3138a6d11e 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -146,9 +146,11 @@ static inline struct rb_node *ordered_tree_search(struct btrfs_inode *inode,
+@@ -7342,11 +7345,12 @@ static int lock_extent_direct(struct inode *inode, u64 lockstart, u64 lockend,
  }
  
- static struct btrfs_ordered_extent *alloc_ordered_extent(
--			struct btrfs_inode *inode, u64 file_offset, u64 num_bytes,
--			u64 ram_bytes, u64 disk_bytenr, u64 disk_num_bytes,
--			u64 offset, unsigned long flags, int compress_type)
-+			struct btrfs_inode *inode,
-+			struct fscrypt_extent_info *fscrypt_info,
-+			u64 file_offset, u64 num_bytes, u64 ram_bytes,
-+			u64 disk_bytenr, u64 disk_num_bytes, u64 offset,
-+			unsigned long flags, int compress_type)
+ /* The callers of this must take lock_extent() */
+-static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
+-				       u64 len, u64 orig_start, u64 block_start,
+-				       u64 block_len, u64 orig_block_len,
+-				       u64 ram_bytes, int compress_type,
+-				       int type)
++static struct extent_map *create_io_em(struct btrfs_inode *inode,
++				       struct fscrypt_extent_info *fscrypt_info,
++				       u64 start, u64 len, u64 orig_start,
++				       u64 block_start, u64 block_len,
++				       u64 orig_block_len, u64 ram_bytes,
++				       int compress_type, int type)
  {
- 	struct btrfs_ordered_extent *entry;
+ 	struct extent_map *em;
  	int ret;
-@@ -181,10 +183,12 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
- 	entry->bytes_left = num_bytes;
- 	entry->inode = igrab(&inode->vfs_inode);
- 	entry->compress_type = compress_type;
--	entry->encryption_type = BTRFS_ENCRYPTION_NONE;
- 	entry->truncated_len = (u64)-1;
- 	entry->qgroup_rsv = ret;
- 	entry->flags = flags;
-+	entry->fscrypt_info = fscrypt_get_extent_info(fscrypt_info);
-+	entry->encryption_type = entry->fscrypt_info ?
-+		BTRFS_ENCRYPTION_FSCRYPT : BTRFS_ENCRYPTION_NONE;
- 	refcount_set(&entry->refs, 1);
- 	init_waitqueue_head(&entry->wait);
- 	INIT_LIST_HEAD(&entry->list);
-@@ -247,6 +251,7 @@ static void insert_ordered_extent(struct btrfs_ordered_extent *entry)
-  * Add an ordered extent to the per-inode tree.
-  *
-  * @inode:           Inode that this extent is for.
-+ * @fscrypt_info:    The fscrypt_extent_info for this extent, if necessary.
-  * @file_offset:     Logical offset in file where the extent starts.
-  * @num_bytes:       Logical length of extent in file.
-  * @ram_bytes:       Full length of unencoded data.
-@@ -263,17 +268,19 @@ static void insert_ordered_extent(struct btrfs_ordered_extent *entry)
-  * Return: the new ordered extent or error pointer.
-  */
- struct btrfs_ordered_extent *btrfs_alloc_ordered_extent(
--			struct btrfs_inode *inode, u64 file_offset,
--			u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
--			u64 disk_num_bytes, u64 offset, unsigned long flags,
--			int compress_type)
-+			struct btrfs_inode *inode,
-+			struct fscrypt_extent_info *fscrypt_info,
-+			u64 file_offset, u64 num_bytes, u64 ram_bytes,
-+			u64 disk_bytenr, u64 disk_num_bytes, u64 offset,
-+			unsigned long flags, int compress_type)
- {
- 	struct btrfs_ordered_extent *entry;
+@@ -10535,7 +10539,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
+ 		goto out_delalloc_release;
+ 	extent_reserved = true;
  
- 	ASSERT((flags & ~BTRFS_ORDERED_TYPE_FLAGS) == 0);
- 
--	entry = alloc_ordered_extent(inode, file_offset, num_bytes, ram_bytes,
--				     disk_bytenr, disk_num_bytes, offset, flags,
-+	entry = alloc_ordered_extent(inode, fscrypt_info, file_offset,
-+				     num_bytes, ram_bytes, disk_bytenr,
-+				     disk_num_bytes, offset, flags,
- 				     compress_type);
- 	if (!IS_ERR(entry))
- 		insert_ordered_extent(entry);
-@@ -1166,8 +1173,9 @@ struct btrfs_ordered_extent *btrfs_split_ordered_extent(
- 	if (WARN_ON_ONCE(ordered->disk_num_bytes != ordered->num_bytes))
- 		return ERR_PTR(-EINVAL);
- 
--	new = alloc_ordered_extent(inode, file_offset, len, len, disk_bytenr,
--				   len, 0, flags, ordered->compress_type);
-+	new = alloc_ordered_extent(inode, ordered->fscrypt_info, file_offset,
-+				   len, len, disk_bytenr, len, 0, flags,
-+				   ordered->compress_type);
- 	if (IS_ERR(new))
- 		return new;
- 
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index 85ba9a381880..57ca8ce6eb6d 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -163,10 +163,11 @@ bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
- 				    struct btrfs_ordered_extent **cached,
- 				    u64 file_offset, u64 io_size);
- struct btrfs_ordered_extent *btrfs_alloc_ordered_extent(
--			struct btrfs_inode *inode, u64 file_offset,
--			u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
--			u64 disk_num_bytes, u64 offset, unsigned long flags,
--			int compress_type);
-+			struct btrfs_inode *inode,
-+			struct fscrypt_extent_info *fscrypt_info,
-+			u64 file_offset, u64 num_bytes, u64 ram_bytes,
-+			u64 disk_bytenr, u64 disk_num_bytes, u64 offset,
-+			unsigned long flags, int compress_type);
- void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
- 			   struct btrfs_ordered_sum *sum);
- struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *inode,
+-	em = create_io_em(inode, start, num_bytes,
++	em = create_io_em(inode, NULL, start, num_bytes,
+ 			  start - encoded->unencoded_offset, ins.objectid,
+ 			  ins.offset, ins.offset, ram_bytes, compression,
+ 			  BTRFS_ORDERED_COMPRESSED);
 -- 
 2.41.0
 
