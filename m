@@ -1,77 +1,64 @@
-Return-Path: <linux-btrfs+bounces-481-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-482-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E4D18014E9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 22:08:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DBB58015E5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 23:12:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5324D1F21031
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 21:08:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 200DF1F21014
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 22:12:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5168F58ADC;
-	Fri,  1 Dec 2023 21:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988535B1F2;
+	Fri,  1 Dec 2023 22:12:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="I8zmJv/U";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="xhXAeSrQ"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="N4EVIv29"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AEA9D54;
-	Fri,  1 Dec 2023 13:08:18 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id B7AE55C01D6;
-	Fri,  1 Dec 2023 16:08:17 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 01 Dec 2023 16:08:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:sender:subject
-	:subject:to:to; s=fm2; t=1701464897; x=1701551297; bh=nh8JeosZ65
-	b+tKpjl7Qmw/fSpCn0JuTPBXOhkR4kHaU=; b=I8zmJv/UdXXOjksjsLDhsxxI4n
-	fbOdvP0KJ3Mqq8BnjkEmsgaYBJyryvzijP6TvYpwdJua9DxWk/z2QYzygHLPOXdc
-	5VNhsVF4DNfv/CMszhNLLyLRuRo+/s39LBaW25KSy8uP+qyfFFpt4AOPBSEQ2fAX
-	b0BQ5y4omEs84640OrxV9MEQNdNRXiZInprYYvMHhEg11gfo1I/3uQ5b/xQBPrA/
-	rlNpOuc1T6JzhHw/Pf+gOnT4RV2dsVaaWhagNGAQtoE/IFq8okwji3b1YQ4ibb10
-	/8CP6om+5O9975d43stGXOuBTtkicYe2s+O2PiuUOM2YVv7mYbBkDIk4T2Wg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:sender:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1701464897; x=1701551297; bh=nh8JeosZ65b+tKpjl7Qmw/fSpCn0
-	JuTPBXOhkR4kHaU=; b=xhXAeSrQJVozFeYnwwuKJJCqGHTwg9MEVu6jSyG6f5kH
-	3deNIdIyOHO3IofSStbEs1f5vOO0tH0AZE3ldhfSoMMRMnMPrQ758/utre1arAgI
-	7FcMCXTakaAeB2AYWTkQqgofHCi+D0P6OcxPd2j53G8ydhfpmr1Cz00DYl4TOMnf
-	7e4OP/z5k4ASrkHdfjBNjEKOkxHgwv7lm2jMSdzwyAma/3u4z/byiH+V/7eMTxL/
-	5+hh7igegoRjQg+v7WJm69ARlfEo6VOFVNGp1QUKQ5GUqCu5NAaZdQuZdVetI0Wl
-	2FvMNYN+v9zwX1kdTwrbf8QNEyeqWqxfdgg7rFriOA==
-X-ME-Sender: <xms:QUtqZSd_-T5m8PEtm9eOMYsjBUmNZXrxrG8aRZYvc0Cvdk78g7EaeQ>
-    <xme:QUtqZcNJYkq0wBe7O9W0dJA82mQNlL5v3ienJnJ0l89su9BHzZFaMAy7-EwjkVrya
-    dnYd9pM2cgM6yEqIdc>
-X-ME-Received: <xmr:QUtqZTjyQgt2BjMa3YixM3KaFteqB2i4DxwHdPq4BlGmAMaLP8MNWrTmBfyb0SLQVwvBP_q-7FeUazbWgHScA8qOTQk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgudeghecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
-    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:QUtqZf_dohFA2w7vyxtCDIZ_bAaiDDP1TGviISIL46qAPrAkBzjE8w>
-    <xmx:QUtqZetjI9tSoyypgT3fEc9SIsA9rmmBkL85O2GdDLW1wFNvBioh6w>
-    <xmx:QUtqZWFJYYFdcysc_EVJmmtu9eBcO61Y7K4InBgRy0FsOiOY4sZpyg>
-    <xmx:QUtqZTUKEgADOHWHTFMfn3j4ELgirKo7_o1cVm0Hw6R3H4oDjN2M4w>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 1 Dec 2023 16:08:17 -0500 (EST)
-From: Boris Burkov <boris@bur.io>
+Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D43128
+	for <linux-btrfs@vger.kernel.org>; Fri,  1 Dec 2023 14:11:59 -0800 (PST)
+Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-5d226f51f71so29283637b3.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Dec 2023 14:11:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1701468718; x=1702073518; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4D2ssBblD7dUjePS+uFyWXaSTg3hGeewoVwZQIYlZAc=;
+        b=N4EVIv291IeX0jMhU4ZY1SCS0z4xkvCyMIdkU+1HmAfCyvk0vYI46RGKN5YY54Hh+L
+         svK1NCx/Wk94xSAVAotldi+uxmHAVw+cblCddj55TndtUfYx1eKgUsBA3tAlfiz/Cn3+
+         Fx+h+PtxRQJrOwNd6XfEbzoA+9zElFtGpm4BJYVCSL1xzX1sW2IDJRsJancHFn08RdNk
+         LGd462/a8K6BmlvhH4HKJFw875i8GIvnt8l/Cql0Dvo0xFZV8YV6V/85fqHV474qpi3l
+         64ZuVSYKZBK4ekEXLSMJ8uAm5XTQRKHWLQ8VsTzjTQsaI2sY35R8k5OFxnib4oH0f9KG
+         T5qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701468718; x=1702073518;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4D2ssBblD7dUjePS+uFyWXaSTg3hGeewoVwZQIYlZAc=;
+        b=t+ssFmGGUs9cL6vPuOaxyd2A+kkG61oQv3TdCMsOPMT8f/m4klG102W7pbxpbPThrM
+         vJvJAwmqdFpr3a+VOkzLtSx6/AAPi4ZuSCvSKipg5AqXLfuh/ocVPthsQAXR5NN8gdu/
+         QKPYLItsrnsXtBaEWD7rEA3f86ZM3sqHXMxGpN7wdAzBDTUgj/JYGiG5tkQYFEcsFu8U
+         NREJVxUH3wqPzh5F6Sxb3mB1sTssUVtgBn3DoT4Ys3GIPenE5v9AgXId0uxQVL0Smdbg
+         Th7cwexwkJsg2qUqv34qFt7liVkucYy+k7sadSqC+2w5HOM5RuJWK3pbu682WXEFNMQK
+         WAKA==
+X-Gm-Message-State: AOJu0YzOGRcD12yCZD6yRU0i67g2g5vwW9kopRK1KnPRj9gV2sxCndH1
+	90WDMicOjO1AQ2tSZERfnKU8cOidhp7xhqAN6b9tVODF
+X-Google-Smtp-Source: AGHT+IHHlDTe3kN9sZvz3Rvne4DhloRRkvFGzmwLmC72NybYQyzqUp7G5LETq7oxtGxL3t5zKGxHUA==
+X-Received: by 2002:a05:690c:3348:b0:5ce:a72e:a30a with SMTP id fk8-20020a05690c334800b005cea72ea30amr370225ywb.24.1701468718037;
+        Fri, 01 Dec 2023 14:11:58 -0800 (PST)
+Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id c129-20020a0dc187000000b0059f766f9750sm1391018ywd.124.2023.12.01.14.11.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 14:11:57 -0800 (PST)
+From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com,
-	fstests@vger.kernel.org
-Subject: [PATCH] btrfs/303: use quota rescan wrapper
-Date: Fri,  1 Dec 2023 13:09:45 -0800
-Message-ID: <18afc03e67772666190415c742f0793e8207c5e6.1701464909.git.boris@bur.io>
-X-Mailer: git-send-email 2.42.0
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH v4 00/46] btrfs: add fscrypt support
+Date: Fri,  1 Dec 2023 17:10:57 -0500
+Message-ID: <cover.1701468305.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -80,29 +67,153 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This new test called quota rescan directly rather than with the new
-wrapper. As a result, it failed with -O squota in MKFS_OPTIONS. Using
-the wrapper, it skips the rescan and passes again.
+Hello,
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- tests/btrfs/303 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v3 can be found here
 
-diff --git a/tests/btrfs/303 b/tests/btrfs/303
-index b9d6c61d1..410460af5 100755
---- a/tests/btrfs/303
-+++ b/tests/btrfs/303
-@@ -43,7 +43,7 @@ _scratch_mkfs >> $seqres.full 2>&1 || _fail "2nd mkfs failed"
- _scratch_mount
- 
- $BTRFS_UTIL_PROG quota enable "$SCRATCH_MNT" >> $seqres.full
--$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT" >> $seqres.full
-+_qgroup_rescan $SCRATCH_MNT >> $seqres.full
- 
- # Create a qgroup for the first subvolume, this would make the later
- # subvolume creation to find an existing qgroup, and abort transaction.
+https://lore.kernel.org/linux-btrfs/cover.1697480198.git.josef@toxicpanda.com/
+
+There's been a longer delay between versions than I'd like, this was mostly due
+to Plumbers, Holidays, and then uncovering a bunch of new issues with '-o
+test_dummy_encryption'.  I'm still working through some of the btrfs specific
+failures, but the fscrypt side appears to be stable.  I had to add a few changes
+to fscrypt since the last time, but nothing earth shattering, just moving the
+keyring destruction and adding a helper we need for btrfs send to work properly.
+
+This is passing a good chunk of the fstests, at this point the majority appear
+to be cases where I need to exclude the test when using test_dummy_encryption
+because of various limitations of our tools or other infrastructure related
+things.
+
+I likely will have a follow-up series with more fixes, but the bulk of this is
+unchanged since the last posting.  There were some bug fixes and such but the
+overall design remains the same.  Thanks,
+
+Josef
+
+v3->v4:
+- Added support for '-o test_dummy_encryption' at Eric's suggestion, this
+  uncovered a load of issues.
+- Preliminary work to support decrypting names for our various name resolution
+  ioctls.  I didn't get everything but I got the ones we depend on in fstests.
+- Preliminary work for send of an encrypted directory with the key loaded.
+  There's probably still bugs in here, but it doesn't crash anymore.
+- Fixed how we limit the bio size to work with direct and buffered io.
+- Fixed using the wrong fscrypt extent context for writes into prealloc extents.
+
+Josef Bacik (31):
+  fs: move fscrypt keyring destruction to after ->put_super
+  fscrypt: add per-extent encryption support
+  fscrypt: add a fscrypt_inode_open helper
+  fscrypt: conditionally don't wipe mk secret until the last active user
+    is done
+  blk-crypto: add a process bio callback
+  fscrypt: add documentation about extent encryption
+  btrfs: add infrastructure for safe em freeing
+  btrfs: add fscrypt_info and encryption_type to ordered_extent
+  btrfs: plumb through setting the fscrypt_info for ordered extents
+  btrfs: plumb the fscrypt extent context through create_io_em
+  btrfs: populate the ordered_extent with the fscrypt context
+  btrfs: keep track of fscrypt info and orig_start for dio reads
+  btrfs: add an optional encryption context to the end of file extents
+  btrfs: pass through fscrypt_extent_info to the file extent helpers
+  btrfs: pass the fscrypt_info through the replace extent infrastructure
+  btrfs: implement the fscrypt extent encryption hooks
+  btrfs: setup fscrypt_extent_info for new extents
+  btrfs: populate ordered_extent with the orig offset
+  btrfs: set the bio fscrypt context when applicable
+  btrfs: add a bio argument to btrfs_csum_one_bio
+  btrfs: add orig_logical to btrfs_bio
+  btrfs: limit encrypted writes to 256 segments
+  btrfs: implement process_bio cb for fscrypt
+  btrfs: add test_dummy_encryption support
+  btrfs: don't rewrite ret from inode_permission
+  btrfs: move inode_to_path higher in backref.c
+  btrfs: make btrfs_ref_to_path handle encrypted filenames
+  btrfs: don't search back for dir inode item in INO_LOOKUP_USER
+  btrfs: deal with encrypted symlinks in send
+  btrfs: decrypt file names for send
+  btrfs: load the inode context before sending writes
+
+Omar Sandoval (7):
+  fscrypt: expose fscrypt_nokey_name
+  btrfs: disable various operations on encrypted inodes
+  btrfs: start using fscrypt hooks
+  btrfs: add inode encryption contexts
+  btrfs: add new FEATURE_INCOMPAT_ENCRYPT flag
+  btrfs: adapt readdir for encrypted and nokey names
+  btrfs: implement fscrypt ioctls
+
+Sweet Tea Dorminy (8):
+  btrfs: disable verity on encrypted inodes
+  btrfs: handle nokey names.
+  btrfs: add encryption to CONFIG_BTRFS_DEBUG
+  btrfs: add get_devices hook for fscrypt
+  btrfs: turn on inlinecrypt mount option for encrypt
+  btrfs: set file extent encryption excplicitly
+  btrfs: add fscrypt_info and encryption_type to extent_map
+  btrfs: explicitly track file extent length for replace and drop
+
+ Documentation/filesystems/fscrypt.rst |  41 ++
+ block/blk-crypto-fallback.c           |  40 ++
+ block/blk-crypto-internal.h           |   8 +
+ block/blk-crypto-profile.c            |   2 +
+ block/blk-crypto.c                    |   6 +-
+ fs/btrfs/Makefile                     |   1 +
+ fs/btrfs/accessors.h                  |  50 +++
+ fs/btrfs/backref.c                    | 114 ++++--
+ fs/btrfs/bio.c                        |  75 +++-
+ fs/btrfs/bio.h                        |   6 +
+ fs/btrfs/btrfs_inode.h                |   3 +-
+ fs/btrfs/compression.c                |   6 +
+ fs/btrfs/ctree.h                      |   4 +
+ fs/btrfs/defrag.c                     |  10 +-
+ fs/btrfs/delayed-inode.c              |  29 +-
+ fs/btrfs/delayed-inode.h              |   6 +-
+ fs/btrfs/dir-item.c                   | 108 +++++-
+ fs/btrfs/dir-item.h                   |  11 +-
+ fs/btrfs/disk-io.c                    |   1 +
+ fs/btrfs/extent_io.c                  | 114 +++++-
+ fs/btrfs/extent_io.h                  |   3 +
+ fs/btrfs/extent_map.c                 | 102 ++++-
+ fs/btrfs/extent_map.h                 |  12 +
+ fs/btrfs/file-item.c                  |  17 +-
+ fs/btrfs/file-item.h                  |   7 +-
+ fs/btrfs/file.c                       |  16 +-
+ fs/btrfs/fs.h                         |   6 +-
+ fs/btrfs/fscrypt.c                    | 412 ++++++++++++++++++++
+ fs/btrfs/fscrypt.h                    | 112 ++++++
+ fs/btrfs/inode.c                      | 518 ++++++++++++++++++++------
+ fs/btrfs/ioctl.c                      |  68 ++--
+ fs/btrfs/ordered-data.c               |  36 +-
+ fs/btrfs/ordered-data.h               |  21 +-
+ fs/btrfs/reflink.c                    |   8 +
+ fs/btrfs/root-tree.c                  |   8 +-
+ fs/btrfs/root-tree.h                  |   2 +-
+ fs/btrfs/send.c                       | 133 ++++++-
+ fs/btrfs/super.c                      |  75 ++++
+ fs/btrfs/sysfs.c                      |   6 +
+ fs/btrfs/tree-checker.c               |  66 +++-
+ fs/btrfs/tree-log.c                   |  26 +-
+ fs/btrfs/verity.c                     |   3 +
+ fs/crypto/crypto.c                    |  10 +-
+ fs/crypto/fname.c                     |  39 +-
+ fs/crypto/fscrypt_private.h           |  44 +++
+ fs/crypto/hooks.c                     |  42 +++
+ fs/crypto/inline_crypt.c              |  87 ++++-
+ fs/crypto/keyring.c                   |  18 +-
+ fs/crypto/keysetup.c                  | 155 ++++++++
+ fs/crypto/policy.c                    |  59 +++
+ fs/super.c                            |  12 +-
+ include/linux/blk-crypto.h            |   9 +-
+ include/linux/fscrypt.h               | 130 +++++++
+ include/uapi/linux/btrfs.h            |   1 +
+ include/uapi/linux/btrfs_tree.h       |  35 +-
+ 55 files changed, 2619 insertions(+), 314 deletions(-)
+ create mode 100644 fs/btrfs/fscrypt.c
+ create mode 100644 fs/btrfs/fscrypt.h
+
 -- 
-2.42.0
+2.41.0
 
 
