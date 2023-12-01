@@ -1,65 +1,65 @@
-Return-Path: <linux-btrfs+bounces-526-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-528-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 895CE80161C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 23:17:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62B94801620
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 23:17:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B60931C21024
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 22:17:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5742B21BF2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Dec 2023 22:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C32726709F;
-	Fri,  1 Dec 2023 22:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11649619BB;
+	Fri,  1 Dec 2023 22:12:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="xlYeo6ze"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="KN8r0N3Z"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410ED10D0
-	for <linux-btrfs@vger.kernel.org>; Fri,  1 Dec 2023 14:12:52 -0800 (PST)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5d3c7ef7b31so18905307b3.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 01 Dec 2023 14:12:52 -0800 (PST)
+Received: from mail-yw1-x1142.google.com (mail-yw1-x1142.google.com [IPv6:2607:f8b0:4864:20::1142])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA7B10EA
+	for <linux-btrfs@vger.kernel.org>; Fri,  1 Dec 2023 14:12:53 -0800 (PST)
+Received: by mail-yw1-x1142.google.com with SMTP id 00721157ae682-5cbcfdeaff3so30098747b3.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Dec 2023 14:12:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1701468771; x=1702073571; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1701468772; x=1702073572; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=G65+p44mGmrcw3g1ylziU5NRee9dMbEGAa4uRdfp8o0=;
-        b=xlYeo6zeg6wvHGuyfMi6+kUoUr36OpIiUzbo6jF4dRRUb612Z0GBkiFqCtsLQ9EsLU
-         iSlkXZw9+AkieZ4VIcLIemcf+VIQJWo1plVAJ/U5zQJ4SYliLFe+FGqgGmq6W2O/2onf
-         KUdMXBTls6kgKsixpPIuGSSF5TwuiksnlyL9tfRIcyh+5AXEho1wwW6cEyoHKT48LeKj
-         kwpdx7fqLnKRA6txVhxcHNYNa2iRNMEgF8awX/ZkXsfg0E42EExcaAUwkMZKqoMM9hFm
-         oUlgFpOqsIsdZxl9nrZw4ffAnjNMp6blLZu+kX/Ud2yoo3A4jk5OnasBiAgLet8W66ER
-         //tA==
+        bh=UnBFsSJF3IsR7DnmwzCPuaucSteetnKny36hQz4x9Tc=;
+        b=KN8r0N3ZyGwFepUQuSKlKaHl9V5mCT2yLnm636K/gn2OtfyIpO5rbJOQ81KKm1d7Lt
+         NWgoz192ZtLxPWxeVpZPBBehKGLFXaOxTWEjHMEg3aPWVMJaEgVTqLNxa2p1lHuO6P0W
+         ocy6c7zGUuHlOjfwmPpnHfK9eJYvPQgFjETf1hPps7KpDOzIfNH1oe7U9nmJxIX9Pztg
+         x2gzGFfgpIFYQgSVUXnzFf96NiuyAOxc8Oxz9cbaPget362mXF2yXrHAWTvLVOZWHsHk
+         ttwErjhMAbPkmIcA2dzutT4xBBs5ol7fzGojNzTe6NdrVaPNZAgdaHmds3MgNc9Hh5AD
+         ZThw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701468771; x=1702073571;
+        d=1e100.net; s=20230601; t=1701468772; x=1702073572;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G65+p44mGmrcw3g1ylziU5NRee9dMbEGAa4uRdfp8o0=;
-        b=c4gLuvqEE4UVNAfNAlivCnbqhY6GxwpkWDjuCMnRC71RyPdichcFv6KHHWDpKo5+mA
-         lr5Q0ypNF0d6rYzCcqsLQZeTZ1dABpnX4CnTafNSBO1irxpxKsFntZMCF9UBz4C4/JDY
-         99e5pW3HKLTX0dRlZ+XzHPvSoeMzjT/v291t2ydXiRsyxxwxrUxD09/Gjl96Hg0fItK/
-         xKtb2bNN6iJaIk5oaxuPlLFDdt2ulxHcMCAKwTTraQNhm+hI5VCB2bXJWMXDcUxvCmSn
-         z8LqfLtOoa76Rp0ADarb6UbsDb9n/BUpE7Z75sdU4eJWWJ/4UaAuaVgJc4IpBPNkOowE
-         cruQ==
-X-Gm-Message-State: AOJu0Yyc0iTSWmzu5L5KMMxM+a0Raq1SWOkbuyoS8EWZKYAMblg1F0LA
-	yD9Xqps8wE20aNPQlswjlqC99CbCIW6pztGSIVJQRQ==
-X-Google-Smtp-Source: AGHT+IGMXu8ydshCa8rJ4v/ERWlHQ7MaV6TkNFrUdf8axRijnNw6x9bzA6o3POz87QqdoN+lC3Ssrw==
-X-Received: by 2002:a05:690c:3381:b0:5d7:1941:356d with SMTP id fl1-20020a05690c338100b005d71941356dmr196783ywb.84.1701468771338;
-        Fri, 01 Dec 2023 14:12:51 -0800 (PST)
+        bh=UnBFsSJF3IsR7DnmwzCPuaucSteetnKny36hQz4x9Tc=;
+        b=URunszhU2vAXQ3RydrTwSToJfqas29/O63hz9oszfmf0YT3rKbBr1WpZAk+XgnK0U0
+         XBj+CRUjDvdvPpsFsxTxPwSXPNfKpJFtTBlMCaxtFDldQAGmydntAGJnA4j2CRsOV4I9
+         /lYmhlBDhSdRcFCweYEw5Q4ARj1dQwrnMOmN/jdS/oit4pGayC0ELTWTPWg+5du/+xi2
+         31Vehfthj5KZHbhnVxi5ZvUZnxt4nX3kL9ywHaAzQHRmJtTLiYOPXRrD6WGYqeELJF6j
+         ikyZAY18pQ9ZJRmHb1TUtfYslRGgxIwdvwcAPwGeVe2+TWT5WY2NjBr6hWylJ3l9fIM7
+         UKig==
+X-Gm-Message-State: AOJu0YzbTM5TsxJEaWnKR37IKxN1JzZZ4nv5rBuBti9QMv2Zh+aG9D0E
+	atXs48Q/o334kyeQ6fpgO892sugYCjWKh9waX7IvSXC1
+X-Google-Smtp-Source: AGHT+IFHE/NvnM2BVqABU7Hu3PtQOXzgb9ekQXJwRFI8JzofsueQL+LkwFcUZdc+HgFvkpWH16Xy2g==
+X-Received: by 2002:a05:690c:711:b0:5d4:3013:25d2 with SMTP id bs17-20020a05690c071100b005d4301325d2mr324407ywb.12.1701468772305;
+        Fri, 01 Dec 2023 14:12:52 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id r20-20020a0de814000000b005d39c874019sm1143201ywe.66.2023.12.01.14.12.50
+        by smtp.gmail.com with ESMTPSA id i190-20020a0dc6c7000000b005d25be5c7f4sm1385122ywd.73.2023.12.01.14.12.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 14:12:51 -0800 (PST)
+        Fri, 01 Dec 2023 14:12:52 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org
-Subject: [PATCH v4 44/46] btrfs: deal with encrypted symlinks in send
-Date: Fri,  1 Dec 2023 17:11:41 -0500
-Message-ID: <4ef9ff7d8238e0ed0995ae4ed65e8de276ebcbd3.1701468306.git.josef@toxicpanda.com>
+Subject: [PATCH v4 45/46] btrfs: decrypt file names for send
+Date: Fri,  1 Dec 2023 17:11:42 -0500
+Message-ID: <ba81531dc639edddba297442fda6d7fc3b455e3e.1701468306.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1701468305.git.josef@toxicpanda.com>
 References: <cover.1701468305.git.josef@toxicpanda.com>
@@ -71,80 +71,117 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Send needs to send the decrypted value of the symlinks, handle the case
-where the inode is encrypted and decrypt the symlink name into a buffer
-and copy this buffer into our fs_path struct.
+In send we're going to be looking up file names from back references and
+putting them into the send stream.  If we are encrypted use the helper
+for decrypting names and copy the decrypted name into the buffer.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/send.c | 47 ++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 44 insertions(+), 3 deletions(-)
+ fs/btrfs/send.c | 51 +++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 41 insertions(+), 10 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 3b929f0e8f04..ee5ea16423bb 100644
+index ee5ea16423bb..de77321777f4 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -1732,9 +1732,8 @@ static int find_extent_clone(struct send_ctx *sctx,
+@@ -33,6 +33,7 @@
+ #include "ioctl.h"
+ #include "verity.h"
+ #include "lru_cache.h"
++#include "fscrypt.h"
+ 
+ /*
+  * Maximum number of references an extent can have in order for us to attempt to
+@@ -585,13 +586,42 @@ static int fs_path_add_path(struct fs_path *p, struct fs_path *p2)
  	return ret;
  }
  
--static int read_symlink(struct btrfs_root *root,
--			u64 ino,
--			struct fs_path *dest)
-+static int read_symlink_unencrypted(struct btrfs_root *root, u64 ino,
-+				    struct fs_path *dest)
- {
- 	int ret;
- 	struct btrfs_path *path;
-@@ -1800,6 +1799,48 @@ static int read_symlink(struct btrfs_root *root,
- 	return ret;
- }
- 
-+static int read_symlink_encrypted(struct btrfs_root *root, u64 ino,
-+				  struct fs_path *dest)
+-static int fs_path_add_from_extent_buffer(struct fs_path *p,
++static int fs_path_add_from_encrypted(struct btrfs_root *root,
++				      struct fs_path *p,
++				      struct extent_buffer *eb,
++				      unsigned long off, int len,
++				      u64 parent_ino)
 +{
-+	DEFINE_DELAYED_CALL(done);
-+	const char *buf;
-+	struct page *page;
-+	struct inode *inode;
-+	int ret = 0;
++	struct fscrypt_str fname = FSTR_INIT(NULL, 0);
++	int ret;
 +
-+	inode = btrfs_iget(root->fs_info->sb, ino, root);
-+	if (IS_ERR(inode))
-+		return PTR_ERR(inode);
++	ret = fscrypt_fname_alloc_buffer(BTRFS_NAME_LEN, &fname);
++	if (ret)
++		return ret;
 +
-+	page = read_mapping_page(inode->i_mapping, 0, NULL);
-+	if (IS_ERR(page)) {
-+		ret = PTR_ERR(page);
++	ret = btrfs_decrypt_name(root, eb, off, len, parent_ino, &fname);
++	if (ret)
 +		goto out;
-+	}
 +
-+	buf = fscrypt_get_symlink(inode, page_address(page),
-+				  BTRFS_MAX_INLINE_DATA_SIZE(root->fs_info),
-+				  &done);
-+	if (IS_ERR(buf))
-+		goto out_page;
-+	ret = fs_path_add(dest, buf, strlen(buf));
-+out_page:
-+	put_page(page);
-+	do_delayed_call(&done);
++	ret = fs_path_add(p, fname.name, fname.len);
 +out:
-+	iput(inode);
++	fscrypt_fname_free_buffer(&fname);
 +	return ret;
 +}
 +
++static int fs_path_add_from_extent_buffer(struct btrfs_root *root,
++					  struct fs_path *p,
+ 					  struct extent_buffer *eb,
+-					  unsigned long off, int len)
++					  unsigned long off, int len,
++					  u64 parent_ino)
+ {
+ 	int ret;
+ 	char *prepared;
+ 
++	if (root && btrfs_fs_incompat(root->fs_info, ENCRYPT))
++		return fs_path_add_from_encrypted(root, p, eb, off, len,
++						  parent_ino);
 +
-+static int read_symlink(struct btrfs_root *root, u64 ino,
-+			struct fs_path *dest)
-+{
-+	if (btrfs_fs_incompat(root->fs_info, ENCRYPT))
-+		return read_symlink_encrypted(root, ino, dest);
-+	return read_symlink_unencrypted(root, ino, dest);
-+}
-+
- /*
-  * Helper function to generate a file name that is unique in the root of
-  * send_root and parent_root. This is used to generate names for orphan inodes.
+ 	ret = fs_path_prepare_for_add(p, len, &prepared);
+ 	if (ret < 0)
+ 		goto out;
+@@ -1074,8 +1104,8 @@ static int iterate_inode_ref(struct btrfs_root *root, struct btrfs_path *path,
+ 			}
+ 			p->start = start;
+ 		} else {
+-			ret = fs_path_add_from_extent_buffer(p, eb, name_off,
+-							     name_len);
++			ret = fs_path_add_from_extent_buffer(root, p, eb, name_off,
++							     name_len, dir);
+ 			if (ret < 0)
+ 				goto out;
+ 		}
+@@ -1792,7 +1822,7 @@ static int read_symlink_unencrypted(struct btrfs_root *root, u64 ino,
+ 	off = btrfs_file_extent_inline_start(ei);
+ 	len = btrfs_file_extent_ram_bytes(path->nodes[0], ei);
+ 
+-	ret = fs_path_add_from_extent_buffer(dest, path->nodes[0], off, len);
++	ret = fs_path_add_from_extent_buffer(NULL, dest, path->nodes[0], off, len, 0);
+ 
+ out:
+ 	btrfs_free_path(path);
+@@ -2090,18 +2120,19 @@ static int get_first_ref(struct btrfs_root *root, u64 ino,
+ 		iref = btrfs_item_ptr(path->nodes[0], path->slots[0],
+ 				      struct btrfs_inode_ref);
+ 		len = btrfs_inode_ref_name_len(path->nodes[0], iref);
+-		ret = fs_path_add_from_extent_buffer(name, path->nodes[0],
+-						     (unsigned long)(iref + 1),
+-						     len);
+ 		parent_dir = found_key.offset;
++		ret = fs_path_add_from_extent_buffer(root, name, path->nodes[0],
++						     (unsigned long)(iref + 1),
++						     len, parent_dir);
+ 	} else {
+ 		struct btrfs_inode_extref *extref;
+ 		extref = btrfs_item_ptr(path->nodes[0], path->slots[0],
+ 					struct btrfs_inode_extref);
+ 		len = btrfs_inode_extref_name_len(path->nodes[0], extref);
+-		ret = fs_path_add_from_extent_buffer(name, path->nodes[0],
+-					(unsigned long)&extref->name, len);
+ 		parent_dir = btrfs_inode_extref_parent(path->nodes[0], extref);
++		ret = fs_path_add_from_extent_buffer(root, name, path->nodes[0],
++					(unsigned long)&extref->name, len,
++					parent_dir);
+ 	}
+ 	if (ret < 0)
+ 		goto out;
 -- 
 2.41.0
 
