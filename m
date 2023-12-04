@@ -1,162 +1,231 @@
-Return-Path: <linux-btrfs+bounces-568-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-570-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 502DB803931
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Dec 2023 16:51:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BFE580395B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Dec 2023 16:59:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0529F1F210BA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Dec 2023 15:51:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E24581F211AC
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Dec 2023 15:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219162D039;
-	Mon,  4 Dec 2023 15:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561392D05D;
+	Mon,  4 Dec 2023 15:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iiuze3qT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCB8A4
-	for <linux-btrfs@vger.kernel.org>; Mon,  4 Dec 2023 07:50:57 -0800 (PST)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a1b7b6bf098so165242566b.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 04 Dec 2023 07:50:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701705055; x=1702309855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g/n6Z7YnJlCIWTsaHqbnpnO3LzBqMi7wD11sZnELj6k=;
-        b=vNRAXPgVt2gExEHy2Zg5T8LqSaulhPic2veJqMXR+DGIZ2Qyb0X5TB7XrexVhjjLa6
-         1+U+phJvkHBbdb5hUB4R+SDf0b9qmT/Vp9HxeMiKsCc0MNvG+jULG2XQzX0u57C5JLti
-         pNq9Pz0qmKGYI7dHhB9lM99tRj+GnpcmAPuw9hZh4J/Mj/5AOYGNsv/6OmiEsbdlXgn/
-         f+bXHRjMG0eTFoliOL0A4M7K/Opg5JWpTfYHbxHJKsqS5FiMh6iZ5XQW7dC205PFn6aw
-         0oZ0dBk53715Tk7kiHX/rPu2DyCWJxOE7t/nU1MeGOlzQgY9+dfFI/0ktsZAow0i6bF+
-         ZPXQ==
-X-Gm-Message-State: AOJu0Yxpf6PvqTTWMKuRUZmRYuNIUKxreK7AbOXNP60Ng5VS9A6A9uq7
-	PnZLgJAy9BjhJbYJqH8Gh042A+8EhjKMFQ==
-X-Google-Smtp-Source: AGHT+IHzui22i2xUMXTuhUgCaipTUY+1qyGdMJEl/XFEAyXMhOgmbVgADd+phdDqCjkffeolST3rnQ==
-X-Received: by 2002:a17:906:103:b0:a17:d879:7f06 with SMTP id 3-20020a170906010300b00a17d8797f06mr6096165eje.4.1701705055452;
-        Mon, 04 Dec 2023 07:50:55 -0800 (PST)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
-        by smtp.gmail.com with ESMTPSA id oz11-20020a170906cd0b00b009fc990d9edbsm5391275ejb.192.2023.12.04.07.50.55
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 07:50:55 -0800 (PST)
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a18b0f69b33so825406966b.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 04 Dec 2023 07:50:55 -0800 (PST)
-X-Received: by 2002:a17:906:88f:b0:a19:a409:37e1 with SMTP id
- n15-20020a170906088f00b00a19a40937e1mr6286847eje.58.1701705055092; Mon, 04
- Dec 2023 07:50:55 -0800 (PST)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 558A42C87D;
+	Mon,  4 Dec 2023 15:59:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB986C433C9;
+	Mon,  4 Dec 2023 15:59:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701705566;
+	bh=wUvaW2WBFFWOm+BjvuRxx5B6h8PwUfRkrKqvoO+S1Ek=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=iiuze3qTJqY0ZTaLDWQUIF2NRGmLmhT5cPqKSOBEdoxD8APLf12zSaLU4i9VMMfx/
+	 AsFWl3mLBrBPFTvCH8sjW5WCx+wYnZ/LjsuCRgl3LJY9Cuc1J0ZK2Q7np7ffWTdyvp
+	 c3X7Nv7q/CrHH8EhPoZ1yaJNboPu0+W8LmV93MgYFMbUVpFSAae18KwvAZxv2OGBc6
+	 PJgmCCiIuajRmwBelE80Vr1cGWsRdGBuk05rKbN/FbheErA8T/rRiBueScNgDoaTHX
+	 0f7JJs8ciHfzV+Zpmb3tCKGeC/R8chOXuK3E7wxHPamJV+Wu6o7L6SN+CzxPhOejcp
+	 1Yt9eC0AxAlOg==
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a1a496a73ceso417364466b.2;
+        Mon, 04 Dec 2023 07:59:26 -0800 (PST)
+X-Gm-Message-State: AOJu0Ywib7KYMQ6Y3r1LQZqsGiyEGU8UI9Crc0G91Xo/3ju2AeRCP0NW
+	4z0jIH1NJMobF9OsKgli6NBrvkBFiKBg0iGmr3I=
+X-Google-Smtp-Source: AGHT+IFZikvRXz7xJe/MSqAj5aHRG2tIGIeVIfp1iKGY6Wd/BXEaxjGWkA6LP0xDBbcEyHZhWF6L2QwTmsD2sla07JM=
+X-Received: by 2002:a17:906:710f:b0:a19:a19b:78cb with SMTP id
+ x15-20020a170906710f00b00a19a19b78cbmr3199252ejj.142.1701705565302; Mon, 04
+ Dec 2023 07:59:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <d28d747954ec9967f6e01dcc2185229f1667b7db.1701658076.git.wqu@suse.com>
-In-Reply-To: <d28d747954ec9967f6e01dcc2185229f1667b7db.1701658076.git.wqu@suse.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Mon, 4 Dec 2023 10:50:18 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je8bQmfC5tWztqz3LRym0BWA01JVLuNQf0VB6AFDR7ufuA@mail.gmail.com>
-Message-ID: <CAEg-Je8bQmfC5tWztqz3LRym0BWA01JVLuNQf0VB6AFDR7ufuA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs-progs: Documentation: update the man page for btrfs
- check lowmem mode
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
+References: <20231204-btrfs-raid-v1-0-b254eb1bcff8@wdc.com> <20231204-btrfs-raid-v1-1-b254eb1bcff8@wdc.com>
+In-Reply-To: <20231204-btrfs-raid-v1-1-b254eb1bcff8@wdc.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 4 Dec 2023 15:58:48 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4hHiOpN9v1DnKeU166yp2p78Hy+_g4VZ6k9G9CM83a9g@mail.gmail.com>
+Message-ID: <CAL3q7H4hHiOpN9v1DnKeU166yp2p78Hy+_g4VZ6k9G9CM83a9g@mail.gmail.com>
+Subject: Re: [PATCH 1/7] btrfs: add fstest for stripe-tree metadata with 4k write
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 3, 2023 at 9:48=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+On Mon, Dec 4, 2023 at 1:25=E2=80=AFPM Johannes Thumshirn
+<johannes.thumshirn@wdc.com> wrote:
 >
-> Lowmem mode has improved quite a lot since its introduction, for
-> read-only check it's definitely fine.
+> Test a simple 4k write on all RAID profiles currently supported with the
+> raid-stripe-tree.
 >
-> For repair mode, both lowmem and original mode are considered dangerous
-> especially for complex corruptions.
->
-> For now lowmem mode is only bad at fixing fundamentally corrupted cases,
-> like bad shift offsets or transid, which in real world it's not an easy
-> repair for the original mode either.
->
-> This patch would move the --mode option out of the dangerous section and
-> update the notes for the lowmem mode on its limitation.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->  Documentation/btrfs-check.rst | 32 ++++++++++++++------------------
->  1 file changed, 14 insertions(+), 18 deletions(-)
+>  tests/btrfs/302     | 55 +++++++++++++++++++++++++++++++++++++++++++++++=
++++
+>  tests/btrfs/302.out | 58 +++++++++++++++++++++++++++++++++++++++++++++++=
+++++++
+>  2 files changed, 113 insertions(+)
 >
-> diff --git a/Documentation/btrfs-check.rst b/Documentation/btrfs-check.rs=
-t
-> index 046aec52923a..41ab39fab317 100644
-> --- a/Documentation/btrfs-check.rst
-> +++ b/Documentation/btrfs-check.rst
-> @@ -57,6 +57,20 @@ SAFE OR ADVISORY OPTIONS
->  -E|--subvol-extents <subvolid>
->          show extent state for the given subvolume
->
-> +--mode <MODE>
-> +        select mode of operation regarding memory and IO
+> diff --git a/tests/btrfs/302 b/tests/btrfs/302
+> new file mode 100755
+> index 000000000000..1d6693beff4c
+> --- /dev/null
+> +++ b/tests/btrfs/302
+> @@ -0,0 +1,55 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2023 Western Digital Cooperation.  All Rights Reserved.
+> +#
+> +# FS QA Test 302
+> +#
+> +# Test on-disk layout of RAID Stripe Tree Metadata
+
+All the tests in the patchset have this exact same description.
+Can we get a more specific description for each one?
+
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick raid remount volume raid-stripe-tree
 > +
-> +        The *MODE* can be one of:
+> +. ./common/filter
+> +. ./common/filter.btrfs
 > +
-> +        original
-> +                The metadata are read into memory and verified, thus the=
- requirements are high
-> +                on large filesystems and can even lead to out-of-memory =
-conditions.  The
-> +                possible workaround is to export the block device over n=
-etwork to a machine
-> +                with enough memory.
-> +        lowmem
-> +                This mode is supposed to address the high memory consump=
-tion at the cost of
-> +                increased IO when it needs to re-read blocks.  This may =
-increase run time.
+> +_supported_fs btrfs
+> +_require_test
+
+The test device is not used, this is not needed.
+
+> +_require_btrfs_command inspect-internal dump-tree
+> +_require_btrfs_mkfs_feature "raid-stripe-tree"
+> +_require_scratch_dev_pool 4
+> +_require_xfs_io_command "pwrite"
+> +_require_xfs_io_command "fsync"
+
+This can be skipped, the checks for the pwrite and fsync commands.
+We never check for those as all xfs_io versions should have those, as
+they belong to the most basic and universally available commands.
+
+> +_require_btrfs_fs_feature "raid_stripe_tree"
 > +
->  -p|--progress
->          indicate progress at various checking phases
+> +test_4k_write()
+> +{
+> +       profile=3D$1
+> +       ndevs=3D$2
+
+These variables should be made local.
+
+All these comments also apply to all the other tests introduced in the patc=
+hset.
+
+Thanks.
+
+> +
+> +       _scratch_dev_pool_get $ndevs
+> +
+> +       echo "=3D=3D=3D=3D Testing $profile =3D=3D=3D=3D"
+> +       _scratch_pool_mkfs -d $profile -m $profile
+> +       _scratch_mount
+> +
+> +       $XFS_IO_PROG -fc "pwrite 0 4k" "$SCRATCH_MNT/foo" | _filter_xfs_i=
+o
+> +
+> +       _scratch_cycle_mount
+> +       md5sum "$SCRATCH_MNT/foo" | _filter_scratch
+> +
+> +       _scratch_unmount
+> +
+> +       $BTRFS_UTIL_PROG inspect-internal dump-tree -t raid_stripe $SCRAT=
+CH_DEV_POOL |\
+> +               _filter_btrfs_version |  _filter_stripe_tree
+> +
+> +       _scratch_dev_pool_put
+> +}
+> +
+> +echo "=3D Test basic 4k write =3D"
+> +test_4k_write raid0 2
+> +test_4k_write raid1 2
+> +test_4k_write raid10 4
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/302.out b/tests/btrfs/302.out
+> new file mode 100644
+> index 000000000000..149630e69501
+> --- /dev/null
+> +++ b/tests/btrfs/302.out
+> @@ -0,0 +1,58 @@
+> +QA output created by 302
+> +=3D Test basic 4k write =3D
+> +=3D=3D=3D=3D Testing raid0 =3D=3D=3D=3D
+> +wrote 4096/4096 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +5fed275e7617a806f94c173746a2a723  SCRATCH_MNT/foo
+> +
+> +raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0)
+> +leaf XXXXXXXXX items X free space XXXXX generation X owner RAID_STRIPE_T=
+REE
+> +leaf XXXXXXXXX flags 0x1(WRITTEN) backref revision 1
+> +checksum stored <CHECKSUM>
+> +checksum calced <CHECKSUM>
+> +fs uuid <UUID>
+> +chunk uuid <UUID>
+> +       item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 24
+> +                       encoding: RAID0
+> +                       stripe 0 devid 1 physical XXXXXXXXX
+> +total bytes XXXXXXXX
+> +bytes used XXXXXX
+> +uuid <UUID>
+> +=3D=3D=3D=3D Testing raid1 =3D=3D=3D=3D
+> +wrote 4096/4096 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +5fed275e7617a806f94c173746a2a723  SCRATCH_MNT/foo
+> +
+> +raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0)
+> +leaf XXXXXXXXX items X free space XXXXX generation X owner RAID_STRIPE_T=
+REE
+> +leaf XXXXXXXXX flags 0x1(WRITTEN) backref revision 1
+> +checksum stored <CHECKSUM>
+> +checksum calced <CHECKSUM>
+> +fs uuid <UUID>
+> +chunk uuid <UUID>
+> +       item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> +                       encoding: RAID1
+> +                       stripe 0 devid 1 physical XXXXXXXXX
+> +                       stripe 1 devid 2 physical XXXXXXXXX
+> +total bytes XXXXXXXX
+> +bytes used XXXXXX
+> +uuid <UUID>
+> +=3D=3D=3D=3D Testing raid10 =3D=3D=3D=3D
+> +wrote 4096/4096 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +5fed275e7617a806f94c173746a2a723  SCRATCH_MNT/foo
+> +
+> +raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0)
+> +leaf XXXXXXXXX items X free space XXXXX generation X owner RAID_STRIPE_T=
+REE
+> +leaf XXXXXXXXX flags 0x1(WRITTEN) backref revision 1
+> +checksum stored <CHECKSUM>
+> +checksum calced <CHECKSUM>
+> +fs uuid <UUID>
+> +chunk uuid <UUID>
+> +       item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> +                       encoding: RAID10
+> +                       stripe 0 devid 1 physical XXXXXXXXX
+> +                       stripe 1 devid 2 physical XXXXXXXXX
+> +total bytes XXXXXXXX
+> +bytes used XXXXXX
+> +uuid <UUID>
 >
-> @@ -117,24 +131,6 @@ DANGEROUS OPTIONS
->          .. warning::
->                  Do not use unless you know what you're doing.
->
-> ---mode <MODE>
-> -        select mode of operation regarding memory and IO
-> -
-> -        The *MODE* can be one of:
-> -
-> -        original
-> -                The metadata are read into memory and verified, thus the=
- requirements are high
-> -                on large filesystems and can even lead to out-of-memory =
-conditions.  The
-> -                possible workaround is to export the block device over n=
-etwork to a machine
-> -                with enough memory.
-> -        lowmem
-> -                This mode is supposed to address the high memory consump=
-tion at the cost of
-> -                increased IO when it needs to re-read blocks.  This may =
-increase run time.
-> -
-> -        .. note::
-> -                *lowmem* mode does not work with *--repair* yet, and is =
-still considered
-> -                experimental.
-> -
->  .. _man-check-option-force:
->
->  --force
 > --
 > 2.43.0
 >
 >
-
-This patch should also include updating the code in check/main.c to
-drop the warnings and notes of its experimental nature too.
-
-
-
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
 
