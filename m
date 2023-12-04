@@ -1,39 +1,39 @@
-Return-Path: <linux-btrfs+bounces-591-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-592-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8048F8040B5
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Dec 2023 22:07:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB5AC8040BF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Dec 2023 22:08:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2604B2812D4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Dec 2023 21:07:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93D991F210AD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Dec 2023 21:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FAED364A5;
-	Mon,  4 Dec 2023 21:07:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC633364A6;
+	Mon,  4 Dec 2023 21:08:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Jo5vMUKQ"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="UfEmkD2a"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA73AA
-	for <linux-btrfs@vger.kernel.org>; Mon,  4 Dec 2023 13:07:35 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD2A107
+	for <linux-btrfs@vger.kernel.org>; Mon,  4 Dec 2023 13:08:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1701724049; x=1702328849; i=quwenruo.btrfs@gmx.com;
-	bh=JJhmQmcx1oTf4PfLTPLTgkU4ZfCqqcU07ZQW99DmfIA=;
+	s=s31663417; t=1701724082; x=1702328882; i=quwenruo.btrfs@gmx.com;
+	bh=1GD3BTJjBndMNGGRpJS8YYYLu1N3Xzq88d0uyilZ++4=;
 	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=Jo5vMUKQD3PskzP9OCFEg1J3w0gQ9vCAANmspi0xesMha4fsdtXxYFAYYgEm0Pug
-	 BbWsLnRD/SUWmKuKPkhnsIaWKaoe3ItwPDIRsl6T9RYojI5LRhS7Oy8/69u+QgPbl
-	 uILr/rjOy8d7EbAIfJNd3HBDdR3nYMyjEXbUmcv+nueb/wgymTp9qKF7y6t6K899y
-	 81e/pPJ/DOqCMzGo3gA2Q8XHo+hcykl+F0Mklq1KTH2YxidU5ygEGm0mWspi5a819
-	 8EoGSeDf5zqftAi6qzBTIl3GLSZLJzySuc37xb/CPCZipLu4XQxPWAb9sUBfPqcWe
-	 CG65lHSqKMtE3y/e0w==
+	b=UfEmkD2adCAEZec81y0f96WNlj4uBj31waihP55FdEwml+rZ5Np/MYr+4ebO8Dau
+	 mYRCdjQ7/mqFf5AjlvhAHsb4EnsaHBrhgxtTXOqviiX15XAEHvsn5GSH27Z1P5lrW
+	 FNbJ1O3ls7ZVE2X/lz7e6C6tY6g2kEFd+eZOFngPo9t6XnHL3YKBfqJLmznK0uNCO
+	 VeE9LE6kRWTyl6M7xJ5MLK6gIaBuS84cCgQBEJtgmzd5X7S7bg349/Qnt/uh0j6bf
+	 7S9WyMq8OeRMiNK6MbiuSFkkedHdbzBt5t3bI3s6yirm/oUlTZXAP/nwfRj+72HXh
+	 kefAzdL2a9W5LqLEIQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7K3Y-1rBKUd3gtw-007mxp; Mon, 04
- Dec 2023 22:07:28 +0100
-Message-ID: <de707933-b800-4bc2-8da5-44a99bcd6e83@gmx.com>
-Date: Tue, 5 Dec 2023 07:37:24 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MZkpb-1qmtcM3r79-00Wn2k; Mon, 04
+ Dec 2023 22:08:02 +0100
+Message-ID: <23711b4d-4190-41ef-b325-a11cfc752ff1@gmx.com>
+Date: Tue, 5 Dec 2023 07:38:00 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -41,12 +41,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] btrfs: fix qgroup_free_reserved_data int overflow
+Subject: Re: [PATCH 3/5] btrfs: free qgroup pertrans rsv on trans abort
 Content-Language: en-US
 To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
  kernel-team@fb.com
 References: <cover.1701464169.git.boris@bur.io>
- <98d6609df5dc669df4025c257c28077f44b21e04.1701464169.git.boris@bur.io>
+ <07934597eaee1e2204c204bfd34bc628708e3739.1701464169.git.boris@bur.io>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -72,51 +72,37 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <98d6609df5dc669df4025c257c28077f44b21e04.1701464169.git.boris@bur.io>
+In-Reply-To: <07934597eaee1e2204c204bfd34bc628708e3739.1701464169.git.boris@bur.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:O8IDuBEd6u/IY/S5hsZjfshoX96+0ZUNv0/lOqgHE/juo47RhXb
- qxzSiU+9pwKBZ2/ItLlKkhDZK1etUIuRDfDLH986DiAyKEOqVcAq+rclU/rE14GQiaB+EmW
- UrcukKrZ801BQ1V31+TzNzyTEYNS02CufzykAQwN9MmyRk5HuQgX5q0YkWXNfqI3QnHUqzp
- b4PkCFsuW9z9K5dbyT9LA==
-UI-OutboundReport: notjunk:1;M01:P0:eDqzmBkLhnk=;nUHKJZigYND7w8DHoH1nJZMY8Ht
- zIPCykV2XYSBw98QrkL24sU22K0IRmnsOseBRQ+ULr+xfXz+AdtR2N/BNPa9wlDKSQ0wkge2Y
- BfxGaSqzlI0OlhOprhdQsqvoQE7R6uHXkf8440Wx6SkUiRluAZG1OhWZcEUeRvg54Mv6KmrBf
- wbbuZzJ9yEgedlXUzd4knqlKv7h4+Sn3/jxgk9P5g8RSc0h7fga10OESDFz63+3A2LCg6enGu
- SOxzuuq9+2a8QRxVOFZU8Zx4zGbsSn8c/oitwxQ8/B0a/ykgXxQCY8Py44al2fQfmS4gASCtX
- CxosJfKRtc306wDyest+NOrDjyvFRq5PneocHOn6r2VsDjkDIR+oJsbUnv6mmsdFz1fcit/OJ
- AtmnWgYAh/tw5RY1AM9y4q7hnXHLFNlXTN7TaxUcm0cmjYhxX7jY+SRogxNDt/lTp2suvWo9z
- GwhUmMur96+GtbqzmuI+PFiaPv3ad4IXAEpdAnnVni2GZnIdhctOcSL9e5DAMpe6HrpKBRjii
- 5RENhIbxsCbiIDQNhPmLSfKC843Bafd8fLOFVLAn+sT39EO84LoPAxadfaEZXNBfq8arzz2YQ
- YSJEup7RbrrDi2H0ZfWxE/FMLCnfS/PKx9oLs428O1kFuOZkZ93SrQCc5URGC2GNczTJIb3oQ
- vdkBjr0Qht8k9l1icmUTnF6k2qQvlNdp2upBaz0OW0/CBHWJVCTB8aQGdLY5ZhEMOt5TuGpUo
- tqTGfTa/DJw+TA4sPkgWTAxI4QMftkXt7rfnYNA0sNNB3T/Ts5t1/f7V1PHHhBt04XWJsFfm2
- dng2uQ+mvs/duyY+Vf5oc8MvCoiomWaQcxuUeORxZA2yWcDKVpqylM7seMA4h+Nsqza564CNw
- D1ZI9AwBnbyoquNhRYJPMIxUE3DGeHMTfYwEIwlj4/8dhW0b2oJjyhKbuZOVriRNrSPtG8lZ8
- qtGBkMx0ztFqTCdhOSVUW3vjm3U=
+X-Provags-ID: V03:K1:FfmKhARZ9NR0rWk479LPe9/KceYCinZtKoK/5NkfbupEP5BWvor
+ hjGO9sOnDacL08b1i6qlJPW5mDRqvMiBqoD90fnek2qWJ00R+UYUsMyggdsh5aUu6nRFoZN
+ OS/8obqRkMOsbCJep80yhyq9ccp7nPDAOlejeOZJ4b6GX38zXFlf19JcJrINdQjuxd13fqV
+ ITOBbOgvI66LGyYn6qRxw==
+UI-OutboundReport: notjunk:1;M01:P0:CCjb2Pw5jsE=;waB6Fx5UkHaaDwEEOXLiK/srCkQ
+ YPs5eYC5slSYysEXphFYTpuhqk4xDL00b7ybcKsWUbWL5B1Jf6g8V6rrjislIgSezhON6uRwJ
+ u6A9H5St4uq0toHJ/qrLrE4Otr13bfnYmNC6CaFLP0g1z2lHTSei1G+9fQlLlqGgK43TqYAcF
+ Hx72JSh2P++oARMl/OvOKk20UeyiP2x5YeBWQCS3VF7lwp7anHLqRabgeRyYkLv+FQwIJGEdA
+ fHGfKoBz46Xu4CkVnRSFLkPbzeO59OJXjELGarXT/Ku1BlXQEb9wdyYArw+mb9e6Ct3kyrFMe
+ UDRqex4l6Wt7QPCPQcAuDFOeKxKFjtIXn3fv/FIuTbE02hsHCB3aC4Kus3A4Ux9n0mCJwNST+
+ TqYf1QoWW4uqqkyOvljetzFVq8q70lfR861Ms/heU87xLBORX7UtJAKYDzPOU4NM1ioIHUfuL
+ mhaNdYG2MvBBelVoAC4xOgAG5PdA/V+SprYw3m5eNQXw+ZSudkXLdyoRU+DcHPTwBcapKntd7
+ juQs7Ng6XjImRrzxIxdtkCg6skxs3G4JggvlpsZbFHwfHmtqUIHN2Fk4Wsx4FpzsGqAklRYFX
+ oWBZ78gVDNbve2HyDNKIeW1NpncPp9TEeI8wUEXgfBEY8MbSiEFRpFqCZCVj0rFd1JRswOID7
+ TXSBYob81O3ZOYC1gp6RfQrLQnWXkw1Kp2aVB99s/PDoRAy33Od3ySYH8RBqkfW3LVISif8ZW
+ QbSwxB5pIfb/w6iNBSoJgOOKT0Haw543GHyqdDGi5hSP61Kk9nE5G4YtCIx/X5NwommlAHcBd
+ cu6lb+Knku6Q8lkhN13rseM5VYNaJh2DZGZoDYZgEq4RGoYTblb/BU4Dq0a3UJIfYQ1QnrPRg
+ Q68fHWfr+CkCNB2YnnZx8i9yt6e+Sp/p24ffnqw3ehamClp5kQaKr6mWI7gqegsGPC6ux4VRc
+ CqFI4oWE9D057QLJK8jsKDkKmw8=
 
 
 
 On 2023/12/2 07:30, Boris Burkov wrote:
-> The reserved data counter and input parameter is a u64, but we
-> inadvertantly accumulate it in an int. Overflowing that int results in
-> freeing the wrong amount of data and breaking rsv accounting.
->
-> Unfortunately, this overflow rot spreads from there, as the qgroup
-> release/free functions rely on returning an int to take advantage of
-> negative values for error codes.
-
-Indeed, reusing int for both released bytes and error number is the root
-cause of the overflow.
-
->
-> Therefore, the full fix is to return the "released" or "freed" amount by
-> a u64* argument and to return 0 or negative error code via the return
-> value.
->
-> Most of the callsites simply ignore the return value, though some
-> of them handle the error and count the returned bytes. Change all of
-> them accordingly.
+> If we abort a transaction, we never run the code that frees the pertrans
+> qgroup reservation. This results in warnings on unmount as that
+> reservation has been leaked. The leak isn't a huge issue since the fs is
+> read-only, but it's better to clean it up when we know we can/should. Do
+> it during the cleanup_transaction step of aborting.
 >
 > Signed-off-by: Boris Burkov <boris@bur.io>
 
@@ -125,272 +111,75 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   fs/btrfs/delalloc-space.c |  2 +-
->   fs/btrfs/file.c           |  2 +-
->   fs/btrfs/inode.c          | 16 ++++++++--------
->   fs/btrfs/ordered-data.c   |  7 ++++---
->   fs/btrfs/qgroup.c         | 25 +++++++++++++++----------
->   fs/btrfs/qgroup.h         |  4 ++--
->   6 files changed, 31 insertions(+), 25 deletions(-)
+>   fs/btrfs/disk-io.c | 28 ++++++++++++++++++++++++++++
+>   fs/btrfs/qgroup.c  |  5 +++--
+>   2 files changed, 31 insertions(+), 2 deletions(-)
 >
-> diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
-> index 51453d4928fa..2833e8ef4c09 100644
-> --- a/fs/btrfs/delalloc-space.c
-> +++ b/fs/btrfs/delalloc-space.c
-> @@ -199,7 +199,7 @@ void btrfs_free_reserved_data_space(struct btrfs_ino=
-de *inode,
->   	start =3D round_down(start, fs_info->sectorsize);
->
->   	btrfs_free_reserved_data_space_noquota(fs_info, len);
-> -	btrfs_qgroup_free_data(inode, reserved, start, len);
-> +	btrfs_qgroup_free_data(inode, reserved, start, len, NULL);
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 9317606017e2..a1f440cd6d45 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -4775,6 +4775,32 @@ void btrfs_cleanup_dirty_bgs(struct btrfs_transac=
+tion *cur_trans,
+>   	}
 >   }
 >
->   /*
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index e9c4b947a5aa..7a71720aaed2 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -3192,7 +3192,7 @@ static long btrfs_fallocate(struct file *file, int=
- mode,
->   			qgroup_reserved -=3D range->len;
->   		} else if (qgroup_reserved > 0) {
->   			btrfs_qgroup_free_data(BTRFS_I(inode), data_reserved,
-> -					       range->start, range->len);
-> +					       range->start, range->len, NULL);
->   			qgroup_reserved -=3D range->len;
->   		}
->   		list_del(&range->list);
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index f8647d8271b7..e79a047aa5d1 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -697,7 +697,7 @@ static noinline int cow_file_range_inline(struct btr=
-fs_inode *inode, u64 size,
->   	 * And at reserve time, it's always aligned to page size, so
->   	 * just free one page here.
->   	 */
-> -	btrfs_qgroup_free_data(inode, NULL, 0, PAGE_SIZE);
-> +	btrfs_qgroup_free_data(inode, NULL, 0, PAGE_SIZE, NULL);
->   	btrfs_free_path(path);
->   	btrfs_end_transaction(trans);
->   	return ret;
-> @@ -5141,7 +5141,7 @@ static void evict_inode_truncate_pages(struct inod=
-e *inode)
->   		 */
->   		if (state_flags & EXTENT_DELALLOC)
->   			btrfs_qgroup_free_data(BTRFS_I(inode), NULL, start,
-> -					       end - start + 1);
-> +					       end - start + 1, NULL);
->
->   		clear_extent_bit(io_tree, start, end,
->   				 EXTENT_CLEAR_ALL_BITS | EXTENT_DO_ACCOUNTING,
-> @@ -8076,7 +8076,7 @@ static void btrfs_invalidate_folio(struct folio *f=
-olio, size_t offset,
->   		 *    reserved data space.
->   		 *    Since the IO will never happen for this page.
->   		 */
-> -		btrfs_qgroup_free_data(inode, NULL, cur, range_end + 1 - cur);
-> +		btrfs_qgroup_free_data(inode, NULL, cur, range_end + 1 - cur, NULL);
->   		if (!inode_evicting) {
->   			clear_extent_bit(tree, cur, range_end, EXTENT_LOCKED |
->   				 EXTENT_DELALLOC | EXTENT_UPTODATE |
-> @@ -9513,7 +9513,7 @@ static struct btrfs_trans_handle *insert_prealloc_=
-file_extent(
->   	struct btrfs_path *path;
->   	u64 start =3D ins->objectid;
->   	u64 len =3D ins->offset;
-> -	int qgroup_released;
-> +	u64 qgroup_released =3D 0;
->   	int ret;
->
->   	memset(&stack_fi, 0, sizeof(stack_fi));
-> @@ -9526,9 +9526,9 @@ static struct btrfs_trans_handle *insert_prealloc_=
-file_extent(
->   	btrfs_set_stack_file_extent_compression(&stack_fi, BTRFS_COMPRESS_NON=
-E);
->   	/* Encryption and other encoding is reserved and all 0 */
->
-> -	qgroup_released =3D btrfs_qgroup_release_data(inode, file_offset, len)=
-;
-> -	if (qgroup_released < 0)
-> -		return ERR_PTR(qgroup_released);
-> +	ret =3D btrfs_qgroup_release_data(inode, file_offset, len, &qgroup_rel=
-eased);
-> +	if (ret < 0)
-> +		return ERR_PTR(ret);
->
->   	if (trans) {
->   		ret =3D insert_reserved_file_extent(trans, inode,
-> @@ -10423,7 +10423,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *ioc=
-b, struct iov_iter *from,
->   	btrfs_delalloc_release_metadata(inode, disk_num_bytes, ret < 0);
->   out_qgroup_free_data:
->   	if (ret < 0)
-> -		btrfs_qgroup_free_data(inode, data_reserved, start, num_bytes);
-> +		btrfs_qgroup_free_data(inode, data_reserved, start, num_bytes, NULL);
->   out_free_data_space:
->   	/*
->   	 * If btrfs_reserve_extent() succeeded, then we already decremented
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index 8d4ab5ecfa5d..c68fb78b7454 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -152,11 +152,12 @@ static struct btrfs_ordered_extent *alloc_ordered_=
-extent(
+> +static void btrfs_free_all_qgroup_pertrans(struct btrfs_fs_info *fs_inf=
+o)
+> +{
+> +	struct btrfs_root *gang[8];
+> +	int i;
+> +	int ret;
+> +
+> +	spin_lock(&fs_info->fs_roots_radix_lock);
+> +	while (1) {
+> +		ret =3D radix_tree_gang_lookup_tag(&fs_info->fs_roots_radix,
+> +						 (void **)gang, 0,
+> +						 ARRAY_SIZE(gang),
+> +						 0); // BTRFS_ROOT_TRANS_TAG
+> +		if (ret =3D=3D 0)
+> +			break;
+> +		for (i =3D 0; i < ret; i++) {
+> +			struct btrfs_root *root =3D gang[i];
+> +
+> +			btrfs_qgroup_free_meta_all_pertrans(root);
+> +			radix_tree_tag_clear(&fs_info->fs_roots_radix,
+> +					(unsigned long)root->root_key.objectid,
+> +					0); // BTRFS_ROOT_TRANS_TAG
+> +		}
+> +	}
+> +	spin_unlock(&fs_info->fs_roots_radix_lock);
+> +}
+> +
+>   void btrfs_cleanup_one_transaction(struct btrfs_transaction *cur_trans=
+,
+>   				   struct btrfs_fs_info *fs_info)
 >   {
->   	struct btrfs_ordered_extent *entry;
->   	int ret;
-> +	u64 qgroup_rsv =3D 0;
+> @@ -4803,6 +4829,8 @@ void btrfs_cleanup_one_transaction(struct btrfs_tr=
+ansaction *cur_trans,
+>   				     EXTENT_DIRTY);
+>   	btrfs_destroy_pinned_extent(fs_info, &cur_trans->pinned_extents);
 >
->   	if (flags &
->   	    ((1 << BTRFS_ORDERED_NOCOW) | (1 << BTRFS_ORDERED_PREALLOC))) {
->   		/* For nocow write, we can release the qgroup rsv right now */
-> -		ret =3D btrfs_qgroup_free_data(inode, NULL, file_offset, num_bytes);
-> +		ret =3D btrfs_qgroup_free_data(inode, NULL, file_offset, num_bytes, &=
-qgroup_rsv);
->   		if (ret < 0)
->   			return ERR_PTR(ret);
->   	} else {
-> @@ -164,7 +165,7 @@ static struct btrfs_ordered_extent *alloc_ordered_ex=
-tent(
->   		 * The ordered extent has reserved qgroup space, release now
->   		 * and pass the reserved number for qgroup_record to free.
->   		 */
-> -		ret =3D btrfs_qgroup_release_data(inode, file_offset, num_bytes);
-> +		ret =3D btrfs_qgroup_release_data(inode, file_offset, num_bytes, &qgr=
-oup_rsv);
->   		if (ret < 0)
->   			return ERR_PTR(ret);
->   	}
-> @@ -182,7 +183,7 @@ static struct btrfs_ordered_extent *alloc_ordered_ex=
-tent(
->   	entry->inode =3D igrab(&inode->vfs_inode);
->   	entry->compress_type =3D compress_type;
->   	entry->truncated_len =3D (u64)-1;
-> -	entry->qgroup_rsv =3D ret;
-> +	entry->qgroup_rsv =3D qgroup_rsv;
->   	entry->flags =3D flags;
->   	refcount_set(&entry->refs, 1);
->   	init_waitqueue_head(&entry->wait);
+> +	btrfs_free_all_qgroup_pertrans(fs_info);
+> +
+>   	cur_trans->state =3DTRANS_STATE_COMPLETED;
+>   	wake_up(&cur_trans->commit_wait);
+>   }
 > diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index ce446d9d7f23..a953c16c7eb8 100644
+> index a953c16c7eb8..daec90342dad 100644
 > --- a/fs/btrfs/qgroup.c
 > +++ b/fs/btrfs/qgroup.c
-> @@ -4057,13 +4057,14 @@ int btrfs_qgroup_reserve_data(struct btrfs_inode=
- *inode,
+> @@ -4337,8 +4337,9 @@ static void qgroup_convert_meta(struct btrfs_fs_in=
+fo *fs_info, u64 ref_root,
 >
->   /* Free ranges specified by @reserved, normally in error path */
->   static int qgroup_free_reserved_data(struct btrfs_inode *inode,
-> -			struct extent_changeset *reserved, u64 start, u64 len)
-> +				     struct extent_changeset *reserved,
-> +				     u64 start, u64 len, u64 *freed_ret)
->   {
->   	struct btrfs_root *root =3D inode->root;
->   	struct ulist_node *unode;
->   	struct ulist_iterator uiter;
->   	struct extent_changeset changeset;
-> -	int freed =3D 0;
-> +	u64 freed =3D 0;
->   	int ret;
+>   		qgroup_rsv_release(fs_info, qgroup, num_bytes,
+>   				BTRFS_QGROUP_RSV_META_PREALLOC);
+> -		qgroup_rsv_add(fs_info, qgroup, num_bytes,
+> -				BTRFS_QGROUP_RSV_META_PERTRANS);
+> +		if (!sb_rdonly(fs_info->sb))
+> +			qgroup_rsv_add(fs_info, qgroup, num_bytes,
+> +				       BTRFS_QGROUP_RSV_META_PERTRANS);
 >
->   	extent_changeset_init(&changeset);
-> @@ -4104,7 +4105,9 @@ static int qgroup_free_reserved_data(struct btrfs_=
-inode *inode,
->   	}
->   	btrfs_qgroup_free_refroot(root->fs_info, root->root_key.objectid, fre=
-ed,
->   				  BTRFS_QGROUP_RSV_DATA);
-> -	ret =3D freed;
-> +	if (freed_ret)
-> +		*freed_ret =3D freed;
-> +	ret =3D 0;
->   out:
->   	extent_changeset_release(&changeset);
->   	return ret;
-> @@ -4112,7 +4115,7 @@ static int qgroup_free_reserved_data(struct btrfs_=
-inode *inode,
->
->   static int __btrfs_qgroup_release_data(struct btrfs_inode *inode,
->   			struct extent_changeset *reserved, u64 start, u64 len,
-> -			int free)
-> +			u64 *released, int free)
->   {
->   	struct extent_changeset changeset;
->   	int trace_op =3D QGROUP_RELEASE;
-> @@ -4128,7 +4131,7 @@ static int __btrfs_qgroup_release_data(struct btrf=
-s_inode *inode,
->   	/* In release case, we shouldn't have @reserved */
->   	WARN_ON(!free && reserved);
->   	if (free && reserved)
-> -		return qgroup_free_reserved_data(inode, reserved, start, len);
-> +		return qgroup_free_reserved_data(inode, reserved, start, len, release=
-d);
->   	extent_changeset_init(&changeset);
->   	ret =3D clear_record_extent_bits(&inode->io_tree, start, start + len =
--1,
->   				       EXTENT_QGROUP_RESERVED, &changeset);
-> @@ -4143,7 +4146,8 @@ static int __btrfs_qgroup_release_data(struct btrf=
-s_inode *inode,
->   		btrfs_qgroup_free_refroot(inode->root->fs_info,
->   				inode->root->root_key.objectid,
->   				changeset.bytes_changed, BTRFS_QGROUP_RSV_DATA);
-> -	ret =3D changeset.bytes_changed;
-> +	if (released)
-> +		*released =3D changeset.bytes_changed;
->   out:
->   	extent_changeset_release(&changeset);
->   	return ret;
-> @@ -4162,9 +4166,10 @@ static int __btrfs_qgroup_release_data(struct btr=
-fs_inode *inode,
->    * NOTE: This function may sleep for memory allocation.
->    */
->   int btrfs_qgroup_free_data(struct btrfs_inode *inode,
-> -			struct extent_changeset *reserved, u64 start, u64 len)
-> +			   struct extent_changeset *reserved,
-> +			   u64 start, u64 len, u64 *freed)
->   {
-> -	return __btrfs_qgroup_release_data(inode, reserved, start, len, 1);
-> +	return __btrfs_qgroup_release_data(inode, reserved, start, len, freed,=
- 1);
->   }
->
->   /*
-> @@ -4182,9 +4187,9 @@ int btrfs_qgroup_free_data(struct btrfs_inode *ino=
-de,
->    *
->    * NOTE: This function may sleep for memory allocation.
->    */
-> -int btrfs_qgroup_release_data(struct btrfs_inode *inode, u64 start, u64=
- len)
-> +int btrfs_qgroup_release_data(struct btrfs_inode *inode, u64 start, u64=
- len, u64 *released)
->   {
-> -	return __btrfs_qgroup_release_data(inode, NULL, start, len, 0);
-> +	return __btrfs_qgroup_release_data(inode, NULL, start, len, released, =
-0);
->   }
->
->   static void add_root_meta_rsv(struct btrfs_root *root, int num_bytes,
-> diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-> index 855a4f978761..15b485506104 100644
-> --- a/fs/btrfs/qgroup.h
-> +++ b/fs/btrfs/qgroup.h
-> @@ -358,10 +358,10 @@ int btrfs_verify_qgroup_counts(struct btrfs_fs_inf=
-o *fs_info, u64 qgroupid,
->   /* New io_tree based accurate qgroup reserve API */
->   int btrfs_qgroup_reserve_data(struct btrfs_inode *inode,
->   			struct extent_changeset **reserved, u64 start, u64 len);
-> -int btrfs_qgroup_release_data(struct btrfs_inode *inode, u64 start, u64=
- len);
-> +int btrfs_qgroup_release_data(struct btrfs_inode *inode, u64 start, u64=
- len, u64 *released);
->   int btrfs_qgroup_free_data(struct btrfs_inode *inode,
->   			   struct extent_changeset *reserved, u64 start,
-> -			   u64 len);
-> +			   u64 len, u64 *freed);
->   int btrfs_qgroup_reserve_meta(struct btrfs_root *root, int num_bytes,
->   			      enum btrfs_qgroup_rsv_type type, bool enforce);
->   int __btrfs_qgroup_reserve_meta(struct btrfs_root *root, int num_bytes=
-,
+>   		list_for_each_entry(glist, &qgroup->groups, next_group)
+>   			qgroup_iterator_add(&qgroup_list, glist->group);
 
