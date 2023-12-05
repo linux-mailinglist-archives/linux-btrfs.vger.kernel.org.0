@@ -1,264 +1,171 @@
-Return-Path: <linux-btrfs+bounces-665-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-668-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44D9B805B51
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 18:47:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4529805E67
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 20:12:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F33FB281ECD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 17:47:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DE301F21604
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 19:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C5B6A33B;
-	Tue,  5 Dec 2023 17:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 986B66D1A9;
+	Tue,  5 Dec 2023 19:11:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="qLnEPYWl"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FsrL/Bsc";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DIu60kw6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722C018F;
-	Tue,  5 Dec 2023 09:47:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1701798431; x=1733334431;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=L7RwUz52ypeOOfgAxBgi1jSj/I8ZxrfHoMionymVtig=;
-  b=qLnEPYWlBgM3BpkzhQeeZPnvrrNqCsa6EUp2n8af5Veo3FEq+KxtI02T
-   N8oqtMic6ZvssXkx+vaYbR3JEkXbOw31u31bQwWIVIelI7oghlblYkh5g
-   /Ho8nBfz9qyOEmL8NWARlwuSQJd96rLFzMYKUCDxvkqE2b0E8dLI46yfg
-   kzzECQPfqVODZP/mH9RnAwc735X3h2j7isVR9vuzj+sFB4vclkSOCBa1u
-   aQfjjLdncC1PcYQ5b2M/BBfSqXrxXZJNAZ9kEswuBqOOhOnXhSvd8gRB7
-   xALKiWZ9qIkz7yp/g5s6TJcdolIgqyT1JGjF24HNxXuQPJRC6QGKgE5uX
-   w==;
-X-CSE-ConnectionGUID: c/wA5/g3T4+GyZ7M1wmzvA==
-X-CSE-MsgGUID: VzaNV6N4Sq26EytLAFhCPg==
-X-IronPort-AV: E=Sophos;i="6.04,252,1695657600"; 
-   d="scan'208";a="3944975"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Dec 2023 01:47:11 +0800
-IronPort-SDR: Ic6XV94VD/jWOaiWqBqZlxAJP1TDOcoxQFzF9m+W/yP2r91mGRrTwZp8VzkEWxEK9RIQ+HL9rx
- WIw2/zYpCZWA==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Dec 2023 08:52:32 -0800
-IronPort-SDR: i2esY4esalCewl0RQdr/+lg3aQvtEWiqz3x86Tn2ELnTbfHu/vu+PEZzUgCSHtLsrtl0jLKR+k
- d5TGqZBnUjDA==
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip01.wdc.com with ESMTP; 05 Dec 2023 09:47:11 -0800
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Date: Tue, 05 Dec 2023 09:47:07 -0800
-Subject: [PATCH v3 7/7] btrfs: add fstest for overwriting a file partially
- with RST
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F23B0
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Dec 2023 11:11:52 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 058711FBA1;
+	Tue,  5 Dec 2023 19:11:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1701803510;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8XvyhmI0bnUNZ32U+FIeBn+JSTVj4IR44nentmR4ItQ=;
+	b=FsrL/BscrK3zOFcNab1wwOujBcQesehxk0CmiHjul+RHqGyBKDl0ibKp7K0KryRnhr4FaN
+	KspNlhvz4B0NULRGFhicqDhHkNjFlKIFU0yMridPwmSvoVZ/2ESgYyevrFWJLBh+0lnXNf
+	LMzmx9+8TWldoQT72diQugKNbqv2hq0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1701803510;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8XvyhmI0bnUNZ32U+FIeBn+JSTVj4IR44nentmR4ItQ=;
+	b=DIu60kw6fm0zTvZ7Ng4IzyFHyLYMg2BTd4QMFXWwp3V3aS+v3Gy/bVNBmvWk3STMFlMYpg
+	PSJxhg4taSUOqbDA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A3CC6138FF;
+	Tue,  5 Dec 2023 19:11:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id Dx/ZJPV1b2V+YAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Tue, 05 Dec 2023 19:11:49 +0000
+Date: Tue, 5 Dec 2023 20:04:59 +0100
+From: David Sterba <dsterba@suse.cz>
+To: David Sterba <dsterba@suse.cz>
+Cc: Filipe Manana <fdmanana@kernel.org>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/2] btrfs: use xarray for btrfs_root::delayed_nodes_tree
+ instead of radix-tree
+Message-ID: <20231205190459.GQ2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1701384168.git.dsterba@suse.com>
+ <e283f8d460c7b3288e8eb1d8974d6b5842210167.1701384168.git.dsterba@suse.com>
+ <CAL3q7H7a0nu8xa6dNZeBzzez1D3e8dr2tUkOcaUNNnPbFJ_YLA@mail.gmail.com>
+ <20231204154934.GA2205@twin.jikos.cz>
+ <20231204160731.GB2205@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231205-btrfs-raid-v3-7-0e857a5439a2@wdc.com>
-References: <20231205-btrfs-raid-v3-0-0e857a5439a2@wdc.com>
-In-Reply-To: <20231205-btrfs-raid-v3-0-0e857a5439a2@wdc.com>
-To: Anand Jain <anand.jain@oracle.com>, Zorro Lang <zlang@redhat.com>
-Cc: Filipe Manana <fdmanana@suse.com>, fstests@vger.kernel.org, 
- linux-btrfs@vger.kernel.org, 
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701798423; l=6685;
- i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
- bh=L7RwUz52ypeOOfgAxBgi1jSj/I8ZxrfHoMionymVtig=;
- b=JwraXZiezt39foJdf7Hl/ffiCrI6NIzmcSo7J8F8b6L5PIn8b+r8AC8KDvn4/3sMRZmG7wIhh
- M+9XnbQN/UbBB8AlP+8kX2e0Kj7PsJv/LOK9qJM7gcujoQeHYdedtqV
-X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
- pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231204160731.GB2205@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.36
+X-Spamd-Result: default: False [-0.36 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.998];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.36)[76.74%]
 
-Add a test writing 128k to an empty file with one stripe already
-pre-filled on-disk. Then overwrite a portion of the file in the middle.
+On Mon, Dec 04, 2023 at 05:07:31PM +0100, David Sterba wrote:
+> On Mon, Dec 04, 2023 at 04:49:34PM +0100, David Sterba wrote:
+> > On Fri, Dec 01, 2023 at 11:03:25AM +0000, Filipe Manana wrote:
+> > > On Thu, Nov 30, 2023 at 10:56 PM David Sterba <dsterba@suse.com> wrote:
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- tests/btrfs/308     |  56 +++++++++++++++++++++++++++
- tests/btrfs/308.out | 106 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 162 insertions(+)
+> It the lock conversion would not be the right way, the xa_reserve can be
+> done but it it's not as simple as the preload, it inserts a reserved
+> entry to the tree which is NULL upon read so we'd have to handle that
+> everywhere.
 
-diff --git a/tests/btrfs/308 b/tests/btrfs/308
-new file mode 100755
-index 000000000000..e57e32bc7fa2
---- /dev/null
-+++ b/tests/btrfs/308
-@@ -0,0 +1,56 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2023 Western Digital Cooperation.  All Rights Reserved.
-+#
-+# FS QA Test 306
-+#
-+# Test on-disk layout of RAID Stripe Tree Metadata by writing 128k to an empty
-+# file on a filesystem that has one stripe already pre-filled. Afterwards
-+# overwrite a portion of the file.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick raid remount volume raid-stripe-tree
-+
-+. ./common/filter
-+. ./common/filter.btrfs
-+
-+_supported_fs btrfs
-+_require_btrfs_command inspect-internal dump-tree
-+_require_btrfs_mkfs_feature "raid-stripe-tree"
-+_require_scratch_dev_pool 4
-+_require_btrfs_fs_feature "raid_stripe_tree"
-+
-+test_128k_write_overwrite()
-+{
-+	local profile=$1
-+	local ndevs=$2
-+
-+	_scratch_dev_pool_get $ndevs
-+
-+	echo "==== Testing $profile ===="
-+	_scratch_pool_mkfs -d $profile -m $profile -O raid-stripe-tree
-+	_scratch_mount
-+
-+	$XFS_IO_PROG -fc "pwrite -W 0 32k" "$SCRATCH_MNT/bar" | _filter_xfs_io
-+	$XFS_IO_PROG -fc "pwrite -W 0 128k" "$SCRATCH_MNT/foo" | _filter_xfs_io
-+	$XFS_IO_PROG -fc "pwrite -W 64k 8k" "$SCRATCH_MNT/foo" | _filter_xfs_io
-+
-+	_scratch_cycle_mount
-+	md5sum "$SCRATCH_MNT/foo" | _filter_scratch
-+
-+	_scratch_unmount
-+
-+	$BTRFS_UTIL_PROG inspect-internal dump-tree -t raid_stripe $SCRATCH_DEV_POOL |\
-+		_filter_btrfs_version | _filter_stripe_tree
-+
-+	_scratch_dev_pool_put
-+}
-+
-+echo "= Test 128k write to empty file with 1st stripe partially prefilled then overwrite ="
-+test_128k_write_overwrite raid0 2
-+test_128k_write_overwrite raid1 2
-+test_128k_write_overwrite raid10 4
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/308.out b/tests/btrfs/308.out
-new file mode 100644
-index 000000000000..c93a3a43b248
---- /dev/null
-+++ b/tests/btrfs/308.out
-@@ -0,0 +1,106 @@
-+QA output created by 308
-+= Test 128k write to empty file with 1st stripe partially prefilled then overwrite =
-+==== Testing raid0 ====
-+wrote 32768/32768 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 131072/131072 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 8192/8192 bytes at offset 65536
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+d48858312a922db7eb86377f638dbc9f  SCRATCH_MNT/foo
-+
-+raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0) 
-+leaf XXXXXXXXX items X free space XXXXX generation X owner RAID_STRIPE_TREE
-+leaf XXXXXXXXX flags 0x1(WRITTEN) backref revision 1
-+checksum stored <CHECKSUM>
-+checksum calced <CHECKSUM>
-+fs uuid <UUID>
-+chunk uuid <UUID>
-+	item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 24
-+			encoding: RAID0
-+			stripe 0 devid 1 physical XXXXXXXXX
-+	item 1 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 24
-+			encoding: RAID0
-+			stripe 0 devid 1 physical XXXXXXXXX
-+	item 2 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 24
-+			encoding: RAID0
-+			stripe 0 devid 2 physical XXXXXXXXX
-+	item 3 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 24
-+			encoding: RAID0
-+			stripe 0 devid 1 physical XXXXXXXXX
-+	item 4 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 24
-+			encoding: RAID0
-+			stripe 0 devid 1 physical XXXXXXXXX
-+total bytes XXXXXXXX
-+bytes used XXXXXX
-+uuid <UUID>
-+==== Testing raid1 ====
-+wrote 32768/32768 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 131072/131072 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 8192/8192 bytes at offset 65536
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+d48858312a922db7eb86377f638dbc9f  SCRATCH_MNT/foo
-+
-+raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0) 
-+leaf XXXXXXXXX items X free space XXXXX generation X owner RAID_STRIPE_TREE
-+leaf XXXXXXXXX flags 0x1(WRITTEN) backref revision 1
-+checksum stored <CHECKSUM>
-+checksum calced <CHECKSUM>
-+fs uuid <UUID>
-+chunk uuid <UUID>
-+	item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
-+			encoding: RAID1
-+			stripe 0 devid 1 physical XXXXXXXXX
-+			stripe 1 devid 2 physical XXXXXXXXX
-+	item 1 key (XXXXXX RAID_STRIPE 131072) itemoff XXXXX itemsize 40
-+			encoding: RAID1
-+			stripe 0 devid 1 physical XXXXXXXXX
-+			stripe 1 devid 2 physical XXXXXXXXX
-+	item 2 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 40
-+			encoding: RAID1
-+			stripe 0 devid 1 physical XXXXXXXXX
-+			stripe 1 devid 2 physical XXXXXXXXX
-+total bytes XXXXXXXX
-+bytes used XXXXXX
-+uuid <UUID>
-+==== Testing raid10 ====
-+wrote 32768/32768 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 131072/131072 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 8192/8192 bytes at offset 65536
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+d48858312a922db7eb86377f638dbc9f  SCRATCH_MNT/foo
-+
-+raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0) 
-+leaf XXXXXXXXX items X free space XXXXX generation X owner RAID_STRIPE_TREE
-+leaf XXXXXXXXX flags 0x1(WRITTEN) backref revision 1
-+checksum stored <CHECKSUM>
-+checksum calced <CHECKSUM>
-+fs uuid <UUID>
-+chunk uuid <UUID>
-+	item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
-+			encoding: RAID10
-+			stripe 0 devid 1 physical XXXXXXXXX
-+			stripe 1 devid 2 physical XXXXXXXXX
-+	item 1 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
-+			encoding: RAID10
-+			stripe 0 devid 1 physical XXXXXXXXX
-+			stripe 1 devid 2 physical XXXXXXXXX
-+	item 2 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
-+			encoding: RAID10
-+			stripe 0 devid 3 physical XXXXXXXXX
-+			stripe 1 devid 4 physical XXXXXXXXX
-+	item 3 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
-+			encoding: RAID10
-+			stripe 0 devid 1 physical XXXXXXXXX
-+			stripe 1 devid 2 physical XXXXXXXXX
-+	item 4 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 40
-+			encoding: RAID10
-+			stripe 0 devid 1 physical XXXXXXXXX
-+			stripe 1 devid 2 physical XXXXXXXXX
-+total bytes XXXXXXXX
-+bytes used XXXXXX
-+uuid <UUID>
+Seems that xa_reserve can emulate the preload. It takes the GFP flags
+and will insert a reserved entry, btrfs_get_delayed_node() expects a
+NULL and there's no other xa_load() except
+btrfs_get_or_create_delayed_node() that's doing the insert.
 
--- 
-2.43.0
+The insertion is done to the reserved slot by xa_store() and serialized
+by the spin lock, the slot reservation can race, xarray handles that.
+xa_store() also takes the GFP flags but they should not be needed.
 
+I'm running the code below with manual error injection (xa_reserve()
+fails every 100th time), so far fstests continue, reporting either
+enomem or transaction aborts.
+
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -122,6 +122,8 @@ static struct btrfs_delayed_node *btrfs_get_or_create_delayed_node(
+ 	int ret;
+ 
+ 	do {
++		void *ptr;
++
+ 		node = btrfs_get_delayed_node(btrfs_inode);
+ 		if (node)
+ 			return node;
+@@ -134,15 +136,25 @@ static struct btrfs_delayed_node *btrfs_get_or_create_delayed_node(
+ 		/* Cached in the inode and can be accessed. */
+ 		refcount_set(&node->refs, 2);
+ 
++		ret = xa_reserve(&root->delayed_nodes, ino, GFP_NOFS);
++		if (ret == -ENOMEM) {
++			kmem_cache_free(delayed_node_cache, node);
++			return ERR_PTR(-ENOMEM);
++		}
+ 		spin_lock(&root->inode_lock);
+-		ret = xa_insert(&root->delayed_nodes, ino, node, GFP_ATOMIC);
+-		if (ret < 0) {
++		ptr = xa_load(&root->delayed_nodes, ino);
++		if (ptr) {
++			/* Somebody inserted it. */
+ 			spin_unlock(&root->inode_lock);
+ 			kmem_cache_free(delayed_node_cache, node);
+-			if (ret != -EBUSY)
+-				return ERR_PTR(ret);
+-			/* Otherwise it's ENOMEM. */
++			ret = -EEXIST;
++			continue;
+ 		}
++		ptr = xa_store(&root->delayed_nodes, ino, node, GFP_ATOMIC);
++		ASSERT(xa_err(ptr) != -EINVAL);
++		ASSERT(xa_err(ptr) != -ENOMEM);
++		ASSERT(ptr == NULL);
++		ret = 0;
+ 	} while (ret < 0);
+ 	btrfs_inode->delayed_node = node;
+ 	spin_unlock(&root->inode_lock);
 
