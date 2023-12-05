@@ -1,47 +1,47 @@
-Return-Path: <linux-btrfs+bounces-606-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-607-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9275880496E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 06:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D86EF804988
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 06:54:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEACA28162C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 05:45:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6914A28164F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 05:54:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5677D2EA;
-	Tue,  5 Dec 2023 05:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06B7CD50E;
+	Tue,  5 Dec 2023 05:54:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ta23N3NM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jbrrt8bm"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE58AD26E;
-	Tue,  5 Dec 2023 05:44:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EB05C433C8;
-	Tue,  5 Dec 2023 05:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0636CD28B;
+	Tue,  5 Dec 2023 05:54:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C5AEC433C7;
+	Tue,  5 Dec 2023 05:54:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701755098;
-	bh=nnB2GVEF0qg3/xmo5rtiPkE3svlhXBgxG8n8uFlrfUc=;
+	s=k20201202; t=1701755681;
+	bh=2sgftbqbAfkigqri4VIdWIpZUTDqlQL8Lt67PkAsZFs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ta23N3NMrvWc9O+41tVSxC1Y/Oz5+P9w5DNF78MudxDYIoucVkAnfiq1epuhOUbr9
-	 DNhp8IlUk5nGN4vvQINkgy8cZZhY/LFqCmSow7n5KdTOE+xb6xeDafWmGDvEGE6Pj9
-	 ALjkp+udzerHIpncUtSCmiz7C0Qpy4jyHBnS7hGWoYaGiaD0RSkWVFtfLSM1snAFjY
-	 7nQxHo9RtgUaNY972G2VqLkylLVipnRVEpKX2ioVcQrQVnCs+AOqZEhPRudhSoW6xs
-	 7ze6AvlrCJjSPITI/KySf1ML5EssT6xU3raWdiC++YDXvEvA8MipFHQ7sM61yspuRW
-	 Id6k3ulY5jkTA==
-Date: Mon, 4 Dec 2023 21:44:56 -0800
+	b=Jbrrt8bm/XGC3K82fxJ9vtlZxFBWBhjmUxz3y7tUeTPQ+rXO+qRFQEu+pf/+yIxtt
+	 AnEXxkXtc8UCc35foFnD2nKGVm+UQUG5BdGtHWjkrP/Mj/KdldWVR+dlJ0aHF/uNTC
+	 XjSkQbnW/5VxbMTacXLnmY0vi54BQiY5VeYIMD5u06In0YjTVT8Je1yRZtitTsoB6f
+	 OMNV/2tZVb7VcBXV2qUVosEjn3y6p1XRmY/Sz8kQWTH8M+BH3Nc56P6N0UAJqBOlGe
+	 ZzyYXW98dhGAXOaKi64nLuVcaOu2sBK+6yHNBSus6MP/oD0Sw98v0tRyR+wC2USa6x
+	 C7cHuzzb7UNng==
+Date: Mon, 4 Dec 2023 21:54:39 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 26/46] btrfs: keep track of fscrypt info and
- orig_start for dio reads
-Message-ID: <20231205054456.GN1168@sol.localdomain>
+Subject: Re: [PATCH v4 46/46] btrfs: load the inode context before sending
+ writes
+Message-ID: <20231205055439.GO1168@sol.localdomain>
 References: <cover.1701468305.git.josef@toxicpanda.com>
- <5e74c0395e4f58082b9446fb0105c0cb99e8338d.1701468306.git.josef@toxicpanda.com>
+ <99694dd7249ea1edefcf13b9842447e530fc3f6f.1701468306.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -50,19 +50,62 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5e74c0395e4f58082b9446fb0105c0cb99e8338d.1701468306.git.josef@toxicpanda.com>
+In-Reply-To: <99694dd7249ea1edefcf13b9842447e530fc3f6f.1701468306.git.josef@toxicpanda.com>
 
-On Fri, Dec 01, 2023 at 05:11:23PM -0500, Josef Bacik wrote:
-> We keep track of this information in the ordered extent for writes, but
-> we need it for reads as well.  Add fscrypt_extent_info and orig_start to
-> the dio_data so we can populate this on reads.  This will be used later
-> when we attach the fscrypt context to the bios.
+On Fri, Dec 01, 2023 at 05:11:43PM -0500, Josef Bacik wrote:
+> For send we will read the pages and copy them into our buffer.  Use the
+> fscrypt_inode_open helper to make sure the key is loaded properly before
+> trying to read from the inode so the contents are properly decrypted.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/send.c | 35 ++++++++++++++++++++++++++++++++++-
+>  1 file changed, 34 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index de77321777f4..3475b4cea09d 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -5392,6 +5392,37 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
+>  	return ret;
+>  }
+>  
+> +static int load_fscrypt_context(struct send_ctx *sctx)
+> +{
+> +	struct btrfs_root *root = sctx->send_root;
+> +	struct name_cache_entry *nce;
+> +	struct inode *dir;
+> +	int ret;
+> +
+> +	if (!IS_ENCRYPTED(sctx->cur_inode))
+> +		return 0;
+> +
+> +	/*
+> +	 * We're encrypted, we need to load the parent inode in order to make
+> +	 * sure the encryption context is loaded, we use this after calling
+> +	 * get_cur_path() so our nce for the current inode should be here.  If
+> +	 * not handle it, but ASSERT() for developers.
+> +	 */
+> +	nce = name_cache_search(sctx, sctx->cur_ino, sctx->cur_inode_gen);
+> +	if (!nce) {
+> +		ASSERT(nce);
+> +		return -EINVAL;
+> +	}
+> +
+> +	dir = btrfs_iget(root->fs_info->sb, nce->parent_ino, root);
+> +	if (IS_ERR(dir))
+> +		return PTR_ERR(dir);
+> +
+> +	ret = fscrypt_inode_open(dir, sctx->cur_inode);
+> +	iput(dir);
+> +	return ret;
 
-Does this mean that btrfs will support direct I/O on encrypted files from the
-beginning?  Are you enforcing FS block alignment, as is required for encrypted
-direct I/O?
+fscrypt_file_open() is called even on unencrypted files, which results in strong
+enforcement that encrypted directories don't contain unencrypted files.
+
+The code above doesn't do that with fscrypt_inode_open().  That seems like a
+bug; the rules for "send" internally "opening" a file should be the same as a
+standard open, right?  Or did you do it this way intentionally?
 
 - Eric
 
