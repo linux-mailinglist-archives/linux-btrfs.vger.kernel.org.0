@@ -1,46 +1,47 @@
-Return-Path: <linux-btrfs+bounces-599-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-600-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24C298048D8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 05:54:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BE4A80491C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 06:04:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAC9AB20C8C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 04:54:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A93EF1F21464
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 05:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A130CA5C;
-	Tue,  5 Dec 2023 04:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CAF0D263;
+	Tue,  5 Dec 2023 05:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RCDZ1SYm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PMwnuQx3"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8347211A;
-	Tue,  5 Dec 2023 04:54:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48276C433C7;
-	Tue,  5 Dec 2023 04:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37BF96AC0;
+	Tue,  5 Dec 2023 05:03:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72309C433C8;
+	Tue,  5 Dec 2023 05:03:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701752044;
-	bh=gfnlbyYTn/MoiggJHqdV/y+nYA+UAKkU/fA7bdBpam8=;
+	s=k20201202; t=1701752635;
+	bh=vtT7bl38gEnsHRMN1TYd7JwRxYZi5DGpaZuoozZO+sI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RCDZ1SYmsNVA8OTNgEzLwWqeHAlYhOPQXBF4wMm/0xd5T/TmB92iorV1/72FjuVPO
-	 YxdCbYRDh5pX1R+pmGRc8/uBNBjfZknRL/NcQEhS9gm47Y4HeOSK7yADpfUnVNRB8i
-	 kuB4cZ4qkcTCI6myzLmkJIFpNQci9+0Zbs+y6ZAnLkam6ZUW4FZJV5Wq6JFty5vJ5Z
-	 CdvaTxDWjPPxcA5nhJ4wfe8YgJg7cIX6iHOITR2f0PcYzhgPso2S8XkVdvq2bN6qkf
-	 TOUpbKAPGK7Dob1dhobl2T1iyiJ7fe8dUS5GajlZeq8M5KTxZ5BE+hmdZ17G3fDPjM
-	 TeU8svdAjp6WA==
-Date: Mon, 4 Dec 2023 20:54:02 -0800
+	b=PMwnuQx3DuHJ2n0XbyecJgWaVT+ffZzpdibX17Cizq4eiDErdba2QcbGggt1mVbfL
+	 2UhnNBxMaOUuI4U/yjf0BLjJlfGdWne7aq3+nsbH+dTE/PcLzjBopquCGXd2NKUTXf
+	 VZX1PbpS2rXz2M53QqHs8URv1UP9OTjuh1kc72Auj8M9xjpYe+XA7vss74+mLTRwjH
+	 k0/DvUvWZ0t3hpQQ0IMdvveA9H8WtFU5j7k9jlWyMZjbdzrFzktWDMSQTnDAMUz22V
+	 2w1Buh1n9kE2n5xtsE8i3XUsUFMl0g/NPYdHYxYvlczkWLuXweErS26NSAZuIoweaS
+	 lacWzi/LlP5Rg==
+Date: Mon, 4 Dec 2023 21:03:53 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 05/46] blk-crypto: add a process bio callback
-Message-ID: <20231205045402.GG1168@sol.localdomain>
+	linux-fsdevel@vger.kernel.org, Omar Sandoval <osandov@osandov.com>,
+	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: Re: [PATCH v4 06/46] fscrypt: expose fscrypt_nokey_name
+Message-ID: <20231205050353.GH1168@sol.localdomain>
 References: <cover.1701468305.git.josef@toxicpanda.com>
- <eeeea8d462fe739cff8883feeccacd154a10b40b.1701468306.git.josef@toxicpanda.com>
+ <5e180dc6cef80ab6997d5f4827ac1583123a5074.1701468306.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -49,135 +50,45 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eeeea8d462fe739cff8883feeccacd154a10b40b.1701468306.git.josef@toxicpanda.com>
+In-Reply-To: <5e180dc6cef80ab6997d5f4827ac1583123a5074.1701468306.git.josef@toxicpanda.com>
 
-On Fri, Dec 01, 2023 at 05:11:02PM -0500, Josef Bacik wrote:
-> +	/* Process the encrypted bio before we submit it. */
-> +	if (bc->bc_key->crypto_cfg.process_bio) {
-> +		blk_st = bc->bc_key->crypto_cfg.process_bio(src_bio, enc_bio);
-> +		if (blk_st != BLK_STS_OK) {
-> +			src_bio->bi_status = blk_st;
-> +			goto out_free_bounce_pages;
-> +		}
-> +	}
-> +
+On Fri, Dec 01, 2023 at 05:11:03PM -0500, Josef Bacik wrote:
+> -/*
+> - * Decoded size of max-size no-key name, i.e. a name that was abbreviated using
+> + * Decoded size of max-size nokey name, i.e. a name that was abbreviated using
+>   * the strong hash and thus includes the 'sha256' field.  This isn't simply
+>   * sizeof(struct fscrypt_nokey_name), as the padding at the end isn't included.
+>   */
 
-How does this interact with the splitting that can happen at the beginning of
-blk_crypto_fallback_encrypt_bio()?  Won't src_bio differ from the original bio
-in that case?
-
-> +	/*
-> +	 * Process the bio first before trying to decrypt.
-> +	 *
-> +	 * NOTE: btrfs expects that this bio is the same that was submitted.  If
-> +	 * at any point this changes we will need to update process_bio to take
-> +	 * f_ctx->crypt_iter in order to make sure we can iterate the pages for
-> +	 * checksumming.  We're currently saving this in our btrfs_bio, so this
-> +	 * works, but if at any point in the future we start allocating a bounce
-> +	 * bio or something we need to update this callback.
-> +	 */
-> +	if (bc->bc_key->crypto_cfg.process_bio) {
-> +		blk_st = bc->bc_key->crypto_cfg.process_bio(bio, bio);
-> +		if (blk_st != BLK_STS_OK) {
-> +			bio->bi_status = blk_st;
-> +			goto out_no_keyslot;
-> +		}
-> +	}
-
-The NOTE above feels a bit out of place.  It doesn't make sense to use a bounce
-bio for decryption, so the described concern doesn't seem too realistic.
-Specific filesystems also shouldn't really be mentioned here.  Maybe the comment
-should just say that the contract of blk_crypto_process_bio_t requires
-orig_bio == enc_bio for reads?  Maybe it should be a comment on
-blk_crypto_process_bio_t itself.
-
-> +/**
-> + * blk_crypto_cfg_supports_process_bio - check if this config supports
-> + *					 process_bio
-> + * @profile: the profile we're checking
-> + *
-> + * This is just a quick check to make sure @profile is the fallback profile, as
-> + * no other offload implementations support process_bio.
-> + */
-> +bool blk_crypto_cfg_supports_process_bio(struct blk_crypto_profile *profile)
-> +{
-> +	return profile == blk_crypto_fallback_profile;
-> +}
-
-How about calling this blk_crypto_profile_is_fallback()?
-
-> diff --git a/include/linux/blk-crypto.h b/include/linux/blk-crypto.h
-> index 5e5822c18ee4..194c1d727013 100644
-> --- a/include/linux/blk-crypto.h
-> +++ b/include/linux/blk-crypto.h
-> @@ -6,7 +6,7 @@
->  #ifndef __LINUX_BLK_CRYPTO_H
->  #define __LINUX_BLK_CRYPTO_H
->  
-> -#include <linux/types.h>
-> +#include <linux/blk_types.h>
->  
->  enum blk_crypto_mode_num {
->  	BLK_ENCRYPTION_MODE_INVALID,
-> @@ -17,6 +17,9 @@ enum blk_crypto_mode_num {
->  	BLK_ENCRYPTION_MODE_MAX,
->  };
->  
-> +typedef blk_status_t (blk_crypto_process_bio_t)(struct bio *orig_bio,
-> +						struct bio *enc_bio);
-
-Usually people include a '*' in function pointer typedefs.
-
-> +
->  #define BLK_CRYPTO_MAX_KEY_SIZE		64
->  /**
->   * struct blk_crypto_config - an inline encryption key's crypto configuration
-
-This kerneldoc comment is missing documentation for process_bio.
-
-> @@ -31,6 +34,7 @@ struct blk_crypto_config {
->  	enum blk_crypto_mode_num crypto_mode;
->  	unsigned int data_unit_size;
->  	unsigned int dun_bytes;
-> +	blk_crypto_process_bio_t *process_bio;
->  };
-
-*process_bio => process_bio.
+The above change seems accidental?  Note that while the C identifiers use
+"nokey", in text I've been writing it as "no-key".
 
 > diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-> index 756f23fc3e83..5f5efb472fc9 100644
+> index 5f5efb472fc9..f57601b40e18 100644
 > --- a/include/linux/fscrypt.h
 > +++ b/include/linux/fscrypt.h
-> @@ -16,6 +16,7 @@
->  #include <linux/fs.h>
+> @@ -17,6 +17,7 @@
 >  #include <linux/mm.h>
 >  #include <linux/slab.h>
-> +#include <linux/blk-crypto.h>
+>  #include <linux/blk-crypto.h>
+> +#include <crypto/sha2.h>
 >  #include <uapi/linux/fscrypt.h>
 >  
 >  /*
-> @@ -199,6 +200,19 @@ struct fscrypt_operations {
->  	 */
->  	struct block_device **(*get_devices)(struct super_block *sb,
->  					     unsigned int *num_devs);
-> +
-> +	/*
-> +	 * A callback if the file system requires the ability to process the
-> +	 * encrypted bio.
-> +	 *
-> +	 * @orig_bio: the original bio submitted.
-> +	 * @enc_bio: the encrypted bio.
-> +	 *
-> +	 * For writes the enc_bio will be different from the orig_bio, for reads
-> +	 * they will be the same.  For reads we get the bio before it is
-> +	 * decrypted, for writes we get the bio before it is submitted.
-> +	 */
-> +	blk_crypto_process_bio_t *process_bio;
+> @@ -56,6 +57,42 @@ struct fscrypt_name {
+>  #define fname_name(p)		((p)->disk_name.name)
+>  #define fname_len(p)		((p)->disk_name.len)
+>  
+[...]
+> +struct fscrypt_nokey_name {
+> +	u32 dirhash[2];
+> +	u8 bytes[149];
+> +	u8 sha256[SHA256_DIGEST_SIZE];
+> +}; /* 189 bytes => 252 bytes base64url-encoded, which is <= NAME_MAX (255) */
 
-Adding fscrypt support for process_bio should be a separate patch.
-
-Also, the documentation for fscrypt_operations::process_bio should make it clear
-that it only applies to inline encryption.
+I'd be tempted to just change SHA256_DIGEST_SIZE to 32, which would avoid
+needing to include crypto/sha2.h.  The size is effectively hardcoded anyway, via
+the 'u8 bytes[149];' field.  And it's not like SHA-256 will stop being 256 bits.
 
 - Eric
 
