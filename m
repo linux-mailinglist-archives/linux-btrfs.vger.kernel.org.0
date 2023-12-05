@@ -1,141 +1,148 @@
-Return-Path: <linux-btrfs+bounces-669-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-670-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EF32805EBD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 20:40:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2469805EBF
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 20:42:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDC23281F6F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 19:40:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F399C1C210D8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 19:42:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC516ABA4;
-	Tue,  5 Dec 2023 19:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EB266ABA2;
+	Tue,  5 Dec 2023 19:42:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B7pfo2vf"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="qxRvTL+w";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="1O50rri0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097F06AB85
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Dec 2023 19:40:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92DDCC433C8
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Dec 2023 19:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701805221;
-	bh=U4+0J7BG7gdEBLkGrYyiOgc29bJtoQawcvf84e1DziI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=B7pfo2vfQ+NP6EF6cKrah7hWJnUQl7OqyrhXqygmnlgaMjQ93pBCWVBYuoHaVPyJn
-	 Wh1lD0wvJ2FdsCmQ7Dd2woBWFiCl0jJcszmFPTj4Qcl9djn4sOuXTfysuleqB7GsF8
-	 8PwS4BxNXoMQ5OB9PcjNOmFyBuFFK+hUM8EbaEkyrsA/sq8IKPh/bb3V4RfphgeSFN
-	 PJknMf0a4zyxMgqoN3EwClaoKOeP7qXvdDzofDMBQv0TGbtYIshiss22s1Uq4aE0WR
-	 I07je9yVGmlhK2Sfcw9EV+sXxFM+O/PijymDpR9veKPWMV81oQMQumirBwQsLnVf0d
-	 mnRI2ZtrOyvaA==
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40c09dfa03cso30963965e9.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Dec 2023 11:40:21 -0800 (PST)
-X-Gm-Message-State: AOJu0YzBDx23t+ZiNBolzrE8tDbZloYm5uUYFBavVbExIlncGSRYraHj
-	gLKkIme0flhlqBvfDhuUQQ/M5l1vcDwHPSVx6IM=
-X-Google-Smtp-Source: AGHT+IGwAfVcuAYoPk6pcQakHDnRAzRFqRAs+XRYvktN26mv/UCdVQfEBGX9k0/3NxupRTOELOLXbzE/5iMoaItd8q4=
-X-Received: by 2002:a05:600c:3ac7:b0:40b:5e59:c585 with SMTP id
- d7-20020a05600c3ac700b0040b5e59c585mr881598wms.175.1701805220032; Tue, 05 Dec
- 2023 11:40:20 -0800 (PST)
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971E7137
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Dec 2023 11:42:34 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.west.internal (Postfix) with ESMTP id 303D43200A42;
+	Tue,  5 Dec 2023 14:42:31 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Tue, 05 Dec 2023 14:42:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:sender
+	:subject:subject:to:to; s=fm2; t=1701805350; x=1701891750; bh=Lj
+	/YuSP4cbYANvNkckEP71e0lOZIffO120yrjheRu7I=; b=qxRvTL+wQzx6eVzOtb
+	782RyXOF34aSNVw2B+/NQE4pwYYvg4XvzqAJgsvn4meoi84d4KAKzw0u+wVd7vgn
+	3tvV3hcp1JfBHPRd2icsGTFd5osHmMv23vIq5IqxSf4Jdn80Actoh5YwOgEW1rPJ
+	ycr0oWs21ypXZgDa0lKtNQfR+/4gHOlfcQCs4QEw9Nl7miJF/H8fM8VL8rrM7oKP
+	jo7CJCEA52wCS25qgz1GP8ClAOHdSUW4tlI5n6QmTpXXg3JzfTQ78724Mfss4zy5
+	8kDc+NzHvrTk+Gf3fL263Zzz+rY2DPf4881vw5eL+GJHmTOtEsmwSc94HRA9u10q
+	5m3A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm1; t=1701805350; x=1701891750; bh=Lj/YuSP4cbYAN
+	vNkckEP71e0lOZIffO120yrjheRu7I=; b=1O50rri0Fk8QPyLofQeABVVDPviMM
+	9XirLvGY2r86Rt6w0qXKhQ7g93Lj/4bL01oRZxkGILFpzgXPPU/25DZbRwT4NpPQ
+	2X5LblmbGIt+UHgyzUVV+djOU1dqo9vRVa7AnumKHruOrBf+eKhlIhluIcnFj6af
+	f3KK9xkwTRxJ8tGd8AD/P6sNWq1G6bM0RbmcQQthUOx635wRflK8A+KIvUF+4x80
+	dVLPgN6Jc4ZONZExp2IJOOMeZPs7M2ck6BwpUgnkDTxSovBEwcbN4V5+zgRpbmI1
+	xkqgzyNDHkVKmi6v/99uS5y/ZXdfmyKRYub3hvoSwn13atssNqStrpIRg==
+X-ME-Sender: <xms:Jn1vZSHT6eXSLEyCXh2WX4AZ88x4zUFEySRTcLoK-1TFyLyG4qhlcQ>
+    <xme:Jn1vZTWnoIAz-xE_X6_qID1BANwJpe8RU-vuWQQwii3FnNRSD_d9fxg0a_fb-B6s7
+    cvBnDOWDpjk3pFsrPM>
+X-ME-Received: <xmr:Jn1vZcIn3SyAqDp8I04YdrtuEkJp8kyyXs1XdemnQUN85FgT-35yVAsy1Ln2bw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejkedguddvjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkfhggtggujgesth
+    dtredttddtvdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghu
+    rhdrihhoqeenucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvd
+    evieeiiedugfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
+    mhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:Jn1vZcGlnfN29eEmErKlSQ4eVGD1YhuuL8uuBryY06McTgrOed51Ew>
+    <xmx:Jn1vZYW9OsWT-4H5d-VjIL4nx5QvgHz3WQNwJGG2k1NZSp2Gug1XBg>
+    <xmx:Jn1vZfPLyk09Ia2KCV6RwT2cpoESGiiWwd6y95wyXc4tWC-h6VOvkw>
+    <xmx:Jn1vZTdIgUAo-ub6mwUQbQU2ywP_WsfFi0pjGOFVf4EefA-2swaIQg>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 5 Dec 2023 14:42:29 -0500 (EST)
+Date: Tue, 5 Dec 2023 11:42:25 -0800
+From: Boris Burkov <boris@bur.io>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 1/5] btrfs: free qgroup rsv on ioerr ordered_extent
+Message-ID: <ZW99IahvTeLvQ0yv@devvm9258.prn0.facebook.com>
+References: <cover.1701464169.git.boris@bur.io>
+ <301bc827ef330a961a95791e6c4d3dbe3e2a6108.1701464169.git.boris@bur.io>
+ <a72c5e7a-13ab-4f2f-8371-7ef4e2e2646e@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1701384168.git.dsterba@suse.com> <e283f8d460c7b3288e8eb1d8974d6b5842210167.1701384168.git.dsterba@suse.com>
- <CAL3q7H7a0nu8xa6dNZeBzzez1D3e8dr2tUkOcaUNNnPbFJ_YLA@mail.gmail.com>
- <20231204154934.GA2205@twin.jikos.cz> <20231204160731.GB2205@twin.jikos.cz> <20231205190459.GQ2751@twin.jikos.cz>
-In-Reply-To: <20231205190459.GQ2751@twin.jikos.cz>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 5 Dec 2023 19:39:43 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4XuCHo66yrViMWnuySAVn-8k-OGdQc65Pn7wsjqcXu0g@mail.gmail.com>
-Message-ID: <CAL3q7H4XuCHo66yrViMWnuySAVn-8k-OGdQc65Pn7wsjqcXu0g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btrfs: use xarray for btrfs_root::delayed_nodes_tree
- instead of radix-tree
-To: dsterba@suse.cz
-Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a72c5e7a-13ab-4f2f-8371-7ef4e2e2646e@gmx.com>
 
-On Tue, Dec 5, 2023 at 7:11=E2=80=AFPM David Sterba <dsterba@suse.cz> wrote=
-:
->
-> On Mon, Dec 04, 2023 at 05:07:31PM +0100, David Sterba wrote:
-> > On Mon, Dec 04, 2023 at 04:49:34PM +0100, David Sterba wrote:
-> > > On Fri, Dec 01, 2023 at 11:03:25AM +0000, Filipe Manana wrote:
-> > > > On Thu, Nov 30, 2023 at 10:56=E2=80=AFPM David Sterba <dsterba@suse=
-.com> wrote:
->
-> > It the lock conversion would not be the right way, the xa_reserve can b=
-e
-> > done but it it's not as simple as the preload, it inserts a reserved
-> > entry to the tree which is NULL upon read so we'd have to handle that
-> > everywhere.
->
-> Seems that xa_reserve can emulate the preload. It takes the GFP flags
-> and will insert a reserved entry, btrfs_get_delayed_node() expects a
-> NULL and there's no other xa_load() except
-> btrfs_get_or_create_delayed_node() that's doing the insert.
->
-> The insertion is done to the reserved slot by xa_store() and serialized
-> by the spin lock, the slot reservation can race, xarray handles that.
-> xa_store() also takes the GFP flags but they should not be needed.
->
-> I'm running the code below with manual error injection (xa_reserve()
-> fails every 100th time), so far fstests continue, reporting either
-> enomem or transaction aborts.
+On Tue, Dec 05, 2023 at 07:34:10AM +1030, Qu Wenruo wrote:
+> 
+> 
+> On 2023/12/2 07:30, Boris Burkov wrote:
+> > An ordered extent completing is a critical moment in qgroup rsv
+> > handling, as the ownership of the reservation is handed off from the
+> > ordered extent to the delayed ref. In the happy path we release (unlock)
+> > but do not free (decrement counter) the reservation, and the delayed ref
+> > drives the free. However, on an error, we don't create a delayed ref,
+> > since there is no ref to add. Therefore, free on the error path.
+> 
+> And I believe this would cause btrfs to be noisy at the unmount time,
+> due to unreleased qgroup rsv.
+> 
+> Have you hit any one during your tests? If so, mind to add some dmesg
+> output for it?
+> 
+> Or if no hit so far, would it be possible to add a new test case for it?
 
-Oh, that's perfect and seems very promising. Thanks.
+I hit the conditions for all of these fixes running xfstests with
+MKFS_OPTIONS including -O squota or -O quota. IIRC the failures were
+almost all in the umount path in btrfs_check_quota_leak, though some of
+the issues manifested as reservation freeing underflows in
+qgroup_rsv_release. generic/475 triggered most of the bugs but a handful
+of other tests hit some others. Unfortunately, I did not take perfect
+notes on which test was fixed by which patch. I can try to recover that
+information by removing the patches and running the full suite while
+iteratively adding them back in. That is obviously fairly time consuming,
+so I would only do it if people really want that information in the commit
+messages or something.
 
->
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -122,6 +122,8 @@ static struct btrfs_delayed_node *btrfs_get_or_create=
-_delayed_node(
->         int ret;
->
->         do {
-> +               void *ptr;
-> +
->                 node =3D btrfs_get_delayed_node(btrfs_inode);
->                 if (node)
->                         return node;
-> @@ -134,15 +136,25 @@ static struct btrfs_delayed_node *btrfs_get_or_crea=
-te_delayed_node(
->                 /* Cached in the inode and can be accessed. */
->                 refcount_set(&node->refs, 2);
->
-> +               ret =3D xa_reserve(&root->delayed_nodes, ino, GFP_NOFS);
-> +               if (ret =3D=3D -ENOMEM) {
-> +                       kmem_cache_free(delayed_node_cache, node);
-> +                       return ERR_PTR(-ENOMEM);
-> +               }
->                 spin_lock(&root->inode_lock);
-> -               ret =3D xa_insert(&root->delayed_nodes, ino, node, GFP_AT=
-OMIC);
-> -               if (ret < 0) {
-> +               ptr =3D xa_load(&root->delayed_nodes, ino);
-> +               if (ptr) {
-> +                       /* Somebody inserted it. */
->                         spin_unlock(&root->inode_lock);
->                         kmem_cache_free(delayed_node_cache, node);
-> -                       if (ret !=3D -EBUSY)
-> -                               return ERR_PTR(ret);
-> -                       /* Otherwise it's ENOMEM. */
-> +                       ret =3D -EEXIST;
-> +                       continue;
->                 }
-> +               ptr =3D xa_store(&root->delayed_nodes, ino, node, GFP_ATO=
-MIC);
-> +               ASSERT(xa_err(ptr) !=3D -EINVAL);
-> +               ASSERT(xa_err(ptr) !=3D -ENOMEM);
-> +               ASSERT(ptr =3D=3D NULL);
-> +               ret =3D 0;
->         } while (ret < 0);
->         btrfs_inode->delayed_node =3D node;
->         spin_unlock(&root->inode_lock);
+Thanks for the review!
+Boris
+
+> 
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> 
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> 
+> Thanks,
+> Qu
+> 
+> > ---
+> >   fs/btrfs/ordered-data.c | 3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> > index 574e8a55e24a..8d4ab5ecfa5d 100644
+> > --- a/fs/btrfs/ordered-data.c
+> > +++ b/fs/btrfs/ordered-data.c
+> > @@ -599,7 +599,8 @@ void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
+> >   			release = entry->disk_num_bytes;
+> >   		else
+> >   			release = entry->num_bytes;
+> > -		btrfs_delalloc_release_metadata(btrfs_inode, release, false);
+> > +		btrfs_delalloc_release_metadata(btrfs_inode, release,
+> > +						test_bit(BTRFS_ORDERED_IOERR, &entry->flags));
+> >   	}
+> > 
+> >   	percpu_counter_add_batch(&fs_info->ordered_bytes, -entry->num_bytes,
 
