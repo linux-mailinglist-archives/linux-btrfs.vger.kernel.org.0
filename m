@@ -1,116 +1,136 @@
-Return-Path: <linux-btrfs+bounces-609-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-610-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19544804B78
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 08:52:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1710804B79
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 08:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B2A61C20E20
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 07:52:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B9F01F214C4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 07:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE0002EAF3;
-	Tue,  5 Dec 2023 07:51:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC94430D1F;
+	Tue,  5 Dec 2023 07:52:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="W2o/b7YH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IZW9MXqJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1347CA
-	for <linux-btrfs@vger.kernel.org>; Mon,  4 Dec 2023 23:51:50 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 716AE1FB79
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Dec 2023 07:51:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1701762709; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=i4sN65e58JTYkvdufduGmKS3cDcd0nkwvxb86tmby1c=;
-	b=W2o/b7YHOfaSHu/No+Zz0IllWqBbwncHZ9wn2+/KDQrFZFWhFQ7qosEePR+Zwz0/8useLm
-	vuz4ZyjUuhe8itYiydwLE3rh5blOXKIk+1pYEj0oJ1YoNrc/tWIwLgBlaShioPw/V8MU0X
-	ilszD32qy0UkFdAt23EKcRaHgFBMZLM=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 72C28138FF
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Dec 2023 07:51:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id irGfCJTWbmUeCQAAn2gu4w
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 05 Dec 2023 07:51:48 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix mismatching parameter names for btrfs_get_extent()
-Date: Tue,  5 Dec 2023 18:21:29 +1030
-Message-ID: <4a8d8601602d7ceef622286c259bc4c11d7e3585.1701762681.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.0
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8CECB
+	for <linux-btrfs@vger.kernel.org>; Mon,  4 Dec 2023 23:51:56 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6d87a8228e0so1220748a34.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 04 Dec 2023 23:51:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701762715; x=1702367515; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ffn/rS6LjWuEm7b+6Ws5nNlAjr3VStp6Mz0ExGHnNQc=;
+        b=IZW9MXqJvm1cFZNZCZgqJLrJfIp3yWl/UoCL6fDcApi2WOOyfbi/ezbSd4r4/xxyiT
+         y184wiMgXDm9TWGBEPGt07ySQDkWvxy5fuqNIOyY1ER6KARSmeGKDBkCJrGaEFNB92se
+         AVS8a4uhIsKIdd4oE1ozvrF2AWF0GX/amCBTfuIcy/sZdJTwKhqN9Ob1iX+puoSHRWNT
+         tgEPQK6Y6qj0qhlTcuAKfrz+OjtlLCrWe5oThzedcoaS6bKLKWNQU5Bfl9N4vDFgk2vD
+         uh7scaZJ1izx1fXJ8lBqIViVtBf/TXY5gE4MtDjJrSwIOsVSzMCkGDa/NTQwTvMb6+Hl
+         v0iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701762715; x=1702367515;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ffn/rS6LjWuEm7b+6Ws5nNlAjr3VStp6Mz0ExGHnNQc=;
+        b=TY584fz157xWgyTKe7jOhtS5LPAZUXEXQ5awvp2rj/d2TtKMnOH9zz9b0qobSh2OJa
+         pwbg3GztdK5JVmcDMws5cJQddRD/ujYRe7H+T5F6ad6BC5Gm27S9icgSV+/9C4tMzCND
+         6rGjBJHiKkykeoY6Vssd/drnys3tC2G8LvtTR5NNb6Zj8XmI/N8F8qrd6+Ekt2t90G3J
+         0TN4FU4wZpivGMJG8b9C+WzYoIKbWGso8O+tWV3Et5C9Rd2sgxT+udwe7jK+AW1axiXA
+         BX7PKJ4pKKB+4dHbinLJVdCteLbwiLeB4FRckI8GuXhhfG3a5Iw9Og4MFtyc+CCgF7xS
+         Mi3A==
+X-Gm-Message-State: AOJu0YyC8eLvPEfi0OiMgvATF04Z2EdkwOTnKPcv2ekIMS0f83mJsec3
+	QAWCWcqGLqdy+NJxStqs1Rp3LTqyqTMvQsstjnRr9oAbC9U=
+X-Google-Smtp-Source: AGHT+IE7lP+nHlw9iR7XH4JIemchDu3hnib7O2oPFMvuiqqwkHB6fU/dlVcz+DifCYiUGhb78Ae1/pja+IWAZvDkMmQ=
+X-Received: by 2002:a05:6870:a546:b0:1fa:e0df:600d with SMTP id
+ p6-20020a056870a54600b001fae0df600dmr3227617oal.9.1701762715530; Mon, 04 Dec
+ 2023 23:51:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Score: 3.90
-X-Spamd-Result: default: False [3.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_DN_NONE(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[]
+From: Stefan N <stefannnau@gmail.com>
+Date: Tue, 5 Dec 2023 18:21:44 +1030
+Message-ID: <CA+W5K0r4Jkhwm2ztJYwKQ1w91Cb0tObcd4PA6bLDOH18xbmYAg@mail.gmail.com>
+Subject: scrub: unrepaired sectors detected
+To: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The definition for btrfs_get_extent() is using "u64 end" as the last
-parameter, but in implementation we go "u64 len", and all call sites
-follows the implementation.
+Hi all,
 
-This can be very confusing during development, as most developers
-including me, would just use the snippet returned by LSP (clangd in my
-case), which would only check the definition.
+I'm having trouble getting an array to perform a scrub or replace, and
+would appreciate any assistance. I have two empty disks I can use to
+move things around, but the intended outcome is to use them to replace
+two of the smaller disks.
 
-Unfortunately this mismatch is introduced from the very beginning of
-btrfs.
+$ uname -a ; btrfs --version ; btrfs fi show
+Linux $hostname 6.5.0-13-generic #13-Ubuntu SMP PREEMPT_DYNAMIC Fri
+Nov  3 12:16:05 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+btrfs-progs v6.3.2
+Label: none  uuid: 3cde0d85-f53e-4db6-ac2c-a0e6528c5ced
+        Total devices 8 FS bytes used 71.32TiB
+        devid    1 size 16.37TiB used 16.37TiB path /dev/sdg
+        devid    2 size 10.91TiB used 10.91TiB path /dev/sdf
+        devid    3 size 16.37TiB used 16.36TiB path /dev/sdd
+        devid    4 size 16.37TiB used 12.54TiB path /dev/sda
+        devid    5 size 10.91TiB used 10.91TiB path /dev/sde
+        devid    6 size 10.91TiB used 10.91TiB path /dev/sdc
+        devid    7 size 16.37TiB used 16.37TiB path /dev/sdh
+        devid    8 size 10.91TiB used 10.91TiB path /dev/sdb
 
-Fix it to prevent further confusion.
+$ btrfs fi df /mnt/point/
+Data, RAID6: total=71.97TiB, used=71.23TiB
+System, RAID1C3: total=36.00MiB, used=6.62MiB
+Metadata, RAID1C3: total=91.00GiB, used=85.09GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+$
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/btrfs_inode.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Attempting to scrub
+BTRFS error (device sdg): unrepaired sectors detected, full stripe
+145926853230592 data stripe 2 errors 5-13
+BTRFS info (device sdg): scrub: not finished on devid 2 with status: -5
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 5572ae52444e..9feb7e96d85a 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -487,7 +487,7 @@ struct inode *btrfs_iget_path(struct super_block *s, u64 ino,
- struct inode *btrfs_iget(struct super_block *s, u64 ino, struct btrfs_root *root);
- struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
- 				    struct page *page, size_t pg_offset,
--				    u64 start, u64 end);
-+				    u64 start, u64 len);
- int btrfs_update_inode(struct btrfs_trans_handle *trans,
- 		       struct btrfs_inode *inode);
- int btrfs_update_inode_fallback(struct btrfs_trans_handle *trans,
--- 
-2.43.0
+Scrub device /dev/sdf (id 2) canceled
+Scrub started:    Thu Nov 30 08:01:03 2023
+Status:           aborted
+Duration:         32:17:10
+        data_extents_scrubbed: 89766644
+        tree_extents_scrubbed: 0
+        data_bytes_scrubbed: 5856020676608
+        tree_bytes_scrubbed: 0
+        read_errors: 0
+        csum_errors: 0
+        verify_errors: 0
+        no_csum: 0
+        csum_discards: 0
+        super_errors: 0
+        malloc_errors: 0
+        uncorrectable_errors: 0
+        unverified_errors: 0
+        corrected_errors: 0
+        last_physical: 7984173809664
 
+Attempting to do replace using brand new disks, failed at ~50%, ran
+twice with two different pairs of disks
+Disk /dev/sdi: 16.37 TiB, 18000207937536 bytes, 35156656128 sectors
+Disk /dev/sdl: 16.37 TiB, 18000207937536 bytes, 35156656128 sectors
+
+BTRFS error (device sdg): unrepaired sectors detected, full stripe
+145926853230592 data stripe 2 errors 5-13
+BTRFS error (device sdg): btrfs_scrub_dev(/dev/sdf, 2, /dev/sdl) failed -5
+
+The data is fairly replaceable so typically have been previously been
+deleting files that fail checks and performing roughly 3-monthly
+scrubs and weekly balances (musage/dusage=50).
+
+Any help would be appreciated!
+
+Cheers,
+
+Stefan
 
