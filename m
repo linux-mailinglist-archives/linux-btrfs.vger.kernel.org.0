@@ -1,136 +1,89 @@
-Return-Path: <linux-btrfs+bounces-651-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-652-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94B9C805A8B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 17:54:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 105D7805AAC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 18:04:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C55D51C21169
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 16:54:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFC7928207F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Dec 2023 17:04:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEDA863DCE;
-	Tue,  5 Dec 2023 16:54:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0t4A+k75";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pu7gHU+k"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB1169286;
+	Tue,  5 Dec 2023 17:03:59 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E1AD41
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Dec 2023 08:54:48 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2A5F21FB9F;
-	Tue,  5 Dec 2023 16:54:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1701795286;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y7x0/Ex9Ue8+dyvKy/p6dNXPXp6Iurxce6vP5NyJrog=;
-	b=0t4A+k75iN6oNBy1Rl+QmdQFZxvErQS2XbvdOsEtfcLQWdYOKwtuoB50fnOW0enWN3+7PA
-	nMQ31Kg6mMXBi2s8Mhi1Vd/KUzP40zVcPCmUwZmqlMg+tsT0tn1gwJmMvVu4TyT58l6Pla
-	jYVpqyS9LX/2MVI2SdJ1cISCv2V7FLg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1701795286;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y7x0/Ex9Ue8+dyvKy/p6dNXPXp6Iurxce6vP5NyJrog=;
-	b=pu7gHU+kQJpeBSYJN8NiEKFgiM3awEXszXTWgGjMwr64YVECt5+AcaYwY7w4AK3H29zJT/
-	0N/CZa9+gClbFLCQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 10A8E138FF;
-	Tue,  5 Dec 2023 16:54:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id UbUUA9ZVb2WDNwAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Tue, 05 Dec 2023 16:54:46 +0000
-Date: Tue, 5 Dec 2023 17:47:56 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/3] btrfs-progs: check: remove inode cache clearing
- functionality
-Message-ID: <20231205164756.GM2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1701672971.git.wqu@suse.com>
- <9ded4d71f4ab77ee4ed8d3ff31df839e85756def.1701672971.git.wqu@suse.com>
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBD9A1;
+	Tue,  5 Dec 2023 09:03:55 -0800 (PST)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-58ceab7daddso2484286eaf.3;
+        Tue, 05 Dec 2023 09:03:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701795835; x=1702400635;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Kxt6CKccKyM2aD5KqaYbJ+5NRAtsSu20TdTe87tfro=;
+        b=gC36X4NARMJFnoLUNZ6eIGcjEc1l5871SjthUiIspKmoaHf1kKjnlSO/V046uFgT2E
+         ANpe+rE5YEEqD2ycQzEEJ2mRgqdkimd665BviZzZGLt00siu1fKb6fMq6SofmFtGR9Px
+         /zZsUIDflXJhqBv7j8JhsaId5oPThrEeECQf5cm+TU/s04ZWVnfKzi3t9ivWG7FV5IV7
+         HAKl0s0DEmaS9cO/6BzT6PWwXhne8jh6A1fDwzLnkdgkZjOzP56x2wDgqZCl+pc1x+lZ
+         w4m5sa7rw0F01s7QLkdN9wIPpD6NKIHh+cJB34LW3DHrhW2juZF4rQu33NAJsvjscxVW
+         LC8Q==
+X-Gm-Message-State: AOJu0YyRYu6XQo6MkLfAFga6iBIY3nm9gjjsFU1upk6OFnZLq5EGsGF2
+	MNkzx2aSUSOJ7Mqx2nFdsWg=
+X-Google-Smtp-Source: AGHT+IHREsBDTR/fguPuUAOPGrQJFqdX7+L934/9nqEfo9v3T6jgbM8x1qOuTAd7fOfx1S8tYfwMzA==
+X-Received: by 2002:a05:6358:6f95:b0:16e:43a1:6881 with SMTP id s21-20020a0563586f9500b0016e43a16881mr2252180rwn.26.1701795834695;
+        Tue, 05 Dec 2023 09:03:54 -0800 (PST)
+Received: from [172.20.2.177] (rrcs-173-197-90-226.west.biz.rr.com. [173.197.90.226])
+        by smtp.gmail.com with ESMTPSA id s25-20020a639259000000b00578afd8e012sm5146562pgn.92.2023.12.05.09.03.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 09:03:54 -0800 (PST)
+Message-ID: <189fa9b2-bcc8-4839-ac04-33a29bba9aaa@acm.org>
+Date: Tue, 5 Dec 2023 09:03:48 -0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ded4d71f4ab77ee4ed8d3ff31df839e85756def.1701672971.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Score: 5.10
-X-Spamd-Result: default: False [5.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 BAYES_SPAM(5.10)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
+Content-Language: en-US
+To: Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk, roger.pau@citrix.com,
+ colyli@suse.de, kent.overstreet@gmail.com, joern@lazybastard.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+ gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+ martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+ dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org, chao@kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+ konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
+ hare@suse.de, p.raghav@samsung.com
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+ linux-nilfs@vger.kernel.org, yukuai3@huawei.com, yi.zhang@huawei.com,
+ yangerkun@huawei.com
+References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+ <20231205123728.1866699-2-yukuai1@huaweicloud.com>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20231205123728.1866699-2-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 04, 2023 at 05:26:27PM +1030, Qu Wenruo wrote:
-> Since we're already directing the end user to use "btrfs rescue
-> clear-ino-cache" command, there is not much need to support it in
-> btrfs-check.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  check/main.c                                        |  12 ++----------
->  .../060-ino-cache-clean}/ino-cache-enabled.raw.xz   | Bin
->  .../060-ino-cache-clean}/test.sh                    |   2 +-
->  3 files changed, 3 insertions(+), 11 deletions(-)
->  rename tests/{fsck-tests/046-ino-cache-clean => misc-tests/060-ino-cache-clean}/ino-cache-enabled.raw.xz (100%)
->  rename tests/{fsck-tests/046-ino-cache-clean => misc-tests/060-ino-cache-clean}/test.sh (97%)
-> 
-> diff --git a/check/main.c b/check/main.c
-> index 901a7ef5ebcb..30967fd426ca 100644
-> --- a/check/main.c
-> +++ b/check/main.c
-> @@ -9994,7 +9994,6 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
->  	int init_csum_tree = 0;
->  	int readonly = 0;
->  	int clear_space_cache = 0;
-> -	int clear_ino_cache = 0;
->  	int qgroup_report = 0;
->  	int qgroups_repaired = 0;
->  	int qgroup_verify_ret;
-> @@ -10118,8 +10117,8 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
->  				ctree_flags |= OPEN_CTREE_WRITES;
->  				break;
->  			case GETOPT_VAL_CLEAR_INO_CACHE:
-> -				clear_ino_cache = 1;
-> -				ctree_flags |= OPEN_CTREE_WRITES;
-> +				error("--clear-ino-cache option is deprecated, please use \"btrfs rescue clear-ino-cache\" instead");
-> +				exit(1);
+On 12/5/23 04:37, Yu Kuai wrote:
+> +static inline u8 block_bits(struct block_device *bdev)
+> +{
+> +	return bdev->bd_inode->i_blkbits;
+> +}
 
-This can be added independent of the rest of the series, though this
-kind of change is suitable for the major release. I'll add it to devel
-now but it's targeting 6.7.
+This function needs a name that's more descriptive.
+
+Thanks,
+
+Bart.
 
