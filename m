@@ -1,101 +1,126 @@
-Return-Path: <linux-btrfs+bounces-712-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-715-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D36B580723B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Dec 2023 15:22:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF1AB807338
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Dec 2023 15:59:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B8D4B20F03
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Dec 2023 14:22:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99A6F281F84
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Dec 2023 14:59:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 253403EA60;
-	Wed,  6 Dec 2023 14:22:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA3523FB15;
+	Wed,  6 Dec 2023 14:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ojDk7+bv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338161BD
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Dec 2023 06:22:22 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rAsn5-0002Jb-Pp; Wed, 06 Dec 2023 15:22:19 +0100
-Message-ID: <149bf20e-538b-4051-9ee3-a9d98e09c3bd@leemhuis.info>
-Date: Wed, 6 Dec 2023 15:22:19 +0100
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6017B5;
+	Wed,  6 Dec 2023 06:59:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=s+7kV2NOaPEBmhFkJpDv/pC5Llv4VXEE9i8fdKbvmjw=; b=ojDk7+bvhmkVaj86d9uPvOhQaz
+	kbAJJlz3eiFA7yxHtxf02BCaqsNM5pS9C8k5lXRoPly3/N/e0u5QADIgtZKFOwGOJtwsI5ZzSsYPS
+	PKyktYqelsFB3E+G8W+4/yQSFmaQ2jHSWEigX57CwcwQszQ0bDoxOOqdU2sc0+ZoE3Ff1wwcpqslV
+	VWLgXJnu2MrDZGBo0sVLqXRdAvGI+d1WdlsXWEVkM0crARzZz5+nD3AR2Avd8/g6eRde0hkW/FoXX
+	agEz57imZpOlmdW73T5pzua0TfxBEP/xRZ/WXwPlD7/tpJRN5cqF7OvXJrtIdGRYW6omWvwYwBXvA
+	OJr6nVaw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rAtMN-002zkJ-Nc; Wed, 06 Dec 2023 14:58:47 +0000
+Date: Wed, 6 Dec 2023 14:58:47 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org,
+	chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
+	akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+	linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
+Message-ID: <ZXCMJ9skAAgPm4z3@casper.infradead.org>
+References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+ <20231205123728.1866699-2-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs write-bandwidth performance regression of 6.5-rc4/rc3
-Content-Language: en-US, de-DE
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-To: Wang Yugui <wangyugui@e16-tech.com>, Chris Mason <clm@meta.com>
-Cc: Christoph Hellwig <hch@lst.de>, linux-btrfs@vger.kernel.org,
- Chris Mason <clm@fb.com>,
- Linux kernel regressions list <regressions@lists.linux.dev>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-References: <20230811222321.2AD2.409509F4@e16-tech.com>
- <20ab0be0-e7d0-632b-b94c-89d76911f1ed@meta.com>
- <20230813175032.AA17.409509F4@e16-tech.com>
- <4108c514-77ff-a247-d6e1-2c12a5dea295@leemhuis.info>
-In-Reply-To: <4108c514-77ff-a247-d6e1-2c12a5dea295@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701872542;fe37b2ff;
-X-HE-SMSGID: 1rAsn5-0002Jb-Pp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205123728.1866699-2-yukuai1@huaweicloud.com>
 
-On 29.08.23 11:45, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 13.08.23 11:50, Wang Yugui wrote:
->>> On 8/11/23 10:23 AM, Wang Yugui wrote:
->>>>> On Wed, Aug 02, 2023 at 08:04:57AM +0800, Wang Yugui wrote:
->>>>>>> And with only a revert of
->>>>>>>
->>>>>>> "btrfs: submit IO synchronously for fast checksum implementations"?
->>>>>> GOOD performance when only (Revert "btrfs: submit IO synchronously for fast
->>>>>> checksum implementations") 
->>>>> Ok, so you have a case where the offload for the checksumming generation
->>>>> actually helps (by a lot).  Adding Chris to the Cc list as he was
->>>>> involved with this.
->>>>>
->>>>>>>> -       if (test_bit(BTRFS_FS_CSUM_IMPL_FAST, &bbio->fs_info->flags))
->>>>>>>> +       if ((bbio->bio.bi_opf & REQ_META) && test_bit(BTRFS_FS_CSUM_IMPL_FAST, &bbio->fs_info->flags))
->>>>>>>>                 return false;
->>>>>>> This disables synchronous checksum calculation entirely for data I/O.
->>>>>> without this fix, data I/O checksum is always synchronous?
->>>>>> this is a feature change of "btrfs: submit IO synchronously for fast checksum implementations"?
->>>>> It is never with the above patch.
->>>>>
->>>>>>> Also I'm curious if you see any differents for a non-RAID0 (i.e.
->>>>>>> single profile) workload.
->>>>>> '-m single -d single' is about 10% slow that '-m raid1 -d raid0' in this test
->>>>>> case.
->>>>> How does it compare with and without the revert?  Can you add the numbers?
->>>
->>> Looking through the thread, you're comparing -m single -d single, but
->>> btrfs is still doing the raid.
->>>
->>> Sorry to keep asking for more runs, but these numbers are a surprise,
->>> and I probably won't have time today to reproduce before vacation next
->>> week (sadly, Christoph and I aren't going together).
+On Tue, Dec 05, 2023 at 08:37:15PM +0800, Yu Kuai wrote:
+> +struct folio *bdev_read_folio(struct block_device *bdev, pgoff_t index)
+> +{
+> +	return read_mapping_folio(bdev->bd_inode->i_mapping, index, NULL);
+> +}
+> +EXPORT_SYMBOL_GPL(bdev_read_folio);
 
-FWIW, seems this thread died down and the underlying reason for the
-regression despite quite a bit of effort from the developers wasn't
-found. Haven't noticed any similar reports either. Reverting apparently
-is not a option. So in the end this afaics remains unfixed. In an ideal
-"no regressions" world this shouldn't happen, but well, we sadly don't
-live in one. So I'll stop tracking this issue, it's not worth the effort:
+I'm coming to the opinion that 'index' is the wrong parameter here.
+Looking through all the callers of bdev_read_folio() in this patchset,
+they all have a position in bytes, and they all convert it to
+index for this call.  The API should probably be:
 
-#regzbot inconclusive: despite some efforts from the developers could
-not be fixed
-#regzbot ignore-activity
+struct folio *bdev_read_folio(struct block_device *bdev, loff_t pos)
+{
+	return read_mapping_folio(bdev->bd_inode->i_mapping,
+			pos / PAGE_SIZE, NULL);
+}
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+... and at some point, we'll get round to converting read_mapping_folio()
+to take its argument in loff_t.
+
+Similiarly for these two APIs:
+
+> +struct folio *bdev_read_folio_gfp(struct block_device *bdev, pgoff_t index,
+> +				  gfp_t gfp)
+> +struct folio *bdev_get_folio(struct block_device *bdev, pgoff_t index)
+
+> +struct folio *bdev_find_or_create_folio(struct block_device *bdev,
+> +					pgoff_t index, gfp_t gfp)
+> +{
+> +	return __filemap_get_folio(bdev->bd_inode->i_mapping, index,
+> +				   FGP_LOCK | FGP_ACCESSED | FGP_CREAT, gfp);
+> +}
+> +EXPORT_SYMBOL_GPL(bdev_find_or_create_folio);
+
+This one probably shouldn't exist.  I've been converting callers of
+find_or_create_page() to call __filemap_get_folio; I suspect we
+should expose a __bdev_get_folio and have the callers use the FGP
+arguments directly, but I'm open to other opinions here.
+
+> +void bdev_sync_readahead(struct block_device *bdev, struct file_ra_state *ra,
+> +			 struct file *file, pgoff_t index,
+> +			 unsigned long req_count)
+> +{
+> +	struct file_ra_state tmp_ra = {};
+> +
+> +	if (!ra) {
+> +		ra = &tmp_ra;
+> +		file_ra_state_init(ra, bdev->bd_inode->i_mapping);
+> +	}
+> +	page_cache_sync_readahead(bdev->bd_inode->i_mapping, ra, file, index,
+> +				  req_count);
+> +}
+
+I think the caller should always be passing in a valid file_ra_state.
+It's only cramfs that doesn't have one, and it really should!
+Not entirely sure about the arguments here; part of me says "bytes",
+but this is weird enough to maybe take arguments in pages.
 
