@@ -1,91 +1,104 @@
-Return-Path: <linux-btrfs+bounces-726-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-727-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 510598078FF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Dec 2023 20:53:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DFCF807A92
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Dec 2023 22:37:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0692F1C20F20
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Dec 2023 19:53:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE4B72824AF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Dec 2023 21:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD743EA8C;
-	Wed,  6 Dec 2023 19:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="dj514mSl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43D170983;
+	Wed,  6 Dec 2023 21:37:19 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE94D3
-	for <linux-btrfs@vger.kernel.org>; Wed,  6 Dec 2023 11:53:03 -0800 (PST)
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-16.iol.local with ESMTPA
-	id Axx5rLRF1cu4tAxx6rpJpH; Wed, 06 Dec 2023 20:53:00 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-	t=1701892380; bh=mEJkVm7ev+DvD2HkhMHa+JzB8jmcPs/8qwMiFpGr2tc=;
-	h=From;
-	b=dj514mSlsm8IvBdjGxMZlnNzsxq72vKQHnz1ezENdvumgNnturQz3Mz16kwVjLT9x
-	 Yh4nVxRdHmeWJzfEkB07w1+WhZHrGsQK9W+QmKeAZPcPcuhsKd61FSjX2RMJK8nF6M
-	 1NqvANCghLpmwgELXsZZVWTzcuw1eWprcD+Uvuj4gHhT+JDXSujRaiRzzarxQLSL63
-	 klsi6u/aDaEtSXcSf3mE507twr9TV1zNoVOeHwvhU42gd+ywDCO6c1dD32AUdVvIRa
-	 EduQvgUfQuKL302tFuNFH2qx/vAR8dma4bC6Ctd0yF5Z9UEQdi2U9yCTUEP/LMb3wS
-	 Iyg06t8aZgaYw==
-X-CNFS-Analysis: v=2.4 cv=QouYn3+d c=1 sm=1 tr=0 ts=6570d11c cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=6KbN6L3f2dnEQenaixcA:9 a=QEXdDO2ut3YA:10
-Message-ID: <dc5b4031-588e-44ea-9bc6-e429a8195e47@inwind.it>
-Date: Wed, 6 Dec 2023 20:52:59 +0100
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CE798
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Dec 2023 13:37:15 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5D0ED21D8B;
+	Wed,  6 Dec 2023 21:37:14 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4837113403;
+	Wed,  6 Dec 2023 21:37:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 7+kvEYrpcGXlewAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Wed, 06 Dec 2023 21:37:14 +0000
+Date: Wed, 6 Dec 2023 22:30:19 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, william.brown@suse.com
+Subject: Re: [PATCH 0/3] btrfs-progs: subvolume-list: add qgroup sizes output
+Message-ID: <20231206213019.GT2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1701160698.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH RFC] btrfs: pick device with lowest devt for show_devname
-Content-Language: en-US
-To: dsterba@suse.cz
-Cc: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <85226cf68d7a72a034f0c0895b96b2557169755b.1698917826.git.anand.jain@oracle.com>
- <20231124161906.GE18929@twin.jikos.cz>
- <36171811-ed49-4427-a647-e052ec70faa0@oracle.com>
- <589d8650-26e8-4c0e-a602-bdb5ce427ed5@oracle.com>
- <2248a4d7-bbd0-4bf3-992a-c1e13c8f2c20@libero.it>
- <336d54f8-3a27-a7e9-3482-781559fab709@oracle.com>
- <183599a4-392d-443d-b914-7ac830b3c2d7@inwind.it>
- <20231205174443.GP2751@twin.jikos.cz>
-From: Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <20231205174443.GP2751@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfKUtLT3q3088cmlmPaIBmkthfCX5+aynhP0bhWS+QmBuNIFmZI9quRdV9g6g5DVqqUEt65MWu922ugJ9mYtUxDtuejEtbQr/Se1HPeonU+7Ho0Ut83SR
- QAml6PspHg1Q/ZOtFu08RPOitHZjTFT2mvLnUtLhviMV17iWbLDEsisNPbtB0qjzOObb41X42Xvoqk5uvNqQ1iHkLJey3ktYncqELdDpbIAky+MvzjR7PNye
- PPxOOqdOgEysAqAFWs/zGg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1701160698.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Bar: ++++++++++++++
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none;
+	dmarc=none;
+	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [14.17 / 50.00];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 DMARC_NA(1.20)[suse.cz];
+	 R_SPF_SOFTFAIL(4.60)[~all];
+	 NEURAL_SPAM_SHORT(3.00)[1.000];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.02)[54.44%]
+X-Spam-Score: 14.17
+X-Rspamd-Queue-Id: 5D0ED21D8B
 
-On 05/12/2023 18.44, David Sterba wrote:
-> On Wed, Nov 29, 2023 at 09:54:02PM +0100, Goffredo Baroncelli wrote:
-[...]
->> I developed a little utility to build for each btrfs filesystem:
->> - all the devices involved
->> - all the mountpoint (if any) where the filesystem is mounted and the subvolume used as root.
->>
->> It was nice because it got all these information only using:
->> - libblkid
->> - parsing /proc/self/mountinfo
-> 
-> I think if there's one consistent approach based on libblkid then all
-> the related tools and projects can use that.
-> 
-Just now I send some patches to evaluate. See
+On Tue, Nov 28, 2023 at 07:14:50PM +1030, Qu Wenruo wrote:
+> ZFS' management tool is way better received than btrfs-progs, one of the
+> user-friendly point is the default `zpool list`, which includes the size
+> of each subvolume.
 
-[PATCH 0/4] RFC: add the btrfs_info helper
+The output of 'subvol list' needs a rework, it's from the early times.
+Unfortunatelly lots of tools depend on the output format so it's not
+easy to change it.
 
-BR
+There's a WIP https://github.com/kdave/btrfs-progs/issues/515 with
+outlined problems and proposed solutions.
 
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+To work around the compatibility problem and to bring a nice UI I've
+proposed to create a completely new command and shamelessly copying what
+https://github.com/speed47/btrfs-list does. Instead of adding new
+features to current 'list' incrementally.
 
+Adding the qgroups column is probably ok, I'll take another look.
 
