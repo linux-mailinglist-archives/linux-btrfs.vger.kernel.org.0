@@ -1,165 +1,119 @@
-Return-Path: <linux-btrfs+bounces-750-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-749-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 080788089C4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 15:02:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B811C8089A2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 14:57:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B10EC1F214AB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 14:02:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7258A28297F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 13:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B591441236;
-	Thu,  7 Dec 2023 14:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="s7QC3avY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a1g6YHom";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="s7QC3avY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a1g6YHom"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4221840C18;
+	Thu,  7 Dec 2023 13:57:03 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79BB10EB
-	for <linux-btrfs@vger.kernel.org>; Thu,  7 Dec 2023 06:02:19 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA43133
+	for <linux-btrfs@vger.kernel.org>; Thu,  7 Dec 2023 05:56:59 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B75F11FB69;
-	Thu,  7 Dec 2023 14:02:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1701957737;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=owoTjkKWWqElMa9z3Y6ylP+UOIHQezvcRUGlJxY1WuA=;
-	b=s7QC3avYVUUStCJQRtBjULUYrSkJs3XBoXjRyZ6DRVLZJfhJiHTt+OVC2VcelK2PMVFu7v
-	y6nY/NkqNuMZ2NhJj4V6BIIgZsLpzh3y/IgxjZSKwRUO5rMWWHTEASsLTJFfC3X5XgCOYq
-	NIa1neCzNtaq1OcnncU4lVCPjoEHFnQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1701957737;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=owoTjkKWWqElMa9z3Y6ylP+UOIHQezvcRUGlJxY1WuA=;
-	b=a1g6YHomuLaBokdCu06zvdoNoFoNAYlY7+KpBAFezO6VLo42+mu35NSHw9FcKEHK1ie2e3
-	FW+hCdDApXRTVlAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1701957737;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=owoTjkKWWqElMa9z3Y6ylP+UOIHQezvcRUGlJxY1WuA=;
-	b=s7QC3avYVUUStCJQRtBjULUYrSkJs3XBoXjRyZ6DRVLZJfhJiHTt+OVC2VcelK2PMVFu7v
-	y6nY/NkqNuMZ2NhJj4V6BIIgZsLpzh3y/IgxjZSKwRUO5rMWWHTEASsLTJFfC3X5XgCOYq
-	NIa1neCzNtaq1OcnncU4lVCPjoEHFnQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1701957737;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=owoTjkKWWqElMa9z3Y6ylP+UOIHQezvcRUGlJxY1WuA=;
-	b=a1g6YHomuLaBokdCu06zvdoNoFoNAYlY7+KpBAFezO6VLo42+mu35NSHw9FcKEHK1ie2e3
-	FW+hCdDApXRTVlAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 83FAC21CE4;
+	Thu,  7 Dec 2023 13:56:58 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A9C3139E3;
-	Thu,  7 Dec 2023 14:02:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id hkSDJWnQcWWVHgAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 07 Dec 2023 14:02:17 +0000
-Date: Thu, 7 Dec 2023 14:55:22 +0100
-From: David Sterba <dsterba@suse.cz>
-To: David Disseldorp <ddiss@suse.de>
-Cc: David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: drop unused memparse() parameter
-Message-ID: <20231207135522.GX2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20231205111329.6652-1-ddiss@suse.de>
- <20231205142253.GD2751@twin.jikos.cz>
- <20231206112143.7d1df045@echidna>
- <20231206185330.GS2751@twin.jikos.cz>
- <20231207105255.5cbd892a@echidna>
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7243D13B6A;
+	Thu,  7 Dec 2023 13:56:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Sb1PBSjPcWU6KgAAD6G6ig
+	(envelope-from <ddiss@suse.de>); Thu, 07 Dec 2023 13:56:56 +0000
+From: David Disseldorp <ddiss@suse.de>
+To: linux-btrfs@vger.kernel.org
+Cc: Qu Wenruo <wqu@suse.com>,
+	David Disseldorp <ddiss@suse.de>
+Subject: [PATCH] btrfs-progs: scrub: improve Rate reporting for sub-second durations
+Date: Fri,  8 Dec 2023 00:56:47 +1100
+Message-Id: <20231207135647.24332-1-ddiss@suse.de>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207105255.5cbd892a@echidna>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spam-Score: -6.80
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -8.00
-X-Spamd-Result: default: False [-8.00 / 50.00];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 REPLY(-4.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[99.99%];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [11.79 / 50.00];
 	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	 FROM_HAS_DN(0.00)[];
 	 RCPT_COUNT_THREE(0.00)[3];
+	 R_MISSING_CHARSET(2.50)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 R_SPF_SOFTFAIL(4.60)[~all:c];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 MX_GOOD(-0.01)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spamd-Bar: +++++++++++
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none;
+	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of ddiss@suse.de) smtp.mailfrom=ddiss@suse.de
+X-Rspamd-Server: rspamd1
+X-Rspamd-Queue-Id: 83FAC21CE4
+X-Spam-Score: 11.79
 
-On Thu, Dec 07, 2023 at 10:52:55AM +1100, David Disseldorp wrote:
-> On Wed, 6 Dec 2023 19:53:31 +0100, David Sterba wrote:
-> 
-> > On Wed, Dec 06, 2023 at 11:21:43AM +1100, David Disseldorp wrote:
-> > > On Tue, 5 Dec 2023 15:22:53 +0100, David Sterba wrote:
-> > >   
-> > > > On Tue, Dec 05, 2023 at 10:13:29PM +1100, David Disseldorp wrote:  
-> > > > > The @retptr parameter for memparse() is optional.
-> > > > > btrfs_devinfo_scrub_speed_max_store() doesn't use it for any input
-> > > > > validation, so the parameter can be dropped.    
-> > > > 
-> > > > Or should it be used for validation? memparse is also used in
-> > > > btrfs_chunk_size_store() that accepts whitespace as trailing characters
-> > > > (namely '\n' if the value is from echo).  
-> > > 
-> > > It probably should have been used for validation when originally added,
-> > > but the current behaviour is now part of the sysfs scrub_speed_max API.
-> > > Failing on invalid input would break scripts which do things like
-> > >   echo clear > /sys/fs/btrfs/UUID/devinfo/1/scrub_speed_max  
-> > 
-> > I'm not sure the 'part of the API' is a valid agrument here. It's
-> > documented that the value is in bytes and that suffixes can be passed
-> > for convenience. How come anybody would use 'clear' in the first place
-> > and expect it to work with undefined meaning?
-> 
-> Most people don't read documentation :).
+Scrubs which complete in under one second may carry a duration rounded
+down to zero. This subsequently results in a bytes_per_sec value of
+zero, which corresponds to the Rate metric output, causing intermittent
+tests/btrfs/282 failures.
 
-Unfortunatelly true. Here the expected practice is that size values on
-input can have a suffix so it should be consistent and understandable
-even without reading documentation.
+This change ensures that Rate reflects any sub-second bytes processed.
+Time left and ETA metrics are also affected by this change, in that they
+increase to account for (sub-second) bytes_per_sec.
 
-> If there's a willingness to
-> accept any fallout from adding the validation then I'm happy to do that.
-> Will send a v2.
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+---
+ cmds/scrub.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Yes, I think the simple fix is to add the handling as
-btrfs_chunk_size_store() does and this will be the pattern for any
-future memparsed values in sysfs.
+diff --git a/cmds/scrub.c b/cmds/scrub.c
+index 4a741355..72ea3b67 100644
+--- a/cmds/scrub.c
++++ b/cmds/scrub.c
+@@ -152,7 +152,14 @@ static void print_scrub_summary(struct btrfs_scrub_progress *p, struct scrub_sta
+ 	time_t sec_eta;
+ 
+ 	bytes_scrubbed = p->data_bytes_scrubbed + p->tree_bytes_scrubbed;
+-	if (s->duration > 0)
++	/*
++	 * If duration is zero seconds (rounded down), then the Rate metric
++	 * should still reflect the amount of bytes that have been processed
++	 * in under a second.
++	 */
++	if (s->duration == 0)
++		bytes_per_sec = bytes_scrubbed;
++	else
+ 		bytes_per_sec = bytes_scrubbed / s->duration;
+ 	if (bytes_per_sec > 0)
+ 		sec_left = (bytes_total - bytes_scrubbed) / bytes_per_sec;
+-- 
+2.35.3
 
-There's one outlier discard/kbps_limit that takes KiB directly so that's
-a plain integer. Eventually discard/max_discard_size can also use memparse.
 
