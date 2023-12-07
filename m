@@ -1,158 +1,129 @@
-Return-Path: <linux-btrfs+bounces-745-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-746-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2E62808766
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 13:12:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25730808797
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 13:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28FAF1C21F54
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 12:12:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C05701F22477
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 12:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC5339AF4;
-	Thu,  7 Dec 2023 12:12:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89CFA39FFB;
+	Thu,  7 Dec 2023 12:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L4psUv2o"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mA+LXoXN";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="drCVTGcP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6571D84
+	for <linux-btrfs@vger.kernel.org>; Thu,  7 Dec 2023 04:22:30 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84AF187B;
-	Thu,  7 Dec 2023 12:12:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52971C433C7;
-	Thu,  7 Dec 2023 12:12:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701951131;
-	bh=2+aGullRBbfnICMPkRMyx84gPHQIh1abH+d15HDJmeg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=L4psUv2oMN0Lxk13MvTZpzccwxqlsjuHMrlwUf2pzsQOArj80yGb0fpo/tfoggcqT
-	 k5BBL+d5VzBoNHDiiiZ2C+AVxLLAsrqH5s16QMZg3nsyNfwkzhciWTADyE3jlfn7Rq
-	 A7k3aaX7Sdo73YUiLt8TInIUTzVWbgPqITNoz+56BnQsXOeN/47GE8XYSAkwgvzG9P
-	 ubxrREAQV+YSkKro7NXR+OA83OhAkU6Y8tkR2itsM6aqdQ4ryZ3nuSOhUWxpHe+yM4
-	 0yxPQWl0+AGfWW9R6/nS57q3PGLNieMsQU9+KoyxfiAp0rpWkNwFpWv6rA62y5VZXt
-	 xObTtSCW9HvWg==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-50bf2d9b3fdso752644e87.3;
-        Thu, 07 Dec 2023 04:12:11 -0800 (PST)
-X-Gm-Message-State: AOJu0YxDAxhNiLpOc4kp56pbbLuUeOG7knfpiMoX3f3lkWp+cGVNxKOT
-	90Pis1hIcQYXqQJ17MlLNs6SC4AeUeMIM8lIFZQ=
-X-Google-Smtp-Source: AGHT+IENODZwwZcL7JsTuG04t3TxoMLsR1CQ0Y9xF/ZNA5CA3Y59h+NLADpwxqow75rdnpytfSWpgb+ev3aqEe8iZ9M=
-X-Received: by 2002:a05:6512:3124:b0:50c:a39:ee37 with SMTP id
- p4-20020a056512312400b0050c0a39ee37mr1494200lfd.109.1701951129477; Thu, 07
- Dec 2023 04:12:09 -0800 (PST)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 449BC1FB41;
+	Thu,  7 Dec 2023 12:22:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1701951748;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mr4W+cJzjEMODr537AAT/EAXvDIpBm6ZgLylz2prmUY=;
+	b=mA+LXoXNEDFkUfdwSIx7U9Tict3J1qt6kx0seREhAFDncPMGtizMnkZh9W9DKy/l5Bl4cl
+	yy0z196HlEqsPt5fWC+ZS1KwgYtlJkwmysy4qjNt46zDb9uVFr1qlu+x7T8nad02AKEFHw
+	xwR0gBNj8FiRM+JsDXqOfH7KhHr5LOc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1701951748;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mr4W+cJzjEMODr537AAT/EAXvDIpBm6ZgLylz2prmUY=;
+	b=drCVTGcPT3bvrWc/S8Cm8RW4PQUB0/mCLpZLncdq/Wupu3FPC3F9rzZ5BzJ3e9pPFIW7lq
+	O/Zt9rl8gkEKohBQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0BCBB139E3;
+	Thu,  7 Dec 2023 12:22:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id /ZfpAAS5cWVvfQAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Thu, 07 Dec 2023 12:22:28 +0000
+Date: Thu, 7 Dec 2023 13:15:37 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: David Disseldorp <ddiss@suse.de>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: drop unused memparse() parameter
+Message-ID: <20231207121537.GU2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20231205111329.6652-1-ddiss@suse.de>
+ <19fc847b-7df6-41fc-ad52-f4e7f6d13201@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231207-btrfs-raid-v5-0-44aa1affe856@wdc.com>
-In-Reply-To: <20231207-btrfs-raid-v5-0-44aa1affe856@wdc.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 7 Dec 2023 12:11:32 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7pMjbc1-xZ1xDSMRBM2C-FiTi=sx=mQNBqH4MbXQ_WLA@mail.gmail.com>
-Message-ID: <CAL3q7H7pMjbc1-xZ1xDSMRBM2C-FiTi=sx=mQNBqH4MbXQ_WLA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/9] fstests: add tests for btrfs' raid-stripe-tree feature
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc: Anand Jain <anand.jain@oracle.com>, Zorro Lang <zlang@redhat.com>, 
-	Filipe Manana <fdmanana@suse.com>, fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19fc847b-7df6-41fc-ad52-f4e7f6d13201@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Score: 4.10
+X-Spamd-Result: default: False [4.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 BAYES_SPAM(5.10)[100.00%];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[]
 
-On Thu, Dec 7, 2023 at 9:03=E2=80=AFAM Johannes Thumshirn
-<johannes.thumshirn@wdc.com> wrote:
->
-> Add tests for btrfs' raid-stripe-tree feature. All of these test work by
-> writing a specific pattern to a newly created filesystem and afterwards
-> using `btrfs inspect-internal -t raid-stripe $SCRATCH_DEV_POOL` to verify
-> the placement and the layout of the metadata.
->
-> The md5sum of each file will be compared as well after a re-mount of the
-> filesystem.
->
-> ---
-> Changes in v5:
-> - add _require_btrfs_free_space_tree helper and use in tests
-> - Link to v4: https://lore.kernel.org/r/20231206-btrfs-raid-v4-0-578284dd=
-3a70@wdc.com
->
-> Changes in v4:
-> - add _require_btrfs_no_compress to all tests
-> - add _require_btrfs_no_nodatacow helper and add to btrfs/308
-> - add _require_btrfs_feature "free_space_tree" to all tests
-> - Link to v3: https://lore.kernel.org/r/20231205-btrfs-raid-v3-0-0e857a54=
-39a2@wdc.com
->
-> Changes in v3:
-> - added 'raid-stripe-tree' to mkfs options, as only zoned raid gets it
->   automatically
-> - Rename test cases as btrfs/302 and btrfs/303 already exist upstream
-> - Link to v2: https://lore.kernel.org/r/20231205-btrfs-raid-v2-0-25f80eea=
-345b@wdc.com
->
-> Changes in v2:
-> - Re-ordered series so the newly introduced group is added before the
->   tests
-> - Changes Filipe requested to the tests.
-> - Link to v1: https://lore.kernel.org/r/20231204-btrfs-raid-v1-0-b254eb1b=
-cff8@wdc.com
->
-> ---
-> Johannes Thumshirn (9):
->       fstests: doc: add new raid-stripe-tree group
->       common: add filter for btrfs raid-stripe dump
->       common: add _require_btrfs_no_nodatacow helper
->       common: add _require_btrfs_free_space_tree
->       btrfs: add fstest for stripe-tree metadata with 4k write
->       btrfs: add fstest for 8k write spanning two stripes on raid-stripe-=
-tree
->       btrfs: add fstest for writing to a file at an offset with RST
->       btrfs: add fstests to write 128k to a RST filesystem
->       btrfs: add fstest for overwriting a file partially with RST
->
->  common/btrfs        |  17 +++++++++
->  common/filter.btrfs |  14 +++++++
->  doc/group-names.txt |   1 +
->  tests/btrfs/304     |  56 +++++++++++++++++++++++++++
->  tests/btrfs/304.out |  58 ++++++++++++++++++++++++++++
->  tests/btrfs/305     |  61 ++++++++++++++++++++++++++++++
->  tests/btrfs/305.out |  82 ++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/306     |  59 +++++++++++++++++++++++++++++
->  tests/btrfs/306.out |  75 +++++++++++++++++++++++++++++++++++++
->  tests/btrfs/307     |  56 +++++++++++++++++++++++++++
->  tests/btrfs/307.out |  65 ++++++++++++++++++++++++++++++++
->  tests/btrfs/308     |  60 +++++++++++++++++++++++++++++
->  tests/btrfs/308.out | 106 ++++++++++++++++++++++++++++++++++++++++++++++=
-++++++
->  13 files changed, 710 insertions(+)
-> ---
-> base-commit: baca8a2b5cb6e798ce3a07e79a081031370c6cb8
+On Thu, Dec 07, 2023 at 01:01:50PM +1030, Qu Wenruo wrote:
+> 
+> 
+> On 2023/12/5 21:43, David Disseldorp wrote:
+> > The @retptr parameter for memparse() is optional.
+> > btrfs_devinfo_scrub_speed_max_store() doesn't use it for any input
+> > validation, so the parameter can be dropped.
+> 
+> To me, I believe it's better to completely get rid of memparse().
+> 
+> As you already found out, some suffix, especially "e|E" can screw up the 
+> result.
+> E.g. "25e" would be interpreted as 25 with "e" as suffix, which is fine 
+> according to the rule. (without prefix, the base is 10, so only "25" is 
+> valid. Then the remaining part is interpreted as suffix).
+> 
+> And since btrfs is not going to do pretty size output for sysfs (as most 
+> sysfs is not directly for end users, and we need accurate output), to be 
+> consistent there isn't much need for suffix handling either.
+> 
+> So can't we just replace memparse() with kstrtoull()?
 
-Btw this base commit does not exist in the official fstests repo.
-That commit is from the staging branch at https://github.com/kdave/xfstests
+The value that can be read from the sysfs file is in bytes and it's so
+that applications do not need to interpret it, like multiplying with
+1024. We'll probably never return the pretty values with suffixes in
+sysfs files.
 
-A "git am" will fail because the official fstests repo doesn't have
-_require_btrfs_no_block_group_tree() at common/btrfs,
-so it needs to be manually adjusted when applying the 3rd patch.
+However, on the input side the suffixes are a convenience, setting to
+limit the throughput as '32m' is better than typing '32000000' and
+counting zeros or $((32*1024*1024)) or 33554432.
 
-I tried the tests and they look good, so:
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-One question I missed before. Test 304 for example does a 4K write and
-expects in the golden output to get a 4K raid stripe item.
-What happens on a machine with 64K page size? There the default sector
-size is 64K, will the write result in a 64K raid stripe item or will
-it be 4K? In the former case, it will make the test fail.
-
-Thanks.
-
-
-> change-id: 20231204-btrfs-raid-75975797f97d
->
-> Best regards,
-> --
-> Johannes Thumshirn <johannes.thumshirn@wdc.com>
->
->
+This is why memparse is there and kstrtoull does not do that.
 
