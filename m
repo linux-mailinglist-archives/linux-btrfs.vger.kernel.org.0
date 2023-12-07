@@ -1,173 +1,185 @@
-Return-Path: <linux-btrfs+bounces-733-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-734-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E845807EEA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 03:45:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E926807F30
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 04:36:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C13A8B210B3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 02:45:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 670601C211F4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 03:36:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D2746B9;
-	Thu,  7 Dec 2023 02:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750FF5670;
+	Thu,  7 Dec 2023 03:36:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="J8OvY/Fy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DF1D72;
-	Wed,  6 Dec 2023 18:45:20 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SlzCJ2k7mz4f3kKx;
-	Thu,  7 Dec 2023 10:45:16 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 697281A0E26;
-	Thu,  7 Dec 2023 10:45:17 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgCnqxG5MXFllH3QCw--.13955S3;
-	Thu, 07 Dec 2023 10:45:16 +0800 (CST)
-Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
-To: Matthew Wilcox <willy@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
- kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
- hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
- jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
- josef@toxicpanda.com, dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org,
- chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
- akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
- linux-nilfs@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
- <20231205123728.1866699-2-yukuai1@huaweicloud.com>
- <ZXCMJ9skAAgPm4z3@casper.infradead.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <d195aba8-7b89-698f-b7a0-06b87ae01c21@huaweicloud.com>
-Date: Thu, 7 Dec 2023 10:45:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C951D69
+	for <linux-btrfs@vger.kernel.org>; Wed,  6 Dec 2023 19:36:34 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 69EA421D2C;
+	Thu,  7 Dec 2023 03:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1701920192; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wDcu2oKvUy6ufKnqVTyWQyhx2Gx4alhrMuxQSmwJ5mg=;
+	b=J8OvY/FyTCLJ4n7wp6WLcmBDi94c7fq79KdzC26+k+gxJe+uGPx/0cqbtGoGbcjvZcAuQn
+	wQSLhR/7SdKKBdaY1TOtks8CpuXOMbshyJ9pXW6B8yM6mMKxp/GZnPJdnTkqnBg4P2Xs+t
+	gz/IY0Y3Wm+vE9SDQupkQyCMbsYyLHE=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CF3B8139E3;
+	Thu,  7 Dec 2023 03:36:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id KDfpGr49cWU8bwAAn2gu4w
+	(envelope-from <wqu@suse.com>); Thu, 07 Dec 2023 03:36:30 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: David Disseldorp <ddiss@suse.com>
+Subject: [PATCH] btrfs: get rid of memparse() for sysfs operations
+Date: Thu,  7 Dec 2023 14:06:11 +1030
+Message-ID: <69524a828a08d8d88face116ea7563fd34275815.1701920169.git.wqu@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZXCMJ9skAAgPm4z3@casper.infradead.org>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCnqxG5MXFllH3QCw--.13955S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF4Dury5Kr13Aw47Gr4Uurg_yoW5Ar4DpF
-	W8KFZ8JrW8Gr18ursrJa15Z3WFg34UJFW5ZrWxG343C3s0yr9akFWYgws0kayIv3yUJFs7
-	ZFWjvrW8WF1j9FJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9I14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_
-	WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-	IYCTnIWIevJa73UjIFyTuYvjfUojjgUUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Score: 10.00
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [10.00 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(5.10)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[]
 
-Hi,
+[CONFUSION]
+Btrfs is using memparse() for the following sysfs interfaces:
 
-ÔÚ 2023/12/06 22:58, Matthew Wilcox Ð´µÀ:
-> On Tue, Dec 05, 2023 at 08:37:15PM +0800, Yu Kuai wrote:
->> +struct folio *bdev_read_folio(struct block_device *bdev, pgoff_t index)
->> +{
->> +	return read_mapping_folio(bdev->bd_inode->i_mapping, index, NULL);
->> +}
->> +EXPORT_SYMBOL_GPL(bdev_read_folio);
-> 
-> I'm coming to the opinion that 'index' is the wrong parameter here.
-> Looking through all the callers of bdev_read_folio() in this patchset,
-> they all have a position in bytes, and they all convert it to
-> index for this call.  The API should probably be:
-> 
-> struct folio *bdev_read_folio(struct block_device *bdev, loff_t pos)
-> {
-> 	return read_mapping_folio(bdev->bd_inode->i_mapping,
-> 			pos / PAGE_SIZE, NULL);
-> }
+- /sys/fs/btrfs/<uuid>/devinfo/<devid>/scrub_speed_max
+- /sys/fs/btrfs/<uuid>/allocation/<type>/chunk_size
 
-Thanks for reviewing this patchset! Okay, I'll convert to pass in "pos"
-in v2.
-> 
-> ... and at some point, we'll get round to converting read_mapping_folio()
-> to take its argument in loff_t.
-> 
-> Similiarly for these two APIs:
-> 
->> +struct folio *bdev_read_folio_gfp(struct block_device *bdev, pgoff_t index,
->> +				  gfp_t gfp)
->> +struct folio *bdev_get_folio(struct block_device *bdev, pgoff_t index)
-> 
->> +struct folio *bdev_find_or_create_folio(struct block_device *bdev,
->> +					pgoff_t index, gfp_t gfp)
->> +{
->> +	return __filemap_get_folio(bdev->bd_inode->i_mapping, index,
->> +				   FGP_LOCK | FGP_ACCESSED | FGP_CREAT, gfp);
->> +}
->> +EXPORT_SYMBOL_GPL(bdev_find_or_create_folio);
-> 
-> This one probably shouldn't exist.  I've been converting callers of
-> find_or_create_page() to call __filemap_get_folio; I suspect we
-> should expose a __bdev_get_folio and have the callers use the FGP
-> arguments directly, but I'm open to other opinions here.
+Thus we can echo some seemingly valid values into them (using
+scrub_speed_max as an example):
 
-If nobody against this, I will expose single __bdev_get_folio() to use
-in v2.
-> 
->> +void bdev_sync_readahead(struct block_device *bdev, struct file_ra_state *ra,
->> +			 struct file *file, pgoff_t index,
->> +			 unsigned long req_count)
->> +{
->> +	struct file_ra_state tmp_ra = {};
->> +
->> +	if (!ra) {
->> +		ra = &tmp_ra;
->> +		file_ra_state_init(ra, bdev->bd_inode->i_mapping);
->> +	}
->> +	page_cache_sync_readahead(bdev->bd_inode->i_mapping, ra, file, index,
->> +				  req_count);
->> +}
-> 
-> I think the caller should always be passing in a valid file_ra_state.
-> It's only cramfs that doesn't have one, and it really should!
-> Not entirely sure about the arguments here; part of me says "bytes",
-> but this is weird enough to maybe take arguments in pages.
+ # echo 25e > scrub_speed_max
+ # cat scrub_speed_max
+ 10376293541461622784
 
-In fact, bdev_sync_readahead() is only called for cramfs and ext4.
+This can cause several confusion:
 
-For ext4 it's used in ext4_readdir() so there is valid file_ra_state.
+- The end user may just want to type "0x25e"
+- Even if it's treated as decimal "25" and E (exabyte), the result is
+  not correct
+  25 exabyte should be 28147497671065600, as 25 with 2 ** 10 would lead
+  to something ends with "00" in decimal (25 * 4 = 100).
 
-Hoever, for cramfs it's used in cramfs_read(), and cramfs_read() is used
-for:
+[CAUSE]
+Above "25e" is valid because memparse() handles the extra suffix and do
+proper base conversion.
 
-1) cramfs_read_folio
-2) cramfs_readdir
-3) cramfs_lookup
-4) cramfs_read_super
+"25e" has no "0x" or "0" prefix, thus it's treated as decimal, and only
+"25" is the valid part. Then it goes with number detection, but the
+final "e" is treated as invalid since the base is 10.
 
-Looks like it's easy to pass in valid file_ra_state() for 1) and 2),
-however, I don't see an easy way to do this for 3) and 4).
+Then we do the extra left shift based on the suffix.
 
-Thanks,
-Kuai
+There are several problem in memparse itself:
 
-> 
-> .
-> 
+- No overflow check
+  The usage of simple_strtoull() lacks the overflow check, thus it's
+  already discouraged to use.
+
+- The suffix "E" (exabyte) can be easily confused with 0xe.
+
+[FIX]
+For btrfs sysfs interface, we don't accept extra suffix, except the
+mentioned two entries.
+
+Furthermore since we don't do pretty size output, and considering the
+sysfs interfaces are mostly for script or other tools, there is no need
+to accept extra suffix either.
+
+So here we can just replace the memparse() to kstrou64() instead, and
+reject the above "25e" example.
+
+Reported-by: David Disseldorp <ddiss@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/sysfs.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index e6b51fb3ddc1..051642177982 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -760,8 +760,8 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
+ {
+ 	struct btrfs_space_info *space_info = to_space_info(kobj);
+ 	struct btrfs_fs_info *fs_info = to_fs_info(get_btrfs_kobj(kobj));
+-	char *retptr;
+ 	u64 val;
++	int ret;
+ 
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
+@@ -776,11 +776,9 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
+ 	if (space_info->flags & BTRFS_BLOCK_GROUP_SYSTEM)
+ 		return -EPERM;
+ 
+-	val = memparse(buf, &retptr);
+-	/* There could be trailing '\n', also catch any typos after the value */
+-	retptr = skip_spaces(retptr);
+-	if (*retptr != 0 || val == 0)
+-		return -EINVAL;
++	ret = kstrtou64(buf, 0, &val);
++	if (ret < 0)
++		return ret;
+ 
+ 	val = min(val, BTRFS_MAX_DATA_CHUNK_SIZE);
+ 
+@@ -1779,10 +1777,12 @@ static ssize_t btrfs_devinfo_scrub_speed_max_store(struct kobject *kobj,
+ {
+ 	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
+ 						   devid_kobj);
+-	char *endptr;
+-	unsigned long long limit;
++	u64 limit;
++	int ret;
+ 
+-	limit = memparse(buf, &endptr);
++	ret = kstrtou64(buf, 0, &limit);
++	if (ret < 0)
++		return ret;
+ 	WRITE_ONCE(device->scrub_speed_max, limit);
+ 	return len;
+ }
+-- 
+2.43.0
 
 
