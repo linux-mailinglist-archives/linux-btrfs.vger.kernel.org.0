@@ -1,40 +1,40 @@
-Return-Path: <linux-btrfs+bounces-753-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-754-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A27C809202
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 21:03:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CFA9809214
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 21:11:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A09B21C20936
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 20:03:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EAB4B20D54
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 20:11:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E3A250251;
-	Thu,  7 Dec 2023 20:03:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75A05025C;
+	Thu,  7 Dec 2023 20:11:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="PzRasVlj"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="sXf3ipd7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63021AD
-	for <linux-btrfs@vger.kernel.org>; Thu,  7 Dec 2023 12:03:29 -0800 (PST)
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897E1170F
+	for <linux-btrfs@vger.kernel.org>; Thu,  7 Dec 2023 12:11:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1701979407; x=1702584207; i=quwenruo.btrfs@gmx.com;
-	bh=VarhqY5uQqrI6fhB0mRAvzMvQalK7tuAP0Zw0yCzUUE=;
+	s=s31663417; t=1701979873; x=1702584673; i=quwenruo.btrfs@gmx.com;
+	bh=ZMqL58BqiF3dWyk3+Y/AN0xYl9NKYVHZakLG1q9r9IE=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=PzRasVljcH+xGAzwzhUNrrTqDPv5MftraZKx5T+Muc+dLGU7+KvurZNCul5l2ykT
-	 atjpKFsWShsKtJelL0ms1ly7DggKgtH9LI5O6FcWClHUMScXbxaRbyInWmhV5ReIX
-	 WSporEnDV2PAjBA51OLWI/iEd737dUxa3BvMykt++hsFkDGr4YAbJxmlNajzlJQcq
-	 0JW8Mb+9LJjdyXAQpkIrvGdAC6Rhpq/4uMrK3W9i6mRoyjVfJ2ZLQwMObJp0QQq0W
-	 HXcj1d7u3iw7uds2CyHLMuT6+y+k/JLhE5VZfGTFqnylRbDhNdVungK7RmxzThBio
-	 80CoxBIkREyr7DRCSQ==
+	b=sXf3ipd7uwkd3gy9an5hgvFqygwaq/4NGtBm8xv38R56+a7b4W4ZbgBf9D4wXa5/
+	 3wTzegiz8itBOtWBcAPCe0Hl4cbtpTXb/dhgjansXGzF58QBGmOTqq3JGFrWM8/bj
+	 ernPi8T28nBV19+hrmadrhNOuq4Xch2VHxWrnHk+tFXscRvLarWg/y55B8NF2SlVq
+	 4IsZ4mzaeoVdplXvI2kC5hmnOh+0GW1P5XbGxktlMZ6tsKUdntYY0htYJCtLzvV25
+	 FLDLOuqBKavKSXznHjo99EKtZHWYnD2b/EEH5v/IE7lePRDNZ1gghOX5wozgdr/Z9
+	 xhHcjYj9H/tsdB5UCQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.153] ([122.151.37.21]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MS3ir-1qmtzZ1tAh-00TQFw; Thu, 07
- Dec 2023 21:03:27 +0100
-Message-ID: <d1463937-9917-4cac-83f6-aa5186d8ce41@gmx.com>
-Date: Fri, 8 Dec 2023 06:33:25 +1030
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRCOE-1qqW2u2Q44-00NA4Y; Thu, 07
+ Dec 2023 21:11:13 +0100
+Message-ID: <f6dd7115-e365-4f02-960e-43e2c6a5bdf5@gmx.com>
+Date: Fri, 8 Dec 2023 06:41:07 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -42,12 +42,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: scrub: improve Rate reporting for sub-second
- durations
+Subject: Re: [PATCH] btrfs: get rid of memparse() for sysfs operations
 Content-Language: en-US
-To: David Disseldorp <ddiss@suse.de>, linux-btrfs@vger.kernel.org
-Cc: Qu Wenruo <wqu@suse.com>
-References: <20231207135647.24332-1-ddiss@suse.de>
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, David Disseldorp <ddiss@suse.com>
+References: <69524a828a08d8d88face116ea7563fd34275815.1701920169.git.wqu@suse.com>
+ <20231207140906.GY2751@twin.jikos.cz>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -73,75 +73,117 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20231207135647.24332-1-ddiss@suse.de>
+In-Reply-To: <20231207140906.GY2751@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:aYDmcznOGwXo9RhXfKwbOdm9rds+H3BPCyWxO8TLkl6pYijcN7N
- aUSK3QHJzlxb2ANfS3Tx+ye3L0bEDQ/HBZ5WrvBwwHCd9jPJRGoJ3PtolDAVscrlUq5Vr+v
- LTPi0XzvkKMRIwAPbjWrbGDik29HuakGY3b2ELymn9X1kj3E1y3fJ05FEeU7iMUJ3uQPwGB
- bHrZpeV8aYvQxuhc6Fh5w==
-UI-OutboundReport: notjunk:1;M01:P0:a+hkTM6MFQA=;aCEqnJbC+ENCe6uZt0Os1U1RiJH
- NZE/nCIMiDTIot+Nf4OtpMth7ZvsWcy+KipyA3UO9njAs91iHpOMy6MQ2O3Ck8HqlLVIYojGW
- b+DgBYKVTrnwsPPu4JJVu8JYFjhE/6R7Cg1AO2MYtFyAH+kwSf3ozi5F+VcN9wqtQWcuVTbYC
- mRfR4jlkI92zzMu1zsmcD479xvC8Z3fLL/Ur8PT4mQUOnY5BVSr79nKm44Or6kgxvBU3OJ7TR
- NwNfWcFFKyn132Gtl2Fdkm+LCY72xttqev91Y4r6N8u088eBe7XPjd2YNdROl9RIdIiJqD3pq
- FpLzsMkzPTAcWAUMaOBw250vtF5hohhAqaaOevGukbGx7HLCo+4Q7A0jEkrIu9Dmpr9YwSoj1
- j1wnHY5cRhq4gUcXOlCkOAyWl8cNvLNLuGQ25oc/jvISpOnOeO4poaEHsiUMTTViq3r2nZarJ
- s1e8J6D9T0QbY3hXPC4eMz4/omYmzAuEMoehDXPDV/Dhq02W/ojosiYP5rm8C2MT7qne6wlKZ
- q1y2Izhmq0IUrrJRf4PoXs11Z77YT1ZcN8GEDS3Xd45Nu9xici864X+jw6BtO1nVFQ8bKg9s8
- d3LeKFrKvDptXXMtuVL1FbEtzj8fEGSipgvPn0i2gt/8JVM3GFoV5GtAyiaOhydnq3gj05MJM
- cX+sDhZ/NpwGM3eg1cWWL7U0++7BpgR6+IpLMiW6nrG/aIolMlcIxrNVWCUbDmiVvOB3uJi7A
- rUpBZ8znWDrA6O5J8lDtZx9Syg4zVYybLMLxYprAy3oSoyXTlDq3hOKsCBZ3XifDZ1/xuqbAG
- UCp4TY3w/kT/+HjX4u10ONnezDFZ5P7mUM+es2T1o9tDHhoa+y8Tqft2JNFYM7vZGmvR913UI
- MBciZv4dgpsbjfeLLNgD0Wwrz/9VarkEWJbNsczL2yimk8zksGABbqPa6u+WTr//Sq5y25uzz
- fmCrgd5uA/5ZqGViR3DOHbnnIjw=
+X-Provags-ID: V03:K1:/6386SoETUpEHsOWZAooRwblpDEVEDlJzAukt0LcVr2BZDXiNRl
+ FeEmZ4G0C8AW9mklTxxUVp0cIkRugNU05lGssBJArbdXyeG4IL5RncMWlA/NtcS10gz8q5L
+ m5oSUha2iFWP9F0wz5rwS0/CWz+Z3jXPYljansPc2dw+in1C6lCJ4MEP+cyV2JrjPdJWTIo
+ qGad7INMXDFSl2t7wVAIQ==
+UI-OutboundReport: notjunk:1;M01:P0:DWCUruloCHs=;8S8UZkBApF+LrxzJNX3FXpv4MnN
+ OOf5EjfTjqo/sZ3SwAyp6KeuuHn5jPi4/lN2HzmFHwUBt4WwLxMmiAKBZDSr2UVS482aeYIK2
+ bLqHdAdzjc3YGBHtUKd6ZCQzHfAWzvC+I3M/IW7eC1gyoHyr1UcSSx9Q3KZQeTzOcLMxtBNzQ
+ uRTGicT34s5oSR9dz0kzfSpIfIzV/B63GYCrcOaKo0GwWqllvQ+sa+9ETNg1QBKdEzbQCkSmE
+ wiiXHBqFOgroBZs//joPBMDPWZ5RQYWO5+3B7EUSrn0AJSvy467VibeUzEcqHWM8NbCM0+gj2
+ 0BJsK0NFT6CRpyyo9xcTzPQWAtCculFoRjmUWMVGp/skFyhZ8uHLN4ZdIFFbh9fcotjbBppSd
+ cbtXujl6JJgqk+kWTEBDtQBjGLFYtfEF0THxs6o//QAHVQ/yRuFVSwTimhmgDZttiv7A5PHpG
+ v8CzbJrVHYAa3cksqjXA6zLV3UulMrpoN6ad1AcsIPN+KTXXBNy3hc6eWEWdtotDF0hlFqwtv
+ I66WT7lC+Ip7TGvaaFAWVSwW2JXn99bwK018cC5e2a1aYpmVJGqo2Do7zD3JUW2YHvixGE7SQ
+ vulheOeDS8fVwpWG9ruaBgkOOzigxDQFApwN9WmQkg9AJ0TtiGf5KbDeGH6Px3xyEOq4IaKUG
+ Sl6MF0zNMf8bt18QP13Dd9yn1lGFfd2Kt3iuN3v/fbPxUI3HPEP5BkecCM6fmYqE0SC/+yEq3
+ 90DCiyNo4zloevblf5U31DS+G/U6p5z+5a1ff7VFEjh6RdEjJNfiW3AaIYZCEgJG4AUjOWFy2
+ 2ZRiUIQjnar6VuYGMc9ccXDNAaitGUG8Y5v6S7Nu+PZWlLkYJ90jVBinGWhwtxVHCUkHvsJlP
+ WTkOUxxM0d57D1dHo+8jX5vKkHDcvIyygs8t01AIn7RsAQzovT3KjCiN+8RMMjVoH3XMsO/uu
+ WsDBkve/mvkgWi014UXlGo9Qoyw=
 
 
 
-On 2023/12/8 00:26, David Disseldorp wrote:
-> Scrubs which complete in under one second may carry a duration rounded
-> down to zero. This subsequently results in a bytes_per_sec value of
-> zero, which corresponds to the Rate metric output, causing intermittent
-> tests/btrfs/282 failures.
+On 2023/12/8 00:39, David Sterba wrote:
+> On Thu, Dec 07, 2023 at 02:06:11PM +1030, Qu Wenruo wrote:
+>> [CONFUSION]
+>> Btrfs is using memparse() for the following sysfs interfaces:
+>>
+>> - /sys/fs/btrfs/<uuid>/devinfo/<devid>/scrub_speed_max
+>> - /sys/fs/btrfs/<uuid>/allocation/<type>/chunk_size
+>>
+>> Thus we can echo some seemingly valid values into them (using
+>> scrub_speed_max as an example):
+>>
+>>   # echo 25e > scrub_speed_max
+>>   # cat scrub_speed_max
+>>   10376293541461622784
+>>
+>> This can cause several confusion:
+>>
+>> - The end user may just want to type "0x25e"
+>> - Even if it's treated as decimal "25" and E (exabyte), the result is
+>>    not correct
+>>    25 exabyte should be 28147497671065600, as 25 with 2 ** 10 would lea=
+d
+>>    to something ends with "00" in decimal (25 * 4 =3D 100).
+>>
+>> [CAUSE]
+>> Above "25e" is valid because memparse() handles the extra suffix and do
+>> proper base conversion.
+>>
+>> "25e" has no "0x" or "0" prefix, thus it's treated as decimal, and only
+>> "25" is the valid part. Then it goes with number detection, but the
+>> final "e" is treated as invalid since the base is 10.
+>>
+>> Then we do the extra left shift based on the suffix.
+>>
+>> There are several problem in memparse itself:
+>>
+>> - No overflow check
+>>    The usage of simple_strtoull() lacks the overflow check, thus it's
+>>    already discouraged to use.
+>>
+>> - The suffix "E" (exabyte) can be easily confused with 0xe.
+>>
+>> [FIX]
+>> For btrfs sysfs interface, we don't accept extra suffix, except the
+>> mentioned two entries.
+>>
+>> Furthermore since we don't do pretty size output, and considering the
+>> sysfs interfaces are mostly for script or other tools, there is no need
+>> to accept extra suffix either.
+>>
+>> So here we can just replace the memparse() to kstrou64() instead, and
+>> reject the above "25e" example.
 >
-> This change ensures that Rate reflects any sub-second bytes processed.
-> Time left and ETA metrics are also affected by this change, in that they
-> increase to account for (sub-second) bytes_per_sec.
+> No, please read the reasoning why we want the suffixes,
+> https://lore.kernel.org/linux-btrfs/20231207135522.GX2751@twin.jikos.cz/
+
+I'm strongly against the expectation that all sysfs entrances should
+accept suffix.
+
+In fact, no matter if it's btrfs or not, memparse() is the minor usage,
+most are not accepting the suffix.
+
 >
-> Signed-off-by: David Disseldorp <ddiss@suse.de>
+> That memparse accepts 0x is fine but I'd say highly uncommon to be ever
+> seen as input.
 
-Looks good to me.
+Really? 0x10000000 or 4294967296, which is easily to grasp?
 
-In the future we should also increase the resolution to proper time
-stamp level.
+Thus the whole thing really depends on your expectation.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+But one thing is for sure, all entries should accept bytes, that should
+always be true.
+Whether suffix should be acceptable is already debatable.
+
+>
+> If memparse is not able to correctly parse exabytes then it's not our
+> bug, as the comment says
+
+But it's our fault to use functions known to lead to wrong numbers.
+
+>
+> "This function has caveats. Please use kstrtoull instead."
+> https://elixir.bootlin.com/linux/latest/source/lib/vsprintf.c#L93
+>
+The comment says exactly what we should do, "use strtoull instead".
 
 Thanks,
 Qu
-> ---
->   cmds/scrub.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/cmds/scrub.c b/cmds/scrub.c
-> index 4a741355..72ea3b67 100644
-> --- a/cmds/scrub.c
-> +++ b/cmds/scrub.c
-> @@ -152,7 +152,14 @@ static void print_scrub_summary(struct btrfs_scrub_=
-progress *p, struct scrub_sta
->   	time_t sec_eta;
->
->   	bytes_scrubbed =3D p->data_bytes_scrubbed + p->tree_bytes_scrubbed;
-> -	if (s->duration > 0)
-> +	/*
-> +	 * If duration is zero seconds (rounded down), then the Rate metric
-> +	 * should still reflect the amount of bytes that have been processed
-> +	 * in under a second.
-> +	 */
-> +	if (s->duration =3D=3D 0)
-> +		bytes_per_sec =3D bytes_scrubbed;
-> +	else
->   		bytes_per_sec =3D bytes_scrubbed / s->duration;
->   	if (bytes_per_sec > 0)
->   		sec_left =3D (bytes_total - bytes_scrubbed) / bytes_per_sec;
 
