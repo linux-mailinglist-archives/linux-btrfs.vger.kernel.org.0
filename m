@@ -1,124 +1,152 @@
-Return-Path: <linux-btrfs+bounces-751-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-752-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84AF5808A03
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 15:16:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AA268091FB
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 20:57:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4218C1C20899
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 14:16:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B9BB1C20A04
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Dec 2023 19:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3235641A84;
-	Thu,  7 Dec 2023 14:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D5C5024A;
+	Thu,  7 Dec 2023 19:57:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TbeaS6SH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD00410E7
-	for <linux-btrfs@vger.kernel.org>; Thu,  7 Dec 2023 06:16:03 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 22F9B21D72;
-	Thu,  7 Dec 2023 14:16:02 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C5CF5139E3;
-	Thu,  7 Dec 2023 14:16:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id lhFRLaHTcWUcIwAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 07 Dec 2023 14:16:01 +0000
-Date: Thu, 7 Dec 2023 15:09:06 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, David Disseldorp <ddiss@suse.com>
-Subject: Re: [PATCH] btrfs: get rid of memparse() for sysfs operations
-Message-ID: <20231207140906.GY2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <69524a828a08d8d88face116ea7563fd34275815.1701920169.git.wqu@suse.com>
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371DB171F
+	for <linux-btrfs@vger.kernel.org>; Thu,  7 Dec 2023 11:56:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1701979016; x=1702583816; i=quwenruo.btrfs@gmx.com;
+	bh=4cxWDwn68GSq8c6RxZRPA8WPDZ+2oVp72co4sJdUGE8=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=TbeaS6SHtenxV+z5g3Jwura0YIi76VURdVszUTcO5NvIwThUPf35O2xkzOaIeVQW
+	 pOJsrosgh69ZMo2Zha6HSph3Rg5HlwGooP8+lylBdwz4nTd+d8gEKLi45apopwUGy
+	 LJz0049q874WIMJPy8QKXIie0R46vFXcgXimckfeeheDTYvhI51pT/pf0zqnMA5fc
+	 rD98UoYlSAKn0QDUGvGT+y0vczGeEJwmFCJO79v2jET2lOIT83oPkDPpbycsO//OT
+	 cAO/56DrkafmPklH7CzEhDf/EzbCD9RCDP0/y9sSco0D1RoOc7CO0UJVklbwcjYez
+	 SKcrGCPOu0KqUPbt4Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.153] ([122.151.37.21]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mj8qd-1rheyI2Nkb-00fCiX; Thu, 07
+ Dec 2023 20:56:56 +0100
+Message-ID: <d8cd0a73-9ea8-4990-bcbe-949ff9c8cad8@gmx.com>
+Date: Fri, 8 Dec 2023 06:26:50 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <69524a828a08d8d88face116ea7563fd34275815.1701920169.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 22F9B21D72
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: drop unused memparse() parameter
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: David Disseldorp <ddiss@suse.de>, linux-btrfs@vger.kernel.org
+References: <20231205111329.6652-1-ddiss@suse.de>
+ <19fc847b-7df6-41fc-ad52-f4e7f6d13201@suse.com>
+ <20231207121537.GU2751@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20231207121537.GU2751@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:jY9hUNVsRLjN9mUp2tVPLD2NQxVGoeq+VXsPm4jUuYXvnX5UYb5
+ mZYx0Pm9+/SuIPoSNerTtfaLy1VVMOvQ0gedqrJqfQKI4EdnkL/QYuoRsg9qrfJzAZTFyV0
+ 7m+zOi/mKv+T3bT8x1DltxahQFLN3IHSAHxlYWkkgTfCpN3vwoC6AcfXZRFXtQ4L8bRHkvt
+ Sz9p12NpijrQHruy88pDA==
+UI-OutboundReport: notjunk:1;M01:P0:3SVBxJi3P/M=;gb94Qe0lQ/p22WNQgSN0Re304/Y
+ NW7bXCRaHlLqBzhXeiZKBN3rjdQf8WwCOIn4N1uiU+BEJ02DjOMwWR3PRqRAB1qeP5cqgQOpP
+ ecziLkRHnNAzpkrDoUaiigf0nIxlX4B0KtJ57JFwDUWqGMI6gc8//X2F3gUruYzfPvEbzy7ux
+ FUxkvgMQKbMsLHX33+9LEtNpSyQgca0i4X3JK7lmWaNyX+3JhntjKxW88BbV/ZiibsyhE9TYF
+ lItg3DtMfOpeIFcvY1ufXEv67Pzd59sEmfxdzozyT1X+YMdkMHQ6fl6O+QRKfLkIzr1J5oU8p
+ UBSUsj/MW4oK3YTIB9qDi9hESl02chqV2Snn9136XZ+Zz3Z2ijbBuv+rl++YGSFup8br6ts3X
+ 6AjpP1x7VYJWa+aGLbE8esap2o4LdKQ36OilkDTITPehqaY/sQm9g7uAJk1/rHYUyGCMvpFlf
+ TAgYiiwTp3SkwoRSpY42CPFKhKgrQBmRVCNKfq03cu657ffoleGss9KoOgdtevzmPr93WSU9d
+ 7cKdSbV4ztc7P16mQkSYvgzbzdvDPylZZc3XBsv+IellYvXKFQ8yzEBMXX3HpduuFEUyCBJL7
+ BqV8rh6Th/1Ql+T5sHH+MkLKa9qiKGCrT3Bl++Dbg3laJQFGkYjocAif5Nnxt8wEtW9eYP+Uo
+ HrtbaSeu1Q8ApPh7T8LwGJqdOWBRlKjVCxVjXHyh8OTOAFlMK/URd+Tceyruh2UdNBIbqB2O/
+ fP9kHXuSxESKIKp6PaR+4UvwtONpl2fIGO8u4Ih2XVH1U9Z1fSiP3+0vQ5hTfQ42hKlJHEovD
+ 8qvKx2JmH7v5c4LvQ1igzcL0kaWml8RfPnb7TWYtCZnEbNpFjnbgZruEUfdbdfIejbA+4Ui/B
+ JWTI6adMysYUBDgYMigBm9ayuz+WMerkoMAPoOZeeM2HOa0wi093ZIHXJhax6wJrCs7u2xxQ1
+ I74Ysr67j5B9aiA5jWvNyyhMQ1k=
 
-On Thu, Dec 07, 2023 at 02:06:11PM +1030, Qu Wenruo wrote:
-> [CONFUSION]
-> Btrfs is using memparse() for the following sysfs interfaces:
-> 
-> - /sys/fs/btrfs/<uuid>/devinfo/<devid>/scrub_speed_max
-> - /sys/fs/btrfs/<uuid>/allocation/<type>/chunk_size
-> 
-> Thus we can echo some seemingly valid values into them (using
-> scrub_speed_max as an example):
-> 
->  # echo 25e > scrub_speed_max
->  # cat scrub_speed_max
->  10376293541461622784
-> 
-> This can cause several confusion:
-> 
-> - The end user may just want to type "0x25e"
-> - Even if it's treated as decimal "25" and E (exabyte), the result is
->   not correct
->   25 exabyte should be 28147497671065600, as 25 with 2 ** 10 would lead
->   to something ends with "00" in decimal (25 * 4 = 100).
-> 
-> [CAUSE]
-> Above "25e" is valid because memparse() handles the extra suffix and do
-> proper base conversion.
-> 
-> "25e" has no "0x" or "0" prefix, thus it's treated as decimal, and only
-> "25" is the valid part. Then it goes with number detection, but the
-> final "e" is treated as invalid since the base is 10.
-> 
-> Then we do the extra left shift based on the suffix.
-> 
-> There are several problem in memparse itself:
-> 
-> - No overflow check
->   The usage of simple_strtoull() lacks the overflow check, thus it's
->   already discouraged to use.
-> 
-> - The suffix "E" (exabyte) can be easily confused with 0xe.
-> 
-> [FIX]
-> For btrfs sysfs interface, we don't accept extra suffix, except the
-> mentioned two entries.
-> 
-> Furthermore since we don't do pretty size output, and considering the
-> sysfs interfaces are mostly for script or other tools, there is no need
-> to accept extra suffix either.
-> 
-> So here we can just replace the memparse() to kstrou64() instead, and
-> reject the above "25e" example.
 
-No, please read the reasoning why we want the suffixes,
-https://lore.kernel.org/linux-btrfs/20231207135522.GX2751@twin.jikos.cz/
 
-That memparse accepts 0x is fine but I'd say highly uncommon to be ever
-seen as input.
+On 2023/12/7 22:45, David Sterba wrote:
+> On Thu, Dec 07, 2023 at 01:01:50PM +1030, Qu Wenruo wrote:
+>>
+>>
+>> On 2023/12/5 21:43, David Disseldorp wrote:
+>>> The @retptr parameter for memparse() is optional.
+>>> btrfs_devinfo_scrub_speed_max_store() doesn't use it for any input
+>>> validation, so the parameter can be dropped.
+>>
+>> To me, I believe it's better to completely get rid of memparse().
+>>
+>> As you already found out, some suffix, especially "e|E" can screw up th=
+e
+>> result.
+>> E.g. "25e" would be interpreted as 25 with "e" as suffix, which is fine
+>> according to the rule. (without prefix, the base is 10, so only "25" is
+>> valid. Then the remaining part is interpreted as suffix).
+>>
+>> And since btrfs is not going to do pretty size output for sysfs (as mos=
+t
+>> sysfs is not directly for end users, and we need accurate output), to b=
+e
+>> consistent there isn't much need for suffix handling either.
+>>
+>> So can't we just replace memparse() with kstrtoull()?
+>
+> The value that can be read from the sysfs file is in bytes and it's so
+> that applications do not need to interpret it, like multiplying with
+> 1024. We'll probably never return the pretty values with suffixes in
+> sysfs files.
+>
+> However, on the input side the suffixes are a convenience, setting to
+> limit the throughput as '32m' is better than typing '32000000' and
+> counting zeros or $((32*1024*1024)) or 33554432.
+>
+> This is why memparse is there and kstrtoull does not do that.
 
-If memparse is not able to correctly parse exabytes then it's not our
-bug, as the comment says
+That suffix is causing confusion already, just check my "25e" case.
+(It does not only lead to huge number, but also lead to incorrect value
+even if we treat "e" as a suffix)
 
-"This function has caveats. Please use kstrtoull instead."
-https://elixir.bootlin.com/linux/latest/source/lib/vsprintf.c#L93
+Furthermore, the convenience argument is not that strong, you won't
+expect end users to do the change for a fs every time.
+Thus it's mostly managed by a small script or some other tool.
+
+In that case I don't think doing extra bash calculation is a big deal
+anyway.
+
+Thanks,
+Qu
 
