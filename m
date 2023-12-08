@@ -1,193 +1,244 @@
-Return-Path: <linux-btrfs+bounces-765-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-766-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10B7980ACF5
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Dec 2023 20:27:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30F6080AE60
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Dec 2023 21:57:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB5E41F210F8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Dec 2023 19:27:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB23B281AE0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Dec 2023 20:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9715E4CB54;
-	Fri,  8 Dec 2023 19:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E8CC4CB3E;
+	Fri,  8 Dec 2023 20:57:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="v34J+x97"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="pTzx836F"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB571706
-	for <linux-btrfs@vger.kernel.org>; Fri,  8 Dec 2023 11:27:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=nhP63GVsVrWLVAxPML197F0O3cetLPHMkQz/YgWzztY=; b=v34J+x97/QY2kWqsqiFNEg0JcH
-	eSpX/Mm7XXOr33PBmbNbSnv4L0qTwvFXfwC8nQ6off9qDrmakRKvuGwCoWoZkt7qchWxYYHm/9SuE
-	B4dFKny6AouIam4JPYApeFxzbtsA/DWgp3E0u9ktqearwcwoO3PT/BGVXFsaV/Pf1XzaIWlAwV4E7
-	jP631p84wkgz1UMaMQ76NdlA4XwLl5n3BmOC749wfopZ+08JiU1t13g7ZZpHZs2s7I2azSHr+Zmy+
-	Ac2w450Ltg3f6tfyFj7moHxc5jKn1ZJkGkU3ipm18AXvc3mUWTBPXAlpQ7bXkpfwQRi2pJTM/IWK+
-	PnnCURAQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rBgVT-006OFt-QD; Fri, 08 Dec 2023 19:27:27 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: Use a folio array throughout the defrag process
-Date: Fri,  8 Dec 2023 19:27:24 +0000
-Message-Id: <20231208192725.1523194-2-willy@infradead.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20231208192725.1523194-1-willy@infradead.org>
-References: <20231208192725.1523194-1-willy@infradead.org>
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B93B1724
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Dec 2023 12:57:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1702069011; x=1702673811; i=quwenruo.btrfs@gmx.com;
+	bh=XPxymVaJ0lyZdOK0EOI5586YTWd3cgVjwj/bhE0y+KM=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=pTzx836F6QSHLawLQO8jrP9LETeIHu2P/K+fjg4K/OEW6shD6lPqan1yhj/2Dvxi
+	 KfgXnPO+txYm6uKc2Izd37wtI96bHN9fB8HUXWjvKQa78tcdoGsaUGqbDHGmYWea/
+	 ik0HB49NvuIjC3/u2q5tFctxdKCJM8NKWYfKHLdG2MUBfb+oDpw3sW+Zkl30c2YTJ
+	 fkwJbKfzdRoPfFJb/qFIw062+AYZI69sFtQb/OgFUWLelFdqYrtY1a9PWM9yY9gE/
+	 6ptsJEm04rKh087+3Z4zEhJM2al7pt0LZn0IyZnp1H7xq15Ub5txFp+XQqONr6Fqd
+	 CQoNtk1I02Z/QACnOw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([118.102.94.57]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7sDq-1r6lwu2h1u-004yz3; Fri, 08
+ Dec 2023 21:56:51 +0100
+Message-ID: <b9b91cd5-80be-41c0-a7fe-a64cbbcc6d85@gmx.com>
+Date: Sat, 9 Dec 2023 07:26:45 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] btrfs: Convert defrag_prepare_one_page() to use a
+ folio
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20231208192725.1523194-1-willy@infradead.org>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20231208192725.1523194-1-willy@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Xe+DjDhQeWJTcn2KTkqGDeX+b2e+3UOuCApxgSMSP5T7ZjRL03E
+ CD7FmhASmUDPPqP71VZaqBo50fHrBuqneqFiSrPsSy8/HcR7wpZHzA7NmPq0tcJVcfnUkfd
+ ZZYAnJ0BhonXdy9RqNJiZjoOHXpk40dLVs0YZd4KtlHG8XYGVCs6wauw3dRAxPum+QJDwcq
+ xP7h20MEmDT3WkbaFlcdg==
+UI-OutboundReport: notjunk:1;M01:P0:znHyaOfREis=;82zpz40L3un22jdKJIxvzEk7pDL
+ iFXAv1iOiZs9o9+EYez7XMRhgB5OE7gOWfEMzcvxxVoujmTMRYpb4aCD1KSPdDOlmvrq1nly4
+ GGrY0MhiIw4H4HmBQ/eUMw5f3CrZJzK9CcdsbBGxAfQZher+hu/mb9rifDKBiHXHAQKRJx+tE
+ GiLnBRsEJa5gMSCm/ekfELlVLWbohR2xIYqbFg0I3CqZTII9Yw9qivIOevF5eXDjb5cWmOUFd
+ Z0iyZyTd/57Pd+KJLhtAXZHdc6J61swWOJDtnPUZihW5fYqfKgce+I+iAbRryQjM0mzb8amcb
+ NGGnUmE2/BvmydN6SVnZperwOhCvQQJvKLpa9p00CilEbt4tV1LU1YAceSVjxlhwHc7qaPA6k
+ frq62R7pdj6U39QS1wb1JzkLEVid936FOzEcmPG5riWHy5o9zJug9vFdtfnDzzYJ+k3DCsqEt
+ blnu6UShkWSaSnqN/ZS2WL33If9rV5ChKpQ/Zftcti2CNop7syzUT/Z6D9hiN1C5EjgLCOAKJ
+ SB1GCZEc2TyfAW3Pt1d4thZZWUMP/XxZWz7L+NSXrvjuLiCAN96/R2zKmLSjOXrbbdJO/uQKK
+ F9fnUOiBzdlOSNMhlJzmtpEWkEwvSJ7dTFRxUPaRnzdQDEWWpRzm1+AL9FBs5DAI2OpuWTQ1x
+ 36JQ0OEGr4sQlD530IU1mgo6gSzSQ2rZwVRx4R8bIMDWwY5xii0bg7s6Vwg0jB5IEVOh64ovH
+ WeWZIls/U0IprRPKsZ/fggOkhvIWMJ9wa/LyV7/p0h+DS/zOlfBRWb5OxGtZ/lcMmi/5z2jmA
+ wsuDrnlmuJ9QNeKIHZ9U7Jr6tA5WX/OjT5/SzbCtmmNnhV3PEFBPfqtN8cZpboKpThsAqWwRU
+ AyCUZGeqr+l8Pzo778gSxJCaiZ/VcFmeiBV7ceXH7Y5MuAo7FY58S8J5JakD6CL4S6M6SyzW5
+ litSAw==
 
-Remove more hidden calls to compound_head() by using an array of folios
-instead of pages.  Also neaten the error path in defrag_one_range() by
-adjusting the length of the array instead of checking for NULL.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/btrfs/defrag.c | 44 +++++++++++++++++++++-----------------------
- 1 file changed, 21 insertions(+), 23 deletions(-)
 
-diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index 17a13d3ed131..4b94362779fe 100644
---- a/fs/btrfs/defrag.c
-+++ b/fs/btrfs/defrag.c
-@@ -861,7 +861,7 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
-  * NOTE: Caller should also wait for page writeback after the cluster is
-  * prepared, here we don't do writeback wait for each page.
-  */
--static struct page *defrag_prepare_one_page(struct btrfs_inode *inode, pgoff_t index)
-+static struct folio *defrag_prepare_one_folio(struct btrfs_inode *inode, pgoff_t index)
- {
- 	struct address_space *mapping = inode->vfs_inode.i_mapping;
- 	gfp_t mask = btrfs_alloc_write_mask(mapping);
-@@ -875,7 +875,7 @@ static struct page *defrag_prepare_one_page(struct btrfs_inode *inode, pgoff_t i
- 	folio = __filemap_get_folio(mapping, index,
- 			FGP_LOCK | FGP_ACCESSED | FGP_CREAT, mask);
- 	if (IS_ERR(folio))
--		return &folio->page;
-+		return folio;
- 
- 	/*
- 	 * Since we can defragment files opened read-only, we can encounter
-@@ -942,7 +942,7 @@ static struct page *defrag_prepare_one_page(struct btrfs_inode *inode, pgoff_t i
- 			return ERR_PTR(-EIO);
- 		}
- 	}
--	return &folio->page;
-+	return folio;
- }
- 
- struct defrag_target_range {
-@@ -1163,7 +1163,7 @@ static_assert(PAGE_ALIGNED(CLUSTER_SIZE));
-  */
- static int defrag_one_locked_target(struct btrfs_inode *inode,
- 				    struct defrag_target_range *target,
--				    struct page **pages, int nr_pages,
-+				    struct folio **folios, int nr_pages,
- 				    struct extent_state **cached_state)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-@@ -1172,7 +1172,7 @@ static int defrag_one_locked_target(struct btrfs_inode *inode,
- 	const u64 len = target->len;
- 	unsigned long last_index = (start + len - 1) >> PAGE_SHIFT;
- 	unsigned long start_index = start >> PAGE_SHIFT;
--	unsigned long first_index = page_index(pages[0]);
-+	unsigned long first_index = folios[0]->index;
- 	int ret = 0;
- 	int i;
- 
-@@ -1189,8 +1189,8 @@ static int defrag_one_locked_target(struct btrfs_inode *inode,
- 
- 	/* Update the page status */
- 	for (i = start_index - first_index; i <= last_index - first_index; i++) {
--		ClearPageChecked(pages[i]);
--		btrfs_page_clamp_set_dirty(fs_info, pages[i], start, len);
-+		folio_clear_checked(folios[i]);
-+		btrfs_page_clamp_set_dirty(fs_info, &folios[i]->page, start, len);
- 	}
- 	btrfs_delalloc_release_extents(inode, len);
- 	extent_changeset_free(data_reserved);
-@@ -1206,7 +1206,7 @@ static int defrag_one_range(struct btrfs_inode *inode, u64 start, u32 len,
- 	struct defrag_target_range *entry;
- 	struct defrag_target_range *tmp;
- 	LIST_HEAD(target_list);
--	struct page **pages;
-+	struct folio **folios;
- 	const u32 sectorsize = inode->root->fs_info->sectorsize;
- 	u64 last_index = (start + len - 1) >> PAGE_SHIFT;
- 	u64 start_index = start >> PAGE_SHIFT;
-@@ -1217,21 +1217,21 @@ static int defrag_one_range(struct btrfs_inode *inode, u64 start, u32 len,
- 	ASSERT(nr_pages <= CLUSTER_SIZE / PAGE_SIZE);
- 	ASSERT(IS_ALIGNED(start, sectorsize) && IS_ALIGNED(len, sectorsize));
- 
--	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
--	if (!pages)
-+	folios = kcalloc(nr_pages, sizeof(struct folio *), GFP_NOFS);
-+	if (!folios)
- 		return -ENOMEM;
- 
- 	/* Prepare all pages */
- 	for (i = 0; i < nr_pages; i++) {
--		pages[i] = defrag_prepare_one_page(inode, start_index + i);
--		if (IS_ERR(pages[i])) {
--			ret = PTR_ERR(pages[i]);
--			pages[i] = NULL;
--			goto free_pages;
-+		folios[i] = defrag_prepare_one_folio(inode, start_index + i);
-+		if (IS_ERR(folios[i])) {
-+			ret = PTR_ERR(folios[i]);
-+			nr_pages = i;
-+			goto free_folios;
- 		}
- 	}
- 	for (i = 0; i < nr_pages; i++)
--		wait_on_page_writeback(pages[i]);
-+		folio_wait_writeback(folios[i]);
- 
- 	/* Lock the pages range */
- 	lock_extent(&inode->io_tree, start_index << PAGE_SHIFT,
-@@ -1251,7 +1251,7 @@ static int defrag_one_range(struct btrfs_inode *inode, u64 start, u32 len,
- 		goto unlock_extent;
- 
- 	list_for_each_entry(entry, &target_list, list) {
--		ret = defrag_one_locked_target(inode, entry, pages, nr_pages,
-+		ret = defrag_one_locked_target(inode, entry, folios, nr_pages,
- 					       &cached_state);
- 		if (ret < 0)
- 			break;
-@@ -1265,14 +1265,12 @@ static int defrag_one_range(struct btrfs_inode *inode, u64 start, u32 len,
- 	unlock_extent(&inode->io_tree, start_index << PAGE_SHIFT,
- 		      (last_index << PAGE_SHIFT) + PAGE_SIZE - 1,
- 		      &cached_state);
--free_pages:
-+free_folios:
- 	for (i = 0; i < nr_pages; i++) {
--		if (pages[i]) {
--			unlock_page(pages[i]);
--			put_page(pages[i]);
--		}
-+		folio_unlock(folios[i]);
-+		folio_put(folios[i]);
- 	}
--	kfree(pages);
-+	kfree(folios);
- 	return ret;
- }
- 
--- 
-2.42.0
+On 2023/12/9 05:57, Matthew Wilcox (Oracle) wrote:
+> Use a folio throughout defrag_prepare_one_page() to remove dozens of
+> hidden calls to compound_head().  There is no support here for large
+> folios; indeed, turn the existing check for PageCompound into a check
+> for large folios.
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
+Looks good to me.
+
+Although some comments inlined below
+> ---
+>   fs/btrfs/defrag.c | 53 ++++++++++++++++++++++++-----------------------
+>   1 file changed, 27 insertions(+), 26 deletions(-)
+>
+> diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+> index a9a068af8d6e..17a13d3ed131 100644
+> --- a/fs/btrfs/defrag.c
+> +++ b/fs/btrfs/defrag.c
+> @@ -868,13 +868,14 @@ static struct page *defrag_prepare_one_page(struct=
+ btrfs_inode *inode, pgoff_t i
+>   	u64 page_start =3D (u64)index << PAGE_SHIFT;
+>   	u64 page_end =3D page_start + PAGE_SIZE - 1;
+>   	struct extent_state *cached_state =3D NULL;
+> -	struct page *page;
+> +	struct folio *folio;
+>   	int ret;
+>
+>   again:
+> -	page =3D find_or_create_page(mapping, index, mask);
+> -	if (!page)
+> -		return ERR_PTR(-ENOMEM);
+> +	folio =3D __filemap_get_folio(mapping, index,
+> +			FGP_LOCK | FGP_ACCESSED | FGP_CREAT, mask);
+
+When I was (and still am) a newbie to the folio interfaces, the "__"
+prefix is driving me away to use it.
+
+Mind to change it in the future? Like adding a new
+filemap_get_or_create_folio()?
+
+
+
+> +	if (IS_ERR(folio))
+> +		return &folio->page;
+>
+>   	/*
+>   	 * Since we can defragment files opened read-only, we can encounter
+> @@ -884,16 +885,16 @@ static struct page *defrag_prepare_one_page(struct=
+ btrfs_inode *inode, pgoff_t i
+>   	 * executables that explicitly enable them, so this isn't very
+>   	 * restrictive.
+>   	 */
+> -	if (PageCompound(page)) {
+> -		unlock_page(page);
+> -		put_page(page);
+> +	if (folio_test_large(folio)) {
+> +		folio_unlock(folio);
+> +		folio_put(folio);
+>   		return ERR_PTR(-ETXTBSY);
+>   	}
+>
+> -	ret =3D set_page_extent_mapped(page);
+> +	ret =3D set_page_extent_mapped(&folio->page);
+
+With my recent patches, set_page_extent_mapped() is already using folio
+interfaces, I guess it's time to finally change it to accept a folio.
+
+>   	if (ret < 0) {
+> -		unlock_page(page);
+> -		put_page(page);
+> +		folio_unlock(folio);
+> +		folio_put(folio);
+>   		return ERR_PTR(ret);
+>   	}
+>
+> @@ -908,17 +909,17 @@ static struct page *defrag_prepare_one_page(struct=
+ btrfs_inode *inode, pgoff_t i
+>   		if (!ordered)
+>   			break;
+>
+> -		unlock_page(page);
+> +		folio_unlock(folio);
+>   		btrfs_start_ordered_extent(ordered);
+>   		btrfs_put_ordered_extent(ordered);
+> -		lock_page(page);
+> +		folio_lock(folio);
+>   		/*
+> -		 * We unlocked the page above, so we need check if it was
+> +		 * We unlocked the folio above, so we need check if it was
+>   		 * released or not.
+>   		 */
+> -		if (page->mapping !=3D mapping || !PagePrivate(page)) {
+> -			unlock_page(page);
+> -			put_page(page);
+> +		if (folio->mapping !=3D mapping || !folio->private) {
+
+This folio->private check is not the same as PagePrivate(page) IIRC.
+Isn't folio_test_private() more suitable here?
+
+Thanks,
+Qu
+
+> +			folio_unlock(folio);
+> +			folio_put(folio);
+>   			goto again;
+>   		}
+>   	}
+> @@ -927,21 +928,21 @@ static struct page *defrag_prepare_one_page(struct=
+ btrfs_inode *inode, pgoff_t i
+>   	 * Now the page range has no ordered extent any more.  Read the page =
+to
+>   	 * make it uptodate.
+>   	 */
+> -	if (!PageUptodate(page)) {
+> -		btrfs_read_folio(NULL, page_folio(page));
+> -		lock_page(page);
+> -		if (page->mapping !=3D mapping || !PagePrivate(page)) {
+> -			unlock_page(page);
+> -			put_page(page);
+> +	if (!folio_test_uptodate(folio)) {
+> +		btrfs_read_folio(NULL, folio);
+> +		folio_lock(folio);
+> +		if (folio->mapping !=3D mapping || !folio->private) {
+> +			folio_unlock(folio);
+> +			folio_put(folio);
+>   			goto again;
+>   		}
+> -		if (!PageUptodate(page)) {
+> -			unlock_page(page);
+> -			put_page(page);
+> +		if (!folio_test_uptodate(folio)) {
+> +			folio_unlock(folio);
+> +			folio_put(folio);
+>   			return ERR_PTR(-EIO);
+>   		}
+>   	}
+> -	return page;
+> +	return &folio->page;
+>   }
+>
+>   struct defrag_target_range {
 
