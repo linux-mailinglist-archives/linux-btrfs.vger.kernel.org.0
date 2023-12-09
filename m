@@ -1,26 +1,26 @@
-Return-Path: <linux-btrfs+bounces-781-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-785-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77B0380B614
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Dec 2023 20:27:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63F1080B618
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Dec 2023 20:28:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C4511F2115E
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Dec 2023 19:27:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F166281138
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Dec 2023 19:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C17681CF83;
-	Sat,  9 Dec 2023 19:27:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686AB1DDC7;
+	Sat,  9 Dec 2023 19:27:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tiscali.it header.i=@tiscali.it header.b="eJA2d2xG"
+	dkim=pass (1024-bit key) header.d=tiscali.it header.i=@tiscali.it header.b="SHKmkMVT"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.tiscali.it (michael.mail.tiscali.it [213.205.33.246])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 00C8C137
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 012D810C8
 	for <linux-btrfs@vger.kernel.org>; Sat,  9 Dec 2023 11:27:25 -0800 (PST)
 Received: from venice.bhome ([84.220.171.3])
 	by michael.mail.tiscali.it with 
-	id LKTN2B00x04l9eU01KTNYM; Sat, 09 Dec 2023 19:27:22 +0000
+	id LKTN2B00x04l9eU01KTNYW; Sat, 09 Dec 2023 19:27:22 +0000
 X-Spam-Final-Verdict: clean
 X-Spam-State: 0
 X-Spam-Score: 0
@@ -29,10 +29,12 @@ x-auth-user: kreijack@tiscali.it
 From: Goffredo Baroncelli <kreijack@tiscali.it>
 To: linux-btrfs@vger.kernel.org
 Cc: Goffredo Baroncelli <kreijack@inwind.it>
-Subject: [PATCH 0/9][btrfs-progs] Remove unused dirstream variable
-Date: Sat,  9 Dec 2023 19:53:20 +0100
-Message-ID: <cover.1702148009.git.kreijack@inwind.it>
+Subject: [PATCH 1/9] Killing dirstream: add helpers
+Date: Sat,  9 Dec 2023 19:53:21 +0100
+Message-ID: <802bd72e2f67add884e8725ec87063e7554f8f40.1702148009.git.kreijack@inwind.it>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1702148009.git.kreijack@inwind.it>
+References: <cover.1702148009.git.kreijack@inwind.it>
 Reply-To: Goffredo Baroncelli <kreijack@libero.it>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -42,95 +44,130 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tiscali.it; s=smtp;
-	t=1702150042; bh=BcM0igVkFhVrY9loV5TGfCI8BiWsvEF9YCS25PjeuQA=;
-	h=From:To:Cc:Subject:Date:Reply-To;
-	b=eJA2d2xGAoJ+9UYruEjwpsbo+5wYde+iEM0Ds6Hxhi7vNMjovXowOKuBD3diDTB+4
-	 IqsPT06LKrWWneDFUiEffotANe0OCE/5EsJy7UHk+6ruBujBYyIX82U4TJ/ZJzWz/l
-	 OBJTNT+/JFg+vzcerrh/ViE5rxbcaNgfz5QbPClc=
+	t=1702150042; bh=9x4u0mYTUs1yQZRmVU9e994uQ8ynuFpiVdFtB4c0xco=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:Reply-To;
+	b=SHKmkMVTofiQits1GtDV1bDEtJXQrji345dglZt2vmdW+k7rT4uEY98uDV7+isvVD
+	 p9EpjhDa1i2FmiZxVlSWuvVFwX4pIm9DE07s6hE8Id6sP1+aWzdTxf97kHA/zmmSyL
+	 BDna40yUpGuBevpD/6AbWj4txwn1um7ChiXNdZlo=
 
 From: Goffredo Baroncelli <kreijack@inwind.it>
 
-For historical reason, the helpers [btrfs_]open_[file_or_]dir() work with
-directory returning the 'fd' and a 'dirstream' variable returned by
-opendir(3).
+For historical reason the helpers [btrfs_]open_dir... return also
+the 'DIR *dirstream' value when a dir is opened.
 
-If the path is a file, the 'fd' is computed from open(2) and
-dirstream is set to NULL.
-If the path is a directory, first the directory is opened by opendir(3), then
-the 'fd' is computed using dirfd(3).
-However the 'dirstream' returned by opendir(3) is left open until 'fd'
-is not needed anymore.
+However this is never used. So avoid calling diropen() and return
+only the fd.
 
-In near every case the 'dirstream' variable is not used. Only 'fd' is
-used.
+This is a preparatory patch that adds some helpers.
 
-A call to close_file_or_dir() freed both 'fd' and 'dirstream'.
+Signed-off-by: Goffredo Baroncelli <kreijack@libero.it>
+---
+ common/open-utils.c | 80 +++++++++++++++++++++++++++++++++++++++++++++
+ common/open-utils.h |  5 +++
+ 2 files changed, 85 insertions(+)
 
-Aim of this patch set is to getrid of this complexity; when the path of
-a directory is passed, the fd is get directly using open(path, O_RDONLY):
-so we don't need to use readdir(3) and to maintain the not used variable
-'dirstream'.
-
-So each call of a legacy [btrfs_]open_[file_or_]dir() helper is
-replaced by a call to the new btrfs_open_[file_or_]dir_fd() functions.
-These functions return only the file descriptor.
-
-Also close_file_or_dir() is not needed anymore.
-
-The first patch, introduces the new helpers; the last patch removed the
-unused older helpers. The intermediate patches updated the code.
-
-The 3rd patch updated also the add_seen_fsid() function. Before it
-stored the dirstream variable. But now it is not needed anymore.
-So we removed a parameter of the functions and a field in the structure.
-
-In the 8th patch, the only occurrences where 'dirstream' is used was
-corrected: the dirstream is computed using fdopendir(3), and the cleanup
-is updated according.
-
-The results is:
-- removed 7 functions
-- add 4 new functions
-- removed 100 lines
-- removed 43 occurrences of an unused 'dirstream' variable.
-
-BR
-G.Baroncelli
-
-*** BLURB HERE ***
-
-Goffredo Baroncelli (9):
-  Killing dirstream: add helpers
-  Killing dirstream: replace btrfs_open_dir with btrfs_open_dir_fd
-  Killing dirstream: replace btrfs_open_dir with btrfs_open_dir_fd
-  Killing dirstream: replace open_path_or_dev_mnt with btrfs_open_mnt_fd
-  Killing dirstream: replace open_file_or_dir3 with btrfs_open_fd2
-  Killing dirstream: replace btrfs_open_file_or_dir with
-    btrfs_open_file_or_dir_fd
-  Killing dirstream: replace open_file_or_dir with btrfs_open_fd2
-  Killing dirstream: remove open_file_or_dir3 from du_add_file
-  Killing dirstream: remove unused functions
-
- cmds/balance.c          |  27 ++++-----
- cmds/device.c           |  26 ++++----
- cmds/filesystem-du.c    |  18 +++++-
- cmds/filesystem-usage.c |   5 +-
- cmds/filesystem.c       |  26 ++++----
- cmds/inspect.c          |  35 +++++------
- cmds/property.c         |   5 +-
- cmds/qgroup.c           |  29 ++++-----
- cmds/quota.c            |  16 +++--
- cmds/replace.c          |  17 +++---
- cmds/scrub.c            |  15 ++---
- cmds/subvolume-list.c   |   5 +-
- cmds/subvolume.c        |  44 ++++++--------
- common/device-scan.c    |   6 +-
- common/device-scan.h    |   4 +-
- common/open-utils.c     | 127 ++++++++++++----------------------------
- common/open-utils.h     |  13 ++--
- common/utils.c          |   5 +-
- 18 files changed, 164 insertions(+), 259 deletions(-)
-
+diff --git a/common/open-utils.c b/common/open-utils.c
+index 111a51d9..61153294 100644
+--- a/common/open-utils.c
++++ b/common/open-utils.c
+@@ -318,3 +318,83 @@ void close_file_or_dir(int fd, DIR *dirstream)
+ }
+ 
+ 
++/*
++ * Do the following checks before calling open:
++ * 1: path is in a btrfs filesystem
++ */
++int btrfs_open_fd2(const char *path, bool verbose, bool read_write, bool dir_only)
++{
++	struct statfs stfs;
++	struct stat st;
++	int ret;
++
++	if (stat(path, &st) != 0) {
++		error_on(verbose, "cannot access '%s': %m", path);
++		return -1;
++	}
++
++	if (statfs(path, &stfs) != 0) {
++		error_on(verbose, "cannot access '%s': %m", path);
++		return -1;
++	}
++
++	if (stfs.f_type != BTRFS_SUPER_MAGIC) {
++		error_on(verbose, "not a btrfs filesystem: %s", path);
++		return -2;
++	}
++
++	if (dir_only && !S_ISDIR(st.st_mode)) {
++		error_on(verbose, "not a directory: %s", path);
++		return -3;
++	}
++
++	if (S_ISDIR(st.st_mode) || !read_write)
++		ret = open(path, O_RDONLY);
++	else
++		ret = open(path, O_RDWR);
++	if (ret < 0) {
++		error_on(verbose, "cannot access '%s': %m", path);
++	}
++
++	return ret;
++}
++
++int btrfs_open_file_or_dir_fd(const char *path)
++{
++	return btrfs_open_fd2(path, true, true, false);
++}
++
++int btrfs_open_dir_fd(const char *path)
++{
++	return btrfs_open_fd2(path, true, true, true);
++}
++
++
++/*
++ * Given a pathname, return a filehandle to:
++ * 	the original pathname or,
++ * 	if the pathname is a mounted btrfs device, to its mountpoint.
++ *
++ * On error, return -1, errno should be set.
++ */
++int btrfs_open_mnt_fd(const char *path, bool verbose)
++{
++	char mp[PATH_MAX];
++	int ret;
++
++	if (path_is_block_device(path)) {
++		ret = get_btrfs_mount(path, mp, sizeof(mp));
++		if (ret < 0) {
++			/* not a mounted btrfs dev */
++			error_on(verbose, "'%s' is not a mounted btrfs device",
++				 path);
++			errno = EINVAL;
++			return -1;
++		}
++		ret = btrfs_open_fd2(mp, verbose, true, true);
++	} else {
++		ret = btrfs_open_dir_fd(path);
++	}
++
++	return ret;
++}
+diff --git a/common/open-utils.h b/common/open-utils.h
+index 3f8c004e..96d99f5d 100644
+--- a/common/open-utils.h
++++ b/common/open-utils.h
+@@ -39,4 +39,9 @@ int btrfs_open_file_or_dir(const char *path, DIR **dirstream, int verbose);
+ 
+ void close_file_or_dir(int fd, DIR *dirstream);
+ 
++int btrfs_open_fd2(const char *path, bool verbose, bool read_write, bool dir_only);
++int btrfs_open_file_or_dir_fd(const char *path);
++int btrfs_open_dir_fd(const char *path);
++int btrfs_open_mnt_fd(const char *path, bool verbose);
++
+ #endif
 -- 
 2.43.0
 
