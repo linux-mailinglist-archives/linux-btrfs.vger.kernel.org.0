@@ -1,191 +1,294 @@
-Return-Path: <linux-btrfs+bounces-777-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-788-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB33380B600
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Dec 2023 20:16:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43AF780B66C
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Dec 2023 22:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72524280FE9
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Dec 2023 19:16:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B85D11F21056
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Dec 2023 21:09:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287B71A29A;
-	Sat,  9 Dec 2023 19:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3611CA95;
+	Sat,  9 Dec 2023 21:09:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="api9viFk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E217A95;
-	Sat,  9 Dec 2023 11:16:34 -0800 (PST)
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2ca02def690so38675061fa.3;
-        Sat, 09 Dec 2023 11:16:34 -0800 (PST)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF759F4
+	for <linux-btrfs@vger.kernel.org>; Sat,  9 Dec 2023 13:09:39 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2cb21afa6c1so26163891fa.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 09 Dec 2023 13:09:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1702156178; x=1702760978; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:content-language:references:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GEejwOHD83hUSs+OJE4OJ+NSXjHJjuEFpor+Yo++fl0=;
+        b=api9viFkms1r8BUHZdwq8ewZ2XMVThT/wJq2tfUK0IoafaYDncy37X9CpyK19qsfUv
+         dpW38NmNqyoAzTqWp8nOKn4K0lHGzd4+2dRvjD2TOERANKbhFmheVKMzDmdNL4vq5yEg
+         7V6QkFqEMVdXM21/5bsO0v1ejkqOeiPAwh4iQ+noLF3+TUaVhXkJR0layaontUYj5jKE
+         XQz4FxC/MGARf6FBP40KPHZLSJIYuNSA/3Zeb0R7Vpf95NvY4XEBxuY8LKNiMbT7rsW8
+         5m78TaB8ZaNhPiNIWYmpnlgt+LDLB+C46lefUN0Yt++z6Z1/TBHej/fPxdY6wc/vq1i/
+         v/tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702149393; x=1702754193;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yvIAlV8cR7DKjpVwhZEvex6k5cOHUw6zvJ4KqiQQ7J4=;
-        b=Afqy9cfNXfyam3zY5QBzyBw8JQLYL/l55eW01qRamui4B/GfSEgIHn4gy/s0KRk6ug
-         CekzBhMOqz6rzE8IvmfOH+NYywICh8oiGtkCPAA7uJE05UuGmDLHOJRwGnBcXoKtb0vm
-         pqilQgz2qbXufcLIbDNfmrKl+4Qb0MT+xoaAIm7bk/um4lnkWutUVBV3y/9tcofCq40e
-         93tq2BKiT+2cWLF+wQeAxuxEUCYQZhKN+JufW7n/a9bjLL4ytHvThVbsUkvRMlrVt2x9
-         BPoqsTW3RDrRMDjOKEFOqQtVK75FlltQwm711BScNFPgUvsP/cXP5YYSfqk8fT/v0MfF
-         exHA==
-X-Gm-Message-State: AOJu0YzjHxei+rX9NEqS4j3uj6ZfyVL1VfibgzmlBSFedTQUBrBC/RT1
-	HQfNAUSV2aiORjQt7Bd44FDIFJFVmchCpA==
-X-Google-Smtp-Source: AGHT+IGN0IV821CdXlu7CZ4P485FGl0zRIG8tNc78XYVzaDuaYLBZfHR92pXSu5JbAoB5xdF4JjjoQ==
-X-Received: by 2002:a2e:8619:0:b0:2ca:365b:8585 with SMTP id a25-20020a2e8619000000b002ca365b8585mr685177lji.106.1702149392466;
-        Sat, 09 Dec 2023 11:16:32 -0800 (PST)
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
-        by smtp.gmail.com with ESMTPSA id th19-20020a1709078e1300b00a1bda8db043sm2496840ejc.120.2023.12.09.11.16.32
+        d=1e100.net; s=20230601; t=1702156178; x=1702760978;
+        h=in-reply-to:autocrypt:from:content-language:references:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GEejwOHD83hUSs+OJE4OJ+NSXjHJjuEFpor+Yo++fl0=;
+        b=YpoN8yBISlS3k/A3erUBjWjy/NsB88vpfV4FGghNzvRlgWRAtOQsz760HCnYo09Zk7
+         T2qV2xt+kkiTvG0GxzuuwDiDsl8ycyCgFzmhVxXwtkYIRzYnrT8EAnWJCxd6CbnSZupz
+         Wu90lSu5va+fUk19eO3df96cOVOaUELHZJSCpzpZHChpKygQoAYXNrEJlAAIAkm1Bo/q
+         pHskETf7UkknaGwB9i9j11E0QhDpdCtY4FzFHrdWwgVF/yYrhPfX7lXCEuepBbDlv6yL
+         8fKOn2ZXO4Gmq4jdBLNcHEGoCjfCIobEAGYmvQEMLR9NM29iq7eDARZfdmtwYwz9cuYQ
+         gskg==
+X-Gm-Message-State: AOJu0YwRXbi987OIWKoMIIK5a47VMdGanaJjZ2Q164NO8/65fEqB5NRX
+	jbex8kFkJJTS/JT49ZjPzzqfTg==
+X-Google-Smtp-Source: AGHT+IFHgto4zmBkqoKhOK/Nwv5DDHNXW+R8lKAHdk33d7km6LBCVpRI3VUW1Jj4Mr7s2bvL2m9bdw==
+X-Received: by 2002:a2e:6a01:0:b0:2ca:24c:e252 with SMTP id f1-20020a2e6a01000000b002ca024ce252mr945890ljc.91.1702156177918;
+        Sat, 09 Dec 2023 13:09:37 -0800 (PST)
+Received: from ?IPV6:2001:4479:a500:4d00::959? ([2001:4479:a500:4d00::959])
+        by smtp.gmail.com with ESMTPSA id f16-20020aa782d0000000b006ce6878b274sm3612203pfn.216.2023.12.09.13.09.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Dec 2023 11:16:32 -0800 (PST)
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40c317723a8so22972775e9.3;
-        Sat, 09 Dec 2023 11:16:32 -0800 (PST)
-X-Received: by 2002:a05:600c:2b10:b0:40c:16ee:321e with SMTP id
- y16-20020a05600c2b1000b0040c16ee321emr955135wme.62.1702149391793; Sat, 09 Dec
- 2023 11:16:31 -0800 (PST)
+        Sat, 09 Dec 2023 13:09:37 -0800 (PST)
+Message-ID: <d8a5e127-25e6-44df-abe4-73776f43825f@suse.com>
+Date: Sun, 10 Dec 2023 07:39:31 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231207-btrfs-raid-v5-0-44aa1affe856@wdc.com>
- <CAL3q7H7pMjbc1-xZ1xDSMRBM2C-FiTi=sx=mQNBqH4MbXQ_WLA@mail.gmail.com>
- <0e13042e-1322-4baf-8ffd-4cd9415acac0@oracle.com> <ea5e3a98-b5ec-46c8-bf0d-e8fbd88cf4eb@wdc.com>
-In-Reply-To: <ea5e3a98-b5ec-46c8-bf0d-e8fbd88cf4eb@wdc.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Sat, 9 Dec 2023 14:15:54 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je_B87HAvFVhm-_1Q4NDuhyELVrDxvebzrDfNzUL4yi+ww@mail.gmail.com>
-Message-ID: <CAEg-Je_B87HAvFVhm-_1Q4NDuhyELVrDxvebzrDfNzUL4yi+ww@mail.gmail.com>
-Subject: Re: [PATCH v5 0/9] fstests: add tests for btrfs' raid-stripe-tree feature
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: Anand Jain <anand.jain@oracle.com>, Filipe Manana <fdmanana@kernel.org>, 
-	Zorro Lang <zlang@redhat.com>, Filipe Manana <fdmanana@suse.com>, 
-	"fstests@vger.kernel.org" <fstests@vger.kernel.org>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] btrfs: scrub: Fix use of uninitialized variable
+To: 'Guanjun' <guanjun@linux.alibaba.com>, wqu@suse.com, dsterba@suse.com,
+ clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+References: <20231209082132.2690130-1-guanjun@linux.alibaba.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <20231209082132.2690130-1-guanjun@linux.alibaba.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------IQ0eZQFN1TZ0gSR83IsG9gvN"
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------IQ0eZQFN1TZ0gSR83IsG9gvN
+Content-Type: multipart/mixed; boundary="------------9Xr5MdSjhRuokWfP3gziTlHe";
+ protected-headers="v1"
+From: Qu Wenruo <wqu@suse.com>
+To: 'Guanjun' <guanjun@linux.alibaba.com>, wqu@suse.com, dsterba@suse.com,
+ clm@fb.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+Message-ID: <d8a5e127-25e6-44df-abe4-73776f43825f@suse.com>
+Subject: Re: [PATCH 1/1] btrfs: scrub: Fix use of uninitialized variable
+References: <20231209082132.2690130-1-guanjun@linux.alibaba.com>
+In-Reply-To: <20231209082132.2690130-1-guanjun@linux.alibaba.com>
+
+--------------9Xr5MdSjhRuokWfP3gziTlHe
+Content-Type: multipart/mixed; boundary="------------GvcMG5VA8KZBddarWOy9hEdY"
+
+--------------GvcMG5VA8KZBddarWOy9hEdY
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+
+DQoNCk9uIDIwMjMvMTIvOSAxODo1MSwgJ0d1YW5qdW4nIHdyb3RlOg0KPiBGcm9tOiBHdWFu
+anVuIDxndWFuanVuQGxpbnV4LmFsaWJhYmEuY29tPg0KPiANCj4gJ3JldCcgd2lsbCBiZSB1
+bmluaXRpYWxpemVkIGluIGNhc2UgdGhhdCB0aGUgbG9naWNhbF9sZW5ndGgNCj4gaXMgMC4g
+RXZlbiBpZiB0aGUgY2FsbGVyIGhhcyBhbHJlYWR5IGVuc3VyZWQgdGhhdCBsb2dpY2FsX2xl
+bmd0aA0KPiBpcyBncmVhdGVyIHRoYW4gMCwgd2Ugc3RpbGwgbmVlZCB0byBmaXggdGhpcyBp
+c3N1ZS4gRHVlIHRvIHRoZQ0KPiBjb21waWxlciBtYXkgY29tcGxhaW4gbGlrZSB0aGlzOg0K
+PiANCj4gZnMvYnRyZnMvc2NydWIuYzogSW4gZnVuY3Rpb24g4oCYc2NydWJfc2ltcGxlX21p
+cnJvci5jb25zdHByb3DigJk6DQo+IGZzL2J0cmZzL3NjcnViLmM6MjEyMzo5OiBlcnJvcjog
+4oCYcmV04oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbiBb
+LVdlcnJvcj1tYXliZS11bmluaXRpYWxpemVkXQ0KPiAgIDIxMjMgfCAgcmV0dXJuIHJldDsN
+Cj4gICAgICAgIHwgICAgICAgICBefn4NCj4gDQoNCkNvbXBpbGVyIHZlcnNpb24gYW5kIGNv
+bmZpZyBwbGVhc2UuDQoNCllvdSBrbm93IGJ0cmZzIGhhcyBlbmFibGVkIC1XbWF5YmUtdW5p
+bml0aWFsaXplZCBhbHJlYWR5IGFuZCBhbGwgDQp3YXJuaW5ncyB3b3VsZCBiZSB0cmVhdGVk
+IGFzIGVycm9yLg0KVGhpcyBtZWFucyBpZiB0aGlzIGlzIHJlYWxseSB2YWxpZCwgdG9ucyBv
+ZiB0ZXN0ZXJzIHdvdWxkIGFscmVhZHkgaGl0IGl0Lg0KDQpUaHVzIEknbSB3b25kZXJpbmcg
+aWYgaXQncyBzb21lIGludGVybmFsIG91dC1vZi1kYXRlIHRvb2xjaGFpbiBvbiB5b3VyIHNp
+ZGUuDQoNCg0KRnVydGhlcm1vcmUsIGlmIHlvdSByZWFsbHkgd2FudCB0byBmaXggdGhlIHBy
+b2JsZW0sIEkgc3Ryb25nbHkgDQpkaXNjb3VyYWdlIGZyb20gYmxpbmRseSBzZXR0aW5nIHRo
+ZSBAcmV0IHRvIDAuDQoNCkJ1dCBjaGFuZ2UgYWxsIHRoZSBicmVhayBjYWxscyBvZiB0aGUg
+bG9vcCB0byByZXR1cm4gZGlyZWN0bHksIHNvIHRoYXQgDQp0aGUgZmluYWwgcmV0dXJuIG91
+dCBvZiB0aGUgbG9vcCBjYW4gYWx3YXlzIHJldHVybiAwLCBzbyB0aGF0IEByZXQgY2FuIA0K
+YmUgZGVmaW5lZCBpbnNpZGUgdGhlIGxvb3AsIGFuZCBiZSBtdWNoIHNhZmVyLg0KDQpUaGFu
+a3MsDQpRdQ0KDQo+IEZpeGVzOiAwOTAyMmIxNGZhZmMgKGJ0cmZzOiBzY3J1YjogaW50cm9k
+dWNlIGRlZGljYXRlZCBoZWxwZXIgdG8gc2NydWIgc2ltcGxlLW1pcnJvciBiYXNlZCByYW5n
+ZSkNCj4gU2lnbmVkLW9mZi1ieTogR3Vhbmp1biA8Z3Vhbmp1bkBsaW51eC5hbGliYWJhLmNv
+bT4NCj4gLS0tDQo+ICAgZnMvYnRyZnMvc2NydWIuYyB8IDIgKy0NCj4gICAxIGZpbGUgY2hh
+bmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQg
+YS9mcy9idHJmcy9zY3J1Yi5jIGIvZnMvYnRyZnMvc2NydWIuYw0KPiBpbmRleCBhMDE4MDdj
+YmQ0ZDQuLjEzMDI0MTMxZjc3ZCAxMDA2NDQNCj4gLS0tIGEvZnMvYnRyZnMvc2NydWIuYw0K
+PiArKysgYi9mcy9idHJmcy9zY3J1Yi5jDQo+IEBAIC0yMDcxLDcgKzIwNzEsNyBAQCBzdGF0
+aWMgaW50IHNjcnViX3NpbXBsZV9taXJyb3Ioc3RydWN0IHNjcnViX2N0eCAqc2N0eCwNCj4g
+ICAJc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8gPSBzY3R4LT5mc19pbmZvOw0KPiAg
+IAljb25zdCB1NjQgbG9naWNhbF9lbmQgPSBsb2dpY2FsX3N0YXJ0ICsgbG9naWNhbF9sZW5n
+dGg7DQo+ICAgCXU2NCBjdXJfbG9naWNhbCA9IGxvZ2ljYWxfc3RhcnQ7DQo+IC0JaW50IHJl
+dDsNCj4gKwlpbnQgcmV0ID0gMDsNCj4gICANCj4gICAJLyogVGhlIHJhbmdlIG11c3QgYmUg
+aW5zaWRlIHRoZSBiZyAqLw0KPiAgIAlBU1NFUlQobG9naWNhbF9zdGFydCA+PSBiZy0+c3Rh
+cnQgJiYgbG9naWNhbF9lbmQgPD0gYmctPnN0YXJ0ICsgYmctPmxlbmd0aCk7DQo=
+--------------GvcMG5VA8KZBddarWOy9hEdY
+Content-Type: application/pgp-keys; name="OpenPGP_0xC23D91F3A125FEA8.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xC23D91F3A125FEA8.asc"
+Content-Description: OpenPGP public key
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 8, 2023 at 4:19=E2=80=AFAM Johannes Thumshirn
-<Johannes.Thumshirn@wdc.com> wrote:
->
-> On 08.12.23 02:19, Anand Jain wrote:
-> >
-> >
-> > On 12/7/23 17:41, Filipe Manana wrote:
-> >> On Thu, Dec 7, 2023 at 9:03=E2=80=AFAM Johannes Thumshirn
-> >> <johannes.thumshirn@wdc.com> wrote:
-> >>>
-> >>> Add tests for btrfs' raid-stripe-tree feature. All of these test work=
- by
-> >>> writing a specific pattern to a newly created filesystem and afterwar=
-ds
-> >>> using `btrfs inspect-internal -t raid-stripe $SCRATCH_DEV_POOL` to ve=
-rify
-> >>> the placement and the layout of the metadata.
-> >>>
-> >>> The md5sum of each file will be compared as well after a re-mount of =
-the
-> >>> filesystem.
-> >>>
-> >>> ---
-> >>> Changes in v5:
-> >>> - add _require_btrfs_free_space_tree helper and use in tests
-> >>> - Link to v4: https://lore.kernel.org/r/20231206-btrfs-raid-v4-0-5782=
-84dd3a70@wdc.com
-> >>>
-> >>> Changes in v4:
-> >>> - add _require_btrfs_no_compress to all tests
-> >>> - add _require_btrfs_no_nodatacow helper and add to btrfs/308
-> >>> - add _require_btrfs_feature "free_space_tree" to all tests
-> >>> - Link to v3: https://lore.kernel.org/r/20231205-btrfs-raid-v3-0-0e85=
-7a5439a2@wdc.com
-> >>>
-> >>> Changes in v3:
-> >>> - added 'raid-stripe-tree' to mkfs options, as only zoned raid gets i=
-t
-> >>>     automatically
-> >>> - Rename test cases as btrfs/302 and btrfs/303 already exist upstream
-> >>> - Link to v2: https://lore.kernel.org/r/20231205-btrfs-raid-v2-0-25f8=
-0eea345b@wdc.com
-> >>>
-> >>> Changes in v2:
-> >>> - Re-ordered series so the newly introduced group is added before the
-> >>>     tests
-> >>> - Changes Filipe requested to the tests.
-> >>> - Link to v1: https://lore.kernel.org/r/20231204-btrfs-raid-v1-0-b254=
-eb1bcff8@wdc.com
-> >>>
-> >>> ---
-> >>> Johannes Thumshirn (9):
-> >>>         fstests: doc: add new raid-stripe-tree group
-> >>>         common: add filter for btrfs raid-stripe dump
-> >>>         common: add _require_btrfs_no_nodatacow helper
-> >>>         common: add _require_btrfs_free_space_tree
-> >>>         btrfs: add fstest for stripe-tree metadata with 4k write
-> >>>         btrfs: add fstest for 8k write spanning two stripes on raid-s=
-tripe-tree
-> >>>         btrfs: add fstest for writing to a file at an offset with RST
-> >>>         btrfs: add fstests to write 128k to a RST filesystem
-> >>>         btrfs: add fstest for overwriting a file partially with RST
-> >>>
-> >>>    common/btrfs        |  17 +++++++++
-> >>>    common/filter.btrfs |  14 +++++++
-> >>>    doc/group-names.txt |   1 +
-> >>>    tests/btrfs/304     |  56 +++++++++++++++++++++++++++
-> >>>    tests/btrfs/304.out |  58 ++++++++++++++++++++++++++++
-> >>>    tests/btrfs/305     |  61 ++++++++++++++++++++++++++++++
-> >>>    tests/btrfs/305.out |  82 ++++++++++++++++++++++++++++++++++++++++
-> >>>    tests/btrfs/306     |  59 +++++++++++++++++++++++++++++
-> >>>    tests/btrfs/306.out |  75 +++++++++++++++++++++++++++++++++++++
-> >>>    tests/btrfs/307     |  56 +++++++++++++++++++++++++++
-> >>>    tests/btrfs/307.out |  65 ++++++++++++++++++++++++++++++++
-> >>>    tests/btrfs/308     |  60 +++++++++++++++++++++++++++++
-> >>>    tests/btrfs/308.out | 106 ++++++++++++++++++++++++++++++++++++++++=
-++++++++++++
-> >>>    13 files changed, 710 insertions(+)
-> >>> ---
-> >>> base-commit: baca8a2b5cb6e798ce3a07e79a081031370c6cb8
-> >>
-> >> Btw this base commit does not exist in the official fstests repo.
-> >> That commit is from the staging branch at https://github.com/kdave/xfs=
-tests
-> >>
-> >> A "git am" will fail because the official fstests repo doesn't have
-> >> _require_btrfs_no_block_group_tree() at common/btrfs,
-> >> so it needs to be manually adjusted when applying the 3rd patch.
-> >>
-> >> I tried the tests and they look good, so:
-> >>
-> >> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> >>
-> >> One question I missed before. Test 304 for example does a 4K write and
-> >> expects in the golden output to get a 4K raid stripe item.
-> >> What happens on a machine with 64K page size? There the default sector
-> >> size is 64K, will the write result in a 64K raid stripe item or will
-> >> it be 4K? In the former case, it will make the test fail.
-> >>
-> >
-> > Testing on a 64K pagesize. Will run it. Apologies for intermittent
-> > responses; OOO until December 21.
->
-> Thanks Anand!
->
-> I don't have a 64k page size system to test, but I _think_ Filipe is
-> right, that will fail. I think we should skip these tests on non 4k secto=
-rs.
->
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-Once we land the patch to default to 4k sector size[1] regardless of
-page size, this should all work across all architectures, no?
+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
+SBugJZ66ww=3D=3D
+=3D/5yp
+-----END PGP PUBLIC KEY BLOCK-----
 
-[1]: https://lore.kernel.org/linux-btrfs/20231116160235.2708131-2-neal@gomp=
-a.dev/
+--------------GvcMG5VA8KZBddarWOy9hEdY--
 
+--------------9Xr5MdSjhRuokWfP3gziTlHe--
 
+--------------IQ0eZQFN1TZ0gSR83IsG9gvN
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEELd9y5aWlW6idqkLhwj2R86El/qgFAmV014sFAwAAAAAACgkQwj2R86El/qiH
+ZAgAjGYy9rqns+I34Kwg0AK6dj3cDDdOfEkQ1XayvK7I2ZXtepCnlkdSLhlzK5692B+9mo6bJOX0
+FpL2s+2ll2S1/z0wYb0N09ZOfRAO37fpXTwXgwihl1ldTV3/a6dmLQqTpyuCtgtmydTUd1s4qXVW
+QeJvCroUz1zPZemwsbtc+x34LB9iSxW5cOjiq5oY5Z8RBCh639aElSMoNQD0JY/mg2dtlXml0Ncq
+vCGAPH1/RZf6mqlms7EFTGlNLam0CU0Lm3nke2aX8Y1Y76+QJq4AeBoOQq3rNQG9OeSQDOtt4C0m
+zZY6BEkam3tiWLSuoTq632cycSF2WdBIw1wycaApWA==
+=4SYI
+-----END PGP SIGNATURE-----
+
+--------------IQ0eZQFN1TZ0gSR83IsG9gvN--
 
