@@ -1,223 +1,139 @@
-Return-Path: <linux-btrfs+bounces-821-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-823-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 793F780DC2F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Dec 2023 21:57:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FAF880DE42
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Dec 2023 23:30:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A608A1C2165A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Dec 2023 20:57:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 386C7B21308
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Dec 2023 22:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F665467D;
-	Mon, 11 Dec 2023 20:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Zj2gAmpH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074774CB2B;
+	Mon, 11 Dec 2023 22:30:20 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B2C9F
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Dec 2023 12:57:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1702328248; x=1702933048; i=quwenruo.btrfs@gmx.com;
-	bh=B7cxpup76UJMwFmthutMUcvJGk3rrSn/iywb7BLfcuU=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=Zj2gAmpHlLyo5lfNvsKaMte7/iooldj73G6hIrOQuP1Qb93L2cXjztIwqAfeds2Y
-	 7SqryathBu116CH+P1ynVsIQfdSEstoxFnbA68PXf8sj3D3idHqouWtrAzC+MJTZJ
-	 2ToBuARuzyiPbTDQFrkFryUpXNNaDeGGrkxJrioGvL4c8PAN5JAEyE7M/a+xmShbc
-	 jJaGd6aXBxwIbFBRpXWT01w/GgHVVhDeNWltCxn/CNCxhr00vX2aSo8ht6EGeSvkj
-	 Bo9CRxhmsWuq+XfKrdXi4JYNArU2BMe/j6TlfrWGc6XYeiEen4vFOzKQLeodaVLkF
-	 Y/EQG3WgHQRs1nJ5rQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([193.115.79.20]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0oG5-1rOfHm3KJ3-00wo2E; Mon, 11
- Dec 2023 21:57:28 +0100
-Message-ID: <253c6b4e-2b33-4892-8d6f-c0f783732cb6@gmx.com>
-Date: Tue, 12 Dec 2023 07:27:23 +1030
+Received: from bird.elm.relay.mailchannels.net (bird.elm.relay.mailchannels.net [23.83.212.17])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B262E4
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Dec 2023 14:30:10 -0800 (PST)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 71D0536316B;
+	Mon, 11 Dec 2023 22:24:02 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 27D9B3631D5;
+	Mon, 11 Dec 2023 22:24:01 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1702333441; a=rsa-sha256;
+	cv=none;
+	b=jXx4jYE58LmuYAeyTW/cp1GdExl9Zs7A9QCXIB27sE9B34YQHLHUjnQ8EPKCPvsQcC+3xn
+	jqfvW788/ZRupOH/2Bjzi6qsi/QBxoajDQSVrcZXOVVphkvaZVvTNsI91kePcMdPx+PcHV
+	nO/VxhMp+P+ovUGyaaYegMP5vwibqLqs61FNadEPf79x9IucYs8x99k+CA2pEUYtYhRaOH
+	KlEYDJBArqwEP0b94pTI1SMKJcgHkkzn4eAw83IyD5AKSwhMS8CTFZ2vLevX5XC7+bWaIm
+	HLOzy9/xANhO2JDkb1pUflypz2UZ/6LtBlpEdqAjgazKovHQNEX8bVa45bKK2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1702333441;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oSMruv8vHCgWUJmEpAriWG+zMh4jhx28++2IRpo9Lb4=;
+	b=5Lb3E3JM7xnUwTwxOuOpbEqSRMoy2cpJH1jwDMwQ1wOFKMeDURTzt6/ZQUrxgRubwB9QcH
+	7POgjCvGr8V9YDj0f7sbk7Aj6Bn2k4FC25Im4xXTETfUVjvmOjdPpmaUF4dO/hecIBRxLX
+	q0eJP+ejinAOb5q5D3DkEtXjkklDeMVT1aAyrPRS2XbIcxkDsJBmdaqhrAsw5KpLMsPjnZ
+	686hwGFqhXilk8yxRTyYmUpOi6oKdyp7tWdWl7lqN7mu59RVaWyIgrM535L1Hd9EX7Kxu+
+	qUB9hrDCXY0VaFpgziEoIvUDsh/qDxWjgWX9ORaRyJujRVv5EJ9Hnz0ZsD3cAg==
+ARC-Authentication-Results: i=1;
+	rspamd-5749745b69-kk6rb;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Bubble-Stretch: 14f6bedb628f1ea8_1702333441687_1733466020
+X-MC-Loop-Signature: 1702333441687:2709048962
+X-MC-Ingress-Time: 1702333441687
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+	by 100.124.185.79 (trex/6.9.2);
+	Mon, 11 Dec 2023 22:24:01 +0000
+Received: from p5090f0e4.dip0.t-ipconnect.de ([80.144.240.228]:39262 helo=heisenberg.fritz.box)
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <calestyo@scientia.org>)
+	id 1rCogt-000660-2M;
+	Mon, 11 Dec 2023 22:23:59 +0000
+Message-ID: <95692519c19990e9993d5a93985aab854289632a.camel@scientia.org>
+Subject: Re: btrfs thinks fs is full, though 11GB should be still free
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Date: Mon, 11 Dec 2023 23:23:53 +0100
+In-Reply-To: <253c6b4e-2b33-4892-8d6f-c0f783732cb6@gmx.com>
+References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
+	 <253c6b4e-2b33-4892-8d6f-c0f783732cb6@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2-1 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs thinks fs is full, though 11GB should be still free
-Content-Language: en-US
-To: Christoph Anton Mitterer <calestyo@scientia.org>,
- linux-btrfs@vger.kernel.org
-References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KmD69yLNK6FEFBVRL3dhRwrdKxl5YmtZ1zzoSsQ14aa+jgtrW/C
- H6p1Pp7Imslxp7AWLS7Yyze81zW1KFZHKlsr1ScOTa3CGrtDmfRIPzK92kpuPmO/95ndpDy
- IiAGhXblT+yIz0LyIKx3oixRe7SprzcFgsxm9k31znsvg8ksZtc1RHEC/xfkab8FbX0M91X
- xbvD83caoYtOH6QceEWJg==
-UI-OutboundReport: notjunk:1;M01:P0:5ZGEgSJ4e3c=;ToRqP8h0NqgMg3FM7kz/ZLIgG5s
- q7Xojw7r1ggp+MFRMccUgSwh35Bx/0I1sp0CEZ3G4rBYxgnQ+ri5CbQoog1/oRcgThhafh64r
- n8T6tiBFG3lX79Mc07OgoHIsMx5CYSxQxXDZJN7qTSuCdp3nxSTnNXefpzvs8/Imm2VS4xqXS
- k0TTnk99TpWmsIijx6/pSXyF0FhFQdKc+y0/a1G79rWwYTS3BlFC/ciRHHUiZKudh22oZGUD0
- k+kYd1PJdOFrAwbNIOdUUR186Bx0KvaCtQS55DMJA3+0nvMsLl+uCOY6qUBNqWBgUujVSRScd
- JJcnhg+vO2X8K0D5si9nyrCKfQqgvYwEwX6i7RZl37/SMqTdvKjkP6DH1o4iX08bTEhRZGhhc
- /HYkKMgDYOhSYgAFVTj5VbjsVOnRLynWMfoiTxlALqXCVeJjeismLLRuuG/BsDBpvS3+4pGLs
- 5iVyHZaeaPe70xrgTWpPutBh4MYrHQOo2Nf9FEKiil/cTNg6mQbZugrGrjYWoll1di9HzXYI1
- 6beRGAKJjNRMY4L2fBqulT8lxr0PjjVu16GvWHXwzhDpAACrnOTJFVMHcTANWGOALy2bxM4jL
- abkuRAk1wvd0YRgLMYxbi7Bgaw/HB+quCCv49C3obvL2iARTfoWQm/rtqxtOEOFYWWaRbl6fD
- vFWs0ZMW/fOuh91Gq/yBmf/enbm445dJqlSt4KxA0yzkWrE1nflmtioaram3tgGSikmXdyr6E
- cwN6m5XYCYWqQFQJf2GVK0SMRazLIQpowQ/mzUAj1BOpFk/dTA0qdJSrzR+DGxNCNRvabD3PO
- xoCNK0LWtVHXm5Kfqsfj8pasLdUkI/Ru7IbZ/LdRGf0pdl01hwPGL6U2c1rTXST0fYMcGx9UX
- d+dxw5hSuw3Y3W2Z3aKXwH4axNo58+3f+RvChelt7PSvzBQA1yP/Q10naIC0An72d1NM5DloP
- dIRftA==
+X-AuthUser: calestyo@scientia.org
+
+Hey Qu
+
+On Tue, 2023-12-12 at 07:27 +1030, Qu Wenruo wrote:
+> Is your current mounted subvolume the fs tree? Or already the data
+> subvolume?
+
+Well actually both, I always have a "service" mountpoint of the root
+volume as well, and just unmounted that to no confuse with "double"
+mount entries.
+
+In reality it looks like:
+# mount | grep vdb
+/dev/vdb on /data/main type btrfs (rw,noatime,space_cache=3Dv2,subvolid=3D2=
+57,subvol=3D/data)
+/dev/vdb on /data/btrfs-top-level-subvolumes/data-main type btrfs (rw,noati=
+me,space_cache=3Dv2,subvolid=3D5,subvol=3D/)
+
+But all data (except for 2 empty dirs, where on other systems I would
+place btrbk snapshots) is in the data subvolume:
+
+data/btrfs-top-level-subvolumes/data-main# ls -al
+total 16
+drwxr-xr-x 1 root root 26 Feb 21  2023 .
+drwxr-xr-x 1 root root 30 Nov  9 23:49 ..
+drwxr-xr-x 1 root root 20 Feb 21  2023 data
+drwx------ 1 root root 10 Feb 21  2023 snapshots
+/data/btrfs-top-level-subvolumes/data-main# du --apparent-size --total -s -=
+-si *
+29G	data
+10	snapshots
+29G	total
 
 
+> If the latter case, there are some files you can not access from your
+> current mount point.
 
-On 2023/12/12 06:56, Christoph Anton Mitterer wrote:
-> Hey.
->
-> I think the following might have already happened the 2nd time. I have
-> a Debian stable with kernel 6.1.55 running Prometheus.
->
-> There's one separate btrfs, just for Prometheus time series database.
->
->
-> # btrfs check /dev/vdb
-> Opening filesystem to check...
-> Checking filesystem on /dev/vdb
-> UUID: decdc81d-7cc4-431c-ab84-e03771f6de5d
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space tree
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 42427637760 bytes used, no error found
-> total csum bytes: 27362284
-> total tree bytes: 32686080
-> total fs tree bytes: 1982464
-> total extent tree bytes: 360448
-> btree space waste bytes: 2839648
-> file data blocks allocated: 54877196288
->   referenced 28014796800
+No it's not that (that would have been quite embarrassing ^^).
+/data/btrfs-top-level-subvolumes/data-main# tree -a snapshots/
+snapshots/
+=E2=94=94=E2=94=80=E2=94=80 btrbk
 
-That's pretty good.
-
-> # mount /data/main/
->
->
-> # df | grep main
-> /dev/vdb       btrfs      43G   43G   25k 100% /data/main
->
-> =3D> df thinks it's full
->
->
-> # btrfs filesystem usage /data/main/
-> Overall:
->      Device size:		  40.00GiB
->      Device allocated:		  40.00GiB
->      Device unallocated:		   1.00MiB
-
-Already full from the perspective of chunk space.
-
-No new chunk can be allocated.
-
->      Device missing:		     0.00B
->      Device slack:		     0.00B
->      Used:			  39.54GiB
->      Free (estimated):		  24.00KiB	(min: 24.00KiB)
->      Free (statfs, df):		  24.00KiB
->      Data ratio:			      1.00
->      Metadata ratio:		      2.00
->      Global reserve:		  29.22MiB	(used: 0.00B)
->      Multiple profiles:		        no
->
-> Data,single: Size:39.48GiB, Used:39.48GiB (100.00%)
-
-Data chunks are already exhausted.
-
->     /dev/vdb	  39.48GiB
->
-> Metadata,DUP: Size:256.00MiB, Used:31.16MiB (12.17%)
-
-A single metadata chunk, which is not full.
+2 directories, 0 files
 
 
->     /dev/vdb	 512.00MiB
->
-> System,DUP: Size:8.00MiB, Used:16.00KiB (0.20%)
->     /dev/vdb	  16.00MiB
->
-> Unallocated:
->     /dev/vdb	   1.00MiB
->
-> =3D> btrfs does so, too
->
-> # btrfs subvolume list -pagu /data/main/
-> ID 257 gen 2347947 parent 5 top level 5 uuid ae3fa7ff-f5a4-cf44-8555-ad5=
-79195036c path <FS_TREE>/data
+> Thus it's recommended to use qgroup to show a correct full view of
+> the
+> used space by each subvolume.
 
-Is your current mounted subvolume the fs tree? Or already the data
-subvolume?
+Uhm... qgroups? How would they help me here?
 
-If the latter case, there are some files you can not access from your
-current mount point.
-
-Thus it's recommended to use qgroup to show a correct full view of the
-used space by each subvolume.
-
-Thanks,
-Qu
-
->
-> =3D> no snapshots involved
->
-> # du --apparent-size --total -s --si /data/main/
-> 29G	/data/main/
-> 29G	total
->
-> =3D> but when actually counting the file sizes, there should be 11G left=
-.
->
->
-> :/data/main/prometheus# dd if=3D/dev/zero of=3Dfoo bs=3D1M count=3D1
-> dd: error writing 'foo': No space left on device
-> 1+0 records in
-> 0+0 records out
-> 0 bytes copied, 0,0876783 s, 0,0 kB/s
->
->
-> And it really is full.
->
->
-> Any ideas how this can happen?
->
->
-> Thanks,
-> Chris.
->
+Cheers,
+Chris.
 
