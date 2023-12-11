@@ -1,50 +1,102 @@
-Return-Path: <linux-btrfs+bounces-813-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-814-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 802BD80D27C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Dec 2023 17:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 812FA80D2D7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Dec 2023 17:52:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 357F81F215CC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Dec 2023 16:42:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36E661F216DD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Dec 2023 16:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C69848CC8;
-	Mon, 11 Dec 2023 16:42:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2D84D582;
+	Mon, 11 Dec 2023 16:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="10U2V6iy"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KF7fZ16G";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="55atrZPO";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KF7fZ16G";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="55atrZPO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356958E;
-	Mon, 11 Dec 2023 08:42:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=i2yTXhZ98lJELJnDUOhyYRgpOtbhX9CT8JLckwmAl/Q=; b=10U2V6iyB8Karqp48moMv+oDlg
-	l0eo/emwTWSVjCKHM0HnG6FG1tVr0aO7ecr8t+QpTSRGEOoGVKIsOyJRo4jzeCkTmyqFyiSGTMpuq
-	RqJ5VoSr4VCkhirUxDpqYooGk4lu+0d7J0ezL5UVI9XEnr1DHFP6rUyr/SLonlAbL6qnuUl6dYzco
-	1Aa1wywcBTWg+5aIDDczv7K33DmN8LwkFC1LnVc/O91bJv5VwasPlyD6Ceib3UV0OG//e9Iamkk/Z
-	kUQGsTa503UHT760y/I1zgoCWVM1nndt5wlI9NjinJNjIqkhS9gPFh4lT8yS3iTgB7J/2EbXOLpLY
-	PiN9l6Aw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCjMe-005vGF-38;
-	Mon, 11 Dec 2023 16:42:40 +0000
-Date: Mon, 11 Dec 2023 08:42:40 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-fscrypt@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH] fscrypt: move the call to fscrypt_destroy_keyring() into
- ->put_super()
-Message-ID: <ZXc8AISosHRDXMN7@infradead.org>
-References: <20231206001325.13676-1-ebiggers@kernel.org>
- <ZXAW1BREPtCSUz4W@infradead.org>
- <20231206064430.GA41771@sol.localdomain>
- <ZXAf0WUbCccBn5QM@infradead.org>
- <20231209212938.GA2270@sol.localdomain>
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A20EB3;
+	Mon, 11 Dec 2023 08:52:19 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3A65722413;
+	Mon, 11 Dec 2023 16:52:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702313538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rKyChubYQOLUssFrI8/z8khe3/ZNZIgTAEz8GE5ZHf8=;
+	b=KF7fZ16GGZSNVIercO+eYb/zdHDuObhA9Onxa81BeqL3LeXtWEzJu+HqGO1kfleK3MMb9x
+	jUugKN6DhI5mx4QzBnf4JH10nshySFJYQzot/cnv9bMAHLqxdYshFuHfymm3WHOgnJ+pWp
+	7mgLY2fOp0ANNoP3kZ8g+YQPQxBLCuM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702313538;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rKyChubYQOLUssFrI8/z8khe3/ZNZIgTAEz8GE5ZHf8=;
+	b=55atrZPOIWUHCEdWSl7m1h0isEhBA3PJTsKW7m5NfRjFtXZtvlPhx1kYCCQxQNMKERbIiQ
+	03X5sRIKKKs3qZCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702313538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rKyChubYQOLUssFrI8/z8khe3/ZNZIgTAEz8GE5ZHf8=;
+	b=KF7fZ16GGZSNVIercO+eYb/zdHDuObhA9Onxa81BeqL3LeXtWEzJu+HqGO1kfleK3MMb9x
+	jUugKN6DhI5mx4QzBnf4JH10nshySFJYQzot/cnv9bMAHLqxdYshFuHfymm3WHOgnJ+pWp
+	7mgLY2fOp0ANNoP3kZ8g+YQPQxBLCuM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702313538;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rKyChubYQOLUssFrI8/z8khe3/ZNZIgTAEz8GE5ZHf8=;
+	b=55atrZPOIWUHCEdWSl7m1h0isEhBA3PJTsKW7m5NfRjFtXZtvlPhx1kYCCQxQNMKERbIiQ
+	03X5sRIKKKs3qZCg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 26D01134B0;
+	Mon, 11 Dec 2023 16:52:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 1uB1CUI+d2XzFAAAn2gu4w
+	(envelope-from <jack@suse.cz>); Mon, 11 Dec 2023 16:52:18 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id A24EDA07E3; Mon, 11 Dec 2023 17:52:17 +0100 (CET)
+Date: Mon, 11 Dec 2023 17:52:17 +0100
+From: Jan Kara <jack@suse.cz>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+	konishi.ryusuke@gmail.com, willy@infradead.org,
+	akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v2 for-6.8/block 01/18] block: add some bdev apis
+Message-ID: <20231211165217.fil437byq7w2vcp7@quack3>
+References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+ <20231211140552.973290-2-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -53,19 +105,60 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231209212938.GA2270@sol.localdomain>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20231211140552.973290-2-yukuai1@huaweicloud.com>
+X-Spam-Level: 
+X-Spam-Score: -1.58
+X-Spamd-Result: default: False [-1.26 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-1.96)[94.82%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 R_RATELIMIT(0.00)[to_ip_from(RLg7z3ka1nnoi3zj4x13ixbdfk)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_GT_50(0.00)[50];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,redhat.com,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,lists.linux.dev,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -1.26
+Authentication-Results: smtp-out1.suse.de;
+	none
 
-On Sat, Dec 09, 2023 at 01:29:38PM -0800, Eric Biggers wrote:
-> btrfs releases its block devices in ->put_super(), so with your proposal that
-> would need to be moved to ->kill_sb() as well, right?
+On Mon 11-12-23 22:05:35, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Those apis will be used for other modules, so that bd_inode won't be
+> accessed directly from other modules.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-Yes.  I actually sent a patch for that in August:
+...
 
-   https://www.spinics.net/lists/linux-btrfs/msg138572.html
+> +void bdev_associated_mapping(struct block_device *bdev,
+> +			     struct address_space *mapping)
+> +{
+> +	mapping->host = bdev->bd_inode;
+> +}
 
-but it somehow got lost in the usual mess of btrfs trees and Dave
-not wanting to Ack picking it up through the VFS tree with the rest
-of the series.
+Here I'm not sure - is the helper really a win? It seems a bit obscure to
+me. This initialization of another mapping for a bdev looks really special.
 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
