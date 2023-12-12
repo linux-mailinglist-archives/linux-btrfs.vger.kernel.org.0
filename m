@@ -1,135 +1,185 @@
-Return-Path: <linux-btrfs+bounces-830-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-831-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 323F980E0E4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 02:32:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 621B080E1E2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 03:31:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6406E1C216EE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 01:32:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93737B216E2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 02:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C1723CF;
-	Tue, 12 Dec 2023 01:32:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFA16AD53;
+	Tue, 12 Dec 2023 02:29:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="L8xBiWbH";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jlXVpez5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706BACE;
-	Mon, 11 Dec 2023 17:32:21 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sq1Lj3Z6Rz4f3lDc;
-	Tue, 12 Dec 2023 09:32:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 5C7FC1A0D83;
-	Tue, 12 Dec 2023 09:32:18 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgCn9gwauHdlugyeDQ--.45656S3;
-	Tue, 12 Dec 2023 09:32:13 +0800 (CST)
-Subject: Re: [PATCH RFC v2 for-6.8/block 15/18] buffer: add a new helper to
- read sb block
-To: Jan Kara <jack@suse.cz>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
- kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
- hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
- jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
- josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
- brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org, chao@kernel.org,
- tytso@mit.edu, adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
- konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
- p.raghav@samsung.com, hare@suse.de, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
- linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
- linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
- "yangerkun@huawei.com" <yangerkun@huawei.com>,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140753.975297-1-yukuai1@huaweicloud.com>
- <20231211172708.qpuk4rkwq4u2zbmj@quack3>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <be459c50-5179-2748-2636-7965b9e1cb7a@huaweicloud.com>
-Date: Tue, 12 Dec 2023 09:32:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761C7109
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Dec 2023 18:28:59 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C80051FC83
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Dec 2023 02:28:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1702348138; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=B6WCJcyclvbMTNN7tMDH/BTzCLiUt6kbY4vOt/E/G/8=;
+	b=L8xBiWbH9sg/4TpaYPdwt/AHUI8Ud2F2WBOb1NwnWE5qqAoNG7pgmWBwCagq09JwWE3e7t
+	uCkPl4KL0xDwU1BZMcRmaPj/qjRSw1u5hrTao0A022Fb0rOJr2QxdvB6Q9hf7BNoJm/C4L
+	62xTbSS7i/7zovd3mSWezoHQ3cP+q50=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1702348137; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=B6WCJcyclvbMTNN7tMDH/BTzCLiUt6kbY4vOt/E/G/8=;
+	b=jlXVpez5pwKtepch2MP3KdbN3OAbnol96opvHLCCKcTwnT3uTWd5ZfsAlJDR1m/IpaZQ+9
+	L3Lj4C3zvx6j1v0LgewA+KzHk4E2nixnGOjVc414xhDTZmj77NWR+HcWAa6ELEoKtReTST
+	+kZ1V7+gWwsSobpPcqIN0tix3LrISw8=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id BF5A713463
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Dec 2023 02:28:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id RxWVGmjFd2WtHQAAn2gu4w
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Dec 2023 02:28:56 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/3] btrfs: migrate IO path to folios
+Date: Tue, 12 Dec 2023 12:58:35 +1030
+Message-ID: <cover.1702347666.git.wqu@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231211172708.qpuk4rkwq4u2zbmj@quack3>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCn9gwauHdlugyeDQ--.45656S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7trWDZF4Dur4DWFWktF1xGrg_yoW8WF48pr
-	ySkayakrZrAr1a9F12qw1rXFyrKa13G3WrCFyfJa4UAryagr13XrWxGF4UGFW3ZrnrAws8
-	Xa1FkayrZw15KFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9q14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6rWU
-	JVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F
-	4UJbIYCTnIWIevJa73UjIFyTuYvjfUFfHUDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Score: 18.34
+X-Spamd-Result: default: False [1.09 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(5.10)[100.00%];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_DN_NONE(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 DMARC_POLICY_ALLOW(0.00)[suse.com,quarantine];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 ARC_NA(0.00)[];
+	 R_SPF_FAIL(0.00)[-all];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	 RCPT_COUNT_ONE(0.00)[1];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 WHITELIST_DMARC(-7.00)[suse.com:D:+];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spamd-Bar: +
+X-Rspamd-Server: rspamd1
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: C80051FC83
+X-Spam-Score: 1.09
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=jlXVpez5;
+	spf=fail (smtp-out2.suse.de: domain of wqu@suse.com does not designate 2a07:de40:b281:104:10:150:64:98 as permitted sender) smtp.mailfrom=wqu@suse.com;
+	dmarc=pass (policy=quarantine) header.from=suse.com
 
-Hi,
+[CHANGELOG]
+v2:
+- Fix a PAGE_SHIFT usage in the 3rd patch on the data read path
+  I know this won't be touched any time soon, but considering it's
+  really one patch away from enabling higher order folios for metadata,
+  let's make the cleanup closer to perfection.
 
-ÔÚ 2023/12/12 1:27, Jan Kara Ð´µÀ:
-> On Mon 11-12-23 22:07:53, Yu Kuai wrote:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Unlike __bread_gfp(), ext4 has special handing while reading sb block:
->>
->> 1) __GFP_NOFAIL is not set, and memory allocation can fail;
->> 2) If buffer write failed before, set buffer uptodate and don't read
->>     block from disk;
->> 3) REQ_META is set for all IO, and REQ_PRIO is set for reading xattr;
->> 4) If failed, return error ptr instead of NULL;
->>
->> This patch add a new helper __bread_gfp2() that will match above 2 and 3(
->> 1 will be used, and 4 will still be encapsulated by ext4), and prepare to
->> prevent calling mapping_gfp_constraint() directly on bd_inode->i_mapping
->> in ext4.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ...
->> +/*
->> + * This works like __bread_gfp() except:
->> + * 1) If buffer write failed before, set buffer uptodate and don't read
->> + * block from disk;
->> + * 2) Caller can pass in additional op_flags like REQ_META;
->> + */
->> +struct buffer_head *
->> +__bread_gfp2(struct block_device *bdev, sector_t block, unsigned int size,
->> +	     blk_opf_t op_flags, gfp_t gfp)
->> +{
->> +	return bread_gfp(bdev, block, size, op_flags, gfp, true);
->> +}
->> +EXPORT_SYMBOL(__bread_gfp2);
-> 
-> __bread_gfp2() is not a great name, why not just using bread_gfp()
-> directly? I'm not a huge fan of boolean arguments but three different flags
-> arguments would be too much for my taste ;) so I guess I can live with
-> that.
 
-I agree that __bread_gfp2 is not a greate name, if possible, I'll try to
-figure out a better name for v3.
+One critical problem I hit the most during my initial higher order
+folios tests are, incorrect access to the pages which conflicts with the
+page flag policy.
 
-Thanks for reviewing this patchset!
-Kuai
-> 
-> 								Honza
-> 
+Since folio flags are only set to certain pages according to their
+policies (PF_ANY, PF_HEAD, PF_ONLY_HEAD, PF_NO_TAIL, PF_NO_COMPOUND and
+the most weird on PF_SECOND), setting page flags violating the policy
+would immedate lead to VM_BUG_ON().
+
+Thus no matter if we go compound page or folio, we can not go the
+page-by-page iteration helpers that easily.
+One of the hot spots which can lead to VM_BUG_ON()s are the endio
+helpers.
+
+So this patch would:
+
+- Make metadata set/get helpers to utilize folio interfaces
+
+- Make subpage code to accept folios directly
+  This is to avoid btrfs_page_*() helpers to accept page pointers, which
+  is another hot spot which uses page pointer a lot.
+
+- Migrate btrfs bio endio functions to utilize bio_for_each_folio_all()
+  This completely removes the ability to direct access page pointers.
+  Although we still need some extra folio_page(folio, 0) calls to keep
+  compatible with existing helpers.
+
+  And since we're here, also fix the choas of btrfs endio functions'
+  naming scheme, now it would always be:
+    end_bbio_<target>_(read|write)
+  The <target> can be:
+
+  - data
+    For non-compressed and non-encoeded operations
+
+  - compressed
+    For compressed IO and encoded IO.
+
+  - meta
+
+  And since compressed IO path is utilizing unmapped pages (pages
+  without an address_space), thus they don't touch the page flags.
+  This makes compressed IO path a very good test bed for the initial
+  introduction of higher order folio.
+
+Qu Wenruo (3):
+  btrfs: migrate get_eb_page_index() and get_eb_offset_in_page() to
+    folios
+  btrfs: migrate subpage code to folio interfaces
+  btrfs: migrate various btrfs end io functions to folios
+
+ fs/btrfs/accessors.c        |  80 ++++----
+ fs/btrfs/compression.c      |  15 +-
+ fs/btrfs/ctree.c            |  13 +-
+ fs/btrfs/defrag.c           |   3 +-
+ fs/btrfs/disk-io.c          |   4 +-
+ fs/btrfs/extent_io.c        | 363 +++++++++++++++++++-----------------
+ fs/btrfs/extent_io.h        |  40 ++--
+ fs/btrfs/file.c             |  13 +-
+ fs/btrfs/free-space-cache.c |   4 +-
+ fs/btrfs/inode.c            |  34 ++--
+ fs/btrfs/ordered-data.c     |   5 +-
+ fs/btrfs/reflink.c          |   6 +-
+ fs/btrfs/relocation.c       |   5 +-
+ fs/btrfs/subpage.c          | 304 ++++++++++++++----------------
+ fs/btrfs/subpage.h          |  74 ++++----
+ 15 files changed, 500 insertions(+), 463 deletions(-)
+
+-- 
+2.43.0
 
 
