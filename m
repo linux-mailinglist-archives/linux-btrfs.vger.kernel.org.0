@@ -1,79 +1,107 @@
-Return-Path: <linux-btrfs+bounces-874-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-875-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97A7C80EFD9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 16:16:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C0380F013
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 16:24:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26E50B20E2A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 15:16:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0ADBB20DA0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 15:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE9D75423;
-	Tue, 12 Dec 2023 15:16:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A2375436;
+	Tue, 12 Dec 2023 15:24:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="l0T8itEe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T8lAcSDS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [IPv6:2001:41d0:203:375::bb])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2287AA
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Dec 2023 07:16:36 -0800 (PST)
-Date: Tue, 12 Dec 2023 10:16:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702394195;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IAvBDqN7URQA7HRlFvKs2d63EJZvcsvm6p9cVChC2Qc=;
-	b=l0T8itEeLgP+TeuxTerhTmP7PKg/A2wSuyKw6g6ssdmrwj4LaH4uRcEErtuJzZNTp2lg/p
-	L7C1Tyeg37an2pUbmbfFWhdBn5xL5H8Mvth+ImPyMKlJXZcj8worxUm4WNsgiq8uoYtp8E
-	WrTFMh8oY55gLZJY+zg54sHAs7tNjgM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Amir Goldstein <amir73il@gmail.com>, Dave Chinner <david@fromorbit.com>,
-	NeilBrown <neilb@suse.de>, Donald Buczek <buczek@molgen.mpg.de>,
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157F775403;
+	Tue, 12 Dec 2023 15:24:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B635BC433C8;
+	Tue, 12 Dec 2023 15:24:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702394678;
+	bh=pkdBqV21b4Rfh/sUCZdEfLUL98HZquCTqxlPZhn+Osk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=T8lAcSDSqXLnp9J6sCXrdO5TxFpG4jjPrautjBO8odwGvYNgVxr+oFMkhVCZknFAS
+	 L8MROPHcjijzWytZ5SDc989QsSGAMgWiWZIZTtHGMnG5vVoEGP6DePOT/i+UnJA3iK
+	 oSOr8vuxGuJMdLR1RBjl3WmsQ1MLd8b/Qc+wFu+BQIZrGtZuAymBB1eVG23m+Zvu0X
+	 h8sEtvVUXT6IWlsVcxoPIAFbLddgvj2Ew6EP2C1i+ZwzxcJ45O+p1H2J1rW2V8BCl1
+	 n/oqCkLEYZeMd1mGAQloBOzKRFO1easG16/35IJtCSRqcFeyJnpnH3xcH5pOvG4HrR
+	 tK2x93mz191JQ==
+Date: Tue, 12 Dec 2023 16:24:33 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: David Howells <dhowells@redhat.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Donald Buczek <buczek@molgen.mpg.de>,
 	linux-bcachefs@vger.kernel.org,
 	Stefan Krueger <stefan.krueger@aei.mpg.de>,
-	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+	linux-btrfs@vger.kernel.org
 Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
  snapshots on muti-user systems?)
-Message-ID: <20231212151631.wi7rgawmp3uig6cl@moria.home.lan>
-References: <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de>
- <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan>
- <170233460764.12910.276163802059260666@noble.neil.brown.name>
- <20231211233231.oiazgkqs7yahruuw@moria.home.lan>
- <170233878712.12910.112528191448334241@noble.neil.brown.name>
- <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
- <170234279139.12910.809452786055101337@noble.neil.brown.name>
+Message-ID: <20231212-untiefen-leihwagen-ca303230fc4e@brauner>
+References: <170234279139.12910.809452786055101337@noble.neil.brown.name>
  <ZXf1WCrw4TPc5y7d@dread.disaster.area>
  <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com>
- <20231212-impfung-linden-6f973f2ade19@brauner>
+ <2810685.1702372247@warthog.procyon.org.uk>
+ <20231212-ablauf-achtbar-ae6e5b15b057@brauner>
+ <CAJfpegvL9kV+06v2W+5LbUk0eZr1ydfT1v0P-Pp_KexLNz=Lfg@mail.gmail.com>
+ <20231212-sechzehn-hausgemacht-6eb61150554e@brauner>
+ <CAJfpegshsEWtm-dcdUy2w9_ic0Ag7GXpA2yRWGR+LD2T37odGQ@mail.gmail.com>
+ <20231212-kahlschlag-abtropfen-51dc89b9ac11@brauner>
+ <CAJfpegu3uwAjMQd2jrBty0Lx-oHOczF0x6xNkyqcT4MBqyJo7Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231212-impfung-linden-6f973f2ade19@brauner>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <CAJfpegu3uwAjMQd2jrBty0Lx-oHOczF0x6xNkyqcT4MBqyJo7Q@mail.gmail.com>
 
-On Tue, Dec 12, 2023 at 09:56:45AM +0100, Christian Brauner wrote:
-> On Tue, Dec 12, 2023 at 08:32:55AM +0200, Amir Goldstein wrote:
-> > > >  STATX_ATTR_INUM_NOT_UNIQUE - it is possible that two files have the
-> > > >                               same inode number
+On Tue, Dec 12, 2023 at 03:06:07PM +0100, Miklos Szeredi wrote:
+> On Tue, 12 Dec 2023 at 14:48, Christian Brauner <brauner@kernel.org> wrote:
 > 
-> This is just ugly with questionable value. A constant reminder of how
-> broken this is. Exposing the subvolume id also makes this somewhat redundant.
+> > Exposing the subvolume id in statx() is still fine imho. It's a concept
+> > shared between btrfs and bcachefs and it's pretty useful for interested
+> > userspace that wants to make use of these apis.
+> 
+> Exposing subvolume ID should be okay, as long as it's not advertised
+> as a way to uniquely identify an inode.   Its use should be limited to
+> finding subvolume boundaries.
+> 
+> > > It might help to have the fh in statx, since that's easier on the
+> > > userspace programmer than having to deal with two interfaces (i_ino
+> > > won't go away for some time, because of backward compatibility).
+> > > OTOH I also don't like the way it would need to be shoehorned into
+> > > statx.
+> >
+> > No, it really doesn't belong into statx().
+> >
+> > And besides, the file handle apis name_to_handle_at() are already
+> > in wider use than a lot of people think. Not just for the exportfs case
+> > but also for example, cgroupfs uses file handles to provide unique
+> > identifiers for cgroups that can be compared.
+> 
+> The issue with name_to_handle_at() is its use of the old, non-unique
+> mount ID.  Yes, yes, we can get away with
+> 
+>  fd = openat(dfd, path, O_PATH);
+>  name_to_handle_at(fd, "", ..., AT_EMPTY_PATH);
+>  statx(fd, "", AT_EMPTY_PATH, STATX_MNT_ID_UNIQUE, ...);
+>  close(fd);
+> 
+> But that's *four* syscalls instead of one...
 
-Oh hell no. We finally get a reasonably productive discussion and I wake
-up to you calling things ugly and broken, with no reason or
-justification or any response to the justification that's already been
-given?
-
-Christain, that's not how we do things. Let's not turn what was a
-productive discussion into a trainwreck, OK?
+Yeah, but putting this into statx() isn't really nice imho. Once we do
+actually land the unique mount id thing it wouldn't be the worst thing
+to add name_to_handle_at2().
 
