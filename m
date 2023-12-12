@@ -1,109 +1,114 @@
-Return-Path: <linux-btrfs+bounces-851-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-852-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC02580E812
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 10:47:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15E4C80EC03
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 13:38:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 594C2280EFF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 09:47:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7504E281393
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 12:38:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ABC95914D;
-	Tue, 12 Dec 2023 09:47:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8895FEE7;
+	Tue, 12 Dec 2023 12:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HPZDKqWv"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="fuh3S6cz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6FAE4
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Dec 2023 01:46:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702374417;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=esvxw69kt9HBv0/olNC0BlWzgDrZkwrB0IdPpNeWzPE=;
-	b=HPZDKqWvFRFG77KnfYS4sDqdaGQL1ir6sTD3VLmGKoiiR4w9BBDK61M9QjBSAAAXtxY5wK
-	4ALurNNvmHhN0erVcS0wBAbzWbkh/2EKk+UIeFN2BEPMblO4kW343ZqQ5yMc0CmSJHJpUQ
-	n/8wPhBC3P17xIJS4qPjgI2/s/Wtxzk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-607-SCyH3tE6PLuxiN5U41ameg-1; Tue, 12 Dec 2023 04:46:54 -0500
-X-MC-Unique: SCyH3tE6PLuxiN5U41ameg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8FAE8835389;
-	Tue, 12 Dec 2023 09:46:53 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.2])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id F118F40C6EB9;
-	Tue, 12 Dec 2023 09:46:51 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20231212-ablauf-achtbar-ae6e5b15b057@brauner>
-References: <20231212-ablauf-achtbar-ae6e5b15b057@brauner> <630fcb48-1e1e-43df-8b27-a396a06c9f37@molgen.mpg.de> <20231208200247.we3zrwmnkwy5ibbz@moria.home.lan> <170233460764.12910.276163802059260666@noble.neil.brown.name> <20231211233231.oiazgkqs7yahruuw@moria.home.lan> <170233878712.12910.112528191448334241@noble.neil.brown.name> <20231212000515.4fesfyobdlzjlwra@moria.home.lan> <170234279139.12910.809452786055101337@noble.neil.brown.name> <ZXf1WCrw4TPc5y7d@dread.disaster.area> <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com> <2810685.1702372247@warthog.procyon.org.uk>
-To: Christian Brauner <brauner@kernel.org>
-Cc: dhowells@redhat.com, Amir Goldstein <amir73il@gmail.com>,
-    Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
-    Kent Overstreet <kent.overstreet@linux.dev>,
-    Donald Buczek <buczek@molgen.mpg.de>, linux-bcachefs@vger.kernel.org,
-    Stefan Krueger <stefan.krueger@aei.mpg.de>,
-    linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-    linux-btrfs@vger.kernel.org
-Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and snapshots on muti-user systems?)
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444DB110;
+	Tue, 12 Dec 2023 04:38:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1702384695; x=1733920695;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=HxLnsy+1wzJFDbdBgEWHFKFPXH75LHkJH8uVaiHdWO0=;
+  b=fuh3S6cznHcmN0xl/8jz9/9DUQDWiGPV+EN8qb6RRVk356qSfZwAccfW
+   bWqmKur7LZIAYoUV+tp0gRZh8VaPwP8Zw79vAqo93gV2UzCA3eq+9iQtG
+   Et/f+z54200iCT+BbAHRVQn1+hjolXb0zuFOhitMieha9mZhMA3/sgkJl
+   Vc7iIGV+1QhEDlKNteIdCcK55i6JuTniwUX4+XcsLacG94qvu9S33OkVa
+   +V84U64utzSwCPPzFNkCbFiPSzgiiptAlfzawa7vaJgfs5vOdFepsK0xy
+   +j4hLgbiaCpEdCIDBB5zyyY9eNzLFxJkjpOBfj+lf33ponx5c/0GbYTDH
+   Q==;
+X-CSE-ConnectionGUID: xCwpIT7FSHaErwldKyunDg==
+X-CSE-MsgGUID: UdtOej1lRbKvuC80Tl2gXQ==
+X-IronPort-AV: E=Sophos;i="6.04,270,1695657600"; 
+   d="scan'208";a="4629785"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Dec 2023 20:38:13 +0800
+IronPort-SDR: 5Fhmkq7VxQSiyP2WOKOmkC97fn6L5aMvXcdglI8a0KvblJDJ/Yt56eNDh2bWmqIG5gjC1gWHkt
+ vz+OcEYEGPqw==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Dec 2023 03:43:26 -0800
+IronPort-SDR: WzDIvKQqA3LLyuNHm+UkZVLffG9NuRobe5ag3IJc77mUmdGQv/ZThDS0U338FLmLswjLsOAfWe
+ R9teZsu2MpUw==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
+  by uls-op-cesaip02.wdc.com with ESMTP; 12 Dec 2023 04:38:12 -0800
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 00/13] btrfs: clean up RAID I/O geometry calculation
+Date: Tue, 12 Dec 2023 04:37:58 -0800
+Message-Id: <20231212-btrfs_map_block-cleanup-v1-0-b2d954d9a55b@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2812078.1702374411.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 12 Dec 2023 09:46:51 +0000
-Message-ID: <2812079.1702374411@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACZUeGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDIwNz3aSSorTi+NzEgviknPzkbN3knNTEvNICXWMTszRT48S0NEuDFCW
+ g7oKi1LTMCrDJ0bG1tQCdbVldaQAAAA==
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702384691; l=1540;
+ i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
+ bh=HxLnsy+1wzJFDbdBgEWHFKFPXH75LHkJH8uVaiHdWO0=;
+ b=s0YTYTdmfza6AEe2dcweU8WfdAEb56Vd6rQELH/ft5wMIDIdr8u7D8NPLSKllTdu6Wn2fHsRE
+ Dg/6r7NPbA+BWojqQDifnWwlMwyFN5b6IB2XbUlDuMbqISpXTbgTXPD
+X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
+ pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
 
-Christian Brauner <brauner@kernel.org> wrote:
+The calculation of the RAID I/O geometry in btrfs_map_block has been a maze of
+if-else statements for a very long time and the advent of the
+raid-stripe-tree made the situation even worse.
 
-> > There is a upcoming potential problem where even the 64-bit field I pl=
-aced
-> > in statx() may be insufficient.  The Auristor AFS server, for example,=
- has
-> > a 96-bit vnode ID, but I can't properly represent this in stx_ino.
-> > Currently, I
-> =
+This patchset refactors btrfs_map_block() to untagle the maze and make I/O
+geometry setting easier to follow, but does not introduce any functional
+changes.
 
-> Is that vnode ID akin to a volume? Because if so you could just
-> piggy-back on a subvolume id field in statx() and expose it there.
+I've also run it through Josef's CI and there have been test failures, but
+none of them introduced by these patches.
 
-No.  The volume ID is the ID of the volume.  The vnode is the equivalent o=
-f an
-inode.
+---
+Johannes Thumshirn (13):
+      btrfs: factor out helper for single device IO check
+      btrfs: re-introduce struct btrfs_io_geometry
+      btrfs: factor out block-mapping for RAID0
+      btrfs: factor out RAID1 block mapping
+      btrfs: factor out block mapping for DUP profiles
+      btrfs: factor out block mapping for RAID10
+      btrfs: reduce scope of data_stripes in btrfs_map_block
+      btrfs: factor out block mapping for RAID5/6
+      btrfs: factor out block mapping for single profiles
+      btrfs: untagle if else maze in btrfs_map_block
+      btrfs: open code set_io_stripe for RAID56
+      btrfs: pass struct btrfs_io_geometry to set_io_stripe
+      btrfs: pass btrfs_io_geometry into btrfs_max_io_len
 
-> > just truncate the value to fit and hope that the discarded part will b=
-e all
-> > zero, but that's not really a good thing to do - especially when stx_i=
-no is
-> > used programmatically to check for hardlinks.
-> > =
+ fs/btrfs/volumes.c | 388 +++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 245 insertions(+), 143 deletions(-)
+---
+base-commit: 14d1d39586246ca9d4ce97049c98be849e3bbcd9
+change-id: 20231207-btrfs_map_block-cleanup-346f53aff90d
 
-> > Would it be better to add an 'stx_ino_2' field and corresponding flag?
-> =
-
-> Would this be meaningfully different from using a file handle?
-
-There's also the matter of presenting the "inode number" to the user - "ls=
- -i"
-for example.
-
-David
+Best regards,
+-- 
+Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
 
