@@ -1,139 +1,108 @@
-Return-Path: <linux-btrfs+bounces-870-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-871-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ADE480EDAE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 14:32:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F45080EE00
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 14:48:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A2DFB20C48
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 13:32:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFEC31F21692
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 13:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E169065EB6;
-	Tue, 12 Dec 2023 13:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E606B6F63A;
+	Tue, 12 Dec 2023 13:47:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Soo6BjJw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07D5B3
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Dec 2023 05:32:34 -0800 (PST)
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1fb1f23d1bcso9955031fac.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Dec 2023 05:32:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702387954; x=1702992754;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KGYX1JcahWQVmmbjS2b0eMoTc8GaaY/bTCt82bEmxHs=;
-        b=J5ihrkM+zpj41hg5Wl6dDcV0FIa/4GUEqDSGmXFzvbxChnOCBnIEl4J7W7FgINN27Z
-         sX24lKtdh/JlYxkTXr/DENU5tnLXIWAJOtNhiiRxGtZ7vJDwYq5GPHLghdxJgZi1UouB
-         q1vs7vVIz6MrK8r2vi4MGnUvMMPdc++DCpAQbUkjo4effk8JzxxbZ7oL5k6RvvAYMt6P
-         DH9qa2SqQWs2iKMnB7GeHKCjKKtu/edwxLRlV3b2YMaxtSTio/HAT55tv+2QBo8QE+s7
-         FItFwz9/RRcVP81eLrJXEP9FbeOtrQX8eKGft8VMsgVXrVsXXTXUmncx2KlEnvmKvTC4
-         VrGg==
-X-Gm-Message-State: AOJu0YxG7QPi+LB6Rsft+DVY1eOyu/L3QwlKq6jFw0nAfBULmZVe1lHz
-	2HiuREeyrhmZArgL2EdC5yAxvDH8SkmunxN2zuL2E25BqBrB
-X-Google-Smtp-Source: AGHT+IHV473fRfDVaXq62bjejr4Dhd4YONJaik+XJVoq0djyWs4yOJdc9z6wKrwtRtBu2oXqoV7pGtWIpm6/RDBP30auXzpRshae
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE506DCFB;
+	Tue, 12 Dec 2023 13:47:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1178C433CD;
+	Tue, 12 Dec 2023 13:47:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702388876;
+	bh=KK6k7ktFdcMgvX1gs7P76rUn6O9ERk65npZY37aPADA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Soo6BjJw9sG9qzCxgmUA+QzURPApdg6AHB5j9LZxaFflQGJDsi5NtgRBLKtWsbplK
+	 KuZ6my0SFlPVy2/hD0CBCRwWE3fQ5QhVvkuJXqm/8kzFfFaEdVUNKFWPD5bNWCi8cu
+	 9ykSqBt8ncPXuUctx1Y3nuKA3TXuEWcz95gh6tdcEJvPvUGyOiuCbX83eirVttE4DI
+	 daRXkF1P2P9/f7OL1oXCzBUvboHq1Yjc+jHojwOgJydcoDBGLSJYhBQcTe5IJzRiZl
+	 T1pwoT/+CeXkpsffqK7v6VbbxLvrWe1qnub/rM91vF1lxWjdiqqs0cp1pRQyLT8vjX
+	 +TYv5gapNQwww==
+Date: Tue, 12 Dec 2023 14:47:51 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: David Howells <dhowells@redhat.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Donald Buczek <buczek@molgen.mpg.de>,
+	linux-bcachefs@vger.kernel.org,
+	Stefan Krueger <stefan.krueger@aei.mpg.de>,
+	linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+	linux-btrfs@vger.kernel.org
+Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
+ snapshots on muti-user systems?)
+Message-ID: <20231212-kahlschlag-abtropfen-51dc89b9ac11@brauner>
+References: <170233878712.12910.112528191448334241@noble.neil.brown.name>
+ <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
+ <170234279139.12910.809452786055101337@noble.neil.brown.name>
+ <ZXf1WCrw4TPc5y7d@dread.disaster.area>
+ <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com>
+ <2810685.1702372247@warthog.procyon.org.uk>
+ <20231212-ablauf-achtbar-ae6e5b15b057@brauner>
+ <CAJfpegvL9kV+06v2W+5LbUk0eZr1ydfT1v0P-Pp_KexLNz=Lfg@mail.gmail.com>
+ <20231212-sechzehn-hausgemacht-6eb61150554e@brauner>
+ <CAJfpegshsEWtm-dcdUy2w9_ic0Ag7GXpA2yRWGR+LD2T37odGQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:6393:b0:1fb:483:a1d5 with SMTP id
- t19-20020a056870639300b001fb0483a1d5mr6941506oap.10.1702387953977; Tue, 12
- Dec 2023 05:32:33 -0800 (PST)
-Date: Tue, 12 Dec 2023 05:32:33 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000444fa8060c501557@google.com>
-Subject: [syzbot] [btrfs?] WARNING in fiemap_process_hole
-From: syzbot <syzbot+35281eae12e6fa221f16@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Level: **
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJfpegshsEWtm-dcdUy2w9_ic0Ag7GXpA2yRWGR+LD2T37odGQ@mail.gmail.com>
 
-Hello,
+On Tue, Dec 12, 2023 at 10:42:58AM +0100, Miklos Szeredi wrote:
+> On Tue, 12 Dec 2023 at 10:35, Christian Brauner <brauner@kernel.org> wrote:
+> 
+> > So taking a step back here, please. The original motivation for this
+> > discussion was restricted to handle btrfs - and now bcachefs as well.
+> > Both have a concept of a subvolume so it made sense to go that route.
+> > IOW, it wasn't originally a generic problem or pitched as such.
+> >
+> > Would overlayfs be able to utilize an extended inode field as well?
+> 
+> Well, yes, but I don't think that's the right solution.
 
-syzbot found the following issue on:
+Exposing the subvolume id in statx() is still fine imho. It's a concept
+shared between btrfs and bcachefs and it's pretty useful for interested
+userspace that wants to make use of these apis.
 
-HEAD commit:    815fb87b7530 Merge tag 'pm-6.7-rc4' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16865c18e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1f341086b9b65f3
-dashboard link: https://syzkaller.appspot.com/bug?extid=35281eae12e6fa221f16
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> I think the right solution is to move to using file handles instead of
+> st_ino, the problem with that is that there's no way kernel can force
+> upgrading userspace.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+That's not our job tbh. I get why this is desirable. What we can do is
+advertise better and newer apis but we don't have to make unpleasant
+compromises in our interfaces for that.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5207d4e5f747/disk-815fb87b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5255f6dfc8c3/vmlinux-815fb87b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/876a2e66fa94/bzImage-815fb87b.xz
+> 
+> It might help to have the fh in statx, since that's easier on the
+> userspace programmer than having to deal with two interfaces (i_ino
+> won't go away for some time, because of backward compatibility).
+> OTOH I also don't like the way it would need to be shoehorned into
+> statx.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+35281eae12e6fa221f16@syzkaller.appspotmail.com
+No, it really doesn't belong into statx().
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 31576 at fs/btrfs/extent_io.c:2454 emit_fiemap_extent fs/btrfs/extent_io.c:2454 [inline]
-WARNING: CPU: 1 PID: 31576 at fs/btrfs/extent_io.c:2454 fiemap_process_hole+0x9e0/0xaf0 fs/btrfs/extent_io.c:2695
-Modules linked in:
-CPU: 1 PID: 31576 Comm: syz-executor.4 Not tainted 6.7.0-rc3-syzkaller-00284-g815fb87b7530 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:emit_fiemap_extent fs/btrfs/extent_io.c:2454 [inline]
-RIP: 0010:fiemap_process_hole+0x9e0/0xaf0 fs/btrfs/extent_io.c:2695
-Code: 85 ed 0f 45 c8 89 4c 24 14 4c 8b 7c 24 18 49 89 dd eb 39 e8 82 d2 f0 fd eb 32 e8 7b d2 f0 fd e9 a5 00 00 00 e8 71 d2 f0 fd 90 <0f> 0b 90 41 bd ea ff ff ff 49 bc 00 00 00 00 00 fc ff df e9 87 00
-RSP: 0018:ffffc90003897520 EFLAGS: 00010287
-RAX: ffffffff839da7cf RBX: 0000000000027000 RCX: 0000000000040000
-RDX: ffffc9000c740000 RSI: 00000000000057d1 RDI: 00000000000057d2
-RBP: ffffc90003897690 R08: ffffffff839da273 R09: 1ffffffff21bae90
-R10: dffffc0000000000 R11: fffffbfff21bae91 R12: 1ffff92000712f1e
-R13: 00000000000d9000 R14: 0000000000101000 R15: 1ffff92000712f1f
-FS:  00007f73188496c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f39fba05000 CR3: 000000005143e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- extent_fiemap+0xeae/0x1fe0
- btrfs_fiemap+0x178/0x1e0 fs/btrfs/inode.c:7830
- ioctl_fiemap fs/ioctl.c:220 [inline]
- do_vfs_ioctl+0x19ea/0x2b40 fs/ioctl.c:811
- __do_sys_ioctl fs/ioctl.c:869 [inline]
- __se_sys_ioctl+0x81/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f7317a7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f73188490c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f7317b9c120 RCX: 00007f7317a7cae9
-RDX: 00000000200000c0 RSI: 00000000c020660b RDI: 0000000000000005
-RBP: 00007f7317ac847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f7317b9c120 R15: 00007fff6ffca378
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+And besides, the file handle apis name_to_handle_at() are already
+in wider use than a lot of people think. Not just for the exportfs case
+but also for example, cgroupfs uses file handles to provide unique
+identifiers for cgroups that can be compared.
 
