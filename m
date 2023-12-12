@@ -1,156 +1,196 @@
-Return-Path: <linux-btrfs+bounces-826-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-827-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA4B980DFBC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 00:54:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36C8880DFD8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 01:12:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95686282689
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Dec 2023 23:54:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5D0CB2177B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 00:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2706556B7E;
-	Mon, 11 Dec 2023 23:54:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TWjfqP4/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9DC39F;
+	Tue, 12 Dec 2023 00:12:19 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F9BAB
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Dec 2023 15:54:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1702338859; x=1702943659; i=quwenruo.btrfs@gmx.com;
-	bh=OX28a2+ntyKahKUd3JpI1AIK30Mcx33cj0ACNaFLmx0=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=TWjfqP4/7Z/sBTn/lWW8mkG6VCBm1DEbgtt5HveUvnr4bbcc8/T+nxuI0K0AG/H/
-	 ndziqHH8iWgwVJUzaE1Gz8nogKufe5e1+XKcshezsc1oICYqfaOmJT51ze1ugcwQN
-	 xtw51PkKgeUUn9tFaUgrm2ivTpFNYROZbKXRip60z1mdOAUxk7RJXb/cZOSQkGSl1
-	 c3PzZ5ntYUNcbSC6CDYGeBMpgLHe4Vi8BCSgn/2mJ5vpEv5S8d8a7rv/hVZHH4IrE
-	 Zk9wsOgPRd9X7IT5KIEQHqq0ef+R+NpkfOQf67pwhvNu/li17US6DjgrB3llc8yhb
-	 4LMrgP5nodhgd1LGGQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([193.115.79.20]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MjS54-1rej7g2AR8-00kvUS; Tue, 12
- Dec 2023 00:54:19 +0100
-Message-ID: <f2dfb764-1356-4a3c-81e8-a2225f40fea5@gmx.com>
-Date: Tue, 12 Dec 2023 10:24:14 +1030
+Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B64BB5
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Dec 2023 16:12:16 -0800 (PST)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 8018294220E;
+	Tue, 12 Dec 2023 00:12:15 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id C30989417B1;
+	Tue, 12 Dec 2023 00:12:14 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1702339935; a=rsa-sha256;
+	cv=none;
+	b=O8dJvsPGwV75BZ9xYIUFu87kNJ6lby3HXl4/+zlRxx7uwHww64cyE6HAJEAgFvgxiStk6L
+	RlZ6+SorY/dg1fTTNtLrQz0jbeX8WMv6t8qCIdmzCd5QvjssiL0qL/NOc3ano+Ft/DGHHa
+	9s4/i/e7OYlM4AIzhRYgjdRvOOIAP0rTlVbdhF8gtPFauB/qbzVNFzST6k9RPUSNWUSclm
+	9b9KY6uB9eqBGCsM8efRc3ffZGYgWHSfu+aMj9giGyv+jgn02wlzrkKoiCuTYo1VGGCNzK
+	zhFyrQcZEtrSij3I0BT14KMvM8QmM7UZNALMCOX44PDxzGkLkyyxd+mk9v5egQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1702339935;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DxgLEZyJd9LFel7D1Oh1YHmBZOOROr9nZYXpybT+Wao=;
+	b=dRr0CXNSRo4B2KTsOoEQbEgPFCHGrCcTtfTH4CLAUTgF8utpqxvVz4wKpnMp56ie/tDKhU
+	LgyBlCgUI/p8yNiP4q8u2aySgBzhZRA4U/dqwYDLE4mz/A4cxe7r/D5yR/LJk6UwCLy256
+	vf+emZ0kEXzpU1vyZAOwuEkk0EPc+y7Fiho5oK/o4aly074/ON+nBNS+v9XkAE72Rxxyio
+	AgsDJRwykP/NftSJ4HYSQFNbXuMccNKrZmQDO2A6UVJTogzHtogJ1PvdfMN4t2ZZCDrRoq
+	CzQqZeue5HMiRW77Cx7/QCYjrP9oN805e2u8IBT/XCDucJMItSevCXb962P+hA==
+ARC-Authentication-Results: i=1;
+	rspamd-6cb9686b59-fwr6j;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Unite-Supply: 342267042089aa84_1702339935331_84393924
+X-MC-Loop-Signature: 1702339935331:620153766
+X-MC-Ingress-Time: 1702339935331
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+	by 100.118.156.120 (trex/6.9.2);
+	Tue, 12 Dec 2023 00:12:15 +0000
+Received: from p5090f0e4.dip0.t-ipconnect.de ([80.144.240.228]:47406 helo=heisenberg.fritz.box)
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <calestyo@scientia.org>)
+	id 1rCqNd-0005Xv-3D;
+	Tue, 12 Dec 2023 00:12:13 +0000
+Message-ID: <f1f3b0f2a48f9092ea54f05b0f6596c58370e0b2.camel@scientia.org>
+Subject: Re: btrfs thinks fs is full, though 11GB should be still free
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Date: Tue, 12 Dec 2023 01:12:08 +0100
+In-Reply-To: <f2dfb764-1356-4a3c-81e8-a2225f40fea5@gmx.com>
+References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
+	 <253c6b4e-2b33-4892-8d6f-c0f783732cb6@gmx.com>
+	 <95692519c19990e9993d5a93985aab854289632a.camel@scientia.org>
+	 <656b69f7-d897-4e9d-babe-39727b8e3433@gmx.com>
+	 <cf65cb296cf4bca8abb0e1ee260436990bc9d3ca.camel@scientia.org>
+	 <f2dfb764-1356-4a3c-81e8-a2225f40fea5@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2-1 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs thinks fs is full, though 11GB should be still free
-Content-Language: en-US
-To: Christoph Anton Mitterer <calestyo@scientia.org>,
- linux-btrfs@vger.kernel.org
-References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
- <253c6b4e-2b33-4892-8d6f-c0f783732cb6@gmx.com>
- <95692519c19990e9993d5a93985aab854289632a.camel@scientia.org>
- <656b69f7-d897-4e9d-babe-39727b8e3433@gmx.com>
- <cf65cb296cf4bca8abb0e1ee260436990bc9d3ca.camel@scientia.org>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <cf65cb296cf4bca8abb0e1ee260436990bc9d3ca.camel@scientia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XpsOLxYcrS8+Q3tOh403rTXyhY8IrvZ45TOI+AhpmCk1avvhXSv
- ibqLkoP692nnwGwMqN90Km8bhx6mOK26tktGQuJFUOld09qBNFZg1gWBuIDbO7wbpdXeseY
- l6JP6fcvvlP824GT+S0DLXkwRuPGtRTblRbsXSkJiY8F+XEHSISwyDw9OblPJct4phEv8LK
- IZ+voAqaD7raqesc6A7SA==
-UI-OutboundReport: notjunk:1;M01:P0:7oKUKQNNgAI=;ROWW6UCKzsfEPPlOItkgs2Ml8I/
- lZ5rcxMFTrZNMSQ5dJkqUr4nqa5lJRfC8RWbCkl/QIsZvTjm2jkBso6U8K/P+KcqzVZ/5AW+2
- 1fcEZOEDAy3llFVNT34IIbRWiVDRG4zA9c0kE7JhM1l9WHWD4MmjYqQ0XQYyo3QhnsXpfyAZ5
- yk6BwvPitSQowbIDeSCAujcO0Lp0c4JpTeibotk3XlRXyuvKr4rf5H2rY9aPPCy9DQCvIfiFa
- bZv4WA2GWhpFl/6VfHwhvXOXvjDeq8B1+qzKSKEkdGSS973qBgVTFjxJOk2S7WAWOVrgctum5
- C5yDJCWsiBrOVqqjMfGLOKIbPucpx/0aKMGSQ0hfXbHUmf3+u4vqOqEweb36I2UuuNWXFfxU0
- PvlniUcDj3dMZYhddoKbwjZIIUcpgQqf9oc9HLwhUV3sbVKgBt4hL8ZgD5GzzGC52K//L1uiR
- m65LkS9pUiLmgb9TBlfGnLGkS3AdHCDDykCnql9ZWVGVQCNGa0fBv1KPkQj7K4xjpro0D33Ly
- kLRtKJra2CG2FnEoPYV7bMQcqVzPvl/j604wq1ETkUAiKTEbtY3hZ+zX4JTFzLpB9Gw5+RQit
- m5H8tPxVZzgnU8EKcv006c0HwPXezrNOX9M7Nhb+1CrShN8cS+270noK41tKUJ2glr3qlB9sT
- xlOS++jbAxQuqGAw9WgCNy8xNmzYp8RvFaFg62dIS47GIdKvfL9OrdhdXfW7drA/gsdmgTctP
- NwTubzxt6kRZUTf7jMzJ5deT0zHhYq7Ych8TYFiwaM3Yjm5DyFUKAmzq7pGEBHsbxa1CIxGtx
- b0BbdSKj/7OwUXckr0FqLr5ZNMLjtO8do5y2q1gGYoX3+lD+hixteyasp2pPzj2MvxVsa59gc
- X74742MmRRP+DFWujkXR6CO3Ky6/8Nsj+qf2KIoXWxfthH2d40avT3/gvL2BWaCdMWvGt0jD2
- qTr1pBsvVMvDI7tE7Df86K3DCpY=
+X-AuthUser: calestyo@scientia.org
+
+On Tue, 2023-12-12 at 10:24 +1030, Qu Wenruo wrote:
+> Then the last thing is extent bookends.
+>=20
+> COW and small random writes can easily lead to extra space wasted by
+> extent bookends.
+
+Is there a way to check this? Would I just seem maaany extents when I
+look at the files with filefrag?
+
+
+I mean Prometheus, continuously collects metrics from a number of nodes
+an (sooner or later) writes them to disk.
+I don't really know their code, so I have no idea if they already write
+every tiny metric, or only large bunches thereof.
+
+Since they do maintain a WAL, I'd assume the former.
+
+Every know and then, the WAL is written to chunk files which are rather
+large, well ~160M or so in my case, but that depends on how many
+metrics one collects. I think they always write data for a period of
+2h.
+Later on, they further compact that chunks (I think after 8 hours and
+so on), in which case some larger rewritings would be done.
+Though in my case this doesn't happen, as I run Thanos on top of
+Prometheus, and for that one needs to disable Prometheus' own
+compaction.
+
+
+I've had already previously looked at the extents for these "compacted"
+chunk files, but the worst file had only 32 extents (as reported by
+filefrag).
+
+Looking at the WAL files:
+/data/main/prometheus/metrics2/wal# filefrag * | grep -v ' 0 extents
+found'
+00001030: 82 extents found
+00001031: 81 extents found
+00001032: 79 extents found
+00001033: 82 extents found
+00001034: 78 extents found
+00001035: 78 extents found
+00001036: 81 extents found
+00001037: 79 extents found
+00001038: 79 extents found
+00001039: 89 extents found
+00001040: 80 extents found
+00001041: 74 extents found
+00001042: 81 extents found
+00001043: 97 extents found
+00001044: 101 extents found
+00001045: 316 extents found
+checkpoint.00001029: FIBMAP/FIEMAP unsupported
+
+(I did the grep -v, because there were a gazillion of empty wal files,
+presumably created when the fs was already full).
+
+The above numbers though still don't look to bad, do they?
+
+And checking all:
+# find /data/main/ -type f -execdir filefrag {} \; | cut -d : -f 2 |
+sort | uniq -c | sort -V
+   3706  0 extents found
+    450  1 extent found
+     25  3 extents found
+     62  2 extents found
+      1  8 extents found
+      1  9 extents found
+      1  10 extents found
+      1  11 extents found
+      1  32 extents found
+      1  74 extents found
+      1  80 extents found
+      1  89 extents found
+      1  97 extents found
+      1  101 extents found
+      1  316 extents found
+      2  78 extents found
+      2  82 extents found
+      3  5 extents found
+      3  79 extents found
+      3  81 extents found
+      6  4 extents found
 
 
 
-On 2023/12/12 10:08, Christoph Anton Mitterer wrote:
-> On Tue, 2023-12-12 at 09:50 +1030, Qu Wenruo wrote:
->> Shows exactly which subvolumes uses how many bytes, including orphan
->> ones which is pending for deletion.
->
-> Well... here we go:
-> # btrfs qgroup show .
-> Qgroupid    Referenced    Exclusive   Path
-> --------    ----------    ---------   ----
-> 0/5           16.00KiB     16.00KiB   <toplevel>
-> 0/257         39.48GiB     39.48GiB   data
-> 0/258         16.00KiB     16.00KiB   <stale>
-> 0/259         16.00KiB     16.00KiB   a
-> 0/260         16.00KiB     16.00KiB   b
-> 1/100         32.00KiB     32.00KiB   <0 member qgroups>
-> 1/101            0.00B        0.00B   <0 member qgroups>
->
-> I've just created a and b to get qgroup (somehow? ^^) working.
->
->
-> Nevertheless:
-> I'm 100% sure, that before, there were never any subvolumes on that fs
-> other than the toplevel and data, unless btrfs somehow creates/deletes
-> them automatically.
->
->
-> But the above output, AFAIU, still shows that "everything" is in data,
-> while counting the bytes of files there, still yields a much lower
-> number.
+> E.g. You write a 16M data extents, then over-write the tailing 8M,
+> now
+> we have two data extents, the old 16M and the new 8M, wasting 8M
+> space.
+>=20
+> In that case, you can try defrag, but you still need to delete some
+> data
+> first so that you can do defrag...
 
-OK, then everything looks fine.
 
->
->
-> And other ideas what I could test?
+Well my main concern is rather how to prevent this from happening in
+the first place... the data is already all backuped into Thanos, so I
+could also just wipe the fs.
+But this seems to occur repeatedly (well, okay only twice so far O:-)
+).
+So that would mean we have some IO pattern that "kills" btrfs.
 
-Then the last thing is extent bookends.
 
-COW and small random writes can easily lead to extra space wasted by
-extent bookends.
-
-E.g. You write a 16M data extents, then over-write the tailing 8M, now
-we have two data extents, the old 16M and the new 8M, wasting 8M space.
-
-In that case, you can try defrag, but you still need to delete some data
-first so that you can do defrag...
-
-Thanks,
-Qu
->
->
-> Thanks,
-> Chris.
+Cheers,
+Chris.
 
