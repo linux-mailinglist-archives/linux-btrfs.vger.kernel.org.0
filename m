@@ -1,44 +1,40 @@
-Return-Path: <linux-btrfs+bounces-875-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-878-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25C0380F013
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 16:24:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A8DE80F12E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 16:36:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0ADBB20DA0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 15:24:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 353F028164C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Dec 2023 15:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A2375436;
-	Tue, 12 Dec 2023 15:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB88A76DC5;
+	Tue, 12 Dec 2023 15:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T8lAcSDS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tMklP8KB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157F775403;
-	Tue, 12 Dec 2023 15:24:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B635BC433C8;
-	Tue, 12 Dec 2023 15:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702394678;
-	bh=pkdBqV21b4Rfh/sUCZdEfLUL98HZquCTqxlPZhn+Osk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T8lAcSDSqXLnp9J6sCXrdO5TxFpG4jjPrautjBO8odwGvYNgVxr+oFMkhVCZknFAS
-	 L8MROPHcjijzWytZ5SDc989QsSGAMgWiWZIZTtHGMnG5vVoEGP6DePOT/i+UnJA3iK
-	 oSOr8vuxGuJMdLR1RBjl3WmsQ1MLd8b/Qc+wFu+BQIZrGtZuAymBB1eVG23m+Zvu0X
-	 h8sEtvVUXT6IWlsVcxoPIAFbLddgvj2Ew6EP2C1i+ZwzxcJ45O+p1H2J1rW2V8BCl1
-	 n/oqCkLEYZeMd1mGAQloBOzKRFO1easG16/35IJtCSRqcFeyJnpnH3xcH5pOvG4HrR
-	 tK2x93mz191JQ==
-Date: Tue, 12 Dec 2023 16:24:33 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: David Howells <dhowells@redhat.com>,
+X-Greylist: delayed 449 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Dec 2023 07:36:31 PST
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [IPv6:2001:41d0:203:375::af])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B41CAA
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Dec 2023 07:36:31 -0800 (PST)
+Date: Tue, 12 Dec 2023 10:28:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702394936;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SSmYahAI1/3A8P8vC3gfszRXaL+fhFAUnbHnvxlXGHQ=;
+	b=tMklP8KBZbAmG9PihUM4JU0INuK2SvNuu070eAEpmLWnT7IUHxk9P6Kc/mrz9yuiJAVpUK
+	8GXkZLEw+Rq2QzLV77V1aIpjWvURFhLOlOyjbwIWQtDXDX67hJc3NWYz21EoT04jbogY0L
+	GsPgDu6NASJnEsy6h4lf0PPYaAWgfvg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Miklos Szeredi <miklos@szeredi.hu>, David Howells <dhowells@redhat.com>,
 	Amir Goldstein <amir73il@gmail.com>,
 	Dave Chinner <david@fromorbit.com>, NeilBrown <neilb@suse.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
 	Donald Buczek <buczek@molgen.mpg.de>,
 	linux-bcachefs@vger.kernel.org,
 	Stefan Krueger <stefan.krueger@aei.mpg.de>,
@@ -46,62 +42,78 @@ Cc: David Howells <dhowells@redhat.com>,
 	linux-btrfs@vger.kernel.org
 Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
  snapshots on muti-user systems?)
-Message-ID: <20231212-untiefen-leihwagen-ca303230fc4e@brauner>
-References: <170234279139.12910.809452786055101337@noble.neil.brown.name>
+Message-ID: <20231212152853.fvlkgstsvmryoyix@moria.home.lan>
+References: <20231211233231.oiazgkqs7yahruuw@moria.home.lan>
+ <170233878712.12910.112528191448334241@noble.neil.brown.name>
+ <20231212000515.4fesfyobdlzjlwra@moria.home.lan>
+ <170234279139.12910.809452786055101337@noble.neil.brown.name>
  <ZXf1WCrw4TPc5y7d@dread.disaster.area>
  <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com>
  <2810685.1702372247@warthog.procyon.org.uk>
  <20231212-ablauf-achtbar-ae6e5b15b057@brauner>
  <CAJfpegvL9kV+06v2W+5LbUk0eZr1ydfT1v0P-Pp_KexLNz=Lfg@mail.gmail.com>
  <20231212-sechzehn-hausgemacht-6eb61150554e@brauner>
- <CAJfpegshsEWtm-dcdUy2w9_ic0Ag7GXpA2yRWGR+LD2T37odGQ@mail.gmail.com>
- <20231212-kahlschlag-abtropfen-51dc89b9ac11@brauner>
- <CAJfpegu3uwAjMQd2jrBty0Lx-oHOczF0x6xNkyqcT4MBqyJo7Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJfpegu3uwAjMQd2jrBty0Lx-oHOczF0x6xNkyqcT4MBqyJo7Q@mail.gmail.com>
+In-Reply-To: <20231212-sechzehn-hausgemacht-6eb61150554e@brauner>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Dec 12, 2023 at 03:06:07PM +0100, Miklos Szeredi wrote:
-> On Tue, 12 Dec 2023 at 14:48, Christian Brauner <brauner@kernel.org> wrote:
+On Tue, Dec 12, 2023 at 10:35:40AM +0100, Christian Brauner wrote:
+> On Tue, Dec 12, 2023 at 10:28:12AM +0100, Miklos Szeredi wrote:
+> > On Tue, 12 Dec 2023 at 10:23, Christian Brauner <brauner@kernel.org> wrote:
+> > >
+> > > On Tue, Dec 12, 2023 at 09:10:47AM +0000, David Howells wrote:
+> > > > Christian Brauner <brauner@kernel.org> wrote:
+> > > >
+> > > > > > > > I suggest:
+> > > > > > > >
+> > > > > > > >  STATX_ATTR_INUM_NOT_UNIQUE - it is possible that two files have the
+> > > > > > > >                               same inode number
+> > > > >
+> > > > > This is just ugly with questionable value. A constant reminder of how
+> > > > > broken this is. Exposing the subvolume id also makes this somewhat redundant.
+> > > >
+> > > > There is a upcoming potential problem where even the 64-bit field I placed in
+> > > > statx() may be insufficient.  The Auristor AFS server, for example, has a
+> > > > 96-bit vnode ID, but I can't properly represent this in stx_ino.  Currently, I
+> > >
+> > > Is that vnode ID akin to a volume? Because if so you could just
+> > > piggy-back on a subvolume id field in statx() and expose it there.
+> > 
+> > And how would exporting a subvolume ID and expecting userspace to take
+> > that into account when checking for hard links be meaningfully
+> > different than expecting userspace to retrieve the file handle and
+> > compare that?
+> > 
+> > The latter would at least be a generic solution, including stacking fs
+> > inodes, instead of tackling just a specific corner of the problem
+> > space.
 > 
-> > Exposing the subvolume id in statx() is still fine imho. It's a concept
-> > shared between btrfs and bcachefs and it's pretty useful for interested
-> > userspace that wants to make use of these apis.
+> So taking a step back here, please. The original motivation for this
+> discussion was restricted to handle btrfs - and now bcachefs as well.
+> Both have a concept of a subvolume so it made sense to go that route.
+> IOW, it wasn't originally a generic problem or pitched as such.
 > 
-> Exposing subvolume ID should be okay, as long as it's not advertised
-> as a way to uniquely identify an inode.   Its use should be limited to
-> finding subvolume boundaries.
-> 
-> > > It might help to have the fh in statx, since that's easier on the
-> > > userspace programmer than having to deal with two interfaces (i_ino
-> > > won't go away for some time, because of backward compatibility).
-> > > OTOH I also don't like the way it would need to be shoehorned into
-> > > statx.
-> >
-> > No, it really doesn't belong into statx().
-> >
-> > And besides, the file handle apis name_to_handle_at() are already
-> > in wider use than a lot of people think. Not just for the exportfs case
-> > but also for example, cgroupfs uses file handles to provide unique
-> > identifiers for cgroups that can be compared.
-> 
-> The issue with name_to_handle_at() is its use of the old, non-unique
-> mount ID.  Yes, yes, we can get away with
-> 
->  fd = openat(dfd, path, O_PATH);
->  name_to_handle_at(fd, "", ..., AT_EMPTY_PATH);
->  statx(fd, "", AT_EMPTY_PATH, STATX_MNT_ID_UNIQUE, ...);
->  close(fd);
-> 
-> But that's *four* syscalls instead of one...
+> Would overlayfs be able to utilize an extended inode field as well?
 
-Yeah, but putting this into statx() isn't really nice imho. Once we do
-actually land the unique mount id thing it wouldn't be the worst thing
-to add name_to_handle_at2().
+No, the original motivation was not just btrfs and bcachefs; overlayfs
+fundamentally needs to export a bigger identifier than the host
+filesystems - pigeonhole principle, if anyone remembers their
+combinatorics.
+
+This applies to any filesystem which is under the hood reexporting from
+other filesystems; there's a lot of stuff going on in container
+filesystems right now, and I expect it'll come up there (you can create
+new identifiers if you're exporting file by file, but not if it's
+directory trees).
+
+And Neal brought up NFS re-exports; I think there's a compelling
+argument to be made that we ought to be able to round trip NFS
+filehandles.
 
