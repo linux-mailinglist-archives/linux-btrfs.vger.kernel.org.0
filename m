@@ -1,149 +1,176 @@
-Return-Path: <linux-btrfs+bounces-944-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-945-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5673D812044
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 21:54:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13841812187
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 23:32:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FA2F1C21147
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 20:54:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1DF7282C6A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 22:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7A97E57F;
-	Wed, 13 Dec 2023 20:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D648981831;
+	Wed, 13 Dec 2023 22:32:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MSt5dQdV";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y+ramPYM";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MSt5dQdV";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y+ramPYM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8C49C;
-	Wed, 13 Dec 2023 12:54:45 -0800 (PST)
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40c38de1ee4so51651075e9.0;
-        Wed, 13 Dec 2023 12:54:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702500883; x=1703105683;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uERSlmWABCloqqWZmq7G8mc4+2oSuJMPRYaQZcqODM8=;
-        b=WRR6pfC63xOLdCDt0ZYKZmVodlCqKIzNr1h3S1BHOA1SvmuRldey2vOYiW4jbIH7mz
-         1mTAvF1AuxWiEP+0e2IYQkLyXbJzaO6QOLkTlyim83KQNr94CTVobSsEyAPbRKUwSLva
-         IK4Azpc06FR2hKqRYEgU0CTqBhhsZTSJeBgqoJDxOKbATTWkIK2qwKEQitQ5X7P4Xm6M
-         U0XPNg3kR13YgsryggZ0IHP1Y2I/3sGFiAIZJA2KqHV10TWUJWUFaNHkDyZaBhsAEqOB
-         chQv2aWt4NNIjtQKk+EzrGN7m5ztd5UrMwptO3gS3POE4gF+vXxlq2CngRxDsZb7q1ix
-         AJPA==
-X-Gm-Message-State: AOJu0YwCnrf+cy5mUO2fUA76UbxeEcLd0QpTOlGcPF3mlRucLmL+QzjU
-	1CNMe9q81rCeRIVwuVUFOL3lYSA2IYKHew==
-X-Google-Smtp-Source: AGHT+IFugTNGnl0Qu9btbrBMpylz/sK9luUWzvyHxx7L23FEz2CDJEcjHWIBeO62L/7fMxpNdntTLA==
-X-Received: by 2002:a05:600c:3b9f:b0:40c:2878:35ec with SMTP id n31-20020a05600c3b9f00b0040c287835ecmr4656224wms.131.1702500882927;
-        Wed, 13 Dec 2023 12:54:42 -0800 (PST)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id vh9-20020a170907d38900b00a1d18c142eesm8393448ejc.59.2023.12.13.12.54.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 12:54:42 -0800 (PST)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55226029d17so1417898a12.0;
-        Wed, 13 Dec 2023 12:54:42 -0800 (PST)
-X-Received: by 2002:a50:d657:0:b0:54c:f9e6:e40f with SMTP id
- c23-20020a50d657000000b0054cf9e6e40fmr4717255edj.7.1702500882554; Wed, 13 Dec
- 2023 12:54:42 -0800 (PST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF23F7
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Dec 2023 14:32:26 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B5FF422388;
+	Wed, 13 Dec 2023 22:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702506744;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NLxWRvPs1mky6vAQPllCiusVf2PFFSDCc6DJ5VExyyo=;
+	b=MSt5dQdVBW/CbeQfQNT5YFTpg7kt+F2vDR3Qi0TRFviyM4QknkTldSLqooqU4sACryIRvy
+	oeQH5fH6rGq6u9HcEmXt9Iq+r46znlkKrcJmyPKNG9VwJ0JrvyF9b9gvGe4jF5cAKhMRdd
+	wLAHTwcs/MaxOFA6wxfBowCCdio6OXU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702506744;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NLxWRvPs1mky6vAQPllCiusVf2PFFSDCc6DJ5VExyyo=;
+	b=y+ramPYMPUQhwuerxiu5u+KS9LwlvoM9MEQ3a7liNqECUGXQiqWUOykWdS8nVKIAstVCdI
+	TirJxFASlDLxLIBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702506744;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NLxWRvPs1mky6vAQPllCiusVf2PFFSDCc6DJ5VExyyo=;
+	b=MSt5dQdVBW/CbeQfQNT5YFTpg7kt+F2vDR3Qi0TRFviyM4QknkTldSLqooqU4sACryIRvy
+	oeQH5fH6rGq6u9HcEmXt9Iq+r46znlkKrcJmyPKNG9VwJ0JrvyF9b9gvGe4jF5cAKhMRdd
+	wLAHTwcs/MaxOFA6wxfBowCCdio6OXU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702506744;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NLxWRvPs1mky6vAQPllCiusVf2PFFSDCc6DJ5VExyyo=;
+	b=y+ramPYMPUQhwuerxiu5u+KS9LwlvoM9MEQ3a7liNqECUGXQiqWUOykWdS8nVKIAstVCdI
+	TirJxFASlDLxLIBw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 762301391D;
+	Wed, 13 Dec 2023 22:32:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id TBUHHPgwemXZNQAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Wed, 13 Dec 2023 22:32:24 +0000
+Date: Wed, 13 Dec 2023 23:25:29 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Neal Gompa <neal@gompa.dev>
+Cc: Linux BTRFS Development <linux-btrfs@vger.kernel.org>,
+	Anand Jain <anand.jain@oracle.com>,
+	Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+	David Sterba <dsterba@suse.cz>, Hector Martin <marcan@marcan.st>,
+	Sven Peter <sven@svenpeter.dev>,
+	Davide Cavalca <davide@cavalca.name>, Jens Axboe <axboe@fb.com>,
+	Asahi Lina <lina@asahilina.net>,
+	Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [PATCH v4 0/1] Enforce 4k sectorize by default for mkfs
+Message-ID: <20231213222529.GF3001@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20231116160235.2708131-1-neal@gompa.dev>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213040018.73803-1-ebiggers@kernel.org> <20231213040018.73803-4-ebiggers@kernel.org>
-In-Reply-To: <20231213040018.73803-4-ebiggers@kernel.org>
-From: Neal Gompa <neal@gompa.dev>
-Date: Wed, 13 Dec 2023 15:54:05 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je9K=i80N7-UpJG=XUMVtA_c5bv6DscXw+326wANLvXV2w@mail.gmail.com>
-Message-ID: <CAEg-Je9K=i80N7-UpJG=XUMVtA_c5bv6DscXw+326wANLvXV2w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] fs: move fscrypt keyring destruction to after ->put_super
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
-	Josef Bacik <josef@toxicpanda.com>, Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116160235.2708131-1-neal@gompa.dev>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spam-Score: -1.00
+X-Spam-Flag: NO
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.01
+X-Spamd-Result: default: False [-1.01 / 50.00];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_DN_ALL(0.00)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.01)[46.92%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,oracle.com,gmx.com,suse.com,suse.cz,marcan.st,svenpeter.dev,cavalca.name,fb.com,asahilina.net,lists.linux.dev];
+	 RCVD_TLS_ALL(0.00)[]
 
-On Tue, Dec 12, 2023 at 11:01=E2=80=AFPM Eric Biggers <ebiggers@kernel.org>=
- wrote:
->
-> From: Josef Bacik <josef@toxicpanda.com>
->
-> btrfs has a variety of asynchronous things we do with inodes that can
-> potentially last until ->put_super, when we shut everything down and
-> clean up all of our async work.  Due to this we need to move
-> fscrypt_destroy_keyring() to after ->put_super, otherwise we get
-> warnings about still having active references on the master key.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  fs/super.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/super.c b/fs/super.c
-> index 076392396e724..faf7d248145d2 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -674,34 +674,34 @@ void generic_shutdown_super(struct super_block *sb)
->                 /* Evict all inodes with zero refcount. */
->                 evict_inodes(sb);
->
->                 /*
->                  * Clean up and evict any inodes that still have referenc=
-es due
->                  * to fsnotify or the security policy.
->                  */
->                 fsnotify_sb_delete(sb);
->                 security_sb_delete(sb);
->
-> -               /*
-> -                * Now that all potentially-encrypted inodes have been ev=
-icted,
-> -                * the fscrypt keyring can be destroyed.
-> -                */
-> -               fscrypt_destroy_keyring(sb);
-> -
->                 if (sb->s_dio_done_wq) {
->                         destroy_workqueue(sb->s_dio_done_wq);
->                         sb->s_dio_done_wq =3D NULL;
->                 }
->
->                 if (sop->put_super)
->                         sop->put_super(sb);
->
-> +               /*
-> +                * Now that all potentially-encrypted inodes have been ev=
-icted,
-> +                * the fscrypt keyring can be destroyed.
-> +                */
-> +               fscrypt_destroy_keyring(sb);
-> +
->                 if (CHECK_DATA_CORRUPTION(!list_empty(&sb->s_inodes),
->                                 "VFS: Busy inodes after unmount of %s (%s=
-)",
->                                 sb->s_id, sb->s_type->name)) {
->                         /*
->                          * Adding a proper bailout path here would be har=
-d, but
->                          * we can at least make it more likely that a lat=
-er
->                          * iput_final() or such crashes cleanly.
->                          */
->                         struct inode *inode;
->
-> --
-> 2.43.0
->
->
+On Thu, Nov 16, 2023 at 11:02:23AM -0500, Neal Gompa wrote:
+> The Fedora Asahi SIG[0] is working on bringing up support for
+> Apple Silicon Macintosh computers through the Fedora Asahi Remix[1].
+> 
+> Apple Silicon Macs are unusual in that they currently require 16k
+> page sizes, which means that the current default for mkfs.btrfs(8)
+> makes a filesystem that is unreadable on x86 PCs and most other ARM
+> PCs.
+> 
+> This is now even more of a problem within Apple Silicon Macs as it is now
+> possible to nest 4K Fedora Linux VMs on 16K Fedora Asahi Remix machines to
+> enable performant x86 emulation[2] and the host storage needs to be compatible
+> for both environments.
+> 
+> Thus, I'd like to see us finally make the switchover to 4k sectorsize
+> for new filesystems by default, regardless of page size.
+> 
+> The initial test run by Hector Martin[3] at request of Qu Wenruo
+> looked promising[4], and we've been running with this behavior on
+> Fedora Linux since Fedora Linux 36 (at around 6.2) with no issues.
+> 
+> === Changelog ===
+> 
+> v4: Fixed minor errors in the cover letter and patch subject
+> 
+> v3: Refreshed cover letter, rebased to latest, updated doc references for v6.7
+> 
+> v2: Rebased to latest, updated doc references for v6.6
+> 
+> Final v1: Collected Reviewed-by tags for inclusion.
+> 
+> RFC v2: Addressed documentation feedback
+> 
+> RFC v1: Initial submission
+> 
+> [0]: https://fedoraproject.org/wiki/SIGs/Asahi
+> [1]: https://fedora-asahi-remix.org/
+> [2]: https://sinrega.org/2023-10-06-using-microvms-for-gaming-on-fedora-asahi/
+> [3]: https://lore.kernel.org/linux-btrfs/fdffeecd-964f-0c69-f869-eb9ceca20263@suse.com/T/#m11d7939de96c43b3a7cdabc7c568d8bcafc7ca83
+> [4]: https://lore.kernel.org/linux-btrfs/fdffeecd-964f-0c69-f869-eb9ceca20263@suse.com/T/#mf382b78a8122b0cb82147a536c85b6a9098a2895
+> 
+> Neal Gompa (1):
+>   btrfs-progs: mkfs: Enforce 4k sectorsize by default
 
-This makes sense to me.
-
-Reviewed-by: Neal Gompa <neal@gompa.dev>
-
-
-
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+FYI, current plan is to add the change to 6.7 release with ETA in
+January. We've discussed this and given the increasing demand for that
+from various distros and testing coverage so done far it seems that it's
+sufficient.
 
