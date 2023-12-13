@@ -1,85 +1,87 @@
-Return-Path: <linux-btrfs+bounces-947-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-948-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F0A812202
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 23:46:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AB8C81222D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 23:57:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B864D1C21414
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 22:46:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15C8D1F218D2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 22:57:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B096E7FBBD;
-	Wed, 13 Dec 2023 22:46:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0650781E5D;
+	Wed, 13 Dec 2023 22:57:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IIXIrPzD";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mElLMasg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IIXIrPzD";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mElLMasg"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yVCgMRR4";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zQdcDEE4";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yVCgMRR4";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zQdcDEE4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD052DC
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Dec 2023 14:46:00 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15306CF
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Dec 2023 14:57:10 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 495BD223C5;
-	Wed, 13 Dec 2023 22:45:59 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 647871F789;
+	Wed, 13 Dec 2023 22:57:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702507559;
+	t=1702508228;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=liqyxzfhOMu91jCJrDu0Z76hyQNy3qhPHO8Lgdvop4g=;
-	b=IIXIrPzDysgzMJUQsm5C6Pw6y1EUMos5PyuRU7Io/vPlGCc4byU0aAikIsHoJMHggzcbYz
-	hOTgHEJp9gcfi7GN8F/gPPNIT90gs1lC7TnZO+c3bioas3/6ImwIa2uEKbfEO699X3AOa0
-	M8vVwAkmHh2Lcb8DN08c0sK7peZbWQY=
+	bh=ad8AKRK3bbIkHAVOXzadd2ury2RB9xjSAYLOy9Y1AtA=;
+	b=yVCgMRR4CSSh6fI8UuiccQ2JSkUQnRyWggzPhqPd0Q00hYFfdqqIiUUyeUmuezu3MOkE7O
+	PbPTfbf1q1rvVNGUYVOtyq6IFE1bJ28U7c1D0bCR4HLwI4gxt2ziWCwN4c6qBHzJODUCuO
+	jrKPINzAukxBMLGxgnj9qQNbRLgXHOA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702507559;
+	s=susede2_ed25519; t=1702508228;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=liqyxzfhOMu91jCJrDu0Z76hyQNy3qhPHO8Lgdvop4g=;
-	b=mElLMasgRL4jo9/CheLFnCXt2Nmw4pDEJ46+u4c6BjbHy/dOp/kTT9mGYsgzbqGK8LOo49
-	tVbMGGfsxdGwasDw==
+	bh=ad8AKRK3bbIkHAVOXzadd2ury2RB9xjSAYLOy9Y1AtA=;
+	b=zQdcDEE4GwahIMw2XFMjSlLKCAlLfiQKpO9lRO6JtGrE8J0dL6EQXotG1yfcGHrW3mPfcz
+	OcsT2TkIyZko6dCw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702507559;
+	t=1702508228;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=liqyxzfhOMu91jCJrDu0Z76hyQNy3qhPHO8Lgdvop4g=;
-	b=IIXIrPzDysgzMJUQsm5C6Pw6y1EUMos5PyuRU7Io/vPlGCc4byU0aAikIsHoJMHggzcbYz
-	hOTgHEJp9gcfi7GN8F/gPPNIT90gs1lC7TnZO+c3bioas3/6ImwIa2uEKbfEO699X3AOa0
-	M8vVwAkmHh2Lcb8DN08c0sK7peZbWQY=
+	bh=ad8AKRK3bbIkHAVOXzadd2ury2RB9xjSAYLOy9Y1AtA=;
+	b=yVCgMRR4CSSh6fI8UuiccQ2JSkUQnRyWggzPhqPd0Q00hYFfdqqIiUUyeUmuezu3MOkE7O
+	PbPTfbf1q1rvVNGUYVOtyq6IFE1bJ28U7c1D0bCR4HLwI4gxt2ziWCwN4c6qBHzJODUCuO
+	jrKPINzAukxBMLGxgnj9qQNbRLgXHOA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702507559;
+	s=susede2_ed25519; t=1702508228;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=liqyxzfhOMu91jCJrDu0Z76hyQNy3qhPHO8Lgdvop4g=;
-	b=mElLMasgRL4jo9/CheLFnCXt2Nmw4pDEJ46+u4c6BjbHy/dOp/kTT9mGYsgzbqGK8LOo49
-	tVbMGGfsxdGwasDw==
+	bh=ad8AKRK3bbIkHAVOXzadd2ury2RB9xjSAYLOy9Y1AtA=;
+	b=zQdcDEE4GwahIMw2XFMjSlLKCAlLfiQKpO9lRO6JtGrE8J0dL6EQXotG1yfcGHrW3mPfcz
+	OcsT2TkIyZko6dCw==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1EAA21391D;
-	Wed, 13 Dec 2023 22:45:59 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4C62A1391D;
+	Wed, 13 Dec 2023 22:57:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 8ddoBic0emU3OAAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Wed, 13 Dec 2023 22:45:59 +0000
-Date: Wed, 13 Dec 2023 23:39:08 +0100
+	id tLUkEsQ2emUKOgAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Wed, 13 Dec 2023 22:57:08 +0000
+Date: Wed, 13 Dec 2023 23:50:09 +0100
 From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs: migrate the remaining functions exposed by a
- full fstests with larger metadata folios
-Message-ID: <20231213223907.GH3001@twin.jikos.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: David Disseldorp <ddiss@suse.de>, David Sterba <dsterba@suse.cz>,
+	linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH] btrfs: validate scrub_speed_max sysfs string
+Message-ID: <20231213225009.GI3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1702354716.git.wqu@suse.com>
+References: <20231207135522.GX2751@twin.jikos.cz>
+ <20231208004156.9612-1-ddiss@suse.de>
+ <7d72dca9-d995-40b8-a2f1-97f5526bccc4@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -88,62 +90,74 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1702354716.git.wqu@suse.com>
+In-Reply-To: <7d72dca9-d995-40b8-a2f1-97f5526bccc4@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spam-Score: -1.02
+X-Spam-Score: 7.93
+X-Spamd-Bar: ++++
+X-Rspamd-Queue-Id: 647871F789
+X-Spam-Score: 4.40
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.10
-X-Spamd-Result: default: False [-1.10 / 50.00];
-	 ARC_NA(0.00)[];
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yVCgMRR4;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=zQdcDEE4;
+	spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz;
+	dmarc=none
+X-Spamd-Result: default: False [4.40 / 50.00];
 	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
 	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
 	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 R_SPF_SOFTFAIL(4.60)[~all];
+	 RCPT_COUNT_FIVE(0.00)[5];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
 	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_TO(0.00)[gmx.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.10)[65.76%]
+	 BAYES_HAM(-0.19)[70.63%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DMARC_NA(1.20)[suse.cz];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
 
-On Tue, Dec 12, 2023 at 03:54:08PM +1030, Qu Wenruo wrote:
-> [REPO]
-> This patchset along with all the previous migrations (and the final
-> enablement patch) can be found here:
+On Mon, Dec 11, 2023 at 01:48:15PM +1030, Qu Wenruo wrote:
 > 
-> https://github.com/adam900710/linux/tree/eb_memory
 > 
-> With all the previous migrations (although only tested without larger
-> folios), we are finally just one step away from enabling larger folio
-> support for btrfs metadata.
+> On 2023/12/8 11:11, David Disseldorp wrote:
+> > Fail the sysfs I/O on any trailing non-space characters.
+> >
+> > Signed-off-by: David Disseldorp <ddiss@suse.de>
 > 
-> During my local full fstests runs with larger metadata folios, there are
-> only two bugs hit, all related to some code path not yet handling folios
-> correct:
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
 > 
-> - eb_bitmap_offset()
-> - btrfs_repair_eb_io_failure()
+> Although I have an unrelated idea.
 > 
-> Otherwise my local branch can already pass local fstests without new
-> regressions.
+> Since memparse() provides the @endptr, can we rewind the @endptr, so
+> that we can check if the last valid charactor is suffix 'e'.
+> Then reject it from btrfs size.
 > 
-> So here is the final (and I hope is the last) migrations for involed
-> metadata code path, before the final patch enabling larger folio
-> support.
+> I really don't think we need exabytes suffix for our scrub speed limit
+> usage.
 
-Great, thanks. We'll need to test the first batch of folio conversion
-but so far it seems it's ok, enabling the higher order folios can be
-done at rc3 time in case we want to target the next major release, or we
-can postpone it to the following one if needed.
+I think nobody will intentionally use the 'e' exabyte suffix in this
+case but I don't want to add an exception to parsing the values. We'd
+have to document that, explain why it's not accepted, it's additional
+work for a case I still dont understand why it's so important.
+
+If the exabyte scale values are not properly parsed by memparse() due to
+simple_strtoull() as a workaround we can add our parser based on
+kstrtoull() or do such change in memparse() proper.
 
