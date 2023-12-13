@@ -1,93 +1,150 @@
-Return-Path: <linux-btrfs+bounces-911-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-912-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6CF5810DD5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 11:04:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC7A2811036
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 12:35:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C50F281BC5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 10:04:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 745982822D1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 11:35:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C198A224C6;
-	Wed, 13 Dec 2023 10:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1215624205;
+	Wed, 13 Dec 2023 11:35:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nNOUKLgF"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Efw+pJyX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C36FB21A11;
-	Wed, 13 Dec 2023 10:04:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74B64C433C8;
-	Wed, 13 Dec 2023 10:04:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702461882;
-	bh=QePzytgeWK2qtS6DLN65UyMUVQEzwecQEMcPzyfNYKE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nNOUKLgFqtvPk21lH7EZBiY7Sn4duKc8ZPMXNWPruXX2pO1TuZruRir3qTL15aw+/
-	 y+dd4pl5+AstqxQLdlQGQbvEyJmL+WfJDz4xzSJ6sDoET/AinXvZIB3FVYYSIXH2tb
-	 eDI00INHKVonEN35A2g2JW0Xu10Qu2kGMMLBL9bhH1k4ob07NwstvGQRWq+S7BUfJo
-	 ok8fVKKCCnkkf4wTXmMlkTV8m4UsKG2GcnIdpDcI0QT3WzBHF1plErG6EAhKAQb84K
-	 6XKJN6aFeOUCkcQ0lb/hO8ffmZ7ulkfNRFabXGprGfqNzHbummIRS5StNwGfnJCA3e
-	 3CfzkVIbSB0HA==
-Date: Wed, 13 Dec 2023 11:04:36 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: NeilBrown <neilb@suse.de>
-Cc: Miklos Szeredi <miklos@szeredi.hu>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Dave Chinner <david@fromorbit.com>,
-	Donald Buczek <buczek@molgen.mpg.de>,
-	linux-bcachefs@vger.kernel.org,
-	Stefan Krueger <stefan.krueger@aei.mpg.de>,
-	David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Subject: Re: file handle in statx (was: Re: How to cope with subvolumes and
- snapshots on muti-user systems?)
-Message-ID: <20231213-rammen-vorgreifen-1515308def06@brauner>
-References: <170234279139.12910.809452786055101337@noble.neil.brown.name>
- <ZXf1WCrw4TPc5y7d@dread.disaster.area>
- <CAOQ4uxiQcOk1Kw1JX4602vjuWNfL=b_A3uB1FJFaHQbEX6OOMA@mail.gmail.com>
- <20231212-impfung-linden-6f973f2ade19@brauner>
- <20231212151631.wi7rgawmp3uig6cl@moria.home.lan>
- <20231212-neudefinition-hingucken-785061b73237@brauner>
- <20231212153542.kl2fbzrabhr6kai5@moria.home.lan>
- <CAJfpegsKsbdtUHUPnu3huCiPXwX46eKYSUbLXiWqH23GinXo7w@mail.gmail.com>
- <170241761429.12910.13323799451396212981@noble.neil.brown.name>
- <20231213-umgearbeitet-erdboden-c2fd5409034d@brauner>
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CE7199;
+	Wed, 13 Dec 2023 03:35:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1702467325; x=1734003325;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=CFMdVIjYEHRKAW9HT5fnwral3Zbl4aKvKfqrMdBv2r8=;
+  b=Efw+pJyXf8D93c+CoWvkmcnasAFIAlswh2edhF/hgMdD5BHUp9EKH7Xw
+   oz9VeepXSvElGwOIDrRxg9ta9K/ZuqhzbWHdhywms1S/ZLdYUfcpZXzR0
+   qW1IMdWMOzzC/brysk6WhudsGXQh/PbmAqoM4Keat2Ywn8qJusafdjgIB
+   otftDxiY7EBzhtM6ZGu+XQQNYkUYNeBmaqDviQGTyQtUKkWDWFJciZnuG
+   ELC3Qh8a756km4k3JopDyl2b4EH0TMREEIjo3NGnvlNSD+W/JLywzX0Tq
+   tJqWf/HvlsjJ0WXNye0YT8GTyQBLinayPhAF08WgOjTcoRnOzRGcNMqPW
+   A==;
+X-CSE-ConnectionGUID: T/Zw7jMRTOapnFMIdjT4RA==
+X-CSE-MsgGUID: 1FkfndhUTJ24iGvGHuzbzQ==
+X-IronPort-AV: E=Sophos;i="6.04,272,1695657600"; 
+   d="scan'208";a="4718825"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Dec 2023 19:35:24 +0800
+IronPort-SDR: c6BJfNm0BmkZUiCWH4VUNjKlbPHb5Qe9SRELAMftePQrjLspBoAl6qLqxyuKU9xCRucVuB+Lyp
+ +Wz0vjoAqLhQ==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 Dec 2023 02:40:36 -0800
+IronPort-SDR: jvUpEoHthA792O98JBaVOFAXaPdmoiOtOsspMFnTQ1IUUVcv6hGMRfftbHiqrobKwEDR4vxeA7
+ iaa9ndtwlHtA==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
+  by uls-op-cesaip02.wdc.com with ESMTP; 13 Dec 2023 03:35:24 -0800
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v6 0/9] fstests: add tests for btrfs' raid-stripe-tree
+ feature
+Date: Wed, 13 Dec 2023 03:35:21 -0800
+Message-Id: <20231213-btrfs-raid-v6-0-913738861069@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231213-umgearbeitet-erdboden-c2fd5409034d@brauner>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPmWeWUC/3XNQW7DIBCF4atErEsEA+PBXfUeURZgoGHRuILIT
+ RT57p1kUyOlyzfS989dtFRLauJ9dxc1LaWV+cxjeNuJ6eTPn0mWyFuAAqNBWRkuNTdZfYmScCS
+ kkfJIUTD4rimX6zN2OPI+lXaZ6+3ZXvTj+jKzaKlkALQp6DDl7D5+4rSf5i/xiCywhdhBYAiYn
+ UrJG4uhh+Z/aBiq5JA8WjN66KHdwqGDliGSA2djNJ5UD3ELqYPI0Frvtc+ZHw9/cF3XXwQqCBi
+ GAQAA
+To: Anand Jain <anand.jain@oracle.com>, Zorro Lang <zlang@redhat.com>
+Cc: Filipe Manana <fdmanana@suse.com>, fstests@vger.kernel.org, 
+ linux-btrfs@vger.kernel.org, 
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702467323; l=3025;
+ i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
+ bh=CFMdVIjYEHRKAW9HT5fnwral3Zbl4aKvKfqrMdBv2r8=;
+ b=iN2P+hsMiJAiuSlB+vq2DCQH+YkG/MSeNOHELyoUAV9b9Eu4eYiX/4ntnU8LksewJ8FgDJNdx
+ jEVfDXY02AWCe3HsnTshsvQU9W8eV8ZPHlgwq6nEVMnXHJZyRhP+0MD
+X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
+ pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
 
-On Wed, Dec 13, 2023 at 10:48:01AM +0100, Christian Brauner wrote:
-> On Wed, Dec 13, 2023 at 08:46:54AM +1100, NeilBrown wrote:
-> > On Wed, 13 Dec 2023, Miklos Szeredi wrote:
-> > > On Tue, 12 Dec 2023 at 16:35, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > > 
-> > > > Other poeple have been finding ways to contribute to the technical
-> > > > discussion; just calling things "ugly and broken" does not.
-> > > 
-> > > Kent, calm down please.  We call things "ugly and broken" all the
-> > > time.  That's just an opinion, you are free to argue it, and no need
-> > > to take it personally.
-> > 
-> > But maybe we shouldn't.  Maybe we should focus on saying what, exactly,
-> > is unpleasant to look at and way.  Or what exactly causes poor
-> > funcationality.
-> 
-> I said it's "ugly" and I doubted it's value. I didn't call it "broken".
+Add tests for btrfs' raid-stripe-tree feature. All of these test work by
+writing a specific pattern to a newly created filesystem and afterwards
+using `btrfs inspect-internal -t raid-stripe $SCRATCH_DEV_POOL` to verify
+the placement and the layout of the metadata.
 
-I see where you took that from. To be clear, what I meant by broken is
-the device number switching that btrfs has been doing which has caused
-so much pain already and is at least partially responsible for this
-endless long discussion. I didn't mean "broken" as in the flag is
-broken. I acknowledge that I failed to make that clearer.
+The md5sum of each file will be compared as well after a re-mount of the
+filesystem.
+
+---
+Changes in v6:
+- require 4k pagesize for all tests as output depends on page size
+- Add Filipe's Reviewed-by
+- Link to v5: https://lore.kernel.org/r/20231207-btrfs-raid-v5-0-44aa1affe856@wdc.com
+
+Changes in v5:
+- add _require_btrfs_free_space_tree helper and use in tests
+- Link to v4: https://lore.kernel.org/r/20231206-btrfs-raid-v4-0-578284dd3a70@wdc.com
+
+Changes in v4:
+- add _require_btrfs_no_compress to all tests
+- add _require_btrfs_no_nodatacow helper and add to btrfs/308
+- add _require_btrfs_feature "free_space_tree" to all tests
+- Link to v3: https://lore.kernel.org/r/20231205-btrfs-raid-v3-0-0e857a5439a2@wdc.com
+
+Changes in v3:
+- added 'raid-stripe-tree' to mkfs options, as only zoned raid gets it
+  automatically
+- Rename test cases as btrfs/302 and btrfs/303 already exist upstream
+- Link to v2: https://lore.kernel.org/r/20231205-btrfs-raid-v2-0-25f80eea345b@wdc.com
+
+Changes in v2:
+- Re-ordered series so the newly introduced group is added before the
+  tests
+- Changes Filipe requested to the tests.
+- Link to v1: https://lore.kernel.org/r/20231204-btrfs-raid-v1-0-b254eb1bcff8@wdc.com
+
+---
+Johannes Thumshirn (9):
+      fstests: doc: add new raid-stripe-tree group
+      common: add filter for btrfs raid-stripe dump
+      common: add _require_btrfs_no_nodatacow helper
+      common: add _require_btrfs_free_space_tree
+      btrfs: add fstest for stripe-tree metadata with 4k write
+      btrfs: add fstest for 8k write spanning two stripes on raid-stripe-tree
+      btrfs: add fstest for writing to a file at an offset with RST
+      btrfs: add fstests to write 128k to a RST filesystem
+      btrfs: add fstest for overwriting a file partially with RST
+
+ common/btrfs        |  17 +++++++++
+ common/filter.btrfs |  14 +++++++
+ doc/group-names.txt |   1 +
+ tests/btrfs/304     |  58 ++++++++++++++++++++++++++++
+ tests/btrfs/304.out |  58 ++++++++++++++++++++++++++++
+ tests/btrfs/305     |  63 +++++++++++++++++++++++++++++++
+ tests/btrfs/305.out |  82 ++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/306     |  61 ++++++++++++++++++++++++++++++
+ tests/btrfs/306.out |  75 +++++++++++++++++++++++++++++++++++++
+ tests/btrfs/307     |  58 ++++++++++++++++++++++++++++
+ tests/btrfs/307.out |  65 ++++++++++++++++++++++++++++++++
+ tests/btrfs/308     |  62 ++++++++++++++++++++++++++++++
+ tests/btrfs/308.out | 106 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 13 files changed, 720 insertions(+)
+---
+base-commit: e8a1c16502fad2660d29de5835c4c84700b1f11a
+change-id: 20231204-btrfs-raid-75975797f97d
+
+Best regards,
+-- 
+Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
 
