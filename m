@@ -1,91 +1,84 @@
-Return-Path: <linux-btrfs+bounces-945-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-946-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13841812187
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 23:32:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 822BE81218E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 23:34:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1DF7282C6A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 22:32:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9A951F219CB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Dec 2023 22:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D648981831;
-	Wed, 13 Dec 2023 22:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE7F8183A;
+	Wed, 13 Dec 2023 22:34:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MSt5dQdV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y+ramPYM";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MSt5dQdV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y+ramPYM"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="m1qTzAk8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o3VqyE8f";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="m1qTzAk8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o3VqyE8f"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF23F7
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Dec 2023 14:32:26 -0800 (PST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE35DB7
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Dec 2023 14:34:38 -0800 (PST)
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B5FF422388;
-	Wed, 13 Dec 2023 22:32:24 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 457771F788;
+	Wed, 13 Dec 2023 22:34:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702506744;
+	t=1702506877;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NLxWRvPs1mky6vAQPllCiusVf2PFFSDCc6DJ5VExyyo=;
-	b=MSt5dQdVBW/CbeQfQNT5YFTpg7kt+F2vDR3Qi0TRFviyM4QknkTldSLqooqU4sACryIRvy
-	oeQH5fH6rGq6u9HcEmXt9Iq+r46znlkKrcJmyPKNG9VwJ0JrvyF9b9gvGe4jF5cAKhMRdd
-	wLAHTwcs/MaxOFA6wxfBowCCdio6OXU=
+	bh=+p4U3YgzDWtwoYWYN4gbv/9zz40TiaJ3m320zGCsznk=;
+	b=m1qTzAk8YbbQW/Cv+ka5XqztgaW3hKxnqaulIVlAdJACGVePLe8b6LzymuC54EO4UD3az+
+	E66k/j6mHuL2R2465b7M/mYx1v0snFVLMZyPsK9qORvewJbNJ5rNBzbILNaWZP9HmnJJbu
+	IJk02x/LqdX/+KskHz0OU2qVuVmXc4E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702506744;
+	s=susede2_ed25519; t=1702506877;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NLxWRvPs1mky6vAQPllCiusVf2PFFSDCc6DJ5VExyyo=;
-	b=y+ramPYMPUQhwuerxiu5u+KS9LwlvoM9MEQ3a7liNqECUGXQiqWUOykWdS8nVKIAstVCdI
-	TirJxFASlDLxLIBw==
+	bh=+p4U3YgzDWtwoYWYN4gbv/9zz40TiaJ3m320zGCsznk=;
+	b=o3VqyE8fzecX1F8GRxHr/+O9qrkKbWdCbDmSSxL9sr3pmHoN36yeN4XpKQpHrhG77VwQxB
+	7etUh9dNnHUsRdAg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702506744;
+	t=1702506877;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NLxWRvPs1mky6vAQPllCiusVf2PFFSDCc6DJ5VExyyo=;
-	b=MSt5dQdVBW/CbeQfQNT5YFTpg7kt+F2vDR3Qi0TRFviyM4QknkTldSLqooqU4sACryIRvy
-	oeQH5fH6rGq6u9HcEmXt9Iq+r46znlkKrcJmyPKNG9VwJ0JrvyF9b9gvGe4jF5cAKhMRdd
-	wLAHTwcs/MaxOFA6wxfBowCCdio6OXU=
+	bh=+p4U3YgzDWtwoYWYN4gbv/9zz40TiaJ3m320zGCsznk=;
+	b=m1qTzAk8YbbQW/Cv+ka5XqztgaW3hKxnqaulIVlAdJACGVePLe8b6LzymuC54EO4UD3az+
+	E66k/j6mHuL2R2465b7M/mYx1v0snFVLMZyPsK9qORvewJbNJ5rNBzbILNaWZP9HmnJJbu
+	IJk02x/LqdX/+KskHz0OU2qVuVmXc4E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702506744;
+	s=susede2_ed25519; t=1702506877;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NLxWRvPs1mky6vAQPllCiusVf2PFFSDCc6DJ5VExyyo=;
-	b=y+ramPYMPUQhwuerxiu5u+KS9LwlvoM9MEQ3a7liNqECUGXQiqWUOykWdS8nVKIAstVCdI
-	TirJxFASlDLxLIBw==
+	bh=+p4U3YgzDWtwoYWYN4gbv/9zz40TiaJ3m320zGCsznk=;
+	b=o3VqyE8fzecX1F8GRxHr/+O9qrkKbWdCbDmSSxL9sr3pmHoN36yeN4XpKQpHrhG77VwQxB
+	7etUh9dNnHUsRdAg==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 762301391D;
-	Wed, 13 Dec 2023 22:32:24 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1E59B1391D;
+	Wed, 13 Dec 2023 22:34:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id TBUHHPgwemXZNQAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Wed, 13 Dec 2023 22:32:24 +0000
-Date: Wed, 13 Dec 2023 23:25:29 +0100
+	id UDnJBn0xemU5NgAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Wed, 13 Dec 2023 22:34:37 +0000
+Date: Wed, 13 Dec 2023 23:27:31 +0100
 From: David Sterba <dsterba@suse.cz>
-To: Neal Gompa <neal@gompa.dev>
-Cc: Linux BTRFS Development <linux-btrfs@vger.kernel.org>,
-	Anand Jain <anand.jain@oracle.com>,
-	Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-	David Sterba <dsterba@suse.cz>, Hector Martin <marcan@marcan.st>,
-	Sven Peter <sven@svenpeter.dev>,
-	Davide Cavalca <davide@cavalca.name>, Jens Axboe <axboe@fb.com>,
-	Asahi Lina <lina@asahilina.net>,
-	Asahi Linux <asahi@lists.linux.dev>
-Subject: Re: [PATCH v4 0/1] Enforce 4k sectorize by default for mkfs
-Message-ID: <20231213222529.GF3001@twin.jikos.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] btrfs: migrate IO path to folios
+Message-ID: <20231213222731.GG3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20231116160235.2708131-1-neal@gompa.dev>
+References: <cover.1702347666.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -94,83 +87,94 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231116160235.2708131-1-neal@gompa.dev>
+In-Reply-To: <cover.1702347666.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Level: 
-X-Spam-Score: -1.00
-X-Spam-Flag: NO
-Authentication-Results: smtp-out1.suse.de;
+X-Spam-Score: -4.00
+Authentication-Results: smtp-out2.suse.de;
 	none
 X-Spam-Level: 
-X-Spam-Score: -1.01
-X-Spamd-Result: default: False [-1.01 / 50.00];
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 ARC_NA(0.00)[];
 	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
 	 REPLYTO_ADDR_EQ_FROM(0.00)[];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_DN_ALL(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.01)[46.92%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmx.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,oracle.com,gmx.com,suse.com,suse.cz,marcan.st,svenpeter.dev,cavalca.name,fb.com,asahilina.net,lists.linux.dev];
-	 RCVD_TLS_ALL(0.00)[]
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-On Thu, Nov 16, 2023 at 11:02:23AM -0500, Neal Gompa wrote:
-> The Fedora Asahi SIG[0] is working on bringing up support for
-> Apple Silicon Macintosh computers through the Fedora Asahi Remix[1].
+On Tue, Dec 12, 2023 at 12:58:35PM +1030, Qu Wenruo wrote:
+> [CHANGELOG]
+> v2:
+> - Fix a PAGE_SHIFT usage in the 3rd patch on the data read path
+>   I know this won't be touched any time soon, but considering it's
+>   really one patch away from enabling higher order folios for metadata,
+>   let's make the cleanup closer to perfection.
 > 
-> Apple Silicon Macs are unusual in that they currently require 16k
-> page sizes, which means that the current default for mkfs.btrfs(8)
-> makes a filesystem that is unreadable on x86 PCs and most other ARM
-> PCs.
 > 
-> This is now even more of a problem within Apple Silicon Macs as it is now
-> possible to nest 4K Fedora Linux VMs on 16K Fedora Asahi Remix machines to
-> enable performant x86 emulation[2] and the host storage needs to be compatible
-> for both environments.
+> One critical problem I hit the most during my initial higher order
+> folios tests are, incorrect access to the pages which conflicts with the
+> page flag policy.
 > 
-> Thus, I'd like to see us finally make the switchover to 4k sectorsize
-> for new filesystems by default, regardless of page size.
+> Since folio flags are only set to certain pages according to their
+> policies (PF_ANY, PF_HEAD, PF_ONLY_HEAD, PF_NO_TAIL, PF_NO_COMPOUND and
+> the most weird on PF_SECOND), setting page flags violating the policy
+> would immedate lead to VM_BUG_ON().
 > 
-> The initial test run by Hector Martin[3] at request of Qu Wenruo
-> looked promising[4], and we've been running with this behavior on
-> Fedora Linux since Fedora Linux 36 (at around 6.2) with no issues.
+> Thus no matter if we go compound page or folio, we can not go the
+> page-by-page iteration helpers that easily.
+> One of the hot spots which can lead to VM_BUG_ON()s are the endio
+> helpers.
 > 
-> === Changelog ===
+> So this patch would:
 > 
-> v4: Fixed minor errors in the cover letter and patch subject
+> - Make metadata set/get helpers to utilize folio interfaces
 > 
-> v3: Refreshed cover letter, rebased to latest, updated doc references for v6.7
+> - Make subpage code to accept folios directly
+>   This is to avoid btrfs_page_*() helpers to accept page pointers, which
+>   is another hot spot which uses page pointer a lot.
 > 
-> v2: Rebased to latest, updated doc references for v6.6
+> - Migrate btrfs bio endio functions to utilize bio_for_each_folio_all()
+>   This completely removes the ability to direct access page pointers.
+>   Although we still need some extra folio_page(folio, 0) calls to keep
+>   compatible with existing helpers.
 > 
-> Final v1: Collected Reviewed-by tags for inclusion.
+>   And since we're here, also fix the choas of btrfs endio functions'
+>   naming scheme, now it would always be:
+>     end_bbio_<target>_(read|write)
+>   The <target> can be:
 > 
-> RFC v2: Addressed documentation feedback
+>   - data
+>     For non-compressed and non-encoeded operations
 > 
-> RFC v1: Initial submission
+>   - compressed
+>     For compressed IO and encoded IO.
 > 
-> [0]: https://fedoraproject.org/wiki/SIGs/Asahi
-> [1]: https://fedora-asahi-remix.org/
-> [2]: https://sinrega.org/2023-10-06-using-microvms-for-gaming-on-fedora-asahi/
-> [3]: https://lore.kernel.org/linux-btrfs/fdffeecd-964f-0c69-f869-eb9ceca20263@suse.com/T/#m11d7939de96c43b3a7cdabc7c568d8bcafc7ca83
-> [4]: https://lore.kernel.org/linux-btrfs/fdffeecd-964f-0c69-f869-eb9ceca20263@suse.com/T/#mf382b78a8122b0cb82147a536c85b6a9098a2895
+>   - meta
 > 
-> Neal Gompa (1):
->   btrfs-progs: mkfs: Enforce 4k sectorsize by default
+>   And since compressed IO path is utilizing unmapped pages (pages
+>   without an address_space), thus they don't touch the page flags.
+>   This makes compressed IO path a very good test bed for the initial
+>   introduction of higher order folio.
+> 
+> Qu Wenruo (3):
+>   btrfs: migrate get_eb_page_index() and get_eb_offset_in_page() to
+>     folios
+>   btrfs: migrate subpage code to folio interfaces
+>   btrfs: migrate various btrfs end io functions to folios
 
-FYI, current plan is to add the change to 6.7 release with ETA in
-January. We've discussed this and given the increasing demand for that
-from various distros and testing coverage so done far it seems that it's
-sufficient.
+Added to misc-next, thanks.
 
