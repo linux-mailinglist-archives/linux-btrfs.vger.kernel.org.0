@@ -1,66 +1,66 @@
-Return-Path: <linux-btrfs+bounces-960-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-961-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A7A0813D5B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Dec 2023 23:38:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05FBD813D68
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Dec 2023 23:40:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCEFF1C21E3C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Dec 2023 22:38:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F3C41C21D95
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Dec 2023 22:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D38666AD4;
-	Thu, 14 Dec 2023 22:38:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38FCB671E9;
+	Thu, 14 Dec 2023 22:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="XTlWxBaD"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Sq4W6YCp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F56C3FE5B
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Dec 2023 22:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 494A166AD9
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Dec 2023 22:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5918f11099dso83198eaf.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Dec 2023 14:37:36 -0800 (PST)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-77f59fcb204so3919985a.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Dec 2023 14:39:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1702593455; x=1703198255; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1702593583; x=1703198383; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mB4WMXaz7dFyTEmQyFn/PgpW9lKUPIZQtgrXyoigau0=;
-        b=XTlWxBaD8U3A/evs3uOZfplemtzlQSM6RX4K7HMndKg+H8+vQbqhOC28inrXQSvMwn
-         rNCxFHZ4qaDp0js8IVYpvLu8SkPJuAqJXC/KBVoIzUzolNP+QV71LFA7Q9WOx2UzHHCe
-         vagzrTrecuH8eN8mGbCrwqewVx5dDZHAAwBScRMheqg0bzSTofyAuKT9cajqA2mMeKmV
-         lWVNjkSZ31rVx7qReqW23H5FL07jC+nHAdjc7oAmQ1PJH7aoq4K+P1uemjN6UbJqwFqY
-         tTgYieoM/05lrqb75FHcfNM2aBrJmTtfWV4S8WSbT97hYG5v9LqyTNyT2+ZhiwTVgokI
-         aZoQ==
+        bh=vRvi98Wm8PCsRancz6ftSljs9Q/E5UB8k2DC0NipNW4=;
+        b=Sq4W6YCpC/7/mUJoRprzILLTx0+GgCVokGNvVGRB9YH2V75bWsiXbK04sRqD0IUKDY
+         J9jchXGa2d0Rb4M+g7CxRHO8cBE5qavojbfOKuaJUU6QlQrprUASIUkeP8O8dSOIfLZZ
+         0Cts9doL9/N6MOunLdFuxvIJ6PuIatB60HbiPszB5/zfTRr4JfQcQUm3HjiUHKrQrLi3
+         gnUKTwUg3KTP517Ny7tbfeSvavL3eTIyt3kCD2PGF8xme2kHBl8MveW86XXJCkQj4/xk
+         nfBLc8Dzd8KubGSzk7bwpW7n5P12NFp4s7y6igPJfjfX+j6ya4KcwXxJQpEs53IrJsHK
+         D2AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702593455; x=1703198255;
+        d=1e100.net; s=20230601; t=1702593583; x=1703198383;
         h=content-transfer-encoding:mime-version:message-id:date:subject:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mB4WMXaz7dFyTEmQyFn/PgpW9lKUPIZQtgrXyoigau0=;
-        b=PYkZ53z7KSbZOUtBCYduA4z/nI9VX/5OYebgxViC6hmDhnMqVTM0Ak8K2QUo8MddSU
-         CgrSW1qvIqKo6jJsdUvyYzidDbNjSYhWNFMIweZVw0PXnle9OXM4segqWEGE3/9gHo71
-         CkpHIgJNVVcvuX40hcVWjR1x9r0f7Tdaw1lDHR6jDt/d32tYQdnIO3RiR2wqscNdA5y0
-         XUXozgP2N4uh2sJra7lFETtSQNaGvyhHby9CdAi6attDK+A5aCLrzT9lPOO43nG7m2JX
-         PSJCCeH7U48yVz95o9XG1eYhv+oGNtDZ3VoT8NQvmbVYVdtVpJiOLoQJQ1q/WdfTP+On
-         TBgA==
-X-Gm-Message-State: AOJu0YxXVmrwhUQsOCG4rRJqBjdV6YaUKc/cxOjqiC4GnSWRqLs0lL+i
-	q0dAXXXkDBCEi2E+4hVgKB3j6MFGFZQeSG8RL1o=
-X-Google-Smtp-Source: AGHT+IHd+PsXJCjWKtAU1bi6Z2988r5PAh1yjtLwkEY3gPi946u3Bp5v3FDe2k2h9SVK0psxUZmsQQ==
-X-Received: by 2002:a05:6359:7385:b0:170:accb:e22c with SMTP id uz5-20020a056359738500b00170accbe22cmr8332043rwb.54.1702593454992;
-        Thu, 14 Dec 2023 14:37:34 -0800 (PST)
+        bh=vRvi98Wm8PCsRancz6ftSljs9Q/E5UB8k2DC0NipNW4=;
+        b=Y3ZpVSqKQ/LgF3nPwJFw80v8tVsg2mVjZ24Bu8fxC+hdtpBySW+OZZ/2vDkJXdXzLC
+         ryPITI6q1FGTIVs/4ZnC1I9NiJY+99m472UicgoOUQxF+iYxGXSkGu//jWQBfFRgHF8I
+         45ICbsq6e1KhxhwKV2kyS92m4bYfBt6ZIo27df0XJk9PcuztV4EkIeMbBq9yW8Pw152t
+         GILxj3DYQT8o+pzvBEgXlSB2i/HhQSN34q0mM1wrXknYMisMP/SGta+VtTxNmIYeyMFK
+         mvhnJJzKkl9ijHaosqRTRu3B+34/ouUKlESah45xdgkRwB15jvkncdn5vuphw/fCoq+w
+         g89Q==
+X-Gm-Message-State: AOJu0Ywe7RdM2S/QBc7WtgjL/7O4TS32Zpn2fQN8blEd09U7TWaAfVWL
+	8V5MZbtyhFt7uicX5XCIdTSnOt1f6rOGwuUpW0E=
+X-Google-Smtp-Source: AGHT+IGNxa2U+cT/j5tqLR2PhwCQtHiNaO97VtwDBbhwmDxWOkDp0tTL20OsFUs3OTPTeeo3PQX8MQ==
+X-Received: by 2002:a05:620a:349:b0:77e:fba3:7587 with SMTP id t9-20020a05620a034900b0077efba37587mr11176174qkm.127.1702593582935;
+        Thu, 14 Dec 2023 14:39:42 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id ec15-20020ad44e6f000000b0067f0306b4c7sm1277604qvb.105.2023.12.14.14.37.33
+        by smtp.gmail.com with ESMTPSA id g2-20020a37e202000000b00767dc4c539bsm5532869qki.44.2023.12.14.14.39.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 14:37:33 -0800 (PST)
+        Thu, 14 Dec 2023 14:39:42 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
-To: ","@web.codeaurora.org, linux-btrfs@vger.kernel.org,
+To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH] btrfs: don't double put our subpage reference in alloc_extent_buffer
-Date: Thu, 14 Dec 2023 17:37:29 -0500
-Message-ID: <dd32747467e46ee7ce4feb8a1c3a30d93fd4b133.1702593420.git.josef@toxicpanda.com>
+Subject: [PATCH][RESEND] btrfs: don't double put our subpage reference in alloc_extent_buffer
+Date: Thu, 14 Dec 2023 17:39:38 -0500
+Message-ID: <dd32747467e46ee7ce4feb8a1c3a30d93fd4b133.1702593423.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -69,6 +69,8 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+
+** Apologies if you're getting this twice, I fat fingered my email command **
 
 This fix can be folded into "btrfs: refactor alloc_extent_buffer() to
 allocate-then-attach method".
