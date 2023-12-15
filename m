@@ -1,100 +1,153 @@
-Return-Path: <linux-btrfs+bounces-984-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-985-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F0C815116
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 21:31:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34FF581515B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 21:45:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B45A286899
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 20:31:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82186B23F02
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 20:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B61DDB9;
-	Fri, 15 Dec 2023 20:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C7347F7E;
+	Fri, 15 Dec 2023 20:44:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.com header.i=@yandex.com header.b="JoUbZeno"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RFBpRTPC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from forward501a.mail.yandex.net (forward501a.mail.yandex.net [178.154.239.81])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167D0846D
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Dec 2023 20:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.com
-Received: from mail-nwsmtp-mxback-production-main-254.iva.yp-c.yandex.net (mail-nwsmtp-mxback-production-main-254.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:9a8c:0:640:9a2c:0])
-	by forward501a.mail.yandex.net (Yandex) with ESMTP id 4253861624;
-	Fri, 15 Dec 2023 23:31:15 +0300 (MSK)
-Received: from mail.yandex.com (2a02:6b8:c0c:1606:0:640:506f:0 [2a02:6b8:c0c:1606:0:640:506f:0])
-	by mail-nwsmtp-mxback-production-main-254.iva.yp-c.yandex.net (mxback/Yandex) with HTTP id 9VsEpk2X6Ko0-9eEkHxK7;
-	Fri, 15 Dec 2023 23:31:14 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.com; s=mail;
-	t=1702672274; bh=IWhkCJf09cv3grxs4bm4f+nnhBFReXH00pkVWaERXrU=;
-	h=References:Date:Message-Id:Cc:Subject:To:From:In-Reply-To;
-	b=JoUbZenoBWvUW8yHYgkoZ9//teNZIN+EboqgmO+9yegsCKdPRrOZctb5vQjlC+ykX
-	 8naWMhDsnjhE7P2x280BZyv3hfnsn3hfZgwOmoPdRjLHJTcSnQ6vWYascZKQZOh1ml
-	 pDfk4Oy1oapBuSEDFITxQgZqPqe6Z3byGe1tLcfs=
-Authentication-Results: mail-nwsmtp-mxback-production-main-254.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.com
-Received: by 5onccsrv2hdogkey.iva.yp-c.yandex.net with HTTP;
-	Fri, 15 Dec 2023 23:31:14 +0300
-From: Grigori Efimovitch <etlp6@yandex.com>
-Envelope-From: etlp6@yandex.com
-To: Chris Murphy <lists@colorremedies.com>
-Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-In-Reply-To: <4bfd7275-f4ac-4c22-8528-40c43e86a71a@app.fastmail.com>
-References: <2320801702653223@yjd3yivcrkgrkrlg.iva.yp-c.yandex.net> <4bfd7275-f4ac-4c22-8528-40c43e86a71a@app.fastmail.com>
-Subject: Re:Can't mount clone of btrfs partition at the same time as the original.
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5BE47F7C
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Dec 2023 20:44:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1702673050; x=1703277850; i=quwenruo.btrfs@gmx.com;
+	bh=r95y9QEW7989QZgWsq3EyuOQUJhzpa2nWH7Mv5JCIAg=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=RFBpRTPC+IBknTyNuRApmUEG2z9yuHoc3DF1R1PkWtlWYEKxHqbfrCqDbOQJWrez
+	 JqzlLPdsOa2gSyq4MZU8KRJz98L22JIqlXLL4yFjkYlQXYlkUAECv+CN+kQiAJ1nK
+	 MBDBZxR5yH+HxJhbsjUKMbbop9ju8Ls4U5yTNEWwEMiGysXfk8I/7n2uxUqM/rFnB
+	 BfT/5KNPTPJILfgCHu/JqGsbZ9SL3YJRxehvlr7tV22GxmZlq6wWBp6uC9w82DwCi
+	 8fbzBe8gZFdJ/Fu2JhAWynGNhrg6Si8vPJFMXm407yTuO34d/yZ4rrTmFgXoKQ07A
+	 LFp6AZpF+BurpQL1bg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.153] ([193.115.79.20]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mq2jC-1rabAR3gH4-00n9Kr; Fri, 15
+ Dec 2023 21:44:10 +0100
+Message-ID: <cbe969fd-5c2d-4c54-92e7-3952d9ca37b2@gmx.com>
+Date: Sat, 16 Dec 2023 07:14:04 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date: Fri, 15 Dec 2023 15:31:14 -0500
-Message-Id: <1964151702672274@5onccsrv2hdogkey.iva.yp-c.yandex.net>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: handle existing eb in the radix tree properly
+To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com
+References: <93ba6929e6ce070bd27bd80220bff7112793a3ca.1702658189.git.josef@toxicpanda.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <93ba6929e6ce070bd27bd80220bff7112793a3ca.1702658189.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:j5TaYFR/qLQlH0mGzKgO64b8u9rjhGnOeOzRrbta+dROKdpFsq4
+ kMEfAnWCsw76EduJHKdy31lnv1Sbs8Ky5d8+wfh718PIkqbtjW7ajLjIp9ncOHJVTmBrVKr
+ +uNpdanXPio7Nm2S/hIHUccBUewdBVSeGGQRoT04amcsIjtBRqm4kbiyH8TXqwZgrHUFjIF
+ mVBcrpcmqdCiGqBEl3FxA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:YkpWDp+0X40=;JJp5f3L6Rfx0qVXfYGLcvPAp6gc
+ 2f6lgzmQkOsgrWwamvJjsO18j6q8zTkA1CQTmQEXyW/Pp4ljjgOyZL4P3aK8ydXS4+T36Nx4K
+ wtQoMlO+tWstuXCDvI39Ck0lW5w/pBMFfAQy6kT6t/eLHkC6H8eNunhPHbqdPANltE7QQNaBt
+ fzmG4EroApEVdMJh+FXnQiSWaXx0KJe9W/9HUujIwjxmQCMyj8I9HDdkOJC0g0auW0dY5hqKn
+ RTAB/qhI11w/JEPZ2fjEXqj+uVwZLpDGAeWgZiJeoKoh7tuwhF8OsjQNTN57gP6PkeN4GMR+i
+ voVqvcI4+Q1Wn00dK3/AoQ8dR8SFTz7a4eIyZ1tmjtouVv1CfbvYi8zbqX0pa5WTxigaksGgh
+ geo1KhMQYHbxfMAhjRjrJNJR7MmETTlDwGfNNP+uTAHRfjqvirIoxTPOthlEsuJXBzVTOThSM
+ psqoA/s5x36OYb59o9z0Z2BF4VsVWjBo9g9NjIQJ3exRGMqvGcw5SWf56+V4+zP1UUC6IVKxH
+ zUXDmRNX1AhROA3X3D4q1BnQbD9VIWqpe3DKj2x8UPNwa1ZCH/pmydWtL3XP7wxRsm1Kf+1pw
+ rljHcLlbZieTA5H1AO5RmenhyNSrl28RNcP7rQ+JIeMMHkBv5/3WLnqOVF5hCE3j5lZF0ZlL6
+ NW2W9nwyWZ5K3hOXPBqAvcRRADkyugZ+Ge+iPv7ZpIE8uoSoZ5biOa3e0ikXa+3wmrA3630uX
+ 448Cmw0wOAIjMJYKiBrgoAu1mb2LVbUyXmoNvZ9ejE9+alSpL0uv1SPZLEUAvR6zsFfpw1/ft
+ ezSnyI4/b3sZkTlbDSizOBFFzQ4zy38ep1Qdr33nW/2iQr8UGPlfaf9ihhobYdNph5SkpPt7I
+ 8oP0XnK3VGjzftA8ahZVjwPDJCWztTH45LTM7wk2lTHtC0qr9NaJHMmRCzntaGCUfBihMyHEX
+ PmIFjTRnvsWE7ZpzSHcCtZDxMGo=
 
 
-On Fri, Dec 15, 2023, at 10:13 AM, Grigori Efimovitch wrote:
 
->Hi,
-> 
-> 1 - I do that all the time with ext4 to clone my boot partition:
+On 2023/12/16 03:06, Josef Bacik wrote:
+> This fix can be folded into "btrfs: refactor alloc_extent_buffer() to
+> allocate-then-attach method".
 >
->Like Remi, I'm having a hard time following all the extra information, but don't see how this clone was created in the first place.
+> My previous fix simply fixed the panic, this fixes the memory leak that
+> I observed after fixing the panic.
 >
-
-Sorry, I'll do it again.
-
-The clone is created every week or so from a live dvd where the original is sda and the soon-to-be backup is sdb:
-"pv < /dev/sda > /dev/sdb" OR "dd if=/dev/sda of=/dev/sdb bs=1M status=progress" depending on what's available on the live dvd.
-
-My point 1 (with rsync) was only there to demonstrate it was doable on ext4 and I was just wondering if it were on btrfs as well.  After some tries, it's doable on the same disk or partition.
-From your replies, I take for granted it's not doable on 2 identically partitioned hard drives with the same UUIDs.
-
->Btrfs makes prolific use of UUIDs. The file system UUID has several synonyms: the volume UUID, the fsid, and also the one blkid reports as "UUID=" is found in the super block, and in every leaf and node.
+> When we have an existing extent buffer in the radix tree we'll goto out
+> to clean everything up, but we have a
 >
+> if (ret < 0)
+> 	return ERR_PTR(ret);
 
-I did notice that.  Hence the impossibility to mount both at the same time.
+Stupid me...
 
->You shouldn't clone a Btrfs using dd or ddrescue, except as a data recovery technique, in which the original and copy are not ever used at the same time.
->
+I shouldn't put this refactor in a already bug-prone behavior change patch=
+.
 
-Point taken.  Thanks.
+>
+> Even though we have the existing extent buffer.  We've looked this thing
+> up so have a reference on it so we leak that, but we're also returning
+> an error when we shouldn't be.  Fix this up by setting ret to 0 if we
+> get an error back from the radix tree insert.  With these two fixups I
+> can now get through btrfs/187 on subpage without anything blowing up.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
->If your use case requires using an original and a copy at the same time, you need to change the UUID for one of the file systems by using btrfstune -M flag, which uses metadata_uuid file system feature to >change the UUID quickly (without requiring all of the metadata to be read and rewritten with the new UUID). This is probably what you want to use since you already have this file system created.
->
->In the future, I suggest using the Btrfs seed sprout feature to clone Btrfs file systems.
->https://btrfs.readthedocs.io/en/latest/Seeding-device.html
->
->There are multiple use cases possible with the seed feature, so just be aware there's more than one way to use it. The way you'd use it: make the original a seed (read-only), mount it, add a second device, remount the file system read-write (this is potentially the confusing part), and then remove the seed device (also potentially confusing). The removal of the seed causes replication to start from the seed (1st device) to the sprout (2nd device). The resulting sprout is data wise byte for byte identical. But it is not a block copy like dd. It uses the > balance code path to replicate at the block group level. In effect you will get a balanced file system as the resulting sprout, with one other difference: the UUID will be unique.
->
->Strictly speaking this is a derivative file system. It starts as a clone with the intent of modifying it for a different use case than the original file system. The use case isn't to keep the two file systems identical all the time or else you'd probably use raid1.
->
->Note that all the subvolumes and snapshots have their UUIDs preserved so any workflow that depends on replication of snapshots using btrfs send/receive is also preserved. You can thereby create unlimited derivative file system copies that are valid source and destination for send/receive operations, however your workflow was setup for the original file system.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-This reading will receive all my attention.  Thanks for pointing it to me.  My purpose is to make a backup, the fastest way possible.  Sdb has one usage only.  To be restored to sda if sda ever came corrupted or damaged.  History proved it happens.  I wasn't lucky with snapshots.  Most of the time, the system is unbootable or corrupted.  Worked once in 2 months.  All other situations were problematic.  So let's rely on something I've been using for 25 years, an exact clone copy maximum 1 week old.
+Thanks for pinning it down and the fix,
+Qu
+
+> ---
+>   fs/btrfs/extent_io.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index b42603098b6b..375fbec298bc 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -3731,6 +3731,7 @@ struct extent_buffer *alloc_extent_buffer(struct b=
+trfs_fs_info *fs_info,
+>   	spin_unlock(&fs_info->buffer_lock);
+>   	radix_tree_preload_end();
+>   	if (ret =3D=3D -EEXIST) {
+> +		ret =3D 0;
+>   		existing_eb =3D find_extent_buffer(fs_info, start);
+>   		if (existing_eb)
+>   			goto out;
 
