@@ -1,153 +1,122 @@
-Return-Path: <linux-btrfs+bounces-985-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-986-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34FF581515B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 21:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D13881518A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 22:03:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82186B23F02
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 20:45:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED4E6B21018
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 21:03:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C7347F7E;
-	Fri, 15 Dec 2023 20:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RFBpRTPC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9788547793;
+	Fri, 15 Dec 2023 21:03:15 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5BE47F7C
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Dec 2023 20:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1702673050; x=1703277850; i=quwenruo.btrfs@gmx.com;
-	bh=r95y9QEW7989QZgWsq3EyuOQUJhzpa2nWH7Mv5JCIAg=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=RFBpRTPC+IBknTyNuRApmUEG2z9yuHoc3DF1R1PkWtlWYEKxHqbfrCqDbOQJWrez
-	 JqzlLPdsOa2gSyq4MZU8KRJz98L22JIqlXLL4yFjkYlQXYlkUAECv+CN+kQiAJ1nK
-	 MBDBZxR5yH+HxJhbsjUKMbbop9ju8Ls4U5yTNEWwEMiGysXfk8I/7n2uxUqM/rFnB
-	 BfT/5KNPTPJILfgCHu/JqGsbZ9SL3YJRxehvlr7tV22GxmZlq6wWBp6uC9w82DwCi
-	 8fbzBe8gZFdJ/Fu2JhAWynGNhrg6Si8vPJFMXm407yTuO34d/yZ4rrTmFgXoKQ07A
-	 LFp6AZpF+BurpQL1bg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([193.115.79.20]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mq2jC-1rabAR3gH4-00n9Kr; Fri, 15
- Dec 2023 21:44:10 +0100
-Message-ID: <cbe969fd-5c2d-4c54-92e7-3952d9ca37b2@gmx.com>
-Date: Sat, 16 Dec 2023 07:14:04 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DFD47F42;
+	Fri, 15 Dec 2023 21:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a1e2f34467aso90898866b.2;
+        Fri, 15 Dec 2023 13:03:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702674191; x=1703278991;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YdXPhVoljjpQ/GSCvKTA3xcVcrs4S0B/iVQWRUeQUaw=;
+        b=j3FzpsNQY0ye4m28HqDkJlPvdSFEH1SfGgXzYG6486Bn0l12lh7k6A6+KoibRIW++g
+         vVWaENSnhh1bglKUx9nPV0TDqMoW8q23rKPhaPLV6RIDouxVuotNUwu3kPDsnpaupwF2
+         sIFlJVaWBR0bz4TrIl2PJf+7jXy5r9WNNC38o8dQQvzToT2njKOqo+S59M7f9u+x5Z6d
+         7EAdDVm5YMtOlLj3LwcYmxB0mlgrrwBn3Oqt5xczwXcaPu8unUoHySgsrGUuJnQmPNGK
+         oEl+8ROGnbDD8oZOhK+V98ixcg7NeONfnErjcuPFt1Bb8ubnTCa0yQPHSsiZFH6h8neb
+         eiGw==
+X-Gm-Message-State: AOJu0YxzNGLpbAnfQ033GauPUJSSsy0MReSKfJUpR4794wdzg2PMXwF2
+	bDJK/zBWU7JgBqgoZPkDW6et/JU+gmp/1rHW
+X-Google-Smtp-Source: AGHT+IFrggzcXEeLB86xDwo6+SDJoIT3Q4jjeswibtTl8ZJM25F1sT9EwdrfJOXiRYd7Ei78hhz6gQ==
+X-Received: by 2002:a17:907:707:b0:a10:c6ab:9cbe with SMTP id xb7-20020a170907070700b00a10c6ab9cbemr8666300ejb.46.1702674191041;
+        Fri, 15 Dec 2023 13:03:11 -0800 (PST)
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
+        by smtp.gmail.com with ESMTPSA id un7-20020a170907cb8700b009fc42f37970sm11262325ejc.171.2023.12.15.13.03.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 13:03:10 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3364a5ccbb1so966926f8f.1;
+        Fri, 15 Dec 2023 13:03:10 -0800 (PST)
+X-Received: by 2002:adf:d1ce:0:b0:336:3dcd:186b with SMTP id
+ b14-20020adfd1ce000000b003363dcd186bmr3450891wrd.63.1702674190638; Fri, 15
+ Dec 2023 13:03:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: handle existing eb in the radix tree properly
-To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-References: <93ba6929e6ce070bd27bd80220bff7112793a3ca.1702658189.git.josef@toxicpanda.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <93ba6929e6ce070bd27bd80220bff7112793a3ca.1702658189.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <27a3901ec5c2f63650441e5c99f430fce864b609.1702652494.git.josef@toxicpanda.com>
+In-Reply-To: <27a3901ec5c2f63650441e5c99f430fce864b609.1702652494.git.josef@toxicpanda.com>
+From: Neal Gompa <neal@gompa.dev>
+Date: Fri, 15 Dec 2023 16:02:33 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je8A+NJbhXnaWwhCNFW=DnSe-soQc49EVY=pY2wQg+b-bg@mail.gmail.com>
+Message-ID: <CAEg-Je8A+NJbhXnaWwhCNFW=DnSe-soQc49EVY=pY2wQg+b-bg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: do not allow non subvolume root targets for snapshot
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:j5TaYFR/qLQlH0mGzKgO64b8u9rjhGnOeOzRrbta+dROKdpFsq4
- kMEfAnWCsw76EduJHKdy31lnv1Sbs8Ky5d8+wfh718PIkqbtjW7ajLjIp9ncOHJVTmBrVKr
- +uNpdanXPio7Nm2S/hIHUccBUewdBVSeGGQRoT04amcsIjtBRqm4kbiyH8TXqwZgrHUFjIF
- mVBcrpcmqdCiGqBEl3FxA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YkpWDp+0X40=;JJp5f3L6Rfx0qVXfYGLcvPAp6gc
- 2f6lgzmQkOsgrWwamvJjsO18j6q8zTkA1CQTmQEXyW/Pp4ljjgOyZL4P3aK8ydXS4+T36Nx4K
- wtQoMlO+tWstuXCDvI39Ck0lW5w/pBMFfAQy6kT6t/eLHkC6H8eNunhPHbqdPANltE7QQNaBt
- fzmG4EroApEVdMJh+FXnQiSWaXx0KJe9W/9HUujIwjxmQCMyj8I9HDdkOJC0g0auW0dY5hqKn
- RTAB/qhI11w/JEPZ2fjEXqj+uVwZLpDGAeWgZiJeoKoh7tuwhF8OsjQNTN57gP6PkeN4GMR+i
- voVqvcI4+Q1Wn00dK3/AoQ8dR8SFTz7a4eIyZ1tmjtouVv1CfbvYi8zbqX0pa5WTxigaksGgh
- geo1KhMQYHbxfMAhjRjrJNJR7MmETTlDwGfNNP+uTAHRfjqvirIoxTPOthlEsuJXBzVTOThSM
- psqoA/s5x36OYb59o9z0Z2BF4VsVWjBo9g9NjIQJ3exRGMqvGcw5SWf56+V4+zP1UUC6IVKxH
- zUXDmRNX1AhROA3X3D4q1BnQbD9VIWqpe3DKj2x8UPNwa1ZCH/pmydWtL3XP7wxRsm1Kf+1pw
- rljHcLlbZieTA5H1AO5RmenhyNSrl28RNcP7rQ+JIeMMHkBv5/3WLnqOVF5hCE3j5lZF0ZlL6
- NW2W9nwyWZ5K3hOXPBqAvcRRADkyugZ+Ge+iPv7ZpIE8uoSoZ5biOa3e0ikXa+3wmrA3630uX
- 448Cmw0wOAIjMJYKiBrgoAu1mb2LVbUyXmoNvZ9ejE9+alSpL0uv1SPZLEUAvR6zsFfpw1/ft
- ezSnyI4/b3sZkTlbDSizOBFFzQ4zy38ep1Qdr33nW/2iQr8UGPlfaf9ihhobYdNph5SkpPt7I
- 8oP0XnK3VGjzftA8ahZVjwPDJCWztTH45LTM7wk2lTHtC0qr9NaJHMmRCzntaGCUfBihMyHEX
- PmIFjTRnvsWE7ZpzSHcCtZDxMGo=
 
-
-
-On 2023/12/16 03:06, Josef Bacik wrote:
-> This fix can be folded into "btrfs: refactor alloc_extent_buffer() to
-> allocate-then-attach method".
+On Fri, Dec 15, 2023 at 10:02=E2=80=AFAM Josef Bacik <josef@toxicpanda.com>=
+ wrote:
 >
-> My previous fix simply fixed the panic, this fixes the memory leak that
-> I observed after fixing the panic.
+> Our btrfs subvolume snapshot <source> <destination> utility enforces
+> that <source> is the root of the subvolume, however this isn't enforced
+> in the kernel.  Update the kernel to also enforce this limitation to
+> avoid problems with other users of this ioctl that don't have the
+> appropriate checks in place.
 >
-> When we have an existing extent buffer in the radix tree we'll goto out
-> to clean everything up, but we have a
->
-> if (ret < 0)
-> 	return ERR_PTR(ret);
-
-Stupid me...
-
-I shouldn't put this refactor in a already bug-prone behavior change patch=
-.
-
->
-> Even though we have the existing extent buffer.  We've looked this thing
-> up so have a reference on it so we leak that, but we're also returning
-> an error when we shouldn't be.  Fix this up by setting ret to 0 if we
-> get an error back from the radix tree insert.  With these two fixups I
-> can now get through btrfs/187 on subpage without anything blowing up.
->
+> cc: stable@vger.kernel.org
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks for pinning it down and the fix,
-Qu
-
 > ---
->   fs/btrfs/extent_io.c | 1 +
->   1 file changed, 1 insertion(+)
+>  fs/btrfs/ioctl.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 >
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index b42603098b6b..375fbec298bc 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3731,6 +3731,7 @@ struct extent_buffer *alloc_extent_buffer(struct b=
-trfs_fs_info *fs_info,
->   	spin_unlock(&fs_info->buffer_lock);
->   	radix_tree_preload_end();
->   	if (ret =3D=3D -EEXIST) {
-> +		ret =3D 0;
->   		existing_eb =3D find_extent_buffer(fs_info, start);
->   		if (existing_eb)
->   			goto out;
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 4e50b62db2a8..298edca43901 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1290,6 +1290,16 @@ static noinline int __btrfs_ioctl_snap_create(stru=
+ct file *file,
+>                          * are limited to own subvolumes only
+>                          */
+>                         ret =3D -EPERM;
+> +               } else if (btrfs_ino(BTRFS_I(src_inode)) !=3D
+> +                          BTRFS_FIRST_FREE_OBJECTID) {
+> +                       /*
+> +                        * Snapshots must be made with the src_inode refe=
+rring
+> +                        * to the subvolume inode, otherwise the permissi=
+on
+> +                        * checking above is useless because we may have
+> +                        * permission on a lower diretory but not the sub=
+vol
+> +                        * itself.
+> +                        */
+> +                       ret =3D -EINVAL;
+>                 } else {
+>                         ret =3D btrfs_mksnapshot(&file->f_path, idmap,
+>                                                name, namelen,
+> --
+> 2.43.0
+>
+>
+
+Yes, please!
+
+Reviewed-by: Neal Gompa <neal@gompa.dev>
+
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
