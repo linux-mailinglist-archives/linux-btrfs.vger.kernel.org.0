@@ -1,43 +1,43 @@
-Return-Path: <linux-btrfs+bounces-983-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-984-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEB308150F3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 21:15:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4F0C815116
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 21:31:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B6D4286531
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 20:15:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B45A286899
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 20:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E5A45BE8;
-	Fri, 15 Dec 2023 20:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B61DDB9;
+	Fri, 15 Dec 2023 20:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.com header.i=@yandex.com header.b="Ot3wW0mK"
+	dkim=pass (1024-bit key) header.d=yandex.com header.i=@yandex.com header.b="JoUbZeno"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from forward501a.mail.yandex.net (forward501a.mail.yandex.net [178.154.239.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794DC45975
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Dec 2023 20:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167D0846D
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Dec 2023 20:31:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.com
 Received: from mail-nwsmtp-mxback-production-main-254.iva.yp-c.yandex.net (mail-nwsmtp-mxback-production-main-254.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:9a8c:0:640:9a2c:0])
-	by forward501a.mail.yandex.net (Yandex) with ESMTP id EFD7F61385;
-	Fri, 15 Dec 2023 23:14:47 +0300 (MSK)
-Received: from mail.yandex.com (2a02:6b8:c0c:488c:0:640:251f:0 [2a02:6b8:c0c:488c:0:640:251f:0])
-	by mail-nwsmtp-mxback-production-main-254.iva.yp-c.yandex.net (mxback/Yandex) with HTTP id fEsZwj2XG8c0-jLk4lC5C;
-	Fri, 15 Dec 2023 23:14:47 +0300
+	by forward501a.mail.yandex.net (Yandex) with ESMTP id 4253861624;
+	Fri, 15 Dec 2023 23:31:15 +0300 (MSK)
+Received: from mail.yandex.com (2a02:6b8:c0c:1606:0:640:506f:0 [2a02:6b8:c0c:1606:0:640:506f:0])
+	by mail-nwsmtp-mxback-production-main-254.iva.yp-c.yandex.net (mxback/Yandex) with HTTP id 9VsEpk2X6Ko0-9eEkHxK7;
+	Fri, 15 Dec 2023 23:31:14 +0300
 X-Yandex-Fwd: 1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.com; s=mail;
-	t=1702671287; bh=JZQtX04uddNp97P9jVh4BCXcTH25XZuBBNAcjTxrPXY=;
+	t=1702672274; bh=IWhkCJf09cv3grxs4bm4f+nnhBFReXH00pkVWaERXrU=;
 	h=References:Date:Message-Id:Cc:Subject:To:From:In-Reply-To;
-	b=Ot3wW0mKlwCSXJeaKzSPzwzvraezpwHh9doy7gXP+GoN6M7Tmjd2z1HtCU3yEJJ6s
-	 g11CyQJbb8p2YnYuo8K80LgCwS6pbSAOKrJGq9SLY+p3wFwQM0CS7c/VSStQZnjoLz
-	 sn9Ig3zd7o8zU/YIFK0+cF53EUUVRITtWRKTWIIU=
+	b=JoUbZenoBWvUW8yHYgkoZ9//teNZIN+EboqgmO+9yegsCKdPRrOZctb5vQjlC+ykX
+	 8naWMhDsnjhE7P2x280BZyv3hfnsn3hfZgwOmoPdRjLHJTcSnQ6vWYascZKQZOh1ml
+	 pDfk4Oy1oapBuSEDFITxQgZqPqe6Z3byGe1tLcfs=
 Authentication-Results: mail-nwsmtp-mxback-production-main-254.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.com
-Received: by ybzyx5bgt3byggqr.iva.yp-c.yandex.net with HTTP;
-	Fri, 15 Dec 2023 23:14:47 +0300
+Received: by 5onccsrv2hdogkey.iva.yp-c.yandex.net with HTTP;
+	Fri, 15 Dec 2023 23:31:14 +0300
 From: Grigori Efimovitch <etlp6@yandex.com>
 Envelope-From: etlp6@yandex.com
 To: Chris Murphy <lists@colorremedies.com>
@@ -52,39 +52,49 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date: Fri, 15 Dec 2023 15:14:47 -0500
-Message-Id: <1933241702671287@ybzyx5bgt3byggqr.iva.yp-c.yandex.net>
+Date: Fri, 15 Dec 2023 15:31:14 -0500
+Message-Id: <1964151702672274@5onccsrv2hdogkey.iva.yp-c.yandex.net>
 Content-Transfer-Encoding: 7bit
 Content-Type: text/plain
 
+
 On Fri, Dec 15, 2023, at 10:13 AM, Grigori Efimovitch wrote:
 
->First, I think there were safeguards added to kernel within the past few
->years, but last time I checked, it was not safe, (as in, probably
->immediately disastrous) to mount a btrfs filesystem while an exact clone
->of the raw disk even existed.  I would suggest taking care that this is
->never the case.
+>Hi,
+> 
+> 1 - I do that all the time with ext4 to clone my boot partition:
+>
+>Like Remi, I'm having a hard time following all the extra information, but don't see how this clone was created in the first place.
+>
+
+Sorry, I'll do it again.
+
+The clone is created every week or so from a live dvd where the original is sda and the soon-to-be backup is sdb:
+"pv < /dev/sda > /dev/sdb" OR "dd if=/dev/sda of=/dev/sdb bs=1M status=progress" depending on what's available on the live dvd.
+
+My point 1 (with rsync) was only there to demonstrate it was doable on ext4 and I was just wondering if it were on btrfs as well.  After some tries, it's doable on the same disk or partition.
+From your replies, I take for granted it's not doable on 2 identically partitioned hard drives with the same UUIDs.
+
+>Btrfs makes prolific use of UUIDs. The file system UUID has several synonyms: the volume UUID, the fsid, and also the one blkid reports as "UUID=" is found in the super block, and in every leaf and node.
+>
+
+I did notice that.  Hence the impossibility to mount both at the same time.
+
+>You shouldn't clone a Btrfs using dd or ddrescue, except as a data recovery technique, in which the original and copy are not ever used at the same time.
+>
 
 Point taken.  Thanks.
 
->I'm confused about the process here.  First, you copy files from your
->boot directory to a mount point on sdb.  Presumably, /boot resides on
->sda.  Then you make a raw copy of the entire sda disk to sdb?  (That
->will completely overwrite anything you might have copied over in step 1.
+>If your use case requires using an original and a copy at the same time, you need to change the UUID for one of the file systems by using btrfstune -M flag, which uses metadata_uuid file system feature to >change the UUID quickly (without requiring all of the metadata to be read and rewritten with the new UUID). This is probably what you want to use since you already have this file system created.
 >
->But then, from your description, I have to ask, are you trying to copy
-
-Sorry. Hard to explain. 1 and 2 were 2 separate cases.  Point 1 was there only to demonstrate I used to do that with rsync on ext3-4 filesystems.  So it's doable.
-Point 2 is the way I clone sda to sdb. And no, the system isn't mounted. Of course not.  And the purpose is to overwrite everything.  Sdb will become my backup.
-
-> 5 - I cannot change the disk uuid because the external hard drive sdb is the backup, has to be a clone and grub expects those very uuids to be bootable. Hence I tried to change the label to circumvent the mounting error but to no avail.
+>In the future, I suggest using the Btrfs seed sprout feature to clone Btrfs file systems.
+>https://btrfs.readthedocs.io/en/latest/Seeding-device.html
 >
+>There are multiple use cases possible with the seed feature, so just be aware there's more than one way to use it. The way you'd use it: make the original a seed (read-only), mount it, add a second device, remount the file system read-write (this is potentially the confusing part), and then remove the seed device (also potentially confusing). The removal of the seed causes replication to start from the seed (1st device) to the sprout (2nd device). The resulting sprout is data wise byte for byte identical. But it is not a block copy like dd. It uses the > balance code path to replicate at the block group level. In effect you will get a balanced file system as the resulting sprout, with one other difference: the UUID will be unique.
 >
->My suggestion would be to change the UUID of sdb3, manually fix the
->/mnt/desk/root/boot/grub/grub.cfg file, then exclude that file from your
->rsync.  (Alternatively, you can script a very simple search and replace
->that will swap out the UUID inside that file to run at the end of your
->backup rsync.)
+>Strictly speaking this is a derivative file system. It starts as a clone with the intent of modifying it for a different use case than the original file system. The use case isn't to keep the two file systems identical all the time or else you'd probably use raid1.
+>
+>Note that all the subvolumes and snapshots have their UUIDs preserved so any workflow that depends on replication of snapshots using btrfs send/receive is also preserved. You can thereby create unlimited derivative file system copies that are valid source and destination for send/receive operations, however your workflow was setup for the original file system.
 
-That's what I was expecting as an answer.  No big deal.  I already have a script doing just that I use when I cannot use dd / pv e.g. when I have to resize or realign partitions:  I recreate partitions with the new sizes on sdb and rsync the data from sda to sdb.  Done that on xfs and ext4.  Last operation, I restore the UUIDs (for grub, fstab, etc)
+This reading will receive all my attention.  Thanks for pointing it to me.  My purpose is to make a backup, the fastest way possible.  Sdb has one usage only.  To be restored to sda if sda ever came corrupted or damaged.  History proved it happens.  I wasn't lucky with snapshots.  Most of the time, the system is unbootable or corrupted.  Worked once in 2 months.  All other situations were problematic.  So let's rely on something I've been using for 25 years, an exact clone copy maximum 1 week old.
 
