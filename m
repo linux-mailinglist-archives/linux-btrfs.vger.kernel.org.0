@@ -1,122 +1,119 @@
-Return-Path: <linux-btrfs+bounces-986-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D13881518A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 22:03:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 274FB815209
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 22:46:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED4E6B21018
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 21:03:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA7EE1F252D1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 21:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9788547793;
-	Fri, 15 Dec 2023 21:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF0C649F7D;
+	Fri, 15 Dec 2023 21:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="qlpswb1D"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DFD47F42;
-	Fri, 15 Dec 2023 21:03:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a1e2f34467aso90898866b.2;
-        Fri, 15 Dec 2023 13:03:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E85B749F73
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Dec 2023 21:45:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5d7a47d06eeso10916907b3.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Dec 2023 13:45:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1702676752; x=1703281552; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Voo/Qo5neoICI5TEYLgUqQlKmAzhYFSB0CPj59btfKQ=;
+        b=qlpswb1DLMhzlDsKOBNvP0yThjdBFWhR2ne/ZU7HPq2/8b9pfZt5oEVHVuc7RkeMuF
+         EVOFx42ECpSBoj173PiPwUji9255AqY5xRcu+HDdqp6bU2udyUbkKLHZn3R2xmrnHQrL
+         DP1vdtuyL0zdyHalAvw7jpIzazS2dJ7B/f5ww8ieDYCDUp0Zvxqdet+XtLnAb/Li6sDj
+         Yf1TEKbH3ey/4FQ1QBFlZoBlGJ6upflHh1bj8HpIBME/DActXx6g5wBA7YntCdEsWn3u
+         Oj/8KSGWA7tr0ivpMQvYL5n1HCxiSMGywlBIOh4BfneCYoA/hfUrYaS/FgY5LF+BueQp
+         N3tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702674191; x=1703278991;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YdXPhVoljjpQ/GSCvKTA3xcVcrs4S0B/iVQWRUeQUaw=;
-        b=j3FzpsNQY0ye4m28HqDkJlPvdSFEH1SfGgXzYG6486Bn0l12lh7k6A6+KoibRIW++g
-         vVWaENSnhh1bglKUx9nPV0TDqMoW8q23rKPhaPLV6RIDouxVuotNUwu3kPDsnpaupwF2
-         sIFlJVaWBR0bz4TrIl2PJf+7jXy5r9WNNC38o8dQQvzToT2njKOqo+S59M7f9u+x5Z6d
-         7EAdDVm5YMtOlLj3LwcYmxB0mlgrrwBn3Oqt5xczwXcaPu8unUoHySgsrGUuJnQmPNGK
-         oEl+8ROGnbDD8oZOhK+V98ixcg7NeONfnErjcuPFt1Bb8ubnTCa0yQPHSsiZFH6h8neb
-         eiGw==
-X-Gm-Message-State: AOJu0YxzNGLpbAnfQ033GauPUJSSsy0MReSKfJUpR4794wdzg2PMXwF2
-	bDJK/zBWU7JgBqgoZPkDW6et/JU+gmp/1rHW
-X-Google-Smtp-Source: AGHT+IFrggzcXEeLB86xDwo6+SDJoIT3Q4jjeswibtTl8ZJM25F1sT9EwdrfJOXiRYd7Ei78hhz6gQ==
-X-Received: by 2002:a17:907:707:b0:a10:c6ab:9cbe with SMTP id xb7-20020a170907070700b00a10c6ab9cbemr8666300ejb.46.1702674191041;
-        Fri, 15 Dec 2023 13:03:11 -0800 (PST)
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
-        by smtp.gmail.com with ESMTPSA id un7-20020a170907cb8700b009fc42f37970sm11262325ejc.171.2023.12.15.13.03.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Dec 2023 13:03:10 -0800 (PST)
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3364a5ccbb1so966926f8f.1;
-        Fri, 15 Dec 2023 13:03:10 -0800 (PST)
-X-Received: by 2002:adf:d1ce:0:b0:336:3dcd:186b with SMTP id
- b14-20020adfd1ce000000b003363dcd186bmr3450891wrd.63.1702674190638; Fri, 15
- Dec 2023 13:03:10 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702676752; x=1703281552;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Voo/Qo5neoICI5TEYLgUqQlKmAzhYFSB0CPj59btfKQ=;
+        b=chSzK92NbGKaJ2m9dJ8k+Vj6Ibfv3lNvS0k1s+JLUZtyZM09zslomslU4pGXhFlylW
+         zmTeTJcxAWyUg+3jvB2TRWmj5o3xEbY7LGbSqOCFnAbLhHlDleuGPNNlVnVyOw/ltbrp
+         phqoDWxzUlMUExL0Lx67oT0JygKEysrDYJNQYhYs6K6+GQwZm2UgKQ8qWLTCpWjpWAGv
+         TBdZMpd721lMlwBgWOkMLi/emG7TJ/yd4wX591gtyF88/ZWab9sOmtJCviJT9osO5kkb
+         E1Sxj07dL9qB+AuXAf3rs8TH8X3ABRuzJeaKP88n9n6BbJf97aGmlcMguxB7FL6YXbRW
+         bXxg==
+X-Gm-Message-State: AOJu0YxhWo82yjH8K7XRg8djDEw+LRtzxBUJXnH8wCe+dBjT08Ktxci5
+	5uWe+Q/aBBSL4pFl1UrsvZ8KOw==
+X-Google-Smtp-Source: AGHT+IGn2gXyZ44rH0GdttHxI9BDGa6muaa1HTZ9b5XYSMgUKOgwNkucKhJf+BqCcDPHEJOxXfTXxQ==
+X-Received: by 2002:a0d:d9cc:0:b0:5e3:3bcc:c344 with SMTP id b195-20020a0dd9cc000000b005e33bccc344mr3671813ywe.33.1702676751819;
+        Fri, 15 Dec 2023 13:45:51 -0800 (PST)
+Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id b80-20020a0dd953000000b005e2ca09e751sm2443263ywe.110.2023.12.15.13.45.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 13:45:50 -0800 (PST)
+Date: Fri, 15 Dec 2023 16:45:50 -0500
+From: Josef Bacik <josef@toxicpanda.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Eric Biggers <ebiggers@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH 1/3] btrfs: call btrfs_close_devices from
+ ->kill_sb
+Message-ID: <20231215214550.GB883762@perftesting>
+References: <20231213040018.73803-1-ebiggers@kernel.org>
+ <20231213040018.73803-2-ebiggers@kernel.org>
+ <20231213084123.GA6184@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <27a3901ec5c2f63650441e5c99f430fce864b609.1702652494.git.josef@toxicpanda.com>
-In-Reply-To: <27a3901ec5c2f63650441e5c99f430fce864b609.1702652494.git.josef@toxicpanda.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Fri, 15 Dec 2023 16:02:33 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je8A+NJbhXnaWwhCNFW=DnSe-soQc49EVY=pY2wQg+b-bg@mail.gmail.com>
-Message-ID: <CAEg-Je8A+NJbhXnaWwhCNFW=DnSe-soQc49EVY=pY2wQg+b-bg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: do not allow non subvolume root targets for snapshot
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213084123.GA6184@lst.de>
 
-On Fri, Dec 15, 2023 at 10:02=E2=80=AFAM Josef Bacik <josef@toxicpanda.com>=
- wrote:
->
-> Our btrfs subvolume snapshot <source> <destination> utility enforces
-> that <source> is the root of the subvolume, however this isn't enforced
-> in the kernel.  Update the kernel to also enforce this limitation to
-> avoid problems with other users of this ioctl that don't have the
-> appropriate checks in place.
->
-> cc: stable@vger.kernel.org
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/ioctl.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 4e50b62db2a8..298edca43901 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -1290,6 +1290,16 @@ static noinline int __btrfs_ioctl_snap_create(stru=
-ct file *file,
->                          * are limited to own subvolumes only
->                          */
->                         ret =3D -EPERM;
-> +               } else if (btrfs_ino(BTRFS_I(src_inode)) !=3D
-> +                          BTRFS_FIRST_FREE_OBJECTID) {
-> +                       /*
-> +                        * Snapshots must be made with the src_inode refe=
-rring
-> +                        * to the subvolume inode, otherwise the permissi=
-on
-> +                        * checking above is useless because we may have
-> +                        * permission on a lower diretory but not the sub=
-vol
-> +                        * itself.
-> +                        */
-> +                       ret =3D -EINVAL;
->                 } else {
->                         ret =3D btrfs_mksnapshot(&file->f_path, idmap,
->                                                name, namelen,
-> --
-> 2.43.0
->
->
+On Wed, Dec 13, 2023 at 09:41:23AM +0100, Christoph Hellwig wrote:
+> On Tue, Dec 12, 2023 at 08:00:16PM -0800, Eric Biggers wrote:
+> > From: Christoph Hellwig <hch@lst.de>
+> > 
+> > blkdev_put must not be called under sb->s_umount to avoid a lock order
+> > reversal with disk->open_mutex once call backs from block devices to
+> > the file system using the holder ops are supported.  Move the call
+> > to btrfs_close_devices into btrfs_free_fs_info so that it is closed
+> > from ->kill_sb (which is also called from the mount failure handling
+> > path unlike ->put_super) as well as when an fs_info is freed because
+> > an existing superblock already exists.
+> 
+> Thanks, this looks roughly the same to what I have locally.
+> 
+> I did in fact forward port everything missing from the get_super
+> series yesterday, but on my test setup btrfs/142 hangs even in the
+> baseline setup.  I went back to Linux before giving up for now.
+> 
+> Josef, any chane you could throw this branch:
+> 
+>     git://git.infradead.org/users/hch/misc.git btrfs-holder
+> 
+> into your CI setup and see if it sticks?  Except for the trivial last
+> three patches this is basically what you reviewed already, although
+> there was some heavy rebasing due to the mount API converison.
 
-Yes, please!
+I ran it through, you broke a test that isn't upstream yet to test the old mount
+api double mount thing that I have a test for
 
-Reviewed-by: Neal Gompa <neal@gompa.dev>
+https://github.com/btrfs/fstests/commit/2796723e77adb0f9da1059acf13fc402467f7ac4
 
+In this case we end up leaking a reference on the fs_devices.  If you add this
+fixup to "btrfs: call btrfs_close_devices from ->kill_sb" it fixes that failure.
+I'm re-running with that fixup applied, but I assume the rest is fine.  Thanks,
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Josef
 
