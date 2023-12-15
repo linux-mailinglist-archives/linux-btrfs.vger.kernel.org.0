@@ -1,118 +1,150 @@
-Return-Path: <linux-btrfs+bounces-981-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-982-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34B82814F92
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 19:16:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 080AF815063
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 20:50:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE7FB1F2149D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 18:16:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A5EF1F25614
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 19:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAA446458;
-	Fri, 15 Dec 2023 18:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F4FC45C09;
+	Fri, 15 Dec 2023 19:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="Ya75Fd61";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="EiTuQ9Io"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z/VZ045o";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7o3Pcz24";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z/VZ045o";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7o3Pcz24"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6953841867
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Dec 2023 18:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=colorremedies.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.west.internal (Postfix) with ESMTP id 674373200A8E;
-	Fri, 15 Dec 2023 13:14:57 -0500 (EST)
-Received: from imap50 ([10.202.2.100])
-  by compute4.internal (MEProxy); Fri, 15 Dec 2023 13:14:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	colorremedies.com; h=cc:content-type:content-type:date:date:from
-	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1702664096; x=
-	1702750496; bh=CG9HzM87f49GHGyDMwQuyt5zdnh4e95zwWGw0cv3REo=; b=Y
-	a75Fd61kwE8YoH7ZiYMAhtzERS6glgr6msJt4NBoD1YxCxU2ZjXYR7RMEe7kR86I
-	A7re8EQGEhY4G5MxFYS2qGfrfY99jizUoweW0/P+mhdE+aY1ecAnRk4+ZcVE6KDk
-	Oo4cmAL1gIoSk7HtBmqnqW5qkbjF8ShwR7nAoLGyFNDtN27Wou+G2m4vjC+1hsPu
-	sY+6+/Ox77LccFbApXQUZqqzzMr3eVWHYdIv8VzoHxQhwQ3FVj1Ak92xGK6DSbPc
-	3XkxHj+jbiAfiX2aZNId6qtToZF0fSmhbCN2bFvIxLqMPmFm3Cpueq+q7pVpvT5E
-	WVjF/YG3h1nR3bMU49lEQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1702664096; x=1702750496; bh=CG9HzM87f49GHGyDMwQuyt5zdnh4
-	e95zwWGw0cv3REo=; b=EiTuQ9Ioh4lJK0vok03XKuuM3rlu1n3hsIujcf65HUnJ
-	xaoneeHVCKHI5wNvGU6U6FSsuqPzPKj/4jVDxQjwCiQk0xuU5OedUJsAJT8/0ui/
-	c2NOLdRF3U1xnHIDeIESB8dftECGCKT/rP9hAN+cJgSBGKoth0UQ2MGjuCw1EM3V
-	Evr65m+3gr4HWlupB3xLoPVBzo4GZ4qz9slWQHZDjPJk/79WUnv2z/O6quiSl/oJ
-	tnmH3kbPRr5MvxvtogshUmpu7dXUrbmAhUtBQrCc1m29BSJRejso9yQMSRN01A80
-	6IhH7gFqxe6Rx3TKZL8dqKDAUSRfvWtiY0YwvS4gOQ==
-X-ME-Sender: <xms:oJd8ZTFI7QKAPTuMfH4Chq9DIq0Or7ZpipUf0RYAUtO_2hxRQuSYJQ>
-    <xme:oJd8ZQXfBcE0fzNSNmDXb4yWf8CtZvH6LjJb4TyowUB-bevPjQTlNahErnrmNHRpQ
-    zt3zlYu9jGk7SXYabk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtvddguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfvehh
-    rhhishcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtoh
-    hmqeenucggtffrrghtthgvrhhnpeevteffgeffhefgkeegheduhfdtgeefueegfffhgeek
-    gfekfedttddvffehleeuhfenucffohhmrghinheprhgvrgguthhhvgguohgtshdrihhone
-    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhishht
-    shestgholhhorhhrvghmvgguihgvshdrtghomh
-X-ME-Proxy: <xmx:oJd8ZVLL2ltXEoFB1lzNmaQL2hIJIEqtrWSbg_uIxwydR_WIW1Pk-Q>
-    <xmx:oJd8ZRGqT39tTVJPLu6JIZ5YPOgV1-IBSkXLqfvPzP--W5A2HZCliA>
-    <xmx:oJd8ZZVzpok_SX5iRAqdNZIWZDPwn0-JnYbfkajvgGBmwwZWTpSrGA>
-    <xmx:oJd8ZYANw01h9RtMoUtcKTmPUl5MCApCMWmCs25TgzV_on9SqWFEIw>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 5F2D31700093; Fri, 15 Dec 2023 13:14:56 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1283-g327e3ec917-fm-20231207.002-g327e3ec9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A65045BEE
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Dec 2023 19:50:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 31C3722080;
+	Fri, 15 Dec 2023 19:50:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702669808;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g3K3sOzJHpzfs+U9ASS0FiMCSKGRZMSbuSMpVw+AeTo=;
+	b=z/VZ045odyB+5z2jngU1kmZIFnG4fH02PzkOym/JRMj4avauU6x/0Lc6DImCU8uI0+m4ef
+	vlOSKrOSx4Gli0SWbg6ls5Mu1yL7lIKMH+LIVwSROQfjJwIB75AFg2IVLB1LO1lxOPRx2r
+	94Jf9rC2Cv9zDuASLGj6Xa9BRgsFHpw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702669808;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g3K3sOzJHpzfs+U9ASS0FiMCSKGRZMSbuSMpVw+AeTo=;
+	b=7o3Pcz24aFRy0XLALJYoIXHPNdeUkszQCQ7IwUEauMjtwk8nKsaCkSe8rv3Mj7h4DlAvxc
+	wTDfcKFMTypsZGBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702669808;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g3K3sOzJHpzfs+U9ASS0FiMCSKGRZMSbuSMpVw+AeTo=;
+	b=z/VZ045odyB+5z2jngU1kmZIFnG4fH02PzkOym/JRMj4avauU6x/0Lc6DImCU8uI0+m4ef
+	vlOSKrOSx4Gli0SWbg6ls5Mu1yL7lIKMH+LIVwSROQfjJwIB75AFg2IVLB1LO1lxOPRx2r
+	94Jf9rC2Cv9zDuASLGj6Xa9BRgsFHpw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702669808;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g3K3sOzJHpzfs+U9ASS0FiMCSKGRZMSbuSMpVw+AeTo=;
+	b=7o3Pcz24aFRy0XLALJYoIXHPNdeUkszQCQ7IwUEauMjtwk8nKsaCkSe8rv3Mj7h4DlAvxc
+	wTDfcKFMTypsZGBA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1568613A08;
+	Fri, 15 Dec 2023 19:50:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id fkvCBPCtfGWgQQAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Fri, 15 Dec 2023 19:50:08 +0000
+Date: Fri, 15 Dec 2023 20:50:06 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: handle existing eb in the radix tree properly
+Message-ID: <20231215195006.GB9795@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <93ba6929e6ce070bd27bd80220bff7112793a3ca.1702658189.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <4bfd7275-f4ac-4c22-8528-40c43e86a71a@app.fastmail.com>
-In-Reply-To: <2320801702653223@yjd3yivcrkgrkrlg.iva.yp-c.yandex.net>
-References: <2320801702653223@yjd3yivcrkgrkrlg.iva.yp-c.yandex.net>
-Date: Fri, 15 Dec 2023 13:14:35 -0500
-From: "Chris Murphy" <lists@colorremedies.com>
-To: "Grigori Efimovitch" <etlp6@yandex.com>,
- "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Subject: Re: Can't mount clone of btrfs partition at the same time as the original.
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <93ba6929e6ce070bd27bd80220bff7112793a3ca.1702658189.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: **
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spamd-Bar: /
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-0.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.29)[74.62%]
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="z/VZ045o";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=7o3Pcz24
+X-Spam-Score: -0.30
+X-Rspamd-Queue-Id: 31C3722080
 
-
-
-On Fri, Dec 15, 2023, at 10:13 AM, Grigori Efimovitch wrote:
-> Hi,
+On Fri, Dec 15, 2023 at 11:36:59AM -0500, Josef Bacik wrote:
+> This fix can be folded into "btrfs: refactor alloc_extent_buffer() to
+> allocate-then-attach method".
 > 
-> 1 - I do that all the time with ext4 to clone my boot partition:
+> My previous fix simply fixed the panic, this fixes the memory leak that
+> I observed after fixing the panic.
+> 
+> When we have an existing extent buffer in the radix tree we'll goto out
+> to clean everything up, but we have a
+> 
+> if (ret < 0)
+> 	return ERR_PTR(ret);
+> 
+> Even though we have the existing extent buffer.  We've looked this thing
+> up so have a reference on it so we leak that, but we're also returning
+> an error when we shouldn't be.  Fix this up by setting ret to 0 if we
+> get an error back from the radix tree insert.  With these two fixups I
+> can now get through btrfs/187 on subpage without anything blowing up.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Like Remi, I'm having a hard time following all the extra information, but don't see how this clone was created in the first place.
-
-Btrfs makes prolific use of UUIDs. The file system UUID has several synonyms: the volume UUID, the fsid, and also the one blkid reports as "UUID=" is found in the super block, and in every leaf and node.
-
-You shouldn't clone a Btrfs using dd or ddrescue, except as a data recovery technique, in which the original and copy are not ever used at the same time.
-
-If your use case requires using an original and a copy at the same time, you need to change the UUID for one of the file systems by using btrfstune -M flag, which uses metadata_uuid file system feature to change the UUID quickly (without requiring all of the metadata to be read and rewritten with the new UUID). This is probably what you want to use since you already have this file system created.
-
-In the future, I suggest using the Btrfs seed sprout feature to clone Btrfs file systems.
-https://btrfs.readthedocs.io/en/latest/Seeding-device.html
-
-There are multiple use cases possible with the seed feature, so just be aware there's more than one way to use it. The way you'd use it: make the original a seed (read-only), mount it, add a second device, remount the file system read-write (this is potentially the confusing part), and then remove the seed device (also potentially confusing). The removal of the seed causes replication to start from the seed (1st device) to the sprout (2nd device). The resulting sprout is data wise byte for byte identical. But it is not a block copy like dd. It uses the balance code path to replicate at the block group level. In effect you will get a balanced file system as the resulting sprout, with one other difference: the UUID will be unique.
-
-Strictly speaking this is a derivative file system. It starts as a clone with the intent of modifying it for a different use case than the original file system. The use case isn't to keep the two file systems identical all the time or else you'd probably  use raid1.
-
-Note that all the subvolumes and snapshots have their UUIDs preserved so any workflow that depends on replication of snapshots using btrfs send/receive is also preserved. You can thereby create unlimited derivative file system copies that are valid source and destination for send/receive operations, however your workflow was setup for the original file system.
-
-
--- 
-Chris Murphy
+Folded to the patch, thanks. I did not update the changelog as the fix
+is a pattern that we use elsewhere "reset error code when retrying".
 
