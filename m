@@ -1,147 +1,118 @@
-Return-Path: <linux-btrfs+bounces-968-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-969-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AEB28140EC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 05:23:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC369814112
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 05:59:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 415121C2237E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 04:23:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BD93B21A0A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Dec 2023 04:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D20663D0;
-	Fri, 15 Dec 2023 04:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CFE63B3;
+	Fri, 15 Dec 2023 04:59:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="vuMD/A0d";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="nQF6h5E2";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="W/ETAg7D";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="S7DEMSIC"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RHzg8gZI"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A2C610D;
-	Fri, 15 Dec 2023 04:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A6E2E21FEA;
-	Fri, 15 Dec 2023 04:23:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702614206; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32658610D
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Dec 2023 04:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702616363;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9YLPmSYs18YcsRLgvb0K2o9nyXLwmqnrqPDlTANPjZo=;
-	b=vuMD/A0d3d1SbmLx5g4DaLMiIUabw2N6mJYX6dPiO2AY9W7iffwR9uDtP2SrqoDtG1hc6D
-	mcEXvZWYBAw9cSwGaibvqSuCCLmbeCvivQpL2n9gM4HNIqw4bha6AuTYVdYnYp0J7Yurxe
-	4ZXin6hnEMdVgDnBPGsmNcLaRPskhpk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702614206;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9YLPmSYs18YcsRLgvb0K2o9nyXLwmqnrqPDlTANPjZo=;
-	b=nQF6h5E2ny9+I3768UVyITx9OeatKik7Aid1pHHdOI1NkhLdzC+sC17kYQXM/Q04bOWSPC
-	mlzUB6DCp9OLVTAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1702614205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9YLPmSYs18YcsRLgvb0K2o9nyXLwmqnrqPDlTANPjZo=;
-	b=W/ETAg7D6D+pLy+IWKBTRjE7Xbr/TK2YOgv6JnOpXl85sd8hUZoYircn9up9nwpgXttjzx
-	TI5WaHM5vuln8mmIReNL25/3t+Qn38bMoSfDMR+A49iUsTkNyegkSIYarPnKs07ESTNoE0
-	75l2JlAC0QXNSThGiGzOuEaOfJb8cn0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1702614205;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9YLPmSYs18YcsRLgvb0K2o9nyXLwmqnrqPDlTANPjZo=;
-	b=S7DEMSICcI6fsfJJshYpzPYez2USYkMm9dYGQrNWoYz+4bu3Qjhqfs3B2SKgI4ywnEbFui
-	ysvj+rhr4CFzmeCQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1C15813305;
-	Fri, 15 Dec 2023 04:23:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id O9dnLrvUe2USUAAAn2gu4w
-	(envelope-from <ddiss@suse.de>); Fri, 15 Dec 2023 04:23:23 +0000
-Date: Fri, 15 Dec 2023 15:23:18 +1100
-From: David Disseldorp <ddiss@suse.de>
+	bh=AzYme2818bmqCqLCCWWTHl63ngKdsCYvGkGhDR+59hU=;
+	b=RHzg8gZIMOfzpvqV61wHXHljbr//Yyymi+hcg8tRCmiF9SiSz+dRAmFmmDre2QCbLevPss
+	ooMigMWJTk1Cou42lWqP4UYoYmNX96Ve3I360RX7QzBz14hfW56A0AIF3xTj7Ux9zBqRj6
+	DbMqLCiLH6mILuDzHEvfRHS8f1A7bCQ=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-255-9iKthcBoMEqS8wYUad65_A-1; Thu, 14 Dec 2023 23:59:21 -0500
+X-MC-Unique: 9iKthcBoMEqS8wYUad65_A-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5c1af03481bso212077a12.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Dec 2023 20:59:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702616360; x=1703221160;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AzYme2818bmqCqLCCWWTHl63ngKdsCYvGkGhDR+59hU=;
+        b=EElN8Na93JljdWI+d1Pien6RWVfUOl3iTVv6lTBcXnzPrEfP2wPWTrnpxdmB6PjGbn
+         vdejjoloO0HQQuzUmVNYg0wMEBS5TWRJFF99/borQZB+7g+JEOOqw7GQVT0AUuWLpV4I
+         E5Flc9bwBtZcG/tCKcpynQ309nttUILbKIme3KTvrM0U744sbCpg8pj1urgj8fHWHkBJ
+         3YvRgNSwlB7oAyC8qiaTuvyAFy3QjzKKez96U8z+7eiPYjSbjyHKAbSU+2GF29+rFLMd
+         S/Lzqz2emcCXuR4nGgnlSbJg2LxZl7t/liWB9oBxJFzxMCf/+wYaDL17JYFSK9Ya1nbo
+         Jw5g==
+X-Gm-Message-State: AOJu0YwGojSaeM+H2hTQpsgK7tfc0RyUcajZuHU9GXphCy0lNMLdqDOQ
+	CTCbaQfpq12RYQvrbYtQYxnWqUUwFBPuQqGQZMZYWDymMjAGoUewQxSpjMNpY71WVPRyMOBCfks
+	yp2YtQ75KLeL/ZVzn0fu2M9Y=
+X-Received: by 2002:a17:902:6e02:b0:1d3:2e0d:cd98 with SMTP id u2-20020a1709026e0200b001d32e0dcd98mr4281251plk.105.1702616360025;
+        Thu, 14 Dec 2023 20:59:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEnoz2UEdlxaBQKCM2RChpGukhSgPgtyB6qTVOlALgIThX4mIW3jmmDxgffckfL7+pFxoPumg==
+X-Received: by 2002:a17:902:6e02:b0:1d3:2e0d:cd98 with SMTP id u2-20020a1709026e0200b001d32e0dcd98mr4281250plk.105.1702616359650;
+        Thu, 14 Dec 2023 20:59:19 -0800 (PST)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id h2-20020a170902f54200b001cfc67d46efsm13151258plf.191.2023.12.14.20.59.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 20:59:19 -0800 (PST)
+Date: Fri, 15 Dec 2023 12:59:16 +0800
+From: Zorro Lang <zlang@redhat.com>
 To: Naohiro Aota <naohiro.aota@wdc.com>
 Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH] fstests: filter.btrfs: update
  _filter_transaction_commit()
-Message-ID: <20231215152318.78149dec@echidna>
-In-Reply-To: <20231215030951.449252-1-naohiro.aota@wdc.com>
+Message-ID: <20231215045916.3pobm5dlu5snqjps@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 References: <20231215030951.449252-1-naohiro.aota@wdc.com>
+ <20231215152318.78149dec@echidna>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spam-Score: -0.93
-X-Spam-Flag: NO
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [0.22 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.18)[70.24%]
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Score: 0.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215152318.78149dec@echidna>
 
-On Fri, 15 Dec 2023 12:09:51 +0900, Naohiro Aota wrote:
-...
-> diff --git a/common/filter.btrfs b/common/filter.btrfs
-> index 02c6b92dfa94..cea9911448eb 100644
-> --- a/common/filter.btrfs
-> +++ b/common/filter.btrfs
-> @@ -70,6 +70,7 @@ _filter_btrfs_device_stats()
->  
->  _filter_transaction_commit() {
->  	sed -e "/Transaction commit: none (default)/d" | \
-> +	sed -e "s/Delete subvolume [0-9]\+/Delete subvolume/g" | \
->  	sed -e "s/Delete subvolume (.*commit):/Delete subvolume/g"
->  }
->  
+On Fri, Dec 15, 2023 at 03:23:18PM +1100, David Disseldorp wrote:
+> On Fri, 15 Dec 2023 12:09:51 +0900, Naohiro Aota wrote:
+> ...
+> > diff --git a/common/filter.btrfs b/common/filter.btrfs
+> > index 02c6b92dfa94..cea9911448eb 100644
+> > --- a/common/filter.btrfs
+> > +++ b/common/filter.btrfs
+> > @@ -70,6 +70,7 @@ _filter_btrfs_device_stats()
+> >  
+> >  _filter_transaction_commit() {
+> >  	sed -e "/Transaction commit: none (default)/d" | \
+> > +	sed -e "s/Delete subvolume [0-9]\+/Delete subvolume/g" | \
+> >  	sed -e "s/Delete subvolume (.*commit):/Delete subvolume/g"
+> >  }
+> >  
+> 
+> 
+> Looks fine
+> Reviewed-by: David Disseldorp <ddiss@suse.de>
+> 
+> Nit: the pipe chain can be removed. It might also be a little simpler
+> if each version had an independent filter, e.g.
+>   sed -e "/Transaction commit: none (default)/d" \
+>       -e "s/Delete subvolume [0-9]\+ (.*commit)/Delete subvolume/g" \
+>       -e "s/Delete subvolume (.*commit):/Delete subvolume/g"
 
+Yup, we use `sed` as this generally. Although I can help to change that,
+but appreciate that if you can do it and make sure it still works.
 
-Looks fine
-Reviewed-by: David Disseldorp <ddiss@suse.de>
+Thanks,
+Zorro
 
-Nit: the pipe chain can be removed. It might also be a little simpler
-if each version had an independent filter, e.g.
-  sed -e "/Transaction commit: none (default)/d" \
-      -e "s/Delete subvolume [0-9]\+ (.*commit)/Delete subvolume/g" \
-      -e "s/Delete subvolume (.*commit):/Delete subvolume/g"
+> 
+
 
