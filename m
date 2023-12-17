@@ -1,41 +1,58 @@
-Return-Path: <linux-btrfs+bounces-995-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-996-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33C31816069
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Dec 2023 17:42:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4843B81607C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Dec 2023 17:54:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8E041F21D45
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Dec 2023 16:42:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC521B223A3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Dec 2023 16:54:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A306446441;
-	Sun, 17 Dec 2023 16:42:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4EA46536;
+	Sun, 17 Dec 2023 16:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tiscali.it header.i=@tiscali.it header.b="Iax/yL5v"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WLAw68Jl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.tiscali.it (michael.mail.tiscali.it [213.205.33.246])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E68246421
-	for <linux-btrfs@vger.kernel.org>; Sun, 17 Dec 2023 16:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tiscali.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tiscali.it
-Received: from venice.bhome ([84.220.171.3])
-	by michael.mail.tiscali.it with 
-	id PUha2B01G04l9eU01Uhbr2; Sun, 17 Dec 2023 16:41:35 +0000
-X-Spam-Final-Verdict: clean
-X-Spam-State: 0
-X-Spam-Score: 0
-X-Spam-Verdict: clean
-x-auth-user: kreijack@tiscali.it
-From: Goffredo Baroncelli <kreijack@tiscali.it>
-To: linux-btrfs@vger.kernel.org
-Cc: Goffredo Baroncelli <kreijack@inwind.it>
-Subject: [PATCH] [BUG] btrfs-progs: btrfs dev us: don't print uncorrect unallocated data
-Date: Sun, 17 Dec 2023 17:40:26 +0100
-Message-ID: <3ab02bc2189617b9d60ec6de924f60ee3899babe.1702831226.git.kreijack@inwind.it>
-X-Mailer: git-send-email 2.43.0
-Reply-To: Goffredo Baroncelli <kreijack@libero.it>
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 608DA44C99;
+	Sun, 17 Dec 2023 16:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=zthoML/uhpAs1hPvD/fh13swKppKnu7l7FTtACwvAxE=; b=WLAw68JlEwbNFdIQ2xyIscfsps
+	CWgTZVnaIvQlWzz06TQgw+PjcgppWNTQHeaP9heFZI/N1X6bRYNdiDnf2HKguxboWjjhX0XmDtIjK
+	Cfq3ixlcQVdCDmt8I6cHcZgfNphEKcI3/sVh25Wwnsz+IwF9FU+0k1hDj6q3C9Vdeme9/K9trDDqA
+	V71hDtLh1lZVVWiDsNBiBlb8sihMmf06SvtbxGjuggJOMDbBBTxgpx44hH1dWWFQwYuZk0pKkO4pD
+	z9I6Ggwwd4Bgt8+xX5UuHNQ6CBWHRRa61Hf3XU+/hpP1RR7WYzVz20j0J0IOo1IjoDdlSGlIKer06
+	t4lIRgSQ==;
+Received: from [88.128.92.84] (helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rEuOw-0088L9-1x;
+	Sun, 17 Dec 2023 16:54:03 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	dm-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	linux-nvme@lists.infradead.org,
+	linux-scsi@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net
+Subject: remove support for the host aware zoned model
+Date: Sun, 17 Dec 2023 17:53:54 +0100
+Message-Id: <20231217165359.604246-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -43,92 +60,53 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tiscali.it; s=smtp;
-	t=1702831295; bh=PhAOE3uVPblKDGNGDf6VcdrApnOQ1coUPAi//dImTDA=;
-	h=From:To:Cc:Subject:Date:Reply-To;
-	b=Iax/yL5vipCnv2YO/tDa1IU9RrEeJ3KvDNa/hmtvJceTWPm2LCA7grpLiQeX30IqV
-	 q29yJux69Wfj/0TvlEcIU5kQAepdD7JXvm6K7vhsyZlFB23ZXbIfprpvuieX5eyOm3
-	 q0gbrxfkfvBiHchHXoTmvdQz7VX9gTuzjuLPKMfE=
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-From: Goffredo Baroncelli <kreijack@inwind.it>
+Hi all,
 
-If "btrfs dev us" is invoked by a not root user, it is imposible to
-collect the chunk info data (not enough privileges). This causes
-"btrfs dev us" to print as "Unallocated" value the size of the disk.
+hen zones were first added the SCSI and ATA specs, two different
+models were supported (in addition to the drive managed one that
+is invisible to the host):
 
-This patch handle the case where print_device_chunks() is invoked
-without the chunk info data, printing "Unallocated N/A":
+ - host managed where non-conventional zones there is strict requirement
+   to write at the write pointer, or else an error is returned
+ - host aware where a write point is maintained if writes always happen
+   at it, otherwise it is left in an under-defined state and the
+   sequential write preferred zones behave like conventional zones
+   (probably very badly performing ones, though)
 
-Before the patch:
+Not surprisingly this lukewarm model didn't prove to be very useful and
+was finally removed from the ZBC and SBC specs (NVMe never implemented
+it).  Due to to the easily disappearing write pointer host software
+could never rely on the write pointer to actually be useful for say
+recovery.
 
-$ btrfs dev us t/
-WARNING: cannot read detailed chunk info, per-device usage will not be shown, run as root
-/dev/loop0, ID: 1
-   Device size:             5.00GiB
-   Device slack:              0.00B
-   Unallocated:             5.00GiB  <-- Wrong
+Fortunately only a few HDD prototypes shipped using this model which
+never made it to mass production.  Drop the support before it is too
+late.  Note that any such host aware prototype HDD can still be used
+with Linux as we'll now treat it as a conventional HDD.
 
-$ sudo btrfs dev us t/
-[sudo] password for ghigo:
-/dev/loop0, ID: 1
-   Device size:             5.00GiB
-   Device slack:              0.00B
-   Data,single:             8.00MiB
-   Metadata,DUP:          512.00MiB
-   System,DUP:             16.00MiB
-   Unallocated:             4.48GiB  <-- Correct
-
-After the patch:
-$ ./btrfs dev us /tmp/t/
-WARNING: cannot read detailed chunk info, per-device usage will not be shown, run as root
-/dev/loop0, ID: 1
-   Device size:             5.00GiB
-   Device slack:              0.00B
-   Unallocated:                 N/A
-
-$ sudo ./btrfs dev us /tmp/t/
-[sudo] password for ghigo:
-/dev/loop0, ID: 1
-   Device size:             5.00GiB
-   Device slack:              0.00B
-   Data,single:             8.00MiB
-   Metadata,DUP:          512.00MiB
-   System,DUP:             16.00MiB
-   Unallocated:             4.48GiB
----
- cmds/filesystem-usage.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
-index 0db91e9c..844dc085 100644
---- a/cmds/filesystem-usage.c
-+++ b/cmds/filesystem-usage.c
-@@ -1302,10 +1302,20 @@ void print_device_chunks(const struct device_info *devinfo,
- 		allocated += size;
- 
- 	}
--	pr_verbose(LOG_DEFAULT, "   Unallocated: %*s%10s\n",
--		(int)(20 - strlen("Unallocated")), "",
--		pretty_size_mode(devinfo->size - allocated,
--			unit_mode | UNITS_NEGATIVE));
-+
-+	/*
-+	 * If chunkinfos is empty, we cannot compute the unallocated
-+	 * size, so don't print uncorrect data.
-+	 */
-+	if (chunkinfos->length == 0)
-+		pr_verbose(LOG_DEFAULT, "   Unallocated: %*s%10s\n",
-+			(int)(20 - strlen("Unallocated")), "",
-+			"N/A");
-+	else
-+		pr_verbose(LOG_DEFAULT, "   Unallocated: %*s%10s\n",
-+			(int)(20 - strlen("Unallocated")), "",
-+			pretty_size_mode(devinfo->size - allocated,
-+				unit_mode | UNITS_NEGATIVE));
- }
- 
- void print_device_sizes(const struct device_info *devinfo, unsigned unit_mode)
--- 
-2.43.0
-
+Diffstat:
+ block/blk-settings.c           |   83 +++++------------------------------------
+ block/blk-sysfs.c              |    9 ----
+ block/blk-zoned.c              |    3 -
+ block/blk.h                    |    2 
+ block/partitions/core.c        |   12 -----
+ drivers/block/null_blk/zoned.c |    2 
+ drivers/block/ublk_drv.c       |    2 
+ drivers/block/virtio_blk.c     |   78 +++++++++++---------------------------
+ drivers/md/dm-kcopyd.c         |    2 
+ drivers/md/dm-table.c          |   45 +++++++++-------------
+ drivers/md/dm-zoned-metadata.c |    7 +--
+ drivers/md/dm-zoned-target.c   |    4 -
+ drivers/nvme/host/zns.c        |    2 
+ drivers/scsi/scsi_debug.c      |   27 ++++++-------
+ drivers/scsi/sd.c              |   50 +++++++++++-------------
+ drivers/scsi/sd_zbc.c          |   16 -------
+ fs/btrfs/zoned.c               |   23 +----------
+ fs/btrfs/zoned.h               |    2 
+ fs/f2fs/data.c                 |    2 
+ fs/f2fs/super.c                |   17 +++-----
+ include/linux/blkdev.h         |   38 +-----------------
+ 21 files changed, 124 insertions(+), 302 deletions(-)
 
