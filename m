@@ -1,61 +1,61 @@
-Return-Path: <linux-btrfs+bounces-1034-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1035-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1DF38176D1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 17:05:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC608176DE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 17:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74FF11F2612C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 16:05:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76A56284AC3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 16:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B157072074;
-	Mon, 18 Dec 2023 16:02:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F328740A6;
+	Mon, 18 Dec 2023 16:02:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="LWVt8cIc"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="QjZlEGw+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CDC65D742
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Dec 2023 16:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27047204B
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Dec 2023 16:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1702915356; x=1734451356;
+  t=1702915363; x=1734451363;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ng52X/ouutLoop3mLhEk3FTCGxR3Fc63aEDZEFuqMNk=;
-  b=LWVt8cIcQfPYv9bwCc4gQcIlLo2ql1+gMXFP+4CdHIxunvBpOTe5TqCj
-   vSFx1R99ltu9HkC5bDtYbCh5ke7p430N9CaaUupb8a2v357gu1f7gktSF
-   LOXW4Y5366ONGtFBhEEPXStbpenACQ8pcFw81+uWwo+Ty880ennnbopaJ
-   HOcHZl/qn4C3h2XCt4LVywSb7Jpce2/9TchatNyjK1CmVHDk8ENcdhMpz
-   eT9X7ve0E60/SyVfD9SE4MV12KZ9JVRk8kgQDCbTxED8OyZ6bjbzkIRX7
-   0QyLErMK6nE2hLvIcm1UQEYNyhoCSJhdkYMJrfleY0indiILIrOvX6UgZ
-   A==;
-X-CSE-ConnectionGUID: LEf6xMHkQ9anmSSNRf8Ogw==
-X-CSE-MsgGUID: EkvckzeJRfKj4IMKmGFSlA==
+  bh=JJhTX+6/OGBOBtFGidv8T5Jxvu+NMnKG7TRIKpbYGwc=;
+  b=QjZlEGw+0eHe2Fm2b6gyp00gVX48QmY38hfAF5HFq7XX1xJ3Kaj4iWUs
+   vWynoKC/gWek4XTKmc++lAefZHtU8KjE0hN0NDfQCNN+A7W4OKmq0Y2am
+   Z4b5LAElTOlg8Ww/hbNH8qy2k6QiO3+VMogKAeE2/ATagSmUIqM/mAqAM
+   ywnWDq2wmFb21EMRkx2dpfl+9NbJGLKHMqR3fJOQsrKX4x+p8o2aau2S2
+   sImraA+3m9XXdKJOW6jCcyv5pR1igYFrtWr1bcjxziSypUo/gscudjvIr
+   ngQZV8GafiVJWwvwBVugchWTs3SsAkS9pMNaBu6c9J2DU7XJGkqWmo2rq
+   g==;
+X-CSE-ConnectionGUID: 8dQsPYBMSFOsIm/FdoowBg==
+X-CSE-MsgGUID: iN3xMVceSQCPM2eYAfgqbA==
 X-IronPort-AV: E=Sophos;i="6.04,286,1695657600"; 
-   d="scan'208";a="4945730"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Dec 2023 00:02:35 +0800
-IronPort-SDR: 6MGphk7sEUYbjnVDAv09mf5+RxW6lzEtbs3O6hy7G1Z5iDA0U5l/PnwZOMXMpTaEmD/MqI/Zpz
- gdffF0FEi5Ig==
+   d="scan'208";a="5487548"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Dec 2023 00:02:41 +0800
+IronPort-SDR: 2wnsqo2lew84uTWO+/0nu9sL68N+shXK5FeZkSrjcQiN3x2OALGv1wNlw+NftwCzRT/6YVkZf9
+ WySAJiZ2CpnQ==
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Dec 2023 07:13:21 -0800
-IronPort-SDR: o9D72XUOToCBqX5Vc8FL9M/YRmexMPAmfPa9o8eeXHjzlpg37hAkXte3JkRVQ0nZ46NAUIbNvB
- y6JtrVBlzlNw==
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Dec 2023 07:13:26 -0800
+IronPort-SDR: h0/UuG4hhDasDp72gdvtO3X+6tqa2AqQdi8drRHsgX2v6PS+uLhcnP4+xeMcWNoG+naIo7ULSG
+ rKXDFWsZp/CA==
 WDCIronportException: Internal
 Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.88])
-  by uls-op-cesaip01.wdc.com with ESMTP; 18 Dec 2023 08:02:35 -0800
+  by uls-op-cesaip01.wdc.com with ESMTP; 18 Dec 2023 08:02:40 -0800
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 1/2] btrfs: zoned: split out prepare_allocation_zoned()
-Date: Tue, 19 Dec 2023 01:02:28 +0900
-Message-ID: <274542c69aa580a163b5e995afb8c19fe494318b.1702913643.git.naohiro.aota@wdc.com>
+Subject: [PATCH 2/2] btrfs: zoned: optimize hint byte for zoned allocator
+Date: Tue, 19 Dec 2023 01:02:29 +0900
+Message-ID: <66b60a59f7ef31dd0ed5a1be992114e81f7b26e5.1702913643.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1702913643.git.naohiro.aota@wdc.com>
 References: <cover.1702913643.git.naohiro.aota@wdc.com>
@@ -67,64 +67,54 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Split out prepare_allocation_zoned() for further extension. While at it,
-optimize the if-branch a bit.
+Writing sequentially to a huge file on btrfs on a SMR HDD revealed a
+decline of the performance (220 MiB/s to 30 MiB/s after 500 minutes).
 
+The performance goes down because of increased latency of the extent
+allocation, which is induced by a traversing of a lot of full block groups.
+
+So, this patch optimizes the ffe_ctl->hint_byte by choosing a block group
+with sufficient size from the active block group list, which does not
+contain full block groups.
+
+After applying the patch, the performance is maintained well.
+
+Fixes: 2eda57089ea3 ("btrfs: zoned: implement sequential extent allocation")
+CC: stable@vger.kernel.org # 5.15+
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/extent-tree.c | 32 +++++++++++++++++++-------------
- 1 file changed, 19 insertions(+), 13 deletions(-)
+ fs/btrfs/extent-tree.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index f396aba92c57..d260b970bec7 100644
+index d260b970bec7..6d680031211a 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -4298,6 +4298,24 @@ static int prepare_allocation_clustered(struct btrfs_fs_info *fs_info,
- 	return 0;
- }
- 
-+static int prepare_allocation_zoned(struct btrfs_fs_info *fs_info,
-+				    struct find_free_extent_ctl *ffe_ctl)
-+{
-+	if (ffe_ctl->for_treelog) {
-+		spin_lock(&fs_info->treelog_bg_lock);
-+		if (fs_info->treelog_bg)
-+			ffe_ctl->hint_byte = fs_info->treelog_bg;
-+		spin_unlock(&fs_info->treelog_bg_lock);
-+	} else if (ffe_ctl->for_data_reloc) {
-+		spin_lock(&fs_info->relocation_bg_lock);
-+		if (fs_info->data_reloc_bg)
-+			ffe_ctl->hint_byte = fs_info->data_reloc_bg;
-+		spin_unlock(&fs_info->relocation_bg_lock);
-+	}
+@@ -4311,6 +4311,24 @@ static int prepare_allocation_zoned(struct btrfs_fs_info *fs_info,
+ 		if (fs_info->data_reloc_bg)
+ 			ffe_ctl->hint_byte = fs_info->data_reloc_bg;
+ 		spin_unlock(&fs_info->relocation_bg_lock);
++	} else if (ffe_ctl->flags & BTRFS_BLOCK_GROUP_DATA) {
++		struct btrfs_block_group *block_group;
 +
-+	return 0;
-+}
++		spin_lock(&fs_info->zone_active_bgs_lock);
++		list_for_each_entry(block_group, &fs_info->zone_active_bgs, active_bg_list) {
++			/*
++			 * No lock is OK here because avail is monotinically
++			 * decreasing, and this is just a hint.
++			 */
++			u64 avail = block_group->zone_capacity - block_group->alloc_offset;
 +
- static int prepare_allocation(struct btrfs_fs_info *fs_info,
- 			      struct find_free_extent_ctl *ffe_ctl,
- 			      struct btrfs_space_info *space_info,
-@@ -4308,19 +4326,7 @@ static int prepare_allocation(struct btrfs_fs_info *fs_info,
- 		return prepare_allocation_clustered(fs_info, ffe_ctl,
- 						    space_info, ins);
- 	case BTRFS_EXTENT_ALLOC_ZONED:
--		if (ffe_ctl->for_treelog) {
--			spin_lock(&fs_info->treelog_bg_lock);
--			if (fs_info->treelog_bg)
--				ffe_ctl->hint_byte = fs_info->treelog_bg;
--			spin_unlock(&fs_info->treelog_bg_lock);
--		}
--		if (ffe_ctl->for_data_reloc) {
--			spin_lock(&fs_info->relocation_bg_lock);
--			if (fs_info->data_reloc_bg)
--				ffe_ctl->hint_byte = fs_info->data_reloc_bg;
--			spin_unlock(&fs_info->relocation_bg_lock);
--		}
--		return 0;
-+		return prepare_allocation_zoned(fs_info, ffe_ctl);
- 	default:
- 		BUG();
++			if (block_group_bits(block_group, ffe_ctl->flags) &&
++			    avail >= ffe_ctl->num_bytes) {
++				ffe_ctl->hint_byte = block_group->start;
++				break;
++			}
++		}
++		spin_unlock(&fs_info->zone_active_bgs_lock);
  	}
+ 
+ 	return 0;
 -- 
 2.43.0
 
