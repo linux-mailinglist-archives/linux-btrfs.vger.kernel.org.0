@@ -1,44 +1,43 @@
-Return-Path: <linux-btrfs+bounces-1039-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1040-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27360817B6C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 20:53:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE8BD817B6D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 20:54:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 924621F21D2E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 19:53:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C78AC1C23299
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 19:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEBE67204D;
-	Mon, 18 Dec 2023 19:53:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3285471470;
+	Mon, 18 Dec 2023 19:54:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="UD6QOVXm"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TW/BQcoZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88FD071450;
-	Mon, 18 Dec 2023 19:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5673A1A2
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Dec 2023 19:54:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1702929175; x=1703533975; i=quwenruo.btrfs@gmx.com;
-	bh=A9vOEdNXA+RTh6Hw7H93/1mPcxxWI0jQPWHGe06FFBI=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=UD6QOVXmBD26IRUI1EzefgnhSvRnJkc371Af9z5AVrpNYsBrSK0Zkmo6ydr6IWPE
-	 l7t/BvYKInYkH6rrpnrEzOagrYY9lcjw+UaEtCO7ci+8CREcFjAD9+78Um04RdQTq
-	 0Dtqd3MdEOxd5dP0SzxjaP5tBzZCjffFugHcqtJ44/9YQzYGzcmDR+uEiKZSNXxWP
-	 HTycNbIOXFdGpFPDUTQX0rYelpbd6PsPMuhOlsgZExvBWodjkHklIE83EzwEoFKej
-	 FhrtdT4d8duumZDAmWhoyet+rUTRlb2/u05A8sMPZTrd0Lp+nhtNzBHWnN2QnGgTF
-	 BrTXw9lKomnVCyq0Gw==
+	s=s31663417; t=1702929252; x=1703534052; i=quwenruo.btrfs@gmx.com;
+	bh=0UEZVz/P34aNkA/mAE9EY8+uWFGnV0BbLKpm0Afhco4=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=TW/BQcoZfPcZ+sgnAiBvK11aBXLmwa8tLq9CrZR5agVb6qW/dAr4abPQjXepR5oX
+	 3rFrTkYk53LSaBojdA7+yy2fTuI5r3xVwoFYPwIxXAO9ZehuGmPj6rYj9dEBW67hu
+	 TwXpnYM6Y28geFI//prla/sx+FNQU3AaLTFP9d9Rd0840S3l3C0CwHATIjhUxaAu7
+	 KnXrvOUiAT1QJh+vAFHh8t7xkAZIwusAJ5Z6PdPLc1rBn0iMX0GvfIxC7GqgGsYLj
+	 el7sk202+X3HGXV5N6OVGd23vX3Rg7u496XlMT4yZYEmINagpTOdqVjc178HIsGmX
+	 YteyKzH0/x4ZlPpQlg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.153] ([193.115.108.148]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8ob6-1rCU2S0qwQ-015p9G; Mon, 18
- Dec 2023 20:52:54 +0100
-Message-ID: <3ca2a681-79c1-4478-b17f-3128a7018b2d@gmx.com>
-Date: Tue, 19 Dec 2023 06:22:42 +1030
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N9dwd-1rCD2M108D-015Y25; Mon, 18
+ Dec 2023 20:54:12 +0100
+Message-ID: <ae601db7-ab4c-4a40-84ba-a2a40903a7a4@gmx.com>
+Date: Tue, 19 Dec 2023 06:24:10 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -46,16 +45,22 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
-To: David Disseldorp <ddiss@suse.de>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-kernel@vger.kernel.org
-References: <cover.1702628925.git.wqu@suse.com>
- <11da10b4d07bf472cd47410db65dc0e222d61e83.1702628925.git.wqu@suse.com>
- <20231218235946.32ab7a69@echidna>
+Subject: Re: btrfs thinks fs is full, though 11GB should be still free
 Content-Language: en-US
+To: Christoph Anton Mitterer <calestyo@scientia.org>,
+ linux-btrfs@vger.kernel.org
+References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
+ <253c6b4e-2b33-4892-8d6f-c0f783732cb6@gmx.com>
+ <95692519c19990e9993d5a93985aab854289632a.camel@scientia.org>
+ <656b69f7-d897-4e9d-babe-39727b8e3433@gmx.com>
+ <cf65cb296cf4bca8abb0e1ee260436990bc9d3ca.camel@scientia.org>
+ <f2dfb764-1356-4a3c-81e8-a2225f40fea5@gmx.com>
+ <f1f3b0f2a48f9092ea54f05b0f6596c58370e0b2.camel@scientia.org>
+ <3cfc3cdf-e6f2-400e-ac12-5ddb2840954d@gmx.com>
+ <2d5838efc179a557b41c84e9ca9a608be6a159e8.camel@scientia.org>
+ <9ce30564e238d1be0deafb8cab8968f800a8deaa.camel@scientia.org>
+ <8a9b6743-37e6-4a71-9423-6ce5169959ac@gmx.com>
+ <62e9ad23d4829f30600ea6e611d2cd4636f080cc.camel@scientia.org>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -81,189 +86,56 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20231218235946.32ab7a69@echidna>
+In-Reply-To: <62e9ad23d4829f30600ea6e611d2cd4636f080cc.camel@scientia.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:I+c8Kc9OiMMdaAHGaBUZ0eLli9zuEU3t092r7fawYoLirdEhs8A
- Fto7K3+7dks0Kzf7fIujDxkzg6Gh8rQFP+BKzCVt/EWoPRKwnalAGU4n12Zp5658aFeXN6n
- ZpkCUA0e1rxyv8RuIqqrDr9cybzPgv7r4u7M3kSCM20ZbZx/3gRWM810PH176INqb9J8MSO
- E8d9x/Ol76h3mIzialg0Q==
+X-Provags-ID: V03:K1:dnjp9wqK86Y0DIo8jHaRBKHycAmESNuLrC/l0HeYBvarvVLSGDX
+ 5ugjYo6umFN40Qx+IMSbcTnSNMJlFEwH6AhOGR0w49HpZJwc90sRfUPKvDAM8V2weQoP8k0
+ eVzRbN5Mtqs541oeMBP2CbFfrJijoS5wwQwe1tstWW83TL8r8WfhNrjbhfwgrTcEBgejmOn
+ PPADPsqNB93QhLU7AI5Uw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:3VwJOFl0Eew=;+WQ3z8Ye2zb3Zp/+/9aWxzUlDDa
- N4izoiVtMNpIAKAE3RpIQQ1CbcRBksam1gAPbwp8LyClXZc3D+jveSXbF+PFyRVStzDNAfxPy
- kvNBCk4VWpajreg/3koPnbgC9i/rV0Ppub/1FvNUEzVO9Gtdyb+iiNLU8DMvO3Ue43kSMY/ll
- DjFiDKUPvuBA4C2SWGVrDik1GJ/odksVa1igrYQ55c5TGaHwlpQFIpgXKZKa/bcNRrMh0Elti
- mYsRsh1XD6Rybh4cp3CowvjiY2tfwKJS1UHXtBpYTAAKEa8bUhico2NhgzlWCe9RQ225EFnXI
- IbM0mAcRVQB/Wl97CZpmLrRo3F//Ch1hJL8t5pfcB7zTMJQj6B1q+Zhjmi+6RDBkT0tomFdpf
- w3H1CZvtBgkbKYs9SqPYZMZ1JMIcnm6YUlFB8hBQ270rqwghxPLzWLRX/VG5NV/mFJUNQ81vB
- RJWzOvB+5FnJpCDDYr5/rdpyXYl5H6hjN1eXYuAm2DQ1PrqzDZ2FuR2oAMcpFLV5oVuCqlDgn
- 8OuvBfxIFVQtgcrVzPCToioprbMeBfgHTUg3+l9OWZYTY4DuKDq4vu+9RFoMcuU0Pofst+eh+
- YLqJpBuQd/vxFv4hI8Np3dqknIAjlBzlXskuVcdLfvY/rc7nXbXbuRnkjiRqCkyIUMIe3lWb/
- HuoNa2W9cYYLLVCo6exadIlOPbb8SWICdXdPpma9ExJBUzZ2C+zsoJrdYYxdyVPrTlMdZNT+1
- 7zeJQIq6N0Hy9BSzvFTjCAzSUEOm7uD89P0efeozmfTIz7fg2V4yYJJbpvX0eeU/FEc0WLhaM
- rTuaNMmwcYewozpdYcZiniYsr69vyAFC41en7zyIEL3x+SsQjua/i1nO2ypKCHKj0gTiYEmX4
- guHG6KWM4tJY1FZBXKdNOAij1/xSeYsCWWtZ626l+yN6ZtVmMEO9sHCU+oFxeiznVbvABjyr8
- dVW6VVE8X5YGDIAhFASuB7x2dj8=
+UI-OutboundReport: notjunk:1;M01:P0:ECOZyuiA3vE=;16ZfeeBO2nUWxLeA6egL5OZrALs
+ 8qpHI+/zOJ8owSPMVOL7DqT5We9rP6/LW41HVvO2HdhC/9a9zSUAvhEdq3gO4LKA9pkKlNFhU
+ 8ZLFNJRK/zzHvE5zA7pREHSTgXy4+jvuaZ1hz+qPiZVR+QM8At/6Uy+Sfrp2Ev1vBj694Rbey
+ 1a/vs3sVa69qo01RzfhldsykfKYJ10RmYs2DPv55bZF8I6kCdnPpX6KuzwfGE/+y9ZvC6Hy/k
+ VRyk+Hw+4BY+Em+Go/CJuQ/7SMuJyH18cK1g19NmNtB+xXF6WVglsF7PDzeZypCuBxahDktwG
+ 1GTS+r7JY+Dcb1OxnCQPUbAefYHYmSu/Qu/MzGvCqzsSZkkG/jQyTGJc17IVVjMam/R9pK5YA
+ szKz0/6GLkUzbrVO6F9j44316ei+uLfXC/yiK4DzlQr7tAc+vg+ZVDxdG5Mj2G6g2JghbXuhN
+ cxrnFLSATuziI+BxJilOCQePTTfjdZ/Y+byGTWNJHv6wexGd/9Cvipagpi6NQIOJLJ7gNL5b3
+ vWrudAzn96KGrs23GIfNud/AynXgONJilbxZwrXD8I4DLzThBAs+K/yh0OowKkWOHSmv180Ty
+ yEkDDez0Y6PX8MBY88C6RAh33XkOmEGfs9fNbF1FQh99UoQi4ZEuXN8L21boV+zov1Ca04AKg
+ OTwafbJYFQIOi8/f+H72kNhnnSjlz/2fRCdYnwwzK4/+uwCLcBQfogfjNhEaBxKXJ6MdKk9s1
+ YfxszTKVMMNA8OQ4NBZoy6uXgfPYEoKzkK1nacqCjbNgZ2fyIDbe2t2PndzhSJPWUNUsmlxpb
+ E1UWAZK66mfrQioTntlW366sAT8y/m0og+PyQdpDF6t6r+gZSxyka3DdIPtnAYyz5rRuuIBRB
+ 92kcmKSRnBHwlkRC7vVia/vcV0EjUx83BWBGQ1f2Tl4pe6K+gaSYdgyRRcjf810zyCAjQCXqB
+ mPDakr42kQCBQdzhaW8TpQmwnA0=
 
 
 
-On 2023/12/18 23:29, David Disseldorp wrote:
-> Hi Qu,
+On 2023/12/19 02:54, Christoph Anton Mitterer wrote:
+> Hey again.
 >
-> On Fri, 15 Dec 2023 19:09:23 +1030, Qu Wenruo wrote:
+> Seems that even the manual defrag doesn't help at all:
 >
-[...]
->> +/**
->> + * kstrtoull_suffix - convert a string to ull with suffixes support
->> + * @s: The start of the string. The string must be null-terminated, an=
-d may also
->> + *  include a single newline before its terminating null.
->> + * @base: The number base to use. The maximum supported base is 16. If=
- base is
->> + *  given as 0, then the base of the string is automatically detected =
-with the
->> + *  conventional semantics - If it begins with 0x the number will be p=
-arsed as a
->> + *  hexadecimal (case insensitive), if it otherwise begins with 0, it =
-will be
->> + *  parsed as an octal number. Otherwise it will be parsed as a decima=
-l.
->> + * @res: Where to write the result of the conversion on success.
->> + * @suffixes: A string of acceptable suffixes, must be provided. Or ca=
-ller
->> + *  should use kstrtoull() directly.
+> After:
+> btrfs filesystem defragment -v -r -t 100000M
 >
-> The suffixes parameter seems a bit cumbersome; callers need to provide
-> both upper and lower cases, and unsupported characters aren't checked
-> for. However, I can't think of any better suggestions at this stage.
+> there's still:
+> # compsize .
+> Processed 309 files, 324 regular extents (324 refs), 146 inline.
+> Type       Perc     Disk Usage   Uncompressed Referenced
+> TOTAL      100%       22G          22G          13G
+> none       100%       22G          22G          13G
 >
-
-Initially I went bitmap for the prefixes, but it's not any better.
-
-Firstly where the bitmap should start. If we go bit 0 for "K", then the
-code would introduce some difference between the bit number and left
-shift (bit 0, left shift 10), which may be a little confusing.
-
-If we go bit 1 for "K", the bit and left shift it much better, but bit 0
-behavior would be left untouched.
-
-Finally the bitmap itself is not that straightforward.
-
-The limitation of providing both upper and lower case is due to the fact
-that we don't have a case insensitive version of strchr().
-But I think it's not that to fix, just convert them all to lower or
-upper case, then do the strchr().
-
-Would accepting both cases for the suffixes be good enough?
-
->> + *
->> + *
->> + * Return 0 on success.
->> + *
->> + * Return -ERANGE on overflow or -EINVAL if invalid chars found.
->> + * Return value must be checked.
->> + */
->> +int kstrtoull_suffix(const char *s, unsigned int base, unsigned long l=
-ong *res,
->> +		     const char *suffixes)
->> +{
->> +	unsigned long long init_value;
->> +	unsigned long long final_value;
->> +	char *endptr;
->> +	int ret;
->> +
->> +	ret =3D _kstrtoull(s, base, &init_value, &endptr);
->> +	/* Either already overflow or no number string at all. */
->> +	if (ret < 0)
->> +		return ret;
->> +	final_value =3D init_value;
->> +	/* No suffixes. */
->> +	if (!*endptr)
->> +		goto done;
->> +
->> +	switch (*endptr) {
->> +	case 'K':
->> +	case 'k':
->> +		if (!strchr(suffixes, *endptr))
->> +			return -EINVAL;
->> +		final_value <<=3D 10;
->> +		endptr++;
->> +		break;
->> +	case 'M':
->> +	case 'm':
->> +		if (!strchr(suffixes, *endptr))
->> +			return -EINVAL;
->> +		final_value <<=3D 20;
->> +		endptr++;
->> +		break;
->> +	case 'G':
->> +	case 'g':
->> +		if (!strchr(suffixes, *endptr))
->> +			return -EINVAL;
->> +		final_value <<=3D 30;
->> +		endptr++;
->> +		break;
->> +	case 'T':
->> +	case 't':
->> +		if (!strchr(suffixes, *endptr))
->> +			return -EINVAL;
->> +		final_value <<=3D 40;
->> +		endptr++;
->> +		break;
->> +	case 'P':
->> +	case 'p':
->> +		if (!strchr(suffixes, *endptr))
->> +			return -EINVAL;
->> +		final_value <<=3D 50;
->> +		endptr++;
->> +		break;
->> +	case 'E':
->> +	case 'e':
->> +		if (!strchr(suffixes, *endptr))
->> +			return -EINVAL;
->> +		final_value <<=3D 60;
->> +		endptr++;
->> +		break;
->> +	}
->> +	if (*endptr =3D=3D '\n')
 >
-> Nit: the per-case logic could be simplified to a single "shift_val =3D X=
-"
-> if you initialise and handle !shift_val.
+> Any other ideas how this could be solved?
 
-Indeed, thanks for the hint!
+Snapshot or reflinks (remember cp now goes reflink by default)?
 
 Thanks,
 Qu
 >
->> +		endptr++;
->> +	if (*endptr)
->> +		return -EINVAL;
->> +
->> +	/* Overflow check. */
->> +	if (final_value < init_value)
->> +		return -EOVERFLOW;
->> +done:
->> +	*res =3D final_value;
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL(kstrtoull_suffix);
->> +
->>   /**
->>    * kstrtoll - convert a string to a long long
->>    * @s: The start of the string. The string must be null-terminated, a=
-nd may also
->> @@ -159,7 +262,7 @@ int kstrtoll(const char *s, unsigned int base, long=
- long *res)
->>   	int rv;
->>
->>   	if (s[0] =3D=3D '-') {
->> -		rv =3D _kstrtoull(s + 1, base, &tmp);
->> +		rv =3D _kstrtoull(s + 1, base, &tmp, NULL);
->>   		if (rv < 0)
->>   			return rv;
->>   		if ((long long)-tmp > 0)
->
->
+> Cheers,
+> Chris.
 >
 
