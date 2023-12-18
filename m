@@ -1,71 +1,75 @@
-Return-Path: <linux-btrfs+bounces-1003-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1004-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC3EF816154
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Dec 2023 18:39:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEA8F8165BA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 05:49:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A13EB1F219A3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Dec 2023 17:39:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B38A1F21450
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 04:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38CFF47A40;
-	Sun, 17 Dec 2023 17:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F7C63A3;
+	Mon, 18 Dec 2023 04:49:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gz4oP20m"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="G3yVKWwo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E5F46B8A;
-	Sun, 17 Dec 2023 17:38:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 38A7CC433D9;
-	Sun, 17 Dec 2023 17:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702834727;
-	bh=EfhrzwiO51ESBHocL2wxvS7VBr3ILGj+1/afcWCiX9w=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=gz4oP20m6Oe1OJp31jkf07nH+CtjIGRGtr2KzHJkryBNNZvtFQKRGWSJsfQN9dwQn
-	 G8CcElx+9PQgh0u1w0rIKHbqNaAfYSzAdoiCuPZoAxKp5zFXhAY2QYd7rrlALqHu0e
-	 q/+uc8s7tQX5MSSJgLaMwYi9livT7zXwBRFPI9Pv8yR2nn0FWAyrWdekwSfAuhmFKO
-	 QI3+NYgkDtUwIJ1ofGkQpHMGsGHZYdWOCdHT6YzNv2Fs019V8hTqiHJjw4TXnlwxuY
-	 418naAUMuzo2Ywrb6st5CQ36wAqnzF6HPjctV6YO+6+HFtiGZdsh8UnnhkvVPIWq3f
-	 jVR3RUBh/qhgQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 26B23C04DD9;
-	Sun, 17 Dec 2023 17:38:47 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fix for 6.7-rc6, part 2
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1702832900.git.dsterba@suse.com>
-References: <cover.1702832900.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1702832900.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.7-rc5-tag
-X-PR-Tracked-Commit-Id: a8892fd71933126ebae3d60aec5918d4dceaae76
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0e389834672c723435a44818ed2cabc4dad24429
-Message-Id: <170283472715.25242.12767373714578138188.pr-tracker-bot@kernel.org>
-Date: Sun, 17 Dec 2023 17:38:47 +0000
-To: David Sterba <dsterba@suse.com>
-Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F7F8566A
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Dec 2023 04:49:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=rnl1r2gT3X4Y2iVxedi3hdahWEIAm2dDStbQQiBDYrc=; b=G3yVKWwoOTNJq32X0npIhv3BFt
+	hHY3kZHrq+3RBRqSyqiQFOuRQDB8/NnyggNwz4VWuBalfeKWa2AbPCN/QPDBHNkTn1CXU0EgD0QLV
+	TejTsRfVhCMcZP2rw+9V72cbBBuBoZCMfbhboBxF65Pki2nDHmqQBmi9yrCmlhZvAwm8Dz0U2QeEg
+	TcZ4iVRvRcJDEM6q86oh1pCcAqNM9ZERG2xTh7DG7bCvhVinxGpozrU/iqtuENRSZpAbrAEz6UYTz
+	7wOPXcAvkLyH6OpAe7AU1blv6Z5O2EPUf8yCdoAWcjtujUZKMAUPMBAfqbGJx0DH4giFEHqzwiOoF
+	m0JaszLQ==;
+Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rF5ZP-0094D4-31;
+	Mon, 18 Dec 2023 04:49:36 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org,
+	Christian Brauner <brauner@kernel.org>,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: use the super_block as bdev holder
+Date: Mon, 18 Dec 2023 05:49:28 +0100
+Message-Id: <20231218044933.706042-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-The pull request you sent on Sun, 17 Dec 2023 18:17:39 +0100:
+Hi all,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.7-rc5-tag
+this series contains the btrfs parts of the "remove get_super" from June
+that managed to get lost.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0e389834672c723435a44818ed2cabc4dad24429
+I've dropped all the reviews from back then as the rebase against the new
+mount API conversion led to a lot of non-trivial conflicts.
 
-Thank you!
+Josef kindly ran it through the CI farm and provided a fixup based on that.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Diffstat:
+ disk-io.c |    4 +--
+ super.c   |   71 ++++++++++++++++++++++++++++++++++----------------------------
+ volumes.c |   60 +++++++++++++++++++++++++++-------------------------
+ volumes.h |    8 ++++--
+ 4 files changed, 78 insertions(+), 65 deletions(-)
 
