@@ -1,164 +1,201 @@
-Return-Path: <linux-btrfs+bounces-1011-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1012-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94F368166D9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 07:53:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FDA08167B5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 08:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03F53B21DE8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 06:53:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB516B22012
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 07:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 371C26131;
-	Mon, 18 Dec 2023 06:53:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5BD4101EC;
+	Mon, 18 Dec 2023 07:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="loBrPuyc"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="dRUUH6XJ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="o93xeuG1";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="dRUUH6XJ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="o93xeuG1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 534A97464;
-	Mon, 18 Dec 2023 06:53:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ADCEC433C8;
-	Mon, 18 Dec 2023 06:53:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702882389;
-	bh=EpFEN3Jue2G6Rxerxg89hbnN15oJOVy46RhaWGQO2tw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=loBrPuycmVkyYVqG8sgfHh3oEDZfWG5B8CoIyakdwRnEweatH2xsCuIZr02Fy23+s
-	 NP6GBo2huii33qSC8iG8JeB8qFZasdKInhhYftE3Q8ChdHj8/tCwUsmKJl6c8YLKxy
-	 cVlJTOYI8GtA3yDDTwe6nVlimJa8Rz5X2BUKqoUuQwFaMSrfaStI0bPQlO9a2rflyi
-	 xT2Ps/TW6alm8uF+2a2DYLo5ROKLijEteSNVxVnWCGFPt3iup5B11HrcZF/360Z7Jf
-	 zAUZNPBt9TAyJg61SfSNPXKR06JSvPTEKJqzevSpQ10Jd357eLVI5OPHS0/Yf/Iojn
-	 MqyxR4tcyMymA==
-Message-ID: <190f58f7-2ed6-46f8-af59-5e167a0bddeb@kernel.org>
-Date: Mon, 18 Dec 2023 15:53:06 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA07E101C0
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Dec 2023 07:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D9992222AD;
+	Mon, 18 Dec 2023 07:49:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702885773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1KiM4PYVqRplbZbNOhzuluAiWOwW7UOGXvHiHjq/LfQ=;
+	b=dRUUH6XJSUdefnR1t01vuxGMnv7BvxYdRyHqmXU0vESfdnyR+2j1630D1M36bd9QnbgFWA
+	seZiO+IZCfZeix/38Ei+E9DWPPsn2Da+ZgCivAevQXpp8aycNJXWYZMN1BSjtqC1RuRvSK
+	OK8J13NaJax8cP28xL6TCFbnOfyb4ow=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702885773;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1KiM4PYVqRplbZbNOhzuluAiWOwW7UOGXvHiHjq/LfQ=;
+	b=o93xeuG1GwSsQb0BvF3xAUUEF9Co21rbRBwlfndIh9AvP8Md+ehrTWZf5V0UU3i/JHWO28
+	bSjUZeuQnvhmQVDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1702885773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1KiM4PYVqRplbZbNOhzuluAiWOwW7UOGXvHiHjq/LfQ=;
+	b=dRUUH6XJSUdefnR1t01vuxGMnv7BvxYdRyHqmXU0vESfdnyR+2j1630D1M36bd9QnbgFWA
+	seZiO+IZCfZeix/38Ei+E9DWPPsn2Da+ZgCivAevQXpp8aycNJXWYZMN1BSjtqC1RuRvSK
+	OK8J13NaJax8cP28xL6TCFbnOfyb4ow=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1702885773;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1KiM4PYVqRplbZbNOhzuluAiWOwW7UOGXvHiHjq/LfQ=;
+	b=o93xeuG1GwSsQb0BvF3xAUUEF9Co21rbRBwlfndIh9AvP8Md+ehrTWZf5V0UU3i/JHWO28
+	bSjUZeuQnvhmQVDQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B3C2313997;
+	Mon, 18 Dec 2023 07:49:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id mMh0E4z5f2UsdwAAn2gu4w
+	(envelope-from <ddiss@suse.de>); Mon, 18 Dec 2023 07:49:32 +0000
+Date: Mon, 18 Dec 2023 18:49:17 +1100
+From: David Disseldorp <ddiss@suse.de>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/2] btrfs: sysfs: use kstrtoull_suffix() to replace
+ memparse()
+Message-ID: <20231218184917.064e105e@echidna>
+In-Reply-To: <2693b00ca850b0f604e03c836e71d0ad8a93ffee.1702628925.git.wqu@suse.com>
+References: <cover.1702628925.git.wqu@suse.com>
+ <2693b00ca850b0f604e03c836e71d0ad8a93ffee.1702628925.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/5] block: remove support for the host aware zone model
-Content-Language: en-US
-To: =?UTF-8?B?RWQgVHNhaSAo6JSh5a6X6LuSKQ==?= <Ed.Tsai@mediatek.com>,
- "hch@lst.de" <hch@lst.de>, "axboe@kernel.dk" <axboe@kernel.dk>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
- "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
- =?UTF-8?B?Q2FzcGVyIExpICjmnY7kuK3mpq4p?= <casper.li@mediatek.com>,
- =?UTF-8?B?Q2h1bi1IdW5nIFd1ICjlt6vpp7/lro8p?= <Chun-hung.Wu@mediatek.com>,
- "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
- "dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
- "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
- "pbonzini@redhat.com" <pbonzini@redhat.com>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
- "linux-f2fs-devel@lists.sourceforge.net"
- <linux-f2fs-devel@lists.sourceforge.net>,
- "stefanha@redhat.com" <stefanha@redhat.com>
-References: <20231217165359.604246-1-hch@lst.de>
- <20231217165359.604246-4-hch@lst.de>
- <b4d33dc359495c6227a3f20285566eed27718a14.camel@mediatek.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <b4d33dc359495c6227a3f20285566eed27718a14.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.04
+X-Spamd-Result: default: False [-3.04 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_SPAM_SHORT(0.56)[0.188];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-On 2023/12/18 15:15, Ed Tsai (蔡宗軒) wrote:
-> Hi Christoph,
-> 
-> some minor suggestions:
-> 
-> On Sun, 2023-12-17 at 17:53 +0100, Christoph Hellwig wrote:
->>
->> diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
->> index 198d38b53322c1..260b5b8f2b0d7e 100644
->> --- a/drivers/md/dm-table.c
->> +++ b/drivers/md/dm-table.c
->> @@ -1579,21 +1579,18 @@ bool dm_table_has_no_data_devices(struct
->> dm_table *t)
->>  	return true;
->>  }
->>  
->> -static int device_not_zoned_model(struct dm_target *ti, struct
->> dm_dev *dev,
->> -				  sector_t start, sector_t len, void
->> *data)
->> +static int device_not_zoned(struct dm_target *ti, struct dm_dev
->> *dev,
->> +			    sector_t start, sector_t len, void *data)
->>  {
->> -	struct request_queue *q = bdev_get_queue(dev->bdev);
->> -	enum blk_zoned_model *zoned_model = data;
->> +	bool *zoned = data;
->>  
->> -	return blk_queue_zoned_model(q) != *zoned_model;
->> +	return bdev_is_zoned(dev->bdev) != *zoned;
->>  }
->>  
->>  static int device_is_zoned_model(struct dm_target *ti, struct dm_dev
->> *dev,
->>  				 sector_t start, sector_t len, void
->> *data)
-> 
-> Seems like the word "model" should also be remove here.
-> 
->>  {
->> -	struct request_queue *q = bdev_get_queue(dev->bdev);
->> -
->> -	return blk_queue_zoned_model(q) != BLK_ZONED_NONE;
->> +	return bdev_is_zoned(dev->bdev);
->>  }
->>  
->>  /*
->> @@ -1603,8 +1600,7 @@ static int device_is_zoned_model(struct
->> dm_target *ti, struct dm_dev *dev,
->>   * has the DM_TARGET_MIXED_ZONED_MODEL feature set, the devices can
->> have any
->>   * zoned model with all zoned devices having the same zone size.
->>   */
->> -static bool dm_table_supports_zoned_model(struct dm_table *t,
->> -					  enum blk_zoned_model
->> zoned_model)
->> +static bool dm_table_supports_zoned(struct dm_table *t, bool zoned)
->>  {
->>  	for (unsigned int i = 0; i < t->num_targets; i++) {
->>  		struct dm_target *ti = dm_table_get_target(t, i);
->> @@ -1623,11 +1619,11 @@ static bool
->> dm_table_supports_zoned_model(struct dm_table *t,
->>  
->>  		if (dm_target_supports_zoned_hm(ti->type)) {
->>  			if (!ti->type->iterate_devices ||
->> -			    ti->type->iterate_devices(ti,
->> device_not_zoned_model,
->> -						      &zoned_model))
->> +			    ti->type->iterate_devices(ti,
->> device_not_zoned,
->> +						      &zoned))
->>  				return false;
->>  		} else if (!dm_target_supports_mixed_zoned_model(ti-
->>> type)) {
->> -			if (zoned_model == BLK_ZONED_HM)
->> +			if (zoned)
->>  				return false;
->>  		}
->>  	}
-> 
-> The parameter "bool zoned" is redundant. It should be removed from the
-> above 3 functions
-> 
-> Additionally, because we no longer need to distinguish the zoned model
-> here, DM_TARGET_MIXED_ZONED_MODEL is meaningless. We can also clean up
-> its related code.
+Hi Qu,
 
-Nope. The mixed thing is for mixing up non-zoned with zoned models.
-For the entire DM code, HM and HA are both treated as HM-like zoned.
+On Fri, 15 Dec 2023 19:09:24 +1030, Qu Wenruo wrote:
 
--- 
-Damien Le Moal
-Western Digital Research
+> Since memparse() itself can not handle overflow at all, use
+> memparse_ull() to be extra safe.
+
+s/memparse_ull/kstrtoull_suffix/
+
+> Now overflow values can be properly detected.
+
+Please document how the sysfs API changes with this, in addition to
+overflow handling:
+- support for 'E' / 'e' suffixes dropped
+- only one trailing '\n' accepted, instead of many isspace()
+
+The latter might break a few scripts.
+
+Cheers, David
+
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/sysfs.c | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 84c05246ffd8..089c3fc123fe 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -760,7 +760,7 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
+>  {
+>  	struct btrfs_space_info *space_info = to_space_info(kobj);
+>  	struct btrfs_fs_info *fs_info = to_fs_info(get_btrfs_kobj(kobj));
+> -	char *retptr;
+> +	int ret;
+>  	u64 val;
+>  
+>  	if (!capable(CAP_SYS_ADMIN))
+> @@ -776,11 +776,9 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
+>  	if (space_info->flags & BTRFS_BLOCK_GROUP_SYSTEM)
+>  		return -EPERM;
+>  
+> -	val = memparse(buf, &retptr);
+> -	/* There could be trailing '\n', also catch any typos after the value */
+> -	retptr = skip_spaces(retptr);
+> -	if (*retptr != 0 || val == 0)
+> -		return -EINVAL;
+> +	ret = kstrtoull_suffix(buf, 0, &val, KSTRTOULL_SUFFIX_DEFAULT);
+> +	if (ret < 0)
+> +		return ret;
+>  
+>  	val = min(val, BTRFS_MAX_DATA_CHUNK_SIZE);
+>  
+> @@ -1779,14 +1777,12 @@ static ssize_t btrfs_devinfo_scrub_speed_max_store(struct kobject *kobj,
+>  {
+>  	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
+>  						   devid_kobj);
+> -	char *endptr;
+>  	unsigned long long limit;
+> +	int ret;
+>  
+> -	limit = memparse(buf, &endptr);
+> -	/* There could be trailing '\n', also catch any typos after the value. */
+> -	endptr = skip_spaces(endptr);
+> -	if (*endptr != 0)
+> -		return -EINVAL;
+> +	ret = kstrtoull_suffix(buf, 0, &limit, KSTRTOULL_SUFFIX_DEFAULT);
+> +	if (ret < 0)
+> +		return ret;
+>  	WRITE_ONCE(device->scrub_speed_max, limit);
+>  	return len;
+>  }
+
+
+
 
 
