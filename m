@@ -1,79 +1,80 @@
-Return-Path: <linux-btrfs+bounces-1043-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1042-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC317817DF3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 00:14:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 183D7817DE4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 00:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE5411C218BD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 23:14:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 576B2B22AB2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 23:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8FC76093;
-	Mon, 18 Dec 2023 23:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13A27760A8;
+	Mon, 18 Dec 2023 23:09:52 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from tiger.tulip.relay.mailchannels.net (tiger.tulip.relay.mailchannels.net [23.83.218.248])
+Received: from dormouse.elm.relay.mailchannels.net (dormouse.elm.relay.mailchannels.net [23.83.212.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B94AC1EA85
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Dec 2023 23:14:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7013C7608B
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Dec 2023 23:09:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id B2719501B52;
-	Mon, 18 Dec 2023 16:24:17 +0000 (UTC)
+	by relay.mailchannels.net (Postfix) with ESMTP id 8BBA3941925
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Dec 2023 22:30:41 +0000 (UTC)
 Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
 	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id B62DE50055D;
-	Mon, 18 Dec 2023 16:24:15 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1702916656; a=rsa-sha256;
+	by relay.mailchannels.net (Postfix) with ESMTPA id DCFE5941BB5
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Dec 2023 22:30:40 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1702938641; a=rsa-sha256;
 	cv=none;
-	b=yETcitU+K7dYaK7fqjlvINjgBSbR4mFBSe6wLy17c0VwFDSlxj3a0GYz/aX1MTbRRBgxhC
-	WgOg0EWkLGJMYixUjGv67Af9bM4yK3DbeTmdxIGKTSg4qnesT7wbitt9cTkATH2T/puHL5
-	ZXMl64TsXhV9hYaYuKLE3hoTSAWyezekARXAZ7hOBi7Qtyl3qu5wQvNHANOhgZLRzog65o
-	BxVbTY5oookvyCfG5wAxsNYtidLtyLe833oHJl43u2eeNoGnFCOMBDV7I1knOrgxIGwe09
-	d4tU+W+6dZ3r3I0/cByXGIi7WUICn3BhWZ7uGMGCnQIrXeEXtPVGVUv17X69Ww==
+	b=JbXT3QLRBU/ofN+NzZ7JeXhsS0IZ+k19JRO0dj59YckqVeJIPb4qnKQ6qS4dsosYxbXOO5
+	lmVfxSWm0LZQpIs44Kms3W7bW39g5j7AE6BkonYTklrvDsIiG8cWUxmGqtGzxw/tESTYYz
+	Cw1jXfBRsjkvDedSliP68EnXaZKJMtxTD2rJRSuTtk46+GtYepDIHOerx4cACTS+hYJBb6
+	ecz5jGy2R9Np94o19QOI10TAJvzacbhse5BQY4iswRBQS1q29AarBCZyUx7aVRevUENWUV
+	uu7t9Im2WC4eQiHBxtHakTufRXDFIOJw1wLy7f57mJou+W+lMELCU0unOIgfMQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
  d=mailchannels.net;
-	s=arc-2022; t=1702916656;
+	s=arc-2022; t=1702938641;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=a8fzBqwcRbyuQSCYBsEAcH3j6slgDzNlkqvCzt5fVvY=;
-	b=u6TP7PAIXs+SGr6Hx4d4JpXdcc/Mi9FDqqT8UV/ARZDENQqVtUHWJUqzaNPXR0PpjtUYP3
-	FEIDX0RPmpVVdFcYVX/gdxFv3SOF4mmZQRlh6vGt+kKOReAdR/xH1ewaY5T1evS40kiCXK
-	dkpiiKHp8AUBhPz3N/C16Xvdbpcg748Z4kfuiFWdUsdC6sK9ZoNOcjXYOl8ks4RCKES1RD
-	xwcNj3WZSkuNJ9XQWSE1fgCtzG9Qc2eIOgksKkpTBPU9GUqu2bwu0mwlYTtUvgekCOqeQr
-	ZZ3hZ8KZfBF6P07L9odhk+PPddTdr5fLeHSV1rk4ouJ2rWUoBSB5UBDY3GuyFQ==
+	bh=z6xlsSG0xCkrLJlODo6nftMgPe7YM7cjZ8eoloSfOP4=;
+	b=H83f/0uNZq2suKr4GPnLNwyrjVoKKHiH42epBhEw+gOFXWSw6Tz6sdxoG+6XZdc7cGnyWy
+	CJy1Ur6swum440qnAqdmSAzKu1OsvIleBFXC/rEy1WrIEv0dGoOwc6QfwRsdbPVfCTOjxD
+	4M0flxlz7xHWz7w1VSnWfCA/YzgHItgjpD3K5ZH4X2KTpXiqSGysLkTdoVfCN3FBByRbvX
+	ZMeEFuLQsUHQwMQsTCyXMQqmikdhKIz1pWlZuwa5rn5pniM7BjYGE2IeUxkDnf75Y9X9GL
+	8scIXIbhvTx9cXlthk+69J5wEAkdMm/WFL5nDIMld3WQXUkDcL3su2afrAc7lA==
 ARC-Authentication-Results: i=1;
-	rspamd-659dcc87c8-6g8fz;
+	rspamd-659dcc87c8-pb9dr;
 	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MC-Relay: Neutral
 X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MailChannels-Auth-Id: instrampxe0y3a
-X-Fearful-Thread: 306a70040665eeee_1702916656371_718820325
-X-MC-Loop-Signature: 1702916656371:2647141577
-X-MC-Ingress-Time: 1702916656371
+X-Name-Dime: 50e7bcaf4d2b1c3d_1702938641391_327959844
+X-MC-Loop-Signature: 1702938641391:819029078
+X-MC-Ingress-Time: 1702938641391
 Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
  [3.69.87.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-	by 100.120.248.43 (trex/6.9.2);
-	Mon, 18 Dec 2023 16:24:16 +0000
-Received: from p5b0ed5dc.dip0.t-ipconnect.de ([91.14.213.220]:40714 helo=heisenberg.fritz.box)
+	by 100.104.199.175 (trex/6.9.2);
+	Mon, 18 Dec 2023 22:30:41 +0000
+Received: from p5b0ed5dc.dip0.t-ipconnect.de ([91.14.213.220]:52336 helo=heisenberg.fritz.box)
 	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <calestyo@scientia.org>)
-	id 1rFGPa-0002QT-1K;
-	Mon, 18 Dec 2023 16:24:14 +0000
-Message-ID: <62e9ad23d4829f30600ea6e611d2cd4636f080cc.camel@scientia.org>
+	id 1rFM8B-0000p8-1U
+	for linux-btrfs@vger.kernel.org;
+	Mon, 18 Dec 2023 22:30:39 +0000
+Message-ID: <9205bba254d09a2afc57bc93fb7f818dc6835c6a.camel@scientia.org>
 Subject: Re: btrfs thinks fs is full, though 11GB should be still free
 From: Christoph Anton Mitterer <calestyo@scientia.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Date: Mon, 18 Dec 2023 17:24:08 +0100
+To: linux-btrfs@vger.kernel.org
+Date: Mon, 18 Dec 2023 23:30:32 +0100
 In-Reply-To: <8a9b6743-37e6-4a71-9423-6ce5169959ac@gmx.com>
 References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
 	 <253c6b4e-2b33-4892-8d6f-c0f783732cb6@gmx.com>
@@ -97,22 +98,59 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-AuthUser: calestyo@scientia.org
 
-Hey again.
+Hey.
 
-Seems that even the manual defrag doesn't help at all:
-
-After:
-btrfs filesystem defragment -v -r -t 100000M
-
-there's still:
-# compsize .
-Processed 309 files, 324 regular extents (324 refs), 146 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced =20
-TOTAL      100%       22G          22G          13G      =20
-none       100%       22G          22G          13G      =20
+Had already sent the mail below this afternoon, but just got a bounce:
+<linux-btrfs@vger.kernel.org>: lost connection with
+    smtp.subspace.kernel.org[44.238.234.78] while receiving the initial ser=
+ver
+    greeting
 
 
-Any other ideas how this could be solved?
+So here it's again,... effectively it just says that autodefrag didn't
+help either.
+
+Cheers,
+Chris.
+
+
+On Tue, 2023-12-12 at 14:43 +1030, Qu Wenruo wrote:
+> The direct cause is frequent fsync()/sync() with overwrites.
+> Btrfs is really relying on merging the writes between transactions,
+> if
+> fsync()/sync() is called too frequently (like some data base) and the
+> program is doing overwrites, this is exactly what you would have.
+>=20
+> IIRC we can set the AUTODEFRAG for an directory?
+
+I have tried meanwhile with autodefrag for a few days, but that doesn't
+cure the problem, not sure why it doesn't seem to kick in.
+
+
+The way Prometheus writes together with btrfs, causes extensive loss of
+space:
+compsize /data/main/prometheus/metrics2
+Processed 305 files, 567 regular extents (586 refs), 146 inline.
+Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Perc=C2=A0=C2=A0=C2=A0=C2=A0 Disk =
+Usage=C2=A0=C2=A0 Uncompressed Referenced=C2=A0=20
+TOTAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 21G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 21G=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 13G=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=20
+none=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 21G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 21G=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 13G=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=20
+
+
+I'll try with a manual defrag now, but it's a bit unfortunate that this
+happens without manual intervention.
+Or would it be better or even help to balance?
+
+
+And nodatacow isn't IMO a real alternative either, as long as one
+looses one of the greatest btrfs benefits with is (checksumming).
+
 
 Cheers,
 Chris.
