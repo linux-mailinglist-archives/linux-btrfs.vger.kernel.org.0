@@ -1,41 +1,41 @@
-Return-Path: <linux-btrfs+bounces-1005-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1006-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B40A08165BB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 05:49:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD7FA8165BC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 05:49:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 479D9B210D7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 04:49:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B52B2823A9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Dec 2023 04:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842CB63BA;
-	Mon, 18 Dec 2023 04:49:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4981563D3;
+	Mon, 18 Dec 2023 04:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="B6e07KHJ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="4kM8A5Ru"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F0695680
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Dec 2023 04:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF85163AE
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Dec 2023 04:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=jGpmtEB+cn2F/3PfIxw2xWkhull+ZgQeedcokwukZ0w=; b=B6e07KHJL7rSr5IjVFnr6f2eTP
-	PHRu/ZR3qwVZfzo/E8HNV3qb1k4YYUlLlP3VgjwmUyMN16NwJizhbeXmwZgtG8IG4MraD7wbfeoMJ
-	WKajxRh10BZWJxV72sII2Yrj/rfBujGW0QGkfKhvMHr7g7aQIqVQAo0KBVMxuJNldsJ3dgXw98Z8Y
-	DY0Th/t8Oqv+LWe8QqPyjYnfm5z7EbBZFCdAIt2SG59wh+M+4lqU99CMY/SsmDK20GFQhX8+F99D0
-	gFWS9cWqs6MfHphZQFOZ9yTkjX1/w00JZv78kdxtviT8fEAIug8Oq1wxS2/PfKIUoJTAKtaj7kAzO
-	GV0M2xyw==;
+	bh=6+/tPB8H2ZpOMp6KNaaRjHjXsRE9V5S6wwFc2IkV/vo=; b=4kM8A5Rufr/JJ7L9t+FrWAYFZF
+	zdUdRkWLKfvysbVPVpJj0OWXRiv9aAX3+BEdaTA/aBIEI1XDT42Zl95wqoBIQwv1cpELMQU0COPMQ
+	bszehWU7FoJF8flOR3y+SnKNIzYrktGepGfXtd7WFg8rDSda80vEp22ErxXCz6OqF2Y8HNMDQAGl8
+	KuFfbLGR5nRqLRVo9MS4Zv8G5JcoGErJbYKEYXWt7sgy7mmg94KAm0fwOPorcCEeUJk+NKS2orqi5
+	qES3hKb1YWtF5QWQ9zTxsAzQCfrQ1FP3+BeqKuqTohXEZQNpCJU2Y78im+xLKZnTePExg3Ke+IX7X
+	oicn2olg==;
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rF5ZS-0094Dh-1P;
-	Mon, 18 Dec 2023 04:49:38 +0000
+	id 1rF5ZV-0094ES-0M;
+	Mon, 18 Dec 2023 04:49:41 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Chris Mason <clm@fb.com>,
 	Josef Bacik <josef@toxicpanda.com>,
@@ -43,9 +43,9 @@ To: Chris Mason <clm@fb.com>,
 Cc: linux-btrfs@vger.kernel.org,
 	Christian Brauner <brauner@kernel.org>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 1/5] btrfs: always open the device read-only in btrfs_scan_one_device
-Date: Mon, 18 Dec 2023 05:49:29 +0100
-Message-Id: <20231218044933.706042-2-hch@lst.de>
+Subject: [PATCH 2/5] btrfs: call btrfs_close_devices from ->kill_sb
+Date: Mon, 18 Dec 2023 05:49:30 +0100
+Message-Id: <20231218044933.706042-3-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231218044933.706042-1-hch@lst.de>
 References: <20231218044933.706042-1-hch@lst.de>
@@ -58,96 +58,116 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-btrfs_scan_one_device opens the block device only to read the super
-block.  Instead of passing a blk_mode_t argument to sometimes open
-it for writing, just hard code BLK_OPEN_READ as it will never write
-to the device or hand the block_device out to someone else.
+blkdev_put must not be called under sb->s_umount to avoid a lock order
+reversal with disk->open_mutex once call backs from block devices to
+the file system using the holder ops are supported.  Move the call
+to btrfs_close_devices into btrfs_free_fs_info so that it is closed
+from ->kill_sb (which is also called from the mount failure handling
+path unlike ->put_super) as well as when an fs_info is freed because
+an existing superblock already exists.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/super.c   | 9 ++++-----
- fs/btrfs/volumes.c | 4 ++--
- fs/btrfs/volumes.h | 2 +-
- 3 files changed, 7 insertions(+), 8 deletions(-)
+ fs/btrfs/disk-io.c |  4 ++--
+ fs/btrfs/super.c   | 27 ++++++++++++++-------------
+ 2 files changed, 16 insertions(+), 15 deletions(-)
 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index c6907d533fe839..c2f57c986069b7 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1265,6 +1265,8 @@ static void free_global_roots(struct btrfs_fs_info *fs_info)
+ 
+ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
+ {
++	if (fs_info->fs_devices)
++		btrfs_close_devices(fs_info->fs_devices);
+ 	percpu_counter_destroy(&fs_info->dirty_metadata_bytes);
+ 	percpu_counter_destroy(&fs_info->delalloc_bytes);
+ 	percpu_counter_destroy(&fs_info->ordered_bytes);
+@@ -3597,7 +3599,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 
+ 	iput(fs_info->btree_inode);
+ fail:
+-	btrfs_close_devices(fs_info->fs_devices);
+ 	ASSERT(ret < 0);
+ 	return ret;
+ }
+@@ -4377,7 +4378,6 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 	iput(fs_info->btree_inode);
+ 
+ 	btrfs_mapping_tree_free(fs_info);
+-	btrfs_close_devices(fs_info->fs_devices);
+ }
+ 
+ void btrfs_mark_buffer_dirty(struct btrfs_trans_handle *trans,
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 3a677b808f0f75..ba16ade1d79aea 100644
+index ba16ade1d79aea..7d38f973e991f6 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -295,10 +295,9 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		break;
- 	case Opt_device: {
- 		struct btrfs_device *device;
--		blk_mode_t mode = sb_open_mode(fc->sb_flags);
+@@ -1810,10 +1810,8 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 	if (ret)
+ 		return ret;
  
- 		mutex_lock(&uuid_mutex);
--		device = btrfs_scan_one_device(param->string, mode, false);
-+		device = btrfs_scan_one_device(param->string, false);
- 		mutex_unlock(&uuid_mutex);
- 		if (IS_ERR(device))
- 			return PTR_ERR(device);
-@@ -1796,7 +1795,7 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 	 * With 'true' passed to btrfs_scan_one_device() (mount time) we expect
- 	 * either a valid device or an error.
+-	if (!(fc->sb_flags & SB_RDONLY) && fs_devices->rw_devices == 0) {
+-		ret = -EACCES;
+-		goto error;
+-	}
++	if (!(fc->sb_flags & SB_RDONLY) && fs_devices->rw_devices == 0)
++		return -EACCES;
+ 
+ 	bdev = fs_devices->latest_dev->bdev;
+ 
+@@ -1827,15 +1825,12 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 	 * otherwise it's tied to the lifetime of the super_block.
  	 */
--	device = btrfs_scan_one_device(fc->source, mode, true);
-+	device = btrfs_scan_one_device(fc->source, true);
- 	ASSERT(device != NULL);
- 	if (IS_ERR(device)) {
- 		mutex_unlock(&uuid_mutex);
-@@ -2198,7 +2197,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- 		 * Scanning outside of mount can return NULL which would turn
- 		 * into 0 error code.
- 		 */
--		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
-+		device = btrfs_scan_one_device(vol->name, false);
- 		ret = PTR_ERR_OR_ZERO(device);
- 		mutex_unlock(&uuid_mutex);
- 		break;
-@@ -2216,7 +2215,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- 		 * Scanning outside of mount can return NULL which would turn
- 		 * into 0 error code.
- 		 */
--		device = btrfs_scan_one_device(vol->name, BLK_OPEN_READ, false);
-+		device = btrfs_scan_one_device(vol->name, false);
- 		if (IS_ERR_OR_NULL(device)) {
- 			mutex_unlock(&uuid_mutex);
- 			ret = PTR_ERR(device);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 4c32497311d2ff..02b61757798366 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1310,7 +1310,7 @@ int btrfs_forget_devices(dev_t devt)
-  * the device or return an error. Multi-device and seeding devices are registered
-  * in both cases.
+ 	sb = sget_fc(fc, btrfs_fc_test_super, set_anon_super_fc);
+-	if (IS_ERR(sb)) {
+-		ret = PTR_ERR(sb);
+-		goto error;
+-	}
++	if (IS_ERR(sb))
++		return PTR_ERR(sb);
+ 
+ 	set_device_specific_options(fs_info);
+ 
+ 	if (sb->s_root) {
+-		btrfs_close_devices(fs_devices);
+ 		if ((fc->sb_flags ^ sb->s_flags) & SB_RDONLY)
+ 			ret = -EBUSY;
+ 	} else {
+@@ -1854,10 +1849,6 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 
+ 	fc->root = dget(sb->s_root);
+ 	return 0;
+-
+-error:
+-	btrfs_close_devices(fs_devices);
+-	return ret;
+ }
+ 
+ /*
+@@ -1950,10 +1941,20 @@ static int btrfs_get_tree_super(struct fs_context *fc)
   */
--struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
-+struct btrfs_device *btrfs_scan_one_device(const char *path,
- 					   bool mount_arg_dev)
+ static struct vfsmount *btrfs_reconfigure_for_mount(struct fs_context *fc)
  {
- 	struct btrfs_super_block *disk_super;
-@@ -1339,7 +1339,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 	 * values temporarily, as the device paths of the fsid are the only
- 	 * required information for assembling the volume.
- 	 */
--	bdev_handle = bdev_open_by_path(path, flags, NULL, NULL);
-+	bdev_handle = bdev_open_by_path(path, BLK_OPEN_READ, NULL, NULL);
- 	if (IS_ERR(bdev_handle))
- 		return ERR_CAST(bdev_handle);
++	struct btrfs_fs_info *fs_info = fc->s_fs_info;
+ 	struct vfsmount *mnt;
+ 	int ret;
+ 	const bool ro2rw = !(fc->sb_flags & SB_RDONLY);
  
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 53f87f398da779..3d35c4b92efb94 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -642,7 +642,7 @@ struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
- void btrfs_mapping_tree_free(struct btrfs_fs_info *fs_info);
- int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 		       blk_mode_t flags, void *holder);
--struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
-+struct btrfs_device *btrfs_scan_one_device(const char *path,
- 					   bool mount_arg_dev);
- int btrfs_forget_devices(dev_t devt);
- void btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
++	/*
++	 * We got a reference to our fs_devices, so we need to close it here to
++	 * make sure we don't leak our reference on the fs_devices.
++	 */
++	if (fs_info->fs_devices) {
++		btrfs_close_devices(fs_info->fs_devices);
++		fs_info->fs_devices = NULL;
++	}
++
+ 	/*
+ 	 * We got an EBUSY because our SB_RDONLY flag didn't match the existing
+ 	 * super block, so invert our setting here and retry the mount so we
 -- 
 2.39.2
 
