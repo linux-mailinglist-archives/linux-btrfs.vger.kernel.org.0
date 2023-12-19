@@ -1,73 +1,119 @@
-Return-Path: <linux-btrfs+bounces-1055-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1056-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9DC5818567
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 11:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 78802818653
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 12:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C9191C231B2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 10:38:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CD821C21B88
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 11:29:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C499814F78;
-	Tue, 19 Dec 2023 10:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00EBD168C1;
+	Tue, 19 Dec 2023 11:29:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=cdac.in header.i=@cdac.in header.b="QWGJNxUl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from mailsender.cdac.in (mailsender.cdac.in [196.1.113.117])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 221DD14A94;
-	Tue, 19 Dec 2023 10:38:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id A192468BFE; Tue, 19 Dec 2023 11:38:25 +0100 (CET)
-Date: Tue, 19 Dec 2023 11:38:25 +0100
-From: "hch@lst.de" <hch@lst.de>
-To: Damien Le Moal <dlemoal@kernel.org>
-Cc: Ed Tsai =?utf-8?B?KOiUoeWul+i7kik=?= <Ed.Tsai@mediatek.com>,
-	"Naohiro.Aota@wdc.com" <Naohiro.Aota@wdc.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
-	"hch@lst.de" <hch@lst.de>,
-	"martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-	"axboe@kernel.dk" <axboe@kernel.dk>,
-	Chun-Hung Wu =?utf-8?B?KOW3q+mnv+Wujyk=?= <Chun-hung.Wu@mediatek.com>,
-	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-	"dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
-	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
-	"stefanha@redhat.com" <stefanha@redhat.com>
-Subject: Re: [PATCH 3/5] block: remove support for the host aware zone model
-Message-ID: <20231219103825.GB14379@lst.de>
-References: <20231217165359.604246-1-hch@lst.de> <20231217165359.604246-4-hch@lst.de> <b4d33dc359495c6227a3f20285566eed27718a14.camel@mediatek.com> <190f58f7-2ed6-46f8-af59-5e167a0bddeb@kernel.org> <f19c41b9ea990e6da734b6c81caeebb73fb60b29.camel@mediatek.com> <do3ekgymdpa4skyz5p3dp6qcqq7zuty73qrpmftszmffunnxpm@fyswyalaxzfq> <dbc4a5b4296effd88ba0ef939aa324df0969545c.camel@mediatek.com> <0a329050-0010-47cb-8c7b-a2f0863a21e8@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642A21643A
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Dec 2023 11:29:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cdac.in
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cdac.in
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cdac.in; s=default;
+	t=1702985383; bh=7lGYQi6Dj+xZLx0PuDJWFsIHXWtANxoHzujTvoHASH4=;
+	h=From:To:Subject:Date:From;
+	b=QWGJNxUl0xqdCCqqJ77ZCqg7yYhfJMe5dciM5k/F7knHENCpBavY+lwKtP4cdiV8B
+	 5cAC0XP3bybOK+4EEFddYDaXzL/jJCkyNjIZKf2AM/o2jCXr+VyZH5APHmgX4ee4CO
+	 yTJLNcWBxFHSRFiGVkc5tO6oUldOu22R69EWs7gY=
+Received: from ims.pune.cdac.in (ims.pune.cdac.in [10.208.1.15])
+	by mailsender.cdac.in (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 3BJBTgP33189267
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Dec 2023 16:59:43 +0530
+Received: from smtp.cdac.in (mailgw1.pune.cdac.in [10.208.1.26])
+	by ims.pune.cdac.in (8.14.4/8.14.4) with ESMTP id 3BJBTfcN010836
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Dec 2023 16:59:41 +0530
+X-Auth: saranyag@cdac.in
+Received: from DESKTOPJN4LLJN (parvathy_pc.tvm.cdac.in [10.176.27.82])
+	(Authenticated sender: saranyag@cdac.in)
+	by smtp.cdac.in (Postfix) with ESMTPSA id 605674E00B4
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Dec 2023 16:59:41 +0530 (IST)
+From: <saranyag@cdac.in>
+To: <linux-btrfs@vger.kernel.org>
+Subject: Logical to Physical Address Mapping/Translation in Btrfs
+Date: Tue, 19 Dec 2023 16:59:54 +0530
+Message-ID: <000b01da326e$b054cdb0$10fe6910$@cdac.in>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a329050-0010-47cb-8c7b-a2f0863a21e8@kernel.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdoybqgAKvdN4RTXSqOR3xMlfe6MxA==
+Content-Language: en-us
+X-CDAC-PUNE-MailScanner-Information: Please contact mailadmin@cdac.in for more information
+X-CDAC-PUNE-MailScanner-ID: 3BJBTfcN010836
+X-CDAC-PUNE-MailScanner: Found to be clean
+X-CDAC-PUNE-MailScanner-MCPCheck: 
+X-CDAC-PUNE-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
+	score=0.801, required 6, autolearn=disabled, ALL_TRUSTED -1.00,
+	BAYES_50 0.80, BOGUS_THREAD 0.50, FVGT_u_HAS_2LETTERFLDR 0.50,
+	URIBL_BLOCKED 0.00)
+X-CDAC-PUNE-MailScanner-From: saranyag@cdac.in
+X-CDAC-PUNE-MailScanner-To: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 19, 2023 at 05:12:41PM +0900, Damien Le Moal wrote:
-> >> Since we cannot create lambda as in other fancy languages, we need
-> >> two
-> >> functions...
-> > 
-> > Not really, there is a "void *data" can be used.
-> > 
-> > The device_is_zoned_model() is just the same as the device_not_zoned()
-> > with (bool *)data = false.
-> > 
-> > It's very minor, so is okay to ignore my preference.
-> 
-> Send a patch on top of Christoph's series if you want to clean this up.
+Hi,
 
-I'll need to respin anyway, so I'll look into incorporating the
-suggestion.
+May I know how the logical address is translated to the physical address in
+Btrfs?
+
+I have read the official documentation of Btrfs available here
+(https://btrfs.readthedocs.io/en/latest/Introduction.html). It is not
+covering the address translation part in detail.
+
+I have also gone through the Btrfs source code
+(https://github.com/torvalds/linux/tree/master/fs/btrfs). I could not figure
+out the address translation from the code also.
+
+After referring to the following functions, what I could understand is that
+after getting the logical address of Chunk tree root from the superblock, we
+need to convert it into the corresponding physical address for parsing into
+the next level.=A0
+
+int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices
+*fs_devices, char *options)
+
+int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
+
+static int read_one_chunk(struct btrfs_key *key, struct extent_buffer
+*leaf,=A0 struct btrfs_chunk *chunk)
+
+Any hints or pointers to the documentation on this is greatly appreciated.
+I want to know the implementation part in btrfs-progs/source code.
+
+Thanks in advance
+Saranya G
+CDAC
+
+
+
+---------------------------------------------------------------------------=
+---------------------------------
+[ C-DAC is on Social-Media too. Kindly follow us at:
+Facebook: https://www.facebook.com/CDACINDIA & Twitter: @cdacindia ]
+
+This e-mail is for the sole use of the intended recipient(s) and may
+contain confidential and privileged information. If you are not the
+intended recipient, please contact the sender by reply e-mail and destroy
+all copies and the original message. Any unauthorized review, use,
+disclosure, dissemination, forwarding, printing or copying of this email
+is strictly prohibited and appropriate legal action will be taken.
+---------------------------------------------------------------------------=
+---------------------------------
+
 
