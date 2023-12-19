@@ -1,119 +1,177 @@
-Return-Path: <linux-btrfs+bounces-1066-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1067-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7D92819276
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 22:42:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A177481936D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 23:20:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63A8F2897E3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 21:42:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 565F41F23587
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 22:20:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47683B78B;
-	Tue, 19 Dec 2023 21:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753793C6A4;
+	Tue, 19 Dec 2023 22:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Zd5+jzmW"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="EIVwWWoN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F203B287;
-	Tue, 19 Dec 2023 21:42:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1703022159; x=1734558159;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=tPP2kDEf/tN7yIAxxly8R2bJj7+PWjjcASYnXDyDXAI=;
-  b=Zd5+jzmWEY3tdtsgR7QnSMqXic56XObdc6Ny3K83jNApQgRvE69Wc6Qh
-   nEc0tIpkN4LCYmBxa17L3jhUk7xAINusmbJ0SHMVQ8Nbg7TrDMwM+40qw
-   KxFBygfTAitmM5GrtmenwrDP3NIJiPJGOQgbs8PT/AXKGhpKlQfdnm6LU
-   DvR7aJm2R1sHBrdaQDSBBjPWw2yAl1XRqdFFMZbWVPuExm6Obhyg9h+Sc
-   opUOwHyiRKoBLabV41bSze1xKm+emvaxWMbFxaoIGcrWb+h5PJ4w9tHDV
-   JxECxS3Nvk/CzNIsyyBbVQb1+AOLM3uZfslnZHRa6iOqwQzXlHlifYTAy
-   w==;
-X-CSE-ConnectionGUID: fmJvmysGSFanO9JYKWvAig==
-X-CSE-MsgGUID: cQ+N/ee3T5K/bwRkySxDbA==
-X-IronPort-AV: E=Sophos;i="6.04,289,1695657600"; 
-   d="scan'208";a="5328979"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Dec 2023 05:42:33 +0800
-IronPort-SDR: 7sSVpd69KBg7RW6M4gv3n9j9FpUdMQGueSeLS3P7jSRddWFiN9H/oM/u4xRl5aIvGH0i0ZQ8ZZ
- 91F0/8ClgqGA==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Dec 2023 12:47:37 -0800
-IronPort-SDR: N0nYHn3UrUEGXVcv3yanexY5Yg7nyGkQT0Mj56efowPshBruEPICk1Y6viY4Q1hI8YxE1DT/5D
- uNU+QOcGKIdw==
-WDCIronportException: Internal
-Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.90])
-  by uls-op-cesaip02.wdc.com with ESMTP; 19 Dec 2023 13:42:33 -0800
-From: Naohiro Aota <naohiro.aota@wdc.com>
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	David Disseldorp <ddiss@suse.de>
-Subject: [PATCH v2] fstests: filter.btrfs: update _filter_transaction_commit()
-Date: Wed, 20 Dec 2023 06:42:30 +0900
-Message-ID: <20231219214230.770724-1-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314E93D0A7
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Dec 2023 22:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1703024422; x=1703629222; i=quwenruo.btrfs@gmx.com;
+	bh=VoG8g6A/cUgViMWbscxxZvmeE6Lt7T/Ric48DSK1SRM=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=EIVwWWoNY5Qsea/ApsHNB9rQ4UY4u3q8RnEyJZ25t2d9ZaKkTLzci01/ockPRId9
+	 JtbgfwK/YpbIIESIE+0TqxRmnOrrl7dHSOM/wYnRK4l/NrAu0XlzTgMp2svaUGvbL
+	 UPmy4eeYkkCVBurX1NtWx+DY/PZ2o6ZdcA/csfgx5cz35NVigPG1xl2XtWaWjhPLc
+	 mW4OJlHROkNbSsW/mTjv0KZKbFKpenTaVfEzCir9T1A9fjIwPMUYNnt1ALpFhV7WN
+	 d9OdGNsBVJTkbIIWlAdzeViMsZaqa9w0yu3uMZtPCTAr6cOTyvZHlXtaiB1cup4Au
+	 woBtqgwzF+dCGauuFA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.153] ([115.64.109.135]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1fmq-1r9Mlh1LZY-0121Cc; Tue, 19
+ Dec 2023 23:20:22 +0100
+Message-ID: <0f6ab509-2403-4ab6-af3f-d5beb559b450@gmx.com>
+Date: Wed, 20 Dec 2023 08:50:17 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: Logical to Physical Address Mapping/Translation in Btrfs
+Content-Language: en-US
+To: saranyag@cdac.in, linux-btrfs@vger.kernel.org
+References: <000b01da326e$b054cdb0$10fe6910$@cdac.in>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <000b01da326e$b054cdb0$10fe6910$@cdac.in>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:y/BmMVMV4XPy7GKYyhdt8EVWq4j4t3+WdHMntr8cXBbnh7urwTz
+ bqz7RyPl0YrZAGqMC/RUI61+joOovA3I8/RlAHP7SSmXfXyWt5uzAb//yge3qLTRLv1yhQj
+ B5VoytiJ1/HAlmpaCEVTM+HGZ6JOI9EIA5BzI6CaDa41BUdr6Fgyo+QY7DJ7hitngXNVVll
+ UijS8pWYGtHncK8MyCdnA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:WrmrKCxh9gQ=;2yz4wbYyCO/s+Onla1uL8Gox3NR
+ CSIEJM0Ushg0JYco3JT5t2t8XcdNrEljexiBFptLyt0B/RuuV+6+IULmid8OMcv8atrMXa8NH
+ IGBLS8Rc9c1V48/TYcY+5jim1009pezVOoQDK33qRu6aOZs3tsubLdUKMWq9IYJjZUbrjWHZD
+ 2TrheNEUWdFiblUMH/OnQunifLo/9pBhrBT6dzND7rvb1lXDDrnOQxx/PZtXsjGBi9im3jWg1
+ ZNAVdppVKSBUL/JhptaUoJCFIFNNVjV6ynmlH1UTrI1ijCZuErlnGl3he6m8ctOjxXpoJj+mo
+ wpKggoGcsNRA6VGfd4siYOlbWzm/eLTuqhzagMEAjS5gDm20sQ89S5UiVEI5v8Wa8bzUQSvmP
+ djOwNCRDWcFg+YnfwJsXe7uuMS+mFQIgF9i6fIBTHIQkkwdWW7SvymsXWh0cxceGMmzm/BYMI
+ FDxB84SIwdV/evk11qSl1NWnfyQuVaZh8qljBZq8aKL2iuYxo6uaM4vgwhI+gPO3cPmLy5dX3
+ BpKNqVHKFdiBH4YkeJTUMIjVg2bmqbf45vw+qPXaBKTlxwVX05rrRDhqr4S6bO9B8JwQtN5kP
+ uiT5YqiT9V6Qi9O2OQ4+452whsd/jHGxnpQWGFt86matLdehy/d0G+9WpySEphpGUvnjQVYjX
+ h8L+JReODbUbGjtMdXaa8aOLV9aMzSsCQUDU1CMwgonUnHWUkHXfzV4jy9nYhSqbvItKOlrn/
+ Lmd+FDkrnK3njuAXj4q8tyu/f+5YtsRcCXA8Bvs8AMaXdumNL2H4x/u41r+rhJ4hfa6BO8IHY
+ wTE4G5YaTAFWsR9t3ISaLuEfIJ1QkYxgY/d7Aj167TEHOFpkaYssL3wrLVXTMGXNJP7zUdFuG
+ UUVh35+ft5hf+yGRRxf+C59zMGebJ1/PLwpkvfyqZZRq92ivk93rZwZEHXigu+lS3u6zSPkzR
+ GGvFv3fo5m54OPdKGt6GoEpna00=
 
-Recent btrfs-progs commit 5c91264d2dfc ("btrfs-progs: subvol delete:
-print the id of the deleted subvolume") added the id of the deleted
-subvolume to "Delete subvolume" print format.
 
-As a result, btrfs/001 now always fail by the output difference.
 
-  - output mismatch (see /host/results/btrfs/001.out.bad)
-      --- tests/btrfs/001.out     2021-02-05 01:44:17.000000000 +0000
-      +++ /host/results/btrfs/001.out.bad 2023-12-15 01:43:07.000000000 +0000
-      @@ -33,7 +33,7 @@
-       Listing subvolumes
-       snap
-       subvol
-      -Delete subvolume 'SCRATCH_MNT/snap'
-      +Delete subvolume 256 (no-commit): 'SCRATCH_MNT/snap'
-       List root dir
-       subvol
-      ...
+On 2023/12/19 21:59, saranyag@cdac.in wrote:
+> Hi,
+>
+> May I know how the logical address is translated to the physical address=
+ in
+> Btrfs?
 
-Fix the issue by updating _filter_transaction_commit().
+This is documented in btrfs-dev-docs/chunks.txt:
 
-Reviewed-by: David Disseldorp <ddiss@suse.de>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- common/filter.btrfs | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+https://github.com/btrfs/btrfs-dev-docs/blob/master/chunks.txt
 
-v2: Fold multiple filters in single sed command, as suggested by David
-Disseldorp.
 
-diff --git a/common/filter.btrfs b/common/filter.btrfs
-index 02c6b92dfa94..8c6fe5793663 100644
---- a/common/filter.btrfs
-+++ b/common/filter.btrfs
-@@ -69,8 +69,9 @@ _filter_btrfs_device_stats()
- }
- 
- _filter_transaction_commit() {
--	sed -e "/Transaction commit: none (default)/d" | \
--	sed -e "s/Delete subvolume (.*commit):/Delete subvolume/g"
-+	sed -e "/Transaction commit: none (default)/d" \
-+	    -e "s/Delete subvolume [0-9]\+ (.*commit):/Delete subvolume/g" \
-+	    -e "s/Delete subvolume (.*commit):/Delete subvolume/g"
- }
- 
- _filter_btrfs_subvol_delete()
--- 
-2.43.0
+>
+> I have read the official documentation of Btrfs available here
+> (https://btrfs.readthedocs.io/en/latest/Introduction.html). It is not
+> covering the address translation part in detail.
+>
+> I have also gone through the Btrfs source code
+> (https://github.com/torvalds/linux/tree/master/fs/btrfs). I could not fi=
+gure
+> out the address translation from the code also.
+>
+> After referring to the following functions, what I could understand is t=
+hat
+> after getting the logical address of Chunk tree root from the superblock=
+, we
+> need to convert it into the corresponding physical address for parsing i=
+nto
+> the next level.
+>
+> int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices
+> *fs_devices, char *options)
+>
+> int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
+>
+> static int read_one_chunk(struct btrfs_key *key, struct extent_buffer
+> *leaf,=C2=A0 struct btrfs_chunk *chunk)
+>
+> Any hints or pointers to the documentation on this is greatly appreciate=
+d.
+> I want to know the implementation part in btrfs-progs/source code.
 
+For the implementation, you need to check btrfs_map_block() (the same
+name in both btrfs-progs and kernel), which is the core of logical ->
+physical mapping.
+
+All your mentioned functions are just reading the chunk tree into memory.
+
+Thanks,
+Qu
+
+>
+> Thanks in advance
+> Saranya G
+> CDAC
+>
+>
+>
+> ------------------------------------------------------------------------=
+------------------------------------
+> [ C-DAC is on Social-Media too. Kindly follow us at:
+> Facebook: https://www.facebook.com/CDACINDIA & Twitter: @cdacindia ]
+>
+> This e-mail is for the sole use of the intended recipient(s) and may
+> contain confidential and privileged information. If you are not the
+> intended recipient, please contact the sender by reply e-mail and destro=
+y
+> all copies and the original message. Any unauthorized review, use,
+> disclosure, dissemination, forwarding, printing or copying of this email
+> is strictly prohibited and appropriate legal action will be taken.
+> ------------------------------------------------------------------------=
+------------------------------------
+>
+>
 
