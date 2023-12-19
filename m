@@ -1,114 +1,73 @@
-Return-Path: <linux-btrfs+bounces-1054-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1055-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61E0D81854A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 11:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E9DC5818567
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 11:38:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 731A21C22CBA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 10:25:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C9191C231B2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Dec 2023 10:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9311548B;
-	Tue, 19 Dec 2023 10:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="AlEoq3cC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C499814F78;
+	Tue, 19 Dec 2023 10:38:32 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F8C114F77;
-	Tue, 19 Dec 2023 10:25:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1702981518; bh=atxKJG/+oOQOf1n8hjqc88GOaBMrWZfLPQjGsiRwgSg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=AlEoq3cCCXt+aNM2aKsmVzCLXrnDWDvS2w5VykAoffC/pxKn9K7Fk8n6FAoslwafe
-	 5U6TcP7VOxdwAAw8a9l+ZXs4oxnymGK5YAULKTfJvldsEHggsjNAgZ4o7bzKafCGlP
-	 kZIa6MFTzkyGDLdxtWjFyuZqYlRnZ1XX39TnbvcU=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
-	id 4C98AAE1; Tue, 19 Dec 2023 18:19:09 +0800
-X-QQ-mid: xmsmtpt1702981149t023sln67
-Message-ID: <tencent_44CA0665C9836EF9EEC80CB9E7E206DF5206@qq.com>
-X-QQ-XMAILINFO: N7h1OCCDntujEmdmqzMjwNHgjylki1TMvdz8WrMzVegcBdlk2NNeYBWMItDqSi
-	 pp9rTBFNHYT6tR2W0IPBna9Z8CWlTDm2+VRenPQ7rOxHgrHXtS+ZLpoc2/Ep380ZQ2G6Kbtxm3VA
-	 TggA7n/2eJmTsl+TtpqqCTDmKmMkthyo0pFL+dj8Pt28b+LU+qhfB8t0SJnt6TIfskKMZnn7jX+E
-	 GCOXEarhSulPZKeyvH906JSoS33bTR9Cvem9wnSmvfJcMAW/kWjKdcUDnkVJKv0Zq+ruKil5qfT3
-	 qirf6QVUXnxKjyaDiigd9dIJ8bUFCigVWb92IVRypkUwQ+7IyBytDA098Pyukq2WhDoTMByMdksO
-	 nOJa4ZwMaMn9CLu+GmTIhhTXgVSmojO3JqX3otQ+lEUjB8KXG7CU5A6zOCmTa8W1h3It04mpk3kg
-	 uHWKeUueuVNqzDyqiv8FNjFE78xN8Dij4w3Weva/5TvvIWiMq1kqq8ZJm0rUtu5N+EPR4EIV35gY
-	 7vorusd1idyYrntPqZtHYZVbMdF/DdEqv4oP0LSwCaLBvw61mKOigvB20gIbIN/m2I8iBqXnFPfd
-	 RhoR7tj7p0pvDZrH1FsOVzkQhRxzxYtM72aT58IqhllRUCk+TgRukgsPNXYqUntwC7NFv+xjKBoh
-	 gO+hWARINeGkrzG1Dflr2ueVyUxN9RAJnnSZVBKSAu9jgnv43Z05dTjmdRYlheNEsvfcZaCDVsof
-	 1p4I3OSvcNPfTFeQHvVYfRjfX1yJ0zXrC5UKJYQip3sa2ZTCEG3MoSbp1lncHuajzQ+oCFToghLO
-	 jai+zsOUQtgX2SRo8r+Rv6/JKpUV6FqUjhQBzZeAdX3m3sHsat6OEhRB3p+hXQ7TTtT/gES7W64n
-	 4G5+U8IdqeEAALVyMoRHjPeK3HzX3QEhOb8MeIJyCjyjJQr9AK10YKRCmdO2IE+ujIrvAZg4Rp3c
-	 A//KQWZGbxovH5miC0pA==
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
-Cc: clm@fb.com,
-	daniel@iogearbox.net,
-	dsterba@suse.com,
-	john.fastabend@gmail.com,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	liujian56@huawei.com,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] btrfs: fix oob Read in getname_kernel
-Date: Tue, 19 Dec 2023 18:19:10 +0800
-X-OQ-MSGID: <20231219101909.2058476-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <000000000000d1a1d1060cc9c5e7@google.com>
-References: <000000000000d1a1d1060cc9c5e7@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 221DD14A94;
+	Tue, 19 Dec 2023 10:38:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id A192468BFE; Tue, 19 Dec 2023 11:38:25 +0100 (CET)
+Date: Tue, 19 Dec 2023 11:38:25 +0100
+From: "hch@lst.de" <hch@lst.de>
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: Ed Tsai =?utf-8?B?KOiUoeWul+i7kik=?= <Ed.Tsai@mediatek.com>,
+	"Naohiro.Aota@wdc.com" <Naohiro.Aota@wdc.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
+	"hch@lst.de" <hch@lst.de>,
+	"martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+	"axboe@kernel.dk" <axboe@kernel.dk>,
+	Chun-Hung Wu =?utf-8?B?KOW3q+mnv+Wujyk=?= <Chun-hung.Wu@mediatek.com>,
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+	"dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
+	"stefanha@redhat.com" <stefanha@redhat.com>
+Subject: Re: [PATCH 3/5] block: remove support for the host aware zone model
+Message-ID: <20231219103825.GB14379@lst.de>
+References: <20231217165359.604246-1-hch@lst.de> <20231217165359.604246-4-hch@lst.de> <b4d33dc359495c6227a3f20285566eed27718a14.camel@mediatek.com> <190f58f7-2ed6-46f8-af59-5e167a0bddeb@kernel.org> <f19c41b9ea990e6da734b6c81caeebb73fb60b29.camel@mediatek.com> <do3ekgymdpa4skyz5p3dp6qcqq7zuty73qrpmftszmffunnxpm@fyswyalaxzfq> <dbc4a5b4296effd88ba0ef939aa324df0969545c.camel@mediatek.com> <0a329050-0010-47cb-8c7b-a2f0863a21e8@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a329050-0010-47cb-8c7b-a2f0863a21e8@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-If ioctl does not pass in the correct tgtdev_name string, oob will occur because
-"\0" cannot be found.
+On Tue, Dec 19, 2023 at 05:12:41PM +0900, Damien Le Moal wrote:
+> >> Since we cannot create lambda as in other fancy languages, we need
+> >> two
+> >> functions...
+> > 
+> > Not really, there is a "void *data" can be used.
+> > 
+> > The device_is_zoned_model() is just the same as the device_not_zoned()
+> > with (bool *)data = false.
+> > 
+> > It's very minor, so is okay to ignore my preference.
+> 
+> Send a patch on top of Christoph's series if you want to clean this up.
 
-Reported-and-tested-by: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- fs/btrfs/dev-replace.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index f9544fda38e9..e7e96e57f682 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -730,7 +730,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
- int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
- 			    struct btrfs_ioctl_dev_replace_args *args)
- {
--	int ret;
-+	int ret, len;
- 
- 	switch (args->start.cont_reading_from_srcdev_mode) {
- 	case BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_ALWAYS:
-@@ -740,8 +740,10 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
- 		return -EINVAL;
- 	}
- 
-+	len = strnlen(args->start.tgtdev_name, BTRFS_DEVICE_PATH_NAME_MAX + 1);
- 	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
--	    args->start.tgtdev_name[0] == '\0')
-+	    args->start.tgtdev_name[0] == '\0' ||
-+	    len == BTRFS_DEVICE_PATH_NAME_MAX + 1)
- 		return -EINVAL;
- 
- 	ret = btrfs_dev_replace_start(fs_info, args->start.tgtdev_name,
--- 
-2.43.0
-
+I'll need to respin anyway, so I'll look into incorporating the
+suggestion.
 
