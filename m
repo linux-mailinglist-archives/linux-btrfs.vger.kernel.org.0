@@ -1,182 +1,117 @@
-Return-Path: <linux-btrfs+bounces-1070-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1071-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 742418194FB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Dec 2023 01:11:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B258B81971C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Dec 2023 04:18:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30FF6287C04
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Dec 2023 00:10:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 398CAB2593A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Dec 2023 03:18:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798F7B65E;
-	Wed, 20 Dec 2023 00:10:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06304CA41;
+	Wed, 20 Dec 2023 03:18:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="S+5E8WoT";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="q1cMXTfV"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="G1qQ7DzF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E61258BF3
-	for <linux-btrfs@vger.kernel.org>; Wed, 20 Dec 2023 00:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ED2F81F7F1
-	for <linux-btrfs@vger.kernel.org>; Wed, 20 Dec 2023 00:10:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1703031032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n7EgUh3/FfASxy7ffgHlIzKv5PodR2qlzfeNLzOLGkQ=;
-	b=S+5E8WoTQFoWdug1tsekYAMGFZTS/6PugRG2FcceENMlnFMpRz4biBgmB5Jp2JiF7h8S3s
-	cfvOt4VHPDeXBP+ATJBJhwt5vZbiaOYQ5e47h4LX5x4mrSLIXs+zgHnO2pGmIW8CsbmD/S
-	42NwTOdXjN22/hFPKhSfN77M6y6pCvo=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1703031031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n7EgUh3/FfASxy7ffgHlIzKv5PodR2qlzfeNLzOLGkQ=;
-	b=q1cMXTfVVK9zwVTWKbrhWM2Zsspf+pavhXuLYe0ldE7EloefArMoZmvZznIBwXHNoNYwX9
-	70qqn2E+nDyYOZLdgSSbXHgfIWW0rMeIpiEBxyfN9MHnLtMYVCKRlES8L3UfcNy2arm4yH
-	V/aUfnGKu6RfuvBxHPzJewXDPcmC0/4=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AFA60139F9
-	for <linux-btrfs@vger.kernel.org>; Wed, 20 Dec 2023 00:10:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id wBCGEvYwgmU5dQAAn2gu4w
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 20 Dec 2023 00:10:30 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs: sysfs: use kstrtoull_suffix() to replace memparse()
-Date: Wed, 20 Dec 2023 10:40:01 +1030
-Message-ID: <7e485fb6cafa66c5b9bb01970c152a499b3a7650.1703030510.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1703030510.git.wqu@suse.com>
-References: <cover.1703030510.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3868BE7
+	for <linux-btrfs@vger.kernel.org>; Wed, 20 Dec 2023 03:18:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d3d3f0afc4so4719115ad.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Dec 2023 19:18:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1703042291; x=1703647091; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kF+V1Jg1BXc6LruEx2QSeT3aVZaOhuhdq7yp1ywFjS8=;
+        b=G1qQ7DzFK/ztH2sYXxjLo6olokvWbiUFdif+c3QnQc8WibAzRjm85/2S0sSl3sT3RK
+         +aNIfv2ElHNkdkz2qawjtwwpXTf1xy+aTrl2XhVdulELGW3HHVqhNClMR3hvB/qJafg4
+         MQ1kuoG9iqtA9gJpp0j4N8Obqa6TybDo8AIktrj7pjufShPm3EL2y/3EmCDjX65aYAXo
+         /QYMEWyFHX6v0Lvv78ZKR16Vkq788y8rRo0znIby7soAIcEBmKKgkAEe++QepU2fd++7
+         AaAmveI5cFyQoHqmempzrcXi6FdKZ4S7znhZREIx3XqaUOKm35RQoMzXf1rNdfBiJ/a/
+         qlZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703042291; x=1703647091;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kF+V1Jg1BXc6LruEx2QSeT3aVZaOhuhdq7yp1ywFjS8=;
+        b=Oht4xs82WsimLl664lg0q6GrFPHEV6VpcT8FWItnyoe0ivhaoFC5/0tTIsJk8f2EyG
+         YjThOwTQf5loR4ggq2A/EkKmdAREy/88mjsJT00orLE7lpd+OmGyMfdlzGW7qS08Q/K9
+         GxjrjBlRuut141OvQsqom4Ie+/PyMue+ea7MEHI97Xx3gBBCteKwx7R5jhCO64jCmG+Q
+         saxlhx3Z1NeL+eqlBYB7+nmrpZC59AUvDelIn0/KMApU8oo0JL5ZCMToYZUIntafAda+
+         RouPpCGoGiXtA2/8l/SQH88Tx1S4mmhjMuxVRdg3lQk0JkQOUEUGZOvMHRRiqas63c8I
+         KBYw==
+X-Gm-Message-State: AOJu0Ywfx+pP0K2qLR/OkQzuU0slv2WamvdlyL5bZHU5HYWRAOFCNH9s
+	Yk9zOq65vYFHezO9ogNf+/dtJ4CGija9mMB6L3BPRA==
+X-Google-Smtp-Source: AGHT+IGJy8KYnZyMHC+4fzSHET6hgmed+3GNH6+zA4QShlWQzZGtRyh4P66B+nvfNY4nmXMHOASd9w==
+X-Received: by 2002:a05:6a20:3c8d:b0:18b:2020:8cd1 with SMTP id b13-20020a056a203c8d00b0018b20208cd1mr42952817pzj.3.1703042291622;
+        Tue, 19 Dec 2023 19:18:11 -0800 (PST)
+Received: from [127.0.0.1] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id d6-20020aa78e46000000b006d088356541sm16958284pfr.104.2023.12.19.19.18.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 19:18:11 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, 
+ Stefan Hajnoczi <stefanha@redhat.com>, Damien Le Moal <dlemoal@kernel.org>, 
+ "Martin K. Petersen" <martin.petersen@oracle.com>, dm-devel@lists.linux.dev, 
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev, 
+ linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org, 
+ linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+In-Reply-To: <20231217165359.604246-1-hch@lst.de>
+References: <20231217165359.604246-1-hch@lst.de>
+Subject: Re: remove support for the host aware zoned model
+Message-Id: <170304229020.683808.16849978519505449769.b4-ty@kernel.dk>
+Date: Tue, 19 Dec 2023 20:18:10 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: 1.90
-X-Spamd-Result: default: False [1.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_DN_NONE(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: *
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-7edf1
 
-Since memparse() itself can not handle overflow at all, use
-kstrtoull_suffix() to be extra safe.
 
-This would introduce behavior changes to the following sysfs interfaces:
+On Sun, 17 Dec 2023 17:53:54 +0100, Christoph Hellwig wrote:
+> hen zones were first added the SCSI and ATA specs, two different
+> models were supported (in addition to the drive managed one that
+> is invisible to the host):
+> 
+>  - host managed where non-conventional zones there is strict requirement
+>    to write at the write pointer, or else an error is returned
+>  - host aware where a write point is maintained if writes always happen
+>    at it, otherwise it is left in an under-defined state and the
+>    sequential write preferred zones behave like conventional zones
+>    (probably very badly performing ones, though)
+> 
+> [...]
 
-- /sys/fs/btrfs/<uuid>/allocation/(data|metadata|system)/chunk_size
+Applied, thanks!
 
-- /sys/fs/btrfs/<uuid>/devinfo/<devid>/scrub_speed_max
+[1/5] virtio_blk: cleanup zoned device probing
+      commit: 77360cadaae562f437b3e98dc3af748d8d75bdc2
+[2/5] virtio_blk: remove the broken zone revalidation support
+      commit: a971ed8002110f211899279cd7295756d263b771
+[3/5] block: remove support for the host aware zone model
+      commit: 7437bb73f087e5f216f9c6603f5149d354e315af
+[4/5] block: simplify disk_set_zoned
+      commit: d73e93b4dfab10c80688b061c30048df05585c7e
+[5/5] sd: only call disk_clear_zoned when needed
+      commit: 5cc99b89785c55430a5674b32ad0d9e57a8ec251
 
-The behavior changes would include:
-
-- More overflow detection
-
-- No support for "E" suffix anymore
-
-- More strict tailing character requirement
-  Now the only allowed tailing character is newline.
-  Other characters including space are no longer supported.
-
-  Although for regular "echo NUMBER >" usage it should be totally fine.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- None
----
- fs/btrfs/sysfs.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
-
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 84c05246ffd8..089c3fc123fe 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -760,7 +760,7 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
- {
- 	struct btrfs_space_info *space_info = to_space_info(kobj);
- 	struct btrfs_fs_info *fs_info = to_fs_info(get_btrfs_kobj(kobj));
--	char *retptr;
-+	int ret;
- 	u64 val;
- 
- 	if (!capable(CAP_SYS_ADMIN))
-@@ -776,11 +776,9 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
- 	if (space_info->flags & BTRFS_BLOCK_GROUP_SYSTEM)
- 		return -EPERM;
- 
--	val = memparse(buf, &retptr);
--	/* There could be trailing '\n', also catch any typos after the value */
--	retptr = skip_spaces(retptr);
--	if (*retptr != 0 || val == 0)
--		return -EINVAL;
-+	ret = kstrtoull_suffix(buf, 0, &val, KSTRTOULL_SUFFIX_DEFAULT);
-+	if (ret < 0)
-+		return ret;
- 
- 	val = min(val, BTRFS_MAX_DATA_CHUNK_SIZE);
- 
-@@ -1779,14 +1777,12 @@ static ssize_t btrfs_devinfo_scrub_speed_max_store(struct kobject *kobj,
- {
- 	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
- 						   devid_kobj);
--	char *endptr;
- 	unsigned long long limit;
-+	int ret;
- 
--	limit = memparse(buf, &endptr);
--	/* There could be trailing '\n', also catch any typos after the value. */
--	endptr = skip_spaces(endptr);
--	if (*endptr != 0)
--		return -EINVAL;
-+	ret = kstrtoull_suffix(buf, 0, &limit, KSTRTOULL_SUFFIX_DEFAULT);
-+	if (ret < 0)
-+		return ret;
- 	WRITE_ONCE(device->scrub_speed_max, limit);
- 	return len;
- }
+Best regards,
 -- 
-2.43.0
+Jens Axboe
+
+
 
 
