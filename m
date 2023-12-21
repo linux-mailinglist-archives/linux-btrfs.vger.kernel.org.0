@@ -1,160 +1,119 @@
-Return-Path: <linux-btrfs+bounces-1103-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1105-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8289C81B56B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 13:01:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ED4981B945
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 15:07:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E1FD287ED0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 12:01:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BDFCB289A3F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 14:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D847F6E587;
-	Thu, 21 Dec 2023 12:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HJeIRufo"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D646D539F8;
+	Thu, 21 Dec 2023 14:05:29 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+Received: from dragonfly.birch.relay.mailchannels.net (dragonfly.birch.relay.mailchannels.net [23.83.209.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D176DD18;
-	Thu, 21 Dec 2023 12:00:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703160058; x=1734696058;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HUgYg3Z9o2yXh3C+bSwBC9vytvmB1fqomhibW+F8MgE=;
-  b=HJeIRufo0vZRNrE95XlecUcArUoo2hrCcDZ5R1BAiBdZZ7Xtuuz04Hut
-   gp3KztthXpGfN1GgSxfTOij8k8uACeVGz5xUrfGnM+GSVKvPfkNdf+m2f
-   JwEKpJ3rqVxlEF2mzRrGM+aHcNNLqj1w0T9x8ZAkhz/u5r/57QgZL0+2v
-   gctyKo4arQIwJhBX9VOcg/cyqKMpEaMMoiFvekIjDMsxxm1q6znRZrQVo
-   tVEWwVXq9UTU8ORjInU4IOu5hXwIyaYDG/SknmHvjwjsqNYp6aPIZ3OTr
-   q3KTDf2BHXCdZKrNFVaVWAmRBuRSG0mQihpMxL7sFXcSVfNIm2tKBZf2c
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="462406717"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="462406717"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 04:00:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10930"; a="900082435"
-X-IronPort-AV: E=Sophos;i="6.04,293,1695711600"; 
-   d="scan'208";a="900082435"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 04:00:43 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rGHjF-00000007qPi-1MKb;
-	Thu, 21 Dec 2023 14:00:41 +0200
-Date: Thu, 21 Dec 2023 14:00:40 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, Alexey Dobriyan <adobriyan@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-btrfs@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-kernel@vger.kernel.org, David Sterba <dsterba@suse.cz>
-Subject: Re: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
-Message-ID: <ZYQo6DB4nQj58iUg@smile.fi.intel.com>
-References: <ZYL5CI4aEyVnabhe@smile.fi.intel.com>
- <15cf089f-be9a-4762-ae6b-4791efca6b44@gmx.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060BC360B5
+	for <linux-btrfs@vger.kernel.org>; Thu, 21 Dec 2023 14:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 10C6E804B67;
+	Thu, 21 Dec 2023 13:46:54 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id DA885804A84;
+	Thu, 21 Dec 2023 13:46:48 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1703166409; a=rsa-sha256;
+	cv=none;
+	b=vR2SV30M9TJA0msqY2cmA4DDfCbMxnBDZwV+dM5EjvQrQRp1jcWyzREqDzbaRwZI073r2Z
+	3JtbjtvX1sNgMTd0EuCJQK/DB9fB2/Y8eiy932l9XtHXB9+GvYiQQuMmzCcj+17IRM3Nzx
+	a9r2Y8hv6sZ2KLMef9YQjbrh4t9Rq1uNhQXXz9Dp8HK+njJ2CHa9qdxjUDzkEULCnhm9CM
+	4La45i2E+jv/rmxZr1/nNzD8g1/Crhlbw8xEA2mWCjkUOzka8nF7DC2LyryPHywBe8DKOR
+	QG6onxlJCO0eQw4zVdErQCyrBwbJqfHnMZIPE+eMM0Reg8FTSom/n5QloJyYhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1703166409;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KuH6PFzaTdchlc8pqXhx9NwSaXmYut5GrEzULZ8+spI=;
+	b=lnpXSYyYRHvuYbtrlYXpkNHTwk28KKsc7nsWBhXO5HosXNfnqjQEgHnUlFiuEj3PISYqfh
+	iZjnciQLiYt5Oo1xg/NXWHgnVfMNISDxdaEZqb3mgg3dEP0KMmvXGvehYjLSu6iGCCKwBf
+	5tnBgjXgLRO25bwrIEUx+3gSrDriyexyW2h628Dq0p2mRIQGZ1qWtK7Hz2iKM0WsfoXO0B
+	7M5FLuPa30s+WM7EjMLtLhTmYQm/q38XfSeXPlU1nDu+UgEU97bxthLcwpZNCCZHvGy2N8
+	b9FgPSj+fO5iEhdaZ4o6RHfG/MdAMqSaVW+YCNLvg+L5pILqHRpSvDFlHtyHSQ==
+ARC-Authentication-Results: i=1;
+	rspamd-856c7f878f-ds55r;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Well-Made-Skirt: 21bf68de6c506d39_1703166409810_3125382575
+X-MC-Loop-Signature: 1703166409810:981188549
+X-MC-Ingress-Time: 1703166409809
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+	by 100.108.178.186 (trex/6.9.2);
+	Thu, 21 Dec 2023 13:46:49 +0000
+Received: from dhcp-138-246-3-41.dynamic.eduroam.mwn.de ([138.246.3.41]:43602 helo=[10.183.50.88])
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <calestyo@scientia.org>)
+	id 1rGJNt-0003c7-0g;
+	Thu, 21 Dec 2023 13:46:47 +0000
+Message-ID: <b47ed92f14edde7db5c1037a75b38652afa6c1c1.camel@scientia.org>
+Subject: Re: btrfs thinks fs is full, though 11GB should be still free
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: Andrei Borzenkov <arvidjaar@gmail.com>
+Cc: kreijack@inwind.it, Qu Wenruo <quwenruo.btrfs@gmx.com>, 
+	linux-btrfs@vger.kernel.org
+Date: Thu, 21 Dec 2023 14:46:41 +0100
+In-Reply-To: <CAA91j0VNf9UQTYOn688eboGB_bw4YeKOXnKAt1uAYRZwYA3UPg@mail.gmail.com>
+References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
+	 <253c6b4e-2b33-4892-8d6f-c0f783732cb6@gmx.com>
+	 <95692519c19990e9993d5a93985aab854289632a.camel@scientia.org>
+	 <656b69f7-d897-4e9d-babe-39727b8e3433@gmx.com>
+	 <cf65cb296cf4bca8abb0e1ee260436990bc9d3ca.camel@scientia.org>
+	 <f2dfb764-1356-4a3c-81e8-a2225f40fea5@gmx.com>
+	 <f1f3b0f2a48f9092ea54f05b0f6596c58370e0b2.camel@scientia.org>
+	 <3cfc3cdf-e6f2-400e-ac12-5ddb2840954d@gmx.com>
+	 <2d5838efc179a557b41c84e9ca9a608be6a159e8.camel@scientia.org>
+	 <9ce30564e238d1be0deafb8cab8968f800a8deaa.camel@scientia.org>
+	 <8a9b6743-37e6-4a71-9423-6ce5169959ac@gmx.com>
+	 <62e9ad23d4829f30600ea6e611d2cd4636f080cc.camel@scientia.org>
+	 <7acc8ea1-079d-42bb-8880-dbd9bbfa100b@libero.it>
+	 <fecad7ce2cea1ff125a842d8c53f1fbfe4f1d231.camel@scientia.org>
+	 <CAA91j0VNf9UQTYOn688eboGB_bw4YeKOXnKAt1uAYRZwYA3UPg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.50.2-1 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <15cf089f-be9a-4762-ae6b-4791efca6b44@gmx.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-AuthUser: calestyo@scientia.org
 
-On Thu, Dec 21, 2023 at 07:08:08AM +1030, Qu Wenruo wrote:
-> On 2023/12/21 00:54, Andy Shevchenko wrote:
-> > On Wed, Dec 20, 2023 at 08:31:09PM +1030, Qu Wenruo wrote:
-> > > On 2023/12/20 20:24, Alexey Dobriyan wrote:
-> > > > > Just as mentioned in the comment of memparse(), the simple_stroull()
-> > > > > usage can lead to overflow all by itself.
-> > > > 
-> > > > which is the root cause...
-> > > > 
-> > > > I don't like one char suffixes. They are easy to integrate but then the
-> > > > _real_ suffixes are "MiB", "GiB", etc.
-> > > > 
-> > > > If you care only about memparse(), then using _parse_integer() can be
-> > > > arranged. I don't see why not.
-> > > 
-> > > Well, personally speaking I don't think we should even support the suffix at
-> > > all, at least for the only two usage inside btrfs.
-> > > 
-> > > But unfortunately I'm not the one to do the final call, and the final call
-> > > is to keep the suffix behavior...
-> > > 
-> > > And indeed using _parse_integer() with _parse_interger_fixup_radix() would
-> > > be better, as we don't need to extend the _kstrtoull() code base.
-> > 
-> > My comment on the first patch got vanished due to my MTA issues, but I'll try
-> > to summarize my point here.
-> > 
-> > First of all, I do not like the naming, it's too vague. What kind of suffix?
-> > Do we suppose to have suffix in the input? What will be the behaviour w/o
-> > suffix?  And so on...
-> 
-> I really like David Sterb to hear this though.
-
-Me too, I like to hear opinions. But I will fight for the best we can do here.
-
-> To me, we should mark memparse() as deprecated as soon as possible, not
-> spreading the damn pandemic to any newer code.
-
-Send a patch!
-
-> The "convenience" is not an excuse to use incorrect code.
-
-I do not object this.
-
-> > Second, if it's a problem in memparse(), just fix it and that's all.
-> 
-> Nope, the memparse() itself doesn't have any way to indicate errors.
-> 
-> It's not fixable in the first place, as long as you want a drop-in solution.
-> 
-> > Third, as Alexey said, we have metric and byte suffixes and they are different.
-> > Supporting one without the other is just adding to the existing confusion.
-> > 
-> > Last, but not least, we do NOT accept new code in the lib/ without test cases.
-> > 
-> > So, that said here is my formal NAK for this series (at least in this form).
-> 
-> Then why there is the hell of memparse() in the first place?
-
-You have all means to investigate.
-It used to be setup_mem() till 9b0f5889b12b ("Linux 2.2.18pre9"),
-which in turn was split from setup_arch() in 716454f016a9 ("Import
-2.1.121pre1")... Looking deeper seems it comes as a parser at hand
-for the mem= command line parameter very long time ago.
-
-> It doesn't have test case (we have cmdline_kunit, but it doesn't test
-> memparse() at all), nor the proper error detection.
-
-Exactly! Someone's job to add this. And the best is the one who touches
-the code. See how cmdline_kunit appears.
-
-> I'm fine to get my patch rejected, but why the hell of memparse() is
-> here in the first place?
-> It doesn't fit any of the standard you mentioned.
-
-So, what standard did we have in above mentioned (prehistorical) time?
-
-> > P.S> The Subject should start with either kstrtox: or lib/kstrtox.c.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+T24gVHVlLCAyMDIzLTEyLTE5IGF0IDExOjIyICswMzAwLCBBbmRyZWkgQm9yemVua292IHdyb3Rl
+Ogo+IC9kYXRhL21haW4vcHJvbWV0aGV1cy9tZXRyaWNzMi8wMUhIRkVaUEo4VFBGVllUWFYxMVI3
+Wkg0WC9jaHVua3MvMDAwMAo+IDAxCj4gUHJvY2Vzc2VkIDEgZmlsZSwgMSByZWd1bGFyIGV4dGVu
+dHMgKDEgcmVmcyksIDAgaW5saW5lLgo+IFR5cGXCoMKgwqDCoMKgwqAgUGVyY8KgwqDCoMKgIERp
+c2sgVXNhZ2XCoMKgIFVuY29tcHJlc3NlZCBSZWZlcmVuY2VkCj4gVE9UQUzCoMKgwqDCoMKgIDEw
+MCXCoMKgwqDCoMKgIDI1Nk3CoMKgwqDCoMKgwqDCoMKgIDI1Nk3CoMKgwqDCoMKgwqDCoMKgwqAg
+MTVNCj4gbm9uZcKgwqDCoMKgwqDCoCAxMDAlwqDCoMKgwqDCoCAyNTZNwqDCoMKgwqDCoMKgwqDC
+oCAyNTZNwqDCoMKgwqDCoMKgwqDCoMKgIDE1TQo+IAo+IEkgd291bGQgdHJ5IHRvIGZpbmQgb3V0
+IHdoZXRoZXIgdGhpcyBzaW5nbGUgZXh0ZW50IGlzIHNoYXJlZCwgd2hlcmUKPiB0aGUgZGF0YSBp
+cyBsb2NhdGVkIGluc2lkZSB0aGlzIGV4dGVudC4gQ291bGQgaXQgYmUgdGhhdCBmaWxlIHdhcwo+
+IHRydW5jYXRlZCBvciB0aGUgaG9sZSB3YXMgcHVuY2hlZCBpbiBpdD8KCkhvdyB3b3VsZCBJIGRv
+IHRoYXQ/IDotKQoKVGhhbmtzLApDaHJpcy4K
 
 
