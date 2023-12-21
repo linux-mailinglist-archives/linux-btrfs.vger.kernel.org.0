@@ -1,44 +1,44 @@
-Return-Path: <linux-btrfs+bounces-1109-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1110-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE93C81BFA3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 21:38:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C1781BFB6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 21:42:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A2AE286882
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 20:38:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C425628AA05
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 20:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B370976909;
-	Thu, 21 Dec 2023 20:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2EB76915;
+	Thu, 21 Dec 2023 20:41:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="KAF7RoIH"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bm2QSibt"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A87760B8;
-	Thu, 21 Dec 2023 20:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1F0760B8
+	for <linux-btrfs@vger.kernel.org>; Thu, 21 Dec 2023 20:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1703191059; x=1703795859; i=quwenruo.btrfs@gmx.com;
-	bh=y3Vr8OBtrbWu+WuJeurEbVDD8rmpE0rQqeZ+az136S4=;
+	s=s31663417; t=1703191307; x=1703796107; i=quwenruo.btrfs@gmx.com;
+	bh=pxfEGc6vbRkuoi0YJ/WNu6KgVqi02hR+f0C+i7zNWzk=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=KAF7RoIHzH/b5qFUgA+Dfl3g9h5dfdtt71Z8fPO/T1bzpQsEjmSXV/jmamE7BtWF
-	 h4UlDhBoxosc9b9tH3GL59b9Fcn7N/cBYL6X66u/tqW3JoP8OMVfc2PezmkSVopM4
-	 UTADmxwnehUDn51dKZ8ORBHP3Ct21P8U+rgoMCJFaIvECeGa17li9wgL2ehK5/X/S
-	 IAL/BaaS0Foe/nT7c4GhZZeuKdnA+rkDjddQunvNhQ9lIC3nB30o5qVAPwi7l2N4g
-	 /QLQR7WmY1nmYYBa5uX7mJINjz36+DC6gAK9V4KXeh8Fa0uuvnrrxSHshCbclasaF
-	 dySipGkKrRhupI0LWg==
+	b=bm2QSibtBrDh3fHYiSJ7ae4d5wUtCespnTegGb4wnI7HN/FE7xfJEdqfSUsre8Nt
+	 o9bJyDTIhr/vpyLGlil9fQ0PLk1xKOqHNk6V9sG+I60XD3RteZZI5l5XW9e9h3Kv6
+	 tqzRpEEsWgobvyXoiqAmKLXDbv/K+y8vQC4dvf7V79N0Ps+gchezkjBHSE/Yke8QQ
+	 KqGQgMT1U68lNf7aNucW08gMTrdZh5c9QuwkuEssuuSiSAZfRa2Jw9fBuiguTeIyK
+	 8jndnpKTK6Ev2u4ofmcP1nJreipRjCaS2WhsxsnrPiXekEjHSteL4j3JxtO7/YHy+
+	 ISY4XHiFVkR+Mr3S/Q==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([193.115.114.154]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N7i8O-1rCTho1TEY-014kTT; Thu, 21
- Dec 2023 21:37:39 +0100
-Message-ID: <cf3808eb-0c8f-4a51-b2b4-14eb33b88992@gmx.com>
-Date: Fri, 22 Dec 2023 07:07:31 +1030
+Received: from [172.16.0.153] ([193.115.114.154]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M5QF5-1rFaut3Kuz-001UPc; Thu, 21
+ Dec 2023 21:41:47 +0100
+Message-ID: <e6ef9ab3-06ab-4360-b205-3a7559b6b388@gmx.com>
+Date: Fri, 22 Dec 2023 07:11:42 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -46,16 +46,27 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] lib/strtox: introduce kstrtoull_suffix() helper
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Qu Wenruo <wqu@suse.com>, Alexey Dobriyan <adobriyan@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-btrfs@vger.kernel.org,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- linux-kernel@vger.kernel.org, David Sterba <dsterba@suse.cz>
-References: <ZYL5CI4aEyVnabhe@smile.fi.intel.com>
- <15cf089f-be9a-4762-ae6b-4791efca6b44@gmx.com>
- <ZYQo6DB4nQj58iUg@smile.fi.intel.com>
+Subject: Re: btrfs thinks fs is full, though 11GB should be still free
 Content-Language: en-US
+To: Christoph Anton Mitterer <calestyo@scientia.org>,
+ Andrei Borzenkov <arvidjaar@gmail.com>
+Cc: kreijack@inwind.it, linux-btrfs@vger.kernel.org
+References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
+ <253c6b4e-2b33-4892-8d6f-c0f783732cb6@gmx.com>
+ <95692519c19990e9993d5a93985aab854289632a.camel@scientia.org>
+ <656b69f7-d897-4e9d-babe-39727b8e3433@gmx.com>
+ <cf65cb296cf4bca8abb0e1ee260436990bc9d3ca.camel@scientia.org>
+ <f2dfb764-1356-4a3c-81e8-a2225f40fea5@gmx.com>
+ <f1f3b0f2a48f9092ea54f05b0f6596c58370e0b2.camel@scientia.org>
+ <3cfc3cdf-e6f2-400e-ac12-5ddb2840954d@gmx.com>
+ <2d5838efc179a557b41c84e9ca9a608be6a159e8.camel@scientia.org>
+ <9ce30564e238d1be0deafb8cab8968f800a8deaa.camel@scientia.org>
+ <8a9b6743-37e6-4a71-9423-6ce5169959ac@gmx.com>
+ <62e9ad23d4829f30600ea6e611d2cd4636f080cc.camel@scientia.org>
+ <7acc8ea1-079d-42bb-8880-dbd9bbfa100b@libero.it>
+ <fecad7ce2cea1ff125a842d8c53f1fbfe4f1d231.camel@scientia.org>
+ <CAA91j0VNf9UQTYOn688eboGB_bw4YeKOXnKAt1uAYRZwYA3UPg@mail.gmail.com>
+ <b47ed92f14edde7db5c1037a75b38652afa6c1c1.camel@scientia.org>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -81,142 +92,64 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ZYQo6DB4nQj58iUg@smile.fi.intel.com>
+In-Reply-To: <b47ed92f14edde7db5c1037a75b38652afa6c1c1.camel@scientia.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:prYbZ8LRirqClbMpjl5VPjbCQZysSGPZH4h5iyrtPoDhxhED5t6
- QG3cDeBVLMXnR5BbKfLjouNJOshEYG6R9FvMcvti1Bl3jadh6fpnFnsXaa6vWeuXehdUVza
- 0JPFXKv0mjsLRM7DLQlMQowy3P3pzhL83q07x3oYSMvEqNOTQ6d4wGK43kaybkZgOIR5als
- GZAiWIMBpR6iGR7RjS/7Q==
+X-Provags-ID: V03:K1:ZqYHgV1/gnj0/9O8+pymWkAEF6c91w5zSY7BGB9LGFRP1S4V8/q
+ IBksFwKuKNOg9SuGv6neSANkFoFw+6NKEt+yg0zWHFgQIgi6iIqIet8pTg0WRI2K1e1W34l
+ 571GiPXNjICd4nHsW/yF7hELvr6TQPDQuS8NSlzVVzt+PTjtXGzKoOyrx1SCrPsklW8Wjya
+ w453ye6wuGR8bVZcWs6iw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:GbW1fzBlwX0=;l/cwhsbPb7rI4LiBqzNGTdYV+wk
- mqbfQ2nh7gq7uhml8zPFSKUjhGE41yqxCgEJ4AUaC7OIYZtKxZKMFfADaX+VKNb3AXhIuWWGi
- paRNZA6YF3w9M0MxeXsA3lfDz3BujFhgh0NY7ft/9cg5uxzSwg15Ke1p/g5M9hHcfO8XAkZg3
- MWGO5zDAedcrvn2euPl9kkejNpJ1ZvQglX8IWKaxuYYtL5FECbQPG5YIk0j/GeIbcbN5pXhwV
- mMIUR8ymyynFHrhx0+oljxANPtu8ScUFYUVkv1ateTPtVxTSstrCY5VHADsgQcJFKJtzyH/2A
- PdH7cOSKd9ksX32bjAVgQK5ONiPzApvmzgrtCeQamKb1JEa19jShufBk0DZ3O5hsBsXtoGnp6
- FlIkN5LSZfxTARcnPczET0lEhYdrni5KcISKSuJUJ00b0v2xvpStUco9J2aSWJOVhASwQUiZu
- RPu90Om1O2PUDEVqSkWtafIs/EB8zIFQWDwqsQ9VEKAL756PNfuI+w9Ada1fE0qTZdIFjw/uJ
- fAxVWUZkzWnOq6lE8SZLhu20sYIhDaOq3S7DJuT55KrSjeodqerT8Z2ei/cs33u4x96nd5DML
- aJNtL/DwnGpH4HmcZ6FYahzi5vSuoiF6PLKQgFOrKJCwQDYnWLUG5ZAfyJO6A3xTQwXkPSpbw
- LBgwDR4YmTR1GhCyiO9LTMnR8QtName86H96wSpkg37MOBDyjhSxYiv2immsPT8NK9F+fPm2Y
- A7PtJQDH7PYZTTqueVix0dd+kc4Hjvir8ME1PedUbFzHu7fteqODWRK3BUgDibOxJkv/AkuPQ
- RErsUh+DKNL05VNCYuTDfGXIJgxO5yE/vzNEWcXJFu98ZslblqxGFn/cnVZo6wdKoxnpfUPbq
- X9PGezyECj/neLbcgQQ+cTtMMhTDY/BEV3NJUVgSmZ7duVUgSKNrtBTkv+fE8v9qezt74om3e
- 7nGMj1dCPrn8ljDUpCG11d0j7/k=
+UI-OutboundReport: notjunk:1;M01:P0:EOsnoRGh5SM=;sRRQ2HQ3IyRiW9JLe4uzXJi6qpn
+ zUOVVsFnGNXgR8yYwedOzpbziQhQ0xlfgTjgR2NTNyxNLCd/oCa0DMfCHYqw7Q0jdYKkhc7bn
+ Nvu8eUeojq1XnRYrSl4Iq4rKA1ZoHmNs2rnlt50sWQ/CyqArvCp9wpbCmvaDe4RfKOWmsGjuX
+ uCSkCl6ihjOfdzDVMSqZThASS2HKywh4q71AYjkYCBBEa1jJjfzN2cYCcIPv6g81l8H6J2CZK
+ insf15M2VnSigmdOKe378zfR770jdht9SLtLW/Jsjw+k77eEg7zYu/0Md+e/a6l5Bg/MbThAq
+ I04YxmnHZ48QjG946RLvGqvFvfR5PFlbcsv7ShAMm0xAHsbE48AuS9Va+TwpDMA716sLzKc8m
+ KYU5rFQLvGrQqnXFbu1oKnkGQLh48541MLTVbgZAQs6BscWPdOkDy6md6ZinPUttSy6mlSONc
+ KJDGctfWE6FAppftxhAUmUL5oNXeuij5h/bMTn9l1yu9gysg/RaEOkVuCRnsQL2vNausOgWy+
+ eeMKufgGNyCCp2JgOXyHu1HgX+0gi5/ZKnmMRNfznwaKk/hxwc5cBOoUaWABZoWJnpJToRRwI
+ aRTpBzJeBS/4k3PdNJkQ8SmqL/zw+bDCTVzOuJp9SMLVb2wRT/t9TMsHMCOPsz/PWOWLGXsmV
+ ix9IP653SUkFLJCXdNMNMM3PuU1pTYGYD3CmMKPTGcmPqxdeNKJBi1+fqBfkzB+3OeW82/nHz
+ rOgwKjOQrLVE5CLt9ZPX8V9Zrw5hvzSnDoIrPoK41kr76l+CtpHIC8JVDtbcUGMs6qMcaHkuK
+ MdmfFtbGCrNtINs2UwPKWalQoXV77jWnGHO700z1zdzAkJdyxIVWJJvWB8tYKHCzV5ihBniou
+ bkpXvrcCvPXvbvwn0G3zUijlCL7efB+yNgob2arJ9PlrVw4xnnSJKlQWscFkSzyXFj65zQ/0s
+ Up9rBO2OrrscDA1WIils7p4ZG7Y=
 
 
 
-On 2023/12/21 22:30, Andy Shevchenko wrote:
-> On Thu, Dec 21, 2023 at 07:08:08AM +1030, Qu Wenruo wrote:
->> On 2023/12/21 00:54, Andy Shevchenko wrote:
->>> On Wed, Dec 20, 2023 at 08:31:09PM +1030, Qu Wenruo wrote:
->>>> On 2023/12/20 20:24, Alexey Dobriyan wrote:
->>>>>> Just as mentioned in the comment of memparse(), the simple_stroull(=
-)
->>>>>> usage can lead to overflow all by itself.
->>>>>
->>>>> which is the root cause...
->>>>>
->>>>> I don't like one char suffixes. They are easy to integrate but then =
-the
->>>>> _real_ suffixes are "MiB", "GiB", etc.
->>>>>
->>>>> If you care only about memparse(), then using _parse_integer() can b=
-e
->>>>> arranged. I don't see why not.
->>>>
->>>> Well, personally speaking I don't think we should even support the su=
-ffix at
->>>> all, at least for the only two usage inside btrfs.
->>>>
->>>> But unfortunately I'm not the one to do the final call, and the final=
- call
->>>> is to keep the suffix behavior...
->>>>
->>>> And indeed using _parse_integer() with _parse_interger_fixup_radix() =
-would
->>>> be better, as we don't need to extend the _kstrtoull() code base.
->>>
->>> My comment on the first patch got vanished due to my MTA issues, but I=
-'ll try
->>> to summarize my point here.
->>>
->>> First of all, I do not like the naming, it's too vague. What kind of s=
-uffix?
->>> Do we suppose to have suffix in the input? What will be the behaviour =
-w/o
->>> suffix?  And so on...
+On 2023/12/22 00:16, Christoph Anton Mitterer wrote:
+> On Tue, 2023-12-19 at 11:22 +0300, Andrei Borzenkov wrote:
+>> /data/main/prometheus/metrics2/01HHFEZPJ8TPFVYTXV11R7ZH4X/chunks/0000
+>> 01
+>> Processed 1 file, 1 regular extents (1 refs), 0 inline.
+>> Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Perc=C2=A0=C2=A0=C2=A0=C2=A0 D=
+isk Usage=C2=A0=C2=A0 Uncompressed Referenced
+>> TOTAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+256M=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 256M=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 15M
+>> none=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 256M=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 256M=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 15M
 >>
->> I really like David Sterb to hear this though.
+>> I would try to find out whether this single extent is shared, where
+>> the data is located inside this extent. Could it be that file was
+>> truncated or the hole was punched in it?
 >
-> Me too, I like to hear opinions. But I will fight for the best we can do=
- here.
->
->> To me, we should mark memparse() as deprecated as soon as possible, not
->> spreading the damn pandemic to any newer code.
->
-> Send a patch!
->
->> The "convenience" is not an excuse to use incorrect code.
->
-> I do not object this.
->
->>> Second, if it's a problem in memparse(), just fix it and that's all.
->>
->> Nope, the memparse() itself doesn't have any way to indicate errors.
->>
->> It's not fixable in the first place, as long as you want a drop-in solu=
-tion.
->>
->>> Third, as Alexey said, we have metric and byte suffixes and they are d=
-ifferent.
->>> Supporting one without the other is just adding to the existing confus=
-ion.
->>>
->>> Last, but not least, we do NOT accept new code in the lib/ without tes=
-t cases.
->>>
->>> So, that said here is my formal NAK for this series (at least in this =
-form).
->>
->> Then why there is the hell of memparse() in the first place?
->
-> You have all means to investigate.
-> It used to be setup_mem() till 9b0f5889b12b ("Linux 2.2.18pre9"),
-> which in turn was split from setup_arch() in 716454f016a9 ("Import
-> 2.1.121pre1")... Looking deeper seems it comes as a parser at hand
-> for the mem=3D command line parameter very long time ago.
->
->> It doesn't have test case (we have cmdline_kunit, but it doesn't test
->> memparse() at all), nor the proper error detection.
->
-> Exactly! Someone's job to add this. And the best is the one who touches
-> the code. See how cmdline_kunit appears.
->
->> I'm fine to get my patch rejected, but why the hell of memparse() is
->> here in the first place?
->> It doesn't fit any of the standard you mentioned.
->
-> So, what standard did we have in above mentioned (prehistorical) time?
+> How would I do that? :-)
 
-Fine, there is no standard in the ancient days.
+Grab the INODE number of that file (`stat` is good enough).
 
-Then what about going the following path for the whole memparse() rabbit
-hole?
+Know the subvolume id.
 
-- Mark the old memparse() deprecated
-- Add a new function memparse_safe() (or rename the older one to
-   __memparse, and let the new one to be named memparse()?)
-- Add unit test for the new memparse_safe() or whatever the name is
-- Try my best to migrate as many call sites as possible
-   Only the two btrfs ones I'm 100% confident for now
+Then `btrfs ins dump-tree -t <subvolid> <device> | grep -A7 "key (256 "
 
-Would that be a sounding plan?
+I guess it's time to add a way to dump all the items of a single inode
+for dump-tree now.
 
 Thanks,
 Qu
 >
->>> P.S> The Subject should start with either kstrtox: or lib/kstrtox.c.
->
+> Thanks,
+> Chris.
 
