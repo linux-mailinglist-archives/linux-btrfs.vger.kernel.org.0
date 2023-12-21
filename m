@@ -1,81 +1,82 @@
-Return-Path: <linux-btrfs+bounces-1112-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1114-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D992E81C0F5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 23:25:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18AEF81C13C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 23:55:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B706B23545
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 22:25:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9756D1F25F33
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Dec 2023 22:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D08B77F2D;
-	Thu, 21 Dec 2023 22:25:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0ABD78E72;
+	Thu, 21 Dec 2023 22:55:03 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from relay.mailchannels.net (gt-egress-001.relay.mailchannels.net [199.10.31.235])
+Received: from aye.elm.relay.mailchannels.net (aye.elm.relay.mailchannels.net [23.83.212.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 088C377F10
-	for <linux-btrfs@vger.kernel.org>; Thu, 21 Dec 2023 22:25:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D558E64A96
+	for <linux-btrfs@vger.kernel.org>; Thu, 21 Dec 2023 22:55:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 6D3923620F0;
-	Thu, 21 Dec 2023 22:06:54 +0000 (UTC)
+	by relay.mailchannels.net (Postfix) with ESMTP id 2C2A07A27DA;
+	Thu, 21 Dec 2023 22:15:24 +0000 (UTC)
 Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
 	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id E5BED361C2E;
-	Thu, 21 Dec 2023 22:06:52 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1703196413; a=rsa-sha256;
+	by relay.mailchannels.net (Postfix) with ESMTPA id 0D7C97A2586;
+	Thu, 21 Dec 2023 22:15:22 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1703196923; a=rsa-sha256;
 	cv=none;
-	b=hWkSKwtb7ExzxQBtblDwALYrjgOBq2EAr+t1eBfTFW4ZYtKF5ANWP7wfsM7E7Dbio/qvDO
-	+oX3eakG8yURA/EnVgZq8c7lxObGq2qYG1Q7e0wEqdn1YR4qPw6JJPUtRdlXoDeUpS7zYs
-	n2tBEKmXVZyoxm8H8xh58JjCWp2YrwoQ9+gPn/Hkz3ZX+EBzCxELvDK1PKsepobuAQpnAG
-	NIA9JofwfarHSGf/Jf0VEmP/vT4YgEIU8c3TzVqNnjfIank3XgggAaR9JJyTlj+9Ls0/fh
-	XnSl6BKbgKjxTV1EtoRfYomlnbGbMOFMXGJa+xdqlTbsd7o0wfTuM/3p8um8qg==
+	b=WTgaiNDDqM3i9MPP0X0PK4DDfMErWw4mAVGV6eJNUp/VmFcJ9qWbOkEUO122zhR5Z46DZT
+	6WUVdBhG8IeSeQohrKHRyBIdXujVoQ/grio3uTJjj4rAr4u9qFf5/PZ8/d+Q+4fQVFN/Qy
+	dwhLYgp8A0i3BlwW5EtypxIBMDIYiyiuJzmY76R8gn9u/+1X1E7ZK67VePY3t1HXcCnu2/
+	jiDPHihMKgv/2x94GLcUmGK+na53I0AxnipEJStCRpBMEofthyobPvuRSouuUS/FeC4jpy
+	EZRRa2Bqi4J8LNrn8bfTsFOGRV+5ju1PipTNJzNKkCjuFR+QU6kBHhSTzZBOaQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
  d=mailchannels.net;
-	s=arc-2022; t=1703196413;
+	s=arc-2022; t=1703196923;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gcHJJ0XZHOg8H5nwwxx6NEP3irPSS+hzqeHWOZqKKIg=;
-	b=WYiQE7vIbNoFiuPqoLLPJxz1hJKowfi94xOdRJBE8uqRqirDWKP3b6TJgByEp73fo8naFm
-	3a+r/VUTJSK0t4jLzXDFLDycQuEf6tAZlBbZNyCjHwWRnh1KEQ+yFt9/cD7+BQ3mdTAZ1N
-	g5ypFlF7vEtOBMr5B7l7QZ9gqjOWVOzpPuV7mCZVlhjYvOUfm6V8pQ8FPu2QpmgcEkPoSh
-	lKdU33EhZ71H/a35HuvO2UWAxMCq1NZi61LZOF3a6ZSDMo+RxmPorotcFBi49NebWC1aue
-	D12VicoJhrZhqvViKed7LdHqI0QmnFCryyt70mfbSAxpo6KI7J1AnkpXyLK29A==
+	bh=LVogweCpW0Gr3AgzpOyJTC8wIjY4HM758Fd7gs3VN8o=;
+	b=XolYur9ABgHJ0l6+1yJ0a/A6WgRvKLqVvUNH28iwKU4l/yOoHJGUwqW5JxSP+yIUu4PApI
+	FSELIiKbsEsLhOoNAUtMWBkGQIfD7v1RNipgEDc147avImGyY3Snn0oVcXsOhFGWpC0nFp
+	g81ESfCnuoJ0HfS5S/OMd8K/N9cbpIeRsa9UYgow6KD8aHSxTSSh8iZit/Tn0ESOPvwDEJ
+	hZ6Ibv4oyGnx1WaBf2NxTD3QnY/ZUV3q5GhLqJbMLSwuFUTOSHMGzaY/NOrxtBMw5rqF0v
+	SdTi1bAFv9fqm4NfyvNlh+kYvHzSGbUNLqT1hfVOah5zPL3HOzcnEIvAtZ84Sg==
 ARC-Authentication-Results: i=1;
-	rspamd-856c7f878f-tbr8p;
+	rspamd-856c7f878f-2bgzp;
 	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
 X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MC-Relay: Neutral
 X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
 X-MailChannels-Auth-Id: instrampxe0y3a
-X-Duck-Trail: 63ea05421c91248b_1703196413872_3359219665
-X-MC-Loop-Signature: 1703196413872:3404601825
-X-MC-Ingress-Time: 1703196413872
+X-Society-Illustrious: 13b5864f40c448f0_1703196923990_992574289
+X-MC-Loop-Signature: 1703196923990:119233089
+X-MC-Ingress-Time: 1703196923990
 Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
  [3.69.87.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-	by 100.107.232.172 (trex/6.9.2);
-	Thu, 21 Dec 2023 22:06:53 +0000
-Received: from p5b0ed5dc.dip0.t-ipconnect.de ([91.14.213.220]:60124 helo=heisenberg.fritz.box)
+	by 100.125.117.212 (trex/6.9.2);
+	Thu, 21 Dec 2023 22:15:23 +0000
+Received: from p5b0ed5dc.dip0.t-ipconnect.de ([91.14.213.220]:40238 helo=heisenberg.fritz.box)
 	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <calestyo@scientia.org>)
-	id 1rGRBq-0002cI-0Y;
-	Thu, 21 Dec 2023 22:06:51 +0000
-Message-ID: <1bdc9dcea3b2ec776e9b5b3b7c711654580e0d31.camel@scientia.org>
+	id 1rGRK4-0002zf-16;
+	Thu, 21 Dec 2023 22:15:21 +0000
+Message-ID: <979fd68a4a766f823366797eab1060e5c515a776.camel@scientia.org>
 Subject: Re: btrfs thinks fs is full, though 11GB should be still free
 From: Christoph Anton Mitterer <calestyo@scientia.org>
-To: kreijack@inwind.it, Andrei Borzenkov <arvidjaar@gmail.com>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Date: Thu, 21 Dec 2023 23:06:45 +0100
-In-Reply-To: <cb2d0cf1-8612-4c7b-8d29-d9efcb7888c4@inwind.it>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Andrei Borzenkov
+ <arvidjaar@gmail.com>
+Cc: kreijack@inwind.it, linux-btrfs@vger.kernel.org
+Date: Thu, 21 Dec 2023 23:15:15 +0100
+In-Reply-To: <e6ef9ab3-06ab-4360-b205-3a7559b6b388@gmx.com>
 References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
 	 <253c6b4e-2b33-4892-8d6f-c0f783732cb6@gmx.com>
 	 <95692519c19990e9993d5a93985aab854289632a.camel@scientia.org>
@@ -91,9 +92,8 @@ References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
 	 <7acc8ea1-079d-42bb-8880-dbd9bbfa100b@libero.it>
 	 <fecad7ce2cea1ff125a842d8c53f1fbfe4f1d231.camel@scientia.org>
 	 <CAA91j0VNf9UQTYOn688eboGB_bw4YeKOXnKAt1uAYRZwYA3UPg@mail.gmail.com>
-	 <9bb4ead3-2e98-4d0f-a980-1d53847c8b99@inwind.it>
-	 <21d14fb83e170441f9640f98bae3ba8f0e48eaad.camel@scientia.org>
-	 <cb2d0cf1-8612-4c7b-8d29-d9efcb7888c4@inwind.it>
+	 <b47ed92f14edde7db5c1037a75b38652afa6c1c1.camel@scientia.org>
+	 <e6ef9ab3-06ab-4360-b205-3a7559b6b388@gmx.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.50.2-1 
@@ -105,61 +105,72 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-AuthUser: calestyo@scientia.org
 
-On Thu, 2023-12-21 at 19:03 +0100, Goffredo Baroncelli wrote:
-> > # lsof --
-> > /data/main/prometheus/metrics2/01HHFEZPJ8TPFVYTXV11R7ZH4X/chunks/00
-> > 0001
->=20
-> Here you should do a defrag, after the stop of prometheus.
+On Fri, 2023-12-22 at 07:11 +1030, Qu Wenruo wrote:
+> Grab the INODE number of that file (`stat` is good enough).
+# stat /data/main/prometheus/metrics2/01HHFEZPJ8TPFVYTXV11R7ZH4X/chunks/000=
+001=20
+  File: /data/main/prometheus/metrics2/01HHFEZPJ8TPFVYTXV11R7ZH4X/chunks/00=
+0001
+  Size: 15781418  	Blocks: 30824      IO Block: 4096   regular file
+Device: 0,43	Inode: 642         Links: 1
+Access: (0664/-rw-rw-r--)  Uid: (  106/prometheus)   Gid: (  106/prometheus=
+)
+Access: 2023-12-12 17:50:26.968485936 +0100
+Modify: 2023-12-12 17:50:28.748495544 +0100
+Change: 2023-12-12 17:50:57.280649521 +0100
+ Birth: 2023-12-12 17:50:26.968485936 +0100
 
-No difference. Even after syncing, and even after unmount/mountig.
+> Know the subvolume id.
 
-
-btw: I did that:
-
-/data/main# compsize /data/main/prometheus/metrics2/01HHFEZPJ8TPFVYTXV11R7Z=
-H4X/chunks/000001=20
-Processed 1 file, 1 regular extents (1 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced =20
-TOTAL      100%      256M         256M          15M      =20
-none       100%      256M         256M          15M      =20
-
-/data/main# cat /data/main/prometheus/metrics2/01HHFEZPJ8TPFVYTXV11R7ZH4X/c=
-hunks/000001 > foo
-/data/main# compsize -b foo=20
-Processed 1 file, 1 regular extents (1 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced =20
-TOTAL      100%     268435456    268435456    15781888   =20
-none       100%     268435456    268435456    15781888   =20
-/data/main# ls -al foo=20
--rw-r--r-- 1 root root 15781418 Dec 21 23:02 foo
-
-=3D> Wouldn't have expected that, not only the discrepancy between
-   referenced and ls.
-   But even the freshly cat'ed file has that space waste. There should
-   be no holes, or any other monkey business involved?
+# btrfs subvolume list -pagu /data/main/
+ID 257 gen 2371697 parent 5 top level 5 uuid ae3fa7ff-f5a4-cf44-8555-ad5791=
+95036c path <FS_TREE>/data
 
 
-# du --apparent-size --total -s --block-size=3D1 /data/main/
-22112706625	/data/main/
-22112706625	total
+> Then `btrfs ins dump-tree -t <subvolid> <device> | grep -A7 "key (256
+> "
 
-# compsize -b /data/main/
-Processed 463 files, 865 regular extents (874 refs), 224 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced =20
-TOTAL      100%     35752870045  35752870045  22097375389=20
-none       100%     35752870045  35752870045  22097375389=20
+I assume 256 should be the inode number?
+If so:
+# btrfs ins dump-tree -t 257 /dev/vdb | grep -A7 "key (642 "
+		location key (642 INODE_ITEM 0) type FILE
+		transid 2348290 data_len 0 name_len 6
+		name: 000001
+	item 128 key (638 DIR_INDEX 3) itemoff 9441 itemsize 36
+		location key (642 INODE_ITEM 0) type FILE
+		transid 2348290 data_len 0 name_len 6
+		name: 000001
+	item 129 key (639 INODE_ITEM 0) itemoff 9281 itemsize 160
+		generation 2348289 transid 2348290 size 17788225 nbytes 17788928
+		block group 0 mode 100664 links 1 uid 106 gid 106 rdev 0
+		sequence 408 flags 0x0(none)
+		atime 1702399826.500483413 (2023-12-12 17:50:26)
+--
+	item 132 key (642 INODE_ITEM 0) itemoff 9053 itemsize 160
+		generation 2348289 transid 2348290 size 15781418 nbytes 15781888
+		block group 0 mode 100664 links 1 uid 106 gid 106 rdev 0
+		sequence 3362 flags 0x10(PREALLOC)
+		atime 1702399826.968485936 (2023-12-12 17:50:26)
+		ctime 1702399857.280649521 (2023-12-12 17:50:57)
+		mtime 1702399828.748495544 (2023-12-12 17:50:28)
+		otime 1702399826.968485936 (2023-12-12 17:50:26)
+	item 133 key (642 INODE_REF 638) itemoff 9037 itemsize 16
+		index 3 namelen 6 name: 000001
+	item 134 key (642 EXTENT_DATA 0) itemoff 8984 itemsize 53
+		generation 2348290 type 1 (regular)
+		extent data disk byte 9500291072 nr 268435456
+		extent data offset 0 nr 15781888 ram 268435456
+		extent compression 0 (none)
+	item 135 key (643 INODE_ITEM 0) itemoff 8824 itemsize 160
+		generation 2348290 transid 2363471 size 283 nbytes 283
+		block group 0 mode 100664 links 1 uid 106 gid 106 rdev 0
 
 
-
->=20
-> I am trying to write a tool that walks the backref to find the
-> owners.
-> I hope for tomorrow to have a prototype to test.
-
-Thanks!
+If you need the whole output of btrfs ins dump-tree -t 257 /dev/vdb,
+it's only 72k compressed, and AFAIU shouldn't contain any private data
+(well nothing on the whole fs is private ^^).
 
 
 Cheers,
-Chris.
+Chris
 
