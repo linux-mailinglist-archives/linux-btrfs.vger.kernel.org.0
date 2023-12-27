@@ -1,183 +1,180 @@
-Return-Path: <linux-btrfs+bounces-1141-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1142-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0635F81ECA7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Dec 2023 07:35:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3932781ECD1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Dec 2023 08:10:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70F391F21460
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Dec 2023 06:35:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B5201C222F7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Dec 2023 07:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 896045396;
-	Wed, 27 Dec 2023 06:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79A6C63CD;
+	Wed, 27 Dec 2023 07:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fy65utrA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="hzzG6cK/";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fy65utrA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="hzzG6cK/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PEoX05FN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9EF5228;
-	Wed, 27 Dec 2023 06:34:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 186D721F0A;
-	Wed, 27 Dec 2023 06:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1703658455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FakuDnvNk9/YjmcoZ/WVOYeU7HnKDgkIl+6IPRziswE=;
-	b=fy65utrANAhoHW1PKl99U1yOzgRDKnt8FQbQ09zIHtO9y4vy9ktIWn3cEHe8O+Q2WJPPPJ
-	bLGSPzBRNK000hGl+D1vpaxgdJmy9iB93fCr3fI3PF9OsbQZieMr6cFDg0ogS0Pc8xO+Fa
-	v6P6o8p0yLYWIYzqeyAa4I9YCG320AA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1703658455;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FakuDnvNk9/YjmcoZ/WVOYeU7HnKDgkIl+6IPRziswE=;
-	b=hzzG6cK/ky4Ian2nbOoLikiSrP5+sHLGkaIG8VBjFIxiq7uuRS+vb32BJwWx+/ue4E7j0/
-	pUR+m7dVzc1nr1Aw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1703658455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FakuDnvNk9/YjmcoZ/WVOYeU7HnKDgkIl+6IPRziswE=;
-	b=fy65utrANAhoHW1PKl99U1yOzgRDKnt8FQbQ09zIHtO9y4vy9ktIWn3cEHe8O+Q2WJPPPJ
-	bLGSPzBRNK000hGl+D1vpaxgdJmy9iB93fCr3fI3PF9OsbQZieMr6cFDg0ogS0Pc8xO+Fa
-	v6P6o8p0yLYWIYzqeyAa4I9YCG320AA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1703658455;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FakuDnvNk9/YjmcoZ/WVOYeU7HnKDgkIl+6IPRziswE=;
-	b=hzzG6cK/ky4Ian2nbOoLikiSrP5+sHLGkaIG8VBjFIxiq7uuRS+vb32BJwWx+/ue4E7j0/
-	pUR+m7dVzc1nr1Aw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5E67113902;
-	Wed, 27 Dec 2023 06:27:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id iZciOtLDi2WOIAAAn2gu4w
-	(envelope-from <ddiss@suse.de>); Wed, 27 Dec 2023 06:27:30 +0000
-Date: Wed, 27 Dec 2023 17:27:09 +1100
-From: David Disseldorp <ddiss@suse.de>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
- andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM
-Subject: Re: [PATCH 3/3] btrfs: migrate to the newer memparse_safe() helper
-Message-ID: <20231227172709.4402bc6c@echidna>
-In-Reply-To: <6dfa53ded887caa2269c1beeaedcff086342339a.1703324146.git.wqu@suse.com>
-References: <cover.1703324146.git.wqu@suse.com>
-	<6dfa53ded887caa2269c1beeaedcff086342339a.1703324146.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A367A63A8;
+	Wed, 27 Dec 2023 07:10:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5224CC433C8;
+	Wed, 27 Dec 2023 07:10:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703661039;
+	bh=j/vrVg0JXSm76eMraSC0QENbVnPO+PnML1tSAEZdzD0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=PEoX05FN2o6lEct5iERitcxpJm9Lu98BR3utOR/LjGPse01HaKf8G0YXKWd3W/u4b
+	 fHSkn4C5UovfU5dtwx6NjNNi7T2Te6EgLxavjPwuyGdqOy+z2HulETanC+WMhvehwA
+	 gOzSrZGAOqOoZST11Xn2GacRIKBnAoZxRTvy9xtnJEOGnQHwE/6mZOOGoqK5IQS+Un
+	 yD8bKU/XY726TseeWONmbmAT9ldofOkaGM0IR+sRRCW2JnyZxJBYQixvqjJUQVH9Oq
+	 5C7IxSWTAkobJkW2vuZJqCh88AL2RT5Y9T5lHl4E1nWaICLOJMjXeDT3M9b13YdsRg
+	 LigVSpG4aWqBA==
+Message-ID: <cb85b619-e39a-4782-95f8-b20764fc1022@kernel.org>
+Date: Wed, 27 Dec 2023 15:10:32 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [f2fs-dev] [PATCH 2/3] f2fs: move release of block devices to
+ after kill_block_super()
+Content-Language: en-US
+To: Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org
+Cc: linux-fscrypt@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+ Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
+References: <20231213040018.73803-1-ebiggers@kernel.org>
+ <20231213040018.73803-3-ebiggers@kernel.org>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <20231213040018.73803-3-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,linux-foundation.org,wanadoo.fr,linux.intel.com,ACULAB.COM];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
 
-On Sat, 23 Dec 2023 20:28:07 +1030, Qu Wenruo wrote:
-
-> The new helper has better error report and correct overflow detection,
-> furthermore the old @retptr behavior is also kept, thus there should be
-> no behavior change.
+On 2023/12/13 12:00, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Call destroy_device_list() and free the f2fs_sb_info from
+> kill_f2fs_super(), after the call to kill_block_super().  This is
+> necessary to order it after the call to fscrypt_destroy_keyring() once
+> generic_shutdown_super() starts calling fscrypt_destroy_keyring() just
+> after calling ->put_super.  This is because fscrypt_destroy_keyring()
+> may call into f2fs_get_devices() via the fscrypt_operations.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  fs/btrfs/ioctl.c |  8 ++++++--
->  fs/btrfs/super.c |  8 ++++++++
->  fs/btrfs/sysfs.c | 14 +++++++++++---
->  3 files changed, 25 insertions(+), 5 deletions(-)
+>   fs/f2fs/super.c | 12 +++++++-----
+>   1 file changed, 7 insertions(+), 5 deletions(-)
 > 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 4e50b62db2a8..8bfd4b4ccf02 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -1175,8 +1175,12 @@ static noinline int btrfs_ioctl_resize(struct file *file,
->  			mod = 1;
->  			sizestr++;
->  		}
-> -		new_size = memparse(sizestr, &retptr);
-> -		if (*retptr != '\0' || new_size == 0) {
-> +
-> +		ret = memparse_safe(sizestr, MEMPARSE_SUFFIXES_DEFAULT,
-> +				    &new_size, &retptr);
-> +		if (ret < 0)
-> +			goto out_finish;
-> +		if (*retptr != '\0') {
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 033af907c3b1d..ba95a341a9a36 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -1710,42 +1710,39 @@ static void f2fs_put_super(struct super_block *sb)
+>   	f2fs_destroy_node_manager(sbi);
+>   	f2fs_destroy_segment_manager(sbi);
+>   
+>   	/* flush s_error_work before sbi destroy */
+>   	flush_work(&sbi->s_error_work);
+>   
+>   	f2fs_destroy_post_read_wq(sbi);
+>   
+>   	kvfree(sbi->ckpt);
+>   
+> -	sb->s_fs_info = NULL;
+>   	if (sbi->s_chksum_driver)
+>   		crypto_free_shash(sbi->s_chksum_driver);
+>   	kfree(sbi->raw_super);
+>   
+> -	destroy_device_list(sbi);
+>   	f2fs_destroy_page_array_cache(sbi);
+>   	f2fs_destroy_xattr_caches(sbi);
+>   	mempool_destroy(sbi->write_io_dummy);
+>   #ifdef CONFIG_QUOTA
+>   	for (i = 0; i < MAXQUOTAS; i++)
+>   		kfree(F2FS_OPTION(sbi).s_qf_names[i]);
+>   #endif
+>   	fscrypt_free_dummy_policy(&F2FS_OPTION(sbi).dummy_enc_policy);
+>   	destroy_percpu_info(sbi);
+>   	f2fs_destroy_iostat(sbi);
+>   	for (i = 0; i < NR_PAGE_TYPE; i++)
+>   		kvfree(sbi->write_io[i]);
+>   #if IS_ENABLED(CONFIG_UNICODE)
+>   	utf8_unload(sb->s_encoding);
+>   #endif
+> -	kfree(sbi);
+>   }
+>   
+>   int f2fs_sync_fs(struct super_block *sb, int sync)
+>   {
+>   	struct f2fs_sb_info *sbi = F2FS_SB(sb);
+>   	int err = 0;
+>   
+>   	if (unlikely(f2fs_cp_error(sbi)))
+>   		return 0;
+>   	if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED)))
+> @@ -4895,23 +4892,23 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>   }
+>   
+>   static struct dentry *f2fs_mount(struct file_system_type *fs_type, int flags,
+>   			const char *dev_name, void *data)
+>   {
+>   	return mount_bdev(fs_type, flags, dev_name, data, f2fs_fill_super);
+>   }
+>   
+>   static void kill_f2fs_super(struct super_block *sb)
+>   {
+> -	if (sb->s_root) {
+> -		struct f2fs_sb_info *sbi = F2FS_SB(sb);
+> +	struct f2fs_sb_info *sbi = F2FS_SB(sb);
+>   
+> +	if (sb->s_root) {
+>   		set_sbi_flag(sbi, SBI_IS_CLOSE);
+>   		f2fs_stop_gc_thread(sbi);
+>   		f2fs_stop_discard_thread(sbi);
+>   
+>   #ifdef CONFIG_F2FS_FS_COMPRESSION
+>   		/*
+>   		 * latter evict_inode() can bypass checking and invalidating
+>   		 * compress inode cache.
+>   		 */
+>   		if (test_opt(sbi, COMPRESS_CACHE))
+> @@ -4924,20 +4921,25 @@ static void kill_f2fs_super(struct super_block *sb)
+>   				.reason = CP_UMOUNT,
+>   			};
+>   			stat_inc_cp_call_count(sbi, TOTAL_CALL);
+>   			f2fs_write_checkpoint(sbi, &cpc);
+>   		}
+>   
+>   		if (is_sbi_flag_set(sbi, SBI_IS_RECOVERED) && f2fs_readonly(sb))
+>   			sb->s_flags &= ~SB_RDONLY;
+>   	}
+>   	kill_block_super(sb);
+> +	if (sbi) {
 
-Was dropping the -EINVAL return for new_size=0 intentional?
+Can you please add one single line comment here to expand why we
+need to delay destroying device_list?
 
->  			ret = -EINVAL;
->  			goto out_finish;
->  		}
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 3a677b808f0f..2bb6ea525e89 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -400,6 +400,14 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
->  		ctx->thread_pool_size = result.uint_32;
->  		break;
->  	case Opt_max_inline:
-> +		int ret;
-> +
-> +		ret = memparse_safe(param->string, MEMPARSE_SUFFIXES_DEFAULT,
-> +				    &ctx->max_inline, NULL);
-> +		if (ret < 0) {
-> +			btrfs_err(NULL, "invalid string \"%s\"", param->string);
-> +			return ret;
-> +		}
->  		ctx->max_inline = memparse(param->string, NULL);
+Other code part looks good to me.
 
-Looks like you overlooked removal of the old memparse() call above.
+Thanks,
 
-Cheers, David
+> +		destroy_device_list(sbi);
+> +		kfree(sbi);
+> +		sb->s_fs_info = NULL;
+> +	}
+>   }
+>   
+>   static struct file_system_type f2fs_fs_type = {
+>   	.owner		= THIS_MODULE,
+>   	.name		= "f2fs",
+>   	.mount		= f2fs_mount,
+>   	.kill_sb	= kill_f2fs_super,
+>   	.fs_flags	= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
+>   };
+>   MODULE_ALIAS_FS("f2fs");
 
