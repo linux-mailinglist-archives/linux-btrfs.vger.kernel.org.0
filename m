@@ -1,95 +1,87 @@
-Return-Path: <linux-btrfs+bounces-1151-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1152-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8756481FF4F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Dec 2023 13:08:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B76481FF5C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Dec 2023 13:23:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24EA428428D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Dec 2023 12:08:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 995B9B22324
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Dec 2023 12:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2228D111A0;
-	Fri, 29 Dec 2023 12:08:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BC15111A2;
+	Fri, 29 Dec 2023 12:23:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="RRk+m9U/";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="tfRwEm8c"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="N4gm3nxs";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="DZUmq6yv"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 064531118F;
-	Fri, 29 Dec 2023 12:08:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6188A11195;
+	Fri, 29 Dec 2023 12:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BT8O72C005631;
-	Fri, 29 Dec 2023 12:08:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : from : to : cc : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=ocEqttlfEqsRqffgDhKdgWACYH9dnc9uSvwUzppK0jQ=;
- b=RRk+m9U/ofTO99K3B8Y5w9OnMew68/sjWxdJPIrDSYK8Y2DCuH8zLg66s5ZnNS500N4t
- K631A00XjRbvfX8sxn6NDYwA05pUgVapjWmbTH9cM2CVv/1b/QkjouB5zr2JWlunqD18
- SiBce/WJfAgRvKOMVud28v4Ae8Y9/yZLF7urat/9cA4KBLu/U2m/zUAp0g5aGXZA4ih2
- LcDtAIjkhz6lc6JLw4OUVAOxC7gsGG56sTOLBOZXkupVxAWHz887f4a9I+8Fym8vJ1bb
- HlXBGCF5CjJcBR7CmC+f7w0VZN7aKuNg+p2jZT2+D6w3C7wkBIYrjhry9uBzijUlz6C/ Cg== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3v7f3a4wdh-1
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BT8PgOC007078;
+	Fri, 29 Dec 2023 12:23:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=ppQ2C0H4XQlmdUl+patWgKSEEnl80hSU4J07iJxVUQ0=;
+ b=N4gm3nxsRfW/Pj0235462wXUOWO40/8HEVCmQJ1//UI1Cfu4/F7czt7KgOYBMH7Ep7xz
+ JVLwSHr+3DnuClN7+71vX/p3QtSekhSfKt+sMtrqz+NUVF1MmR+jPmSNkHLf/HvXo9SE
+ c0DdjhQyGmrY0m/ltnb1fO33netpgJc5V7dFuBZy3QyVMjmoIK1dXMBk/QWPJRSrznZw
+ gKwJexb9hKdpD1MKpoCCIAKq5elgTvIivUCtr6bQcBdLBvj4Kli2KuB/MXGlr4e7RWhU
+ UmpqubzY5OMKzuqQ/meI6PNjLLJ3Phhbhgdym4VgpviWoEveGdHQLUQIwfUh4D48N81n 7A== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3v7f3a4wqw-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 29 Dec 2023 12:08:11 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BTBoBWd040737;
-	Fri, 29 Dec 2023 12:08:11 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3v73addnsf-1
+	Fri, 29 Dec 2023 12:22:59 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BTBhqsi018891;
+	Fri, 29 Dec 2023 12:22:59 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3v5p0d869r-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 29 Dec 2023 12:08:10 +0000
+	Fri, 29 Dec 2023 12:22:59 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KdsPlqzRVsJrXIH+N5yMjzlsW0qTIyy18TY4Zs3KgYgIkFxZE6PZisFSHMyuhvk7g9zMoWVLSNOf6KoQNTTwH+r1Qf6jE2OIT2xABPMqs71fwmjk+rCaWuZ0jjF+ZPnYptZJUz641BZ4zS4rPDjWwFpYrsA36YjTRxBecneSodYd5+DeYXnn2N4gTskTLjfQ+gws32s1j7rw+UgrDWRUVT6gpFePOKmJ5MCORFITEOTLoftTJORIomZT7fpimJQvAsPYSYGQzjpNDZyrtUltPlqYGfN4sVCW9MJcOGsBVkDry6SpLoJ/qdk2av7kK2F2GoP1HbaCeIBpf7jjjxj1Nw==
+ b=b2rhP7lgaNG4ismonyFEtWX1T30qQ1CydxKd1hU1YFdqO6NpDeusWT+oQDgcn+XMqMBvEulfgMYNyup4ean12zkz72Zx3PWiinLlPY1vJyEgE78m6WujaW9P7qJNNoszgWERs66fF4h5euWlR7I/22cXu6M6MRuve2SfsJ4iAkU5vqWlImn0A87bHd+ncYJCDaePI5YfbrhYdlYpRKIKXNVB5irLPS/2q2W11i9efP2rckEqLYs5BVnLGm26SP3bFXsGXvg94Ooq/4Ew4QndD4Ft42FAGYzjv3xSMSK1wEHYBRBrfdlTJE7xMkNeYvTBjUakuruE7prfVuVyfw497w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ocEqttlfEqsRqffgDhKdgWACYH9dnc9uSvwUzppK0jQ=;
- b=H7dH6g3BsCWg2VR7gXUTOA5LUsGTEuysgBbCYRtxfdgv5dMBOOrwmHJS+cJhFIblcOukjbFAIZGwn7JLdGQBLqI1notW9M+PRvxNYAGwLpdbSCXKhhFiI285V9+4EZdWMzVxp06QB5yWDmJMv6sJxxNw2eDDc4eZsh06/vtbdnoYzk8zyS8mWAGJPpmGjHnqY3JBcEEM4YfQCRWqvSg974ebksR2tbYbd4F7+dqJsq440aG/osVuWMleG8FYYrVjHHkvr3YBhjPsT7RgxR5GYfHszp6C+cIRhuqrhS2EM32soqGFMzWMClnxeJmLXRS4OZ5azvdnbmFBo+x76qIOBQ==
+ bh=ppQ2C0H4XQlmdUl+patWgKSEEnl80hSU4J07iJxVUQ0=;
+ b=JAVUZNho/zGVroIRoaGvbJ0sgN/LnjV+SC6gLMO8hdyJTPqf21ehPX8z/oEWUEJJQaEEiOjM2SgtcNowKvStEogUPL6IEOTiI2Nxho13Bs43B4OUqpq/urxzTtNRARS96fZ8GiKUmDCiggzMJmmNmxzXDFzU+9eTN18///vzJh372kLE2mZquD/HDr5SgEHAnJaNKQ2/AykxV9wgTY/nOfuZG2iWpA+E/Fn6dh1O7aErX/6JmhhTUx5vnIrdP8YKTanUsXtDUR/Ik2N0kCxC5Wam91IVej33YFCWMYSiYS9Wx8vgNLo8n7OalnufLQsfXGtXyp4cv282qdPvvRVSyA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ocEqttlfEqsRqffgDhKdgWACYH9dnc9uSvwUzppK0jQ=;
- b=tfRwEm8c1IGhCJDgGtIiiqie7Ot0wSVZWp+94X331/wthnR64CDc4rVYQKgSXMztdZqr6qNKODnenJE0mxSNIUvp3XCx02A5GW8ZqaoYOblTPF+cDMV2oHdWEYZXGbYIJ8cOwDPzrtbo4IdU39/tATy4Q41LGulhtTEOKeyP67k=
+ bh=ppQ2C0H4XQlmdUl+patWgKSEEnl80hSU4J07iJxVUQ0=;
+ b=DZUmq6yvy5ozV+Hv4CH9X3umiV+phH/3nPbnkJivfIl8DxdiqqsyrYtaCp3EaHDcpnV8Ab+h+fZEAcz4WziTQXCwiyi+PMfceXTocBXMz0xtm6cb2BZBEfeVVQaTX+6H1VPZ9FJ6+oISHf98Ixv4iUPH0wcPWf+xkhBVF+hlX34=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by DS7PR10MB7347.namprd10.prod.outlook.com (2603:10b6:8:eb::15) with
+ by CH2PR10MB4360.namprd10.prod.outlook.com (2603:10b6:610:ac::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.29; Fri, 29 Dec
- 2023 12:08:08 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.21; Fri, 29 Dec
+ 2023 12:22:57 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::2000:9c78:19f5:176a]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::2000:9c78:19f5:176a%3]) with mapi id 15.20.7135.019; Fri, 29 Dec 2023
- 12:08:08 +0000
-Message-ID: <c46cac6b-2c60-3602-8c35-d6b304ffb0da@oracle.com>
-Date: Fri, 29 Dec 2023 17:38:02 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH v6 5/9] btrfs: add fstest for stripe-tree metadata with 4k
- write
-Content-Language: en-US
+ 12:22:56 +0000
 From: Anand Jain <anand.jain@oracle.com>
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Zorro Lang <zlang@redhat.com>
-Cc: Filipe Manana <fdmanana@suse.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20231213-btrfs-raid-v6-0-913738861069@wdc.com>
- <20231213-btrfs-raid-v6-5-913738861069@wdc.com>
- <37f24bda-fe2c-fd82-38eb-d5d0e3e54842@oracle.com>
-In-Reply-To: <37f24bda-fe2c-fd82-38eb-d5d0e3e54842@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, johannes.thumshirn@wdc.com
+Subject: [PATCH v7 0/10] fstests: add tests for btrfs' raid-stripe-tree feature
+Date: Fri, 29 Dec 2023 17:52:40 +0530
+Message-Id: <cover.1703838752.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.38.1
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR04CA0173.apcprd04.prod.outlook.com (2603:1096:4::35)
- To PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0228.apcprd06.prod.outlook.com
+ (2603:1096:4:68::36) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -97,105 +89,153 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DS7PR10MB7347:EE_
-X-MS-Office365-Filtering-Correlation-Id: 524e83d4-1045-4035-7812-08dc0866d213
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CH2PR10MB4360:EE_
+X-MS-Office365-Filtering-Correlation-Id: fb2c5440-6d5f-4395-db4b-08dc0868e37c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	3SvE9OTbyMMraOlXMw8dMFqOzgGwGS/+2h6lTzwqhWo/Bjnk3EsZjeu5BAPztTy3HFhfEgOi3YLfq0yg765AqET1D7ZdFDFMi7uXCUxpDlA153cqd2KSQoPq3G6HZayXZEOP8ecvhEa4/Vp9CjaHoR9dghNJwJkSpnAjBXJT59dMFu1MOVTDvg9MYkH0f7XmFODPCnOXJBNcDPpVWkXzNrh/mnq7s/oRoZVgH5ZdBRoysp+ql/59StDL8GFLjbxyliOh+UAUus1x6II8I0AQj0IHuIaiDlvjoymcFxnzeN7d3pYpKEY8OkTlpsBpxCuuBBEhvOX2GWL+9Wfi+80egD0mM7GfjygQfsriudyR1Zz9NOlGHg9Bk27ZpzORGVk6tJX2yrWV3sa7crGiSirg0eCPAIItIaF/SJXtao7RMMYirxANjzmtRb9/GTljMxmERBXLFz4MYT0RQUWRbo6uYI0k62DgP/3p62T5CBSnwdav/8FdbE/vAF/nuOj67/aUfdxTVy2l4FI4vhfTVPVhsEfmEaUmHtNKf5fs3ZsDkz6xq2Rq+hFB0Co+MGQy2b8T8IARW4cdkD/67RE8XJjKZE7D4z1nguTQOUtzBC+Y9wo04g9FbG7s0Yf3HqmuIE5KpqUSe3WiT1cvFavphV1eDQ==
+	Ft025IV23PinGT9EcumNy4fCGQP6hhoK8MTZx1DCxAXGkWz3N3ufNFmwYphZscNVG/3KBeXMhGldr6Aq5iEBnJ/KqNfyem4nBUIYkeCbv2JbsjSXm+mqZ9D+m6V9IPXDNYuFEI+DVxh4H16ngTu6n/5blDkWW7relnknG+HdJLuARJNwBf9J4nx34aUs1i7V7Wm6nrLFRDcFF93RPWVALnz2bMh5D1o/YF4khtDCCev5dL5XfpQ/cS3QC9yM9EyJLssC4IEtFRIgi3JF575tyP1954c9rB4bx6qYAsHw/cIIwfYa/x8eEz8ZkA4wRc4ZGr+y4QX7A6JVowedu3AyMLBdI1i1rKlJmhrWhnIv/gFBhZl1j0KnWeD1saVhmjEBUqNe4EgTKhCr8hYmX6a2YX5IGwQW7xajHHvbtE/9PzKqdzJ4NnrpOOPnFpeim3RSwd5HPmC/tEC8W5YOkcKwUd2wwt+9xBsc7FngKSOOd3MbYM3kaEDw+Ng08vbiqKFTw1uVL9sawMScTL/AZNq3kR7tJsd9NE/gxT4OfCWGhIo=
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(39860400002)(376002)(136003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(31686004)(44832011)(2906002)(66476007)(66556008)(66946007)(5660300002)(4744005)(4326008)(8676002)(8936002)(316002)(6506007)(110136005)(41300700001)(6486002)(6512007)(86362001)(31696002)(6666004)(478600001)(26005)(36756003)(2616005)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(376002)(396003)(346002)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(4326008)(2616005)(26005)(44832011)(8676002)(8936002)(5660300002)(2906002)(6486002)(966005)(6512007)(6506007)(6666004)(478600001)(66476007)(66556008)(66946007)(316002)(6916009)(41300700001)(38100700002)(83380400001)(36756003)(86362001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?R3pNcGIzN3hTZmc5WFFiRFhFMGg4M3k4VFlrRkR6SGlTOE9SM1NBVTVKV1Nl?=
- =?utf-8?B?ZVZvb2N0Y2QvdUhEQTRuSnhaYVdlMHp3SkhCN1E3SVI1ZHpSVmxFZmhFZGln?=
- =?utf-8?B?SmZDYWZwbHlVYWIvWWlSZmZWZ05rZWdrRWZsTkptcjZjS240VktsWXBodWVX?=
- =?utf-8?B?SlhtUGgzbVhNVzJ0OHNiZzY4c1d2aTJmN2dseFFML1hDRXdHRVl1eHYrTGtG?=
- =?utf-8?B?b05DYUJoeC9taUJXNTVpanM2R1A2OGVhSFBJdmJhWEdKck81QkovSHdrZjRI?=
- =?utf-8?B?T1I1dEd5YlNMWUtoUVJQZkUvNjhjSFlsTE1ucTJoQXhOcCtxYVFVdUZ3K2sw?=
- =?utf-8?B?cC94b0cwZnVIVHJYTVVmMWhsWmd6M2ZyVkwweDBMc3Nkd2V4TFAwMFJyM3Za?=
- =?utf-8?B?ZTNKcisvcXJUaUJOUHNmb3cwT1ZWRm9TdVhXbTI1QUxmUUF5amJWTFo1ei9y?=
- =?utf-8?B?eTB4eHdhREMya25tY2pwWG4xMUNMU01rdlFwUno0b2Z0YnlORFhyRTJQVFFQ?=
- =?utf-8?B?QmMrWnB0THVmU1k5Y2lPZGdCMGE5SEpIdFRrQXpUL20yaVJrTXNMZ2hQbWRR?=
- =?utf-8?B?d1p2VXRrMjFUN0tFTzNGMzJYNVRZcGpXSVczcUh0ajdIQWREZGJVcXRSVTY4?=
- =?utf-8?B?YjMyYXlVbmtWK0h5TmZPbmlHbnJPT1RWUGpjd0daMXdlcGpKL1ZFa0JEbTdh?=
- =?utf-8?B?ZlNGWU1aMmRFNE9NQlhkTkcyeWsyWlFMeklYSlA0cVUwdmhPMTU2b01sekcz?=
- =?utf-8?B?TlBDNXBlYUpaVHVUYlRzd0VMbVc0SThCZ2ovdFdUS2JJSFpJeTJFQzQ0Y0FF?=
- =?utf-8?B?a0w1WFFiNXhpTTI1ZVp5YkFUMjRXaXUvalpsSlBuWDRUdU1sK2lBOEkxSzF1?=
- =?utf-8?B?T2NDVnhZemhYTWtHalR4N1pZVDdPclJFU0VlenNudlo5VVRKYmJhdVBBRURY?=
- =?utf-8?B?VXFZQnlCV3lsVFhSVW5kUGlDNUNxUGRkeUV2c0JxYmtscXB1U3VURFdYUnFW?=
- =?utf-8?B?d0xmTnF0OHlzejJPSk4yNzZiWXpiZ1RmUmFDaXFBdldQckwxM21vVFNOaEtY?=
- =?utf-8?B?L3AzT1JMRlduRU0yZzlCZWJBc2dTR0dOMUFUSk5UUFNaUXg2QXRvS2piQURG?=
- =?utf-8?B?bUtKNTgvazFmY203ZklHOVpwWkI2akZBOEZSK2NoZWhFU250d3hQU3hsMC9m?=
- =?utf-8?B?ZmZWWThDWWVCeW83eE9KOE9GMVJ5R0Z1MXlMZ2RvcEV6dmNFWTRpcTBkeVJy?=
- =?utf-8?B?bU0vdDIwUTVvU1JJcm5lS09PdTU2emdjTlJFSUF3S1hhZFBLNy9wMzNtZzlv?=
- =?utf-8?B?Z1dGMDBJRGhZMEUyWW81dS9tQnFYVStNOGx1OHErYXloUDNJUEVEckcwOHNX?=
- =?utf-8?B?V2pyTkF4N2dKdGdqQ1ZQR2ZvM1QzV0ZpVjE3MnErb1NIM2RBQWJUMzFSazhD?=
- =?utf-8?B?ZDF2MzZsMFJFZkJZckU0d2srNjQzV2NWcnpjNkNMb2lZa0htVkFoKzkvYno4?=
- =?utf-8?B?RHdmRW43VnlyVzVSMzJoUFBsLzV5M05FeUFIZEVZZVJjV3p1Q29sdVRDamxn?=
- =?utf-8?B?TmJ3d3g4dkJNOFVKekREYzhWRWtyUEh1aThNTk00c1FNQkRyV3FZNHlhd00x?=
- =?utf-8?B?cDBzM3lGS1U5RStmRS8xZzE4QTUvNGwxRGxTL0srNktuTjZibk1QNzdFR3dF?=
- =?utf-8?B?WmxHdWdTWDU0YmRTMkZDam82ZFJkTG5JZ2J5eEtQcXRhQWpFT1hDMjFzZmVT?=
- =?utf-8?B?SjBZL2xIalZHbCttWk85L01KSGtnUFRib2UwSUNiOXI1Vm9LdXVOUDl2NTZ6?=
- =?utf-8?B?NVNCTDM0a0N5dStMeXZzSHRRVEQvR1Vnd0U2UVQwMHV3am5lbGt0bmNpaEdq?=
- =?utf-8?B?NTI3ZWs3Z00yVjRsNE5vZXIwOEprTjhrQkNuc2FGNk8xSWFZQXlwc2dFdVE2?=
- =?utf-8?B?OXg0ZlZjOElidC9vemU5L0d5bDhhdTd6ZHJOSTNCUUtEUW92ckdHNFpuUVEx?=
- =?utf-8?B?UE1Vbmg3cGEzU3lURW5WTCtJNGQ5RFVsVmhGN3RWMlRkVWk5VURtYUloWkVm?=
- =?utf-8?B?cjhyU2JOdmF6L2NqWWN0WFkzUnBYNHJVbjVMdllqc1NlRzc3bTJOTUV6Y1Uz?=
- =?utf-8?Q?j1HdU1hlQt5FM4JNQMBhUyMf+?=
+	=?us-ascii?Q?TBcGPDFd13MHxHNw/1mUwNFE4rAo9iXd5OTXplcHWPdL4QnMnVEWH6tkc2si?=
+ =?us-ascii?Q?IthsU5iI/6XrLFfXJ5BMR8evMuv+8zWYMTwXDcLCCMRzq1dMTuhk2dTKnrPd?=
+ =?us-ascii?Q?DdCWZgYK42B8a+jZYP2u82hl3IQrhkCYcpFqNk0HmtfHTFk0BPmJhA4bpZ3j?=
+ =?us-ascii?Q?IuTyAxV8up3O34GQFs+oNbENIsFXYOX5W/av+SeM1gLCYuyxqG+6Bhv9aKYi?=
+ =?us-ascii?Q?IoJlo4kYO3u/GeVH2KtZ7XIaOtUDPjtGPxwysGzy2WaQbItWoE/KXp1yS9qU?=
+ =?us-ascii?Q?TLgAm/2iWOupBgE4bb4Yq+isF7n9bhD8sTzP34XnOPTGMpb74Fa21B/FdAMi?=
+ =?us-ascii?Q?KQqtxltOIT4Xes7WcRiC0NQKi+dwL/JbpdLIktCxAISdlPgxLy8l4PaxWHgb?=
+ =?us-ascii?Q?voZ2jbFW3lS9u8+MCqcZooZrB1jTfbj+SjDRPytJR0wF5sWcdTX67B9e58MX?=
+ =?us-ascii?Q?u/1eXl+J10A+RC5hqdMGa9wKXC5JgRWlVfq6dOCzXQd7HxyPGY/YSDY7ycJP?=
+ =?us-ascii?Q?u5HAxcCg6yV942+l+65T2g+1CUCzEd45pKjf84STVxz0FwtjFofB/ldO0ypU?=
+ =?us-ascii?Q?upl6AnsWsiE7qG+yGGGI44eoYF52sUVE92D/9OZBlUTD7vu9NNtrJHj3Vckt?=
+ =?us-ascii?Q?GLJCCAOL3+sCdWm6WR7X6QpHX6Xr2dpJ8AV2iQN5xK6oiqIB45rQ6fQYBIXB?=
+ =?us-ascii?Q?7jJmirFf6h33bbKmoFVNZg3XzA9ctJ1z/k6FtQYG4QF88De9OU0IBzlXOLwL?=
+ =?us-ascii?Q?pa4RGIUPXZJIOxDWDBSaDmcsP34/niLm0npQyZW2r7VtD9cwRCUG8uJoU1M/?=
+ =?us-ascii?Q?Z/j67U06opT+7Ge393zM31jZxbhrw28TQ3Ebo7c7BzaQT6aimqx5Ld8t7mbc?=
+ =?us-ascii?Q?NHtpgrBfUf8G63fY7Ir6XLrp3KI1l2miCOoaH/UkeMebDEGt+qBQaZqen05Y?=
+ =?us-ascii?Q?5nezxVN6pIxQFflDE0BxCMY/JovxGQdsRUpBssf9Hp/wNHSNiKtwJNwehnuy?=
+ =?us-ascii?Q?UT+KwwIcqI4iaGZTJmlKCEv2MaJmP4Ak2TyU8/BnL0aGBdC0JfgTL9kc5Psq?=
+ =?us-ascii?Q?2kQrCXVJRPoyCu3WQMH5nlmrUmYiEmaO4z+ylpT5d1d4hqLrF6RSN58NZsGm?=
+ =?us-ascii?Q?sadSrpQvqImK7Ilyl6DT+B6/354Go/cdeOlDsc5uXSWa/APlkjSSWGMDpQKd?=
+ =?us-ascii?Q?19C4sxunUfcnk8H0sDcgoQz/taXptGlseT9RYycB77Z27lNYFMeKUTTFi4XW?=
+ =?us-ascii?Q?HcGodN4kTukrlaQRKM34Q+s6KThI+KBfIz3ghS6qUDACISscsHy6c+cQj11b?=
+ =?us-ascii?Q?5kEwiEe5pfTCwSH873ZDSMXojZlSHyiV2z7IayikJnsxki0zKibo2XzW9rPR?=
+ =?us-ascii?Q?Oy8uuMmgUvYKt1Abql3N8OVOyQDyxedVbHZ38DqOQ3Nc/++0xznWcL07jQ/A?=
+ =?us-ascii?Q?BQWXQgcWVC1sucYoXPmHdEk0vyYD7vdtv9Kn/KPnqkazO/13TaWBVVNsNFQ0?=
+ =?us-ascii?Q?HUOhOqWFAw9wxG2P5E3KlB7bMeU3s91TuN59mtEdMVrfAn4lsNtYVrF8/lri?=
+ =?us-ascii?Q?lQ2j/v7y5S93/Eyf5mYgNWlJ+lW6MitbvBwdEJTf?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	jTkWpdUvj6CMj69mrolITm7++/YpGEvq5uFd9+/Oy+A/vEzz+1Yp5s7T+1b8Z9c1wduHjEANt8bvGEgGZnZULT2OMjSBSGVCMQN9r2hzvdO6Vt7bLW+39EP0jP/9+s5DQrIZPZeOVadacwqiKXcUfUwiwLW4b6RtQx7kQbVNQrQFMTjhhseRSQQrZyP5aQl6O73/v5c/U6hhR3XWssC4qioSofnqOiET1Zol7H0gF7bdDnsmSqdvjyr3WtKeEjP+5kmpI7OUJW+Q5P8pJRRdkj2eRFWfGMkVTkKOW+EkDHOybHZCXnmqTG8RF8oQS8uBujvis1X7TWU4RQErW64HWA8MkFz+SOHaUyt20muOJzmCuJBGNFVvZqqb/gIOgxuuRyPyh56TXaej8657e7ZuL/4NwJgvWKHbkTOGl7qXJTNZEOV/QEth6Co+GsubRRXyaEbtMwKF+i+Wij1KKTZT5qJNBtXcmYXOQ8KEM8KVoiowabvhRrH2LYq4cYI7HDLf1xgRQC0JPNQEepuTZBQAy9Wyhun32YPb9Ot7rA+BwDcNfMvJe+6IA1rH7JCZVfSOkaIUqQuFcjolGdudI8VzFLsFJZyd+DzZyNyVR0wsRYw=
+	ukGTcloYmrxwQd1imrHw5FH1SxLNfGTiCahtn2C4B7IVYDyNuWX7M3R9hCveNYsWZ3eaX6G7BeMI5s696V73dpjTt0zpOQuIWCKPPS6APZ6y+yVg5m5kT7OmflM1SSk3Xmb2JQdXTFsGX30BsfrjSmJKp9B0CjCMyng+OTqqyF50iWfUgy9OH1DsOWTqiHHJ84ZpVogSR/RzEjIfX1Jv/VkTpl35Q1y+9brgpSdivT8vwSl6Mf19IVm9LZU67qSHsDL6CDYsID/OaKtVm4qnEE9TysHgrrG7pGaqwgOKB8uOaCKVu+NbBzk2CRPA3JBergLqytC+IRH1YDXNOCUlM4wufg/owS9/dPsIucs8ZHHXESsVCqgINYPiezhtMfXIKnp8I7ZtdvJYk+eLQUkhcO0WILr8I3skwTl/bknUlHmQTi7w6jzy0gFDfIWIPPfELqKfsIy/gslO6QsxYpXRaCuC98m7LHPoxGj02bLhzRAWdoDSOBPZdJ45rFf2E956NvnhPY9zesnYpLsCzqhlttC/G3DO/TbSOfcuHYCJYtmWe/w5ZOcRG9XmmLx+s/qAdWuwwMEt3cqR5dxwvgvW46qsYmQtR59ee1dU1wc1ctk=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 524e83d4-1045-4035-7812-08dc0866d213
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb2c5440-6d5f-4395-db4b-08dc0868e37c
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2023 12:08:08.7493
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2023 12:22:56.9099
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VUA/moDKQh/eeGJTUwlfNngoVcwIPXia2QI9wgTTel+WSrXJRMwulK6T9pC0daaQuTM/ZsDLF1QwwCLrH683DQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB7347
+X-MS-Exchange-CrossTenant-UserPrincipalName: xVMr0FZo7taX/XdqwKMLvzNAa2Zk3czu2Fb2t1KMrYz6NTluuxz4fd4QZ6Gj++zBZOPVB/Naj6buhhPYNN2HBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4360
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-29_04,2023-12-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 adultscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 mlxscore=0 suspectscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 mlxlogscore=999
+ bulkscore=0 adultscore=0 phishscore=0 suspectscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312290096
-X-Proofpoint-GUID: ECOSexeCOGNqDcEV-wJL42p-Imrymiq0
-X-Proofpoint-ORIG-GUID: ECOSexeCOGNqDcEV-wJL42p-Imrymiq0
+ definitions=main-2312290098
+X-Proofpoint-GUID: brfZtPd1Oea5aDTcwqhGjN08WuKfxhXs
+X-Proofpoint-ORIG-GUID: brfZtPd1Oea5aDTcwqhGjN08WuKfxhXs
 
+Changes in v7:
+- Fixed trailing whitespace in the .out files
+- Fixed the following test statement in 30[4-8]:
+     test _get_page_size -eq 4096
+- Link to v6: https://lore.kernel.org/r/20231213-btrfs-raid-v6-0-913738861069@wdc.com
 
->> +test _get_page_size -eq 4096 || _notrun "this tests requires 4k 
->> pagesize"
->> +
-> 
-> I made the following changes, to make this test-case run.
-> Also, in 30[5,6]
-> 
-> -----
-> diff --git a/tests/btrfs/304 b/tests/btrfs/304
-> index 05a4ae32639d..f1db52c1ba5c 100755
-> --- a/tests/btrfs/304
-> +++ b/tests/btrfs/304
-> @@ -22,7 +22,7 @@ _require_btrfs_fs_feature "free_space_tree"
->   _require_btrfs_free_space_tree
->   _require_btrfs_no_compress
-> 
-> -test _get_page_size -eq 4096 || _notrun "this tests requires 4k pagesize"
-> +test $(_get_page_size) -eq 4096 || _notrun "this tests requires 4k 
-> pagesize"
-> 
->   test_4k_write()
->   {
-> -------
+--- original cover page from Johannes ----
+Add tests for btrfs' raid-stripe-tree feature. All of these test work by
+writing a specific pattern to a newly created filesystem and afterwards
+using `btrfs inspect-internal -t raid-stripe $SCRATCH_DEV_POOL` to verify
+the placement and the layout of the metadata.
 
-With the above fixed and the trailing white spaces fixed
+The md5sum of each file will be compared as well after a re-mount of the
+filesystem.
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+---
+Changes in v6:
+- require 4k pagesize for all tests as output depends on page size
+- Add Filipe's Reviewed-by
+- Link to v5: https://lore.kernel.org/r/20231207-btrfs-raid-v5-0-44aa1affe856@wdc.com
 
-for the patchset.
+Changes in v5:
+- add _require_btrfs_free_space_tree helper and use in tests
+- Link to v4: https://lore.kernel.org/r/20231206-btrfs-raid-v4-0-578284dd3a70@wdc.com
+
+Changes in v4:
+- add _require_btrfs_no_compress to all tests
+- add _require_btrfs_no_nodatacow helper and add to btrfs/308
+- add _require_btrfs_feature "free_space_tree" to all tests
+- Link to v3: https://lore.kernel.org/r/20231205-btrfs-raid-v3-0-0e857a5439a2@wdc.com
+
+Changes in v3:
+- added 'raid-stripe-tree' to mkfs options, as only zoned raid gets it
+  automatically
+- Rename test cases as btrfs/302 and btrfs/303 already exist upstream
+- Link to v2: https://lore.kernel.org/r/20231205-btrfs-raid-v2-0-25f80eea345b@wdc.com
+
+Changes in v2:
+- Re-ordered series so the newly introduced group is added before the
+  tests
+- Changes Filipe requested to the tests.
+- Link to v1: https://lore.kernel.org/r/20231204-btrfs-raid-v1-0-b254eb1bcff8@wdc.com
+
+Anand Jain (1):
+  common: add _filter_trailing_whitespace
+
+Johannes Thumshirn (9):
+  fstests: doc: add new raid-stripe-tree group
+  common: add filter for btrfs raid-stripe dump
+  common: add _require_btrfs_no_nodatacow helper
+  common: add _require_btrfs_free_space_tree
+  btrfs: add fstest for stripe-tree metadata with 4k write
+  btrfs: add fstest for 8k write spanning two stripes on
+    raid-stripe-tree
+  btrfs: add fstest for writing to a file at an offset with RST
+  btrfs: add fstests to write 128k to a RST filesystem
+  btrfs: add fstest for overwriting a file partially with RST
+
+ common/btrfs        |  17 +++++++
+ common/filter       |   5 +++
+ common/filter.btrfs |  14 ++++++
+ doc/group-names.txt |   1 +
+ tests/btrfs/304     |  59 ++++++++++++++++++++++++
+ tests/btrfs/304.out |  58 ++++++++++++++++++++++++
+ tests/btrfs/305     |  64 ++++++++++++++++++++++++++
+ tests/btrfs/305.out |  82 ++++++++++++++++++++++++++++++++++
+ tests/btrfs/306     |  62 ++++++++++++++++++++++++++
+ tests/btrfs/306.out |  75 +++++++++++++++++++++++++++++++
+ tests/btrfs/307     |  59 ++++++++++++++++++++++++
+ tests/btrfs/307.out |  65 +++++++++++++++++++++++++++
+ tests/btrfs/308     |  63 ++++++++++++++++++++++++++
+ tests/btrfs/308.out | 106 ++++++++++++++++++++++++++++++++++++++++++++
+ 14 files changed, 730 insertions(+)
+ create mode 100755 tests/btrfs/304
+ create mode 100644 tests/btrfs/304.out
+ create mode 100755 tests/btrfs/305
+ create mode 100644 tests/btrfs/305.out
+ create mode 100755 tests/btrfs/306
+ create mode 100644 tests/btrfs/306.out
+ create mode 100755 tests/btrfs/307
+ create mode 100644 tests/btrfs/307.out
+ create mode 100755 tests/btrfs/308
+ create mode 100644 tests/btrfs/308.out
+
+-- 
+2.39.3
+
 
