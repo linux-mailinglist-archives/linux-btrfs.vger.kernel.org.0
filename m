@@ -1,87 +1,87 @@
-Return-Path: <linux-btrfs+bounces-1160-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1161-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C97381FF66
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Dec 2023 13:24:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E747B81FF67
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Dec 2023 13:24:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1494B22949
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Dec 2023 12:24:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 752B21F23E9B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Dec 2023 12:24:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919EB11711;
-	Fri, 29 Dec 2023 12:23:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E1C1171E;
+	Fri, 29 Dec 2023 12:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="HyXP5uHH";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ENFc5oMb"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="YUed6LMk";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ScLM9zwx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A97111BF;
-	Fri, 29 Dec 2023 12:23:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B90B11701;
+	Fri, 29 Dec 2023 12:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BT8PDcQ014684;
-	Fri, 29 Dec 2023 12:23:38 GMT
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BT8Ofs2009485;
+	Fri, 29 Dec 2023 12:23:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2023-11-20; bh=cSGPApT3bHxbNN17i3Fmog/oBoThzzlaNwnuqIJC2yg=;
- b=HyXP5uHHbEKlu4v/L5HlhG8/CXP1PG4Au44GbdA9qkEvTQd9kQDQCa4N/a9geWMeT+t/
- Uwh/oVNb/drLYa3ibEcxtjg8BlXdRFCMgRI54grCj453fIYNop2Ru1ZoYC6aGGnLg14j
- 1lAhNv6oIvAYlwTUzMf3py6r2oJqJhvAs52rVMy/NBHMMSk2rnJOc8jYT6OyM2kL4NAf
- SaGKxjmgoVJnLs+xgH5t/zXZwuj5IjKqFBwKNE94nfbuebdfDQDpGp2kgb7mbH7ZgK9g
- Dhc/k0BU8LWXw1vFrpP6rPwAhDK8sDNek1INX8dq4gqsGotF0j8QU6ZrQciwMKJ1mnDr Ag== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3v5pfcfm7k-1
+ s=corp-2023-11-20; bh=xE+SLTtEHhOf0HJNjp4iWCAdTlyI04ys4X+syMPFgqA=;
+ b=YUed6LMkMEjStrd5U9GqgrlljLK3SOwHLSz9206Gk68pmIaE3Kt7Ao+FztsIPBqUlJ9o
+ yOv8MqG9AqhgXCfhzlvYjodtIWII9w0GnMRlgDzS04JTNrQIQcFO7cYgjOGFo8+QT767
+ nYQuOsU5MUNg3iipxg3IQf8VN/m5VSYTwckNqrgqz4WAuI43buf/nibTshfI/1Kbwp6i
+ bn/Yrehc0y/mXmEOtm8088GcS13JSU1L36j+bB24YGpnyJFzYV/avMmEhVNjiWjcyox1
+ M7Tfaw4N5B7LBkLKAI14uPd8OoQ9gKLraDBsRr46TwuyUESo7o+iSnBw/pQroRcHmBy2 vw== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3v5q5ufhb9-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 29 Dec 2023 12:23:38 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BTBdj66022966;
-	Fri, 29 Dec 2023 12:23:37 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3v6a965mq5-1
+	Fri, 29 Dec 2023 12:23:43 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BTC63lp033534;
+	Fri, 29 Dec 2023 12:23:42 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3v73ade3n7-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 29 Dec 2023 12:23:37 +0000
+	Fri, 29 Dec 2023 12:23:42 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ejjK6E75geqsIKLnwK32Qe7Ds6Y8UN3U8vPc7sJVDZjqGISUQrE0F2+6UV4Qt8nIGXH+vrYrUaIcnYw9VGWmfv+7i/CMhT5h7xRfgrkvqw28p/bwCL7Ak89KFEM7diLfbMiDEYF2m8IzcVBM2vankzthmgp+F0aGwH6Ds3EZk41iwOLP/mHQKrh4LI2E5tKtt9vpSgkGmOaVg87p7SzrgJLA/SE1/WT1mk7ptJ9DTaxQeV6Amq3qp79oBHGuK/ppHySfnQ99PVWETnfQTT00s5ggt8xOObZaI7HCK4Uk2zjsWZEPVmztQsxSU+/y5GxD6tW4eK5yfpAG/9dUaK9Nyg==
+ b=R/rB0zoNUTj+R2xCf7y/wxxhxCLwLrYiZrNKjibU0qf4kahlyMhcAad7w0cX1rjFTmMZML7t9FzHnDLOW5WuL9AHMQMs8phDZQBMvU2obiY5vEhMbiEDVqzIpHs4x071SsfQEp0xtc7ErMLbS4aFPNmssBtTFdd9DeurBg8N3VfffZx5plL7bvpCyQ38UhaFW/s0TvCfVWOEoWGnPe8B2/ktyablHNXdwGSt2X+GGjO6G8XibCWUh9t08A9kT4RVduUvlj6nKB1yRnB95tfZ0cWAKZYdDSHbbdFjF1b5g2u4wr3/9xsaM3z8dZ/LN//TREfo4Vve4RhbQJD23fYIsQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cSGPApT3bHxbNN17i3Fmog/oBoThzzlaNwnuqIJC2yg=;
- b=fX3SbUB8MA3AV8x8nGhdRobr0+fAHPiCqDEl+qBnhdO2AczolFQJRVUzBB8Cw6wkOb3mXpB25tJ1bq+FEMOdFjt++Kqnfm0287aE4Cbhc//hc6xlzu6KI9xKEZQrLGsUxUubSANIjf2zfe7RDmvp06Zb/HNPsdrkZBu9BocS4vYULxWIliF5gvdwLlVulKyhyXAPO6GsFz7ifcBSJmibXjFSQbp7Gr1GQERTbsxy2232zOQEEvGbD7w8tIAkzZmeMCIcYElLYoPwHNq9+MautzxUbIlIqUT3XA58BjmlPbUaEQ4diw7VhzYGSbayKqqhMnsgp2KGvA2Bowhe+XEwuQ==
+ bh=xE+SLTtEHhOf0HJNjp4iWCAdTlyI04ys4X+syMPFgqA=;
+ b=mfgIgKxlUhMfPXoslLWt8xXN/tVFpyTOXtB/8e+W1wSQHhQF4MZ1jgDWjTrXD9hPSXao3DtvY8ES4c6+rOKIJNnURQq24dwRoB305ZrJsOOdiZYzv4vqQw8f9XH7mp6G6cMbhO6wMT879YHJLyIC2w2Xj3I06rbhrcnvYwTaQ2/BDn3p/pSt/yXM+Qm+nlQfrVOHR1wTkrCHinKIle6aF7XSf9Nu0asd8/Bc3ebnFc+WJd/LpqVDqiuVjtVIit7L9j4YQaDjq+8al/fL7btHnkomBYeHX46CUWDrnuBsnUZBmKsN53faUnU67I7loKmw5MRio3HLPjNLODAWCB2N+A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cSGPApT3bHxbNN17i3Fmog/oBoThzzlaNwnuqIJC2yg=;
- b=ENFc5oMb1zy0jjDINFK+IgQM+eTs+dqDqtLstbt2no/htfx3DPNcoqyfCKv1b798iGlBnsbM1s573l4f0wCqTuXVAXM9mi2XWQpzdk7bnaAmWYNW5xVQEhhfS8EcLz/zPgkmtZVu/xxuMILQHsE+Xz9+a8q3rPb1dUFsdwhDl9A=
+ bh=xE+SLTtEHhOf0HJNjp4iWCAdTlyI04ys4X+syMPFgqA=;
+ b=ScLM9zwxeXyMPnGF9KcmWBH/TdwL11h5h5yAS3HqEgoxS/Zo31Z0nlyQY7kHGmdzZH3JzOE8L3+O3DMSxnGmPojrcW9KFnfTPh9eUYj0NaoVNpVWmDjohVz7qRk78ezNNMXQWMK50RQ4rjGM/OWrVpT+DFHXm7Ivsxq8IqNHvZc=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
  by CH2PR10MB4360.namprd10.prod.outlook.com (2603:10b6:610:ac::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.21; Fri, 29 Dec
- 2023 12:23:35 +0000
+ 2023 12:23:39 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::2000:9c78:19f5:176a]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::2000:9c78:19f5:176a%3]) with mapi id 15.20.7135.019; Fri, 29 Dec 2023
- 12:23:35 +0000
+ 12:23:39 +0000
 From: Anand Jain <anand.jain@oracle.com>
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org, johannes.thumshirn@wdc.com
-Subject: [PATCH v7 08/10] btrfs: add fstest for writing to a file at an offset with RST
-Date: Fri, 29 Dec 2023 17:52:48 +0530
-Message-Id: <128d200f1e8f89b6a088ecd1bc04818833a8307f.1703838752.git.anand.jain@oracle.com>
+Subject: [PATCH v7 09/10] btrfs: add fstests to write 128k to a RST filesystem
+Date: Fri, 29 Dec 2023 17:52:49 +0530
+Message-Id: <33e0709eee01e7af870efede1b880260359daaec.1703838752.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <cover.1703838752.git.anand.jain@oracle.com>
 References: <cover.1703838752.git.anand.jain@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SG3P274CA0019.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::31)
+X-ClientProxiedBy: SG3P274CA0005.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::17)
  To PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -91,72 +91,72 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CH2PR10MB4360:EE_
-X-MS-Office365-Filtering-Correlation-Id: 279ee3e4-ed8d-438b-6bab-08dc0868fa9a
+X-MS-Office365-Filtering-Correlation-Id: 97f68618-81b6-4614-db82-08dc0868fcd1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	cTv2t8P0Mhh7OnquzvsCaSL3ko2rIMxLPvOFKUFnVXrX/iEPduF114WTeYL6jD4EqAus+morpPXAbNGHWySWy3qH7QEWgZj4QKtOPSoCxntcPtE3lSy+c4ENaV2JF96lmuLFNFIgfzHrDELQvXcCEoFH4mEqvX6Kycb9LUHrbOABfYwGTSZ2ycYunzrjD9gtmxTMWDTuE1NOyiuWNU/ybOYLVDjTBD7OK5HJN0mT3tGsuW8ffboSQ1UmAru7P4uI75eXmSIZ0oAseGrqI7TYEBVeJW4gppneqL14kYaodQ1DtMlWvCxVfDs0o0hoXDvccBT/w0lAqKi2dLL4Sfu1+wF4g1fniSbkxiJFkPccKlBH2uttOxbj321ebQc2eNAQKWlH36U7la5/OHGn0HFvRVbH4jG4Ld7mcaQ5GIGQwl4L0CgPBnHFaGMkV6TginDhHKM2CPa21xW9xHjgX9ICaY5fOosy05woVMc2wDM7wAwLUswUtWxM+8i1Ih2fOA7SmJyDy4I/klf5TXrmCB3o9pEXDFoZR0Y0VLeERJQ3KVQdHtw8uBdpBCorUiPr+24Wb8E5aNN0V+KVOX9Ip2CrdFi7lxLTynFafDLtRCmeHHo=
+	/5QTOwNu89dfLI38UTbxAbfSjict9O4yrnSZriPWY7chjaLNI8lgp6nCOmxFJ1de6FDMiSY9b4IS/euBCxTJFzdbWfu/KHhpbPu3OjAUmnTUpyIdr6KdP+9h+sikYfwQ8FLMzGikLZfKBNzZWj3DswgTnELv5/336g9bf7ocBkiG1KOYXgJXkTidamLUhBpna9VQrBCzBUk3ADV+2ZCABrNAR/KAGgie/Abnk1geAAJSe3yzmQM1He14Tx6sstgtFhNDEZm0JF2eckBwoM4WsehCEZsyVr0ZplldKxOfVweez0fI164HoeuvleJUoiDsID8UJrGw1GFhr8gcrUZnYxoApp6dBvfUmXlLr5LHaijSjG2FkAQcR4bJqZgulmmHCPhUDOJYfguo/hbsib6zIqXJYA0PeoWIHe3beZRXuO9EslMqy8p08VvOiaSfI3U+PaBpdZnR0SKtNGJHFBZRopHuczQPNQX8HnrZVJPNVoiRQm3bFuNApGOzupE0Puqs5BsXIYt8d8+bbbn0Iaq5+hP/bbVGSYU9zuDzAxw+gxZXBJnxAlycCOXptD3hx3Wt9obGTF35h0PmwIBQgVjgBqrkNZW3PmtjngTMp9I0Q8U=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(376002)(396003)(346002)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(4326008)(2616005)(26005)(44832011)(8676002)(8936002)(5660300002)(2906002)(6486002)(6512007)(6506007)(6666004)(478600001)(66476007)(66556008)(66946007)(316002)(6916009)(41300700001)(38100700002)(36756003)(86362001)(21314003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?UAJGaLNEW40oW+QJqATbQOHfmi7yQbIqoicqx58jEyj8dB0VguFZWYOFrs0E?=
- =?us-ascii?Q?4B7CGDtob8PN7TpM8VhZH2Z+OUNZRJHv2tZtrPwbESkk7BIoX0WRJL6pQFQC?=
- =?us-ascii?Q?w6g2PPe3Z5llJJsF6HTwfWMq/xn/fS7kO+9juFp71rRfVlFmRrZL3R9Z9St/?=
- =?us-ascii?Q?+yHElGO8eatwLIhxVF3LUO7HLeobE1Sq0scV6Xxddr4MPOIsPWojR+xcTtsX?=
- =?us-ascii?Q?ySCnZyeuMP5wLDpr3QScQyBxzf8t8xK1CxAWyPngZqOcozKhuJKkuviOiGGj?=
- =?us-ascii?Q?lLv63tp95D7C9Dg2Gbu0hpNFmKIeCjZOWcNWnDu5T8uJ89YrcP9Wf+v45Ncu?=
- =?us-ascii?Q?qei93T4adMpXSBhw4gneEzKxsRJB/Wt1ASLIPpqr11Y8q7O5GQR+UdVsAuKN?=
- =?us-ascii?Q?ebN3HiWADeeofKl0vzXTsOGzwT7OoeRmtgcII7+C7g/ckeK3XnfFFtyrlgTH?=
- =?us-ascii?Q?wFjOotwDHLUB0kg5rShyfzok5z8gZU8H/vR8nOGQklNaUdBgUOnLz2ihemkO?=
- =?us-ascii?Q?sHrngNzrqa4ePNNTCplK3I+HvioBs2qTBImi3Jh5+RIUSK6OZ2wk1SKXFoYm?=
- =?us-ascii?Q?i86VmkozJ9/8KEETVE3bRtJRghyLVAQ/5EbKzg5a/lfMBR6PeWPrZF1Nk7ji?=
- =?us-ascii?Q?AmfKES1InXh5UlV/YlMqGcd8qx4vYcV1QCjZm+bmAUM5rjuARysqudHCVQwl?=
- =?us-ascii?Q?+zPRdPAndJpwWrqdQuEvbox7xkickTExevi1zRtHNRu0uzGhs/RDqg6RV71q?=
- =?us-ascii?Q?Wp51hKHvY/UhjtMwpKD1OanTCYD8nPwbBRTCGBRHPcARRxHmRRP/qOEU/xwU?=
- =?us-ascii?Q?8u9NqHA74AyioPOeMQ9pLobbwRUV4L2sUcz2Iq2fdXBv2J7jnAS5peEBBsG+?=
- =?us-ascii?Q?wWCoSsfPStDteqTfL2J3kgXf9vwtglctZRP4DMnlV4hPXNfmLPdWQhohDfnu?=
- =?us-ascii?Q?l1yQk8bjnqkz5QQ4WV4m1MsGBFDpH7uuU5Gh2fLZqIo4C05PSshycva7naHU?=
- =?us-ascii?Q?wQedptnlnN87iv0GtkPJvlhLDG8efasDZg1Y2dOwjsR04QkHtJlB+1FZgeZK?=
- =?us-ascii?Q?SqPPLZYpx4uYQ9WQ54mqtFQz0aKGwXqimYGKPGFBLkVncCm7HmOsSg3m6nd8?=
- =?us-ascii?Q?c8+2TUb7qBD2HmLYSBU154+yipf4iKmvlKBFE6HxV1lgTL6grpQ1pqFsn+Hz?=
- =?us-ascii?Q?Ai1KhLU6g5RqfT3NHOO0RQeIvgLjKu8KJMTmYO4tpqqWJd08TZ7n16DxYRJ6?=
- =?us-ascii?Q?cgJA+6I2LKf8uL0LPdwjfIZbja6JnU1aApMzerbLnXs24mln4rgoHaoR9x3g?=
- =?us-ascii?Q?q4sz8FXJslx8pPMYvNrKQwI+k8m6fataAVWEk+C35eZ6QKHA/6p7YJ5zhxZN?=
- =?us-ascii?Q?vyAQF0aU2dCzvPAWiu/fC7jB5rBQ3tcXNQwntsdsEmnJg6f7nJ5Jm9b16tI+?=
- =?us-ascii?Q?sOKr2Ur475gJyUhjDSvOebjvIP7fNEnwuDwy08xMLYdqfYnwskbu+iuX4qUx?=
- =?us-ascii?Q?AofV9qsxr6JPTDBbQW5AGvNvCTcMXvAEzHgc5wMEoSwauKgILFJqkKeVp741?=
- =?us-ascii?Q?40hmzFFBBnkSpFaujOVGOaZEj7+k2zqsYDjUE4FefcdsJe7tDdo4aJkKuWXj?=
- =?us-ascii?Q?Ig=3D=3D?=
+	=?us-ascii?Q?kYVzkPpefmc/UA6OmcNcyMB9G3Oa1gurKHfPSj3h5/s8hoYcC94yuNbU0oBx?=
+ =?us-ascii?Q?Iu+qnLaBuR/lyzAwNtfwNclxxZzGbs6HHw+f1iP2OUMizLq0OqfnLrV93PwK?=
+ =?us-ascii?Q?nk5KVY4l92nnHuZ/4P6qbqRrGEwgnzt1xVEntYT60wkkbUmnR2uO6Sqmslmb?=
+ =?us-ascii?Q?Ve8ss+btcemBa2qvsLupor+679/NsFYu4UTReqKVBidisMm/wvzf7qudJ4DJ?=
+ =?us-ascii?Q?25n6MmSaDxGVyv6oYTI4tB/iIzpGJDgOtY4cPQdrs2SJyDjyyNdNhBKJ8MZM?=
+ =?us-ascii?Q?eflkNGqZN1lOeRv/FBImBkT6WXiz8Bcg2S+LV+FTxuyrxO0+D8gEuMg+Gsop?=
+ =?us-ascii?Q?ayCNhctJSaNYvFIIHoq8O4R7EjiWhKdGn4K+zqDaZ8fQIlFosr88eJN6J6Da?=
+ =?us-ascii?Q?znHHLIawfezZoaqPDKCSAZnpXY1IQH56tlGB2jcgq0Cz/lVO475tMnQp7BXj?=
+ =?us-ascii?Q?Y6jClKvybh1ubOTE4ZgJ9fuEG9vswaGmHg+PAI/3KDF4wuLfe5QLzrT5fYCq?=
+ =?us-ascii?Q?wrs1H0Ux3Ekc/DzFha33QJUk4unFuneFxb7ddS+bGqnuzTSP3XBgdePWfhHa?=
+ =?us-ascii?Q?xqp7/+xugdUEFE/BYzvY3Y+F9DYATTluIl0iKvPEJqEeF8QcXqIR+Vxb7VTS?=
+ =?us-ascii?Q?U+7MPrrQ6NCNQcI7c9gCyEtNLeagVHQ+gRTOfNvABApXPDopsVzpsL2+uD+k?=
+ =?us-ascii?Q?ALGLJKdyjAfDAj6W/lW2XO0SffEuSvWodcyAJ1I8+CKko9/oWGId0UxgSy3e?=
+ =?us-ascii?Q?ctESg67/+2VHg069DOR0OsTQVkAditYigoNrosLFsj1hZa2ShE7qf18/o7dK?=
+ =?us-ascii?Q?UQw6kbFlZExZyo4j1Yjuo+szEw+MCyOjAAO2SMZs508EWfLHq/Uu3GUSCVbn?=
+ =?us-ascii?Q?eFE/jcd4Bpjn57OUzKCqKDA5M/itBTuORmN2DZ/vbdnlluXOq1jQbWkCpxJd?=
+ =?us-ascii?Q?aA3sky2wPWcywGGupDqdtQrmfHlzB4RCo4pdzEjoTqExjQ0k1+MpEPxf83UO?=
+ =?us-ascii?Q?V1ShZ7RzOeGZ2by7e2XrKcRn1tB+PPsoMzvZCpWCBW0jmVSL4qTERTAriMHD?=
+ =?us-ascii?Q?pZgWe1CJ7zSjcJDzJB70Y6V7duNz5uW3mKeDwR8LGhTe12S4hx3flDMFalHL?=
+ =?us-ascii?Q?WOA3kWz1I+Z6AoDFU9FWmIwVD0UxsGoqqR19g2QIuVZHvldAnPWBhsf+Z8Qk?=
+ =?us-ascii?Q?nbEQMXscyHI13FPllmdKqh7bNpr1sWnDBg3Vd9Q9F9GNCq/7bTF8obZ5hsXn?=
+ =?us-ascii?Q?HTKO4CR3tvpJ92mDk9y4xNX9NOtCVuufXjtunLrDOb25KHxpZUmAwsxLQXH1?=
+ =?us-ascii?Q?mclUCae45F3b64aF/sCVcrs8pHSVgX53b8mhf+K60KXqCEhQfZwgz3Blp9dZ?=
+ =?us-ascii?Q?WNDuYrh7HvjfZdnPt/i5ZRqR4CoG4L0LD3iubkaPoUo4exOp5ysUZn9Elb8E?=
+ =?us-ascii?Q?LTP1LDh8kX5m4RjPPeyUhOnjzn61txpD/27jHACJm3cy5YJR67hp30ykUnlp?=
+ =?us-ascii?Q?Me1GZQdybE959msSyjv1VdjB2dCBYNE3fshrJQapc1+atS1A0g6LIb0c6kbf?=
+ =?us-ascii?Q?DudQMET7DGb+p0wxewV3hvq4r+qfxIjcJGMpMR26yS8k1QxnHKBHFBuFWWfO?=
+ =?us-ascii?Q?zA=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	gznDOZFkMKPRhLqJ1VdpdSPF2JQiw3sVD1a9LMwVNMaxwqg+HIq2jtfPvTNsPBQZLgbzFIF/UY+0xsGXQEH5derLmOOhFO5luzetMf58xO5fsLXz3pNvgiBZOxDqWAgrQ4y89CgLlogH4Id6YH56p5BYYzz8LgKvIxRSE5XD8ZXKTFAoEXua3C1S4QfohmEOr6LbCaK+54S+axni5Qxloe6h7hl0tMccTtpyxQvCH0IMezD17Y6eYwqNIDHURJ+kAK5/OYUUwBndvDkgLyo8KJJeHNqsEF0uYMbt6mJ9meKY2HSlQ5JnQ6ny9OOLMh4ySiSrjx7DZcUmMi51kp+MwdtnZD9yxFmnLwjqC1OUTBEkGnOagsZIgirwUVs9bOLEva9fVahddKsPK6p51rljdiF5sfz8llvhbz3UfnEq9YJd8Qp/pkYtj0C3ujIE5/HVEMHD1Ayf7v68BODCCsGXmBnNQKpmrwedxN46zjE8gyyHH7gQ0yiGkrw6RTPNopGYnGb3Q5UePGpihdyLmofX22D2xqj/FXXEy6yfsywwVmYxa3y3Mbtl37FgU1mCKYR2jLVNXSDcd03Wkqgn277OwFT3KN5LUw3j1DXnLT8imVE=
+	rIAS5HwH/CBUDYfffTRihZIXa2L1BXxMOE+gI7PJ/0gNN9bM1a02PVCu/Z0lI4I6dME9hrOz2n9ySqwuYPnapqDQGoZmhevXgkq22ojXgmekjHIHS+7xSWeF7YNDRfb1ooHx6/avGfOI3LTA+3ZZxp2Ve/PXbN+pJE2EV2cYTM+h0lhDUuoMD3BEDBhzdf0PfXqMEZ/LNB/FEC1jJMppw8WF8gB/Hm3ASowqwDq8RqhUOY9FpqhAN46g0mImGBiPhUDQ4EqY3p22JeZodyq8f2uAe9JmVDe5HjPDDg58u5FLLaL/VnUNYesli16Kw0ZQxUYd9p4TlsImDNGmm/ly21U2iyhn3OzPYyjEKZI4bSrsT0tn3OKYJlGwNxxmuZqL0logsZ+gpqAyf6Qd/gvOd63mNG9sPdxqXH/Z/4LCbcjr5fWaCw22UPGP5OgiOF6rYwNxydwgGBrLH19ZKz5FpMb7Vfy8RG5Wi0RQkPvIMbNIfxdY3c7chUXTMjabbxgTdASW/NFTrnz42YuVz2s26ph7Ida4A38WRUDHF2DP/LFzPK99J/KVOT9SLzGijv0rH8ORWcxH5HQ8yglvScnXwh0V5NPBJbYpeB9E4PTHjbY=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 279ee3e4-ed8d-438b-6bab-08dc0868fa9a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 97f68618-81b6-4614-db82-08dc0868fcd1
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2023 12:23:35.4870
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Dec 2023 12:23:39.3840
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tjLJuqzDt//oI6i7K02Tuf9Aw8k9M41YPmkU7glSgp89Ba8pgkTw92+ZFEjaaeeEo0GIJ/NvfjU+WAVnaxRqYw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: mW/ATe4E+9rtq1uioIs0iVsZqghbmLgDBJC8f0HTPIdd5nkhPA0S5HF/pwO87vxiDCbtBOSMb7nh0mZD0QVsQQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4360
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-29_04,2023-12-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 malwarescore=0 spamscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312290098
-X-Proofpoint-GUID: 3_uN4B95kkDgrp2zf1Rp2SbfjhjI_395
-X-Proofpoint-ORIG-GUID: 3_uN4B95kkDgrp2zf1Rp2SbfjhjI_395
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 adultscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312290098
+X-Proofpoint-GUID: buCNF2gBxSKDXxt_P3pEmLWY2-cTiIGf
+X-Proofpoint-ORIG-GUID: buCNF2gBxSKDXxt_P3pEmLWY2-cTiIGf
 
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Add a fstest writing 4k at offset 64k to a file with one RAID tripe
-already pre-filled for a raid-stripe-tree formatted file system.
+Add a test writing 128k to a file on an empty filesystem formatted with a
+raid-stripe-tree.
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 Reviewed-by: Anand Jain <anand.jain@oracle.com>
@@ -164,27 +164,26 @@ Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 [Fixed the test statement and trailing white space in the .out file.]
 ---
- tests/btrfs/306     | 62 +++++++++++++++++++++++++++++++++++++
- tests/btrfs/306.out | 75 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 137 insertions(+)
- create mode 100755 tests/btrfs/306
- create mode 100644 tests/btrfs/306.out
+ tests/btrfs/307     | 59 ++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/307.out | 65 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 124 insertions(+)
+ create mode 100755 tests/btrfs/307
+ create mode 100644 tests/btrfs/307.out
 
-diff --git a/tests/btrfs/306 b/tests/btrfs/306
+diff --git a/tests/btrfs/307 b/tests/btrfs/307
 new file mode 100755
-index 000000000000..e2a9f804ac8b
+index 000000000000..30656bcf0d96
 --- /dev/null
-+++ b/tests/btrfs/306
-@@ -0,0 +1,62 @@
++++ b/tests/btrfs/307
+@@ -0,0 +1,59 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +# Copyright (c) 2023 Western Digital Cooperation.  All Rights Reserved.
 +#
-+# FS QA Test 306
++# FS QA Test 307
 +#
-+# Test on-disk layout of RAID Stripe Tree Metadata by writing 4k to an emppty
-+# file at offset 64k with one stripe pre-filled on an otherwise pristine
-+# filesystem.
++# Test on-disk layout of RAID Stripe Tree Metadata by writing 128k to a new
++# file on a pristine filesystem
 +#
 +. ./common/preamble
 +_begin_fstest auto quick raid remount volume raid-stripe-tree
@@ -203,7 +202,7 @@ index 000000000000..e2a9f804ac8b
 +
 +test $(_get_page_size) -eq 4096 || _notrun "this tests requires 4k pagesize"
 +
-+test_4k_write_64koff()
++test_128k_write()
 +{
 +	local profile=$1
 +	local ndevs=$2
@@ -214,10 +213,7 @@ index 000000000000..e2a9f804ac8b
 +	_scratch_pool_mkfs -d $profile -m $profile -O raid-stripe-tree
 +	_scratch_mount
 +
-+	# precondition one stripe
-+	$XFS_IO_PROG -fc "pwrite 0 64k" "$SCRATCH_MNT/bar" | _filter_xfs_io
-+
-+	$XFS_IO_PROG -fc "pwrite 64k 4k" "$SCRATCH_MNT/foo" | _filter_xfs_io
++	$XFS_IO_PROG -fc "pwrite 0 128k" "$SCRATCH_MNT/foo" | _filter_xfs_io
 +
 +	_scratch_cycle_mount
 +	md5sum "$SCRATCH_MNT/foo" | _filter_scratch
@@ -230,28 +226,27 @@ index 000000000000..e2a9f804ac8b
 +
 +	_scratch_dev_pool_put
 +}
-+echo "= Test 4k write to an empty file at offset 64k with one stripe prefilled ="
-+test_4k_write_64koff raid0 2
-+test_4k_write_64koff raid1 2
-+test_4k_write_64koff raid10 4
++
++echo "= Test 128k write to empty file  ="
++test_128k_write raid0 2
++test_128k_write raid1 2
++test_128k_write raid10 4
 +
 +# success, all done
 +status=0
 +exit
-diff --git a/tests/btrfs/306.out b/tests/btrfs/306.out
+diff --git a/tests/btrfs/307.out b/tests/btrfs/307.out
 new file mode 100644
-index 000000000000..25065674c77b
+index 000000000000..2815d17d7f03
 --- /dev/null
-+++ b/tests/btrfs/306.out
-@@ -0,0 +1,75 @@
-+QA output created by 306
-+= Test 4k write to an empty file at offset 64k with one stripe prefilled =
++++ b/tests/btrfs/307.out
+@@ -0,0 +1,65 @@
++QA output created by 307
++= Test 128k write to empty file  =
 +==== Testing raid0 ====
-+wrote 65536/65536 bytes at offset 0
++wrote 131072/131072 bytes at offset 0
 +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 4096/4096 bytes at offset 65536
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+381b0e7d72cb4f75286fe2b445e8d92a  SCRATCH_MNT/foo
++d48858312a922db7eb86377f638dbc9f  SCRATCH_MNT/foo
 +
 +raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0)
 +leaf XXXXXXXXX items X free space XXXXX generation X owner RAID_STRIPE_TREE
@@ -263,18 +258,16 @@ index 000000000000..25065674c77b
 +	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 24
 +			encoding: RAID0
 +			stripe 0 devid 1 physical XXXXXXXXX
-+	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 24
++	item 1 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 24
 +			encoding: RAID0
 +			stripe 0 devid 2 physical XXXXXXXXX
 +total bytes XXXXXXXX
 +bytes used XXXXXX
 +uuid <UUID>
 +==== Testing raid1 ====
-+wrote 65536/65536 bytes at offset 0
++wrote 131072/131072 bytes at offset 0
 +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 4096/4096 bytes at offset 65536
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+381b0e7d72cb4f75286fe2b445e8d92a  SCRATCH_MNT/foo
++d48858312a922db7eb86377f638dbc9f  SCRATCH_MNT/foo
 +
 +raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0)
 +leaf XXXXXXXXX items X free space XXXXX generation X owner RAID_STRIPE_TREE
@@ -283,11 +276,7 @@ index 000000000000..25065674c77b
 +checksum calced <CHECKSUM>
 +fs uuid <UUID>
 +chunk uuid <UUID>
-+	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
-+			encoding: RAID1
-+			stripe 0 devid 1 physical XXXXXXXXX
-+			stripe 1 devid 2 physical XXXXXXXXX
-+	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
++	item 0 key (XXXXXX RAID_STRIPE 131072) itemoff XXXXX itemsize 40
 +			encoding: RAID1
 +			stripe 0 devid 1 physical XXXXXXXXX
 +			stripe 1 devid 2 physical XXXXXXXXX
@@ -295,11 +284,9 @@ index 000000000000..25065674c77b
 +bytes used XXXXXX
 +uuid <UUID>
 +==== Testing raid10 ====
-+wrote 65536/65536 bytes at offset 0
++wrote 131072/131072 bytes at offset 0
 +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 4096/4096 bytes at offset 65536
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+381b0e7d72cb4f75286fe2b445e8d92a  SCRATCH_MNT/foo
++d48858312a922db7eb86377f638dbc9f  SCRATCH_MNT/foo
 +
 +raid stripe tree key (RAID_STRIPE_TREE ROOT_ITEM 0)
 +leaf XXXXXXXXX items X free space XXXXX generation X owner RAID_STRIPE_TREE
@@ -312,7 +299,7 @@ index 000000000000..25065674c77b
 +			encoding: RAID10
 +			stripe 0 devid 1 physical XXXXXXXXX
 +			stripe 1 devid 2 physical XXXXXXXXX
-+	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
++	item 1 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
 +			encoding: RAID10
 +			stripe 0 devid 3 physical XXXXXXXXX
 +			stripe 1 devid 4 physical XXXXXXXXX
