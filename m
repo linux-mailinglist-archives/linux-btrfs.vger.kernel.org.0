@@ -1,45 +1,45 @@
-Return-Path: <linux-btrfs+bounces-1168-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1169-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E5AA820485
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Dec 2023 12:22:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B68B820486
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Dec 2023 12:23:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04D6FB21453
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Dec 2023 11:22:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15D7C282153
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Dec 2023 11:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDDD679C2;
-	Sat, 30 Dec 2023 11:22:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B5179E0;
+	Sat, 30 Dec 2023 11:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="sQePpu8v"
+	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="XuxG69Kr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
+Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637C67481
-	for <linux-btrfs@vger.kernel.org>; Sat, 30 Dec 2023 11:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A07E79CC
+	for <linux-btrfs@vger.kernel.org>; Sat, 30 Dec 2023 11:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libero.it
 Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-16.iol.local with ESMTPA
-	id JXNUrZCqPOtSyJXNUrPljv; Sat, 30 Dec 2023 12:19:40 +0100
+	by smtp-18.iol.local with ESMTPA
+	id JXOgrgJQQtNr4JXOgrxZ8e; Sat, 30 Dec 2023 12:20:54 +0100
 x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-	t=1703935180; bh=M7fWbrxkiaQ7L2Vg7Bxz1jm6clKHf13DI1iVBp+xydc=;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+	t=1703935254; bh=lJ6HQVOhEweyvyjQW0oNnZL3vQgSh4P3cc9JUgEyGus=;
 	h=From;
-	b=sQePpu8vuntRp+FsaNnaWJT7ohmgLcXmPsdbHH97hZp0cfa8hdohzCWvzeNOSGHAz
-	 Qyz5LJXGadNbxuk9M+GSAF4FoHMg+DL2WHQSnEs2lbr5SaemUo5QrpuPxle241NpGk
-	 koIYRwUtlP0U7VDSxkYUFU6eD4NKQkE58cXclVlAdqZGpr9L+AOlqKNE5/Sm7rQtvj
-	 hgvIJwROzgpn4l4vlsHD/LCC8tKGYLzIIdpYbhPV0PztvtBFSYuaVC5pNWN12fAthR
-	 xHGgaDCAqF99oEh2gjIxZqbPUdamtqZKOusgMCTolN/LLsGe9HDPJBlzVdMIP0KJ2M
-	 GsaHwaL/gWRpg==
-X-CNFS-Analysis: v=2.4 cv=Qf+g/OXv c=1 sm=1 tr=0 ts=658ffccc cx=a_exe
+	b=XuxG69Krpo2RpXjAmNpxZaLLdYsMiK48SJP6dFlF0rEi1Ec0hppoEHff1FHhqqqHu
+	 fvcIwJeCy4T0PD1OkIvR9fCOQjwIcG91c8Bfp9MxiCeSZyh+a4usaZn51ChpI0IUjY
+	 ZsJe9BKptrdAWfVV8BqkGruqU2y5Ii5mJi4zbCKEHZJajnmz+rerQuYWUcukF3an6J
+	 Mp+NVzaCH1PV+hPJCZog6QsMpL8v1N6pXg8Jyy3x+KSDrKik7X/h0muD8//r2UBQqh
+	 alrhHcd1Gy6FTBeOYOU56xQFG1BVLh1Y+jpIZffglCcVDgYBek9D5WkwsSJOESvDMU
+	 XhcbQFhZFfinQ==
+X-CNFS-Analysis: v=2.4 cv=Y44+8DSN c=1 sm=1 tr=0 ts=658ffd16 cx=a_exe
  a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=ga8dwThMXQ2cuOZhVrQA:9 a=QEXdDO2ut3YA:10
-Message-ID: <65b5110d-a216-4b86-8c84-d8db51bdff27@inwind.it>
-Date: Sat, 30 Dec 2023 12:19:40 +0100
+ a=IkcTkHD0fZMA:10 a=afuZVMEZdzaUdAc_kMwA:9 a=QEXdDO2ut3YA:10
+Message-ID: <6e4b2c09-b820-4ba8-8117-d13f3556e426@libero.it>
+Date: Sat, 30 Dec 2023 12:20:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -48,101 +48,56 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH] [BUG] btrfs-progs: btrfs dev us: don't print uncorrect
- unallocated data
-To: linux-btrfs@vger.kernel.org
-References: <3ab02bc2189617b9d60ec6de924f60ee3899babe.1702831226.git.kreijack@inwind.it>
+Subject: Re: [PATCH 0/9][btrfs-progs] Remove unused dirstream variable
 Content-Language: en-US
-From: Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <3ab02bc2189617b9d60ec6de924f60ee3899babe.1702831226.git.kreijack@inwind.it>
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1702148009.git.kreijack@inwind.it>
+ <20231214161749.GA9795@twin.jikos.cz>
+From: Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <20231214161749.GA9795@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfFY1ka6G8V2jANxmdClvqVcTbTeQABG1m+oMZLWkfOKW7B5CmQcUWlKQwWUNaZLeIEDhuYNdk0/weHaOLkzOQzJwmwn3Ct+L1gS2mNWpkhU7VXBwDndT
- atzV7o3WS+Rm6hEcOjdg5iH8jZT0DoRALPa9h5DOdTz9huZyyTimKQI8WeW+DhDqslUSCafgzoPXuNRalgjr8LU/HpZ4GCWMpcU=
+X-CMAE-Envelope: MS4xfAqg55Y/HdMWH04+fqi/ED+RFpP7Icg8xvVpD5CBo0RSyoRcJw74zBIRW1dAcbkdXfRVxv2xmalh4REzif5noEhtjpHbPtQDXNuucF5XqbDuN+qe9RVH
+ dzgb48VjmDB87u+FV1L2Nx90H2cw200cif4rpyU3m5VhhtXferHUi6Ch0B0tGhcbYH0gW0escVou/YjWAfeOm/E6URo4OPNt0zgHPfvg9MwbM7BgIiBeMzI0
 
-On 17/12/2023 17.40, Goffredo Baroncelli wrote:
-> From: Goffredo Baroncelli <kreijack@inwind.it>
+On 14/12/2023 17.17, David Sterba wrote:
+> On Sat, Dec 09, 2023 at 07:53:20PM +0100, Goffredo Baroncelli wrote:
+>> From: Goffredo Baroncelli <kreijack@inwind.it>
+>>
+>> For historical reason, the helpers [btrfs_]open_[file_or_]dir() work with
+>> directory returning the 'fd' and a 'dirstream' variable returned by
+>> opendir(3).
+>>
+>> If the path is a file, the 'fd' is computed from open(2) and
+>> dirstream is set to NULL.
+>> If the path is a directory, first the directory is opened by opendir(3), then
+>> the 'fd' is computed using dirfd(3).
+>> However the 'dirstream' returned by opendir(3) is left open until 'fd'
+>> is not needed anymore.
+>>
+>> In near every case the 'dirstream' variable is not used. Only 'fd' is
+>> used.
+> 
+> As I'm reading dirfd manual page, dirfd returns the internal file
+> descriptor of the dirstream and it gets closed after call to closedir().
+> This means if we pass a directory and want a file descriptor then its
+> lifetime matches the correspoinding DIR.
+> 
+>> A call to close_file_or_dir() freed both 'fd' and 'dirstream'.
+>>
+>> Aim of this patch set is to getrid of this complexity; when the path of
+>> a directory is passed, the fd is get directly using open(path, O_RDONLY):
+>> so we don't need to use readdir(3) and to maintain the not used variable
+>> 'dirstream'.
+> 
+> Does this work the same way as with the dirstream?
+> 
 
-Gentle reminder
+Hi David, are you interested in this patch ? I think that it is a
+great simplification.
 
-
-> 
-> If "btrfs dev us" is invoked by a not root user, it is imposible to
-> collect the chunk info data (not enough privileges). This causes
-> "btrfs dev us" to print as "Unallocated" value the size of the disk.
-> 
-> This patch handle the case where print_device_chunks() is invoked
-> without the chunk info data, printing "Unallocated N/A":
-> 
-> Before the patch:
-> 
-> $ btrfs dev us t/
-> WARNING: cannot read detailed chunk info, per-device usage will not be shown, run as root
-> /dev/loop0, ID: 1
->     Device size:             5.00GiB
->     Device slack:              0.00B
->     Unallocated:             5.00GiB  <-- Wrong
-> 
-> $ sudo btrfs dev us t/
-> [sudo] password for ghigo:
-> /dev/loop0, ID: 1
->     Device size:             5.00GiB
->     Device slack:              0.00B
->     Data,single:             8.00MiB
->     Metadata,DUP:          512.00MiB
->     System,DUP:             16.00MiB
->     Unallocated:             4.48GiB  <-- Correct
-> 
-> After the patch:
-> $ ./btrfs dev us /tmp/t/
-> WARNING: cannot read detailed chunk info, per-device usage will not be shown, run as root
-> /dev/loop0, ID: 1
->     Device size:             5.00GiB
->     Device slack:              0.00B
->     Unallocated:                 N/A
-> 
-> $ sudo ./btrfs dev us /tmp/t/
-> [sudo] password for ghigo:
-> /dev/loop0, ID: 1
->     Device size:             5.00GiB
->     Device slack:              0.00B
->     Data,single:             8.00MiB
->     Metadata,DUP:          512.00MiB
->     System,DUP:             16.00MiB
->     Unallocated:             4.48GiB
-> ---
->   cmds/filesystem-usage.c | 18 ++++++++++++++----
->   1 file changed, 14 insertions(+), 4 deletions(-)
-> 
-> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
-> index 0db91e9c..844dc085 100644
-> --- a/cmds/filesystem-usage.c
-> +++ b/cmds/filesystem-usage.c
-> @@ -1302,10 +1302,20 @@ void print_device_chunks(const struct device_info *devinfo,
->   		allocated += size;
->   
->   	}
-> -	pr_verbose(LOG_DEFAULT, "   Unallocated: %*s%10s\n",
-> -		(int)(20 - strlen("Unallocated")), "",
-> -		pretty_size_mode(devinfo->size - allocated,
-> -			unit_mode | UNITS_NEGATIVE));
-> +
-> +	/*
-> +	 * If chunkinfos is empty, we cannot compute the unallocated
-> +	 * size, so don't print uncorrect data.
-> +	 */
-> +	if (chunkinfos->length == 0)
-> +		pr_verbose(LOG_DEFAULT, "   Unallocated: %*s%10s\n",
-> +			(int)(20 - strlen("Unallocated")), "",
-> +			"N/A");
-> +	else
-> +		pr_verbose(LOG_DEFAULT, "   Unallocated: %*s%10s\n",
-> +			(int)(20 - strlen("Unallocated")), "",
-> +			pretty_size_mode(devinfo->size - allocated,
-> +				unit_mode | UNITS_NEGATIVE));
->   }
->   
->   void print_device_sizes(const struct device_info *devinfo, unsigned unit_mode)
+BR
 
 -- 
 gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
