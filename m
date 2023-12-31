@@ -1,105 +1,83 @@
-Return-Path: <linux-btrfs+bounces-1171-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1172-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C335E820B7E
-	for <lists+linux-btrfs@lfdr.de>; Sun, 31 Dec 2023 15:13:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68012820C32
+	for <lists+linux-btrfs@lfdr.de>; Sun, 31 Dec 2023 18:37:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBF81B2107B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 31 Dec 2023 14:13:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19C051F21AA8
+	for <lists+linux-btrfs@lfdr.de>; Sun, 31 Dec 2023 17:37:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7364A63B5;
-	Sun, 31 Dec 2023 14:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C398F6A;
+	Sun, 31 Dec 2023 17:36:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="vOKuWTbv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 215E76111;
-	Sun, 31 Dec 2023 14:13:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50e7e55c0f6so4960172e87.0;
-        Sun, 31 Dec 2023 06:13:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704031998; x=1704636798;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=meBsux30PDhxX/nY+Qz4C4OMxLX76pAecghMGbRF+ag=;
-        b=U3XJGaqm9oZgBQHOyNBjISKKX5SDMwToPPashQDUZCmPwhyoYUCdd8nwS7B1WavW17
-         /qmwyjAtQY0YxJzH4oEg9mGkv6o6Zr4hCsV308kSyjnrBIAYNrb+9N5HfYr59sNGr+x5
-         WsIGYieqdgJzdaXc1XDrORQrsqO6/iXW7Kshid1Fq6VcRuQnXQokvmXACev5jt33wjBJ
-         LfGbZYwzQkVwVw57cmXAUH+CKeOMLCWy4lnrHkVYmlKKp0GaIF5Qw9y8CQgbuVfC8SIM
-         XcaKhpRraCcvUTikpxS0OUqLot/RlFOZm6hCFFs7WXFOaKpi0Zx1Rtb9CB7QLIiYpemx
-         3B/Q==
-X-Gm-Message-State: AOJu0YxqXSt60icZNtZPv7ubFAvEWHuIkIIZH6boqnLnKYPvDGLCIV9Y
-	SYDQviE3Bitnuc4S/Ay3zLfsojgCAfG+Nw==
-X-Google-Smtp-Source: AGHT+IG5QwHH7aqkp9PoGlKvEMUfbZZh5KQJpCdnyER3IBUUtocebjIZZEKFC7nvj/hKT8A3MXfSJA==
-X-Received: by 2002:a05:6512:159b:b0:50e:5623:d8 with SMTP id bp27-20020a056512159b00b0050e562300d8mr4017645lfb.197.1704031997592;
-        Sun, 31 Dec 2023 06:13:17 -0800 (PST)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id z4-20020a170906434400b00a2744368bdesm4289596ejm.82.2023.12.31.06.13.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Dec 2023 06:13:17 -0800 (PST)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a22f59c6ae6so957185566b.1;
-        Sun, 31 Dec 2023 06:13:17 -0800 (PST)
-X-Received: by 2002:a17:906:218:b0:a27:76ff:6a51 with SMTP id
- 24-20020a170906021800b00a2776ff6a51mr1280120ejd.115.1704031997226; Sun, 31
- Dec 2023 06:13:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D3E58F42;
+	Sun, 31 Dec 2023 17:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	(No client certificate requested)
+	by box.fidei.email (Postfix) with ESMTPSA id 419BF80A59;
+	Sun, 31 Dec 2023 12:26:59 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+	t=1704043620; bh=rBePiq3m19xLDYg1NFE6jjWigazxJvjaHtlPnRE8KQ0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=vOKuWTbv1uVpzjAVEcMw8DcLgEbWU3WJmkaVOO7tr8HLtA55nKeK2ACIhRU541JT/
+	 6+a2Kn2wuBlI19NsYzCdD5n0YdhORpAluSGO9jUJ49JzJWA1ZH8RccCakllvPPFRc8
+	 tcsz3zlHPCw2KZnz8d5AvjsVrQ5mvgEC/ciziHN36ClgzbLDKmjjPt2+T+8V0f0Uid
+	 LqlFoSOLDKGs/D1yMMBgrBnOVjYA8E669Wqo5zym9PH7bNlb8Mg1SC5607/CK9rCan
+	 DQxLabPoYRn3a6t26e3eDw40jrB0X5DONmQW0Hk2i2v/vayotvMvj5tId6vRppL23Z
+	 yJ6cdkqAbaoIA==
+Message-ID: <4c402f0f-1298-4dbb-b593-79e7e5233694@dorminy.me>
+Date: Sun, 31 Dec 2023 12:26:57 -0500
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <f09fb4edd69cf42fbb816e806384f79340e9d2b4.1703979415.git.wqu@suse.com>
-In-Reply-To: <f09fb4edd69cf42fbb816e806384f79340e9d2b4.1703979415.git.wqu@suse.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Sun, 31 Dec 2023 09:12:40 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je9vT-VwVtkqj2pszP08kmk9npPkf-OsSwe3G93m0YsxXw@mail.gmail.com>
-Message-ID: <CAEg-Je9vT-VwVtkqj2pszP08kmk9npPkf-OsSwe3G93m0YsxXw@mail.gmail.com>
-Subject: Re: [PATCH] fstests: btrfs: remove test case btrfs/131
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH RFC v2 00/16] btrfs: fscrypt integration status
+To: Stephen Andary <stephen@jamminmusic.com>
+Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, kernel-team@fb.com,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ osandov@osandov.com
+References: <CAH6pm79WsviF-L3kq+peAiSgZsrHbNfPzeYWNEE6KU=TRhiyVw@mail.gmail.com>
+Content-Language: en-US
+From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <CAH6pm79WsviF-L3kq+peAiSgZsrHbNfPzeYWNEE6KU=TRhiyVw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Dec 30, 2023 at 6:37=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
->
-> Test case btrfs/131 is a quick tests for v1/v2 free space related
-> behavior, including the mount time conversion and disabling of v2 space
-> cache.
->
-> However there are two problems, mostly related to the v2 cache clearing.
->
-> - There are some features with hard dependency on v2 free space cache
->   Including:
->   * block-group-tree
->   * extent-tree-v2
->   * subpage support
->
->   Note those features may even not support clearing v2 cache.
->
-> - The v1 free space cache is going to be deprecated
->   Since v5.15 the default mkfs is already going v2 cache instead.
->   It won't be long before we mark v1 cache deprecated and force to
->   go v2 cache.
->
-> This makes the test case to fail unnecessarily, the false failure would
-> only grow with new features relying on v2 cache.
->
-> So here let's removing the test case completely.
->
+On 12/30/23 10:26, Stephen Andary wrote:
+> Happy Holidays. I stumbled on this public mailbox in an article, and 
+> would love to follow encryption progress in the new year.
+> Where is the best place to follow the current progress of fscrypt BTRFS 
+> integration?
+> 
+> Best,
+> Stephen
 
-Can we pair this change with a corresponding change in btrfs-progs
-that blocks using v1? I don't think it's actually worth splitting this
-change up in phases, especially when we're explicitly dropping the
-tests around it.
+Current version of the patchset is 
+https://lore.kernel.org/linux-btrfs/cover.1697480198.git.josef@toxicpanda.com/ 
+-- the patches are mailed to linux-btrfs and linux-fscrypt, I would 
+suggest subscribing to a mailing list linux-fscrypt (less traffic) andor 
+linux-btrfs at https://subspace.kernel.org/vger.kernel.org.html for 
+email updates.
 
+(You could also try using lei as described at 
+https://josefbacik.github.io/kernel/2021/10/18/lei-and-b4.html to look 
+for only relevant emails, but I don't personally know how to use lei to 
+do that.)
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Thanks for the interest!
+
+Sweet Tea
 
