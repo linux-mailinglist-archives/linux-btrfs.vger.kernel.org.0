@@ -1,124 +1,136 @@
-Return-Path: <linux-btrfs+bounces-1174-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1175-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54788211A5
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jan 2024 01:01:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84EB782152B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jan 2024 20:55:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CADC71C21CA2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jan 2024 00:00:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 615791C20DF6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jan 2024 19:55:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66803CA4A;
-	Mon,  1 Jan 2024 00:00:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D9CDDC6;
+	Mon,  1 Jan 2024 19:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L1U/ZHg3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07450C8CF;
-	Mon,  1 Jan 2024 00:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50e7c6f0487so5075970e87.3;
-        Sun, 31 Dec 2023 16:00:49 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E4FDDA3
+	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jan 2024 19:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704138930;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Fom98YZ3saOzfcMPCQNEio6JgkI9Tm86huiOm1TIpTI=;
+	b=L1U/ZHg3JWHvikHzCFVvP4SOuHsB1O64LYDDTmLfT9ic8qYWXnAHImO6nfyJITRVjLwQ13
+	S/qQO5kgDqwqnqFJl28pV7ySlvYOD7lX7sUJYwyJPaZWSwWSab6tUnpf8zs175E513r2vE
+	Vd0qo7lrv+orBYI4D5FIT0TLerD9mug=
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
+ [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-550-FNFl1xZbOEqdE8Rwtfq2oA-1; Mon, 01 Jan 2024 14:55:29 -0500
+X-MC-Unique: FNFl1xZbOEqdE8Rwtfq2oA-1
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-204047a3789so11597853fac.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 01 Jan 2024 11:55:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704067248; x=1704672048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GB5pl5ZTuPfaCfWoS7lZD2imOyQWT9+xStwkcEg2vuI=;
-        b=HCkPpBNM9S7GttJ8cRxuZjDoOlXsokwyk3ZrU3vT4DqXZLo2otiDB/Q1bnlD1JoAGg
-         DEin4/i5E4JutM/3SFIZp/HW6wcxaF890CwJMjLS1Oe45S9spQt+6ja3/q1RqevjLik/
-         i1JblIfhaB09N0rZibUHBUmj7tRlpjVWiIBZ3+uy6yyGSIPXnMwVx7cUdeKxvC67KfZJ
-         4wFQjwimpXvPeS9KB0zgL1qe4vELLkXx0eNNK/3ouLT8rI3BKAet4omIRfCNuEFDRlsp
-         5CTy4OTUwJERUjv2ZCcuo3f3QdGSMzh3HA2/nXpb88xPuA6/EBjauteeRBNPWzysGnDe
-         Zh9w==
-X-Gm-Message-State: AOJu0YzUSre4p7+3s5Q/rqzW2IPWlM99EvPkh3y5xeb2xKr3Y43jTOHl
-	JiiERaI+jT37Zkx4+l+TMfvU8awQWrwlYA==
-X-Google-Smtp-Source: AGHT+IFiQbNKDsIGVAnCPgx9QFtEyakOt7+dGjhKetQpz7REHmiUXKtQ8XHhawDuvSD1onQHdUU4rA==
-X-Received: by 2002:ac2:4d17:0:b0:50e:771e:e09e with SMTP id r23-20020ac24d17000000b0050e771ee09emr2883943lfi.125.1704067247411;
-        Sun, 31 Dec 2023 16:00:47 -0800 (PST)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id w5-20020a19c505000000b0050e7fe37a29sm1819597lfe.200.2023.12.31.16.00.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Dec 2023 16:00:47 -0800 (PST)
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e72e3d435so5927310e87.2;
-        Sun, 31 Dec 2023 16:00:47 -0800 (PST)
-X-Received: by 2002:a05:6512:3ab:b0:50e:70b4:79ce with SMTP id
- v11-20020a05651203ab00b0050e70b479cemr3177755lfp.185.1704067246967; Sun, 31
- Dec 2023 16:00:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704138928; x=1704743728;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fom98YZ3saOzfcMPCQNEio6JgkI9Tm86huiOm1TIpTI=;
+        b=hdiiYVcTYO0dCgufn1rJ4QGY7Rm910VSxl7qCQz9xMDlrZpKXwPPA2ZIhxlwH2ZqmG
+         mixBEU4LTWXgvWuFa/Y7nXpoOIporKin6gVGaCQdnG9OOAYazpvHlU3O7Gk9W/4thx3i
+         1OMkSlyR3jvfA6naFSE9+9DmCL+Y/a8Xye7oTj3HGspr3MZH7/iT0MCsy9yRbpHgWPC9
+         ajxEjEiw/tK5UDtz3CFVL6cLz4wSpO9RT9wtWlz4yXnML9+r7sYlg4Y/7/ih6A4L/G56
+         QlJp68EX3XJhB7z/SeNUNq2pUetI9D559TmOaeSixmYjt9cDRFxM037ATR68MAjMSRjT
+         JGiQ==
+X-Gm-Message-State: AOJu0YxF8gIly1ella5PWSmmdtDxX4hvMCcgK0BO22dqoS25bpjTIo5n
+	lelQ+Db7/GQO1YDPHHk2YjSgfFS0cfi+NqwpEhbReAfPcyQE1JD/5gLtXWGU2LFG+J69XQLqFP1
+	tLq2v1RFsVskG2RRoq0vhll9KYvI5pIQ=
+X-Received: by 2002:a05:6871:8210:b0:203:c722:5210 with SMTP id sp16-20020a056871821000b00203c7225210mr20073962oab.74.1704138928370;
+        Mon, 01 Jan 2024 11:55:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG7c8ZR8oiWnoADHUOdm4UGdpd3RniL9mcBAlHPE+kv5t/VY6J6FYaHasXWwHu8f8qoMWfzcA==
+X-Received: by 2002:a05:6871:8210:b0:203:c722:5210 with SMTP id sp16-20020a056871821000b00203c7225210mr20073949oab.74.1704138928046;
+        Mon, 01 Jan 2024 11:55:28 -0800 (PST)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id g33-20020a635221000000b0058ee60f8e4dsm19349836pgb.34.2024.01.01.11.55.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jan 2024 11:55:27 -0800 (PST)
+Date: Tue, 2 Jan 2024 03:55:24 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs/303: add git commit ID to _fixed_by_kernel_commit
+Message-ID: <20240101195524.6pmsefq4welawfae@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <a61891b7afa408c39921c2357d00812292068c9e.1701858258.git.fdmanana@suse.com>
+ <20231209044114.znk5wbl5fuwgf5hr@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <CAL3q7H53RjEXxRXC=x_H2qZ+aaeSgoikvoirBTRdDWW0nAmHzw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <f09fb4edd69cf42fbb816e806384f79340e9d2b4.1703979415.git.wqu@suse.com>
- <CAEg-Je9vT-VwVtkqj2pszP08kmk9npPkf-OsSwe3G93m0YsxXw@mail.gmail.com> <cea1fa09-df9c-4234-9b00-941d07afb706@suse.com>
-In-Reply-To: <cea1fa09-df9c-4234-9b00-941d07afb706@suse.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Sun, 31 Dec 2023 19:00:10 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je-xcrZ5BKN9tGETgwq-wd8NXmWehDf2AFvLO6Nhgqyc1Q@mail.gmail.com>
-Message-ID: <CAEg-Je-xcrZ5BKN9tGETgwq-wd8NXmWehDf2AFvLO6Nhgqyc1Q@mail.gmail.com>
-Subject: Re: [PATCH] fstests: btrfs: remove test case btrfs/131
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H53RjEXxRXC=x_H2qZ+aaeSgoikvoirBTRdDWW0nAmHzw@mail.gmail.com>
 
-On Sun, Dec 31, 2023 at 5:14=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
->
->
->
-> On 2024/1/1 00:42, Neal Gompa wrote:
-> > On Sat, Dec 30, 2023 at 6:37=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
-> >>
-> >> Test case btrfs/131 is a quick tests for v1/v2 free space related
-> >> behavior, including the mount time conversion and disabling of v2 spac=
-e
-> >> cache.
-> >>
-> >> However there are two problems, mostly related to the v2 cache clearin=
-g.
-> >>
-> >> - There are some features with hard dependency on v2 free space cache
-> >>    Including:
-> >>    * block-group-tree
-> >>    * extent-tree-v2
-> >>    * subpage support
-> >>
-> >>    Note those features may even not support clearing v2 cache.
-> >>
-> >> - The v1 free space cache is going to be deprecated
-> >>    Since v5.15 the default mkfs is already going v2 cache instead.
-> >>    It won't be long before we mark v1 cache deprecated and force to
-> >>    go v2 cache.
-> >>
-> >> This makes the test case to fail unnecessarily, the false failure woul=
-d
-> >> only grow with new features relying on v2 cache.
-> >>
-> >> So here let's removing the test case completely.
-> >>
+On Fri, Dec 29, 2023 at 12:59:44PM +0000, Filipe Manana wrote:
+> On Sat, Dec 9, 2023 at 4:41 AM Zorro Lang <zlang@redhat.com> wrote:
 > >
-> > Can we pair this change with a corresponding change in btrfs-progs
-> > that blocks using v1? I don't think it's actually worth splitting this
-> > change up in phases, especially when we're explicitly dropping the
-> > tests around it.
->
-> That sounds pretty reasonable.
->
-> I'll craft one to deprecate v1 cache in progs too.
->
+> > On Wed, Dec 06, 2023 at 10:24:44AM +0000, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > >
+> > > The kernel patch for this test was merged into 6.7-rc4, so replace the
+> > > "xxxxxxxxxxxx" stub with the commit id.
+> > >
+> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > > ---
+> >
+> > Reviewed-by: Zorro Lang <zlang@redhat.com>
+> 
+> What happened to this patch? It was not merged in the last 2 for-next
+> branch updates.
 
-As part of the deprecation, it should probably be difficult to use v1
-cache and if we're not already automatically migrating people to v2,
-we should probably start doing that.
+Sorry, it was missed, it'll be in next release.
 
+Thanks,
+Zorro
 
+> 
+> Thanks.
+> 
+> >
+> > >  tests/btrfs/303 | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/tests/btrfs/303 b/tests/btrfs/303
+> > > index b9d6c61d..521d49d0 100755
+> > > --- a/tests/btrfs/303
+> > > +++ b/tests/btrfs/303
+> > > @@ -15,7 +15,7 @@ _begin_fstest auto quick snapshot subvol qgroup
+> > >  _supported_fs btrfs
+> > >  _require_scratch
+> > >
+> > > -_fixed_by_kernel_commit xxxxxxxxxxxx \
+> > > +_fixed_by_kernel_commit 8049ba5d0a28 \
+> > >       "btrfs: do not abort transaction if there is already an existing qgroup"
+> > >
+> > >  _scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
+> > > --
+> > > 2.40.1
+> > >
+> > >
+> >
+> 
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
 
