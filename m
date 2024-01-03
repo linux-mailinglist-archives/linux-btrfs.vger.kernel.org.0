@@ -1,62 +1,62 @@
-Return-Path: <linux-btrfs+bounces-1204-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECE4C823926
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 00:28:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6723E823928
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 00:29:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EFC01C2484D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jan 2024 23:28:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF20C1F25AC8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jan 2024 23:29:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3D9200C6;
-	Wed,  3 Jan 2024 23:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ADDE20322;
+	Wed,  3 Jan 2024 23:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BS/MAECR";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BS/MAECR"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nx+rfJMR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LYnBnPnV"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36CFA1F926;
-	Wed,  3 Jan 2024 23:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115D12030E;
+	Wed,  3 Jan 2024 23:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0C52221ECA;
-	Wed,  3 Jan 2024 23:28:19 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E9C6221EDC;
+	Wed,  3 Jan 2024 23:28:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704324499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1704324504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=frgVRPdp70OVgJksCxSW6XCCaTKoGsaFs4KP1Eow2jE=;
-	b=BS/MAECR5qZgfeBcU+viUNd2YXUBJYA7trmLUcWM4UZRKMTXMfLTCoPTsvcGmm9+G/WMJW
-	7Ox/daEyCnaezMGFvJjjoYAn3sJ/UC9B+MYRhN2L0QsbN0TGA0LTl35v3URUUXqp7zCDLv
-	5x62EnAjCPD4OTssaLQ+ODyIO58sqcM=
+	bh=kffFtRl5m4ojqwep18pNVD5nd1xQvcq1dn2rbQ2uvyg=;
+	b=nx+rfJMRpwMPJ8dV77fDDyBee3QI5eZGjDNbQfFq00eSUb8xC6D6d6egE2OCZfHfjC+RQC
+	ibFW76/25K3qcpo8JECE7ZFGP1C7Pmzou9NiG/Zoul4gFCuKfbqERrrIQZBgTKmNX8NNHu
+	/48GCfei9/0B2Zp4R6AelkmetoeMaXg=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704324499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1704324503; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=frgVRPdp70OVgJksCxSW6XCCaTKoGsaFs4KP1Eow2jE=;
-	b=BS/MAECR5qZgfeBcU+viUNd2YXUBJYA7trmLUcWM4UZRKMTXMfLTCoPTsvcGmm9+G/WMJW
-	7Ox/daEyCnaezMGFvJjjoYAn3sJ/UC9B+MYRhN2L0QsbN0TGA0LTl35v3URUUXqp7zCDLv
-	5x62EnAjCPD4OTssaLQ+ODyIO58sqcM=
+	bh=kffFtRl5m4ojqwep18pNVD5nd1xQvcq1dn2rbQ2uvyg=;
+	b=LYnBnPnVhFpZW9oao06138VQyeY2hm5s1vXU7x5mRFIBZk6W6yQOC3ppDAhQPApbKJj1Gh
+	CEJjKgMIziY14uWWrlsVi4IFu3KraQtIvBnuzSwkmhQejWpoW+IqubP+8zt+p4x06X0w4c
+	58pjzp/QkXUmhCU62lMw+Bp72GWBxf4=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4FD1C13AA6;
-	Wed,  3 Jan 2024 23:28:14 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C099D1398A;
+	Wed,  3 Jan 2024 23:28:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ICGdMI7tlWWXTgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 03 Jan 2024 23:28:14 +0000
+	id gMJOGZPtlWWXTgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 03 Jan 2024 23:28:19 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -66,9 +66,9 @@ To: linux-btrfs@vger.kernel.org,
 	David.Laight@ACULAB.COM,
 	ddiss@suse.de,
 	geert@linux-m68k.org
-Subject: [PATCH v3 1/4] kstrtox: always skip the leading "0x" even if no more valid chars
-Date: Thu,  4 Jan 2024 09:57:48 +1030
-Message-ID: <9076fa9d3d2d3b2574386f4850a45f7902f6503c.1704324320.git.wqu@suse.com>
+Subject: [PATCH v3 2/4] kstrtox: introduce a safer version of memparse()
+Date: Thu,  4 Jan 2024 09:57:49 +1030
+Message-ID: <4960b36916d55e22be08fe1689b81e0eefb47578.1704324320.git.wqu@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1704324320.git.wqu@suse.com>
 References: <cover.1704324320.git.wqu@suse.com>
@@ -109,74 +109,243 @@ X-Spamd-Result: default: False [1.69 / 50.00];
 	 BAYES_HAM(-3.00)[100.00%];
 	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="BS/MAECR"
+	dkim=pass header.d=suse.com header.s=susede1 header.b=LYnBnPnV
 X-Spam-Level: *
-X-Rspamd-Queue-Id: 0C52221ECA
+X-Rspamd-Queue-Id: E9C6221EDC
 
-Currently the invalid string "0x" (only hex prefix, no valid chars
-followed) would make _parse_integer_fixup_radix() to treat it as octal.
+[BUGS]
+Function memparse() lacks error handling:
 
-This is due to the fact that the function would only auto-detect hex if
-and only if there is any valid hex char after "0x".
-Or it would only go octal instead.
+- If no valid number string at all
+  In that case @retptr would just be updated and return value would be
+  zero.
 
-Thankfully this won't affect our unit test, as "0x" would still be
-treated as failure (-EINVAL) anyway:
+- No overflown detection
+  This applies to both the number string part, and the suffixes part.
+  And since we have no way to indicate errors, we can get weird results
+  like:
 
-- Old code treats "0x" as '0' with tailing 'x'
-  Thus return -EINVAL due to the tailing 'x'.
+  	"25E" -> 10376293541461622784 (9E)
 
-- New code treats "0x" as "0x" suffix with nothing following up
-  Thus return -EINVAL due to no valid string.
+  This is due to the fact that for "E" suffix, there is only 4 bits
+  left, and 25 with 60 bits left shift would lead to overflow.
 
-But for the incoming memparse_safe(), the remaining string would still
-be consumed by the caller, and we need to properly treat "0x" as an
-invalid string.
+[CAUSE]
+The root cause is already mentioned in the comments of the function, the
+usage of simple_strtoull() is the source of evil.
+Furthermore the function prototype is no good either, just returning an
+unsigned long long gives us no way to indicate an error.
 
-So this patch would make _parse_integer_fixup_radix() to forcefully go
-hex no matter if there is any valid char following.
+[FIX]
+Due to the prototype limits, we can not have a drop-in replacement for
+memparse().
 
-And there is a also copy of _parse_integer_fixup_radix() inside
-arch/x86/boot/string.c, to keep the code consistent this patch would
-also modify that copy.
+This patch can only help by introduce a new helper, memparse_safe(), and
+mark the old memparse() deprecated.
 
-Thankfully for that copy in arch/x86/boot/string.c, it's only doing
-kstrtoll(), thus there would be no behavior change, just as explained
-above.
+The new memparse_safe() has the following improvement:
+
+- Invalid string detection
+  If no number string can be detected at all, -EINVAL would be returned.
+
+- Better overflow detection
+  Both the string part and the extra left shift would have overflow
+  detection.
+  Any overflow would result -ERANGE.
+
+- Safer default suffix selection
+  The helper allows the caller to choose the suffixes that they want to
+  use.
+  But only "KMGTP" are recommended by default since the "E" leaves only
+  4 bits before overflow.
+  For those callers really know what they are doing, they can still
+  manually to include all suffixes.
+
+Due to the prototype change, callers should migrate to the new one and
+change their code and add extra error handling.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: David Disseldorp <ddiss@suse.de>
 ---
- arch/x86/boot/string.c | 2 +-
- lib/kstrtox.c          | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ include/linux/kernel.h  |  8 +++-
+ include/linux/kstrtox.h | 15 +++++++
+ lib/cmdline.c           |  5 ++-
+ lib/kstrtox.c           | 96 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 122 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/boot/string.c b/arch/x86/boot/string.c
-index 1c8541ae3b3a..49750ef697bb 100644
---- a/arch/x86/boot/string.c
-+++ b/arch/x86/boot/string.c
-@@ -233,7 +233,7 @@ static const char *_parse_integer_fixup_radix(const char *s, unsigned int *base)
- {
- 	if (*base == 0) {
- 		if (s[0] == '0') {
--			if (_tolower(s[1]) == 'x' && isxdigit(s[2]))
-+			if (_tolower(s[1]) == 'x')
- 				*base = 16;
- 			else
- 				*base = 8;
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index d9ad21058eed..b1b6da60ea43 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -201,7 +201,13 @@ void do_exit(long error_code) __noreturn;
+ 
+ extern int get_option(char **str, int *pint);
+ extern char *get_options(const char *str, int nints, int *ints);
+-extern unsigned long long memparse(const char *ptr, char **retptr);
++
++/*
++ * DEPRECATED, lack of any kind of error handling.
++ *
++ * Use memparse_safe() from lib/kstrtox.c instead.
++ */
++extern __deprecated unsigned long long memparse(const char *ptr, char **retptr);
+ extern bool parse_option_str(const char *str, const char *option);
+ extern char *next_arg(char *args, char **param, char **val);
+ 
+diff --git a/include/linux/kstrtox.h b/include/linux/kstrtox.h
+index 7fcf29a4e0de..53a1e059dd31 100644
+--- a/include/linux/kstrtox.h
++++ b/include/linux/kstrtox.h
+@@ -9,6 +9,21 @@
+ int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
+ int __must_check _kstrtol(const char *s, unsigned int base, long *res);
+ 
++enum memparse_suffix {
++	MEMPARSE_SUFFIX_K = 1 << 0,
++	MEMPARSE_SUFFIX_M = 1 << 1,
++	MEMPARSE_SUFFIX_G = 1 << 2,
++	MEMPARSE_SUFFIX_T = 1 << 3,
++	MEMPARSE_SUFFIX_P = 1 << 4,
++	MEMPARSE_SUFFIX_E = 1 << 5,
++};
++
++#define MEMPARSE_SUFFIXES_DEFAULT (MEMPARSE_SUFFIX_K | MEMPARSE_SUFFIX_M |\
++				   MEMPARSE_SUFFIX_G | MEMPARSE_SUFFIX_T |\
++				   MEMPARSE_SUFFIX_P)
++
++int __must_check memparse_safe(const char *s, enum memparse_suffix suffixes,
++			       unsigned long long *res, char **retptr);
+ int __must_check kstrtoull(const char *s, unsigned int base, unsigned long long *res);
+ int __must_check kstrtoll(const char *s, unsigned int base, long long *res);
+ 
+diff --git a/lib/cmdline.c b/lib/cmdline.c
+index 90ed997d9570..d379157de349 100644
+--- a/lib/cmdline.c
++++ b/lib/cmdline.c
+@@ -139,12 +139,15 @@ char *get_options(const char *str, int nints, int *ints)
+ EXPORT_SYMBOL(get_options);
+ 
+ /**
+- *	memparse - parse a string with mem suffixes into a number
++ *	memparse - DEPRECATED, parse a string with mem suffixes into a number
+  *	@ptr: Where parse begins
+  *	@retptr: (output) Optional pointer to next char after parse completes
+  *
++ *	There is no way to handle errors, and no overflown detection and string
++ *	sanity checks.
+  *	Parses a string into a number.  The number stored at @ptr is
+  *	potentially suffixed with K, M, G, T, P, E.
++ *
+  */
+ 
+ unsigned long long memparse(const char *ptr, char **retptr)
 diff --git a/lib/kstrtox.c b/lib/kstrtox.c
-index d586e6af5e5a..41c9a499bbf3 100644
+index 41c9a499bbf3..a1e4279f52b3 100644
 --- a/lib/kstrtox.c
 +++ b/lib/kstrtox.c
-@@ -27,7 +27,7 @@ const char *_parse_integer_fixup_radix(const char *s, unsigned int *base)
- {
- 	if (*base == 0) {
- 		if (s[0] == '0') {
--			if (_tolower(s[1]) == 'x' && isxdigit(s[2]))
-+			if (_tolower(s[1]) == 'x')
- 				*base = 16;
- 			else
- 				*base = 8;
+@@ -113,6 +113,102 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+ 	return 0;
+ }
+ 
++/**
++ * memparse_safe - convert a string to an unsigned long long, safer version of
++ * memparse()
++ *
++ * @s:		The start of the string. Must be null-terminated.
++ *		The base would be determined automatically, if it starts with
++ *		"0x" the base would be 16, if it starts with "0" the base
++ *		would be 8, otherwise the base would be 10.
++ *		After a valid number string, there can be at most one
++ *		case-insensive suffix character, specified by the @suffixes
++ *		parameter.
++ *
++ * @suffixes:	The suffixes which should be parsed. Use logical ORed
++ *		memparse_suffix enum to indicate the supported suffixes.
++ *		The suffixes are case-insensive, all 2 ^ 10 based.
++ *		Supported ones are "KMGPTE".
++ *		NOTE: If one suffix out of the supported one is hit, it would
++ *		end the parse normally, with @retptr pointed to the unsupported
++ *		suffix.
++ *
++ * @res:	Where to write the result.
++ *
++ * @retptr:	(output) Optional pointer to the next char after parse completes.
++ *
++ * Return 0 if any valid numberic string can be parsed, and @retptr updated.
++ * Return -INVALID if no valid number string can be found.
++ * Return -ERANGE if the number overflows.
++ * For minus return values, @retptr would not be updated.
++ */
++noinline int memparse_safe(const char *s, enum memparse_suffix suffixes,
++			   unsigned long long *res, char **retptr)
++{
++	unsigned long long value;
++	unsigned int rv;
++	int shift = 0;
++	int base = 0;
++
++	s = _parse_integer_fixup_radix(s, &base);
++	rv = _parse_integer(s, base, &value);
++	if (rv & KSTRTOX_OVERFLOW)
++		return -ERANGE;
++	if (rv == 0)
++		return -EINVAL;
++
++	s += rv;
++	switch (*s) {
++	case 'K':
++	case 'k':
++		if (!(suffixes & MEMPARSE_SUFFIX_K))
++			break;
++		shift = 10;
++		break;
++	case 'M':
++	case 'm':
++		if (!(suffixes & MEMPARSE_SUFFIX_M))
++			break;
++		shift = 20;
++		break;
++	case 'G':
++	case 'g':
++		if (!(suffixes & MEMPARSE_SUFFIX_G))
++			break;
++		shift = 30;
++		break;
++	case 'T':
++	case 't':
++		if (!(suffixes & MEMPARSE_SUFFIX_T))
++			break;
++		shift = 40;
++		break;
++	case 'P':
++	case 'p':
++		if (!(suffixes & MEMPARSE_SUFFIX_P))
++			break;
++		shift = 50;
++		break;
++	case 'E':
++	case 'e':
++		if (!(suffixes & MEMPARSE_SUFFIX_E))
++			break;
++		shift = 60;
++		break;
++	}
++	if (shift) {
++		s++;
++		if (value >> (64 - shift))
++			return -ERANGE;
++		value <<= shift;
++	}
++	*res = value;
++	if (retptr)
++		*retptr = (char *)s;
++	return 0;
++}
++EXPORT_SYMBOL(memparse_safe);
++
+ /**
+  * kstrtoull - convert a string to an unsigned long long
+  * @s: The start of the string. The string must be null-terminated, and may also
 -- 
 2.43.0
 
