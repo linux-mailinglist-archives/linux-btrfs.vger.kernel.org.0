@@ -1,71 +1,42 @@
-Return-Path: <linux-btrfs+bounces-1249-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1250-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E467F82493D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 20:49:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61CD582494A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 20:55:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64E06B2340C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 19:49:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EBDE285AA1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 19:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC012C69B;
-	Thu,  4 Jan 2024 19:48:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11DD62C18E;
+	Thu,  4 Jan 2024 19:55:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="ttrQcyTI"
+	dkim=pass (1024-bit key) header.d=tiscali.it header.i=@tiscali.it header.b="vLRgprRJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAF092C1B5
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Jan 2024 19:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-28bec6ae0ffso609967a91.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 04 Jan 2024 11:48:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1704397734; x=1705002534; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LI3CcEGC+c03glOk3zIu9Fwj+YgfZfBtc/M+MkavCyo=;
-        b=ttrQcyTI92As2AAoSMDvjvlTlKTuc8hvztIRuqnPcB0g2APqIdGFDei+RuoS8RtgZ+
-         n7DOH3d8nXEOK/vZS0Z38SKXxjxDICMu/8zXJ4eMyElAHH/TZmVNXM8AUNfAskC+36mw
-         ksHb9j9fdUCiWwaXJTIMtq7tSR5M5i4ds5yfImxyg3hhBDOjwS1BYN5B3OAFFDFw10g2
-         Wu2R6lUL0T9ybVjifYwkW7VQQ97b+9N6YhwbjtIZbMLhbhLaQF+H69+A08h3fZ+bBy2y
-         EX+c4vPRfOEyCmHZY7hPTCPeeQfuyT12u6AGTpOrH1s6AN4MDZwZztVPuWMQ0FS5c+o4
-         VyNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704397734; x=1705002534;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LI3CcEGC+c03glOk3zIu9Fwj+YgfZfBtc/M+MkavCyo=;
-        b=vHmK+jDMjEs2ljfs+O1BNDDcFqd6/lvqBfxUxhQ9P/PbYTO9XCzimoi08XJ7TPE4NA
-         eMndvQEtmvq++cQw+tDtyw/Jna4VgPOqdQ4/Qr8IOSS2E8kVnyo8OBbz0AD49DL3BIZM
-         Tj1pwvIIIe2rOicntWFaAyv94bI89BHufcYiu5kXclVh3jFEHPFhIVgLWX1SwHjwD33l
-         nl06j2eaHbQlaC3DTz1ec+dzhR4h5BnhBDXyDlbd2D47jB1O+vyTqZ7b3Zzx2g5iRS8a
-         +Nj9CrOP3D4l9w1W205vD4RKnGa+Rm1Giky0B/qfIPwBSlj9te/DMr0mnT17WlyGFGGZ
-         UD8w==
-X-Gm-Message-State: AOJu0YxprgH2wayedJ/eUWPONg+tJmDY6cC07VRAquJQQhaGhOqJjKCL
-	eK6HwJcj+Ijkd3wELS6iWYO7vzYBo7Te8mhHN7qmyH0e3JY=
-X-Google-Smtp-Source: AGHT+IHZidQhAveur2y7CgNS7XOWgYd+982U17pB2NlJggVzgKYxikGlnaiJvY1/JyNL4VSzWU7ZpQ==
-X-Received: by 2002:a17:90a:fe18:b0:28c:9080:bd06 with SMTP id ck24-20020a17090afe1800b0028c9080bd06mr944283pjb.55.1704397734616;
-        Thu, 04 Jan 2024 11:48:54 -0800 (PST)
-Received: from telecaster.hsd1.wa.comcast.net ([2620:10d:c090:400::4:ff66])
-        by smtp.gmail.com with ESMTPSA id gf23-20020a17090ac7d700b0028c89298d36sm98431pjb.27.2024.01.04.11.48.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 11:48:54 -0800 (PST)
-From: Omar Sandoval <osandov@osandov.com>
+Received: from smtp.tiscali.it (michael.mail.tiscali.it [213.205.33.246])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508FC2C1A8
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Jan 2024 19:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tiscali.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tiscali.it
+Received: from venice.bhome ([84.220.171.3])
+	by michael.mail.tiscali.it with 
+	id Wjuc2B01704l9eU01jucZR; Thu, 04 Jan 2024 19:54:37 +0000
+X-Spam-Final-Verdict: clean
+X-Spam-State: 0
+X-Spam-Score: -100
+X-Spam-Verdict: clean
+x-auth-user: kreijack@tiscali.it
+From: Goffredo Baroncelli <kreijack@tiscali.it>
 To: linux-btrfs@vger.kernel.org
-Cc: kernel-team@fb.com
-Subject: [PATCH v2 2/2] btrfs: avoid copying BTRFS_ROOT_SUBVOL_DEAD flag to snapshot of subvolume being deleted
-Date: Thu,  4 Jan 2024 11:48:47 -0800
-Message-ID: <eb4387abc3e524b054bce9e3ce318f26838b9179.1704397423.git.osandov@fb.com>
+Cc: Anand Jain <anand.jain@oracle.com>,
+	Goffredo Baroncelli <kreijack@inwind.it>
+Subject: [PATCH] btrfs-progs: btrfs dev us: don't print uncorrect unallocated data
+Date: Thu,  4 Jan 2024 20:53:44 +0100
+Message-ID: <f862a81c8ac4b63b2cca2096ffb75907ae899c95.1704398024.git.kreijack@inwind.it>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1704397423.git.osandov@fb.com>
-References: <cover.1704397423.git.osandov@fb.com>
+Reply-To: Goffredo Baroncelli <kreijack@libero.it>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -73,112 +44,95 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tiscali.it; s=smtp;
+	t=1704398077; bh=htHPWGoPKhqRB2sVODRN5bx0bOzdIkzuoc0PcuCCZYg=;
+	h=From:To:Cc:Subject:Date:Reply-To;
+	b=vLRgprRJLygD74FsNb2yUWxoFzWpI/T1ry5S9KUsu1139qrR5LsUHw3gjkEiJSYQe
+	 iZmBs2NH/DbT4QO1I9bkh9KA16X/AY0gSFnHHEWaLLGy8WmbSiEk+I9IaEKhDnJUfl
+	 oX9wAFo1tC9S5DzZVuGoan1kT0IfAcl2D0xr/HDM=
 
-From: Omar Sandoval <osandov@fb.com>
+From: Goffredo Baroncelli <kreijack@inwind.it>
 
-Sweet Tea spotted a race between subvolume deletion and snapshotting
-that can result in the root item for the snapshot having the
-BTRFS_ROOT_SUBVOL_DEAD flag set. The race is:
+If "btrfs dev us" is invoked by a not root user, it is imposible to
+collect the chunk info data (not enough privileges). This causes
+"btrfs dev us" to print as "Unallocated" value the size of the disk.
 
-Thread 1                                      | Thread 2
-----------------------------------------------|----------
-btrfs_delete_subvolume                        |
-  btrfs_set_root_flags(BTRFS_ROOT_SUBVOL_DEAD)|
-                                              |btrfs_mksubvol
-                                              |  down_read(subvol_sem)
-                                              |  create_snapshot
-                                              |    ...
-                                              |    create_pending_snapshot
-                                              |      copy root item from source
-  down_write(subvol_sem)                      |
+This patch handle the case where print_device_chunks() is invoked
+without the chunk info data, printing "Unallocated N/A":
 
-This flag is only checked in send and swap activate, which this would
-cause to fail mysteriously.
+Before the patch:
 
-create_snapshot() now checks the root refs to reject a deleted
-subvolume, so we can fix this by locking subvol_sem earlier so that the
-BTRFS_ROOT_SUBVOL_DEAD flag and the root refs are updated atomically.
+$ btrfs dev us t/
+WARNING: cannot read detailed chunk info, per-device usage will not be shown, run as root
+/dev/loop0, ID: 1
+   Device size:             5.00GiB
+   Device slack:              0.00B
+   Unallocated:             5.00GiB  <-- Wrong
 
-Reported-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Signed-off-by: Omar Sandoval <osandov@fb.com>
+$ sudo btrfs dev us t/
+[sudo] password for ghigo:
+/dev/loop0, ID: 1
+   Device size:             5.00GiB
+   Device slack:              0.00B
+   Data,single:             8.00MiB
+   Metadata,DUP:          512.00MiB
+   System,DUP:             16.00MiB
+   Unallocated:             4.48GiB  <-- Correct
+
+After the patch:
+$ ./btrfs dev us /tmp/t/
+WARNING: cannot read detailed chunk info, per-device usage will not be shown, run as root
+/dev/loop0, ID: 1
+   Device size:             5.00GiB
+   Device slack:              0.00B
+   Unallocated:                 N/A
+
+$ sudo ./btrfs dev us /tmp/t/
+[sudo] password for ghigo:
+/dev/loop0, ID: 1
+   Device size:             5.00GiB
+   Device slack:              0.00B
+   Data,single:             8.00MiB
+   Metadata,DUP:          512.00MiB
+   System,DUP:             16.00MiB
+   Unallocated:             4.48GiB
+
+Signed-off-by: Goffredo Baroncelli <kreijack@libero.it>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+
 ---
- fs/btrfs/inode.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ cmds/filesystem-usage.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index b3e39610cc95..7bcc1c03437a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4458,6 +4458,8 @@ int btrfs_delete_subvolume(struct btrfs_inode *dir, struct dentry *dentry)
- 	u64 root_flags;
- 	int ret;
+diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+index 015c401e..e88ee323 100644
+--- a/cmds/filesystem-usage.c
++++ b/cmds/filesystem-usage.c
+@@ -1302,10 +1302,20 @@ void print_device_chunks(const struct device_info *devinfo,
+ 		allocated += size;
  
-+	down_write(&fs_info->subvol_sem);
+ 	}
+-	pr_verbose(LOG_DEFAULT, "   Unallocated: %*s%10s\n",
+-		(int)(20 - strlen("Unallocated")), "",
+-		pretty_size_mode(devinfo->size - allocated,
+-			unit_mode | UNITS_NEGATIVE));
 +
- 	/*
- 	 * Don't allow to delete a subvolume with send in progress. This is
- 	 * inside the inode lock so the error handling that has to drop the bit
-@@ -4469,25 +4471,25 @@ int btrfs_delete_subvolume(struct btrfs_inode *dir, struct dentry *dentry)
- 		btrfs_warn(fs_info,
- 			   "attempt to delete subvolume %llu during send",
- 			   dest->root_key.objectid);
--		return -EPERM;
-+		ret = -EPERM;
-+		goto out_up_write;
- 	}
- 	if (atomic_read(&dest->nr_swapfiles)) {
- 		spin_unlock(&dest->root_item_lock);
- 		btrfs_warn(fs_info,
- 			   "attempt to delete subvolume %llu with active swapfile",
- 			   root->root_key.objectid);
--		return -EPERM;
-+		ret = -EPERM;
-+		goto out_up_write;
- 	}
- 	root_flags = btrfs_root_flags(&dest->root_item);
- 	btrfs_set_root_flags(&dest->root_item,
- 			     root_flags | BTRFS_ROOT_SUBVOL_DEAD);
- 	spin_unlock(&dest->root_item_lock);
++	/*
++	 * If chunkinfos is empty, we cannot compute the unallocated
++	 * size, so don't print uncorrect data.
++	 */
++	if (chunkinfos->length == 0)
++		pr_verbose(LOG_DEFAULT, "   Unallocated: %*s%10s\n",
++			(int)(20 - strlen("Unallocated")), "",
++			"N/A");
++	else
++		pr_verbose(LOG_DEFAULT, "   Unallocated: %*s%10s\n",
++			(int)(20 - strlen("Unallocated")), "",
++			pretty_size_mode(devinfo->size - allocated,
++				unit_mode | UNITS_NEGATIVE));
+ }
  
--	down_write(&fs_info->subvol_sem);
--
- 	ret = may_destroy_subvol(dest);
- 	if (ret)
--		goto out_up_write;
-+		goto out_undead;
- 
- 	btrfs_init_block_rsv(&block_rsv, BTRFS_BLOCK_RSV_TEMP);
- 	/*
-@@ -4497,7 +4499,7 @@ int btrfs_delete_subvolume(struct btrfs_inode *dir, struct dentry *dentry)
- 	 */
- 	ret = btrfs_subvolume_reserve_metadata(root, &block_rsv, 5, true);
- 	if (ret)
--		goto out_up_write;
-+		goto out_undead;
- 
- 	trans = btrfs_start_transaction(root, 0);
- 	if (IS_ERR(trans)) {
-@@ -4563,15 +4565,17 @@ int btrfs_delete_subvolume(struct btrfs_inode *dir, struct dentry *dentry)
- 	inode->i_flags |= S_DEAD;
- out_release:
- 	btrfs_subvolume_release_metadata(root, &block_rsv);
--out_up_write:
--	up_write(&fs_info->subvol_sem);
-+out_undead:
- 	if (ret) {
- 		spin_lock(&dest->root_item_lock);
- 		root_flags = btrfs_root_flags(&dest->root_item);
- 		btrfs_set_root_flags(&dest->root_item,
- 				root_flags & ~BTRFS_ROOT_SUBVOL_DEAD);
- 		spin_unlock(&dest->root_item_lock);
--	} else {
-+	}
-+out_up_write:
-+	up_write(&fs_info->subvol_sem);
-+	if (!ret) {
- 		d_invalidate(dentry);
- 		btrfs_prune_dentries(dest);
- 		ASSERT(dest->send_in_progress == 0);
+ void print_device_sizes(const struct device_info *devinfo, unsigned unit_mode)
 -- 
 2.43.0
 
