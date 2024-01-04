@@ -1,211 +1,137 @@
-Return-Path: <linux-btrfs+bounces-1207-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1208-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B859082392C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 00:29:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8BE68239ED
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 01:57:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 561EC287915
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jan 2024 23:29:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2698B2465D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 00:57:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0AE20B0D;
-	Wed,  3 Jan 2024 23:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iA7DfiSb";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iA7DfiSb"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BBD4A24;
+	Thu,  4 Jan 2024 00:57:46 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F806208DA;
-	Wed,  3 Jan 2024 23:28:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BE9E81F7D1;
-	Wed,  3 Jan 2024 23:28:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704324513; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1VzFgHrE0lFC+VNDDj8M8pUUWESRusrMT1ddLdCqdXU=;
-	b=iA7DfiSbWuoqRI5TWOUFau6fl2Av6d4rlxS18czGmXygf2JiWqTLpUX0zMfjvHGxXWafnA
-	5igBLXuHcaGK6XTrgJYXCAvh3BIAWNSn7UGa1AgCL0eD2Hb4A6VLW8oMdB4/SvkkJa6bx7
-	MLnd/qJWxNX8INbpyA1IlAtra82H82A=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704324513; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1VzFgHrE0lFC+VNDDj8M8pUUWESRusrMT1ddLdCqdXU=;
-	b=iA7DfiSbWuoqRI5TWOUFau6fl2Av6d4rlxS18czGmXygf2JiWqTLpUX0zMfjvHGxXWafnA
-	5igBLXuHcaGK6XTrgJYXCAvh3BIAWNSn7UGa1AgCL0eD2Hb4A6VLW8oMdB4/SvkkJa6bx7
-	MLnd/qJWxNX8INbpyA1IlAtra82H82A=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 88D031398A;
-	Wed,  3 Jan 2024 23:28:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8G8ZCZ3tlWWXTgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 03 Jan 2024 23:28:29 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org,
-	christophe.jaillet@wanadoo.fr,
-	andriy.shevchenko@linux.intel.com,
-	David.Laight@ACULAB.COM,
-	ddiss@suse.de,
-	geert@linux-m68k.org
-Subject: [PATCH v3 4/4] btrfs: migrate to the newer memparse_safe() helper
-Date: Thu,  4 Jan 2024 09:57:51 +1030
-Message-ID: <c88ad0a44ec2899ef8f96ff9cbbe274119444578.1704324320.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1704324320.git.wqu@suse.com>
-References: <cover.1704324320.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CB1F3FC8
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Jan 2024 00:57:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cc7b9281d1so447511fa.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Jan 2024 16:57:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704329862; x=1704934662;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3YYPJw8d92SKaDewagAATP3R3KKLZhjMYxC8s5zej7k=;
+        b=Lv12kMxbOSm/SqpcOCqsQDOvV4cSbkheaLBzGsAv5R2N1yf+pYsYIP3i/Q50tcdlys
+         ct7lBUNwJCskRAUTmS1DLqrT6U/kvJZebDk8EbeACKvzwo0f3h6JUT2G7zdpA/qMun1e
+         oa2cJVOtwuFZe63VloWFStFC3hQet2qJKDAed9a6ewMRE1QvC7d9/3TEWFZI6QdAayuZ
+         duLnd8nJUUISsVvtiRubqmI/1tNKCxHbxzN3j1qhhKK+5NH1j7/KZbHW8QbiQ8Hrq2Xe
+         lj75+k0nrfWuvDK4pBjEejdFdAFcznFu4VM9ONRqygtso/7f5NLTD+CphbC69r0asJSz
+         P0Dg==
+X-Gm-Message-State: AOJu0YykUFikAHZaqQ7ZA/OBnl95uMROgA8R1EfW7agVPZ6do1TynKsl
+	jWPYkeg5J68vh+gPj5SBh4T5IJiAGTsnSjTH
+X-Google-Smtp-Source: AGHT+IE2a61QpECyq3Q88AK4U8GoZKd4rS9M+U7I4NE6tiq+JOiDElnfcy1mM3dNUecM8iIv+X2R+w==
+X-Received: by 2002:a05:651c:54c:b0:2cc:d4ae:c2ce with SMTP id q12-20020a05651c054c00b002ccd4aec2cemr7379637ljp.38.1704329861493;
+        Wed, 03 Jan 2024 16:57:41 -0800 (PST)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id s6-20020a2ea106000000b002cd12db0546sm713792ljl.117.2024.01.03.16.57.41
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Jan 2024 16:57:41 -0800 (PST)
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50eac018059so1325e87.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Jan 2024 16:57:41 -0800 (PST)
+X-Received: by 2002:a05:6512:1246:b0:50e:74f0:810e with SMTP id
+ fb6-20020a056512124600b0050e74f0810emr8796904lfb.137.1704329861072; Wed, 03
+ Jan 2024 16:57:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: *****
-X-Spam-Score: 5.34
-X-Spamd-Result: default: False [5.34 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	 R_MISSING_CHARSET(2.50)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_DN_NONE(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.06)[-0.293];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.de:email];
-	 FREEMAIL_TO(0.00)[vger.kernel.org,linux-foundation.org,wanadoo.fr,linux.intel.com,ACULAB.COM,suse.de,linux-m68k.org];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+References: <f94513bea5369c4ea65c8dab9a5a83403381c521.1704226673.git.josef@toxicpanda.com>
+In-Reply-To: <f94513bea5369c4ea65c8dab9a5a83403381c521.1704226673.git.josef@toxicpanda.com>
+From: Neal Gompa <neal@gompa.dev>
+Date: Wed, 3 Jan 2024 19:57:04 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je9Lk-LbAhgH5+yeQ+pH7F4xXz4+Tf-K5ZVktwqqZRDJNQ@mail.gmail.com>
+Message-ID: <CAEg-Je9Lk-LbAhgH5+yeQ+pH7F4xXz4+Tf-K5ZVktwqqZRDJNQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: WARN_ON_ONCE() in our leak detection code
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The new helper has better error report and correct overflow detection,
-furthermore the old @retptr behavior is also kept, thus there should be
-no behavior change.
+On Tue, Jan 2, 2024 at 3:18=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> w=
+rote:
+>
+> fstests looks for WARN_ON's in dmesg.  Add WARN_ON_ONCE() to our leak
+> detection code so that fstests will fail if these things trip at all.
+> This will allow us to easily catch problems with our reference counting
+> that may otherwise go unnoticed.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/disk-io.c        | 1 +
+>  fs/btrfs/extent-io-tree.c | 1 +
+>  fs/btrfs/extent_io.c      | 1 +
+>  3 files changed, 3 insertions(+)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index c6907d533fe8..5f350702a4d9 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1244,6 +1244,7 @@ void btrfs_check_leaked_roots(struct btrfs_fs_info =
+*fs_info)
+>                 btrfs_err(fs_info, "leaked root %s refcount %d",
+>                           btrfs_root_name(&root->root_key, buf),
+>                           refcount_read(&root->refs));
+> +               WARN_ON_ONCE(1);
+>                 while (refcount_read(&root->refs) > 1)
+>                         btrfs_put_root(root);
+>                 btrfs_put_root(root);
+> diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
+> index e3ee5449cc4a..1544e7b1eaed 100644
+> --- a/fs/btrfs/extent-io-tree.c
+> +++ b/fs/btrfs/extent-io-tree.c
+> @@ -48,6 +48,7 @@ static inline void btrfs_extent_state_leak_debug_check(=
+void)
+>                        extent_state_in_tree(state),
+>                        refcount_read(&state->refs));
+>                 list_del(&state->leak_list);
+> +               WARN_ON_ONCE(1);
+>                 kmem_cache_free(extent_state_cache, state);
+>         }
+>  }
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index a0ffd41c5cc1..a173cf08eb8f 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -82,6 +82,7 @@ void btrfs_extent_buffer_leak_debug_check(struct btrfs_=
+fs_info *fs_info)
+>                        eb->start, eb->len, atomic_read(&eb->refs), eb->bf=
+lags,
+>                        btrfs_header_owner(eb));
+>                 list_del(&eb->leak_list);
+> +               WARN_ON_ONCE(1);
+>                 kmem_cache_free(extent_buffer_cache, eb);
+>         }
+>         spin_unlock_irqrestore(&fs_info->eb_leak_lock, flags);
+> --
+> 2.43.0
+>
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Disseldorp <ddiss@suse.de>
----
- fs/btrfs/ioctl.c |  6 +++++-
- fs/btrfs/super.c |  9 ++++++++-
- fs/btrfs/sysfs.c | 14 +++++++++++---
- 3 files changed, 24 insertions(+), 5 deletions(-)
+Great, simple, and useful! A nice trifecta.
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 4e50b62db2a8..cb63f50a2078 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1175,7 +1175,11 @@ static noinline int btrfs_ioctl_resize(struct file *file,
- 			mod = 1;
- 			sizestr++;
- 		}
--		new_size = memparse(sizestr, &retptr);
-+
-+		ret = memparse_safe(sizestr, MEMPARSE_SUFFIXES_DEFAULT,
-+				    &new_size, &retptr);
-+		if (ret < 0)
-+			goto out_finish;
- 		if (*retptr != '\0' || new_size == 0) {
- 			ret = -EINVAL;
- 			goto out_finish;
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 3a677b808f0f..0f29fd692e0f 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -263,6 +263,8 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
- {
- 	struct btrfs_fs_context *ctx = fc->fs_private;
- 	struct fs_parse_result result;
-+	/* Only for memparse_safe() caller. */
-+	int ret;
- 	int opt;
- 
- 	opt = fs_parse(fc, btrfs_fs_parameters, param, &result);
-@@ -400,7 +402,12 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		ctx->thread_pool_size = result.uint_32;
- 		break;
- 	case Opt_max_inline:
--		ctx->max_inline = memparse(param->string, NULL);
-+		ret = memparse_safe(param->string, MEMPARSE_SUFFIXES_DEFAULT,
-+				    &ctx->max_inline, NULL);
-+		if (ret < 0) {
-+			btrfs_err(NULL, "invalid string \"%s\"", param->string);
-+			return ret;
-+		}
- 		break;
- 	case Opt_acl:
- 		if (result.negated) {
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 84c05246ffd8..6846572496a6 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -762,6 +762,7 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
- 	struct btrfs_fs_info *fs_info = to_fs_info(get_btrfs_kobj(kobj));
- 	char *retptr;
- 	u64 val;
-+	int ret;
- 
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
-@@ -776,7 +777,10 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
- 	if (space_info->flags & BTRFS_BLOCK_GROUP_SYSTEM)
- 		return -EPERM;
- 
--	val = memparse(buf, &retptr);
-+	ret = memparse_safe(buf, MEMPARSE_SUFFIXES_DEFAULT, &val, &retptr);
-+	if (ret < 0)
-+		return ret;
-+
- 	/* There could be trailing '\n', also catch any typos after the value */
- 	retptr = skip_spaces(retptr);
- 	if (*retptr != 0 || val == 0)
-@@ -1779,10 +1783,14 @@ static ssize_t btrfs_devinfo_scrub_speed_max_store(struct kobject *kobj,
- {
- 	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
- 						   devid_kobj);
--	char *endptr;
- 	unsigned long long limit;
-+	char *endptr;
-+	int ret;
-+
-+	ret = memparse_safe(buf, MEMPARSE_SUFFIXES_DEFAULT, &limit, &endptr);
-+	if (ret < 0)
-+		return ret;
- 
--	limit = memparse(buf, &endptr);
- 	/* There could be trailing '\n', also catch any typos after the value. */
- 	endptr = skip_spaces(endptr);
- 	if (*endptr != 0)
--- 
-2.43.0
+Reviewed-by: Neal Gompa <neal@gompa.dev>
 
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
