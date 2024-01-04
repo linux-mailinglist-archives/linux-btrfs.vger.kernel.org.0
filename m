@@ -1,43 +1,43 @@
-Return-Path: <linux-btrfs+bounces-1223-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1224-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB5F3823C46
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 07:30:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31A4E823C50
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 07:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FB371C21256
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 06:30:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0B14B24C8E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jan 2024 06:43:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6DF1DA28;
-	Thu,  4 Jan 2024 06:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F9E200A6;
+	Thu,  4 Jan 2024 06:43:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="3w/lOk/B"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="AJjKAzYK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D611CAAA;
-	Thu,  4 Jan 2024 06:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
-	bh=nm5gZuhwG89+aYkWXe70aqBaQmXxsheZZc0vTTDP7VU=; b=3w/lOk/BCWj902Chpacv/FdQqw
-	1vY7lL4Q8eS22dxlxKHMnZ2z889bYifxJLGDC7xFe3WferO5QwfAmHotYQYU9Ug1nGEyp8HO0oQW7
-	xYJRXgd5VzoxSd3DbY+/D1naFFBk+Pvamvy7f3NA22p4YvTsQDVOhNDKyZl/hr8L9afwIOxuvEsp8
-	nAJK+2aEF6VAhVz97uSkAlkVJxWa6lR737XAdfLaUtyMaWp0m4edkGjmNUhx3S/xdApXWej21MQok
-	OkGIY1RcEXmw+3/bJQzRTASvUCyTarRS+Grtz3PZ+/3CQEepzyGUeCmXIEVoexLhko7ktw/Qbk2Ww
-	g6a0GjLg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLHFW-00CzYy-1e;
-	Thu, 04 Jan 2024 06:30:38 +0000
-Message-ID: <248554b4-a549-4e94-835c-3430403b746c@infradead.org>
-Date: Wed, 3 Jan 2024 22:30:37 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C2A71F927;
+	Thu,  4 Jan 2024 06:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1704350555; x=1704955355; i=quwenruo.btrfs@gmx.com;
+	bh=xida4jYMBmqOqXEefFj9KpfEQTtSxYYAjtuqmqphSmI=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=AJjKAzYKykbZypYugkmRWSuMZ8Z2EMUp0jgQM1BWrY2P+rNfwsKfQPYb/WovdZSB
+	 6dVjuctFqGqhGEvHIuBVPUgbVJTV/RqufXjds0eeOfdsaSKNC+Azi59O3FFaEW1Hm
+	 Rp2mnXOa2DCZ4dRVOPBiadYZ47wPlnVor1hosRzyNCZ4z043ge45D6nmN6JC6eZuZ
+	 h407avVR3H+4YM0daRzJlTPE58trRVg21/1nTsUtiGti6dNLNPXiBJ88jslHp7SR5
+	 uy9Ey53UhwMuVRSSpuhNK3Sq/9CEzw06jp005srBn5eEAAkmZVEkdYA0fKuC73L83
+	 +6kfA1AExe9vKjGhCg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.153] ([118.211.64.174]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFsUp-1rQX252zp1-00HKa6; Thu, 04
+ Jan 2024 07:42:35 +0100
+Message-ID: <d321160b-b895-4049-8ac6-4ff6ce5df7d4@gmx.com>
+Date: Thu, 4 Jan 2024 17:12:25 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -47,284 +47,213 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 2/4] kstrtox: introduce a safer version of memparse()
 Content-Language: en-US
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
- christophe.jaillet@wanadoo.fr, andriy.shevchenko@linux.intel.com,
- David.Laight@ACULAB.COM, ddiss@suse.de, geert@linux-m68k.org
+To: Randy Dunlap <rdunlap@infradead.org>, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
+ andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM, ddiss@suse.de,
+ geert@linux-m68k.org
 References: <cover.1704324320.git.wqu@suse.com>
  <4960b36916d55e22be08fe1689b81e0eefb47578.1704324320.git.wqu@suse.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <4960b36916d55e22be08fe1689b81e0eefb47578.1704324320.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-On 1/3/24 15:27, Qu Wenruo wrote:
-> [BUGS]
-> Function memparse() lacks error handling:
-> 
-> - If no valid number string at all
->   In that case @retptr would just be updated and return value would be
->   zero.
-> 
-> - No overflown detection
->   This applies to both the number string part, and the suffixes part.
->   And since we have no way to indicate errors, we can get weird results
->   like:
-> 
->   	"25E" -> 10376293541461622784 (9E)
-> 
->   This is due to the fact that for "E" suffix, there is only 4 bits
->   left, and 25 with 60 bits left shift would lead to overflow.
-> 
-> [CAUSE]
-> The root cause is already mentioned in the comments of the function, the
-> usage of simple_strtoull() is the source of evil.
-> Furthermore the function prototype is no good either, just returning an
-> unsigned long long gives us no way to indicate an error.
-> 
-> [FIX]
-> Due to the prototype limits, we can not have a drop-in replacement for
-> memparse().
-> 
-> This patch can only help by introduce a new helper, memparse_safe(), and
-> mark the old memparse() deprecated.
-> 
-> The new memparse_safe() has the following improvement:
-> 
-> - Invalid string detection
->   If no number string can be detected at all, -EINVAL would be returned.
-> 
-> - Better overflow detection
->   Both the string part and the extra left shift would have overflow
->   detection.
->   Any overflow would result -ERANGE.
-> 
-> - Safer default suffix selection
->   The helper allows the caller to choose the suffixes that they want to
->   use.
->   But only "KMGTP" are recommended by default since the "E" leaves only
->   4 bits before overflow.
->   For those callers really know what they are doing, they can still
->   manually to include all suffixes.
-> 
-> Due to the prototype change, callers should migrate to the new one and
-> change their code and add extra error handling.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Reviewed-by: David Disseldorp <ddiss@suse.de>
-> ---
->  include/linux/kernel.h  |  8 +++-
->  include/linux/kstrtox.h | 15 +++++++
->  lib/cmdline.c           |  5 ++-
->  lib/kstrtox.c           | 96 +++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 122 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> index d9ad21058eed..b1b6da60ea43 100644
-> --- a/include/linux/kernel.h
-> +++ b/include/linux/kernel.h
-> @@ -201,7 +201,13 @@ void do_exit(long error_code) __noreturn;
->  
->  extern int get_option(char **str, int *pint);
->  extern char *get_options(const char *str, int nints, int *ints);
-> -extern unsigned long long memparse(const char *ptr, char **retptr);
-> +
-> +/*
-> + * DEPRECATED, lack of any kind of error handling.
-> + *
-> + * Use memparse_safe() from lib/kstrtox.c instead.
-> + */
-> +extern __deprecated unsigned long long memparse(const char *ptr, char **retptr);
->  extern bool parse_option_str(const char *str, const char *option);
->  extern char *next_arg(char *args, char **param, char **val);
->  
-> diff --git a/include/linux/kstrtox.h b/include/linux/kstrtox.h
-> index 7fcf29a4e0de..53a1e059dd31 100644
-> --- a/include/linux/kstrtox.h
-> +++ b/include/linux/kstrtox.h
-> @@ -9,6 +9,21 @@
->  int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
->  int __must_check _kstrtol(const char *s, unsigned int base, long *res);
->  
-> +enum memparse_suffix {
-> +	MEMPARSE_SUFFIX_K = 1 << 0,
-> +	MEMPARSE_SUFFIX_M = 1 << 1,
-> +	MEMPARSE_SUFFIX_G = 1 << 2,
-> +	MEMPARSE_SUFFIX_T = 1 << 3,
-> +	MEMPARSE_SUFFIX_P = 1 << 4,
-> +	MEMPARSE_SUFFIX_E = 1 << 5,
-> +};
-> +
-> +#define MEMPARSE_SUFFIXES_DEFAULT (MEMPARSE_SUFFIX_K | MEMPARSE_SUFFIX_M |\
-> +				   MEMPARSE_SUFFIX_G | MEMPARSE_SUFFIX_T |\
-> +				   MEMPARSE_SUFFIX_P)
-> +
-> +int __must_check memparse_safe(const char *s, enum memparse_suffix suffixes,
-> +			       unsigned long long *res, char **retptr);
->  int __must_check kstrtoull(const char *s, unsigned int base, unsigned long long *res);
->  int __must_check kstrtoll(const char *s, unsigned int base, long long *res);
->  
-> diff --git a/lib/cmdline.c b/lib/cmdline.c
-> index 90ed997d9570..d379157de349 100644
-> --- a/lib/cmdline.c
-> +++ b/lib/cmdline.c
-> @@ -139,12 +139,15 @@ char *get_options(const char *str, int nints, int *ints)
->  EXPORT_SYMBOL(get_options);
->  
->  /**
-> - *	memparse - parse a string with mem suffixes into a number
-> + *	memparse - DEPRECATED, parse a string with mem suffixes into a number
->   *	@ptr: Where parse begins
->   *	@retptr: (output) Optional pointer to next char after parse completes
->   *
-> + *	There is no way to handle errors, and no overflown detection and string
-> + *	sanity checks.
->   *	Parses a string into a number.  The number stored at @ptr is
->   *	potentially suffixed with K, M, G, T, P, E.
-> + *
-
-Extra line is not needed.
-
->   */
->  
->  unsigned long long memparse(const char *ptr, char **retptr)
-> diff --git a/lib/kstrtox.c b/lib/kstrtox.c
-> index 41c9a499bbf3..a1e4279f52b3 100644
-> --- a/lib/kstrtox.c
-> +++ b/lib/kstrtox.c
-> @@ -113,6 +113,102 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
->  	return 0;
->  }
->  
-> +/**
-> + * memparse_safe - convert a string to an unsigned long long, safer version of
-> + * memparse()
-> + *
-> + * @s:		The start of the string. Must be null-terminated.
-> + *		The base would be determined automatically, if it starts with
-> + *		"0x" the base would be 16, if it starts with "0" the base
-> + *		would be 8, otherwise the base would be 10.
-> + *		After a valid number string, there can be at most one
-> + *		case-insensive suffix character, specified by the @suffixes
-
-		case-insensitive
-
-> + *		parameter.
-> + *
-> + * @suffixes:	The suffixes which should be parsed. Use logical ORed
-> + *		memparse_suffix enum to indicate the supported suffixes.
-> + *		The suffixes are case-insensive, all 2 ^ 10 based.
-
-		                 case-insensitive
-
-> + *		Supported ones are "KMGPTE".
-> + *		NOTE: If one suffix out of the supported one is hit, it would
-
-		                                         ones
-
-> + *		end the parse normally, with @retptr pointed to the unsupported
-> + *		suffix.
-
-Could you explain (or give an example) of "to the unsupported suffix"?
-This isn't clear IMO.
-
-> + *
-> + * @res:	Where to write the result.
-> + *
-> + * @retptr:	(output) Optional pointer to the next char after parse completes.
-> + *
-> + * Return 0 if any valid numberic string can be parsed, and @retptr updated.
-> + * Return -INVALID if no valid number string can be found.
-> + * Return -ERANGE if the number overflows.
-> + * For minus return values, @retptr would not be updated.
-
- * Returns:
- * * %0 if any valid numeric string can be parsed, and @retptr is updated.
- * * %-EINVAL if no valid number string can be found.
- * * %-ERANGE if the number overflows.
- * * For negative return values, @retptr is not updated.
+ <248554b4-a549-4e94-835c-3430403b746c@infradead.org>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <248554b4-a549-4e94-835c-3430403b746c@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:CrVsbMwMt7+YQRPUOmwVq14/SXF/4aS6iv4NElSkHwvms7ll4/O
+ eX37P/ub/HxExSR/zXC5y3VdXKAylUTdGxh+BK4HshhShXDVVwlBllXi2BWQeBUiMzaz7Ep
+ C1C94hPv5pjdC03MEHfSaeFeAmHyr5GKNgDJ0JmtLM3/xGoiZykrAvwwkGAFfUszqj+1wHX
+ weKmfAoReFjUyOl4YaAhw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:16ck9G6Xcy0=;w2lX4z2ysrT18sPfv7Hmmi8ZSNo
+ Dhu7UaiFK+nHDkG2WdfO3xdGnsdMxmhMRkIr7HGGNy0C3VpYCcv5W9elFq5eRzX2MhdMcgCA3
+ X55yFCWzWaopj36btoDHcVbInAnfkFv3spR8YcpIxbS3MyrM9KkD0KLfnXHt406Ibiqv/vtWc
+ B4eut9gP9wHV+GIr/zuMRvHR5+osQwpkjnkg+7uNDB7OMYv/q65AZsIvlq6DSKeAXav1HSOsx
+ p60STJtIUZXETDIFp4DbJWfN7Ebr1CJ9MHyPW+WwrTwnN64v+FTJSVKfnQEMoYNB50h0CzJtu
+ BRhtlhwLsP7F/gnDlwxThXS/Nv5/pMAmEm70CyXhAO8/eSijp27X0M5agFipfoVKun4xDFUwk
+ LqExkXSoSy0Lk9LIaTwFoR2chSdTmJ8TAvnSq6iXuf6BabR8ndhBwgOS2wkrcltC5Ec9zWVqk
+ GIVHjIvPLn1jE5rBcaZaaR5HeTcs5nnM5hxzu+MnznNEBnFtxZ+dBHOPSuPTfwSkBSmuBmgTm
+ JhCEsiKdxebL6IyXmiSdGb5MHPKeiraoucV6deBi3KTKQW7ZYH5GnyiET0pf52+fMyx/pXtlC
+ kaGD36IWeegOOsFsqdkZ7s+pFErIHFR5K8p9QYm/dKXx7v8s/oA0yarvKGA0tWhf69QZdBcLI
+ Gm/HIACwb3tzHkbnfT5B2OIb4i8pQJXi/fBsTvssdsXgUVSmid4Nq+aRLvL6jwh5QSp/125ws
+ jSx3HvEB4P10V3jt71lo+4aI5ANMYMBX+Ep9+WU2EqFZ9RVFty/snti5LzQzEqNfsyf5xgEWV
+ wGe+X9oEzdzxmU9zHL9UKsm6fz9fFhOgIzKzWcjcjB5lUXoIfBRGEv1FWbQsn5+TBkS1Pbjs5
+ 36F6V0Z3dDjxS5T9z+AdasprB9r3vjHYmSM7tHPBmb76cFI3fUAC1h48V+MNhT9VNu+dCKvMC
+ vxWwNt375Bhk1oaR4nuDpDgcfoc=
 
 
-For *ALL* of the comments, I request/suggest that you change the "would be" or
-"would not be" to "is" or "is not" or whatever present tense words make the
-most sense.
 
+On 2024/1/4 17:00, Randy Dunlap wrote:
+> Hi,
+>
+[...]
+>> + *		parameter.
+>> + *
+>> + * @suffixes:	The suffixes which should be parsed. Use logical ORed
+>> + *		memparse_suffix enum to indicate the supported suffixes.
+>> + *		The suffixes are case-insensive, all 2 ^ 10 based.
+>
+> 		                 case-insensitive
+>
+>> + *		Supported ones are "KMGPTE".
+>> + *		NOTE: If one suffix out of the supported one is hit, it would
+>
+> 		                                         ones
+>
+>> + *		end the parse normally, with @retptr pointed to the unsupported
+>> + *		suffix.
+>
+> Could you explain (or give an example) of "to the unsupported suffix"?
+> This isn't clear IMO.
 
-> + */
-> +noinline int memparse_safe(const char *s, enum memparse_suffix suffixes,
-> +			   unsigned long long *res, char **retptr)
-> +{
-> +	unsigned long long value;
-> +	unsigned int rv;
-> +	int shift = 0;
-> +	int base = 0;
-> +
-> +	s = _parse_integer_fixup_radix(s, &base);
-> +	rv = _parse_integer(s, base, &value);
-> +	if (rv & KSTRTOX_OVERFLOW)
-> +		return -ERANGE;
-> +	if (rv == 0)
-> +		return -EINVAL;
-> +
-> +	s += rv;
-> +	switch (*s) {
-> +	case 'K':
-> +	case 'k':
-> +		if (!(suffixes & MEMPARSE_SUFFIX_K))
-> +			break;
-> +		shift = 10;
-> +		break;
-> +	case 'M':
-> +	case 'm':
-> +		if (!(suffixes & MEMPARSE_SUFFIX_M))
-> +			break;
-> +		shift = 20;
-> +		break;
-> +	case 'G':
-> +	case 'g':
-> +		if (!(suffixes & MEMPARSE_SUFFIX_G))
-> +			break;
-> +		shift = 30;
-> +		break;
-> +	case 'T':
-> +	case 't':
-> +		if (!(suffixes & MEMPARSE_SUFFIX_T))
-> +			break;
-> +		shift = 40;
-> +		break;
-> +	case 'P':
-> +	case 'p':
-> +		if (!(suffixes & MEMPARSE_SUFFIX_P))
-> +			break;
-> +		shift = 50;
-> +		break;
-> +	case 'E':
-> +	case 'e':
-> +		if (!(suffixes & MEMPARSE_SUFFIX_E))
-> +			break;
-> +		shift = 60;
-> +		break;
-> +	}
-> +	if (shift) {
-> +		s++;
-> +		if (value >> (64 - shift))
-> +			return -ERANGE;
-> +		value <<= shift;
-> +	}
-> +	*res = value;
-> +	if (retptr)
-> +		*retptr = (char *)s;
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(memparse_safe);
-> +
->  /**
->   * kstrtoull - convert a string to an unsigned long long
->   * @s: The start of the string. The string must be null-terminated, and may also
+Oh, my bad, that sentence itself is not correct.
 
-Thanks.
--- 
-#Randy
+What I really want to say is:
+
+  If one suffix (one of "KMGPTE") is hit but that suffix is not
+  specified in the @suffxies parameter, it would end the parse normally,
+  with @retptr pointed to the (unsupported) suffix.
+
+The example would be the "68k " case in the ok cases in the next patch.
+We have two different cases for the same "68k" string, with different
+@suffixes and different results:
+
+	"68k ", KMGPTE -> 68 * 1024, @retptr at " ".
+	"68k ", M -> 68, @retptr at 'k'.
+
+I don't have a better expression here unfortunately, maybe the special
+case is not even worthy explaining?
+
+>
+>> + *
+>> + * @res:	Where to write the result.
+>> + *
+>> + * @retptr:	(output) Optional pointer to the next char after parse com=
+pletes.
+>> + *
+>> + * Return 0 if any valid numberic string can be parsed, and @retptr up=
+dated.
+>> + * Return -INVALID if no valid number string can be found.
+>> + * Return -ERANGE if the number overflows.
+>> + * For minus return values, @retptr would not be updated.
+>
+>   * Returns:
+>   * * %0 if any valid numeric string can be parsed, and @retptr is updat=
+ed.
+>   * * %-EINVAL if no valid number string can be found.
+>   * * %-ERANGE if the number overflows.
+>   * * For negative return values, @retptr is not updated.
+>
+>
+> For *ALL* of the comments, I request/suggest that you change the "would =
+be" or
+> "would not be" to "is" or "is not" or whatever present tense words make =
+the
+> most sense.
+
+No problem.
+
+Thanks,
+Qu
+
+>
+>
+>> + */
+>> +noinline int memparse_safe(const char *s, enum memparse_suffix suffixe=
+s,
+>> +			   unsigned long long *res, char **retptr)
+>> +{
+>> +	unsigned long long value;
+>> +	unsigned int rv;
+>> +	int shift =3D 0;
+>> +	int base =3D 0;
+>> +
+>> +	s =3D _parse_integer_fixup_radix(s, &base);
+>> +	rv =3D _parse_integer(s, base, &value);
+>> +	if (rv & KSTRTOX_OVERFLOW)
+>> +		return -ERANGE;
+>> +	if (rv =3D=3D 0)
+>> +		return -EINVAL;
+>> +
+>> +	s +=3D rv;
+>> +	switch (*s) {
+>> +	case 'K':
+>> +	case 'k':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_K))
+>> +			break;
+>> +		shift =3D 10;
+>> +		break;
+>> +	case 'M':
+>> +	case 'm':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_M))
+>> +			break;
+>> +		shift =3D 20;
+>> +		break;
+>> +	case 'G':
+>> +	case 'g':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_G))
+>> +			break;
+>> +		shift =3D 30;
+>> +		break;
+>> +	case 'T':
+>> +	case 't':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_T))
+>> +			break;
+>> +		shift =3D 40;
+>> +		break;
+>> +	case 'P':
+>> +	case 'p':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_P))
+>> +			break;
+>> +		shift =3D 50;
+>> +		break;
+>> +	case 'E':
+>> +	case 'e':
+>> +		if (!(suffixes & MEMPARSE_SUFFIX_E))
+>> +			break;
+>> +		shift =3D 60;
+>> +		break;
+>> +	}
+>> +	if (shift) {
+>> +		s++;
+>> +		if (value >> (64 - shift))
+>> +			return -ERANGE;
+>> +		value <<=3D shift;
+>> +	}
+>> +	*res =3D value;
+>> +	if (retptr)
+>> +		*retptr =3D (char *)s;
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL(memparse_safe);
+>> +
+>>   /**
+>>    * kstrtoull - convert a string to an unsigned long long
+>>    * @s: The start of the string. The string must be null-terminated, a=
+nd may also
+>
+> Thanks.
 
