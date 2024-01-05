@@ -1,62 +1,62 @@
-Return-Path: <linux-btrfs+bounces-1259-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1260-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88953824D03
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jan 2024 03:37:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 322D8824D05
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jan 2024 03:37:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 611D4B24196
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jan 2024 02:36:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC0AA1C221C8
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jan 2024 02:37:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D4D411CA0;
-	Fri,  5 Jan 2024 02:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B38E443E;
+	Fri,  5 Jan 2024 02:35:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="X/eb29QA";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="X/eb29QA"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eMbibWj9";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eMbibWj9"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 773211DDCA;
-	Fri,  5 Jan 2024 02:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF7761DFD9;
+	Fri,  5 Jan 2024 02:35:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6438A21E10;
-	Fri,  5 Jan 2024 02:35:48 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9184321E18;
+	Fri,  5 Jan 2024 02:35:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704422148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1704422154; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=r0wCWhBQozO3Z2ctWn9ecEecEmejOp5V+NjL13yOagY=;
-	b=X/eb29QA8QXLNmttWhddLm3uJJ6BK1JoAuK6j2xFtyx/XEfAU4eMVDpJGl/4hOZE/IBKR2
-	lTyP8Bh7ynoE4HvLPPouGOtyaJC3Rbz6S81JlsQ5OJMm1Meehmdo1qegrC3UdeWZc8PIpN
-	WKlJw5HmLTUFRrxW9ZzUHrC4VuX8L/A=
+	bh=1VzFgHrE0lFC+VNDDj8M8pUUWESRusrMT1ddLdCqdXU=;
+	b=eMbibWj9aQIHuexHBntrjN9NuMmHRin9cu6JTonVaPFp6mCoeeOPW3dqVMb0uElWTqmXDa
+	2fzjbEp6tJbytfrasmqTXbFb7ugThCcUGUlCHvXxZuNi3MWw0EqUZzmNn2PB9ho7183gsT
+	yJUnrsAewe9ikqEz2L95qELl9e+lp6s=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704422148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1704422154; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=r0wCWhBQozO3Z2ctWn9ecEecEmejOp5V+NjL13yOagY=;
-	b=X/eb29QA8QXLNmttWhddLm3uJJ6BK1JoAuK6j2xFtyx/XEfAU4eMVDpJGl/4hOZE/IBKR2
-	lTyP8Bh7ynoE4HvLPPouGOtyaJC3Rbz6S81JlsQ5OJMm1Meehmdo1qegrC3UdeWZc8PIpN
-	WKlJw5HmLTUFRrxW9ZzUHrC4VuX8L/A=
+	bh=1VzFgHrE0lFC+VNDDj8M8pUUWESRusrMT1ddLdCqdXU=;
+	b=eMbibWj9aQIHuexHBntrjN9NuMmHRin9cu6JTonVaPFp6mCoeeOPW3dqVMb0uElWTqmXDa
+	2fzjbEp6tJbytfrasmqTXbFb7ugThCcUGUlCHvXxZuNi3MWw0EqUZzmNn2PB9ho7183gsT
+	yJUnrsAewe9ikqEz2L95qELl9e+lp6s=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EAF5A137E8;
-	Fri,  5 Jan 2024 02:35:42 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 67562137E8;
+	Fri,  5 Jan 2024 02:35:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mIohG/5ql2XhbAAAD6G6ig
-	(envelope-from <wqu@suse.com>); Fri, 05 Jan 2024 02:35:42 +0000
+	id mDkVAAVrl2XhbAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 05 Jan 2024 02:35:49 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -67,9 +67,9 @@ To: linux-btrfs@vger.kernel.org,
 	ddiss@suse.de,
 	geert@linux-m68k.org,
 	rdunlap@infradead.org
-Subject: [PATCH v4 3/4] kstrtox: add unit tests for memparse_safe()
-Date: Fri,  5 Jan 2024 13:05:01 +1030
-Message-ID: <388bf16c6df3fb2b73a0b3b27a8769a7a8a257e6.1704422015.git.wqu@suse.com>
+Subject: [PATCH v4 4/4] btrfs: migrate to the newer memparse_safe() helper
+Date: Fri,  5 Jan 2024 13:05:02 +1030
+Message-ID: <0c006657fd7d5d923e135bdd4cecc5bcf6a01451.1704422015.git.wqu@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1704422015.git.wqu@suse.com>
 References: <cover.1704422015.git.wqu@suse.com>
@@ -80,342 +80,134 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: **
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 6438A21E10
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="X/eb29QA"
-X-Spam-Score: -2.01
 X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-2.01 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_DN_NONE(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_TO(0.00)[vger.kernel.org,linux-foundation.org,wanadoo.fr,linux.intel.com,ACULAB.COM,suse.de,linux-m68k.org,infradead.org];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: 0.70
+X-Spamd-Result: default: False [0.70 / 50.00];
 	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 URIBL_BLOCKED(0.00)[suse.com:email,suse.com:dkim,suse.de:email];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 URIBL_BLOCKED(0.00)[suse.de:email,suse.com:email];
 	 FROM_HAS_DN(0.00)[];
 	 FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
 	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_HI(-3.50)[suse.com:dkim];
+	 TO_DN_NONE(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-0.990];
+	 RCPT_COUNT_SEVEN(0.00)[9];
 	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.com:email,suse.com:dkim];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.com:email];
+	 FREEMAIL_TO(0.00)[vger.kernel.org,linux-foundation.org,wanadoo.fr,linux.intel.com,ACULAB.COM,suse.de,linux-m68k.org,infradead.org];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-The new tests cases for memparse_safe() include:
-
-- The existing test cases for kstrtoull()
-  Including all the 3 bases (8, 10, 16), and all the ok and failure
-  cases.
-  Although there are something we need to verify specific for
-  memparse_safe():
-
-  * @retptr and @value are not modified for failure cases
-
-  * return value are correct for failure cases
-
-  * @retptr is correct for the good cases
-
-- New test cases
-  Not only testing the result value, but also the @retptr, including:
-
-  * good cases with extra tailing chars, but without valid prefix
-    The @retptr should point to the first char after a valid string.
-    3 cases for all the 3 bases.
-
-  * good cases with extra tailing chars, with valid prefix
-    5 cases for all the suffixes.
-
-  * good cases with valid but disabled suffixes
-    The same 5 cases as the previous one, just disable the corresponding
-    suffixes.
-
-  * bad cases without any number but stray suffix
-    Should be rejected with -EINVAL
+The new helper has better error report and correct overflow detection,
+furthermore the old @retptr behavior is also kept, thus there should be
+no behavior change.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: David Disseldorp <ddiss@suse.de>
 ---
- lib/test-kstrtox.c | 244 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 244 insertions(+)
+ fs/btrfs/ioctl.c |  6 +++++-
+ fs/btrfs/super.c |  9 ++++++++-
+ fs/btrfs/sysfs.c | 14 +++++++++++---
+ 3 files changed, 24 insertions(+), 5 deletions(-)
 
-diff --git a/lib/test-kstrtox.c b/lib/test-kstrtox.c
-index f355f67169b6..8f52b53c1374 100644
---- a/lib/test-kstrtox.c
-+++ b/lib/test-kstrtox.c
-@@ -268,6 +268,247 @@ static void __init test_kstrtoll_ok(void)
- 	TEST_OK(kstrtoll, long long, "%lld", test_ll_ok);
- }
- 
-+/*
-+ * The special pattern to make sure the result is not modified for error cases.
-+ */
-+#define ULL_PATTERN		(0xefefefef7a7a7a7aULL)
-+#define POINTER_PATTERN		((void *)(uintptr_t)(ULL_PATTERN & UINTPTR_MAX))
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 4e50b62db2a8..cb63f50a2078 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1175,7 +1175,11 @@ static noinline int btrfs_ioctl_resize(struct file *file,
+ 			mod = 1;
+ 			sizestr++;
+ 		}
+-		new_size = memparse(sizestr, &retptr);
 +
-+/* Want to include "E" suffix for full coverage. */
-+#define MEMPARSE_TEST_SUFFIX	(MEMPARSE_SUFFIX_K | MEMPARSE_SUFFIX_M |\
-+				 MEMPARSE_SUFFIX_G | MEMPARSE_SUFFIX_T |\
-+				 MEMPARSE_SUFFIX_P | MEMPARSE_SUFFIX_E)
-+
-+static void __init test_memparse_safe_fail(void)
-+{
-+	struct memparse_test_fail {
-+		const char *str;
-+		/* Expected error number, either -EINVAL or -ERANGE. */
-+		unsigned int expected_ret;
-+	};
-+	static const struct memparse_test_fail tests[] __initconst = {
-+		/* No valid string can be found at all. */
-+		{"", -EINVAL},
-+		{"\n", -EINVAL},
-+		{"\n0", -EINVAL},
-+		{"+", -EINVAL},
-+		{"-", -EINVAL},
-+
-+		/* Only hex prefix, but no valid string. */
-+		{"0x", -EINVAL},
-+		{"0X", -EINVAL},
-+
-+		/* Only hex prefix, with suffix but still no valid string. */
-+		{"0xK", -EINVAL},
-+		{"0xM", -EINVAL},
-+		{"0xG", -EINVAL},
-+
-+		/* Only hex prefix, with invalid chars. */
-+		{"0xH", -EINVAL},
-+		{"0xy", -EINVAL},
-+
-+		/*
-+		 * No support for any leading "+-" chars, even followed by a valid
-+		 * number.
-+		 */
-+		{"-0", -EINVAL},
-+		{"+0", -EINVAL},
-+		{"-1", -EINVAL},
-+		{"+1", -EINVAL},
-+
-+		/* Stray suffix would also be rejected. */
-+		{"K", -EINVAL},
-+		{"P", -EINVAL},
-+
-+		/* Overflow in the string itself*/
-+		{"18446744073709551616", -ERANGE},
-+		{"02000000000000000000000", -ERANGE},
-+		{"0x10000000000000000", -ERANGE},
-+
-+		/*
-+		 * Good string but would overflow with suffix.
-+		 *
-+		 * Note, for "E" suffix, one should not use with hex, or "0x1E"
-+		 * would be treated as 0x1e (30 in decimal), not 0x1 and "E" suffix.
-+		 * Another reason "E" suffix is cursed.
-+		 */
-+		{"16E", -ERANGE},
-+		{"020E", -ERANGE},
-+		{"16384P", -ERANGE},
-+		{"040000P", -ERANGE},
-+		{"16777216T", -ERANGE},
-+		{"0100000000T", -ERANGE},
-+		{"17179869184G", -ERANGE},
-+		{"0200000000000G", -ERANGE},
-+		{"17592186044416M", -ERANGE},
-+		{"0400000000000000M", -ERANGE},
-+		{"18014398509481984K", -ERANGE},
-+		{"01000000000000000000K", -ERANGE},
-+	};
-+	unsigned int i;
-+
-+	for_each_test(i, tests) {
-+		const struct memparse_test_fail *t = &tests[i];
-+		unsigned long long tmp = ULL_PATTERN;
-+		char *retptr = POINTER_PATTERN;
-+		int ret;
-+
-+		ret = memparse_safe(t->str, MEMPARSE_TEST_SUFFIX, &tmp, &retptr);
-+		if (ret != t->expected_ret) {
-+			WARN(1, "str '%s', expected ret %d got %d\n", t->str,
-+			     t->expected_ret, ret);
-+			continue;
-+		}
-+		if (tmp != ULL_PATTERN)
-+			WARN(1, "str '%s' failed as expected, but result got modified",
-+			     t->str);
-+		if (retptr != POINTER_PATTERN)
-+			WARN(1, "str '%s' failed as expected, but pointer got modified",
-+			     t->str);
-+	}
-+}
-+
-+static void __init test_memparse_safe_ok(void)
-+{
-+	struct memparse_test_ok {
-+		const char *str;
-+		unsigned long long expected_value;
-+		/* How many bytes the @retptr pointer should be moved forward. */
-+		unsigned int retptr_off;
-+
-+		/* If 0, falls back to MEMPARSE_TEST_SUFFIX. */
-+		enum memparse_suffix suffixes;
-+	};
-+	static DEFINE_TEST_OK(struct memparse_test_ok, tests) = {
-+		/*
-+		 * The same pattern of kstrtoull, just with extra @retptr
-+		 * verification.
-+		 */
-+		{"0",			0ULL,			1},
-+		{"1",			1ULL,			1},
-+		{"127",			127ULL,			3},
-+		{"128",			128ULL,			3},
-+		{"129",			129ULL,			3},
-+		{"255",			255ULL,			3},
-+		{"256",			256ULL,			3},
-+		{"257",			257ULL,			3},
-+		{"32767",		32767ULL,		5},
-+		{"32768",		32768ULL,		5},
-+		{"32769",		32769ULL,		5},
-+		{"65535",		65535ULL,		5},
-+		{"65536",		65536ULL,		5},
-+		{"65537",		65537ULL,		5},
-+		{"2147483647",		2147483647ULL,		10},
-+		{"2147483648",		2147483648ULL,		10},
-+		{"2147483649",		2147483649ULL,		10},
-+		{"4294967295",		4294967295ULL,		10},
-+		{"4294967296",		4294967296ULL,		10},
-+		{"4294967297",		4294967297ULL,		10},
-+		{"9223372036854775807",	9223372036854775807ULL,	19},
-+		{"9223372036854775808",	9223372036854775808ULL,	19},
-+		{"9223372036854775809",	9223372036854775809ULL,	19},
-+		{"18446744073709551614", 18446744073709551614ULL, 20},
-+		{"18446744073709551615", 18446744073709551615ULL, 20},
-+
-+		{"00",				00ULL,		2},
-+		{"01",				01ULL,		2},
-+		{"0177",			0177ULL,	4},
-+		{"0200",			0200ULL,	4},
-+		{"0201",			0201ULL,	4},
-+		{"0377",			0377ULL,	4},
-+		{"0400",			0400ULL,	4},
-+		{"0401",			0401ULL,	4},
-+		{"077777",			077777ULL,	6},
-+		{"0100000",			0100000ULL,	7},
-+		{"0100001",			0100001ULL,	7},
-+		{"0177777",			0177777ULL,	7},
-+		{"0200000",			0200000ULL,	7},
-+		{"0200001",			0200001ULL,	7},
-+		{"017777777777",		017777777777ULL,	12},
-+		{"020000000000",		020000000000ULL,	12},
-+		{"020000000001",		020000000001ULL,	12},
-+		{"037777777777",		037777777777ULL,	12},
-+		{"040000000000",		040000000000ULL,	12},
-+		{"040000000001",		040000000001ULL,	12},
-+		{"0777777777777777777777",	0777777777777777777777ULL, 22},
-+		{"01000000000000000000000",	01000000000000000000000ULL, 23},
-+		{"01000000000000000000001",	01000000000000000000001ULL, 23},
-+		{"01777777777777777777776",	01777777777777777777776ULL, 23},
-+		{"01777777777777777777777",	01777777777777777777777ULL, 23},
-+
-+		{"0x0",			0x0ULL,			3},
-+		{"0x1",			0x1ULL,			3},
-+		{"0x7f",		0x7fULL,		4},
-+		{"0x80",		0x80ULL,		4},
-+		{"0x81",		0x81ULL,		4},
-+		{"0xff",		0xffULL,		4},
-+		{"0x100",		0x100ULL,		5},
-+		{"0x101",		0x101ULL,		5},
-+		{"0x7fff",		0x7fffULL,		6},
-+		{"0x8000",		0x8000ULL,		6},
-+		{"0x8001",		0x8001ULL,		6},
-+		{"0xffff",		0xffffULL,		6},
-+		{"0x10000",		0x10000ULL,		7},
-+		{"0x10001",		0x10001ULL,		7},
-+		{"0x7fffffff",		0x7fffffffULL,		10},
-+		{"0x80000000",		0x80000000ULL,		10},
-+		{"0x80000001",		0x80000001ULL,		10},
-+		{"0xffffffff",		0xffffffffULL,		10},
-+		{"0x100000000",		0x100000000ULL,		11},
-+		{"0x100000001",		0x100000001ULL,		11},
-+		{"0x7fffffffffffffff",	0x7fffffffffffffffULL,	18},
-+		{"0x8000000000000000",	0x8000000000000000ULL,	18},
-+		{"0x8000000000000001",	0x8000000000000001ULL,	18},
-+		{"0xfffffffffffffffe",	0xfffffffffffffffeULL,	18},
-+		{"0xffffffffffffffff",	0xffffffffffffffffULL,	18},
-+
-+		/* Now with extra non-suffix chars to test @retptr update. */
-+		{"1q84",		1,			1},
-+		{"02o45",		2,			2},
-+		{"0xffvii",		0xff,			4},
-+
-+		/*
-+		 * Valid suffix then tailing chars, to test the @retptr
-+		 * behavior.
-+		 */
-+		{"68k ",		69632,			3},
-+		{"8MS",			8388608,		2},
-+		{"0xaeGis",		0x2b80000000,		5},
-+		{"0xaTx",		0xa0000000000,		4},
-+		{"3E8",			0x3000000000000000,	2},
-+
-+		/* Valid suffixes but not enabled. */
-+		{"68k ",	68,	2, MEMPARSE_SUFFIX_M},
-+		{"8MS",		8,	1, MEMPARSE_SUFFIX_K},
-+		{"0xaeGis",	0xae,	4, MEMPARSE_SUFFIX_K},
-+		{"0xaTx",	0xa,	3, MEMPARSE_SUFFIX_K},
-+		{"3E8",		3,	1, MEMPARSE_SUFFIX_K},
-+	};
-+	unsigned int i;
-+
-+	for_each_test(i, tests) {
-+		const struct memparse_test_ok *t = &tests[i];
-+		unsigned long long tmp;
-+		char *retptr;
-+		int ret;
-+		enum memparse_suffix suffixes = MEMPARSE_TEST_SUFFIX;
-+
-+		if (t->suffixes)
-+			suffixes = t->suffixes;
-+
-+		ret = memparse_safe(t->str, suffixes, &tmp, &retptr);
-+		if (ret != 0) {
-+			WARN(1, "str '%s', expected ret 0 got %d\n", t->str, ret);
-+			continue;
-+		}
-+		if (tmp != t->expected_value)
-+			WARN(1, "str '%s' incorrect result, expected %llu got %llu",
-+			     t->str, t->expected_value, tmp);
-+		if (retptr != t->str + t->retptr_off)
-+			WARN(1, "str '%s' incorrect endptr, expected %u got %zu",
-+			     t->str, t->retptr_off, retptr - t->str);
-+	}
-+}
- static void __init test_kstrtoll_fail(void)
++		ret = memparse_safe(sizestr, MEMPARSE_SUFFIXES_DEFAULT,
++				    &new_size, &retptr);
++		if (ret < 0)
++			goto out_finish;
+ 		if (*retptr != '\0' || new_size == 0) {
+ 			ret = -EINVAL;
+ 			goto out_finish;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 3a677b808f0f..0f29fd692e0f 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -263,6 +263,8 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
  {
- 	static DEFINE_TEST_FAIL(test_ll_fail) = {
-@@ -710,6 +951,9 @@ static int __init test_kstrtox_init(void)
- 	test_kstrtoll_ok();
- 	test_kstrtoll_fail();
+ 	struct btrfs_fs_context *ctx = fc->fs_private;
+ 	struct fs_parse_result result;
++	/* Only for memparse_safe() caller. */
++	int ret;
+ 	int opt;
  
-+	test_memparse_safe_ok();
-+	test_memparse_safe_fail();
+ 	opt = fs_parse(fc, btrfs_fs_parameters, param, &result);
+@@ -400,7 +402,12 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 		ctx->thread_pool_size = result.uint_32;
+ 		break;
+ 	case Opt_max_inline:
+-		ctx->max_inline = memparse(param->string, NULL);
++		ret = memparse_safe(param->string, MEMPARSE_SUFFIXES_DEFAULT,
++				    &ctx->max_inline, NULL);
++		if (ret < 0) {
++			btrfs_err(NULL, "invalid string \"%s\"", param->string);
++			return ret;
++		}
+ 		break;
+ 	case Opt_acl:
+ 		if (result.negated) {
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 84c05246ffd8..6846572496a6 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -762,6 +762,7 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
+ 	struct btrfs_fs_info *fs_info = to_fs_info(get_btrfs_kobj(kobj));
+ 	char *retptr;
+ 	u64 val;
++	int ret;
+ 
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
+@@ -776,7 +777,10 @@ static ssize_t btrfs_chunk_size_store(struct kobject *kobj,
+ 	if (space_info->flags & BTRFS_BLOCK_GROUP_SYSTEM)
+ 		return -EPERM;
+ 
+-	val = memparse(buf, &retptr);
++	ret = memparse_safe(buf, MEMPARSE_SUFFIXES_DEFAULT, &val, &retptr);
++	if (ret < 0)
++		return ret;
 +
- 	test_kstrtou64_ok();
- 	test_kstrtou64_fail();
- 	test_kstrtos64_ok();
+ 	/* There could be trailing '\n', also catch any typos after the value */
+ 	retptr = skip_spaces(retptr);
+ 	if (*retptr != 0 || val == 0)
+@@ -1779,10 +1783,14 @@ static ssize_t btrfs_devinfo_scrub_speed_max_store(struct kobject *kobj,
+ {
+ 	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
+ 						   devid_kobj);
+-	char *endptr;
+ 	unsigned long long limit;
++	char *endptr;
++	int ret;
++
++	ret = memparse_safe(buf, MEMPARSE_SUFFIXES_DEFAULT, &limit, &endptr);
++	if (ret < 0)
++		return ret;
+ 
+-	limit = memparse(buf, &endptr);
+ 	/* There could be trailing '\n', also catch any typos after the value. */
+ 	endptr = skip_spaces(endptr);
+ 	if (*endptr != 0)
 -- 
 2.43.0
 
