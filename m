@@ -1,208 +1,214 @@
-Return-Path: <linux-btrfs+bounces-1278-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1280-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8722A825D82
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jan 2024 01:59:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77CA6825E4D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jan 2024 06:40:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A4E71F226BE
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jan 2024 00:59:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 774C81C23456
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jan 2024 05:40:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 293191374;
-	Sat,  6 Jan 2024 00:58:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970B733FB;
+	Sat,  6 Jan 2024 05:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="H6iM/4rN";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="W7t9Qwsu"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="N3Wd74Yl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF6110E5
-	for <linux-btrfs@vger.kernel.org>; Sat,  6 Jan 2024 00:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4060wn5i012536;
-	Sat, 6 Jan 2024 00:58:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=8P6IFRY7+triODOT/RlbZccbz99rsVxc7nmHZbrKDfI=;
- b=H6iM/4rNrtPi6OJxbWcUq+Qih7hfg6yTHJqhQuWfyyqM8bgZcJt6u/aN+ER/xJGbZV4U
- Ci7d1LKNhT4A3FtrA9o3Mkot5RXyWBBfnYuNzWoJAKxDHueR0NNU2qXmRLXWNzXHmOVw
- NBTWf6O3rKAGTCVBfObFZhYI3If/GP4VFjqO5pJxnufS2I8tqQfUan4BoM36oBsZSqAI
- v9+gIUabyUWgft5wCoosRU1BZiGvQlLoOR1laKJb5+XifrEq2TIIbrhzXU2E74/YtAP0
- yJM8dI2+IvG+vo5wAuPW/at0ECBAu9p8QyR/pvnjVxGgnr6S7DzYDSZaP+OXZlO7Q7Pj 0w== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vevsqg00d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 06 Jan 2024 00:58:52 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 405NGsJm010702;
-	Sat, 6 Jan 2024 00:58:52 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ve176g4gx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 06 Jan 2024 00:58:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JUodWZst1GYWAOfVY9j9g2Cg7AZh+hka4TP9bGFtFXGmsN9QqXjp52hwNmI7aiyitFzzfXIuwsYKDWvaeS36bMeyKArzG4DDr1+ch2SJD7vj1kXSFZoJ2tlX+uCI6Ygb3/PJrt0kIJMafpJU9DmmD3w+0ZXBNdlZwCpHKmBw9sywTrVpY68wYPf0UofUgNTZ44U8gnIqY5mpMrpOYX+vuhYzMw6gSmU+BYcZ8DROxetfpUPYrSSO1Naoc1QOK9nJ/uyXwZs3ubfUBt1vbt4BSrZUlSKKwe6OHG9mpm+kKkazcwDncgve1cyEDFAv5488KXFBkCiXstSAMxxOwzcyEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8P6IFRY7+triODOT/RlbZccbz99rsVxc7nmHZbrKDfI=;
- b=ldsA/2TVVjqjOPhoLeIkdwOP/ZYSBJRwV2aPsGPWIGvPYfDt2PCxLpXQxpVqw5TEuWE+MbIkhUpXElSAx+2tbGhuqpaMJRmZU5PHkW7c6K8Lht0vmMU37eMjFNEweEUKRuWgKuTe1BMZ9BRgnuPRYbVqExafU9R2OWi2fwiRf+xTdDpqzHItS9xXSZCrr5IAsBsNnltvqTHJs9MfXbYRmP8lAHqJlWMsAWIl4+CQI/WUkymMpbiuhHM7FZGK/zw3MxwLOkMqgCOffDgFxhehZbYMlw/jHX+fNXwju3uEvoGY6J0HnLzDNakSR0JCa5sZAVtWhYx6DN5CbXkk94E4aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8P6IFRY7+triODOT/RlbZccbz99rsVxc7nmHZbrKDfI=;
- b=W7t9QwsuaP/LjB7Ayq3gx6xrGy+wp604y9l41BIcPSr0pxV4IPTFzVY6mQnNxbSCxbBKqzqSbHkiCQlyZGkYZaocMd0CCBucLy3ba+ZitvYZfqg1aUcfrzKWNXhRfD6sLHkSWlGIdLchqesXI3AfW3eIB8u9WqXVsn27bkRXs4k=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by CY8PR10MB6778.namprd10.prod.outlook.com (2603:10b6:930:99::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.16; Sat, 6 Jan
- 2024 00:58:50 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2000:9c78:19f5:176a]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::2000:9c78:19f5:176a%3]) with mapi id 15.20.7159.015; Sat, 6 Jan 2024
- 00:58:50 +0000
-Message-ID: <646b83af-235b-4243-9e16-9e288e39d113@oracle.com>
-Date: Sat, 6 Jan 2024 08:58:44 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] btrfs: subvolume deletion vs. snapshot fixes
-Content-Language: en-US
-To: Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
-Cc: kernel-team@fb.com
-References: <cover.1704397423.git.osandov@fb.com>
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <cover.1704397423.git.osandov@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR06CA0215.apcprd06.prod.outlook.com
- (2603:1096:4:68::23) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F311FAB
+	for <linux-btrfs@vger.kernel.org>; Sat,  6 Jan 2024 05:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1704519626; x=1705124426; i=quwenruo.btrfs@gmx.com;
+	bh=Zw+MZJeEfmIg3lDq5Cd7YvUamNPEVv3KRmz6yJKUmgs=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=N3Wd74YlbAHQUh2qThd3jZfiplU2SE7GHI5slgletEvvtAuYix3spvn5vlpy/18D
+	 +Xf4s2noRFdxJ7KEBwHULIJLo4JyEflz6eUoULHrz5yuYrlmfiSLVuwM9UU5xU7hn
+	 dKfl+mgxZ0KAy5Eq+g6MSN/p78wlXwYh+qGAT8ci0ULziZk9odTcYLUf9Uoe7Wme9
+	 UdGay7m5B+ds/e/qZkgSMAAHPJIAFoF5xyrU5+NxFz6Kb3+eZgYSPXvv9Bv7mBOw+
+	 PJ9IfE59yTurqw+rPS9/jA4MLXnxPiby0N8DE6PYoywS6fIUgH+ACY5JZ/kjuyAOp
+	 liXXJ7Jx55muK/iuyw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.153] ([118.211.64.174]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M4s4r-1rNuIQ2Sdr-0020OY; Sat, 06
+ Jan 2024 06:40:26 +0100
+Message-ID: <b849c107-c3d5-4dae-a03f-c7575eee157b@gmx.com>
+Date: Sat, 6 Jan 2024 16:10:22 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CY8PR10MB6778:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5ef6fda4-2a84-4d34-c684-08dc0e52a512
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	2EEDM8yRuoobKfGSePNZ5DKOJX6NsnqeHqYQ7epMUiZWZSiM1DIRPD4DW5MMJmolZarA9CEr0FZrJ0V49EZWdS1ZUworsRv19U5njWc5ZUqELo9JOSXj9+zVSwkk4s2rdgg1pBm+MECCWD28rranoIcPte/ZYRLmKtwttS1Q90V2s64DOB7f9q8o5FSSh2r0J/Cnro1lRZ2H495Ya7hIp6w1PBB9GFXGSXXauYytyFl2jYoH03jZCd5BduOTucG6ZtUfCGO953hbxCGmD8VMgJPtIATEt2pnyUaOCtOsfkUsce0ptKBO6muONdy7hwkFiIzfbSyyA1+/h6uVHK72VeY9jN+L29y3lF8Y0W8+Zm8ANW+qmthhNR0BE7cF382N+IHgwOg6sA+55vv778R4sDeXkm+r1V4JDrXqbih3nkD/joDJcrhM2rDcl47wzmYy/dvhZ/dtmvT5Dj15r1um0SizpcOHQokzWjW5u3JJ2GvCCkM+sH/7ncuVkdxV33YaeXDuqNMAm58xwPwTqSodygFFenZUpds4If383rkCd2zQD/QSxdXfvYKanRuNtZYnSgx8iUMIiM7GakUoRIZ1E7QuZn2p1ZsKVSKp/uzS90ddD6PgMoK7/0mxvVyZRCvS5MVe2kFz0mgh7mJvi7hEbA==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(136003)(396003)(376002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(31686004)(2616005)(53546011)(966005)(6506007)(478600001)(6666004)(6486002)(6512007)(26005)(36756003)(38100700002)(86362001)(31696002)(5660300002)(41300700001)(83380400001)(66946007)(2906002)(8936002)(66476007)(66556008)(316002)(4326008)(8676002)(44832011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?aHNJb01lR1hKYllUMGxvT2t0dERwK3hvSFI1UDEzTTZxL0E5V3VSSTQwWGY0?=
- =?utf-8?B?d1lITENlU0x5YjhiN256cmVVVXZmRzZwN292ZHJEbmNQalVOei9WaU95S28v?=
- =?utf-8?B?QUkwSHg0azg0b1hPUXJQY3pqYzd6TjNsNlhrdDdEcVFGUWV6VzVEazRCTVl3?=
- =?utf-8?B?dWVObllxVUNsUlliRnV2RUhKdXlDQzc4YVhNeG5kTWpxR3RIeHY0ZzBNakIy?=
- =?utf-8?B?S2M2ajJVRjBPTWFERUlYOUpIa2MrV3NFMDNiRUEzcWpDYjh6WURQUkpFeVZU?=
- =?utf-8?B?M3dNM3g2QXRZY3JLQzgxSmdzRzh3cFd5MFV4K3ZVZVc0MXB6N0Vxb05oWHpG?=
- =?utf-8?B?dERJcXRqUTcybnN0U3Rnd0RkLzBIMmJFbFdpV1E4MWZ1bkQwaEdSY3RhcUxy?=
- =?utf-8?B?WjFOUnVOQ2IyN0FwWElLWEF6RmI3Sys0aXhsaFJnaDd4MTJJNFVmY0tWMXE5?=
- =?utf-8?B?UjdzeWlESWUzSmxObzhBTmQrMk56ZmtmdHRBNDRTVGpISitOZUwyU1FDcXdn?=
- =?utf-8?B?SUpUZys4bjQ4UlRmUkhvMVkveDlFS1A1NWxEeEhSS1pSdENGTXlVMDUxb2hq?=
- =?utf-8?B?VnJ2UTZ1MTU1QjlQdnAwYjIrZUM2bVFuT2F2cml6TXFWZE5oMC9ITmZUeEdk?=
- =?utf-8?B?anQxZWdEbytZcDdHY0JqZUxlcTN0M3JnM1NTSFRrL1VieEtBTlN5cUV5bE15?=
- =?utf-8?B?eitYVTZ3UnBUWEFRZUVtR3lXUnV5aXhpZUZNdFZST05RMkpUVGFwT3hQUm1I?=
- =?utf-8?B?eW51L2hCeWpLeTFRTXVYZTI4WjRyaFFHeVlOUWNPSEwrVUwzRUhmTW9BMXlS?=
- =?utf-8?B?d0ZmaDExd2VxQkkySlU1dzBacHN2WnBDM1RxU29uZzhlVGRWbFVDSjJtZnhX?=
- =?utf-8?B?allCVEY0NHRab2swUHk5OWh1K2lSNGMzVEJjd3RhWGtIanIweXB6SEViZ3pl?=
- =?utf-8?B?RC82L1lzTHNMMENZQ3pveTNmT0Y5cDZ5R01mREl4eVo5a3NpZWRFOFQxa0dD?=
- =?utf-8?B?dmNGQ0ZLYTMzMHlSY0ZGVTlsQTdtRys3WnZwMzM3dW5hWUNIK1dLbjNpTmN5?=
- =?utf-8?B?V0lnekJHZVFoVStPMEp1bkNRRFVtMWd1dytuUkkvcFZPU0djNTRRSGdjVUpG?=
- =?utf-8?B?MlUvRk5DdlAwZ1VZMHRDd0NMSFYySHpLMmZ5eGxlZURJOUNwRGw2ZTBteXNL?=
- =?utf-8?B?eWxITjZ4RlNoUUtXTUsvZy94RncrR1FSUGhjd2w0U0s3b2FtL0FnV1IyK1Fx?=
- =?utf-8?B?L1BjSDVCOXN1U2t4L01lOXplVFBrZGpqbTF0dXlLdXVNdjhzRWdGNUZ2TkIw?=
- =?utf-8?B?eWNpZmcrakU5QTI2STg0aFJHekQ3Tmc0S3BHaTUvNWRlVTRnV1JjK3hxZW93?=
- =?utf-8?B?V00vZTBneU1XajlUUWZJLzFUamlkOGVzaHZ6bEdERG9nUHUrb1A0TmhuY0dX?=
- =?utf-8?B?SDk5UHpTS3ZOYUYyMmtTWDFwOGd5eDFCV282d3VYWmt0SVQyN3JmaUplK3Js?=
- =?utf-8?B?YXBNak1DandEOTFWOUJDMURCQWZJK1NIZkRHWmhja09SVWRQM2pGK1pvYk1I?=
- =?utf-8?B?UVYxY3dYWTBPYmowLzNHcDl4RldLS2ovTWl3Rk00Lzd3a0dzQjFYeGxuMnN0?=
- =?utf-8?B?U2xzYWo3Nk92cGEvRmNGbVo4NkYwM2VwM1FFQ3BlSDMwZXp5OTUzT3JwMTg3?=
- =?utf-8?B?NGRINzE5cVJXaHE1Qlg4aWR0Z1JiUVlZVE44YUJDakRQRXgrVHJhSk9NeGJ6?=
- =?utf-8?B?bFRheTU3b3MxUFM4WTYyK0lieXdxNDFxczJvM2s0d1lLZytKOE5oSW1mU3Jl?=
- =?utf-8?B?SzZsUEdWZ3Y0cS83VHlLM1VCcFhuRGN0SHBOTis5SnE2S0NrNTFFVHBvdVF1?=
- =?utf-8?B?VXFPTGs4UWF5Rzk1QnRtL3NyWEFIbFNyY2Nxb1hJMTRaQ2YrdWszTDIwMTds?=
- =?utf-8?B?UlEvSk9NQzE2SXNPTEpPWVYvMlFERzhobGs3WTBZME81cmRyV1UwN1UyN1hp?=
- =?utf-8?B?REN0OWlKZENaUG1lcUdneWZRTWg1Z3ZuQmx1VGwwY1RCOU05Y01tN0dmeFJD?=
- =?utf-8?B?N1VNdXk1NmNHd25kb0RGVnVhdEswOEZac2lRQTh0cCt4N2JvYzVUbkROQjE0?=
- =?utf-8?Q?Q3TwfHiuKhYrRSvrCjzTXIagq?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	hY7rCO6VbqF5/7aPU7YcXCqxk1WVgwR+CC31wurJwSLFTgOFt+WmMEEGgmhw2b3aYb686BsBSOUBlAzDaKQ4cBFuhcWcndLs1KIs0E1wKp06aYqvaAfYQdd4VBmiGgEd0BDHZmd4ds24Txepu73NG49qmPY9E8jly8qcRcOL70fBPW3g6TYuNdvt1cT74wALUezxu6FMI0hZQTm5SxJpRNcq6QtDvgfbKJnNWbx906S1aHNMNSOAozsVA+/skUG7N3Jgt0Bv61x/VC//dLwL6PSaDjR/VD8bFIO3gfpkXDGf7IGqnEepaiJ3D9Aa1EnYIqJ2W5KhmlmF6NwjsFUtqZnLmNWPvNHi9adpNMJkNqZvaTRb+vQHeIHdQY0aKp7B0Ko1IkqX04b37uHdLNfy5FQEY5otYNBb0ho9gXkdDrLSw5AalbnkC67ZbfiX0Fh0fZot/1CLWkjew0+Tpn1uPmQaHlTUzb2AK0pT8MUFjHEqCjA16KwXOiZaByQjYgiEpEjrMKHU4AvtxcQtbbUchhOMRvNsNzc+63H32CmREkiav591ulg8JyAP8piB+9vbc74ZxVdiV6ONtyAsdMMNpAXH3nSGS8hNLLStwC+sglQ=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5ef6fda4-2a84-4d34-c684-08dc0e52a512
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2024 00:58:50.2755
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: H8wFcmsZGRvKBwbQ0BLqD479Crn3U3owhYn6DRBL345+ZyKgocYQa3WGOxBAwYSUAJc/RV2etCuW228vFMRAMQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6778
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-05_08,2024-01-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- bulkscore=0 spamscore=0 suspectscore=0 adultscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401060003
-X-Proofpoint-GUID: rkxF1adkzenI4tnZwbE-QuApOORUD4P2
-X-Proofpoint-ORIG-GUID: rkxF1adkzenI4tnZwbE-QuApOORUD4P2
-
-On 1/5/24 03:48, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
-> 
-> Hi,
-> 
-> This small series fixes a couple of bugs that can happen when trying to
-> snapshot a deleted subvolume. Patch 1 fixes a filesystem abort that we
-> hit in production. Patch 2 fixes another issue that Sweet Tea spotted
-> when reviewing patch 1.
-> 
-> An fstest was sent previously [1].
-> 
-> Thanks!
-> 
-> Changes from v1 [2]:
-> 
-> - Rebased on latest misc-next.
-> - Added patch 2.
-> 
-> 1: https://lore.kernel.org/linux-btrfs/62415ffc97ff2db4fa65cdd6f9db6ddead8105cd.1703010806.git.osandov@osandov.com/
-> 2: https://lore.kernel.org/linux-btrfs/068014bd3e90668525c295660862db2932e25087.1703010314.git.osandov@fb.com/
-> 
-> Omar Sandoval (2):
->    btrfs: don't abort filesystem when attempting to snapshot deleted
->      subvolume
->    btrfs: avoid copying BTRFS_ROOT_SUBVOL_DEAD flag to snapshot of
->      subvolume being deleted
-> 
-
-Looks good.
-
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: btrfs thinks fs is full, though 11GB should be still free
+Content-Language: en-US
+To: Christoph Anton Mitterer <calestyo@scientia.org>
+Cc: linux-btrfs@vger.kernel.org
+References: <0f4a5a08fe9c4a6fe1bfcb0785691a7532abb958.camel@scientia.org>
+ <8a9b6743-37e6-4a71-9423-6ce5169959ac@gmx.com>
+ <62e9ad23d4829f30600ea6e611d2cd4636f080cc.camel@scientia.org>
+ <7acc8ea1-079d-42bb-8880-dbd9bbfa100b@libero.it>
+ <fecad7ce2cea1ff125a842d8c53f1fbfe4f1d231.camel@scientia.org>
+ <CAA91j0VNf9UQTYOn688eboGB_bw4YeKOXnKAt1uAYRZwYA3UPg@mail.gmail.com>
+ <b47ed92f14edde7db5c1037a75b38652afa6c1c1.camel@scientia.org>
+ <e6ef9ab3-06ab-4360-b205-3a7559b6b388@gmx.com>
+ <979fd68a4a766f823366797eab1060e5c515a776.camel@scientia.org>
+ <ba9556f9-4784-4bf8-8fa1-49b17df6d31e@gmx.com>
+ <c085dabb449f8088156d906062db0b9fa0f7fe32.camel@scientia.org>
+ <aa69e84f-d466-457d-9b29-47043c2aef53@suse.com>
+ <bf5726d2a30996d06204b17d05daec9c77b7d769.camel@scientia.org>
+ <57a0f910-a100-4f31-ad22-762e8c0ecb39@gmx.com>
+ <513dfa2b00cf496e6f682508037616b6165fcc53.camel@scientia.org>
+ <494daef3-c180-4529-befb-325a46a3eeeb@gmx.com>
+ <156b27d5ea42ed4afa6d73dec8e2f479d346786d.camel@scientia.org>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <156b27d5ea42ed4afa6d73dec8e2f479d346786d.camel@scientia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:SCbKcDc/mM7NtvnAW6QVQDBmxv3ezRw660pewjVyrts1LCdv4xX
+ +8A+guVdymnfEDyPhcKknrLQe/hP0ERU9MTc6tsNQRXxTlPkOg9gKxtkSmj5wkbKXIYalrE
+ kYarCXhs2BCs0LvWOqM6Gop1RLpTrS8LX2tOs4JqYdO+SsIAg49p3nS69qU89cKxPcciQV1
+ Na3HCUiOx4hcoMjg34C9g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:MiRznYyHQ9o=;WVTUcG7yITBCkQHo/Y0DAV2b1ig
+ pSZCBaTy7ePJzghk//xOw7Gzu8YvM3EZWpjLJFDPMka8LTk/jhBSrRnO3dQqZGLVrEz9sD7YS
+ nA/dDFKfijYC3h4hOe0J6Yr4FY9xURDV6XTeWqYeS3aM8rWvXlQ+v8ktvsRJekZAeM8B9K6ZE
+ JLNkH4UaZZscqiHp8L0jb0pT5HlU85HlGLgrsGbiLBm3hL18JJyiMCp8yc5Ck4A+Z/6VK4hCY
+ X4mo/oSPfjLw/wsyB802gTYpEtYhE2ps+GDwplW3Wz3kcK5Dw+7P9HxLzMKn84oepvqaaXfNG
+ qLn95T2wgI9/lVxNuZjXg18o5o6x5qAtJ0oimkodKJnqJBnDQgkiio6aGesmTByX1BU51shvZ
+ zMxjxTh+XP1gZvqHI7m7EsUPqle0Mm15KicsSah2ET2wYs54/9fZwDoV8HG1/9NRRaUGH289G
+ IcoCRXFfnR+G6kPRU18ED+xGDxH4WNtYuxGc+tyOzUwHFLTqLn5iU9zDV0tmJz6+rJzIu2ND0
+ EqLAdx2n+z+CaaDJX5U1tlO2U1xq3B/UeTsawvJH9NvjNpDi5w4wLB+XlbwLw2GsrJHHfdpgJ
+ qaV0cSxICc19F595Njphp210d8WM54Soddc4k+YhKCvmOtTc4jWFp3YnqKc8vPDIY6+06ilBD
+ AZPg5MvSX608nLHLgMMVOwRyjP9gz+pVwyfwkT7PGPaoQNg2udK1fyZtmIruidP7q6uLkLRI5
+ 5bCk12BPoo1HuIw13OqApRo0zsOGZn0yDYkoo2cO+5h73Ub3ezNIQzF6Z/F6rr6RQH5jBbtPF
+ 91q5yLlpvhta70Wk14tW9caARFekKpW/yUngwP7jkiNrEb8/w8v0uODQe7uMEBMsrYKyD6XKO
+ 9ZbxQmC+2ufEm1OiJVid+aaXKBhL4hBYEAb9cBzYT8X4X7u/8SoTDlYRcq0B/qFqnsM5aBz0v
+ 6+SClimk3IzDTNV8T56GL6nD2Yo=
 
 
-Thx, Anand
+
+On 2024/1/6 11:12, Christoph Anton Mitterer wrote:
+> On Fri, 2024-01-05 at 17:37 +1030, Qu Wenruo wrote:
+>> but pretty hard to find a
+>> good way to improve:
+>
+> I guess it would not be an alternative to do the work on truncate (i.e.
+> check whether a lot is wasted and if so, create a new extent with just
+> the right size), because that would need a full re-write of the
+> extent... or would it?
+
+I'm not sure if it's a valid idea to do all these on truncation.
+It would involve doing all the backref walk to determine if it's needed
+to do the COW.
+
+>
+> Also, a while ago in one of my mails I saw that:
+> $ cat affected-file > new-file
+> would also cause new-file to be affected... which I found pretty
+> strange.
+>
+> Any idea why that happens?
+
+Initially I thought that's impossible, until I tired it:
+
+mkfs.btrfs -f $dev1
+mount $dev1 $mnt
+xfs_io -f -c "pwrite 0 128m" $mnt/file
+sync
+truncate -s 4k $mnt/file
+sync
+cat $mnt/file > $mnt/new
+sync
+
+Then dump tree indeed show the new file is sharing the same large extent:
 
 
->   fs/btrfs/inode.c | 22 +++++++++++++---------
->   fs/btrfs/ioctl.c |  3 +++
->   2 files changed, 16 insertions(+), 9 deletions(-)
-> 
+         item 6 key (257 INODE_ITEM 0) itemoff 15817 itemsize 160
+                 generation 7 transid 8 size 4096 nbytes 4096
+                 block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
+                 sequence 32770 flags 0x0(none)
+         item 7 key (257 INODE_REF 256) itemoff 15803 itemsize 14
+                 index 2 namelen 4 name: file
+         item 8 key (257 EXTENT_DATA 0) itemoff 15750 itemsize 53
+                 generation 7 type 1 (regular)
+                 extent data disk byte 298844160 nr 134217728 <<<
+                 extent data offset 0 nr 4096 ram 134217728
+                 extent compression 0 (none)
+         item 9 key (258 INODE_ITEM 0) itemoff 15590 itemsize 160
+                 generation 9 transid 9 size 4096 nbytes 4096
+                 block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
+                 sequence 1 flags 0x0(none)
+         item 10 key (258 INODE_REF 256) itemoff 15577 itemsize 13
+                 index 3 namelen 3 name: new
+         item 11 key (258 EXTENT_DATA 0) itemoff 15524 itemsize 53
+                 generation 7 type 1 (regular)
+                 extent data disk byte 298844160 nr 134217728 <<<
+                 extent data offset 0 nr 4096 ram 134217728
+                 extent compression 0 (none)
 
+My guess is bash is doing something weird thus making the whole cat +
+redirection into reflink.
+
+But at least dd works as expected by creating a new extent.
+
+>
+>
+>
+>> My previous guess is totally wrong, it has nothing to do with
+>> NODATACOW/PREALLOC flags at all.
+>>
+>> It's a defrag only problem.
+>
+> Sure, but I meant, if a file is NODATACOW and would be prealloced to a
+> large size and then truncated - would it also loose the extra space?
+
+That would be the same.
+
+>
+>
+> And do you think that other CoW fs would be affected, too? IIRC XFS is
+> also about to get CoW features... so may it's simply an IO pattern that
+> developers need to avoid with modern filesystems.
+
+Not sure, maybe XFS would do extra extent split to solve the problem.
+
+Thanks,
+Qu
+
+>
+>
+> Cheers,
+> Chris-
+>
 
