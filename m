@@ -1,324 +1,220 @@
-Return-Path: <linux-btrfs+bounces-1305-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1306-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89A0A826A44
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 10:09:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DE4D826D22
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 12:47:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33BF4282B8A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 09:09:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2A87B215D4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 11:47:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F7E111BD;
-	Mon,  8 Jan 2024 09:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D94C22EFA;
+	Mon,  8 Jan 2024 11:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ARbSHq6O";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ARbSHq6O"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="jfv5n3Ge";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="dzXHvFJd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50285D2FF
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 09:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7935D21DB8
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 09:09:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704704951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Qe4tnTmO24QA6K1L74V6yqSdclR3I2CpbGAuPO3lbTM=;
-	b=ARbSHq6OGyJB3VS4+mgOHGAsQBK/ucO0rJWCGcAh6RN5PKLdjI2hIRQcb97u4cJaXQKbmZ
-	9TAR9vV/Yq8fqpvYkaCt5Wchzut7XjVOjPlDzn2sDdDxgx9BRSza5s0imB82Fsn/jWyWBo
-	O+EAmceCaE3iT6PnaZyaaLBfGUF+X5c=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704704951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Qe4tnTmO24QA6K1L74V6yqSdclR3I2CpbGAuPO3lbTM=;
-	b=ARbSHq6OGyJB3VS4+mgOHGAsQBK/ucO0rJWCGcAh6RN5PKLdjI2hIRQcb97u4cJaXQKbmZ
-	9TAR9vV/Yq8fqpvYkaCt5Wchzut7XjVOjPlDzn2sDdDxgx9BRSza5s0imB82Fsn/jWyWBo
-	O+EAmceCaE3iT6PnaZyaaLBfGUF+X5c=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6346113496
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 09:09:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id eCPKA7a7m2UxCwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 08 Jan 2024 09:09:10 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: zstd: fix and simplify the inline extent decompression
-Date: Mon,  8 Jan 2024 19:38:46 +1030
-Message-ID: <0e4ae269b3fd0caf99964c16c98bdd67dbab7150.1704704328.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1704704328.git.wqu@suse.com>
-References: <cover.1704704328.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0598724A16;
+	Mon,  8 Jan 2024 11:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1704714444; x=1736250444;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=ZULCkicFSjSNQrK96cgOLm0rNAC/9y+q+pygE7APexk=;
+  b=jfv5n3GeGlsa5nLQfKB6/pT3bEnUNLb5/FRVThyvS6/XWV+5zu3bRCeo
+   ZtXUB15tfEt+s+8IwJuLiheEHNQySVfsnaShcS5Gb5CAXx9m95m9N2ZmM
+   MGEtIeOr40KJxWyQ4SUKWbsCVi0/7f+4/GExa7Eo9MCLagiy+m5wPL08D
+   a/YfJwQzPofWEyc9ZJu7pk5YBCngH+ILFDi5etpf089FZGsvq8TBne4Ao
+   z8e8sK2FfvTM6KK7WWQTHuMGy+IkbtH1Cxejk07qVGMTsPJ41KJpjfnFC
+   JBvccnyZcbQMcrF4KSK+uEaIzf8hpi4JI5jt/Yd7qvmqPmXVjufXLVur7
+   A==;
+X-CSE-ConnectionGUID: IJHZujtIQN2w6uPkxs6LqA==
+X-CSE-MsgGUID: v40WYlTrSHK+dvH9TkUI3w==
+X-IronPort-AV: E=Sophos;i="6.04,340,1695657600"; 
+   d="scan'208";a="6367674"
+Received: from mail-dm6nam12lp2169.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.169])
+  by ob1.hgst.iphmx.com with ESMTP; 08 Jan 2024 19:47:15 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XPfQjdZcjJXIE9gKYa11a9HbVhfgScCeluYCnG0uEREysgsPy6WfE3UTENJ6XaxLP+7tkn/t+QvFUhx0FBXBhWGkbi/YwMTMUdlFpC3WlMgJZGqBIPQB1lhfdLeomAGc/Rf1x3+zOjUuUsFPmkUCK9qw1/qxvwC9J/uh4/7MaMqeVjdPX3oS81c0nkUKxV5XxjdRL4I6sBuwNPR+GGxJuqfVa+E08gh9p+lhAtgvjHU03LH9ruFi1Jvd6JaaMwafKeWzwQrwpUF6PtJGpTj8lbgXIXmPkkguZK9B4gdBPj+f90JaaJUI3FgFPo5pJQeviT0zBKONe1S1J2aZIYGptw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZULCkicFSjSNQrK96cgOLm0rNAC/9y+q+pygE7APexk=;
+ b=NSTiEausRPzuci4sshwHHqP4TqX5E2FvGIS6s1fsvuDx3p3v1NPnaj81HtdR++c81cA9UiKW/B05GPfcmWQd0I1qD2oVMUTrs1zR9BDQPCjxpzSYuWbHOzTeIUjjVh+KtxdDitsiOO9B9osnPRZ8KUiiyS45Ob1qd+DV7WJwqIgRrukP1WFE1pTz3uiciVcXmm0zfu1PHlEz2qw9DZwTfUqw1HlhxtC0eZ/VK7/xCHE7OA1tTen/LI18hN2HUUfcZ2cnU8HHSfR6RPlF9NTfJVUURd3WwZ4M0IWTQilhZp7corC4qEshKB0+N0TRLcbfXsltlbkyDMAtCzrwCue3HA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZULCkicFSjSNQrK96cgOLm0rNAC/9y+q+pygE7APexk=;
+ b=dzXHvFJdLanFseXN/ZEw0AwIaRwYMBA6UVYGBTTnb5JgM4ggv+9o5xf4z5ZJetXt103mzireBisjqN+CGLgaG6c0B9RdyoiyIcuOujJ8U/jVLyOfbi9PoYp2BarNMf1YXOtOP72fl/X+a+IphAHn7UD8M4KbbobfthApNG/NVCc=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by IA0PR04MB8889.namprd04.prod.outlook.com (2603:10b6:208:484::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.21; Mon, 8 Jan
+ 2024 11:47:11 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::8ea3:9333:a633:c161]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::8ea3:9333:a633:c161%7]) with mapi id 15.20.7159.020; Mon, 8 Jan 2024
+ 11:47:11 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>
+CC: "lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+	"linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-fsdevel@vger.kernel.org"
+	<linux-fsdevel@vger.kernel.org>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] Removing GFP_NOFS
+Thread-Topic: [Lsf-pc] [LSF/MM/BPF TOPIC] Removing GFP_NOFS
+Thread-Index: AQHaP1N1f1xtm7GuQkGyfOpNi6HK+7DLDVQAgATE2YA=
+Date: Mon, 8 Jan 2024 11:47:11 +0000
+Message-ID: <20f3de31-fbb0-4d8b-8f34-aa1beba9afc9@wdc.com>
+References: <ZZcgXI46AinlcBDP@casper.infradead.org>
+ <20240105105736.24jep6q6cd7vsnmz@quack3>
+In-Reply-To: <20240105105736.24jep6q6cd7vsnmz@quack3>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|IA0PR04MB8889:EE_
+x-ms-office365-filtering-correlation-id: 02511648-1310-4d8f-4560-08dc103f8d33
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ rLMEHCgQR6RilSbDxqj2S2BBXcK97hkEWGk0bbHxbdMJTZfU27MZLKfHyP8IVJHY3E69GDWVaSweTzjA7syDA5BT72i+Vmmpcs2EOKq6dOTS4wLrHVWPUniInv1qYrWVTln1tVaQ0+ojPRAEHtaQSIokkrG3fMT/0QqawjdczwjYpIJZ3Y4fp/TFUXM3E3o9lF2pHW1MeZSYQk0eUi9BErAAHxwj0NLIU6EMZQyYvfy0T7MvRZu1uARbE0VdBGI6set529aSZuvd3jCBHxJyNWgdoiV8Ve2vZrSUuJ0iWUoAvadUj/ht+WDc4pwIOYF/yNrhEEAacnI0MHmK0gEn9PjH/s5F1XrZ1oxKBc3aKwKhmn4FjPfW+YB7/178IhlCcyjZravBvkD4POzyoElehTgLhcnuestomt4nYYsKLhaou4eC55msn1AzoBf1Shn8Kaak6EpQUAoIZSQ8HnV20izbkvGs2CCbyDiqj68s6eORKVSGDZkR7OiwGq0Xo1zvWbcQiRDiq2NmBX0FUEoh7jOIVkEdRVXvthxsOZxiUsq98asZ0pMsoaUNAMqFl13AbifqkNaa580v9HOhWvR7idVLUPuRA0J3ZKnU+hzwNB7AMJnHYlqzYZ5XqS1A2IngBKdU4uTRKaHYOicYU3cmL0zI+RhhxDkPlSMZsKsM3Fs9XfGg25VdM64i9ZlR56jB
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(376002)(346002)(39860400002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(7416002)(38100700002)(2906002)(6486002)(2616005)(76116006)(91956017)(66946007)(64756008)(66446008)(66476007)(38070700009)(66556008)(41300700001)(122000001)(31696002)(86362001)(31686004)(71200400001)(36756003)(66899024)(5660300002)(4326008)(54906003)(316002)(110136005)(53546011)(6506007)(6512007)(83380400001)(478600001)(82960400001)(8936002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?aHMza2g2RHBiTk9nWWROSndLcFhLYjBKdHFuK2dYU3FNZm9sSSt5bkZCUDRa?=
+ =?utf-8?B?S1c0WDNYNE5xVjZqaXRPQVJsbzVQM25XMFhQTXlza3k0MGQ3Y01OODNhVDN4?=
+ =?utf-8?B?R3VORlhZclUreXdvWGJUUi9nNFZtUVZVUlZWRnRWQ3ZxUXVUQnFPUEdKYWM0?=
+ =?utf-8?B?bUpib1NWU3Jwc2hzRy8xNkwrYW8xbUR1SEhvQmJCSjhpdXFPNlRLQmpIbXlD?=
+ =?utf-8?B?cXNINTBHR3Q1UnVFM2d6Qk1EODVESjEvZEhXa2NKZC8rNCtvUUJjbUxPbHcr?=
+ =?utf-8?B?VCtoTFdvOUE1UUFSbDJkUDJNVE5sYXp2MXBBci94TVRDRW5xMmM0aWV1UGVK?=
+ =?utf-8?B?T0VxVmZTNzAyRkVaMzRqK05KOTlQTGZhUlNxM3FtNW1IWXd3bXBWRVh3SjZi?=
+ =?utf-8?B?WXcxVFZZMnNZZU0zK0dqd3lzeWhnR0hoU0VaQzNjcjJOVi9qa1ZXQjBJenVT?=
+ =?utf-8?B?NVdhT01abnhac2dPRWYzU2ppNHQyTkpHZGRHM00rdWM4dFJmOExXenpDeTVu?=
+ =?utf-8?B?NGlJd1VXWVZYamFjZFR6c0tPWDRUcFhnakhiN3EvNDMwamtFdXVlSUFUc0lZ?=
+ =?utf-8?B?VnJZN2pncjVJNExSOS9BRU91ZTc0YlVZYzMvN0piaDYwdFRpTU5hcWRrY2N3?=
+ =?utf-8?B?ZytNT0JwSG1EVVFCbnh3TFBxeUh2dy92dlMyU252UjF3N2VjaDNUck9pditZ?=
+ =?utf-8?B?NlpzM0tXRGJyYlNMb1ZsaEZoSWxCZmpCQXNSZlYvbUszckZzK3FGRWk4aHhC?=
+ =?utf-8?B?ZlFuTDFDV25zY1lJVkN0bUFVOFcyWCtSNDlCeWt4c0wwN0tXVWJteGhMNmNC?=
+ =?utf-8?B?U3kvNURqUXpYMVA3Si9PNjZtbkNxSHdKWmc2MW5yTWxLeDYwckwwaW9Vanc5?=
+ =?utf-8?B?TFUxT2Z0Z3dic1NBWFowYnBVUDhlYkdCaHg5SlZvUnFORVFUSEFnOWdjMkNa?=
+ =?utf-8?B?bGoxd0w3L0JxNU5ibXUxNGMvajR5KzFFeEI3dHhveTlFd2NSZ1I5NTBZQjFZ?=
+ =?utf-8?B?Y3VVVGZWTWxaeVhxL1J1aGJVRDdscjlVaEJUSjh5bml0ejRRMzhrUUo2STNQ?=
+ =?utf-8?B?SCs4M3h4QWd6MzdQclhKcXVwQ09Kc2ZUOEw5WHc5c282Wm1oTmRGY1RJTlVp?=
+ =?utf-8?B?SVVHeUlqN214UG82ZDFOWjJPSms4SGo5cGJERnc1U3F3ZDR2Z29oeUp4N1g5?=
+ =?utf-8?B?WGhBMVI5U2wrTkZxVlNhZGQ2NlJuUjIxREhidUo1Tzdkc2xPcnIzNjlQbDl6?=
+ =?utf-8?B?QmJhY0pzTXRPcldESmZlZy9Wdytsc1g2VVM1UnExWTRIUEpyVUI1b0tLaWtV?=
+ =?utf-8?B?UVJmdklxSW16d3JZWHpkaUZLZVFhbUdFZmw3RmZJYkdzYzdCcEJnWDdoV052?=
+ =?utf-8?B?UVk0ODFtdGdtUDBMYkd6ckpRSThCN1VTdEc1dWdpclJHb2NMeEpEM3VjeTRO?=
+ =?utf-8?B?Tk9oQVM5SFFNRjhDUTBUbS9WZTd1NE1WaFhETVl3RStlMFlBekFrTWRuanQx?=
+ =?utf-8?B?c3ZIdUlXNjlkQU5PODZ2Y0F4KzFrNUtMeGc1L0ZxSzdxZWYxQUFiRkwxbHdy?=
+ =?utf-8?B?NjNzbmxxL1lUSUl1b0xaL0ZTSjRvWUdsbkZ3bEFUVnN5dlpSVEljY284c2RJ?=
+ =?utf-8?B?bFEzUnNLeG1yd1N5a0kxSCtwbklaVFpIelp0ZCttVFVFZzN4L0VZSDFTMnZj?=
+ =?utf-8?B?Y2xWb2c0VXhFb1FFeHlUUWhicC9hWlp5blFZUTI3T0kyV1lnS2tWZDhOeXk0?=
+ =?utf-8?B?TmdrM2FiVzcyRlZSWlFlcUVVYmF4UkpzU3ltUUFrcVY3TEdLbU5mSjRSNlF5?=
+ =?utf-8?B?cFdOVkVKR2F2S1JENjNGUXBiOW1RYUdXR2lvUE1wdVBoNzVIOXhuNDA4VGJZ?=
+ =?utf-8?B?NkxpaFVWZENUVmJBNFU4TzFwUUVtNitGTGRJeWxMckRiKzE4eno3SjBhbU9W?=
+ =?utf-8?B?VFArRUdEN2UwWjM4WDhNTXd3Z1pNU1RCRklkMDdaVHAwY3RBb2tIbXVHR09N?=
+ =?utf-8?B?aWRRNW1VdFJnRGZ4YVVVOEdXYkhPOEQ0MzVkckdraXI0YXk3NVlWYlR6Qi9K?=
+ =?utf-8?B?YXgvQi9NeTBIemJpQytKTGxhQXlqbkdzR2VmdERRZEtiZ2lBZGV1cXZ1UmhE?=
+ =?utf-8?B?S2RLTytCbkZBVDNoZGZMTVRvVHhKdW1vdGlVWTFzNFRETTdLUjZyZ3dtdjZW?=
+ =?utf-8?B?eXNjTUFaVmxJQVBveWUvVUk2c0tVNmZUN2VKaktYSmxjem8vOGxxUUw3cTFh?=
+ =?utf-8?B?cmRUQXBXNnNhR2xEb0ZvLzZ1dldnPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <ED8CEF284AB49D40884930E019254474@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=ARbSHq6O
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_DN_NONE(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_TLS_ALL(0.00)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: -3.01
-X-Rspamd-Queue-Id: 7935D21DB8
-X-Spam-Flag: NO
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	N39wcDRcvgJe0VkcqbGhvM67ux6V/C2RKJP9QVB34TLIHGoRR3Fztws7xXZVxOfQ7jaFNELZw6a4Lb1QybGAt/Z1urh8ywtd0JXupX/UeqfzL7aHsU0PtcWcFFZa0O4kaD+bFD6iv2bsffh/rD/qNFmliwlWmbmZA+VWJ9xytnRf5YjBy1ulXx+Du08TM0MQ2vbq7itt0cYoLZkgOeS1xGNB+jfWHJYhmIxo0I+Ap7SFiIWVQILXbLFtzk4I5HTzEaXbeD2CBRrBWffv6Z4OHxM/oT3CJ6VdYIzi9zZHwMgfH5CfMcK3ilVO97I1piV+FwmJ5jhDlVcTrvlhx/5walaa49hdJlWa8p7Mch2pQkBDitXf0AVmhViG3nfPJQp3lOg/HMO6EUxXv+gAkYsnX8AMePdCm1i+LdK6AFb3J+60Tmsi4z0s/7z1hbRBda4d9fBDrPqSBB7MyCEwznqxdzbhGTcq3xSNKF9eAEorSBaDx8Z1iYshrTDNUZ07/hAANTcsWPgFx3aBMuisJ53bBmsFXFGNLdoZSk6SHw0OJ8E9dToGTPh57to43WEXj0l/7lyUIo+D+tCK27of2FyIOwDU5BZ3LuNNMNPC+PWZH9Y+yk/SyOdSRNwCXa72xOqy
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02511648-1310-4d8f-4560-08dc103f8d33
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2024 11:47:11.7161
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: z2q7VpFLvEftVNVe9/blQrhU1BMgX50+HPgFlZ2c8G68qPxStqMggdZY4WkaT4tDv+ecyUHsrdTbleGenmgdWGnose7T+R6kc5WRWoTKQCU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR04MB8889
 
-[BUG]
-If we have a filesystem with 4k sectorsize, and an inlined compressed
-extent created like this:
-
-	item 4 key (257 INODE_ITEM 0) itemoff 15863 itemsize 160
-		generation 8 transid 8 size 4096 nbytes 4096
-		block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
-		sequence 1 flags 0x0(none)
-	item 5 key (257 INODE_REF 256) itemoff 15839 itemsize 24
-		index 2 namelen 14 name: source_inlined
-	item 6 key (257 EXTENT_DATA 0) itemoff 15770 itemsize 69
-		generation 8 type 0 (inline)
-		inline extent data size 48 ram_bytes 4096 compression 3 (zstd)
-
-Then trying to reflink that extent in an aarch64 system with 64K page
-size, the reflink would just fail:
-
-  # xfs_io -f -c "reflink $mnt/source_inlined 0 60k 4k" $mnt/dest
-  XFS_IOC_CLONE_RANGE: Input/output error
-
-[CAUSE]
-In zstd_decompress(), we didn't treat @start_byte as just a page offset,
-but also use it as an indicator on whether we should error out, without
-any proper explanation (this is copied from other decompression code).
-
-In reality, for subpage cases, although @start_byte can be non-zero,
-we should never switch input/output buffer nor error out, since the whole
-input/output buffer should never exceed one sector, thus we should not
-need to do any buffer switch.
-
-Thus the current code using @start_byte as a condition to switch
-input/output buffer or finish the decompression is completely incorrect.
-
-[FIX]
-The fix involves several modification:
-
-- Rename @start_byte to @dest_pgoff to properly express its meaning
-
-- Use @sectorsize other than PAGE_SIZE to properly initialize the
-  output buffer size
-
-- Use correct destination offset inside the destination page
-
-- Simplify the main loop
-  Since the input/output buffer should never switch, we only need one
-  zstd_decompress_stream() call.
-
-- Consider early end as an error
-
-After the fix, even on 64K page sized aarch64, above reflink now
-works as expected:
-
-  # xfs_io -f -c "reflink $mnt/source_inlined 0 60k 4k" $mnt/dest
-  linked 4096/4096 bytes at offset 61440
-
-And results the correct file layout:
-
-	item 9 key (258 INODE_ITEM 0) itemoff 15542 itemsize 160
-		generation 10 transid 10 size 65536 nbytes 4096
-		block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
-		sequence 1 flags 0x0(none)
-	item 10 key (258 INODE_REF 256) itemoff 15528 itemsize 14
-		index 3 namelen 4 name: dest
-	item 11 key (258 XATTR_ITEM 3817753667) itemoff 15445 itemsize 83
-		location key (0 UNKNOWN.0 0) type XATTR
-		transid 10 data_len 37 name_len 16
-		name: security.selinux
-		data unconfined_u:object_r:unlabeled_t:s0
-	item 12 key (258 EXTENT_DATA 61440) itemoff 15392 itemsize 53
-		generation 10 type 1 (regular)
-		extent data disk byte 13631488 nr 4096
-		extent data offset 0 nr 4096 ram 4096
-		extent compression 0 (none)
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/compression.h |  2 +-
- fs/btrfs/zstd.c        | 74 +++++++++++++-----------------------------
- 2 files changed, 23 insertions(+), 53 deletions(-)
-
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index afd7e50d073d..97fe3ebf11a2 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -169,7 +169,7 @@ int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
- 		unsigned long *total_in, unsigned long *total_out);
- int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
- int zstd_decompress(struct list_head *ws, const u8 *data_in,
--		struct page *dest_page, unsigned long start_byte, size_t srclen,
-+		struct page *dest_page, unsigned long dest_pgoff, size_t srclen,
- 		size_t destlen);
- void zstd_init_workspace_manager(void);
- void zstd_cleanup_workspace_manager(void);
-diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-index 0d66db8bc1d4..812e3bd43889 100644
---- a/fs/btrfs/zstd.c
-+++ b/fs/btrfs/zstd.c
-@@ -20,6 +20,7 @@
- #include "misc.h"
- #include "compression.h"
- #include "ctree.h"
-+#include "super.h"
- 
- #define ZSTD_BTRFS_MAX_WINDOWLOG 17
- #define ZSTD_BTRFS_MAX_INPUT (1 << ZSTD_BTRFS_MAX_WINDOWLOG)
-@@ -618,80 +619,49 @@ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- }
- 
- int zstd_decompress(struct list_head *ws, const u8 *data_in,
--		struct page *dest_page, unsigned long start_byte, size_t srclen,
-+		struct page *dest_page, unsigned long dest_pgoff, size_t srclen,
- 		size_t destlen)
- {
- 	struct workspace *workspace = list_entry(ws, struct workspace, list);
-+	struct btrfs_fs_info *fs_info = btrfs_sb(dest_page->mapping->host->i_sb);
-+	const u32 sectorsize = fs_info->sectorsize;
- 	zstd_dstream *stream;
- 	int ret = 0;
--	size_t ret2;
--	unsigned long total_out = 0;
--	unsigned long pg_offset = 0;
-+	unsigned long to_copy = 0;
- 
- 	stream = zstd_init_dstream(
- 			ZSTD_BTRFS_MAX_INPUT, workspace->mem, workspace->size);
- 	if (!stream) {
- 		pr_warn("BTRFS: zstd_init_dstream failed\n");
--		ret = -EIO;
- 		goto finish;
- 	}
- 
--	destlen = min_t(size_t, destlen, PAGE_SIZE);
--
- 	workspace->in_buf.src = data_in;
- 	workspace->in_buf.pos = 0;
- 	workspace->in_buf.size = srclen;
- 
- 	workspace->out_buf.dst = workspace->buf;
- 	workspace->out_buf.pos = 0;
--	workspace->out_buf.size = PAGE_SIZE;
-+	workspace->out_buf.size = sectorsize;
- 
--	ret2 = 1;
--	while (pg_offset < destlen
--	       && workspace->in_buf.pos < workspace->in_buf.size) {
--		unsigned long buf_start;
--		unsigned long buf_offset;
--		unsigned long bytes;
--
--		/* Check if the frame is over and we still need more input */
--		if (ret2 == 0) {
--			pr_debug("BTRFS: zstd_decompress_stream ended early\n");
--			ret = -EIO;
--			goto finish;
--		}
--		ret2 = zstd_decompress_stream(stream, &workspace->out_buf,
--				&workspace->in_buf);
--		if (zstd_is_error(ret2)) {
--			pr_debug("BTRFS: zstd_decompress_stream returned %d\n",
--					zstd_get_error_code(ret2));
--			ret = -EIO;
--			goto finish;
--		}
--
--		buf_start = total_out;
--		total_out += workspace->out_buf.pos;
--		workspace->out_buf.pos = 0;
--
--		if (total_out <= start_byte)
--			continue;
--
--		if (total_out > start_byte && buf_start < start_byte)
--			buf_offset = start_byte - buf_start;
--		else
--			buf_offset = 0;
--
--		bytes = min_t(unsigned long, destlen - pg_offset,
--				workspace->out_buf.size - buf_offset);
--
--		memcpy_to_page(dest_page, pg_offset,
--			       workspace->out_buf.dst + buf_offset, bytes);
--
--		pg_offset += bytes;
-+	/*
-+	 * Since both input and output buffer should not exceed one sector,
-+	 * One call should end the decompression.
-+	 */
-+	ret = zstd_decompress_stream(stream, &workspace->out_buf, &workspace->in_buf);
-+	if (zstd_is_error(ret)) {
-+		pr_warn_ratelimited("BTRFS: zstd_decompress_stream return %d\n",
-+				    zstd_get_error_code(ret));
-+		goto finish;
- 	}
--	ret = 0;
-+	to_copy = workspace->out_buf.pos;
-+	memcpy_to_page(dest_page, dest_pgoff + to_copy, workspace->out_buf.dst,
-+		       to_copy);
- finish:
--	if (pg_offset < destlen) {
--		memzero_page(dest_page, pg_offset, destlen - pg_offset);
-+	/* Error or early end. */
-+	if (to_copy < destlen) {
-+		ret = -EIO;
-+		memzero_page(dest_page, dest_pgoff + to_copy, destlen - to_copy);
- 	}
- 	return ret;
- }
--- 
-2.43.0
-
+T24gMDUuMDEuMjQgMTE6NTcsIEphbiBLYXJhIHdyb3RlOg0KPiBIZWxsbywNCj4gDQo+IE9uIFRo
+dSAwNC0wMS0yNCAyMToxNzoxNiwgTWF0dGhldyBXaWxjb3ggd3JvdGU6DQo+PiBUaGlzIGlzIHBy
+aW1hcmlseSBhIF9GSUxFU1lTVEVNXyB0cmFjayB0b3BpYy4gIEFsbCB0aGUgd29yayBoYXMgYWxy
+ZWFkeQ0KPj4gYmVlbiBkb25lIG9uIHRoZSBNTSBzaWRlOyB0aGUgRlMgcGVvcGxlIG5lZWQgdG8g
+ZG8gdGhlaXIgcGFydC4gIEl0IGNvdWxkDQo+PiBiZSBhIGpvaW50IHNlc3Npb24sIGJ1dCBJJ20g
+bm90IHN1cmUgdGhlcmUncyBtdWNoIGZvciB0aGUgTU0gcGVvcGxlDQo+PiB0byBzYXkuDQo+Pg0K
+Pj4gVGhlcmUgYXJlIHNpdHVhdGlvbnMgd2hlcmUgd2UgbmVlZCB0byBhbGxvY2F0ZSBtZW1vcnks
+IGJ1dCBjYW5ub3QgY2FsbA0KPj4gaW50byB0aGUgZmlsZXN5c3RlbSB0byBmcmVlIG1lbW9yeS4g
+IEdlbmVyYWxseSB0aGlzIGlzIGJlY2F1c2Ugd2UncmUNCj4+IGhvbGRpbmcgYSBsb2NrIG9yIHdl
+J3ZlIHN0YXJ0ZWQgYSB0cmFuc2FjdGlvbiwgYW5kIGF0dGVtcHRpbmcgdG8gd3JpdGUNCj4+IG91
+dCBkaXJ0eSBmb2xpb3MgdG8gcmVjbGFpbSBtZW1vcnkgd291bGQgcmVzdWx0IGluIGEgZGVhZGxv
+Y2suDQo+Pg0KPj4gVGhlIG9sZCB3YXkgdG8gc29sdmUgdGhpcyBwcm9ibGVtIGlzIHRvIHNwZWNp
+ZnkgR0ZQX05PRlMgd2hlbiBhbGxvY2F0aW5nDQo+PiBtZW1vcnkuICBUaGlzIGNvbnZleXMgbGl0
+dGxlIGluZm9ybWF0aW9uIGFib3V0IHdoYXQgaXMgYmVpbmcgcHJvdGVjdGVkDQo+PiBhZ2FpbnN0
+LCBhbmQgc28gaXQgaXMgaGFyZCB0byBrbm93IHdoZW4gaXQgbWlnaHQgYmUgc2FmZSB0byByZW1v
+dmUuDQo+PiBJdCdzIGFsc28gYSByZWZsZXggLS0gbWFueSBmaWxlc3lzdGVtIGF1dGhvcnMgdXNl
+IEdGUF9OT0ZTIGJ5IGRlZmF1bHQNCj4+IGV2ZW4gd2hlbiB0aGV5IGNvdWxkIHVzZSBHRlBfS0VS
+TkVMIGJlY2F1c2UgdGhlcmUncyBubyByaXNrIG9mIGRlYWRsb2NrLg0KPj4NCj4+IFRoZSBuZXcg
+d2F5IGlzIHRvIHVzZSB0aGUgc2NvcGVkIEFQSXMgLS0gbWVtYWxsb2Nfbm9mc19zYXZlKCkgYW5k
+DQo+PiBtZW1hbGxvY19ub2ZzX3Jlc3RvcmUoKS4gIFRoZXNlIHNob3VsZCBiZSBjYWxsZWQgd2hl
+biB3ZSBzdGFydCBhDQo+PiB0cmFuc2FjdGlvbiBvciB0YWtlIGEgbG9jayB0aGF0IHdvdWxkIGNh
+dXNlIGEgR0ZQX0tFUk5FTCBhbGxvY2F0aW9uIHRvDQo+PiBkZWFkbG9jay4gIFRoZW4ganVzdCB1
+c2UgR0ZQX0tFUk5FTCBhcyBub3JtYWwuICBUaGUgbWVtb3J5IGFsbG9jYXRvcnMNCj4+IGNhbiBz
+ZWUgdGhlIG5vZnMgc2l0dWF0aW9uIGlzIGluIGVmZmVjdCBhbmQgd2lsbCBub3QgY2FsbCBiYWNr
+IGludG8NCj4+IHRoZSBmaWxlc3lzdGVtLg0KPj4NCj4+IFRoaXMgcmVzdWx0cyBpbiBiZXR0ZXIg
+Y29kZSB3aXRoaW4geW91ciBmaWxlc3lzdGVtIGFzIHlvdSBkb24ndCBuZWVkIHRvDQo+PiBwYXNz
+IGFyb3VuZCBnZnAgZmxhZ3MgYXMgbXVjaCwgYW5kIGNhbiBsZWFkIHRvIGJldHRlciBwZXJmb3Jt
+YW5jZSBmcm9tDQo+PiB0aGUgbWVtb3J5IGFsbG9jYXRvcnMgYXMgR0ZQX05PRlMgd2lsbCBub3Qg
+YmUgdXNlZCB1bm5lY2Vzc2FyaWx5Lg0KPj4NCj4+IFRoZSBtZW1hbGxvY19ub2ZzIEFQSXMgd2Vy
+ZSBpbnRyb2R1Y2VkIGluIE1heSAyMDE3LCBidXQgd2Ugc3RpbGwgaGF2ZQ0KPj4gb3ZlciAxMDAw
+IHVzZXMgb2YgR0ZQX05PRlMgaW4gZnMvIHRvZGF5IChhbmQgMjAwIG91dHNpZGUgZnMvLCB3aGlj
+aCBpcw0KPj4gcmVhbGx5IHNhZCkuICBUaGlzIHNlc3Npb24gaXMgZm9yIGZpbGVzeXN0ZW0gZGV2
+ZWxvcGVycyB0byB0YWxrIGFib3V0DQo+PiB3aGF0IHRoZXkgbmVlZCB0byBkbyB0byBmaXggdXAg
+dGhlaXIgb3duIGZpbGVzeXN0ZW0sIG9yIHNoYXJlIHN0b3JpZXMNCj4+IGFib3V0IGhvdyB0aGV5
+IG1hZGUgdGhlaXIgZmlsZXN5c3RlbSBiZXR0ZXIgYnkgYWRvcHRpbmcgdGhlIG5ldyBBUElzLg0K
+PiANCj4gSSBhZ3JlZSB0aGlzIGlzIGEgd29ydGh5IGdvYWwgYW5kIHRoZSBzY29wZWQgQVBJIGhl
+bHBlZCB1cyBhIGxvdCBpbiB0aGUNCj4gZXh0NC9qYmQyIGxhbmQuIFN0aWxsIHdlIGhhdmUgc29t
+ZSBsZWdhY3kgdG8gZGVhbCB3aXRoOg0KPiANCj4gfj4gZ2l0IGdyZXAgIk5PRlMiIGZzL2piZDIv
+IHwgd2MgLWwNCj4gMTUNCj4gfj4gZ2l0IGdyZXAgIk5PRlMiIGZzL2V4dDQvIHwgd2MgLWwNCj4g
+NzENCj4NCg0KRm9yIGV2ZXJ5b25lIGZvbGxvd2luZyBvdXQgdGhlcmUgYmVpbmcgY3VyaW91czoN
+CjEgLSBhZmZzDQoxIC0gY2FjaGVmaWxlcw0KMSAtIGVjcnlwdGZzDQoxIC0gZnNjYWNoZQ0KMSAt
+IG5vdGlmeQ0KMSAtIHNxdWFzaGZzDQoxIC0gdmJveHNmDQoxIC0gem9uZWZzDQoyIC0gaGZzcGx1
+cw0KMiAtIHRyYWNlZnMNCjMgLSA5cA0KMyAtIGV4dDINCjMgLSBpb21hcA0KNSAtIGJlZnMNCjUg
+LSBleGZhdA0KNSAtIGZhdA0KNSAtIHVkZg0KNSAtIHVmcw0KNyAtIGVyb2ZzDQoxMCAtIGZ1c2UN
+CjExIC0gc21iDQoxNCAtIGhwZnMNCjE1IC0gamJkMg0KMTcgLSBjcnlwdG8NCjE3IC0gamZzDQox
+NyAtIHF1b3RhDQoxNyAtIHJlaXNlcmZzDQoxOCAtIG5mcw0KMTggLSBuaWxmczINCjIxIC0gbnRm
+cw0KMzAgLSB4ZnMNCjM3IC0gYmNhY2hlZnMNCjQ2IC0gZ2ZzMg0KNDcgLSBhZnMNCjU1IC0gZGxt
+DQo2MSAtIGYyZnMNCjYzIC0gY2VwaA0KNjYgLSBleHQ0DQo3MSAtIG9jZnMyDQo3NCAtIG50ZnMz
+DQo4NCAtIHViaWZzDQoxOTkgLSBidHJmcw0KDQpBcyBJJ3ZlIGFscmVhZHkgZmVhcmVkIHdlIChh
+cyBpbiBidHJmcykgYXJlIHRoZSB3b3JzdCBoZXJlLg0KDQo=
 
