@@ -1,333 +1,173 @@
-Return-Path: <linux-btrfs+bounces-1298-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1299-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDDB582695A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 09:22:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5F76826986
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 09:31:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D566F1C21BBE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 08:22:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 979E9B2150A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 08:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B73D6B662;
-	Mon,  8 Jan 2024 08:22:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361E6BE5B;
+	Mon,  8 Jan 2024 08:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TFN43l37"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="D/J3TohO";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="HcDdmjsR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D970B660
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 08:22:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e6c0c0c6bso222627e87.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 08 Jan 2024 00:22:01 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A62BA39
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 08:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4088F1OI031953
+	for <linux-btrfs@vger.kernel.org>; Mon, 8 Jan 2024 08:31:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=o2PzKH4CsWFiNIHfaUcSuejwJYITpMHu/dPGiVEv5uQ=;
+ b=D/J3TohOBYuL2BeQ+Ps9I432uIXQu/SWGhOaMx1fLQC2I0iDVuco7hAHMegrUPV5ZcnC
+ JwD8ez1ZAo928H1ZlOCFLHG/QWBTHeSL0D1g7ruipMT30PH98G1TkgemYqMwkosT/y4V
+ 7lQdVsSFqSD8bry0MvBgCPq7OWZiR3X5ds3niikqM90wAk/R6975vjRq5U2rIO+ObzHj
+ YdfwP7RHwqtiG9oGjhUIHWSrRhir3vQ/wFOYYdKA3wnS36akXIjTSDFCrn81bAHzapW2
+ o/XUqT50sm9tiMkJOnyJbk7xNGw9ITQLvOj/QgAPNs/uRUPU/Q/fE1uffz4BRL0YvFVM Kw== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vgdc6r1mv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+	for <linux-btrfs@vger.kernel.org>; Mon, 08 Jan 2024 08:31:17 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4087LYap012477
+	for <linux-btrfs@vger.kernel.org>; Mon, 8 Jan 2024 08:31:15 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vfuweu1mc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+	for <linux-btrfs@vger.kernel.org>; Mon, 08 Jan 2024 08:31:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NMRWJv6VNCssTdSi1NT8u7+eQoXzD8lYcBdcJn2LKtvMbuFs8QMaKakBR0kkmm88EExn7rS9zntRZOABUKMkB+jigRERwEIJqshioeqfy44h31yCCYDhkV7ttRjrqV8rGvyV8rMS8j4Ym8jizn/O3GL/oZgo6sf/01iURfN+mjJR2LSm+7PmoQTONaPsWgTPpAqaGaUB3CpKyElpPlBUkBpWQ22WTMt2GI0EPRgRtsB9lWGmr9cuUzNKjoo934l/ypxX4HFGU1hsxE3nFLl9nktzGMlIlm/ccvu1mnfU2tP1xjZp13fcvHbzB4ndxlj5T0n0LDPc45IBD50Wh0wqhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o2PzKH4CsWFiNIHfaUcSuejwJYITpMHu/dPGiVEv5uQ=;
+ b=VjJwMsaL08EtF96yAtZr2hoPSu/A1d4OSRmDERHHB66LhR//6dUhRsPAceAO2GAJ794BXx5GgFYyizefWhwzWWuF69XLtj/nuaDGQzQeY/h2bLkAADVtqqYCjz1IE0PyvfeRL6OgGtDTFRngTliXQaJkCS+YGjyNNGZnCTk8oJWqcwmVkA/6BnA0SECIuWN/wHTLtqdMfKnXiskwD9YKhcY3+nIyCmIwtgrh+cVutg2OOXiG/tqGXEGlzY1vMMAhalZTzDYzsRYB/BZNBF+zci3amw0HBFn2/R8bgRrPp/x8poZZ3RiiEQO1oeKRtBq/YPg16SatDAhpDbTaUCbu1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704702120; x=1705306920; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KvVamn2hNDUycSXLj2kLIbBQvBCJZs4O1m8z00p2iqw=;
-        b=TFN43l37dTGwQOummHbKXStjeYvCnNArQgJ5sASnzThv8K/TweWuWzXHQUUItS6PUC
-         KGdwnsEZZRYHG3bD3WY6P1XUxWzMWamPLLVCMCU2AhHSy2mOC+/A/5vUbUM9IcZK1DE+
-         9IW1k3r7FLcsxSSS2+v81SUKFL5/VDw5D6fFLPERmEfCYwQMsjroDAcfZaw70Epkjpnn
-         QIEbgOv9z67H2HmD4VcKVveJbfW27Vashf9X3FA0AQNjQkeJsVfkF2qZwdqG/vJJ5MtP
-         htZaqFp8Api+I0Ep/TKk4z3W/zWZSp9YWjFc0fvj3MGrbVo61z2eiCJUNdWlsZqb50YE
-         tMTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704702120; x=1705306920;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KvVamn2hNDUycSXLj2kLIbBQvBCJZs4O1m8z00p2iqw=;
-        b=sW+FGbvGjc/C8nvaU23LueB0o87bXNaBa5dUdcFJ8l9l0/JfSglwg5yaM4D2UmpYDQ
-         Y/xJjNZcrKrsAzCBLHBE9ZqOx4cjoriwvYHEgyeF314cFTfcXM1VYX0LF/qpipENRCu1
-         AiysY91xAODGJ/pq6ZLB9pOjG2hQWE6VPwdvLj8HDJHdEWjSqNM8Yq41sSL4sYaVJRKA
-         DjqRM51GiH2QnyfQvJ7lJN+429Jb9K+cOYwdSHp5nF65dCH1aMsxn4KfQ7dEkB7zmKUZ
-         amgxebCl/xIav0D+EgCpZtEarFiLudeEe3UhClHUc0dOFNpsMlwfD8ieBU73ctMPbS0F
-         U6bw==
-X-Gm-Message-State: AOJu0Yw/jdbz/7mb5LcyPgCkONATg4VlhJK1q5zNOgG45mnTq+4tsDzF
-	/OyqQa/bZJEytEVMbWLKpIY=
-X-Google-Smtp-Source: AGHT+IGwzanNt6/mzgDafhcqiELSQ883bHfwzGNECwC1NzOK3yRSPh/bwe1oMdzsaxizvWzv8TAc6w==
-X-Received: by 2002:a05:6512:3ba1:b0:50e:b2ba:15d with SMTP id g33-20020a0565123ba100b0050eb2ba015dmr2958355lfv.1.1704702119533;
-        Mon, 08 Jan 2024 00:21:59 -0800 (PST)
-Received: from [192.168.1.109] ([176.124.146.252])
-        by smtp.gmail.com with ESMTPSA id l4-20020ac24a84000000b0050e7e304238sm1077015lfp.19.2024.01.08.00.21.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Jan 2024 00:21:59 -0800 (PST)
-Message-ID: <354d852c-0283-4008-ae20-e00788b8d5eb@gmail.com>
-Date: Mon, 8 Jan 2024 11:21:58 +0300
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o2PzKH4CsWFiNIHfaUcSuejwJYITpMHu/dPGiVEv5uQ=;
+ b=HcDdmjsRgKcEcjMh1kx+cPT2K3QVRGVPUuxMw8q0feqk3FKevyE9tsuih58/gfPj5XA+hJcpTA0WboEhLrfDlakVaraC7E+BLwDoBsH12qGQ1BdoByaoy0wLAN+CBwv5mKixflPXsGlLwlvrzhG7Oxh3cR0V1ypvE6Z88E6Immg=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by MN2PR10MB4302.namprd10.prod.outlook.com (2603:10b6:208:199::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.23; Mon, 8 Jan
+ 2024 08:31:13 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2000:9c78:19f5:176a]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::2000:9c78:19f5:176a%3]) with mapi id 15.20.7159.020; Mon, 8 Jan 2024
+ 08:31:13 +0000
+From: Anand Jain <anand.jain@oracle.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs-progs: Documentation: fix compile an error and
+Date: Mon,  8 Jan 2024 16:31:06 +0800
+Message-Id: <cover.1704438755.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR02CA0022.apcprd02.prod.outlook.com
+ (2603:1096:4:195::23) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Using send/receive to keep two rootfs-partitions in sync fails
- with "ERROR: snapshot: cannot find parent subvolume"
-Content-Language: en-US, ru-RU
-To: Clemens Eisserer <linuxhippy@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAFvQSYQvUQXabM4XDNH34y=CsbCHmonmwRh_sS=DkxhJWC2oxA@mail.gmail.com>
- <de1e4749-c265-496b-956d-6ab8e56af7d0@gmail.com>
- <CAFvQSYReFG3hUJCoRps36hbR1-PaprSsEirodtSS9Bc9nThEtQ@mail.gmail.com>
-From: Andrei Borzenkov <arvidjaar@gmail.com>
-In-Reply-To: <CAFvQSYReFG3hUJCoRps36hbR1-PaprSsEirodtSS9Bc9nThEtQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|MN2PR10MB4302:EE_
+X-MS-Office365-Filtering-Correlation-Id: df2f9a2c-55c6-4bf1-54c9-08dc10242cd6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	wOD0bJGel/HkEoq0MxF3vpCHc8RIyWFAd+epEGIW0K38GVem1cYpQYKwTH/NKOILegsaa0DSjvOvJfzJZ4TcUxop1NHUk32eN/mnoGl7FkU22bNP7rrCS9riCyuoynIfJtFjFtf8gM/Fd8a1rOW6IDtkUtogoaZCVt/uFqUmWr2TvKIN9JQ2ehJ7Lhr7C6p03ih+dHWNACe6d8ojwEoNxSj3fd9mTolMuVlyPp1VB+W25OxMFj/g4jOU9psgXZ9Crf9lLHdWcR+acwOktlHH1kDhoVJVhlBYt4m0/kpRbiu+2wI7FiqaQG+4KrpMR0YGagqOcrih4vvdQ1PxhQ6GdyYrN5hu8bseqZAhXIBiURQ45gvRc4iYesTnFDFPiYSQ4lxXpGnbfuVJV80cHbLKR8VF4AZExOgot1qSvH8rNwpy5tMeK6DhJRIU8cUxlKF8wg206Q+RQ2i6LiyVh4eWc58fjaFpAuNAg+2Hgy4RV5y+DfQEnU7IpWJ4JEr3Wv1B7TNZS1o/xDxduqapqrI7A9Ef02GPDQTzXV+EQqqhPBlIY6Y2hWri/OzX27qGGN2de6fsZhojn1p+gv6ioIjGzHm3URfhobXGHB8woYz4OZNIH62UR0Pwmq3/lDWR37X5
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(376002)(396003)(366004)(230922051799003)(230173577357003)(230273577357003)(1800799012)(186009)(451199024)(64100799003)(4744005)(2906002)(6486002)(2616005)(26005)(66476007)(66556008)(66946007)(41300700001)(86362001)(36756003)(5660300002)(316002)(83380400001)(6506007)(6666004)(6512007)(44832011)(478600001)(6916009)(8936002)(38100700002)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?fwhAz2TMjtzkmXudWI+pLDwW/ltX4a5+JBP291UvLWMbAuUAUQVmYaQkqKFD?=
+ =?us-ascii?Q?ByOzDcBEX09Gk04ywiHkjP9P1MepxIo8aIzeSrDQBKPVHVJmk6Dtdk9PrNZi?=
+ =?us-ascii?Q?5cCFYMvvPCzC+7gOMBnz9OOvEecWsWRAJua3TKEhXEzDdKe18RRilffTVSfv?=
+ =?us-ascii?Q?mwi972xXvLVL8XPwEG0BCGsldWyVIQ8cCJwDGDsn/8M7Rk6sYOlduP/i2+4z?=
+ =?us-ascii?Q?bvS9mB+J4Gmy2HPMH6HfG0HJg6ioT/XB6RS8AdVO/ulWHbE3HWpp2Kh3Ispu?=
+ =?us-ascii?Q?GPS+/le91+d2/O1fxTUZOCxo3xn49cWTEguvhP6XBc+ce+ZhiefvG5OsjVRP?=
+ =?us-ascii?Q?SbOIBDZhSJH77FuUWk8RUAg21BtzLz1RNrHkG68iPBrZXT58xLfDrDuOZIfP?=
+ =?us-ascii?Q?KsT7N9OWLuImqIoWcbgBi2XgujBp8c791XBLiuScA9U9FhnlWlrSabo0qZK4?=
+ =?us-ascii?Q?nwYLVGQkyyc41AZ34J3X+nwWs9Lm/Pt3lKv7oIbdLs60znjVZDeinLyOvBtK?=
+ =?us-ascii?Q?NFT5gEKMCUIO4sc9BRg51ywRY0gmoTYo++a46s5Rx4J6wFh7ZSX184jJ0szy?=
+ =?us-ascii?Q?++qj2aVcF+68atH53JYa0xzQ/MJo2i2K7TfDfO4vSlLbaDkcWJ00KOHZtcLs?=
+ =?us-ascii?Q?T57JitmR5FTfrez3n4wbTrtU0TTs/8X1x/po3DyXuwHo9a/h/q17BTZZT/hl?=
+ =?us-ascii?Q?sEWVy7CDZVlrKoeUIaCn+EpNZsRXWssRrtcZbV7969EVaopfvoWkfSq6I43x?=
+ =?us-ascii?Q?Uv4dSVVy9Fv5GxaQQEU2Lz38vhzCXoTIMfmqPVPAVhLm9azO754b6L9ITdVg?=
+ =?us-ascii?Q?16ENIKtiS6pzv7teJSnbcLAW01idq5bH3L4Igpn7gfnD21mlwE6aPYKzch5g?=
+ =?us-ascii?Q?wZriccYagMTeTTG/mbb+0S6N5wl0PdgWiOsPyQcWi5J1hX1zEwuxZ9UQ5XES?=
+ =?us-ascii?Q?xC9v/+VAVX4ikQxcbu+5rUiCa7Tw84/a1UqbafXfxJDu40iY4m1e6UClx7ky?=
+ =?us-ascii?Q?YLBOpn3Xr0S9JdCmk+tzBtZf4hPlZDhez/vzGSL5JdRJqwSvL25heAJICcMT?=
+ =?us-ascii?Q?78LIu5Cec4Jss0H69Mz401SO2KXwncQyLPa6WuHvuFBbqfDz3S2+HOBYfL6c?=
+ =?us-ascii?Q?B+BaIrx9a5rTAHVDn9NuJnwxgFkMqVgpzRiFSkgnRD0meQvVJP7NeV1Q6UfY?=
+ =?us-ascii?Q?DvcZJYVKBagaAjrvMGk+mLSSUTUZhn2GbDPl7DqVr4v5gEUxBBk1lrullhTf?=
+ =?us-ascii?Q?38z6rIRIzXSH682ZeuAji5njc4XQLGwsuZl5TlpiTSCfmeOfINCB5WJnnQS7?=
+ =?us-ascii?Q?EGIVakOtfy03fjR0MO4GuNiVrPq6Jn5TDToJ1emp9FxIBGspnTMF+DuSH861?=
+ =?us-ascii?Q?6vP+x6/+msyY3QAw70gFxM1H9bSIfy8LBFMqJL8JtUk1CD69nGx9AGN/F1Qq?=
+ =?us-ascii?Q?DlNYPaISCwDoSXgd4vvvj6aD3sWS9pC9RcrN4ioZVEtAgtmaVNvhtElK6oVp?=
+ =?us-ascii?Q?FgprcQi3iCZJ7bofK/v4f0WgV8q13zbKHIzAzIPlCxB7OOpFE+6udvkPZQhI?=
+ =?us-ascii?Q?BsEhoY92f4WqnbWBn4ksovI81tozLwBqTRVwkJD/?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	+RNXEaGpolMdUJDcrmvthjTbplgkbUX0huVRM4mjaCCSSJEDmyjtmRe2DA6PfNmaWed109DmgWcdKl2v+PWJtf1fAOHW0sWfdxZyMzKCi/j8lNNxzqv9DxukJsR6l4nmhzSy9Q9VOWdoakvv9Xb8xJ2Wum7vNWoI1cArw1wBBAmx8UU3IfZQPwb2UfjSL6MSa5wdPf7JCKRsFyx3ZTVL/1Ek3OXsS4EGaP/sOykZR0g1muGBS/J7gmV+V+nqSeBx4euQrJJk+lJMm7azG7BpOkTyXBtYnm1xio2y/Gz4bZ5BGs8SzIdLvCizMbHBmrBHx1vBrCl7I0Z/YglfqA6MTPZU+HHcDz9cQTF0BAI9EpBjxYI1n5duWNbzD4H+M/c/68tLySMtDhSU1LGq8lYulFDPqtO080eZ9BHmwjtokfmpeIL4eHvnPZNpceNEJy11OY+pJCJ2LL6y0mGBRMO3VbfiboT4n3K1vsnquiO5mVM/7bKN8/9yjHW5Rq9qXsn57vSsMYJDE5XYSjsKYNTlF9hiO4PBAxDbNBwqALujipkeZQWZvKPpecIVQVOQYrjCOb1U5V2AqBrCp+iM6hrdHjafhXvzF7ymR60kgCA5jdg=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: df2f9a2c-55c6-4bf1-54c9-08dc10242cd6
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2024 08:31:13.8084
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fV7+goQ89P7uE5v85y8njB69+Me+UhNvaALrKIk4Qk09+hEJhnWOs4ZruGcWH1C45uK/decXWb1J2449DRB3OA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4302
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-07_15,2024-01-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ mlxlogscore=737 adultscore=0 spamscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401080071
+X-Proofpoint-ORIG-GUID: WxwdHFBDqQ-3VqO1Fh5kEUbMMzbLCRkR
+X-Proofpoint-GUID: WxwdHFBDqQ-3VqO1Fh5kEUbMMzbLCRkR
 
-On 07.01.2024 11:10, Clemens Eisserer wrote:
-> Hello Andrei,
-> 
-> Thanks for taking a look.
-> 
-> The exact commands executed where:
-> 
-> mkdir intern
-> mkdir extern
-> 
-> mount /dev/mapper/ext extern
-> mout /dev/mapper/int intern
-> 
-> ls extern/
-> # output: root-ro
-> 
-> ls intern/
-> # output: -> empty
-> 
-> btrfs send extern/root-ro | btrfs receive intern/ #initial ext -> int
-> btrfs sub snap intern/root-ro intern/root-rw # rw snapshot to modify int
-> touch intern/root-rw/newfile #actual modification
-> 
-> umount intern
-> umount extern
-> 
-> sh sync_int_to_ext.sh #source of script at bottom
-> 
-> ls extern/root-ro/newfile
+Fixes a warning and an error during the build with Sphinx.
 
-That cannot show anything because previous script unmounts "extern".
+Anand Jain (2):
+  btrfs-progs: Documentation: fix sphinx code-block warning
+  btrfs-progs Documentation: placeholder for contents.rst file
 
-> # output: extern/root-ro/newfile -> sync int->ext was successful
->  > # now modify ext fs
-> mount /dev/mapper/ext extern/
-> touch extern/root-rw/anothernewfile
-> umount extern
-> 
-> sh sync_ext_to_int.sh
-> 
-> mount /dev/mapper/int intern/
-> 
-> ls intern/root-ro/anothernewfile
-> # output intern/root-ro/anothernewfile -> sync ext->int was successful
-> 
-> umount intern
-> 
-> sh sync_int_to_ext.sh # just to make sure
-> 
-> # boot into extern/root-rw with rootflags=subvol/root-rw
-> # both newfile and anothernewfile are visible in the root-fs
-> 
-> # reboot into other OS used for syncing disks
-> 
-> sh sync_ext_to_int.sh #to mirror modifications made in ext during it
-> was rootfs back to intern, worked
-> sh sync_int_to_ext.sh # just to make sure
-> 
-> # boot into extern/root-rw with rootflags=subvol/root-rw
-> # perform a few modifications
-> 
-> # reboot into other OS used for syncing disks
-> 
-> sh sync_ext_to_int.sh
-> # command btrfs send -p extern/root-ro extern/root-ro-new | btrfs
-> receive intern/ fails with:
-> ERROR: clone: cannot find source subvol 29fca96e-ca6a-3d4b-b7c9-566f1240d978
-> 
-> 
-> btrfs sub list -pqu intern/
-> ID 330 gen 426 parent 5 top level 5 parent_uuid
-> 29fca96e-ca6a-3d4b-b7c9-566f1240d978 uuid
-> 6409bfb7-1af0-7e4b-8a0f-d5a44e34a15c path root-ro
-> ID 331 gen 426 parent 5 top level 5 parent_uuid
-> 6409bfb7-1af0-7e4b-8a0f-d5a44e34a15c uuid
-> 258c1fe5-b14e-654b-8ad5-5591268c9095 path root-rw
-> 
-> btrfs sub list -pqu extern/
-> ID 291 gen 418 parent 5 top level 5 parent_uuid
-> 1c738933-0bb2-2547-ad5f-326bfc6263b3 uuid
-> 939c1ed9-9589-6c4b-ace7-2fcdeb970303 path root-rw
-> ID 292 gen 418 parent 5 top level 5 parent_uuid
-> 939c1ed9-9589-6c4b-ace7-2fcdeb970303 uuid
-> 155f4370-32f0-5f4b-b288-2e8d7302d279 path root-ro
-> 
+ Documentation/Tree-checker.rst               |  4 ++--
+ Documentation/ch-subvolume-intro.rst         | 10 +++++-----
+ Documentation/ch-volume-management-intro.rst |  2 +-
+ Documentation/contents.rst                   |  0
+ Documentation/dev/Developer-s-FAQ.rst        |  2 +-
+ Documentation/dev/Experimental.rst           |  4 ++--
+ Documentation/dev/dev-btrfs-design.rst       |  8 ++++----
+ Documentation/trouble-index.rst              | 16 ++++++++--------
+ 8 files changed, 23 insertions(+), 23 deletions(-)
+ create mode 100644 Documentation/contents.rst
 
-
-The error is correct. There is no subvolume with UUID 
-29fca96e-ca6a-3d4b-b7c9-566f1240d978 and according to the output in your 
-other mail there are no received UUIDs which breaks send/receive chain.
-
-Unfortunately the output you sent was *after* your script already 
-destroyed the original state of both filesystems - it recreated 
-subvolumes without running successful send/receive first. So we still do 
-not know the state when error happened.
-
-Modify your scripts to output "btrfs sub list -pqRu ..." for both 
-filesystems at the very beginning, before doing anything, and post full 
-output.
-
-> Best regards, Clemens
-> 
-> 
-> 
-> script sync_ext_to_int.sh:
-> 
-> unalias cp
-> mount -o compress=zstd:6 /dev/mapper/ext extern/
-> mount -o compress=zstd:6 /dev/mapper/int intern/
-> 
-> btrfs sub snap -r extern/root-rw extern/root-ro-new
-> btrfs send -p extern/root-ro extern/root-ro-new | btrfs receive intern/
-> 
-> btrfs sub del extern/root-ro
-> mv extern/root-ro-new extern/root-ro
-> 
-> btrfs sub del intern/root-ro
-> mv intern/root-ro-new intern/root-ro
-> btrfs sub del intern/root-rw
-> btrfs sub snap intern/root-ro intern/root-rw
-> 
-> #cp cfgint/fstab intern/root-rw/etc/
-> #cp cfgint/crypttab intern/root-rw/etc/
-> #cp cfgint/grub intern/root-rw/etc/default/
-> 
-> umount extern;
-> umount intern;
-> 
-> 
-> 
-> script sync_int_to_ext.sh:
-> 
-> unalias cp
-> mount -o compress=zstd:6 /dev/mapper/ext extern/
-> mount -o compress=zstd:6 /dev/mapper/int intern/
-> 
-> btrfs sub snap -r intern/root-rw intern/root-ro-new
-> btrfs send -p intern/root-ro intern/root-ro-new | btrfs receive extern/
-> 
-> btrfs sub del intern/root-ro
-> mv intern/root-ro-new intern/root-ro
-> 
-> btrfs sub del extern/root-ro
-> mv extern/root-ro-new extern/root-ro
-> btrfs sub del extern/root-rw
-> btrfs sub snap extern/root-ro extern/root-rw
-> 
-> cp cfgext/fstab extern/root-rw/etc/
-> cp cfgext/crypttab extern/root-rw/etc/
-> cp cfgext/grub extern/root-rw/etc/default/
-> 
-> umount extern;
-> umount intern;
-> 
-> Am So., 7. Jan. 2024 um 08:19 Uhr schrieb Andrei Borzenkov
-> <arvidjaar@gmail.com>:
->>
->> On 07.01.2024 10:06, Clemens Eisserer wrote:
->>> Hi,
->>>
->>> I would like to use send/receive to keep two root-filesystems in sync,
->>> as I've been using it for years now for backups where it really does
->>> wonders (thanks a lot!).
->>>
->>> Both disks contain a read-only snapshot which is kept in-sync between
->>> the filesystems (int and ext are the mountpoints of the two disks,
->>> original_disk is just used for initial data):
->>>      btrfs send original_disk/root-ro | btrfs receive int/ #send
->>> snapshot of the original disk to the first of the two filesystens
->>> (disk "int")
->>>      btrfs send int/root-ro | btrfs receive ext/ #now replicate the same
->>> to disk "ext"
->>> so both disks start with a snapshot "root-ro" with equal content.
->>>
->>> in case I would like to work with one of the two disks, I create a rw
->>> snapshot based no root-ro:
->>>     btrfs sub snap ext/root-ro ext/root-rw
->>>
->>>     touch ext/root-wr/create-a-new-file # perform some modifications
->>>
->>
->> There was no "root-wr" before.
->>
->>> once modifications in root-rw are done, the following steps are
->>> performed to sync the filesystems:
->>>     btrfs sub snap -r ext/root-rw ext/root-ro-new #create a root-ro-new
->>> read-only snapshot based on the rw-snapshot with modfications (so it
->>> can be used with btrfs send)
->>>     btrfs send -p ext/root-ro extern/root-ro-new | btrfs receive int/
->>> #send root-ro-new to "int" filesystem
->>
->> There was no "extern" before.
->>
->> Never describe computer commands. Copy and paste them in full with
->> complete output.
->>
->>>     btrfs sub del ext/root-ro # delete the original root-ro snapshot, as
->>> it is no longer needed for differential btrfs send
->>>     mv ext/root-ro-new ext/root-ro #rename root-ro-new to root-ro, as
->>> this is the current state of the other (int) filesystem
->>>     btrfs sub del int/root-ro # delete root-ro in "int" too, as it is no
->>> longer needed for differential btrfs receive
->>>     mv int/root-ro-new int/root-ro #rename root-ro-new to root-ro
->>>     btrfs sub snap int/root-ro int/root-rw # create a working copy of
->>> root-ro which is writeable
->>>
->>> this works great - i can add/modify files in one root-rw folder, call
->>> the synchronization script and everything is found on the other
->>> filesystem.
->>> When exchanging int and ext in the script above it actually works in
->>> both directions, so this is exactly what I was hoping to achieve.
->>> Even when executing the script multiple times int->ext, ext->int,
->>> int->ext ... with modifications in between, everything works as
->>> expected.
->>> Awesome :)
->>>
->>> However, when actually using the file-systems as rootfs, this seem to
->>> break when performing the following steps:
->>> - create rw snapshot of root-ro on disk "ext": btrfs sub snap
->>> ext/root-ro ext/root-rw
->>> - boot the system with rootfs=ext-uuid and rootflags=subvol=/root-rw
->>> (etc/fstab was adapted accordingly)
->>> - use the system, modify file system etc and shutdown again
->>> - start separate system to synchronize disks (not based on int or ext
->>> rootfs) and call sync script ext->int (shown above)
->>>
->>
->> It is absolutely unclear what it means. As mentioned, provide full
->> transcript of your actions as well as the output of
->>
->> btrfs subvolume list -pqu /mount-point
->>
->> for all filesystems involved in these commands.
->>
->>> it now suddenly fails at btrfs receive with:
->>> btrfs send -p ext/root-ro ext/root-ro-new | btrfs receive intern/
->>> ERROR: snapshot: cannot find parent subvolume
->>> 4ed11491-7563-fb49-99e7-86cb47cfb510
->>>
->>> which I, to be honest, don't understand.
->>> Exactly the same sequence of commands worked multiple times when the
->>> root-rw snapshot was not booted from but modified directly on the sync
->>> system, even with umounts between modification & send/receive.
->>> Does it make a difference for btrfs if it is used as rootfs vs normal
->>> writeable mount?
->>> Or does it just work in the non-boot case because of some side-effects?
->>>
->>> Thanks & best regards, Clemens
->>>
->>
-> 
+-- 
+2.31.1
 
 
