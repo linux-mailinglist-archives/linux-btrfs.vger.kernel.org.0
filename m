@@ -1,68 +1,68 @@
-Return-Path: <linux-btrfs+bounces-1304-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1305-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4A09826A43
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 10:09:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89A0A826A44
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 10:09:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DAE0282BA4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 09:09:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33BF4282B8A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 09:09:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3BE9EAE6;
-	Mon,  8 Jan 2024 09:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F7E111BD;
+	Mon,  8 Jan 2024 09:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ghl2W2e1";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ghl2W2e1"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ARbSHq6O";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ARbSHq6O"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC0C011CAF
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 09:09:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50285D2FF
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 09:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C0A461F799
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 09:09:09 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7935D21DB8
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 09:09:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704704949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1704704951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ra0N412ELeFeEAucFGBVYlwtaVxuvLSr5kMYmXA7Lf0=;
-	b=ghl2W2e1FLcMrDA22GyB2owN/3CIX6EeDQEAmjvl5vIv0B1z9U7Fym8BWL6F56h9LkcSNc
-	elssdyiGKM0hWJg/FIgUHdo1bsubzRULcEWJn2EPqeBPKaCld/fp8kxBY9hsHDcdMgJ8MG
-	XK5j092KJbMxW7qIVqQkUNXnflQhZ9A=
+	bh=Qe4tnTmO24QA6K1L74V6yqSdclR3I2CpbGAuPO3lbTM=;
+	b=ARbSHq6OGyJB3VS4+mgOHGAsQBK/ucO0rJWCGcAh6RN5PKLdjI2hIRQcb97u4cJaXQKbmZ
+	9TAR9vV/Yq8fqpvYkaCt5Wchzut7XjVOjPlDzn2sDdDxgx9BRSza5s0imB82Fsn/jWyWBo
+	O+EAmceCaE3iT6PnaZyaaLBfGUF+X5c=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704704949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1704704951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ra0N412ELeFeEAucFGBVYlwtaVxuvLSr5kMYmXA7Lf0=;
-	b=ghl2W2e1FLcMrDA22GyB2owN/3CIX6EeDQEAmjvl5vIv0B1z9U7Fym8BWL6F56h9LkcSNc
-	elssdyiGKM0hWJg/FIgUHdo1bsubzRULcEWJn2EPqeBPKaCld/fp8kxBY9hsHDcdMgJ8MG
-	XK5j092KJbMxW7qIVqQkUNXnflQhZ9A=
+	bh=Qe4tnTmO24QA6K1L74V6yqSdclR3I2CpbGAuPO3lbTM=;
+	b=ARbSHq6OGyJB3VS4+mgOHGAsQBK/ucO0rJWCGcAh6RN5PKLdjI2hIRQcb97u4cJaXQKbmZ
+	9TAR9vV/Yq8fqpvYkaCt5Wchzut7XjVOjPlDzn2sDdDxgx9BRSza5s0imB82Fsn/jWyWBo
+	O+EAmceCaE3iT6PnaZyaaLBfGUF+X5c=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A78AC13496
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 09:09:08 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6346113496
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 09:09:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GDGOFLS7m2UxCwAAD6G6ig
+	id eCPKA7a7m2UxCwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 08 Jan 2024 09:09:08 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 08 Jan 2024 09:09:10 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] btrfs: lzo: fix and simplify the inline extent decompression
-Date: Mon,  8 Jan 2024 19:38:45 +1030
-Message-ID: <5c985e26b07a40a934801a00af0656a848bcaebe.1704704328.git.wqu@suse.com>
+Subject: [PATCH 3/3] btrfs: zstd: fix and simplify the inline extent decompression
+Date: Mon,  8 Jan 2024 19:38:46 +1030
+Message-ID: <0e4ae269b3fd0caf99964c16c98bdd67dbab7150.1704704328.git.wqu@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1704704328.git.wqu@suse.com>
 References: <cover.1704704328.git.wqu@suse.com>
@@ -74,33 +74,42 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 ARC_NA(0.00)[];
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=ARbSHq6O
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
 	 TO_DN_NONE(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
 	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	 RCPT_COUNT_ONE(0.00)[1];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: -3.01
+X-Rspamd-Queue-Id: 7935D21DB8
 X-Spam-Flag: NO
-X-Spam-Score: 0.70
 
 [BUG]
 If we have a filesystem with 4k sectorsize, and an inlined compressed
@@ -114,7 +123,7 @@ extent created like this:
 		index 2 namelen 14 name: source_inlined
 	item 6 key (257 EXTENT_DATA 0) itemoff 15770 itemsize 69
 		generation 8 type 0 (inline)
-		inline extent data size 48 ram_bytes 4096 compression 2 (lzo)
+		inline extent data size 48 ram_bytes 4096 compression 3 (zstd)
 
 Then trying to reflink that extent in an aarch64 system with 64K page
 size, the reflink would just fail:
@@ -123,15 +132,14 @@ size, the reflink would just fail:
   XFS_IOC_CLONE_RANGE: Input/output error
 
 [CAUSE]
-In zlib_decompress(), we didn't treat @start_byte as just a page offset,
+In zstd_decompress(), we didn't treat @start_byte as just a page offset,
 but also use it as an indicator on whether we should error out, without
-any proper explanation (this is from the very beginning of btrfs).
+any proper explanation (this is copied from other decompression code).
 
 In reality, for subpage cases, although @start_byte can be non-zero,
 we should never switch input/output buffer nor error out, since the whole
-input/output buffer should never exceed one sector.
-(The above assumption is only not true if we're going to support
-multi-page sectorsize)
+input/output buffer should never exceed one sector, thus we should not
+need to do any buffer switch.
 
 Thus the current code using @start_byte as a condition to switch
 input/output buffer or finish the decompression is completely incorrect.
@@ -146,9 +154,9 @@ The fix involves several modification:
 
 - Use correct destination offset inside the destination page
 
-- Use memcpy_to_page() to copy the contents to the destination page
-
-- Use memzero_page() to zero out the tailing part
+- Simplify the main loop
+  Since the input/output buffer should never switch, we only need one
+  zstd_decompress_stream() call.
 
 - Consider early end as an error
 
@@ -180,30 +188,38 @@ And results the correct file layout:
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
  fs/btrfs/compression.h |  2 +-
- fs/btrfs/lzo.c         | 34 +++++++++-------------------------
- 2 files changed, 10 insertions(+), 26 deletions(-)
+ fs/btrfs/zstd.c        | 74 +++++++++++++-----------------------------
+ 2 files changed, 23 insertions(+), 53 deletions(-)
 
 diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 2b4dfb1b010c..afd7e50d073d 100644
+index afd7e50d073d..97fe3ebf11a2 100644
 --- a/fs/btrfs/compression.h
 +++ b/fs/btrfs/compression.h
-@@ -159,7 +159,7 @@ int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
+@@ -169,7 +169,7 @@ int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
  		unsigned long *total_in, unsigned long *total_out);
- int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
- int lzo_decompress(struct list_head *ws, const u8 *data_in,
+ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
+ int zstd_decompress(struct list_head *ws, const u8 *data_in,
 -		struct page *dest_page, unsigned long start_byte, size_t srclen,
 +		struct page *dest_page, unsigned long dest_pgoff, size_t srclen,
  		size_t destlen);
- struct list_head *lzo_alloc_workspace(unsigned int level);
- void lzo_free_workspace(struct list_head *ws);
-diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
-index 1131d5a29d61..e43bc0fdc74e 100644
---- a/fs/btrfs/lzo.c
-+++ b/fs/btrfs/lzo.c
-@@ -425,16 +425,16 @@ int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
+ void zstd_init_workspace_manager(void);
+ void zstd_cleanup_workspace_manager(void);
+diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
+index 0d66db8bc1d4..812e3bd43889 100644
+--- a/fs/btrfs/zstd.c
++++ b/fs/btrfs/zstd.c
+@@ -20,6 +20,7 @@
+ #include "misc.h"
+ #include "compression.h"
+ #include "ctree.h"
++#include "super.h"
+ 
+ #define ZSTD_BTRFS_MAX_WINDOWLOG 17
+ #define ZSTD_BTRFS_MAX_INPUT (1 << ZSTD_BTRFS_MAX_WINDOWLOG)
+@@ -618,80 +619,49 @@ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
  }
  
- int lzo_decompress(struct list_head *ws, const u8 *data_in,
+ int zstd_decompress(struct list_head *ws, const u8 *data_in,
 -		struct page *dest_page, unsigned long start_byte, size_t srclen,
 +		struct page *dest_page, unsigned long dest_pgoff, size_t srclen,
  		size_t destlen)
@@ -211,57 +227,95 @@ index 1131d5a29d61..e43bc0fdc74e 100644
  	struct workspace *workspace = list_entry(ws, struct workspace, list);
 +	struct btrfs_fs_info *fs_info = btrfs_sb(dest_page->mapping->host->i_sb);
 +	const u32 sectorsize = fs_info->sectorsize;
- 	size_t in_len;
- 	size_t out_len;
- 	size_t max_segment_len = WORKSPACE_BUF_LENGTH;
+ 	zstd_dstream *stream;
  	int ret = 0;
--	char *kaddr;
--	unsigned long bytes;
+-	size_t ret2;
+-	unsigned long total_out = 0;
+-	unsigned long pg_offset = 0;
++	unsigned long to_copy = 0;
  
- 	if (srclen < LZO_LEN || srclen > max_segment_len + LZO_LEN * 2)
- 		return -EUCLEAN;
-@@ -451,7 +451,7 @@ int lzo_decompress(struct list_head *ws, const u8 *data_in,
- 	}
- 	data_in += LZO_LEN;
- 
--	out_len = PAGE_SIZE;
-+	out_len = sectorsize;
- 	ret = lzo1x_decompress_safe(data_in, in_len, workspace->buf, &out_len);
- 	if (ret != LZO_E_OK) {
- 		pr_warn("BTRFS: decompress failed!\n");
-@@ -459,29 +459,13 @@ int lzo_decompress(struct list_head *ws, const u8 *data_in,
- 		goto out;
+ 	stream = zstd_init_dstream(
+ 			ZSTD_BTRFS_MAX_INPUT, workspace->mem, workspace->size);
+ 	if (!stream) {
+ 		pr_warn("BTRFS: zstd_init_dstream failed\n");
+-		ret = -EIO;
+ 		goto finish;
  	}
  
--	if (out_len < start_byte) {
-+	ASSERT(out_len <= sectorsize);
-+	memcpy_to_page(dest_page, dest_pgoff, workspace->buf, out_len);
-+	/* Early end, considered as an error. */
-+	if (unlikely(out_len < destlen)) {
- 		ret = -EIO;
--		goto out;
-+		memzero_page(dest_page, dest_pgoff + out_len, destlen - out_len);
+-	destlen = min_t(size_t, destlen, PAGE_SIZE);
+-
+ 	workspace->in_buf.src = data_in;
+ 	workspace->in_buf.pos = 0;
+ 	workspace->in_buf.size = srclen;
+ 
+ 	workspace->out_buf.dst = workspace->buf;
+ 	workspace->out_buf.pos = 0;
+-	workspace->out_buf.size = PAGE_SIZE;
++	workspace->out_buf.size = sectorsize;
+ 
+-	ret2 = 1;
+-	while (pg_offset < destlen
+-	       && workspace->in_buf.pos < workspace->in_buf.size) {
+-		unsigned long buf_start;
+-		unsigned long buf_offset;
+-		unsigned long bytes;
+-
+-		/* Check if the frame is over and we still need more input */
+-		if (ret2 == 0) {
+-			pr_debug("BTRFS: zstd_decompress_stream ended early\n");
+-			ret = -EIO;
+-			goto finish;
+-		}
+-		ret2 = zstd_decompress_stream(stream, &workspace->out_buf,
+-				&workspace->in_buf);
+-		if (zstd_is_error(ret2)) {
+-			pr_debug("BTRFS: zstd_decompress_stream returned %d\n",
+-					zstd_get_error_code(ret2));
+-			ret = -EIO;
+-			goto finish;
+-		}
+-
+-		buf_start = total_out;
+-		total_out += workspace->out_buf.pos;
+-		workspace->out_buf.pos = 0;
+-
+-		if (total_out <= start_byte)
+-			continue;
+-
+-		if (total_out > start_byte && buf_start < start_byte)
+-			buf_offset = start_byte - buf_start;
+-		else
+-			buf_offset = 0;
+-
+-		bytes = min_t(unsigned long, destlen - pg_offset,
+-				workspace->out_buf.size - buf_offset);
+-
+-		memcpy_to_page(dest_page, pg_offset,
+-			       workspace->out_buf.dst + buf_offset, bytes);
+-
+-		pg_offset += bytes;
++	/*
++	 * Since both input and output buffer should not exceed one sector,
++	 * One call should end the decompression.
++	 */
++	ret = zstd_decompress_stream(stream, &workspace->out_buf, &workspace->in_buf);
++	if (zstd_is_error(ret)) {
++		pr_warn_ratelimited("BTRFS: zstd_decompress_stream return %d\n",
++				    zstd_get_error_code(ret));
++		goto finish;
  	}
--
--	/*
--	 * the caller is already checking against PAGE_SIZE, but lets
--	 * move this check closer to the memcpy/memset
--	 */
--	destlen = min_t(unsigned long, destlen, PAGE_SIZE);
--	bytes = min_t(unsigned long, destlen, out_len - start_byte);
--
--	kaddr = kmap_local_page(dest_page);
--	memcpy(kaddr, workspace->buf + start_byte, bytes);
--
--	/*
--	 * btrfs_getblock is doing a zero on the tail of the page too,
--	 * but this will cover anything missing from the decompressed
--	 * data.
--	 */
--	if (bytes < destlen)
--		memset(kaddr+bytes, 0, destlen-bytes);
--	kunmap_local(kaddr);
- out:
+-	ret = 0;
++	to_copy = workspace->out_buf.pos;
++	memcpy_to_page(dest_page, dest_pgoff + to_copy, workspace->out_buf.dst,
++		       to_copy);
+ finish:
+-	if (pg_offset < destlen) {
+-		memzero_page(dest_page, pg_offset, destlen - pg_offset);
++	/* Error or early end. */
++	if (to_copy < destlen) {
++		ret = -EIO;
++		memzero_page(dest_page, dest_pgoff + to_copy, destlen - to_copy);
+ 	}
  	return ret;
  }
 -- 
