@@ -1,148 +1,252 @@
-Return-Path: <linux-btrfs+bounces-1313-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1314-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 651618277C2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 19:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B931F8278A9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 20:37:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCC11B2318B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 18:37:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C6E7B213AC
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jan 2024 19:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856DB5730A;
-	Mon,  8 Jan 2024 18:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC60A55C11;
+	Mon,  8 Jan 2024 19:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="guxBsYRK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="s33c6lwu";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="guxBsYRK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="s33c6lwu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iJf9HAJD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E6957302
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 18:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A96B321A44;
-	Mon,  8 Jan 2024 18:34:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704738893;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/5LUupcU+O6cESYP5wG49FtyS0i3jMeJYd6c4ZK5/Xs=;
-	b=guxBsYRKo7UbrE5sODpo5qTxiPymc4KvGsqqdbuc2cuURFd6phmWff9HCCa4VhqGOIATTm
-	mwh2ZCDjmhUjxP1DGdrQqNj28ZSv/6jMuUXq1776cFqbVuTtPVoLTecDd2ZBQS6Hzw0zY5
-	cy2/knpXJdo1srw5/8TbrL1f0KSYwzc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704738893;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/5LUupcU+O6cESYP5wG49FtyS0i3jMeJYd6c4ZK5/Xs=;
-	b=s33c6lwu30Cg91X9ZBRRGZQVo6t7xlSzH0eve/qjD9D0J1SKnIijiz4YkbvofxjcoNFLjA
-	kV3ok3+FY5ACh5CA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704738893;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/5LUupcU+O6cESYP5wG49FtyS0i3jMeJYd6c4ZK5/Xs=;
-	b=guxBsYRKo7UbrE5sODpo5qTxiPymc4KvGsqqdbuc2cuURFd6phmWff9HCCa4VhqGOIATTm
-	mwh2ZCDjmhUjxP1DGdrQqNj28ZSv/6jMuUXq1776cFqbVuTtPVoLTecDd2ZBQS6Hzw0zY5
-	cy2/knpXJdo1srw5/8TbrL1f0KSYwzc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704738893;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/5LUupcU+O6cESYP5wG49FtyS0i3jMeJYd6c4ZK5/Xs=;
-	b=s33c6lwu30Cg91X9ZBRRGZQVo6t7xlSzH0eve/qjD9D0J1SKnIijiz4YkbvofxjcoNFLjA
-	kV3ok3+FY5ACh5CA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8DCE91392C;
-	Mon,  8 Jan 2024 18:34:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id d9GWIU1AnGXjawAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 08 Jan 2024 18:34:53 +0000
-Date: Mon, 8 Jan 2024 19:34:39 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: cache folio size and shift in extent_buffer
-Message-ID: <20240108183439.GG28693@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <b4e58a4cbe2b457e5d0a7f844cdbe035103179c2.1704432940.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63DFB55C04
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jan 2024 19:37:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7cc970f8156so459751241.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Jan 2024 11:37:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704742626; x=1705347426; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nomm+1RTXPEit5JvF77Twoztd95whCx4jBUaUFpCm60=;
+        b=iJf9HAJDhEbtVceK2WJXbqJ7mrQsgXgabm4qoy2ajJF6kyFKZnG1JdrSJZQkR88fyM
+         4YUzdpCQ3O3D75aErBElMBHgNaQHC7NcKaqXUyoH4jIeYSJnK6o8JDokH6UPeSZMT/kw
+         kwKz2x4KRupESxCtUJe4FK9QglxtuqmBqtyxAUcHOik2NmoLoJVSmFVo58efKzCjcwNg
+         rSKDSLo8KjLYlOsbAv1ol3Cw/oR1esSuHfPRNCAjqYmNG+KeHsPcCANHehrmfp3cR8bc
+         jYTHV88K7kqTR3JXY8Lu1jMq62tIbmn0VY13YnqPAz8cxrNQBCvjUhpCFRi3f0+2IJMR
+         tLOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704742626; x=1705347426;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nomm+1RTXPEit5JvF77Twoztd95whCx4jBUaUFpCm60=;
+        b=vL7Xd/C8DMsC0XIvP/C4VGh7d6JwNbqA0jGg7HYlD/tYinV1PRwM4euxT0shgoml/T
+         PSABeM5bTvnGCu+pobJiVDCvYfaggYcIkfhguY8V4j9deIE61k/ffDpa/KhYnEnbJI8J
+         /HQTYCyWJFtA3dRFF34ZcqezWFHHBzPTHdZ5q+BuOTXrbqONuSPEbMylvOGi6WM0jqr0
+         Sem/9UcbK9YmurUw7X7P5dIPejDT4zVYB96J2aXS5sx+NYmFy1SdnRPHagiqbzA6qFxF
+         F6z6oBsQy5wTetKp1WtGTRurYV7NGccWtVzv/QwUS2pAKyXvB0i8PIcwBJweTJjiI5q8
+         n1SA==
+X-Gm-Message-State: AOJu0Yz3fy3mx+Bq/HyugJ/0VQLeCzXJaI1w7JN/cfsaSgemEr5SiSKa
+	1uQMrHwci2Q7efed8lXFZR3t57fE1dNSbmWeeqk=
+X-Google-Smtp-Source: AGHT+IGEFYEMOuXg54pEYYq2qu1en+OqoPUYUo970ktDJ/kyTPl3DxSgdoXy/le7dXngA2Qa19btYu9j7FSYPtUGul0=
+X-Received: by 2002:a05:6122:902:b0:4b6:ca2c:b420 with SMTP id
+ j2-20020a056122090200b004b6ca2cb420mr1161844vka.2.1704742626032; Mon, 08 Jan
+ 2024 11:37:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b4e58a4cbe2b457e5d0a7f844cdbe035103179c2.1704432940.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.00
-X-Spamd-Result: default: False [-1.00 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[43.15%]
-X-Spam-Flag: NO
+References: <CAFvQSYQvUQXabM4XDNH34y=CsbCHmonmwRh_sS=DkxhJWC2oxA@mail.gmail.com>
+ <de1e4749-c265-496b-956d-6ab8e56af7d0@gmail.com> <CAFvQSYReFG3hUJCoRps36hbR1-PaprSsEirodtSS9Bc9nThEtQ@mail.gmail.com>
+ <354d852c-0283-4008-ae20-e00788b8d5eb@gmail.com>
+In-Reply-To: <354d852c-0283-4008-ae20-e00788b8d5eb@gmail.com>
+From: Clemens Eisserer <linuxhippy@gmail.com>
+Date: Mon, 8 Jan 2024 20:36:54 +0100
+Message-ID: <CAFvQSYRHFkjDEyd7rBUnpZm4oQe0MKd3jgkR8WPuK_2KPvSDwg@mail.gmail.com>
+Subject: Re: Using send/receive to keep two rootfs-partitions in sync fails
+ with "ERROR: snapshot: cannot find parent subvolume"
+To: Andrei Borzenkov <arvidjaar@gmail.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Jan 05, 2024 at 04:05:55PM +1030, Qu Wenruo wrote:
-> After the conversion to folio interfaces (but without the patch to
-> enable larger folio allocation), there is a LTP report about observable
-> performance drop on metadata heavy operations.
+Hi Andrei,
 
-Please add link of the report.
+> The error is correct. There is no subvolume with UUID
+> 29fca96e-ca6a-3d4b-b7c9-566f1240d978 and according to the output in your
+> other mail there are no received UUIDs which breaks send/receive chain.
+>
+> Unfortunately the output you sent was *after* your script already
+> destroyed the original state of both filesystems - it recreated
+> subvolumes without running successful send/receive first. So we still do
+> not know the state when error happened.
 
-> This drop is caused by the extra code of calculating the
-> folio_size()/folio_shift(), instead of the old hard coded
-> PAGE_SIZE/PAGE_SHIFT.
-> 
-> To slightly reduce the overhead, just cache both folio_size and
-> folio_shift in extent_buffer.
-> 
-> The two new members (u32 folio_size and u8 folio_shift) is stored inside
-> the holes of extent_buffer. (folio_size is shared with len, which is
-> reduced to u32).
+I am really sorry, I didn't think of this.
 
-The size of eb hasn't changed, currently it's 240 for me, so that's
-good. The object code has shrunk by 1970 bytes from 5880.  The assembly
-of accessors looks a bit better, but I don't see much options to
-optimize that significantly.
+I've followed your suggestions and tried to reproduce it once again.
+This time I booted from extern/root-rw two times and performed
+ext->int->ext in between, but didn't manually change files like in the
+previous runs.
+After the second boot send/receive failed as expected. I've omitted
+manual mounts/unmounts this time from the command-list.
 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Added to misc-next, thanks.
+I would be really glad if you could - once again - have a look at the results:
+
+btrfs send source_disk/root-ro | btrfs receive extern/ #initial source->ext
+btrfs send extern/root-ro | btrfs receive intern/ #initial ext -> int
+btrfs sub snap extern/root-ro extern/root-rw # rw snapshot to modify
+ext, will be used as subvol when booting
+btrfs sub snap intern/root-ro intern/root-rw # rw snapshot to modify
+int, won't be used
+
+# boot fedora from extern (+ install firefox via dnf) + shutdown again
+
+btrfs subvolume list -pqRu intern/
+ID 386 gen 576 parent 5 top level 5 parent_uuid -
+              received_uuid 8d1ee193-2522-014b-b436-032f0a4fc461 uuid
+a88bb4ed-65c8-db4f-b209-9ca07eaf3d21 path root-ro
+ID 387 gen 576 parent 5 top level 5 parent_uuid
+a88bb4ed-65c8-db4f-b209-9ca07eaf3d21 received_uuid -
+                 uuid f4d1c9cc-3e4b-4248-9b02-626bed3ad238 path
+root-rw
+
+btrfs subvolume list -pqRu extern/
+ID 345 gen 588 parent 5 top level 5 parent_uuid -
+              received_uuid 8d1ee193-2522-014b-b436-032f0a4fc461 uuid
+21cabdfd-02f5-ab4b-943a-6ebf88326dae path root-ro
+ID 346 gen 611 parent 5 top level 5 parent_uuid
+21cabdfd-02f5-ab4b-943a-6ebf88326dae received_uuid -
+                 uuid 0c9d9843-32f3-d341-b657-a33de46c9d0e path
+root-rw
+
+sh sync_ext_to_int.sh
+
+btrfs subvolume list -pqRu intern/
+ID 388 gen 583 parent 5 top level 5 parent_uuid
+a88bb4ed-65c8-db4f-b209-9ca07eaf3d21 received_uuid
+b326e1fe-7295-3948-a401-b6de850e213c uuid
+f055e3e8-d048-744c-abb4-c3efd87c4875 path root-ro
+ID 389 gen 583 parent 5 top level 5 parent_uuid
+f055e3e8-d048-744c-abb4-c3efd87c4875 received_uuid -
+                 uuid da51f30f-f10a-b04c-b7a7-5e718118a49c path
+root-rw
+
+btrfs subvolume list -pqRu extern/
+ID 346 gen 615 parent 5 top level 5 parent_uuid
+21cabdfd-02f5-ab4b-943a-6ebf88326dae received_uuid -
+                 uuid 0c9d9843-32f3-d341-b657-a33de46c9d0e path
+root-rw
+ID 347 gen 615 parent 5 top level 5 parent_uuid
+0c9d9843-32f3-d341-b657-a33de46c9d0e received_uuid -
+                 uuid b326e1fe-7295-3948-a401-b6de850e213c path
+root-ro
+
+sh sync_int_to_ext.sh (intern was not changed, just to keep ext->int,
+int->ext in order)
+
+btrfs subvolume list -pqRu intern/
+ID 389 gen 588 parent 5 top level 5 parent_uuid
+f055e3e8-d048-744c-abb4-c3efd87c4875 received_uuid -
+                 uuid da51f30f-f10a-b04c-b7a7-5e718118a49c path
+root-rw
+ID 390 gen 588 parent 5 top level 5 parent_uuid
+da51f30f-f10a-b04c-b7a7-5e718118a49c received_uuid -
+                 uuid 8a1f263b-581d-1847-a0da-0fc17e1ca2c4 path
+root-ro
+
+btrfs subvolume list -pqRu extern/
+ID 348 gen 623 parent 5 top level 5 parent_uuid
+b326e1fe-7295-3948-a401-b6de850e213c received_uuid
+8a1f263b-581d-1847-a0da-0fc17e1ca2c4 uuid
+c481acb9-b077-7841-a4b6-a0273f7aa12f path root-ro
+ID 349 gen 623 parent 5 top level 5 parent_uuid
+c481acb9-b077-7841-a4b6-a0273f7aa12f received_uuid -
+                 uuid cf80f17f-3d5d-7744-83f4-096b7688288c path
+root-rw
+
+# boot fedora from extern (remove google-chrome and chromium via dnf)
++ shutdown again
+
+btrfs subvolume list -pqRu extern/
+ID 348 gen 623 parent 5 top level 5 parent_uuid
+b326e1fe-7295-3948-a401-b6de850e213c received_uuid
+8a1f263b-581d-1847-a0da-0fc17e1ca2c4 uuid
+c481acb9-b077-7841-a4b6-a0273f7aa12f path root-ro
+ID 349 gen 633 parent 5 top level 5 parent_uuid
+c481acb9-b077-7841-a4b6-a0273f7aa12f received_uuid -
+                 uuid cf80f17f-3d5d-7744-83f4-096b7688288c path
+root-rw
+
+sh sync_ext_to_int.sh
+
+manually executed line-by-line in expecting it would fail it failed at:
+btrfs send -p extern/root-ro extern/root-ro-new | btrfs receive intern/
+At subvol extern/root-ro-new
+At snapshot root-ro-new
+ERROR: clone: cannot find source subvol 8a1f263b-581d-1847-a0da-0fc17e1ca2c4
+
+interestingly, despite send-receive failed/aborted with the message
+above, intern/root-ro-new was created and contains contents but left
+in writable state:
+
+btrfs sub show intern/root-ro-new/
+root-ro-new
+        Name:                   root-ro-new
+        UUID:                   d32788b9-5572-5743-bf27-46b57c8b92c1
+        Parent UUID:            8a1f263b-581d-1847-a0da-0fc17e1ca2c4
+        Received UUID:          -
+        Creation time:          2024-01-08 20:14:59 +0100
+        Subvolume ID:           391
+        Generation:             596
+        Gen at creation:        594
+        Parent ID:              5
+        Top level ID:           5
+        Flags:                  -
+        Send transid:           0
+        Send time:              2024-01-08 20:14:59 +0100
+        Receive transid:        0
+        Receive time:           -
+        Snapshot(s):
+        Quota group:            n/a
+
+
+btrfs subvolume list -pqRu intern/
+ID 389 gen 588 parent 5 top level 5 parent_uuid
+f055e3e8-d048-744c-abb4-c3efd87c4875 received_uuid -
+                 uuid da51f30f-f10a-b04c-b7a7-5e718118a49c path
+root-rw
+ID 390 gen 594 parent 5 top level 5 parent_uuid
+da51f30f-f10a-b04c-b7a7-5e718118a49c received_uuid -
+                 uuid 8a1f263b-581d-1847-a0da-0fc17e1ca2c4 path
+root-ro
+ID 391 gen 595 parent 5 top level 5 parent_uuid
+8a1f263b-581d-1847-a0da-0fc17e1ca2c4 received_uuid -
+                 uuid d32788b9-5572-5743-bf27-46b57c8b92c1 path
+root-ro-new
+
+
+btrfs subvolume list -pqRu extern/
+ID 348 gen 623 parent 5 top level 5 parent_uuid
+b326e1fe-7295-3948-a401-b6de850e213c received_uuid
+8a1f263b-581d-1847-a0da-0fc17e1ca2c4 uuid
+c481acb9-b077-7841-a4b6-a0273f7aa12f path root-ro
+ID 349 gen 636 parent 5 top level 5 parent_uuid
+c481acb9-b077-7841-a4b6-a0273f7aa12f received_uuid -
+                 uuid cf80f17f-3d5d-7744-83f4-096b7688288c path
+root-rw
+ID 350 gen 636 parent 5 top level 5 parent_uuid
+cf80f17f-3d5d-7744-83f4-096b7688288c received_uuid -
+                 uuid d73b4afe-0837-8046-b798-21102cb82d4d path
+root-ro-new
+
+Looking at the last output I have to admit I am confused.
+The error mentioned missing parent with
+8a1f263b-581d-1847-a0da-0fc17e1ca2c4 for intern/root-ro-new seems to
+be there. Isn't this, as expected intern/root-ro with
+8a1f263b-581d-1847-a0da-0fc17e1ca2c4.
+
+Thanks for all your patience and help!
+
+Best regards, Clemens
 
