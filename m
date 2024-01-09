@@ -1,44 +1,43 @@
-Return-Path: <linux-btrfs+bounces-1329-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1330-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CF38828EB9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 22:05:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 168C2828ED0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 22:20:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DDB6B25463
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 21:05:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BBB62842FE
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 21:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20753D99A;
-	Tue,  9 Jan 2024 21:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D81C3DB80;
+	Tue,  9 Jan 2024 21:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="JB1c3GU1"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LrFmmvfI"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E223D0BF
-	for <linux-btrfs@vger.kernel.org>; Tue,  9 Jan 2024 21:04:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC983D551
+	for <linux-btrfs@vger.kernel.org>; Tue,  9 Jan 2024 21:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1704834292; x=1705439092; i=quwenruo.btrfs@gmx.com;
-	bh=Oy+pUj6nR6FL7bCDYDH7npLkevuf3tyHH4Rth4HMp1Y=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=JB1c3GU128KvFxEB7hhCruBVjU1x7YDCi1+z2lzOSg3bmXaKPi8cr3VLzcwFQV0k
-	 YBgPGmqlrubRrmWuTg16a2LuYV9hpjfPF3yuVBEpFFA28kyflKfJqfQS2UWFCaOgu
-	 XGqB/yZ7Te0qxjg3+8a3FXbXejCbza/yNofexyz9C0T3Tw9mYdl8Wl/6pl0MFK0S+
-	 upl3w6o3Nr2mOhDwqswVlNN0WeNe/hsy9yd0giBHy/WMZflCSLFOFjhbHFF4afZ8C
-	 L318zLE8R5RgtdulnrsvLOI95CTyOHrrilR8YNuJtdJj7rsL1gyfQ4Bn//EnQUaja
-	 qRxdRGUw8VBZwhXNzQ==
+	s=s31663417; t=1704835186; x=1705439986; i=quwenruo.btrfs@gmx.com;
+	bh=4T1RKhJK+OuxzPyxdyWEzrKlSS0V8TVGd23+xM12Bus=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=LrFmmvfIRQ8ABBbfzLOeqzI6C5cT7QcKlP6zySRj1UrxfDfGOsGGmRarU2k4pdAK
+	 NzgOLsUQR9TZUSPFTS0bCDt17KHm8twJfRXglLe/HB6UvET+sR6UaEsWlN5hwQ22k
+	 thjRaVdZE143ImCAhLgESRZGZ2+bNH/BrYag4EXyvfxKJFdr+BjjFwbUE0iPw0Mi4
+	 GDQzm2mP/7JPXsLrKuzFq01c/X1YjqjQFr82MVHm7P/PwgKvKAnjtFCvENSs3fFRs
+	 Y4y+YopzYibK2HOnV2RW4qbZRdQ1L0M44WsqKsyKSgpL4gYk+bJp4VM3SA9t6ywnE
+	 NBDnl1BXig/NMxtZZA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([193.115.113.22]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MdvmY-1qnQEH0Xvq-00b6w5; Tue, 09
- Jan 2024 22:04:51 +0100
-Message-ID: <59615d5b-8802-4218-8b0b-18e3eff47cb3@gmx.com>
-Date: Wed, 10 Jan 2024 07:34:45 +1030
+Received: from [172.16.0.153] ([193.115.113.22]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mv31c-1r5e8P44Bc-00r3k0; Tue, 09
+ Jan 2024 22:19:46 +0100
+Message-ID: <27fb4ed5-c3ce-4ab7-a3fd-d77dc8dd4fb2@gmx.com>
+Date: Wed, 10 Jan 2024 07:49:42 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -46,14 +45,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: defrag: add under utilized extent to defrag target
- list
+Subject: Re: Scrub reports uncorrectable errors with correctable errors
+ unrepaired, but all files are fine
 Content-Language: en-US
-To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org,
- Christoph Anton Mitterer <calestyo@scientia.org>
-References: <2c2fac36b67c97c9955eb24a97c6f3c09d21c7ff.1704440000.git.wqu@suse.com>
- <CAL3q7H5LEjZCkhTwgYJLSeQkG6NsY5AhE__na-2hCa7UuXuCzw@mail.gmail.com>
+To: Rongrong <i@rong.moe>, linux-btrfs@vger.kernel.org
+References: <8bd12a1ee60172f53ee0c27374f41c3ec9976be8.camel@rong.moe>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -79,153 +75,136 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H5LEjZCkhTwgYJLSeQkG6NsY5AhE__na-2hCa7UuXuCzw@mail.gmail.com>
+In-Reply-To: <8bd12a1ee60172f53ee0c27374f41c3ec9976be8.camel@rong.moe>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+gsObECX4xKvnqz318R6eFNc0+v2esP1huyNEI+d0NzzAAOjwtP
- ztwczf0k4OLLniwwX9UC1aD6khXxpDNMnh8nzyFtsLRt+HEKRzfGrE/LfE5ZH8Gu/ZsD/+8
- I3XKkftu0JByYB/PBMmSMPuA1E/kK5Eipw1B69Du85orcoVjm5el7DXZaxZecA1EcAb/N0g
- KygN2Pr2gSxb3lPY3Wsag==
+X-Provags-ID: V03:K1:1zBKkSRtFbBRBbbCv6jV4VBJl53th8HBr2j6WrH/m2cxSKsD0fd
+ ZtzNlXGbpL1a8zVCw1LSQkswEVnyXgLT2r61CSpayzgIstKtVDxLGqPblvrPFaT2YXlQWNe
+ inIKVY8Lv/f8CkJ1XIFLrUUHnglE3QqhRJ/Ggcp9WTNGWPa31/6tV47OpOHos5xR5CUI5Nu
+ sWn3WjyC7wWUTORy+eOJg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:qRFpdXC8QSk=;IY58RSldbO0wPuA5TGF21WWmJ/s
- TsKSQO5xgKbqvomgmzpPXmhRJ2APtsPCqvF/GhOahIkAWQ0inlS6aHXalbIMtmGjA55H5eMV8
- XTAuBVz2uLTlqWgxZ0hItRiDZFASfYJy3TU3HcS4k62+HKCisjvW2GEhslUpVhIEPhDER5XI2
- E6TquHsMfXhR/nvS3+ghxVqHZzilHBKMeoK0rwnVWh7jWtwW4Uy30Xp3hyflHzJegAXKy/cRD
- DI4Q5Q9ZUQQjdOYjFYnRZ5G5p0huexgZF7XXkgqjf4jaspjp2vSMo9+a4zl4s3YXs40fbgS6h
- B05BgGE1pMkv6duaaFzqQ5/oVha8Rbe0pshV8vSRu6pjXWUnyeRPHAXApRJW8JpPQVfevKlv7
- nge8keN6Dv7kW7pVSPa3J3UzWJwm+vvG7WTpzACQdWQGHy3svN7mJwuVAAvVKD+2J4ICywUpE
- vN/sEjcIaDR0t7oEVOO4YYQCNduLApiumiDgZ87eKVN0i71vzMzYhRIrcDBi+VqyIyel2qfzb
- aYLWgSaE5cbxud3eaPu8Yxa+jJ0Eagm5aNoUYLxRgFIyuXjB++3yb+RtlTRkPLmVCB/No5Gep
- 6kpARcOdamhMA4/vb2qcqlcay7d9yS4RyT7EzDt8UfYzJZZpeJhidcQOMv8vx1JNDvCv+T2Oe
- vJBccrk5oEyNb0eqphT4BoA5MBLrUBeDmAwH9B+LJ1UEl7iu75TFPoDh9y2EDhKuiurY0waQp
- VdOIPKlkVGEDSwtOFDZWU/sbokmyKBz/oiQYiP05RdYNsSTOc6l+XT0aG8hjMivIg+Zc9Onh6
- 8XfmttnwSXVPxBGOspqCJc+FcemMholB4yW/vCYXBteW1m6+s3Wemw4IK/4svXJamdI2fqwQE
- AeG2lJtgmtZbjw69bJc8pk3Y2ceZwAr8iZAS2RmzchfZIFn3WtuiE4Nht+DKNZJYbmssAovdO
- 3fXfxGApE1rgERrUTR3v8lJ82Z8=
+UI-OutboundReport: notjunk:1;M01:P0:1gulMhAugY8=;vOQX1IBXRzr4cE75m71YuQ7huEb
+ /W3ozU4sq88Szpx7T2ZwHNoMYeb/8dLH3hqjUQmJveAwfJ3xycZo7/Ugel2l9MRIQcqJMtPw3
+ lxfn6vX+WZOCG8xhevgDuOnmtZqHqyLAZEOTf4E+YYUaDkcpf2K2SNTqKTM5FF1ZBTByoLPCG
+ pEMOtylddMH7m1fV/bxYjHFbNdiRBeROtS4gZH0ZX6dNRrNYmHYmarcZdZqKmlSviE4tZPweD
+ fb4iuYxbuWRz0OU12XgJDoFSsAoSJEV74VKrEA1kaZZlV2VcRdf4E0O1YRRnFUEOmr2MBnq2p
+ m82pl7+d8g36pS1xRhjZrI1oFKJJUG64vaW1Y8powv/6Mgq6GA7oYPvdeSxoMvcorbnobZE5u
+ J5dMPQbXo3fG3yLBV7FFmrsFMJ1CzIBL957wd5UPGxusZ6cyfFVstBAsBDo43i0ihK/FYWUdi
+ nM93INRVTopRMdtNwxv3CU/YxT8vBFCvdTVYp6bKivetTiNU/51lnqzNeQ5ZldN4lurcM9nSP
+ SDLRm3yX51s0ic2WxCOC/4O/s9czlEadcedXwC/UbFsntgsMPbWkRTEduZQi60GAnYmHG4+fB
+ uUocYwv7LxkgLKUqfQC+JcWXJBbkdNKKTE2EgbbnZvrLtExjxEZgjp8sbRv9GAc5eURkxqZJI
+ kxXJ2ySUl+RPpR79mrHnA7IQWqCdWMVMHHf3KI/WRZzk6ip7Ww3VNtSh81JDsgOp3Lc074D+D
+ hOmy2c+L7kX8aKZ8BtZ83VCcsW7zTn+m4b5coehLyFOcAH1X9KepXNMuWgWF7k8Q2rQ2DjDtg
+ jOxSQRS7bL71tDpumCD7koffQhYqrDoLE9uSnEC77AKWWUnGjjHIBqtbYrw/2flpYfr+m9UCR
+ wuj9/j66TSh1O6nXQ8vZFBFCUEAHAuHU2IfK1An98i3sUUS+FL9L0fOhoUp3BeungwB8XxEpT
+ gCX0bQ==
 
 
 
-On 2024/1/10 01:25, Filipe Manana wrote:
-> On Fri, Jan 5, 2024 at 7:34=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->>
->> [BUG]
->> The following script can lead to a very under utilized extent and we
->> have no way to use defrag to properly reclaim its wasted space:
->>
->>    # mkfs.btrfs -f $dev
->>    # mount $dev $mnt
->>    # xfs_io -f -c "pwrite 0 128M" $mnt/foobar
->>    # sync
->>    # btrfs filesystem defrag $mnt/foobar
->>    # sync
+On 2024/1/10 04:36, Rongrong wrote:
+> Hi all,
 >
-> There's a missing truncate in the example.
+> I recently scrubbed my fs and saw multiple correctable and
+> uncorrectable errors. Weirdly, the correctable errors did not really
+> get repaired ("fixed up") after the scrub was finished. It just
+> persisted and reappeared in the next scrub. But surprisingly, when I
+> tried to archive all files using `rsync -aAHUXxvP /path/to/mountpoint
+> /path/to/archive` (the fs has no subvolume other than <FS_TREE>), no
+> error was raised (both rsync and dmesg) and all files were fine. Both
+> `btrfs check` and `btrfs check --check-data-csum` also finished without
+> error.
 >
->>
->> After the above operations, the file "foobar" is still utilizing the
->> whole 128M:
->>
->>          item 4 key (257 INODE_ITEM 0) itemoff 15883 itemsize 160
->>                  generation 7 transid 8 size 4096 nbytes 4096
->>                  block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
->>                  sequence 32770 flags 0x0(none)
->>          item 5 key (257 INODE_REF 256) itemoff 15869 itemsize 14
->>                  index 2 namelen 4 name: file
->>          item 6 key (257 EXTENT_DATA 0) itemoff 15816 itemsize 53
->>                  generation 7 type 1 (regular)
->>                  extent data disk byte 298844160 nr 134217728 <<<
->>                  extent data offset 0 nr 4096 ram 134217728
->>                  extent compression 0 (none)
->>
->> Meaning the expected defrag way to reclaim the space is not working.
->>
->> [CAUSE]
->> The file extent has no adjacent extent at all, thus all existing defrag
->> code consider it a perfectly good file extent, even if it's only
->> utilizing a very tiny amount of space.
->>
->> [FIX]
->> Add a special handling for under utilized extents, currently the ratio
->> is 6.25% (1/16).
->>
->> This would allow us to add such extent to our defrag target list,
->> resulting it to be properly defragged.
->>
->> Reported-by: Christoph Anton Mitterer <calestyo@scientia.org>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/defrag.c | 11 +++++++++++
->>   1 file changed, 11 insertions(+)
->>
->> diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
->> index c276b136ab63..cc319190b6fb 100644
->> --- a/fs/btrfs/defrag.c
->> +++ b/fs/btrfs/defrag.c
->> @@ -1070,6 +1070,17 @@ static int defrag_collect_targets(struct btrfs_i=
-node *inode,
->>                  if (!next_mergeable) {
->>                          struct defrag_target_range *last;
->>
->> +                       /*
->> +                        * Special entry point utilization ratio under =
-1/16 (only
->> +                        * referring 1/16 of an on-disk extent).
->> +                        * This can happen for a truncated large extent=
-.
->> +                        * If we don't add them, then for a truncated f=
-ile
->> +                        * (may be the last 4K of a 128M extent) it wil=
-l never
+> I tried many kernel versions, including 6.5.13, 6.6.10 and 6.7-rc8.
+> btrfs-progs is 6.6.3. The fs is mounted with the below parameters:
+> autodefrag,compress-force=3Dzstd,relatime
 >
-> may be -> maybe
+> Each time a scrub gets finished, the error summary is the same:
 >
->> +                        * be defraged.
+> Error summary: read=3D416
+> Corrected: 168
+> Uncorrectable: 248
+> Unverified: 0
 >
-> defraged -> defragged
+> Only two types of errors were shown in dmesg:
 >
->> +                        */
->> +                       if (em->ram_bytes < em->orig_block_len / 16)
+> BTRFS critical (device [D]): unable to find chunk map for logical
+> [LoUc] length [LeUc]
+> BTRFS error (device [D]): fixed up error at logical [LoC] on dev
+> /dev/[D] physical [PhC]
+> (all [PhC] just equaled to the corresponding [LoC])
 >
-> Why 1 / 16?
-> For a 128M extent for example, even 1 / 2 (64M) is a lot of wasted space=
-.
-> So I think a better condition is needed, probably to consider the
-> absolute value of wasted/unused space too.
+> I randomly picked some addresses and did some research:
+>
+> # btrfs inspect-internal inode-resolve [LoUc] /path/to/mountpoint
+> ERROR: ino paths ioctl: No such file or directory
+> # btrfs inspect-internal logical-resolve [LoUc] /path/to/mountpoint
+> ERROR: ino paths ioctl: No such file or directory
+> # btrfs inspect-internal dump-tree -b [LoUc] /dev/[D]
+> btrfs-progs v6.6.3
+> Invalid mapping for [LoUc]-[LoUc+16384], got [Lo1]-[Lo2]
+> Couldn't map the block [LoUc]
+> ERROR: failed to read tree block [LoUc]
+> # btrfs inspect-internal inode-resolve [LoC] /path/to/mountpoint
+> ERROR: ino paths ioctl: No such file or directory
+> # btrfs inspect-internal logical-resolve [LoC] /path/to/mountpoint
+> /path/to/file
+> # btrfs inspect-internal dump-tree -b [LoC] /dev/[D]
+> btrfs-progs v6.6.3
+> checksum verify failed on [LoC] wanted [csum1] found [csum2]
+> ERROR: failed to read tree block [LoC]
+>
+> I checked the commit log of fs/btrfs/scrub.c, and tried scrub on
+> 6.3.12. The scrub finished without error. I assume this is intended as
+> 0096580713ffc061a579bd8be0661120079e3beb was simply not back-ported.
 
-The 1/16 is chosen as a trade-off between wasted space and possible
-unnecessary defrag.
-
-E.g. the file extent is only referring to 4K of a 32K extent. Doing a
-defrag would not save much bytes.
-
-I can definitely go both (ratio and absolute wasted space), but that
-also means I need to find a new threshold (for wasted bytes), and I'm
-not confident enough to come up another one.
+This should not be the case, that commit should only be included in
+newer kernels with the reworked scrub, or it doesn't need to be
+backported at all.
 
 >
-> And this should use em->len and not em->ram_bytes. The latter is
-> preserved when spitting an extent map.
+> I guess the root cause of the issue is that one of the DUP metadata
+> copies was somehow corrupted. Am I right?
 
-Oh indeed, would definitely fix it.
+I don't think so, I think there may be some false alerts, either from
+kernel scrub interface, or btrfs-progs.
+
+> I am to confirm:
+> 1. is this behavior (false "fixed up") of scrub intended?
+
+Nope. Considering "btrfs check" and "btrfs check --check-data-csum" is
+totally fine, this should be a bug related to scrub.
+
+> 2. why btrfs check finished without error under such a circumstance?
+
+Because that is probably the real case.
+
+> 3. since all files were fine and btrfs check finished without error,
+> should these "uncorrectable" errors be actually correctable?
+
+I believe it's some bugs, either from scrub functionality of btrfs
+kernel module, or btrfs-progs reporting.
+
+Would you please try the following?
+
+- A different btrfs-progs to do the same scrub
+   To rule out some btrfs-progs regression.
+
+- "btrfs scrub start -RD"
+   This shows the raw data reported, including where the corruptions are
+   (data/metadata, and scrubbed bytes etc).
+
+- Do a readonly scrub on a readonly mounted btrfs
+   Just to rule out any write-time races, which can help us to pin down
+   the possible cause.
 
 Thanks,
 Qu
 
-
-> You can even notice this in the tree dump example from the change log
-> - the file extent's items ram bytes is 128M, not 4K.
 >
-> Thanks.
+> I have a full dump of the disk. As long as needed, I can provide
+> further debug assistance and more information about the fs.
 >
->> +                               goto add;
->> +
->>                          /* Empty target list, no way to merge with las=
-t entry */
->>                          if (list_empty(target_list))
->>                                  goto next;
->> --
->> 2.43.0
->>
->>
+> Thanks,
+> Rongrong
 >
 
