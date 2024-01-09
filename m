@@ -1,136 +1,122 @@
-Return-Path: <linux-btrfs+bounces-1331-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1332-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76660828FC5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 23:20:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C1A1828FD9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 23:23:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 720601C250BE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 22:20:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2796B215CA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 22:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A253DBB1;
-	Tue,  9 Jan 2024 22:17:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D8B3E472;
+	Tue,  9 Jan 2024 22:23:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="KvZR+2yw"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="v4dmi3Pe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC9A3DB9F
-	for <linux-btrfs@vger.kernel.org>; Tue,  9 Jan 2024 22:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1704838644; x=1705443444; i=quwenruo.btrfs@gmx.com;
-	bh=DvTaZldHxuHSANBkjKnuhs50Mh/XS4GkG4G5H45rxrM=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=KvZR+2ywos0uJz7qd3fg4Odn5T8IE1uH5fNwBxu45XaSnubRQzOfvJ2JXShYaS7J
-	 88Kn4ff8Lz+XzIaszFePhvHJvcZQ0ltwg1/6RkEdWBGsdOf16ylxq6QdOw+Awivmz
-	 CArffZHvV6PUNA1op+6cJOw730qJYINQEsCD4Ltz0kYS7C5xUzc62X+TmlBcM2uIU
-	 o6+wPxQtB04Tj9wGRbapHqIcvLuTVmGdhYZkk4zGMmtGT1M+lkvQrx5QzQ8FSFpGj
-	 wQJpAhG7lhxHBIHBEleqxDKcsOyoUUXXI9OEr/rRUQ0WYX+gb5cJ8XX/8IkK050NJ
-	 fYCIEheMveOh6IdMLA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([193.115.113.22]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MkHQX-1quMJ83BZR-00kgKb; Tue, 09
- Jan 2024 23:17:24 +0100
-Message-ID: <61b6a8db-61ad-4c59-9f35-49e30a6437cc@gmx.com>
-Date: Wed, 10 Jan 2024 08:47:19 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D3663DBA4
+	for <linux-btrfs@vger.kernel.org>; Tue,  9 Jan 2024 22:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5cda24a77e0so1536035a12.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 09 Jan 2024 14:23:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1704839013; x=1705443813; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RTaJ7F4UvxTDYLwb0WtqTx+At6efRtBZFNZppNwGZ4o=;
+        b=v4dmi3PeHedFlxj5MN0GxY+JUYC7smfDF5oiKO9ZSBRwdXsEdaCJ+jx2r0OxPqtcGR
+         cAuWOaEL135A7dfGfP0QyGa30g7Mb3djr3an/KtjgIjrCpDQbGRVYN3qwsvsdgUj0JEy
+         aASsIlfknqfn4+FVfJnP5FhWhg2qsEjxjQiCNrLGEofpMzaqLi7MWUVFyiPnz+cW/uzG
+         V9MKv1z4D4qaGjLqzpEWMG7OPjqg1KP7vY8qSWItJukYXiT5bH0SgL9bcIcK8WQG0tMe
+         3fOHghG43tyHr6N38uBy8dwr5fbiCiEP4XpR0zbdlajkO7i7AsVFaWUYVg2hO+294ADS
+         OYxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704839013; x=1705443813;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RTaJ7F4UvxTDYLwb0WtqTx+At6efRtBZFNZppNwGZ4o=;
+        b=UPAqRCtXIEsO8k2P2jX8efDcfDZ9HsjRXeWv2fYrRQs/+gpVI49iiJ4rLm3iR9k6dl
+         bqbTLXe9N6TQrOwSZNba6UvgnWxo2/LaZqkSZUtBvHTzXGWD4IZw2R7v4b/YWenulYPY
+         QhN2YEkYSAfGZ+nbtJIMAnL7JucFnqBDNZcpZCajLBKHPXxPtxW0qtYYXFTZQB69uYuR
+         dCFwJ3Dm6zVFtU7n8U++E+ICzL48407U4psEKOJ0kNKfVFTcbHQ8/JO1tdE25JEyGt2J
+         ZCAPXUBa4xTHI/A2EpLAhhhfnog1ywrleU2Uc7Xpbvkxfy6xI8hCru3SgIl32uIF4pTa
+         PZNQ==
+X-Gm-Message-State: AOJu0Yx1liglwlei1UnmFRBnE1DSuGCs8Ck8OwfAEm1ehmCdkBPWj7WT
+	735KQchQKPI/vjIQM/pylh5s/sa0K58K9hrUR/4Om9PMrN8=
+X-Google-Smtp-Source: AGHT+IHwxs6hfy7c10y/Z2WOv2jOl6yN4BZqONuQsBTiNNd0jqVThjnDnXUFG2w0+QL/HodxmXR+Zw==
+X-Received: by 2002:a05:6a21:339d:b0:199:c372:d775 with SMTP id yy29-20020a056a21339d00b00199c372d775mr10071pzb.91.1704839012809;
+        Tue, 09 Jan 2024 14:23:32 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-249-6.pa.nsw.optusnet.com.au. [49.180.249.6])
+        by smtp.gmail.com with ESMTPSA id ns14-20020a17090b250e00b0028c2de909e4sm2574940pjb.50.2024.01.09.14.23.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 14:23:32 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rNKVN-008FeO-0H;
+	Wed, 10 Jan 2024 09:23:29 +1100
+Date: Wed, 10 Jan 2024 09:23:29 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: "dsterba@suse.cz" <dsterba@suse.cz>, Jan Kara <jack@suse.cz>,
+	Matthew Wilcox <willy@infradead.org>,
+	"lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+	"linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] Removing GFP_NOFS
+Message-ID: <ZZ3HYUR85iIEJiGX@dread.disaster.area>
+References: <ZZcgXI46AinlcBDP@casper.infradead.org>
+ <20240105105736.24jep6q6cd7vsnmz@quack3>
+ <20f3de31-fbb0-4d8b-8f34-aa1beba9afc9@wdc.com>
+ <20240108173928.GB28693@twin.jikos.cz>
+ <b5bc1e72-72ea-4b67-86a1-3d41deb5bc72@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: defrag: add under utilized extent to defrag target
- list
-Content-Language: en-US
-To: Christoph Anton Mitterer <calestyo@scientia.org>,
- Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org
-References: <2c2fac36b67c97c9955eb24a97c6f3c09d21c7ff.1704440000.git.wqu@suse.com>
- <CAL3q7H5LEjZCkhTwgYJLSeQkG6NsY5AhE__na-2hCa7UuXuCzw@mail.gmail.com>
- <59615d5b-8802-4218-8b0b-18e3eff47cb3@gmx.com>
- <adb8b47a1dcb44747b15dde1aa6ac8c2592edd45.camel@scientia.org>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <adb8b47a1dcb44747b15dde1aa6ac8c2592edd45.camel@scientia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0ymA2vWB3H+oCOL0rkL/KKTnEj+A+Zf1CTM5togmPyfg04shAcY
- L5W3/4G5UF/BGTEpLQ+3v/E1KxF+zbmdAhNmtfX1zDcGmFfCmNXUHH1WyBkK42n8oMdJE8G
- WzoqQIOndHeM+Xw84NM/NCgFIJxGIW76mgHX06tHeZ2eiOgF08g1Bqo5PWmHu+So68hxR2Z
- 9q4Egxv4RtjJT5bzAq6IQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:OeKyaakCOX8=;otjKE/mIGw9wj2M90p1vkFJiHx/
- z2S9H7nSi2j2rNC7Ln31XgnOQGVKCPiZQwdb+Xpkv0wU2S37BwnkhDvGIUPsJs4/J4RnePJob
- FfZQUcbNL2lJTCFK8nVMm5RQrhsKCtnGylbj7boeWJ1FgQaVPLjsNZG2wBaSThy03TzdrC1kr
- NmcLMc+K/duLg82LZTSwwg1Ep3CaTVRS1OMCTSlCIrI8TS6boswM+8rfCwuH2Z8WknIA2SmoC
- QrdrIsiC4PluLQMsiDf43HrXfXvTOYbIDae9DCY2GmH0rw2YR7vfpysVbiR2le+p1mqOewWMl
- WOEmwrmbszCpgmC1risxTOgxXX5JtKBKxJzAeAKQ4CYKOi9ND4j//xtScK6Sqb2xhtT6HZAN3
- wZGsHquvf6mtZOG0s30ANbvVYgL2ekKUFifhPSZQYc8p8l3sqiWLs8TNvxn0N28qoo4IVDJ38
- BD3WgnDhm7I0MpqUdln1Ys91r/sAaHjbE/BplTHATlcTSxYs9ocWWR9px7Y5eLJuzhKdvpQRa
- HyNRMDO6J6DGHx9i2JWEyO+2lmn7bb5/imh3S6oSdvdBWbItCEpPkH45H7JWtAqV9r40SHJkO
- E7xlfYQ0nY5SRurT4lSQICAddvhrQIbzTxiOkXBpBC0nK3Go6sx6nai/xUdlwZ4GpiHn5krPD
- hC9zK8INF7EUA5PzIGu34aJunvTenS+MfMn3l5bqO82eYHxXDV3+4sHt2KUTOWSxfsEA/DRdR
- /M7Ny8GfSYfmFukU1O2wX90Fg6Ih2kJQg29uytoCUYBhAVia2+XuP4hXLBySUtMNOIgLjc8Mv
- q4qKO4evVnCdFF781JNac1cklyNWGAky6MshVV/Jh2IAv63w+amFnFEEtNOyosF6hOQdJUVnA
- fT7WkU8KV9JD79TifZliEskVHMk1JGTvMe/1v2nKfGimzeuZ/lYValKI3tgxxDeFtcEsWYCiH
- 3k91tJS1uk4/E5YoSLFh/n/g8n4=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b5bc1e72-72ea-4b67-86a1-3d41deb5bc72@wdc.com>
 
+On Tue, Jan 09, 2024 at 07:43:54AM +0000, Johannes Thumshirn wrote:
+> On 08.01.24 18:40, David Sterba wrote:
+> >> 199 - btrfs
+> > 
+> > All the easy conversions to scoped nofs allocaionts have been done, the
+> > rest requires to add saving the nofs state at the transactions tart, as
+> > said in above. I have a wip series for that, updated every few releases
+> > but it's intrusive and not finished for a testing run. The number of
+> > patches is over 100, doing each conversion separately, the other generic
+> > changes are straightforward.
+> > 
+> > It's possible to do it incrementally, there's one moster patch (300
+> > edited lines) to add a stub parameter to transaction start,
+> > https://lore.kernel.org/linux-btrfs/20211018173803.18353-1-dsterba@suse.com/ .
+> > There are some counter points in the discussion if it has to be done
+> > like that but IIRC it's not possible, I have examples why not.
+> > 
+> 
+> At a first glance, storing the nofs scope in the transaction handle like 
+> Filipe proposed sounds like a good idea to me.
 
+That's exactly what XFS has done for the last couple of decades. :)
 
-On 2024/1/10 08:27, Christoph Anton Mitterer wrote:
-> On Wed, 2024-01-10 at 07:34 +1030, Qu Wenruo wrote:
->> The 1/16 is chosen as a trade-off between wasted space and possible
->> unnecessary defrag.
->
-> Felipe's point doesn't seem so invalid.... wouldn't it be possible to
-> make the trade-off somehow configurable, so that the user can choose
-> via some command line option?
+Cheers,
 
-We have 16 bytes extra space for the ioctl, I think we can go 2 u32 to
-configure both ratio and wasted space if needed.
-
-Unfortunately we don't have any existing checks on
-btrfs_ioctl_defrag_range_args::flags, which means we have no way to
-detect if the kernel supports new flags.
-
-I'll start adding such rejection first, then we can start adding new
-btrfs_ioctl_defrag_range_args flags/options to support configurable
-ratio/wasted bytes.
-
-Thanks,
-Qu
-
->
-> Cheers,
-> Chris.
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
