@@ -1,90 +1,92 @@
-Return-Path: <linux-btrfs+bounces-1325-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1326-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F94C8289DA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 17:19:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C21788289EB
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 17:24:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81E8A1C246B6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 16:19:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D5FC286B3F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jan 2024 16:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 482153A1CA;
-	Tue,  9 Jan 2024 16:19:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBBCD3A1D0;
+	Tue,  9 Jan 2024 16:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NZ6oEdoC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sKI6JGKh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NZ6oEdoC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sKI6JGKh"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OhE+Cs7W";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Za91Z5/x";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QuqPDQqX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z0Kuavmt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8819E3A1C0
-	for <linux-btrfs@vger.kernel.org>; Tue,  9 Jan 2024 16:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3962939FFC
+	for <linux-btrfs@vger.kernel.org>; Tue,  9 Jan 2024 16:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7C9A21F7FE;
-	Tue,  9 Jan 2024 16:19:33 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2630521E5B;
+	Tue,  9 Jan 2024 16:24:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704817173;
+	t=1704817455;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4xLrPVNE9HPo9kT8Lwyr89aCgPMfTyjt+IPZ1Rs+0Gw=;
-	b=NZ6oEdoCyUML3+dQO8nmGRVvuW76esVHUFgNVfhXU1oe9ryKmEIiNWtSF2nOfqfpcTINWj
-	Es9Kz+aIqGbGE8DuAlzndo4W6km5k0giuPdIRJ3QscU4BBxykcf1zIzFeJvL0MJ91nJV+R
-	R0c5g2F2p/cQUthrijfUywLzdzP6JFY=
+	bh=ZI8etPH5p266ML+mme6shSYxSB8QOPuOi/8aXYuKcu0=;
+	b=OhE+Cs7WeFzZR1TJfjtHgd2klkyHNxmj0u3wZLOGE95iTUmZRM/hxB8n+2JHIi2M2ojb95
+	DWF9ITv56+ftg+SLq3Nz14zIirKojmMYNFqe22UOv3/JgbClL9y7S1u8JGuDIcuxUWVjhn
+	JRETWCdCa4YuonpVkkw67Q74yp2COqM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704817173;
+	s=susede2_ed25519; t=1704817455;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4xLrPVNE9HPo9kT8Lwyr89aCgPMfTyjt+IPZ1Rs+0Gw=;
-	b=sKI6JGKhTijaJKZGmXBY7XToG3q06j4gG7P7XVJoKYv5xC2roXBqQ7Sd2+cMavHdfL9ZQB
-	cL5k4xBazoW83+Bg==
+	bh=ZI8etPH5p266ML+mme6shSYxSB8QOPuOi/8aXYuKcu0=;
+	b=Za91Z5/xb5jKJpsLdh4qpi7J8ANfW7aX2cUKOAlVr9R5pPuYCOz8RpVPY9tIWhC3b8o4cb
+	Yrg6rcNNMvZV1yDw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704817173;
+	t=1704817454;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4xLrPVNE9HPo9kT8Lwyr89aCgPMfTyjt+IPZ1Rs+0Gw=;
-	b=NZ6oEdoCyUML3+dQO8nmGRVvuW76esVHUFgNVfhXU1oe9ryKmEIiNWtSF2nOfqfpcTINWj
-	Es9Kz+aIqGbGE8DuAlzndo4W6km5k0giuPdIRJ3QscU4BBxykcf1zIzFeJvL0MJ91nJV+R
-	R0c5g2F2p/cQUthrijfUywLzdzP6JFY=
+	bh=ZI8etPH5p266ML+mme6shSYxSB8QOPuOi/8aXYuKcu0=;
+	b=QuqPDQqXNUNbeOdOJfZi3mk6fsfYwk9s4jAl3VAt/r/oDXbpT8AIioyPOVg10pqkgFiRsN
+	XGPeV7GBL9Odtk6lB6rEoBfrkdmO7HAbo6r6DbIWnHMVCXn6KqFvyl/153N+CrMJwOYXJX
+	KHrpTfHNTFpAYaEIZCbgImVvPwJ+Lac=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704817173;
+	s=susede2_ed25519; t=1704817454;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4xLrPVNE9HPo9kT8Lwyr89aCgPMfTyjt+IPZ1Rs+0Gw=;
-	b=sKI6JGKhTijaJKZGmXBY7XToG3q06j4gG7P7XVJoKYv5xC2roXBqQ7Sd2+cMavHdfL9ZQB
-	cL5k4xBazoW83+Bg==
+	bh=ZI8etPH5p266ML+mme6shSYxSB8QOPuOi/8aXYuKcu0=;
+	b=Z0KuavmtNZgLvJ74w8HmWUZ+Xb3HMfKTjiNQwwyOTggdLVRUtoOPWjQJNuNH6ekgsmQ37T
+	+34tzR9yPTgDE+Dg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 636BF134E8;
-	Tue,  9 Jan 2024 16:19:33 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 042A3134E8;
+	Tue,  9 Jan 2024 16:24:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8IQaGBVynWXacAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 09 Jan 2024 16:19:33 +0000
-Date: Tue, 9 Jan 2024 17:19:15 +0100
+	id r8GSAC5znWXadAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 09 Jan 2024 16:24:14 +0000
+Date: Tue, 9 Jan 2024 17:23:59 +0100
 From: David Sterba <dsterba@suse.cz>
 To: Anand Jain <anand.jain@oracle.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] btrfs-progs: Documentation: fix sphinx code-block
- warning
-Message-ID: <20240109161915.GJ28693@twin.jikos.cz>
+Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC 2/2] btrfs-progs Documentation: placeholder for
+ contents.rst file
+Message-ID: <20240109162359.GK28693@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1704438755.git.anand.jain@oracle.com>
- <b5e7aa00820d6fcc680b201070f81e3178571dea.1704438755.git.anand.jain@oracle.com>
+ <b30031c129e92c7e99c7e5bc818a456cd5828cc8.1704438755.git.anand.jain@oracle.com>
+ <20240108213325.GI28693@twin.jikos.cz>
+ <328e7958-6b77-093a-f3be-bcb07e85e0eb@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -93,135 +95,81 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b5e7aa00820d6fcc680b201070f81e3178571dea.1704438755.git.anand.jain@oracle.com>
+In-Reply-To: <328e7958-6b77-093a-f3be-bcb07e85e0eb@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: **
 X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=NZ6oEdoC;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=sKI6JGKh
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [0.29 / 50.00];
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-1.22 / 50.00];
 	 ARC_NA(0.00)[];
 	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
 	 TO_DN_SOME(0.00)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
 	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: 0.29
-X-Rspamd-Queue-Id: 7C9A21F7FE
+	 BAYES_HAM(-0.22)[72.00%]
+X-Spam-Level: 
 X-Spam-Flag: NO
+X-Spam-Score: -1.22
 
-On Mon, Jan 08, 2024 at 04:31:07PM +0800, Anand Jain wrote:
-> diff --git a/Documentation/Tree-checker.rst b/Documentation/Tree-checker.rst
-> index 68df6fdfa0de..c0e5e316d958 100644
-> --- a/Documentation/Tree-checker.rst
-> +++ b/Documentation/Tree-checker.rst
-> @@ -30,7 +30,7 @@ fine.
->  
->  A message may look like:
->  
-> -.. code-block::
-> +.. code-block:: text
+On Tue, Jan 09, 2024 at 09:25:37PM +0800, Anand Jain wrote:
+> 
+> 
+> 
+> On 09/01/2024 05:33, David Sterba wrote:
+> > On Mon, Jan 08, 2024 at 04:31:08PM +0800, Anand Jain wrote:
+> >> For now, to circumvent the build error, create a placeholder file
+> >> named contents.rst.
+> >>
+> >> Sphinx error:
+> >> master file btrfs-progs/Documentation/contents.rst not found
+> > 
+> > I don't see that error with sphinx 7.2.6, which version do you use?
+> > 
+> 
+>    python3-sphinx-3.4.3-7.el9.noarch  -- no issues
+>    python3-sphinx-1.7.6-3.el8.noarch  -- build errors as above.
+> 
+> 
+> >> make[1]: *** [Makefile:37: man] Error 2
+> >> make: *** [Makefile:502: build-Documentation] Error 2
+> >>
+> >> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> >> ---
+> >> RFC because the empty contents.rst to fix the error.
+> > 
+> > Adding an empty file to silence the error is probably ok but what's the
+> > reason to have it?
+> 
+> While contents.rst similar to index.rst with its Table of Contents
+> (TOC) and toctree directives. But, I am not sure yet if we can replace
+> index.rst with contents.rst. And doing it ended up with multiple errors.
+> So, I abandoned the idea, restored to creating an empty file instead.
+> It appears that contents.rst is needed only in older versions like'
+> 1.7.6.
 
-No syntax hilighting is specified as 'none' elsewhere, so I'd change
-that to be consistent.
+Ok then, the empty file would be a fix but it leads to this warning on a
+newer version:
 
->  
->     [ 1716.823895] BTRFS critical (device vdb): corrupt leaf: root=18446744073709551607 block=38092800 slot=0, invalid key objectid: has 1 expect 6 or [256, 18446744073709551360] or 18446744073709551604
->     [ 1716.829499] BTRFS info (device vdb): leaf 38092800 gen 19 total ptrs 4 free space 15851 owner 18446744073709551607
-> @@ -54,7 +54,7 @@ checksum is found to be valid. This protects against changes to the metadata
->  that could possibly also update the checksum, less likely to happen accidentally
->  but rather due to intentional corruption or fuzzing.
->  
-> -.. code-block::
-> +.. code-block:: text
->  
->     [ 4823.612832] BTRFS critical (device vdb): corrupt leaf: root=7 block=30474240 slot=0, invalid nritems, have 0 should not be 0 for non-root leaf
->     [ 4823.616798] BTRFS error (device vdb): block=30474240 read time tree block corruption detected
-> diff --git a/Documentation/ch-subvolume-intro.rst b/Documentation/ch-subvolume-intro.rst
-> index 57b42fe7a97f..3a138f221cc6 100644
-> --- a/Documentation/ch-subvolume-intro.rst
-> +++ b/Documentation/ch-subvolume-intro.rst
-> @@ -3,7 +3,7 @@ file/directory hierarchy and inode number namespace. Subvolumes can share file
->  extents. A snapshot is also subvolume, but with a given initial content of the
->  original subvolume. A subvolume has always inode number 256.
->  
-> -.. note::
-> +.. note:: text
+.../contents.rst: WARNING: document isn't included in any toctree
 
-Does note really need the paramter? You've added 4 but there are 70+ in
-the whole documentation so that would need fixing them all (or none).
+We could add it conditionally at build time in case the sphinx version
+is old, with something like that:
 
->     A subvolume in BTRFS is not like an LVM logical volume, which is block-level
->     snapshot while BTRFS subvolumes are file extent-based.
->  
-> @@ -34,7 +34,7 @@ Subvolumes can be given capacity limits, through the qgroups/quota facility, but
->  otherwise share the single storage pool of the whole btrfs filesystem. They may
->  even share data between themselves (through deduplication or snapshotting).
->  
-> -.. note::
-> +.. note:: text
->      A snapshot is not a backup: snapshots work by use of BTRFS' copy-on-write
->      behaviour. A snapshot and the original it was taken from initially share all
->      of the same data blocks. If that data is damaged in some way (cosmic rays,
-> @@ -68,7 +68,7 @@ change and could potentially break the incremental send use case, performing
->  it by :ref:`btrfs property set<man-property-set>` requires force if that is
->  really desired by user.
->  
-> -.. note::
-> +.. note:: text
->     The safety checks have been implemented in 5.14.2, any subvolumes previously
->     received (with a valid *received_uuid*) and read-write status may exist and
->     could still lead to problems with send/receive. You can use :ref:`btrfs subvolume show<man-subvolume-show>`
-> @@ -138,7 +138,7 @@ Mounting a read-write snapshot as read-only is possible and will not change the
->  The name of the mounted subvolume is stored in file :file:`/proc/self/mountinfo` in
->  the 4th column:
->  
-> -.. code-block::
-> +.. code-block:: text
->  
->     27 21 0:19 /subv1 /mnt rw,relatime - btrfs /dev/sda rw,space_cache
->                ^^^^^^
-> @@ -151,7 +151,7 @@ then a snapshot is taken, then the cloned directory entry representing the
->  subvolume becomes empty and the inode has number 2. All other files and
->  directories in the target snapshot preserve their original inode numbers.
->  
-> -.. note::
-> +.. note:: text
->     Inode number is not a filesystem-wide unique identifier, some applications
->     assume that. Please use pair *subvolumeid:inodenumber* for that purpose.
->     The subvolume id can be read by :ref:`btrfs inspect-internal rootid<man-inspect-rootid>`
-> diff --git a/Documentation/ch-volume-management-intro.rst b/Documentation/ch-volume-management-intro.rst
-> index c93576c72586..15b44c9447b8 100644
-> --- a/Documentation/ch-volume-management-intro.rst
-> +++ b/Documentation/ch-volume-management-intro.rst
-> @@ -27,7 +27,7 @@ RAID level
->          standard RAID levels. At the moment the supported ones are: RAID0, RAID1,
->          RAID10, RAID5 and RAID6.
->  
-> -.. _man-device-typical-use-cases:
-> +.. _man-device-typical-use-cases: none
+.PHONY: contents.rst
 
-This is a label for a reference, I doubt it needs a parameter.
-
-The rest looks ok, thanks.
+contents.rst:
+	if "sphinx --version < 3.2.1"; then touch contents.rst; fi
 
