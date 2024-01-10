@@ -1,158 +1,178 @@
-Return-Path: <linux-btrfs+bounces-1365-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1366-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF661829DE9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jan 2024 16:49:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA6D8829E09
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jan 2024 16:56:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EA6B1C229E3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jan 2024 15:49:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02001B2227B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jan 2024 15:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56614C3C3;
-	Wed, 10 Jan 2024 15:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF7DF4C614;
+	Wed, 10 Jan 2024 15:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ii6CCIu6"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IwkwTOZt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vRFh6QaK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LxJpvf6b";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4djvRbWr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24DB84C3AC;
-	Wed, 10 Jan 2024 15:48:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A359BC433C7;
-	Wed, 10 Jan 2024 15:48:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704901733;
-	bh=3lRPiWOcHW5DzNVyRsTxkC2cqTMnSyW9WMv0JYC/Ny4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ii6CCIu6pPIF6fBSR7g7F8fejQZIQukBEcGxGpGAf2AwvonA2gcRbnJHu3lgBXs05
-	 apQilbyjzknJBvi3ZmXio34NE1MZesVIv1+wyZr3GNiJ4R+nYkY/at+6e3hA5bePUI
-	 Iec5DDJ9YcYn89GsSEfA9eAh+kv1ntv+2LrYQ+cl3L7dTEJE6V47/X04M10Kqihs//
-	 55k+0Jq93NsYroZNJmScCjPdN8CbjixBZHu0MLUuSQsNEXUPK1YpJ3ULbYFv+30AsF
-	 BKNnL8uYMm3R8vnfPr6YGHTFmnIEEx47WsSginTJvfmC5lSEajzxJBh4hW/8Dua6SG
-	 JCXpMnlVXOzgw==
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a271a28aeb4so457767866b.2;
-        Wed, 10 Jan 2024 07:48:53 -0800 (PST)
-X-Gm-Message-State: AOJu0YwYIWlu0fyWbFkJnErQteXHlJwVNvxwgaMznISJHOJ4uCF/Od5T
-	DiSgT24sprRoe4gvp/w08rWKmSUXBDSVOBivNEA=
-X-Google-Smtp-Source: AGHT+IHPqN6Vfhhu5r5vYn6exfhfha7AZJOR9my/AW4pjx54GOzctNcrQ1TjE1f2T7LLWGF0Uf3u4X6/++a1kdpGJ0g=
-X-Received: by 2002:a17:907:7f28:b0:a2b:9580:c447 with SMTP id
- qf40-20020a1709077f2800b00a2b9580c447mr954929ejc.110.1704901732086; Wed, 10
- Jan 2024 07:48:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2195C4BAB0;
+	Wed, 10 Jan 2024 15:56:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0D5D921DAA;
+	Wed, 10 Jan 2024 15:56:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704902167;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UdRDAcSG2IDlJ6wJ1MdreWcR1qBg5i+HYtCzFm8Eaw4=;
+	b=IwkwTOZtv7ajVhA/5CvKHdyniAKga32pMta2wOp8nXr3cudKUgTomYjcSG3gs3b9rRMg4d
+	PhAWUJll8pYexlQuBSWuZnhzihzmXwM+w/jRiD54/f/TliUVxmy8HMte1F0fQ912ZfVajK
+	MF0uVflO1BO8vtRry6RXx1Nv2VwzaK8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704902167;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UdRDAcSG2IDlJ6wJ1MdreWcR1qBg5i+HYtCzFm8Eaw4=;
+	b=vRFh6QaKZLCtewgzrn/xS+Xef4VEaTfMmB/vzV7jc4JfDCgf/yj1YGJ8I1nciByEJ6p2Zb
+	ktPAj0XOfIWfwiCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704902165;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UdRDAcSG2IDlJ6wJ1MdreWcR1qBg5i+HYtCzFm8Eaw4=;
+	b=LxJpvf6bvAJILRNeexKQvYPfazdQ+6AL1IsUmFMkQvMUE/CxCxBDYRSVn/USsWZfujmMOb
+	ZxlrLJ/oML+5dZsfegyh8QVFa6BrqZ1+od/YoMhCSJuKDxAKoRKRXvgzMo5VR3tUT9hioI
+	k7xn69NRi2tflzKdFyF9qiRteXdwfmw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704902165;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UdRDAcSG2IDlJ6wJ1MdreWcR1qBg5i+HYtCzFm8Eaw4=;
+	b=4djvRbWro38jKXhPTJlPnJNlJrXQrB0GBsZGY6L7MyexqJ2BtloG2vvxYJFe3F/5A+eQEW
+	VqVoETZCx2gYDDAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D86EE13786;
+	Wed, 10 Jan 2024 15:56:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id y6pxNBS+nmWmHgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 10 Jan 2024 15:56:04 +0000
+Date: Wed, 10 Jan 2024 16:55:46 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com, clm@fb.com,
+	daniel@iogearbox.net, dsterba@suse.com, john.fastabend@gmail.com,
+	josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	liujian56@huawei.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] btrfs: fix oob Read in getname_kernel
+Message-ID: <20240110155545.GW28693@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <tencent_44CA0665C9836EF9EEC80CB9E7E206DF5206@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0d35011f8afe8bd55c1f0318b0d2515ea10eac7f.1704839283.git.wqu@suse.com>
- <20240110005428.GN28693@twin.jikos.cz> <CAL3q7H5rryOLzp3EKq8RTbjMHMHeaJubfpsVLF6H4qJnKCUR1w@mail.gmail.com>
- <20240110144434.GU28693@twin.jikos.cz>
-In-Reply-To: <20240110144434.GU28693@twin.jikos.cz>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 10 Jan 2024 15:48:15 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H55UPbk9NTSnvpe+oRg54gbn4YaJSEkR7B=AkTTtagzFw@mail.gmail.com>
-Message-ID: <CAL3q7H55UPbk9NTSnvpe+oRg54gbn4YaJSEkR7B=AkTTtagzFw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: defrag: reject unknown flags of btrfs_ioctl_defrag_range_args
-To: dsterba@suse.cz
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_44CA0665C9836EF9EEC80CB9E7E206DF5206@qq.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.71 / 50.00];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 TO_DN_SOME(0.00)[];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_TO(0.00)[qq.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,qq.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[33f23b49ac24f986c9e8];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,qq.com:email,suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[syzkaller.appspotmail.com,fb.com,iogearbox.net,suse.com,gmail.com,toxicpanda.com,vger.kernel.org,huawei.com,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: -2.71
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 0D5D921DAA
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LxJpvf6b;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4djvRbWr
 
-On Wed, Jan 10, 2024 at 2:44=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
-e:
->
-> On Wed, Jan 10, 2024 at 11:43:39AM +0000, Filipe Manana wrote:
-> > On Wed, Jan 10, 2024 at 12:55=E2=80=AFAM David Sterba <dsterba@suse.cz>=
- wrote:
-> > >
-> > > On Wed, Jan 10, 2024 at 08:58:26AM +1030, Qu Wenruo wrote:
-> > > > Add extra sanity check for btrfs_ioctl_defrag_range_args::flags.
-> > > >
-> > > > This is not really to enhance fuzzing tests, but as a preparation f=
-or
-> > > > future expansion on btrfs_ioctl_defrag_range_args.
-> > > >
-> > > > In the future we're adding new members, allowing more fine tuning f=
-or
-> > > > btrfs defrag.
-> > > > Without the -ENONOTSUPP error, there would be no way to detect if t=
-he
-> > > > kernel supports those new defrag features.
-> > > >
-> > > > cc: stable@vger.kernel.org #4.14+
-> > > > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > >
-> > > Added to misc-next, thanks.
-> > >
-> > > > ---
-> > > >  fs/btrfs/ioctl.c           | 4 ++++
-> > > >  include/uapi/linux/btrfs.h | 2 ++
-> > > >  2 files changed, 6 insertions(+)
-> > > >
-> > > > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> > > > index a1743904202b..3a846b983b28 100644
-> > > > --- a/fs/btrfs/ioctl.c
-> > > > +++ b/fs/btrfs/ioctl.c
-> > > > @@ -2608,6 +2608,10 @@ static int btrfs_ioctl_defrag(struct file *f=
-ile, void __user *argp)
-> > > >                               ret =3D -EFAULT;
-> > > >                               goto out;
-> > > >                       }
-> > > > +                     if (range.flags & ~BTRFS_DEFRAG_RANGE_FLAGS_S=
-UPP) {
-> > > > +                             ret =3D -EOPNOTSUPP;
-> > >
-> > > This should be EINVAL, this is for invalid parameter values or
-> > > combinations, EOPNOTSUPP would be for the whole ioctl as not supporte=
-d.
-> >
-> > I'm confused now.
-> > We return EOPNOTSUPP for a lot of ioctls when they are given an
-> > unknown flag, for example
-> > at btrfs_ioctl_scrub():
-> >
-> > if (sa->flags & ~BTRFS_SCRUB_SUPPORTED_FLAGS) {
-> >     ret =3D -EOPNOTSUPP;
-> >     goto out;
-> > }
-> >
-> > Or at btrfs_ioctl_snap_create_v2():
-> >
-> > if (vol_args->flags & ~BTRFS_SUBVOL_CREATE_ARGS_MASK) {
-> >    ret =3D -EOPNOTSUPP;
-> >    goto free_args;
-> > }
-> >
-> > We also do similar for fallocate, at btrfs_fallocate():
-> >
-> > if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
-> >         FALLOC_FL_ZERO_RANGE))
-> >     return -EOPNOTSUPP;
-> >
-> > I was under the expectation that EOPNOTSUPP is the correct thing to do
-> > in this patch.
-> > So what's different in this patch from those existing examples to
-> > justify EINVAL instead?
->
-> Seems that we indeed do EOPNOTSUPP for unsupported flags while EINVAL is
-> for invalid parameters, altough there's
->
-> btrfs_ioctl_send()
->
-> 8113         if (arg->flags & ~BTRFS_SEND_FLAG_MASK) {
-> 8114                 ret =3D -EINVAL;
-> 8115                 goto out;
-> 8116         }
-> 8117
->
-> Either way it should be consistent, so the send flag check is a mistake.
-> I'll update the patch from Qu back to EOPNOTSUPP. Thanks.
+On Tue, Dec 19, 2023 at 06:19:10PM +0800, Edward Adam Davis wrote:
+> If ioctl does not pass in the correct tgtdev_name string, oob will occur because
+> "\0" cannot be found.
+> 
+> Reported-and-tested-by: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>  fs/btrfs/dev-replace.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> index f9544fda38e9..e7e96e57f682 100644
+> --- a/fs/btrfs/dev-replace.c
+> +++ b/fs/btrfs/dev-replace.c
+> @@ -730,7 +730,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
+>  int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+>  			    struct btrfs_ioctl_dev_replace_args *args)
+>  {
+> -	int ret;
+> +	int ret, len;
+>  
+>  	switch (args->start.cont_reading_from_srcdev_mode) {
+>  	case BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_ALWAYS:
+> @@ -740,8 +740,10 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+>  		return -EINVAL;
+>  	}
+>  
+> +	len = strnlen(args->start.tgtdev_name, BTRFS_DEVICE_PATH_NAME_MAX + 1);
+>  	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
+> -	    args->start.tgtdev_name[0] == '\0')
+> +	    args->start.tgtdev_name[0] == '\0' ||
+> +	    len == BTRFS_DEVICE_PATH_NAME_MAX + 1)
 
-Ok, with that:
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
+I think srcdev_name would have to be checked the same way, but instead
+of strnlen I'd do memchr(name, 0, BTRFS_DEVICE_PATH_NAME_MAX). The check
+for 0 in [0] is probably pointless, it's just a shortcut for an empty
+buffer. We expect a valid 0-terminated string, which could be an invalid
+path but that will be found out later when opening the block device.
 
