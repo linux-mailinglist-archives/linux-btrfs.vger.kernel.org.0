@@ -1,91 +1,90 @@
-Return-Path: <linux-btrfs+bounces-1397-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1398-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A6B182B231
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jan 2024 16:54:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D384482B269
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jan 2024 17:06:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81CC01C24646
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jan 2024 15:54:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D5BD287949
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jan 2024 16:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C464F1E6;
-	Thu, 11 Jan 2024 15:54:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D66C4F60B;
+	Thu, 11 Jan 2024 16:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="10HGB+/8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YHc6NNPK";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="10HGB+/8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YHc6NNPK"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ay0tUeY2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z4D6kAWC";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ay0tUeY2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z4D6kAWC"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 547AB495FB
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Jan 2024 15:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 254104F5E9
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Jan 2024 16:06:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 52A122222C;
-	Thu, 11 Jan 2024 15:54:41 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A76DF21E2A;
+	Thu, 11 Jan 2024 16:06:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704988481;
+	t=1704989179;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mqZmuRHNLH8ljUZ73NF1g7UqL/gzabV5Zv9AS/q9joM=;
-	b=10HGB+/89WtdNUOUiL9MaXVBkSA2HVdckoX/lRrCbAJxTzPfcByB2xRvkKbuiSYjlGvrI7
-	BP1GUDsbVDxW2nrTjCxRB8Is4q2apaz/ZzNsvv9baaTGgGo3XoWkoaLhogjviaaY9m3G2q
-	Gz0H+DIV9Dm5xcRKObmvHNSAkZmI5f0=
+	bh=av/S77/OH95AHnFb28rlwKnaA4Kf0pK3A7Gtj01YuU0=;
+	b=Ay0tUeY29ybXAvi1xJ33Msztg+VpyyaUVHUUScFsadiFkz/w0w5W2DVZGEfOwVXxUnY5od
+	CEniTfrbE/5Sq0MIYf4dCC8z8yMvY5NFgHQvE0i/HLNzm0vP2SnsNC72NAkZCeOApbers3
+	TJ6ZbhpHVI2Mm3hnWLxLGYvXZp0HWe8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704988481;
+	s=susede2_ed25519; t=1704989179;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mqZmuRHNLH8ljUZ73NF1g7UqL/gzabV5Zv9AS/q9joM=;
-	b=YHc6NNPKY1mD1M6NY3ji2sw4yMHsi1LcgfSbapKxHHUNKbhC/BbWL/+OcAlSajMZUUQMbR
-	JTSPVReeg/gKctCw==
+	bh=av/S77/OH95AHnFb28rlwKnaA4Kf0pK3A7Gtj01YuU0=;
+	b=Z4D6kAWCvBsL/xMpWV4uAjXpDcXno92WY4lPmkcTVHhGjfhEt+HqZJxmRKwAbZvhXHF3Rl
+	LNY85hOyEocPutBA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704988481;
+	t=1704989179;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mqZmuRHNLH8ljUZ73NF1g7UqL/gzabV5Zv9AS/q9joM=;
-	b=10HGB+/89WtdNUOUiL9MaXVBkSA2HVdckoX/lRrCbAJxTzPfcByB2xRvkKbuiSYjlGvrI7
-	BP1GUDsbVDxW2nrTjCxRB8Is4q2apaz/ZzNsvv9baaTGgGo3XoWkoaLhogjviaaY9m3G2q
-	Gz0H+DIV9Dm5xcRKObmvHNSAkZmI5f0=
+	bh=av/S77/OH95AHnFb28rlwKnaA4Kf0pK3A7Gtj01YuU0=;
+	b=Ay0tUeY29ybXAvi1xJ33Msztg+VpyyaUVHUUScFsadiFkz/w0w5W2DVZGEfOwVXxUnY5od
+	CEniTfrbE/5Sq0MIYf4dCC8z8yMvY5NFgHQvE0i/HLNzm0vP2SnsNC72NAkZCeOApbers3
+	TJ6ZbhpHVI2Mm3hnWLxLGYvXZp0HWe8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704988481;
+	s=susede2_ed25519; t=1704989179;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mqZmuRHNLH8ljUZ73NF1g7UqL/gzabV5Zv9AS/q9joM=;
-	b=YHc6NNPKY1mD1M6NY3ji2sw4yMHsi1LcgfSbapKxHHUNKbhC/BbWL/+OcAlSajMZUUQMbR
-	JTSPVReeg/gKctCw==
+	bh=av/S77/OH95AHnFb28rlwKnaA4Kf0pK3A7Gtj01YuU0=;
+	b=Z4D6kAWCvBsL/xMpWV4uAjXpDcXno92WY4lPmkcTVHhGjfhEt+HqZJxmRKwAbZvhXHF3Rl
+	LNY85hOyEocPutBA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 36371138E5;
-	Thu, 11 Jan 2024 15:54:41 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 80F55138E5;
+	Thu, 11 Jan 2024 16:06:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id NBT9DEEPoGWaegAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 11 Jan 2024 15:54:41 +0000
-Date: Thu, 11 Jan 2024 16:54:25 +0100
+	id PrC6HvsRoGW7fAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Thu, 11 Jan 2024 16:06:19 +0000
+Date: Thu, 11 Jan 2024 17:05:56 +0100
 From: David Sterba <dsterba@suse.cz>
 To: Anand Jain <anand.jain@oracle.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: don't unconditionally call folio_start_writeback
- in subpage
-Message-ID: <20240111155425.GH31555@twin.jikos.cz>
+Cc: dsterba@suse.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: fixup: v2 Documentation: placeholder for
+ contents.rst file
+Message-ID: <20240111160556.GI31555@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cd8e40a516d86d1c58a221fa8d964a04bc226891.1704924693.git.josef@toxicpanda.com>
- <755c30fa-a601-4ba6-8263-601439f1bceb@oracle.com>
+References: <cover.1704906806.git.anand.jain@oracle.com>
+ <adb208f0750fdbca06594f775eb0a81f886574c7.1704942814.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -94,61 +93,48 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <755c30fa-a601-4ba6-8263-601439f1bceb@oracle.com>
+In-Reply-To: <adb208f0750fdbca06594f775eb0a81f886574c7.1704942814.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="10HGB+/8";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=YHc6NNPK
-X-Spamd-Result: default: False [-1.52 / 50.00];
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Ay0tUeY2;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Z4D6kAWC
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.96 / 50.00];
 	 ARC_NA(0.00)[];
 	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
+	 RCPT_COUNT_THREE(0.00)[3];
 	 TO_DN_SOME(0.00)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
 	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 DKIM_TRACE(0.00)[suse.cz:+];
 	 MX_GOOD(-0.01)[];
 	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.01)[46.59%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 52A122222C
-X-Spam-Level: 
-X-Spam-Score: -1.52
+	 BAYES_HAM(-0.25)[73.35%]
+X-Spam-Score: -2.96
+X-Rspamd-Queue-Id: A76DF21E2A
 X-Spam-Flag: NO
 
-On Thu, Jan 11, 2024 at 01:57:13PM +0800, Anand Jain wrote:
-> On 1/11/24 06:14, Josef Bacik wrote:
-> > In the normal case we check if a page is under writeback and skip it
-> > before we attempt to begin writeback.
-> > 
-> > The exception is subpage metadata writes, where we know we don't have an
-> > eb under writeback and we're doing it one eb at a time.  Since
-> > b5612c368648 ("mm: return void from folio_start_writeback() and related
-> > functions") we now will BUG_ON() if we call folio_start_writeback()
-> > on a folio that's already under writeback.  Previously
-> > folio_start_writeback() would bail if writeback was already started.
-> > 
-> 
-> > Fix this in the subpage code by checking if we have writeback set and
-> > skipping it if we do.  This fixes the panic we were seeing on subpage.
-> 
-> The panic stack trace in the git commit log will add more clarity.
-> 
-> Can we fold this into the commit 55151ea9ec1b ("btrfs: migrate subpage 
-> code to folio interfaces")
+On Thu, Jan 11, 2024 at 12:21:00PM +0800, Anand Jain wrote:
+> We don't need touch Documentation/contents.rst in the Makefile when
+> Documentation/Makefile.in is doing it. Fix the devel commit 7479e750ba65
+> ("btrfs-progs: docs: placeholder for contents.rst file on older sphinx version").
 
-No we can't fold that it's been already merged to master branch, besides
-the fact that the whole patch queue was frozen a month ago.
+Thanks, I was not sure if the file should be in the toplevel directory
+too. Updated in devel.
 
