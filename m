@@ -1,43 +1,43 @@
-Return-Path: <linux-btrfs+bounces-1387-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1388-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9200482A7F1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jan 2024 08:01:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1317D82A7F4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jan 2024 08:02:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33E1CB21DFC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jan 2024 07:01:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CCF61F2402B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jan 2024 07:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FEE5663;
-	Thu, 11 Jan 2024 07:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24A846AC0;
+	Thu, 11 Jan 2024 07:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="hNZAyrvg"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Hjo1jNv9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 409F946B1
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Jan 2024 07:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317486AA1
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Jan 2024 07:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1704956461; x=1705561261; i=quwenruo.btrfs@gmx.com;
-	bh=qbIJcHrPe3DzBAioboLroXrXlmQviyY7KBBosZSpW00=;
+	s=s31663417; t=1704956505; x=1705561305; i=quwenruo.btrfs@gmx.com;
+	bh=f7qRwqby8tXX00vYhmin6IcV1wB76eBqla/Vmrse4Ig=;
 	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=hNZAyrvgUzTIlP6eQFxTerl+Wov9wTBisqzOZdLZIneMwb2S5bgcIBsCwhBJ7Bgi
-	 AIeXvfeNFervIeI8um9KM0T7KdL18C7TCIoh6pL0rPOcC+oLKl5iqaprAoOyQGDjc
-	 c+wcxKK5g3qlazdiqQMs6Znb80X15AYji/1zcLBakFAPhMF0M+XARq0V7AjtIUzep
-	 POEe0I1eDzPbPdXMBxddPRHcZcvp+ZIfgTWxCZ46zKBGdUXL+bimtYxEPrRN/8ckI
-	 rpCWDXDYI63HFQ8Ty/6rtpd78X+CxxJoFm87pR9XSmQ2ptvkL7mQVSlXn4Cwz1Yqd
-	 5kfqBxvBMgUshCAGfg==
+	b=Hjo1jNv9cngycQ93N3eRGz06XHWt8ORvrcBKN4npLofagztZTmBvd9txOKRDiHjQ
+	 tLoh1Q0JIdTjZyR0ZAeId7oGR2/R/2pi7kb7Tw2d+mQihWWYIyaOS1ojoW7Ur34Ue
+	 0tm5Zq51026zmX+jaMmpnJusPqPqgbNxJQG/L9BywdfKBFGhyC9gKUDjGG7DjLo09
+	 9yUiZDSvdrq9YBNFlKJqsMAPFF/pmeQGNMzES6gbXDARbL4N1NnlgLSuSHCPahAWK
+	 q653z5lUTcEAixmpRAk84NYdAl4QP4UePIFs34eih8xFj1ifot0sZlrrq1Qnz0p+P
+	 PwyKerlPbrwKeNf/kw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [192.168.153.88] ([49.178.149.31]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJmGP-1rd1cr2tdB-00KD2o; Thu, 11
- Jan 2024 08:01:01 +0100
-Message-ID: <bcd3e007-a9f3-4d9a-a28a-cec0452133b7@gmx.com>
-Date: Thu, 11 Jan 2024 17:30:56 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MQeA2-1rZQR42mZi-00Nkcf; Thu, 11
+ Jan 2024 08:01:45 +0100
+Message-ID: <5bd47d44-17a9-4c50-98a4-d9bc32b641f2@gmx.com>
+Date: Thu, 11 Jan 2024 17:31:42 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -48,9 +48,10 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs: don't unconditionally call folio_start_writeback
  in subpage
 Content-Language: en-US
-To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
+To: Anand Jain <anand.jain@oracle.com>, Josef Bacik <josef@toxicpanda.com>,
+ linux-btrfs@vger.kernel.org, kernel-team@fb.com
 References: <cd8e40a516d86d1c58a221fa8d964a04bc226891.1704924693.git.josef@toxicpanda.com>
+ <755c30fa-a601-4ba6-8263-601439f1bceb@oracle.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -76,74 +77,92 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <cd8e40a516d86d1c58a221fa8d964a04bc226891.1704924693.git.josef@toxicpanda.com>
+In-Reply-To: <755c30fa-a601-4ba6-8263-601439f1bceb@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JRoGAqNYHO1JZ3+Fl0m+992yQDb+VtDSirtfIr+DRnV400i9Xct
- ItKDTY/W/hxqQk/v+14sSUbUFDivZaKGaieoX/LMq7HJ23C1k1RR87K5wnXbGHO9lHNKUZd
- +yxXmd9Q3ddFUJzZJjP8GDqLx0F2D9RlsXzCvV0NbLVprd2WqyKYwGvlK8IxLDha0GoryBk
- K8CulpAKlqowVjWN59ndQ==
+X-Provags-ID: V03:K1:8Y71N08rElxAf/5WklC6DxSujJH6qYnEedRDbiUf68HlFnZfEfz
+ VysuwfPNziZt7ou7uEfugHhOaEGKBdkB7pd30k7nlUP2jjHc2ZfmXQ0Y0CBYkj6M5iirz/X
+ yieYa9A3+v4CFENeZ/nrvfc/fo6jN1KCUQgcqGpCrWKWX50H7K3ITKIOMduTG91GhW31SXI
+ A7Z+G6xlsyluk3rmdDJOQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:l7PL5ipPdsE=;CsRc+8Ljy3isGzdZHl0mio8d0rc
- WOLhqTWPsdHtkF73r1opSwlpJEt1zDCZ7FqW7YlIhg4sPOaqOfrp0u7yP63bvqS8nQzuYsSU3
- smmdJxjtGbskFvr8iKETYJAeMWu1fvUw6wexzwC/kw1Dj7MwX/bqjMqxIzgTau3QTu7e8BUiz
- CNUhHzFaeqM/CvufvYPnkV/g2dr+HjjcHwEkmL1IvAq/4c8bQJ+4q/PH61aU+zu3e7MA8oeJW
- R75jFZOy/Oz3EOZIkMKDjUcxmgSwquG0P2EZ4tCumWsPQ1eMppr4b13cQ1eDbMyyS/qcA1+Ec
- 5lfq5L+OiwpvYYR0hbJDSrEhl7oHEd7sj5fLszoqAe4NcLLJz0HLHxzatkCtV4kGidn9pOOOT
- fnFASAZQBGHDrAhhayY+qWnmSK1w4FMcLhjNqKQGsJ8TTgkLHLcRjAsL/Tw5hY54WO75TFdtL
- OcDOCZub63D15fvpp4Zfu8KGRJzhCXjbFKaoJHY+GnfkRSL7lNt5I74Ve7ltWbLo+JblfEYFz
- mcDQ9FPcZlOIbCLjU+atZf59ZE6CRGfs58T6KvKqj/7YteEsQUefCmEFrCUfzpEZEZL8G64H6
- S4AVw9ybZGVFnM/Iz10p8DuMYDG78oQuFWqW5wj7le80Q/fPyBUjZlRaQs8EHU8oH/kHFTs/7
- N2c0oZJKRkiPrfgLqRbKHcsxQ1MgZF3/U76aW2tfoNpEINQZbF6QgQMPgFtrYSgofvI6RRr/M
- R2IwYooq9HyV0KSPbRsX9acM6az1rI8CLJKCkiI7s/3IYzXRyqB4+4jasirK+PiulNbeealTm
- p/kS4rczQsHSHKP5F3r7X3Pq9eBX0N2MNaX8ofaisEMkEZaCleoFLUu+OgEwdU7xmWud65XQN
- XG7PwlUCGbS7HENuf1GQI9C2SQV/qqDgTeft6CjDNICs11zZoEeV7241DLwVFrDwmgneqsmJl
- i2dLy0SCO7GtyUVcgrzOATBTiqM=
+UI-OutboundReport: notjunk:1;M01:P0:wzoNHwuK5JQ=;HCXJ3YaalhRphs49VMyJ04Uf3Ez
+ ETkMUs7HOTUGkcsv6ovPS2msa3hD2JZ/86xy/AD9WPCn8beT66Csv806McYGT7UlGMb6er1ln
+ sJQ7XyPhKejZLKAWaxe2PFHituvYhNJYiAAFTNV6putg7/vEwm8iDnp9b+DlA99GBL5BK269G
+ C0Kru8N5irboxUUwgZYkxgpmwTtN3Lhyk/Iy8ugsR2uM7CmlI6fHChH21QwM/GE1i3hG9DWZv
+ zHw/tevpwig8U6Lyw4w1HyeCiGyhbBQEVE18emPjAPupf1xIhXhUU2U9HS4xMxhfUiIMILR4m
+ l2yhWunif+1ecM2k2jdqElKaI7TagK+oFR5hRukpTJkpTH3UqIHMTZ1rKaNU8DOVzAKWq/q4h
+ Qk8HNTL0gosbmSglcWCH43VEnXSxZCte5jf3Vhwm+vWaqHbkOvmd3v0slO2sBzJJ6rW9M003H
+ oC37rsq4W6d8F1zVX74EIiFLYGa8Mrx2BYFUPacS0r9x0ufMtUs5FHOV4etPlFDl4wjKhCUJ5
+ cZWNE80WDAMuVQWpxY8InOCJlRg/GTZGgU9DCTEZA+WK4w/fYy2RD21L2+yRP3RrufWPtlfJt
+ bHb8S1ZK0E/ANJmIC/I7TElOiE8qyoS4mFAjy4xuDo2uWQB1aiR65jsiQYPsjLC0Yp7Su+MQA
+ vhu5Pttc1Kjcw1/heHJRY6FtF5z3LJQGY9QM4Zo0caLWJjGFnipk7NIq5rgTL527/AWZAawB8
+ FTFlC/Wq1LEsHZQya95d3plAOlTQ+9QNxdiSD14mPzgZT9ThVA72bQQ5X3qTBh3F3wCu9boKz
+ q+c2r/d8EdK8ymoCMRfDfPDb9yjm/N1ui11zZadqplHhd1sMVe5yLazNscnGq9ELtkpWcDmWc
+ r/7KOE+aovXCukrXQ5Cbs2kUh5Kx/kD9BtDq7cclfRcQN27rizuZB3k+FCd6Yjs+/hcFpWLJ+
+ 2RPYYP/tnaJ6d3hwTwK3kEk8bk8=
 
 
 
-On 2024/1/11 08:44, Josef Bacik wrote:
-> In the normal case we check if a page is under writeback and skip it
-> before we attempt to begin writeback.
+On 2024/1/11 16:27, Anand Jain wrote:
+> On 1/11/24 06:14, Josef Bacik wrote:
+>> In the normal case we check if a page is under writeback and skip it
+>> before we attempt to begin writeback.
+>>
+>> The exception is subpage metadata writes, where we know we don't have a=
+n
+>> eb under writeback and we're doing it one eb at a time.=C2=A0 Since
+>> b5612c368648 ("mm: return void from folio_start_writeback() and related
+>> functions") we now will BUG_ON() if we call folio_start_writeback()
+>> on a folio that's already under writeback.=C2=A0 Previously
+>> folio_start_writeback() would bail if writeback was already started.
+>>
 >
-> The exception is subpage metadata writes, where we know we don't have an
-> eb under writeback and we're doing it one eb at a time.  Since
-> b5612c368648 ("mm: return void from folio_start_writeback() and related
-> functions") we now will BUG_ON() if we call folio_start_writeback()
-> on a folio that's already under writeback.  Previously
-> folio_start_writeback() would bail if writeback was already started.
+>> Fix this in the subpage code by checking if we have writeback set and
+>> skipping it if we do.=C2=A0 This fixes the panic we were seeing on subp=
+age.
 >
-> Fix this in the subpage code by checking if we have writeback set and
-> skipping it if we do.  This fixes the panic we were seeing on subpage.
+> The panic stack trace in the git commit log will add more clarity.
 >
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Can we fold this into the commit 55151ea9ec1b ("btrfs: migrate subpage
+> code to folio interfaces")
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+I don't think it's a good idea to merge a bug fix to a pure refactor.
 
-Initially I thought my subpage code screwed up again, but turns out it's
-MM layer behavior change.
+This is really some conflicts between us and mm layer.
 
 Thanks,
 Qu
-
-> ---
->   fs/btrfs/subpage.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-> index 93511d54abf8..0e49dab8dad2 100644
-> --- a/fs/btrfs/subpage.c
-> +++ b/fs/btrfs/subpage.c
-> @@ -475,7 +475,8 @@ void btrfs_subpage_set_writeback(const struct btrfs_=
-fs_info *fs_info,
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 >
->   	spin_lock_irqsave(&subpage->lock, flags);
->   	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bi=
-ts);
-> -	folio_start_writeback(folio);
-> +	if (!folio_test_writeback(folio))
-> +		folio_start_writeback(folio);
->   	spin_unlock_irqrestore(&subpage->lock, flags);
->   }
+> If not:
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+>
+> Thanks, Anand
+>
+>
+>> ---
+>> =C2=A0 fs/btrfs/subpage.c | 3 ++-
+>> =C2=A0 1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+>> index 93511d54abf8..0e49dab8dad2 100644
+>> --- a/fs/btrfs/subpage.c
+>> +++ b/fs/btrfs/subpage.c
+>> @@ -475,7 +475,8 @@ void btrfs_subpage_set_writeback(const struct
+>> btrfs_fs_info *fs_info,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock_irqsave(&subpage->lock, flags)=
+;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bitmap_set(subpage->bitmaps, start_bit, =
+len >>
+>> fs_info->sectorsize_bits);
+>> -=C2=A0=C2=A0=C2=A0 folio_start_writeback(folio);
+>> +=C2=A0=C2=A0=C2=A0 if (!folio_test_writeback(folio))
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 folio_start_writeback(folio=
+);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock_irqrestore(&subpage->lock, f=
+lags);
+>> =C2=A0 }
+>
 >
 
