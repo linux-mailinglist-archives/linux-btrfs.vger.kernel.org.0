@@ -1,101 +1,139 @@
-Return-Path: <linux-btrfs+bounces-1412-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1413-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4392082BF3A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jan 2024 12:30:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B19082BF90
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jan 2024 13:04:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 573B71C23CC1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jan 2024 11:30:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF353287BDD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jan 2024 12:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5215F67E86;
-	Fri, 12 Jan 2024 11:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A92F6A01F;
+	Fri, 12 Jan 2024 12:04:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lE3KEbmx"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bw0VuYWW";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="5stQosJo";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bw0VuYWW";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="5stQosJo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 824A167E6D
-	for <linux-btrfs@vger.kernel.org>; Fri, 12 Jan 2024 11:30:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1413C43390
-	for <linux-btrfs@vger.kernel.org>; Fri, 12 Jan 2024 11:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705059049;
-	bh=3ivSCP2RSRhJO8AoFhSzJu8zd43D+mHxR2PrY1Xh8W0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lE3KEbmxBU4wjIEBK4tl10N/qm9GG+ltDtgmjAT87JmpPrsB0/TXyMKAveUjth7OY
-	 l3ItA4ZUJZikQZuGLx++STLByiEIU+BPKS1zNa7MW67O18FNrqeLsP2EUKoTISsgl4
-	 Ut9yYN2OoL2U42oVPLidz+zwaM8fm3VdnLm+tPa0qPS8t0Rsjj0nEj+ShjqdSH5BmR
-	 D+LbwltXb4Geum615ECeXnkdD3yDAcr98TUooGpZVOvU92ZhRvTUagXO1qxDuGho88
-	 wMsp8QPVh82lfrfEsn2Hd3qqYzhdezkh/b0lxjMsddxujPrnwYkXC1WT4TT9FBpP0t
-	 kKBVKdQDIt3iA==
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a28d61ba65eso740173166b.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Jan 2024 03:30:49 -0800 (PST)
-X-Gm-Message-State: AOJu0YxEhGexD7WOrr9eiFnHnlhojL0oMm19GHPlBZNlUbyqAfeAUUKo
-	lhuGX4FYcWH3ngnIKlkOX+/rj69UjqHjNQqIucA=
-X-Google-Smtp-Source: AGHT+IF3+8BPCfbnRDgIxDgctulrSczgTBoOGXG2kXeK1S83y+Bg78hcS7Xjf+Pcsuuy0emAvK8MyeSSTZkOcsfTB60=
-X-Received: by 2002:a17:906:a457:b0:a19:a19b:4262 with SMTP id
- cb23-20020a170906a45700b00a19a19b4262mr398100ejb.205.1705059048383; Fri, 12
- Jan 2024 03:30:48 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9387D6A00B
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Jan 2024 12:04:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9E1A01FCD7;
+	Fri, 12 Jan 2024 12:04:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705061072; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d6+12cwVa/ROMg5NR+fIj8ChQ042YSwleolXlwZkgA0=;
+	b=bw0VuYWWRn3KBEI1pyTBmhI3z53KGGnWkDLu6biROZCLXZPeWkUFqjONfhpCMnXc0aslJM
+	RhD5j5EWcIxPa1zLRZRT8VeyUyYyk8kbP/q3s9ocHk8LWV2Vh35ZEhtbo8L53PYsrw5+sX
+	vOxir67Ldt45CNp2d8CmKepB9RmlBvk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705061072;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d6+12cwVa/ROMg5NR+fIj8ChQ042YSwleolXlwZkgA0=;
+	b=5stQosJouo7jbMbZOONKY+krG35WPAcQFi/BVtv26XQaHzCKZE+3ccPCupUHxHlPDcizlz
+	w2qZ2A6sfL7uqGDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705061072; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d6+12cwVa/ROMg5NR+fIj8ChQ042YSwleolXlwZkgA0=;
+	b=bw0VuYWWRn3KBEI1pyTBmhI3z53KGGnWkDLu6biROZCLXZPeWkUFqjONfhpCMnXc0aslJM
+	RhD5j5EWcIxPa1zLRZRT8VeyUyYyk8kbP/q3s9ocHk8LWV2Vh35ZEhtbo8L53PYsrw5+sX
+	vOxir67Ldt45CNp2d8CmKepB9RmlBvk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705061072;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d6+12cwVa/ROMg5NR+fIj8ChQ042YSwleolXlwZkgA0=;
+	b=5stQosJouo7jbMbZOONKY+krG35WPAcQFi/BVtv26XQaHzCKZE+3ccPCupUHxHlPDcizlz
+	w2qZ2A6sfL7uqGDA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 41D331340F;
+	Fri, 12 Jan 2024 12:04:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id iH/gBtAqoWWaBQAAn2gu4w
+	(envelope-from <rgoldwyn@suse.de>); Fri, 12 Jan 2024 12:04:32 +0000
+Date: Fri, 12 Jan 2024 06:05:42 -0600
+From: Goldwyn Rodrigues <rgoldwyn@suse.de>
+To: David Sterba <dsterba@suse.cz>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: Re: [PATCH] btrfs: page to folio conversion in
+ btrfs_truncate_block()
+Message-ID: <rdvzhdajctrwzyualrppin2hxj2bt6wijgmp3njp74iw6us72y@ry2lxh6wkwtc>
+References: <cn7d3gijpqxtmlytcv4ztac3eb7ukd54co4csitaw6czn6bfxr@3wopycxp755q>
+ <20240111182516.GM31555@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a2c72015288d70b870ded1d6f8aaba1c2cf63f97.1705045187.git.cccheng@synology.com>
-In-Reply-To: <a2c72015288d70b870ded1d6f8aaba1c2cf63f97.1705045187.git.cccheng@synology.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 12 Jan 2024 11:30:11 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6JXLFaMxWX-9ba25=2Kcb6X5ig5yJZWcL39CVGq+Foxg@mail.gmail.com>
-Message-ID: <CAL3q7H6JXLFaMxWX-9ba25=2Kcb6X5ig5yJZWcL39CVGq+Foxg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: tree-checker: fix iref size in error messages
-To: Chung-Chiang Cheng <cccheng@synology.com>
-Cc: dsterba@suse.com, linux-btrfs@vger.kernel.org, shepjeng@gmail.com, 
-	kernel@cccheng.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240111182516.GM31555@twin.jikos.cz>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [0.25 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.15)[68.58%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.25
 
-On Fri, Jan 12, 2024 at 7:49=E2=80=AFAM Chung-Chiang Cheng <cccheng@synolog=
-y.com> wrote:
->
-> The error message should accurately reflect the size rather than the
-> size.
+On 19:40 11/01, David Sterba wrote:
+> On Wed, Jan 10, 2024 at 07:56:13PM -0600, Goldwyn Rodrigues wrote:
+> > Convert use of struct page to struct folio inside btrfs_truncate_block().
+> > The only page based function is set_page_extent_mapped(). All other
+> > functions have folio equivalents.
+> > 
+> > Had to use __filemap_get_folio() because filemap_grab_folio() does not
+> > allow passing allocation mask as a parameter.
+> > 
+> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> 
+> There are some overly long lines, I can fix that unless you'd like to
+> commit the patch yourself.
 
-The second "size" should be "type".
+Yes, you can fix them. I will wait for Josef's docs to start committing
+myself.
 
->
-> Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
 
-Other than that, it looks good.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-> ---
->  fs/btrfs/tree-checker.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 50fdc69fdddf..6eccf8496486 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -1436,7 +1436,7 @@ static int check_extent_item(struct extent_buffer *=
-leaf,
->                 if (unlikely(ptr + btrfs_extent_inline_ref_size(inline_ty=
-pe) > end)) {
->                         extent_err(leaf, slot,
->  "inline ref item overflows extent item, ptr %lu iref size %u end %lu",
-> -                                  ptr, inline_type, end);
-> +                                  ptr, btrfs_extent_inline_ref_size(inli=
-ne_type), end);
->                         return -EUCLEAN;
->                 }
->
-> --
-> 2.34.1
->
->
+-- 
+Goldwyn
 
