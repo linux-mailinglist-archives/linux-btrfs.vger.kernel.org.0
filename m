@@ -1,209 +1,161 @@
-Return-Path: <linux-btrfs+bounces-1418-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1419-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C8C582C329
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jan 2024 16:58:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88E2E82C660
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jan 2024 21:33:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03BFB1C21F60
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jan 2024 15:58:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19490B23136
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jan 2024 20:33:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C23766EB7F;
-	Fri, 12 Jan 2024 15:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96FDD168C0;
+	Fri, 12 Jan 2024 20:33:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cL6eARNb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TzugksmU";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cL6eARNb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TzugksmU"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="jFoSYmH2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 449166EB6E
-	for <linux-btrfs@vger.kernel.org>; Fri, 12 Jan 2024 15:58:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3A3591FCDC;
-	Fri, 12 Jan 2024 15:58:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705075102;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vrryde+EVtXdkoyZJ7nR/fTVbSbmKtKZoPsttaFOXfY=;
-	b=cL6eARNbf5J2+hH4ItW4Ap6x4LcfWrfVEef6aJYow4wPFk9eeOinHNhv/szypmxnb4W55p
-	wq7itl7HZGKikJVafsvKrWUnyOVu3MtveD70umsYfIYt5QOO2uScgNb3JsEdkhKXAiov1A
-	esUWXtOn+f6ZdKJlh7s1o86cleNjkOQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705075102;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vrryde+EVtXdkoyZJ7nR/fTVbSbmKtKZoPsttaFOXfY=;
-	b=TzugksmUD/7dmvdO0gpcD4IqT02mo09i0WZ4DG1vRQGm99ikaWiOoSKD4L2NmcDZQybMdD
-	/pHd61gldzwg7DAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705075102;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vrryde+EVtXdkoyZJ7nR/fTVbSbmKtKZoPsttaFOXfY=;
-	b=cL6eARNbf5J2+hH4ItW4Ap6x4LcfWrfVEef6aJYow4wPFk9eeOinHNhv/szypmxnb4W55p
-	wq7itl7HZGKikJVafsvKrWUnyOVu3MtveD70umsYfIYt5QOO2uScgNb3JsEdkhKXAiov1A
-	esUWXtOn+f6ZdKJlh7s1o86cleNjkOQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705075102;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vrryde+EVtXdkoyZJ7nR/fTVbSbmKtKZoPsttaFOXfY=;
-	b=TzugksmUD/7dmvdO0gpcD4IqT02mo09i0WZ4DG1vRQGm99ikaWiOoSKD4L2NmcDZQybMdD
-	/pHd61gldzwg7DAw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1F8DC1340F;
-	Fri, 12 Jan 2024 15:58:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id z8BDB55hoWWiIQAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Fri, 12 Jan 2024 15:58:22 +0000
-Date: Fri, 12 Jan 2024 16:58:06 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-	Christoph Anton Mitterer <calestyo@scientia.org>
-Subject: Re: [PATCH] btrfs: defrag: add under utilized extent to defrag
- target list
-Message-ID: <20240112155806.GS31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <2c2fac36b67c97c9955eb24a97c6f3c09d21c7ff.1704440000.git.wqu@suse.com>
- <20240110170941.GA31555@twin.jikos.cz>
- <a033550b-9300-42bd-9ec2-74f9ee15cad3@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 402E623C8
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Jan 2024 20:33:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1705091602; x=1705696402; i=quwenruo.btrfs@gmx.com;
+	bh=NxAwff9WboRuKpG/967gR+NGJ3DZsv8WJ4mdPH0dXME=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=jFoSYmH22/3fekahjWjgo2S1ytBVT1ryfj59keB7wL1Rdd2vVPni+owXWCYXaeBZ
+	 qFPyMZPSTVEtdDXXGE3O6q2FPF+f9UeEP4n3sH5vB1voph3JCkbsfkPGa8IYiTIyL
+	 INJYR6m4CzMJl13C9dvXlt6l/kCs0afgLow75hSrqg6GqRoz1s6GRMySJ/2kosIeP
+	 ldu6/Vcca9YKpgJkxqG8ETn20UGrgZ7D1YU+jX6tL8oRz6qwCJqTeonvakQaKyI9Z
+	 ldoGpKDnvr3Lmqc5wIwBIh+yFuELpUIGltcwb8ZebhLvP4fOwk22DBDQRHsttqucG
+	 QsFpu5K8G2N1vo/52w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MsHru-1r9TlQ0W5K-00tobJ; Fri, 12
+ Jan 2024 21:33:22 +0100
+Message-ID: <7e908c1f-d14f-4562-ae1e-1431c091b140@gmx.com>
+Date: Sat, 13 Jan 2024 07:03:18 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a033550b-9300-42bd-9ec2-74f9ee15cad3@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=cL6eARNb;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=TzugksmU
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 3A3591FCDC
-X-Spam-Level: 
-X-Spam-Score: -3.01
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs-progs: tree-checker: dump the tree block when
+ hitting an error
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <a5ab0e98ae40df23b3bb65235f7bd9296e3b0be4.1705027543.git.wqu@suse.com>
+ <20240112153602.GP31555@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240112153602.GP31555@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:c7OVIfT3oCIJ9dwrpmQSf3dy7zVNwTXOX1QAHSuOlXPYEqWOBAx
+ u3Oz6qECyPfuSiOzbkiXmmZS4styRlwLdUBgdbzO6bl5Vf+unh7kZ2GorOkV6xgY/Vw2I2m
+ ilgP6ofleuBD45MjpXE6KQtuFO3cIi/2xhPl5KJP60Jbqkt+Y1oqHVVr81l/b7oXl2doMCT
+ a+iE49XWN8U34WBmDHx+Q==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:yXlchq2cQeg=;LvAsozIONLSDxIwWU9Lu4LCilYm
+ 5dZoyttlQiBe4LXVd/n8ThvBHy91YfpInrQj8N5FYh4Y5VepXk53Ao/dn5N8yPsWGWM8sOY5C
+ i+L8Uw1guYbhL9tiGeY/UhpUTa4xIKgtyoBScWeQHcaq4ysdLTejBX/Z9UHcSsVDpMB1swgLo
+ fVBHlq7gl3emqibVHKV09qGooDVnlQLevlXVJKxF5ka8b1T2NvpNL6nnRb/aDCJu/pd1dnlmF
+ BYZofiAAbTP0b0fnM7ceJogP/ndHIxNejuA+6nCyPHg/d6YmvccyoNWlMEgrGmSs4IEvZjKNU
+ lB8/egKypBAH/5omOE0jZ1vI6PXEBU7//PCWaIXNQrqo7V2hBOy+z16eKaCW98DlqSwRsxPXZ
+ BENE4ODax056OXFRnn1sI5Zn1l2j3AwMmfE6U1Yz5vxr8d2Lsd+VmKXUnBQIkhPN5PNyqifOh
+ fRAtLOma6bErbPP2Q99AHfcK1z945/1U+leWt5tRgTk9DrzMKwcdN8dxORyQlu1YscfzHcvmV
+ XrlHlf6zKvyvljZ4pgkpueR+GVS54/5wTnePLjitIa9LVry9frNiS8mQiC+WenxVvoOytGQm8
+ L9CMEBa+ct6tD/MN62SjaxITX4vI3tdlrTKeRwcUleMQPL4kXHmNUxJQaIXLg0h0x934RT52d
+ s3WRc/iU5Wt62lMvGzdNBprWSeIZoruL+GJLLdS+rwPphL0quhxXF8qj1Dtp1LNGnpzxWemHD
+ ZZOVr9EoP61EWcwvLbADEKdSHQqSBWpksJFfwjB8nASPmo5pFEw3wjMTZgFDSkHLAaMMdEgfa
+ 5BSc7GqEHX93ofz7MggM/SWlzSfad35FRMPw66QWkLPigrXMyWU/WRiA7Y4rPsObZf85UBmts
+ r9j/aui7g6JhD5a8ubU3jB/VrnfBi9/Qr8/9wcc5mGTts2bYJogruAIzPRJFwmgEaV7cWugxy
+ 1sZFVflsbEc/oNRLeIc71sOMaPU=
 
-On Thu, Jan 11, 2024 at 04:54:47PM +1030, Qu Wenruo wrote:
-> 
-> 
-> On 2024/1/11 03:39, David Sterba wrote:
-> > On Fri, Jan 05, 2024 at 06:03:40PM +1030, Qu Wenruo wrote:
-> >> [BUG]
-> >> The following script can lead to a very under utilized extent and we
-> >> have no way to use defrag to properly reclaim its wasted space:
-> >>
-> >>    # mkfs.btrfs -f $dev
-> >>    # mount $dev $mnt
-> >>    # xfs_io -f -c "pwrite 0 128M" $mnt/foobar
-> >>    # sync
-> >>    # btrfs filesystem defrag $mnt/foobar
-> >>    # sync
-> > 
-> > I don't see what's wrong with this example, as Filipe noted there's a
-> > truncate missing, but still this should be explained better.
-> 
-> Sorry, the full explanation looks like this:
-> 
-> After above truncation, we will got the following file extent layout:
-> 
-> 	item 6 key (257 EXTENT_DATA 0) itemoff 15813 itemsize 53
-> 		generation 7 type 1 (regular)
-> 		extent data disk byte 298844160 nr 134217728
-> 		extent data offset 0 nr 4096 ram 134217728
-> 		extent compression 0 (none)
-> 
-> That would be the last 4K referring that 128M extent, aka, wasted 
-> (128M-4K) bytes, or 99.695% of the extent.
 
-Ok, so it's the known issue.
 
-> Normally we expect defrag to properly re-dirty the extent so that we can 
-> free that 128M extent.
-> But defrag won't touch it at all, mostly due to there is no next extent 
-> to merge.
-> 
-> > Is this the problem when an overwritten and shared extent is partially
-> > overwritten but still occupying the whole range, aka. bookend extent?
-> > If yes, defrag was never meant to deal with that, though we could use
-> > the interface for that.
-> 
-> If we don't go defrag, there is really no good way to do it safely.
-> 
-> Sure you can copy the file to another non-btrfs location or dd it.
-> But that's not safe if there is still some process accessing it etc.
-> 
-> > As Andrei pointed out, this is more like a garbage collection, get rid
-> > of extent that is partially unreachable. Detecting such extent requires
-> > looking for the unreferenced part of the extent while defragmentation
-> > deals with live data. This could be a new ioctl entirely too. But first
-> > I'd like to know if we're talking about the same thing.
-> 
-> Yes, we're talking about the bookend problem.
-> As I would expect defrag to free most, if not all, such bookend extents.
-> (And that's exactly what I recommend to the initial report)
+On 2024/1/13 02:06, David Sterba wrote:
+> On Fri, Jan 12, 2024 at 01:16:20PM +1030, Qu Wenruo wrote:
+>> Unlike kernel where tree-checker would provide enough info so later we
+>> can use "btrfs inspect dump-tree" to catch the offending tree block, in
+>> progs we may not even have a btrfs to start "btrfs inspect dump-tree".
+>> E.g during btrfs-convert.
+>>
+>> To make later debug easier, let's call btrfs_print_tree() for every
+>> error we hit inside tree-checker.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+> Added to devel, thanks.
+>
+>> ---
+>>   kernel-shared/tree-checker.c | 15 +++++++++++++++
+>>   1 file changed, 15 insertions(+)
+>>
+>> diff --git a/kernel-shared/tree-checker.c b/kernel-shared/tree-checker.=
+c
+>> index 003156795a43..a98553985402 100644
+>> --- a/kernel-shared/tree-checker.c
+>> +++ b/kernel-shared/tree-checker.c
+>> @@ -33,6 +33,7 @@
+>>   #include "kernel-shared/accessors.h"
+>>   #include "kernel-shared/file-item.h"
+>>   #include "kernel-shared/extent_io.h"
+>> +#include "kernel-shared/print-tree.h"
+>>   #include "kernel-shared/uapi/btrfs.h"
+>>   #include "kernel-shared/uapi/btrfs_tree.h"
+>>   #include "common/internal.h"
+>> @@ -95,6 +96,8 @@ static void generic_err(const struct extent_buffer *e=
+b, int slot,
+>>   		btrfs_header_level(eb) =3D=3D 0 ? "leaf" : "node",
+>>   		btrfs_header_owner(eb), btrfs_header_bytenr(eb), slot, &vaf);
+>>   	va_end(args);
+>> +
+>> +	btrfs_print_tree((struct extent_buffer *)eb, 0);
+>
+> Printing the eb should not require writable eb, but there are many
+> functions that would need to be converted to 'const' so the cas is OK
+> for now but cleaning that up would be welcome.
 
-Here the defrag can mean two things, the interface (ioctl and command)
-and the implementation. As defrag tries to merge adjacent extents or
-coalesce small extents and move it to a new location, this may not be
-always necessary just to get rid of the unreachable extent parts.
+I tried but failed.
 
-From the interface side, we can add a mode that does only the garbage
-collection, effectively just looking up the unreachable parts, trimming
-the extents but leaving the live data intact.
+Most of the call sites are fine to be constified, but there is a special
+trap inside bfs_print_children(), where we call extent_buffer_get(),
+which can never be called on a const eb pointer.
 
-The modes of operation:
+Thus that's why we are still using the ugly forced convert here.
 
-- current defrag, move if filters and conditons allow that
-- defrag + garbage collect extents
-- just garbage collect extents
-
-The third mode is for use case to let it run on the whole filesystem but
-not try to rewrite everything.
-
-I'm not sure how would it affect send/receive, read-only subvolumes
-should not be touched.
+Thanks,
+Qu
+>
 
