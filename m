@@ -1,114 +1,95 @@
-Return-Path: <linux-btrfs+bounces-1423-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1424-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D20482C94F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 04:58:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0C5682CA79
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 09:06:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A820BB24935
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 03:58:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D51911C2233F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 08:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460971D530;
-	Sat, 13 Jan 2024 03:57:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E274618C2F;
+	Sat, 13 Jan 2024 08:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R75erNed"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from aye.elm.relay.mailchannels.net (aye.elm.relay.mailchannels.net [23.83.212.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA5551D52A
-	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 03:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 8B5666C15A9;
-	Sat, 13 Jan 2024 03:48:06 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
-	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 18B116C1583;
-	Sat, 13 Jan 2024 03:48:04 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1705117685; a=rsa-sha256;
-	cv=none;
-	b=msVcBgVSvRMpdBk1bIpthglIllLrFobNlURsQ4Mkl75PL/JR1YbZ9bdH79GQfouvIPg9Av
-	xKoA7fZ5GwmhXCf5mUXXbkbMel6dmDUB5c+L3G/x9nCNGvDwJk8qXQb3X2zMMjejcIqKbv
-	hhr3wYamdnfyLRbJWqO21LWvFLuGppmAomy+aFMYKixzpVYPqPQWTNOHaJxTeTAF+ztHGI
-	M2SUO2OivLg/GbWQFf4Agj/+tbVf4k/ZHDfKD6cdVxjykaYI5Z/AbsmyvlVJHzBFf544UC
-	JXZAB5hvutDNYNHihrnZmkG6dOAZ3tQ83XCvDs3fn87KEHP6YHo25HYSGQ1bGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1705117685;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=frPb07bboEoMbpMUSg7PMGxsNfkAz19kFY51IF47AnQ=;
-	b=9kvw8nrdk1s+y/WHpXC34BuU4ua9rmfj+IS6Ctg+tUKCvGvXWwgNeaC+rw6cIuPOACjO+l
-	wmDzl2WgcVT4FIaMvauhNA7AueLcr05G0wCsLdloTg3t19f9ipFs8uDwkeuItJTUeBQqq8
-	aQ9zLVWlAeIeOMTGZLHsiqDqaYrR1T7O8Y4KdlUSpC9/HOJ2jLwWsGaxAJ9oKdzSCYm8wo
-	qM+zYaOlFJROpZX1DsDijHBklGHjP1nKoxtAEsOw2d/Q6oyS39AQQG6Ey9rWdS2orYDfYx
-	z5BifAnmd3M0NbRjnpYpFRWMwnAn2Y9lvkLP63MbbUKt/Dx6IJewoiWeD2PL2Q==
-ARC-Authentication-Results: i=1;
-	rspamd-568947cb6c-bcfmp;
-	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Cooperative-Print: 3d94ec8b4c4da97e_1705117685888_2234459595
-X-MC-Loop-Signature: 1705117685888:2875850659
-X-MC-Ingress-Time: 1705117685887
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-	by 100.103.118.39 (trex/6.9.2);
-	Sat, 13 Jan 2024 03:48:05 +0000
-Received: from p5b071bfc.dip0.t-ipconnect.de ([91.7.27.252]:52954 helo=heisenberg.fritz.box)
-	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <calestyo@scientia.org>)
-	id 1rOV05-0005Ah-2S;
-	Sat, 13 Jan 2024 03:48:03 +0000
-Message-ID: <17f726a997187b71331b9dd232321bbecbe56038.camel@scientia.org>
-Subject: Re: [PATCH] btrfs: defrag: add under utilized extent to defrag
- target list
-From: Christoph Anton Mitterer <calestyo@scientia.org>
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org, Qu Wenruo <wqu@suse.com>
-Date: Sat, 13 Jan 2024 04:47:57 +0100
-In-Reply-To: <20240112155806.GS31555@twin.jikos.cz>
-References: 
-	<2c2fac36b67c97c9955eb24a97c6f3c09d21c7ff.1704440000.git.wqu@suse.com>
-	 <20240110170941.GA31555@twin.jikos.cz>
-	 <a033550b-9300-42bd-9ec2-74f9ee15cad3@suse.com>
-	 <20240112155806.GS31555@twin.jikos.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3-1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956AC168C2
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 08:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50e6c0c0c6bso1569971e87.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 00:05:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705133155; x=1705737955; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=95K4ldKBwILzAWZyxH+yZh9alql3/vSCChYVb0/EMik=;
+        b=R75erNedv1HHkUi2NL2+5M+mbm1nCuuQCQLm4ZpeT0LXRJevLLTv8ZkqQ63A6RZ2wD
+         /msOnwHH0Nhe8M7EOA/t25ZC/SgDdlH+5Pvh4kR5RQQCags6wlii/EPbSGNYX4+oswpy
+         /cKKNW6Tt0Uxk/FbXcSYHN7I9X31MhTd3bPWGwkzbqSpeHU4/ou2y03ojCd2QgH5Y30j
+         1BB47Q5CudUCPl5lSDc3nZ8SbjZvQMindXga7qDT1NJOFyAltLdlUrcqDvcciIZzHXOx
+         KoQAI673L1/yfOv3a2ZOJBj+0GfRBLqt0IRw4OLlJ/KG2L1Sb0q5eSFsDDwEsSCxW7H9
+         q4Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705133155; x=1705737955;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=95K4ldKBwILzAWZyxH+yZh9alql3/vSCChYVb0/EMik=;
+        b=Qz7DD/tGWtAGbiShc7lVuHArgAd4Ajbqfc4ENefYpcKSO0go6CV09YR1OsZgU7ntDt
+         iJsAYMDvSimSCIb95MAOMCOG0S1JFUAyDHpwaxEysMqsq13CrarMKNNYv/GiHKw9mpao
+         aTCkUvgGIbHJiATildj1Orbw8SLwb0UdqcEYFwkKIRApvgS/v7uhHSiMixGRdODgHi/a
+         4aXt4NfJxHEZ/QUO7jK3OZnZ8hMKBm5Fw0qivQC1uTBB07EFSnuzeeNmI1Sv7w25Pvhz
+         Vbdd305SkEkZQzq7haV8up7I/0D0D1DwudQXdWeMM8QVtwYrjq+SmTPuugXV4QOCVme5
+         Y7kA==
+X-Gm-Message-State: AOJu0Yyl8EFqv9Puj3L0OiZy2NeXqMcMntphMSTiZ/IqHkLZ/OE914E6
+	tomilw16p0RpYvKPAOSy2Cwi754lWfQ=
+X-Google-Smtp-Source: AGHT+IHDpl5ftTq7LyMv/MEYAxqXo0a0dVPHnPQhv0Zb2edHUN8KpBVHurIekOXk5zAnlq06+BKtlA==
+X-Received: by 2002:a2e:5c86:0:b0:2cd:3731:9c24 with SMTP id q128-20020a2e5c86000000b002cd37319c24mr2237290ljb.1.1705133155287;
+        Sat, 13 Jan 2024 00:05:55 -0800 (PST)
+Received: from ?IPV6:2a00:1370:8180:225c:1a3d:4c49:4f1b:95bc? ([2a00:1370:8180:225c:1a3d:4c49:4f1b:95bc])
+        by smtp.gmail.com with ESMTPSA id x21-20020a05651c069500b002cd37ceea4bsm735317ljb.46.2024.01.13.00.05.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Jan 2024 00:05:54 -0800 (PST)
+Message-ID: <15751051-dc90-498f-82bb-773d639a3b24@gmail.com>
+Date: Sat, 13 Jan 2024 11:05:52 +0300
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-AuthUser: calestyo@scientia.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: defrag: add under utilized extent to defrag target
+ list
+Content-Language: en-US, ru-RU
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+ Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org,
+ Christoph Anton Mitterer <calestyo@scientia.org>
+References: <2c2fac36b67c97c9955eb24a97c6f3c09d21c7ff.1704440000.git.wqu@suse.com>
+ <20240110170941.GA31555@twin.jikos.cz>
+ <a033550b-9300-42bd-9ec2-74f9ee15cad3@suse.com>
+ <20240112155806.GS31555@twin.jikos.cz>
+ <7bef3393-a1b4-4a18-98cb-508cfb1ca6ee@gmx.com>
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+In-Reply-To: <7bef3393-a1b4-4a18-98cb-508cfb1ca6ee@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2024-01-12 at 16:58 +0100, David Sterba wrote:
-> I'm not sure how would it affect send/receive, read-only subvolumes
-> should not be touched.
+On 13.01.2024 06:17, Qu Wenruo wrote:
+> 
+> What we really want to do is, just add extra filters to allow end users
+> to re-dirty the last file extent.
+> 
 
-This of course means, that if the IO pattern that causes this issues
-happens, and if snapshots are used on such fs, the supposed cure would
-make the problem even worse.
+It is possible to punch holes in the middle of the file, so partial 
+extents can happen anywhere.
 
-Guess either some documentation should then be added somewhere,
-describing the whole thing... or perhaps it should be (re-)considered
-whether one could do something so that the wasted parts get
-automatically freed upon truncation. Maybe some attribute that can be
-set on a directory and files/dirs created beneath that get the special
-treatment.
-
-
-Cheers,
-Chris.
 
