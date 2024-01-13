@@ -1,43 +1,43 @@
-Return-Path: <linux-btrfs+bounces-1435-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1436-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5E2882CEC3
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 22:24:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95C5D82CED2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 22:40:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 240181F2212E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 21:24:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92C3D1C20FCD
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 21:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E3C16436;
-	Sat, 13 Jan 2024 21:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DF016436;
+	Sat, 13 Jan 2024 21:40:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="OIgFMMEw"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="dhnfVy7U"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 099FB15AF9
-	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 21:24:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4C62CA6
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 21:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705181037; x=1705785837; i=quwenruo.btrfs@gmx.com;
-	bh=5DIYeolcksyk/PrsCbWRJPkdt4U8P7GpEGCtAG4Dnxw=;
+	s=s31663417; t=1705182008; x=1705786808; i=quwenruo.btrfs@gmx.com;
+	bh=SyJbTmfWtPwVKHr/+YpobAqHuxy35Y+wEoy4JjbkQnE=;
 	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=OIgFMMEwQKkDv6EUPNfHJpNilWRYUv4HOZf7wdahSRh4gaJZwc7cLpuJadLFZ4Z0
-	 7nXtqC82NlhJWCb0l4g9EiWEZl0eSLWHBpbwhRgxofciy6ahMCIXy+9stqxNsleTj
-	 ODEMLgDP6F5h0OaMLcVc4FlvUy5wkNChXBT798o/sGej/Q+PH3vvdbYtX6HKmcFMl
-	 0mfQF5eS0+H4OHvRVGwFQvsDKTr7EuG8cMFldEMTfGxCzVLaaEP5O/8No3/F5gpzU
-	 ZM6caU1i5AvFQd2f/4LRiyx/7+vjLICyw+wmlO8qdtWsB/S+XC69oEGKn1gjYHwVi
-	 R4+jFSlG+FkYsMY4mg==
+	b=dhnfVy7UZN7UkDU5M7g79ZUUIUYpE+TX299/caCOuGuEXQEzJ8JeBd9z9jfRavkB
+	 6xdBwj93mjPupdXMkIKuGlLECsZ0yvndKz4S+9anGGQVqeDztPtCTPWs9z2w3YXYK
+	 8kXk5hItziFTiVd4LPwq/LH/QMTBWeQPDUIy7khwqUXgPExqEhevvdnmq9/xtI6j/
+	 3jLbsT38Dh1H84AuXX8VK/jnEi4zQmaAbucr+d4ESiA0gMlLdELEcq1oPmremEG1L
+	 vFx4NJvsAWQb1aBHpEd4E+LrAOSUq7HXKGhyzBj/3l5K1F7aBj6SyFMeA2n0DGvgl
+	 DplYPuWetSDQU0W9Gw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MEUzA-1rLx7m2IjS-00G1OS; Sat, 13
- Jan 2024 22:23:57 +0100
-Message-ID: <b28cb9be-b21a-47ab-807e-23a1a8d0f6f6@gmx.com>
-Date: Sun, 14 Jan 2024 07:53:53 +1030
+Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWih0-1reITH2sFE-00X6bk; Sat, 13
+ Jan 2024 22:40:08 +0100
+Message-ID: <3e0ba2b7-bbe6-448f-b4d2-2e7dde291735@gmx.com>
+Date: Sun, 14 Jan 2024 08:10:05 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -45,10 +45,21 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: scrub: slab-use-after-free (ae76d8e3e)
+Subject: Re: Scrub reports uncorrectable errors with correctable errors
+ unrepaired, but all files are fine
 Content-Language: en-US
-To: Rongrong <i@rong.moe>, linux-btrfs@vger.kernel.org
-References: <0a3faca1c52f7fff0ac35566c6453f81f57a3d16.camel@rong.moe>
+To: Qu Wenruo <wqu@suse.com>, Rongrong <i@rong.moe>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <8bd12a1ee60172f53ee0c27374f41c3ec9976be8.camel@rong.moe>
+ <27fb4ed5-c3ce-4ab7-a3fd-d77dc8dd4fb2@gmx.com>
+ <b10d90cc5eb4f49eabfe3cc0df92ef40b64428b0.camel@rong.moe>
+ <794c3085-c5ee-417f-aeaf-d6c0ebd7d96f@gmx.com>
+ <f8999f0745b2cddb42d3fbc16fdaf346b530c848.camel@outlook.com>
+ <1b4f45c0-da2b-4817-8cdf-a07fd405ce9c@gmx.com>
+ <50e1a0a0cf29f361426c0eb7005d389e4dd2833c.camel@rong.moe>
+ <2e275902-dc1c-41b1-b1fb-998f7fd16de3@gmx.com>
+ <0de1265ff914ff0fa772fad548c329c6d7f280b3.camel@rong.moe>
+ <31a6c044-1540-4345-9504-2234f93aa150@suse.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -74,129 +85,120 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <0a3faca1c52f7fff0ac35566c6453f81f57a3d16.camel@rong.moe>
+In-Reply-To: <31a6c044-1540-4345-9504-2234f93aa150@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mPBPweq7YJpqVqo7+0rGcHmPqKIThZ071/aocWrf67eYwfk0UUt
- 6lyo+GBLTAw09oihjfu8KPXl0zLgDEXo4pm8wQ27x1dHkfxJZ4bkSbOpFQm9H3P3hkZfY9K
- +suOUWYhIN9pEKt6jIbWiGiPkVdtN0qjVLWb3u8//kaaGoxp2xQRkewKYRE2rYth9Ku87w0
- BxdykQWMq4kLxEy2u6u5Q==
+X-Provags-ID: V03:K1:md1aZCdEFEtvXucga4bw5KCy0kn6eJLYW5Y0pA9lOb+epGDnfFW
+ ZuCAjvzBLOuJ5+9ikpsdsqms2UDjmF/O/pHNlTOUgFik5Oi7dKKsip6u323HZGmaLYQdwDS
+ GUbrVQmNx9pi/y4S2y+v2FbHmog7i8FN2OIeCDRHkgmdolfpiFqUZ5+jPTbLfC7xnie6YNF
+ zRxOn9gZNx6i4G0iJ4Ixw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:o6O4keepbIU=;QNXwT/n9ztEPKB3rF2IjtzkBCZO
- NJ7eK6OucoskYqU4tVe4rfgLI1TaVPFXEob2N8WAZNSF4ruM3+bzJ0bYS1ZQVVmTUXVErJEVz
- kb/sVPWQAJNippgxYsq8H8naRmvJBAQGVHSdGQSyHuKtv5LfqHRoPxuOHc2lbSjtYKxX1ETpj
- b72ULS4rJ56kQsVo5cemyYdW9XVpx6Jp1tYSl8/BY7mhecndU06SE0IvaAtwJydkaEOwHvNVG
- PKVAjcJ6+WSnDNyPqVhCeLJr39KoQUkTh/H5DXmJZ/OdducnaTYHam9Bqjr70KS70Th3SQKl6
- xdH8k8I1MwuSyhtoNtY70G6Tu+kfdoGU38yGM4jTh+eFpd3VvHwFU7/60KI6KpkX/CMseR8Q6
- CqD+3VodwqPvnwm43UCkM9PpcoS5GHoBvZ4WswJEiDn/VjbEf7dFPR9YWh0DkEItBC9NyLR2D
- FhzjEJ9qOuIkZIOapCKVJzVLWrTm58Mcw3n+v4NvYTr8YjKh3UDZh6oFPC06OzpADolyyL6wi
- vcbfGUk448kmNJFBicdEek0Sw3jjZNRGRN5hVjq6yT5oiO7vzLh5NRrhcCIrIQY4uGu3ZRf4g
- cFfedctYvjeq1A/Qe3S/WaPIKpApzzZNEnwnJzYab727C+MprDjJC0rqX3H6nJ2VmxoM4nnHc
- zM0bz7m/nB6Mvtcyx57dnndz8n5fNhNiK+ZZl/cyNUBMdR0uCkV4GvTyW6rB6UjfdvPcqRp9+
- zqzz4Rab2o0daQc6o+hvoOoFIA7LdpHOhZiuwCtcZKZfjiLe2nm0S/ofwzk8ixPIzPbcFBp8b
- uGmqG2ZHLJs4Do5A5lfpwBPtyhMDH+qJLiJII85x16C0lYFuNdZcIZnskwkujVxzS2bynRjB6
- Z21oP3X8CYWkQB4iyB8P7qsE0RTzlHBkJGGANJr40InxWwuR/u9whCBzgYqswoC911yLYIzFz
- BHub1RWhDaZ22QNjl5No3oxheWg=
+UI-OutboundReport: notjunk:1;M01:P0:Al+v6qkFwxI=;qVoSD6muq3w7vFNhgrmlEov4wUC
+ BUomR7qWQRvkYynLhfq5qvqnz0G8R6oRrckMN2bMwm8fvmE/us1IVsDcAihlDUHH44zGnVBQH
+ QnRQ0eyvXYzHZjjoFa7W8jue4vKtAS9B/7GUmOMj8fU8ZEqkU3DDhPi1M4WYWIj0D+k5NrqnC
+ oOC85sHQUT8O9urIHuqoSvJ0Z0riQsBgkqPyx1nuQ1cS70mEFTLyaVMQeZkPZfJLhB5BEufp0
+ SeQTVVKVdBnSHw4pcGXy5LoBayqbTo9L6dmvGSfsHu5af98665VlwsHmLPn5Vg3skWQ/bNV31
+ z7UfVyRA013WPe5aAf5Cw8WxasAns+/gh3WbJBUllWtBVCcjrYtEtkHkF031gWQHxZDo4dWQE
+ Ynmb+gHdT10w2LTbg/bgBJRmZ+zSHAd+9DOledY1KShRiPGbpS6idh7XGDAeU1dNW6dxwnoNx
+ HqNd5HLbcsBihuOYhd2/1E+pWF8KQ6eWG9j2hxr65skufliLwGxs1UHtcCNWrY2OFHLCbysQz
+ WrajDlD2nttkfXN8iVwwEJb8DOr1u2rIV5gwHraECrUXiCwc5fL1mdBs4rHOsqaFMRwe5NCPV
+ ahWRO2b9NK9NINcqPosD8EfIw0OIhMvfXj2/C8Ftx6ba3637z2pNyf/+jk+Y6LtJoNUQQ/Vq/
+ 54VMRvVsxsQ9aosvmWPVzrjp2P9Z/BFD9mwTJ9f/7DmAXpAwVQ4wWjhj666M3TY24+YzRYRnx
+ XZvNX3PpmPcqUBawcAxpd8VTLeOME+Of4zPnyHPq5umtfMVHCaGQ5/L2jRQHWx7S3P9leTG0O
+ yu4oQcXkHsTY8SIlyy0xdA4hzE8YE7Sj1wNkyd1JcLJ/AQ7nokhMU6PC6pWhabk1vXuRVKaGx
+ X6WZUnjOaMCo0wXOmaSptr10iOq8GL9i12lYFgcaBJlez+wa+rfLBQAC4yaY9hp7uSY4ZhAoq
+ MVD8mkAg6LD3W2Dhqcim3Xh3nKc=
 
 
 
-On 2024/1/14 04:10, Rongrong wrote:
-> Hi all,
+On 2024/1/14 07:38, Qu Wenruo wrote:
 >
-> I recently scrubbed my fs and surprisingly saw kernel oops. For context
-> and more information about the fs, please refer=C2=A0to
-> https://lore.kernel.org/linux-btrfs/8bd12a1ee60172f53ee0c27374f41c3ec997=
-6be8.camel@rong.moe
 >
-> Usually the kernel oops when the scrub progress is 1~30%. Then it will
-> oops again, making the btrfs process die. After that, any attempt to
-> unmount the fs hangs forever, so do reboot and shutdown.
+> On 2024/1/14 05:52, Rongrong wrote:
+>> On Fri, 2024-01-12 at 20:23 +1030, Qu Wenruo wrote:
+>>>
+>>> On 2024/1/12 18:08, Rongrong wrote:
+>>>> Hmm, let me recall...
+>>>> Seeing the mtime of files above, I just remembered that:
+>>>> The fs was converted from ext4 using btrfs-convert.
+>>>
+>>> This explains why the chunk bytenr are not aligned to 64K.
+>>>
+>>> If you dump the chunk tree (`btrfs ins dump-tree -t chunk`), you can s=
+ee
+>>> all the chunks and their bytenr.
+>>>
+>>> I believe there are quite some chunks not aligned to 64K boundary.
+>>> Mind to provide the chunk tree dump of the fs (before the full balance=
+).
+>>
+>> Sure, in attachment.
 >
-> It seems always reproducible if any of the below conditions is met:
-> - Intel CPU (i7-7567U/i7-13700H), intel_iommu=3Doff
-> - x86_64 KVM (host CPU: Intel/AMD), virtio-blk
-> - RK3399
-> - Mounted via a loop device
+> Thanks a lot, the chunk dump explains why the problem happens.
 >
-> Not reproducible on:
-> - Intel CPU (i7-7567U/i7-13700H), intel_iommu=3Don
-> - AMD Ryzen CPU (PRO 4750U), amd_iommu=3Don/off
+> With the initial KASAN backtrace:
 >
-> Starting here, all experiments were done in a KVM:
-> - Host: Intel i7-7567U
-> - Vdisk: raw dump of my fs, virtio-blk (IO scheduler: none)
-> - btrfs-progs: 6.6.3
+> [=C2=A0 171.700526] BTRFS critical (device vdb): unable to find chunk ma=
+p for
+> logical 2214744064 length 4096
+> [=C2=A0 171.700738] BTRFS critical (device vdb): unable to find chunk ma=
+p for
+> logical 2214744064 length 45056
+> [=C2=A0 171.700951]
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [=C2=A0 171.700962] BUG: KASAN: slab-use-after-free in
+> __blk_rq_map_sg+0x18f/0x7c0
 >
-> The first reproducible stable kernel is 6.5.4.
+> The first bytenr which hit not chunk map is 2214744064.
 >
-> Bisection between 6.5.3 and 6.5.4 indicates that the buggy commit is
-> ce585c9b1cd700324fecedae130a9c35261fec30, which is a backport of
-> ae76d8e3e1351aa1ba09cc68dab6866d356f2e17 (first appeared in v6.6-rc1).
+> And checking the chunk map, it is out of the boundary of the data chunk:
 >
-> KASAN detected slab-use-after-free in __blk_rq_map_sg while scrubbing
-> on v6.7, meanwhile an assertion was failed at block/blk-merge.c:584.
-> See also the attached dmesg.
+>  =C2=A0=C2=A0=C2=A0=C2=A0item 2 key (FIRST_CHUNK_TREE CHUNK_ITEM 2214658=
+048) itemoff 16025
+> itemsize 80
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 86016 owner 2 stripe_=
+len 65536 type DATA|single
 >
-> With the below patch applied to v6.7, slab-use-after-free and oops
-> disappeared, making scrub able to finish.
+> This data chunk ends at bytenr 2214744064 (exclusive).
+>
+> My believe is, the use-after-free is caused by the fact that
+> btrfs_map_bio() code is doing extra split, and by somehow the error
+> cleanup is not properly done.
+>
+> Thus the direct cause is some bad error handling in btrfs bio layer, but
+> the root cause is the new scrub code is not handling the unaligned part
+> of the chunk.
+>
+> The fix would come in 3 parts:
+>
+> - Fix the btrfs bio layer error handling if part of the bio crossed
+>  =C2=A0 chunk boundary
+>
+> - Fix the scrub code to make sure the tailing part won't go beyond chunk
+>  =C2=A0 boundary
 
-Thanks for the report.
+This would be merged into one patch.
 
-Although I believe the root cause is the same for the uncorrectable errors=
-.
+It turns out that btrfs bio layer is doing its work correctly, it's our
+endio function causing the problem.
 
-And IMHO, even with the patch, as long as you enable KASAN, KASAN would
-still warn about the use-after-free.
-
-The root cause is that, the new scrub code expects the whole 64K read to
-be mapped in one go, thus no bio split from btrfs bio layer.
-
-But for the converted fs, the end of a data chunk is not ensured to end
-at the 64K boundary, thus it can lead to unexpected bio split.
-
-With the extra bio split, the scrub_read_endio() can be called twice,
-causing the same bio to be freed and all kind of weird use-after-free.
-
-Sorry I didn't notice it early enough, as it needs the full chunk tree
-dump to verify.
-
-So all of these would be handled in the original thread.
+Thus only one thing to fix, and the fix can be crafted pretty simply.
 
 Thanks,
 Qu
+
 >
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index b877203f1dc5..3fecd7eee0bf 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1698,14 +1698,11 @@ static void submit_initial_group_read(struct scr=
-ub_ctx *sctx,
->                                        unsigned int first_slot,
->                                        unsigned int nr_stripes)
->   {
-> -       struct blk_plug plug;
-> -
->          ASSERT(first_slot < SCRUB_TOTAL_STRIPES);
->          ASSERT(first_slot + nr_stripes <=3D SCRUB_TOTAL_STRIPES);
+> - Fix btrfs-convert to create 64K aligned chunks
+>  =C2=A0 It looks like the existing btrfs-convert is only creating chunks=
+ that
+>  =C2=A0 starts at 64K aligned address, but the end can still be unaligne=
+d.
 >
->          scrub_throttle_dev_io(sctx, sctx->stripes[0].dev,
->                                btrfs_stripe_nr_to_offset(nr_stripes));
-> -       blk_start_plug(&plug);
->          for (int i =3D 0; i < nr_stripes; i++) {
->                  struct scrub_stripe *stripe =3D &sctx->stripes[first_sl=
-ot + i];
+> Meanwhile please keep a disk image, as we may need your help again in
+> verify the fixes.
 >
-> @@ -1713,7 +1710,6 @@ static void submit_initial_group_read(struct scrub=
-_ctx *sctx,
->                  ASSERT(test_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &stripe-=
->state));
->                  scrub_submit_initial_read(sctx, stripe);
->          }
-> -       blk_finish_plug(&plug);
->   }
->
->   static int flush_scrub_stripes(struct scrub_ctx *sctx)
->
-> Thanks,
-> Rongrong
+> Thanks for all the detailed report!
+> Qu
 
