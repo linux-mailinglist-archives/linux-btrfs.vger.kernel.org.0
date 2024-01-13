@@ -1,139 +1,229 @@
-Return-Path: <linux-btrfs+bounces-1420-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1421-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D27D882C661
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jan 2024 21:35:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBED082C833
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 01:06:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DD2EB2328B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jan 2024 20:35:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CADF91C227D7
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 00:06:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752A5168C3;
-	Fri, 12 Jan 2024 20:35:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F17436C;
+	Sat, 13 Jan 2024 00:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="K6Ld65Se"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="njV1DBOh";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="njV1DBOh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742F416418
-	for <linux-btrfs@vger.kernel.org>; Fri, 12 Jan 2024 20:35:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705091726; x=1705696526; i=quwenruo.btrfs@gmx.com;
-	bh=vQ1TBC4dAKiNCCAY/B41AE4t1Qr7ar1ekm/f3Acf8BI=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=K6Ld65Se8QAepkGNHGeQmh3CkVPocp6r6p/Ziwsuhf+sSASQzppvi3ROawADyG2Z
-	 ls92lTYbqUMsOmCujmRUPVTxPLcyuHjsfXTqMDKAp6AmNyILka+DW1d4N49MSgSHq
-	 KNHqcb2rRgt5h/YyoorF8CF+G9T3sERyrjPTNK4ajdRvmMPURzG1mHcG3FPesuTOZ
-	 R9utRynHDzjxm5ZaDyX439gbriJS+LApxEL/BVwGUg1fsCRvwy9kGMCiAt4h8ef6l
-	 qjVxtZcrEDSrVS0L53t9Cbws2dq1h2X5NQAwcb3KN8XdpPjhPKiQz3HGpPgfE8kCp
-	 RwHr3wypyOwlGnffBQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4s0t-1rPlgw1sLX-001yoL; Fri, 12
- Jan 2024 21:35:26 +0100
-Message-ID: <882254fa-47b8-44b3-91b5-20378aaa0778@gmx.com>
-Date: Sat, 13 Jan 2024 07:05:21 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C46364
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 00:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AFD4F1F44E
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 00:06:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705104406; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=v8U9Yp3Skhjse+ItRul8drCcj3LaGrfhH+SLcpsGHIA=;
+	b=njV1DBOhVmJZZYW5Z/FKqkxIEDSi5tymw+GYe6IeZ+RY/JA6WFlS2EFQELizbKYWkKm6Xl
+	PFgqiwPVx6GozNRnYYia5xjrjoSwo2gq+acBacPbUK5umfi4YEq/pCOqZ0LOpgMpQhjOxP
+	OLvbXS3xgVLrtMcK0aHZmYDenyuLUHs=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705104406; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=v8U9Yp3Skhjse+ItRul8drCcj3LaGrfhH+SLcpsGHIA=;
+	b=njV1DBOhVmJZZYW5Z/FKqkxIEDSi5tymw+GYe6IeZ+RY/JA6WFlS2EFQELizbKYWkKm6Xl
+	PFgqiwPVx6GozNRnYYia5xjrjoSwo2gq+acBacPbUK5umfi4YEq/pCOqZ0LOpgMpQhjOxP
+	OLvbXS3xgVLrtMcK0aHZmYDenyuLUHs=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D6F2713649
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 00:06:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id sGGUIxXUoWX9FQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 00:06:45 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: convert-ext2: insert a dummy inode item before inode ref
+Date: Sat, 13 Jan 2024 10:36:27 +1030
+Message-ID: <6f4ac3afeeef5410d70713bb2fe07245f5817fb6.1705104367.git.wqu@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: tree-checker: fix iref size in error messages
-Content-Language: en-US
-To: Chung-Chiang Cheng <cccheng@synology.com>, dsterba@suse.com,
- linux-btrfs@vger.kernel.org
-Cc: shepjeng@gmail.com, kernel@cccheng.net
-References: <a2c72015288d70b870ded1d6f8aaba1c2cf63f97.1705045187.git.cccheng@synology.com>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <a2c72015288d70b870ded1d6f8aaba1c2cf63f97.1705045187.git.cccheng@synology.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UCMJv0RR/s9WbbE1Vf4m+2LyFJnvVFK+HCORdkl7YrH+9+tvdLE
- eiGcAWRurTYF+lcoAp6G9rJG2LygAp7xi95JecdOJ6KdsbwywWSjELGSTtmu0WUIJ/E+F6b
- u7RW+TrHTd9tKlTXQpKSQi3ZV4orkYs+GCL7f93zkeC97fZjp5bO76sV8aKNJ3XGl79s0GL
- PRIwSYEdyToaBGbF+pADA==
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=njV1DBOh
+X-Spamd-Result: default: False [1.69 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCPT_COUNT_ONE(0.00)[1];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_DN_NONE(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 1.69
+X-Rspamd-Queue-Id: AFD4F1F44E
+X-Spam-Level: *
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:2klpq9WHsRk=;swYBJGkG7nV3l9S8aCvEyeAgu6P
- pGgbd0BfK4NlB7h6Aq60NsDsj9NWoCzt/NE/7AkViChBkqYFeRv/7vPJDHh4tMVTOKIqSOmJP
- nSDwoJC61VA2WzpV0f29CuJHaSb4PDdkJTzRlVb1/FJAk4MMI3xq14os+ehNVTXq3MXQ8PYgp
- XpFUqyrrd0vLvw73yQ7+SK+4KENt6bgE8ginQrNikt6MQkm8fX2O9dTeAEIEV7eQMSepbcld6
- 8dUD8Xed4DeLqmtaH+YaAD5JI7YT5TdH9N1NTtEwHHmRSHOGf97TkJIaNAzDftjPZeanMWANa
- AxCJnsl8sRoIUWgVvEfOJuf4+XCAtmc8E5sU4tZ/qx3DmjpLIFPQI1jSeEcv0wP38hF3Z9wlv
- ISikN5bDdC8AurX6LH9x5RhtQMkdJ870LKPB3ddYo5w4P/21iXoZECJduL5AOM91Ceu3YPrMN
- jtowlnGXhvACV27gdTpipj3kBwW+cg91pSM2LIr1xkBwaTiSl7B3DoYnVHYWYPMTFJotofh2E
- xPUI44PZk8CGVKfVJ8SWBVrGn7Tv1Lx13CXGzeJfpngEfsOQnYZxsU/XJCbG3ycAg0L4ChAsj
- 3Y/1fr1tqMgmdnLAXWk4pbtrKsvUC2VQ7RhCLlH+7C7hhU5zbK4mWbUXJYAe2gNERo5QiDmgt
- Ovzl7GoLupxwKf3YqWZ26Pk1aZowpKRt9cfnBdVIlKQSL/8D9UBrpE1ZsbxUmbxJunIHlXDTZ
- QdixwcE6lWMkR2ZJxg5+bMB8gczJUcEeS2Jk6bEAWrGcMRgWDE42P+o9yLiixGG3eTomFulhu
- o1JhRP+m8zM0gDA3RE2SEFxUwF2mokRb/XGlbGrTOrGDtvQCoJNBYasYtBy8ss3hQC0EyY6Nu
- E/0Mbnb76K1cxeAaBxFGTfp+lPioJSVln+RNPxw6l4QNjcSJ3o58PaUeZEc6tRYIBGEPng/Ml
- 2x8hJL1qJQ0uIGrtQSf3Be38g20=
+X-Spamd-Bar: +
 
+[BUG]
+There is a report about failed btrfs-convert, which shows the following
+error:
 
+  Create btrfs metadata
+  corrupt leaf: root=5 block=5001931145216 slot=1 ino=89911763, invalid previous key objectid, have 89911762 expect 89911763
+  leaf 5001931145216 items 336 free space 7 generation 90 owner FS_TREE
+  leaf 5001931145216 flags 0x1(WRITTEN) backref revision 1
+  fs uuid 8b69f018-37c3-4b30-b859-42ccfcbe2449
+  chunk uuid 448ce78c-ea41-49f6-99dc-46ad80b93da9
+          item 0 key (89911762 INODE_REF 3858733) itemoff 16222 itemsize 61
+                  index 171 namelen 51 name: [FILENAME1]
+          item 1 key (89911763 INODE_REF 3858733) itemoff 16161 itemsize 61
+                  index 103 namelen 51 name: [FILENAME2]
 
-On 2024/1/12 18:11, Chung-Chiang Cheng wrote:
-> The error message should accurately reflect the size rather than the
-> size.
-I guess the second "size" mean inline type?
+[CAUSE]
+When iterating a directory, btrfs-convert would insert the DIR_ITEMs,
+along with the INODE_REF of that inode.
 
-Otherwise looks good.
+This leads to above stray INODE_REFs, and trigger the tree-checker.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+This can only happen for large fs, as for most cases we have all these
+modified tree blocks cached, thus tree-checker won't be triggered.
+But when the tree block cache is not hit, and we have to read from disk,
+then such behavior can lead to above tree-checker error.
 
-Thanks,
-Qu
+[FIX]
+Insert a dummy INODE_ITEM for the INODE_REF first, the inode items would
+be updated when iterating the child inode of the directory.
 
->
-> Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
-> ---
->   fs/btrfs/tree-checker.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 50fdc69fdddf..6eccf8496486 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -1436,7 +1436,7 @@ static int check_extent_item(struct extent_buffer =
-*leaf,
->   		if (unlikely(ptr + btrfs_extent_inline_ref_size(inline_type) > end))=
+Issue: #731
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ convert/source-ext2.c | 30 ++++++++++++++++++++----------
+ convert/source-fs.c   | 13 +++++++++++++
+ 2 files changed, 33 insertions(+), 10 deletions(-)
+
+diff --git a/convert/source-ext2.c b/convert/source-ext2.c
+index 7e93b0901489..f56d79734715 100644
+--- a/convert/source-ext2.c
++++ b/convert/source-ext2.c
+@@ -857,6 +857,10 @@ static int ext2_copy_single_inode(struct btrfs_trans_handle *trans,
+ 	struct btrfs_key inode_key;
+ 	struct btrfs_path path = { 0 };
+
++	inode_key.objectid = objectid;
++	inode_key.type = BTRFS_INODE_ITEM_KEY;
++	inode_key.offset = 0;
++
+ 	if (ext2_inode->i_links_count == 0)
+ 		return 0;
+
+@@ -878,13 +882,23 @@ static int ext2_copy_single_inode(struct btrfs_trans_handle *trans,
+ 	ext2_convert_inode_flags(&btrfs_inode, ext2_inode);
+
+ 	/*
+-	 * The inode item must be inserted before any file extents/dir items/xattrs,
+-	 * or we may trigger tree-checker. (File extents/dir items/xattrs require
+-	 * the previous item has the same key objectid).
++	 * The inode may already be created (with dummy contents), in that
++	 * case we don't need to do anything yet.
++	 * The inode item would be updated at the end anyway.
+ 	 */
+-	ret = btrfs_insert_inode(trans, root, objectid, &btrfs_inode);
+-	if (ret < 0)
+-		return ret;
++	ret = btrfs_lookup_inode(trans, root, &path, &inode_key, 1);
++	btrfs_release_path(&path);
++	if (ret > 0) {
++		/*
++		 * No inode item yet, the inode item must be inserted before
++		 * any file extents/dir items/xattrs, or we may trigger
++		 * tree-checker. (File extents/dir items/xattrs require the
++		 * previous item has the same key objectid).
++		 */
++		ret = btrfs_insert_inode(trans, root, objectid, &btrfs_inode);
++		if (ret < 0)
++			return ret;
++	}
+
+ 	switch (ext2_inode->i_mode & S_IFMT) {
+ 	case S_IFREG:
+@@ -917,10 +931,6 @@ static int ext2_copy_single_inode(struct btrfs_trans_handle *trans,
+ 	 * Update the inode item, as above insert never updates the inode's
+ 	 * nbytes and size.
+ 	 */
+-	inode_key.objectid = objectid;
+-	inode_key.type = BTRFS_INODE_ITEM_KEY;
+-	inode_key.offset = 0;
+-
+ 	ret = btrfs_lookup_inode(trans, root, &path, &inode_key, 1);
+ 	if (ret > 0)
+ 		ret = -ENOENT;
+diff --git a/convert/source-fs.c b/convert/source-fs.c
+index fe1ff7d0d795..ff6912dfa21f 100644
+--- a/convert/source-fs.c
++++ b/convert/source-fs.c
+@@ -183,6 +183,7 @@ int convert_insert_dirent(struct btrfs_trans_handle *trans,
  {
->   			extent_err(leaf, slot,
->   "inline ref item overflows extent item, ptr %lu iref size %u end %lu",
-> -				   ptr, inline_type, end);
-> +				   ptr, btrfs_extent_inline_ref_size(inline_type), end);
->   			return -EUCLEAN;
->   		}
->
+ 	int ret;
+ 	u64 inode_size;
++	struct btrfs_inode_item dummy_iitem = { 0 };
+ 	struct btrfs_key location = {
+ 		.objectid = objectid,
+ 		.offset = 0,
+@@ -193,6 +194,18 @@ int convert_insert_dirent(struct btrfs_trans_handle *trans,
+ 				    dir, &location, file_type, index_cnt);
+ 	if (ret)
+ 		return ret;
++	/*
++	 * We must have an INOTE_ITEM before INODE_REF, or tree-checker won't
++	 * be happy.
++	 * The content of the INODE_ITEM would be properly updated when iterating
++	 * that child inode.
++	 */
++	ret = btrfs_insert_inode(trans, root, objectid, &dummy_iitem);
++	/* The inode item is already there, just skip it. */
++	if (ret == -EEXIST)
++		ret = 0;
++	if (ret < 0)
++		return ret;
+ 	ret = btrfs_insert_inode_ref(trans, root, name, name_len,
+ 				     objectid, dir, index_cnt);
+ 	if (ret)
+--
+2.43.0
+
 
