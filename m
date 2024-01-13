@@ -1,229 +1,225 @@
-Return-Path: <linux-btrfs+bounces-1421-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1422-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBED082C833
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 01:06:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A09A82C937
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 04:17:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CADF91C227D7
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 00:06:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1809F286265
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jan 2024 03:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F17436C;
-	Sat, 13 Jan 2024 00:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF285CA78;
+	Sat, 13 Jan 2024 03:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="njV1DBOh";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="njV1DBOh"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Wsur/u8R"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C46364
-	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 00:06:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AFD4F1F44E
-	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 00:06:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705104406; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=v8U9Yp3Skhjse+ItRul8drCcj3LaGrfhH+SLcpsGHIA=;
-	b=njV1DBOhVmJZZYW5Z/FKqkxIEDSi5tymw+GYe6IeZ+RY/JA6WFlS2EFQELizbKYWkKm6Xl
-	PFgqiwPVx6GozNRnYYia5xjrjoSwo2gq+acBacPbUK5umfi4YEq/pCOqZ0LOpgMpQhjOxP
-	OLvbXS3xgVLrtMcK0aHZmYDenyuLUHs=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705104406; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=v8U9Yp3Skhjse+ItRul8drCcj3LaGrfhH+SLcpsGHIA=;
-	b=njV1DBOhVmJZZYW5Z/FKqkxIEDSi5tymw+GYe6IeZ+RY/JA6WFlS2EFQELizbKYWkKm6Xl
-	PFgqiwPVx6GozNRnYYia5xjrjoSwo2gq+acBacPbUK5umfi4YEq/pCOqZ0LOpgMpQhjOxP
-	OLvbXS3xgVLrtMcK0aHZmYDenyuLUHs=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D6F2713649
-	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 00:06:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sGGUIxXUoWX9FQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 00:06:45 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: convert-ext2: insert a dummy inode item before inode ref
-Date: Sat, 13 Jan 2024 10:36:27 +1030
-Message-ID: <6f4ac3afeeef5410d70713bb2fe07245f5817fb6.1705104367.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 625068F5A
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jan 2024 03:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1705115849; x=1705720649; i=quwenruo.btrfs@gmx.com;
+	bh=D3e/yjMu615CKY+FdkJblsmDrgTVkfBNLGtwzcQMHA4=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=Wsur/u8Rh0VXvQ6/SAcqQA2T7B7aLhBrO4nk04Fo+X4RtjKKNFX7P9yYCc7lj8VW
+	 0qZaX0P2gG5+v+nrHEzHTGA0MNg8+wTKxmcrJqie/n7T51P9L3uod58A+NB/OJqvj
+	 zZOoJj7MP3gpkJYJ7JlTfvE/4rCE2/SQG3ZY+U7jaGSfZYDUoSxlxli3/UB2sIsyT
+	 xlp28NM7BuKH7O1NIFj6vPOdaT6Akc63Gupj/6iAp+4gTD+a9HDtpRtCogvQun21+
+	 44njHcB0DWmQc5TCznk438a1QXFHiKnmbCqk7UU+BSM9dYsKZDI/umm9tufxOt6uI
+	 eq5P+JtbdTSTcjhmIA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M26vB-1rQyYr2qLp-002bfq; Sat, 13
+ Jan 2024 04:17:29 +0100
+Message-ID: <7bef3393-a1b4-4a18-98cb-508cfb1ca6ee@gmx.com>
+Date: Sat, 13 Jan 2024 13:47:25 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=njV1DBOh
-X-Spamd-Result: default: False [1.69 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_DN_NONE(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.69
-X-Rspamd-Queue-Id: AFD4F1F44E
-X-Spam-Level: *
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: defrag: add under utilized extent to defrag target
+ list
+Content-Language: en-US
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org,
+ Christoph Anton Mitterer <calestyo@scientia.org>
+References: <2c2fac36b67c97c9955eb24a97c6f3c09d21c7ff.1704440000.git.wqu@suse.com>
+ <20240110170941.GA31555@twin.jikos.cz>
+ <a033550b-9300-42bd-9ec2-74f9ee15cad3@suse.com>
+ <20240112155806.GS31555@twin.jikos.cz>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240112155806.GS31555@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vhn8vM/8xFZI8p5bacChAX46OayDDyY/Bx/NRK5QYyZoBn+rqnz
+ jtPjNUAVi5avHGWtjCKO+PLQAdrAdzgmMnYkzYWGJffEc7C50sCYMwJ8dZ9KX0Le8EbN88C
+ tsq7tUCbA+H2D3QhEpjIYuif6LzOOTjAmphkwbzCx7jUUzVoQY5YzR0RoG6OoVu71rMHa9P
+ cMl2uz17bYK21BDNl7cXw==
 X-Spam-Flag: NO
-X-Spamd-Bar: +
+UI-OutboundReport: notjunk:1;M01:P0:/FiA4Iauo2E=;kwPWkuIls+KJ1wmyhD9CK8FjCvb
+ fvTFX1sH3dWUG0g9LZT0L29U0l1gKLiwjSBKGv8KobucFW4dlglYKoNbuxRm7jTtKiSXPROnc
+ ujbjTKAooZ1JEEUvT7Nj9P2QLjo9NfIMbGEp0ssHZNSlogDEiS4WRJv7V6TS3s+TheKqouYK5
+ 1KmIzn8o+9QFYiS6fqIJKUaUiaGCeB7xjYY8Dz3fegdrV/sP2IHQXbCAZPUDZFYg8thP+1Z7a
+ 98XLpcOsm2ERChC0eBIgS5Msn4tIc6IZCg4v+tXJUHUxjrXvwCTTEK8rBf8vV7zf5C0ku+JHx
+ 4bG2sJxc4MuUE+wnkvEr7r5OAOGlEMj4zJlgllso82GE8gdhRD+4SzuZpIVrGQE76vVkQr26k
+ xd+pu+A3KhrQa4sORI5QbBSEqKXBdXuHo63onVp3glXD+NNSp41aaQAJGcFkElQrFzXQni49B
+ P2/fjKBVKVpdISyTCJuQTL1YwgBTyOGbHsbOxsqrHS5V5dFYg1ZDDi+AWyNQjx1LOsPINkaH5
+ 4Xpd9BR+Bg1QzonHGYS932GJGUUwhUNjCyqnVwZYxMS0BTlsSFPdHSloL+Ih9q8kW4e6wwb+N
+ SynEnF6an7QWRrn5LG2T+tC44EWyoy8J5GMUUi/gpoTX7V36V7Ii2SbG0cnmI2aEhWQLwsXGA
+ eijbfnEwbpU1/Lzj41SoH8USloWzTQP+wPmsRacyW/Q+21R/Gdvhx7aEhzUvRq3B7mdmJ/JeK
+ 1iXc1uBdAe0Qt1pFa7RSOV1zySCrfIrprj0Y0cR1YgdpDMv6AlKDf2hq7ywAaQ9k9Wv79AJxP
+ NG7TZueo7MGls5Y9IP6sbM64hbjjcG/9iIKIpvr3V5KWiCV7MUc5eWHxJq6OMKuVCviO+kAMs
+ EiyGHPEw4VznFUaR6voxyYs6x4qj4mOlLEkhq9L/bm9tW8JyWjoj244DGpS28KC03oKHuzsR6
+ 07bIj9plcDU3gljGLQsH4Y++cz8=
 
-[BUG]
-There is a report about failed btrfs-convert, which shows the following
-error:
 
-  Create btrfs metadata
-  corrupt leaf: root=5 block=5001931145216 slot=1 ino=89911763, invalid previous key objectid, have 89911762 expect 89911763
-  leaf 5001931145216 items 336 free space 7 generation 90 owner FS_TREE
-  leaf 5001931145216 flags 0x1(WRITTEN) backref revision 1
-  fs uuid 8b69f018-37c3-4b30-b859-42ccfcbe2449
-  chunk uuid 448ce78c-ea41-49f6-99dc-46ad80b93da9
-          item 0 key (89911762 INODE_REF 3858733) itemoff 16222 itemsize 61
-                  index 171 namelen 51 name: [FILENAME1]
-          item 1 key (89911763 INODE_REF 3858733) itemoff 16161 itemsize 61
-                  index 103 namelen 51 name: [FILENAME2]
 
-[CAUSE]
-When iterating a directory, btrfs-convert would insert the DIR_ITEMs,
-along with the INODE_REF of that inode.
+On 2024/1/13 02:28, David Sterba wrote:
+> On Thu, Jan 11, 2024 at 04:54:47PM +1030, Qu Wenruo wrote:
+>>
+>>
+>> On 2024/1/11 03:39, David Sterba wrote:
+>>> On Fri, Jan 05, 2024 at 06:03:40PM +1030, Qu Wenruo wrote:
+>>>> [BUG]
+>>>> The following script can lead to a very under utilized extent and we
+>>>> have no way to use defrag to properly reclaim its wasted space:
+>>>>
+>>>>     # mkfs.btrfs -f $dev
+>>>>     # mount $dev $mnt
+>>>>     # xfs_io -f -c "pwrite 0 128M" $mnt/foobar
+>>>>     # sync
+>>>>     # btrfs filesystem defrag $mnt/foobar
+>>>>     # sync
+>>>
+>>> I don't see what's wrong with this example, as Filipe noted there's a
+>>> truncate missing, but still this should be explained better.
+>>
+>> Sorry, the full explanation looks like this:
+>>
+>> After above truncation, we will got the following file extent layout:
+>>
+>> 	item 6 key (257 EXTENT_DATA 0) itemoff 15813 itemsize 53
+>> 		generation 7 type 1 (regular)
+>> 		extent data disk byte 298844160 nr 134217728
+>> 		extent data offset 0 nr 4096 ram 134217728
+>> 		extent compression 0 (none)
+>>
+>> That would be the last 4K referring that 128M extent, aka, wasted
+>> (128M-4K) bytes, or 99.695% of the extent.
+>
+> Ok, so it's the known issue.
+>
+>> Normally we expect defrag to properly re-dirty the extent so that we ca=
+n
+>> free that 128M extent.
+>> But defrag won't touch it at all, mostly due to there is no next extent
+>> to merge.
+>>
+>>> Is this the problem when an overwritten and shared extent is partially
+>>> overwritten but still occupying the whole range, aka. bookend extent?
+>>> If yes, defrag was never meant to deal with that, though we could use
+>>> the interface for that.
+>>
+>> If we don't go defrag, there is really no good way to do it safely.
+>>
+>> Sure you can copy the file to another non-btrfs location or dd it.
+>> But that's not safe if there is still some process accessing it etc.
+>>
+>>> As Andrei pointed out, this is more like a garbage collection, get rid
+>>> of extent that is partially unreachable. Detecting such extent require=
+s
+>>> looking for the unreferenced part of the extent while defragmentation
+>>> deals with live data. This could be a new ioctl entirely too. But firs=
+t
+>>> I'd like to know if we're talking about the same thing.
+>>
+>> Yes, we're talking about the bookend problem.
+>> As I would expect defrag to free most, if not all, such bookend extents=
+.
+>> (And that's exactly what I recommend to the initial report)
+>
+> Here the defrag can mean two things, the interface (ioctl and command)
+> and the implementation. As defrag tries to merge adjacent extents or
+> coalesce small extents and move it to a new location, this may not be
+> always necessary just to get rid of the unreachable extent parts.
 
-This leads to above stray INODE_REFs, and trigger the tree-checker.
+To me, defrag just means re-dirty the file range.
+Whether it would result contig extent or lead to more fragments is not
+ensured.
+(E.g. defrag a fragmented file, but the fs itself is also super
+fragmented, or due to very high memory pressure we have to do writeback
+very often).
 
-This can only happen for large fs, as for most cases we have all these
-modified tree blocks cached, thus tree-checker won't be triggered.
-But when the tree block cache is not hit, and we have to read from disk,
-then such behavior can lead to above tree-checker error.
+>
+>  From the interface side, we can add a mode that does only the garbage
+> collection, effectively just looking up the unreachable parts, trimming
+> the extents but leaving the live data intact.
 
-[FIX]
-Insert a dummy INODE_ITEM for the INODE_REF first, the inode items would
-be updated when iterating the child inode of the directory.
+Another thing is, the same bookend problem would lead to very different
+behavior, based on whether the file extent has an adjacent extent.
 
-Issue: #731
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- convert/source-ext2.c | 30 ++++++++++++++++++++----------
- convert/source-fs.c   | 13 +++++++++++++
- 2 files changed, 33 insertions(+), 10 deletions(-)
+To me, the very basic defrag is just re-dirty all extents, no matter
+what (and I believe some older fs is doing exactly that?).
 
-diff --git a/convert/source-ext2.c b/convert/source-ext2.c
-index 7e93b0901489..f56d79734715 100644
---- a/convert/source-ext2.c
-+++ b/convert/source-ext2.c
-@@ -857,6 +857,10 @@ static int ext2_copy_single_inode(struct btrfs_trans_handle *trans,
- 	struct btrfs_key inode_key;
- 	struct btrfs_path path = { 0 };
+It's us doing extra checks to avoid wasting IO on already very good extent=
+s.
 
-+	inode_key.objectid = objectid;
-+	inode_key.type = BTRFS_INODE_ITEM_KEY;
-+	inode_key.offset = 0;
-+
- 	if (ext2_inode->i_links_count == 0)
- 		return 0;
+>
+> The modes of operation:
+>
+> - current defrag, move if filters and conditons allow that
+> - defrag + garbage collect extents
+> - just garbage collect extents
 
-@@ -878,13 +882,23 @@ static int ext2_copy_single_inode(struct btrfs_trans_handle *trans,
- 	ext2_convert_inode_flags(&btrfs_inode, ext2_inode);
+Thus I don't really think there is any different between garbage
+collection or "defrag".
 
- 	/*
--	 * The inode item must be inserted before any file extents/dir items/xattrs,
--	 * or we may trigger tree-checker. (File extents/dir items/xattrs require
--	 * the previous item has the same key objectid).
-+	 * The inode may already be created (with dummy contents), in that
-+	 * case we don't need to do anything yet.
-+	 * The inode item would be updated at the end anyway.
- 	 */
--	ret = btrfs_insert_inode(trans, root, objectid, &btrfs_inode);
--	if (ret < 0)
--		return ret;
-+	ret = btrfs_lookup_inode(trans, root, &path, &inode_key, 1);
-+	btrfs_release_path(&path);
-+	if (ret > 0) {
-+		/*
-+		 * No inode item yet, the inode item must be inserted before
-+		 * any file extents/dir items/xattrs, or we may trigger
-+		 * tree-checker. (File extents/dir items/xattrs require the
-+		 * previous item has the same key objectid).
-+		 */
-+		ret = btrfs_insert_inode(trans, root, objectid, &btrfs_inode);
-+		if (ret < 0)
-+			return ret;
-+	}
+They are the same thing, just re-dirty the file extents.
+(And as stated above, if the result would be better is never ensured).
 
- 	switch (ext2_inode->i_mode & S_IFMT) {
- 	case S_IFREG:
-@@ -917,10 +931,6 @@ static int ext2_copy_single_inode(struct btrfs_trans_handle *trans,
- 	 * Update the inode item, as above insert never updates the inode's
- 	 * nbytes and size.
- 	 */
--	inode_key.objectid = objectid;
--	inode_key.type = BTRFS_INODE_ITEM_KEY;
--	inode_key.offset = 0;
--
- 	ret = btrfs_lookup_inode(trans, root, &path, &inode_key, 1);
- 	if (ret > 0)
- 		ret = -ENOENT;
-diff --git a/convert/source-fs.c b/convert/source-fs.c
-index fe1ff7d0d795..ff6912dfa21f 100644
---- a/convert/source-fs.c
-+++ b/convert/source-fs.c
-@@ -183,6 +183,7 @@ int convert_insert_dirent(struct btrfs_trans_handle *trans,
- {
- 	int ret;
- 	u64 inode_size;
-+	struct btrfs_inode_item dummy_iitem = { 0 };
- 	struct btrfs_key location = {
- 		.objectid = objectid,
- 		.offset = 0,
-@@ -193,6 +194,18 @@ int convert_insert_dirent(struct btrfs_trans_handle *trans,
- 				    dir, &location, file_type, index_cnt);
- 	if (ret)
- 		return ret;
-+	/*
-+	 * We must have an INOTE_ITEM before INODE_REF, or tree-checker won't
-+	 * be happy.
-+	 * The content of the INODE_ITEM would be properly updated when iterating
-+	 * that child inode.
-+	 */
-+	ret = btrfs_insert_inode(trans, root, objectid, &dummy_iitem);
-+	/* The inode item is already there, just skip it. */
-+	if (ret == -EEXIST)
-+		ret = 0;
-+	if (ret < 0)
-+		return ret;
- 	ret = btrfs_insert_inode_ref(trans, root, name, name_len,
- 				     objectid, dir, index_cnt);
- 	if (ret)
---
-2.43.0
+What we really want to do is, just add extra filters to allow end users
+to re-dirty the last file extent.
 
+Thanks,
+Qu
+>
+> The third mode is for use case to let it run on the whole filesystem but
+> not try to rewrite everything.
+>
+> I'm not sure how would it affect send/receive, read-only subvolumes
+> should not be touched.
+>
 
