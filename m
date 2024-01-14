@@ -1,107 +1,82 @@
-Return-Path: <linux-btrfs+bounces-1439-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1440-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1209B82D0C6
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jan 2024 14:43:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AE9C82D168
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jan 2024 17:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8499DB216ED
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jan 2024 13:42:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2705281ECF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jan 2024 16:17:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F4023D2;
-	Sun, 14 Jan 2024 13:42:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7214F5243;
+	Sun, 14 Jan 2024 16:17:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oAZCHPLz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GPbuRlvd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 207C12100;
-	Sun, 14 Jan 2024 13:42:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705239766; x=1736775766;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0SdNNY8cR3/JqcCcTMz3H6BUbuomCCtkQgHAbuevA64=;
-  b=oAZCHPLzKIuuAoJEJpHIkybBTh5WJZncEApPe3H7nhJdd/i346hBy51K
-   bAhg0y0JwpTKSmL1KTZMF+tazZPXkFVeVUA/gd3kfmM52zHhHQ6muuYoh
-   oZl/WLBEBIvmnn7yC7nRyX30572LadsGqC1szTcRibH7MU4dfrsY7IVPw
-   Gn/dURF+hd10mjZPj/IV17qDmOgQC6kHUKr5VN7SRvpRCRi/FHD13Z4tz
-   Bqsq9Gt/d+EqX20RIw8haj15NLDMyuxFWJlm1h3e7HCJt7Db+109go78r
-   4Ml/PUrQAA/CV/1EdtFlFi6UL20J089nfxXeKMRZOeqyL8c2pMkTHKxwk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10952"; a="465841160"
-X-IronPort-AV: E=Sophos;i="6.04,194,1695711600"; 
-   d="scan'208";a="465841160"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 05:42:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10952"; a="817567764"
-X-IronPort-AV: E=Sophos;i="6.04,194,1695711600"; 
-   d="scan'208";a="817567764"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 05:42:43 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rP0l5-0000000Dtxx-47nJ;
-	Sun, 14 Jan 2024 15:42:39 +0200
-Date: Sun, 14 Jan 2024 15:42:39 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-	christophe.jaillet@wanadoo.fr, David.Laight@aculab.com,
-	ddiss@suse.de, geert@linux-m68k.org
-Subject: Re: [PATCH v3 0/4] kstrtox: introduce memparse_safe()
-Message-ID: <ZaPkz7gU42Eahf4L@smile.fi.intel.com>
-References: <cover.1704324320.git.wqu@suse.com>
- <ZZllAi_GbsoDF5Eg@smile.fi.intel.com>
- <7708fc8b-738c-4d58-b89e-801ce6a4832a@gmx.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB977E
+	for <linux-btrfs@vger.kernel.org>; Sun, 14 Jan 2024 16:17:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33678156e27so6831470f8f.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 Jan 2024 08:17:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705249033; x=1705853833; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=cJURNptZ9zA2sHXMhCLcjlx+1zdO2zRQHkb8PifniGw=;
+        b=GPbuRlvdGeof6tDgIKMCY+JRNBIzqUTXZhhEafswtwLeO3QIPDAdrIL7HFsUsZEqA9
+         wi7ElUeIFxXoCOIDOtqVNyxpvJbaBqmigJUPRwhskEyGyP16ht5cn5qkDW8wFONTJeKf
+         FWtXwX4EZGJiJToFme7Er+xr9ZCz8rzxNXLFiditD+oPhUlar1r1Xc79ID8u/85+V/95
+         0TNN7ntR5+Qi32yX2hTa17Sp1mV13RgNiFKqkC20hJqmQlZaJACH2rah4w70o4/Nv5vk
+         60Jp/+kFYjaaC0L4BC8rmuOfGqzNQaCddiKk6aF5Ui556YCbtypqcSAD814di0CRoKSg
+         hXag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705249033; x=1705853833;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cJURNptZ9zA2sHXMhCLcjlx+1zdO2zRQHkb8PifniGw=;
+        b=YBVJcR1Blg7p/mTvmywfyr8mVDybPqWWJnKBekAyyo/pijOPUOdQVdeSN8G4uXsdHv
+         YzKXV3WOu3FK2Z5pUgdPfSm/15r2HSyMaN5hGWxuiG2czG1R2GF/qPMqMMA0XnUGH8BB
+         voYRgPP+SzEQVY3hMjDWYNgcI8a80Qb6Q1ESKBuB+ydaB0eg7DusnwuxXaye0F72fwIr
+         f+2uqs/cVWTGSfwosmqKIPHOAkXv8QW7QbH2QJkURIeTBnCqNRGZM4zoZ+sZAuEaAuUk
+         wLfjiNxHvKH+LrJGYqHWh3mVItFvqveHZ1LC7nU0SqpLKKnIWsX7yAzMBHeEms+fTwd4
+         mgkw==
+X-Gm-Message-State: AOJu0YyqlIP+9917mvFuBA5Zr2oTWeCorNs9IiqQPn0k+QnXAZMNOhMy
+	FlMl27fcdVLwp4U9gtZ3uDtwx+UIE+of35dXinw=
+X-Google-Smtp-Source: AGHT+IGt0DWqzwO1mfj04M942UMdWRQrCrO42Fz0/AIJ/7k2YmhSRqyv1IV+VsIBMAwE6sVlcawepYULKLD1XKfZeeI=
+X-Received: by 2002:adf:8b92:0:b0:337:6948:1309 with SMTP id
+ o18-20020adf8b92000000b0033769481309mr2093194wra.38.1705249033083; Sun, 14
+ Jan 2024 08:17:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7708fc8b-738c-4d58-b89e-801ce6a4832a@gmx.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <a2c72015288d70b870ded1d6f8aaba1c2cf63f97.1705045187.git.cccheng@synology.com>
+ <882254fa-47b8-44b3-91b5-20378aaa0778@gmx.com>
+In-Reply-To: <882254fa-47b8-44b3-91b5-20378aaa0778@gmx.com>
+From: Chung-Chiang Cheng <shepjeng@gmail.com>
+Date: Mon, 15 Jan 2024 00:17:01 +0800
+Message-ID: <CAHuHWtmwsTB3H9ALAq2O+uuGBiP3PvNU4b+K06FRLEkxvju-Pg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: tree-checker: fix iref size in error messages
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Chung-Chiang Cheng <cccheng@synology.com>, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
+	kernel@cccheng.net
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Jan 07, 2024 at 07:28:27AM +1030, Qu Wenruo wrote:
-> On 2024/1/7 01:04, Andy Shevchenko wrote:
-> > On Thu, Jan 04, 2024 at 09:57:47AM +1030, Qu Wenruo wrote:
+> > The error message should accurately reflect the size rather than the
+> > size.
+> I guess the second "size" mean inline type?
 
-...
+Yes. I mistyped. It should be "type".
 
-> > Having test cases is quite good, thanks!
-> > But as I understood what Alexey wanted, is not using the kstrtox files for this.
-> > You can introduce it in the cmdline.c, correct? Just include local "kstrtox.h".
-> 
-> Not really possible, all the needed parsing helpers are internal inside
-> kstrtox.c.
-
-I'm not sure I follow. The functions are available to other library (built-in)
-modules.
-
-> Furthermore, this also means memparse() can not be enhanced due to:
-> 
-> - Lack of ways to return errors
-
-What does this mean?
-
-> - Unable to call the parsing helpers inside cmdline.c
-
-??? (see above)
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Cheng
 
