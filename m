@@ -1,185 +1,107 @@
-Return-Path: <linux-btrfs+bounces-1438-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1439-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4401782D044
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jan 2024 11:15:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1209B82D0C6
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jan 2024 14:43:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5C8D2825CD
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jan 2024 10:15:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8499DB216ED
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jan 2024 13:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D9DF2107;
-	Sun, 14 Jan 2024 10:15:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F4023D2;
+	Sun, 14 Jan 2024 13:42:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oAZCHPLz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7789D5392
-	for <linux-btrfs@vger.kernel.org>; Sun, 14 Jan 2024 10:15:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-35ff7c81f4aso72915165ab.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 Jan 2024 02:15:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705227320; x=1705832120;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ef8RlfvNizusNJEpFPPJswpir101aPuFjW55VZ/jFAE=;
-        b=YvoEjjQc+UpcNEORIJGU6Sbm/z6c7YF5k+Ks8dJfSatFnHsq2o5HWltKoRAXblHNgX
-         qszLWk3aixjcSPbLr6CjTlT/0hBEO0wZ/i7m507j8hw9rlJD9y8OIinoTZ9JumjI5QQ4
-         GCikbkcmNCEm7jaYieEntnebyudeHjWE15ANQMN/XMzJTJAVFVc178Qvw1ZfFDb1t0Z4
-         o5VJaXlwRUoeqiMNCoU5Nez7kKj58tTvHTB5b4v/CE5F1GmccOdQl8mTsWbwCnK1jf1X
-         vfnYytc7ETmFII0lFyY9H/IIoKcLH/OsFwiKen3k/PMmHrVQhXe5Cjlt3QXmbtpbRsNm
-         irSg==
-X-Gm-Message-State: AOJu0YybmVSjXdG+ulpoePyg5FZZs8AWWFYarXOwNDzkyBEwt86CwbD2
-	wLYvte/JZY38ZbdwmqMaudzmyOZ5UHf7kZtHwL3NciWIy13K
-X-Google-Smtp-Source: AGHT+IH4paAtnH1GJFNpGmWxNyqSDgEl+vpHoOr+kybnQ1rSsj6CcqUHkvD2v8RpwUFwLc1rO0kDVuvGqOYmC9+eM+6+83UNe4yt
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 207C12100;
+	Sun, 14 Jan 2024 13:42:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705239766; x=1736775766;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0SdNNY8cR3/JqcCcTMz3H6BUbuomCCtkQgHAbuevA64=;
+  b=oAZCHPLzKIuuAoJEJpHIkybBTh5WJZncEApPe3H7nhJdd/i346hBy51K
+   bAhg0y0JwpTKSmL1KTZMF+tazZPXkFVeVUA/gd3kfmM52zHhHQ6muuYoh
+   oZl/WLBEBIvmnn7yC7nRyX30572LadsGqC1szTcRibH7MU4dfrsY7IVPw
+   Gn/dURF+hd10mjZPj/IV17qDmOgQC6kHUKr5VN7SRvpRCRi/FHD13Z4tz
+   Bqsq9Gt/d+EqX20RIw8haj15NLDMyuxFWJlm1h3e7HCJt7Db+109go78r
+   4Ml/PUrQAA/CV/1EdtFlFi6UL20J089nfxXeKMRZOeqyL8c2pMkTHKxwk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10952"; a="465841160"
+X-IronPort-AV: E=Sophos;i="6.04,194,1695711600"; 
+   d="scan'208";a="465841160"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 05:42:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10952"; a="817567764"
+X-IronPort-AV: E=Sophos;i="6.04,194,1695711600"; 
+   d="scan'208";a="817567764"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2024 05:42:43 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rP0l5-0000000Dtxx-47nJ;
+	Sun, 14 Jan 2024 15:42:39 +0200
+Date: Sun, 14 Jan 2024 15:42:39 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+	christophe.jaillet@wanadoo.fr, David.Laight@aculab.com,
+	ddiss@suse.de, geert@linux-m68k.org
+Subject: Re: [PATCH v3 0/4] kstrtox: introduce memparse_safe()
+Message-ID: <ZaPkz7gU42Eahf4L@smile.fi.intel.com>
+References: <cover.1704324320.git.wqu@suse.com>
+ <ZZllAi_GbsoDF5Eg@smile.fi.intel.com>
+ <7708fc8b-738c-4d58-b89e-801ce6a4832a@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1b85:b0:35f:f01e:bb1d with SMTP id
- h5-20020a056e021b8500b0035ff01ebb1dmr548548ili.5.1705227320751; Sun, 14 Jan
- 2024 02:15:20 -0800 (PST)
-Date: Sun, 14 Jan 2024 02:15:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b6ffa9060ee52c74@google.com>
-Subject: [syzbot] [btrfs?] KMSAN: uninit-value in bcmp (2)
-From: syzbot <syzbot+3ce5dea5b1539ff36769@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7708fc8b-738c-4d58-b89e-801ce6a4832a@gmx.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hello,
+On Sun, Jan 07, 2024 at 07:28:27AM +1030, Qu Wenruo wrote:
+> On 2024/1/7 01:04, Andy Shevchenko wrote:
+> > On Thu, Jan 04, 2024 at 09:57:47AM +1030, Qu Wenruo wrote:
 
-syzbot found the following issue on:
+...
 
-HEAD commit:    610a9b8f49fb Linux 6.7-rc8
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=110b4555e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e51fe20c3e51ba7f
-dashboard link: https://syzkaller.appspot.com/bug?extid=3ce5dea5b1539ff36769
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+> > Having test cases is quite good, thanks!
+> > But as I understood what Alexey wanted, is not using the kstrtox files for this.
+> > You can introduce it in the cmdline.c, correct? Just include local "kstrtox.h".
+> 
+> Not really possible, all the needed parsing helpers are internal inside
+> kstrtox.c.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I'm not sure I follow. The functions are available to other library (built-in)
+modules.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/daced691c987/disk-610a9b8f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5e37367a7d1e/vmlinux-610a9b8f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/013b65c960ab/bzImage-610a9b8f.xz
+> Furthermore, this also means memparse() can not be enhanced due to:
+> 
+> - Lack of ways to return errors
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3ce5dea5b1539ff36769@syzkaller.appspotmail.com
+What does this mean?
 
-=====================================================
-BUG: KMSAN: uninit-value in memcmp lib/string.c:681 [inline]
-BUG: KMSAN: uninit-value in bcmp+0xc3/0x1c0 lib/string.c:713
- memcmp lib/string.c:681 [inline]
- bcmp+0xc3/0x1c0 lib/string.c:713
- sample_repeated_patterns fs/btrfs/compression.c:1298 [inline]
- btrfs_compress_heuristic+0x926/0x31f0 fs/btrfs/compression.c:1380
- inode_need_compress fs/btrfs/inode.c:804 [inline]
- btrfs_run_delalloc_range+0x156c/0x16c0 fs/btrfs/inode.c:2272
- writepage_delalloc+0x244/0x6b0 fs/btrfs/extent_io.c:1189
- __extent_writepage fs/btrfs/extent_io.c:1440 [inline]
- extent_write_cache_pages fs/btrfs/extent_io.c:2108 [inline]
- extent_writepages+0x1d22/0x3f20 fs/btrfs/extent_io.c:2230
- btrfs_writepages+0x35/0x40 fs/btrfs/inode.c:7836
- do_writepages+0x426/0x870 mm/page-writeback.c:2553
- filemap_fdatawrite_wbc+0x1d8/0x270 mm/filemap.c:387
- start_delalloc_inodes+0x91d/0x1560 fs/btrfs/inode.c:9284
- btrfs_start_delalloc_roots+0x874/0xe80 fs/btrfs/inode.c:9361
- shrink_delalloc fs/btrfs/space-info.c:649 [inline]
- flush_space+0xbd4/0x16c0 fs/btrfs/space-info.c:759
- btrfs_async_reclaim_metadata_space+0x76d/0x9c0 fs/btrfs/space-info.c:1089
- process_one_work kernel/workqueue.c:2627 [inline]
- process_scheduled_works+0x104e/0x1e70 kernel/workqueue.c:2700
- worker_thread+0xf45/0x1490 kernel/workqueue.c:2781
- kthread+0x3ed/0x540 kernel/kthread.c:388
- ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+> - Unable to call the parsing helpers inside cmdline.c
 
-Uninit was stored to memory at:
- heuristic_collect_sample fs/btrfs/compression.c:1338 [inline]
- btrfs_compress_heuristic+0x303/0x31f0 fs/btrfs/compression.c:1378
- inode_need_compress fs/btrfs/inode.c:804 [inline]
- btrfs_run_delalloc_range+0x156c/0x16c0 fs/btrfs/inode.c:2272
- writepage_delalloc+0x244/0x6b0 fs/btrfs/extent_io.c:1189
- __extent_writepage fs/btrfs/extent_io.c:1440 [inline]
- extent_write_cache_pages fs/btrfs/extent_io.c:2108 [inline]
- extent_writepages+0x1d22/0x3f20 fs/btrfs/extent_io.c:2230
- btrfs_writepages+0x35/0x40 fs/btrfs/inode.c:7836
- do_writepages+0x426/0x870 mm/page-writeback.c:2553
- filemap_fdatawrite_wbc+0x1d8/0x270 mm/filemap.c:387
- start_delalloc_inodes+0x91d/0x1560 fs/btrfs/inode.c:9284
- btrfs_start_delalloc_roots+0x874/0xe80 fs/btrfs/inode.c:9361
- shrink_delalloc fs/btrfs/space-info.c:649 [inline]
- flush_space+0xbd4/0x16c0 fs/btrfs/space-info.c:759
- btrfs_async_reclaim_metadata_space+0x76d/0x9c0 fs/btrfs/space-info.c:1089
- process_one_work kernel/workqueue.c:2627 [inline]
- process_scheduled_works+0x104e/0x1e70 kernel/workqueue.c:2700
- worker_thread+0xf45/0x1490 kernel/workqueue.c:2781
- kthread+0x3ed/0x540 kernel/kthread.c:388
- ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+??? (see above)
 
-Uninit was created at:
- __alloc_pages+0x9a4/0xe00 mm/page_alloc.c:4591
- alloc_pages_mpol+0x62b/0x9d0 mm/mempolicy.c:2133
- alloc_pages mm/mempolicy.c:2204 [inline]
- folio_alloc+0x1da/0x380 mm/mempolicy.c:2211
- filemap_alloc_folio+0xa5/0x430 mm/filemap.c:974
- __filemap_get_folio+0xa5a/0x1760 mm/filemap.c:1918
- pagecache_get_page+0x4a/0x1a0 mm/folio-compat.c:99
- prepare_pages+0x1f2/0x1050 fs/btrfs/file.c:922
- btrfs_buffered_write+0xe48/0x2be0 fs/btrfs/file.c:1316
- btrfs_do_write_iter+0x370/0x2300 fs/btrfs/file.c:1687
- btrfs_file_write_iter+0x38/0x40 fs/btrfs/file.c:1704
- __kernel_write_iter+0x329/0x930 fs/read_write.c:517
- dump_emit_page fs/coredump.c:888 [inline]
- dump_user_range+0x593/0xcd0 fs/coredump.c:915
- elf_core_dump+0x59e8/0x5c60 fs/binfmt_elf.c:2077
- do_coredump+0x32c9/0x4920 fs/coredump.c:764
- get_signal+0x2185/0x2d10 kernel/signal.c:2890
- arch_do_signal_or_restart+0x53/0xca0 arch/x86/kernel/signal.c:309
- exit_to_user_mode_loop+0xe8/0x320 kernel/entry/common.c:168
- exit_to_user_mode_prepare+0x163/0x220 kernel/entry/common.c:204
- irqentry_exit_to_user_mode+0xd/0x30 kernel/entry/common.c:309
- irqentry_exit+0x16/0x40 kernel/entry/common.c:412
- exc_page_fault+0x246/0x6f0 arch/x86/mm/fault.c:1564
- asm_exc_page_fault+0x2b/0x30 arch/x86/include/asm/idtentry.h:570
-
-CPU: 1 PID: 56 Comm: kworker/u4:4 Not tainted 6.7.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-Workqueue: events_unbound btrfs_async_reclaim_metadata_space
-=====================================================
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
