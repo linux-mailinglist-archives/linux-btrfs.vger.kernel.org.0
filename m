@@ -1,43 +1,43 @@
-Return-Path: <linux-btrfs+bounces-1443-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1444-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D100C82D3A1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 05:27:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80D4F82D3E0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 06:28:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BE2C28166E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 04:27:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E01A11F2153E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 05:27:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E4D2572;
-	Mon, 15 Jan 2024 04:27:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3051257A;
+	Mon, 15 Jan 2024 05:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="c0JshEHv"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ZE4M85OZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98BDC23A2;
-	Mon, 15 Jan 2024 04:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
-	bh=0oUh0+cGcT+wp2cEd4U7ieZkM+ak91v7266sG9V6sGc=; b=c0JshEHvimLExKfkwXfveDR2hG
-	EPtESkxXMGWYq1gLgZWSYX5DWxDdqfKYWnSi4O+2NVSDPYPvgyEvhXEuinUFfZ+xllaPXQPj93z6A
-	6uHAZfo2jXCQkaZXyt8rx/o/kvcc4CZBXpP1ZFpOfPunr4U6RwPbqqj/L2Vi1HxHZXJN7gJ1MY5To
-	N/1Bs9MAViwbDPI3ZHuQk6WnF/Ew6kZ0UXXzK6EdcDgW6MZtzHzt92pPS5lMAvTFUj7OZmRm0+RW9
-	tSPTQUW0IjjEI2/pNfgNFklDRS7/Bu5J303jYNGgPvmtSc4O8ZfXfoma52MKXC3ROeggRQvUkyHii
-	Ce4FpgeQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rPEZE-007kTd-2j;
-	Mon, 15 Jan 2024 04:27:20 +0000
-Message-ID: <64def21a-2727-455b-9e35-e2a56d2f1625@infradead.org>
-Date: Sun, 14 Jan 2024 20:27:18 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517F923A2;
+	Mon, 15 Jan 2024 05:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1705296442; x=1705901242; i=quwenruo.btrfs@gmx.com;
+	bh=9D/2WGZqXmPkWznCliR0JPHXsHIvP7mg/1wpCuxjeWY=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=ZE4M85OZyBHvWAFdzNdsLtNbUVt1Su9kCpI6hJzcSTU3wlELs+HW5CJOj4Y+a3Cv
+	 1VWXef+HP7kibLhDZwhz2/g3AaMptRDp2RK5VmK0lyIyM6npYudqZiRh2Y8AI4B1k
+	 Ez49fwkDKORrxaOJn7+zj3hD3a8NyTxQtYj//KDcuQm8I/fLc8/wtu4+H2MOHSLLR
+	 W2X3+UNQRUl6dFuFODWNaHnVFZtIbW2dq6Lo9rhig2Q9YeGx0pCnbzeoaKLSqC58m
+	 /6vDD8Wy/5jZv0AK3O3YRitj22ZKAM+N12X3rYr0yvJ0hAb7yXXLwIflxiQEb8zpb
+	 /mCplB+Oz86IDJvs2g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKbg4-1rhtNl2H8e-00Kxkm; Mon, 15
+ Jan 2024 06:27:22 +0100
+Message-ID: <848c719c-daa2-403a-b7eb-f172b4236dc1@gmx.com>
+Date: Mon, 15 Jan 2024 15:57:15 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -47,170 +47,159 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v4 2/4] kstrtox: introduce a safer version of memparse()
 Content-Language: en-US
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
- christophe.jaillet@wanadoo.fr, andriy.shevchenko@linux.intel.com,
- David.Laight@ACULAB.COM, ddiss@suse.de, geert@linux-m68k.org
+To: Randy Dunlap <rdunlap@infradead.org>, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
+ andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM, ddiss@suse.de,
+ geert@linux-m68k.org
 References: <cover.1704422015.git.wqu@suse.com>
  <f972b96cad42e49235d90b863038a080acc0059e.1704422015.git.wqu@suse.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <f972b96cad42e49235d90b863038a080acc0059e.1704422015.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <64def21a-2727-455b-9e35-e2a56d2f1625@infradead.org>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <64def21a-2727-455b-9e35-e2a56d2f1625@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5CmCsA2KrGFN1660ZZ6Fw5boWVfnwNgEfD8SQxdTe95sR24pJ5U
+ cwMVFyeCdgZolIokIjCzCmrTrcYDHH+6rq36CbDiqjXVwYhT6RfjeDTVvrTVUDAeVvGMDoz
+ KCRa38c5559YZ6eASfEF9o2gLb5c2jY4HpCJ3swk3yaJHnTThsdObMCqZsy37fX5RjCR5iq
+ 7hDjDUTu2QU+BsEH+XW8g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:wAWENv8Y+4Q=;d5JEhPuh1tIsRx9RgKwpd658CC5
+ WYe5v5Dc50tM0ygydYabpys81qyokGhgNHbfPeULdtGSaLe7nHR5t+pyDXDIVJEd0Dd+zTiCo
+ cM9ES7ENPY+T/niaEVRODo75md3g/iLpiGSbUbLPuMT08xfMTYgiJYsUr4XBnhfvRjNHjUOMF
+ 0Ag37SsncU9rZF4WC1BDPL8H5ZJlIp9DUlojUJ2hLpLli88pOpDRoYEYhYOqqLlFGNLvAcPKQ
+ /u1BzIj5Ob/t82hVWuTCSeo8EDErsFIlT2Xp+t5wEIe6hEyeHyrQAHckqEHsx5B2+w/vLnQ1u
+ WboT+mB5G/HgiPyMS/DU6Bk8FjWdDBgqlupv3fNJr869oa/nvFIe3Bi3WW5fNGq4VGkxErN5X
+ ZJ+ffBQCdB5RxDWJN3pEVSnaM0kjA1ZU0/JbU5bAyINovn4oS2Su4i86OLwHvu6cbQxRcfMrb
+ 3dZMRmB4wA2FLFCeus+9Qlu3isMBc+SQq+an4uLlNgnExmXw/yRoZTEG8+VQFqmFMakS8yo+p
+ 3Sl2mmYzrEh/c85h9DXie6i1+RQpDfCRWJgrvILx2lNIdlA8nkQS6Mde8pUwJhz4cjN1JHKqf
+ N9vHRwvJp9dNnTxKL8ys2VNiKN8PkWjuOyp+BKDg2Z/gVJj1qiey/SLXPjQ2UfCx+KLEzgSOK
+ BYbhyIomNg6LSyBzzkpeqmiX3kJOCiaIKd3PYvrlSN3gFWjiZtWQ5epET3whNoUNcyFKVjgvv
+ 2UlIHOxkVjHcIQcDL6AdWI8b7p4sGcDP5bRof4B+1pN4Zyf2dySTOWHokAiAYU9sDnIbSpvFG
+ HBYTj8YLtl6RVyxr7zE7XjXjo6w41Xx788LpPC3TNnWeEatoNISdCRNQBSMdtUOh3FXsAbC4g
+ olm3nk9Iodiz41u0GhKwSYUywb6NwdhrcscMIqY6iRd+2AL3BUtbQbNqh6jXgqeLzJW7MtNpX
+ UREzenhHDipJbdFx3AOS0WmkQmM=
 
-Hi,
 
-On 1/4/24 18:35, Qu Wenruo wrote:
-> [BUGS]
-> Function memparse() lacks error handling:
-> 
-> - If no valid number string at all
->   In that case @retptr would just be updated and return value would be
->   zero.
-> 
-> - No overflown detection
 
-       overflow
+On 2024/1/15 14:57, Randy Dunlap wrote:
+[...]
+>> @@ -113,6 +113,105 @@ static int _kstrtoull(const char *s, unsigned int=
+ base, unsigned long long *res)
+>>   	return 0;
+>>   }
+>>
+>> +/**
+>> + * memparse_safe - convert a string to an unsigned long long, safer ve=
+rsion of
+>> + * memparse()
+>> + *
+>> + * @s:		The start of the string. Must be null-terminated.
+>
+> Unless I misunderstand, this is the biggest problem that I see with
+> memparse_safe(): "Must be null-terminated".
+> memparse() does not have that requirement.
 
->   This applies to both the number string part, and the suffixes part.
->   And since we have no way to indicate errors, we can get weird results
->   like:
-> 
->   	"25E" -> 10376293541461622784 (9E)
-> 
->   This is due to the fact that for "E" suffix, there is only 4 bits
->   left, and 25 with 60 bits left shift would lead to overflow.
-> 
-> [CAUSE]
-> The root cause is already mentioned in the comments of the function, the
-> usage of simple_strtoull() is the source of evil.
-> Furthermore the function prototype is no good either, just returning an
-> unsigned long long gives us no way to indicate an error.
-> 
-> [FIX]
-> Due to the prototype limits, we can not have a drop-in replacement for
-> memparse().
-> 
-> This patch can only help by introduce a new helper, memparse_safe(), and
-> mark the old memparse() deprecated.
-> 
-> The new memparse_safe() has the following improvement:
-> 
-> - Invalid string detection
->   If no number string can be detected at all, -EINVAL would be returned.
+This is just an extra safety requirement.
 
-                                                        is returned.
+In reality, memparse_safe() would end at the either the first
+unsupported suffix after the valid numeric string (including '\0'),
+or won't be updated if any error is hit (either no valid string at all,
+or some overflow happened).
 
-> 
-> - Better overflow detection
->   Both the string part and the extra left shift would have overflow
+For most if not all call sites, the string passed in is already
+null-terminated.
 
-                                                  have overflow
+>
+> And how is @retptr updated if the string is null-terminated?
 
->   detection.
->   Any overflow would result -ERANGE.
+E.g "123456G\0", in this case if suffix "G" is allowed, then @retptr
+would be updated to '\0'.
 
-    Any overflow results in -ERANGE.
+Or another example "123456\0", @retptr would still be updated to '\0'.
 
-> 
-> - Safer default suffix selection
->   The helper allows the caller to choose the suffixes that they want to
->   use.
->   But only "KMGTP" are recommended by default since the "E" leaves only
->   4 bits before overflow.
->   For those callers really know what they are doing, they can still
->   manually to include all suffixes.
-> 
-> Due to the prototype change, callers should migrate to the new one and
-> change their code and add extra error handling.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Reviewed-by: David Disseldorp <ddiss@suse.de>
-> ---
->  include/linux/kernel.h  |  8 +++-
->  include/linux/kstrtox.h | 15 +++++++
->  lib/cmdline.c           |  4 +-
->  lib/kstrtox.c           | 99 +++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 124 insertions(+), 2 deletions(-)
-> 
+>
+> If the "Must be null-terminated." is correct, it requires that every use=
+r/caller
+> first determine the end of the number (how? space and/or any special cha=
+racter
+> or any alphabetic character that is not in KMGTPE? Then save that ending=
+ char,
+> change it to NUL, call memparse_safe(), then restore the saved char?
 
-> diff --git a/lib/cmdline.c b/lib/cmdline.c
-> index 90ed997d9570..35dbb03b5592 100644
-> --- a/lib/cmdline.c
-> +++ b/lib/cmdline.c
-> @@ -139,10 +139,12 @@ char *get_options(const char *str, int nints, int *ints)
->  EXPORT_SYMBOL(get_options);
->  
->  /**
-> - *	memparse - parse a string with mem suffixes into a number
-> + *	memparse - DEPRECATED, parse a string with mem suffixes into a number
->   *	@ptr: Where parse begins
->   *	@retptr: (output) Optional pointer to next char after parse completes
->   *
-> + *	There is no way to handle errors, and no overflown detection and string
-> + *	sanity checks.
->   *	Parses a string into a number.  The number stored at @ptr is
->   *	potentially suffixed with K, M, G, T, P, E.
->   */
-> diff --git a/lib/kstrtox.c b/lib/kstrtox.c
-> index 41c9a499bbf3..375c7f0842e3 100644
-> --- a/lib/kstrtox.c
-> +++ b/lib/kstrtox.c
-> @@ -113,6 +113,105 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
->  	return 0;
->  }
->  
-> +/**
-> + * memparse_safe - convert a string to an unsigned long long, safer version of
-> + * memparse()
-> + *
-> + * @s:		The start of the string. Must be null-terminated.
+There are already test cases like "86k \0" (note all strings in the test
+case is all null terminated), which would lead to a success parse, with
+@retptr updated to ' ' (if suffix K is specified) or 'k' (if suffix K is
+not specified).
 
-Unless I misunderstand, this is the biggest problem that I see with
-memparse_safe(): "Must be null-terminated".
-memparse() does not have that requirement.
+So the behavior is still the same.
+It may be my expression too confusing.
 
-And how is @retptr updated if the string is null-terminated?
+Any recommendation for the comments?
 
-If the "Must be null-terminated." is correct, it requires that every user/caller
-first determine the end of the number (how? space and/or any special character
-or any alphabetic character that is not in KMGTPE? Then save that ending char,
-change it to NUL, call memparse_safe(), then restore the saved char?
+Thanks,
+Qu
 
-I'm hoping that the documentation is not correct...
-
-> + *		The base is determined automatically, if it starts with "0x"
-> + *		the base is 16, if it starts with "0" the base is 8, otherwise
-> + *		the base is 10.
-> + *		After a valid number string, there can be at most one
-> + *		case-insensitive suffix character, specified by the @suffixes
-> + *		parameter.
-> + *
-> + * @suffixes:	The suffixes which should be handled. Use logical ORed
-> + *		memparse_suffix enum to indicate the supported suffixes.
-> + *		The suffixes are case-insensitive, all 2 ^ 10 based.
-> + *		Supported ones are "KMGPTE".
-> + *		If one suffix (one of "KMGPTE") is hit but that suffix is
-> + *		not specified in the @suffxies parameter, it ends the parse
-> + *		normally, with @retptr pointed to the (unsupported) suffix.
-> + *		E.g. "68k" with suffxies "M" returns 68 decimal, @retptr
-> + *		updated to 'k'.
-> + *
-> + * @res:	Where to write the result.
-> + *
-> + * @retptr:	(output) Optional pointer to the next char after parse completes.
-> + *
-> + * Returns:
-> + * * %0 if any valid numeric string can be parsed, and @retptr is updated.
-> + * * %-EINVAL if no valid number string can be found.
-> + * * %-ERANGE if the number overflows.
-> + * * For negative return values, @retptr is not updated.
-> + */
-> +noinline int memparse_safe(const char *s, enum memparse_suffix suffixes,
-> +			   unsigned long long *res, char **retptr)
-> +{
-
-Thanks.
--- 
-#Randy
+>
+> I'm hoping that the documentation is not correct...
+>
+>> + *		The base is determined automatically, if it starts with "0x"
+>> + *		the base is 16, if it starts with "0" the base is 8, otherwise
+>> + *		the base is 10.
+>> + *		After a valid number string, there can be at most one
+>> + *		case-insensitive suffix character, specified by the @suffixes
+>> + *		parameter.
+>> + *
+>> + * @suffixes:	The suffixes which should be handled. Use logical ORed
+>> + *		memparse_suffix enum to indicate the supported suffixes.
+>> + *		The suffixes are case-insensitive, all 2 ^ 10 based.
+>> + *		Supported ones are "KMGPTE".
+>> + *		If one suffix (one of "KMGPTE") is hit but that suffix is
+>> + *		not specified in the @suffxies parameter, it ends the parse
+>> + *		normally, with @retptr pointed to the (unsupported) suffix.
+>> + *		E.g. "68k" with suffxies "M" returns 68 decimal, @retptr
+>> + *		updated to 'k'.
+>> + *
+>> + * @res:	Where to write the result.
+>> + *
+>> + * @retptr:	(output) Optional pointer to the next char after parse com=
+pletes.
+>> + *
+>> + * Returns:
+>> + * * %0 if any valid numeric string can be parsed, and @retptr is upda=
+ted.
+>> + * * %-EINVAL if no valid number string can be found.
+>> + * * %-ERANGE if the number overflows.
+>> + * * For negative return values, @retptr is not updated.
+>> + */
+>> +noinline int memparse_safe(const char *s, enum memparse_suffix suffixe=
+s,
+>> +			   unsigned long long *res, char **retptr)
+>> +{
+>
+> Thanks.
 
