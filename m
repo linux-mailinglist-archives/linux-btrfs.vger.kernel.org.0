@@ -1,44 +1,44 @@
-Return-Path: <linux-btrfs+bounces-1456-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1457-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04B9F82E2B2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 23:43:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 295AF82E2B9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 23:51:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A139E283B62
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 22:43:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C59F01F22E08
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 22:51:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C251B7E0;
-	Mon, 15 Jan 2024 22:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516DE1B7E1;
+	Mon, 15 Jan 2024 22:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="clxxpwiF"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="g1eTzcvj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56546FBB
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jan 2024 22:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EED0A6FBB
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jan 2024 22:51:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705358607; x=1705963407; i=quwenruo.btrfs@gmx.com;
-	bh=3iSnT+BIH/rDD/zyvqxOzLTtywPl8XrLsEVHj2Ijqgs=;
+	s=s31663417; t=1705359062; x=1705963862; i=quwenruo.btrfs@gmx.com;
+	bh=PF1bgRbag44r4vDa3Lx3HzX/gn3ltfO/ycOgULkWRt4=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=clxxpwiFjfrI8F8C5tIgRIT2FrP2w80+WZODSmv5cZHNMVMA76u04ngS+cPpnPFP
-	 3H9/meriGIBcQoiveI9dQHlSszWIcM6rjSr9PZR3CwF9z6uhU8TG7t3j9RdPa16qA
-	 s6EaLq7ZqZU3C7q1hXVd9nMHkVG07fZZ5ld4az/BzG3TtHQM8CE/nfRJVzSHqDcd1
-	 Ce6bLEI8pP0EJsFItN2LBww2J36jarNkPytg/GewAk2ipzO+LVDC371Zh2yfZIN9u
-	 MtoGHpUZMz8h2LGVMnneyFc7ViQLsJnbP2dKKIfpMIMcHimSavz7DK57XCvY1DcBb
-	 wAirtSEenICx/IHPTQ==
+	b=g1eTzcvj8bCrnF4X5hHhbw4qn8s70198m/DvzpoZI+5g2SvV/SY86JJI72j36Jk0
+	 VtqIn2s5/OH7O+j7i8l99Tnc2yBFMAKCGy5vAW5J9coJLMcd7C871ULio7PaUG6mj
+	 TBt2EmdEBYgielS+qku8mfIXPxMtKIeXmoaQ+8+VFLW64700yYea4+C3TDEOeq3o1
+	 Y1KC00nyPuFMEEALxUPf3YDV4O69Gqqn95qBWwQ1zzoQIyfTGNkGTIUSyuM24wa4S
+	 6QylK/bA4uIqM7isz2aV6NhI0HrEqEzA1tWdYhEWur85Cypj94DPzY7vS8YLFz8Sy
+	 /qG4KPXFF4LyH8Lp7w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXXyJ-1re6gy0Cop-00YwTE; Mon, 15
- Jan 2024 23:43:27 +0100
-Message-ID: <c31f1082-82f5-4558-9795-db1b40079f91@gmx.com>
-Date: Tue, 16 Jan 2024 09:13:23 +1030
+Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5G9t-1qxdDf0bcT-011Cz0; Mon, 15
+ Jan 2024 23:51:02 +0100
+Message-ID: <de82a8aa-7b51-4aa1-9cd6-a2f749a6e941@gmx.com>
+Date: Tue, 16 Jan 2024 09:20:58 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -46,15 +46,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: tree-checker: dump the tree block when
- hitting an error
+Subject: Re: [PATCH] btrfs: scrub: avoid use-after-free when chunk end is not
+ 64K aligned
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, Qu Wenruo
+ <wqu@suse.com>, "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Cc: Rongrong <i@rong.moe>
+References: <8531c41848973ac60ca4e23e2c7a2a47c4b94881.1705313879.git.wqu@suse.com>
+ <12744dd0-a56e-487e-b27d-4ad66498d7e5@wdc.com>
 Content-Language: en-US
-To: dsterba@suse.cz
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <a5ab0e98ae40df23b3bb65235f7bd9296e3b0be4.1705027543.git.wqu@suse.com>
- <20240112153602.GP31555@twin.jikos.cz>
- <7e908c1f-d14f-4562-ae1e-1431c091b140@gmx.com>
- <20240115145438.GT31555@suse.cz>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -80,58 +79,49 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240115145438.GT31555@suse.cz>
+In-Reply-To: <12744dd0-a56e-487e-b27d-4ad66498d7e5@wdc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:V2p6TFmceQUVATqL5FxvSyaiumCDqBLxyBYmgYz8UAlB/p/8IH+
- rIYmjNGYlfVIv1MYe/zhNvKhcbwFLN+ai6dhMNYgMijr0f5iuroFQlD6zJfvRK11m2vAoEt
- 5X5X3+e4y2IOSGEtEdyALIrOsrHbnxHLYy9BQvONb+uCtGZ50yNaN0ppBpg/cFnYl0UTU4A
- jFwjjE6EAJZ3BPFos5EOw==
+X-Provags-ID: V03:K1:SFx3GDNGL97MW4N2J3aljBhhk2h9qcHn4IYvgS2raS4B+UkdGr5
+ 5sHnUhCAzF1YuW4B1di++3nd/aI9M+Jp+D83bf+ITlJm8YhwuYe1xC8vF3dXes/xSHzrj5C
+ 4+ygEBMfdDvGXDvVeKYJzBzZjtjI8rwQ8ELqhQe1GjgSSvxDEwXhsQ7CmDOySPT16tWTieI
+ mdE575gn0Zh1u87yZCuPA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:XzHpfMyIink=;u+T/9AVPISouApaUhfH4l1cctL5
- aIh2bma4Gk+53/QZWawKtrkIgDfrKpH3X6qfJXS0V0kqAdqjqBGfkQxkx6ErwrpRaumB94uEN
- Vn3geM7shUk09FcuKp1v4o2aGAkk9rRxhmLB89iWBbILVd2npnSA6/sqWKSrLL4gNYyYTF3k+
- ikfE1KfJnGj9Xd2oTuS1vE3yU0Q1WVjQLrGBJdbSMMPicHWiGhKixiQWfJ6bKhDmE6/xeae6/
- eoaRwT7bCz28MaWFyRA+trl7fvnvvP4giLgq9AUmby1IzNYFpdnSS/ukJHjCyueaGHSBB0G7m
- EVSmbmjf7XdL77Dmn5dT8wBJK7ttP9GKWkk3sIDci8DI78uOdZIOlod6WkC9MNIMwNh7U+EIk
- pTF7DXJDtA+BeX8vb2yoGmfLxk3+DQq0+fVWXb7pv7gih1RNvpMJ7C6qdNNA5rasDlsOCEAv3
- kiYvgry/q1+BoURyaZhXQL1Nix5p/7A1rDPfnIq3ho0Yswt91Q42IEvsfFVR8zRwUfnvPfvjB
- 6GlHQ1fulMqLtVX84EspSww1dFF9iw+LsEXBmd51sxPJZ6sr3LkLDDs8yKB6BM1kjZSKC01Yi
- CqHpKRu2coszPnHM25dGFdyQtC8K1wvUgmgmbEOCI7INX7d9DYUTfPLXDgRM8vsZ0nkWdl+nH
- BSMW37iGjhlK6I7NXHqoa65upQS+aEyodn6bhJOYGcHmu7uwHlDcbsQvsF0uaHXNIyZ1JOZJZ
- Yn3PRL/hiDzE/zZ6pfdhWUp1qOdqBh+4S5h95Jk7rIynNZWCzo2JRRWwVTZQbXvwtGEdqFpIz
- T3DbeGbJXA36r11Z11C2HbnZ7f610n3jlI7d/Po3EHTD9cvfsqNVUdbyl+4UhnN9wlT+f+9h4
- 9sY0IUrgTPYBN1dGcq58n2QQgijEFVcLZM6teByS1Dn+YMgMcNC74VnVUB5GDLpsPmC+bKeiE
- KO+16Aa/UHkDeNeurCX6jiIfmzg=
+UI-OutboundReport: notjunk:1;M01:P0:u3zp7IECfpk=;/nx30j+Ej7l7pddMa/WSkwPWO5f
+ 68ISSHsx4HQWNCQMAegtnJWdkEiQ1Kw3Oc0xRae3ge0YZzGywaNlX+4U0ZLdyjL6jgfE/lBch
+ wP0At9H3xOXyFcmWKXTlbZIZhbIckOe1tG1tnNuAsiMu71JtX/5/gaNqZ8CPdh1Bk/wGkYJyw
+ m4/aOQE9mxtvE/cS3oNgd43mbwCYxI9iCXgoQ8hJJ20unvSE6eT4HOlTDXUWbEQO6H5dQj4M7
+ uuZEkkQ9lQsI3MWhJCaXz1SGt1GdlFHjj/+51YNnLfWPxM1QpKZZy/YTwpP5+MfAuuz0Uieje
+ xxByBZrwlLYXVGzT1CBmop0vZB9DyyNu43UO9DMGToKhWJyIAY9V4Ik2kIh3X1d+y0cN3Gs3o
+ 0yoIggZBYph6BQcQ+iTrMFox4EHX50Rk0coEYJuojU7I4yP14hUYIoIwAINkSpoRsdqzReSG9
+ 4gphkv0NMHcEBbHZcd4ZrQYE7rfbcsptgacorIBKBQR1syfJsweaUZaVC6ahGcf30f1OGFLH4
+ qrXSxqSlcQpp+LsdshOD9N3TU4BoIfcQqB8vtLuZSQRX9BUWVeJiUe2EvSh9krn5zw1ZKAEeg
+ /g0Ak2zQZNvdwkeSOTYAXkoOQ1d/P5PT6fqMKvz9DmQqEXmLZozqe4wOTIk33YhDgM+fy9xkx
+ /sDxBvl6hq+ssITMCAeo4BqREX0F0taI4VZJjh06uboxKi7VVQWoJuh1IYBKZuiVn3H2TPzMp
+ d2dAGY03+nLcLGiTNfCMqPazS8HKnn+SmbCVfIaSIyRC1HuGPYYuwRMFykURz1kzjxmMSMkuA
+ MK39a+7HVr7/LH9Y/MS1hTm3UqiifThOuaMHTllKVxK57S18/xrLv7eIuI9yC2l5+0F+anryH
+ NqD1z8op+eSQJufTGEjEYc3T5ZU77M3IsjAf1E6Lvbvuad+BBcwTCRvOf7m//lxiausGrkYYe
+ PGazWA==
 
 
 
-On 2024/1/16 01:24, David Sterba wrote:
-> On Sat, Jan 13, 2024 at 07:03:18AM +1030, Qu Wenruo wrote:
->>>> +	btrfs_print_tree((struct extent_buffer *)eb, 0);
->>>
->>> Printing the eb should not require writable eb, but there are many
->>> functions that would need to be converted to 'const' so the cas is OK
->>> for now but cleaning that up would be welcome.
->>
->> I tried but failed.
->>
->> Most of the call sites are fine to be constified, but there is a specia=
-l
->> trap inside bfs_print_children(), where we call extent_buffer_get(),
->> which can never be called on a const eb pointer.
+On 2024/1/15 22:39, Johannes Thumshirn wrote:
+[...]
 >
-> Oh, I see. We can't remove the ref update but what if we reset the path
-> slot to NULL before releasing it?
+>> - Make sure scrub_submit_initial_read() only to read the chunk range
+>>     This is done by calculating the real number of sectors we need to
+>>     read, and add sector-by-sector to the bio.
+>
+> Why can't you do it the same way the RST version does it by checking the
+> extent_sector_bitmap and then add sector-by-sector from it?
 
-The other solution would be, only consitfy btrfs_print_node() and
-btrfs_print_leaf().
+Sure, we can, although the whole new scrub code is before RST, and at
+that time, the whole 64K read behavior is considered as a better option,
+as it reduces the IOPS for a fragmented stripe.
 
-For anything that would need to traversal the tree, still allow them to
-modify the eb.
-
-I'll give it a try, and if it passed compile, that would be my next step.
-Would this be a good idea?
+And initially to make the code much simpler, but it turns out that the
+"simpler" code is also less robust, requiring very strict never-be-split
+condition, and finally leading to the bug.
 
 Thanks,
 Qu
