@@ -1,205 +1,165 @@
-Return-Path: <linux-btrfs+bounces-1444-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1445-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80D4F82D3E0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 06:28:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9332C82D6A4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 11:04:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E01A11F2153E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 05:27:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E0E5284C61
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 10:04:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3051257A;
-	Mon, 15 Jan 2024 05:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C01F4FD;
+	Mon, 15 Jan 2024 10:03:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ZE4M85OZ"
+	dkim=pass (1024-bit key) header.d=rong.moe header.i=i@rong.moe header.b="XCTNZozL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517F923A2;
-	Mon, 15 Jan 2024 05:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705296442; x=1705901242; i=quwenruo.btrfs@gmx.com;
-	bh=9D/2WGZqXmPkWznCliR0JPHXsHIvP7mg/1wpCuxjeWY=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=ZE4M85OZyBHvWAFdzNdsLtNbUVt1Su9kCpI6hJzcSTU3wlELs+HW5CJOj4Y+a3Cv
-	 1VWXef+HP7kibLhDZwhz2/g3AaMptRDp2RK5VmK0lyIyM6npYudqZiRh2Y8AI4B1k
-	 Ez49fwkDKORrxaOJn7+zj3hD3a8NyTxQtYj//KDcuQm8I/fLc8/wtu4+H2MOHSLLR
-	 W2X3+UNQRUl6dFuFODWNaHnVFZtIbW2dq6Lo9rhig2Q9YeGx0pCnbzeoaKLSqC58m
-	 /6vDD8Wy/5jZv0AK3O3YRitj22ZKAM+N12X3rYr0yvJ0hAb7yXXLwIflxiQEb8zpb
-	 /mCplB+Oz86IDJvs2g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKbg4-1rhtNl2H8e-00Kxkm; Mon, 15
- Jan 2024 06:27:22 +0100
-Message-ID: <848c719c-daa2-403a-b7eb-f172b4236dc1@gmx.com>
-Date: Mon, 15 Jan 2024 15:57:15 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EECEF4E7
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jan 2024 10:03:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rong.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rong.moe
+ARC-Seal: i=1; a=rsa-sha256; t=1705313032; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=PEGAFHtnJL5enD+g6/wUk9ORnmzWtjff1LVmCDq+4Gvl8SnIMlScyWs9XmL9OdJhmpyrb17v9vJrSSh0SDfWSKlWbrwVpkmJHDObNfmoGI+zVtk4tooZRQyP0M2m3UboMMavz3oZxkSBr/CgGYwqdfncIAdlR1xKnTB8lAkbVxs=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1705313032; h=Content-Type:Content-Transfer-Encoding:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
+	bh=iYxO94MgBxnaStR3YmNm4fJ2cymWYovrBVWJVySs7/s=; 
+	b=agepqxLmTDtj4IVEQuAt/4VV8VYE45oK3zgju0x3rv2EkM6hN9wGckqdb5fFKw75h0KoeGLtjxAOr0JsMrD+4HIQLIi4cDgmp9pZIbNWB/uCOzsp5VVA9a7Q0nVLmM3VT1dHFhfhZIwe6Zzia/3Ilvdpf8PBkORfHXtZCktJ4Lo=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=rong.moe;
+	spf=pass  smtp.mailfrom=i@rong.moe;
+	dmarc=pass header.from=<i@rong.moe>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1705313032;
+	s=zmail; d=rong.moe; i=i@rong.moe;
+	h=Message-ID:Subject:Subject:From:From:To:To:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To:Cc;
+	bh=iYxO94MgBxnaStR3YmNm4fJ2cymWYovrBVWJVySs7/s=;
+	b=XCTNZozLstLkj1wqGAddgKRLBecXBbmqgb+Ksvzye25da94FMU9PKg6Fb3wBSDov
+	qCunkTaqhpUC3zkV/Uwav4tUNkltEhJMFzW5fLJpDCpIkXEJXZz95lE/JECTJmtHfKB
+	Gl8hnmf4I4GYc76lz5YXDmbjH/U3RXYIHa7pCQ64=
+Received: from [192.168.8.156] (149.248.38.156 [149.248.38.156]) by mx.zohomail.com
+	with SMTPS id 170531303102755.11796926264742; Mon, 15 Jan 2024 02:03:51 -0800 (PST)
+Message-ID: <faa3ef680b68bc8facb1f0c4714f4722162bd691.camel@rong.moe>
+Subject: Re: Scrub reports uncorrectable errors with correctable errors
+ unrepaired, but all files are fine
+From: Rongrong <i@rong.moe>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>, 
+	"linux-btrfs@vger.kernel.org"
+	 <linux-btrfs@vger.kernel.org>
+Date: Mon, 15 Jan 2024 18:03:46 +0800
+In-Reply-To: <8a89a5cf-8d10-4737-bebf-f60f89dacf9b@gmx.com>
+References: <8bd12a1ee60172f53ee0c27374f41c3ec9976be8.camel@rong.moe>
+	 <27fb4ed5-c3ce-4ab7-a3fd-d77dc8dd4fb2@gmx.com>
+	 <b10d90cc5eb4f49eabfe3cc0df92ef40b64428b0.camel@rong.moe>
+	 <794c3085-c5ee-417f-aeaf-d6c0ebd7d96f@gmx.com>
+	 <f8999f0745b2cddb42d3fbc16fdaf346b530c848.camel@outlook.com>
+	 <1b4f45c0-da2b-4817-8cdf-a07fd405ce9c@gmx.com>
+	 <50e1a0a0cf29f361426c0eb7005d389e4dd2833c.camel@rong.moe>
+	 <2e275902-dc1c-41b1-b1fb-998f7fd16de3@gmx.com>
+	 <0de1265ff914ff0fa772fad548c329c6d7f280b3.camel@rong.moe>
+	 <31a6c044-1540-4345-9504-2234f93aa150@suse.com>
+	 <3e0ba2b7-bbe6-448f-b4d2-2e7dde291735@gmx.com>
+	 <8a89a5cf-8d10-4737-bebf-f60f89dacf9b@gmx.com>
+Autocrypt: addr=i@rong.moe; prefer-encrypt=mutual;
+ keydata=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
+	cMTsfqztU+orM
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3-1 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/4] kstrtox: introduce a safer version of memparse()
-Content-Language: en-US
-To: Randy Dunlap <rdunlap@infradead.org>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
- andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM, ddiss@suse.de,
- geert@linux-m68k.org
-References: <cover.1704422015.git.wqu@suse.com>
- <f972b96cad42e49235d90b863038a080acc0059e.1704422015.git.wqu@suse.com>
- <64def21a-2727-455b-9e35-e2a56d2f1625@infradead.org>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <64def21a-2727-455b-9e35-e2a56d2f1625@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5CmCsA2KrGFN1660ZZ6Fw5boWVfnwNgEfD8SQxdTe95sR24pJ5U
- cwMVFyeCdgZolIokIjCzCmrTrcYDHH+6rq36CbDiqjXVwYhT6RfjeDTVvrTVUDAeVvGMDoz
- KCRa38c5559YZ6eASfEF9o2gLb5c2jY4HpCJ3swk3yaJHnTThsdObMCqZsy37fX5RjCR5iq
- 7hDjDUTu2QU+BsEH+XW8g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:wAWENv8Y+4Q=;d5JEhPuh1tIsRx9RgKwpd658CC5
- WYe5v5Dc50tM0ygydYabpys81qyokGhgNHbfPeULdtGSaLe7nHR5t+pyDXDIVJEd0Dd+zTiCo
- cM9ES7ENPY+T/niaEVRODo75md3g/iLpiGSbUbLPuMT08xfMTYgiJYsUr4XBnhfvRjNHjUOMF
- 0Ag37SsncU9rZF4WC1BDPL8H5ZJlIp9DUlojUJ2hLpLli88pOpDRoYEYhYOqqLlFGNLvAcPKQ
- /u1BzIj5Ob/t82hVWuTCSeo8EDErsFIlT2Xp+t5wEIe6hEyeHyrQAHckqEHsx5B2+w/vLnQ1u
- WboT+mB5G/HgiPyMS/DU6Bk8FjWdDBgqlupv3fNJr869oa/nvFIe3Bi3WW5fNGq4VGkxErN5X
- ZJ+ffBQCdB5RxDWJN3pEVSnaM0kjA1ZU0/JbU5bAyINovn4oS2Su4i86OLwHvu6cbQxRcfMrb
- 3dZMRmB4wA2FLFCeus+9Qlu3isMBc+SQq+an4uLlNgnExmXw/yRoZTEG8+VQFqmFMakS8yo+p
- 3Sl2mmYzrEh/c85h9DXie6i1+RQpDfCRWJgrvILx2lNIdlA8nkQS6Mde8pUwJhz4cjN1JHKqf
- N9vHRwvJp9dNnTxKL8ys2VNiKN8PkWjuOyp+BKDg2Z/gVJj1qiey/SLXPjQ2UfCx+KLEzgSOK
- BYbhyIomNg6LSyBzzkpeqmiX3kJOCiaIKd3PYvrlSN3gFWjiZtWQ5epET3whNoUNcyFKVjgvv
- 2UlIHOxkVjHcIQcDL6AdWI8b7p4sGcDP5bRof4B+1pN4Zyf2dySTOWHokAiAYU9sDnIbSpvFG
- HBYTj8YLtl6RVyxr7zE7XjXjo6w41Xx788LpPC3TNnWeEatoNISdCRNQBSMdtUOh3FXsAbC4g
- olm3nk9Iodiz41u0GhKwSYUywb6NwdhrcscMIqY6iRd+2AL3BUtbQbNqh6jXgqeLzJW7MtNpX
- UREzenhHDipJbdFx3AOS0WmkQmM=
+X-ZohoMailClient: External
 
+On Sun, 2024-01-14 at 12:34 +1030, Qu Wenruo wrote:
+> Hi Rongrong,
+>=20
+> Mind to test this branch against your image dump?
+> https://github.com/adam900710/linux/tree/scrub_beyond_chunk_fixes
+>=20
+> For this branch, you do not need to apply to patch to disable blk plug.
+> As the crash is caused by bad scrub read endio (which can not handle any
+> unexpected bio split, thus leads to use-after-free).
 
+Scrub errors, oops, kernel bugs and slab-UAF all vanished without
+disabling blk plug. Cheers!
 
-On 2024/1/15 14:57, Randy Dunlap wrote:
+   Scrub device /dev/vdb (id 1) done
+   Scrub started:    Sun Jan 14 21:57:30 2024
+   Status:           finished
+   Duration:         0:43:59
+           data_extents_scrubbed: 21561913
+           tree_extents_scrubbed: 313432
+           data_bytes_scrubbed: 1128612171776
+           tree_bytes_scrubbed: 5135269888
+           read_errors: 0
+           csum_errors: 0
+           verify_errors: 0
+           no_csum: 0
+           csum_discards: 0
+           super_errors: 0
+           malloc_errors: 0
+           uncorrectable_errors: 0
+           unverified_errors: 0
+           corrected_errors: 0
+           last_physical: 1994106359808
+
+   [    0.000000] Linux version 6.7.0-rc5-x64v3-dbg+ (icenowy@edelgard) (gc=
+c (GCC) 13.2.0 20230727 (AOSC OS, Core), GNU ld (GNU Binutils) 2.41) #13 SM=
+P PREEMPT_DYNAMIC Sun Jan 14 17:42:36 CST 2024
+   [    0.386759] kasan: KernelAddressSanitizer initialized
+   [  311.624759] BTRFS info (device vdb): scrub: started on devid 1
+   [ 2950.646598] BTRFS info (device vdb): scrub: finished on devid 1 with =
+status: 0
+
+So,
+Tested-by: Rongrong <i@rong.moe>
+
+> Thanks,
+> Qu
+
+On Sun, 2024-01-14 at 07:53 +1030, Qu Wenruo wrote:
 [...]
->> @@ -113,6 +113,105 @@ static int _kstrtoull(const char *s, unsigned int=
- base, unsigned long long *res)
->>   	return 0;
->>   }
->>
->> +/**
->> + * memparse_safe - convert a string to an unsigned long long, safer ve=
-rsion of
->> + * memparse()
->> + *
->> + * @s:		The start of the string. Must be null-terminated.
->
-> Unless I misunderstand, this is the biggest problem that I see with
-> memparse_safe(): "Must be null-terminated".
-> memparse() does not have that requirement.
+> Although I believe the root cause is the same for the uncorrectable error=
+s.
+>=20
+> And IMHO, even with the patch, as long as you enable KASAN, KASAN would
+> still warn about the use-after-free.
 
-This is just an extra safety requirement.
+That was what I had believed until I ran scrub (which blk plug disabled
+and KASAN enabled) twice on the original dump image without seeing any
+KASAN warning, kernel bug, or oops.
 
-In reality, memparse_safe() would end at the either the first
-unsupported suffix after the valid numeric string (including '\0'),
-or won't be updated if any error is hit (either no valid string at all,
-or some overflow happened).
+It's confusing, but I think we can just look ahead as the
+scrub_beyond_chunk_fixes branch has been proven to fix the bug :)
 
-For most if not all call sites, the string passed in is already
-null-terminated.
+[...]
+> Thanks,
+> Qu
 
->
-> And how is @retptr updated if the string is null-terminated?
+I have some questions that may or may not be off-topic:
 
-E.g "123456G\0", in this case if suffix "G" is allowed, then @retptr
-would be updated to '\0'.
+- Is there any other disadvantage of having a converted btrfs with data
+never balanced?
 
-Or another example "123456\0", @retptr would still be updated to '\0'.
+- Furthermore, the fact that the bug was introduced in v6.4-rc1 and
+reported only after v6.7 had been released hints that a converted btrfs
+with data never balanced has the risk of running into edge cases.
+Should we recommend users to run a full balance (currently only
+metadata balance is recommended) after the conversion, if they would
+like to make their fs "more stable"?
 
->
-> If the "Must be null-terminated." is correct, it requires that every use=
-r/caller
-> first determine the end of the number (how? space and/or any special cha=
-racter
-> or any alphabetic character that is not in KMGTPE? Then save that ending=
- char,
-> change it to NUL, call memparse_safe(), then restore the saved char?
-
-There are already test cases like "86k \0" (note all strings in the test
-case is all null terminated), which would lead to a success parse, with
-@retptr updated to ' ' (if suffix K is specified) or 'k' (if suffix K is
-not specified).
-
-So the behavior is still the same.
-It may be my expression too confusing.
-
-Any recommendation for the comments?
+Thanks again for all your detailed explanations, helpful suggestions
+and the fix.
 
 Thanks,
-Qu
-
->
-> I'm hoping that the documentation is not correct...
->
->> + *		The base is determined automatically, if it starts with "0x"
->> + *		the base is 16, if it starts with "0" the base is 8, otherwise
->> + *		the base is 10.
->> + *		After a valid number string, there can be at most one
->> + *		case-insensitive suffix character, specified by the @suffixes
->> + *		parameter.
->> + *
->> + * @suffixes:	The suffixes which should be handled. Use logical ORed
->> + *		memparse_suffix enum to indicate the supported suffixes.
->> + *		The suffixes are case-insensitive, all 2 ^ 10 based.
->> + *		Supported ones are "KMGPTE".
->> + *		If one suffix (one of "KMGPTE") is hit but that suffix is
->> + *		not specified in the @suffxies parameter, it ends the parse
->> + *		normally, with @retptr pointed to the (unsupported) suffix.
->> + *		E.g. "68k" with suffxies "M" returns 68 decimal, @retptr
->> + *		updated to 'k'.
->> + *
->> + * @res:	Where to write the result.
->> + *
->> + * @retptr:	(output) Optional pointer to the next char after parse com=
-pletes.
->> + *
->> + * Returns:
->> + * * %0 if any valid numeric string can be parsed, and @retptr is upda=
-ted.
->> + * * %-EINVAL if no valid number string can be found.
->> + * * %-ERANGE if the number overflows.
->> + * * For negative return values, @retptr is not updated.
->> + */
->> +noinline int memparse_safe(const char *s, enum memparse_suffix suffixe=
-s,
->> +			   unsigned long long *res, char **retptr)
->> +{
->
-> Thanks.
+Rongrong
 
