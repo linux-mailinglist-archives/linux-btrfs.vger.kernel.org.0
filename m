@@ -1,166 +1,190 @@
-Return-Path: <linux-btrfs+bounces-1452-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1453-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2FFD82DE6A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 18:22:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19D0E82E06E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 20:09:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E2BDB21C90
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 17:22:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 972732823E0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jan 2024 19:09:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C566182CA;
-	Mon, 15 Jan 2024 17:22:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C7DB18E15;
+	Mon, 15 Jan 2024 19:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dZwSw0CF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nFgLacu4";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dZwSw0CF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nFgLacu4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D9F417C95
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jan 2024 17:22:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7ba97338185so914909339f.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jan 2024 09:22:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705339339; x=1705944139;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bIMtM5cQIWfoWWtc9gO0GJqV1TeSsNtRegOy1qIgr3s=;
-        b=QqoDMUZ6P28yHucYnOOwi8I9Tui0ppf+qyaVrXFaIsionD9uQy+OC8GxWQNmz3BkKp
-         0sR537/WXmWGNK/1tERe/1jbA04zGwXrRso34dLQnpF2QIycFp+ufUTbgRzghMrIOfjy
-         IijwQQG0qPPO1jM6bznp4XRgLgOdL3VgA91BFL3zr0+p+gFhdAh4vjFBmxqkP15LLo+h
-         muDOiJAN+BlwtyjL8H/Pno6TzWsZWTRtekVLepfjbfJNoIKQSokcF2JsSY5ttxwFCaLH
-         R8ErrouUhW+rgWPQ7yFp9jApKMjtgC5ME7AV5fzKcTstiPQmNfNlczYjWLvud4toDZH1
-         VwZA==
-X-Gm-Message-State: AOJu0Yxa1sU8ds4ui9TM/iOLfjcMr5NcHJabadqBNNdAob4gDg789sh1
-	yngRkcrMhfhBrsrZWbOa5mhS29qRDpGJRFtqrjPbwP9970i4
-X-Google-Smtp-Source: AGHT+IH2eJRKR3KXx5475N99GDNulm6KJcgkpSdGuTwLKenANzxE7B3NCqfQrTzEQL1L9c6a3kSaSznGhcpGRTM3AIpzKofhp11F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 743B418C01;
+	Mon, 15 Jan 2024 19:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4CB191FD3E;
+	Mon, 15 Jan 2024 19:08:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705345723;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aXqG9tpDXOuq5pm5OTaGvyKE6oX/ladrg2W+JHdkSeI=;
+	b=dZwSw0CFBj2OUJUusoZfn5JO6NPs4vwC+ecrRAnAOVZRsG9+clFSNNqtsfJUhJ57s9w00Z
+	mK3Ww/G4y3Yb5zMpp0Pxv44MkQzkhdo+I9xTyCE99Egsm1caw6PorLnkb5h4fXMN5VmMDc
+	VmfW20iouHWQHEEbkNxdhYl94jU7Q/M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705345723;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aXqG9tpDXOuq5pm5OTaGvyKE6oX/ladrg2W+JHdkSeI=;
+	b=nFgLacu4Yloox2cbPLv2Syy8y9GPgU+henqjrd4QjHnDs+Wbf5oWGy2fBYWI8hx5lQzZjk
+	P6hSVI4JUnYA+9DA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705345723;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aXqG9tpDXOuq5pm5OTaGvyKE6oX/ladrg2W+JHdkSeI=;
+	b=dZwSw0CFBj2OUJUusoZfn5JO6NPs4vwC+ecrRAnAOVZRsG9+clFSNNqtsfJUhJ57s9w00Z
+	mK3Ww/G4y3Yb5zMpp0Pxv44MkQzkhdo+I9xTyCE99Egsm1caw6PorLnkb5h4fXMN5VmMDc
+	VmfW20iouHWQHEEbkNxdhYl94jU7Q/M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705345723;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aXqG9tpDXOuq5pm5OTaGvyKE6oX/ladrg2W+JHdkSeI=;
+	b=nFgLacu4Yloox2cbPLv2Syy8y9GPgU+henqjrd4QjHnDs+Wbf5oWGy2fBYWI8hx5lQzZjk
+	P6hSVI4JUnYA+9DA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EEC11139D2;
+	Mon, 15 Jan 2024 19:08:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id MfwfObqCpWXyEAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Mon, 15 Jan 2024 19:08:42 +0000
+Date: Mon, 15 Jan 2024 20:08:25 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: David Sterba <dsterba@suse.cz>,
+	syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com, clm@fb.com,
+	daniel@iogearbox.net, dsterba@suse.com, john.fastabend@gmail.com,
+	josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	liujian56@huawei.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] btrfs: fix oob Read in getname_kernel
+Message-ID: <20240115190824.GV31555@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <tencent_44CA0665C9836EF9EEC80CB9E7E206DF5206@qq.com>
+ <20240110155545.GW28693@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:29bc:b0:7ba:cef9:803a with SMTP id
- u28-20020a05660229bc00b007bacef9803amr73471ios.4.1705339339502; Mon, 15 Jan
- 2024 09:22:19 -0800 (PST)
-Date: Mon, 15 Jan 2024 09:22:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008d7a36060eff419e@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_issue_discard
-From: syzbot <syzbot+4a4f1eba14eb5c3417d1@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	kristian@klausen.dk, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110155545.GW28693@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.30
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,qq.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[33f23b49ac24f986c9e8];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.00)[-0.022];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[qq.com:email];
+	 FREEMAIL_TO(0.00)[qq.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[suse.cz,syzkaller.appspotmail.com,fb.com,iogearbox.net,suse.com,gmail.com,toxicpanda.com,vger.kernel.org,huawei.com,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-Hello,
+On Wed, Jan 10, 2024 at 04:55:46PM +0100, David Sterba wrote:
+> On Tue, Dec 19, 2023 at 06:19:10PM +0800, Edward Adam Davis wrote:
+> > If ioctl does not pass in the correct tgtdev_name string, oob will occur because
+> > "\0" cannot be found.
+> > 
+> > Reported-and-tested-by: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
+> > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> > ---
+> >  fs/btrfs/dev-replace.c | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> > index f9544fda38e9..e7e96e57f682 100644
+> > --- a/fs/btrfs/dev-replace.c
+> > +++ b/fs/btrfs/dev-replace.c
+> > @@ -730,7 +730,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
+> >  int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+> >  			    struct btrfs_ioctl_dev_replace_args *args)
+> >  {
+> > -	int ret;
+> > +	int ret, len;
+> >  
+> >  	switch (args->start.cont_reading_from_srcdev_mode) {
+> >  	case BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_ALWAYS:
+> > @@ -740,8 +740,10 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+> >  		return -EINVAL;
+> >  	}
+> >  
+> > +	len = strnlen(args->start.tgtdev_name, BTRFS_DEVICE_PATH_NAME_MAX + 1);
+> >  	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
+> > -	    args->start.tgtdev_name[0] == '\0')
+> > +	    args->start.tgtdev_name[0] == '\0' ||
+> > +	    len == BTRFS_DEVICE_PATH_NAME_MAX + 1)
+> 
+> I think srcdev_name would have to be checked the same way, but instead
+> of strnlen I'd do memchr(name, 0, BTRFS_DEVICE_PATH_NAME_MAX). The check
+> for 0 in [0] is probably pointless, it's just a shortcut for an empty
+> buffer. We expect a valid 0-terminated string, which could be an invalid
+> path but that will be found out later when opening the block device.
 
-syzbot found the following issue on:
+Please let me know if you're going to send an updated fix. I'd like to
+get this fixed to close the syzbot report but also want to give you the
+credit for debugging and fix.
 
-HEAD commit:    3e7aeb78ab01 Merge tag 'net-next-6.8' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13f61d33e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8e557b1c0a57d2c0
-dashboard link: https://syzkaller.appspot.com/bug?extid=4a4f1eba14eb5c3417d1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16bdfc0be80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=177f3c83e80000
+The preferred fix is something like that:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4c8a9f091067/disk-3e7aeb78.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8cb663b518a5/vmlinux-3e7aeb78.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/bc6d189cfcf3/bzImage-3e7aeb78.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/e37fd964ba01/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/174ce0bdbd5e/mount_4.gz
-
-The issue was bisected to:
-
-commit 2b9ac22b12a266eb4fec246a07b504dd4983b16b
-Author: Kristian Klausen <kristian@klausen.dk>
-Date:   Fri Jun 18 11:51:57 2021 +0000
-
-    loop: Fix missing discard support when using LOOP_CONFIGURE
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=111924a5e80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=131924a5e80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=151924a5e80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4a4f1eba14eb5c3417d1@syzkaller.appspotmail.com
-Fixes: 2b9ac22b12a2 ("loop: Fix missing discard support when using LOOP_CONFIGURE")
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5071 at fs/btrfs/extent-tree.c:1263 btrfs_issue_discard+0x5ba/0x5e0 fs/btrfs/extent-tree.c:1263
-Modules linked in:
-CPU: 0 PID: 5071 Comm: syz-executor384 Not tainted 6.7.0-syzkaller-04629-g3e7aeb78ab01 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:btrfs_issue_discard+0x5ba/0x5e0 fs/btrfs/extent-tree.c:1263
-Code: 3c 30 00 74 08 4c 89 e7 e8 23 51 58 fe 4d 01 2c 24 31 ed 89 e8 48 83 c4 28 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 87 be fb fd 90 <0f> 0b 90 4d 01 fd 49 29 dd 49 81 e5 00 fe ff ff 49 89 df e9 74 fa
-RSP: 0018:ffffc900043df640 EFLAGS: 00010293
-RAX: ffffffff83933039 RBX: 0000000000504200 RCX: ffff888076528000
-RDX: 0000000000000000 RSI: 0000000000504018 RDI: 0000000000504200
-RBP: ffffc900043df810 R08: ffffffff83932ab8 R09: 1ffff1100516a40e
-R10: dffffc0000000000 R11: ffffed100516a40f R12: ffffc900043df760
-R13: 000000000018bfe8 R14: ffff88801b14b980 R15: 0000000000504018
-FS:  00007f61f8a7e6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f790f99dae0 CR3: 0000000028f87000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- do_discard_extent fs/btrfs/extent-tree.c:1359 [inline]
- btrfs_discard_extent+0x605/0xa80 fs/btrfs/extent-tree.c:1410
- do_trimming+0x1fd/0x590 fs/btrfs/free-space-cache.c:3673
- trim_no_bitmap+0xd60/0x11d0 fs/btrfs/free-space-cache.c:3797
- btrfs_trim_block_group+0x14f/0x450 fs/btrfs/free-space-cache.c:4037
- btrfs_trim_fs+0x3c7/0x10d0 fs/btrfs/extent-tree.c:6315
- btrfs_ioctl_fitrim+0x5ad/0x610 fs/btrfs/ioctl.c:535
- btrfs_ioctl+0x12b/0xd40 fs/btrfs/ioctl.c:4583
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f61f8aef469
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 21 1f 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f61f8a7e168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000040 RCX: 00007f61f8aef469
-RDX: 0000000020000080 RSI: 00000000c0185879 RDI: 0000000000000005
-RBP: 00007f61f8b95710 R08: 00007f61f8b95718 R09: 00007f61f8b95718
-R10: 00007f61f8a7e6c0 R11: 0000000000000246 R12: 00007f61f8b9571c
-R13: 000000000000006e R14: 00007ffd9ed8dbf0 R15: 00007ffd9ed8dcd8
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -741,6 +741,8 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+        if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
+            args->start.tgtdev_name[0] == '\0')
+                return -EINVAL;
++       args->start.srcdev_name[BTRFS_PATH_NAME_MAX] = 0;
++       args->start.tgtdev_name[BTRFS_PATH_NAME_MAX] = 0;
+ 
+        ret = btrfs_dev_replace_start(fs_info, args->start.tgtdev_name,
+                                        args->start.srcdevid,
 
