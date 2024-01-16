@@ -1,161 +1,160 @@
-Return-Path: <linux-btrfs+bounces-1468-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1469-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E58482EC40
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 10:54:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDC5682ED49
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 12:01:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12A511F224CC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 09:54:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E64DB23652
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 11:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4446134DB;
-	Tue, 16 Jan 2024 09:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E851A71A;
+	Tue, 16 Jan 2024 11:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b="E0X/tHWC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="njZImTaL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from dvalin.narfation.org (dvalin.narfation.org [213.160.73.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC2A134A1;
-	Tue, 16 Jan 2024 09:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=narfation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=narfation.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
-	s=20121; t=1705398486;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/VCLSujzzlDwuQlHwmx12Nj9mX+R3Jv83uQp+uToPts=;
-	b=E0X/tHWCKP+I7eyjg29dLJkauXq79JyGU0MK8In7XKzm4VDEmrdqTc7dxx6so8eYcL53gf
-	Nwhgz0OCj2RZ4EMqm4cBJVv+cwNETy7TDwSefwODFUXjgDw6u+HYRWMZ5BDqzU9veqE+FB
-	MnYtekoPtvzsXOZZa7VducunC5Fbg8s=
-From: Sven Eckelmann <sven@narfation.org>
-To: linus.luessing@c0d3.blue
-Cc: b.a.t.m.a.n@lists.open-mesh.org, clm@fb.com, davem@davemloft.net,
- dsterba@suse.com, edumazet@google.com, josef@toxicpanda.com, kuba@kernel.org,
- linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
- syzkaller-bugs@googlegroups.com,
- syzbot <syzbot+ebe64cc5950868e77358@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] [btrfs?] memory leak in corrupted
-Date: Tue, 16 Jan 2024 10:48:03 +0100
-Message-ID: <23660052.EfDdHjke4D@ripper>
-In-Reply-To: <000000000000beadc4060f0cbc23@google.com>
-References: <000000000000beadc4060f0cbc23@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25601A5B7;
+	Tue, 16 Jan 2024 11:00:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31BB1C433F1;
+	Tue, 16 Jan 2024 11:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705402830;
+	bh=ka4ginUjS5CjHM0V8b8SOVIgogjHzG2IgkhfNwVc7Mk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=njZImTaLdGb3i9JS73leCK9eh65efGnlVfx/VydMfLkNv5haxpeZsJz542IqxYsAd
+	 bk0gnJZretKX1VoQYIliU5Z9a8SVRDJyb0fPuSXtVPAUuXQlmkrfW208s9DtVHKaqu
+	 oBs0HJCLs2LSHkpCGwpvXoKhbJSHLJ1k/+L+Tyo1s0G2fqEMt4wimAIFk1kKQfsAiF
+	 /t2suYFIZybiRQR0l0UALkir0ZAjgfbJaIrRjP42+hAQUdVHv05DZCdAwzV2+GySso
+	 hk0R/R31qg4CLn2XgwnQSj0W1Mys3DF3+LDZ49i3v4/Ue+LpznmxXib7T/rYR93IGP
+	 UWVPaWNx7TRKA==
+From: Christian Brauner <brauner@kernel.org>
+To: lsf-pc@lists.linux-foundation.org
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-btrfs@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	Matthew Wilcox <willy@infradead.org>,
+	Jan Kara <jack@suse.cz>,
+	Christoph Hellwig <hch@infradead.org>
+Subject: [LSF/MM/BPF TOPIC] Dropping page cache of individual fs
+Date: Tue, 16 Jan 2024 11:50:32 +0100
+Message-ID: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart9125406.EvYhyI6sBW";
- micalg="pgp-sha512"; protocol="application/pgp-signature"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4352; i=brauner@kernel.org; h=from:subject:message-id; bh=EZGa/THoxMnhCwXco+IB49hkRcRBCokvtP+wu+ae8TI=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQui6/iW+TkW1bY+nLiIYdrzh8e7+7m1EpZM4GVceKZa 8sXfT/9u6OUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAi6S0Mf4X/PtP+YNM6IYvH 8eqNoOLTTVszb3D5fp7MoH4wqqaO7SLD/yrh1jc7bf/qtzIvCHPh+Xq6gf/7hrsrVj+ZLmHxpcV jBwcA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
---nextPart9125406.EvYhyI6sBW
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Sven Eckelmann <sven@narfation.org>
-To: linus.luessing@c0d3.blue
-Subject: Re: [syzbot] [btrfs?] memory leak in corrupted
-Date: Tue, 16 Jan 2024 10:48:03 +0100
-Message-ID: <23660052.EfDdHjke4D@ripper>
-In-Reply-To: <000000000000beadc4060f0cbc23@google.com>
-References: <000000000000beadc4060f0cbc23@google.com>
-MIME-Version: 1.0
+Hey,
 
-@Linus, this looks like something for you.
+I'm not sure this even needs a full LSFMM discussion but since I
+currently don't have time to work on the patch I may as well submit it.
 
-On Tuesday, 16 January 2024 10:27:20 CET syzbot wrote:
-> syzbot found the following issue on:
-> 
-> HEAD commit:    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14620debe80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a7031f9e71583b4a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ebe64cc5950868e77358
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a344c1e80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/82a7201eef4c/disk-052d5343.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/ca12b4c31826/vmlinux-052d5343.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/3f07360ba5a8/bzImage-052d5343.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ebe64cc5950868e77358@syzkaller.appspotmail.com
+Gnome recently got awared 1M Euro by the Sovereign Tech Fund (STF). The
+STF was created by the German government to fund public infrastructure:
 
-The relevant line is the batadv_mcast_forw_tracker_tvlv_handler registration 
-in batadv_mcast_init() which was introduced in
-commit 07afe1ba288c ("batman-adv: mcast: implement multicast packet reception and forwarding")
+"The Sovereign Tech Fund supports the development, improvement and
+ maintenance of open digital infrastructure. Our goal is to sustainably
+ strengthen the open source ecosystem. We focus on security, resilience,
+ technological diversity, and the people behind the code." (cf. [1])
 
-And I can't find the batadv_tvlv_handler_unregister for 
-BATADV_TVLV_MCAST_TRACKER in batadv_mcast_free()
+Gnome has proposed various specific projects including integrating
+systemd-homed with Gnome. Systemd-homed provides various features and if
+you're interested in details then you might find it useful to read [2].
+It makes use of various new VFS and fs specific developments over the
+last years.
 
-Kind regards,
-	Sven
+One feature is encrypting the home directory via LUKS. An approriate
+image or device must contain a GPT partition table. Currently there's
+only one partition which is a LUKS2 volume. Inside that LUKS2 volume is
+a Linux filesystem. Currently supported are btrfs (see [4] though),
+ext4, and xfs.
 
-> 
-> BUG: memory leak
-> unreferenced object 0xffff88811c71a980 (size 64):
->   comm "syz-executor.7", pid 5063, jiffies 4294953937
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 20 8e 7e 1c 81 88 ff ff  ........ .~.....
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace (crc 9f8721dd):
->     [<ffffffff815f7d53>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
->     [<ffffffff815f7d53>] slab_post_alloc_hook mm/slub.c:3817 [inline]
->     [<ffffffff815f7d53>] slab_alloc_node mm/slub.c:3860 [inline]
->     [<ffffffff815f7d53>] kmalloc_trace+0x283/0x330 mm/slub.c:4007
->     [<ffffffff84aae617>] kmalloc include/linux/slab.h:590 [inline]
->     [<ffffffff84aae617>] kzalloc include/linux/slab.h:711 [inline]
->     [<ffffffff84aae617>] batadv_tvlv_handler_register+0xf7/0x2a0 net/batman-adv/tvlv.c:560
->     [<ffffffff84a8d09f>] batadv_mcast_init+0x4f/0xc0 net/batman-adv/multicast.c:1926
->     [<ffffffff84a895b9>] batadv_mesh_init+0x209/0x2f0 net/batman-adv/main.c:231
->     [<ffffffff84a9fa88>] batadv_softif_init_late+0x1f8/0x280 net/batman-adv/soft-interface.c:812
->     [<ffffffff83f48559>] register_netdevice+0x189/0xca0 net/core/dev.c:10188
->     [<ffffffff84a9f255>] batadv_softif_newlink+0x55/0x70 net/batman-adv/soft-interface.c:1088
->     [<ffffffff83f61dc0>] rtnl_newlink_create net/core/rtnetlink.c:3515 [inline]
->     [<ffffffff83f61dc0>] __rtnl_newlink+0xb10/0xec0 net/core/rtnetlink.c:3735
->     [<ffffffff83f621bc>] rtnl_newlink+0x4c/0x70 net/core/rtnetlink.c:3748
->     [<ffffffff83f5cd1f>] rtnetlink_rcv_msg+0x22f/0x5b0 net/core/rtnetlink.c:6615
->     [<ffffffff84093291>] netlink_rcv_skb+0x91/0x1d0 net/netlink/af_netlink.c:2543
->     [<ffffffff84092242>] netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
->     [<ffffffff84092242>] netlink_unicast+0x2c2/0x440 net/netlink/af_netlink.c:1367
->     [<ffffffff84092701>] netlink_sendmsg+0x341/0x690 net/netlink/af_netlink.c:1908
->     [<ffffffff83ef2912>] sock_sendmsg_nosec net/socket.c:730 [inline]
->     [<ffffffff83ef2912>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
->     [<ffffffff83ef5af4>] __sys_sendto+0x164/0x1e0 net/socket.c:2191
->     [<ffffffff83ef5b98>] __do_sys_sendto net/socket.c:2203 [inline]
->     [<ffffffff83ef5b98>] __se_sys_sendto net/socket.c:2199 [inline]
->     [<ffffffff83ef5b98>] __x64_sys_sendto+0x28/0x30 net/socket.c:2199
+The following issue isn't specific to systemd-homed. Gnome wants to be
+able to support locking encrypted home directories. For example, when
+the laptop is suspended. To do this the luksSuspend command can be used.
 
+The luksSuspend call is nothing else than a device mapper ioctl to
+suspend the block device and it's owning superblock/filesystem. Which in
+turn is nothing but a freeze initiated from the block layer:
 
---nextPart9125406.EvYhyI6sBW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+dm_suspend()
+-> __dm_suspend()
+   -> lock_fs()
+      -> bdev_freeze()
 
------BEGIN PGP SIGNATURE-----
+So when we say luksSuspend we really mean block layer initiated freeze.
+The overall goal or expectation of userspace is that after a luksSuspend
+call all sensitive material has been evicted from relevant caches to
+harden against various attacks. And luksSuspend does wipe the encryption
+key and suspend the block device. However, the encryption key can still
+be available clear-text in the page cache. To illustrate this problem
+more simply:
 
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmWmUNMACgkQXYcKB8Em
-e0ak3w//d9HRSZJiTWYrWkiOMLEoDd7oWa9shGcdm9qS+bmJ4RWkqyLQKWiLl6yz
-CcGxtbDBUXvVgMUHX9BuctKnigZ7VA+7wMY1ZLVE0KUPOlqkvlW9GvkOutwa2f1d
-hwFa2uPCSXqWbIaU6JjxNvHM0sEJou392MebhV5n9M9zJlS8/v5t7lwgKa3tnLL2
-vhyqSKKs7BESIvUhI399nPr2AfOhw+qqndV35B5gAJVeHC+iSWBycKolP/LstaJq
-Z7JE1eusP50i3vrSVIglwiefF7kUq1Y088F1nq2ommuVXFfPAxss5bwUupG7Jmtf
-gIYIslX/eLNpahJvVIKNTMPBjfcaeEbT8e87xIzhT1H4quv2oApKfWTM5u0XryDK
-29ICqroEH4DCv+gEYF4Miip40m982YtZlB1wnShFK3icFZaEGipgqxJ67/XJNkfP
-GXdNnzWlEl6PXsS388TYLkQlxWdFNsSM08IPZjolOEgIDhZaM3AUCDUe22BWiN5Z
-BdbeU3sWmiy3BaZ2fUh6M0Cawd1Oz4QneJl3rPce1jeDI4ee9CtTdgWd1/ziG8yH
-0QhMTljzGz5WEaPBT9L7PsKf33/s/IY1GwXzB/maObFi10G6nn+743btOlCodOb3
-i4lTc8Z3Vl+4CCl78CUfQemr/nd8irtzCJk/OJuUlOSmepgs+J4=
-=A35g
------END PGP SIGNATURE-----
+truncate -s 500M /tmp/img
+echo password | cryptsetup luksFormat /tmp/img --force-password
+echo password | cryptsetup open /tmp/img test
+mkfs.xfs /dev/mapper/test
+mount /dev/mapper/test /mnt
+echo "secrets" > /mnt/data
+cryptsetup luksSuspend test
+cat /mnt/data
 
---nextPart9125406.EvYhyI6sBW--
+This will still happily print the contents of /mnt/data even though the
+block device and the owning filesystem are frozen because the data is
+still in the page cache.
 
+To my knowledge, the only current way to get the contents of /mnt/data
+or the encryption key out of the page cache is via
+/proc/sys/vm/drop_caches which is a big hammer.
 
+My initial reaction is to give userspace an API to drop the page cache
+of a specific filesystem which may have additional uses. I initially had
+started drafting an ioctl() and then got swayed towards a
+posix_fadvise() flag. I found out that this was already proposed a few
+years ago but got rejected as it was suspected this might just be
+someone toying around without a real world use-case. I think this here
+might qualify as a real-world use-case.
 
+This may at least help securing users with a regular dm-crypt setup
+where dm-crypt is the top layer. Users that stack additional layers on
+top of dm-crypt may still leak plaintext of course if they introduce
+additional caching. But that's on them.
+
+Of course other ideas welcome.
+
+[1]: https://www.sovereigntechfund.de/en
+[2]: https://systemd.io/HOME_DIRECTORY
+[3]: https://lore.kernel.org/linux-btrfs/20230908-merklich-bebauen-11914a630db4@brauner/
+[4]: A bdev_freeze() call ideally does the following:
+
+     (1) Freeze the block device @bdev
+     (2) Find the owning superblock of the block device @bdev and freeze the
+         filesystem as well.
+
+     Especially (2) wasn't true for a long time. Filesystems would only be
+     able to freeze the filesystems on the main block device. For example, an
+     xfs filesystem using an external log device would not be able to be
+     frozen if the block layer request came via the external log device. This
+     is fixed since v6.8 for all filesystems using appropriate holder
+     operations.
+
+     Except for btrfs where block device initiated freezes don't work at all;
+     not even for the main block device. I've pointed this out months ago in [3].
+
+     Which is why we currently can't use btrfs with LUKS2 encryption as as
+     luksSuspend call will leave the filesystem unfrozen.
+[5]: https://gitlab.com/cryptsetup/cryptsetup/-/issues/855
+     https://gitlab.gnome.org/Teams/STF/homed/-/issues/23
 
