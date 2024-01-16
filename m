@@ -1,141 +1,80 @@
-Return-Path: <linux-btrfs+bounces-1458-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1459-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7598382E7AD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 02:53:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6A5D82E7B5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 02:54:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E19721C22CC9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 01:53:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 633DF1F22D2A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 01:54:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC6757865;
-	Tue, 16 Jan 2024 01:15:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A2579D0;
+	Tue, 16 Jan 2024 01:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="ACMwnKx8"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bluemole.com header.i=@bluemole.com header.b="aF/b6m00"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out203-205-221-236.mail.qq.com (out203-205-221-236.mail.qq.com [203.205.221.236])
+Received: from mx04lb.world4you.com (mx04lb.world4you.com [81.19.149.114])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1702A6FC8;
-	Tue, 16 Jan 2024 01:14:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1705367390; bh=DCpBVg+aQyT3L+Kdy97dklgtgdBCPPQELOohdN2IBLs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ACMwnKx8OkePAo+TKkh4mm6VLRW+bwd3znbVNaqB5AKe72gorFllQqcdy96Ni/xPB
-	 wP/Mm6sYlsJN3YldUyZXdGwE4u/tva+fdY2mJmmuzCzWeDW7DcCNAjwIoW7pzSIim6
-	 RXmflkXYt0ubQpdqfksJ5ItJKEDxw+O63axATAGA=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id 26E31ED2; Tue, 16 Jan 2024 09:09:46 +0800
-X-QQ-mid: xmsmtpt1705367386t9z3vls8a
-Message-ID: <tencent_29BA3BBBE933849E2C1B404BE21BA525FB08@qq.com>
-X-QQ-XMAILINFO: OOPJ7pYMv25t/i5xDARED5DFubYiZPfDhGJ1pTdWxzL7vQ4ffXDKzsES3yFW87
-	 5Vt/xVbjPBm9GcMfJtspWmJSTFYrIGXGlUpjvs88aUaWIKLpUTBB2p0vEtnigSRWZ5XZi2blXijN
-	 +m820GKQgqIjJT4n9O0Apgq0ACVXVjW9yBvf0aoarXaaPnlWCn8wZtLSPLT1K34GqBlxCGSzXNqZ
-	 VijDbRMlsdjetKemCP+25+ncH6Wz2Q+CEdga7Ffn0ODPUko6lAaFL1pA5mbp0zFJELydIyXRwjw8
-	 wxvl8KPVTqnUQOMuyhQXX87xYF2QQZc/jPWH1gGNYgfiVkM1/R34xY1Dq2hEZVPgWcyoIGsga7WE
-	 p/xqJEn+LwB5iUAW1hfCJQB7b9KORLXYJihBbcMvvIVbrJoFdXfyxgATy3y/jXXB1XWjLHtp/K9g
-	 aDLyu2zCIGAQ+EHAaNZZWFShDQgx3jtDRH4phaMa3fBSiQGOhP0pRbnaSD/n39TyhxMZf7kiZQdO
-	 beg7RLrOsXPOcHwzL0nkfPVvKOhO/i2hmYlHsSD9n5208v1IdoTyagAMwp8ph0akQyVUl+ZrLHit
-	 7ScVjzZdmULr85wGj0j9nip/SNr8ZRXHEERwLA5/na1DKWdgR4VF95HRVzMM6mhiH8uvJRMRQYjY
-	 bmeAtPbOSauv+gE/iLLT9JHMgX92GwVQKRPSGH1X8GEEKdrxjU24hfKi5vPMSg4hD2qik7OeOpde
-	 ahAZIMSbDV2wLcZkhYRfnGyZ92/X0lnd9AizHsDJ4G7y6YcUR3TtbvZvEBCfIeiEhnh0KuI51Mld
-	 3ioHVAdM3EQ9D5vm+LODJAlZoT/oqvNkQ+ukqaYNN60R44rTUG0MxCy7eDLwGwsadzmtPETstnmh
-	 b/iu79xrQo7P2nLt6Vg7veqeGFXmhWpj4x6aNZ9a28WZ/vsZFLw7YoG/OR8FMxszZubV9vXXZ7J8
-	 L8LgKtf7DQLM7dI2ZA+YWGrk8u1+iABcK5zAE6Hcc=
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Edward Adam Davis <eadavis@qq.com>
-To: dsterba@suse.cz
-Cc: clm@fb.com,
-	daniel@iogearbox.net,
-	dsterba@suse.com,
-	eadavis@qq.com,
-	john.fastabend@gmail.com,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	liujian56@huawei.com,
-	syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in getname_kernel (2)
-Date: Tue, 16 Jan 2024 09:09:47 +0800
-X-OQ-MSGID: <20240116010946.58705-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240115190824.GV31555@twin.jikos.cz>
-References: <20240115190824.GV31555@twin.jikos.cz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CFBF7499
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Jan 2024 01:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bluemole.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bluemole.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=bluemole.com; s=dkim11; h=To:Date:Message-Id:Subject:Mime-Version:
+	Content-Transfer-Encoding:Content-Type:From:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=qEPSQ+5bvnmfTsHAUBwtXOT/I+BytFcTfetORs7rBkw=; b=aF/b6m00fKDo997zWfBTGqeCJr
+	mXlP5GgqqqLUDkX9ZwI+Mxd9wSurW8ouH9Ca7Sui68QY6rrHb47qya+ja9p7Z9lPvFWfycE5r6TIJ
+	H65D2RpKMHaRCguN1h5CYb5njJ7ERvzpzO8WDiDnqE01vnJFlJkTWkfjDrnWyxLXOQtyNXb/s/pnC
+	wSWuhZh6HoDeyL3A6YDT1ptqDLKf4wH9Spy0ialpd6uzHEt0GpFkoZPqULG85zBNOjfv+6JGtgbpC
+	pJwz4X606ntoBPUaLIgEShBxxRj63wGQS4uloYOjG/Hh1nmTlFM89EtIIZRZzyXo22UuNgKrZwvAU
+	P8L2opBg==;
+Received: from [62.240.134.68] (helo=cox.noco)
+	by mx04lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <ubu@bluemole.com>)
+	id 1rPXzD-00042B-1D
+	for linux-btrfs@vger.kernel.org;
+	Tue, 16 Jan 2024 02:11:27 +0100
+From: Michael Zacherl <ubu@bluemole.com>
+Content-Type: text/plain;
+	charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Checking status of potentially hibernating encrypted BTRFS?
+Message-Id: <70AC3CE8-D407-4409-AAB7-1F1FF38A7ECE@bluemole.com>
+Date: Tue, 16 Jan 2024 02:11:26 +0100
+To: linux-btrfs@vger.kernel.org
+X-Mailer: Apple Mail (2.3445.104.21)
+X-AV-Do-Run: Yes
 
-On Mon, 15 Jan 2024 20:08:25 +0100, David Sterba wrote:
-> > > If ioctl does not pass in the correct tgtdev_name string, oob will occur because
-> > > "\0" cannot be found.
-> > >
-> > > Reported-and-tested-by: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
-> > > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> > > ---
-> > >  fs/btrfs/dev-replace.c | 6 ++++--
-> > >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-> > > index f9544fda38e9..e7e96e57f682 100644
-> > > --- a/fs/btrfs/dev-replace.c
-> > > +++ b/fs/btrfs/dev-replace.c
-> > > @@ -730,7 +730,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
-> > >  int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
-> > >  			    struct btrfs_ioctl_dev_replace_args *args)
-> > >  {
-> > > -	int ret;
-> > > +	int ret, len;
-> > >
-> > >  	switch (args->start.cont_reading_from_srcdev_mode) {
-> > >  	case BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_ALWAYS:
-> > > @@ -740,8 +740,10 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
-> > >  		return -EINVAL;
-> > >  	}
-> > >
-> > > +	len = strnlen(args->start.tgtdev_name, BTRFS_DEVICE_PATH_NAME_MAX + 1);
-> > >  	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
-> > > -	    args->start.tgtdev_name[0] == '\0')
-> > > +	    args->start.tgtdev_name[0] == '\0' ||
-> > > +	    len == BTRFS_DEVICE_PATH_NAME_MAX + 1)
-> >
-> > I think srcdev_name would have to be checked the same way, but instead
-> > of strnlen I'd do memchr(name, 0, BTRFS_DEVICE_PATH_NAME_MAX). The check
-> > for 0 in [0] is probably pointless, it's just a shortcut for an empty
-> > buffer. We expect a valid 0-terminated string, which could be an invalid
-> > path but that will be found out later when opening the block device.
-> 
-> Please let me know if you're going to send an updated fix. I'd like to
-> get this fixed to close the syzbot report but also want to give you the
-> credit for debugging and fix.
-> 
-> The preferred fix is something like that:
-> 
-> --- a/fs/btrfs/dev-replace.c
-> +++ b/fs/btrfs/dev-replace.c
-> @@ -741,6 +741,8 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
->         if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
->             args->start.tgtdev_name[0] == '\0')
->                 return -EINVAL;
-> +       args->start.srcdev_name[BTRFS_PATH_NAME_MAX] = 0;
-> +       args->start.tgtdev_name[BTRFS_PATH_NAME_MAX] = 0;
-This is not correct,
-1. The maximum length of tgtdev_name is BTRFS_DEVICE_PATH_NAME_MAX + 1
-2. strnlen should be used to confirm the presence of \0 in tgtdev_name
-3. Input values should not be subjectively updated
-4. The current issue only involves tgtdev_name
-> 
->         ret = btrfs_dev_replace_start(fs_info, args->start.tgtdev_name,
->                                         args->start.srcdevid,
+Hello,
+after I accidentally rendered a system with encrypted BTRFS un-bootable, =
+I=E2=80=99m trying to check the state of the BTRFS before I try to mount =
+it externally.
+After some intense experience *) I=E2=80=99d prefer to proceed very =
+carefully.
+I=E2=80=99ve to assume the system is hibernating, so the FS is not in a =
+clean state.
+In order to fix the system I=E2=80=99d have to mount the FS externally.
 
+What=E2=80=99s a save way to proceed?
+Thank you very much!
+
+Michael.
+
+
+*) =
+https://lore.kernel.org/linux-btrfs/12ad8fa0-a4f6-815d-dcab-1b6efa1c9da8@b=
+luemole.com/=
 
