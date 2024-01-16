@@ -1,213 +1,104 @@
-Return-Path: <linux-btrfs+bounces-1487-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1488-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EDF982F48F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 19:48:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1E782F4DF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 20:02:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A85BA1C239E1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 18:48:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6007F285C17
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 19:02:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561371CFA7;
-	Tue, 16 Jan 2024 18:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460B61D54E;
+	Tue, 16 Jan 2024 19:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pNg7g5bC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RAiBODWH";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pNg7g5bC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RAiBODWH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BQlmYwfL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA161CF81
-	for <linux-btrfs@vger.kernel.org>; Tue, 16 Jan 2024 18:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545151CF8F;
+	Tue, 16 Jan 2024 19:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705430881; cv=none; b=PfY/AIQWyS1v1/0qkPdlSBkLKIEA3+goPCqM699te+xH4vziVOU1G8ep6N5Vw6G+1hfsOvhVJleXu3e1g2of/t9X0aCYGSi/DrYJOeQsB4W14+WU7KMm9Cf46hOrydtrx9jFCZuT3Bgz7X16T5Lb5orWv9bTKClZgE/IGFnOk7g=
+	t=1705431739; cv=none; b=AJWDikvdxNIWezvaE8AA5e6kgNFFoGBgEbkkbtcDzO84L8FuEidQf4JmkdzV+VIGrxCutJC/gI+ZhKlT5M0aBIxc27qzmI42Tw0Jgw0lZrkLDR9gAgfFh9pi7e4ROxt1z/KvFJcKIn29Km/r+3BAeBDyMktx5msWm/3LQD2PSDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705430881; c=relaxed/simple;
-	bh=mHgSQgyRGHS+iDOecj1MQ/4mWsqGOybWPl/NRPQg7mM=;
-	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
-	 DKIM-Signature:Received:Received:Date:From:To:Cc:Subject:
-	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:User-Agent:X-Spam-Level:
-	 X-Spam-Score:X-Spamd-Result:X-Spam-Flag; b=NP51bf9Ur76C6pvUEAz4AuGnKUZKcSb5sjLWiKwQVxEYTrhs+BeG6trmx1xoKS3T6JSvcvR0jkcNTUSaPC82cIxQ248P1JmsbE4fey3M3PM3dKQ85Uuv9Ke/DdtRthXXCAxBBOOynub3Yl58/kBPeYZPwSQKwykz/K6FtOB5cbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pNg7g5bC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RAiBODWH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pNg7g5bC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RAiBODWH; arc=none smtp.client-ip=195.135.223.130
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B5450220B3;
-	Tue, 16 Jan 2024 18:47:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705430876;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PVNTakAfSW44HQnT78r3QOsr8XR9AdVfFyvLvq83o/g=;
-	b=pNg7g5bCiOmzYS/e9Ss9Kp/2YvX+NEES8MlaCRfYoMJcblgAtCS2MyWKKFtmBVVLNiZNB9
-	pr6m/UYAXMaZhWAIOhX4D+DSywAN/wHTYBW7vpnCX63R/3Qpn4Ds5wuPLPxcGX3Jo7syIC
-	EHDaUrykPgONmUMZLYF98ndpr2zFIFQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705430876;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PVNTakAfSW44HQnT78r3QOsr8XR9AdVfFyvLvq83o/g=;
-	b=RAiBODWHYJ2KVLnYGReoJDWKieCJLoJDbTXtX0zMdg4H+gpMJXiGJ962veB4d+xWzFaqz0
-	5i+Z0A0M5MD48rAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705430876;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PVNTakAfSW44HQnT78r3QOsr8XR9AdVfFyvLvq83o/g=;
-	b=pNg7g5bCiOmzYS/e9Ss9Kp/2YvX+NEES8MlaCRfYoMJcblgAtCS2MyWKKFtmBVVLNiZNB9
-	pr6m/UYAXMaZhWAIOhX4D+DSywAN/wHTYBW7vpnCX63R/3Qpn4Ds5wuPLPxcGX3Jo7syIC
-	EHDaUrykPgONmUMZLYF98ndpr2zFIFQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705430876;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PVNTakAfSW44HQnT78r3QOsr8XR9AdVfFyvLvq83o/g=;
-	b=RAiBODWHYJ2KVLnYGReoJDWKieCJLoJDbTXtX0zMdg4H+gpMJXiGJ962veB4d+xWzFaqz0
-	5i+Z0A0M5MD48rAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8D2EC133CF;
-	Tue, 16 Jan 2024 18:47:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id ybClIVzPpmV9OwAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Tue, 16 Jan 2024 18:47:56 +0000
-Date: Tue, 16 Jan 2024 19:47:38 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs-progs: convert-ext2: insert a dummy inode item
- before inode ref
-Message-ID: <20240116184738.GE31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <6e1e07ad53a9e716be28e4d505042a50c1676254.1705134953.git.wqu@suse.com>
+	s=arc-20240116; t=1705431739; c=relaxed/simple;
+	bh=oxwRyeIL7M3hBA9vL9BEAgyW9LT9u2t413CGMrrBAAY=;
+	h=Received:DKIM-Signature:Received:Content-Type:MIME-Version:
+	 Content-Transfer-Encoding:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=GxcklUavu9RIEhjDVPuJzPN14tKjhTewAJJGOLJI+Q8aDr+XzojMAEm2bAR+RknHjXUjeP8fP12+A76a4RD5PWyxrzaA+PlW5ROzV0JUt/yM419rEcJdq3g1jrJuF3aHBSku2Z662AZxs7w1X+oe2C1XE05GUXAO6cTi4F1Mryk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BQlmYwfL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DCB27C433F1;
+	Tue, 16 Jan 2024 19:02:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705431738;
+	bh=oxwRyeIL7M3hBA9vL9BEAgyW9LT9u2t413CGMrrBAAY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=BQlmYwfLboHO4veFxacQLWA1eyijOjOtpvGdOcLB0sJS7z9eyKYF2Kv6ylK8KAJzX
+	 udynA+l1fx/Jxo9NUVI+CNFE1qI3OrGTniJeYVSiJ4reRLREBBQL3xHMvrqwwiw/Gu
+	 IKzO4vBoMYNROkk2z4d2RP8CjLajJTU237dQ/uqq0sx/B6CYDpjTbzThBUiNq0wnpX
+	 X8gNWgdAyEN8wYTXEhaE3JMmp6ZzcwihS2XBvNccMc8QH4mfkSIhbeDlc+owz8aiyj
+	 pGCvOM0Ta4kMlmWsLhLO9yha6U0JHDHRCENEuJlyVpAG6ox/Y412LVgVi4G1swMuoJ
+	 UFwOnulWFyR1w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C2AD0D8C987;
+	Tue, 16 Jan 2024 19:02:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6e1e07ad53a9e716be28e4d505042a50c1676254.1705134953.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.92
-X-Spamd-Result: default: False [-3.92 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.12)[-0.587];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Subject: Re: [f2fs-dev] [PATCH 1/5] virtio_blk: cleanup zoned device probing
+From: patchwork-bot+f2fs@kernel.org
+Message-Id: 
+ <170543173879.30188.5344312872944674652.git-patchwork-notify@kernel.org>
+Date: Tue, 16 Jan 2024 19:02:18 +0000
+References: <20231217165359.604246-2-hch@lst.de>
+In-Reply-To: <20231217165359.604246-2-hch@lst.de>
+To: Christoph Hellwig <hch@lst.de>
+Cc: axboe@kernel.dk, dm-devel@lists.linux.dev, linux-scsi@vger.kernel.org,
+ martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
+ linux-nvme@lists.infradead.org, virtualization@lists.linux.dev,
+ dlemoal@kernel.org, stefanha@redhat.com, pbonzini@redhat.com,
+ linux-f2fs-devel@lists.sourceforge.net, linux-btrfs@vger.kernel.org
 
-On Sat, Jan 13, 2024 at 07:07:06PM +1030, Qu Wenruo wrote:
-> [BUG]
-> There is a report about failed btrfs-convert, which shows the following
-> error:
-> 
->   Create btrfs metadata
->   corrupt leaf: root=5 block=5001931145216 slot=1 ino=89911763, invalid previous key objectid, have 89911762 expect 89911763
->   leaf 5001931145216 items 336 free space 7 generation 90 owner FS_TREE
->   leaf 5001931145216 flags 0x1(WRITTEN) backref revision 1
->   fs uuid 8b69f018-37c3-4b30-b859-42ccfcbe2449
->   chunk uuid 448ce78c-ea41-49f6-99dc-46ad80b93da9
->           item 0 key (89911762 INODE_REF 3858733) itemoff 16222 itemsize 61
->                   index 171 namelen 51 name: [FILENAME1]
->           item 1 key (89911763 INODE_REF 3858733) itemoff 16161 itemsize 61
->                   index 103 namelen 51 name: [FILENAME2]
-> 
-> [CAUSE]
-> When iterating a directory, btrfs-convert would insert the DIR_ITEMs,
-> along with the INODE_REF of that inode.
-> 
-> This leads to above stray INODE_REFs, and trigger the tree-checker.
-> 
-> This can only happen for large fs, as for most cases we have all these
-> modified tree blocks cached, thus tree-checker won't be triggered.
-> But when the tree block cache is not hit, and we have to read from disk,
-> then such behavior can lead to above tree-checker error.
-> 
-> [FIX]
-> Insert a dummy INODE_ITEM for the INODE_REF first, the inode items would
-> be updated when iterating the child inode of the directory.
-> 
-> Issue: #731
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+Hello:
 
-Thanks, the cached data are uncovering some bugs, I wonder if
-https://github.com/kdave/btrfs-progs/issues/349 could be also caused by
-that.
+This series was applied to jaegeuk/f2fs.git (dev)
+by Jens Axboe <axboe@kernel.dk>:
 
-> ---
->  check/mode-common.h   | 15 ---------------
->  common/utils.h        | 16 ++++++++++++++++
->  convert/source-ext2.c | 30 ++++++++++++++++++++----------
->  convert/source-fs.c   | 20 ++++++++++++++++++++
->  4 files changed, 56 insertions(+), 25 deletions(-)
+On Sun, 17 Dec 2023 17:53:55 +0100 you wrote:
+> Move reading and checking the zoned model from virtblk_probe_zoned_device
+> into the caller, leaving only the code to perform the actual setup for
+> host managed zoned devices in virtblk_probe_zoned_device.
 > 
-> ---
-> Changelog:
-> v2:
-> - Initialized dummy inodes' mode/generation/transid
->   As the mode can still trigger tree-checker warnings.
+> This allows to share the model reading and sharing between builds with
+> and without CONFIG_BLK_DEV_ZONED, and improve it for the
+> !CONFIG_BLK_DEV_ZONED case.
 > 
-> diff --git a/check/mode-common.h b/check/mode-common.h
-> index 894bbbb8141b..80672e51e870 100644
-> --- a/check/mode-common.h
-> +++ b/check/mode-common.h
-> @@ -167,21 +167,6 @@ static inline bool is_valid_imode(u32 imode)
-> 
->  int recow_extent_buffer(struct btrfs_root *root, struct extent_buffer *eb);
-> 
-> -static inline u32 btrfs_type_to_imode(u8 type)
-> -{
-> -	static u32 imode_by_btrfs_type[] = {
-> -		[BTRFS_FT_REG_FILE]	= S_IFREG,
-> -		[BTRFS_FT_DIR]		= S_IFDIR,
-> -		[BTRFS_FT_CHRDEV]	= S_IFCHR,
-> -		[BTRFS_FT_BLKDEV]	= S_IFBLK,
-> -		[BTRFS_FT_FIFO]		= S_IFIFO,
-> -		[BTRFS_FT_SOCK]		= S_IFSOCK,
-> -		[BTRFS_FT_SYMLINK]	= S_IFLNK,
-> -	};
-> -
-> -	return imode_by_btrfs_type[(type)];
-> -}
+> [...]
 
-Why did you move this helper to utils.h? Here it's available for
-anything that needs it. Mkfs and convert share some code, no style
-problem to cross include from each other. Also moving it to utils.h is
-going the opposite way, it's a header that's a default if there's no
-better place. Lot of code has been factored out of it.
+Here is the summary with links:
+  - [f2fs-dev,1/5] virtio_blk: cleanup zoned device probing
+    https://git.kernel.org/jaegeuk/f2fs/c/77360cadaae5
+  - [f2fs-dev,2/5] virtio_blk: remove the broken zone revalidation support
+    https://git.kernel.org/jaegeuk/f2fs/c/a971ed800211
+  - [f2fs-dev,3/5] block: remove support for the host aware zone model
+    https://git.kernel.org/jaegeuk/f2fs/c/7437bb73f087
+  - [f2fs-dev,4/5] block: simplify disk_set_zoned
+    https://git.kernel.org/jaegeuk/f2fs/c/d73e93b4dfab
+  - [f2fs-dev,5/5] sd: only call disk_clear_zoned when needed
+    https://git.kernel.org/jaegeuk/f2fs/c/5cc99b89785c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
