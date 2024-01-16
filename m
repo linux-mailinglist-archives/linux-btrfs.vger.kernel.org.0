@@ -1,133 +1,158 @@
-Return-Path: <linux-btrfs+bounces-1475-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1476-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB71282F1F3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 16:55:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2502482F210
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 17:01:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AE51285D0D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 15:55:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F7B91F2188C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 16:01:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668B91C6A4;
-	Tue, 16 Jan 2024 15:54:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B641CAAD;
+	Tue, 16 Jan 2024 16:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="r4PQ/eOP";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="r4PQ/eOP"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sDuA4gz0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nGOo7I5n";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sDuA4gz0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nGOo7I5n"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 803CB1BF3A;
-	Tue, 16 Jan 2024 15:54:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1705420491;
-	bh=pjY2k+YByejaq83dLC4A1kRHxj3IpcdeBea5o5eMGtc=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=r4PQ/eOPY10cMMN0Ex+dLgBhMtXUhoGRNDRlToKsA1pvZRbbNBT7JE0/0OR5YRjZK
-	 IErSnnYepaPT2S5umKKMfWW5hCsGj5GjZOEpNSCPtI8XXvx9dDsBcFrXLRBFhMhbrI
-	 cDEWC0o7VASAF32fW76AiHo1dmaN7bIdKSLoOlBg=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id BD42112801D1;
-	Tue, 16 Jan 2024 10:54:51 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id xjhfFOwDRbQ8; Tue, 16 Jan 2024 10:54:51 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1705420491;
-	bh=pjY2k+YByejaq83dLC4A1kRHxj3IpcdeBea5o5eMGtc=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=r4PQ/eOPY10cMMN0Ex+dLgBhMtXUhoGRNDRlToKsA1pvZRbbNBT7JE0/0OR5YRjZK
-	 IErSnnYepaPT2S5umKKMfWW5hCsGj5GjZOEpNSCPtI8XXvx9dDsBcFrXLRBFhMhbrI
-	 cDEWC0o7VASAF32fW76AiHo1dmaN7bIdKSLoOlBg=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1751CA85
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Jan 2024 16:00:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id AF76D12801C7;
-	Tue, 16 Jan 2024 10:54:50 -0500 (EST)
-Message-ID: <9283ad6dd8e911fa9861b0f31a47aa82474d9fd2.camel@HansenPartnership.com>
-Subject: Re: [LSF/MM/BPF TOPIC] Dropping page cache of individual fs
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Christian Brauner <brauner@kernel.org>,
- lsf-pc@lists.linux-foundation.org,  linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-btrfs@vger.kernel.org, 
- linux-block@vger.kernel.org, Jan Kara <jack@suse.cz>, Christoph Hellwig
- <hch@infradead.org>
-Date: Tue, 16 Jan 2024 10:54:48 -0500
-In-Reply-To: <ZaajUn0Idp90hLir@casper.infradead.org>
-References: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
-	 <458822c2889a4fce54a07ce80d001e998ca56b48.camel@HansenPartnership.com>
-	 <ZaajUn0Idp90hLir@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 42138221E3;
+	Tue, 16 Jan 2024 16:00:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705420854;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DvktxeyhlQTtxrdb5/FFrPWlcPsGygB3QUxbTa4GPKM=;
+	b=sDuA4gz0dT/c5N0wLSdXEuil7VwdzajG08ETlOPk7wcu1RN7QFBuSW19kw05Jz1m8ExjPN
+	erWI8rE+NJbxqNZS0PIUtv2DCejezHmKYxAcEqCv5adJ4eMVPlGBdCvfH71gScHkGVmeeZ
+	VvkDfIuBXdwpaBSsKokgl0HTj9Q3bbU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705420854;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DvktxeyhlQTtxrdb5/FFrPWlcPsGygB3QUxbTa4GPKM=;
+	b=nGOo7I5ns36y9RhPQA/oDHG6j0LgcltLhW7YqQIeC42OIsXw+Yjhs6TE4R8E3nibz6rtBq
+	OC5hjK6Me3D8MACQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705420854;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DvktxeyhlQTtxrdb5/FFrPWlcPsGygB3QUxbTa4GPKM=;
+	b=sDuA4gz0dT/c5N0wLSdXEuil7VwdzajG08ETlOPk7wcu1RN7QFBuSW19kw05Jz1m8ExjPN
+	erWI8rE+NJbxqNZS0PIUtv2DCejezHmKYxAcEqCv5adJ4eMVPlGBdCvfH71gScHkGVmeeZ
+	VvkDfIuBXdwpaBSsKokgl0HTj9Q3bbU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705420854;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DvktxeyhlQTtxrdb5/FFrPWlcPsGygB3QUxbTa4GPKM=;
+	b=nGOo7I5ns36y9RhPQA/oDHG6j0LgcltLhW7YqQIeC42OIsXw+Yjhs6TE4R8E3nibz6rtBq
+	OC5hjK6Me3D8MACQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 20CA0133CF;
+	Tue, 16 Jan 2024 16:00:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id LdaIBzaopmXhKAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Tue, 16 Jan 2024 16:00:54 +0000
+Date: Tue, 16 Jan 2024 17:00:36 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: tree-checker: dump the tree block when
+ hitting an error
+Message-ID: <20240116160036.GZ31555@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <a5ab0e98ae40df23b3bb65235f7bd9296e3b0be4.1705027543.git.wqu@suse.com>
+ <20240112153602.GP31555@twin.jikos.cz>
+ <7e908c1f-d14f-4562-ae1e-1431c091b140@gmx.com>
+ <20240115145438.GT31555@suse.cz>
+ <c31f1082-82f5-4558-9795-db1b40079f91@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c31f1082-82f5-4558-9795-db1b40079f91@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.20 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FREEMAIL_TO(0.00)[gmx.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[38.65%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.20
 
-On Tue, 2024-01-16 at 15:40 +0000, Matthew Wilcox wrote:
-> On Tue, Jan 16, 2024 at 10:25:20AM -0500, James Bottomley wrote:
-> > On Tue, 2024-01-16 at 11:50 +0100, Christian Brauner wrote:
-> > > So when we say luksSuspend we really mean block layer initiated
-> > > freeze. The overall goal or expectation of userspace is that
-> > > after a luksSuspend call all sensitive material has been evicted
-> > > from relevant caches to harden against various attacks. And
-> > > luksSuspend does wipe the encryption key and suspend the block
-> > > device. However, the encryption key can still be available clear-
-> > > text in the page cache. To illustrate this problem more simply:
-> > > 
-> > > truncate -s 500M /tmp/img
-> > > echo password | cryptsetup luksFormat /tmp/img --force-password
-> > > echo password | cryptsetup open /tmp/img test
-> > > mkfs.xfs /dev/mapper/test
-> > > mount /dev/mapper/test /mnt
-> > > echo "secrets" > /mnt/data
-> > > cryptsetup luksSuspend test
-> > > cat /mnt/data
-> > 
-> > Not really anything to do with the drop caches problem, but luks
-> > can use the kernel keyring API for this.  That should ensure the
-> > key itself can be shredded on suspend without replication anywhere
-> > in memory.  Of course the real problem is likely that the key has
-> > or is derived from a password and that password is in the user
-> > space gnome-keyring, which will be much harder to purge ...
-> > although if the keyring were using secret memory it would be way
-> > easier ...
+On Tue, Jan 16, 2024 at 09:13:23AM +1030, Qu Wenruo wrote:
 > 
-> I think you've misunderstood the problem.  Let's try it again.
 > 
-> add-password-to-kernel-keyring
-> create-encrypted-volume-using-password
-> write-detailed-confession-to-encrypted-volume
-> suspend-volume
-> delete-password-from-kernel-keyring
-> cat-volume reveals the detailed confession
+> On 2024/1/16 01:24, David Sterba wrote:
+> > On Sat, Jan 13, 2024 at 07:03:18AM +1030, Qu Wenruo wrote:
+> >>>> +	btrfs_print_tree((struct extent_buffer *)eb, 0);
+> >>>
+> >>> Printing the eb should not require writable eb, but there are many
+> >>> functions that would need to be converted to 'const' so the cas is OK
+> >>> for now but cleaning that up would be welcome.
+> >>
+> >> I tried but failed.
+> >>
+> >> Most of the call sites are fine to be constified, but there is a special
+> >> trap inside bfs_print_children(), where we call extent_buffer_get(),
+> >> which can never be called on a const eb pointer.
+> >
+> > Oh, I see. We can't remove the ref update but what if we reset the path
+> > slot to NULL before releasing it?
 > 
-> ie the page cache contains the decrypted data, even though what's on
-> disc is encrypted.  Nothing to do with key management.
+> The other solution would be, only consitfy btrfs_print_node() and
+> btrfs_print_leaf().
+> 
+> For anything that would need to traversal the tree, still allow them to
+> modify the eb.
+> 
+> I'll give it a try, and if it passed compile, that would be my next step.
+> Would this be a good idea?
 
-No I didn't; you cut the bit where I referred to that in the second
-half of my email you don't quote.
-
-But my point is that caching key material is by far the biggest
-security problem because if that happens and it can be recovered, every
-secret on the disk is toast.  Caching clear pages from the disk is a
-problem, but it's way less severe than caching key material, so making
-sure the former is solved should be priority number one (because in
-security you start with the biggest exposure first).
-
-I then went on to say that for the second problem, I think making drop
-all caches actually do that has the best security properties rather
-than segmented cache dropping.
-
-James
-
+Yeah makes sense, we'll se how much can it can be cleaned up. The const
+parameters are nice to have as they don't really break anything, but
+should be used as a matter of good coding practices.
 
