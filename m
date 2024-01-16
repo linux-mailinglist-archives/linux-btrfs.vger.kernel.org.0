@@ -1,160 +1,171 @@
-Return-Path: <linux-btrfs+bounces-1469-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1470-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDC5682ED49
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 12:01:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C67282EE12
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 12:45:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E64DB23652
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 11:01:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61C9A1C23218
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 11:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E851A71A;
-	Tue, 16 Jan 2024 11:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A41B1B95A;
+	Tue, 16 Jan 2024 11:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="njZImTaL"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0lV9GplD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yJ8JNLIB";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="A536vFk3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="v+qwMeT1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25601A5B7;
-	Tue, 16 Jan 2024 11:00:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31BB1C433F1;
-	Tue, 16 Jan 2024 11:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705402830;
-	bh=ka4ginUjS5CjHM0V8b8SOVIgogjHzG2IgkhfNwVc7Mk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=njZImTaLdGb3i9JS73leCK9eh65efGnlVfx/VydMfLkNv5haxpeZsJz542IqxYsAd
-	 bk0gnJZretKX1VoQYIliU5Z9a8SVRDJyb0fPuSXtVPAUuXQlmkrfW208s9DtVHKaqu
-	 oBs0HJCLs2LSHkpCGwpvXoKhbJSHLJ1k/+L+Tyo1s0G2fqEMt4wimAIFk1kKQfsAiF
-	 /t2suYFIZybiRQR0l0UALkir0ZAjgfbJaIrRjP42+hAQUdVHv05DZCdAwzV2+GySso
-	 hk0R/R31qg4CLn2XgwnQSj0W1Mys3DF3+LDZ49i3v4/Ue+LpznmxXib7T/rYR93IGP
-	 UWVPaWNx7TRKA==
-From: Christian Brauner <brauner@kernel.org>
-To: lsf-pc@lists.linux-foundation.org
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-btrfs@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	Matthew Wilcox <willy@infradead.org>,
-	Jan Kara <jack@suse.cz>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: [LSF/MM/BPF TOPIC] Dropping page cache of individual fs
-Date: Tue, 16 Jan 2024 11:50:32 +0100
-Message-ID: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2564D1B81D;
+	Tue, 16 Jan 2024 11:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EC0C71FB9B;
+	Tue, 16 Jan 2024 11:45:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705405520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=83bL3UmsaprNcY7TPS07Y3PDh7YlqCXB9W2bN/Ht43U=;
+	b=0lV9GplD+mrgk/IJ/S2gaAtFzBSuKKrJ6visLA/+I3aGzYt64sq9xjwivvNiaMs6Xbrc4t
+	SYd+JuDz7KqNde53QcnysATItdd/NAaVS58RB3ENSjDrn4eI53ehE0mruRhjlaGJpl/TGS
+	ldZeELRDfl1QCfcmw29baR5dyvsQErI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705405520;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=83bL3UmsaprNcY7TPS07Y3PDh7YlqCXB9W2bN/Ht43U=;
+	b=yJ8JNLIBCs4W4fyuiZWd8Pa+fvn78mPygqgykOOZtsOdtFV/94D54u9+tFGKwWWLPLrfjU
+	Ysv42yoIhJcGSKAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705405519; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=83bL3UmsaprNcY7TPS07Y3PDh7YlqCXB9W2bN/Ht43U=;
+	b=A536vFk3gnTNijO4YYz0DzRs4FvEYHjMCeg6LgSJjwjeFdPdf1Hlp6lbYe/7u3zpfS+fkg
+	EyBzQMgbK5HhMskOcPLhv/Sui+caIP+m1NKqVk01vNrm+hXkWgiOeuVm4yY2oIQdVTyzuS
+	2pEz990omojyzSv6wyIHJQQIz30L7Bo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705405519;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=83bL3UmsaprNcY7TPS07Y3PDh7YlqCXB9W2bN/Ht43U=;
+	b=v+qwMeT1ZH7wmyznf9FueLZTrIFbJTPEaZ4zJqJ2O5LskSHbcRUCryODHF74feC7IwgK8P
+	TXpdlPMd79iGEhAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D210A132FA;
+	Tue, 16 Jan 2024 11:45:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ix/7Mk9spmWWPgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 16 Jan 2024 11:45:19 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 6C3E8A0803; Tue, 16 Jan 2024 12:45:19 +0100 (CET)
+Date: Tue, 16 Jan 2024 12:45:19 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christian Brauner <brauner@kernel.org>
+Cc: lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-btrfs@vger.kernel.org,
+	linux-block@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+	Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [LSF/MM/BPF TOPIC] Dropping page cache of individual fs
+Message-ID: <20240116114519.jcktectmk2thgagw@quack3>
+References: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4352; i=brauner@kernel.org; h=from:subject:message-id; bh=EZGa/THoxMnhCwXco+IB49hkRcRBCokvtP+wu+ae8TI=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQui6/iW+TkW1bY+nLiIYdrzh8e7+7m1EpZM4GVceKZa 8sXfT/9u6OUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAi6S0Mf4X/PtP+YNM6IYvH 8eqNoOLTTVszb3D5fp7MoH4wqqaO7SLD/yrh1jc7bf/qtzIvCHPh+Xq6gf/7hrsrVj+ZLmHxpcV jBwcA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=A536vFk3;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=v+qwMeT1
+X-Spamd-Result: default: False [0.19 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 0.19
+X-Rspamd-Queue-Id: EC0C71FB9B
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-Hey,
+On Tue 16-01-24 11:50:32, Christian Brauner wrote:
 
-I'm not sure this even needs a full LSFMM discussion but since I
-currently don't have time to work on the patch I may as well submit it.
+<snip the usecase details>
 
-Gnome recently got awared 1M Euro by the Sovereign Tech Fund (STF). The
-STF was created by the German government to fund public infrastructure:
+> My initial reaction is to give userspace an API to drop the page cache
+> of a specific filesystem which may have additional uses. I initially had
+> started drafting an ioctl() and then got swayed towards a
+> posix_fadvise() flag. I found out that this was already proposed a few
+> years ago but got rejected as it was suspected this might just be
+> someone toying around without a real world use-case. I think this here
+> might qualify as a real-world use-case.
+> 
+> This may at least help securing users with a regular dm-crypt setup
+> where dm-crypt is the top layer. Users that stack additional layers on
+> top of dm-crypt may still leak plaintext of course if they introduce
+> additional caching. But that's on them.
 
-"The Sovereign Tech Fund supports the development, improvement and
- maintenance of open digital infrastructure. Our goal is to sustainably
- strengthen the open source ecosystem. We focus on security, resilience,
- technological diversity, and the people behind the code." (cf. [1])
+Well, your usecase has one substantial difference from drop_caches. You
+actually *require* pages to be evicted from the page cache for security
+purposes. And giving any kind of guarantees is going to be tough. Think for
+example when someone grabs page cache folio reference through vmsplice(2),
+then you initiate your dmSuspend and want to evict page cache. What are you
+going to do? You cannot free the folio while the refcount is elevated, you
+could possibly detach it from the page cache so it isn't at least visible
+but that has side effects too - after you resume the folio would remain
+detached so it will not see changes happening to the file anymore. So IMHO
+the only thing you could do without problematic side-effects is report
+error. Which would be user unfriendly and could be actually surprisingly
+frequent due to trasient folio references taken by various code paths.
 
-Gnome has proposed various specific projects including integrating
-systemd-homed with Gnome. Systemd-homed provides various features and if
-you're interested in details then you might find it useful to read [2].
-It makes use of various new VFS and fs specific developments over the
-last years.
+Sure we could report error only if the page has pincount elevated, not only
+refcount, but it needs some serious thinking how this would interact.
 
-One feature is encrypting the home directory via LUKS. An approriate
-image or device must contain a GPT partition table. Currently there's
-only one partition which is a LUKS2 volume. Inside that LUKS2 volume is
-a Linux filesystem. Currently supported are btrfs (see [4] though),
-ext4, and xfs.
+Also what is going to be the interaction with mlock(2)?
 
-The following issue isn't specific to systemd-homed. Gnome wants to be
-able to support locking encrypted home directories. For example, when
-the laptop is suspended. To do this the luksSuspend command can be used.
+Overall this doesn't seem like "just tweak drop_caches a bit" kind of
+work...
 
-The luksSuspend call is nothing else than a device mapper ioctl to
-suspend the block device and it's owning superblock/filesystem. Which in
-turn is nothing but a freeze initiated from the block layer:
+								Honza
 
-dm_suspend()
--> __dm_suspend()
-   -> lock_fs()
-      -> bdev_freeze()
 
-So when we say luksSuspend we really mean block layer initiated freeze.
-The overall goal or expectation of userspace is that after a luksSuspend
-call all sensitive material has been evicted from relevant caches to
-harden against various attacks. And luksSuspend does wipe the encryption
-key and suspend the block device. However, the encryption key can still
-be available clear-text in the page cache. To illustrate this problem
-more simply:
-
-truncate -s 500M /tmp/img
-echo password | cryptsetup luksFormat /tmp/img --force-password
-echo password | cryptsetup open /tmp/img test
-mkfs.xfs /dev/mapper/test
-mount /dev/mapper/test /mnt
-echo "secrets" > /mnt/data
-cryptsetup luksSuspend test
-cat /mnt/data
-
-This will still happily print the contents of /mnt/data even though the
-block device and the owning filesystem are frozen because the data is
-still in the page cache.
-
-To my knowledge, the only current way to get the contents of /mnt/data
-or the encryption key out of the page cache is via
-/proc/sys/vm/drop_caches which is a big hammer.
-
-My initial reaction is to give userspace an API to drop the page cache
-of a specific filesystem which may have additional uses. I initially had
-started drafting an ioctl() and then got swayed towards a
-posix_fadvise() flag. I found out that this was already proposed a few
-years ago but got rejected as it was suspected this might just be
-someone toying around without a real world use-case. I think this here
-might qualify as a real-world use-case.
-
-This may at least help securing users with a regular dm-crypt setup
-where dm-crypt is the top layer. Users that stack additional layers on
-top of dm-crypt may still leak plaintext of course if they introduce
-additional caching. But that's on them.
-
-Of course other ideas welcome.
-
-[1]: https://www.sovereigntechfund.de/en
-[2]: https://systemd.io/HOME_DIRECTORY
-[3]: https://lore.kernel.org/linux-btrfs/20230908-merklich-bebauen-11914a630db4@brauner/
-[4]: A bdev_freeze() call ideally does the following:
-
-     (1) Freeze the block device @bdev
-     (2) Find the owning superblock of the block device @bdev and freeze the
-         filesystem as well.
-
-     Especially (2) wasn't true for a long time. Filesystems would only be
-     able to freeze the filesystems on the main block device. For example, an
-     xfs filesystem using an external log device would not be able to be
-     frozen if the block layer request came via the external log device. This
-     is fixed since v6.8 for all filesystems using appropriate holder
-     operations.
-
-     Except for btrfs where block device initiated freezes don't work at all;
-     not even for the main block device. I've pointed this out months ago in [3].
-
-     Which is why we currently can't use btrfs with LUKS2 encryption as as
-     luksSuspend call will leave the filesystem unfrozen.
-[5]: https://gitlab.com/cryptsetup/cryptsetup/-/issues/855
-     https://gitlab.gnome.org/Teams/STF/homed/-/issues/23
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
