@@ -1,143 +1,210 @@
-Return-Path: <linux-btrfs+bounces-1466-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1467-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E1882EB4F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 10:13:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95EE282EB7A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 10:27:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5FA21F21D2C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 09:13:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71659B22EA8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jan 2024 09:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B6812B9A;
-	Tue, 16 Jan 2024 09:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="MznAwDtF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB6CB12E50;
+	Tue, 16 Jan 2024 09:27:23 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 452BC12B8D;
-	Tue, 16 Jan 2024 09:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705396363; x=1706001163; i=quwenruo.btrfs@gmx.com;
-	bh=jI6sDzQkPN+DfPBKgNfksiXi37NWcrYrS2OPe6mAuzY=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=MznAwDtF/ES/ZNLD7MABrPa3lUldNkEi6cLfjHDewciNLUmtOEccn5yaaIG7m5Yf
-	 WAfZwzSWGunENe+LMTz72O16EUrO1a8FceGF5osFYBs9oVEEqnB83U4MVG2NavX+t
-	 2N44ZnxSVAXucPpUJ0SWZ9KC/67QFURFcgRJ5io6zslQa+/yonT7Fwn1GrRhsZP6G
-	 ZW3yqTSDOCdqW0Cu/eo4yPZf2F0PNJl43urdxY37fXe+wFNHupw/pIBn6HoepF+x3
-	 Nh1P1rjyCVPazHdBbBqaiu7/rdwunxcsrZeea/2O2G7JJ+jb88V9oQjMMnhGBF544
-	 9XTSeTL9gHIWVN7vhQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1fmq-1r1Z2p0aoy-0121za; Tue, 16
- Jan 2024 10:12:43 +0100
-Message-ID: <4cc5ba4d-299a-46eb-b452-21eac629ace8@gmx.com>
-Date: Tue, 16 Jan 2024 19:42:39 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C2212B78
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Jan 2024 09:27:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36089faa032so74158215ab.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jan 2024 01:27:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705397241; x=1706002041;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jOsxNLpBRTGiUU6lZBOr9zV8xafpZmwbpi5r0C8L1zg=;
+        b=TCcY/qourEITzfxg2Qva9wl0jkpmQNqhGt1xVeyA22OaRhkes4D0x1jCEj0ooA92fJ
+         XtTukGUrIUVHznuNi1AIJ4bfdciyPfDmIs/xGqh5dDe3d1c3inTCsSdCFC51oV6r3AUm
+         c0Y+BT+eQxIIYTHkx8GvF/K5gujlyNd0QqEgQxcaL9NXG/yeMn45UYExhFB1Ky+OQt+X
+         naBxo+dzeCD50pUE7MsR5b1ltoM6PF+7dap/gVwB82+9UGl18SCGUTnO2ibe5iDGIDEZ
+         cXE3Igd5r9wv0kcn1M71kfSFU7/AObvAYkG6TPsCs7FLfGiUTNcEaZXwFcI1JenKUlAh
+         rl6Q==
+X-Gm-Message-State: AOJu0Yyo+Rme6RC01N0ev/cyLLPFgDqeL+ZW5GYAgR30C6DQYuKIM79I
+	CjA0CwizT3S+CcKQcR4wypOVg3W3gxumYQWsq2lfZE5K1fPc
+X-Google-Smtp-Source: AGHT+IFSriItWy/h+LU6Lr8mhhRE9S5UJnpA1nLIi1CBILH2BJvuTvAJglPqCxymAvNQo4joBj6nnYdmsRVo4L5SxnTw7Mqn9f44
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: don't warn if discard range is not aligned to
- sector
-Content-Language: en-US
-To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org,
- syzbot+4a4f1eba14eb5c3417d1@syzkaller.appspotmail.com
-References: <20240115193859.1521-1-dsterba@suse.com>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240115193859.1521-1-dsterba@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iRnlzFSNJPCJl1ODabPRI+EROOJhSAY8iwjhY0ZHQ+zQVi0CGXf
- xlaV7L5HWQjgW/7H+hfL15mY8GIesGdchISje1bWAqUyX02/mhLG6/azdiwEcMpOWW3yiAf
- 9EOcQ35QZzo7m9iDZR0RPBJWrd70MsLF+MOgCRbDBy4rigAjzhJsP8wK76+P2VT/Se6pcdg
- WD7qddXv1hA62MG+/8ysQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:MrwAzFOjfR8=;SoAuHHJeI/m8fDGjXQ6pccsl6Kq
- BIDiODGqsptgNCq0LvXG/X9MvzJZFB/qPE+XfAeTvObTPFdEz5gmhFjVfTlbQkeHeHlyEcpQq
- boqbd9+qtMPGnSPPKdssm3PbKIB/0hKWSb1dIkG8orUVy0vcZ3fKotiCO/TULgMAuz/SCPzF7
- tzUf/lIz5MYQNVDka8WfsqUDnoe+f7rDL24KH2TdzjW4nEgHMZsUECvIspNX3/IzIIE+UThFp
- sP9mPQoYQ6BFMS4Ab5SURs612GIYNww7dCTEUg0rxiHT1TcUDGxQMd89HPrvSn+LbewoAVH+W
- XTLotRmEjnPEO393i5TM3rwX1f97Lc+pIz+RypG19BY+je29NwjcGGFr17fPW9Z4Uj6gfesPV
- +dAoSSgDlP8t5t+Clg/kjE6RPK8IsTTduLLkXRaDMZncT2UKNqFkBWQy3h8s5HApADFs8+9r4
- C4fkitYdjMYVlasd9LxiPh5EFJ/BOwfuk+BP8ZxJnskJwxM2gKX5QwLIQ6mx8A4m3AEIe5pmT
- KF9auM9ijFMCZJ5lY7kbEDOjSwb3Ba6EFz5dRPHCP+jbXPkhqx0zxd25oI1fDgRBAKySpkd4B
- 3y5n5X5U0D5WxLvlCeLY7f1ndcIS5mPJgcHVCqbbTc0RAqvtuk1XWrjre4MdkAM8n24AIk7/Y
- QS5L6mfzujxdmQCcEV4hBYNe69iimqr151XFEAaReyL/4AEwVEs+Gpovu/P9yRA1/3l1dwgSu
- XV+SUflWBkF3K5+8JtaTdNqSaLmESklSRrfZeNOQjCeywC2RavKC0KjWsIufC3Zr/E88jAGW4
- VADHhJi810aO3ljhsi2PDu75ctF+fzVRcha1xtCRADdaNbktz88OLgtvOURCncwAXSRJ13Uxe
- EeVFxnbR0gl9tR3cmkhY8o9nKSHirlKixwsqP/xqhezX2a5j4NXL/ls2R9cIbHIuMXunhUNNH
- 7s8iOVuzyX7I70PBn6vIEWiI/lY=
+X-Received: by 2002:a05:6e02:1a07:b0:35f:d5ea:8a86 with SMTP id
+ s7-20020a056e021a0700b0035fd5ea8a86mr937528ild.5.1705397240898; Tue, 16 Jan
+ 2024 01:27:20 -0800 (PST)
+Date: Tue, 16 Jan 2024 01:27:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000beadc4060f0cbc23@google.com>
+Subject: [syzbot] [btrfs?] memory leak in corrupted
+From: syzbot <syzbot+ebe64cc5950868e77358@syzkaller.appspotmail.com>
+To: a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org, clm@fb.com, 
+	davem@davemloft.net, dsterba@suse.com, edumazet@google.com, 
+	josef@toxicpanda.com, kuba@kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	mareklindner@neomailbox.ch, netdev@vger.kernel.org, pabeni@redhat.com, 
+	sven@narfation.org, sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14620debe80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a7031f9e71583b4a
+dashboard link: https://syzkaller.appspot.com/bug?extid=ebe64cc5950868e77358
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a344c1e80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/82a7201eef4c/disk-052d5343.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ca12b4c31826/vmlinux-052d5343.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3f07360ba5a8/bzImage-052d5343.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ebe64cc5950868e77358@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff88811c71a980 (size 64):
+  comm "syz-executor.7", pid 5063, jiffies 4294953937
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 20 8e 7e 1c 81 88 ff ff  ........ .~.....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace (crc 9f8721dd):
+    [<ffffffff815f7d53>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff815f7d53>] slab_post_alloc_hook mm/slub.c:3817 [inline]
+    [<ffffffff815f7d53>] slab_alloc_node mm/slub.c:3860 [inline]
+    [<ffffffff815f7d53>] kmalloc_trace+0x283/0x330 mm/slub.c:4007
+    [<ffffffff84aae617>] kmalloc include/linux/slab.h:590 [inline]
+    [<ffffffff84aae617>] kzalloc include/linux/slab.h:711 [inline]
+    [<ffffffff84aae617>] batadv_tvlv_handler_register+0xf7/0x2a0 net/batman-adv/tvlv.c:560
+    [<ffffffff84a8d09f>] batadv_mcast_init+0x4f/0xc0 net/batman-adv/multicast.c:1926
+    [<ffffffff84a895b9>] batadv_mesh_init+0x209/0x2f0 net/batman-adv/main.c:231
+    [<ffffffff84a9fa88>] batadv_softif_init_late+0x1f8/0x280 net/batman-adv/soft-interface.c:812
+    [<ffffffff83f48559>] register_netdevice+0x189/0xca0 net/core/dev.c:10188
+    [<ffffffff84a9f255>] batadv_softif_newlink+0x55/0x70 net/batman-adv/soft-interface.c:1088
+    [<ffffffff83f61dc0>] rtnl_newlink_create net/core/rtnetlink.c:3515 [inline]
+    [<ffffffff83f61dc0>] __rtnl_newlink+0xb10/0xec0 net/core/rtnetlink.c:3735
+    [<ffffffff83f621bc>] rtnl_newlink+0x4c/0x70 net/core/rtnetlink.c:3748
+    [<ffffffff83f5cd1f>] rtnetlink_rcv_msg+0x22f/0x5b0 net/core/rtnetlink.c:6615
+    [<ffffffff84093291>] netlink_rcv_skb+0x91/0x1d0 net/netlink/af_netlink.c:2543
+    [<ffffffff84092242>] netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
+    [<ffffffff84092242>] netlink_unicast+0x2c2/0x440 net/netlink/af_netlink.c:1367
+    [<ffffffff84092701>] netlink_sendmsg+0x341/0x690 net/netlink/af_netlink.c:1908
+    [<ffffffff83ef2912>] sock_sendmsg_nosec net/socket.c:730 [inline]
+    [<ffffffff83ef2912>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
+    [<ffffffff83ef5af4>] __sys_sendto+0x164/0x1e0 net/socket.c:2191
+    [<ffffffff83ef5b98>] __do_sys_sendto net/socket.c:2203 [inline]
+    [<ffffffff83ef5b98>] __se_sys_sendto net/socket.c:2199 [inline]
+    [<ffffffff83ef5b98>] __x64_sys_sendto+0x28/0x30 net/socket.c:2199
+
+BUG: memory leak
+unreferenced object 0xffff88811c8561c0 (size 64):
+  comm "syz-executor.0", pid 5062, jiffies 4294953941
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 20 ce 7e 1c 81 88 ff ff  ........ .~.....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace (crc 7256c890):
+    [<ffffffff815f7d53>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff815f7d53>] slab_post_alloc_hook mm/slub.c:3817 [inline]
+    [<ffffffff815f7d53>] slab_alloc_node mm/slub.c:3860 [inline]
+    [<ffffffff815f7d53>] kmalloc_trace+0x283/0x330 mm/slub.c:4007
+    [<ffffffff84aae617>] kmalloc include/linux/slab.h:590 [inline]
+    [<ffffffff84aae617>] kzalloc include/linux/slab.h:711 [inline]
+    [<ffffffff84aae617>] batadv_tvlv_handler_register+0xf7/0x2a0 net/batman-adv/tvlv.c:560
+    [<ffffffff84a8d09f>] batadv_mcast_init+0x4f/0xc0 net/batman-adv/multicast.c:1926
+    [<ffffffff84a895b9>] batadv_mesh_init+0x209/0x2f0 net/batman-adv/main.c:231
+    [<ffffffff84a9fa88>] batadv_softif_init_late+0x1f8/0x280 net/batman-adv/soft-interface.c:812
+    [<ffffffff83f48559>] register_netdevice+0x189/0xca0 net/core/dev.c:10188
+    [<ffffffff84a9f255>] batadv_softif_newlink+0x55/0x70 net/batman-adv/soft-interface.c:1088
+    [<ffffffff83f61dc0>] rtnl_newlink_create net/core/rtnetlink.c:3515 [inline]
+    [<ffffffff83f61dc0>] __rtnl_newlink+0xb10/0xec0 net/core/rtnetlink.c:3735
+    [<ffffffff83f621bc>] rtnl_newlink+0x4c/0x70 net/core/rtnetlink.c:3748
+    [<ffffffff83f5cd1f>] rtnetlink_rcv_msg+0x22f/0x5b0 net/core/rtnetlink.c:6615
+    [<ffffffff84093291>] netlink_rcv_skb+0x91/0x1d0 net/netlink/af_netlink.c:2543
+    [<ffffffff84092242>] netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
+    [<ffffffff84092242>] netlink_unicast+0x2c2/0x440 net/netlink/af_netlink.c:1367
+    [<ffffffff84092701>] netlink_sendmsg+0x341/0x690 net/netlink/af_netlink.c:1908
+    [<ffffffff83ef2912>] sock_sendmsg_nosec net/socket.c:730 [inline]
+    [<ffffffff83ef2912>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
+    [<ffffffff83ef5af4>] __sys_sendto+0x164/0x1e0 net/socket.c:2191
+    [<ffffffff83ef5b98>] __do_sys_sendto net/socket.c:2203 [inline]
+    [<ffffffff83ef5b98>] __se_sys_sendto net/socket.c:2199 [inline]
+    [<ffffffff83ef5b98>] __x64_sys_sendto+0x28/0x30 net/socket.c:2199
+
+BUG: memory leak
+unreferenced object 0xffff88811cd88cc0 (size 64):
+  comm "syz-executor.5", pid 5078, jiffies 4294953981
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 20 8e 05 1d 81 88 ff ff  ........ .......
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace (crc a919e6d6):
+    [<ffffffff815f7d53>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff815f7d53>] slab_post_alloc_hook mm/slub.c:3817 [inline]
+    [<ffffffff815f7d53>] slab_alloc_node mm/slub.c:3860 [inline]
+    [<ffffffff815f7d53>] kmalloc_trace+0x283/0x330 mm/slub.c:4007
+    [<ffffffff84aae617>] kmalloc include/linux/slab.h:590 [inline]
+    [<ffffffff84aae617>] kzalloc include/linux/slab.h:711 [inline]
+    [<ffffffff84aae617>] batadv_tvlv_handler_register+0xf7/0x2a0 net/batman-adv/tvlv.c:560
+    [<ffffffff84a8d09f>] batadv_mcast_init+0x4f/0xc0 net/batman-adv/multicast.c:1926
+    [<ffffffff84a895b9>] batadv_mesh_init+0x209/0x2f0 net/batman-adv/main.c:231
+    [<ffffffff84a9fa88>] batadv_softif_init_late+0x1f8/0x280 net/batman-adv/soft-interface.c:812
+    [<ffffffff83f48559>] register_netdevice+0x189/0xca0 net/core/dev.c:10188
+    [<ffffffff84a9f255>] batadv_softif_newlink+0x55/0x70 net/batman-adv/soft-interface.c:1088
+    [<ffffffff83f61dc0>] rtnl_newlink_create net/core/rtnetlink.c:3515 [inline]
+    [<ffffffff83f61dc0>] __rtnl_newlink+0xb10/0xec0 net/core/rtnetlink.c:3735
+    [<ffffffff83f621bc>] rtnl_newlink+0x4c/0x70 net/core/rtnetlink.c:3748
+    [<ffffffff83f5cd1f>] rtnetlink_rcv_msg+0x22f/0x5b0 net/core/rtnetlink.c:6615
+    [<ffffffff84093291>] netlink_rcv_skb+0x91/0x1d0 net/netlink/af_netlink.c:2543
+    [<ffffffff84092242>] netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
+    [<ffffffff84092242>] netlink_unicast+0x2c2/0x440 net/netlink/af_netlink.c:1367
+    [<ffffffff84092701>] netlink_sendmsg+0x341/0x690 net/netlink/af_netlink.c:1908
+    [<ffffffff83ef2912>] sock_sendmsg_nosec net/socket.c:730 [inline]
+    [<ffffffff83ef2912>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
+    [<ffffffff83ef5af4>] __sys_sendto+0x164/0x1e0 net/socket.c:2191
+    [<ffffffff83ef5b98>] __do_sys_sendto net/socket.c:2203 [inline]
+    [<ffffffff83ef5b98>] __se_sys_sendto net/socket.c:2199 [inline]
+    [<ffffffff83ef5b98>] __x64_sys_sendto+0x28/0x30 net/socket.c:2199
 
 
 
-On 2024/1/16 06:08, David Sterba wrote:
-> There's a warning in btrfs_issue_discard() when the range is not aligned
-> to 512 bytes, originally added in 4d89d377bbb0 ("btrfs:
-> btrfs_issue_discard ensure offset/length are aligned to sector
-> boundaries"). We can't do sub-sector writes anyway so the adjustment is
-> the only thing that we can do and the warning is unnecessary.
->
-> CC: stable@vger.kernel.org # 4.19+
-> Reported-by: syzbot+4a4f1eba14eb5c3417d1@syzkaller.appspotmail.com
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->   fs/btrfs/extent-tree.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 6d680031211a..8e8cc1111277 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -1260,7 +1260,8 @@ static int btrfs_issue_discard(struct block_device=
- *bdev, u64 start, u64 len,
->   	u64 bytes_left, end;
->   	u64 aligned_start =3D ALIGN(start, 1 << SECTOR_SHIFT);
->
-> -	if (WARN_ON(start !=3D aligned_start)) {
-> +	/* Adjust the range to be aligned to 512B sectors if necessary. */
-> +	if (start !=3D aligned_start) {
->   		len -=3D aligned_start - start;
->   		len =3D round_down(len, 1 << SECTOR_SHIFT);
->   		start =3D aligned_start;
-Can we do one step further in mkfs and device add, by rounding down the
-device size to btrfs sector boundary?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Add maybe output a warning message at mount time when adding one device?
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Thanks,
-Qu
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
