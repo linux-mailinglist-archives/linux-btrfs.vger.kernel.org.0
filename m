@@ -1,173 +1,180 @@
-Return-Path: <linux-btrfs+bounces-1496-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1497-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3000D82FE03
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 01:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A859E82FE1C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 01:56:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEA68288D1D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 00:33:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BD0D289466
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 00:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 293AB79DC;
-	Wed, 17 Jan 2024 00:32:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C88C410FF;
+	Wed, 17 Jan 2024 00:55:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Vtzsj/sj";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Vtzsj/sj"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z02cqtKw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gg9CDxmg";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z02cqtKw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gg9CDxmg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 908116AD6
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 00:32:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0737680C
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 00:55:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705451576; cv=none; b=W1BPHSJvWYkw8fNsOhpd0Eb8TZBpn6ZS6yzRLgDTHUn9JjygFuoG0iLBo9tLuQv7HeRPbkq6bFfBONJGVeKLqyfdbScVBNScm0+MiZ/yy2vwDPs1KTbGn4MMKl2SEC0YswYLm592zz0JD+Djy7RjEONjahz+NmxffIVFxT0PPmo=
+	t=1705452946; cv=none; b=PwHr2/3apNN6QMpRDWtHghNMNpjEpao9OAXvF2yHXXKQaauHfjg0oRL2mGRqd60EJpX6bvzSkmkm9Q1eXpM9zlxpCmS/ubY1iSifd7dQ9TFWAWxMvPcSjwgv6Bi9UiiNOVA/xSqD0NeONLUEmIkfFpy1aaM53ZRQAPw5bffuC6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705451576; c=relaxed/simple;
-	bh=iKyl3z7/7bbOheLCAuuTOAl09q/P36DxaXGif3z0YvU=;
-	h=Received:DKIM-Signature:DKIM-Signature:Received:Received:From:To:
-	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding:X-Spam-Level:X-Spamd-Bar:
-	 X-Rspamd-Server:X-Spamd-Result:X-Spam-Score:X-Rspamd-Queue-Id:
-	 X-Spam-Flag; b=KNZ/UVBsr731GJCbxYEhl6aeya7KXYKnLt7FS1mkdNE/Tfn7Tsl8PDgDDCygpfnK4yjhniAM887JNtBpVjUowCSl+wMDTpYuEKjh8sLZFtLWSsuIGahZ3GURHV0f3fl0ZgKOxAGp6ZxIQuhVg8FK7RqOsQq2Ax1wKS0uwEYmdPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Vtzsj/sj; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Vtzsj/sj; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1705452946; c=relaxed/simple;
+	bh=MCTAOxAmlpO8D9S6iIsUBysvOMA15Ngz80wldOfZcgI=;
+	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
+	 DKIM-Signature:Received:Received:Date:From:To:Cc:Subject:
+	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:User-Agent:X-Spam-Level:
+	 X-Spam-Score:X-Spamd-Result:X-Spam-Flag; b=eJIcvgsWxgHaYU4aIpxSZ9kZ2Z5riousSAeeZix9w48KtCHpXQkHSkOaN1cSO5pF/uL4jEDqJ90JAvC2H+ZnnPFRBfffgE6Bb4i9SzSIik6Fyi/erNYCq6nJl18tKz7MUOL4Qt2+eItY+2BS0gvXIbZX4k2eymLgWuJ+FtqmSmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=z02cqtKw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gg9CDxmg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=z02cqtKw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gg9CDxmg; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B42711FBB6
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 00:32:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705451572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2308D220F6;
+	Wed, 17 Jan 2024 00:55:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705452943;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Jw7CAt+Q4w2uvn7ttHIQGWfz0zu1dNCJCf/gO6d4Ews=;
-	b=Vtzsj/sj5qrgxrSQ2O6hbXoq1GMKELb9UaYLMJVu4DJP+KCfqKE1FkRpRZwxvKurPvlq56
-	9+cS/PmimburLdQYM0ViwEya59BnGqmPp8fIPhfKcRBbkrs2MMOQgepEM98QnXOjkXyMRt
-	kbBkzmJTTU8fak/a+InrBBnuuPy5pVg=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705451572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	bh=w6OzYhbi2M2GdQZAe+rWpXNW77C07aqbbtVLrrE4RIc=;
+	b=z02cqtKwsqPZQORLgc9KK4fH2FGsLoFw3whl334PhKVs6Uth/om0rk4IWUIDubOMdnzw97
+	E+mQKnKvrhJfy/SIr8z5tn4Yrje+hpcn6PphbitpOjuycO1qsFcFEbyoRqFEiBtA7vifY8
+	WGQWRU2HrU/Eu9ioeiE7kdTok5XZBsA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705452943;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Jw7CAt+Q4w2uvn7ttHIQGWfz0zu1dNCJCf/gO6d4Ews=;
-	b=Vtzsj/sj5qrgxrSQ2O6hbXoq1GMKELb9UaYLMJVu4DJP+KCfqKE1FkRpRZwxvKurPvlq56
-	9+cS/PmimburLdQYM0ViwEya59BnGqmPp8fIPhfKcRBbkrs2MMOQgepEM98QnXOjkXyMRt
-	kbBkzmJTTU8fak/a+InrBBnuuPy5pVg=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	bh=w6OzYhbi2M2GdQZAe+rWpXNW77C07aqbbtVLrrE4RIc=;
+	b=gg9CDxmgSF4+CxqiQoZk33hhkhDelwmOPNrahqk2qAKc3cqOtsiUmh2n1e9ea5jibCPJTg
+	zQsmBW8vHwqlIlCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705452943;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w6OzYhbi2M2GdQZAe+rWpXNW77C07aqbbtVLrrE4RIc=;
+	b=z02cqtKwsqPZQORLgc9KK4fH2FGsLoFw3whl334PhKVs6Uth/om0rk4IWUIDubOMdnzw97
+	E+mQKnKvrhJfy/SIr8z5tn4Yrje+hpcn6PphbitpOjuycO1qsFcFEbyoRqFEiBtA7vifY8
+	WGQWRU2HrU/Eu9ioeiE7kdTok5XZBsA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705452943;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w6OzYhbi2M2GdQZAe+rWpXNW77C07aqbbtVLrrE4RIc=;
+	b=gg9CDxmgSF4+CxqiQoZk33hhkhDelwmOPNrahqk2qAKc3cqOtsiUmh2n1e9ea5jibCPJTg
+	zQsmBW8vHwqlIlCQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C110013751
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 00:32:51 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EE36013482;
+	Wed, 17 Jan 2024 00:55:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +BV8IDMgp2W0GgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 00:32:51 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs: scrub: limit RST scrub to chunk boundary
-Date: Wed, 17 Jan 2024 11:02:26 +1030
-Message-ID: <46320cbeb3274ad3cca6db03c03e063fc3047732.1705449249.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1705449249.git.wqu@suse.com>
-References: <cover.1705449249.git.wqu@suse.com>
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 0Pp7OY4lp2U0ZQAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Wed, 17 Jan 2024 00:55:42 +0000
+Date: Wed, 17 Jan 2024 01:55:20 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+	Qu Wenruo <wqu@suse.com>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	Rongrong <i@rong.moe>
+Subject: Re: [PATCH] btrfs: scrub: avoid use-after-free when chunk end is not
+ 64K aligned
+Message-ID: <20240117005520.GG31555@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <8531c41848973ac60ca4e23e2c7a2a47c4b94881.1705313879.git.wqu@suse.com>
+ <12744dd0-a56e-487e-b27d-4ad66498d7e5@wdc.com>
+ <de82a8aa-7b51-4aa1-9cd6-a2f749a6e941@gmx.com>
+ <20240116182807.GB31555@twin.jikos.cz>
+ <49056bc2-55ba-4f09-9a30-0caf4016bfc2@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: ***
-X-Spamd-Bar: +++
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="Vtzsj/sj"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [3.49 / 50.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <49056bc2-55ba-4f09-9a30-0caf4016bfc2@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
 	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 TO_DN_EQ_ADDR_SOME(0.00)[];
 	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmx.com];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RCPT_COUNT_FIVE(0.00)[6];
 	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_DN_NONE(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_TO(0.00)[gmx.com];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[41.05%]
-X-Spam-Score: 3.49
-X-Rspamd-Queue-Id: B42711FBB6
+	 BAYES_HAM(-3.00)[100.00%]
 X-Spam-Flag: NO
 
-[BUG]
-If there is an extent beyond chunk boundary, currently RST scrub would
-error out.
+On Wed, Jan 17, 2024 at 06:36:00AM +1030, Qu Wenruo wrote:
+> On 2024/1/17 04:58, David Sterba wrote:
+> > On Tue, Jan 16, 2024 at 09:20:58AM +1030, Qu Wenruo wrote:
+> >> On 2024/1/15 22:39, Johannes Thumshirn wrote:
+> >> [...]
+> >>>
+> >>>> - Make sure scrub_submit_initial_read() only to read the chunk range
+> >>>>      This is done by calculating the real number of sectors we need to
+> >>>>      read, and add sector-by-sector to the bio.
+> >>>
+> >>> Why can't you do it the same way the RST version does it by checking the
+> >>> extent_sector_bitmap and then add sector-by-sector from it?
+> >>
+> >> Sure, we can, although the whole new scrub code is before RST, and at
+> >> that time, the whole 64K read behavior is considered as a better option,
+> >> as it reduces the IOPS for a fragmented stripe.
+> >
+> > I'd like to keep the scrub fix separte from the RST code, even if
+> > there's a chance for some code sharing or reuse. The scrub fix needs to
+> > be backported so it's better to keep it independent.
+> 
+> So do I need to split the fix, so that the first part would be purely
+> for the non-RST scrub part, and then a small fix to the RST part?
+> 
+> I can try to do that, but since we need to touch the read endio function
+> anyway, it may mean if we don't do it properly, it may break bisection.
+> 
+> Thus I'd prefer to do a manual backport for the older branches without
+> the RST code.
 
-[CAUSE]
-In scrub_submit_extent_sector_read(), we completely rely on
-extent_sector_bitmap, which is populated using extent tree.
-
-The extent tree can be corrupted that there is an extent item beyond a
-chunk.
-
-In that case, RST scrub would fail and error out.
-
-[FIX]
-Despite the extent_sector_bitmap usage, also limit the read to chunk
-boundary.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/scrub.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 2d81b1a18a04..0123d2728923 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -1646,6 +1646,9 @@ static void scrub_submit_extent_sector_read(struct scrub_ctx *sctx,
- {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
- 	struct btrfs_bio *bbio = NULL;
-+	unsigned int nr_sectors = min(BTRFS_STRIPE_LEN, stripe->bg->start +
-+				      stripe->bg->length - stripe->logical) >>
-+				  fs_info->sectorsize_bits;
- 	u64 stripe_len = BTRFS_STRIPE_LEN;
- 	int mirror = stripe->mirror_num;
- 	int i;
-@@ -1656,6 +1659,10 @@ static void scrub_submit_extent_sector_read(struct scrub_ctx *sctx,
- 		struct page *page = scrub_stripe_get_page(stripe, i);
- 		unsigned int pgoff = scrub_stripe_get_page_offset(stripe, i);
- 
-+		/* We're beyond the chunk boundary, no need to read anymore. */
-+		if (i >= nr_sectors)
-+			break;
-+
- 		/* The current sector cannot be merged, submit the bio. */
- 		if (bbio &&
- 		    ((i > 0 &&
--- 
-2.43.0
-
+I was not sure how much the scrub and RST are entangled so it was a
+suggestion to make the backport workable. It is preferred by stable to
+take patches 1:1 regarding the code changes (context adjustments are
+ok). In this case the manual backport would be needed, let's say one
+patch is taken without change and another one (regarding the RST
+changes) would be manualy tweaked.
 
