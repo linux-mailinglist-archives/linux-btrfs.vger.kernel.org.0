@@ -1,108 +1,104 @@
-Return-Path: <linux-btrfs+bounces-1497-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1498-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A859E82FE1C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 01:56:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BA9682FE1E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 01:56:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BD0D289466
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 00:55:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10DD91F2598A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 00:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C88C410FF;
-	Wed, 17 Jan 2024 00:55:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7423417D9;
+	Wed, 17 Jan 2024 00:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z02cqtKw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gg9CDxmg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z02cqtKw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gg9CDxmg"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jf4wQ5bB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eLRHuqxB";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jf4wQ5bB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eLRHuqxB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0737680C
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 00:55:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E680F1364
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 00:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705452946; cv=none; b=PwHr2/3apNN6QMpRDWtHghNMNpjEpao9OAXvF2yHXXKQaauHfjg0oRL2mGRqd60EJpX6bvzSkmkm9Q1eXpM9zlxpCmS/ubY1iSifd7dQ9TFWAWxMvPcSjwgv6Bi9UiiNOVA/xSqD0NeONLUEmIkfFpy1aaM53ZRQAPw5bffuC6E=
+	t=1705453002; cv=none; b=Yz2YjSEr8pWNRMjUN0yofMQJnXnEt5yPw+9oUBfLExJeNxgtsgZZ9hg0O/iaj7RAtdwP1gE/MLbumklIKkf0BxXp4fYFW410/IffrgHYjxG/3Ra7vNx4HZWbsObYk89vykHQjhHLfabLI+ocda9u1ASoF3KkZw8EAqDGTIaD+/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705452946; c=relaxed/simple;
-	bh=MCTAOxAmlpO8D9S6iIsUBysvOMA15Ngz80wldOfZcgI=;
+	s=arc-20240116; t=1705453002; c=relaxed/simple;
+	bh=pPH5zQJ7fRhzVt9VSTiVDERiCylws+a+H+puceGUToU=;
 	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
 	 DKIM-Signature:Received:Received:Date:From:To:Cc:Subject:
 	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:User-Agent:X-Spam-Level:
-	 X-Spam-Score:X-Spamd-Result:X-Spam-Flag; b=eJIcvgsWxgHaYU4aIpxSZ9kZ2Z5riousSAeeZix9w48KtCHpXQkHSkOaN1cSO5pF/uL4jEDqJ90JAvC2H+ZnnPFRBfffgE6Bb4i9SzSIik6Fyi/erNYCq6nJl18tKz7MUOL4Qt2+eItY+2BS0gvXIbZX4k2eymLgWuJ+FtqmSmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=z02cqtKw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gg9CDxmg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=z02cqtKw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gg9CDxmg; arc=none smtp.client-ip=195.135.223.130
+	 Content-Disposition:In-Reply-To:User-Agent:X-Spamd-Result:
+	 X-Rspamd-Server:X-Rspamd-Queue-Id:X-Spam-Level:X-Spam-Score:
+	 X-Spam-Flag; b=k56j+kngTu7KRydvMOksPhtaEni2pWNgDcmAQumydaSz7KH5FlWb/p5Z1VBQR9Cgd9gotW7aKr7uzPSL2niieM663W5S/bbkzD7RzqpLr2XsJaCCcNCmaDeSrG4D8VOvcr5yyP/gQ3RxwLvzsXfRDm/DPGIX2yVyO+RpHqh5zCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Jf4wQ5bB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eLRHuqxB; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Jf4wQ5bB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eLRHuqxB; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2308D220F6;
-	Wed, 17 Jan 2024 00:55:43 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 059961FB45;
+	Wed, 17 Jan 2024 00:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705452943;
+	t=1705452999;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w6OzYhbi2M2GdQZAe+rWpXNW77C07aqbbtVLrrE4RIc=;
-	b=z02cqtKwsqPZQORLgc9KK4fH2FGsLoFw3whl334PhKVs6Uth/om0rk4IWUIDubOMdnzw97
-	E+mQKnKvrhJfy/SIr8z5tn4Yrje+hpcn6PphbitpOjuycO1qsFcFEbyoRqFEiBtA7vifY8
-	WGQWRU2HrU/Eu9ioeiE7kdTok5XZBsA=
+	bh=a9ONCQYi++9Qoxjgg3vq8rozpZGhquDBQI4QLhtSZGo=;
+	b=Jf4wQ5bBt1z1WNaEqteI+v863NIQBDeRhNlVqeknnSqiPthaYZBXbaciIEJd4nayIaHJiB
+	6IAPLTuhtcERZv+V+k5yUz0NZkGH4BlzcowWuswzFbwZWNHN7PFlzaYHglKl9iEi4l4UBE
+	kjfaDQsb1oBXpAUrqJol2dHaeAjIupg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705452943;
+	s=susede2_ed25519; t=1705452999;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w6OzYhbi2M2GdQZAe+rWpXNW77C07aqbbtVLrrE4RIc=;
-	b=gg9CDxmgSF4+CxqiQoZk33hhkhDelwmOPNrahqk2qAKc3cqOtsiUmh2n1e9ea5jibCPJTg
-	zQsmBW8vHwqlIlCQ==
+	bh=a9ONCQYi++9Qoxjgg3vq8rozpZGhquDBQI4QLhtSZGo=;
+	b=eLRHuqxB7yZaEMcUJMYH+7TZBZzZTrWRFCU0qMxEwwTUyl0jTlwM9c6/tT425m/NkCxJwS
+	ltL6d/D+KvAR9sBg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705452943;
+	t=1705452999;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w6OzYhbi2M2GdQZAe+rWpXNW77C07aqbbtVLrrE4RIc=;
-	b=z02cqtKwsqPZQORLgc9KK4fH2FGsLoFw3whl334PhKVs6Uth/om0rk4IWUIDubOMdnzw97
-	E+mQKnKvrhJfy/SIr8z5tn4Yrje+hpcn6PphbitpOjuycO1qsFcFEbyoRqFEiBtA7vifY8
-	WGQWRU2HrU/Eu9ioeiE7kdTok5XZBsA=
+	bh=a9ONCQYi++9Qoxjgg3vq8rozpZGhquDBQI4QLhtSZGo=;
+	b=Jf4wQ5bBt1z1WNaEqteI+v863NIQBDeRhNlVqeknnSqiPthaYZBXbaciIEJd4nayIaHJiB
+	6IAPLTuhtcERZv+V+k5yUz0NZkGH4BlzcowWuswzFbwZWNHN7PFlzaYHglKl9iEi4l4UBE
+	kjfaDQsb1oBXpAUrqJol2dHaeAjIupg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705452943;
+	s=susede2_ed25519; t=1705452999;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w6OzYhbi2M2GdQZAe+rWpXNW77C07aqbbtVLrrE4RIc=;
-	b=gg9CDxmgSF4+CxqiQoZk33hhkhDelwmOPNrahqk2qAKc3cqOtsiUmh2n1e9ea5jibCPJTg
-	zQsmBW8vHwqlIlCQ==
+	bh=a9ONCQYi++9Qoxjgg3vq8rozpZGhquDBQI4QLhtSZGo=;
+	b=eLRHuqxB7yZaEMcUJMYH+7TZBZzZTrWRFCU0qMxEwwTUyl0jTlwM9c6/tT425m/NkCxJwS
+	ltL6d/D+KvAR9sBg==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EE36013482;
-	Wed, 17 Jan 2024 00:55:42 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D5D1713482;
+	Wed, 17 Jan 2024 00:56:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 0Pp7OY4lp2U0ZQAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Wed, 17 Jan 2024 00:55:42 +0000
-Date: Wed, 17 Jan 2024 01:55:20 +0100
+	id 6v/6M8Ylp2VUZQAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Wed, 17 Jan 2024 00:56:38 +0000
+Date: Wed, 17 Jan 2024 01:56:20 +0100
 From: David Sterba <dsterba@suse.cz>
 To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-	Qu Wenruo <wqu@suse.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	Rongrong <i@rong.moe>
-Subject: Re: [PATCH] btrfs: scrub: avoid use-after-free when chunk end is not
- 64K aligned
-Message-ID: <20240117005520.GG31555@twin.jikos.cz>
+Cc: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs-progs: convert-ext2: insert a dummy inode item
+ before inode ref
+Message-ID: <20240117005620.GH31555@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <8531c41848973ac60ca4e23e2c7a2a47c4b94881.1705313879.git.wqu@suse.com>
- <12744dd0-a56e-487e-b27d-4ad66498d7e5@wdc.com>
- <de82a8aa-7b51-4aa1-9cd6-a2f749a6e941@gmx.com>
- <20240116182807.GB31555@twin.jikos.cz>
- <49056bc2-55ba-4f09-9a30-0caf4016bfc2@gmx.com>
+References: <6e1e07ad53a9e716be28e4d505042a50c1676254.1705134953.git.wqu@suse.com>
+ <20240116184738.GE31555@twin.jikos.cz>
+ <fec2ca19-2b17-476f-9ba1-55f85e622ea3@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -111,70 +107,134 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <49056bc2-55ba-4f09-9a30-0caf4016bfc2@gmx.com>
+In-Reply-To: <fec2ca19-2b17-476f-9ba1-55f85e622ea3@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Jf4wQ5bB;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=eLRHuqxB
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	 ARC_NA(0.00)[];
 	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 TO_DN_EQ_ADDR_SOME(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
 	 FREEMAIL_ENVRCPT(0.00)[gmx.com];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
 	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TO_DN_SOME(0.00)[];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim];
 	 FREEMAIL_TO(0.00)[gmx.com];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 RCVD_TLS_ALL(0.00)[];
 	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 059961FB45
+X-Spam-Level: 
+X-Spam-Score: -3.01
 X-Spam-Flag: NO
 
-On Wed, Jan 17, 2024 at 06:36:00AM +1030, Qu Wenruo wrote:
-> On 2024/1/17 04:58, David Sterba wrote:
-> > On Tue, Jan 16, 2024 at 09:20:58AM +1030, Qu Wenruo wrote:
-> >> On 2024/1/15 22:39, Johannes Thumshirn wrote:
-> >> [...]
-> >>>
-> >>>> - Make sure scrub_submit_initial_read() only to read the chunk range
-> >>>>      This is done by calculating the real number of sectors we need to
-> >>>>      read, and add sector-by-sector to the bio.
-> >>>
-> >>> Why can't you do it the same way the RST version does it by checking the
-> >>> extent_sector_bitmap and then add sector-by-sector from it?
+On Wed, Jan 17, 2024 at 06:43:50AM +1030, Qu Wenruo wrote:
+> 
+> 
+> On 2024/1/17 05:17, David Sterba wrote:
+> > On Sat, Jan 13, 2024 at 07:07:06PM +1030, Qu Wenruo wrote:
+> >> [BUG]
+> >> There is a report about failed btrfs-convert, which shows the following
+> >> error:
 > >>
-> >> Sure, we can, although the whole new scrub code is before RST, and at
-> >> that time, the whole 64K read behavior is considered as a better option,
-> >> as it reduces the IOPS for a fragmented stripe.
+> >>    Create btrfs metadata
+> >>    corrupt leaf: root=5 block=5001931145216 slot=1 ino=89911763, invalid previous key objectid, have 89911762 expect 89911763
+> >>    leaf 5001931145216 items 336 free space 7 generation 90 owner FS_TREE
+> >>    leaf 5001931145216 flags 0x1(WRITTEN) backref revision 1
+> >>    fs uuid 8b69f018-37c3-4b30-b859-42ccfcbe2449
+> >>    chunk uuid 448ce78c-ea41-49f6-99dc-46ad80b93da9
+> >>            item 0 key (89911762 INODE_REF 3858733) itemoff 16222 itemsize 61
+> >>                    index 171 namelen 51 name: [FILENAME1]
+> >>            item 1 key (89911763 INODE_REF 3858733) itemoff 16161 itemsize 61
+> >>                    index 103 namelen 51 name: [FILENAME2]
+> >>
+> >> [CAUSE]
+> >> When iterating a directory, btrfs-convert would insert the DIR_ITEMs,
+> >> along with the INODE_REF of that inode.
+> >>
+> >> This leads to above stray INODE_REFs, and trigger the tree-checker.
+> >>
+> >> This can only happen for large fs, as for most cases we have all these
+> >> modified tree blocks cached, thus tree-checker won't be triggered.
+> >> But when the tree block cache is not hit, and we have to read from disk,
+> >> then such behavior can lead to above tree-checker error.
+> >>
+> >> [FIX]
+> >> Insert a dummy INODE_ITEM for the INODE_REF first, the inode items would
+> >> be updated when iterating the child inode of the directory.
+> >>
+> >> Issue: #731
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > >
-> > I'd like to keep the scrub fix separte from the RST code, even if
-> > there's a chance for some code sharing or reuse. The scrub fix needs to
-> > be backported so it's better to keep it independent.
+> > Thanks, the cached data are uncovering some bugs, I wonder if
+> > https://github.com/kdave/btrfs-progs/issues/349 could be also caused by
+> > that.
 > 
-> So do I need to split the fix, so that the first part would be purely
-> for the non-RST scrub part, and then a small fix to the RST part?
+> Unfortunately the csum is not the same problem at all.
 > 
-> I can try to do that, but since we need to touch the read endio function
-> anyway, it may mean if we don't do it properly, it may break bisection.
+> I don't have any clue yet, but can take sometime to look into it since
+> there is a reproducer.
 > 
-> Thus I'd prefer to do a manual backport for the older branches without
-> the RST code.
+> >
+> >> ---
+> >>   check/mode-common.h   | 15 ---------------
+> >>   common/utils.h        | 16 ++++++++++++++++
+> >>   convert/source-ext2.c | 30 ++++++++++++++++++++----------
+> >>   convert/source-fs.c   | 20 ++++++++++++++++++++
+> >>   4 files changed, 56 insertions(+), 25 deletions(-)
+> >>
+> >> ---
+> >> Changelog:
+> >> v2:
+> >> - Initialized dummy inodes' mode/generation/transid
+> >>    As the mode can still trigger tree-checker warnings.
+> >>
+> >> diff --git a/check/mode-common.h b/check/mode-common.h
+> >> index 894bbbb8141b..80672e51e870 100644
+> >> --- a/check/mode-common.h
+> >> +++ b/check/mode-common.h
+> >> @@ -167,21 +167,6 @@ static inline bool is_valid_imode(u32 imode)
+> >>
+> >>   int recow_extent_buffer(struct btrfs_root *root, struct extent_buffer *eb);
+> >>
+> >> -static inline u32 btrfs_type_to_imode(u8 type)
+> >> -{
+> >> -	static u32 imode_by_btrfs_type[] = {
+> >> -		[BTRFS_FT_REG_FILE]	= S_IFREG,
+> >> -		[BTRFS_FT_DIR]		= S_IFDIR,
+> >> -		[BTRFS_FT_CHRDEV]	= S_IFCHR,
+> >> -		[BTRFS_FT_BLKDEV]	= S_IFBLK,
+> >> -		[BTRFS_FT_FIFO]		= S_IFIFO,
+> >> -		[BTRFS_FT_SOCK]		= S_IFSOCK,
+> >> -		[BTRFS_FT_SYMLINK]	= S_IFLNK,
+> >> -	};
+> >> -
+> >> -	return imode_by_btrfs_type[(type)];
+> >> -}
+> >
+> > Why did you move this helper to utils.h? Here it's available for
+> > anything that needs it. Mkfs and convert share some code, no style
+> > problem to cross include from each other. Also moving it to utils.h is
+> > going the opposite way, it's a header that's a default if there's no
+> > better place. Lot of code has been factored out of it.
+> 
+> OK, my initial problem is about including headers from check/, but since
+> it's not a problem then I'm totally fine.
+> 
+> Would update the patch and reflect that.
 
-I was not sure how much the scrub and RST are entangled so it was a
-suggestion to make the backport workable. It is preferred by stable to
-take patches 1:1 regarding the code changes (context adjustments are
-ok). In this case the manual backport would be needed, let's say one
-patch is taken without change and another one (regarding the RST
-changes) would be manualy tweaked.
+No need to, I've added it to devel already, thanks.
 
