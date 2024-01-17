@@ -1,222 +1,168 @@
-Return-Path: <linux-btrfs+bounces-1534-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1535-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E07830F2B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 23:26:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFA3B831006
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jan 2024 00:11:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD9181F25E5F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 22:26:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2E2E1C2175A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 23:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF483288DF;
-	Wed, 17 Jan 2024 22:26:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB761286BD;
+	Wed, 17 Jan 2024 23:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="OK+yHujq"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MJHlnu0T";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CI7re5ba"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA02B286B2
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 22:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC37A2556A
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 23:11:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705530380; cv=none; b=kK/V5GUVxnwV8hbaDpWlgwmQRWkt6KeSPUETniup5zKaYm894hqwulZgrZYSOO74jguoaUhtM0rAP7kBNDN4eFRWOk3BSw0NZ5pKaWH0y9ky07QkehF+Gl+QHL2JVvqDibzBfzmwUphcdkC9QjgH6UkmG5t2s35pDUztGlCHU0Q=
+	t=1705533070; cv=none; b=QAQDV/+zGyQGdggC9B7HQF52dMHb22amGyH9rsp/bP8oLrEwKdo5TItRJV3a3PHhgV+ICFJfRAy7xb16eOmhVjB1o0DojLYHJyAR/gg2tPOlGiIXOZ4i6GVfbMRn79PF6gT12WYrg0FvKY0D0V+fBXYjId1Gihsqq9OWLOMt0vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705530380; c=relaxed/simple;
-	bh=fbGRpFNzjDJ58+XoKzZOb69zWNASCmMS9ecNHaJmtZM=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
-	 Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=mKDVvTS3+dfMYEuhU1B6cFgSVFhBTuhKnoLkjICXu2wg/STqKro95qhWtgKfkc80uP59GUWRK8hiUHKl6Z6rCuEuzPhuZar0A89Lelv+RU3lor0I10ejMVKBenWXcrCFq4mZRw9hvtr3lJARSWxk7DhCoUdCQLFVndIt5PJHaIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=OK+yHujq; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d5f1e0e32eso14101005ad.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 14:26:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1705530378; x=1706135178; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Z/hRTX+MQ2pZDmJRifmLI1vSLH0o1ZgpBqyx2XxHN0=;
-        b=OK+yHujqwR+5rXMuqSWZM/qUzQETYTMp8HCziT/DL6fg2mc+6RDZjj7Rr0iy+dq1jj
-         RIY7KRzuO46OK6o5aMOsiuJUjH1255J8DEVyuYgwnxQhfGgQSo2yC/WZnLS6cyQ4GtZi
-         ux51+yFDrzu5rsBdktdpMLGoj9W+p17H8yjyptljENOisvCOTCn+fho5pUI0q0CdkJW3
-         bjVsCz7+8YYcIRUvJuAcrw5aM2DGUM60paMguWVgDC8dTVGJxF7srZSssr2x9YL2rZd9
-         ggiupD456xhtbuLyCpZO8apf5lZfnqo6uQOeDZ83UXfWOMyJJSEx9EJ8TYWJgfQ7XxXL
-         /GIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705530378; x=1706135178;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0Z/hRTX+MQ2pZDmJRifmLI1vSLH0o1ZgpBqyx2XxHN0=;
-        b=Ufv0zBI2Zn9EsIalJAcENCw1O4DV9NlXM/t3fcSnfc9/XXajME+bm7O6KhajpadjDF
-         31rRZtpoSGlAIXJ4SI2t9T2kQzKEwSlA+Sc87nvI7yaHoAjFVm92x1IWirh3F6qFgmsp
-         YOskooDJ1/MqtIaP3xvrBhnZKuFri5ZpGwRMEcJYKDrYNE2epG9cfIOkNs7/c1RQL2Rf
-         WN1jS4QXDx8E9/44MVTPuNUyBZclS/nW0iwyzmyqHrYGb7yzqRjO73T+M/Fir0bvlJzi
-         d9Kr+c8rdbvyYRqqERrwHOd9Mok4Gkyp9gTLII7P40VFlobwnFyOqJVSaZwjS20exSuJ
-         D7MA==
-X-Gm-Message-State: AOJu0YxKZqZYemsUNEBAKekcT8Pm5/AV5kAtuRoUUHMIR1jyqruUBwp0
-	Qost/XRqKit1h1lUKsgxM2zCr1225VDQpg==
-X-Google-Smtp-Source: AGHT+IHXfhiJO0uOdn4WriD5J2oZVP6Jq3kTbXvHM9B9awAtkN42CQFn1wuH4PYtyXhbASYEzOE6mQ==
-X-Received: by 2002:a17:902:db03:b0:1d6:f9a8:532d with SMTP id m3-20020a170902db0300b001d6f9a8532dmr1083027plx.107.1705530378063;
-        Wed, 17 Jan 2024 14:26:18 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-249-6.pa.nsw.optusnet.com.au. [49.180.249.6])
-        by smtp.gmail.com with ESMTPSA id 17-20020a170902ee5100b001d5e5836292sm139483plo.130.2024.01.17.14.26.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 14:26:17 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rQEMR-00BlDA-00;
-	Thu, 18 Jan 2024 09:26:15 +1100
-Date: Thu, 18 Jan 2024 09:26:14 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-btrfs@vger.kernel.org,
-	linux-block@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-	Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
-	adrianvovk@gmail.com
-Subject: Re: [LSF/MM/BPF TOPIC] Dropping page cache of individual fs
-Message-ID: <ZahUBkqYad0Lb3/V@dread.disaster.area>
-References: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
- <ZabtYQqakvxJVYjM@dread.disaster.area>
- <20240117-yuppie-unflexibel-dbbb281cb948@brauner>
+	s=arc-20240116; t=1705533070; c=relaxed/simple;
+	bh=Vn5hV3WxfWlVJ5u5JCvQYbstB5PtkIHR5Rl/WTEWSUc=;
+	h=Received:DKIM-Signature:DKIM-Signature:Received:Received:From:To:
+	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding:X-Spamd-Result:X-Spam-Level:X-Spam-Score:
+	 X-Spam-Flag; b=I6o/U+Uh03v64VlbpueHJRaDsIyIehsyy976vXruat3G3xyPF/u+DCRG+jCXzJrhBElVN5fx48HnBFaRna9sFpMlSOBlU14hfb5Zs4VJC5ccg5z/k9ctj/IaAUq8QDpjnGu99JuCNrq14po15SfL1MRYeGzuxcOKKUnaxbyaGi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MJHlnu0T; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CI7re5ba; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EE2AA21FD8
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 23:11:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705533063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=dFFnvoh0yfDlaUqeNuXsA7/AYtgP0QnCD5SwYfhxUqs=;
+	b=MJHlnu0TOGD3r4feSFKk7TXCQACrEXVSpMSJVifgHvCEse4YSZX9v0RJo2+vL4JtvNk/kT
+	7yaLy+B0/D+qJkFNC+Gss5p+BRI1VUvW//T7HplbcnRB1C8zfIt0AfuHogOPWv4nQAYkCG
+	ilVkpChpjYd4NoWfKVZI9xR2BedCOPA=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705533062; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=dFFnvoh0yfDlaUqeNuXsA7/AYtgP0QnCD5SwYfhxUqs=;
+	b=CI7re5ba3aSSwb4QmlCCjHeSh00oAXm1XSb7e12PiFL/24JFSP+TwH+kql1e/9x7qG8ylF
+	g7crWccM6cVxaF3nzL5PJw+hKxDSeuP2Yb3ztmwTmU9TP3sHeQmXsKnQ4wAe/fcH03RE3S
+	Dtg6jxqcWYVOK+LXqZHP6RLy7lZrswY=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D87313800
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 23:11:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5CSEOIVeqGXpHwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 23:11:01 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/2] btrfs-progs: parser related cleanups
+Date: Thu, 18 Jan 2024 09:40:41 +1030
+Message-ID: <cover.1705532789.git.wqu@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240117-yuppie-unflexibel-dbbb281cb948@brauner>
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [4.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCPT_COUNT_ONE(0.00)[1];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_DN_NONE(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[19.39%]
+X-Spam-Level: ****
+X-Spam-Score: 4.90
+X-Spam-Flag: NO
 
-On Wed, Jan 17, 2024 at 02:19:43PM +0100, Christian Brauner wrote:
-> On Wed, Jan 17, 2024 at 07:56:01AM +1100, Dave Chinner wrote:
-> > On Tue, Jan 16, 2024 at 11:50:32AM +0100, Christian Brauner wrote:
-> > > Hey,
-> > > 
-> > > I'm not sure this even needs a full LSFMM discussion but since I
-> > > currently don't have time to work on the patch I may as well submit it.
-> > > 
-> > > Gnome recently got awared 1M Euro by the Sovereign Tech Fund (STF). The
-> > > STF was created by the German government to fund public infrastructure:
-> > > 
-> > > "The Sovereign Tech Fund supports the development, improvement and
-> > >  maintenance of open digital infrastructure. Our goal is to sustainably
-> > >  strengthen the open source ecosystem. We focus on security, resilience,
-> > >  technological diversity, and the people behind the code." (cf. [1])
-> > > 
-> > > Gnome has proposed various specific projects including integrating
-> > > systemd-homed with Gnome. Systemd-homed provides various features and if
-> > > you're interested in details then you might find it useful to read [2].
-> > > It makes use of various new VFS and fs specific developments over the
-> > > last years.
-> > > 
-> > > One feature is encrypting the home directory via LUKS. An approriate
-> > > image or device must contain a GPT partition table. Currently there's
-> > > only one partition which is a LUKS2 volume. Inside that LUKS2 volume is
-> > > a Linux filesystem. Currently supported are btrfs (see [4] though),
-> > > ext4, and xfs.
-> > > 
-> > > The following issue isn't specific to systemd-homed. Gnome wants to be
-> > > able to support locking encrypted home directories. For example, when
-> > > the laptop is suspended. To do this the luksSuspend command can be used.
-> > > 
-> > > The luksSuspend call is nothing else than a device mapper ioctl to
-> > > suspend the block device and it's owning superblock/filesystem. Which in
-> > > turn is nothing but a freeze initiated from the block layer:
-> > > 
-> > > dm_suspend()
-> > > -> __dm_suspend()
-> > >    -> lock_fs()
-> > >       -> bdev_freeze()
-> > > 
-> > > So when we say luksSuspend we really mean block layer initiated freeze.
-> > > The overall goal or expectation of userspace is that after a luksSuspend
-> > > call all sensitive material has been evicted from relevant caches to
-> > > harden against various attacks. And luksSuspend does wipe the encryption
-> > > key and suspend the block device. However, the encryption key can still
-> > > be available clear-text in the page cache.
-> > 
-> > The wiping of secrets is completely orthogonal to the freezing of
-> > the device and filesystem - the freeze does not need to occur to
-> > allow the encryption keys and decrypted data to be purged. They
-> > should not be conflated; purging needs to be a completely separate
-> > operation that can be run regardless of device/fs freeze status.
-> 
-> Yes, I'm aware. I didn't mean to imply that these things are in any way
-> necessarily connected. Just that there are use-cases where they are. And
-> the encrypted home directory case is one. One froze the block device and
-> filesystem one would now also like to drop the page cache which has most
-> of the interesting data.
-> 
-> The fact that after a block layer initiated freeze - again mostly a
-> device mapper problem - one may or may not be able to successfully read
-> from the filesystem is annoying. Of course one can't write, that will
-> hang one immediately. But if one still has some data in the page cache
-> one can still dump the contents of that file. That's at least odd
-> behavior from a users POV even if for us it's cleary why that's the
-> case.
+[CHANGELOG]
+v2:
+- Properly return the parsed value for parse_u64_with_suffix()
+  Facepalm, I forgot to assign the result to @value_ret, and only relied
+  on cli-tests to catch them, but they are not enough to catch.
 
-A frozen filesystem doesn't prevent read operations from occurring.
+- Avoid outputting any error message inside parse_u64_with_suffix()
+  One error message and exit(1) call is left from previous function.
+  Need to be consistent with all other error situations.
 
-> And a freeze does do a sync_filesystem() and a sync_blockdev() to flush
-> out any dirty data for that specific filesystem.
+- Rebased using the patch from devel branch
+  So that the modification David did won't need to be redone.
 
-Yes, it's required to do that - the whole point of freezing a
-filesystem is to bring the filesystem into a *consistent physical
-state on persistent storage* and to hold it in that state until it
-is thawed.
+Btrfs-progs has two types of parsers:
 
-> So it would be fitting
-> to give users an api that allows them to also drop the page cache
-> contents.
+- parse_*()
+  Those would return 0 for a good parse, and save the value into a
+  pointer.
+  Callers are responsible to handle the error.
 
-Not as part of a freeze operation.
+- arg_strto*()
+  Those would directly return the parsed value, and call exit(1)
+  directly for errors.
 
-Read operations have *always* been allowed from frozen filesystems;
-they are intended to be allowed because one of the use cases for
-freezing is to create a consistent filesystem state for backup of
-the filesystem. That requires everything in the filesystem can be
-read whilst it is frozen, and that means the page cache needs to
-remain operational.
+However this split is not perfect:
 
-What the underlying device allows when it has been *suspended* is a
-different issue altogether. The key observation here is that storage
-device suspend != filesystem freeze and they can have very different
-semantics depending on the operation being performed on the block
-device while it is suspended.
+- A lot of code can be shared between them
+  In fact, mostly arg_strto*() can be implement using parse_*().
+  The only difference is in how detailed the error string would be.
 
-IOWs, a device suspend implementation might freeze the filesystem to
-bring the contents of the storage device whilst frozen into a
-consistent, uptodate state (e.g. for device level backups), but
-block device level suspend does not *require* that the filesystem is
-frozen whilst the device IO operations are suspended.
+- parse_size_from_string() doesn't follow the scheme
+  It follows arg_strto*() behavior but has the parse_*() name.
 
-> For some use-cases like the Gnome use-case one wants to do a freeze and
-> drop everything that one can from the page cache for that specific
-> filesystem.
+This patch would:
 
-So they have to do an extra system call between FS_IOC_FREEZE and
-FS_IOC_THAW. What's the problem with that? What are you trying to
-optimise by colliding cache purging with FS_IOC_FREEZE?
+- Use parse_u64() to implement arg_strtou64()
+  The first patch.
 
-If the user/application/infrastructure already has to iterate all
-the mounted filesystems to freeze them, then it's trivial for them
-to add a cache purging step to that infrastructure for the storage
-configurations that might need it. I just don't see why this needs
-to be part of a block device freeze operation, especially as the
-"purge caches on this filesystem" operation has potential use cases
-outside of the luksSuspend context....
+- Use parse_u64_with_suffix() to implement arg_strtou64_with_suffix()
+  The new helper parse_u64_with_suffix() would replace the old
+  parse_size_from_string() and do the proper error handling.
 
-Cheers,
+Qu Wenruo (2):
+  btrfs-progs: use parse_u64() to implement arg_strtou64()
+  btrfs-progs: implement arg_strtou64_with_suffix() with a new helper
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+ cmds/filesystem.c     | 15 ++++----
+ cmds/qgroup.c         |  3 +-
+ cmds/reflink.c        |  7 ++--
+ cmds/scrub.c          |  2 +-
+ common/parse-utils.c  | 90 +++++++++++++++++++++++++++----------------
+ common/parse-utils.h  |  2 +-
+ common/string-utils.c | 45 ++++++++++++++--------
+ common/string-utils.h |  9 +++++
+ convert/main.c        |  3 +-
+ kernel-shared/zoned.c |  4 +-
+ mkfs/main.c           |  6 +--
+ 11 files changed, 118 insertions(+), 68 deletions(-)
+
+--
+2.43.0
+
 
