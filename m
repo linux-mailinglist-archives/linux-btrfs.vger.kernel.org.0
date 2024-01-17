@@ -1,101 +1,107 @@
-Return-Path: <linux-btrfs+bounces-1530-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1531-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52466830D8F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 20:58:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06857830DBA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 21:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1B98B215A9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 19:58:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7246C282E0F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 20:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBDA824A11;
-	Wed, 17 Jan 2024 19:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA6424B30;
+	Wed, 17 Jan 2024 20:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pBAyXJA3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bEQyoUXO";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pBAyXJA3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bEQyoUXO"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DxH57UwC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XaReb3Nt";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DxH57UwC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XaReb3Nt"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D53E249FE
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 19:58:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960C6249F3;
+	Wed, 17 Jan 2024 20:08:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705521510; cv=none; b=gvECdngf8Mwk/uVSzbGh7qSJtJX6mzta2FJIXTnUFFLu/be1jAJ0iE1mBUnKNMIq3CKCzhXmSOoiDhDQJdUjHnjwjhAiEHSA6Lq2yKuWkL7GnYB2WqDBUPXIsYzjZwmdamwUYoxvVyHWQH4b1JRV0p2dSs70RyKkPT7DmYId69Q=
+	t=1705522127; cv=none; b=hy9HQNeAUb27yWm81LYOwv1QEUZ8Q1WIdtbvsY8+GMTlMSWRObhO/xtpTiWwnOaZtqkKPMfEtigUUyCxITc5m5m12jXSWowI2G6xvMrUiV/fv++Pk4nYhvcwTNqrsh0ip3Rn4xLNk2XGPtpobDlo7P8bOOWssR02qvJm6+1Q9bM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705521510; c=relaxed/simple;
-	bh=CcdSNi6nsJcRYK30kzWHXGgo8zHDyY2O6jAQNlWy3Nw=;
+	s=arc-20240116; t=1705522127; c=relaxed/simple;
+	bh=cJBSRVjP/I08r0Jgo3w2nkYK47VeBsQ/VGUIKeQwBvI=;
 	h=Received:DKIM-Signature:DKIM-Signature:DKIM-Signature:
 	 DKIM-Signature:Received:Received:Date:From:To:Cc:Subject:
 	 Message-ID:Reply-To:References:MIME-Version:Content-Type:
 	 Content-Disposition:In-Reply-To:User-Agent:X-Spamd-Result:
-	 X-Rspamd-Server:X-Spam-Score:X-Rspamd-Queue-Id:X-Spam-Level:
-	 X-Spam-Flag:X-Spamd-Bar; b=RUG+8eifJAvVJ/CI4YTC37JRL/eE/g67HPG7+vKZ2rbtN4XGkb436KA3XvoLApr9lCEYW43i4ODm2g6hCNV92EcnA8M/6M8owuMkDIvlMM24XXe/M66rWSTO5vt+sRe7XuAQtBLvkESlqpnb4Ru1mOCLLfflQLckym//QvHXseQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pBAyXJA3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bEQyoUXO; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pBAyXJA3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bEQyoUXO; arc=none smtp.client-ip=195.135.223.131
+	 X-Spam-Level:X-Spam-Flag:X-Spam-Score; b=K0q1WWtHH92YK0z+8u259z188K7uy9vBCkdxRIhocGyOfwxiCDVqS4w5hWk9TmmjZJ5dSKh3utyu2Vt2NJZkXya3NaoZv8cVrEc9hznhg2zvGa5SV5z3JmhZ+AW+ToPtmWLwVA4fDJsaNuk/DFiOaW3hG6W4E2m/f2to5bOY+rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DxH57UwC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XaReb3Nt; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DxH57UwC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XaReb3Nt; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2701C1F387;
-	Wed, 17 Jan 2024 19:58:26 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 658701FD60;
+	Wed, 17 Jan 2024 20:08:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705521506;
+	t=1705522123;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=c8ZLlWEyJc/QH2WQ/NE78P9o5WaXRgOLBdT2d2vUB6I=;
-	b=pBAyXJA31jIweovE4BPxuYUFOsfWU4Gk4eWCYmFhxW2lcYNHNV1zq/ITXez7Df7dTntuwA
-	ba8Y5NxBg483i8e3/D+nD0S5ddIhlW5JSGlHi0Z/YWB+b/g9i7/mdqWvOcnsWNWQ4Lr4bV
-	wvWAouk+z0fMptB2I7lgJVJG9KTADvI=
+	bh=QBFusp2e90JVXJXG409tSOTDSwNhaaPD9hhA0gagayk=;
+	b=DxH57UwCaUh8rRctwsG6q8VSqM6zMRwpARpjRMPNOU0RLWRKbfMi2QYzelVofELqc7P59L
+	eSspWRHH0rC8fXWP8mnljMrDr4rKFlBs+THOUM9XYZlHboBMy/i82nr1movr/2TVhfQOwP
+	TtXi0afrtGJ73AM9vIpBJB/Kk4ZVpuE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705521506;
+	s=susede2_ed25519; t=1705522123;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=c8ZLlWEyJc/QH2WQ/NE78P9o5WaXRgOLBdT2d2vUB6I=;
-	b=bEQyoUXOd9qnLyoGvMj7ui4J50BR7CYwznxZXgbS1QZxRGj1QBpiUOo25LbntakbtKboGJ
-	a+HEu4BFEa0RFXAQ==
+	bh=QBFusp2e90JVXJXG409tSOTDSwNhaaPD9hhA0gagayk=;
+	b=XaReb3NttmBxmdu6NCVYFV11x2ZakG/pdtvwdtVpNKA7sga7NvxRb5lkTFvqukNtqcWtxc
+	loPHKueJLqUdLVCA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705521506;
+	t=1705522123;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=c8ZLlWEyJc/QH2WQ/NE78P9o5WaXRgOLBdT2d2vUB6I=;
-	b=pBAyXJA31jIweovE4BPxuYUFOsfWU4Gk4eWCYmFhxW2lcYNHNV1zq/ITXez7Df7dTntuwA
-	ba8Y5NxBg483i8e3/D+nD0S5ddIhlW5JSGlHi0Z/YWB+b/g9i7/mdqWvOcnsWNWQ4Lr4bV
-	wvWAouk+z0fMptB2I7lgJVJG9KTADvI=
+	bh=QBFusp2e90JVXJXG409tSOTDSwNhaaPD9hhA0gagayk=;
+	b=DxH57UwCaUh8rRctwsG6q8VSqM6zMRwpARpjRMPNOU0RLWRKbfMi2QYzelVofELqc7P59L
+	eSspWRHH0rC8fXWP8mnljMrDr4rKFlBs+THOUM9XYZlHboBMy/i82nr1movr/2TVhfQOwP
+	TtXi0afrtGJ73AM9vIpBJB/Kk4ZVpuE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705521506;
+	s=susede2_ed25519; t=1705522123;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=c8ZLlWEyJc/QH2WQ/NE78P9o5WaXRgOLBdT2d2vUB6I=;
-	b=bEQyoUXOd9qnLyoGvMj7ui4J50BR7CYwznxZXgbS1QZxRGj1QBpiUOo25LbntakbtKboGJ
-	a+HEu4BFEa0RFXAQ==
+	bh=QBFusp2e90JVXJXG409tSOTDSwNhaaPD9hhA0gagayk=;
+	b=XaReb3NttmBxmdu6NCVYFV11x2ZakG/pdtvwdtVpNKA7sga7NvxRb5lkTFvqukNtqcWtxc
+	loPHKueJLqUdLVCA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 10CC413482;
-	Wed, 17 Jan 2024 19:58:26 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 3AE8613310;
+	Wed, 17 Jan 2024 20:08:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id URqlA2IxqGWzZQAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Wed, 17 Jan 2024 19:58:26 +0000
-Date: Wed, 17 Jan 2024 20:58:03 +0100
+	id DSnkDcszqGXoZgAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Wed, 17 Jan 2024 20:08:43 +0000
+Date: Wed, 17 Jan 2024 21:08:24 +0100
 From: David Sterba <dsterba@suse.cz>
-To: Goffredo Baroncelli <kreijack@libero.it>
-Cc: linux-btrfs@vger.kernel.org, Goffredo Baroncelli <kreijack@inwind.it>
-Subject: Re: [PATCH] btrfs fi us: wrong values in case of raid5 and not root
-Message-ID: <20240117195803.GN31555@twin.jikos.cz>
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: dsterba@suse.cz, clm@fb.com, daniel@iogearbox.net, dsterba@suse.com,
+	john.fastabend@gmail.com, josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, liujian56@huawei.com,
+	syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in
+ getname_kernel (2)
+Message-ID: <20240117200824.GO31555@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <e8659631b0481defe32fcde435432da630af6789.1704400902.git.kreijack@inwind.it>
+References: <20240115190824.GV31555@twin.jikos.cz>
+ <tencent_29BA3BBBE933849E2C1B404BE21BA525FB08@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -104,95 +110,121 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e8659631b0481defe32fcde435432da630af6789.1704400902.git.kreijack@inwind.it>
+In-Reply-To: <tencent_29BA3BBBE933849E2C1B404BE21BA525FB08@qq.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=pBAyXJA3;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=bEQyoUXO
-X-Spamd-Result: default: False [-0.01 / 50.00];
+	none
+X-Spamd-Result: default: False [-1.30 / 50.00];
 	 ARC_NA(0.00)[];
 	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 FREEMAIL_ENVRCPT(0.00)[inwind.it,libero.it];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
 	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,qq.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[33f23b49ac24f986c9e8];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_HAM(-3.00)[100.00%];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[libero.it:email,inwind.it:email,suse.cz:dkim];
-	 FREEMAIL_TO(0.00)[libero.it];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 FREEMAIL_TO(0.00)[qq.com];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,inwind.it];
-	 RCVD_TLS_ALL(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -0.01
-X-Rspamd-Queue-Id: 2701C1F387
+	 FREEMAIL_CC(0.00)[suse.cz,fb.com,iogearbox.net,suse.com,gmail.com,toxicpanda.com,vger.kernel.org,huawei.com,syzkaller.appspotmail.com,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
 X-Spam-Level: 
 X-Spam-Flag: NO
-X-Spamd-Bar: /
+X-Spam-Score: -1.30
 
-On Thu, Jan 04, 2024 at 09:41:42PM +0100, Goffredo Baroncelli wrote:
-> From: Goffredo Baroncelli <kreijack@inwind.it>
-> 
-> In case of a raid5/6 filesystem 'btrfs fi us' returns wrong values
-> without the root capabilities.
-> 
-> $ sudo btrfs fi us /tmp/raid5fs  # as root
-> Overall:
->     Device size:                   3.00GiB
->     Device allocated:              1.51GiB		<--- OK
->     Device unallocated:            1.49GiB		<--- OK
->     Device missing:                  0.00B
->     Device slack:                    0.00B
->     Used:                        769.03MiB		<--- OK
->     Free (estimated):              1.32GiB      (min: 1.32GiB) <-OK
->     Free (statfs, df):             1.32GiB
->     Data ratio:                       1.50		<--- OK
->     Metadata ratio:                   1.50		<--- OK
->     Global reserve:                5.50MiB      (used: 0.00B)
->     Multiple profiles:                  no
-> [...]
-> 
-> $ btrfs fi us /tmp/raid5fs      # as user
-> WARNING: cannot read detailed chunk info, per-device usage will not be shown, run as root
-> Overall:
->     Device size:                   3.00GiB
->     Device allocated:                0.00B		<--- WRONG
->     Device unallocated:            3.00GiB		<--- WRONG
->     Device missing:                  0.00B
->     Device slack:                    0.00B
->     Used:                            0.00B		<--- WRONG
->     Free (estimated):                0.00B      (min: 8.00EiB) <- WRONG
->     Free (statfs, df):             1.32GiB
->     Data ratio:                       0.00		<--- WRONG
->     Metadata ratio:                   0.00		<--- WRONG
->     Global reserve:                5.50MiB      (used: 0.00B)
->     Multiple profiles:                  no
-> [...]
-> 
-> The reason is that the BTRFS_IOC_SPACE_INFO ioctl doesn't return enough
-> info. To bypass it a scan of the chunks is required when a raid5/6
-> profile is present.
-> 
-> To avoid providing wrong information, in case of a raid5/6 filesystem
-> without the root capabilities the "btrfs fi us" is not executed at all
-> and a warning with a suggestion to run it as root is printed.
-> 
-> $ ./btrfs fi us /tmp/t/
-> WARNING: cannot read detailed chunk info, per-device usage will not be shown, run as root
-> WARNING: due to the presence of a raid5/raid6 profile, we cannots compute some values;
-> WARNING: run as root instead.
-> $
-> 
-> Signed-off-by: Goffredo Baroncelli <kreijack@libero.it>
+On Tue, Jan 16, 2024 at 09:09:47AM +0800, Edward Adam Davis wrote:
+> On Mon, 15 Jan 2024 20:08:25 +0100, David Sterba wrote:
+> > > > If ioctl does not pass in the correct tgtdev_name string, oob will occur because
+> > > > "\0" cannot be found.
+> > > >
+> > > > Reported-and-tested-by: syzbot+33f23b49ac24f986c9e8@syzkaller.appspotmail.com
+> > > > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> > > > ---
+> > > >  fs/btrfs/dev-replace.c | 6 ++++--
+> > > >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> > > > index f9544fda38e9..e7e96e57f682 100644
+> > > > --- a/fs/btrfs/dev-replace.c
+> > > > +++ b/fs/btrfs/dev-replace.c
+> > > > @@ -730,7 +730,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
+> > > >  int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+> > > >  			    struct btrfs_ioctl_dev_replace_args *args)
+> > > >  {
+> > > > -	int ret;
+> > > > +	int ret, len;
+> > > >
+> > > >  	switch (args->start.cont_reading_from_srcdev_mode) {
+> > > >  	case BTRFS_IOCTL_DEV_REPLACE_CONT_READING_FROM_SRCDEV_MODE_ALWAYS:
+> > > > @@ -740,8 +740,10 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+> > > >  		return -EINVAL;
+> > > >  	}
+> > > >
+> > > > +	len = strnlen(args->start.tgtdev_name, BTRFS_DEVICE_PATH_NAME_MAX + 1);
+> > > >  	if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
+> > > > -	    args->start.tgtdev_name[0] == '\0')
+> > > > +	    args->start.tgtdev_name[0] == '\0' ||
+> > > > +	    len == BTRFS_DEVICE_PATH_NAME_MAX + 1)
+> > >
+> > > I think srcdev_name would have to be checked the same way, but instead
+> > > of strnlen I'd do memchr(name, 0, BTRFS_DEVICE_PATH_NAME_MAX). The check
+> > > for 0 in [0] is probably pointless, it's just a shortcut for an empty
+> > > buffer. We expect a valid 0-terminated string, which could be an invalid
+> > > path but that will be found out later when opening the block device.
+> > 
+> > Please let me know if you're going to send an updated fix. I'd like to
+> > get this fixed to close the syzbot report but also want to give you the
+> > credit for debugging and fix.
+> > 
+> > The preferred fix is something like that:
+> > 
+> > --- a/fs/btrfs/dev-replace.c
+> > +++ b/fs/btrfs/dev-replace.c
+> > @@ -741,6 +741,8 @@ int btrfs_dev_replace_by_ioctl(struct btrfs_fs_info *fs_info,
+> >         if ((args->start.srcdevid == 0 && args->start.srcdev_name[0] == '\0') ||
+> >             args->start.tgtdev_name[0] == '\0')
+> >                 return -EINVAL;
+> > +       args->start.srcdev_name[BTRFS_PATH_NAME_MAX] = 0;
+> > +       args->start.tgtdev_name[BTRFS_PATH_NAME_MAX] = 0;
+> This is not correct,
+> 1. The maximum length of tgtdev_name is BTRFS_DEVICE_PATH_NAME_MAX + 1
 
-Added to devel, thanks.
+Yes, so if the array size is N + 1 then writing to offset N is valid.
+It's a bit confusing that the paths using BTRFS_PATH_NAME_MAX are +1
+bigger so it's not folling the patterns using N as the limit.
+
+> 2. strnlen should be used to confirm the presence of \0 in tgtdev_name
+
+Yes, this would work, with the slight difference that memchr looks for
+the 0 character regardless of any other, while strnlen also looks for
+any intermediate 0. memchr is an optimization, for input parameter
+validation it does not matter.
+
+> 3. Input values should not be subjectively updated
+
+Yeah, this is indeed subjective, I propsed that because we already do
+that for subvolume ioctls. This probably would never show up in
+practice, the paths are not that long and even if the real linux limit
+is PATH_MAX (4096) and BTRFS_PATH_NAME_MAX was originally set to a lower
+value it's still enough for everybody.
+
+From practiacal perspective I don't see any difference between
+overwriting the last place of NUL or checking it by strnlen/memchr.
+
+> 4. The current issue only involves tgtdev_name
+
+Right, that needs to be fixed. With bugs like that it's always good to
+look around for similar cases or audit everything of similar pattern,
+here it's an ioctl taking a user-specified path. If the target path is
+fixed, we need the source path fixed too. It can be a separate patch, no
+problem.
 
