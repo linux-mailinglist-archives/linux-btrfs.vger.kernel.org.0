@@ -1,217 +1,164 @@
-Return-Path: <linux-btrfs+bounces-1501-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1502-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC2F82FECB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 03:26:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F29F982FF76
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 05:11:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D43761F21D4F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 02:26:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11AD21C23D1D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 04:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EFD01C11;
-	Wed, 17 Jan 2024 02:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9121F6AB8;
+	Wed, 17 Jan 2024 04:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LMGWha6N"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sRk+KfRF";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sRk+KfRF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24FB215CC
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 02:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2949522D
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 04:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705458382; cv=none; b=omX5ZXF6faCafa7Y2gQ5w8mvZAvplYX0TXPsjKWb47QaC/I0dyfkO72T/qdO7p4zsRqe0kNcrPqL2DrXcufNTYeSfUDguoAkl6vz4uqGiXcmiZlSYsq+Bg/8khfUUGurBXyGM7FEVKQDrpPPYuIBb2IjN2SzJhMULdvU5zCyBJ0=
+	t=1705464665; cv=none; b=SrI5RfYMUFN1jqUjELFe7DBs2SqaKzTnvrDJafKCAAwXqXg+XyZf6YXSNMFIS4x/jlS4mAfKPP/fsjMfglbqJkKF2uM+Ec54aDHzkzS7ORyoKmzKrHsV4f3Rrpay2+JjBli1ZfcqWlkLSR+tOwV7HzIj0yDi/jM2wpa2QldlmEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705458382; c=relaxed/simple;
-	bh=zmcebiIEIvMASitbu8HY5Ki2gfMON+Nsxi7iwClRliI=;
-	h=DKIM-Signature:X-UI-Sender-Class:Received:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:Content-Language:To:Cc:References:
-	 From:Autocrypt:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 X-Provags-ID:X-Spam-Flag:UI-OutboundReport; b=Vh+kNIjNFmtyw6FOyH0uCDKu+kRyiIWh3qqgdtRGpj8uvBPFrtULXLgVyCRy27ibXgP/k8tEaFG/Y58+1jnS9MXhwblG3MLhYQrGVztEKu95C5PJGUHaCP8ipIMwIgV2DPElnmuBQLaZE0ySXcfrM4wdpIbfgEIGoXRSy1nCSw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LMGWha6N; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705458376; x=1706063176; i=quwenruo.btrfs@gmx.com;
-	bh=zmcebiIEIvMASitbu8HY5Ki2gfMON+Nsxi7iwClRliI=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=LMGWha6NfLBerbtmfnzhisXeC6aSyzu0YRD/5Hg09yrObQIUhtxs6etVUxUHz3so
-	 DbCWDMaEOudaWD/Rp5+gLjNL1+4wF9cgIS/GRAdO47jmUOlGdJjmwK7b/pJzG9gDf
-	 qkdr4F3QD2Cc7d3c0Z2qkD58SJ35fBoU/Ua2dDZGWJfn+rXsuZ/TovZCNaTz/DoPM
-	 45PBQowxsAZAN9TLPNVdfflkt9Xm6+X1Th0rk2I9QB21VADFytjGZE8CVpXn+4Erf
-	 ZAOy/zeAMUnMZ911gOoIaoYPnbHt1ryHtyEH4c5Ur97YbZAtNE9WaUhdEafO2V2cJ
-	 pETGlXtNa/3RGjzvsg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MZTqg-1rbUsT2mBS-00WWVb; Wed, 17
- Jan 2024 03:26:16 +0100
-Message-ID: <7a0ed26a-1db7-4eb5-9522-afb21f557db9@gmx.com>
-Date: Wed, 17 Jan 2024 12:56:12 +1030
+	s=arc-20240116; t=1705464665; c=relaxed/simple;
+	bh=tyX9StE4zMWb84tWp3HhJht2S+dHshA8IKf+4DR8mYs=;
+	h=Received:DKIM-Signature:DKIM-Signature:Received:Received:From:To:
+	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding:X-Spamd-Result:X-Rspamd-Server:
+	 X-Spam-Score:X-Rspamd-Queue-Id:X-Spam-Level:X-Spam-Flag:
+	 X-Spamd-Bar; b=P9uL8TBisLSf41wENwZqwIniJwECOVsaY7qQHD5B3IE7YWWTyfM+Sg1LiAU5DLZj2k1YIIB9TnekXxkhedtZU4mHo8HjRpu1y7nbzXd4PG1NDc7FCkXccNUcDNJBSLnkFajTaJXDR9xSrzQHmPxM/J0t+3XZvzY5h1IaaTQXI6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sRk+KfRF; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sRk+KfRF; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F13C71FD58
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 04:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705464660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=f2hfoGLqhTqNyL9PUjqGQnS27c5u9K2U9hAyD6DcdU0=;
+	b=sRk+KfRFLuE34jFNyZMCTVdb+TdwrXJD4ffC5wRhS17fiVtB6qJGbLp1l3TTjul+/3oYQS
+	Ulf+MmkpsMKjI6orBLMgTPjSvY8QftvwrZMCiycCagzAaB9jx+1BcveaTU2+zO0msAQBCL
+	7bX9nvWsNlPMsMK4DuieP8Knlergrl8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705464660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=f2hfoGLqhTqNyL9PUjqGQnS27c5u9K2U9hAyD6DcdU0=;
+	b=sRk+KfRFLuE34jFNyZMCTVdb+TdwrXJD4ffC5wRhS17fiVtB6qJGbLp1l3TTjul+/3oYQS
+	Ulf+MmkpsMKjI6orBLMgTPjSvY8QftvwrZMCiycCagzAaB9jx+1BcveaTU2+zO0msAQBCL
+	7bX9nvWsNlPMsMK4DuieP8Knlergrl8=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B2A813751
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 04:10:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id JHD5M1JTp2XrSgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 04:10:58 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs-progs: parser related cleanups
+Date: Wed, 17 Jan 2024 14:40:38 +1030
+Message-ID: <cover.1705464240.git.wqu@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] btrfs-progs: convert/ext2: new debug environment
- variable to finetune transaction size
-Content-Language: en-US
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1705135055.git.wqu@suse.com>
- <4c2f12dc417a192f4acfd804831401aadeeb9c42.1705135055.git.wqu@suse.com>
- <20240116183152.GC31555@twin.jikos.cz>
- <8d987075-18be-4866-80da-03415b6da7ff@suse.com>
- <20240117010806.GI31555@twin.jikos.cz>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240117010806.GI31555@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UZajEM8aoTaKcKs8NfTZeecLzXtCcqQSYALiVl+NGa09SLx/VGY
- 1AA/jtJXbumTl3RzYEHDwFgX2wrKcsWmMLjHV+3QWuG0Xu5rGVw1w7rkxq8oH+jvRzsU6f5
- DEgtU5pM0P+YAEvDcsEgALY3QLkIkGOnzszQTxdn7qIh/3Fzz59KZHClAeEACjDCGo/X3e/
- xXQoWzSkTFzLRkXK3lckw==
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=sRk+KfRF
+X-Spamd-Result: default: False [2.64 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCPT_COUNT_ONE(0.00)[1];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_DN_NONE(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.05)[60.46%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 2.64
+X-Rspamd-Queue-Id: F13C71FD58
+X-Spam-Level: **
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:pKgC9wjluO0=;+1t1QZGrV3Gc4ZgAuSHuOYaYqVS
- B+8pn3BqTpb47z69lcmF7h/hgoYlOYmn4xNFssaufbKCFg3WxiFVJf9ub6rgUFXwRvGjXWQmN
- tgsyVwqcW2DnGC2LrfuAPHe9O/IB4FCp9Wpo+wgBUTUvtN6IkpD7w7p7TKZquqLPs47vegckF
- 5GDzHti4yK6xGkdfm52sr9hpIzspcULX/VSCOSg/xDO6EMyE8DIgA74CzZjQa6Q5+DdB8Z2Xg
- /V1bY/8FzdV76WdmvW4baww0nOR1bUIGBZ2e/MmGQRLegb13bESMxisDs5VR3KPru8olviXf2
- t3X/e1Q05PxG1X6JM9dNMdCKIfJJIjrVwVmgPNHYpv/vXgBbLX0Rp08GbfV6ztbg9ui1a+utT
- 3Y8SE3AWp4GMPcdf0q7Y5vROj47TDXBoxIYZMxGIz7A7Cje06qZIG3vQB2ydQaKorR1uCWYXD
- iIK0b+UlV+FqYPpHOJFSDJVqqjEpBCvVc5iEYBJvc/cnE+0ePmU0otmix6oBfxIi9jsS2uJyZ
- e5eXXstf15LrmmMryMCMGpiAO6hgV5MuD6Em3R96x+77HGcr8cVDiRf6rWJE0j/QVuU1K3pO3
- 2o1X76VQj4J+DCA3pFeSYcordtCohPbGru90e3a9C6kkTcBx2TtQEijGzUJs4IRVkKkXsqzJ6
- a8ss1gqv6FtV6FotBOJew+wAP4TammO+VEHgC2S4SKmgnpKJ8GkUY9eYuCwgeKBnD817EzfmS
- j37RMKflM0hYtGpiOlvelyZXLZg1P7A6MwDzUdOFO8WNFCs088DVhvqabbm1d5YuNc/XlhALV
- fwzcnaNuXqQR6oBVzS5btft5DSxm1MTRCzwHJ8mJKwjahGS9Z3+G0NRXVAZUoC2LUYoNpH0CW
- OuTSpv8thu76hIrZL7/MH5raE+sQLEuGF5rgio9D76fAHQsppvRM4YrH83TZ5bS1L/hYlMJ/2
- AyK75lVOGOYkOEv9xbsZ015tR7A=
+X-Spamd-Bar: ++
 
+Btrfs-progs has two types of parsers:
 
+- parse_*()
+  Those would return 0 for a good parse, and save the value into a
+  pointer.
+  Callers are responsible to handle the error.
 
-On 2024/1/17 11:38, David Sterba wrote:
-> On Wed, Jan 17, 2024 at 06:50:11AM +1030, Qu Wenruo wrote:
->> On 2024/1/17 05:01, David Sterba wrote:
->>> On Sat, Jan 13, 2024 at 07:15:29PM +1030, Qu Wenruo wrote:
->>>> Since we got a recent bug report about tree-checker triggered for lar=
-ge
->>>> fs conversion, we need a properly way to trigger the problem for test
->>>> case purpose.
->>>>
->>>> To trigger that bug, we need to meet several conditions:
->>>>
->>>> - We need to read some tree blocks which has half-backed inodes
->>>> - We need a large enough enough fs to generate more tree blocks than
->>>>     our cache.
->>>>
->>>>     For our existing test cases, firstly the fs is not that large, th=
-us
->>>>     we may even go just one transaction to generate all the inodes.
->>>>
->>>>     Secondly we have a global cache for tree blocks, which means a lo=
-t of
->>>>     written tree blocks are still in the cache, thus won't trigger
->>>>     tree-checker.
->>>>
->>>> To make the problem much easier for our existing test case to expose,
->>>> this patch would introduce a debug environment variable:
->>>> BTRFS_PROGS_DEBUG_BLOCKS_USED_THRESHOLD.
->>>>
->>>> This would affects the threshold for the transaction size, setting it=
- to
->>>> a much smaller value would make the bug much easier to trigger.
->>>>
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>>    common/utils.c        | 62 +++++++++++++++++++++++++++++++++++++++=
-++++
->>>>    common/utils.h        |  1 +
->>>>    convert/source-ext2.c |  9 ++++++-
->>>>    3 files changed, 71 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/common/utils.c b/common/utils.c
->>>> index 62f0e3f48b39..e6070791f5cc 100644
->>>> --- a/common/utils.c
->>>> +++ b/common/utils.c
->>>> @@ -956,6 +956,68 @@ u8 rand_u8(void)
->>>>    	return (u8)(rand_u32());
->>>>    }
->>>>
->>>> +/*
->>>> + * Parse a u64 value from an environment variable.
->>>> + *
->>>> + * Supports unit suffixes "KMGTP", the suffix is always 2 ** 10 base=
-d.
->>>> + * With proper overflow detection.
->>>> + *
->>>> + * The string must end with '\0', anything unexpected non-suffix str=
-ing,
->>>> + * including space, would lead to -EINVAL and no value updated.
->>>> + */
->>>> +int get_env_u64(const char *env_name, u64 *value_ret)
->>>
->>> There already is a function for parsing sizes parse_size_from_string()
->>> in common/parse-utils.c.
->>
->> Unfortunately that's not suitable.
->>
->> We don't want a invalid string to fully blow up the program, as the
->> existing parser would call exit(1), especially we only need it for a
->> debug environmental variable.
->
-> I see.
->
->> Should I change the existing one to provide better error handling?
->> (Which means around 16 call sites update), or is there some better solu=
-tion?
->
-> Yeah, the parsers used for command line arguments are fine to exit as
-> error handling but generic helper should not do that. There's
-> arg_strotu64, so I'd keep the arg_ prefix for helpers that will exit on
-> error.
->
-> Looking at parse_size_from_string, it should return int or bool and the
-> value will be in parameter. This is cleaner than using errno for that.
->
-And I can take it one step further, make arg_* helper to utilize the
-proper parser version (which would return an int to indicate error), and
-call exit(1) to error out.
+- arg_strto*()
+  Those would directly return the parsed value, and call exit(1)
+  directly for errors.
 
-By this, we can share the code and still keep the behavior.
+However this split is not perfect:
 
-Although it would mean I have to change the call sites.
+- A lot of code can be shared between them
+  In fact, mostly arg_strto*() can be implement using parse_*().
+  The only difference is in how detailed the error string would be.
 
-I'll craft a proper series for the conversion/cleanup.
+- parse_size_from_string() doesn't follow the scheme
+  It follows arg_strto*() behavior but has the parse_*() name.
 
-Thanks,
-Qu
+This patch would:
+
+- Use parse_u64() to implement arg_strtou64()
+  The first patch.
+
+- Use parse_u64_with_suffix() to implement arg_strtou64_with_suffix()
+  The new helper parse_u64_with_suffix() would replace the old
+  parse_size_from_string() and do the proper error handling.
+
+Qu Wenruo (2):
+  btrfs-progs: use parse_u64() to implement arg_strtou64()
+  btrfs-progs: implement arg_strtou64_with_suffix() with a new helper
+
+ cmds/filesystem.c     | 15 ++++----
+ cmds/qgroup.c         |  3 +-
+ cmds/reflink.c        |  7 ++--
+ cmds/scrub.c          |  2 +-
+ common/parse-utils.c  | 85 ++++++++++++++++++++++++++++---------------
+ common/parse-utils.h  |  2 +-
+ common/string-utils.c | 45 +++++++++++++++--------
+ common/string-utils.h |  3 ++
+ convert/main.c        |  3 +-
+ kernel-shared/zoned.c |  4 +-
+ mkfs/main.c           |  6 +--
+ 11 files changed, 110 insertions(+), 65 deletions(-)
+
+--
+2.43.0
+
 
