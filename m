@@ -1,86 +1,106 @@
-Return-Path: <linux-btrfs+bounces-1512-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1513-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F32CC83016A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 09:40:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8C5C8303A8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 11:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A437287A54
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 08:40:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09F801C246AE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 10:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561971173E;
-	Wed, 17 Jan 2024 08:40:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC801DA4C;
+	Wed, 17 Jan 2024 10:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=severnouse.com header.i=@severnouse.com header.b="DPc3kXtb"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="lzJQidbM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.severnouse.com (mail.severnouse.com [141.95.160.218])
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18DF11170F
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 08:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.95.160.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049B4154A6
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 10:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705480829; cv=none; b=IPooVaobECOuaQfKKAGqR4zRl9jB7lJKHYNMDJUCCJMO3VrwKa2crLaSSU68FIf2KZjP8Qp9EMWajm7WeRADu2OE1IHISolHDFhSCpl4sKmFlzgzET6+Tpy0TqzvMDvQWce0cFzLXocNZOMEJso8R1qtWrP9YOnX+KTXqJeCL1o=
+	t=1705487454; cv=none; b=RZQv64MU2GETxDJQbOAVat3QZF86s/c0tcNWoEiLPBcnhAJRYl9JjDOGhs+0kgS6alXgF7CnMAdyFkyEvranYoaez9Rv/xlX9Qz4Gu6gv/g6lhyCey41Kr5CasDSPge1iV3IwBik5gS0t5f4mw6G/JNmkydsQwol1ahzgsj5rWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705480829; c=relaxed/simple;
-	bh=waaYxUsyRtmB2zEBuWcqRuRHSoYd8sJFCtgHO/3AHKE=;
-	h=Received:DKIM-Signature:Received:Message-ID:Date:From:To:Subject:
-	 X-Mailer:MIME-Version:Content-Type:Content-Transfer-Encoding; b=SW0QBVeNp6n/CI1dln72GE6j2XtGd7rtjTpV/EgcxjE0cFeARC6PX/ZR1cXEktyuCEemB/oVYPmEA7Mz74uGgErIBuV/ngp2QwIEV87R24X2EhUkhlZuzAmB1gKJm4phD7ubwyQFyutdkh9ZBrcLvOl45gy5VeyzumENsUind+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=severnouse.com; spf=pass smtp.mailfrom=severnouse.com; dkim=pass (2048-bit key) header.d=severnouse.com header.i=@severnouse.com header.b=DPc3kXtb; arc=none smtp.client-ip=141.95.160.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=severnouse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=severnouse.com
-Received: by mail.severnouse.com (Postfix, from userid 1002)
-	id 928E7A2CC9; Wed, 17 Jan 2024 08:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=severnouse.com;
-	s=mail; t=1705480822;
-	bh=waaYxUsyRtmB2zEBuWcqRuRHSoYd8sJFCtgHO/3AHKE=;
-	h=Date:From:To:Subject:From;
-	b=DPc3kXtb+61CN5y52v6gSkzhjrdeW5QQrsVnnSTEjnI9tg4HbxiOhvixxYifHAf7R
-	 eE9rfZFymGuG5CYV5SajB0S6fZ1r2UPHYtJUVwajUF9Bvk4Jqf0c7887qTdJk57RHE
-	 nP8vp6VUTQcqpnKtV2w7sxUrOSxqPZ3UnXXV4ROxLxihRKq0y1NV9CuhNy+N1Za5s2
-	 7H6ZqrQbwIj5KVo4330r9ompfMM8W9XQCQ2D9dh+RWpw5jIJl18e7Mqj2xi90EYQU2
-	 Eu+ij9gkHuzI/Qmgdbj6P2HPcrZ7E2n3f83Wb8LwZPMQ2rLSm3bZZugMmUEzAUa3Yu
-	 dbYYnkx1TrjDA==
-Received: by mail.severnouse.com for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 08:40:20 GMT
-Message-ID: <20240117074500-0.1.bh.olob.0.nowqk4ibek@severnouse.com>
-Date: Wed, 17 Jan 2024 08:40:20 GMT
-From: "Ray Galt" <ray.galt@severnouse.com>
-To: <linux-btrfs@vger.kernel.org>
-Subject: Meeting with the Development Team
-X-Mailer: mail.severnouse.com
+	s=arc-20240116; t=1705487454; c=relaxed/simple;
+	bh=qQCDLpvaOZNVn0XwF7XUDCWit2gGz/fWau6voCqw53M=;
+	h=DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:X-IronPort-AV:
+	 Received:IronPort-SDR:Received:IronPort-SDR:WDCIronportException:
+	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding; b=SZuEp2YNqu+mcOaWQrPr17zvt32xP+pSGg7L1Xg//LgYgzswkWj/WdQ/Fy6+KoH2H1JJlk/DHU6aIuStU4E7/j1q0jX+N+Fo/Uh5eggJeq9o6wpmqLK1XHH3qKQ93t+ZnmNfoRErGyTb7vN8nOh3Gw/4do3IpiiCWYAQxp35keA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=lzJQidbM; arc=none smtp.client-ip=216.71.153.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1705487452; x=1737023452;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qQCDLpvaOZNVn0XwF7XUDCWit2gGz/fWau6voCqw53M=;
+  b=lzJQidbMUZvWFsXUv75fjQifbWxZnbpGGi4OX2Vbgfn6LuT/mNusO6Ua
+   A+g3iHtZB5JAClrLf8Z0v7ZJrgyUSk96EMYQxgYLNB5CGzJB9nAI318fc
+   16X4cx6oYorZj4JtyqMYdcr8IP3vDaLvhp9KFnyPr3Ym63TqtDPsE6PX8
+   wDCkdPHNzLxhEULClBfycUlxX135j0Qunrv/D/9WVDek5FwrCnE0V/ehQ
+   REf/VaTJ9lETUCw05QCTRBdpkbh8UvelXJh2jB6oZXfF3C0ku2YWMCVW0
+   BqUXRyaGBuIakDCEunyTFpVBHx/Kj2JE6upPjUzji4gSW1s2vv8GsFC8t
+   Q==;
+X-CSE-ConnectionGUID: 1+kjtFVaRsW5HqjwsWnQZw==
+X-CSE-MsgGUID: RVrTQdPJQBmeeVCq7cqVyg==
+X-IronPort-AV: E=Sophos;i="6.05,200,1701100800"; 
+   d="scan'208";a="7557026"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 17 Jan 2024 18:30:46 +0800
+IronPort-SDR: Q8uw/Vrz0+hMoQEVApKTqx9/GGYgwQvPYLGg2c7fAeTBD+rl3Ci8Pr1G6WSseJ5TJjWVQJ9EF6
+ lblVkfhXqe6A==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 17 Jan 2024 01:40:55 -0800
+IronPort-SDR: vGLQXqTiKAGef0tPHeuYuMSi9HAqL/Q3pctSSAXqqbfUaFBDacFzpl8vFTgBK2TTQHbXTRIfWc
+ ysmJ14PDGHlw==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
+  by uls-op-cesaip02.wdc.com with ESMTP; 17 Jan 2024 02:30:46 -0800
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: remove duplicate recording of physical address
+Date: Wed, 17 Jan 2024 02:30:13 -0800
+Message-ID: <022e1767f333e36d22e0c6f859334ae9433e42a4.1705487315.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Remove the duplicate physical recording of the original write physical
+address in case of a single device write.
 
-I would like to reach out to the decision-maker in the IT environment wit=
-hin your company.
+This duplicated code is most likely present due to a rebase error.
 
-We are a well-established digital agency in the European market. Our solu=
-tions eliminate the need to build and maintain in-house IT and programmin=
-g departments, hire interface designers, or employ user experience specia=
-lists.
+Fixes: 02c372e1f016e ("btrfs: add support for inserting raid stripe extents")
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/bio.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-We take responsibility for IT functions while simultaneously reducing the=
- costs of maintenance. We provide support that ensures access to high-qua=
-lity specialists and continuous maintenance of efficient hardware and sof=
-tware infrastructure.
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 928f512cdb4a..2d20215548db 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -509,8 +509,6 @@ static void __btrfs_submit_bio(struct bio *bio, struct btrfs_io_context *bioc,
+ 	if (!bioc) {
+ 		/* Single mirror read/write fast path. */
+ 		btrfs_bio(bio)->mirror_num = mirror_num;
+-		if (bio_op(bio) != REQ_OP_READ)
+-			btrfs_bio(bio)->orig_physical = smap->physical;
+ 		bio->bi_iter.bi_sector = smap->physical >> SECTOR_SHIFT;
+ 		if (bio_op(bio) != REQ_OP_READ)
+ 			btrfs_bio(bio)->orig_physical = smap->physical;
+-- 
+2.43.0
 
-Companies that thrive are those that leverage market opportunities faster=
- than their competitors. Guided by this principle, we support gaining a c=
-ompetitive advantage by providing comprehensive IT support.
-
-May I present what we can do for you?
-
-
-Best regards
-Ray Galt
 
