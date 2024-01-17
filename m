@@ -1,211 +1,123 @@
-Return-Path: <linux-btrfs+bounces-1518-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1519-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D0D8306EA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 14:20:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFCD58307E4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 15:21:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73DDBB24C85
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 13:20:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C51361C2156F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jan 2024 14:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9851F61A;
-	Wed, 17 Jan 2024 13:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 113D32032F;
+	Wed, 17 Jan 2024 14:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oQGWDOx+"
+	dkim=pass (1024-bit key) header.d=intelfx.name header.i=@intelfx.name header.b="jREQ9QwK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8181A1EB57;
-	Wed, 17 Jan 2024 13:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183E92030E
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 14:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705497589; cv=none; b=bx4wDioZ6d6bEugF8HB0z7yw8jg0AMjoaDXn7G1DDutMV/xMl3MiI7k850/HAsPUkryl8MlnvbxrDfaxkZaEDKxz4E4eoY2y+ivjRHvo5ZPSwTzAcG2EZAX6gMkz4PcwGtpW3zl3Elt/nI8TEHm6HBN9S3iEqdUaSXjfP7AuSbw=
+	t=1705501294; cv=none; b=pVu7qDmnJ3DNK0X6FkEp+iBHrTQvR6X0aJN1tHXvioH0c148nTHJe2BjwDEvPmForx/jaK9fBgRW2tvx3gCsg2qdqdYOvsdgffETlOJ8Tpb8DdLPDYUnd55DnwYCIBKYhGNovxrQ5J0bu7QYSDvWJ79Mh3C48Gr6X6WTatCX6eA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705497589; c=relaxed/simple;
-	bh=PFwWNdCAPHdz4P1b3gtmw5Cqqs2CPi48jQ7oai7GPro=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=SpCJWq97YWvqt3RSFisgTcPxbZTWof/N7s6LyHPSqQ/Qy8rsSRNT7+gfqGFwJ09ho1XZr0netpmL1JVBXT+MS7Ue0IeLLBTRNcu7sxWt3jwkMFrf0PW/GyGPUYBucQv7f95FCswP4foH/Q+AoZ2FQ5T83bLkHXKTHps5lwjpAjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oQGWDOx+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53C2EC433C7;
-	Wed, 17 Jan 2024 13:19:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705497589;
-	bh=PFwWNdCAPHdz4P1b3gtmw5Cqqs2CPi48jQ7oai7GPro=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oQGWDOx+k9/gtTlV55SvHK6YUjTw+wm+xhLrBjx2MlYgoVwNOaP6nf+m+kaLdejFf
-	 Y04Pvgx7/3X0l9L+mXg+6fqLwiCM/sXrhvNsbMi5BbNUVLEhcW9aUUUgaAwVwszxlL
-	 dw9ebqaY/u3Uir4vJfV6W/2XgsDF/sh8O1vMAuPyhBW4uvOOoajXFLJ5sxioqM+uU+
-	 cAhUxThfI3aHqjpB4W4InYUByKDpGo8g9iDvRLMHas78O3VIqNtyf51LflG1wvnK1x
-	 Fi1zqzl7t5A0R667dcj8bg07nID9RXzniHIuZwT4Ak+RmfKsVouaxBDJBlsR5nz1nu
-	 kk4xNvM9wyRww==
-Date: Wed, 17 Jan 2024 14:19:43 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Dave Chinner <david@fromorbit.com>
-Cc: lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org, 
-	Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>, 
-	adrianvovk@gmail.com
-Subject: Re: [LSF/MM/BPF TOPIC] Dropping page cache of individual fs
-Message-ID: <20240117-yuppie-unflexibel-dbbb281cb948@brauner>
-References: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
- <ZabtYQqakvxJVYjM@dread.disaster.area>
+	s=arc-20240116; t=1705501294; c=relaxed/simple;
+	bh=zrHUWeZYzl+qU8wLU7ev1M/2IslCM8DGvu6nW+AnSR8=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:
+	 Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Autocrypt:Content-Type:Content-Transfer-Encoding:User-Agent:
+	 MIME-Version; b=LMOOuIG4sh3DJaNIk4LunLL9GEhLHmg19f4daAbor47zOyH0CldPG4P917ww/XC43QGDcp4FDd5/gf9daTflzrJoX03xT7bIPEnrnW1nOHSXc4pP+c6aubW5qa35Rs5JJwNhq7AHV1pt7xwD0NMCSFUruD4ituenys/PU5PSNQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=intelfx.name; spf=pass smtp.mailfrom=intelfx.name; dkim=pass (1024-bit key) header.d=intelfx.name header.i=@intelfx.name header.b=jREQ9QwK; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=intelfx.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intelfx.name
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e880121efso9382325e9.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jan 2024 06:21:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intelfx.name; s=google; t=1705501290; x=1706106090; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zrHUWeZYzl+qU8wLU7ev1M/2IslCM8DGvu6nW+AnSR8=;
+        b=jREQ9QwK7ErGYzHqy+Jo0rzZ3kUlP9yZceSSC1l7/gql1ua8T6XPzHdPK8YZ9GA0ZH
+         /TojZfh77L+qJOtR/J1ulW/5Nw12HfMG5lgM3TEPczBuqDXX7EhGS35mGs+soRod55qL
+         0irAn5dNh40/HR3h6l66x6TRkIQ2AnvV2XykU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705501290; x=1706106090;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zrHUWeZYzl+qU8wLU7ev1M/2IslCM8DGvu6nW+AnSR8=;
+        b=Vebjv26OumS84dp0a/j4FrWrvAnqXv60YcIwLgeONmQSXOzaNTvsIYsf1zvqPnTT/8
+         K0PXMQGSjKk4+1bQFlYJEfAkHT+QD9BoxiG/WuFQ0NiuU+svKOhKoUsTSzAlw/wph+Ke
+         fCMd0xI8dIxEEHIry+YK3+4YpTzBrHEmQ8yuCNQgBvr+XaJI9xluyfIcpFA2hAj66FVK
+         N1cJl8zvLQyMshZRr89iPRdxihPqapO/PWqFN8IBkmSj2qQnoPsXtw26ork0i31hCS5n
+         fb+fKRFQkV7+ncB17nl1ZjNLHHsQkDGjuTbxobRKHGfTHvBzG4xkrCONZRyzCUwEiXXR
+         Py4A==
+X-Gm-Message-State: AOJu0YztLSpiPyu8PQE1WrZWo+Pc15+TICo2fiIbTHXpA80IGKtA/r8b
+	WpMEvSv5QIX1XuVh0Wjq3Jc0pAs36R162z0QSFVRxzl60ubbQQ==
+X-Google-Smtp-Source: AGHT+IH6Ec7zO1EUExQvQz0PkfO8kiCmnX2OKMOOEmZjkAQjRmRG+IeRbcr9gvmC6uZdVr1NtgAQkg==
+X-Received: by 2002:a05:600c:3107:b0:40e:6278:95e0 with SMTP id g7-20020a05600c310700b0040e627895e0mr4688342wmo.22.1705501289895;
+        Wed, 17 Jan 2024 06:21:29 -0800 (PST)
+Received: from able.exile.i.intelfx.name ([178.134.111.230])
+        by smtp.gmail.com with ESMTPSA id u21-20020a05600c139500b0040e4a7a7ca3sm22765880wmf.43.2024.01.17.06.21.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jan 2024 06:21:29 -0800 (PST)
+Message-ID: <a7e4924729d909a7bc93ee68df31e75a385ba749.camel@intelfx.name>
+Subject: Re: [6.7 regression] [BISECTED] 28270e25c69a causes overallocation
+ of metadata space
+From: Ivan Shapovalov <intelfx@intelfx.name>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: linux-btrfs@vger.kernel.org
+Date: Wed, 17 Jan 2024 15:21:27 +0100
+In-Reply-To: <CAL3q7H5UaYcAYHijBO+QTnnpruVQXvdirg05_X94KRKrKnXDZw@mail.gmail.com>
+References: <9cdbf0ca9cdda1b4c84e15e548af7d7f9f926382.camel@intelfx.name>
+	 <CAL3q7H5UaYcAYHijBO+QTnnpruVQXvdirg05_X94KRKrKnXDZw@mail.gmail.com>
+Autocrypt: addr=intelfx@intelfx.name; prefer-encrypt=mutual; keydata=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
+ NzAT4cw
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZabtYQqakvxJVYjM@dread.disaster.area>
 
-On Wed, Jan 17, 2024 at 07:56:01AM +1100, Dave Chinner wrote:
-> On Tue, Jan 16, 2024 at 11:50:32AM +0100, Christian Brauner wrote:
-> > Hey,
-> > 
-> > I'm not sure this even needs a full LSFMM discussion but since I
-> > currently don't have time to work on the patch I may as well submit it.
-> > 
-> > Gnome recently got awared 1M Euro by the Sovereign Tech Fund (STF). The
-> > STF was created by the German government to fund public infrastructure:
-> > 
-> > "The Sovereign Tech Fund supports the development, improvement and
-> >  maintenance of open digital infrastructure. Our goal is to sustainably
-> >  strengthen the open source ecosystem. We focus on security, resilience,
-> >  technological diversity, and the people behind the code." (cf. [1])
-> > 
-> > Gnome has proposed various specific projects including integrating
-> > systemd-homed with Gnome. Systemd-homed provides various features and if
-> > you're interested in details then you might find it useful to read [2].
-> > It makes use of various new VFS and fs specific developments over the
-> > last years.
-> > 
-> > One feature is encrypting the home directory via LUKS. An approriate
-> > image or device must contain a GPT partition table. Currently there's
-> > only one partition which is a LUKS2 volume. Inside that LUKS2 volume is
-> > a Linux filesystem. Currently supported are btrfs (see [4] though),
-> > ext4, and xfs.
-> > 
-> > The following issue isn't specific to systemd-homed. Gnome wants to be
-> > able to support locking encrypted home directories. For example, when
-> > the laptop is suspended. To do this the luksSuspend command can be used.
-> > 
-> > The luksSuspend call is nothing else than a device mapper ioctl to
-> > suspend the block device and it's owning superblock/filesystem. Which in
-> > turn is nothing but a freeze initiated from the block layer:
-> > 
-> > dm_suspend()
-> > -> __dm_suspend()
-> >    -> lock_fs()
-> >       -> bdev_freeze()
-> > 
-> > So when we say luksSuspend we really mean block layer initiated freeze.
-> > The overall goal or expectation of userspace is that after a luksSuspend
-> > call all sensitive material has been evicted from relevant caches to
-> > harden against various attacks. And luksSuspend does wipe the encryption
-> > key and suspend the block device. However, the encryption key can still
-> > be available clear-text in the page cache.
-> 
-> The wiping of secrets is completely orthogonal to the freezing of
-> the device and filesystem - the freeze does not need to occur to
-> allow the encryption keys and decrypted data to be purged. They
-> should not be conflated; purging needs to be a completely separate
-> operation that can be run regardless of device/fs freeze status.
+On 2024-01-17 at 11:28 +0000, Filipe Manana wrote:
+> On Wed, Jan 17, 2024 at 6:04=E2=80=AFAM Ivan Shapovalov
+> <intelfx@intelfx.name> wrote:
+> >=20
+> > <...>
+> > # first bad commit: [28270e25c69a2c76ea1ed0922095bffb9b9a4f98]
+> > btrfs: always reserve space for delayed refs when starting
+> > transaction
+>=20
+> This sounds like the generally more pessimistic metadata reservation
+> is triggering allocation of many metadata block groups
+> that never get used and then unused and therefore not
+> reclaimed/deleted. Not something impossible to happen before that,
+> but much more likely due to more reserved space.
+>=20
+> I'll send some fixes.
+>=20
+> Did you actually run into -ENOSPC issues?
 
-Yes, I'm aware. I didn't mean to imply that these things are in any way
-necessarily connected. Just that there are use-cases where they are. And
-the encrypted home directory case is one. One froze the block device and
-filesystem one would now also like to drop the page cache which has most
-of the interesting data.
+No, I did not wait around for a ENOSPC -- I noticed the issue when my
+monitoring told me that there was almost no unallocated space left (on
+my personal server's rootfs the situation was even worse than on the fs
+above, there was around 200G of metadata logical space allocated with
+only 13G used).
 
-The fact that after a block layer initiated freeze - again mostly a
-device mapper problem - one may or may not be able to successfully read
-from the filesystem is annoying. Of course one can't write, that will
-hang one immediately. But if one still has some data in the page cache
-one can still dump the contents of that file. That's at least odd
-behavior from a users POV even if for us it's cleary why that's the
-case.
-
-And a freeze does do a sync_filesystem() and a sync_blockdev() to flush
-out any dirty data for that specific filesystem. So it would be fitting
-to give users an api that allows them to also drop the page cache
-contents.
-
-For some use-cases like the Gnome use-case one wants to do a freeze and
-drop everything that one can from the page cache for that specific
-filesystem.
-
-And drop_caches is a big hammer simply because there are workloads where
-that isn't feasible. Even on a modern boring laption system one may have
-lots of services. On a large scale system one may have thousands of
-services and they may all uses separate images (And the border between
-isolated services and containers is fuzzy at best.). And here invoking
-drop_caches penalizes every service.
-
-One may want to drop the contents of _some_ services but not all of
-them. Especially during suspend where one cares about dropping the page
-cache of the home directory that gets suspended - encrypted or
-unencrypted.
-
-Ignoring the security aspect itself. Just the fact that one froze the
-block device and the owning filesystem one may want to go and drop the
-page cache as well without impacting every other filesystem on the
-system. Which may be thousands. One doesn't want to penalize them all.
-
-Ignoring the specific use-case I know that David has been interested in
-a way to drop the page cache for afs. So this is not just for the home
-directory case. I mostly wanted to make it clear that there are users of
-an interface like this; even if it were just best effort.
-
-> 
-> FWIW, focussing on purging the page cache omits the fact that
-> having access to the directory structure is a problem - one can
-> still retrieve other user information that is stored in metadata
-> (e.g. xattrs) that isn't part of the page cache. Even the directory
-> structure that is cached in dentries could reveal secrets someone
-> wants to keep hidden (e.g code names for operations/products).
-
-Yes, of course but that's fine. The most sensitive data and the biggest
-chunks of data will be the contents of files. We don't necessarily need
-to cater to the paranoid with this.
-
-> 
-> So if we want luksSuspend to actually protect user information when
-> it runs, then it effectively needs to bring the filesystem right
-> back to it's "just mounted" state where the only thing in memory is
-> the root directory dentry and inode and nothing else.
-
-Yes, which we know isn't feasible.
-
-> 
-> And, of course, this is largely impossible to do because anything
-> with an open file on the filesystem will prevent this robust cache
-> purge from occurring....
-> 
-> Which brings us back to "best effort" only, and at this point we
-> already have drop-caches....
-> 
-> Mind you, I do wonder if drop caches is fast enough for this sort of
-> use case. It is single threaded, and if the filesystem/system has
-> millions of cached inodes it can take minutes to run. Unmount has
-> the same problem - purging large dentry/inode caches takes a *lot*
-> of CPU time and these operations are single threaded.
-> 
-> So it may not be practical in the luks context to purge caches e.g.
-> suspending a laptop shouldn't take minutes. However laptops are
-> getting to the hundreds of GB of RAM these days and so they can
-> cache millions of inodes, so cache purge runtime is definitely a
-> consideration here.
-
-I'm really trying to look for a practical api that doesn't require users
-to drop the caches for every mounted image on the system.
-
-FYI, I've tried to get some users to reply here so they could speak to
-the fact that they don't expect this to be an optimal solution but none
-of them know how to reply to lore mboxes so I can just relay
-information.
+--=20
+Ivan Shapovalov / intelfx /
 
