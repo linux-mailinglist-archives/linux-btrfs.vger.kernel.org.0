@@ -1,111 +1,176 @@
-Return-Path: <linux-btrfs+bounces-1554-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1555-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C86F1831B4D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jan 2024 15:27:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43D7A831EC9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jan 2024 18:52:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E373C1C226BA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jan 2024 14:27:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C7CAB23565
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jan 2024 17:52:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B7CB28DB5;
-	Thu, 18 Jan 2024 14:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2677D2D610;
+	Thu, 18 Jan 2024 17:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HH2RHRMN"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="wgJncUnU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B74528DA5;
-	Thu, 18 Jan 2024 14:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090392C68C;
+	Thu, 18 Jan 2024 17:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705588024; cv=none; b=qRNCh3AGMR9crXaB+7HG2clNf5GaSKQf+cKlJhKifaGQRzVNJ03vgNeUEnHTr37BXSd2Gi0lBwnS0Ts1CmsNbSZKz0f+gNq4PisQasw/A3WlVjoac91RoxnAPI4btS7rpKwN5z7cD6ZKY+pOB6sN26ek3FfncPwVIiT8ppYSyjk=
+	t=1705600359; cv=none; b=TeP3dQn9Gg/LNfgCrGrzbr2hM6WjWIzw7ZUcLQwcfSfDLwk9OiCOlZ1M4YcTcsSGwUPNToOjfB2agXhNWy2vh7a6jtEgKeh7/fLxJZOhycyfwJ79siZD3fj+Tj1CfORTU6amuDIr/j2AUw7Qg3vWkxmbyBZQtYd/lKMlyOS6GjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705588024; c=relaxed/simple;
-	bh=YmGrZjWGN6bhVc62uzAhw2r6YpLLQ2rytwNdVlCo1/M=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To; b=bKhx9iYNCO40Eo37HX6JMcnKB1CeOx1ipSA4Vsw+sMppF9T/DqJsnEsPsbb4R4Wg8DS3Kb37Uj60N5O0ubs2obF8HD7uBWfAKfM4N/S/zEHeHGeP3hBgRYa61PDib7BwpfAiYMSNgYLLaWIi4mxWYc9JJSlcPeJL6w2BkW49c1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HH2RHRMN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74FBBC433C7;
-	Thu, 18 Jan 2024 14:27:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705588023;
-	bh=YmGrZjWGN6bhVc62uzAhw2r6YpLLQ2rytwNdVlCo1/M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HH2RHRMN+Y7+lj4he2mWElpSDJ0MublcMwlr55tUM8QobMsA6lNCoeYvWviSAOOUW
-	 BtTxP2ba+8RN6ZGheqMnxTjTa+0OmZ5S730EKWDtXRSZgvaIY+r3r9jj6mbFJmPz91
-	 FMm3HgnYKa18q02+fWR93xSVJVLWvUbdLJpWPfzpyTdCO1J/oeEm9hZ2NgIq7REmRN
-	 RMcT9mcamKsvr0SB89zW2x1wg3tNawoghLeJX5ROKQE3+xTbXsSEyzvPOxkCpawdag
-	 ougFQkrQs7ZtfAlTsHaKwu2oWJgvfNtnhmQLF12gwtyBZo1paXJAZGDo6AwQ2s0NWo
-	 mcfvAH4Hb7X+g==
-Date: Thu, 18 Jan 2024 15:26:58 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Jan Kara <jack@suse.cz>, lsf-pc@lists.linux-foundation.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-btrfs@vger.kernel.org, 
-	linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
-Subject: Re: [LSF/MM/BPF TOPIC] Dropping page cache of individual fs
-Message-ID: <20240118-lodern-einwohner-4b94d4153fd4@brauner>
-References: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
- <20240116114519.jcktectmk2thgagw@quack3>
- <20240117-tupfen-unqualifiziert-173af9bc68c8@brauner>
- <20240117143528.idmyeadhf4yzs5ck@quack3>
- <ZafpsO3XakIekWXx@casper.infradead.org>
+	s=arc-20240116; t=1705600359; c=relaxed/simple;
+	bh=KKJJ6HPqG21gZ+Co1uAQr5O3IGs7SkQEmxmkOZnVKfM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=YdvnfZFeivYgw7PqKkP8r1OJSvv1e9rPt4vsW3kMvjz+K/49Up3F0mxVJXOlE5tp4Yvjp6PNz9uJCOEICo6D75j9CBKHKXdTZJM24glfF/ZzHxkPcw5qSpsbV3aiUqZvxvnqfFB/ib029BXQ4R7/Z/bCWrYEKpPd2CsItzK2V6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=wgJncUnU; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
+	bh=hGDDDdy4DJSwqpdxi3VKxYASFTzt0obR4RNDFTT72ow=; b=wgJncUnUfmNMXiR5xRJWIIeNXg
+	wBOu88qbaJDezs/zSYlfZcTUWlXhv3nv3I1fvX7tVAlpiBHzZrhSE/CbZNqoVSak1UAIFgZLvKs9k
+	d5oHh5hCeaIDuYlmrI5QaNjFvgiXnwViG4baMr+s/FmA98LNXq+C8YZ0KEpmhhU976FVX+oXBjuLW
+	yBqqIkLVvDNrdwWfqX1vr+UBI+oypanwcmpmfdz4cqSJDn88M2GjXrAyEFiDj0kciwzzFafjG+2jk
+	RDFFFCf6Sx0vfG5Jfu0Bl2m7EfkuxdYWhJQmTKxQs4YdFLn23iKb4DdnM3YTj7hp7lgUEd0/1PTHH
+	1/KpAwUg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rQWZ8-003R80-0C;
+	Thu, 18 Jan 2024 17:52:34 +0000
+Message-ID: <d91d9c20-3b17-40e4-96d0-49daecf6558e@infradead.org>
+Date: Thu, 18 Jan 2024 09:52:33 -0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZafpsO3XakIekWXx@casper.infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/4] kstrtox: introduce a safer version of memparse()
+Content-Language: en-US
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
+ andriy.shevchenko@linux.intel.com, David.Laight@ACULAB.COM, ddiss@suse.de,
+ geert@linux-m68k.org
+References: <cover.1704422015.git.wqu@suse.com>
+ <f972b96cad42e49235d90b863038a080acc0059e.1704422015.git.wqu@suse.com>
+ <64def21a-2727-455b-9e35-e2a56d2f1625@infradead.org>
+ <848c719c-daa2-403a-b7eb-f172b4236dc1@gmx.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <848c719c-daa2-403a-b7eb-f172b4236dc1@gmx.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 17, 2024 at 02:52:32PM +0000, Matthew Wilcox wrote:
-> On Wed, Jan 17, 2024 at 03:35:28PM +0100, Jan Kara wrote:
-> > OK. So could we then define the effect of your desired call as calling
-> > posix_fadvise(..., POSIX_FADV_DONTNEED) for every file? This is kind of
-> > best-effort eviction which is reasonably well understood by everybody.
+Hi,
+
+On 1/14/24 21:27, Qu Wenruo wrote:
 > 
-> I feel like we're in an XY trap [1].  What Christian actually wants is
-> to not be able to access the contents of a file while the device it's
-> on is suspended, and we've gone from there to "must drop the page cache".
 > 
-> We have numerous ways to intercept file reads and make them either
-> block or fail.  The obvious one to me is security_file_permission()
-> called from rw_verify_area().  Can we do everything we need with an LSM?
+> On 2024/1/15 14:57, Randy Dunlap wrote:
+> [...]
+>>> @@ -113,6 +113,105 @@ static int _kstrtoull(const char *s, unsigned int base, unsigned long long *res)
+>>>       return 0;
+>>>   }
+>>>
+>>> +/**
+>>> + * memparse_safe - convert a string to an unsigned long long, safer version of
+>>> + * memparse()
+>>> + *
+>>> + * @s:        The start of the string. Must be null-terminated.
+>>
+>> Unless I misunderstand, this is the biggest problem that I see with
+>> memparse_safe(): "Must be null-terminated".
+>> memparse() does not have that requirement.
 > 
-> [1] https://meta.stackexchange.com/questions/66377/what-is-the-xy-problem
+> This is just an extra safety requirement.
+> 
+> In reality, memparse_safe() would end at the either the first
+> unsupported suffix after the valid numeric string (including '\0'),
+> or won't be updated if any error is hit (either no valid string at all,
+> or some overflow happened).
+> 
+> For most if not all call sites, the string passed in is already
+> null-terminated.
+> 
+>>
+>> And how is @retptr updated if the string is null-terminated?
+> 
+> E.g "123456G\0", in this case if suffix "G" is allowed, then @retptr
+> would be updated to '\0'.
+> 
+> Or another example "123456\0", @retptr would still be updated to '\0'.
+> 
+>>
+>> If the "Must be null-terminated." is correct, it requires that every user/caller
+>> first determine the end of the number (how? space and/or any special character
+>> or any alphabetic character that is not in KMGTPE? Then save that ending char,
+>> change it to NUL, call memparse_safe(), then restore the saved char?
+> 
+> There are already test cases like "86k \0" (note all strings in the test
+> case is all null terminated), which would lead to a success parse, with
+> @retptr updated to ' ' (if suffix K is specified) or 'k' (if suffix K is
+> not specified).
+> 
+> So the behavior is still the same.
+> It may be my expression too confusing.
+> 
+> Any recommendation for the comments?
 
-Nice idea and we do stuff like that in other scenarios such as [1] where
-we care about preventing _writes_ from occuring while a specific service
-hasn't been fully set up. So that has been going through my mind as
-well. And the LSM approach might be complementary. For example, if
-feasible, it could be activated _before_ the freeze operation only
-allowing the block layer initiated freeze. And then we can drop the page
-cache.
+Well, "Must be null-terminated." is incorrect, so explain better where
+the numeric conversion ends.
 
-But in this case the LSM approach isn't easily workable or solves the
-problem for Gnome. It would force the usage of a bpf LSM most likely as
-well. And the LSM would have to be activated when the filesystem is
-frozen and then deactivated when it is unfrozen. I'm not even sure
-that's currently easily doable.
+Thanks.
 
-But the Gnome use-case wants to be able to drop file contents before
-they suspend the system. So the thread-model is wider than just someone
-being able to read contents on an active systems. But it's best-effort
-of course. So failing and reporting an error would be totally fine and
-then policy could dictate whether to not even suspend. It actually might
-help userspace in general.
+> 
+> Thanks,
+> Qu
+> 
+>>
+>> I'm hoping that the documentation is not correct...
+>>
+>>> + *        The base is determined automatically, if it starts with "0x"
+>>> + *        the base is 16, if it starts with "0" the base is 8, otherwise
+>>> + *        the base is 10.
+>>> + *        After a valid number string, there can be at most one
+>>> + *        case-insensitive suffix character, specified by the @suffixes
+>>> + *        parameter.
+>>> + *
+>>> + * @suffixes:    The suffixes which should be handled. Use logical ORed
+>>> + *        memparse_suffix enum to indicate the supported suffixes.
+>>> + *        The suffixes are case-insensitive, all 2 ^ 10 based.
+>>> + *        Supported ones are "KMGPTE".
+>>> + *        If one suffix (one of "KMGPTE") is hit but that suffix is
+>>> + *        not specified in the @suffxies parameter, it ends the parse
+>>> + *        normally, with @retptr pointed to the (unsupported) suffix.
+>>> + *        E.g. "68k" with suffxies "M" returns 68 decimal, @retptr
+>>> + *        updated to 'k'.
+>>> + *
+>>> + * @res:    Where to write the result.
+>>> + *
+>>> + * @retptr:    (output) Optional pointer to the next char after parse completes.
+>>> + *
+>>> + * Returns:
+>>> + * * %0 if any valid numeric string can be parsed, and @retptr is updated.
+>>> + * * %-EINVAL if no valid number string can be found.
+>>> + * * %-ERANGE if the number overflows.
+>>> + * * For negative return values, @retptr is not updated.
+>>> + */
+>>> +noinline int memparse_safe(const char *s, enum memparse_suffix suffixes,
+>>> +               unsigned long long *res, char **retptr)
+>>> +{
+>>
+>> Thanks.
+> 
 
-The ability to drop the page cache of a specific filesystem is useful
-independent of the Gnome use-case especially in systems with thousands
-or ten-thousands of services that use separate filesystem images
-something that's not uncommon.
-
-[1]: https://github.com/systemd/systemd/blob/74e6a7d84a40de18bb3b18eeef6284f870f30a6e/src/nsresourced/bpf/userns_restrict/userns-restrict.bpf.c
+-- 
+#Randy
 
