@@ -1,135 +1,150 @@
-Return-Path: <linux-btrfs+bounces-1568-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1569-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9A8B832A8F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jan 2024 14:34:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FBBB832BC4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jan 2024 15:54:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 807681F23C41
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jan 2024 13:34:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC77A2832A0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jan 2024 14:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE24C537EE;
-	Fri, 19 Jan 2024 13:34:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0423854BFA;
+	Fri, 19 Jan 2024 14:53:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WF7YHfGK"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xIXDyU75";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="N0471no9";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xIXDyU75";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="N0471no9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDCEC524DC;
-	Fri, 19 Jan 2024 13:34:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 506205475D
+	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jan 2024 14:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705671249; cv=none; b=R7furtsdhqZFjZUYd66ax52ZQy5IS5ihCFMQcTA6FegEz//8LD0cAC+4KGHLHr9iz0WKWZrVM82ayuWJseoAyqqEicQjRwUeuHDhqAlZkX/Ko5MFdFs/nsofTI2MzYUG5pkcBl/BcOHHYqJhmHA+QJvG5Wqz4oqmXvSX6pgM52A=
+	t=1705676016; cv=none; b=YWI1JCFnY6jOVG6tML1EKvDmS4kHG56+A2L42g+LmiLFrxQAKOjEjuJH5ItaVIhEXeI40mLFJ0DlaCf9gsKjQmWE3BLGxIDttOrVCGRIGyBezx+asGYe0OGOKZVuziNJ9+mxwOeefvr4CxYsffBzhnyo9YILFJxG1vdw/oSIDxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705671249; c=relaxed/simple;
-	bh=UBsHDqO8tKLqiQ+CTMYG+UCcxV5ppDhinAhgrXTQroQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WVzmIN2k+E6phiyyzflazYUGmvc5ddRI3YoLBlLlF15XMEr1z5y57PaRxZGK1yXw8mE0GPgOrA+jyFZpl02Tlvenzo5Y2t6XGYILFLgEMIqTqYZ44Ppcizi3iZSw7blTGuzCWJxIbaySK1lSsvfht+x+SzOsp+V8OF94lbKq+qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WF7YHfGK; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-290483f8c7bso653343a91.3;
-        Fri, 19 Jan 2024 05:34:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705671247; x=1706276047; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IEtuowdYcENMHjoePZzsx4gwz942S9hCHH4g6ErNp7g=;
-        b=WF7YHfGKUFTlVFIms46n5qlXlOsgA99j9fp8ifH2nTy2ZbkOADciQ8Oo612iFm2u7N
-         Blz52+vRY1mvJQJZK6Wf2/cNDz96ioCbgY2e/k52xUUWNJC5J7bOwdn0YPfXP/+zlbdy
-         KyhBC77VxYZCZysGBwfFSrFoZnVzv9VfRqea5cED1PCsvaZHYlBz7tEjUvG35GYnxDvm
-         x4sqXBVyrTC9FP01EUlQwbe2ojzoe+VMQCw9p0W/0YbQSa2aokQow2E0hm0eQ+qG1dmu
-         gMJBmg0BI7Mg4Hr4T7kBY+Ge4yvwgZlhi134kyS39XJIhotHtncratoJoIh3Qjuzi/X+
-         MMTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705671247; x=1706276047;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IEtuowdYcENMHjoePZzsx4gwz942S9hCHH4g6ErNp7g=;
-        b=Ggv5rZVbBTKlOHxrKZH4edXip2Yj6IXB5ChhvFi7Tp/gOeCctXQaX2x9btE3RaBXsa
-         WAWnjZJs06ZmyN4so2Lm9XEAaNfCIKu0dGijLO5rfvSH63h5Qx79+5EKwEbcycb/Hy+z
-         EZNlpiHIjI6dRjQWL7MhJ58ke6mLIO5N5rI6y4VEz8MD40X6jculVpluAp/whPjbEyKI
-         pdSYJl+OPzaDQ9rczi7byfuPbC95IXh+3hRfwTxuMNeZ3tD+szv74tupJS1XZthIQSKz
-         W8i6aH1rLcuSQcKORfuwASJWywTgmJHJscxfQaJYzEFm6SKWRT+Fm+Sd11dfbiF7A5xf
-         a4pQ==
-X-Gm-Message-State: AOJu0YwoThhzz9WuB/FVmR1qH1dXA0EACsg9WohAgN5NJY4deIGV2PVY
-	9iaAc5eljqvuQT6WEIsZEYWwU+1cyJKNvBK/7lpNvJlu59hEBWd8
-X-Google-Smtp-Source: AGHT+IGAFLo9KRH9q9uNiFVsZuGA+bSjfWZPxWv+9VoYLrjeP72T0YBjj29Ii48OuvZrH22M0zGI1Q==
-X-Received: by 2002:a17:90a:6d43:b0:290:4e69:6a2 with SMTP id z61-20020a17090a6d4300b002904e6906a2mr606173pjj.82.1705671247143;
-        Fri, 19 Jan 2024 05:34:07 -0800 (PST)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id v20-20020a170902d09400b001d70602f561sm2867025plv.1.2024.01.19.05.34.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jan 2024 05:34:06 -0800 (PST)
-Message-ID: <48691b8d-1710-431d-ae8d-398ba1482de1@gmail.com>
-Date: Fri, 19 Jan 2024 20:34:01 +0700
+	s=arc-20240116; t=1705676016; c=relaxed/simple;
+	bh=ZAY/5y9gMfePD7Csto3KZfiroyAxcvCEqOUfghlzXho=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F+B83B1tPlmW9rl+PVrPpViCBb4Bk96CSwpoLStlBZDA1Y0HkoL3YsgLdlGbJuj/5f9ihQNtoFCP2y0OTiOnZZWfcQdpskEFNUt3qKicp9wtC03qWtuigTVwyBB+uSM8uLt4wJoUU8XT72kYPV3coDyG0EWp48GILkvB4GKwwn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xIXDyU75; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=N0471no9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xIXDyU75; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=N0471no9; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2F69221E24;
+	Fri, 19 Jan 2024 14:53:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705676012;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CkM0obDGl5da83gxgecLpuAuKSdMqzH7HNygbwer5Lg=;
+	b=xIXDyU75hZhCArPuu8f2gN8hlYMeZBhsF+gHL+Xkj9Xfba1qHH7uDhcUiH+r07YpdXkyXJ
+	/lGW9EWd50CDMsgnKX3YQGlYl4yAPOgdIlkhmtSjpXhkvmLLQgGqUIGwo3m/Xnb1W+7ZbM
+	/iJ5W+HIKBwO85zVkb2r4MCS/03C30k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705676012;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CkM0obDGl5da83gxgecLpuAuKSdMqzH7HNygbwer5Lg=;
+	b=N0471no97294wDq9C3MsGScPNVJKgYOFMgUDNZpQzzgobPhTX5xLCNaaoogyTIC54hCYKj
+	HNXPGNFN1xwcq9Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705676012;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CkM0obDGl5da83gxgecLpuAuKSdMqzH7HNygbwer5Lg=;
+	b=xIXDyU75hZhCArPuu8f2gN8hlYMeZBhsF+gHL+Xkj9Xfba1qHH7uDhcUiH+r07YpdXkyXJ
+	/lGW9EWd50CDMsgnKX3YQGlYl4yAPOgdIlkhmtSjpXhkvmLLQgGqUIGwo3m/Xnb1W+7ZbM
+	/iJ5W+HIKBwO85zVkb2r4MCS/03C30k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705676012;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CkM0obDGl5da83gxgecLpuAuKSdMqzH7HNygbwer5Lg=;
+	b=N0471no97294wDq9C3MsGScPNVJKgYOFMgUDNZpQzzgobPhTX5xLCNaaoogyTIC54hCYKj
+	HNXPGNFN1xwcq9Dg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 19F0B133DC;
+	Fri, 19 Jan 2024 14:53:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id V4SyBeyMqmUFAwAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Fri, 19 Jan 2024 14:53:32 +0000
+Date: Fri, 19 Jan 2024 15:53:12 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc: linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 1/4] btrfs: Use IS_ERR() instead of checking folio for
+ NULL
+Message-ID: <20240119145312.GR31555@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1705605787.git.rgoldwyn@suse.com>
+ <e4df9a1068c81f3edeee9bbb4e63d1d453be569b.1705605787.git.rgoldwyn@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Disk write deterioration in 5.x kernel
-To: Linux regressions mailing list <regressions@lists.linux.dev>,
- Gowtham <trgowtham123@gmail.com>, Linux btrfs <linux-btrfs@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>
-References: <CA+XNQ=j6re4bhRDUebzPLDvMtZecqtx+GRRPgpd9apss+vOaBg@mail.gmail.com>
- <CA+XNQ=hGxYsMAo6Gc+Up5QctbWjkER17uK97YXWc9uyx_7+3uw@mail.gmail.com>
- <ZaodrO8QjCqSXPHe@archie.me>
- <02c0a0c9-91b7-4766-9c15-8059b8e7c09d@leemhuis.info>
-Content-Language: en-US
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <02c0a0c9-91b7-4766-9c15-8059b8e7c09d@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e4df9a1068c81f3edeee9bbb4e63d1d453be569b.1705605787.git.rgoldwyn@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xIXDyU75;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=N0471no9
+X-Spamd-Result: default: False [-0.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.09)[64.55%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -0.10
+X-Rspamd-Queue-Id: 2F69221E24
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-On 1/19/24 15:55, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 19.01.24 07:58, Bagas Sanjaya wrote:
->> [also Cc: btrfs maintainers]
->>
->> On Fri, Jan 19, 2024 at 09:37:50AM +0530, Gowtham wrote:
->>>
->>> Is there anything I can collect to debug what is the problem in the new kernel?
+On Thu, Jan 18, 2024 at 01:46:37PM -0600, Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> From the version numbers you provided it seems you are using vendor
-> kernels containing patches. You thus might want to ask the vendor for
-> support. Most upstream developers are unlikely to help and some even
-> complete ignore reports using such kernels.
+> __filemap_get_folio() returns an error instead of a NULL pointer. Use
+> IS_ERR() to check if folio is not returned.
 > 
-> You also need to try latest mainline and bisect, as Bagas already
-> pointed out, as that problem might be solved already and might have
-> nothing to do with Btrfs at all.
+> As we are fixing this, use set_folio_extent_mapped() instead of
+> set_page_extent_mapped().
 > 
->> Please don't top-post, reply inline with appropriate context instead.
-> 
-> Bagas, FWIW, I think telling users this is not helpful at all and maybe
-> counter productive; please consider to stop doing this.
-> 
+> Fixes: f8809b1f6a3e btrfs: page to folio conversion in btrfs_truncate_block()
 
-I was writing the reminder like broonie did.
-
-> Yes, kernel development uses inline replies -- hence it's a good idea to
-> point that out *to developers* that submit patches et. al.
-> 
-> But most people in the world uses top-posting; you and I might not like
-> that, but that's how it is. Telling non-developers to adjust their
-> behavior to our habits will often just come over as rude. It might
-> nevertheless be worth it. But it's best to leave that decision to the
-> developers that handle the report, as they have to interact way more
-> with the reporter that you or I will have to.
-> 
-
-OK, thanks!
-
--- 
-An old man doll... just what I always wanted! - Clara
-
+This is still in for-next so the fixup should be squashed there.
 
