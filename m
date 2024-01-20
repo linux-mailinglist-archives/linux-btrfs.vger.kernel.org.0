@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-1576-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1577-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9A2F833206
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jan 2024 01:55:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B02EA833207
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jan 2024 01:55:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59201B230EC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jan 2024 00:55:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6314B1F22EF3
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jan 2024 00:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C44DEA3;
-	Sat, 20 Jan 2024 00:55:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABAC10E1;
+	Sat, 20 Jan 2024 00:55:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="j2q4BHIs";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZBJ68XTh"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="ErnYMYet";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QXgXpzcI"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A07B7F7
-	for <linux-btrfs@vger.kernel.org>; Sat, 20 Jan 2024 00:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E77EC0
+	for <linux-btrfs@vger.kernel.org>; Sat, 20 Jan 2024 00:55:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705712108; cv=none; b=SRZrfEHlj6ZlCEyVxZc9C37ELS46gy5rz9Q78Ab8ZeiZLKPwlhiiU8WIPy5Kw3dK+YtOIH6ynoCQLTgmrEpidDuuWCFhNn+9/SoGSLC9d4+c7UX2koGYzQVVqLkpSYqCgV0ZAXZjdmAZVxNkpe39hmxulgVlQTpaE287EGoEpwA=
+	t=1705712110; cv=none; b=GBmD2PPrKJ4sSwhJ1PZSEWEi/zQmJnt6igwU5N/wJ8RIwe6SqDHbloN4pn72tNKi7H/xH9ZvsbAwt6CoySXQYxelif0NB/Jjn/NT3rUQRojc1HE7ij5WLSiPoS4RKIlduqvqNRIc2lQST0eNdNjE332KZP0mV6zLf91heRc53Uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705712108; c=relaxed/simple;
-	bh=MDhPdyTOcMgR5w+sxPHt80PKYxDobxBARdZrd8+3rDU=;
+	s=arc-20240116; t=1705712110; c=relaxed/simple;
+	bh=3FtkTd+3FzRb5GLSYLs6nLDzZ/z20j9zxLi7nW8ZjkI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eAFPeHhFS2Ct8AMEuTknhV+yWU2Yy798DKi0WB3+hK+q0yErOYt69RNGk5pUJwY1WXxW2oFc3zFfAkLEfMoS5XUXOmCl3nIxyatoxHV5FD32fbVPckG+UdmFlk5x/p078BQrpIx+UnP/lEx/6x8cT7MT3VV+T+3IvkxZPza9/XI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=j2q4BHIs; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ZBJ68XTh; arc=none smtp.client-ip=64.147.123.21
+	 MIME-Version; b=oRAUeFbccVm/yFKvppGPKIBNwBNn1+I6IIq0t7/bdQmvuJYod/UQNtAbB9K7oPB8C9W2xHptbcaRqxYJK7jQxN+qjcItaskNRvSJpfHVXsc0rUCpvK4+CsRDHG1n98fequm495+jNglVoQbs8X7OkjbsB2jVaIB7R0yZmBt/xCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=ErnYMYet; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QXgXpzcI; arc=none smtp.client-ip=64.147.123.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 610C93200AD6;
-	Fri, 19 Jan 2024 19:55:05 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 19 Jan 2024 19:55:05 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.west.internal (Postfix) with ESMTP id 386773200AC5;
+	Fri, 19 Jan 2024 19:55:08 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 19 Jan 2024 19:55:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
 	:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1705712104; x=
-	1705798504; bh=LzxCody8ku3TDdLnj4PvjQl1ZckzTtxmlQV1qA7nbJ8=; b=j
-	2q4BHIs0h8+IYkIQ4CSdC/wP5PzjV4eFxojwgz2MIwyMJuohttUVQEXPDAqRX5Cq
-	fVwEB5eY4KJosoNM/njl5HwKDQ4pQpd2DpOfhuknegbNJ4JEopkM3mPPNHwe/ZQ9
-	1Q2WYTulm9NEfKpl6wdy09l2aZwZ58Ca/t4ePWDF0Ykb6TWCEaRAtE7rlEJDfl5n
-	BNk+hj3o21Em7mKGfJD5TSTlSH2dsHTyab8S5v/l5JIMhvFmHhUx1X1fvjkow5ic
-	ecpjnfoSwPGbILCOBbvJZMOUMcUBRP4AbP1XiBbI2K/MWjma/tP+1pryPdXEryJ4
-	iq2RJSXdhTyyHcp5CHngg==
+	:reply-to:subject:subject:to:to; s=fm1; t=1705712107; x=
+	1705798507; bh=vqoKA104sb2D+NIP1EyPfwAekJWdgbAK8USg+UWh/aQ=; b=E
+	rnYMYetzh0edZx1O6sQq76+RqJ85CnvUZv0JR6tLx9tJFU8nZhjAHjDY/dglNmvu
+	9G8/KW84dTYLyTpbdixA6ympHI2WtbFlSHfOIg3C+Ck2wuJF7c+7T4y8Ov3XnAcV
+	GK0mtoz9H8iwlCeNg94fwce6zzY01D4RBRIGCZ9mnWpG/odFEMa1/turRsZM06tD
+	m6Qv6U42p4RlMg2tkAVgIPRLnX7z4AzuI+qz62XtOrjnhyTaEbpAhoCDIhyNtpds
+	5gxz3Fy59exr3rnLiXV71oSLXCZtBiTfIuvMrKbKYous7QigNDS1NiIjjSav73FW
+	oDqz54hqbXOL/+Asv9fPQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:content-transfer-encoding:content-type
 	:date:date:feedback-id:feedback-id:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
 	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm3; t=1705712104; x=1705798504; bh=LzxCody8ku3TD
-	dLnj4PvjQl1ZckzTtxmlQV1qA7nbJ8=; b=ZBJ68XThvF5+30XvRrLZ4RqabJ2CQ
-	uvIgLZ7hlb64ZJxNZlJkUfK9M9YeSMGh6dwnWdvlFreQAMDV9IH45eRvkhkIg081
-	iC4kmMydyoO1chyzl+pEZ1hVH7Zo1r6AZeBwtkt54UbI/EqA7seHpP7Jrk2tTARx
-	Tb01yyKxp0BUbBinrEDMo5dywsY45mAtUaaRSLUVpswX9Twpgrss0JkO1k3Dk1D3
-	PgdPbHV6jUtBwrSmZQasTnpDsLHft034dbrpQPRKvgXBmKXkK6KT2xAfbJ+/3wKe
-	DCTt2eA/gBiQzXAVJl2dEbmsHFpNAS05E7507zx8SUSaLDBLpNmHJHuhg==
-X-ME-Sender: <xms:6BmrZb-QOb74o2tsJVdk8-a0QK3OUR9YYEQKu4vJQJD6wW2bKsJhbg>
-    <xme:6BmrZXtXmBCGJDsK_dRR03ik1fqXmWD1gq-D6cQfRIeM96MbcOZerlEDBkWcYNWhH
-    T8pCzHa_8C80mjxzE4>
-X-ME-Received: <xmr:6BmrZZAZOjbM1gRNsZfXCDd2tYViNq-uTLSWhj_bDxDknQ6xXgSQgCxP43cQOxlvqgLbGxbXLH2ba-PDAL0jRnwfG_o>
+	:x-sasl-enc; s=fm3; t=1705712107; x=1705798507; bh=vqoKA104sb2D+
+	NIP1EyPfwAekJWdgbAK8USg+UWh/aQ=; b=QXgXpzcIfVCbm16f2kOHHyNBx7IIM
+	Nys868lfrGQk7S9k5jLPPcVb8FwGoWzTvL6xw+nDlDXZ5IQlcjNYDyAmWzNB7fW4
+	eGXPa3L2UdjqHwFq6qE28m9e2t+XlZPzO/4TMg9wbI+jl+hD6+VHB7Bu4ss6jEHW
+	0nX/mkuM2nuz7pFt6+kwpo/M4YQJ7VcTs/6UR5sV0ANo7o8t2oHGHNV6PWpYRfO8
+	SBkesFn/mGzkhAXYQ01UkQlqrbL3tztKP3qK/wHN8XCFv6/5alwAX5jHoLq/rw4C
+	wK3sUrmOeL+FoTK7hU87NRgqNlRkr74imOIMmSV/YCD8kxWXfO3hB7F9w==
+X-ME-Sender: <xms:6xmrZVsxNthF5nWkA3DPxM7mQc-FCroPh58hcp6XTtWBuYuW7PwHjQ>
+    <xme:6xmrZefhRHF7ljfsjnPP5FmxZrIQ3xAFFALc8txbMAX08t58zyhDGSTdckx3BcVUt
+    bdf-j4j5elag_dCa-U>
+X-ME-Received: <xmr:6xmrZYwRnqcdFJcfd-9FH5Ga0S0LDpd-Bugjfon-Ny0YgmBw_A6zcLyxswmO8Yb-gMi4G0ZrV7Apz57vqDOpIr-GwgU>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekuddgvdekucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -71,19 +71,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekuddgvdekucetufdoteggod
     ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
     dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
     mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:6BmrZXeuV__MEXxFbZSSX44W5Ppmmd00twSCKaRXsLUdRHLEoHAF7A>
-    <xmx:6BmrZQP3C8OoCe9iB2y_MMrLEggBKU4Tg2_E3RmueaFziWW_BQpr4A>
-    <xmx:6BmrZZl6r52CgY0wR-6M7vrQ3VWq2ZRHczckcNLU5mu1XWSVTAi26A>
-    <xmx:6BmrZaXYel25zh202ZCZmEPQi89spGiMrG7aKkP-kZLjX-SAwdegHA>
+X-ME-Proxy: <xmx:6xmrZcOsBDx0Ami3A-RV1OvH-l0w_sYIvwG7MLqBogOv7v3EP-4u7w>
+    <xmx:6xmrZV-FPFv5QMqLlyHZIedkbI6knYAAARoepqCsU8Eairo5Im43Lg>
+    <xmx:6xmrZcW_Eg8pME7cu9lHPncK0MwFXz6iaUgLDpJE2oT47R7GhmsngA>
+    <xmx:6xmrZSFUz22FQBA3Gg0WOjN1sxZXBkFPzZ4X8AW9N8Pxds4aKtu9wQ>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Jan 2024 19:55:04 -0500 (EST)
+ 19 Jan 2024 19:55:07 -0500 (EST)
 From: Boris Burkov <boris@bur.io>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 1/2] btrfs: forbid creating subvol qgroups
-Date: Fri, 19 Jan 2024 16:55:58 -0800
-Message-ID: <eb79dcbe0cbfa7459b249f76818a5e5a08a42ea4.1705711967.git.boris@bur.io>
+Subject: [PATCH 2/2] btrfs: forbid deleting live subvol qgroup
+Date: Fri, 19 Jan 2024 16:55:59 -0800
+Message-ID: <8ef9980c0621c82737b646b2bcf9df7b5a6dc216.1705711967.git.boris@bur.io>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1705711967.git.boris@bur.io>
 References: <cover.1705711967.git.boris@bur.io>
@@ -95,33 +95,55 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This leads to various races and it isn't helpful, because you can't
-specify a subvol id when creating a subvol, so you can't be sure it
-will be the right one. Any requirements on the automatic subvol can
-be gratified by using a higher level qgroup and the inheritance
-parameters of subvol creation.
+If a subvolume still exists, forbid deleting its qgroup.
+This behavior generally leads to incorrect behavior in squotas and
+doesn't have a legitimate purpose.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/ioctl.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/btrfs/qgroup.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 58e0c59bc4cd..3d476decde52 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3815,6 +3815,11 @@ static long btrfs_ioctl_qgroup_create(struct file *file, void __user *arg)
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 63b426cc7798..672896b2b7a0 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -29,6 +29,7 @@
+ #include "extent-tree.h"
+ #include "root-tree.h"
+ #include "tree-checker.h"
++#include "super.h"
+ 
+ enum btrfs_qgroup_mode btrfs_qgroup_mode(struct btrfs_fs_info *fs_info)
+ {
+@@ -1736,6 +1737,15 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+ 	return ret;
+ }
+ 
++static bool qgroup_has_usage(struct btrfs_qgroup *qgroup)
++{
++	return (qgroup->rfer > 0 || qgroup->rfer_cmpr > 0 ||
++		qgroup->excl > 0 || qgroup->excl_cmpr > 0 ||
++		qgroup->rsv.values[BTRFS_QGROUP_RSV_DATA] > 0 ||
++		qgroup->rsv.values[BTRFS_QGROUP_RSV_META_PREALLOC] > 0 ||
++		qgroup->rsv.values[BTRFS_QGROUP_RSV_META_PERTRANS] > 0);
++}
++
+ int btrfs_remove_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+@@ -1755,6 +1765,11 @@ int btrfs_remove_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
  		goto out;
  	}
  
-+	if (sa->create && is_fstree(sa->qgroupid)) {
-+		ret = -EINVAL;
++	if (is_fstree(qgroupid) && qgroup_has_usage(qgroup)) {
++		ret = -EBUSY;
 +		goto out;
 +	}
 +
- 	trans = btrfs_join_transaction(root);
- 	if (IS_ERR(trans)) {
- 		ret = PTR_ERR(trans);
+ 	/* Check if there are no children of this qgroup */
+ 	if (!list_empty(&qgroup->members)) {
+ 		ret = -EBUSY;
 -- 
 2.43.0
 
