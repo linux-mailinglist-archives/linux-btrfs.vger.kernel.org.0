@@ -1,52 +1,52 @@
-Return-Path: <linux-btrfs+bounces-1578-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1579-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E78583328A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jan 2024 03:58:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CD6D83328B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jan 2024 03:59:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A4BA1C213AF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jan 2024 02:58:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FE17B21D22
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jan 2024 02:59:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A312C10E8;
-	Sat, 20 Jan 2024 02:58:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA07710E8;
+	Sat, 20 Jan 2024 02:59:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TwM942Xo"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Ns+7x0FD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B77EBC
-	for <linux-btrfs@vger.kernel.org>; Sat, 20 Jan 2024 02:57:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5394EBC
+	for <linux-btrfs@vger.kernel.org>; Sat, 20 Jan 2024 02:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705719482; cv=none; b=Sa/jguz0RYgLylf8cDbNmIziAW8OoZgeb3wBbZDyxbDdHPlZ5V4iZSORtnAik7N/bYYSIPGDjNoLposUrZ/UcWne4TgNaMnolKDxAsuadm3jqfjNmJCtY7W304AdZdGmplPSFEhLyZuEF/M002t3/SFUaMS6rgnDoirN3DWa5Yc=
+	t=1705719550; cv=none; b=fOtyU7o9g983xeACnYf7PMPep4OrFIJg62xajKk/R7HH424XDN6xY1btlAll56I6uhZUCGXk/9o7GZJstZU77NG18HSlviVMbOwt6bqnCi/+ychlyASVKunqwafc/9uOJMgtaoGIvcxFDcM/1Syo0iBjIRpN9wWObBag2hcK/qY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705719482; c=relaxed/simple;
-	bh=mDAv9JjHqiFzZpLp/gJ1YG9clzfIqm9voCZUNv0Suew=;
+	s=arc-20240116; t=1705719550; c=relaxed/simple;
+	bh=ZJoXu67BbQ8WHAVD8zXVN5tIwkFdYbPCNd+N/TtQd+g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=iPqdI7xjMLV5op68VlJS0JBBcnCiBQPNLfN7y301A2uhodMD2TcP+RwYj5KpWitNlmgzpv7WP2tHWoDRKYVDBQSc6xNtSpGaHTiDpVpYZH7CLmywvD4j72p+xT/62IP+gT4JAruhzmG7bC8SUresXP1PR2kI/OCObszsw5YvcOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=TwM942Xo; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=ZQRWpD2cESyZ8jEY2mJmoF53y2KwQK2qaeqMJhwb2Pjpiy4iWuemvSlsjYMSY2cG4YQEZTZdBwNQ1DsSSQIHOAXs7ILfj1DqUPfiKdrWEDM3la2oXOyoJ9BH9QWKcI79bAzcfewQ5QiPnRIX1QpPVegHHPfigvfxvzjiJn3x1Q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Ns+7x0FD; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705719471; x=1706324271; i=quwenruo.btrfs@gmx.com;
-	bh=mDAv9JjHqiFzZpLp/gJ1YG9clzfIqm9voCZUNv0Suew=;
+	s=s31663417; t=1705719539; x=1706324339; i=quwenruo.btrfs@gmx.com;
+	bh=ZJoXu67BbQ8WHAVD8zXVN5tIwkFdYbPCNd+N/TtQd+g=;
 	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=TwM942XoAVESENq2f8ILhIQJiJ6H8BhN9R3Ry6ATBh5j98S8kh5BqRg99/koz1tz
-	 KcfxFbI7BsPFIq4vhqCLRC+FbtMQA09Kel1zl6PY9471jJpFVxQhWkGzEF9CmkpMY
-	 5beB7HegGrrkPfAZtk0akGwgUlml/wtMtXIigryz25TGw0qjzL0D4YzmaVQGl1UKZ
-	 Vf+FbBrXCzcVpjWEjIPTf6AmaeBVKMSMiM9s4Y/0z36SiYwfggkzRq0KDDcpOAW9Z
-	 EiUMu3M4qN85X+PkJvdgeSSlSgdzNXVTOCd13VgOj23QNi4npIfBJcV5dBwZHP9uv
-	 JYFNempCTu3Y5RlLLQ==
+	b=Ns+7x0FDknDQ+M61r/iYNX8SBNL6kMOfzRsyJsIwVZvS4d6sR6QEHJJc2Y4T0Iqb
+	 IHuwoTTizCljbB/8yGEi/TBSwN424ZJewkFbnZ7+eMLoIrESTTY1NRwKZMCRR+6Xb
+	 saEGE4kLvWdv8GYgYTA6rR2imwj1KngCAFg6lFKcXD9UyAKNN8bQdzQAeNcp7agvj
+	 x16Zg6XFGDzEk3DamiVJ5sK+8+w8+0fWpUtQ2clC1wYIDYoAhxv8IRlv1sU0Alvwv
+	 mvux0WXHdsNgJVbA9VBDO3m0sFsBhLOvIZVLJJde5TlOvQ2Fr37aPQJYFBXp1DlAC
+	 nZ3enTXVXcZRd7Ipmg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4QsY-1r1LBY24ak-011PCg; Sat, 20
- Jan 2024 03:57:51 +0100
-Message-ID: <34a8f0b0-8235-40ea-bf11-8d29d987d9c6@gmx.com>
-Date: Sat, 20 Jan 2024 13:27:47 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3UV8-1rQTL63W6c-000ff8; Sat, 20
+ Jan 2024 03:58:59 +0100
+Message-ID: <7b0b14b7-0970-4470-a0cf-3a0b9ec93eff@gmx.com>
+Date: Sat, 20 Jan 2024 13:28:57 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,12 +54,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] btrfs: forbid creating subvol qgroups
+Subject: Re: [PATCH 2/2] btrfs: forbid deleting live subvol qgroup
+Content-Language: en-US
 To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
  kernel-team@fb.com
 References: <cover.1705711967.git.boris@bur.io>
- <eb79dcbe0cbfa7459b249f76818a5e5a08a42ea4.1705711967.git.boris@bur.io>
-Content-Language: en-US
+ <8ef9980c0621c82737b646b2bcf9df7b5a6dc216.1705711967.git.boris@bur.io>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -85,38 +85,36 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <eb79dcbe0cbfa7459b249f76818a5e5a08a42ea4.1705711967.git.boris@bur.io>
+In-Reply-To: <8ef9980c0621c82737b646b2bcf9df7b5a6dc216.1705711967.git.boris@bur.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2KCrtuHc0mdm+B4q9agtJ4KiyFgnTju18waLCj7Wj49e5GDIoWz
- tTrhxTiezmpnrR6BOlHrGVgeK4gwUdQAmvJJoLkSd58SEpA2dQxB7o106gjkoIIdQ5XSKpS
- oyBhpSTa5mA7tXqqI9+p+GBhR3XC7vcd0QEDgyp3s2dm8Dce+Y9t06pRV6AVuBV4n+3EuTd
- a6k+C3vSlZOjqpAkmZHSw==
+X-Provags-ID: V03:K1:5XxDEPHxRumkgqo2mCVGWOr1ofaUGoIcBIDADr9kpBBsdLhmNdI
+ zocem8No8acswkLNm+BsvtpU1kmSgfpbi/JArEtdrslSnpd48LcrwjEtqb6adz6GnPrC9KL
+ HG13gjE4LZI8LiOEPRVPZmOfq7I6G5VhKIAfCPrLaIHrr6j7SCg4lk8ZMA/B7VHTIsneJ2G
+ vujkSj/bGnwy7ZfgcN2Ng==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:9JVVa+AlyBY=;DQawZjj0sfluQzgcoT/Co3xX794
- DRvekR97edOvVD1lB5gZWrafzdn1tY4ud+k8vOGkPKvsEq+GD2uH4p0UL0UC0eW9FHwsm8qkT
- INRVm9p8RAKfbOHLko2sXb/k9MzsqMTIe6MZTrsK2rFw8Es8amV/fMZL8r8B/vZ0X5IbCxjH1
- bX6pAc003nhlnuvH24txVixke9h7xwGdQjZYTa+88CBSnGrVR/RJ18rIbu3pajdeemdzDmqD1
- uXdGIpDI+o2Ncvc39t8suC1j+DVwdQfVAVvymloqzh01gHN3FyrDz0/t1AjyRNmTLcXCTCatU
- sNbTxl281+o6T5khwbzAtA0g5OeguP0gvg3KJtYkJgi9p94i3b+UonFYopp6W+KFhgYIMUYaL
- Cbz7o7A4Gh7GH+s3l0ct1CB0kMrGtdaO9PB9042HAWmk0xSV7/SESkVCXbQ98PRFYpGgzaMiU
- Vjl4soFe4x3MUaYWXdZ9YkiiRemXbUrLXDBEdPPFORbB49xu2QjgdWQgt211ItYeYtrAqzZ0i
- 2LOupu2w11eyyLK7jfvVlYeeacoAYinNoZ4oh8VeP9RlfaM8g1j8lFLuaIAP13duILAY2rEUP
- +83K7m323oAP/NHi59DswKO8p+GWRp+WzmFLAKRPp3bWj2490HRss8XvfdxVvG5O4Dj7U1p5Z
- m2mt8jPbS8z3K3tjAdjz52lSgI8qX8c9KQglNoA0neCcDiI4T5NJ/4fOywL/Jscz0U5eKwLws
- NN4sqMbDfhRiWAlM0N2dA376Aq1cv4/O+8rE60UVy4WntwmlX/nr3AIOVgotKil7w/fr7/mhB
- hb/z5wpDVu5+GAyKPkoxjlo6u/Lqf0TMJfQa+H0FtfbaB781EIapk39T/wOFt0LZVE9T8rr7G
- p4ORjC8w6KD8CD3gu2v4kyS799GNONywyPkOL42q43KSziN20CanjEYCyaS9VqDj4kkPqyqfF
- zel9wCuNjS69wT680Q46Be3+UH8=
+UI-OutboundReport: notjunk:1;M01:P0:gPQ5RThkErw=;GK81jOd0P2/9x2S3wZzkSt2Mlea
+ KpPROu+Qe39LaQzg8/thNVlSwBhuf14PzbLSy6iiGod2nfEqwFAOj2FsYFlbt86jTdxg6vzPc
+ s0yC6J+2donALLvCQ8XwbxKIBKByv7F2l09S3w5a+/3i4KOOIEuGbXA7xpclVyk75/8a2NqBI
+ V2KqUktCdXN1trd4OrvdPfbO8JsB9BAG9QDluj4YGoJt7BB5Cnc+jhvwZmJXaz1X/gzsIHTbE
+ n7SlHtUigzte35kDTj91SiMDrR6BAKN0Jl4yk+e9EFlYoBqKqCGszH5ANgswuABMX5T15rDA9
+ 6Vy8O1hQ+O68Aq3A0tx3IYc/b6pI9XvOCP+GtF7d4d7xAazKvZo8/Fk2CjSUMxia91vonE40g
+ 8GyolXllyO6DQNxfFTHYI2L4Y4ipYNrrc8jbWvJazN8gPEABFSPNoIJlpsyNiJ0M1m+GZG4SE
+ OQxZiW/5kTJ/AWx6OTy3ezqGhbNeSUDkQJGXdZP13DiWI2kqxIFiplaHXi6Q3NB4Oqj6i/xrE
+ QtA2NoJQeTy6yFNPFHJ38iJeYlRIKasN3MdAJARbbW0S4VpGpNnLFudO8bTFt06C4B9r5G6d8
+ tpNkaAZXfV87aZIQbIf7xikafmQPXM4zep7d2v88Rj7i2hkpIJ04kjS+LjkUarDZqZziB2R91
+ i31ng+QwJyI6MsC7Z4EmuqEEQ2/cyTK4fk27cTOOxwfI9zd+Gf2R0MJ1wtopaiwNkfdJI40X0
+ WCy8sZFoEv3C+7vBZfe/it6rsCD6RMUUVPltFKRS570HwsYg7naedXXii11b9Z5vZ+KNwObnb
+ OyYYWiKMMas3pqmgavL7IXt4dwew14bE8O2Pr79yOD2/FWJK/I6cloyDFH6EN3V7XaUGFDoeA
+ 7pkpFaAuNPt03yvB1WkPBL2z/cPgtmCTMSgEqxU66asXNaAHdsYZHB3N6PzUcVDCMLze41iGg
+ Un/kmvKigImjck+eVBTVPL9/jDo=
 
 
 
 On 2024/1/20 11:25, Boris Burkov wrote:
-> This leads to various races and it isn't helpful, because you can't
-> specify a subvol id when creating a subvol, so you can't be sure it
-> will be the right one. Any requirements on the automatic subvol can
-> be gratified by using a higher level qgroup and the inheritance
-> parameters of subvol creation.
+> If a subvolume still exists, forbid deleting its qgroup.
+> This behavior generally leads to incorrect behavior in squotas and
+> doesn't have a legitimate purpose.
 >
 > Signed-off-by: Boris Burkov <boris@bur.io>
 
@@ -124,25 +122,53 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+
 > ---
->   fs/btrfs/ioctl.c | 5 +++++
->   1 file changed, 5 insertions(+)
+>   fs/btrfs/qgroup.c | 15 +++++++++++++++
+>   1 file changed, 15 insertions(+)
 >
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 58e0c59bc4cd..3d476decde52 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -3815,6 +3815,11 @@ static long btrfs_ioctl_qgroup_create(struct file=
- *file, void __user *arg)
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 63b426cc7798..672896b2b7a0 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -29,6 +29,7 @@
+>   #include "extent-tree.h"
+>   #include "root-tree.h"
+>   #include "tree-checker.h"
+> +#include "super.h"
+>
+>   enum btrfs_qgroup_mode btrfs_qgroup_mode(struct btrfs_fs_info *fs_info=
+)
+>   {
+> @@ -1736,6 +1737,15 @@ int btrfs_create_qgroup(struct btrfs_trans_handle=
+ *trans, u64 qgroupid)
+>   	return ret;
+>   }
+>
+> +static bool qgroup_has_usage(struct btrfs_qgroup *qgroup)
+> +{
+> +	return (qgroup->rfer > 0 || qgroup->rfer_cmpr > 0 ||
+> +		qgroup->excl > 0 || qgroup->excl_cmpr > 0 ||
+> +		qgroup->rsv.values[BTRFS_QGROUP_RSV_DATA] > 0 ||
+> +		qgroup->rsv.values[BTRFS_QGROUP_RSV_META_PREALLOC] > 0 ||
+> +		qgroup->rsv.values[BTRFS_QGROUP_RSV_META_PERTRANS] > 0);
+> +}
+> +
+>   int btrfs_remove_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid=
+)
+>   {
+>   	struct btrfs_fs_info *fs_info =3D trans->fs_info;
+> @@ -1755,6 +1765,11 @@ int btrfs_remove_qgroup(struct btrfs_trans_handle=
+ *trans, u64 qgroupid)
 >   		goto out;
 >   	}
 >
-> +	if (sa->create && is_fstree(sa->qgroupid)) {
-> +		ret =3D -EINVAL;
+> +	if (is_fstree(qgroupid) && qgroup_has_usage(qgroup)) {
+> +		ret =3D -EBUSY;
 > +		goto out;
 > +	}
 > +
->   	trans =3D btrfs_join_transaction(root);
->   	if (IS_ERR(trans)) {
->   		ret =3D PTR_ERR(trans);
+>   	/* Check if there are no children of this qgroup */
+>   	if (!list_empty(&qgroup->members)) {
+>   		ret =3D -EBUSY;
 
