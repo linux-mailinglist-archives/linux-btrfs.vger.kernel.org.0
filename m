@@ -1,170 +1,116 @@
-Return-Path: <linux-btrfs+bounces-1574-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1575-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4697A832CAB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jan 2024 17:01:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 369A8833205
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jan 2024 01:55:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AC74B22FF9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jan 2024 16:01:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3808284F74
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jan 2024 00:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05BF254BFD;
-	Fri, 19 Jan 2024 16:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD3EA3C;
+	Sat, 20 Jan 2024 00:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RU8Gteb4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+fzVLUL7";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TUtah5jz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="V5hyIQJC"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="rM1uavTJ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Fvx4GMpJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA23454BE8
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jan 2024 16:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDD0659
+	for <linux-btrfs@vger.kernel.org>; Sat, 20 Jan 2024 00:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705680086; cv=none; b=AH5g+WPU9pKEANGxSGAhE2rB+Nx9vbH9tFeWThjQTlOvk0lCrMxB8G/JukRulkjZQ0J+vTBXG+JrqTsVe3zJic8X9BS8Y5rhgDSSX8hE3USiPTWp3UXdKR4SVPRP0Zs+EEDfaKvdAAnkhdcWUIrs/RJOaBpFJmkL/gbJGnArd24=
+	t=1705712106; cv=none; b=N7nxpdo9m4cXwbLTfOlDWVQv5Nw+qNrT1Ak7mczS409kliEs3/5SzodBCs4DPPTaT/Hfcq7L0T/s/29GWJfurhsC9R+y+iz5ZBKeslQvdBAtJ5XqiSHlP8yaBXuM00kuafxHBzsx5/2T0NltLpDra6G5oD5oFXqWyTA/bqxJYgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705680086; c=relaxed/simple;
-	bh=IQadk+QEc7t5ilJqGoKcOWkXeR8IFDMY4EGL5/KdKYE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mumeB0T/BF7ZIWlS4MCBa8nAJGzU3jYyRu4J0xizQToG3gpndEwbnaviDiO7JuqEaJyYvWUaswaXNn5eRlvHip6zEbOjfAbQlJEEBpxFfXTE0EhHNIiJvXecShXeLEeFd8IOHs2PhKPZw9+UpMSSS3k59Ea6QUbtf0AEL0Y7bdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RU8Gteb4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+fzVLUL7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TUtah5jz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=V5hyIQJC; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8EF5A2205B;
-	Fri, 19 Jan 2024 16:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705680082;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DusS4YxfStZkGWZHuZ1FSdbwlcveQQDufWFoA3yjJ4g=;
-	b=RU8Gteb4xRq0BX1Ago284StSwRhR2hYXBrcc9G+5xC/o83dWssUkso7+E+Qko70TNl8nM+
-	mSb8mtcj8gzBRzvi8rNTchLTeZlVVSw6WlVTpNjhw6S9X6z5lTBzv4HDBJtXThtbu++HNG
-	35etUP5WH6G4R4F5n3t7TV6TBDqy/4I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705680082;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DusS4YxfStZkGWZHuZ1FSdbwlcveQQDufWFoA3yjJ4g=;
-	b=+fzVLUL7CHpoRHh7OFHO/nB8qaVd/f75XYoovnzH4XiGsTaZsBlugKr471ht31S94ZNY3b
-	B74/ABxgb36tDHCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705680081;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DusS4YxfStZkGWZHuZ1FSdbwlcveQQDufWFoA3yjJ4g=;
-	b=TUtah5jzBW9z5f7mixEHKtflpXdzEUFy9D++Mq5+HrxfwARIBSEPIK5yRTNoMoo4Wk9uad
-	GM5ND5Zuir8mRfkht2Wrs2K9tkQAbpwRsl/kLEqDGAGjg0ITvWjyqlzHIuM1GeH/S/Es7z
-	aTndvrx3djXeBD51oL6Bk/kaFVX152A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705680081;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DusS4YxfStZkGWZHuZ1FSdbwlcveQQDufWFoA3yjJ4g=;
-	b=V5hyIQJCOHtTEJ8pYFePfXkdKsF6Ycl5St0QRV4uf2arCuVK40VZBbUxGElzVxOyku5WPM
-	IWjpReeAjcFSVWCQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6DE7E1343E;
-	Fri, 19 Jan 2024 16:01:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id SHxaGtGcqmWQCgAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Fri, 19 Jan 2024 16:01:21 +0000
-Date: Fri, 19 Jan 2024 17:01:01 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Naohiro Aota <naohiro.aota@wdc.com>
-Cc: linux-btrfs@vger.kernel.org, wangyugui@e16-tech.com
-Subject: Re: [PATCH 0/2] btrfs: disable inline checksum for multi-dev striped
- FS
-Message-ID: <20240119160101.GT31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1705568050.git.naohiro.aota@wdc.com>
+	s=arc-20240116; t=1705712106; c=relaxed/simple;
+	bh=FZCB/eCqo+7c2DvzlX9ZF4cqQw24z7tshkAgcmT1GNQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=KC5k62YPR1pnReNIyQRNZDvmnOQnnOTkd8ZPXKhCtN7W0tQwILMYrrSiEAplhhrcpOEo430NdU3zDaYeu4P3CNO8ECfgIMAZFYj2UNykL6VgccbDZFQuD8ANnDZaJRyF00IqH/Z4Ct8BU12hvFZePWY/DHSPm0cM+jn6Zl+2mng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=rM1uavTJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Fvx4GMpJ; arc=none smtp.client-ip=64.147.123.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id BA2DF3200AD3;
+	Fri, 19 Jan 2024 19:55:02 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 19 Jan 2024 19:55:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1705712102; x=1705798502; bh=d6xDyzRA/HenqQKMRPA1g
+	mUNbUg0Y+McpIiMQedMFu4=; b=rM1uavTJAdT95fMQkqsyvPIS785JlMJF1a2k8
+	9sifigZXt6/UzVhi8S8/4lk89MB2DlBrpD3E8ZB2pOJE6ZaWZtBNP9qX/8NA/9wD
+	5kwSRCmDCDUnXxY1ntbOFur67pnpE1yskY7NKGvW82PZrRPyIlBsWbbpsJh0//EK
+	61OCqRBYpIATA14VcP5tATVcD4KvHH2BHOdXNrVSRQHK5tjahMpNnlF6iZzzcOIF
+	6s6mC3Hi/yG2vtp9ZKBnY/iD72/6IkkBnQ9N9uG3iOT68wfx6E0S6ZSVOEEEXqxJ
+	AJrTRRSMCcYP7dESfzIh5m1BFJzdvFbdCEuQGxPWeJxffbTQA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1705712102; x=1705798502; bh=d6xDyzRA/HenqQKMRPA1gmUNbUg0
+	Y+McpIiMQedMFu4=; b=Fvx4GMpJBYuJwJX0vIvSktMMbcjBfB4JvqB+q3MvQpWq
+	uHPxobeYKmGmt7kaDQfr4rSnzPQT1srWGI2knyCxicQBajCWD4rVgmYrvn8lAKYR
+	mf8n+4lMTACo/GXcOROMUA05c0LKU/Jfck/gAHpyMXTLblkhfeJwtcM8M1uJ0Crw
+	ZQGKxkEV7eE1bnZ+rSZ7kiTD8nyS2HA8ei/ynI4GPTt/2xoTQpF3LNZ2541s6fdk
+	xJyvS4ieedVmxaRRS5EIQBm3wVsD5kqKc/ui2Xmhy/wQeFy79qkcZ4zc7mxBlrtC
+	B+nhH1RwtkqOAMXwAXCtcf8/tWqjNeD0u1PyIt/9ag==
+X-ME-Sender: <xms:5RmrZVFbScm8Qy9fg_hk4CeK8LapvOnQxO8PFshMnkXXZtA5NlUkFQ>
+    <xme:5RmrZaXD6FC_ONd8rkiYcK39e42hFUj7WVUhYYh4FR_w7_2kJbte8vGTy6Gvb7yS6
+    K07f7Md3wtFMIa0YrQ>
+X-ME-Received: <xmr:5RmrZXLjXfwaVfJb6w_T8idaYymL6lAUJfVx1_TpuU65IErI5bjHIkjYyhikn0uykTCfV1STUzujASFC2wLgSRW9p-k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekuddgvdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
+    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
+    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:5RmrZbGvTZycUNoJKwMJyHFpQAtIEW4wf_PbPsZNO-VssahePkM6ug>
+    <xmx:5RmrZbWYXAqKO7Sne8b6gYtJO4LHt8eMk7C9pqHAmSeebct6bh_xCQ>
+    <xmx:5RmrZWM_Yth44gHvYuUAMYzE8BEuliz8kXz04Pl0vE_FU1fj5vFkUA>
+    <xmx:5hmrZcc8Ja66r13XiOeC9dqABfVNBzLaHBJPhgFQfTt1txqRIlRrMQ>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 19 Jan 2024 19:55:01 -0500 (EST)
+From: Boris Burkov <boris@bur.io>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH 0/2] btrfs: subvol qgroup lifetime invariants
+Date: Fri, 19 Jan 2024 16:55:57 -0800
+Message-ID: <cover.1705711967.git.boris@bur.io>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1705568050.git.naohiro.aota@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=TUtah5jz;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=V5hyIQJC
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.21 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[26.39%]
-X-Spam-Score: -1.21
-X-Rspamd-Queue-Id: 8EF5A2205B
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 18, 2024 at 05:54:49PM +0900, Naohiro Aota wrote:
-> There was a report of write performance regression on 6.5-rc4 on RAID0
-> (4 devices) btrfs [1]. Then, I reported that BTRFS_FS_CSUM_IMPL_FAST
-> and doing the checksum inline can be bad for performance on RAID0
-> setup [2]. 
+Subvol qgroups (id 0/SUBVOLID) are special. They get created
+and reaped automatically for subvols, and can never have any children by
+virtue of being at level 0.
 
-First, please don't name it 'inline checksum', it's so confusing because
-we have 'inline' as inline files and also the inline checksums stored in
-the b-tree nodes.
+Manually managing them doesn't provide much value but does create the
+possibility for weird states and races. To that end, ban deleting subvol
+qgroups that still have usage and creating subvol qgroups at all.
 
-> [1] https://lore.kernel.org/linux-btrfs/20230731152223.4EFB.409509F4@e16-tech.com/
-> [2] https://lore.kernel.org/linux-btrfs/p3vo3g7pqn664mhmdhlotu5dzcna6vjtcoc2hb2lsgo2fwct7k@xzaxclba5tae/
-> 
-> While inlining the fast checksum is good for single (or two) device,
-> but it is not fast enough for multi-device striped writing.
-> 
-> So, this series first introduces fs_devices->inline_csum_mode and its
-> sysfs interface to tweak the inline csum behavior (auto/on/off). Then,
-> it disables inline checksum when it find a block group striped writing
-> into multiple devices.
+Testing Note: this patch series breaks btrfs/303 as that test is hunting
+a race to do with creating a subvol qgroup which now explicitly fails.
 
-How is one supposed to know if and how the sysfs knob should be set?
-This depends on the device speed(s), profiles and number of devices, can
-the same decision logic be replicated inside btrfs? Such tuning should
-be done automatically (similar things are done in other subystems like
-memory management).
+Boris Burkov (2):
+  btrfs: forbid creating subvol qgroups
+  btrfs: forbid deleting live subvol qgroup
 
-With such type of setting we'll get people randomly flipping it on/off
-and see if it fixes performance, without actually looking if it's
-relevant or not. We've seen this with random advice circling around
-internet how to fix enospc problems, it's next to impossible to stop
-that so I really don't want to allow that for performance.
+ fs/btrfs/ioctl.c  |  5 +++++
+ fs/btrfs/qgroup.c | 15 +++++++++++++++
+ 2 files changed, 20 insertions(+)
+
+-- 
+2.43.0
+
 
