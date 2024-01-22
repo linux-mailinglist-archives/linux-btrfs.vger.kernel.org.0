@@ -1,290 +1,179 @@
-Return-Path: <linux-btrfs+bounces-1626-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1628-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3058C83776C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 00:05:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1799D8377B9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 00:27:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82421B2514F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jan 2024 23:05:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D20D1C237E9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jan 2024 23:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC46D48CED;
-	Mon, 22 Jan 2024 23:05:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3C04E1B3;
+	Mon, 22 Jan 2024 23:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="jmNUeJN4";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="sc33KcJX"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="rnliwtKo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBA248CDE;
-	Mon, 22 Jan 2024 23:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE29A4B5A6;
+	Mon, 22 Jan 2024 23:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705964729; cv=none; b=AKv+VpjE0ZeK1wt5FudGBcAGvVq2s/OsaLzHeENh3ht3b62aaCtvxHpRxzgHo4OxtI2v527crusINui1xXbN0WBj0IhWkYfeIvu+ifuc6ltZO1erqELaoWFiSwR+oRMWf16bHgps+abbYjjMPeTUlQGQSvIjXXkSmdJfFi9aST8=
+	t=1705966064; cv=none; b=Q5RWkdu1XyZMqWVygBTnB8blBfw8xKlaVzFMYlfpju+amBq4Niw8Z0uVHmbVGVpJPNWfSBKVPE/hLyoNFjyor2x91F7d3Ls39JaHiUmpG99WjMv3ckd/+Iw56V6DaWRHKuDZGik9exzS2Q6IA1HyhGHmoWksoLfmFjXiYeGJmgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705964729; c=relaxed/simple;
-	bh=JTSmGzhhgd/D+wcKtMduOHazpxqYsBFx+mPbfm7mMwE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=lDj5OjK9CkX5wsXKoZMd7V9jXrr0i8BEImYwc1Ohb422GN2gT2VOvjkPcplGbJK6kVzRuttLWeRErgViYeHkWnA+HthxYcohJ4fETUrx60iFWds9/LawrmHzGtd8sxJj5W21FrGbEOXBtNCrdjfvvSNbvTH+TWsg30mw696IvU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=jmNUeJN4; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=sc33KcJX; arc=none smtp.client-ip=64.147.123.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id C17033200A3B;
-	Mon, 22 Jan 2024 18:05:25 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 22 Jan 2024 18:05:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm1; t=1705964725; x=1706051125; bh=RS5NX66ZE6PjkMihkhF90
-	MYAB6KXybsAkT3yWwEZsiw=; b=jmNUeJN4tW6zBrCJ2cKieVViRpPqS5r0RNdwd
-	ZbIYwdpYdmkU475LGk58qdeO4NugzeC2u8vUmoy2mVYoPfV6Cmp43GGxls5R4Abo
-	bUg823Q2e7lbz3AfFkB1vfX/tArQX4+g9xuuBH/VG+5PIcBYVzFgsb+Aa92M4tOq
-	gcLtEETuJhFeLpS3F1Xf8HfuE3sgwWOseIUVii9K3s1PO3YUdwJ/O4McybRdeTZE
-	Zj8sMPrGHn+j7qIeFGQT3FXJHPenBj1P56IT8odEKJPe/lxlYWm8R1EeoSuOuhJk
-	+OWUIVC9AThCI6ONi4jzL4XQrYX6eWoYgwusPnPEqB7enLDBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1705964725; x=1706051125; bh=RS5NX66ZE6PjkMihkhF90MYAB6KX
-	ybsAkT3yWwEZsiw=; b=sc33KcJX4pxSuCSYMZsW3D1S3mwEw27+WFvQd0WjGJLY
-	tK1NoyQZcD5p5dBA4r2QcyBPP2Rwfik3urlxntRLSjPipIMo46797Dyrlc4ruLUv
-	AzRYytSREzn63bOF0r+ZqtSeaPPZm9MCKBW+5la7xTzxLtVJuaNd0w4mdvet+vzB
-	vLDFOLGhYnDkxRM4uVMFs04Dl5dLw+gjHZCSD+XjCi5P8miw0VGhC00j9OYAiV2l
-	LXrIB78OIuTl+49Wj1+6K0D5opMy4xF4o9Borv+K573HzSVZid58Zstr7MpxtG6x
-	XgZ4XI8P6I60tWDXBxm1jwisivQyNf1Ob6FVMhOl/g==
-X-ME-Sender: <xms:tPSuZdeYm9xDh-US4ezl37Vk3Sdz8f_KhO7dc3CaeCYwYapNJlQojA>
-    <xme:tPSuZbNZu1kILUH6dr-haV-ol1GyQiAQl0k5saysRG_5R8z_03urZwHV_EZ7A7xgv
-    3h4Vz6U5Qsm-Kk5vQs>
-X-ME-Received: <xmr:tPSuZWhbwGnO3kUxHfKTWlqUZtWuipl4sQWXYpRedyhT6ouoADyZgjAYAxkigaaGC0kJRsYNOMfhniAvv2DNsYW-47U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekjedgtdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
-    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:tPSuZW_HyZFt5u1NWbZFGeAvDl12-hywu-ZrT4aMLAI6Zv-eMf2WSA>
-    <xmx:tPSuZZtor7SNEv2vbeDVZNpEOQo2a5Dho4Waz-az7NIFICL9DFT2Ag>
-    <xmx:tPSuZVFodeA4sONashQjNyfGrZOB5cj13JKOwtrw-mbpcbZdwK0t5Q>
-    <xmx:tfSuZaWxQv2mkpj-PAyFGhLyp3n5skk6yOpDgeaPrdX-aq9nHqwVKg>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 22 Jan 2024 18:05:24 -0500 (EST)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com,
-	fstests@vger.kernel.org
-Subject: [PATCH] btrfs/304: test qgroup deletion
-Date: Mon, 22 Jan 2024 15:06:28 -0800
-Message-ID: <c9fa8fa558e307a5d0d28545ff69433ae8324f4c.1705964751.git.boris@bur.io>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1705966064; c=relaxed/simple;
+	bh=594BwK7mvu1HQwBaIY2Xo3HEKqrdu9uTJlsJkT01tJg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KatElTQddZL26jqaHXE5Cfznx7J7ksgxnrmpUSQEsJU5mRKXvAdUi+V1CXhesIy/d2diZjhewU9SXa18Q9WD994am12UizYsCENK3/Ar3EWT6xFV381j6Hs4G99MKcQbnvzsH4KZRNfJPxUanx6uPj6YaeuxhnrZyg+fBBajfi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=rnliwtKo; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1705966058; x=1706570858; i=quwenruo.btrfs@gmx.com;
+	bh=594BwK7mvu1HQwBaIY2Xo3HEKqrdu9uTJlsJkT01tJg=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=rnliwtKognca61/cSz+XRxp6A9uzg58g6Biit17Y32DmvZY1mmo+7CAUkV55BaBX
+	 UxkX3idixNNdCJzUqswWuETTXLI2zX4up0RfEWHRyWKvSgai+wMk8HSY4Y1uG/1Yy
+	 IfNEECjWlMwAq77JgYlEnF+VAaUfvYDPYLh5/Zw1Ro03svDMijtXD24nGAn3TVmhq
+	 p6hnFujTjL14qb893UuUEVxIXYnpLV9AUUY9n7/6RrITBTg1nlAcX8q2szPTqq/2U
+	 rI+9PY4RwOM2I95RLF9BEEHtlie3lBBy8mn/WdCm0Ge15ITaPEN3IsolPJmijUcfi
+	 O49ngM3q+ubEiTYWJw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MpDNf-1qkh422EIx-00qkIg; Tue, 23
+ Jan 2024 00:27:38 +0100
+Message-ID: <b55a95be-38e8-4db7-9653-f864788b475c@gmx.com>
+Date: Tue, 23 Jan 2024 09:57:33 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
+To: dsterba@suse.cz, Linus Torvalds <torvalds@linux-foundation.org>
+Cc: David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1705946889.git.dsterba@suse.com>
+ <CAHk-=wgHDYsNm7CG3szZUotcNqE_w+ojcF+JG88gn5px7uNs0Q@mail.gmail.com>
+ <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
+ <20240122230526.GF31555@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240122230526.GF31555@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:W1dfWQ5ZXwpCKKhC+n129uDN3Sy9Vd/Lm0aqg7YNd97SRAJ7I7W
+ 90DEfSyUZwbvaL3J9hw2OF5IBFnhHPYh+U2GaTtjer8yQSX2xmNZIA6VeeKdEHDUYqC7p/9
+ 0OaFAerGpJblGUSgT3W4pYlvsGQ7dwVcmuxqXEinuuSn1+cwem5XU6s103fxXUick9iBICW
+ W/f+cnxgZnUMNRNgowNug==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:YLR9kyS6L6k=;6lznmeudGg0lYSx7TxfomiCtTTG
+ Um5zcO+07YMO40YrUi30k6xFbD44ru58wPyMF5z0RJTNUgfh9B+mfO8ii/kvncZA/BwtN0Rxo
+ jto+1hpI1O4jEXfLRWAOtdjoqa+JF2uivpbawepLefKshwSrFbJuhToNbQb2+4qp5PzboVFSP
+ nRVoP1IpZpQwR56JV+890luSDx9npfhBHLnTQ4fWn5vmPxqwdqaS0x7phdZdBX8j1Yxbo0xNY
+ cCFTSANaC7kSUALvJuCwZcFBVlTpIGAwMcR17Rfljy6H/rk1qYeOBGtuXKBDWxkW+oC25Ml2D
+ R+VkzCrjWAuc2fZa8Le+bQEpYR7EkhdEj4kPM2JIvRAAeBW0R7q+lUeLIABaj1mQVdd2XuCng
+ aq6es1Par+doh1Acz//CgYQrpLfeX54+C/uSZBxPsXQq8nDvzY9RQ4/eiqlIDj+A1OsHx3Jgu
+ ycp6W/P5HdOtHjkl3Y4LieCMc2KKzA3tF4qWE2Dr1SDkahjuONozgf1MVvxGFtgeBsAgYr9rA
+ showmK30xFp28Iky1E6N0p161nEzaZp8onbTi3IL0+iRk11Vdpdp5d8GTYWzrpYH3LgXZOsUf
+ G6A/6htgQnp9Hrh75c+sOEwlnakDIrIMK6Ha53PZRLFyppAqESnbcFGMV41iu5GIlXddtPO7x
+ tXo7OX+PqtbprD8nW4lndu3jSqWOlnKAYqHuf1Wr2hQ1giV+ilRzyfxjlAfbCTgMIQ2Fay6ps
+ N9LP8Qf7KF0k9gMyFjik9/qJXEhrRMxoX9zYHaZL9KP2BIrMrRzU4Jr1cJeFcOL6INntfMTiQ
+ W2Cf341KsagFObr23ryFigP3lKF226XsWH3B5IREf0pX6Mqb2BQ/1+HNioQCl0/O7AfUdRDjq
+ FLXLGLc4yFT0cWjFXDH2u5uFwzUi5mQpHhfrkUIxTQYY9S2+vlnT6EEyGxnnuEt7l8ypdTvD/
+ tzGqloq94f7W5R1wCP8v+QnphgA=
 
-When using squotas, an extent's OWNER_REF can long outlive the subvolume
-that is the owner, since it could pick up a different reference that
-keeps it around, but the subvolume can go away.
 
-Test this case, as originally, it resulted in a read only btrfs.
 
-Since we can blow up the subvolume in the same transaction as the extent
-is written, we can also increment the usage of a non-existent subvolume.
+On 2024/1/23 09:35, David Sterba wrote:
+> On Mon, Jan 22, 2024 at 02:54:31PM -0800, Linus Torvalds wrote:
+>> On Mon, 22 Jan 2024 at 14:34, Linus Torvalds
+>> <torvalds@linux-foundation.org> wrote:
+>>>
+>>> Bah. These fixes are garbage. Now my machine doesn't even boot. I'm
+>>> bisecting
+>
+> Ah, sorry.
+>
+>> My bisection says
+>>
+>>     1e7f6def8b2370ecefb54b3c8f390ff894b0c51b is the first bad commit
+>
+> We got a report today [1] that this commit is indeed bad,
+>
+> https://lore.kernel.org/linux-btrfs/CABq1_vj4GpUeZpVG49OHCo-3sdbe2-2ROcu=
+_xDvUG-6-5zPRXg@mail.gmail.com/
+>
+> the timing was also unfortuate and too late to recall the pull request.
 
-This leaves an OWNER_REF behind with no corresponding incremented usage
-in a qgroup, so if we re-create that qgroup, we can then underflow its
-usage.
+All my fault.
 
-Both of these cases are fixed in the kernel by disallowing
-creating subvol qgroups and by disallowing deleting qgroups that still
-have usage.
+The offending line is:
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- common/btrfs        | 10 +++++
- tests/btrfs/301     | 14 +------
- tests/btrfs/304     | 90 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/304.out |  6 +++
- 4 files changed, 108 insertions(+), 12 deletions(-)
- create mode 100755 tests/btrfs/304
- create mode 100644 tests/btrfs/304.out
++	memcpy_to_page(dest_page, dest_pgoff + to_copy, workspace->out_buf.dst,
++		       to_copy);
 
-diff --git a/common/btrfs b/common/btrfs
-index f91f8dd86..c8593c1f9 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -775,3 +775,13 @@ _has_btrfs_sysfs_feature_attr()
- 
- 	test -e /sys/fs/btrfs/features/$feature_attr
- }
-+
-+_enable_quota()
-+{
-+	local mode=$1
-+
-+	[ $mode == "n" ] && return
-+	arg=$([ $mode == "s" ] && echo "--simple")
-+
-+	$BTRFS_UTIL_PROG quota enable $arg $SCRATCH_MNT
-+}
-diff --git a/tests/btrfs/301 b/tests/btrfs/301
-index db4697247..b3ee66cd9 100755
---- a/tests/btrfs/301
-+++ b/tests/btrfs/301
-@@ -157,16 +157,6 @@ do_enospc_falloc()
- 	do_falloc $file $sz
- }
- 
--enable_quota()
--{
--	local mode=$1
--
--	[ $mode == "n" ] && return
--	arg=$([ $mode == "s" ] && echo "--simple")
--
--	$BTRFS_UTIL_PROG quota enable $arg $SCRATCH_MNT
--}
--
- get_subvid()
- {
- 	_btrfs_get_subvolid $SCRATCH_MNT subv
-@@ -186,7 +176,7 @@ prepare()
- {
- 	_scratch_mkfs >> $seqres.full
- 	_scratch_mount
--	enable_quota "s"
-+	_enable_quota "s"
- 	$BTRFS_UTIL_PROG subvolume create $subv >> $seqres.full
- 	local subvid=$(get_subvid)
- 	set_subvol_limit $subvid $limit
-@@ -397,7 +387,7 @@ enable_mature()
- 	# Sync before enabling squotas to reliably *not* count the writes
- 	# we did before enabling.
- 	sync
--	enable_quota "s"
-+	_enable_quota "s"
- 	set_subvol_limit $subvid $limit
- 	_scratch_cycle_mount
- 	usage=$(get_subvol_usage $subvid)
-diff --git a/tests/btrfs/304 b/tests/btrfs/304
-new file mode 100755
-index 000000000..3fce0591c
---- /dev/null
-+++ b/tests/btrfs/304
-@@ -0,0 +1,90 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
-+#
-+# FS QA Test 304
-+#
-+# Test various race conditions between qgroup deletion and squota writes
-+#
-+. ./common/preamble
-+_begin_fstest auto quick qgroup subvol clone
-+
-+# Override the default cleanup function.
-+# _cleanup()
-+# {
-+# 	cd /
-+# 	rm -r -f $tmp.*
-+# }
-+
-+# Import common functions.
-+. ./common/reflink
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_scratch_reflink
-+_require_cp_reflink
-+_require_scratch_enable_simple_quota
-+_require_no_compress
-+
-+_fixed_by_kernel_commit xxxxxxxxxxxx "btrfs: forbid deleting live subvol qgroup"
-+_fixed_by_kernel_commit xxxxxxxxxxxx "btrfs: forbid creating subvol qgroups"
-+
-+subv1=$SCRATCH_MNT/subv1
-+subv2=$SCRATCH_MNT/subv2
-+
-+prepare()
-+{
-+    _scratch_mkfs >> $seqres.full
-+    _scratch_mount
-+    _enable_quota "s"
-+    $BTRFS_UTIL_PROG subvolume create $subv1 >> $seqres.full
-+    $BTRFS_UTIL_PROG subvolume create $subv2 >> $seqres.full
-+    $XFS_IO_PROG -fc "pwrite -q 0 128K" $subv1/f
-+    _cp_reflink $subv1/f $subv2/f
-+}
-+
-+# An extent can long outlive its owner. Test this by deleting the owning
-+# subvolume, committing the transaction, then deleting the reflinked copy.
-+# Deleting the copy will attempt to free space from the missing owner, which
-+# should be a no-op.
-+free_from_deleted_owner()
-+{
-+    echo "free from deleted owner"
-+    prepare
-+    subvid1=$(_btrfs_get_subvolid $SCRATCH_MNT subv1)
-+
-+    $BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
-+    $BTRFS_UTIL_PROG subvolume delete $subv1 >> $seqres.full
-+    $BTRFS_UTIL_PROG qgroup destroy 0/$subvid1 $SCRATCH_MNT >> $seqres.full
-+    $BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
-+    rm $subv2/f
-+    _scratch_unmount
-+}
-+
-+# A race where we delete the owner in the same transaction as writing the
-+# extent leads to incrementing the squota usage of the missing qgroup.
-+# This leaves behind an owner ref with an owner id that cannot exist, so
-+# freeing the extent now frees from that qgroup, but there has never
-+# been a corresponding usage to free.
-+add_to_deleted_owner()
-+{
-+    echo "add to deleted owner"
-+    prepare
-+    subvid1=$(_btrfs_get_subvolid $SCRATCH_MNT subv1)
-+
-+    $BTRFS_UTIL_PROG subvolume delete $subv1 >> $seqres.full
-+    $BTRFS_UTIL_PROG qgroup destroy 0/$subvid1 $SCRATCH_MNT >> $seqres.full
-+    $BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
-+    $BTRFS_UTIL_PROG qgroup create 0/$subvid1 $SCRATCH_MNT >> $seqres.full
-+    rm $subv2/f
-+    _scratch_unmount
-+}
-+
-+free_from_deleted_owner
-+add_to_deleted_owner
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/304.out b/tests/btrfs/304.out
-new file mode 100644
-index 000000000..55bbc64f5
---- /dev/null
-+++ b/tests/btrfs/304.out
-@@ -0,0 +1,6 @@
-+QA output created by 304
-+free from deleted owner
-+ERROR: unable to destroy quota group: Device or resource busy
-+add to deleted owner
-+ERROR: unable to destroy quota group: Device or resource busy
-+ERROR: unable to create quota group: Invalid argument
--- 
-2.43.0
+I'm using the bad pg_off for the memcpy_to_page() call.
+And zstd is the only affected algo.
 
+All the other algos go like this:
+
++	memcpy_to_page(dest_page, dest_pgoff, workspace->buf, out_len);
+
+So that's why it's screwing up the zstd compressed inline extent
+decompression, as we can easily write beyond the page boundary and write
+into the next innocent page.
+
+And the existing compression group didn't catch it at all.
+
+Would fix it and add new test cases for the regression.
+
+Thanks,
+Qu
+>
+>> but I'll still have to verify by testing the revert on top of my curren=
+t tree.
+>>
+>> It did revert cleanly, but I also note that if the zstd case is wrong,
+>> I assume the other very similar commits (for zlib and lzo) are
+>> potentially also wrong.
+>>
+>> Let me reboot to verify that at least my machine boots.
+>
+> Per the report revert makes it work again and zlib and lzo cases are not
+> affected.
+>
+> I can send a pull request reverting all the three until we figure out
+> what's wrong, or you can do it as all revert cleanly.
+>
 
