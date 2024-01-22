@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-1624-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1625-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4107E8376A5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jan 2024 23:55:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6956B837748
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 00:01:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00E00289417
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jan 2024 22:55:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBFFFB25DE7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jan 2024 23:01:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A00DC14A9A;
-	Mon, 22 Jan 2024 22:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5243EA75;
+	Mon, 22 Jan 2024 23:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="HTC5bauZ"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Rb+4YSUj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B40610A15
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jan 2024 22:54:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32481364BB
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jan 2024 23:01:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705964092; cv=none; b=SswbckpqORhENQnptuc8zniV2VUWSeGhV6ezosccG+P6ej1+kVh98VWcCVik6WbRqZW4apsgPWZNI5pM435Ea96tK3X8YfMU2Fedwf4uSzNOf6ROm876Jab3VkuUc7jMbrAAjOqHW4qGYFykRhl3Ig3qoImDEvq/6DgX5WuR604=
+	t=1705964496; cv=none; b=agowCbeIFxXisIm4NOQnnxJCZQ+fSzDRR0i/gAidPXF+vDRBo5V2SsKaS8sNOP/yqwZC+hybyKmgKAgNybIhjzQx5/A893B/Hn5XfQFqEAxuhjptDqfaRKT4VuQPQ0j0szcCwiImkmTkcNWe/e1W3uk86BCLQhFeMjZlD9Sv6xQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705964092; c=relaxed/simple;
-	bh=Vv4GoVLQbcboDBK9JF2IcWRLvU3UCl3aQM4sIGzFBNE=;
+	s=arc-20240116; t=1705964496; c=relaxed/simple;
+	bh=8cQOxzwWYJnNCmVmBs4ce9ATA/N4mz/+qpEV4kUBcOQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ff5lDmbWKNm3TCP9vba2Cdhxh2CiykR4jFmFeTFXWxACpf8iDtFZAwNPIEc0hQatj1idkniF8EUQ2XC8syOgAJ6IXywWpobGlRXJ7Na2K4P3/CoL+VkbSLPYprtigPKS/zTXmZ2urrhX7pAdBKGEBYDKxm7zvjx3u551MNECQ7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=HTC5bauZ; arc=none smtp.client-ip=209.85.208.175
+	 To:Cc:Content-Type; b=H0aH1McaL00yEAMEVj4fWKXeUy3MBOHH/b+PRBTrek5EJHPy+ZklmEwMTYuIBplTn5PFxf1YnsKH22H94Kakz2zo7tS9flajHimuAwJ26IZRtJR712yVfOJ72qaMAMqk3UCVJVoNlVzE9KiK1XE+AA/RlEpuU9S0Zpk9gjpC2IA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Rb+4YSUj; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cf03521306so10792611fa.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Jan 2024 14:54:50 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e86a9fc4bso47708375e9.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Jan 2024 15:01:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1705964089; x=1706568889; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1705964492; x=1706569292; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JOEb90GER7mzhUcx62Qpw2hCQjGXAjl9en9ZzJ8SQUY=;
-        b=HTC5bauZzFgfwmwUWbkTaKbGr5SLZegCsHkpQ/SvLm9jFvdsSO8N4n8gIK9Bt2stAQ
-         NDvcCSZKVE8H9Fl+CFtssBoVBaRmkUpFLYDW/E/ueJoON/yVlecfKjF6cTFUaOnIYhoS
-         rI23U9P/hYluSReuBMKbSCBUGCvbpXrxYg8Dw=
+        bh=TPlzJOHJ8wV3hedKz1a7v4FHImLT+aZ8tnfdq+8evgM=;
+        b=Rb+4YSUjWdveoStXtotD3xXwIpIqsuOXpPCqkNYAKiZmRlDv7fZBwMjoPRIBI/d1+N
+         Z41fnfedkU4+MU73dgdLoBiHs5+zIuLttQ3k29N1nU1k3jxvVt+1EMnaucXh2YP6Bsp8
+         6J6na2OxokLFQc42/wpcHYJ7q/yKSr+x6p2rw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705964089; x=1706568889;
+        d=1e100.net; s=20230601; t=1705964492; x=1706569292;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JOEb90GER7mzhUcx62Qpw2hCQjGXAjl9en9ZzJ8SQUY=;
-        b=YF8uFXaAuadfmXbKy+QkEBCMDi9Oi29bxMIGLcRl+4+cG/XTOIsVnI4ie9OQ+k59og
-         IcjVbp7O7B5CGO8Wg1/VN+yOOQCSi93Gyp7SExSFS6fq5Ls/Q1bWc9waJbaAcrTESS+1
-         8bhqqdnCstcnhzHqe4MRxH1j/MKyurQRnwWSWO4vnmq3G8gNl6umC8Ixbcff1v83DGzF
-         cK/V/cS/MNcL4niEC2maUgJXmbrZuB7CQfiWyMl5ajUtk3W7gY3gFf8WpubkXAYE0Qts
-         KH1kJU2vNl+dwPOBzDWY3j5OkBH3PfEw9KihcbFtfBPHf/voPfNPLcORxwc6KIbRJxO8
-         xp2g==
-X-Gm-Message-State: AOJu0YwZpEIgVin2Lw19Ws2ZFa5uXOK9X8Kr1nuBzyfgnBvTXhZB3xhV
-	OV9MeYiCM2uCZgiF4c4WMZ+UkWjdmdw8G5bb5JpRbHVpr0y3A/16umlt1fWskkV5MD94GNNEN3Y
-	NyEvZbA==
-X-Google-Smtp-Source: AGHT+IGVePn0E+zCTGJal2/nS89TiKnxOAmniGEY9GPCfEYhDuK9yElAbS+QAAG2sOyp1vQngu8zVw==
-X-Received: by 2002:a05:651c:4d2:b0:2cc:f02c:c979 with SMTP id e18-20020a05651c04d200b002ccf02cc979mr2596209lji.33.1705964088746;
-        Mon, 22 Jan 2024 14:54:48 -0800 (PST)
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
-        by smtp.gmail.com with ESMTPSA id q20-20020aa7da94000000b00559f32cc081sm2887396eds.57.2024.01.22.14.54.48
+        bh=TPlzJOHJ8wV3hedKz1a7v4FHImLT+aZ8tnfdq+8evgM=;
+        b=mZgu6MIbS4yAvYGTPdKGU8MI3y9EgFz1k0wzgEK34KSWM/v9kc4+A3Z96VTQEMlf39
+         +FGrnC8KPJFYdTdzqXjXpSOVexAdKEfan/IrTrxeIb4AQJSyF1zg3R1IYlTLsM6JObZx
+         Q5GozJbRPWKqZ2dUoIM/PqDfdg5oyKOn3zgoNQJZ6mlAeLnVH2c6UiMp0qoeMlXJDHZv
+         5kJf130U6jQ4AnceSVErRqgTXlg9Kifb0oVMgG/p3r4Y+2DZRW8eZRbh4qYZPlXlGNGO
+         AzMMInJ+60fNQTt5mn50r9aBPkUSc51vpGm9TdwcJyhhKcCaEsVi/HCsxKFYoXjQnLm+
+         n7zw==
+X-Gm-Message-State: AOJu0YwNo1vBJpCLuzBUeeNde8GCG/OJ3SsWqPBxrdV2Vz4Iy/es4/hn
+	vxYtxUsVPnr/3EGiXgLWbjEkhNO7cqiKNE76zsCydx66qxuRbKBucP42pg+ZBLfmeCRUZq4vgGd
+	iqmnHOw==
+X-Google-Smtp-Source: AGHT+IFvpqnFKZaXRHJDIJOlXTNNaP3n8rj+HyTE8babGfhavYApJatA7+1PU6D3jv8l5mTadYtwQw==
+X-Received: by 2002:a05:600c:224c:b0:40e:5c65:6880 with SMTP id a12-20020a05600c224c00b0040e5c656880mr2735353wmm.89.1705964492148;
+        Mon, 22 Jan 2024 15:01:32 -0800 (PST)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
+        by smtp.gmail.com with ESMTPSA id er25-20020a056402449900b0055a829811ddsm3799895edb.48.2024.01.22.15.01.31
         for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 14:54:48 -0800 (PST)
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-336c9acec03so3255709f8f.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Jan 2024 14:54:48 -0800 (PST)
-X-Received: by 2002:a7b:cb97:0:b0:40e:8bb2:6bcf with SMTP id
- m23-20020a7bcb97000000b0040e8bb26bcfmr2474196wmi.151.1705964087839; Mon, 22
- Jan 2024 14:54:47 -0800 (PST)
+        Mon, 22 Jan 2024 15:01:31 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55a3a875f7fso4071024a12.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Jan 2024 15:01:31 -0800 (PST)
+X-Received: by 2002:aa7:cfd2:0:b0:55a:9212:33d2 with SMTP id
+ r18-20020aa7cfd2000000b0055a921233d2mr364232edy.26.1705964490997; Mon, 22 Jan
+ 2024 15:01:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -76,33 +76,30 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <cover.1705946889.git.dsterba@suse.com> <CAHk-=wgHDYsNm7CG3szZUotcNqE_w+ojcF+JG88gn5px7uNs0Q@mail.gmail.com>
-In-Reply-To: <CAHk-=wgHDYsNm7CG3szZUotcNqE_w+ojcF+JG88gn5px7uNs0Q@mail.gmail.com>
+ <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
+In-Reply-To: <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 22 Jan 2024 14:54:31 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
-Message-ID: <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
+Date: Mon, 22 Jan 2024 15:01:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjTVe-ZY5jd4tX4=rYEuuUVPECPU3_LvX9qu4nM8pd6_w@mail.gmail.com>
+Message-ID: <CAHk-=wjTVe-ZY5jd4tX4=rYEuuUVPECPU3_LvX9qu4nM8pd6_w@mail.gmail.com>
 Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
 To: David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 22 Jan 2024 at 14:34, Linus Torvalds
+On Mon, 22 Jan 2024 at 14:54, Linus Torvalds
 <torvalds@linux-foundation.org> wrote:
 >
-> Bah. These fixes are garbage. Now my machine doesn't even boot. I'm
-> bisecting
+> Let me reboot to verify that at least my machine boots.
 
-My bisection says
+My tree with that commit reverted does indeed boot:
 
-   1e7f6def8b2370ecefb54b3c8f390ff894b0c51b is the first bad commit
+  Revert "btrfs: zstd: fix and simplify the inline extent decompression"
 
-but I'll still have to verify by testing the revert on top of my current tree.
+is working ok for me.
 
-It did revert cleanly, but I also note that if the zstd case is wrong,
-I assume the other very similar commits (for zlib and lzo) are
-potentially also wrong.
+I do not think I have anything odd in my Kconfig, and I didn't see any
+messages, and there is nothing logged either - just a hang at boot.
 
-Let me reboot to verify that at least my machine boots.
-
-              Linus
+                Linus
 
