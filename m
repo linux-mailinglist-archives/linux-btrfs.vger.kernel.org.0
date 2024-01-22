@@ -1,179 +1,163 @@
-Return-Path: <linux-btrfs+bounces-1628-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1629-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1799D8377B9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 00:27:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5A8A8377D2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 00:50:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D20D1C237E9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jan 2024 23:27:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF3B2B24A4D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jan 2024 23:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3C04E1B3;
-	Mon, 22 Jan 2024 23:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5BD14E1D7;
+	Mon, 22 Jan 2024 23:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="rnliwtKo"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="blxxj6lo";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hbbLarQM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE29A4B5A6;
-	Mon, 22 Jan 2024 23:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E819038DCC;
+	Mon, 22 Jan 2024 23:50:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705966064; cv=none; b=Q5RWkdu1XyZMqWVygBTnB8blBfw8xKlaVzFMYlfpju+amBq4Niw8Z0uVHmbVGVpJPNWfSBKVPE/hLyoNFjyor2x91F7d3Ls39JaHiUmpG99WjMv3ckd/+Iw56V6DaWRHKuDZGik9exzS2Q6IA1HyhGHmoWksoLfmFjXiYeGJmgE=
+	t=1705967428; cv=none; b=R1z3pK821A0B0iQrOiQQ6F3fIn/X5lS3OWWzfojyAo3j0RojXrc5tuJsYIU0cIu/fCCT2DXGZRfR52pj1h3HzSlxeSxyANB/maPkcKVidmuFqFVI6z0KY8v0nK1GA7O27lxfeBlzyD6eYIdMAuHo/BnmjbmPspSUKNBa7WTitzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705966064; c=relaxed/simple;
-	bh=594BwK7mvu1HQwBaIY2Xo3HEKqrdu9uTJlsJkT01tJg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KatElTQddZL26jqaHXE5Cfznx7J7ksgxnrmpUSQEsJU5mRKXvAdUi+V1CXhesIy/d2diZjhewU9SXa18Q9WD994am12UizYsCENK3/Ar3EWT6xFV381j6Hs4G99MKcQbnvzsH4KZRNfJPxUanx6uPj6YaeuxhnrZyg+fBBajfi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=rnliwtKo; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1705966058; x=1706570858; i=quwenruo.btrfs@gmx.com;
-	bh=594BwK7mvu1HQwBaIY2Xo3HEKqrdu9uTJlsJkT01tJg=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=rnliwtKognca61/cSz+XRxp6A9uzg58g6Biit17Y32DmvZY1mmo+7CAUkV55BaBX
-	 UxkX3idixNNdCJzUqswWuETTXLI2zX4up0RfEWHRyWKvSgai+wMk8HSY4Y1uG/1Yy
-	 IfNEECjWlMwAq77JgYlEnF+VAaUfvYDPYLh5/Zw1Ro03svDMijtXD24nGAn3TVmhq
-	 p6hnFujTjL14qb893UuUEVxIXYnpLV9AUUY9n7/6RrITBTg1nlAcX8q2szPTqq/2U
-	 rI+9PY4RwOM2I95RLF9BEEHtlie3lBBy8mn/WdCm0Ge15ITaPEN3IsolPJmijUcfi
-	 O49ngM3q+ubEiTYWJw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.153] ([61.245.157.120]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MpDNf-1qkh422EIx-00qkIg; Tue, 23
- Jan 2024 00:27:38 +0100
-Message-ID: <b55a95be-38e8-4db7-9653-f864788b475c@gmx.com>
-Date: Tue, 23 Jan 2024 09:57:33 +1030
+	s=arc-20240116; t=1705967428; c=relaxed/simple;
+	bh=d6cfvBQNKPaaqqNpkhTE+uXaksS5FghTgNe444hBHgA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ihRoRAXxsXrajzxMrdbb+3fkv8Wou1sWws3OlJvqWkP4zua7YMOKEjF/MTzBFo2/KMz+MIj3VPP2JrfftMm7LExdX1AXYuaw8Af7HMNBBj+aIy9/6FLI4fc6yGRP35nQu9etgbuUf2lKUJ4MqpAkgBthMNQGCa9p04+v2U3ectc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=blxxj6lo; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hbbLarQM; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.west.internal (Postfix) with ESMTP id 439093200AF9;
+	Mon, 22 Jan 2024 18:50:25 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Mon, 22 Jan 2024 18:50:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1705967424; x=1706053824; bh=JqOxVHoWuC
+	6xC7ubsPPJY1ZmJL8w2E22Q/gtqtE3ZxE=; b=blxxj6loUh7cotlSC+whGFFZZr
+	ndTTrke/x8GTb2jVGso6DujyjzU07Ct49J+KQ3gKwMrW2OD3wU2jcoG1y8SL8kQ/
+	4hIaPR8nkWVhGF8cl8t+hCEfNP5HJS2qE3c1qac3k8O2yqIzAYb+lmgfFb4YHcir
+	RfWNxZMN+YZ7RGwPxI7+dV0XUsNqS2wIwkGToe9WlxlCtDLsnx5M/PjQ1y0utqtz
+	M75yGchZi23FZ0Qx6nkBMlB1V3QI68takNQhq/BUs+GVWOEc5VMD6aaK09BMls6f
+	I7n4niIlVl1D8zcXtYOcybJRbuv1TeAxVErZs6imSBzau62vHMB0v2B/e9mA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1705967424; x=1706053824; bh=JqOxVHoWuC6xC7ubsPPJY1ZmJL8w
+	2E22Q/gtqtE3ZxE=; b=hbbLarQMxaab5qu7O8qlYn1GfNnG7NUkIjNwnd5SeDlh
+	V/UxR+UQ+zLvzV80HRobjRtW7dmaJ8XnTQfaNFOSMwqX9f1IfX74uDgAypd1S6sm
+	M3JfJAbxOXG52L5UjK34kihRHuXkxcSV4PQgxE/OjqZ09VQ7HBc7MbKxA+mPaoJK
+	AxtkTyC88PHTU6DktFUh4rtFWxQ8oFry8FQX2aW5uboD/CwkIbw5EYb2+3qBb+o6
+	g+wuYwRANkHpFWB2wqeKVbS6UJqf8O/bDcKhtdqn5YtMjbxnQ0IjzCxKtcPFcVS6
+	nL7db91veOEgiXU7smSBw1B7TKFgj4uZg3mc623mvA==
+X-ME-Sender: <xms:QP-uZTXq5MZNojYbmb_tCglAAQWk0J_Glu5OAWL1viZfE8GRS__qhw>
+    <xme:QP-uZblytYA9RxVBJMGvSnj76kTzs6nrBEJ9uDAeFnyK2a-pFWCi2X6ugxHiv9R_1
+    zSqbBVN0sfJw0PSMjw>
+X-ME-Received: <xmr:QP-uZfZmQPrpwKcYpzUWE--tFfx9cBHKMGffHmeboAo983s3nCIzDStUFg71YUMOFv-WH5rRjhxHrmbWYBJPJrVgeBQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekjedgudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:QP-uZeVGmO1eiTDnUococIvX606sPpSCSUXC6UDXGTb9Mvs6r9NXgw>
+    <xmx:QP-uZdmx5yZpZCoKO43sOGvAI0RVItrTz2DWYPTSepl3a-jh9X5mIw>
+    <xmx:QP-uZbdLYl18RgJM8tGbQ3okS0nPKczjn9287O6RPpzL_2dLPWbkYw>
+    <xmx:QP-uZQsTb8ec4f3MIUYPOTxR7ZTxytc7y1IUOeRNRQi99GYvvPIJIw>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 22 Jan 2024 18:50:23 -0500 (EST)
+Date: Mon, 22 Jan 2024 15:51:27 -0800
+From: Boris Burkov <boris@bur.io>
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>
+Subject: Re: [PATCH 2/2] btrfs: zoned: wake up cleaner sooner if needed
+Message-ID: <20240122235127.GA1695621@zen.localdomain>
+References: <20240122-reclaim-fix-v1-0-761234a6d005@wdc.com>
+ <20240122-reclaim-fix-v1-2-761234a6d005@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
-To: dsterba@suse.cz, Linus Torvalds <torvalds@linux-foundation.org>
-Cc: David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1705946889.git.dsterba@suse.com>
- <CAHk-=wgHDYsNm7CG3szZUotcNqE_w+ojcF+JG88gn5px7uNs0Q@mail.gmail.com>
- <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
- <20240122230526.GF31555@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240122230526.GF31555@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:W1dfWQ5ZXwpCKKhC+n129uDN3Sy9Vd/Lm0aqg7YNd97SRAJ7I7W
- 90DEfSyUZwbvaL3J9hw2OF5IBFnhHPYh+U2GaTtjer8yQSX2xmNZIA6VeeKdEHDUYqC7p/9
- 0OaFAerGpJblGUSgT3W4pYlvsGQ7dwVcmuxqXEinuuSn1+cwem5XU6s103fxXUick9iBICW
- W/f+cnxgZnUMNRNgowNug==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YLR9kyS6L6k=;6lznmeudGg0lYSx7TxfomiCtTTG
- Um5zcO+07YMO40YrUi30k6xFbD44ru58wPyMF5z0RJTNUgfh9B+mfO8ii/kvncZA/BwtN0Rxo
- jto+1hpI1O4jEXfLRWAOtdjoqa+JF2uivpbawepLefKshwSrFbJuhToNbQb2+4qp5PzboVFSP
- nRVoP1IpZpQwR56JV+890luSDx9npfhBHLnTQ4fWn5vmPxqwdqaS0x7phdZdBX8j1Yxbo0xNY
- cCFTSANaC7kSUALvJuCwZcFBVlTpIGAwMcR17Rfljy6H/rk1qYeOBGtuXKBDWxkW+oC25Ml2D
- R+VkzCrjWAuc2fZa8Le+bQEpYR7EkhdEj4kPM2JIvRAAeBW0R7q+lUeLIABaj1mQVdd2XuCng
- aq6es1Par+doh1Acz//CgYQrpLfeX54+C/uSZBxPsXQq8nDvzY9RQ4/eiqlIDj+A1OsHx3Jgu
- ycp6W/P5HdOtHjkl3Y4LieCMc2KKzA3tF4qWE2Dr1SDkahjuONozgf1MVvxGFtgeBsAgYr9rA
- showmK30xFp28Iky1E6N0p161nEzaZp8onbTi3IL0+iRk11Vdpdp5d8GTYWzrpYH3LgXZOsUf
- G6A/6htgQnp9Hrh75c+sOEwlnakDIrIMK6Ha53PZRLFyppAqESnbcFGMV41iu5GIlXddtPO7x
- tXo7OX+PqtbprD8nW4lndu3jSqWOlnKAYqHuf1Wr2hQ1giV+ilRzyfxjlAfbCTgMIQ2Fay6ps
- N9LP8Qf7KF0k9gMyFjik9/qJXEhrRMxoX9zYHaZL9KP2BIrMrRzU4Jr1cJeFcOL6INntfMTiQ
- W2Cf341KsagFObr23ryFigP3lKF226XsWH3B5IREf0pX6Mqb2BQ/1+HNioQCl0/O7AfUdRDjq
- FLXLGLc4yFT0cWjFXDH2u5uFwzUi5mQpHhfrkUIxTQYY9S2+vlnT6EEyGxnnuEt7l8ypdTvD/
- tzGqloq94f7W5R1wCP8v+QnphgA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122-reclaim-fix-v1-2-761234a6d005@wdc.com>
 
+On Mon, Jan 22, 2024 at 02:51:04AM -0800, Johannes Thumshirn wrote:
+> On very fast but small devices, waiting for a transaction commit can be
+> too long of a wait in order to wake up the cleaner kthread to remove unused
+> and reclaimable block-groups.
+> 
+> Check every time we're adding back free space to a block group, if we need
+> to activate the cleaner kthread.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/free-space-cache.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> index d372c7ce0e6b..2d98b9ca0e83 100644
+> --- a/fs/btrfs/free-space-cache.c
+> +++ b/fs/btrfs/free-space-cache.c
+> @@ -30,6 +30,7 @@
+>  #include "file-item.h"
+>  #include "file.h"
+>  #include "super.h"
+> +#include "zoned.h"
+>  
+>  #define BITS_PER_BITMAP		(PAGE_SIZE * 8UL)
+>  #define MAX_CACHE_BYTES_PER_GIG	SZ_64K
+> @@ -2694,6 +2695,7 @@ int __btrfs_add_free_space(struct btrfs_block_group *block_group,
+>  static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
+>  					u64 bytenr, u64 size, bool used)
+>  {
 
+I thought add_free_space are only called from various error/backout
+conditions and then for real from unpin_extent_range, which is also in
+the transaction commit.
 
-On 2024/1/23 09:35, David Sterba wrote:
-> On Mon, Jan 22, 2024 at 02:54:31PM -0800, Linus Torvalds wrote:
->> On Mon, 22 Jan 2024 at 14:34, Linus Torvalds
->> <torvalds@linux-foundation.org> wrote:
->>>
->>> Bah. These fixes are garbage. Now my machine doesn't even boot. I'm
->>> bisecting
->
-> Ah, sorry.
->
->> My bisection says
->>
->>     1e7f6def8b2370ecefb54b3c8f390ff894b0c51b is the first bad commit
->
-> We got a report today [1] that this commit is indeed bad,
->
-> https://lore.kernel.org/linux-btrfs/CABq1_vj4GpUeZpVG49OHCo-3sdbe2-2ROcu=
-_xDvUG-6-5zPRXg@mail.gmail.com/
->
-> the timing was also unfortuate and too late to recall the pull request.
+The normal reclaim/unused decision is made in btrfs_update_block_group
+for that reason.
 
-All my fault.
-
-The offending line is:
-
-+	memcpy_to_page(dest_page, dest_pgoff + to_copy, workspace->out_buf.dst,
-+		       to_copy);
-
-I'm using the bad pg_off for the memcpy_to_page() call.
-And zstd is the only affected algo.
-
-All the other algos go like this:
-
-+	memcpy_to_page(dest_page, dest_pgoff, workspace->buf, out_len);
-
-So that's why it's screwing up the zstd compressed inline extent
-decompression, as we can easily write beyond the page boundary and write
-into the next innocent page.
-
-And the existing compression group didn't catch it at all.
-
-Would fix it and add new test cases for the regression.
+OTOH, I assume you had some repro that was performing poorly and this
+patch fixed it so, I am very likely missing something.
 
 Thanks,
-Qu
->
->> but I'll still have to verify by testing the revert on top of my curren=
-t tree.
->>
->> It did revert cleanly, but I also note that if the zstd case is wrong,
->> I assume the other very similar commits (for zlib and lzo) are
->> potentially also wrong.
->>
->> Let me reboot to verify that at least my machine boots.
->
-> Per the report revert makes it work again and zlib and lzo cases are not
-> affected.
->
-> I can send a pull request reverting all the three until we figure out
-> what's wrong, or you can do it as all revert cleanly.
->
+Boris
+
+> +	struct btrfs_fs_info *fs_info = block_group->fs_info;
+>  	struct btrfs_space_info *sinfo = block_group->space_info;
+>  	struct btrfs_free_space_ctl *ctl = block_group->free_space_ctl;
+>  	u64 offset = bytenr - block_group->start;
+> @@ -2745,6 +2747,10 @@ static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
+>  		btrfs_mark_bg_to_reclaim(block_group);
+>  	}
+>  
+> +	if (btrfs_zoned_should_reclaim(fs_info) &&
+> +	    !test_bit(BTRFS_FS_CLEANER_RUNNING, &fs_info->flags))
+> +		wake_up_process(fs_info->cleaner_kthread);
+> +
+>  	return 0;
+>  }
+>  
+> 
+> -- 
+> 2.43.0
+> 
 
