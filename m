@@ -1,170 +1,79 @@
-Return-Path: <linux-btrfs+bounces-1621-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1622-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CBEF837577
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jan 2024 22:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06AB7837596
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jan 2024 22:44:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C4771C22F98
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jan 2024 21:36:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 361721C20D85
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jan 2024 21:44:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28F248790;
-	Mon, 22 Jan 2024 21:34:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED56A4879C;
+	Mon, 22 Jan 2024 21:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ejiCP1VO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="18DIKOhg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ejiCP1VO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="18DIKOhg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMTRc6Gc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59022481A5;
-	Mon, 22 Jan 2024 21:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22E59481D0;
+	Mon, 22 Jan 2024 21:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705959297; cv=none; b=MH0RdirYxEh36kArg5i/0I8oos/5adPeVmmkcnMN2ApZBBopI57E5JFTjG3QzDswq3y2WAGWT6NnyJ4oP9y9QlOmVMP93OIWcr0WUdjsEjUmdYRP33HZYl1AY5elCYh7jfm70K+KubLVKMT7evvMdW6HiyZP7WfgtQlfQcg1mBc=
+	t=1705959878; cv=none; b=mhDoNto8voUvdEmAas0AhEEPbOnHOVFtbzG+rLH3F72PGR+PQMEknK5gcbu1WIcS9bpdPEA/OOipfNcKG2s56OMptGDLnM8MOSddUnFalsDHI4+pKM6akn7nf57B6YOWzaY5bJD82qCS8aowzVXT1N0hFtVP9hJBkfMA8ubXE9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705959297; c=relaxed/simple;
-	bh=AvisTLD9wXTFCZ0+eSEooOBpcWR8LOo3Vu/9ugqVbRc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p5ziffTSsHSLhzXyeg7SrkIS2nYgbCz6t+O+cYZlAUnfoGwvXssIjDfZETOGNpitwycqRYb2r1E5Jhu6nG7+eoTXYVsEQbMfi8b4iMszeHYpehNWPsEPQ6/YPWRDg9pM1ZFdEwXclrpHjbhhkVZikDwkO057VFF/mDFTg3aj5Ro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ejiCP1VO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=18DIKOhg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ejiCP1VO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=18DIKOhg; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 805C61F391;
-	Mon, 22 Jan 2024 21:34:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705959293;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4V8EMIiewNXIpjskcZ/asr7GAbLav864HbAcqkeBWDA=;
-	b=ejiCP1VOck0JH8EV2FpNiyMOC0Qng47tmgubMjJO5KFYw/gNGS2/o9RDPjxmGKqOUVrqEx
-	jiFhtg+YFtv/QbvEF6HpGbuGYkW4okwPY16UHUQduT6cJCUY6aCNSK6Gm67Uf7cmXNkpx6
-	4gwHnEzFGWVZtL2dMxTab5zlWsdgNmE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705959293;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4V8EMIiewNXIpjskcZ/asr7GAbLav864HbAcqkeBWDA=;
-	b=18DIKOhgNI2S3WVE6dmQYHsp2Uh7JitA1mvuovx+xmV7i6lz1+xlUOsxmEh8G94kSOO6rW
-	w34cBlddncKAjqDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705959293;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4V8EMIiewNXIpjskcZ/asr7GAbLav864HbAcqkeBWDA=;
-	b=ejiCP1VOck0JH8EV2FpNiyMOC0Qng47tmgubMjJO5KFYw/gNGS2/o9RDPjxmGKqOUVrqEx
-	jiFhtg+YFtv/QbvEF6HpGbuGYkW4okwPY16UHUQduT6cJCUY6aCNSK6Gm67Uf7cmXNkpx6
-	4gwHnEzFGWVZtL2dMxTab5zlWsdgNmE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705959293;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4V8EMIiewNXIpjskcZ/asr7GAbLav864HbAcqkeBWDA=;
-	b=18DIKOhgNI2S3WVE6dmQYHsp2Uh7JitA1mvuovx+xmV7i6lz1+xlUOsxmEh8G94kSOO6rW
-	w34cBlddncKAjqDQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5DD0F13310;
-	Mon, 22 Jan 2024 21:34:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id lHdkFn3frmUSAgAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Mon, 22 Jan 2024 21:34:53 +0000
-Date: Mon, 22 Jan 2024 22:34:28 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>
-Subject: Re: [PATCH 1/2] btrfs: zoned: use rcu list for iterating devices to
- collect stats
-Message-ID: <20240122213428.GE31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240122-reclaim-fix-v1-0-761234a6d005@wdc.com>
- <20240122-reclaim-fix-v1-1-761234a6d005@wdc.com>
+	s=arc-20240116; t=1705959878; c=relaxed/simple;
+	bh=j8rCJPrH0opyPn7g1x7+Sagl1pkcqo5+J3j5lU+glpk=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=G0oXRfn/t1tXXtlFwW1h/fwg18X9vcyyFCGg98qX+PFqHdPBUeM7b2qC3oxIF9fmGqq0SwIpy9KoXKKvH/Z6b7cYUZgQZr2QfVT7F2DYTpuQcKX7zhz/NX1pwQ9JwIlJWPR9e7tJDAEEtfsNERuuPpQkOgeJSeIx/WsIa/Qx6q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMTRc6Gc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 84559C433F1;
+	Mon, 22 Jan 2024 21:44:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705959877;
+	bh=j8rCJPrH0opyPn7g1x7+Sagl1pkcqo5+J3j5lU+glpk=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=kMTRc6Gc7OUirmwIX6H/kIvDUWbyIdMQig28EaXt6UimoAcFR2+ei9N5gKXl6RVui
+	 QmOgdTpE65WsRdsdb6+XzVGdy/4cJNmVV6iB4CgudouRVjulx9UjRe4P0PILM8yxb7
+	 LSAbYjNrLznV2qedujPB3ZRGNL3/UmkqhpNouyyeLDft5oqyo2xsFPevqgkEnPnyaW
+	 3o+EWQ7MopA1v+Cnk7R0ifTKUh/UKvBEzoSYhRtXfKaA4249IrA1FTbbtzPB+8XYeP
+	 rVnGnPaKcdV4EfDrhKLu2kgiVj83Mh/NLCesHskRFoKl7UfUD6B5q+6y5HO030qRP0
+	 lOUqG39PwViqA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 70CA4D8C9A8;
+	Mon, 22 Jan 2024 21:44:37 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1705946889.git.dsterba@suse.com>
+References: <cover.1705946889.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1705946889.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.8-rc1-tag
+X-PR-Tracked-Commit-Id: 7f2d219e78e95a137a9c76fddac7ff8228260439
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 5d9248eed48054bf26b3d5ad3d7073a356a17d19
+Message-Id: <170595987745.4413.7633969849838857336.pr-tracker-bot@kernel.org>
+Date: Mon, 22 Jan 2024 21:44:37 +0000
+To: David Sterba <dsterba@suse.com>
+Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122-reclaim-fix-v1-1-761234a6d005@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.26 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.46)[79.03%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.26
 
-On Mon, Jan 22, 2024 at 02:51:03AM -0800, Johannes Thumshirn wrote:
-> As btrfs_zoned_should_reclaim only has to iterate the device list in order
-> to collect stats on the device's total and used bytes, we don't need to
-> take the full blown mutex, but can iterate the device list in a rcu_read
-> context.
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/zoned.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 168af9d000d1..b7e7b5a5a6fa 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -2423,15 +2423,15 @@ bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info)
->  	if (fs_info->bg_reclaim_threshold == 0)
->  		return false;
->  
-> -	mutex_lock(&fs_devices->device_list_mutex);
-> -	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
->  		if (!device->bdev)
->  			continue;
->  
->  		total += device->disk_total_bytes;
->  		used += device->bytes_used;
->  	}
-> -	mutex_unlock(&fs_devices->device_list_mutex);
-> +	rcu_read_unlock();
+The pull request you sent on Mon, 22 Jan 2024 19:33:44 +0100:
 
-This is basically only a hint and inaccuracies in the total or used
-values would be transient, right? The sum is calculated each time the
-funciton is called, not stored anywhere so in the unlikely case of
-device removal it may skip reclaim once, but then pick it up later.
-Any actual removal of the block groups in verified again and properly
-locked in btrfs_reclaim_bgs_work().
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.8-rc1-tag
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/5d9248eed48054bf26b3d5ad3d7073a356a17d19
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
