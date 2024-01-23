@@ -1,60 +1,103 @@
-Return-Path: <linux-btrfs+bounces-1647-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1648-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B4218394CA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 17:35:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC2DC839721
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 19:01:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADFEF1C280AE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 16:35:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EEF31F221C3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 18:01:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843817F7F0;
-	Tue, 23 Jan 2024 16:35:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00C0D81218;
+	Tue, 23 Jan 2024 18:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sUf8cFLb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nFtgjJQN";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UQjaiAxz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tjyiFCXd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A5C481C7
-	for <linux-btrfs@vger.kernel.org>; Tue, 23 Jan 2024 16:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A720811EF;
+	Tue, 23 Jan 2024 18:00:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706027739; cv=none; b=UMjve/XOeE2j9Az+ItLfIUgdgySjWAxRReb3A5osDZIEdGaBALqXJsvK61qPwJJJL28dz6KeDSA2aDyAFj/E7qs7Tsi3kLLP+m4tTJG0/ztEne7lCOgigDUqiB1wkxgZrJjsbc7gMnQu6x133ljnmR5fpi3SF5+dsvD/oVAtQ9w=
+	t=1706032838; cv=none; b=VcujhaXh0+1EhFrebbRAMOkTug0+BTyZ42n88PvFWCa14E+ko11l6sIQqa3vyinCqFS6lDh/Qg2ZicMmVxYUyDKgb0CeKLTLMlNfIAkQjmNnPMRdhpmvEzPk8qNWI73ZFj0zAde6GBP0F4ON46kvKP4UMoq1RbqCWl2Hf+7bpNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706027739; c=relaxed/simple;
-	bh=6fJjHp3pn5dYm430xCireEoLAtM42d/H99908PoTXTM=;
+	s=arc-20240116; t=1706032838; c=relaxed/simple;
+	bh=gB1SgnGfzm09XI+5LmFaivN86jXztQ5jJrCvuEAq17w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tA9Q7efEJQQooGAUMvVOs9XwJG4aG6vxUJX9GjjSz4kuVcicVBhjLhoBS9dt/EM/n3b3BIEK3tPhwyw8xpBO5KJ4CQ8PWbb4qiNyEIo4rD5tybnZBco8xcyd8gIoXycIB+hL6A4TQbXiGH9t+G0oIu17hy6ykdgQYZRcx4rEBis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	 Content-Type:Content-Disposition:In-Reply-To; b=Uw8H0wBlIEDTVn3mvg2j7CP5JSwxAxOH5Fy4n4rqxIFOaP9lov9eYvKThctLaXN6A66xbTAn3v386nZeJV3jgf/8FVW0HRzSV5Oysm6Ne4ae5XN2Q5uXO3V4TYX63wtrFvGGWfmyVz7iwsF2ZuDX0D0sv8DWF/MTzpp4+029dbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sUf8cFLb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nFtgjJQN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UQjaiAxz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tjyiFCXd; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8FF3121FE4;
-	Tue, 23 Jan 2024 16:35:35 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A21E91F79B;
+	Tue, 23 Jan 2024 18:00:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706032833;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=73bOZ+zCkZyM30zC+DeYdYwK5c+ej+sHgFTKc3CTQW0=;
+	b=sUf8cFLbTH+8c1EGMLVeUglSVuqPMhdySyU33HZYuBXMdQFa9ViEMeb8wxobTVA+Qjo6Aq
+	CMXmWqX0DTaQ70kzfZjeKnP+znlN5WxE96E9rVT95Q7RPA5nRn+SUOyNDO03tnhhjlrj/i
+	g0DgrMVCTEofdth+rri2pc5Q8KN9Uq8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706032833;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=73bOZ+zCkZyM30zC+DeYdYwK5c+ej+sHgFTKc3CTQW0=;
+	b=nFtgjJQNMmAgOaG4i+B1EwKCWfU4viFPX3mhc3MIRVZk/D4pWVPxBDKOW9dZ0ZlFXFIm7z
+	aqkDvqDnwVyOCBBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706032832;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=73bOZ+zCkZyM30zC+DeYdYwK5c+ej+sHgFTKc3CTQW0=;
+	b=UQjaiAxzCYu7nvLsTwtYRK8T053Kvo3MrIoBY9kjBBvcAlXXMepZKflnfDHlA5ZfgYr0u4
+	6USHVrNSNIHN55r5kJNoVW/zRoVCrPEPl7E8GNBsZl8DC5BseGgOB9DlPPGotkEsV80f8t
+	LkaUbflIehKqq8kJa3I9XZ+hJO6Xm10=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706032832;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=73bOZ+zCkZyM30zC+DeYdYwK5c+ej+sHgFTKc3CTQW0=;
+	b=tjyiFCXdOlieg8/hb7BX6blMfZWZN+vk4dpxqGL5FzjT/q7adSBDels12x4Y1eVZBseKI+
+	+6WplbpVZfMebDBQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3F1E113786;
-	Tue, 23 Jan 2024 16:35:35 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 67DC113638;
+	Tue, 23 Jan 2024 18:00:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CEWOBtfqr2VoDgAAD6G6ig
-	(envelope-from <rgoldwyn@suse.de>); Tue, 23 Jan 2024 16:35:35 +0000
-Date: Tue, 23 Jan 2024 10:36:45 -0600
-From: Goldwyn Rodrigues <rgoldwyn@suse.de>
-To: David Sterba <dsterba@suse.cz>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: Re: [PATCH 3/4] btrfs: convert relocate_one_page() to
- relocate_one_folio()
-Message-ID: <dyk4c6cip5qfbdmtlgmkxzuhsoyeub6xzppe33rxrbpz3cwekw@eassyo2qkoqn>
-References: <cover.1705605787.git.rgoldwyn@suse.com>
- <b723970ca03542e6863442ded58651cfcdb8fe24.1705605787.git.rgoldwyn@suse.com>
- <20240122205244.GY31555@twin.jikos.cz>
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 4WgYGMD+r2XvCAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Tue, 23 Jan 2024 18:00:32 +0000
+Date: Tue, 23 Jan 2024 19:00:10 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-hardening@vger.kernel.org, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 44/82] btrfs: Refactor intentional wrap-around test
+Message-ID: <20240123180010.GI31555@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20240122235208.work.748-kees@kernel.org>
+ <20240123002814.1396804-44-keescook@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -63,86 +106,68 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240122205244.GY31555@twin.jikos.cz>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 8FF3121FE4
+In-Reply-To: <20240123002814.1396804-44-keescook@chromium.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Level: 
-X-Spam-Score: -4.00
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UQjaiAxz;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=tjyiFCXd
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.36 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-0.15)[68.60%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,chromium.org:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Score: -1.36
+X-Rspamd-Queue-Id: A21E91F79B
 X-Spam-Flag: NO
 
-On 21:52 22/01, David Sterba wrote:
-> On Thu, Jan 18, 2024 at 01:46:39PM -0600, Goldwyn Rodrigues wrote:
-> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > 
-> > Convert page references to folios and call the respective folio
-> > functions.
-> > 
-> > Since find_or_create_page() takes a mask argument, call
-> > __filemap_get_folio() instead of filemap_grab_folio().
-> > 
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > ---
-> >  fs/btrfs/relocation.c | 87 ++++++++++++++++++++++---------------------
-> >  1 file changed, 44 insertions(+), 43 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> > index c365bfc60652..f4fd4257adae 100644
-> > --- a/fs/btrfs/relocation.c
-> > +++ b/fs/btrfs/relocation.c
-> > @@ -2849,7 +2849,7 @@ static noinline_for_stack int prealloc_file_extent_cluster(
-> >  	 * btrfs_do_readpage() call of previously relocated file cluster.
-> >  	 *
-> >  	 * If the current cluster starts in the above range, btrfs_do_readpage()
-> > -	 * will skip the read, and relocate_one_page() will later writeback
-> > +	 * will skip the read, and relocate_one_folio() will later writeback
-> >  	 * the padding zeros as new data, causing data corruption.
-> >  	 *
-> >  	 * Here we have to manually invalidate the range (i_size, PAGE_END + 1).
-> > @@ -2983,68 +2983,69 @@ static u64 get_cluster_boundary_end(const struct file_extent_cluster *cluster,
-> >  	return cluster->boundary[cluster_nr + 1] - 1;
-> >  }
-> >  
-> > -static int relocate_one_page(struct inode *inode, struct file_ra_state *ra,
-> > +static int relocate_one_folio(struct inode *inode, struct file_ra_state *ra,
-> >  			     const struct file_extent_cluster *cluster,
-> > -			     int *cluster_nr, unsigned long page_index)
-> > +			     int *cluster_nr, unsigned long index)
-> >  {
-> >  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-> >  	u64 offset = BTRFS_I(inode)->index_cnt;
-> >  	const unsigned long last_index = (cluster->end - offset) >> PAGE_SHIFT;
-> >  	gfp_t mask = btrfs_alloc_write_mask(inode->i_mapping);
-> > -	struct page *page;
-> > -	u64 page_start;
-> > -	u64 page_end;
-> > +	struct folio *folio;
-> > +	u64 start;
-> > +	u64 end;
-> >  	u64 cur;
-> >  	int ret;
-> >  
-> > -	ASSERT(page_index <= last_index);
-> > -	page = find_lock_page(inode->i_mapping, page_index);
-> > -	if (!page) {
-> > +	ASSERT(index <= last_index);
-> > +	folio = filemap_lock_folio(inode->i_mapping, index);
-> > +	if (IS_ERR(folio)) {
-> >  		page_cache_sync_readahead(inode->i_mapping, ra, NULL,
+On Mon, Jan 22, 2024 at 04:27:19PM -0800, Kees Cook wrote:
+> In an effort to separate intentional arithmetic wrap-around from
+> unexpected wrap-around, we need to refactor places that depend on this
+> kind of math. One of the most common code patterns of this is:
 > 
-> How do page_cache_sync_readahead and folios interact? We still have
-> page == folio but the large folios are on the way, so do we need
-> something to make it work? If there's an assumption about pages and
-> folios this could be turned to an assertion so we don't forget about
-> that later.
+> 	VAR + value < VAR
+> 
+> Notably, this is considered "undefined behavior" for signed and pointer
+> types, which the kernel works around by using the -fno-strict-overflow
+> option in the build[1] (which used to just be -fwrapv). Regardless, we
+> want to get the kernel source to the position where we can meaningfully
+> instrument arithmetic wrap-around conditions and catch them when they
+> are unexpected, regardless of whether they are signed[2], unsigned[3],
+> or pointer[4] types.
+> 
+> Refactor open-coded wrap-around addition test to use add_would_overflow().
+> This paves the way to enabling the wrap-around sanitizers in the future.
+> 
+> Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
+> Link: https://github.com/KSPP/linux/issues/26 [2]
+> Link: https://github.com/KSPP/linux/issues/27 [3]
+> Link: https://github.com/KSPP/linux/issues/344 [4]
+> Cc: Chris Mason <clm@fb.com>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: linux-btrfs@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-For now page and folio are the same and the assumption is folio size is
-PAGE_SIZE. I am adding WARN_ON(folio_order(folio)) after an uptodate
-folio is received to warn if the folio size changes.
-
--- 
-Goldwyn
+Acked-by: David Sterba <dsterba@suse.com>
 
