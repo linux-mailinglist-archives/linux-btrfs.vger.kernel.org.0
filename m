@@ -1,100 +1,89 @@
-Return-Path: <linux-btrfs+bounces-1654-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1655-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF5D839981
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 20:28:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F77F8399E5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 20:56:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 939C31F2B6D8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 19:28:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2AB1B25E2E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jan 2024 19:56:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F30085C4E;
-	Tue, 23 Jan 2024 19:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C9D82D87;
+	Tue, 23 Jan 2024 19:56:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="JQApYBJE";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BQuMDb3A";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="JQApYBJE";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BQuMDb3A"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="G5O17Vld";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PHXBDKKp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DA49823DC
-	for <linux-btrfs@vger.kernel.org>; Tue, 23 Jan 2024 19:27:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D178A823D4;
+	Tue, 23 Jan 2024 19:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706038046; cv=none; b=LdgUaIIks0m3NvKoLMc3cPMLxRgDMdwsoQDxtEWtma3RlmQ0VqFws6+fBlvklkVyEor2wNfoXN5L+dfg+eQq2ORnJRT6wQuQlnFO/wuy1E1flnyvWS79PhZC6r1OyyrEllJuJ8kPonsvqd4veK6Cea+qVNLX++KXSOXaGlHNnyA=
+	t=1706039760; cv=none; b=QVitUEBNx0sGTgiiREdl2FITIExuZnH947Qfb9g1BE/qNnxV4v6aELxwb8RDS5ILDaiDhepW3dDqzLKBB724Lxsw3efifzil4B0oOkzHU8lHb+gXbb4Uxj3Ple3wbHhBjFu+Y7iQ4TFurZoHA31OSHtD6ZxHhsihHwtIpAGxOe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706038046; c=relaxed/simple;
-	bh=7OE/OgkZiymhYYl7vhuYu64EouFAQnuAdCaLAxNcI2Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B5ITkYU3ACq+nWncGJsCzsf4w8nHCH98HeFmTvHitag+39Pkkj71eawtTdahtFts9mQGWwF3c/EbRTwmT86B2d6dNLe8h2K3jGt3QHmrXwpl1hl5SC6mXhADkcHhe0h6CD33Dl+/qtS88XGVI2HXZ514a4m4xo6sstud58NZxOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=JQApYBJE; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BQuMDb3A; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=JQApYBJE; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BQuMDb3A; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A2DF221E88;
-	Tue, 23 Jan 2024 19:27:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706038043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wvxq5K5aiXExb5RVHKgZXivD1fPQ/U++u+7iaKlTybI=;
-	b=JQApYBJE6lszW6HbvlQdMH9u3sVC0GgQlNBp4UbxeMUxUqMRzALTcFgtIfEEmkqp5Vs3yJ
-	tBCXQrWJBuU9lrIKwADpE1njCWIZ+WjGiKvT87sdWg+qBexIh48RlkgMw8IvhNVWZQxcBt
-	3/Xx16ShLD7J4c11cmRSgT9feuBR/Lc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706038043;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wvxq5K5aiXExb5RVHKgZXivD1fPQ/U++u+7iaKlTybI=;
-	b=BQuMDb3Aj4wD614rMC9TYut907YGQu3mAoeE5hIYhyromKPfIqlOus5seYd89dHvVOhoPc
-	xfSrfk6t0fpJErBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706038043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wvxq5K5aiXExb5RVHKgZXivD1fPQ/U++u+7iaKlTybI=;
-	b=JQApYBJE6lszW6HbvlQdMH9u3sVC0GgQlNBp4UbxeMUxUqMRzALTcFgtIfEEmkqp5Vs3yJ
-	tBCXQrWJBuU9lrIKwADpE1njCWIZ+WjGiKvT87sdWg+qBexIh48RlkgMw8IvhNVWZQxcBt
-	3/Xx16ShLD7J4c11cmRSgT9feuBR/Lc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706038043;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wvxq5K5aiXExb5RVHKgZXivD1fPQ/U++u+7iaKlTybI=;
-	b=BQuMDb3Aj4wD614rMC9TYut907YGQu3mAoeE5hIYhyromKPfIqlOus5seYd89dHvVOhoPc
-	xfSrfk6t0fpJErBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3A04913786;
-	Tue, 23 Jan 2024 19:27:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id BXSSOBoTsGXYQAAAD6G6ig
-	(envelope-from <rgoldwyn@suse.de>); Tue, 23 Jan 2024 19:27:22 +0000
-From: Goldwyn Rodrigues <rgoldwyn@suse.de>
-To: linux-btrfs@vger.kernel.org
-Cc: Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 3/3] btrfs: page to folio conversion in put_file_data()
-Date: Tue, 23 Jan 2024 13:28:07 -0600
-Message-ID: <12136abe1189961a89e4d10ffc7726c0f93df782.1706037337.git.rgoldwyn@suse.com>
+	s=arc-20240116; t=1706039760; c=relaxed/simple;
+	bh=m0huhoxp7kWvSSu45o3xug39ChTNFf330CKJjkjlW7Y=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Ud3wL6TlKZSkAaluPqjoMrtu8KLWimuroj4aS3CGLmRqOX7e1OY5atZ8ijxOcIc+tW5ArahE6qSVq5i3G0qnG/6zRAWuv1svpC70NenTqF5QJFu3CGvxEKrJecMt6GNXWBA58NQ9GIgo7mY7AH8ho5lCuPYVYymkpxuMjI4m3+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=G5O17Vld; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PHXBDKKp; arc=none smtp.client-ip=66.111.4.26
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id A82955C0156;
+	Tue, 23 Jan 2024 14:55:56 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 23 Jan 2024 14:55:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1706039756; x=1706126156; bh=eMl2C/uXpJ/BLXUauamQn
+	oArYSUUhvQB07dKNlFUspk=; b=G5O17Vlda9POE8yd6roDYOkl9Quz0VOyV7mMM
+	lyquzotPB8wVxyjMqYg5geLBeAOqz407ouSChh2O4/4iaHAkb6FC+f3gQbtacKl9
+	IPaFYv3gIv+hSuJeyHn21/BRzLos14N8/c32hk63ihFNb/HnLT3yaLCF6z1mnV9f
+	fJNfjWHNbTsiIl3qkxvpTJD7m94qwge8fBL7wekT6z6mgosurzrq9zzc2dEdOVJo
+	OQT88TvBphsWUGZY0IfDWnMzLcrzpxmANNJSFGbNQWdrGU6XbuGitEFZcZyWSlDC
+	Fsyyc5K3ZYHCmeW3KSEV7WNr4QBA+EMZ7GbxbXRZT7TMGegIw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706039756; x=1706126156; bh=eMl2C/uXpJ/BLXUauamQnoArYSUU
+	hvQB07dKNlFUspk=; b=PHXBDKKpGsddWfeupHFWaIZ+VIRjz8ThF5J7Xg0gXANF
+	pFFT670yqASJQnYEwM7Y5ppPnK5cG6uZBC4s7CaYeqH8zmqXH6Fs6xWBPXUC2yTo
+	kjMyxMCG4VX30zsBEBEhtrW5EtNi+36t31NYEz1rL2tBlLXQmkZ1jTscxeHqSkSA
+	r/LcyVXqxO/i/5SQhCvDfVLa3IMjorcRAyO0CVvpDetdOm5Dq6tLiBVW5i9fGmAl
+	XMfS7oi+fA5m/dGUif8qNj0drOFp4+taIqrCVscjuaVwKfOLvDmIiLCzZB7gu43O
+	uynZwJD5SVQMGkvxPmxkMZZkd3WEFDN2a5syE4k8cg==
+X-ME-Sender: <xms:zBmwZcWVlOhAtQibEjVyiWJQGggv09yHw2MgPQAr7SJSOcvnF3hYrg>
+    <xme:zBmwZQnfZLX4a7-1X7RiDh32ZgQJKOh0qb2GT8jlE7yilj4Y6tb4172u7U0ytA6_U
+    RzdIdWh-c4t0IcEvp8>
+X-ME-Received: <xmr:zBmwZQZlAT5Z0N9CyQFqc1EdF1zfzY_HWFjypMEn8-zwud76nmitidOz7zR8NV4gLQNzNKJwWWUiNd8Bdksm4RWR4ck>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekkedguddvkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhepudeitdelueeijeefleffveelieefgfejjeeigeekud
+    duteefkefffeethfdvjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:zBmwZbXTxkEq2LnlaZmLLV1SQT9P0Q60iwi5lIWnQ2RYVvac4MJyIA>
+    <xmx:zBmwZWmG_ADGC2abSfDcgcurFrNlQOm2OM1fNvjJG8iINWtC11q-sg>
+    <xmx:zBmwZQct-sOPB3n8EXLJ_vYExuVDN0XiBmozbLhnu7-En6fP6t5ZXw>
+    <xmx:zBmwZavAnhe2iI42CupYhy73BnXVBl1YMF1jsDqJaRztEOf2JBlLGg>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 23 Jan 2024 14:55:56 -0500 (EST)
+From: Boris Burkov <boris@bur.io>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com,
+	fstests@vger.kernel.org
+Subject: [PATCH] btrfs: Remove btrfs/303
+Date: Tue, 23 Jan 2024 11:56:59 -0800
+Message-ID: <a3f51f2fff6581a6b4dd2e5776b7f40d22dcf65b.1706039782.git.boris@bur.io>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1706037337.git.rgoldwyn@suse.com>
-References: <cover.1706037337.git.rgoldwyn@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -102,126 +91,120 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.30
-X-Spamd-Result: default: False [-0.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
 
-From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+This test was reproducing a bug triggered by creating a subvolume qgroup
+before creating the subvolume itself with a snapshot.
 
-Use folio instead of page in put_file_data().
-Add a WARN_ON(folio_order(folio)) to make sure we are dealing with
-PAGE_SIZE folios.
+The kernel patch:
+btrfs: forbid creating subvol qgroups
 
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+explicitly prevents that and makes it fail with EINVAL. I could "fix"
+this test by expecting the EINVAL message in the output, but at that
+point it would simply be a test that creating a subvolume and
+snapshotting it works with qgroups, which is adequately tested by other
+tests which focus on accurately measuring shared/exclusive usage in
+various snapshot/reflink scenarios. To avoid confusion, I think it is
+best to simply delete this test.
+
+Signed-off-by: Boris Burkov
 ---
- fs/btrfs/send.c | 44 +++++++++++++++++++++++---------------------
- 1 file changed, 23 insertions(+), 21 deletions(-)
+ tests/btrfs/303     | 77 ---------------------------------------------
+ tests/btrfs/303.out |  2 --
+ 2 files changed, 79 deletions(-)
+ delete mode 100755 tests/btrfs/303
+ delete mode 100644 tests/btrfs/303.out
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 141ab89fb63e..8885eadbb6a8 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -5257,10 +5257,11 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
- {
- 	struct btrfs_root *root = sctx->send_root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
--	struct page *page;
-+	struct folio *folio;
- 	pgoff_t index = offset >> PAGE_SHIFT;
- 	pgoff_t last_index;
- 	unsigned pg_offset = offset_in_page(offset);
-+	struct address_space *mapping = sctx->cur_inode->i_mapping;
- 	int ret;
- 
- 	ret = put_data_header(sctx, len);
-@@ -5273,44 +5274,45 @@ static int put_file_data(struct send_ctx *sctx, u64 offset, u32 len)
- 		unsigned cur_len = min_t(unsigned, len,
- 					 PAGE_SIZE - pg_offset);
- 
--		page = find_lock_page(sctx->cur_inode->i_mapping, index);
--		if (!page) {
--			page_cache_sync_readahead(sctx->cur_inode->i_mapping,
-+		folio = filemap_lock_folio(mapping, index);
-+		if (IS_ERR(folio)) {
-+			page_cache_sync_readahead(mapping,
- 						  &sctx->ra, NULL, index,
- 						  last_index + 1 - index);
- 
--			page = find_or_create_page(sctx->cur_inode->i_mapping,
--						   index, GFP_KERNEL);
--			if (!page) {
--				ret = -ENOMEM;
-+	                folio = filemap_grab_folio(mapping, index);
-+			if (IS_ERR(folio)) {
-+				ret = PTR_ERR(folio);
- 				break;
- 			}
- 		}
- 
--		if (PageReadahead(page))
--			page_cache_async_readahead(sctx->cur_inode->i_mapping,
--						   &sctx->ra, NULL, page_folio(page),
-+		WARN_ON(folio_order(folio));
-+
-+		if (folio_test_readahead(folio))
-+			page_cache_async_readahead(mapping,
-+						   &sctx->ra, NULL, folio,
- 						   index, last_index + 1 - index);
- 
--		if (!PageUptodate(page)) {
--			btrfs_read_folio(NULL, page_folio(page));
--			lock_page(page);
--			if (!PageUptodate(page)) {
--				unlock_page(page);
-+		if (!folio_test_uptodate(folio)) {
-+			btrfs_read_folio(NULL, folio);
-+			folio_lock(folio);
-+			if (!folio_test_uptodate(folio)) {
-+				folio_unlock(folio);
- 				btrfs_err(fs_info,
- 			"send: IO error at offset %llu for inode %llu root %llu",
--					page_offset(page), sctx->cur_ino,
-+					folio_pos(folio), sctx->cur_ino,
- 					sctx->send_root->root_key.objectid);
--				put_page(page);
-+				folio_put(folio);
- 				ret = -EIO;
- 				break;
- 			}
- 		}
- 
--		memcpy_from_page(sctx->send_buf + sctx->send_size, page,
-+		memcpy_from_folio(sctx->send_buf + sctx->send_size, folio,
- 				 pg_offset, cur_len);
--		unlock_page(page);
--		put_page(page);
-+		folio_unlock(folio);
-+		folio_put(folio);
- 		index++;
- 		pg_offset = 0;
- 		len -= cur_len;
+diff --git a/tests/btrfs/303 b/tests/btrfs/303
+deleted file mode 100755
+index 410460af5..000000000
+--- a/tests/btrfs/303
++++ /dev/null
+@@ -1,77 +0,0 @@
+-#! /bin/bash
+-# SPDX-License-Identifier: GPL-2.0
+-# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
+-#
+-# FS QA Test 303
+-#
+-# A regression test to make sure snapshot creation won't cause transaction
+-# abort if there is already an existing qgroup.
+-#
+-. ./common/preamble
+-_begin_fstest auto quick snapshot subvol qgroup
+-
+-. ./common/filter
+-
+-_supported_fs btrfs
+-_require_scratch
+-
+-_fixed_by_kernel_commit xxxxxxxxxxxx \
+-	"btrfs: do not abort transaction if there is already an existing qgroup"
+-
+-_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
+-_scratch_mount
+-
+-# Create the first subvolume and get its id.
+-# This subvolume id should not change no matter if there is an existing
+-# qgroup for it.
+-$BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/subvol" >> $seqres.full
+-$BTRFS_UTIL_PROG subvolume snapshot "$SCRATCH_MNT/subvol" \
+-	"$SCRATCH_MNT/snapshot">> $seqres.full
+-
+-init_subvolid=$(_btrfs_get_subvolid "$SCRATCH_MNT" "snapshot")
+-
+-if [ -z "$init_subvolid" ]; then
+-	_fail "Unable to get the subvolid of the first snapshot"
+-fi
+-
+-echo "Subvolumeid: ${init_subvolid}" >> $seqres.full
+-
+-_scratch_unmount
+-
+-# Re-create the fs, as btrfs won't reuse the subvolume id.
+-_scratch_mkfs >> $seqres.full 2>&1 || _fail "2nd mkfs failed"
+-_scratch_mount
+-
+-$BTRFS_UTIL_PROG quota enable "$SCRATCH_MNT" >> $seqres.full
+-_qgroup_rescan $SCRATCH_MNT >> $seqres.full
+-
+-# Create a qgroup for the first subvolume, this would make the later
+-# subvolume creation to find an existing qgroup, and abort transaction.
+-$BTRFS_UTIL_PROG qgroup create 0/"$init_subvolid" "$SCRATCH_MNT" >> $seqres.full
+-
+-# Now create the first snapshot, which should have the same subvolid no matter
+-# if the quota is enabled.
+-$BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/subvol" >> $seqres.full
+-$BTRFS_UTIL_PROG subvolume snapshot "$SCRATCH_MNT/subvol" \
+-	"$SCRATCH_MNT/snapshot" >> $seqres.full
+-
+-# Either the snapshot create failed and transaction is aborted thus no
+-# snapshot here, or we should be able to create the snapshot.
+-new_subvolid=$(_btrfs_get_subvolid "$SCRATCH_MNT" "snapshot")
+-
+-echo "Subvolumeid: ${new_subvolid}" >> $seqres.full
+-
+-if [ -z "$new_subvolid" ]; then
+-	_fail "Unable to get the subvolid of the first snapshot"
+-fi
+-
+-# Make sure the subvolumeid for the first snapshot didn't change.
+-if [ "$new_subvolid" -ne "$init_subvolid" ]; then
+-	_fail "Subvolumeid for the first snapshot changed, has ${new_subvolid} expect ${init_subvolid}"
+-fi
+-
+-echo "Silence is golden"
+-
+-# success, all done
+-status=0
+-exit
+diff --git a/tests/btrfs/303.out b/tests/btrfs/303.out
+deleted file mode 100644
+index d48808e60..000000000
+--- a/tests/btrfs/303.out
++++ /dev/null
+@@ -1,2 +0,0 @@
+-QA output created by 303
+-Silence is golden
 -- 
 2.43.0
 
