@@ -1,78 +1,80 @@
-Return-Path: <linux-btrfs+bounces-1688-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1689-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7C6083AF86
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:20:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A066583AF92
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:21:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FFFE286214
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:20:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6801BB2A9A7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0047A7F7CE;
-	Wed, 24 Jan 2024 17:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C374823D6;
+	Wed, 24 Jan 2024 17:19:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="gEF6GLkk"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="vEWmGDll"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E5F8120E
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035A481AD7
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:19:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706116770; cv=none; b=Jztzd3sXc3YkeBSSPN8/qNNAoxjPuXBRK4mI+lx6AKSnde/IcfA3i0JGMsTynltVTEQklMG2m8JOQQ46wFWO6ilG5bA9PBt1UVg454W67QXJO9zJry2IEaAz36IrQZ1WubSfHXVW17bzhjFtxalXR7oe7MiQY/Sje4YKbps7nbU=
+	t=1706116771; cv=none; b=K3x+B382sx9/F9HYuL0ccecv3E56ZXXhbCN6vPNKTm6DvSxM3GD5pparuphSVeixNTACfLRmkoWz1R1X0Wic1G536Vn6XeUDMqHVhMTAHwBWFEF3DWOMt8YZcsYe2Cl2RmwhMF7FJtZrsJA1wTn01GhjCM5m8rNu6IHPrDOhSKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706116770; c=relaxed/simple;
-	bh=/cP3hvQ7ssw6Z0Dj3R3GpX1wEm9lki+CxQB3N65VW0A=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rdR5iurYONmn4S0UCiOTpoTU8bT0HZ96f+mmEz1pUXCk5NU5sAlkFNn21rsEzL7GTGxL5ckaYUQQip00Z7E3fxbChYHcFTUPmS44gbfLiv6NdS0sa7qkVDUprhAah4k9T8LYxnGbZH21WF4OsmyYWLTjPw2nko/W13PGrVc0bRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=gEF6GLkk; arc=none smtp.client-ip=209.85.219.170
+	s=arc-20240116; t=1706116771; c=relaxed/simple;
+	bh=Uu7YV5yLr+hEql+nzXLoNu2mALbE3xnZm69CLggz7r4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=UTeZXo/Nw9EARGCh5jl5J/YkQhAEAyxc0CWVwdbMFLgGX1DrEO3fkIJBL6ccbTCWWa6l0ZdjsxjKsD9j4v+YOd0P/CdBBJE2G7TkQ3Ix2BG/XWnjAXcF5ONQSrX2UhKZWpkkIMYjXXyfWOts7zx3RuNPk9MnXnFeDo+lGQcaEX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=vEWmGDll; arc=none smtp.client-ip=209.85.219.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-db3a09e96daso4986442276.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:19:28 -0800 (PST)
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so4734497276.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:19:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116767; x=1706721567; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116769; x=1706721569; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RFQ0e9hCGetkHNdr5YnTdx0eP/4gCHtSmlT6TIRDZYw=;
-        b=gEF6GLkkYannpT065ImrmuGe7ZvJ0As2IMKpBfq1ZeLM1jbBviX0VxRoHp1A3y3/rX
-         FeMo/QIJ4+De4Tj4K7qjHXQ05lObyEegskDfcCNrwd+t5pUGO4B9zJOW2jUIFm2lWEUB
-         lXaQfldMS4sXpTzho9WkDUSvUdS8+XHDtr79SYtSBGvsxRL5yxNOtuog/dDSDq75lpwU
-         I9gfGEHSvhiZoO4KHlEHOOL4AMjXHyvodwTiWqB4JLmk1rSecjt9Tl9bxWcl9uH02320
-         WAQloVDNzXsnuWbzNmOt27NZcxFUmkPQhjb9Q0+uDjqkByyaADQ6AqHDnc8hZzCk78Qh
-         aCFw==
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dpViKIiaU00vd91Jd8ebfAvhrj8KwHij6IqIKuBGBFs=;
+        b=vEWmGDlls+cxq28XlcsssZVUXouHcvlekkWm39ZZ+SKsXcW2O4KQqJO/fCSLZKlzda
+         qRk6ldHtxs4lPZdFfkdxxHvnIxTK3OnREXbuOhKfn+WZV/Uq5OaE7OHRDQdCVa3BznHN
+         cli+qrkgL1+r+aso64kye+5I3nQqKl6tdfGGPqbpVv9sL6u7WRq6hKIcYswLoDaDr3In
+         BP1fd4uyUNwJP2Z7zjRnvASdi4VnBsfruJrNwM+VjHpR3hsumirRJADzH03K7A0g3DVq
+         ngsEI1dF96bc3xtEAczo7U7VvAXqNsHM7+qWJEDHYfGDiBZJ67H/Amg6u9RT7WTcGYTW
+         yPew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706116767; x=1706721567;
+        d=1e100.net; s=20230601; t=1706116769; x=1706721569;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RFQ0e9hCGetkHNdr5YnTdx0eP/4gCHtSmlT6TIRDZYw=;
-        b=Z4VWZQB370DwHzbdoBlwD6Ey6BYUYGbcr6kWAgyYRz3krTSB5Ppqef2MR1/vGFVZ+m
-         mzofGX08SMbIXc43hj7HWAbGvTo6uvrzJ5wj9KLQ+V5J75PpVPWTGgnfgh2Yo2Cg/gGt
-         JRS0VcGQRNIH2+ga9rNq1HK7XbuEg4h2qlOOLWbXqZr+6puM9hMJXoRh3/6ZzkfoamAR
-         jb59vfghd1j/+lLJ2DJRBeEd6Skqz1ovUbkfZxIEkJTitlaaRpLMGeDMhYyhse/n0Fj6
-         OayNcIkjrsInFtbLp4OTOUydpwFG2ulYcHusLoQvPv/ReVPLNeudCk9dLvwnp3U8s4p/
-         UaDg==
-X-Gm-Message-State: AOJu0YzcwqQSqfs+77UoS6VfGKnz91mxiboRjdHNYoZFBpH4gXhl3vNq
-	nUb09eJztyLKr4CCuZigVzNglwGWXBmMmijJKiySmuaYV4GDhFaV6qMesov3/1rYU8dfGA2rJjr
-	P
-X-Google-Smtp-Source: AGHT+IFOSIJgorYfwjqNotdeGDlxmfy90Cbu4BNH85sILCf5Uw9ZjF0Sgm4Wt12nqSJ9/qU+mft+Dw==
-X-Received: by 2002:a05:6902:2082:b0:dc2:5516:c77b with SMTP id di2-20020a056902208200b00dc25516c77bmr1061615ybb.79.1706116767672;
-        Wed, 24 Jan 2024 09:19:27 -0800 (PST)
+        bh=dpViKIiaU00vd91Jd8ebfAvhrj8KwHij6IqIKuBGBFs=;
+        b=gZ2+rCJq08c9AMrTicLme/yDtr5oS26ZVZ6W+GEfTHvmLZ5RUDIWIQ52OXtvhaM4DR
+         Ng0nF+C9wY0CGMv77ttPe9RXGOz0m0iLaEjyWOPzlzXHxi5+bowGjDJ3R8BwjgjSGAWl
+         W7VW0BJA8PYaDF33E+n2DHILOToLhP1loGRx6IlxBsRYDe1npIQFoyGNNq1+rhTkv6Zm
+         caE/9aoNof4Ujld9U376RNQSbdTBr0ypKQag6eQT6E8moucaRx+8064dKfSvMoYS/nnZ
+         PfzS7jhVcSgsl5P+EX+cSWIacfjOvrfkTVK4g6mlzDEi9Ka8KVCeKSrEMDWkNeeZIQEH
+         GKNg==
+X-Gm-Message-State: AOJu0YwWz0oGofUtWf7nYzwJLNK7tappfbdAcYYB/zOEs/mb+Ii3uUc/
+	yJc2Y+Hl/d6x9jdw1cInhxyS6ooBmWyZHGwnfhflqXlRQFZ2Yaul4iReYNS1GRXnJt50Kwq1iUP
+	+
+X-Google-Smtp-Source: AGHT+IE6+aUQj2Vu/z1LuyBy5pWU9s8FQ1RxgYLn7+HV7gzojx2HElf2LVFdGXHnSD4XDTeUfIjl9Q==
+X-Received: by 2002:a81:52d3:0:b0:5ff:7f14:a5af with SMTP id g202-20020a8152d3000000b005ff7f14a5afmr748320ywb.16.1706116768678;
+        Wed, 24 Jan 2024 09:19:28 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id d82-20020a254f55000000b00dbd9eee633dsm2967630ybb.59.2024.01.24.09.19.27
+        by smtp.gmail.com with ESMTPSA id i5-20020a815405000000b005de8c10f283sm61461ywb.102.2024.01.24.09.19.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 09:19:27 -0800 (PST)
+        Wed, 24 Jan 2024 09:19:28 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH v5 06/52] fscrypt: add a process_bio hook to fscrypt_operations
-Date: Wed, 24 Jan 2024 12:18:28 -0500
-Message-ID: <2c638e5fa1b7868dbf79d932b15364c3c30ca9de.1706116485.git.josef@toxicpanda.com>
+Cc: Omar Sandoval <osandov@osandov.com>,
+	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH v5 07/52] fscrypt: expose fscrypt_nokey_name
+Date: Wed, 24 Jan 2024 12:18:29 -0500
+Message-ID: <132b64edf1e6b705995fb1a6dc2f194527f6be75.1706116485.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1706116485.git.josef@toxicpanda.com>
 References: <cover.1706116485.git.josef@toxicpanda.com>
@@ -84,62 +86,119 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This will allow file systems to set a process_bio hook for inline
-encryption.  This will be utilized by btrfs in order to make sure the
-checksumming work is done on the encrypted bio's.
+From: Omar Sandoval <osandov@osandov.com>
 
+btrfs stores its data structures, including filenames in directories, in
+its own buffer implementation, struct extent_buffer, composed of
+several non-contiguous pages. We could copy filenames into a
+temporary buffer and use fscrypt_match_name() against that buffer, such
+extensive memcpying would be expensive. Instead, exposing
+fscrypt_nokey_name as in this change allows btrfs to recapitulate
+fscrypt_match_name() using methods on struct extent_buffer instead of
+dealing with a raw byte array.
+
+Signed-off-by: Omar Sandoval <osandov@osandov.com>
+Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/crypto/inline_crypt.c |  3 ++-
- include/linux/fscrypt.h  | 14 ++++++++++++++
- 2 files changed, 16 insertions(+), 1 deletion(-)
+ fs/crypto/fname.c       | 36 ------------------------------------
+ include/linux/fscrypt.h | 36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+), 36 deletions(-)
 
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index 52c4a24e2657..b8598007b1be 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -171,7 +171,8 @@ int fscrypt_prepare_inline_crypt_key(struct fscrypt_prepared_key *prep_key,
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index 7b3fc189593a..3e8210036f15 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -25,42 +25,6 @@
+  */
+ #define FSCRYPT_FNAME_MIN_MSG_LEN 16
  
- 	err = blk_crypto_init_key(blk_key, raw_key, crypto_mode,
- 				  fscrypt_get_dun_bytes(ci),
--				  1U << ci->ci_data_unit_bits, NULL);
-+				  1U << ci->ci_data_unit_bits,
-+				  sb->s_cop->process_bio);
- 	if (err) {
- 		fscrypt_err(inode, "error %d initializing blk-crypto key", err);
- 		goto fail;
+-/*
+- * struct fscrypt_nokey_name - identifier for directory entry when key is absent
+- *
+- * When userspace lists an encrypted directory without access to the key, the
+- * filesystem must present a unique "no-key name" for each filename that allows
+- * it to find the directory entry again if requested.  Naively, that would just
+- * mean using the ciphertext filenames.  However, since the ciphertext filenames
+- * can contain illegal characters ('\0' and '/'), they must be encoded in some
+- * way.  We use base64url.  But that can cause names to exceed NAME_MAX (255
+- * bytes), so we also need to use a strong hash to abbreviate long names.
+- *
+- * The filesystem may also need another kind of hash, the "dirhash", to quickly
+- * find the directory entry.  Since filesystems normally compute the dirhash
+- * over the on-disk filename (i.e. the ciphertext), it's not computable from
+- * no-key names that abbreviate the ciphertext using the strong hash to fit in
+- * NAME_MAX.  It's also not computable if it's a keyed hash taken over the
+- * plaintext (but it may still be available in the on-disk directory entry);
+- * casefolded directories use this type of dirhash.  At least in these cases,
+- * each no-key name must include the name's dirhash too.
+- *
+- * To meet all these requirements, we base64url-encode the following
+- * variable-length structure.  It contains the dirhash, or 0's if the filesystem
+- * didn't provide one; up to 149 bytes of the ciphertext name; and for
+- * ciphertexts longer than 149 bytes, also the SHA-256 of the remaining bytes.
+- *
+- * This ensures that each no-key name contains everything needed to find the
+- * directory entry again, contains only legal characters, doesn't exceed
+- * NAME_MAX, is unambiguous unless there's a SHA-256 collision, and that we only
+- * take the performance hit of SHA-256 on very long filenames (which are rare).
+- */
+-struct fscrypt_nokey_name {
+-	u32 dirhash[2];
+-	u8 bytes[149];
+-	u8 sha256[SHA256_DIGEST_SIZE];
+-}; /* 189 bytes => 252 bytes base64url-encoded, which is <= NAME_MAX (255) */
+-
+ /*
+  * Decoded size of max-size no-key name, i.e. a name that was abbreviated using
+  * the strong hash and thus includes the 'sha256' field.  This isn't simply
 diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 22211f87e7be..ea3033956208 100644
+index ea3033956208..fc8b2156e444 100644
 --- a/include/linux/fscrypt.h
 +++ b/include/linux/fscrypt.h
-@@ -16,6 +16,7 @@
- #include <linux/fs.h>
- #include <linux/mm.h>
- #include <linux/slab.h>
-+#include <linux/blk-crypto.h>
- #include <uapi/linux/fscrypt.h>
+@@ -56,6 +56,42 @@ struct fscrypt_name {
+ #define fname_name(p)		((p)->disk_name.name)
+ #define fname_len(p)		((p)->disk_name.len)
  
- /*
-@@ -199,6 +200,19 @@ struct fscrypt_operations {
- 	 */
- 	struct block_device **(*get_devices)(struct super_block *sb,
- 					     unsigned int *num_devs);
++/*
++ * struct fscrypt_nokey_name - identifier for directory entry when key is absent
++ *
++ * When userspace lists an encrypted directory without access to the key, the
++ * filesystem must present a unique "no-key name" for each filename that allows
++ * it to find the directory entry again if requested.  Naively, that would just
++ * mean using the ciphertext filenames.  However, since the ciphertext filenames
++ * can contain illegal characters ('\0' and '/'), they must be encoded in some
++ * way.  We use base64url.  But that can cause names to exceed NAME_MAX (255
++ * bytes), so we also need to use a strong hash to abbreviate long names.
++ *
++ * The filesystem may also need another kind of hash, the "dirhash", to quickly
++ * find the directory entry.  Since filesystems normally compute the dirhash
++ * over the on-disk filename (i.e. the ciphertext), it's not computable from
++ * no-key names that abbreviate the ciphertext using the strong hash to fit in
++ * NAME_MAX.  It's also not computable if it's a keyed hash taken over the
++ * plaintext (but it may still be available in the on-disk directory entry);
++ * casefolded directories use this type of dirhash.  At least in these cases,
++ * each no-key name must include the name's dirhash too.
++ *
++ * To meet all these requirements, we base64url-encode the following
++ * variable-length structure.  It contains the dirhash, or 0's if the filesystem
++ * didn't provide one; up to 149 bytes of the ciphertext name; and for
++ * ciphertexts longer than 149 bytes, also the SHA-256 of the remaining bytes.
++ *
++ * This ensures that each no-key name contains everything needed to find the
++ * directory entry again, contains only legal characters, doesn't exceed
++ * NAME_MAX, is unambiguous unless there's a SHA-256 collision, and that we only
++ * take the performance hit of SHA-256 on very long filenames (which are rare).
++ */
++struct fscrypt_nokey_name {
++	u32 dirhash[2];
++	u8 bytes[149];
++	u8 sha256[32];
++}; /* 189 bytes => 252 bytes base64url-encoded, which is <= NAME_MAX (255) */
 +
-+	/*
-+	 * A callback if the file system requires the ability to process the
-+	 * encrypted bio, used only with inline encryption.
-+	 *
-+	 * @orig_bio: the original bio submitted.
-+	 * @enc_bio: the encrypted bio.
-+	 *
-+	 * For writes the enc_bio will be different from the orig_bio, for reads
-+	 * they will be the same.  For reads we get the bio before it is
-+	 * decrypted, for writes we get the bio before it is submitted.
-+	 */
-+	blk_crypto_process_bio_t process_bio;
- };
+ /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
+ #define FSCRYPT_SET_CONTEXT_MAX_SIZE	40
  
- static inline struct fscrypt_inode_info *
 -- 
 2.43.0
 
