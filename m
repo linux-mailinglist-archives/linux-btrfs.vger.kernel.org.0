@@ -1,129 +1,318 @@
-Return-Path: <linux-btrfs+bounces-1740-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1741-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14B8A83B2A1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 20:58:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F2D183B37D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 22:00:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA8FC1F21E02
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 19:58:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E416D1F23F1C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 21:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED54C133421;
-	Wed, 24 Jan 2024 19:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946541350ED;
+	Wed, 24 Jan 2024 21:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="hGXFpEUc"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="hmOn+h2e"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342957E760
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 19:58:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B8DA1350DD;
+	Wed, 24 Jan 2024 21:00:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706126315; cv=none; b=aOhEqNBtGQYXvP8wH5aKSLH7LoaUOQELJ+UXZhsa+bSYjLyraHrekt3pC7NNKLDoPAOIKKg+TOagz91cJ1gjj/5mL8/Rw/QbW+/O1F0PLSBXa7jilUxTSbTpOTY1G7/ad+qQyiKvth/YE6ceAP7up5iHXZyOjx9ZXn8DFvN1my0=
+	t=1706130019; cv=none; b=Btz1c8PJERXdMit1hfQuC1WFxH1X0egeFgAa7Xhx0CbBnk9QGNmE+nU0lzZqfw0UkZxOh+5sYPqYfVm1CLMZU4jtyAWaEjuOG+AgQb1qrKhdfgxbrOlsdXjskXNyYy/N0Zg1KGNtAGHe7WMdIwKTaCbuuQ8dNwBpDO2NWKHWzOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706126315; c=relaxed/simple;
-	bh=M1byJika2MYDhtNDM9RbkLNvGqbmvv6JoWe2+AOZMgo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p0LLTSrmZQotAZKqFz5KXAQ9ffO/AzplfSW8dT+Y48z5V8FymavIGyNi6PM8fsxUu1Ic/Lz1u5I0W0gzNEbpE/zueQ8nMKmWv2an2j7gD4Lor0JztLKXhbCX/lJs/28s9F+31DBiZUOwVhQsbmA1rRc6zSyGFZ8+RNyDZn71pAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=hGXFpEUc; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc223f3dd5eso4947675276.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 11:58:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706126312; x=1706731112; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+z3lTPRbpE2uORgJqQqSu0SYo99VB9iUB6MfecDT+MQ=;
-        b=hGXFpEUc4qGltNhytybdCa+uWYM0G+LFTKEFL2x1Y9yTPk0qfjmA1Ss/sV+eUram2m
-         rtGJyWVny42o/qyB8+puy1dltR3EljSIrGsNeZ0Ob4ystGe4o0iwqkh7umiIR1Hl/JD2
-         KckxCZcb0OIcE7hy6ge7zIXlQMftDTiEDcMkFtTBbqG3JueDtoT9fQj2Rl36d9Diznom
-         qqhTpacDohBmfSdMqiDTXfIILTV2tbcqECYpZ6MR4NjLE7xSvnTTsdx77vi/hTfeEGeh
-         EBq2ZONVQjqJbld4EYu9o2GaRP0OvjtVtA8I92nMdaZXgDvVwdnRP7P9CLE7i0jChwNK
-         E5/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706126312; x=1706731112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+z3lTPRbpE2uORgJqQqSu0SYo99VB9iUB6MfecDT+MQ=;
-        b=mY/1yZFd1O4Ghx4cavfUg8tvDR3sjzikfyDyGkcoYjrd9DfsEbJEdCYjQcD1zIt6gW
-         tXXRmVaJ36zMetbe1LGK2hBd77IWsGhTJoXs04i8w1fQkI+Nnqed3uCVapSPvF0P/31i
-         5mAv5sGnPX6kNGl8JpaA1EaBj6rcq0aVS+sRyVoGn6FCy938vtnXMBthDjnLFYXohnmH
-         vPro2UMW2L9lfbeYxLOTnB+pxc8CJBwIHobgg6NkdQ1HGU2BK95Rkgy9p14PdR04a9gz
-         OeBXbocdhS426lRTi0+5COhTVfcxcCYXU/yMOcDtfBVnlRwCa4zMmgTJgVDo/8a56LzU
-         6s0w==
-X-Gm-Message-State: AOJu0YwNpAkys0dmZ3eGdq6daS3L3bsQrIHgzIK3b2QmEzxTNGfMTnTE
-	Nyt9kXMcb90YqFlWXWj5Ido5j1opJi4G5zFiunDYSw6dPIrLRFOM25qoiQZrPjw/GH0AZhLm3ER
-	4
-X-Google-Smtp-Source: AGHT+IFucnFymyToqTCAbTKFJv1htf/U+STWwR8DjaaCBoqkJW7+lRpiLAcJTrGVP+4clpKCRkG+cg==
-X-Received: by 2002:a25:5386:0:b0:dc2:41de:b744 with SMTP id h128-20020a255386000000b00dc241deb744mr1257084ybb.32.1706126312101;
-        Wed, 24 Jan 2024 11:58:32 -0800 (PST)
-Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id a5-20020a25ae05000000b00d7745e2bb19sm3016234ybj.29.2024.01.24.11.58.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 11:58:31 -0800 (PST)
-Date: Wed, 24 Jan 2024 14:58:31 -0500
-From: Josef Bacik <josef@toxicpanda.com>
-To: Neal Gompa <neal@gompa.dev>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v5 00/52] btrfs: add fscrypt support
-Message-ID: <20240124195831.GA1212739@perftesting>
-References: <cover.1706116485.git.josef@toxicpanda.com>
- <CAEg-Je8E9HMZKeSxPY35qjTsq0rZNx3fSq1Rzi-fD+U+3oOZWA@mail.gmail.com>
+	s=arc-20240116; t=1706130019; c=relaxed/simple;
+	bh=QKfSQXjNPoMyNHmDy3yJdokk4b9mGyEorO7ZOXZFyGE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=pvmo375sEJpjfF794+7YBbCzPr8bhKm0g/xQoxRTFSxJn9UWwVPOP123o8VxvRu0E/5tXZZQNHe2ZYKe5D2vUHrEFqto2kLuOkdoMtbnfi4Mb1vmskzl6gvHmPvyswKG9SYAzR2TarSXZs5Usc284D+O5p2649Gsy2l/I30Qoxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=hmOn+h2e; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1706130005; x=1706734805; i=quwenruo.btrfs@gmx.com;
+	bh=QKfSQXjNPoMyNHmDy3yJdokk4b9mGyEorO7ZOXZFyGE=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=hmOn+h2egRypx4oZXV14wqLsra6I7j/51LVqy3tMmslxu4LcaVXX+rKzcCQhA4It
+	 C1dGQTSsJxM0AG2xr5FNzxWy5/TOtniMD3eCycqy4Y8EOC9HaIpXT0TDofzmGZDcN
+	 BSIx/4pxsTIprFdlALklX0JzrsKhmRViks5E2TBSTfnPFf7tpqZ7ZDK5vlZ/3E/tr
+	 WQdEBEjMhvNkpOAJ5GpHu8YLm2xReYZS+oCGI2OPH+SsznBHcP9hxP7Z5gFbqx6Nw
+	 NN20rXE9JW+5fKC7HJx/gWXH9Do5UsJeKvW1VwS8xkSd2GxqM3EIfBZtJlhtm5sMN
+	 xncMvYUSJmiIKPCtMA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.101] ([61.245.157.120]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mk0Ne-1qn2p22ItU-00kOIy; Wed, 24
+ Jan 2024 22:00:05 +0100
+Message-ID: <9baa2a24-a44a-4f5e-95d7-23509ea450e4@gmx.com>
+Date: Thu, 25 Jan 2024 07:30:00 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEg-Je8E9HMZKeSxPY35qjTsq0rZNx3fSq1Rzi-fD+U+3oOZWA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fstests: btrfs: verify the read behavior of compressed
+ inline extent
+To: Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+References: <20240123034908.25415-1-wqu@suse.com>
+ <17e9c07d-9396-4999-8449-b0e3e764c32f@oracle.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <17e9c07d-9396-4999-8449-b0e3e764c32f@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:EWkM8gF4R+BBmSO13Q77as6CdumY5Ke2n4OvN68kRRIQp0WIehg
+ Ti8A/lu7mAKza1yBNMUGluKpJrBYPXVuapLAhIQDBLdE87K+pQl68CqeI6hgQ+9OFTM/C2A
+ 7rFE8psPSNZ9J+mT8/s38Nrx5sC3BkFOkzkhRrlhkFNePiNi8nmtWxt6gEMBotqi8x1XhWk
+ 3kBMYGFArKdc5D2+bIJNQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:1Qf9YFU9338=;0AJBSPxPxn3t4SdzBB9hWMwMOvg
+ OD5nJ+S5bnWx+T3foANj5y/oI+2F8y2b/tbT34gUy3fU7418pFj4x8P4uBHHUnQtLmlnQc13n
+ vNIygdWTHmsCeTryXvAQN6hLwuXg6oB/oTTsXTRDPbQBhltoRlNHAWqhB9lS5pFsXJxl89Vx8
+ QdzW/Kv3eLAX0j+tgJgxrVe/XRNitoVr82kQaNiK91ZR/iZ0MVNEz5tYgpqr4J1kgCKwJCom2
+ eqghQfeTys6hZaTh3Qo8T/4n0622xJs1Ei/5/ojUwtFCC0DF9Mk5NkmQkOZidY0a0vm8OSAG+
+ K87s0K3UoHjWpvkNs3JlQBxIslKfgvv8cwaYsGT3/yafS8c+3JlH7jtUX/fEVvFAt6hm0gT2t
+ 6dHypXCp1tqKQofVorcIejcNvfHqKcVqqcwqtO4o66tFai7Rs/BtCXCaFKgwG7Y9/4hwIHR8P
+ RlisPALJDDV2ZqcH4i/3qDG6JMmEMN90UcJu7taAZvIQKoUXsBE5wWkcSFdSihvwwN3xhO5Dk
+ dUOlyMjQ2n9qe8YZ2IoGfdx1KI9PRzeyCsI+uCTyuPH1IDHUo++hn7Efb3K3QBwZN92OPwWm1
+ Gy1F4qNwDVhTkClo2P72/i20eugY1ISut+Mrn7jZHVmnUcFt2SPp6XYgCp15FyXaDnx89KGem
+ 9K/Nyr8wsk2Vt/KImzM0+AJDvmzlJUgMJpStsKFOmEnUm9yxJjQIAVIsON5yzfev+dOPl3xmm
+ JR8DfFw1UfyHIY15hfBrpsLF+4Xu+V7tbpslfhrYdPMgWk+p9fuILaluyEeo+cDQBJngiUk8t
+ 0pc18kOL6CnQ/1l/5oo0nIoVhYaqwNRQ8k7TdXVzxpsAJi0XSXGaqWLaPqjjoGIXS/Sk0A3jn
+ ZII1YPC236xbMCIvL6Tx74SqhA8A3gE8gmi9gtSX7oGBj/Rw3trzZBOxR4NfrktZtfTuqrGWC
+ PD0fU4Gl2pEoepQZAXj3z+7awSI=
 
-On Wed, Jan 24, 2024 at 02:18:40PM -0500, Neal Gompa wrote:
-> On Wed, Jan 24, 2024 at 12:19 PM Josef Bacik <josef@toxicpanda.com> wrote:
-> >
-> > Hello,
-> >
-> > This is based on
-> >
-> > https://github.com/btrfs/linux.git for-next
-> >
-> > which has the recent pull from the fscrypt tree.
-> >
-> > I've reworked a lot of this to incorporate Eric's suggestions.  There are a few
-> > more patches because of bugs I've found in testing, and I've disabled a few
-> > features, namely RAID5/6 and send, as they will require more work to support
-> > with encryption and that can be done after the core work is merged.
-> >
-> > Thanks,
-> >
-> > Josef
-> >
-> > v4->v5:
-> > - Addressed all the comments from Eric and then reworked the rest of the code to
-> >   handle the various changes.
-> > - Fixed read repair.
-> > - Fixed log replay.
-> > - Disabled send for encrypted file systems.
-> > - Disabled turning on encryption on RAID5/6 file systems.
-> >
-> 
-> As long as we get these features back soon after this is merged, I'm
-> fine with this. It's important from the Fedora perspective to at least
-> have the ability to do blind replication, so I hope it follows shortly
-> after.
 
-Yup the send/receive stuff is mostly done, it's just the incremental part that's
-broken.  I have a plan for it, but it's an additional 10-20 patches and this
-series is already a monster.  I don't plan on enabling it for normal users until
-send support is landed as well.  Thanks,
 
-Josef
+On 2024/1/24 22:40, Anand Jain wrote:
+> On 1/23/24 11:49, Qu Wenruo wrote:
+>> [BUG]
+>> There is a report about reading a zstd compressed inline file extent
+>> would lead to either a VM_BUG_ON() crash, or lead to incorrect file
+>> content.
+>>
+>> [CAUSE]
+>> The root cause is a incorrect memcpy_to_page() call, which uses
+>> incorrect page offset, and can lead to either the VM_BUG_ON() as we may
+>> write beyond the page boundary, or writes into the incorrect offset of
+>> the page.
+>>
+>> [TEST CASE]
+>> The test case would:
+>>
+>> - Mount with the specified compress algorithm
+>> - Create a 4K file
+>> - Verify the 4K file is all inlined and compressed
+>> - Verify the content of the initial write
+>> - Cycle mount to drop all the page cache
+>> - Verify the content of the file again
+>> - Unmount and fsck the fs
+>>
+>> This workload would be applied to all supported compression algorithms.
+>> And it can catch the problem correctly by triggering VM_BUG_ON(), as ou=
+r
+>> workload would result decompressed extent size to be 4K, and would
+>> trigger the VM_BUG_ON() 100%.
+>> And with the revert or the new fix, the test case can pass safely.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> =C2=A0 tests/btrfs/310=C2=A0=C2=A0=C2=A0=C2=A0 | 81 +++++++++++++++++++=
+++++++++++++++++++++++++++
+>> =C2=A0 tests/btrfs/310.out |=C2=A0 2 ++
+>> =C2=A0 2 files changed, 83 insertions(+)
+>> =C2=A0 create mode 100755 tests/btrfs/310
+>> =C2=A0 create mode 100644 tests/btrfs/310.out
+>>
+>> diff --git a/tests/btrfs/310 b/tests/btrfs/310
+>> new file mode 100755
+>> index 00000000..b514a8bc
+>> --- /dev/null
+>> +++ b/tests/btrfs/310
+>> @@ -0,0 +1,81 @@
+>> +#! /bin/bash
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
+>> +#
+>> +# FS QA Test 310
+>> +#
+>> +# Make sure reading on an compressed inline extent is behaving correct=
+ly
+>> +#
+>> +. ./common/preamble
+>> +_begin_fstest auto quick compress
+>> +
+>> +# Import common functions.
+>> +# . ./common/filter
+>> +
+>> +# real QA test starts here
+>> +
+>> +# Modify as appropriate.
+>> +_supported_fs btrfs
+>> +_require_scratch
+>> +
+>> +# This test require inlined compressed extents creation, and all the
+>> writes
+>> +# are designed for 4K sector size.
+>> +_require_btrfs_inline_extents_creation
+>> +_require_btrfs_support_sectorsize 4096
+>> +
+>> +_fixed_by_kernel_commit e01a83e12604 \
+>> +=C2=A0=C2=A0=C2=A0 "Revert \"btrfs: zstd: fix and simplify the inline =
+extent
+>> decompression\""
+>> +
+>> +# The correct md5 for the correct 4K file filled with "0xcd"
+>> +md5sum_correct=3D"5fed275e7617a806f94c173746a2a723"
+>> +
+>> +workload()
+>> +{
+>> +=C2=A0=C2=A0=C2=A0 local algo=3D"$1"
+>> +
+>> +=C2=A0=C2=A0=C2=A0 echo "=3D=3D=3D Testing compression algorithm ${alg=
+o} =3D=3D=3D" >> $seqres.full
+>> +=C2=A0=C2=A0=C2=A0 _scratch_mkfs >> $seqres.full
+>> +=C2=A0=C2=A0=C2=A0 _scratch_mount -o compress=3D${algo}
+>> +
+>> +=C2=A0=C2=A0=C2=A0 _pwrite_byte 0xcd 0 4k "$SCRATCH_MNT/inline_file" >=
+ /dev/null
+>
+>
+>
+>> +=C2=A0=C2=A0=C2=A0 result=3D$(_md5_checksum "$SCRATCH_MNT/inline_file"=
+)
+>> +=C2=A0=C2=A0=C2=A0 echo "after initial write, md5sum=3D${result}" >> $=
+seqres.full
+>> +=C2=A0=C2=A0=C2=A0 if [ "$result" !=3D "$md5sum_correct" ]; then
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 _fail "initial write result=
+s incorrect content for \"$algo\""
+>> +=C2=A0=C2=A0=C2=A0 fi
+>
+> General rule of thumb is where possible use stdout and compare it with
+> the golden output.
+>
+> So something like the below shall suffice.
+>
+> echo "after initial write with alog=3D$algo"
+> _md5_checksum "$SCRATCH_MNT/inline_file"
+>
+> Also, helps quick debug, when=C2=A0 fails we have the diff.
+
+Nope, for this particular case, golden output is not suitable.
+
+As the workload is dependent on the support compression algorithm, we
+can not reply on golden output to cover all algorithms.
+Or it would always fail for older kernels without zstd, or for newer
+kernel with newer algorithm.
+
+That's why I personally don't believe golden output is always the best
+way to go.
+
+Thanks,
+Qu
+>
+>
+>> +=C2=A0=C2=A0=C2=A0 sync
+>
+>  =C2=A0Generally, we need comments to explain why sync is necessary.
+>
+>> +
+>> +=C2=A0=C2=A0=C2=A0 $XFS_IO_PROG -c "fiemap -v" $SCRATCH_MNT/inline_fil=
+e | tail -n 1
+>> > $tmp.fiemap
+>> +=C2=A0=C2=A0=C2=A0 cat $tmp.fiemap >> $seqres.full
+>> +=C2=A0=C2=A0=C2=A0 # Make sure we got an inlined compressed file exten=
+t.
+>> +=C2=A0=C2=A0=C2=A0 # 0x200 means inlined, 0x100 means not block aligne=
+d, 0x8 means
+>> encoded
+>> +=C2=A0=C2=A0=C2=A0 # (compressed in this case), and 0x1 means the last=
+ extent.
+>> +=C2=A0=C2=A0=C2=A0 if ! grep -q "0x309" $tmp.fiemap; then
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rm -f -- $tmp.fiemap
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 _notrun "No compressed inli=
+ne extent created, maybe subpage?"
+>
+>  =C2=A0workload() is called for each compress algo. If we fail
+>  =C2=A0for one of the algo then notrun is not a good option here.
+>
+>  =C2=A0IMO, stdout (with filters?) and comparing it with golden output
+>  =C2=A0is better.
+>
+>> +=C2=A0=C2=A0=C2=A0 fi
+>
+>
+>> +=C2=A0=C2=A0=C2=A0 rm -f -- $tmp.fiemap
+>> +
+>> +=C2=A0=C2=A0=C2=A0 # Unmount to clear the page cache.
+>> +=C2=A0=C2=A0=C2=A0 _scratch_cycle_mount
+>> +
+>> +=C2=A0=C2=A0=C2=A0 # For v6.8-rc1 without the revert or the newer fix,=
+ this can
+>> +=C2=A0=C2=A0=C2=A0 # crash or lead to incorrect contents for zstd.
+>> +=C2=A0=C2=A0=C2=A0 result=3D$(_md5_checksum "$SCRATCH_MNT/inline_file"=
+)
+>> +=C2=A0=C2=A0=C2=A0 echo "after cycle mount, md5sum=3D${result}" >> $se=
+qres.full
+>> +=C2=A0=C2=A0=C2=A0 if [ "$result" !=3D "$md5sum_correct" ]; then
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 _fail "read for compressed =
+inline extent failed for \"$algo\""
+>> +=C2=A0=C2=A0=C2=A0 fi
+>
+>  =C2=A0Here too, same as above, golden output to compare can be done.
+>  =C2=A0And remove _fail.
+>
+> Thanks, Anand
+>
+>> +=C2=A0=C2=A0=C2=A0 _scratch_unmount
+>> +=C2=A0=C2=A0=C2=A0 _check_scratch_fs
+>> +}
+>> +
+>> +algo_list=3D($(_btrfs_compression_algos))
+>> +for algo in ${algo_list[@]}; do
+>> +=C2=A0=C2=A0=C2=A0 workload $algo
+>> +done
+>> +
+>> +echo "Silence is golden"
+>> +
+>> +status=3D0
+>> +exit
+>> diff --git a/tests/btrfs/310.out b/tests/btrfs/310.out
+>> new file mode 100644
+>> index 00000000..7b9eaf78
+>> --- /dev/null
+>> +++ b/tests/btrfs/310.out
+>> @@ -0,0 +1,2 @@
+>> +QA output created by 310
+>> +Silence is golden
+>
+>
 
