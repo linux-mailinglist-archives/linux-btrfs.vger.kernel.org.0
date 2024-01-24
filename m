@@ -1,80 +1,79 @@
-Return-Path: <linux-btrfs+bounces-1692-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1693-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE10283AF89
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D651983AF8A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:20:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65D0B1F26F16
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:20:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C7C81F27334
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:20:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4FB82D94;
-	Wed, 24 Jan 2024 17:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906B885C44;
+	Wed, 24 Jan 2024 17:19:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Q8RxY0Ht"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="WDkSf+zF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D59F82D71
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C3082D7B
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:19:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706116774; cv=none; b=iFyCAaXkDs0NdKaZPK5x3VFMeeaSUVvm+Ff5WR9UYvdU3Ka1wXjp7hbtYlHF1JPgrXHX1bo1ANHWD5bNyt+WsT2Rm5nbORndFJsrkIZRv5/nCTKkd2QHrnW9R/eaS2HgJGiYcPUlnXjMhIuM+/60JTlvCSIXfW0WcB5lNvY9+YY=
+	t=1706116774; cv=none; b=BEBmVt6qOqqUCcl48lxdBdBgFHCk02VReSahrXasUnF521TVOosfIwrf6/7nD7IZDP1Hl1WXnP2tiG1uXw/v4Soe0dWXjsHunSYtcONM2LD2YVUAM6TTFLmuzk/F2J2IVoDyhVqc5HNAWkbe3MrGH54RECLoAkvGHSZ52vZ0zCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706116774; c=relaxed/simple;
-	bh=Cl0q0mHy+OuiyGgyIEFPo6cO6ZyClhg2rMG5vgFqyBU=;
+	bh=IzZbnNi2HvSrxNI5el6QIj8D5vc83fohl+628NeiNos=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TYvxYoMPyPnO5ttXeC6FMn5HdxM9yhkBfZV/lpetl+DuH79lF8u3J3vBW8d90Us2KR3rEct+aaW1js4nbR4Ax72hnU6J4u1cOyRwFA8lvPcMNCc5bi5PUSC8X6f0bL2C39Xj3KXTUGZp3gAAZSyWeATOyybdDcLC9nawoEY2970=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Q8RxY0Ht; arc=none smtp.client-ip=209.85.128.169
+	 MIME-Version; b=WZcCOcPPtnmHQHt/r+rd+Y+3oRRNfrqp2kAo4RSuC/0UB5lWdiJL7OICfntPUVYob/gEc1axLzHTGUVJMP5fDAR/iK02Rsm4Ie3bxhyfFQrB78aYy4B9bChqTzam0raPSNhm66/cgl0yHuHB0oieWREJqRa7pMZDhvYaxHlfjds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=WDkSf+zF; arc=none smtp.client-ip=209.85.219.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5fc2e997804so52224097b3.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:19:32 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso3588738276.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:19:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116771; x=1706721571; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116772; x=1706721572; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JH2EKMKBSNEeu4gP5LCCBuqQDLw8uHSTnP4/ZUu0wsk=;
-        b=Q8RxY0Hthrh3+r23ei+HgXXzPAdQ6BI3koQS2LINUDkwgf5Q4acPH0Ph3fNO6DwdNZ
-         YjcToauxEDm3XIoGBAHhazT8NoH9JWVria1tw88wootRYwIcfNX5ySZow2AjWUZk/1eG
-         x9ERp0PlabWy/n/UufQaK9h9IRiF95Jxgobbr2C5N3F3U58mhgRIgqt6jxA+DFyikJC6
-         DLHucZVnhuAZYAp5dsDYb+4uORs2HGf9cF1SRzK8gt0OF38wOg3Lv52sBGhE4X4SxE1+
-         MAtwKH1rCoCH2a3544+VId4SJU94QgROPtWaTbew2dVuskUgY14iyMRDGZY39ghh9sFc
-         Iulg==
+        bh=FNcc1gRUx/9vClORZZm5lvfIUxidIgjQfVOu+2PLHfg=;
+        b=WDkSf+zF8u1GYZtxYi1numd1YChdI1WehuPouqzjkoDpjO2I4oBM95QN2bNgxMsJ3i
+         NhN9KjoA4yTItAi1+vaW1s87brUhyqBw7EWDx1+stJk0D7xA2+zb6s/bcmFZQA/iryDL
+         /Ffo6OSfEYgCfdSH4gWbFbEgMyKSAjv1QEg1sLSzkGo0bqpMlGXZeFbzrudcHo8fVN1d
+         UaTjrL3BN/qJCA3piYST/AX2PrUoPPQ7abkgXX21oP2t6Z/IpdXe12Y7MoRIS3a7NQAa
+         9mPfdeReY2EN9GrXNHZHNnBkGNlqgvNWOmpYxow1iSHgDEv/OijwPBqHm22XbQ1ARsZC
+         zNCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706116771; x=1706721571;
+        d=1e100.net; s=20230601; t=1706116772; x=1706721572;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JH2EKMKBSNEeu4gP5LCCBuqQDLw8uHSTnP4/ZUu0wsk=;
-        b=Q2e3dqWuzBQrPBU+o7atuC04GHdn49ixrp2ibixkI5iRnEFX5FoJqZ5IfrithPoseS
-         JPDdr6Ac9EhZ1RPpm6eer42lPT9OUpC47TPm6sLxbUF2aeHgZRJ0TrfmGKmPKgOIIzpw
-         xpLBMneTn3u6UTldkzkWezO+g1WZPvapY+uTM8JOHI+fUvwC/4et1xeNvJJVp9vZovLJ
-         IFLcXk29woL9w6mRwrRD66yM5Sil2YBrSdog5lp9I8bmETsS0UtRjLcUkO6t0EKytvQM
-         R6gDO69taZJVCDfx2Z0cJPPmT/pKHG49/WdGI0cnigkyWUHut3SL32+Ux/fVGhN2dQOC
-         LolQ==
-X-Gm-Message-State: AOJu0YxfPvmmm4rDcX1nIrcDV/wrfSeJcyIoDpmJ8RgDhYANdwktwG9p
-	KSxD3jj2XTteERaVR4rSeMXLbKlFhTh+Mj//bDZRG3i0MF2NULYrAH7txWa9788RrMr8HswA34V
-	y
-X-Google-Smtp-Source: AGHT+IG5HHlloxTpZ1etIlGxjZuYbCsD+AZNFsXVdVAzAdqg6uRVsN8gycDkkoltiwNZOIYNoNrkaw==
-X-Received: by 2002:a81:4808:0:b0:5f4:fd2b:89b with SMTP id v8-20020a814808000000b005f4fd2b089bmr1179641ywa.16.1706116771473;
-        Wed, 24 Jan 2024 09:19:31 -0800 (PST)
+        bh=FNcc1gRUx/9vClORZZm5lvfIUxidIgjQfVOu+2PLHfg=;
+        b=JyXhDKsBcpLbeRT8SZLk1xOyZ0Nc/+bDfJFoZ9agUl2jNAJQY+tkw/r3d5W1sdFiai
+         FzO65fnSULnVmpE75HuyTj9MaWE5zs2UFOyZULvzlzrfh4Cn7LjRxuQDlOF+DCp02BAb
+         ibknOX9ZL55ds59ay+rFJTFEFblHxrUwwYUFw0IP61YiKaH8DNp1LSDYEZ0bsDlJxr1A
+         I9I+ELp873sjml9RjpkcBj5VJTO6l1G8btt22BPbVpK1jpZcIpj9qRVsnSqsxTex1Bx6
+         96wpFPfy1bHergHO1vygrw+eRNQ98saN1IK5FQIFPGGq+pd4kIEcZeSBKi3mf8O1ixrF
+         pxBw==
+X-Gm-Message-State: AOJu0YwhazosYYUmzHRfmI1LtgwcHcD9WhyXxF6ZX/2VR3RN0nn7KP9g
+	j8v+FLxzT4s5TVPh5mK4Ir2o9LyPzYvbMfetHTqpq/5AKZYcoPRPt1JjXQ09UGU0wyDRRP/Ra+x
+	B
+X-Google-Smtp-Source: AGHT+IEYRstLN/qS9tb/xBT/C23PpWQcoFuq4vGqD/W4TM5fMtNOxoJOjQ6Wmx6ay1kZafFDjLaYpA==
+X-Received: by 2002:a05:6902:1351:b0:dc6:8b4:7388 with SMTP id g17-20020a056902135100b00dc608b47388mr427152ybu.35.1706116772363;
+        Wed, 24 Jan 2024 09:19:32 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id fl15-20020a05690c338f00b005ff9d3ca38fsm67272ywb.1.2024.01.24.09.19.31
+        by smtp.gmail.com with ESMTPSA id z13-20020a25664d000000b00dc278dca7cfsm2848813ybm.8.2024.01.24.09.19.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 09:19:31 -0800 (PST)
+        Wed, 24 Jan 2024 09:19:32 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Cc: Omar Sandoval <osandov@osandov.com>,
-	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v5 10/52] btrfs: disable various operations on encrypted inodes
-Date: Wed, 24 Jan 2024 12:18:32 -0500
-Message-ID: <0d1c1c34c9a9e2999a1cb5c76ed72ddcb866595e.1706116485.git.josef@toxicpanda.com>
+Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Subject: [PATCH v5 11/52] btrfs: disable verity on encrypted inodes
+Date: Wed, 24 Jan 2024 12:18:33 -0500
+Message-ID: <f4f34a604fa16b8b91a4db0c6f3bca3beca22ab3.1706116485.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1706116485.git.josef@toxicpanda.com>
 References: <cover.1706116485.git.josef@toxicpanda.com>
@@ -86,60 +85,32 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Omar Sandoval <osandov@osandov.com>
+From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-Initially, only normal data extents will be encrypted. This change
-forbids various other bits:
-- allows reflinking only if both inodes have the same encryption status
-- disable inline data on encrypted inodes
+Right now there isn't a way to encrypt things that aren't either
+filenames in directories or data on blocks on disk with extent
+encryption, so for now, disable verity usage with encryption on btrfs.
 
-Signed-off-by: Omar Sandoval <osandov@osandov.com>
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c   | 3 ++-
- fs/btrfs/reflink.c | 7 +++++++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ fs/btrfs/verity.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index bedd8703bfa6..c6122c20ad3a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -639,7 +639,8 @@ static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 size,
- 	 * compressed) data fits in a leaf and the configured maximum inline
- 	 * size.
- 	 */
--	if (size < i_size_read(&inode->vfs_inode) ||
-+	if (IS_ENCRYPTED(&inode->vfs_inode) ||
-+	    size < i_size_read(&inode->vfs_inode) ||
- 	    size > fs_info->sectorsize ||
- 	    data_len > BTRFS_MAX_INLINE_DATA_SIZE(fs_info) ||
- 	    data_len > fs_info->max_inline)
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index e38cb40e150c..c61e54983faf 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
+diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
+index 66e2270b0dae..352b2644b4af 100644
+--- a/fs/btrfs/verity.c
++++ b/fs/btrfs/verity.c
+@@ -588,6 +588,9 @@ static int btrfs_begin_enable_verity(struct file *filp)
  
- #include <linux/blkdev.h>
-+#include <linux/fscrypt.h>
- #include <linux/iversion.h>
- #include "ctree.h"
- #include "fs.h"
-@@ -809,6 +810,12 @@ static int btrfs_remap_file_range_prep(struct file *file_in, loff_t pos_in,
- 		ASSERT(inode_in->i_sb == inode_out->i_sb);
- 	}
+ 	ASSERT(inode_is_locked(file_inode(filp)));
  
-+	/*
-+	 * Can only reflink encrypted files if both files are encrypted.
-+	 */
-+	if (IS_ENCRYPTED(inode_in) != IS_ENCRYPTED(inode_out))
-+		return -EINVAL;
++	if (IS_ENCRYPTED(&inode->vfs_inode))
++		return -EOPNOTSUPP;
 +
- 	/* Don't make the dst file partly checksummed */
- 	if ((BTRFS_I(inode_in)->flags & BTRFS_INODE_NODATASUM) !=
- 	    (BTRFS_I(inode_out)->flags & BTRFS_INODE_NODATASUM)) {
+ 	if (test_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &inode->runtime_flags))
+ 		return -EBUSY;
+ 
 -- 
 2.43.0
 
