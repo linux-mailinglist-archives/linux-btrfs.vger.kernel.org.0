@@ -1,80 +1,80 @@
-Return-Path: <linux-btrfs+bounces-1696-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1697-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E11C83AFDB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:29:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EFEB83AF8C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:21:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3862FB2BA94
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:21:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E27951F277B1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72EA885C49;
-	Wed, 24 Jan 2024 17:19:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51E386127;
+	Wed, 24 Jan 2024 17:19:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Er8S1GNR"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="mzupIAa5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C82282D7B
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD7F85C68
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:19:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706116777; cv=none; b=R5efgI/UZUj6jPgLtRFTqzGIUgdGZJzCFehBcpBz9PydrP8HUGyLPGGHqxSclKq6yuQ+zJntzcOiF0oBE8+cjr0WNGBi/GwN7UCUPVcNahB57T2PiJJcXGNpzBo5d37F5J3dNq6e9UeTHPV/bexnL2F745GKSCsBgQ+cG5GSjJo=
+	t=1706116780; cv=none; b=mxsabf2h7Q4O3h4Bf+UV0bIhWHYXhWvOdeuYMLzgSyP9aWBxUDaVXsTFaOUM3daiztthyrk/5f6xvNMVR5v8Sy4vmGowIv/VhdEJVrKtGcsWHSAr6+w25RsZrAzPhgYLzY+sYwdHNtTDnTgjP17MtlVEdJdgwgWEx1WMJZ6s1n0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706116777; c=relaxed/simple;
-	bh=OlBHhKisUlPCrNnx9U+0wXpi8lJXa7vJWPFez8vMs0k=;
+	s=arc-20240116; t=1706116780; c=relaxed/simple;
+	bh=ptJCe7hhVq76TPB0bGTdBW6OQTar+EY9x4jyONcyLhI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Cdbvicgbw0iTkIYs2iYcHZZ2w0zwwTvgx8gXuecrFwIF4lqG1lcVtFLr2aIcve+w+UvsejlwfMTynAWNkwNB9bYXnnLVRrF+7jH2qTyvZpFYACw8+MrL3OQKft1BplzR/Mt2GhhueeoOVqsRJXAFkj00xz71zU3x2y/O4hETCbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Er8S1GNR; arc=none smtp.client-ip=209.85.128.177
+	 MIME-Version; b=Roa6IWwginqrd7Fbm6AlMkHx4KvfsocWKyL99QT5DJGqLzTn3p92I+J7iIYfTWvNpXzYDr9Uj7dja5yrKdTh/lnFP/oqFJBaYDqvPjLHs2rmjBCXonIlEgxWe5uH+KQc5wG0bF1/jehy78NWHnplF6ggXuGZtYss3lbHyIya1po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=mzupIAa5; arc=none smtp.client-ip=209.85.128.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5ff7dd8d7ceso50975497b3.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:19:36 -0800 (PST)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-600273605a9so30183877b3.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:19:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116775; x=1706721575; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116776; x=1706721576; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B90h+ogtiYX77+oD841lDmSgsgTD/UgNO6cKltWxjdk=;
-        b=Er8S1GNRgQra2W8Ef3HyhC2TVcPX3WKq0UXzRCDVgLMGewpmMHRenSegkxdwNm7N7r
-         DjyZWiqpe7Pga5AE+RiBGwpNYfxg8vHKceDbpm94xni2O2WEr0WRUcBx5zaekEaT6hSU
-         zjhcMBurLqTsFvKleAwnJOU6GAqleBjLzrnQrsj3nMw4ZRFTcde4mQ7P911NjIH+LPda
-         mz7E70NbTJCXGd7lPHaorqRwcQr1gUqSwgJTMJJj8iZf34zHHkfQJusqbclSm/xbndP4
-         LZNlYmL2JD04CrSSjy6aJkV3Pkzguinop6dv3UE+BtO4L7LrTOPmuuF1s9Y/VSNkmne3
-         lj7w==
+        bh=hP8GjdbBRIu2C0n5JwKz88O+jt6xyl4XpJqWdjHU4hc=;
+        b=mzupIAa5rYCXRLpNNM+Z7TrQa8Cr9JL1830qvIIOYY8B8SqDpPYRsIZXhdSPREG89D
+         uCi5uZbEg2f9bf9PTlq8WAbpsd+tSlAcwRbJLyKRAGzpCcJgYVvd9kivBPgm5MijXLvD
+         ca06sikByEg/BcxVfqhysg7S9HLASnCQp9d9Ta52NItVQJjILBiJ1bMjIN93dQqPZzxp
+         o53r3psSTuNLvM6BNhbV3TK0BWxSTlydbE/zabaQ7PCoxzLFwdrUikvMhHSKYnkOM6Ga
+         DDN9lqgINE5lUDbbHV9/a4gIzPzQA6c89w1eAF0xEjTgdZw7ea6LSAPOkY462UXMasUW
+         xzfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706116775; x=1706721575;
+        d=1e100.net; s=20230601; t=1706116776; x=1706721576;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B90h+ogtiYX77+oD841lDmSgsgTD/UgNO6cKltWxjdk=;
-        b=Iq2UpM+Bs7S0HRy20Mg54jMsv5ih8Ow7Xgg/t6h6kT5622AMhaeVP7+CAmHZz7JJDA
-         2iCphsQRZLGZxoZeUznNFzct4kXErUYFHfn0EfpW9voOpJFK5wtLnsxbXSzbIlvEiRZ8
-         L/S/hXaa/k+ZT2RfLKJg5eotLJCpQqDBNdK7FIntxAzNbkZCduscGhZ2HSvCI0lhj+ym
-         uKptlyq5U8Chsb4ojTWHKSTVvBLyGe4m2E0ESBJe2IO0Q44r4W9+rkGQBJShYBauxsJ7
-         xwr3O5SWjXjzdHvHOAFq8HRxF+b232KfbOe1W/1uu3FWO7uY5vAu97UXhZTiaViNoeX4
-         4Lcg==
-X-Gm-Message-State: AOJu0Yx5+FtLbaHNSQUlpuYvFOPfZtcNC0iGURN77vSF9WMunN9POAmT
-	fE21j6pjRZPYxTBhZGMnbYBtj/5zjSgCw6HK5jImnRfIWuWklyOjUo5+Blcf7+lMRhGOlZt88gL
-	1
-X-Google-Smtp-Source: AGHT+IE1JyRcZiCAeKUgBbJG3dRYafar61HDbvkTbNI+ammluJrx9CCeQW/xUVVzPOGQ7OYo41REug==
-X-Received: by 2002:a0d:e0c3:0:b0:5ff:7a74:412e with SMTP id j186-20020a0de0c3000000b005ff7a74412emr1147444ywe.38.1706116775115;
-        Wed, 24 Jan 2024 09:19:35 -0800 (PST)
+        bh=hP8GjdbBRIu2C0n5JwKz88O+jt6xyl4XpJqWdjHU4hc=;
+        b=pEqzHySwN1jKSpqCTM1tw2HfWZ69IXsVJ9SfYipiKg7xb+mWX6pySoAudSfb6GJA2v
+         +83eU3p0KFKmFn6IIe1K0BmoEVnEyUHjl2P2107/JyMwEpu8305ChwBvdCVFUWa3AsOa
+         +fxFBibwoVjBCz6aF4v/Aw6/3l2fmYGEgIhizfqhkyFU/Ryu5VzdZ9GoI+RHJIjaSyC3
+         DFcW2+8+7fVti7kQukHs8iCrzSYidrLxANN/jpSb8ypH11lA2EhJP1agQz6NqsAq7Oyg
+         zdN3b6If6Q1DGjN7IJCRNMIp4VJG14KPOMX4YqeW0lCvW4AQXxn96+V6eOjYSsqERrY/
+         105A==
+X-Gm-Message-State: AOJu0Yz59YymUaK3MVsgpOvgm0W+4lvra1x/NOIKjs9Vy87dpRC7KNyU
+	ThjfiVtHChAPJiQMJEwN8YlI2zUOcDf107vx+RCTmESE6b29GNsKj3U+DHMVKWKEUO9Qxpw5SJN
+	O
+X-Google-Smtp-Source: AGHT+IFmG1zTlGTHFA64ZLVRcOVeMHsrm60k7B8ZVGrgkVmTY1Im1C5sij97aDgdeN4ItOSvS81Ccw==
+X-Received: by 2002:a81:5f88:0:b0:5e7:e9d9:9c39 with SMTP id t130-20020a815f88000000b005e7e9d99c39mr1270193ywb.58.1706116776309;
+        Wed, 24 Jan 2024 09:19:36 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id ft9-20020a05690c360900b0060026481ad9sm73325ywb.0.2024.01.24.09.19.34
+        by smtp.gmail.com with ESMTPSA id cl9-20020a05690c0c0900b005ff7957f298sm65843ywb.25.2024.01.24.09.19.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 09:19:34 -0800 (PST)
+        Wed, 24 Jan 2024 09:19:35 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
 Cc: Omar Sandoval <osandov@osandov.com>,
 	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v5 14/52] btrfs: add new FEATURE_INCOMPAT_ENCRYPT flag
-Date: Wed, 24 Jan 2024 12:18:36 -0500
-Message-ID: <ccbea52046c1dadbbef926bfc878cc23af952729.1706116485.git.josef@toxicpanda.com>
+Subject: [PATCH v5 15/52] btrfs: adapt readdir for encrypted and nokey names
+Date: Wed, 24 Jan 2024 12:18:37 -0500
+Message-ID: <52b31cd6e5c86f8fe3d08ce65bca5f40c3ce5c5a.1706116485.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1706116485.git.josef@toxicpanda.com>
 References: <cover.1706116485.git.josef@toxicpanda.com>
@@ -88,86 +88,961 @@ Content-Transfer-Encoding: 8bit
 
 From: Omar Sandoval <osandov@osandov.com>
 
-As encrypted files will be incompatible with older filesystem versions,
-new filesystems should be created with an incompat flag for fscrypt,
-which will gate access to the encryption ioctls.
+Deleting an encrypted file must always be permitted, even if the user
+does not have the appropriate key. Therefore, for listing an encrypted
+directory, so-called 'nokey' names are provided, and these nokey names
+must be sufficient to look up and delete the appropriate encrypted
+files. See 'struct fscrypt_nokey_name' for more information on the
+format of these names.
+
+The first part of supporting nokey names is allowing lookups by nokey
+name. Only a few entry points need to support these: deleting a
+directory, file, or subvolume -- each of these call
+fscrypt_setup_filename() with a '1' argument, indicating that the key is
+not required and therefore a nokey name may be provided. If a nokey name
+is provided, the fscrypt_name returned by fscrypt_setup_filename() will
+not have its disk_name field populated, but will have various other
+fields set.
+
+This change alters the relevant codepaths to pass a complete
+fscrypt_name anywhere that it might contain a nokey name. When it does
+contain a nokey name, the first time the name is successfully matched to
+a stored name populates the disk name field of the fscrypt_name,
+allowing the caller to use the normal disk name codepaths afterward.
+Otherwise, the matching functionality is in close analogue to the
+function fscrypt_match_name().
+
+Functions where most callers are providing a fscrypt_str are duplicated
+and adapted for a fscrypt_name, and functions where most callers are
+providing a fscrypt_name are changed to so require at all callsites.
 
 Signed-off-by: Omar Sandoval <osandov@osandov.com>
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/fs.h              | 3 ++-
- fs/btrfs/super.c           | 5 +++++
- fs/btrfs/sysfs.c           | 6 ++++++
- include/uapi/linux/btrfs.h | 1 +
- 4 files changed, 14 insertions(+), 1 deletion(-)
+ fs/btrfs/btrfs_inode.h   |   2 +-
+ fs/btrfs/delayed-inode.c |  29 ++++++-
+ fs/btrfs/delayed-inode.h |   6 +-
+ fs/btrfs/dir-item.c      |  77 ++++++++++++++++---
+ fs/btrfs/dir-item.h      |  11 ++-
+ fs/btrfs/extent_io.c     |  41 ++++++++++
+ fs/btrfs/extent_io.h     |   3 +
+ fs/btrfs/fscrypt.c       |  35 +++++++++
+ fs/btrfs/fscrypt.h       |  19 +++++
+ fs/btrfs/inode.c         | 158 ++++++++++++++++++++++++++-------------
+ fs/btrfs/root-tree.c     |   8 +-
+ fs/btrfs/root-tree.h     |   2 +-
+ fs/btrfs/tree-log.c      |   3 +-
+ 13 files changed, 321 insertions(+), 73 deletions(-)
 
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index f8bb73d6ab68..1340e71d026c 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -232,7 +232,8 @@ enum {
- #define BTRFS_FEATURE_INCOMPAT_SUPP		\
- 	(BTRFS_FEATURE_INCOMPAT_SUPP_STABLE |	\
- 	 BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE | \
--	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2)
-+	 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2 | \
-+	 BTRFS_FEATURE_INCOMPAT_ENCRYPT)
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index 83de0909f460..f5b81969ff5d 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -433,7 +433,7 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry);
+ int btrfs_set_inode_index(struct btrfs_inode *dir, u64 *index);
+ int btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 		       struct btrfs_inode *dir, struct btrfs_inode *inode,
+-		       const struct fscrypt_str *name);
++		       struct fscrypt_name *name);
+ int btrfs_add_link(struct btrfs_trans_handle *trans,
+ 		   struct btrfs_inode *parent_inode, struct btrfs_inode *inode,
+ 		   const struct fscrypt_str *name, int add_backref, u64 index);
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 08102883f560..076106d392c1 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1769,7 +1769,9 @@ int btrfs_should_delete_dir_index(struct list_head *del_list,
+ /*
+  * Read dir info stored in the delayed tree.
+  */
+-int btrfs_readdir_delayed_dir_index(struct dir_context *ctx,
++int btrfs_readdir_delayed_dir_index(struct inode *inode,
++				    struct fscrypt_str *fstr,
++				    struct dir_context *ctx,
+ 				    struct list_head *ins_list)
+ {
+ 	struct btrfs_dir_item *di;
+@@ -1779,6 +1781,7 @@ int btrfs_readdir_delayed_dir_index(struct dir_context *ctx,
+ 	int name_len;
+ 	int over = 0;
+ 	unsigned char d_type;
++	size_t fstr_len = fstr->len;
  
- #else
+ 	/*
+ 	 * Changing the data of the delayed item is impossible. So
+@@ -1803,8 +1806,28 @@ int btrfs_readdir_delayed_dir_index(struct dir_context *ctx,
+ 		d_type = fs_ftype_to_dtype(btrfs_dir_flags_to_ftype(di->type));
+ 		btrfs_disk_key_to_cpu(&location, &di->location);
  
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 33bd29fa2696..28fbe366717e 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2438,6 +2438,11 @@ static int __init btrfs_print_mod_info(void)
- 			", fsverity=yes"
- #else
- 			", fsverity=no"
-+#endif
-+#ifdef CONFIG_FS_ENCRYPTION
-+			", fscrypt=yes"
-+#else
-+			", fscrypt=no"
- #endif
- 			;
- 	pr_info("Btrfs loaded%s\n", options);
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 84c05246ffd8..f75b00805462 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -304,6 +304,9 @@ BTRFS_FEAT_ATTR_INCOMPAT(raid_stripe_tree, RAID_STRIPE_TREE);
- #ifdef CONFIG_FS_VERITY
- BTRFS_FEAT_ATTR_COMPAT_RO(verity, VERITY);
- #endif
-+#ifdef CONFIG_FS_ENCRYPTION
-+BTRFS_FEAT_ATTR_INCOMPAT(encryption, ENCRYPT);
-+#endif /* CONFIG_FS_ENCRYPTION */
+-		over = !dir_emit(ctx, name, name_len,
+-			       location.objectid, d_type);
++		if (di->type & BTRFS_FT_ENCRYPTED) {
++			int ret;
++			struct fscrypt_str iname = FSTR_INIT(name, name_len);
++
++			fstr->len = fstr_len;
++			/*
++			 * The hash is only used when the encryption key is not
++			 * available. But if we have delayed insertions, then we
++			 * must have the encryption key available or we wouldn't
++			 * have been able to create entries in the directory.
++			 * So, we don't calculate the hash.
++			 */
++			ret = fscrypt_fname_disk_to_usr(inode, 0, 0, &iname,
++							fstr);
++			if (ret)
++				return ret;
++			over = !dir_emit(ctx, fstr->name, fstr->len,
++					 location.objectid, d_type);
++		} else {
++			over = !dir_emit(ctx, name, name_len, location.objectid,
++					 d_type);
++		}
+ 
+ 		if (refcount_dec_and_test(&curr->refs))
+ 			kfree(curr);
+diff --git a/fs/btrfs/delayed-inode.h b/fs/btrfs/delayed-inode.h
+index 5cceb31bbd16..d369f6997df7 100644
+--- a/fs/btrfs/delayed-inode.h
++++ b/fs/btrfs/delayed-inode.h
+@@ -16,6 +16,8 @@
+ #include <linux/refcount.h>
+ #include "ctree.h"
+ 
++struct fscrypt_str;
++
+ enum btrfs_delayed_item_type {
+ 	BTRFS_DELAYED_INSERTION_ITEM,
+ 	BTRFS_DELAYED_DELETION_ITEM
+@@ -155,7 +157,9 @@ void btrfs_readdir_put_delayed_items(struct inode *inode,
+ 				     struct list_head *del_list);
+ int btrfs_should_delete_dir_index(struct list_head *del_list,
+ 				  u64 index);
+-int btrfs_readdir_delayed_dir_index(struct dir_context *ctx,
++int btrfs_readdir_delayed_dir_index(struct inode *inode,
++				    struct fscrypt_str *fstr,
++				    struct dir_context *ctx,
+ 				    struct list_head *ins_list);
+ 
+ /* Used during directory logging. */
+diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
+index 9c07d5c3e5ad..a64cfddff7f0 100644
+--- a/fs/btrfs/dir-item.c
++++ b/fs/btrfs/dir-item.c
+@@ -6,6 +6,7 @@
+ #include "messages.h"
+ #include "ctree.h"
+ #include "disk-io.h"
++#include "fscrypt.h"
+ #include "transaction.h"
+ #include "accessors.h"
+ #include "dir-item.h"
+@@ -230,6 +231,47 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
+ 	return di;
+ }
+ 
++/*
++ * Lookup for a directory item by fscrypt_name.
++ *
++ * @trans:	The transaction handle to use.
++ * @root:	The root of the target tree.
++ * @path:	Path to use for the search.
++ * @dir:	The inode number (objectid) of the directory.
++ * @name:	The fscrypt_name associated to the directory entry
++ * @mod:	Used to indicate if the tree search is meant for a read only
++ *		lookup or for a deletion lookup, so its value should be 0 or
++ *		-1, respectively.
++ *
++ * Returns: NULL if the dir item does not exists, an error pointer if an error
++ * happened, or a pointer to a dir item if a dir item exists for the given name.
++ */
++struct btrfs_dir_item *btrfs_lookup_dir_item_fname(struct btrfs_trans_handle *trans,
++						   struct btrfs_root *root,
++						   struct btrfs_path *path, u64 dir,
++						   struct fscrypt_name *name, int mod)
++{
++	struct btrfs_key key;
++	struct btrfs_dir_item *di = NULL;
++	int ret = 0;
++
++	key.objectid = dir;
++	key.type = BTRFS_DIR_ITEM_KEY;
++	key.offset = btrfs_name_hash(name->disk_name.name, name->disk_name.len);
++	/* XXX get the right hash for no-key names */
++
++	ret = btrfs_search_slot(trans, root, &key, path, mod, -mod);
++	if (ret == 0)
++		di = btrfs_match_dir_item_fname(root->fs_info, path, name);
++
++	if (ret == -ENOENT || (di && IS_ERR(di) && PTR_ERR(di) == -ENOENT))
++		return NULL;
++	if (ret < 0)
++		di = ERR_PTR(ret);
++
++	return di;
++}
++
+ int btrfs_check_dir_item_collision(struct btrfs_root *root, u64 dir,
+ 				   const struct fscrypt_str *name)
+ {
+@@ -287,9 +329,9 @@ int btrfs_check_dir_item_collision(struct btrfs_root *root, u64 dir,
+ }
  
  /*
-  * Features which depend on feature bits and may differ between each fs.
-@@ -336,6 +339,9 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
- #ifdef CONFIG_FS_VERITY
- 	BTRFS_FEAT_ATTR_PTR(verity),
- #endif
+- * Lookup for a directory index item by name and index number.
++ * Lookup for a directory index item by fscrypt_name and index number.
+  *
+- * @trans:	The transaction handle to use. Can be NULL if @mod is 0.
++ * @trans:	The transaction handle to use.
+  * @root:	The root of the target tree.
+  * @path:	Path to use for the search.
+  * @dir:	The inode number (objectid) of the directory.
+@@ -327,7 +369,7 @@ btrfs_lookup_dir_index_item(struct btrfs_trans_handle *trans,
+ 
+ struct btrfs_dir_item *
+ btrfs_search_dir_index_item(struct btrfs_root *root, struct btrfs_path *path,
+-			    u64 dirid, const struct fscrypt_str *name)
++			    u64 dirid, struct fscrypt_name *name)
+ {
+ 	struct btrfs_dir_item *di;
+ 	struct btrfs_key key;
+@@ -340,9 +382,7 @@ btrfs_search_dir_index_item(struct btrfs_root *root, struct btrfs_path *path,
+ 	btrfs_for_each_slot(root, &key, &key, path, ret) {
+ 		if (key.objectid != dirid || key.type != BTRFS_DIR_INDEX_KEY)
+ 			break;
+-
+-		di = btrfs_match_dir_item_name(root->fs_info, path,
+-					       name->name, name->len);
++		di = btrfs_match_dir_item_fname(root->fs_info, path, name);
+ 		if (di)
+ 			return di;
+ 	}
+@@ -378,9 +418,9 @@ struct btrfs_dir_item *btrfs_lookup_xattr(struct btrfs_trans_handle *trans,
+  * this walks through all the entries in a dir item and finds one
+  * for a specific name.
+  */
+-struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_fs_info *fs_info,
+-						 struct btrfs_path *path,
+-						 const char *name, int name_len)
++struct btrfs_dir_item *btrfs_match_dir_item_fname(struct btrfs_fs_info *fs_info,
++						  struct btrfs_path *path,
++						  struct fscrypt_name *name)
+ {
+ 	struct btrfs_dir_item *dir_item;
+ 	unsigned long name_ptr;
+@@ -399,8 +439,8 @@ struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_fs_info *fs_info,
+ 			btrfs_dir_data_len(leaf, dir_item);
+ 		name_ptr = (unsigned long)(dir_item + 1);
+ 
+-		if (btrfs_dir_name_len(leaf, dir_item) == name_len &&
+-		    memcmp_extent_buffer(leaf, name, name_ptr, name_len) == 0)
++		if (btrfs_fscrypt_match_name(name, leaf, name_ptr,
++					     btrfs_dir_name_len(leaf, dir_item)))
+ 			return dir_item;
+ 
+ 		cur += this_len;
+@@ -410,6 +450,21 @@ struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_fs_info *fs_info,
+ 	return NULL;
+ }
+ 
++/*
++ * helper function to look at the directory item pointed to by 'path'
++ * this walks through all the entries in a dir item and finds one
++ * for a specific name.
++ */
++struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_fs_info *fs_info,
++						 struct btrfs_path *path,
++						 const char *name, int name_len)
++{
++	struct fscrypt_name fname = {
++		.disk_name = FSTR_INIT((char *) name, name_len)
++	};
++	return btrfs_match_dir_item_fname(fs_info, path, &fname);
++}
++
+ /*
+  * given a pointer into a directory item, delete it.  This
+  * handles items that have more than one entry in them.
+diff --git a/fs/btrfs/dir-item.h b/fs/btrfs/dir-item.h
+index e40a226373d7..1d6ab8c3b879 100644
+--- a/fs/btrfs/dir-item.h
++++ b/fs/btrfs/dir-item.h
+@@ -6,6 +6,7 @@
+ #include <linux/crc32c.h>
+ 
+ struct fscrypt_str;
++struct fscrypt_name;
+ 
+ int btrfs_check_dir_item_collision(struct btrfs_root *root, u64 dir,
+ 			  const struct fscrypt_str *name);
+@@ -16,6 +17,11 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
+ 					     struct btrfs_root *root,
+ 					     struct btrfs_path *path, u64 dir,
+ 					     const struct fscrypt_str *name, int mod);
++struct btrfs_dir_item *btrfs_lookup_dir_item_fname(
++	struct btrfs_trans_handle *trans,
++	struct btrfs_root *root,
++	struct btrfs_path *path, u64 dir,
++	struct fscrypt_name *name, int mod);
+ struct btrfs_dir_item *btrfs_lookup_dir_index_item(
+ 			struct btrfs_trans_handle *trans,
+ 			struct btrfs_root *root,
+@@ -23,7 +29,7 @@ struct btrfs_dir_item *btrfs_lookup_dir_index_item(
+ 			u64 index, const struct fscrypt_str *name, int mod);
+ struct btrfs_dir_item *btrfs_search_dir_index_item(struct btrfs_root *root,
+ 			    struct btrfs_path *path, u64 dirid,
+-			    const struct fscrypt_str *name);
++			    struct fscrypt_name *name);
+ int btrfs_delete_one_dir_name(struct btrfs_trans_handle *trans,
+ 			      struct btrfs_root *root,
+ 			      struct btrfs_path *path,
+@@ -42,6 +48,9 @@ struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_fs_info *fs_info,
+ 						 struct btrfs_path *path,
+ 						 const char *name,
+ 						 int name_len);
++struct btrfs_dir_item *btrfs_match_dir_item_fname(struct btrfs_fs_info *fs_info,
++						  struct btrfs_path *path,
++						  struct fscrypt_name *name);
+ 
+ static inline u64 btrfs_name_hash(const char *name, int len)
+ {
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index c1b15a8efef5..19c4f0657098 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4320,6 +4320,47 @@ static void assert_eb_folio_uptodate(const struct extent_buffer *eb, int i)
+ 	}
+ }
+ 
++/* Take a sha256 of a portion of an extent buffer. */
++void extent_buffer_sha256(const struct extent_buffer *eb,
++			  unsigned long start,
++			  unsigned long len, u8 *out)
++{
++	size_t cur;
++	size_t offset;
++	char *kaddr;
++	unsigned long i = get_eb_folio_index(eb, start);
++	struct sha256_state sctx;
++
++	if (check_eb_range(eb, start, len))
++		return;
++
++	if (eb->addr) {
++		sha256(eb->addr + start, len, out);
++		return;
++	}
++
++	offset = get_eb_offset_in_folio(eb, start);
++
++	/*
++	 * TODO: This should maybe be using the crypto API, not the fallback,
++	 * but fscrypt uses the fallback and this is only used in emulation of
++	 * fscrypt's buffer sha256 method.
++	 */
++	sha256_init(&sctx);
++	while (len > 0) {
++		assert_eb_folio_uptodate(eb, i);
++
++		cur = min(len, PAGE_SIZE - offset);
++		kaddr = folio_address(eb->folios[i]);
++		sha256_update(&sctx, (u8 *)(kaddr + offset), cur);
++
++		len -= cur;
++		offset = 0;
++		i++;
++	}
++	sha256_final(&sctx, out);
++}
++
+ static void __write_extent_buffer(const struct extent_buffer *eb,
+ 				  const void *srcv, unsigned long start,
+ 				  unsigned long len, bool use_memmove)
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 4437607f2b06..80f40f027f1e 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -287,6 +287,9 @@ static inline int extent_buffer_uptodate(const struct extent_buffer *eb)
+ 
+ int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
+ 			 unsigned long start, unsigned long len);
++void extent_buffer_sha256(const struct extent_buffer *eb,
++			  unsigned long start,
++			  unsigned long len, u8 *out);
+ void read_extent_buffer(const struct extent_buffer *eb, void *dst,
+ 			unsigned long start,
+ 			unsigned long len);
+diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
+index 3f82352662e6..8f22c5f257ff 100644
+--- a/fs/btrfs/fscrypt.c
++++ b/fs/btrfs/fscrypt.c
+@@ -1,17 +1,52 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
+ #include <linux/iversion.h>
++#include <crypto/sha2.h>
+ #include "ctree.h"
+ #include "accessors.h"
+ #include "btrfs_inode.h"
+ #include "disk-io.h"
++#include "ioctl.h"
+ #include "fs.h"
+ #include "fscrypt.h"
+ #include "ioctl.h"
+ #include "messages.h"
++#include "root-tree.h"
+ #include "transaction.h"
+ #include "xattr.h"
+ 
++/*
++ * This function is extremely similar to fscrypt_match_name() but uses an
++ * extent_buffer.
++ */
++bool btrfs_fscrypt_match_name(struct fscrypt_name *fname,
++			      struct extent_buffer *leaf, unsigned long de_name,
++			      u32 de_name_len)
++{
++	const struct fscrypt_nokey_name *nokey_name =
++		(const struct fscrypt_nokey_name *)fname->crypto_buf.name;
++	u8 digest[SHA256_DIGEST_SIZE];
++
++	if (likely(fname->disk_name.name)) {
++		if (de_name_len != fname->disk_name.len)
++			return false;
++		return !memcmp_extent_buffer(leaf, fname->disk_name.name,
++					     de_name, de_name_len);
++	}
++
++	if (de_name_len <= sizeof(nokey_name->bytes))
++		return false;
++
++	if (memcmp_extent_buffer(leaf, nokey_name->bytes, de_name,
++				 sizeof(nokey_name->bytes)))
++		return false;
++
++	extent_buffer_sha256(leaf, de_name + sizeof(nokey_name->bytes),
++			     de_name_len - sizeof(nokey_name->bytes), digest);
++
++	return !memcmp(digest, nokey_name->sha256, sizeof(digest));
++}
++
+ static int btrfs_fscrypt_get_context(struct inode *inode, void *ctx, size_t len)
+ {
+ 	struct btrfs_key key = {
+diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
+index 80adb7e56826..1647bbbcd609 100644
+--- a/fs/btrfs/fscrypt.h
++++ b/fs/btrfs/fscrypt.h
+@@ -4,9 +4,28 @@
+ #define BTRFS_FSCRYPT_H
+ 
+ #include <linux/fscrypt.h>
++#include "extent_io.h"
+ 
+ #include "fs.h"
+ 
 +#ifdef CONFIG_FS_ENCRYPTION
-+	BTRFS_FEAT_ATTR_PTR(encryption),
++bool btrfs_fscrypt_match_name(struct fscrypt_name *fname,
++			      struct extent_buffer *leaf,
++			      unsigned long de_name, u32 de_name_len);
++
++#else
++static inline bool btrfs_fscrypt_match_name(struct fscrypt_name *fname,
++					    struct extent_buffer *leaf,
++					    unsigned long de_name,
++					    u32 de_name_len)
++{
++	if (de_name_len != fname_len(fname))
++		return false;
++	return !memcmp_extent_buffer(leaf, fname->disk_name.name, de_name,
++				     de_name_len);
++}
 +#endif /* CONFIG_FS_ENCRYPTION */
- 	NULL
- };
++
+ extern const struct fscrypt_operations btrfs_fscrypt_ops;
  
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index f8bc34a6bcfa..25b01cf0a3b4 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -334,6 +334,7 @@ struct btrfs_ioctl_fs_info_args {
- #define BTRFS_FEATURE_INCOMPAT_ZONED		(1ULL << 12)
- #define BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2	(1ULL << 13)
- #define BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE	(1ULL << 14)
-+#define BTRFS_FEATURE_INCOMPAT_ENCRYPT		(1ULL << 15)
- #define BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA	(1ULL << 16)
+ #endif /* BTRFS_FSCRYPT_H */
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 4999ae1db2a3..5db3a92688fb 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -4053,7 +4053,7 @@ int btrfs_update_inode_fallback(struct btrfs_trans_handle *trans,
+ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 				struct btrfs_inode *dir,
+ 				struct btrfs_inode *inode,
+-				const struct fscrypt_str *name,
++				struct fscrypt_name *name,
+ 				struct btrfs_rename_ctx *rename_ctx)
+ {
+ 	struct btrfs_root *root = dir->root;
+@@ -4071,7 +4071,7 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 		goto out;
+ 	}
  
- struct btrfs_ioctl_feature_flags {
+-	di = btrfs_lookup_dir_item(trans, root, path, dir_ino, name, -1);
++	di = btrfs_lookup_dir_item_fname(trans, root, path, dir_ino, name, -1);
+ 	if (IS_ERR_OR_NULL(di)) {
+ 		ret = di ? PTR_ERR(di) : -ENOENT;
+ 		goto err;
+@@ -4099,11 +4099,14 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 		}
+ 	}
+ 
+-	ret = btrfs_del_inode_ref(trans, root, name, ino, dir_ino, &index);
++	ret = btrfs_del_inode_ref(trans, root, &name->disk_name, ino, dir_ino,
++				  &index);
+ 	if (ret) {
++		/* This should print a base-64 encoded name if relevant? */
+ 		btrfs_info(fs_info,
+ 			"failed to delete reference to %.*s, inode %llu parent %llu",
+-			name->len, name->name, ino, dir_ino);
++			name->disk_name.len, name->disk_name.name, ino,
++			dir_ino);
+ 		btrfs_abort_transaction(trans, ret);
+ 		goto err;
+ 	}
+@@ -4124,8 +4127,10 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 	 * operations on the log tree, increasing latency for applications.
+ 	 */
+ 	if (!rename_ctx) {
+-		btrfs_del_inode_ref_in_log(trans, root, name, inode, dir_ino);
+-		btrfs_del_dir_entries_in_log(trans, root, name, dir, index);
++		btrfs_del_inode_ref_in_log(trans, root, &name->disk_name,
++					   inode, dir_ino);
++		btrfs_del_dir_entries_in_log(trans, root, &name->disk_name,
++					     dir, index);
+ 	}
+ 
+ 	/*
+@@ -4143,7 +4148,7 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 	if (ret)
+ 		goto out;
+ 
+-	btrfs_i_size_write(dir, dir->vfs_inode.i_size - name->len * 2);
++	btrfs_i_size_write(dir, dir->vfs_inode.i_size - name->disk_name.len * 2);
+ 	inode_inc_iversion(&inode->vfs_inode);
+ 	inode_inc_iversion(&dir->vfs_inode);
+  	inode_set_mtime_to_ts(&dir->vfs_inode, inode_set_ctime_current(&dir->vfs_inode));
+@@ -4154,7 +4159,7 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 
+ int btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 		       struct btrfs_inode *dir, struct btrfs_inode *inode,
+-		       const struct fscrypt_str *name)
++		       struct fscrypt_name *name)
+ {
+ 	int ret;
+ 
+@@ -4205,7 +4210,7 @@ static int btrfs_unlink(struct inode *dir, struct dentry *dentry)
+ 				false);
+ 
+ 	ret = btrfs_unlink_inode(trans, BTRFS_I(dir), BTRFS_I(d_inode(dentry)),
+-				 &fname.disk_name);
++				 &fname);
+ 	if (ret)
+ 		goto end_trans;
+ 
+@@ -4242,8 +4247,6 @@ static int btrfs_unlink_subvol(struct btrfs_trans_handle *trans,
+ 	if (ret)
+ 		return ret;
+ 
+-	/* This needs to handle no-key deletions later on */
+-
+ 	if (btrfs_ino(inode) == BTRFS_FIRST_FREE_OBJECTID) {
+ 		objectid = inode->root->root_key.objectid;
+ 	} else if (btrfs_ino(inode) == BTRFS_EMPTY_SUBVOL_DIR_OBJECTID) {
+@@ -4260,8 +4263,8 @@ static int btrfs_unlink_subvol(struct btrfs_trans_handle *trans,
+ 		goto out;
+ 	}
+ 
+-	di = btrfs_lookup_dir_item(trans, root, path, dir_ino,
+-				   &fname.disk_name, -1);
++	di = btrfs_lookup_dir_item_fname(trans, root, path, dir_ino,
++					 &fname, -1);
+ 	if (IS_ERR_OR_NULL(di)) {
+ 		ret = di ? PTR_ERR(di) : -ENOENT;
+ 		goto out;
+@@ -4287,7 +4290,7 @@ static int btrfs_unlink_subvol(struct btrfs_trans_handle *trans,
+ 	 * call btrfs_del_root_ref, and it _shouldn't_ fail.
+ 	 */
+ 	if (btrfs_ino(inode) == BTRFS_EMPTY_SUBVOL_DIR_OBJECTID) {
+-		di = btrfs_search_dir_index_item(root, path, dir_ino, &fname.disk_name);
++		di = btrfs_search_dir_index_item(root, path, dir_ino, &fname);
+ 		if (IS_ERR_OR_NULL(di)) {
+ 			if (!di)
+ 				ret = -ENOENT;
+@@ -4304,7 +4307,7 @@ static int btrfs_unlink_subvol(struct btrfs_trans_handle *trans,
+ 	} else {
+ 		ret = btrfs_del_root_ref(trans, objectid,
+ 					 root->root_key.objectid, dir_ino,
+-					 &index, &fname.disk_name);
++					 &index, &fname);
+ 		if (ret) {
+ 			btrfs_abort_transaction(trans, ret);
+ 			goto out;
+@@ -4631,7 +4634,7 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
+ 
+ 	/* now the directory is empty */
+ 	err = btrfs_unlink_inode(trans, BTRFS_I(dir), BTRFS_I(d_inode(dentry)),
+-				 &fname.disk_name);
++				 &fname);
+ 	if (!err) {
+ 		btrfs_i_size_write(BTRFS_I(inode), 0);
+ 		/*
+@@ -5337,32 +5340,23 @@ void btrfs_evict_inode(struct inode *inode)
+  * If no dir entries were found, returns -ENOENT.
+  * If found a corrupted location in dir entry, returns -EUCLEAN.
+  */
+-static int btrfs_inode_by_name(struct btrfs_inode *dir, struct dentry *dentry,
++static int btrfs_inode_by_name(struct btrfs_inode *dir,
++			       struct fscrypt_name *fname,
+ 			       struct btrfs_key *location, u8 *type)
+ {
+ 	struct btrfs_dir_item *di;
+ 	struct btrfs_path *path;
+ 	struct btrfs_root *root = dir->root;
+ 	int ret = 0;
+-	struct fscrypt_name fname;
+ 
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+ 		return -ENOMEM;
+ 
+-	ret = fscrypt_setup_filename(&dir->vfs_inode, &dentry->d_name, 1, &fname);
+-	if (ret < 0)
+-		goto out;
+-	/*
+-	 * fscrypt_setup_filename() should never return a positive value, but
+-	 * gcc on sparc/parisc thinks it can, so assert that doesn't happen.
+-	 */
+-	ASSERT(ret == 0);
+-
+ 	/* This needs to handle no-key deletions later on */
+ 
+-	di = btrfs_lookup_dir_item(NULL, root, path, btrfs_ino(dir),
+-				   &fname.disk_name, 0);
++	di = btrfs_lookup_dir_item_fname(NULL, root, path, btrfs_ino(dir),
++				   fname, 0);
+ 	if (IS_ERR_OR_NULL(di)) {
+ 		ret = di ? PTR_ERR(di) : -ENOENT;
+ 		goto out;
+@@ -5374,13 +5368,13 @@ static int btrfs_inode_by_name(struct btrfs_inode *dir, struct dentry *dentry,
+ 		ret = -EUCLEAN;
+ 		btrfs_warn(root->fs_info,
+ "%s gets something invalid in DIR_ITEM (name %s, directory ino %llu, location(%llu %u %llu))",
+-			   __func__, fname.disk_name.name, btrfs_ino(dir),
+-			   location->objectid, location->type, location->offset);
++			   __func__, fname->usr_fname->name,
++			   btrfs_ino(dir), location->objectid,
++			   location->type, location->offset);
+ 	}
+ 	if (!ret)
+ 		*type = btrfs_dir_ftype(path->nodes[0], di);
+ out:
+-	fscrypt_free_filename(&fname);
+ 	btrfs_free_path(path);
+ 	return ret;
+ }
+@@ -5658,20 +5652,27 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
+ 	struct btrfs_root *root = BTRFS_I(dir)->root;
+ 	struct btrfs_root *sub_root = root;
+ 	struct btrfs_key location;
++	struct fscrypt_name fname;
+ 	u8 di_type = 0;
+ 	int ret = 0;
+ 
+ 	if (dentry->d_name.len > BTRFS_NAME_LEN)
+ 		return ERR_PTR(-ENAMETOOLONG);
+ 
+-	ret = btrfs_inode_by_name(BTRFS_I(dir), dentry, &location, &di_type);
+-	if (ret < 0)
++	ret = fscrypt_prepare_lookup(dir, dentry, &fname);
++	if (ret)
+ 		return ERR_PTR(ret);
+ 
++	ret = btrfs_inode_by_name(BTRFS_I(dir), &fname, &location, &di_type);
++	if (ret < 0) {
++		inode = ERR_PTR(ret);
++		goto cleanup;
++	}
++
+ 	if (location.type == BTRFS_INODE_ITEM_KEY) {
+ 		inode = btrfs_iget(dir->i_sb, location.objectid, root);
+ 		if (IS_ERR(inode))
+-			return inode;
++			goto cleanup;
+ 
+ 		/* Do extra check against inode mode with di_type */
+ 		if (btrfs_inode_type(inode) != di_type) {
+@@ -5680,9 +5681,10 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
+ 				  inode->i_mode, btrfs_inode_type(inode),
+ 				  di_type);
+ 			iput(inode);
+-			return ERR_PTR(-EUCLEAN);
++			inode = ERR_PTR(-EUCLEAN);
++			goto cleanup;
+ 		}
+-		return inode;
++		goto cleanup;
+ 	}
+ 
+ 	ret = fixup_tree_root_location(fs_info, BTRFS_I(dir), dentry,
+@@ -5697,7 +5699,7 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
+ 		btrfs_put_root(sub_root);
+ 
+ 		if (IS_ERR(inode))
+-			return inode;
++			goto cleanup;
+ 
+ 		down_read(&fs_info->cleanup_work_sem);
+ 		if (!sb_rdonly(inode->i_sb))
+@@ -5709,6 +5711,8 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
+ 		}
+ 	}
+ 
++cleanup:
++	fscrypt_free_filename(&fname);
+ 	return inode;
+ }
+ 
+@@ -5897,18 +5901,32 @@ static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
+ 	LIST_HEAD(del_list);
+ 	int ret;
+ 	char *name_ptr;
+-	int name_len;
++	u32 name_len;
+ 	int entries = 0;
+ 	int total_len = 0;
+ 	bool put = false;
+ 	struct btrfs_key location;
++	struct fscrypt_str fstr = FSTR_INIT(NULL, 0);
++	u32 fstr_len = 0;
+ 
+ 	if (!dir_emit_dots(file, ctx))
+ 		return 0;
+ 
++	if (BTRFS_I(inode)->flags & BTRFS_INODE_ENCRYPT) {
++		ret = fscrypt_prepare_readdir(inode);
++		if (ret)
++			return ret;
++		ret = fscrypt_fname_alloc_buffer(BTRFS_NAME_LEN, &fstr);
++		if (ret)
++			return ret;
++		fstr_len = fstr.len;
++	}
++
+ 	path = btrfs_alloc_path();
+-	if (!path)
+-		return -ENOMEM;
++	if (!path) {
++		ret = -ENOMEM;
++		goto err_fstr;
++	}
+ 
+ 	addr = private->filldir_buf;
+ 	path->reada = READA_FORWARD;
+@@ -5925,6 +5943,7 @@ static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
+ 		struct dir_entry *entry;
+ 		struct extent_buffer *leaf = path->nodes[0];
+ 		u8 ftype;
++		u32 nokey_len;
+ 
+ 		if (found_key.objectid != key.objectid)
+ 			break;
+@@ -5938,8 +5957,13 @@ static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
+ 			continue;
+ 		di = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_dir_item);
+ 		name_len = btrfs_dir_name_len(leaf, di);
+-		if ((total_len + sizeof(struct dir_entry) + name_len) >=
+-		    PAGE_SIZE) {
++		nokey_len = DIV_ROUND_UP(name_len * 4, 3);
++		/*
++		 * If name is encrypted, and we don't have the key, we could
++		 * need up to 4/3rds the bytes to print it.
++		 */
++		if ((total_len + sizeof(struct dir_entry) + nokey_len)
++		    >= PAGE_SIZE) {
+ 			btrfs_release_path(path);
+ 			ret = btrfs_filldir(private->filldir_buf, entries, ctx);
+ 			if (ret)
+@@ -5953,8 +5977,36 @@ static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
+ 		ftype = btrfs_dir_flags_to_ftype(btrfs_dir_flags(leaf, di));
+ 		entry = addr;
+ 		name_ptr = (char *)(entry + 1);
+-		read_extent_buffer(leaf, name_ptr,
+-				   (unsigned long)(di + 1), name_len);
++		if (btrfs_dir_flags(leaf, di) & BTRFS_FT_ENCRYPTED) {
++			struct fscrypt_str oname = FSTR_INIT(name_ptr,
++							     nokey_len);
++			u32 hash = 0, minor_hash = 0;
++
++			read_extent_buffer(leaf, fstr.name,
++					   (unsigned long)(di + 1), name_len);
++			fstr.len = name_len;
++			/*
++			 * We're iterating through DIR_INDEX items, so we don't
++			 * have the DIR_ITEM hash handy. Only compute it if
++			 * we'll need it -- the nokey name stores it, so that
++			 * we can look up the appropriate item by nokey name
++			 * later on.
++			 */
++			if (!fscrypt_has_encryption_key(inode)) {
++				u64 name_hash = btrfs_name_hash(fstr.name,
++								fstr.len);
++				hash = name_hash;
++				minor_hash = name_hash >> 32;
++			}
++			ret = fscrypt_fname_disk_to_usr(inode, hash, minor_hash,
++							&fstr, &oname);
++			if (ret)
++				goto err;
++			name_len = oname.len;
++		} else {
++			read_extent_buffer(leaf, name_ptr,
++					   (unsigned long)(di + 1), name_len);
++		}
+ 		put_unaligned(name_len, &entry->name_len);
+ 		put_unaligned(fs_ftype_to_dtype(ftype), &entry->type);
+ 		btrfs_dir_item_key_to_cpu(leaf, di, &location);
+@@ -5974,7 +6026,8 @@ static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
+ 	if (ret)
+ 		goto nopos;
+ 
+-	ret = btrfs_readdir_delayed_dir_index(ctx, &ins_list);
++	fstr.len = fstr_len;
++	ret = btrfs_readdir_delayed_dir_index(inode, &fstr, ctx, &ins_list);
+ 	if (ret)
+ 		goto nopos;
+ 
+@@ -6005,6 +6058,8 @@ static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
+ 	if (put)
+ 		btrfs_readdir_put_delayed_items(inode, &ins_list, &del_list);
+ 	btrfs_free_path(path);
++err_fstr:
++	fscrypt_fname_free_buffer(&fstr);
+ 	return ret;
+ }
+ 
+@@ -6463,6 +6518,7 @@ int btrfs_add_link(struct btrfs_trans_handle *trans,
+ 	struct btrfs_root *root = parent_inode->root;
+ 	u64 ino = btrfs_ino(inode);
+ 	u64 parent_ino = btrfs_ino(parent_inode);
++	struct fscrypt_name fname = { .disk_name = *name };
+ 
+ 	if (unlikely(ino == BTRFS_FIRST_FREE_OBJECTID)) {
+ 		memcpy(&key, &inode->root->root_key, sizeof(key));
+@@ -6518,7 +6574,7 @@ int btrfs_add_link(struct btrfs_trans_handle *trans,
+ 		int err;
+ 		err = btrfs_del_root_ref(trans, key.objectid,
+ 					 root->root_key.objectid, parent_ino,
+-					 &local_index, name);
++					 &local_index, &fname);
+ 		if (err)
+ 			btrfs_abort_transaction(trans, err);
+ 	} else if (add_backref) {
+@@ -8912,7 +8968,7 @@ static int btrfs_rename_exchange(struct inode *old_dir,
+ 	} else { /* src is an inode */
+ 		ret = __btrfs_unlink_inode(trans, BTRFS_I(old_dir),
+ 					   BTRFS_I(old_dentry->d_inode),
+-					   old_name, &old_rename_ctx);
++					   &old_fname, &old_rename_ctx);
+ 		if (!ret)
+ 			ret = btrfs_update_inode(trans, BTRFS_I(old_inode));
+ 	}
+@@ -8927,7 +8983,7 @@ static int btrfs_rename_exchange(struct inode *old_dir,
+ 	} else { /* dest is an inode */
+ 		ret = __btrfs_unlink_inode(trans, BTRFS_I(new_dir),
+ 					   BTRFS_I(new_dentry->d_inode),
+-					   new_name, &new_rename_ctx);
++					   &new_fname, &new_rename_ctx);
+ 		if (!ret)
+ 			ret = btrfs_update_inode(trans, BTRFS_I(new_inode));
+ 	}
+@@ -9172,7 +9228,7 @@ static int btrfs_rename(struct mnt_idmap *idmap,
+ 	} else {
+ 		ret = __btrfs_unlink_inode(trans, BTRFS_I(old_dir),
+ 					   BTRFS_I(d_inode(old_dentry)),
+-					   &old_fname.disk_name, &rename_ctx);
++					   &old_fname, &rename_ctx);
+ 		if (!ret)
+ 			ret = btrfs_update_inode(trans, BTRFS_I(old_inode));
+ 	}
+@@ -9190,7 +9246,7 @@ static int btrfs_rename(struct mnt_idmap *idmap,
+ 		} else {
+ 			ret = btrfs_unlink_inode(trans, BTRFS_I(new_dir),
+ 						 BTRFS_I(d_inode(new_dentry)),
+-						 &new_fname.disk_name);
++						 &new_fname);
+ 		}
+ 		if (!ret && new_inode->i_nlink == 0)
+ 			ret = btrfs_orphan_add(trans,
+diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+index 603ad1459368..d131934123f5 100644
+--- a/fs/btrfs/root-tree.c
++++ b/fs/btrfs/root-tree.c
+@@ -10,6 +10,7 @@
+ #include "messages.h"
+ #include "transaction.h"
+ #include "disk-io.h"
++#include "fscrypt.h"
+ #include "print-tree.h"
+ #include "qgroup.h"
+ #include "space-info.h"
+@@ -334,7 +335,7 @@ int btrfs_del_root(struct btrfs_trans_handle *trans,
+ 
+ int btrfs_del_root_ref(struct btrfs_trans_handle *trans, u64 root_id,
+ 		       u64 ref_id, u64 dirid, u64 *sequence,
+-		       const struct fscrypt_str *name)
++		       struct fscrypt_name *name)
+ {
+ 	struct btrfs_root *tree_root = trans->fs_info->tree_root;
+ 	struct btrfs_path *path;
+@@ -356,13 +357,14 @@ int btrfs_del_root_ref(struct btrfs_trans_handle *trans, u64 root_id,
+ 	if (ret < 0) {
+ 		goto out;
+ 	} else if (ret == 0) {
++		u32 name_len;
+ 		leaf = path->nodes[0];
+ 		ref = btrfs_item_ptr(leaf, path->slots[0],
+ 				     struct btrfs_root_ref);
+ 		ptr = (unsigned long)(ref + 1);
++		name_len = btrfs_root_ref_name_len(leaf, ref);
+ 		if ((btrfs_root_ref_dirid(leaf, ref) != dirid) ||
+-		    (btrfs_root_ref_name_len(leaf, ref) != name->len) ||
+-		    memcmp_extent_buffer(leaf, name->name, ptr, name->len)) {
++		    !btrfs_fscrypt_match_name(name, leaf, ptr, name_len)) {
+ 			ret = -ENOENT;
+ 			goto out;
+ 		}
+diff --git a/fs/btrfs/root-tree.h b/fs/btrfs/root-tree.h
+index 8b2c3859e464..5ba7b36cf826 100644
+--- a/fs/btrfs/root-tree.h
++++ b/fs/btrfs/root-tree.h
+@@ -15,7 +15,7 @@ int btrfs_add_root_ref(struct btrfs_trans_handle *trans, u64 root_id,
+ 		       const struct fscrypt_str *name);
+ int btrfs_del_root_ref(struct btrfs_trans_handle *trans, u64 root_id,
+ 		       u64 ref_id, u64 dirid, u64 *sequence,
+-		       const struct fscrypt_str *name);
++		       struct fscrypt_name *name);
+ int btrfs_del_root(struct btrfs_trans_handle *trans, const struct btrfs_key *key);
+ int btrfs_insert_root(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 		      const struct btrfs_key *key,
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 916e54b91ecc..c1ceaed65622 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -901,9 +901,10 @@ static int unlink_inode_for_log_replay(struct btrfs_trans_handle *trans,
+ 				       struct btrfs_inode *inode,
+ 				       const struct fscrypt_str *name)
+ {
++	struct fscrypt_name fname = { .disk_name = *name, };
+ 	int ret;
+ 
+-	ret = btrfs_unlink_inode(trans, dir, inode, name);
++	ret = btrfs_unlink_inode(trans, dir, inode, &fname);
+ 	if (ret)
+ 		return ret;
+ 	/*
 -- 
 2.43.0
 
