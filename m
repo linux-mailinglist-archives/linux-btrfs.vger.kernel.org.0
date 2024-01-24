@@ -1,80 +1,78 @@
-Return-Path: <linux-btrfs+bounces-1689-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1690-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A066583AF92
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:21:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B7AC83AF87
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6801BB2A9A7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:20:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5AB81F26C2C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C374823D6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F352982D76;
 	Wed, 24 Jan 2024 17:19:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="vEWmGDll"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="th51FyVG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035A481AD7
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3708823B6
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706116771; cv=none; b=K3x+B382sx9/F9HYuL0ccecv3E56ZXXhbCN6vPNKTm6DvSxM3GD5pparuphSVeixNTACfLRmkoWz1R1X0Wic1G536Vn6XeUDMqHVhMTAHwBWFEF3DWOMt8YZcsYe2Cl2RmwhMF7FJtZrsJA1wTn01GhjCM5m8rNu6IHPrDOhSKU=
+	t=1706116772; cv=none; b=Ar8rwcPnWjQSCQ9w9T1lYWvARAFDbunChAZ20RFnNVWBRk24xnldH04/cZUmjFEEwgkeGmWFO9Bj3IwcAc5TA+E1ZJG3ELzJ9BEo6oG5B5lJ4Bm81s9CObNUGVtTEiCZaM4d6PfaMEAq47fTH6GZjc4KIBLa2+xC3845IFoYOG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706116771; c=relaxed/simple;
-	bh=Uu7YV5yLr+hEql+nzXLoNu2mALbE3xnZm69CLggz7r4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UTeZXo/Nw9EARGCh5jl5J/YkQhAEAyxc0CWVwdbMFLgGX1DrEO3fkIJBL6ccbTCWWa6l0ZdjsxjKsD9j4v+YOd0P/CdBBJE2G7TkQ3Ix2BG/XWnjAXcF5ONQSrX2UhKZWpkkIMYjXXyfWOts7zx3RuNPk9MnXnFeDo+lGQcaEX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=vEWmGDll; arc=none smtp.client-ip=209.85.219.180
+	s=arc-20240116; t=1706116772; c=relaxed/simple;
+	bh=1unsrFxzdWyc52oIzARPeb8T+L3Ofl84YwZcEuDqfE4=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=OJwA5JGbagGaQtWdwW+duX5N3f8QVUKH7del+R+q2GAcEeblS0bFwgT+VeQA+10fs+z/7TO9STED3VpG/sO8hw2JD0jxCUZs6Cn9s84UW2tA5U7CcnyPC7EM2SpANBc49K/y2mWmUWv95dddweAS8qK0UF5VKjCd7EECQn0IUeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=th51FyVG; arc=none smtp.client-ip=209.85.128.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so4734497276.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:19:29 -0800 (PST)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60036bfdbfeso23999687b3.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:19:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116769; x=1706721569; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dpViKIiaU00vd91Jd8ebfAvhrj8KwHij6IqIKuBGBFs=;
-        b=vEWmGDlls+cxq28XlcsssZVUXouHcvlekkWm39ZZ+SKsXcW2O4KQqJO/fCSLZKlzda
-         qRk6ldHtxs4lPZdFfkdxxHvnIxTK3OnREXbuOhKfn+WZV/Uq5OaE7OHRDQdCVa3BznHN
-         cli+qrkgL1+r+aso64kye+5I3nQqKl6tdfGGPqbpVv9sL6u7WRq6hKIcYswLoDaDr3In
-         BP1fd4uyUNwJP2Z7zjRnvASdi4VnBsfruJrNwM+VjHpR3hsumirRJADzH03K7A0g3DVq
-         ngsEI1dF96bc3xtEAczo7U7VvAXqNsHM7+qWJEDHYfGDiBZJ67H/Amg6u9RT7WTcGYTW
-         yPew==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9sW2iDvsXcgI5hN33rhcxkjxObmQ5zKHgm8H4uzuR/g=;
+        b=th51FyVGCvpYWj6Ivntw7KX894aV1vraFyaF2vdbRZVJrl/ukCeeUlgT5A85T0a0Cd
+         UqweQjHbQroV4qzXEwc9KTL10bx43jCMHx41rBJd1aVRTTKZryCfUoDaSCEYlYCsiKey
+         A2S9SImWczl88/Yt7a1taOWFmxe47idJmAkeNMuos8jrUfrVs8RhPC36USeN3EqKpEvC
+         mX+4y+BRxeT5Xio0Bw67P1Ghf05zfPV6sQEFAvkLxZmuetdJjJkOgoCYZ4HSZ0n6fq64
+         gNM4RMXgiw6UYKx0dXZ4dgNGqleThyoe+1AiONG3UteiBItS7r5aLfxjLr87k6LiJ4NY
+         XsXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1706116769; x=1706721569;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dpViKIiaU00vd91Jd8ebfAvhrj8KwHij6IqIKuBGBFs=;
-        b=gZ2+rCJq08c9AMrTicLme/yDtr5oS26ZVZ6W+GEfTHvmLZ5RUDIWIQ52OXtvhaM4DR
-         Ng0nF+C9wY0CGMv77ttPe9RXGOz0m0iLaEjyWOPzlzXHxi5+bowGjDJ3R8BwjgjSGAWl
-         W7VW0BJA8PYaDF33E+n2DHILOToLhP1loGRx6IlxBsRYDe1npIQFoyGNNq1+rhTkv6Zm
-         caE/9aoNof4Ujld9U376RNQSbdTBr0ypKQag6eQT6E8moucaRx+8064dKfSvMoYS/nnZ
-         PfzS7jhVcSgsl5P+EX+cSWIacfjOvrfkTVK4g6mlzDEi9Ka8KVCeKSrEMDWkNeeZIQEH
-         GKNg==
-X-Gm-Message-State: AOJu0YwWz0oGofUtWf7nYzwJLNK7tappfbdAcYYB/zOEs/mb+Ii3uUc/
-	yJc2Y+Hl/d6x9jdw1cInhxyS6ooBmWyZHGwnfhflqXlRQFZ2Yaul4iReYNS1GRXnJt50Kwq1iUP
-	+
-X-Google-Smtp-Source: AGHT+IE6+aUQj2Vu/z1LuyBy5pWU9s8FQ1RxgYLn7+HV7gzojx2HElf2LVFdGXHnSD4XDTeUfIjl9Q==
-X-Received: by 2002:a81:52d3:0:b0:5ff:7f14:a5af with SMTP id g202-20020a8152d3000000b005ff7f14a5afmr748320ywb.16.1706116768678;
-        Wed, 24 Jan 2024 09:19:28 -0800 (PST)
+        bh=9sW2iDvsXcgI5hN33rhcxkjxObmQ5zKHgm8H4uzuR/g=;
+        b=QK/5KMSoZSkTS3u9Z7Gw+ooAqppJBrrdEdDeVx1eSenGaHwC1nhzjgbxNnus4xz6qW
+         geEU+M2TLSn6tpl81wybnXaNYQW8M0AQ5uThreXQxgI2WkusXAjg13IbobhxqEdQ/AYw
+         KTfq8c4Fd+OtkOnh8EU4Owig+UO79FLNyuPJJJcRxOjIaZ4S+shnlNihmTj3OcVgZZJ8
+         wjrcF0n8JLbWC18lOjORBkO36r7q9F3ottQhreJHPTagKGMsdYLUGWIt2sx1qt4CF7gC
+         ZNqLIWgSBI+/j4G82I1vvA1LdNb5MBP+bp3i8H33dPaNMEwUJfMEKVSFtMJHTzXC5Ymg
+         +8FA==
+X-Gm-Message-State: AOJu0Yw/sXeEbQo0zfofwTuxGM95mmG0xZnMJo8xldBv3CgivCaJJL+m
+	TEFZ337KjBCXQG8IWY7EMZCeIvBSiPjQtKb6rgPmywOlcZXqJ8bowkvIs290M46pw3PVfXOAT03
+	8
+X-Google-Smtp-Source: AGHT+IEeFzUDVojL6FW41YhfVqE+xto/neDRrcVM4vDbD+4qMBh2cd4g/z3ssIimIuounyNBec5N3w==
+X-Received: by 2002:a0d:e687:0:b0:5ee:7a7d:fd11 with SMTP id p129-20020a0de687000000b005ee7a7dfd11mr1128940ywe.21.1706116769703;
+        Wed, 24 Jan 2024 09:19:29 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id i5-20020a815405000000b005de8c10f283sm61461ywb.102.2024.01.24.09.19.28
+        by smtp.gmail.com with ESMTPSA id a2-20020a818a02000000b005ff7f3a9c0dsm61493ywg.119.2024.01.24.09.19.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 09:19:28 -0800 (PST)
+        Wed, 24 Jan 2024 09:19:29 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Cc: Omar Sandoval <osandov@osandov.com>,
-	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v5 07/52] fscrypt: expose fscrypt_nokey_name
-Date: Wed, 24 Jan 2024 12:18:29 -0500
-Message-ID: <132b64edf1e6b705995fb1a6dc2f194527f6be75.1706116485.git.josef@toxicpanda.com>
+Subject: [PATCH v5 08/52] fscrypt: add documentation about extent encryption
+Date: Wed, 24 Jan 2024 12:18:30 -0500
+Message-ID: <7b2cc4dd423c3930e51b1ef5dd209164ff11c05a.1706116485.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1706116485.git.josef@toxicpanda.com>
 References: <cover.1706116485.git.josef@toxicpanda.com>
@@ -86,118 +84,79 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Omar Sandoval <osandov@osandov.com>
+Add a couple of sections to the fscrypt documentation about per-extent
+encryption.
 
-btrfs stores its data structures, including filenames in directories, in
-its own buffer implementation, struct extent_buffer, composed of
-several non-contiguous pages. We could copy filenames into a
-temporary buffer and use fscrypt_match_name() against that buffer, such
-extensive memcpying would be expensive. Instead, exposing
-fscrypt_nokey_name as in this change allows btrfs to recapitulate
-fscrypt_match_name() using methods on struct extent_buffer instead of
-dealing with a raw byte array.
-
-Signed-off-by: Omar Sandoval <osandov@osandov.com>
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/crypto/fname.c       | 36 ------------------------------------
- include/linux/fscrypt.h | 36 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+), 36 deletions(-)
+ Documentation/filesystems/fscrypt.rst | 41 +++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 7b3fc189593a..3e8210036f15 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -25,42 +25,6 @@
-  */
- #define FSCRYPT_FNAME_MIN_MSG_LEN 16
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+index e86b886b64d0..4421c43a3fcd 100644
+--- a/Documentation/filesystems/fscrypt.rst
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -256,6 +256,21 @@ alternative master keys or to support rotating master keys.  Instead,
+ the master keys may be wrapped in userspace, e.g. as is done by the
+ `fscrypt <https://github.com/google/fscrypt>`_ tool.
  
--/*
-- * struct fscrypt_nokey_name - identifier for directory entry when key is absent
-- *
-- * When userspace lists an encrypted directory without access to the key, the
-- * filesystem must present a unique "no-key name" for each filename that allows
-- * it to find the directory entry again if requested.  Naively, that would just
-- * mean using the ciphertext filenames.  However, since the ciphertext filenames
-- * can contain illegal characters ('\0' and '/'), they must be encoded in some
-- * way.  We use base64url.  But that can cause names to exceed NAME_MAX (255
-- * bytes), so we also need to use a strong hash to abbreviate long names.
-- *
-- * The filesystem may also need another kind of hash, the "dirhash", to quickly
-- * find the directory entry.  Since filesystems normally compute the dirhash
-- * over the on-disk filename (i.e. the ciphertext), it's not computable from
-- * no-key names that abbreviate the ciphertext using the strong hash to fit in
-- * NAME_MAX.  It's also not computable if it's a keyed hash taken over the
-- * plaintext (but it may still be available in the on-disk directory entry);
-- * casefolded directories use this type of dirhash.  At least in these cases,
-- * each no-key name must include the name's dirhash too.
-- *
-- * To meet all these requirements, we base64url-encode the following
-- * variable-length structure.  It contains the dirhash, or 0's if the filesystem
-- * didn't provide one; up to 149 bytes of the ciphertext name; and for
-- * ciphertexts longer than 149 bytes, also the SHA-256 of the remaining bytes.
-- *
-- * This ensures that each no-key name contains everything needed to find the
-- * directory entry again, contains only legal characters, doesn't exceed
-- * NAME_MAX, is unambiguous unless there's a SHA-256 collision, and that we only
-- * take the performance hit of SHA-256 on very long filenames (which are rare).
-- */
--struct fscrypt_nokey_name {
--	u32 dirhash[2];
--	u8 bytes[149];
--	u8 sha256[SHA256_DIGEST_SIZE];
--}; /* 189 bytes => 252 bytes base64url-encoded, which is <= NAME_MAX (255) */
--
- /*
-  * Decoded size of max-size no-key name, i.e. a name that was abbreviated using
-  * the strong hash and thus includes the 'sha256' field.  This isn't simply
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index ea3033956208..fc8b2156e444 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -56,6 +56,42 @@ struct fscrypt_name {
- #define fname_name(p)		((p)->disk_name.name)
- #define fname_len(p)		((p)->disk_name.len)
- 
-+/*
-+ * struct fscrypt_nokey_name - identifier for directory entry when key is absent
-+ *
-+ * When userspace lists an encrypted directory without access to the key, the
-+ * filesystem must present a unique "no-key name" for each filename that allows
-+ * it to find the directory entry again if requested.  Naively, that would just
-+ * mean using the ciphertext filenames.  However, since the ciphertext filenames
-+ * can contain illegal characters ('\0' and '/'), they must be encoded in some
-+ * way.  We use base64url.  But that can cause names to exceed NAME_MAX (255
-+ * bytes), so we also need to use a strong hash to abbreviate long names.
-+ *
-+ * The filesystem may also need another kind of hash, the "dirhash", to quickly
-+ * find the directory entry.  Since filesystems normally compute the dirhash
-+ * over the on-disk filename (i.e. the ciphertext), it's not computable from
-+ * no-key names that abbreviate the ciphertext using the strong hash to fit in
-+ * NAME_MAX.  It's also not computable if it's a keyed hash taken over the
-+ * plaintext (but it may still be available in the on-disk directory entry);
-+ * casefolded directories use this type of dirhash.  At least in these cases,
-+ * each no-key name must include the name's dirhash too.
-+ *
-+ * To meet all these requirements, we base64url-encode the following
-+ * variable-length structure.  It contains the dirhash, or 0's if the filesystem
-+ * didn't provide one; up to 149 bytes of the ciphertext name; and for
-+ * ciphertexts longer than 149 bytes, also the SHA-256 of the remaining bytes.
-+ *
-+ * This ensures that each no-key name contains everything needed to find the
-+ * directory entry again, contains only legal characters, doesn't exceed
-+ * NAME_MAX, is unambiguous unless there's a SHA-256 collision, and that we only
-+ * take the performance hit of SHA-256 on very long filenames (which are rare).
-+ */
-+struct fscrypt_nokey_name {
-+	u32 dirhash[2];
-+	u8 bytes[149];
-+	u8 sha256[32];
-+}; /* 189 bytes => 252 bytes base64url-encoded, which is <= NAME_MAX (255) */
++Per-extent encryption keys
++--------------------------
 +
- /* Maximum value for the third parameter of fscrypt_operations.set_context(). */
- #define FSCRYPT_SET_CONTEXT_MAX_SIZE	40
++For certain file systems, such as btrfs, it's desired to derive a
++per-extent encryption key.  This is to enable features such as snapshots
++and reflink, where you could have different inodes pointing at the same
++extent.  When a new extent is created fscrypt randomly generates a
++16-byte nonce and the file system stores it along side the extent.
++Then, it uses a KDF (as described in `Key derivation function`_) to
++derive the extent's key from the master key and nonce.
++
++Currently the inode's master key and encryption policy must match the
++extent, so you cannot share extents between inodes that were encrypted
++differently.
++
+ DIRECT_KEY policies
+ -------------------
+ 
+@@ -1395,6 +1410,27 @@ by the kernel and is used as KDF input or as a tweak to cause
+ different files to be encrypted differently; see `Per-file encryption
+ keys`_ and `DIRECT_KEY policies`_.
+ 
++Extent encryption context
++-------------------------
++
++The extent encryption context mirrors the important parts of the above
++`Encryption context`_, with a few ommisions.  The struct is defined as
++follows::
++
++        struct fscrypt_extent_context {
++                u8 version;
++                u8 encryption_mode;
++                u8 master_key_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE];
++                u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
++        };
++
++Currently all fields much match the containing inode's encryption
++context, with the exception of the nonce.
++
++Additionally extent encryption is only supported with
++FSCRYPT_EXTENT_CONTEXT_V2 using the standard policy, all other policies
++are disallowed.
++
+ Data path changes
+ -----------------
+ 
+@@ -1418,6 +1454,11 @@ buffer.  Some filesystems, such as UBIFS, already use temporary
+ buffers regardless of encryption.  Other filesystems, such as ext4 and
+ F2FS, have to allocate bounce pages specially for encryption.
+ 
++Inline encryption is not optional for extent encryption based file
++systems, the amount of objects required to be kept around is too much.
++Inline encryption handles the object lifetime details which results in a
++cleaner implementation.
++
+ Filename hashing and encoding
+ -----------------------------
  
 -- 
 2.43.0
