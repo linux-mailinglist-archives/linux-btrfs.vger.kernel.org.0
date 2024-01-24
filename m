@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-1743-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1744-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE78C83B3B1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 22:18:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AD5383B3B2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 22:18:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E9C51F253A7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 21:18:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E5F91C23541
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 21:18:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920D31353E4;
-	Wed, 24 Jan 2024 21:18:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 048FA1353E8;
+	Wed, 24 Jan 2024 21:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="c3BXrYdR";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="c3BXrYdR"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oMKyK2TU";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oMKyK2TU"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E1A17E760
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 21:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F62E1353E3
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 21:18:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706131096; cv=none; b=sD1YfoOmC3PLehqURSI9AtkNuHc/LwSh3gRteleLgwJkVsGBvIlJ8+ilA5B9YGdAdmc8vIHvNsWBWEuRGZEITR/W3Og/DDyRffyx3Hz72ox8dFlFkHTiqpJX32qOcvfS/KMenm0Kbeofdj4SFn2uPWBqrnqJ/n7I0HXCyXWi+rE=
+	t=1706131099; cv=none; b=hAU5XMdZ78Xt7MXMVhJJJAiE12fNLFS9GZ8WjYrTQqiNrBjCChvON6qCb8FPjoJfGYu1pWARZOD0fVcrWsy1+UJRbXUljcLVuXUPWdsZsnUZYpIpBnHVzu2YxrIDneOqH2OSpAkIhZCYRVrgWd++ThsfuuXxt/AMJ99PQ8/XlXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706131096; c=relaxed/simple;
-	bh=8Cb97388zbxK1SFgikL+CyLvVJfAXspRsJUK0FggzdM=;
+	s=arc-20240116; t=1706131099; c=relaxed/simple;
+	bh=BqKpxQdgaSpmKy/sN+JhkpTTyHzCdKK8sZN0x+JRcUg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pxFue2x4mkOBhVRZsm0COTPiKFax/GsBk4T6HKgEZMPKdFfKxgJp8plIW0QliS2UdKObnfMbhvX9h+zv8hty2zNOvymfWYZQLFEUyktNoY0DLqvWpmfkeR19rBEGx1rCN4VBNB5Nc3aZtTXSg+2wJUlBGVuAJ1ES1Qu4FXMLGc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=c3BXrYdR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=c3BXrYdR; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=KoWMRjsdDYObp7p/FIIGT8GdfDpbMINPw1ndFomE0GWrs3K8VkroGSMQ7U7mgJvK/DYY+GaGQcmdvIvPR0BTIzTVjJBE6qf5DkLvfX0Il63dyPmcmoUAev+4+EchgMr1PTbT41BpgASyyCr9uKPmXXnTLmSi1f9IUdSQF0liW4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oMKyK2TU; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oMKyK2TU; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 701D41FD85;
-	Wed, 24 Jan 2024 21:18:13 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D6C661FD8C;
+	Wed, 24 Jan 2024 21:18:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706131093; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1706131095; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5/GCNl1SCnRjV5/FZW6ZeqoEhQfO1p2x7eEoW+mfFw4=;
-	b=c3BXrYdR/lFhg5mjDjKx8ylqhPhYswkuqfQBe/zByD/deoobM4xDaLxLUPiyz1JlPvzTSB
-	gMqOOU0VvinUEycH+jikSZSQkff9qGSHejwkVQtif9hV9zLTDP9cBlFhjWczxuLMtX5yKG
-	+CLQAIMgFb8deAcl1yZ7cfGqicostCQ=
+	bh=hcwYBEo3SuQA6HqcLIQmclOFp7JBHypfA5QvKaCkrc4=;
+	b=oMKyK2TU4dnBROBx65Scs2U7ce+ToKmNp7HDUA1W+bV9b9qPOOP9QukkPTuduVcInEBl5d
+	m6w48ohJC1gFBrj7EL9JUYBEnXJU1buWjV8alRN+jmy8z/vYdmzl8pzrT7nRY6yHWFcT77
+	qn5g/mihCHsZXRc6mTCCnUOjKCGy3n4=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706131093; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1706131095; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5/GCNl1SCnRjV5/FZW6ZeqoEhQfO1p2x7eEoW+mfFw4=;
-	b=c3BXrYdR/lFhg5mjDjKx8ylqhPhYswkuqfQBe/zByD/deoobM4xDaLxLUPiyz1JlPvzTSB
-	gMqOOU0VvinUEycH+jikSZSQkff9qGSHejwkVQtif9hV9zLTDP9cBlFhjWczxuLMtX5yKG
-	+CLQAIMgFb8deAcl1yZ7cfGqicostCQ=
+	bh=hcwYBEo3SuQA6HqcLIQmclOFp7JBHypfA5QvKaCkrc4=;
+	b=oMKyK2TU4dnBROBx65Scs2U7ce+ToKmNp7HDUA1W+bV9b9qPOOP9QukkPTuduVcInEBl5d
+	m6w48ohJC1gFBrj7EL9JUYBEnXJU1buWjV8alRN+jmy8z/vYdmzl8pzrT7nRY6yHWFcT77
+	qn5g/mihCHsZXRc6mTCCnUOjKCGy3n4=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6894813786;
-	Wed, 24 Jan 2024 21:18:13 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CD70913786;
+	Wed, 24 Jan 2024 21:18:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wySEGZV+sWWddwAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Wed, 24 Jan 2024 21:18:13 +0000
+	id Th0kMpd+sWWjdwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Wed, 24 Jan 2024 21:18:15 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 01/20] btrfs: handle directory and dentry mismatch in btrfs_may_delete()
-Date: Wed, 24 Jan 2024 22:17:48 +0100
-Message-ID: <269733d3339107847d24fe4d19f4e55cb6c8cfc3.1706130791.git.dsterba@suse.com>
+Subject: [PATCH 02/20] btrfs: handle invalid range and start in merge_extent_mapping()
+Date: Wed, 24 Jan 2024 22:17:54 +0100
+Message-ID: <6cd106844e522bbdd21f15572d81d4c9186725cc.1706130791.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <cover.1706130791.git.dsterba@suse.com>
 References: <cover.1706130791.git.dsterba@suse.com>
@@ -102,42 +102,48 @@ X-Spamd-Result: default: False [0.90 / 50.00];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[16.19%]
+	 RCVD_TLS_ALL(0.00)[]
 X-Spam-Level: 
 X-Spam-Flag: NO
 X-Spam-Score: 0.90
 
-The helper btrfs_may_delete() is a copy of generic fs/namei.c:may_delete()
-to verify various conditions before deletion. There's a BUG_ON added
-before linux.git started, we can turn it to a proper error handling
-at least in our local helper. A mistmatch between directory and the
-deleted dentry is clearly invalid.
-
-This won't be probably ever hit due to the way how the parameters are
-set from the caller btrfs_ioctl_snap_destroy(), using a VFS helper
-lookup_one().
+Turn a BUG_ON to a properly handled error and update the error message
+in the caller.  It is expected that @em_in and @start passed to
+btrfs_add_extent_mapping() overlap. Besides tests, the only caller
+btrfs_get_extent() makes sure this is true.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/ioctl.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/btrfs/extent_map.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 3d476decde52..845fdc5f2a99 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -910,7 +910,9 @@ static int btrfs_may_delete(struct mnt_idmap *idmap,
- 	if (d_really_is_negative(victim))
- 		return -ENOENT;
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index f170e7122e74..ac5e366d57b2 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -539,7 +539,8 @@ static noinline int merge_extent_mapping(struct extent_map_tree *em_tree,
+ 	u64 end;
+ 	u64 start_diff;
  
--	BUG_ON(d_inode(victim->d_parent) != dir);
-+	/* The @victim is not inside @dir. */
-+	if (d_inode(victim->d_parent) != dir)
+-	BUG_ON(map_start < em->start || map_start >= extent_map_end(em));
++	if (map_start < em->start || map_start >= extent_map_end(em))
 +		return -EINVAL;
- 	audit_inode_child(dir, victim, AUDIT_TYPE_CHILD_DELETE);
  
- 	error = inode_permission(idmap, dir, MAY_WRITE | MAY_EXEC);
+ 	if (existing->start > map_start) {
+ 		next = existing;
+@@ -634,9 +635,9 @@ int btrfs_add_extent_mapping(struct btrfs_fs_info *fs_info,
+ 				free_extent_map(em);
+ 				*em_in = NULL;
+ 				WARN_ONCE(ret,
+-"unexpected error %d: merge existing(start %llu len %llu) with em(start %llu len %llu)\n",
+-					  ret, existing->start, existing->len,
+-					  orig_start, orig_len);
++"extent map merge error existing [%llu, %llu) with em [%llu, %llu) start %llu\n",
++					  existing->start, existing->len,
++					  orig_start, orig_len, start);
+ 			}
+ 			free_extent_map(existing);
+ 		}
 -- 
 2.42.1
 
