@@ -1,210 +1,159 @@
-Return-Path: <linux-btrfs+bounces-1668-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1669-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABF6F839DF4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 02:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B0DBF83A04E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 04:59:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1D021C25656
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 01:08:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E45641C2720A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 03:59:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8DD1106;
-	Wed, 24 Jan 2024 01:08:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 672268F72;
+	Wed, 24 Jan 2024 03:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ErLuoIfR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ErLuoIfR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A33EC5
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 01:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC4266FA5
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 03:59:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706058528; cv=none; b=M//r7eZ9xRwlNk10UHiDHbbYa6Yj/3QwKiddQ4L37tiCo9ThY4lGzscQYhXEH9IA2QDSQLjD5zU92E9OO3e9uW35dHSwbIRH/w8b0XLIsXvRySVIi+xpP1VCp1ol6uMIkgrcVzFJ5rc1+yywLttau86kjw444Nf5WrYpkzD40BA=
+	t=1706068757; cv=none; b=nRNsgQLvsEsgdpNA8c3dU5MUROrDblBnBatshR7QTxsrLQubTJZh+YLhJJWGnW1CCSJ+uqGHkXM/o1ytRttG+9kO5f+FMkr68o3p12JGIaRhvoFdk7r9z/8H4d9fhpaO0Lavd3GlOqZsNco6E+Y70sHdfQ5lWVWPKNZnWOhvj/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706058528; c=relaxed/simple;
-	bh=hriCenPgeX9/jvm+Lx7AfQPyVlASuUSUbfNb2WiN4Bk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QpSi3zgShh78qnQLfWFtmzJj3R992bKZPsxvPPHarVKfrt6z8yHNCHVlG1HeTyTtqZbt4/GQ5fJ3mQgIt5gWNB2r7/cdoiV3filwGhBgqB+YP/ix2CMxcy7UqKQokW+qvgCNS6KVlBMLN4S2gDjMuhFHJGAgM5PgO6fL8chxZNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a293f2280c7so511163666b.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Jan 2024 17:08:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706058524; x=1706663324;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k4zDOp4VVOH4gDaxGr8TkGiQrxsAA22QqKSqzK2s94w=;
-        b=dz9jotVP2aMbTAclh1QRR7mvpNKgI176Tb2Ke0gDwH9FOXHx7Yg28z16ssorxGGizx
-         uczJBeE1x8J/iYM8XKxsyHcbZOmLxMloASbN3ykexs3ZBok9+oHdtwRu5eM5Xe7yQQEt
-         EPnATSc9W1kN/gESKJcCHlAi/eRQqeTz5ol0TafKuZK26RBu3PNnV/E0sS1SHmtHb9M+
-         HXYt9qFJke6/kGIb7U7wkY7BKab0P7x0LvhrmIOE8yVBdLe1l3jYshvQDpNOkURVBCYT
-         SCVZZD1w1tbEsIgNvsifCJtroJCmvVgAtBiwDHsa0PjQvo1BE2/7HAUuk/NfSQZpzo6t
-         0WKg==
-X-Gm-Message-State: AOJu0Yxg7hEP4eiWI5yctfbWWZaKeXD8opx1ROYtB0syQ4L2QmQ9mojk
-	tZJlwuuSphY8PEGD02OM9KUd+HHSIxVtGsyrvgMl4IeR7ZkkkfGn0wiCSFDjq3QecQ==
-X-Google-Smtp-Source: AGHT+IHQURCrjvCnbJ3pvEdoZTuTq8VRaFSGR1aFdMBz7xRkqtMYaeSbZ5Dr4PbCkorQmTjEsyB89w==
-X-Received: by 2002:a17:906:ae87:b0:a30:f774:e42f with SMTP id md7-20020a170906ae8700b00a30f774e42fmr193150ejb.302.1706058523687;
-        Tue, 23 Jan 2024 17:08:43 -0800 (PST)
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
-        by smtp.gmail.com with ESMTPSA id tb25-20020a1709078b9900b00a2fc5d30717sm4230148ejc.65.2024.01.23.17.08.43
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 17:08:43 -0800 (PST)
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40eacb6067dso32824805e9.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Jan 2024 17:08:43 -0800 (PST)
-X-Received: by 2002:a05:600c:c1b:b0:40e:a488:3044 with SMTP id
- fm27-20020a05600c0c1b00b0040ea4883044mr558326wmb.117.1706058523216; Tue, 23
- Jan 2024 17:08:43 -0800 (PST)
+	s=arc-20240116; t=1706068757; c=relaxed/simple;
+	bh=F864I449D7epTAYTfMbAPvBrongAHjPFoMZT3nkjEoE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=DQCSekewpzJ1QPwP1C6xAt6t5IsQxWTCTupEjpUpprbiYGZHKXbOuoF29dyComgxC0W5u34gfsxLtViAYyKFDK8RMLnFgrfHs2rLuKhdIPDQ5trW6hSGAovITXRf8OqCLkG67z6l73B7T0id/9ivQrau6pAmbq/jnZixUcldh8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ErLuoIfR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ErLuoIfR; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B42301FCFD
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 03:59:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706068752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Hb0VYBs6H3W0q7fw2kVOQ/0OwBQkZzQO1EjBbNHfwJw=;
+	b=ErLuoIfRboZE2s0T77te8Mntqo2ciSp+7c8fPXRQgWLwb7ihvZ1QUa9XdT9vbQ6x0MHLZS
+	HwNbbR6wcxubXmU0lRIwdU3YUAP1XyNRkr53OiiYc2kBYR8fW+ygaTO7C+jE622AUcFLlA
+	Ht+8CFNSqSmYY3PBFBKQ7lOIU/xUI3g=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706068752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Hb0VYBs6H3W0q7fw2kVOQ/0OwBQkZzQO1EjBbNHfwJw=;
+	b=ErLuoIfRboZE2s0T77te8Mntqo2ciSp+7c8fPXRQgWLwb7ihvZ1QUa9XdT9vbQ6x0MHLZS
+	HwNbbR6wcxubXmU0lRIwdU3YUAP1XyNRkr53OiiYc2kBYR8fW+ygaTO7C+jE622AUcFLlA
+	Ht+8CFNSqSmYY3PBFBKQ7lOIU/xUI3g=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D9226136F5
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 03:59:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ywWwJQ+LsGXVLgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 03:59:11 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC 0/2] btrfs: defrag: further preparation for multi-page sector size
+Date: Wed, 24 Jan 2024 14:29:06 +1030
+Message-ID: <cover.1706068026.git.wqu@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <c3bed652c4e20c8a446fba371d529a78dc98b827.1705978912.git.wqu@suse.com>
- <CAEg-Je_OygqAdFoAV02PK8zaZm_4HhkvLz8-FQEK6ZnodYst5w@mail.gmail.com> <b12560b9-0fa6-453f-9bcf-94f06371031c@gmx.com>
-In-Reply-To: <b12560b9-0fa6-453f-9bcf-94f06371031c@gmx.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Tue, 23 Jan 2024 20:08:07 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je8jVZCESa++dr-LxuiyyT9v8vMLwyh1fJtZ2Ma-=rmEFw@mail.gmail.com>
-Message-ID: <CAEg-Je8jVZCESa++dr-LxuiyyT9v8vMLwyh1fJtZ2Ma-=rmEFw@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: zstd: fix and simplify the inline extent decompression
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: ***
+X-Spamd-Bar: +++
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=ErLuoIfR
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [3.40 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCPT_COUNT_ONE(0.00)[1];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_DN_NONE(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.09)[64.88%]
+X-Spam-Score: 3.40
+X-Rspamd-Queue-Id: B42301FCFD
+X-Spam-Flag: NO
 
-On Tue, Jan 23, 2024 at 7:07=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
->
->
->
-> On 2024/1/24 10:19, Neal Gompa wrote:
-> > On Mon, Jan 22, 2024 at 10:04=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote=
-:
-> >>
-> >> [BUG]
-> >> If we have a filesystem with 4k sectorsize, and an inlined compressed
-> >> extent created like this:
-> >>
-> >>          item 4 key (257 INODE_ITEM 0) itemoff 15863 itemsize 160
-> >>                  generation 8 transid 8 size 4096 nbytes 4096
-> >>                  block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
-> >>                  sequence 1 flags 0x0(none)
-> >>          item 5 key (257 INODE_REF 256) itemoff 15839 itemsize 24
-> >>                  index 2 namelen 14 name: source_inlined
-> >>          item 6 key (257 EXTENT_DATA 0) itemoff 15770 itemsize 69
-> >>                  generation 8 type 0 (inline)
-> >>                  inline extent data size 48 ram_bytes 4096 compression=
- 3 (zstd)
-> >>
-> >> Then trying to reflink that extent in an aarch64 system with 64K page
-> >> size, the reflink would just fail:
-> >>
-> >>    # xfs_io -f -c "reflink $mnt/source_inlined 0 60k 4k" $mnt/dest
-> >>    XFS_IOC_CLONE_RANGE: Input/output error
-> >>
-> >> [CAUSE]
-> >> In zstd_decompress(), we didn't treat @start_byte as just a page offse=
-t,
-> >> but also use it as an indicator on whether we should error out, withou=
-t
-> >> any proper explanation (this is copied from other decompression code).
-> >>
-> >> In reality, for subpage cases, although @start_byte can be non-zero,
-> >> we should never switch input/output buffer nor error out, since the wh=
-ole
-> >> input/output buffer should never exceed one sector, thus we should not
-> >> need to do any buffer switch.
-> >>
-> >> Thus the current code using @start_byte as a condition to switch
-> >> input/output buffer or finish the decompression is completely incorrec=
-t.
-> >>
-> >> [FIX]
-> >> The fix involves several modification:
-> >>
-> >> - Rename @start_byte to @dest_pgoff to properly express its meaning
-> >>
-> >> - Use @sectorsize other than PAGE_SIZE to properly initialize the
-> >>    output buffer size
-> >>
-> >> - Use correct destination offset inside the destination page
-> >>
-> >> - Simplify the main loop
-> >>    Since the input/output buffer should never switch, we only need one
-> >>    zstd_decompress_stream() call.
-> >>
-> >> - Consider early end as an error
-> >>
-> >> After the fix, even on 64K page sized aarch64, above reflink now
-> >> works as expected:
-> >>
-> >>    # xfs_io -f -c "reflink $mnt/source_inlined 0 60k 4k" $mnt/dest
-> >>    linked 4096/4096 bytes at offset 61440
-> >>
-> >> And results the correct file layout:
-> >>
-> >>          item 9 key (258 INODE_ITEM 0) itemoff 15542 itemsize 160
-> >>                  generation 10 transid 10 size 65536 nbytes 4096
-> >>                  block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
-> >>                  sequence 1 flags 0x0(none)
-> >>          item 10 key (258 INODE_REF 256) itemoff 15528 itemsize 14
-> >>                  index 3 namelen 4 name: dest
-> >>          item 11 key (258 XATTR_ITEM 3817753667) itemoff 15445 itemsiz=
-e 83
-> >>                  location key (0 UNKNOWN.0 0) type XATTR
-> >>                  transid 10 data_len 37 name_len 16
-> >>                  name: security.selinux
-> >>                  data unconfined_u:object_r:unlabeled_t:s0
-> >>          item 12 key (258 EXTENT_DATA 61440) itemoff 15392 itemsize 53
-> >>                  generation 10 type 1 (regular)
-> >>                  extent data disk byte 13631488 nr 4096
-> >>                  extent data offset 0 nr 4096 ram 4096
-> >>                  extent compression 0 (none)
-> >>
-> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >> ---
-> >>   fs/btrfs/compression.h |  2 +-
-> >>   fs/btrfs/zstd.c        | 73 ++++++++++++----------------------------=
---
-> >>   2 files changed, 22 insertions(+), 53 deletions(-)
-> >> ---
-> >> Changelog:
-> >> v2:
-> >> - Fix the incorrect memcpy_page() parameter:
-> >>    Previously the pgoff is (dest_pgoff + to_copy), not just (dest_pgof=
-f).
-> >>    This leads to possible write beyond the current page and can lead t=
-o
-> >>    either incorrect contents (if to_copy is smaller than 2K), or
-> >>    triggering the VM_BUG_ON() inside memcpy_to_page() as our write
-> >>    destination is beyond the page boundary.
-> >>
-> >
-> > Have we checked to see if this problem shows up in the other
-> > compression algorithms? I know the change was reverted for btrfs-zstd
-> > because Linus saw the issue directly[1], but I'm concerned that the
-> > only reason he saw it is because Fedora uses zstd by default[2] and
-> > this might be an issue in the other algorithms.
->
-> Already checked, and new test case is also added (which you have also
-> replied).
->
-> As replied in the other thread, zstd is really the exception.
->
+With the folio interface, it's much easier to support multi-page sector
+size (aka, sector/block size > PAGE_SIZE, which is rare between major
+upstream filesystems).
 
-Then we should be gravy here. Hopefully this time nothing else pops up! ^_^=
-;
+The basic idea is, if we firstly convert to full folio interface, and
+allow an address space to only allocate folio which is exactly
+block/sector size, the support for multi-page would be mostly done.
 
-Reviewed-by: Neal Gompa <neal@gompa.dev>
+But before that support, there are still quite some conversion left for
+btrfs.
 
+Furthermore, with both subpage and multipage sector size, we need to
+handle folio different:
 
+- For subpage
+  The folio would always be page sized.
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+- For multipage (and regular sectorsize == PAGE_SIZE)
+  The folio would be sector sized.
+
+Furthermore, the filemap interface would make various shifts more
+complex.
+As filemap_*() interfaces use index which is PAGE_SHIFT based,
+meanwhile with potential larger folio, the folio shift can be larger
+than PAGE_SHIFT.
+
+Thus in the future, we may want to change filemap interface to accept
+bytenr to avoid confusion between page and folio shifts.
+
+The first patch would introduce a cached folio size and shift.
+
+The second patch would make defrag to utilize the new cached folio size
+and shift.
+(And still use PAGE_SHIFT only for filemap*() interfaces)
+
+Qu Wenruo (2):
+  btrfs: introduce cached folio size
+  btrfs: defrag: prepare defrag for larger data folio size
+
+ fs/btrfs/defrag.c  | 69 +++++++++++++++++++++++++---------------------
+ fs/btrfs/disk-io.c | 11 ++++++++
+ fs/btrfs/fs.h      | 10 +++++++
+ 3 files changed, 58 insertions(+), 32 deletions(-)
+
+-- 
+2.43.0
+
 
