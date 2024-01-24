@@ -1,56 +1,77 @@
-Return-Path: <linux-btrfs+bounces-1756-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1757-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE67A83B3BF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 22:19:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E482283B3C0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 22:19:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 818211F2683D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 21:19:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D04B2830E0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 21:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51664135410;
-	Wed, 24 Jan 2024 21:19:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED8A41350FB;
+	Wed, 24 Jan 2024 21:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sy0N7Xlh";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sy0N7Xlh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6BA13540E
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 21:18:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA6C1353F9
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 21:19:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706131139; cv=none; b=tdpw4Jz25S6+bz9MTSi4nvz9U36nLJwbOIOgkBjTGxLeRq9lUFH9FR+YgfFof2CXoDYbvvuc6Ga98s7zNqtzMeSgT0sm9wPzLGKLRTKIH6UC9rsn6qV+cnyLkIdgmAGM4OdckkQPJ2PGFsIjz485MBL7EOa/UBVqyRsrgH0c0mQ=
+	t=1706131142; cv=none; b=hkpBA2JczNeqexYCsMpNdV0oif9CzyFunc/GTCGZqKvQa0p3rXfkQ5axgE0JElxaqCqpa0dRWgP5ehBoq91aMj3gr/oxrHrHa94pkDD3UwA6l8MmlxKJxSPIkYP9MqDISejqpsQpVkT1FVxRI7dY14v3HcvXTiCBHo+6QuOZAnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706131139; c=relaxed/simple;
-	bh=zUgOPdm9kaBs1Ne2TxQm4ltuC6dCFd+Qd8ft5xoTxgY=;
+	s=arc-20240116; t=1706131142; c=relaxed/simple;
+	bh=DBo56Cp9sZWtS9i2SYGfsZlQ7dIMPtBnb95eMJfACeM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=otHv/HJC0Bc5w6kAqIP7q9T6B0RhkSEQLn6X6OqFeVvhDPHskk7JeX6cLdDXlVXqD1v0jdxRWOjdjoPDWvfeCkgUrkRNsBUxrwS1ZKERT3/aMvz5NiBapp9rvfspTRyepM2Aj6rtBD4+fUVadxb00Mn4SqB9ftLgJW80v+iI9A4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=ZSkIQvHy0NBGuOM9opGlOhUAQkR+vdrCuqcSMkWlNUR6N58YN2iFiqsUFAP4e529VhBhV/n0ggnMFyhsa31vNwd50LH04utLveAlrXPoJwXkHKWjYPups8PpMT3/jr8bKaVnDYxeyjh6cmowHMG4KqNAORZRpPi4FUeTVBRPuO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sy0N7Xlh; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sy0N7Xlh; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AB3E81FD8C;
-	Wed, 24 Jan 2024 21:18:56 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 08EEB21F87;
+	Wed, 24 Jan 2024 21:18:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706131139; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZV/Tez7Zvb4PO5ZiacXlpryOPFPny2uUtUxYSE9+ENw=;
+	b=sy0N7XlhO6VFiwFPONuNjgVYsbDrgUfWlihWe0MHGA808z61ZClhzh51uSFcXOLNGr6YNW
+	SXTp8yGfPzVcctotrPkdYBGj8a7HJvMffQJLFl5xOtYak1nJjeAml6bvFsb6yiOs5KWh63
+	PCPASPaw/dta0DQ3p4J+8kTwbWvFOIc=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706131139; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZV/Tez7Zvb4PO5ZiacXlpryOPFPny2uUtUxYSE9+ENw=;
+	b=sy0N7XlhO6VFiwFPONuNjgVYsbDrgUfWlihWe0MHGA808z61ZClhzh51uSFcXOLNGr6YNW
+	SXTp8yGfPzVcctotrPkdYBGj8a7HJvMffQJLFl5xOtYak1nJjeAml6bvFsb6yiOs5KWh63
+	PCPASPaw/dta0DQ3p4J+8kTwbWvFOIc=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 99CE513786;
-	Wed, 24 Jan 2024 21:18:56 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0289113786;
+	Wed, 24 Jan 2024 21:18:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kLaKJcB+sWXjdwAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Wed, 24 Jan 2024 21:18:56 +0000
+	id ffWbAMN+sWXndwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Wed, 24 Jan 2024 21:18:59 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 14/20] btrfs: change BUG_ON to assertion when verifying lockdep class setup
-Date: Wed, 24 Jan 2024 22:18:35 +0100
-Message-ID: <f1919241ecdaef121a0553c28b7754b79bdaa779.1706130791.git.dsterba@suse.com>
+Subject: [PATCH 15/20] btrfs: change BUG_ON to assertion when verifying root in btrfs_alloc_reserved_file_extent()
+Date: Wed, 24 Jan 2024 22:18:37 +0100
+Message-ID: <d58d17b4a176adfb23191dc4da9d5f89e9833d9e.1706130791.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <cover.1706130791.git.dsterba@suse.com>
 References: <cover.1706130791.git.dsterba@suse.com>
@@ -61,40 +82,53 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: AB3E81FD8C
+X-Spamd-Result: default: False [0.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLY(-4.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Level: 
 X-Spam-Flag: NO
+X-Spam-Score: 0.90
 
-The BUG_ON in btrfs_set_buffer_lockdep_class() is a sanity check of the
-level which is verified in callers, e.g. when initializing an extent
-buffer or reading from an eb header. Change it to an assertion as this
-would not happen unless things are really bad and would fail elsewhere
-too.
+The file extents are normally reserved in subvolume roots but could be
+also in the data reloc tree. Change the BUG_ON to assertions as this
+verifies the usage assumptions.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/locking.c | 2 +-
+ fs/btrfs/extent-tree.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-index 74d8e2003f58..c1dad121099e 100644
---- a/fs/btrfs/locking.c
-+++ b/fs/btrfs/locking.c
-@@ -85,7 +85,7 @@ void btrfs_set_buffer_lockdep_class(u64 objectid, struct extent_buffer *eb, int
- {
- 	struct btrfs_lockdep_keyset *ks;
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index ba47f5996c84..2a04c2083759 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -4964,7 +4964,7 @@ int btrfs_alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 	u64 root_objectid = root->root_key.objectid;
+ 	u64 owning_root = root_objectid;
  
--	BUG_ON(level >= ARRAY_SIZE(ks->keys));
-+	ASSERT(level < ARRAY_SIZE(ks->keys));
+-	BUG_ON(root_objectid == BTRFS_TREE_LOG_OBJECTID);
++	ASSERT(root_objectid != BTRFS_TREE_LOG_OBJECTID);
  
- 	/* Find the matching keyset, id 0 is the default entry */
- 	for (ks = btrfs_lockdep_keysets; ks->id; ks++)
+ 	if (btrfs_is_data_reloc_root(root) && is_fstree(root->relocation_src_root))
+ 		owning_root = root->relocation_src_root;
 -- 
 2.42.1
 
