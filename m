@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-1664-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1665-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5911839D7D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 01:07:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 081F5839D7E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 01:09:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34FC7B2803D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 00:07:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A9D01C22DD9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 00:09:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8995D368;
-	Wed, 24 Jan 2024 00:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049147E5;
+	Wed, 24 Jan 2024 00:08:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="uY1WuDBe"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="dv+t3KcI"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A26B17F3
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 00:07:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9724368;
+	Wed, 24 Jan 2024 00:08:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706054849; cv=none; b=oh1KvLbyT5JjlaNnTK4pKaclx/jPMBvbB1hLrftepmb7w4g9ttjxmy5I8rVCaRj4sMqcGzRDUbt7eah90cqgDNFVaPmnQz9sCMVU27ipWiqd6j9aNYsiS5PvpjyhmdFKjEl+nySOW3vFTniTnZZP6AeP6yM5QPgvou7fgD3Yaf4=
+	t=1706054935; cv=none; b=HC8PmuMYjzHViBBsi4M24v/OUmxPF95yBgm3lMsKXovUKeNg/fNO3dq9u0RqLhOupevkirZg+AgNWDsfRs29qe333o25z/TuT67AIO689oTK/OkvTLXLEvpH1+i4k75q16jcEXJwXLu7naVh5drNf5TW06A6chTg61CAp0hRWyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706054849; c=relaxed/simple;
-	bh=czV1uAGfxA9+Uh6bSTjoGyyWtG26S81goR2ck3TqZQQ=;
+	s=arc-20240116; t=1706054935; c=relaxed/simple;
+	bh=zdMTSfYHnseO2hKxUnLhVk5ao2eN2ghQupjfKHBamVM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lmOgprVC7N6w2qo6+kBaN08IUwV7GpfGV3EnLGM9wZXLznyHFnPPR77qX+F0qu/hiOhptAJEjKfKLHnZQCifwTv0HRa6yZC+N4fjWzrJgbeJ5NX6oHIVuMKoayFpFuyncbnDmrWVcyG/2+gdzpGn7IN4FPhYIW2YMKP/0Q9vBOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=uY1WuDBe; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=WUl3Bh10R2dEPDRZbaoh4yRDb62p7xR+6OMFZQAQb16Z4hej64vFWDnbjfD/wpUhK55yzGg+fZ6otitQgX+n7EgHu4rXZFiSP6zIqBOdxoekkB77eHnEXFX0jIgT2IcCjsoSP5DjoDjnexZfMlF+u1dWYvgsBFiAH0hJygGunnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=dv+t3KcI; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1706054835; x=1706659635; i=quwenruo.btrfs@gmx.com;
-	bh=czV1uAGfxA9+Uh6bSTjoGyyWtG26S81goR2ck3TqZQQ=;
+	s=s31663417; t=1706054927; x=1706659727; i=quwenruo.btrfs@gmx.com;
+	bh=zdMTSfYHnseO2hKxUnLhVk5ao2eN2ghQupjfKHBamVM=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=uY1WuDBeWcjHFiXjUBcIbETm7XLr8Ex9GDkL5J9XaJWT8LWCtqjOGYCym9gW5CFG
-	 GyvzzoCMMCZShZrntTtrZxIt7JgaXhoxjImVYR3U8toCtuoMcBEJZE0XgGmeNZ7yc
-	 i8Ma5cYK9ff10lDnr0G6AqA12iLYZWeKhsljjZVmR9fc4tmuGA3uR3XMrAryi1I2d
-	 h4Fs/Z1uNTrRiZz+qw1MG9y01Yj4Mx4ZaWQZsFQBLq9NPj/zZP8f+AcCDmgA3X7Si
-	 zU68RsSOf6pqU7spbsd7JuniTjOznP8xejRk3pi75BisErKeuLwT2MMSHKKtN1HEc
-	 ecd1QVyeF6cVg0fnqg==
+	b=dv+t3KcI2YVH1zzsMZYn+7UMDZbqssDhM+ITtSBf67cgT4Jdp4qf3Kyny5nsnqdn
+	 b7mvPm6TrSatffCPLZzwJx61GIgsG8PQZh47809ZTGd3LQbHYadt5SW2b22aX7+Lg
+	 TXRzRbKJfQrfWAbJWxlcdIvT7RsfndWcgQnfNbI4q7mlPosn5pJdLkCjbhza7hYEh
+	 +Dg3T3XNvjk4gQsTfqb+yX4WX8usRrmUbt9dsan1Dr/eIXIs1Q7+qOk5SNg7AMLzu
+	 Mo+eBwB+r64v16XfgYg3ir9q5ivqDDFKz4Yp0yl7NYnKKdlE/diTtGaXM8USdRB56
+	 IXNGL7b4mPhtIkFksg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.101] ([61.245.157.120]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MRmjq-1rdxOb0iRm-00TF3C; Wed, 24
- Jan 2024 01:07:15 +0100
-Message-ID: <b12560b9-0fa6-453f-9bcf-94f06371031c@gmx.com>
-Date: Wed, 24 Jan 2024 10:37:11 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6UZl-1rQUsg078D-006v73; Wed, 24
+ Jan 2024 01:08:47 +0100
+Message-ID: <4f54135d-d013-4534-9598-f099df541205@gmx.com>
+Date: Wed, 24 Jan 2024 10:38:45 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,13 +55,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: zstd: fix and simplify the inline extent
- decompression
-To: Neal Gompa <neal@gompa.dev>
-Cc: linux-btrfs@vger.kernel.org
-References: <c3bed652c4e20c8a446fba371d529a78dc98b827.1705978912.git.wqu@suse.com>
- <CAEg-Je_OygqAdFoAV02PK8zaZm_4HhkvLz8-FQEK6ZnodYst5w@mail.gmail.com>
+Subject: Re: [PATCH] fstests: btrfs: verify the read behavior of compressed
+ inline extent
 Content-Language: en-US
+To: Neal Gompa <neal@gompa.dev>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+References: <20240123034908.25415-1-wqu@suse.com>
+ <CAEg-Je-0JN59m+Cjxf_oFjWn37JxyfVLeqy=wyjo5qyucsp8fQ@mail.gmail.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -87,149 +87,194 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAEg-Je_OygqAdFoAV02PK8zaZm_4HhkvLz8-FQEK6ZnodYst5w@mail.gmail.com>
+In-Reply-To: <CAEg-Je-0JN59m+Cjxf_oFjWn37JxyfVLeqy=wyjo5qyucsp8fQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4qcGPlcn3J1X1SACKXAdKPjBpQHVMKg+Dt8anJSmc7TbpE9X72d
- BIpUqK70KHYuEWG+6bpXwF7zt0/m3tapg86ORWpylguQwSz116gQnmGhfDfkyli1/wu6p9e
- qzs0oTEWMpeE5YA5/mv04eviaFKvvv0CH4E1pYBAxa7irjQEp3JcaCyoeGkR5v0MAi16dZa
- 1ywIUZS/HeWparzOWA+Hg==
+X-Provags-ID: V03:K1:FuQ/C1T2dSZmDxjiPmlbraSmSGrOaU1bWpnGt/QViKj1dA2puHX
+ 6/pjmqjXzzRZQl4gzOQQc/x3I0i5p70JbcKlYzB7/aRO5shTD1mvXY36mEJ9m1x004UAUHW
+ XV4CraAYXb9V6zrI0rWxc7O9jLgiT1IhYzYGvIgCrZVc9h6SE2ZreEM3tw0+PuO6RF+es4x
+ k/gJ9KeytsFtb6aOX5KHw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:y8DNbdBtDeg=;OQ7tvkblC7kbcDnEvZiRQ6mvXlw
- 8PHy7pt6Sf9IuOpaOyG1cYVBcZ2Ns3dHY8wphV114nIQ4/ngw09+bM7ik3GDJA+OCsJLKJ2wC
- IvIvAemFQdsTGhOH9irJxWKm68VuLHvFT4DTbzYHskBvY1f9WjQ/zXU2O/Il5EkZO8WEjWYeD
- jVHjfz7Wn9CTDNTDAAaIPrLG83yzkF6nYFySHvEVLAdbD4hAcFaFDbf21kSnvBfbHYvrSbtYH
- 0SWbu0Vjr604HJMKuUknhC7aqtwXdKvOtwPqrcveo6+SoB+YUZs2iXeMqzZd5vu5YytpQBAnu
- X58+ACAFWi9tGlKckKpHypycGx4a7SMQZY2l2kaoVlrGOuu49QDD/rqg7zio8r/qqpiXyKhaf
- oDfHiuH6T1AI6cWyTmh3rqB4siqswzxE2JHxkTDzgjvT0RUuNvisvnkMCkdY3e9vp0NQg8QbC
- p2BO2GkODtKZj/EVYIEsIPz2SioV25lw9ohrDQLo0Wo66ed3vvH7cHWyDCCM+SO1flnwrCd/c
- TvR/YFK0T1ObacgP9erqKlWZD5zi5uaUFdhbn0e3u01tsoP7ePud7qBmGG2fTDjfXd2/SXD1t
- VxZTQchSt3tzTXNP2s84guuf1xen7m/esd/RHisCx5rzIbGIDNLGLduqhwZ4y2dJRlZCuZoQH
- +4ONy4iwJavJjWdzfXMyMhGG3niWEGlboP5ZBeJJOPYzQ16uSUoFo1Pe2CTix3c/s2si/fCqL
- +POIgSNOJ0YfO8F4BIcxINYxmmX5KG7X7kYad2hlRNuI17Nf5f1mbUwkudFbtL4gn7Kh/DzGI
- WVX3+dUeYohYl7MxynU6t8F0tosCq1iybRAlFPjPX2tTPZFdPBa6xTWr1txBcfyhsOo54RoYB
- Ojwd5QE+X3OQghOiCDKHFxMda4IHmEJ9gQC3VEeBPWae+7U/Duwf7ZIE0dHAiYbcx9HSYg3sj
- 60cM9lDzSci5Dbpydaan8RersuE=
+UI-OutboundReport: notjunk:1;M01:P0:V6dUgViqg9g=;EjJSVRj96FWNJRoP+QLrddh1Xno
+ 14ame6ZtlZMx5eLO1ADibZLPxF7H8NAc4/eaG5uVie7zP6wZrxizXs48Q3XRWanvyvcRgdwrz
+ DCVIDH3i3nQ9vmrOb5TbxAVccKoirZ34M3O0DqJf3umCb2fBMs2lJnasY+oslKpdGvXOc7CbV
+ Tok2UmeMg4/YTwZqYXpX9TXXEUgkWAVW3+jqBagAR0nB/QTlExwwdDBIU3VZCnV4J29hC3ImR
+ VpDFAo39K2LAky9PAbRN2zNHQnpSi+CT+6fd1q0pQEfkiBoDQbqjAtpde119XvNa+OZGBJx+Y
+ ny6ADcza867jwfHtNfxtPksl21C6CGGeolpgC3E/3RQW9mG7jZTv2Zd87xaaDCTxix22PSSG9
+ Uwv6qPutRb1DO7HJVO+0ZMrctp9A/qaoSqqioF/35bUPqYy72Sj/c3TleLsH1Am0QgDLjK9tm
+ ns2xM7FNUPs839FXDjh+Kv0voQ9/DVUyJe0JfyvbThcmi9vthcVUNvg2+fSuampnrD5O7/fRu
+ Qk4HR7+iE9v7cq0usbfab5Tdc1BI50Y8W/9SkHnhQIx7uWQYsOLBG4VkXqCypEsdkuiRvV/XU
+ w0StHj5eOJfYwknpLaBtjcYsNL8nxthHK+sXf1NhvVm7x0oTk7PZ0aRYZMsMuvcM9uq5hOXTI
+ AALzi0DWyYVtEDFK4Y1bqxC1cb6RPaNq9oUetz39PWB8ni9dCh+Sle+R2Yp4qbzJz0bYZfI1U
+ O98w9jTFV1vVfpK7FKhXA2pkEVQSSqdveuGRtmp83TqlSN4tXGTmMrME21+xAfdp3khP2u5Yn
+ qJq1GeWDAiV8MTzS7h8DzwaARSiqfdaDhKBpcFpfZfelAZ70V5wrIyDcG319aUbcEaCggPGhS
+ EVCiY26pmQKuDRuWH28Dee2bEVRsdhIZzYFjn14gjxLoV9A5GhWqD5bLuWFcdAKh11SP1bdin
+ owxwd3j98T7KRweXnxSofI3lKYo=
 
 
 
-On 2024/1/24 10:19, Neal Gompa wrote:
-> On Mon, Jan 22, 2024 at 10:04=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+On 2024/1/24 10:21, Neal Gompa wrote:
+> On Mon, Jan 22, 2024 at 10:49=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
 >>
 >> [BUG]
->> If we have a filesystem with 4k sectorsize, and an inlined compressed
->> extent created like this:
->>
->>          item 4 key (257 INODE_ITEM 0) itemoff 15863 itemsize 160
->>                  generation 8 transid 8 size 4096 nbytes 4096
->>                  block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
->>                  sequence 1 flags 0x0(none)
->>          item 5 key (257 INODE_REF 256) itemoff 15839 itemsize 24
->>                  index 2 namelen 14 name: source_inlined
->>          item 6 key (257 EXTENT_DATA 0) itemoff 15770 itemsize 69
->>                  generation 8 type 0 (inline)
->>                  inline extent data size 48 ram_bytes 4096 compression =
-3 (zstd)
->>
->> Then trying to reflink that extent in an aarch64 system with 64K page
->> size, the reflink would just fail:
->>
->>    # xfs_io -f -c "reflink $mnt/source_inlined 0 60k 4k" $mnt/dest
->>    XFS_IOC_CLONE_RANGE: Input/output error
+>> There is a report about reading a zstd compressed inline file extent
+>> would lead to either a VM_BUG_ON() crash, or lead to incorrect file
+>> content.
 >>
 >> [CAUSE]
->> In zstd_decompress(), we didn't treat @start_byte as just a page offset=
-,
->> but also use it as an indicator on whether we should error out, without
->> any proper explanation (this is copied from other decompression code).
+>> The root cause is a incorrect memcpy_to_page() call, which uses
+>> incorrect page offset, and can lead to either the VM_BUG_ON() as we may
+>> write beyond the page boundary, or writes into the incorrect offset of
+>> the page.
 >>
->> In reality, for subpage cases, although @start_byte can be non-zero,
->> we should never switch input/output buffer nor error out, since the who=
-le
->> input/output buffer should never exceed one sector, thus we should not
->> need to do any buffer switch.
+>> [TEST CASE]
+>> The test case would:
 >>
->> Thus the current code using @start_byte as a condition to switch
->> input/output buffer or finish the decompression is completely incorrect=
-.
+>> - Mount with the specified compress algorithm
+>> - Create a 4K file
+>> - Verify the 4K file is all inlined and compressed
+>> - Verify the content of the initial write
+>> - Cycle mount to drop all the page cache
+>> - Verify the content of the file again
+>> - Unmount and fsck the fs
 >>
->> [FIX]
->> The fix involves several modification:
->>
->> - Rename @start_byte to @dest_pgoff to properly express its meaning
->>
->> - Use @sectorsize other than PAGE_SIZE to properly initialize the
->>    output buffer size
->>
->> - Use correct destination offset inside the destination page
->>
->> - Simplify the main loop
->>    Since the input/output buffer should never switch, we only need one
->>    zstd_decompress_stream() call.
->>
->> - Consider early end as an error
->>
->> After the fix, even on 64K page sized aarch64, above reflink now
->> works as expected:
->>
->>    # xfs_io -f -c "reflink $mnt/source_inlined 0 60k 4k" $mnt/dest
->>    linked 4096/4096 bytes at offset 61440
->>
->> And results the correct file layout:
->>
->>          item 9 key (258 INODE_ITEM 0) itemoff 15542 itemsize 160
->>                  generation 10 transid 10 size 65536 nbytes 4096
->>                  block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
->>                  sequence 1 flags 0x0(none)
->>          item 10 key (258 INODE_REF 256) itemoff 15528 itemsize 14
->>                  index 3 namelen 4 name: dest
->>          item 11 key (258 XATTR_ITEM 3817753667) itemoff 15445 itemsize=
- 83
->>                  location key (0 UNKNOWN.0 0) type XATTR
->>                  transid 10 data_len 37 name_len 16
->>                  name: security.selinux
->>                  data unconfined_u:object_r:unlabeled_t:s0
->>          item 12 key (258 EXTENT_DATA 61440) itemoff 15392 itemsize 53
->>                  generation 10 type 1 (regular)
->>                  extent data disk byte 13631488 nr 4096
->>                  extent data offset 0 nr 4096 ram 4096
->>                  extent compression 0 (none)
+>> This workload would be applied to all supported compression algorithms.
+>> And it can catch the problem correctly by triggering VM_BUG_ON(), as ou=
+r
+>> workload would result decompressed extent size to be 4K, and would
+>> trigger the VM_BUG_ON() 100%.
+>> And with the revert or the new fix, the test case can pass safely.
 >>
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >> ---
->>   fs/btrfs/compression.h |  2 +-
->>   fs/btrfs/zstd.c        | 73 ++++++++++++-----------------------------=
--
->>   2 files changed, 22 insertions(+), 53 deletions(-)
->> ---
->> Changelog:
->> v2:
->> - Fix the incorrect memcpy_page() parameter:
->>    Previously the pgoff is (dest_pgoff + to_copy), not just (dest_pgoff=
-).
->>    This leads to possible write beyond the current page and can lead to
->>    either incorrect contents (if to_copy is smaller than 2K), or
->>    triggering the VM_BUG_ON() inside memcpy_to_page() as our write
->>    destination is beyond the page boundary.
+>>   tests/btrfs/310     | 81 ++++++++++++++++++++++++++++++++++++++++++++=
++
+>>   tests/btrfs/310.out |  2 ++
+>>   2 files changed, 83 insertions(+)
+>>   create mode 100755 tests/btrfs/310
+>>   create mode 100644 tests/btrfs/310.out
+>>
+>> diff --git a/tests/btrfs/310 b/tests/btrfs/310
+>> new file mode 100755
+>> index 00000000..b514a8bc
+>> --- /dev/null
+>> +++ b/tests/btrfs/310
+>> @@ -0,0 +1,81 @@
+>> +#! /bin/bash
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
+>> +#
+>> +# FS QA Test 310
+>> +#
+>> +# Make sure reading on an compressed inline extent is behaving correct=
+ly
+>> +#
+>> +. ./common/preamble
+>> +_begin_fstest auto quick compress
+>> +
+>> +# Import common functions.
+>> +# . ./common/filter
+>> +
+>> +# real QA test starts here
+>> +
+>> +# Modify as appropriate.
+>> +_supported_fs btrfs
+>> +_require_scratch
+>> +
+>> +# This test require inlined compressed extents creation, and all the w=
+rites
+>> +# are designed for 4K sector size.
+>> +_require_btrfs_inline_extents_creation
+>> +_require_btrfs_support_sectorsize 4096
+>> +
+>> +_fixed_by_kernel_commit e01a83e12604 \
+>> +       "Revert \"btrfs: zstd: fix and simplify the inline extent decom=
+pression\""
+>> +
+>> +# The correct md5 for the correct 4K file filled with "0xcd"
+>> +md5sum_correct=3D"5fed275e7617a806f94c173746a2a723"
+>> +
+>> +workload()
+>> +{
+>> +       local algo=3D"$1"
+>> +
+>> +       echo "=3D=3D=3D Testing compression algorithm ${algo} =3D=3D=3D=
+" >> $seqres.full
+>> +       _scratch_mkfs >> $seqres.full
+>> +       _scratch_mount -o compress=3D${algo}
+>> +
+>> +       _pwrite_byte 0xcd 0 4k "$SCRATCH_MNT/inline_file" > /dev/null
+>> +       result=3D$(_md5_checksum "$SCRATCH_MNT/inline_file")
+>> +       echo "after initial write, md5sum=3D${result}" >> $seqres.full
+>> +       if [ "$result" !=3D "$md5sum_correct" ]; then
+>> +               _fail "initial write results incorrect content for \"$a=
+lgo\""
+>> +       fi
+>> +       sync
+>> +
+>> +       $XFS_IO_PROG -c "fiemap -v" $SCRATCH_MNT/inline_file | tail -n =
+1 > $tmp.fiemap
+>> +       cat $tmp.fiemap >> $seqres.full
+>> +       # Make sure we got an inlined compressed file extent.
+>> +       # 0x200 means inlined, 0x100 means not block aligned, 0x8 means=
+ encoded
+>> +       # (compressed in this case), and 0x1 means the last extent.
+>> +       if ! grep -q "0x309" $tmp.fiemap; then
+>> +               rm -f -- $tmp.fiemap
+>> +               _notrun "No compressed inline extent created, maybe sub=
+page?"
+>> +       fi
+>> +       rm -f -- $tmp.fiemap
+>> +
+>> +       # Unmount to clear the page cache.
+>> +       _scratch_cycle_mount
+>> +
+>> +       # For v6.8-rc1 without the revert or the newer fix, this can
+>> +       # crash or lead to incorrect contents for zstd.
+>> +       result=3D$(_md5_checksum "$SCRATCH_MNT/inline_file")
+>> +       echo "after cycle mount, md5sum=3D${result}" >> $seqres.full
+>> +       if [ "$result" !=3D "$md5sum_correct" ]; then
+>> +               _fail "read for compressed inline extent failed for \"$=
+algo\""
+>> +       fi
+>> +       _scratch_unmount
+>> +       _check_scratch_fs
+>> +}
+>> +
+>> +algo_list=3D($(_btrfs_compression_algos))
+>> +for algo in ${algo_list[@]}; do
+>> +       workload $algo
+>> +done
+>> +
+>> +echo "Silence is golden"
+>> +
+>> +status=3D0
+>> +exit
+>> diff --git a/tests/btrfs/310.out b/tests/btrfs/310.out
+>> new file mode 100644
+>> index 00000000..7b9eaf78
+>> --- /dev/null
+>> +++ b/tests/btrfs/310.out
+>> @@ -0,0 +1,2 @@
+>> +QA output created by 310
+>> +Silence is golden
+>> --
+>> 2.42.0
+>>
 >>
 >
-> Have we checked to see if this problem shows up in the other
-> compression algorithms? I know the change was reverted for btrfs-zstd
-> because Linus saw the issue directly[1], but I'm concerned that the
-> only reason he saw it is because Fedora uses zstd by default[2] and
-> this might be an issue in the other algorithms.
+> This looks reasonable to me, but how is $_btrfs_compression_algos
+> defined? Does it include all the algorithm options supported in Btrfs?
 
-Already checked, and new test case is also added (which you have also
-replied).
+It fetches all the supported compression algo through the sysfs interfaces=
+:
 
-As replied in the other thread, zstd is really the exception.
+   /sys/fs/btrfs/features/compress_*
+
+Along with the default supported zlib compression.
 
 Thanks,
 Qu
-
 >
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-commit/?id=3De01a83e12604aa2f8d4ab359ec44e341a2248b4a
-> [2]: https://fedoraproject.org/wiki/Changes/BtrfsTransparentCompression
 >
 
