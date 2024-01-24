@@ -1,153 +1,239 @@
-Return-Path: <linux-btrfs+bounces-1681-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1682-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EA5C83AE75
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:37:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D34EB83AF80
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:19:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9DD81F2669D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 16:37:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88B981F24882
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:19:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF6667CF39;
-	Wed, 24 Jan 2024 16:37:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFD17E79E;
+	Wed, 24 Jan 2024 17:19:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bkcsIqJK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BiqD0VNA";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bkcsIqJK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BiqD0VNA"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="PGE4/v/l"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A5CC7CF16
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 16:37:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE807CF18
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706114235; cv=none; b=Z66YWtvFvlDZMYQt2xrnyIUYG1Xh0YULuAx6mvFrmUCLwrHbBoGTFe5JTo9/Di7q0LHLK7R5a491Bu8BYERvIIuBbS0WecNcuM58x4Qb2urHp2PYdrU/9leZJKSP0nSJvNO2oQvHJhiO7M7cqRhlCVS0V5OIu5vVBe5cN23BZSk=
+	t=1706116765; cv=none; b=s2Bupe4gBa/7khpjVnobiSf5lJdDkts5YSZzvxcZPsDdur8GDLU1d/6v2DuxWqj9BF64F4+lX/jhAh9wjjVL7SYNcSu7aazOqQNhG2XacOxJ50J00szNyOrQt6OerCGVqAsqlAQpCV0SYjrVqPBkMRzggeZ8T7S47F/pqYf+oRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706114235; c=relaxed/simple;
-	bh=ST6dAkk8l1QO/OSWo94IDiei8x32WSPd80HU3ZhaJnQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KY6Yk0lIj2zp2o3OvWRLx8jSrHsZDgArcZgkDicfkMl4jksdqp1G3vnqQBGKuvt0I5YJDzOnDuWnzXUmvDHAQz++0P1EcrwUdQuc+ndmHPio1i8hO+sHo+t0rWgYs99nl5Ysw2cwP3NeKRkDlxBtdsOgWww7W9qPlHtQh58QChk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bkcsIqJK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BiqD0VNA; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bkcsIqJK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BiqD0VNA; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C5B3221F5A;
-	Wed, 24 Jan 2024 16:37:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706114231;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T8r/xEcaAWQgeHCx8Ik+BQxagwl/J5PANnM2gRYnAVU=;
-	b=bkcsIqJKIOdTwHdInaIQ69CFxCA1ja0njI6Lxqe/rASEsk3xI4od1sGVayZY6GInB3NNx5
-	uUs5oFuJAgKQ4jdMzagAwm+Art0nuXn9HQhfC9qdkuSU7+3GDnTCxD5M8VREZQC4y/osDZ
-	/PDQXaueTXhe8Okfk6c9uqCwR+ew3vk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706114231;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T8r/xEcaAWQgeHCx8Ik+BQxagwl/J5PANnM2gRYnAVU=;
-	b=BiqD0VNAFjEAabXfi38pTCEfWqdqYD7vWA5lrCI809JyFh/MGvppMyPDGryDjYJtdTgy55
-	asRoQ0pn0hHvEaAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706114231;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T8r/xEcaAWQgeHCx8Ik+BQxagwl/J5PANnM2gRYnAVU=;
-	b=bkcsIqJKIOdTwHdInaIQ69CFxCA1ja0njI6Lxqe/rASEsk3xI4od1sGVayZY6GInB3NNx5
-	uUs5oFuJAgKQ4jdMzagAwm+Art0nuXn9HQhfC9qdkuSU7+3GDnTCxD5M8VREZQC4y/osDZ
-	/PDQXaueTXhe8Okfk6c9uqCwR+ew3vk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706114231;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T8r/xEcaAWQgeHCx8Ik+BQxagwl/J5PANnM2gRYnAVU=;
-	b=BiqD0VNAFjEAabXfi38pTCEfWqdqYD7vWA5lrCI809JyFh/MGvppMyPDGryDjYJtdTgy55
-	asRoQ0pn0hHvEaAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B5E8B1333E;
-	Wed, 24 Jan 2024 16:37:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id zoY5LLc8sWXLJgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 24 Jan 2024 16:37:11 +0000
-Date: Wed, 24 Jan 2024 17:36:49 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Neal Gompa <neal@gompa.dev>
-Cc: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+	s=arc-20240116; t=1706116765; c=relaxed/simple;
+	bh=8TCipElJWrrVGSZ8SfH6pqBHnJ8vR4ZAFVvUuzH1T/w=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=iPrMYFGOJTr8ZQr+wXH1Dx6QEtL/7j4P6wI4agcVvzut0aYB3opNndhdvXmtQKoGapjcU1Jjz4Bvo92TfnvZ1J+Krj41n3zByZuWxR+ra4U5ugz9k/Oz/9j2NzQEarcjlLvuzbmvBRqx6+eZi9klASO5jtKgUgH1PNPeH8b4IjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=PGE4/v/l; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc24ead4428so3963442276.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:19:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116762; x=1706721562; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ms+OTBBhZis0eqOryrejDyJG6p0OPn544rYhzRiAIdE=;
+        b=PGE4/v/lwNPHGVS1NN1fOZq5tw8mSaQ1J9yzVMHGXVIrOs/e8jxdQtpeESNL6kJCaB
+         kvTFIOmHdyhoDMxsSI0vjjgs+Vnjt/Q19ry0oaqhscdg6lIKJ8rLF5TiRWq50TIP7Oeq
+         bOJ2EGxe9sMu0zYAxyyqBgCivxAuW5tDVDG0taElm5azPp0OwrHLDqrSW/Tb9ZstlgLG
+         kaFb9bQlC5adi1MqAAHhz8ki3ni9qj5x1c/noyqxSVb8IdqKVipKOeQucIfem0Te4Cu6
+         dugbaDXaEv+56GRgk+PqNFwGCRp46gvQJIx61Ucx/BOpDEEY5HVgUYtxQYEPQx5YS/fa
+         2tQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706116762; x=1706721562;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ms+OTBBhZis0eqOryrejDyJG6p0OPn544rYhzRiAIdE=;
+        b=fhnGbeFglXSuiAguTNIw81hF+FvXqe2o8foxJLvcFTviyp3njYQP5fvr0gL8MHYaVv
+         Z5jrQkBF51U6Sew10NvlS0DzzZv6w4MQe6fYnHpPfBgaPnxNpT+wOtvpVQl5b0mTUTnU
+         pBwg/ykVwOfGfexcQ3kzl/QuNq2eziLwQxTBDB1w/GaYcjkNT9CdtmB5pFhtByygYxSg
+         D0lEJkX/IpP2370jpTb4UBk12aLbhL5I9hy22nv5FrmS7rKzUpIQO/ItSWxNriABGORq
+         aWO9Er9iBbWUp8IDZKfktpkBi7hV6U9Xb6F8E+nd3T3GYXe4qASJ3WaZLotAgfLzCA12
+         E5pw==
+X-Gm-Message-State: AOJu0Yy7303xHHPcnMz4wjJr6wKPnRosfJOLVvZpHqD7tCsNR4DPNNl6
+	t7QRwQaZlQu7Bnhe1pBDbguzIct7NMzDmyRLH1GoD2VlRhDBD/EDjxHZuZCiXUJxO+kj5GE/r2D
+	r
+X-Google-Smtp-Source: AGHT+IFX123zdYbeBCiZGnjnTiyjjecCXEshornTGlvc3hpcu+si3+pnAa0rmZvyjq9U3byIxGgBGg==
+X-Received: by 2002:a25:c3c7:0:b0:dc2:2604:4585 with SMTP id t190-20020a25c3c7000000b00dc226044585mr957540ybf.74.1706116761781;
+        Wed, 24 Jan 2024 09:19:21 -0800 (PST)
+Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id m187-20020a2526c4000000b00dc2324b3cddsm2949781ybm.37.2024.01.24.09.19.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 09:19:21 -0800 (PST)
+From: Josef Bacik <josef@toxicpanda.com>
+To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: Re: [PATCH 1/2] btrfs: forbid creating subvol qgroups
-Message-ID: <20240124163649.GL31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1705711967.git.boris@bur.io>
- <eb79dcbe0cbfa7459b249f76818a5e5a08a42ea4.1705711967.git.boris@bur.io>
- <CAEg-Je_6RNUoFg-+btbBtrCZRE1uZ77g_1mdbCqtyGiSZ0vhMw@mail.gmail.com>
+Subject: [PATCH v5 00/52] btrfs: add fscrypt support
+Date: Wed, 24 Jan 2024 12:18:22 -0500
+Message-ID: <cover.1706116485.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEg-Je_6RNUoFg-+btbBtrCZRE1uZ77g_1mdbCqtyGiSZ0vhMw@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.18 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.02)[52.56%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.18
 
-On Wed, Jan 24, 2024 at 07:52:28AM -0500, Neal Gompa wrote:
-> On Fri, Jan 19, 2024 at 7:55 PM Boris Burkov <boris@bur.io> wrote:
-> >
-> > This leads to various races and it isn't helpful, because you can't
-> > specify a subvol id when creating a subvol, so you can't be sure it
-> > will be the right one. Any requirements on the automatic subvol can
-> > be gratified by using a higher level qgroup and the inheritance
-> > parameters of subvol creation.
-> 
-> Hold up, does this mean that qgroups can't be used *at all* on Fedora,
-> where we use subvolumes for both the root and user home directory
-> hierarchies?
+Hello,
 
-How do you imply that from the patch? This is about preventing creating
-the subvolume qgroups, i.e. with the level 0 and referred to as 0/1234
-where 1234 is a subvolume id. Such qgroups are supposed to be created
-only at the time the subvolume is created.
+This is based on 
+
+https://github.com/btrfs/linux.git for-next
+
+which has the recent pull from the fscrypt tree.
+
+I've reworked a lot of this to incorporate Eric's suggestions.  There are a few
+more patches because of bugs I've found in testing, and I've disabled a few
+features, namely RAID5/6 and send, as they will require more work to support
+with encryption and that can be done after the core work is merged.
+
+Thanks,
+
+Josef
+
+v4->v5:
+- Addressed all the comments from Eric and then reworked the rest of the code to
+  handle the various changes.
+- Fixed read repair.
+- Fixed log replay.
+- Disabled send for encrypted file systems.
+- Disabled turning on encryption on RAID5/6 file systems.
+
+v3->v4:
+- Added support for '-o test_dummy_encryption' at Eric's suggestion, this
+  uncovered a load of issues.
+- Preliminary work to support decrypting names for our various name resolution
+  ioctls.  I didn't get everything but I got the ones we depend on in fstests.
+- Preliminary work for send of an encrypted directory with the key loaded.
+  There's probably still bugs in here, but it doesn't crash anymore.
+- Fixed how we limit the bio size to work with direct and buffered io.
+- Fixed using the wrong fscrypt extent context for writes into prealloc extents.
+
+Josef Bacik (38):
+  fscrypt: add per-extent encryption support
+  fscrypt: allow inline encryption for extent based encryption
+  fscrypt: add a fscrypt_inode_open helper
+  fscrypt: conditionally don't wipe mk secret until the last active user
+    is done
+  blk-crypto: add a process bio callback
+  fscrypt: add a process_bio hook to fscrypt_operations
+  fscrypt: add documentation about extent encryption
+  btrfs: add infrastructure for safe em freeing
+  btrfs: select encryption dependencies if FS_ENCRYPTION
+  btrfs: add fscrypt_info and encryption_type to ordered_extent
+  btrfs: plumb through setting the fscrypt_info for ordered extents
+  btrfs: plumb the fscrypt extent context through create_io_em
+  btrfs: populate the ordered_extent with the fscrypt context
+  btrfs: keep track of fscrypt info and orig_start for dio reads
+  btrfs: add an optional encryption context to the end of file extents
+  btrfs: pass through fscrypt_extent_info to the file extent helpers
+  btrfs: implement the fscrypt extent encryption hooks
+  btrfs: setup fscrypt_extent_info for new extents
+  btrfs: populate ordered_extent with the orig offset
+  btrfs: set the bio fscrypt context when applicable
+  btrfs: add a bio argument to btrfs_csum_one_bio
+  btrfs: add orig_logical to btrfs_bio
+  btrfs: limit encrypted writes to 256 segments
+  btrfs: implement process_bio cb for fscrypt
+  btrfs: implement read repair for encryption
+  btrfs: add test_dummy_encryption support
+  btrfs: don't rewrite ret from inode_permission
+  btrfs: move inode_to_path higher in backref.c
+  btrfs: make btrfs_ref_to_path handle encrypted filenames
+  btrfs: don't search back for dir inode item in INO_LOOKUP_USER
+  btrfs: deal with encrypted symlinks in send
+  btrfs: decrypt file names for send
+  btrfs: load the inode context before sending writes
+  btrfs: set the appropriate free space settings in reconfigure
+  btrfs: support encryption with log replay
+  btrfs: disable auto defrag on encrypted files
+  btrfs: disable encryption on RAID5/6
+  btrfs: disable send if we have encryption enabled
+
+Omar Sandoval (7):
+  fscrypt: expose fscrypt_nokey_name
+  btrfs: disable various operations on encrypted inodes
+  btrfs: start using fscrypt hooks
+  btrfs: add inode encryption contexts
+  btrfs: add new FEATURE_INCOMPAT_ENCRYPT flag
+  btrfs: adapt readdir for encrypted and nokey names
+  btrfs: implement fscrypt ioctls
+
+Sweet Tea Dorminy (7):
+  btrfs: disable verity on encrypted inodes
+  btrfs: handle nokey names.
+  btrfs: gate encryption behind BTRFS_DEBUG
+  btrfs: add get_devices hook for fscrypt
+  btrfs: set file extent encryption excplicitly
+  btrfs: add fscrypt_info and encryption_type to extent_map
+  btrfs: explicitly track file extent length for replace and drop
+
+ Documentation/filesystems/fscrypt.rst |  41 ++
+ block/blk-crypto-fallback.c           |  43 +++
+ block/blk-crypto-internal.h           |   8 +
+ block/blk-crypto-profile.c            |   2 +
+ block/blk-crypto.c                    |   6 +-
+ fs/btrfs/Kconfig                      |   3 +
+ fs/btrfs/Makefile                     |   1 +
+ fs/btrfs/accessors.h                  |  50 +++
+ fs/btrfs/backref.c                    | 114 ++++--
+ fs/btrfs/bio.c                        | 163 +++++++-
+ fs/btrfs/bio.h                        |  16 +-
+ fs/btrfs/btrfs_inode.h                |   3 +-
+ fs/btrfs/compression.c                |   9 +
+ fs/btrfs/ctree.h                      |   5 +
+ fs/btrfs/defrag.c                     |  18 +-
+ fs/btrfs/delayed-inode.c              |  29 +-
+ fs/btrfs/delayed-inode.h              |   6 +-
+ fs/btrfs/dir-item.c                   | 108 +++++-
+ fs/btrfs/dir-item.h                   |  11 +-
+ fs/btrfs/disk-io.c                    |   3 +-
+ fs/btrfs/extent_io.c                  | 120 +++++-
+ fs/btrfs/extent_io.h                  |   3 +
+ fs/btrfs/extent_map.c                 | 104 ++++-
+ fs/btrfs/extent_map.h                 |  26 ++
+ fs/btrfs/file-item.c                  |  33 +-
+ fs/btrfs/file-item.h                  |   7 +-
+ fs/btrfs/file.c                       |  12 +-
+ fs/btrfs/fs.h                         |   6 +-
+ fs/btrfs/fscrypt.c                    | 423 ++++++++++++++++++++
+ fs/btrfs/fscrypt.h                    | 116 ++++++
+ fs/btrfs/inode.c                      | 529 ++++++++++++++++++++------
+ fs/btrfs/ioctl.c                      |  69 ++--
+ fs/btrfs/ordered-data.c               |  36 +-
+ fs/btrfs/ordered-data.h               |  21 +-
+ fs/btrfs/reflink.c                    |   8 +
+ fs/btrfs/root-tree.c                  |   8 +-
+ fs/btrfs/root-tree.h                  |   2 +-
+ fs/btrfs/send.c                       | 140 ++++++-
+ fs/btrfs/super.c                      | 106 +++++-
+ fs/btrfs/super.h                      |   3 +-
+ fs/btrfs/sysfs.c                      |   6 +
+ fs/btrfs/tree-checker.c               |  66 +++-
+ fs/btrfs/tree-log.c                   |  37 +-
+ fs/btrfs/verity.c                     |   3 +
+ fs/crypto/crypto.c                    |  10 +-
+ fs/crypto/fname.c                     |  36 --
+ fs/crypto/fscrypt_private.h           |  42 ++
+ fs/crypto/hooks.c                     |  46 ++-
+ fs/crypto/inline_crypt.c              |  84 +++-
+ fs/crypto/keyring.c                   |  18 +-
+ fs/crypto/keysetup.c                  | 166 ++++++++
+ fs/crypto/policy.c                    |  47 +++
+ include/linux/blk-crypto.h            |  15 +-
+ include/linux/fscrypt.h               | 125 ++++++
+ include/uapi/linux/btrfs.h            |   1 +
+ include/uapi/linux/btrfs_tree.h       |  35 +-
+ 56 files changed, 2798 insertions(+), 350 deletions(-)
+ create mode 100644 fs/btrfs/fscrypt.c
+ create mode 100644 fs/btrfs/fscrypt.h
+
+-- 
+2.43.0
+
 
