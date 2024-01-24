@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-1725-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1726-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F41CA83AFAD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:24:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE4D883B014
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:33:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A37D628BB1D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:24:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C1F4B2DC6D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0ECC1292FA;
-	Wed, 24 Jan 2024 17:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24DE129A67;
+	Wed, 24 Jan 2024 17:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="F3APG9kY"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Lr/hgcy+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A220F81AC7
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F021292F3
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706116806; cv=none; b=HfxW9IO/vxfDM8JwI7i6oPR9jxJYWVvtkAenPKZVkeuKuqeNTbF4hxZzSAzwK2D7JH4idLJwFXGBwhj3qjssL7a75DxkO39ORuRqHhQBPvEJi2UNKYn1Zd5NAFQhKUyq1JWZWfFWgeQ3Se1o+xCJqx39/WP2zyf6giey7Lzm2w0=
+	t=1706116807; cv=none; b=iCt+/SX6IqzJm1zR+OnMfa5cmY8DPJEkpBP1Wamf36wilJPM1YpDVTvxndZLCC2+ySQp8k4bU0ARCq6glnUZICJW4i6UFXpNQYH1yMh5+iNll+yqVdS/xifeNGJ7fDMPjj/rELeES/lx8R9QQTJGN6qAqDxpeXQqRiRaMxrYPkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706116806; c=relaxed/simple;
-	bh=RsgzIVBsz01VwzkIxSD2+w4KA2XXIeeWH0vR/60+LQc=;
+	s=arc-20240116; t=1706116807; c=relaxed/simple;
+	bh=0RvlsfLOSn3+Tptx/+KHsomQ6m2NCD5RtDAhF7RPT5Y=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OJzoJtxb8cu5O9JTVA9xxg36JjqTPA3ublxcwHCgoy+Ieg/vd4q9VMoX+PLutopYCLwnvrjn+3p2GsI9eEg0agq5XzENMPi13I7hQg2hPZyCXOZwJLK+rD+1NDaWNd2R7vKs063DrdIYIIOXzp/DFuHceL1z78OfFIGhQEV8ahs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=F3APG9kY; arc=none smtp.client-ip=209.85.219.176
+	 MIME-Version; b=WoYaNzw7cONHv2cjXHXjIV/1pcCCBcPD4joXJ3XlBavpe5Nym3zGW/RJ/jKtYAIuLf5z4HAT179qj/ms6VIq6uHQO2zKP1k5KRPFmtYDGaoQfg3GL6QFxhYmnPZlMjmhZij55l5vK9iSgy2GAZf+6wiMAihVK/CstzZ6Hfai3L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Lr/hgcy+; arc=none smtp.client-ip=209.85.128.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc221f01302so4470179276.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:20:04 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60032f9e510so18446587b3.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:20:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116803; x=1706721603; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116804; x=1706721604; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=OloT/erk4mHRgg9VGWOA3jcX3n+PreTy1AVXCpgYEsE=;
-        b=F3APG9kYFsq3cAI95glBr2AgCk+/nG0Z4oLGKQduPdcAXzuvcGJHYskqS2gRaXku/p
-         SWrvX/Ga4Nifk06Qv561HD7t8baVb6tVwVSVHY6T3kmr6C/c8yjdJgBdRV8P0RlCXjs4
-         5y9hZj/o9hWU2/ZQksXZ5YSIrav/LPRohTpoyiQRaTW8Awe7Bg+FcCjEEkG706N5Woit
-         5rwGcySPwX9zJDD4bfSUN3BCYgHluIgvQmDWTXmaRKFXl+VFrglsb/pxHc9DbmjmY5CD
-         FvZrjIXPbetsbq/U0eUzNk7IxLfEVJX0oNy/pQBc71wWr3T4CwVIccF6yIRF003sA+MI
-         1pYA==
+        bh=ZeC1YxJFTfa0zQ5hIQIZHx7xW86/p/Vd7B5Eiqx4Plo=;
+        b=Lr/hgcy+DC4aXlu/T9nZjpSE6JUt89d6eUssXax/skFU2+RXTt1VcOiWJCCHq828Fv
+         9E4OAaRbhkT1FdMJSOPZGWvD4jcMi+OJhObEFKVcbeoOR4H53GWKdDIQeF5Jhx2MyW42
+         9QWtxluRpDhVGkDR5l/L6pvxxgHpFacuIa7cPa/N/4Zww4sK+uHNDKbFE+d5I7Kj6Cw4
+         iz6BLrLc6d6SD6GKgRmEceAOaQD8LBbyAQBxkgeXHXJWR5LW5FRbymxcU+SnGGVn3nAt
+         WnfDgl6yIfOa+aoe16atxpuBR7V04gD0ZH5+wHAvZUvAo+7y2SWEe6rAiqN07AcPcBZY
+         fGNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706116803; x=1706721603;
+        d=1e100.net; s=20230601; t=1706116804; x=1706721604;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OloT/erk4mHRgg9VGWOA3jcX3n+PreTy1AVXCpgYEsE=;
-        b=HPrYte0uHrg11RaBgwFqLI03l3yhPoVI3X41sWSkld5Fa2Ch0v5dj1D9vBP0go9HZs
-         qibkGWe02S1KQKLl0hBISPghzYuRTNi+HNicajBfZVbm8rESQh4OiDB42sKsNjiGC2eO
-         O+1fxpH3D0NSYoIO5ZEAJBZZ1BPzg7NnLlUHYz6A2x1HIRpoK+fvprY8ASafNas6b6jf
-         a0Gmxfk7Iw6ac4Iy0zJ6SBeQkRRFL+Tw9m+eaiL56NjEoY9YQSFg7o8A5GA+TBWeUlEd
-         b9ULtHLJrgzN2TM359iQAFIgKh+a/7X+6FMM7zXWW0WYmWyM+GDKKwo7tva+ghQOqJ8z
-         I9jA==
-X-Gm-Message-State: AOJu0YxSqunLLyTvn4KTaNf9qdbkDCBot8PmjOPIKwSbQ1SkLWoTgwej
-	FY/wP8xvX6ZtAfUiKxcppV4Dm3qy8Kg8CYlI7nU2fkgm7J7NCotcfdPc5rrw6pQiqLUjnf6fP2U
-	s
-X-Google-Smtp-Source: AGHT+IHaqWhrpDkjISBRATMkV1CIWIFl9HfeZzFRPLcxMZciRt/LBMMfWyBultpUP/fkkBsgmYZmPw==
-X-Received: by 2002:a25:8609:0:b0:dc2:3aec:d5ee with SMTP id y9-20020a258609000000b00dc23aecd5eemr1053429ybk.114.1706116803431;
-        Wed, 24 Jan 2024 09:20:03 -0800 (PST)
+        bh=ZeC1YxJFTfa0zQ5hIQIZHx7xW86/p/Vd7B5Eiqx4Plo=;
+        b=hlJH7Bj7JeFcn3LpBsNmUKb2ZtxAqpThpLaWJ5PNXyM38PfOQGFf8T27sCaY+e2cDt
+         qc7Ei05YuvI/TEBK96opQ8K9NK7ZKKx44a/U7dUqIs9anPSoe0EvSYwStihFnrtpc7kp
+         +yzUAvdHcSoeTxogVnkFbsjjLkCh0OeEMqFuDYY1xC6RsIg5d5Fa0noI2rxC9F6Yy22G
+         wjkwSwpGb9AFtrXl6M05T5dBPRVIqBmQal06bR0TZSLWONWMf5d7yIi1708hZpIVeo8Y
+         XenThOUdLWKT4NdkktjDOVvpwxGhNEHorOD5VXib3orXIDcZrovPW8YFVq8ZE6RI5hNv
+         lvYw==
+X-Gm-Message-State: AOJu0Yw6PWE2u/07ARGVUu+9VGi/TpMG4LGiP01/0GoxynjVmHtuXRhr
+	G1tKRdeLu0aYJovjoMf/LsoSK2A7um49MsMh6a/b5MGtKmGu8RvyffsDkDnRVgKONBRdo3puF8q
+	m
+X-Google-Smtp-Source: AGHT+IFhVfwRbSQggUrFVDbhb45IeV65m2TER7oUFjuR4KmiKEal3XTLbaoJbpEIQKGHGdPfrT9lRw==
+X-Received: by 2002:a81:7b09:0:b0:5ff:b29d:4532 with SMTP id w9-20020a817b09000000b005ffb29d4532mr1141928ywc.35.1706116804499;
+        Wed, 24 Jan 2024 09:20:04 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id y185-20020a25dcc2000000b00d677aec54ffsm2935134ybe.60.2024.01.24.09.20.03
+        by smtp.gmail.com with ESMTPSA id d134-20020a0ddb8c000000b005ffd1bf706fsm61261ywe.96.2024.01.24.09.20.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 09:20:03 -0800 (PST)
+        Wed, 24 Jan 2024 09:20:04 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH v5 43/52] btrfs: make btrfs_ref_to_path handle encrypted filenames
-Date: Wed, 24 Jan 2024 12:19:05 -0500
-Message-ID: <365d4f820f70b7cf69b1b9cae9b949a15c3350b0.1706116485.git.josef@toxicpanda.com>
+Subject: [PATCH v5 44/52] btrfs: don't search back for dir inode item in INO_LOOKUP_USER
+Date: Wed, 24 Jan 2024 12:19:06 -0500
+Message-ID: <d35eb165e63756db85f8e3630d807a5a8731e2cd.1706116485.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1706116485.git.josef@toxicpanda.com>
 References: <cover.1706116485.git.josef@toxicpanda.com>
@@ -84,172 +84,67 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We use this helper for inode-resolve and path resolution in send, so
-update this helper to properly decrypt any encrypted names it finds.
+We don't need to search back to the inode item, the directory inode
+number is in key.offset, so simply use that.  If we can't find the
+directory we'll get an ENOENT at the iget.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/backref.c | 45 +++++++++++++++++++++++++++++++++++++++++----
- fs/btrfs/fscrypt.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/fscrypt.h | 11 +++++++++++
- 3 files changed, 98 insertions(+), 4 deletions(-)
+ fs/btrfs/ioctl.c | 23 +++--------------------
+ 1 file changed, 3 insertions(+), 20 deletions(-)
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index f58fe7c745c2..9ed854b9f3fc 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -20,6 +20,7 @@
- #include "extent-tree.h"
- #include "relocation.h"
- #include "tree-checker.h"
-+#include "fscrypt.h"
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 2740f0359446..f5dc281121d2 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1902,7 +1902,7 @@ static int btrfs_search_path_in_tree_user(struct mnt_idmap *idmap,
+ 	struct btrfs_root_ref *rref;
+ 	struct btrfs_root *root = NULL;
+ 	struct btrfs_path *path;
+-	struct btrfs_key key, key2;
++	struct btrfs_key key;
+ 	struct extent_buffer *leaf;
+ 	struct inode *temp_inode;
+ 	char *ptr;
+@@ -1956,24 +1956,6 @@ static int btrfs_search_path_in_tree_user(struct mnt_idmap *idmap,
+ 			read_extent_buffer(leaf, ptr,
+ 					(unsigned long)(iref + 1), len);
  
- /* Just arbitrary numbers so we can be sure one of these happened. */
- #define BACKREF_FOUND_SHARED     6
-@@ -2117,6 +2118,42 @@ int btrfs_find_one_extref(struct btrfs_root *root, u64 inode_objectid,
- 	return ret;
- }
- 
-+static int copy_resolved_iref_to_buf(struct btrfs_root *fs_root,
-+				     struct extent_buffer *eb,
-+				     char *dest, u64 parent,
-+				     unsigned long name_off, u32 name_len,
-+				     s64 *bytes_left)
-+{
-+	struct btrfs_fs_info *fs_info = fs_root->fs_info;
-+	struct fscrypt_str fname = FSTR_INIT(NULL, 0);
-+	int ret;
-+
-+	/* No encryption, just copy the name in. */
-+	if (!btrfs_fs_incompat(fs_info, ENCRYPT)) {
-+		*bytes_left -= name_len;
-+		if (*bytes_left >= 0)
-+			read_extent_buffer(eb, dest + *bytes_left,
-+					   name_off, name_len);
-+		return 0;
-+	}
-+
-+	ret = fscrypt_fname_alloc_buffer(BTRFS_NAME_LEN, &fname);
-+	if (ret)
-+		return ret;
-+
-+	ret = btrfs_decrypt_name(fs_root, eb, name_off, name_len, parent,
-+				 &fname);
-+	if (ret)
-+		goto out;
-+
-+	*bytes_left -= fname.len;
-+	if (*bytes_left >= 0)
-+		memcpy(dest + *bytes_left, fname.name, fname.len);
-+out:
-+	fscrypt_fname_free_buffer(&fname);
-+	return ret;
-+}
-+
- /*
-  * this iterates to turn a name (from iref/extref) into a full filesystem path.
-  * Elements of the path are separated by '/' and the path is guaranteed to be
-@@ -2148,10 +2185,10 @@ char *btrfs_ref_to_path(struct btrfs_root *fs_root, struct btrfs_path *path,
- 		dest[bytes_left] = '\0';
- 
- 	while (1) {
--		bytes_left -= name_len;
--		if (bytes_left >= 0)
--			read_extent_buffer(eb, dest + bytes_left,
--					   name_off, name_len);
-+		ret = copy_resolved_iref_to_buf(fs_root, eb, dest, parent,
-+						name_off, name_len, &bytes_left);
-+		if (ret)
-+			break;
- 		if (eb != eb_in) {
- 			if (!path->skip_locking)
- 				btrfs_tree_read_unlock(eb);
-diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index 6a6ecf4a49e2..83fa99a5be6e 100644
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -365,6 +365,52 @@ int btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length)
- 	return map_length;
- }
- 
-+int btrfs_decrypt_name(struct btrfs_root *root, struct extent_buffer *eb,
-+		       unsigned long name_off, u32 name_len,
-+		       u64 parent_ino, struct fscrypt_str *name)
-+{
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	struct inode *dir;
-+	struct fscrypt_str iname = FSTR_INIT(NULL, 0);
-+	int ret;
-+
-+	ASSERT(name_len <= BTRFS_NAME_LEN);
-+
-+	ret = fscrypt_fname_alloc_buffer(name_len, &iname);
-+	if (ret)
-+		return ret;
-+
-+	dir = btrfs_iget(fs_info->sb, parent_ino, root);
-+	if (IS_ERR(dir)) {
-+		ret = PTR_ERR(dir);
-+		goto out;
-+	}
-+
-+	/*
-+	 * Directory isn't encrypted, the name isn't encrypted, we can just copy
-+	 * it into the buffer.
-+	 */
-+	if (!IS_ENCRYPTED(dir)) {
-+		read_extent_buffer(eb, name->name, name_off, name_len);
-+		name->len = name_len;
-+		goto out_inode;
-+	}
-+
-+	read_extent_buffer(eb, iname.name, name_off, name_len);
-+
-+	ret = fscrypt_prepare_readdir(dir);
-+	if (ret)
-+		goto out_inode;
-+
-+	ASSERT(dir->i_crypt_info);
-+	ret = fscrypt_fname_disk_to_usr(dir, 0, 0, &iname, name);
-+out_inode:
-+	iput(dir);
-+out:
-+	fscrypt_fname_free_buffer(&iname);
-+	return ret;
-+}
-+
- const struct fscrypt_operations btrfs_fscrypt_ops = {
- 	.has_per_extent_encryption = 1,
- 	.get_context = btrfs_fscrypt_get_context,
-diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
-index 703122e8d57f..6fca223e7d9e 100644
---- a/fs/btrfs/fscrypt.h
-+++ b/fs/btrfs/fscrypt.h
-@@ -38,6 +38,9 @@ bool btrfs_mergeable_encrypted_bio(struct bio *bio, struct inode *inode,
- 				   struct fscrypt_extent_info *fi,
- 				   u64 logical_offset);
- int btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length);
-+int btrfs_decrypt_name(struct btrfs_root *root, struct extent_buffer *eb,
-+		       unsigned long name_off, u32 name_len,
-+		       u64 parent_ino, struct fscrypt_str *name);
- 
- #else
- static inline void btrfs_fscrypt_save_extent_info(struct btrfs_inode *inode,
-@@ -98,6 +101,14 @@ static inline u64 btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length)
- 	return map_length;
- }
- 
-+static inline int btrfs_decrypt_name(struct btrfs_root *root,
-+				     struct extent_buffer *eb,
-+				     unsigned long name_off, u32 name_len,
-+				     u64 parent_ino, struct fscrypt_str *name)
-+{
-+	return -EINVAL;
-+}
-+
- #endif /* CONFIG_FS_ENCRYPTION */
- 
- extern const struct fscrypt_operations btrfs_fscrypt_ops;
+-			/* Check the read+exec permission of this directory */
+-			ret = btrfs_previous_item(root, path, dirid,
+-						  BTRFS_INODE_ITEM_KEY);
+-			if (ret < 0) {
+-				goto out_put;
+-			} else if (ret > 0) {
+-				ret = -ENOENT;
+-				goto out_put;
+-			}
+-
+-			leaf = path->nodes[0];
+-			slot = path->slots[0];
+-			btrfs_item_key_to_cpu(leaf, &key2, slot);
+-			if (key2.objectid != dirid) {
+-				ret = -ENOENT;
+-				goto out_put;
+-			}
+-
+ 			/*
+ 			 * We don't need the path anymore, so release it and
+ 			 * avoid deadlocks and lockdep warnings in case
+@@ -1981,11 +1963,12 @@ static int btrfs_search_path_in_tree_user(struct mnt_idmap *idmap,
+ 			 * btree and lock the same leaf.
+ 			 */
+ 			btrfs_release_path(path);
+-			temp_inode = btrfs_iget(sb, key2.objectid, root);
++			temp_inode = btrfs_iget(sb, key.offset, root);
+ 			if (IS_ERR(temp_inode)) {
+ 				ret = PTR_ERR(temp_inode);
+ 				goto out_put;
+ 			}
++			/* Check the read+exec permission of this directory */
+ 			ret = inode_permission(idmap, temp_inode,
+ 					       MAY_READ | MAY_EXEC);
+ 			iput(temp_inode);
 -- 
 2.43.0
 
