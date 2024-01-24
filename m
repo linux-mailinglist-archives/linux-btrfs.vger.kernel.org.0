@@ -1,125 +1,134 @@
-Return-Path: <linux-btrfs+bounces-1735-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1736-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4AD283B22D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 20:20:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB04183B248
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 20:28:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DFF228D72B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 19:20:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83B0628679F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 19:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED0C132C34;
-	Wed, 24 Jan 2024 19:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DDA3132C19;
+	Wed, 24 Jan 2024 19:27:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="hBw9Q3we";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DLa00wNk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC424131749
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 19:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4FE130E5D
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 19:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706123961; cv=none; b=Un0Cyy6BYxAnTqxu6gUWODn6G19vZA6B89Pz7eMk6LoHL5v72kODvB6xaWkr5GGHo9kOh3KlmUmhV+8aBvxWTDgj0ZppA/KNAWWT5A1QXNDBpsVOkcZ/jyXja2ytw8tG2c/p7WKUOfPBE3T/MLoTUaXTHUFE2fHN9EbEWdQlTRQ=
+	t=1706124473; cv=none; b=miZ/fGnXJ9s9sYscXvD6n73G55w7qp/GI0/kvX4v70Qn2HJInq24T9uMf9udIjdReNUdSKfbua8hkR0DGtLgWiB3m07gmKoFH6AXGU9m/vXqEIEU0wxAQPYHbnvxj/f3hec5uLxNJDPaPynq/ODjXRaWWBWgenmDo3xNeIfmN2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706123961; c=relaxed/simple;
-	bh=FpyoHUfgdG07j5WJnIH47NGhSrb5TU1PVKyz+0Hslu0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ja7WlMLuDDxZp61SLEqZ6mTCX6K9dPdN3oYBhtjCbhBzku8JyqOFoL+wCspX/0lI2fjyMFppKhfR52aokAweIPqM11qp3KuUM3HS883a/qhl4P2zQlvAYTik5QCcDW9fQ88/zUKsFzNEfUGLd5RTaheRBgnTPMQ33X+MAQhecEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55a45a453eeso7574988a12.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 11:19:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706123957; x=1706728757;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TZn7NrEg6WObcCMQAtWnAqObSHnMRvMqMrwD0XTBr14=;
-        b=F9sDOJH50YwsKN6KW3etNnu0joShrfY2fgimzaOr8eR9CO9QGPPQbks/39KXldB0io
-         uvBMsbGIH6AsMiq4CrlrNUUkpHEH1MwTA5YXwwmWIJbKH2PgIGPP+Udc4LoKyGsavkxb
-         x6PGcNe27uPa4FE0kGVr9+P+Tl37mR+KSgAIsdglHqVEJXzk1g6Dqb4tMjOHxxZPNx1S
-         ZcX11q7EBFJW7UqPl2sRRT6hICjvFXy5t2BBE5F/jnJjSTs7x9pj2AfeNLExJZBEx94F
-         ujMeGesAeKnka2wDxschRX4C22MsgbSd7ymfBiJPr92HOrttCfHs+DgeETKZX8EfPS7b
-         ohTw==
-X-Gm-Message-State: AOJu0Yx02OpYm54YRQlzU1UOjV1NueZl3sWAxjKAp5DrjgHF5+H7aXfZ
-	u1Pp/UktWfGHfTMaYG1m5M5CuO1nStVdZQfpEmPjh8zHUO/QeCuGmX27rzB2r8zW3Q==
-X-Google-Smtp-Source: AGHT+IGEBKGp/1AP5oLxWDLVn93yaNmLzgAZSOrdDfd4kei/GQJYEwpJbnJp3sSkAi6qhmT+oCXhqg==
-X-Received: by 2002:a17:906:3e53:b0:a2d:79b6:bbeb with SMTP id t19-20020a1709063e5300b00a2d79b6bbebmr1152021eji.66.1706123957216;
-        Wed, 24 Jan 2024 11:19:17 -0800 (PST)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id ex16-20020a170907955000b00a2cbbebedc1sm187152ejc.53.2024.01.24.11.19.17
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 11:19:17 -0800 (PST)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55a539d205aso6543038a12.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 11:19:17 -0800 (PST)
-X-Received: by 2002:a05:6402:2811:b0:55c:9c81:9a36 with SMTP id
- h17-20020a056402281100b0055c9c819a36mr1661915ede.68.1706123956936; Wed, 24
- Jan 2024 11:19:16 -0800 (PST)
+	s=arc-20240116; t=1706124473; c=relaxed/simple;
+	bh=ajlSjWNtGvQsz/K4vFtUwAiyCNX9WV6L9AF847GaIj4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DhN4sI6/kcsYLA/kyRwHK9s/uv0jFBo1mZb+W6l6aMNhhZHHKN/+m5OvoBGP9UfZOV1gpm0sm6lwamRsP96NS6Ugoons4+pVLZKp0XfBOI16ZbSqyDr1A8isUm7wKTPpSSV9lLlOjr2Zx0GMg8BYYaCmmglHvw66B3BgSVbIHq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=hBw9Q3we; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DLa00wNk; arc=none smtp.client-ip=66.111.4.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.nyi.internal (Postfix) with ESMTP id 4855A5C00FD;
+	Wed, 24 Jan 2024 14:27:50 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Wed, 24 Jan 2024 14:27:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1706124470; x=1706210870; bh=mKSyLTTpl8
+	pbPtH3KyGwwaaU2+Sx7CmwxQSJt0wcPX8=; b=hBw9Q3weXQaeh21PzxPB76/R7K
+	aSdSLR5/qFlIRIMWDMIQRuB7RbdyctA/ZSrVbqa/LdyHdVWl8DqQQ7bl4l+SfmNB
+	FwjXBGJc3pj2AcrSILBlpn+S+58J1u9TdHd6phWAUfunaQLIZy/J8JXImi4MxA0x
+	tXiq4RVwZG6AyyqfVYJ1a7L7AZv/+3Ckv7b+a1ASLjt/9rOk+xyMUONHjsnpcObg
+	EY3weieirmNbHTyeaeZ2jxVtXTC4De6ogd4rSMi6ojbFoZ4KT7YCtyaKIaha0Ag4
+	6Dv5oKwf3FY1fmzRcKBiWwmCNP/yOQJM94kadKTor9Pe23cKT4xU3eLiqtMw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706124470; x=1706210870; bh=mKSyLTTpl8pbPtH3KyGwwaaU2+Sx
+	7CmwxQSJt0wcPX8=; b=DLa00wNkYECnhHdxIcnIHry6zF9252AEIkDFf55poIud
+	bzfIqp0CSMsS9s6IDTJbH3Z1SawlxMymINe9aApFVBbyNr0F3n3otcnyjTPQgJyl
+	CkdIdEACJnZCQUBPQrmtUBKVxBql861qLCrgKj8TUcXGJjIxjdpNHPGdJ7X8msQ8
+	4FZPJIh8soLKhOerd0Lfirn3aVDSSqQWhaHsOMLrZvqYofYvwKaJsmzzfpHXTDMt
+	t6lMpJEcEtcDej8mpE3RyajgoumQ29e3MdxyUyAluMl5tOIA9ORovqKTfz+FmshP
+	jO2rpkXc8EsKpmEo6hEAIpDLr7mNviF3gN3nj51VdA==
+X-ME-Sender: <xms:tmSxZQ6V_1XCSnCG7f3BlvJ3zxRFrIMe9l7f01R7nGGhPO6V8wlpKQ>
+    <xme:tmSxZR4nmxInjg-xAj_CbAJgo_b03vgLgYC15H7YVaKXHnmUKC8bNAuastyCPwRII
+    3YOFwPIPg2pLpfDHFs>
+X-ME-Received: <xmr:tmSxZffzPFzxPm14xW0sJl2QDQgTbEoXVMxo1Q3p_RWij5I0rYNEqPniDPT6faDNHQczypvMT3dhshUeAf2RgGKa6Fo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeluddguddvvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
+    essghurhdrihho
+X-ME-Proxy: <xmx:tmSxZVI2u2f2bj7h3pblUVkYf8RvCFcbsW5xiqZYVZJRTnRdqolz0Q>
+    <xmx:tmSxZUKRX8kTMPKxqY4D__HtTTB9dB23jB7CukxmX0ZNy24MevrcBw>
+    <xmx:tmSxZWzB8D_vLZDH5Rv4VrKYYO39bkd0LFUjG77uCdaMhQ9orxzjGA>
+    <xmx:tmSxZej5D4n86vaCAdSKBj6CTLjdm86DDnIF_Hp5C2Sj3wyNJhm9ZA>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 24 Jan 2024 14:27:49 -0500 (EST)
+Date: Wed, 24 Jan 2024 11:28:50 -0800
+From: Boris Burkov <boris@bur.io>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v5 52/52] btrfs: disable send if we have encryption
+ enabled
+Message-ID: <20240124192850.GA1789919@zen.localdomain>
+References: <cover.1706116485.git.josef@toxicpanda.com>
+ <62ce86b38e2575c542eed7fbe8d986e68496b1d7.1706116485.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1706116485.git.josef@toxicpanda.com>
-In-Reply-To: <cover.1706116485.git.josef@toxicpanda.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Wed, 24 Jan 2024 14:18:40 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je8E9HMZKeSxPY35qjTsq0rZNx3fSq1Rzi-fD+U+3oOZWA@mail.gmail.com>
-Message-ID: <CAEg-Je8E9HMZKeSxPY35qjTsq0rZNx3fSq1Rzi-fD+U+3oOZWA@mail.gmail.com>
-Subject: Re: [PATCH v5 00/52] btrfs: add fscrypt support
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <62ce86b38e2575c542eed7fbe8d986e68496b1d7.1706116485.git.josef@toxicpanda.com>
 
-On Wed, Jan 24, 2024 at 12:19=E2=80=AFPM Josef Bacik <josef@toxicpanda.com>=
- wrote:
->
-> Hello,
->
-> This is based on
->
-> https://github.com/btrfs/linux.git for-next
->
-> which has the recent pull from the fscrypt tree.
->
-> I've reworked a lot of this to incorporate Eric's suggestions.  There are=
- a few
-> more patches because of bugs I've found in testing, and I've disabled a f=
-ew
-> features, namely RAID5/6 and send, as they will require more work to supp=
-ort
-> with encryption and that can be done after the core work is merged.
->
-> Thanks,
->
-> Josef
->
-> v4->v5:
-> - Addressed all the comments from Eric and then reworked the rest of the =
-code to
->   handle the various changes.
-> - Fixed read repair.
-> - Fixed log replay.
-> - Disabled send for encrypted file systems.
-> - Disabled turning on encryption on RAID5/6 file systems.
->
-
-As long as we get these features back soon after this is merged, I'm
-fine with this. It's important from the Fedora perspective to at least
-have the ability to do blind replication, so I hope it follows shortly
-after.
-
-With regards to the RAID 5/6 modes, I'm somewhat okay on sitting that
-out while the rework to use the raid-stripe-tree stuff is in progress.
-
-
-
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+On Wed, Jan 24, 2024 at 12:19:14PM -0500, Josef Bacik wrote:
+> send needs to track the dir item values to see if files were renamed
+> when doing an incremental send.  There is code to decrypt the names, but
+> this breaks the code that checks to see if something was overwritten.
+> Until this gap is closed we need to disable send on encrypted file
+> systems.  Fixing this is straightforward, but a medium sized project.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/send.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index d26ca7b64087..eba45477b10a 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -8183,6 +8183,12 @@ long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
+>  	if (!capable(CAP_SYS_ADMIN))
+>  		return -EPERM;
+>  
+> +	if (btrfs_fs_incompat(fs_info, ENCRYPT)) {
+> +		btrfs_err(fs_info,
+> +		  "send with encryption enabled isn't currently suported");
+s/suported/supported/
+> +		return -EINVAL;
+> +	}
+> +
+>  	/*
+>  	 * The subvolume must remain read-only during send, protect against
+>  	 * making it RW. This also protects against deletion.
+> -- 
+> 2.43.0
+> 
 
