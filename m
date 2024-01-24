@@ -1,79 +1,78 @@
-Return-Path: <linux-btrfs+bounces-1700-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1701-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 393D683AF90
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:21:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DCCA83AF91
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 18:21:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2F1B1F282A6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:21:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35C5C287566
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jan 2024 17:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6267C7F7EA;
-	Wed, 24 Jan 2024 17:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FF086156;
+	Wed, 24 Jan 2024 17:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="1mos43+D"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="EyUVMKIv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD927E79A
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C698613E
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 17:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706116781; cv=none; b=K/jg/8eTdGGNE+puWl4fUopSLr3tfmgTEvO8dxHLbPt+pn3VgZiadhBb0zuhxNhAwZALpc7i7YxqjKSwMgIHuxjXUbx43oOcFypQ+EkKi1BMMLehbRbnHeIEsHxYqNsB5T+3DKSTC+LwbCDqu3Wup8rgaBrSPXcQrGuGQmX1ufE=
+	t=1706116783; cv=none; b=QsS05TWSJt2DO9h0c5LnSDHb4JZ7z8RxF30WPJIK44ZBBFE9n4FCgw02CG2wjBsaPKgks+kBnbi0skI7/seg7Tp3vzTeXxo2i9aI037CqQr6YaoNr7Fa/aJzrka8fSuR9yHXup8CkmG5wsHU587xVmvWCEzOYoVuo7FnuCh5gJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706116781; c=relaxed/simple;
-	bh=NZRyzKRzNZ4Jx3CjS7t3Q2bBeJ7+CY5fV75V1z1QV3c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LSwb2lus8+Tz6FcNNQcfQ7CxoiFu2NbPId/9S32UQorxMKYp/StCAC0HsZsW8Ee+IUYxuUUoaZmMbfihUBZDqiHLF612qYBv/rpwzgA1cOxppv+DZ3m6tHH97EVsxrefIT2ApGnBb49tW63J9mekS20f8lhSNWG/1stATUP1vPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=1mos43+D; arc=none smtp.client-ip=209.85.128.179
+	s=arc-20240116; t=1706116783; c=relaxed/simple;
+	bh=oS1MgH3lRCEp8fVEefp9ekMiukrY2HcvdAkncIOGYfU=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=iADWCOQqjSLjGwAjqsDn0OHNHM2v7vPCUVmsD9A7YJcGc6le1WFhFEpYNDGmC860eAdXYQvNc+AELENOBfvSpL5ugXXC3RW2L+n7DYhg2/wnfi+Oq9rKJq7vf5C6gQLLOoNFpQXnLroYhV66thHgkpoEQ1rSj51WykbsmCywyKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=EyUVMKIv; arc=none smtp.client-ip=209.85.128.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5ff7ec8772dso49931947b3.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:19:40 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5ebca94cf74so56422457b3.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jan 2024 09:19:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116779; x=1706721579; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706116780; x=1706721580; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jy9agr8g7LNh5MpRHg1aNLlpzBp6ZezqPeMd1029Udo=;
-        b=1mos43+D/RmmSJ5RZ8Jtb9HsHlTz0OlO29uBN9Eic6t/x3H9eG62jICfwNjr8dpEaf
-         EGzjQx/kfwDegHkmLn1m6VNtAvmvLrVGno4Nn4Yk3PrBpru26bVvbOBlJrLnxCX2xHuj
-         4D14zaaNpozvwTW0mB7txHcPCcmkjm5Pb78Eqis7S+VoWklcZ8H+Og35rcP9XspdBJ8x
-         hTDImO0nK72E3oslKdclK/AMHuuJ4gLadJrsrEOt9cKJePCE0RmyAmfMA/P2C2vCCG0M
-         M0FN0WXA1SqhAtsl76QOO1/PCOvvq5HEU0O3bHcuoSTuD+kf7kVTUmLCyJhSX1V6hpNM
-         sOAA==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XHv6I4cDHnW0vlMJvKGhfHAhzUDioGRjA/BiwZZacn8=;
+        b=EyUVMKIv+bA416+8QO8K34J6OOkFRCqw2zUrTpVTMFp0k4yRjBYZlR96AErJwIs9bq
+         BdRy15P9XR+PKKIM6eu91mB4/KRR6ZVpuuzDmTUmpETRL9Hw/7WJAjQUb0Hjerv76S0L
+         TonAx24wKh6BjokN7CQ4g+Xr0bcFRTu1QuMx2MHfksdakm6MI0yUlz2LF117G+DJ+Xif
+         X7/m+KTASxpEWHuHQ1MJku3h2zZA1kGcmgmM/BwdfBCMtniD8dOBGdUcxCx7vknU9ow8
+         y4lpAQirohp3fXw3+ntDxo73ZwknZlHzpvDNjTVeofudL9DARFk94upHKLiOH0f0Oiqx
+         uG3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706116779; x=1706721579;
+        d=1e100.net; s=20230601; t=1706116780; x=1706721580;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Jy9agr8g7LNh5MpRHg1aNLlpzBp6ZezqPeMd1029Udo=;
-        b=EuAEoFrEOmk2oYFZbbeA3UYtZrWzQV4ZRhW5DK058jLBV3ES9nsd7zJFdvOvzMHX/m
-         nCUXAYZnRS7JVpzYkTFqaizNXJFCuNMlup6ZNPph3TGKwuIPCIRB0JwGL+hePTQc9FYl
-         gISeLizBb8cIQMWpRdQb7BiEPMAuBgtQXBhxiKnoDbHHY4gTy2dScayRLc6GtpalcGzM
-         mlMdDmix7tge+4dFAEy3DdZ9y9UQhcITRaik3GGziDXOnOKMSI7uQCTvyIsPDva+haod
-         G3FaIwaWa99529SxZd74csF7Ihuk1FR16MsQPkxyuz0AhRGfQoSVR93RSzUY0qCHeWOo
-         TUVw==
-X-Gm-Message-State: AOJu0YxVqUiI+VUYkdbhQN+wvg1aeGjUpuLWzGhHWc9Foq1SYqwA+sny
-	ymLtY3JsWVffpGk1mDABEhRUqiJh0LGfJzYoyKDrfVGrjxLZ+P4iOrt0mr/44kjuBoql0yRNjqI
-	W
-X-Google-Smtp-Source: AGHT+IFLR6VhFXCJZW6u8s6juTThWl/Limr7I+kO1XiEGx9xi6JAT694Cz+poX8K2oP+FtQx/o1VWQ==
-X-Received: by 2002:a81:4817:0:b0:5ff:4c01:c622 with SMTP id v23-20020a814817000000b005ff4c01c622mr1129698ywa.87.1706116779122;
-        Wed, 24 Jan 2024 09:19:39 -0800 (PST)
+        bh=XHv6I4cDHnW0vlMJvKGhfHAhzUDioGRjA/BiwZZacn8=;
+        b=JCaqLXRRCeM8z6wiluCMpizSZXXxOI7qb7NDi3eXbqt8PJ1FMe2CLRMXMdBdr/+rV6
+         e0/0YdZVTRioWQ91fbxLmVSNkoSTSsSrB/E9oxc/E0fF2NfXr0XXkOnMKos95tNFyw1U
+         VVdTa6CB5L33RJ7/2FHy8ZNSqKzoyQF46NKJfXDfJwIPc4xCRlUD5O9V6LDs+xBbbq26
+         BFosDpZfP9bbRgvlyIcu2RkIhNVSBWPYB35+mNld2yjoL5jDduTRL2J4CcvcGxg0wylX
+         MjBDyUlOGbBtAC+hM7nXDneDcsqgO25af3QvW4phx9m/8ytKEwFyxmNJOaQOP5ExEJ/2
+         nC+Q==
+X-Gm-Message-State: AOJu0YwIoL5hRb2dNkgXfETvEzf9lYVYuVgcemVoU3h5BeiW5faYgTKc
+	uMeFPJd+zFIasyj+zSqSZxSdd+A40FSEVJZpHhTeT6u8JMM22ClfUbt0vCUeyTWNR05btIj0lyY
+	L
+X-Google-Smtp-Source: AGHT+IErcX6og+2r1vzuPuo+OGpClj7kBE9aYVeYCRTTlgCGlY2iHvIO2evIV2kxmQlPTcqMXmSzeg==
+X-Received: by 2002:a0d:f186:0:b0:5fa:82bd:8642 with SMTP id a128-20020a0df186000000b005fa82bd8642mr881366ywf.29.1706116780573;
+        Wed, 24 Jan 2024 09:19:40 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id i6-20020a819106000000b005ffb11e67bdsm63881ywg.62.2024.01.24.09.19.38
+        by smtp.gmail.com with ESMTPSA id dt5-20020a05690c250500b005ca99793930sm65576ywb.20.2024.01.24.09.19.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 09:19:38 -0800 (PST)
+        Wed, 24 Jan 2024 09:19:39 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v5 18/52] btrfs: gate encryption behind BTRFS_DEBUG
-Date: Wed, 24 Jan 2024 12:18:40 -0500
-Message-ID: <5134ab713b080f78b90eae46671596f72bbb1815.1706116485.git.josef@toxicpanda.com>
+Subject: [PATCH v5 19/52] btrfs: select encryption dependencies if FS_ENCRYPTION
+Date: Wed, 24 Jan 2024 12:18:41 -0500
+Message-ID: <396f5067b2551a9f2de4b439509e1a285985d358.1706116485.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1706116485.git.josef@toxicpanda.com>
 References: <cover.1706116485.git.josef@toxicpanda.com>
@@ -85,37 +84,30 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+We need this to make sure the appropriate encryption algorithms are
+turned on in our config if we have FS_ENCRYPTION enabled, and
+additionally we only support inline encryption with the fallback block
+crypto, so we need to make sure we pull in those dependencies.
 
-Since this is a disk format change and is currently in development, gate
-the fscrypt ioctls for btrfs behind BTRFS_DEBUG.
-
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ioctl.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 07c9e04cd0d8..95e2615bba51 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4595,6 +4595,7 @@ long btrfs_ioctl(struct file *file, unsigned int
- 		return btrfs_ioctl_get_fslabel(fs_info, argp);
- 	case FS_IOC_SETFSLABEL:
- 		return btrfs_ioctl_set_fslabel(file, argp);
-+#ifdef CONFIG_BTRFS_DEBUG
- 	case FS_IOC_SET_ENCRYPTION_POLICY: {
- 		if (!IS_ENABLED(CONFIG_FS_ENCRYPTION))
- 			return -EOPNOTSUPP;
-@@ -4623,6 +4624,7 @@ long btrfs_ioctl(struct file *file, unsigned int
- 		return fscrypt_ioctl_get_key_status(file, (void __user *)arg);
- 	case FS_IOC_GET_ENCRYPTION_NONCE:
- 		return fscrypt_ioctl_get_nonce(file, (void __user *)arg);
-+#endif /* CONFIG_BTRFS_DEBUG */
- 	case FITRIM:
- 		return btrfs_ioctl_fitrim(fs_info, argp);
- 	case BTRFS_IOC_SNAP_CREATE:
+diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+index 4fb925e8c981..5ff716beb997 100644
+--- a/fs/btrfs/Kconfig
++++ b/fs/btrfs/Kconfig
+@@ -18,6 +18,9 @@ config BTRFS_FS
+ 	select FS_IOMAP
+ 	select RAID6_PQ
+ 	select XOR_BLOCKS
++	select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
++	select FS_ENCRYPTION_INLINE_CRYPT if FS_ENCRYPTION
++	select BLK_INLINE_ENCRYPTION_FALLBACK if FS_ENCRYPTION
+ 	depends on PAGE_SIZE_LESS_THAN_256KB
+ 
+ 	help
 -- 
 2.43.0
 
