@@ -1,102 +1,115 @@
-Return-Path: <linux-btrfs+bounces-1785-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1786-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFEB383BEB7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 11:28:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04AAC83C105
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 12:38:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9759128BD6D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 10:28:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B043528B250
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 11:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7732228E3E;
-	Thu, 25 Jan 2024 10:26:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QX9Lgq4v"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A534E1D8;
+	Thu, 25 Jan 2024 11:34:04 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEF7220DF7
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 10:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDBE951017;
+	Thu, 25 Jan 2024 11:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.241.18.167
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706178397; cv=none; b=eOlGcxeqWOGjTP1bsReGBTdvvlmD4bawNN5xgL+zMn75fsQwHF8dDXFoydSVCO+Eik8fXyncA2M1PQXe0DoJzNJSmyVxpCJXNw6+LSFCo99PWMcjeUqnGTrkZU+RG5+pMGot0GhNdNv8kabHBehSGMonM0SbwE/3mzcoco7ftDI=
+	t=1706182444; cv=none; b=ZMVPd09dyY1i1nwgCGptz5gZRKDUUf+ZIwqAZStSiSDriAWmAKoleukHK+mqTJyyHFqmmQNmCpUn6QecjQwq0jjg8u/uJ59bWeU3YAmeg5ihgMqifwtaCfATYbszgWYNm/P4UhmrN/yG6fll3ykAtLH7/O+OmXF9bnA4LNrXrpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706178397; c=relaxed/simple;
-	bh=XdwHqc2RLS/YRE0/MNV3LPnapHyySuYrTZWc7SP7kvQ=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=l+TxX5S5Fl7JFCya6WPxZCLXK59EMhutXcu8N7+Bw4mDfK3F5yTo9GnjRKvj3zjbvvl9Sc9SpWfYy9iFmFjTedgB5RPpKG3pTSRuqK0bC4GqKuXpbuvp0RuPPf2RG5OR605nHQAWMAsSZyv6yAa9v+EiK9I7uonSSBhCpCeaSt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QX9Lgq4v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00C73C43390
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 10:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706178396;
-	bh=XdwHqc2RLS/YRE0/MNV3LPnapHyySuYrTZWc7SP7kvQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=QX9Lgq4vj6EmnR0YmxnuNt26qdmrwi7/n9Bu70wSXwMWgFnV7v5lsaPW6gAn/oUB3
-	 raZ46TpLftVmJ5FtsM6H0yv9xvxfBhHVw4Evdye/LtA9z6WD7vQmxOcSbRPLtPHjD5
-	 i7mi4HbTzwMiwbSLCdWwuCaD57DhU53fr/dFFm97J4/R/CFzlasIfqU28tgWdAmcVn
-	 ++n3Jr2/1wmt9p9BezO63zkgopedA+QDhgphmy/JEd+4y+xpV576BLARRZGdNZchZj
-	 JEB319xIcUfUMat8Rx/3gCDsHzWh04dGq8J1OEaOy62vC5VKLcHszTgMROEnPqlH1S
-	 6W+OPzzOUQiIw==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/5] btrfs: add comment about list_is_singular() use at btrfs_delete_unused_bgs()
-Date: Thu, 25 Jan 2024 10:26:28 +0000
-Message-Id: <fdc5a0a2cf0240c02c56521332a48409be65b326.1706177914.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1706177914.git.fdmanana@suse.com>
-References: <cover.1706177914.git.fdmanana@suse.com>
+	s=arc-20240116; t=1706182444; c=relaxed/simple;
+	bh=9Osbi+VQBj6QAYWxlXkNyCZikozOnWLhTODvYvHK42g=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C8c1FHaEaC2xyaqMvB0cYqkKrUEBBH36QikNeBAfXFtg4opnSDspkmIv+kB4t4QvvxnbNOWIllZZp/gOuaWyYJ3mj1ikhRBF1wCQ96qRUKmMktwZpDH+rLV4j9Nb20fp50DdhQvgMwoqJR5GxnaBRpKo9IzLRTirkU4oie11czU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com; spf=pass smtp.mailfrom=de.adit-jv.com; arc=none smtp.client-ip=93.241.18.167
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 912E15200F2;
+	Thu, 25 Jan 2024 12:33:58 +0100 (CET)
+Received: from lxhi-087 (10.72.93.211) by hi2exch02.adit-jv.com (10.72.92.28)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 25 Jan
+ 2024 12:33:58 +0100
+Date: Thu, 25 Jan 2024 12:33:54 +0100
+From: Eugeniu Rosca <erosca@de.adit-jv.com>
+To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
+CC: <linux-btrfs@vger.kernel.org>, Filipe Manana <fdmanana@suse.com>, Rob
+ Landley <rob@landley.net>, <stable@vger.kernel.org>, David Sterba
+	<dsterba@suse.com>, <Maksim.Paimushkin@se.bosch.com>,
+	<Eugeniu.Rosca@bosch.com>, <erosca@de.adit-jv.com>, Eugeniu Rosca
+	<roscaeugeniu@gmail.com>
+Subject: Re: [PATCH v2] btrfs: fix infinite directory reads
+Message-ID: <20240125113354.GA2629056@lxhi-087>
+References: <1ae6e30a71112e07c727f9e93ff32032051bbce7.1706176168.git.wqu@suse.com>
+ <CAL3q7H77i3kv7C352k2R6nr-m-cgh_cdCCeTkXna+v1yjpMuoA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H77i3kv7C352k2R6nr-m-cgh_cdCCeTkXna+v1yjpMuoA@mail.gmail.com>
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
 
-From: Filipe Manana <fdmanana@suse.com>
+Hi Filipe and Qu,
 
-At btrfs_delete_unused_bgs(), the use of the list_is_singular() check on
-a block group may not be immediately obvious. It is there to prevent
-losing raid profile information for a block group type (data, metadata or
-system), as that information is removed from
-fs_info->avail_[data|metadata|system]_alloc_bits when the last block group
-of a given type is deleted. So deleting the block group would later result
-in creating block groups of that type with a single profile (because
-fs_info->avail_*_alloc_bits would have a value of 0).
+On Thu, Jan 25, 2024 at 10:02:01AM +0000, Filipe Manana wrote:
+> On Thu, Jan 25, 2024 at 9:51 AM Qu Wenruo <wqu@suse.com> wrote:
+> >
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > [ Upstream commit 9b378f6ad48cfa195ed868db9123c09ee7ec5ea2 ]
+> >
+> > The readdir implementation currently processes always up to the last index
+> > it finds. This however can result in an infinite loop if the directory has
 
-This check was added in commit aefbe9a633b5 ("btrfs: Fix lost-data-profile
-caused by auto removing bg").
+[..]
 
-So add a comment mentioning the need for the check.
+> Thanks for the backport, and running the corresponding test case from
+> fstests to verify it's working.
+> 
+> However when backporting a commit, one should also check if there are
+> fixes for that commit, as they
+> often introduce regressions or have some other bug - 
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/block-group.c | 7 +++++++
- 1 file changed, 7 insertions(+)
++1. Good to see this best practice applied here.
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 378d9103a207..2dc39e8db995 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1522,6 +1522,13 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 			 * outstanding allocations in this block group.  We do
- 			 * the ro check in case balance is currently acting on
- 			 * this block group.
-+			 *
-+			 * Also bail out if this is the only block group for its
-+			 * type, because otherwise we would lose profile
-+			 * information from fs_info->avail_*_alloc_bits and the
-+			 * next block group of this type would be created with a
-+			 * "single" profile (even if we're in a raid fs) because
-+			 * fs_info->avail_*_alloc_bits would be 0.
- 			 */
- 			trace_btrfs_skip_unused_block_group(block_group);
- 			spin_unlock(&block_group->lock);
--- 
-2.40.1
+> and that's the
+> case here. We also need to backport
+> the following 3 commits:
+> 
+> https:// git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=357950361cbc6d54fb68ed878265c647384684ae
+> https:// git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e60aa5da14d01fed8411202dbe4adf6c44bd2a57
+> https:// git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8e7f82deb0c0386a03b62e30082574347f8b57d5
 
+Good catch. I get the same list thanks to the reference of the culprit:
+
+$ git log --oneline --grep 9b378f6ad linux/master
+8e7f82deb0c038 btrfs: fix race between reading a directory and adding entries to it
+e60aa5da14d01f btrfs: refresh dir last index during a rewinddir(3) call
+357950361cbc6d btrfs: set last dir index to the current last index when opening dir
+
+> One regression, the one regarding rewinddir(3), even has a test case
+> in fstests too (generic/471) and would have been caught
+> when running the "dir" group tests in fstests:
+> 
+> https:// git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?h=for-next&id=68b958f5dc4ab13cfd86f7fb82621f9f022b7626
+> 
+> I'll work on making backports of those 3 other patches on top of your
+> backport, and then send all of them in a series,
+> including your patch, to make it easier to follow and apply all at once.
+
+Thanks for your support. Looking forward.
+
+BR, Eugeniu
 
