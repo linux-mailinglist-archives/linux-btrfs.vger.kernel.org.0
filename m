@@ -1,52 +1,52 @@
-Return-Path: <linux-btrfs+bounces-1767-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1768-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7809683B880
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 04:53:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2798C83B887
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 04:58:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD8AF1F24503
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 03:53:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D51342845A7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 03:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA19C7464;
-	Thu, 25 Jan 2024 03:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9597489;
+	Thu, 25 Jan 2024 03:58:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="d71OYthM"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="KTlb68jQ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D84B6127
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 03:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4CDB7460
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 03:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706154792; cv=none; b=K7LW+lvZX0fowgAv3DVhuM8H4vejmc1pknCgSD8uU0LwgHaR8Xyp9b/Z9vYmA2rZ5hY0G19sJuDH18hyzNMFefTWTzgvhsgGZJlpyyRgiTDF/YE3tKCpHlbnZB49PokHi09GtnQoPRVaNc79Y7x1qS5Zh695fbFsiF4RiVauWi8=
+	t=1706155090; cv=none; b=X68EVnBHNAB2Shi1PnG6WSogOcYs4vs19qR9tXCqoIEOEh+UojYQewY8SHxn+BlfIhjfLmYxdoVu0x6CyO2P+PZOUJgprSGjBmPEdLMLs2ouoSyiCVOXUwDX/amFUIpM1VzAREC2d2TgRwk5ll8i8eDvzUA3z6g60Zra0f8E4iI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706154792; c=relaxed/simple;
-	bh=c6Woxa8+xpYECDnOTtaljlWLIpLsoKDMB1Fu6qaSQK4=;
+	s=arc-20240116; t=1706155090; c=relaxed/simple;
+	bh=ihywy4HMimoEMiEfA7YWAS0aC9BmzCdWGF0zMaHIt9Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=un3Rv7PdHHx23/DASJrZHY80TYZpsClzWX3l8rTMi6pWusi8UBPggy4UC2gGUaYrzNjcuuMvzZ44Y5UgHJE1dMFuIGVnAFfM2TFZiXlE/93DephJ3aeZLWEdFMvhzHgkaQJnOuVhAeLDY/En6UYp906SgyIdB0BriZdwfMkvnDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=d71OYthM; arc=none smtp.client-ip=212.227.15.19
+	 In-Reply-To:Content-Type; b=cpMt5Mvf11vYSTJWdBiXdBxrwMngp0jQ65aZ9Cm005H0advqjqZVbKPAEzm9iBqrdDobpcNT7uxNbuXUmpIpCd1ANG6Pyn0LJNm7igxOOKmyq+WxFerPMUcaVQXDJiXrySe897eJ7FGC01Ot0Ew4jfbXNfeW2tYnok8K4MB0HK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=KTlb68jQ; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1706154787; x=1706759587; i=quwenruo.btrfs@gmx.com;
-	bh=c6Woxa8+xpYECDnOTtaljlWLIpLsoKDMB1Fu6qaSQK4=;
+	s=s31663417; t=1706155085; x=1706759885; i=quwenruo.btrfs@gmx.com;
+	bh=ihywy4HMimoEMiEfA7YWAS0aC9BmzCdWGF0zMaHIt9Q=;
 	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=d71OYthMjBaefDLtu5Kme3gUa7bU3+j4BOWqCHVVldAFcGNccfRvmwcHhz9QwVf4
-	 zPdSzmHhxO22xmLEN4Imf/qIRYU3olFy91T0ifFZoGzkkqHPIobh1mJhJVn/Z0I/3
-	 wnd/BsbOZs4CXIzcQZNZoGClb9BKLWtu2pxj4rRacDrmPSiwU6xpgi8tOgP9vwAxX
-	 QA4ilpkVPxLf7UjVdowSfuXLklZey1OGP6cjRPnXjZj9//dL5RKkW2zDKnHVqN8fY
-	 +cAXenIkK17gLEW/IQK5qe4tDclY9/2KPo5mYGnTWGDmC+Y0TS0Xa45zUzgK78Qur
-	 uRECYpHEDsTW/0SNpg==
+	b=KTlb68jQPtUjKp5mIETP7JwHFK3qmzIou5Il8+tsbchmbFW9Y+0cZMvM/S1AiaCn
+	 PDM8Vo+SfjVWUyNi/H0hpf37EWycBWpteMBNMU5zvXiPJNEXfweXbvyi5irg7t4Y1
+	 aHCKrwgRh2OzSRYtwFAw5fp987ShVlFa8yMF/UqFQ6mFG2cr/fjZ9oJ2z7RHAiIH2
+	 mpBSNYMngRSOkM3Lo4D8MhrvkM3x0PAlZa4Wi24wMSrX0RJKhxfpQGtDOg1xq0iaX
+	 KYD/pqRHyRySJ8Y2J4InfsWBivDN6G2Bh8VZzlI65pDnmmTCfgcC05p0hihBk2S3i
+	 +2vlPZkT3JGA0UntVA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.101] ([61.245.157.120]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MV63g-1rdGfU291K-00S9tP; Thu, 25
- Jan 2024 04:53:07 +0100
-Message-ID: <7f04e4d0-8695-4d2c-90f8-ea2befb598c8@gmx.com>
-Date: Thu, 25 Jan 2024 14:23:03 +1030
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmDEg-1qkkhQ2v3I-00iEdX; Thu, 25
+ Jan 2024 04:58:05 +0100
+Message-ID: <f2eb8f2f-999f-47a6-b920-fb5ba211fe72@gmx.com>
+Date: Thu, 25 Jan 2024 14:28:02 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,12 +54,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/20] btrfs: handle invalid range and start in
- merge_extent_mapping()
+Subject: Re: [PATCH 03/20] btrfs: handle block group lookup error when it's
+ being removed
 Content-Language: en-US
 To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1706130791.git.dsterba@suse.com>
- <6cd106844e522bbdd21f15572d81d4c9186725cc.1706130791.git.dsterba@suse.com>
+ <cfe1bf94b8a6f24407795d3e1823a187ead04570.1706130791.git.dsterba@suse.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -85,81 +85,69 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <6cd106844e522bbdd21f15572d81d4c9186725cc.1706130791.git.dsterba@suse.com>
+In-Reply-To: <cfe1bf94b8a6f24407795d3e1823a187ead04570.1706130791.git.dsterba@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:neTjkLNBzIk/UdxwuuGxUJG6uhKRUCLJ/HsQNc/1L2Mw4+XFM/w
- CwmRfPXqFNatcjmAT6xlY8dU+2VmLliWtUSHumjeiNAGkGpSTAdIR2SevOT64EDzrtoKZP7
- Ylb9KG6gZKKjP7JZpq3CEg+f97sYuHhYyF1cmKKEDzdRfxIsQ3uspch1IUYCNmBR9/YABAp
- OAzWZg6svK3w3eEoHki8g==
+X-Provags-ID: V03:K1:VgCkRkckTWyNyssvdOFtO3Ny2tdYnsDRpKuDgepnv3rSP++6T6v
+ yemh4RaON7TC6P026lUYtTvrjh89u3viXzPfK9p8PFPuXyOPrrNzHFPizD/HspkNSTKo6Bm
+ nq5MGSmRPvzIFKIHynzUzoksUp5TXWPhENN0BvpK80ksKkg9Tkjc5cHWOmc4Wi7bYpB/U5J
+ BTd6XOqfShEUvTZubE09Q==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:sWfNJmPhGXc=;qGq3gKZwkhT/HJiRYGo5x69l34V
- +ydhPe6sOrUe9Lom5tHiBEPrqjABgUxoeLCVANbgMKvnrG+v4fGS3/tKfJ2L9jkM3mImxp+h+
- Ma62QZ9oFDauFHNjStEmCJYHWTgmYgT6WVAYp/kNerBvs0prZofK3wAd39kzHHrhMDt7PF0L/
- QaO2HOAL5/CnB6QRz6+CMp3Os1xo5iplTSpAMfnnga2ZomtqFD5E9abo4tdEq6AlWgDYrcRws
- U7mZjPPQkaaG9tU9oGiQB/1yXs7aVu1lQ+K1FpYGEZF3y6EaKQ/ySEy27EKsubiTBgCVHrWw1
- iGc4Vo/WpBhBYXnoL5/OD/BBrDZvETjLxRac5t8cmLd35ieTCc+ZYhzU7kABb2cr7mCH01q6u
- scw5Ed23LLPS4DcDX/ND5qMYKqaQppDx31yFH2WW17O6ZoiWJGntXhNAaa6sIkij9CGPv+wR3
- aKIIzmVg5GEZ6VSdrmsazCRMjx87gQQphKxpPVek7iCY2ztnroUk4/2WVo/ea+4srqUyx74Ez
- T2wi4claYwhkHoc6E2QmJs8lqaed8oMUXnQAjo352mcskbugUATC2AxHhY4Mp6B14DNCw9DEc
- YiLeWhb/QAlNHsil1knb/4WPQBJTVPibYH+Ke9TFUAG04juRy8AlLo//tGT3RDcWmJ/ystPbJ
- nki9PYhqyFOFUUllFh6eL1VurZPy3vIvbNO4Le1S0Rj1ghNODOJQpu4Y0zaEckMF8jHxXReT6
- WPDiTfLfm4SBuykbP32lMbLj1KIVfP8MfqNVOAiYr6iXRx1wtUXeTBdXrBZjv14k97jhIYtK2
- +3Nv+Q8IIFBOZ36aA/PWyAtwQ3pJydNZMoe2tA3XwF5hbslpHUMMZHTXWWHVu4LgPBrUNB9gL
- iJGKDb5ctupDtVtWAOFEZIpSWZ0pLl+eTSE7ujnvRCRYXwZw8JvW34n3C7UgJ3KyCWVnGhuEz
- fY6pAA==
+UI-OutboundReport: notjunk:1;M01:P0:2O3Bz0p9rzk=;G/7Nf0M4h6iT9YzmQmiiak+IbO/
+ I2Voh7uv+hmOIjG6VM2Pt8pBdLdZ2+LtgtEghacNoG6sXAhDIM7reUlWRimp/ZwilG5Xsqhjo
+ XdVFtehaCJg6aUYqxig4gr2Wnot/FOXblFJVch54bZCFoH41maQSFYwJeZk27eqU8WlbQUEzA
+ qyulaGko51qI2c9uvVqNwpwt+mnHoxrS6myAwc27e/F6VSjlR5r8Rn4/dKPkYBUyj3cYhvPeC
+ 3L3yPVXCgWPnC/xlppiomI7UgpuhDpB76D11IWkPTxIU0dw4CL0juAMgPNCPcvK3/g0YgIaVM
+ KCq7ddfVEDtvgP7cWDdouZzzNsjq4XASAy0RHuPvWZ/wn6iO31fBNxMC8XYiPiuV3d58kfzm1
+ XzIqiJ0NWxZabrqwiaIpnUyUd2yc3Msf5jNwnhxCse3VV/q+Amglxegi4ICbuxGhwmuVRqnJM
+ iN/3HzoPobBNoBemZsLkAYVznsPEaraAO49bhEFbiqwEtA8xEBYP82EjBANz+4M0DZYuRJR4A
+ LcSTTqN36dTpJfxMi4xLLVI74Yqp+LGdaqi9a4KutW0zX+nGN/WoXMZzW9Jjj3+hkFPrkybdw
+ 6ov47mG5OzwyXEDzHxVWLrQLi3S7YHdQ5t4ESlkqYh03ik9OQZM5cY1XSmFL8ggtG5D5BDhAp
+ nqxvVC2u2lKkpHOhY8VCXtcOThYUgmqEhv7zqTdeclIzi9eRDtTdqyW2mjkhIkPfRsZ4VhAha
+ qzMOdQTwc9Owr+oirHxgzdIQ1hZT0wPvY4mdiRJNVBgQkuL+jpkphmOMZl9OmfNArvy3uPHwE
+ k2iu41uB3J2OhM+WeFUEdzO+kpH56T98bpiXlYYrg1I4s/Tifsm182ADdoAERO+3/0nSUEwK7
+ 6n/1LkdC+vQeHYT6C8OycnUe7RjCkyf/bUvfLdGhe5xoG/QFgZD9E+nsc8nA4HTCPR3JwEcOW
+ tG0xJGrtYIXqnp7glVurBaFEdAc=
 
 
 
 On 2024/1/25 07:47, David Sterba wrote:
-> Turn a BUG_ON to a properly handled error and update the error message
-> in the caller.  It is expected that @em_in and @start passed to
-> btrfs_add_extent_mapping() overlap. Besides tests, the only caller
-> btrfs_get_extent() makes sure this is true.
+> The unlikely case of lookup error in btrfs_remove_block_group() can be
+> handled properly, in its caller this would lead to a transaction abort.
+> We can't do anything else, a block group must have been loaded first.
 >
 > Signed-off-by: David Sterba <dsterba@suse.com>
 > ---
->   fs/btrfs/extent_map.c | 9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
+>   fs/btrfs/block-group.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-> index f170e7122e74..ac5e366d57b2 100644
-> --- a/fs/btrfs/extent_map.c
-> +++ b/fs/btrfs/extent_map.c
-> @@ -539,7 +539,8 @@ static noinline int merge_extent_mapping(struct exte=
-nt_map_tree *em_tree,
->   	u64 end;
->   	u64 start_diff;
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 1905d76772a9..16a2b8609989 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1063,7 +1063,9 @@ int btrfs_remove_block_group(struct btrfs_trans_ha=
+ndle *trans,
+>   	bool remove_rsv =3D false;
 >
-> -	BUG_ON(map_start < em->start || map_start >=3D extent_map_end(em));
-> +	if (map_start < em->start || map_start >=3D extent_map_end(em))
-> +		return -EINVAL;
+>   	block_group =3D btrfs_lookup_block_group(fs_info, map->start);
+> -	BUG_ON(!block_group);
+> +	if (!block_group)
+> +		return -ENOENT;
 
-Shouldn't we go -EUCLEAN?
+This -ENOENT return value is fine, as the only caller would call
+btrfs_abort_transaction() to be noisy enough.
 
-This is not something we really expect to hit, as it normally means
-something wrong with the extent map.
+And talking about btrfs_abort_transaction(), I think we can call it
+early to make debug a little easierly.
+
+> +
+>   	BUG_ON(!block_group->ro);
+
+But shouldn't we also handle the RO case?
 
 Thanks,
 Qu
 
 >
->   	if (existing->start > map_start) {
->   		next =3D existing;
-> @@ -634,9 +635,9 @@ int btrfs_add_extent_mapping(struct btrfs_fs_info *f=
-s_info,
->   				free_extent_map(em);
->   				*em_in =3D NULL;
->   				WARN_ONCE(ret,
-> -"unexpected error %d: merge existing(start %llu len %llu) with em(start=
- %llu len %llu)\n",
-> -					  ret, existing->start, existing->len,
-> -					  orig_start, orig_len);
-> +"extent map merge error existing [%llu, %llu) with em [%llu, %llu) star=
-t %llu\n",
-> +					  existing->start, existing->len,
-> +					  orig_start, orig_len, start);
->   			}
->   			free_extent_map(existing);
->   		}
+>   	trace_btrfs_remove_block_group(block_group);
 
