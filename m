@@ -1,145 +1,427 @@
-Return-Path: <linux-btrfs+bounces-1776-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1777-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A8A183BDD1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 10:48:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9425583BDE7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 10:51:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49927B31E21
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 09:40:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23A731F29B48
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 09:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C131BDEE;
-	Thu, 25 Jan 2024 09:39:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53ABA1CD21;
+	Thu, 25 Jan 2024 09:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="GGRueA3E"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hYsdTRfS";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hYsdTRfS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC67E1CF95;
-	Thu, 25 Jan 2024 09:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F731CD11;
+	Thu, 25 Jan 2024 09:50:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175549; cv=none; b=ZpSvS9UF/h3zkkcIvumA5BV7XzQ7L0uks9MXGg5dq/8+PObdiB/g6BEPPQz6jINR6N/UqFbxfyxiLqJ7VbHIpmC7unnTpHzG+DY3oB0CaEXpxSRcU+99sRzHLjzGgVDqTzHw/rxWhyoCOEbEBEzb1miG6D5bmS3GzUji/pD304U=
+	t=1706176239; cv=none; b=qflaSQthvnh+1i1sFjzVvSjAsuqQWaHvcxF5w5fdSHiRpsUOCAScTONBaPKCRZvTcUYoDC7gAonoVxETodUbzm8LsYqdcIVOOXgndzFK8jf101PTTlmy/u3ARplKwX+UZ4cpL77B0Rc09k/l4E4U75PJbruXgCRqV/RoXO7RsQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175549; c=relaxed/simple;
-	bh=FneVe5TmqfUlCW7s3vSev2G+8n4GIBcMwrnxiCW5Axg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s/Uw7Zz33rryllQcYj9FrnuGrrwRYwTTCYDt7rM9OzQIdAGXB5gtaL7IlCx/KTZbtoRd5gJB6PFV9mEgbRao7+2NJaY0qgFqp3q43Mi6mZhej4RmFypk7CIZIN90V9bKa1O5XOVfhs9B01COcr8INYTX4Z4Ao3JVXs4FFQnBYlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=GGRueA3E; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1706175542; x=1706780342; i=quwenruo.btrfs@gmx.com;
-	bh=FneVe5TmqfUlCW7s3vSev2G+8n4GIBcMwrnxiCW5Axg=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=GGRueA3EL+CzzKjBmNo8tYjwxXVeyG4J8OqILMZpf3/35HXLzUEaqkH8jcfec/tH
-	 Ah4YaC9FDbxaBBRX0rcEFSuXFm76lNzcuDgd1Ru63VctCyI9sWMO0164Xx65T95z0
-	 lpNAvAITXR3NaiPFP7vU8QdP6+Dn6pVbEQyOYO1OR1dhlx6MXu9zwSGRPBycu+YuI
-	 3wFxfzWkvs/TLITRhTdBU8FvNmJIybfDKW+LZGhNqdE1TI8Cx0nSjQ279H4WyvK8/
-	 WLC1KvsNPbQJjfjscbWLoaa4p3PLvkKYY8bDMUhdoN4ZJVC8VB/J8dQbldDmMT31K
-	 8aiDKI7IIqFSVgXNyw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MlNpH-1qobhA34Zx-00llF1; Thu, 25
- Jan 2024 10:39:02 +0100
-Message-ID: <738c8d76-9f7d-4503-8ad7-ba1d038e33ab@gmx.com>
-Date: Thu, 25 Jan 2024 20:08:56 +1030
+	s=arc-20240116; t=1706176239; c=relaxed/simple;
+	bh=Md0N8iHE5o0KFeOrb3AbXS6GQyXDbtChP5vo6g24b80=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EuJny9gY//AeFHsqj1PpCxVvE5suVD/HUi071pw2o9a0mQ5j41Qmhov6xXGEXVUouqJoN54i/AUiilu5AMgEVYDDJo1bZBpXqC9Vt98Aac6DXKlN4AemK5IBuUwNScsTYemwKQ7j7HwSEz3VWAcT4rZQ5a9pSSv8ruAo6+q8feM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hYsdTRfS; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hYsdTRfS; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5A7C721D63;
+	Thu, 25 Jan 2024 09:50:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706176235; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Gbm56TFQ1UUyXjfH7fScIL4dvCAZVSQDrCf+LqG044Y=;
+	b=hYsdTRfSI2vv2RNplnsaM1Wovmo2zPBlKSXkHDa0PxbODVee9qAop8P3QnolkJoPtgNRvD
+	x0yeNUaNhxiGat1n2YH5xY5xdzICdS4/XeyD++JNI5hitBA65mKYupJVz3RN0TvKf8fX+K
+	9oRT/+8fC6659tumyDmlw9woCQ8VboM=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706176235; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Gbm56TFQ1UUyXjfH7fScIL4dvCAZVSQDrCf+LqG044Y=;
+	b=hYsdTRfSI2vv2RNplnsaM1Wovmo2zPBlKSXkHDa0PxbODVee9qAop8P3QnolkJoPtgNRvD
+	x0yeNUaNhxiGat1n2YH5xY5xdzICdS4/XeyD++JNI5hitBA65mKYupJVz3RN0TvKf8fX+K
+	9oRT/+8fC6659tumyDmlw9woCQ8VboM=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3900613649;
+	Thu, 25 Jan 2024 09:50:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ThmYOegusmWJWQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 25 Jan 2024 09:50:32 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	erosca@de.adit-jv.com
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Rob Landley <rob@landley.net>,
+	stable@vger.kernel.org,
+	David Sterba <dsterba@suse.com>
+Subject: [PATCH v2] btrfs: fix infinite directory reads
+Date: Thu, 25 Jan 2024 20:20:15 +1030
+Message-ID: <1ae6e30a71112e07c727f9e93ff32032051bbce7.1706176168.git.wqu@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15] btrfs: fix infinite directory reads
-To: Eugeniu Rosca <erosca@de.adit-jv.com>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
- Rob Landley <rob@landley.net>, stable@vger.kernel.org,
- David Sterba <dsterba@suse.com>,
- Maksim Paimushkin <Maksim.Paimushkin@se.bosch.com>,
- Eugeniu Rosca <eugeniu.rosca@de.bosch.com>,
- Eugeniu Rosca <roscaeugeniu@gmail.com>
-References: <88ce65d61253e3474635c589a7de9e668108462e.1706153625.git.wqu@suse.com>
- <20240125093504.GA2625557@lxhi-087>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240125093504.GA2625557@lxhi-087>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:S9qlyXeGM7wCpRNPJENLiHK2adVIuJeSgy8yyVWtjZq2LVUaA/G
- u6dLOF1lKDiC9opLKS+4VHtaD3vouaJawFAjl+GiD95fpAwwa+BPl2H/NW5Sy0nR9ak8cZh
- KfBvsxO/H5u8cE86LSRQ1Cp3uEGipUoxyMRToFOj8FFtnmMKDtShQtpegezMXxoe4dikVCU
- BjNrMUzdBqaWZfBJyx/XA==
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: 0.70
+X-Spamd-Result: default: False [0.70 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:5uXJoBO6ZHg=;ZOQZ51MMYO2VavS7ELt1lPIenfe
- 7YvOB+e1yMnpkvfAmV3+h9+3E/uXoYusvos1iUqbse/3xp6ECf87NZGGeoEyJMK9We2hOFaSA
- exGhMnJTBUTTES9b0aCRzEizJHei90yMohcJbSoQVVX5oNcCzE6my1/hrcdzIzXkUcPtIA9A+
- ue4Kxm81OFFRDHm3kGfoeEQ9Ry4vCpDyJUSF+JHmFrbITO3efyl2tmKmmiK9zV0e4rRGHG0kP
- GX/StpY+pyGVmeB6cyGFhqCGJnJElKlrHc+WOcN7cioT6YFZYzZOaS3JRIpORwgxLuNUTLZHK
- qTcSW9aQYCKju5/ba20MeWchcT7A4wNG+kp0KhS6zxeUmlgepnwuEcXZbcwlLobL1GPo+3fWU
- N2fXMP/eye9liGaoucxltzecSiGv1R70FibL7nnusbDrXCHrQs4LbHTA5wZvw1Hf5isdTAvbl
- 17FiamvHTpXLv0/Yw31fCN2Dtt4Wit7Vt2OTqyYD4jKXISmV/3ak5aa89+Hh5LgnO6MGcPUt1
- hVq0JAVcbQjG6Kq17G0htlBRqJv3xFVBdvEsOtOUm73L920/2UhUuxyVTCm7r0Tbyrw/58n8H
- G5Nrt3zRnx+SeIaAO4sjNPMctJDIyFO7MfHJ9CBrbWbFf/2YUZi9L0VhcT9TTV8JSYpEvLcLM
- wQaf4pYOUIi2jBDhajdNhP+F+EbCIXulE2MunamAa2WOXuBIbn1YIhOvDh+ngnj2Ag0L1JfgY
- Ca5axx6k1Ca2KK7ZeLUTAmXHfvG0zOD172SyXrNMiFyLKTvIKoMBZWJAxeCuYyhUz8zXKrbwW
- /r193y7wouk+bQQ6YKuNB2eWWskmUb5bPCqHtIw9fX0fBMdWBZ2tZAcsMoPG+kUNz8gv3HBsq
- ltfkxHAuJ57hBSH5461WCWlCKjNcNYPpDmWkSZvVdPfDALuDh7gQqqguGNATit7gGmARqkXZT
- xKq1ZLdXEGXa35LGR4b/e84RtjI=
 
+From: Filipe Manana <fdmanana@suse.com>
 
+[ Upstream commit 9b378f6ad48cfa195ed868db9123c09ee7ec5ea2 ]
 
-On 2024/1/25 20:05, Eugeniu Rosca wrote:
-> Hello Qu,
->
-> On Thu, Jan 25, 2024 at 02:17:08PM +1030, Qu Wenruo wrote:
->> From: Filipe Manana <fdmanana@suse.com>
->
-> Many thanks for the backport!
-> Conflict resolution looks surprisingly clean!
-> Please, give some time for verification.
->
->> [ Upstream commit b4c639f699349880b7918b861e1bd360442ec450 ]
->
-> PS: Not sure the "Upstream commit" is the right one.
-> Should it be 9b378f6ad48cfa195ed868db9123c09ee7ec5ea2 ?
+The readdir implementation currently processes always up to the last index
+it finds. This however can result in an infinite loop if the directory has
+a large number of entries such that they won't all fit in the given buffer
+passed to the readdir callback, that is, dir_emit() returns a non-zero
+value. Because in that case readdir() will be called again and if in the
+meanwhile new directory entries were added and we still can't put all the
+remaining entries in the buffer, we keep repeating this over and over.
 
-My bad, my clipboard has over 20 commits (all from my failed full
-backport attempt).
+The following C program and test script reproduce the problem:
 
-Would fix it soon.
+  $ cat /mnt/readdir_prog.c
+  #include <sys/types.h>
+  #include <dirent.h>
+  #include <stdio.h>
 
-Thanks,
-Qu
->
-> BR, Eugeniu
->
+  int main(int argc, char *argv[])
+  {
+    DIR *dir = opendir(".");
+    struct dirent *dd;
+
+    while ((dd = readdir(dir))) {
+      printf("%s\n", dd->d_name);
+      rename(dd->d_name, "TEMPFILE");
+      rename("TEMPFILE", dd->d_name);
+    }
+    closedir(dir);
+  }
+
+  $ gcc -o /mnt/readdir_prog /mnt/readdir_prog.c
+
+  $ cat test.sh
+  #!/bin/bash
+
+  DEV=/dev/sdi
+  MNT=/mnt/sdi
+
+  mkfs.btrfs -f $DEV &> /dev/null
+  #mkfs.xfs -f $DEV &> /dev/null
+  #mkfs.ext4 -F $DEV &> /dev/null
+
+  mount $DEV $MNT
+
+  mkdir $MNT/testdir
+  for ((i = 1; i <= 2000; i++)); do
+      echo -n > $MNT/testdir/file_$i
+  done
+
+  cd $MNT/testdir
+  /mnt/readdir_prog
+
+  cd /mnt
+
+  umount $MNT
+
+This behaviour is surprising to applications and it's unlike ext4, xfs,
+tmpfs, vfat and other filesystems, which always finish. In this case where
+new entries were added due to renames, some file names may be reported
+more than once, but this varies according to each filesystem - for example
+ext4 never reported the same file more than once while xfs reports the
+first 13 file names twice.
+
+So change our readdir implementation to track the last index number when
+opendir() is called and then make readdir() never process beyond that
+index number. This gives the same behaviour as ext4.
+
+Reported-by: Rob Landley <rob@landley.net>
+Link: https://lore.kernel.org/linux-btrfs/2c8c55ec-04c6-e0dc-9c5c-8c7924778c35@landley.net/
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=217681
+CC: stable@vger.kernel.org # 5.15
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+[ Resolve a conflict due to member changes in 96d89923fa94 ]
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/ctree.h         |   1 +
+ fs/btrfs/delayed-inode.c |   5 +-
+ fs/btrfs/delayed-inode.h |   1 +
+ fs/btrfs/inode.c         | 131 +++++++++++++++++++++++----------------
+ 4 files changed, 84 insertions(+), 54 deletions(-)
+---
+Changelog:
+v2:
+- Fix the upstream commit hash
+
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 1467bf439cb4..7905f178efa3 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1361,6 +1361,7 @@ struct btrfs_drop_extents_args {
+ 
+ struct btrfs_file_private {
+ 	void *filldir_buf;
++	u64 last_index;
+ };
+ 
+ 
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index fd951aeaeac5..5a98c5da1225 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1513,6 +1513,7 @@ int btrfs_inode_delayed_dir_index_count(struct btrfs_inode *inode)
+ }
+ 
+ bool btrfs_readdir_get_delayed_items(struct inode *inode,
++				     u64 last_index,
+ 				     struct list_head *ins_list,
+ 				     struct list_head *del_list)
+ {
+@@ -1532,14 +1533,14 @@ bool btrfs_readdir_get_delayed_items(struct inode *inode,
+ 
+ 	mutex_lock(&delayed_node->mutex);
+ 	item = __btrfs_first_delayed_insertion_item(delayed_node);
+-	while (item) {
++	while (item && item->key.offset <= last_index) {
+ 		refcount_inc(&item->refs);
+ 		list_add_tail(&item->readdir_list, ins_list);
+ 		item = __btrfs_next_delayed_item(item);
+ 	}
+ 
+ 	item = __btrfs_first_delayed_deletion_item(delayed_node);
+-	while (item) {
++	while (item && item->key.offset <= last_index) {
+ 		refcount_inc(&item->refs);
+ 		list_add_tail(&item->readdir_list, del_list);
+ 		item = __btrfs_next_delayed_item(item);
+diff --git a/fs/btrfs/delayed-inode.h b/fs/btrfs/delayed-inode.h
+index b2412160c5bc..a9cfce856d2e 100644
+--- a/fs/btrfs/delayed-inode.h
++++ b/fs/btrfs/delayed-inode.h
+@@ -123,6 +123,7 @@ void btrfs_destroy_delayed_inodes(struct btrfs_fs_info *fs_info);
+ 
+ /* Used for readdir() */
+ bool btrfs_readdir_get_delayed_items(struct inode *inode,
++				     u64 last_index,
+ 				     struct list_head *ins_list,
+ 				     struct list_head *del_list);
+ void btrfs_readdir_put_delayed_items(struct inode *inode,
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 95af29634e55..1df374ce829b 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -6121,6 +6121,74 @@ static struct dentry *btrfs_lookup(struct inode *dir, struct dentry *dentry,
+ 	return d_splice_alias(inode, dentry);
+ }
+ 
++/*
++ * Find the highest existing sequence number in a directory and then set the
++ * in-memory index_cnt variable to the first free sequence number.
++ */
++static int btrfs_set_inode_index_count(struct btrfs_inode *inode)
++{
++	struct btrfs_root *root = inode->root;
++	struct btrfs_key key, found_key;
++	struct btrfs_path *path;
++	struct extent_buffer *leaf;
++	int ret;
++
++	key.objectid = btrfs_ino(inode);
++	key.type = BTRFS_DIR_INDEX_KEY;
++	key.offset = (u64)-1;
++
++	path = btrfs_alloc_path();
++	if (!path)
++		return -ENOMEM;
++
++	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
++	if (ret < 0)
++		goto out;
++	/* FIXME: we should be able to handle this */
++	if (ret == 0)
++		goto out;
++	ret = 0;
++
++	if (path->slots[0] == 0) {
++		inode->index_cnt = BTRFS_DIR_START_INDEX;
++		goto out;
++	}
++
++	path->slots[0]--;
++
++	leaf = path->nodes[0];
++	btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
++
++	if (found_key.objectid != btrfs_ino(inode) ||
++	    found_key.type != BTRFS_DIR_INDEX_KEY) {
++		inode->index_cnt = BTRFS_DIR_START_INDEX;
++		goto out;
++	}
++
++	inode->index_cnt = found_key.offset + 1;
++out:
++	btrfs_free_path(path);
++	return ret;
++}
++
++static int btrfs_get_dir_last_index(struct btrfs_inode *dir, u64 *index)
++{
++	if (dir->index_cnt == (u64)-1) {
++		int ret;
++
++		ret = btrfs_inode_delayed_dir_index_count(dir);
++		if (ret) {
++			ret = btrfs_set_inode_index_count(dir);
++			if (ret)
++				return ret;
++		}
++	}
++
++	*index = dir->index_cnt;
++
++	return 0;
++}
++
+ /*
+  * All this infrastructure exists because dir_emit can fault, and we are holding
+  * the tree lock when doing readdir.  For now just allocate a buffer and copy
+@@ -6133,10 +6201,17 @@ static struct dentry *btrfs_lookup(struct inode *dir, struct dentry *dentry,
+ static int btrfs_opendir(struct inode *inode, struct file *file)
+ {
+ 	struct btrfs_file_private *private;
++	u64 last_index;
++	int ret;
++
++	ret = btrfs_get_dir_last_index(BTRFS_I(inode), &last_index);
++	if (ret)
++		return ret;
+ 
+ 	private = kzalloc(sizeof(struct btrfs_file_private), GFP_KERNEL);
+ 	if (!private)
+ 		return -ENOMEM;
++	private->last_index = last_index;
+ 	private->filldir_buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
+ 	if (!private->filldir_buf) {
+ 		kfree(private);
+@@ -6205,7 +6280,8 @@ static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
+ 
+ 	INIT_LIST_HEAD(&ins_list);
+ 	INIT_LIST_HEAD(&del_list);
+-	put = btrfs_readdir_get_delayed_items(inode, &ins_list, &del_list);
++	put = btrfs_readdir_get_delayed_items(inode, private->last_index,
++					      &ins_list, &del_list);
+ 
+ again:
+ 	key.type = BTRFS_DIR_INDEX_KEY;
+@@ -6238,6 +6314,8 @@ static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
+ 			break;
+ 		if (found_key.offset < ctx->pos)
+ 			goto next;
++		if (found_key.offset > private->last_index)
++			break;
+ 		if (btrfs_should_delete_dir_index(&del_list, found_key.offset))
+ 			goto next;
+ 		di = btrfs_item_ptr(leaf, slot, struct btrfs_dir_item);
+@@ -6371,57 +6449,6 @@ static int btrfs_update_time(struct inode *inode, struct timespec64 *now,
+ 	return dirty ? btrfs_dirty_inode(inode) : 0;
+ }
+ 
+-/*
+- * find the highest existing sequence number in a directory
+- * and then set the in-memory index_cnt variable to reflect
+- * free sequence numbers
+- */
+-static int btrfs_set_inode_index_count(struct btrfs_inode *inode)
+-{
+-	struct btrfs_root *root = inode->root;
+-	struct btrfs_key key, found_key;
+-	struct btrfs_path *path;
+-	struct extent_buffer *leaf;
+-	int ret;
+-
+-	key.objectid = btrfs_ino(inode);
+-	key.type = BTRFS_DIR_INDEX_KEY;
+-	key.offset = (u64)-1;
+-
+-	path = btrfs_alloc_path();
+-	if (!path)
+-		return -ENOMEM;
+-
+-	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+-	if (ret < 0)
+-		goto out;
+-	/* FIXME: we should be able to handle this */
+-	if (ret == 0)
+-		goto out;
+-	ret = 0;
+-
+-	if (path->slots[0] == 0) {
+-		inode->index_cnt = BTRFS_DIR_START_INDEX;
+-		goto out;
+-	}
+-
+-	path->slots[0]--;
+-
+-	leaf = path->nodes[0];
+-	btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+-
+-	if (found_key.objectid != btrfs_ino(inode) ||
+-	    found_key.type != BTRFS_DIR_INDEX_KEY) {
+-		inode->index_cnt = BTRFS_DIR_START_INDEX;
+-		goto out;
+-	}
+-
+-	inode->index_cnt = found_key.offset + 1;
+-out:
+-	btrfs_free_path(path);
+-	return ret;
+-}
+-
+ /*
+  * helper to find a free sequence number in a given directory.  This current
+  * code is very simple, later versions will do smarter things in the btree
+-- 
+2.43.0
+
 
