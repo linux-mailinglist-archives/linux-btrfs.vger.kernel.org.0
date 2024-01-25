@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-1782-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1783-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C662F83BEBE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 11:29:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C94F83BEC6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 11:30:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00628B28A60
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 10:28:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14A5EB28C7B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 10:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2227F1CABB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F00361CFBC;
 	Thu, 25 Jan 2024 10:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B6EZ6VQL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X6ef4GOK"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527021CAAB
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 10:26:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264661CABC
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 10:26:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706178394; cv=none; b=p4xpV8beGlANflhLot6ebiqe4vLmZPBs3VQ1lZdtb+xhKVYGuCCdJiMcnQodm7j5mJNkkgWJHygEIUoblcjJ/U/+FM0Kq4CNxauxF/0Nxhiy8dS3vX65q5HNYyqOFbZEuXbKnutoQ1fcmePsWPqD9YxfWbJuccWgbhS6bGDoCFI=
+	t=1706178395; cv=none; b=VEf6rra2xfJ7VmcweG9XlOHoQE4SUk7X6tXDWxnsw4pcZQEoL/hT5+J6wkFUxY5OAVsZMBNCJBGX4eAhOxRWxcMWeOeLD97HlhUh6uIN0t3sUi2wRwZOIF7jl92pPOZkS9HTpN5+bhFQSraIrNOxn3Z08sosRN8vnrecNzn+gVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706178394; c=relaxed/simple;
-	bh=q8w6+t4lVwp7uvhFKcRbB6tYPld8uu53vdbJ+LipNqE=;
+	s=arc-20240116; t=1706178395; c=relaxed/simple;
+	bh=a/Z8NlrgMADXJY5F4ipZrUN0GX5eLstqHayrNkkcngw=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bHBAji3wQYR0rbpP5k7U6TSkkc9uCZToS9y5FjfR2/FZ+dWbGalv52/rvvERmsY2MxbIn+zMMUTmq+hmfDcaxfiCEvtUl3DquYLrFCDTfaCzTuD8GBhSN0/s5Rb/MTqC+LULtOi2SBag4lVriPQVl5Zjf/k3XNKtv7dV9bJOzqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B6EZ6VQL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D376C433B1
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 10:26:33 +0000 (UTC)
+	 MIME-Version; b=ZVJrqJKlUang8gFvOuc38h4C0bA317MrK/PrHRNru+1DSvLIy4BmSY2AopLstUeNj4iiS20fS5SiPMLxFqdSVqaFlzRz8WlvIFYtcMYbfik+ZN0MtgWHJs+zoRpTq8cp6+HDOSP6zE6dKzblhjuIoz4pMHJvqcWyC10mPN/o5Vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X6ef4GOK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F473C43399
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 10:26:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706178393;
-	bh=q8w6+t4lVwp7uvhFKcRbB6tYPld8uu53vdbJ+LipNqE=;
+	s=k20201202; t=1706178394;
+	bh=a/Z8NlrgMADXJY5F4ipZrUN0GX5eLstqHayrNkkcngw=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=B6EZ6VQLlfibciDyvehLObAJFyo6btK8pFokuEBsQbmkFx68Bj9X4C7hYah2R+reD
-	 goW/HrOjr+YWcUqa5CTBnNoxRRZGc7B3U6wdRM9Ih5odYBzed+/pOj/kIiQUoGkhiH
-	 zQtoHp9L8z/kecKd3WjVmSz1TXFYYh4lecs/uCKo7rX+HCfCiaQoFyTp57XeC1gOd6
-	 JD/x7itBJjy1Vp3c7mZvtWba06FqO5m34lCrJtRoeP7Te4+4C6mHFfAJnusA+tgv5u
-	 k6eCLvRlevzZXMTEDqS90qNWKUDSU5oVlc4gb7Nr0oKGFkU1KbVWLukrF9J7grxAQ7
-	 zWYdUQIXCurnA==
+	b=X6ef4GOKuqLW+8Nq1Zqkse+x2mb6oKD1TGTWr5ntxbVfjXGY1JBfQOEPL1Ggn+0T3
+	 WufQiiyMP5iUjwH6ezsycReI+qsq1IltpRuAzflMCv7r6m7hkegPXU2CCi0tYjiFMY
+	 0/S8ky88ffj5WDsI7xeTswlem7nQdhUTofnzxy0eFi9f2RWk7HnFjSOViXGfJAWzrk
+	 l3R7CsgOJuNpVQqhbppgcaezMF3b1BI9LATEDEuuxtRg2qHqGIcgPvbs/EpJdD7S3c
+	 z9fos/x+j6KFqzs5jlkB1Cy6JitQEQhFfQnNHgNXuwCm7leQycWVNjEjnfubFGsvNq
+	 1fSrZbWD0Ug9w==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/5] btrfs: do not delete unused block group if it may be used soon
-Date: Thu, 25 Jan 2024 10:26:25 +0000
-Message-Id: <46dbefda7220b7f8e5ee89003a98a0465867f4a0.1706177914.git.fdmanana@suse.com>
+Subject: [PATCH 3/5] btrfs: add new unused block groups to the list of unused block groups
+Date: Thu, 25 Jan 2024 10:26:26 +0000
+Message-Id: <6182c48084855e40c898c019d9d6bcbca7e3722d.1706177914.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1706177914.git.fdmanana@suse.com>
 References: <cover.1706177914.git.fdmanana@suse.com>
@@ -59,143 +59,98 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Before deleting a block group that is in the list of unused block groups
-(fs_info->unused_bgs), we check if the block group became used before
-deleting it, as extents from it may have been allocated after it was added
-to the list.
+Space reservations for metadata are, most of the time, pessimistic as we
+reserve space for worst possible cases - where tree heights are at the
+maximum possible height (8), we need to COW every extent buffer in a tree
+path, need to split extent buffers, etc.
 
-However even if the block group was not yet used, there may be tasks that
-have only reserved space and have not yet allocated extents, and they
-might be relying on the availability of the unused block group in order
-to allocate extents. The reservation works first by increasing the
-"bytes_may_use" field of the corresponding space_info object (which may
-first require flushing delayed items, allocating a new block group, etc),
-and only later a task does the actual allocation of extents.
+For data, we generally reserve the exact amount of space we are going to
+allocate. The exception here is when using compression, in which case we
+reserve space matching the uncompressed size, as the compression only
+happens at writeback time and in the worst possible case we need that
+amount of space in case the data is not compressible.
 
-For metadata we usually don't end up using all reserved space, as we are
-pessimistic and typically account for the worst cases (need to COW every
-single node in a path of a tree at maximum possible height, etc). For
-data we usually reserve the exact amount of space we're going to allocate
-later, except when using compression where we always reserve space based
-on the uncompressed size, as compression is only triggered when writeback
-starts so we don't know in advance how much space we'll actually need, or
-if the data is compressible.
+This means that when there's not available space in the corresponding
+space_info object, we may need to allocate a new block group, and then
+that block group might not be used after all. In this case the block
+group is never added to the list of unused block groups and ends up
+never being deleted - except if we unmount and mount again the fs, as
+when reading block groups from disk we add unused ones to the list of
+unused block groups (fs_info->unused_bgs). Otherwise a block group is
+only added to the list of unused block groups when we deallocate the
+last extent from it, so if no extent is ever allocated, the block group
+is kept around forever.
 
-So don't delete an unused block group if the total size of its space_info
-object minus the block group's size is less then the sum of used space and
-space that may be used (space_info->bytes_may_use), as that means we have
-tasks that reserved space and may need to allocate extents from the block
-group. In this case, besides skipping the deletion, re-add the block group
-to the list of unused block groups so that it may be reconsidered later,
-in case the tasks that reserved space end up not needing to allocate
-extents from it.
+This also means that if we have a bunch of tasks reserving space in
+parallel we can end up allocating many block groups that end up never
+being used or kept around for too long without being used, which has
+the potential to result in ENOSPC failures in case for example we over
+allocate too many metadata block groups and then end up in a state
+without enough unallocated space to allocate a new data block group.
 
-Allowing the deletion of the block group while we have reserved space, can
-result in tasks failing to allocate metadata extents (-ENOSPC) while under
-a transaction handle, resulting in a transaction abort, or failure during
-writeback for the case of data extents.
+This is more likely to happen with metadata reservations as of kernel
+6.7, namely since commit 28270e25c69a ("btrfs: always reserve space for
+delayed refs when starting transaction"), because we started to always
+reserve space for delayed references when starting a transaction handle
+for a non-zero number of items, and also to try to reserve space to fill
+the gap between the delayed block reserve's reserved space and its size.
 
-CC: stable@vger.kernel.org # 6.0+
+So to avoid this, when finishing the creation a new block group, add the
+block group to the list of unused block groups if it's still unused at
+that time. This way the next time the cleaner kthread runs, it will delete
+the block group if it's still unused and not needed to satisfy existing
+space reservations.
+
+CC: stable@vger.kernel.org # 6.7+
+Reported-by: Ivan Shapovalov <intelfx@intelfx.name>
+Link: https://lore.kernel.org/linux-btrfs/9cdbf0ca9cdda1b4c84e15e548af7d7f9f926382.camel@intelfx.name/
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/block-group.c | 46 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ fs/btrfs/block-group.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 9daef18bcbbc..5fe37bc82f11 100644
+index 5fe37bc82f11..378d9103a207 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -1455,6 +1455,7 @@ static bool clean_pinned_extents(struct btrfs_trans_handle *trans,
-  */
- void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- {
-+	LIST_HEAD(retry_list);
- 	struct btrfs_block_group *block_group;
- 	struct btrfs_space_info *space_info;
- 	struct btrfs_trans_handle *trans;
-@@ -1476,6 +1477,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 
- 	spin_lock(&fs_info->unused_bgs_lock);
- 	while (!list_empty(&fs_info->unused_bgs)) {
-+		u64 used;
- 		int trimming;
- 
- 		block_group = list_first_entry(&fs_info->unused_bgs,
-@@ -1511,6 +1513,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 			goto next;
- 		}
- 
-+		spin_lock(&space_info->lock);
- 		spin_lock(&block_group->lock);
- 		if (btrfs_is_block_group_used(block_group) || block_group->ro ||
- 		    list_is_singular(&block_group->list)) {
-@@ -1522,10 +1525,49 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 			 */
- 			trace_btrfs_skip_unused_block_group(block_group);
- 			spin_unlock(&block_group->lock);
-+			spin_unlock(&space_info->lock);
-+			up_write(&space_info->groups_sem);
-+			goto next;
-+		}
+@@ -2729,6 +2729,37 @@ void btrfs_create_pending_block_groups(struct btrfs_trans_handle *trans)
+ 		btrfs_dec_delayed_refs_rsv_bg_inserts(fs_info);
+ 		list_del_init(&block_group->bg_list);
+ 		clear_bit(BLOCK_GROUP_FLAG_NEW, &block_group->runtime_flags);
 +
 +		/*
-+		 * The block group may be unused but there may be space reserved
-+		 * accounting with the existence of that block group, that is,
-+		 * space_info->bytes_may_use was incremented by a task but no
-+		 * space was yet allocated from the block group by the task.
-+		 * That space may or may not be allocated, as we are generally
-+		 * pessimistic about space reservation for metadata as well as
-+		 * for data when using compression (as we reserve space based on
-+		 * the worst case, when data can't be compressed, and before
-+		 * actually attempting compression, before starting writeback).
-+		 *
-+		 * So check if the total space of the space_info minus the size
-+		 * of this block group is less than the used space of the
-+		 * space_info - if that's the case, then it means we have tasks
-+		 * that might be relying on the block group in order to allocate
-+		 * extents, and add back the block group to the unused list when
-+		 * we finish, so that we retry later in case no tasks ended up
-+		 * needing to allocate extents from the block group.
++		 * If the block group is still unused, add it to the list of
++		 * unused block groups. The block group may have been created in
++		 * order to satisfy a space reservation, in which case the
++		 * extent allocation only happens later. But often we don't
++		 * actually need to allocate space that we previously reserved,
++		 * so the block group may become unused for a long time. For
++		 * example for metadata we generally reserve space for a worst
++		 * possible scenario, but then don't end up allocating all that
++		 * space or none at all (due to no need to COW, extent buffers
++		 * were already COWed in the current transaction and still
++		 * unwritten, tree heights lower than the maximum possible
++		 * height, etc). For data we generally reserve the axact amount
++		 * of space we are going to allocate later, the exception is
++		 * when using compression, as we must reserve space based on the
++		 * uncompressed data size, because the compression is only done
++		 * when writeback triggered and we don't know how much space we
++		 * are actually going to need, so we reserve the uncompressed
++		 * size because the data may be uncompressible in the worst case.
 +		 */
-+		used = btrfs_space_info_used(space_info, true);
-+		if (space_info->total_bytes - block_group->length < used) {
-+			/*
-+			 * Add a reference for the list, compensate for the ref
-+			 * drop under the "next" label for the
-+			 * fs_info->unused_bgs list.
-+			 */
-+			btrfs_get_block_group(block_group);
-+			list_add_tail(&block_group->bg_list, &retry_list);
++		if (ret == 0) {
++			bool used;
 +
-+			trace_btrfs_skip_unused_block_group(block_group);
++			spin_lock(&block_group->lock);
++			used = btrfs_is_block_group_used(block_group);
 +			spin_unlock(&block_group->lock);
-+			spin_unlock(&space_info->lock);
- 			up_write(&space_info->groups_sem);
- 			goto next;
- 		}
 +
- 		spin_unlock(&block_group->lock);
-+		spin_unlock(&space_info->lock);
- 
- 		/* We don't want to force the issue, only flip if it's ok. */
- 		ret = inc_block_group_ro(block_group, 0);
-@@ -1649,12 +1691,16 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 		btrfs_put_block_group(block_group);
- 		spin_lock(&fs_info->unused_bgs_lock);
++			if (!used)
++				btrfs_mark_bg_unused(block_group);
++		}
  	}
-+	list_splice_tail(&retry_list, &fs_info->unused_bgs);
- 	spin_unlock(&fs_info->unused_bgs_lock);
- 	mutex_unlock(&fs_info->reclaim_bgs_lock);
- 	return;
- 
- flip_async:
- 	btrfs_end_transaction(trans);
-+	spin_lock(&fs_info->unused_bgs_lock);
-+	list_splice_tail(&retry_list, &fs_info->unused_bgs);
-+	spin_unlock(&fs_info->unused_bgs_lock);
- 	mutex_unlock(&fs_info->reclaim_bgs_lock);
- 	btrfs_put_block_group(block_group);
- 	btrfs_discard_punt_unused_bgs_list(fs_info);
+ 	btrfs_trans_release_chunk_metadata(trans);
+ }
 -- 
 2.40.1
 
