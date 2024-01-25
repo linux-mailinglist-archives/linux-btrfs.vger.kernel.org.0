@@ -1,52 +1,52 @@
-Return-Path: <linux-btrfs+bounces-1772-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1773-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B064883B894
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 05:08:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A759883B899
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 05:10:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 412941F23048
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 04:08:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D63851C23881
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 04:10:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E72F748D;
-	Thu, 25 Jan 2024 04:08:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9EFCA50;
+	Thu, 25 Jan 2024 04:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="UHxCn5x7"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="oMqZYuID"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D109763DD
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 04:08:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90E38829
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 04:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706155704; cv=none; b=e6SO3VT9KCxqe75jC+NfoYgOPk3sAbHZZAUXl081pLcIBQ8I58D5iLZ3/FC5qRSA8Krh5j1gbzj+8C60pEnO2dl9dfNEPefl4AZhsH+m5O9GbsaA7FBl1AM3vkeuQjw8KnSqWuwWGkIEBzbjwo/yjTsN6ISPtE3oyUKaVJW2Y10=
+	t=1706155819; cv=none; b=a34UnBXU7HAdBFPRMZjFBALT6RVKch+HKNjtPKYTu/5krccj04L3u41hSEkgCoMNg6dsfwbb1RKULHgPYRxFGlRErKZEXlH6vJzupFUvz19iDV2wu1hnBuP0Bzj8a/E/YUHI/ui+vMtdvZ9hIVPC1OiI6JG3z+1YUch7pqsyeIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706155704; c=relaxed/simple;
-	bh=7rm7S/mhjM+E0m7Ko9LWvwOfhuKWQuMJI5QNUxlnzDc=;
+	s=arc-20240116; t=1706155819; c=relaxed/simple;
+	bh=C3YVppJ5UrEwSLkHEeLzz0RlMlRNYUgqE+zOauXiqLk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=nsniBUoBk25IcYptYWcGoDTv2069cJLyx9gpouGZX5oKlpGOpEM70VFvE9zxkHn5s3Q2TJ7VpCKXZFN1uriBe0BzH89AaNuhSsg+7KPMi32CuXQUz2JZdI6WQgVb1ByKqw/hVGFH9YcgJR1GCJwynRh64XjJknZuWIIKkl2kdsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=UHxCn5x7; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=lruMQtTb09DWkasY8ETEnknuU60MNkgE83tf1bWJ2ihf5KrLjg8DrXR7Ul7bDnsuarePTK6pPW2l9Hs9iBKNjc6EMrZT0qBR8RODJaZnlJC4THBfbBB1C5qEVQL24sdceVaMPTAlHya1fjaCdUt8sk4Znqsc7wdhrkz2ZSweiYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=oMqZYuID; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1706155699; x=1706760499; i=quwenruo.btrfs@gmx.com;
-	bh=7rm7S/mhjM+E0m7Ko9LWvwOfhuKWQuMJI5QNUxlnzDc=;
+	s=s31663417; t=1706155815; x=1706760615; i=quwenruo.btrfs@gmx.com;
+	bh=C3YVppJ5UrEwSLkHEeLzz0RlMlRNYUgqE+zOauXiqLk=;
 	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=UHxCn5x7EjAvi+DQY3WOe11BTGTrEAmndgaxLM5LXF7sQSB3uVG9n6Qqa+v5y8eH
-	 m66KzljO3Ssui5hNGeGXYFV/m8f8TcrAB5wafQM3LUSSWtEjIvgnIOEpHaISSAr3F
-	 7kiWjmVG1tWfm2XYOzkuKKhC25c6Q3nUqS2Yi6zvw3jNFgebHhG2zpNi46RF77cue
-	 XOplAgWyYL4z0qOXne0jJhBoB8B3oLtCmLN66z3W8WlaqPkQbWOu600naEEaWBy3s
-	 4WsFHlxy40OfVre0MLc2/7bia6W2+5x4WWwbacnIFmU+ivR0jWxMm3D2tEhc/GVZ7
-	 ROgr4j2SDjnp3eMEtQ==
+	b=oMqZYuIDeC5jrjOc4B5fNogOXmqbBAMZ5eKHq0D3s55+1G0QEMgwVd9mcXAiAnS/
+	 22gqh0ibL+Nqf0rfkMTfAEHzM3JPMGe35teq4V8heAEHWZOlQiToXB0GYbfA4GbiI
+	 aPkjQb53pygazGFjfuC29dAbM2tHNvUL4hFbYrLixBo41uARRbPUrLfSaKKlc0XGB
+	 zMzgaJSe3y3vm1FLpMBokSNL5wcFp+YJeODOSO0s19A7mKil5qe7l7oiqkCwIlr26
+	 dANZjMJcXk4XlduwwrF0p2xEn6K2Z/HLVNg2Zv2dJstUnt+QiLeOKofflkgg+nW2H
+	 43zdEZGWMW3zgLYp0w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.101] ([61.245.157.120]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mt75H-1rCxyt2nKz-00tUjN; Thu, 25
- Jan 2024 05:08:19 +0100
-Message-ID: <21add1cf-d22e-4a95-a293-65ac51b7ec23@gmx.com>
-Date: Thu, 25 Jan 2024 14:38:17 +1030
+Received: from [172.16.0.101] ([61.245.157.120]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMGN2-1rm1qK2cys-00JJMW; Thu, 25
+ Jan 2024 05:10:15 +0100
+Message-ID: <c917ba6b-142d-4ed3-b968-b850ae9079a5@gmx.com>
+Date: Thu, 25 Jan 2024 14:40:12 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,12 +54,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/20] btrfs: handle chunk tree lookup error in
- btrfs_relocate_sys_chunks()
+Subject: Re: [PATCH 08/20] btrfs: handle invalid extent item reference found
+ in check_committed_ref()
 Content-Language: en-US
 To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1706130791.git.dsterba@suse.com>
- <ae9556ccc1c06b17ea40f2e05b60cc4d8dcac0a7.1706130791.git.dsterba@suse.com>
+ <139f98f6906bcd774f867e1ef4020fa948ebef93.1706130791.git.dsterba@suse.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -85,79 +85,67 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ae9556ccc1c06b17ea40f2e05b60cc4d8dcac0a7.1706130791.git.dsterba@suse.com>
+In-Reply-To: <139f98f6906bcd774f867e1ef4020fa948ebef93.1706130791.git.dsterba@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eKHwDrcpbrtigL03eqSQ5LFq8uXDMXKKkyZh256nxv7J+Shq0Ou
- sjWpwaXpu1oL/mSj0hrnR1uc5S588eJHMiVBsyUkouCKgLi4i48/Irux8QkSywpsDS8gj32
- nj0fn5MBTDyyHLcYvac8alInUPFprESXrhGsRQQLc+ll6BH+MImCkkuaKy4f4z9ClT2J6kp
- 3P3PklAXFAD/pVePhxGug==
+X-Provags-ID: V03:K1:c3gAJX5hirVoOnK6bqWkaf/2nFAkyX8OvrP7gD2ek9jU8DvyVmv
+ 5FoQAceDaIfq1/NRnH0vjLSClZc0bBY90D7fhobdC/wXo3QmkhrJPWWovh4SUyN2A80B4Hq
+ YdFBLEggt3AyYqrsoQlNFNz616clAW9siGlaO6lJBqUoORbUkHio1mawwo10LQK+HEnlC/A
+ p+4Uq7doAk8o2PQJVbcog==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:GAAKgjULAU4=;K7HKWNsRkrVNlrtOuZnYC/r199V
- udoHMpf17DIJ4c7lgvP4xSpblGbv2SEBc63ZD32834xNp+/riemtrZj8M/GembySfED84TdAG
- QiqJi64qr3zecCKntmN+kuzQnzA5Fc1SKEjwhtus7IP8zXfdWvVvWOUjb/9Gr1xGPyGMjvHEQ
- qRcEFODRa/Fl7U5P6Y02ppRzJn/yVqV/HL8p0H2Nsg3MFwXYlK7Bz9OKpscdWxLZU46Ic9lhm
- Mw5nByHqnB4nsyg6gBYoGkkxzKEbWHUF0kzZIX5aPowkYIyK2usdiQfhfqLaV/ILDeTPCjuiV
- vfTAWsQfAMzvKIuAi32nqGZaD7D/+WfNTJhmwgOVamy7g3/+FlVTDVyXMaBHKfu/Tgu3JXnBA
- agne6eHmtu+N8O0aSSL+JZj4hAm5U1QfPDoFZUJAz1tvhkasncozBa+nZc03AVgQHS+GOjC86
- XhMYjq2lG6TAmtuFhQ2+XTJdrbIywTxSZ6aBYyZCwmm4RDqeojJj8gEbrR+Ow1ZaSCOthsLE1
- L+AW82I+7ik8R5LoTPXXL/GtSB8FYL3bGCXYWp0OJZr3LQPlenReHp/1JLXyF2GN9Z0D8Pcl4
- E+D1WCJdgKIZMpAVY0FouqEBGxMFJzRfkQ4vW2HEoRG9XLHRrXLsX+4aK9VXdkByk2jAhvsAr
- +ELz/ceWjoTi/706rq5k6F7mbXhcnKXIWknocyzXoddCsQEo48sFQwmxsEFsFaezEWvR4W1nV
- QfEnnokOk6Lxi+gCWokr98IetqxdIlpmEW3fuRFdyu4jg+xrT5zgpB6SsrDD8xujsZTN2oZTH
- EYm2HBLQnVW3F8DweH5Oz9Z0iX+WuDxF6Oy/qKiNLXtl+Vywn1atDxxwvkLVxZ8LAJ4yomms2
- w4Mv5AVTaYMhuyjPf+hZsdx6uy/A5JXkhN9c9z8+QJXHPjsIeu/m6Ek6FdxMzjSfqmEk2u3jP
- 1qAz11gtjEbWInofHIfe7l9YQ/Q=
+UI-OutboundReport: notjunk:1;M01:P0:8C2umELAOb4=;E92w10lwy2muZddgatYRYXLWGH6
+ D7MoZZwqFKk14CcFQW/ROjPE9GZbfzocx9mUW4gjN8Uv5SOxXUG1+0s7AtmOuQqbDr3TE7SBO
+ TS9LTKbHefdXRQXwBRiZzvWPluEhyNlGkvkwSoYVbBGrDhY7vM7aGBLBJwtUHd9YsNKU+ffIH
+ OFbEAt9ePQLV4c9/xrGpnucKTykLc2d0l2aCLtOaBLQRNg4jKv95FlbQ9rcBiYyVnTxsKpCrM
+ O/NlV5Js1M6m2vLUVrd4NYe+tkA07vud2tIKrtLZPC9xQLm4HyaNywDyuRAWxsSQWZy9glT8z
+ XlJXSm4UI6zUxO3WmXP/1w/t7tAHbaQo4Xy8pIVpl42uljHpm2l+FmbJhUiH0xQcVaRvXVJTG
+ p4o4nPp5dP0Rg14vrKS4QpNYtmrZNqqnb0M0gZnXKjpzzqYf6bUPGyRF8ZKba95WBJNHKDQiI
+ cQkwA/Veop8+OGfbGpvv9uOzuFRnJaxANybMQW8EtJdJQaFgCCPYMFDC2NtmoC/HQeSeFCcyr
+ FvGrsEcqSPJz320HiQP3PCJE+e7uJ8eY3vfWvdYti6xLKDLiMlUKYvYm74CeQcbsFxcnnfFNU
+ 34Qn8bkgHmrofrmn6/3/xEHnYxe1IJOY/eeAy31L1OyubQWgHLgcqCLkKJbnb8eY5ZCeZTnsj
+ tTbIXMBdg0bvcaofUnMby40wPfBd3jUNw0X10SOdqlYfqRcR+cNVANwBIHl4BIr4BMANFXcED
+ fjo8cnbDKDjYh2hlcFhVrlo5Pc2sIRe/6m5wXd8o6DlwFOE3nGfofqqTRVBgCgoBdWQs5GOSk
+ hVEU3sjmMA7x+b7F88PWdBT7KNnz+v0qlhOvXzRM6okg3YSUPEDQoZGEfutfeUCjAZWMF59mV
+ XI9RvX8EBpqdhmuPKBkCVx6jxpsT0MTvO5OkeCUCWzQTf8+s5gnRRUA/BJ0a/4xxKx8DW+Ne2
+ d/RwcZaSQptnF9JR1BlnanaFInA=
 
 
 
 On 2024/1/25 07:48, David Sterba wrote:
-> The unhandled case in btrfs_relocate_sys_chunks() loop is a corruption,
-> as it could be caused only by two impossible conditions:
->
-> - at first the search key is set up to look for a chunk tree item, with
->    offset -1, this is an inexact search and the key->offset will contain
->    the correct offset upon a successful search, a valid chunk tree item
->    cannot have an offset -1
->
-> - after first successful search, the found_key corresponds to a chunk
->    item, the offset is decremented by 1 before the next loop, it's
->    impossible to find a chunk item there due to alignment and size
->    constraints
+> The check_committed_ref() helper looks up an extent item by a key,
+> allowing to do an inexact search when key->offset is -1.  It's never
+> expected to find such item, as it would break the allowed range of a
+> extent item offset.
 >
 > Signed-off-by: David Sterba <dsterba@suse.com>
 > ---
->   fs/btrfs/volumes.c | 12 +++++++++++-
->   1 file changed, 11 insertions(+), 1 deletion(-)
+>   fs/btrfs/extent-tree.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
 >
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index d67785be2c77..6aae92e4b424 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -3393,7 +3393,17 @@ static int btrfs_relocate_sys_chunks(struct btrfs=
-_fs_info *fs_info)
->   			mutex_unlock(&fs_info->reclaim_bgs_lock);
->   			goto error;
->   		}
-> -		BUG_ON(ret =3D=3D 0); /* Corruption */
-> +		if (ret =3D=3D 0) {
-> +			/*
-> +			 * On the first search we would find chunk tree with
-> +			 * offset -1, which is not possible. On subsequent
-> +			 * loops this would find an existing item on an invalid
-> +			 * offset (one less than the previous one, wrong
-> +			 * alignment and size).
-> +			 */
-> +			ret =3D -EUCLEAN;
-> +			goto error;
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 4283e3025ab0..ba47f5996c84 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -2399,7 +2399,14 @@ static noinline int check_committed_ref(struct bt=
+rfs_root *root,
+>   	ret =3D btrfs_search_slot(NULL, extent_root, &key, path, 0, 0);
+>   	if (ret < 0)
+>   		goto out;
+> -	BUG_ON(ret =3D=3D 0); /* Corruption */
+> +	if (ret =3D=3D 0) {
+> +		/*
+> +		 * Key with offset -1 found, there would have to exist an extent
+> +		 * item with such offset, but this is out of the valid range.
+> +		 */
+> +		ret =3D -EUCLEAN;
+> +		goto out;
+> +	}
 
-This can be handled by adding new root item offset key check in
-tree-checker, then converting to an ASSERT().
+It looks like we also need an key offset check for extent item.
 
 Thanks,
 Qu
-> +		}
 >
->   		ret =3D btrfs_previous_item(chunk_root, path, key.objectid,
->   					  key.type);
+>   	ret =3D -ENOENT;
+>   	if (path->slots[0] =3D=3D 0)
 
