@@ -1,100 +1,100 @@
-Return-Path: <linux-btrfs+bounces-1795-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1796-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9299583C788
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 17:08:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E624483C7A2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 17:13:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41E892923DC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 16:08:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C7F91F2793B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 16:13:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D85686144;
-	Thu, 25 Jan 2024 16:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191E9129A66;
+	Thu, 25 Jan 2024 16:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="m63vCA2j";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yGoXG4V6";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="m63vCA2j";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yGoXG4V6"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="H9Ys8uqx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qhuQX0Un";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="3dNS0WoW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jy8pq2G9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 125E5823DE
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 16:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B77DA6EB57
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jan 2024 16:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706198881; cv=none; b=M6DSvw26qSgofRpAnevTX56rZIQjiDCJvKeBmXqxnAPcnjTcJs5BWinINLfzs2zF3qAWLFYni8jwaqXyDsMjxAzWihT5qwXdF14IMh5W5Y+6YLAVIla/UJBxs3nwPPRIABrxnXR74PiXgVg+Zv7rhErK4+48gM7bJmmpsEMmTmM=
+	t=1706199199; cv=none; b=q7eBZis5NShHjhCgE2Qajyo7XNb97DQFzoMuyNhZEM5Ncnbcu0LvjA8+9tmaSFSWWUN1MucpgM9lpKCfuHaeEb+ELyjrmslbYlfx+ng6noHDV1a5JJ2eJFdOZLoPRhR04BmBVCLlHPWIuLP+2z9vVs8Jax16SqHlU1GA6EHmXrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706198881; c=relaxed/simple;
-	bh=pmP7AKaOZYgXq1TXxHdmT5dyIKTaqVZS2jl0IIVS2sY=;
+	s=arc-20240116; t=1706199199; c=relaxed/simple;
+	bh=YtY2FZEHYtlpCb/8fhmE/Kq4r924jJ3vaFKicDlKg7U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ReZkaKpgfwcsn8QyaopI+h3yxcL8Ivwo5Fijf5F95+i2iGZepK9MWGrb6VqKSSnRskKG/Lkf8UyUl+3epPF7e8y5J0b5Hc2Y0/SFiW/3aLJk89bNb+uKgLdGkWn3qhXOiq2Rdd2gkl4K0cknp+TZeitizALBJfq+5FlMHY98xrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=m63vCA2j; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yGoXG4V6; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=m63vCA2j; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yGoXG4V6; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=dJ5ZfKfPWJHw3vCGToDFc34LCBjAlLzkaZVGgwFCn680adMPfcZQcQuiR/hbTuzwOPXtwRRdH4oC8hLif2WhYUzjAI8qMcNZJpMdZwHUKDsiY2pViN7OxRxfYKgIOqV8Znm2m0kA16j39kV9gW8fcDBYRGGjPklsN0IQh9iuibw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=H9Ys8uqx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qhuQX0Un; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=3dNS0WoW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jy8pq2G9; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4F89C1F894;
-	Thu, 25 Jan 2024 16:07:54 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D3B7C21EAB;
+	Thu, 25 Jan 2024 16:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706198874;
+	t=1706199195;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6Lrv86EAcw7mt98FZSt2ZHFrfA9A8HXyNwmDswrAf8Q=;
-	b=m63vCA2jjcWyG3Gk8E6ftX/dCqcplbxKb6WgZk3kdi6YmNpn+39wK9MqeJcHTjFHgEfU3C
-	ij5P8FzUnB5Z9VYxU2PbBsr2yF7v6Tys3JA+K0nVJLFmgY2nCq2s9IDVVGn1J76IFzvZyX
-	vNi+suIhkVwmWNWUq93xQCAmH6Tp3Uo=
+	bh=jrRUMdCYz/l3w9he3I4/Tzya5MO+tH80K71UFFrK+j0=;
+	b=H9Ys8uqxI9ykumzBtjFa8qzHpT558LhHsuSD7cXjcl4AvyqJ+IqNnDDgnCFfMZlVcN3CqT
+	uLB+ldVzKvhPWmbWEqKT0KdQhR2LmjQZuO/Pv4sGt7PCA7yh4kq/bUb705Opfw9QgrdrrY
+	/tYKal0gfZeMlj44m6eDe2hMNc16+mI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706198874;
+	s=susede2_ed25519; t=1706199195;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6Lrv86EAcw7mt98FZSt2ZHFrfA9A8HXyNwmDswrAf8Q=;
-	b=yGoXG4V6gShXhe9sAV5Fh/IcIUzAsVndqaFaXBACfpupG1X6QGNtQcDcoAF9KEmAibB+A6
-	rimLhcZfHu5ag4Cg==
+	bh=jrRUMdCYz/l3w9he3I4/Tzya5MO+tH80K71UFFrK+j0=;
+	b=qhuQX0UnP0NwQCHziFfGu+K3Xd8GaUHLHOJMaTtIiCEYwWNB3V/5RvHRRwoLVfL5bpjhxa
+	OqBkMU51+14yxbDg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706198874;
+	t=1706199194;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6Lrv86EAcw7mt98FZSt2ZHFrfA9A8HXyNwmDswrAf8Q=;
-	b=m63vCA2jjcWyG3Gk8E6ftX/dCqcplbxKb6WgZk3kdi6YmNpn+39wK9MqeJcHTjFHgEfU3C
-	ij5P8FzUnB5Z9VYxU2PbBsr2yF7v6Tys3JA+K0nVJLFmgY2nCq2s9IDVVGn1J76IFzvZyX
-	vNi+suIhkVwmWNWUq93xQCAmH6Tp3Uo=
+	bh=jrRUMdCYz/l3w9he3I4/Tzya5MO+tH80K71UFFrK+j0=;
+	b=3dNS0WoWtMc74rrGxyE28cE8aoPDVlpFijfbk9ZbkySBYvQgUZwgdXkr+mBFvDAbxz2N8/
+	a8vwguNgWMgw7OhDrCwctesoYuKMbqysnnwIAt/qYg7PMA4M6rGYeaZ4oBwYAb6+N4BYAX
+	lUEjU1ue1aCbb5JZ1TDxEqdQgQyw0Is=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706198874;
+	s=susede2_ed25519; t=1706199194;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6Lrv86EAcw7mt98FZSt2ZHFrfA9A8HXyNwmDswrAf8Q=;
-	b=yGoXG4V6gShXhe9sAV5Fh/IcIUzAsVndqaFaXBACfpupG1X6QGNtQcDcoAF9KEmAibB+A6
-	rimLhcZfHu5ag4Cg==
+	bh=jrRUMdCYz/l3w9he3I4/Tzya5MO+tH80K71UFFrK+j0=;
+	b=jy8pq2G9tsGlgWWpcQV0pFR/7dQ9Jwh+/izWDmAOagctZ3vj8nFv1G4SCmybpjVvyGda1f
+	ECs+VGysciNG0gDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2EAA8139E7;
-	Thu, 25 Jan 2024 16:07:54 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BE3A913649;
+	Thu, 25 Jan 2024 16:13:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rXXfClqHsmVndAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 25 Jan 2024 16:07:54 +0000
-Date: Thu, 25 Jan 2024 17:07:30 +0100
+	id 1Pg+LpqIsmX1dQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 25 Jan 2024 16:13:14 +0000
+Date: Thu, 25 Jan 2024 17:12:52 +0100
 From: David Sterba <dsterba@suse.cz>
 To: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 02/20] btrfs: handle invalid range and start in
- merge_extent_mapping()
-Message-ID: <20240125160730.GM31555@twin.jikos.cz>
+Subject: Re: [PATCH 03/20] btrfs: handle block group lookup error when it's
+ being removed
+Message-ID: <20240125161252.GN31555@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 References: <cover.1706130791.git.dsterba@suse.com>
- <6cd106844e522bbdd21f15572d81d4c9186725cc.1706130791.git.dsterba@suse.com>
- <7f04e4d0-8695-4d2c-90f8-ea2befb598c8@gmx.com>
+ <cfe1bf94b8a6f24407795d3e1823a187ead04570.1706130791.git.dsterba@suse.com>
+ <f2eb8f2f-999f-47a6-b920-fb5ba211fe72@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -103,12 +103,12 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7f04e4d0-8695-4d2c-90f8-ea2befb598c8@gmx.com>
+In-Reply-To: <f2eb8f2f-999f-47a6-b920-fb5ba211fe72@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=m63vCA2j;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=yGoXG4V6
-X-Spamd-Result: default: False [-0.01 / 50.00];
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=3dNS0WoW;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jy8pq2G9
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	 ARC_NA(0.00)[];
 	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
@@ -131,47 +131,54 @@ X-Spamd-Result: default: False [-0.01 / 50.00];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[29.04%]
+	 BAYES_HAM(-3.00)[100.00%]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -0.01
-X-Rspamd-Queue-Id: 4F89C1F894
+X-Rspamd-Queue-Id: D3B7C21EAB
 X-Spam-Level: 
+X-Spam-Score: -3.01
 X-Spam-Flag: NO
-X-Spamd-Bar: /
 
-On Thu, Jan 25, 2024 at 02:23:03PM +1030, Qu Wenruo wrote:
+On Thu, Jan 25, 2024 at 02:28:02PM +1030, Qu Wenruo wrote:
 > 
 > 
 > On 2024/1/25 07:47, David Sterba wrote:
-> > Turn a BUG_ON to a properly handled error and update the error message
-> > in the caller.  It is expected that @em_in and @start passed to
-> > btrfs_add_extent_mapping() overlap. Besides tests, the only caller
-> > btrfs_get_extent() makes sure this is true.
+> > The unlikely case of lookup error in btrfs_remove_block_group() can be
+> > handled properly, in its caller this would lead to a transaction abort.
+> > We can't do anything else, a block group must have been loaded first.
 > >
 > > Signed-off-by: David Sterba <dsterba@suse.com>
 > > ---
-> >   fs/btrfs/extent_map.c | 9 +++++----
-> >   1 file changed, 5 insertions(+), 4 deletions(-)
+> >   fs/btrfs/block-group.c | 4 +++-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-> > index f170e7122e74..ac5e366d57b2 100644
-> > --- a/fs/btrfs/extent_map.c
-> > +++ b/fs/btrfs/extent_map.c
-> > @@ -539,7 +539,8 @@ static noinline int merge_extent_mapping(struct extent_map_tree *em_tree,
-> >   	u64 end;
-> >   	u64 start_diff;
+> > diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> > index 1905d76772a9..16a2b8609989 100644
+> > --- a/fs/btrfs/block-group.c
+> > +++ b/fs/btrfs/block-group.c
+> > @@ -1063,7 +1063,9 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+> >   	bool remove_rsv = false;
 > >
-> > -	BUG_ON(map_start < em->start || map_start >= extent_map_end(em));
-> > +	if (map_start < em->start || map_start >= extent_map_end(em))
-> > +		return -EINVAL;
+> >   	block_group = btrfs_lookup_block_group(fs_info, map->start);
+> > -	BUG_ON(!block_group);
+> > +	if (!block_group)
+> > +		return -ENOENT;
 > 
-> Shouldn't we go -EUCLEAN?
+> This -ENOENT return value is fine, as the only caller would call
+> btrfs_abort_transaction() to be noisy enough.
 > 
-> This is not something we really expect to hit, as it normally means
-> something wrong with the extent map.
+> And talking about btrfs_abort_transaction(), I think we can call it
+> early to make debug a little easierly.
 
-The logic I used here is that it's a simple helper and it verifies the
-arguments. If they're invalid then it's EINVAL. EUCLEAN needs some
-interpretation like in the other patches unexpectedly finding an item,
-it's up to the caller.
+There are several patterns, one is that transaction abort is called by
+the function that started it. It's not consistent but as a hint abort
+can be used anywhere if things go so bad that it's impossible to roll
+back, eg. in a middle of a big loop setting up block groups and such.
+
+> > +
+> >   	BUG_ON(!block_group->ro);
+> 
+> But shouldn't we also handle the RO case?
+
+Of course but it's fixing a different problem with tracking of read-only
+status of a bg and I will not mix that to that patch.
 
