@@ -1,115 +1,91 @@
-Return-Path: <linux-btrfs+bounces-1786-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1787-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04AAC83C105
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 12:38:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38F8183C183
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 13:00:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B043528B250
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 11:38:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3D041F2681C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jan 2024 12:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A534E1D8;
-	Thu, 25 Jan 2024 11:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66DAF3D99E;
+	Thu, 25 Jan 2024 12:00:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NoWRNPvu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDBE951017;
-	Thu, 25 Jan 2024 11:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.241.18.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88FB93589C;
+	Thu, 25 Jan 2024 12:00:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706182444; cv=none; b=ZMVPd09dyY1i1nwgCGptz5gZRKDUUf+ZIwqAZStSiSDriAWmAKoleukHK+mqTJyyHFqmmQNmCpUn6QecjQwq0jjg8u/uJ59bWeU3YAmeg5ihgMqifwtaCfATYbszgWYNm/P4UhmrN/yG6fll3ykAtLH7/O+OmXF9bnA4LNrXrpQ=
+	t=1706184006; cv=none; b=nTPCnbFYdOdUhnKQDejk4uLtOX4xitVp5ujGdIRlUPpu58duw5Zr9gtcN48hIHRApbGFeWCjK4W9Kmd+U/hRgZbsBTwDycJ4aAJGCiDxt9jCT94vXwiNT+R0LXs5WNFHM+EZ9Rw8FxGIz6KmRcUtY8TLB6b7B3vI5CCO29+R+fE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706182444; c=relaxed/simple;
-	bh=9Osbi+VQBj6QAYWxlXkNyCZikozOnWLhTODvYvHK42g=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C8c1FHaEaC2xyaqMvB0cYqkKrUEBBH36QikNeBAfXFtg4opnSDspkmIv+kB4t4QvvxnbNOWIllZZp/gOuaWyYJ3mj1ikhRBF1wCQ96qRUKmMktwZpDH+rLV4j9Nb20fp50DdhQvgMwoqJR5GxnaBRpKo9IzLRTirkU4oie11czU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com; spf=pass smtp.mailfrom=de.adit-jv.com; arc=none smtp.client-ip=93.241.18.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 912E15200F2;
-	Thu, 25 Jan 2024 12:33:58 +0100 (CET)
-Received: from lxhi-087 (10.72.93.211) by hi2exch02.adit-jv.com (10.72.92.28)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 25 Jan
- 2024 12:33:58 +0100
-Date: Thu, 25 Jan 2024 12:33:54 +0100
-From: Eugeniu Rosca <erosca@de.adit-jv.com>
-To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-CC: <linux-btrfs@vger.kernel.org>, Filipe Manana <fdmanana@suse.com>, Rob
- Landley <rob@landley.net>, <stable@vger.kernel.org>, David Sterba
-	<dsterba@suse.com>, <Maksim.Paimushkin@se.bosch.com>,
-	<Eugeniu.Rosca@bosch.com>, <erosca@de.adit-jv.com>, Eugeniu Rosca
-	<roscaeugeniu@gmail.com>
-Subject: Re: [PATCH v2] btrfs: fix infinite directory reads
-Message-ID: <20240125113354.GA2629056@lxhi-087>
-References: <1ae6e30a71112e07c727f9e93ff32032051bbce7.1706176168.git.wqu@suse.com>
- <CAL3q7H77i3kv7C352k2R6nr-m-cgh_cdCCeTkXna+v1yjpMuoA@mail.gmail.com>
+	s=arc-20240116; t=1706184006; c=relaxed/simple;
+	bh=hYpQ7CEzvle5EuuG/F5A+L14k1ZhxbBgAqet4EDoWeA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=S1FgOeldLi91K4GB0/dP5U7/sWN7XNMmnKCtvIuOJMD9cg9ho29KG1QWfcLwXu9G3J9PXzyImK/88FfCo2H1mnM9660FEsOl03HQVHT6SLQAMYJP/nNgWdQ2g/ptZM0PR741ul5SPQZOSQi/+aCJRtVNMfAyrqDkv7f8EJaCbm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NoWRNPvu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35A72C433F1;
+	Thu, 25 Jan 2024 12:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706184006;
+	bh=hYpQ7CEzvle5EuuG/F5A+L14k1ZhxbBgAqet4EDoWeA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=NoWRNPvuH6fRc4RR7QmgJ1Ci1fFdrrXBWTPGQ+p8bwamD3pWYoP5D6QSUW1uengFV
+	 qR7HtH9KaBKzrEBRwKWgXqDf8/TWmwoWg4OnzU9eKKQODEKsnTgQPHFN5H/jEoH3sG
+	 xmKMNRUl92pp0ULMQza9wy+P2bIk/M5uYkWPbEs8UWzwzRs9i5DchGwFnd66p+Tzow
+	 Y1MFGJ/tnEvhLtO1xMdN1zplSYvo+Ngac3W1MAmwmlfTpNE4W4/U3Wl5LBDtmy1184
+	 PrM5nibtW6K4BTjCk3jIC1VrTJ7K7fmaggRV//btvHvEgES/LwHbArciIw5Ia2qobL
+	 MAdLhlPNFpSZQ==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Cc: erosca@de.adit-jv.com,
+	Maksim.Paimushkin@se.bosch.com,
+	Matthias.Thomae@de.bosch.com,
+	Sebastian.Unger@bosch.com,
+	Dirk.Behme@de.bosch.com,
+	Eugeniu.Rosca@bosch.com,
+	wqu@suse.com,
+	dsterba@suse.com,
+	stable@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH 0/4 for 5.15 stable] btrfs: some directory fixes for stable 5.15
+Date: Thu, 25 Jan 2024 11:59:34 +0000
+Message-Id: <cover.1706183427.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H77i3kv7C352k2R6nr-m-cgh_cdCCeTkXna+v1yjpMuoA@mail.gmail.com>
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
 
-Hi Filipe and Qu,
+From: Filipe Manana <fdmanana@suse.com>
 
-On Thu, Jan 25, 2024 at 10:02:01AM +0000, Filipe Manana wrote:
-> On Thu, Jan 25, 2024 at 9:51 AM Qu Wenruo <wqu@suse.com> wrote:
-> >
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > [ Upstream commit 9b378f6ad48cfa195ed868db9123c09ee7ec5ea2 ]
-> >
-> > The readdir implementation currently processes always up to the last index
-> > it finds. This however can result in an infinite loop if the directory has
+Here follows the backport of some directory related fixes for the stable
+5.15 tree. I tested these on top of 5.15.147.
 
-[..]
+These were recently requested at:
 
-> Thanks for the backport, and running the corresponding test case from
-> fstests to verify it's working.
-> 
-> However when backporting a commit, one should also check if there are
-> fixes for that commit, as they
-> often introduce regressions or have some other bug - 
+   https://lore.kernel.org/linux-btrfs/20240124225522.GA2614102@lxhi-087/
 
-+1. Good to see this best practice applied here.
+Filipe Manana (4):
+  btrfs: fix infinite directory reads
+  btrfs: set last dir index to the current last index when opening dir
+  btrfs: refresh dir last index during a rewinddir(3) call
+  btrfs: fix race between reading a directory and adding entries to it
 
-> and that's the
-> case here. We also need to backport
-> the following 3 commits:
-> 
-> https:// git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=357950361cbc6d54fb68ed878265c647384684ae
-> https:// git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e60aa5da14d01fed8411202dbe4adf6c44bd2a57
-> https:// git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8e7f82deb0c0386a03b62e30082574347f8b57d5
+ fs/btrfs/ctree.h         |   1 +
+ fs/btrfs/delayed-inode.c |   5 +-
+ fs/btrfs/delayed-inode.h |   1 +
+ fs/btrfs/inode.c         | 150 +++++++++++++++++++++++++--------------
+ 4 files changed, 102 insertions(+), 55 deletions(-)
 
-Good catch. I get the same list thanks to the reference of the culprit:
+-- 
+2.40.1
 
-$ git log --oneline --grep 9b378f6ad linux/master
-8e7f82deb0c038 btrfs: fix race between reading a directory and adding entries to it
-e60aa5da14d01f btrfs: refresh dir last index during a rewinddir(3) call
-357950361cbc6d btrfs: set last dir index to the current last index when opening dir
-
-> One regression, the one regarding rewinddir(3), even has a test case
-> in fstests too (generic/471) and would have been caught
-> when running the "dir" group tests in fstests:
-> 
-> https:// git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?h=for-next&id=68b958f5dc4ab13cfd86f7fb82621f9f022b7626
-> 
-> I'll work on making backports of those 3 other patches on top of your
-> backport, and then send all of them in a series,
-> including your patch, to make it easier to follow and apply all at once.
-
-Thanks for your support. Looking forward.
-
-BR, Eugeniu
 
