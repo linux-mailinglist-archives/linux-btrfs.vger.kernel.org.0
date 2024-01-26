@@ -1,472 +1,221 @@
-Return-Path: <linux-btrfs+bounces-1819-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1820-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 963B583D9C6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jan 2024 12:56:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 069E283D9ED
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jan 2024 13:06:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47E83299F74
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jan 2024 11:56:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2B132833FC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jan 2024 12:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3900E1B958;
-	Fri, 26 Jan 2024 11:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C13F18626;
+	Fri, 26 Jan 2024 12:06:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMMYvoeZ"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ba5X5e4f";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Qeen30u3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 675DE1B940
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jan 2024 11:55:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706270152; cv=none; b=ZB9K7bgVhfPSIIx5qDCaBaH9buTtmaz2UMitUV6uqT86fhmNee6ga08LmbSH5y+i8V+9ex2uITByhtdB3+Q6NT3QXQ5/4K+00WBUSqGBqXdvmfmFJQIjJIJEK/R0v5ZvzXH3hBKRuo93grBon3Yce3g1UOYXIgQCevX9Yy0tYkI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706270152; c=relaxed/simple;
-	bh=MkQIMC498XS/Q+GcDcy8XVMcJcPB/I6WSI7b7cMj490=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i8a9Cqoh6HD/lJIMHPDvTiMt0wGDnwt853fpmBPsonlppBx8+ByBaLINlK89+IcNrroQjQcWWaqX7wXOBH0kV6vNax8PE2fTe+aZmV0wWLbKwoIyLrzyTQXENE9NBrO2B6Hhh79L8WT1Ed8Gg3wXQoyFeaeXaVliEFA4dfePF7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMMYvoeZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6796C43399
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jan 2024 11:55:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706270151;
-	bh=MkQIMC498XS/Q+GcDcy8XVMcJcPB/I6WSI7b7cMj490=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=kMMYvoeZ+NoBHaAV9tM37jN5ARJE0c5ZrD6K84tokcxwCVrpptB3djog0ujFdIuJl
-	 d3npg9YCPKXv66jndVAZrpZYQPCQnulFYRxDCFomxucUQkTvdI7OOtCQa8UO5QxMFt
-	 WUSqD5Jd/V8vo/A5VaW3HG1efNEq/voZf1xXQiodR2gHFvex2QL/VxXu9dMKWz3vFd
-	 +0tkNvgeTzhhKny0AoMdohv7Yi80zfKDcryQJ/1BZoIVmwf23fhD1F0rCqyxr1PP7D
-	 7wVmINicCRQ7+7zplVP136cGYSjIYQ/znlmixuBsmZTmP3eQ73y/WYf1GGjtWlKECl
-	 3+SRDPcCu1VRQ==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a2c179aa5c4so47211566b.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jan 2024 03:55:51 -0800 (PST)
-X-Gm-Message-State: AOJu0YxHa5whjcZlc4PuoERp8087hNAk404G2c1IRNouf5szgsfrndtF
-	1sZaf/6Dvlz8FhOivc8rgXHff19Ch26iloS/yHBSWTVugpzKjzzLzmWFbBkbc8cc70CxpnVihG9
-	dMQreqNC+do/GJ7m3a2fL+76DX+0=
-X-Google-Smtp-Source: AGHT+IE3K6K5no/oKwYl2tJH+BsmOY82nc2n80VDW36TqN6dxoftuD4dECPwVkkz9wdgD9juq6iTO+4cnm+agDFRgUA=
-X-Received: by 2002:a17:906:ae99:b0:a30:420f:447b with SMTP id
- md25-20020a170906ae9900b00a30420f447bmr584691ejb.7.1706270149956; Fri, 26 Jan
- 2024 03:55:49 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A12BB175AE
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jan 2024 12:06:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706270779; cv=fail; b=e7LVHkZoCwV6qMiE6+HTg2FvuMH39JfoV9MnkGm3DQ58h19NfW7pmnQbomAWwrrnorHu6PgJMxZrc174agNVU6lcI4Y4FBQRVl0OLBkEMTu7kHKhQTdkQRaNySKfAXs73UT1VGILz+S993kOeCmk0+gbR0next6Zd/sfF9Ycc3Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706270779; c=relaxed/simple;
+	bh=fQFQuFK6xHYGcoUhHoLa3ZA7lkH4X2T9FYfw4SR4fQk=;
+	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=mp0SMtprzVQxXi62OHzjBOBurtAEpVtMJe9Xt1NkVMju37wOhPANjF++u16UfVySpjZAjcA/cTp6gsP77BnFQTlkQ6ICvy4g/WTmcJ1+rq7mGY81BfL8dNE7tVyyguzJ0vqRyk26pISiY2MmIqxUkEIZqsKAGNLYV6REkWWHy3I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ba5X5e4f; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Qeen30u3; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40PN3N1D013701;
+	Fri, 26 Jan 2024 12:06:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=BF5fUhS+/5QUD2QWfrTsP3l2+8FmTM4iA2luwGeoZdQ=;
+ b=ba5X5e4fXoMjEWkys5Iz45YwMWKhX4C63v9t7X9pbdmYR7ZWABd6j++pgtZGlWM6BLkh
+ TW4pF7NiLufCJBzZL8uE+dJbt4sqduPfRyvmUzlTQxtTElbE6UbcaOj+telNL5Ltxs79
+ UF95OTtN8fqh4Cg42rpOsYd4rbRUUaezSrR3lo9LFPlH6r6i8w0STpPsbRQaDAljcPuA
+ /GOofRMIDUp/NJ4JtEiNYZzhKQTZyO61L8zL/TMq/0J5IfVSQAqqh6m+FCjoKa00Pfdw
+ zp4Du5HW8Rdm8Fes7IOYr5y4J9Z7uMqIK1cy0rppn9uB9tGJXd2DqGcJSNYHczihyBsx ew== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr7aca61q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Jan 2024 12:06:15 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40QAlVIC026037;
+	Fri, 26 Jan 2024 12:06:14 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2041.outbound.protection.outlook.com [104.47.74.41])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vs31a9jae-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 26 Jan 2024 12:06:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QbPjq0bOVO1NAIGSfhszTuWOGYq/hHFm/9WW1Ib3HBvK9E/3a+RUhN2sgniyrLBS3qmMNlW/UkgoqEJwei5YAcpjW6dOkqYvG+FS2ZclRXxbsb+ZGqKrvZT0/oQY+Uh5KxEPZY94yzgmToRe8Trps0g79FGqSLk1GeStYaInC40GnoXH9SM6lLPacq62/Wj5O3Nfa0rPDNCX139Ukeny5G1MXHJB6b3ZwhZOEUtYlUYMfeeWwabbTzU+ZioqSVPdAiQQow2Ib9wiuYaGn8259uyQMihRGdroAbp5AporgN+8ZROQghalPKIWIRsrwSuOpiMrpw4u/LQ1Wi36aJ0TGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BF5fUhS+/5QUD2QWfrTsP3l2+8FmTM4iA2luwGeoZdQ=;
+ b=k+dOESRkLWhpIVwVN1EjbGew/vluYk62JH0gQCdJroLra4cy8s3srGkCdJ+LrOLhEQZAxWMQTW5OZWx9ZVmF0AFcETYk4M6to5cCu8LX6av2pfxtw0GXbLa6pTZFZUkaNtL8Xb5qyARjlsgvXL3qTYbo/EwqKjBP+/RbCWgbNGjSq24fMC+sr2ZSEW+JReG2ySxHijqv331DEmzCIHf41A+CZIjnznzyF8t2Xh35LP1mnESfdzmvYGJXf6ZUpaJcCO5C0cZeZcaJle7TFfhCqiC2PC3Suq0OJfDCXjNeCqxh+lVOy3iVY3ZgONlyJyIrJOKUId1qOfp3O8sq4V7VoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BF5fUhS+/5QUD2QWfrTsP3l2+8FmTM4iA2luwGeoZdQ=;
+ b=Qeen30u3DrVwyQVynpXqP5NKCLHUaj61Fc+zBSIwl4D0Zx7i0omhkuyHhuix1I/sp0F8WPhzLFID7Btz7v3cHQP+e8gC+kRJRJ4cgjQO6Seg5EdlMOyp33hc0CKCJMUmRCBwTkREBLCcLWNMiQjl8YDXAbXyIcxkjp3iucN55jc=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by SA3PR10MB7043.namprd10.prod.outlook.com (2603:10b6:806:313::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.27; Fri, 26 Jan
+ 2024 12:06:12 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::9a3e:7f11:fbb:1690]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::9a3e:7f11:fbb:1690%3]) with mapi id 15.20.7228.027; Fri, 26 Jan 2024
+ 12:06:12 +0000
+Message-ID: <9ee6b3bd-a409-4eda-bcd9-b0527b1b1b33@oracle.com>
+Date: Fri, 26 Jan 2024 20:06:06 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 05/20] btrfs: handle invalid root reference found in
+ btrfs_find_root()
+Content-Language: en-US
+To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1706130791.git.dsterba@suse.com>
+ <0011782bc0af988fc393ae8cee8b2d761def05d4.1706130791.git.dsterba@suse.com>
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <0011782bc0af988fc393ae8cee8b2d761def05d4.1706130791.git.dsterba@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2P153CA0011.APCP153.PROD.OUTLOOK.COM (2603:1096::21) To
+ PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <72097c8f447b02fb4ed3cb6b898d73423ca52d09.camel@kernel.org>
- <8b24dc83-1506-b5cc-1441-5233d161f5d8@suse.com> <20230619175443.GE16168@twin.jikos.cz>
- <CAL3q7H6bmy-a7hk216HgbbZZfS-t59bV2HZa18TJ=qHXMHJfRw@mail.gmail.com> <e8651759-c364-424a-a2b7-ef7acd128974@gmx.com>
-In-Reply-To: <e8651759-c364-424a-a2b7-ef7acd128974@gmx.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 26 Jan 2024 11:55:12 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7pBvYdNoG=Twm2unnY+-Z8d03wvfT8fy1bRbQYp_gT1A@mail.gmail.com>
-Message-ID: <CAL3q7H7pBvYdNoG=Twm2unnY+-Z8d03wvfT8fy1bRbQYp_gT1A@mail.gmail.com>
-Subject: Re: BUG in raid6_pq while running fstest btrfs/286
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, Jeff Layton <jlayton@kernel.org>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Song Liu <song@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Giulio Benetti <giulio.benetti@benettiengineering.com>, 
-	linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SA3PR10MB7043:EE_
+X-MS-Office365-Filtering-Correlation-Id: dd071210-0c00-4e10-c885-08dc1e673038
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	kndgLrVfWPUcTBuEk8dc59v5toH/J+m6WC11UEkc9cfhwmjpI56DezkR8qRIKEK9D+V0rzKGspns1Pb3tHuPrK3qig7kO0Ovw2dAkcMx/l45OfAtDzJB9acHQVvK3Syik6EJmB/V1Y2zive8eS/0aXS1DOt3rp2nT4WCea7bZMCXt+KJmnuk6DWdvKdECaARUIkkpu2QFEVgQqtMSfI7V01NAA0irTkao5ZtV254ijEZbuYJQ+CvXxCZu9It2OTp2xIbiWf4eKHe7TjnfNYqQewezESgoIBhSIWYLqvG36IagFbxCqj/M6nmPZPIo31Ytm1Zc0mOVWukVx8IGPfgOJcayUezjxBhhygbe0+WB7qR4o5p6fNzPynrOyMPaQm5asEA21wfx6z68N2f/YwbDhrY70zccTxAjZsEE+NzwVlK/zDzy8LP9aeTCJrpe4snD0vWgdlv8bQpOAl+PJpjfJDlpf7ig0XUAnN6wxX8LpZ4eP2rNl9os683DNjl21TUnBYDx6XQshHF2XjNs8TyRdu5DNI22WRLRgDWFTSIzgxKhNhLsvrM0KMaNTBvqxIwK29u4vZIFl6lycKD8V5jw4/4saTWi7Mh3lHOWv2uub0cnPhx25/lS9KRetweqITUfU0ADaOepI1twEm5iI7g+Q==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(136003)(376002)(39860400002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(31686004)(83380400001)(86362001)(36756003)(31696002)(6506007)(38100700002)(41300700001)(2616005)(26005)(6512007)(66946007)(2906002)(66556008)(6486002)(66476007)(53546011)(8676002)(316002)(44832011)(6666004)(478600001)(8936002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?Y3Q2SkdpVXp6Qnl4YnRudG5kRVhaTkp1VERaWGw4N2VOc05FcTRwR3VBWTBL?=
+ =?utf-8?B?akdPd0dTcmdxeUtnZWFudUQ5MEJUVUkvOFJHTXAwYllkLzZMQ1VsdzhoK1FO?=
+ =?utf-8?B?a1FNRjljRjJNSlJTb0tFM0hjK2VlblBZb1BtVEsyb0E1TUFmTWMyU3BIeGVa?=
+ =?utf-8?B?TzV4MnlZdHh5MTIvN1d2d0I1UnVnWk5tRkk3YWVhcE9hVnZJRVdZL3pYc2FK?=
+ =?utf-8?B?VStQUTM4RytoVU55UDVjL1JDWlNUZHpRc2gxL2g0WWNabVVzdnFtZ1BaWjdy?=
+ =?utf-8?B?ckRvcmNIWVZVR085VmpmOCtSaTRJcVEzMUZ0M0p2ZlpkTldhMFBXcXkzVk5k?=
+ =?utf-8?B?WTJKYnhkNytyM2tWN1kzWGpQdThKc2JrZ0RNdnZKRTQzNzV1Vnh3SE1hbVhm?=
+ =?utf-8?B?SDhFTVUva3QxRUt5UVdkTm1Lc2VpQjFPM1JVZkd5OHhsNTFxM1VzRTcxYXpJ?=
+ =?utf-8?B?eU5hTiswQ3ROS2Q1RWFXMnVTQ2t6V3lhVUpTQmVEUkdHTWpPbkR3eGV2RmIy?=
+ =?utf-8?B?Nkd3aWJxNEpVL085Q25IeWVhTzVEVUQrcGtNc0NOREZkKy9nTlRJRS9LRklz?=
+ =?utf-8?B?Y21kTHM2NnVEMHFpK2dScVRoYW1pQzhCVkFUMk9SMzN2QjhZNGRUckdkV2RD?=
+ =?utf-8?B?cC9IVDdURzRGeDd3a1BIWTAvK0xZK2hQVG5BVVlWeGI0MDZUZTl3bkZDM3pZ?=
+ =?utf-8?B?UEV2Z2ZKZm11ZDBxTk9hMEFWSGdmV1ZMcktjMHE0OGtKOWsrM29RMHpQWnhW?=
+ =?utf-8?B?QnY3eWdXZ2dNZDV1UWQvZ0NnbExOVG9NTFhzUXIrK203Ym1tOEc1LzdxcHhL?=
+ =?utf-8?B?M1VBdEpaYmhSR2t5RnZnTk45Umh4WDVBN25MdVY5bmpjSllDcU01N1pKMWRz?=
+ =?utf-8?B?WXpHMENQbjl0VU5CMmxYczFTSktPMnZjcVpVdTkvSXNDMU1aczJrNk1iUjNy?=
+ =?utf-8?B?YSs3NlFTMjNPZzQ0ZHduQnlEQ1lDQ2cxaDcyQStCR0JPU0lOK3orUStEbHA0?=
+ =?utf-8?B?cTFYZk5wN05JdDdKclhoVXQxckhFK1dmUVRjM2lWU1JEOGc1a0kvS2w3a244?=
+ =?utf-8?B?ZER2M1U4N1cxZWd6VUlMbWYxdi9Xb3R3ZWxwOGdXWmNydDZIVytITVdrNWZR?=
+ =?utf-8?B?OVA4K2tkL3BySm04Tmp5VjVYdGtSa29wbXRHRXJ6VkRtSGJqMVp5RnFBbXhQ?=
+ =?utf-8?B?Y2dsdnA3aUNkK2xVUkwrZThjK2xub1dlQk10bWtzeWg0V3llVmRQZWVlUjNU?=
+ =?utf-8?B?cCtGbnhvMjgwZm9ueTAwWWxvV2ZrcmtsMmIvUHIwRFlzZ1Y3YjhXRnJWQzEy?=
+ =?utf-8?B?RU12dFFFbVBPTWJkNEZNR2ZIZm12VTBvNjJlK0dZaVpNVmtDaTZMblZwREpK?=
+ =?utf-8?B?LzBJUituVW14a0RCNk9jSGpldk5TNStodDNqbEdrS2JmZEhpK2g1dU5kR0xQ?=
+ =?utf-8?B?RUpWQ3NwY1NZMlJYR3hTdTVGRmdyUjZEV25wZlhBd0FRcmtzN01YNzJ1OStM?=
+ =?utf-8?B?aE4wVkJPSU1ubHN6L0dRUE9sb2VON0dwVm96RWkxMWhYTXcxaUhTV0FkL1BI?=
+ =?utf-8?B?SGtnT216Q2lFZUdWRWNFdUNGUlZ3UTd4Qm1yenBqV3E1Zll4OU52bDJjK1hm?=
+ =?utf-8?B?emdPcVd0cWZNeTBnTWpoK21pT2puRWdneVZWSisyQ1kyNWZBNnBrSVcrT0Yw?=
+ =?utf-8?B?M0tuQ0VrNW9DWFY2Z1M2WGVDVWgxTzlhQXBOOGxTaExFVFBBckI0eXlEWUNw?=
+ =?utf-8?B?Wk0rNW5FbTZaeVp0ckt2blNiSGRXUm1DalVKOGpXdXhKOXJPRmJJOXlob20y?=
+ =?utf-8?B?ZGdLa2VQRWlOajBNdjd4c0NaeWxRYi9WRE1iYlU4TkhNRCtqOVlTTWRrc0t5?=
+ =?utf-8?B?bWJ6U0ltdUpzUzRGTjEwNkRWUFpOREFkV1lQYlhJVU5lWlp2Y3lnR251aVQy?=
+ =?utf-8?B?OURpZjF2YS9lUTAyUkQ0RFBqZ3hLMDFoam5uUnV6QXZaMmNVa09udWhWUjZT?=
+ =?utf-8?B?cjRwMTdUcUh3dWVqYVZ1V29BUVk5Mm9pMS9XNUZIZDI5NU9jNXJaRHhnenhj?=
+ =?utf-8?B?WjN4cUViQ2dSNGpSbFlCc1NBR1dxd3lUQzAxZFFzVk5PU2VpS0s3eFppdld1?=
+ =?utf-8?Q?yrQ3WW4jnCVrTqQV6ycskYZuA?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	CSovwtVjmkM6RuBY0BUub8KxwxnqHJG+NWxuABcNIxTjO3Lugu3PUOB/WIPqkXCmLXb+1e91PSSXyG54r7BbFoUVdpuiq9ED3HwUlUSvKdSUW8FAFDNE6Qkt8ZKBsgQx4QTGAc/vFkKuJ9E1y0pjPzCMpJPXsYnwT2c2EkK10psUUgm67RHPLvEz7zr7eS9AQbUThXHBBw7RCiMAvK1JR8oj62Nnc6aRNlNp92GqoYwfxLRKXi0pjGZuyJE+cpb4UL4TGhXTr0kQRyIOS/ACqHC6O9ILNQME76Eyj+rDL/G5qk8CLQDdn7NAkpJUoW+DJmELVndMaGhdhBpIs/RZHQBdbwB2m8g5gzxNQfVh1Mns3h3Nz336Rfpsu7+OrtbgezN3KtwM5kTqmA/3O3x79LABMCwGByFwTilZyia77dQxibnM+VfCic+Vx9s32fmEV3F1Xm1aYbHl3o2qbGYMuHAHD/+6XPFaM2yKvEC7qfUAvGn/Lt2RS1h4DABq3PVpZPzPYisxdYmzRw03ztryJbP9wnyl8axx/Uy8AjDspbZMRhtskZc5aaFcaQmtjmfUVGyR3QT/vhDT4+tcpbPLoOUY0i8dQPtG08M1qvVk5EY=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd071210-0c00-4e10-c885-08dc1e673038
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2024 12:06:12.2077
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QTAWFtkOcCdoi86FOCacXZF6RfhwxvXIaqIeQm4ZBSTjRVGq0wvSMiQUO/TwEe9MEh3McYbkc/jsEnc/Rb18iQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR10MB7043
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=915 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401260088
+X-Proofpoint-GUID: Aw8YC-3HakLWonYe0B-2rL66J-YOPd5I
+X-Proofpoint-ORIG-GUID: Aw8YC-3HakLWonYe0B-2rL66J-YOPd5I
 
-On Thu, Jan 25, 2024 at 11:04=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com>=
- wrote:
->
->
->
-> On 2024/1/25 20:43, Filipe Manana wrote:
-> > On Mon, Jun 19, 2023 at 7:36=E2=80=AFPM David Sterba <dsterba@suse.cz> =
-wrote:
-> >>
-> >> On Fri, Jun 16, 2023 at 09:57:47AM +0800, Qu Wenruo wrote:
-> >>> On 2023/6/16 01:58, Jeff Layton wrote:
-> >>>> I hit this today, while doing some testing with kdevops. Test btrfs/=
-286
-> >>>> was running when it failed:
-> >>>>
-> >>>> [ 4759.230216] run fstests btrfs/286 at 2023-06-15 16:11:41
-> >>>> [ 4759.636322] BTRFS: device fsid 8d197804-9964-4b3f-bbea-3ef33869b5=
-64 devid 1 transid 484 /dev/loop16 scanned by mount (893879)
-> >>>> [ 4759.641190] BTRFS info (device loop16): using crc32c (crc32c-inte=
-l) checksum algorithm
-> >>>> [ 4759.644817] BTRFS info (device loop16): using free space tree
-> >>>> [ 4759.650706] BTRFS info (device loop16): enabling ssd optimization=
-s
-> >>>> [ 4759.652720] BTRFS info (device loop16): auto enabling async disca=
-rd
-> >>>> [ 4760.484561] BTRFS: device fsid 2a451aed-b7b6-4498-ba17-0e28a2e1a2=
-6b devid 1 transid 6 /dev/loop5 scanned by (udev-worker) (894101)
-> >>>> [ 4760.494221] BTRFS: device fsid 2a451aed-b7b6-4498-ba17-0e28a2e1a2=
-6b devid 2 transid 6 /dev/loop6 scanned by (udev-worker) (892207)
-> >>>> [ 4760.497373] BTRFS: device fsid 2a451aed-b7b6-4498-ba17-0e28a2e1a2=
-6b devid 3 transid 6 /dev/loop7 scanned by (udev-worker) (892535)
-> >>>> [ 4760.502687] BTRFS: device fsid 2a451aed-b7b6-4498-ba17-0e28a2e1a2=
-6b devid 4 transid 6 /dev/loop8 scanned by mkfs.btrfs (894095)
-> >>>> [ 4760.515672] BTRFS info (device loop5): using crc32c (crc32c-intel=
-) checksum algorithm
-> >>>> [ 4760.519412] BTRFS info (device loop5): setting nodatasum
-> >>>> [ 4760.521777] BTRFS info (device loop5): using free space tree
-> >>>> [ 4760.527120] BTRFS info (device loop5): enabling ssd optimizations
-> >>>> [ 4760.528861] BTRFS info (device loop5): auto enabling async discar=
-d
-> >>>> [ 4760.532184] BTRFS info (device loop5): checking UUID tree
-> >>>> [ 4762.658754] BTRFS info (device loop5): using crc32c (crc32c-intel=
-) checksum algorithm
-> >>>> [ 4762.662098] BTRFS info (device loop5): allowing degraded mounts
-> >>>> [ 4762.664749] BTRFS info (device loop5): setting nodatasum
-> >>>> [ 4762.667347] BTRFS info (device loop5): using free space tree
-> >>>> [ 4762.672306] BTRFS warning (device loop5): devid 2 uuid de8712ab-c=
-a85-4414-93a7-213060d1831d is missing
-> >>>> [ 4762.676977] BTRFS info (device loop5): enabling ssd optimizations
-> >>>> [ 4762.679852] BTRFS info (device loop5): auto enabling async discar=
-d
-> >>>> [ 4763.355404] BTRFS info (device loop5): dev_replace from <missing =
-disk> (devid 2) to /dev/loop9 started
-> >>>> [ 4763.595633] BTRFS info (device loop5): dev_replace from <missing =
-disk> (devid 2) to /dev/loop9 finished
-> >>>> [ 4764.044660] 286 (893750): drop_caches: 3
-> >>>> [ 4765.384814] BTRFS: device fsid 7acce38c-63c2-4365-a338-e1f6c0fd48=
-4b devid 1 transid 6 /dev/loop5 scanned by (udev-worker) (894101)
-> >>>> [ 4765.392235] BTRFS: device fsid 7acce38c-63c2-4365-a338-e1f6c0fd48=
-4b devid 2 transid 6 /dev/loop6 scanned by (udev-worker) (892207)
-> >>>> [ 4765.404469] BTRFS: device fsid 7acce38c-63c2-4365-a338-e1f6c0fd48=
-4b devid 3 transid 6 /dev/loop7 scanned by (udev-worker) (894101)
-> >>>> [ 4765.412107] BTRFS: device fsid 7acce38c-63c2-4365-a338-e1f6c0fd48=
-4b devid 4 transid 6 /dev/loop8 scanned by mkfs.btrfs (894169)
-> >>>> [ 4765.429084] BTRFS info (device loop5): using crc32c (crc32c-intel=
-) checksum algorithm
-> >>>> [ 4765.433332] BTRFS info (device loop5): setting nodatasum
-> >>>> [ 4765.435506] BTRFS info (device loop5): using free space tree
-> >>>> [ 4765.440808] BTRFS info (device loop5): enabling ssd optimizations
-> >>>> [ 4765.442402] BTRFS info (device loop5): auto enabling async discar=
-d
-> >>>> [ 4765.444752] BTRFS info (device loop5): checking UUID tree
-> >>>> [ 4767.634901] BTRFS info (device loop5): using crc32c (crc32c-intel=
-) checksum algorithm
-> >>>> [ 4767.637985] BTRFS info (device loop5): allowing degraded mounts
-> >>>> [ 4767.640216] BTRFS info (device loop5): setting nodatasum
-> >>>> [ 4767.642221] BTRFS info (device loop5): using free space tree
-> >>>> [ 4767.646646] BTRFS warning (device loop5): devid 2 uuid 6240c286-8=
-93c-4d19-bbf5-f1d2fecc6b96 is missing
-> >>>> [ 4767.650311] BTRFS warning (device loop5): devid 2 uuid 6240c286-8=
-93c-4d19-bbf5-f1d2fecc6b96 is missing
-> >>>> [ 4767.655256] BTRFS info (device loop5): enabling ssd optimizations
-> >>>> [ 4767.658073] BTRFS info (device loop5): auto enabling async discar=
-d
-> >>>> [ 4768.343633] BTRFS info (device loop5): dev_replace from <missing =
-disk> (devid 2) to /dev/loop9 started
-> >>>> [ 4768.608799] BTRFS info (device loop5): dev_replace from <missing =
-disk> (devid 2) to /dev/loop9 finished
-> >>>> [ 4768.750345] 286 (893750): drop_caches: 3
-> >>>> [ 4769.993871] BTRFS: device fsid 965cdb50-095a-4fd9-bcda-2c17bd80c3=
-ad devid 1 transid 6 /dev/loop5 scanned by (udev-worker) (894101)
-> >>>> [ 4770.002879] BTRFS: device fsid 965cdb50-095a-4fd9-bcda-2c17bd80c3=
-ad devid 2 transid 6 /dev/loop6 scanned by (udev-worker) (892207)
-> >>>> [ 4770.015617] BTRFS: device fsid 965cdb50-095a-4fd9-bcda-2c17bd80c3=
-ad devid 3 transid 6 /dev/loop7 scanned by (udev-worker) (894101)
-> >>>> [ 4770.021936] BTRFS: device fsid 965cdb50-095a-4fd9-bcda-2c17bd80c3=
-ad devid 4 transid 6 /dev/loop8 scanned by mkfs.btrfs (894243)
-> >>>> [ 4770.041357] BTRFS info (device loop5): using crc32c (crc32c-intel=
-) checksum algorithm
-> >>>> [ 4770.043426] BTRFS info (device loop5): setting nodatasum
-> >>>> [ 4770.045340] BTRFS info (device loop5): using free space tree
-> >>>> [ 4770.050615] BTRFS info (device loop5): enabling ssd optimizations
-> >>>> [ 4770.053473] BTRFS info (device loop5): auto enabling async discar=
-d
-> >>>> [ 4770.056311] BTRFS info (device loop5): checking UUID tree
-> >>>> [ 4772.692223] BTRFS info (device loop5): using crc32c (crc32c-intel=
-) checksum algorithm
-> >>>> [ 4772.695043] BTRFS info (device loop5): allowing degraded mounts
-> >>>> [ 4772.697901] BTRFS info (device loop5): setting nodatasum
-> >>>> [ 4772.700355] BTRFS info (device loop5): using free space tree
-> >>>> [ 4772.704900] BTRFS warning (device loop5): devid 2 uuid 5fa35bdf-8=
-f54-4652-ba28-7c302a265f8d is missing
-> >>>> [ 4772.708151] BTRFS warning (device loop5): devid 2 uuid 5fa35bdf-8=
-f54-4652-ba28-7c302a265f8d is missing
-> >>>> [ 4772.713703] BTRFS info (device loop5): enabling ssd optimizations
-> >>>> [ 4772.716270] BTRFS info (device loop5): auto enabling async discar=
-d
-> >>>> [ 4773.735253] BTRFS info (device loop5): dev_replace from <missing =
-disk> (devid 2) to /dev/loop9 started
-> >>>> [ 4774.089640] BTRFS info (device loop5): dev_replace from <missing =
-disk> (devid 2) to /dev/loop9 finished
-> >>>> [ 4774.269606] 286 (893750): drop_caches: 3
-> >>>> [ 4775.897236] BTRFS: device fsid 0552fbf6-2877-4ab3-b5a2-da5db268e1=
-c3 devid 1 transid 6 /dev/loop5 scanned by (udev-worker) (894101)
-> >>>> [ 4775.905939] BTRFS: device fsid 0552fbf6-2877-4ab3-b5a2-da5db268e1=
-c3 devid 2 transid 6 /dev/loop6 scanned by mkfs.btrfs (894317)
-> >>>> [ 4775.909603] BTRFS: device fsid 0552fbf6-2877-4ab3-b5a2-da5db268e1=
-c3 devid 3 transid 6 /dev/loop7 scanned by mkfs.btrfs (894317)
-> >>>> [ 4775.913080] BTRFS: device fsid 0552fbf6-2877-4ab3-b5a2-da5db268e1=
-c3 devid 4 transid 6 /dev/loop8 scanned by mkfs.btrfs (894317)
-> >>>> [ 4775.928177] BTRFS info (device loop5): using crc32c (crc32c-intel=
-) checksum algorithm
-> >>>> [ 4775.930566] BTRFS info (device loop5): setting nodatasum
-> >>>> [ 4775.932930] BTRFS info (device loop5): using free space tree
-> >>>> [ 4775.937296] BTRFS info (device loop5): enabling ssd optimizations
-> >>>> [ 4775.938306] BTRFS info (device loop5): auto enabling async discar=
-d
-> >>>> [ 4775.940084] BTRFS info (device loop5): checking UUID tree
-> >>>> [ 4779.204728] BTRFS info (device loop5): using crc32c (crc32c-intel=
-) checksum algorithm
-> >>>> [ 4779.207351] BTRFS info (device loop5): allowing degraded mounts
-> >>>> [ 4779.210284] BTRFS info (device loop5): setting nodatasum
-> >>>> [ 4779.212740] BTRFS info (device loop5): using free space tree
-> >>>> [ 4779.218547] BTRFS warning (device loop5): devid 2 uuid 9a9f7178-0=
-caa-4c5f-8f92-034e72257005 is missing
-> >>>> [ 4779.221982] BTRFS warning (device loop5): devid 2 uuid 9a9f7178-0=
-caa-4c5f-8f92-034e72257005 is missing
-> >>>> [ 4779.227912] BTRFS info (device loop5): enabling ssd optimizations
-> >>>> [ 4779.230483] BTRFS info (device loop5): auto enabling async discar=
-d
-> >>>> [ 4780.128223] BTRFS info (device loop5): dev_replace from <missing =
-disk> (devid 2) to /dev/loop9 started
-> >>>> [ 4780.422390] BUG: kernel NULL pointer dereference, address: 000000=
-0000000000
-> >>>> [ 4780.423934] #PF: supervisor read access in kernel mode
-> >>>> [ 4780.425584] #PF: error_code(0x0000) - not-present page
-> >>>> [ 4780.427234] PGD 0 P4D 0
-> >>>> [ 4780.428293] Oops: 0000 [#1] PREEMPT SMP PTI
-> >>>> [ 4780.429722] CPU: 3 PID: 761699 Comm: kworker/u16:4 Not tainted 6.=
-4.0-rc6+ #6
-> >>>> [ 4780.431582] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), B=
-IOS 1.16.2-1.fc38 04/01/2014
-> >>>> [ 4780.433897] Workqueue: btrfs-rmw rmw_rbio_work [btrfs]
-> >>>> [ 4780.435655] RIP: 0010:raid6_sse21_gen_syndrome+0x9e/0x130 [raid6_=
-pq]
-> >>>> [ 4780.437518] Code: 4d 8d 54 05 00 44 89 c0 48 c1 e0 03 48 29 c6 49=
- 8b 03 48 01 d0 0f 18 00 66 0f 6f 10 49 8b 01 0f 18 04 10 66 0f 6f e2 49 8b=
- 01 <66> 0f 6f 34 10 4c 89 d0 45 85 c0 78 34 48 8b 08 0f 18 04 11 66 0f
-> >>>> [ 4780.442488] RSP: 0018:ffffb66f0296fdc8 EFLAGS: 00010286
-> >>>> [ 4780.444147] RAX: 0000000000000000 RBX: 0000000000001000 RCX: ffff=
-a0ff4cfa3248
-> >>>> [ 4780.446192] RDX: 0000000000000000 RSI: ffffa0f74cfa3238 RDI: 0000=
-000000000000
-> >>>> [ 4780.448278] RBP: ffffa0ff4e72a000 R08: 00000000fffffffe R09: ffff=
-a0ff4cfa3238
-> >>>> [ 4780.450387] R10: ffffa0ff4cfa3230 R11: ffffa0ff4cfa3240 R12: ffff=
-a0fe8bdf3000
-> >>>> [ 4780.452515] R13: ffffa0ff4cfa3240 R14: 0000000000000003 R15: 0000=
-000000000000
-> >>>> [ 4780.454638] FS:  0000000000000000(0000) GS:ffffa0ff77cc0000(0000)=
- knlGS:0000000000000000
-> >>>> [ 4780.456956] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >>>> [ 4780.458778] CR2: 0000000000000000 CR3: 000000015eb0a001 CR4: 0000=
-000000060ee0
-> >>>> [ 4780.460789] Call Trace:
-> >>>> [ 4780.461832]  <TASK>
-> >>>> [ 4780.462804]  ? __die+0x1f/0x70
-> >>>> [ 4780.463915]  ? page_fault_oops+0x159/0x450
-> >>>> [ 4780.465207]  ? fixup_exception+0x22/0x310
-> >>>> [ 4780.466484]  ? exc_page_fault+0x7a/0x180
-> >>>> [ 4780.467666]  ? asm_exc_page_fault+0x22/0x30
-> >>>> [ 4780.468879]  ? raid6_sse21_gen_syndrome+0x9e/0x130 [raid6_pq]
-> >>>> [ 4780.470372]  ? raid6_sse21_gen_syndrome+0x38/0x130 [raid6_pq]
-> >>>> [ 4780.471801]  rmw_rbio+0x5c8/0xa80 [btrfs]
-> >>>> [ 4780.472987]  ? preempt_count_add+0x6a/0xa0
-> >>>> [ 4780.474061]  ? lock_stripe_add+0xe1/0x290 [btrfs]
-> >>>> [ 4780.475288]  process_one_work+0x1c7/0x3d0
-> >>>> [ 4780.476304]  worker_thread+0x4d/0x380
-> >>>> [ 4780.477232]  ? __pfx_worker_thread+0x10/0x10
-> >>>> [ 4780.478241]  kthread+0xf3/0x120
-> >>>> [ 4780.479071]  ? __pfx_kthread+0x10/0x10
-> >>>> [ 4780.479982]  ret_from_fork+0x2c/0x50
-> >>>> [ 4780.480843]  </TASK>
-> >>>> [ 4780.481488] Modules linked in: dm_thin_pool dm_persistent_data dm=
-_bio_prison dm_bufio dm_log_writes dm_flakey nls_iso8859_1 nls_cp437 vfat f=
-at ext4 9p crc16 joydev kvm_intel netfs virtio_net mbcache cirrus kvm psmou=
-se pcspkr net_failover failover xfs irqbypass drm_shmem_helper virtio_ballo=
-on jbd2 evdev button 9pnet_virtio drm_kms_helper loop drm dm_mod zram zsmal=
-loc crct10dif_pclmul crc32_pclmul ghash_clmulni_intel sha512_ssse3 sha512_g=
-eneric aesni_intel nvme virtio_blk crypto_simd nvme_core virtio_pci cryptd =
-t10_pi virtio i6300esb virtio_pci_legacy_dev crc64_rocksoft_generic virtio_=
-pci_modern_dev crc64_rocksoft crc64 virtio_ring serio_raw btrfs blake2b_gen=
-eric libcrc32c crc32c_generic crc32c_intel xor raid6_pq autofs4
-> >>>> [ 4780.492421] CR2: 0000000000000000
-> >>>> [ 4780.493185] ---[ end trace 0000000000000000 ]---
-> >>>> [ 4780.494099] RIP: 0010:raid6_sse21_gen_syndrome+0x9e/0x130 [raid6_=
-pq]
-> >>>> [ 4780.495217] Code: 4d 8d 54 05 00 44 89 c0 48 c1 e0 03 48 29 c6 49=
- 8b 03 48 01 d0 0f 18 00 66 0f 6f 10 49 8b 01 0f 18 04 10 66 0f 6f e2 49 8b=
- 01 <66> 0f 6f 34 10 4c 89 d0 45 85 c0 78 34 48 8b 08 0f 18 04 11 66 0f
-> >>>> [ 4780.498186] RSP: 0018:ffffb66f0296fdc8 EFLAGS: 00010286
-> >>>> [ 4780.499138] RAX: 0000000000000000 RBX: 0000000000001000 RCX: ffff=
-a0ff4cfa3248
-> >>>> [ 4780.500327] RDX: 0000000000000000 RSI: ffffa0f74cfa3238 RDI: 0000=
-000000000000
-> >>>> [ 4780.501533] RBP: ffffa0ff4e72a000 R08: 00000000fffffffe R09: ffff=
-a0ff4cfa3238
-> >>>> [ 4780.502683] R10: ffffa0ff4cfa3230 R11: ffffa0ff4cfa3240 R12: ffff=
-a0fe8bdf3000
-> >>>> [ 4780.503827] R13: ffffa0ff4cfa3240 R14: 0000000000000003 R15: 0000=
-000000000000
-> >>>> [ 4780.504971] FS:  0000000000000000(0000) GS:ffffa0ff77cc0000(0000)=
- knlGS:0000000000000000
-> >>>> [ 4780.506207] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >>>> [ 4780.507143] CR2: 0000000000000000 CR3: 000000015eb0a001 CR4: 0000=
-000000060ee0
-> >>>> [ 4780.508242] note: kworker/u16:4[761699] exited with irqs disabled
-> >>>> [ 4780.509242] note: kworker/u16:4[761699] exited with preempt_count=
- 1
-> >>>>
-> >>>>
-> >>>> Looks like a quadword move failed? I'm not well-versed in SSE asm, I=
-'m afraid:
-> >>>>
-> >>>> $ ./scripts/faddr2line --list ./lib/raid6/raid6_pq.ko raid6_sse21_ge=
-n_syndrome+0x9e/0x130
-> >>>> raid6_sse21_gen_syndrome+0x9e/0x130:
-> >>>>
-> >>>> raid6_sse21_gen_syndrome at /home/jlayton/git/kdevops/linux/lib/raid=
-6/sse2.c:56
-> >>>>    51                for ( d =3D 0 ; d < bytes ; d +=3D 16 ) {
-> >>>>    52                        asm volatile("prefetchnta %0" : : "m" (=
-dptr[z0][d]));
-> >>>>    53                        asm volatile("movdqa %0,%%xmm2" : : "m"=
- (dptr[z0][d])); /* P[0] */
-> >>>>    54                        asm volatile("prefetchnta %0" : : "m" (=
-dptr[z0-1][d]));
-> >>>>    55                        asm volatile("movdqa %xmm2,%xmm4"); /* =
-Q[0] */
-> >>>>> 56<                        asm volatile("movdqa %0,%%xmm6" : : "m" =
-(dptr[z0-1][d]));
-> >>>>    57                        for ( z =3D z0-2 ; z >=3D 0 ; z-- ) {
-> >>>>    58                                asm volatile("prefetchnta %0" :=
- : "m" (dptr[z][d]));
-> >>>>    59                                asm volatile("pcmpgtb %xmm4,%xm=
-m5");
-> >>>>    60                                asm volatile("paddb %xmm4,%xmm4=
-");
-> >>>>    61                                asm volatile("pand %xmm0,%xmm5"=
-);
-> >>>>
-> >>>>
-> >>>> This machine is running v6.4.0-rc5 with some ctime handling patches =
-on
-> >>>> top (nothing that should affect anything at this level). The Kconfig=
- is
-> >>>> config-next-20230530 from the kdevops tree:
-> >>>>
-> >>>> https://github.com/linux-kdevops/kdevops/blob/master/playbooks/roles=
-/bootlinux/templates/config-next-20230530)
-> >>>>
-> >>>> Let me know if you need other info!
-> >>>
-> >>> Unfortunately there are similar reports but I failed to reproduce any=
-where.
-> >>>
-> >>> In the past, I have added extra debugging for the reporter, and the
-> >>> result is, at least every pointer is valid, until the control is pass=
-ed
-> >>> to the optimization routine...
-> >>>
-> >>> You can try to disable SSE for the vCPU, or even pass AVX feature to =
-the
-> >>> vCPU, and normally you would see the error gone.
-> >>>
-> >>> The last time I see such problem is from David, but we did not got an=
-y
-> >>> progress any further.
-> >>
-> >> I haven't seen the crash for a long time, IIRC it's related to SSE2,
-> >> no acceleration or anything AVX+ works.
-> >
-> > Well, I don't think it's related to SSE2 at all.
-> >
-> > I sporadically get the same crash with AVX2, for raid56 tests, so I
-> > would say it's very likely btrfs' fault.
-> > For example this crash on 6.2 when running btrfs/027:
-> >
-> > [10425.262835] general protection fault, probably for non-canonical
-> > address 0xcccccccccccccccc: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
-> > [10425.265179] CPU: 0 PID: 11267 Comm: kworker/u16:2 Not tainted
-> > 6.2.0-rc7-btrfs-next-145+ #1
-> > [10425.266196] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> > BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> > [10425.267570] Workqueue: btrfs-rmw rmw_rbio_work [btrfs]
-> > [10425.268247] RIP: 0010:raid6_avx21_gen_syndrome+0x9e/0x130 [raid6_pq]
->
-> In fact, my previous run of that 5.15 backport also hit a crash, but for
-> avx512 path.
-> (And 5.15 is even before my RAID56 rework)
->
-> Although in my case, it may be related to the special big/little cores
-> of intel CPUs. (I assigned 8 vCPU to the VM, while there are only 6 big
-> cores, 8 small cores may not support AVX512)
-> Furthermore, on my AMD cpus powered VMs, they never hit such crash.
-> (Both AMD and Intel machines are using host-passingthrough for vCPU
-> features)
->
-> Furthermore, my crash is very random, it crashed in btrfs/297, with all
-> previous RAID56 test cases passed.
->
-> So I'm still not sure what's really going on here.
->
-> > [10425.268986] Code: 4d 8d 54 05 00 44 89 c0 48 c1 e0 03 48 29 c6 49
-> > 8b 03 48 01 d0 0f 18 00 c5 fd 6f 10 49 8b 01 0f 18 04 10 c5 fd 6f e2
-> > 49 8b 01 <c5> fd 6f 34 10 4c 89 d0 45 85 c0 78 30 48 8b 08 0f 18 04 11
-> > c>
-> > [10425.271183] RSP: 0018:ffffb370c722fd80 EFLAGS: 00010286
-> > [10425.271892] RAX: cccccccccccccccc RBX: 0000000000001000 RCX: ffff9b0=
-8a87e9800
->
-> The RAX is the first parameter, aka rbio->real_stripes, while RBX is
-> sectorsize (0x1000 =3D 4K).
->
-> So there is definitely something wrong here.
->
-> Can you reproduce the problem reliably?
+On 1/25/24 05:18, David Sterba wrote:
+> The btrfs_find_root() looks up a root by a key, allowing to do an
+> inexact search when key->offset is -1.  It's never expected to find such
+> item, as it would break allowed the range of a root id.
+> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+>   fs/btrfs/root-tree.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+> index ba7e2181ff4e..326cd0d03287 100644
+> --- a/fs/btrfs/root-tree.c
+> +++ b/fs/btrfs/root-tree.c
+> @@ -82,7 +82,14 @@ int btrfs_find_root(struct btrfs_root *root, const struct btrfs_key *search_key,
+>   		if (ret > 0)
+>   			goto out;
+>   	} else {
+> -		BUG_ON(ret == 0);		/* Logical error */
+> +		/*
+> +		 * Key with offset -1 found, there would have to exist a root
+> +		 * with such id, but this is out of the valid range.
+> +		 */
+> +		if (ret == 0) {
+> +			ret = -EUCLEAN;
+> +			goto out;
+> +		}
+>   		if (path->slots[0] == 0)
+>   			goto out;
+>   		path->slots[0]--;
 
-No, I can't.
-As I said, it happens very sporadically, and it's been like that for
-many years, ever since I remember... Like maybe once every 3 months or
-less than that.
-It happens on any test that exercises raid56, and the last records I
-have, it's been always on tests that exercise device replace, so
-there's probably a connection.
 
->
-> Thanks,
-> Qu
->
-> > [10425.273176] RDX: 0000000000000000 RSI: ffff9b00a87e98d8 RDI: 0000000=
-000000000
-> > [10425.274074] RBP: ffff9b08e7e31000 R08: 00000000fffffffe R09: ffff9b0=
-8a87e98d8
-> > [10425.274886] R10: ffff9b08a87e98d0 R11: ffff9b08a87e98e0 R12: ffff9b0=
-8e5c00000
-> > [10425.275742] R13: ffff9b08a87e98e0 R14: 0000000000000003 R15: 0000000=
-000000000
-> > [10425.276562] FS:  0000000000000000(0000) GS:ffff9b0bace00000(0000)
-> > knlGS:0000000000000000
-> > [10425.277515] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [10425.278172] CR2: 00007f7e1a04f421 CR3: 000000017b9b8001 CR4: 0000000=
-000370ef0
-> > [10425.278982] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
-000000000
-> > [10425.279809] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
-000000400
-> > [10425.280574] Call Trace:
-> > [10425.280849]  <TASK>
-> > [10425.281064]  rmw_rbio.part.0+0x384/0x890 [btrfs]
-> > [10425.281709]  rmw_rbio_work+0x64/0x80 [btrfs]
-> > [10425.282245]  process_one_work+0x24f/0x5a0
-> > [10425.282672]  worker_thread+0x52/0x3b0
-> > [10425.283059]  ? __pfx_worker_thread+0x10/0x10
-> > [10425.283573]  kthread+0xf0/0x120
-> > [10425.283906]  ? __pfx_kthread+0x10/0x10
-> > [10425.284308]  ret_from_fork+0x29/0x50
-> > [10425.284696]  </TASK>
-> > [10425.284989] Modules linked in: loop btrfs blake2b_generic xor
-> > raid6_pq libcrc32c overlay intel_rapl_msr intel_rapl_common
-> > crct10dif_pclmul ghash_clmulni_intel sha512_ssse3 sha512_generic bochs
-> > aesni_intel dr>
-> > [10425.295936] ---[ end trace 0000000000000000 ]---
-> >
-> > Qu also got the same crash on AVX recently.
-> >
+While here, why not also add an error message, especially for calls
+from btrfs_read_roots() when the IGNOREBADROOTS is set, we ignore
+the error and continue without the abort(). Including an error
+message will provide more information about the bad root.
+
+btrfs_read_roots()
+::
+  btrfs_read_tree_root() | btrfs_get_fs_root_commit_root() | 
+load_global_roots_objectid()
+  read_tree_root_path()
+   btrfs_find_root()
+
+
+Thanks, Anand
 
