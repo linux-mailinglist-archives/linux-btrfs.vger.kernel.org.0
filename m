@@ -1,233 +1,150 @@
-Return-Path: <linux-btrfs+bounces-1836-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1837-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AFB783E47D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jan 2024 23:05:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 974FB83E4A1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jan 2024 23:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30AAC1C230FA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jan 2024 22:05:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E829DB22BD1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jan 2024 22:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54657286B3;
-	Fri, 26 Jan 2024 22:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AC9F5A784;
+	Fri, 26 Jan 2024 22:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nPpU/QPk"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Wun/mJBa"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABDE42555E;
-	Fri, 26 Jan 2024 22:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234D659B73;
+	Fri, 26 Jan 2024 22:05:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706306681; cv=none; b=iJxhkvn0oBCU9qOuvITUXDWtGENL37qj5pLQkmqxLio1Bz0p07FaWe4uQ3KUcq/91SWEGgdrNsDb0JHywtw80PNtT/yHG7AW579erZuosHqFSRgpMADSq0FmDLC1EuxPKTfCJXuwnu3ozcSv3T5yxzaI7NpPpnaMysYsFTUIKzQ=
+	t=1706306749; cv=none; b=hUj3hIxfSxCOKQPblTKIIiWaTyh7E7tBgpSeAKUk0G4FoZzkF1UQrelNUoNNVucI6MkY/YiE0dYVnP4SewnwfzmUwGEA0XOFeYJNKTAHrsoPLNuTH3CeGicsP4HaQhsGm0RweI/FHLT7lyad5UR2jgkLl0JB06PKqI9DHuJmTHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706306681; c=relaxed/simple;
-	bh=PgTmG/yzGVqUhuwJ1i6jbTUkm8ADJwrhKbzlIpQ+M9M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kaDXUV7rD1hpbzaLvi4LjfxwPOtVdAli57OFvo2BjUa+PQ5WprwWxwWf5nZhnLarewwQueGuAnFgkPBcHW2sCl2SgqY1XQALAaDCJQNSfshv4pPcPTamv6xOe/WEz56HTLbTcpSJ66xYIC78+roU0d0qmzMqgTfNrSrn6YebMe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nPpU/QPk; arc=none smtp.client-ip=134.134.136.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706306679; x=1737842679;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PgTmG/yzGVqUhuwJ1i6jbTUkm8ADJwrhKbzlIpQ+M9M=;
-  b=nPpU/QPkyxw/o5eiMsb3YXl6z8u0ciuOUMG0pQu9t3k5rGKg2A2/+4Er
-   VDdOyjGVRbfJZKSaiGGhSYlDsfRI1IM3THnmKdVLIEpEVeZq6F0vD16lN
-   KY8JxjApB1X5uew6BZc2GJOR1tqyYRZNinkgZHjlFydJrwpBgaYHc8Dgz
-   Fa9zwfp7eSfstOqhvGdRCDWjzBr9z1DIbkzrGGJpzVf/CADNbD+bSRIq/
-   7EGFo+MugUuTDMkCtrUXBaEoHW+wG7QgDXOiDdGiZWTlNfkxUzgrrigUJ
-   rNb+coVcUvxXaVlYjaX8/C3D7gHIRo/+msyFFQs2gXMQxoDj1iBcByIVj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="406317867"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="406317867"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 14:04:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2716758"
-Received: from lkp-server01.sh.intel.com (HELO 370188f8dc87) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 26 Jan 2024 14:04:33 -0800
-Received: from kbuild by 370188f8dc87 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rTUJL-0001NK-01;
-	Fri, 26 Jan 2024 22:04:31 +0000
-Date: Sat, 27 Jan 2024 06:03:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Mike Snitzer <snitzer@kernel.org>, dm-devel@lists.linux.dev,
-	Chris Mason <chris.mason@fusionio.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-	Chao Yu <chao@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-	Chaitanya Kulkarni <kch@nvidia.com>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: Re: [PATCH 5/5] block: remove gfp_flags from blkdev_zone_mgmt
-Message-ID: <202401270524.3SWUUYR8-lkp@intel.com>
-References: <20240123-zonefs_nofs-v1-5-cc0b0308ef25@wdc.com>
+	s=arc-20240116; t=1706306749; c=relaxed/simple;
+	bh=quovCUEiBJzRcC6tpz1IJ7bTQOD+HpTMRkt5AyBCYDU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VleeToeVxByvQeEBrAFwwdeRNWCszbhyeMHr+nooQOhTNwZgjmivJIkA1Sbx5C3ytL7RRQ+xF7/C4V5q8Ut7ddX5smpUysjKi+YmtpHySj+wBwlvG0jTYmxzfkM3SLlyTUjcx/SqzbHx1TXAlg+kqOPZoVrxQemgJn4piRF00eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Wun/mJBa; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1706306743; x=1706911543; i=quwenruo.btrfs@gmx.com;
+	bh=quovCUEiBJzRcC6tpz1IJ7bTQOD+HpTMRkt5AyBCYDU=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=Wun/mJBaip6NFrp5muOf6Z3rJTfgH00zXoLhhDynRnACkx4JPWDXyb8uUYsMU3m7
+	 Z6LL5zYt6Ra7p2Hx1TKygWa2V9bJ1d71nhAMH5VffqcJywTvihWeQ4LAIKlW/SANK
+	 /10bkttgWAuYKm0ZmgR96PpAh757h/VeQnlFOiyDqYvS064ORAZxHmtRrV4UDw6EL
+	 Q3wXDnsdNBHoIt0KzjbgG0pSbugekVBGIrAOdNbzJZdgYPh6kPmAYRi/b3lJ558BA
+	 PiQ9eV2CTRE6wIN42ASQN4NZGMNxIhVqwmTmWyGujHlRSP2cG+FnXU5JPievqauHz
+	 a9VxRLfkyyMeYvOpcQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbzuB-1qwLIv3cT9-00dWG5; Fri, 26
+ Jan 2024 23:05:43 +0100
+Message-ID: <cbd72a58-6d6b-4e78-8028-63e92ad9502c@gmx.com>
+Date: Sat, 27 Jan 2024 08:35:39 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123-zonefs_nofs-v1-5-cc0b0308ef25@wdc.com>
-
-Hi Johannes,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on 7ed2632ec7d72e926b9e8bcc9ad1bb0cd37274bf]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Johannes-Thumshirn/zonefs-pass-GFP_KERNEL-to-blkdev_zone_mgmt-call/20240123-174911
-base:   7ed2632ec7d72e926b9e8bcc9ad1bb0cd37274bf
-patch link:    https://lore.kernel.org/r/20240123-zonefs_nofs-v1-5-cc0b0308ef25%40wdc.com
-patch subject: [PATCH 5/5] block: remove gfp_flags from blkdev_zone_mgmt
-config: hexagon-allmodconfig (https://download.01.org/0day-ci/archive/20240127/202401270524.3SWUUYR8-lkp@intel.com/config)
-compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project a31a60074717fc40887cfe132b77eec93bedd307)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240127/202401270524.3SWUUYR8-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401270524.3SWUUYR8-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/md/dm-zoned-metadata.c:8:
-   In file included from drivers/md/dm-zoned.h:12:
-   In file included from include/linux/blkdev.h:9:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-         |                                                   ^
-   In file included from drivers/md/dm-zoned-metadata.c:8:
-   In file included from drivers/md/dm-zoned.h:12:
-   In file included from include/linux/blkdev.h:9:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   In file included from drivers/md/dm-zoned-metadata.c:8:
-   In file included from drivers/md/dm-zoned.h:12:
-   In file included from include/linux/blkdev.h:9:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:12:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
->> drivers/md/dm-zoned-metadata.c:1661:34: error: too many arguments to function call, expected 4, have 5
-    1659 |                 ret = blkdev_zone_mgmt(dev->bdev, REQ_OP_ZONE_RESET,
-         |                       ~~~~~~~~~~~~~~~~
-    1660 |                                        dmz_start_sect(zmd, zone),
-    1661 |                                        zmd->zone_nr_sectors, GFP_KERNEL);
-         |                                                              ^~~~~~~~~~
-   include/linux/gfp_types.h:327:20: note: expanded from macro 'GFP_KERNEL'
-     327 | #define GFP_KERNEL      (__GFP_RECLAIM | __GFP_IO | __GFP_FS)
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/blkdev.h:327:5: note: 'blkdev_zone_mgmt' declared here
-     327 | int blkdev_zone_mgmt(struct block_device *bdev, enum req_op op,
-         |     ^                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     328 |                 sector_t sectors, sector_t nr_sectors);
-         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   6 warnings and 1 error generated.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>, Qu Wenruo <wqu@suse.com>
+Cc: dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1705946889.git.dsterba@suse.com>
+ <CAHk-=whNdMaN9ntZ47XRKP6DBes2E5w7fi-0U3H2+PS18p+Pzw@mail.gmail.com>
+ <20240126200008.GT31555@twin.jikos.cz>
+ <8b2c6d1f-2e14-43a0-b48a-512a3d4a811d@suse.com>
+ <CAHk-=wjhtqo_FEqZkPuOVUNZzsGhjftdcN9aQpA3f3WD0qS1pA@mail.gmail.com>
+ <7c4bc81e-51b4-4b93-8cae-f16663b1c820@suse.com>
+ <CAHk-=wj1h8GhhEuqmiCMZW7iBu3k7hn3mJSO9kTm7P31BCZExA@mail.gmail.com>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <CAHk-=wj1h8GhhEuqmiCMZW7iBu3k7hn3mJSO9kTm7P31BCZExA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:QPU7Y2ELcU5BU3RNadFFUpS77GELHdeUSviHfF3gCeLc+U8cHx5
+ 2UAVC+dovE3CsmoNOCiCUjGRFi2PR9JLGhaHt/CrHuzdbYSVRWAbniu57A4qYWmR8bjW+A3
+ gaf9UHxbFuNGY1AefNh3pHxb0yPfj4KJLPIZdYUDvJ8NOC0uvjZ90mWAYRa4b27yCG6lddZ
+ JKXqXdECOx+FqqrZToZCQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:AwyVdHZMhf4=;VOAhamGl0dDKzNkWnG+WDmnE3AN
+ 0dA4NJTNGpPGxs4sAvBxsR5uBoRTkNgmquoFIC6jf6c/kcpczIuioL8jyNhK1mG4+KGmaBcm0
+ AqttJUKLQKm/8Kk8zPJs/ulfPuUvLWuY4x0VnB+PFrEfsdpWmmgqkjMxwM+KxLOKtQosaFYFY
+ 7wOtXw9r71C5JaIr8m1DQBg9RrA+YiPMbHS2d+wJNY1vge2H4egajpiuwyvZu0EodA88yMZy7
+ jU5qOIyK/06HdA+7+Vy7ccLh/4xvPD1xk/UwOqlVYo0ueTMXm1hID+OSq37NYYaLVSqA0YXVQ
+ DXQ3hSXTRlLJYxYSnFZHjEzhEEmzmTmSa2dtFjQ6RUsMLss4mE/9jftdGyJBN6Gike6s03XdA
+ B9jgASrnVlj/cdC0L0YXbDNc9zPYUiXGnddH/QIiEaemBK4KdL3sMxp2+K3/Dq8SRbev23JWR
+ iE2MFKp65l0j/BcrBW7qwMfS2Vd+Ng3rAoKH5JzMDeIbuRNWwbjJ7Pu0z0uufT7t7Q7tCccCX
+ DNlr1JoT9tyqL4xw/CvKb7Ric3nATWp2dZU7AHwuBGOO7uBwgUNabHMNHzkJm3K0lTDqel9NW
+ Rve+T5wv7v5wa9dOyjp+k63hHKO9q5p6ugAHD1ENml0cUGbwviG/CJePJQOaImicXmvhOkIvk
+ uLQzF7+Udb4GNQtPbJHp1jxizE3bBWtK6dSeaIW1IUVf23XeA49cDFxd3wBkqgZNGm4xoy6MU
+ smt+LKUD+t//4mOEQYMrX/9EhgoSE0KZvBAWdY1yYlX9+PDWo5LZbS7HnYmdhacu8XPVfWQI5
+ kYvWHDyxDd/OxO6LSMscT9V6GOzULzkrJ+wa5vIv+i/GZLR9LWGTEHsIzA7fXihlMRAe/tQ77
+ ICN+AS1sgLEJLO4xsjEGdR12YfLkKSNn9ncEL6mMBIXq2K1cM5TXx9tWRpBDsHZpVtKWeRlmS
+ J9fQteMqi9cOYk+NCQqgq/4Ct1c=
 
 
-vim +1661 drivers/md/dm-zoned-metadata.c
 
-3b1a94c88b798d Damien Le Moal     2017-06-07  1639  
-3b1a94c88b798d Damien Le Moal     2017-06-07  1640  /*
-3b1a94c88b798d Damien Le Moal     2017-06-07  1641   * Reset a zone write pointer.
-3b1a94c88b798d Damien Le Moal     2017-06-07  1642   */
-3b1a94c88b798d Damien Le Moal     2017-06-07  1643  static int dmz_reset_zone(struct dmz_metadata *zmd, struct dm_zone *zone)
-3b1a94c88b798d Damien Le Moal     2017-06-07  1644  {
-3b1a94c88b798d Damien Le Moal     2017-06-07  1645  	int ret;
-3b1a94c88b798d Damien Le Moal     2017-06-07  1646  
-3b1a94c88b798d Damien Le Moal     2017-06-07  1647  	/*
-3b1a94c88b798d Damien Le Moal     2017-06-07  1648  	 * Ignore offline zones, read only zones,
-3b1a94c88b798d Damien Le Moal     2017-06-07  1649  	 * and conventional zones.
-3b1a94c88b798d Damien Le Moal     2017-06-07  1650  	 */
-3b1a94c88b798d Damien Le Moal     2017-06-07  1651  	if (dmz_is_offline(zone) ||
-3b1a94c88b798d Damien Le Moal     2017-06-07  1652  	    dmz_is_readonly(zone) ||
-3b1a94c88b798d Damien Le Moal     2017-06-07  1653  	    dmz_is_rnd(zone))
-3b1a94c88b798d Damien Le Moal     2017-06-07  1654  		return 0;
-3b1a94c88b798d Damien Le Moal     2017-06-07  1655  
-3b1a94c88b798d Damien Le Moal     2017-06-07  1656  	if (!dmz_is_empty(zone) || dmz_seq_write_err(zone)) {
-8f22272af7a727 Hannes Reinecke    2020-06-02  1657  		struct dmz_dev *dev = zone->dev;
-3b1a94c88b798d Damien Le Moal     2017-06-07  1658  
-6c1b1da58f8c7a Ajay Joshi         2019-10-27  1659  		ret = blkdev_zone_mgmt(dev->bdev, REQ_OP_ZONE_RESET,
-3b1a94c88b798d Damien Le Moal     2017-06-07  1660  				       dmz_start_sect(zmd, zone),
-c4d4977392621f Johannes Thumshirn 2024-01-23 @1661  				       zmd->zone_nr_sectors, GFP_KERNEL);
-3b1a94c88b798d Damien Le Moal     2017-06-07  1662  		if (ret) {
-3b1a94c88b798d Damien Le Moal     2017-06-07  1663  			dmz_dev_err(dev, "Reset zone %u failed %d",
-b71228739851a9 Hannes Reinecke    2020-05-11  1664  				    zone->id, ret);
-3b1a94c88b798d Damien Le Moal     2017-06-07  1665  			return ret;
-3b1a94c88b798d Damien Le Moal     2017-06-07  1666  		}
-3b1a94c88b798d Damien Le Moal     2017-06-07  1667  	}
-3b1a94c88b798d Damien Le Moal     2017-06-07  1668  
-3b1a94c88b798d Damien Le Moal     2017-06-07  1669  	/* Clear write error bit and rewind write pointer position */
-3b1a94c88b798d Damien Le Moal     2017-06-07  1670  	clear_bit(DMZ_SEQ_WRITE_ERR, &zone->flags);
-3b1a94c88b798d Damien Le Moal     2017-06-07  1671  	zone->wp_block = 0;
-3b1a94c88b798d Damien Le Moal     2017-06-07  1672  
-3b1a94c88b798d Damien Le Moal     2017-06-07  1673  	return 0;
-3b1a94c88b798d Damien Le Moal     2017-06-07  1674  }
-3b1a94c88b798d Damien Le Moal     2017-06-07  1675  
+On 2024/1/27 08:32, Linus Torvalds wrote:
+> On Fri, 26 Jan 2024 at 13:56, Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> On 2024/1/27 08:21, Linus Torvalds wrote:
+>>>
+>>> Allocation lifetime problems?
+>>
+>> Could be, thus it may be better to output the flags of the first page
+>> for tree-checker.
+>
+> Note that the fact that it magically went away certainly implies that
+> it never "really" existed, and that something was using a pointer or
+> similar.
+>
+> IOW, this is not some IO that got scribbled over, or a cache that got
+> corrupted. If it had been real corruption, I would have expected that
+> it would have stayed around in memory.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Yep, thus it makes sense to show the page status of an eb.
+
+It could be some race that the eb pages are not properly hold, thus its
+content changed unexpectedly.
+
+Thanks,
+Qu
+
+>
+>                   Linus
+>
 
