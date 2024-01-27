@@ -1,94 +1,88 @@
-Return-Path: <linux-btrfs+bounces-1842-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1843-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D9183EE1B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 16:55:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8529883EF49
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 18:56:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 975F81F22A0A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 15:55:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5FAD1C21739
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 17:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82A4A2941E;
-	Sat, 27 Jan 2024 15:55:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2210D2D610;
+	Sat, 27 Jan 2024 17:56:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aveT/YBj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iIMdEoZX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BDB225764
-	for <linux-btrfs@vger.kernel.org>; Sat, 27 Jan 2024 15:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E4A025777;
+	Sat, 27 Jan 2024 17:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706370930; cv=none; b=IfUZPlFt6ll10rjo9KRcew3DQVcxP9Sb55Z+IsYA6PZe1VSisKFSlGK/RM04I0xyt9QYxhpHhun+KR5I6RCjOTZtmxpOu/FN55q7Hmco17de87ygbBxykeL81Lw7opw8QqjV8+NcdR3cPU/euR4DyzSJEdh+mdnXUXONkiboZVY=
+	t=1706378203; cv=none; b=lAk0vhmZMWQvZDYNExgI8UODREJ/T0xIuV6Jy+r3TqM+GCnH4sja25X/My0dLzxxY2SXg0VFpQp+Q7qIAMTPP1ed0YKgKovTcPK/kQXsaDejT1zTibfWKkrxGK7m8w0FDLZGHd5VhJ92r487c9YkpQqgHjHxN5hBO5ilUUxfMtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706370930; c=relaxed/simple;
-	bh=ptCX21hK7FKJBjpCKt0RRHlMj3O8Zof3shHyPFrxqEw=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=sFr1cauX0Xo6bzaWQtB6Vq2yTmfxX0UM96zCXIP/XhGFXCfHRE3QSkTD6HdRXw+6ODQu9we2CFvsgmlV8NUbYrOvANUjQO/K/K/EAkRuT+eVutPg8Lqw+IRphTQdMzbaGLcLnvuSFBhPbEbEHsYMY0c2V+xb52xr4UKfH3m4f6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aveT/YBj; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33ade380b9fso1991077f8f.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 27 Jan 2024 07:55:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706370927; x=1706975727; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4zqV+41/hyRvoZyNtE7zvH1L7Se/TH+Zwi2XJes1hw4=;
-        b=aveT/YBjrixpUak//5QVKo7gKdl25p5rNGk8Z+g7Q+tZZgZxCM9LFclXQy3F2Ra6Mq
-         ige/ArVQ6RTO5lw7YhTTFT4zW1xuRQ78CoZKV3HDxuOuHpz//8GQ2D1DN55Lny96Vhu1
-         eBLwDHWxG5boz1nPJcs6E3ihMI3ebgfnvWcNgsK/CckVkDDlEDawy0+ptdNaFYhvK+ej
-         TE9g4Ov/OaoLkyUuuqGGS9vZeUeyjEhhdqltkXjc5yNcHyjDUOg8xZhYW/hlMg9LqW0R
-         phm+x3fCBYoZO7ifrWPgsWTh1JWF9+SPpECcfUBUOapMeZHNH+ngk3dEL+rMZ8zKty/+
-         wrrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706370927; x=1706975727;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4zqV+41/hyRvoZyNtE7zvH1L7Se/TH+Zwi2XJes1hw4=;
-        b=oNuhRZ3omqFlV8TxjXXH5RnYMorT57tYsOAY/U+0TBgSWz11kBGj/8bQpcSJZUlYWr
-         fHtA+AlPWhTAzyHO5jIxjRpN7Yr+JAuwxAGfiOBUNilF4cZMWT/0blKcOcoQCwv8iHMl
-         ezMPbG5/CxtpvqvS8cBO0QzJOgw5jfWz3pFvylw9I95Jk9kKFiWerTIqpPfBI49SDoiP
-         uTdXlHbyMg+Le/lcB3kxXOxO+138Bb/+qwPOeHrrl92cY+dCo3DDiAhP3fyQitWaxOwp
-         h64Q41Dq04uGlFRN51W5I/EVuHcjsBL+e3vJHMteQQ0wneJmIb1uoe1m2PRYr2HYn9+T
-         IcRw==
-X-Gm-Message-State: AOJu0YwX+r7fCF0OPepbQncQEaxm0tgRcpHGA8o7eainGJY0oO1QIdko
-	wmXo0lbJ658t6bhx3cg92s+iYz1nKWFbBAN6Ho1uIVWFYwGa8H1MsmrVlnHmfZw7sj8RDLTd9sn
-	UB5ubXcqnvuxexVoQbmQNrqKEsbEPzAja0Wc=
-X-Google-Smtp-Source: AGHT+IFy3JQkfwdKLnX2y/SgM7sSAQ0UDBZOhOFcspVbienNu0JJaTTFV+FxvGTHqhItrX2uyV9858o2Bd9duWP92EM=
-X-Received: by 2002:adf:f783:0:b0:337:bec0:d5b7 with SMTP id
- q3-20020adff783000000b00337bec0d5b7mr924735wrp.160.1706370926875; Sat, 27 Jan
- 2024 07:55:26 -0800 (PST)
+	s=arc-20240116; t=1706378203; c=relaxed/simple;
+	bh=Mi6FZsJ7oJzO3j0KuyqojMy6sRZJZhWvGhDRKOSX3hQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LGSWGd7VP1OYN6SSqnto6rTibp1aH3mwigDa3JjQIihgBJ5nEKfCzDLr0BupM6D8PvMRy1o5gcqKDpsH+oWuNhcvEAqdkSes4JVFV2+YSFhSji4lQnX1kAbHJ3pWtTxsQeCagB8avZzmXwrVAzXlFf56NZn/z5YTHFsBquxaZwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iIMdEoZX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E85A3C433F1;
+	Sat, 27 Jan 2024 17:56:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706378202;
+	bh=Mi6FZsJ7oJzO3j0KuyqojMy6sRZJZhWvGhDRKOSX3hQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=iIMdEoZXpC/fajwchqaJbw1eGXkK434rb7QZ74hbrOsANUGE8zwk0hBnXiNcuOz8y
+	 v3JGClKDd8dBLYYrttEkdRKWb09TLaL+XYMN6yR88MdOMI1sRfj4ushYeKGh1xOq3a
+	 ory0EuBY2jBbrmNddOvlQpz0nfOpdnj5bCft/h7oXaraNC6m8WK5SMdxYCoNGPfTPi
+	 NQdrg8UEF4MWpnY31DTfZZJ3TENI/yslf7MNS4gd5fwsegVkl9+XS4x+p0Tp44R/r5
+	 1w/wE/2c6YPmDDs8bz83bzAKVD5KeCYwhWOofTWVxC0Fe8ERhnNfm4ZLqQkLchs1Yf
+	 3usiW/kVXdtNg==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Cc: stable@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH 0/4 for 6.1 stable]
+Date: Sat, 27 Jan 2024 17:56:30 +0000
+Message-Id: <cover.1706377319.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: pk <pkoroau@gmail.com>
-Date: Sat, 27 Jan 2024 16:55:15 +0100
-Message-ID: <CAMNwjEJ-4ecq-sA7610CH4N34ft3j0uYivYteSA6GKFL5A30zA@mail.gmail.com>
-Subject: send / receive handling of I/O errors
-To: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello from a Debian user. I ran this, while decommissioning an SSD with many
-broken sectors.
+From: Filipe Manana <fdmanana@suse.com>
 
-    btrfs send /ssd/subvolume_with_broken_files  |  btrfs receive /dest
+Here follows the backport of some directory related fixes for the stable
+6.1 tree. I tested these on top of 6.1.75.
 
-- btrfs send stopped at I/O error.
-- I was left with a draft subvolume, with two empty subdirectories, whose names
-  were auto-generated identifiers.
+These were recently requested by a user for 5.15 stable:
 
-I know that oldstable (5.10.1) is ancient, but I cannot find a mention of these
-on the manpage and changelogs, so I thought they might apply to the current
-version.
+   https://lore.kernel.org/linux-btrfs/20240124225522.GA2614102@lxhi-087/
 
-- btrfs send: What about an option to skip files on error and print non-fatal
-  warnings?
-- btrfs receive: Is it intentional that it leaves a draft subvolume when the
-  stream EOF's unexpectedly?
+This request is to backport the same patches to 6.1, while the request
+for 5.15 stabe is at:
+
+   https://lore.kernel.org/linux-btrfs/cover.1706183427.git.fdmanana@suse.com/
+
+Filipe Manana (4):
+  btrfs: fix infinite directory reads
+  btrfs: set last dir index to the current last index when opening dir
+  btrfs: refresh dir last index during a rewinddir(3) call
+  btrfs: fix race between reading a directory and adding entries to it
+
+ fs/btrfs/ctree.h         |   1 +
+ fs/btrfs/delayed-inode.c |   5 +-
+ fs/btrfs/delayed-inode.h |   1 +
+ fs/btrfs/inode.c         | 150 +++++++++++++++++++++++++--------------
+ 4 files changed, 102 insertions(+), 55 deletions(-)
+
+-- 
+2.40.1
+
 
