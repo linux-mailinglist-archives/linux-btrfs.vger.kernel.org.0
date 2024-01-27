@@ -1,112 +1,248 @@
-Return-Path: <linux-btrfs+bounces-1855-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1856-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C9C883EF74
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 19:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6970883F003
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 21:44:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD20928403A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 18:19:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20C40283ECD
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 20:44:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2651C2E40B;
-	Sat, 27 Jan 2024 18:19:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F398E17BA3;
+	Sat, 27 Jan 2024 20:44:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NmpFFT0h"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="S7SaeCJ3";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="S7SaeCJ3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B7362D60B;
-	Sat, 27 Jan 2024 18:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63CF14AAE;
+	Sat, 27 Jan 2024 20:44:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706379568; cv=none; b=cJvo+7bWz6BxHmys/mrNJNvMU6/73dAHN/qX3P4xem+0otbBstVIvuRQaM9h2SdMwnvfSsb1aAqYe69wO021PIzspWi8MtMp+e/K8FmeKKsgL33/zETeCTROx/xSfJkOgVQc3LgJOOTtHZJU1tST9vG3LzL2iWno41SG12CTtig=
+	t=1706388286; cv=none; b=WzH3rpwq8QVwhReJl2pVLpiEe7MIJ71wNb9fFcgY0fK685yuft0xy37KvhPG6mYbZM5QfZ9oRQoby9TxKuTATS9Dz/kKfTcru/Lig9wgEptks7hZfw/GuB4UizmBTaxWAByikj8wx+8P6kAU/+FdF4Ei9Rr6DG4Rhoyffjv7fck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706379568; c=relaxed/simple;
-	bh=DKIOW5L12aovtX3SolJxO2bnwk4o54VSLredvKyOm0w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HphNkktbw8d+GilfT1Zn9KUbXBGAUyZ5ofaxVguaeeGsipyioEjDeRivsbBgodYO9Q6kSpLkpEa1H/NYGtXyQO/txC8IbrMUgBFHj3KT1RJclZh5iaAabpIbm0gY+03IAWJwsurx8NncQWC4/aLQUcYfJoEO+quOYXpxx2iYVYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NmpFFT0h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0AC6C433F1;
-	Sat, 27 Jan 2024 18:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706379567;
-	bh=DKIOW5L12aovtX3SolJxO2bnwk4o54VSLredvKyOm0w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=NmpFFT0hc+fJJ2Af1RykMTP+vyOdre0XqIH3tdHdOaWTtHAu37GhwfI9/wV4YgNKC
-	 mtQtCopObkJk11ZqQGrOZMMmsXHPT4hg83/6c0MDDNkdSgUslOlzJ2TtuNh4h+XS+r
-	 wvxy8R1+LJFA2xQ8ofZmgjSxuRtv+cEJ4dk4As/3nIfcTJbBQdFlEqnIT0Vv6l82jt
-	 waDJsf+cJDnBJaafEahERbFsUdW+dylXe0Ny4ehbmyvK+/4rLoqVoXXXTb8q4dl5Ha
-	 /8Po8MmIBe6pTBaPm3cg8RzjbpcJ4v6JUeEFmvWF5db2bee4OwFjOtkmR6qoj1+nfI
-	 JnGs+WWQzuGYw==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a28a6cef709so147634166b.1;
-        Sat, 27 Jan 2024 10:19:27 -0800 (PST)
-X-Gm-Message-State: AOJu0Yzc6S3fE5N7OmxxNX0VqtZJaoQU5SV7PLkBTBxIW36IRQFjW5YZ
-	v+gIuPPf9X3vSpHlW/CeiBC+Hn8PjhukrpGvyV3QTrUO3V9fKlMvmrnDwLr6nYF02W0iQMijyK4
-	1AYRHsIaNM6c8Dnc6ZfRcFo6Mgxo=
-X-Google-Smtp-Source: AGHT+IHvaXjpVp8e3c6wWSKRu7HwHihUffsa4KCOetO2QBBDTmn+53Fgf4pTCYh1kAXaUmTGlGcaSBPhv4VtCCaBXbk=
-X-Received: by 2002:a17:906:390d:b0:a27:be67:1743 with SMTP id
- f13-20020a170906390d00b00a27be671743mr1401686eje.40.1706379566232; Sat, 27
- Jan 2024 10:19:26 -0800 (PST)
+	s=arc-20240116; t=1706388286; c=relaxed/simple;
+	bh=et05MBeBLjOGvTD4CdjRQuT9lahPDzzoReNVExkfhLg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Cw1y/9s+TZ7q0R5yV2RRxOkc0vesANyV54OtdjSufEFTB5bOr2aSyf6wzD6t0eK7UqTCCPEA2Y4LAuhIFkOGObf50gK2TqkoSyhxMtrSm4l0aUZ7DzYTlr7a8TRTZ/FGwPVbO3XWZf9Qp4/v+LVbwrOYTAAebGplCF9ys669+z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=S7SaeCJ3; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=S7SaeCJ3; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 06AD221E77;
+	Sat, 27 Jan 2024 20:44:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706388276; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=3+Wnnwt+b1edc5CO4paTxNcGAJPoMyZ5f+/EzivmTZQ=;
+	b=S7SaeCJ3VWG66IRdkm+gurQz0KOZTJSAogt7IbcW8Ahmkf8ARZcODU3zkDtRn6RIL11B7y
+	M7JIOKl/+rNk/YYaVG98DMlNUpEnqn5oQWmB2f87s/DsikqGkD0kSZucOv7flR49qa1ogA
+	MLUcRTzGXOhTt09YSCZXnJYRYuKovac=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706388276; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=3+Wnnwt+b1edc5CO4paTxNcGAJPoMyZ5f+/EzivmTZQ=;
+	b=S7SaeCJ3VWG66IRdkm+gurQz0KOZTJSAogt7IbcW8Ahmkf8ARZcODU3zkDtRn6RIL11B7y
+	M7JIOKl/+rNk/YYaVG98DMlNUpEnqn5oQWmB2f87s/DsikqGkD0kSZucOv7flR49qa1ogA
+	MLUcRTzGXOhTt09YSCZXnJYRYuKovac=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F27E81329F;
+	Sat, 27 Jan 2024 20:44:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id UXwhLDJrtWVzTwAAn2gu4w
+	(envelope-from <wqu@suse.com>); Sat, 27 Jan 2024 20:44:34 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: [PATCH v2] fstests: btrfs: verify the read behavior of compressed inline extent
+Date: Sun, 28 Jan 2024 07:14:17 +1030
+Message-ID: <20240127204417.11880-1-wqu@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1706183427.git.fdmanana@suse.com> <2024012633-retold-avid-8113@gregkh>
- <CAL3q7H5ZXmN32iYx9LjMh7arcp+tyLdn1zDHZCT+8hGhMfAA9A@mail.gmail.com>
-In-Reply-To: <CAL3q7H5ZXmN32iYx9LjMh7arcp+tyLdn1zDHZCT+8hGhMfAA9A@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sat, 27 Jan 2024 18:18:49 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4xi0t1QZ1JTGxvMSPLFpK7YiN_=ui9XDe8qnqjpUhgnw@mail.gmail.com>
-Message-ID: <CAL3q7H4xi0t1QZ1JTGxvMSPLFpK7YiN_=ui9XDe8qnqjpUhgnw@mail.gmail.com>
-Subject: Re: [PATCH 0/4 for 5.15 stable] btrfs: some directory fixes for
- stable 5.15
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: linux-btrfs@vger.kernel.org, erosca@de.adit-jv.com, 
-	Maksim.Paimushkin@se.bosch.com, Matthias.Thomae@de.bosch.com, 
-	Sebastian.Unger@bosch.com, Dirk.Behme@de.bosch.com, Eugeniu.Rosca@bosch.com, 
-	wqu@suse.com, dsterba@suse.com, stable@vger.kernel.org, 
-	Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: 0.70
+X-Spamd-Result: default: False [0.70 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_DN_NONE(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-On Sat, Jan 27, 2024 at 5:58=E2=80=AFPM Filipe Manana <fdmanana@kernel.org>=
- wrote:
->
-> On Sat, Jan 27, 2024 at 1:15=E2=80=AFAM Greg KH <gregkh@linuxfoundation.o=
-rg> wrote:
-> >
-> > On Thu, Jan 25, 2024 at 11:59:34AM +0000, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > Here follows the backport of some directory related fixes for the sta=
-ble
-> > > 5.15 tree. I tested these on top of 5.15.147.
-> >
-> > As these are not also in 6.1.y, we can't take these as you do not want
-> > to upgrade and have regressions, right?
-> >
-> > If you can provide a working set of 6.1.y changes for these, we will be
-> > glad to queue them all up, thanks.
->
-> Ok, here the version for 6.1, tested against 6.1.75:
->
-> https://lore.kernel.org/linux-btrfs/cover.1706377319.git.fdmanana@suse.co=
-m/
+[BUG]
+There is a report about reading a zstd compressed inline file extent
+would lead to either a VM_BUG_ON() crash, or lead to incorrect file
+content.
 
-Sorry, there's a change I forgot to git add and amend to patch 1/4, so
-fixed in a v2 at:
+[CAUSE]
+The root cause is a incorrect memcpy_to_page() call, which uses
+incorrect page offset, and can lead to either the VM_BUG_ON() as we may
+write beyond the page boundary, or writes into the incorrect offset of
+the page.
 
-https://lore.kernel.org/linux-btrfs/cover.1706379057.git.fdmanana@suse.com/
+[TEST CASE]
+The test case would:
 
-Thanks.
->
-> Thanks.
->
-> >
-> > greg k-h
+- Mount with the specified compress algorithm
+- Create a 4K file
+- Verify the 4K file is all inlined and compressed
+- Verify the content of the initial write
+- Cycle mount to drop all the page cache
+- Verify the content of the file again
+- Unmount and fsck the fs
+
+This workload would be applied to all supported compression algorithms.
+And it can catch the problem correctly by triggering VM_BUG_ON(), as our
+workload would result decompressed extent size to be 4K, and would
+trigger the VM_BUG_ON() 100%.
+And with the revert or the new fix, the test case can pass safely.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tests/btrfs/310     | 83 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/310.out |  2 ++
+ 2 files changed, 85 insertions(+)
+ create mode 100755 tests/btrfs/310
+ create mode 100644 tests/btrfs/310.out
+---
+Changelog:
+v2:
+- Add a comment on why a "sync" is needed
+- Update the failure case comment
+  The specific design of the inline extent size is ensured to trigger
+  VM_BUG_ON(), thus remove the data corruption case.
+
+diff --git a/tests/btrfs/310 b/tests/btrfs/310
+new file mode 100755
+index 00000000..507485a4
+--- /dev/null
++++ b/tests/btrfs/310
+@@ -0,0 +1,83 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 310
++#
++# Make sure reading on an compressed inline extent is behaving correctly
++#
++. ./common/preamble
++_begin_fstest auto quick compress
++
++# Import common functions.
++# . ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_require_scratch
++
++# This test require inlined compressed extents creation, and all the writes
++# are designed for 4K sector size.
++_require_btrfs_inline_extents_creation
++_require_btrfs_support_sectorsize 4096
++
++_fixed_by_kernel_commit e01a83e12604 \
++	"Revert \"btrfs: zstd: fix and simplify the inline extent decompression\""
++
++# The correct md5 for the correct 4K file filled with "0xcd"
++md5sum_correct="5fed275e7617a806f94c173746a2a723"
++
++workload()
++{
++	local algo="$1"
++
++	echo "=== Testing compression algorithm ${algo} ===" >> $seqres.full
++	_scratch_mkfs >> $seqres.full
++	_scratch_mount -o compress=${algo}
++
++	_pwrite_byte 0xcd 0 4k "$SCRATCH_MNT/inline_file" > /dev/null
++	result=$(_md5_checksum "$SCRATCH_MNT/inline_file")
++	echo "after initial write, md5sum=${result}" >> $seqres.full
++	if [ "$result" != "$md5sum_correct" ]; then
++		_fail "initial write results incorrect content for \"$algo\""
++	fi
++	# Writeback data to get correct fiemap result, or we got FIEMAP_DEALLOC
++	# without compression/inline flags.
++	sync
++
++	$XFS_IO_PROG -c "fiemap -v" $SCRATCH_MNT/inline_file | tail -n 1 > $tmp.fiemap
++	cat $tmp.fiemap >> $seqres.full
++	# Make sure we got an inlined compressed file extent.
++	# 0x200 means inlined, 0x100 means not block aligned, 0x8 means encoded
++	# (compressed in this case), and 0x1 means the last extent.
++	if ! grep -q "0x309" $tmp.fiemap; then
++		rm -f -- $tmp.fiemap
++		_notrun "No compressed inline extent created, maybe subpage?"
++	fi
++	rm -f -- $tmp.fiemap
++
++	# Unmount to clear the page cache.
++	_scratch_cycle_mount
++
++	# For v6.8-rc1 without the revert or the newer fix, this would
++	# lead to VM_BUG_ON() thus crash
++	result=$(_md5_checksum "$SCRATCH_MNT/inline_file")
++	echo "after cycle mount, md5sum=${result}" >> $seqres.full
++	if [ "$result" != "$md5sum_correct" ]; then
++		_fail "read for compressed inline extent failed for \"$algo\""
++	fi
++	_scratch_unmount
++	_check_scratch_fs
++}
++
++algo_list=($(_btrfs_compression_algos))
++for algo in ${algo_list[@]}; do
++	workload $algo
++done
++
++echo "Silence is golden"
++
++status=0
++exit
+diff --git a/tests/btrfs/310.out b/tests/btrfs/310.out
+new file mode 100644
+index 00000000..7b9eaf78
+--- /dev/null
++++ b/tests/btrfs/310.out
+@@ -0,0 +1,2 @@
++QA output created by 310
++Silence is golden
+-- 
+2.42.0
+
 
