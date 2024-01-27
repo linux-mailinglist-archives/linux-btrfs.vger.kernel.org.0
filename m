@@ -1,208 +1,100 @@
-Return-Path: <linux-btrfs+bounces-1847-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1848-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC89283EF51
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 18:57:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3628283EF58
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 18:59:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 734B528182B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 17:57:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68BF31C22006
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 17:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50FB2E648;
-	Sat, 27 Jan 2024 17:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697FC2D61A;
+	Sat, 27 Jan 2024 17:59:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qtrMELrh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CU+lCf2u"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD89D2D058;
-	Sat, 27 Jan 2024 17:56:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91D272D602;
+	Sat, 27 Jan 2024 17:59:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706378210; cv=none; b=hLxc3R3dcuVYeeSGYo2166r0PiG83zMnq6XV7AIS0IlClKtKurU8AQ2V5Qe+jNgGJ1ha5SKtAjqIR6AosooBu8mY+S4o6z2la5yE9DpnArMG1ZZhBmCOn2IV2VJbQ9y/QuQrej68n2VbjNwfnaJ7dJb53YoV/W5SPVpjO9LRx74=
+	t=1706378371; cv=none; b=FGqnZuk9TiiQaVeRa4MGuTApNb6GhiFtIU5WCrelQA/Y46HY3+FX1U+tPe2cGSqbaeOnhlH+Gq3lVZ6zKo0PM31E21PX9h5OhDxyEaOl6a1SdXP0N/Jhc5PmDvqg2V9bct0WAR9aR4q+/oHf1Cmpm5X7em+J6DzbjcO101NfuMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706378210; c=relaxed/simple;
-	bh=Eg0K/trAQNjpDZxd/Sr3UzgkemGD8ockThlKdquQLMg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pNySFXF4hFWqGAQGhYfb9uT5l0Vj5AczqPmMNNz3zWN0zcosKOIvAwRd3Zed83biv0jBO2L/OWFkMSszPGUxSFg7de+i/bPl9DyIN3g1xaaAweClJztWFGfUMxBUSygTcWVf2jJOCTdKhFBzgjo0PvE2KcHktSkjYK7NV+P058M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qtrMELrh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1595AC433F1;
-	Sat, 27 Jan 2024 17:56:47 +0000 (UTC)
+	s=arc-20240116; t=1706378371; c=relaxed/simple;
+	bh=gvQC5KlWY5DmvbXMzH+mPH2Ftf5UIF36bObNOQK4mHo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XAdByOP5QYDBbfSski7nvnZA/I3Am8upoXaBKoj2Kc9LAl89dUbJs12zKObCYdc3vG1NypFLUJnusLzM/Cx15wSKJzmxKaoXDfJp/ZUwc5AOirSfRcS8nxu0vcqIxeBeyDgHrVRjWW8vg+oR9HIvJL6oAWhFJDhswyX7H/Kakck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CU+lCf2u; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6706C433A6;
+	Sat, 27 Jan 2024 17:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706378209;
-	bh=Eg0K/trAQNjpDZxd/Sr3UzgkemGD8ockThlKdquQLMg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qtrMELrh1fqEjOBrIMpOQt/jqAicOvL3oERpxGYPqykNeC4PwBee7ikr77OjjJIWm
-	 AmUvPBZKtNWESJ8huaTl0Rx3upQSdSH/+A9xvYwQj6hE4Cr+6NC8uZegQljEPWo64Y
-	 6/On6jXvr27Z65nqup/E390vTlCkUhJhEWAhfQ8wWUdUkq01z/FvTmfRk+u1RJ2DY/
-	 XxDZ8uyIT3cpSo11CGCaG5RlvoYkDaeN+c3SR9o+iBERUJFW4QNs3JZuFlUPjv9YLM
-	 BvWUA43Mqlc22bkkU/gFYclJB6jtqoWCIsX0woOZiWCzspM9pNpdg/NIXzXS0XuWHo
-	 /ryo8xMnthDAQ==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>,
-	ken <ken@bllue.org>,
-	syzbot+d13490c82ad5353c779d@syzkaller.appspotmail.com,
-	David Sterba <dsterba@suse.com>
-Subject: [PATCH 4/4 for 6.1 stable] btrfs: fix race between reading a directory and adding entries to it
-Date: Sat, 27 Jan 2024 17:56:34 +0000
-Message-Id: <665b7f285abafaadaed47914cae1842d5bc9d424.1706377319.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1706377319.git.fdmanana@suse.com>
-References: <cover.1706377319.git.fdmanana@suse.com>
+	s=k20201202; t=1706378370;
+	bh=gvQC5KlWY5DmvbXMzH+mPH2Ftf5UIF36bObNOQK4mHo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=CU+lCf2u9jlOmLs1xTxYvaX+tAESFwr75X+Djz4dK2WHE8XQ9vnBR4Er33GdiJuos
+	 VfpfBVok9qF1ybu/J8MFmcKLUeLQOxEuPr7VG8zcQonji+HLvC0pIZvRI9MGDVvgmO
+	 KifNRPOhNYSqD2Uv4kg6NwSqifAkFFYjC/U5Mh3nwJrqZ0lhuu25+PNS0C2UP8nM8i
+	 INKOkh59p/IrcR+x3XWrMaNH8tGumYtuGMzHJDNt45O2DQQnc8SRBiU+h741WmX3Ih
+	 1ApLduc/3W8K1LuLE6Hk7VomFb0/gSPydjUrh/ExkLq825ZvvdX6AcCGlFVSHHN9V5
+	 DesgyC7s6crXQ==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5102bbe87afso704876e87.1;
+        Sat, 27 Jan 2024 09:59:30 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy6lS8K1afkFQOawCJSYew87fM1VAc4gvzH4j/Y5Ct//hbo7KpU
+	B/5p1pYljJx5sIIXrTb6CAJsTfMv+rPXka9Yau3OqkSkz9F0/dhVzEDpfmJ3DmyYpreBksgUxhS
+	6ryf/sxkdUcRiw4CRq77OjddrU2Q=
+X-Google-Smtp-Source: AGHT+IF6DavKcKdFodXfqQ5yl/YfBG+5xwTYev1b1o76KfSUC6m+vJyrXUvqmQZWHYc+BZ1FIo5IxD7WJVqVwXriqbM=
+X-Received: by 2002:a05:6512:2256:b0:510:6e7:8e43 with SMTP id
+ i22-20020a056512225600b0051006e78e43mr1327762lfu.49.1706378368928; Sat, 27
+ Jan 2024 09:59:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1706183427.git.fdmanana@suse.com> <2024012633-retold-avid-8113@gregkh>
+In-Reply-To: <2024012633-retold-avid-8113@gregkh>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Sat, 27 Jan 2024 17:58:52 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5ZXmN32iYx9LjMh7arcp+tyLdn1zDHZCT+8hGhMfAA9A@mail.gmail.com>
+Message-ID: <CAL3q7H5ZXmN32iYx9LjMh7arcp+tyLdn1zDHZCT+8hGhMfAA9A@mail.gmail.com>
+Subject: Re: [PATCH 0/4 for 5.15 stable] btrfs: some directory fixes for
+ stable 5.15
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: linux-btrfs@vger.kernel.org, erosca@de.adit-jv.com, 
+	Maksim.Paimushkin@se.bosch.com, Matthias.Thomae@de.bosch.com, 
+	Sebastian.Unger@bosch.com, Dirk.Behme@de.bosch.com, Eugeniu.Rosca@bosch.com, 
+	wqu@suse.com, dsterba@suse.com, stable@vger.kernel.org, 
+	Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Filipe Manana <fdmanana@suse.com>
+On Sat, Jan 27, 2024 at 1:15=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+>
+> On Thu, Jan 25, 2024 at 11:59:34AM +0000, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > Here follows the backport of some directory related fixes for the stabl=
+e
+> > 5.15 tree. I tested these on top of 5.15.147.
+>
+> As these are not also in 6.1.y, we can't take these as you do not want
+> to upgrade and have regressions, right?
+>
+> If you can provide a working set of 6.1.y changes for these, we will be
+> glad to queue them all up, thanks.
 
-commit 8e7f82deb0c0386a03b62e30082574347f8b57d5 upstream.
+Ok, here the version for 6.1, tested against 6.1.75:
 
-When opening a directory (opendir(3)) or rewinding it (rewinddir(3)), we
-are not holding the directory's inode locked, and this can result in later
-attempting to add two entries to the directory with the same index number,
-resulting in a transaction abort, with -EEXIST (-17), when inserting the
-second delayed dir index. This results in a trace like the following:
+https://lore.kernel.org/linux-btrfs/cover.1706377319.git.fdmanana@suse.com/
 
-  Sep 11 22:34:59 myhostname kernel: BTRFS error (device dm-3): err add delayed dir index item(name: cockroach-stderr.log) into the insertion tree of the delayed node(root id: 5, inode id: 4539217, errno: -17)
-  Sep 11 22:34:59 myhostname kernel: ------------[ cut here ]------------
-  Sep 11 22:34:59 myhostname kernel: kernel BUG at fs/btrfs/delayed-inode.c:1504!
-  Sep 11 22:34:59 myhostname kernel: invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
-  Sep 11 22:34:59 myhostname kernel: CPU: 0 PID: 7159 Comm: cockroach Not tainted 6.4.15-200.fc38.x86_64 #1
-  Sep 11 22:34:59 myhostname kernel: Hardware name: ASUS ESC500 G3/P9D WS, BIOS 2402 06/27/2018
-  Sep 11 22:34:59 myhostname kernel: RIP: 0010:btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel: Code: eb dd 48 (...)
-  Sep 11 22:34:59 myhostname kernel: RSP: 0000:ffffa9980e0fbb28 EFLAGS: 00010282
-  Sep 11 22:34:59 myhostname kernel: RAX: 0000000000000000 RBX: ffff8b10b8f4a3c0 RCX: 0000000000000000
-  Sep 11 22:34:59 myhostname kernel: RDX: 0000000000000000 RSI: ffff8b177ec21540 RDI: ffff8b177ec21540
-  Sep 11 22:34:59 myhostname kernel: RBP: ffff8b110cf80888 R08: 0000000000000000 R09: ffffa9980e0fb938
-  Sep 11 22:34:59 myhostname kernel: R10: 0000000000000003 R11: ffffffff86146508 R12: 0000000000000014
-  Sep 11 22:34:59 myhostname kernel: R13: ffff8b1131ae5b40 R14: ffff8b10b8f4a418 R15: 00000000ffffffef
-  Sep 11 22:34:59 myhostname kernel: FS:  00007fb14a7fe6c0(0000) GS:ffff8b177ec00000(0000) knlGS:0000000000000000
-  Sep 11 22:34:59 myhostname kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  Sep 11 22:34:59 myhostname kernel: CR2: 000000c00143d000 CR3: 00000001b3b4e002 CR4: 00000000001706f0
-  Sep 11 22:34:59 myhostname kernel: Call Trace:
-  Sep 11 22:34:59 myhostname kernel:  <TASK>
-  Sep 11 22:34:59 myhostname kernel:  ? die+0x36/0x90
-  Sep 11 22:34:59 myhostname kernel:  ? do_trap+0xda/0x100
-  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel:  ? do_error_trap+0x6a/0x90
-  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel:  ? exc_invalid_op+0x50/0x70
-  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel:  ? asm_exc_invalid_op+0x1a/0x20
-  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel:  btrfs_insert_dir_item+0x200/0x280
-  Sep 11 22:34:59 myhostname kernel:  btrfs_add_link+0xab/0x4f0
-  Sep 11 22:34:59 myhostname kernel:  ? ktime_get_real_ts64+0x47/0xe0
-  Sep 11 22:34:59 myhostname kernel:  btrfs_create_new_inode+0x7cd/0xa80
-  Sep 11 22:34:59 myhostname kernel:  btrfs_symlink+0x190/0x4d0
-  Sep 11 22:34:59 myhostname kernel:  ? schedule+0x5e/0xd0
-  Sep 11 22:34:59 myhostname kernel:  ? __d_lookup+0x7e/0xc0
-  Sep 11 22:34:59 myhostname kernel:  vfs_symlink+0x148/0x1e0
-  Sep 11 22:34:59 myhostname kernel:  do_symlinkat+0x130/0x140
-  Sep 11 22:34:59 myhostname kernel:  __x64_sys_symlinkat+0x3d/0x50
-  Sep 11 22:34:59 myhostname kernel:  do_syscall_64+0x5d/0x90
-  Sep 11 22:34:59 myhostname kernel:  ? syscall_exit_to_user_mode+0x2b/0x40
-  Sep 11 22:34:59 myhostname kernel:  ? do_syscall_64+0x6c/0x90
-  Sep 11 22:34:59 myhostname kernel:  entry_SYSCALL_64_after_hwframe+0x72/0xdc
+Thanks.
 
-The race leading to the problem happens like this:
-
-1) Directory inode X is loaded into memory, its ->index_cnt field is
-   initialized to (u64)-1 (at btrfs_alloc_inode());
-
-2) Task A is adding a new file to directory X, holding its vfs inode lock,
-   and calls btrfs_set_inode_index() to get an index number for the entry.
-
-   Because the inode's index_cnt field is set to (u64)-1 it calls
-   btrfs_inode_delayed_dir_index_count() which fails because no dir index
-   entries were added yet to the delayed inode and then it calls
-   btrfs_set_inode_index_count(). This functions finds the last dir index
-   key and then sets index_cnt to that index value + 1. It found that the
-   last index key has an offset of 100. However before it assigns a value
-   of 101 to index_cnt...
-
-3) Task B calls opendir(3), ending up at btrfs_opendir(), where the VFS
-   lock for inode X is not taken, so it calls btrfs_get_dir_last_index()
-   and sees index_cnt still with a value of (u64)-1. Because of that it
-   calls btrfs_inode_delayed_dir_index_count() which fails since no dir
-   index entries were added to the delayed inode yet, and then it also
-   calls btrfs_set_inode_index_count(). This also finds that the last
-   index key has an offset of 100, and before it assigns the value 101
-   to the index_cnt field of inode X...
-
-4) Task A assigns a value of 101 to index_cnt. And then the code flow
-   goes to btrfs_set_inode_index() where it increments index_cnt from
-   101 to 102. Task A then creates a delayed dir index entry with a
-   sequence number of 101 and adds it to the delayed inode;
-
-5) Task B assigns 101 to the index_cnt field of inode X;
-
-6) At some later point when someone tries to add a new entry to the
-   directory, btrfs_set_inode_index() will return 101 again and shortly
-   after an attempt to add another delayed dir index key with index
-   number 101 will fail with -EEXIST resulting in a transaction abort.
-
-Fix this by locking the inode at btrfs_get_dir_last_index(), which is only
-only used when opening a directory or attempting to lseek on it.
-
-Reported-by: ken <ken@bllue.org>
-Link: https://lore.kernel.org/linux-btrfs/CAE6xmH+Lp=Q=E61bU+v9eWX8gYfLvu6jLYxjxjFpo3zHVPR0EQ@mail.gmail.com/
-Reported-by: syzbot+d13490c82ad5353c779d@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/linux-btrfs/00000000000036e1290603e097e0@google.com/
-Fixes: 9b378f6ad48c ("btrfs: fix infinite directory reads")
-CC: stable@vger.kernel.org # 6.5+
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/inode.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index aeae04b5cef4..38f253a2d170 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6000,21 +6000,24 @@ static int btrfs_set_inode_index_count(struct btrfs_inode *inode)
- 
- static int btrfs_get_dir_last_index(struct btrfs_inode *dir, u64 *index)
- {
--	if (dir->index_cnt == (u64)-1) {
--		int ret;
-+	int ret = 0;
- 
-+	btrfs_inode_lock(&dir->vfs_inode, 0);
-+	if (dir->index_cnt == (u64)-1) {
- 		ret = btrfs_inode_delayed_dir_index_count(dir);
- 		if (ret) {
- 			ret = btrfs_set_inode_index_count(dir);
- 			if (ret)
--				return ret;
-+				goto out;
- 		}
- 	}
- 
- 	/* index_cnt is the index number of next new entry, so decrement it. */
- 	*index = dir->index_cnt - 1;
-+out:
-+	btrfs_inode_unlock(&dir->vfs_inode, 0);
- 
--	return 0;
-+	return ret;
- }
- 
- /*
--- 
-2.40.1
-
+>
+> greg k-h
 
