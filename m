@@ -1,110 +1,102 @@
-Return-Path: <linux-btrfs+bounces-1872-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1874-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5759883F9A2
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jan 2024 21:00:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0837383FA52
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jan 2024 23:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C3B71F23F6B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jan 2024 20:00:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A7C51C21714
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jan 2024 22:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F303C46B;
-	Sun, 28 Jan 2024 19:59:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="HLbacQqc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C633C6BA;
+	Sun, 28 Jan 2024 22:22:28 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E474C3BF
-	for <linux-btrfs@vger.kernel.org>; Sun, 28 Jan 2024 19:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75CF25773
+	for <linux-btrfs@vger.kernel.org>; Sun, 28 Jan 2024 22:22:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706471991; cv=none; b=RrEW7pns74xSKagGd33EfB1K8LOU1IWJyf/YTvqSqBlutA17ZjNvHw1F1QxsmvfKd7zJrlKW3lepCW73c8LUI3dD4OiQK36XlSVR2NcMMcmmA8hKr3ETjQhjz6rc/8SwLFw/MuodY/dPzorxgJyeRrpJX0gefoTjWBWyBKeen1E=
+	t=1706480548; cv=none; b=MYd91sYKNTkIGjlFf4G3EXli+ljU3v+vw2/cRY3au6qkdMENG0WjpssyHlIFDw/5fXrcR1JSMjrp78wKESOOU6A2AZ+0OGCcjhe7ZRHrs3DmTi8ljOvYh/OuajwwYm0z9HDHxdpteiWrM8tpFl0+2ttcjMclzAHdktzsbfehVMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706471991; c=relaxed/simple;
-	bh=RQPBgjqLxVYa9z7DAN4AMZv6aMuk7G/qW9fdGyDL5MM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nP97WNbhafldrAV6zFf6XkgmEsKJUo0zXFIKG2iUvexYR2MNuaaQOWgFLhccgC74GVhz3MZ8rw8WXy42edESQ52B3QzDPcGkFfWqc67iUQdY0kXCN3Nqmv8nxSKD8Y3X5MvQORfzbc/4INJW1jI34J1r+MnDLNF9irCWTfmqhgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=HLbacQqc; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cf1fd1cc5bso23368431fa.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 28 Jan 2024 11:59:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706471987; x=1707076787; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jvgl07qLmO97AnDOonOYaDY55AuzJRLfRUuCExUHbJw=;
-        b=HLbacQqcZ10CSzcNoAQ72MHpzZ8XS+RKCzZCY0k1uvjX4dMlOAAtiq8bBaGjJ3myvZ
-         Ae7OoytbX0x9shmBgYS0M0+eUvd5VhZwS+Y6nJeh0UE35ciQiouWptiORbIJ4b3JE+fM
-         tceLZ7v3lg3u3vDzHODtdrEJz5lZ0d+BqpZd4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706471987; x=1707076787;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jvgl07qLmO97AnDOonOYaDY55AuzJRLfRUuCExUHbJw=;
-        b=Ba82TiLDDVO4/1NdOPmYnke1n/v1fz0QEURhDsil0KUJxvyXoFzkpp1S/vMmcRwRp0
-         kBhfUpMt23nt1cvaxUXscO0ORT9J4jqwFU9z4E4tXSfEMSX8bpGoTY+7J4csGLGQeg5h
-         rvzVOEdtKWNOKylGoHdqg3SfeYjgKUiqCc4TkdNhKWsIEpag8p44NjZeTeCnIxM9vvF0
-         AVJySaNKnkr2P4iphI+fl+iMl3Si1bEGyFs45aqYZ+AyUjqdXI8wmk0EIWuubxrOkhUr
-         xRAUNYGkTZzoJMc1QP+ecCHOl/MXU8lDYriecumPKVGsAdsBKmylVxcsbE9Gn9pzsjUl
-         MQ8A==
-X-Gm-Message-State: AOJu0Yw7sb/+U1YxamzLWNo0XSjIjaECNV8xhiWExzOp3ZCS9HtSfG9E
-	9NBEVGYDPKflY9mLDyxm0xkllEXvGue1czqbRUAkJ5pWjERlzOqVVOacgH5Ge888H1ooOBY2YNd
-	Qbwo=
-X-Google-Smtp-Source: AGHT+IGWXt02+ym1EGpOeZFz4m0bbRqDeYoXLXy3j9baMEUWaYuR6q86eHYi0Ji/Zv3kPylsb0fd5A==
-X-Received: by 2002:a2e:9882:0:b0:2cf:3851:5fad with SMTP id b2-20020a2e9882000000b002cf38515fadmr3188194ljj.2.1706471987020;
-        Sun, 28 Jan 2024 11:59:47 -0800 (PST)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id v2-20020a2e9602000000b002cefb66ef4csm919246ljh.56.2024.01.28.11.59.46
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Jan 2024 11:59:46 -0800 (PST)
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cf1fd1cc5bso23368181fa.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 28 Jan 2024 11:59:46 -0800 (PST)
-X-Received: by 2002:a2e:994e:0:b0:2cf:1a11:ea87 with SMTP id
- r14-20020a2e994e000000b002cf1a11ea87mr3234050ljj.39.1706471985664; Sun, 28
- Jan 2024 11:59:45 -0800 (PST)
+	s=arc-20240116; t=1706480548; c=relaxed/simple;
+	bh=w+Isv3Nh2z6FjdDokf+f2FGQ9NAyfu3S12nMJKPy8MA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=mmQKM6UZpbiv1DlC1IEV+u6LX6nl/a9xVXRDN77VbcXZ4jxzkzUYayKR/ZcaywfdsgzeGwRmOPsDKMHb47tSMt+x1uZkdApEUb+VKwtcYCT6B/8s5vul7wKA5s9274YWlBO1G8CLbMqCfReccsZUkBfxIKMF/Kg9TrWyNEuMPv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-65-vnl-NSxrMcqYOJXJo4DcEw-1; Sun, 28 Jan 2024 22:22:18 +0000
+X-MC-Unique: vnl-NSxrMcqYOJXJo4DcEw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 28 Jan
+ 2024 22:21:54 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 28 Jan 2024 22:21:53 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Linus Torvalds' <torvalds@linux-foundation.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Netdev
+	<netdev@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, Andy Shevchenko
+	<andriy.shevchenko@linux.intel.com>, Andrew Morton
+	<akpm@linux-foundation.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Christoph Hellwig <hch@infradead.org>, Dan Carpenter
+	<dan.carpenter@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, "David
+ S . Miller" <davem@davemloft.net>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>
+Subject: RE: [PATCH next 10/11] block: Use a boolean expression instead of
+ max() on booleans
+Thread-Topic: [PATCH next 10/11] block: Use a boolean expression instead of
+ max() on booleans
+Thread-Index: AdpSITDgD70hEVnBTjm/gYoTnRBnpgAA0+uAAAR1AXA=
+Date: Sun, 28 Jan 2024 22:21:53 +0000
+Message-ID: <a756a7712dfe4d03a142520d4c46e7a3@AcuMS.aculab.com>
+References: <0ca26166dd2a4ff5a674b84704ff1517@AcuMS.aculab.com>
+ <b564df3f987e4371a445840df1f70561@AcuMS.aculab.com>
+ <CAHk-=whxYjLFhjov39N67ePb3qmCmxrhbVXEtydeadfao53P+A@mail.gmail.com>
+In-Reply-To: <CAHk-=whxYjLFhjov39N67ePb3qmCmxrhbVXEtydeadfao53P+A@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0ca26166dd2a4ff5a674b84704ff1517@AcuMS.aculab.com> <b564df3f987e4371a445840df1f70561@AcuMS.aculab.com>
-In-Reply-To: <b564df3f987e4371a445840df1f70561@AcuMS.aculab.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 28 Jan 2024 11:59:29 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whxYjLFhjov39N67ePb3qmCmxrhbVXEtydeadfao53P+A@mail.gmail.com>
-Message-ID: <CAHk-=whxYjLFhjov39N67ePb3qmCmxrhbVXEtydeadfao53P+A@mail.gmail.com>
-Subject: Re: [PATCH next 10/11] block: Use a boolean expression instead of
- max() on booleans
-To: David Laight <David.Laight@aculab.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Netdev <netdev@vger.kernel.org>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Christoph Hellwig <hch@infradead.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, "David S . Miller" <davem@davemloft.net>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Sun, 28 Jan 2024 at 11:36, David Laight <David.Laight@aculab.com> wrote:
->
-> However it generates:
-> error: comparison of constant =C3=A2=E2=82=AC=CB=9C0=C3=A2=E2=82=AC=E2=84=
-=A2 with boolean expression is always true [-Werror=3Dbool-compare]
-> inside the signedness check that max() does unless a '+ 0' is added.
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjggSmFudWFyeSAyMDI0IDE5OjU5DQo+IA0K
+PiBPbiBTdW4sIDI4IEphbiAyMDI0IGF0IDExOjM2LCBEYXZpZCBMYWlnaHQgPERhdmlkLkxhaWdo
+dEBhY3VsYWIuY29tPiB3cm90ZToNCj4gPg0KPiA+IEhvd2V2ZXIgaXQgZ2VuZXJhdGVzOg0KPiA+
+IGVycm9yOiBjb21wYXJpc29uIG9mIGNvbnN0YW50IMOi4oKsy5www6LigqzihKIgd2l0aCBib29s
+ZWFuIGV4cHJlc3Npb24gaXMgYWx3YXlzIHRydWUgWy1XZXJyb3I9Ym9vbC1jb21wYXJlXQ0KPiA+
+IGluc2lkZSB0aGUgc2lnbmVkbmVzcyBjaGVjayB0aGF0IG1heCgpIGRvZXMgdW5sZXNzIGEgJysg
+MCcgaXMgYWRkZWQuDQo+IA0KPiBQbGVhc2UgZml4IHlvdXIgbG9jYWxlLiBZb3UgaGF2ZSByYW5k
+b20gZ2FyYmFnZSBjaGFyYWN0ZXJzIHRoZXJlLA0KPiBwcmVzdW1hYmx5IGJlY2F1c2UgeW91IGhh
+dmUgc29tZSBpbmNvcnJlY3QgbG9jYWxlIHNldHRpbmcgc29tZXdoZXJlIGluDQo+IHlvdXIgdG9v
+bGNoYWluLg0KDQpIbW1tbSBibGFtZSBnY2MgOi0pDQpUaGUgZXJyb3IgbWVzc2FnZSBkaXNwbGF5
+cyBhcyAnMCcgYnV0IGlzIGUyOjgwOjk4IDMwIGUyOjgwOjk5DQpJIEhBVEUgVVRGLTgsIGl0IHdv
+dWxkbid0IGJlIGFzIGJhZCBpZiBpdCB3ZXJlIGEgYmlqZWN0aW9uLg0KDQpMZXRzIHNlZSBpZiBh
+ZGRpbmcgJ0xBTkc9QycgaW4gdGhlIHNoZWxsIHNjcmlwdCBJIHVzZSB0bw0KZG8ga2VybmVsIGJ1
+aWxkcyBpcyBlbm91Z2guDQoNCkkgYWxzbyBtYW5hZ2VkIHRvIHNlbmQgcGFydHMgMSB0byA2IHdp
+dGhvdXQgZGVsZXRpbmcgdGhlIFJFOg0KKEkgaGF2ZSB0byBjdXQmcGFzdGUgZnJvbSB3b3JkcGFk
+IGludG8gYSAncmVwbHktYWxsJyBvZiB0aGUgZmlyc3QNCm1lc3NhZ2UgSSBzZW5kLiBXb3JrIHVz
+ZXMgbWltZWNhc3QgYW5kIGl0IGhhcyBzdGFydGVkIGJvdW5jaW5nDQpteSBjb3B5IG9mIGV2ZXJ5
+IG1lc3NhZ2UgSSBzZW5kIHRvIHRoZSBsaXN0cy4pDQoNCk1heWJlIEkgc2hvdWxkIHN0YXJ0IHVz
+aW5nIHRlbG5ldCB0byBzZW5kIHJhdyBTTVRQIDotKQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJl
+ZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXlu
+ZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Please fix your locale. You have random garbage characters there,
-presumably because you have some incorrect locale setting somewhere in
-your toolchain.
-
-           Linus
 
