@@ -1,150 +1,247 @@
-Return-Path: <linux-btrfs+bounces-1858-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1859-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C477383F03A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 22:40:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B3783F616
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jan 2024 16:24:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 202A12835E8
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jan 2024 21:39:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 809F1B21CE8
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jan 2024 15:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A5B81B5A2;
-	Sat, 27 Jan 2024 21:39:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=intelfx.name header.i=@intelfx.name header.b="KhXchv28"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EBBC24B41;
+	Sun, 28 Jan 2024 15:24:33 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E861B271
-	for <linux-btrfs@vger.kernel.org>; Sat, 27 Jan 2024 21:39:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D007923769;
+	Sun, 28 Jan 2024 15:24:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706391592; cv=none; b=Pq/pt9h+bibhSQI0a31Vup5NpAzdxE9+4T63sWYWOHbuvSITs1l9nakSyXulmbX6NFwpQugrMFW0rZpT/oRI0JpOKTSWhIuLiknY/4v3nhShirxkAWcJ3Kq/GuCsZ8dQvwNDbZmTgBhXTFumOADLbeWzRNS6GFW58tLPrlwhUNk=
+	t=1706455473; cv=none; b=uUmxu2IgDDJGzRX+bk7zjDm4565UWZhJSB2yKQpbBWFlLX7wf0xlcA91VEgYmiiXhLqwwcW8uhSDHxcwfj5Y5pP9wYF0NhhZx7kfl+vkN3d6TfDIPJ841+pFG4Le8kwjoDcEYszT8bRBcui/fJlnqeeiOHd6ZR6YfX25TcSeYo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706391592; c=relaxed/simple;
-	bh=sX6ELondmO2/DqLErpMydWRounc+pwUbf5cxWGDovo0=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lMTEj2KCIl41K3caLfI9e82da3yLmTDmRfCw15qcIoFNji79Z2Ipxrd1I7BUrU9tZTp8Cfbk2nV220sYOQ+iAhtVoPuGpHuI3Q8kmBsVwlEAtcvIcFcMic3BePr67Ai2LpsyfMQVUHSSeMuwH45uu56qs9Z8L9hKFB6zwSaA5Hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=intelfx.name; spf=pass smtp.mailfrom=intelfx.name; dkim=pass (1024-bit key) header.d=intelfx.name header.i=@intelfx.name header.b=KhXchv28; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=intelfx.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intelfx.name
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40eb033c1b0so23319075e9.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 27 Jan 2024 13:39:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intelfx.name; s=google; t=1706391588; x=1706996388; darn=vger.kernel.org;
-        h=mime-version:user-agent:autocrypt:references:in-reply-to:date:to
-         :from:subject:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=sX6ELondmO2/DqLErpMydWRounc+pwUbf5cxWGDovo0=;
-        b=KhXchv28Jor+m3vluNhjYdH7y88biFO60V6BoZthbPl1vE0/lukIwaIafnVzsDa8H3
-         mFXemuQ/ufVlT66Gi64cdJW6EFUsvLY6yswwVBymNzFrHRZ9uzpeW4Ld077pLbT1LwpG
-         Z3n0PGzmSCNba8ix4/YhShC2cljUYqN00DxP8=
+	s=arc-20240116; t=1706455473; c=relaxed/simple;
+	bh=1WGm2ryBsFzTy1OtbF6IzWgVoBRA/DRTu0IwIswlh1Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XSxIcnNWC629brXQRDmI7AZXtJdWaQrmUTHEXtxbRuqMwtM75hgM6Q3QjA3/dMyvm3YVhJgoM1GcyzAKL62Yr+Yi4BRZ6jE51RVDc9fcJzi7vwwP38PiD/XZITAQUu2XCKALAQcq7uNjfEsmzelpei1nGguIe2YIQgn2IMbC8yw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2cf591b5db7so9911691fa.2;
+        Sun, 28 Jan 2024 07:24:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706391588; x=1706996388;
-        h=mime-version:user-agent:autocrypt:references:in-reply-to:date:to
-         :from:subject:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sX6ELondmO2/DqLErpMydWRounc+pwUbf5cxWGDovo0=;
-        b=D527LVxCkGh0I4o6o9qLLUUVvnrxLMZ++HirRQgo+KeDd1wR+KHWz/1nfzCDnkH5zL
-         FQeJHuzCG/VyyqCgjZLlWIxH1FYyD5FiThG9c4pbekR9dAgvUvVNvA4ycFUmtZ13l6u+
-         Rfk++yKm+g6FA49rex5cBIQ9SqsnEmr2LGo/B/yobJ8oJ8rDGqt/DJMbFOIsyYSnSw/k
-         5cPsX58rHvfbvmQCiHX8UBZKIr5KFv8uAYIz6TYpf52b786Qw5fOQdqD7c9JKy+6ROQW
-         evvybD81HLqK2lvUf+VYO+6G0ZVyW4s3g/mUqj2WmpyRoLjbx8RaVvoeqdJn9PomlZKI
-         kIUA==
-X-Gm-Message-State: AOJu0Yy5ennom4hQZlqy95NKdtALV6AOmA86pLni8URhmdCyxndkwlpI
-	xVhnjJl17qNGkISQ3x7CogyfcOxbv+8tvmPc6h01HV0ZcZ8ecFtwz7cpHEiDHPDuaKB5rww7yr3
-	A
-X-Google-Smtp-Source: AGHT+IHqblpl11XjqYoqiw2rw1HQagF4nQUB3SM3iTG6K4Z2+u7QL80ZwvwjXuP7IHaIplafxK6vhw==
-X-Received: by 2002:a05:600c:190f:b0:40e:b93e:4a0f with SMTP id j15-20020a05600c190f00b0040eb93e4a0fmr1996141wmq.19.1706391587643;
-        Sat, 27 Jan 2024 13:39:47 -0800 (PST)
-Received: from able.exile.i.intelfx.name ([178.134.111.230])
-        by smtp.gmail.com with ESMTPSA id bg24-20020a05600c3c9800b0040d91fa270fsm5682769wmb.36.2024.01.27.13.39.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Jan 2024 13:39:46 -0800 (PST)
-Message-ID: <c0649a6d95144ca7040762efe467ac6ee707ac0b.camel@intelfx.name>
-Subject: Re: [PATCH 0/5] btrfs: some fixes around unused block deletion
-From: Ivan Shapovalov <intelfx@intelfx.name>
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-Date: Sat, 27 Jan 2024 22:39:44 +0100
-In-Reply-To: <cover.1706177914.git.fdmanana@suse.com>
-References: <cover.1706177914.git.fdmanana@suse.com>
-Autocrypt: addr=intelfx@intelfx.name; prefer-encrypt=mutual; keydata=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
- NzAT4cw
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-CxXJ95y0XaLWQraIMjj/"
-User-Agent: Evolution 3.50.3 
+        d=1e100.net; s=20230601; t=1706455468; x=1707060268;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hvQgc2hckMBbQq/LS42Nr9eJB3W5hc9pzJsp+VDP858=;
+        b=rTLYzBai8pzI14plTsM0U+ijvYwhTBbIBI1jc6KL20g2h1g0It667S11vMrjbi7nyq
+         39hHgcdbalFvAMh8LvMfeS+95jADRz/iEce7ZVGYZk5folY2p5duO7FW8KKUjm5UIUed
+         gsU5mB3zVVOoIrUPXRThJfiuvCxqRyOAdjb0I32i56VOfTOZHHS33HiMUX1gkVc26sYP
+         47mr604mj9CGQpTAVbNEzFLigvqUsSPUXqC5lyEeWnSy1BBixF7lz5KPrJ9HizRGe8u/
+         NGU75LUdBtwBG3A34bNKudzhYU6qCO+K9/4wRtuo9TGwgHMHlvgLKCRj6/kah6ahtiOV
+         0tSg==
+X-Gm-Message-State: AOJu0YyQAHgvxRm1RNj23oGl0AxsEw1x1V1SEJ0S7aEGr7UHRKqVMl9d
+	jYk0AqF2F+cgl+dcnQGkD7HGCU/el+n04fCuyqozM0Key8oTj4mUqT6SPVEtAxFO0A==
+X-Google-Smtp-Source: AGHT+IFZektNP/hAhP9tWYFN9Ht13aayFcBKG4LL4MTx/LMJyEgE43fWuEO32D12MN1Ac8Sie/QseQ==
+X-Received: by 2002:a2e:3a12:0:b0:2cd:9959:53a0 with SMTP id h18-20020a2e3a12000000b002cd995953a0mr2296211lja.1.1706455468133;
+        Sun, 28 Jan 2024 07:24:28 -0800 (PST)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id d11-20020a056402516b00b00559cb738c1bsm2818148ede.4.2024.01.28.07.24.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Jan 2024 07:24:27 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55ef011e934so348877a12.3;
+        Sun, 28 Jan 2024 07:24:27 -0800 (PST)
+X-Received: by 2002:aa7:d1c5:0:b0:55e:ae9c:b673 with SMTP id
+ g5-20020aa7d1c5000000b0055eae9cb673mr1622596edp.41.1706455467684; Sun, 28 Jan
+ 2024 07:24:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-
-
---=-CxXJ95y0XaLWQraIMjj/
+References: <20240127204417.11880-1-wqu@suse.com>
+In-Reply-To: <20240127204417.11880-1-wqu@suse.com>
+From: Neal Gompa <neal@gompa.dev>
+Date: Sun, 28 Jan 2024 15:23:51 +0000
+X-Gmail-Original-Message-ID: <CAEg-Je-KvRra=Vtn9i0NaLZAGQCt40LaJAHywznKZXStBFRKbw@mail.gmail.com>
+Message-ID: <CAEg-Je-KvRra=Vtn9i0NaLZAGQCt40LaJAHywznKZXStBFRKbw@mail.gmail.com>
+Subject: Re: [PATCH v2] fstests: btrfs: verify the read behavior of compressed
+ inline extent
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On 2024-01-25 at 10:26 +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
->=20
-> These fix a couple issues regarding block group deletion, either
-> deleting
-> an unused block group when it shouldn't be deleted due to outstanding
-> reservations relying on the block group, or unused block groups never
-> getting deleted since they were created due to pessimistic space
-> reservation and ended up never being used. More details on the change
-> logs of each patch.
->=20
-> Filipe Manana (5):
-> =C2=A0 btrfs: add and use helper to check if block group is used
-> =C2=A0 btrfs: do not delete unused block group if it may be used soon
-> =C2=A0 btrfs: add new unused block groups to the list of unused block
-> groups
-> =C2=A0 btrfs: document what the spinlock unused_bgs_lock protects
-> =C2=A0 btrfs: add comment about list_is_singular() use at
-> btrfs_delete_unused_bgs()
->=20
-> =C2=A0fs/btrfs/block-group.c | 87
-> +++++++++++++++++++++++++++++++++++++++++-
-> =C2=A0fs/btrfs/block-group.h |=C2=A0 7 ++++
-> =C2=A0fs/btrfs/fs.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- |=C2=A0 3 ++
-> =C2=A03 files changed, 95 insertions(+), 2 deletions(-)
->=20
+On Sat, Jan 27, 2024 at 8:44=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [BUG]
+> There is a report about reading a zstd compressed inline file extent
+> would lead to either a VM_BUG_ON() crash, or lead to incorrect file
+> content.
+>
+> [CAUSE]
+> The root cause is a incorrect memcpy_to_page() call, which uses
+> incorrect page offset, and can lead to either the VM_BUG_ON() as we may
+> write beyond the page boundary, or writes into the incorrect offset of
+> the page.
+>
+> [TEST CASE]
+> The test case would:
+>
+> - Mount with the specified compress algorithm
+> - Create a 4K file
+> - Verify the 4K file is all inlined and compressed
+> - Verify the content of the initial write
+> - Cycle mount to drop all the page cache
+> - Verify the content of the file again
+> - Unmount and fsck the fs
+>
+> This workload would be applied to all supported compression algorithms.
+> And it can catch the problem correctly by triggering VM_BUG_ON(), as our
+> workload would result decompressed extent size to be 4K, and would
+> trigger the VM_BUG_ON() 100%.
+> And with the revert or the new fix, the test case can pass safely.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  tests/btrfs/310     | 83 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/310.out |  2 ++
+>  2 files changed, 85 insertions(+)
+>  create mode 100755 tests/btrfs/310
+>  create mode 100644 tests/btrfs/310.out
+> ---
+> Changelog:
+> v2:
+> - Add a comment on why a "sync" is needed
+> - Update the failure case comment
+>   The specific design of the inline extent size is ensured to trigger
+>   VM_BUG_ON(), thus remove the data corruption case.
+>
+> diff --git a/tests/btrfs/310 b/tests/btrfs/310
+> new file mode 100755
+> index 00000000..507485a4
+> --- /dev/null
+> +++ b/tests/btrfs/310
+> @@ -0,0 +1,83 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 310
+> +#
+> +# Make sure reading on an compressed inline extent is behaving correctly
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick compress
+> +
+> +# Import common functions.
+> +# . ./common/filter
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_require_scratch
+> +
+> +# This test require inlined compressed extents creation, and all the wri=
+tes
+> +# are designed for 4K sector size.
+> +_require_btrfs_inline_extents_creation
+> +_require_btrfs_support_sectorsize 4096
+> +
+> +_fixed_by_kernel_commit e01a83e12604 \
+> +       "Revert \"btrfs: zstd: fix and simplify the inline extent decompr=
+ession\""
+> +
 
-Still broken for me, unfortunately.
+I assume that this will be updated once we land a fixed commit? We
+should ensure we keep track of those things...
+
+> +# The correct md5 for the correct 4K file filled with "0xcd"
+> +md5sum_correct=3D"5fed275e7617a806f94c173746a2a723"
+> +
+> +workload()
+> +{
+> +       local algo=3D"$1"
+> +
+> +       echo "=3D=3D=3D Testing compression algorithm ${algo} =3D=3D=3D" =
+>> $seqres.full
+> +       _scratch_mkfs >> $seqres.full
+> +       _scratch_mount -o compress=3D${algo}
+> +
+> +       _pwrite_byte 0xcd 0 4k "$SCRATCH_MNT/inline_file" > /dev/null
+> +       result=3D$(_md5_checksum "$SCRATCH_MNT/inline_file")
+> +       echo "after initial write, md5sum=3D${result}" >> $seqres.full
+> +       if [ "$result" !=3D "$md5sum_correct" ]; then
+> +               _fail "initial write results incorrect content for \"$alg=
+o\""
+> +       fi
+> +       # Writeback data to get correct fiemap result, or we got FIEMAP_D=
+EALLOC
+> +       # without compression/inline flags.
+> +       sync
+> +
+> +       $XFS_IO_PROG -c "fiemap -v" $SCRATCH_MNT/inline_file | tail -n 1 =
+> $tmp.fiemap
+> +       cat $tmp.fiemap >> $seqres.full
+> +       # Make sure we got an inlined compressed file extent.
+> +       # 0x200 means inlined, 0x100 means not block aligned, 0x8 means e=
+ncoded
+> +       # (compressed in this case), and 0x1 means the last extent.
+> +       if ! grep -q "0x309" $tmp.fiemap; then
+> +               rm -f -- $tmp.fiemap
+> +               _notrun "No compressed inline extent created, maybe subpa=
+ge?"
+> +       fi
+> +       rm -f -- $tmp.fiemap
+> +
+> +       # Unmount to clear the page cache.
+> +       _scratch_cycle_mount
+> +
+> +       # For v6.8-rc1 without the revert or the newer fix, this would
+> +       # lead to VM_BUG_ON() thus crash
+> +       result=3D$(_md5_checksum "$SCRATCH_MNT/inline_file")
+> +       echo "after cycle mount, md5sum=3D${result}" >> $seqres.full
+> +       if [ "$result" !=3D "$md5sum_correct" ]; then
+> +               _fail "read for compressed inline extent failed for \"$al=
+go\""
+> +       fi
+> +       _scratch_unmount
+> +       _check_scratch_fs
+> +}
+> +
+> +algo_list=3D($(_btrfs_compression_algos))
+> +for algo in ${algo_list[@]}; do
+> +       workload $algo
+> +done
+> +
+> +echo "Silence is golden"
+> +
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/310.out b/tests/btrfs/310.out
+> new file mode 100644
+> index 00000000..7b9eaf78
+> --- /dev/null
+> +++ b/tests/btrfs/310.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 310
+> +Silence is golden
+> --
+> 2.42.0
+>
+>
+
+Otherwise, LGTM.
+
+Reviewed-by: Neal Gompa <neal@gompa.dev>
+
 
 --=20
-Ivan Shapovalov / intelfx /
-
---=-CxXJ95y0XaLWQraIMjj/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE5N8nvImcx2nJlFGce94XyOTjDp0FAmW1eCAACgkQe94XyOTj
-Dp0Ctg/+OzCd21DZ9WcqwihjWLGatIhlh3x4T9uE/kI9/NXPjd4pZHMZ/gilut2F
-StXRfE6GHtNr/ggqPtHX6wPxUGigEmnRPbwuNshGvlxctW0aaatDdzvr7AYLjnHz
-p78e10UzM3Ia2DjpKRYbCuBoQtwaaKxx1axD9IU2DIem8GJA2fq4cmzBhPgKh4xM
-G+3se+Hy1aSOi2TO20MkZSta+FhycCm0YYTq0dLTZjl6DI60lhgGkowoEZcCUiiV
-wT2TZQuRUmyyoT9GMWeUQAwJs5OtJtHw09wXaY1xR+nIW2SyObs1Xk1BMadBhV86
-hjLzIKKWH+b6hdBt3/UV8x2qlWw9Z64RhugvVItW03UvdZ0f9qQGe3qHQH0gaKaP
-ANLEL7lObvEkjCJzNaGgcg3eBBVSKuicTXqTncOc8ZZ+pM8CSvFjnBWBjzaBl6pq
-Lrnm9oRfiLmcoNawAGILVTsoGUOTuMiMFWiwQ66U+4xQmLdAmpTIIKwwmaBuBTmg
-PmDH+YAVGOe9dwjkgG5jwTli/cNku2MxCwgfbD2G6N9ozqlJf6TuT/eFBC+fVbuP
-hsyBiLi2WM2msVALCtfHu3D5XP0N4nsBngIq7QHSDsQmxRLBqW9MwXRi+h7HfqG5
-qyoDwoJXudrOFM1csVO3YRX4o6sCf4zCC3Kfx8DEyK+b1uBgXuA=
-=GvnX
------END PGP SIGNATURE-----
-
---=-CxXJ95y0XaLWQraIMjj/--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
