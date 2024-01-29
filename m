@@ -1,127 +1,146 @@
-Return-Path: <linux-btrfs+bounces-1875-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1877-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A04F683FA5B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jan 2024 23:32:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF0383FF5D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 08:53:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 421C9B22220
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jan 2024 22:32:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91B421C23667
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 07:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21FC9446C6;
-	Sun, 28 Jan 2024 22:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 845D74F1F4;
+	Mon, 29 Jan 2024 07:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GmUzxYOA"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="XKoAWwFC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93D403C473
-	for <linux-btrfs@vger.kernel.org>; Sun, 28 Jan 2024 22:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1290552F70;
+	Mon, 29 Jan 2024 07:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.141.245
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706481141; cv=none; b=iDZGZGCVlE/zFBnp4JbcYv5cO7agCfpQDnvpmstRE+ipAnFsauxF5fSCnC7p82VBqstP7GCkSYg9puroc3Zu5M7/fKQpR5dkEh/DDN7Dw5ojf4jiJDWl03RhjNLJSm2rjdA+3V/zhHT/tHMe7S9JpYzh1SzqQLMYMo2xKpnJSXI=
+	t=1706514757; cv=none; b=PSkZknQuItr8lBc4Ghil2dAhatW+l42L8HJ7HPDAKX869PSHXwFQYnyr5j/KuLJTzPvehFfpZN8sr/wYnT8q6jIVr5KSdK1NBCB/fiZWvf96B1ppmQcFftMWr+jRoNFdIhMOLL6RInjFui+/lm8fQ/gLT/4N2GrUJ75Go2jqq5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706481141; c=relaxed/simple;
-	bh=AEYZz0WbEa5P8+CB+O4anP0MQfywFaLOnhWBqol5b2w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oiHuMesOVN100vVGzMmujirZ70iO7SLYUvzW3Oy6qsrohybmxiku0dZqi4PkJmrePY2sJqdDCBe1PxQt2TrYrB5IhFasvyoBTL6A4MG4sw+VM1JxRynqXcIErx/VuWCcZyzDX7T1HKGg51EkwYTbNzx6pSx0pD2OOiB439aSK5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=GmUzxYOA; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a35a7a86b8aso46184566b.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 28 Jan 2024 14:32:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706481137; x=1707085937; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bqwd7hhPAgPM5QIH38rfOxpWBqWFIbyQQhTZxa5cgpo=;
-        b=GmUzxYOA42m7h/7H4YNdv34VRamsWfZHNZ0+fFrZ+hcwnOSugC+FDjr97BOejvA/B0
-         15aSABLiDKGWI+Ddja2wklAoPCVjLPunUNcDlKBoPIj7ovhktc5CpY6AhqBsts39Uo9v
-         PoBAqImOt3ALpkfnJXJlAe0T8391j42pTmHrg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706481137; x=1707085937;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bqwd7hhPAgPM5QIH38rfOxpWBqWFIbyQQhTZxa5cgpo=;
-        b=Xxxri2NNYcz/Wr9lnsd9omSuXwpQ3aM6dQz7qqw/cmcK7L6OY9J78wzps5/wZr7GGe
-         0/1bK1jDIicK+UL4Ueo411Moiym2cDauiJgsCwp8604jlPZwqeKJiXQphzqPSqn572B5
-         FvtF4XqOlj3h9WSQZILr67x5IbnLG3uyw6Mqtp6RatYeZosPFIOHUFLg/8WqSEEk6/bV
-         Z5w0nDrlD4zpkSlWZteInb0rJ3o9qU6Y8x45wY1LHFwmMMI6DlZgmSxfonOq4KcnujHg
-         n3BRIGJvQlcarKbsfzj/Fd1siqH83hjiONtG/mA12jsYBV/7zTtgl4uQzto+v7dXk4ag
-         b4ug==
-X-Gm-Message-State: AOJu0Yw10j5m+k9NCo7eG+6VzPJ+1mL/FL6yKLyBE4OtydB+sITFuPbw
-	7wqGwbpUwq8/71NXDjMZudBYWhEXv6JwSlMxT3kzlcqYS8Ziv1xhVxw5TnLSAdmQZR1RVQX78a2
-	qDxLDPw==
-X-Google-Smtp-Source: AGHT+IHIHvxuHfIx89uaPY0Y5g/Ce7KkENyVP1Fwa0XrVOd/5T2DpVCyYbGiYreryMUnoBsRm1Lmaw==
-X-Received: by 2002:a17:906:27d3:b0:a35:ce76:dd67 with SMTP id k19-20020a17090627d300b00a35ce76dd67mr121150ejc.5.1706481137457;
-        Sun, 28 Jan 2024 14:32:17 -0800 (PST)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id k15-20020a1709065fcf00b00a2cea055d92sm3270145ejv.176.2024.01.28.14.32.16
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Jan 2024 14:32:16 -0800 (PST)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55cc182da17so2087493a12.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 28 Jan 2024 14:32:16 -0800 (PST)
-X-Received: by 2002:a05:6402:3509:b0:55e:c6e3:5e24 with SMTP id
- b9-20020a056402350900b0055ec6e35e24mr2150353edd.36.1706481136452; Sun, 28 Jan
- 2024 14:32:16 -0800 (PST)
+	s=arc-20240116; t=1706514757; c=relaxed/simple;
+	bh=rp5FcjO4/GYjbF5Qyk/GxKqz5Dm+QfeA7jbL0YYHdsM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=KyAeq2CBVke3JrOpCOEdaY39czmfPCdNJvbaAUzppdxKlr8FH6DvmT2tCLkLXgyzedba/R+YHJew69+eUzJnRA8oola8JAvKseYrHZotQtrGpTWyENX1y0EIMxMOltkA1/2EZWNoeqMIecLvr+c2PZE0GfQND6o+vbmMBGPhk9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=XKoAWwFC; arc=none smtp.client-ip=68.232.141.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1706514755; x=1738050755;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=rp5FcjO4/GYjbF5Qyk/GxKqz5Dm+QfeA7jbL0YYHdsM=;
+  b=XKoAWwFCJyE4SSdjzG7ykRQ3IY1GYH5kkhc8fRJryBnE6P6O9UC/wVjp
+   uiyBRtffxT0+drwocE1mwkssIgBaC9gDtC2flggHtdhh4C7u1f+LLRmMf
+   26lu5IJfa1vmwUKB5nYmdm5rMKrZJFZ6NUw3nlrgVYi87bYobXVk8fh90
+   c+kF/TlZ8YsNY4L+u+A65wSvQYKr1EWWvjH06Fvv1qulTB9MJqqJlQg6n
+   iQ89vSU7TFotOuMRJBQHx0guvy+riLefuAfh5l05Yc9RXNbYJeFnlpTsw
+   vlYVrgsyBz0HSU88zXTBkuWKu5zKMEQ/mpQl/9wwwbNxQodpKYmqgj29f
+   g==;
+X-CSE-ConnectionGUID: i3AIqhLoRfGg2acZAua5fg==
+X-CSE-MsgGUID: NWGJryoKR22IAwaPuB+Bug==
+X-IronPort-AV: E=Sophos;i="6.05,226,1701100800"; 
+   d="scan'208";a="8194605"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 29 Jan 2024 15:52:27 +0800
+IronPort-SDR: XKmQyU5LRfXJN4EP3MstUx/6dt1sLU+J4iQLeTtq1RGxD0IXKohpvK2SHlN06cdtdM92F1dINn
+ Cjtz5OUu/oNQ==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Jan 2024 22:56:42 -0800
+IronPort-SDR: a+xFj1elJxUfjnGbMLQtq4lQiX7ERjA+Y4ZquDyvRef/cnam2FbEjwxso8q5jVbsGBbnmT7XDU
+ gx4d10id9lHQ==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
+  by uls-op-cesaip02.wdc.com with ESMTP; 28 Jan 2024 23:52:24 -0800
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v3 0/5] block: remove gfp_mask for blkdev_zone_mgmt()
+Date: Sun, 28 Jan 2024 23:52:15 -0800
+Message-Id: <20240128-zonefs_nofs-v3-0-ae3b7c8def61@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0ca26166dd2a4ff5a674b84704ff1517@AcuMS.aculab.com>
- <b564df3f987e4371a445840df1f70561@AcuMS.aculab.com> <CAHk-=whxYjLFhjov39N67ePb3qmCmxrhbVXEtydeadfao53P+A@mail.gmail.com>
- <a756a7712dfe4d03a142520d4c46e7a3@AcuMS.aculab.com>
-In-Reply-To: <a756a7712dfe4d03a142520d4c46e7a3@AcuMS.aculab.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 28 Jan 2024 14:32:00 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiacNkOUvT_ib9t4HXX9DSsUCFOCAvbPi+WBkdX3KCq2A@mail.gmail.com>
-Message-ID: <CAHk-=wiacNkOUvT_ib9t4HXX9DSsUCFOCAvbPi+WBkdX3KCq2A@mail.gmail.com>
-Subject: Re: [PATCH next 10/11] block: Use a boolean expression instead of
- max() on booleans
-To: David Laight <David.Laight@aculab.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Netdev <netdev@vger.kernel.org>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Christoph Hellwig <hch@infradead.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, "David S . Miller" <davem@davemloft.net>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADBZt2UC/1XMywrCMBCF4VeRWRuZTC+2rnwPEbHJxGZhIonES
+ +m7mxZBuzwH/m+AyMFyhN1qgMDJRutdHsV6Bao/uwsLq/MGQipRShRv79jEk/MmCq0lE3XEWNa
+ Qi1tgY5+zdjjm3dt49+E140lO79ehYuEkKVAohR0W2LChav/QaqP8FSYl0X9ZLUvKJel2W6lGy
+ brFXzmO4wfFfYJg3gAAAA==
+To: Damien Le Moal <dlemoal@kernel.org>, 
+ Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <jth@kernel.org>, 
+ Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>, 
+ Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev, 
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, 
+ Chao Yu <chao@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+ Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
+ Chaitanya Kulkarni <kch@nvidia.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
+ linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, 
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706514743; l=1894;
+ i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
+ bh=rp5FcjO4/GYjbF5Qyk/GxKqz5Dm+QfeA7jbL0YYHdsM=;
+ b=2ejVcWAH227cyBcLTAnmQV/viZ0C5PHZhudgyn72fAlTiBCd6IOpK+wyllf64WvtEBVU5sViJ
+ 8eBBKuHqePeBlFpK16YJ9MZy0ZO2EaU/AF6A2deSt4WZJ/fyuLoWemF
+X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
+ pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
 
-On Sun, 28 Jan 2024 at 14:22, David Laight <David.Laight@aculab.com> wrote:
->
-> Hmmmm blame gcc :-)
+Fueled by the LSFMM discussion on removing GFP_NOFS initiated by Willy,
+I've looked into the sole GFP_NOFS allocation in zonefs. As it turned out,
+it is only done for zone management commands and can be removed.
 
-I do agree that the gcc warning quoting is unnecessarily ugly (even
-just visually), but..
+After digging into more callers of blkdev_zone_mgmt() I came to the
+conclusion that the gfp_mask parameter can be removed alltogether.
 
-> The error message displays as '0' but is e2:80:98 30 e2:80:99
-> I HATE UTF-8, it wouldn't be as bad if it were a bijection.
+So this series switches all callers of blkdev_zone_mgmt() to either use
+GFP_KERNEL where possible or grab a memalloc_no{fs,io} context.
 
-No, that's not the problem. The UTF-8 that gcc emits is fine.
+The final patch in this series is getting rid of the gfp_mask parameter.
 
-And your email was also UTF-8:
+Link: https://lore.kernel.org/all/ZZcgXI46AinlcBDP@casper.infradead.org/
 
-    Content-Type: text/plain; charset=UTF-8
+---
+Changes in v3:
+- Fix build error after rebase in dm-zoned-metadata.c
+- Link to v2: https://lore.kernel.org/r/20240125-zonefs_nofs-v2-0-2d975c8c1690@wdc.com
 
-The problem is that you clearly then used some other tool in between
-that took the UTF-8 byte stream, and used it as (presumably) Latin1,
-which is bogus.
+Changes in v2:
+- guard blkdev_zone_mgmt in dm-zoned-metadata.c with memalloc_noio context
+- Link to v1: https://lore.kernel.org/r/20240123-zonefs_nofs-v1-0-cc0b0308ef25@wdc.com
 
-If you just make everything use and stay as UTF-8, it all works out
-beautifully. But I suspect you have an editor or a MUA that is fixed
-in some 1980s mindset, and when you cut-and-pasted the UTF-8, it
-treated it as Latin1.
+---
+Johannes Thumshirn (5):
+      zonefs: pass GFP_KERNEL to blkdev_zone_mgmt() call
+      dm: dm-zoned: guard blkdev_zone_mgmt with noio scope
+      btrfs: zoned: call blkdev_zone_mgmt in nofs scope
+      f2fs: guard blkdev_zone_mgmt with nofs scope
+      block: remove gfp_flags from blkdev_zone_mgmt
 
-Just make all your environment be utf-8, like it should be. It's not
-the 80s any more. We don't do mullets, and we don't do Latin1, ok?
+ block/blk-zoned.c              | 19 ++++++++-----------
+ drivers/md/dm-zoned-metadata.c |  5 ++++-
+ drivers/nvme/target/zns.c      |  5 ++---
+ fs/btrfs/zoned.c               | 35 +++++++++++++++++++++++++----------
+ fs/f2fs/segment.c              | 15 ++++++++++++---
+ fs/zonefs/super.c              |  2 +-
+ include/linux/blkdev.h         |  2 +-
+ 7 files changed, 53 insertions(+), 30 deletions(-)
+---
+base-commit: 615d300648869c774bd1fe54b4627bb0c20faed4
+change-id: 20240110-zonefs_nofs-dd1e22b2e046
 
-            Linus
+Best regards,
+-- 
+Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
 
