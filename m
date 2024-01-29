@@ -1,126 +1,181 @@
-Return-Path: <linux-btrfs+bounces-1895-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1897-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C5B18405AF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 13:54:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 426DD8406DB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 14:27:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F07C31F24329
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 12:54:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA156B25BFF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 13:27:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E88B627E3;
-	Mon, 29 Jan 2024 12:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uL8AxVBF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E1A6312A;
+	Mon, 29 Jan 2024 13:27:21 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out28-54.mail.aliyun.com (out28-54.mail.aliyun.com [115.124.28.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A466166D
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 12:49:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 587D063105
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 13:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.28.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706532581; cv=none; b=KHVHSdhAPAiK38c5Gm90VGMLJ0PtyAiQbGEneWEOvsVvi8/fVgvEct7hAmn0zdOX5y4nuoyr56Dlmp6pepPDaHxRLBpiRu+2NmztLrgtpKNhfwK2wJedjnFcpplOTcEKczZ/qdaGKFl1wysRemWQshfV24s9s1/o29lRub9wa8I=
+	t=1706534841; cv=none; b=lsjqY9QSrNitHeCQACdoGtvXGOX2vJXBubIich53B8WFCSWOvnocXzQ1FmBAjSH/YwqJ3FfhEadZ3V7+/6ibTmCOyCMtmkaPfPsoKqTbD5se+kegRmaTv+FGx4igX72M3Cq/iUky0iTfZlHteORC7M8IShLiW1pmpfuaydbKNlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706532581; c=relaxed/simple;
-	bh=I+HAGvulRvz7eCOBWABcS7QjUuzLQqJO/q8ytCgFD/0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m/avRSW7avOf08liBHnDAmgBr0hwPtX0t82TLguq39GUb5PGRVNZlfuEcYSBn+BYX436YaZUAShmr+ueHo5GfdDK19t4JiIThsJIS3dwmHKD5+Z1YtPNqhY1fKARGU4W1qWG66tX0W66CvHQALCiFrQIoD0+aOM3riIWBv8qOSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uL8AxVBF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B43BEC433F1
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 12:49:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706532580;
-	bh=I+HAGvulRvz7eCOBWABcS7QjUuzLQqJO/q8ytCgFD/0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=uL8AxVBFTh/DUMRz0PGnom7SZIXW/FuVrNP8iiKrm6CWBKIkzrSgduUtC/mdyxLDH
-	 8jTC2OVb1c/OxMDoFsam7hRJIOZjpwtvq/2VM9GK7ylkbh1onognfpo7C2i/UJU9a0
-	 +BhvJt/jmeh11GHN32la6VbOs6b5ZMg+HS2d9uJFp/XzhyNTaXNYnuJPYV3YxkwoMi
-	 noPURDXqUvrqEBrDOmFWXHEuppD9SuvkjvCVwLwJdCekXseFsyheEJmNnAvd66SEeQ
-	 aOLTQOlYcEnEU/FD7oqxdNOI5bE/JjYQT6gFrJ0TvnMu5UI9Dx21lbthuGJYBUQT0p
-	 +ZOi0+tI6lymA==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55ee9805da7so1381766a12.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 04:49:40 -0800 (PST)
-X-Gm-Message-State: AOJu0YxNW29yAjRC3BRShwv+0MB+EW/eskG/d39UYIo9xOweT34+I5Sh
-	/mg9pKPoO4LDId6zjlUF8zZKEe3qmgxhUTM/K8NlymM94DX26IK/ATNbiLMzY3vpn9dlFdS2m2A
-	D1s8g0q4xxXnXiemCjd4kZWO6Srs=
-X-Google-Smtp-Source: AGHT+IHGwpwxia9VmX1CB/3byUvE6N7XI4c3zllwz0uFZpBFHx+8R4cN3z5evhKHVm9nNBMR/sRYlj3bvP2MtVC6Mn4=
-X-Received: by 2002:a17:906:89b:b0:a35:cbf1:c254 with SMTP id
- n27-20020a170906089b00b00a35cbf1c254mr1270047eje.11.1706532579127; Mon, 29
- Jan 2024 04:49:39 -0800 (PST)
+	s=arc-20240116; t=1706534841; c=relaxed/simple;
+	bh=jH9JiH1etfHxoFogJ30atlVKqm01dzITOUBxGtv1jck=;
+	h=Date:From:To:Subject:In-Reply-To:References:Message-Id:
+	 MIME-Version:Content-Type; b=fUIcYfx900SLQv5VHrW1G+aPwKqGXpWt0sgwrFeEb6nvM14DG2RzZuF4r7HE1iaWPpmhz9TniymqQrZrxvsQYNbTdmoICPqXoz6hQ8CgTEAqCjLRWBjjPesBEHC9LsLldS44L4EjmG+x+fNuzVpwgpeJemhgpCmJxSQvePqKGlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com; spf=pass smtp.mailfrom=e16-tech.com; arc=none smtp.client-ip=115.124.28.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=e16-tech.com
+X-Alimail-AntiSpam:AC=CONTINUE;BC=0.04442335|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0130562-0.000483652-0.98646;FP=1934797680062827995|1|1|2|0|-1|-1|-1;HT=ay29a033018047207;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.WIdi1X1_1706532981;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.WIdi1X1_1706532981)
+          by smtp.aliyun-inc.com;
+          Mon, 29 Jan 2024 20:56:22 +0800
+Date: Mon, 29 Jan 2024 20:56:22 +0800
+From: Wang Yugui <wangyugui@e16-tech.com>
+To: Naohiro Aota <naohiro.aota@wdc.com>,
+ linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] btrfs: disable inline checksum for multi-dev striped FS
+In-Reply-To: <20240124081931.1DDE.409509F4@e16-tech.com>
+References: <cover.1705568050.git.naohiro.aota@wdc.com> <20240124081931.1DDE.409509F4@e16-tech.com>
+Message-Id: <20240129205621.1BA8.409509F4@e16-tech.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1706177914.git.fdmanana@suse.com> <c0649a6d95144ca7040762efe467ac6ee707ac0b.camel@intelfx.name>
-In-Reply-To: <c0649a6d95144ca7040762efe467ac6ee707ac0b.camel@intelfx.name>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 29 Jan 2024 12:49:02 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6802ayLHUJFztzZAVzBLJAGdFx=6FHNNy87+obZXXZpQ@mail.gmail.com>
-Message-ID: <CAL3q7H6802ayLHUJFztzZAVzBLJAGdFx=6FHNNy87+obZXXZpQ@mail.gmail.com>
-Subject: Re: [PATCH 0/5] btrfs: some fixes around unused block deletion
-To: Ivan Shapovalov <intelfx@intelfx.name>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.81.05 [en]
 
-On Sat, Jan 27, 2024 at 9:39=E2=80=AFPM Ivan Shapovalov <intelfx@intelfx.na=
-me> wrote:
->
-> On 2024-01-25 at 10:26 +0000, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > These fix a couple issues regarding block group deletion, either
-> > deleting
-> > an unused block group when it shouldn't be deleted due to outstanding
-> > reservations relying on the block group, or unused block groups never
-> > getting deleted since they were created due to pessimistic space
-> > reservation and ended up never being used. More details on the change
-> > logs of each patch.
-> >
-> > Filipe Manana (5):
-> >   btrfs: add and use helper to check if block group is used
-> >   btrfs: do not delete unused block group if it may be used soon
-> >   btrfs: add new unused block groups to the list of unused block
-> > groups
-> >   btrfs: document what the spinlock unused_bgs_lock protects
-> >   btrfs: add comment about list_is_singular() use at
-> > btrfs_delete_unused_bgs()
-> >
-> >  fs/btrfs/block-group.c | 87
-> > +++++++++++++++++++++++++++++++++++++++++-
-> >  fs/btrfs/block-group.h |  7 ++++
-> >  fs/btrfs/fs.h          |  3 ++
-> >  3 files changed, 95 insertions(+), 2 deletions(-)
-> >
->
-> Still broken for me, unfortunately.
+Hi,
 
-I'm curious about your workload. Is it something like continuous,
-non-stop deduplication or cloning for example?
+> Hi,
+> 
+> > There was a report of write performance regression on 6.5-rc4 on RAID0
+> > (4 devices) btrfs [1]. Then, I reported that BTRFS_FS_CSUM_IMPL_FAST
+> > and doing the checksum inline can be bad for performance on RAID0
+> > setup [2]. 
+> > 
+> > [1] https://lore.kernel.org/linux-btrfs/20230731152223.4EFB.409509F4@e16-tech.com/
+> > [2] https://lore.kernel.org/linux-btrfs/p3vo3g7pqn664mhmdhlotu5dzcna6vjtcoc2hb2lsgo2fwct7k@xzaxclba5tae/
+> > 
+> > While inlining the fast checksum is good for single (or two) device,
+> > but it is not fast enough for multi-device striped writing.
+> > 
+> > So, this series first introduces fs_devices->inline_csum_mode and its
+> > sysfs interface to tweak the inline csum behavior (auto/on/off). Then,
+> > it disables inline checksum when it find a block group striped writing
+> > into multiple devices.
+> 
+> We have struct btrfs_inode | sync_writers in kernel 6.1.y, but dropped in recent
+> kernel. 
+> 
+> Is btrfs_inode | sync_writers not implemented very well?
 
-Did you actually experience -ENOSPC errors?
+I tried the logic blow, some like ' btrfs_inode | sync_writers'.
+- checksum of metadata always sync
+- checksum of data async only when depth over 1,
+	to reduce task switch when low load.
+	to use more cpu core when high load.
 
-Also, if you unmount and then mount again the fs, any unused block
-groups should be scheduled for deletion once the cleaner thread runs,
-at least if there's not a huge workload for a minute or two.
+performance test result is not good
+	2GiB/s(checksum of data always async) -> 2.1GiB/s when low load.
+	4GiB/s(checksum of data always async) -> 2788MiB/s when high load.
 
-On top of this patchset, can you try the following patch?
+but the info  maybe useful, so post it here.
 
-https://pastebin.com/raw/U7b0e03g
 
-If that still doesn't help, try the following the following patch on
-top of this patchset:
+- checksum of metadata always sync
 
-https://pastebin.com/raw/rKiSmG5w
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 12b12443efaa..8ef968f0957d 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -598,7 +598,7 @@ static void run_one_async_free(struct btrfs_work *work)
+ static bool should_async_write(struct btrfs_bio *bbio)
+ {
+ 	/* Submit synchronously if the checksum implementation is fast. */
+-	if (test_bit(BTRFS_FS_CSUM_IMPL_FAST, &bbio->fs_info->flags))
++	if ((bbio->bio.bi_opf & REQ_META) && test_bit(BTRFS_FS_CSUM_IMPL_FAST, &bbio->fs_info->flags))
+ 		return false;
+ 
+ 	/*
 
-Thanks.
 
->
-> --
-> Ivan Shapovalov / intelfx /
+- checksum of data async only when depth over 1, to reduce task switch.
+
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index efb894967f55..f90b6e8cf53c 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -626,6 +626,9 @@ static bool should_async_write(struct btrfs_bio *bbio)
+ 	if ((bbio->bio.bi_opf & REQ_META) && btrfs_is_zoned(bbio->fs_info))
+ 		return false;
+ 
++	if (!(bbio->bio.bi_opf & REQ_META) && atomic_read(&bbio->fs_info->depth_checksum_data)==0 )
++		return false;
++
+ 	return true;
+ }
+ 
+@@ -725,11 +728,21 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 		if (inode && !(inode->flags & BTRFS_INODE_NODATASUM) &&
+ 		    !test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state) &&
+ 		    !btrfs_is_data_reloc_root(inode->root)) {
+-			if (should_async_write(bbio) &&
+-			    btrfs_wq_submit_bio(bbio, bioc, &smap, mirror_num))
+-				goto done;
+-
++			if (should_async_write(bbio)){
++				if (!(bbio->bio.bi_opf & REQ_META))
++					atomic_inc(&bbio->fs_info->depth_checksum_data);
++				ret = btrfs_wq_submit_bio(bbio, bioc, &smap, mirror_num);
++				if (!(bbio->bio.bi_opf & REQ_META))
++					atomic_dec(&bbio->fs_info->depth_checksum_data);
++				if(ret)
++					goto done;
++			}
++
++			if (!(bbio->bio.bi_opf & REQ_META))
++				atomic_inc(&bbio->fs_info->depth_checksum_data);
+ 			ret = btrfs_bio_csum(bbio);
++			if (!(bbio->bio.bi_opf & REQ_META))
++				atomic_dec(&bbio->fs_info->depth_checksum_data);
+ 			if (ret)
+ 				goto fail_put_bio;
+ 		} else if (use_append) {
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index d7b127443c9a..3fd89be7610a 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2776,6 +2776,7 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
+ 
+ 	fs_info->thread_pool_size = min_t(unsigned long,
+ 					  num_online_cpus() + 2, 8);
++	atomic_set(&fs_info->depth_checksum_data, 0);
+ 
+ 	INIT_LIST_HEAD(&fs_info->ordered_roots);
+ 	spin_lock_init(&fs_info->ordered_root_lock);
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 7443bf014639..123cc8fa9be1 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -596,6 +596,7 @@ struct btrfs_fs_info {
+ 	struct task_struct *transaction_kthread;
+ 	struct task_struct *cleaner_kthread;
+ 	u32 thread_pool_size;
++	atomic_t depth_checksum_data;
+ 
+ 	struct kobject *space_info_kobj;
+ 	struct kobject *qgroups_kobj;
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2024/01/25
+
+
 
