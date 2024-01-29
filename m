@@ -1,73 +1,80 @@
-Return-Path: <linux-btrfs+bounces-1886-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1887-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0188C8401FC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 10:46:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D31F8401FD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 10:46:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 341581C216D4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 09:46:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7849CB2144D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 09:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D261E55C2D;
-	Mon, 29 Jan 2024 09:46:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FCF755E41;
+	Mon, 29 Jan 2024 09:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uCklnAeu";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uCklnAeu"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="shzRcZ9L";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="shzRcZ9L"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE3454FB8
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B31655787
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706521595; cv=none; b=NT7Iv6pCmrigEWfaQhwPTQRM/PhSwPkKbKfzEodV3QAn5npdHjCJCMRYTq1BQo8AHRSnYFhlJz6rcWaCFAfokDEPmgePBXBu+2J9erIVc3Erv7Baa9rHmXbdh31vMyw6+O7+mj5Z6zUosCSwM6ESycO7IInDyEnnF+QuyE0hLOg=
+	t=1706521595; cv=none; b=GxcBbzTeNCDKFn/SIFUR/kcHpqwXNdNqCp1qRrxOuI4BKzwj4ac7kWVEUtQBTewMsaINMPn0aSZ7sqMU4G4T3Du+vhBygMy1zm4NgbiychpGUpRupoOgDHj8h+fm6zu5As4pXh0ZnLANE8eroYWUITg9yWsjD31Q4BCFPRr0BrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706521595; c=relaxed/simple;
-	bh=PXMzg4Sn1UDC8LXXheNGcZjlQpYNbgwSb7VJcbK6lus=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=MmTqSflpZJu7ZWmcI/xJKNX7LRQ4qzmH4DsfFv1+Ae8VKuj1bbc30a8tG+QyLjzVXdnba/zKGfc1b5HDph7/o09astiSSJ7YKq6v9Tl85oLaXiMBi6eNZp+Gdhm1rLj4va1LSlfAVWNVdB5fe/9wKyrKCtPrY/xUDTWr5s0MIiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uCklnAeu; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uCklnAeu; arc=none smtp.client-ip=195.135.223.131
+	bh=0CUg3U9G3ogkYBwcKnbW5Jra82Nsgh+eEpFuLYgMbZ4=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=IhR9uKzJKoeIlySSuWObRmpCVdoPbW0TyaXiUySnLEjoVTimi866h7l6XUV/BIEyd1fqPV2gCK2xK4SBidM6jpeeMQf9ZAWhbgvcE5Up+AYJT18UckVAZfhIWFF0A6gNq4IvnsWZecEBmcPcZ6/aJY6/YQCvlv4gcQFN/MkNHWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=shzRcZ9L; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=shzRcZ9L; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5BA141F7D8
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:30 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8A44A21C3D
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706521590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=fSf1ieebqKgX+Rj7US+6JDv64sVeNueYjBKTi20Z2jY=;
-	b=uCklnAeuO+Q5UjN8kf7bMukTsRq/ePlUZ/LntIkK89pXh6FkamInUg/VUXR2AlG5OZePaQ
-	EHzW1nhhgK7npOu7d5OFopdfrIx+Wc+zR9lhWCqWLs3sQh8TBAx7UbrKpmNgiqiajWN8If
-	rRC5P8maW1Jwg46gIGwqougwKoiMKsw=
+	t=1706521591; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A+wLpdnwUeiodW05G7j+fYUPE3ybA4OF/G2EWXqDku4=;
+	b=shzRcZ9LJNtConBw8gkA5ps0ud/p0chEKfiuG7+MLjnqtCmErAE/YkRLHjHvAT2kBnXNj6
+	ZbpUhWOQfQNRZ4bGVvxn/XDyeeFq2vuz/JVTiWGywcppQTucWBlprABVsRuxk4Fo6MV61j
+	ZnABRwhChnMmdlW77qrg07RiP6oagUA=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706521590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=fSf1ieebqKgX+Rj7US+6JDv64sVeNueYjBKTi20Z2jY=;
-	b=uCklnAeuO+Q5UjN8kf7bMukTsRq/ePlUZ/LntIkK89pXh6FkamInUg/VUXR2AlG5OZePaQ
-	EHzW1nhhgK7npOu7d5OFopdfrIx+Wc+zR9lhWCqWLs3sQh8TBAx7UbrKpmNgiqiajWN8If
-	rRC5P8maW1Jwg46gIGwqougwKoiMKsw=
+	t=1706521591; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A+wLpdnwUeiodW05G7j+fYUPE3ybA4OF/G2EWXqDku4=;
+	b=shzRcZ9LJNtConBw8gkA5ps0ud/p0chEKfiuG7+MLjnqtCmErAE/YkRLHjHvAT2kBnXNj6
+	ZbpUhWOQfQNRZ4bGVvxn/XDyeeFq2vuz/JVTiWGywcppQTucWBlprABVsRuxk4Fo6MV61j
+	ZnABRwhChnMmdlW77qrg07RiP6oagUA=
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9C0CF13911
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:29 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CA3AD13911
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id NlL3F/Vzt2W/RwAAn2gu4w
+	id MG1TI/Zzt2W/RwAAn2gu4w
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:29 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:30 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/6] btrfs: compression: migrate to folio interfaces
-Date: Mon, 29 Jan 2024 20:16:05 +1030
-Message-ID: <cover.1706521511.git.wqu@suse.com>
+Subject: [PATCH 1/6] btrfs: compression: add error handling for missed page cache
+Date: Mon, 29 Jan 2024 20:16:06 +1030
+Message-ID: <5a13a9bb2ca544e3a109d191088651569d26b0a2.1706521511.git.wqu@suse.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1706521511.git.wqu@suse.com>
+References: <cover.1706521511.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -75,11 +82,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
+X-Spamd-Result: default: False [1.90 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
@@ -89,66 +94,174 @@ X-Spamd-Result: default: False [0.70 / 50.00];
 	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	 BROKEN_CONTENT_TYPE(1.50)[];
 	 RCPT_COUNT_ONE(0.00)[1];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 TO_DN_NONE(0.00)[];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 MID_CONTAINS_FROM(1.00)[];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 RCVD_TLS_ALL(0.00)[];
 	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: *
+X-Spam-Score: 1.90
 X-Spam-Flag: NO
 
-This is the conversion for btrfs compression paths to use folio
-interfaces.
+For all the supported compression algorithms, the compression path would
+always need to grab the page cache, then do the compression.
 
-For now, it's a pure intrefaces change, just with some variable names
-also changed from "page" to "folio".
+Normally we would get a page reference without any problem, since the
+write path should have already locked the pages in the write range.
+Just for the sake of error handling, we should handle the page cache
+miss case.
 
-There is no utilization of possible larger folio size yet, thus we're
-still using a lot of PAGE_SIZE/PAGE_SHIFT in the existing code.
+This patch adds a common wrapper, btrfs_compress_find_get_page(),
+which calls find_get_page(), and do the error handling along with an
+error message with an ASSERT().
 
-But it's still a good first step towards large folio for btrfs data.
+Callers inside compression path would only need to call
+btrfs_compress_find_get_page(), and error out if it returned any error.
 
-The first patch is in fact independent from the series, to slightly
-enhance the page cache missing error handling, but all later patches
-relies on it, to make later folio change a little smoother.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/compression.c | 26 ++++++++++++++++++++++++++
+ fs/btrfs/compression.h |  3 +++
+ fs/btrfs/lzo.c         |  5 +++--
+ fs/btrfs/zlib.c        | 14 ++++++++++----
+ fs/btrfs/zstd.c        |  9 +++++++--
+ 5 files changed, 49 insertions(+), 8 deletions(-)
 
-The third patch is also a good cleanup, as it allows we to pass a single
-page to inline creation path.
-Although during tests, it turns out that under heavy race we can try to
-insert an empty inline extent, but since the old code can handle it
-well, I just added one comment for it.
-
-The remaining but the last one are some preparation before the final
-conversion.
-
-And the final patch is the core conversion, as we have several structure
-relying on page array, it's impossible to just convert one algorithm to
-folio meanwhile keep all the other using pages.
-
-
-Qu Wenruo (6):
-  btrfs: compression: add error handling for missed page cache
-  btrfs: compression: convert page allocation to folio interfaces
-  btrfs: make insert_inline_extent() to accept one page directly
-  btrfs: migrate insert_inline_extent() to folio interfaces
-  btrfs: introduce btrfs_alloc_folio_array()
-  btrfs: compression: migrate compression/decompression paths to folios
-
- fs/btrfs/compression.c | 119 +++++++++++++++++++-------------
- fs/btrfs/compression.h |  41 ++++++------
- fs/btrfs/extent_io.c   |  31 +++++++++
- fs/btrfs/extent_io.h   |   2 +
- fs/btrfs/inode.c       | 149 +++++++++++++++++++++--------------------
- fs/btrfs/lzo.c         |  87 ++++++++++++------------
- fs/btrfs/zlib.c        | 110 ++++++++++++++++--------------
- fs/btrfs/zstd.c        |  79 ++++++++++++----------
- 8 files changed, 349 insertions(+), 269 deletions(-)
-
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 488089acd49f..165ed35b4f9f 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -974,6 +974,32 @@ static unsigned int btrfs_compress_set_level(int type, unsigned level)
+ 	return level;
+ }
+ 
++/* A wrapper around find_get_page(), with extra error message. */
++int btrfs_compress_find_get_page(struct address_space *mapping, u64 start,
++				 struct page **in_page_ret)
++{
++	struct page *in_page;
++
++	/*
++	 * The compressed write path should have the page locked already,
++	 * thus we only need to grab one reference of the page cache.
++	 */
++	in_page = find_get_page(mapping, start >> PAGE_SHIFT);
++	if (unlikely(!in_page)) {
++		struct btrfs_inode *binode = BTRFS_I(mapping->host);
++		struct btrfs_fs_info *fs_info = binode->root->fs_info;
++
++		btrfs_crit(fs_info,
++		"failed to get page cache, root %lld ino %llu file offset %llu",
++			   binode->root->root_key.objectid, btrfs_ino(binode),
++			   start);
++		ASSERT(0);
++		return -ENOENT;
++	}
++	*in_page_ret = in_page;
++	return 0;
++}
++
+ /*
+  * Given an address space and start and length, compress the bytes into @pages
+  * that are allocated on demand.
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index afd7e50d073d..427a0c2cd5cc 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -143,6 +143,9 @@ bool btrfs_compress_is_valid_type(const char *str, size_t len);
+ 
+ int btrfs_compress_heuristic(struct inode *inode, u64 start, u64 end);
+ 
++int btrfs_compress_find_get_page(struct address_space *mapping, u64 start,
++				 struct page **in_page_ret);
++
+ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 		u64 start, struct page **pages, unsigned long *out_pages,
+ 		unsigned long *total_in, unsigned long *total_out);
+diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
+index e43bc0fdc74e..fe7e08a4199c 100644
+--- a/fs/btrfs/lzo.c
++++ b/fs/btrfs/lzo.c
+@@ -244,8 +244,9 @@ int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 
+ 		/* Get the input page first */
+ 		if (!page_in) {
+-			page_in = find_get_page(mapping, cur_in >> PAGE_SHIFT);
+-			ASSERT(page_in);
++			ret =  btrfs_compress_find_get_page(mapping, cur_in, &page_in);
++			if (ret < 0)
++				goto out;
+ 		}
+ 
+ 		/* Compress at most one sector of data each time */
+diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
+index 8da66ea699e8..171c40712516 100644
+--- a/fs/btrfs/zlib.c
++++ b/fs/btrfs/zlib.c
+@@ -151,9 +151,12 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 					if (data_in) {
+ 						kunmap_local(data_in);
+ 						put_page(in_page);
++						data_in = NULL;
+ 					}
+-					in_page = find_get_page(mapping,
+-								start >> PAGE_SHIFT);
++					ret = btrfs_compress_find_get_page(mapping,
++							start, &in_page);
++					if (ret < 0)
++						goto out;
+ 					data_in = kmap_local_page(in_page);
+ 					copy_page(workspace->buf + i * PAGE_SIZE,
+ 						  data_in);
+@@ -164,9 +167,12 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 				if (data_in) {
+ 					kunmap_local(data_in);
+ 					put_page(in_page);
++					data_in = NULL;
+ 				}
+-				in_page = find_get_page(mapping,
+-							start >> PAGE_SHIFT);
++				ret = btrfs_compress_find_get_page(mapping,
++						start, &in_page);
++				if (ret < 0)
++					goto out;
+ 				data_in = kmap_local_page(in_page);
+ 				start += PAGE_SIZE;
+ 				workspace->strm.next_in = data_in;
+diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
+index 4cba8176b074..88674771b4e6 100644
+--- a/fs/btrfs/zstd.c
++++ b/fs/btrfs/zstd.c
+@@ -404,7 +404,9 @@ int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 	}
+ 
+ 	/* map in the first page of input data */
+-	in_page = find_get_page(mapping, start >> PAGE_SHIFT);
++	ret = btrfs_compress_find_get_page(mapping, start, &in_page);
++	if (ret < 0)
++		goto out;
+ 	workspace->in_buf.src = kmap_local_page(in_page);
+ 	workspace->in_buf.pos = 0;
+ 	workspace->in_buf.size = min_t(size_t, len, PAGE_SIZE);
+@@ -477,10 +479,13 @@ int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 		if (workspace->in_buf.pos == workspace->in_buf.size) {
+ 			tot_in += PAGE_SIZE;
+ 			kunmap_local(workspace->in_buf.src);
++			workspace->in_buf.src = NULL;
+ 			put_page(in_page);
+ 			start += PAGE_SIZE;
+ 			len -= PAGE_SIZE;
+-			in_page = find_get_page(mapping, start >> PAGE_SHIFT);
++			ret = btrfs_compress_find_get_page(mapping, start, &in_page);
++			if (ret < 0)
++				goto out;
+ 			workspace->in_buf.src = kmap_local_page(in_page);
+ 			workspace->in_buf.pos = 0;
+ 			workspace->in_buf.size = min_t(size_t, len, PAGE_SIZE);
 -- 
 2.43.0
 
