@@ -1,120 +1,119 @@
-Return-Path: <linux-btrfs+bounces-1893-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1894-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42B81840208
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 10:48:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 972968402A4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 11:16:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E24BFB20FE5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 09:48:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5352F28398B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 10:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E2955E4B;
-	Mon, 29 Jan 2024 09:47:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1E85647A;
+	Mon, 29 Jan 2024 10:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UM3si/uz"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WliwLMXR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17AEE41C63;
-	Mon, 29 Jan 2024 09:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C603E55E71
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 10:16:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706521667; cv=none; b=DeyaZ+n/QrKh09lImbyHV4ummQkw9AUsqlw27w3O1e4Q8Z231uD6jtsxEeQCpnAF0uvvlZ2ua9i3LgQw2zIt1rNrWsZ4gnI3vbEp2Hnrp0+Cr6K+3ufI2k6m4DFfD6U2MXolp7G/+QDP/A471Qnvt9dinUHB/KuwGm3NHjk+uv4=
+	t=1706523403; cv=none; b=rNVH/FIuU3CbsQe3yIUXp6wjxsSw7w/KlqDIENkAx9KhskGawl7pxemouw6W8oAus9ytcc9lSdstziVzL/AXRuH8w5FLgkSkmE/oMvjAkXJ+Ar6b7ZQvt+JdAgbU2ds/LoBlKjJl3Hh2PcN0uBiD2xaTqdYoYYxkK0L7lguCqEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706521667; c=relaxed/simple;
-	bh=VBR7uHoh5G4bx356M7+wqgaO8/xBmXdJrn7Uz3rJrXU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ceFMYS4wADgNE3Lr7AiY2P9gor5sJgUvWYDiADqpIeQ5YR5k9VQ/KruLZ10F9QmiFcDxDP8B78dnYQ+2KD3DN9TQQzTFllFSUK5o1evvVGSALN8KnfTuyVwE9AYiRH/Ubs4RFArQ3rG9JatAgeq4tMEAXmpGNFREme9mC6uYwfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UM3si/uz; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706521666; x=1738057666;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=VBR7uHoh5G4bx356M7+wqgaO8/xBmXdJrn7Uz3rJrXU=;
-  b=UM3si/uzuk9wzk7/1AR6iRl8NMahd8GHdLsM1Fg5lxXmfyXukbiFruu+
-   G4XXzip2yNhktO0OwSF1H/VZm3hgNhXI/39c2hSWcwxRP+D9XBIl+I4hY
-   VVKzhiVbSOBL6lxoq1YqgqayNN3Qo/4GLatWSqM4TZekaQesXn3pVo2Pt
-   WxNFJmN6rR3dC2oKCMJ6u/YTZu1ovojxpqP2GFpgx4cfYaRIOITf4yKCJ
-   tJdfD2kOPJy1Z179AhkFg5YMXM6hxmFHiHLL8m0Am/InCrc6n2Q340Sr5
-   X6MXMeBb0EK9jUjnGHgStr9gOW8abpQbtomGHI1waS7Si9NWZzmEfjBDD
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="9652174"
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="9652174"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 01:47:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10967"; a="787778209"
-X-IronPort-AV: E=Sophos;i="6.05,226,1701158400"; 
-   d="scan'208";a="787778209"
-Received: from hbrandbe-mobl.ger.corp.intel.com (HELO localhost) ([10.252.59.53])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2024 01:47:40 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: David Laight <David.Laight@ACULAB.COM>, "'linux-kernel@vger.kernel.org'"
- <linux-kernel@vger.kernel.org>, 'Linus
- Torvalds' <torvalds@linux-foundation.org>, 'Netdev'
- <netdev@vger.kernel.org>, "'dri-devel@lists.freedesktop.org'"
- <dri-devel@lists.freedesktop.org>
-Cc: 'Jens Axboe' <axboe@kernel.dk>, "'Matthew Wilcox (Oracle)'"
- <willy@infradead.org>, 'Christoph Hellwig' <hch@infradead.org>,
- "'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>, 'Andrew
- Morton' <akpm@linux-foundation.org>, 'Andy Shevchenko'
- <andriy.shevchenko@linux.intel.com>, "'David S . Miller'"
- <davem@davemloft.net>, 'Dan Carpenter' <dan.carpenter@linaro.org>
-Subject: RE: [PATCH next 10/11] block: Use a boolean expression instead of
+	s=arc-20240116; t=1706523403; c=relaxed/simple;
+	bh=9bB/+pYSzIDzHnesJvCHGI9xL4OX/zPz3pf6v9GMJ88=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qmOgekBzX131cpga5t0v8x57Co+sGmAnozwavURdfRJ8KzbydKdZPfc4N865v0diQF2Hik8UoBFUEQFK0VpSGA5GlAn7NXeUGhBOC/2M2a2LomEuGSb2L41qyn7oHrQYSHHrHq4DJtNTlZIey5ob7zIzzw3RjigZ8AgAtzqjRvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WliwLMXR; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e8fec0968so34753715e9.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 02:16:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706523400; x=1707128200; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NKy2gXfjJl67cLJ142YEpKmEzsXs/wjVnlS7KJyhEVM=;
+        b=WliwLMXRtTGdulxYWnj0Sw7G05KaAUFXAzuh3E3URhTJTXToxChS/R5/DzKimA4Ltd
+         mdfQ5Z9oIwHl8UhvY4npeH1Z4F9qOWCEEhXDG1FkfzHwbgN+HmpArHGeLUoq+A3Cv8f4
+         XTjcHWSJXFnTQjoWjR7cTW99szaf0ww6w+RT2EhLmmdPes1uMD1agXxYrMOtefAGzrfU
+         2zGE2PqTup7ufMTlgIPIUIswnoG0mgVJgxdAa4S/3UAWYGVYGYTXRh7WQRv1v5O2SXWI
+         8PUave/05EBPl5qu4AxzfktfxTHYeFlQqMXG91NYR6WyVXc6/sDcmFlWlqiv5WGCeNG5
+         h7gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706523400; x=1707128200;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NKy2gXfjJl67cLJ142YEpKmEzsXs/wjVnlS7KJyhEVM=;
+        b=Em7YDwkxzg9d0f0khWK7wNqQSkcmpyu2Jbd2qP6Wc0M7AAzCaM71yscLAHfv2xUeqA
+         r+jdLdDvVXICNOAjuFKIel8HF5rU0xCbhIswv+BrvYm/UvjLehj/Pev2awPXeSqluFg0
+         gmbCg6T6yrIVK247OovcTnCG1dVmzsqlR5EKKg8LZtJ463VoNzO8aSKX6okfIh087PUD
+         6F2zj6uCYzCDcHep2wOKm3vVxa+ihUl8JsvQmtGeLjInjVDUUaEQ4owjMWTZmQjbhI4Y
+         T+uiHCnX5AjH5wULBWFVu67xyridd1lmgevbNLCi4qfg5wY8vl1ESfeKq+gijwzzziU3
+         aa3w==
+X-Gm-Message-State: AOJu0YxMtUMp1iJc2Dv0A5fjHa3JEInl+4TS0ytUbMk5XVtzzWhBohnQ
+	eY6gSlA4bm2lFlaBcfjb/+gngK+NPl1FSmv2lv1yi9pPxJAjO8mH76xLal5LUyY=
+X-Google-Smtp-Source: AGHT+IH5bjN8ErIkVNKTlTrzFnhf+0GWnSJB3KhJvYnwW8dR3tdpM+mdQ3RTeCDlNT0u0sOij3Dtdw==
+X-Received: by 2002:a5d:438e:0:b0:33a:e478:94a6 with SMTP id i14-20020a5d438e000000b0033ae47894a6mr3466412wrq.31.1706523400116;
+        Mon, 29 Jan 2024 02:16:40 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id cl10-20020a5d5f0a000000b0033aeb20f5b8sm3292519wrb.13.2024.01.29.02.16.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jan 2024 02:16:39 -0800 (PST)
+Date: Mon, 29 Jan 2024 13:16:36 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: David Laight <David.Laight@aculab.com>
+Cc: 'Jani Nikula' <jani.nikula@linux.intel.com>,
+	"'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+	'Linus Torvalds' <torvalds@linux-foundation.org>,
+	'Netdev' <netdev@vger.kernel.org>,
+	"'dri-devel@lists.freedesktop.org'" <dri-devel@lists.freedesktop.org>,
+	'Jens Axboe' <axboe@kernel.dk>,
+	"'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+	'Christoph Hellwig' <hch@infradead.org>,
+	"'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>,
+	'Andrew Morton' <akpm@linux-foundation.org>,
+	'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
+	"'David S . Miller'" <davem@davemloft.net>
+Subject: Re: [PATCH next 10/11] block: Use a boolean expression instead of
  max() on booleans
-In-Reply-To: <963d1126612347dd8c398a9449170e16@AcuMS.aculab.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <6eaa0f91-104f-4efb-9ea3-7c7f21e75842@moroto.mountain>
 References: <0ca26166dd2a4ff5a674b84704ff1517@AcuMS.aculab.com>
  <b564df3f987e4371a445840df1f70561@AcuMS.aculab.com>
  <87sf2gjyn9.fsf@intel.com>
  <963d1126612347dd8c398a9449170e16@AcuMS.aculab.com>
-Date: Mon, 29 Jan 2024 11:47:37 +0200
-Message-ID: <87il3cjwsm.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <963d1126612347dd8c398a9449170e16@AcuMS.aculab.com>
 
-On Mon, 29 Jan 2024, David Laight <David.Laight@ACULAB.COM> wrote:
+On Mon, Jan 29, 2024 at 09:22:40AM +0000, David Laight wrote:
 > From: Jani Nikula
->> Sent: 29 January 2024 09:08
->> 
->> On Sun, 28 Jan 2024, David Laight <David.Laight@ACULAB.COM> wrote:
->> > blk_stack_limits() contains:
->> > 	t->zoned = max(t->zoned, b->zoned);
->> > These are bool, so it is just a bitwise or.
->> 
->> Should be a logical or, really. And || in code.
->
+> > Sent: 29 January 2024 09:08
+> > 
+> > On Sun, 28 Jan 2024, David Laight <David.Laight@ACULAB.COM> wrote:
+> > > blk_stack_limits() contains:
+> > > 	t->zoned = max(t->zoned, b->zoned);
+> > > These are bool, so it is just a bitwise or.
+> > 
+> > Should be a logical or, really. And || in code.
+> 
 > Not really, bitwise is fine for bool (especially for 'or')
 > and generates better code.
 
-Logical operations for booleans are more readable for humans than
-bitwise. And semantically correct.
+For | vs || the type doesn't make a difference...  It makes a difference
+for AND.  "0x1 & 0x10" vs "0x1 && 0x10".
 
-With a = b || c you know what happens regardless of the types in
-question. a = b | c you have to look up the types to know what's going
-on.
-
-To me, better code only matters if it's a hotpath.
-
-That said, not my are of maintenance, so *shrug*.
-
-
-BR,
-Jani.
-
-
--- 
-Jani Nikula, Intel
+regards,
+dan carpenter
 
