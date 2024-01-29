@@ -1,119 +1,126 @@
-Return-Path: <linux-btrfs+bounces-1894-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1895-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 972968402A4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 11:16:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C5B18405AF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 13:54:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5352F28398B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 10:16:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F07C31F24329
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 12:54:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1E85647A;
-	Mon, 29 Jan 2024 10:16:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E88B627E3;
+	Mon, 29 Jan 2024 12:49:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WliwLMXR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uL8AxVBF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C603E55E71
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 10:16:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A466166D
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 12:49:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706523403; cv=none; b=rNVH/FIuU3CbsQe3yIUXp6wjxsSw7w/KlqDIENkAx9KhskGawl7pxemouw6W8oAus9ytcc9lSdstziVzL/AXRuH8w5FLgkSkmE/oMvjAkXJ+Ar6b7ZQvt+JdAgbU2ds/LoBlKjJl3Hh2PcN0uBiD2xaTqdYoYYxkK0L7lguCqEo=
+	t=1706532581; cv=none; b=KHVHSdhAPAiK38c5Gm90VGMLJ0PtyAiQbGEneWEOvsVvi8/fVgvEct7hAmn0zdOX5y4nuoyr56Dlmp6pepPDaHxRLBpiRu+2NmztLrgtpKNhfwK2wJedjnFcpplOTcEKczZ/qdaGKFl1wysRemWQshfV24s9s1/o29lRub9wa8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706523403; c=relaxed/simple;
-	bh=9bB/+pYSzIDzHnesJvCHGI9xL4OX/zPz3pf6v9GMJ88=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qmOgekBzX131cpga5t0v8x57Co+sGmAnozwavURdfRJ8KzbydKdZPfc4N865v0diQF2Hik8UoBFUEQFK0VpSGA5GlAn7NXeUGhBOC/2M2a2LomEuGSb2L41qyn7oHrQYSHHrHq4DJtNTlZIey5ob7zIzzw3RjigZ8AgAtzqjRvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WliwLMXR; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40e8fec0968so34753715e9.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 02:16:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706523400; x=1707128200; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NKy2gXfjJl67cLJ142YEpKmEzsXs/wjVnlS7KJyhEVM=;
-        b=WliwLMXRtTGdulxYWnj0Sw7G05KaAUFXAzuh3E3URhTJTXToxChS/R5/DzKimA4Ltd
-         mdfQ5Z9oIwHl8UhvY4npeH1Z4F9qOWCEEhXDG1FkfzHwbgN+HmpArHGeLUoq+A3Cv8f4
-         XTjcHWSJXFnTQjoWjR7cTW99szaf0ww6w+RT2EhLmmdPes1uMD1agXxYrMOtefAGzrfU
-         2zGE2PqTup7ufMTlgIPIUIswnoG0mgVJgxdAa4S/3UAWYGVYGYTXRh7WQRv1v5O2SXWI
-         8PUave/05EBPl5qu4AxzfktfxTHYeFlQqMXG91NYR6WyVXc6/sDcmFlWlqiv5WGCeNG5
-         h7gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706523400; x=1707128200;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NKy2gXfjJl67cLJ142YEpKmEzsXs/wjVnlS7KJyhEVM=;
-        b=Em7YDwkxzg9d0f0khWK7wNqQSkcmpyu2Jbd2qP6Wc0M7AAzCaM71yscLAHfv2xUeqA
-         r+jdLdDvVXICNOAjuFKIel8HF5rU0xCbhIswv+BrvYm/UvjLehj/Pev2awPXeSqluFg0
-         gmbCg6T6yrIVK247OovcTnCG1dVmzsqlR5EKKg8LZtJ463VoNzO8aSKX6okfIh087PUD
-         6F2zj6uCYzCDcHep2wOKm3vVxa+ihUl8JsvQmtGeLjInjVDUUaEQ4owjMWTZmQjbhI4Y
-         T+uiHCnX5AjH5wULBWFVu67xyridd1lmgevbNLCi4qfg5wY8vl1ESfeKq+gijwzzziU3
-         aa3w==
-X-Gm-Message-State: AOJu0YxMtUMp1iJc2Dv0A5fjHa3JEInl+4TS0ytUbMk5XVtzzWhBohnQ
-	eY6gSlA4bm2lFlaBcfjb/+gngK+NPl1FSmv2lv1yi9pPxJAjO8mH76xLal5LUyY=
-X-Google-Smtp-Source: AGHT+IH5bjN8ErIkVNKTlTrzFnhf+0GWnSJB3KhJvYnwW8dR3tdpM+mdQ3RTeCDlNT0u0sOij3Dtdw==
-X-Received: by 2002:a5d:438e:0:b0:33a:e478:94a6 with SMTP id i14-20020a5d438e000000b0033ae47894a6mr3466412wrq.31.1706523400116;
-        Mon, 29 Jan 2024 02:16:40 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id cl10-20020a5d5f0a000000b0033aeb20f5b8sm3292519wrb.13.2024.01.29.02.16.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jan 2024 02:16:39 -0800 (PST)
-Date: Mon, 29 Jan 2024 13:16:36 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: David Laight <David.Laight@aculab.com>
-Cc: 'Jani Nikula' <jani.nikula@linux.intel.com>,
-	"'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-	'Linus Torvalds' <torvalds@linux-foundation.org>,
-	'Netdev' <netdev@vger.kernel.org>,
-	"'dri-devel@lists.freedesktop.org'" <dri-devel@lists.freedesktop.org>,
-	'Jens Axboe' <axboe@kernel.dk>,
-	"'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-	'Christoph Hellwig' <hch@infradead.org>,
-	"'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>,
-	'Andrew Morton' <akpm@linux-foundation.org>,
-	'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-	"'David S . Miller'" <davem@davemloft.net>
-Subject: Re: [PATCH next 10/11] block: Use a boolean expression instead of
- max() on booleans
-Message-ID: <6eaa0f91-104f-4efb-9ea3-7c7f21e75842@moroto.mountain>
-References: <0ca26166dd2a4ff5a674b84704ff1517@AcuMS.aculab.com>
- <b564df3f987e4371a445840df1f70561@AcuMS.aculab.com>
- <87sf2gjyn9.fsf@intel.com>
- <963d1126612347dd8c398a9449170e16@AcuMS.aculab.com>
+	s=arc-20240116; t=1706532581; c=relaxed/simple;
+	bh=I+HAGvulRvz7eCOBWABcS7QjUuzLQqJO/q8ytCgFD/0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m/avRSW7avOf08liBHnDAmgBr0hwPtX0t82TLguq39GUb5PGRVNZlfuEcYSBn+BYX436YaZUAShmr+ueHo5GfdDK19t4JiIThsJIS3dwmHKD5+Z1YtPNqhY1fKARGU4W1qWG66tX0W66CvHQALCiFrQIoD0+aOM3riIWBv8qOSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uL8AxVBF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B43BEC433F1
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 12:49:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706532580;
+	bh=I+HAGvulRvz7eCOBWABcS7QjUuzLQqJO/q8ytCgFD/0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=uL8AxVBFTh/DUMRz0PGnom7SZIXW/FuVrNP8iiKrm6CWBKIkzrSgduUtC/mdyxLDH
+	 8jTC2OVb1c/OxMDoFsam7hRJIOZjpwtvq/2VM9GK7ylkbh1onognfpo7C2i/UJU9a0
+	 +BhvJt/jmeh11GHN32la6VbOs6b5ZMg+HS2d9uJFp/XzhyNTaXNYnuJPYV3YxkwoMi
+	 noPURDXqUvrqEBrDOmFWXHEuppD9SuvkjvCVwLwJdCekXseFsyheEJmNnAvd66SEeQ
+	 aOLTQOlYcEnEU/FD7oqxdNOI5bE/JjYQT6gFrJ0TvnMu5UI9Dx21lbthuGJYBUQT0p
+	 +ZOi0+tI6lymA==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55ee9805da7so1381766a12.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 04:49:40 -0800 (PST)
+X-Gm-Message-State: AOJu0YxNW29yAjRC3BRShwv+0MB+EW/eskG/d39UYIo9xOweT34+I5Sh
+	/mg9pKPoO4LDId6zjlUF8zZKEe3qmgxhUTM/K8NlymM94DX26IK/ATNbiLMzY3vpn9dlFdS2m2A
+	D1s8g0q4xxXnXiemCjd4kZWO6Srs=
+X-Google-Smtp-Source: AGHT+IHGwpwxia9VmX1CB/3byUvE6N7XI4c3zllwz0uFZpBFHx+8R4cN3z5evhKHVm9nNBMR/sRYlj3bvP2MtVC6Mn4=
+X-Received: by 2002:a17:906:89b:b0:a35:cbf1:c254 with SMTP id
+ n27-20020a170906089b00b00a35cbf1c254mr1270047eje.11.1706532579127; Mon, 29
+ Jan 2024 04:49:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <963d1126612347dd8c398a9449170e16@AcuMS.aculab.com>
+References: <cover.1706177914.git.fdmanana@suse.com> <c0649a6d95144ca7040762efe467ac6ee707ac0b.camel@intelfx.name>
+In-Reply-To: <c0649a6d95144ca7040762efe467ac6ee707ac0b.camel@intelfx.name>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 29 Jan 2024 12:49:02 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6802ayLHUJFztzZAVzBLJAGdFx=6FHNNy87+obZXXZpQ@mail.gmail.com>
+Message-ID: <CAL3q7H6802ayLHUJFztzZAVzBLJAGdFx=6FHNNy87+obZXXZpQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] btrfs: some fixes around unused block deletion
+To: Ivan Shapovalov <intelfx@intelfx.name>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29, 2024 at 09:22:40AM +0000, David Laight wrote:
-> From: Jani Nikula
-> > Sent: 29 January 2024 09:08
-> > 
-> > On Sun, 28 Jan 2024, David Laight <David.Laight@ACULAB.COM> wrote:
-> > > blk_stack_limits() contains:
-> > > 	t->zoned = max(t->zoned, b->zoned);
-> > > These are bool, so it is just a bitwise or.
-> > 
-> > Should be a logical or, really. And || in code.
-> 
-> Not really, bitwise is fine for bool (especially for 'or')
-> and generates better code.
+On Sat, Jan 27, 2024 at 9:39=E2=80=AFPM Ivan Shapovalov <intelfx@intelfx.na=
+me> wrote:
+>
+> On 2024-01-25 at 10:26 +0000, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > These fix a couple issues regarding block group deletion, either
+> > deleting
+> > an unused block group when it shouldn't be deleted due to outstanding
+> > reservations relying on the block group, or unused block groups never
+> > getting deleted since they were created due to pessimistic space
+> > reservation and ended up never being used. More details on the change
+> > logs of each patch.
+> >
+> > Filipe Manana (5):
+> >   btrfs: add and use helper to check if block group is used
+> >   btrfs: do not delete unused block group if it may be used soon
+> >   btrfs: add new unused block groups to the list of unused block
+> > groups
+> >   btrfs: document what the spinlock unused_bgs_lock protects
+> >   btrfs: add comment about list_is_singular() use at
+> > btrfs_delete_unused_bgs()
+> >
+> >  fs/btrfs/block-group.c | 87
+> > +++++++++++++++++++++++++++++++++++++++++-
+> >  fs/btrfs/block-group.h |  7 ++++
+> >  fs/btrfs/fs.h          |  3 ++
+> >  3 files changed, 95 insertions(+), 2 deletions(-)
+> >
+>
+> Still broken for me, unfortunately.
 
-For | vs || the type doesn't make a difference...  It makes a difference
-for AND.  "0x1 & 0x10" vs "0x1 && 0x10".
+I'm curious about your workload. Is it something like continuous,
+non-stop deduplication or cloning for example?
 
-regards,
-dan carpenter
+Did you actually experience -ENOSPC errors?
+
+Also, if you unmount and then mount again the fs, any unused block
+groups should be scheduled for deletion once the cleaner thread runs,
+at least if there's not a huge workload for a minute or two.
+
+On top of this patchset, can you try the following patch?
+
+https://pastebin.com/raw/U7b0e03g
+
+If that still doesn't help, try the following the following patch on
+top of this patchset:
+
+https://pastebin.com/raw/rKiSmG5w
+
+Thanks.
+
+>
+> --
+> Ivan Shapovalov / intelfx /
 
