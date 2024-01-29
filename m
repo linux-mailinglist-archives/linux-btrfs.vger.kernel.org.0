@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-1888-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1889-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D5C68401FE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 10:46:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32D808401FF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 10:47:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA28BB21349
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 09:46:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD601284E6B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jan 2024 09:46:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9107955E57;
-	Mon, 29 Jan 2024 09:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E8F55E74;
+	Mon, 29 Jan 2024 09:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="F2JJ+qwV";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lvflaDxx"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="H0txIqaI";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bhEjZpwf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D347255777
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A73E755C1B
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706521596; cv=none; b=hljsAgch7Z38UjgliYlx2QOnKrPItW4ocV3ovxPpgeaawfOR1RqtIiAzYTV+lGReC87wCFXs6HPPE2G0/GNnbLTiguBxzq0tjYcZxbkEeLrl5hf72bRN9YABGGrkVRE9MqgzPu9artGeIZqU82mUNhCDbYOi9lk2S4hBg+zGyc0=
+	t=1706521597; cv=none; b=OQa61WEd94EZGYgUFVtDYKu411IChBn+rvFDHDLOcIkrDEUV2jX+o3fGXcGT3jl5GoQ49Gq2vVUB1qp4PbEKzt+n7JVwhnM3MuOKEQWS0CXL00mRzQxaWSiOK2ppi3Jf4br68WktVdQWO8OiGguai9QpcIylCF/AmVC1Y81s6EU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706521596; c=relaxed/simple;
-	bh=Woc5nAF6KlZ352i08jQTfp8Jl4JbwoA1NQh6vucpXCA=;
+	s=arc-20240116; t=1706521597; c=relaxed/simple;
+	bh=CuRDPeNbl/MonYu0HsMdvIx/57XtBeTdrxFPYXoDwFk=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ajc0SzSIGIXAcSSG7N0llrtnvMfRCk4VDWDw//7BGQ1ejWbTe+d/8lE+zqCzp1+NusB1Wd4AUvranWXkWIIL120NKD/nk3bWxc0XmdLZ/T5eW2C1uOpYn4f7MLoDIHxJGqXNvl+z51qECOSJpI0qMZB4xp3CEkMc331yKDIcawU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=F2JJ+qwV; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lvflaDxx; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=kthyyhrI2bj0383hwalQN4QHEEhX2l0ORkYBg8PUF09scrXgAg137jbcMOlCD4CSjodir00nIgbeGYAr2azW2QbySDnINWLOZCHKFfCbj4KKsrDIm8kmfdQKJ8K1H2NUU4ks/o3zzypVdgQ6uT0J3/dLMzyni4jtDskUVK8H7J0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=H0txIqaI; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bhEjZpwf; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C48FF1F7D9
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:32 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E933621C5E
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706521594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jaVGzLICDv/eRaqPAln1NRampoW95STMMlLLsg82RDY=;
+	b=H0txIqaIZONghuOX4IptyjoTT3XVukja3IDDfwy3GgfXAniHCDCmR8NFfxjprp7hJalJ6P
+	j5Rj5aJIs7BwqRNGM+DzVbq6gZRmfCyx4uwH224CHwvDpMT3uDp5FwUgtNhgXIyIknsANR
+	fOw1leUuv80jZQ3Dnt8JImi9SKomRX8=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
 	t=1706521593; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=S9LSqrHVvtZsWW/x2Ts9UVHabs7Y5TPavQEPYOZJe1U=;
-	b=F2JJ+qwVaKfqdw5NhMRvit1DHGLwDGBIG5n00DLqy+Y6rvc9+zE/wTvum9V/gSWJH6A8EL
-	H5D9i87dPBvSbG3Y8M8ZiuCSPP4+C3PbZ/S2OYrX44eqnxRQibB5RF25HhTaXWprMI+7bI
-	YiWByIDosDhW5uA+DPKprO5WRC8FvD8=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706521592; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S9LSqrHVvtZsWW/x2Ts9UVHabs7Y5TPavQEPYOZJe1U=;
-	b=lvflaDxxStg2YtkwGhPfkpCm1WwzgZzMkbPtfkKuXlFakdNU9BMpcBdgZefvxQymAGduS6
-	gYpRvOgXSUMNaSHv3YmyWxQbcAqp1Xi0gMR4nHwAEL07KoWvD47RWYS5zZuM4Feq0/D4pl
-	bsdHUBpMp+jU9cWkYelyJIaIKkQRHkU=
+	bh=jaVGzLICDv/eRaqPAln1NRampoW95STMMlLLsg82RDY=;
+	b=bhEjZpwfdrkXx7qUR6jd2zyClGZ/gLqVw1lh0BB7NfCRJX+rcD8vLnlH8Q+3l8td/+iV3x
+	Cfe8X9KDOp20O+B8z9g0umWKhd4eamgwF5J0HU4U7s6NR6sn9rF8okKVOz4gQl10AENDCm
+	h3eeh9/2SPPHddsxQ/007+UFv3DbRUY=
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0439213911
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:31 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 3263913911
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id oK6HLvdzt2W/RwAAn2gu4w
+	id CN/FOfhzt2W/RwAAn2gu4w
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:31 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jan 2024 09:46:32 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/6] btrfs: compression: convert page allocation to folio interfaces
-Date: Mon, 29 Jan 2024 20:16:07 +1030
-Message-ID: <764525d863b7701bc93f7939078ded3d9962dfe0.1706521511.git.wqu@suse.com>
+Subject: [PATCH 3/6] btrfs: make insert_inline_extent() to accept one page directly
+Date: Mon, 29 Jan 2024 20:16:08 +1030
+Message-ID: <25054a001f14e9461f80638814831b8a487a2b2a.1706521511.git.wqu@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1706521511.git.wqu@suse.com>
 References: <cover.1706521511.git.wqu@suse.com>
@@ -82,12 +82,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=lvflaDxx
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [0.49 / 50.00];
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=bhEjZpwf
+X-Spamd-Result: default: False [1.69 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
@@ -99,236 +96,143 @@ X-Spamd-Result: default: False [0.49 / 50.00];
 	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	 BROKEN_CONTENT_TYPE(1.50)[];
 	 RCPT_COUNT_ONE(0.00)[1];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 TO_DN_NONE(0.00)[];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	 DKIM_TRACE(0.00)[suse.com:+];
 	 MX_GOOD(-0.01)[];
 	 MID_CONTAINS_FROM(1.00)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 RCVD_TLS_ALL(0.00)[];
 	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: 0.49
-X-Rspamd-Queue-Id: C48FF1F7D9
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 1.69
+X-Rspamd-Queue-Id: E933621C5E
+X-Spam-Level: *
 X-Spam-Flag: NO
+X-Spamd-Bar: +
 
-Currently we have two wrappers to allocate and free a page for
-compression usage:
+Since our inline extent can not accept anything larger than a sector,
+there is really no need to pass all the compressed pages to
+insert_inline_extent().
 
-- btrfs_alloc_compr_page()
-- btrfs_free_compr_page()
-
-The allocator would try to grab a page from the pool, and only allocate
-a new page if the pool is empty.
-
-The reclaimer would check if the pool is full, and if not full it would
-put the page into the pool.
-
-This patch would convert both helpers to use folio interfaces, and
-allowing further conversion of compression path to folios.
+And just in case, expand the ASSERT()s to make sure we only try inline
+with compressed size no larger than sectorsize.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c | 24 ++++++++++++------------
- fs/btrfs/compression.h |  4 ++--
- fs/btrfs/inode.c       |  4 ++--
- fs/btrfs/lzo.c         |  4 ++--
- fs/btrfs/zlib.c        |  6 +++---
- fs/btrfs/zstd.c        |  6 +++---
- 6 files changed, 24 insertions(+), 24 deletions(-)
+ fs/btrfs/inode.c | 47 +++++++++++++++++++++++++----------------------
+ 1 file changed, 25 insertions(+), 22 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 165ed35b4f9f..9c2c86f69588 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -161,7 +161,7 @@ static int compression_decompress(int type, struct list_head *ws,
- static void btrfs_free_compressed_pages(struct compressed_bio *cb)
- {
- 	for (unsigned int i = 0; i < cb->nr_pages; i++)
--		btrfs_free_compr_page(cb->compressed_pages[i]);
-+		btrfs_free_compr_folio(page_folio(cb->compressed_pages[i]));
- 	kfree(cb->compressed_pages);
- }
- 
-@@ -223,25 +223,25 @@ static unsigned long btrfs_compr_pool_scan(struct shrinker *sh, struct shrink_co
- /*
-  * Common wrappers for page allocation from compression wrappers
-  */
--struct page *btrfs_alloc_compr_page(void)
-+struct folio *btrfs_alloc_compr_folio(void)
- {
--	struct page *page = NULL;
-+	struct folio *folio = NULL;
- 
- 	spin_lock(&compr_pool.lock);
- 	if (compr_pool.count > 0) {
--		page = list_first_entry(&compr_pool.list, struct page, lru);
--		list_del_init(&page->lru);
-+		folio = list_first_entry(&compr_pool.list, struct folio, lru);
-+		list_del_init(&folio->lru);
- 		compr_pool.count--;
- 	}
- 	spin_unlock(&compr_pool.lock);
- 
--	if (page)
--		return page;
-+	if (folio)
-+		return folio;
- 
--	return alloc_page(GFP_NOFS);
-+	return folio_alloc(GFP_NOFS, 0);
- }
- 
--void btrfs_free_compr_page(struct page *page)
-+void btrfs_free_compr_folio(struct folio *folio)
- {
- 	bool do_free = false;
- 
-@@ -249,7 +249,7 @@ void btrfs_free_compr_page(struct page *page)
- 	if (compr_pool.count > compr_pool.thresh) {
- 		do_free = true;
- 	} else {
--		list_add(&page->lru, &compr_pool.list);
-+		list_add(&folio->lru, &compr_pool.list);
- 		compr_pool.count++;
- 	}
- 	spin_unlock(&compr_pool.lock);
-@@ -257,8 +257,8 @@ void btrfs_free_compr_page(struct page *page)
- 	if (!do_free)
- 		return;
- 
--	ASSERT(page_ref_count(page) == 1);
--	put_page(page);
-+	ASSERT(folio_ref_count(folio) == 1);
-+	folio_put(folio);
- }
- 
- static void end_bbio_comprssed_read(struct btrfs_bio *bbio)
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 427a0c2cd5cc..7fc3145bfbed 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -98,8 +98,8 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio);
- 
- unsigned int btrfs_compress_str2level(unsigned int type, const char *str);
- 
--struct page *btrfs_alloc_compr_page(void);
--void btrfs_free_compr_page(struct page *page);
-+struct folio *btrfs_alloc_compr_folio(void);
-+void btrfs_free_compr_folio(struct folio *folio);
- 
- enum btrfs_compression_type {
- 	BTRFS_COMPRESS_NONE  = 0,
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6734717350e3..f057a0a147ac 100644
+index f057a0a147ac..daf13f45fccd 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -1044,7 +1044,7 @@ static void compress_file_range(struct btrfs_work *work)
- 	if (pages) {
- 		for (i = 0; i < nr_pages; i++) {
- 			WARN_ON(pages[i]->mapping);
--			btrfs_free_compr_page(pages[i]);
-+			btrfs_free_compr_folio(page_folio(pages[i]));
- 		}
- 		kfree(pages);
- 	}
-@@ -1059,7 +1059,7 @@ static void free_async_extent_pages(struct async_extent *async_extent)
+@@ -512,12 +512,13 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
+ 				struct btrfs_inode *inode, bool extent_inserted,
+ 				size_t size, size_t compressed_size,
+ 				int compress_type,
+-				struct page **compressed_pages,
++				struct page *compressed_page,
+ 				bool update_i_size)
+ {
+ 	struct btrfs_root *root = inode->root;
+ 	struct extent_buffer *leaf;
+ 	struct page *page = NULL;
++	const u32 sectorsize = trans->fs_info->sectorsize;
+ 	char *kaddr;
+ 	unsigned long ptr;
+ 	struct btrfs_file_extent_item *ei;
+@@ -525,10 +526,23 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
+ 	size_t cur_size = size;
+ 	u64 i_size;
  
- 	for (i = 0; i < async_extent->nr_pages; i++) {
- 		WARN_ON(async_extent->pages[i]->mapping);
--		btrfs_free_compr_page(async_extent->pages[i]);
-+		btrfs_free_compr_folio(page_folio(async_extent->pages[i]));
- 	}
- 	kfree(async_extent->pages);
- 	async_extent->nr_pages = 0;
-diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
-index fe7e08a4199c..262305025aa7 100644
---- a/fs/btrfs/lzo.c
-+++ b/fs/btrfs/lzo.c
-@@ -152,7 +152,7 @@ static int copy_compressed_data_to_page(char *compressed_data,
- 	cur_page = out_pages[*cur_out / PAGE_SIZE];
- 	/* Allocate a new page */
- 	if (!cur_page) {
--		cur_page = btrfs_alloc_compr_page();
-+		cur_page = folio_page(btrfs_alloc_compr_folio(), 0);
- 		if (!cur_page)
- 			return -ENOMEM;
- 		out_pages[*cur_out / PAGE_SIZE] = cur_page;
-@@ -178,7 +178,7 @@ static int copy_compressed_data_to_page(char *compressed_data,
- 		cur_page = out_pages[*cur_out / PAGE_SIZE];
- 		/* Allocate a new page */
- 		if (!cur_page) {
--			cur_page = btrfs_alloc_compr_page();
-+			cur_page = folio_page(btrfs_alloc_compr_folio(), 0);
- 			if (!cur_page)
- 				return -ENOMEM;
- 			out_pages[*cur_out / PAGE_SIZE] = cur_page;
-diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
-index 171c40712516..306a3f0bee11 100644
---- a/fs/btrfs/zlib.c
-+++ b/fs/btrfs/zlib.c
-@@ -121,7 +121,7 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
- 	workspace->strm.total_in = 0;
- 	workspace->strm.total_out = 0;
+-	ASSERT((compressed_size > 0 && compressed_pages) ||
+-	       (compressed_size == 0 && !compressed_pages));
++	/*
++	 * The decompressed size must still be no larger than a sector.
++	 * Under heavy race, we can have size == 0 passed in, but that
++	 * shouldn't be a big deal and we can continue the insertion.
++	 */
++	ASSERT(size <= sectorsize);
  
--	out_page = btrfs_alloc_compr_page();
-+	out_page = folio_page(btrfs_alloc_compr_folio(), 0);
- 	if (out_page == NULL) {
- 		ret = -ENOMEM;
+-	if (compressed_size && compressed_pages)
++	/*
++	 * The compressed size also need to be no larger than a sector.
++	 * That's also why we only need one page as the parameter.
++	 */
++	if (compressed_page)
++		ASSERT(compressed_size <= sectorsize);
++	else
++		ASSERT(compressed_size == 0);
++
++	if (compressed_size && compressed_page)
+ 		cur_size = compressed_size;
+ 
+ 	if (!extent_inserted) {
+@@ -556,21 +570,10 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
+ 	ptr = btrfs_file_extent_inline_start(ei);
+ 
+ 	if (compress_type != BTRFS_COMPRESS_NONE) {
+-		struct page *cpage;
+-		int i = 0;
+-		while (compressed_size > 0) {
+-			cpage = compressed_pages[i];
+-			cur_size = min_t(unsigned long, compressed_size,
+-				       PAGE_SIZE);
++		kaddr = kmap_local_page(compressed_page);
++		write_extent_buffer(leaf, kaddr, ptr, compressed_size);
++		kunmap_local(kaddr);
+ 
+-			kaddr = kmap_local_page(cpage);
+-			write_extent_buffer(leaf, kaddr, ptr, cur_size);
+-			kunmap_local(kaddr);
+-
+-			i++;
+-			ptr += cur_size;
+-			compressed_size -= cur_size;
+-		}
+ 		btrfs_set_file_extent_compression(leaf, ei,
+ 						  compress_type);
+ 	} else {
+@@ -620,7 +623,7 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
+ static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 size,
+ 					  size_t compressed_size,
+ 					  int compress_type,
+-					  struct page **compressed_pages,
++					  struct page *compressed_page,
+ 					  bool update_i_size)
+ {
+ 	struct btrfs_drop_extents_args drop_args = { 0 };
+@@ -668,7 +671,7 @@ static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 size,
+ 
+ 	ret = insert_inline_extent(trans, path, inode, drop_args.extent_inserted,
+ 				   size, compressed_size, compress_type,
+-				   compressed_pages, update_i_size);
++				   compressed_page, update_i_size);
+ 	if (ret && ret != -ENOSPC) {
+ 		btrfs_abort_transaction(trans, ret);
  		goto out;
-@@ -206,7 +206,7 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
- 				ret = -E2BIG;
- 				goto out;
- 			}
--			out_page = btrfs_alloc_compr_page();
-+			out_page = folio_page(btrfs_alloc_compr_folio(), 0);
- 			if (out_page == NULL) {
- 				ret = -ENOMEM;
- 				goto out;
-@@ -242,7 +242,7 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
- 				ret = -E2BIG;
- 				goto out;
- 			}
--			out_page = btrfs_alloc_compr_page();
-+			out_page = folio_page(btrfs_alloc_compr_folio(), 0);
- 			if (out_page == NULL) {
- 				ret = -ENOMEM;
- 				goto out;
-diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-index 88674771b4e6..2cdedae39147 100644
---- a/fs/btrfs/zstd.c
-+++ b/fs/btrfs/zstd.c
-@@ -412,7 +412,7 @@ int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
- 	workspace->in_buf.size = min_t(size_t, len, PAGE_SIZE);
- 
- 	/* Allocate and map in the output buffer */
--	out_page = btrfs_alloc_compr_page();
-+	out_page = folio_page(btrfs_alloc_compr_folio(), 0);
- 	if (out_page == NULL) {
- 		ret = -ENOMEM;
- 		goto out;
-@@ -457,7 +457,7 @@ int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
- 				ret = -E2BIG;
- 				goto out;
- 			}
--			out_page = btrfs_alloc_compr_page();
-+			out_page = folio_page(btrfs_alloc_compr_folio(), 0);
- 			if (out_page == NULL) {
- 				ret = -ENOMEM;
- 				goto out;
-@@ -517,7 +517,7 @@ int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
- 			ret = -E2BIG;
- 			goto out;
+@@ -975,7 +978,7 @@ static void compress_file_range(struct btrfs_work *work)
+ 		} else {
+ 			ret = cow_file_range_inline(inode, actual_end,
+ 						    total_compressed,
+-						    compress_type, pages,
++						    compress_type, pages[0],
+ 						    false);
  		}
--		out_page = btrfs_alloc_compr_page();
-+		out_page = folio_page(btrfs_alloc_compr_folio(), 0);
- 		if (out_page == NULL) {
- 			ret = -ENOMEM;
- 			goto out;
+ 		if (ret <= 0) {
+@@ -10385,7 +10388,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
+ 	if (start == 0 && encoded->unencoded_len == encoded->len &&
+ 	    encoded->unencoded_offset == 0) {
+ 		ret = cow_file_range_inline(inode, encoded->len, orig_count,
+-					    compression, pages, true);
++					    compression, pages[0], true);
+ 		if (ret <= 0) {
+ 			if (ret == 0)
+ 				ret = orig_count;
 -- 
 2.43.0
 
