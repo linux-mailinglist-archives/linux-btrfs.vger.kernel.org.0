@@ -1,73 +1,73 @@
-Return-Path: <linux-btrfs+bounces-1928-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1929-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2811B84175E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 01:13:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FBDB841834
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 02:15:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5631284925
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 00:13:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A07DE1F22D33
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 01:15:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4213922069;
-	Tue, 30 Jan 2024 00:13:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18D4A3611D;
+	Tue, 30 Jan 2024 01:14:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gGd7BBnP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CWgVHKIk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05C33D68;
-	Tue, 30 Jan 2024 00:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B7D92E40E;
+	Tue, 30 Jan 2024 01:14:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706573602; cv=none; b=t76giQfeESYxQlsNDqkqGhzV/jGSd1DxKcLXnZOYJDVkzLmAvSsC08A2ORPYPpKsKqoa7Xou2eC2C+ZeGqP9BfpA0qPSEKVT9Y3XqNeNl7JxaU0MDgncrtUfSHQVNYwzN8UnurXmY0krB2SrJs9qLYWUbAuNfDuO/TCpqGfLpYE=
+	t=1706577295; cv=none; b=g0RHkyOy3Xc3jXmQgtZyC3RmWV09JiOoRpYTFTeNqpEK9cy8I+J+ZFV+Bgt2JFuMaAiMBdhJ1OMwdUVd2DSvrIMb3J+kQblj9FdLhNyrp6qBZIohlosRA4vIl0ndBx9/i49KYV8vFbR5nmQ0q2bwe7k2nbexiGzgwXuU/v7KjC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706573602; c=relaxed/simple;
-	bh=/v4k9c7z0s5BJeRduspOMCH/i8kwYiHyfA6vcz9EGVA=;
+	s=arc-20240116; t=1706577295; c=relaxed/simple;
+	bh=eoJyiGl4ayk4YTXbAr04VCd2Mc9MYdaEbukUT9Fp/5M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pndIBV0KCN3RP5NpDPx1BBf9SX1o5W13FpOndvQZBUB3xkQdzBUEDcF7fhSjtltcCdfW7Otf5WZgGKifA+NEjaQnUm83tSQ5fAy0q2M7k47crAysOdfEuz7PDfYbewpGBePvFjnxO1JrlZtkNrr0nDfjZYHmvgt6WO5o94yPiew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gGd7BBnP; arc=none smtp.client-ip=209.85.219.47
+	 In-Reply-To:Content-Type; b=jesIxSfQhveixhW8jNA3rps5mS4Y1aIyADNR4b5SUTYicHTcS1/cuhPyDOeRG1PHadhgzF+EirhS3I+MadHmWRNHBQksicPROU/9VmyLdft+9ZlBLbItLaOVZZ52/nDSqfAGFfN2PT0/EoJWgMuT2cpIXIY+pZbOtDqSRVHuWSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CWgVHKIk; arc=none smtp.client-ip=209.85.219.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-68c4673eff5so14836616d6.1;
-        Mon, 29 Jan 2024 16:13:20 -0800 (PST)
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-68c53ed6c56so7121016d6.3;
+        Mon, 29 Jan 2024 17:14:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706573600; x=1707178400; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706577292; x=1707182092; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1cTjgRUa/OuT1Zow9lfJR4BHRyRrTMnOxetbaBI0D7k=;
-        b=gGd7BBnP1ovzMLeIFOVjWahSnrScTQ3qZ/FPzE+dlc3NiQDrhgYOL0xGmkWS1h7YZP
-         uzRRvO7+7IgtDHp6vAtOusgdPY453ulPmNCML1s0vYp3imx2y/M0+KGUCbTUyrRIMOwX
-         2i71rYiBVwInmWySueJTUhRRSs75udSh9/uR98+ukgWHeKO5LFu+bKkA71tSYTBuokd1
-         GrMpUE6VSiOCEk+Wxfa32dtSYEvQs9LqIBuNv8Lcwf6tDzKiRH7SJfHEv2aTlYybsT5k
-         ezG/+8HK0KFlpuctDff1FvVdtbKUS8kItZ4CM/RvIZ+RdOwRibryoyM+pXhU9WFeUcMP
-         LL1Q==
+        bh=e/aCaBG7yhYrHtqXVGKsvyj5q1AeIV6pyFfNUjCo8V0=;
+        b=CWgVHKIk/VW7wfXH/cwif1edm7P8YOyaKMHjp2kCgWEDQDSoUKCvwCapx44xkO/BnU
+         mDsAY/jSOvBr/TJ0JyBGQcHhbC7Wdz2OyTVS7qBxHSQqsBdoFQmwqW8og/VZulpeigkq
+         og9TjG3GHJxuYAeWK7yMwOAv8vtaCxF0qjS+dn3OGVMTLkvcLUnfCxQvrUg5LiullXBg
+         OiDxrRLi7JKbs/gdRFYGQMMmfAbnRRAEcYmljszHiTV0PhWjnHQp6wFMh4p89frACKsl
+         SCwwNy3GRdeTLTFBcSdZDn7N2Hm8E6ppHdOHt5E0XMoJtXhUnCAf4ihFdlSvj7nBCf+b
+         8DiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706573600; x=1707178400;
+        d=1e100.net; s=20230601; t=1706577292; x=1707182092;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1cTjgRUa/OuT1Zow9lfJR4BHRyRrTMnOxetbaBI0D7k=;
-        b=ddaU31QVA38ojGBBMlGxlj/O9Z1ts4wfzoxK3F4T05F333CJjXLeGkdpvMQQNylpKk
-         5GXl6TlZB+np3NHsRqVVewGKeQBcXb9qGKLiJex3TGo2E71AmAZSklasNCuEvz5w95Fe
-         lRRrfyX9jpeEx5mVyIR4E5ac8a79M0HSLdntvqjYuSLN7n4sXPbeDeClZFEI7/USQ/dd
-         gzLDTXt7l/2MtlUdo005teC9BZr2W3TZRYkPlAw5HsvZh+Z64d8Zcve3l3od8SNe4P4p
-         9n18uA8gP47bOgV9UL9BZtnQDmnIwGrGH3+Ah7bn7rH5aigR6SwEAPKr0ISl8eJheSIR
-         nBcg==
-X-Gm-Message-State: AOJu0YwjM01aH4KmSbEZ3aB8GjGMt9NBMIrTeOJOo9CJukSZWoURK+8I
-	JoPm2ZF4MWIhhcHUAEvbIbrh56LoZndzdN7oBYJINCmEvAQEtql6oHpRYiPreTTTIQ==
-X-Google-Smtp-Source: AGHT+IHH6hHDKm4nySIae5BxK+drQrnCA8T5/9zdN7Htn1zRhndn0EHzWb/IXqtzANbIwtv738w6VQ==
-X-Received: by 2002:a05:6214:2a8b:b0:68c:5e87:7032 with SMTP id jr11-20020a0562142a8b00b0068c5e877032mr387571qvb.40.1706573599739;
-        Mon, 29 Jan 2024 16:13:19 -0800 (PST)
+        bh=e/aCaBG7yhYrHtqXVGKsvyj5q1AeIV6pyFfNUjCo8V0=;
+        b=uY68Y1eJMYQNaw58RGozCjm0zhitJvbV6FRfmboxOx1PQ8n8ZkSTgwVktWQZyF9OIs
+         aeVag1rTKPPYu4Nqpi8NNHhM+qJSPvfx8+4uwnckXDtFkjzEOyLi61fSXC3jyDVk66cc
+         knbSuQEaLG+JUF78U7CSpTNqxmZDn3LjhuY57FFHWj8Kb9RRG7x7mNf7vJ9iDVKskNcU
+         Y8JKAVLkUrb7AuttcuGUiGfLwBgubAIl8wOcRNWsrD+koJsDR+FltJnfaEVV1T1unFGo
+         +ikkMphayR+7q6nrZI2mpHP6hIM+d+XIeUDralBIvMT98fXawpKnLdN5hwY0WDn3pZcc
+         HrDw==
+X-Gm-Message-State: AOJu0YwyD+AS8rosRoIFnS4EF8o6t2bpMYT/ooHbvf5fCXn6bJiVcr50
+	F3PZpnr5VQBUg5ecxa7DxerP4ziZdaFqo9jdxmunj6A93LYwFL8Z
+X-Google-Smtp-Source: AGHT+IEBL+y9RmTTPRXJWgmfIA3BgVl8nyNgmtSI7JAEYrZpS3GHYTxtiPjQdbBKmwD1Km5HR3U4nA==
+X-Received: by 2002:a05:6214:1d0d:b0:681:7ad3:db0a with SMTP id e13-20020a0562141d0d00b006817ad3db0amr7727553qvd.103.1706577292452;
+        Mon, 29 Jan 2024 17:14:52 -0800 (PST)
 Received: from [10.56.180.189] (184-057-057-014.res.spectrum.com. [184.57.57.14])
-        by smtp.gmail.com with ESMTPSA id pf1-20020a056214498100b0067f53e25d1esm3931087qvb.14.2024.01.29.16.13.18
+        by smtp.gmail.com with ESMTPSA id om8-20020a0562143d8800b0068c3d2ee00fsm3001919qvb.40.2024.01.29.17.14.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Jan 2024 16:13:19 -0800 (PST)
-Message-ID: <3107a023-3173-4b3d-9623-71812b1e7eb6@gmail.com>
-Date: Mon, 29 Jan 2024 19:13:17 -0500
+        Mon, 29 Jan 2024 17:14:52 -0800 (PST)
+Message-ID: <5b498690-5641-4070-97da-90a6a12c7b7f@gmail.com>
+Date: Mon, 29 Jan 2024 20:14:50 -0500
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,53 +77,110 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [LSF/MM/BPF TOPIC] Dropping page cache of individual fs
 Content-Language: en-US
-To: Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>
+To: Theodore Ts'o <tytso@mit.edu>, Dave Chinner <david@fromorbit.com>
 Cc: Christian Brauner <brauner@kernel.org>,
  lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org,
  linux-mm@kvack.org, linux-btrfs@vger.kernel.org,
- linux-block@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
+ linux-block@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+ Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>
 References: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
- <20240116114519.jcktectmk2thgagw@quack3>
- <20240117-tupfen-unqualifiziert-173af9bc68c8@brauner>
- <20240117143528.idmyeadhf4yzs5ck@quack3>
- <ZafpsO3XakIekWXx@casper.infradead.org>
+ <ZabtYQqakvxJVYjM@dread.disaster.area> <20240117061742.GM911245@mit.edu>
 From: Adrian Vovk <adrianvovk@gmail.com>
-In-Reply-To: <ZafpsO3XakIekWXx@casper.infradead.org>
+In-Reply-To: <20240117061742.GM911245@mit.edu>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hello! I'm the "GNOME people" who Christian is referring to
+On 1/17/24 01:17, Theodore Ts'o wrote:
+> What is the threat model that you are trying to protect against?  If
+> the attacker has access to the memory of the suspended processor, then
+> number of things you need to protect against becomes *vast*.  For one
+> thing, if you're going to blow away the LUKS encryption on suspend,
+> then during the resume process, *before* you allow general user
+> processes to start running again (when they might try to read from the
+> file system whose encryption key is no longer available, and thus will
+> be treated to EIO errors), you're going to have to request that user
+> to provide the encryption key, either directly or indirectly.
 
-On 1/17/24 09:52, Matthew Wilcox wrote:
-> I feel like we're in an XY trap [1].  What Christian actually wants is
-> to not be able to access the contents of a file while the device it's
-> on is suspended, and we've gone from there to "must drop the page cache".
+The threat we have in mind are cold-boot attacks, same as the threat 
+that dm-crypt protects against when it lets us wipe the LUKS volume 
+key.We want to limit the amount of plain-text user data an attacker can 
+acquire from a suspended system.
 
-What we really want is for the plaintext contents of the files to be 
-gone from memory while the dm-crypt device backing them is suspended.
+As I mention elsewhere in this thread, the key word for me is "limit". 
+I'm not expecting perfect security, but I'd like most plaintext file 
+contents to be removed from memory on suspend so that an attacker cannot 
+access most recently accessed files. Ideally it would be "all" not 
+"most", of course, but I'll happily take what's feasible
 
-Ultimately my goal is to limit the chance that an attacker with access 
-to a user's suspended laptop will be able to access the user's encrypted 
-data. I need to achieve this without forcing the user to completely log 
-out/power off/etc their system; it must be invisible to the user. The 
-key word here is limit; if we can remove _most_ files from memory _most_ 
-of the time Ithink luksSuspend would be a lot more useful against cold 
-boot than it is today.
+> And if the attacker has access to the suspended memory, is it
+> read-only access, or can the attacker modify the memory image to
+> include a trojan that records the encryption once it is demanded of
+> the user, and then mails it off to Moscow or Beijing or Fort Meade?
 
-I understand that perfectly wiping all the files out of memory without 
-completely unmounting the filesystem isn't feasible, and that's probably 
-OK for our use-case. As long as most files can be removed from memory 
-most of the time, anyway...
+Yes, it's read-only access.
 
-> We have numerous ways to intercept file reads and make them either
-> block or fail.  The obvious one to me is security_file_permission()
-> called from rw_verify_area().  Can we do everything we need with an LSM?
->
-> [1] https://meta.stackexchange.com/questions/66377/what-is-the-xy-problem
+If the attacker has write access to the memory image while the system is 
+suspended then it's complete game-over on all fronts. At that point they 
+can completely replace the kernel if they so choose. This is not 
+something I expect to be able to defend against outside of the solutions 
+you mention, but those are not feasible on commodity consumer hardware. 
+I'm looking to achieve the best we can with what we have. This is also 
+not an attack I've heard of in the wild against consumer hardware; I 
+know it's possible because I know people who've done it, but it takes 
+many weeks (at least) of research and effort to prepare for a given chip 
+- definitely not as easy as a cold-boot attack which can take seconds 
+and works pretty universally.
 
-As Christian mentioned: the LSM may be a good addition, but it would 
-have to be in addition to wiping the data out of the page cache, not 
-instead of. An LSM will not help against a cold boot attack
+> To address the whole set of problems, it might be that the answer
+> might lie in something like confidential compute, where the all of the
+> memory encrypted.  Now you don't need to worry about wiping the page
+> cache, since it's all encrypted.  Of course, you still need to solve
+> the problem of how to restablish the confidential compute keys after
+> it has been wiped as part of the suspend, but you needed to solve that
+> with the LUKS key anyway.
+
+Without special hardware support you'll need to re-establish keys via 
+unencrypted software, and unencrypted software can be replaced by an 
+attacker if they're able to write to RAM. So it doesn't solve the 
+problem you bring up. But anyway I feel this part of the discussion is 
+starting to border on theoretical...
+
+Though I suppose encrypting all the memory belonging to just the one 
+user with that user's LUKS volume key could be an alternative solution. 
+That way wiping out the key has the effect of "wiping out" all the 
+user's related memory, at least until we can re-authenticate and bring 
+it all back. But I suspect this would not only be extremely difficult to 
+implement in the kernel but would also have huge performance cost 
+without special hardware
+
+> Anoter potential approach is a bit more targetted, which is to mark
+> certain files as containing keying information, so the system can
+> focus on making sure those pages are wiped at suspend time.  It still
+> has issues, such as how the desire to wipe them from the memory at
+> suspend time interacts with mlock(), which is often done by programs
+> to prevent them from getting written to swap.  And of course, we still
+> need to worry about what to do if the file is pinned because it's
+> being accessed by RDMA or by sendfile(2) --- but perhaps a keyfile has
+> no business of being accessed via RDMA or blasted out (unencrypted!)
+> at high speed to a network connection via sendfile(2) --- and so
+> perhaps those sorts of things should be disallowed if the file is
+> marked as "this file contains secret keys --- treat it specially".
+
+Secret keys are not what we're trying to protect here necessarily. 
+Random user documents are often sensitive. People store tax documents, 
+corporate secrets, or any number of other sensitive things on their 
+computers. If an attacker can perform a cold boot attack on the device 
+then depending on how recently these tax documents or corporate secrets 
+were accessed they might just be in memory in plain text, which is not 
+good. No amount of protecting the keys prevents this.
+
+That said, having an extra security layer for secret keys would be 
+useful. There are definitely files that contain sensitive data, and it 
+would be useful to tell the kernel which files those are so that it can 
+treat them extra carefully in the ways you suggest. Maybe even avoid 
+putting them in plain text into the page cache? But this would have to 
+be an extra step, since it's not feasible to make the user mark all the 
+files that they consider to be sensitive
 
 Adrian
 
