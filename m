@@ -1,72 +1,72 @@
-Return-Path: <linux-btrfs+bounces-1932-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1933-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D33CD841B9B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 06:55:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AD2D841BB2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 07:01:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CB251F242DA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 05:55:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C479B22D4C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 06:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234F5381C1;
-	Tue, 30 Jan 2024 05:55:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4DAD381BB;
+	Tue, 30 Jan 2024 06:01:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eqHESeh/";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eqHESeh/"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="W05qUil7";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HXS/nNzs"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC6F381B0
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 05:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB181381B0
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 06:01:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706594114; cv=none; b=HCwkuQBmEorD9XKso59iwGcZef0gEbbVydJtUKP2Yycsuo1b8GRaxPQw1wdaaFgbpkvRXlrV/MgExvIW6UIX5/X2zR8iDq11KOdJnl6ClCMI7bKmYBf9Cg3Rg3bZDafImXFaSnK60SASUeeERGXQ4U1rw1fwnpwTExORPrEehf4=
+	t=1706594500; cv=none; b=qAA2meFrDdPbM6Q/d++T6LWZ/ZmwKw7yZfeyi3taczR0DvFdhQ6I6w2eqUNhW0BV/Qe0jnp6H2XlxtZpF+RfNYCEpz7m+0g8skHnYgdSliuznw2+SjPAUAfzQ6qR1hjsNKDqKD90WwL36eWhBiO0ovQQzQg631XhdOef74IEC3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706594114; c=relaxed/simple;
-	bh=14X5v0VAtx008yX+JnzpLgOys9BblFv9IPwS3rsn63A=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=ktnuFS1Ei0sjN8Sg0LL8Jh3D82X/WvffFsTGPPPY0r1tiBfhdZgd3ehL/MxH6m475aJYu7qJ/RiK8o4tMLiV9KsvQKPdw2FAqDUxUUTb8J8gHUbQXLXFhKG4OeEDa9cBjN+LRa7nsHkc8B1GjWvkpJvgBU9h2xDvMfvjbUl0gK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eqHESeh/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eqHESeh/; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1706594500; c=relaxed/simple;
+	bh=5S2hIEWDCocOZr0NjZN0Efgxo+Bd7rEtrn3pkrIS/X8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Sa9FSYD/8rw8vdxbEkCMPL6Hhckb920+Y2eK7/Pu6pv0035xakWV3zXpWpCzH2/nmlJPoIB+obo9scd3Ux+cTkxBGnENxF57w02cQrcHiNVCOlKPgG0mrW7qAZwy+Cx99acl4LcA74VLcwFH+fhw0O3fQXaqrRs+yfO8mQqOj4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=W05qUil7; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HXS/nNzs; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 084BD21FC3
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 05:55:09 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EFD191F82F
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 06:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706594109; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1706594496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ukY7oHJQTMFHbrCMzoBEmqsrKo3sXx6WH1SqhOQqDwc=;
-	b=eqHESeh/MxMH+S81pxGwBbJum6TUrcHd+oizKjGWADqz2qOnBtE8eJDhGuiONVSnBphB0Y
-	DF1pW8j9M8C20AhyTJjAnN+iJ29n8Nw9LW3l6RldMDOphtu3QjSrSftV2Stldn7TAc7mbc
-	NOBEoFHKBpocb3yr6zWm9FI+TWTyMhY=
+	bh=kGSIgKUYz4H0aQ5Hz7ECrKBkbBSsCVn/rXVTmQEHGqk=;
+	b=W05qUil7qxb9ODawyz0CwJHr0U1VMIwVgTNQIlNRo9GE6qbrdv9WdOKalYMl87/axC6IiC
+	pgRm7SNxt2LBDEc9qSYQXmXyqlRIn67WbVWvBL2QV4nhd1lO2G69NWriIlC7BjINB1V0fu
+	hOofaVgWTAUzK1SToL1HYIOTO6v7AXA=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706594109; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1706594495; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ukY7oHJQTMFHbrCMzoBEmqsrKo3sXx6WH1SqhOQqDwc=;
-	b=eqHESeh/MxMH+S81pxGwBbJum6TUrcHd+oizKjGWADqz2qOnBtE8eJDhGuiONVSnBphB0Y
-	DF1pW8j9M8C20AhyTJjAnN+iJ29n8Nw9LW3l6RldMDOphtu3QjSrSftV2Stldn7TAc7mbc
-	NOBEoFHKBpocb3yr6zWm9FI+TWTyMhY=
+	bh=kGSIgKUYz4H0aQ5Hz7ECrKBkbBSsCVn/rXVTmQEHGqk=;
+	b=HXS/nNzs5dLNYzKXpjYKH5ZoS+lAp42iLw4JlxbHoxWPkfGeVpZQAgkN8R7hG72JdE6aCy
+	Dal+SxYA0i/M4x0wA7I22nPJYl/bcAl9BAApKpLzqbO64CYpMjxGzMd2WcFg0hC4r8RTrH
+	OHnSLVgrh6vCxzJnCfXi2/DVp/73ie8=
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4623613462
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 05:55:08 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 39A6413462
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 06:01:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id T712AjyPuGW1PAAAn2gu4w
+	id 4s04O76QuGXaPQAAn2gu4w
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 05:55:08 +0000
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 06:01:34 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: mkfs: use flock() to properly prevent race with udev
-Date: Tue, 30 Jan 2024 16:24:50 +1030
-Message-ID: <37dc1f1eef2034fe4a5b836b8dd6efb8fae7352c.1706594068.git.wqu@suse.com>
+Subject: [PATCH v2] btrfs-progs: mkfs: use flock() to properly prevent race with udev
+Date: Tue, 30 Jan 2024 16:31:17 +1030
+Message-ID: <49bbb80e37990b0614f0929ac302560b27d2d933.1706594470.git.wqu@suse.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -75,7 +75,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
+Authentication-Results: smtp-out2.suse.de;
 	none
 X-Spam-Level: 
 X-Spam-Score: 0.70
@@ -171,6 +171,11 @@ prevent such race with udev.
 Issue: #734
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
+Changelog:
+v2:
+- Fix the patch prefix
+  From "btrfs" to "btrfs-progs"
+---
  common/device-utils.c | 114 ++++++++++++++++++++++++++++++++++++++++++
  common/device-utils.h |   3 ++
  mkfs/main.c           |  11 ++++
@@ -197,7 +202,7 @@ index f86120afa00c..88c21c66382d 100644
 @@ -48,6 +50,24 @@
  #define BLKDISCARD	_IO(0x12,119)
  #endif
- 
+
 +static LIST_HEAD(locked_devices);
 +
 +/*
@@ -324,7 +329,7 @@ index 853d17b5ab98..3a04348a0867 100644
 @@ -57,6 +57,9 @@ int btrfs_prepare_device(int fd, const char *file, u64 *block_count_ret,
  ssize_t btrfs_direct_pread(int fd, void *buf, size_t count, off_t offset);
  ssize_t btrfs_direct_pwrite(int fd, const void *buf, size_t count, off_t offset);
- 
+
 +int btrfs_flock_one_device(char *path);
 +void btrfs_unlock_all_devicecs(void);
 +
@@ -338,7 +343,7 @@ index b9882208dbd5..6e6cb81a4165 100644
 @@ -1723,6 +1723,15 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
  		}
  	}
- 
+
 +	/* Lock all devices to prevent race with udev probing. */
 +	for (i = 0; i < device_count; i++) {
 +		char *path = argv[optind + i - 1];
@@ -354,10 +359,10 @@ index b9882208dbd5..6e6cb81a4165 100644
 @@ -2079,6 +2088,7 @@ out:
  	free(label);
  	free(source_dir);
- 
+
 +	btrfs_unlock_all_devicecs();
  	return !!ret;
- 
+
  error:
 @@ -2090,6 +2100,7 @@ error:
  	free(prepare_ctx);
@@ -367,7 +372,7 @@ index b9882208dbd5..6e6cb81a4165 100644
  	exit(1);
  success:
  	exit(0);
--- 
+--
 2.43.0
 
 
