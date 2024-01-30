@@ -1,73 +1,51 @@
-Return-Path: <linux-btrfs+bounces-1933-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1934-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD2D841BB2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 07:01:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F48384223D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 12:06:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C479B22D4C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 06:01:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDDB71F2761C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 11:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4DAD381BB;
-	Tue, 30 Jan 2024 06:01:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C7167731;
+	Tue, 30 Jan 2024 11:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="W05qUil7";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HXS/nNzs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cW6Sfr8A"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB181381B0
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 06:01:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86BDA65BD1
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 11:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706594500; cv=none; b=qAA2meFrDdPbM6Q/d++T6LWZ/ZmwKw7yZfeyi3taczR0DvFdhQ6I6w2eqUNhW0BV/Qe0jnp6H2XlxtZpF+RfNYCEpz7m+0g8skHnYgdSliuznw2+SjPAUAfzQ6qR1hjsNKDqKD90WwL36eWhBiO0ovQQzQg631XhdOef74IEC3g=
+	t=1706612748; cv=none; b=oROGeVF1AgwJxx+WrSYbfrYdLxMWPYScO+e+iRJ7fSa/L2S6+y8rETjsdi8cS6iZM4iAQ2dgIQBIi8PPZTZ9aycTJZ+KEGJiPiTYCYXw5CBqWw089Emc82ZKUbBM/gwWhv3hqNo3vEDcAcpqyI9rpSicvrZ2taxLm7nREh8dZT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706594500; c=relaxed/simple;
-	bh=5S2hIEWDCocOZr0NjZN0Efgxo+Bd7rEtrn3pkrIS/X8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Sa9FSYD/8rw8vdxbEkCMPL6Hhckb920+Y2eK7/Pu6pv0035xakWV3zXpWpCzH2/nmlJPoIB+obo9scd3Ux+cTkxBGnENxF57w02cQrcHiNVCOlKPgG0mrW7qAZwy+Cx99acl4LcA74VLcwFH+fhw0O3fQXaqrRs+yfO8mQqOj4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=W05qUil7; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HXS/nNzs; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EFD191F82F
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 06:01:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706594496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=kGSIgKUYz4H0aQ5Hz7ECrKBkbBSsCVn/rXVTmQEHGqk=;
-	b=W05qUil7qxb9ODawyz0CwJHr0U1VMIwVgTNQIlNRo9GE6qbrdv9WdOKalYMl87/axC6IiC
-	pgRm7SNxt2LBDEc9qSYQXmXyqlRIn67WbVWvBL2QV4nhd1lO2G69NWriIlC7BjINB1V0fu
-	hOofaVgWTAUzK1SToL1HYIOTO6v7AXA=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706594495; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=kGSIgKUYz4H0aQ5Hz7ECrKBkbBSsCVn/rXVTmQEHGqk=;
-	b=HXS/nNzs5dLNYzKXpjYKH5ZoS+lAp42iLw4JlxbHoxWPkfGeVpZQAgkN8R7hG72JdE6aCy
-	Dal+SxYA0i/M4x0wA7I22nPJYl/bcAl9BAApKpLzqbO64CYpMjxGzMd2WcFg0hC4r8RTrH
-	OHnSLVgrh6vCxzJnCfXi2/DVp/73ie8=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 39A6413462
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 06:01:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 4s04O76QuGXaPQAAn2gu4w
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 06:01:34 +0000
-From: Qu Wenruo <wqu@suse.com>
+	s=arc-20240116; t=1706612748; c=relaxed/simple;
+	bh=eDHWX0qUw6ME0emvrE9fB2KFMjMayqKqPq9IPG9/RTI=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=NvGeHqL4v3Zl3tjWq9y/djGi7Q8mskqpdLYiC9Ig8bUCvXMmiazY/RLlhjfSIwQn3H060tkaUrwG+t44SXllh433Fuw24Q+0GGPMyiNzKyPkf6iCrplMsxs+uG9N3x1+2zABTzPB5BZ9G2WdyTU+Tm7RXqrQudIIUaFdieYE69s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cW6Sfr8A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E820C433F1
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 11:05:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706612748;
+	bh=eDHWX0qUw6ME0emvrE9fB2KFMjMayqKqPq9IPG9/RTI=;
+	h=From:To:Subject:Date:From;
+	b=cW6Sfr8AkBrfk5feJc+If281arflLzvGaIZkAlVl5UwA19tzPJ9L3AZZTDDmOHTVg
+	 SVwRaNakPpD3gpPNRIzGR0JT5KGoywbnfR2A6EJG+mUs6cu8KDGpkvrxeZlW+91XFF
+	 ZEuLh8pLhtPdLwFIj6P0N3HXHfbQRGjTpK5D17OK9e85Ev/tmOZOayorQnVAdAkigR
+	 TQSogtjzmledjoSDdP7FRpqOtbOw5nHbC4zbbBRO5GmtYgtrlQaEZ0XbkVxmKkESM2
+	 6XtTIN+1oKjXWwY+Vco0RT5jLnf+Bn7PqBzRiiT6HxlcAognWYfaOtz8ll3n6raUNO
+	 bnqjTVyxurDuw==
+From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs-progs: mkfs: use flock() to properly prevent race with udev
-Date: Tue, 30 Jan 2024 16:31:17 +1030
-Message-ID: <49bbb80e37990b0614f0929ac302560b27d2d933.1706594470.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.0
+Subject: [PATCH] btrfs: preallocate temporary extent buffer for inode logging when needed
+Date: Tue, 30 Jan 2024 11:05:44 +0000
+Message-Id: <1ef0997eee1fbe194ab2546f34052cd4e27c6ef4.1706612525.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -75,304 +53,457 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_DN_NONE(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-0.998];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
 
-[BUG]
-Even after commit b2a1be83b85f ("btrfs-progs: mkfs: keep file
-descriptors open during whole time"), there is still a bug report about
-blkid failed to grab the FSID:
+From: Filipe Manana <fdmanana@suse.com>
 
- device=/dev/loop0
- fstype=btrfs
+When logging an inode and we require to copy items from subvolume leaves
+to the log tree, we clone each subvolume leaf and than use that clone to
+copy items to the log tree. This is required to avoid possible deadlocks
+as stated in commit 796787c978ef ("btrfs: do not modify log tree while
+holding a leaf from fs tree locked").
 
- wipefs -a "$device"*
+The cloning requires allocating an extent buffer (struct extent_buffer)
+and then allocating pages (folios) to attach to the extent buffer. This
+may be slow in case we are under memory pressure, and since we are doing
+the cloning while holding a read lock on a subvolume leaf, it means we
+can be blocking other operations on that leaf for significant periods of
+time, which can increase latency on operations like creating other files,
+renaming files, etc. Similarly because we're under a log transaction, we
+may also cause extra delay on other tasks doing an fsync, because syncing
+the log requires waiting for tasks that joined a log transaction to exit
+the transaction.
 
- parted -s "$device" \
-     mklabel gpt \
-     mkpart '"EFI system partition"' fat32 1MiB 513MiB \
-     set 1 esp on \
-     mkpart '"root partition"' "$fstype" 513MiB 100%
+So to improve this, for any inode logging operation that needs to copy
+items from a subvolume leaf ("full sync" or "copy everything" bit set
+in the inode), preallocate a dummy extent buffer before locking any
+extent buffer from the subvolume tree, and even before joining a log
+transaction, add it to the log context and then use it when we need to
+copy items from a subvolume leaf to the log tree. This avoids making
+other operations get extra latency when waiting to lock a subvolume
+leaf that is used during inode logging and we are under heavy memory
+pressure.
 
- udevadm settle
- partitions=($(lsblk -n -o path "$device"))
+The following test script with bonnie++ was used to test this:
 
- mkfs.fat -F 32 ${partitions[1]}
- mkfs."$fstype" ${partitions[2]}
- udevadm settle
+  $ cat test.sh
+  #!/bin/bash
 
-The above script can sometimes result empty fsid:
+  DEV=/dev/sdh
+  MNT=/mnt/sdh
+  MOUNT_OPTIONS="-o ssd"
 
- loop0
- |-loop0p1 BDF3-552B
- `-loop0p2
+  MEMTOTAL_BYTES=`free -b | grep Mem: | awk '{ print $2 }'`
+  NR_DIRECTORIES=20
+  NR_FILES=20480
+  DATASET_SIZE=$((MEMTOTAL_BYTES * 2 / 1048576))
+  DIRECTORY_SIZE=$((MEMTOTAL_BYTES * 2 / NR_FILES))
+  NR_FILES=$((NR_FILES / 1024))
 
-[CAUSE]
-Although commit b2a1be83b85f ("btrfs-progs: mkfs: keep file descriptors
-open during whole time") changed the lifespan of the fds, it doesn't
-properly inform udev about our change to certain partition.
+  echo "performance" | \
+      tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 
-Thus for a multi-partition case, udev can start scanning the whole disk,
-meanwhile our mkfs is still happening halfway.
+  umount $DEV &> /dev/null
+  mkfs.btrfs -f $MKFS_OPTIONS $DEV
+  mount $MOUNT_OPTIONS $DEV $MNT
 
-If the scan is done before our new super blocks written, and our close()
-calls happens later just before the current scan is finished, udev can
-got the temporary super blocks (which is not a valid one).
+  bonnie++ -u root -d $MNT \
+      -n $NR_FILES:$DIRECTORY_SIZE:$DIRECTORY_SIZE:$NR_DIRECTORIES \
+      -r 0 -s $DATASET_SIZE -b
 
-And since our close() calls happens during the scan, there would be no
-new scan, thus leading to the bad result.
+  umount $MNT
 
-[FIX]
-The proper way to avoid race with udev is to flock() the whole disk
-(aka, the parent block device, not the partition disk).
+The results of this test on a 8G VM running a non-debug kernel (Debian's
+default kernel config), were the following.
 
-Thus this patch would introduce such mechanism by:
+Before this change:
 
-- btrfs_flock_one_device()
-  This would resolve the path to a whole disk path.
-  Then make sure the whole disk is not already locked (this can happen
-  for cases like "mkfs.btrfs -f /dev/sda[123]").
+  Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
+                      -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+  Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+  debian0       7501M  376k  99  1.4g  96  117m  14 1510k  99  2.5g  95 +++++ +++
+  Latency             35068us   24976us    2944ms   30725us   71770us   26152us
+  Version 2.00a       ------Sequential Create------ --------Random Create--------
+  debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+  files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+  20:384100:384100/20 20480  32 20480  58 20480  48 20480  39 20480  56 20480  61
+  Latency               411ms   11914us     119ms     617ms   10296us     110ms
 
-  If the device is not already locked, then flock() the device, and
-  insert a new entry into the list.
+After this change:
 
-- btrfs_unlock_all_devices()
-  Would go unlock all devices recorded in locked_devices list, and free
-  the memory.
+  Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
+                      -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+  Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+  debian0       7501M  375k  99  1.4g  97  117m  14 1546k  99  2.3g  98 +++++ +++
+  Latency             35975us  20945us    2144ms   10297us    2217us    6004us
+  Version 2.00a       ------Sequential Create------ --------Random Create--------
+  debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+  files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+  20:384100:384100/20 20480  35 20480  58 20480  48 20480  40 20480  57 20480  59
+  Latency               320ms   11237us   77779us     518ms    6470us   86389us
 
-And mkfs.btrfs would be the first one to utilize the new mechanism, to
-prevent such race with udev.
-
-Issue: #734
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
-Changelog:
-v2:
-- Fix the patch prefix
-  From "btrfs" to "btrfs-progs"
----
- common/device-utils.c | 114 ++++++++++++++++++++++++++++++++++++++++++
- common/device-utils.h |   3 ++
- mkfs/main.c           |  11 ++++
- 3 files changed, 128 insertions(+)
+ fs/btrfs/file.c     | 12 ++++++
+ fs/btrfs/tree-log.c | 93 +++++++++++++++++++++++++++------------------
+ fs/btrfs/tree-log.h | 25 ++++++++++++
+ 3 files changed, 94 insertions(+), 36 deletions(-)
 
-diff --git a/common/device-utils.c b/common/device-utils.c
-index f86120afa00c..88c21c66382d 100644
---- a/common/device-utils.c
-+++ b/common/device-utils.c
-@@ -17,11 +17,13 @@
- #include <sys/ioctl.h>
- #include <sys/stat.h>
- #include <sys/types.h>
-+#include <sys/file.h>
- #include <linux/limits.h>
- #ifdef BTRFS_ZONED
- #include <linux/blkzoned.h>
- #endif
- #include <linux/fs.h>
-+#include <linux/kdev_t.h>
- #include <limits.h>
- #include <stdio.h>
- #include <stdlib.h>
-@@ -48,6 +50,24 @@
- #define BLKDISCARD	_IO(0x12,119)
- #endif
-
-+static LIST_HEAD(locked_devices);
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index f8e1a7ce3d39..fd5e23035a28 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1912,6 +1912,8 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 		goto out_release_extents;
+ 	}
+ 
++	btrfs_init_log_ctx_scratch_eb(&ctx);
 +
-+/*
-+ * This is to record flock()ed devices.
-+ * For flock() to prevent udev races, we must lock the parent block device,
-+ * but we may hit cases like "mkfs.btrfs -f /dev/sda[123]", in that case
-+ * we should only lock "/dev/sda" once.
-+ *
-+ * This structure would be used to record any flocked block device (not
-+ * the partition one), and avoid double locking.
-+ */
-+struct btrfs_locked_wholedisk {
-+	char *full_path;
-+	dev_t devno;
-+	int fd;
-+	struct list_head list;
-+};
-+
- /*
-  * Discard the given range in one go
-  */
-@@ -633,3 +653,97 @@ ssize_t btrfs_direct_pwrite(int fd, const void *buf, size_t count, off_t offset)
- 	free(bounce_buf);
+ 	/*
+ 	 * We use start here because we will need to wait on the IO to complete
+ 	 * in btrfs_sync_log, which could require joining a transaction (for
+@@ -1931,6 +1933,15 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	trans->in_fsync = true;
+ 
+ 	ret = btrfs_log_dentry_safe(trans, dentry, &ctx);
++	/*
++	 * Scratch eb no longer needed, release before syncing log or commit
++	 * transaction, to avoid holding unnecessary memory during such long
++	 * operations.
++	 */
++	if (ctx.scratch_eb) {
++		free_extent_buffer(ctx.scratch_eb);
++		ctx.scratch_eb = NULL;
++	}
+ 	btrfs_release_log_ctx_extents(&ctx);
+ 	if (ret < 0) {
+ 		/* Fallthrough and commit/free transaction. */
+@@ -2006,6 +2017,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 
+ 	ret = btrfs_commit_transaction(trans);
+ out:
++	free_extent_buffer(ctx.scratch_eb);
+ 	ASSERT(list_empty(&ctx.list));
+ 	ASSERT(list_empty(&ctx.conflict_inodes));
+ 	err = file_check_and_advance_wb_err(file);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 331fc7429952..761b13b3d342 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3619,6 +3619,30 @@ static int flush_dir_items_batch(struct btrfs_trans_handle *trans,
  	return ret;
  }
-+
-+int btrfs_flock_one_device(char *path)
+ 
++static int clone_leaf(struct btrfs_path *path, struct btrfs_log_ctx *ctx)
 +{
-+	struct btrfs_locked_wholedisk *entry;
-+	struct stat st = { 0 };
-+	char *wholedisk_path;
-+	dev_t wholedisk_devno;
-+	int ret;
++	const int slot = path->slots[0];
 +
-+	ret = stat(path, &st);
-+	if (ret < 0) {
-+		error("failed to stat %s: %m", path);
-+		return -errno;
-+	}
-+	/* Non-block device, skipping the locking. */
-+	if (!S_ISBLK(st.st_mode))
-+		return 0;
-+
-+	ret = blkid_devno_to_wholedisk(st.st_dev, path, strlen(path),
-+				       &wholedisk_devno);
-+	if (ret < 0) {
-+		error("failed to get the whole disk devno for %s: %m", path);
-+		return -errno;
-+	}
-+	wholedisk_path = blkid_devno_to_devname(wholedisk_devno);
-+	if (!wholedisk_path) {
-+		error("failed to get the devname of dev %ld:%ld",
-+			MAJOR(wholedisk_devno), MINOR(wholedisk_devno));
++	if (ctx->scratch_eb) {
++		copy_extent_buffer_full(ctx->scratch_eb, path->nodes[0]);
++	} else {
++		ctx->scratch_eb = btrfs_clone_extent_buffer(path->nodes[0]);
++		if (!ctx->scratch_eb)
++			return -ENOMEM;
 +	}
 +
-+	/* Check if we already have the whole disk in the list. */
-+	list_for_each_entry(entry, &locked_devices, list) {
-+		/* The wholedisk is already locked, need to do nothing. */
-+		if (entry->devno == wholedisk_devno ||
-+		    entry->full_path == wholedisk_path) {
-+			free(wholedisk_path);
-+			return 0;
-+		}
-+	}
++	btrfs_release_path(path);
++	path->nodes[0] = ctx->scratch_eb;
++	path->slots[0] = slot;
++	/*
++	 * Add extra ref to scratch eb so that it is not freed when callers
++	 * release the path, so we can reuse it later if needed.
++	 */
++	atomic_inc(&ctx->scratch_eb->refs);
 +
-+	/* Allocate new entry. */
-+	entry = malloc(sizeof(*entry));
-+	if (!entry) {
-+		errno = ENOMEM;
-+		error("unable to allocate new memory for %s: %m",
-+		      wholedisk_path);
-+		free(wholedisk_path);
-+		return -errno;
-+	}
-+	entry->devno = wholedisk_devno;
-+	entry->full_path = wholedisk_path;
-+
-+	/* Lock the whole disk. */
-+	entry->fd = open(wholedisk_path, O_RDONLY);
-+	if (entry->fd < 0) {
-+		error("failed to open device %s: %m",
-+		      wholedisk_path);
-+		free(wholedisk_path);
-+		free(entry);
-+		return -errno;
-+	}
-+	ret = flock(entry->fd, LOCK_EX);
-+	if (ret < 0) {
-+		error("failed to hold an exclusive lock on %s: %m",
-+		      wholedisk_path);
-+		free(wholedisk_path);
-+		free(entry);
-+		return -errno;
-+	}
-+
-+	/* Insert it into the list. */
-+	list_add_tail(&entry->list, &locked_devices);
 +	return 0;
 +}
 +
-+void btrfs_unlock_all_devicecs(void)
-+{
-+	while (!list_empty(&locked_devices)) {
-+		struct btrfs_locked_wholedisk *entry;
-+		int ret;
-+
-+		entry = list_entry(locked_devices.next,
-+				   struct btrfs_locked_wholedisk, list);
-+
-+		list_del_init(&entry->list);
-+		ret = flock(entry->fd, LOCK_UN);
-+		if (ret < 0)
-+			warning("failed to unlock %s (fd %d dev %ld:%ld), skipping it",
-+				entry->full_path, entry->fd, MAJOR(entry->devno),
-+				MINOR(entry->devno));
-+		free(entry->full_path);
-+		free(entry);
-+	}
-+}
-diff --git a/common/device-utils.h b/common/device-utils.h
-index 853d17b5ab98..3a04348a0867 100644
---- a/common/device-utils.h
-+++ b/common/device-utils.h
-@@ -57,6 +57,9 @@ int btrfs_prepare_device(int fd, const char *file, u64 *block_count_ret,
- ssize_t btrfs_direct_pread(int fd, void *buf, size_t count, off_t offset);
- ssize_t btrfs_direct_pwrite(int fd, const void *buf, size_t count, off_t offset);
-
-+int btrfs_flock_one_device(char *path);
-+void btrfs_unlock_all_devicecs(void);
-+
- #ifdef BTRFS_ZONED
- static inline ssize_t btrfs_pwrite(int fd, const void *buf, size_t count,
- 				   off_t offset, bool direct)
-diff --git a/mkfs/main.c b/mkfs/main.c
-index b9882208dbd5..6e6cb81a4165 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -1723,6 +1723,15 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 		}
+ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
+ 				  struct btrfs_inode *inode,
+ 				  struct btrfs_path *path,
+@@ -3633,23 +3657,20 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
+ 	bool last_found = false;
+ 	int batch_start = 0;
+ 	int batch_size = 0;
+-	int i;
++	int ret;
+ 
+ 	/*
+ 	 * We need to clone the leaf, release the read lock on it, and use the
+ 	 * clone before modifying the log tree. See the comment at copy_items()
+ 	 * about why we need to do this.
+ 	 */
+-	src = btrfs_clone_extent_buffer(path->nodes[0]);
+-	if (!src)
+-		return -ENOMEM;
++	ret = clone_leaf(path, ctx);
++	if (ret < 0)
++		return ret;
+ 
+-	i = path->slots[0];
+-	btrfs_release_path(path);
+-	path->nodes[0] = src;
+-	path->slots[0] = i;
++	src = path->nodes[0];
+ 
+-	for (; i < nritems; i++) {
++	for (int i = path->slots[0]; i < nritems; i++) {
+ 		struct btrfs_dir_item *di;
+ 		struct btrfs_key key;
+ 		int ret;
+@@ -4259,17 +4280,16 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
+ 			       struct btrfs_path *dst_path,
+ 			       struct btrfs_path *src_path,
+ 			       int start_slot, int nr, int inode_only,
+-			       u64 logged_isize)
++			       u64 logged_isize, struct btrfs_log_ctx *ctx)
+ {
+ 	struct btrfs_root *log = inode->root->log_root;
+ 	struct btrfs_file_extent_item *extent;
+ 	struct extent_buffer *src;
+-	int ret = 0;
++	int ret;
+ 	struct btrfs_key *ins_keys;
+ 	u32 *ins_sizes;
+ 	struct btrfs_item_batch batch;
+ 	char *ins_data;
+-	int i;
+ 	int dst_index;
+ 	const bool skip_csum = (inode->flags & BTRFS_INODE_NODATASUM);
+ 	const u64 i_size = i_size_read(&inode->vfs_inode);
+@@ -4302,14 +4322,11 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
+ 	 * while the other is holding the delayed node's mutex and wants to
+ 	 * write lock the same subvolume leaf for flushing delayed items.
+ 	 */
+-	src = btrfs_clone_extent_buffer(src_path->nodes[0]);
+-	if (!src)
+-		return -ENOMEM;
++	ret = clone_leaf(src_path, ctx);
++	if (ret < 0)
++		return ret;
+ 
+-	i = src_path->slots[0];
+-	btrfs_release_path(src_path);
+-	src_path->nodes[0] = src;
+-	src_path->slots[0] = i;
++	src = src_path->nodes[0];
+ 
+ 	ins_data = kmalloc(nr * sizeof(struct btrfs_key) +
+ 			   nr * sizeof(u32), GFP_NOFS);
+@@ -4324,7 +4341,7 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
+ 	batch.nr = 0;
+ 
+ 	dst_index = 0;
+-	for (i = 0; i < nr; i++) {
++	for (int i = 0; i < nr; i++) {
+ 		const int src_slot = start_slot + i;
+ 		struct btrfs_root *csum_root;
+ 		struct btrfs_ordered_sum *sums;
+@@ -4431,7 +4448,7 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
+ 		goto out;
+ 
+ 	dst_index = 0;
+-	for (i = 0; i < nr; i++) {
++	for (int i = 0; i < nr; i++) {
+ 		const int src_slot = start_slot + i;
+ 		const int dst_slot = dst_path->slots[0] + dst_index;
+ 		struct btrfs_key key;
+@@ -4704,7 +4721,8 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
+  */
+ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
+ 				      struct btrfs_inode *inode,
+-				      struct btrfs_path *path)
++				      struct btrfs_path *path,
++				      struct btrfs_log_ctx *ctx)
+ {
+ 	struct btrfs_root *root = inode->root;
+ 	struct btrfs_key key;
+@@ -4770,7 +4788,7 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
+ 		if (slot >= btrfs_header_nritems(leaf)) {
+ 			if (ins_nr > 0) {
+ 				ret = copy_items(trans, inode, dst_path, path,
+-						 start_slot, ins_nr, 1, 0);
++						 start_slot, ins_nr, 1, 0, ctx);
+ 				if (ret < 0)
+ 					goto out;
+ 				ins_nr = 0;
+@@ -4820,7 +4838,7 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
  	}
-
-+	/* Lock all devices to prevent race with udev probing. */
-+	for (i = 0; i < device_count; i++) {
-+		char *path = argv[optind + i - 1];
+ 	if (ins_nr > 0)
+ 		ret = copy_items(trans, inode, dst_path, path,
+-				 start_slot, ins_nr, 1, 0);
++				 start_slot, ins_nr, 1, 0, ctx);
+ out:
+ 	btrfs_release_path(path);
+ 	btrfs_free_path(dst_path);
+@@ -4899,7 +4917,7 @@ static int btrfs_log_changed_extents(struct btrfs_trans_handle *trans,
+ 	write_unlock(&tree->lock);
+ 
+ 	if (!ret)
+-		ret = btrfs_log_prealloc_extents(trans, inode, path);
++		ret = btrfs_log_prealloc_extents(trans, inode, path, ctx);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -4980,7 +4998,8 @@ static int logged_inode_size(struct btrfs_root *log, struct btrfs_inode *inode,
+ static int btrfs_log_all_xattrs(struct btrfs_trans_handle *trans,
+ 				struct btrfs_inode *inode,
+ 				struct btrfs_path *path,
+-				struct btrfs_path *dst_path)
++				struct btrfs_path *dst_path,
++				struct btrfs_log_ctx *ctx)
+ {
+ 	struct btrfs_root *root = inode->root;
+ 	int ret;
+@@ -5009,7 +5028,7 @@ static int btrfs_log_all_xattrs(struct btrfs_trans_handle *trans,
+ 		if (slot >= nritems) {
+ 			if (ins_nr > 0) {
+ 				ret = copy_items(trans, inode, dst_path, path,
+-						 start_slot, ins_nr, 1, 0);
++						 start_slot, ins_nr, 1, 0, ctx);
+ 				if (ret < 0)
+ 					return ret;
+ 				ins_nr = 0;
+@@ -5035,7 +5054,7 @@ static int btrfs_log_all_xattrs(struct btrfs_trans_handle *trans,
+ 	}
+ 	if (ins_nr > 0) {
+ 		ret = copy_items(trans, inode, dst_path, path,
+-				 start_slot, ins_nr, 1, 0);
++				 start_slot, ins_nr, 1, 0, ctx);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -5847,7 +5866,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
+ 				}
+ 				ret = copy_items(trans, inode, dst_path, path,
+ 						 ins_start_slot, ins_nr,
+-						 inode_only, logged_isize);
++						 inode_only, logged_isize, ctx);
+ 				if (ret < 0)
+ 					return ret;
+ 				ins_nr = 0;
+@@ -5866,7 +5885,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
+ 				goto next_slot;
+ 			ret = copy_items(trans, inode, dst_path, path,
+ 					 ins_start_slot,
+-					 ins_nr, inode_only, logged_isize);
++					 ins_nr, inode_only, logged_isize, ctx);
+ 			if (ret < 0)
+ 				return ret;
+ 			ins_nr = 0;
+@@ -5883,7 +5902,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
+ 		}
+ 
+ 		ret = copy_items(trans, inode, dst_path, path, ins_start_slot,
+-				 ins_nr, inode_only, logged_isize);
++				 ins_nr, inode_only, logged_isize, ctx);
+ 		if (ret < 0)
+ 			return ret;
+ 		ins_nr = 1;
+@@ -5898,7 +5917,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
+ 		if (ins_nr) {
+ 			ret = copy_items(trans, inode, dst_path, path,
+ 					 ins_start_slot, ins_nr, inode_only,
+-					 logged_isize);
++					 logged_isize, ctx);
+ 			if (ret < 0)
+ 				return ret;
+ 			ins_nr = 0;
+@@ -5923,7 +5942,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
+ 	}
+ 	if (ins_nr) {
+ 		ret = copy_items(trans, inode, dst_path, path, ins_start_slot,
+-				 ins_nr, inode_only, logged_isize);
++				 ins_nr, inode_only, logged_isize, ctx);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -5934,7 +5953,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
+ 		 * lock the same leaf with btrfs_log_prealloc_extents() below.
+ 		 */
+ 		btrfs_release_path(path);
+-		ret = btrfs_log_prealloc_extents(trans, inode, dst_path);
++		ret = btrfs_log_prealloc_extents(trans, inode, dst_path, ctx);
+ 	}
+ 
+ 	return ret;
+@@ -6526,7 +6545,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 
+ 	btrfs_release_path(path);
+ 	btrfs_release_path(dst_path);
+-	ret = btrfs_log_all_xattrs(trans, inode, path, dst_path);
++	ret = btrfs_log_all_xattrs(trans, inode, path, dst_path, ctx);
+ 	if (ret)
+ 		goto out_unlock;
+ 	xattrs_logged = true;
+@@ -6553,7 +6572,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 		 * BTRFS_INODE_COPY_EVERYTHING set.
+ 		 */
+ 		if (!xattrs_logged && inode->logged_trans < trans->transid) {
+-			ret = btrfs_log_all_xattrs(trans, inode, path, dst_path);
++			ret = btrfs_log_all_xattrs(trans, inode, path, dst_path, ctx);
+ 			if (ret)
+ 				goto out_unlock;
+ 			btrfs_release_path(path);
+@@ -7502,6 +7521,7 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 
+ 	btrfs_init_log_ctx(&ctx, &inode->vfs_inode);
+ 	ctx.logging_new_name = true;
++	btrfs_init_log_ctx_scratch_eb(&ctx);
+ 	/*
+ 	 * We don't care about the return value. If we fail to log the new name
+ 	 * then we know the next attempt to sync the log will fallback to a full
+@@ -7510,6 +7530,7 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 	 * inconsistent state after a rename operation.
+ 	 */
+ 	btrfs_log_inode_parent(trans, inode, parent, LOG_INODE_EXISTS, &ctx);
++	free_extent_buffer(ctx.scratch_eb);
+ 	ASSERT(list_empty(&ctx.conflict_inodes));
+ out:
+ 	/*
+diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
+index a550a8a375cd..af219e8840d2 100644
+--- a/fs/btrfs/tree-log.h
++++ b/fs/btrfs/tree-log.h
+@@ -36,6 +36,15 @@ struct btrfs_log_ctx {
+ 	struct list_head conflict_inodes;
+ 	int num_conflict_inodes;
+ 	bool logging_conflict_inodes;
++	/*
++	 * Used for fsyncs that need to copy items from the subvolume tree to
++	 * the log tree (full sync flag set or copy everything flag set) to
++	 * avoid allocating a temporary extent buffer while holding a lock on
++	 * an extent buffer of the subvolume tree and under the log transaction.
++	 * Also helps to avoid allocating and freeing a temporary extent buffer
++	 * in case we need to process multiple leaves from the subvolume tree.
++	 */
++	struct extent_buffer *scratch_eb;
+ };
+ 
+ static inline void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx,
+@@ -53,6 +62,22 @@ static inline void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx,
+ 	INIT_LIST_HEAD(&ctx->conflict_inodes);
+ 	ctx->num_conflict_inodes = 0;
+ 	ctx->logging_conflict_inodes = false;
++	ctx->scratch_eb = NULL;
++}
 +
-+		ret = btrfs_flock_one_device(path);
-+		if (ret < 0)
-+			warning("failed to flock %s, skipping it", path);
-+	}
++static inline void btrfs_init_log_ctx_scratch_eb(struct btrfs_log_ctx *ctx)
++{
++	struct btrfs_inode *inode = BTRFS_I(ctx->inode);
 +
- 	/* Start threads */
- 	for (i = 0; i < device_count; i++) {
- 		prepare_ctx[i].file = argv[optind + i - 1];
-@@ -2079,6 +2088,7 @@ out:
- 	free(label);
- 	free(source_dir);
-
-+	btrfs_unlock_all_devicecs();
- 	return !!ret;
-
- error:
-@@ -2090,6 +2100,7 @@ error:
- 	free(prepare_ctx);
- 	free(label);
- 	free(source_dir);
-+	btrfs_unlock_all_devicecs();
- 	exit(1);
- success:
- 	exit(0);
---
-2.43.0
++	if (!test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags) &&
++	    !test_bit(BTRFS_INODE_COPY_EVERYTHING, &inode->runtime_flags))
++		return;
++
++	/*
++	 * Don't care about allocation failure. This is just for optimization,
++	 * if we fail to allocate here, we will try again later if needed.
++	 */
++	ctx->scratch_eb = alloc_dummy_extent_buffer(inode->root->fs_info, 0);
+ }
+ 
+ static inline void btrfs_release_log_ctx_extents(struct btrfs_log_ctx *ctx)
+-- 
+2.40.1
 
 
