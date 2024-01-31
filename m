@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-1955-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1956-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E23E84387D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 09:07:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E79C8843927
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 09:34:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 072D11F2344E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 08:07:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A4CBB219DF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 08:34:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5658A5B5B8;
-	Wed, 31 Jan 2024 08:07:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8E3605DC;
+	Wed, 31 Jan 2024 08:34:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LLyYCDtP"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="H7FRVkmE"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B5F5A0E5
-	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jan 2024 08:07:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C186604C3
+	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jan 2024 08:34:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706688455; cv=none; b=AsMPOoMgqX/I3bzgBfUAR/a1ulihxOLSm+K2Z5wE72Ct/2leAq8godzazPY+qHndrBAV3hpNxLhqcy2PprLGdR+cDiEIYqSqtZsw6bxpl9uXidSJUK5kajOOrq6F7WtlItDjqEfmnjm4cuYSJUFoFOdSf7G3ku0mP2Py+A/WlI4=
+	t=1706690068; cv=none; b=pnCknhzs0GhNMn1Bwds62IfzrfvtyOHueZ01sUZRZAUi157v036tiHoXDYqA8y12WjA8bPnpJHm/BR5ui52cPUpX9RuFTbPAFJ6AAM9YVG46mYQ+Kqb+A4ACXEAO2iaXQPYp+3BA3x8BzIdoxbtsD2kELgW4VjQxJQQPJBlsuoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706688455; c=relaxed/simple;
-	bh=WWnG0PvyAo4cbDYLuXx0Y/GuxkhaLWrEx7JQslzSGkU=;
+	s=arc-20240116; t=1706690068; c=relaxed/simple;
+	bh=ePO6h4f3wxtNM8TR+Vv92v/prgQmCbAzU0s4qFRU1Rs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JRhGiYcV2VIFOH9XjIhVTvJhNDo9Pr7gfnUzMTScMA6ySawekffvKn0Ueb8+y4pP02L1vWJxrMfVw6ENtFWMbHVkRgFGJdSfTw020iv4e2bCl2NDk9MZWl0Qh96+Zay/5IEzUfBKimjdvy/zld+zFgHVSQGEgyYNnqCEamn69Ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LLyYCDtP; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=JoLMBapf5gQZ+/dspD2bVgv0M02VKyIEr5ZDXK8UabGDehgMCPUUIGfDTyZaPQdrJl26o3zZh5GbMPyhm1Z+DFz4g0xS6+T3Mk0A15NCFq76A3fuaMT90/bEsbP4OgCRa7U4UyWVkXg92lHgnYjcQj0IinnEBswBbQavE8Z9hcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=H7FRVkmE; arc=none smtp.client-ip=212.227.15.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1706688449; x=1707293249; i=quwenruo.btrfs@gmx.com;
-	bh=WWnG0PvyAo4cbDYLuXx0Y/GuxkhaLWrEx7JQslzSGkU=;
+	s=s31663417; t=1706690063; x=1707294863; i=quwenruo.btrfs@gmx.com;
+	bh=ePO6h4f3wxtNM8TR+Vv92v/prgQmCbAzU0s4qFRU1Rs=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=LLyYCDtPGGhB4oavqQ5+Cma1LjX+M7A3rmZSurTon0thGQP1rFixqU8Gz6F5Em2d
-	 vrQFkITKWHkC/HPMI1oTzIs9hoEhL5sKDlq2VI1v1H9EICZRs1eVyPEqs4xKZ31/O
-	 n2XBRWC5dJ3DJel9PVsd3Pk3+Nlz2h1YCXtya4SbGKob2Caxanu5mkcqcEkm8VQAK
-	 zDvvzy/an+KmD3SummLGikHgLicOq8ED/LrUx3PKeiAQ7SpHHHS9Qx5gAKvPajxCP
-	 DBI6h+Q6oRvZnIj9yZsve50G6LaQD5vEN2YHABMRK242wqHna6fEpr7a+Y4YYOvRy
-	 5JZtoqRlrwYsJGHbqw==
+	b=H7FRVkmEM9AWpYA4DFUqpYtLVPbaFWcBN1y2fpt6sUGZNEPD224HAWUxFxozBZI9
+	 S/AluYMSWPLVsYAHqIoWQk1JEH3Kr7v4QOsz4xCA8Bcbm39Pg96Fke3roymTnt1+I
+	 g1U4fXQaEfpd5ddjMB6NPxnoUePZpSLRLA9UxdVoStRF8tGmNE0zSueG66+P7FfTS
+	 1LiXASdvyb5YjuC4NjWz4uDVjhZIk2wqMKef9HMrFJMw9UBTFt8IByYbFJ5vge4ay
+	 Q9njuficsyxPKgYz1XrKgR8ZVPBxCvTVt7uHNmPNogxaz9alXjnwt5JOJDuHNfWNJ
+	 YX2fYGRBy5t09yefNQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M4b1o-1rWjWZ0Aek-001gEa; Wed, 31
- Jan 2024 09:07:29 +0100
-Message-ID: <eba1ef68-12f8-4c57-932b-e53e0c0c059b@gmx.com>
-Date: Wed, 31 Jan 2024 18:37:26 +1030
+Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M3lc9-1rUovt39rX-000pKb; Wed, 31
+ Jan 2024 09:34:23 +0100
+Message-ID: <0ecad434-8a72-4528-aa1c-579a32044e1e@gmx.com>
+Date: Wed, 31 Jan 2024 19:04:19 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -62,6 +62,7 @@ To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
 References: <49bbb80e37990b0614f0929ac302560b27d2d933.1706594470.git.wqu@suse.com>
  <20240131071319.GH31555@twin.jikos.cz>
+ <eba1ef68-12f8-4c57-932b-e53e0c0c059b@gmx.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -87,176 +88,227 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240131071319.GH31555@twin.jikos.cz>
+In-Reply-To: <eba1ef68-12f8-4c57-932b-e53e0c0c059b@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:d3Qobc/Oh03hmEQmrdwtgIxnN0cGgwmSnTVL2hEr8gAoPqPpLFM
- 8L47N+KtbuQ7rryFCvjiROrxY50PnTEBcexhlGnun9WE1VBC+uJjh0havkhwg7ZITu2UJOP
- 0CD2k1ej+PHQrs3bXByUh2OQd6Z/JqZsXTGaKbiqQaqokTHvMDuI6jWYRE1Uu2VVnJYSqgt
- YoKW2w9lNIolbDzrW5m0w==
+X-Provags-ID: V03:K1:2oiifxhVQEAAXYBF3S2MReyUmMEqTFsdOC9gP2/NtJwFf9VDEOr
+ svmpoFelOCgy8mRyOMPfOmu5SW7m1ke3YjQMrmYX5YQKjLkPjtt4IhuKZOc3vcsQ71Ep9ce
+ P4gxfBbVoXgUTcGuTzgzgANgiMU/Udn0G43j1dpXnfdVwvyMC9hDcHZMCN8GtY1L+g5FKOH
+ t77ClQL5nLGmjmuDoWBCQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:sScQihzS/bY=;dM8b24BZLk4iBD0pmWrpaVwsR56
- /j7J3Yzii/CsGCUQ4ggsxaya0HBedOegohKFaCAv9BPsFkrbVoYz8mMo9KQ8ba90R4kKGZ2SZ
- qhQxe65p4IhlW9lPzrXrZIPJFPwhP8lS1YMWp+SC83B4/9Cs6frt3kThSsjvCYriJV64n6hXs
- 5Ba62BkYE6W6/YZBtmGT8cNiCnWdL9AzI0HZfdgIsDD42NyLWG2JXT4cSJkGenhSRW/SfCz1B
- vN+cxH7xA5Vq4706dfuP7Z4Vx65ogsDSf4z7mDxYdvkxtRTCnt5l2+Hs+HipGSBFpe3nbuqFN
- 84VcuzmluNEBrqsc8u4uLFGowFkSll2ycfh+pbvU+w2KEBRugkxnPNtXpNFzaEMs+SPehAk78
- RpOL3TUyBOWj8PuDmy237TsLmvpvwBStSgsbRJzXDFaZ8UDG/Af4iRHbor9s0p0S5XjkGnoWr
- 9rILjaM2cCrAvOvC6dSkqIw8hYDRST01HBajEQlnQ8cLeyVao2bWdYmNhKaB++UMoysjVvcU+
- Z1lXpiGow2bzF0nnvqyv5ktU8VHsDu3anFW5tmOjUFrIfgcDdJoJojx9Yhx3d2Y9/SMASSEEi
- X7Zw6e3HX7fg+Spx69iV+Lf36BYPmbUZFQTLYbFZO1mIAB7PYNhzpWZGHwID5PTtrrAeK4cwp
- mxb/LStJQOUOvX7qYyq77IKTtR9jKpXNc8KKuog8AXr5Hc/A2wwBqtNAG6qQSaZ/ViEUrRAGb
- RiUsWoMcW+GFSPCxqSBvx3WSbB9EYEsPym5NlmfkcrOW7NzukvRPxn7GG7p/hGfEMzmqqz8wj
- IimDbQs+SzKevbUrx9DZrzdy1vKFodpNWk9vzGlT5SlRArS/0QZ5YOPJJ4Srkixt8nvhIzih9
- d6TzbquMh2KrJK+SWWo7ZMiyyQ9salMvRCZJS6qJy2C2ovnrSbzMZhIy/W+2FhuLYfCzk0ChX
- /Qdl8WRIvE0WnQmWGULFZYe2CWg=
+UI-OutboundReport: notjunk:1;M01:P0:na7NqGFaK9Q=;kJv/PdGG9Ecmyon7xr0NCJ0JJpb
+ 2XL07U4uwqHbF13XH8o/WJthsUME1BwJOxi2u/R/O7BtsaLM14pKcVrIvDaxzUNOcHTZI6ps6
+ UEu8uXtzZ++UEEVwxik3l5t2JvBpi+NRlsE6WUX2gPUXy+2pTkwszAPXhA2vwODAHfP1G4ljQ
+ CeKaOjveKDf9M+wtKvKt6orJhr6ybHMsf8i6P+q/WsnvjfAEDjqFCmnZYQv5cH8JBYhAUtEIV
+ pelTkVCYsMqrmb6e0kxWNQzayDhcdsf8KEk4HhCqL+0P4uC5ChYbkVes/TrwpJEuVDZZmH9OS
+ P3/K99IS2C3NUIDiiJ55T2Wh8N57VKwr+Thbkn6UsCMwVklaCqWhqDTnDsHi2R6Hhnkw1cxfC
+ 4p+24ccvDZFsUZrO5EmPwjxjppH/mKkrQjoKhNDb3RLaDac3FQlk1J8QhF6g6fzOKQD+9Jqb0
+ SbW7DPppgx4T2Ng8+QbWTTmMgVa0gZ1qTwJ+3UemdmSm++jxJ0hH6XVbk4QDJe/eQprryIWRt
+ C10ZQaMl5SY1MX3xThcNJvI/c+S1a/4f4dElCW79JOtN46WiVAKt2jtBbxzByRIO2gAnu3C8E
+ uTbQBBL4xdMPshecJ1fTOaKkXV7VogRCgDItPoTQ09AI6AY/64hLO7IYP8LWYmkuhLhTy+ztA
+ ZlHO4q0zdtyCzlh3UBPOcHweiY+gAj0cfbiZhs5YKL996HQC4ZtjZZQAI0qPP1QQMjQg52uBr
+ WZSiRdj+uZc1wKqRw/0A7DmD/A3b7lv4c8eGg5WGuhLy8Ly0DIGEq1Pk38xycz07rODv9iEMV
+ oAm7XwuLGjytgGsOXXw5mbXxiDb2bhoXqWt8Mkz2u7EtssvU0LtnjB63o5O6i9dsTVDv5KQHV
+ liuZmzD4xL7wTO0pwuInXIcEQkaOCS9MQk+uzHk6mZfE1vHru68GLY/FPwVEz/jHFDVs15GU6
+ NuOjgkvNpNQOI2uUjM39i7dlkpM=
 
 
 
-On 2024/1/31 17:43, David Sterba wrote:
-> On Tue, Jan 30, 2024 at 04:31:17PM +1030, Qu Wenruo wrote:
->> [BUG]
->> Even after commit b2a1be83b85f ("btrfs-progs: mkfs: keep file
->> descriptors open during whole time"), there is still a bug report about
->> blkid failed to grab the FSID:
->>
->>   device=3D/dev/loop0
->>   fstype=3Dbtrfs
->>
->>   wipefs -a "$device"*
->>
->>   parted -s "$device" \
->>       mklabel gpt \
->>       mkpart '"EFI system partition"' fat32 1MiB 513MiB \
->>       set 1 esp on \
->>       mkpart '"root partition"' "$fstype" 513MiB 100%
->>
->>   udevadm settle
->>   partitions=3D($(lsblk -n -o path "$device"))
->>
->>   mkfs.fat -F 32 ${partitions[1]}
->>   mkfs."$fstype" ${partitions[2]}
->>   udevadm settle
+On 2024/1/31 18:37, Qu Wenruo wrote:
 >
-> As mentioned in the issue 'udevadm lock <command>' can be used as a
-> workaround until mkfs does the locking but we can also use that for
-> testing, ie lock a device and then try mkfs.
-
-Indeed, that may be a cleaner way to solve the problem.
-
-Let me check if there is any API provided to do that, but still we will
-need the same de-duplication check to prevent locking the same device
-twice if we're making fs on all partition from the same disk.
-
 >
->>
->> The above script can sometimes result empty fsid:
->>
->>   loop0
->>   |-loop0p1 BDF3-552B
->>   `-loop0p2
->>
->> [CAUSE]
->> Although commit b2a1be83b85f ("btrfs-progs: mkfs: keep file descriptors
->> open during whole time") changed the lifespan of the fds, it doesn't
->> properly inform udev about our change to certain partition.
->>
->> Thus for a multi-partition case, udev can start scanning the whole disk=
-,
->> meanwhile our mkfs is still happening halfway.
->>
->> If the scan is done before our new super blocks written, and our close(=
-)
->> calls happens later just before the current scan is finished, udev can
->> got the temporary super blocks (which is not a valid one).
->>
->> And since our close() calls happens during the scan, there would be no
->> new scan, thus leading to the bad result.
->>
->> [FIX]
->> The proper way to avoid race with udev is to flock() the whole disk
->> (aka, the parent block device, not the partition disk).
->>
->> Thus this patch would introduce such mechanism by:
->>
->> - btrfs_flock_one_device()
->>    This would resolve the path to a whole disk path.
->>    Then make sure the whole disk is not already locked (this can happen
->>    for cases like "mkfs.btrfs -f /dev/sda[123]").
->>
->>    If the device is not already locked, then flock() the device, and
->>    insert a new entry into the list.
->>
->> - btrfs_unlock_all_devices()
->>    Would go unlock all devices recorded in locked_devices list, and fre=
-e
->>    the memory.
->>
->> And mkfs.btrfs would be the first one to utilize the new mechanism, to
->> prevent such race with udev.
->>
->> Issue: #734
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> Changelog:
->> v2:
->> - Fix the patch prefix
->>    From "btrfs" to "btrfs-progs"
->> ---
->>   common/device-utils.c | 114 +++++++++++++++++++++++++++++++++++++++++=
-+
->>   common/device-utils.h |   3 ++
->>   mkfs/main.c           |  11 ++++
->>   3 files changed, 128 insertions(+)
->>
->> diff --git a/common/device-utils.c b/common/device-utils.c
->> index f86120afa00c..88c21c66382d 100644
->> --- a/common/device-utils.c
->> +++ b/common/device-utils.c
->> @@ -17,11 +17,13 @@
->>   #include <sys/ioctl.h>
->>   #include <sys/stat.h>
->>   #include <sys/types.h>
->> +#include <sys/file.h>
->>   #include <linux/limits.h>
->>   #ifdef BTRFS_ZONED
->>   #include <linux/blkzoned.h>
->>   #endif
->>   #include <linux/fs.h>
->> +#include <linux/kdev_t.h>
->>   #include <limits.h>
->>   #include <stdio.h>
->>   #include <stdlib.h>
->> @@ -48,6 +50,24 @@
->>   #define BLKDISCARD	_IO(0x12,119)
->>   #endif
->>
->> +static LIST_HEAD(locked_devices);
->> +
->> +/*
->> + * This is to record flock()ed devices.
->> + * For flock() to prevent udev races, we must lock the parent block de=
-vice,
->> + * but we may hit cases like "mkfs.btrfs -f /dev/sda[123]", in that ca=
-se
->> + * we should only lock "/dev/sda" once.
->> + *
->> + * This structure would be used to record any flocked block device (no=
+> On 2024/1/31 17:43, David Sterba wrote:
+>> On Tue, Jan 30, 2024 at 04:31:17PM +1030, Qu Wenruo wrote:
+>>> [BUG]
+>>> Even after commit b2a1be83b85f ("btrfs-progs: mkfs: keep file
+>>> descriptors open during whole time"), there is still a bug report abou=
 t
->> + * the partition one), and avoid double locking.
->> + */
->> +struct btrfs_locked_wholedisk {
+>>> blkid failed to grab the FSID:
+>>>
+>>> =C2=A0 device=3D/dev/loop0
+>>> =C2=A0 fstype=3Dbtrfs
+>>>
+>>> =C2=A0 wipefs -a "$device"*
+>>>
+>>> =C2=A0 parted -s "$device" \
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mklabel gpt \
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mkpart '"EFI system partition"' fat32 1=
+MiB 513MiB \
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set 1 esp on \
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mkpart '"root partition"' "$fstype" 513=
+MiB 100%
+>>>
+>>> =C2=A0 udevadm settle
+>>> =C2=A0 partitions=3D($(lsblk -n -o path "$device"))
+>>>
+>>> =C2=A0 mkfs.fat -F 32 ${partitions[1]}
+>>> =C2=A0 mkfs."$fstype" ${partitions[2]}
+>>> =C2=A0 udevadm settle
+>>
+>> As mentioned in the issue 'udevadm lock <command>' can be used as a
+>> workaround until mkfs does the locking but we can also use that for
+>> testing, ie lock a device and then try mkfs.
 >
-> Please pick a different name, we've been calling it devices, although
-> you can find 'disk' references but mainly for historical reasons (eg.
-> when it's in a structure). In this case it's a block device.
+> Indeed, that may be a cleaner way to solve the problem.
 >
+> Let me check if there is any API provided to do that, but still we will
+> need the same de-duplication check to prevent locking the same device
+> twice if we're making fs on all partition from the same disk.
 
-Well, the "wholedisk" name is from the libblk, and I thought it may be
-good enough, but it's not the case.
+Nope, the "udevadm lock" is just doing flock() on the target device,
+thus it's no difference than my implementation.
 
-Maybe "parent_block_dev" would be better?
+The call chain looks like this:
+
+udevadm-lock.c:
+lock_device()
+|- lock_generic(LOCK_BSD, LOCK_EX|LOCK_NB);
+    |- flock(fd, operation);
+
+And the fd passed in is also the "wholedisk" fd, not the partition disk fd=
+:
+
+lock_main()
+|- find_devno()
+    |- path_get_whole_disk()
+
+So in short, "udevadm lock" command is just doing:
+
+- Convert the partition path to whole disk path
+- Make sure the whole disk is not yet locked
+- Then call flock() on it
+   There are some extra work like deadline, but it's not really
+   something we need to bother AFAIK.
+
+And it also has the same de-duplication ability of my patch.
+Although udev is using binary search instead of my simpler but slower
+list based search.
+
+Whether to utilize external "udevadm lock" command, or doing the same
+thing inside "mkfs.btrfs" is up to you to determine.
+
+But at least, I'm doing the same thing as "udevadm lock".
+(Although this version has other problems, like using st_dev not
+st_rdev, and not properly making the parameter for
+btrfs_flock_one_device() const etc)
 
 Thanks,
 Qu
+>
+>>
+>>>
+>>> The above script can sometimes result empty fsid:
+>>>
+>>> =C2=A0 loop0
+>>> =C2=A0 |-loop0p1 BDF3-552B
+>>> =C2=A0 `-loop0p2
+>>>
+>>> [CAUSE]
+>>> Although commit b2a1be83b85f ("btrfs-progs: mkfs: keep file descriptor=
+s
+>>> open during whole time") changed the lifespan of the fds, it doesn't
+>>> properly inform udev about our change to certain partition.
+>>>
+>>> Thus for a multi-partition case, udev can start scanning the whole dis=
+k,
+>>> meanwhile our mkfs is still happening halfway.
+>>>
+>>> If the scan is done before our new super blocks written, and our close=
+()
+>>> calls happens later just before the current scan is finished, udev can
+>>> got the temporary super blocks (which is not a valid one).
+>>>
+>>> And since our close() calls happens during the scan, there would be no
+>>> new scan, thus leading to the bad result.
+>>>
+>>> [FIX]
+>>> The proper way to avoid race with udev is to flock() the whole disk
+>>> (aka, the parent block device, not the partition disk).
+>>>
+>>> Thus this patch would introduce such mechanism by:
+>>>
+>>> - btrfs_flock_one_device()
+>>> =C2=A0=C2=A0 This would resolve the path to a whole disk path.
+>>> =C2=A0=C2=A0 Then make sure the whole disk is not already locked (this=
+ can happen
+>>> =C2=A0=C2=A0 for cases like "mkfs.btrfs -f /dev/sda[123]").
+>>>
+>>> =C2=A0=C2=A0 If the device is not already locked, then flock() the dev=
+ice, and
+>>> =C2=A0=C2=A0 insert a new entry into the list.
+>>>
+>>> - btrfs_unlock_all_devices()
+>>> =C2=A0=C2=A0 Would go unlock all devices recorded in locked_devices li=
+st, and free
+>>> =C2=A0=C2=A0 the memory.
+>>>
+>>> And mkfs.btrfs would be the first one to utilize the new mechanism, to
+>>> prevent such race with udev.
+>>>
+>>> Issue: #734
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>> Changelog:
+>>> v2:
+>>> - Fix the patch prefix
+>>> =C2=A0=C2=A0 From "btrfs" to "btrfs-progs"
+>>> ---
+>>> =C2=A0 common/device-utils.c | 114 +++++++++++++++++++++++++++++++++++=
++++++++
+>>> =C2=A0 common/device-utils.h |=C2=A0=C2=A0 3 ++
+>>> =C2=A0 mkfs/main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 |=C2=A0 11 ++++
+>>> =C2=A0 3 files changed, 128 insertions(+)
+>>>
+>>> diff --git a/common/device-utils.c b/common/device-utils.c
+>>> index f86120afa00c..88c21c66382d 100644
+>>> --- a/common/device-utils.c
+>>> +++ b/common/device-utils.c
+>>> @@ -17,11 +17,13 @@
+>>> =C2=A0 #include <sys/ioctl.h>
+>>> =C2=A0 #include <sys/stat.h>
+>>> =C2=A0 #include <sys/types.h>
+>>> +#include <sys/file.h>
+>>> =C2=A0 #include <linux/limits.h>
+>>> =C2=A0 #ifdef BTRFS_ZONED
+>>> =C2=A0 #include <linux/blkzoned.h>
+>>> =C2=A0 #endif
+>>> =C2=A0 #include <linux/fs.h>
+>>> +#include <linux/kdev_t.h>
+>>> =C2=A0 #include <limits.h>
+>>> =C2=A0 #include <stdio.h>
+>>> =C2=A0 #include <stdlib.h>
+>>> @@ -48,6 +50,24 @@
+>>> =C2=A0 #define BLKDISCARD=C2=A0=C2=A0=C2=A0 _IO(0x12,119)
+>>> =C2=A0 #endif
+>>>
+>>> +static LIST_HEAD(locked_devices);
+>>> +
+>>> +/*
+>>> + * This is to record flock()ed devices.
+>>> + * For flock() to prevent udev races, we must lock the parent block
+>>> device,
+>>> + * but we may hit cases like "mkfs.btrfs -f /dev/sda[123]", in that
+>>> case
+>>> + * we should only lock "/dev/sda" once.
+>>> + *
+>>> + * This structure would be used to record any flocked block device (n=
+ot
+>>> + * the partition one), and avoid double locking.
+>>> + */
+>>> +struct btrfs_locked_wholedisk {
+>>
+>> Please pick a different name, we've been calling it devices, although
+>> you can find 'disk' references but mainly for historical reasons (eg.
+>> when it's in a structure). In this case it's a block device.
+>>
+>
+> Well, the "wholedisk" name is from the libblk, and I thought it may be
+> good enough, but it's not the case.
+>
+> Maybe "parent_block_dev" would be better?
+>
+> Thanks,
+> Qu
+>
 
