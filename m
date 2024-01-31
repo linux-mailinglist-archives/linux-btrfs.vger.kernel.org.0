@@ -1,260 +1,241 @@
-Return-Path: <linux-btrfs+bounces-1950-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1951-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C49D843778
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 08:15:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA23F843779
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 08:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A10FC1C25796
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 07:15:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B3AFB26745
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 07:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3064466B4C;
-	Wed, 31 Jan 2024 07:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6BAE67E90;
+	Wed, 31 Jan 2024 07:14:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KHrJHxgy";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2RJPfMVa";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KHrJHxgy";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2RJPfMVa"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="qOE82/Om"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280BF664C6
-	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jan 2024 07:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1250167E60
+	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jan 2024 07:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706685235; cv=none; b=Fevona7T1QlxC3cP3sisTdIjRAaDL22JSMtNEA33M2iBxA243A5gANtP2C9nPaIcJFt3tKLJIyR891SBK1iXdWRKhnQ/9SrwrhRRJXOWVxyBgkyomx11wUSjOTNZiVQK/9iNZRI94GwECj9h1uE+zzxclZhDF+vX+GqQDhpfWqo=
+	t=1706685249; cv=none; b=u6UnipJM3d+OfISufH/7H2SZEGpPwKOUDgaGHYZLgqazKRC+mkpD6Q+KbVsZ41YgQzVKpfmn95Y2H5aqE/tmPpj+byguKxa/rdZlwy2SK/pTC6AJ4RYs73vB4URg8DB5W5rh/2aYPv7bZ5N/SRVhDBgnDRjSd/ZIvTKzfdWQNzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706685235; c=relaxed/simple;
-	bh=IZGLSCWlCub38uP7SZu+Iln40JNn5TO93oI5c8naTHk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H3+/IYDsOEh6DyM95Ei2YmFPnJIQuZiNfJcKH9+KvJzRLs0xy3vVuif3HekvEGoBubNb6RWViNSe7/tN58tLqwLP7qS9wz/ZdLXq6/HvAIRNR+8YbuSiXxJVMvQaI71khgzeZX32EqcjyXJB3hq8dE/cFHhNv/LMf1A2sHfMqu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KHrJHxgy; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2RJPfMVa; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KHrJHxgy; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2RJPfMVa; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1B88C22116;
-	Wed, 31 Jan 2024 07:13:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706685225;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6z9WrSPpjv4tVCvCQ2BhSmAM67acryUNitZBB0z2ZDI=;
-	b=KHrJHxgy38uatamdv4n0DIRhiJRvjx3fJQrN3WRhEoKYIgqAB1K7641V1BIzOU+tRVzMms
-	wMgLdugY4PUGlCb16jegtB+Mjq6tYaVkHifuLTbDG9FVeauGc9NayIklKb1PvzU2kMUVHx
-	FCyOgiVavclKrHzxIRGO3m5j9fmmF0c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706685225;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6z9WrSPpjv4tVCvCQ2BhSmAM67acryUNitZBB0z2ZDI=;
-	b=2RJPfMVa2lz4ojRys/oDCh7RCi0i1SX9Ku4I7YBjz1n8901ab2M7ywOyIn9bpOE91AVcYL
-	AqRVDI5IOQ22KFCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706685225;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6z9WrSPpjv4tVCvCQ2BhSmAM67acryUNitZBB0z2ZDI=;
-	b=KHrJHxgy38uatamdv4n0DIRhiJRvjx3fJQrN3WRhEoKYIgqAB1K7641V1BIzOU+tRVzMms
-	wMgLdugY4PUGlCb16jegtB+Mjq6tYaVkHifuLTbDG9FVeauGc9NayIklKb1PvzU2kMUVHx
-	FCyOgiVavclKrHzxIRGO3m5j9fmmF0c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706685225;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6z9WrSPpjv4tVCvCQ2BhSmAM67acryUNitZBB0z2ZDI=;
-	b=2RJPfMVa2lz4ojRys/oDCh7RCi0i1SX9Ku4I7YBjz1n8901ab2M7ywOyIn9bpOE91AVcYL
-	AqRVDI5IOQ22KFCA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E7EEF132FA;
-	Wed, 31 Jan 2024 07:13:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id uzMzOCjzuWX3CAAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Wed, 31 Jan 2024 07:13:44 +0000
-Date: Wed, 31 Jan 2024 08:13:19 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs-progs: mkfs: use flock() to properly prevent
- race with udev
-Message-ID: <20240131071319.GH31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <49bbb80e37990b0614f0929ac302560b27d2d933.1706594470.git.wqu@suse.com>
+	s=arc-20240116; t=1706685249; c=relaxed/simple;
+	bh=k7z6iPKoNTgzprzxJJYvYjZu0AkITtleWqgfLLiRFeo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mEU/fk9zcTXLF2OlrwmN8kDZf/yhX2TIyraGr69Tbrt/FebjlGI7RwupfvNyyF3kSVUA1Aimt0ZghicuiAHNL9v+gKOtyKgnq/6QthNRj5KDy/FCY2LcI9sLdml5F2MqTBh+dN5xHYbIpbz2GR49gWlPi660ijxfDW1tSfBncsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=qOE82/Om; arc=none smtp.client-ip=216.71.154.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1706685247; x=1738221247;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=k7z6iPKoNTgzprzxJJYvYjZu0AkITtleWqgfLLiRFeo=;
+  b=qOE82/OmCNFSZDYEqq6fRNzfAENkEqjMaRl7iNhA7qeFibzdZC76/28x
+   Wwhrg7z/OYj2Toat1ATSCq0FfY/0pzH6Rb2kgRXka1Y1xxjAqC8GJ11px
+   9MX3nkUole3vADOWbtsTYS9wARMRSYSyDa+k0mwTV+Obpy0IVW4JXw/3X
+   Eidv5zWiyrjdsVm5mSB9X62fary5BzLwMwM0QAWib6e7HG/9E1sbnM6HN
+   wwiqXFO25afqaAwWPLJGoQVYHpXM6vOxuKavpDIH6/L4AflaklRdEkPFX
+   PWiluN/78k8RM6cJgWktBnjFrltDY+xtkNYG/SEJwLcWV7YwKMgIHmst/
+   w==;
+X-CSE-ConnectionGUID: 9j67+pzUTZyRK9sH61gYXA==
+X-CSE-MsgGUID: 8cmGkbbHSxqaeeL4vhluMw==
+X-IronPort-AV: E=Sophos;i="6.05,231,1701100800"; 
+   d="scan'208";a="7841891"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 31 Jan 2024 15:14:01 +0800
+IronPort-SDR: HdsPPpIoKz5bCgWYM8zAJLmYyQD4AltOlnMFW40ILeTaIFxN67YZaccd+9AitSgx+ZNs3uc5Yh
+ FVMS1HLwHzGA==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 30 Jan 2024 22:23:53 -0800
+IronPort-SDR: YA79nETXkWnxe0a4ljJEaKSlRky7W6ZeRdsDbNBOuhtdaULt7/TTj/0ke1hS1UYrjbyj+pcnAX
+ rdqlKt8gvmmQ==
+WDCIronportException: Internal
+Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.126])
+  by uls-op-cesaip01.wdc.com with ESMTP; 30 Jan 2024 23:14:00 -0800
+From: Naohiro Aota <naohiro.aota@wdc.com>
+To: linux-btrfs@vger.kernel.org
+Cc: wangyugui@e16-tech.com,
+	clm@meta.com,
+	hch@lst.de,
+	Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v2] btrfs: introduce sync_csum_mode to tweak sync checksum behavior
+Date: Wed, 31 Jan 2024 16:13:45 +0900
+Message-ID: <75b81282919c566735f80f71c57343e282c40bed.1706685025.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <49bbb80e37990b0614f0929ac302560b27d2d933.1706594470.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KHrJHxgy;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2RJPfMVa
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.21
-X-Rspamd-Queue-Id: 1B88C22116
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 30, 2024 at 04:31:17PM +1030, Qu Wenruo wrote:
-> [BUG]
-> Even after commit b2a1be83b85f ("btrfs-progs: mkfs: keep file
-> descriptors open during whole time"), there is still a bug report about
-> blkid failed to grab the FSID:
-> 
->  device=/dev/loop0
->  fstype=btrfs
-> 
->  wipefs -a "$device"*
-> 
->  parted -s "$device" \
->      mklabel gpt \
->      mkpart '"EFI system partition"' fat32 1MiB 513MiB \
->      set 1 esp on \
->      mkpart '"root partition"' "$fstype" 513MiB 100%
-> 
->  udevadm settle
->  partitions=($(lsblk -n -o path "$device"))
-> 
->  mkfs.fat -F 32 ${partitions[1]}
->  mkfs."$fstype" ${partitions[2]}
->  udevadm settle
+We disable offloading checksum to workqueues and do it synchronously when
+the checksum algorithm is fast. However, as reported in the link below,
+RAID0 with multiple devices may suffer from the sync checksum, because
+"fast checksum" is still not fast enough to catch up RAID0 writing.
 
-As mentioned in the issue 'udevadm lock <command>' can be used as a
-workaround until mkfs does the locking but we can also use that for
-testing, ie lock a device and then try mkfs.
+To measure the effectiveness of sync checksum for developers, it would be
+better to have a switch for the sync checksum under CONFIG_BTRFS_DEBUG
+hood.
 
-> 
-> The above script can sometimes result empty fsid:
-> 
->  loop0
->  |-loop0p1 BDF3-552B
->  `-loop0p2
-> 
-> [CAUSE]
-> Although commit b2a1be83b85f ("btrfs-progs: mkfs: keep file descriptors
-> open during whole time") changed the lifespan of the fds, it doesn't
-> properly inform udev about our change to certain partition.
-> 
-> Thus for a multi-partition case, udev can start scanning the whole disk,
-> meanwhile our mkfs is still happening halfway.
-> 
-> If the scan is done before our new super blocks written, and our close()
-> calls happens later just before the current scan is finished, udev can
-> got the temporary super blocks (which is not a valid one).
-> 
-> And since our close() calls happens during the scan, there would be no
-> new scan, thus leading to the bad result.
-> 
-> [FIX]
-> The proper way to avoid race with udev is to flock() the whole disk
-> (aka, the parent block device, not the partition disk).
-> 
-> Thus this patch would introduce such mechanism by:
-> 
-> - btrfs_flock_one_device()
->   This would resolve the path to a whole disk path.
->   Then make sure the whole disk is not already locked (this can happen
->   for cases like "mkfs.btrfs -f /dev/sda[123]").
-> 
->   If the device is not already locked, then flock() the device, and
->   insert a new entry into the list.
-> 
-> - btrfs_unlock_all_devices()
->   Would go unlock all devices recorded in locked_devices list, and free
->   the memory.
-> 
-> And mkfs.btrfs would be the first one to utilize the new mechanism, to
-> prevent such race with udev.
-> 
-> Issue: #734
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog:
-> v2:
-> - Fix the patch prefix
->   From "btrfs" to "btrfs-progs"
-> ---
->  common/device-utils.c | 114 ++++++++++++++++++++++++++++++++++++++++++
->  common/device-utils.h |   3 ++
->  mkfs/main.c           |  11 ++++
->  3 files changed, 128 insertions(+)
-> 
-> diff --git a/common/device-utils.c b/common/device-utils.c
-> index f86120afa00c..88c21c66382d 100644
-> --- a/common/device-utils.c
-> +++ b/common/device-utils.c
-> @@ -17,11 +17,13 @@
->  #include <sys/ioctl.h>
->  #include <sys/stat.h>
->  #include <sys/types.h>
-> +#include <sys/file.h>
->  #include <linux/limits.h>
->  #ifdef BTRFS_ZONED
->  #include <linux/blkzoned.h>
->  #endif
->  #include <linux/fs.h>
-> +#include <linux/kdev_t.h>
->  #include <limits.h>
->  #include <stdio.h>
->  #include <stdlib.h>
-> @@ -48,6 +50,24 @@
->  #define BLKDISCARD	_IO(0x12,119)
->  #endif
-> 
-> +static LIST_HEAD(locked_devices);
-> +
-> +/*
-> + * This is to record flock()ed devices.
-> + * For flock() to prevent udev races, we must lock the parent block device,
-> + * but we may hit cases like "mkfs.btrfs -f /dev/sda[123]", in that case
-> + * we should only lock "/dev/sda" once.
-> + *
-> + * This structure would be used to record any flocked block device (not
-> + * the partition one), and avoid double locking.
-> + */
-> +struct btrfs_locked_wholedisk {
+This commit introduces fs_devices->sync_csum_mode for CONFIG_BTRFS_DEBUG,
+so that a btrfs developer can change the behavior by writing to
+/sys/fs/btrfs/<uuid>/sync_csum. The default is "auto" which is the same as
+the previous behavior. Or, you can set "on" or "off" to always/never use
+sync checksum.
 
-Please pick a different name, we've been calling it devices, although
-you can find 'disk' references but mainly for historical reasons (eg.
-when it's in a structure). In this case it's a block device.
+More benchmark should be collected with this knob to implement a proper
+criteria to enable/disable sync checksum.
+
+Link: https://lore.kernel.org/linux-btrfs/20230731152223.4EFB.409509F4@e16-tech.com/
+Link: https://lore.kernel.org/linux-btrfs/p3vo3g7pqn664mhmdhlotu5dzcna6vjtcoc2hb2lsgo2fwct7k@xzaxclba5tae/
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+v2:
+- Call it "sync checksum" properly
+- Removed a patch to automatically change checksum behavior
+- Hide the sysfs interface under CONFIG_BTRFS_DEBUG
+---
+ fs/btrfs/bio.c     | 13 ++++++++++++-
+ fs/btrfs/sysfs.c   | 43 +++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.h | 23 +++++++++++++++++++++++
+ 3 files changed, 78 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 960b81718e29..c896d3cd792b 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -608,8 +608,19 @@ static void run_one_async_done(struct btrfs_work *work, bool do_free)
+ 
+ static bool should_async_write(struct btrfs_bio *bbio)
+ {
++	bool auto_csum_mode = true;
++
++#ifdef CONFIG_BTRFS_DEBUG
++	struct btrfs_fs_devices *fs_devices = bbio->fs_info->fs_devices;
++
++	if (fs_devices->sync_csum_mode == BTRFS_SYNC_CSUM_FORCE_ON)
++		return false;
++
++	auto_csum_mode = fs_devices->sync_csum_mode == BTRFS_SYNC_CSUM_AUTO;
++#endif
++
+ 	/* Submit synchronously if the checksum implementation is fast. */
+-	if (test_bit(BTRFS_FS_CSUM_IMPL_FAST, &bbio->fs_info->flags))
++	if (auto_csum_mode && test_bit(BTRFS_FS_CSUM_IMPL_FAST, &bbio->fs_info->flags))
+ 		return false;
+ 
+ 	/*
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 84c05246ffd8..ea1e54149ef4 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1306,6 +1306,46 @@ static ssize_t btrfs_bg_reclaim_threshold_store(struct kobject *kobj,
+ BTRFS_ATTR_RW(, bg_reclaim_threshold, btrfs_bg_reclaim_threshold_show,
+ 	      btrfs_bg_reclaim_threshold_store);
+ 
++#ifdef CONFIG_BTRFS_DEBUG
++static ssize_t btrfs_sync_csum_show(struct kobject *kobj,
++				    struct kobj_attribute *a, char *buf)
++{
++	struct btrfs_fs_devices *fs_devices = to_fs_devs(kobj);
++
++	switch (fs_devices->sync_csum_mode) {
++	case BTRFS_SYNC_CSUM_AUTO:
++		return sysfs_emit(buf, "auto\n");
++	case BTRFS_SYNC_CSUM_FORCE_ON:
++		return sysfs_emit(buf, "on\n");
++	case BTRFS_SYNC_CSUM_FORCE_OFF:
++		return sysfs_emit(buf, "off\n");
++	default:
++		WARN_ON(1);
++		return -EINVAL;
++	}
++}
++
++static ssize_t btrfs_sync_csum_store(struct kobject *kobj,
++				     struct kobj_attribute *a, const char *buf,
++				     size_t len)
++{
++	struct btrfs_fs_devices *fs_devices = to_fs_devs(kobj);
++
++	if (sysfs_streq(buf, "auto"))
++		fs_devices->sync_csum_mode = BTRFS_SYNC_CSUM_AUTO;
++	else if (sysfs_streq(buf, "on"))
++		fs_devices->sync_csum_mode = BTRFS_SYNC_CSUM_FORCE_ON;
++	else if (sysfs_streq(buf, "off"))
++		fs_devices->sync_csum_mode = BTRFS_SYNC_CSUM_FORCE_OFF;
++	else
++		return -EINVAL;
++
++	return len;
++	return -EINVAL;
++}
++BTRFS_ATTR_RW(, sync_csum, btrfs_sync_csum_show, btrfs_sync_csum_store);
++#endif
++
+ /*
+  * Per-filesystem information and stats.
+  *
+@@ -1325,6 +1365,9 @@ static const struct attribute *btrfs_attrs[] = {
+ 	BTRFS_ATTR_PTR(, bg_reclaim_threshold),
+ 	BTRFS_ATTR_PTR(, commit_stats),
+ 	BTRFS_ATTR_PTR(, temp_fsid),
++#ifdef CONFIG_BTRFS_DEBUG
++	BTRFS_ATTR_PTR(, sync_csum),
++#endif
+ 	NULL,
+ };
+ 
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 53f87f398da7..9b821677aeb3 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -276,6 +276,24 @@ enum btrfs_read_policy {
+ 	BTRFS_NR_READ_POLICY,
+ };
+ 
++#ifdef CONFIG_BTRFS_DEBUG
++/*
++ * Checksum mode - do it synchronously in btrfs_submit_chunk() or offload it.
++ */
++enum btrfs_sync_csum_mode {
++	/*
++	 * Choose sync checksum or offloading automatically. Do it
++	 * synchronously if the checksum is fast, or offload to workqueues
++	 * otherwise.
++	 */
++	BTRFS_SYNC_CSUM_AUTO,
++	/* Never offload checksum to workqueues. */
++	BTRFS_SYNC_CSUM_FORCE_ON,
++	/* Always offload checksum to workqueues. */
++	BTRFS_SYNC_CSUM_FORCE_OFF,
++};
++#endif
++
+ struct btrfs_fs_devices {
+ 	u8 fsid[BTRFS_FSID_SIZE]; /* FS specific uuid */
+ 
+@@ -380,6 +398,11 @@ struct btrfs_fs_devices {
+ 
+ 	/* Policy used to read the mirrored stripes. */
+ 	enum btrfs_read_policy read_policy;
++
++#ifdef CONFIG_BTRFS_DEBUG
++	/* Checksum mode - do it synchronously or offload it. */
++	enum btrfs_sync_csum_mode sync_csum_mode;
++#endif
+ };
+ 
+ #define BTRFS_MAX_DEVS(info) ((BTRFS_MAX_ITEM_SIZE(info)	\
+-- 
+2.43.0
+
 
