@@ -1,96 +1,123 @@
-Return-Path: <linux-btrfs+bounces-1943-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1944-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6D26842E2E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 21:49:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA2878434D9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 05:30:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9AC51C253EB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jan 2024 20:49:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18FFF1C256E8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 04:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B261762DF;
-	Tue, 30 Jan 2024 20:49:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599B31B7E9;
+	Wed, 31 Jan 2024 04:30:19 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A9DC71B49
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 20:49:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBA517C8B
+	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jan 2024 04:30:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706647766; cv=none; b=az7jrSX1OA1RYRbE4/efGY/LWRlCeVyXzCtjdgQo63NuETJC7y+Ajqwhg35YPday7KeGhvuYckr35PZZW3tHomP8df2aqyLKt4rL18eZfW2/Jr8uLU1o9DIwbMDkCzKKcRj3cJrzYgJ1dBCf9Y5PKVCAKgk8u4/p7NstJIQ3eL8=
+	t=1706675418; cv=none; b=XJy+XjJ069VTOeKdWFhKO2bcPF9dKZneD1uba9TSdn+lCu1k6bsGM61QjCi+vYvaFJVs3atExxTkEMlUngf8V73z3D02czWeJfvQ3gX1wzXwAcdhDNn9hoMLZGBkbUtEM4RdKXFr93px0STC0mMUc2f/qzEzGAqbWYUgoQdGq+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706647766; c=relaxed/simple;
-	bh=bS3zY4RD+CMpw9nf3G/9PKea3i0PDScm6HPQf3AhHgw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gaLRoSW+v/CV+hyOpPvGvgSGJti39iol518xze75YoxhKoOQPUh0Nwv815ZgBmE2J4jkKYUb8Yl81JpN87d1/Cxz8io33DdWswnuw8v4vF678kvs/nbuNWCBntzcba7YwPf/v+pw8FMLjQVZOub2+ziX6GdCgy12b/SQP2RCV8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.219.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-68873473ce6so34068146d6.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 12:49:24 -0800 (PST)
+	s=arc-20240116; t=1706675418; c=relaxed/simple;
+	bh=8HMP/KjFBx/VlXqYZPbok4cIhCr6SSfIhr+OC3U+PT8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eniqb1sshjw+1qV+1qHEEwXkvlwqCi6F+OIzt2P1lyg4pwrMqnv+iR+GQsc4H3olC8TvnK1CqjMK4h/S8vuSNRIzJ16OdB0o8K7TAcz8VOMzPMtRXgbg0KpI/u0k1okngX82oJFoa/mXvNGbBClFrZ00EB4UxBfK8bm4ScB93og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-511206d1c89so1363876e87.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 20:30:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706647763; x=1707252563;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AtZBEe426KIf/mBUMlvvoaF7jyFEZ9/COBSE2/txMLU=;
-        b=Gvyb3/1VNuN/gt4TsxqwQ3u26x3s+iPRKL0is2dHjG66CvubKiuVctNwK7pUOLttTl
-         SBylTfiDF10L1C+THH4CffgxBXz53A+wm5FWrr6jHX7GoQehUMFYUPdyq3Szock0cyZE
-         GBDCWwCWpLkHdemAlI6sWGPXpW2gma905Y2Ru/+F9/vq/0c6r3r8BZgR+akGTPHdVAfX
-         vH5zl2AFEa2EUmApLB3a1XZXUlyRCnNukPB01qvE4QcszRa1zIpncgws+RBUYw5nMEPO
-         p96SSC4MjFb9teFnNecToEgE9Honufz4LqWEi3h/gXg7oaFPqKHTWjnjKdLHhLkZwmih
-         opjQ==
-X-Gm-Message-State: AOJu0YxRQhVgjsRkfqdvduCDJn0ZjfDOEc7cH8eNc14k4miQFybOWSaC
-	BSxQSzZ73CMnZf8zDLGre+/39s9phs1DmVduZHjBL5uclrXeF2p4EVyZZ1C2zA==
-X-Google-Smtp-Source: AGHT+IExCJjqhy5J/HQbLwc6HEIv1PKoKFV6opMfTc/hdwP/PWAAPv9RfvTcXLRcTuNHUUdlDE2mNw==
-X-Received: by 2002:a05:6214:f2c:b0:681:7d81:705b with SMTP id iw12-20020a0562140f2c00b006817d81705bmr615439qvb.4.1706647763522;
-        Tue, 30 Jan 2024 12:49:23 -0800 (PST)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id of10-20020a056214434a00b0068c560eaf8fsm1688182qvb.134.2024.01.30.12.49.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 12:49:23 -0800 (PST)
-Date: Tue, 30 Jan 2024 15:49:22 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc: Damien Le Moal <dlemoal@kernel.org>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Johannes Thumshirn <jth@kernel.org>,
-	Alasdair Kergon <agk@redhat.com>,
-	Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev,
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-	Chao Yu <chao@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-	Chaitanya Kulkarni <kch@nvidia.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net, linux-block@vger.kernel.org,
-	linux-nvme@lists.infradead.org
-Subject: Re: [PATCH v3 5/5] block: remove gfp_flags from blkdev_zone_mgmt
-Message-ID: <Zblg0qE25wPt-SRv@redhat.com>
-References: <20240128-zonefs_nofs-v3-0-ae3b7c8def61@wdc.com>
- <20240128-zonefs_nofs-v3-5-ae3b7c8def61@wdc.com>
+        d=1e100.net; s=20230601; t=1706675414; x=1707280214;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2JA5wBAqOYI5aMC8WWd4j+Vir7nbk5D37PgKH91X5Gc=;
+        b=LV5iOI3+uC6OdpLd9xJlCYmjC6SrqvmEaxG0c3d1nzledcRBbuVeQNOIeTPL9rXIQP
+         eDavsa1KHUdWbpHOaWVjDNYrRDOKDz0eDUhHsZIMrRKOOGGh0gg6TdqwwsNVD5H/EN3/
+         lVEm5T06tYGiFQstf1rQwTM0QgNKNfafvvRq46ZddP+LEVO5hinkDwilTB6SMCYfj4hG
+         V2VvlBeTqc021xy1QTxUqEBSn1oCTH/iArqyetqxrnL7VByuB4zut+5/3DVIRejCVy2Q
+         F5b8sLzUQ+bXY+/Vk2i3MD/iCeOzc1XSEUIRBu6L8bzwY06jzBfZeWMzyiVH8UYAapOr
+         WzBw==
+X-Gm-Message-State: AOJu0YwiNhSWshX1C8usHriPnZqa/Il0VltSdVRcmKGSOCuuRz+YI9Fi
+	IdwOsYYxVjFJvJsSW4GJYrp+h/gt5z/aChJComEkroj5j9ziC6QPi9SbpKyo0Tdbog==
+X-Google-Smtp-Source: AGHT+IErW7hbjEdvWndi25yHuNddgFYXGXpTaDkF+QXpzipKY779uTC4fanTGH9oc7GAIzKo7gvZCA==
+X-Received: by 2002:ac2:5159:0:b0:510:15aa:ef16 with SMTP id q25-20020ac25159000000b0051015aaef16mr353948lfd.58.1706675414172;
+        Tue, 30 Jan 2024 20:30:14 -0800 (PST)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id og16-20020a1709071dd000b00a28aba1f56fsm5732004ejc.210.2024.01.30.20.30.14
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Jan 2024 20:30:14 -0800 (PST)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55790581457so5720316a12.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jan 2024 20:30:14 -0800 (PST)
+X-Received: by 2002:a05:6402:64f:b0:55e:d46b:7d82 with SMTP id
+ u15-20020a056402064f00b0055ed46b7d82mr233973edx.28.1706675413903; Tue, 30 Jan
+ 2024 20:30:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240128-zonefs_nofs-v3-5-ae3b7c8def61@wdc.com>
+References: <cover.1706037337.git.rgoldwyn@suse.com> <20240129080442.GV31555@twin.jikos.cz>
+In-Reply-To: <20240129080442.GV31555@twin.jikos.cz>
+From: Neal Gompa <neal@gompa.dev>
+Date: Wed, 31 Jan 2024 04:29:36 +0000
+X-Gmail-Original-Message-ID: <CAEg-Je8L1B0JHmmcir5GpThPqACpLXm13sT6v2yS4pV_4Ty+0g@mail.gmail.com>
+Message-ID: <CAEg-Je8L1B0JHmmcir5GpThPqACpLXm13sT6v2yS4pV_4Ty+0g@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] page to folio conversion
+To: David Sterba <dsterba@suse.cz>
+Cc: Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org, 
+	Goldwyn Rodrigues <rgoldwyn@suse.com>, Josef Bacik <josef@toxicpanda.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 29 2024 at  2:52P -0500,
-Johannes Thumshirn <johannes.thumshirn@wdc.com> wrote:
+On Mon, Jan 29, 2024 at 8:05=E2=80=AFAM David Sterba <dsterba@suse.cz> wrot=
+e:
+>
+> On Tue, Jan 23, 2024 at 01:28:04PM -0600, Goldwyn Rodrigues wrote:
+> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> >
+> > These patches transform some page usage to folio. All references and da=
+ta
+> > of page/folio is within the scope of the function changed.
+> >
+> > Changes since v1:
+> > Review comments -
+> >   * Added WARN_ON(folio_order(folio)) to ensure future development know=
+s
+> >     this code assumes folio_size(folio) =3D=3D PAGE_SIZE
+> >   * namespace restoration: prefix variable names with folio_
+> >   * Line adjustments
+> >
+> > Goldwyn Rodrigues (3):
+> >   btrfs: page to folio conversion: prealloc_file_extent_cluster()
+> >   btrfs: convert relocate_one_page() to relocate_one_folio()
+> >   btrfs: page to folio conversion in put_file_data()
+>
+> The conversion looks straightforward like we've been doing elsewhere,
+> however the CI is still not in a shape to validate arm + subpage, I've
+> seen the hosts not pass with various sets of patches (removed potential
+> breakage and keeping potential fixes).
+>
+> There are more folio conversions coming so I'd like to get them all in
+> so we can switch to the big folios eventually but without the CI
+> verification of subpage it's a bit risky.
+>
 
-> Now that all callers pass in GFP_KERNEL to blkdev_zone_mgmt() and use
-> memalloc_no{io,fs}_{save,restore}() to define the allocation scope, we can
-> drop the gfp_mask parameter from blkdev_zone_mgmt() as well as
-> blkdev_zone_reset_all() and blkdev_zone_reset_all_emulated().
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Wait, we don't? I thought Josef had specifically added Fedora Asahi
+runners specifically for subpage testing[1]?
 
-Reviewed-by: Mike Snitzer <snitzer@kernel.org>
+[1]: https://josefbacik.github.io/kernel/2023/07/18/btrfs-github-ci.html
+
+
+
+--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
