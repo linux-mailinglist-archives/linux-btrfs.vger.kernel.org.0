@@ -1,185 +1,107 @@
-Return-Path: <linux-btrfs+bounces-1946-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1947-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44FC7843678
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 07:13:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AB9A843688
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 07:20:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE2C11F25254
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 06:13:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97379B25987
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 06:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A863EA92;
-	Wed, 31 Jan 2024 06:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0zTVtWd0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VnXuxaQK";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0zTVtWd0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VnXuxaQK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD2F3E49C;
+	Wed, 31 Jan 2024 06:19:52 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0D33EA67
-	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jan 2024 06:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D7A3D0A8;
+	Wed, 31 Jan 2024 06:19:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706681615; cv=none; b=C8fG3sbaAAO8xZN9JnJGGpoSdQrv+PMHn7PvoFW6S7AgS4DcNP6XvqF2Iq0b32LfFcm25BQMSS4ktQTkdMagPo080KffDXjy9TNbgOTA6wlEc5i2QqQ/3uz/jrMvJF6qiFLqL5pYO2IWOyMSty3+uhwfhnOj6Gw/WOIv4sp6ijk=
+	t=1706681991; cv=none; b=aEehZOQYykqSseToVkyG1iJ0FayY8HOOWc2ZuX8l8dIK4kxMS0ENQdfGft+o47ho7qANqWQzCsxLDAX95FUtSflaawCUj/Kb3JiAzsi2kN6EsZ12Q57Z3q+wpuhs+ESLPnOQg3ugWteIqoUF/w77mngA9WYiQOXKH9vBJb6SqpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706681615; c=relaxed/simple;
-	bh=NtaPvoK7Gh78fT0gCvwdrv12vCU8GMZqwgbtPWb01QM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TG51v0Xz5/7VBBzyNj+0qEgb09YAb0R83j/FHD63mRiLi6S8VFsPtcFtDDtvHAOh2lSGowG5m7FAEgr7G2iwSoT9IdDtV0bKlOWJABC2SxQ2MWTQS/aEKhAOwwo34hDVu2maH/X4qyAflqoFbrFTDSE1N4BF0l6pI7cXvWOnDac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0zTVtWd0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VnXuxaQK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0zTVtWd0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VnXuxaQK; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BCE2B1FB54;
-	Wed, 31 Jan 2024 06:13:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706681611;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zDED8bseYJr0vztAj/G9EM4BLn6ZU8B1s+bpisJ5nVY=;
-	b=0zTVtWd0OhO9/1FPqGh393WKu6zK1r87BOOR1jhJcyFGNIipxLDtkZLpzZf+N69CLQCbWB
-	TZHuCyyWNTUyUf8sdi1LPx+FGkgEAgMPlIFqbV4rj8zwzbNhCr63MpYiX/hQpvK7gM12Ua
-	5uAl94Pcad6Vb2oekvZLygIu4jjbXsg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706681611;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zDED8bseYJr0vztAj/G9EM4BLn6ZU8B1s+bpisJ5nVY=;
-	b=VnXuxaQKoCasTS1iPCMo8I8Cg6zyMcNPoG27ATimMkruE9420qJ60qH3tzQGA/oLEXks2A
-	e7FrKYWroAALCsDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706681611;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zDED8bseYJr0vztAj/G9EM4BLn6ZU8B1s+bpisJ5nVY=;
-	b=0zTVtWd0OhO9/1FPqGh393WKu6zK1r87BOOR1jhJcyFGNIipxLDtkZLpzZf+N69CLQCbWB
-	TZHuCyyWNTUyUf8sdi1LPx+FGkgEAgMPlIFqbV4rj8zwzbNhCr63MpYiX/hQpvK7gM12Ua
-	5uAl94Pcad6Vb2oekvZLygIu4jjbXsg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706681611;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zDED8bseYJr0vztAj/G9EM4BLn6ZU8B1s+bpisJ5nVY=;
-	b=VnXuxaQKoCasTS1iPCMo8I8Cg6zyMcNPoG27ATimMkruE9420qJ60qH3tzQGA/oLEXks2A
-	e7FrKYWroAALCsDw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A053D139D9;
-	Wed, 31 Jan 2024 06:13:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id wD73JgvluWVyfAAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Wed, 31 Jan 2024 06:13:31 +0000
-Date: Wed, 31 Jan 2024 07:13:02 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Neal Gompa <neal@gompa.dev>
-Cc: Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org,
-	Goldwyn Rodrigues <rgoldwyn@suse.com>,
-	Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH v2 0/3] page to folio conversion
-Message-ID: <20240131061302.GF31555@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1706037337.git.rgoldwyn@suse.com>
- <20240129080442.GV31555@twin.jikos.cz>
- <CAEg-Je8L1B0JHmmcir5GpThPqACpLXm13sT6v2yS4pV_4Ty+0g@mail.gmail.com>
+	s=arc-20240116; t=1706681991; c=relaxed/simple;
+	bh=u5O3/gNRSdF1Vka2tF/34OTpsuldLvuRZepGrl5h7k0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SMd1/Ht+hwPMxiZzVQrytTKDNCCdD+anj/qi/Ds1xW4e3l7v/khJH85HxE1ueXqAzq2V0FYjkpG2QgRqaX4/ufGujJr9Wl5ehxhKWoJbBjQWa2TQJuZE+gXn/WP9zakGgSy9iI4/6Q2MYFtMwXI8rtXceGsQKzKQxvlwSP3gJ7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 40ea3aee49ee4d33a1f27c107259acbd-20240131
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:c50e72fa-99b4-4905-8d10-937242d3f027,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:5
+X-CID-INFO: VERSION:1.1.35,REQID:c50e72fa-99b4-4905-8d10-937242d3f027,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-META: VersionHash:5d391d7,CLOUDID:b83cf37f-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:240131141931X8CLJG0B,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 40ea3aee49ee4d33a1f27c107259acbd-20240131
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 297476359; Wed, 31 Jan 2024 14:19:28 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 3AAC9E000EB9;
+	Wed, 31 Jan 2024 14:19:27 +0800 (CST)
+X-ns-mid: postfix-65B9E66F-40888197
+Received: from kernel.. (unknown [172.20.15.254])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 74415E000EB9;
+	Wed, 31 Jan 2024 14:19:25 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com
+Cc: linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] btrfs: Simplify the allocation of slab caches in btrfs_delayed_inode_init
+Date: Wed, 31 Jan 2024 14:19:24 +0800
+Message-Id: <20240131061924.130083-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEg-Je8L1B0JHmmcir5GpThPqACpLXm13sT6v2yS4pV_4Ty+0g@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0zTVtWd0;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=VnXuxaQK
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.21 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[27.79%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-0.985];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -1.21
-X-Rspamd-Queue-Id: BCE2B1FB54
-X-Spam-Flag: NO
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 31, 2024 at 04:29:36AM +0000, Neal Gompa wrote:
-> On Mon, Jan 29, 2024 at 8:05 AM David Sterba <dsterba@suse.cz> wrote:
-> >
-> > On Tue, Jan 23, 2024 at 01:28:04PM -0600, Goldwyn Rodrigues wrote:
-> > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > >
-> > > These patches transform some page usage to folio. All references and data
-> > > of page/folio is within the scope of the function changed.
-> > >
-> > > Changes since v1:
-> > > Review comments -
-> > >   * Added WARN_ON(folio_order(folio)) to ensure future development knows
-> > >     this code assumes folio_size(folio) == PAGE_SIZE
-> > >   * namespace restoration: prefix variable names with folio_
-> > >   * Line adjustments
-> > >
-> > > Goldwyn Rodrigues (3):
-> > >   btrfs: page to folio conversion: prealloc_file_extent_cluster()
-> > >   btrfs: convert relocate_one_page() to relocate_one_folio()
-> > >   btrfs: page to folio conversion in put_file_data()
-> >
-> > The conversion looks straightforward like we've been doing elsewhere,
-> > however the CI is still not in a shape to validate arm + subpage, I've
-> > seen the hosts not pass with various sets of patches (removed potential
-> > breakage and keeping potential fixes).
-> >
-> > There are more folio conversions coming so I'd like to get them all in
-> > so we can switch to the big folios eventually but without the CI
-> > verification of subpage it's a bit risky.
-> >
-> 
-> Wait, we don't? I thought Josef had specifically added Fedora Asahi
-> runners specifically for subpage testing[1]?
+commit 0a31bd5f2bbb ("KMEM_CACHE(): simplify slab cache creation")
+introduces a new macro.
+Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
+to simplify the creation of SLAB caches.
 
-Yes, but we don't have yet a stable testing base with all-pass results
-on all configuration and with quirks disabling unreliable tests. There
-are crashes reported with various sets of patches that are likely
-caused by folio changes but it's hard to narrow down which ones.
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ fs/btrfs/delayed-inode.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 08102883f560..8c748c6cdf6d 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -28,11 +28,7 @@ static struct kmem_cache *delayed_node_cache;
+=20
+ int __init btrfs_delayed_inode_init(void)
+ {
+-	delayed_node_cache =3D kmem_cache_create("btrfs_delayed_node",
+-					sizeof(struct btrfs_delayed_node),
+-					0,
+-					SLAB_MEM_SPREAD,
+-					NULL);
++	delayed_node_cache =3D KMEM_CACHE(btrfs_delayed_node, SLAB_MEM_SPREAD);
+ 	if (!delayed_node_cache)
+ 		return -ENOMEM;
+ 	return 0;
+--=20
+2.39.2
+
 
