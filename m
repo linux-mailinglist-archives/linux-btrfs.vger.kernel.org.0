@@ -1,168 +1,247 @@
-Return-Path: <linux-btrfs+bounces-1974-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1975-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58533844802
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 20:34:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDB1A84490E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 21:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C27021F25AEE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 19:34:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AE4029021E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jan 2024 20:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C633AC16;
-	Wed, 31 Jan 2024 19:34:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD42D38DDB;
+	Wed, 31 Jan 2024 20:41:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="pebuakVd"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="lFWar+4U"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0103E479
-	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jan 2024 19:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E2138FAA
+	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jan 2024 20:41:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706729644; cv=none; b=P8CtWGDdLBQntopMGsigEEGv7VElTXQRWymR9z6+GNoJvJA3n2qNExfpolafgMLEYh2u50n/m5MMlvimuBgePLvYWDeFDM6mH2G/yqawxVUpO7+BZSWpA9qvOb4vGdTniCKFgBtDuitluv4QEKFEKCGEstTrGJUMsiHUBrQHgSc=
+	t=1706733713; cv=none; b=ORtIk7mHNfDZDsBRDE4x3Uf13OHkULL+qti431A0ug19irq7Wy2QIkzKRsvMSExg+dnrCRc6xZu3nGk7nE7831SES+d34YU5Vu3gZYhuzTVfCVJ83C9/qxwYZhE7Dx6mZArzn5sT78LKHKjZWr9pvKwBMPhyg/sLdMsJJWC6ITY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706729644; c=relaxed/simple;
-	bh=DZk3i+EbDplK1q2qoAb7Uhjuhh8nbQgYqSzNVEynAmk=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=O0hu+13r/jky6LTPNfWBkG4D5/BRTMkjx2xBQKY+iYttPDuszNI/l74HddVMR8ikqsViT9yWztUayVjOQsPI92sHlw+eGVHhnAuX/dWeAFfaMEjG5orzgOi05J2q7PIQPPoduif1vyW5GsuXTi8LR55WALZxnEqhOgOVMza6pPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=pebuakVd; arc=none smtp.client-ip=209.85.219.52
+	s=arc-20240116; t=1706733713; c=relaxed/simple;
+	bh=6AJOumOwU3lGrjfTqXweqd+2rUMyS8ROR8eYeZ752HE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=abvCdapqzzFN1Tz/ov691XQYyVLChqTaeaLLxVD+8xXA6+HwYbI59rRjUOCexlyi6551RHYqs01L9yvHIp/NPYT8iMI+8gLXvPyrqEYaMhFIY4LorzrE2cKdVcHLHlbUGZebsh+34uNmsP2kGGmJc4U8m218Cevrk+GDZwc30xA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=lFWar+4U; arc=none smtp.client-ip=209.85.219.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6818a9fe380so817046d6.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 Jan 2024 11:34:02 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc226bad48cso147479276.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 Jan 2024 12:41:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706729641; x=1707334441; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8fACU4hHTGcf4mrKhTf9lHvFT5+tsQvST3N0gbZzwfs=;
-        b=pebuakVdfYRKz72MJXA0RzWWKaz1IRcUtvEx25IxMbNMHL9gLwEDQJArfkL77ETgks
-         in/f1eVl8QuqfZyIe/Ngt5wcvZNnRmU6EJ1I9ouwQaDDhq3cnD77p5cPbYoEd7He8AhJ
-         VIpaGHv9gZcCW4bA12NT+zlFYhoLsemuBhfLJQS9GHmWNEFeuBIum1vZVg+iJd3HKpCA
-         MGon8p1kQ/sdnN6qZliPnLo/LH44r1oLh0Rb64pFJeuBz5esC3ti8hn+mr01lj0B7/2D
-         DDkv8HtbWPR9Wk3YL5LEKfr0Le+SHfWXRIFBklP3IDiy8jVoaYq9wIOxvlJPa3BimxdV
-         lyTQ==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706733710; x=1707338510; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O9nFRkJh91Bnnb6zCvOXiM/IRlcjZlBEPqU++gxWlRE=;
+        b=lFWar+4Ub3fkSUV36csrynhdNQRj+qq8deL2MxD+M8B/GgUUTEH7dETSHFB3XwPAz+
+         QHF5EDmMlgMV+YCK8zbM8fZbe1nyegFo2Z7cVQmZwPH3+FqcPA7LL23ZJTcSe8Rrn141
+         XI2/ie/r2tS16FKqIAvXzVupCs2sq3XP0//U0fqXbgw6r8w10aoXjULSQ+S7+fUWl7JU
+         rFULZaz9pk4DSIFDGHiKxv7Fs90hVavj7LJ0E9xXgjXGQC33iElRPhsQPGncv9Eu+sOF
+         qFWcI36aaRNO+OrHamMTZGz50B4QINWGSqK3ZA/kENmZwMsubSTb1QfIxfE3ZgC6cAor
+         SnCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706729641; x=1707334441;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8fACU4hHTGcf4mrKhTf9lHvFT5+tsQvST3N0gbZzwfs=;
-        b=gHRFGayEfP+KK0Ou3vuoRoVkbFmH+EwecRngr+yRczHOwhP2BaIPoPFEZ0LzRYcvpx
-         MCAnfZXtaZnupPSKJT9Siv49x8owWyHkBe6SH3GBOkoDRIV84qeeOSmpp27CpNC0VBiA
-         pDYVcJLt65IAQoLzasBAj6dzd4YGUl7KkzGB6Qblorg0A6MLUIEgSkFIs2WFd2SIgMhE
-         FT9CrlbHc5DIQOf8pru0NnwonfwH/IWTgHw9u3MgQFIMKYwfCcYZvM2x+AJGNMwTATOE
-         ForpK1lql9SHkdKd8gQvZP/3k1aO3ojDlgtaPorY/FeeJZMpoZKD83wKYtF5DrRn7rUH
-         7+YQ==
-X-Gm-Message-State: AOJu0YxgboWYTiMVfEILzeXYDUvOo/B/arq/w935LbvAI46JURjyjNDz
-	YIiGxLBFge1XyP7+AJKfwjdgQ7HCvOkbN506WiGdKNAgKnlYVnXIp2HlP32nPoa/O5Uh37MpAUo
-	D
-X-Google-Smtp-Source: AGHT+IFF4DPbauNB30t7Fo1qK/wePduwLgJhUMkXSC0s9jdbmkZTeACktIV6OSDRfpJqFQjOWBZqqA==
-X-Received: by 2002:ad4:5d42:0:b0:68c:3b04:49f4 with SMTP id jk2-20020ad45d42000000b0068c3b0449f4mr3444477qvb.64.1706729641339;
-        Wed, 31 Jan 2024 11:34:01 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706733710; x=1707338510;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O9nFRkJh91Bnnb6zCvOXiM/IRlcjZlBEPqU++gxWlRE=;
+        b=waAiycTUgGVU5kON/qXQog1tUVtZQOiq6N9k67FtENDFb6xWv40WrEHLPJOQwUXTbJ
+         xZTvRD3D0H5LQxeXtDXnEnN4o2/s9Q7Ai7gMIr7YAi5AGRMkpSPaG+JDJRhsj3X8YXJs
+         allBFGnMQJJd+jh4V1k2cvQ8LSejWWCx0/n33CQ13OreFcRYm49WdAR8NI8ziW2umD89
+         ZiM+pKYYVd584zKTcVb8Tn9FA5MxKHOArhvDuUABlNRY79bRl3nvh6LnD2N0EKqP+mZP
+         9324n5doawr7VujhoNVM6wnk3hSivFbLROBDRuCwHw3FjgS9E4UGLFR7QX7bjaeZ0D1u
+         hSWA==
+X-Gm-Message-State: AOJu0YzT8mzq/cpkwje/EOafrZPVXytllTXb7/Kc6PTNIhGRDiB+5/xM
+	Qlh8ihwJYmDYyNkB38Nc+MbFUDFUPJGise2mse5fSvdxsu0SRv6IczO6wgSnz9bS1q21dQRqWtN
+	f
+X-Google-Smtp-Source: AGHT+IGeEq7VvSrFZiLE8XcO117XynxhHL1k4P1FkJ5xruXkM/tFF0t/+C3PQX/a+jCWJhXK/ixHpA==
+X-Received: by 2002:a25:7188:0:b0:dbc:d57f:4632 with SMTP id m130-20020a257188000000b00dbcd57f4632mr184036ybc.61.1706733710265;
+        Wed, 31 Jan 2024 12:41:50 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id mf15-20020a0562145d8f00b00686a080092bsm5794875qvb.1.2024.01.31.11.34.00
+        by smtp.gmail.com with ESMTPSA id lv7-20020a056214578700b0068691ce0e74sm5872968qvb.0.2024.01.31.12.41.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jan 2024 11:34:01 -0800 (PST)
+        Wed, 31 Jan 2024 12:41:49 -0800 (PST)
+Date: Wed, 31 Jan 2024 15:41:48 -0500
 From: Josef Bacik <josef@toxicpanda.com>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH] btrfs: don't drop extent_map for free space inode on write error
-Date: Wed, 31 Jan 2024 14:33:56 -0500
-Message-ID: <280a4b489f58586b20bd195c84cf396098a784d5.1706729623.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.43.0
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: preallocate temporary extent buffer for inode
+ logging when needed
+Message-ID: <20240131204148.GA3203388@perftesting>
+References: <1ef0997eee1fbe194ab2546f34052cd4e27c6ef4.1706612525.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ef0997eee1fbe194ab2546f34052cd4e27c6ef4.1706612525.git.fdmanana@suse.com>
 
-While running the CI for an unrelated change I hit the following panic
-with generic/648 on btrfs_holes_spacecache.
+On Tue, Jan 30, 2024 at 11:05:44AM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When logging an inode and we require to copy items from subvolume leaves
+> to the log tree, we clone each subvolume leaf and than use that clone to
+> copy items to the log tree. This is required to avoid possible deadlocks
+> as stated in commit 796787c978ef ("btrfs: do not modify log tree while
+> holding a leaf from fs tree locked").
+> 
+> The cloning requires allocating an extent buffer (struct extent_buffer)
+> and then allocating pages (folios) to attach to the extent buffer. This
+> may be slow in case we are under memory pressure, and since we are doing
+> the cloning while holding a read lock on a subvolume leaf, it means we
+> can be blocking other operations on that leaf for significant periods of
+> time, which can increase latency on operations like creating other files,
+> renaming files, etc. Similarly because we're under a log transaction, we
+> may also cause extra delay on other tasks doing an fsync, because syncing
+> the log requires waiting for tasks that joined a log transaction to exit
+> the transaction.
+> 
+> So to improve this, for any inode logging operation that needs to copy
+> items from a subvolume leaf ("full sync" or "copy everything" bit set
+> in the inode), preallocate a dummy extent buffer before locking any
+> extent buffer from the subvolume tree, and even before joining a log
+> transaction, add it to the log context and then use it when we need to
+> copy items from a subvolume leaf to the log tree. This avoids making
+> other operations get extra latency when waiting to lock a subvolume
+> leaf that is used during inode logging and we are under heavy memory
+> pressure.
+> 
+> The following test script with bonnie++ was used to test this:
+> 
+>   $ cat test.sh
+>   #!/bin/bash
+> 
+>   DEV=/dev/sdh
+>   MNT=/mnt/sdh
+>   MOUNT_OPTIONS="-o ssd"
+> 
+>   MEMTOTAL_BYTES=`free -b | grep Mem: | awk '{ print $2 }'`
+>   NR_DIRECTORIES=20
+>   NR_FILES=20480
+>   DATASET_SIZE=$((MEMTOTAL_BYTES * 2 / 1048576))
+>   DIRECTORY_SIZE=$((MEMTOTAL_BYTES * 2 / NR_FILES))
+>   NR_FILES=$((NR_FILES / 1024))
+> 
+>   echo "performance" | \
+>       tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+> 
+>   umount $DEV &> /dev/null
+>   mkfs.btrfs -f $MKFS_OPTIONS $DEV
+>   mount $MOUNT_OPTIONS $DEV $MNT
+> 
+>   bonnie++ -u root -d $MNT \
+>       -n $NR_FILES:$DIRECTORY_SIZE:$DIRECTORY_SIZE:$NR_DIRECTORIES \
+>       -r 0 -s $DATASET_SIZE -b
+> 
+>   umount $MNT
+> 
+> The results of this test on a 8G VM running a non-debug kernel (Debian's
+> default kernel config), were the following.
+> 
+> Before this change:
+> 
+>   Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
+>                       -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+>   Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+>   debian0       7501M  376k  99  1.4g  96  117m  14 1510k  99  2.5g  95 +++++ +++
+>   Latency             35068us   24976us    2944ms   30725us   71770us   26152us
+>   Version 2.00a       ------Sequential Create------ --------Random Create--------
+>   debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+>   files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+>   20:384100:384100/20 20480  32 20480  58 20480  48 20480  39 20480  56 20480  61
+>   Latency               411ms   11914us     119ms     617ms   10296us     110ms
+> 
+> After this change:
+> 
+>   Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
+>                       -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+>   Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+>   debian0       7501M  375k  99  1.4g  97  117m  14 1546k  99  2.3g  98 +++++ +++
+>   Latency             35975us  20945us    2144ms   10297us    2217us    6004us
+>   Version 2.00a       ------Sequential Create------ --------Random Create--------
+>   debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+>   files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+>   20:384100:384100/20 20480  35 20480  58 20480  48 20480  40 20480  57 20480  59
+>   Latency               320ms   11237us   77779us     518ms    6470us   86389us
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/file.c     | 12 ++++++
+>  fs/btrfs/tree-log.c | 93 +++++++++++++++++++++++++++------------------
+>  fs/btrfs/tree-log.h | 25 ++++++++++++
+>  3 files changed, 94 insertions(+), 36 deletions(-)
+> 
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index f8e1a7ce3d39..fd5e23035a28 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1912,6 +1912,8 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+>  		goto out_release_extents;
+>  	}
+>  
+> +	btrfs_init_log_ctx_scratch_eb(&ctx);
+> +
+>  	/*
+>  	 * We use start here because we will need to wait on the IO to complete
+>  	 * in btrfs_sync_log, which could require joining a transaction (for
+> @@ -1931,6 +1933,15 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+>  	trans->in_fsync = true;
+>  
+>  	ret = btrfs_log_dentry_safe(trans, dentry, &ctx);
+> +	/*
+> +	 * Scratch eb no longer needed, release before syncing log or commit
+> +	 * transaction, to avoid holding unnecessary memory during such long
+> +	 * operations.
+> +	 */
+> +	if (ctx.scratch_eb) {
+> +		free_extent_buffer(ctx.scratch_eb);
+> +		ctx.scratch_eb = NULL;
+> +	}
+>  	btrfs_release_log_ctx_extents(&ctx);
+>  	if (ret < 0) {
+>  		/* Fallthrough and commit/free transaction. */
+> @@ -2006,6 +2017,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+>  
+>  	ret = btrfs_commit_transaction(trans);
+>  out:
+> +	free_extent_buffer(ctx.scratch_eb);
+>  	ASSERT(list_empty(&ctx.list));
+>  	ASSERT(list_empty(&ctx.conflict_inodes));
+>  	err = file_check_and_advance_wb_err(file);
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 331fc7429952..761b13b3d342 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -3619,6 +3619,30 @@ static int flush_dir_items_batch(struct btrfs_trans_handle *trans,
+>  	return ret;
+>  }
+>  
+> +static int clone_leaf(struct btrfs_path *path, struct btrfs_log_ctx *ctx)
+> +{
+> +	const int slot = path->slots[0];
+> +
+> +	if (ctx->scratch_eb) {
+> +		copy_extent_buffer_full(ctx->scratch_eb, path->nodes[0]);
+> +	} else {
+> +		ctx->scratch_eb = btrfs_clone_extent_buffer(path->nodes[0]);
+> +		if (!ctx->scratch_eb)
+> +			return -ENOMEM;
+> +	}
+> +
+> +	btrfs_release_path(path);
+> +	path->nodes[0] = ctx->scratch_eb;
 
-assertion failed: block_start != EXTENT_MAP_HOLE, in fs/btrfs/extent_io.c:1385
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/extent_io.c:1385!
-invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
-CPU: 1 PID: 2695096 Comm: fsstress Kdump: loaded Tainted: G        W          6.8.0-rc2+ #1
-RIP: 0010:__extent_writepage_io.constprop.0+0x4c1/0x5c0
-Call Trace:
- <TASK>
- extent_write_cache_pages+0x2ac/0x8f0
- extent_writepages+0x87/0x110
- do_writepages+0xd5/0x1f0
- filemap_fdatawrite_wbc+0x63/0x90
- __filemap_fdatawrite_range+0x5c/0x80
- btrfs_fdatawrite_range+0x1f/0x50
- btrfs_write_out_cache+0x507/0x560
- btrfs_write_dirty_block_groups+0x32a/0x420
- commit_cowonly_roots+0x21b/0x290
- btrfs_commit_transaction+0x813/0x1360
- btrfs_sync_file+0x51a/0x640
- __x64_sys_fdatasync+0x52/0x90
- do_syscall_64+0x9c/0x190
- entry_SYSCALL_64_after_hwframe+0x6e/0x76
+Here we put the scratch_b into path->nodes[0], so if we go do the next leaf in
+the copy_items loop we'll drop our reference for this scratch_eb, and then we're
+just writing into free'd memory.  Am I missing something here?  Thanks,
 
-This happens because we fail to write out the free space cache in one
-instance, come back around and attempt to write it again.  However on
-the second pass through we go to call btrfs_get_extent() on the inode to
-get the extent mapping.  Because this is a new block group, and with the
-free space inode we always search the commit root to avoid deadlocking
-with the tree, we find nothing and return a EXTENT_MAP_HOLE for the
-requested range.
-
-This happens because the first time we try to write the space cache out
-we hit an error, and on an error we drop the extent mapping.  This is
-normal for normal files, but the free space cache inode is special.  We
-always expect the extent map to be correct.  Thus the second time
-through we end up with a bogus extent map.
-
-Since we're deprecating this feature, the most straightforward way to
-fix this is to simply skip dropping the extent map range for this failed
-range.
-
-I shortened the test by using error injection to stress the area to make
-it easier to reproduce.  With this patch in place we no longer panic
-with my error injection test.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/inode.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6734717350e3..ca26e2c267f2 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3182,8 +3182,23 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 			unwritten_start += logical_len;
- 		clear_extent_uptodate(io_tree, unwritten_start, end, NULL);
- 
--		/* Drop extent maps for the part of the extent we didn't write. */
--		btrfs_drop_extent_map_range(inode, unwritten_start, end, false);
-+		/*
-+		 * Drop extent maps for the part of the extent we didn't write.
-+		 *
-+		 * We have an exception here for the free_space_inode, this is
-+		 * because when we do btrfs_get_extent() on the free space inode
-+		 * we will search the commit root.  If this is a new block group
-+		 * we won't find anything, and we will trip over the assert in
-+		 * writepage where we do ASSERT(em->block_start !=
-+		 * EXTENT_MAP_HOLE).
-+		 *
-+		 * Theoretically we could also skip this for any NOCOW extent as
-+		 * we don't mess with the extent map tree in the NOCOW case, but
-+		 * for now simply skip this if we are the free space inode.
-+		 */
-+		if (!btrfs_is_free_space_inode(inode))
-+			btrfs_drop_extent_map_range(inode, unwritten_start,
-+						    end, false);
- 
- 		/*
- 		 * If the ordered extent had an IOERR or something else went
--- 
-2.43.0
-
+Josef
 
