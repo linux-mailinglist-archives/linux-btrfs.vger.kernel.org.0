@@ -1,232 +1,166 @@
-Return-Path: <linux-btrfs+bounces-2038-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2039-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7622845F63
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 19:09:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CCB18460A5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 20:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC0471C21F55
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 18:09:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90DBC1C22ED7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 19:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96451128806;
-	Thu,  1 Feb 2024 18:04:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE77185266;
+	Thu,  1 Feb 2024 19:07:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A+n5XHKt"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rtnrYGjh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kma1vS9p";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rtnrYGjh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kma1vS9p"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFAB384FB2;
-	Thu,  1 Feb 2024 18:04:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D18DF8405B
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Feb 2024 19:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706810654; cv=none; b=eNpdBp9xKVaTQuwoyVXmx7zkrX+Cl+/gsf996EBxmmQ1ge2cMcq73c+xOpdJssjJ8RyIWrbGHRLLz7PqmwEqfRyN3fM4uqJYE3KLwFFoIKgBCHX3+sGQtrn3tx/HaLOUcnz57cQvqdC57+Lmyyhfk33UCnrU9+2NbdQjRf8mjpY=
+	t=1706814463; cv=none; b=HPDD+sQ5E7MetYWOY6dTqPv8LRQ9i05UZOVzz845vhki81xeSrchXahGGF734K+kJjL77nZmhdl//jIZRW3SjQfs8Wh9J0yv0+ukaqbaREhgISWug2zVXinRRPKD7/k88OxQEjTTXN8rdhWhuASqlEvAkKRUb44gHeHPHsDAGCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706810654; c=relaxed/simple;
-	bh=BWiqFVO3jlZeDfqjBtpe5k9UV8+EHbM889pu2XrE0X4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Npvyr4cvE0R/RIfAUzTw8KsZOTFL3Rf4mNCsBPYB6Qs9mZEji69j8Q47SMaOGFgyPAmaNxtsRDW6um0foD0SGGGuwbGkQf7VR+BCQmtTgC9kl37UKJbq7zes3JFg9122I7FTr8KYGPNOhfllcW/qA2E6SER3h9sqh+FvyyhVjv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A+n5XHKt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E7CC433C7;
-	Thu,  1 Feb 2024 18:04:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706810654;
-	bh=BWiqFVO3jlZeDfqjBtpe5k9UV8+EHbM889pu2XrE0X4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A+n5XHKtpIAPy6kh+z4TLy1uweNtAMCbZl7QOvYvxRR2accFYzWR9HWO/G1YuL3JF
-	 Q8sgcCKERyWbXzmd0cJvFOmcPdgKus0cAtXPcFD6oVvAO656Y1dTy1ous/Ow9Xobgt
-	 VHZBnFY/qEaxFBMl0Lc83X9O92RRebJ/nHrw/iru8yXrRa3YIQ0zJyWmgtMKHm+/1+
-	 2duvow9qtD31netPNNwbulidIqX+tVNXQAMXaGt29CK5mo868W3JitKt+x831RPQvh
-	 WeC/x20w1hT4p5PiS57ACLSQvYEn2Rd4DJ1Puu/j0AUUX4ufwXcxhATaFHuPmHJFLM
-	 YPcsN3jt14Pog==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 4/4] btrfs: require no nodatacow for tests that exercise read repair
-Date: Thu,  1 Feb 2024 18:03:50 +0000
-Message-Id: <5c3c56241dcb8d2b6c87bb4d6875d2c0659b9219.1706810184.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1706810184.git.fdmanana@suse.com>
-References: <cover.1706810184.git.fdmanana@suse.com>
+	s=arc-20240116; t=1706814463; c=relaxed/simple;
+	bh=2tU9NzVj9+OCKZO8ptvHheOVWiLV3p/EsK332lG6JPQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=skvO5/UUJjmyxz1iZ+WppEwMHTOthYLIrPeFI+45IuEmlWl/ExqlR26uBzz5nbakBXsVXhKTNVW8HDLyJklcKUy9yeGV48bZrCdn/Xq17y/CUf4WUNpnP1/lSwyP/NtHKWTPsWILAntkGosUfh8k91PyprXy6AQuSszs6NVnwEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rtnrYGjh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kma1vS9p; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rtnrYGjh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kma1vS9p; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9CBBE22104;
+	Thu,  1 Feb 2024 19:07:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706814459;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ga9QnSU8+oc4uQOTki7QCzZGKjtDHy2OLhEAdpV2FkQ=;
+	b=rtnrYGjhZtW/OJbbuFaYdaqzAzsD2OhFcMpgKwfk5aYNawFM2uhMBFEv4dlU+sXcRS0VMh
+	gz/MGMhII92qixMuu0/bDijQwynyduhdJR0oMtWaHxkRTby2sGObyxfPLDgE3ThfcjFuDJ
+	yaDCxAoYPCRv6Kzzh1fYTldWAea7opI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706814459;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ga9QnSU8+oc4uQOTki7QCzZGKjtDHy2OLhEAdpV2FkQ=;
+	b=kma1vS9p50+syxApo3V6TvzO+PNwGw3macmYTpzNNnl3bkkSc/pizENQeqc3fvM8QYF2pK
+	yH/twwtd69g4waCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706814459;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ga9QnSU8+oc4uQOTki7QCzZGKjtDHy2OLhEAdpV2FkQ=;
+	b=rtnrYGjhZtW/OJbbuFaYdaqzAzsD2OhFcMpgKwfk5aYNawFM2uhMBFEv4dlU+sXcRS0VMh
+	gz/MGMhII92qixMuu0/bDijQwynyduhdJR0oMtWaHxkRTby2sGObyxfPLDgE3ThfcjFuDJ
+	yaDCxAoYPCRv6Kzzh1fYTldWAea7opI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706814459;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ga9QnSU8+oc4uQOTki7QCzZGKjtDHy2OLhEAdpV2FkQ=;
+	b=kma1vS9p50+syxApo3V6TvzO+PNwGw3macmYTpzNNnl3bkkSc/pizENQeqc3fvM8QYF2pK
+	yH/twwtd69g4waCw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 86E1B1329F;
+	Thu,  1 Feb 2024 19:07:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 8nFyIPvru2XgWgAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Thu, 01 Feb 2024 19:07:39 +0000
+Date: Thu, 1 Feb 2024 20:07:12 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, Anand Jain <anand.jain@oracle.com>,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC] btrfs-progs: mkfs: optimize file descriptor usage in
+ mkfs.btrfs
+Message-ID: <20240201190712.GW31555@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <06b40e351b544a314178909772281994bb9de259.1706714983.git.anand.jain@oracle.com>
+ <20240131204800.GB3203388@perftesting>
+ <04a9a9cf-0c77-4f1e-b9f3-12cceeb7ef57@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <04a9a9cf-0c77-4f1e-b9f3-12cceeb7ef57@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=rtnrYGjh;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kma1vS9p
+X-Spamd-Result: default: False [-1.51 / 50.00];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 FREEMAIL_TO(0.00)[gmx.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 9CBBE22104
+X-Spam-Level: 
+X-Spam-Score: -1.51
+X-Spam-Flag: NO
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, Feb 01, 2024 at 07:19:15PM +1030, Qu Wenruo wrote:
+> The problem is, even if we change the sequence, it doesn't make much
+> difference.
+> 
+> There are several things involved, and most of them are out of our control:
+> 
+> - The udev scan is triggered on writable fd close().
+> - The udev scan is always executed on the parent block device
+>    Not the partition device.
+> - The udev scan the whole disk, not just the partition
+> 
+> With those involved, changing the nested behavior would not change anything.
+> 
+> The write in another partition of the same parent block device can still
+> triggered a scan meanwhile we're making fs on our partition.
 
-Several test cases that exercise the ability to detect corrupted data and
-repair it, fail when "-o nodatacow" is passed to MOUNT_OPTIONS, because
-that ability requires the existence of data checksums, and those are
-disabled in nodatacow mode. So skip the tests when "-o nodatacow" is
-present.
+So this means that creating ext4 on /dev/sda1 and btrfs on /dev/sda2 can
+trigger the udev events? And when both mkfs utilities would lock the
+device then running them concurrently will fail, right? This could
+happen in installation tools that can create different filesystems at
+the same time.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/140 | 3 ++-
- tests/btrfs/141 | 2 ++
- tests/btrfs/157 | 2 ++
- tests/btrfs/158 | 2 ++
- tests/btrfs/215 | 2 ++
- tests/btrfs/265 | 2 ++
- tests/btrfs/266 | 2 ++
- tests/btrfs/267 | 2 ++
- tests/btrfs/268 | 2 ++
- tests/btrfs/269 | 2 ++
- tests/btrfs/289 | 2 ++
- 11 files changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/tests/btrfs/140 b/tests/btrfs/140
-index 247a7356..5ce65886 100755
---- a/tests/btrfs/140
-+++ b/tests/btrfs/140
-@@ -22,7 +22,8 @@ _begin_fstest auto quick read_repair fiemap
- # Modify as appropriate.
- _supported_fs btrfs
- _require_scratch_dev_pool 2
--
-+# No data checksums for NOCOW case, so can't detect corruption and repair data.
-+_require_btrfs_no_nodatacow
- _require_btrfs_command inspect-internal dump-tree
- _require_odirect
- # Overwriting data is forbidden on a zoned block device
-diff --git a/tests/btrfs/141 b/tests/btrfs/141
-index 90a90d00..e1adb91e 100755
---- a/tests/btrfs/141
-+++ b/tests/btrfs/141
-@@ -22,6 +22,8 @@ _begin_fstest auto quick read_repair
- 
- # Modify as appropriate.
- _supported_fs btrfs
-+# No data checksums for NOCOW case, so can't detect corruption and repair data.
-+_require_btrfs_no_nodatacow
- _require_scratch_dev_pool 2
- 
- _require_btrfs_command inspect-internal dump-tree
-diff --git a/tests/btrfs/157 b/tests/btrfs/157
-index 022db511..648db0d0 100755
---- a/tests/btrfs/157
-+++ b/tests/btrfs/157
-@@ -30,6 +30,8 @@ _begin_fstest auto quick raid read_repair
- 
- # Modify as appropriate.
- _supported_fs btrfs
-+# No data checksums for NOCOW case, so can't detect corruption and repair data.
-+_require_btrfs_no_nodatacow
- _require_scratch_dev_pool 4
- _require_btrfs_command inspect-internal dump-tree
- _require_btrfs_fs_feature raid56
-diff --git a/tests/btrfs/158 b/tests/btrfs/158
-index aa85835a..28599d09 100755
---- a/tests/btrfs/158
-+++ b/tests/btrfs/158
-@@ -22,6 +22,8 @@ _begin_fstest auto quick raid scrub
- 
- # Modify as appropriate.
- _supported_fs btrfs
-+# No data checksums for NOCOW case, so can't detect corruption and repair data.
-+_require_btrfs_no_nodatacow
- _require_scratch_dev_pool 4
- _require_btrfs_command inspect-internal dump-tree
- _require_btrfs_fs_feature raid56
-diff --git a/tests/btrfs/215 b/tests/btrfs/215
-index 00646898..6fa226fe 100755
---- a/tests/btrfs/215
-+++ b/tests/btrfs/215
-@@ -25,6 +25,8 @@ get_physical()
- # Modify as appropriate.
- _supported_fs btrfs
- _require_scratch
-+# No data checksums for NOCOW case, so can't detect corruption and repair data.
-+_require_btrfs_no_nodatacow
- # Overwriting data is forbidden on a zoned block device
- _require_non_zoned_device $SCRATCH_DEV
- 
-diff --git a/tests/btrfs/265 b/tests/btrfs/265
-index b75d9c84..127da7ad 100755
---- a/tests/btrfs/265
-+++ b/tests/btrfs/265
-@@ -19,6 +19,8 @@ _begin_fstest auto quick read_repair
- _supported_fs btrfs
- _require_scratch_dev_pool 3
- 
-+# No data checksums for NOCOW case, so can't detect corruption and repair data.
-+_require_btrfs_no_nodatacow
- _require_odirect
- # Overwriting data is forbidden on a zoned block device
- _require_non_zoned_device "${SCRATCH_DEV}"
-diff --git a/tests/btrfs/266 b/tests/btrfs/266
-index 42aff7c0..acfb1d59 100755
---- a/tests/btrfs/266
-+++ b/tests/btrfs/266
-@@ -18,6 +18,8 @@ _begin_fstest auto quick read_repair
- # real QA test starts here
- 
- _supported_fs btrfs
-+# No data checksums for NOCOW case, so can't detect corruption and repair data.
-+_require_btrfs_no_nodatacow
- _require_scratch_dev_pool 3
- 
- _require_odirect
-diff --git a/tests/btrfs/267 b/tests/btrfs/267
-index 75a6fdcc..51b28d9b 100755
---- a/tests/btrfs/267
-+++ b/tests/btrfs/267
-@@ -20,6 +20,8 @@ _begin_fstest auto quick read_repair
- _supported_fs btrfs
- _require_scratch_dev_pool 3
- 
-+# No data checksums for NOCOW case, so can't detect corruption and repair data.
-+_require_btrfs_no_nodatacow
- _require_odirect
- # Overwriting data is forbidden on a zoned block device
- _require_non_zoned_device "${SCRATCH_DEV}"
-diff --git a/tests/btrfs/268 b/tests/btrfs/268
-index 9dc14a18..d122ee36 100755
---- a/tests/btrfs/268
-+++ b/tests/btrfs/268
-@@ -16,6 +16,8 @@ _begin_fstest auto quick read_repair
- _supported_fs btrfs
- _require_scratch
- _require_odirect
-+# No data checksums for NOCOW case, so can't detect corruption and repair data.
-+_require_btrfs_no_nodatacow
- _require_non_zoned_device "${SCRATCH_DEV}" # no overwrites on zoned devices
- _require_scratch_dev_pool 2
- _scratch_dev_pool_get 2
-diff --git a/tests/btrfs/269 b/tests/btrfs/269
-index ad8f7286..7ffad125 100755
---- a/tests/btrfs/269
-+++ b/tests/btrfs/269
-@@ -20,6 +20,8 @@ _begin_fstest auto quick read_repair
- _supported_fs btrfs
- _require_scratch
- _require_odirect
-+# No data checksums for NOCOW case, so can't detect corruption and repair data.
-+_require_btrfs_no_nodatacow
- _require_non_zoned_device "${SCRATCH_DEV}" # no overwrites on zoned devices
- _require_scratch_dev_pool 4
- _scratch_dev_pool_get 4
-diff --git a/tests/btrfs/289 b/tests/btrfs/289
-index 39d8f733..f1aaf4cc 100755
---- a/tests/btrfs/289
-+++ b/tests/btrfs/289
-@@ -16,6 +16,8 @@ _begin_fstest auto quick scrub repair
- # Modify as appropriate.
- _supported_fs btrfs
- _require_scratch
-+# No data checksums for NOCOW case, so can't detect corruption and repair data.
-+_require_btrfs_no_nodatacow
- 
- _require_odirect
- # Overwriting data is forbidden on a zoned block device
--- 
-2.40.1
-
+I wonder if we should add options to assert, skip locking or wait until
+it's free.
 
