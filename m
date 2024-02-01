@@ -1,120 +1,251 @@
-Return-Path: <linux-btrfs+bounces-1994-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1995-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 613E28456FC
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 13:09:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3019484575E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 13:23:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15F141F24E7C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 12:09:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F50FB299F7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 12:23:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1DE215D5D9;
-	Thu,  1 Feb 2024 12:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3626715DBDC;
+	Thu,  1 Feb 2024 12:23:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="M3LEou8M"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iSTFNmY8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4756615D5DD;
-	Thu,  1 Feb 2024 12:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269F115DBB1;
+	Thu,  1 Feb 2024 12:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706789317; cv=none; b=tPj7NJxyjyuhDpKBVfSV/sFazLsakCNw2m8RG2sORbFpt3rdqBkmnrxMGF5Xg0T0/RG3j4fdBBx2vY/CCI7TuRZhu8hsJfzuUCq/xXesxulkunwh+p2p03VqplQP6EL1zWtkWGBek1qdqPXhdr0n7GLm8TLlP119NedKGbW/tio=
+	t=1706790213; cv=none; b=puTCVMC2J4rBT9NknC3AcVkH/g21C5GM3vldAE67qw7mP3K8iCADnpEcISSWyVS0zLZRlFDCJj3vjc5MIDr8P0J3XuUuoKNPvTCamEbDvJs62Tqmc8HR1epMV2lvwSOoYfiOWz55wWN+lgasV7PTd5/V+jH0sikB4TtGW6hWTSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706789317; c=relaxed/simple;
-	bh=5YHOQ4t6yvK3SOA0EQMMmdoojJngamhIGtLZGsyLgo4=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=Ie0SwaSOl1JFQNGeZqpavO0fit+TSLRSazBOhl9c1Evjln7d1lQk1gHYbxCbFARRD+aAy9UvpxQmI5cplAxzDOTB+OEPq/j2A9qIW/vsRHD9TcZ28EBt4TZ7E4VrsELWhaEGaWtkzNOaPYv8IWtf4X6kbS7zpcXJ4shLHI/x0/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=M3LEou8M; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706789291; x=1707394091; i=markus.elfring@web.de;
-	bh=5YHOQ4t6yvK3SOA0EQMMmdoojJngamhIGtLZGsyLgo4=;
-	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
-	 In-Reply-To;
-	b=M3LEou8MMS9TNQvjNu/ylUsfrcTZ1OUVx30pCajQzVW/8shzoQbC+WfK/r4ARlk+
-	 vfQ7je1kym7XyDIT+KglvMYc9Zv0yW02NQS0Kj41Pb5rV6J1TwQgARHk/7uhJNCK+
-	 pByTTKceEB7hhg4qz9upH/siB0sKs8ciN40UgBrXudIKyYea46r/+FXqeJOAOZ3H9
-	 Ab7Vr6GSIq+4d/7SAJexowrmTqfw1U6GUVqwKoVEzAzEFUFI31QF45kOuW/fhjF5g
-	 Gd5+xhucxfQKrq/FsvAJCJ20M24Y1CGsePZ5pERshr+B553p+QjK0qlDo4Z+W3cA4
-	 0YepboYwYebp/R+A5A==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MOm0x-1rgs0y0diR-00PweK; Thu, 01
- Feb 2024 13:08:11 +0100
-Message-ID: <dc42614d-adee-4cf9-96e4-b27604360a9b@web.de>
-Date: Thu, 1 Feb 2024 13:07:50 +0100
+	s=arc-20240116; t=1706790213; c=relaxed/simple;
+	bh=ZFurzuBhRYqTEZPlJY85DGEXA/epISwQhff8Frs8cbw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HdPKlvw/DmwCP6imuBapCUkza/gPCtkD+lixK4U3nlaNGXFJ89aIwruVHsyhE51XYth/1a4m5j/J8mjGohpYET3CLOHHVcD5mI3kBYWjBPiqZ+OpO33LvKR8NIzwsR3J33Jk+ZNpBFaKcb2yl8QGw1uLJwj6DqyBgD7gvRehhEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iSTFNmY8; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706790212; x=1738326212;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZFurzuBhRYqTEZPlJY85DGEXA/epISwQhff8Frs8cbw=;
+  b=iSTFNmY8n/NROAjxhwKfzGcwr01gKEeHp6m30zYit3QbnB1L/dvrf0HM
+   04imbxZsofjLm82mtMhiC54lYAY8ZJddcQZecMm0ksJ5tR/Dr1iuPzsnd
+   v8OgpG0atlVNqB5avfirHovSFllpoRk9QYBMrEOh5vdoXo5tB92JfyHx0
+   fCBFidOS0pEWSe8IfXSNEhLgDKi3YlxhiP080QTrZTvpompVamBkW6qtP
+   J4/NDoilcIpf785y+oKdzczP0nxAMNjNERHSS4R1rN7XycewMNPBKuu4v
+   H78tpK3acWD5aj2uD9gzb7jP9CofWm5UwwP+6ZYUYazCHOPE7al5SikOS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3746810"
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="3746810"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:23:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
+   d="scan'208";a="4499071"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by orviesa004.jf.intel.com with ESMTP; 01 Feb 2024 04:23:25 -0800
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+	Marcin Szycik <marcin.szycik@linux.intel.com>,
+	Wojciech Drewek <wojciech.drewek@intel.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Andy Shevchenko <andy@kernel.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Alexander Potapenko <glider@google.com>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Simon Horman <horms@kernel.org>,
+	linux-btrfs@vger.kernel.org,
+	dm-devel@redhat.com,
+	ntfs3@lists.linux.dev,
+	linux-s390@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v5 00/21] ice: add PFCP filter support
+Date: Thu,  1 Feb 2024 13:21:55 +0100
+Message-ID: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Kunwu Chan <chentao@kylinos.cn>, linux-btrfs@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
- David Sterba <dsterba@suse.com>,
- Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
- Josef Bacik <josef@toxicpanda.com>
-References: <a6ed9030-8d48-4f9c-8504-9a5308813791@kylinos.cn>
-Subject: Re: btrfs: Simplify the allocation of slab caches in
- btrfs_delayed_inode_init
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <a6ed9030-8d48-4f9c-8504-9a5308813791@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tTR37h8N46o+RCJpvASlOfWYMAUb/RsxgvmxcFn4VqZVCNz+VOQ
- +TOTHTfBox+SSAX1Ef7at2fUMMNHBbUN+xOXpHMPMpgj+LmeSgeQUxF0fb8G/sfCGZUKPIY
- UJGTFWcVOfTUalTsN6ZpHzFKfPHkjihgixACFQuiY6DcyiU3bHMDAhyTz18t8qolD1V3YYw
- 6QkSWgkylotG5Tunt/IVg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mqIb6wq4LtU=;b4G7ICZaPcoftmM5jOtpljxBMY4
- 5GLrhfnMWHfJ6VvAcmVMCGYLumi7hV2GNCE98m8mSBXZi8WL/Ua08FGxmRin8EFt/jzMnE+jy
- zS4S9+1wZts0+1ndt5Aun4t87+tn2mmrG9vX6PHLh/5kHfdde7YYMSVc969NjziLWJmgVYUV+
- hYM58UnZFhD4dO1ea5jdjCggdYN/kRox4qk8eRD+LeFkEwtNnjlRwWxGZcBDW5FIr8Vdjsd/7
- 0DHk+ZxVFVCdJMp2M51S2SQ+CYlUPZQ+PlrTlSGSSbHGTx8I6kFFyv90j3gvf2AUotCwHtdco
- UlGlGwnSi7quqXL22Ty+JHVaANvke3496t7CYjq0NkJjl/07S+YGBA5GtVQjhQ1k5j26EJlbV
- 9wSphFvxdpmIMHGLn1NHRD7B7BVOFkThcnkYQrsSEVtHHpVR2XyN1Spjgm41I2nA0aLfbY4HI
- zJIXNGfZwQNVQSHHBMf3L20zfB8TrZVa+O/CvV6Orz1iGh/V+gdfvBRtvp9Iz0RjxpxinAJ1P
- bn1M/axtSiB/HBaMJK5dXX+lz914FwX5FDv2uL76BzuYGVMKMvV3dgM9cUesbrv69lUnpVBIz
- OvAWFwPIQieIgdfA9yJcRakODNYXgtU5ddvkTHwVdqtpfRVJBCXzJpnuEGLuhea8qNgt+Tdi3
- 9qQx3CLm9f1Y9ogLqqBXhIbts2JveK03iIglZZYaUTbP03lE7qPsiIJJ8fGos7kTgHbTj6zTm
- 0P4v9u8zagOHAzBk3d9GAAg61XAUCCEo6SZRgn6S3eII2bEFwkvYwKZbhy5mg0oqXGnVD0p/8
- mME5tysoru8UP6+kMaPukDmPKzeHl8YiSoThCeD8UIPms=
+Content-Transfer-Encoding: 8bit
 
-=E2=80=A6
-> So i'll update the commit msg to this:
->
-> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-> to simplify the creation of SLAB caches.
-> Make the code cleaner and more readable.
-=E2=80=A6
+Add support for creating PFCP filters in switchdev mode. Add pfcp module
+that allows to create a PFCP-type netdev. The netdev then can be passed to
+tc when creating a filter to indicate that PFCP filter should be created.
 
-* Please replace the word =E2=80=9Cnew=E2=80=9D by a reference to the comm=
-it 8eb8284b412906181357c2b0110d879d5af95e52
-  ("usercopy: Prepare for usercopy whitelisting").
+To add a PFCP filter, a special netdev must be created and passed to tc
+command:
 
-  See also related background information from 2017-06-10.
+  ip link add pfcp0 type pfcp
+  tc filter add dev eth0 ingress prio 1 flower pfcp_opts \
+    1:12ab/ff:fffffffffffffff0 skip_hw action mirred egress redirect \
+    dev pfcp0
 
-* How does your response fit to the repetition of improvable change descri=
-ptions?
+Changes in iproute2 [1] are required to use pfcp_opts in tc.
 
-  Example:
-  [PATCH] btrfs: Simplify the allocation of slab caches in btrfs_transacti=
-on_init
-  https://lore.kernel.org/lkml/20240201093554.208092-1-chentao@kylinos.cn/
-  https://lkml.org/lkml/2024/2/1/387
+ICE COMMS package is required as it contains PFCP profiles.
 
-* How do you think about to group similar source code transformations
-  into patch series?
+Part of this patchset modifies IP_TUNNEL_*_OPTs, which were previously
+stored in a __be16. All possible values have already been used, making
+it impossible to add new ones.
 
+* 1-3: add new bitmap_{read,write}(), which is used later in the IP
+       tunnel flags code (from Alexander's ARM64 MTE series[2]);
+* 4-14: some bitmap code preparations also used later in IP tunnels;
+* 15-17: convert IP tunnel flags from __be16 to a bitmap;
+* 18-21: add PFCP module and support for it in ice.
 
-Regards,
-Markus
+[1] https://lore.kernel.org/netdev/20230614091758.11180-1-marcin.szycik@linux.intel.com
+[2] https://lore.kernel.org/linux-kernel/20231218124033.551770-1-glider@google.com/
+---
+From v4[3]:
+* rebase on top of 6.8-rc1;
+* collect all the dependencies together in one series (did I get it
+  right? :s);
+* no functional changes.
+
+v3: https://lore.kernel.org/intel-wired-lan/20230721071532.613888-1-marcin.szycik@linux.intel.com
+v2: https://lore.kernel.org/intel-wired-lan/20230607112606.15899-1-marcin.szycik@linux.intel.com
+v1: https://lore.kernel.org/intel-wired-lan/20230601131929.294667-1-marcin.szycik@linux.intel.com
+
+[3] https://lore.kernel.org/netdev/20231207164911.14330-1-marcin.szycik@linux.intel.com
+---
+
+Alexander Lobakin (14):
+  bitops: add missing prototype check
+  bitops: make BYTES_TO_BITS() treewide-available
+  bitops: let the compiler optimize {__,}assign_bit()
+  linkmode: convert linkmode_{test,set,clear,mod}_bit() to macros
+  s390/cio: rename bitmap_size() -> idset_bitmap_size()
+  fs/ntfs3: add prefix to bitmap_size() and use BITS_TO_U64()
+  btrfs: rename bitmap_set_bits() -> btrfs_bitmap_set_bits()
+  tools: move alignment-related macros to new <linux/align.h>
+  bitmap: introduce generic optimized bitmap_size()
+  bitmap: make bitmap_{get,set}_value8() use bitmap_{read,write}()
+  lib/bitmap: add compile-time test for __assign_bit() optimization
+  ip_tunnel: use a separate struct to store tunnel params in the kernel
+  ip_tunnel: convert __be16 tunnel flags to bitmaps
+  lib/bitmap: add tests for IP tunnel flags conversion helpers
+
+Alexander Potapenko (2):
+  lib/test_bitmap: add tests for bitmap_{read,write}()
+  lib/test_bitmap: use pr_info() for non-error messages
+
+Marcin Szycik (2):
+  ice: refactor ICE_TC_FLWR_FIELD_ENC_OPTS
+  ice: Add support for PFCP hardware offload in switchdev
+
+Michal Swiatkowski (1):
+  pfcp: always set pfcp metadata
+
+Syed Nayyar Waris (1):
+  lib/bitmap: add bitmap_{read,write}()
+
+Wojciech Drewek (1):
+  pfcp: add PFCP module
+
+ drivers/net/Kconfig                           |  13 +
+ drivers/net/Makefile                          |   1 +
+ .../net/ethernet/intel/ice/ice_flex_type.h    |   4 +-
+ .../ethernet/intel/ice/ice_protocol_type.h    |  12 +
+ drivers/net/ethernet/intel/ice/ice_switch.h   |   2 +
+ drivers/net/ethernet/intel/ice/ice_tc_lib.h   |   8 +-
+ .../ethernet/mellanox/mlx5/core/en/tc_tun.h   |   2 +-
+ .../ethernet/mellanox/mlxsw/spectrum_ipip.h   |   2 +-
+ fs/ntfs3/ntfs_fs.h                            |   4 +-
+ include/linux/bitmap.h                        |  93 ++++--
+ include/linux/bitops.h                        |  23 +-
+ include/linux/cpumask.h                       |   2 +-
+ include/linux/linkmode.h                      |  27 +-
+ include/linux/netdevice.h                     |   7 +-
+ include/net/dst_metadata.h                    |  10 +-
+ include/net/flow_dissector.h                  |   2 +-
+ include/net/gre.h                             |  70 ++--
+ include/net/ip6_tunnel.h                      |   4 +-
+ include/net/ip_tunnels.h                      | 139 ++++++--
+ include/net/pfcp.h                            |  90 ++++++
+ include/net/udp_tunnel.h                      |   4 +-
+ include/uapi/linux/if_tunnel.h                |  36 +++
+ include/uapi/linux/pkt_cls.h                  |  14 +
+ tools/include/linux/align.h                   |  12 +
+ tools/include/linux/bitmap.h                  |   9 +-
+ tools/include/linux/bitops.h                  |   2 +
+ tools/include/linux/mm.h                      |   5 +-
+ drivers/md/dm-clone-metadata.c                |   5 -
+ drivers/net/bareudp.c                         |  19 +-
+ drivers/net/ethernet/intel/ice/ice_ddp.c      |   9 +
+ drivers/net/ethernet/intel/ice/ice_switch.c   |  85 +++++
+ drivers/net/ethernet/intel/ice/ice_tc_lib.c   |  68 +++-
+ .../mellanox/mlx5/core/en/tc_tun_encap.c      |   6 +-
+ .../mellanox/mlx5/core/en/tc_tun_geneve.c     |  12 +-
+ .../mellanox/mlx5/core/en/tc_tun_gre.c        |   8 +-
+ .../mellanox/mlx5/core/en/tc_tun_vxlan.c      |   9 +-
+ .../net/ethernet/mellanox/mlx5/core/en_tc.c   |  16 +-
+ .../ethernet/mellanox/mlxsw/spectrum_ipip.c   |  56 ++--
+ .../ethernet/mellanox/mlxsw/spectrum_span.c   |  10 +-
+ .../ethernet/netronome/nfp/flower/action.c    |  27 +-
+ drivers/net/geneve.c                          |  44 ++-
+ drivers/net/pfcp.c                            | 302 +++++++++++++++++
+ drivers/net/vxlan/vxlan_core.c                |  14 +-
+ drivers/s390/cio/idset.c                      |  12 +-
+ fs/btrfs/free-space-cache.c                   |   8 +-
+ fs/ntfs3/bitmap.c                             |   4 +-
+ fs/ntfs3/fsntfs.c                             |   2 +-
+ fs/ntfs3/index.c                              |  11 +-
+ fs/ntfs3/super.c                              |   2 +-
+ kernel/trace/trace_probe.c                    |   2 -
+ lib/math/prime_numbers.c                      |   2 -
+ lib/test_bitmap.c                             | 303 ++++++++++++++++--
+ net/bridge/br_vlan_tunnel.c                   |   9 +-
+ net/core/filter.c                             |  26 +-
+ net/core/flow_dissector.c                     |  20 +-
+ net/ipv4/fou_bpf.c                            |   2 +-
+ net/ipv4/gre_demux.c                          |   2 +-
+ net/ipv4/ip_gre.c                             | 144 +++++----
+ net/ipv4/ip_tunnel.c                          | 109 +++++--
+ net/ipv4/ip_tunnel_core.c                     |  82 +++--
+ net/ipv4/ip_vti.c                             |  41 ++-
+ net/ipv4/ipip.c                               |  33 +-
+ net/ipv4/ipmr.c                               |   2 +-
+ net/ipv4/udp_tunnel_core.c                    |   5 +-
+ net/ipv6/addrconf.c                           |   3 +-
+ net/ipv6/ip6_gre.c                            |  85 ++---
+ net/ipv6/ip6_tunnel.c                         |  14 +-
+ net/ipv6/sit.c                                |  38 ++-
+ net/netfilter/ipvs/ip_vs_core.c               |   6 +-
+ net/netfilter/ipvs/ip_vs_xmit.c               |  20 +-
+ net/netfilter/nft_tunnel.c                    |  44 +--
+ net/openvswitch/flow_netlink.c                |  61 ++--
+ net/psample/psample.c                         |  26 +-
+ net/sched/act_tunnel_key.c                    |  36 +--
+ net/sched/cls_flower.c                        | 134 +++++++-
+ tools/perf/util/probe-finder.c                |   4 +-
+ 76 files changed, 1965 insertions(+), 614 deletions(-)
+ create mode 100644 include/net/pfcp.h
+ create mode 100644 tools/include/linux/align.h
+ create mode 100644 drivers/net/pfcp.c
+
+-- 
+2.43.0
+
 
