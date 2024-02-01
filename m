@@ -1,58 +1,59 @@
-Return-Path: <linux-btrfs+bounces-1995-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1996-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3019484575E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 13:23:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B56E845766
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 13:24:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F50FB299F7
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 12:23:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C455291DA2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 12:24:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3626715DBDC;
-	Thu,  1 Feb 2024 12:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7383F15F325;
+	Thu,  1 Feb 2024 12:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iSTFNmY8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d0DU34it"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269F115DBB1;
-	Thu,  1 Feb 2024 12:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E11F715F31C;
+	Thu,  1 Feb 2024 12:23:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706790213; cv=none; b=puTCVMC2J4rBT9NknC3AcVkH/g21C5GM3vldAE67qw7mP3K8iCADnpEcISSWyVS0zLZRlFDCJj3vjc5MIDr8P0J3XuUuoKNPvTCamEbDvJs62Tqmc8HR1epMV2lvwSOoYfiOWz55wWN+lgasV7PTd5/V+jH0sikB4TtGW6hWTSc=
+	t=1706790218; cv=none; b=puMw3AP7YfK95QX47ApqVnixhPJqrE0hL2W8x1D6rEa4xZq1RUd6bhncMoiD5DrtjY1vXI//7/36mNCQc8Y8KPWKFZI2fa2ji25LzSFfVSdzXv+o7aSxVflfDG3rVi7IPc3nJmIeRW47uyrkh+3dsfh5NjHeUrSiv14QlAjDSoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706790213; c=relaxed/simple;
-	bh=ZFurzuBhRYqTEZPlJY85DGEXA/epISwQhff8Frs8cbw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HdPKlvw/DmwCP6imuBapCUkza/gPCtkD+lixK4U3nlaNGXFJ89aIwruVHsyhE51XYth/1a4m5j/J8mjGohpYET3CLOHHVcD5mI3kBYWjBPiqZ+OpO33LvKR8NIzwsR3J33Jk+ZNpBFaKcb2yl8QGw1uLJwj6DqyBgD7gvRehhEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iSTFNmY8; arc=none smtp.client-ip=198.175.65.15
+	s=arc-20240116; t=1706790218; c=relaxed/simple;
+	bh=FkdWCDGhSzmNJ65dmfIHiTVxvqOrslZqMpuEArCTxEw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=uEFYDcvrbBXGvri5/yysb+7LdlgMMQKzlofehsjH09xzYkkOez0s7tLP4z8qJgZvsDzEQ2YCODcixj04enVXmrz1SrsTJnU9BVlXeS+T8GbJqymXT4hEVzWydt3I8K2gFk6oHBrIoxA1dflEysMOW/rfZ+sh2yauLPD9qdDalbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d0DU34it; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706790212; x=1738326212;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ZFurzuBhRYqTEZPlJY85DGEXA/epISwQhff8Frs8cbw=;
-  b=iSTFNmY8n/NROAjxhwKfzGcwr01gKEeHp6m30zYit3QbnB1L/dvrf0HM
-   04imbxZsofjLm82mtMhiC54lYAY8ZJddcQZecMm0ksJ5tR/Dr1iuPzsnd
-   v8OgpG0atlVNqB5avfirHovSFllpoRk9QYBMrEOh5vdoXo5tB92JfyHx0
-   fCBFidOS0pEWSe8IfXSNEhLgDKi3YlxhiP080QTrZTvpompVamBkW6qtP
-   J4/NDoilcIpf785y+oKdzczP0nxAMNjNERHSS4R1rN7XycewMNPBKuu4v
-   H78tpK3acWD5aj2uD9gzb7jP9CofWm5UwwP+6ZYUYazCHOPE7al5SikOS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3746810"
+  t=1706790218; x=1738326218;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=FkdWCDGhSzmNJ65dmfIHiTVxvqOrslZqMpuEArCTxEw=;
+  b=d0DU34itVs0PV8ayeqXPcJ9RDc4UJpkZD8sqBojExjn6shKlp7etVYkX
+   e9QdCHuGjZZmjwfq47NBfJGldbp0kZN6UFD8ruZIb+4rBTk37tuBqOY6q
+   Ek0dTWxHaV/7T13qtVHN/IdRscp8GZ9EJ486UdG9e5I8G+8bc1rPH5xz5
+   IZlGPRS1Nxl5GzXsMldbRLPNubjM3oNvZxWyAU2VbyAljVTtjPpRTCDi2
+   +2DWZnLY/Z8Lrjigm6ry4pcb0LU921SAFwsLr1KIDSsQlWVJpikMnkwmA
+   kQWoIenZuC/c4hxdLxRCoVugjTV4cJ4dnrwFSr4j8yboffbMSk3onOOSd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3746870"
 X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="3746810"
+   d="scan'208";a="3746870"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:23:31 -0800
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:23:37 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="4499071"
+   d="scan'208";a="4499077"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa004.jf.intel.com with ESMTP; 01 Feb 2024 04:23:25 -0800
+  by orviesa004.jf.intel.com with ESMTP; 01 Feb 2024 04:23:31 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -76,11 +77,17 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	linux-s390@vger.kernel.org,
 	intel-wired-lan@lists.osuosl.org,
 	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v5 00/21] ice: add PFCP filter support
-Date: Thu,  1 Feb 2024 13:21:55 +0100
-Message-ID: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+	linux-kernel@vger.kernel.org,
+	Syed Nayyar Waris <syednwaris@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	William Breathitt Gray <william.gray@linaro.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH net-next v5 01/21] lib/bitmap: add bitmap_{read,write}()
+Date: Thu,  1 Feb 2024 13:21:56 +0100
+Message-ID: <20240201122216.2634007-2-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -89,162 +96,130 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for creating PFCP filters in switchdev mode. Add pfcp module
-that allows to create a PFCP-type netdev. The netdev then can be passed to
-tc when creating a filter to indicate that PFCP filter should be created.
+From: Syed Nayyar Waris <syednwaris@gmail.com>
 
-To add a PFCP filter, a special netdev must be created and passed to tc
-command:
+The two new functions allow reading/writing values of length up to
+BITS_PER_LONG bits at arbitrary position in the bitmap.
 
-  ip link add pfcp0 type pfcp
-  tc filter add dev eth0 ingress prio 1 flower pfcp_opts \
-    1:12ab/ff:fffffffffffffff0 skip_hw action mirred egress redirect \
-    dev pfcp0
+The code was taken from "bitops: Introduce the for_each_set_clump macro"
+by Syed Nayyar Waris with a number of changes and simplifications:
+ - instead of using roundup(), which adds an unnecessary dependency
+   on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
+ - indentation is reduced by not using else-clauses (suggested by
+   checkpatch for bitmap_get_value());
+ - bitmap_get_value()/bitmap_set_value() are renamed to bitmap_read()
+   and bitmap_write();
+ - some redundant computations are omitted.
 
-Changes in iproute2 [1] are required to use pfcp_opts in tc.
-
-ICE COMMS package is required as it contains PFCP profiles.
-
-Part of this patchset modifies IP_TUNNEL_*_OPTs, which were previously
-stored in a __be16. All possible values have already been used, making
-it impossible to add new ones.
-
-* 1-3: add new bitmap_{read,write}(), which is used later in the IP
-       tunnel flags code (from Alexander's ARM64 MTE series[2]);
-* 4-14: some bitmap code preparations also used later in IP tunnels;
-* 15-17: convert IP tunnel flags from __be16 to a bitmap;
-* 18-21: add PFCP module and support for it in ice.
-
-[1] https://lore.kernel.org/netdev/20230614091758.11180-1-marcin.szycik@linux.intel.com
-[2] https://lore.kernel.org/linux-kernel/20231218124033.551770-1-glider@google.com/
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+Link: https://lore.kernel.org/lkml/fe12eedf3666f4af5138de0e70b67a07c7f40338.1592224129.git.syednwaris@gmail.com/
+Suggested-by: Yury Norov <yury.norov@gmail.com>
+Co-developed-by: Alexander Potapenko <glider@google.com>
+Signed-off-by: Alexander Potapenko <glider@google.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Yury Norov <yury.norov@gmail.com>
+Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
-From v4[3]:
-* rebase on top of 6.8-rc1;
-* collect all the dependencies together in one series (did I get it
-  right? :s);
-* no functional changes.
+ include/linux/bitmap.h | 77 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
 
-v3: https://lore.kernel.org/intel-wired-lan/20230721071532.613888-1-marcin.szycik@linux.intel.com
-v2: https://lore.kernel.org/intel-wired-lan/20230607112606.15899-1-marcin.szycik@linux.intel.com
-v1: https://lore.kernel.org/intel-wired-lan/20230601131929.294667-1-marcin.szycik@linux.intel.com
-
-[3] https://lore.kernel.org/netdev/20231207164911.14330-1-marcin.szycik@linux.intel.com
----
-
-Alexander Lobakin (14):
-  bitops: add missing prototype check
-  bitops: make BYTES_TO_BITS() treewide-available
-  bitops: let the compiler optimize {__,}assign_bit()
-  linkmode: convert linkmode_{test,set,clear,mod}_bit() to macros
-  s390/cio: rename bitmap_size() -> idset_bitmap_size()
-  fs/ntfs3: add prefix to bitmap_size() and use BITS_TO_U64()
-  btrfs: rename bitmap_set_bits() -> btrfs_bitmap_set_bits()
-  tools: move alignment-related macros to new <linux/align.h>
-  bitmap: introduce generic optimized bitmap_size()
-  bitmap: make bitmap_{get,set}_value8() use bitmap_{read,write}()
-  lib/bitmap: add compile-time test for __assign_bit() optimization
-  ip_tunnel: use a separate struct to store tunnel params in the kernel
-  ip_tunnel: convert __be16 tunnel flags to bitmaps
-  lib/bitmap: add tests for IP tunnel flags conversion helpers
-
-Alexander Potapenko (2):
-  lib/test_bitmap: add tests for bitmap_{read,write}()
-  lib/test_bitmap: use pr_info() for non-error messages
-
-Marcin Szycik (2):
-  ice: refactor ICE_TC_FLWR_FIELD_ENC_OPTS
-  ice: Add support for PFCP hardware offload in switchdev
-
-Michal Swiatkowski (1):
-  pfcp: always set pfcp metadata
-
-Syed Nayyar Waris (1):
-  lib/bitmap: add bitmap_{read,write}()
-
-Wojciech Drewek (1):
-  pfcp: add PFCP module
-
- drivers/net/Kconfig                           |  13 +
- drivers/net/Makefile                          |   1 +
- .../net/ethernet/intel/ice/ice_flex_type.h    |   4 +-
- .../ethernet/intel/ice/ice_protocol_type.h    |  12 +
- drivers/net/ethernet/intel/ice/ice_switch.h   |   2 +
- drivers/net/ethernet/intel/ice/ice_tc_lib.h   |   8 +-
- .../ethernet/mellanox/mlx5/core/en/tc_tun.h   |   2 +-
- .../ethernet/mellanox/mlxsw/spectrum_ipip.h   |   2 +-
- fs/ntfs3/ntfs_fs.h                            |   4 +-
- include/linux/bitmap.h                        |  93 ++++--
- include/linux/bitops.h                        |  23 +-
- include/linux/cpumask.h                       |   2 +-
- include/linux/linkmode.h                      |  27 +-
- include/linux/netdevice.h                     |   7 +-
- include/net/dst_metadata.h                    |  10 +-
- include/net/flow_dissector.h                  |   2 +-
- include/net/gre.h                             |  70 ++--
- include/net/ip6_tunnel.h                      |   4 +-
- include/net/ip_tunnels.h                      | 139 ++++++--
- include/net/pfcp.h                            |  90 ++++++
- include/net/udp_tunnel.h                      |   4 +-
- include/uapi/linux/if_tunnel.h                |  36 +++
- include/uapi/linux/pkt_cls.h                  |  14 +
- tools/include/linux/align.h                   |  12 +
- tools/include/linux/bitmap.h                  |   9 +-
- tools/include/linux/bitops.h                  |   2 +
- tools/include/linux/mm.h                      |   5 +-
- drivers/md/dm-clone-metadata.c                |   5 -
- drivers/net/bareudp.c                         |  19 +-
- drivers/net/ethernet/intel/ice/ice_ddp.c      |   9 +
- drivers/net/ethernet/intel/ice/ice_switch.c   |  85 +++++
- drivers/net/ethernet/intel/ice/ice_tc_lib.c   |  68 +++-
- .../mellanox/mlx5/core/en/tc_tun_encap.c      |   6 +-
- .../mellanox/mlx5/core/en/tc_tun_geneve.c     |  12 +-
- .../mellanox/mlx5/core/en/tc_tun_gre.c        |   8 +-
- .../mellanox/mlx5/core/en/tc_tun_vxlan.c      |   9 +-
- .../net/ethernet/mellanox/mlx5/core/en_tc.c   |  16 +-
- .../ethernet/mellanox/mlxsw/spectrum_ipip.c   |  56 ++--
- .../ethernet/mellanox/mlxsw/spectrum_span.c   |  10 +-
- .../ethernet/netronome/nfp/flower/action.c    |  27 +-
- drivers/net/geneve.c                          |  44 ++-
- drivers/net/pfcp.c                            | 302 +++++++++++++++++
- drivers/net/vxlan/vxlan_core.c                |  14 +-
- drivers/s390/cio/idset.c                      |  12 +-
- fs/btrfs/free-space-cache.c                   |   8 +-
- fs/ntfs3/bitmap.c                             |   4 +-
- fs/ntfs3/fsntfs.c                             |   2 +-
- fs/ntfs3/index.c                              |  11 +-
- fs/ntfs3/super.c                              |   2 +-
- kernel/trace/trace_probe.c                    |   2 -
- lib/math/prime_numbers.c                      |   2 -
- lib/test_bitmap.c                             | 303 ++++++++++++++++--
- net/bridge/br_vlan_tunnel.c                   |   9 +-
- net/core/filter.c                             |  26 +-
- net/core/flow_dissector.c                     |  20 +-
- net/ipv4/fou_bpf.c                            |   2 +-
- net/ipv4/gre_demux.c                          |   2 +-
- net/ipv4/ip_gre.c                             | 144 +++++----
- net/ipv4/ip_tunnel.c                          | 109 +++++--
- net/ipv4/ip_tunnel_core.c                     |  82 +++--
- net/ipv4/ip_vti.c                             |  41 ++-
- net/ipv4/ipip.c                               |  33 +-
- net/ipv4/ipmr.c                               |   2 +-
- net/ipv4/udp_tunnel_core.c                    |   5 +-
- net/ipv6/addrconf.c                           |   3 +-
- net/ipv6/ip6_gre.c                            |  85 ++---
- net/ipv6/ip6_tunnel.c                         |  14 +-
- net/ipv6/sit.c                                |  38 ++-
- net/netfilter/ipvs/ip_vs_core.c               |   6 +-
- net/netfilter/ipvs/ip_vs_xmit.c               |  20 +-
- net/netfilter/nft_tunnel.c                    |  44 +--
- net/openvswitch/flow_netlink.c                |  61 ++--
- net/psample/psample.c                         |  26 +-
- net/sched/act_tunnel_key.c                    |  36 +--
- net/sched/cls_flower.c                        | 134 +++++++-
- tools/perf/util/probe-finder.c                |   4 +-
- 76 files changed, 1965 insertions(+), 614 deletions(-)
- create mode 100644 include/net/pfcp.h
- create mode 100644 tools/include/linux/align.h
- create mode 100644 drivers/net/pfcp.c
-
+diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+index 99451431e4d6..7ca0379be8c1 100644
+--- a/include/linux/bitmap.h
++++ b/include/linux/bitmap.h
+@@ -79,6 +79,10 @@ struct device;
+  *  bitmap_to_arr64(buf, src, nbits)            Copy nbits from buf to u64[] dst
+  *  bitmap_get_value8(map, start)               Get 8bit value from map at start
+  *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
++ *  bitmap_read(map, start, nbits)              Read an nbits-sized value from
++ *                                              map at start
++ *  bitmap_write(map, value, start, nbits)      Write an nbits-sized value to
++ *                                              map at start
+  *
+  * Note, bitmap_zero() and bitmap_fill() operate over the region of
+  * unsigned longs, that is, bits behind bitmap till the unsigned long
+@@ -636,6 +640,79 @@ static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
+ 	map[index] |= value << offset;
+ }
+ 
++/**
++ * bitmap_read - read a value of n-bits from the memory region
++ * @map: address to the bitmap memory region
++ * @start: bit offset of the n-bit value
++ * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG
++ *
++ * Returns: value of @nbits bits located at the @start bit offset within the
++ * @map memory region. For @nbits = 0 and @nbits > BITS_PER_LONG the return
++ * value is undefined.
++ */
++static inline unsigned long bitmap_read(const unsigned long *map,
++					unsigned long start,
++					unsigned long nbits)
++{
++	size_t index = BIT_WORD(start);
++	unsigned long offset = start % BITS_PER_LONG;
++	unsigned long space = BITS_PER_LONG - offset;
++	unsigned long value_low, value_high;
++
++	if (unlikely(!nbits || nbits > BITS_PER_LONG))
++		return 0;
++
++	if (space >= nbits)
++		return (map[index] >> offset) & BITMAP_LAST_WORD_MASK(nbits);
++
++	value_low = map[index] & BITMAP_FIRST_WORD_MASK(start);
++	value_high = map[index + 1] & BITMAP_LAST_WORD_MASK(start + nbits);
++	return (value_low >> offset) | (value_high << space);
++}
++
++/**
++ * bitmap_write - write n-bit value within a memory region
++ * @map: address to the bitmap memory region
++ * @value: value to write, clamped to nbits
++ * @start: bit offset of the n-bit value
++ * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG.
++ *
++ * bitmap_write() behaves as-if implemented as @nbits calls of __assign_bit(),
++ * i.e. bits beyond @nbits are ignored:
++ *
++ *   for (bit = 0; bit < nbits; bit++)
++ *           __assign_bit(start + bit, bitmap, val & BIT(bit));
++ *
++ * For @nbits == 0 and @nbits > BITS_PER_LONG no writes are performed.
++ */
++static inline void bitmap_write(unsigned long *map, unsigned long value,
++				unsigned long start, unsigned long nbits)
++{
++	size_t index;
++	unsigned long offset;
++	unsigned long space;
++	unsigned long mask;
++	bool fit;
++
++	if (unlikely(!nbits || nbits > BITS_PER_LONG))
++		return;
++
++	mask = BITMAP_LAST_WORD_MASK(nbits);
++	value &= mask;
++	offset = start % BITS_PER_LONG;
++	space = BITS_PER_LONG - offset;
++	fit = space >= nbits;
++	index = BIT_WORD(start);
++
++	map[index] &= (fit ? (~(mask << offset)) : ~BITMAP_FIRST_WORD_MASK(start));
++	map[index] |= value << offset;
++	if (fit)
++		return;
++
++	map[index + 1] &= BITMAP_FIRST_WORD_MASK(start + nbits);
++	map[index + 1] |= (value >> space);
++}
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* __LINUX_BITMAP_H */
 -- 
 2.43.0
 
