@@ -1,80 +1,73 @@
-Return-Path: <linux-btrfs+bounces-2052-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2054-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C92D846530
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 02:00:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 215BD846596
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 02:54:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD9451C214D7
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 01:00:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A86F61F26F9A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 01:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F75B8C08;
-	Fri,  2 Feb 2024 00:59:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79F72BE59;
+	Fri,  2 Feb 2024 01:54:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="f1QMMblD";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="f1QMMblD"
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="qciq9Dl/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa1.hc1455-7.c3s2.iphmx.com (esa1.hc1455-7.c3s2.iphmx.com [207.54.90.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13A963AA
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 Feb 2024 00:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A534BE55;
+	Fri,  2 Feb 2024 01:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.54.90.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706835586; cv=none; b=Y+OiuDPrG9FXduS3+t5y269ggRWx3gZNC6tT7TtRXSh2uHSdSpd+/dMFvYLj8P/PtTy9eadyGst3v/RSthsPXqFR7whF8xeqAN0hmNRZuvDtafJdyoWgX3voeYHeNWO2T7IYHwtbJXuBi911Iod9dPr+74CNf65q8EBsb9Yj4k0=
+	t=1706838855; cv=none; b=U1xggK2bIt3JpVT91mrh4YHKmKBE0r/JkTaWUdnMscv1hN5UCAoBkIg7KorpPPCrmKgXbCPdZmsFmDmhc5IXgZayMbFGJ3KM+HMYwC60xNASlL5TDHtk1bQTtKgwdDPeHxf7OE14gfAn1XryX1aFEo00cfWoNXjUOmFmVt5JVFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706835586; c=relaxed/simple;
-	bh=rzKY+6hX1N6z2XKKd4uHq/6Gc8J9BKHdYHfc+iXyfIo=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=egFW2JeUhY62+2VJ3SFNa0U+JN10+8jXWQb7HTG6bTuUboKD1f0yR18rrfp1BRZCoo4LoGebusCqxeLNMxRrvBqLU+PAgw0Vwzpf7wFd4tfm5XBlUzZ6jGdNi9lX7zylA8BTkrwzswapGE7+HFUP+WjLbFw9vcodoaHDideL1zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=f1QMMblD; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=f1QMMblD; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 298302213A
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 Feb 2024 00:59:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706835583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zjaaQWDE3E3+0T8x1M03eDaU8tBjahCaSDZ3JMDETY4=;
-	b=f1QMMblDhIUP7AZ2agGviPcXdxzHkXpi9knfSGu7PH1a1QMoYNNCvPYadYFDobbVzgv4F9
-	rF34BCNCDiqiFad982sAzsxDzaGObOkH5MxdBY9OEFVGu3C/+BmN1KDpQ+zpLtzSABC+mh
-	FoeVCKIU8ipcF/9g+qsut0s5AD1g5jA=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706835583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zjaaQWDE3E3+0T8x1M03eDaU8tBjahCaSDZ3JMDETY4=;
-	b=f1QMMblDhIUP7AZ2agGviPcXdxzHkXpi9knfSGu7PH1a1QMoYNNCvPYadYFDobbVzgv4F9
-	rF34BCNCDiqiFad982sAzsxDzaGObOkH5MxdBY9OEFVGu3C/+BmN1KDpQ+zpLtzSABC+mh
-	FoeVCKIU8ipcF/9g+qsut0s5AD1g5jA=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 65FE5139AB
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 Feb 2024 00:59:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gLW/Cn4+vGXABgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 02 Feb 2024 00:59:42 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs-progs: fix the stray fd close in open_ctree_fs_info()
-Date: Fri,  2 Feb 2024 11:29:21 +1030
-Message-ID: <abf545db2a21d27c02f92b8a3be0e836fbd3cdd5.1706827356.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1706827356.git.wqu@suse.com>
-References: <cover.1706827356.git.wqu@suse.com>
+	s=arc-20240116; t=1706838855; c=relaxed/simple;
+	bh=vsD8NVDlsuUy+gkg9e+2hn/r5frQVC4+m3fkTZ7yDtQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Wl7+4CiNGUEkLpvJGOtQHq5kZVmWxe+y4k0qVgIJ3wfoSzbgqmramOAqro4uW4T8Tk2yDGdq6rlNWZBJiNBXt44avSkJMT/EKgHqPPOpFDzR7glelPgLilstqz3Reb2xQMhxjfkABozCOjTtHYZo41lJTxAznziXT/J95qBIsRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=qciq9Dl/; arc=none smtp.client-ip=207.54.90.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1706838854; x=1738374854;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vsD8NVDlsuUy+gkg9e+2hn/r5frQVC4+m3fkTZ7yDtQ=;
+  b=qciq9Dl/Lwu3m3NYVALd1ewJPCuO50nmLNZ/H01IjmKQLDI74Gw4Gl+J
+   8nDpDnui5euXKqpcolMK0ftwptAuFr1JrwPNKvYch3l0UmTXMQpwKiUYi
+   prvBeOjBpIyzESb2roWgo7+PiSx6EIft6rUriFwMxPpBVohuQIF3YvCBI
+   wx5BHgyoJNTexARoncMhMmMbrKMRydq3qetokZB1fdne55i/m2QjMFCBa
+   MepOMhvqZrIU2GWsQaNTK8ku8tTIlinA4H7SCXuIrci1cZEuqqbUmegfD
+   FVWQf83jzordoVAh9VSgqMjEmEjli5LmjKqBtw3CRQ1bHHW9iS6nwQZEU
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="147948400"
+X-IronPort-AV: E=Sophos;i="6.05,236,1701097200"; 
+   d="scan'208";a="147948400"
+Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
+  by esa1.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 10:53:02 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
+	by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 67617CA205;
+	Fri,  2 Feb 2024 10:52:59 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
+	by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id A5B2FD41E3;
+	Fri,  2 Feb 2024 10:52:58 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 46FE2E253A;
+	Fri,  2 Feb 2024 10:52:58 +0900 (JST)
+Received: from rhel93GA.g08.fujitsu.local (unknown [10.167.221.71])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id E76C41A009A;
+	Fri,  2 Feb 2024 09:52:57 +0800 (CST)
+From: Yang Xu <xuyang2018.jy@fujitsu.com>
+To: fstests@vger.kernel.org,
+	linux-btrfs@vger.kernel.org
+Cc: Yang Xu <xuyang2018.jy@fujitsu.com>
+Subject: [PATCH v2] t_snapshot_deleted_subvolume: add check for BTRFS_IOC_SNAP_DESTROY_V2
+Date: Wed, 31 Jan 2024 23:23:48 -0500
+Message-Id: <20240201042348.147733-1-xuyang2018.jy@fujitsu.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,147 +75,75 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [1.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_DN_NONE(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: *
-X-Spam-Score: 1.90
-X-Spam-Flag: NO
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28158.003
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28158.003
+X-TMASE-Result: 10--0.230800-10.000000
+X-TMASE-MatchedRID: JUGAxiLh1cPcaPLLdBjevxqkhv3OdF4Dh6nwisY6+c0ErOtgylrM6mnX
+	UUBQ4UsQbn+bq+W8j6V2vbKZ0Ubwp5nFDQsuYb5/W1M77Gh1ugYJlr1xKkE5ucC5DTEMxpeQfiq
+	1gj2xET/gr0WZ6u+ypRIlVYCqhV5OHxPMjOKY7A8LbigRnpKlKZx+7GyJjhAUDVqkdheCqj8fYV
+	pT7I/EHPdoaGy1IdC2/4uhiNc5tAeTp/b1uB9fwNvEw5dGxRulytIt/mHZpcMuYHZzOnqbEULkl
+	G2PtdM1mw0Qaktp+ussz+cQMs/Tnp75MOLIf/j3DF+QsB+Q01JoBmTSwRxjXg==
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
-[BUG]
-Although commit b2a1be83b85f ("btrfs-progs: mkfs: keep file descriptors
-open during whole time") is making sure we're only closing the writeable
-fds after the fs is properly created, there is still a missing fd not
-following the requirement.
+On some platform, struct btrfs_ioctl_vol_args_v2 is defined, but the
+macros BTRFS_IOC_SNAP_DESTROY_V2 is not defined. This will cause
+compile error. Add check for BTRFS_IOC_SNAP_DESTROY_V2 to solve this
+problem.
 
-And this explains the issue why sometimes after mkfs.btrfs, lsblk still
-doesn't give a valid uuid.
+BTRFS_IOC_SNAP_CREATE_V2 and BTRFS_IOC_SUBVOL_CREATE_V2 were
+introduced together with struct btrfs_ioctl_vol_args_v2 by the
+commit 55e301fd57a6 ("Btrfs: move fs/btrfs/ioctl.h to
+include/uapi/linux/btrfs.h"). So there is no need to check them.
 
-Shown by the strace output (the command is "mkfs.btrfs -f
-/dev/test/scratch1"):
-
- openat(AT_FDCWD, "/dev/test/scratch1", O_RDWR) = 5 <<< Writeable open
- fadvise64(5, 0, 0, POSIX_FADV_DONTNEED) = 0
- sysinfo({uptime=2529, loads=[8704, 6272, 2496], totalram=4104548352, freeram=3376611328, sharedram=9211904, bufferram=43016192, totalswap=3221221376, freeswap=3221221376, procs=190, totalhigh=0, freehigh=0, mem_unit=1}) = 0
- lseek(5, 0, SEEK_END)                   = 10737418240
- lseek(5, 0, SEEK_SET)                   = 0
- ......
- close(5)                                = 0 <<< Closed now
- pwrite64(6, "O\250\22\261\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 16384, 1163264) = 16384
- pwrite64(6, "\201\316\272\342\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 16384, 1179648) = 16384
- pwrite64(6, "K}S\t\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 16384, 1196032) = 16384
- pwrite64(6, "\207j$\265\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 16384, 1212416) = 16384
- pwrite64(6, "q\267;\336\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 16384, 5242880) = 16384
- fsync(6) <<< But we're still writing into the disk.
-
-[CAUSE]
-After more digging, it turns out we have a very obvious escape in
-open_ctree_fs_info():
-
-open_ctree_fs_info()
-|- fp = open(oca->filename, flags);
-|- info = __open_ctree_fd();
-|- close(fp);
-
-As later we only do IO using the device fd, this close() seems fine.
-
-But the truth is, for mkfs usage, this fs_info is a temporary one, with
-a special magic number for the disk.
-And since mkfs is doing writeable operations, this close() would
-immediately trigger udev scan.
-
-And since at this stage, the fs is not yet fully created, udev can race
-with mkfs, and may get the invalid temporary superblock.
-
-[FIX]
-Introduce a new btrfs_fs_info member, initial_fd, for
-open_ctree_fs_info() to record the fd.
-
-And on close_ctree(), if we find fs_info::initial_fd is a valid fd, then
-close it.
-
-By this, we make sure all writeable fds are only closed after we have
-written valid super blocks into the disk.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
 ---
- kernel-shared/ctree.h   | 9 +++++++++
- kernel-shared/disk-io.c | 8 +++++++-
- 2 files changed, 16 insertions(+), 1 deletion(-)
+ configure.ac                       |  1 +
+ src/t_snapshot_deleted_subvolume.c | 10 +++++-----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index bcf11d870061..944632226baa 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -404,6 +404,15 @@ struct btrfs_fs_info {
- 	u32 sectorsize;
- 	u32 stripesize;
- 	u32 leaf_data_size;
+diff --git a/configure.ac b/configure.ac
+index b22fc52b..b14b1ab8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -109,6 +109,7 @@ AC_CHECK_MEMBERS([struct btrfs_ioctl_vol_args_v2.subvolid], [], [], [[
+ #include <stddef.h>
+ #include <linux/btrfs.h>
+ ]])
++AC_CHECK_DECLS([BTRFS_IOC_SNAP_DESTROY_V2],,,[#include <linux/btrfs.h>])
+ 
+ AC_CONFIG_HEADERS([include/config.h])
+ AC_CONFIG_FILES([include/builddefs])
+diff --git a/src/t_snapshot_deleted_subvolume.c b/src/t_snapshot_deleted_subvolume.c
+index c3adb1c4..402c0515 100644
+--- a/src/t_snapshot_deleted_subvolume.c
++++ b/src/t_snapshot_deleted_subvolume.c
+@@ -20,11 +20,6 @@
+ #define BTRFS_IOCTL_MAGIC 0x94
+ #endif
+ 
+-#ifndef BTRFS_IOC_SNAP_DESTROY_V2
+-#define BTRFS_IOC_SNAP_DESTROY_V2 \
+-	_IOW(BTRFS_IOCTL_MAGIC, 63, struct btrfs_ioctl_vol_args_v2)
+-#endif
+-
+ #ifndef BTRFS_IOC_SNAP_CREATE_V2
+ #define BTRFS_IOC_SNAP_CREATE_V2 \
+ 	_IOW(BTRFS_IOCTL_MAGIC, 23, struct btrfs_ioctl_vol_args_v2)
+@@ -58,6 +53,11 @@ struct btrfs_ioctl_vol_args_v2 {
+ };
+ #endif
+ 
++#if !HAVE_DECL_BTRFS_IOC_SNAP_DESTROY_V2
++#define BTRFS_IOC_SNAP_DESTROY_V2 \
++	_IOW(BTRFS_IOCTL_MAGIC, 63, struct btrfs_ioctl_vol_args_v2)
++#endif
 +
-+	/*
-+	 * For open_ctree_fs_info() to hold the initial fd until close.
-+	 *
-+	 * For writeable open_ctree_fs_info() call, we should not close
-+	 * the fd until the fs_info is properly closed, or it will trigger
-+	 * udev scan while our fs is not properly initialized.
-+	 */
-+	int initial_fd;
- 	u16 csum_type;
- 	u16 csum_size;
- 
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index c053319200cb..05323b2cd393 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -913,6 +913,7 @@ struct btrfs_fs_info *btrfs_new_fs_info(int writable, u64 sb_bytenr)
- 	fs_info->metadata_alloc_profile = (u64)-1;
- 	fs_info->system_alloc_profile = fs_info->metadata_alloc_profile;
- 	fs_info->nr_global_roots = 1;
-+	fs_info->initial_fd = -1;
- 
- 	return fs_info;
- 
-@@ -1690,7 +1691,10 @@ struct btrfs_fs_info *open_ctree_fs_info(struct open_ctree_args *oca)
- 		return NULL;
- 	}
- 	info = __open_ctree_fd(fp, oca);
--	close(fp);
-+	if (info)
-+		info->initial_fd = fp;
-+	else
-+		close(fp);
- 	return info;
- }
- 
-@@ -2297,6 +2301,8 @@ skip_commit:
- 
- 	btrfs_release_all_roots(fs_info);
- 	ret = btrfs_close_devices(fs_info->fs_devices);
-+	if (fs_info->initial_fd >= 0)
-+		close(fs_info->initial_fd);
- 	btrfs_cleanup_all_caches(fs_info);
- 	btrfs_free_fs_info(fs_info);
- 	if (!err)
+ int main(int argc, char **argv)
+ {
+ 	if (argc != 2) {
 -- 
-2.43.0
+2.39.3
 
 
