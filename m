@@ -1,59 +1,59 @@
-Return-Path: <linux-btrfs+bounces-1996-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1997-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B56E845766
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 13:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 33B2184576F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 13:24:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C455291DA2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 12:24:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7B08292B22
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 12:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7383F15F325;
-	Thu,  1 Feb 2024 12:23:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C83F116088B;
+	Thu,  1 Feb 2024 12:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d0DU34it"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Na9bktwG"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E11F715F31C;
-	Thu,  1 Feb 2024 12:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F27160879;
+	Thu,  1 Feb 2024 12:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706790218; cv=none; b=puMw3AP7YfK95QX47ApqVnixhPJqrE0hL2W8x1D6rEa4xZq1RUd6bhncMoiD5DrtjY1vXI//7/36mNCQc8Y8KPWKFZI2fa2ji25LzSFfVSdzXv+o7aSxVflfDG3rVi7IPc3nJmIeRW47uyrkh+3dsfh5NjHeUrSiv14QlAjDSoQ=
+	t=1706790224; cv=none; b=k8d8OYofgjmS1hGgiEYiVuQ/mctdR6xVwMLqyLIK6hCD1/XxwkmXYwwtm6y9mJBljr4AyeLxIrP9XLw0OspYhljfjlAJD7AAxLIl8PWNHZ17+pi72XEt1/GxIQRCaM+G27DWRKUOHegvJtOzWNCM4yRoF6IPyb+oJ8ckc8ME3IQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706790218; c=relaxed/simple;
-	bh=FkdWCDGhSzmNJ65dmfIHiTVxvqOrslZqMpuEArCTxEw=;
+	s=arc-20240116; t=1706790224; c=relaxed/simple;
+	bh=bxw9De2QeTuuO+3xX9DSiY/xghjHqConjbvU0/oyb6o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uEFYDcvrbBXGvri5/yysb+7LdlgMMQKzlofehsjH09xzYkkOez0s7tLP4z8qJgZvsDzEQ2YCODcixj04enVXmrz1SrsTJnU9BVlXeS+T8GbJqymXT4hEVzWydt3I8K2gFk6oHBrIoxA1dflEysMOW/rfZ+sh2yauLPD9qdDalbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d0DU34it; arc=none smtp.client-ip=198.175.65.15
+	 MIME-Version; b=UDxzKrNrWCBuuXrxVUR24so1yywVrzJKBc1cdZK9C7xzEnQofmhPrturp6IVF/2GA22lFV3dauNv2iKtnr94+u22SghIrrZG6UPyU8JCHs63NAzgJryDDjIiukyx7AnjvB0Pe1EoKoWEWkkRa6nzr+/EAVcxnLHXem+LKDnfmec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Na9bktwG; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706790218; x=1738326218;
+  t=1706790223; x=1738326223;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=FkdWCDGhSzmNJ65dmfIHiTVxvqOrslZqMpuEArCTxEw=;
-  b=d0DU34itVs0PV8ayeqXPcJ9RDc4UJpkZD8sqBojExjn6shKlp7etVYkX
-   e9QdCHuGjZZmjwfq47NBfJGldbp0kZN6UFD8ruZIb+4rBTk37tuBqOY6q
-   Ek0dTWxHaV/7T13qtVHN/IdRscp8GZ9EJ486UdG9e5I8G+8bc1rPH5xz5
-   IZlGPRS1Nxl5GzXsMldbRLPNubjM3oNvZxWyAU2VbyAljVTtjPpRTCDi2
-   +2DWZnLY/Z8Lrjigm6ry4pcb0LU921SAFwsLr1KIDSsQlWVJpikMnkwmA
-   kQWoIenZuC/c4hxdLxRCoVugjTV4cJ4dnrwFSr4j8yboffbMSk3onOOSd
+  bh=bxw9De2QeTuuO+3xX9DSiY/xghjHqConjbvU0/oyb6o=;
+  b=Na9bktwGLCa0D+3qVSE/qkZmfN7gdlDBpiDSyzdfXN8HzkgTDZSHquS8
+   rbPfIa6Agu2QdKFzg6gnHxlP9f8tHUVHq8A7iPfQPLA/29seMQ+5Rdu8v
+   hD2xzkh5VbNXwnNM4agiZiRMCr76PD3BY67+86T5W8TTpj+tjfPLBInFN
+   5AWuVrnO6UsbuTcgqbxHlWCkp4UXwjUrB10OcqPKXZUAWZSnUmFvAe0bk
+   U6OzYbyMBLPkSGnrqL+hefY4C96zoh0b9H7BwY9qr0rU6ZN2SXwtQSmJj
+   mvYnUAMimfOq6KbS5JVI9rUU+f4khVlEattJ/3igOh2oZy6JIvSHxuqa1
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3746870"
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="3746878"
 X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="3746870"
+   d="scan'208";a="3746878"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:23:37 -0800
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2024 04:23:42 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,234,1701158400"; 
-   d="scan'208";a="4499077"
+   d="scan'208";a="4499082"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa004.jf.intel.com with ESMTP; 01 Feb 2024 04:23:31 -0800
+  by orviesa004.jf.intel.com with ESMTP; 01 Feb 2024 04:23:37 -0800
 From: Alexander Lobakin <aleksander.lobakin@intel.com>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -78,13 +78,10 @@ Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
 	intel-wired-lan@lists.osuosl.org,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Syed Nayyar Waris <syednwaris@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	William Breathitt Gray <william.gray@linaro.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH net-next v5 01/21] lib/bitmap: add bitmap_{read,write}()
-Date: Thu,  1 Feb 2024 13:21:56 +0100
-Message-ID: <20240201122216.2634007-2-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v5 02/21] lib/test_bitmap: add tests for bitmap_{read,write}()
+Date: Thu,  1 Feb 2024 13:21:57 +0100
+Message-ID: <20240201122216.2634007-3-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
 References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
@@ -96,130 +93,247 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Syed Nayyar Waris <syednwaris@gmail.com>
+From: Alexander Potapenko <glider@google.com>
 
-The two new functions allow reading/writing values of length up to
-BITS_PER_LONG bits at arbitrary position in the bitmap.
+Add basic tests ensuring that values can be added at arbitrary positions
+of the bitmap, including those spanning into the adjacent unsigned
+longs.
 
-The code was taken from "bitops: Introduce the for_each_set_clump macro"
-by Syed Nayyar Waris with a number of changes and simplifications:
- - instead of using roundup(), which adds an unnecessary dependency
-   on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
- - indentation is reduced by not using else-clauses (suggested by
-   checkpatch for bitmap_get_value());
- - bitmap_get_value()/bitmap_set_value() are renamed to bitmap_read()
-   and bitmap_write();
- - some redundant computations are omitted.
+Two new performance tests, test_bitmap_read_perf() and
+test_bitmap_write_perf(), can be used to assess future performance
+improvements of bitmap_read() and bitmap_write():
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
-Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
-Link: https://lore.kernel.org/lkml/fe12eedf3666f4af5138de0e70b67a07c7f40338.1592224129.git.syednwaris@gmail.com/
-Suggested-by: Yury Norov <yury.norov@gmail.com>
-Co-developed-by: Alexander Potapenko <glider@google.com>
+[    0.431119][    T1] test_bitmap: Time spent in test_bitmap_read_perf:	615253
+[    0.433197][    T1] test_bitmap: Time spent in test_bitmap_write_perf:	916313
+
+(numbers from a Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz machine running
+QEMU).
+
 Signed-off-by: Alexander Potapenko <glider@google.com>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Acked-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- include/linux/bitmap.h | 77 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 77 insertions(+)
+ lib/test_bitmap.c | 179 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 172 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index 99451431e4d6..7ca0379be8c1 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -79,6 +79,10 @@ struct device;
-  *  bitmap_to_arr64(buf, src, nbits)            Copy nbits from buf to u64[] dst
-  *  bitmap_get_value8(map, start)               Get 8bit value from map at start
-  *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
-+ *  bitmap_read(map, start, nbits)              Read an nbits-sized value from
-+ *                                              map at start
-+ *  bitmap_write(map, value, start, nbits)      Write an nbits-sized value to
-+ *                                              map at start
-  *
-  * Note, bitmap_zero() and bitmap_fill() operate over the region of
-  * unsigned longs, that is, bits behind bitmap till the unsigned long
-@@ -636,6 +640,79 @@ static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
- 	map[index] |= value << offset;
+diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+index 65f22c2578b0..46c015468077 100644
+--- a/lib/test_bitmap.c
++++ b/lib/test_bitmap.c
+@@ -60,18 +60,17 @@ static const unsigned long exp3_1_0[] __initconst = {
+ };
+ 
+ static bool __init
+-__check_eq_uint(const char *srcfile, unsigned int line,
+-		const unsigned int exp_uint, unsigned int x)
++__check_eq_ulong(const char *srcfile, unsigned int line,
++		 const unsigned long exp_ulong, unsigned long x)
+ {
+-	if (exp_uint != x) {
+-		pr_err("[%s:%u] expected %u, got %u\n",
+-			srcfile, line, exp_uint, x);
++	if (exp_ulong != x) {
++		pr_err("[%s:%u] expected %lu, got %lu\n",
++			srcfile, line, exp_ulong, x);
+ 		return false;
+ 	}
+ 	return true;
  }
  
-+/**
-+ * bitmap_read - read a value of n-bits from the memory region
-+ * @map: address to the bitmap memory region
-+ * @start: bit offset of the n-bit value
-+ * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG
-+ *
-+ * Returns: value of @nbits bits located at the @start bit offset within the
-+ * @map memory region. For @nbits = 0 and @nbits > BITS_PER_LONG the return
-+ * value is undefined.
-+ */
-+static inline unsigned long bitmap_read(const unsigned long *map,
-+					unsigned long start,
-+					unsigned long nbits)
-+{
-+	size_t index = BIT_WORD(start);
-+	unsigned long offset = start % BITS_PER_LONG;
-+	unsigned long space = BITS_PER_LONG - offset;
-+	unsigned long value_low, value_high;
-+
-+	if (unlikely(!nbits || nbits > BITS_PER_LONG))
-+		return 0;
-+
-+	if (space >= nbits)
-+		return (map[index] >> offset) & BITMAP_LAST_WORD_MASK(nbits);
-+
-+	value_low = map[index] & BITMAP_FIRST_WORD_MASK(start);
-+	value_high = map[index + 1] & BITMAP_LAST_WORD_MASK(start + nbits);
-+	return (value_low >> offset) | (value_high << space);
-+}
-+
-+/**
-+ * bitmap_write - write n-bit value within a memory region
-+ * @map: address to the bitmap memory region
-+ * @value: value to write, clamped to nbits
-+ * @start: bit offset of the n-bit value
-+ * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG.
-+ *
-+ * bitmap_write() behaves as-if implemented as @nbits calls of __assign_bit(),
-+ * i.e. bits beyond @nbits are ignored:
-+ *
-+ *   for (bit = 0; bit < nbits; bit++)
-+ *           __assign_bit(start + bit, bitmap, val & BIT(bit));
-+ *
-+ * For @nbits == 0 and @nbits > BITS_PER_LONG no writes are performed.
-+ */
-+static inline void bitmap_write(unsigned long *map, unsigned long value,
-+				unsigned long start, unsigned long nbits)
-+{
-+	size_t index;
-+	unsigned long offset;
-+	unsigned long space;
-+	unsigned long mask;
-+	bool fit;
-+
-+	if (unlikely(!nbits || nbits > BITS_PER_LONG))
-+		return;
-+
-+	mask = BITMAP_LAST_WORD_MASK(nbits);
-+	value &= mask;
-+	offset = start % BITS_PER_LONG;
-+	space = BITS_PER_LONG - offset;
-+	fit = space >= nbits;
-+	index = BIT_WORD(start);
-+
-+	map[index] &= (fit ? (~(mask << offset)) : ~BITMAP_FIRST_WORD_MASK(start));
-+	map[index] |= value << offset;
-+	if (fit)
-+		return;
-+
-+	map[index + 1] &= BITMAP_FIRST_WORD_MASK(start + nbits);
-+	map[index + 1] |= (value >> space);
-+}
-+
- #endif /* __ASSEMBLY__ */
+-
+ static bool __init
+ __check_eq_bitmap(const char *srcfile, unsigned int line,
+ 		  const unsigned long *exp_bmap, const unsigned long *bmap,
+@@ -185,7 +184,8 @@ __check_eq_str(const char *srcfile, unsigned int line,
+ 		result;							\
+ 	})
  
- #endif /* __LINUX_BITMAP_H */
+-#define expect_eq_uint(...)		__expect_eq(uint, ##__VA_ARGS__)
++#define expect_eq_ulong(...)		__expect_eq(ulong, ##__VA_ARGS__)
++#define expect_eq_uint(x, y)		expect_eq_ulong((unsigned int)(x), (unsigned int)(y))
+ #define expect_eq_bitmap(...)		__expect_eq(bitmap, ##__VA_ARGS__)
+ #define expect_eq_pbl(...)		__expect_eq(pbl, ##__VA_ARGS__)
+ #define expect_eq_u32_array(...)	__expect_eq(u32_array, ##__VA_ARGS__)
+@@ -1245,6 +1245,168 @@ static void __init test_bitmap_const_eval(void)
+ 	BUILD_BUG_ON(~var != ~BIT(25));
+ }
+ 
++/*
++ * Test bitmap should be big enough to include the cases when start is not in
++ * the first word, and start+nbits lands in the following word.
++ */
++#define TEST_BIT_LEN (1000)
++
++/*
++ * Helper function to test bitmap_write() overwriting the chosen byte pattern.
++ */
++static void __init test_bitmap_write_helper(const char *pattern)
++{
++	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
++	DECLARE_BITMAP(exp_bitmap, TEST_BIT_LEN);
++	DECLARE_BITMAP(pat_bitmap, TEST_BIT_LEN);
++	unsigned long w, r, bit;
++	int i, n, nbits;
++
++	/*
++	 * Only parse the pattern once and store the result in the intermediate
++	 * bitmap.
++	 */
++	bitmap_parselist(pattern, pat_bitmap, TEST_BIT_LEN);
++
++	/*
++	 * Check that writing a single bit does not accidentally touch the
++	 * adjacent bits.
++	 */
++	for (i = 0; i < TEST_BIT_LEN; i++) {
++		bitmap_copy(bitmap, pat_bitmap, TEST_BIT_LEN);
++		bitmap_copy(exp_bitmap, pat_bitmap, TEST_BIT_LEN);
++		for (bit = 0; bit <= 1; bit++) {
++			bitmap_write(bitmap, bit, i, 1);
++			__assign_bit(i, exp_bitmap, bit);
++			expect_eq_bitmap(exp_bitmap, bitmap,
++					 TEST_BIT_LEN);
++		}
++	}
++
++	/* Ensure writing 0 bits does not change anything. */
++	bitmap_copy(bitmap, pat_bitmap, TEST_BIT_LEN);
++	bitmap_copy(exp_bitmap, pat_bitmap, TEST_BIT_LEN);
++	for (i = 0; i < TEST_BIT_LEN; i++) {
++		bitmap_write(bitmap, ~0UL, i, 0);
++		expect_eq_bitmap(exp_bitmap, bitmap, TEST_BIT_LEN);
++	}
++
++	for (nbits = BITS_PER_LONG; nbits >= 1; nbits--) {
++		w = IS_ENABLED(CONFIG_64BIT) ? 0xdeadbeefdeadbeefUL
++					     : 0xdeadbeefUL;
++		w >>= (BITS_PER_LONG - nbits);
++		for (i = 0; i <= TEST_BIT_LEN - nbits; i++) {
++			bitmap_copy(bitmap, pat_bitmap, TEST_BIT_LEN);
++			bitmap_copy(exp_bitmap, pat_bitmap, TEST_BIT_LEN);
++			for (n = 0; n < nbits; n++)
++				__assign_bit(i + n, exp_bitmap, w & BIT(n));
++			bitmap_write(bitmap, w, i, nbits);
++			expect_eq_bitmap(exp_bitmap, bitmap, TEST_BIT_LEN);
++			r = bitmap_read(bitmap, i, nbits);
++			expect_eq_ulong(r, w);
++		}
++	}
++}
++
++static void __init test_bitmap_read_write(void)
++{
++	unsigned char *pattern[3] = {"", "all:1/2", "all"};
++	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
++	unsigned long zero_bits = 0, bits_per_long = BITS_PER_LONG;
++	unsigned long val;
++	int i, pi;
++
++	/*
++	 * Reading/writing zero bits should not crash the kernel.
++	 * READ_ONCE() prevents constant folding.
++	 */
++	bitmap_write(NULL, 0, 0, READ_ONCE(zero_bits));
++	/* Return value of bitmap_read() is undefined here. */
++	bitmap_read(NULL, 0, READ_ONCE(zero_bits));
++
++	/*
++	 * Reading/writing more than BITS_PER_LONG bits should not crash the
++	 * kernel. READ_ONCE() prevents constant folding.
++	 */
++	bitmap_write(NULL, 0, 0, READ_ONCE(bits_per_long) + 1);
++	/* Return value of bitmap_read() is undefined here. */
++	bitmap_read(NULL, 0, READ_ONCE(bits_per_long) + 1);
++
++	/*
++	 * Ensure that bitmap_read() reads the same value that was previously
++	 * written, and two consequent values are correctly merged.
++	 * The resulting bit pattern is asymmetric to rule out possible issues
++	 * with bit numeration order.
++	 */
++	for (i = 0; i < TEST_BIT_LEN - 7; i++) {
++		bitmap_zero(bitmap, TEST_BIT_LEN);
++
++		bitmap_write(bitmap, 0b10101UL, i, 5);
++		val = bitmap_read(bitmap, i, 5);
++		expect_eq_ulong(0b10101UL, val);
++
++		bitmap_write(bitmap, 0b101UL, i + 5, 3);
++		val = bitmap_read(bitmap, i + 5, 3);
++		expect_eq_ulong(0b101UL, val);
++
++		val = bitmap_read(bitmap, i, 8);
++		expect_eq_ulong(0b10110101UL, val);
++	}
++
++	for (pi = 0; pi < ARRAY_SIZE(pattern); pi++)
++		test_bitmap_write_helper(pattern[pi]);
++}
++
++static void __init test_bitmap_read_perf(void)
++{
++	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
++	unsigned int cnt, nbits, i;
++	unsigned long val;
++	ktime_t time;
++
++	bitmap_fill(bitmap, TEST_BIT_LEN);
++	time = ktime_get();
++	for (cnt = 0; cnt < 5; cnt++) {
++		for (nbits = 1; nbits <= BITS_PER_LONG; nbits++) {
++			for (i = 0; i < TEST_BIT_LEN; i++) {
++				if (i + nbits > TEST_BIT_LEN)
++					break;
++				/*
++				 * Prevent the compiler from optimizing away the
++				 * bitmap_read() by using its value.
++				 */
++				WRITE_ONCE(val, bitmap_read(bitmap, i, nbits));
++			}
++		}
++	}
++	time = ktime_get() - time;
++	pr_err("Time spent in %s:\t%llu\n", __func__, time);
++}
++
++static void __init test_bitmap_write_perf(void)
++{
++	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
++	unsigned int cnt, nbits, i;
++	unsigned long val = 0xfeedface;
++	ktime_t time;
++
++	bitmap_zero(bitmap, TEST_BIT_LEN);
++	time = ktime_get();
++	for (cnt = 0; cnt < 5; cnt++) {
++		for (nbits = 1; nbits <= BITS_PER_LONG; nbits++) {
++			for (i = 0; i < TEST_BIT_LEN; i++) {
++				if (i + nbits > TEST_BIT_LEN)
++					break;
++				bitmap_write(bitmap, val, i, nbits);
++			}
++		}
++	}
++	time = ktime_get() - time;
++	pr_err("Time spent in %s:\t%llu\n", __func__, time);
++}
++
++#undef TEST_BIT_LEN
++
+ static void __init selftest(void)
+ {
+ 	test_zero_clear();
+@@ -1261,6 +1423,9 @@ static void __init selftest(void)
+ 	test_bitmap_cut();
+ 	test_bitmap_print_buf();
+ 	test_bitmap_const_eval();
++	test_bitmap_read_write();
++	test_bitmap_read_perf();
++	test_bitmap_write_perf();
+ 
+ 	test_find_nth_bit();
+ 	test_for_each_set_bit();
 -- 
 2.43.0
 
