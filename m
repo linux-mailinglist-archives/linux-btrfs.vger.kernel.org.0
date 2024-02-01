@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-2035-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2036-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27521845F60
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 19:09:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4C2845F61
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 19:09:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C32B41C22776
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 18:09:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B10F11C22733
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 18:09:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF38A127B69;
-	Thu,  1 Feb 2024 18:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01705127B78;
+	Thu,  1 Feb 2024 18:04:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aXMB6GeO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eOYtxeDN"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D968F127B52;
-	Thu,  1 Feb 2024 18:04:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C684127B52;
+	Thu,  1 Feb 2024 18:04:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706810644; cv=none; b=IdRAbOkLlo/cIAbajE9mYgPeunegHBewsu1ee0Tykwo+kDtDoS81vjBs5QyVoVUJlmoQnqhGXiwQCMdvRrZwepyGUCq9JtkHU1eKv0g5vq3cHLymngJqSlRUhUaZoNl+GasNLMmeb0Qymx7/mtnYIBIfVAmOqYlD2e0qj+ZheIc=
+	t=1706810647; cv=none; b=kByOgInSCWrcPYc3Ca+4Qne8LuY9HrkY5ssTXjsGVel/KNwQ62ptkoZc7tO6BugYJHRriDsWqEjId11xjcala5LDSDjtVCELYCtr31r8PIbE8SK4LNRix7jDhIGRN0xUbJVXABrrRTVVE0hCKTU/U0ht8OKWuLa3QgUUPr3JfOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706810644; c=relaxed/simple;
-	bh=wH0FTHH2f0Izmm4ituTnkzAKw0K7lbkSPsk6LoI5uM0=;
+	s=arc-20240116; t=1706810647; c=relaxed/simple;
+	bh=Wz6y+ZQr5WBAqiVasEs/iYYNIQoVGkfxyGzfE9Bfwk4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kPOJ5SEq/v7ZgoUGchMHx5VXgTMtqL2tQjNmp9tTTdkJeooVHr346P/ggC96RHWWzSAFE6GhKIBUMvqNEj/TlnZ5wx7T2Fo/SevZtyQl8Jy6ERfFX2gH656xQTx7489NosekYajmfGYeWtUm7q/FoXUa1/cbVlxRXk/qUpgnSwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aXMB6GeO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FF41C433C7;
-	Thu,  1 Feb 2024 18:04:03 +0000 (UTC)
+	 MIME-Version; b=F2RtxA+YCLqiE4Kibe2fs4E1G5C2s5mZ/42Sr8VHVYLuReVTL9rT869grY37T1hI7F89CXgCZ7IHQyU1YIsghNy/kwQ3kXqfuJ5ln9i1x1pBK0Uwmt3I4PbiITOparEj66NKm9PFr3uafStesUx/+RGyXKfUW0D+Tpn8g1tMn9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eOYtxeDN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23FA7C433C7;
+	Thu,  1 Feb 2024 18:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706810644;
-	bh=wH0FTHH2f0Izmm4ituTnkzAKw0K7lbkSPsk6LoI5uM0=;
+	s=k20201202; t=1706810647;
+	bh=Wz6y+ZQr5WBAqiVasEs/iYYNIQoVGkfxyGzfE9Bfwk4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aXMB6GeOCRjKa6tbBpXKbvKI3nFivbOOTRaHj0uwBrw8ciRqeQNSq5mTLFLtPoP5J
-	 qESqz00JSuNgPdYS56Map/CxGCrL6g61ogcyxTcmNvsz9M8NnG6xC8QcJT+9pzgNRz
-	 azIL2oThlR5fg8fNQnVWsftEqH4YH4SePd00CZc9eFIt4oi3uRfJYYKzSqQoUaR9hr
-	 FLxCiVZ2jORoXfwd94vL2jXMNoCUDqayNF7oy9z2vz7QCwetC5fgdiIcFebOBkI0Zk
-	 4E2y/8jqO6OlAX3ijJswiNPP7OJeg9d0v60v+P3VrpredtTvT1vZZYpyyEDOWztJCp
-	 FYyPt5+Dp15Sg==
+	b=eOYtxeDNXmsELrHJVXc/IZ1JouWelgud4zdSOfe5rAzgJY8WBlRXgdJnmFKDrYol/
+	 ENwcT/UL9KYJwPabchFELuormotHzJk5a7JKLv6xlMurgZBZsNmcDlpRjY2yj52lLk
+	 QjC1xMMpY+mP0MygHtrXEs9pdanoEXpGDcJ9INVL8l3a2RBFQlOM3bGpDlRDoi23Us
+	 h8g5hgyXRqA8UWSmJwXoQqCzGUgAIh2RwdIKnKdq8A5OAy7C540T2yVaU2j5QAX01F
+	 dkhaqPtog1dQ+J2fmqV0MTx5PC7h+oTS6aN01Pmmd2cjPVwl6f8E32iSERtPzpw7+E
+	 Ddps4QVclFSRg==
 From: fdmanana@kernel.org
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
 	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 1/4] btrfs: require no nodatacow for tests that exercise compression
-Date: Thu,  1 Feb 2024 18:03:47 +0000
-Message-Id: <413f5f4f472480a66bcc3b48c45071cdeea12dfb.1706810184.git.fdmanana@suse.com>
+Subject: [PATCH 2/4] btrfs/173: make the test work when mounting with nodatacow
+Date: Thu,  1 Feb 2024 18:03:48 +0000
+Message-Id: <0e243759cb9551eaac8b6f10f4dfbcbd5e880d56.1706810184.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cover.1706810184.git.fdmanana@suse.com>
 References: <cover.1706810184.git.fdmanana@suse.com>
@@ -61,93 +61,34 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Several test cases fail when running with MOUNT_OPTIONS="-o nodatacow"
-because they attempt to use compression and compression can not be
-enabled on nodatacow files (it fails with -EINVAL). So make sure those
-tests are not run if nodatacow is specified in MOUNT_OPTIONS.
+Currently btrfs/173 fails when passing "-o nodatacow" to MOUNT_OPTIONS
+because it assumes that when creating a file it does not have the
+nodatacow flag set, which is obviously not true if the fs is mounted with
+"-o nodatacow". To allow the test to run successfully with nodatacow,
+just make sure it clears the nodatacow flag from the file if the fs was
+mounted with "-o nodatacow".
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- tests/btrfs/024 | 1 +
- tests/btrfs/048 | 1 +
- tests/btrfs/059 | 1 +
- tests/btrfs/138 | 1 +
- tests/btrfs/234 | 1 +
- tests/btrfs/281 | 1 +
- 6 files changed, 6 insertions(+)
+ tests/btrfs/173 | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/tests/btrfs/024 b/tests/btrfs/024
-index 95c734ec..a8ca0e1d 100755
---- a/tests/btrfs/024
-+++ b/tests/btrfs/024
-@@ -17,6 +17,7 @@ _begin_fstest auto quick compress
- # real QA test starts here
- _supported_fs btrfs
- _require_scratch
-+_require_btrfs_no_nodatacow
- 
- __workout()
- {
-diff --git a/tests/btrfs/048 b/tests/btrfs/048
-index 8a88b8cc..aa2030b1 100755
---- a/tests/btrfs/048
-+++ b/tests/btrfs/048
-@@ -30,6 +30,7 @@ _require_test
- _require_scratch
- _require_btrfs_command "property"
- _require_btrfs_command inspect-internal dump-super
-+_require_btrfs_no_nodatacow
- 
- send_files_dir=$TEST_DIR/btrfs-test-$seq
- 
-diff --git a/tests/btrfs/059 b/tests/btrfs/059
-index 76a1e76e..8b458b34 100755
---- a/tests/btrfs/059
-+++ b/tests/btrfs/059
-@@ -28,6 +28,7 @@ _supported_fs btrfs
- _require_test
- _require_scratch
- _require_btrfs_command "property"
-+_require_btrfs_no_nodatacow
- 
- _scratch_mkfs >> $seqres.full 2>&1
- _scratch_mount
-diff --git a/tests/btrfs/138 b/tests/btrfs/138
-index f99e58e7..427fdede 100755
---- a/tests/btrfs/138
-+++ b/tests/btrfs/138
-@@ -18,6 +18,7 @@ _begin_fstest auto compress
- _supported_fs btrfs
- _require_scratch
- _require_btrfs_command property
-+_require_btrfs_no_nodatacow
- 
- algos=($(_btrfs_compression_algos))
- 
-diff --git a/tests/btrfs/234 b/tests/btrfs/234
-index c045ea6c..542515e8 100755
---- a/tests/btrfs/234
-+++ b/tests/btrfs/234
-@@ -18,6 +18,7 @@ _begin_fstest auto quick compress rw
- _supported_fs btrfs
- _require_scratch
- _require_odirect
-+_require_btrfs_no_nodatacow
- _require_chattr c
- 
- _scratch_mkfs >>$seqres.full 2>&1
-diff --git a/tests/btrfs/281 b/tests/btrfs/281
-index 63fb89ea..64075225 100755
---- a/tests/btrfs/281
-+++ b/tests/btrfs/281
-@@ -25,6 +25,7 @@ _require_scratch_reflink
- _require_btrfs_send_v2
- _require_xfs_io_command "fiemap"
- _require_fssum
-+_require_btrfs_no_nodatacow
- 
- _fixed_by_kernel_commit a11452a3709e \
- 	"btrfs: send: avoid unaligned encoded writes when attempting to clone range"
+diff --git a/tests/btrfs/173 b/tests/btrfs/173
+index 6e78a826..42af2d26 100755
+--- a/tests/btrfs/173
++++ b/tests/btrfs/173
+@@ -23,6 +23,11 @@ echo "COW file"
+ # unset it after the swap file has been created.
+ rm -f "$SCRATCH_MNT/swap"
+ touch "$SCRATCH_MNT/swap"
++# Make sure we have a COW file if we were mounted with "-o nodatacow".
++if _normalize_mount_options "$MOUNT_OPTIONS" | grep -q "nodatacow"; then
++	_require_chattr C
++	$CHATTR_PROG -C "$SCRATCH_MNT/swap"
++fi
+ chmod 0600 "$SCRATCH_MNT/swap"
+ _pwrite_byte 0x61 0 $(($(_get_page_size) * 10)) "$SCRATCH_MNT/swap" >> $seqres.full
+ $MKSWAP_PROG "$SCRATCH_MNT/swap" >> $seqres.full
 -- 
 2.40.1
 
