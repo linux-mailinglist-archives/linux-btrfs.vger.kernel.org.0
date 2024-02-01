@@ -1,105 +1,153 @@
-Return-Path: <linux-btrfs+bounces-1990-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-1991-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E117845431
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 10:38:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C21EA845542
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 11:26:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE342B2A4B6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 09:38:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EA6B2910F5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 10:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE63415B963;
-	Thu,  1 Feb 2024 09:36:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AF215CD68;
+	Thu,  1 Feb 2024 10:25:36 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B814D9E8;
-	Thu,  1 Feb 2024 09:36:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE25F4DA19;
+	Thu,  1 Feb 2024 10:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706780174; cv=none; b=OR3zFJUqOD1jNOwHkn/bukQMvQr8YQhhz94M9xtFAURgv8c6hudUP2EDYPRhtbCjRYy7W16/5E4CKrnxIsPjBmhSMwDDQU4a48imFQ4fonGOyZ3VxSEL3tC3ng+h6uhDYmdMk4aQgvTg3SjDMjaVKq03TLfc/Ghn+/JGtmQOm0k=
+	t=1706783136; cv=none; b=ghCs1OI/Q6h6wKwGCKOnUIh/hx4N8UTDqcmmhiakrFb6fvQ+144OuMRzswzItUCD8Q9EDhY8bFTZWSPi2pysukfDOlMeOJXG+eUDPdEmizO0+2BMAeZqyi9HS9avLC+47aiiLp7Lkqqke0CwqF3NDC59dHQQuQGau1KJLqHgOWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706780174; c=relaxed/simple;
-	bh=jViJ3zJh5S2RCOGgf/S6HMEGoMjD40/QTYwYjRnaFjY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HS5GINlUtSPDHBgaxnlczysipK+I5gPDGSpz0wNN0o3sGBA+FGUSWbRqvCzgzEkrxPQW+L86I06pFk8t4pkCiI1hqGrkw0hp7kkHyAxQLrjFBQX6dwqgsm3LOuwHeZj+dRbRygE/8L8AUFdQXkuJhPDtlJb2/iKqmlhrROy4Alc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 92d47a634f2e4abcaf6f369d3549e3f8-20240201
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:f6e10d24-893a-4854-8526-31f5b5cd2053,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:f6e10d24-893a-4854-8526-31f5b5cd2053,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:dc750180-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:2402011735594VB9L5PE,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: 92d47a634f2e4abcaf6f369d3549e3f8-20240201
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1698438554; Thu, 01 Feb 2024 17:35:57 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 4C618E000EB9;
-	Thu,  1 Feb 2024 17:35:57 +0800 (CST)
-X-ns-mid: postfix-65BB65FD-1124251252
-Received: from kernel.. (unknown [172.20.15.254])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 69079E000EB9;
-	Thu,  1 Feb 2024 17:35:56 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] btrfs: Simplify the allocation of slab caches in btrfs_transaction_init
-Date: Thu,  1 Feb 2024 17:35:54 +0800
-Message-Id: <20240201093554.208092-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706783136; c=relaxed/simple;
+	bh=OQNMfD7l22pZXc5xj4re2mrx8QNM3zdYIZ3qCt93++8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TazCTMV7fNR6sRc+R+R96Wg3VVingr4RIFP9opupRSyCO488tJl7kADLlARANNSfYwfhlS/alLsMNCliISDTMGqiIOB3/j5LG262Lk08DpIGCz3TH+rwoLJwBJDUUn5j8OKELSkdNGmIxmOhm203JAy/mwadsxeIhl1cs8p1Z9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rVUG9-00036B-Bn; Thu, 01 Feb 2024 11:25:29 +0100
+Message-ID: <7d3cee75-ee74-4348-947a-7e4bce5484b2@leemhuis.info>
+Date: Thu, 1 Feb 2024 11:25:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [btrfs] commit bc27d6f0aa0e4de184b617aceeaf25818cc646de breaks
+ update-grub
+Content-Language: en-US, de-DE
+To: Anand Jain <anand.jain@oracle.com>, Alex Romosan <aromosan@gmail.com>,
+ CHECK_1234543212345@protonmail.com, brauner@kernel.org
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>,
+ Linux kernel regressions list <regressions@lists.linux.dev>,
+ linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ dsterba@suse.cz
+References: <CAKLYgeJ1tUuqLcsquwuFqjDXPSJpEiokrWK2gisPKDZLs8Y2TQ@mail.gmail.com>
+ <39e3a4fe-d456-4de4-b481-51aabfa02b8d@leemhuis.info>
+ <20240111155056.GG31555@twin.jikos.cz> <20240111170644.GK31555@twin.jikos.cz>
+ <f45e5b7c-4354-87d3-c7f1-d8dd5f4d2abd@oracle.com>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <f45e5b7c-4354-87d3-c7f1-d8dd5f4d2abd@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1706783133;05226587;
+X-HE-SMSGID: 1rVUG9-00036B-Bn
 
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
+for once, to make this easily accessible to everyone.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- fs/btrfs/transaction.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Anand, what's the status wrt to below issue (which afaics seems to
+affect quite a few people)? Things look stalled, but I might be missing
+something, that's why I ask for a quick update.
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 5b3333ceef04..0c069d44e77f 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -2720,9 +2720,8 @@ void __cold __btrfs_abort_transaction(struct btrfs_=
-trans_handle *trans,
-=20
- int __init btrfs_transaction_init(void)
- {
--	btrfs_trans_handle_cachep =3D kmem_cache_create("btrfs_trans_handle",
--			sizeof(struct btrfs_trans_handle), 0,
--			SLAB_TEMPORARY | SLAB_MEM_SPREAD, NULL);
-+	btrfs_trans_handle_cachep =3D KMEM_CACHE(btrfs_trans_handle,
-+						 SLAB_TEMPORARY | SLAB_MEM_SPREAD);
- 	if (!btrfs_trans_handle_cachep)
- 		return -ENOMEM;
- 	return 0;
---=20
-2.39.2
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
+#regzbot poke
+
+On 12.01.24 00:24, Anand Jain wrote:
+> On 11/01/2024 22:36, David Sterba wrote:
+>> On Thu, Jan 11, 2024 at 04:50:56PM +0100, David Sterba wrote:
+>>> On Thu, Jan 11, 2024 at 12:45:50PM +0100, Thorsten Leemhuis wrote:
+>>>>
+>>>> On 08.01.24 15:11, Alex Romosan wrote:
+>>>>>
+>>>>> Running my own compiled kernel without initramfs on a lenovo thinkpad
+>>>>> x1 carbon gen 7.
+>>>>>
+>>>>> Since version 6.7-rc1 i haven't been able to to a grub-update,
+>>>>>
+>>>>> instead i get this error:
+>>>>>
+>>>>> grub-probe: error: cannot find a device for / (is /dev mounted?) solid
+>>>>> state drive
+>>>>>
+>>>>> 6.6 was the last version that worked.
+>>>>>
+>>>>> Today I did a git-bisect between these two versions which identified
+>>>>> commit bc27d6f0aa0e4de184b617aceeaf25818cc646de btrfs: scan but don't
+>>>>> register device on single device filesystem as the culprit. reverting
+>>>>> this commit from 6.7 final allowed me to run update-grub again.
+>>>>>
+>>>>> not sure if this is the intended behavior or if i'm missing some other
+>>>>> kernel options. any help/fixes would be appreciated.
+>>>>
+>>>> Thanks for the report. To be sure the issue doesn't fall through the
+>>>> cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+>>>> tracking bot:
+>>>>
+>>>> #regzbot ^introduced bc27d6f0aa0e4de184b617aceeaf25818cc646de
+>>>> #regzbot title btrfs: update-grub broken (cannot find a device for /
+>>>> (is
+>>>> /dev mounted?))
+>>>> #regzbot ignore-activity
+>>>
+>>> The bug is also tracked at
+>>> https://bugzilla.kernel.org/show_bug.cgi?id=218353 .
+>>
+>> About the fix: we can't simply revert the patch because the temp_fsid
+>> depends on that. A workaround could be to check if the device path is
+>> "/dev/root" and still register the device. But I'm not sure if this does
+>> not break the use case that Steamdeck needs, as it's for the root
+>> partition.
+> 
+> 
+> Thank you for the report.
+> 
+> The issue seems more complex than a simple scenario, as the following
+> test-case works well:
+> 
+>   $ mount /dev/sdb1 /btrfs
+>   $ cat /proc/self/mountinfo | grep btrfs
+> 345 63 0:34 / /btrfs rw,relatime shared:179 - btrfs /dev/sdb1
+> rw,space_cache=v2,subvolid=5,subvol=/
+> 
+> However, the relevant part of the commit
+> bc27d6f0aa0e4de184b617aceeaf25818cc646de that may be failing could
+> be in identifying a device, whether it is the same or different
+> For this, we use:
+> 
+>      lookup_bdev(path, &path_devt);
+> 
+> and match with the devt(MAJ:MIN) saved in the btrfs_device;
+> would this work during initrd? I need to dig more. Trying
+> to figure out how can I reproduce this.
+> 
+> Thanks, Anand
+> 
+> 
 
