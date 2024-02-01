@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-2037-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2038-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A16A2845F62
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 19:09:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7622845F63
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 19:09:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 433CF299036
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 18:09:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC0471C21F55
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 18:09:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E563128802;
-	Thu,  1 Feb 2024 18:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96451128806;
+	Thu,  1 Feb 2024 18:04:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UkJUGEaU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A+n5XHKt"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA373127B52;
-	Thu,  1 Feb 2024 18:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFAB384FB2;
+	Thu,  1 Feb 2024 18:04:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706810649; cv=none; b=BrYZJlaV73fg5rjoQVrW2RDhVEZ8fe1McTGPxAGYcIWb/DDkpXDzsVnHU4NxmhO/wucFQeKKqQTvynAC3ZWpmO48aYFgMeNQg9xan5QRtaQ91SWgLPjAse2RFTMpg4jn567Xi0MEu9ClXGcaoh0EglNh+InV58UvDhSzIJaCp6I=
+	t=1706810654; cv=none; b=eNpdBp9xKVaTQuwoyVXmx7zkrX+Cl+/gsf996EBxmmQ1ge2cMcq73c+xOpdJssjJ8RyIWrbGHRLLz7PqmwEqfRyN3fM4uqJYE3KLwFFoIKgBCHX3+sGQtrn3tx/HaLOUcnz57cQvqdC57+Lmyyhfk33UCnrU9+2NbdQjRf8mjpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706810649; c=relaxed/simple;
-	bh=pJey/BqAnBn9Q7A8kD7XQJQcSUF9vWU0CCQME/Wrf/k=;
+	s=arc-20240116; t=1706810654; c=relaxed/simple;
+	bh=BWiqFVO3jlZeDfqjBtpe5k9UV8+EHbM889pu2XrE0X4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oGswaXjvza0zwMDMbmP8l3KjTuJTAtJLGm3z3xe1JZGxr8YJ0y4XeHe0hSSjo152atuK40XYukwOOEe5SqU/GZTBPyBCJCCBM8nvbr4xKt4trEXvntk0ifvdU3nPa42Grv+3YWBXER0NtXiJLuTOmMjao9ubMerbZ3ofvbxeooo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UkJUGEaU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82AE0C433C7;
-	Thu,  1 Feb 2024 18:04:08 +0000 (UTC)
+	 MIME-Version; b=Npvyr4cvE0R/RIfAUzTw8KsZOTFL3Rf4mNCsBPYB6Qs9mZEji69j8Q47SMaOGFgyPAmaNxtsRDW6um0foD0SGGGuwbGkQf7VR+BCQmtTgC9kl37UKJbq7zes3JFg9122I7FTr8KYGPNOhfllcW/qA2E6SER3h9sqh+FvyyhVjv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A+n5XHKt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E7CC433C7;
+	Thu,  1 Feb 2024 18:04:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706810649;
-	bh=pJey/BqAnBn9Q7A8kD7XQJQcSUF9vWU0CCQME/Wrf/k=;
+	s=k20201202; t=1706810654;
+	bh=BWiqFVO3jlZeDfqjBtpe5k9UV8+EHbM889pu2XrE0X4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UkJUGEaUQgc4APZot2PJ0JVP0BTiibY3/ljwylh6BQ8fZF46yIkf9Fo8px8g1nIY9
-	 7E+BG5AO0Q5vwTrnE9YWYwnT6wd5P8K9zf3+OzTZnmXi5zqqMo6dOwCg7BcZYVvZjW
-	 NcuOsweraKLO4/KhEUz4/NuxlmiJQ1UJPBoHOH308NQ9ATFASTkIbxMick0pF9SPhZ
-	 3FPYzUm9yFHEu2pfoh3dIB0ApwMIOialfzmeFjXi9AMFFpiSKfj+h9bY6s5L+DRfNa
-	 Udddg2be+pbQ67vxR4ODTkWwu6rBUlsPpm5VJU5N8YdCyLaWk0NtxnZ5qL76BuqCvG
-	 XOjeA+rL8tBuw==
+	b=A+n5XHKtpIAPy6kh+z4TLy1uweNtAMCbZl7QOvYvxRR2accFYzWR9HWO/G1YuL3JF
+	 Q8sgcCKERyWbXzmd0cJvFOmcPdgKus0cAtXPcFD6oVvAO656Y1dTy1ous/Ow9Xobgt
+	 VHZBnFY/qEaxFBMl0Lc83X9O92RRebJ/nHrw/iru8yXrRa3YIQ0zJyWmgtMKHm+/1+
+	 2duvow9qtD31netPNNwbulidIqX+tVNXQAMXaGt29CK5mo868W3JitKt+x831RPQvh
+	 WeC/x20w1hT4p5PiS57ACLSQvYEn2Rd4DJ1Puu/j0AUUX4ufwXcxhATaFHuPmHJFLM
+	 YPcsN3jt14Pog==
 From: fdmanana@kernel.org
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
 	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 3/4] btrfs/299: skip test if we were mounted with nodatacow
-Date: Thu,  1 Feb 2024 18:03:49 +0000
-Message-Id: <92cf2f68139e3e8488c09372ef1fd46443b3299b.1706810184.git.fdmanana@suse.com>
+Subject: [PATCH 4/4] btrfs: require no nodatacow for tests that exercise read repair
+Date: Thu,  1 Feb 2024 18:03:50 +0000
+Message-Id: <5c3c56241dcb8d2b6c87bb4d6875d2c0659b9219.1706810184.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cover.1706810184.git.fdmanana@suse.com>
 References: <cover.1706810184.git.fdmanana@suse.com>
@@ -61,36 +61,171 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The test requires the ability to create an inline extent in a file with
-a prealloced extent, created with fallocate's FALLOC_FL_KEEP_SIZE mode,
-which can only happen when COW is enabled. If the test is run with
-MOUNT_OPTIONS="-o nodatacow", then COW never happens as all writes end
-up using the preallocated extent. This results in the logical-resolve
-command to return one file path when it should return none, since the
-base logical address of the prealloc extent is still in use unless COW
-happens.
-
-So make the test not run if nodatacow is specified in MOUNT_OPTIONS.
+Several test cases that exercise the ability to detect corrupted data and
+repair it, fail when "-o nodatacow" is passed to MOUNT_OPTIONS, because
+that ability requires the existence of data checksums, and those are
+disabled in nodatacow mode. So skip the tests when "-o nodatacow" is
+present.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- tests/btrfs/299 | 3 +++
- 1 file changed, 3 insertions(+)
+ tests/btrfs/140 | 3 ++-
+ tests/btrfs/141 | 2 ++
+ tests/btrfs/157 | 2 ++
+ tests/btrfs/158 | 2 ++
+ tests/btrfs/215 | 2 ++
+ tests/btrfs/265 | 2 ++
+ tests/btrfs/266 | 2 ++
+ tests/btrfs/267 | 2 ++
+ tests/btrfs/268 | 2 ++
+ tests/btrfs/269 | 2 ++
+ tests/btrfs/289 | 2 ++
+ 11 files changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/tests/btrfs/299 b/tests/btrfs/299
-index c4b1c7c5..d38bf2ac 100755
---- a/tests/btrfs/299
-+++ b/tests/btrfs/299
-@@ -23,6 +23,9 @@ _supported_fs btrfs
- _require_scratch
- _require_xfs_io_command "falloc" "-k"
- _require_btrfs_command inspect-internal logical-resolve
-+# Can't run with nodatacow because we need to be able to create an inline extent
-+# in a range with a prealloc extent, which can only happen with COW enabled.
+diff --git a/tests/btrfs/140 b/tests/btrfs/140
+index 247a7356..5ce65886 100755
+--- a/tests/btrfs/140
++++ b/tests/btrfs/140
+@@ -22,7 +22,8 @@ _begin_fstest auto quick read_repair fiemap
+ # Modify as appropriate.
+ _supported_fs btrfs
+ _require_scratch_dev_pool 2
+-
++# No data checksums for NOCOW case, so can't detect corruption and repair data.
 +_require_btrfs_no_nodatacow
- _fixed_by_kernel_commit 560840afc3e6 \
- 	"btrfs: fix resolving backrefs for inline extent followed by prealloc"
+ _require_btrfs_command inspect-internal dump-tree
+ _require_odirect
+ # Overwriting data is forbidden on a zoned block device
+diff --git a/tests/btrfs/141 b/tests/btrfs/141
+index 90a90d00..e1adb91e 100755
+--- a/tests/btrfs/141
++++ b/tests/btrfs/141
+@@ -22,6 +22,8 @@ _begin_fstest auto quick read_repair
  
+ # Modify as appropriate.
+ _supported_fs btrfs
++# No data checksums for NOCOW case, so can't detect corruption and repair data.
++_require_btrfs_no_nodatacow
+ _require_scratch_dev_pool 2
+ 
+ _require_btrfs_command inspect-internal dump-tree
+diff --git a/tests/btrfs/157 b/tests/btrfs/157
+index 022db511..648db0d0 100755
+--- a/tests/btrfs/157
++++ b/tests/btrfs/157
+@@ -30,6 +30,8 @@ _begin_fstest auto quick raid read_repair
+ 
+ # Modify as appropriate.
+ _supported_fs btrfs
++# No data checksums for NOCOW case, so can't detect corruption and repair data.
++_require_btrfs_no_nodatacow
+ _require_scratch_dev_pool 4
+ _require_btrfs_command inspect-internal dump-tree
+ _require_btrfs_fs_feature raid56
+diff --git a/tests/btrfs/158 b/tests/btrfs/158
+index aa85835a..28599d09 100755
+--- a/tests/btrfs/158
++++ b/tests/btrfs/158
+@@ -22,6 +22,8 @@ _begin_fstest auto quick raid scrub
+ 
+ # Modify as appropriate.
+ _supported_fs btrfs
++# No data checksums for NOCOW case, so can't detect corruption and repair data.
++_require_btrfs_no_nodatacow
+ _require_scratch_dev_pool 4
+ _require_btrfs_command inspect-internal dump-tree
+ _require_btrfs_fs_feature raid56
+diff --git a/tests/btrfs/215 b/tests/btrfs/215
+index 00646898..6fa226fe 100755
+--- a/tests/btrfs/215
++++ b/tests/btrfs/215
+@@ -25,6 +25,8 @@ get_physical()
+ # Modify as appropriate.
+ _supported_fs btrfs
+ _require_scratch
++# No data checksums for NOCOW case, so can't detect corruption and repair data.
++_require_btrfs_no_nodatacow
+ # Overwriting data is forbidden on a zoned block device
+ _require_non_zoned_device $SCRATCH_DEV
+ 
+diff --git a/tests/btrfs/265 b/tests/btrfs/265
+index b75d9c84..127da7ad 100755
+--- a/tests/btrfs/265
++++ b/tests/btrfs/265
+@@ -19,6 +19,8 @@ _begin_fstest auto quick read_repair
+ _supported_fs btrfs
+ _require_scratch_dev_pool 3
+ 
++# No data checksums for NOCOW case, so can't detect corruption and repair data.
++_require_btrfs_no_nodatacow
+ _require_odirect
+ # Overwriting data is forbidden on a zoned block device
+ _require_non_zoned_device "${SCRATCH_DEV}"
+diff --git a/tests/btrfs/266 b/tests/btrfs/266
+index 42aff7c0..acfb1d59 100755
+--- a/tests/btrfs/266
++++ b/tests/btrfs/266
+@@ -18,6 +18,8 @@ _begin_fstest auto quick read_repair
+ # real QA test starts here
+ 
+ _supported_fs btrfs
++# No data checksums for NOCOW case, so can't detect corruption and repair data.
++_require_btrfs_no_nodatacow
+ _require_scratch_dev_pool 3
+ 
+ _require_odirect
+diff --git a/tests/btrfs/267 b/tests/btrfs/267
+index 75a6fdcc..51b28d9b 100755
+--- a/tests/btrfs/267
++++ b/tests/btrfs/267
+@@ -20,6 +20,8 @@ _begin_fstest auto quick read_repair
+ _supported_fs btrfs
+ _require_scratch_dev_pool 3
+ 
++# No data checksums for NOCOW case, so can't detect corruption and repair data.
++_require_btrfs_no_nodatacow
+ _require_odirect
+ # Overwriting data is forbidden on a zoned block device
+ _require_non_zoned_device "${SCRATCH_DEV}"
+diff --git a/tests/btrfs/268 b/tests/btrfs/268
+index 9dc14a18..d122ee36 100755
+--- a/tests/btrfs/268
++++ b/tests/btrfs/268
+@@ -16,6 +16,8 @@ _begin_fstest auto quick read_repair
+ _supported_fs btrfs
+ _require_scratch
+ _require_odirect
++# No data checksums for NOCOW case, so can't detect corruption and repair data.
++_require_btrfs_no_nodatacow
+ _require_non_zoned_device "${SCRATCH_DEV}" # no overwrites on zoned devices
+ _require_scratch_dev_pool 2
+ _scratch_dev_pool_get 2
+diff --git a/tests/btrfs/269 b/tests/btrfs/269
+index ad8f7286..7ffad125 100755
+--- a/tests/btrfs/269
++++ b/tests/btrfs/269
+@@ -20,6 +20,8 @@ _begin_fstest auto quick read_repair
+ _supported_fs btrfs
+ _require_scratch
+ _require_odirect
++# No data checksums for NOCOW case, so can't detect corruption and repair data.
++_require_btrfs_no_nodatacow
+ _require_non_zoned_device "${SCRATCH_DEV}" # no overwrites on zoned devices
+ _require_scratch_dev_pool 4
+ _scratch_dev_pool_get 4
+diff --git a/tests/btrfs/289 b/tests/btrfs/289
+index 39d8f733..f1aaf4cc 100755
+--- a/tests/btrfs/289
++++ b/tests/btrfs/289
+@@ -16,6 +16,8 @@ _begin_fstest auto quick scrub repair
+ # Modify as appropriate.
+ _supported_fs btrfs
+ _require_scratch
++# No data checksums for NOCOW case, so can't detect corruption and repair data.
++_require_btrfs_no_nodatacow
+ 
+ _require_odirect
+ # Overwriting data is forbidden on a zoned block device
 -- 
 2.40.1
 
