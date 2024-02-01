@@ -1,52 +1,53 @@
-Return-Path: <linux-btrfs+bounces-2045-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2046-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC1C8846284
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 22:15:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3D1846312
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 23:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52B1F28D37E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 21:15:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C39FBB24D93
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 22:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A4ED3CF60;
-	Thu,  1 Feb 2024 21:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB1F3FB14;
+	Thu,  1 Feb 2024 22:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="R3T0um2+"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="cdoUdWpe"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C723CF4B
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Feb 2024 21:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753313F8D9
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Feb 2024 22:00:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706822138; cv=none; b=gjPCjpVNsaGi7CvScwHZqgb8HTuEnI5RCFfHSYrgy6I3b7mb+tLCklDi3A5chTIMNgpl9cUDq8CnOUZBNkq9OODLKaTJ/IQDtX43Ofygj5+uTvcw1E+F221fLh9YIpD1mXHavTDLGE05Zrfnm6WBK434wfy8SQDEo1zDkkmuPXo=
+	t=1706824810; cv=none; b=dS5JHQCZ8NTeZZVJnL8bsCNZ6xR1kf8QDTI7h5RbkmT4toFkrxEOOGPhGA9uNsKl1HiNRxYckciJ6C0BlKBNSjrBSmp0/MNsE0UNRe/RxK3QpA9xTrC6sXJXJ8O1X1BHvL+xdw4YMnev12a+4qTOwVb1vbDMauxnB9iFsGFbWS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706822138; c=relaxed/simple;
-	bh=6bjNMV0J0VCsrIPzq+amNUlAkU/WfwcpmZo+Oo5XfVs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Ht320K9foVupWw6xd0gaoKY906LUuPLBEFHD4gYsdDuulnjFVCF3gNcIdnzmV7NZJdKS24PD1B4oRtXNGO9ZMW8rD+tow7jOkCErXY+6stddAnkntuSBQmhYGOk0ilDjBT1UBb3L2pbhGTMlscvIkXlk57Q60/gmx3YQ6S/Lbj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=R3T0um2+; arc=none smtp.client-ip=212.227.17.20
+	s=arc-20240116; t=1706824810; c=relaxed/simple;
+	bh=L98AHwNwn+VvMPbK6XBttb6ps/EvSOHfqX4G+6/iZ5g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MC0ikKKCvxz5GuTvJ2NGRcvRPkPgrUX4PyML0RUKf6OKBZ3+fEGAT/G4QcrTP5L8Cm+5Wv+itAlLaRhua4rzCk/bKm44hG3MuIhu1268csz9rTC1TMWetAzFPAgnbcIRvgCDhdQ0RrvEOHhvgRmbccAGXtJQEY80f5r+qw+zPbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=cdoUdWpe; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1706822129; x=1707426929; i=quwenruo.btrfs@gmx.com;
-	bh=6bjNMV0J0VCsrIPzq+amNUlAkU/WfwcpmZo+Oo5XfVs=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=R3T0um2+1coYzsysvGGHqAP93P9Oo0cp3YbH/qyViwBBwJyd1HhrRvB9HhS6TTI+
-	 i8rL09tBxC1zQlokaI9rVO4YAIFJrg2YOm/HYWb2d+kLxqKrfASZ4LlNOfNkTn9eG
-	 RGE+H0Y5K6HbjRD8m3H9XUC1r5IakDx178bNHERM23Z1TVKJmuQG7x0bFbScdMV+f
-	 q/mUWx1Gxu51F24/RF/FoeoqJYOWVWAgjgx0pm7UxBABoU4Vs8lZNsSN/pEKKqt+b
-	 IQVAYkrFIdCLMNJWYfYbUXReYo2jkvN/rMFt7OfZiK7gOox1Xs0QIA1k+7BneNoUO
-	 9xXxsiza5Pici7s3Qw==
+	s=s31663417; t=1706824801; x=1707429601; i=quwenruo.btrfs@gmx.com;
+	bh=L98AHwNwn+VvMPbK6XBttb6ps/EvSOHfqX4G+6/iZ5g=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=cdoUdWpenkwar9FbMNvpBUN0tRgZqF1464+z3mkFn84zyIESLMFDYgE3ODupNT82
+	 1OJnhJR+qnWywYFRdtOAGukNAfa+7KsV24SIXUibWomL01q/IV7mWbU8deVHMH7OR
+	 hRPjfBE2puznP8udWaR/2yLVC5V0gGjvjsqv6a0gBSqdgeagTv8n9eV0y4x3jcUvm
+	 eMmm5LQOx+IXGmHW5ev2j+YLLVtaf/0Wx6f1kOKJHNhYNJa566zd77bcbGUdsPOgU
+	 VLZwePyRbTzhc7jNPbvwDPsMBRxRw9ZlmhtyDnByXmBhI9ldon/52ekIlo+Nhnis8
+	 S6K7cCngJpAI9I8aKw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MgvrB-1qpB2z2U4z-00hLxc; Thu, 01
- Feb 2024 22:15:29 +0100
-Message-ID: <f2533b10-417f-4f70-bb68-5f408fa75424@gmx.com>
-Date: Fri, 2 Feb 2024 07:45:25 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKKUp-1rkrVP2rMt-00Lqur; Thu, 01
+ Feb 2024 23:00:01 +0100
+Message-ID: <34047c7b-365b-41ee-b349-b4d645acb2d0@gmx.com>
+Date: Fri, 2 Feb 2024 08:29:57 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,15 +55,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs-progs: mkfs: use flock() to properly prevent
- race with udev
+Subject: Re: [PATCH RFC] btrfs-progs: mkfs: optimize file descriptor usage in
+ mkfs.btrfs
 Content-Language: en-US
-To: Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org
-References: <49bbb80e37990b0614f0929ac302560b27d2d933.1706594470.git.wqu@suse.com>
- <b5b191e2-27a8-4d9f-92ec-434e7b88d1f9@oracle.com>
- <0f6bbeb1-0d05-4f4c-837d-11ca8297fcef@suse.com>
- <868c62e2-9bf9-49ed-97e5-ddfdf1e138ed@oracle.com>
+To: Josef Bacik <josef@toxicpanda.com>, Anand Jain <anand.jain@oracle.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <06b40e351b544a314178909772281994bb9de259.1706714983.git.anand.jain@oracle.com>
+ <20240131204800.GB3203388@perftesting>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -88,486 +87,198 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <868c62e2-9bf9-49ed-97e5-ddfdf1e138ed@oracle.com>
+In-Reply-To: <20240131204800.GB3203388@perftesting>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:SemDGKi00zPi6UcD6JWBwox96dVOGfLqzGoxKBQvKfj0HngxjGg
- S1NjPWJ0BBPpV933yOH5sAZfTOKZZssuV+AwWMMUQawbTBKG9qhCvPj65zTnBOVS17hwD5o
- t6+xIz26xbkb0+583vmjl+lm9mRPNPSW0Q3gKkiWlMyBYQnJCbDHb+hKm/FGalcwrlScLE/
- fHBJkeXyYBqrQ23v+MQaw==
+X-Provags-ID: V03:K1:2/8upQfvOEX1HIu3QcoDATYIFdiku+aWUQn+H44Eho8G6Uk138g
+ 1wJLqxVqlumEddHheYM2zLMmYRr17iXmhHutE3Py02SGn1s6KFj+IZdYPmoP9wthWvd2dj/
+ 3sLNFqeGsgs47OfkOCbp/4q9pmsMqE64Ykx3mpNaQG+LgLRIvhAvWvTKS1sOauZNRELmexX
+ GDbAKgRk6qbG9j8YsXKNw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:PIaFMXNKaXc=;HkgE1h2IqrMgqQANaz4i1V78g/q
- JF8UQpLlwLcVQZUs7V/XPn2pzFxvhfZJmwL2uBsnsGdNv4d54qso2Int98fzLYpzG6tS8074y
- tgO7m9f1f65/VZ5k4HUUhJ6CxDUNqbwVZKLqBzb8oRLLxIL9sh11RcGgy2Qd4zLa/LXxPjqpz
- J3MB0S1/NdvJOSUj1lCtHT2wtSYZm+OIWuTyPo/Jo0iC2fKct4lSeU0bpdQp1L8xrN5Oo6nSJ
- cPXd9MpxlgGXAMrs4pmg4UbENKOBjMmISRef811MDOAXYXmp1W1PbiYAlIXS/IUrRWBRyxfO+
- 0o0iYUOMYEQ+Fx8IwOrC9MXmi8SgwbNOC/jlplBkwn7QgFIOjDqUuAawv6ilR7io2osw07TH3
- cneDhTFFr9y38YdUa/mtgVT1sebWwz38nVFZ7y3JbGNL6itx9OAeaMCm1oQ9pgRqe+xfCRIjd
- 4Qr4ahsDRuGY97wXwM801SUTd6hjSMKH/AiFBn0zalbaowkVL8SqY0EQPb92gI8DAUtqKjK2m
- ppfowqYa+ryVoeTPONNryXemCBBVMwnWWCTcDsFuEsYz1+dqyxEu5Ucx8CZS2ShGmezWsWtPh
- 9anoOo17Ov2MXQ/dHcAz6IxiEdvB5QcJzoX07BPB8uKkanE+rCJjZKrrxl2b3Pic73WCZ1Tq4
- p5OHI8fJP4Moux1toc2/JIYSR9rUyoBAS4uHN8pwMjbObhKoSYtvvd7npAwxyl/5ZUujzDBiI
- Em7EQ3ea6RvU6AV6Lgytk/uzDbFiNNPhR4nNmjl7gduXs44sNU1ny1iIf8unAs9ctJecVWJVu
- uZFJe1OmqNN9kybg6Oo8p3c0FXgREUuyxG96s/lxU8Rlg=
+UI-OutboundReport: notjunk:1;M01:P0:oxJZy8cH5Do=;O3jGn85eWt0K5Ip4P6w7U6RH3Nc
+ pLN5hnn9ug9GWoKyIpVVoreBiDEsL0BZF57eZa5+YgNCiIrCJke+vU1U8m35u4e3c+lDfVsbk
+ LnDHXV7CrGfD9BL3itDimt8vFoh8GX17UMT2iTCX/8dcKprYsp1J6niS2JaxyU6Vhjdso7gjX
+ lB5PXqH+CS/wwi/x0MEdIoOfFIfB2Qc8y5QgmwCTD1yJ0AdwqZFTkrLMxBz2Zl2ywM6idAGWe
+ 9b5OSJqoLtu0vtnGgrASK3WSXzuZmphzFjAEs6T1UKs5ptb9a6wvapTNBfcfGk8t3oHzPMd/a
+ 9RyCGyVLzF9SlwpvSrmfGBfJcYAldZvv7ICggV9wbBrsgL6LdFsWuSAmQHuZBTHEwxowoVTkk
+ KrPzGWODlXKm/QNuVAN52Q+ZpyjbfO2kYKZ90udd8tQrn1uTaAUbfvWJHfG/iTVoLcLbThK4D
+ qPaJbvKsqeAj0OWAEGaNkgEU1nQmWomupJAWu5wVhPyViPuo9wwerhC4RbuFpc/QS+zIH2ha2
+ /o/XFQ8DiXfstgRMUZsduD+zb28cb3GFzBpSEHWc+OOrbPY7wL5irrkTz0yxAQyXT/PC4OjuS
+ xu6vnXuDi44EgISAW3ix92wCsyJqrEzFd9n/xOf3GIKwksekdJc0TNvshwUKjLH8t3RE/PRH7
+ OubhgxPIiyPSry8nxOrR77V0MQ5vL+cfFMkHVxJQZAymzdPWAJQB8lhiTXOUH+MavKyBBnYUA
+ FRc39VDsbhWqPWF81hV29uOHSc/Y/hpXgzMPJF3DDj75f8yvtbfaGFoswjs7kno/6WBKww3pn
+ 7l7iF4jgFU60F6X9xM3kD8kJpGK4dmNAN4WwIelm8nrpg=
 
 
 
-On 2024/2/1 21:02, Anand Jain wrote:
->
->
-> On 2/1/24 04:06, Qu Wenruo wrote:
+On 2024/2/1 07:18, Josef Bacik wrote:
+> On Wed, Jan 31, 2024 at 11:49:28PM +0800, Anand Jain wrote:
+>> I've reproduced the missing udev events issue without device partitions
+>> using the test case as below. The test waits for the creation of 'by-uu=
+id'
+>> and, waiting indefinitely means successful reproduction. as below:
+>>
+>> --------------------------------------------------
+>> #!/bin/bash
+>> usage()
+>> {
+>> 	echo
+>> 	echo "Usage: ./t1 sdb btrfs"
+>> 	exit 1
+>> }
+>>
+>> : ${1?"arg1 <dev> is missing"} || usage
+>> dev=3D$1
+>>
+>> : ${2?"arg2 <fstype> is missing"} || usage
+>> fstype=3D$2
+>>
+>> systemd=3D$(rpm -q --queryformat=3D'%{NAME}-%{VERSION}-%{RELEASE}' syst=
+emd)
+>>
+>> run_testcase()
+>> {
+>> 	local cnt=3D$1
+>> 	local ret=3D0
+>> 	local sleepcnt=3D0
+>>
+>> 	local newuuid=3D""
+>> 	local logpid=3D""
+>> 	local log=3D""
+>> 	local logfile=3D"./udev_log_${systemd}_${fstype}.out"
+>>
+>> 	>$logfile
+>>
+>> 	wipefs -a /dev/${dev}* &>/dev/null
+>> 	sync
+>> 	udevadm settle /dev/$dev
+>>
+>> 	udevadm monitor -k -u -p > $logfile &
+>> 	logpid=3D$!
+>> 	>strace.out
+>> 	run "strace -f -ttT -o strace.out mkfs.$fstype -q -f /dev/$dev"
+>>
+>> 	newuuid=3D$(blkid -p /dev/$dev | awk '{print $2}' | sed -e 's/UUID=3D/=
+/' -e 's/\"//g')
+>>
+>> 	kill $logpid
+>> 	sync $logfile
+>>
+>> 	ret=3D-1
+>> 	while [ $ret !=3D 0 ]
+>> 	do
+>> 		run -s -q "ls -lt /dev/disk/by-uuid | grep $newuuid"
+>> 		ret=3D$?
+>> 		((sleepcnt++))
+>> 		sleep 1
+>> 	done
+>>
+>> 	#for systemd-239-78.0.3.el8
+>> 	log=3D$(cat $logfile|grep ID_FS_TYPE_NEW)
+>> 	#for systemd-252-18.0.1.el9.x86_64
+>> 	#log=3D$(grep --text "ID_FS_UUID=3D${newuuid}" $logfile)
+>>
+>> 	echo $cnt sleepcnt=3D$sleepcnt newuuid=3D$newuuid ret=3D$ret log=3D$lo=
+g
+>> }
+>>
+>> echo Test case: t1: version 3.
+>> echo
+>>
+>> run -o cat /etc/system-release
+>> run -o uname -a
+>> run -o rpm -q systemd
+>> if [ $fstype =3D=3D "btrfs" ]; then
+>> 	run -o mkfs.btrfs --version
+>> elif [ $fstype =3D=3D "xfs" ]; then
+>> 	run -o mkfs.xfs -V
+>> else
+>> 	echo unknown fstype $fstype
+>> fi
+>> echo
+>>
+>> for ((cnt =3D 0; cnt < 13; cnt++)); do
+>> 	run_testcase $cnt
+>> done
+>> -----------------------------------------------------------------
 >>
 >>
->> On 2024/2/1 02:23, Anand Jain wrote:
->>> On 1/30/24 11:31, Qu Wenruo wrote:
->>>> [BUG]
->>>> Even after commit b2a1be83b85f ("btrfs-progs: mkfs: keep file
->>>> descriptors open during whole time"), there is still a bug report abo=
-ut
->>>> blkid failed to grab the FSID:
->>>>
->>>> =C2=A0 device=3D/dev/loop0
->>>> =C2=A0 fstype=3Dbtrfs
->>>>
->>>> =C2=A0 wipefs -a "$device"*
->>>>
->>>> =C2=A0 parted -s "$device" \
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mklabel gpt \
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mkpart '"EFI system partition"' fat32 =
-1MiB 513MiB \
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set 1 esp on \
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mkpart '"root partition"' "$fstype" 51=
-3MiB 100%
->>>>
->>>> =C2=A0 udevadm settle
->>>> =C2=A0 partitions=3D($(lsblk -n -o path "$device"))
->>>>
->>>> =C2=A0 mkfs.fat -F 32 ${partitions[1]}
->>>> =C2=A0 mkfs."$fstype" ${partitions[2]}
->>>> =C2=A0 udevadm settle
->>>>
->>>> The above script can sometimes result empty fsid:
->>>>
->>>> =C2=A0 loop0
->>>> =C2=A0 |-loop0p1 BDF3-552B
->>>> =C2=A0 `-loop0p2
->>>>
->>>
->>>
->>>
->>>> [CAUSE]
->>>> Although commit b2a1be83b85f ("btrfs-progs: mkfs: keep file descripto=
-rs
->>>> open during whole time") changed the lifespan of the fds, it doesn't
->>>> properly inform udev about our change to certain partition.
->>>>
->
->
->>>> Thus for a multi-partition case, udev can start scanning the whole
->>>> disk,
->>>> meanwhile our mkfs is still happening halfway.
->>>>
->>>> If the scan is done before our new super blocks written, and our
->>>> close()
->>>> calls happens later just before the current scan is finished, udev ca=
-n
->>>> got the temporary super blocks (which is not a valid one).
->>>>
->>>> And since our close() calls happens during the scan, there would be n=
-o
->>>> new scan, thus leading to the bad result.
->>>>
->>>
->>>
->>>
->>> I am able to reproduce the missing udev events without the device
->>> partitions on the entire device also, so its not about the flock.
->>> Also, per the udevadm monitor I see no new fsid being reported for
->>> the btrfs. Please find the test case in the RFC patch below.
->>
->> Please go check the issue of btrfs-progs.
->>
->> Firstly, it is about flock().
->> In fact the problem would be gone if using "udevadm lock" command for
->> the mkfs.btrfs.
->>
->> And as I already explained, "udevadm lock" is just flock() for the
->> parent block device, with some extra fancy work like deadline and
->> deduplication.
->>
->
-> I am able to reproduce the issue on the entire device, which conflicts
-> with the cause you have mentioned. Ref to the test case in the RFC.
->
->>> The problem appears to be a convoluted nested file descriptor of the
->>> primary device (which obtains the temp-super-block).
->>
->> Nope.
->
-> I don't see how your fix will work when two filesystems' mkfs use
-> flock() simultaneously on different partitions of the same device.
-> IMO, this approach is incorrect.
+>> It appears that the problem is due to the convoluted nested device open
+>> and device close in mkfs.btrfs as shown below:
 
-Why not?
+I did a full strace with extra debug output, the problem is not the
+nested fds lifespan, but as I expected, a stray writeable fd.
 
-The first would lock the parent block device, does it work, and unlock.
-The other one who loses the race would just wait until the first one
-finishes its work.
+In fact the problem is we have a pre-mature close on the first device,
+if and only if using open_ctree_fs_info():
 
-And I'd say you're incorrect, or argue with udev guys:
+open_ctree_fs_info():
+|- fp =3D open(oca->filename, oflags);
+|- info =3D __open_ctree_fd();
+|- close(fp);
 
-https://systemd.io/BLOCK_DEVICE_LOCKING/
+That close() is the problem.
+At that time, the fs is still just a temporary fs, without a valid btrfs
+superblock.
+Kicking off the udev scan at this timing is the worst.
 
->
-> Were you able reproduce the issue with mkfs.xfs? I couldn't; xfs
-> doesn't use flock() either, as I glanced.
+We can keep that fd into oca, and close it after close_ctree().
 
-Yes, mkfs.xfs is not doing the flock, but have you tried it with an
-external log device on the same disk?
-I'm pretty sure it would cause the same problem.
+And the problem should be gone, even we still keep the nested fd lifespan.
 
-Any fs with multi-device support (no matter if it's external log or true
-multi-device support) would have the same problem.
+So although your patch is working, the explanation is no on the point.
 
-For pure single device usecase, changing the fd lifespan may be fine,
-but see the next section, as I don't think the existing nested behavior
-is the cause.
+And my flock() would cover the case, as it would prevent the udev scan
+to be started.
 
->
-> Cleaning up the mkfs.btrfs file descriptors has been pending for a
-> long time, which my RFC patch did as a first step. It makes it
-> similar to what other filesystem mkfs do, with no nesting of open
-> and close per device. The udev monitors CLOSE-WRITE event, and it
-> works well with this RFC.
-
-Then explain why the original nested workflow doesn't work in the first
-place.
-
-Let me be clear, we keep the first writeable fd open (for the
-preparation part), then we open the devices for fs_info open.
-
-At the time of close of the fs_info devices, the fs is already properly
-written.
-Later closes of the preparation fds would only:
-
-- Trigger a new scan (and found nothing changed)
-- Do nothing if there is already a running scan
-
-Either way, as long as the scan is triggered by the close of writeable
-fds, the scan should got a correct btrfs super already.
-
-Thus the fd lifespan change makes no difference.
-
-I would even suggest there may be some stray writeable fd we didn't notice=
-.
-But even that's the case, the proper flock() documented by the udev guys
-can handle it correctly no matter what the lifespan of writeable fds is.
+I'll prepare a fix based on the findings.
 
 Thanks,
 Qu
->
-> Thanks, Anand
->
 >>
->> Thanks,
->> Qu
+>> -------------
+>>   prepare_ctx opens all devices <-- fd1
+>>     zero the super-block
+>>     writes temp-sb to the first device.
 >>
->>>
->>> The RFC patch below optimizes the file descriptors and I find it to
->>> fix the issue. Now, both yours and my test cases pass.
->>>
->>> [PATCH RFC] btrfs-progs: mkfs: optimize file descriptor usage in
->>> =C2=A0=C2=A0mkfs.btrfs
->>>
->>> Thanks, Anand
->>>
->>>
->>>
->>>
->>>> [FIX]
->>>> The proper way to avoid race with udev is to flock() the whole disk
->>>> (aka, the parent block device, not the partition disk).
->>>>
->>>> Thus this patch would introduce such mechanism by:
->>>>
->>>> - btrfs_flock_one_device()
->>>> =C2=A0=C2=A0 This would resolve the path to a whole disk path.
->>>> =C2=A0=C2=A0 Then make sure the whole disk is not already locked (thi=
-s can happen
->>>> =C2=A0=C2=A0 for cases like "mkfs.btrfs -f /dev/sda[123]").
->>>>
->>>> =C2=A0=C2=A0 If the device is not already locked, then flock() the de=
-vice, and
->>>> =C2=A0=C2=A0 insert a new entry into the list.
->>>>
->>>> - btrfs_unlock_all_devices()
->>>> =C2=A0=C2=A0 Would go unlock all devices recorded in locked_devices l=
-ist, and
->>>> free
->>>> =C2=A0=C2=A0 the memory.
->>>>
->>>> And mkfs.btrfs would be the first one to utilize the new mechanism, t=
-o
->>>> prevent such race with udev.
->>>>
->>>> Issue: #734
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>> Changelog:
->>>> v2:
->>>> - Fix the patch prefix
->>>> =C2=A0=C2=A0 From "btrfs" to "btrfs-progs"
->>>> ---
->>>> =C2=A0 common/device-utils.c | 114
->>>> ++++++++++++++++++++++++++++++++++++++++++
->>>> =C2=A0 common/device-utils.h |=C2=A0=C2=A0 3 ++
->>>> =C2=A0 mkfs/main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 |=C2=A0 11 ++++
->>>> =C2=A0 3 files changed, 128 insertions(+)
->>>>
->>>> diff --git a/common/device-utils.c b/common/device-utils.c
->>>> index f86120afa00c..88c21c66382d 100644
->>>> --- a/common/device-utils.c
->>>> +++ b/common/device-utils.c
->>>> @@ -17,11 +17,13 @@
->>>> =C2=A0 #include <sys/ioctl.h>
->>>> =C2=A0 #include <sys/stat.h>
->>>> =C2=A0 #include <sys/types.h>
->>>> +#include <sys/file.h>
->>>> =C2=A0 #include <linux/limits.h>
->>>> =C2=A0 #ifdef BTRFS_ZONED
->>>> =C2=A0 #include <linux/blkzoned.h>
->>>> =C2=A0 #endif
->>>> =C2=A0 #include <linux/fs.h>
->>>> +#include <linux/kdev_t.h>
->>>> =C2=A0 #include <limits.h>
->>>> =C2=A0 #include <stdio.h>
->>>> =C2=A0 #include <stdlib.h>
->>>> @@ -48,6 +50,24 @@
->>>> =C2=A0 #define BLKDISCARD=C2=A0=C2=A0=C2=A0 _IO(0x12,119)
->>>> =C2=A0 #endif
->>>>
->>>> +static LIST_HEAD(locked_devices);
->>>> +
->>>> +/*
->>>> + * This is to record flock()ed devices.
->>>> + * For flock() to prevent udev races, we must lock the parent block
->>>> device,
->>>> + * but we may hit cases like "mkfs.btrfs -f /dev/sda[123]", in that
->>>> case
->>>> + * we should only lock "/dev/sda" once.
->>>> + *
->>>> + * This structure would be used to record any flocked block device
->>>> (not
->>>> + * the partition one), and avoid double locking.
->>>> + */
->>>> +struct btrfs_locked_wholedisk {
->>>> +=C2=A0=C2=A0=C2=A0 char *full_path;
->>>> +=C2=A0=C2=A0=C2=A0 dev_t devno;
->>>> +=C2=A0=C2=A0=C2=A0 int fd;
->>>> +=C2=A0=C2=A0=C2=A0 struct list_head list;
->>>> +};
->>>> +
->>>> =C2=A0 /*
->>>> =C2=A0=C2=A0 * Discard the given range in one go
->>>> =C2=A0=C2=A0 */
->>>> @@ -633,3 +653,97 @@ ssize_t btrfs_direct_pwrite(int fd, const void
->>>> *buf, size_t count, off_t offset)
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(bounce_buf);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->>>> =C2=A0 }
->>>> +
->>>> +int btrfs_flock_one_device(char *path)
->>>> +{
->>>> +=C2=A0=C2=A0=C2=A0 struct btrfs_locked_wholedisk *entry;
->>>> +=C2=A0=C2=A0=C2=A0 struct stat st =3D { 0 };
->>>> +=C2=A0=C2=A0=C2=A0 char *wholedisk_path;
->>>> +=C2=A0=C2=A0=C2=A0 dev_t wholedisk_devno;
->>>> +=C2=A0=C2=A0=C2=A0 int ret;
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 ret =3D stat(path, &st);
->>>> +=C2=A0=C2=A0=C2=A0 if (ret < 0) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error("failed to stat %s:=
- %m", path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -errno;
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> +=C2=A0=C2=A0=C2=A0 /* Non-block device, skipping the locking. */
->>>> +=C2=A0=C2=A0=C2=A0 if (!S_ISBLK(st.st_mode))
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 ret =3D blkid_devno_to_wholedisk(st.st_dev, path,=
- strlen(path),
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &wholed=
-isk_devno);
->>>> +=C2=A0=C2=A0=C2=A0 if (ret < 0) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error("failed to get the =
-whole disk devno for %s: %m", path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -errno;
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> +=C2=A0=C2=A0=C2=A0 wholedisk_path =3D blkid_devno_to_devname(wholedi=
-sk_devno);
->>>> +=C2=A0=C2=A0=C2=A0 if (!wholedisk_path) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error("failed to get the =
-devname of dev %ld:%ld",
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 M=
-AJOR(wholedisk_devno), MINOR(wholedisk_devno));
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 /* Check if we already have the whole disk in the=
- list. */
->>>> +=C2=A0=C2=A0=C2=A0 list_for_each_entry(entry, &locked_devices, list)=
- {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* The wholedisk is alrea=
-dy locked, need to do nothing. */
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (entry->devno =3D=3D w=
-holedisk_devno ||
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 e=
-ntry->full_path =3D=3D wholedisk_path) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 f=
-ree(wholedisk_path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r=
-eturn 0;
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 /* Allocate new entry. */
->>>> +=C2=A0=C2=A0=C2=A0 entry =3D malloc(sizeof(*entry));
->>>> +=C2=A0=C2=A0=C2=A0 if (!entry) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 errno =3D ENOMEM;
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error("unable to allocate=
- new memory for %s: %m",
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 wholedisk_path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(wholedisk_path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -errno;
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> +=C2=A0=C2=A0=C2=A0 entry->devno =3D wholedisk_devno;
->>>> +=C2=A0=C2=A0=C2=A0 entry->full_path =3D wholedisk_path;
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 /* Lock the whole disk. */
->>>> +=C2=A0=C2=A0=C2=A0 entry->fd =3D open(wholedisk_path, O_RDONLY);
->>>> +=C2=A0=C2=A0=C2=A0 if (entry->fd < 0) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error("failed to open dev=
-ice %s: %m",
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 wholedisk_path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(wholedisk_path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(entry);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -errno;
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> +=C2=A0=C2=A0=C2=A0 ret =3D flock(entry->fd, LOCK_EX);
->>>> +=C2=A0=C2=A0=C2=A0 if (ret < 0) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error("failed to hold an =
-exclusive lock on %s: %m",
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 wholedisk_path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(wholedisk_path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(entry);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -errno;
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 /* Insert it into the list. */
->>>> +=C2=A0=C2=A0=C2=A0 list_add_tail(&entry->list, &locked_devices);
->>>> +=C2=A0=C2=A0=C2=A0 return 0;
->>>> +}
->>>> +
->>>> +void btrfs_unlock_all_devicecs(void)
->>>> +{
->>>> +=C2=A0=C2=A0=C2=A0 while (!list_empty(&locked_devices)) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_locked_whole=
-disk *entry;
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 entry =3D list_entry(lock=
-ed_devices.next,
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_locked_wholedisk, =
-list);
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 list_del_init(&entry->lis=
-t);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D flock(entry->fd, =
-LOCK_UN);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0)
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 w=
-arning("failed to unlock %s (fd %d dev %ld:%ld),
->>>> skipping it",
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 entry->full_path, entry->fd, MAJOR(entry->devno),
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 MINOR(entry->devno));
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(entry->full_path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(entry);
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> +}
->>>> diff --git a/common/device-utils.h b/common/device-utils.h
->>>> index 853d17b5ab98..3a04348a0867 100644
->>>> --- a/common/device-utils.h
->>>> +++ b/common/device-utils.h
->>>> @@ -57,6 +57,9 @@ int btrfs_prepare_device(int fd, const char *file,
->>>> u64 *block_count_ret,
->>>> =C2=A0 ssize_t btrfs_direct_pread(int fd, void *buf, size_t count, of=
-f_t
->>>> offset);
->>>> =C2=A0 ssize_t btrfs_direct_pwrite(int fd, const void *buf, size_t co=
-unt,
->>>> off_t offset);
->>>>
->>>> +int btrfs_flock_one_device(char *path);
->>>> +void btrfs_unlock_all_devicecs(void);
->>>> +
->>>> =C2=A0 #ifdef BTRFS_ZONED
->>>> =C2=A0 static inline ssize_t btrfs_pwrite(int fd, const void *buf, si=
-ze_t
->>>> count,
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 off_t offset, bool dir=
-ect)
->>>> diff --git a/mkfs/main.c b/mkfs/main.c
->>>> index b9882208dbd5..6e6cb81a4165 100644
->>>> --- a/mkfs/main.c
->>>> +++ b/mkfs/main.c
->>>> @@ -1723,6 +1723,15 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>
->>>> +=C2=A0=C2=A0=C2=A0 /* Lock all devices to prevent race with udev pro=
-bing. */
->>>> +=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < device_count; i++) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char *path =3D argv[optin=
-d + i - 1];
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_flock_one_d=
-evice(path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0)
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 w=
-arning("failed to flock %s, skipping it", path);
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> +
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Start threads */
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < device_count; i++) {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 prepare_ctx[i]=
-.file =3D argv[optind + i - 1];
->>>> @@ -2079,6 +2088,7 @@ out:
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(label);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(source_dir);
->>>>
->>>> +=C2=A0=C2=A0=C2=A0 btrfs_unlock_all_devicecs();
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return !!ret;
->>>>
->>>> =C2=A0 error:
->>>> @@ -2090,6 +2100,7 @@ error:
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(prepare_ctx);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(label);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(source_dir);
->>>> +=C2=A0=C2=A0=C2=A0 btrfs_unlock_all_devicecs();
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 exit(1);
->>>> =C2=A0 success:
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 exit(0);
->>>> --
->>>> 2.43.0
->>>>
->>>
+>>   open_ctree opens the first device again <-- fd2
+>>
+>>   prepare_ctx writes temp-sb to all the remaining devs <-- fd1
+>>
+>>   fs_info->finalize_on_close =3D 1;
+>>   close_ctree_fs_info()<-- writes valid <--- fd2
+>>
+>>   prepare_ctx is closed <--- fd1.
+>> -------------
+>>
+>> This cleanup patch reuses the main file descriptor (fd1) in open_ctree(=
+),
+>> and with this change both the test cases (with partition and without
+>> partition) now runs fine.
+>>
+>> I've done an initial tests only, not validated with the multi-device mk=
+fs.
+>> More cleanup is possible but pending feedback;  marking this patch as a=
+n RFC.
+>
+> I'd like to see the cleaned up version of this patch, but I have a few c=
+omments.
+>
+> 1) I think re-using the fd is reasonable, tho could this just be reworke=
+d to
+>     create the temp-sb and write this to all the devs, close the file
+>     descriptors, and then call open_ctree?
+>
+> 2) I hate adding another thing into a core file that we'll have to figur=
+e out
+>     how to undo later as we sync more code from the kernel into btrfs-pr=
+ogs, I'm
+>     not sure if there's a way around this, but thinking harder about add=
+ing
+>     something to disk-io.c that is for userspace only would be good.
+>
+> Thanks,
+>
+> Josef
 >
 
