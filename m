@@ -1,169 +1,264 @@
-Return-Path: <linux-btrfs+bounces-2040-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2041-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C17248460D0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 20:18:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8B2884617B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 20:54:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 362A51F29B51
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 19:18:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7944B26C54
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 19:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8875285277;
-	Thu,  1 Feb 2024 19:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684DD85653;
+	Thu,  1 Feb 2024 19:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nUyAvUu8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HO2BIeF5";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nUyAvUu8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HO2BIeF5"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="on5MoVEm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED30384FC7
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Feb 2024 19:18:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF7F43AC7
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Feb 2024 19:52:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706815122; cv=none; b=Q1TdmN9hAIkey0M41hUNz/LxjSN1TrNgHvqD1cNanpxSbqWLHmQq9yXBp82ILVU3t6KOtEop18bv8fafkQJKx9NF7uZhNmTJ95WClzMNBjz4QlTuJVe4l2mHVYNAdPWkif6H++HoH/C6Dyeq9cyQrjb6yCl7KLU/QbUHGLx0o4s=
+	t=1706817134; cv=none; b=bG1FnfmiSln+Qj1TcfdcugdeMyxH3f36nKCLBO5DSPL5ZAsrW2Tdq/rbTGALfYgJWtco936hbdY6ZtasyVRxouXEVVubozXWNBDM36JTPN9J6CLhGXhkhUO1+/XrqmnYd0p5LSEyHf4KBPul68vy/Un2/1MVPb/3p0+UrB6JzNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706815122; c=relaxed/simple;
-	bh=UTfpDq7uEHT6xTNLb64yphZLuz5wnnzLck8LBucsZxA=;
+	s=arc-20240116; t=1706817134; c=relaxed/simple;
+	bh=OasYF+zlylORE2O3KAkExVcWOxjf9Q8KU0Fw3IY4iV0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J6VFUna8gkiQ7bST/NwUozBweYe0wtyyGU3L6j5J0uRLyW0+A3And/GeoG2hXMWi1HNh0wrecuyzFGU6N9VPIgjeumc531vY/tU85dGKXXmBcEi9o8Eo2QE62MEKpQuYF0DJV86OocFOpiKDFyaS7lchBrH08jgKwaUHt19HCPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nUyAvUu8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HO2BIeF5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nUyAvUu8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HO2BIeF5; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BEA121FB5C;
-	Thu,  1 Feb 2024 19:18:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706815118;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Tk/n5LBred5NbutMZNKrV0vN66XAeWFeJTx3A0BP6A=;
-	b=nUyAvUu89sGJJrOTC4sjxQr/MluMAN4frRdDGfT4F9UXD3nqAT/+40cb613bYi8ULsA56P
-	D8Vqap/kvmzPwhR2QJTXQTqosU1Rq5meDVwJ7MJIdP8j4nGsRgQGTLa3TKqpEl5WHVBL7z
-	7Ft8xbf1LWdQUWF9sRmCqjZ0GzV6Xec=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706815118;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Tk/n5LBred5NbutMZNKrV0vN66XAeWFeJTx3A0BP6A=;
-	b=HO2BIeF5H6SgzRbFnwMX3P/La3hhpWxQPJDiKJaiBFaC2mHEYMUQx3EFh4uIFBD3/Q9bUq
-	9zGXC+xMidduh1CQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706815118;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Tk/n5LBred5NbutMZNKrV0vN66XAeWFeJTx3A0BP6A=;
-	b=nUyAvUu89sGJJrOTC4sjxQr/MluMAN4frRdDGfT4F9UXD3nqAT/+40cb613bYi8ULsA56P
-	D8Vqap/kvmzPwhR2QJTXQTqosU1Rq5meDVwJ7MJIdP8j4nGsRgQGTLa3TKqpEl5WHVBL7z
-	7Ft8xbf1LWdQUWF9sRmCqjZ0GzV6Xec=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706815118;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7Tk/n5LBred5NbutMZNKrV0vN66XAeWFeJTx3A0BP6A=;
-	b=HO2BIeF5H6SgzRbFnwMX3P/La3hhpWxQPJDiKJaiBFaC2mHEYMUQx3EFh4uIFBD3/Q9bUq
-	9zGXC+xMidduh1CQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A8AB81329F;
-	Thu,  1 Feb 2024 19:18:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 1+WSKI7uu2XLXAAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 01 Feb 2024 19:18:38 +0000
-Date: Thu, 1 Feb 2024 20:18:12 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC] btrfs-progs: mkfs: optimize file descriptor usage in
- mkfs.btrfs
-Message-ID: <20240201191811.GX31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <06b40e351b544a314178909772281994bb9de259.1706714983.git.anand.jain@oracle.com>
- <20240131204800.GB3203388@perftesting>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WqmnFLQ69pb6Yii2HuajpyYYTg0mO5gMGQymoK9Ktu92fV0qE4eqcAVCgRz7sW71IFra43kR0K8xaTc9RVL0gZQlP9AVcDv7bTrcBO2f9x+rSAeitwRERtasvUBVZeRP8eOT1Mq3DjlRqfKB15ostILVVKyWPilhXv6mZ1rUggI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=on5MoVEm; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42a8a398cb2so9656411cf.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 01 Feb 2024 11:52:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706817131; x=1707421931; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uZlbPq0yn3oDKkOHnN/FRnM/8DWWvfC/B/kVP978mqk=;
+        b=on5MoVEmcFMfpfQ682nyaHDvBaQiU/V0Q+uIWY5+Qn05uIy3NH70ojD2jP7ECdcgUt
+         jz68R43jtooHMdR7ctqHeyMiAsPCeRhla8WjyxqVLGHxudvTlac4jZPOSXo6k2X7prTt
+         ZuLVsdBmbgQFY/94Cbg3PAkEhEgSoE57Nv5/d0JbnlNr1uQ1XytcSww2Rch4mk5WKDjy
+         dHYcCcZqWRpGJ/l5aBw6hVqEiQYqk08y7gJrAChOUFzxoIIjffUgAph3fiNx7+LbOjYT
+         wu/bE2bDnvxBRIGS6lYi8/NFIlSiWVP2mASQFW46jUNFKTqgoOmcfBt1Dq2OQm+vAo91
+         dmYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706817131; x=1707421931;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uZlbPq0yn3oDKkOHnN/FRnM/8DWWvfC/B/kVP978mqk=;
+        b=a9zEu7mrid1DmAwTNpntL186LuYKsTm6schzsxK1HUgyKsqhpL3JWenWf4dP1nylM6
+         Dz2WGGDD4iPHdnGFDZS4beMIHyDq/P28rq3ORfEfRaytc+sFPdEsc8cAaw07XldQKXJC
+         vpB4cXorBJefAu6RPXsvYQyhg3c9HZy1xmV3hjQ1BAQo8Fy+tQR+R9lxFRSctglW+AHE
+         l1IflWt+vavPbyVEnPSieqhb/527Tn6cmhhF4bYim8MFCDNXj4GqIcRaIaCdi1uM222E
+         6tqmHz92JHy2BT1+uK2Ol6rxTC6bGbopunzjGiVvvPberkNPpkELeZx0gtyFTbJXPyuQ
+         dXKg==
+X-Gm-Message-State: AOJu0YziPVR3rLKteOjcQsX5TZsNioVjG+/uvTs/GjD2ACPGdW4DvD99
+	f/UEleKmonyCW3Jf1lEw7yU7HjpG4cA41ZiZ42Yfh2P2XMpPYDH8JqMGSTbkYT5U+mh+OblBOOx
+	N
+X-Google-Smtp-Source: AGHT+IF1jpDDpfZiHFNwaj9Foug0eMoToPss0+BWuIzYzetNG9vKTiqy6LvFEVj9+cwIuxEtY5XYQQ==
+X-Received: by 2002:a05:622a:652:b0:42a:9a69:b40a with SMTP id a18-20020a05622a065200b0042a9a69b40amr6279549qtb.30.1706817131324;
+        Thu, 01 Feb 2024 11:52:11 -0800 (PST)
+Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id fx12-20020a05622a4acc00b0042a6e6792basm78837qtb.69.2024.02.01.11.52.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Feb 2024 11:52:10 -0800 (PST)
+Date: Thu, 1 Feb 2024 14:52:09 -0500
+From: Josef Bacik <josef@toxicpanda.com>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: preallocate temporary extent buffer for inode
+ logging when needed
+Message-ID: <20240201195209.GA3232474@perftesting>
+References: <1ef0997eee1fbe194ab2546f34052cd4e27c6ef4.1706612525.git.fdmanana@suse.com>
+ <20240131204148.GA3203388@perftesting>
+ <CAL3q7H60nJ5ir3-64u78FyGaj5KTw5KQdtY4Vhz=uDutUaFgEQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240131204800.GB3203388@perftesting>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nUyAvUu8;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=HO2BIeF5
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.71 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[24.45%]
-X-Spam-Score: -2.71
-X-Rspamd-Queue-Id: BEA121FB5C
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H60nJ5ir3-64u78FyGaj5KTw5KQdtY4Vhz=uDutUaFgEQ@mail.gmail.com>
 
-On Wed, Jan 31, 2024 at 03:48:00PM -0500, Josef Bacik wrote:
-> On Wed, Jan 31, 2024 at 11:49:28PM +0800, Anand Jain wrote:
-> > This cleanup patch reuses the main file descriptor (fd1) in open_ctree(),
-> > and with this change both the test cases (with partition and without
-> > partition) now runs fine.
-> > 
-> > I've done an initial tests only, not validated with the multi-device mkfs.
-> > More cleanup is possible but pending feedback;  marking this patch as an RFC.
+On Wed, Jan 31, 2024 at 08:55:43PM +0000, Filipe Manana wrote:
+> On Wed, Jan 31, 2024 at 8:41 PM Josef Bacik <josef@toxicpanda.com> wrote:
+> >
+> > On Tue, Jan 30, 2024 at 11:05:44AM +0000, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > >
+> > > When logging an inode and we require to copy items from subvolume leaves
+> > > to the log tree, we clone each subvolume leaf and than use that clone to
+> > > copy items to the log tree. This is required to avoid possible deadlocks
+> > > as stated in commit 796787c978ef ("btrfs: do not modify log tree while
+> > > holding a leaf from fs tree locked").
+> > >
+> > > The cloning requires allocating an extent buffer (struct extent_buffer)
+> > > and then allocating pages (folios) to attach to the extent buffer. This
+> > > may be slow in case we are under memory pressure, and since we are doing
+> > > the cloning while holding a read lock on a subvolume leaf, it means we
+> > > can be blocking other operations on that leaf for significant periods of
+> > > time, which can increase latency on operations like creating other files,
+> > > renaming files, etc. Similarly because we're under a log transaction, we
+> > > may also cause extra delay on other tasks doing an fsync, because syncing
+> > > the log requires waiting for tasks that joined a log transaction to exit
+> > > the transaction.
+> > >
+> > > So to improve this, for any inode logging operation that needs to copy
+> > > items from a subvolume leaf ("full sync" or "copy everything" bit set
+> > > in the inode), preallocate a dummy extent buffer before locking any
+> > > extent buffer from the subvolume tree, and even before joining a log
+> > > transaction, add it to the log context and then use it when we need to
+> > > copy items from a subvolume leaf to the log tree. This avoids making
+> > > other operations get extra latency when waiting to lock a subvolume
+> > > leaf that is used during inode logging and we are under heavy memory
+> > > pressure.
+> > >
+> > > The following test script with bonnie++ was used to test this:
+> > >
+> > >   $ cat test.sh
+> > >   #!/bin/bash
+> > >
+> > >   DEV=/dev/sdh
+> > >   MNT=/mnt/sdh
+> > >   MOUNT_OPTIONS="-o ssd"
+> > >
+> > >   MEMTOTAL_BYTES=`free -b | grep Mem: | awk '{ print $2 }'`
+> > >   NR_DIRECTORIES=20
+> > >   NR_FILES=20480
+> > >   DATASET_SIZE=$((MEMTOTAL_BYTES * 2 / 1048576))
+> > >   DIRECTORY_SIZE=$((MEMTOTAL_BYTES * 2 / NR_FILES))
+> > >   NR_FILES=$((NR_FILES / 1024))
+> > >
+> > >   echo "performance" | \
+> > >       tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+> > >
+> > >   umount $DEV &> /dev/null
+> > >   mkfs.btrfs -f $MKFS_OPTIONS $DEV
+> > >   mount $MOUNT_OPTIONS $DEV $MNT
+> > >
+> > >   bonnie++ -u root -d $MNT \
+> > >       -n $NR_FILES:$DIRECTORY_SIZE:$DIRECTORY_SIZE:$NR_DIRECTORIES \
+> > >       -r 0 -s $DATASET_SIZE -b
+> > >
+> > >   umount $MNT
+> > >
+> > > The results of this test on a 8G VM running a non-debug kernel (Debian's
+> > > default kernel config), were the following.
+> > >
+> > > Before this change:
+> > >
+> > >   Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
+> > >                       -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+> > >   Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+> > >   debian0       7501M  376k  99  1.4g  96  117m  14 1510k  99  2.5g  95 +++++ +++
+> > >   Latency             35068us   24976us    2944ms   30725us   71770us   26152us
+> > >   Version 2.00a       ------Sequential Create------ --------Random Create--------
+> > >   debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+> > >   files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+> > >   20:384100:384100/20 20480  32 20480  58 20480  48 20480  39 20480  56 20480  61
+> > >   Latency               411ms   11914us     119ms     617ms   10296us     110ms
+> > >
+> > > After this change:
+> > >
+> > >   Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
+> > >                       -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
+> > >   Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+> > >   debian0       7501M  375k  99  1.4g  97  117m  14 1546k  99  2.3g  98 +++++ +++
+> > >   Latency             35975us  20945us    2144ms   10297us    2217us    6004us
+> > >   Version 2.00a       ------Sequential Create------ --------Random Create--------
+> > >   debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
+> > >   files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
+> > >   20:384100:384100/20 20480  35 20480  58 20480  48 20480  40 20480  57 20480  59
+> > >   Latency               320ms   11237us   77779us     518ms    6470us   86389us
+> > >
+> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > > ---
+> > >  fs/btrfs/file.c     | 12 ++++++
+> > >  fs/btrfs/tree-log.c | 93 +++++++++++++++++++++++++++------------------
+> > >  fs/btrfs/tree-log.h | 25 ++++++++++++
+> > >  3 files changed, 94 insertions(+), 36 deletions(-)
+> > >
+> > > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> > > index f8e1a7ce3d39..fd5e23035a28 100644
+> > > --- a/fs/btrfs/file.c
+> > > +++ b/fs/btrfs/file.c
+> > > @@ -1912,6 +1912,8 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+> > >               goto out_release_extents;
+> > >       }
+> > >
+> > > +     btrfs_init_log_ctx_scratch_eb(&ctx);
+> > > +
+> > >       /*
+> > >        * We use start here because we will need to wait on the IO to complete
+> > >        * in btrfs_sync_log, which could require joining a transaction (for
+> > > @@ -1931,6 +1933,15 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+> > >       trans->in_fsync = true;
+> > >
+> > >       ret = btrfs_log_dentry_safe(trans, dentry, &ctx);
+> > > +     /*
+> > > +      * Scratch eb no longer needed, release before syncing log or commit
+> > > +      * transaction, to avoid holding unnecessary memory during such long
+> > > +      * operations.
+> > > +      */
+> > > +     if (ctx.scratch_eb) {
+> > > +             free_extent_buffer(ctx.scratch_eb);
+> > > +             ctx.scratch_eb = NULL;
+> > > +     }
+> > >       btrfs_release_log_ctx_extents(&ctx);
+> > >       if (ret < 0) {
+> > >               /* Fallthrough and commit/free transaction. */
+> > > @@ -2006,6 +2017,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+> > >
+> > >       ret = btrfs_commit_transaction(trans);
+> > >  out:
+> > > +     free_extent_buffer(ctx.scratch_eb);
+> > >       ASSERT(list_empty(&ctx.list));
+> > >       ASSERT(list_empty(&ctx.conflict_inodes));
+> > >       err = file_check_and_advance_wb_err(file);
+> > > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> > > index 331fc7429952..761b13b3d342 100644
+> > > --- a/fs/btrfs/tree-log.c
+> > > +++ b/fs/btrfs/tree-log.c
+> > > @@ -3619,6 +3619,30 @@ static int flush_dir_items_batch(struct btrfs_trans_handle *trans,
+> > >       return ret;
+> > >  }
+> > >
+> > > +static int clone_leaf(struct btrfs_path *path, struct btrfs_log_ctx *ctx)
+> > > +{
+> > > +     const int slot = path->slots[0];
+> > > +
+> > > +     if (ctx->scratch_eb) {
+> > > +             copy_extent_buffer_full(ctx->scratch_eb, path->nodes[0]);
+> > > +     } else {
+> > > +             ctx->scratch_eb = btrfs_clone_extent_buffer(path->nodes[0]);
+> > > +             if (!ctx->scratch_eb)
+> > > +                     return -ENOMEM;
+> > > +     }
+> > > +
+> > > +     btrfs_release_path(path);
+> > > +     path->nodes[0] = ctx->scratch_eb;
+> >
+> > Here we put the scratch_b into path->nodes[0], so if we go do the next leaf in
+> > the copy_items loop we'll drop our reference for this scratch_eb, and then we're
+> > just writing into free'd memory.  Am I missing something here?  Thanks,
 > 
-> I'd like to see the cleaned up version of this patch, but I have a few comments.
-> 
-> 1) I think re-using the fd is reasonable, tho could this just be reworked to
->    create the temp-sb and write this to all the devs, close the file
->    descriptors, and then call open_ctree?
+> That's why below we take an extra reference on the scratch_eb, it's
+> even commented.
 
-This would trigger the udev unnecessarily and could let other processes
-to eg. try to mount the device (like systemd did or maybe still does).
-This could fail the second open_ctree. That it's all done with one fd
-open reduces possible interactions that could be problematic.
+My eyes just glazed right over that, I looked through all the callsites and
+didn't read this function closely enough.  You can add
 
-> 2) I hate adding another thing into a core file that we'll have to figure out
->    how to undo later as we sync more code from the kernel into btrfs-progs, I'm
->    not sure if there's a way around this, but thinking harder about adding
->    something to disk-io.c that is for userspace only would be good.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Yeah the open_ctree functions in progs are misplaced in disk-io.c and
-are there for historical reasons. We'd need separate file (or maybe
-whole compat directory) but for now let it be there, the cleanup is
-going to be big.
+Thanks,
+
+Josef
 
