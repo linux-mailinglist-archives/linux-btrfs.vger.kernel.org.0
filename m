@@ -1,264 +1,298 @@
-Return-Path: <linux-btrfs+bounces-2041-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2042-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B2884617B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 20:54:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A780484619C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 20:59:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7944B26C54
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 19:52:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D3331F27E34
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 19:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684DD85653;
-	Thu,  1 Feb 2024 19:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B1098529F;
+	Thu,  1 Feb 2024 19:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="on5MoVEm"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="x2CMNKF5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF7F43AC7
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Feb 2024 19:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9291429B0
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Feb 2024 19:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706817134; cv=none; b=bG1FnfmiSln+Qj1TcfdcugdeMyxH3f36nKCLBO5DSPL5ZAsrW2Tdq/rbTGALfYgJWtco936hbdY6ZtasyVRxouXEVVubozXWNBDM36JTPN9J6CLhGXhkhUO1+/XrqmnYd0p5LSEyHf4KBPul68vy/Un2/1MVPb/3p0+UrB6JzNU=
+	t=1706817541; cv=none; b=EBlCvNGVlZ7xtY5+SCJR1HzIFvIBhSx1fuEZn3Olzq5Asm3eXh1HF6wXFcvR7kN5UwZWuhhBxvJeCDoPqoRUUm2J029YVUgF+FwAGvqrBQVITASk49bCAVuykQ9kx8RoiP9gB+Z9rS901j4sYUz6RfT0SCWMyMm8NiN3vDCN/EU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706817134; c=relaxed/simple;
-	bh=OasYF+zlylORE2O3KAkExVcWOxjf9Q8KU0Fw3IY4iV0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WqmnFLQ69pb6Yii2HuajpyYYTg0mO5gMGQymoK9Ktu92fV0qE4eqcAVCgRz7sW71IFra43kR0K8xaTc9RVL0gZQlP9AVcDv7bTrcBO2f9x+rSAeitwRERtasvUBVZeRP8eOT1Mq3DjlRqfKB15ostILVVKyWPilhXv6mZ1rUggI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=on5MoVEm; arc=none smtp.client-ip=209.85.160.178
+	s=arc-20240116; t=1706817541; c=relaxed/simple;
+	bh=OnezgRTYXYI8VtAQZUVRRV7jjeTrO8TG/LK4DeCW2VA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=gcLeLInDqUQXwmwQit0kZQ3i/QwkJwyhC9gvw63bhskY3CpnGPiYrYZ3hxk1jhcG+Q3N4kdm+k+UjqqEujCHyihviIdaSkM7SpvZQEqJlvuX58bxBC9P31m/tNMH7D/ZOqzUhX0rezDFWGvmrJZrzdNQe1eG3z3584JWvPIUSkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=x2CMNKF5; arc=none smtp.client-ip=209.85.210.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42a8a398cb2so9656411cf.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 01 Feb 2024 11:52:12 -0800 (PST)
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e12f8506ccso741427a34.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 01 Feb 2024 11:58:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706817131; x=1707421931; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uZlbPq0yn3oDKkOHnN/FRnM/8DWWvfC/B/kVP978mqk=;
-        b=on5MoVEmcFMfpfQ682nyaHDvBaQiU/V0Q+uIWY5+Qn05uIy3NH70ojD2jP7ECdcgUt
-         jz68R43jtooHMdR7ctqHeyMiAsPCeRhla8WjyxqVLGHxudvTlac4jZPOSXo6k2X7prTt
-         ZuLVsdBmbgQFY/94Cbg3PAkEhEgSoE57Nv5/d0JbnlNr1uQ1XytcSww2Rch4mk5WKDjy
-         dHYcCcZqWRpGJ/l5aBw6hVqEiQYqk08y7gJrAChOUFzxoIIjffUgAph3fiNx7+LbOjYT
-         wu/bE2bDnvxBRIGS6lYi8/NFIlSiWVP2mASQFW46jUNFKTqgoOmcfBt1Dq2OQm+vAo91
-         dmYQ==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706817538; x=1707422338; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Oeu5xlKW8pJl77VSExE+Jp/n5nA3/46c/5cPYWGGtJ0=;
+        b=x2CMNKF5IawB+2RfOygNW2OeBQVlxUVBHha5WC0zwZEg3JIl43lv82Hxaj3RdMdzIZ
+         KkapFBRTayRy5EDMP/wt0FRs7ddq2/Eh4DpJ9Y9/m2zzL5mSeZetErra8XXqWqeweo1h
+         vhwAf6nR7CrLA0meADK8Ze3Gn8eq9FlzXHvEVWc86p2XjwNqiLiuzdL830ngg7VgwUWM
+         PCF7QHaXxMrT4+1hdgDA9XYvrjAiMzqoo7hMrZzGgdYReVtSfTQBQdos3Gv1mULvKNcG
+         OiOl290F5fwbwdFQCPywyJIPoczsujTIJd1zyIzzC8Ftejr+vF3XrB/dOZTdtw4V1mSP
+         wF4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706817131; x=1707421931;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uZlbPq0yn3oDKkOHnN/FRnM/8DWWvfC/B/kVP978mqk=;
-        b=a9zEu7mrid1DmAwTNpntL186LuYKsTm6schzsxK1HUgyKsqhpL3JWenWf4dP1nylM6
-         Dz2WGGDD4iPHdnGFDZS4beMIHyDq/P28rq3ORfEfRaytc+sFPdEsc8cAaw07XldQKXJC
-         vpB4cXorBJefAu6RPXsvYQyhg3c9HZy1xmV3hjQ1BAQo8Fy+tQR+R9lxFRSctglW+AHE
-         l1IflWt+vavPbyVEnPSieqhb/527Tn6cmhhF4bYim8MFCDNXj4GqIcRaIaCdi1uM222E
-         6tqmHz92JHy2BT1+uK2Ol6rxTC6bGbopunzjGiVvvPberkNPpkELeZx0gtyFTbJXPyuQ
-         dXKg==
-X-Gm-Message-State: AOJu0YziPVR3rLKteOjcQsX5TZsNioVjG+/uvTs/GjD2ACPGdW4DvD99
-	f/UEleKmonyCW3Jf1lEw7yU7HjpG4cA41ZiZ42Yfh2P2XMpPYDH8JqMGSTbkYT5U+mh+OblBOOx
-	N
-X-Google-Smtp-Source: AGHT+IF1jpDDpfZiHFNwaj9Foug0eMoToPss0+BWuIzYzetNG9vKTiqy6LvFEVj9+cwIuxEtY5XYQQ==
-X-Received: by 2002:a05:622a:652:b0:42a:9a69:b40a with SMTP id a18-20020a05622a065200b0042a9a69b40amr6279549qtb.30.1706817131324;
-        Thu, 01 Feb 2024 11:52:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706817538; x=1707422338;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Oeu5xlKW8pJl77VSExE+Jp/n5nA3/46c/5cPYWGGtJ0=;
+        b=qfINJvbSLM9+WkaHopopvUOugjnCS1n6159rQvxSCfKpNsUJB4Ps5+YUNPfQZT4U/y
+         4XSW/PcngDjCqceEJAPCfmRn0F9z4X4eanW4+LXZ0hqwW3SNncV/uz6yr4kkUlAjF7kG
+         QK3X8D7PbHDA8t43ZnM9sYFC0yCYhsk76eC58mvTwv8ZnoEqM9ABROFDTvPBCqNnDhla
+         +bFiir86Jb8b7Ckc7Sj3e1MynmoseCvyybuc72gLgDCfgFLih8+wgXT8qKvaiKiYT7vY
+         JY1agqjnuB4InW+zoUY5KVTDoJFMA1s/kpYpEXahqG2bZh/H2DpSR9+pv16y4DEHimlH
+         X2wQ==
+X-Gm-Message-State: AOJu0YydVRoobIwHkSkqbaBxiqWiKc4TNB8352qSWLTWweb+JTSO7Utk
+	uTB6dfxqzTgConip3i6CozCS04+waUjgV2tr40od/i6EXdAoZKEUqaNJKGGYZ6IyoN9CxApdl98
+	G
+X-Google-Smtp-Source: AGHT+IFms6TYkY70iWr95rRf3N7/EvDNbwESuS/6RBx+A2E0bSVqBZFM6lyKsXDtN2VofsiWuw2k5w==
+X-Received: by 2002:a9d:5914:0:b0:6dc:3e02:92aa with SMTP id t20-20020a9d5914000000b006dc3e0292aamr5519812oth.22.1706817538417;
+        Thu, 01 Feb 2024 11:58:58 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWDmPBHhBlkFEiigK7mwc98tmB0zl2hGm4U7SDBVCTrpHmHJYM+Wj3xXSyE7VTIjC1IjX2kmqeza9SaABYa7tbKEc0=
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id fx12-20020a05622a4acc00b0042a6e6792basm78837qtb.69.2024.02.01.11.52.10
+        by smtp.gmail.com with ESMTPSA id f13-20020a05622a114d00b004299f09e3aesm90941qty.51.2024.02.01.11.58.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 11:52:10 -0800 (PST)
-Date: Thu, 1 Feb 2024 14:52:09 -0500
+        Thu, 01 Feb 2024 11:58:58 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: preallocate temporary extent buffer for inode
- logging when needed
-Message-ID: <20240201195209.GA3232474@perftesting>
-References: <1ef0997eee1fbe194ab2546f34052cd4e27c6ef4.1706612525.git.fdmanana@suse.com>
- <20240131204148.GA3203388@perftesting>
- <CAL3q7H60nJ5ir3-64u78FyGaj5KTw5KQdtY4Vhz=uDutUaFgEQ@mail.gmail.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH] btrfs: fix deadlock with fiemap and extent locking
+Date: Thu,  1 Feb 2024 14:58:54 -0500
+Message-ID: <47ac92a6c8be53a5e10add9315255460c062b52d.1706817512.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H60nJ5ir3-64u78FyGaj5KTw5KQdtY4Vhz=uDutUaFgEQ@mail.gmail.com>
 
-On Wed, Jan 31, 2024 at 08:55:43PM +0000, Filipe Manana wrote:
-> On Wed, Jan 31, 2024 at 8:41 PM Josef Bacik <josef@toxicpanda.com> wrote:
-> >
-> > On Tue, Jan 30, 2024 at 11:05:44AM +0000, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > When logging an inode and we require to copy items from subvolume leaves
-> > > to the log tree, we clone each subvolume leaf and than use that clone to
-> > > copy items to the log tree. This is required to avoid possible deadlocks
-> > > as stated in commit 796787c978ef ("btrfs: do not modify log tree while
-> > > holding a leaf from fs tree locked").
-> > >
-> > > The cloning requires allocating an extent buffer (struct extent_buffer)
-> > > and then allocating pages (folios) to attach to the extent buffer. This
-> > > may be slow in case we are under memory pressure, and since we are doing
-> > > the cloning while holding a read lock on a subvolume leaf, it means we
-> > > can be blocking other operations on that leaf for significant periods of
-> > > time, which can increase latency on operations like creating other files,
-> > > renaming files, etc. Similarly because we're under a log transaction, we
-> > > may also cause extra delay on other tasks doing an fsync, because syncing
-> > > the log requires waiting for tasks that joined a log transaction to exit
-> > > the transaction.
-> > >
-> > > So to improve this, for any inode logging operation that needs to copy
-> > > items from a subvolume leaf ("full sync" or "copy everything" bit set
-> > > in the inode), preallocate a dummy extent buffer before locking any
-> > > extent buffer from the subvolume tree, and even before joining a log
-> > > transaction, add it to the log context and then use it when we need to
-> > > copy items from a subvolume leaf to the log tree. This avoids making
-> > > other operations get extra latency when waiting to lock a subvolume
-> > > leaf that is used during inode logging and we are under heavy memory
-> > > pressure.
-> > >
-> > > The following test script with bonnie++ was used to test this:
-> > >
-> > >   $ cat test.sh
-> > >   #!/bin/bash
-> > >
-> > >   DEV=/dev/sdh
-> > >   MNT=/mnt/sdh
-> > >   MOUNT_OPTIONS="-o ssd"
-> > >
-> > >   MEMTOTAL_BYTES=`free -b | grep Mem: | awk '{ print $2 }'`
-> > >   NR_DIRECTORIES=20
-> > >   NR_FILES=20480
-> > >   DATASET_SIZE=$((MEMTOTAL_BYTES * 2 / 1048576))
-> > >   DIRECTORY_SIZE=$((MEMTOTAL_BYTES * 2 / NR_FILES))
-> > >   NR_FILES=$((NR_FILES / 1024))
-> > >
-> > >   echo "performance" | \
-> > >       tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-> > >
-> > >   umount $DEV &> /dev/null
-> > >   mkfs.btrfs -f $MKFS_OPTIONS $DEV
-> > >   mount $MOUNT_OPTIONS $DEV $MNT
-> > >
-> > >   bonnie++ -u root -d $MNT \
-> > >       -n $NR_FILES:$DIRECTORY_SIZE:$DIRECTORY_SIZE:$NR_DIRECTORIES \
-> > >       -r 0 -s $DATASET_SIZE -b
-> > >
-> > >   umount $MNT
-> > >
-> > > The results of this test on a 8G VM running a non-debug kernel (Debian's
-> > > default kernel config), were the following.
-> > >
-> > > Before this change:
-> > >
-> > >   Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
-> > >                       -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
-> > >   Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-> > >   debian0       7501M  376k  99  1.4g  96  117m  14 1510k  99  2.5g  95 +++++ +++
-> > >   Latency             35068us   24976us    2944ms   30725us   71770us   26152us
-> > >   Version 2.00a       ------Sequential Create------ --------Random Create--------
-> > >   debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
-> > >   files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-> > >   20:384100:384100/20 20480  32 20480  58 20480  48 20480  39 20480  56 20480  61
-> > >   Latency               411ms   11914us     119ms     617ms   10296us     110ms
-> > >
-> > > After this change:
-> > >
-> > >   Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
-> > >                       -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
-> > >   Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-> > >   debian0       7501M  375k  99  1.4g  97  117m  14 1546k  99  2.3g  98 +++++ +++
-> > >   Latency             35975us  20945us    2144ms   10297us    2217us    6004us
-> > >   Version 2.00a       ------Sequential Create------ --------Random Create--------
-> > >   debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
-> > >   files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-> > >   20:384100:384100/20 20480  35 20480  58 20480  48 20480  40 20480  57 20480  59
-> > >   Latency               320ms   11237us   77779us     518ms    6470us   86389us
-> > >
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > ---
-> > >  fs/btrfs/file.c     | 12 ++++++
-> > >  fs/btrfs/tree-log.c | 93 +++++++++++++++++++++++++++------------------
-> > >  fs/btrfs/tree-log.h | 25 ++++++++++++
-> > >  3 files changed, 94 insertions(+), 36 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> > > index f8e1a7ce3d39..fd5e23035a28 100644
-> > > --- a/fs/btrfs/file.c
-> > > +++ b/fs/btrfs/file.c
-> > > @@ -1912,6 +1912,8 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
-> > >               goto out_release_extents;
-> > >       }
-> > >
-> > > +     btrfs_init_log_ctx_scratch_eb(&ctx);
-> > > +
-> > >       /*
-> > >        * We use start here because we will need to wait on the IO to complete
-> > >        * in btrfs_sync_log, which could require joining a transaction (for
-> > > @@ -1931,6 +1933,15 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
-> > >       trans->in_fsync = true;
-> > >
-> > >       ret = btrfs_log_dentry_safe(trans, dentry, &ctx);
-> > > +     /*
-> > > +      * Scratch eb no longer needed, release before syncing log or commit
-> > > +      * transaction, to avoid holding unnecessary memory during such long
-> > > +      * operations.
-> > > +      */
-> > > +     if (ctx.scratch_eb) {
-> > > +             free_extent_buffer(ctx.scratch_eb);
-> > > +             ctx.scratch_eb = NULL;
-> > > +     }
-> > >       btrfs_release_log_ctx_extents(&ctx);
-> > >       if (ret < 0) {
-> > >               /* Fallthrough and commit/free transaction. */
-> > > @@ -2006,6 +2017,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
-> > >
-> > >       ret = btrfs_commit_transaction(trans);
-> > >  out:
-> > > +     free_extent_buffer(ctx.scratch_eb);
-> > >       ASSERT(list_empty(&ctx.list));
-> > >       ASSERT(list_empty(&ctx.conflict_inodes));
-> > >       err = file_check_and_advance_wb_err(file);
-> > > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> > > index 331fc7429952..761b13b3d342 100644
-> > > --- a/fs/btrfs/tree-log.c
-> > > +++ b/fs/btrfs/tree-log.c
-> > > @@ -3619,6 +3619,30 @@ static int flush_dir_items_batch(struct btrfs_trans_handle *trans,
-> > >       return ret;
-> > >  }
-> > >
-> > > +static int clone_leaf(struct btrfs_path *path, struct btrfs_log_ctx *ctx)
-> > > +{
-> > > +     const int slot = path->slots[0];
-> > > +
-> > > +     if (ctx->scratch_eb) {
-> > > +             copy_extent_buffer_full(ctx->scratch_eb, path->nodes[0]);
-> > > +     } else {
-> > > +             ctx->scratch_eb = btrfs_clone_extent_buffer(path->nodes[0]);
-> > > +             if (!ctx->scratch_eb)
-> > > +                     return -ENOMEM;
-> > > +     }
-> > > +
-> > > +     btrfs_release_path(path);
-> > > +     path->nodes[0] = ctx->scratch_eb;
-> >
-> > Here we put the scratch_b into path->nodes[0], so if we go do the next leaf in
-> > the copy_items loop we'll drop our reference for this scratch_eb, and then we're
-> > just writing into free'd memory.  Am I missing something here?  Thanks,
-> 
-> That's why below we take an extra reference on the scratch_eb, it's
-> even commented.
+While working on the patchset to remove extent locking I got a lockdep
+splat with fiemap and pagefaulting with my new extent lock replacement
+lock.
 
-My eyes just glazed right over that, I looked through all the callsites and
-didn't read this function closely enough.  You can add
+This deadlock exists with our normal code, we just don't have lockdep
+annotations with the extent locking so we've never noticed it.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Since we're copying the fiemap extent to user space on every iteration
+we have the chance of pagefaulting.  Because we hold the extent lock for
+the entire range we could mkwrite into a range in the file that we have
+mmap'ed.  This would deadlock with the following stack trace
 
-Thanks,
+[<0>] lock_extent+0x28d/0x2f0
+[<0>] btrfs_page_mkwrite+0x273/0x8a0
+[<0>] do_page_mkwrite+0x50/0xb0
+[<0>] do_fault+0xc1/0x7b0
+[<0>] __handle_mm_fault+0x2fa/0x460
+[<0>] handle_mm_fault+0xa4/0x330
+[<0>] do_user_addr_fault+0x1f4/0x800
+[<0>] exc_page_fault+0x7c/0x1e0
+[<0>] asm_exc_page_fault+0x26/0x30
+[<0>] rep_movs_alternative+0x33/0x70
+[<0>] _copy_to_user+0x49/0x70
+[<0>] fiemap_fill_next_extent+0xc8/0x120
+[<0>] emit_fiemap_extent+0x4d/0xa0
+[<0>] extent_fiemap+0x7f8/0xad0
+[<0>] btrfs_fiemap+0x49/0x80
+[<0>] __x64_sys_ioctl+0x3e1/0xb50
+[<0>] do_syscall_64+0x94/0x1a0
+[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
 
-Josef
+I wrote an fstest to reproduce this deadlock without my replacement lock
+and verified that the deadlock exists with our existing locking.
+
+To fix this simply don't take the extent lock for the entire duration of
+the fiemap.  This is safe in general because we keep track of where we
+are when we're searching the tree, so if an ordered extent updates in
+the middle of our fiemap call we'll still emit the correct extents
+because we know what offset we were on before.
+
+The only place we maintain the lock is searching delalloc.  Since the
+delalloc stuff can change during writeback we want to lock the extent
+range so we have a consistent view of delalloc at the time we're
+checking to see if we need to set the delalloc flag.
+
+With this patch applied we no longer deadlock with my testcase.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/extent_io.c | 49 +++++++++++++++++++++++++++++---------------
+ 1 file changed, 33 insertions(+), 16 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 8648ea9b5fb5..f8b68249d958 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2683,16 +2683,25 @@ static int fiemap_process_hole(struct btrfs_inode *inode,
+ 	 * it beyond i_size.
+ 	 */
+ 	while (cur_offset < end && cur_offset < i_size) {
++		struct extent_state *cached_state = NULL;
+ 		u64 delalloc_start;
+ 		u64 delalloc_end;
+ 		u64 prealloc_start;
++		u64 lockstart, lockend;
+ 		u64 prealloc_len = 0;
+ 		bool delalloc;
+ 
++		lockstart = round_down(cur_offset,
++				       inode->root->fs_info->sectorsize);
++		lockend = round_up(end, inode->root->fs_info->sectorsize);
++
++		lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+ 		delalloc = btrfs_find_delalloc_in_range(inode, cur_offset, end,
+ 							delalloc_cached_state,
+ 							&delalloc_start,
+ 							&delalloc_end);
++		unlock_extent(&inode->io_tree, lockstart, lockend,
++			      &cached_state);
+ 		if (!delalloc)
+ 			break;
+ 
+@@ -2860,15 +2869,14 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 		  u64 start, u64 len)
+ {
+ 	const u64 ino = btrfs_ino(inode);
+-	struct extent_state *cached_state = NULL;
+ 	struct extent_state *delalloc_cached_state = NULL;
+ 	struct btrfs_path *path;
+ 	struct fiemap_cache cache = { 0 };
+ 	struct btrfs_backref_share_check_ctx *backref_ctx;
+ 	u64 last_extent_end;
+ 	u64 prev_extent_end;
+-	u64 lockstart;
+-	u64 lockend;
++	u64 align_start;
++	u64 align_end;
+ 	bool stopped = false;
+ 	int ret;
+ 
+@@ -2879,12 +2887,11 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 		goto out;
+ 	}
+ 
+-	lockstart = round_down(start, inode->root->fs_info->sectorsize);
+-	lockend = round_up(start + len, inode->root->fs_info->sectorsize);
+-	prev_extent_end = lockstart;
++	align_start = round_down(start, inode->root->fs_info->sectorsize);
++	align_end = round_up(start + len, inode->root->fs_info->sectorsize);
++	prev_extent_end = align_start;
+ 
+ 	btrfs_inode_lock(inode, BTRFS_ILOCK_SHARED);
+-	lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+ 
+ 	ret = fiemap_find_last_extent_offset(inode, path, &last_extent_end);
+ 	if (ret < 0)
+@@ -2892,7 +2899,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 	btrfs_release_path(path);
+ 
+ 	path->reada = READA_FORWARD;
+-	ret = fiemap_search_slot(inode, path, lockstart);
++	ret = fiemap_search_slot(inode, path, align_start);
+ 	if (ret < 0) {
+ 		goto out_unlock;
+ 	} else if (ret > 0) {
+@@ -2904,7 +2911,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 		goto check_eof_delalloc;
+ 	}
+ 
+-	while (prev_extent_end < lockend) {
++	while (prev_extent_end < align_end) {
+ 		struct extent_buffer *leaf = path->nodes[0];
+ 		struct btrfs_file_extent_item *ei;
+ 		struct btrfs_key key;
+@@ -2927,14 +2934,14 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 		 * The first iteration can leave us at an extent item that ends
+ 		 * before our range's start. Move to the next item.
+ 		 */
+-		if (extent_end <= lockstart)
++		if (extent_end <= align_start)
+ 			goto next_item;
+ 
+ 		backref_ctx->curr_leaf_bytenr = leaf->start;
+ 
+ 		/* We have in implicit hole (NO_HOLES feature enabled). */
+ 		if (prev_extent_end < key.offset) {
+-			const u64 range_end = min(key.offset, lockend) - 1;
++			const u64 range_end = min(key.offset, align_end) - 1;
+ 
+ 			ret = fiemap_process_hole(inode, fieinfo, &cache,
+ 						  &delalloc_cached_state,
+@@ -2949,7 +2956,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 			}
+ 
+ 			/* We've reached the end of the fiemap range, stop. */
+-			if (key.offset >= lockend) {
++			if (key.offset >= align_end) {
+ 				stopped = true;
+ 				break;
+ 			}
+@@ -3043,29 +3050,40 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 	btrfs_free_path(path);
+ 	path = NULL;
+ 
+-	if (!stopped && prev_extent_end < lockend) {
++	if (!stopped && prev_extent_end < align_end) {
+ 		ret = fiemap_process_hole(inode, fieinfo, &cache,
+ 					  &delalloc_cached_state, backref_ctx,
+-					  0, 0, 0, prev_extent_end, lockend - 1);
++					  0, 0, 0, prev_extent_end, align_end - 1);
+ 		if (ret < 0)
+ 			goto out_unlock;
+-		prev_extent_end = lockend;
++		prev_extent_end = align_end;
+ 	}
+ 
+ 	if (cache.cached && cache.offset + cache.len >= last_extent_end) {
+ 		const u64 i_size = i_size_read(&inode->vfs_inode);
+ 
+ 		if (prev_extent_end < i_size) {
++			struct extent_state *cached_state = NULL;
+ 			u64 delalloc_start;
+ 			u64 delalloc_end;
++			u64 lockstart, lockend;
+ 			bool delalloc;
+ 
++			lockstart = round_down(prev_extent_end,
++					       inode->root->fs_info->sectorsize);
++			lockend = round_up(i_size,
++					   inode->root->fs_info->sectorsize);
++
++			lock_extent(&inode->io_tree, lockstart, lockend,
++				    &cached_state);
+ 			delalloc = btrfs_find_delalloc_in_range(inode,
+ 								prev_extent_end,
+ 								i_size - 1,
+ 								&delalloc_cached_state,
+ 								&delalloc_start,
+ 								&delalloc_end);
++			unlock_extent(&inode->io_tree, lockstart, lockend,
++				      &cached_state);
+ 			if (!delalloc)
+ 				cache.flags |= FIEMAP_EXTENT_LAST;
+ 		} else {
+@@ -3076,7 +3094,6 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 	ret = emit_last_fiemap_cache(fieinfo, &cache);
+ 
+ out_unlock:
+-	unlock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+ 	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
+ out:
+ 	free_extent_state(delalloc_cached_state);
+-- 
+2.43.0
+
 
