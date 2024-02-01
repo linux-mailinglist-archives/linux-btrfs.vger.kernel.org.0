@@ -1,116 +1,130 @@
-Return-Path: <linux-btrfs+bounces-2018-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2019-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C3438458E2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 14:29:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A80A7845939
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 14:47:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE74D1C23789
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 13:29:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6384E293D35
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 13:47:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493FB5B680;
-	Thu,  1 Feb 2024 13:28:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A245D46B;
+	Thu,  1 Feb 2024 13:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="jdkCDg0K"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LJFdmqgP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA45F86658;
-	Thu,  1 Feb 2024 13:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2B865D466
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Feb 2024 13:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706794130; cv=none; b=TfReiM+VctDja+lBR1i7p68tk4YqyYV1GgEGrL9LK3ZSoooYt65+ovXbBuw1K5f9GHi7JmkW82Do41dS+msN8dAUcMykFBZ/wN8Ml160P7VjiZsMescMQfOEKU7M6eupLH6lyL/xurhyYSi9b+FV52MfB+cWzVtBiL9m6RRrcQs=
+	t=1706795202; cv=none; b=l1q0v1LKz5enI5FnNkavYrR7hfIdozl/SzDgLYA50tIFsXdOemEaAQH3dBwkbx/Eo61yPqrrhknHWLqM6PkVZsQp8JrsOX8mU7voHAOraBg9dGXF4yWAZVy2PpQDTr4JzQJ/FWJD4jOcy2oy942YJfsj54Vs2Ip+Fa3hskQjdJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706794130; c=relaxed/simple;
-	bh=SA4bfxfxzMyS4Uq6xSXql9EBB1rOpcQ3WFAI6CjVY3M=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=nXQ5WB7QdfZxVVPd0Q+/5D6hl5Kwma+kHI2XD3Wf0INmR9nkUC+2d7BwklbCyly2YMQvGAHozai1Z6ubLnVJYe2FhhhNfkfwF75tuSpYPoCK9imCyk6ps9oJlQpr1rOwSgCYGZQ5zUEGxdvn2ilOq/M5A3cby92jM/xoaxWE3fE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=jdkCDg0K; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706794100; x=1707398900; i=markus.elfring@web.de;
-	bh=SA4bfxfxzMyS4Uq6xSXql9EBB1rOpcQ3WFAI6CjVY3M=;
-	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
-	 In-Reply-To;
-	b=jdkCDg0K0jipMZSuFNQwxMeGM40WxNFcLkxyujHXg1qfgx3EduShl03BLo4bvEiU
-	 VXi9+53+GeJErlEdji6RmW9vfH/PGDEa2rAvWC8f9V3sS5Yjw4hiK/AwnvKs6ciRE
-	 OWuR3Lwtk+ihueY/xlyRZHO/5ymi0VjOXts299YB8jpz59NolUd9PAuoV3nWo0Iyn
-	 x0FFlw0MVOmTgf7i3KpOaQNtSZglf1FLFJbR0kV+F1jEetgYybWGbFETYfeocOjsl
-	 A/978FCQ+qG+qZHy4EoirDQEJmm5hbvdlfVTb+Dn2oQZe2ZzSgl+tSTO7MeK8ljIS
-	 93pEReYixkHIGvD3/w==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MiuOW-1qssRE2Nka-00f7xJ; Thu, 01
- Feb 2024 14:28:20 +0100
-Message-ID: <d14e1d0f-7463-45ce-a25e-2d80f7996934@web.de>
-Date: Thu, 1 Feb 2024 14:28:16 +0100
+	s=arc-20240116; t=1706795202; c=relaxed/simple;
+	bh=suoI7qvddasF6ze11GbOGjsGkZl9FBFquOHwW330phg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZGBS2ivCa9C1rBeZHJJQv/xZ7Nw3p5CbaLBgGCnyMJZm3h8HfDdU+rCxWKqRdZ15tbqyEpMVVEZ6sSLEj6WDFAvBDTglGUknkT8bW77mH5sABvNN1UcVnUOhOpJIdQ2SINivszmUunLO1VmHjpFJMdkWwAkS6kjzeJ2yY07juSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LJFdmqgP; arc=none smtp.client-ip=209.85.221.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4bfe04cd2b0so424450e0c.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 01 Feb 2024 05:46:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706795199; x=1707399999; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gYWYexFtoJ2yHocou+INVoUtLbF8tOuPvQoRlZwm2yg=;
+        b=LJFdmqgPnybJIumvPpfSejLkIEttxsn08suUHDAHBBpYlnfLY7vD/jAwsollH7N3F7
+         /3cqzMeD9q0atz+INW14/C+UpgvO/tSxQ3fo6LkcKvgvw4f2O2tNhFpqec8Fur9gMv3v
+         riRH9dgwwFJulRbu22STv/MYccrOLORyGL5QxMh/eUmOqx/CtxxU0kTQRX3Xlpy9U69n
+         YitNBjDNPl2IwwKRgG0yobZ+WUWalQ/yECvaisqyoop6BsFZXarkvBv0ii1pE/W0beLw
+         1xWK4Z/1h78PaQ7lFPIkIfmVGgl0xy/YC9sLuvBzw+MVlkobmg8Mtz/9WpmMqItaonPl
+         hcWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706795199; x=1707399999;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gYWYexFtoJ2yHocou+INVoUtLbF8tOuPvQoRlZwm2yg=;
+        b=t3qrtSogchXEBocSEygQVrRzVejOKHtOCd2RxBpUuovfmixli8HlUeconQvZwljzdH
+         WXiFBuiepWwtCxA2EyonwjO10DoKZb+OvGhgAw3g1rc10MsQo+7NYpBCpdjimbRkHpWd
+         byOMY7gNAyc3GHtNZkRrSM3ZlZE5+QGObr6M4NyjwjEaxCu9zch6HQXccK26PpOHLKJ2
+         VIG1msZ185VmVa8t1Y+ualRxw4EkH46EVUu7ltjM4Q9HYpUWH7Jx13ge9VXVGKgv+x+T
+         yLhPRyHUStAKrpJcLJDfNH8kC9V27ziYn3RxuZOq3M331+1QTMfGDkUrj/BiVI3ldGOx
+         FQYA==
+X-Gm-Message-State: AOJu0YwMSGNz3ZTKHrLeqWWQQzXC4DLxIQSW6niAjX44BX+Ie1G5N1HM
+	tCZG4xFPBfdrZHXCbc7ke/TmPCQnnJgFT2KphBbTBruNyRyGGDIKc+Cnh9+Q1MHcm7KbYnUscRB
+	asr0Ogg4lm1XtUI5Xdo2OpQ4pmCpMC4YaJeQr
+X-Google-Smtp-Source: AGHT+IG80kHJI3o0nh9nc37cFYAZfNgIoolcnGet/bLjzO8FQfWUZqIqvqwlp1tA8htBaza2xRqZOec13j3l2wPN17s=
+X-Received: by 2002:a05:6122:2a0d:b0:4b6:be94:acc6 with SMTP id
+ fw13-20020a0561222a0d00b004b6be94acc6mr5599008vkb.10.1706795199311; Thu, 01
+ Feb 2024 05:46:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Kunwu Chan <chentao@kylinos.cn>, linux-btrfs@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, Chris Mason <clm@fb.com>,
- David Sterba <dsterba@suse.com>,
- Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
- Josef Bacik <josef@toxicpanda.com>
-References: <20240201084406.202446-1-chentao@kylinos.cn>
-Subject: Re: [v2] btrfs: Simplify the allocation of slab caches in
- btrfs_delayed_inode_init
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240201084406.202446-1-chentao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
+References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+ <20240201122216.2634007-2-aleksander.lobakin@intel.com> <3f6df876-4b25-4dc8-bbac-ce678c428d86@app.fastmail.com>
+In-Reply-To: <3f6df876-4b25-4dc8-bbac-ce678c428d86@app.fastmail.com>
+From: Alexander Potapenko <glider@google.com>
+Date: Thu, 1 Feb 2024 14:45:58 +0100
+Message-ID: <CAG_fn=Wb81V+axD2eLLiE9SfdbJ8yncrkhuyw8b+6OBJJ_M9Sw@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 01/21] lib/bitmap: add bitmap_{read,write}()
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>, 
+	Marcin Szycik <marcin.szycik@linux.intel.com>, Wojciech Drewek <wojciech.drewek@intel.com>, 
+	Yury Norov <yury.norov@gmail.com>, Andy Shevchenko <andy@kernel.org>, 
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>, Jiri Pirko <jiri@resnulli.us>, 
+	Ido Schimmel <idosch@nvidia.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Simon Horman <horms@kernel.org>, linux-btrfs@vger.kernel.org, dm-devel@redhat.com, 
+	ntfs3@lists.linux.dev, linux-s390@vger.kernel.org, 
+	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>, Netdev <netdev@vger.kernel.org>, 
+	linux-kernel@vger.kernel.org, Syed Nayyar Waris <syednwaris@gmail.com>, 
+	William Breathitt Gray <william.gray@linaro.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BqFjLRTgOa3kIpDHoOJgHrjuHTFWi9QzuakpdSBVn8oCUTV0HeJ
- 7W5j/tsDmlcWXTmdop4L90Wb/FW2yUILcYA7gwtIg+tB+nmLVop2xUe9+oRfbkVwfRhtyYk
- cd0HgpVkI/x8Shvq1CiiOsnVk5MHnbS1LIZJKDNwS9hz7UOhwDYcO9EKsRcdVKj8jZdFcyn
- ediP1W0J9gUS9XquijnDw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:+gGUSgueFBk=;RkE7kyyY7SlFYfo50IzofGYDHOS
- iBMxatbrW9MQL3fPfM8oLUoULsAEQi0LArqcs7wDQvlKToT9Q1c93gpZRBFzG8xTps+al5M4g
- E7UjqOeonej8n5w8xPBoFD3sAIbrBMkFMUO2bLgkeaCw28An9Q+jAmjz6lF6GM0YjYf/Mlx7k
- jPe4j4TSFzyC4VAS4s2rUnP8GGXNs1r7AbpZusRDbcE2+xX4nX0Rs6lTIWWRx9m8cDR5Syl47
- FltDcn1Kah+SodyJggiOvKLfXQYp2oi8NP1e8WhLFIJYYRV4xaJcocxTPPgqcoWL8POv6XDdZ
- lSwOiu5ytcl3cKNOD+pBS8Cn+twtjhb/V2eoDj9RjmHHlrjSTf68g9JzxkegkVd9tNvCTm8Ef
- XxyLmIFFBLwbL4sJaDPOaDX2hRoLPfy9nwTMYvmHWgtl9TUxc7y69ONx9cRRjQEH8Hv9tla7y
- u4u/83PiB/j02vCoEUGdErXIw6NVcM2TZgZW+rHIE8TD7kSC9Pt2OtS3awq2IYRuIS6vVJbWF
- HIQ7rjPdRQPtraEXB3+eWr5QjxIcnSC/+dngYiO+2o9JL2gMoNPWYkIkO0K2Aisdc/IM9qnMK
- 9WI3Peh1OtP0lyYz98yVdbpzSGLRoUmXudr/4Ok1GgoXcPfsuMeW2deSCXBOIGFkUNkN2MgeM
- SQg+0oDGPLwlT6ssl88NqDhCfbrFm0ywjPofAcHM4c5Xgr8OuAjSQhpEAIVMPwT4SL7aS4qPu
- jq5WocY1md27KgLRr53TddzgerNGw2IP9JHD8NLZd5+8oMsbJ/8oF6A6gjaTvRs+2SAVmcoPc
- yh7P79p6neplx+NpAFycz8GUV4fZv+YDe2ax3Dq2cBRCQ=
 
-> Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-> to simplify the creation of SLAB caches.
-> Make the code cleaner and more readable.
+On Thu, Feb 1, 2024 at 2:23=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Thu, Feb 1, 2024, at 13:21, Alexander Lobakin wrote:
+> > From: Syed Nayyar Waris <syednwaris@gmail.com>
+> >
+> > The two new functions allow reading/writing values of length up to
+> > BITS_PER_LONG bits at arbitrary position in the bitmap.
+> >
+> > The code was taken from "bitops: Introduce the for_each_set_clump macro=
+"
+> > by Syed Nayyar Waris with a number of changes and simplifications:
+> >  - instead of using roundup(), which adds an unnecessary dependency
+> >    on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
+> >  - indentation is reduced by not using else-clauses (suggested by
+> >    checkpatch for bitmap_get_value());
+> >  - bitmap_get_value()/bitmap_set_value() are renamed to bitmap_read()
+> >    and bitmap_write();
+> >  - some redundant computations are omitted.
+>
+> These functions feel like they should not be inline but are
+> better off in lib/bitmap.c given their length.
+>
+> As far as I can tell, the header ends up being included
+> indirectly almost everywhere, so just parsing these functions
+> likey adds not just dependencies but also compile time.
+>
+>      Arnd
 
-* Please replace the word =E2=80=9Cnew=E2=80=9D by a reference to the comm=
-it 8eb8284b412906181357c2b0110d879d5af95e52
-  ("usercopy: Prepare for usercopy whitelisting").
-
-  See also related background information from 2017-06-10.
-
-* How does your response fit to the repetition of improvable change descri=
-ptions?
-
-  Example:
-  [PATCH] btrfs: Simplify the allocation of slab caches in btrfs_transacti=
-on_init
-  https://lore.kernel.org/lkml/20240201093554.208092-1-chentao@kylinos.cn/
-  https://lkml.org/lkml/2024/2/1/387
-
-* Would you like to group similar source code transformations
-  into patch series?
-
-
-Regards,
-Markus
+Removing particular functions from a header to reduce compilation time
+does not really scale.
+Do we know this case has a noticeable impact on the compilation time?
+If yes, maybe we need to tackle this problem in a different way (e.g.
+reduce the number of dependencies on it)?
 
