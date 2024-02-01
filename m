@@ -1,76 +1,77 @@
-Return-Path: <linux-btrfs+bounces-2042-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2043-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A780484619C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 20:59:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C09998461FD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 21:37:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D3331F27E34
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 19:59:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7C001C22A11
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Feb 2024 20:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B1098529F;
-	Thu,  1 Feb 2024 19:59:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC25E3BB2A;
+	Thu,  1 Feb 2024 20:36:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="x2CMNKF5"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="PnKlcKL0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9291429B0
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Feb 2024 19:58:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597E726AD5
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Feb 2024 20:36:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706817541; cv=none; b=EBlCvNGVlZ7xtY5+SCJR1HzIFvIBhSx1fuEZn3Olzq5Asm3eXh1HF6wXFcvR7kN5UwZWuhhBxvJeCDoPqoRUUm2J029YVUgF+FwAGvqrBQVITASk49bCAVuykQ9kx8RoiP9gB+Z9rS901j4sYUz6RfT0SCWMyMm8NiN3vDCN/EU=
+	t=1706819808; cv=none; b=Fo1qYGrGmjejdTLPAIcJBGJeKVij407MijoEySadkBm3e7TckpMf0FgqbZJVGlP0dIDZKs+/uk2D0401U0xvdrT3LLE5hgTKVB8L66ygTfXerLgTJ13R8qD2IXBS8D71w3MF+w7I25BliQ73sLO8XtopnzmOXDmxOIQhw2fhD3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706817541; c=relaxed/simple;
-	bh=OnezgRTYXYI8VtAQZUVRRV7jjeTrO8TG/LK4DeCW2VA=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=gcLeLInDqUQXwmwQit0kZQ3i/QwkJwyhC9gvw63bhskY3CpnGPiYrYZ3hxk1jhcG+Q3N4kdm+k+UjqqEujCHyihviIdaSkM7SpvZQEqJlvuX58bxBC9P31m/tNMH7D/ZOqzUhX0rezDFWGvmrJZrzdNQe1eG3z3584JWvPIUSkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=x2CMNKF5; arc=none smtp.client-ip=209.85.210.54
+	s=arc-20240116; t=1706819808; c=relaxed/simple;
+	bh=hOA+OqTHVoRrZpUdFgVMuDqxWyxUquXib6M3GSPf09A=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=himMbCLoXX+1FMe7pm+ycijNNRWfZtqtrnR1924pN94STFyt3Vz/+eAhleJqc22fAnA8DJs/Udke+bEZwiUVOTmYuZkfuxPgKAwAh82XYRYYyOG30LIQhfmTZ5tI3C8xYn+ncftWULMxFUTsu3CDEHLBVu2KOGCo7Td/G9VzF0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=PnKlcKL0; arc=none smtp.client-ip=209.85.128.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e12f8506ccso741427a34.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 01 Feb 2024 11:58:59 -0800 (PST)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60412a23225so14045657b3.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 01 Feb 2024 12:36:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706817538; x=1707422338; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1706819805; x=1707424605; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oeu5xlKW8pJl77VSExE+Jp/n5nA3/46c/5cPYWGGtJ0=;
-        b=x2CMNKF5IawB+2RfOygNW2OeBQVlxUVBHha5WC0zwZEg3JIl43lv82Hxaj3RdMdzIZ
-         KkapFBRTayRy5EDMP/wt0FRs7ddq2/Eh4DpJ9Y9/m2zzL5mSeZetErra8XXqWqeweo1h
-         vhwAf6nR7CrLA0meADK8Ze3Gn8eq9FlzXHvEVWc86p2XjwNqiLiuzdL830ngg7VgwUWM
-         PCF7QHaXxMrT4+1hdgDA9XYvrjAiMzqoo7hMrZzGgdYReVtSfTQBQdos3Gv1mULvKNcG
-         OiOl290F5fwbwdFQCPywyJIPoczsujTIJd1zyIzzC8Ftejr+vF3XrB/dOZTdtw4V1mSP
-         wF4Q==
+        bh=5yM7gCeTxtrHaCpqgRrs/cEvnVMk67WLvsx3JX08QAg=;
+        b=PnKlcKL0ZZbGK0qDYz6NMvBKfo+0Co8ytUdTDI8q77vz/qoeIvG5WzErBHGK4VYOyq
+         7W84RnH2ZQcgO98xWRtXWphkZpvi/x6Of/KPrMplXXcGf0/vKUVgLm7RzC9VdOYBN7dj
+         KCM1sQTH8jaL48GUMA1SPFkKoYeC5Y5AZLr9U3EVC01ayzMoVm9PguztGCVG5smtxoEd
+         sHzV7O5IRzk+8n+edcTu+klZVGKEKyIY4iG1KjCY0sP2UUbGlCjepZYUVqaCCius5az7
+         IDrRcLZsqKQZUEA0F86weVNohYKiPDtazpj80tuk+ver15wJQG+RxKUZIlKy5AybbWzF
+         CGkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706817538; x=1707422338;
+        d=1e100.net; s=20230601; t=1706819805; x=1707424605;
         h=content-transfer-encoding:mime-version:message-id:date:subject:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oeu5xlKW8pJl77VSExE+Jp/n5nA3/46c/5cPYWGGtJ0=;
-        b=qfINJvbSLM9+WkaHopopvUOugjnCS1n6159rQvxSCfKpNsUJB4Ps5+YUNPfQZT4U/y
-         4XSW/PcngDjCqceEJAPCfmRn0F9z4X4eanW4+LXZ0hqwW3SNncV/uz6yr4kkUlAjF7kG
-         QK3X8D7PbHDA8t43ZnM9sYFC0yCYhsk76eC58mvTwv8ZnoEqM9ABROFDTvPBCqNnDhla
-         +bFiir86Jb8b7Ckc7Sj3e1MynmoseCvyybuc72gLgDCfgFLih8+wgXT8qKvaiKiYT7vY
-         JY1agqjnuB4InW+zoUY5KVTDoJFMA1s/kpYpEXahqG2bZh/H2DpSR9+pv16y4DEHimlH
-         X2wQ==
-X-Gm-Message-State: AOJu0YydVRoobIwHkSkqbaBxiqWiKc4TNB8352qSWLTWweb+JTSO7Utk
-	uTB6dfxqzTgConip3i6CozCS04+waUjgV2tr40od/i6EXdAoZKEUqaNJKGGYZ6IyoN9CxApdl98
-	G
-X-Google-Smtp-Source: AGHT+IFms6TYkY70iWr95rRf3N7/EvDNbwESuS/6RBx+A2E0bSVqBZFM6lyKsXDtN2VofsiWuw2k5w==
-X-Received: by 2002:a9d:5914:0:b0:6dc:3e02:92aa with SMTP id t20-20020a9d5914000000b006dc3e0292aamr5519812oth.22.1706817538417;
-        Thu, 01 Feb 2024 11:58:58 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWDmPBHhBlkFEiigK7mwc98tmB0zl2hGm4U7SDBVCTrpHmHJYM+Wj3xXSyE7VTIjC1IjX2kmqeza9SaABYa7tbKEc0=
+        bh=5yM7gCeTxtrHaCpqgRrs/cEvnVMk67WLvsx3JX08QAg=;
+        b=hKodARj7HFNOJKKTgw4CQ53Bls4Ywgu4C0kia0Dd+jVx0pI70CMoyCpRkcY7WzwS6e
+         mnczqmU4TbhWleXIsr5W8AEfiwWwiONT8QYj2jhOw/rGOnLiFV4SeOVo3okwfBJQZTVw
+         QWzv3YyN9PEjwBuHk4M81CgUNj2Xm2sRqHpC5xq4+O2mwjHNu53ByWRAt2f8psF/yB1N
+         CNia9nVX3skX9M5mCrm7wlVxgDigiRobYx7xreolYdhBNZZWPTP1nadFFwY+b29/UNQm
+         BgWeJYU5u24t8ePr2wFjELaRFNi0fRALXR+hRuxG/Q4kA/CJEAAUPRNw+JHHtmv+qbus
+         OBnA==
+X-Gm-Message-State: AOJu0YxWAfazXARETCxyy/2K6RsNnAJE8e0G+s5/Wtq5LqQ4voNjprOI
+	o1Xut95uJR5rzOnLRCzxCoLl9OvMFzyYkzoYcFtl5VulcSIWLSLf1qwZLm8RmJvRz1GL5TqLY+r
+	Z
+X-Google-Smtp-Source: AGHT+IEDqvOw6Ns/a0TXI2U+6KlGKwX9dBb1buV1RIGKKHILLx2GXXAhGD4YZgstHVt+LYA1tGfTlA==
+X-Received: by 2002:a0d:d957:0:b0:603:cbe0:465e with SMTP id b84-20020a0dd957000000b00603cbe0465emr340893ywe.20.1706819804773;
+        Thu, 01 Feb 2024 12:36:44 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCXwzWU6S2dwKu2cdEnlvsBsuCxjHbNLNnFOj0r0u1xeRqVQzVjUzrWrYZCL2r24JKxgQK0+r3/SNhU6SBZFaFSsIiQr/4ItqW8t5HlcWRG0b9MKL21b4KOF7uH2
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id f13-20020a05622a114d00b004299f09e3aesm90941qty.51.2024.02.01.11.58.57
+        by smtp.gmail.com with ESMTPSA id mb3-20020a056214550300b0068c6d732303sm104721qvb.117.2024.02.01.12.36.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Feb 2024 11:58:58 -0800 (PST)
+        Thu, 01 Feb 2024 12:36:44 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH] btrfs: fix deadlock with fiemap and extent locking
-Date: Thu,  1 Feb 2024 14:58:54 -0500
-Message-ID: <47ac92a6c8be53a5e10add9315255460c062b52d.1706817512.git.josef@toxicpanda.com>
+Subject: [PATCH] fstests: add a regression test for fiemap into an mmap range
+Date: Thu,  1 Feb 2024 15:36:38 -0500
+Message-ID: <795fcb629a2bbfeaf39023d971b7cb3a468aa87f.1706819794.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -80,218 +81,89 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-While working on the patchset to remove extent locking I got a lockdep
-splat with fiemap and pagefaulting with my new extent lock replacement
-lock.
-
-This deadlock exists with our normal code, we just don't have lockdep
-annotations with the extent locking so we've never noticed it.
-
-Since we're copying the fiemap extent to user space on every iteration
-we have the chance of pagefaulting.  Because we hold the extent lock for
-the entire range we could mkwrite into a range in the file that we have
-mmap'ed.  This would deadlock with the following stack trace
-
-[<0>] lock_extent+0x28d/0x2f0
-[<0>] btrfs_page_mkwrite+0x273/0x8a0
-[<0>] do_page_mkwrite+0x50/0xb0
-[<0>] do_fault+0xc1/0x7b0
-[<0>] __handle_mm_fault+0x2fa/0x460
-[<0>] handle_mm_fault+0xa4/0x330
-[<0>] do_user_addr_fault+0x1f4/0x800
-[<0>] exc_page_fault+0x7c/0x1e0
-[<0>] asm_exc_page_fault+0x26/0x30
-[<0>] rep_movs_alternative+0x33/0x70
-[<0>] _copy_to_user+0x49/0x70
-[<0>] fiemap_fill_next_extent+0xc8/0x120
-[<0>] emit_fiemap_extent+0x4d/0xa0
-[<0>] extent_fiemap+0x7f8/0xad0
-[<0>] btrfs_fiemap+0x49/0x80
-[<0>] __x64_sys_ioctl+0x3e1/0xb50
-[<0>] do_syscall_64+0x94/0x1a0
-[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
-
-I wrote an fstest to reproduce this deadlock without my replacement lock
-and verified that the deadlock exists with our existing locking.
-
-To fix this simply don't take the extent lock for the entire duration of
-the fiemap.  This is safe in general because we keep track of where we
-are when we're searching the tree, so if an ordered extent updates in
-the middle of our fiemap call we'll still emit the correct extents
-because we know what offset we were on before.
-
-The only place we maintain the lock is searching delalloc.  Since the
-delalloc stuff can change during writeback we want to lock the extent
-range so we have a consistent view of delalloc at the time we're
-checking to see if we need to set the delalloc flag.
-
-With this patch applied we no longer deadlock with my testcase.
+Btrfs had a deadlock that you could trigger by mmap'ing a large file and
+using that as the buffer for fiemap.  This test adds a c program to do
+this, and the fstest creates a large enough file and then runs the
+reproducer on the file.  Without the fix btrfs deadlocks, with the fix
+we pass fine.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c | 49 +++++++++++++++++++++++++++++---------------
- 1 file changed, 33 insertions(+), 16 deletions(-)
+ src/Makefile          |  2 +-
+ tests/generic/740     | 41 +++++++++++++++++++++++++++++++++++++++++
+ tests/generic/740.out |  2 ++
+ 3 files changed, 44 insertions(+), 1 deletion(-)
+ create mode 100644 tests/generic/740
+ create mode 100644 tests/generic/740.out
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 8648ea9b5fb5..f8b68249d958 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2683,16 +2683,25 @@ static int fiemap_process_hole(struct btrfs_inode *inode,
- 	 * it beyond i_size.
- 	 */
- 	while (cur_offset < end && cur_offset < i_size) {
-+		struct extent_state *cached_state = NULL;
- 		u64 delalloc_start;
- 		u64 delalloc_end;
- 		u64 prealloc_start;
-+		u64 lockstart, lockend;
- 		u64 prealloc_len = 0;
- 		bool delalloc;
+diff --git a/src/Makefile b/src/Makefile
+index d79015ce..916f6755 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -34,7 +34,7 @@ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
+ 	attr_replace_test swapon mkswap t_attr_corruption t_open_tmpfiles \
+ 	fscrypt-crypt-util bulkstat_null_ocount splice-test chprojid_fail \
+ 	detached_mounts_propagation ext4_resize t_readdir_3 splice2pipe \
+-	uuid_ioctl
++	uuid_ioctl fiemap-fault
  
-+		lockstart = round_down(cur_offset,
-+				       inode->root->fs_info->sectorsize);
-+		lockend = round_up(end, inode->root->fs_info->sectorsize);
+ EXTRA_EXECS = dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
+ 	      btrfs_crc32c_forged_name.py popdir.pl popattr.py \
+diff --git a/tests/generic/740 b/tests/generic/740
+new file mode 100644
+index 00000000..46ec5820
+--- /dev/null
++++ b/tests/generic/740
+@@ -0,0 +1,41 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
++#
++# FS QA Test 708
++#
++# Test fiemap into an mmaped buffer of the same file
++#
++# Create a reasonably large file, then run a program which mmaps it and uses
++# that as a buffer for an fiemap call.  This is a regression test for btrfs
++# where we used to hold a lock for the duration of the fiemap call which would
++# result in a deadlock if we page faulted.
++#
++. ./common/preamble
++_begin_fstest quick auto
++[ $FSTYP == "btrfs" ] && \
++	_fixed_by_kernel_commit xxxxxxxxxxxx \
++		"btrfs: fix deadlock with fiemap and extent locking"
 +
-+		lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
- 		delalloc = btrfs_find_delalloc_in_range(inode, cur_offset, end,
- 							delalloc_cached_state,
- 							&delalloc_start,
- 							&delalloc_end);
-+		unlock_extent(&inode->io_tree, lockstart, lockend,
-+			      &cached_state);
- 		if (!delalloc)
- 			break;
- 
-@@ -2860,15 +2869,14 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		  u64 start, u64 len)
- {
- 	const u64 ino = btrfs_ino(inode);
--	struct extent_state *cached_state = NULL;
- 	struct extent_state *delalloc_cached_state = NULL;
- 	struct btrfs_path *path;
- 	struct fiemap_cache cache = { 0 };
- 	struct btrfs_backref_share_check_ctx *backref_ctx;
- 	u64 last_extent_end;
- 	u64 prev_extent_end;
--	u64 lockstart;
--	u64 lockend;
-+	u64 align_start;
-+	u64 align_end;
- 	bool stopped = false;
- 	int ret;
- 
-@@ -2879,12 +2887,11 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		goto out;
- 	}
- 
--	lockstart = round_down(start, inode->root->fs_info->sectorsize);
--	lockend = round_up(start + len, inode->root->fs_info->sectorsize);
--	prev_extent_end = lockstart;
-+	align_start = round_down(start, inode->root->fs_info->sectorsize);
-+	align_end = round_up(start + len, inode->root->fs_info->sectorsize);
-+	prev_extent_end = align_start;
- 
- 	btrfs_inode_lock(inode, BTRFS_ILOCK_SHARED);
--	lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
- 
- 	ret = fiemap_find_last_extent_offset(inode, path, &last_extent_end);
- 	if (ret < 0)
-@@ -2892,7 +2899,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 	btrfs_release_path(path);
- 
- 	path->reada = READA_FORWARD;
--	ret = fiemap_search_slot(inode, path, lockstart);
-+	ret = fiemap_search_slot(inode, path, align_start);
- 	if (ret < 0) {
- 		goto out_unlock;
- 	} else if (ret > 0) {
-@@ -2904,7 +2911,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		goto check_eof_delalloc;
- 	}
- 
--	while (prev_extent_end < lockend) {
-+	while (prev_extent_end < align_end) {
- 		struct extent_buffer *leaf = path->nodes[0];
- 		struct btrfs_file_extent_item *ei;
- 		struct btrfs_key key;
-@@ -2927,14 +2934,14 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		 * The first iteration can leave us at an extent item that ends
- 		 * before our range's start. Move to the next item.
- 		 */
--		if (extent_end <= lockstart)
-+		if (extent_end <= align_start)
- 			goto next_item;
- 
- 		backref_ctx->curr_leaf_bytenr = leaf->start;
- 
- 		/* We have in implicit hole (NO_HOLES feature enabled). */
- 		if (prev_extent_end < key.offset) {
--			const u64 range_end = min(key.offset, lockend) - 1;
-+			const u64 range_end = min(key.offset, align_end) - 1;
- 
- 			ret = fiemap_process_hole(inode, fieinfo, &cache,
- 						  &delalloc_cached_state,
-@@ -2949,7 +2956,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 			}
- 
- 			/* We've reached the end of the fiemap range, stop. */
--			if (key.offset >= lockend) {
-+			if (key.offset >= align_end) {
- 				stopped = true;
- 				break;
- 			}
-@@ -3043,29 +3050,40 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 	btrfs_free_path(path);
- 	path = NULL;
- 
--	if (!stopped && prev_extent_end < lockend) {
-+	if (!stopped && prev_extent_end < align_end) {
- 		ret = fiemap_process_hole(inode, fieinfo, &cache,
- 					  &delalloc_cached_state, backref_ctx,
--					  0, 0, 0, prev_extent_end, lockend - 1);
-+					  0, 0, 0, prev_extent_end, align_end - 1);
- 		if (ret < 0)
- 			goto out_unlock;
--		prev_extent_end = lockend;
-+		prev_extent_end = align_end;
- 	}
- 
- 	if (cache.cached && cache.offset + cache.len >= last_extent_end) {
- 		const u64 i_size = i_size_read(&inode->vfs_inode);
- 
- 		if (prev_extent_end < i_size) {
-+			struct extent_state *cached_state = NULL;
- 			u64 delalloc_start;
- 			u64 delalloc_end;
-+			u64 lockstart, lockend;
- 			bool delalloc;
- 
-+			lockstart = round_down(prev_extent_end,
-+					       inode->root->fs_info->sectorsize);
-+			lockend = round_up(i_size,
-+					   inode->root->fs_info->sectorsize);
++# real QA test starts here
++_supported_fs generic
++_require_test
++_require_odirect
++_require_test_program fiemap-fault
++dst=$TEST_DIR/fiemap-fault-$seq
 +
-+			lock_extent(&inode->io_tree, lockstart, lockend,
-+				    &cached_state);
- 			delalloc = btrfs_find_delalloc_in_range(inode,
- 								prev_extent_end,
- 								i_size - 1,
- 								&delalloc_cached_state,
- 								&delalloc_start,
- 								&delalloc_end);
-+			unlock_extent(&inode->io_tree, lockstart, lockend,
-+				      &cached_state);
- 			if (!delalloc)
- 				cache.flags |= FIEMAP_EXTENT_LAST;
- 		} else {
-@@ -3076,7 +3094,6 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 	ret = emit_last_fiemap_cache(fieinfo, &cache);
- 
- out_unlock:
--	unlock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
- 	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
- out:
- 	free_extent_state(delalloc_cached_state);
++echo "Silence is golden"
++
++for i in $(seq 0 2 1000)
++do
++	$XFS_IO_PROG -d -f -c "pwrite -q $((i * 4096)) 4096" $dst
++done
++
++$here/src/fiemap-fault $dst > /dev/null || _fail "failed doing fiemap"
++
++rm -f $dst
++
++# success, all done
++status=$?
++exit
++
+diff --git a/tests/generic/740.out b/tests/generic/740.out
+new file mode 100644
+index 00000000..3f841e60
+--- /dev/null
++++ b/tests/generic/740.out
+@@ -0,0 +1,2 @@
++QA output created by 740
++Silence is golden
 -- 
 2.43.0
 
