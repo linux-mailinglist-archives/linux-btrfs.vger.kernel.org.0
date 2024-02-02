@@ -1,151 +1,81 @@
-Return-Path: <linux-btrfs+bounces-2055-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2056-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 361C684691C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 08:17:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13E98846A74
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 09:19:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C07FD1F25F25
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 07:17:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D882AB2AA1F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 08:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D2FB17BBA;
-	Fri,  2 Feb 2024 07:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96DF47F66;
+	Fri,  2 Feb 2024 08:13:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="FUQDn1FH"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="f523w4/L"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78EAF17BA0
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 Feb 2024 07:17:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF7B47A64
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 Feb 2024 08:13:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.154.54.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706858225; cv=none; b=n1nPKl4GMFRvw6FOUlcQbYWfnl6IKUULt/muCk6NOmjNoyOWBBfLU0jVRv610ClmmfzGHgdGPcuBgmXEte7QQCeHcinGgWpsqV+veDcinFouoooS0igstapbcYRAmr4aJo2ZANe6LtV8X+MMSKDWNOvt/xU1elD12hpbnt1Wyj4=
+	t=1706861609; cv=none; b=DaIBYUSYpgDx415U8dwz6JIGsAjV6DXxKEzNCtP/o5LKIdjBPiByIz7p0IG+F4BUmlH9wnNcRKC8rVZr8W3HkNMlrYegdLx9srEn4VqyfLK9I85CSzsVt5LimkDlFo6GCdS+Blfjw2vBBi9jxpoUGkm47VIqjD9DIlY/aIv8rnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706858225; c=relaxed/simple;
-	bh=ZrTu0XyE+6tvz9D3Xgeg8bJbOaNORdgNUlstdr/TVCQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Oy4MWSU6LEfAoz+YpZbO+Ee6GDvZyAlpjUbgC6dQGTzpf79oOsNrVVlnuDQ79ls32NgjKPzi9Yol81e4oqm3Zh2o3Qsx/DXW4G9ZLRAVB6H/0GZCaFVwg5sdsjXzow585V1wkdt13lW8oKt5YeYZ7GpgMC/7JHRAyPxi6w68xJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=FUQDn1FH; arc=none smtp.client-ip=216.71.153.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1706858223; x=1738394223;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ZrTu0XyE+6tvz9D3Xgeg8bJbOaNORdgNUlstdr/TVCQ=;
-  b=FUQDn1FHlhRw5eGVERw3w6B8kA4wRW8yGLyASlGiLX4Tt3n9vZGFOUha
-   6/qQS6abMskiVrujMfmX/lQnNEm19UXKPhMaliISQ26101gXbAi002Fky
-   ARQA95ydz93ukcRwjYGBAcyTqroLb2f9aQKDlux+W/6wS89/1Qq/h8f+X
-   NsQpA9WDYoTB5BeOHUYelR9Di7ZvtdCS9F4hlNLp8jX4K0wIbym2l33wh
-   hUlGfF9FeOeUy6esuYWLPjrDqhGN/jbvObt4tvPovJYtWUzKo9yzOGVU7
-   eYrHVdeYpCrT2zwLXXW5VUVurF9pWJ1Et+F+dsTmQ0A7Z+Ps+ZFqdey7p
-   w==;
-X-CSE-ConnectionGUID: QgHV6c35TQiBwg363zklTA==
-X-CSE-MsgGUID: emDnG4QbTBGvcpQ8hMg1dw==
-X-IronPort-AV: E=Sophos;i="6.05,237,1701100800"; 
-   d="scan'208";a="8261321"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Feb 2024 15:17:00 +0800
-IronPort-SDR: Q4hn/CT+bhZvrnYpr/cpWKWXAge8u6o/3JiVkidKCS8Q1Fbia1rWvO9h7bt4Z1fjgh3RMPjtZF
- /lRiDRyTsWqg==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Feb 2024 22:26:50 -0800
-IronPort-SDR: vhOktJJ9gFGqExcnpvpxqlb6GQsh7nrhhQpiav7aBALReWz4uUEzNXZ4Hc3PT+N9krmy4GX3AT
- sDTBf2U9vG1w==
-WDCIronportException: Internal
-Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.9])
-  by uls-op-cesaip02.wdc.com with ESMTP; 01 Feb 2024 23:17:00 -0800
-From: Naohiro Aota <naohiro.aota@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: use (READ_/WRITE_)ONCE for fs_devices->read_policy
-Date: Fri,  2 Feb 2024 16:14:57 +0900
-Message-ID: <ff28792692e72b0888fff775efad8178889b9756.1706858039.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706861609; c=relaxed/simple;
+	bh=aYt9Hn4zD1N4ImryoaPXkIySHfMzr4L2xBy7l3iMg5E=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=PoLrprVfeQFKQfmkLm3F+N5DVuu44kO6QTze9rRnN1LDw4LYEs/1V9lVzNgo4NxB+HLLrJ2vWjQUKxZav/ZAzoxpUS0h8eA4otfZHfHNzPnHJ9wA4DTHiwHCNEMt4/gaoJ4bBX65fQSvcqwlAdEyRVCQCFYXJ7BejGkR40rInRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=f523w4/L; arc=none smtp.client-ip=43.154.54.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1706861596;
+	bh=I1ntGs8Jver+ywXBYgD9fKzQ4mQvVov0k2ePlvMHBkc=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject;
+	b=f523w4/L/iIbff4ptbrX/GUO04hTJaD8B361m2WANCpML9XJOrTyfvTnG0Qbb7LiA
+	 zm+AYPEPp8HjvyX8KGTzpzy596X9QROFxQsliLIyT8FHGoM1PKj68ApiG52E/Fd/gX
+	 QKqBVk9uJNK1EohS5P8nmFDHEeS6TMkUbqWXO5WY=
+X-QQ-mid: bizesmtpipv603t1706861595tz80
+X-QQ-Originating-IP: AY/+DQ4PBsJVa2CCF0zAHPflrPtTkpFVyBrq7iF/tr4=
+Received: from [IPV6:240e:381:70b1:9300:3433:b ( [255.222.223.15])
+	by bizesmtp.qq.com (ESMTP) with SMTP id 0
+	for <linux-btrfs@vger.kernel.org>; Fri, 02 Feb 2024 16:13:14 +0800 (CST)
+X-QQ-SSF: 01100000000000E0Z000000A0000000
+X-QQ-FEAT: 80XjNWQFvKyYrlPU38abxMIGHCcvwvSbgJZRHk8MS9akA+Xv2Nd64EyZXXBwf
+	gwDlusJgj/FTGvs6Wt7W22gntOPX3qXi0Jp/bMzHVxxlSS463P33G9UXPQhQXLkq0CnzjeY
+	kgMPbI6O4D0RQHUiFDOJd6bcT9dZ9/OY95mtMgkUfEeqowMQfnPnep1H6x9vSGmldyekJfw
+	5dEsKKYnjyB6lGPVbSRb6lrQM3FUwUIUUIW7am7dFodJLFtcfw1YNfFpqK4PiwjiN4dVyfs
+	9ar82YK/ZRzfFVAR95ORlJmT7ADPXilPNWv1kvK6XxP/7nqLWepaCcIiD/3HPkWSv5fwmEN
+	S5VTEpwsPz1K8bMFuU=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 16355086566597214813
+Message-ID: <1ACD2E3643008A17+da260584-2c7f-432a-9e22-9d390aae84cc@bupt.moe>
+Date: Fri, 2 Feb 2024 16:13:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: linux-btrfs@vger.kernel.org
+From: =?UTF-8?B?6Z+p5LqO5oOf?= <hrx@bupt.moe>
+Subject: [btrfs] RAID1 volume on zoned device oops when sync.
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpipv:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-Since we can read/modify the value from the sysfs interface concurrently,
-it would be better to protect it from compiler optimizations.
+Hi All,
 
-Currently, there is only one read policy BTRFS_READ_POLICY_PID available,
-so no actual problem can happen now. This is a preparation for the future
-expansion.
+I have built a RAID1 volume on HC620 using kernel 6.7.2 with btrfs debug 
+enabled.
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/sysfs.c   |  7 ++++---
- fs/btrfs/volumes.c | 10 +++++-----
- 2 files changed, 9 insertions(+), 8 deletions(-)
+Then I started BT download and sync, and it oops. dmesg in 
+https://fars.ee/N4pJ
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 84c05246ffd8..21586ecc35bf 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -1228,11 +1228,12 @@ static ssize_t btrfs_read_policy_show(struct kobject *kobj,
- 				      struct kobj_attribute *a, char *buf)
- {
- 	struct btrfs_fs_devices *fs_devices = to_fs_devs(kobj);
-+	const enum btrfs_read_policy policy = READ_ONCE(fs_devices->read_policy);
- 	ssize_t ret = 0;
- 	int i;
- 
- 	for (i = 0; i < BTRFS_NR_READ_POLICY; i++) {
--		if (fs_devices->read_policy == i)
-+		if (policy == i)
- 			ret += sysfs_emit_at(buf, ret, "%s[%s]",
- 					 (ret == 0 ? "" : " "),
- 					 btrfs_read_policy_name[i]);
-@@ -1256,8 +1257,8 @@ static ssize_t btrfs_read_policy_store(struct kobject *kobj,
- 
- 	for (i = 0; i < BTRFS_NR_READ_POLICY; i++) {
- 		if (sysfs_streq(buf, btrfs_read_policy_name[i])) {
--			if (i != fs_devices->read_policy) {
--				fs_devices->read_policy = i;
-+			if (i != READ_ONCE(fs_devices->read_policy)) {
-+				WRITE_ONCE(fs_devices->read_policy, i);
- 				btrfs_info(fs_devices->fs_info,
- 					   "read policy set to '%s'",
- 					   btrfs_read_policy_name[i]);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 474ab7ed65ea..224345658ea5 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5942,6 +5942,7 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
- 			    struct btrfs_chunk_map *map, int first,
- 			    int dev_replace_is_ongoing)
- {
-+	const enum btrfs_read_policy policy = READ_ONCE(fs_info->fs_devices->read_policy);
- 	int i;
- 	int num_stripes;
- 	int preferred_mirror;
-@@ -5956,13 +5957,12 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
- 	else
- 		num_stripes = map->num_stripes;
- 
--	switch (fs_info->fs_devices->read_policy) {
-+	switch (policy) {
- 	default:
- 		/* Shouldn't happen, just warn and use pid instead of failing */
--		btrfs_warn_rl(fs_info,
--			      "unknown read_policy type %u, reset to pid",
--			      fs_info->fs_devices->read_policy);
--		fs_info->fs_devices->read_policy = BTRFS_READ_POLICY_PID;
-+		btrfs_warn_rl(fs_info, "unknown read_policy type %u, reset to pid",
-+			      policy);
-+		WRITE_ONCE(fs_info->fs_devices->read_policy, BTRFS_READ_POLICY_PID);
- 		fallthrough;
- 	case BTRFS_READ_POLICY_PID:
- 		preferred_mirror = first + (current->pid % num_stripes);
--- 
-2.43.0
+I am still keeping the drive's state.
 
 
