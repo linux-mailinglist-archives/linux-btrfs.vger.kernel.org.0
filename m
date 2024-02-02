@@ -1,217 +1,184 @@
-Return-Path: <linux-btrfs+bounces-2075-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2076-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1A98847236
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 15:52:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95DC1847528
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 17:42:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 772471F2751E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 14:52:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03B951F2C0FB
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 16:42:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AFB145356;
-	Fri,  2 Feb 2024 14:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08961487D6;
+	Fri,  2 Feb 2024 16:42:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gOjEznbj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TrPZFJjM"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9417E102;
-	Fri,  2 Feb 2024 14:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBAD4148309
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 Feb 2024 16:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706885508; cv=none; b=WwmBp2FSLzqLzgm+oUJgrZ6YluXuMPCSSj//dVboh2YlaqFqLfbsXMR61wVTRWc+n06pPS83oOvjm53ptk32ActuXlmiR13D++yxd8ldAJKc5NZ5l31AXYbuAQhlBk/+wXSXlQRzK5FgVsOI8XS6gk+mlUSRn80raYh0lLfBMDk=
+	t=1706892157; cv=none; b=AwbuNr7onbWpRRK12BDrrXWzWpq9NY3kcUPQ28FbW567o1Objureebs0PT/+z59EzUmT85dPBog4TzAFdV3ViB13R78H6a+YkFsq4+r2dPuJlvSb+l3fYhrGgvmLkObKGxQavI/Sc9QNuuH8L5w5JrWvQVEMcuDmX07AZ/OWVF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706885508; c=relaxed/simple;
-	bh=zUhS/GQ8PfrAlJYNfh9JUV5LTVagX+UohjWX8XP81Bc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dQ8bPGoJf7Set2rYFOI85GbPwL3Mfj/xRj7URS2iLnWdyIlnjuCwqaAa3ZcVuFK7aw/FHFLtq9YcNNyMIktZFSh2iqi/l+Ks/oksUXdvmKJttKG41oON7fK5Abt3t9RYRQNXJI5+qKTcyQUNLC63D4FVnu6Mkhx6dyWNermQBPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gOjEznbj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26CF3C43394;
-	Fri,  2 Feb 2024 14:51:48 +0000 (UTC)
+	s=arc-20240116; t=1706892157; c=relaxed/simple;
+	bh=YKCKMxVFHMIPuu2bJjH9MEmdIGbKecLfMqM1qpjtGEw=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=sxgiSXVs+OWQeIkXKPgiEBAsS3IEYA8bCB3lG799PZMmeP6He+Vg3krJyF21DGLI6UyCqaGgSkQrj/j8qqRkFiL6uXaaF4pM1POq466Slfx6cp17t+fbi15/k9tAxByp+keBnxIi3nonjyUB7lvtmgogzU6wqxcMjdjlwzubKBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TrPZFJjM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71E3FC433F1
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 Feb 2024 16:42:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706885508;
-	bh=zUhS/GQ8PfrAlJYNfh9JUV5LTVagX+UohjWX8XP81Bc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=gOjEznbjczG1MU6MtZn2BhbrnOkm9j8li20D86KUpy6XIB7nbmHGvz4OZlLI9tj8h
-	 C50dl9VtfOpcFzuTOk++2AVn3mIRWPKazTp0CY8vlG0dxMxcimwDTrvcQSE7MweyPS
-	 3BOiJo3/GLE7B/jH++5DAIZyBJOq5wrgZgi8MAo0iju9pmIMcIH/mhoffnUQFRVxfw
-	 ZIU66TvtCeaquKNVNlfL+foxXGQ6a+gsY+W33cfKXTAePorYO6magXCDaJc6QmVInj
-	 IVkVxiiYacULtQvOg3yZPjcI4NcclyBEX5waZ0Qj/jVhqmGNTkdne3PaAQrGEKsF77
-	 YxRw/IHy8AEVw==
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a26f73732c5so337595866b.3;
-        Fri, 02 Feb 2024 06:51:48 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw0VjbCXyopU5qm32mJQyfVTnBhFoPH+YLLY3DvQsPyf5Y+5jhY
-	Ig6//Q0+02t12ZxadGicAL0xGdRvEGzpDI7EEiTgRe6axAejvf3i3gUiKxftrxKkcPcBSWZRldX
-	00k5erODdEu8ihxVS6wwI8aRsAeI=
-X-Google-Smtp-Source: AGHT+IFLOWsjZ5xZhJ8fP4Ew9IYBfAXbeGFrejW+f2u8JKX+/ZKIvqieI7WN9UD4+klEaAIxWzidtom7mWohmORU3e0=
-X-Received: by 2002:a17:906:118e:b0:a35:a1dc:8920 with SMTP id
- n14-20020a170906118e00b00a35a1dc8920mr3728098eja.45.1706885506428; Fri, 02
- Feb 2024 06:51:46 -0800 (PST)
+	s=k20201202; t=1706892157;
+	bh=YKCKMxVFHMIPuu2bJjH9MEmdIGbKecLfMqM1qpjtGEw=;
+	h=From:To:Subject:Date:From;
+	b=TrPZFJjM2CyyaNqILs2FmsXK5z7e92832Z6j3V6nRjxWwzJYiBTTCuoq2Kv20PlTa
+	 PysvDqke2NNqjglvzHVvL/cflaI6kg7LNzhWTZRpSXrCYo3kU2Ng0Emz/qMzVi3xLR
+	 G1YCAGStn16Bsq3359tj0sOIS2acZ8i4d4cbOZoaIps2tjee7L9gKWVG2jMcQXY1T0
+	 ztzHxzHk2WoWWNeZQcT0z+5SeO9bHX/WSokAoeK12KrHycFkVK8iD1EfSG+bilpREI
+	 1WZKEfVX6W2MzT1Q4mpS4L3BiX2zKzcBHV0IbBg2hYZRQSFQjeBUnOTMdCCgzvZJDo
+	 aAeeGV1ZX9eig==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: don't refill whole delayed refs block reserve when starting transaction
+Date: Fri,  2 Feb 2024 16:42:32 +0000
+Message-Id: <eba624e8cef9a1e84c9e1ba0c8f32347aa487e63.1706892030.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a3f51f2fff6581a6b4dd2e5776b7f40d22dcf65b.1706039782.git.boris@bur.io>
- <20240202131120.q35fe45cmu5e3dqz@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-In-Reply-To: <20240202131120.q35fe45cmu5e3dqz@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 2 Feb 2024 14:51:09 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7MsG8pLsrEeKOhtXPMw3psw3pFbTTn5k-LGLxLo2oCBg@mail.gmail.com>
-Message-ID: <CAL3q7H7MsG8pLsrEeKOhtXPMw3psw3pFbTTn5k-LGLxLo2oCBg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Remove btrfs/303
-To: Zorro Lang <zlang@redhat.com>
-Cc: linux-btrfs@vger.kernel.org, Boris Burkov <boris@bur.io>, kernel-team@fb.com, 
-	fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 2, 2024 at 1:11=E2=80=AFPM Zorro Lang <zlang@redhat.com> wrote:
->
-> On Tue, Jan 23, 2024 at 11:56:59AM -0800, Boris Burkov wrote:
-> > This test was reproducing a bug triggered by creating a subvolume qgrou=
-p
-> > before creating the subvolume itself with a snapshot.
-> >
-> > The kernel patch:
-> > btrfs: forbid creating subvol qgroups
-> >
-> > explicitly prevents that and makes it fail with EINVAL. I could "fix"
-> > this test by expecting the EINVAL message in the output, but at that
-> > point it would simply be a test that creating a subvolume and
-> > snapshotting it works with qgroups, which is adequately tested by other
-> > tests which focus on accurately measuring shared/exclusive usage in
-> > various snapshot/reflink scenarios. To avoid confusion, I think it is
-> > best to simply delete this test.
-> >
-> > Signed-off-by: Boris Burkov
-> > ---
->
-> Just a reminder, this's a test deletion. To avoid test coverage decrease,
-> I'd like to give it more time to get more reviewing of btrfs list. If no
-> one has any concern, I'll merge it :)
+From: Filipe Manana <fdmanana@suse.com>
 
-It's fine, it's the right thing to do.
+Since commit 28270e25c69a ("btrfs: always reserve space for delayed refs
+when starting transaction") we started not only to reserve metadata space
+for the delayed refs a caller of btrfs_start_transaction() might generate
+but also to try to fully refill the delayed refs block reserve, because
+there are several case where we generate delayed refs and haven't reserved
+space for them, relying on the global block reserve. Relying too much on
+the global block reserve is not always safe, and can result in hitting
+-ENOSPC during transaction commits or worst, in rare cases, being unable
+to mount a filesystem that needs to do orphan cleanup or anything that
+requires modifying the filesystem during mount, and has no more
+unallocated space and the metadata space is nearly full. This was
+explained in detail in that commit's change log.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+However the gap between the reserved amount and the size of the delayed
+refs block reserve can be huge, so attempting to reserve space for such
+a gap can result in allocating many metadata block groups that end up
+not being used. After a recent patch, with the subject:
 
-Thanks.
+  "btrfs: add new unused block groups to the list of unused block groups"
 
->
-> >  tests/btrfs/303     | 77 ---------------------------------------------
-> >  tests/btrfs/303.out |  2 --
-> >  2 files changed, 79 deletions(-)
-> >  delete mode 100755 tests/btrfs/303
-> >  delete mode 100644 tests/btrfs/303.out
-> >
-> > diff --git a/tests/btrfs/303 b/tests/btrfs/303
-> > deleted file mode 100755
-> > index 410460af5..000000000
-> > --- a/tests/btrfs/303
-> > +++ /dev/null
-> > @@ -1,77 +0,0 @@
-> > -#! /bin/bash
-> > -# SPDX-License-Identifier: GPL-2.0
-> > -# Copyright (C) 2023 SUSE Linux Products GmbH. All Rights Reserved.
-> > -#
-> > -# FS QA Test 303
-> > -#
-> > -# A regression test to make sure snapshot creation won't cause transac=
-tion
-> > -# abort if there is already an existing qgroup.
-> > -#
-> > -. ./common/preamble
-> > -_begin_fstest auto quick snapshot subvol qgroup
-> > -
-> > -. ./common/filter
-> > -
-> > -_supported_fs btrfs
-> > -_require_scratch
-> > -
-> > -_fixed_by_kernel_commit xxxxxxxxxxxx \
-> > -     "btrfs: do not abort transaction if there is already an existing =
-qgroup"
-> > -
-> > -_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
-> > -_scratch_mount
-> > -
-> > -# Create the first subvolume and get its id.
-> > -# This subvolume id should not change no matter if there is an existin=
-g
-> > -# qgroup for it.
-> > -$BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/subvol" >> $seqres.ful=
-l
-> > -$BTRFS_UTIL_PROG subvolume snapshot "$SCRATCH_MNT/subvol" \
-> > -     "$SCRATCH_MNT/snapshot">> $seqres.full
-> > -
-> > -init_subvolid=3D$(_btrfs_get_subvolid "$SCRATCH_MNT" "snapshot")
-> > -
-> > -if [ -z "$init_subvolid" ]; then
-> > -     _fail "Unable to get the subvolid of the first snapshot"
-> > -fi
-> > -
-> > -echo "Subvolumeid: ${init_subvolid}" >> $seqres.full
-> > -
-> > -_scratch_unmount
-> > -
-> > -# Re-create the fs, as btrfs won't reuse the subvolume id.
-> > -_scratch_mkfs >> $seqres.full 2>&1 || _fail "2nd mkfs failed"
-> > -_scratch_mount
-> > -
-> > -$BTRFS_UTIL_PROG quota enable "$SCRATCH_MNT" >> $seqres.full
-> > -_qgroup_rescan $SCRATCH_MNT >> $seqres.full
-> > -
-> > -# Create a qgroup for the first subvolume, this would make the later
-> > -# subvolume creation to find an existing qgroup, and abort transaction=
-.
-> > -$BTRFS_UTIL_PROG qgroup create 0/"$init_subvolid" "$SCRATCH_MNT" >> $s=
-eqres.full
-> > -
-> > -# Now create the first snapshot, which should have the same subvolid n=
-o matter
-> > -# if the quota is enabled.
-> > -$BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/subvol" >> $seqres.ful=
-l
-> > -$BTRFS_UTIL_PROG subvolume snapshot "$SCRATCH_MNT/subvol" \
-> > -     "$SCRATCH_MNT/snapshot" >> $seqres.full
-> > -
-> > -# Either the snapshot create failed and transaction is aborted thus no
-> > -# snapshot here, or we should be able to create the snapshot.
-> > -new_subvolid=3D$(_btrfs_get_subvolid "$SCRATCH_MNT" "snapshot")
-> > -
-> > -echo "Subvolumeid: ${new_subvolid}" >> $seqres.full
-> > -
-> > -if [ -z "$new_subvolid" ]; then
-> > -     _fail "Unable to get the subvolid of the first snapshot"
-> > -fi
-> > -
-> > -# Make sure the subvolumeid for the first snapshot didn't change.
-> > -if [ "$new_subvolid" -ne "$init_subvolid" ]; then
-> > -     _fail "Subvolumeid for the first snapshot changed, has ${new_subv=
-olid} expect ${init_subvolid}"
-> > -fi
-> > -
-> > -echo "Silence is golden"
-> > -
-> > -# success, all done
-> > -status=3D0
-> > -exit
-> > diff --git a/tests/btrfs/303.out b/tests/btrfs/303.out
-> > deleted file mode 100644
-> > index d48808e60..000000000
-> > --- a/tests/btrfs/303.out
-> > +++ /dev/null
-> > @@ -1,2 +0,0 @@
-> > -QA output created by 303
-> > -Silence is golden
-> > --
-> > 2.43.0
-> >
-> >
->
->
+We started to add new block groups that are unused to the list of unused
+block groups, to avoid having them around for a very long time in case
+they are never used, because a block group is only added to the list of
+unused block groups when we deallocate the last extent or when mounting
+the filesystem and the block group has 0 bytes used. This is not a problem
+introduced by the commit mentioned earlier, it always existed as our
+metadata space reservations are, most of the time, pessimistic and end up
+not using all the space they reserved, so we can occasionally end up with
+one or two unused metadata block groups for a long period. However after
+that commit mentioned earlier, we are just more pessimistic in the
+metadata space reservations when starting a transaction and therefore the
+issue is more likely to happen.
+
+This however is not always enough because we might create unused metadata
+block groups when reserving metadata space at a high rate if there's
+always a gap in the delayed refs block reserve and the cleaner kthread
+isn't triggered often enough or is busy with other work (running delayed
+iputs, cleaning deleted roots, etc), not to mention the block group's
+allocated space is only usable for a new block group after the transaction
+used to remove it is committed.
+
+A user reported that he's getting a lot of allocated metadata block groups
+but the usage percentage of metadata space was very low compared to the
+total allocated space, specially after running a series of block group
+relocations.
+
+So for now stop trying to refill the gap in the delayed refs block reserve
+and reserve space only for the delayed refs we are expected to generate
+when starting a transaction.
+
+CC: stable@vger.kernel.org # 6.7+
+Reported-by: Ivan Shapovalov <intelfx@intelfx.name>
+Link: https://lore.kernel.org/linux-btrfs/9cdbf0ca9cdda1b4c84e15e548af7d7f9f926382.camel@intelfx.name/
+Link: https://lore.kernel.org/linux-btrfs/CAL3q7H6802ayLHUJFztzZAVzBLJAGdFx=6FHNNy87+obZXXZpQ@mail.gmail.com/
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/transaction.c | 38 ++------------------------------------
+ 1 file changed, 2 insertions(+), 36 deletions(-)
+
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 70d7abd1f772..3575b2bf3042 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -562,56 +562,22 @@ static int btrfs_reserve_trans_metadata(struct btrfs_fs_info *fs_info,
+ 					u64 num_bytes,
+ 					u64 *delayed_refs_bytes)
+ {
+-	struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
+ 	struct btrfs_space_info *si = fs_info->trans_block_rsv.space_info;
+-	u64 extra_delayed_refs_bytes = 0;
+-	u64 bytes;
++	u64 bytes = num_bytes + *delayed_refs_bytes;
+ 	int ret;
+ 
+-	/*
+-	 * If there's a gap between the size of the delayed refs reserve and
+-	 * its reserved space, than some tasks have added delayed refs or bumped
+-	 * its size otherwise (due to block group creation or removal, or block
+-	 * group item update). Also try to allocate that gap in order to prevent
+-	 * using (and possibly abusing) the global reserve when committing the
+-	 * transaction.
+-	 */
+-	if (flush == BTRFS_RESERVE_FLUSH_ALL &&
+-	    !btrfs_block_rsv_full(delayed_refs_rsv)) {
+-		spin_lock(&delayed_refs_rsv->lock);
+-		if (delayed_refs_rsv->size > delayed_refs_rsv->reserved)
+-			extra_delayed_refs_bytes = delayed_refs_rsv->size -
+-				delayed_refs_rsv->reserved;
+-		spin_unlock(&delayed_refs_rsv->lock);
+-	}
+-
+-	bytes = num_bytes + *delayed_refs_bytes + extra_delayed_refs_bytes;
+-
+ 	/*
+ 	 * We want to reserve all the bytes we may need all at once, so we only
+ 	 * do 1 enospc flushing cycle per transaction start.
+ 	 */
+ 	ret = btrfs_reserve_metadata_bytes(fs_info, si, bytes, flush);
+-	if (ret == 0) {
+-		if (extra_delayed_refs_bytes > 0)
+-			btrfs_migrate_to_delayed_refs_rsv(fs_info,
+-							  extra_delayed_refs_bytes);
+-		return 0;
+-	}
+-
+-	if (extra_delayed_refs_bytes > 0) {
+-		bytes -= extra_delayed_refs_bytes;
+-		ret = btrfs_reserve_metadata_bytes(fs_info, si, bytes, flush);
+-		if (ret == 0)
+-			return 0;
+-	}
+ 
+ 	/*
+ 	 * If we are an emergency flush, which can steal from the global block
+ 	 * reserve, then attempt to not reserve space for the delayed refs, as
+ 	 * we will consume space for them from the global block reserve.
+ 	 */
+-	if (flush == BTRFS_RESERVE_FLUSH_ALL_STEAL) {
++	if (ret && flush == BTRFS_RESERVE_FLUSH_ALL_STEAL) {
+ 		bytes -= *delayed_refs_bytes;
+ 		*delayed_refs_bytes = 0;
+ 		ret = btrfs_reserve_metadata_bytes(fs_info, si, bytes, flush);
+-- 
+2.40.1
+
 
