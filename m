@@ -1,201 +1,354 @@
-Return-Path: <linux-btrfs+bounces-2062-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2063-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19457846F2F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 12:41:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5148D846F49
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 12:44:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C565F289D88
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 11:41:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59E201C21687
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Feb 2024 11:44:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143301419B6;
-	Fri,  2 Feb 2024 11:39:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B418D140795;
+	Fri,  2 Feb 2024 11:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MgZN88Vj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IXybJVuy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDE4140799;
-	Fri,  2 Feb 2024 11:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706873966; cv=fail; b=OQa46ZCif7/qDvV0euuxqxHKV5HRc85OJhqK0RsnuI4g+lE5MaDCmsFodHGv8ZbuDYPbDHCsularyBbCzRT72dGkkYD/atMowwQJ038sE/lD/t3Z1PvdkU4zssX0f/Q5F0cKqYdWpqAFIJlQxUwQ2B9f7GVYW3K2emc8lIx5WS4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706873966; c=relaxed/simple;
-	bh=xkRf+LBm8U5DEanN/lZV3DQwOVae4xDfjQDOjqaI/ao=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ch++FQ9/qxQJT7FTk14Ex72phDkxKi8JTI1IebMo+WyUZ7THHvwJd0JCc0U6pDZXLXs55wAk1cx4GebiME1FwjbU+XcwQHP6a1OZD7zQH9aacxhpE0tLjg1hMCdzuATx67Oocmxo+bHCRNh8f8spFXTQE0OEkwpOXwHtV5iKSEs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MgZN88Vj; arc=fail smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706873964; x=1738409964;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=xkRf+LBm8U5DEanN/lZV3DQwOVae4xDfjQDOjqaI/ao=;
-  b=MgZN88Vjso0HeaDxmHADPAZyZqZwWsR6T8cfCoTsISBSW6XcQMzTx2HD
-   rXpdRTS/B33ZJEQyWlWSaEMvzI7tkqka0aiRQs8M2qcGjbDVpV1G/jpyq
-   gw4R9jsDZ3gjwlOvvOcXvX84GIIRPLrG0Zmm6VNLcmUIRjZWYz6H/Pgf2
-   P7d8s7Sqizc/hJwe7wwTddkllp1TJ3QQgNZSIDOSS06XCmHmHSNnRfqzf
-   oWbaki6+3r8XdSEwTQRb3IPYsuAu7o/R1KNpU+ablZtVroBRSZCbgSwx9
-   s9RGtYalFbgii9zc+vg9tqUnkrNCVtBmSZVbOG+s6gCBPShy+yj/bxVpc
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="17669972"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="17669972"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 03:39:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="4809814"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 02 Feb 2024 03:39:23 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 2 Feb 2024 03:39:21 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 2 Feb 2024 03:39:21 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 2 Feb 2024 03:39:21 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GmSFvVNnVeQHtavRwKt2xg1A5zeOK+UczFE6XqoFjYas7deyMZPmZT7SjAkbTLSdeXPnqTCc3Kk7d3IjSXCSEeeOI9NC8hA0DXjOLS9HEEr41OMeCSveYaABrBIuY9SCK8vusAUciKO385MCESmJKqM5vTHK0Oe6zmHRd0WLKfY5b07D5pRITqeaI1tj1rFdt/nmza/MI1pvYQJGPZRKUJ9ppvUsYdp3oZNopig0sut3szdGe8C/4nDkT3oEA9/JljPytYaZdt2nF6H6ulGHyfZzRpJ75UZ0AnFyQuX+zJCgl5gQW9JMyzXnx3fbA+srh+Kxitoxb39t1XRy4d2UTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hi4MUfAEBzT+yrIX5ELl+hDWxei4TQFm65P8IE06RFo=;
- b=Jxes1CRFRHzZeheE3DC9mvswx5vzCZkYXLwYyAHLsw2eBM07609OKlo0LuN+jlDA8oNB3QxRcAdfWW6Z7EFxPUvrlVebzmC0fUaqdiYc4a9M8G+mWp+mcwmm7G2t6rJo33aaWs0UQx1nBdR9JsiZYx9z8W1EQxAY/zxU5BRMw6pINW/F2QmJ5ct+Ag/G6kTuKmv4zuJ80JjfIAhiIy2zkfQokj8aRJX8nrpKrU1JmfuzCLQXrb7WTubN0XwSRqcmTb6toaGgiJOMEHmpzT084CS6QAsrvMNztHTRhzATzGY6QY5bS1SjYvsuV3S76IIndQMSkeNG79NcO4ZDAqQTGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN6PR11MB8102.namprd11.prod.outlook.com (2603:10b6:208:46d::9)
- by SA0PR11MB4541.namprd11.prod.outlook.com (2603:10b6:806:94::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.29; Fri, 2 Feb
- 2024 11:39:19 +0000
-Received: from MN6PR11MB8102.namprd11.prod.outlook.com
- ([fe80::b1b8:dbaa:aa04:a6bf]) by MN6PR11MB8102.namprd11.prod.outlook.com
- ([fe80::b1b8:dbaa:aa04:a6bf%7]) with mapi id 15.20.7249.024; Fri, 2 Feb 2024
- 11:39:19 +0000
-Message-ID: <b6b16208-4dd0-4c34-b377-3bdf5bbdfeb4@intel.com>
-Date: Fri, 2 Feb 2024 12:39:13 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 13/21] bitmap: make bitmap_{get,set}_value8()
- use bitmap_{read,write}()
-Content-Language: en-US
-To: Alexander Lobakin <aleksander.lobakin@intel.com>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-CC: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>, Marcin Szycik
-	<marcin.szycik@linux.intel.com>, Wojciech Drewek <wojciech.drewek@intel.com>,
-	Yury Norov <yury.norov@gmail.com>, Andy Shevchenko <andy@kernel.org>, "Rasmus
- Villemoes" <linux@rasmusvillemoes.dk>, Alexander Potapenko
-	<glider@google.com>, Jiri Pirko <jiri@resnulli.us>, Ido Schimmel
-	<idosch@nvidia.com>, Simon Horman <horms@kernel.org>,
-	<linux-btrfs@vger.kernel.org>, <dm-devel@redhat.com>,
-	<ntfs3@lists.linux.dev>, <linux-s390@vger.kernel.org>,
-	<intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
- <20240201122216.2634007-14-aleksander.lobakin@intel.com>
-From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-In-Reply-To: <20240201122216.2634007-14-aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0048.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:48::10) To MN6PR11MB8102.namprd11.prod.outlook.com
- (2603:10b6:208:46d::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1D5D13E215
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 Feb 2024 11:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706874090; cv=none; b=GCYy6qyEGeyVI3Jzr1uPY/CLCmDqlPRrdbPTwhsHg3AiTTs56SvMZNKvZt/JEUqGdXbc72CmNcCKR9ERTyDL+WWsTsBR5jWUJJIDVuOg+h7vo0WpFdySSPrjVXrOSv/VU4i8lrf7xbVek2uriALdS30okVpaDT5lQ04VA/eM06U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706874090; c=relaxed/simple;
+	bh=e1IKlUgd6JHDvBF9B+oR0oNAlvKRpcX0JPrp7gYx1Ec=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jVUDHi3x9cF/FruIvgZj7YfHd65L2tST3V60zX5UuoVEPcrWVfRJLsaTLf/JNjd9LTqdJA8S23aNdKXjjgKI9jCo3DvitUarFkmMpVVXDDgR5ROAkoLc/wGrzdTP2CyO5eMvHxeZroPXWRZRr3AKNGwpR43UaCiVuKHfnC6wKA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IXybJVuy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B0C2C43390
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 Feb 2024 11:41:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706874089;
+	bh=e1IKlUgd6JHDvBF9B+oR0oNAlvKRpcX0JPrp7gYx1Ec=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=IXybJVuyRzKS4kRsMqA/4CYNcUWfFAgZUNYpjdU5W4m1VzbUklnDQSSsc4FqPQfev
+	 O/BIObHFFbQXRYtRB9m/uAt/dLXbWnarVDP7Ip2Lyb16PaooW0uU0cFlaBxOiOkZxn
+	 Qrc7DzQN0XzZcINgBpqagKK7RpXQsC9DEQIBduRp4QoNlA8WwMiBHFhZO6VjizFXha
+	 Txd8E5C9Z93FhXWLcxT862Gn8d3gXUkFlRJl/0RSmZuFwmKVO9+sQszERL2BMY14ik
+	 rQqi0Rt7X315rEBs0z5kOB+91UDujcgGp3hYa7zYRjKECVELjxM71jOhj9ajjnpjHQ
+	 2axUyVRd/9ysg==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a318ccfe412so224706166b.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Feb 2024 03:41:29 -0800 (PST)
+X-Gm-Message-State: AOJu0Yyn8w901OlLdSF/XvuryQQIV/3rBJXu5xBefxHYzlfirHczDAOP
+	r80z+wglKz9G8rddMqIAir104fd7ev7Z3JdnrNK6rD1GD9Qa3v38biavWSz8OFUH450QGApR1Js
+	rDpTOPu6U77e6N/WNC9ewafZjZNc=
+X-Google-Smtp-Source: AGHT+IFbnGSakGtA9J+d+A/ZdOlWaCLDctsAafuvkJGIakrulqA+dGfcKfVVON0PJ4qCjqaj04Azz8T9y6sOaLsioJA=
+X-Received: by 2002:a17:906:ad7:b0:a35:a3e2:edd3 with SMTP id
+ z23-20020a1709060ad700b00a35a3e2edd3mr1422327ejf.59.1706874087719; Fri, 02
+ Feb 2024 03:41:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN6PR11MB8102:EE_|SA0PR11MB4541:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2fca6fda-f59b-487c-a1b2-08dc23e39828
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ORk0m+9eu95yKvcd2sujVW9SnkNtOl1wnGIdN6B4S3pEWIqTamo9LC8uvz2JYTw7uDqiQWO42M4dp9/u3/iKo480A/+WGchutcIA74ejpjwMUyXGN7+RY1J2x1YUeAWpZcpU0UYKpxD9Rzodsw3yMm86JBpQfMO1WAM8X7p0JZdN/yRQwS54agmfBMvbskRpo9aTh7N3YUYAb8HYEmBanub6CFJTFzT8cvkTHXSi5Txs5Xe4v3tbDHKuVUKVr1Gwe8LUkeCghWNZ0YQNV/SOuhNb3r2XfwuxTCk9hZ/7TnmjiA1iTCE6cSM181SW5ma2ZfxeEhHIMZD5rf7P7hCnmkiIGR2f3iNIl9/ABi+YO7LDKpPXhq3hHdmVN5FJcqRthZ379tw3Z3HKzhjkqRUXKfRNXk5mQ6QvDIkcA8f13BObYfcPMqZwRv4AWKFRo9FeYhocuQ06hYLT3HXnGo2Lds2b7q7TeLmSZo+QtoLeri815BIEHwJUnnV0pGTYbOQZL5hpAs3ZAACqfC9cC9a4oopp7tgiUn4bR2nBRDXeo6AZ0LrH29gZEMYts802V5+lX49xRRTFwJoeQFwaX7Qh4tAmJXcmFtC58PNOK8XPDHW/tUKZn4AMpyAFogULHNs1MKKn8NBSWHCh+PwbeWtPwg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN6PR11MB8102.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(136003)(39860400002)(346002)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(83380400001)(26005)(41300700001)(2616005)(54906003)(82960400001)(8936002)(38100700002)(110136005)(66946007)(8676002)(316002)(66556008)(4326008)(66476007)(5660300002)(4744005)(7416002)(2906002)(6666004)(6506007)(6486002)(6512007)(478600001)(53546011)(86362001)(31696002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aDBFakY3NE5aUFozaVpvMWJiendFMWRGeHV5cHhvdFltamhKdDA3NDBIbGNu?=
- =?utf-8?B?YjdpblZYVG9TSDlraG5oWnZkWDlpYzNiMC9Sbk9VTDNqN1dRWW5CL1pCTG5C?=
- =?utf-8?B?WUwxVEY0TXZNOW9zYjBJdUlmcUxmWDM0VkR4MWVnaEhCM3BsdXRvRFcvdmNp?=
- =?utf-8?B?U0dKeW9uUjh3SE94ajgxK1l3NTF5emZxVkJaUGtOdVpUMmtFTkhNamY1NnlX?=
- =?utf-8?B?WkRTeW9lVVdVWGNiVGFpVUJjLzNBQkpvRjdoZVNpL0JTNGRDYzVod3o2T1Fv?=
- =?utf-8?B?MWhpYWMzQ05GNm1sS2Z1ZXNWZ1hDWk5IK1M1RTgvbytCQWRZQlVkUUhDM2hy?=
- =?utf-8?B?YVUvLzFlRmFwRVBoK2x1WjFEbzh5dUswN0Fyd0RINkZaSnhMMGg0aXpMZkxC?=
- =?utf-8?B?akRMQjBOWitxaWtJbGxBRXJWbkwvTy9oSXUwYjhFcC9vK2tRTnBHUEVIZldv?=
- =?utf-8?B?Q0hta1RCTHdSZ3l1U3E4dXcwV0RoYnRtTVJZZU9tTEd3RUVLTC9xVWxaUzMw?=
- =?utf-8?B?V0FsTXRyQ3dLaEY0VnVuNVJkQllsZFVSdnpWL21NdmRXTzBndjdrN3NObm5E?=
- =?utf-8?B?N1BzaDRDMGM3MnBydWpNV3hkeGYrdWY3ZmF2RTZNVzdpK1oxaEhHV3FYWmlB?=
- =?utf-8?B?SmMrV2Npc1hxb2V5RVlMQXBRNHlYcGJBWkJXNnhJTnBDRXN0dXdocHg0RWpZ?=
- =?utf-8?B?SHRsUHJla2tlWlVDdVFWck9FMDQvYlJvTWlWWTAyT05WYW5RSzNYZDhnQ2xW?=
- =?utf-8?B?SW01TDdLQ3o4TmVyWjU2QlVSVllLekF3eUp4UnRYeG1lNlFqMGtBaEd0U1V1?=
- =?utf-8?B?TTF6clNOdkJ3T2tGdDJQYWZCcllWQmFnZDIvTUNIZVE0cjVqTXhqSWs4bVZK?=
- =?utf-8?B?c1YyYko4K1daNDQzOUZ0VU81UlA4UkgxcWRTK0VhcjJENGhzRVhlVTBId0Ri?=
- =?utf-8?B?UGJWS0VOeGF5R3FweTNuKzE4VTU4S2xqVTJ4b0tYa0ZoejVFL3p0Tk1OZmFv?=
- =?utf-8?B?eE9lUnp6UUQyWHlESkdKdVEyNlNWMk9jRGR2L2VXNG1kQmtpMllYMDh2czJB?=
- =?utf-8?B?VXVKZVBVSmNiemU0dWJtdjVVYkhxWkIzS1o5RTA1bXVNeXpoc1FyN3FudzVX?=
- =?utf-8?B?YVR0N2srN3ZVSXpLREpmaG5panVBbCtabmxQQmZZUW1NdTE3cXBTVjJCSlBi?=
- =?utf-8?B?VlhHbFFJM1BkODZPZ3d6UVVjWk1lMUkycUJnbFh0eXVPK2ZIS3BIMGxiTGNG?=
- =?utf-8?B?cWJVRWVJR0pGU0JIU1BUV2cxQVp2T3RiVmdkRjd1MUt6LzRtSXVXdm90WGt4?=
- =?utf-8?B?VDVKbkJ4V01mNjFIM0NtUk42T1E2SlNmdkRiWDllTDN0Q1JCWktGeC9IZFZM?=
- =?utf-8?B?VmZvM0lDRld6b2dBTFF5TFBIK2VZd0ZacnJHMTQrRmd6L1pXdlNDejhwUEVG?=
- =?utf-8?B?aUtRblU3SlFrUWUvZmRYYUpTeGxocEUxYStXOHQvUmlMMUR6R1ZWOHBOZ3BZ?=
- =?utf-8?B?MURlTjVkd3VYZjBzcXZjbUNGQXZkQllCTjNZN1VFUWsrOU94eitOcTZsU3lr?=
- =?utf-8?B?RFc2T0poYXZjVzlVdnR0cldRMnM4blZhenpsU3hRa2REbWNndll0UzlyN2o5?=
- =?utf-8?B?a3B6aThjdG8wQ1ErREc4a1VYUzhlNWdWVWdXYXRQaGtpRTJtNGx6UkUyaUR3?=
- =?utf-8?B?N296bjFzNloxRlFMUU1LOXV1cGZkR3F5S3pEb1R1VDhWeXNuTFFoSFg5NFJR?=
- =?utf-8?B?cGozU2xDb0RuTUdwNEdpTDJHOHYyWlBnZ1Y4eThsU21kanhMNVk3TWJNckpn?=
- =?utf-8?B?bkNubFJLSmVwTWlhUWN6S3JsTFVubkF4N0tVc0cwNkIxSzhVZmN4Y2MzRFBW?=
- =?utf-8?B?b210MjY2bVNjWWpMNDNBT0dlVVJGUkhhWUZVZUkyVHZFc2RtaWpnRlJoV040?=
- =?utf-8?B?WVprQjZnZTdIZ0hmdHNDRlYxUEwxNWlPMFBaNi9nb3hUTitCTEhtRHM1WW1s?=
- =?utf-8?B?cGFTZEdYZTVqK1hGY2lrVFJ3ZWZBS0tlNllVa2l1M0Y1MExxZ1VjSXdLbFJr?=
- =?utf-8?B?MWFHYm9FNGZQaFJvbnBVREpqNkZSMXM0dW12RXhzaGJ2bGFpbUZtNWJTQTZH?=
- =?utf-8?B?dzNVUW8wc2htYmxuTno0aHdDOEkrYXhDN2RQUnF5QWxGOU9RNU03OW9oeE13?=
- =?utf-8?B?MGc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2fca6fda-f59b-487c-a1b2-08dc23e39828
-X-MS-Exchange-CrossTenant-AuthSource: MN6PR11MB8102.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2024 11:39:19.8069
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BcyHDi9ANWfe4tpz2OsFerogpgZISJJEWzdICXR452ROKg5LgNvcui26uMhqYPNoFdVPQAFTeeuQpyfIdzJNQNtNHeMC/SGl+d/K2pIx5JA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4541
-X-OriginatorOrg: intel.com
+References: <47ac92a6c8be53a5e10add9315255460c062b52d.1706817512.git.josef@toxicpanda.com>
+In-Reply-To: <47ac92a6c8be53a5e10add9315255460c062b52d.1706817512.git.josef@toxicpanda.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 2 Feb 2024 11:40:50 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7Dk0Ei=MFEyvt6P5Gz4WOn98KPhK7nhLgTOxyhc97hRA@mail.gmail.com>
+Message-ID: <CAL3q7H7Dk0Ei=MFEyvt6P5Gz4WOn98KPhK7nhLgTOxyhc97hRA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix deadlock with fiemap and extent locking
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/1/24 13:22, Alexander Lobakin wrote:
-> Now that we have generic bitmap_read() and bitmap_write(), which are
-> inline and try to take care of non-bound-crossing and aligned cases
-> to keep them optimized, collapse bitmap_{get,set}_value8() into
-> simple wrappers around the former ones.
-> bloat-o-meter shows no difference in vmlinux and -2 bytes for
-> gpio-pca953x.ko, which says the optimization didn't suffer due to
-> that change. The converted helpers have the value width embedded
-> and always compile-time constant and that helps a lot.
-> 
-> Suggested-by: Yury Norov <yury.norov@gmail.com>
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+On Thu, Feb 1, 2024 at 7:59=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> w=
+rote:
+>
+> While working on the patchset to remove extent locking I got a lockdep
+> splat with fiemap and pagefaulting with my new extent lock replacement
+> lock.
+>
+> This deadlock exists with our normal code, we just don't have lockdep
+> annotations with the extent locking so we've never noticed it.
+>
+> Since we're copying the fiemap extent to user space on every iteration
+> we have the chance of pagefaulting.  Because we hold the extent lock for
+> the entire range we could mkwrite into a range in the file that we have
+> mmap'ed.  This would deadlock with the following stack trace
+>
+> [<0>] lock_extent+0x28d/0x2f0
+> [<0>] btrfs_page_mkwrite+0x273/0x8a0
+> [<0>] do_page_mkwrite+0x50/0xb0
+> [<0>] do_fault+0xc1/0x7b0
+> [<0>] __handle_mm_fault+0x2fa/0x460
+> [<0>] handle_mm_fault+0xa4/0x330
+> [<0>] do_user_addr_fault+0x1f4/0x800
+> [<0>] exc_page_fault+0x7c/0x1e0
+> [<0>] asm_exc_page_fault+0x26/0x30
+> [<0>] rep_movs_alternative+0x33/0x70
+> [<0>] _copy_to_user+0x49/0x70
+> [<0>] fiemap_fill_next_extent+0xc8/0x120
+> [<0>] emit_fiemap_extent+0x4d/0xa0
+> [<0>] extent_fiemap+0x7f8/0xad0
+> [<0>] btrfs_fiemap+0x49/0x80
+> [<0>] __x64_sys_ioctl+0x3e1/0xb50
+> [<0>] do_syscall_64+0x94/0x1a0
+> [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>
+> I wrote an fstest to reproduce this deadlock without my replacement lock
+> and verified that the deadlock exists with our existing locking.
+>
+> To fix this simply don't take the extent lock for the entire duration of
+> the fiemap.  This is safe in general because we keep track of where we
+> are when we're searching the tree, so if an ordered extent updates in
+> the middle of our fiemap call we'll still emit the correct extents
+> because we know what offset we were on before.
+>
+> The only place we maintain the lock is searching delalloc.  Since the
+> delalloc stuff can change during writeback we want to lock the extent
+> range so we have a consistent view of delalloc at the time we're
+> checking to see if we need to set the delalloc flag.
+>
+> With this patch applied we no longer deadlock with my testcase.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Looks good, but just some minor comments below.
+
 > ---
->   include/linux/bitmap.h | 38 +++++---------------------------------
->   1 file changed, 5 insertions(+), 33 deletions(-)
-> 
+>  fs/btrfs/extent_io.c | 49 +++++++++++++++++++++++++++++---------------
+>  1 file changed, 33 insertions(+), 16 deletions(-)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 8648ea9b5fb5..f8b68249d958 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2683,16 +2683,25 @@ static int fiemap_process_hole(struct btrfs_inode=
+ *inode,
+>          * it beyond i_size.
+>          */
+>         while (cur_offset < end && cur_offset < i_size) {
+> +               struct extent_state *cached_state =3D NULL;
+>                 u64 delalloc_start;
+>                 u64 delalloc_end;
+>                 u64 prealloc_start;
+> +               u64 lockstart, lockend;
 
-Hah, nice!
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+I think our preferred style is to declare one variable per line.
+It also makes it consistent with the rest of the existing local code.
+
+>                 u64 prealloc_len =3D 0;
+>                 bool delalloc;
+>
+> +               lockstart =3D round_down(cur_offset,
+> +                                      inode->root->fs_info->sectorsize);
+
+As a single that would be 85 characters wide, still acceptable.
+
+> +               lockend =3D round_up(end, inode->root->fs_info->sectorsiz=
+e);
+> +
+> +               lock_extent(&inode->io_tree, lockstart, lockend, &cached_=
+state);
+>                 delalloc =3D btrfs_find_delalloc_in_range(inode, cur_offs=
+et, end,
+>                                                         delalloc_cached_s=
+tate,
+>                                                         &delalloc_start,
+>                                                         &delalloc_end);
+> +               unlock_extent(&inode->io_tree, lockstart, lockend,
+> +                             &cached_state);
+
+This can be made into a single line, as it's only 82 characters wide.
+
+>                 if (!delalloc)
+>                         break;
+>
+> @@ -2860,15 +2869,14 @@ int extent_fiemap(struct btrfs_inode *inode, stru=
+ct fiemap_extent_info *fieinfo,
+>                   u64 start, u64 len)
+>  {
+>         const u64 ino =3D btrfs_ino(inode);
+> -       struct extent_state *cached_state =3D NULL;
+>         struct extent_state *delalloc_cached_state =3D NULL;
+>         struct btrfs_path *path;
+>         struct fiemap_cache cache =3D { 0 };
+>         struct btrfs_backref_share_check_ctx *backref_ctx;
+>         u64 last_extent_end;
+>         u64 prev_extent_end;
+> -       u64 lockstart;
+> -       u64 lockend;
+> +       u64 align_start;
+> +       u64 align_end;
+>         bool stopped =3D false;
+>         int ret;
+>
+> @@ -2879,12 +2887,11 @@ int extent_fiemap(struct btrfs_inode *inode, stru=
+ct fiemap_extent_info *fieinfo,
+>                 goto out;
+>         }
+>
+> -       lockstart =3D round_down(start, inode->root->fs_info->sectorsize)=
+;
+> -       lockend =3D round_up(start + len, inode->root->fs_info->sectorsiz=
+e);
+> -       prev_extent_end =3D lockstart;
+> +       align_start =3D round_down(start, inode->root->fs_info->sectorsiz=
+e);
+> +       align_end =3D round_up(start + len, inode->root->fs_info->sectors=
+ize);
+> +       prev_extent_end =3D align_start;
+>
+>         btrfs_inode_lock(inode, BTRFS_ILOCK_SHARED);
+> -       lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+>
+>         ret =3D fiemap_find_last_extent_offset(inode, path, &last_extent_=
+end);
+>         if (ret < 0)
+> @@ -2892,7 +2899,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct=
+ fiemap_extent_info *fieinfo,
+>         btrfs_release_path(path);
+>
+>         path->reada =3D READA_FORWARD;
+> -       ret =3D fiemap_search_slot(inode, path, lockstart);
+> +       ret =3D fiemap_search_slot(inode, path, align_start);
+>         if (ret < 0) {
+>                 goto out_unlock;
+>         } else if (ret > 0) {
+> @@ -2904,7 +2911,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct=
+ fiemap_extent_info *fieinfo,
+>                 goto check_eof_delalloc;
+>         }
+>
+> -       while (prev_extent_end < lockend) {
+> +       while (prev_extent_end < align_end) {
+>                 struct extent_buffer *leaf =3D path->nodes[0];
+>                 struct btrfs_file_extent_item *ei;
+>                 struct btrfs_key key;
+> @@ -2927,14 +2934,14 @@ int extent_fiemap(struct btrfs_inode *inode, stru=
+ct fiemap_extent_info *fieinfo,
+>                  * The first iteration can leave us at an extent item tha=
+t ends
+>                  * before our range's start. Move to the next item.
+>                  */
+> -               if (extent_end <=3D lockstart)
+> +               if (extent_end <=3D align_start)
+>                         goto next_item;
+>
+>                 backref_ctx->curr_leaf_bytenr =3D leaf->start;
+>
+>                 /* We have in implicit hole (NO_HOLES feature enabled). *=
+/
+>                 if (prev_extent_end < key.offset) {
+> -                       const u64 range_end =3D min(key.offset, lockend) =
+- 1;
+> +                       const u64 range_end =3D min(key.offset, align_end=
+) - 1;
+>
+>                         ret =3D fiemap_process_hole(inode, fieinfo, &cach=
+e,
+>                                                   &delalloc_cached_state,
+> @@ -2949,7 +2956,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct=
+ fiemap_extent_info *fieinfo,
+>                         }
+>
+>                         /* We've reached the end of the fiemap range, sto=
+p. */
+> -                       if (key.offset >=3D lockend) {
+> +                       if (key.offset >=3D align_end) {
+>                                 stopped =3D true;
+>                                 break;
+>                         }
+> @@ -3043,29 +3050,40 @@ int extent_fiemap(struct btrfs_inode *inode, stru=
+ct fiemap_extent_info *fieinfo,
+>         btrfs_free_path(path);
+>         path =3D NULL;
+>
+> -       if (!stopped && prev_extent_end < lockend) {
+> +       if (!stopped && prev_extent_end < align_end) {
+>                 ret =3D fiemap_process_hole(inode, fieinfo, &cache,
+>                                           &delalloc_cached_state, backref=
+_ctx,
+> -                                         0, 0, 0, prev_extent_end, locke=
+nd - 1);
+> +                                         0, 0, 0, prev_extent_end, align=
+_end - 1);
+>                 if (ret < 0)
+>                         goto out_unlock;
+> -               prev_extent_end =3D lockend;
+> +               prev_extent_end =3D align_end;
+>         }
+>
+>         if (cache.cached && cache.offset + cache.len >=3D last_extent_end=
+) {
+>                 const u64 i_size =3D i_size_read(&inode->vfs_inode);
+>
+>                 if (prev_extent_end < i_size) {
+> +                       struct extent_state *cached_state =3D NULL;
+>                         u64 delalloc_start;
+>                         u64 delalloc_end;
+> +                       u64 lockstart, lockend;
+
+Same as before, one per line.
+
+>                         bool delalloc;
+>
+> +                       lockstart =3D round_down(prev_extent_end,
+> +                                              inode->root->fs_info->sect=
+orsize);
+> +                       lockend =3D round_up(i_size,
+> +                                          inode->root->fs_info->sectorsi=
+ze);
+> +
+
+With several places in the whole function now using
+inode->root->fs_info->sectorsize, we could
+have a:
+
+const u64 sectorsize =3D inode->root->fs_info->sectorsize;
+
+At the top level of the function and then use it and avoid multiple lines.
+
+> +                       lock_extent(&inode->io_tree, lockstart, lockend,
+> +                                   &cached_state);
+>                         delalloc =3D btrfs_find_delalloc_in_range(inode,
+>                                                                 prev_exte=
+nt_end,
+>                                                                 i_size - =
+1,
+>                                                                 &delalloc=
+_cached_state,
+>                                                                 &delalloc=
+_start,
+>                                                                 &delalloc=
+_end);
+> +                       unlock_extent(&inode->io_tree, lockstart, lockend=
+,
+> +                                     &cached_state);
+>                         if (!delalloc)
+>                                 cache.flags |=3D FIEMAP_EXTENT_LAST;
+>                 } else {
+> @@ -3076,7 +3094,6 @@ int extent_fiemap(struct btrfs_inode *inode, struct=
+ fiemap_extent_info *fieinfo,
+>         ret =3D emit_last_fiemap_cache(fieinfo, &cache);
+>
+>  out_unlock:
+> -       unlock_extent(&inode->io_tree, lockstart, lockend, &cached_state)=
+;
+>         btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
+>  out:
+>         free_extent_state(delalloc_cached_state);
+> --
+> 2.43.0
+>
+>
 
