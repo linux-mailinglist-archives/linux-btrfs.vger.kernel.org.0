@@ -1,85 +1,71 @@
-Return-Path: <linux-btrfs+bounces-2093-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2094-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A550D848E02
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Feb 2024 14:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B6CBC848FE3
+	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Feb 2024 19:20:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50115B21FD5
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Feb 2024 13:15:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25980B21FE4
+	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Feb 2024 18:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0E1224ED;
-	Sun,  4 Feb 2024 13:15:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 166CA24A12;
+	Sun,  4 Feb 2024 18:20:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L277D5EG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="elXcEfiV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2F1224D6
-	for <linux-btrfs@vger.kernel.org>; Sun,  4 Feb 2024 13:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C6B249ED
+	for <linux-btrfs@vger.kernel.org>; Sun,  4 Feb 2024 18:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707052532; cv=none; b=kOsYeNREa6bpksrZhYp5tBkJozlwc9qMlk8f5Ft85c//muJe/BcQWplwhckN1oCjv0P2Vm2s0uzy0q1LZmQwp1BdOBEEYjk6ZQAhBcs75XesgUgXTOqlsy0HvO1GLWS+LyFkiNY3/kGyLECBoYD67aahhiEe3UFdEG4uedcUWz0=
+	t=1707070839; cv=none; b=dmOKCgwqr4teXT5PLq3J7avfR9FMnbH922oAvBZa0gMFI+6nylCD+md6V+0q8eGbzItfeMqyuNigScPddcbZ8/RJYNuU3d/gu9dR/DO+uWagRe4Hy5bwMJFEYAFHop8IpceC5oC8eY3h8x9nwNTxCsMpXA/h6kGR7Z2N7sRxXJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707052532; c=relaxed/simple;
-	bh=CoHXpdBjd4fWUj/c5qQ8LMn61AkWL0vC3uZ+k84u5aE=;
+	s=arc-20240116; t=1707070839; c=relaxed/simple;
+	bh=gy8zs2FoOIoSogXPm8fRBnCFPBZTbqCcHm5nXQLDHz8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u7TdmrXDOCh8k1cwGuL8dIAx8EmN64p+y6B0MqNsrbjymmAoTxWfSOMollKPkJ/UynQUZa8snRZzk6EefAQk5bO9VtBsJxCoBn3SkUqE2WJBDkqu4my91UrRHX89fZhAJjZ1BtqvWI6MN3Y7hfKwVfVg489M8Gh6Yszl04bPU+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L277D5EG; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707052529;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lxyP1JsFMLPRUoWk0k5pEtCyUPIcZiMCq+pimvMnsVg=;
-	b=L277D5EGQCA0zLZeWcuSy9/NLTJ5KC99q+sMTt6rJxrC+cEM3c+d/OwGMdRtZZaNDIO6+7
-	7gznAw0oUucz0phTOaraZA9w9dGWfm9arRK0cml6ejZiURy37yiFg/QxjZhilZQYEEGxwj
-	jp2ivmOjxdBF3H/4MusSaUg3xjoEpjo=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-422-1S_eWhn7NDmfG-PxjfrMGQ-1; Sun, 04 Feb 2024 08:15:26 -0500
-X-MC-Unique: 1S_eWhn7NDmfG-PxjfrMGQ-1
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5ce63e72bc3so3602403a12.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 04 Feb 2024 05:15:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707052525; x=1707657325;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lxyP1JsFMLPRUoWk0k5pEtCyUPIcZiMCq+pimvMnsVg=;
-        b=goIlB5CojEewsYHK6QDCD/izC/iCVBQWM0X4mhE7/YwmO7/eW/r7re8WDjKLFpjgFt
-         Rw7iFDa1jxsRxHDIRLqqfhj3JZKBZkWRRrq2kZ+HQ+WcTMlQPXm+wquDmDAp5g5niRId
-         k1b/1uTMbHLmRdKbpVMOnDgqhxTvVjx5rv28GXwbJtVeJapSTl2jYm+Hdm8ezMMMkchP
-         Xh7V1Cvg4oVNDmRgwwfK0ed4viaEdYbYEGtLH27nnQ1zxQziR4DP3t/jSpJKaZxHCxAI
-         Rv3ZgyR/57qLPaJLJ1eSXEOoovqa7WPABon6uHeo4DVQJ+SaF1I63OMlKQcqBn/ElO9T
-         6Gaw==
-X-Gm-Message-State: AOJu0YwhTbUr3KuTp3DoAHTVrVZ6QR8nNEPE1td8f1Z56y4txgQ7pniZ
-	xjNrSAAVcrzb2BXZz8Kf1WO3ZV6iymxq+SYUUotCeGS+B2z9yy3VMSExKH1NdqMRW5LgI1eTr/f
-	ow5UVY9bcgnW0eU1xnsLuGbmYJKAqdRwicUtFFyxGh4BDu9sQVKkw0XvZbLgF
-X-Received: by 2002:a05:6a20:4393:b0:19c:ae4c:1757 with SMTP id i19-20020a056a20439300b0019cae4c1757mr7058219pzl.52.1707052525002;
-        Sun, 04 Feb 2024 05:15:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHillRBxEnghE7mYJ3gj+fGKT62tHMay+Pp6uivYAIanVjZ99nOfjKV532TLL1l/4QP9oz/oA==
-X-Received: by 2002:a05:6a20:4393:b0:19c:ae4c:1757 with SMTP id i19-20020a056a20439300b0019cae4c1757mr7058206pzl.52.1707052524630;
-        Sun, 04 Feb 2024 05:15:24 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUk+312/AzI5SqOv46D9p4PGcpkytsM/MnH0ROcIvvo3xqVt4JnkVnyn77PFcPTuDmAvAxjb+70HgDwzbIf+94eI4f02KNTql3NxK0=
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id g8-20020a056a0023c800b006ddb0b0ff0dsm4776259pfc.34.2024.02.04.05.15.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Feb 2024 05:15:24 -0800 (PST)
-Date: Sun, 4 Feb 2024 21:15:21 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Yang Xu <xuyang2018.jy@fujitsu.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] t_snapshot_deleted_subvolume: add check for
- BTRFS_IOC_SNAP_DESTROY_V2
-Message-ID: <20240204131521.wnueevl6y4snk5lx@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20240201042348.147733-1-xuyang2018.jy@fujitsu.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MG26jBD1ALgJ6nNwHJRUGqA9bzc82/e99useqd4+/ngI8EQY0pj7p3AigSAnoYxMS0SmYeQv5YbYNPrpLk78FbNyJC04M3+nkVHfr+sAtRabMBnMIXpYlkNCcc8lrlvpAz3/jIZbc+MzGsmyk/ytGMkAclUZZ1Z47KrzBJpOoMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=elXcEfiV; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707070837; x=1738606837;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gy8zs2FoOIoSogXPm8fRBnCFPBZTbqCcHm5nXQLDHz8=;
+  b=elXcEfiVyfSy4TkffaXh/0ejjWoGBUQQqIsJP4tZHGvxZj4oZMMktXZI
+   RbbOGB8aoY1za/PcsovFTM9Wfb2u+SRatAVfmrd/RiAKmHsDNFEv5H4Vc
+   qZI7kp8qSspumpfDwRknZpYfyLawmabnkt6Y3G6CWN2Bz1N8d1CDJa0Ct
+   qOV9skn2xx0Nl8r+3FvSvzlg4mnA9RXusNvJ42QjnMeyjk80lf3QtKL5W
+   cQwz+qEoR/m8wwMOFBjtFmZlDEX16SedqOvGBDLpwQb13qjxHaWkuWyAb
+   Esc3ge5Mru9RfVmO3Xmb5fgDfA0lbGM1QtddMniKTCTS1d2k+ugdhF2GQ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10973"; a="3374146"
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="3374146"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2024 10:20:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,242,1701158400"; 
+   d="scan'208";a="5151591"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by fmviesa003.fm.intel.com with ESMTP; 04 Feb 2024 10:20:36 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rWh6X-0006c8-2Y;
+	Sun, 04 Feb 2024 18:20:33 +0000
+Date: Mon, 5 Feb 2024 02:19:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 4/6] btrfs: periodic block_group reclaim
+Message-ID: <202402050244.pa6hJds3-lkp@intel.com>
+References: <1173e535ec7b46bda33ed2dc4219027502763902.1706914865.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -88,73 +74,57 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240201042348.147733-1-xuyang2018.jy@fujitsu.com>
+In-Reply-To: <1173e535ec7b46bda33ed2dc4219027502763902.1706914865.git.boris@bur.io>
 
-On Wed, Jan 31, 2024 at 11:23:48PM -0500, Yang Xu wrote:
-> On some platform, struct btrfs_ioctl_vol_args_v2 is defined, but the
-> macros BTRFS_IOC_SNAP_DESTROY_V2 is not defined. This will cause
-> compile error. Add check for BTRFS_IOC_SNAP_DESTROY_V2 to solve this
-> problem.
-> 
-> BTRFS_IOC_SNAP_CREATE_V2 and BTRFS_IOC_SUBVOL_CREATE_V2 were
-> introduced together with struct btrfs_ioctl_vol_args_v2 by the
-> commit 55e301fd57a6 ("Btrfs: move fs/btrfs/ioctl.h to
-> include/uapi/linux/btrfs.h"). So there is no need to check them.
-> 
-> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
-> ---
+Hi Boris,
 
-This patch is good to me, and test passed on rhel-8.
+kernel test robot noticed the following build warnings:
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on linus/master v6.8-rc2 next-20240202]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->  configure.ac                       |  1 +
->  src/t_snapshot_deleted_subvolume.c | 10 +++++-----
->  2 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/configure.ac b/configure.ac
-> index b22fc52b..b14b1ab8 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -109,6 +109,7 @@ AC_CHECK_MEMBERS([struct btrfs_ioctl_vol_args_v2.subvolid], [], [], [[
->  #include <stddef.h>
->  #include <linux/btrfs.h>
->  ]])
-> +AC_CHECK_DECLS([BTRFS_IOC_SNAP_DESTROY_V2],,,[#include <linux/btrfs.h>])
->  
->  AC_CONFIG_HEADERS([include/config.h])
->  AC_CONFIG_FILES([include/builddefs])
-> diff --git a/src/t_snapshot_deleted_subvolume.c b/src/t_snapshot_deleted_subvolume.c
-> index c3adb1c4..402c0515 100644
-> --- a/src/t_snapshot_deleted_subvolume.c
-> +++ b/src/t_snapshot_deleted_subvolume.c
-> @@ -20,11 +20,6 @@
->  #define BTRFS_IOCTL_MAGIC 0x94
->  #endif
->  
-> -#ifndef BTRFS_IOC_SNAP_DESTROY_V2
-> -#define BTRFS_IOC_SNAP_DESTROY_V2 \
-> -	_IOW(BTRFS_IOCTL_MAGIC, 63, struct btrfs_ioctl_vol_args_v2)
-> -#endif
-> -
->  #ifndef BTRFS_IOC_SNAP_CREATE_V2
->  #define BTRFS_IOC_SNAP_CREATE_V2 \
->  	_IOW(BTRFS_IOCTL_MAGIC, 23, struct btrfs_ioctl_vol_args_v2)
-> @@ -58,6 +53,11 @@ struct btrfs_ioctl_vol_args_v2 {
->  };
->  #endif
->  
-> +#if !HAVE_DECL_BTRFS_IOC_SNAP_DESTROY_V2
-> +#define BTRFS_IOC_SNAP_DESTROY_V2 \
-> +	_IOW(BTRFS_IOCTL_MAGIC, 63, struct btrfs_ioctl_vol_args_v2)
-> +#endif
-> +
->  int main(int argc, char **argv)
->  {
->  	if (argc != 2) {
-> -- 
-> 2.39.3
-> 
-> 
+url:    https://github.com/intel-lab-lkp/linux/commits/Boris-Burkov/btrfs-report-reclaim-count-in-sysfs/20240203-071516
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/1173e535ec7b46bda33ed2dc4219027502763902.1706914865.git.boris%40bur.io
+patch subject: [PATCH 4/6] btrfs: periodic block_group reclaim
+config: i386-randconfig-141-20240204 (https://download.01.org/0day-ci/archive/20240205/202402050244.pa6hJds3-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402050244.pa6hJds3-lkp@intel.com/
+
+smatch warnings:
+fs/btrfs/space-info.c:1996 btrfs_reclaim_sweep() error: uninitialized symbol 'ret'.
+
+vim +/ret +1996 fs/btrfs/space-info.c
+
+  1977	
+  1978	int btrfs_reclaim_sweep(struct btrfs_fs_info *fs_info)
+  1979	{
+  1980		int ret;
+  1981		int raid;
+  1982		struct btrfs_space_info *space_info;
+  1983	
+  1984		list_for_each_entry(space_info, &fs_info->space_info, list) {
+  1985			if (space_info->flags & BTRFS_BLOCK_GROUP_SYSTEM)
+  1986				continue;
+  1987			if (!READ_ONCE(space_info->periodic_reclaim))
+  1988				continue;
+  1989			for (raid = 0; raid < BTRFS_NR_RAID_TYPES; raid++) {
+  1990				ret = do_reclaim_sweep(fs_info, space_info, raid);
+  1991				if (ret)
+  1992					return ret;
+  1993			}
+  1994		}
+  1995	
+> 1996		return ret;
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
