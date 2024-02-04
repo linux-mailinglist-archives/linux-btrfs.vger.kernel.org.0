@@ -1,148 +1,160 @@
-Return-Path: <linux-btrfs+bounces-2092-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2093-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29690848D33
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Feb 2024 12:44:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A550D848E02
+	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Feb 2024 14:15:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A09CD1F224A4
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Feb 2024 11:44:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50115B21FD5
+	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Feb 2024 13:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA916224D0;
-	Sun,  4 Feb 2024 11:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0E1224ED;
+	Sun,  4 Feb 2024 13:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L277D5EG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEF12209F
-	for <linux-btrfs@vger.kernel.org>; Sun,  4 Feb 2024 11:44:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2F1224D6
+	for <linux-btrfs@vger.kernel.org>; Sun,  4 Feb 2024 13:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707047073; cv=none; b=pSJh22onpbliMRl6qrkNbkeG7YvKjpf9AC7rU778Qv8onQVF9ODCTnaJblxuQuQxTOfl+6wrXJuu9BziQuDwnuRjDH2VLT7YPyVTbhKtYYKPG0XjKGnywki1ev5kcLCZ+VaniMRQ/TPMM0NafsgrCbz/XrSCjzXrs8DTv8g0vao=
+	t=1707052532; cv=none; b=kOsYeNREa6bpksrZhYp5tBkJozlwc9qMlk8f5Ft85c//muJe/BcQWplwhckN1oCjv0P2Vm2s0uzy0q1LZmQwp1BdOBEEYjk6ZQAhBcs75XesgUgXTOqlsy0HvO1GLWS+LyFkiNY3/kGyLECBoYD67aahhiEe3UFdEG4uedcUWz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707047073; c=relaxed/simple;
-	bh=W+PrOG+3qjgKVWlr8gdUcu/HyylkSKA8m2x73hOH6a4=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=a9OfVV6SFqjI1Mai+xZcoOcKS9U3IGqOslcczyVDeDnhqZf1iRfwAEsd8iONb1GcPOAtvF3bgWwNZimD1W4ewC0vFB+3ZAuInp39nuc/TuEmCk/31yVTV9m+D8r0w4MQ4ID3QGpLoIjU0DNJvsdkcZZlAUeXEModrDob/yU/TF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-363bde409b2so4975135ab.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 04 Feb 2024 03:44:31 -0800 (PST)
+	s=arc-20240116; t=1707052532; c=relaxed/simple;
+	bh=CoHXpdBjd4fWUj/c5qQ8LMn61AkWL0vC3uZ+k84u5aE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u7TdmrXDOCh8k1cwGuL8dIAx8EmN64p+y6B0MqNsrbjymmAoTxWfSOMollKPkJ/UynQUZa8snRZzk6EefAQk5bO9VtBsJxCoBn3SkUqE2WJBDkqu4my91UrRHX89fZhAJjZ1BtqvWI6MN3Y7hfKwVfVg489M8Gh6Yszl04bPU+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L277D5EG; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707052529;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lxyP1JsFMLPRUoWk0k5pEtCyUPIcZiMCq+pimvMnsVg=;
+	b=L277D5EGQCA0zLZeWcuSy9/NLTJ5KC99q+sMTt6rJxrC+cEM3c+d/OwGMdRtZZaNDIO6+7
+	7gznAw0oUucz0phTOaraZA9w9dGWfm9arRK0cml6ejZiURy37yiFg/QxjZhilZQYEEGxwj
+	jp2ivmOjxdBF3H/4MusSaUg3xjoEpjo=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-422-1S_eWhn7NDmfG-PxjfrMGQ-1; Sun, 04 Feb 2024 08:15:26 -0500
+X-MC-Unique: 1S_eWhn7NDmfG-PxjfrMGQ-1
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5ce63e72bc3so3602403a12.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 04 Feb 2024 05:15:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707047071; x=1707651871;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6MyD/vd8jdcu5CLhoPmsunjC+RxH9aURP3x2XieB+UE=;
-        b=gT1Cu16nHzZUa5rVr8CWmkgAF1HKimPSVJSrmBoQ26WNVpDl2L6SnJo4fsujbTfPqF
-         V/t4XlDs804T48awDy+qmktbZM+FtjNpZK7R46NX50+tfTsZ38EiUFBk8ZpptNNwJKsv
-         tgvpiygh+itRlG/jm0w+cRUAuwbRgmdw73jN7lhC+hlPj1XCe+El40rl7Yu6cKQZHn+a
-         gB54Rj32q11Eo9LcYQzNq6eOO5lZwLqhoTXVAcK7lP5qorlU3Mz82mWrdHC8GAUbUVvN
-         81lWyNtfmlcKIEobd6TZSc0z9N7Y/7YzyetweLTT55vcTYcZSpg9eFr+kKBpMcQ321Lh
-         YQZw==
-X-Gm-Message-State: AOJu0YzIqO4qTHo/jgnyv9giIJz4sKkT0jYTMhwNst/KA49MuanwYpDw
-	KqAn6/3TJkWdfTicZ7+AWJ4pGe5CpUMQk8fRHPV96SRuAk3JuaRICZb4traYFeKTk9ZGrEp9xUA
-	cWALCCtk11AsrOMwLj90GCWfNVCWOTAshkIqOBXmEyYHRfg9f5TAf6PE=
-X-Google-Smtp-Source: AGHT+IHEKadB5q6lC0tXQyqaJh7ql2qjGqAWHNec8Metezww0Ghn88vKADo2NdJlqlFSt1D39aJxgO2gMQ3AFurC2OhBnaf1F4zP
+        d=1e100.net; s=20230601; t=1707052525; x=1707657325;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lxyP1JsFMLPRUoWk0k5pEtCyUPIcZiMCq+pimvMnsVg=;
+        b=goIlB5CojEewsYHK6QDCD/izC/iCVBQWM0X4mhE7/YwmO7/eW/r7re8WDjKLFpjgFt
+         Rw7iFDa1jxsRxHDIRLqqfhj3JZKBZkWRRrq2kZ+HQ+WcTMlQPXm+wquDmDAp5g5niRId
+         k1b/1uTMbHLmRdKbpVMOnDgqhxTvVjx5rv28GXwbJtVeJapSTl2jYm+Hdm8ezMMMkchP
+         Xh7V1Cvg4oVNDmRgwwfK0ed4viaEdYbYEGtLH27nnQ1zxQziR4DP3t/jSpJKaZxHCxAI
+         Rv3ZgyR/57qLPaJLJ1eSXEOoovqa7WPABon6uHeo4DVQJ+SaF1I63OMlKQcqBn/ElO9T
+         6Gaw==
+X-Gm-Message-State: AOJu0YwhTbUr3KuTp3DoAHTVrVZ6QR8nNEPE1td8f1Z56y4txgQ7pniZ
+	xjNrSAAVcrzb2BXZz8Kf1WO3ZV6iymxq+SYUUotCeGS+B2z9yy3VMSExKH1NdqMRW5LgI1eTr/f
+	ow5UVY9bcgnW0eU1xnsLuGbmYJKAqdRwicUtFFyxGh4BDu9sQVKkw0XvZbLgF
+X-Received: by 2002:a05:6a20:4393:b0:19c:ae4c:1757 with SMTP id i19-20020a056a20439300b0019cae4c1757mr7058219pzl.52.1707052525002;
+        Sun, 04 Feb 2024 05:15:25 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHillRBxEnghE7mYJ3gj+fGKT62tHMay+Pp6uivYAIanVjZ99nOfjKV532TLL1l/4QP9oz/oA==
+X-Received: by 2002:a05:6a20:4393:b0:19c:ae4c:1757 with SMTP id i19-20020a056a20439300b0019cae4c1757mr7058206pzl.52.1707052524630;
+        Sun, 04 Feb 2024 05:15:24 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUk+312/AzI5SqOv46D9p4PGcpkytsM/MnH0ROcIvvo3xqVt4JnkVnyn77PFcPTuDmAvAxjb+70HgDwzbIf+94eI4f02KNTql3NxK0=
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id g8-20020a056a0023c800b006ddb0b0ff0dsm4776259pfc.34.2024.02.04.05.15.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Feb 2024 05:15:24 -0800 (PST)
+Date: Sun, 4 Feb 2024 21:15:21 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Yang Xu <xuyang2018.jy@fujitsu.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] t_snapshot_deleted_subvolume: add check for
+ BTRFS_IOC_SNAP_DESTROY_V2
+Message-ID: <20240204131521.wnueevl6y4snk5lx@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20240201042348.147733-1-xuyang2018.jy@fujitsu.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:210f:b0:471:2b64:d967 with SMTP id
- n15-20020a056638210f00b004712b64d967mr26201jaj.2.1707047070350; Sun, 04 Feb
- 2024 03:44:30 -0800 (PST)
-Date: Sun, 04 Feb 2024 03:44:30 -0800
-In-Reply-To: <000000000000b6ffa9060ee52c74@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003e469906108cde8d@google.com>
-Subject: Re: [syzbot] [btrfs?] KMSAN: uninit-value in bcmp (2)
-From: syzbot <syzbot+3ce5dea5b1539ff36769@syzkaller.appspotmail.com>
-To: amir73il@gmail.com, clm@fb.com, dsterba@suse.com, jack@suse.cz, 
-	josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	repnop@google.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240201042348.147733-1-xuyang2018.jy@fujitsu.com>
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Jan 31, 2024 at 11:23:48PM -0500, Yang Xu wrote:
+> On some platform, struct btrfs_ioctl_vol_args_v2 is defined, but the
+> macros BTRFS_IOC_SNAP_DESTROY_V2 is not defined. This will cause
+> compile error. Add check for BTRFS_IOC_SNAP_DESTROY_V2 to solve this
+> problem.
+> 
+> BTRFS_IOC_SNAP_CREATE_V2 and BTRFS_IOC_SUBVOL_CREATE_V2 were
+> introduced together with struct btrfs_ioctl_vol_args_v2 by the
+> commit 55e301fd57a6 ("Btrfs: move fs/btrfs/ioctl.h to
+> include/uapi/linux/btrfs.h"). So there is no need to check them.
+> 
+> Signed-off-by: Yang Xu <xuyang2018.jy@fujitsu.com>
+> ---
 
-HEAD commit:    9f8413c4a66f Merge tag 'cgroup-for-6.8' of git://git.kerne..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=10fcfdc0180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
-dashboard link: https://syzkaller.appspot.com/bug?extid=3ce5dea5b1539ff36769
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139dd53fe80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12685aa8180000
+This patch is good to me, and test passed on rhel-8.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/79d9f2f4b065/disk-9f8413c4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/cbc68430d9c6/vmlinux-9f8413c4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9740ad9fc172/bzImage-9f8413c4.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/25f4008bd752/mount_0.gz
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3ce5dea5b1539ff36769@syzkaller.appspotmail.com
+>  configure.ac                       |  1 +
+>  src/t_snapshot_deleted_subvolume.c | 10 +++++-----
+>  2 files changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/configure.ac b/configure.ac
+> index b22fc52b..b14b1ab8 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -109,6 +109,7 @@ AC_CHECK_MEMBERS([struct btrfs_ioctl_vol_args_v2.subvolid], [], [], [[
+>  #include <stddef.h>
+>  #include <linux/btrfs.h>
+>  ]])
+> +AC_CHECK_DECLS([BTRFS_IOC_SNAP_DESTROY_V2],,,[#include <linux/btrfs.h>])
+>  
+>  AC_CONFIG_HEADERS([include/config.h])
+>  AC_CONFIG_FILES([include/builddefs])
+> diff --git a/src/t_snapshot_deleted_subvolume.c b/src/t_snapshot_deleted_subvolume.c
+> index c3adb1c4..402c0515 100644
+> --- a/src/t_snapshot_deleted_subvolume.c
+> +++ b/src/t_snapshot_deleted_subvolume.c
+> @@ -20,11 +20,6 @@
+>  #define BTRFS_IOCTL_MAGIC 0x94
+>  #endif
+>  
+> -#ifndef BTRFS_IOC_SNAP_DESTROY_V2
+> -#define BTRFS_IOC_SNAP_DESTROY_V2 \
+> -	_IOW(BTRFS_IOCTL_MAGIC, 63, struct btrfs_ioctl_vol_args_v2)
+> -#endif
+> -
+>  #ifndef BTRFS_IOC_SNAP_CREATE_V2
+>  #define BTRFS_IOC_SNAP_CREATE_V2 \
+>  	_IOW(BTRFS_IOCTL_MAGIC, 23, struct btrfs_ioctl_vol_args_v2)
+> @@ -58,6 +53,11 @@ struct btrfs_ioctl_vol_args_v2 {
+>  };
+>  #endif
+>  
+> +#if !HAVE_DECL_BTRFS_IOC_SNAP_DESTROY_V2
+> +#define BTRFS_IOC_SNAP_DESTROY_V2 \
+> +	_IOW(BTRFS_IOCTL_MAGIC, 63, struct btrfs_ioctl_vol_args_v2)
+> +#endif
+> +
+>  int main(int argc, char **argv)
+>  {
+>  	if (argc != 2) {
+> -- 
+> 2.39.3
+> 
+> 
 
-=====================================================
-BUG: KMSAN: uninit-value in memcmp lib/string.c:692 [inline]
-BUG: KMSAN: uninit-value in bcmp+0x186/0x1c0 lib/string.c:713
- memcmp lib/string.c:692 [inline]
- bcmp+0x186/0x1c0 lib/string.c:713
- fanotify_fh_equal fs/notify/fanotify/fanotify.c:51 [inline]
- fanotify_fid_event_equal fs/notify/fanotify/fanotify.c:72 [inline]
- fanotify_should_merge fs/notify/fanotify/fanotify.c:168 [inline]
- fanotify_merge+0x15f5/0x27e0 fs/notify/fanotify/fanotify.c:209
- fsnotify_insert_event+0x1d0/0x600 fs/notify/notification.c:113
- fanotify_handle_event+0x47f7/0x6140 fs/notify/fanotify/fanotify.c:966
- send_to_group fs/notify/fsnotify.c:360 [inline]
- fsnotify+0x2510/0x3530 fs/notify/fsnotify.c:570
- fsnotify_parent include/linux/fsnotify.h:80 [inline]
- fsnotify_file include/linux/fsnotify.h:100 [inline]
- fsnotify_close include/linux/fsnotify.h:362 [inline]
- __fput+0x578/0x10c0 fs/file_table.c:368
- __fput_sync+0x74/0x90 fs/file_table.c:467
- __do_sys_close fs/open.c:1554 [inline]
- __se_sys_close+0x28a/0x4c0 fs/open.c:1539
- __x64_sys_close+0x48/0x60 fs/open.c:1539
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Uninit was created at:
- slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
- slab_alloc_node mm/slub.c:3478 [inline]
- slab_alloc mm/slub.c:3486 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
- kmem_cache_alloc+0x579/0xa90 mm/slub.c:3502
- fanotify_alloc_fid_event fs/notify/fanotify/fanotify.c:584 [inline]
- fanotify_alloc_event fs/notify/fanotify/fanotify.c:817 [inline]
- fanotify_handle_event+0x2ff6/0x6140 fs/notify/fanotify/fanotify.c:952
- send_to_group fs/notify/fsnotify.c:360 [inline]
- fsnotify+0x2510/0x3530 fs/notify/fsnotify.c:570
- fsnotify_parent include/linux/fsnotify.h:80 [inline]
- fsnotify_file include/linux/fsnotify.h:100 [inline]
- fsnotify_close include/linux/fsnotify.h:362 [inline]
- __fput+0x578/0x10c0 fs/file_table.c:368
- __fput_sync+0x74/0x90 fs/file_table.c:467
- __do_sys_close fs/open.c:1554 [inline]
- __se_sys_close+0x28a/0x4c0 fs/open.c:1539
- __x64_sys_close+0x48/0x60 fs/open.c:1539
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-CPU: 0 PID: 5010 Comm: syz-executor120 Not tainted 6.7.0-syzkaller-00562-g9f8413c4a66f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-=====================================================
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
