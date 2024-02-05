@@ -1,199 +1,164 @@
-Return-Path: <linux-btrfs+bounces-2095-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2096-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0E0C848FE9
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Feb 2024 19:30:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF42284934C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 06:23:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 436B9B212D1
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Feb 2024 18:29:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 000781C22570
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 05:22:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9E424B21;
-	Sun,  4 Feb 2024 18:29:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4B0B664;
+	Mon,  5 Feb 2024 05:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IioVwJxt"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="gMb8if9Q"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6332624A03;
-	Sun,  4 Feb 2024 18:29:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3525B653
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 Feb 2024 05:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707071382; cv=none; b=SmnUtN9Ofe16OhRg7UrpXJXuBCEJBFlVAOPhLQDFmXdOZH70Ho5njCpRmkXTUaveQhxBn1JTJhKWOnh1/5O93urFTJJ7WNeIvf38h1ftZ4pCKWgwN0A16Eu1nZ2Z16eo47uRjRT+JGdQc2ewoKI+XfB4LiRb9W/FML9FdVjm4EU=
+	t=1707110574; cv=none; b=JO5O1hpgO0Qa6gs+wK+McYBoDioO2YRGaav0Us9P7FZqc7/lP7QIBlkVYpGfkGhSupvJSrmWvCUod5dJE68b6+E/Vh9rbtkpJu+tH68huvr9sLpIVxD0cDjWKx+rkyHtLji1zggckCTSwOVdW0mJU7qiK6CWGAeNvKhA+xRja5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707071382; c=relaxed/simple;
-	bh=hSrMj/wKl5jffrFRZdmR/3NGB6Wc3DAA5zwdOPruqes=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qybli+cETLf9Rjx3rFWWfHM35RoTrBw+nQmgsJfk1OX7BmS+nNjwJqmEPBs0ehyIi4LIVrruZ8oxaTJlhj8dKWbuOMtvDXbe2yRgYZ7N3ra1j5HEGYH7VB+Ihn8iWPJRdLM7tvOqBp1MJ28Sk+M4lbRcpdWVnUPo197fK2yqR8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IioVwJxt; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6d54def6fso3400742276.3;
-        Sun, 04 Feb 2024 10:29:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707071380; x=1707676180; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m96LY0uzgcQpdT6g6uTesfbb0UhPXpBOxu8i3g30yqk=;
-        b=IioVwJxtjNZOWsfP39gnimUdRZl042hNY0wkR5Eml/4IuTIvW2X2g7jAjZMQDdQhWR
-         sHtDc9DpgjgOQmTLLlJSKkrwCwLI+pIvZq5ROn26TJ5eRHuW6bL1UFPvdniiwv8/SJMK
-         E26M7r69D8PXL3IfYKxYCLE8wXgT8BZ7dVq1Z7eMcdDcCZU3SBhP4IzD7RcRMxtFh42v
-         eAYzGlSeVa1RBzRHZ2Ir4kEIZNwkChwBWvK8nEweSwG7X4EmjlIuo8miCJ2yMTk2NNyt
-         kPDKwwQ1FHRJtz1ccd7bnquQs0Ud1nXglTuOx6B/f/ZlWVUfE3mgVcMFlg8Acyi3RfBK
-         IUhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707071380; x=1707676180;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m96LY0uzgcQpdT6g6uTesfbb0UhPXpBOxu8i3g30yqk=;
-        b=WOBVGo2R8gVcnoYPDfzpNtfKxK+yEpvDHwA3FG+MHeEStxB7jxAWdd9AIBCzy/4Qnn
-         Z9/ZALkaFa0YNcvDSbSbttnATOPKFlfeDy5yXfADQs/9crSQ0pIuwc1RERdKejNz/pKh
-         KnhkJOuvw7ZcR/ngZ0BQHb17ZmCrKHKcAuv4BJk/tBWjl7mRAFlI3Hr0ZKiyodshoKth
-         ASWJsh0pXUmTe6kLgCo7mLiUP+67MEId4aEMunZG9qXo2ndqHshLmSQxI4g4xUPCddd3
-         ehctDoLj6FUd7cRipVV83sDXqfSDA943lAV6s9vHlEpp8pdgXgTr8lGTDibGfEbgYDeq
-         QxHA==
-X-Gm-Message-State: AOJu0Yzd6nJQwvsOsY8y8Id/YULc1jUZiF5up5g2RO+6y8kGUxD3Lab9
-	foUpNVqR0J2FIzlw0mjjRmiI1h3FhA2kRGXC/g6SCP6grRZ8R0Jok3gnOm0l4tpVeY+3GkA3BoB
-	VpxrOHRX6UEy9Nx0D482OiSU3EL1yh+K/TLBomg==
-X-Google-Smtp-Source: AGHT+IEXCbTvDA0iJAaac8Y5USeXLLy6UhROXRNUCWy/ZNfRAzqhs20pk+lfcfQI+I7p7pEEZBzKucHWWpofhOhAZk4=
-X-Received: by 2002:a25:d389:0:b0:dc2:4450:92f2 with SMTP id
- e131-20020a25d389000000b00dc2445092f2mr10449381ybf.22.1707071380099; Sun, 04
- Feb 2024 10:29:40 -0800 (PST)
+	s=arc-20240116; t=1707110574; c=relaxed/simple;
+	bh=nfpjI4roXgB/ZF05wugRv0966xUfjQoiqzMeGj0HhAM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fTBLnxI+XEX6KXJiUXAxPmTyN1PcnQRQc/BEHdelq67I4JC/IewT/0RdcIyuR1/ZtSzUvAc8c1nKH4DB0j90H/skz7oxtDniKkG2ApsO+LaURNpZWabZ2G5iebDyCrEvriK5KuZ7t0/bsy+aJp6k9XzEpSlNEOiCQ1PqLpOkEPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=gMb8if9Q; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1707110565; x=1707715365; i=quwenruo.btrfs@gmx.com;
+	bh=nfpjI4roXgB/ZF05wugRv0966xUfjQoiqzMeGj0HhAM=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=gMb8if9QUvc5zKzJceSjVh0xx9kg87SEuWz157VVOs8xY5Tt8UEnqrmxdU98Gy/7
+	 /ea87wzGM9E6/qXdTxGYumrjeTk6fR9td0Jdj4GxPp2vRTzV6cwjn1MHaBR88/rlW
+	 aZuIK3BfMp064d0FM7mFaOjPwKKEDyfYtPtrHKiYDd8ucJ5vK/IpDHEfwRqrroi5R
+	 s816LJSI51jP+d5KRfMmRyK8Xi8l7MlwjWj7GfWOkGc5813Aiu4tMKBypLhKzpCMA
+	 1QHhHGMI6REKG9fSNBF6ibTFXrMfiuMHPOPPRLRsU7vuu4j4GghXsWqthu1jO3v4i
+	 sLdNfGvvWqLi8DdN9Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MHoN2-1rlfHO3BLC-00Evxo; Mon, 05
+ Feb 2024 06:22:45 +0100
+Message-ID: <ae491a34-8879-4791-8a51-4c6f20838deb@gmx.com>
+Date: Mon, 5 Feb 2024 15:52:42 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAKLYgeJ1tUuqLcsquwuFqjDXPSJpEiokrWK2gisPKDZLs8Y2TQ@mail.gmail.com>
- <39e3a4fe-d456-4de4-b481-51aabfa02b8d@leemhuis.info> <20240111155056.GG31555@twin.jikos.cz>
- <20240111170644.GK31555@twin.jikos.cz> <f45e5b7c-4354-87d3-c7f1-d8dd5f4d2abd@oracle.com>
- <7d3cee75-ee74-4348-947a-7e4bce5484b2@leemhuis.info> <CAKLYgeLhcE5+Td9eGKAi0xeXSsom381RxuJgKiQ0+oHDNS_DJA@mail.gmail.com>
-In-Reply-To: <CAKLYgeLhcE5+Td9eGKAi0xeXSsom381RxuJgKiQ0+oHDNS_DJA@mail.gmail.com>
-From: Alex Romosan <aromosan@gmail.com>
-Date: Sun, 4 Feb 2024 19:29:29 +0100
-Message-ID: <CAKLYgeKCuDmnuGHuQYPdZZA1_H3s9_9oh+vT_FMpFZqxKSvjzw@mail.gmail.com>
-Subject: Re: [btrfs] commit bc27d6f0aa0e4de184b617aceeaf25818cc646de breaks update-grub
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Anand Jain <anand.jain@oracle.com>, CHECK_1234543212345@protonmail.com, 
-	brauner@kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>, 
-	linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, dsterba@suse.cz
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [btrfs] RAID1 volume on zoned device oops when sync.
+Content-Language: en-US
+To: =?UTF-8?B?6Z+p5LqO5oOf?= <hrx@bupt.moe>, dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+References: <1ACD2E3643008A17+da260584-2c7f-432a-9e22-9d390aae84cc@bupt.moe>
+ <20240202121948.GA31555@twin.jikos.cz>
+ <31227849DBCDBD08+64f08a94-b288-4797-b2a1-be06223c25d9@bupt.moe>
+ <20240203221545.GB355@twin.jikos.cz>
+ <C4754294EA02D5C7+15158e38-2647-4af8-beca-b09216be42b5@bupt.moe>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <C4754294EA02D5C7+15158e38-2647-4af8-beca-b09216be42b5@bupt.moe>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:TWa5nXu6WXkYWrQ9HJSnA49/OMCQk6ClaUAHnX8dyruoF8w0QeV
+ kwiS0UBJI5hz4LAzSsrf3B4HgxWu1GkHawTTHrvbqcn45dL7KoofaWh9xej75CsQXQb7NLc
+ 0/vLe63d0MOa4KDIKuAe6+3Kf6n+uETxlF6Z14vLatDvcDxzyuCbJeWdsfakCqfOJrARUEi
+ 2YVayVWRKFkrRIVk7Hdmw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:MUA5Pwcpwc0=;UVMmh9kIkH1wPM8lPJjIASAE/RX
+ h3r4Y6E/ydqUopkVFg9gmALiQdNVWHsZ4p3dYVTOveU2WBTWhHxAskHNHMGzKhUo1sKJTytgX
+ 8diuPO/okuuaDF8VzqEnCfBqlxKLv4duroxUj3iV0NAHdo+hWuSFhAbL7GFRX9vwj2Sk3579q
+ Neu5vElZPL3ljtgGoBhdGsuX2ZY5GAzMbRZOnRSTY8HRHBhFV9C+Z1B3cYcpUV5KiULalYDJ1
+ CQpshrSfxzhZyWt16/9X4+0WJdQNAeniZTM4c9b+BPoHzpSR8Hiau3DTI9aearUgQ5mddDvoU
+ JSdRnT6IZ9HQF9o/jt6EnIKv0Evvppi21TqHstpPaMhDCythG2lcgHFJ/Irj7XIYwYIZBQP79
+ BUjnqm/DV37hLRl1qmPHlDNk+dhb1jdl3Il8Nl0+yYpZD4+j9uWV7cYpiUc5H8A/UOaN6ojhQ
+ TcSIMszycnVuQwNZxBTcE3Ej/G9fv+vQyQE2SfKSgmi3GeEK9Hlrq/ubLQhvG5c2tQ1QMegwe
+ vq8XmCMVMTSaJcemcfnkxbwoxdBXf7vboRAUrzRGe/QfOPWmH0G0tVKvWuhD3YVRrmf1sFxS3
+ KSs9K1otOdg+On/Fge8GmVGEYGOnMpe5OkzddkOfZCNFyCCM5DLm9i76iOGZLwlG1MXe3Hljo
+ 0H26m3RfoaWXbh40Hj+JRu4GGb5pBq+XuyYLh+JyIzTQoYXAn43E9jCBN7NHFTXX+MZzOM2lZ
+ oGOrfVmmU7knFPKvrQSusJ4MRcgxkKQj5O0LPO5/mH+x5VaM9likhtwkO7KCExz7sR7B6hq0A
+ SsWgF7gzsMH7+PCMV0eTq4GxzfmUDmr6FAbNI2N99RvO4=
 
-sorry about the html post (in case somebody actually got it). as i was
-saying, just for the record it's still not fixed in 6.8-rc3. thanks.
 
 
-On Sun, Feb 4, 2024 at 7:27=E2=80=AFPM Alex Romosan <aromosan@gmail.com> wr=
-ote:
+On 2024/2/4 20:04, =E9=9F=A9=E4=BA=8E=E6=83=9F wrote:
+>  > ie. mkfs.btrfs --sectorsize 16k. it works! I can sync without any
+> problem now. I will continue to monitor if any issues occurred. seems
+> like I can only use these disks on my loongson machine for a while.
+
+Any clue how can I purchase such disks?
+And what's the interface? (NVME? SATA? U2?)
+
+I can go try qemu zoned nvme on my aarch64 host, but so far the SoC is
+offline (won't be online until this weekend).
+
+And have you tried emulated zoned device (no matter if it's qemu zoned
+emulation or nbd or whatever) with 4K sectorsize?
+
+
+So far we don't have good enough coverage with zoned on subpage, I have
+the physical hardware of aarch64 (and VMs with different page size), but
+I don't have any zoned devices.
+
+If you can provide some help, it would super great.
+
 >
-> just for the record it's still not fixed in 6.8-rc3 (obviously, since i'v=
-e been looking at the btrfs patches being applied).
+> Is there any progress or proposed patch for subpage layer fix?
 >
-> On Thu, Feb 1, 2024 at 11:25=E2=80=AFAM Linux regression tracking (Thorst=
-en Leemhuis) <regressions@leemhuis.info> wrote:
+> =E5=9C=A8 2024/2/4 6:15, David Sterba =E5=86=99=E9=81=93:
+>> On Sat, Feb 03, 2024 at 06:18:09PM +0800, =E9=9F=A9=E4=BA=8E=E6=83=9F w=
+rote:
+>>> When mkfs, I intentionally used "-s 4k" for better compatibility.
+>>> And /sys/fs/btrfs/features/supported_sectorsizes is 4096 16384, which
+>>> should be ok.
+>>>
+>>> btrfs-progs is 6.6.2-1, is this related?
+>> No, this is something in kernel. You could test if same page and sector
+>> size works, ie. mkfs.btrfs --sectorsize 16k. This avoids using the
+>> subpage layer that transalates the 4k sectors <-> 16k pages. This has
+>> the known interoperability issues with different page and sector sizes
+>> but if it does not affect you, you can use it.
 >>
->> Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
->> for once, to make this easily accessible to everyone.
->>
->> Anand, what's the status wrt to below issue (which afaics seems to
->> affect quite a few people)? Things look stalled, but I might be missing
->> something, that's why I ask for a quick update.
->>
->> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
->> --
->> Everything you wanna know about Linux kernel regression tracking:
->> https://linux-regtracking.leemhuis.info/about/#tldr
->> If I did something stupid, please tell me, as explained on that page.
->>
->> #regzbot poke
->>
->> On 12.01.24 00:24, Anand Jain wrote:
->> > On 11/01/2024 22:36, David Sterba wrote:
->> >> On Thu, Jan 11, 2024 at 04:50:56PM +0100, David Sterba wrote:
->> >>> On Thu, Jan 11, 2024 at 12:45:50PM +0100, Thorsten Leemhuis wrote:
->> >>>>
->> >>>> On 08.01.24 15:11, Alex Romosan wrote:
->> >>>>>
->> >>>>> Running my own compiled kernel without initramfs on a lenovo think=
-pad
->> >>>>> x1 carbon gen 7.
->> >>>>>
->> >>>>> Since version 6.7-rc1 i haven't been able to to a grub-update,
->> >>>>>
->> >>>>> instead i get this error:
->> >>>>>
->> >>>>> grub-probe: error: cannot find a device for / (is /dev mounted?) s=
-olid
->> >>>>> state drive
->> >>>>>
->> >>>>> 6.6 was the last version that worked.
->> >>>>>
->> >>>>> Today I did a git-bisect between these two versions which identifi=
-ed
->> >>>>> commit bc27d6f0aa0e4de184b617aceeaf25818cc646de btrfs: scan but do=
-n't
->> >>>>> register device on single device filesystem as the culprit. revert=
-ing
->> >>>>> this commit from 6.7 final allowed me to run update-grub again.
->> >>>>>
->> >>>>> not sure if this is the intended behavior or if i'm missing some o=
-ther
->> >>>>> kernel options. any help/fixes would be appreciated.
->> >>>>
->> >>>> Thanks for the report. To be sure the issue doesn't fall through th=
-e
->> >>>> cracks unnoticed, I'm adding it to regzbot, the Linux kernel regres=
-sion
->> >>>> tracking bot:
->> >>>>
->> >>>> #regzbot ^introduced bc27d6f0aa0e4de184b617aceeaf25818cc646de
->> >>>> #regzbot title btrfs: update-grub broken (cannot find a device for =
-/
->> >>>> (is
->> >>>> /dev mounted?))
->> >>>> #regzbot ignore-activity
->> >>>
->> >>> The bug is also tracked at
->> >>> https://bugzilla.kernel.org/show_bug.cgi?id=3D218353 .
->> >>
->> >> About the fix: we can't simply revert the patch because the temp_fsid
->> >> depends on that. A workaround could be to check if the device path is
->> >> "/dev/root" and still register the device. But I'm not sure if this d=
-oes
->> >> not break the use case that Steamdeck needs, as it's for the root
->> >> partition.
->> >
->> >
->> > Thank you for the report.
->> >
->> > The issue seems more complex than a simple scenario, as the following
->> > test-case works well:
->> >
->> >   $ mount /dev/sdb1 /btrfs
->> >   $ cat /proc/self/mountinfo | grep btrfs
->> > 345 63 0:34 / /btrfs rw,relatime shared:179 - btrfs /dev/sdb1
->> > rw,space_cache=3Dv2,subvolid=3D5,subvol=3D/
->> >
->> > However, the relevant part of the commit
->> > bc27d6f0aa0e4de184b617aceeaf25818cc646de that may be failing could
->> > be in identifying a device, whether it is the same or different
->> > For this, we use:
->> >
->> >      lookup_bdev(path, &path_devt);
->> >
->> > and match with the devt(MAJ:MIN) saved in the btrfs_device;
->> > would this work during initrd? I need to dig more. Trying
->> > to figure out how can I reproduce this.
->> >
->> > Thanks, Anand
->> >
->> >
+
+Another thing is, I don't know how the loongson kernel dump works, but
+can you provide the faddr2line output for
+"btrfs_finish_ordered_extent+0x24"?
+
+It looks like ordered->inode is not properly initialized but I'm not
+100% sure.
+
+Thanks,
+Qu
 
