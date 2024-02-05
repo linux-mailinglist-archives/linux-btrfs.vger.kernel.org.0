@@ -1,138 +1,240 @@
-Return-Path: <linux-btrfs+bounces-2109-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2110-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD762849A8F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 13:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 297DA849B41
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 14:00:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 811751F21534
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 12:39:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A31E51F27512
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 13:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899051BDD6;
-	Mon,  5 Feb 2024 12:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B88A35F0C;
+	Mon,  5 Feb 2024 12:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J1I49Jex"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="f5C6S3E8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fgqlJr6B";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="m5nzZvfv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2cJC/LNW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4346B1BC37;
-	Mon,  5 Feb 2024 12:38:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3DAD1CA91
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 Feb 2024 12:57:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707136716; cv=none; b=MW1ANAL2ZZFgyddzcqlzhn8Z9Ty/BzNdNZ5R6+L4xQfMVOw4cJwNTaXHeR+WB4biuj0Mn9ajSGklddEOiSMINYcFxKiEBFjRtx3GwnPBCo2U9Tj0qQ3zfQgz3y4Cgm5BanqkW+/UTj3vxZBaikumTRflKlW2yNbXWG+mtwHFEGc=
+	t=1707137856; cv=none; b=KuIi+SVa5X2XKQTpCAadBCXNf+6qBIAiMBJK+G8ginv4c7tdI/vmACv09AIe24odnK7kitiycNBPLfqf9bJYya1D4aHerk5g6N14rWTsD18QyNttgsoHRxiSIHAcZncIug5BCXpkidSvJHvxZS5dbci8cVxj82IKMMXOnoHlQKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707136716; c=relaxed/simple;
-	bh=ZjyQvDoFp8Iz2SVNGI6LFFX46oN/i7mz7hhxREWzs8w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eGm/G/F1mtqfRVlebnhnqfNklA1XJ3hjyfnQ2zxAk3D6Zpps+LClvyDc4UpmL9JbEa0jrbH2q87410mmNMR+Zw2oV7xypnvFLTsCEyxqJHJxVkZO6Rdk+ecrDrzHsST4Q23nEhZ+E9MkcDxGDJwVtR9UwfJx8sbvT9dkKlAEm1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J1I49Jex; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5ffdf06e009so37169337b3.3;
-        Mon, 05 Feb 2024 04:38:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707136714; x=1707741514; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZjyQvDoFp8Iz2SVNGI6LFFX46oN/i7mz7hhxREWzs8w=;
-        b=J1I49JexAB6PE/BYae1TnNp3VhKNxI1Pu5dTWJW6J60XTVYxCrOMkNWA9lYM0zoPcC
-         65gu5KlxWA8aXTO1otMEW444GMLO9wKUZzj/jJdueW55y7D3e86cUaG+j6b4v9q1+xXA
-         XNUhZyCHMubFSmsDC1T8orqBUdh9XIgy3Mih2+O2zO8fF8pTVewe/fUVE0hL5fWS5pTN
-         84WqltCrcCp1jGd84lsGj/c5csv+WjfwJlnc+yyWD91Ana/clpy7Y92/H8NdNz+m8m3T
-         YWMlXJVisXJD1M8ub3n2ixoQ3dBEqpd09KAbVGsFgbgQa1ogTs17LUWWKxDCtj+fk7qO
-         Awdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707136714; x=1707741514;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZjyQvDoFp8Iz2SVNGI6LFFX46oN/i7mz7hhxREWzs8w=;
-        b=V8zihvmnmvsGIbkKr4qMHeT+sXdg+VCBVY040BTjLgSi6FUd2o/JKFpMFKdzMGzdDZ
-         FYiS32pxdXCIFKLe40ywOMqITpmXHjffBCgmYnPGm/X9dPUFIVV65Vl1E2GmuZiwDrr9
-         kNntQGx9NjPq9tgOYgmGfcpCMiy3btYnhjfsZ/YC2c09Q6ar3O5Wd/x9QOsmf86l7q2r
-         V3BV17+LZn8rEul5rpqRLT0TTvi1WzgzKzVyitM6tQKVkBr/r+pnWuNgCDStoSh9DcRi
-         u7RmtfG2V4T5K8zSNYOmn7yI4NaY7bEgqoL0jRzatWTEzyCKp6vIMiEu5xwmIHjsqvi1
-         BBKA==
-X-Gm-Message-State: AOJu0YySxFz9dQpQxdkx8LP0C2gS+rTTPWj0MI0WIHkMgCTApbPMB4Y6
-	VfF6uFrUr1fVNZX6f4dNsCUVRj2kLL3F9Kg3A1DL/Fx8h26P3bDIfsbCPpki94KL1yB6wTf7MPS
-	1+6BruWgw5445ZrSJJgAhYGeUoJI=
-X-Google-Smtp-Source: AGHT+IED7kOb/CTGUQsjCMQwiFvHcr73C4qzzSvs1YNrN19FZXiTn8fx9WHoc17GvdpKwLrWsPYV7AoAmypKzVM+8/Q=
-X-Received: by 2002:a25:145:0:b0:dc6:e75d:d828 with SMTP id
- 66-20020a250145000000b00dc6e75dd828mr7804555ybb.18.1707136714056; Mon, 05 Feb
- 2024 04:38:34 -0800 (PST)
+	s=arc-20240116; t=1707137856; c=relaxed/simple;
+	bh=eSaxwLQBtu7BuFapxEuI56sm1ut/noJkhDe4EpRA6TE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XVouKSCBou2zJRf156DxC7e1maAofhCjhjbppm3M9V6sNbvmJ8i/Zkay1AIBGIwlqzWFNyrwVkkaN2MqefBzj/xcLI3uAXeUNidoGG6JQMdxpfICBgrZNEJ4VUf/5/jqKLwc/vP+bfj5JfDGA9qX+zRHQj+1oRV2IoiAjtpJ2gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=f5C6S3E8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fgqlJr6B; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=m5nzZvfv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2cJC/LNW; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E47D61F8C2;
+	Mon,  5 Feb 2024 12:57:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707137853;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+X9e9CZhbqLm1NcrKhMRqywteDdoKXWuPcwq6XtsHq4=;
+	b=f5C6S3E8CpDykNvCrTlNz5k8NxlrsKMPDGZWr0JFwTgXN4MuJbMKiarghUK4AEyZqIABD6
+	6rbPXQWHE7M7X2Td/HspErCoAxNsHKF/8jT5nwV6rPPqCootH6wriYjsFP1CiRscKEMY7y
+	qusyOep3B/FW+Qc7whqFna9WmVcWehc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707137853;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+X9e9CZhbqLm1NcrKhMRqywteDdoKXWuPcwq6XtsHq4=;
+	b=fgqlJr6BHd6adFqSe1dgBYQjXLSNj164hM1MPeuemxr7v7hyI/x7KWlGNhGBX2/qdi5G/S
+	8UvzYDQeHqLeOaDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707137852;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+X9e9CZhbqLm1NcrKhMRqywteDdoKXWuPcwq6XtsHq4=;
+	b=m5nzZvfv8Mi3Xg1ag9t1Efj+LXfRIENmJgkhRm063iZ4bF7ANpxCNRJxb/7jv5MeycMuwu
+	NXjrnqClUKdNZIHcZOxG0m3bmH2wuYEqGGMuQfUw26OOeEnwBQHN6cwjhhPS7bO3k1JD3T
+	ut9ivaEVald+srA5zafyIzteRDA8CCg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707137852;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+X9e9CZhbqLm1NcrKhMRqywteDdoKXWuPcwq6XtsHq4=;
+	b=2cJC/LNWQjmW8WubpWzEfTGHe6IFr6YgjWQFfIm6+bcNffLR+wsq+FnQYA48k9tlKq4KsY
+	Bw8WH6lckOfjyeDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C477A13A3B;
+	Mon,  5 Feb 2024 12:57:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wLRoLzzbwGUeVwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 05 Feb 2024 12:57:32 +0000
+Date: Mon, 5 Feb 2024 13:57:04 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: linux-btrfs@vger.kernel.org, dsterba@suse.com, aromosan@gmail.com,
+	bernd.feige@gmx.net
+Subject: Re: [PATCH] btrfs: do not skip re-registration for the mounted device
+Message-ID: <20240205125704.GD355@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <8dd1990114aabb775d4631969f1beabeadaac5b7.1707132247.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAKLYgeJ1tUuqLcsquwuFqjDXPSJpEiokrWK2gisPKDZLs8Y2TQ@mail.gmail.com>
- <39e3a4fe-d456-4de4-b481-51aabfa02b8d@leemhuis.info> <20240111155056.GG31555@twin.jikos.cz>
- <20240111170644.GK31555@twin.jikos.cz> <f45e5b7c-4354-87d3-c7f1-d8dd5f4d2abd@oracle.com>
- <7d3cee75-ee74-4348-947a-7e4bce5484b2@leemhuis.info> <CAKLYgeLhcE5+Td9eGKAi0xeXSsom381RxuJgKiQ0+oHDNS_DJA@mail.gmail.com>
- <CAKLYgeKCuDmnuGHuQYPdZZA1_H3s9_9oh+vT_FMpFZqxKSvjzw@mail.gmail.com> <20240205112619.GC355@twin.jikos.cz>
-In-Reply-To: <20240205112619.GC355@twin.jikos.cz>
-From: Alex Romosan <aromosan@gmail.com>
-Date: Mon, 5 Feb 2024 13:38:23 +0100
-Message-ID: <CAKLYgeK835ESfJ-rNzRsLHKUMQ8rU6HzV3_x6XaUu=HX0sg1=A@mail.gmail.com>
-Subject: Re: [btrfs] commit bc27d6f0aa0e4de184b617aceeaf25818cc646de breaks update-grub
-To: dsterba@suse.cz
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>, Anand Jain <anand.jain@oracle.com>, 
-	CHECK_1234543212345@protonmail.com, brauner@kernel.org, 
-	linux-btrfs <linux-btrfs@vger.kernel.org>, linux-kernel@vger.kernel.org, 
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8dd1990114aabb775d4631969f1beabeadaac5b7.1707132247.git.anand.jain@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.net];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,suse.com,gmail.com,gmx.net];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-i can confirm that with this patch applied on top of 6.8-rc3 i can now
-run update-grub. thank you. checked the kernel logs for btrfs related
-messages and everything seems fine:
+On Mon, Feb 05, 2024 at 07:45:05PM +0800, Anand Jain wrote:
+> We skip device registration for a single device. However, we do not do
+> that if the device is already mounted, as it might be coming in again
+> for scanning a different path.
+> 
+> This patch is lightly tested; for verification if it fixes.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> I still have some unknowns about the problem. Pls test if this fixes
+> the problem.
+> 
+>  fs/btrfs/volumes.c | 44 ++++++++++++++++++++++++++++++++++----------
+>  fs/btrfs/volumes.h |  1 -
+>  2 files changed, 34 insertions(+), 11 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 474ab7ed65ea..192c540a650c 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1299,6 +1299,31 @@ int btrfs_forget_devices(dev_t devt)
+>  	return ret;
+>  }
+>  
+> +static bool btrfs_skip_registration(struct btrfs_super_block *disk_super,
+> +				    dev_t devt, bool mount_arg_dev)
+> +{
+> +	struct btrfs_fs_devices *fs_devices;
+> +
+> +	list_for_each_entry(fs_devices, &fs_uuids, fs_list) {
+> +		struct btrfs_device *device;
+> +
+> +		mutex_lock(&fs_devices->device_list_mutex);
+> +		list_for_each_entry(device, &fs_devices->devices, dev_list) {
+> +			if (device->devt == devt) {
+> +				mutex_unlock(&fs_devices->device_list_mutex);
+> +				return false;
+> +			}
+> +		}
+> +		mutex_unlock(&fs_devices->device_list_mutex);
 
-Btrfs loaded, zoned=3Dno, fsverity=3Dno
-BTRFS: device fsid 695aa7ac-862a-4de3-ae59-c96f784600a0 devid 1
-transid 1990924 /dev/root scanned by swapper/0 (1)
-BTRFS info (device nvme0n1p3): first mount of filesystem
-695aa7ac-862a-4de3-ae59-c96f784600a0
-BTRFS info (device nvme0n1p3): using crc32c (crc32c-generic) checksum algor=
-ithm
-BTRFS info (device nvme0n1p3): disk space caching is enabled
-VFS: Mounted root (btrfs filesystem) readonly on device 0:19.
-BTRFS info (device nvme0n1p3): the free space cache file
-(604538667008) is invalid, skip it
-BTRFS info: devid 1 device path /dev/root changed to /dev/nvme0n1p3
-scanned by (udev-worker) (277)
-BTRFS info (device nvme0n1p3): the free space cache file
-(675405627392) is invalid, skip it
-BTRFS info (device nvme0n1p3): the free space cache file
-(696880463872) is invalid, skip it
-BTRFS info (device nvme0n1p3): the free space cache file
-(725871493120) is invalid, skip it
-BTRFS info (device nvme0n1p3): the free space cache file
-(799959678976) is invalid, skip it
-BTRFS info (device nvme0n1p3): the free space cache file
-(1658160414720) is invalid, skip it
+This is locking and unlocking again before going to device_list_add, so
+if something changes regarding the registered device then it's not up to
+date.
 
-not sure what's going on with the free space cache file, it wasn't
-that long ago i mounted the disk with the clear_cache option after
-which those messages disappeared but now it's back again...
 
---alex--
+> +	}
+> +
+> +	if (!mount_arg_dev && btrfs_super_num_devices(disk_super) == 1 &&
+> +	    !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING))
+> +		return true;
 
-On Mon, Feb 5, 2024 at 12:26=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
-e:
->
-> On Sun, Feb 04, 2024 at 07:29:29PM +0100, Alex Romosan wrote:
-> > sorry about the html post (in case somebody actually got it). as i was
-> > saying, just for the record it's still not fixed in 6.8-rc3. thanks.
->
-> I've updated the bug with link to fix
->
-> https://github.com/kdave/btrfs-devel/commit/b80f3ec6592c69f88ebc74a4e1667=
-6af161e2759
->
-> but would like to ask for testing.
+The way I implemented it is to check the above conditions as a
+prerequisite but leave the heavy work for device_list_add that does all
+the uuid and device list locking and we are quite sure it survives all
+the races between scanning and mounts.
+
+> +
+> +	return false;
+> +}
+> +
+>  /*
+>   * Look for a btrfs signature on a device. This may be called out of the mount path
+>   * and we are not allowed to call set_blocksize during the scan. The superblock
+> @@ -1316,6 +1341,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
+>  	struct btrfs_device *device = NULL;
+>  	struct bdev_handle *bdev_handle;
+>  	u64 bytenr, bytenr_orig;
+> +	dev_t devt = 0;
+>  	int ret;
+>  
+>  	lockdep_assert_held(&uuid_mutex);
+> @@ -1355,18 +1381,16 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
+>  		goto error_bdev_put;
+>  	}
+>  
+> -	if (!mount_arg_dev && btrfs_super_num_devices(disk_super) == 1 &&
+> -	    !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING)) {
+> -		dev_t devt;
+> +	ret = lookup_bdev(path, &devt);
+> +	if (ret)
+> +		btrfs_warn(NULL, "lookup bdev failed for path %s: %d",
+> +			   path, ret);
+>  
+> -		ret = lookup_bdev(path, &devt);
+
+Do we actually need this check? It was added with the patch skipping the
+registration, so it's validating the block device but how can we pass
+something that is not a valid block device?
+
+Besides there's a call to bdev_open_by_path() that in turn does the
+lookup_bdev so checking it here is redundant. It's not related to the
+fix itself but I deleted it in my fix.
+
+> -		if (ret)
+> -			btrfs_warn(NULL, "lookup bdev failed for path %s: %d",
+> -				   path, ret);
+> -		else
+> +	if (btrfs_skip_registration(disk_super, devt, mount_arg_dev)) {
+> +		pr_debug("BTRFS: skip registering single non-seed device %s\n",
+> +			  path);
+> +		if (devt)
+>  			btrfs_free_stale_devices(devt, NULL);
+> -
+> -		pr_debug("BTRFS: skip registering single non-seed device %s\n", path);
+>  		device = NULL;
+>  		goto free_disk_super;
+>  	}
 
