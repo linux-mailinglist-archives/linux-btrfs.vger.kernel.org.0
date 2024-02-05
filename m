@@ -1,244 +1,177 @@
-Return-Path: <linux-btrfs+bounces-2106-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2107-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91CA38499E9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 13:18:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77403849A0E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 13:26:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3C64B23F6F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 12:18:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FA32B2195F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 12:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B89E1BC2C;
-	Mon,  5 Feb 2024 12:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E58F1BC36;
+	Mon,  5 Feb 2024 12:26:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qokjBZp3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lvPWTfyH";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qokjBZp3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lvPWTfyH"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ft2O+wOB";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="VznUUhDs";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ft2O+wOB";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="VznUUhDs"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6381F1B969;
-	Mon,  5 Feb 2024 12:15:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B4551B962;
+	Mon,  5 Feb 2024 12:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707135337; cv=none; b=TjenV/qD3+9L0aMRZLBYUGJIy97Fq/jnFJNJWOv7LHp1GLAQK0iCcbgK9ge85fq551JM4HgSbynXfR3jZZw2sCchdOSLwwgZfLpHfmaUH2wM2ZPnI1wqW0vJjMfk2cwTJqkG/ng1vAxLySgbVSNsZoiUmsFtGvae4XWSBs1jeyU=
+	t=1707135974; cv=none; b=t0nCd4RX5+xIwaa35Fe6JOu8BTsYp/mZAOVar88M7U+u3mR4MQEiyJK2dYdLS+GvkU6RnlGsO5hDBQBj8h1fHKtRNE4cHbmj2Jozj2WDKum36V56cYNi7cEVd++00QWIZocE4fsAY+iD4hGBXnVIfG4X7YohumLxYbEZvPXYUww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707135337; c=relaxed/simple;
-	bh=zc0pRgZYZxJALjoYpqFAdp7FMSnYX9ikWZHhYJIwhpw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WZmuvEW4oTYwsggEUK43fGwNIrIX+AVIWXYWwtOhINgEOskYZypaWJjEmaOCS4g6TSAM834uUK6alyQDuiwuRIyWiCRaByZGNI8oo7EUfoutBmrbrA+UHsIM8PV5PqRRSqr3s+npzDskcZxphmegoH8Crdz/DfUmZ5FSTx3vxeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qokjBZp3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lvPWTfyH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qokjBZp3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lvPWTfyH; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	s=arc-20240116; t=1707135974; c=relaxed/simple;
+	bh=/WWD3To6u+eCPZpMGJRKkDX3WCOFpVPIyW/rSDLnnps=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Vv4VeibTmlijKx4ZmOfYuuXkBL4XImQSAU7mPcb+Ddcw1vI/WyNVNeazOaj+DsCW4ElPqs/P93wUFzKptaiuzghXaoinpnU+lfSDkAFFttGD/Wjce6G2xLkYLdTQRWglPjpbtWTs/Pqwyv0uD4/wBOdjkcT6+zpUpIdlh0QNXfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ft2O+wOB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=VznUUhDs; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ft2O+wOB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=VznUUhDs; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 63F201F8C0;
-	Mon,  5 Feb 2024 12:15:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707135333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 65B60220F4;
+	Mon,  5 Feb 2024 12:26:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707135970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kEO4eHB2RkgWgrfIv+zq/AuT//7QQAheycepXP2TWTg=;
-	b=qokjBZp37IYl0KRBl9puo4nI/vE9Bx9agFbx9Ch6mY/6iIASNHe5Kp81k76O9chLJOXoVE
-	g5DoAoKHzOTlYeOEyfcjjg406NOf9xAS7xdSvGrhFHAn6gGY3uPAOMX2ha2LO5R9pL9r8b
-	hTPkow8Gu51rKxZF/SGDYhA8QiZpQ10=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707135333;
+	bh=q8yovX7ZkSzL2tX8Zi0vM7tz818nJBFWsJQqQ44fHwY=;
+	b=ft2O+wOBVhLzyVuh8m3TJANQEJ54TwrDlbm8wRcPqjtkMDMd0IMp170PoGN5Z7Q3RaobkP
+	IxPQhFZeIzpMisCBmhjEEEA5TQ+cAmrrXiKxpBwt21On9RuywYyDe92RYlKdMlCaxel1Wt
+	v/uhqw3Jw/piEYbw/KGowsk3Gr0w+Iw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707135970;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kEO4eHB2RkgWgrfIv+zq/AuT//7QQAheycepXP2TWTg=;
-	b=lvPWTfyHZmxYa51B4jbheuYBJ/dnTR5Gen2RwGvrBVLkHE15+ZNXeZHQAEGqS04A2yy9p/
-	FNxzhQKszocSwmAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707135333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	bh=q8yovX7ZkSzL2tX8Zi0vM7tz818nJBFWsJQqQ44fHwY=;
+	b=VznUUhDsl6kJgB4uhlbT5YfUlRarjPWLvCwambMuaSAtIOLlFC8URCXfK8jk1p/G4U4iwE
+	rQ+5Rpd4XCuVl8Bg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707135970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kEO4eHB2RkgWgrfIv+zq/AuT//7QQAheycepXP2TWTg=;
-	b=qokjBZp37IYl0KRBl9puo4nI/vE9Bx9agFbx9Ch6mY/6iIASNHe5Kp81k76O9chLJOXoVE
-	g5DoAoKHzOTlYeOEyfcjjg406NOf9xAS7xdSvGrhFHAn6gGY3uPAOMX2ha2LO5R9pL9r8b
-	hTPkow8Gu51rKxZF/SGDYhA8QiZpQ10=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707135333;
+	bh=q8yovX7ZkSzL2tX8Zi0vM7tz818nJBFWsJQqQ44fHwY=;
+	b=ft2O+wOBVhLzyVuh8m3TJANQEJ54TwrDlbm8wRcPqjtkMDMd0IMp170PoGN5Z7Q3RaobkP
+	IxPQhFZeIzpMisCBmhjEEEA5TQ+cAmrrXiKxpBwt21On9RuywYyDe92RYlKdMlCaxel1Wt
+	v/uhqw3Jw/piEYbw/KGowsk3Gr0w+Iw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707135970;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kEO4eHB2RkgWgrfIv+zq/AuT//7QQAheycepXP2TWTg=;
-	b=lvPWTfyHZmxYa51B4jbheuYBJ/dnTR5Gen2RwGvrBVLkHE15+ZNXeZHQAEGqS04A2yy9p/
-	FNxzhQKszocSwmAA==
+	bh=q8yovX7ZkSzL2tX8Zi0vM7tz818nJBFWsJQqQ44fHwY=;
+	b=VznUUhDsl6kJgB4uhlbT5YfUlRarjPWLvCwambMuaSAtIOLlFC8URCXfK8jk1p/G4U4iwE
+	rQ+5Rpd4XCuVl8Bg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 41CB3136F5;
-	Mon,  5 Feb 2024 12:15:33 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 785E313707;
+	Mon,  5 Feb 2024 12:26:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +FTGD2XRwGWKTAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 05 Feb 2024 12:15:33 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id D1C32A0809; Mon,  5 Feb 2024 13:15:32 +0100 (CET)
-Date: Mon, 5 Feb 2024 13:15:32 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+3ce5dea5b1539ff36769@syzkaller.appspotmail.com>
-Cc: amir73il@gmail.com, clm@fb.com, dsterba@suse.com, jack@suse.cz,
-	josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	repnop@google.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [btrfs?] KMSAN: uninit-value in bcmp (2)
-Message-ID: <20240205121532.nj7yfb56jjgglkgu@quack3>
-References: <000000000000b6ffa9060ee52c74@google.com>
- <0000000000003e469906108cde8d@google.com>
+	id MSGMCuDTwGV4TwAAD6G6ig
+	(envelope-from <ddiss@suse.de>); Mon, 05 Feb 2024 12:26:08 +0000
+Date: Mon, 5 Feb 2024 23:26:00 +1100
+From: David Disseldorp <ddiss@suse.de>
+To: fdmanana@kernel.org
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, Filipe Manana
+ <fdmanana@suse.com>
+Subject: Re: [PATCH 2/4] btrfs/173: make the test work when mounting with
+ nodatacow
+Message-ID: <20240205232600.15796771@echidna>
+In-Reply-To: <0e243759cb9551eaac8b6f10f4dfbcbd5e880d56.1706810184.git.fdmanana@suse.com>
+References: <cover.1706810184.git.fdmanana@suse.com>
+	<0e243759cb9551eaac8b6f10f4dfbcbd5e880d56.1706810184.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000003e469906108cde8d@google.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Level: 
-X-Spam-Score: -1.30
-X-Spamd-Result: default: False [-1.30 / 50.00];
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ft2O+wOB;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=VznUUhDs
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.01 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
 	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=656820e61b758b15];
-	 TAGGED_RCPT(0.00)[3ce5dea5b1539ff36769];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
 	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
 	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,storage.googleapis.com:url];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[gmail.com,fb.com,suse.com,suse.cz,toxicpanda.com,vger.kernel.org,google.com,googlegroups.com];
 	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
+	 BAYES_HAM(-0.00)[25.52%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: -1.01
+X-Rspamd-Queue-Id: 65B60220F4
 X-Spam-Flag: NO
 
-On Sun 04-02-24 03:44:30, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    9f8413c4a66f Merge tag 'cgroup-for-6.8' of git://git.kerne..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=10fcfdc0180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3ce5dea5b1539ff36769
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139dd53fe80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12685aa8180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/79d9f2f4b065/disk-9f8413c4.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/cbc68430d9c6/vmlinux-9f8413c4.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/9740ad9fc172/bzImage-9f8413c4.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/25f4008bd752/mount_0.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+3ce5dea5b1539ff36769@syzkaller.appspotmail.com
-> 
-> =====================================================
-> BUG: KMSAN: uninit-value in memcmp lib/string.c:692 [inline]
-> BUG: KMSAN: uninit-value in bcmp+0x186/0x1c0 lib/string.c:713
->  memcmp lib/string.c:692 [inline]
->  bcmp+0x186/0x1c0 lib/string.c:713
->  fanotify_fh_equal fs/notify/fanotify/fanotify.c:51 [inline]
+On Thu,  1 Feb 2024 18:03:48 +0000, fdmanana@kernel.org wrote:
 
-So I'm not sure how this is possible. In fanotify_encode_fh() we have:
-
-        dwords = fh_len >> 2;
-        type = exportfs_encode_fid(inode, buf, &dwords);
-        err = -EINVAL;
-        if (type <= 0 || type == FILEID_INVALID || fh_len != dwords << 2)
-                goto out_err;
-
-        fh->type = type;
-        fh->len = fh_len;
-
-So if the encoded file handle was different length than what we expected we
-will fail the creation of the event...
-
-Aha, the FAT filesystem is mounted in nfs=nostale_ro which means that we're
-using fat_export_ops_nostale and thus fat_encode_fh_nostale for encoding
-fh. And FAT_FID_SIZE_WITHOUT_PARENT is 3 (i.e. 12 bytes) but the function
-initializes just the first 10 bytes of struct fat_fid. I'll send a fix for
-FAT.
-
-								Honza
-
-
->  fanotify_fid_event_equal fs/notify/fanotify/fanotify.c:72 [inline]
->  fanotify_should_merge fs/notify/fanotify/fanotify.c:168 [inline]
->  fanotify_merge+0x15f5/0x27e0 fs/notify/fanotify/fanotify.c:209
->  fsnotify_insert_event+0x1d0/0x600 fs/notify/notification.c:113
->  fanotify_handle_event+0x47f7/0x6140 fs/notify/fanotify/fanotify.c:966
->  send_to_group fs/notify/fsnotify.c:360 [inline]
->  fsnotify+0x2510/0x3530 fs/notify/fsnotify.c:570
->  fsnotify_parent include/linux/fsnotify.h:80 [inline]
->  fsnotify_file include/linux/fsnotify.h:100 [inline]
->  fsnotify_close include/linux/fsnotify.h:362 [inline]
->  __fput+0x578/0x10c0 fs/file_table.c:368
->  __fput_sync+0x74/0x90 fs/file_table.c:467
->  __do_sys_close fs/open.c:1554 [inline]
->  __se_sys_close+0x28a/0x4c0 fs/open.c:1539
->  __x64_sys_close+0x48/0x60 fs/open.c:1539
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Uninit was created at:
->  slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
->  slab_alloc_node mm/slub.c:3478 [inline]
->  slab_alloc mm/slub.c:3486 [inline]
->  __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
->  kmem_cache_alloc+0x579/0xa90 mm/slub.c:3502
->  fanotify_alloc_fid_event fs/notify/fanotify/fanotify.c:584 [inline]
->  fanotify_alloc_event fs/notify/fanotify/fanotify.c:817 [inline]
->  fanotify_handle_event+0x2ff6/0x6140 fs/notify/fanotify/fanotify.c:952
->  send_to_group fs/notify/fsnotify.c:360 [inline]
->  fsnotify+0x2510/0x3530 fs/notify/fsnotify.c:570
->  fsnotify_parent include/linux/fsnotify.h:80 [inline]
->  fsnotify_file include/linux/fsnotify.h:100 [inline]
->  fsnotify_close include/linux/fsnotify.h:362 [inline]
->  __fput+0x578/0x10c0 fs/file_table.c:368
->  __fput_sync+0x74/0x90 fs/file_table.c:467
->  __do_sys_close fs/open.c:1554 [inline]
->  __se_sys_close+0x28a/0x4c0 fs/open.c:1539
->  __x64_sys_close+0x48/0x60 fs/open.c:1539
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> Currently btrfs/173 fails when passing "-o nodatacow" to MOUNT_OPTIONS
+> because it assumes that when creating a file it does not have the
+> nodatacow flag set, which is obviously not true if the fs is mounted with
+> "-o nodatacow". To allow the test to run successfully with nodatacow,
+> just make sure it clears the nodatacow flag from the file if the fs was
+> mounted with "-o nodatacow".
 > 
-> CPU: 0 PID: 5010 Comm: syz-executor120 Not tainted 6.7.0-syzkaller-00562-g9f8413c4a66f #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-> =====================================================
-> 
-> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 > ---
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
+>  tests/btrfs/173 | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> diff --git a/tests/btrfs/173 b/tests/btrfs/173
+> index 6e78a826..42af2d26 100755
+> --- a/tests/btrfs/173
+> +++ b/tests/btrfs/173
+> @@ -23,6 +23,11 @@ echo "COW file"
+>  # unset it after the swap file has been created.
+>  rm -f "$SCRATCH_MNT/swap"
+>  touch "$SCRATCH_MNT/swap"
+> +# Make sure we have a COW file if we were mounted with "-o nodatacow".
+> +if _normalize_mount_options "$MOUNT_OPTIONS" | grep -q "nodatacow"; then
+> +	_require_chattr C
+> +	$CHATTR_PROG -C "$SCRATCH_MNT/swap"
+> +fi
+
+Nit: _format_swapfile already calls $CHATTR_PROG +C, so might as well
+put the _require_chattr call alongside _require_scratch_swapfile
+
+>  chmod 0600 "$SCRATCH_MNT/swap"
+>  _pwrite_byte 0x61 0 $(($(_get_page_size) * 10)) "$SCRATCH_MNT/swap" >> $seqres.full
+>  $MKSWAP_PROG "$SCRATCH_MNT/swap" >> $seqres.full
+
 
