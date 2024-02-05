@@ -1,59 +1,53 @@
-Return-Path: <linux-btrfs+bounces-2099-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2100-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A888493FA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 07:46:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10A0D8494E6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 08:56:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD584281CBF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 06:46:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C53B1C21E91
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 07:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB840D310;
-	Mon,  5 Feb 2024 06:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3146311184;
+	Mon,  5 Feb 2024 07:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="R3UFt+FE"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="lPE3QdAU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79DA311184
-	for <linux-btrfs@vger.kernel.org>; Mon,  5 Feb 2024 06:46:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.154.54.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B56010A1E
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 Feb 2024 07:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707115590; cv=none; b=QLg5aTVeJFioRzpnUQMKgWrWzY6wgPqq7TMTwgJpAObtLhhe9foyg5AHyO30PCeo4g18IFx8grjvzRXJWBUVuYhd0lkH+dEEZ2ZsGg9guqn1kWRiRUofZebsy09eIMrQe7MojHFuqMY6vuTap/deE/Iq30/23LPDjEu4y/cNIVc=
+	t=1707119802; cv=none; b=Wfzdl1BWOG5DGtotJu0nGrrlp8ZEz7gEh9MnnzviwLa+dXEezlVjCan1d0yG7hHxSJ5nE3Vcg8badm+6Bb6N+R3KlHKRwEdmoEfkDC0rnXXLYNm38AxAjoCrVbZJz6Np2cVMLDeVTVEmMRYlqAaJXWL6K/8h+p16BdchYszcW8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707115590; c=relaxed/simple;
-	bh=qiyNLK0+XIwMirUKkBJW9uO2FJqy9lO4JmWm4LGP38s=;
+	s=arc-20240116; t=1707119802; c=relaxed/simple;
+	bh=KXAaqz/3cri6YhFj/o4Eb4sd7JKkk/h15Nc1KgTvVLs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P4J90XX3J90pyox3keSmMZY8KEKdSwZvgkQPFrgMCcuaHYotjEgHBdEheosIHSZFwtx1yJqnH/5tf7RXriXldJDCuh6za0hdH6gTFTt6BdWCGzgWXKy+iqVqgOxQUQQx5R+ZfxpIV1L4c29q2CyWr8I49OKGHf6j7qhlfKeye2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=R3UFt+FE; arc=none smtp.client-ip=43.154.54.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
-	s=qqmb2301; t=1707115575;
-	bh=qiyNLK0+XIwMirUKkBJW9uO2FJqy9lO4JmWm4LGP38s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=R3UFt+FEdPUovjlnvQTijGx79Kr+fHgf2TVbgKn4wbNqhtFS5DxZBiLoLgq0gvGz9
-	 aRvZytk+Q2C9MEf5YoUFaKSRTbuHtXXIG4y53HxcGVRc1tyEUWKyptPzSXsBCYgHDg
-	 RxqjbEUEBlaJSIG4mt2EfSRDVoWWsTbeQL41kAC0=
-X-QQ-mid: bizesmtpipv603t1707115573trii
-X-QQ-Originating-IP: P6fwaVetOUSclFD/UJ9I/aa0vo1dqjbMZuOKuaYXook=
-Received: from [IPV6:240e:381:70b1:9300:6009:d ( [255.217.104.8])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 05 Feb 2024 14:46:12 +0800 (CST)
-X-QQ-SSF: 00100000000000E0Z000000A0000000
-X-QQ-FEAT: 5q30pvLz2ifmU14zGePFXYX1kaNzk2AUowFCLj+q36akHUkVldghsfCP+Xck+
-	IZQas8ZJ0nvfH7zg/lXEMZu13kWQltPRyHCFs+7cY96qkCglI9V+ck0+Wf1kir9ZnuKcyeA
-	+8dnlbEaCySezlEUOvHMpszHzQ+8qtdJpcK80d3f1xIWYZ/MJxlC3EKJJpWnWfjHSvh/Opo
-	qZMy2WFevwZHBQ8PcEGtanBxZj0tap/s7WFoCQmWU4CtqDG5asbYxIMwNpicVicqc+/uvX1
-	LBzIugjCrXOjNDy91Ya1VL06UQqpind2aYRrZ6VLm/HHRfCqoUUhpV5+RJw6NJklzBtoHJd
-	oVd/tYy7IfzGe3SW0R2qAfl6y/0JA==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 17763136370063475400
-Message-ID: <6F6264A5C0D133BB+074eb3c4-737b-410d-8d69-23ce2b92d5bc@bupt.moe>
-Date: Mon, 5 Feb 2024 14:46:12 +0800
+	 In-Reply-To:Content-Type; b=Lx1dTT/FWEyRMIxACm7A84/ksjyZlyriDdPvDga6fRLdaoiDuC+p4/oDu91DgfMYe8iXL5zL8ePQ8trUBkPLrisyqagFNXkHxhlgQ0VL/FDC7wJDWOruFoeCqVCnZATtvLZdLushWGQILW3Loeb8nWlQP6LUxMWEGglQW2hfRys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=lPE3QdAU; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1707119792; x=1707724592; i=quwenruo.btrfs@gmx.com;
+	bh=KXAaqz/3cri6YhFj/o4Eb4sd7JKkk/h15Nc1KgTvVLs=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=lPE3QdAU/SrOseUFey4ZA+ViHmh/9Nsrm5qNoxHID+PmlaSpw9XGCaPUpiySJBFk
+	 CnT6PeH8tGAlCA+x6sFyFVJc/BiiCs+dQ5dm031SMUECywENkXVdWWH3bO0BvaYZ5
+	 6QDrQfouC3GJGmO0idXO6+UJ1xrW0wRj5DHpAkR4trnStFkV/uBJl15TDiDu6IXza
+	 8Mp02uRyZAWoXbGKPmvj0J++AJnCoWUP99e+Upy7k06Ol/QL0G7/clBzcaRqh70QB
+	 cere4R6z2lG+7QgaLB37YlB0XNpwzn4xnMR7ms8hYtKPxoEjOFH7WWKuQC3AznVGe
+	 H7qJPo8YCPXV2qUS/g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Ml6mE-1r9hYp3UQ0-00lWjm; Mon, 05
+ Feb 2024 08:56:32 +0100
+Message-ID: <66540683-cf08-4e4c-a8be-1c68ac4ea599@gmx.com>
+Date: Mon, 5 Feb 2024 18:26:28 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -63,7 +57,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [btrfs] RAID1 volume on zoned device oops when sync.
 Content-Language: en-US
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: =?UTF-8?B?6Z+p5LqO5oOf?= <hrx@bupt.moe>
 Cc: linux-btrfs@vger.kernel.org
 References: <1ACD2E3643008A17+da260584-2c7f-432a-9e22-9d390aae84cc@bupt.moe>
  <20240202121948.GA31555@twin.jikos.cz>
@@ -71,80 +65,179 @@ References: <1ACD2E3643008A17+da260584-2c7f-432a-9e22-9d390aae84cc@bupt.moe>
  <20240203221545.GB355@twin.jikos.cz>
  <C4754294EA02D5C7+15158e38-2647-4af8-beca-b09216be42b5@bupt.moe>
  <ae491a34-8879-4791-8a51-4c6f20838deb@gmx.com>
-From: =?UTF-8?B?6Z+p5LqO5oOf?= <hrx@bupt.moe>
-In-Reply-To: <ae491a34-8879-4791-8a51-4c6f20838deb@gmx.com>
+ <6F6264A5C0D133BB+074eb3c4-737b-410d-8d69-23ce2b92d5bc@bupt.moe>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <6F6264A5C0D133BB+074eb3c4-737b-410d-8d69-23ce2b92d5bc@bupt.moe>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpipv:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mvUFjXeCrgrDnGK81AlaXoV5ueYxSEHVrLeaP9/HOGoit2bafw3
+ eSbNpxW734+5XEnDWjJsKm0TjSfo6DRb25ECWpSv7h2MYkPgJIXQSKn4r5rnaOemOA/vyNb
+ GJxTkumxSyuXDeiGohqpsvcP3FKhg5QpYuzgD8MCp8WkQwvxkojGJBLhe8IVV3GnY9snOfw
+ ILqqeilM5Hr8AjRj33cdg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:gs9g0vdfu0Y=;1PadViSRgH7jQyfPP81D0e3ZwIX
+ 6NHDMdh9aIrMoaAsLrBUMC2rwwpU076P1g7NayojWLJNWW+JNolskKKzjO69ujofz7YOv/ahQ
+ JV1HGUXwF2wWpJ77/yWeHJwM1pO8+YsRp91J5Gm5zhxWNPcq1r6e88fC3iBuDA3dBpjrq25zT
+ wHng1PWomah2vNcjc6hYY1ArkWI61DAGENzWlI7LC3CwWQHSU6Gg/u37q3gswRKdB5Y3nQISu
+ rcqkgZrnc6ACWoD8xuK6tAR6+XZX/d4oVe/6YKBocsM3ellNr+gbTzEw3hgUojzY3E89IJsq6
+ k+g+H2NkQiBQxMsrjANclw9J9J6DWHebkhRNu1KjC4SZ4YEmlazqcSkTc6cnRcuD7mvIbS/KY
+ q46LvHA5VY73VuldnvNc1ichTHbc/MWy91zNc9v+KG3kU7FOcDazJcFN6+mvlH9pg69uIzgiX
+ tLz/eXrHhWEjJpPMG/OdCGdbxnG4IhbUJrpqRmxxrUmadIxaZYNFQrlWisx9t8yyg4Cbi84VV
+ OtP3IV/FPn+43bR1b96b+YaxN9kN+y7HI2eZOX9oEsBOVNrIsOcL5jPXQHjSZisvsOhLpcz6Q
+ egWYjIvOAXluUaZpgGEWeRwYvYujGxOXDeuhyw4Js+L+5+U3xMytRPq0xeHP7CdxUDKp8hX4K
+ 80f9CdrNZviWGG5oF6sDqZ1lLV+UjED3d54OXGTbDMDYaZ5VM5AuNQaCYcQvWx4uC2FFILUJo
+ llofQZhuTuLY/SBCXtQ8dzHhr1AmLAEg9R4mEZVp9eheUDMZJpNTtxoo8VwY294mwyd2A2tZ0
+ QOCXKvCxa2vop3IUSDl1iSJb6rskKQxw//kOxpzlH0s+8=
 
-ID4gQW55IGNsdWUgaG93IGNhbiBJIHB1cmNoYXNlIHN1Y2ggZGlza3M/DQogPiBBbmQgd2hh
-dCdzIHRoZSBpbnRlcmZhY2U/IChOVk1FPyBTQVRBPyBVMj8pDQoNCkkgcHVyY2hhc2VkIHRo
-ZXNlIG9uIHVzZWQgbWFya2V0IGFwcCBjYWxsZWQgWGlhbnl1KOmXsumxvCkgd2hpY2ggbWF5
-IGJlIA0KZGlmZmljdWx0IGZvciB1c2Vycw0Kb3V0c2lkZSBDaGluYSBtYWlubGFuZC4gQW5k
-IGl0cyBzdXBwbHkgaXMgZXh0cmVtZWx5IHVuc3RhYmxlLg0KDQpJdHMgaW50ZXJmYWNlIGlz
-IFNBVEEuIE1pbmUgbW9kZWwgaXMgSFNINzIxNDE0QUxONk0wLiBTcGVjIGxpbms6IA0KaHR0
-cHM6Ly9kb2N1bWVudHMud2VzdGVybmRpZ2l0YWwuY29tL2NvbnRlbnQvZGFtL2RvYy1saWJy
-YXJ5L2VuX3VzL2Fzc2V0cy9wdWJsaWMvd2VzdGVybi1kaWdpdGFsL3Byb2R1Y3QvZGF0YS1j
-ZW50ZXItZHJpdmVzL3VsdHJhc3Rhci1kYy1oYzYwMC1zZXJpZXMvZGF0YS1zaGVldC11bHRy
-YXN0YXItZGMtaGM2MjAucGRmDQoNCiA+IEFuZCBoYXZlIHlvdSB0cmllZCBlbXVsYXRlZCB6
-b25lZCBkZXZpY2UgKG5vIG1hdHRlciBpZiBpdCdzIHFlbXUgem9uZWQNCiA+IGVtdWxhdGlv
-biBvciBuYmQgb3Igd2hhdGV2ZXIpIHdpdGggNEsgc2VjdG9yc2l6ZT8NCg0KSGF2ZSB0cmll
-ZCBvbiBteSBsb29uZ3NvbiB3aXRoIHRoaXMgc2NyaXB0IGZyb20gDQpodHRwczovL2dpdGh1
-Yi5jb20vUm9uZ3JvbmdnZzkNCg0KID4gLi9udWxsYiBzZXR1cA0KID4gLi9udWxsYiBjcmVh
-dGUgLXMgNDA5NiAteiAyNTYNCiA+IC4vbnVsbGIgY3JlYXRlIC1zIDQwOTYgLXogMjU2DQog
-PiAuL251bGxiIGxzDQogPiBta2ZzLmJ0cmZzIC1zIDE2ayAvZGV2L251bGxiMA0KID4gbW91
-bnQgL2Rldi9udWxsYjAgL21udC90bXANCiA+IGJ0cmZzIGRldmljZSBhZGQgL2Rldi9udWxs
-YjEgL21udC90bXANCiA+IGJ0cmZzIGJhbGFuY2Ugc3RhcnQgLWRjb252ZXJ0PXJhaWQxIC1t
-Y29udmVydD1yYWlkMSAvbW50L3RtcA0KDQpXaGV0aGVyIGl0IGlzIDRrIG9yIDE2aywga2Vy
-bmVsIHdpbGwgaGF2ZSAiem9uZWQ6IGRhdGEgcmFpZDEgbmVlZHMgDQpyYWlkLXN0cmlwZS10
-cmVlIg0KDQogPiBJZiB5b3UgY2FuIHByb3ZpZGUgc29tZSBoZWxwLCBpdCB3b3VsZCBzdXBl
-ciBncmVhdC4NCg0KU3VyZS4gSSBjYW4gcHJvdmlkZSBhY2Nlc3MgdG8gbXkgbG9vbmdzb24g
-dy8gZHVhbCBIQzYyMCBpZiB5b3Ugd2lzaC4gWW91IA0KY2FuIGNvbnRhY3QgbWUgb24gdC5t
-ZS9oYW55dXdlaTcwLg0KDQogPiBjYW4geW91IHByb3ZpZGUgdGhlIGZhZGRyMmxpbmUgb3V0
-cHV0IGZvcg0KID4gImJ0cmZzX2ZpbmlzaF9vcmRlcmVkX2V4dGVudCsweDI0Ij8NCg0KSSBo
-YXZlIHJlY29tcGlsZWQga2VybmVsIHRvIGFkZCBERUJVR19JTkZPLiBIZXJlJ3MgcmVzdWx0
-Lg0KDQpbaHl3QGxvb25nM2E2IGxpbnV4LTYuNy4yXSQgLi9zY3JpcHRzL2ZhZGRyMmxpbmUg
-ZnMvYnRyZnMvYnRyZnMua28gDQpidHJmc19maW5pc2hfb3JkZXJlZF9leHRlbnQrMHgyNA0K
-YnRyZnNfZmluaXNoX29yZGVyZWRfZXh0ZW50KzB4MjQvMHhjMDoNCnNwaW5sb2NrX2NoZWNr
-IGF0IA0KL2hvbWUvaHl3L2tlcm5lbF9idWlsZC9saW51eC02LjcuMi8uL2luY2x1ZGUvbGlu
-dXgvc3BpbmxvY2suaDozMjYNCihpbmxpbmVkIGJ5KSBidHJmc19maW5pc2hfb3JkZXJlZF9l
-eHRlbnQgYXQgDQovaG9tZS9oeXcva2VybmVsX2J1aWxkL2xpbnV4LTYuNy4yL2ZzL2J0cmZz
-L29yZGVyZWQtZGF0YS5jOjM4MQ0KDQrlnKggMjAyNC8yLzUgMTM6MjIsIFF1IFdlbnJ1byDl
-hpnpgZM6DQo+DQo+DQo+IE9uIDIwMjQvMi80IDIwOjA0LCDpn6nkuo7mg58gd3JvdGU6DQo+
-PiDCoD4gaWUuIG1rZnMuYnRyZnMgLS1zZWN0b3JzaXplIDE2ay4gaXQgd29ya3MhIEkgY2Fu
-IHN5bmMgd2l0aG91dCBhbnkNCj4+IHByb2JsZW0gbm93LiBJIHdpbGwgY29udGludWUgdG8g
-bW9uaXRvciBpZiBhbnkgaXNzdWVzIG9jY3VycmVkLiBzZWVtcw0KPj4gbGlrZSBJIGNhbiBv
-bmx5IHVzZSB0aGVzZSBkaXNrcyBvbiBteSBsb29uZ3NvbiBtYWNoaW5lIGZvciBhIHdoaWxl
-Lg0KPg0KPiBBbnkgY2x1ZSBob3cgY2FuIEkgcHVyY2hhc2Ugc3VjaCBkaXNrcz8NCj4gQW5k
-IHdoYXQncyB0aGUgaW50ZXJmYWNlPyAoTlZNRT8gU0FUQT8gVTI/KQ0KPg0KPiBJIGNhbiBn
-byB0cnkgcWVtdSB6b25lZCBudm1lIG9uIG15IGFhcmNoNjQgaG9zdCwgYnV0IHNvIGZhciB0
-aGUgU29DIGlzDQo+IG9mZmxpbmUgKHdvbid0IGJlIG9ubGluZSB1bnRpbCB0aGlzIHdlZWtl
-bmQpLg0KPg0KPiBBbmQgaGF2ZSB5b3UgdHJpZWQgZW11bGF0ZWQgem9uZWQgZGV2aWNlIChu
-byBtYXR0ZXIgaWYgaXQncyBxZW11IHpvbmVkDQo+IGVtdWxhdGlvbiBvciBuYmQgb3Igd2hh
-dGV2ZXIpIHdpdGggNEsgc2VjdG9yc2l6ZT8NCj4NCj4NCj4gU28gZmFyIHdlIGRvbid0IGhh
-dmUgZ29vZCBlbm91Z2ggY292ZXJhZ2Ugd2l0aCB6b25lZCBvbiBzdWJwYWdlLCBJIGhhdmUN
-Cj4gdGhlIHBoeXNpY2FsIGhhcmR3YXJlIG9mIGFhcmNoNjQgKGFuZCBWTXMgd2l0aCBkaWZm
-ZXJlbnQgcGFnZSBzaXplKSwgYnV0DQo+IEkgZG9uJ3QgaGF2ZSBhbnkgem9uZWQgZGV2aWNl
-cy4NCj4NCj4gSWYgeW91IGNhbiBwcm92aWRlIHNvbWUgaGVscCwgaXQgd291bGQgc3VwZXIg
-Z3JlYXQuDQo+DQo+Pg0KPj4gSXMgdGhlcmUgYW55IHByb2dyZXNzIG9yIHByb3Bvc2VkIHBh
-dGNoIGZvciBzdWJwYWdlIGxheWVyIGZpeD8NCj4+DQo+PiDlnKggMjAyNC8yLzQgNjoxNSwg
-RGF2aWQgU3RlcmJhIOWGmemBkzoNCj4+PiBPbiBTYXQsIEZlYiAwMywgMjAyNCBhdCAwNjox
-ODowOVBNICswODAwLCDpn6nkuo7mg58gd3JvdGU6DQo+Pj4+IFdoZW4gbWtmcywgSSBpbnRl
-bnRpb25hbGx5IHVzZWQgIi1zIDRrIiBmb3IgYmV0dGVyIGNvbXBhdGliaWxpdHkuDQo+Pj4+
-IEFuZCAvc3lzL2ZzL2J0cmZzL2ZlYXR1cmVzL3N1cHBvcnRlZF9zZWN0b3JzaXplcyBpcyA0
-MDk2IDE2Mzg0LCB3aGljaA0KPj4+PiBzaG91bGQgYmUgb2suDQo+Pj4+DQo+Pj4+IGJ0cmZz
-LXByb2dzIGlzIDYuNi4yLTEsIGlzIHRoaXMgcmVsYXRlZD8NCj4+PiBObywgdGhpcyBpcyBz
-b21ldGhpbmcgaW4ga2VybmVsLiBZb3UgY291bGQgdGVzdCBpZiBzYW1lIHBhZ2UgYW5kIHNl
-Y3Rvcg0KPj4+IHNpemUgd29ya3MsIGllLiBta2ZzLmJ0cmZzIC0tc2VjdG9yc2l6ZSAxNmsu
-IFRoaXMgYXZvaWRzIHVzaW5nIHRoZQ0KPj4+IHN1YnBhZ2UgbGF5ZXIgdGhhdCB0cmFuc2Fs
-YXRlcyB0aGUgNGsgc2VjdG9ycyA8LT4gMTZrIHBhZ2VzLiBUaGlzIGhhcw0KPj4+IHRoZSBr
-bm93biBpbnRlcm9wZXJhYmlsaXR5IGlzc3VlcyB3aXRoIGRpZmZlcmVudCBwYWdlIGFuZCBz
-ZWN0b3Igc2l6ZXMNCj4+PiBidXQgaWYgaXQgZG9lcyBub3QgYWZmZWN0IHlvdSwgeW91IGNh
-biB1c2UgaXQuDQo+Pj4NCj4NCj4gQW5vdGhlciB0aGluZyBpcywgSSBkb24ndCBrbm93IGhv
-dyB0aGUgbG9vbmdzb24ga2VybmVsIGR1bXAgd29ya3MsIGJ1dA0KPiBjYW4geW91IHByb3Zp
-ZGUgdGhlIGZhZGRyMmxpbmUgb3V0cHV0IGZvcg0KPiAiYnRyZnNfZmluaXNoX29yZGVyZWRf
-ZXh0ZW50KzB4MjQiPw0KPg0KPiBJdCBsb29rcyBsaWtlIG9yZGVyZWQtPmlub2RlIGlzIG5v
-dCBwcm9wZXJseSBpbml0aWFsaXplZCBidXQgSSdtIG5vdA0KPiAxMDAlIHN1cmUuDQo+DQo+
-IFRoYW5rcywNCj4gUXUNCj4NCg==
+
+
+On 2024/2/5 17:16, =E9=9F=A9=E4=BA=8E=E6=83=9F wrote:
+>  > Any clue how can I purchase such disks?
+>  > And what's the interface? (NVME? SATA? U2?)
+>
+> I purchased these on used market app called Xianyu(=E9=97=B2=E9=B1=BC) w=
+hich may be
+> difficult for users
+> outside China mainland. And its supply is extremely unstable.
+>
+> Its interface is SATA. Mine model is HSH721414ALN6M0. Spec link:
+> https://documents.westerndigital.com/content/dam/doc-library/en_us/asset=
+s/public/western-digital/product/data-center-drives/ultrastar-dc-hc600-ser=
+ies/data-sheet-ultrastar-dc-hc620.pdf
+>
+>  > And have you tried emulated zoned device (no matter if it's qemu zone=
+d
+>  > emulation or nbd or whatever) with 4K sectorsize?
+>
+> Have tried on my loongson with this script from
+> https://github.com/Rongronggg9
+>
+>  > ./nullb setup
+>  > ./nullb create -s 4096 -z 256
+>  > ./nullb create -s 4096 -z 256
+>  > ./nullb ls
+>  > mkfs.btrfs -s 16k /dev/nullb0
+>  > mount /dev/nullb0 /mnt/tmp
+>  > btrfs device add /dev/nullb1 /mnt/tmp
+>  > btrfs balance start -dconvert=3Draid1 -mconvert=3Draid1 /mnt/tmp
+
+Just want to be sure, for your case, you're doing the same mkfs (4K
+sectorsize) on the physical disk, then add a new disk, and finally
+balanced the fs?
+
+IIRC the balance itself should not succeed, no matter if it's emulated
+or real disks, as data RAID1 requires zoned RST support.
+
+If that's the case, it looks like some checks got bypassed, and one copy
+of the raid1 bbio doesn't get its content setup properly thus leading to
+the NULL pointer dereference.
+
+Anyway, I'll try to reproduce it next week locally, or I'll ask for the
+access to your loonson system soon.
+
+Thanks,
+Qu
+>
+> Whether it is 4k or 16k, kernel will have "zoned: data raid1 needs
+> raid-stripe-tree"
+>
+>  > If you can provide some help, it would super great.
+>
+> Sure. I can provide access to my loongson w/ dual HC620 if you wish. You
+> can contact me on t.me/hanyuwei70.
+>
+>  > can you provide the faddr2line output for
+>  > "btrfs_finish_ordered_extent+0x24"?
+>
+> I have recompiled kernel to add DEBUG_INFO. Here's result.
+>
+> [hyw@loong3a6 linux-6.7.2]$ ./scripts/faddr2line fs/btrfs/btrfs.ko
+> btrfs_finish_ordered_extent+0x24
+> btrfs_finish_ordered_extent+0x24/0xc0:
+> spinlock_check at
+> /home/hyw/kernel_build/linux-6.7.2/./include/linux/spinlock.h:326
+> (inlined by) btrfs_finish_ordered_extent at
+> /home/hyw/kernel_build/linux-6.7.2/fs/btrfs/ordered-data.c:381
+>
+> =E5=9C=A8 2024/2/5 13:22, Qu Wenruo =E5=86=99=E9=81=93:
+>>
+>>
+>> On 2024/2/4 20:04, =E9=9F=A9=E4=BA=8E=E6=83=9F wrote:
+>>> =C2=A0> ie. mkfs.btrfs --sectorsize 16k. it works! I can sync without =
+any
+>>> problem now. I will continue to monitor if any issues occurred. seems
+>>> like I can only use these disks on my loongson machine for a while.
+>>
+>> Any clue how can I purchase such disks?
+>> And what's the interface? (NVME? SATA? U2?)
+>>
+>> I can go try qemu zoned nvme on my aarch64 host, but so far the SoC is
+>> offline (won't be online until this weekend).
+>>
+>> And have you tried emulated zoned device (no matter if it's qemu zoned
+>> emulation or nbd or whatever) with 4K sectorsize?
+>>
+>>
+>> So far we don't have good enough coverage with zoned on subpage, I have
+>> the physical hardware of aarch64 (and VMs with different page size), bu=
+t
+>> I don't have any zoned devices.
+>>
+>> If you can provide some help, it would super great.
+>>
+>>>
+>>> Is there any progress or proposed patch for subpage layer fix?
+>>>
+>>> =E5=9C=A8 2024/2/4 6:15, David Sterba =E5=86=99=E9=81=93:
+>>>> On Sat, Feb 03, 2024 at 06:18:09PM +0800, =E9=9F=A9=E4=BA=8E=E6=83=9F=
+ wrote:
+>>>>> When mkfs, I intentionally used "-s 4k" for better compatibility.
+>>>>> And /sys/fs/btrfs/features/supported_sectorsizes is 4096 16384, whic=
+h
+>>>>> should be ok.
+>>>>>
+>>>>> btrfs-progs is 6.6.2-1, is this related?
+>>>> No, this is something in kernel. You could test if same page and sect=
+or
+>>>> size works, ie. mkfs.btrfs --sectorsize 16k. This avoids using the
+>>>> subpage layer that transalates the 4k sectors <-> 16k pages. This has
+>>>> the known interoperability issues with different page and sector size=
+s
+>>>> but if it does not affect you, you can use it.
+>>>>
+>>
+>> Another thing is, I don't know how the loongson kernel dump works, but
+>> can you provide the faddr2line output for
+>> "btrfs_finish_ordered_extent+0x24"?
+>>
+>> It looks like ordered->inode is not properly initialized but I'm not
+>> 100% sure.
+>>
+>> Thanks,
+>> Qu
+>>
 
