@@ -1,119 +1,140 @@
-Return-Path: <linux-btrfs+bounces-2097-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2098-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44AB2849377
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 06:40:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4584984937C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 06:43:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB655B214F8
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 05:40:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A38481F2309B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Feb 2024 05:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B08DBA30;
-	Mon,  5 Feb 2024 05:39:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE4EBE47;
+	Mon,  5 Feb 2024 05:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="uOJ+fQ7h"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from relay.mailchannels.net (gt-egress-004.relay.mailchannels.net [172.255.62.11])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D62DB641
-	for <linux-btrfs@vger.kernel.org>; Mon,  5 Feb 2024 05:39:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=172.255.62.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707111593; cv=pass; b=AqjF34VCRQM+ZqC/AYCS7iWu5i+VAtDcTrKHNFqnd354WFjO0I0g0n6g/IT/BcOQHgV8nAMtHoiIj3vcsPRrMD4ajrPYjcM43BUkzV0OKxYdHDhcUkwgS31oe/hDQKgA4PQ0qi61+DNNqUBmwRkwpdOTpq42Fo4IuK3X0exFSsQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707111593; c=relaxed/simple;
-	bh=e5rvbnn4282xN5ZeWTITqUxNrno2Fg9RrieMeFcj6Fc=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=sOGKTo6oUiyBHXdBlStUhQqOwDcpMV8+qU2rErWG+gxvfG6Mg+vXt50tR3rhZzwfV5gyHkLvYXSEXjoTakaVian0pN7Y9HOOw/UleU2c0S1KiYl86pTneXIcDNvCvO9TYJioW29/9k7QrSObyIPMRjRxkw3KAmnlC2gkpe1Ubmc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=172.255.62.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 9220D902A9F
-	for <linux-btrfs@vger.kernel.org>; Mon,  5 Feb 2024 05:39:38 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
-	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id D7D3F9030BD
-	for <linux-btrfs@vger.kernel.org>; Mon,  5 Feb 2024 05:39:37 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1707111578; a=rsa-sha256;
-	cv=none;
-	b=fER2HIXmU64vXO0q76qihA0J24ye4x5VIB2YXZ8ojgnbvSIqGx2u058mx1FjLoDQFGau+j
-	wKQj798F+cEud7nBnMw2MMk+LHmSUlmcQ75Dabz5/gglC/R4VGOUw3U1VAH5gwX1VLR/Bw
-	7ltI3lkLOwlzG2uL7Jn0ehyDQxaj1XgYBrbEGKrYpANLT0YvCswnn9TQrsrv5gcpOXOdIg
-	Oft/q+gz1ITmW56MdVJIJi0tYUHqDGZrpKGU02+Ty8SZuTY8lfvP8UA2oP508fqvapn89K
-	YuCaToMQo4FRxsGt+dvPZFzOy+nHD+bLNfuruSa/y01XY98c5JAvcrr9U4v0tg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1707111578;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e5rvbnn4282xN5ZeWTITqUxNrno2Fg9RrieMeFcj6Fc=;
-	b=2g7QW/CYFLO1jhQvVFB/uz6PzGK1vmFk4NaQWVIdSgNBPPbLR7adq9UufMpLPbcfd//gnO
-	VWUnNJuzLdtGiKjobD1JjVvjC00QIBkUnF+CZbq6RzteWL5Pp2G8bIjMlIVzmyMQ3fLe84
-	Ims6rITqqjrt0p6OvsrkmKWFe8sTsJs2L9YU0zmuHrs4y+cCMBAmatPAQcnOqoZU5t0arE
-	O/xxfl/S3/hiSDZu4T5iw/aSvZzDYkzMdFyPea37BTaJGYRsriPVc7Br8EKcq/WXxJ6yzZ
-	o99uQ1WXiR84lw1ZWwHjqibZjczMAfexYmFy/wIf6jS7C+ip5GX667js7YVKLg==
-ARC-Authentication-Results: i=1;
-	rspamd-6bdc45795d-8k67v;
-	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Stretch-Trail: 0abb30392f0899f6_1707111578366_2913438999
-X-MC-Loop-Signature: 1707111578366:2375096191
-X-MC-Ingress-Time: 1707111578366
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
-	by 100.100.214.50 (trex/6.9.2);
-	Mon, 05 Feb 2024 05:39:38 +0000
-Received: from p5b0ed8de.dip0.t-ipconnect.de ([91.14.216.222]:38310 helo=heisenberg.fritz.box)
-	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <calestyo@scientia.org>)
-	id 1rWrhc-0003C6-1g
-	for linux-btrfs@vger.kernel.org;
-	Mon, 05 Feb 2024 05:39:36 +0000
-Message-ID: <c6fcbd44c7ecb06c92f6062e6843a1d106b5799a.camel@scientia.org>
-Subject: Re: [PATCH] btrfs: defrag: add under utilized extent to defrag
- target list
-From: Christoph Anton Mitterer <calestyo@scientia.org>
-To: linux-btrfs@vger.kernel.org
-Date: Mon, 05 Feb 2024 06:39:31 +0100
-In-Reply-To: <2c2fac36b67c97c9955eb24a97c6f3c09d21c7ff.1704440000.git.wqu@suse.com>
-References: 
-	<2c2fac36b67c97c9955eb24a97c6f3c09d21c7ff.1704440000.git.wqu@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3-1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB625BA30
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 Feb 2024 05:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707111786; cv=none; b=ddqG8iNj4OJbiWTwMt24a5pu80cHasps+fngbp9kasguM8183+UVzmNa935aDr4eweypcqrgGg2zYhlKArjiIpzniiW846NHt9cF3RvWIVe4M9VMg3Lc9HHlUxvUYGs3253dP1lSFOODNVO7PqonIA7xf3c0DIKadjxM0Ngu30k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707111786; c=relaxed/simple;
+	bh=/RUkVWtzPSaqTcz4GT8WNg4nRWnkk/rbx+7bDfuMaIM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=bet6B2Xhel1VbebUCLAZLcQhXNaXxuIp5wev1xn/BoeDAzANIjjiEF7Pi+J8qr7+6OZBfHvXMrmnyhRz9lTlcxLtTPUWi1fphyfeLzZxvnS7td8BkQTbEbOZ5kGIulY2aRtt6G2aSAXqwN7gWvFLHFWF8UvT4+8LjC2SGOp6zpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=uOJ+fQ7h; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1707111781; x=1707716581; i=quwenruo.btrfs@gmx.com;
+	bh=/RUkVWtzPSaqTcz4GT8WNg4nRWnkk/rbx+7bDfuMaIM=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=uOJ+fQ7hbC1eBnlOaLC9aOloezrWJZ8rejhKsL4t9UNh5VZ5HMXfg9jtIGkJogm6
+	 oUJaDwiLCEuKGAD4E0m4hYDQhA4Lmj9ckYdsHoLzvSNvs3WSBZsCZma92mUarS1+s
+	 lv6l3qZRpWJWU6fAChWexwQW/eoJ9ZRf/S1Ma10Hz9mvPdxnOZcNsRbGXPEaKS033
+	 /SbcfTQiyWTgEVLr/0CUcDWR1Z1azCTteM2oh268HmljC+aZlG+ggW6GjRhK9B78j
+	 PS/XRpGUwbPHqHawPkK6b8n12RQfXsobAGSzx6HHPWl32VX44fB+JMXucG/ajyqpF
+	 MOCiX4TQeuUwL1Jv6g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MUXpK-1rNxm11J0S-00QQmd; Mon, 05
+ Feb 2024 06:43:01 +0100
+Message-ID: <45d5ad09-5d22-4a93-8b54-8ac1c61f15f5@gmx.com>
+Date: Mon, 5 Feb 2024 16:12:58 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-AuthUser: calestyo@scientia.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: defrag: add under utilized extent to defrag target
+ list
+Content-Language: en-US
+To: Christoph Anton Mitterer <calestyo@scientia.org>,
+ linux-btrfs@vger.kernel.org
+References: <2c2fac36b67c97c9955eb24a97c6f3c09d21c7ff.1704440000.git.wqu@suse.com>
+ <c6fcbd44c7ecb06c92f6062e6843a1d106b5799a.camel@scientia.org>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <c6fcbd44c7ecb06c92f6062e6843a1d106b5799a.camel@scientia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:natnSvbFk0cdFDA27zPzHuSReTnE1gNPW9w42vEOA85sxHoP9y1
+ vDe6EbolvmP3U+DT9SAOxjQvJLKn/njzw66VdK3AkNdiY+vfp+pb2q+QNK08EIfuVupd3En
+ nA3GWE4uZ/zokStAxBUTMx4wp9fZyzpfzrvsWHikhmhKwTS4cVOeeJrfGy8G2ficlxrGsI7
+ TjSg8Uoev+iOori97pmzw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:KPhjEjIjBAw=;DSpm+UM0a37/P9E5nnc84nzD4W9
+ zNyu+bAfd+QGtHzveMliECl6J9W0T4DfHVo488IKTWMzFBw7TUUXomrtqsxAMfORK1HRGK/9/
+ Qw/6kA4gbkSQ+28ADdYLIiEAFcUGO0auXPgIiFD0M577kujb7LyylnxvhV5hUIxJIp5lc1WP+
+ nfYOgaKbNOn6j4ELebxyLhQxMORecLdQalHdqvzvBykJ3Yx8YhZBG5nwJBTBUmeOGdsMCQ97m
+ OiiM1NOzYdUv6TJgtjH8lnGYrdK2DGcT4w5sw6GeSr3FYMJecbgdCo1sVao1eJO4zKOWaarq/
+ u5qYxz6EnD2C27gsDQZR0iNmmO8VGEInBkm/qpci5e5jlAm5UqoZdPPY5s9BQkjxaI0zPnp6W
+ jQrJtX/Lhwz7w8SItISq13IAGWFJexIDhHdAFXWa/hz4pIQcDi5PDccVdHgHnwniVZBfxCLdm
+ JkmBZcoObBjiIRy/GD2LpcfJ5QeFLYCN4bVXZ4fLboJrgnS2GQ8n1sibAMKEc6+TFBWr9kOhH
+ MaqAagHBn2F9P5pBZbibSwB0jdpeOFTOODWUERozditRURuIk7yLzV//0UVuJe/4jONdPYRZV
+ CZGR0MxgKOEmzL8RZpoud8Y1voUs4esAnrlkJ6ZoN/cmO5hND58Gc4ehnyqYiBvqGVfsp17qS
+ +YpenibSXCRSLQr2Zv6UjkQBzAvkxakz4izJT9jdi7ELxQNsDW8AmtbQG8OhmbMM8klrwLBu2
+ XK+RmsJojBeOp7cBWLs0r8AtEzOC6r11yTQ7sHMo6/7bPYhfflMabzXUZfcSFWjjpGe9Ud+Gt
+ gTI2FV02g/TpyEzEWQol7aV6XVbNhlEp9q9bIsT6SdZNs=
 
-Hey there.
-
-Is that patch still under consideration?
-
-The filesystems on my 6.1 kernel regularly run full because of these IO
-patterns... and AFAICS the patch hasn't been merged to master or
-backported to the stables yet.
 
 
-Any ideas how to proceed?
-I mean if btrfs just break with that specific kind of IO patterns and
-there will be no fix,... fine,... but then please tell so that I can
-witch to something else for that use case :-)
+On 2024/2/5 16:09, Christoph Anton Mitterer wrote:
+> Hey there.
+>
+> Is that patch still under consideration?
+>
+> The filesystems on my 6.1 kernel regularly run full because of these IO
+> patterns... and AFAICS the patch hasn't been merged to master or
+> backported to the stables yet.
+>
+>
+> Any ideas how to proceed?
+> I mean if btrfs just break with that specific kind of IO patterns and
+> there will be no fix,... fine,... but then please tell so that I can
+> witch to something else for that use case :-)
 
+Thanks for reminding me to update the patch.
 
-Cheers,
-Chris.
+I'll try to address the comments in the next version and hopes we can
+push the next version into the kernel.
+
+Thanks,
+Qu
+>
+>
+> Cheers,
+> Chris.
+>
 
