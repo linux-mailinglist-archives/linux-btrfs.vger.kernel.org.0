@@ -1,271 +1,178 @@
-Return-Path: <linux-btrfs+bounces-2147-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2148-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73AF184AE32
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 06:54:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C558A84AFA7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 09:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7E9EB21D86
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 05:54:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFD48B24AC5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 08:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C1A7F471;
-	Tue,  6 Feb 2024 05:54:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3C712AAD9;
+	Tue,  6 Feb 2024 08:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bB9VjwUN"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Xr0oD3SP";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="mKPhMdKS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DD1D7F464
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Feb 2024 05:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707198884; cv=none; b=JLmxt4h6XYnxGnpCE7p6DxQa4AIol+Ywo/HXBhBzyjaCKV6S7NAoA+SVd4NQCMBKIg5/2PhSh3Tn04mM2s1JCU5ULF2bmlWV6LT92Bfwf7gsTAthx7b/rws2zJhUpnJDHN7K3i/2CVv4LgwLQvrZVLWhNoILpkYc3YsFQ/MDh4s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707198884; c=relaxed/simple;
-	bh=7lR7XsL+Z7urBZJLbXbMRq31JkfmCwRaIPAfY8SJ31o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g5fyRngqbdM7VcvgxXzTVwfALpxWOhnY2F7o7a9zcf0zmwa5lT9qXPl/Um/OdGfwR09grnf9e4KlbQ0XPBTiCLJ5tIouunf3dnCmsHxLtPYxReBteLYJ0Bbv0wSsmJTZjZasEH3keRVk3tkAoescrEflX4w2AFqFkCwUR31RlMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=bB9VjwUN; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1707198876; x=1707803676; i=quwenruo.btrfs@gmx.com;
-	bh=7lR7XsL+Z7urBZJLbXbMRq31JkfmCwRaIPAfY8SJ31o=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=bB9VjwUN2tYbOl/+9pUwoT8tVmWytUDmQvvKiharDzIB/UKc2OdPqH5rXFf0+C27
-	 6bhAQkjp6WE4hw2i1IF3euzcthIcdE6MLcqh2Qp39YUalKnMrIB0UWi6BigmBLUFt
-	 Q7ZKYp3jxkrt1O7TAdCdwKtYyvKAUoo0njq69JiKsDLKG2ajTkdBT+WCtfuOiFytv
-	 uRFFRviE7D614oLzjpsNtYEKdbhHwblIP1GOWsAbrNFMQaPgH8MLksEdWXd108PI9
-	 uojjU+Dh4TBnDvviwp7/PS/Qgo1kqhgwCZmZ39WHJw7DqL+GhpQzlRuFXovhUn8R0
-	 MELwosMll5XeL74ydw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTAFb-1rRyB22q6x-00UWTD; Tue, 06
- Feb 2024 06:54:36 +0100
-Message-ID: <8932de78-729c-431a-b371-a858e986066d@gmx.com>
-Date: Tue, 6 Feb 2024 16:24:32 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C60129A77
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Feb 2024 08:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.143.124
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707207022; cv=fail; b=p02RoQ71AueLwq+n9hwh6nZUv++eJWql/N+S+vda/Dz1V+WeLk1x9vAsCEDtRKY6jDCI8JLjUR9eMP4q/txq2GeHuPmOikc9U9dSZfSGtOgdq6SBD4Uclecz1p9HRXaVI3GjqNOmywXSZvHtww0NZWpGE0X/Kl0l36wxmUws8Eg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707207022; c=relaxed/simple;
+	bh=Vk2hUJbB8x1kfmvsTSguaM0YPcY6xrQ/6geYb6UO5dM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=WN252QzkK5ZI3FtKazOE3wkI7n+fLYAITRsHcDG54Z04ioIc9Ws4H6F6TqPli3qhHwsTo94N3NXJxGzBDEul0PYnRUAHdzA6qOV58lVnD1VZ22EBilMoEfdLdNajncRvEQKDc5EndKVWEeMfNZ3CZjY3+1w54p5ajb2Yt9DHxKk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Xr0oD3SP; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=mKPhMdKS; arc=fail smtp.client-ip=68.232.143.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1707207019; x=1738743019;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Vk2hUJbB8x1kfmvsTSguaM0YPcY6xrQ/6geYb6UO5dM=;
+  b=Xr0oD3SPSAiPbSNl64ZwLVlzCsEj0x3oXN1Wx304JeMJc8qx7tlVwG+v
+   D82a9lDziWunn8pbObeU/MHWfjBitnW0gRMBLJKdmGbJQtrEIHXVOUX5+
+   x4lrDcQfHqaXmfCbcS602lY1jzy67OxsGj42S57ctWCL9PYk7aV3A7be4
+   KKEj4zyYXsC6j+JO6q0CuAqY9r5bPJcwz7fCIq5dG8kSkAJtDjQB44Hoj
+   TQjzunb2O8BfYKYivv8siKoTB1Hts5sYCFGesa+HdPYOVP929h9fupKMi
+   tC488AzHnXee5flG5oBIhV/wXQ9HYkT92KPJK3Q85QnSgmbXO6nmM74nH
+   g==;
+X-CSE-ConnectionGUID: VrS/uWsJRkyTYtyb4P4DcQ==
+X-CSE-MsgGUID: pGgJL7+wQYujEBh53wlJGw==
+X-IronPort-AV: E=Sophos;i="6.05,246,1701100800"; 
+   d="scan'208";a="8596020"
+Received: from mail-southcentralusazlp17011010.outbound.protection.outlook.com (HELO SA9PR02CU001.outbound.protection.outlook.com) ([40.93.14.10])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Feb 2024 16:10:12 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cbV4pGXmAXMdVnFmECJ1NKTNeAEl+ogS1Kue9CaT1mZD9hpHmdk4+u1cCM7avbP1aFP4Wyt/ywrbUJdoPu2awzknOP3Q4qEgfKMDUc9Py0Lc9NajSBYGr3dowQmthy6j6qGDONXPP6msyUO9tqgFoGAslKgkA5MmJ5UxxgoLybyxIyrLzCaLLjgBaiOkGaQAte4yJd8SEheIh32aIvrdUrjIbgb4CP6QuC+n/r3GGvc3I3c9dQ5wpyuGL9W7dJV/ny0LEezZDBjl5xHcsrG5aak0a1dvPZSiieaDzU8pQMmDIaflEFIZy41w105hmuF70dxBfutYq4P3Bw1wA0/mCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Vk2hUJbB8x1kfmvsTSguaM0YPcY6xrQ/6geYb6UO5dM=;
+ b=jHgeBDRB5+AU52j7rHp3Ev66UQ4/TWu7T3doQHUDrSQIWTqjvdYYe3GAERHVRSixso7pEjuMyUzj1KYrJ6dEYW9I3cJoa7fd4jCEckXEJ0tZir1E78V2Oopxdy4vz57WfOYT34OiXsrzgLLQEknTAwmCMJi7cIRDdHpPdBEwvJssV/x9gERcxh7a77attABeM6TrwCRGQSnMC04ml7QZX4bIqOha5O194EmkqqK0oOdb0aYelZ5oGB6DCLIuhy8sRuYp/tGE45okHFpFA7LkQVeatkVq8x3Owtpy+qDjvDsmnEqo2YU/jMht0Zm0oCF4s9ZcKsqrpJjl6SbKk3XINA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vk2hUJbB8x1kfmvsTSguaM0YPcY6xrQ/6geYb6UO5dM=;
+ b=mKPhMdKSQDZnf6RUvwV0IqtnVyiUtJwSC5/zDX5feL28tcz0GwHPh3lLgvG6kY+VyeY0zZqcmt4YC5Yos8J2TCWjnCSROMSXMXj5K8eGB8iuwbDwGwUvwh+z00A081+0ex9Hb+haHalEV3aXJ9kSul6ljulZPa+vL1Jg4xMv0hQ=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by BY5PR04MB6867.namprd04.prod.outlook.com (2603:10b6:a03:22c::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.36; Tue, 6 Feb
+ 2024 08:10:10 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::649f:fe78:f90c:464c]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::649f:fe78:f90c:464c%7]) with mapi id 15.20.7249.035; Tue, 6 Feb 2024
+ 08:10:10 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: Naohiro Aota <Naohiro.Aota@wdc.com>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+CC: "wangyugui@e16-tech.com" <wangyugui@e16-tech.com>, "clm@meta.com"
+	<clm@meta.com>, "hch@lst.de" <hch@lst.de>
+Subject: Re: [PATCH v3] btrfs: introduce offload_csum_mode to tweak checksum
+ offloading behavior
+Thread-Topic: [PATCH v3] btrfs: introduce offload_csum_mode to tweak checksum
+ offloading behavior
+Thread-Index: AQHaWDPCnIKBS49GO0S8rkzQX1iSj7D892YA
+Date: Tue, 6 Feb 2024 08:10:10 +0000
+Message-ID: <98cf17d2-a672-4ac5-8c5e-b6489c1f3f59@wdc.com>
+References:
+ <8dc4a312da70bb93f042f32a75efb7ec848cc08b.1707122589.git.naohiro.aota@wdc.com>
+In-Reply-To:
+ <8dc4a312da70bb93f042f32a75efb7ec848cc08b.1707122589.git.naohiro.aota@wdc.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|BY5PR04MB6867:EE_
+x-ms-office365-filtering-correlation-id: 21eb3cf0-14c3-4013-fafb-08dc26eb0a07
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ u9vSGtgHkOU48rnJkDaxs6TqBY2Z6295ufK4lWUwLgzWzzPjpIzTyhdtQVapb9NRz9/a19SrD2sJX6C2CbfVeP+a8Bv9b9WbriXHB9A3uU5PfqXnGJ8gJOoR4ysDehd0mywW6rnfq1jzCZ7V96PDQNNf0eFgT+h5KX/A/E0q6n2bbAQ5ALh9rffkGCtzksYvymXI86Ex0TcKa78z5Y7WimVh551pCy9qrrwFtWhx0k0x9nQbv+5Rt9MZxvH4uVrJMBDPcTCCgdm6hwjI6bOZZVa1/75wv8ZuKtW38Tgrn3ct4CKDvcg97K3AAgC+/hOyUrIXtPLrW0l2Qj4CQieoYe1HlodkxRbsB8UZ7YRtAVZ1ihjEXV4VfO8atSHUKn2JVZdMVBX0x8IhsLWkct/1xDwU3pwQZpC8nP/b3O63aLk9pioEgDB7rkmE7thvAiXqeCL1AADPIzx2/l8uKQKYBnZ0DzXsPwI+WqNkk1EEbZn84pochlvVm2p8oXC/GoHd7Wsk5/5on0T4cX8eH3FvZNhAiVtYe8B+/LcxROeCpklXrRgBFi7fr2vlWLaRGea2Zjbu69f0ox1wcGjb6PysBXbkUF9LLT53wZ8IluoqNEWVq8PNHs6Du+8MhvAKxDum117BK4QtYyb4+tJcPJbZ85CIy1O9AJ8ds37dOFhM6LKjGuSBjXOjfZYpTWPVMqPY
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(136003)(346002)(366004)(396003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(41300700001)(110136005)(38070700009)(64756008)(66476007)(76116006)(66946007)(66446008)(66556008)(36756003)(316002)(54906003)(5660300002)(8936002)(19618925003)(4326008)(8676002)(2906002)(82960400001)(38100700002)(122000001)(31686004)(4270600006)(558084003)(6512007)(71200400001)(6486002)(6506007)(86362001)(26005)(478600001)(31696002)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?SWhJNWlzQTNtc0tkbCt0RFhPYmZ3c0ExUmpvcmNyOVdwbmNnclFxS2FjMS9t?=
+ =?utf-8?B?ZmIyb1VyMlJqd3AwNDRkSjVDcVZxM3lCWmFZNVhUaXhic0k1dzY0RmJFejRy?=
+ =?utf-8?B?elNrQzhEc2RtODhMNTkydEl4K09qeEU5cXJlL2hLK1lKS3VtbXpNYXZlNXRa?=
+ =?utf-8?B?NlJZL0pubmdYMEdHbDFXWFdGMjhPM2JMTHBnUE1zVGRwTFJtd0owZHU4UkFV?=
+ =?utf-8?B?UjVkVjROSVVPOTJFd2xTOGxGaEIyVUQ4NWdjMGV3bG4xU3lEbE90a1RWTXNO?=
+ =?utf-8?B?QkdLM3ZDQjN6MDdkcTlkckFXQjgwUUV1TTdTdmN1RitWSktIbkhMV3RhQmpU?=
+ =?utf-8?B?Y3oyaGJrUndDVk5OVkhyVmZJZUM3SDhueUhWMHlDaVdkWTl2TVgzU0RBRnpr?=
+ =?utf-8?B?MitTa0VYN054UjUraTV4eWRNcnpXc3NIbnB5dkVja2cwaHloemZ5SGtzZ1J3?=
+ =?utf-8?B?TmNRMHFzVCt2SEtmbTNUNkQ2UHdSTEZOQ24rL0ZjWG50Y1NTalhubDlGN2ZR?=
+ =?utf-8?B?V3NmQW5UK1ZodlRxTUZkb2c3cGdZQ0IrejhHVlcrYlkvUmllQUczcEM2WTFW?=
+ =?utf-8?B?OHNYZW9ZT0sxMk0wWExvbVpxU2Z1ZXAvb2J1Smd1NktqdlFXbXdTRU5xYnNz?=
+ =?utf-8?B?cEkzNjBmbmkvREQwOUxoNDFReUNicWQvd0dsMG55UWlibVg0MlBtRDg2dTVD?=
+ =?utf-8?B?VVc4UG5EQkNoSGxXcHdNSmYrS3NwamordmFCYVdsckFnek54ZENQRnh6dkY0?=
+ =?utf-8?B?YnVmc0R6eWlkZDVYbStKM2t2aHNmTm9CL2lBZzJaMUYzOWNid0l5eTdMeURT?=
+ =?utf-8?B?cEh5cjl5S0F1aHFyNWxUQkljQmdTd2RnelduUlNDUnhFaFRDNlllYjBpeHNw?=
+ =?utf-8?B?Z21QYmd6SzQ4aWFYdXF1ZE95cURlUkt2WmdsNWorUUJPbnVYMEgxZzk5S2Q4?=
+ =?utf-8?B?ekFFUFdVSTkrT0M4WXVFekxCK3hIQ1EwQ2pmTU51UXNDS2N2TDlWM0E5dmZP?=
+ =?utf-8?B?alNSZW1IU0VsNVVnM2Y0eTR2MXpwMTM1cStDY1d1eFZzeS9KOHlHelBITStC?=
+ =?utf-8?B?cFpINGc5cEhrejg3ZnB0YUpKWVVPaFdNT2xhYkx4K3h5SFZ3azh6NDBhTm83?=
+ =?utf-8?B?blp5N2ZsSWhYMXM3Q2dYcXRXOUJ3RG1TUU5NSytrTFpxSnowOVBPT3h0V0NE?=
+ =?utf-8?B?QjUrWjVTVUlFQnhwUU85cnNoWG4vL0Q5TSs2cXJzeURuSmI0UG1vbmV4dE56?=
+ =?utf-8?B?c3FXcFpESnlvUXovUFQzZXo4RTBmeTNsay9FMnFVbE1FMkp1MWczV3FDaXFT?=
+ =?utf-8?B?S1NDWnRmeG5MK21jc2R5UExwdHMyRkEzZXFsQkl5T05uRm5nU3p2MUlLZXlu?=
+ =?utf-8?B?Z3gvVXR6STQ4TTF3ZFBGc1U2REFDM0RSNUtXbUhhMlQvTmpJZG9sUWpROEFP?=
+ =?utf-8?B?Z293dkdleXBuNi90VzlrRlhIOWh1UlBIaTZaS2pnWjExc0hMNGEzWHdJRTBo?=
+ =?utf-8?B?bS8rWlQ1NUh6VWQ3d0xtY0pkUnR2OXYwYnBwS3VUOW5aNWNIcXBzeU1RVlA3?=
+ =?utf-8?B?UnJWanc2UlprMXR0TlJ6cUtJSTl4VmhwQkVLNE5OSmpnODN3M1hGS2JMbVZ6?=
+ =?utf-8?B?eWIrbzVRMFlIR3hMVVJydWpkTlBRbDRoWW9XcVExbU11dFFTVlJRVXNjZnZw?=
+ =?utf-8?B?SEJPTjhHYXVKM2JoWjZiaVJiN3pxUUMzL0xWdVN5SkNNTks0aDBiODZaL3Qw?=
+ =?utf-8?B?R1hPMXF6ZkJycTdpeG9LUS85VkZjcTJ2OTdCMEcwVVhiTXZuWERhZS9GODNG?=
+ =?utf-8?B?R3ZoeTlHWFNFb2ZrTm5DYUo3OEJyWWxJNGNZRHFpUUdoTUNHTDlqNm5BcGhV?=
+ =?utf-8?B?OGthc2pIWXVWaUhmV1l5RFluY05zQ3NvTUZLbWFRUzdqY204WXNoR2JSNU5K?=
+ =?utf-8?B?Qkl5cGF3SlJtK0lqaEJTdWhsQStoOE9XNXdESm1ldHNWMHZ3MGx6eGZieGlR?=
+ =?utf-8?B?WVVSMnRYVmpvbDlDVW9JVEVuWDZTalRNWEZyTFdYcjdsTEZNYjhwcEpkUUtW?=
+ =?utf-8?B?MHFENEkzbjd4OWhVNW1nSVd6MTQ5dkZ5bm1QYlpDaEx5MWxkMkxPaGl2bkFu?=
+ =?utf-8?B?V3dtak9xeE9WY0YvVjczWXdabXUwUnJQM0xhMXRLVnQyOStvSjlidVh5MDZN?=
+ =?utf-8?B?amc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <945AD95CB47E5843AD0FC2E493D1C041@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: tree-checker: dump the page status if hit
- something wrong
-Content-Language: en-US
-To: tavianator@tavianator.com, wqu@suse.com
-Cc: linux-btrfs@vger.kernel.org
-References: <f51a6d5d7432455a6a858d51b49ecac183e0bbc9.1706312914.git.wqu@suse.com>
- <20240206033807.15498-1-tavianator@tavianator.com>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240206033807.15498-1-tavianator@tavianator.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yJG07XzeChOEZzxfiZ4PXn+Awwv2Jk2oFfsHikq3DkqFnGsXyQJ
- 4uN4lAujaAmP8dKuq1oRIJ1uNL4X5Kp80qrnTgC5OcGb2iTP1aAh8o+mSf59HoWmYcAfqkn
- Ge2eJb4xQD2qsly0K/Xy6I6gr8QYfKnoN2qY3lAZ++9HTMk8NQgrX5nwwjOfAPR6IavrN0I
- SlYkvHVmoyG2xO+09zvIg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:gZva4tCc2wg=;YjhEWffTmjYgpq3RJsnlweDvb3K
- JLw43l/Owxs1INm1EHuYJKMsmYbBX2sU0QrsQkpRmfpnAbGJWISpek2xWLHuaZ1Hnc3hnWivK
- xNj1ZzLX+TaNnVVC4Wkq+MTOyF1GvG2TUoeDutnMujvBo5uZV0IZv7952mhodTZxHReAUloW+
- qXa00z5Wze1IbG9cZSfmclJGNa5PPHHz1yQn7nBYfGlX5lwsvIy4U3dbjVCBm5d42k4BpGbHZ
- GTCQemtBOh0kW73BL/BZFlyv9OKXMoz3BVpE7WR0kdVYe18i33RBwcqpQo8RlnqBlVkHjm3sE
- 55HtKGsH5MfTnzuLQ8e0rn8EW2IzF33/T0jAbsutFDKz2s+cAQ2tsISYNDrKgpQOtX3zy1tlO
- MHCeeoY1nfgaITZqCRAFoaVitJalA+DOvg+aPMexiiSJmoC/qVP/IXVryor44T2wAFwwBFoX/
- sMn5EcfN0uohsWqc/6RvBUdYseG4qePcwWkP2ZlliuUVf6piDyrlfhgZO+O58aWufj7HzXcqv
- WJOduoqvnDVZ2HoNjTj6bCZ091aGC/ebUwqDSeheNrhiywl7MkigPhqMow8R/GDMWPXks54UF
- t1Sd4LvIidBTiPSOmGn9HVLrxRXRqnilcerMx1TLkRuNCt5uLut9ywjZWU/bUro+F0jkk24sW
- EDDtSUoW0ua9SmjFXKcClaTuvJ7c6n9TLaFuM/xsIaVpeWkvpR4OLQI09cinyW3X4+zZivlQR
- 1ETiNpbNMRssiToqTDMaTuQg1zNC49rrtgEOL98MxsIgv9NhKf600Rgia3AylZrJaxqh+mv6n
- qvTPym7JB/4YbWTin9a054YFmLgS1szaOYTW0wPMj0Puk=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	n8JzGFbjcRfGbDnACTh+z93Dw0j/UT2aWJ7u9P0/eMXssujXzIlIpM5VWJbbTyhJq61exkFFrdmS+zHhLBxigla9pRjt9CNGm6WOjl9uEYdOj8J1NtK2IGZgNXHznGatm1ciAr6SPt2gu0nNYo/n3FdCuZbo2WqqN6Lfhn7bztnMv0PMXHdhMTih2ps0CPvMAumcLb/ocPa1BV5NW31MVQdgkZ5CILalvrgdJ7GzJlnDvbFpHqY4lKIUog3z4rUhXYlW4Nz/fSGZud1f+Tobiqdd1199sKE7Wv2KRhf/ip11LXnCaPUt4bZnrd0LTkkpza2slL5jG8H5uSCvupp7sqCQzl6wSE47Cf300XZvHJKcAfrc8FEYycxU8gjlWsReVOIllHfMKLbBeopyxnBXn+YlglVhrzv6GNU4D85QcrFK7ucBMwt/ojkxKSUnYhBQAWElH20dnKKPMjckEBebhorWO748q2nK/aF1p3ALSXIQ3Oqe8qjmZZbFRq/lM+LrsM59CpNqW3oFULiYZZlW/yZA9mGx5RZffqxfTfP9RSVVlMDfpgsfi48JTbT3/I0hLlYflgbFjU6bWj4ekWEPsNYJwQvngzTER5Z9NV1qmyHCJk4/kUhJgZ32DuVSfcFm
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21eb3cf0-14c3-4013-fafb-08dc26eb0a07
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Feb 2024 08:10:10.6853
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: y6r+Igh2zuQkA7/4YskmTBsI77hiSvVLUt7egPXUe5GvWalf+tqeL2xP+EmwGNvrFglBjufPJEGv85kIQee7E0aX7qnnyI4QJIMFYhPe40g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6867
 
-
-
-On 2024/2/6 14:08, tavianator@tavianator.com wrote:
-> On Sat, 27 Jan 2024 10:18:36 +1030, Qu Wenruo wrote:
->> [BUG]
->> There is a bug report about very suspicious tree-checker got triggered:
->>
->>    BTRFS critical (device dm-0): corrupted node, root=3D256
->> block=3D8550954455682405139 owner mismatch, have 11858205567642294356
->> expect [256, 18446744073709551360]
->>    BTRFS critical (device dm-0): corrupted node, root=3D256
->> block=3D8550954455682405139 owner mismatch, have 11858205567642294356
->> expect [256, 18446744073709551360]
->>    BTRFS critical (device dm-0): corrupted node, root=3D256
->> block=3D8550954455682405139 owner mismatch, have 11858205567642294356
->> expect [256, 18446744073709551360]
->>    SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=3Ddm=
--0
->> ino=3D5737268
->
-> I can reproduce this error.  I applied a modified version of your patch,
-> against v6.7.2 because that's what I triggered it on.
->
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 50fdc69fdddf..3f1fc49cd4dc 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -2038,6 +2044,7 @@ int btrfs_check_eb_owner(const struct extent_buffe=
-r *eb, u64 root_owner)
->          if (!is_subvol) {
->                  /* For non-subvolume trees, the eb owner should match r=
-oot owner */
->                  if (unlikely(root_owner !=3D eb_owner)) {
-> +                       dump_page(eb->pages[0], "eb page dump");
->                          btrfs_crit(eb->fs_info,
->   "corrupted %s, root=3D%llu block=3D%llu owner mismatch, have %llu expe=
-ct %llu",
->                                  btrfs_header_level(eb) =3D=3D 0 ? "leaf=
-" : "node",
-> @@ -2053,6 +2060,7 @@ int btrfs_check_eb_owner(const struct extent_buffe=
-r *eb, u64 root_owner)
->           * to subvolume trees.
->           */
->          if (unlikely(is_subvol !=3D is_fstree(eb_owner))) {
-> +               dump_page(eb->pages[0], "eb page dump");
->                  btrfs_crit(eb->fs_info,
->   "corrupted %s, root=3D%llu block=3D%llu owner mismatch, have %llu expe=
-ct [%llu, %llu]",
->                          btrfs_header_level(eb) =3D=3D 0 ? "leaf" : "nod=
-e",
->
-> Here's the corresponding dmesg output:
->
->      page:00000000789c68b4 refcount:4 mapcount:0 mapping:00000000ce99bfc=
-3 index:0x7df93c74 pfn:0x1269558
->      memcg:ffff9f20d10df000
->      aops:btree_aops [btrfs] ino:1
->      flags: 0x12ffff180000820c(referenced|uptodate|workingset|private|no=
-de=3D2|zone=3D2|lastcpupid=3D0xffff)
->      page_type: 0xffffffff()
->      raw: 12ffff180000820c 0000000000000000 dead000000000122 ffff9f11858=
-6feb8
->      raw: 000000007df93c74 ffff9f2232376e80 00000004ffffffff ffff9f20d10=
-df000
->      page dumped because: eb page dump
->      BTRFS critical (device dm-1): corrupted leaf, root=3D709 block=3D86=
-56838410240 owner mismatch, have 2694891690930195334 expect [256, 18446744=
-073709551360]
-
-The page index and eb->start matches page index, so that page attaching
-part is correct.
-
-And the refcount is also 4, which matches the common case.
-
-Although I still need to check the extra flags for workingset.
-
->      page:000000006b7dfcdc refcount:4 mapcount:0 mapping:00000000ce99bfc=
-3 index:0x8dae804c pfn:0x408347
->      memcg:ffff9f20d10df000
->      aops:btree_aops [btrfs] ino:1
->      flags: 0xaffff180000820c(referenced|uptodate|workingset|private|nod=
-e=3D1|zone=3D2|lastcpupid=3D0xffff)
->      page_type: 0xffffffff()
->      raw: 0affff180000820c 0000000000000000 dead000000000122 ffff9f11858=
-6feb8
->      raw: 000000008dae804c ffff9f1497257d00 00000004ffffffff ffff9f20d10=
-df000
->      page dumped because: eb page dump
->      BTRFS critical (device dm-1): corrupted leaf, root=3D518 block=3D97=
-36288518144 owner mismatch, have 1691386650333431481 expect [256, 18446744=
-073709551360]
->      page:00000000fb0df6cd refcount:4 mapcount:0 mapping:00000000ce99bfc=
-3 index:0x7609cbdc pfn:0x129e719
->      memcg:ffff9f20d10df000
->      aops:btree_aops [btrfs] ino:1
->      flags: 0x12ffff180000820c(referenced|uptodate|workingset|private|no=
-de=3D2|zone=3D2|lastcpupid=3D0xffff)
->      page_type: 0xffffffff()
->      raw: 12ffff180000820c 0000000000000000 dead000000000122 ffff9f11858=
-6feb8
->      raw: 000000007609cbdc ffff9f231de92658 00000004ffffffff ffff9f20d10=
-df000
->      page dumped because: eb page dump
->      BTRFS critical (device dm-1): corrupted leaf, root=3D518 block=3D81=
-11527936000 owner mismatch, have 10652220539197264134 expect [256, 1844674=
-4073709551360]
->
-> Hope this helps!  Let me know if you have other debug patches to try.
->
-> Here's my reproducer if you want to try it yourself.  It uses bfs, a
-> find(1) clone I wrote with multi-threading and io_uring support.  I'm
-> in the process of adding multi-threaded stat(), which is what I assume
-> triggers the bug.
->
->      $ git clone "https://github.com/tavianator/bfs"
->      $ cd bfs
->      $ git checkout euclean
->      $ make release
->
-> Then repeat these steps until it triggers:
->
->      # sysctl vm.drop_caches=3D3
->      $ ./bin/bfs /mnt -links 100
->      bfs: error: /mnt/slash/@/var/lib/docker/btrfs/subvolumes/f07d37d1c1=
-48e9fcdbae166a3a4de36eec49009ce651174d0921fab18d55cee6/dev/ram0: Structure=
- needs cleaning.
-
-It looks like the mount point /mnt/ is pretty large with a lot of things
-pre-populated?
-
-I tried to populate the btrfs with my linux git repo (which is around
-6.5G with some GC needed), but even 256 runs didn't hit the problem.
-
-The main part of the script looks like this:
-
-for (( i =3D 0; i < 256; i++ )); do
-	mount $dev1 $mnt
-	sysctl vm.drop_caches=3D3
-	/home/adam/bfs/bin/bfs $mnt -links 100
-	umount $mnt
-done
-
-And the device looks like this:
-
-/dev/mapper/test-scratch1  10485760  6472292   3679260  64% /mnt/btrfs
-
-Although the difference is, I'm using btrfs/for-next branch
-(https://github.com/btrfs/linux/tree/for-next).
-
-Maybe it's missing some fixes not yet in upstream?
-My current guess is related to my commit 09e6cef19c9f ("btrfs: refactor
-alloc_extent_buffer() to allocate-then-attach method"), but since I can
-not reproduce it, it's only a guess...
-
-Thanks,
-Qu
-
->      ...
->
+UmV2aWV3ZWQtYnk6IEpvaGFubmVzIFRodW1zaGlybiA8am9oYW5uZXMudGh1bXNoaXJuQHdkYy5j
+b20+DQo=
 
