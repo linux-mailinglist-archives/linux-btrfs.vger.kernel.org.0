@@ -1,175 +1,192 @@
-Return-Path: <linux-btrfs+bounces-2139-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2140-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA6C484ABB6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 02:40:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77C6B84ABC0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 02:46:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92D292865C7
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 01:40:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D37201F26F03
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 01:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62FD54A11;
-	Tue,  6 Feb 2024 01:40:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC61915A4;
+	Tue,  6 Feb 2024 01:45:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yumLhjsQ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AYx/F1CC";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yumLhjsQ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AYx/F1CC"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="v/WD66Y3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D01010F4;
-	Tue,  6 Feb 2024 01:40:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66EB11113
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Feb 2024 01:45:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.155.65.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707183604; cv=none; b=iF1HidprYGfAfaXDGBsaENICVO7a2+SjyxSwZny+1L7i7llKfjJ5K/JnNQGP/5qyOM5ilIrBZLj8aQZwLUB7nU82ChQXwoWLIS9Q+J7eA38PqcxEvRRscCvelr37XOr/SGBtXXTmOwU7xwZZFickGek3QwXGhunBsbJnKBLx4Cs=
+	t=1707183954; cv=none; b=udUXC8XUXZSfq1JUSWzE9yTai0zPfdwQn5c6ue8m4WduhwpW5wpeDzafO6rea0xxWegkaoExB+mbHydvYow6k1+B4+Gfi7zEkAGlMrrvPE4VcZoDq7U4Z1WCTw09OCRAxvQxdkT9ZeKdxwYHU/2atWrt4Ref2XiZ+FMgjtEPYyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707183604; c=relaxed/simple;
-	bh=NUhCdytWIdemudVvZdAo75J4H9K6/U8s01PbY/tbFn8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nx+dQ4ZF4mi/gBqMihBUPMDHfkI8Y2Gr0kMAIbLK9Hxy6UpOqwdHoaIHunPvqKtO740G8YIVN+/PS9QeJ8tbhodYFybYlVymodh0rgBL0A6r/9w53Kb8TJ+7EhJrluUZV9lEdFNiwOvtq3g4yAHIs4OKmU5RojZylLtfyATtk/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yumLhjsQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AYx/F1CC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yumLhjsQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AYx/F1CC; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 936CB1F383;
-	Tue,  6 Feb 2024 01:40:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707183600;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fzTCSdyEgtc+IhXSe9CfexCQ9Mam0Tb3TrmRo3hIREE=;
-	b=yumLhjsQdmx7zhc1Io3nWwsKM+5OnDCd1zMb5rD64iWlyyj4tNONPZqgVw/rXRt/b17dXO
-	vNPQpfHBo1lMjfG+5s8xml/NwDGlX2s/yYOTDsvktLaJspFlJgjVlzT2cnuaxZiDrJ+1de
-	X4EYvl1McK/vZOHFgH4iTwlD7ep9xd8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707183600;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fzTCSdyEgtc+IhXSe9CfexCQ9Mam0Tb3TrmRo3hIREE=;
-	b=AYx/F1CCr0KwKBZxmKBCFdSbCN18Gm56B92WYOuPi0WPwHm19cQ5g4RXca31Z1EweMjlLf
-	Lx46bqWKcS9st8Dg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707183600;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fzTCSdyEgtc+IhXSe9CfexCQ9Mam0Tb3TrmRo3hIREE=;
-	b=yumLhjsQdmx7zhc1Io3nWwsKM+5OnDCd1zMb5rD64iWlyyj4tNONPZqgVw/rXRt/b17dXO
-	vNPQpfHBo1lMjfG+5s8xml/NwDGlX2s/yYOTDsvktLaJspFlJgjVlzT2cnuaxZiDrJ+1de
-	X4EYvl1McK/vZOHFgH4iTwlD7ep9xd8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707183600;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fzTCSdyEgtc+IhXSe9CfexCQ9Mam0Tb3TrmRo3hIREE=;
-	b=AYx/F1CCr0KwKBZxmKBCFdSbCN18Gm56B92WYOuPi0WPwHm19cQ5g4RXca31Z1EweMjlLf
-	Lx46bqWKcS9st8Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 713C2132DD;
-	Tue,  6 Feb 2024 01:40:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8ao2G/CNwWVICwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 06 Feb 2024 01:40:00 +0000
-Date: Tue, 6 Feb 2024 02:39:31 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Dave Chinner <dchinner@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
-	Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH 4/6] fs: FS_IOC_GETSYSFSNAME
-Message-ID: <20240206013931.GK355@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240205200529.546646-1-kent.overstreet@linux.dev>
- <20240205200529.546646-5-kent.overstreet@linux.dev>
- <20240205222732.GO616564@frogsfrogsfrogs>
- <7si54ajkdqbauf2w64xnzfdglkokifgsjptmkxwdhgymxpk353@zf6nfn53manb>
+	s=arc-20240116; t=1707183954; c=relaxed/simple;
+	bh=vb9GpLsnPnFA99Wvl3qp3TS4Qis/znX8aDhK72QT194=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RYOl48s0olXKY/17gyZcbkuJHj9FpRGxreDF6JP5rDjV+kBXeN6N725vrPl1upWeFcGLtPgNZWFApBZCAwoNy2oK3XLh9yVd5ZCS/RYBYjl61Hxdbg9KzDSoARlg8q9hSdGPLUE9EoQMZ98qXxUImqEE4sSa/smX4hycjHup1A0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=v/WD66Y3; arc=none smtp.client-ip=43.155.65.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1707183946;
+	bh=vb9GpLsnPnFA99Wvl3qp3TS4Qis/znX8aDhK72QT194=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=v/WD66Y3m4tlfgmn86ixt/IhoR5hz4W4mn+iU0/OzVuHJcfNca33xeja9KZeKPXRB
+	 /Oz6PkWPH4lp2e1qMA+y4M+S3AfaRGYVIZRn2E1l04vEH8Tjrf+to+hQeYZbTIQO/o
+	 B9oYZ5xnMAEIvam/8ucaEH7x3tMbyjAdWawuE/YU=
+X-QQ-mid: bizesmtpipv602t1707183944t6og
+X-QQ-Originating-IP: icEd1URcFICFsojHX66h5j+4O+ApM7PHMK9zt/9KA7U=
+Received: from [IPV6:240e:381:70b1:9300:b0be:2 ( [255.229.87.6])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Tue, 06 Feb 2024 09:45:43 +0800 (CST)
+X-QQ-SSF: 00100000000000E0Z000000A0000000
+X-QQ-FEAT: znfcQSa1hKYxXCo+c/G0hsWm8GZz9yuPPpbWcba/JL7+996hDMv6eHnQosa4Y
+	IJdJ7SsJ2ucQgjoNZUJpXwPh2ri/0wKj7brpCAf9KYQFuzCj/3KUVYN5CsknOzi3B1h6guZ
+	W0zvRTv0Hy5ScdNVdqwW/HCocewg+hr/3AuyBWvdkVUCjvkMNaFjBfGb/BujfCqxoFmYd2o
+	yg5C4Kcfj3XNb6srKowacBlHF4cSNXvm0EETFvcxIB7Q8Y+pqVy1zP3RmMxJDJac1OP5LRW
+	UJoslM5dvimD934KQ893sx2NVuXt2amHW4k105cE8d6IvgcGnojrL6Pt6RkwBBDUw9+d6bj
+	M1jHReiPRcQcOAadrPcpr7aDcvlxQ==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 18382312641052253452
+Message-ID: <1889B611E39B320D+fdc8e149-c294-491b-8a31-c747f2ad83d6@bupt.moe>
+Date: Tue, 6 Feb 2024 09:45:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7si54ajkdqbauf2w64xnzfdglkokifgsjptmkxwdhgymxpk353@zf6nfn53manb>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yumLhjsQ;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="AYx/F1CC"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.11 / 50.00];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 MX_GOOD(-0.01)[];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.40)[90.89%]
-X-Spam-Score: -4.11
-X-Rspamd-Queue-Id: 936CB1F383
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [btrfs] RAID1 volume on zoned device oops when sync.
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <1ACD2E3643008A17+da260584-2c7f-432a-9e22-9d390aae84cc@bupt.moe>
+ <20240202121948.GA31555@twin.jikos.cz>
+ <31227849DBCDBD08+64f08a94-b288-4797-b2a1-be06223c25d9@bupt.moe>
+ <20240203221545.GB355@twin.jikos.cz>
+ <C4754294EA02D5C7+15158e38-2647-4af8-beca-b09216be42b5@bupt.moe>
+ <ae491a34-8879-4791-8a51-4c6f20838deb@gmx.com>
+ <6F6264A5C0D133BB+074eb3c4-737b-410d-8d69-23ce2b92d5bc@bupt.moe>
+ <66540683-cf08-4e4c-a8be-1c68ac4ea599@gmx.com>
+ <ED3C933B1371DD79+bdc357d3-3efb-49f4-9b54-8cb0ab9350d1@bupt.moe>
+ <b96844a3-41b6-4bb1-b4b1-85f07d1d1310@gmx.com>
+Content-Language: en-US
+From: =?UTF-8?B?6Z+p5LqO5oOf?= <hrx@bupt.moe>
+In-Reply-To: <b96844a3-41b6-4bb1-b4b1-85f07d1d1310@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpipv:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-On Mon, Feb 05, 2024 at 05:43:37PM -0500, Kent Overstreet wrote:
-> On Mon, Feb 05, 2024 at 02:27:32PM -0800, Darrick J. Wong wrote:
-> > On Mon, Feb 05, 2024 at 03:05:15PM -0500, Kent Overstreet wrote:
-> > > @@ -231,6 +235,7 @@ struct fsxattr {
-> > >  #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
-> > >  #define FS_IOC_GETFSUUID		_IOR(0x94, 51, struct fsuuid2)
-> > >  #define FS_IOC_SETFSUUID		_IOW(0x94, 52, struct fsuuid2)
-> > > +#define FS_IOC_GETFSSYSFSNAME		_IOR(0x94, 53, struct fssysfsname)
-> > 
-> > 0x94 is btrfs, don't add things to their "name" space.
-> 
-> Can we please document this somewhere!?
-> 
-> What, dare I ask, is the "namespace" I should be using?
+DQrlnKggMjAyNC8yLzYgNDo0MCwgUXUgV2VucnVvIOWGmemBkzoNCj4NCj4NCj4gT24gMjAy
+NC8yLzUgMjE6MjAsIOmfqeS6juaDnyB3cm90ZToNCj4+DQo+PiDlnKggMjAyNC8yLzUgMTU6
+NTYsIFF1IFdlbnJ1byDlhpnpgZM6DQo+Pj4NCj4+Pg0KPj4+IE9uIDIwMjQvMi81IDE3OjE2
+LCDpn6nkuo7mg58gd3JvdGU6DQo+Pj4+IMKgPiBBbnkgY2x1ZSBob3cgY2FuIEkgcHVyY2hh
+c2Ugc3VjaCBkaXNrcz8NCj4+Pj4gwqA+IEFuZCB3aGF0J3MgdGhlIGludGVyZmFjZT8gKE5W
+TUU/IFNBVEE/IFUyPykNCj4+Pj4NCj4+Pj4gSSBwdXJjaGFzZWQgdGhlc2Ugb24gdXNlZCBt
+YXJrZXQgYXBwIGNhbGxlZCBYaWFueXUo6Zey6bG8KSB3aGljaCBtYXkgYmUNCj4+Pj4gZGlm
+ZmljdWx0IGZvciB1c2Vycw0KPj4+PiBvdXRzaWRlIENoaW5hIG1haW5sYW5kLiBBbmQgaXRz
+IHN1cHBseSBpcyBleHRyZW1lbHkgdW5zdGFibGUuDQo+Pj4+DQo+Pj4+IEl0cyBpbnRlcmZh
+Y2UgaXMgU0FUQS4gTWluZSBtb2RlbCBpcyBIU0g3MjE0MTRBTE42TTAuIFNwZWMgbGluazoN
+Cj4+Pj4gaHR0cHM6Ly9kb2N1bWVudHMud2VzdGVybmRpZ2l0YWwuY29tL2NvbnRlbnQvZGFt
+L2RvYy1saWJyYXJ5L2VuX3VzL2Fzc2V0cy9wdWJsaWMvd2VzdGVybi1kaWdpdGFsL3Byb2R1
+Y3QvZGF0YS1jZW50ZXItZHJpdmVzL3VsdHJhc3Rhci1kYy1oYzYwMC1zZXJpZXMvZGF0YS1z
+aGVldC11bHRyYXN0YXItZGMtaGM2MjAucGRmIA0KPj4+Pg0KPj4+Pg0KPj4+PiDCoD4gQW5k
+IGhhdmUgeW91IHRyaWVkIGVtdWxhdGVkIHpvbmVkIGRldmljZSAobm8gbWF0dGVyIGlmIGl0
+J3MgcWVtdQ0KPj4+PiB6b25lZA0KPj4+PiDCoD4gZW11bGF0aW9uIG9yIG5iZCBvciB3aGF0
+ZXZlcikgd2l0aCA0SyBzZWN0b3JzaXplPw0KPj4+Pg0KPj4+PiBIYXZlIHRyaWVkIG9uIG15
+IGxvb25nc29uIHdpdGggdGhpcyBzY3JpcHQgZnJvbQ0KPj4+PiBodHRwczovL2dpdGh1Yi5j
+b20vUm9uZ3JvbmdnZzkNCj4+Pj4NCj4+Pj4gwqA+IC4vbnVsbGIgc2V0dXANCj4+Pj4gwqA+
+IC4vbnVsbGIgY3JlYXRlIC1zIDQwOTYgLXogMjU2DQo+Pj4+IMKgPiAuL251bGxiIGNyZWF0
+ZSAtcyA0MDk2IC16IDI1Ng0KPj4+PiDCoD4gLi9udWxsYiBscw0KPj4+PiDCoD4gbWtmcy5i
+dHJmcyAtcyAxNmsgL2Rldi9udWxsYjANCj4+Pj4gwqA+IG1vdW50IC9kZXYvbnVsbGIwIC9t
+bnQvdG1wDQo+Pj4+IMKgPiBidHJmcyBkZXZpY2UgYWRkIC9kZXYvbnVsbGIxIC9tbnQvdG1w
+DQo+Pj4+IMKgPiBidHJmcyBiYWxhbmNlIHN0YXJ0IC1kY29udmVydD1yYWlkMSAtbWNvbnZl
+cnQ9cmFpZDEgL21udC90bXANCj4+Pg0KPj4+IEp1c3Qgd2FudCB0byBiZSBzdXJlLCBmb3Ig
+eW91ciBjYXNlLCB5b3UncmUgZG9pbmcgdGhlIHNhbWUgbWtmcyAoNEsNCj4+PiBzZWN0b3Jz
+aXplKSBvbiB0aGUgcGh5c2ljYWwgZGlzaywgdGhlbiBhZGQgYSBuZXcgZGlzaywgYW5kIGZp
+bmFsbHkNCj4+PiBiYWxhbmNlZCB0aGUgZnM/DQo+Pj4NCj4+IE5vLiBJIGRpZG4ndCBzcGVj
+aWZpZWQgc2VjdG9yIHNpemUgaW4gZmlyc3QgcGxhY2UsIGp1c3QgIm1rZnMuYnRyZnMNCj4+
+ICRkZXYiIG9uIGRlZmF1bHQgbG9vbmdhcmNobGludXggKGtlcm5lbCA2LjcuMCkuDQo+DQo+
+IE1pbmQgdG8gcmUtcnVuIHRoZSBta2ZzLmJ0cmZzIG9uIHRoZSBwaHlzaWNhbCBkaXNrIGFu
+ZCBwcm92aWRlIHRoZSANCj4gb3V0cHV0Pw0KPg0KPiBJIGJlbGlldmUgdGhpcyBpcyBiZWNh
+dXNlIHlvdSdyZSB1c2luZyB0aGUgbGF0ZXN0IGJ0cmZzLXByb2dzLCB3aGljaCBieQ0KPiBk
+ZWZhdWx0IGlzIHVzaW5nIDRLIHNlY3RvcnNpemUgYnkgZGVmYXVsdC4NCj4NCkkgaGF2ZSBj
+aGVja2VkIHVzaW5nIGR1cG0tc3VwZXIgYWZ0ZXIgZmlyc3QgbWtmcywgc2VjdG9yIHNpemUg
+aXMgMTZrLg0KPg0KPj4gQW5kIGl0IHN1Y2NlZWQgd2l0aCBhZGQNCj4+IGRldmljZSAmIGJh
+bGFuY2UuIFRoZW4gSSBzdWNjZXNzZnVsbHkgd3JpdGUgJiByZWFkIHNvbWUgc21hbGwgZmls
+ZXMuIEl0DQo+PiBvb3BzIHdoZW4gSSBzdGFydGVkIHVzaW5nIHRyYW5zbWlzc2lvbiB0byBk
+b3dubG9hZCBzb21ldGhpbmcgYW5kDQo+PiBleGVjdXRlZCAic3luYyIuDQo+Pj4gSUlSQyB0
+aGUgYmFsYW5jZSBpdHNlbGYgc2hvdWxkIG5vdCBzdWNjZWVkLCBubyBtYXR0ZXIgaWYgaXQn
+cyBlbXVsYXRlZA0KPj4+IG9yIHJlYWwgZGlza3MsIGFzIGRhdGEgUkFJRDEgcmVxdWlyZXMg
+em9uZWQgUlNUIHN1cHBvcnQuDQo+Pj4NCj4+PiBJZiB0aGF0J3MgdGhlIGNhc2UsIGl0IGxv
+b2tzIGxpa2Ugc29tZSBjaGVja3MgZ290IGJ5cGFzc2VkLCBhbmQgb25lIA0KPj4+IGNvcHkN
+Cj4+PiBvZiB0aGUgcmFpZDEgYmJpbyBkb2Vzbid0IGdldCBpdHMgY29udGVudCBzZXR1cCBw
+cm9wZXJseSB0aHVzIA0KPj4+IGxlYWRpbmcgdG8NCj4+PiB0aGUgTlVMTCBwb2ludGVyIGRl
+cmVmZXJlbmNlLg0KPj4+DQo+Pj4gQW55d2F5LCBJJ2xsIHRyeSB0byByZXByb2R1Y2UgaXQg
+bmV4dCB3ZWVrIGxvY2FsbHksIG9yIEknbGwgYXNrIGZvciB0aGUNCj4+PiBhY2Nlc3MgdG8g
+eW91ciBsb29uc29uIHN5c3RlbSBzb29uLg0KPj4+DQo+Pj4gVGhhbmtzLA0KPj4+IFF1DQo+
+Pj4+DQo+Pj4+IFdoZXRoZXIgaXQgaXMgNGsgb3IgMTZrLCBrZXJuZWwgd2lsbCBoYXZlICJ6
+b25lZDogZGF0YSByYWlkMSBuZWVkcw0KPj4+PiByYWlkLXN0cmlwZS10cmVlIg0KPj4+Pg0K
+Pj4+PiDCoD4gSWYgeW91IGNhbiBwcm92aWRlIHNvbWUgaGVscCwgaXQgd291bGQgc3VwZXIg
+Z3JlYXQuDQo+Pj4+DQo+Pj4+IFN1cmUuIEkgY2FuIHByb3ZpZGUgYWNjZXNzIHRvIG15IGxv
+b25nc29uIHcvIGR1YWwgSEM2MjAgaWYgeW91IA0KPj4+PiB3aXNoLiBZb3UNCj4+Pj4gY2Fu
+IGNvbnRhY3QgbWUgb24gdC5tZS9oYW55dXdlaTcwLg0KPj4+Pg0KPj4+PiDCoD4gY2FuIHlv
+dSBwcm92aWRlIHRoZSBmYWRkcjJsaW5lIG91dHB1dCBmb3INCj4+Pj4gwqA+ICJidHJmc19m
+aW5pc2hfb3JkZXJlZF9leHRlbnQrMHgyNCI/DQo+Pj4+DQo+Pj4+IEkgaGF2ZSByZWNvbXBp
+bGVkIGtlcm5lbCB0byBhZGQgREVCVUdfSU5GTy4gSGVyZSdzIHJlc3VsdC4NCj4+Pj4NCj4+
+Pj4gW2h5d0Bsb29uZzNhNiBsaW51eC02LjcuMl0kIC4vc2NyaXB0cy9mYWRkcjJsaW5lIGZz
+L2J0cmZzL2J0cmZzLmtvDQo+Pj4+IGJ0cmZzX2ZpbmlzaF9vcmRlcmVkX2V4dGVudCsweDI0
+DQo+Pj4+IGJ0cmZzX2ZpbmlzaF9vcmRlcmVkX2V4dGVudCsweDI0LzB4YzA6DQo+Pj4+IHNw
+aW5sb2NrX2NoZWNrIGF0DQo+Pj4+IC9ob21lL2h5dy9rZXJuZWxfYnVpbGQvbGludXgtNi43
+LjIvLi9pbmNsdWRlL2xpbnV4L3NwaW5sb2NrLmg6MzI2DQo+Pj4+IChpbmxpbmVkIGJ5KSBi
+dHJmc19maW5pc2hfb3JkZXJlZF9leHRlbnQgYXQNCj4+Pj4gL2hvbWUvaHl3L2tlcm5lbF9i
+dWlsZC9saW51eC02LjcuMi9mcy9idHJmcy9vcmRlcmVkLWRhdGEuYzozODENCj4+Pj4NCj4+
+Pj4g5ZyoIDIwMjQvMi81IDEzOjIyLCBRdSBXZW5ydW8g5YaZ6YGTOg0KPj4+Pj4NCj4+Pj4+
+DQo+Pj4+PiBPbiAyMDI0LzIvNCAyMDowNCwg6Z+p5LqO5oOfIHdyb3RlOg0KPj4+Pj4+IMKg
+PiBpZS4gbWtmcy5idHJmcyAtLXNlY3RvcnNpemUgMTZrLiBpdCB3b3JrcyEgSSBjYW4gc3lu
+YyB3aXRob3V0IGFueQ0KPj4+Pj4+IHByb2JsZW0gbm93LiBJIHdpbGwgY29udGludWUgdG8g
+bW9uaXRvciBpZiBhbnkgaXNzdWVzIG9jY3VycmVkLiANCj4+Pj4+PiBzZWVtcw0KPj4+Pj4+
+IGxpa2UgSSBjYW4gb25seSB1c2UgdGhlc2UgZGlza3Mgb24gbXkgbG9vbmdzb24gbWFjaGlu
+ZSBmb3IgYSB3aGlsZS4NCj4+Pj4+DQo+Pj4+PiBBbnkgY2x1ZSBob3cgY2FuIEkgcHVyY2hh
+c2Ugc3VjaCBkaXNrcz8NCj4+Pj4+IEFuZCB3aGF0J3MgdGhlIGludGVyZmFjZT8gKE5WTUU/
+IFNBVEE/IFUyPykNCj4+Pj4+DQo+Pj4+PiBJIGNhbiBnbyB0cnkgcWVtdSB6b25lZCBudm1l
+IG9uIG15IGFhcmNoNjQgaG9zdCwgYnV0IHNvIGZhciB0aGUgDQo+Pj4+PiBTb0MgaXMNCj4+
+Pj4+IG9mZmxpbmUgKHdvbid0IGJlIG9ubGluZSB1bnRpbCB0aGlzIHdlZWtlbmQpLg0KPj4+
+Pj4NCj4+Pj4+IEFuZCBoYXZlIHlvdSB0cmllZCBlbXVsYXRlZCB6b25lZCBkZXZpY2UgKG5v
+IG1hdHRlciBpZiBpdCdzIHFlbXUgDQo+Pj4+PiB6b25lZA0KPj4+Pj4gZW11bGF0aW9uIG9y
+IG5iZCBvciB3aGF0ZXZlcikgd2l0aCA0SyBzZWN0b3JzaXplPw0KPj4+Pj4NCj4+Pj4+DQo+
+Pj4+PiBTbyBmYXIgd2UgZG9uJ3QgaGF2ZSBnb29kIGVub3VnaCBjb3ZlcmFnZSB3aXRoIHpv
+bmVkIG9uIHN1YnBhZ2UsIEkgDQo+Pj4+PiBoYXZlDQo+Pj4+PiB0aGUgcGh5c2ljYWwgaGFy
+ZHdhcmUgb2YgYWFyY2g2NCAoYW5kIFZNcyB3aXRoIGRpZmZlcmVudCBwYWdlIHNpemUpLA0K
+Pj4+Pj4gYnV0DQo+Pj4+PiBJIGRvbid0IGhhdmUgYW55IHpvbmVkIGRldmljZXMuDQo+Pj4+
+Pg0KPj4+Pj4gSWYgeW91IGNhbiBwcm92aWRlIHNvbWUgaGVscCwgaXQgd291bGQgc3VwZXIg
+Z3JlYXQuDQo+Pj4+Pg0KPj4+Pj4+DQo+Pj4+Pj4gSXMgdGhlcmUgYW55IHByb2dyZXNzIG9y
+IHByb3Bvc2VkIHBhdGNoIGZvciBzdWJwYWdlIGxheWVyIGZpeD8NCj4+Pj4+Pg0KPj4+Pj4+
+IOWcqCAyMDI0LzIvNCA2OjE1LCBEYXZpZCBTdGVyYmEg5YaZ6YGTOg0KPj4+Pj4+PiBPbiBT
+YXQsIEZlYiAwMywgMjAyNCBhdCAwNjoxODowOVBNICswODAwLCDpn6nkuo7mg58gd3JvdGU6
+DQo+Pj4+Pj4+PiBXaGVuIG1rZnMsIEkgaW50ZW50aW9uYWxseSB1c2VkICItcyA0ayIgZm9y
+IGJldHRlciBjb21wYXRpYmlsaXR5Lg0KPj4+Pj4+Pj4gQW5kIC9zeXMvZnMvYnRyZnMvZmVh
+dHVyZXMvc3VwcG9ydGVkX3NlY3RvcnNpemVzIGlzIDQwOTYgMTYzODQsDQo+Pj4+Pj4+PiB3
+aGljaA0KPj4+Pj4+Pj4gc2hvdWxkIGJlIG9rLg0KPj4+Pj4+Pj4NCj4+Pj4+Pj4+IGJ0cmZz
+LXByb2dzIGlzIDYuNi4yLTEsIGlzIHRoaXMgcmVsYXRlZD8NCj4+Pj4+Pj4gTm8sIHRoaXMg
+aXMgc29tZXRoaW5nIGluIGtlcm5lbC4gWW91IGNvdWxkIHRlc3QgaWYgc2FtZSBwYWdlIGFu
+ZA0KPj4+Pj4+PiBzZWN0b3INCj4+Pj4+Pj4gc2l6ZSB3b3JrcywgaWUuIG1rZnMuYnRyZnMg
+LS1zZWN0b3JzaXplIDE2ay4gVGhpcyBhdm9pZHMgdXNpbmcgdGhlDQo+Pj4+Pj4+IHN1YnBh
+Z2UgbGF5ZXIgdGhhdCB0cmFuc2FsYXRlcyB0aGUgNGsgc2VjdG9ycyA8LT4gMTZrIHBhZ2Vz
+LiANCj4+Pj4+Pj4gVGhpcyBoYXMNCj4+Pj4+Pj4gdGhlIGtub3duIGludGVyb3BlcmFiaWxp
+dHkgaXNzdWVzIHdpdGggZGlmZmVyZW50IHBhZ2UgYW5kIHNlY3Rvcg0KPj4+Pj4+PiBzaXpl
+cw0KPj4+Pj4+PiBidXQgaWYgaXQgZG9lcyBub3QgYWZmZWN0IHlvdSwgeW91IGNhbiB1c2Ug
+aXQuDQo+Pj4+Pj4+DQo+Pj4+Pg0KPj4+Pj4gQW5vdGhlciB0aGluZyBpcywgSSBkb24ndCBr
+bm93IGhvdyB0aGUgbG9vbmdzb24ga2VybmVsIGR1bXAgd29ya3MsIA0KPj4+Pj4gYnV0DQo+
+Pj4+PiBjYW4geW91IHByb3ZpZGUgdGhlIGZhZGRyMmxpbmUgb3V0cHV0IGZvcg0KPj4+Pj4g
+ImJ0cmZzX2ZpbmlzaF9vcmRlcmVkX2V4dGVudCsweDI0Ij8NCj4+Pj4+DQo+Pj4+PiBJdCBs
+b29rcyBsaWtlIG9yZGVyZWQtPmlub2RlIGlzIG5vdCBwcm9wZXJseSBpbml0aWFsaXplZCBi
+dXQgSSdtIG5vdA0KPj4+Pj4gMTAwJSBzdXJlLg0KPj4+Pj4NCj4+Pj4+IFRoYW5rcywNCj4+
+Pj4+IFF1DQo+Pj4+Pg0KPj4+DQo+Pg0KPj4NCj4NCg==
 
-Grep for _IOCTL_MAGIC in include/uapi:
-
-uapi/linux/aspeed-lpc-ctrl.h:#define __ASPEED_LPC_CTRL_IOCTL_MAGIC 0xb2
-uapi/linux/aspeed-p2a-ctrl.h:#define __ASPEED_P2A_CTRL_IOCTL_MAGIC 0xb3
-uapi/linux/bt-bmc.h:#define __BT_BMC_IOCTL_MAGIC        0xb1
-uapi/linux/btrfs.h:#define BTRFS_IOCTL_MAGIC 0x94
-uapi/linux/f2fs.h:#define F2FS_IOCTL_MAGIC              0xf5
-uapi/linux/ipmi_bmc.h:#define __IPMI_BMC_IOCTL_MAGIC        0xB1
-uapi/linux/pfrut.h:#define PFRUT_IOCTL_MAGIC 0xEE
-uapi/rdma/rdma_user_ioctl.h:#define IB_IOCTL_MAGIC RDMA_IOCTL_MAGIC
-uapi/rdma/rdma_user_ioctl_cmds.h:#define RDMA_IOCTL_MAGIC       0x1b
-
-The label ioctls inherited the 0x94 namespace for backward
-compatibility but as already said, it's the private namespace of btrfs.
 
