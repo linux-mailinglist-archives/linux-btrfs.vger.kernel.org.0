@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-2170-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2172-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B084584BEBF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 21:34:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C661C84BED0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 21:40:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 684B42896A2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 20:34:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0F20B25558
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 20:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A031B81C;
-	Tue,  6 Feb 2024 20:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F20B61B81C;
+	Tue,  6 Feb 2024 20:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="VgOM74A2"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="W6zXAbIZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59C51B957
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Feb 2024 20:34:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 675841B80F
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Feb 2024 20:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707251658; cv=none; b=OaGTAWTQxXpV0mJlM0vSSbP0W5JJ2jCx0naM1ccJrXNm6KvpzIPNhj/0yna/sXqtMRsXuH6xS5dVZJOZ+Xr9hrL79WozNDWFI7N7Yu/92QFE5cEyGiCNtilbCROibDo549SRjh5GBsX+kp0Y9sbuioYP1p+Cy0ya59PP+CaLc6E=
+	t=1707252006; cv=none; b=OJ7YGsiTna41VrNSJINM8iXjVEdXBTuPIAnBG4rxW2CqvMz+zvfcNb4EB4lAP97q4oNj8bBwAR/t2cxjs9RyXv0NCfX5IlkNIUe5wlP+medOTlNSni84x/la3inbz6wacSJpntGsjgZud+xKZpb/V7FBOnnRmr14pwHvIuelrRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707251658; c=relaxed/simple;
-	bh=HeakIbOoSBejVNuIqJvJbZuU+Nd7ZBcOzDQICMkJKJs=;
+	s=arc-20240116; t=1707252006; c=relaxed/simple;
+	bh=9liBrmpvTIEVwRHE2J8VGLQXO7HdvXdFJKsSnXmw+u0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uZSdji7+UOKrIM2R12aimNMSpPBKBPWOj2HFdqwRXEt8KqgL0050zwVHMbcIAsINIQGOQgCbsGA3QorTorrxKrPTRhUuOKnhujs5BWZhSz/vzS7/B+8qWqHFhReZOxfUExsGm7TV8ZDxmnfcKdm9Cic5hbcghc3MNwuN0zbeu4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=VgOM74A2; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=geotfNVKa5tQY+DC09yYTq3XlB+y/AtLS0mpubKUGE1QmZfwMaxpFvktpxdVFuR0wTICSsrZOT7KLAIu9muYxQzNRhUEuVVCmea3ZjU5lc0dZI03kfd8C9a006SXpjsDTaMVaIOQMQC0kJ+9VVZQXUaKYYJtVvk5zNCOucbrRxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=W6zXAbIZ; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1707251649; x=1707856449; i=quwenruo.btrfs@gmx.com;
-	bh=HeakIbOoSBejVNuIqJvJbZuU+Nd7ZBcOzDQICMkJKJs=;
+	s=s31663417; t=1707251999; x=1707856799; i=quwenruo.btrfs@gmx.com;
+	bh=9liBrmpvTIEVwRHE2J8VGLQXO7HdvXdFJKsSnXmw+u0=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=VgOM74A2FovGFZSuBk5jkBV9XsUqXhBfV/YgF0H8ZzM04qcR+9prToI+A9Pm7TpR
-	 aKoMnbJ75MjsirUMULwasIkYAt0WpB9Frss0gmpyRdWXZfW9Y4JaqU6KxuVxJNZm1
-	 pz21dFiB5XWXd2av8D+Pd6R4j6gqwrpHWOLMOJKJ22fWAleQZ/pTWJxGZj/zuEpQE
-	 Ug4wRFrFfboFepmwd0AX+75JR7PtvESSF/srHOpJi/fGzDD4GPYrqvSwHyGdFI1rx
-	 j2HEJX2ThWS2IUhvZTqQPYXTnvLyfYV9LaRGgr3cFQhd6UKvmTGVxQySYKx4Jh1v1
-	 rYychsPoi0KJla9pdQ==
+	b=W6zXAbIZowuw8UPw5oKwR38Fcjrgh6VQ+CGRkLnoQUk4Y6VaZqcxspIKvWk5WSii
+	 b3J2aMhOZ/CGnGQTmliZSVUdC3wue9Nk6POAOuJ1JumxPULLRO41z5i1QlT2R4mBN
+	 bAJlVq54G5iWgEi4sFuBJiYzXOpsnPvQC/v9GoiL/6/eoSWkHo+UD0Wawyso2VQLp
+	 3vhbd1+tVjcRoaEnqRAPcQwaSjcPEgCCCL3V2BLrfDSciReN78yQq6n9Ps12SxaMG
+	 b/pH0C1fTHydeKyyMUXhSmvFGej93LKM3J9x7dpV/HdXqO+GPIwOTQHbS9F4mlN04
+	 zHVJRcWVfelvTO4eAQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWici-1rVLbt1EHg-00X1OY; Tue, 06
- Feb 2024 21:34:09 +0100
-Message-ID: <f7338589-046b-42ec-8b1d-c6f247a482d8@gmx.com>
-Date: Wed, 7 Feb 2024 07:04:06 +1030
+Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeU4y-1qzDwY2Wfc-00aUB9; Tue, 06
+ Feb 2024 21:39:59 +0100
+Message-ID: <60724d87-293d-495f-92ed-80032dab5c47@gmx.com>
+Date: Wed, 7 Feb 2024 07:09:55 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,10 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs: tree-checker: dump the page status if hit
  something wrong
 Content-Language: en-US
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <f51a6d5d7432455a6a858d51b49ecac183e0bbc9.1706312914.git.wqu@suse.com>
- <20240206124642.GM355@twin.jikos.cz>
+To: Tavian Barnes <tavianator@tavianator.com>
+Cc: linux-btrfs@vger.kernel.org, wqu@suse.com
+References: <8932de78-729c-431a-b371-a858e986066d@gmx.com>
+ <20240206201247.4120-1-tavianator@tavianator.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -87,141 +87,214 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240206124642.GM355@twin.jikos.cz>
+In-Reply-To: <20240206201247.4120-1-tavianator@tavianator.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VACjwo4aBb2CK4K6ITM6j9g/VkwFJdeK7LiiHo+CtGNXz+WGIv8
- XWgZKyOh7QMiP6jCMij5OyPRvQKOzBPl27akXsoudT6XkM3u3nOLqcjbz4gAJ03zhHC6EN1
- ZtpGBJPD2CWBvvuE/Y8RAwwhVm2EIAtV6BNtUXTUBhB9mHij9FJCeTbTIO9CfDhleh+iBzd
- HOrzs0LDoDi9Nz8fWWbxg==
+X-Provags-ID: V03:K1:HVOl3gYI2sZMK+ONyyfBPpmlCen6OO/adPQG0b26a8bYyj5hk/P
+ 1C7KPDC8K8dblg8deO6C0CcpUSvoy57xhfGq29yl12ZDQqIxuFdLUxcbEMfvPdkmBkCBu2T
+ 3977lsklGp413RRNGBftT1+jUMbvNHdvKiAAggec1kR6CG8Se3KNKdhgkHrtCFlDcrq4K7m
+ gJYd0vmnIdcEt1k5xQ5Aw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:aQIzL3Ql9pk=;EXfPOESPtg4iN37ZU5bjG7ECoMl
- hKfoa+RjgrW89xr5pZvf5wuGLhOOup9FCUPPE3z3SMh54IE43PwjG6Mqub4FYdW/dlhmMIh9X
- 8aEjdJoV+IdDq3Ea7bdkEm6x2Bgvc3TjujZ9B0cHlhPP8Ygtyh9yECTdbuCoCPiNNhjEeDJQf
- dC4osrT0wmXhzyOKNy+CscGS5fcuJcQnCafwbKzMWiqmeb6E/k0zpbR5OrV0WhgBVXFY1x71N
- 7Kzd+SaJRjvLiXdu4mn7l8puGFT4NuPRJo4ulnmqWkehUnMVvwK3AeDkW82J2eWFjcc1NFvGX
- qSBnFujMB2CRwE1toiBA7y4MaRMWrcqG0Riid8/Rh1OQ8X2Nd3QdQxjGylVN9rT3puenfcIrd
- +yHTYbhJcPuiGtHDjuo0cwHEH641TFS+nn7ml0FbOkb4OqNXQ3Q82PVeXVdBeWUX2aWiF3kaz
- 9y/H0oLsDAHTD0vBCDiT+aj5XpnRqvfIwCPAOjwWbk76cYi7bdvSgMCAoKFKi3VdQ3hEH6ejo
- nPk/ERTg9Dp+sNKidPydp3tqw+cIf9QZ8+PpILLiWo3vsVkjzGMpXap5PJEgX2WeJks6HzA3i
- emjrYscvfmD3aJjc7xhhk0pkoqGA9iwWTlYPB9LAW5nJLXPFSSU1wXu44rVgRuy24oPbJaSZd
- HVlDZRkTEszq77HEYo58jNfpWVfrjNw0iC60ft4+qJ+ncvOIKDC+JLjIPm5847f2T6lu1IJEx
- Qo2pDnBFuQZII45WSREyChC0rD4r1xNAvTljr+D5VCon43U6BCmNUDu5wTN8Wi0hMWxXMfcuY
- znS8gYG8PeJCu9q3n3s1ZDZvlT5h55CrWHs31Wxvfui04=
+UI-OutboundReport: notjunk:1;M01:P0:7kcrPso698E=;ApLLylXTLmGtWG52r4JlrB2QMKa
+ 08JL9COfRQEQcMyLn7Uo8nFXLc53e5VR+mSPNdG57qh0BfDV6ooAWX2gbHIBqqteZZWVxS4k0
+ FGPqJ/cUsD879+MuqFCtxDQ8n5OBogYW1EyF/tWjzm3YdMIC/Iot846kimh/31160HbrQraD+
+ 6I119ZBTj8K1rwAInwG9krsBRSc/YldIk9Mq5d0HUnadeekiQebE+ApYXIPS2iAzSXFDPgO3v
+ OlvIPlMsPYG4bpA6pLYY1V7zdtgkkpa6eAXnr3hZED1ZBTAcwecRpAI4iWVuYUA5WaJLXKfRe
+ 5LPx8mZQ33hk2mIilBNc0eFpIQQdj0TD8gVA5/p7LUiCJyMSZxPVfbDZH6AsMFjvYfTWwkT3i
+ Ohm5k08m+A/JFSGPTbvd1B0XIpYYLXPi0IWDih7B8WJuCphUUkiFAZWZO4uEgM4zPyhgXhu54
+ bq6l/3jRrGC+zWdfHVmMcnyCwoSVo2AGNqgchMWPeV1VeLvZliExkMA2jT9TRQuEsql2wbQ5a
+ haEKRvxOgVtrxiVcDmKaYigwqZ+EaKEHw9jkay0FY+NL1arZu1hcz01EZ5Rz5ixm8g4Jm8vdc
+ ZXRadXJVQVwir+c1qQFpUoQP8uy2H9OkN6csGgpSriHjyynC17VwhdpPRljXcbKyS1J9lK0et
+ lfy34GmeQ4tzOTYX3wZTCzhtQzIs7PSqg8cVdwvWm3PYSOAtDha9LvTa/hm9G5Q3YcEOx7tL7
+ Hz0gdcQT6quUptrgyHyHN2jmTGObcXVA74LWbvgZlIXjAlkRdre91s0zkhWkcf6I07u8AkaNY
+ 5CeAz38onrq2mPvQ3HKhyonOx+5bvJGuuvPorYQ1bigHk=
 
 
 
-On 2024/2/6 23:16, David Sterba wrote:
-> On Sat, Jan 27, 2024 at 10:18:36AM +1030, Qu Wenruo wrote:
->> [BUG]
->> There is a bug report about very suspicious tree-checker got triggered:
+On 2024/2/7 06:42, Tavian Barnes wrote:
+> On Tue, 6 Feb 2024 16:24:32 +1030, Qu Wenruo wrote:
+>> On 2024/2/6 14:08, tavianator@tavianator.com wrote:
+>>> Here's the corresponding dmesg output:
+>>>
+>>>       page:00000000789c68b4 refcount:4 mapcount:0 mapping:00000000ce99=
+bfc3 index:0x7df93c74 pfn:0x1269558
+>>>       memcg:ffff9f20d10df000
+>>>       aops:btree_aops [btrfs] ino:1
+>>>       flags: 0x12ffff180000820c(referenced|uptodate|workingset|private=
+|node=3D2|zone=3D2|lastcpupid=3D0xffff)
+>>>       page_type: 0xffffffff()
+>>>       raw: 12ffff180000820c 0000000000000000 dead000000000122 ffff9f11=
+8586feb8
+>>>       raw: 000000007df93c74 ffff9f2232376e80 00000004ffffffff ffff9f20=
+d10df000
+>>>       page dumped because: eb page dump
+>>>       BTRFS critical (device dm-1): corrupted leaf, root=3D709 block=
+=3D8656838410240 owner mismatch, have 2694891690930195334 expect [256, 184=
+46744073709551360]
 >>
->>    BTRFS critical (device dm-0): corrupted node, root=3D256
->> block=3D8550954455682405139 owner mismatch, have 11858205567642294356
->> expect [256, 18446744073709551360]
->>    BTRFS critical (device dm-0): corrupted node, root=3D256
->> block=3D8550954455682405139 owner mismatch, have 11858205567642294356
->> expect [256, 18446744073709551360]
->>    BTRFS critical (device dm-0): corrupted node, root=3D256
->> block=3D8550954455682405139 owner mismatch, have 11858205567642294356
->> expect [256, 18446744073709551360]
->>    SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=3Ddm=
--0
->> ino=3D5737268
+>> The page index and eb->start matches page index, so that page attaching
+>> part is correct.
 >>
->> [ANALYZE]
->> The root cause is still unclear, but there are some clues already:
+>> And the refcount is also 4, which matches the common case.
 >>
->> - Unaligned eb bytenr
->>    The block bytenr is 8550954455682405139, which is not even aligned t=
-o
->>    2.
->>    This bytenr is fetched from extent buffer header, not from eb->start=
-.
->>
->>    This means, at the initial time of read, eb header bytenr is still
->>    correct (the very basis check to continue read), but later something
->>    wrong happened, got at least the first page corrupted.
->>    Thus we got such obviously incorrect value.
->>
->> - Invalid extent buffer header owner
->>    The read itself is triggered for subvolume 256, but the eb header
->>    owner is 11858205567642294356, which is not really possible.
->>    The problem here is, subovlume id is limited to (1 << 48 - 1),
->>    and this one definitely goes beyond that limit.
->>
->>    So this value is another garbage.
->>
->> We already got two garbage from an extent buffer, which passed the
->> initial bytenr and csum checks, but later the contents become garbage a=
-t
->> some point.
->>
->> This looks like a page lifespan problem (e.g. we didn't proper hold the
->> page).
->>
->> [ENHANCEMENT]
->> The current tree-checker only output things from the extent buffer,
->> nothing with the page status.
->>
->> So this patch would enhance the tree-checker output by also dumpping th=
-e
->> first page, which would look like this:
->>
->>   page:00000000aa9f3ce8 refcount:4 mapcount:0 mapping:00000000169aa6b6 =
-index:0x1d0c pfn:0x1022e5
->>   memcg:ffff888103456000
->>   aops:btree_aops [btrfs] ino:1
->>   flags: 0x2ffff0000008000(private|node=3D0|zone=3D2|lastcpupid=3D0xfff=
-f)
->>   page_type: 0xffffffff()
->>   raw: 02ffff0000008000 0000000000000000 dead000000000122 ffff88811e06e=
-220
->>   raw: 0000000000001d0c ffff888102fdb1d8 00000004ffffffff ffff888103456=
-000
->>   page dumped because: eb page dump
->>   BTRFS critical (device dm-3): corrupt leaf: root=3D5 block=3D30457856=
- slot=3D6 ino=3D257 file_offset=3D0, invalid disk_bytenr for file extent, =
-have 10617606235235216665, should be aligned to 4096
->>   BTRFS error (device dm-3): read time tree block corruption detected o=
-n logical 30457856 mirror 1
->>
->> >From the dump we can see some extra info, something can help us to do
->> extra cross-checks:
->>
->> - Page refcount
->>    if it's too low, it definitely means something bad.
->>
->> - Page aops
->>    Any mapped eb page should have btree_aops with inode number 1.
->>
->> - Page index
->>    Since a mapped eb page should has its bytenr matching the page
->>    position, (index << PAGE_SHIFT) should match the bytenr of the
->>    bytenr from the critical line.
->>
->> - Page Private flags
->>    A mapped eb page should have Private flag set to indicate it's manag=
-ed
->>    by btrfs.
->>
->> Link: https://marc.info/?l=3Dlinux-btrfs&m=3D170629708724284&w=3D2
+>> Although I still need to check the extra flags for workingset.
 >
-> Please use a link to lore.kernel.org, this keeps the threading and the
-> message id is in the url so it's possible to look it up elsewhere.
+> I did get some other splats with refcount:3, e.g.
+>
+>      page:000000005ca43abb refcount:3 mapcount:0 mapping:00000000ce99bfc=
+3 index:0x8eb49f38 pfn:0x17e8520
+>      page:000000005ca43abb refcount:3 mapcount:0 mapping:00000000ce99bfc=
+3 index:0x8eb49f38 pfn:0x17e8520
+>      memcg:ffff9f211ab95000
+>      page:000000005ca43abb refcount:3 mapcount:0 mapping:00000000ce99bfc=
+3 index:0x8eb49f38 pfn:0x17e8520
+>      memcg:ffff9f211ab95000
+>      page:000000005ca43abb refcount:3 mapcount:0 mapping:00000000ce99bfc=
+3 index:0x8eb49f38 pfn:0x17e8520
+>      memcg:ffff9f211ab95000
+>      memcg:ffff9f211ab95000
+>      page:000000005ca43abb refcount:3 mapcount:0 mapping:00000000ce99bfc=
+3 index:0x8eb49f38 pfn:0x17e8520
+>      memcg:ffff9f211ab95000
+>      BTRFS critical (device dm-1): inode mode mismatch with dir: inode m=
+ode=3D042255 btrfs type=3D2 dir type=3D1
+>      aops:btree_aops [btrfs] ino:1
+>      aops:btree_aops [btrfs] ino:1
+>      aops:btree_aops [btrfs] ino:1
+>      aops:btree_aops [btrfs] ino:1
+>      aops:btree_aops [btrfs] ino:1
+>      flags: 0x12ffff580000822c(referenced|uptodate|lru|workingset|privat=
+e|node=3D2|zone=3D2|lastcpupid=3D0xffff)
+>      flags: 0x12ffff580000822c(referenced|uptodate|lru|workingset|privat=
+e|node=3D2|zone=3D2|lastcpupid=3D0xffff)
+>      page_type: 0xffffffff()
+>      page_type: 0xffffffff()
+>      raw: 12ffff580000822c fffffabb9f5f8288 fffffabb9fa14848 ffff9f11858=
+6feb8
+>      raw: 12ffff580000822c fffffabb9f5f8288 fffffabb9fa14848 ffff9f11858=
+6feb8
+>      raw: 000000008eb49f38 ffff9f16ae564cb0 00000003ffffffff ffff9f211ab=
+95000
+>      raw: 000000008eb49f38 ffff9f16ae564cb0 00000003ffffffff ffff9f211ab=
+95000
+>      flags: 0x12ffff580000822c(referenced|uptodate|lru|workingset|privat=
+e|node=3D2|zone=3D2|lastcpupid=3D0xffff)
+>      page dumped because: eb page dump
+>      page dumped because: eb page dump
+>      page_type: 0xffffffff()
+>      BTRFS critical (device dm-1): corrupted leaf, root=3D136202 block=
+=3D9806651031552 owner mismatch, have 174692946400338119 expect [256, 1844=
+6744073709551360]
+>      BTRFS critical (device dm-1): corrupted leaf, root=3D136202 block=
+=3D9806651031552 owner mismatch, have 174692946400338119 expect [256, 1844=
+6744073709551360]
+>      flags: 0x12ffff580000822c(referenced|uptodate|lru|workingset|privat=
+e|node=3D2|zone=3D2|lastcpupid=3D0xffff)
+>      raw: 12ffff580000822c fffffabb9f5f8288 fffffabb9fa14848 ffff9f11858=
+6feb8
+>      raw: 000000008eb49f38 ffff9f16ae564cb0 00000003ffffffff ffff9f211ab=
+95000
+>      page_type: 0xffffffff()
+>      page dumped because: eb page dump
+>      raw: 12ffff580000822c fffffabb9f5f8288 fffffabb9fa14848 ffff9f11858=
+6feb8
+>      BTRFS critical (device dm-1): corrupted leaf, root=3D136202 block=
+=3D9806651031552 owner mismatch, have 174692946400338119 expect [256, 1844=
+6744073709551360]
+>      raw: 000000008eb49f38 ffff9f16ae564cb0 00000003ffffffff ffff9f211ab=
+95000
+>      page dumped because: eb page dump
+>      BTRFS critical (device dm-1): corrupted leaf, root=3D136202 block=
+=3D9806651031552 owner mismatch, have 174692946400338119 expect [256, 1844=
+6744073709551360]
+>      flags: 0x12ffff580000822c(referenced|uptodate|lru|workingset|privat=
+e|node=3D2|zone=3D2|lastcpupid=3D0xffff)
+>      page_type: 0xffffffff()
+>      raw: 12ffff580000822c fffffabb9f5f8288 fffffabb9fa14848 ffff9f11858=
+6feb8
+>      raw: 000000008eb49f38 ffff9f16ae564cb0 00000003ffffffff ffff9f211ab=
+95000
+>      page dumped because: eb page dump
+>      BTRFS critical (device dm-1): corrupted leaf, root=3D136202 block=
+=3D9806651031552 owner mismatch, have 174692946400338119 expect [256, 1844=
+6744073709551360]
+>
+>>> Here's my reproducer if you want to try it yourself.  It uses bfs, a
+>>> find(1) clone I wrote with multi-threading and io_uring support.  I'm
+>>> in the process of adding multi-threaded stat(), which is what I assume
+>>> triggers the bug.
+>>>
+>>>       $ git clone "https://github.com/tavianator/bfs"
+>>>       $ cd bfs
+>>>       $ git checkout euclean
+>>>       $ make release
+>>>
+>>> Then repeat these steps until it triggers:
+>>>
+>>>       # sysctl vm.drop_caches=3D3
+>>>       $ ./bin/bfs /mnt -links 100
+>>>       bfs: error: /mnt/slash/@/var/lib/docker/btrfs/subvolumes/f07d37d=
+1c148e9fcdbae166a3a4de36eec49009ce651174d0921fab18d55cee6/dev/ram0: Struct=
+ure needs cleaning.
+>>
+>> It looks like the mount point /mnt/ is pretty large with a lot of thing=
+s
+>> pre-populated?
+>
+> Right, /mnt contains a few filesystems.  /mnt/slash is my root fs (the
+> subvolume @ is mounted as /).  It's quite large, with over 41 million
+> files and 640 subvolumes.  It's a BTRFS RAID0 array on 4 1TB NVMEs with
+> LUKS encryption.
+>
+>> I tried to populate the btrfs with my linux git repo (which is around
+>> 6.5G with some GC needed), but even 256 runs didn't hit the problem.
+>>
+>> The main part of the script looks like this:
+>>
+>> for (( i =3D 0; i < 256; i++ )); do
+>> 	mount $dev1 $mnt
+>> 	sysctl vm.drop_caches=3D3
+>> 	/home/adam/bfs/bin/bfs $mnt -links 100
+>> 	umount $mnt
+>> done
+>>
+>> And the device looks like this:
+>>
+>> /dev/mapper/test-scratch1  10485760  6472292   3679260  64% /mnt/btrfs
+>
+> I also noticed that it seems easier to reproduce right after a reboot.
+> I failed to reproduce it this morning, but after a reboot it triggered
+> immediately.
+>
+>> Although the difference is, I'm using btrfs/for-next branch
+>> (https://github.com/btrfs/linux/tree/for-next).
+>>
+>> Maybe it's missing some fixes not yet in upstream?
+>> My current guess is related to my commit 09e6cef19c9f ("btrfs: refactor
+>> alloc_extent_buffer() to allocate-then-attach method"), but since I can
+>> not reproduce it, it's only a guess...
+>
+> That's possible!  I tried to follow the existing code in
+> alloc_extent_buffer() but didn't see any obvious races.  I will try agai=
+n
+> with the for-next tree and report back.
 
-The problem is, at the time of writing, lore.kernel.org is down...
-That's why I have to go marc.info for it.
+The most obvious way to proof is, if you can reproduce it really
+reliably, then just go back to that commit and verify (it can still
+cause the problem).
+Then go one commit before for, and verify it doesn't cause the problem
+anymore.
 
-Just hope the infrastructure would be a little more stable than vger.
+Although without a way to reproduce locally, it's really hard to say or
+debug from my end.
 
 Thanks,
 Qu
 >
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> Thanks,
+>> Qu
 >
-> For debugging the patch is useful, I'd say go on and add it.
+> --
 >
-> Reviewed-by: David Sterba <dsterba@suse.com>
->
+> Tavian Barnes
 
