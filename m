@@ -1,175 +1,119 @@
-Return-Path: <linux-btrfs+bounces-2142-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2143-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3893884ACF8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 04:38:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 661F484AD69
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 05:20:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5C8EB21B48
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 03:38:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9893F1C23788
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 04:20:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3CF6745C3;
-	Tue,  6 Feb 2024 03:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171BE768F7;
+	Tue,  6 Feb 2024 04:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R/rAwrD2"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QsZRrd1H"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6D42CA4
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Feb 2024 03:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F42774E0E;
+	Tue,  6 Feb 2024 04:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707190692; cv=none; b=Z1LSRz1THYDCFnRlGDxDL1TD0xPiZOKzmvR+dzhzhQRroDZ0ZBN0RwcZZkK/WU0Z6uR6urbX+tU1GyYXSZqsHjr2bYi/zLX9mCQxedr2GX+4dqqIEcJi33pW9k60Uq1iVfzSqoPVikUVKNqW3bie8goHzJS4w1Ow3j41+2KwUKM=
+	t=1707193216; cv=none; b=cKrZdiYQul5iUH68Zge+DGrfOyue1L+n5tMX71iszAJoP6cLTqEojR5gqtnLj1x2nIMrQ7C29QXSIKhZzRgGRCoQzcNWbVw63xC2nZJnp8xk/EnBJMkD8AdRJ5huXli/xf0mMv30LWH2QlHSphJUhEjYADgr3FFQiiu63HgIF8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707190692; c=relaxed/simple;
-	bh=3VwCrw/Bte9GaRu9iii+KLTMiBP7LS7ahzhN2YL+b1s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KL+jCFxOtk8NFgHkliIWbkIkBBcTBYISErFf9Y860FWfW2ouhT9WStt1eEgaRrRX2egOy3RCiIJrlvliBHC7OeZ6GrZ8EbmTkqLx5boi8v5gJkluPFOVXKWS6Qi6qsoF02VAqvnbVNRgoZIxAzZ72gohT9/fndcjvtou9MsAuug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tavianator.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R/rAwrD2; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tavianator.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42ab4f89bdbso30148371cf.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Feb 2024 19:38:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707190689; x=1707795489; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c/pvCCGPvF69Icbx0MLw1xzXyOzHLF4q1+YpudWq1Nw=;
-        b=R/rAwrD2d+8N2W+wUR9YENKx/itXTJwi5FnmjEPCE+Y9lk7Wll4Pzsqa1PFKD8gc2g
-         yPMHQPRf24TgNKooad5BtudIU9MIRuRLbh9mYVtaoi65exPULeqo+ECFOZ8NfxvYIBTj
-         B8nKGKhneis09xYV9dr+zktjkHIKp5xTOj22xD2Bbw5fEka8ETxg1nD/v3EJMJIVXUn3
-         79XtVhrgHMqq/8woidP2oly3XBGZdVx5aFOaDenwKqyaCBhp8nPnFQc+pFkyXA3rBSwy
-         ZtwDS2rWci0X7cgaYI5MYezyk/sq89gxTebBuEdGwUC3Bm1/i7sAJ7sovz5szlTS9sjk
-         qvkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707190689; x=1707795489;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=c/pvCCGPvF69Icbx0MLw1xzXyOzHLF4q1+YpudWq1Nw=;
-        b=GUwNsvKwT3YZElb4TjNA8irf5XZbKsq/QWQE2vndnlrO+s8AyP/iCAPYgUSMZfqZF2
-         tH4X2Y4FPOoYnN/+5ItRpQA3Z3QH3jbzWR8qZ2tDtu9zP+ZzUBHlm6/q23xCcbj1iYYa
-         ZxwZ9JvIpW3e5/EWveDqwsj/PHohWs4S7ac4ajPiUsxpxUVJcdxYqcXvc9Tcl5kcZP1X
-         h3arWbdZ7lLEfBdQF1dLcQEmZFPs74SwllyixsZQlmczYD02vGfj3+2wiSuZm27ZzYVT
-         zcgpJjNqp2CCWB0a94xKywpB9D0js1A2j0nukTUBSaud4I+H7X4fnJVnRFdtfVyu+qGJ
-         JU6Q==
-X-Gm-Message-State: AOJu0Yz/ukz18pHeTwKJRWl6GshmAHQQaixNmFeRsHMTGej0ku9J3enP
-	TNtP2V+KAIWYKNG5AZGeq5d8Zs1/tG9ImIMgA+Ll/Kf8HE/nsTxOQgb+O+NM
-X-Google-Smtp-Source: AGHT+IGeEOrNtF7PO7uvfSmiRwBmhOvae6Qodg+wB+RJ+eTFgm9gF4cxqGucxSnIvsT7tWVjYKnnlg==
-X-Received: by 2002:a0c:dc14:0:b0:68c:9023:6319 with SMTP id s20-20020a0cdc14000000b0068c90236319mr1277985qvk.22.1707190689212;
-        Mon, 05 Feb 2024 19:38:09 -0800 (PST)
-Received: from tachyon.tail92c87.ts.net ([192.159.180.233])
-        by smtp.gmail.com with ESMTPSA id lb25-20020a056214319900b0068ca3929a5asm625895qvb.85.2024.02.05.19.38.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 19:38:08 -0800 (PST)
-Sender: Tavian Barnes <tavianator@gmail.com>
-From: tavianator@tavianator.com
-To: wqu@suse.com
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: tree-checker: dump the page status if hit something wrong
-Date: Mon,  5 Feb 2024 22:38:07 -0500
-Message-ID: <20240206033807.15498-1-tavianator@tavianator.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <f51a6d5d7432455a6a858d51b49ecac183e0bbc9.1706312914.git.wqu@suse.com>
-References: <f51a6d5d7432455a6a858d51b49ecac183e0bbc9.1706312914.git.wqu@suse.com>
+	s=arc-20240116; t=1707193216; c=relaxed/simple;
+	bh=v2eV89CFfg0ysp6EkHVTL96Fg1zaUIzw2XEMoAZm9IU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=klojETWzc0W4Njot3rERkkGQVgSyn6GUlut6P+PpiEd1HA6gWOqTuO/C4iLs6+y6L+9V4ayJngM7RwVVcmfQ2t+vJt4iclJcQFtrHSKDlc+TmJAaroUrgLWY0NmaZ4+lvKyw2sfyG9osixoBu+94Hk6pXuqUUcbn/a1Z+6Wfh6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=QsZRrd1H; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=8KnBD4rHlGntZQoBsKk3YytjdSLLdJZ0CNvsOChcWKY=; b=QsZRrd1HhHlHz06X66uZZdqjLo
+	1+rrPAIvCkAAJicO7CBx5oJZBvt1/VlxVYJFQ9ewI/sAlcGLZsJ83g+tZpP41dzF9OaMLI6KpM9im
+	atfaWBSSAn/MWNpj9QqA3/ZZp+RG4J+vSne+7YWKd7DsX8+/dcj68yXltM/tPC6gawnHsPy80ll74
+	MGelLAYtiPlBRJF6xcsvRXTxAUAyvWawp0I9p7M/LcJChVxjh3/fdId8UiF5X+Dana6FI7YEYLopk
+	jt3O7jAimwRImUScVUyDcQsXpfs/zZ7ALi4qFfPGWkf+i0orGluaGXP98zTFWugC+asTTjgjNJRwL
+	/IlzbF8g==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rXCwN-0000000603T-0d86;
+	Tue, 06 Feb 2024 04:20:11 +0000
+Message-ID: <ca885dd8-4ac1-43a9-9b0c-79b63cae0620@infradead.org>
+Date: Mon, 5 Feb 2024 20:20:10 -0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/6] fs: FS_IOC_GETSYSFSNAME
+Content-Language: en-US
+To: dsterba@suse.cz, Kent Overstreet <kent.overstreet@linux.dev>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Dave Chinner <dchinner@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
+ Josef Bacik <josef@toxicpanda.com>
+References: <20240205200529.546646-1-kent.overstreet@linux.dev>
+ <20240205200529.546646-5-kent.overstreet@linux.dev>
+ <20240205222732.GO616564@frogsfrogsfrogs>
+ <7si54ajkdqbauf2w64xnzfdglkokifgsjptmkxwdhgymxpk353@zf6nfn53manb>
+ <20240206013931.GK355@twin.jikos.cz>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240206013931.GK355@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, 27 Jan 2024 10:18:36 +1030, Qu Wenruo wrote:
-> [BUG]
-> There is a bug report about very suspicious tree-checker got triggered:
->
->   BTRFS critical (device dm-0): corrupted node, root=256
-> block=8550954455682405139 owner mismatch, have 11858205567642294356
-> expect [256, 18446744073709551360]
->   BTRFS critical (device dm-0): corrupted node, root=256
-> block=8550954455682405139 owner mismatch, have 11858205567642294356
-> expect [256, 18446744073709551360]
->   BTRFS critical (device dm-0): corrupted node, root=256
-> block=8550954455682405139 owner mismatch, have 11858205567642294356
-> expect [256, 18446744073709551360]
->   SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=dm-0
-> ino=5737268
 
-I can reproduce this error.  I applied a modified version of your patch,
-against v6.7.2 because that's what I triggered it on.
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 50fdc69fdddf..3f1fc49cd4dc 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -2038,6 +2044,7 @@ int btrfs_check_eb_owner(const struct extent_buffer *eb, u64 root_owner)
-        if (!is_subvol) {
-                /* For non-subvolume trees, the eb owner should match root owner */
-                if (unlikely(root_owner != eb_owner)) {
-+                       dump_page(eb->pages[0], "eb page dump");
-                        btrfs_crit(eb->fs_info,
- "corrupted %s, root=%llu block=%llu owner mismatch, have %llu expect %llu",
-                                btrfs_header_level(eb) == 0 ? "leaf" : "node",
-@@ -2053,6 +2060,7 @@ int btrfs_check_eb_owner(const struct extent_buffer *eb, u64 root_owner)
-         * to subvolume trees.
-         */
-        if (unlikely(is_subvol != is_fstree(eb_owner))) {
-+               dump_page(eb->pages[0], "eb page dump");
-                btrfs_crit(eb->fs_info,
- "corrupted %s, root=%llu block=%llu owner mismatch, have %llu expect [%llu, %llu]",
-                        btrfs_header_level(eb) == 0 ? "leaf" : "node",
+On 2/5/24 17:39, David Sterba wrote:
+> On Mon, Feb 05, 2024 at 05:43:37PM -0500, Kent Overstreet wrote:
+>> On Mon, Feb 05, 2024 at 02:27:32PM -0800, Darrick J. Wong wrote:
+>>> On Mon, Feb 05, 2024 at 03:05:15PM -0500, Kent Overstreet wrote:
+>>>> @@ -231,6 +235,7 @@ struct fsxattr {
+>>>>  #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
+>>>>  #define FS_IOC_GETFSUUID		_IOR(0x94, 51, struct fsuuid2)
+>>>>  #define FS_IOC_SETFSUUID		_IOW(0x94, 52, struct fsuuid2)
+>>>> +#define FS_IOC_GETFSSYSFSNAME		_IOR(0x94, 53, struct fssysfsname)
+>>>
+>>> 0x94 is btrfs, don't add things to their "name" space.
+>>
+>> Can we please document this somewhere!?
+>>
+>> What, dare I ask, is the "namespace" I should be using?
+> 
+> Grep for _IOCTL_MAGIC in include/uapi:
+> 
+> uapi/linux/aspeed-lpc-ctrl.h:#define __ASPEED_LPC_CTRL_IOCTL_MAGIC 0xb2
+> uapi/linux/aspeed-p2a-ctrl.h:#define __ASPEED_P2A_CTRL_IOCTL_MAGIC 0xb3
+> uapi/linux/bt-bmc.h:#define __BT_BMC_IOCTL_MAGIC        0xb1
+> uapi/linux/btrfs.h:#define BTRFS_IOCTL_MAGIC 0x94
+> uapi/linux/f2fs.h:#define F2FS_IOCTL_MAGIC              0xf5
+> uapi/linux/ipmi_bmc.h:#define __IPMI_BMC_IOCTL_MAGIC        0xB1
+> uapi/linux/pfrut.h:#define PFRUT_IOCTL_MAGIC 0xEE
+> uapi/rdma/rdma_user_ioctl.h:#define IB_IOCTL_MAGIC RDMA_IOCTL_MAGIC
+> uapi/rdma/rdma_user_ioctl_cmds.h:#define RDMA_IOCTL_MAGIC       0x1b
+> 
+> The label ioctls inherited the 0x94 namespace for backward
+> compatibility but as already said, it's the private namespace of btrfs.
+> 
 
-Here's the corresponding dmesg output:
+or more generally, see Documentation/userspace-api/ioctl/ioctl-number.rst.
 
-    page:00000000789c68b4 refcount:4 mapcount:0 mapping:00000000ce99bfc3 index:0x7df93c74 pfn:0x1269558
-    memcg:ffff9f20d10df000
-    aops:btree_aops [btrfs] ino:1
-    flags: 0x12ffff180000820c(referenced|uptodate|workingset|private|node=2|zone=2|lastcpupid=0xffff)
-    page_type: 0xffffffff()
-    raw: 12ffff180000820c 0000000000000000 dead000000000122 ffff9f118586feb8
-    raw: 000000007df93c74 ffff9f2232376e80 00000004ffffffff ffff9f20d10df000
-    page dumped because: eb page dump
-    BTRFS critical (device dm-1): corrupted leaf, root=709 block=8656838410240 owner mismatch, have 2694891690930195334 expect [256, 18446744073709551360]
-    page:000000006b7dfcdc refcount:4 mapcount:0 mapping:00000000ce99bfc3 index:0x8dae804c pfn:0x408347
-    memcg:ffff9f20d10df000
-    aops:btree_aops [btrfs] ino:1
-    flags: 0xaffff180000820c(referenced|uptodate|workingset|private|node=1|zone=2|lastcpupid=0xffff)
-    page_type: 0xffffffff()
-    raw: 0affff180000820c 0000000000000000 dead000000000122 ffff9f118586feb8
-    raw: 000000008dae804c ffff9f1497257d00 00000004ffffffff ffff9f20d10df000
-    page dumped because: eb page dump
-    BTRFS critical (device dm-1): corrupted leaf, root=518 block=9736288518144 owner mismatch, have 1691386650333431481 expect [256, 18446744073709551360]
-    page:00000000fb0df6cd refcount:4 mapcount:0 mapping:00000000ce99bfc3 index:0x7609cbdc pfn:0x129e719
-    memcg:ffff9f20d10df000
-    aops:btree_aops [btrfs] ino:1
-    flags: 0x12ffff180000820c(referenced|uptodate|workingset|private|node=2|zone=2|lastcpupid=0xffff)
-    page_type: 0xffffffff()
-    raw: 12ffff180000820c 0000000000000000 dead000000000122 ffff9f118586feb8
-    raw: 000000007609cbdc ffff9f231de92658 00000004ffffffff ffff9f20d10df000
-    page dumped because: eb page dump
-    BTRFS critical (device dm-1): corrupted leaf, root=518 block=8111527936000 owner mismatch, have 10652220539197264134 expect [256, 18446744073709551360]
+For 0x94, it says:
 
-Hope this helps!  Let me know if you have other debug patches to try.
+0x94  all    fs/btrfs/ioctl.h                                        Btrfs filesystem
+             and linux/fs.h                                          some lifted to vfs/generic
 
-Here's my reproducer if you want to try it yourself.  It uses bfs, a
-find(1) clone I wrote with multi-threading and io_uring support.  I'm
-in the process of adding multi-threaded stat(), which is what I assume
-triggers the bug.
-
-    $ git clone "https://github.com/tavianator/bfs"
-    $ cd bfs
-    $ git checkout euclean
-    $ make release
-
-Then repeat these steps until it triggers:
-
-    # sysctl vm.drop_caches=3
-    $ ./bin/bfs /mnt -links 100
-    bfs: error: /mnt/slash/@/var/lib/docker/btrfs/subvolumes/f07d37d1c148e9fcdbae166a3a4de36eec49009ce651174d0921fab18d55cee6/dev/ram0: Structure needs cleaning.
-    ...
+-- 
+#Randy
 
