@@ -1,91 +1,89 @@
-Return-Path: <linux-btrfs+bounces-2162-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2163-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C87A984B9CE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 16:38:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8718984BACA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 17:23:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6738A1F250D9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 15:38:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9F671C23480
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 16:23:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE0671339A1;
-	Tue,  6 Feb 2024 15:38:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD93E134CD7;
+	Tue,  6 Feb 2024 16:22:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MeC0/nmp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oAZh3RV4"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E85BD12E1D8;
-	Tue,  6 Feb 2024 15:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCB381E49B;
+	Tue,  6 Feb 2024 16:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707233882; cv=none; b=L0pf7IqIZTVxRQEnyfe8oVZbqZVrP+nVaX+tkKsJHmlZHJiN+cnyja0YGriSeG9bT7GN9zmuVJCqokWBl8rRStrTFrNQuT9NmjlDWWeqWHxh9aji1/6LhOzdTPrd10D0nr7XfFomSETeX7tsZ5RTFEJHei3Tj+Pv1rFE+GQeqLc=
+	t=1707236562; cv=none; b=A0a5qXxFqUuL1Q+4vPlj/+oX43lBNhEWmRyvVijoj+8vAkC8rJ/beBN/uXbj95nbOY47dTtKVRTqynpAgn5BDOZLTFGOge8Grx9iGXVEDPTmrJk8+46eUXx58xEjvSF4ukhZfssgcCdzxN/3DQhkupAVqbu8wSUYm5U9ZrWOWnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707233882; c=relaxed/simple;
-	bh=GS8UEbSCgKgB/gRexnGVpyWM7USUW2+rfEyDI5KxFn4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aKLm59GU8SdbTf3YMKNINZjHWhgTThmPPAisGqJx1tE+tp7w3SXcmbn2Q6kEjm1JhD/Ws/76GY+CjQx7C5L0jgI7x1rLDR98qxUx9eGq4jt1cVngQOI4WH8gmw4TSNqKQ/GqaeqYd+2xPAvQGgzN+TsNAmlEspufas8ogxuctvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MeC0/nmp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70DB0C433F1;
-	Tue,  6 Feb 2024 15:38:00 +0000 (UTC)
+	s=arc-20240116; t=1707236562; c=relaxed/simple;
+	bh=9CPWKpsQYkI3BqJRpaVlLK8ZC0X64MdLzyKCF7APEVc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q2f6JLFlNWtRkvtUf+PdGxI5wOhXLaTkUK/adnB7awxzin568ynk5Lq3lNOgrEgkDzJXJMzxbJBXD0TN2Dljr7Y/qlRzPlimTUFwwuNoV2GNvv7cBpkjA5W6sFRyYURj3XNcOInEWiObT9VXmpqBAvk157hkoOtLw03GVftaNX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oAZh3RV4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2A20C433C7;
+	Tue,  6 Feb 2024 16:22:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707233881;
-	bh=GS8UEbSCgKgB/gRexnGVpyWM7USUW2+rfEyDI5KxFn4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=MeC0/nmpBcpRMXw4qehV9ITDmznAf7JstSxhzuhPvmSPmjuZdqbsqo9BNmRWeWoWd
-	 o6eg1wrNN0GLFHvCP4CrxHM1IUwHDsbtV2bixepEFmxUcEkfWDFOuQWczE7xxRSG3e
-	 fkjZ9WfXNGazSJn3AhGHp8LkWiNAfqf0MISuAAroSLY8+e2CMIL38rjyPOIA1Hr4af
-	 I/WAm6tx7tx/or2mxg+UxmdYJA41uax1G65P1WiukM+x0qx0inmSelMJJaw8HwkCgk
-	 pf5HGsj/y9OPoA+7/Isz2zUwgz2b/aQ3J1pOh51tJl+5J6UnLmIkqdM6dBb6L22Lkb
-	 A9JQU7chc1uxw==
-Date: Tue, 6 Feb 2024 07:37:59 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Michal Swiatkowski
- <michal.swiatkowski@linux.intel.com>, Marcin Szycik
- <marcin.szycik@linux.intel.com>, Wojciech Drewek
- <wojciech.drewek@intel.com>, Yury Norov <yury.norov@gmail.com>, Andy
- Shevchenko <andy@kernel.org>, "Rasmus Villemoes"
- <linux@rasmusvillemoes.dk>, Alexander Potapenko <glider@google.com>, Jiri
- Pirko <jiri@resnulli.us>, Ido Schimmel <idosch@nvidia.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, "Simon Horman" <horms@kernel.org>,
- <linux-btrfs@vger.kernel.org>, <dm-devel@redhat.com>,
- <ntfs3@lists.linux.dev>, <linux-s390@vger.kernel.org>,
- <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v5 00/21] ice: add PFCP filter support
-Message-ID: <20240206073759.4d948d1e@kernel.org>
-In-Reply-To: <c90e7c78-47e9-46d0-a4e5-cb4aca737d11@intel.com>
-References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
-	<c90e7c78-47e9-46d0-a4e5-cb4aca737d11@intel.com>
+	s=k20201202; t=1707236561;
+	bh=9CPWKpsQYkI3BqJRpaVlLK8ZC0X64MdLzyKCF7APEVc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oAZh3RV4A3dRMoUBvHujL1RRdxTuJ+l92+NuYuNT7GwO4J89xoZoJsJVq5jZp/gvR
+	 Lj13jxd5GmPmn5dGIn920C97f9XEKaGgVOhkMEklD/I+2y8/HKg5sgL7veiooFk2gZ
+	 H8HlnZJdxb56K0vQCda9dMRcRQwYPOBzdsBDNfhkeWWjwSRzzFFf8YU6dBirT4Gq2a
+	 CbU7chUZXwWFj0M4uyiRaFkENxCmG0a5p/yQDSeIIYOESg4P3LzIbgyiriVsvIDwMD
+	 77USiQ1IZaVfzfJpUs+IQ0+BpMuCND8a8vWThW5AYBL6paMB0ZFPuThM8o0Wro/Ujn
+	 WtOW4LMz1e1Jg==
+Date: Tue, 6 Feb 2024 17:22:37 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/6] filesystem visibility ioctls
+Message-ID: <20240206-aufwuchs-atomkraftgegner-dc53ce1e435f@brauner>
+References: <20240205200529.546646-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240205200529.546646-1-kent.overstreet@linux.dev>
 
-On Tue, 6 Feb 2024 13:46:44 +0100 Alexander Lobakin wrote:
-> > Add support for creating PFCP filters in switchdev mode. Add pfcp module
-> > that allows to create a PFCP-type netdev. The netdev then can be passed to
-> > tc when creating a filter to indicate that PFCP filter should be created.  
+On Mon, Feb 05, 2024 at 03:05:11PM -0500, Kent Overstreet wrote:
+> Hi all,
 > 
-> I believe folks agreed that bitmap_{read,write}() should stay inline,
-> ping then?
+> this patchset adds a few new ioctls to standardize a few interfaces we
+> want
+>  - get/set UUID
 
-It's probably fine, IMHO. I mean, I think we agree that the rarely used
-inlines should not sit in a header included by half of the kernel (not
-an exaggeration). But IMHO a better fix would be to move out whatever
-cpumask.h xarray.h and other common headers depend on to a cut-down
-version rather than making your helpers not inline.
+Last time I spoke in favor of exposing the UUID as a generic ioctl most
+were supportive. But I remember that setting the UUID was a lot more
+contentious. If that's changed though then great.
 
-So I think all we need for now is for people to ack the respective
-patches? Looks like cio and ntfs and missing acks, so are some of 
-the bitops core patches.
+>  - get sysfs path
+> 
+> The get/set UUID ioctls are lifted versions of the ext4 ioctls with one
+> difference, killing the flexible array member - we'll never have UUIDs
+> more than 16 bytes, and getting rid of the flexible array member makes
+> them easier to use.
+> 
+> FS_IOC_GETSYSFSNAME is new, but it addresses something that we've been
+> doing in fs specific code for awhile - "given a path on a mounted
+> filesystem, tell me where it lives in sysfs".
+> 
+> Cheers,
+> Kent
+
+When you send v2 could you please just put me in to. Makes it easier for
+me to pick this series from the list. Thanks!
 
