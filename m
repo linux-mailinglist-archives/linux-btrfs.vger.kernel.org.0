@@ -1,365 +1,139 @@
-Return-Path: <linux-btrfs+bounces-2175-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2176-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F20184BEFA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 21:55:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 273BA84BF7E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 22:49:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FC9C2835AF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 20:55:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB4902849DF
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 21:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088BB1B941;
-	Tue,  6 Feb 2024 20:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 439141B971;
+	Tue,  6 Feb 2024 21:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gb/1d4ro";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="p9eRdGzh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gb/1d4ro";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="p9eRdGzh"
+	dkim=pass (1024-bit key) header.d=tavianator.com header.i=@tavianator.com header.b="pO4LI/dW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7D41B815
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Feb 2024 20:55:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB7391B963
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Feb 2024 21:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707252920; cv=none; b=OL7Zxd6/8YaQ/6IdEl4igKVh3auxTMoWQho8up6VH1JCE6JxT9b3zoNGy2cVaaRcJ2AKvhgFnyN0fTyg/q+9X0GYxPKpWJF/VYkqeLbju+fNqP7bCFYOvHf/NgD0IwtlPJssqUnZcSXlyWyY1OlUykN00VkymKj7g7qb4yeRq6k=
+	t=1707256136; cv=none; b=F20JALGTT0MznvQcMZV0c/++cO8Pp9kXXxo7PQSrJ16QjRucxgfRnuSC/4t+zt6/0sqQqlnKekEjzhKaAOQIbfh0NdOYwlfmTPL6yo6FVYP3bDanpLVLJoOdeM8dbdrtCCE4rCHSDiAyLmL+Tm2G0sC5pn0XlZUtxCZWanuDK5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707252920; c=relaxed/simple;
-	bh=K9ay307hL3d90ZxeegCbyXCBSNQ5otI5otYVkj4CXFE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gnscaqnKUprEvmRNL4dDv+DIULOT2kbHwSJzBqjuXt4Y/vEPMGDGMBv2Qq6L2ETrREzAN+ObmGoMXRwc2jl24x8TUl4GvbN5jEA8kq114eEr1jS69KPAv+44u0aZlj2DVydq9fx88HbP9Kpcx0LccNCPOPsvsoC4LuLTY4hYLsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gb/1d4ro; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=p9eRdGzh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gb/1d4ro; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=p9eRdGzh; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 83B8C222D0;
-	Tue,  6 Feb 2024 20:55:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707252915;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A9BNqdpi+n2EHc9YJ5/SAK9ivLWcftHAPQqaCWY9MH0=;
-	b=gb/1d4roBGUTiVMkR32b8hUTI8wtIfrpF/oegATDoiPqqBRWD8x55lYWB5VH/zHf6IhBI5
-	F1ZdGjhrI9C6mZkMbLnqz4RDAP6xoG7QrEowQaXYBcqAXqN8pUH0KbbK6LY+1zFJz1EA6v
-	PxI6p9avB8mw/pE/oOLByrynhzA0l9I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707252915;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A9BNqdpi+n2EHc9YJ5/SAK9ivLWcftHAPQqaCWY9MH0=;
-	b=p9eRdGzh0sOZwrk5ufucZKNvNNhiTCVkIvRCdaInCBPiQDIipQ+GzCtn18/SGas2se61vh
-	t3W/SaX0kiTc+7BA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707252915;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A9BNqdpi+n2EHc9YJ5/SAK9ivLWcftHAPQqaCWY9MH0=;
-	b=gb/1d4roBGUTiVMkR32b8hUTI8wtIfrpF/oegATDoiPqqBRWD8x55lYWB5VH/zHf6IhBI5
-	F1ZdGjhrI9C6mZkMbLnqz4RDAP6xoG7QrEowQaXYBcqAXqN8pUH0KbbK6LY+1zFJz1EA6v
-	PxI6p9avB8mw/pE/oOLByrynhzA0l9I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707252915;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=A9BNqdpi+n2EHc9YJ5/SAK9ivLWcftHAPQqaCWY9MH0=;
-	b=p9eRdGzh0sOZwrk5ufucZKNvNNhiTCVkIvRCdaInCBPiQDIipQ+GzCtn18/SGas2se61vh
-	t3W/SaX0kiTc+7BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F052139D8;
-	Tue,  6 Feb 2024 20:55:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7gT6FrOcwmXCNAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 06 Feb 2024 20:55:15 +0000
-Date: Tue, 6 Feb 2024 21:54:45 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: fix deadlock with fiemap and extent locking
-Message-ID: <20240206205445.GR355@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <47ac92a6c8be53a5e10add9315255460c062b52d.1706817512.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1707256136; c=relaxed/simple;
+	bh=HiifBXKqLQ0/SFWE533vnqx8ItJ/oPSLKUI3R0bTAqI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sXhkPLopVtg8EOSurUZ4Tq6c8qT9GiSagkoPi+fU2w8iIAbWrIBO/gOhkeVlNmnLUFFk0O5skklKJ6VszzUeq7ylg46TxDJzxx3v7IKSjmW8CPvgARsynHMvPMb/qSP7l86OMGmtkOgz7HGaYktBB+98TsMw4q+tVlxgzKfFZ0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tavianator.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (1024-bit key) header.d=tavianator.com header.i=@tavianator.com header.b=pO4LI/dW; arc=none smtp.client-ip=209.85.221.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tavianator.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4c00ec6f1a7so505468e0c.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 06 Feb 2024 13:48:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tavianator.com; s=google; t=1707256133; x=1707860933; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HC7+ofs7+Cfc+TsNR6H7BiUSfo/MehIbGxGKhJ+aiQQ=;
+        b=pO4LI/dWgAVGfk77OMkOHCY2IszmCQA5EWRXIao1NQw8f8plagrELXRToqGo3/WZpH
+         dguFtlKPGhfs4xt7OmsLbUx4Hm7/8IWPIkd/wvdZP/QRn0AtVqSEz0LiKUeTJfB2yq/Z
+         j12vWK1y2v5rcL8GAtm+GhKVLL8iFw4w9GeyI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707256133; x=1707860933;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HC7+ofs7+Cfc+TsNR6H7BiUSfo/MehIbGxGKhJ+aiQQ=;
+        b=CkI9WPae4U5NyqDt6ByaAIcnnSSh0IOCTIljp2aG5T2xlRsjgQJAe7TuLI/5d2HTMF
+         0ZMGbUyl++b/ZPOGCrxhSyKdkVKCRhKXdyqMvix1/A1Cp6UhaijBN9PpyESBFcLh1j+1
+         mAAxFV+OWZecgkkOB7dKnBXvKIEyJMIR8+UzXKXtBJXFrs1pXgmSDOL1NxC3fpyr6OBV
+         Ql1aPf0Z7akQs493ccCClXPlCRdt9GUHIEm5znQTxdezm7OaPt9FM9LuZul3dOjmPhUB
+         /0jKO6qZIPwg8V0l4yGKmqGKToVt/8NPaRUOeTL57PMSRVHPBmaQ6sB+u/JhkQdCtIhT
+         dyeA==
+X-Gm-Message-State: AOJu0YxeNBkZBkpva3ZgK5HfVMDbX+69i/OTQJsqxWMxAW/cAO5LaRrw
+	NwMoQnkChyBSoDzg5/qtAzdnV8e4RSXr7JG6NUpauQj1R7YDGSUDMrSRS5oitB13aZVV7hIzJiL
+	VVWUJtpAGJjBJ9a7/mI4kO2qBobM=
+X-Google-Smtp-Source: AGHT+IHMHXpYb+GF1VBMs15JdY3Htx2pTtkNDb8qJSn9rrURhB6qcMcd4j2XzOoYrbXBZgvnZsfkl9d5zEIF0Ec6EUc=
+X-Received: by 2002:ac5:cac9:0:b0:4c0:29e5:d31f with SMTP id
+ m9-20020ac5cac9000000b004c029e5d31fmr767868vkl.2.1707256133485; Tue, 06 Feb
+ 2024 13:48:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47ac92a6c8be53a5e10add9315255460c062b52d.1706817512.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="gb/1d4ro";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=p9eRdGzh
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,toxicpanda.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 83B8C222D0
-X-Spam-Level: 
-X-Spam-Score: -3.01
-X-Spam-Flag: NO
+References: <8932de78-729c-431a-b371-a858e986066d@gmx.com> <20240206201247.4120-1-tavianator@tavianator.com>
+ <60724d87-293d-495f-92ed-80032dab5c47@gmx.com>
+In-Reply-To: <60724d87-293d-495f-92ed-80032dab5c47@gmx.com>
+From: Tavian Barnes <tavianator@tavianator.com>
+Date: Tue, 6 Feb 2024 16:48:42 -0500
+Message-ID: <CABg4E-=A+Ga2RtTW4tdJUhTQSNtg3HAvSYmGQaoPKJ-qh-UVJA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: tree-checker: dump the page status if hit
+ something wrong
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org, wqu@suse.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 02:58:54PM -0500, Josef Bacik wrote:
-> While working on the patchset to remove extent locking I got a lockdep
-> splat with fiemap and pagefaulting with my new extent lock replacement
-> lock.
-> 
-> This deadlock exists with our normal code, we just don't have lockdep
-> annotations with the extent locking so we've never noticed it.
-> 
-> Since we're copying the fiemap extent to user space on every iteration
-> we have the chance of pagefaulting.  Because we hold the extent lock for
-> the entire range we could mkwrite into a range in the file that we have
-> mmap'ed.  This would deadlock with the following stack trace
-> 
-> [<0>] lock_extent+0x28d/0x2f0
-> [<0>] btrfs_page_mkwrite+0x273/0x8a0
-> [<0>] do_page_mkwrite+0x50/0xb0
-> [<0>] do_fault+0xc1/0x7b0
-> [<0>] __handle_mm_fault+0x2fa/0x460
-> [<0>] handle_mm_fault+0xa4/0x330
-> [<0>] do_user_addr_fault+0x1f4/0x800
-> [<0>] exc_page_fault+0x7c/0x1e0
-> [<0>] asm_exc_page_fault+0x26/0x30
-> [<0>] rep_movs_alternative+0x33/0x70
-> [<0>] _copy_to_user+0x49/0x70
-> [<0>] fiemap_fill_next_extent+0xc8/0x120
-> [<0>] emit_fiemap_extent+0x4d/0xa0
-> [<0>] extent_fiemap+0x7f8/0xad0
-> [<0>] btrfs_fiemap+0x49/0x80
-> [<0>] __x64_sys_ioctl+0x3e1/0xb50
-> [<0>] do_syscall_64+0x94/0x1a0
-> [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> 
-> I wrote an fstest to reproduce this deadlock without my replacement lock
-> and verified that the deadlock exists with our existing locking.
-> 
-> To fix this simply don't take the extent lock for the entire duration of
-> the fiemap.  This is safe in general because we keep track of where we
-> are when we're searching the tree, so if an ordered extent updates in
-> the middle of our fiemap call we'll still emit the correct extents
-> because we know what offset we were on before.
-> 
-> The only place we maintain the lock is searching delalloc.  Since the
-> delalloc stuff can change during writeback we want to lock the extent
-> range so we have a consistent view of delalloc at the time we're
-> checking to see if we need to set the delalloc flag.
-> 
-> With this patch applied we no longer deadlock with my testcase.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/extent_io.c | 49 +++++++++++++++++++++++++++++---------------
->  1 file changed, 33 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 8648ea9b5fb5..f8b68249d958 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2683,16 +2683,25 @@ static int fiemap_process_hole(struct btrfs_inode *inode,
->  	 * it beyond i_size.
->  	 */
->  	while (cur_offset < end && cur_offset < i_size) {
-> +		struct extent_state *cached_state = NULL;
->  		u64 delalloc_start;
->  		u64 delalloc_end;
->  		u64 prealloc_start;
-> +		u64 lockstart, lockend;
->  		u64 prealloc_len = 0;
->  		bool delalloc;
->  
-> +		lockstart = round_down(cur_offset,
-> +				       inode->root->fs_info->sectorsize);
-> +		lockend = round_up(end, inode->root->fs_info->sectorsize);
-> +
-> +		lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+On Tue, Feb 6, 2024 at 3:40=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com> w=
+rote:
+> On 2024/2/7 06:42, Tavian Barnes wrote:
+> > On Tue, 6 Feb 2024 16:24:32 +1030, Qu Wenruo wrote:
+> >> Maybe it's missing some fixes not yet in upstream?
+> >> My current guess is related to my commit 09e6cef19c9f ("btrfs: refacto=
+r
+> >> alloc_extent_buffer() to allocate-then-attach method"), but since I ca=
+n
+> >> not reproduce it, it's only a guess...
+> >
+> > That's possible!  I tried to follow the existing code in
+> > alloc_extent_buffer() but didn't see any obvious races.  I will try aga=
+in
+> > with the for-next tree and report back.
+>
+> The most obvious way to proof is, if you can reproduce it really
+> reliably, then just go back to that commit and verify (it can still
+> cause the problem).
+> Then go one commit before for, and verify it doesn't cause the problem
+> anymore.
 
-This could use a comment why the locking is ok only for delalloc. This
-is quite a step from 'the whole range'.
+I just tried the tip of btrfs/for-next (6a1dc34172e0, "btrfs: move
+transaction abort to the error site btrfs_rebuild_free_space_tree()"),
+plus the dump_page() patch, and it still reproduces:
 
->  		delalloc = btrfs_find_delalloc_in_range(inode, cur_offset, end,
->  							delalloc_cached_state,
->  							&delalloc_start,
->  							&delalloc_end);
+    BTRFS critical (device dm-2): inode mode mismatch with dir: inode
+mode=3D0142721 btrfs type=3D6 dir type=3D1
+    page:000000004209c922 refcount:4 mapcount:0
+mapping:000000007cadbbf5 index:0x8379d17c pfn:0x13ca315
+    memcg:ffff8f2cba7d0000
+    aops:btree_aops [btrfs] ino:1
+    flags: 0x12ffff180000820c(referenced|uptodate|workingset|private|node=
+=3D2|zone=3D2|lastcpupid=3D0xffff)
+    page_type: 0xffffffff()
+    raw: 12ffff180000820c 0000000000000000 dead000000000122 ffff8f1d446218a=
+0
+    raw: 000000008379d17c ffff8f2faa26ea50 00000004ffffffff ffff8f2cba7d000=
+0
+    page dumped because: eb page dump
+    BTRFS critical (device dm-2): corrupted leaf, root=3D518
+block=3D9034951802880 owner mismatch, have 15999665770497355816 expect
+[256, 18446744073709551360]
 
+Is it still worth trying that specific commit?  I'm guessing not.
 
-> +		unlock_extent(&inode->io_tree, lockstart, lockend,
-> +			      &cached_state);
->  		if (!delalloc)
->  			break;
->  
-> @@ -2860,15 +2869,14 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
->  		  u64 start, u64 len)
->  {
->  	const u64 ino = btrfs_ino(inode);
-> -	struct extent_state *cached_state = NULL;
->  	struct extent_state *delalloc_cached_state = NULL;
->  	struct btrfs_path *path;
->  	struct fiemap_cache cache = { 0 };
->  	struct btrfs_backref_share_check_ctx *backref_ctx;
->  	u64 last_extent_end;
->  	u64 prev_extent_end;
-> -	u64 lockstart;
-> -	u64 lockend;
-> +	u64 align_start;
-> +	u64 align_end;
+> Although without a way to reproduce locally, it's really hard to say or
+> debug from my end.
 
-This could be range_start and range_end, in the context where it appears
-it's IMHO more clear.
+I can try to make a VM image reproducer if that would help.
 
->  	bool stopped = false;
->  	int ret;
->  
-> @@ -2879,12 +2887,11 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
->  		goto out;
->  	}
->  
-> -	lockstart = round_down(start, inode->root->fs_info->sectorsize);
-> -	lockend = round_up(start + len, inode->root->fs_info->sectorsize);
-> -	prev_extent_end = lockstart;
-> +	align_start = round_down(start, inode->root->fs_info->sectorsize);
-> +	align_end = round_up(start + len, inode->root->fs_info->sectorsize);
-> +	prev_extent_end = align_start;
->  
->  	btrfs_inode_lock(inode, BTRFS_ILOCK_SHARED);
-> -	lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
->  
->  	ret = fiemap_find_last_extent_offset(inode, path, &last_extent_end);
->  	if (ret < 0)
-> @@ -2892,7 +2899,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
->  	btrfs_release_path(path);
->  
->  	path->reada = READA_FORWARD;
-> -	ret = fiemap_search_slot(inode, path, lockstart);
-> +	ret = fiemap_search_slot(inode, path, align_start);
->  	if (ret < 0) {
->  		goto out_unlock;
->  	} else if (ret > 0) {
-> @@ -2904,7 +2911,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
->  		goto check_eof_delalloc;
->  	}
->  
-> -	while (prev_extent_end < lockend) {
-> +	while (prev_extent_end < align_end) {
->  		struct extent_buffer *leaf = path->nodes[0];
->  		struct btrfs_file_extent_item *ei;
->  		struct btrfs_key key;
-> @@ -2927,14 +2934,14 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
->  		 * The first iteration can leave us at an extent item that ends
->  		 * before our range's start. Move to the next item.
->  		 */
-> -		if (extent_end <= lockstart)
-> +		if (extent_end <= align_start)
->  			goto next_item;
->  
->  		backref_ctx->curr_leaf_bytenr = leaf->start;
->  
->  		/* We have in implicit hole (NO_HOLES feature enabled). */
->  		if (prev_extent_end < key.offset) {
-> -			const u64 range_end = min(key.offset, lockend) - 1;
-> +			const u64 range_end = min(key.offset, align_end) - 1;
->  
->  			ret = fiemap_process_hole(inode, fieinfo, &cache,
->  						  &delalloc_cached_state,
-> @@ -2949,7 +2956,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
->  			}
->  
->  			/* We've reached the end of the fiemap range, stop. */
-> -			if (key.offset >= lockend) {
-> +			if (key.offset >= align_end) {
->  				stopped = true;
->  				break;
->  			}
-> @@ -3043,29 +3050,40 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
->  	btrfs_free_path(path);
->  	path = NULL;
->  
-> -	if (!stopped && prev_extent_end < lockend) {
-> +	if (!stopped && prev_extent_end < align_end) {
->  		ret = fiemap_process_hole(inode, fieinfo, &cache,
->  					  &delalloc_cached_state, backref_ctx,
-> -					  0, 0, 0, prev_extent_end, lockend - 1);
-> +					  0, 0, 0, prev_extent_end, align_end - 1);
->  		if (ret < 0)
->  			goto out_unlock;
-> -		prev_extent_end = lockend;
-> +		prev_extent_end = align_end;
->  	}
->  
->  	if (cache.cached && cache.offset + cache.len >= last_extent_end) {
->  		const u64 i_size = i_size_read(&inode->vfs_inode);
->  
->  		if (prev_extent_end < i_size) {
-> +			struct extent_state *cached_state = NULL;
->  			u64 delalloc_start;
->  			u64 delalloc_end;
-> +			u64 lockstart, lockend;
->  			bool delalloc;
->  
-> +			lockstart = round_down(prev_extent_end,
-> +					       inode->root->fs_info->sectorsize);
-> +			lockend = round_up(i_size,
-> +					   inode->root->fs_info->sectorsize);
-> +
-> +			lock_extent(&inode->io_tree, lockstart, lockend,
-> +				    &cached_state);
+> Thanks,
+> Qu
 
-And same comment about locking only delalloc range.
-
->  			delalloc = btrfs_find_delalloc_in_range(inode,
->  								prev_extent_end,
->  								i_size - 1,
->  								&delalloc_cached_state,
->  								&delalloc_start,
->  								&delalloc_end);
-> +			unlock_extent(&inode->io_tree, lockstart, lockend,
-> +				      &cached_state);
->  			if (!delalloc)
->  				cache.flags |= FIEMAP_EXTENT_LAST;
->  		} else {
-> @@ -3076,7 +3094,6 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
->  	ret = emit_last_fiemap_cache(fieinfo, &cache);
->  
->  out_unlock:
-> -	unlock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
->  	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
->  out:
->  	free_extent_state(delalloc_cached_state);
-> -- 
-> 2.43.0
-> 
+--=20
+Tavian Barnes
 
