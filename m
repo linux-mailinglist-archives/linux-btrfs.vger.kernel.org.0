@@ -1,48 +1,81 @@
-Return-Path: <linux-btrfs+bounces-2141-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2142-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03F0D84ABE2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 03:03:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3893884ACF8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 04:38:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B36BA286E42
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 02:03:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5C8EB21B48
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 03:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D03D56B83;
-	Tue,  6 Feb 2024 02:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3CF6745C3;
+	Tue,  6 Feb 2024 03:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R/rAwrD2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B560956B6D;
-	Tue,  6 Feb 2024 02:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6D42CA4
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Feb 2024 03:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707185012; cv=none; b=NwtvOVg/uSRvXttVIf1iP0L/sa0QWKaf2U7kououobA2udmt84k/C5V5hKnbhbZxmgsXCrDU4dVvSLgNEYeMcxdE0Gal/wVxgEKfX7LtYqV8r5vGuL/09cUOBfayTyhq4i3jWY9Kn3z9y3zHeQzRpRaDHNjG3lkv9JHpgTISr7k=
+	t=1707190692; cv=none; b=Z1LSRz1THYDCFnRlGDxDL1TD0xPiZOKzmvR+dzhzhQRroDZ0ZBN0RwcZZkK/WU0Z6uR6urbX+tU1GyYXSZqsHjr2bYi/zLX9mCQxedr2GX+4dqqIEcJi33pW9k60Uq1iVfzSqoPVikUVKNqW3bie8goHzJS4w1Ow3j41+2KwUKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707185012; c=relaxed/simple;
-	bh=HCHH0zlG8Okh9pH+9a449X/wcy1iGT612BVT0ULldVI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iFiKLaVIIbhCrnm4NhCIPhuw6GrPhjFA5nB7xHUjfLxsfegzdjrPWEDtqg3k0gr2MG3UVsBrL22PS9knF4/6HYRlcZBcFGxQNRC8EOHtVer/66i+k7O5vtaAFCbBMRt+XKiW3uzgpNargmGu7m6rWi40pv7ohMZGoOz+xcyAm88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from lijuan-ubuntu-04.home.arpa (unknown [124.16.138.129])
-	by APP-05 (Coremail) with SMTP id zQCowADX36OzkcFl3IMSAQ--.8824S2;
-	Tue, 06 Feb 2024 09:56:03 +0800 (CST)
-From: lilijuan@iscas.ac.cn
-To: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	pengpeng@iscas.ac.cn,
-	Lijuan Li <lilijuan@iscas.ac.cn>
-Subject: [PATCH] btrfs: mark __btrfs_add_free_space static
-Date: Tue,  6 Feb 2024 09:56:00 +0800
-Message-Id: <20240206015600.115756-1-lilijuan@iscas.ac.cn>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1707190692; c=relaxed/simple;
+	bh=3VwCrw/Bte9GaRu9iii+KLTMiBP7LS7ahzhN2YL+b1s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=KL+jCFxOtk8NFgHkliIWbkIkBBcTBYISErFf9Y860FWfW2ouhT9WStt1eEgaRrRX2egOy3RCiIJrlvliBHC7OeZ6GrZ8EbmTkqLx5boi8v5gJkluPFOVXKWS6Qi6qsoF02VAqvnbVNRgoZIxAzZ72gohT9/fndcjvtou9MsAuug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tavianator.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R/rAwrD2; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tavianator.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42ab4f89bdbso30148371cf.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Feb 2024 19:38:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707190689; x=1707795489; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c/pvCCGPvF69Icbx0MLw1xzXyOzHLF4q1+YpudWq1Nw=;
+        b=R/rAwrD2d+8N2W+wUR9YENKx/itXTJwi5FnmjEPCE+Y9lk7Wll4Pzsqa1PFKD8gc2g
+         yPMHQPRf24TgNKooad5BtudIU9MIRuRLbh9mYVtaoi65exPULeqo+ECFOZ8NfxvYIBTj
+         B8nKGKhneis09xYV9dr+zktjkHIKp5xTOj22xD2Bbw5fEka8ETxg1nD/v3EJMJIVXUn3
+         79XtVhrgHMqq/8woidP2oly3XBGZdVx5aFOaDenwKqyaCBhp8nPnFQc+pFkyXA3rBSwy
+         ZtwDS2rWci0X7cgaYI5MYezyk/sq89gxTebBuEdGwUC3Bm1/i7sAJ7sovz5szlTS9sjk
+         qvkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707190689; x=1707795489;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=c/pvCCGPvF69Icbx0MLw1xzXyOzHLF4q1+YpudWq1Nw=;
+        b=GUwNsvKwT3YZElb4TjNA8irf5XZbKsq/QWQE2vndnlrO+s8AyP/iCAPYgUSMZfqZF2
+         tH4X2Y4FPOoYnN/+5ItRpQA3Z3QH3jbzWR8qZ2tDtu9zP+ZzUBHlm6/q23xCcbj1iYYa
+         ZxwZ9JvIpW3e5/EWveDqwsj/PHohWs4S7ac4ajPiUsxpxUVJcdxYqcXvc9Tcl5kcZP1X
+         h3arWbdZ7lLEfBdQF1dLcQEmZFPs74SwllyixsZQlmczYD02vGfj3+2wiSuZm27ZzYVT
+         zcgpJjNqp2CCWB0a94xKywpB9D0js1A2j0nukTUBSaud4I+H7X4fnJVnRFdtfVyu+qGJ
+         JU6Q==
+X-Gm-Message-State: AOJu0Yz/ukz18pHeTwKJRWl6GshmAHQQaixNmFeRsHMTGej0ku9J3enP
+	TNtP2V+KAIWYKNG5AZGeq5d8Zs1/tG9ImIMgA+Ll/Kf8HE/nsTxOQgb+O+NM
+X-Google-Smtp-Source: AGHT+IGeEOrNtF7PO7uvfSmiRwBmhOvae6Qodg+wB+RJ+eTFgm9gF4cxqGucxSnIvsT7tWVjYKnnlg==
+X-Received: by 2002:a0c:dc14:0:b0:68c:9023:6319 with SMTP id s20-20020a0cdc14000000b0068c90236319mr1277985qvk.22.1707190689212;
+        Mon, 05 Feb 2024 19:38:09 -0800 (PST)
+Received: from tachyon.tail92c87.ts.net ([192.159.180.233])
+        by smtp.gmail.com with ESMTPSA id lb25-20020a056214319900b0068ca3929a5asm625895qvb.85.2024.02.05.19.38.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 19:38:08 -0800 (PST)
+Sender: Tavian Barnes <tavianator@gmail.com>
+From: tavianator@tavianator.com
+To: wqu@suse.com
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: tree-checker: dump the page status if hit something wrong
+Date: Mon,  5 Feb 2024 22:38:07 -0500
+Message-ID: <20240206033807.15498-1-tavianator@tavianator.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <f51a6d5d7432455a6a858d51b49ecac183e0bbc9.1706312914.git.wqu@suse.com>
+References: <f51a6d5d7432455a6a858d51b49ecac183e0bbc9.1706312914.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -50,63 +83,93 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowADX36OzkcFl3IMSAQ--.8824S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFyDAFW5JF4fZFW5uFy5twb_yoW8Xw1kpF
-	n3AFsxtw1UArsYvFWvgw4qv34Sga4vqa1Uu3s8A3yfXrZxGr1DXFyqv3W8A3W3trWkJr4x
-	Xas09ryUArsIyr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAKzVCY07xG64k0F24l
-	c2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r12
-	6r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0J
-	UfnYwUUUUU=
-X-CM-SenderInfo: poloxyxxdqqxpvfd2hldfou0/
 
-From: Lijuan Li <lilijuan@iscas.ac.cn>
+On Sat, 27 Jan 2024 10:18:36 +1030, Qu Wenruo wrote:
+> [BUG]
+> There is a bug report about very suspicious tree-checker got triggered:
+>
+>   BTRFS critical (device dm-0): corrupted node, root=256
+> block=8550954455682405139 owner mismatch, have 11858205567642294356
+> expect [256, 18446744073709551360]
+>   BTRFS critical (device dm-0): corrupted node, root=256
+> block=8550954455682405139 owner mismatch, have 11858205567642294356
+> expect [256, 18446744073709551360]
+>   BTRFS critical (device dm-0): corrupted node, root=256
+> block=8550954455682405139 owner mismatch, have 11858205567642294356
+> expect [256, 18446744073709551360]
+>   SELinux: inode_doinit_use_xattr:  getxattr returned 117 for dev=dm-0
+> ino=5737268
 
-__btrfs_add_free_space is only used in free-space-cache.c,
-so mark it static.
+I can reproduce this error.  I applied a modified version of your patch,
+against v6.7.2 because that's what I triggered it on.
 
-Signed-off-by: Lijuan Li <lilijuan@iscas.ac.cn>
----
- fs/btrfs/free-space-cache.c | 2 +-
- fs/btrfs/free-space-cache.h | 2 --
- 2 files changed, 1 insertion(+), 3 deletions(-)
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 50fdc69fdddf..3f1fc49cd4dc 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -2038,6 +2044,7 @@ int btrfs_check_eb_owner(const struct extent_buffer *eb, u64 root_owner)
+        if (!is_subvol) {
+                /* For non-subvolume trees, the eb owner should match root owner */
+                if (unlikely(root_owner != eb_owner)) {
++                       dump_page(eb->pages[0], "eb page dump");
+                        btrfs_crit(eb->fs_info,
+ "corrupted %s, root=%llu block=%llu owner mismatch, have %llu expect %llu",
+                                btrfs_header_level(eb) == 0 ? "leaf" : "node",
+@@ -2053,6 +2060,7 @@ int btrfs_check_eb_owner(const struct extent_buffer *eb, u64 root_owner)
+         * to subvolume trees.
+         */
+        if (unlikely(is_subvol != is_fstree(eb_owner))) {
++               dump_page(eb->pages[0], "eb page dump");
+                btrfs_crit(eb->fs_info,
+ "corrupted %s, root=%llu block=%llu owner mismatch, have %llu expect [%llu, %llu]",
+                        btrfs_header_level(eb) == 0 ? "leaf" : "node",
 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index d372c7ce0e6b..812994f456e4 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -2621,7 +2621,7 @@ static void steal_from_bitmap(struct btrfs_free_space_ctl *ctl,
- 	}
- }
- 
--int __btrfs_add_free_space(struct btrfs_block_group *block_group,
-+static int __btrfs_add_free_space(struct btrfs_block_group *block_group,
- 			   u64 offset, u64 bytes,
- 			   enum btrfs_trim_state trim_state)
- {
-diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
-index 33b4da3271b1..d9b7fbc2008a 100644
---- a/fs/btrfs/free-space-cache.h
-+++ b/fs/btrfs/free-space-cache.h
-@@ -114,8 +114,6 @@ int btrfs_write_out_cache(struct btrfs_trans_handle *trans,
- 
- void btrfs_init_free_space_ctl(struct btrfs_block_group *block_group,
- 			       struct btrfs_free_space_ctl *ctl);
--int __btrfs_add_free_space(struct btrfs_block_group *block_group, u64 bytenr,
--			   u64 size, enum btrfs_trim_state trim_state);
- int btrfs_add_free_space(struct btrfs_block_group *block_group,
- 			 u64 bytenr, u64 size);
- int btrfs_add_free_space_unused(struct btrfs_block_group *block_group,
--- 
-2.40.1
+Here's the corresponding dmesg output:
 
+    page:00000000789c68b4 refcount:4 mapcount:0 mapping:00000000ce99bfc3 index:0x7df93c74 pfn:0x1269558
+    memcg:ffff9f20d10df000
+    aops:btree_aops [btrfs] ino:1
+    flags: 0x12ffff180000820c(referenced|uptodate|workingset|private|node=2|zone=2|lastcpupid=0xffff)
+    page_type: 0xffffffff()
+    raw: 12ffff180000820c 0000000000000000 dead000000000122 ffff9f118586feb8
+    raw: 000000007df93c74 ffff9f2232376e80 00000004ffffffff ffff9f20d10df000
+    page dumped because: eb page dump
+    BTRFS critical (device dm-1): corrupted leaf, root=709 block=8656838410240 owner mismatch, have 2694891690930195334 expect [256, 18446744073709551360]
+    page:000000006b7dfcdc refcount:4 mapcount:0 mapping:00000000ce99bfc3 index:0x8dae804c pfn:0x408347
+    memcg:ffff9f20d10df000
+    aops:btree_aops [btrfs] ino:1
+    flags: 0xaffff180000820c(referenced|uptodate|workingset|private|node=1|zone=2|lastcpupid=0xffff)
+    page_type: 0xffffffff()
+    raw: 0affff180000820c 0000000000000000 dead000000000122 ffff9f118586feb8
+    raw: 000000008dae804c ffff9f1497257d00 00000004ffffffff ffff9f20d10df000
+    page dumped because: eb page dump
+    BTRFS critical (device dm-1): corrupted leaf, root=518 block=9736288518144 owner mismatch, have 1691386650333431481 expect [256, 18446744073709551360]
+    page:00000000fb0df6cd refcount:4 mapcount:0 mapping:00000000ce99bfc3 index:0x7609cbdc pfn:0x129e719
+    memcg:ffff9f20d10df000
+    aops:btree_aops [btrfs] ino:1
+    flags: 0x12ffff180000820c(referenced|uptodate|workingset|private|node=2|zone=2|lastcpupid=0xffff)
+    page_type: 0xffffffff()
+    raw: 12ffff180000820c 0000000000000000 dead000000000122 ffff9f118586feb8
+    raw: 000000007609cbdc ffff9f231de92658 00000004ffffffff ffff9f20d10df000
+    page dumped because: eb page dump
+    BTRFS critical (device dm-1): corrupted leaf, root=518 block=8111527936000 owner mismatch, have 10652220539197264134 expect [256, 18446744073709551360]
+
+Hope this helps!  Let me know if you have other debug patches to try.
+
+Here's my reproducer if you want to try it yourself.  It uses bfs, a
+find(1) clone I wrote with multi-threading and io_uring support.  I'm
+in the process of adding multi-threaded stat(), which is what I assume
+triggers the bug.
+
+    $ git clone "https://github.com/tavianator/bfs"
+    $ cd bfs
+    $ git checkout euclean
+    $ make release
+
+Then repeat these steps until it triggers:
+
+    # sysctl vm.drop_caches=3
+    $ ./bin/bfs /mnt -links 100
+    bfs: error: /mnt/slash/@/var/lib/docker/btrfs/subvolumes/f07d37d1c148e9fcdbae166a3a4de36eec49009ce651174d0921fab18d55cee6/dev/ram0: Structure needs cleaning.
+    ...
 
