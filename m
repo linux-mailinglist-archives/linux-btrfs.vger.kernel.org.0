@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-2173-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2174-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DC8684BED3
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 21:41:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB57084BEEF
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 21:50:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77A49B25B66
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 20:41:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B6621C2423A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Feb 2024 20:50:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E671B80F;
-	Tue,  6 Feb 2024 20:41:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AE81B95D;
+	Tue,  6 Feb 2024 20:50:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="NS08uPLf"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="or5RYBwt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38B51B807
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Feb 2024 20:41:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 619FC1B81D
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Feb 2024 20:50:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707252079; cv=none; b=aM1lqyhCbR7frQqY8l2aYGNOuEU8agjaOBODTf73QTiBQdPmcZydgoiuMx9S5mj/gVwADgAdmQrTUw2EjfKUfvsFlLYZ5Cmd4v+YfOr4iaT33dob8FLXf6eckXm7o7htZnJvANm8GEfxddUhr5nq8Ak7weFCBvLc4k5C8G1BlL8=
+	t=1707252649; cv=none; b=inz6wc9vGdcC1gvSqSmTXJHfUTLe91okgCHTeA8gNS9ucFESnXXmsZXOvzAvRK297XKrVdeViq8xcTBJQFAPwJdQ4M3w6eF8oy604p667aUKcZE2TyDuq0pimRxInOx3BEcBRVAdLTYJWvm7PtueB65PlLjRhyBxfq6gbrvc3Qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707252079; c=relaxed/simple;
-	bh=rVCFHbdlgxGUw+vsDRQsd5sZfGNR0IR8ttGHlX9hewk=;
+	s=arc-20240116; t=1707252649; c=relaxed/simple;
+	bh=hgqnpuZT7rWmC8wy0NirdGAcdsyBDfNA8urWxNVs4TI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=chD+TwYL8GvWoOnEXSfEnsUhgb1PSsrENoRzLcvCh89gRenBsIbeKpOOy6Ttiv2sFoKnV0UrkLykLHQwADh/sYYE13PX2/pOOxjXZQMsk8ptVPpzw5fyh+dlEKAL2V2Om4+heSUOravkc/rStoa8sGJz3EG/WiqMs3M6yXn0rOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=NS08uPLf; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=lElPf+go1xIJY1rXuQhEFSCesegZABodsVjG7YlVMzz+vS96ojsolUm91DWiTYm4T2d7eA3OvZ8s+MKhvXv5dFoZ01nVhprea9NJ+mN5qo+5RbhDFfiAQjkgExdRp/u/O3glHY17pi1ZoMcxjzfLoNksjlspWUWO9cLTK0dckK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=or5RYBwt; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1707252070; x=1707856870; i=quwenruo.btrfs@gmx.com;
-	bh=rVCFHbdlgxGUw+vsDRQsd5sZfGNR0IR8ttGHlX9hewk=;
+	s=s31663417; t=1707252639; x=1707857439; i=quwenruo.btrfs@gmx.com;
+	bh=hgqnpuZT7rWmC8wy0NirdGAcdsyBDfNA8urWxNVs4TI=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=NS08uPLfks65WLHAG2+AFV2qLdsrsTWooq0QznArnCG2w9PzmCNn21AcxJqc8QXX
-	 O2WYs576R37kn6HT67KDhWXXGN/rgsAbATU8XFrn7Yom8A5prJwgm895KXG2dsRQd
-	 9/9zWKXHkEhIVtI/Tvak9/jUPPmwOM/CjWTnsM2ctnfKeiBjq3CTYFLsjWkEd2XAK
-	 0wHp3vkTuJcIFTUyCZh3pKGWRvLH1NPhoxdMyUNUPR+ICWdGxvtbvOU3BJzmxw++l
-	 LOB/b0wVNQJ1L5rKnwpeGHhbV/hEX36yFgIJWG9QQ0Qw7IV+ynn7rfnZ2fVFij2G/
-	 nBkRn+jZy23Aa9/N3Q==
+	b=or5RYBwtZvi2tUx+zYuNval4zgRmKyi4xHJyhiBtAto5GvzDlw2feSmxFJJkleEu
+	 AYPs52cVlfX0fufIOqvnubhSe3vcjm7Z9P5fqiSZ4nvTt7d8rEmRM5Q+FAo/IZIRj
+	 My0Nrohq2oH8BrylJVYEojJiwZOGwSCkoeV1yxTHDbhSgycZDyxo+bheNJ3nJT2JE
+	 hocvttHm5ROat+K6K7+aNuqRCmSJEvhe80a0geKulC99NG6b95wVfkppqk2gQXm2W
+	 KsPYsFYstAxOFoeHpBlTtLatB10ZyqNxTHaZUALSuPly0Av8OMbK3vrsZorLEP+HU
+	 8mypQT1tsaZPm+MjdA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.117] ([61.245.157.120]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4s0t-1rYHjO2iQR-001ym0; Tue, 06
- Feb 2024 21:41:10 +0100
-Message-ID: <54a1bb50-7fd2-440f-8563-a82c54bb2179@gmx.com>
-Date: Wed, 7 Feb 2024 07:11:08 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7K3Y-1rf8Ql01bY-007kBL; Tue, 06
+ Feb 2024 21:50:39 +0100
+Message-ID: <6f730234-f252-47bb-b52f-3eac960c863e@gmx.com>
+Date: Wed, 7 Feb 2024 07:20:36 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,15 +55,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] btrfs: defrag: add under utilized extent to defrag
- target list
+Subject: Re: [PATCH 2/2] btrfs: defrag: allow fine-tuning on lone extent
+ defrag behavior
 Content-Language: en-US
 To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org,
- Christoph Anton Mitterer <calestyo@scientia.org>
+Cc: linux-btrfs@vger.kernel.org
 References: <cover.1707172743.git.wqu@suse.com>
- <2188d9521696a2c5f9bbb81479c6c94ea827a0aa.1707172743.git.wqu@suse.com>
- <CAL3q7H72pQ=3wPZpN9zow8+G4xnhSP5UKH1ev808Y5GYYB2BQw@mail.gmail.com>
+ <1e862826f30ce2de104b66572ddfbfd6e2d398a5.1707172743.git.wqu@suse.com>
+ <CAL3q7H5OcYGdoriDdOissUntv1+6orr6-JM2s6HjXDCqNvk6qw@mail.gmail.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -89,245 +88,202 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H72pQ=3wPZpN9zow8+G4xnhSP5UKH1ev808Y5GYYB2BQw@mail.gmail.com>
+In-Reply-To: <CAL3q7H5OcYGdoriDdOissUntv1+6orr6-JM2s6HjXDCqNvk6qw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ckC9+BCY74H9RLTXuva4fa3NaChXyvrEXU/A1k29BYJdq3gVhWi
- oFt4xVij838a709AGli49vX0AT5TcU0vcZku7XsNoEsklLImJtL24K0RbSUbHN9Rg94I/+e
- e0pyrb+YEFP7xvZz3Rlfsy1/pjdm0h6dEGyGxFkKTNwwbojphsz9OLm/8DFkwH4mPKNvt2O
- Ar/RLczanrFySEGQFpnHQ==
+X-Provags-ID: V03:K1:c35/MMClZDV2c/c62HtfwY/0M+mKP9PhyrsXy7QvKIKDMm6NYK0
+ xmo/q8JAVlssOfJRDNLCdByImns/1kjSeD7I7Nreh1Y2aBxbuN4ITwwZYDTfKx1Sv37btKq
+ FLGtpf6pcbspexVgFrfms9SDEOeYR/IQlhQR/rPKlUsuNy9TQKVfzCQn4uFct4glusAcGOE
+ SNdle95r+KiAqj3//oeKw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:yspnAKXY1jM=;fW4SP+QDwB+qPfkMzV08Y2lmy1E
- 3CMdZftOh9n6EQXubuWzRyq3EMWZDVUQbswYnAWlLjNCCI9pUv2/fFXkeaA2ku7mbZv3M4wHr
- rFmvyZfJtiQnUO5ox0opITbR4xOq4+gLAefzlPS25gzbE4bNI2dS0gxVLAd3XSV9f6OMWqB3W
- 4conDYSJjBbQb691kRjDG0c/P9qa0dkiAgh0hVyvSOcDevzeXyJpi9XLo6SYmNl9PbJexetfi
- rTXJAXm3+wR49b5kj5e2L/EgAxvbGC8zBPXSEOBqJOidh7vQR0uvI1FUpzbWdbFsaOsqnJ1k0
- +nmtTYlZ2sgrf+uBnUJHlzReyOT9zKCCs4WVu0fAKVJ2Z9xHxHdtHJrMYtjjnRMaaMSipEzyw
- nrarkM3azooVeJKMhjc2SHSg/SzG0zVnAlmq7eyTebKKbkQCub7sCwUfr7wVZzENbkJYFfAiN
- yUJmTj4c9GqAiJTjnomBSj6pw8ZHxXE235iliFxVeTRzRJdT0L6oT+TETBcdATN1bhv7OF4Ck
- 3qH6TeMWapTyu3vQ8tkLqUgHrVCDTfQ2plYa8LN1YJ0SUdXm1RfqgjxAyn67bCcjMKeJcKWnU
- Q88Har2ZfFhvaIWyPXra3Z9rniVIHVHv5s1ZjXgZrk5L99RJIslGZ0ie75WtJtkw91hJ9U/eE
- TmNWJAwazGrsQxNpkW372+R0En1fPkVJxTBqznM1siIZfOWflAdQqajurdQlH+aaNK1+1/gwq
- tN2MXU+ufEHH2kZPFcMUCm4kjcwHSO42OmlRxntDk95C988i8dm9IbBeps1GRi59xX5agp0gi
- MygQhzjcnm408GPy67+6rLlrQlRIz63aX4Ycj9G9qjFMk=
+UI-OutboundReport: notjunk:1;M01:P0:i22ZrJOlA3o=;Y3iDUJ/DGz6K5/+nfk8d5135CGq
+ +uZkHYeoakyDTQ67HyFkR2HRCjch4O9tPd5mSCGyU2b8JugAlx0whNUN9hSLPILUv3cGcTzDs
+ 4Igw7RdZtUqlu67A3i/FKQNlHVzmBJclvFH9RbJRDJxXRCaYWaDCJwL/b41yvvr58rxsTvdNy
+ OUk+pYs1CEdd4sujPDqRG9YJ0pPYtbjC4GkK9xU31viLGfApurrJf4BSC5+UyGNQYl+cosq7h
+ xQtFxEzmmEE91LTcMq8qIr5wQna1XQR/lIVERBBkzyRk2fJ5TzAXvyLv2ZauYRM2X77rHnRgF
+ f9bJtqshz4OQgZTAU5ELuQ062FMXmVK7D7ePyVTL6RBGmleF8pnTAlNUZpqr9MasuqvJfmHI8
+ 5HDCHMapbCl7EmHGZlqg/nV0xk0cHqQ5ppARvlgevxDBWsM2N1m1XOfoeVLuwLBeLqat8XKes
+ lU1HvTO9LSs+Scoexr0x4UZijNlEHpfgEuUOY2b80L4g6OWVy+OMJURUKxgpMxemr3RQLBMGD
+ lTSjv37qPimfWzSlR+dFT5hJEC+HCKJ1FLn+lwl7BIsZt9Mqzlf+0wHimNG4TtsTq+Ia0vzUV
+ tpsrQZv6j5+XMZVFgs1KCuwETs4wPRIIo6t1WBDEw837m4g3vR496FRmV3R3g6QtxYd3fq2T7
+ xbJDAomebzSvWdZSrKnGmrIccyap9CU+cnehhZu84reBFHBZ2HkshhOidJUO4PN2BRJf9oiEq
+ /jsRo3e5oHQyqyTTDveP5Hw6wsaMtgFHK4OIjaKVShtF14fldkTrV+k5vYzlVcD6pvUxUaEC6
+ PNZDZnUfXctQW0xpi/6bLTGVhJ42tFNpAXzTrGGuiw2eA=
 
 
 
-On 2024/2/7 02:53, Filipe Manana wrote:
-> On Mon, Feb 5, 2024 at 11:46=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+On 2024/2/7 03:33, Filipe Manana wrote:
+> On Mon, Feb 5, 2024 at 11:48=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
 >>
->> [BUG]
->> The following script can lead to a very under utilized extent and we
->> have no way to use defrag to properly reclaim its wasted space:
+>> Previously we're using a fixed ratio and fixed bytes for lone extents
+>> defragging, which may not fit all situations.
 >>
->>    # mkfs.btrfs -f $dev
->>    # mount $dev $mnt
->>    # xfs_io -f -c "pwrite 0 128M" $mnt/foobar
->>    # sync
->>    # truncate -s 4k $mnt/foobar
->>    # btrfs filesystem defrag $mnt/foobar
->>    # sync
->>
->> After the above operations, the file "foobar" is still utilizing the
->> whole 128M:
->>
->>          item 4 key (257 INODE_ITEM 0) itemoff 15883 itemsize 160
->>                  generation 7 transid 8 size 4096 nbytes 4096
->>                  block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
->>                  sequence 32770 flags 0x0(none)
->>          item 5 key (257 INODE_REF 256) itemoff 15869 itemsize 14
->>                  index 2 namelen 4 name: file
->>          item 6 key (257 EXTENT_DATA 0) itemoff 15816 itemsize 53
->>                  generation 7 type 1 (regular)
->>                  extent data disk byte 298844160 nr 134217728 <<<
->>                  extent data offset 0 nr 4096 ram 134217728
->>                  extent compression 0 (none)
->>
->> This is the common btrfs bookend behavior, that 128M extent would only
->> be freed if the last referencer of the extent is freed.
->>
->> The problem is, normally we would go defrag to free that 128M extent,
->> but defrag would not touch the extent at all.
->>
->> [CAUSE]
->> The file extent has no adjacent extent at all, thus all existing defrag
->> code consider it a perfectly good file extent, even if it's only
->> utilizing a very tiny amount of space.
->>
->> [FIX]
->> For a file extent without any adjacent file extent, we should still
->> consider to defrag such under utilized extent, base on the following
->> conditions:
->>
->> - utilization ratio
->>    If the extent is utilizing less than 1/16 of the on-disk extent size=
-,
->>    then it would be a defrag target.
->>
->> - wasted space
->>    If we defrag the extent and can free at least 16MiB, then it would b=
+>> This patch would enhance the behavior by allowing fine-tuning using som=
 e
->>    a defrag target.
+>> extra members inside btrfs_ioctl_defrag_range_args.
 >>
->> Reported-by: Christoph Anton Mitterer <calestyo@scientia.org>
+>> This would introduce two flags and two new members:
+>>
+>> - BTRFS_DEFRAG_RANGE_LONE_RATIO and BTRFS_DEFRAG_RANGE_LONE_WASTED_BYTE=
+S
+>>    With these flags set, defrag would consider lone extents with their
+>>    utilization ratio and wasted bytes as a defrag condition.
+>>
+>> - lone_ratio
+>>    This is a u32 value, but only [0, 65536] is allowed (still beyond u1=
+6
+>>    range, thus have to go u32).
+>>    0 means disable lone ratio detection.
+>>    [1, 65536] means the ratio. If a lone extent is utilizing less than
+>>    (lone_ratio / 65536) * on-disk size of an extent, it would be
+>>    considered as a defrag target.
+>>
+>> - lone_wasted_bytes
+>>    This is a u32 value.
+>>    If we free the lone extent, and can free up to @lone_wasted_bytes
+>>    (excluding the extent itself), then it would be considered as a defr=
+ag
+>>    target.
+>>
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
->
-> As I said in my previous review, please include the lore link to the
-> report, it's always useful.
->
 >> ---
->>   fs/btrfs/defrag.c | 42 ++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 42 insertions(+)
+>>   fs/btrfs/defrag.c          | 40 ++++++++++++++++++++++++-------------=
+-
+>>   fs/btrfs/ioctl.c           |  9 +++++++++
+>>   include/uapi/linux/btrfs.h | 28 +++++++++++++++++++++-----
+>>   3 files changed, 57 insertions(+), 20 deletions(-)
 >>
 >> diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
->> index 8fc8118c3225..85c6e45d0cd4 100644
+>> index 85c6e45d0cd4..3566845ee3e6 100644
 >> --- a/fs/btrfs/defrag.c
 >> +++ b/fs/btrfs/defrag.c
->> @@ -950,6 +950,38 @@ struct defrag_target_range {
->>          u64 len;
->>   };
->>
->> +/*
->> + * Special entry for extents that do not have any adjacent extents.
->> + *
->> + * This is for cases like the only and truncated extent of a file.
->> + * Normally they won't be defraged at all (as they won't be merged wit=
-h
->> + * any adjacent ones), but we may still want to defrag them, to free u=
-p
->> + * some space if possible.
->> + */
->> +static bool should_defrag_under_utilized(struct extent_map *em)
->
-> Can be made const.
->
->> +{
->> +       /*
->> +        * Ratio based check.
->> +        *
->> +        * If the current extent is only utilizing 1/16 of its on-disk =
+>> @@ -958,26 +958,28 @@ struct defrag_target_range {
+>>    * any adjacent ones), but we may still want to defrag them, to free =
+up
+>>    * some space if possible.
+>>    */
+>> -static bool should_defrag_under_utilized(struct extent_map *em)
+>> +static bool should_defrag_under_utilized(struct extent_map *em, u32 lo=
+ne_ratio,
+>> +                                        u32 lone_wasted_bytes)
+>>   {
+>>          /*
+>>           * Ratio based check.
+>>           *
+>> -        * If the current extent is only utilizing 1/16 of its on-disk =
 size,
->> +        * it's definitely under-utilized, and defragging it may free u=
-p
->> +        * the whole extent.
->> +        */
->> +       if (em->len < em->orig_block_len / 16)
->> +               return true;
+>> +        * If the current extent is only utilizing less than
+>> +        * (%lone_ratio/65536) of its on-disk size,
+>
+> I really don't understand what this notation "(%lone_ratio/65536)" means=
+...
+
+That means the ratio is between [0, 65536].
+
+0 means disable ratio check, 1 means 1/65536 of the on-disk size and
+65536 mean 65536/65536 of the on-disk size (aka, all regular extents
+would meet the ratio)
+
+As normally we don't do any float inside kernel, the ratio must be some
+unsigned int/long based.
+
+Any better ideas on the description?
+
+>
+>>           * it's definitely under-utilized, and defragging it may free =
+up
+>>           * the whole extent.
+>>           */
+>> -       if (em->len < em->orig_block_len / 16)
+>> +       if (lone_ratio && em->len < em->orig_block_len * lone_ratio / 6=
+5536)
+>
+> Why don't you use SZ_64K everywhere instead of 65536?
+
+Maybe for the ratio, I should use some macro to define the division base.
+
+>
+>>                  return true;
+>>
+>>          /*
+>>           * Wasted space based check.
+>>           *
+>> -        * If we can free up at least 16MiB, then it may be a good idea
+>> -        * to defrag.
+>> +        * If we can free up at least @lone_wasted_bytes, then it may b=
+e a
+>> +        * good idea to defrag.
+>>           */
+>>          if (em->len < em->orig_block_len &&
+>> -           em->orig_block_len - em->len > SZ_16M)
+>> +           em->orig_block_len - em->len > lone_wasted_bytes)
+>
+> According to the comment it should be >=3D. So either fix the comment,
+> or the comparison.
+
+OK, would change that.
+
+[...]
 >> +
 >> +       /*
->> +        * Wasted space based check.
->> +        *
->> +        * If we can free up at least 16MiB, then it may be a good idea
->> +        * to defrag.
->> +        */
->> +       if (em->len < em->orig_block_len &&
->> +           em->orig_block_len - em->len > SZ_16M)
+>> +        * If we defrag a lone extent (has no adjacent file extent) can=
+ free
 >
-> The first check, len < orig_block_len, is redundant, isn't it?
-> em->len can only be less than or equals to em->orig_block_len.
-> The second condition is enough to have.
+> Using this term "lone" is confusing for me, and this description also
+> suggests it's about a file with only one extent.
+> I would call it wasted_ratio, and the other one wasted_bytes, without
+> the "lone" in the name.
 
-Not exactly, don't forget compressed file extents.
-
+The "lone" would describe a file extent without non-hole neighbor file
+extent, thus I though "lone" would be good enough, but it's not.
 >
->> +               return true;
->> +       return false;
->> +}
->> +
->>   /*
->>    * Collect all valid target extents.
->>    *
->> @@ -1070,6 +1102,16 @@ static int defrag_collect_targets(struct btrfs_i=
-node *inode,
->>                  if (!next_mergeable) {
->>                          struct defrag_target_range *last;
->>
->> +                       /*
->> +                        * This is a single extent without any chance t=
-o merge
->> +                        * with any adjacent extent.
->> +                        *
->> +                        * But if we may free up some space, it is stil=
-l worth
->> +                        * defragging.
->> +                        */
->> +                       if (should_defrag_under_utilized(em))
->> +                               goto add;
->> +
+> Because a case like this:
 >
-> So this logic is making some cases worse actually, making us use more
-> disk space.
-> For example:
->
-> DEV=3D/dev/sdi
-> MNT=3D/mnt/sdi
->
-> mkfs.btrfs -f $DEV
-> mount $DEV $MNT
->
-> xfs_io -f -c "pwrite 0 128M" $MNT/foobar
+> xfs_io -f -c "pwrite 0 4K" $MNT/foobar
 > sync
-> xfs_io -c "truncate 40M" $MNT/foobar
+> xfs_io -c "pwrite 8K 128M" $MNT/foobar
+> sync
+> xfs_io -c "truncate 16K" $MNT/foobar
 > btrfs filesystem defrag $MNT/foobar
 >
-> After this patch, we get:
->
-> item 6 key (257 EXTENT_DATA 0) itemoff 15810 itemsize 53
-> generation 7 type 1 (regular)
-> extent data disk byte 1104150528 nr 134217728
-> extent data offset 0 nr 8650752 ram 134217728
-> extent compression 0 (none)
-> item 7 key (257 EXTENT_DATA 8650752) itemoff 15757 itemsize 53
-> generation 8 type 1 (regular)
-> extent data disk byte 1238368256 nr 33292288
-> extent data offset 0 nr 33292288 ram 33292288
-> extent compression 0 (none)
+> There's an adjacent extent, it's simply not mergeable, but we want to
+> rewrite the second extent to avoid pinning 128M - 8K of data space.
+> A similar example with a next extent that is not mergeable is also
+> doable, or examples with previous and next extents that aren't
+> mergeable.
 
-This behavior is unexpected, as we should redirty the whole 40M, but the
-first 8.25M didn't got re-dirtied is a big problem to me.
-Will look into the situation.
+Yeah, such extent would always have hole neighbors, just not mergeable.
+Thus "lone" is not good enough.
 
 >
-> So we're now using 128M + 32M of disk space where before defrag we used =
-128M.
-> Before the defrag we had:
->
-> item 6 key (257 EXTENT_DATA 0) itemoff 15810 itemsize 53
-> generation 7 type 1 (regular)
-> extent data disk byte 1104150528 nr 134217728
-> extent data offset 0 nr 41943040 ram 134217728
-> extent compression 0 (none)
->
-> So something's not good in this logic.
->
-> Also, there's something else worth considering here, which is extent sha=
-redness.
+> And I still don't get the logic of using 65536... Why not have the
+> ratio as an integer between 0 and 99? That's a lot more intuitive
+> IMO...
 
-This is a known problem for defrag, thus for snapshot/reflink it's
-really on the end user to determine whether they really need defrag.
+The choose of 65536 is to make the division faster, as regular division
+is always slow no matter whatever arch we're one.
+"/ 65536" would be optimized by compiler to ">> 4".
+
+But I guess I'm over optimizing here?
 
 Thanks,
 Qu
-> If an extent is shared we don't want to always dirty the respective
-> range and rewrite it, as that may result in using more disk space...
->
-> Example:
->
-> xfs_io -f -c "pwrite 0 128M" $MNT/foobar
-> btrfs subvolume snapshot $MNT $MNT/snap
-> xfs_io -c "truncate 16M" $MNT/foobar
-> btrfs filesystem defrag $MNT/foobar
->
-> We end up consuming an additional 16M of data without any benefits.
-> Without this patch, this wouldn't happen.
+
 >
 > Thanks.
 >
->
->>                          /* Empty target list, no way to merge with las=
-t entry */
->>                          if (list_empty(target_list))
->>                                  goto next;
+>> +        * up more space than this value (in bytes), it would be consid=
+ered
+>> +        * as a defrag target.
+>> +        */
+>> +       __u32 lone_wasted_bytes;
+>> +
+>>          /* spare for later */
+>> -       __u32 unused[4];
+>> +       __u32 unused[2];
+>>   };
+>>
+>>
 >> --
 >> 2.43.0
 >>
