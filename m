@@ -1,90 +1,91 @@
-Return-Path: <linux-btrfs+bounces-2184-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2185-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A931684C150
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Feb 2024 01:21:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E06484C19F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Feb 2024 02:02:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B64A1F2499F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Feb 2024 00:21:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E98EEB23B67
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Feb 2024 01:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E42C03211;
-	Wed,  7 Feb 2024 00:21:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AAF7C2D6;
+	Wed,  7 Feb 2024 01:02:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Gh8t9j7g";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WCHi2ja1"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="NMe9broS";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="t8/cJdoC"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39672944E;
-	Wed,  7 Feb 2024 00:21:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46428F55
+	for <linux-btrfs@vger.kernel.org>; Wed,  7 Feb 2024 01:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707265285; cv=none; b=Kwexl2q+rx47grboMOH78TEInkrI9Rr68e/AnzRf9jbozGV8bD9du6IDD1FTaDesI2AHPFM6KW0XKuIinG0IZKPwuJssgIrX6UwFWMfB16iyae0SP5nc5GwVaxWo3tf691ZkwPlZf64sgS4Y2Gtr19WWDnmhEmfbcH1hvP17tRg=
+	t=1707267764; cv=none; b=s2PkKX/1B7RaYy1zqnsHHbBDoIjhTiLoHt+xRcsk8uL4oNWSp0y7BDg7gYodk4jLYtVTSFCyW1UV4mHHDlTS1MKVrroZMtQf4tc2PuatMFeQXxaoFoGv8wsIkr9ZoT7XGtICSWVE0HZEMWEWlUzD9cVQFXqttW+feiA0kK2oPz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707265285; c=relaxed/simple;
-	bh=l9ZR9KPFu+v42cI3WJTTUAbQ6wiRvrdN3zmal3nKdd0=;
+	s=arc-20240116; t=1707267764; c=relaxed/simple;
+	bh=b3JrGJ6EECRy4uAxCozx+f6C9OOdwC3M6To+8zQRlbA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DLaKbR9Duo9A6ZVe6bE3uZ1MGYtOAO4PeR0Ty8S4lVqZOFQZVZXHUbKoIDwXUE/s+u77cQ+ZYlaHksPItNKr+nBNrM2Eg2anbhQxTM8NCD09VzSU2Ra/67xnwLVu7Y0kUsEp5AB1IVRUOY6lBXntxpbDM9p12xshk99vDPaTrwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Gh8t9j7g; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WCHi2ja1; arc=none smtp.client-ip=64.147.123.19
+	 Content-Type:Content-Disposition:In-Reply-To; b=nTyaUICWwh5ExhBJX/BhjxFmj0WPlcSCOIIR8dniEGsZabJPhVJCvGo4XUmdRQBzF2X0P7+W3IdzS4rtuvhWBw4K6QDFD5FFU8B79XEQIvhk7km6eXPw45YRkX0YGZFx7xKHln6aKC92dGFvrd4TLb0zgFw4DM6KclIT5bAbaIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=NMe9broS; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=t8/cJdoC; arc=none smtp.client-ip=64.147.123.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id EAA7E32004AE;
-	Tue,  6 Feb 2024 19:21:21 -0500 (EST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id BFB903200A4F;
+	Tue,  6 Feb 2024 20:02:40 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 06 Feb 2024 19:21:22 -0500
+  by compute2.internal (MEProxy); Tue, 06 Feb 2024 20:02:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1707265281; x=1707351681; bh=BBH59OQg0c
-	SKoW00AgUJt80TkHnqF62UtA8oiIbyfqA=; b=Gh8t9j7g5NBvijkmunDsQHA/0U
-	cMbeSnSgKnaQri9RBKVapF/LR6D3UZcSZcF3T91eWafuCp6a3HEObUd0aemJvzFj
-	nlpZpGWRyoQ3dAtLtJjGOiqBeySuhEADoo5FEo91YKBrL2WxxNuKZYK6uBuwRIyP
-	dbSBlYuNulDy8tYxLsLIg7D1XAzOtc9xvTcSo9FLixDgqMc28gBZRt+7qMe6DpcY
-	5h0paDHPwFRWVw06ejp5vZQZvWfrIorFcyUmv27yVCuR34cLintiFBoMQZ3UAH0l
-	zObaUCoqJGcjWSDCxQ1m+wOen8FIt6sURYQyDhMMoBKk/yIQ6e1ARK/Q1rWQ==
+	:subject:to:to; s=fm1; t=1707267760; x=1707354160; bh=D3UrRn9fjK
+	ZB6ngHp7HG5hUA/XQvreJWSyTbZy32SoE=; b=NMe9broSXpWBBh1Y7I3KA6B8OU
+	Qsxx0ieK6ehWWi6aRyEUDj0ALf8wSakZWKFikYuTeNWIZGXIsLrHU6ggxIw+w16H
+	1s+0k+CcVo4jm4x2xrVQPO9KHB88OV9wOVf8YGTJaKlNLZb8rdgCWxpO6QtS55F4
+	OhTjvNxDthIQVBugMOiTGAQKPkeKp0ID0HfvuTdNRXCGT+Q0QNeENIAWzvWqTNp5
+	NsNR/Gj04gMUeClIi0JiOJzwoiuOFR+tckh5xcPS4VW/LP5jmFrLjuiiov+kNmK5
+	YI8uGaIdpm/D9ajg8LJ9unJdn+pF1DLpf+KmscgGhZf7ZsXK4zOoSNxOw9JQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707265281; x=1707351681; bh=BBH59OQg0cSKoW00AgUJt80TkHnq
-	F62UtA8oiIbyfqA=; b=WCHi2ja1Id39g9kHPcjN7tb3POEOfgyObrxeC7lFzIat
-	UJ8ayjvPtXO2jRo3CvogxFAxXmdABCFLKQTQDW/RmPO2QMOk5lGYJ+FYeoFWiRCt
-	6FCNcOwau3Fvf2ymokL/nq4/SL/tP53L8QlLLxXfGtOY9i+J/iTlNrR+8/ybtvE5
-	qLjT3rwACbpT2OPRDZcUASwO1twfv5xZWIhLwAMfCtQfg6Ol6MErtXCRZ9M669WG
-	mzhLsqRsg6XIzM+OPy/fkAdAR25bCAOfGn8bahmXPRpJetGG0/vvueU3mhIN5uqR
-	Vh5Qw4D6f3PsX4r8IFQAz64+2SOQS1ZGY3mC4hsZpQ==
-X-ME-Sender: <xms:Ac3CZe-0t5g6enKZvi_BodLHX_nh6IfICgGT2anZnN03R4T0CVfHnA>
-    <xme:Ac3CZevfEGkIydgfYEpJYSfxqsGQiSltbKxlg9m0Z8-TqbN9kvFEjDYe2WwA0jQiE
-    1GMEy5y1yl22cUn40w>
-X-ME-Received: <xmr:Ac3CZUDRYBMQbrMrcEz5xTp3kpHTkB1VnZGitx4X0SEDBOK0zShZ2IAjjZA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddugddvudcutefuodetggdotefrodftvf
+	fm3; t=1707267760; x=1707354160; bh=D3UrRn9fjKZB6ngHp7HG5hUA/XQv
+	reJWSyTbZy32SoE=; b=t8/cJdoCkRtxcIPuCa+vgm5o6Sr4iwoaGDAUfOQ+B0g7
+	Vm39+jOcAv/VipmDq9V36Arulb8Xv2b/Jv4Lb1fU9YKyi1jl6WU6gyY4c3JQAVPU
+	ln+Fn/YSma7sxrNWOMhFb/+Eod9xejBmQYiTQyWVwbKRGOr+kHqNVmeorUpaEO2M
+	QpOkwQ1XlGYkUCuTWb5uETmKBH79ocwIW6cTkjhNsZLBocxcATXH8y2gVGqkKn2Q
+	OaX+ZFNt9qvef/gGIGGgAKvYT5EOBrnNwDo0ttdh9kzDBe9yklnuwZPkLxSKMY9a
+	Vm8J+mEB3a3u9Pl/1na8BRhT9lgHXiogw3hph7c5Jg==
+X-ME-Sender: <xms:sNbCZUf18DXOBXkFVZNJ-wbAFEKzG91Ht8fD_lEsxgZYaY4dGERb1g>
+    <xme:sNbCZWNVYGtDOr881bDLUiuZFM5kNrMIw1TSB2h2H6B4SFAsn3u0RnDNv5422k3bU
+    2GFpN_Vw9APCKPaBxQ>
+X-ME-Received: <xmr:sNbCZVilX82gLCagt8WW3DVrQNYq8ZdbiE_-h4wG0t4xIP46WPnB3OtVVAI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtddugddvlecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
-    dthfevgffhtdevgffhlefhgfeuueegtdevudeiheeiheetleeghedvfeegfeegnecuffho
-    mhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:Ac3CZWcEHOgB8tieBW4l2wQT2nMH63H9gZ2Q6mfDmIuFZj81zCbjwg>
-    <xmx:Ac3CZTMuGp2bPsVzCsGXgu4SAAuMVdKjjGECxkQ0pigd-VYR34lkvw>
-    <xmx:Ac3CZQkakrvjIilh3txs1OCWxCBDpekCFVq4Qng_N_bLdsvochWyBw>
-    <xmx:Ac3CZZ2VkgkxHQo2M-cr3MQSg1g75IhN4Bkf_oTLc5kuymTrwn3Tyg>
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepke
+    dvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihho
+X-ME-Proxy: <xmx:sNbCZZ_iSWIJjVwR-Dgeix8ff5Fd3FO4lLDBrt5WSyiARP-Te5WbYQ>
+    <xmx:sNbCZQsc6EP9BhJ9v3eGHfxRbxVNeqhLfnWhQ6-xc2R39Kn3gueYkQ>
+    <xmx:sNbCZQFvEFhfYMbka0HqI4pYTpXUH6fMDAqXTEef861fon8EJnizSA>
+    <xmx:sNbCZdUCmSzQfzaHie3tfRIIKbfsVpxNLQzy2sj33uAdgI_QWX5lOw>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 6 Feb 2024 19:21:20 -0500 (EST)
-Date: Tue, 6 Feb 2024 16:21:15 -0800
+ 6 Feb 2024 20:02:39 -0500 (EST)
+Date: Tue, 6 Feb 2024 17:02:35 -0800
 From: Boris Burkov <boris@bur.io>
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: always scan a single device when mounted
-Message-ID: <ZcLM+2mtKFaVUFsF@devvm12410.ftw0.facebook.com>
-References: <20240205174340.30327-1-dsterba@suse.com>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: defrag: avoid unnecessary defrag caused by
+ incorrect extent size
+Message-ID: <ZcLWq9FZJvVAjN88@devvm12410.ftw0.facebook.com>
+References: <abb506b3d54837f79119cdff6c3e08a61e28eba7.1707259963.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -93,164 +94,119 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240205174340.30327-1-dsterba@suse.com>
+In-Reply-To: <abb506b3d54837f79119cdff6c3e08a61e28eba7.1707259963.git.wqu@suse.com>
 
-On Mon, Feb 05, 2024 at 06:43:39PM +0100, David Sterba wrote:
-> There are reports that since version 6.7 update-grub fails to find the
-> device of the root on systems without initrd and on a single device.
+On Wed, Feb 07, 2024 at 10:00:42AM +1030, Qu Wenruo wrote:
+> [BUG]
+> With the following file extent layout, defrag would do unnecessary IO
+> and result more on-disk space usage.
 > 
-> This looks like the device name changed in the output of
-> /proc/self/mountinfo:
-> 
-> 6.5-rc5 working
-> 
->   18 1 0:16 / / rw,noatime - btrfs /dev/sda8 ...
-> 
-> 6.7 not working:
-> 
->   17 1 0:15 / / rw,noatime - btrfs /dev/root ...
-> 
-> and "update-grub" shows this error:
-> 
->   /usr/sbin/grub-probe: error: cannot find a device for / (is /dev mounted?)
-> 
-> This looks like it's related to the device name, but grub-probe
-> recognizes the "/dev/root" path and tries to find the underlying device.
-> However there's a special case for some filesystems, for btrfs in
-> particular.
-> 
-> The generic root device detection heuristic is not done and it all
-> relies on reading the device infos by a btrfs specific ioctl. This ioctl
-> returns the device name as it was saved at the time of device scan (in
-> this case it's /dev/root).
-> 
-> The change in 6.7 for temp_fsid to allow several single device
-> filesystem to exist with the same fsid (and transparently generate a new
-> UUID at mount time) was to skip caching/registering such devices.
-> 
-> This also skipped mounted device. One step of scanning is to check if
-> the device name hasn't changed, and if yes then update the cached value.
-> 
-> This broke the grub-probe as it always read the device /dev/root and
-> couldn't find it in the system. A temporary workaround is to create a
-> symlink but this does not survive reboot.
-> 
-> The right fix is to allow updating the device path of a mounted
-> filesystem even if this is a single device one. This does not affect the
-> temp_fsid feature, the UUID of the mounted filesystem remains the same
-> and the matching is based on device major:minor which is unique per
-> mounted filesystem.
-> 
-> As the main part of device scanning and list update is done in
-> device_list_add() that handles all corner cases and locking, it is
-> extended to take a parameter that tells it to do everything as before,
-> except adding a new device entry.
-> 
-> This covers the path when the device (that exists for all mounted
-> devices) name changes, updating /dev/root to /dev/sdx. Any other single
-> device with filesystem is skipped.
-> 
-> Note that if a system is booted and initial mount is done on the
-> /dev/root device, this will be the cached name of the device. Only after
-> the command "btrfs device rescan" it will change as it triggers the
-> rename.
-> 
-> The fix was verified by users whose systems were affected.
-> 
-> CC: stable@vger.kernel.org # 6.7+
-> Fixes: bc27d6f0aa0e ("btrfs: scan but don't register device on single device filesystem")
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=218353
-> Link: https://lore.kernel.org/lkml/CAKLYgeJ1tUuqLcsquwuFqjDXPSJpEiokrWK2gisPKDZLs8Y2TQ@mail.gmail.com/
-> Signed-off-by: David Sterba <dsterba@suse.com>
+>  # mkfs.btrfs -f $dev
+>  # mount $dev $mnt
+>  # xfs_io -f -c "pwrite 0 40m" $mnt/foobar
+>  # sync
+>  # xfs_io -f -c "pwrite 40m 16k" $mnt/foobar.
+>  # sync
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+Are you planning to make this an xfstest? I think that would be good!
 
+> 
+> Above command would lead to the following file extent layout:
+> 
+>         item 6 key (257 EXTENT_DATA 0) itemoff 15816 itemsize 53
+>                 generation 7 type 1 (regular)
+>                 extent data disk byte 298844160 nr 41943040
+>                 extent data offset 0 nr 41943040 ram 41943040
+>                 extent compression 0 (none)
+>         item 7 key (257 EXTENT_DATA 41943040) itemoff 15763 itemsize 53
+>                 generation 8 type 1 (regular)
+>                 extent data disk byte 13631488 nr 16384
+>                 extent data offset 0 nr 16384 ram 16384
+>                 extent compression 0 (none)
+> 
+> Which is mostly fine. We can allow the final 16K to be merged with the
+> previous 40M, but it's upon the end users' preference.
+> 
+> But if we defrag the file using the default parameters, it would result
+> worse file layout:
+> 
+>  # btrfs filesystem defrag $mnt/foobar
+>  # sync
+> 
+>         item 6 key (257 EXTENT_DATA 0) itemoff 15816 itemsize 53
+>                 generation 7 type 1 (regular)
+>                 extent data disk byte 298844160 nr 41943040
+>                 extent data offset 0 nr 8650752 ram 41943040
+>                 extent compression 0 (none)
+>         item 7 key (257 EXTENT_DATA 8650752) itemoff 15763 itemsize 53
+>                 generation 9 type 1 (regular)
+>                 extent data disk byte 340787200 nr 33292288
+>                 extent data offset 0 nr 33292288 ram 33292288
+>                 extent compression 0 (none)
+>         item 8 key (257 EXTENT_DATA 41943040) itemoff 15710 itemsize 53
+>                 generation 8 type 1 (regular)
+>                 extent data disk byte 13631488 nr 16384
+>                 extent data offset 0 nr 16384 ram 16384
+>                 extent compression 0 (none)
+> 
+> Note the original 40M extent is still there, but a new 32M extent is
+> created for no benefit at all.
+> 
+> [CAUSE]
+> There is an existing check to make sure we won't defrag a large enough
+> extent (the threshold is by default 32M).
+> 
+> But the check is using the length to the end of the extent:
+> 
+> 	range_len = em->len - (cur - em->start);
+> 
+> 	/* Skip too large extent */
+> 	if (range_len >= extent_thresh)
+> 		goto next;
+> 
+> This means, for the first 8MiB of the extent, the range_len is always
+> smaller than the default threshold, and would not be defragged.
+> But after the first 8MiB, the remaining part would fit the requirement,
+> and be defragged.
+> 
+> Such different behavior inside the same extent caused the above problem,
+> and we should avoid different defrag decision inside the same extent.
+> 
+> [FIX]
+> Instead of using @range_len, just use @em->len, so that we have a
+> consistent decision among the same file extent.
+> 
+> Now with this fix, we won't touch the extent, thus not making it any
+> worse.
+> 
+> Fixes: 0cb5950f3f3b ("btrfs: fix deadlock when reserving space during defrag")
+> Reported-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Boris Burkov <boris@bur.io>)
 > ---
->  fs/btrfs/volumes.c | 30 ++++++++++++++----------------
->  1 file changed, 14 insertions(+), 16 deletions(-)
+>  fs/btrfs/defrag.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 474ab7ed65ea..f2c2f7ca5c3d 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -738,6 +738,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->  	bool same_fsid_diff_dev = false;
->  	bool has_metadata_uuid = (btrfs_super_incompat_flags(disk_super) &
->  		BTRFS_FEATURE_INCOMPAT_METADATA_UUID);
-> +	bool can_create_new = *new_device_added;
+> diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+> index 8fc8118c3225..eb62ff490c48 100644
+> --- a/fs/btrfs/defrag.c
+> +++ b/fs/btrfs/defrag.c
+> @@ -1046,7 +1046,7 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+>  			goto add;
+>  
+>  		/* Skip too large extent */
+> -		if (range_len >= extent_thresh)
+> +		if (em->len >= extent_thresh)
+>  			goto next;
 
-It took me quite a while to figure out all the intended logic with the
-now in/out parameter. I think it's probably too cute? Why not just add
-another parameter "can_create_new_device"? I think it feels kind of
-weird on the caller side too, to set "new_device_added" to true, but
-then still rely on it to actually get set to true.
-
-Once I got past this, the logic made sense, so definitely don't block
-yourself on this nit.
+The next check is using em->len and checking the max extnt lengths,
+so we could theoretically merge the max extent size and thresh checks now,
+by taking the min of all the relevant options or something.
 
 >  
->  	if (btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_CHANGING_FSID_V2) {
->  		btrfs_err(NULL,
-> @@ -753,6 +754,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->  		return ERR_PTR(error);
->  	}
->  
-> +	*new_device_added = false;
->  	fs_devices = find_fsid_by_device(disk_super, path_devt, &same_fsid_diff_dev);
->  
->  	if (!fs_devices) {
-> @@ -804,6 +806,15 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->  			return ERR_PTR(-EBUSY);
->  		}
->  
-> +		if (!can_create_new) {
-> +			pr_info(
-> +	"BTRFS: device fsid %pU devid %llu transid %llu %s skip registration scanned by %s (%d)\n",
-> +				disk_super->fsid, devid, found_transid, path,
-> +				current->comm, task_pid_nr(current));
-> +			mutex_unlock(&fs_devices->device_list_mutex);
-> +			return NULL;
-> +		}
-> +
->  		nofs_flag = memalloc_nofs_save();
->  		device = btrfs_alloc_device(NULL, &devid,
->  					    disk_super->dev_item.uuid, path);
-> @@ -1355,27 +1366,14 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
->  		goto error_bdev_put;
->  	}
->  
-> -	if (!mount_arg_dev && btrfs_super_num_devices(disk_super) == 1 &&
-> -	    !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING)) {
-> -		dev_t devt;
-> -
-> -		ret = lookup_bdev(path, &devt);
-> -		if (ret)
-> -			btrfs_warn(NULL, "lookup bdev failed for path %s: %d",
-> -				   path, ret);
-> -		else
-> -			btrfs_free_stale_devices(devt, NULL);
-> -
-> -		pr_debug("BTRFS: skip registering single non-seed device %s\n", path);
-> -		device = NULL;
-> -		goto free_disk_super;
-> -	}
-> +	if (mount_arg_dev || btrfs_super_num_devices(disk_super) != 1 ||
-> +	    (btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING))
-> +		new_device_added = true;
-
-This is the line I was referring to in the comment above, fwiw.
-
->  
->  	device = device_list_add(path, disk_super, &new_device_added);
->  	if (!IS_ERR(device) && new_device_added)
->  		btrfs_free_stale_devices(device->devt, device);
->  
-> -free_disk_super:
->  	btrfs_release_disk_super(disk_super);
->  
->  error_bdev_put:
+>  		/*
 > 
 > -- 
-> 2.42.1
+> 2.43.0
 > 
 
