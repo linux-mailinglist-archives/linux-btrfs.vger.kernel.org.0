@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-2226-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2227-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A5D484DC2F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 10:00:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E2184DC31
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 10:00:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA3B02881A4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 09:00:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F9521F2119A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 09:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7846BB31;
-	Thu,  8 Feb 2024 09:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA446BB2C;
+	Thu,  8 Feb 2024 09:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AxtCsVJF";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AxtCsVJF"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="N0exfZB2";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="N0exfZB2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD186A8C0
-	for <linux-btrfs@vger.kernel.org>; Thu,  8 Feb 2024 09:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87BF6BB27
+	for <linux-btrfs@vger.kernel.org>; Thu,  8 Feb 2024 09:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707382809; cv=none; b=Q5xcf3eIDv+rL6W3qQSFHo3b82mGvYDm0rCpdaR22Xvuje6L2r031Gz0eNixwY7aWXWsgRTZR2wjlvgHZAbok/72OEkcgZhQRm+HDtRz3zeJYqO7dVaD+0lIxoeksHXdW/T6eJRzZQ/zICSAJMw1IytfCymtA9E+Q60fCtrHPaQ=
+	t=1707382811; cv=none; b=kPNweiaS1jaadvwwM940gw+xFzKRlvQF9YUZPz4q6mRJhBUF35XFHIO0CE/H6vBhiJUU/M4lzgk/cBLCY9Y8Sjr1QAlM9wTFV1ECNXyF4bDx2gTkHUeKLBRIbQMBCiNFe7hr5KE0tyjcxbx7OR99fmDagAZH2amAKdIXfAjLIag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707382809; c=relaxed/simple;
-	bh=koup2D07MAt5RqoPap6r7IN9VMaIWPK2R2uFjiDRSXQ=;
+	s=arc-20240116; t=1707382811; c=relaxed/simple;
+	bh=/8a3K7ZvnboP1/cxfZanwULsuOfhMySOiV+rMn0Vp/s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jOJx0n1UAYL8WPeU9tmFkNmp/JCc2ITfzL0gDpQUZUyE5FOpy4xXZHNxOfeQkUUgp3hvn9Y2P3cy5wryZ39iueHI4FAmkOKcxi/YHyhJEHjyBIu4ocWDHnmE7+ldOioUCE6AvS9up2zSwvoT221B96GUp4/vaR0JjjEBbgX7jBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AxtCsVJF; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AxtCsVJF; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=HsXAL6pxkiMjkzKgQtdaH4E4hYrgvY9YpuSMHt7cB6UUlNWQMjvItMjaJiXGgntbamfJh61YylA7sqmahQAoiUtzQekHLh1ezViZb4qSU3pZJrXdfLHLrfu5Rs8Mg4xznGmuimjQrcbko/Bottk1coq5fazUbEs32IGkQg9gaxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=N0exfZB2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=N0exfZB2; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A3D641FD56;
-	Thu,  8 Feb 2024 09:00:05 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 02E8221E6F;
+	Thu,  8 Feb 2024 09:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707382805; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1707382808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dmKfYjV5uvFZd9t0pe9vnHNet20o12JHwXs3puMGv74=;
-	b=AxtCsVJFfXtZ827Qawz2LwpZRzbl9zI8e3bOkUPj2C+cHvR+LhtDtvB0h3gQp/rOkOEKrB
-	K8vZugMHPpZmurShJ9mNR0uranQmpj55y4auk3aOOY5jNfDybthLRHeoy7C/OhCmKJkt8p
-	Ii/vit3VKlvzlkwI9dA8HZ2+rN0pc54=
+	bh=nFusZnWuO50spH/oKtAyoeyHJHEufW1YH11UEl9ALYE=;
+	b=N0exfZB2gahlpU3XedqWs/tOR+YsYxBsaW2VoamUdwoZ5cDcY3fmegG5pM39AW7HBmC+KF
+	97M10PQ4CjBjVBipyhoKgspLtG79fhX2Te0Xp/1g2fGgZzCaB3wo4zIjnYT4EBgXwV8Va3
+	idwOjY6lYg9kvy7ssK7qLs7p9Ids4rM=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707382805; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1707382808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dmKfYjV5uvFZd9t0pe9vnHNet20o12JHwXs3puMGv74=;
-	b=AxtCsVJFfXtZ827Qawz2LwpZRzbl9zI8e3bOkUPj2C+cHvR+LhtDtvB0h3gQp/rOkOEKrB
-	K8vZugMHPpZmurShJ9mNR0uranQmpj55y4auk3aOOY5jNfDybthLRHeoy7C/OhCmKJkt8p
-	Ii/vit3VKlvzlkwI9dA8HZ2+rN0pc54=
+	bh=nFusZnWuO50spH/oKtAyoeyHJHEufW1YH11UEl9ALYE=;
+	b=N0exfZB2gahlpU3XedqWs/tOR+YsYxBsaW2VoamUdwoZ5cDcY3fmegG5pM39AW7HBmC+KF
+	97M10PQ4CjBjVBipyhoKgspLtG79fhX2Te0Xp/1g2fGgZzCaB3wo4zIjnYT4EBgXwV8Va3
+	idwOjY6lYg9kvy7ssK7qLs7p9Ids4rM=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 930E713984;
-	Thu,  8 Feb 2024 09:00:05 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFCEC13984;
+	Thu,  8 Feb 2024 09:00:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id h8blIxWYxGVxDgAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Thu, 08 Feb 2024 09:00:05 +0000
+	id jJeKOheYxGV0DgAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Thu, 08 Feb 2024 09:00:07 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 02/14] btrfs: update comment and drop assertion in extent item lookup in find_parent_nodes()
-Date: Thu,  8 Feb 2024 09:59:36 +0100
-Message-ID: <58769dbf1265749659b64af427acc19487c3ae60.1707382595.git.dsterba@suse.com>
+Subject: [PATCH 03/14] btrfs: handle invalid extent item reference found in extent_from_logical()
+Date: Thu,  8 Feb 2024 09:59:38 +0100
+Message-ID: <6cf0eee9ded5ba3c67265e6b497bf297092bcc0b.1707382595.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <cover.1707382595.git.dsterba@suse.com>
 References: <cover.1707382595.git.dsterba@suse.com>
@@ -82,7 +82,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
+Authentication-Results: smtp-out1.suse.de;
 	none
 X-Spamd-Result: default: False [0.90 / 50.00];
 	 ARC_NA(0.00)[];
@@ -107,31 +107,47 @@ X-Spam-Level:
 X-Spam-Flag: NO
 X-Spam-Score: 0.90
 
-Same comment was added to this type of error, unify that and drop the
-assertion as we'd find out quickly that something is wrong after
-returning -EUCLEAN.
+The extent_from_logical() helper looks up an extent item by a key,
+allowing to do an inexact search when key->offset is -1.  It's never
+expected to find such item, as it would break the allowed range of a
+extent item offset.
+
+The same error is already handled in btrfs_backref_iter_start() so add a
+comment for consistency.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/backref.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/btrfs/backref.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index beed7e459dab..0fa27ed802f6 100644
+index 0fa27ed802f6..6ba743ddfe21 100644
 --- a/fs/btrfs/backref.c
 +++ b/fs/btrfs/backref.c
-@@ -1435,8 +1435,10 @@ static int find_parent_nodes(struct btrfs_backref_walk_ctx *ctx,
+@@ -2227,6 +2227,13 @@ int extent_from_logical(struct btrfs_fs_info *fs_info, u64 logical,
+ 	ret = btrfs_search_slot(NULL, extent_root, &key, path, 0, 0);
  	if (ret < 0)
- 		goto out;
+ 		return ret;
++	if (ret == 0) {
++		/*
++		 * Key with offset -1 found, there would have to exist an extent
++		 * item with such offset, but this is out of the valid range.
++		 */
++		return -EUCLEAN;
++	}
+ 
+ 	ret = btrfs_previous_extent_item(extent_root, path, 0);
+ 	if (ret) {
+@@ -2870,6 +2877,10 @@ int btrfs_backref_iter_start(struct btrfs_backref_iter *iter, u64 bytenr)
+ 	if (ret < 0)
+ 		return ret;
  	if (ret == 0) {
--		/* This shouldn't happen, indicates a bug or fs corruption. */
--		ASSERT(ret != 0);
 +		/*
 +		 * Key with offset -1 found, there would have to exist an extent
 +		 * item with such offset, but this is out of the valid range.
 +		 */
  		ret = -EUCLEAN;
- 		goto out;
+ 		goto release;
  	}
 -- 
 2.42.1
