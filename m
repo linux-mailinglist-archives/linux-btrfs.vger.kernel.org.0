@@ -1,37 +1,37 @@
-Return-Path: <linux-btrfs+bounces-2257-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2261-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A946E84E9B9
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 21:31:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A30FD84E9BA
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 21:31:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE99DB25ED0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 20:31:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F10628DFE2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 20:31:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6700B47F59;
-	Thu,  8 Feb 2024 20:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0B544C96;
+	Thu,  8 Feb 2024 20:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tiscali.it header.i=@tiscali.it header.b="glDMhIri"
+	dkim=pass (1024-bit key) header.d=tiscali.it header.i=@tiscali.it header.b="ixDL7vpv"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.tiscali.it (santino.mail.tiscali.it [213.205.33.245])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486FA3F9E3
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4892E3F9F7
 	for <linux-btrfs@vger.kernel.org>; Thu,  8 Feb 2024 20:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.205.33.245
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707424253; cv=none; b=OLvxISdP0LMvnVU/zN5CJT4vbt3F84tAt5OjC+Ivark192k/Gzp6PGjWlUf1A/CAWaYN5aGoAmtWVJrgCCMOk6fNdbLzxbcT9XUwpSzvlxv19LN0uCaD15Wl+d55YYG98tFlDGxMRxmhjrQALvljhmy8FH/MXUIEjfcBS36EkD0=
+	t=1707424254; cv=none; b=U0tEyYz3cyo9XecWZNDvfSlT/+zIu8VW7SQEHpsjfGZ+ceAI9CNRpcfcfKUoKIlgDDBmzlBOYFcZVukTiUzjxpj/GzvBDUm4/Ay4EmtloJ3g/aRzCuW+ZZwVFLccO823Oo7ITF9AQnoIB00A4lw5Es2WGijD4eK7K+bl1xeEDNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707424253; c=relaxed/simple;
-	bh=iolS9GcuxxCYyqsFPJDGKpGzY/YKpFbE+vgw0p7hjkg=;
+	s=arc-20240116; t=1707424254; c=relaxed/simple;
+	bh=WyDiTA+5fYt32h2UPz33Jpoaux0oLv32u9Ebd/SJ/Uw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YWZwpSRj4oV46Z7Euh/NCyc70/jqViepgyGYg/gRTcGL9XJ9Q4ohNppPXHfHp0hiHAZXmZ0OGKQgCKCu5TrwIyPqph4QZswvEVAiI+qPrLlyvQIZxURCEkSKtFuM3K4/p5sZ9lmya3cBrLUm6zZGJQBGjhoylcQ6ahELUeAuBS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tiscali.it; spf=pass smtp.mailfrom=tiscali.it; dkim=pass (1024-bit key) header.d=tiscali.it header.i=@tiscali.it header.b=glDMhIri; arc=none smtp.client-ip=213.205.33.245
+	 MIME-Version; b=p38RF2zyMuOGbvVm5Pqm4ikU/7l4Y9PYvSxVswzSi72z5HvkOdwoInkdC7AIE3dJXWGbM3jplLwM1QTU+wZfNW0vGzZ+ZShmTJrXpip/iZSk9SQKR5AtDlKcOseUuO/C6toRTWiXwwGUUFZrU7c8uULl/sEKS0kQ2agFwpNdx+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tiscali.it; spf=pass smtp.mailfrom=tiscali.it; dkim=pass (1024-bit key) header.d=tiscali.it header.i=@tiscali.it header.b=ixDL7vpv; arc=none smtp.client-ip=213.205.33.245
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tiscali.it
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tiscali.it
 Received: from venice.bhome ([84.220.171.3])
 	by santino.mail.tiscali.it with 
-	id kkVe2B00g04l9eU01kVfoV; Thu, 08 Feb 2024 20:29:39 +0000
+	id kkVe2B00g04l9eU01kVfoa; Thu, 08 Feb 2024 20:29:39 +0000
 X-Spam-Final-Verdict: clean
 X-Spam-State: 0
 X-Spam-Score: 0
@@ -40,9 +40,9 @@ x-auth-user: kreijack@tiscali.it
 From: Goffredo Baroncelli <kreijack@tiscali.it>
 To: linux-btrfs@vger.kernel.org
 Cc: Goffredo Baroncelli <kreijack@inwind.it>
-Subject: [PATCH 5/9] Killing dirstream: replace open_file_or_dir3 with btrfs_open_fd2
-Date: Thu,  8 Feb 2024 21:19:23 +0100
-Message-ID: <28a66d261b14f17625bd355f837beb18c7546014.1707423567.git.kreijack@inwind.it>
+Subject: [PATCH 6/9] Killing dirstream: replace btrfs_open_file_or_dir with btrfs_open_file_or_dir_fd
+Date: Thu,  8 Feb 2024 21:19:24 +0100
+Message-ID: <7156cf1438f8f2c6442e6f6ba1fe4158080667f6.1707423567.git.kreijack@inwind.it>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1707423567.git.kreijack@inwind.it>
 References: <cover.1707423567.git.kreijack@inwind.it>
@@ -55,11 +55,11 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tiscali.it; s=smtp;
-	t=1707424179; bh=CaRC4LGdNXxKgL18ZnqV/Sz8/ySRzSMr1RihS6k6psA=;
+	t=1707424179; bh=RJVpd5vU1oCn1gxA81O3c09OEpM7ZuwMgY21vU65iYY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:Reply-To;
-	b=glDMhIrip0Z+0Uft/1Zk1RDq1bhuLE5m47+RGaZDh84/j1vI+Qm0ZY4WDKhzNhU6u
-	 kr13qU9EesoIbG9m881uXa0/pAXd4VtRLi2uSPY/vaB/29Owpn5+BW3iUKBcDPH8Cp
-	 iAXQBdAvXQvZSiBC2ABWPzPNKGO1Ybk9QENzDk68=
+	b=ixDL7vpv5rV6xZVzpPggeQj7/xp0jWORzdGYEdZ2ldnKsFvvgqBqWLg3QGjQhxXWj
+	 M2kZ8XyiZvCnr6E+hhDZ0i1Tp2a1A3tVBZR8UWM7Fff4b9QRK+RdYoy/cOi47IJoKF
+	 nfJWJ6/u2jlyxEQ5m/sEcHg+j3lU1fOcFdGWmD/o=
 
 From: Goffredo Baroncelli <kreijack@inwind.it>
 
@@ -69,83 +69,42 @@ the 'DIR *dirstream' value when a dir is opened.
 However this is never used. So avoid calling diropen() and return
 only the fd.
 
-This patch replace open_file_or_dir3() with btrfs_open_fd2() removing
-any reference to the unused/useless dirstream variables.
-btrfs_open_fd2() is needed because sometime the caller need
-to set the RDONLY/RDWRITE mode, and to avoid spourios diagnosis messages.
+This patch replace btrfs_open_file_or_dir() with btrfs_open_file_or_dir_fd()
+removing any reference to the unused/useless dirstream variables.
 
 Signed-off-by: Goffredo Baroncelli <kreijack@libero.it>
 ---
- cmds/filesystem.c | 8 +++-----
- cmds/property.c   | 5 ++---
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ cmds/inspect.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-index d37b52a3..408ebe82 100644
---- a/cmds/filesystem.c
-+++ b/cmds/filesystem.c
-@@ -1004,7 +1004,6 @@ static int cmd_filesystem_defrag(const struct cmd_struct *cmd,
- 	bool recursive = false;
- 	int ret = 0;
- 	int compress_type = BTRFS_COMPRESS_NONE;
--	DIR *dirstream;
- 
- 	/*
- 	 * Kernel 4.19+ supports defragmention of files open read-only,
-@@ -1142,8 +1141,7 @@ static int cmd_filesystem_defrag(const struct cmd_struct *cmd,
- 		struct stat st;
- 		int defrag_err = 0;
- 
--		dirstream = NULL;
--		fd = open_file_or_dir3(argv[i], &dirstream, defrag_open_mode);
-+		fd = btrfs_open_fd2(argv[i], false, defrag_open_mode==O_RDWR, false);
- 		if (fd < 0) {
- 			error("cannot open %s: %m", argv[i]);
- 			ret = -errno;
-@@ -1177,7 +1175,7 @@ static int cmd_filesystem_defrag(const struct cmd_struct *cmd,
- 				error(
- "defrag range ioctl not supported in this kernel version, 2.6.33 and newer is required");
- 				defrag_global_errors++;
--				close_file_or_dir(fd, dirstream);
-+				close(fd);
- 				break;
- 			}
- 			if (ret) {
-@@ -1189,7 +1187,7 @@ static int cmd_filesystem_defrag(const struct cmd_struct *cmd,
- next:
- 		if (ret)
- 			defrag_global_errors++;
--		close_file_or_dir(fd, dirstream);
-+		close(fd);
- 	}
- 
- 	if (defrag_global_errors)
-diff --git a/cmds/property.c b/cmds/property.c
-index be9bdf63..e189e505 100644
---- a/cmds/property.c
-+++ b/cmds/property.c
-@@ -175,12 +175,11 @@ static int prop_compression(enum prop_object_type type,
+diff --git a/cmds/inspect.c b/cmds/inspect.c
+index 86023270..4d4e24d2 100644
+--- a/cmds/inspect.c
++++ b/cmds/inspect.c
+@@ -369,14 +369,13 @@ static int cmd_inspect_rootid(const struct cmd_struct *cmd,
  	int ret;
- 	ssize_t sret;
  	int fd = -1;
+ 	u64 rootid;
 -	DIR *dirstream = NULL;
- 	char *buf = NULL;
- 	char *xattr_name = NULL;
- 	int open_flags = value ? O_RDWR : O_RDONLY;
  
--	fd = open_file_or_dir3(object, &dirstream, open_flags);
-+	fd = btrfs_open_fd2(object, false, open_flags == O_RDWR, false);
- 	if (fd == -1) {
- 		ret = -errno;
- 		error("failed to open %s: %m", object);
-@@ -232,7 +231,7 @@ out:
- 	free(xattr_name);
- 	free(buf);
- 	if (fd >= 0)
--		close_file_or_dir(fd, dirstream);
-+		close(fd);
+ 	clean_args_no_options(cmd, argc, argv);
  
- 	return ret;
+ 	if (check_argc_exact(argc - optind, 1))
+ 		return 1;
+ 
+-	fd = btrfs_open_file_or_dir(argv[optind], &dirstream, 1);
++	fd = btrfs_open_file_or_dir_fd(argv[optind]);
+ 	if (fd < 0) {
+ 		ret = -ENOENT;
+ 		goto out;
+@@ -391,7 +390,7 @@ static int cmd_inspect_rootid(const struct cmd_struct *cmd,
+ 
+ 	pr_verbose(LOG_DEFAULT, "%llu\n", rootid);
+ out:
+-	close_file_or_dir(fd, dirstream);
++	close(fd);
+ 
+ 	return !!ret;
  }
 -- 
 2.43.0
