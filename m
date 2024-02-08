@@ -1,156 +1,115 @@
-Return-Path: <linux-btrfs+bounces-2245-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2246-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2942684DDE1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 11:12:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E51D584DE22
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 11:23:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9338F1F28DE5
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 10:12:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A640928B8AB
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Feb 2024 10:23:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D246D1AC;
-	Thu,  8 Feb 2024 10:12:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554DD6EB55;
+	Thu,  8 Feb 2024 10:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x3XjdpIF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xq7GTIQy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x3XjdpIF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xq7GTIQy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FoNBiHfO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABBF26D1A2
-	for <linux-btrfs@vger.kernel.org>; Thu,  8 Feb 2024 10:12:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7445A6E2C9;
+	Thu,  8 Feb 2024 10:21:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707387141; cv=none; b=MF162z21xk30ZydQ2J0rPy9WFJo3rr7gXkFgmQhjhNdfIZISuQneH7UXGCOhLmnLULqr0tPVR6xhEPELoe6qaq4e1Aoin5jthZeDqxYBnWjkVY4FmgI4phDTO/GCiigC00MA4DsxPGBUZRHGY0gEHeeH8ZJ8SQ1PSnDXYTaX/Gc=
+	t=1707387695; cv=none; b=p9rjPDYmvBrlsXnLgv0MHKSs8P3bPG4hI0kmYDdQaAKaKAzxEVWhWUDCrCuILtpoSG/GqyuNm6sLbGum3nJtPtYXxdwa6loN0BYe/tMmyhqkEM21scvck+vbiro88CXcj9GbOYqSrPSu1uKyA5GtZ38s3rwrtISlTBeYwvk/QSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707387141; c=relaxed/simple;
-	bh=cQLRFFTZpp0V5HiMLIwuGfzozigzgdtO1SHzosYwrUk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G4mcnXZrVShDTakiuLsg3+l/SnzIPZvnY9V89qmJBYi1skV/GIpWVdSjNtWPPO+p6xWwDQoboa+0OmuGB/ZtEDJi+QHJoIz1oCAin0A4Pw8Vi2jBnTCKuLt8Kd2CQOSbjoUQZiK/Z8ma4oJxpLwTvS6P3pZF/N12KPZK04OXf8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x3XjdpIF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xq7GTIQy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x3XjdpIF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xq7GTIQy; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A25151FCDA;
-	Thu,  8 Feb 2024 10:12:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707387135;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NasJSj8KeZP0TvhjZhFIVbvZ6FnWH/K9d5OUGlWCt6M=;
-	b=x3XjdpIFtvxkkn3uEqDv65jAY6vFXmgmFNfcoM6jRhQAQNakc6AkH+IG8q4bBalJ4r9iEB
-	NdyxgsTUxlVZrylp0uQXO/ZOQkp9uqsLRlxAwMwtOX9pXvVOHCeedaRWQJDmomvUd4HGiE
-	C9q1I7549q7GDb8XkZOYYkYxO9uTYC4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707387135;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NasJSj8KeZP0TvhjZhFIVbvZ6FnWH/K9d5OUGlWCt6M=;
-	b=xq7GTIQydLxS3anIMFE+CNs9H105+9q1mMJU+AzFU9J0U6Ir6zb6m7+jmgpLKELMwFysFG
-	Q6A//ZBhkaseC9BA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707387135;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NasJSj8KeZP0TvhjZhFIVbvZ6FnWH/K9d5OUGlWCt6M=;
-	b=x3XjdpIFtvxkkn3uEqDv65jAY6vFXmgmFNfcoM6jRhQAQNakc6AkH+IG8q4bBalJ4r9iEB
-	NdyxgsTUxlVZrylp0uQXO/ZOQkp9uqsLRlxAwMwtOX9pXvVOHCeedaRWQJDmomvUd4HGiE
-	C9q1I7549q7GDb8XkZOYYkYxO9uTYC4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707387135;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NasJSj8KeZP0TvhjZhFIVbvZ6FnWH/K9d5OUGlWCt6M=;
-	b=xq7GTIQydLxS3anIMFE+CNs9H105+9q1mMJU+AzFU9J0U6Ir6zb6m7+jmgpLKELMwFysFG
-	Q6A//ZBhkaseC9BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8C91A1326D;
-	Thu,  8 Feb 2024 10:12:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0rAoIv+oxGXEIwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 08 Feb 2024 10:12:15 +0000
-Date: Thu, 8 Feb 2024 11:11:45 +0100
-From: David Sterba <dsterba@suse.cz>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: don't reserve space for checksums when writing to
- nocow files
-Message-ID: <20240208101145.GW355@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <9024eabd5bd2419cb4ca94f276a1c54a3b2c18cc.1706798197.git.fdmanana@suse.com>
+	s=arc-20240116; t=1707387695; c=relaxed/simple;
+	bh=WymTy0WHsJ7+lOXasaABlWFAYcpSaUy8/JPROfoXSsE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pqtSJ0RuHhrp7Z2RNGkPocLSurwiUSIA++7er2jvFQbxk9pEvEoJSRqgeBkyJYn4ys6TcT/luKLhQSS6tmUfllIR1oe6tgvWMPXe25DstiP6qVW/NSLTIMHdXxGebbypBOhtYyLRfhF0VOUkRDD2ulmXq1mUYx6co8FCRGB9SZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FoNBiHfO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76EABC433F1;
+	Thu,  8 Feb 2024 10:21:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707387694;
+	bh=WymTy0WHsJ7+lOXasaABlWFAYcpSaUy8/JPROfoXSsE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=FoNBiHfOC6y/JmFHCrYHdSKv37cN3eEEHypYr8eIRunxjDQizf2LVPBTPGDgOkCJ9
+	 QRDD8SGXkNgmgV0oEGF+RVXtkSAD3BcHckyzzDAg8ThbRLO0cpEAzKgNOwx7znf7cU
+	 91Cp3G/dPgTTc3oUNWit+xUbw13qRwATpTGECpjNfFsT52jiY7ea962lidGsoVa3+L
+	 wJ+5/xfhTO8At5Nc8AVsQ8UKgNmncQiWpG1CYewlsM63ED96IQWQjvaeySPgW4ji3C
+	 J/wM20hrHuMb7ADZmnKYPUkX5zpYtB/b8rTt1j9khvTyh0S/e10Ce4GEm+QBpdegSK
+	 EHTduQFL5fKZQ==
+From: Christian Brauner <brauner@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] filesystem visibililty ioctls
+Date: Thu,  8 Feb 2024 11:20:45 +0100
+Message-ID: <20240208-wecken-nutzen-3df1102a39b2@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240207025624.1019754-1-kent.overstreet@linux.dev>
+References: <20240207025624.1019754-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9024eabd5bd2419cb4ca94f276a1c54a3b2c18cc.1706798197.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=x3XjdpIF;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=xq7GTIQy
-X-Spamd-Result: default: False [-0.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 TO_DN_NONE(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[34.20%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -0.01
-X-Rspamd-Queue-Id: A25151FCDA
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1950; i=brauner@kernel.org; h=from:subject:message-id; bh=WymTy0WHsJ7+lOXasaABlWFAYcpSaUy8/JPROfoXSsE=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQeWa206fW6cja3/OTmqv69C9TWPavW8LW7bbmS5dmiC X/23upO7ShlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjIgzSG/2GPtsVM8FhiG3n0 /Y1LngIXdjkvjFjdcrjxTEDL7piWNycZ/lmHV3gGXjCS6vTVyPu2p3TK49XGZwKa7DwnHjzgJCH 1iQEA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 01, 2024 at 02:42:16PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Tue, 06 Feb 2024 21:56:14 -0500, Kent Overstreet wrote:
+> ok, any further bikeshedding better be along the lines of "this will
+> cause a gaping security hole unless addressed" ;)
 > 
-> Currently when doing a write to a file we always reserve metadata space
-> for inserting data checksums. However we don't need to do it if we have
-> a nodatacow file (-o nodatacow mount option or chattr +C) or if checksums
-> are disabled (-o nodatasum mount option), as in that case we are only
-> adding unncessary pressure to metadata reservations.
+> changes since v2:
+>  - now using nak (0x15) ioctl range; documentation updated
+>  - new helpers for setting the sysfs name
+>  - sysfs name uuid now has a length field
 > 
-> For example on x86_64, with the default node size of 16K, a 4K buffered
-> write into a nodatacow file is reserving 655360 bytes of metadata space,
-> as it's accounting for checksums. After this change, which stops reserving
-> space for checksums if we have a nodatacow file or checksums are disabled,
-> we only need to reserve 393216 bytes of metadata.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> [...]
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+I've merged that series and put it onto vfs.uuid. I think we should
+really see some more ACKs from other filesystems maintainers for the
+FS_IOC_GETFSSYSFSPATH bits. Once we have that we can declare that branch
+stable.
+
+Note, I dropped the bcachefs changes because they're not upstream yet.
+But once this is a stable branch you can just pull in vfs.uuid and rely
+on that.
+
+---
+
+Applied to the vfs.uuid branch of the vfs/vfs.git tree.
+Patches in the vfs.uuid branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.uuid
+
+[1/6] fs: super_set_uuid()
+      https://git.kernel.org/vfs/vfs/c/4d451351605f
+[2/6] overlayfs: Convert to super_set_uuid()
+      https://git.kernel.org/vfs/vfs/c/5ad6ddd9c998
+[3/6] fs: FS_IOC_GETUUID
+      https://git.kernel.org/vfs/vfs/c/51ee9232f372
+[4/6] fat: Hook up sb->s_uuid
+      https://git.kernel.org/vfs/vfs/c/05dc73e146be
+[5/6] fs: add FS_IOC_GETFSSYSFSPATH
+      https://git.kernel.org/vfs/vfs/c/3dad731c7a45
+[6/6] xfs: add support for FS_IOC_GETFSSYSFSPATH
+      https://git.kernel.org/vfs/vfs/c/aa4386d4df60
 
