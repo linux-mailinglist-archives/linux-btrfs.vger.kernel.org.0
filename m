@@ -1,114 +1,131 @@
-Return-Path: <linux-btrfs+bounces-2291-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2292-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C876784FE02
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Feb 2024 21:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C1D984FF44
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Feb 2024 22:52:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B6D02840C9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Feb 2024 20:57:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4307028D238
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Feb 2024 21:52:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBA7F15485;
-	Fri,  9 Feb 2024 20:57:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3C6F210FA;
+	Fri,  9 Feb 2024 21:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="X048DnKi";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bWkf+NUy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1949D282
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 Feb 2024 20:57:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC9E107AA
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Feb 2024 21:52:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707512246; cv=none; b=huDLwZpHMKWaYKtk07pDSTcXer5NIHr5ChHgAJHFflIcZPRCBQ86iMWvYi8P4eQp0H/mAE5DBdJCKbZAgkvQEcvVt3X+YaOCK1Cb7BDTy5qTkJsBEjJua/ciwifnxsWuX0nlqpbBZtH/cNP5soL0kE/d5V/ra4wM4uLx9l/hvRM=
+	t=1707515565; cv=none; b=CYrSafn0nrC6fvm9lQTtYiWuv80hV/eA86hXrVYK93aMcbDxboQfEtNeCJT8NOen+drsOuYCkvCEgDu1p88SiqRUsZXkuR3buac25MCz5hf5zAkEux5SuTcbaZFgZECKLuUHgmIaI5iHTEf2zgTn3aAlMt3+vmnJuzLkFBkPSCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707512246; c=relaxed/simple;
-	bh=2w6GPo/MTWtYBaOW/OWgRMg+89zVZ8DGTLxVESk9BN4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZMliAnJQ24u10PX87C2pKkyjWTp+LqbxbLFP/s2GlWAPUlIOcQ58q9EvOKrvs+/BiX+89M7Hd5fqk+TwI2EdgOcbwJWN0Vs7hez46p62ELbkcO3PUqmDCi+ayhlMtiJ8CmazxopoM0xIQtOoOR6YWptuO7Uc41mrH+67Z3z9JOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363be7d5b20so13334675ab.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Feb 2024 12:57:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707512244; x=1708117044;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UD6d8u16W8tj+JTdP/So40uF8slaf+OtKrk0cEJJ/h0=;
-        b=N1y62TWvlsWhIg1/vBZES6yJeJg7Oww0Tps493ZpSUedWWW3cwz1ykoMSXMl36IABx
-         8ppvHhto5WRDIIfcxad+4Ax6oc40Xz6rhC7/Lq2F7zB1Y6FQIyeuj4MQa+3mLJEo5raC
-         wVgYEInZApTRl9Uwywz4Y7zWx7EkwFNtyNU5xehsGa35o1KsIlOHEs50BWks9EcY4XST
-         dw8jTkXSUXoRqC/D3FDP3s0gS11ut8KGNv1y76jAUfPYaZ7ARinYd+8AnD4NVBYlwAcC
-         9yQyHiizKzOlbwwo+VjTU6S9caR4/lTRdbetXhhE0gvQgfUIqunVsIjrAZiI9jSGf8xx
-         2XVg==
-X-Forwarded-Encrypted: i=1; AJvYcCUHJczonk5+oNbYXKR0TBGC4z+qhRrOlYW70e2VRpsKe/3a/cYh5+C7og7Q1ns1zDKczMhq/VqUIFJx0a7PcHl97hoEe4b4pzoyImo=
-X-Gm-Message-State: AOJu0Yy5hxnzOtP54iKjnrRzIly1q5zRnOfALxPm+pLoCooww5d3YAff
-	tDXHkd+h5RDiC5vRut8YEj5OWzq9XleKhPQoBVhPwaiAgwlLvr+bdSYjuTla8eyV+6dm+IgDVJK
-	pHRJnVT2a6SUxMtkciWQAGvRatmqjC9MhY3FRStu+p/DOS4IrwMRc3Xw=
-X-Google-Smtp-Source: AGHT+IHWrWtwWypyOdoWhS7xlxZMM/q4FtOhWX580rydd3l3k2GZjuwTfOQlG++evGa5EXtX0Av/lBczvNhbkaOJdzRBiWVAg6tR
+	s=arc-20240116; t=1707515565; c=relaxed/simple;
+	bh=QiNtaBeR0BqONQV5Tn7jwnj6w3m2v5imwNMHnr1ANe4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y4k8BmacAwrSiRcW076QEr36ElykKQc1ldfKu9AvbMxqVJllaKI889Ly9XKNqpZphqC4OHGHtUxj8qbl1EVXWSmlr9Smjm6plysuXfEdmp2uhuKRXx8mq8oNviQqJmlq9tZrUspd/pK8Cp4APKYgTuKK/XnZtZEowbnss9GAhYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=X048DnKi; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=bWkf+NUy; arc=none smtp.client-ip=64.147.123.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id 78B4332009FA;
+	Fri,  9 Feb 2024 16:52:41 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Fri, 09 Feb 2024 16:52:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1707515561; x=1707601961; bh=qVdE0jrzXz
+	Eq5dHlcPWfUmiao5WNmugFG/BQDjbjuOk=; b=X048DnKi101IMLixI77cbOf4fU
+	NqPgcMRNc1EKzhouIiJGfsQKhhI23IuHm6Q9b93XR/LAZ2vATxGSb5iSW+e3AOtN
+	2LiOqgZrh1dqAVqMmp9FySVazzVd+TgCsSvPJJKhnvg0JfjjBQ+rLElFf0FPYk/7
+	MiTp4fMzqojSpXgPZKz2Qhqme4nv6ydJsIdyTmUayT22tJ6btp5/KUcMLk3MrXyK
+	/2H+dhMjdre0aqWSn92HoVHtAFr3aGFVyrGQAQQDwxrb0eZNAj0YiVjTqNoN+hRl
+	s7ATjWx2Kdb7mz6VHEi81w/UK+CiuritNFZwrQ2JpI4e7Iy9YesXZqRlYV+g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1707515561; x=1707601961; bh=qVdE0jrzXzEq5dHlcPWfUmiao5WN
+	mugFG/BQDjbjuOk=; b=bWkf+NUy70oLXtyKhGMz6fCwpEdHGe8FAAMcA+VPCHIj
+	gQWqkkoiFdysIPY/C8qKZ1nSPrPlLpvsqpXNltHt5tvCyD6cqTBK7S837i7XYs1L
+	SYKeInaAMrRbrTgfdBhIOCES1aQyP0AT/x7PbDktZoC9q4YAmD5e5sqDZSuQo33y
+	K8ikKQzx1329gfzBhpdI05Ig1psoqDAG5LtG1yL3pWKk49YcBeHGlMhm+hlzaCdR
+	4odhODilRYNwkbdkXogqa1R6hxTYoAB1FSbM5+I+8Zp4Ofsi7iSa+pPLx/MxhG0n
+	ic1YKw9CnK/9DT3eTfX8A5ySY1dbORx6WPTXkRUJoQ==
+X-ME-Sender: <xms:qJ7GZdSfk9ez-UxM5TLBwR0vfD5KHg8qrvsIm1JK2Qo9YWhUZuuXWw>
+    <xme:qJ7GZWyh2eJo0g_mDiu9WOgDQ_sHOTz-NLbcLnQbv6xEHYeRs_OkeUs1tmR_SCQSB
+    T9mfP2GmeDjgGsofoY>
+X-ME-Received: <xmr:qJ7GZS0boYyPgTtEkAjhYtbi3drEfSrelHO5cHw21W7mV6-p7tr9353IEEsSVp2x5Kvmu4ps8h4-4psWDryRCFbGoM0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrtdeigdduhedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttd
+    ertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
+    rdhioheqnecuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvve
+    eiieeiudfguefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:qJ7GZVBsYvdjoyU8AiaAtxkNI3Wh6l4Yb6YOimra4jJGfNRtBfmMKg>
+    <xmx:qJ7GZWjCOzjb_qjjr_sazoH5dMT33aHXrAPXyfhi97UAs_1fCElCZA>
+    <xmx:qJ7GZZrS4YqpAcY2HyGyfx_VdvT7JiUyNaifEDxtHmItr5Ql2G4ahA>
+    <xmx:qZ7GZeKQczlAo9xFOkWl_f1S5I7f9Lwcul2pgDEKCMjDiFznouu3bQ>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 9 Feb 2024 16:52:40 -0500 (EST)
+Date: Fri, 9 Feb 2024 13:54:24 -0800
+From: Boris Burkov <boris@bur.io>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/9] btrfs: cleanups and minor performance change to
+ setting/clearing delalloc
+Message-ID: <20240209215424.GA149185@zen.localdomain>
+References: <cover.1707491248.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:214d:b0:363:9d58:8052 with SMTP id
- d13-20020a056e02214d00b003639d588052mr27117ilv.2.1707512244237; Fri, 09 Feb
- 2024 12:57:24 -0800 (PST)
-Date: Fri, 09 Feb 2024 12:57:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c47db50610f92cf9@google.com>
-Subject: [syzbot] Monthly btrfs report (Feb 2024)
-From: syzbot <syzbot+listad2f01a497df9ab5d719@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1707491248.git.fdmanana@suse.com>
 
-Hello btrfs maintainers/developers,
+On Fri, Feb 09, 2024 at 06:00:42PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Some cleanups and a minor performance improvement around setting and
+> clearing delalloc ranges. More details in the changelogs.
 
-This is a 31-day syzbot report for the btrfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/btrfs
+These all LGTM.
 
-During the period, 1 new issues were detected and 1 were fixed.
-In total, 43 issues are still open and 51 have been fixed so far.
+If you want to hunt more wins to claim for the inode lock improvement,
+you can also try running fsperf.
 
-Some of the still happening issues:
+Reviewed-by: Boris Burkov <boris@bur.io>
 
-Ref  Crashes Repro Title
-<1>  5804    Yes   kernel BUG in close_ctree
-                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
-<2>  2636    Yes   WARNING in btrfs_space_info_update_bytes_may_use
-                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-<3>  251     Yes   INFO: task hung in lock_extent
-                   https://syzkaller.appspot.com/bug?extid=eaa05fbc7563874b7ad2
-<4>  245     Yes   WARNING in btrfs_chunk_alloc
-                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
-<5>  224     Yes   WARNING in btrfs_remove_chunk
-                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
-<6>  125     Yes   kernel BUG in insert_state_fast
-                   https://syzkaller.appspot.com/bug?extid=9ce4a36127ca92b59677
-<7>  99      Yes   kernel BUG in btrfs_free_tree_block
-                   https://syzkaller.appspot.com/bug?extid=a306f914b4d01b3958fe
-<8>  88      Yes   kernel BUG in set_state_bits
-                   https://syzkaller.appspot.com/bug?extid=b9d2e54d2301324657ed
-<9>  79      Yes   WARNING in btrfs_commit_transaction (2)
-                   https://syzkaller.appspot.com/bug?extid=dafbca0e20fbc5946925
-<10> 74      Yes   WARNING in btrfs_put_transaction
-                   https://syzkaller.appspot.com/bug?extid=3706b1df47f2464f0c1e
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+> 
+> Filipe Manana (9):
+>   btrfs: stop passing root argument to btrfs_add_delalloc_inodes()
+>   btrfs: stop passing root argument to __btrfs_del_delalloc_inode()
+>   btrfs: assert root delalloc lock is held at __btrfs_del_delalloc_inode()
+>   btrfs: rename btrfs_add_delalloc_inodes() to singular form
+>   btrfs: reduce inode lock critical section when setting and clearing delalloc
+>   btrfs: add lockdep assertion to remaining delalloc callbacks
+>   btrfs: use assertion instead of BUG_ON when adding/removing to delalloc list
+>   btrfs: remove do_list variable at btrfs_set_delalloc_extent()
+>   btrfs: remove do_list variable at btrfs_clear_delalloc_extent()
+> 
+>  fs/btrfs/btrfs_inode.h |  3 +-
+>  fs/btrfs/disk-io.c     |  2 +-
+>  fs/btrfs/inode.c       | 93 ++++++++++++++++++++++++++----------------
+>  3 files changed, 60 insertions(+), 38 deletions(-)
+> 
+> -- 
+> 2.40.1
+> 
 
