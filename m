@@ -1,52 +1,52 @@
-Return-Path: <linux-btrfs+bounces-2300-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2301-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B9B185036A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 08:50:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD68885038E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 09:48:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E35C1C2302F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 07:50:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BCE7281A8E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 08:48:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF8DB37706;
-	Sat, 10 Feb 2024 07:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE5E3611E;
+	Sat, 10 Feb 2024 08:48:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="d02Cpp3E"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="qIU57IBH"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0578D376F3
-	for <linux-btrfs@vger.kernel.org>; Sat, 10 Feb 2024 07:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4181928DA4;
+	Sat, 10 Feb 2024 08:48:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707551405; cv=none; b=LM1Wz16LmrkVA1EpD9HUEog906AS48vhv9Odi7uZmA2Ir+AEE12vf18VXcZojPZm5W0kLuZVLxxnhrpnR9bqVE1yAPi7ZveJJ0oJATSbunvTS8pUyg8vg8fRuJF4OSFr184/+h+VffJXPPEo15bRmYK9AT6lHPgKgLz/9gSKdZY=
+	t=1707554925; cv=none; b=d399pwsVowUqjdKIqhk8ZFlqt3j5stwUJEnJTmy+fehoJpimSUmu7b8rS9DVyJH+f6SWxeUqG0S6B/Hc0U/AUcpeAecPvGSdFlBupaPCJAi3oA3prGOx+YoyHuovN925HlW+yhdUtMVP589SUI09onrikx7EevVyZ8X4DghBNsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707551405; c=relaxed/simple;
-	bh=YhRxChoLZ6LkhPCC84Oc9gNTQhEkXoVNPi6HH4VYol8=;
+	s=arc-20240116; t=1707554925; c=relaxed/simple;
+	bh=by42dogj3zUmkKNyU1HJbDJGDyfM4sSev9s3YWrABgQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=VDgFnrsfTnRgeelf0rYgK8mBpovdhsLw8XQbDgAvklst+0wr1291poowk5JNDkDjGpIm8SdBx1uklezquv5k/tdtxHgjzORjfqCJqxb191zXXAhqppXIhKqmL+HzyKs6mZC6dS5PVSlL+Hx3AynfqchX3gVqpPE73H05GOSmwzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=d02Cpp3E; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=k2OHXgKP+IXJK+Xl2Kh/cC//V3SAqp4pSZ5ejKfsMGzeha5DEaiVGacXgMLamvQ/iJlw/toFq5k+zi2MS2GdneQLAyznjlZG524eZj+Y1TYgE0SJ5Hh18a/hYhbD/AtviMrHrSLCwJBa7HuybPjJqM+h7m1TxBgj4c4UYRgIW4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=qIU57IBH; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1707551397; x=1708156197; i=quwenruo.btrfs@gmx.com;
-	bh=YhRxChoLZ6LkhPCC84Oc9gNTQhEkXoVNPi6HH4VYol8=;
+	s=s31663417; t=1707554915; x=1708159715; i=quwenruo.btrfs@gmx.com;
+	bh=by42dogj3zUmkKNyU1HJbDJGDyfM4sSev9s3YWrABgQ=;
 	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=d02Cpp3EkbJoqhfgqeG+Fc86Y76U+CT1FrtaMO09n+ayhI3lKEs7kHO4T0sxOfT7
-	 CKaSAFznSAEw1RD1Rea4UHx7G3QWnHVKepRUWbEL4QJvvzsPJlXZvYr8ZHNueDLLq
-	 SVhER7PQTK9CdVmi5mbhmyy77Qt2Ip3YiWHLlWN4Wq96bh6UOY1kngd5QL9CmUJSK
-	 X8RRmv84NMSGBoOGlcbC3HuYqgo7dQTmJCqodwtGoN/Pr6d9YdYX7EdZZQVrC5ZGH
-	 f3ijQSTTL16+GYSw2JM5T8J048Bo2oJb4lDE/0ZgzHJ6+A5mDH9RRLkAL9ZY6Bz3S
-	 cCCQYJxl/O5M8uBCEA==
+	b=qIU57IBHWbi8iO4qZ5lgyMQYMaRNMQcIxYZjg8iXc/T9iUpnvT8QnOUOeDK//f2I
+	 AKhSnMjvMiuz/37W7NBRfeB1m48wGiCpZrb43/G3fuLZlgJE1PBJP0js0vtYti9yh
+	 5t9ViUg34rxVgVdD5BhPxpjlZy+MDTcqZn4Z1UNSDi+U7Mup7OaI8r4wrigPMARuX
+	 +plxuOogEHFRQj90FMZ4MNNZ74Ervfx+RmQDV3j+rVrkN7MfY10PeL1G06nA1H+NV
+	 TdhUC4/MhvIcHF4loCP7TM5z+4x4eWczbb3J3FJuZP4/CLfaJ2EB6Am7pdOjOqeY0
+	 6srTk+WTq+qzNltHrQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.101] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWzfl-1rWHQT3a8H-00XLqb; Sat, 10
- Feb 2024 08:49:57 +0100
-Message-ID: <475562bb-a26d-4214-bbfd-feb9aa77645d@gmx.com>
-Date: Sat, 10 Feb 2024 18:19:56 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhU5b-1r3E6j1uJX-00eb1k; Sat, 10
+ Feb 2024 09:48:35 +0100
+Message-ID: <9175d10b-035c-4151-80bc-f76bddc194ba@gmx.com>
+Date: Sat, 10 Feb 2024 19:18:29 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,12 +54,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 8/9] btrfs: remove do_list variable at
- btrfs_set_delalloc_extent()
+Subject: Re: [syzbot] Monthly btrfs report (Feb 2024)
 Content-Language: en-US
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1707491248.git.fdmanana@suse.com>
- <f8cf816e7c4d397c41bb2872ef75cd1fa7bdfd44.1707491248.git.fdmanana@suse.com>
+To: syzbot <syzbot+listad2f01a497df9ab5d719@syzkaller.appspotmail.com>,
+ clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+ linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000c47db50610f92cf9@google.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -85,69 +86,110 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <f8cf816e7c4d397c41bb2872ef75cd1fa7bdfd44.1707491248.git.fdmanana@suse.com>
+In-Reply-To: <000000000000c47db50610f92cf9@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3DM1YXi1WYeCEkhJRBeiJcjmevWTkazsjILR7qrRVSaHz7iOS8c
- OQJAqS7oTQViXJbclmsw0OykZJQvQAeK1Fr4LGj/oApUcxAYJXL2hLOiSC4KrvL1IOwqLOE
- 3jsqUf/FFrcTMmbh2+7z+/p3jwnBkysNTYT7KE1Q4W59hdW0/cFB/2PWPVZxnqAX6bdD6tD
- I8Rf1jGWDi34JFB9EgWYg==
+X-Provags-ID: V03:K1:epPBEk7HpEzTDkp3gxgPXB0p5toGWaSyAiNyjzgQaWFKoPJA8BV
+ 8sjRR/aSiS57nYrCqwlTM7yc0uy0TLd+Iq+S7XyLRjqYQVIupT0s3uuk0Wkppb5t6aRltAn
+ TF6jTKInsguQGsStA2Itq3qYLaRQ2glafsz8Za8F2XhfjN/Mgf0SlN2VBu9GrDXMJJ3FKeE
+ h/xxTMnZqZ7ZHuo3bgooA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:oKQjVZc6N7Y=;sxkr/uIRuo7qN48VMdTLl/iUwfD
- GwAiq/+BYKurd0CTLnj4sXjacz+Fzc31l3sBYRCCzp58am+bLcd1k97lHTwLU5z2YcUi6Iv/M
- 2i2JV3M39kTZGDHKr+j+MrNACKmTafZOTmpnE/6NOcwMQKgENqq3Ym11uY1QJoCv3pF1iDRMM
- oJ1TnL/lWcAzbW3wrRDnlBknftYgkJU3kL6eW6AvaSrVNBXBi531GHm/3xtKhPZina+vZLAsF
- C8+nK3UVWaKqnMlVqVeZvgIq5QC76r3Fz/f9rlh4+bUfLeUb7tH6J1wJFaTKU0OstzHgImv/d
- rZ0xJoB8MfbcnoFNubfDq2Ff93KpN8G/czXde1ldy+8nIs0qDQS4wb7u2zfawA96e/r+0YDJQ
- 41PF/aT1BGw52GDPLV/FBs4u64zLcdIF407PuJuf2AoFPB4E/5DbGZUixSPKlZfhzvodCVSfc
- chJQrN3KjrLOXwCunvWyRd7gMHY39qjA7J9w2N1ggLwUIMarGnvBhWVHiDJNrc2QG8TKkc4b1
- pFZn4/zd8yP6mxswOy3jf6cRu1pQTMlTBGRs2yjAGzGdZubzrwziRQCnpMNekwYDr0fgGGmAm
- DgY7TTEaAqB++IpylT8KP1Wfct1onsdpBCzZ0uAILwmvE9P6RYnE9f/LRzxIdbgcdfZbw6wMF
- Uel45c/NwZcWVwlfwBGegxUs50NYUadpmoovR+SeP0GtUG6t7ye6ZSI7FW4/8Q6EZonJ9clsm
- PbRx/AwMPy2SkuRtSAJA5tSDcFEHsSyLeNuMsfM8yTIee61Gr/UAvTtacsk5VBtPbOZE2CW7L
- ENHIPLa/NN7OOcVOK7bHiFK8YNDfHvXIIkXASAdLTPASk=
+UI-OutboundReport: notjunk:1;M01:P0:VuQ85KAy/UU=;5dkLB88JIXoOxzUzjUYzALMv++T
+ 6969Ys3tEqB3KkgoHy0FFubm+tjoutwdNOm8b1WYUUdr0TWtvaolMLUim4l/fDWYZ0qjodGB8
+ BOLfj/pqC4ZE2+qtvZJ2SgiXYOeZaAXdrRxYf/P4KxB9MKkNxsh10/axsFhlbDFyoWQZBKqXs
+ 77F7Oue+EukCDm3QkQEYRuppq3YaWwCysieWrYwV50p+zvhvaxdFVJ2ZEs/oW3HWLnbGIO4MQ
+ E0+omnffuKdmVY+ehU6CoWBe+hl47+aF9gqO93JlLvaZKoeciuAJh+qftWq8IZMIsND22Ylir
+ aG8rixE+Ut28AL9BQ3webVAmNEQ+htpK0d3M0aTondJe+E/FJt7mxYiuX2HE6Z+cX5Sq1YBrO
+ cAPXQ4TrU55Ku2d4dFTmetjnHitFb0pDhFjDj6Jg+542yk+IhV1N/tV8/KZZdi2mbylNtmezy
+ ARtCWZ5f3qwHaWzdqbtN29+OuMWTozZS13FFklUUGyfIHJq2FNGTbuac7qoH7aEfYU3cSAygc
+ /E2vS7gUkZbAJichq3v44TXDEXV/8YtCKO9lf6CdMvi86X2tjTIISiH1XKOTUlSOEMSC0qHgF
+ dU8hPx/dou0F2ABPO8+D/zvYI8+U3qrMbcT6m3IWWEPWqABbHtDGdhO+npSNJzkA6FeHQbHe+
+ DLjk5sOle8SUbCelew5geld6wk7DQOGIHYdTh57dlDYm8lRzmg7GJZUXjROxLceIMdfggK1JN
+ K+Bs8D3Vs7qmIIp/uUp4Sfn70QqgOuazwhGBuACSWBFpxzH2MllFuJNG6GDqg/bbDyn5dGAcN
+ YYAmJvsCbYXtigLWB/KpeElUQ68knhtWocCRIeBcKKCho=
 
 
 
-On 2024/2/10 04:30, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On 2024/2/10 07:27, syzbot wrote:
+> Hello btrfs maintainers/developers,
 >
-> The "do_list" variable is only used once, plus its name/meaning is a bit
-> confusing, so remove it and directory use btrfs_is_free_space_inode().
+> This is a 31-day syzbot report for the btrfs subsystem.
+> All related reports/information can be found at:
+> https://syzkaller.appspot.com/upstream/s/btrfs
 >
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> During the period, 1 new issues were detected and 1 were fixed.
+> In total, 43 issues are still open and 51 have been fixed so far.
+>
+> Some of the still happening issues:
+>
+> Ref  Crashes Repro Title
+> <1>  5804    Yes   kernel BUG in close_ctree
+>                     https://syzkaller.appspot.com/bug?extid=3D2665d678ff=
+fcc4608e18
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+I'm not sure why, but I never had a good experience reproducing the bug
+using the C reproduer.
+
+Furthermore, for this particular case, using that C reproducer only
+reduced tons of duplicated dmesg of:
+
+[  162.264838] btrfs: Unknown parameter 'noinode_cache'
+[  162.308573] loop0: detected capacity change from 0 to 32768
+[  162.308964] btrfs: Unknown parameter 'noinode_cache'
+[  162.313582] loop1: detected capacity change from 0 to 32768
+[  162.314070] btrfs: Unknown parameter 'noinode_cache'
+[  162.323629] loop3: detected capacity change from 0 to 32768
+[  162.324000] btrfs: Unknown parameter 'noinode_cache'
+[  162.328046] loop2: detected capacity change from 0 to 32768
+[  162.328417] btrfs: Unknown parameter 'noinode_cache'
+
+Unlike the latest report which shows a lot of other things.
+
+Anyone can help verifying the C reproducer?
+Or I'm doing something wrong withe the reproducer?
 
 Thanks,
 Qu
-
+> <2>  2636    Yes   WARNING in btrfs_space_info_update_bytes_may_use
+>                     https://syzkaller.appspot.com/bug?extid=3D8edfa01e46=
+fd9fe3fbfb
+> <3>  251     Yes   INFO: task hung in lock_extent
+>                     https://syzkaller.appspot.com/bug?extid=3Deaa05fbc75=
+63874b7ad2
+> <4>  245     Yes   WARNING in btrfs_chunk_alloc
+>                     https://syzkaller.appspot.com/bug?extid=3De8e56d5d31=
+d38b5b47e7
+> <5>  224     Yes   WARNING in btrfs_remove_chunk
+>                     https://syzkaller.appspot.com/bug?extid=3De8582cc168=
+81ec70a430
+> <6>  125     Yes   kernel BUG in insert_state_fast
+>                     https://syzkaller.appspot.com/bug?extid=3D9ce4a36127=
+ca92b59677
+> <7>  99      Yes   kernel BUG in btrfs_free_tree_block
+>                     https://syzkaller.appspot.com/bug?extid=3Da306f914b4=
+d01b3958fe
+> <8>  88      Yes   kernel BUG in set_state_bits
+>                     https://syzkaller.appspot.com/bug?extid=3Db9d2e54d23=
+01324657ed
+> <9>  79      Yes   WARNING in btrfs_commit_transaction (2)
+>                     https://syzkaller.appspot.com/bug?extid=3Ddafbca0e20=
+fbc5946925
+> <10> 74      Yes   WARNING in btrfs_put_transaction
+>                     https://syzkaller.appspot.com/bug?extid=3D3706b1df47=
+f2464f0c1e
+>
 > ---
->   fs/btrfs/inode.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 >
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index fe962a6045fd..17b6ab71584a 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -2462,7 +2462,6 @@ void btrfs_set_delalloc_extent(struct btrfs_inode =
-*inode, struct extent_state *s
->   		u64 len =3D state->end + 1 - state->start;
->   		u64 prev_delalloc_bytes;
->   		u32 num_extents =3D count_max_extents(fs_info, len);
-> -		bool do_list =3D !btrfs_is_free_space_inode(inode);
+> To disable reminders for individual bugs, reply with the following comma=
+nd:
+> #syz set <Ref> no-reminders
 >
->   		spin_lock(&inode->lock);
->   		btrfs_mod_outstanding_extents(inode, num_extents);
-> @@ -2487,7 +2486,7 @@ void btrfs_set_delalloc_extent(struct btrfs_inode =
-*inode, struct extent_state *s
->   		 * and are therefore protected against concurrent calls of this
->   		 * function and btrfs_clear_delalloc_extent().
->   		 */
-> -		if (do_list && prev_delalloc_bytes =3D=3D 0)
-> +		if (!btrfs_is_free_space_inode(inode) && prev_delalloc_bytes =3D=3D 0=
-)
->   			btrfs_add_delalloc_inode(inode);
->   	}
+> To change bug's subsystems, reply with:
+> #syz set <Ref> subsystems: new-subsystem
+>
+> You may send multiple commands in a single email message.
 >
 
