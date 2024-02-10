@@ -1,52 +1,52 @@
-Return-Path: <linux-btrfs+bounces-2297-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2298-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93713850367
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 08:48:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FE1A850368
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 08:49:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A768285A5B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 07:48:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 291E12822B8
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 07:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0752B9B7;
-	Sat, 10 Feb 2024 07:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 433AC2B9B7;
+	Sat, 10 Feb 2024 07:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="q3BtjUli"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="t/wmhVMK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B19134DD
-	for <linux-btrfs@vger.kernel.org>; Sat, 10 Feb 2024 07:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA87286AF
+	for <linux-btrfs@vger.kernel.org>; Sat, 10 Feb 2024 07:48:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707551310; cv=none; b=ZzXtUCzO7PuOsgqqoNvMUH6tgCWw0ScJoV7mA4thDb+UO7hDIIZonRHIxt0wVrQqZVDtEdCNttwkPdHERSL3wOvcQRRBgahKG3MD2fKPqeUCRsyiQS5RWUp6mzd1HolH0bvEbQTj+ud8d39k3Jp570kRyQuyrxeXMAi+DSmA9Ug=
+	t=1707551332; cv=none; b=nfeKR1skPJRdG/ZskroxTme9oPgzpPoisymNWqm8DMWAGw19nQeNz0g1QjZdlsIKJD/4i+8GhaV9j5Vd09s67Gjn4qCueHRUNIekKHZkdN98NyVGyy1O0A1G0b9uloWxBMiIYpll2hygxeFF1q3TyzS6H0JmGeu6wMN+iHO2A+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707551310; c=relaxed/simple;
-	bh=SlpJ4gH9pYus3R6S4F2NZ9ge0iLKY7aJ4qNN9Nvaur8=;
+	s=arc-20240116; t=1707551332; c=relaxed/simple;
+	bh=0NMiUcql6Em67/iMRa2dMENHaezjw2hnVLPLNs3PDXY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=EFD4P7r62sUonQOWSGYRNoTA4XlERjqSii7XgubaDIc7W+2KJaINBz9+6Zbhcgd5v49zX6kRe6v75oUQR3iJ6m0WPqM5Dwntntirxf8FcG94apPAGoHwOsYS9VaXouvlMeKrzCrngTYD+dQ07+ESoEluKxPYlpnMQmVk60njrUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=q3BtjUli; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=UrZWZZ/83vpXTc8+zDv0ucq7qFEzjWKmEetFJPqitARusqSpa3lPX8HPYcBqvkrDWGAD8Yc6MhRhV02vBKnT5fQ1bOl1Ojv4KLosHD/KdE8iqFPWmnU2Y3U6GkhPft7XMHtd7aBQAZjA0V/TEnnL6rqg+mMj0Aahqxy9z4UrbmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=t/wmhVMK; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1707551303; x=1708156103; i=quwenruo.btrfs@gmx.com;
-	bh=SlpJ4gH9pYus3R6S4F2NZ9ge0iLKY7aJ4qNN9Nvaur8=;
+	s=s31663417; t=1707551325; x=1708156125; i=quwenruo.btrfs@gmx.com;
+	bh=0NMiUcql6Em67/iMRa2dMENHaezjw2hnVLPLNs3PDXY=;
 	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=q3BtjUliui80PF4j8M95nnnioXtWvQdaG/CyxFQDa+Oon30E86TqLGkyW0hOjgaA
-	 qowMXBYPFEuO+q4z4KlG6zn4ou1XAF6lXHorYqkvuR7P4jY7i5GaprqdC1Pn8N6MG
-	 t5obHJgPSu0BaHD58AVs3IungswiyFBOjokIk8Uf3Urg8O+bpMqL/X6JBBuh9Z2qL
-	 vynxBJGLMAqb8KtMkel7M1JcuzBXdO155z+OKgG4bl0rVEF+pi5StdiWc6d9C69Vt
-	 ZnEWGta7nTppsyuiYg6KAN12MZKkKkAr8XHVPGlJ9KIz109sRWiV6p18pDsDMHy/G
-	 jN5OnHSk+vYnxJlfjw==
+	b=t/wmhVMKUXxaMnF24qIHHP08ENoswllOh9eolePjyfDuH7SlZaNURB290BmUA1Qm
+	 Uc1C+vKKWR0vXdgT7npgcxHLPhbHxFp5ob3oiGdMxNO18BeAWmUcMASaRGmEhqrg1
+	 g+PeNGG+TTV69WHl/wHG/dq9B8fvya4UZNlDwLn5O0NHn8R69iI4VE14p6MLXugaX
+	 tj7v69AHhuOjn/pqP4W+FtXutG//s+qzS+M3x+nn2iJ4u/hy1b+j42Go8NA0cFa4A
+	 Hq/EuZF7yg+UslBvQPRMxERKkux4V051mk1jZcuCiOs9PDpuuC4FjmJYnLzMS4ZHN
+	 MuWC2+3+9Dg9zeVX3Q==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.101] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6Daq-1rfJoE1QFM-006e40; Sat, 10
- Feb 2024 08:48:22 +0100
-Message-ID: <a8a495e8-e3a9-4663-bedd-10369a1fc76f@gmx.com>
-Date: Sat, 10 Feb 2024 18:18:19 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mi2Jt-1r3nGH1W4X-00e2wD; Sat, 10
+ Feb 2024 08:48:44 +0100
+Message-ID: <7467035e-15ad-4020-a621-e8939f9b29dd@gmx.com>
+Date: Sat, 10 Feb 2024 18:18:43 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,12 +54,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/9] btrfs: add lockdep assertion to remaining delalloc
- callbacks
+Subject: Re: [PATCH 7/9] btrfs: use assertion instead of BUG_ON when
+ adding/removing to delalloc list
 Content-Language: en-US
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1707491248.git.fdmanana@suse.com>
- <3c6359337ba942d628b989cc7458cde4d9a5373a.1707491248.git.fdmanana@suse.com>
+ <d5c32d0109f92b848b6a0054571ef48b82bd77ac.1707491248.git.fdmanana@suse.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -85,38 +85,36 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <3c6359337ba942d628b989cc7458cde4d9a5373a.1707491248.git.fdmanana@suse.com>
+In-Reply-To: <d5c32d0109f92b848b6a0054571ef48b82bd77ac.1707491248.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wMHwTVf7qsu/bad7aTJVgkY8JkQKg8ii8Jhu1hBD7MIy6fq7KrW
- BswtA/uCvHsdfqmDcEOyOdhJzz2V5ZAYNQftnxAXww4Kjenwnyu5BRP0sZBaStttkD8qzcn
- NkIjtjCdYjzNrNXlCttCWWVKzyOxz7qeidGtisO1hjXEeUtQQ9Bu+6e0LcpwBPVtjuc5eL6
- Vf8k6Bx2sOlNXSEZQFXBw==
+X-Provags-ID: V03:K1:g6+UZWejir0dSMVZYE5LPPqLf3ztttSS6BM7mIWRfbo7YyklKBC
+ fvS33lCxLuK3QZ5lUhssGJ1T828shcLwbyCBHU2t0sbB13y5js7cbrFl4Qat9cSY8OAwctl
+ ZOwqe1N3oqzn/sJB1UnfZas5C6TITO7/9WRtjZDRrJ8vzXTgRPbSEf1VxTCUrTm3NQga7IN
+ l957JYd0jjjdb6uJZ4A6w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:jMsMjgT74Q8=;XRfYY5l89Jwo+7X6UJB3fRzdLz5
- izbUZuhxhODiK4r+vIG0i5upNIvK4EI84xSgtB4PNFwg4SKaXf1YIEB3dP1f9GaF2or/Ii26w
- bxWEyIQOkiZacr6m97OeoKaPwvnXi6ixeL4CMnJrxbStswaYj0m4Uzpi99H+DOeFsMKu3Sdgw
- Mjl9xlDrsN3MQNsSrwquxc1HSwOykT6yS2eJhlw0VCnOe1rLkZgMQ/s32MzylZMWvQbR56bkd
- tyAEj8lZV9UaJRGlgISwBs1NDdz7lBEgFbQU/7TVoYkA4Ejhpb6NyQD1P0E34CkpjiEsDTrYk
- F5EGTowrLzHkr+i6mQ/5/MjqFqQXRf4peLYI1syinGHXWGj7Tmu6iFtuXjAtBdSLd7NC6lheV
- D1lC6oNOiipOMVteH/WJsv310USuZxRyFoRHm55VxxWu544PE6Boi9bCDsHwyh/silz6ZUNC7
- v7P7XmHX9jEfgPESuBRXL8csMsuMoRwAP7UIDSSQFHT3KLLciMo7t7xDPal/g5lU0m6OM8YOX
- 48HGfM8c/vmpzp8xypiW/v17Tc2X4rwiVvCGKMjMbFRPKk82sdNkSYrv0skbcK7rskRSvdxwQ
- bcIsXOtLezUUFHNZS3vvGSFElf6ufFYjUacXLapImshEcFJs8jdjxZ1G+w6S+Y3oLUVmXUTB5
- pxUohbcFLjc/EtxXOJCNgNa3WzOeI3txN+/3NOHoUM0HUKhw4o6HU8+i9BGpSGwb7eVGIwniq
- SpvkhWUZm9QnyJTu+KmB+BABhonsU8qoz7j/7BzfFBoR4V3esFI1FoXxj3O8DemFmzUKPK3jE
- GzmgVO/Db5VyuyoekWUvntyM9gRbKII4tSSETXArV8ASg=
+UI-OutboundReport: notjunk:1;M01:P0:b3zy6TqrWfw=;E4EEa4qOa/C0FcK5d5udFXBrdU7
+ RcyM8KfKs/16iHTnW4FMy1pG8sj6puRb4PyUg6d6zcLMEB+eb63If6fMaPmUTMcUUYmjGkQGG
+ f5xodRyf1EblArlzeAoDmf01fGk9qRwr3eFyhPpBEy270qP8a3B27AyNhzNn9PA4iQKunktea
+ hEIPo5mFqma+nrM4e/4iudeaQDCzgJD+URQeSM/Ck4rLhHe/s/penAyrTMhLickEO6XTgWzHi
+ iadnZgRAJub9ZCbL2DBx74ojTlPgP9ZKVc3RdUGuxppj1jzSlqe6gbCoMQdMRNUkbUbg6kKlE
+ loHrsgoEuirTPf4p0A6c8gGPSskwyrInfOoQ9DQGTPM1+u5iSJWGI7MXgY0ySvVjtcNR82/Ow
+ LksNJZYICinandi5NnYGcLg98/xw9kL0ARukQXX0O5fB8ehiLKJSwC2adlJlqUnQB/aTL2B6T
+ +LUqk/jZaM7J2dFBrr/4PORiT4JJQtLLzbWfqnlUnWXz+bF1vvxSlhiVMe1o758nMWdvEmiba
+ ZHoqRh6Zr/M22bcbKg4b0DUYHcfAM9bHXsYFBopSkRLWaAdJF295UC75zXYTrv8w9JRBVvZN/
+ LkXwc1H+pwHHS+au+gTwCAyJBXxpzZHD2bQwnWHiOSHJ8x6Nxz1GFhK9yKCaJNM7vahMzeRj7
+ lslJD+z9xeUniCMitX9auww1LgTT+Mb3PNdjmWeZdaDI9WDG0ppCNomAKtSQtq/9ao5HJNgXR
+ DEtbm7exhEuiyA7yuisuq28vYuMxfpb1iRJIjeOB/qIVEyDyQjmbztg62xtS8mOJp3kCrcNsB
+ SRCN91BGtaLCNiVyDiYxnPkLz0JdcsQb4rkSEruSsePWM=
 
 
 
 On 2024/2/10 04:30, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> The merge and split callbacks for an inode's io tree are supposed to be
-> called while the io tree's spinlock is being held, so that the given
-> extent_state records are stable, not modified or freed while the callbac=
-ks
-> are using them. So add lockdep assertions in the callbacks.
+> When adding or removing and inode to/from the root's delalloc list,
+> instead of using a BUG_ON() to validate list emptiness, use ASSERT()
+> since this is to check logic errors rather than real errors.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -126,31 +124,31 @@ Thanks,
 Qu
 
 > ---
->   fs/btrfs/inode.c | 4 ++++
->   1 file changed, 4 insertions(+)
+>   fs/btrfs/inode.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
 > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 778bb6754e00..c7a5fb1f8b3e 100644
+> index c7a5fb1f8b3e..fe962a6045fd 100644
 > --- a/fs/btrfs/inode.c
 > +++ b/fs/btrfs/inode.c
-> @@ -2300,6 +2300,8 @@ void btrfs_split_delalloc_extent(struct btrfs_inod=
-e *inode,
->   	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
->   	u64 size;
->
-> +	lockdep_assert_held(&inode->io_tree.lock);
-> +
->   	/* not delalloc, ignore it */
->   	if (!(orig->state & EXTENT_DELALLOC))
->   		return;
-> @@ -2338,6 +2340,8 @@ void btrfs_merge_delalloc_extent(struct btrfs_inod=
-e *inode, struct extent_state
->   	u64 new_size, old_size;
->   	u32 num_extents;
->
-> +	lockdep_assert_held(&inode->io_tree.lock);
-> +
->   	/* not delalloc, ignore it */
->   	if (!(other->state & EXTENT_DELALLOC))
->   		return;
+> @@ -2400,7 +2400,7 @@ static void btrfs_add_delalloc_inode(struct btrfs_=
+inode *inode)
+>   	root->nr_delalloc_inodes++;
+>   	if (root->nr_delalloc_inodes =3D=3D 1) {
+>   		spin_lock(&fs_info->delalloc_root_lock);
+> -		BUG_ON(!list_empty(&root->delalloc_root));
+> +		ASSERT(list_empty(&root->delalloc_root));
+>   		list_add_tail(&root->delalloc_root, &fs_info->delalloc_roots);
+>   		spin_unlock(&fs_info->delalloc_root_lock);
+>   	}
+> @@ -2426,7 +2426,7 @@ void __btrfs_del_delalloc_inode(struct btrfs_inode=
+ *inode)
+>   		if (!root->nr_delalloc_inodes) {
+>   			ASSERT(list_empty(&root->delalloc_inodes));
+>   			spin_lock(&fs_info->delalloc_root_lock);
+> -			BUG_ON(list_empty(&root->delalloc_root));
+> +			ASSERT(!list_empty(&root->delalloc_root));
+>   			list_del_init(&root->delalloc_root);
+>   			spin_unlock(&fs_info->delalloc_root_lock);
+>   		}
 
