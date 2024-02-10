@@ -1,52 +1,53 @@
-Return-Path: <linux-btrfs+bounces-2301-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2302-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD68885038E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 09:48:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34BCC8503B3
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 10:40:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BCE7281A8E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 08:48:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 531D91C22890
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Feb 2024 09:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE5E3611E;
-	Sat, 10 Feb 2024 08:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC5136135;
+	Sat, 10 Feb 2024 09:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="qIU57IBH"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="C286p3mh"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4181928DA4;
-	Sat, 10 Feb 2024 08:48:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E8731A8F
+	for <linux-btrfs@vger.kernel.org>; Sat, 10 Feb 2024 09:40:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707554925; cv=none; b=d399pwsVowUqjdKIqhk8ZFlqt3j5stwUJEnJTmy+fehoJpimSUmu7b8rS9DVyJH+f6SWxeUqG0S6B/Hc0U/AUcpeAecPvGSdFlBupaPCJAi3oA3prGOx+YoyHuovN925HlW+yhdUtMVP589SUI09onrikx7EevVyZ8X4DghBNsE=
+	t=1707558008; cv=none; b=OovpruTH4QBFI9gx58xBVmrFg3Dtp3xGBBq8D7+1Wtwt+aXg4kgbmNfJs9NFjoKREy56CByg+db3DSXa+/ziEmNSXokFnOUBVwjfziKkgJsyW7ZCY043UKVme90MJLxLuGAd4b9Y8VVPtxzmoemUg5/315+lihJN6wYt3lZt1IE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707554925; c=relaxed/simple;
-	bh=by42dogj3zUmkKNyU1HJbDJGDyfM4sSev9s3YWrABgQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=k2OHXgKP+IXJK+Xl2Kh/cC//V3SAqp4pSZ5ejKfsMGzeha5DEaiVGacXgMLamvQ/iJlw/toFq5k+zi2MS2GdneQLAyznjlZG524eZj+Y1TYgE0SJ5Hh18a/hYhbD/AtviMrHrSLCwJBa7HuybPjJqM+h7m1TxBgj4c4UYRgIW4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=qIU57IBH; arc=none smtp.client-ip=212.227.17.20
+	s=arc-20240116; t=1707558008; c=relaxed/simple;
+	bh=Osh8drQkNwe6JBC44u7X7aJqBPbWLZmvlVRu/B66Av4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XIdOJmTHtw0X4cxeluHDL17+rKHToqD07ki2YSbLPU0o+RK5pmfulmdOhxOjbP8N+Pk/WLTXzBJf3643arWDiHraTgIx/QtW4+SLoNHwQ+DEda3mULzz6X71Mpn8F9wkNjnRIXObqiIDX0hfMldZ28E7xVgF43iVZIBePc0BSAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=C286p3mh; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1707554915; x=1708159715; i=quwenruo.btrfs@gmx.com;
-	bh=by42dogj3zUmkKNyU1HJbDJGDyfM4sSev9s3YWrABgQ=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=qIU57IBHWbi8iO4qZ5lgyMQYMaRNMQcIxYZjg8iXc/T9iUpnvT8QnOUOeDK//f2I
-	 AKhSnMjvMiuz/37W7NBRfeB1m48wGiCpZrb43/G3fuLZlgJE1PBJP0js0vtYti9yh
-	 5t9ViUg34rxVgVdD5BhPxpjlZy+MDTcqZn4Z1UNSDi+U7Mup7OaI8r4wrigPMARuX
-	 +plxuOogEHFRQj90FMZ4MNNZ74Ervfx+RmQDV3j+rVrkN7MfY10PeL1G06nA1H+NV
-	 TdhUC4/MhvIcHF4loCP7TM5z+4x4eWczbb3J3FJuZP4/CLfaJ2EB6Am7pdOjOqeY0
-	 6srTk+WTq+qzNltHrQ==
+	s=s31663417; t=1707557991; x=1708162791; i=quwenruo.btrfs@gmx.com;
+	bh=Osh8drQkNwe6JBC44u7X7aJqBPbWLZmvlVRu/B66Av4=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=C286p3mhgbLibQ3mpKCtQSVkq7nxzOJ2kyhnprLgzY2ge1ktWlF0sfme5FUjOLAl
+	 oZaZc7HjxrZr4ivj/PK83h2A9l9/lHZBFtdc9IjuKx8Ims1LavywUw4WiyHWVBkMM
+	 1aQV/otjodUcy/qo8Z7dk5MOoqEXwVAJERFQN4EK7rI1/Y288L5M6Rnm7GlS/PhAZ
+	 oVp5OKKjgU+2yFToziFV1P2Z2Vi7YR+Z+wchawypPPnPLoChfCqmx4med+ebD+YAb
+	 Dby9RsBLTpMQQqsVJaPWYqPLHy8Yvio057Lp/hvBmjJcTUpwaJy8tG8KgK3aoVq8m
+	 by9IoW0YQRlyUlz/pg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.101] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhU5b-1r3E6j1uJX-00eb1k; Sat, 10
- Feb 2024 09:48:35 +0100
-Message-ID: <9175d10b-035c-4151-80bc-f76bddc194ba@gmx.com>
-Date: Sat, 10 Feb 2024 19:18:29 +1030
+Received: from [172.16.0.101] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MPXdC-1rKwJZ0xUY-00MZ4b; Sat, 10
+ Feb 2024 10:39:51 +0100
+Message-ID: <91eda445-e58c-4fab-ae49-a10951edfa8d@gmx.com>
+Date: Sat, 10 Feb 2024 20:09:47 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,13 +55,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] Monthly btrfs report (Feb 2024)
+Subject: Re: [PATCH 10/16] btrfs: remove non-standard extent handling in
+ __extent_writepage_io
 Content-Language: en-US
-To: syzbot <syzbot+listad2f01a497df9ab5d719@syzkaller.appspotmail.com>,
- clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000c47db50610f92cf9@google.com>
+To: Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <20230531060505.468704-1-hch@lst.de>
+ <20230531060505.468704-11-hch@lst.de>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -86,110 +88,113 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <000000000000c47db50610f92cf9@google.com>
+In-Reply-To: <20230531060505.468704-11-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:epPBEk7HpEzTDkp3gxgPXB0p5toGWaSyAiNyjzgQaWFKoPJA8BV
- 8sjRR/aSiS57nYrCqwlTM7yc0uy0TLd+Iq+S7XyLRjqYQVIupT0s3uuk0Wkppb5t6aRltAn
- TF6jTKInsguQGsStA2Itq3qYLaRQ2glafsz8Za8F2XhfjN/Mgf0SlN2VBu9GrDXMJJ3FKeE
- h/xxTMnZqZ7ZHuo3bgooA==
+X-Provags-ID: V03:K1:QFCRvcFstv7hnbQC2G2ioQntwrbSty7oZcKIVVqMdPS83NDYQai
+ NwX/E8E8YzFidgqykqHmtHf6dzVanrCCKvzwYe95c8cbdwtbASNnJYe6+c+4K5tF/f7YPlR
+ 1JogL4fn8AU25lXG6ANmMDp+c/PWeren4oOIiQa+/ffKKK9dJok4mBINJ9xeKhJPIgMcivU
+ FiEbhy6oh0AuPCAq3xANA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:VuQ85KAy/UU=;5dkLB88JIXoOxzUzjUYzALMv++T
- 6969Ys3tEqB3KkgoHy0FFubm+tjoutwdNOm8b1WYUUdr0TWtvaolMLUim4l/fDWYZ0qjodGB8
- BOLfj/pqC4ZE2+qtvZJ2SgiXYOeZaAXdrRxYf/P4KxB9MKkNxsh10/axsFhlbDFyoWQZBKqXs
- 77F7Oue+EukCDm3QkQEYRuppq3YaWwCysieWrYwV50p+zvhvaxdFVJ2ZEs/oW3HWLnbGIO4MQ
- E0+omnffuKdmVY+ehU6CoWBe+hl47+aF9gqO93JlLvaZKoeciuAJh+qftWq8IZMIsND22Ylir
- aG8rixE+Ut28AL9BQ3webVAmNEQ+htpK0d3M0aTondJe+E/FJt7mxYiuX2HE6Z+cX5Sq1YBrO
- cAPXQ4TrU55Ku2d4dFTmetjnHitFb0pDhFjDj6Jg+542yk+IhV1N/tV8/KZZdi2mbylNtmezy
- ARtCWZ5f3qwHaWzdqbtN29+OuMWTozZS13FFklUUGyfIHJq2FNGTbuac7qoH7aEfYU3cSAygc
- /E2vS7gUkZbAJichq3v44TXDEXV/8YtCKO9lf6CdMvi86X2tjTIISiH1XKOTUlSOEMSC0qHgF
- dU8hPx/dou0F2ABPO8+D/zvYI8+U3qrMbcT6m3IWWEPWqABbHtDGdhO+npSNJzkA6FeHQbHe+
- DLjk5sOle8SUbCelew5geld6wk7DQOGIHYdTh57dlDYm8lRzmg7GJZUXjROxLceIMdfggK1JN
- K+Bs8D3Vs7qmIIp/uUp4Sfn70QqgOuazwhGBuACSWBFpxzH2MllFuJNG6GDqg/bbDyn5dGAcN
- YYAmJvsCbYXtigLWB/KpeElUQ68knhtWocCRIeBcKKCho=
+UI-OutboundReport: notjunk:1;M01:P0:I2ffT+guAn8=;3XwIetITirvwem5MQ/0Leh6kiOw
+ 1Io31ZxiAY6uxa6zX2jkbwztRZ6CmcmP/kh0SHqU9TMxY7tYMTpCvjuqZ51heqxRvR3EyS7vE
+ fSR8Lvj79GNDeonVh2XP0oCefB2LVeAuZEs1w9abqnQkeKHXz8yifOXgniugC6H3tJe5QkOc1
+ rssB9DR1VmbvTX4y4hcChVo8bYQMKsx+POZzSvoahGdhoPWWAYZdivwQDZPOBJ2QRr/tQaFnn
+ I7autgRWxXBIjojge7kpNY4XmiGdYOyILDGxC1yhxuIw6bTSEMZa4N4alqi07LpwhKyPIKyRr
+ Gl/25Xw5Nut9JjdN8lVMxD//TiCijrjx1mE5UZJM9XOujq2sWwojblkYI+oabp582XUMDnABd
+ yf905Kt95KExZJ4gxtRz02WFmEr4jStBD0uCmIfgXXoI8L1bCAZb0PqYWLyTOPsEkN22TLtcX
+ B5U1Lt8bxYGrnaPZXpgsbpLVt2HRm/rAHuiipr2w6StEexOA7FLt5bfrQ93xvrEgAanv+wNe7
+ XBOAOCnMbwWY0H8DHKAI7LluBYdm8YTfIOMxn0OAeBW9i4XwpYa5kW1ODkf8/T45ddyQc3VGR
+ QRzyhPIMcaRxmGNpNm27TU8Vry9hi416GuyQFKKYGkTcPX8RrwgiZWBk1RJTLKQ59olYGRqIh
+ Ha8l5W1oP4ZPZOddWobMyP6Xby0Vpb642Rd0ALM026uUFFyO6YnsgQDuCmHIbIMeuK6rsoxc2
+ flnJhy5EFeJ9NKns85GNz1mGmTGnQH+dVT+I8Z3qLSDnbCKkyeAEcS8mPjfDE3GCcxQLVj8q2
+ O7DMSA22wciy/6mwkm3jnywXjI2nW1eAklLJ2lcAeCn4E=
 
 
 
-On 2024/2/10 07:27, syzbot wrote:
-> Hello btrfs maintainers/developers,
+On 2023/5/31 15:34, Christoph Hellwig wrote:
+> __extent_writepage_io is never called for compressed or inline extents,
+> or holes.  Remove the not quite working code for them and replace it wit=
+h
+> asserts that these cases don't happen.
 >
-> This is a 31-day syzbot report for the btrfs subsystem.
-> All related reports/information can be found at:
-> https://syzkaller.appspot.com/upstream/s/btrfs
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+It's a little too late, but this patch is causing crashing for subpage.
+
+> ---
+>   fs/btrfs/extent_io.c | 23 +++++------------------
+>   1 file changed, 5 insertions(+), 18 deletions(-)
 >
-> During the period, 1 new issues were detected and 1 were fixed.
-> In total, 43 issues are still open and 51 have been fixed so far.
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 09a9973c27ccfb..a2e1dbd9b92309 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -1361,7 +1361,6 @@ static noinline_for_stack int __extent_writepage_i=
+o(struct btrfs_inode *inode,
+>   	struct extent_map *em;
+>   	int ret =3D 0;
+>   	int nr =3D 0;
+> -	bool compressed;
 >
-> Some of the still happening issues:
+>   	ret =3D btrfs_writepage_cow_fixup(page);
+>   	if (ret) {
+> @@ -1419,10 +1418,14 @@ static noinline_for_stack int __extent_writepage=
+_io(struct btrfs_inode *inode,
+>   		ASSERT(cur < end);
+>   		ASSERT(IS_ALIGNED(em->start, fs_info->sectorsize));
+>   		ASSERT(IS_ALIGNED(em->len, fs_info->sectorsize));
+> +
+>   		block_start =3D em->block_start;
+> -		compressed =3D test_bit(EXTENT_FLAG_COMPRESSED, &em->flags);
+>   		disk_bytenr =3D em->block_start + extent_offset;
 >
-> Ref  Crashes Repro Title
-> <1>  5804    Yes   kernel BUG in close_ctree
->                     https://syzkaller.appspot.com/bug?extid=3D2665d678ff=
-fcc4608e18
+> +		ASSERT(!test_bit(EXTENT_FLAG_COMPRESSED, &em->flags));
+> +		ASSERT(block_start !=3D EXTENT_MAP_HOLE);
 
-I'm not sure why, but I never had a good experience reproducing the bug
-using the C reproduer.
+For subpage cases, __extent_writepage_io() can be triggered to write
+only a subset of the page, from extent_write_locked_range().
 
-Furthermore, for this particular case, using that C reproducer only
-reduced tons of duplicated dmesg of:
+In that case, if we have submitted the target range, since our @len is
+to the end of the page, we can hit a hole.
 
-[  162.264838] btrfs: Unknown parameter 'noinode_cache'
-[  162.308573] loop0: detected capacity change from 0 to 32768
-[  162.308964] btrfs: Unknown parameter 'noinode_cache'
-[  162.313582] loop1: detected capacity change from 0 to 32768
-[  162.314070] btrfs: Unknown parameter 'noinode_cache'
-[  162.323629] loop3: detected capacity change from 0 to 32768
-[  162.324000] btrfs: Unknown parameter 'noinode_cache'
-[  162.328046] loop2: detected capacity change from 0 to 32768
-[  162.328417] btrfs: Unknown parameter 'noinode_cache'
+In that case, this ASSERT() would be triggered.
+And even worse, if CONFIG_BTRFS_ASSERT() is not enabled, we can do wrong
+writeback using the wrong disk_bytenr.
 
-Unlike the latest report which shows a lot of other things.
-
-Anyone can help verifying the C reproducer?
-Or I'm doing something wrong withe the reproducer?
+So at least we need to skip the hole ranges for subpage.
+And thankfully the remaining two cases are impossible for subpage.
 
 Thanks,
 Qu
-> <2>  2636    Yes   WARNING in btrfs_space_info_update_bytes_may_use
->                     https://syzkaller.appspot.com/bug?extid=3D8edfa01e46=
-fd9fe3fbfb
-> <3>  251     Yes   INFO: task hung in lock_extent
->                     https://syzkaller.appspot.com/bug?extid=3Deaa05fbc75=
-63874b7ad2
-> <4>  245     Yes   WARNING in btrfs_chunk_alloc
->                     https://syzkaller.appspot.com/bug?extid=3De8e56d5d31=
-d38b5b47e7
-> <5>  224     Yes   WARNING in btrfs_remove_chunk
->                     https://syzkaller.appspot.com/bug?extid=3De8582cc168=
-81ec70a430
-> <6>  125     Yes   kernel BUG in insert_state_fast
->                     https://syzkaller.appspot.com/bug?extid=3D9ce4a36127=
-ca92b59677
-> <7>  99      Yes   kernel BUG in btrfs_free_tree_block
->                     https://syzkaller.appspot.com/bug?extid=3Da306f914b4=
-d01b3958fe
-> <8>  88      Yes   kernel BUG in set_state_bits
->                     https://syzkaller.appspot.com/bug?extid=3Db9d2e54d23=
-01324657ed
-> <9>  79      Yes   WARNING in btrfs_commit_transaction (2)
->                     https://syzkaller.appspot.com/bug?extid=3Ddafbca0e20=
-fbc5946925
-> <10> 74      Yes   WARNING in btrfs_put_transaction
->                     https://syzkaller.appspot.com/bug?extid=3D3706b1df47=
-f2464f0c1e
+
+> +		ASSERT(block_start !=3D EXTENT_MAP_INLINE);
+> +
+>   		/*
+>   		 * Note that em_end from extent_map_end() and dirty_range_end from
+>   		 * find_next_dirty_byte() are all exclusive
+> @@ -1431,22 +1434,6 @@ static noinline_for_stack int __extent_writepage_=
+io(struct btrfs_inode *inode,
+>   		free_extent_map(em);
+>   		em =3D NULL;
 >
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> To disable reminders for individual bugs, reply with the following comma=
-nd:
-> #syz set <Ref> no-reminders
->
-> To change bug's subsystems, reply with:
-> #syz set <Ref> subsystems: new-subsystem
->
-> You may send multiple commands in a single email message.
->
+> -		/*
+> -		 * compressed and inline extents are written through other
+> -		 * paths in the FS
+> -		 */
+> -		if (compressed || block_start =3D=3D EXTENT_MAP_HOLE ||
+> -		    block_start =3D=3D EXTENT_MAP_INLINE) {
+> -			if (compressed)
+> -				nr++;
+> -			else
+> -				btrfs_writepage_endio_finish_ordered(inode,
+> -						page, cur, cur + iosize - 1, true);
+> -			btrfs_page_clear_dirty(fs_info, page, cur, iosize);
+> -			cur +=3D iosize;
+> -			continue;
+> -		}
+> -
+>   		btrfs_set_range_writeback(inode, cur, cur + iosize - 1);
+>   		if (!PageWriteback(page)) {
+>   			btrfs_err(inode->root->fs_info,
 
