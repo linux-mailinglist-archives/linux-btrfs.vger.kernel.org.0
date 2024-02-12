@@ -1,121 +1,132 @@
-Return-Path: <linux-btrfs+bounces-2307-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2308-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15F3D8508DA
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Feb 2024 12:28:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF91C850C8C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 02:18:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48C941C221FD
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Feb 2024 11:28:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9891328233F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 01:18:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BD75A781;
-	Sun, 11 Feb 2024 11:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C75715B3;
+	Mon, 12 Feb 2024 01:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VVNmiy9g"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="oQIdC/ay";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="AIQtcroQ";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="oQIdC/ay";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="AIQtcroQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1859359178;
-	Sun, 11 Feb 2024 11:28:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836F8ECC;
+	Mon, 12 Feb 2024 01:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707650915; cv=none; b=LM2iap3c/auWLE3ZY1vqD8fInElCxZvZThVV6nf2vWufmRo1nJwJNvfsB9jRM4a4n3Dy4uz5RSfehZeZhGID+xGjujDPrktIHAebWJohETDq1BIv6to0FwekSZwikrzNM57hv3VShb6U3feD6gBTBeLPUjuCfu1Tcdy6UQytNsw=
+	t=1707700699; cv=none; b=VdhVfVUAyEsk9kJ/NOOjc36uAQqtRFE6+lOnR8s4hb4LJV/Geq1hem36Mx7/FOzki5vF+7/K2NEwj/bk+eLVOQm6vphYgOgkMLw4JrVKg7x7B77onbxC0ocxhrl+tP45Dq9zPd6FOqVGq9Mqj/F9d0PrWsrvzYQsVflib7aUUh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707650915; c=relaxed/simple;
-	bh=HjFd7lp/Wz0hf76j/PPhbXj5G+2sKMlVNXJoiKDg4bk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rL7pk+u0U2z5UIjgrEysbxA63kz0BEb+aQRWaUXsfg89XYkgV6UCOw9J6yxGOY3Xzz0wtJY/l1dxbWi5o81f3/OzUoK2Wk4r09obUaxo97ymKjywuxXt3Y9wN41vTK6jZMRX441yDMZsrcYP8GDvSth8XN6S6rui4NB4oirvVps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VVNmiy9g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A543BC433C7;
-	Sun, 11 Feb 2024 11:28:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707650914;
-	bh=HjFd7lp/Wz0hf76j/PPhbXj5G+2sKMlVNXJoiKDg4bk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=VVNmiy9grWrh3Zghjq5VGseh9AZAxFhShNAxddA6Ljq7aQ76yle1iMM1/tgdIgH4c
-	 IKVR8g2pcge19Jal2LNd+WQa0oS3P71yvkhNnXuoPl30DjHRRO+R5BUA6TchnyUFCq
-	 ickFciymG4iBb4XDNt9nAS7zu0OIYQfVp/wFhGmUOg7e60l1Y+syUgUXmWQVdjQkkG
-	 uuZHt4WYLyV6YzP3T53xqQ0xR4zoSRNDD9/7RxjIk/9rAGxiIHo4+kQHR90PjXFsou
-	 g6s+Lc11/M6Uptcxd+AKa4hWK0GPE7DbP/5qEnDrlVeHt28Rx03ZfJZh0cETewE7kt
-	 w/VWrw8a5r7yw==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] generic/736: fix a buffer overflow in readdir-while-renames.c
-Date: Sun, 11 Feb 2024 11:28:26 +0000
-Message-Id: <eff8549698ca7a61089e17727b3e1d45a4839e6f.1707650891.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1707700699; c=relaxed/simple;
+	bh=X8RxdkJ1f3GC/Mfkg3bDudPHmZhEkyhgPou98/1cj/o=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oUY8LDY5eD++EvwPygAa4xCg9AIDqsqiXPncbATp6GsYVqHtyaPa+NL2A4MHhumX+Ov8TYxUEWM5uuteb16CARUzA7YYAyfgV0s+7hJZDAl7TQkSsGzMTaYY8lvPqzaOEpKDA6I3/EatAmRYRNIX7AXX1FyPQbVxT9XqtrL9BDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=oQIdC/ay; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=AIQtcroQ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=oQIdC/ay; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=AIQtcroQ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9705021F14;
+	Mon, 12 Feb 2024 01:18:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707700695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X8RxdkJ1f3GC/Mfkg3bDudPHmZhEkyhgPou98/1cj/o=;
+	b=oQIdC/aykkr3AKWSWVD7djom4xgBEGB153u7plb+G4+xRdHR+thmfbuAeuYuQhPpWTlr8h
+	gv1QRMPdI/MzL14cLLh/gBbk9ZWLEkmlQhmvEX0BNKJylFy7gwjCFKiTzGRWKt4fAvbCyP
+	QeVUKkbf4yDFhPpIEtGTRmvj/sJYldU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707700695;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X8RxdkJ1f3GC/Mfkg3bDudPHmZhEkyhgPou98/1cj/o=;
+	b=AIQtcroQN/CWby1kPKOYhqDtBPm6i3wq7v8ILq4j9SgF/zAXX+KTYPEQWuR1nqNrXVVNZO
+	SQFoN5dk8GldNnDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707700695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X8RxdkJ1f3GC/Mfkg3bDudPHmZhEkyhgPou98/1cj/o=;
+	b=oQIdC/aykkr3AKWSWVD7djom4xgBEGB153u7plb+G4+xRdHR+thmfbuAeuYuQhPpWTlr8h
+	gv1QRMPdI/MzL14cLLh/gBbk9ZWLEkmlQhmvEX0BNKJylFy7gwjCFKiTzGRWKt4fAvbCyP
+	QeVUKkbf4yDFhPpIEtGTRmvj/sJYldU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707700695;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X8RxdkJ1f3GC/Mfkg3bDudPHmZhEkyhgPou98/1cj/o=;
+	b=AIQtcroQN/CWby1kPKOYhqDtBPm6i3wq7v8ILq4j9SgF/zAXX+KTYPEQWuR1nqNrXVVNZO
+	SQFoN5dk8GldNnDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A255813985;
+	Mon, 12 Feb 2024 01:18:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wTfPFNVxyWXlEgAAD6G6ig
+	(envelope-from <ddiss@suse.de>); Mon, 12 Feb 2024 01:18:13 +0000
+Date: Mon, 12 Feb 2024 12:18:06 +1100
+From: David Disseldorp <ddiss@suse.de>
+To: fdmanana@kernel.org
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, Filipe Manana
+ <fdmanana@suse.com>
+Subject: Re: [PATCH] generic/736: fix a buffer overflow in
+ readdir-while-renames.c
+Message-ID: <20240212121806.687b4987@echidna>
+In-Reply-To: <eff8549698ca7a61089e17727b3e1d45a4839e6f.1707650891.git.fdmanana@suse.com>
+References: <eff8549698ca7a61089e17727b3e1d45a4839e6f.1707650891.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.24
+X-Spamd-Result: default: False [-1.24 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.44)[78.67%]
+X-Spam-Flag: NO
 
-From: Filipe Manana <fdmanana@suse.com>
-
-The test is using a 32 characters buffer to print the full path for each
-file name, which in some setups it's not enough because $TEST_DIR can
-point to a path name longer than that, or even smaller but then the buffer
-is still not large enough after appending a file name. When that's the
-case it results in a core dump like this:
-
-  generic/736       QA output created by 736
-  *** buffer overflow detected ***: terminated
-  /opt/xfstests/tests/generic/736: line 32:  9217 Aborted                 (core dumped) $here/src/readdir-while-renames $target_dir
-  Silence is golden
-  - output mismatch (see /opt/xfstests/results//generic/736.out.bad)
-      --- tests/generic/736.out	2024-01-14 12:01:35.000000000 -0500
-      +++ /opt/xfstests/results//generic/736.out.bad	2024-01-23 18:58:37.990000000 -0500
-      @@ -1,2 +1,4 @@
-       QA output created by 736
-      +*** buffer overflow detected ***: terminated
-      +/opt/xfstests/tests/generic/736: line 32:  9217 Aborted                 (core dumped) $here/src/readdir-while-renames $target_dir
-       Silence is golden
-      ...
-      (Run diff -u /opt/xfstests/tests/generic/736.out /opt/xfstests/results//generic/736.out.bad  to see the entire diff)
-  Ran: generic/736
-  Failures: generic/736
-  Failed 1 of 1 tests
-
-We don't actually need to print the full path into the buffer, because we
-have previously set the current directory (chdir) to the path pointed by
-"dir_path". So fix this by printing only the relative path name which
-uses at most 5 characters (NUM_FILES is 5000 plus the nul terminator).
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- src/readdir-while-renames.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/src/readdir-while-renames.c b/src/readdir-while-renames.c
-index afeefb04..b99c0490 100644
---- a/src/readdir-while-renames.c
-+++ b/src/readdir-while-renames.c
-@@ -55,10 +55,16 @@ int main(int argc, char *argv[])
- 
- 	/* Now create all files inside the directory. */
- 	for (i = 1; i <= NUM_FILES; i++) {
--		char file_name[32];
-+		/* 8 characters is enough for NUM_FILES name plus '\0'. */
-+		char file_name[8];
- 		FILE *f;
- 
--		sprintf(file_name, "%s/%d", dir_path, i);
-+		ret = snprintf(file_name, sizeof(file_name), "%d", i);
-+		if (ret < 0 || ret >= sizeof(file_name)) {
-+			fprintf(stderr, "Buffer to small for filename %i\n", i);
-+			ret = EOVERFLOW;
-+			goto out;
-+		}
- 		f = fopen(file_name, "w");
- 		if (f == NULL) {
- 			fprintf(stderr, "Failed to create file number %d: %d\n",
--- 
-2.40.1
-
+Reviewed-by: David Disseldorp <ddiss@suse.de>
 
