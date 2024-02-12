@@ -1,48 +1,53 @@
-Return-Path: <linux-btrfs+bounces-2310-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2311-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75CEF850CCC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 02:59:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCC4D850CF9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 03:58:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00674B21408
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 01:59:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48C8EB22CB4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 02:58:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352661C16;
-	Mon, 12 Feb 2024 01:59:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405B946BF;
+	Mon, 12 Feb 2024 02:58:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AJGNEpkS"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="SRIQM7JG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5368417D2
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 Feb 2024 01:59:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64C64411;
+	Mon, 12 Feb 2024 02:57:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707703161; cv=none; b=e3HoMdljj674nTer621fvoUDZcqE40LCzDFhTTK9pJZleh/gZ26AOIKVixUltYQSKGtgfktxt2XpGAnBr83khbBn9pKdGAQyVfR92MsGJ300bU/KjUnCXJOURPhE5JuOVpdBQRvem7uI67CipEPr9w+Pe70LDwz+8x7PX4eGQ74=
+	t=1707706680; cv=none; b=b5q+RpxenzWJo+C3Qq9cRG4DS3meygwtMz3PCO7mIyu20tqn095bBikEwB0HYS6eLmow7K4SkwQfQs6f/0wE87mp/urF8Yu/C/u75ggiJ1olwR49POIjxUyJ4Qc5CorRzlErjlG0O14yRKiIdUnDXbZ02VsH0yyklT1S3vq6V4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707703161; c=relaxed/simple;
-	bh=k30RgUftOEtjZ4ilUgy8F6q7Tdo873bh/HDTyQxTzEA=;
+	s=arc-20240116; t=1707706680; c=relaxed/simple;
+	bh=ztGjQYrAp08NQlI0sP7paMk2fx24gJxOAohk64a2zus=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bX+5MKbU6l70IYWcYfmKqMX5oVx3CmK862pr3IItTemLfGricDpavu7n6JnNMFr8NFNIJq3JCxjcHqey5vy8ibutU1/xkar5VNYPbFOsxMONoHUFgh90LWMqh/uPXTCk+3fpzlhNdKRQPWWcRzZ3dPoQ9zM6A4xlZsxwM0Zh80A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AJGNEpkS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8BA1C433C7;
-	Mon, 12 Feb 2024 01:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707703160;
-	bh=k30RgUftOEtjZ4ilUgy8F6q7Tdo873bh/HDTyQxTzEA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=AJGNEpkSU4R2osrl1Y7r2ZbR2AzRBw6KYB2stSe4uf/oV81PmlxmEvflv6lMqGICX
-	 I/mYBJEKjpJWIYjasy0MhJWuYjxLt9023EglDsnaBr13ZJWOCDp4y1cOjeMdhHh+DI
-	 KI6kBtXzWceUlkZJJCDCPFoZmctcTCKkXYODAJfmUUiSnFesueu04xZAEtNNjIpRIy
-	 +6UZbPbL7W1X8K0gdpzjO2e5OPqYIQ1LXqVNKClEpYf2eJJkDAy8vUsHAI1gaKqWH5
-	 gfO3nmBIOcrEdVoo+GL4JRUUlYH95HOgKUDj3UnL8MW/rS87RgQY4Kn9CcGVIFK4Dg
-	 DPFckuvywjg4Q==
-Message-ID: <c34e93ef-8bc1-4e53-b009-0d8fc150e635@kernel.org>
-Date: Mon, 12 Feb 2024 10:59:18 +0900
+	 In-Reply-To:Content-Type; b=LS2mPHts84eFypV82WKS5G531rz4XcKRvkxlW1tWsIfTViUzsZ7ZFE80SOD0tloUcKdoRU1iK/8Q0StBD9AfXPkDecaskaQavT6khmbxJtMaIT7q6G76C++hWBY1PuhEaf4fqdlpquy0wkJQ9RgEEoKlQa1aua8105Wa4L+aA9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=SRIQM7JG; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1707706670; x=1708311470; i=quwenruo.btrfs@gmx.com;
+	bh=ztGjQYrAp08NQlI0sP7paMk2fx24gJxOAohk64a2zus=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=SRIQM7JGO2xyIqO0K9HSQ1xXD+FfL4v27jcMjJJEi2I8xAfoFJ0c2ECpPWNMV6lJ
+	 FH4VDoZD+ZxQLGyrzR/+76VdtM813ISNPd0wCXdojyEPHXZ0rCDZqM0JVQyGNfiKK
+	 4weXwHHuKXa2ymKr2oAErX7hmvLf4JD2UUaHvyeyFE8+ybANmEP9Ob5DEcPj2EdkE
+	 +d9Z8L8/ZANVSAailt+Ob3bPS3XYMm6Tmoed1ef5XOehDKgCF4udIv7M4AKTCaurE
+	 uTMWGD4yigyYfQc7tw6ox+5cec5W3NBg9+a4KHcM3eqIH65PzNR3hGXY9OxAphKxP
+	 gDz1zb4+b9u3jdOhmQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.101] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOzSu-1rL93B46gu-00PPqJ; Mon, 12
+ Feb 2024 03:57:50 +0100
+Message-ID: <8dbda6ea-b78d-4b31-ba40-cfc63c48145e@gmx.com>
+Date: Mon, 12 Feb 2024 13:27:46 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -50,125 +55,130 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: zoned: don't skip block group profile checks on
- conv zones
+Subject: Re: [PATCH] generic/736: fix a buffer overflow in
+ readdir-while-renames.c
+To: fdmanana@kernel.org, fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <eff8549698ca7a61089e17727b3e1d45a4839e6f.1707650891.git.fdmanana@suse.com>
 Content-Language: en-US
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
- linux-btrfs@vger.kernel.org
-Cc: David Sterba <dsterba@suse.cz>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
- Naohiro Aota <naohiro.aota@wdc.com>, =?UTF-8?B?6Z+p5LqO5oOf?= <hrx@bupt.moe>
-References: <534c381d897ad3f29948594014910310fe504bbc.1707475586.git.johannes.thumshirn@wdc.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <534c381d897ad3f29948594014910310fe504bbc.1707475586.git.johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <eff8549698ca7a61089e17727b3e1d45a4839e6f.1707650891.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:antg1QBcPKFTy5MgYh70ewxcOkB6CKxhWNlnwMNtgxNlyhfSECm
+ 4ugfe0xpXQFBPdPdzz36eurIi8/HgNPOY49IPKvi61eAxRS722FguT1qI7LjbXa2xPyRNSf
+ 6qcZuAP/RTbQbbvKMfB/McqBCh382hd43AP2xyrwZu+Y7vll0FAczuG1uNj3MVk3obWKgi5
+ piuWvHsCXEda2Qq0XF+Kw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:gBBtNlOj2Yo=;N880Pu0mutMyX2qnPYAfcALoaUi
+ Yzxvfb+GyPXY2/jaBIVuqXOEdH9hKJjQixl1vm482ABaaHVi4IFIMgx2Snll3VCkLO2/d//cT
+ lwtMhxcN8FzbZJlKDgIN72+VpdPJKIx+05S7EYctiDeJTcqM2poXopMsb+DOBY75ukW/7/3fH
+ BTQc8nWddo+uJ90+XI8awRXIMIyRnG86KJGB8dvIXy3/ZHq7lxZm6P00jR7NQulIF42gCfung
+ n+UMqwPrWNDYG+YosNYAu0S3y5czhEdhOX9kzoY0BwqGre9xE58FnfshQFpwnoHPIq0WYobS/
+ otiE8Pd6n5oOUEdvLXgGDo6fHRUYU41lkhLLQIZlJvRgfbp8WobVypZO1/oDMy6ad8XBk+wiW
+ FwjfcDZZH3tn51nk6Dhbpamwmqp/Np5PbUxUjTHW25bZ2RRnH/00gNCWlfAqLyCHa/um3PSXU
+ STJSiFOMjzGQXKfGjy0BeSn7NsXQmTYJIJsXIve2+CtcCGH003GBjd09SdiyasypHpDbD8jts
+ r3Ck+uDXvwdpfnGUa9GLnGHVfrvhEveQATZY7PNiL7VEkvpg+ZnlnCwVQ9n04x8UYCelJ3d3U
+ xja5zfXqXdb+m1rsVeFp1zdaDKTkq4dED7ecy9JQv5muyQAUAwXRunayM6bsA0kM5Sbz9a8WW
+ 3Wup7DZBi2q3I5QOtzt/N122XBhkdG4Xya1u7z93T8iX+dFZSGcYBNB9h9D6ahXMTj327qOcM
+ mWbfUqb7Uus1f3RNT+FrDUt/teJU3zt4K8OZJTOvOdKakXUUoYHFw5QBAPUt+kauMETII7pf7
+ BDUUrEW/SeX2+1rbcUkj+G36P/0Q+OFKr9rLbuSTz73VE=
 
-On 2/9/24 19:46, Johannes Thumshirn wrote:
-> On a zoned filesystem with conventional zones, we're skipping the block
-> group profile checks for the conventional zones.
-> 
-> This allows converting a zoned filesystem's data block groups to RAID when
-> all of the zones backing the chunk are on conventional zones.  But this
-> will lead to problems, once we're trying to allocate chunks backed by
-> sequential zones.
-> 
-> So also check for conventional zones when loading a block group's profile
-> on them.
-> 
-> Reported-by: 韩于惟 <hrx@bupt.moe>
 
-Let's keep using the roman alphabet for names please...
 
-Yuwei,
+On 2024/2/11 21:58, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> The test is using a 32 characters buffer to print the full path for each
+> file name, which in some setups it's not enough because $TEST_DIR can
+> point to a path name longer than that, or even smaller but then the buff=
+er
+> is still not large enough after appending a file name. When that's the
+> case it results in a core dump like this:
+>
+>    generic/736       QA output created by 736
+>    *** buffer overflow detected ***: terminated
+>    /opt/xfstests/tests/generic/736: line 32:  9217 Aborted              =
+   (core dumped) $here/src/readdir-while-renames $target_dir
+>    Silence is golden
+>    - output mismatch (see /opt/xfstests/results//generic/736.out.bad)
+>        --- tests/generic/736.out	2024-01-14 12:01:35.000000000 -0500
+>        +++ /opt/xfstests/results//generic/736.out.bad	2024-01-23 18:58:3=
+7.990000000 -0500
+>        @@ -1,2 +1,4 @@
+>         QA output created by 736
+>        +*** buffer overflow detected ***: terminated
+>        +/opt/xfstests/tests/generic/736: line 32:  9217 Aborted         =
+        (core dumped) $here/src/readdir-while-renames $target_dir
+>         Silence is golden
+>        ...
+>        (Run diff -u /opt/xfstests/tests/generic/736.out /opt/xfstests/re=
+sults//generic/736.out.bad  to see the entire diff)
+>    Ran: generic/736
+>    Failures: generic/736
+>    Failed 1 of 1 tests
+>
+> We don't actually need to print the full path into the buffer, because w=
+e
+> have previously set the current directory (chdir) to the path pointed by
+> "dir_path". So fix this by printing only the relative path name which
+> uses at most 5 characters (NUM_FILES is 5000 plus the nul terminator).
+>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Not all kernel developers can read Chinese, so please sign your emails with your
-name written in roman alphabet.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Thanks,
+Qu
 > ---
->  fs/btrfs/zoned.c | 30 +++++++++++++++++++++++++++---
->  1 file changed, 27 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index d9716456bce0..5beb6b936e61 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -1369,8 +1369,10 @@ static int btrfs_load_block_group_single(struct btrfs_block_group *bg,
->  		return -EIO;
->  	}
->  
-> -	bg->alloc_offset = info->alloc_offset;
-> -	bg->zone_capacity = info->capacity;
-> +	if (info->alloc_offset != WP_CONVENTIONAL) {
-> +		bg->alloc_offset = info->alloc_offset;
-> +		bg->zone_capacity = info->capacity;
-> +	}
->  	if (test_bit(0, active))
->  		set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &bg->runtime_flags);
->  	return 0;
-> @@ -1406,6 +1408,16 @@ static int btrfs_load_block_group_dup(struct btrfs_block_group *bg,
->  		return -EIO;
->  	}
->  
-> +	if (zone_info[0].alloc_offset == WP_CONVENTIONAL) {
-> +		zone_info[0].alloc_offset = bg->alloc_offset;
-> +		zone_info[0].capacity = bg->length;
-> +	}
-> +
-> +	if (zone_info[1].alloc_offset == WP_CONVENTIONAL) {
-> +		zone_info[1].alloc_offset = bg->alloc_offset;
-> +		zone_info[1].capacity = bg->length;
-> +	}
-> +
->  	if (test_bit(0, active) != test_bit(1, active)) {
->  		if (!btrfs_zone_activate(bg))
->  			return -EIO;
-> @@ -1458,6 +1470,9 @@ static int btrfs_load_block_group_raid1(struct btrfs_block_group *bg,
->  						 zone_info[1].capacity);
->  	}
->  
-> +	if (zone_info[0].alloc_offset == WP_CONVENTIONAL)
-> +		zone_info[0].alloc_offset = bg->alloc_offset;
-> +
->  	if (zone_info[0].alloc_offset != WP_MISSING_DEV)
->  		bg->alloc_offset = zone_info[0].alloc_offset;
->  	else
-> @@ -1479,6 +1494,11 @@ static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
->  		return -EINVAL;
->  	}
->  
-> +	for (int i = 0; i < map->num_stripes; i++) {
-> +		if (zone_info[i].alloc_offset == WP_CONVENTIONAL)
-> +			zone_info[i].alloc_offset = bg->alloc_offset;
-> +	}
-> +
->  	for (int i = 0; i < map->num_stripes; i++) {
->  		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
->  		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
-> @@ -1511,6 +1531,11 @@ static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
->  		return -EINVAL;
->  	}
->  
-> +	for (int i = 0; i < map->num_stripes; i++) {
-> +		if (zone_info[i].alloc_offset == WP_CONVENTIONAL)
-> +			zone_info[i].alloc_offset = bg->alloc_offset;
-> +	}
-> +
->  	for (int i = 0; i < map->num_stripes; i++) {
->  		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
->  		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
-> @@ -1605,7 +1630,6 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
->  		} else if (map->num_stripes == num_conventional) {
->  			cache->alloc_offset = last_alloc;
->  			set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &cache->runtime_flags);
-> -			goto out;
->  		}
->  	}
->  
-
--- 
-Damien Le Moal
-Western Digital Research
-
+>   src/readdir-while-renames.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/src/readdir-while-renames.c b/src/readdir-while-renames.c
+> index afeefb04..b99c0490 100644
+> --- a/src/readdir-while-renames.c
+> +++ b/src/readdir-while-renames.c
+> @@ -55,10 +55,16 @@ int main(int argc, char *argv[])
+>
+>   	/* Now create all files inside the directory. */
+>   	for (i =3D 1; i <=3D NUM_FILES; i++) {
+> -		char file_name[32];
+> +		/* 8 characters is enough for NUM_FILES name plus '\0'. */
+> +		char file_name[8];
+>   		FILE *f;
+>
+> -		sprintf(file_name, "%s/%d", dir_path, i);
+> +		ret =3D snprintf(file_name, sizeof(file_name), "%d", i);
+> +		if (ret < 0 || ret >=3D sizeof(file_name)) {
+> +			fprintf(stderr, "Buffer to small for filename %i\n", i);
+> +			ret =3D EOVERFLOW;
+> +			goto out;
+> +		}
+>   		f =3D fopen(file_name, "w");
+>   		if (f =3D=3D NULL) {
+>   			fprintf(stderr, "Failed to create file number %d: %d\n",
 
