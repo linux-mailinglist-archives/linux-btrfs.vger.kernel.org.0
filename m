@@ -1,132 +1,102 @@
-Return-Path: <linux-btrfs+bounces-2308-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2309-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF91C850C8C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 02:18:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 956E1850CBC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 02:35:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9891328233F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 01:18:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C13F51C22803
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 01:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C75715B3;
-	Mon, 12 Feb 2024 01:18:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="oQIdC/ay";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="AIQtcroQ";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="oQIdC/ay";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="AIQtcroQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24B501841;
+	Mon, 12 Feb 2024 01:35:20 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836F8ECC;
-	Mon, 12 Feb 2024 01:18:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3AC10E5
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 Feb 2024 01:35:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707700699; cv=none; b=VdhVfVUAyEsk9kJ/NOOjc36uAQqtRFE6+lOnR8s4hb4LJV/Geq1hem36Mx7/FOzki5vF+7/K2NEwj/bk+eLVOQm6vphYgOgkMLw4JrVKg7x7B77onbxC0ocxhrl+tP45Dq9zPd6FOqVGq9Mqj/F9d0PrWsrvzYQsVflib7aUUh0=
+	t=1707701719; cv=none; b=b30rUB0RWbsSuw1hrU7G8Fi13KGqikSxqnjBfqh1FEQgNyTAv1d2tbA2S/T6sCbVQ+tN54wH74yjL4ot4hccHp18jK9l3NsVjlQA0y6CZ9fisKVNXhJTGytMprBw5gcmfPsqDX926pHBzedZEULb6YpoEKnEjX1sPkVEYK3caB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707700699; c=relaxed/simple;
-	bh=X8RxdkJ1f3GC/Mfkg3bDudPHmZhEkyhgPou98/1cj/o=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oUY8LDY5eD++EvwPygAa4xCg9AIDqsqiXPncbATp6GsYVqHtyaPa+NL2A4MHhumX+Ov8TYxUEWM5uuteb16CARUzA7YYAyfgV0s+7hJZDAl7TQkSsGzMTaYY8lvPqzaOEpKDA6I3/EatAmRYRNIX7AXX1FyPQbVxT9XqtrL9BDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=oQIdC/ay; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=AIQtcroQ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=oQIdC/ay; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=AIQtcroQ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9705021F14;
-	Mon, 12 Feb 2024 01:18:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707700695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X8RxdkJ1f3GC/Mfkg3bDudPHmZhEkyhgPou98/1cj/o=;
-	b=oQIdC/aykkr3AKWSWVD7djom4xgBEGB153u7plb+G4+xRdHR+thmfbuAeuYuQhPpWTlr8h
-	gv1QRMPdI/MzL14cLLh/gBbk9ZWLEkmlQhmvEX0BNKJylFy7gwjCFKiTzGRWKt4fAvbCyP
-	QeVUKkbf4yDFhPpIEtGTRmvj/sJYldU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707700695;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X8RxdkJ1f3GC/Mfkg3bDudPHmZhEkyhgPou98/1cj/o=;
-	b=AIQtcroQN/CWby1kPKOYhqDtBPm6i3wq7v8ILq4j9SgF/zAXX+KTYPEQWuR1nqNrXVVNZO
-	SQFoN5dk8GldNnDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707700695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X8RxdkJ1f3GC/Mfkg3bDudPHmZhEkyhgPou98/1cj/o=;
-	b=oQIdC/aykkr3AKWSWVD7djom4xgBEGB153u7plb+G4+xRdHR+thmfbuAeuYuQhPpWTlr8h
-	gv1QRMPdI/MzL14cLLh/gBbk9ZWLEkmlQhmvEX0BNKJylFy7gwjCFKiTzGRWKt4fAvbCyP
-	QeVUKkbf4yDFhPpIEtGTRmvj/sJYldU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707700695;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X8RxdkJ1f3GC/Mfkg3bDudPHmZhEkyhgPou98/1cj/o=;
-	b=AIQtcroQN/CWby1kPKOYhqDtBPm6i3wq7v8ILq4j9SgF/zAXX+KTYPEQWuR1nqNrXVVNZO
-	SQFoN5dk8GldNnDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A255813985;
-	Mon, 12 Feb 2024 01:18:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wTfPFNVxyWXlEgAAD6G6ig
-	(envelope-from <ddiss@suse.de>); Mon, 12 Feb 2024 01:18:13 +0000
-Date: Mon, 12 Feb 2024 12:18:06 +1100
-From: David Disseldorp <ddiss@suse.de>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, Filipe Manana
- <fdmanana@suse.com>
-Subject: Re: [PATCH] generic/736: fix a buffer overflow in
- readdir-while-renames.c
-Message-ID: <20240212121806.687b4987@echidna>
-In-Reply-To: <eff8549698ca7a61089e17727b3e1d45a4839e6f.1707650891.git.fdmanana@suse.com>
-References: <eff8549698ca7a61089e17727b3e1d45a4839e6f.1707650891.git.fdmanana@suse.com>
+	s=arc-20240116; t=1707701719; c=relaxed/simple;
+	bh=vLov/lwy3plTsfy9GLWCezeRrF5YZdGCLLA89+llgJY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Aafjeaui1B96/8IyHjwPDmrQJGKMcdX/gMGRdxQQldyXGaMa+d9aNTom0z7XGxz/tO+n4bEeguoPR1yNUyWxA9hiEW0fkpV1FolMKpUUQRT2wx8tVvSsEeD95aCFsVDC4qMOMrJ46ZKL0sf3Lmz+fj6VJ7J9Y/yPyTM9m5Z8bgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-68ca3ab3358so14599756d6.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 11 Feb 2024 17:35:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707701716; x=1708306516;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m4lCnr524+Z2awrdo3+gjkRrCRzSgWMcD2ocX3HLWag=;
+        b=E+Mh2AOV9D3B/mAAsVf1RZ+P3nNmcAhe/O38ZZrEpyfWra2YBQdw48+GJ/sDLpODLj
+         KUqYOAq3ipAlQGeKaE3JU0NatK61vf8nUXQLk/0tIiZvd5QnPJlGou03P78SBE3Ns6qM
+         QH89BGgTVJZIr1fjSW8ORLDSIwHY9/rg5waaQ3FV2PJ8DSuYeB9/54ae/cO9VXD9J62Z
+         VE50393WyhvSwkFHRuVONHQ9DLkwRU08Ft0C3BSi+6Z6r+KFBWlquKG+wjLlwICRGpAO
+         MKKeVtdALUSuplp55NrSRn1JIpyrZEJ41ihiRqxVOitQgkx4kDXo4nytC3b8GYzpDlMN
+         aStg==
+X-Gm-Message-State: AOJu0YzuveoySB6D4a5zpGPlJWjGmdpBbqbdUX7u5GQwQ+nUO8Lg2G8I
+	ncPyzip98beUGnQ9ko2dW2LIFkWzjwaD43jTxJ/SzvgTlJypEzj71V5mDR3Igd8=
+X-Google-Smtp-Source: AGHT+IFxn3rWnB3i7MzNF6Y1kJIPn07tgcIWhvobDN19+gx1zz/N8kvgsydY0RKQcktSVY0tZVoMkQ==
+X-Received: by 2002:a0c:e345:0:b0:68c:e740:5f61 with SMTP id a5-20020a0ce345000000b0068ce7405f61mr5043412qvm.57.1707701715709;
+        Sun, 11 Feb 2024 17:35:15 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX50SqYUUcqUv+CwoiLz8Rc1E5Pk3VUMyjMDNdKSdjXmDCBLTXareqo3CXVUMYg+W11Ta24Yv8BAR8iqPl2bZQqpVFQKHVJ/rJkiU2xaAOCweg/08S4QsXIqBSD5gpK22g8WJDOBkmUPsoTnL4A7d8=
+Received: from Belldandy-Slimbook.infra.opensuse.org ([32.220.181.243])
+        by smtp.gmail.com with ESMTPSA id nz9-20020a0562143a8900b0068189a17598sm3176984qvb.72.2024.02.11.17.35.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Feb 2024 17:35:15 -0800 (PST)
+From: Neal Gompa <neal@gompa.dev>
+To: linux-btrfs@vger.kernel.org
+Cc: Josef Bacik <josef@toxicpanda.com>,
+	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+	Davide Cavalca <davide@cavalca.name>,
+	Neal Gompa <neal@gompa.dev>
+Subject: [PATCH] btrfs: sysfs: Drop unnecessary double logical negation in acl_show()
+Date: Sun, 11 Feb 2024 20:34:44 -0500
+Message-ID: <20240212013449.1933655-1-neal@gompa.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.24
-X-Spamd-Result: default: False [-1.24 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.44)[78.67%]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-Reviewed-by: David Disseldorp <ddiss@suse.de>
+The IS_ENABLED() macro already guarantees the result will be a
+suitable boolean return value ("1" for enabled, and "0" for disabled).
+
+Thus, it seems that the "!!" used right before is unnecessary, since
+it is a double negation.
+
+Dropping it should not result in any functional changes.
+
+Signed-off-by: Neal Gompa <neal@gompa.dev>
+---
+ fs/btrfs/sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index e6b51fb..c07a9f7 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -421,7 +421,7 @@ BTRFS_ATTR(static_feature, supported_sectorsizes,
+ 
+ static ssize_t acl_show(struct kobject *kobj, struct kobj_attribute *a, char *buf)
+ {
+-	return sysfs_emit(buf, "%d\n", !!IS_ENABLED(CONFIG_BTRFS_FS_POSIX_ACL));
++	return sysfs_emit(buf, "%d\n", IS_ENABLED(CONFIG_BTRFS_FS_POSIX_ACL));
+ }
+ BTRFS_ATTR(static_feature, acl, acl_show);
+ 
+-- 
+2.43.0
+
 
