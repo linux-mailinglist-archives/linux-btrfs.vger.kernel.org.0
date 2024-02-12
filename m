@@ -1,251 +1,223 @@
-Return-Path: <linux-btrfs+bounces-2313-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2314-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 857C9850D16
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 05:01:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D002850D57
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 06:16:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD6471C213BF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 04:01:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C25D1F23E50
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Feb 2024 05:16:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D20A5235;
-	Mon, 12 Feb 2024 04:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1715463AE;
+	Mon, 12 Feb 2024 05:16:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="GYPFTPvP"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lNvrkQvC";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lNvrkQvC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2764428
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 Feb 2024 04:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.155.65.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3199F53A1;
+	Mon, 12 Feb 2024 05:16:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707710488; cv=none; b=iEukw8mLxR7uFcsusVpje6KMLFlVAjBj2iAcI0dXNzZGYpy95CK2pTvN+KoS4PpIVKdOfy26S8MWWKLIWNiOY6m3xqMrqwkhVdEd6v9uRGd7G8rqO71+YKFv0UU572/6TevGKNMC7OMczjtwcwcE/PoUy2h6rYG+45hZOV6WfnQ=
+	t=1707714984; cv=none; b=SmCkaX/04BTC1sW9TonedhmuakQeNa3+IEY0x2j/00+ONarKJ8YEz0gCY84kXv2nFu7yDtoYBzBDGx/zxMTXntdsLNK+1yvHHSYYYO0lGvmpgjdFRM7liQ4+fjKj5y89hZiht8fX8mZXo2vkEcy9IfjhB+VDEJCcgd69lllKdyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707710488; c=relaxed/simple;
-	bh=wL21n9mxfLqXAYsZLyqczhz/jW2KQVtvQzXz2GDHtH8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YGokB9yh8z5AFh3lDYtLpI8sfgiR1d/5u6Jmi8yxo3ishheNwLSufCU9UNzjXIsKesZCvVlAYsk5tVCgSAMuDsVdiioIPac6rebHvI2giN8Qr2QJPB5HXgN3hCKjEyb7cR5qiIxq78xd58I07IIxsyExxz/AXSfwkesp3YTCVFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=GYPFTPvP; arc=none smtp.client-ip=43.155.65.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
-	s=qqmb2301; t=1707710434;
-	bh=wL21n9mxfLqXAYsZLyqczhz/jW2KQVtvQzXz2GDHtH8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=GYPFTPvPXbL10yzJGq9n/+P+0Z7vq4KEC3CC7duX4uWmYtirzmWG5PtnqRv4xOGrY
-	 ok7i/C7VrKpVHKJDiBDi3tyDiXaEm1gdpmgB0k6TcG52wX1COK2gIWEFZjIbkRHsC/
-	 jZcLqaUNkQjYC93j9G//VCcrE/WWcKu2P7hBNbdM=
-X-QQ-mid: bizesmtp74t1707710431td2k75sr
-X-QQ-Originating-IP: TyCNjafdO0U0ZPpZouP4GarfUWZPhhNnQbIFzaFfbuM=
-Received: from [192.168.1.136] ( [223.150.251.181])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 12 Feb 2024 12:00:30 +0800 (CST)
-X-QQ-SSF: 00100000000000E0Z000000A0000000
-X-QQ-FEAT: qcKkmz/zJhx0NenOBQzlluWF84gwkJQO783SRce9ZPggX1RJucz1zRMgUb/0F
-	DUrYywhXdI6BKSj5ZOgWKuNVxhXnaXeIQvhH3AmFdZjTF4fUcZwmgUmviaiqlcC2uxwq95K
-	4xkvFekaj7m11nGsopD+Eylo3W+MK242+xQWtTbK7LnCchAVXIQ5Witv/8Kk+RPasyvrJ8s
-	yHnfflOQMi2ld6Qwo7WZOME+sX2PxxFSivQTGCwpCheJQt+Lzic7TxExGjJYjCjbttGSUJh
-	wL7nDhZxYA5kjFPum/+BahY+Ma+pqIuAwXeEAURqEJWRAziyeGhYDNF8egm8y+OXJtqnPeg
-	rSJcynSCNANIMbSo59gcqAA3mOm2kMmpvX7WUVuWFWfDmsjn3A=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 16330151264162165331
-Message-ID: <5CC35B932F67CCB9+9e353874-5b52-4d77-bcf6-1eefc247a53d@bupt.moe>
-Date: Mon, 12 Feb 2024 12:00:29 +0800
+	s=arc-20240116; t=1707714984; c=relaxed/simple;
+	bh=bSzd70Fv2tVgOJB5bDYgU8eEhaPHAgucz0QzJipnpok=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lotbyIPL4vEpmahXI3mrwjfzaHDi5KdIqttB2Pqy2nMJgGHXDpDf7QiGHlpE7OM5jWX1f0TcERcWzk/PmjNefZKSj3jHlVUYZLYubq9lcKykNujtG3mBBlRh/eV5c8rORMwNq0qLXacuO8OKcffM50VqWaRHaueeSp+cqtruppc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lNvrkQvC; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lNvrkQvC; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4F19521D01;
+	Mon, 12 Feb 2024 05:16:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707714980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=z57g6+uOw4u4+qwFbmWv12De2SUiR27Xai/f04LplRE=;
+	b=lNvrkQvCvZLbyrQQ27DWHNgRTiMtde/jHU6bRIoONm3dpbzsVgUinCOHD/Hyws2bvNh/G1
+	ocH6ujGTFH8ZYgcVlateEg2BfVClyTSX5sgpgQttGLtwQy6JA40yNOcT2Y/MzKWNBZAyR/
+	l7i3SSrdWYglxdUvozAmfuvWZ7alwC8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707714980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=z57g6+uOw4u4+qwFbmWv12De2SUiR27Xai/f04LplRE=;
+	b=lNvrkQvCvZLbyrQQ27DWHNgRTiMtde/jHU6bRIoONm3dpbzsVgUinCOHD/Hyws2bvNh/G1
+	ocH6ujGTFH8ZYgcVlateEg2BfVClyTSX5sgpgQttGLtwQy6JA40yNOcT2Y/MzKWNBZAyR/
+	l7i3SSrdWYglxdUvozAmfuvWZ7alwC8=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C0E0E13212;
+	Mon, 12 Feb 2024 05:16:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id BiW4IKKpyWUqRQAAn2gu4w
+	(envelope-from <wqu@suse.com>); Mon, 12 Feb 2024 05:16:18 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: HAN Yuwei <hrx@bupt.moe>,
+	stable@vger.kernel.org
+Subject: [PATCH] btrfs: reject zoned RW mount if sectorsize is smaller than page size
+Date: Mon, 12 Feb 2024 15:46:15 +1030
+Message-ID: <2a19a500ccb297397018dac23d30106977153d62.1707714970.git.wqu@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: zoned: don't skip block group profile checks on
- conv zones
-Content-Language: en-US
-To: Damien Le Moal <dlemoal@kernel.org>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-btrfs@vger.kernel.org
-Cc: David Sterba <dsterba@suse.cz>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
- Naohiro Aota <naohiro.aota@wdc.com>
-References: <534c381d897ad3f29948594014910310fe504bbc.1707475586.git.johannes.thumshirn@wdc.com>
- <c34e93ef-8bc1-4e53-b009-0d8fc150e635@kernel.org>
-From: HAN Yuwei <hrx@bupt.moe>
-In-Reply-To: <c34e93ef-8bc1-4e53-b009-0d8fc150e635@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------l0s2c0wTS7J5EvbxjGH9Y1z7"
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: 0.70
+X-Spamd-Result: default: False [0.70 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 TO_DN_SOME(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------l0s2c0wTS7J5EvbxjGH9Y1z7
-Content-Type: multipart/mixed; boundary="------------ErPbzmdh4k1Ui0YP5gYHVG8s";
- protected-headers="v1"
-From: HAN Yuwei <hrx@bupt.moe>
-To: Damien Le Moal <dlemoal@kernel.org>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>, linux-btrfs@vger.kernel.org
-Cc: David Sterba <dsterba@suse.cz>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
- Naohiro Aota <naohiro.aota@wdc.com>
-Message-ID: <9e353874-5b52-4d77-bcf6-1eefc247a53d@bupt.moe>
-Subject: Re: [PATCH] btrfs: zoned: don't skip block group profile checks on
- conv zones
-References: <534c381d897ad3f29948594014910310fe504bbc.1707475586.git.johannes.thumshirn@wdc.com>
- <c34e93ef-8bc1-4e53-b009-0d8fc150e635@kernel.org>
-In-Reply-To: <c34e93ef-8bc1-4e53-b009-0d8fc150e635@kernel.org>
-Autocrypt-Gossip: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+[BUG]
+There is a bug report that with zoned device and sectorsize is smaller
+than page size (aka, subpage), btrfs would crash with a very basic
+workload:
 
---------------ErPbzmdh4k1Ui0YP5gYHVG8s
-Content-Type: multipart/mixed; boundary="------------LiVFfgx3JButxRlzM3Yt06cU"
+ # getconfig PAGESIZE
+ 16384
+ # mkfs.btrfs -f $dev -s 4k
+ # mount $dev $mnt
+ # $fsstress -w -n 8 -s 1707820327 -v -d $mnt
+ # umount $mnt
 
---------------LiVFfgx3JButxRlzM3Yt06cU
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+The crash would look like this (with CONFIG_BTRFS_ASSERT enabled):
 
-DQrlnKggMjAyNC8yLzEyIDk6NTksIERhbWllbiBMZSBNb2FsIOWGmemBkzoNCj4gT24gMi85
-LzI0IDE5OjQ2LCBKb2hhbm5lcyBUaHVtc2hpcm4gd3JvdGU6DQo+PiBPbiBhIHpvbmVkIGZp
-bGVzeXN0ZW0gd2l0aCBjb252ZW50aW9uYWwgem9uZXMsIHdlJ3JlIHNraXBwaW5nIHRoZSBi
-bG9jaw0KPj4gZ3JvdXAgcHJvZmlsZSBjaGVja3MgZm9yIHRoZSBjb252ZW50aW9uYWwgem9u
-ZXMuDQo+Pg0KPj4gVGhpcyBhbGxvd3MgY29udmVydGluZyBhIHpvbmVkIGZpbGVzeXN0ZW0n
-cyBkYXRhIGJsb2NrIGdyb3VwcyB0byBSQUlEIHdoZW4NCj4+IGFsbCBvZiB0aGUgem9uZXMg
-YmFja2luZyB0aGUgY2h1bmsgYXJlIG9uIGNvbnZlbnRpb25hbCB6b25lcy4gIEJ1dCB0aGlz
-DQo+PiB3aWxsIGxlYWQgdG8gcHJvYmxlbXMsIG9uY2Ugd2UncmUgdHJ5aW5nIHRvIGFsbG9j
-YXRlIGNodW5rcyBiYWNrZWQgYnkNCj4+IHNlcXVlbnRpYWwgem9uZXMuDQo+Pg0KPj4gU28g
-YWxzbyBjaGVjayBmb3IgY29udmVudGlvbmFsIHpvbmVzIHdoZW4gbG9hZGluZyBhIGJsb2Nr
-IGdyb3VwJ3MgcHJvZmlsZQ0KPj4gb24gdGhlbS4NCj4+DQo+PiBSZXBvcnRlZC1ieTog6Z+p
-5LqO5oOfIDxocnhAYnVwdC5tb2U+DQo+IExldCdzIGtlZXAgdXNpbmcgdGhlIHJvbWFuIGFs
-cGhhYmV0IGZvciBuYW1lcyBwbGVhc2UuLi4NCg0KVXBkYXRlZC4gQ2FuIGNoYW5nZSB0byAi
-SEFOIFl1d2VpIi4NCg0KPj4gU2lnbmVkLW9mZi1ieTogSm9oYW5uZXMgVGh1bXNoaXJuIDxq
-b2hhbm5lcy50aHVtc2hpcm5Ad2RjLmNvbT4NCj4+IC0tLQ0KPj4gICBmcy9idHJmcy96b25l
-ZC5jIHwgMzAgKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tDQo+PiAgIDEgZmlsZSBj
-aGFuZ2VkLCAyNyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPj4NCj4+IGRpZmYg
-LS1naXQgYS9mcy9idHJmcy96b25lZC5jIGIvZnMvYnRyZnMvem9uZWQuYw0KPj4gaW5kZXgg
-ZDk3MTY0NTZiY2UwLi41YmViNmI5MzZlNjEgMTAwNjQ0DQo+PiAtLS0gYS9mcy9idHJmcy96
-b25lZC5jDQo+PiArKysgYi9mcy9idHJmcy96b25lZC5jDQo+PiBAQCAtMTM2OSw4ICsxMzY5
-LDEwIEBAIHN0YXRpYyBpbnQgYnRyZnNfbG9hZF9ibG9ja19ncm91cF9zaW5nbGUoc3RydWN0
-IGJ0cmZzX2Jsb2NrX2dyb3VwICpiZywNCj4+ICAgCQlyZXR1cm4gLUVJTzsNCj4+ICAgCX0N
-Cj4+ICAgDQo+PiAtCWJnLT5hbGxvY19vZmZzZXQgPSBpbmZvLT5hbGxvY19vZmZzZXQ7DQo+
-PiAtCWJnLT56b25lX2NhcGFjaXR5ID0gaW5mby0+Y2FwYWNpdHk7DQo+PiArCWlmIChpbmZv
-LT5hbGxvY19vZmZzZXQgIT0gV1BfQ09OVkVOVElPTkFMKSB7DQo+PiArCQliZy0+YWxsb2Nf
-b2Zmc2V0ID0gaW5mby0+YWxsb2Nfb2Zmc2V0Ow0KPj4gKwkJYmctPnpvbmVfY2FwYWNpdHkg
-PSBpbmZvLT5jYXBhY2l0eTsNCj4+ICsJfQ0KPj4gICAJaWYgKHRlc3RfYml0KDAsIGFjdGl2
-ZSkpDQo+PiAgIAkJc2V0X2JpdChCTE9DS19HUk9VUF9GTEFHX1pPTkVfSVNfQUNUSVZFLCAm
-YmctPnJ1bnRpbWVfZmxhZ3MpOw0KPj4gICAJcmV0dXJuIDA7DQo+PiBAQCAtMTQwNiw2ICsx
-NDA4LDE2IEBAIHN0YXRpYyBpbnQgYnRyZnNfbG9hZF9ibG9ja19ncm91cF9kdXAoc3RydWN0
-IGJ0cmZzX2Jsb2NrX2dyb3VwICpiZywNCj4+ICAgCQlyZXR1cm4gLUVJTzsNCj4+ICAgCX0N
-Cj4+ICAgDQo+PiArCWlmICh6b25lX2luZm9bMF0uYWxsb2Nfb2Zmc2V0ID09IFdQX0NPTlZF
-TlRJT05BTCkgew0KPj4gKwkJem9uZV9pbmZvWzBdLmFsbG9jX29mZnNldCA9IGJnLT5hbGxv
-Y19vZmZzZXQ7DQo+PiArCQl6b25lX2luZm9bMF0uY2FwYWNpdHkgPSBiZy0+bGVuZ3RoOw0K
-Pj4gKwl9DQo+PiArDQo+PiArCWlmICh6b25lX2luZm9bMV0uYWxsb2Nfb2Zmc2V0ID09IFdQ
-X0NPTlZFTlRJT05BTCkgew0KPj4gKwkJem9uZV9pbmZvWzFdLmFsbG9jX29mZnNldCA9IGJn
-LT5hbGxvY19vZmZzZXQ7DQo+PiArCQl6b25lX2luZm9bMV0uY2FwYWNpdHkgPSBiZy0+bGVu
-Z3RoOw0KPj4gKwl9DQo+PiArDQo+PiAgIAlpZiAodGVzdF9iaXQoMCwgYWN0aXZlKSAhPSB0
-ZXN0X2JpdCgxLCBhY3RpdmUpKSB7DQo+PiAgIAkJaWYgKCFidHJmc196b25lX2FjdGl2YXRl
-KGJnKSkNCj4+ICAgCQkJcmV0dXJuIC1FSU87DQo+PiBAQCAtMTQ1OCw2ICsxNDcwLDkgQEAg
-c3RhdGljIGludCBidHJmc19sb2FkX2Jsb2NrX2dyb3VwX3JhaWQxKHN0cnVjdCBidHJmc19i
-bG9ja19ncm91cCAqYmcsDQo+PiAgIAkJCQkJCSB6b25lX2luZm9bMV0uY2FwYWNpdHkpOw0K
-Pj4gICAJfQ0KPj4gICANCj4+ICsJaWYgKHpvbmVfaW5mb1swXS5hbGxvY19vZmZzZXQgPT0g
-V1BfQ09OVkVOVElPTkFMKQ0KPj4gKwkJem9uZV9pbmZvWzBdLmFsbG9jX29mZnNldCA9IGJn
-LT5hbGxvY19vZmZzZXQ7DQo+PiArDQo+PiAgIAlpZiAoem9uZV9pbmZvWzBdLmFsbG9jX29m
-ZnNldCAhPSBXUF9NSVNTSU5HX0RFVikNCj4+ICAgCQliZy0+YWxsb2Nfb2Zmc2V0ID0gem9u
-ZV9pbmZvWzBdLmFsbG9jX29mZnNldDsNCj4+ICAgCWVsc2UNCj4+IEBAIC0xNDc5LDYgKzE0
-OTQsMTEgQEAgc3RhdGljIGludCBidHJmc19sb2FkX2Jsb2NrX2dyb3VwX3JhaWQwKHN0cnVj
-dCBidHJmc19ibG9ja19ncm91cCAqYmcsDQo+PiAgIAkJcmV0dXJuIC1FSU5WQUw7DQo+PiAg
-IAl9DQo+PiAgIA0KPj4gKwlmb3IgKGludCBpID0gMDsgaSA8IG1hcC0+bnVtX3N0cmlwZXM7
-IGkrKykgew0KPj4gKwkJaWYgKHpvbmVfaW5mb1tpXS5hbGxvY19vZmZzZXQgPT0gV1BfQ09O
-VkVOVElPTkFMKQ0KPj4gKwkJCXpvbmVfaW5mb1tpXS5hbGxvY19vZmZzZXQgPSBiZy0+YWxs
-b2Nfb2Zmc2V0Ow0KPj4gKwl9DQo+PiArDQo+PiAgIAlmb3IgKGludCBpID0gMDsgaSA8IG1h
-cC0+bnVtX3N0cmlwZXM7IGkrKykgew0KPj4gICAJCWlmICh6b25lX2luZm9baV0uYWxsb2Nf
-b2Zmc2V0ID09IFdQX01JU1NJTkdfREVWIHx8DQo+PiAgIAkJICAgIHpvbmVfaW5mb1tpXS5h
-bGxvY19vZmZzZXQgPT0gV1BfQ09OVkVOVElPTkFMKQ0KPj4gQEAgLTE1MTEsNiArMTUzMSwx
-MSBAQCBzdGF0aWMgaW50IGJ0cmZzX2xvYWRfYmxvY2tfZ3JvdXBfcmFpZDEwKHN0cnVjdCBi
-dHJmc19ibG9ja19ncm91cCAqYmcsDQo+PiAgIAkJcmV0dXJuIC1FSU5WQUw7DQo+PiAgIAl9
-DQo+PiAgIA0KPj4gKwlmb3IgKGludCBpID0gMDsgaSA8IG1hcC0+bnVtX3N0cmlwZXM7IGkr
-Kykgew0KPj4gKwkJaWYgKHpvbmVfaW5mb1tpXS5hbGxvY19vZmZzZXQgPT0gV1BfQ09OVkVO
-VElPTkFMKQ0KPj4gKwkJCXpvbmVfaW5mb1tpXS5hbGxvY19vZmZzZXQgPSBiZy0+YWxsb2Nf
-b2Zmc2V0Ow0KPj4gKwl9DQo+PiArDQo+PiAgIAlmb3IgKGludCBpID0gMDsgaSA8IG1hcC0+
-bnVtX3N0cmlwZXM7IGkrKykgew0KPj4gICAJCWlmICh6b25lX2luZm9baV0uYWxsb2Nfb2Zm
-c2V0ID09IFdQX01JU1NJTkdfREVWIHx8DQo+PiAgIAkJICAgIHpvbmVfaW5mb1tpXS5hbGxv
-Y19vZmZzZXQgPT0gV1BfQ09OVkVOVElPTkFMKQ0KPj4gQEAgLTE2MDUsNyArMTYzMCw2IEBA
-IGludCBidHJmc19sb2FkX2Jsb2NrX2dyb3VwX3pvbmVfaW5mbyhzdHJ1Y3QgYnRyZnNfYmxv
-Y2tfZ3JvdXAgKmNhY2hlLCBib29sIG5ldykNCj4+ICAgCQl9IGVsc2UgaWYgKG1hcC0+bnVt
-X3N0cmlwZXMgPT0gbnVtX2NvbnZlbnRpb25hbCkgew0KPj4gICAJCQljYWNoZS0+YWxsb2Nf
-b2Zmc2V0ID0gbGFzdF9hbGxvYzsNCj4+ICAgCQkJc2V0X2JpdChCTE9DS19HUk9VUF9GTEFH
-X1pPTkVfSVNfQUNUSVZFLCAmY2FjaGUtPnJ1bnRpbWVfZmxhZ3MpOw0KPj4gLQkJCWdvdG8g
-b3V0Ow0KPj4gICAJCX0NCj4+ICAgCX0NCj4+ICAgDQo=
---------------LiVFfgx3JButxRlzM3Yt06cU
-Content-Type: application/pgp-keys; name="OpenPGP_0xCC7801A4C3E3A368.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xCC7801A4C3E3A368.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+ assertion failed: block_start != EXTENT_MAP_HOLE, in fs/btrfs/extent_io.c:1384
+ ------------[ cut here ]------------
+ kernel BUG at fs/btrfs/extent_io.c:1384!
+ CPU: 0 PID: 872 Comm: kworker/u9:2 Tainted: G           OE      6.8.0-rc3-custom+ #7
+ Hardware name: QEMU KVM Virtual Machine, BIOS edk2-20231122-12.fc39 11/22/2023
+ Workqueue: writeback wb_workfn (flush-btrfs-8)
+ pc : __extent_writepage_io+0x404/0x460 [btrfs]
+ lr : __extent_writepage_io+0x404/0x460 [btrfs]
+ Call trace:
+  __extent_writepage_io+0x404/0x460 [btrfs]
+  extent_write_locked_range+0x16c/0x460 [btrfs]
+  run_delalloc_cow+0x88/0x118 [btrfs]
+  btrfs_run_delalloc_range+0x128/0x228 [btrfs]
+  writepage_delalloc+0xb8/0x178 [btrfs]
+  __extent_writepage+0xc8/0x3a0 [btrfs]
+  extent_write_cache_pages+0x1cc/0x460 [btrfs]
+  extent_writepages+0x8c/0x120 [btrfs]
+  btrfs_writepages+0x18/0x30 [btrfs]
+  do_writepages+0x94/0x1f8
+  __writeback_single_inode+0x4c/0x388
+  writeback_sb_inodes+0x208/0x4b0
+  wb_writeback+0x118/0x3c0
+  wb_do_writeback+0xbc/0x388
+  wb_workfn+0x80/0x240
+  process_one_work+0x154/0x3c8
+  worker_thread+0x2bc/0x3e0
+  kthread+0xf4/0x108
+  ret_from_fork+0x10/0x20
+ Code: 9102c021 90000be0 91378000 9402bf53 (d4210000)
+ ---[ end trace 0000000000000000 ]---
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+[CAUSE]
+There are several factors causing the problem:
 
-xjMEYd2CwRYJKwYBBAHaRw8BAQdA+Cjl7faceXuI8bf4TOInbIgM8RRMSrlNqkJM
-iX6XUOjNLUhBTiBZdXdlaSAoaGFueXV3ZWk3MCkgPGhhbnl1d2VpNzBAZ21haWwu
-Y29tPsKQBBMWCAA4FiEE5jAMjRwseUJjIHytzHgBpMPjo2gFAmHdg0QCGwEFCwkI
-BwIGFQoJCAsCBBYCAwECHgECF4AACgkQzHgBpMPjo2huYQD+IBK5NHWTngw/Ujcf
-wnTmjXVBqJdrjC8XSHoMQepgwE4BALosq8/PFwesiQjXRo5a7dGyvswgkWtr0LMo
-Bp5SQXkKzSXpn6nkuo7mg58gKGhhbnl1d2VpNzApIDxocnhAYnVwdC5tb2U+wpAE
-ExYIADgWIQTmMAyNHCx5QmMgfK3MeAGkw+OjaAUCYd2CwQIbAQULCQgHAgYVCgkI
-CwIEFgIDAQIeAQIXgAAKCRDMeAGkw+OjaLlDAP9Wh3ee0/6NIL76n6qx9jvM3EKm
-51/AzDdLEz1T26b+fwEAg9vWtLc8gPfjVGsKsXMBJAv57qkz+kws/229mux51wHN
-HemfqeS6juaDnyA8aGFueXV3ZWk3MEBxcS5jb20+wpAEExYIADgWIQTmMAyNHCx5
-QmMgfK3MeAGkw+OjaAUCYd2DJAIbAQULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAK
-CRDMeAGkw+OjaIxvAP9PxxZKTM60lDb/SbyDbfP8Bzi4LfZSa8T6GcBK5gUbGQD/
-cw7hCEHEYdqIa1HATmXIsWozofsrlc4nRVeOjBm7SAbOMwRh3YXMFgkrBgEEAdpH
-DwEBB0BjhXs3EEqaQMMe+y6eQPrN/iijsRn0+V7Yfxgv3LZNMsLANQQYFggAJhYh
-BOYwDI0cLHlCYyB8rcx4AaTD46NoBQJh3YXMAhsCBQkJZgGAAIEJEMx4AaTD46No
-diAEGRYIAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCYd2FzAAKCRBLkKfpYfpB
-U/OHAP98maDWlKN7WlOaIlIuL4nnmeeKlW1zRweQ4nbngJWTZQD+IZ07dJMb41M7
-3k3jPaT+uspGa+D3HivKAvnYGogLAw14AQEAywpAA/ze6ujATllsN9bQFOMThnaC
-FYS3fYEVucLp57sA/RBfjnsQxA4ADe1EJaE0YYwDMo5UKga/wT9Wk90a5LIPzjgE
-Yd2DUhIKKwYBBAGXVQEFAQEHQObBEtGrlnW9aBtHCkwYROmOqVF9AZuLZnAyJotA
-j/4KAwEIB8J+BBgWCAAmFiEE5jAMjRwseUJjIHytzHgBpMPjo2gFAmHdg1ICGwwF
-CQlmAYAACgkQzHgBpMPjo2jG2gD+LkrU5GPlDTUEYxBYBEyfd4igkf2TyeGbwFU5
-pUwrFtgA/0tbB+3oaUUI3jwAbGWlUpXn2+iROFfqokr+fGa4SSUM
-=3D/880
------END PGP PUBLIC KEY BLOCK-----
+1. __extent_writepage_io() requires all dirty ranges to have delalloc
+   executed
+   This can be solved by adding @start and @len parameter to only submit
+   IO for a subset of the page, and update several involved helpers to
+   do subpage checks.
 
---------------LiVFfgx3JButxRlzM3Yt06cU--
+   So this is not a big deal.
 
---------------ErPbzmdh4k1Ui0YP5gYHVG8s--
+2. Subpage only accepts for full page aligned ranges for
+   extent_write_locked_range()
+   For zoned device, regular COW is switched to utilize
+   extent_write_locked_range() to submit the IO.
 
---------------l0s2c0wTS7J5EvbxjGH9Y1z7
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+   But the caller, run_delalloc_cow() can be called to run on a subpage
+   range, e.g.
 
------BEGIN PGP SIGNATURE-----
+   0     4K     8K    12K     16K
+   |/////|      |/////|
 
-iHUEARYKAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCZcmX3QAKCRBLkKfpYfpB
-Uzy5AP9brReIbBu8wbil2Thi5IPxLPa1LHoMSeS4lKasgFVlfgD9FmNp5ln+HZZy
-n7UnW1vhTZFh+TWYIVk/snFZ58qiugQ=
-=03QA
------END PGP SIGNATURE-----
+   Where |///| is the dirtied range.
 
---------------l0s2c0wTS7J5EvbxjGH9Y1z7--
+   In that case, btrfs_run_delalloc_range() would call run_delalloc_cow(),
+   which would call extent_write_locked_range() for [0, 4K), and unlock
+   the whole [0, 16K) page.
+
+   But btrfs_run_delalloc_range() would again be called for range [8K,
+   12K), as there are still dirty range left.
+   In that case, since the whole page is already unlocked by previous
+   iteration, and would cause different ASSERT()s inside
+   extent_write_locked_range().
+
+   That's also why compression for subpage cases require fully page
+   aligned range.
+
+[WORKAROUND]
+A proper fix requires some big changes to delalloc workload, to allow
+extent_write_locked_range() to handle multiple different entries with
+the same @locked_page.
+
+So for now, disable read-write support for subpage zoned btrfs.
+
+The problem can only be solved if subpage btrfs can handle subpage
+compression, which need quite some work on the delalloc procedure for
+the @locked_page handling.
+
+Reported-by: HAN Yuwei <hrx@bupt.moe>
+Link: https://lore.kernel.org/all/1ACD2E3643008A17+da260584-2c7f-432a-9e22-9d390aae84cc@bupt.moe/
+CC: stable@vger.kernel.org # 5.10+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/disk-io.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index c3ab268533ca..85cd23aebdd6 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3193,7 +3193,8 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount)
+ 	 * part of @locked_page.
+ 	 * That's also why compression for subpage only work for page aligned ranges.
+ 	 */
+-	if (fs_info->sectorsize < PAGE_SIZE && btrfs_is_zoned(fs_info) && is_rw_mount) {
++	if (fs_info->sectorsize < PAGE_SIZE &&
++	    btrfs_fs_incompat(fs_info, ZONED) && is_rw_mount) {
+ 		btrfs_warn(fs_info,
+ 	"no zoned read-write support for page size %lu with sectorsize %u",
+ 			   PAGE_SIZE, fs_info->sectorsize);
+-- 
+2.43.0
+
 
