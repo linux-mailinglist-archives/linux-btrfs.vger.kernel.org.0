@@ -1,100 +1,100 @@
-Return-Path: <linux-btrfs+bounces-2360-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2361-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BD33853B4B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Feb 2024 20:39:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE726853B8D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Feb 2024 20:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F5471C26634
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Feb 2024 19:39:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B5B31F23011
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Feb 2024 19:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185F460EF2;
-	Tue, 13 Feb 2024 19:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70E766089C;
+	Tue, 13 Feb 2024 19:48:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="n3ddxItX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SCPzDEOu";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="n3ddxItX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SCPzDEOu"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="l8noWXWf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RbVQorL3";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bcxSONh2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="20UkX9sV"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71DE560ED1
-	for <linux-btrfs@vger.kernel.org>; Tue, 13 Feb 2024 19:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D996D60879
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 Feb 2024 19:48:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707853119; cv=none; b=FwOdSmfNqWgSlWy0fln2UxvYx+EJqs3rMjTTTMu4VLNdu+9nmWOLfKr9aCI8tjXo6b5LNPmhS0m3k0UyY8ggTl/OGlwnYhN2kcIyMMDXGLg4IPm5KuoJA6LpH/3OiKzJkkFMdraFPdVMvVBqCuiqjV58WVjpAjNNEdrgUqkXFfg=
+	t=1707853713; cv=none; b=j13fGpf85ltvA1CAoG7NaGPxoLt/oyiP7CnCBrqooaaQ62Jw0AKNeH4o7SnXjS1c/0puAIraXi6jHn+db8QbbebOCj4ezvjnMW+1swKnIUUVx5bedyihd43bfp7P1k1+D2kZ6BYrY6DLHXfFsWA2W8ChThclwm8p1zIZ1Rnmggw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707853119; c=relaxed/simple;
-	bh=E2A1v9qb0jYdvQ170nQqBbmTh9CAu1QxriBs2UlJOWY=;
+	s=arc-20240116; t=1707853713; c=relaxed/simple;
+	bh=eCHhdacobvgJQcG80c2HJVN3DxCCJ/t6LteFSvkFcLs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vD6KsZckmits+xLN58xbzPp8SLJmH4w5OmWMpy1C8AbL5SzzHvIuGSIGjU5xWyW3rcK0oCzuMa2YrOLPLQf38xYr9K7Jd1KY0gpCsKTun2cqH/tqOuj6Foa/ak3BE36Quv1vfQqm1tyupSoY48cxu05i3UgfQtweedGr/jcRP/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=n3ddxItX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SCPzDEOu; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=n3ddxItX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SCPzDEOu; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=nmBMt0qW1p4H03UyIED/sEgOawbVc0HsDZK/0aMacI/qIijZo/tGgdfHeLAR8lN/cTSn2TTIpHEjp4a6smjnRTPpjUzC/uAtaBMYlvzVUuXUz6Sgcm/quIOuALuX2KIuRPuzgYJIqVxtRfvSEx4N4e20skuScHfsAl9/4/B8rV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=l8noWXWf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RbVQorL3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bcxSONh2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=20UkX9sV; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A40C21FCEF;
-	Tue, 13 Feb 2024 19:38:35 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DF79C1FCF0;
+	Tue, 13 Feb 2024 19:48:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707853115;
+	t=1707853710;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bfwCwMFjkSAYBxw40c7SWDZtYATS/txYo0QCvcwwBQA=;
-	b=n3ddxItXuZRIZyDJI3lBwgvLPuarUE59IjQ1VnXI4P1tAw46dsRr/W7L8hDxnjsFKADnV6
-	NmnS+juEy1uTTjc9/xpm17+UL8xA8yg7C34FGmK9mya7IBTGz8S1GOqAPe4xfomaQ5A2rv
-	mzatRRjOyissnAZzaGNp0qbzj9mBaNY=
+	bh=4fPfnlhk5uCfnvm2FBZl3W5ROmTkwgas4ig1wx82gD8=;
+	b=l8noWXWfvBdVj1RHrdzM4zfh8NfIfFiz0mMZqGidJYdI98gLyQr9L0Mz6nuwlxMahANYrh
+	w3Ku9NhqdF9ew0iJpijXVr7DvSTjtxuiVTP3vJCwAGYPo1E5Ak+NRcIvQNQ2p5f7VKMlUC
+	4qiRNwm66bFrb36/cNCfpPh/cwNlECI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707853115;
+	s=susede2_ed25519; t=1707853710;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bfwCwMFjkSAYBxw40c7SWDZtYATS/txYo0QCvcwwBQA=;
-	b=SCPzDEOuXFJWKYapUqyA1shlTf+yox/ChNblr1Wq3TgG7pwkaW91eFrSwm98bhrX0L19UB
-	8xOqxlLGy3iB25BA==
+	bh=4fPfnlhk5uCfnvm2FBZl3W5ROmTkwgas4ig1wx82gD8=;
+	b=RbVQorL3592r8QzbKhSqZVFBh404iOWmZN8Tt6iNpIheD8abciw1kkOcMgGTTvH9F4i0JZ
+	wrH5nZ21bND2vGBA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707853115;
+	t=1707853708;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bfwCwMFjkSAYBxw40c7SWDZtYATS/txYo0QCvcwwBQA=;
-	b=n3ddxItXuZRIZyDJI3lBwgvLPuarUE59IjQ1VnXI4P1tAw46dsRr/W7L8hDxnjsFKADnV6
-	NmnS+juEy1uTTjc9/xpm17+UL8xA8yg7C34FGmK9mya7IBTGz8S1GOqAPe4xfomaQ5A2rv
-	mzatRRjOyissnAZzaGNp0qbzj9mBaNY=
+	bh=4fPfnlhk5uCfnvm2FBZl3W5ROmTkwgas4ig1wx82gD8=;
+	b=bcxSONh222KHRZv14oKjcXNQDaZxHW72bIl1hUSLyJHZSmA3m80VQPv3Hac+p/atjS1++b
+	dCAM4vJm1y4p/ToR5VGmCG9JsXz5jbau9DzWGLC2+QRSRNhf0ZgVgqm2QcCXYZIHACHFR6
+	UF+bEOfNLeFqCA5YVq7VP0MaXaLeOEI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707853115;
+	s=susede2_ed25519; t=1707853708;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bfwCwMFjkSAYBxw40c7SWDZtYATS/txYo0QCvcwwBQA=;
-	b=SCPzDEOuXFJWKYapUqyA1shlTf+yox/ChNblr1Wq3TgG7pwkaW91eFrSwm98bhrX0L19UB
-	8xOqxlLGy3iB25BA==
+	bh=4fPfnlhk5uCfnvm2FBZl3W5ROmTkwgas4ig1wx82gD8=;
+	b=20UkX9sVq6XWgnOD6G3Ohv0mLNAajBxFPy/FSzaHx35tgqTsmv7rkU+GoS8fO/LexT3m8l
+	94p+O5tdfxK7QQCA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8EF3F13583;
-	Tue, 13 Feb 2024 19:38:35 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CC30013583;
+	Tue, 13 Feb 2024 19:48:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id EEB9IjvFy2V4MgAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Tue, 13 Feb 2024 19:38:35 +0000
-Date: Tue, 13 Feb 2024 20:38:02 +0100
+	id WHprMYzHy2VBNAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Tue, 13 Feb 2024 19:48:28 +0000
+Date: Tue, 13 Feb 2024 20:47:55 +0100
 From: David Sterba <dsterba@suse.cz>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com,
-	aromosan@gmail.com, bernd.feige@gmx.net
-Subject: Re: [PATCH] btrfs: do not skip re-registration for the mounted device
-Message-ID: <20240213193802.GH355@twin.jikos.cz>
+To: Neal Gompa <neal@gompa.dev>
+Cc: linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+	Davide Cavalca <davide@cavalca.name>
+Subject: Re: [PATCH] btrfs: sysfs: Drop unnecessary double logical negation
+ in acl_show()
+Message-ID: <20240213194755.GI355@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <8dd1990114aabb775d4631969f1beabeadaac5b7.1707132247.git.anand.jain@oracle.com>
- <20240212145931.GD355@twin.jikos.cz>
- <8b5c55e0-c9f5-496f-a8ff-cc8eadf64840@oracle.com>
+References: <20240212013449.1933655-1-neal@gompa.dev>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -103,61 +103,54 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8b5c55e0-c9f5-496f-a8ff-cc8eadf64840@oracle.com>
+In-Reply-To: <20240212013449.1933655-1-neal@gompa.dev>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
 Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [0.20 / 50.00];
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=bcxSONh2;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=20UkX9sV
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.22 / 50.00];
 	 ARC_NA(0.00)[];
 	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.net];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 MIME_GOOD(-0.10)[text/plain];
 	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCPT_COUNT_FIVE(0.00)[5];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,suse.com,gmail.com,gmx.net];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[34.98%]
-X-Spam-Level: 
+	 BAYES_HAM(-0.01)[46.80%]
+X-Spam-Score: -1.22
+X-Rspamd-Queue-Id: DF79C1FCF0
 X-Spam-Flag: NO
-X-Spam-Score: 0.20
 
-On Tue, Feb 13, 2024 at 06:05:53AM +0530, Anand Jain wrote:
+On Sun, Feb 11, 2024 at 08:34:44PM -0500, Neal Gompa wrote:
+> The IS_ENABLED() macro already guarantees the result will be a
+> suitable boolean return value ("1" for enabled, and "0" for disabled).
 > 
-> 
-> On 2/12/24 20:29, David Sterba wrote:
-> > On Mon, Feb 05, 2024 at 07:45:05PM +0800, Anand Jain wrote:
-> >> We skip device registration for a single device. However, we do not do
-> >> that if the device is already mounted, as it might be coming in again
-> >> for scanning a different path.
-> >>
-> >> This patch is lightly tested; for verification if it fixes.
-> >>
-> >> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> >> ---
-> 
-> >> I still have some unknowns about the problem. Pls test if this fixes
-> >> the problem.
-> 
-> It is a mystery- we didn't see
->     "BTRFS: skip registering single non-seed device %s\n",
-> in the kernel messages.
-> 
-> Do you have any clue?
+> Thus, it seems that the "!!" used right before is unnecessary, since
+> it is a double negation.
 
-It's printed by pr_debug(), so it may not be on by default. For my
-testing I changed it to printk(KERN_ERR "...") as I do for all debugging
-messages just to be sure, the message was printed.
+Double negation is used to force 0/1 boolean values if it's from an
+unknown source or value range but IS_ENABLED says it's returning 0/1 so
+yeah it's not needed.
 
-It may be actually useful to print that on the 'info' level as we do for
-the other scanning messages.
+> Dropping it should not result in any functional changes.
+> 
+> Signed-off-by: Neal Gompa <neal@gompa.dev>
+
+Reviewed-by: David Sterba <dsterba@suse.com>
 
