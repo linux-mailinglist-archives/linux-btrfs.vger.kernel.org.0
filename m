@@ -1,156 +1,108 @@
-Return-Path: <linux-btrfs+bounces-2352-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2353-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89211853475
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Feb 2024 16:21:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B70A8534DA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Feb 2024 16:38:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C60E1F24A84
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Feb 2024 15:21:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBDA3284FED
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Feb 2024 15:38:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 698855DF02;
-	Tue, 13 Feb 2024 15:21:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 128BF5F47C;
+	Tue, 13 Feb 2024 15:38:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="K/gYimkJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C5Yh4C8N"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD1B55C39
-	for <linux-btrfs@vger.kernel.org>; Tue, 13 Feb 2024 15:21:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D1F5DF26
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 Feb 2024 15:38:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707837709; cv=none; b=hfl20W4tLxADr/MyYbEXr/m+YAUkf/eL17TA7FrV+iUVThVmnBOoEvoBYahIqudlntRIVQYmMiDMyD5dEOPb1vVan9MAYZtRQ8jYnXO6yTNynddVxikaHz58ReKNMHCGC98Q9LLzJyDwAdyt8dBo9nqZoid7+ZqxgZ77hJ4KRoQ=
+	t=1707838681; cv=none; b=W6J3tl6LZckG1wCkhSgnU4PQrUv+dmjnzQPhjh4TAhdc+vfXW0g4nCVkJQ8o+75E+SR66YdIPsTQuNVBtr7ce49GMu/H3RsUhu1foocAHIASK/qZn5R+djMHu5yPE0Qz7+3VeN8lquX9110HN1/5g8VHI5YwtThoghcfAEWjuZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707837709; c=relaxed/simple;
-	bh=Lth7fmDr3e5suv2Jfqbng2UM6La1wdBih7qMXH23Dyc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mEnpVjwFoKu86slTUBtA7lIDjJynsx8t4ZVZyZAdsv//Ynlt5R3Ezzk9z0LCBpidMD+iewaMbBKfv2WNE416RW+rGC8tYZG5jGW/Lwu29LtKo8kkEAr0CH2P9Jr8NMN2z082GuMfs4oibqAfjOfbrCGF8wJv3t0PTVj6bmT3k0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=K/gYimkJ; arc=none smtp.client-ip=209.85.167.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bd4e6a7cb0so3170938b6e.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Feb 2024 07:21:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1707837706; x=1708442506; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EjMQ2p6uTYtjyBD0y9u8zXDFKYlRVPolot5juf3fw4Y=;
-        b=K/gYimkJPt1IlCWmGa7/Iluppoyq66Us9bgDy+SPCFH+/+mONnaCEKOxL9HgKcZ5cq
-         RPWozt3/rWhSHJX8W12kgWlBParuN8KA9ivczLcJR8l9QS8iBQM0AF4tKmFKSsOSGIRV
-         7lqnUx5KYX6GChX5fJEMbz9O/oJf3J8x/imBqjomys17VS3t7bfS6pkO9xSgx08A74rJ
-         9x5sHCl1xSMZrq9cScIwjIYzF37DNgNNuozPSVF0IL+zb9S5M4jT1XWRQStWZ4hJys32
-         O8qMZnwOWnb+M4WbusfbL8Vq7lV7SP8tt3QvoeoPsSi//62tVe7/CkBnt16Gh1UITEpP
-         ykuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707837706; x=1708442506;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EjMQ2p6uTYtjyBD0y9u8zXDFKYlRVPolot5juf3fw4Y=;
-        b=JZ8/r/U4wHr3Ib+7MBVCHIvobyHo7bllDAPR8ipkkc/PDE23JwiZMZHGjLjGedzKCh
-         MW85gvZIs/hVCBRIlsmQDPVUBg/4Uy+WJL7zqE7H3DynFqVGNTLGPXRCz69ASnHVDQpf
-         MEB770NZwPG9cYg4yW8rVU7g2RLjGVDmmFAYnRchV73EhZV+NIgVujMuemLcr2/xlW9M
-         A3AQgWc+eg3tbPMjTwxDYoBrbnxfQIlZ5kVC/X4wMlpKN+R37gLcDiCjFTMRpkIzapou
-         QvF8zKm9yYdOcsyYs/Oj9ycyjEKLx7VHtoQFkLMQDP3J0YdgGoYtdW4kCW1UbalxRGTx
-         2FCQ==
-X-Gm-Message-State: AOJu0YxY0RzRHAhXLrgFiynMZV3YULVItgD2yzmO5OVlkJg0YgeetHLJ
-	TdpSD9oq3PGUFMnXU9twLGhivulJ441i6bYCncBHIBrfLBsY4+zAF7pn62mMHdFgvAWy23gDuAy
-	0
-X-Google-Smtp-Source: AGHT+IF5DayvZKJp52mP4Oi3MGylVHl/Z8DtuvlSWzuXA4MZTcR5wdXMCvaSPaFOHoiH3O6WzVcYOQ==
-X-Received: by 2002:a05:6808:16ac:b0:3c0:3117:aed3 with SMTP id bb44-20020a05680816ac00b003c03117aed3mr10249525oib.18.1707837706016;
-        Tue, 13 Feb 2024 07:21:46 -0800 (PST)
-Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id f22-20020a05622a105600b0042a233d21c2sm1201477qte.80.2024.02.13.07.21.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 07:21:45 -0800 (PST)
-Date: Tue, 13 Feb 2024 10:21:44 -0500
-From: Josef Bacik <josef@toxicpanda.com>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: don't refill whole delayed refs block reserve
- when starting transaction
-Message-ID: <20240213152144.GA4107730@perftesting>
-References: <eba624e8cef9a1e84c9e1ba0c8f32347aa487e63.1706892030.git.fdmanana@suse.com>
+	s=arc-20240116; t=1707838681; c=relaxed/simple;
+	bh=APAnNnSZEu2tAdZ8FXp6euZsBRfdtVzAixVm73Wqxg8=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=LErBLRkhsJaQU/Ilchfl8273Dv0M72hef27GfHjBtAQufeBdui7/mIJy6VMYMM9nVu6l83gSpsl48YjrzaFNoM12y9lnd2/h4wFf7RutsNxcPFGq5SHPuro/uCeBb+FRGZVQWKF7UGOaOY0VmHCSH6KmyaYOv3Tfu8avc7B/6IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C5Yh4C8N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32779C43390
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 Feb 2024 15:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707838680;
+	bh=APAnNnSZEu2tAdZ8FXp6euZsBRfdtVzAixVm73Wqxg8=;
+	h=From:To:Subject:Date:From;
+	b=C5Yh4C8NFawMhkcglV/QYvAakmyzC/Kg8iMLKRk+XGGxdhIkQkWC9umG1oqi6rsZ9
+	 M27ggdEp1CbjEuf8NsU7XnMoQMg9bCdLh/aiCS89uJNTYCF/dRafarefuGowq7LnGK
+	 ZWmF/8YoB7CQhOfohtcQQONL0IakjuN8ViagG34v35+7snYi+z7S4p050PJTju0QV6
+	 gmCfAR2ojR7lU7FlG30cXJI1K5bx/KlxDpfASiZfQJjqaTaNOpdVLrtHTE+1FdQFGj
+	 9oj2QZ11LEKc0UgBB2EFbaG5vucolJ4nIZIohD9B12Y1vLNXoMTC0HS5xzf5Ir1sP2
+	 YU7U79+K6XT3A==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: remove no longer used btrfs_transaction_in_commit()
+Date: Tue, 13 Feb 2024 15:37:57 +0000
+Message-Id: <00e9779bc56f516852e1488cc89403ca2d7d3a7c.1707838285.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eba624e8cef9a1e84c9e1ba0c8f32347aa487e63.1706892030.git.fdmanana@suse.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 02, 2024 at 04:42:32PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Since commit 28270e25c69a ("btrfs: always reserve space for delayed refs
-> when starting transaction") we started not only to reserve metadata space
-> for the delayed refs a caller of btrfs_start_transaction() might generate
-> but also to try to fully refill the delayed refs block reserve, because
-> there are several case where we generate delayed refs and haven't reserved
-> space for them, relying on the global block reserve. Relying too much on
-> the global block reserve is not always safe, and can result in hitting
-> -ENOSPC during transaction commits or worst, in rare cases, being unable
-> to mount a filesystem that needs to do orphan cleanup or anything that
-> requires modifying the filesystem during mount, and has no more
-> unallocated space and the metadata space is nearly full. This was
-> explained in detail in that commit's change log.
-> 
-> However the gap between the reserved amount and the size of the delayed
-> refs block reserve can be huge, so attempting to reserve space for such
-> a gap can result in allocating many metadata block groups that end up
-> not being used. After a recent patch, with the subject:
-> 
->   "btrfs: add new unused block groups to the list of unused block groups"
-> 
-> We started to add new block groups that are unused to the list of unused
-> block groups, to avoid having them around for a very long time in case
-> they are never used, because a block group is only added to the list of
-> unused block groups when we deallocate the last extent or when mounting
-> the filesystem and the block group has 0 bytes used. This is not a problem
-> introduced by the commit mentioned earlier, it always existed as our
-> metadata space reservations are, most of the time, pessimistic and end up
-> not using all the space they reserved, so we can occasionally end up with
-> one or two unused metadata block groups for a long period. However after
-> that commit mentioned earlier, we are just more pessimistic in the
-> metadata space reservations when starting a transaction and therefore the
-> issue is more likely to happen.
-> 
-> This however is not always enough because we might create unused metadata
-> block groups when reserving metadata space at a high rate if there's
-> always a gap in the delayed refs block reserve and the cleaner kthread
-> isn't triggered often enough or is busy with other work (running delayed
-> iputs, cleaning deleted roots, etc), not to mention the block group's
-> allocated space is only usable for a new block group after the transaction
-> used to remove it is committed.
+From: Filipe Manana <fdmanana@suse.com>
 
-We should probably stop abusing the cleaner thread for this and just use work
-items for the different categories of cleanup operations.  But that's just an
-aside.
+The function btrfs_transaction_in_commit() is no longer used, its last
+use was removed in commit 11aeb97b45ad ("btrfs: don't arbitrarily slow
+down delalloc if we're committing"), so just remove it.
 
-> 
-> A user reported that he's getting a lot of allocated metadata block groups
-> but the usage percentage of metadata space was very low compared to the
-> total allocated space, specially after running a series of block group
-> relocations.
-> 
-> So for now stop trying to refill the gap in the delayed refs block reserve
-> and reserve space only for the delayed refs we are expected to generate
-> when starting a transaction.
-> 
-> CC: stable@vger.kernel.org # 6.7+
-> Reported-by: Ivan Shapovalov <intelfx@intelfx.name>
-> Link: https://lore.kernel.org/linux-btrfs/9cdbf0ca9cdda1b4c84e15e548af7d7f9f926382.camel@intelfx.name/
-> Link: https://lore.kernel.org/linux-btrfs/CAL3q7H6802ayLHUJFztzZAVzBLJAGdFx=6FHNNy87+obZXXZpQ@mail.gmail.com/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/transaction.c | 13 -------------
+ fs/btrfs/transaction.h |  1 -
+ 2 files changed, 14 deletions(-)
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 3575b2bf3042..6c201bdbaac7 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1957,19 +1957,6 @@ static void update_super_roots(struct btrfs_fs_info *fs_info)
+ 		super->uuid_tree_generation = root_item->generation;
+ }
+ 
+-int btrfs_transaction_in_commit(struct btrfs_fs_info *info)
+-{
+-	struct btrfs_transaction *trans;
+-	int ret = 0;
+-
+-	spin_lock(&info->trans_lock);
+-	trans = info->running_transaction;
+-	if (trans)
+-		ret = (trans->state >= TRANS_STATE_COMMIT_START);
+-	spin_unlock(&info->trans_lock);
+-	return ret;
+-}
+-
+ int btrfs_transaction_blocked(struct btrfs_fs_info *info)
+ {
+ 	struct btrfs_transaction *trans;
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 681109c5f441..4e451ab173b1 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -277,7 +277,6 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
+ 				struct extent_io_tree *dirty_pages, int mark);
+ int btrfs_wait_tree_log_extents(struct btrfs_root *root, int mark);
+ int btrfs_transaction_blocked(struct btrfs_fs_info *info);
+-int btrfs_transaction_in_commit(struct btrfs_fs_info *info);
+ void btrfs_put_transaction(struct btrfs_transaction *transaction);
+ void btrfs_add_dropped_root(struct btrfs_trans_handle *trans,
+ 			    struct btrfs_root *root);
+-- 
+2.40.1
 
-Thanks,
-
-Josef
 
