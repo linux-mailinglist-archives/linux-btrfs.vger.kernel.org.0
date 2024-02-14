@@ -1,139 +1,231 @@
-Return-Path: <linux-btrfs+bounces-2396-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2397-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD26985549D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 22:21:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E46548554A9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 22:24:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A61A28BC2A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 21:21:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 135661C2207A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 21:24:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2B313F006;
-	Wed, 14 Feb 2024 21:21:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CF813EFF5;
+	Wed, 14 Feb 2024 21:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="dHodetJs";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VdxBy/iX"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="wUwlJOke";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Ky0/eB5+"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F3001B7E2
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Feb 2024 21:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC65128831
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 Feb 2024 21:24:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707945661; cv=none; b=DXhsAG17mL00PBS31ayhANTf64z+/bfd68bQNogkFiNmNkbtu1Kp2Mbuc4rSse0ziKe2sjABRvjoXo/nDsi/998iPp2N6lnBxcGIjI2FUFxPt0jENXbL8vSdLwfyyteZ/EnyAhrZc7zVSg4iIsyHu1rFT5wxGU2j6H0xqkK3DIk=
+	t=1707945844; cv=none; b=U1hFEL5R8kC+zl7sf8FMlEhdcHp7Q+tdfSu5LJjUOek6IeySJdCy5gvJvbyCJwK1CkHNCUVpH0y8isdB/qnudtGI0dNehmm2GsQd3d9aKXpTdUnrlJ8rr2U86mVKH5edTYBJJT6oMxqdnZ8yOPSzd0URr9eqw2ks1mxEw/Kb1Gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707945661; c=relaxed/simple;
-	bh=Ic3iOB9uMSA1c1zTXuYxp0D9zrBy+3imnoKILZgQ4a8=;
+	s=arc-20240116; t=1707945844; c=relaxed/simple;
+	bh=dspyr6+d28GU65r38m68QWZDOsC5YLvlxhQuFbZVuNA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S81+lCBAMY634RDhPiQyQEwoa+DDXKuxlwbwvRlRy5EAkgXL9ZTNMiDt28Cuqi9BYvw/3ndcQoaaRYiud3yykP+Th0cxr4pItPfaoTTj+WR+LAVEN5COCP3AZgTPctz4uLvWd1kSXuiCFDTMk/3vR5kRMQ4Dgsc+1U46J6fDEQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=dHodetJs; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VdxBy/iX; arc=none smtp.client-ip=64.147.123.19
+	 Content-Type:Content-Disposition:In-Reply-To; b=LWbLfHwsq9zh+1ZMmv1rZDhq6xB9+nhXMxlWlC1MOsqtgApkzjLhbUYD4irnEBU9yI+k+JqMbh+eaQLnqNxzyEIGly0JrrZ0Xu369WhwAHVR7oz+h2syu+0ea87GU57B6/yXKSOqFYrGvTjuvoa17i8dCDnDx/8/wsVTYrkeeJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=wUwlJOke; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Ky0/eB5+; arc=none smtp.client-ip=64.147.123.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 5B3C33200A3C;
-	Wed, 14 Feb 2024 16:20:57 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 14 Feb 2024 16:20:57 -0500
+	by mailout.west.internal (Postfix) with ESMTP id 63C0D3200A13;
+	Wed, 14 Feb 2024 16:24:01 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 14 Feb 2024 16:24:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1707945656; x=1708032056; bh=IvU+YmnKLh
-	5USnFCyPmgk4VXGlhSOeDP3Lp1FSzY4ds=; b=dHodetJsJlgQ4KEbro0M/6i2oP
-	BdxPdpmMopHyk8SZ48rDdalNUskwe9OOD61/T3n30OUimW/zw9ZZI8xZ7hPweBF9
-	9LLw1sJoveDSaSCyq95jjKniwMkcXEjHgWg7C9vxW5esWG04putIGP7KNuZSTC+1
-	xMDG9y2saKErxMrWJmCK7vBCRg8IMWFNLecMFvLmgUtoqyXhP9qob93bwJRwaFlk
-	yECFBswfONP4j982mG7/U9nWJqZHpy3bM9MV3qUqVZvq3NSl4AG1reTMJMizFyf4
-	cXzJEHLjLIUzkZnaBu6AtAfjj2ggUIrtNtwmI5PZFQVS11/zF7IgzsXDZlLg==
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1707945840;
+	 x=1708032240; bh=eTMhTMTPQ5zkUISlOi2cBPdbENYvPJKZW2EX50gzepU=; b=
+	wUwlJOkeeVXtV7W+ZIzlBl5qhc2ksRA+qZHUDGK5dNc6d54aK/R1sHdoPTCMKW9Y
+	8CDQPH2FGkGdWk1sln9dS+3/9OpfXOmc889KcAO1U1Z/qv+4DPJ2vYRZEuL6/avn
+	3qMauUeHp3qOvmRGGDkIaOS2gjI2wG5R3ihlu/VAISBBtZFHpcuCI8ykIr6oFZZC
+	PtzXbW9TpmRY5VhwbgTAR2g+IWrxyKFwLL+mX2E9cR2cqTz06lRa99f9rgxoKR3v
+	ask8MG6iQs80RmWIR4CUl/RWtm9tBWoUH58oQSSRuC92IpihvDUpF8/aLW3mxqNZ
+	7TFTXLX0XGiZHMVti/b3VA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1707945656; x=1708032056; bh=IvU+YmnKLh5USnFCyPmgk4VXGlhS
-	OeDP3Lp1FSzY4ds=; b=VdxBy/iX9w/OS4Vqd8Wzi2SInWBUUtQRnFREKj7lDY9u
-	oJZNqbmuGn4JNv/jt4aBxW0+VWtkwLOt8DZLvjkmrfeHErokVzLzqreey5b3G3sz
-	/27hFT1XXuJSmI1SnOQQfgC15UZItv6FLs0SBvxMyuXMInwo09WYeN2TpPq6Eh5x
-	TBTJenIvYOxN7eU/m29kTD470q6CL1KlEi/ZwXEKyC6Fkn3giUhm9fgBNH3OcFEc
-	TfWdyfTGbNi97C6Ex7COfO+TXbxc3TDRnmM7l8rCadP66/eIJEDv7cIrv0j9Coyb
-	03E3nGstQ+qTMQ3ufY4NVVczWtVzWaTIhwvbqIjxfQ==
-X-ME-Sender: <xms:uC7NZbSzU5Ls2ykQy4q3cb8_V6KObYPWknHBRGLX8ylhvn1ha9R0aw>
-    <xme:uC7NZcxX_Ypvy6Pw5HRtFCD0QcwEO8etzmXMS9b69j36lTDR3-4NSvO_iLl9bxWZ4
-    E3X45XvUFlOibZaDJM>
-X-ME-Received: <xmr:uC7NZQ0CMJrk_9omltlIZhLr-Hv7uScK80HL-eHAh69QGkSFAjJlfn5VajN1MgfuxXPUZrrHe-0iaW0SUZVJ-Rhxgho>
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1707945840; x=
+	1708032240; bh=eTMhTMTPQ5zkUISlOi2cBPdbENYvPJKZW2EX50gzepU=; b=K
+	y0/eB5+zncXtNydxZt1DgeyzRE9sBO3RNiCPVyhOjCBHbMQALW0If4tSjmbLCHwW
+	IRVTVt9+IuNyRWupNd2I6JF/81Tdz3xkPC8jFd8OvB+IUhzUAOtMGXM2tMARBYj3
+	nTMJeqxzpEyvhJigmLW/H7HIgwc3xmzBPtCVaisuh5d6sQ77PaC8NxOfhLzSJO9p
+	+PrkPQ6mN2tS8sb/g5g5mj+v/0S1Vpfl6PF2uw9l3rgF4jYMk9u91a1+0swNuMmz
+	QKC+iqCG/pJ14K6UVNQNfGmTvC0eNEGBWjGQKeA6RsbkGArPscPpPeVw7FkrzyGv
+	folNiH7JZ1a+x6gJ+jNOA==
+X-ME-Sender: <xms:cC_NZSZ7udEHJmlTlFhIxx7KXs3MkApbG-nV57VAXsMWES35MSi2Vg>
+    <xme:cC_NZVavm7MH6wNFuyY4BGTQ4PjfK3afd9ZUpakEuOrQJJ30wm_Aqa0oIE6Y5OYw-
+    1NBksW0oH2Hi3_9rdE>
+X-ME-Received: <xmr:cC_NZc9DeYeFj490n-I-WPb666mktHOJcYWGp2dvUml6RxMEv8xz6ggJoTgCwtkqSfKgmVLddgD9rhvgLoRkixOYnSU>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejgddugeelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ehtdfhvefghfdtvefghfelhffgueeugedtveduieehieehteelgeehvdefgeefgeenucff
-    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:uC7NZbD5JzebXdW-qBIaXEum1tFBVfKvLaWoQQnnAntHOUzVQRLBkQ>
-    <xmx:uC7NZUg03XDE0_8nMZGm-q4qzg23b7GhjiwCTv-9ZURsY6UbN3gUOA>
-    <xmx:uC7NZfqObu5Eg0jkA0xgQf23GhnSPG_ed0NzJUMy0DHU3mB83OGAjg>
-    <xmx:uC7NZQaLAnJ8ywbnTZrtoVB0-RQeg0fgG1RvWaKsFIYf31a-W7Uexw>
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epieektedvhfejveehieetuddvvdffkeeileelkeejgfekiefhueekvdfhgffhffeknecu
+    ffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:cC_NZUpFRevWXTeVA8CgZf_oyxVsoJ5QdFjNLvQMjneYTqkQkW0CnA>
+    <xmx:cC_NZdrAOrEM9tftSP1mhTb53fAIJD6R4Uih-b_AWm3rr9N3fUuYmg>
+    <xmx:cC_NZSSVJpU1-U7V8FyPWUAtuciovjrQpg-YcxlzZ95HcR8Z4PJ2dg>
+    <xmx:cC_NZU1Pp1gdQvsm0lzBCX9O4we4OqEhcRvV07hmxzfznQRNEwEEdw>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 14 Feb 2024 16:20:56 -0500 (EST)
-Date: Wed, 14 Feb 2024 13:22:32 -0800
+ 14 Feb 2024 16:24:00 -0500 (EST)
+Date: Wed, 14 Feb 2024 13:25:37 -0800
 From: Boris Burkov <boris@bur.io>
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Edward Adam Davis <eadavis@qq.com>
-Subject: Re: [PATCH 0/3] Ioctl buffer name/path validation
-Message-ID: <20240214212232.GA480208@zen.localdomain>
-References: <cover.1707935035.git.dsterba@suse.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH 0/3] btrfs: make subpage reader/writer counter to be
+ sector aware
+Message-ID: <20240214212537.GA481589@zen.localdomain>
+References: <cover.1707883446.git.wqu@suse.com>
+ <20240214182117.GA377066@zen.localdomain>
+ <28cd604c-230f-4f80-be5c-f835372d80d0@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1707935035.git.dsterba@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <28cd604c-230f-4f80-be5c-f835372d80d0@gmx.com>
 
-On Wed, Feb 14, 2024 at 07:31:54PM +0100, David Sterba wrote:
-> This is inspired by a report and fix [1] where device replace buffers
-> were not properly validated (third patch). The other two are doing
-> proper validation of vol args path or name so that an unterminated
-> string is reported as an error rather than relying on later actions like
-> open that would catch an invalid path.
+On Thu, Feb 15, 2024 at 07:39:15AM +1030, Qu Wenruo wrote:
 > 
-> (I'm OK to replace the third patch in favor of Edward as he spent time
-> analyzing it but we did not agree on a fix and I did not get a reply
-> with the suggestion I implemented in the end.)
 > 
-> [1] https://lore.kernel.org/linux-btrfs/tencent_44CA0665C9836EF9EEC80CB9E7E206DF5206@qq.com/
+> 在 2024/2/15 04:51, Boris Burkov 写道:
+> > On Wed, Feb 14, 2024 at 02:34:33PM +1030, Qu Wenruo wrote:
+> > > This can be fetched from github, and the branch would be utilized for
+> > > all newer subpage delalloc update to support full sector sized
+> > > compression and zoned:
+> > > https://github.com/adam900710/linux/tree/subpage_delalloc
+> > > 
+> > > Currently we just trace subpage reader/writer counter using an atomic.
+> > > 
+> > > It's fine for the current subpage usage, but for the future, we want to
+> > > be aware of which subpage sector is locked inside a page, for proper
+> > > compression (we only support full page compression for now) and zoned support.
+> > 
+> > The logic of the patches seems good and self-consistent to me, I don't
+> > see any issues.
+> > 
+> > However, I think it would be helpful to at least see the client code to
+> > motivate the bitmap a bit more for the ignorant :)
+> 
+> Sure, if needed I can include them into the incoming subpage delalloc
+> patchset.
+> 
+> > 
+> > Also, from a semi-cursory inspection, it looks like this relies on
+> > extent locking to ensure that multiple threads don't collide on the
+> > subpage bitmap, is that correct?
+> 
+> The current plan is to make find_lock_delalloc_range() to always lock
+> all the ranges inside the page, at least beyond the end of the page.
+> 
+> The main work flow would look like this:
+> 
+> find_lock_delalloc_range()
+> {
+> 	int cur = page_offset(page);
+> 
+> 	/*
+> 	 * Subpage, already locked, just grab the next locked range
+> 	 * using the locked bitmap.
+> 	 */
+> 	if (btrfs_is_subpage() && write_count > 0)
+> 		return grab_the_next_locked_range();
+> 
+> 	while (cur < page_end(page)) {
+> 		/*
+> 		 * The old find and lock code, including
+> 		 * the extent locking
+> 		 */
+> 		cur = locked_range_end();
+> 	}
+> 	*start = the_first_locked_range_start;
+> 	*end = the_first_locked_range_end;
+> }
+> 
+> So for non-subpage cases, it's the same.
+> For subpage cases, the page would be kept locked until all its subpage
+> sectors are written.
+> (But would need extra cleanup if we hit some error during subpage sector
+> write)
+> 
+> And the above workflow is still being coded, not yet tested to see if
+> there is anything fundamentally wrong, thus it may change.
+> 
+> > You should check with Josef that his
+> > plans with getting rid of the extent locking don't clash with this.
+> 
+> It would still conflict, but the extent locking part would be the same
+> as usual, so I believe the conflict can be easily resolved.
+> 
+> And I'm pretty happy to help solving the conflicts if needed.
 
-LGTM. One note/question: would it be helpful to pull out:
+By conflict, I meant logically/conceptually, not in terms of git merge
+conflicts.
 
-```
-if (memchr(str, 0, str) == NULL)
-        return -ENAMETOOLONG;
-return 0;
-```
+Right now, AFAICT, your code relies on the fact that the extent is
+locked to ensure that two reads don't trip on the bitmap. If Josef takes
+that out, does the assumption still hold? Page lock gets taken after
+modifying the bitmap, right?
 
-into a helper and use it in all these places?
-
-Either way,
-Reviewed-by: Boris Burkov <boris@bur.io>
+Sorry if I am misunderstanding you.
 
 > 
-> David Sterba (3):
->   btrfs: factor out validation of btrfs_ioctl_vol_args::name
->   btrfs: factor out validation of btrfs_ioctl_vol_args_v2::name
->   btrfs: dev-replace: properly validate device names
+> Thanks,
+> Qu
 > 
->  fs/btrfs/dev-replace.c | 24 +++++++++++++++----
->  fs/btrfs/fs.h          |  2 ++
->  fs/btrfs/ioctl.c       | 54 +++++++++++++++++++++++++++++++++++-------
->  fs/btrfs/super.c       |  5 +++-
->  4 files changed, 72 insertions(+), 13 deletions(-)
-> 
-> -- 
-> 2.42.1
-> 
+> > 
+> > Thanks,
+> > Boris
+> > 
+> > > 
+> > > So here we introduce a new bitmap, called locked bitmap, to trace which
+> > > sector is locked for read/write.
+> > > 
+> > > And since reader/writer are both exclusive (to each other and to the same
+> > > type of lock), we can safely use the same bitmap for both reader and
+> > > writer.
+> > > 
+> > > In theory we can use the bitmap (the weight of the locked bitmap) to
+> > > indicate how many bytes are under reader/write lock, but it's not
+> > > possible yet:
+> > > 
+> > > - No weight support for bitmap range
+> > >    The bitmap API only provides bitmap_weight(), which always starts at
+> > >    bit 0.
+> > > 
+> > > - Need to distinguish read/write lock
+> > > 
+> > > Thus we still keep the reader/writer atomic counter.
+> > > 
+> > > Qu Wenruo (3):
+> > >    btrfs: unexport btrfs_subpage_start_writer() and
+> > >      btrfs_subpage_end_and_test_writer()
+> > >    btrfs: subpage: make reader lock to utilize bitmap
+> > >    btrfs: subpage: make writer lock to utilize bitmap
+> > > 
+> > >   fs/btrfs/subpage.c | 70 ++++++++++++++++++++++++++++++++++++----------
+> > >   fs/btrfs/subpage.h | 16 +++++++----
+> > >   2 files changed, 66 insertions(+), 20 deletions(-)
+> > > 
+> > > --
+> > > 2.43.1
+> > > 
+> > 
 
