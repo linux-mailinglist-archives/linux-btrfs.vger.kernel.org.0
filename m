@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-2385-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2386-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E7C5854EE1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 17:44:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A596C854EE3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 17:44:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 741641C28E32
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 16:44:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 584B41F23D76
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 16:44:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5988629FD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1ACC63107;
 	Wed, 14 Feb 2024 16:42:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="d/BdmOG0"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="BqTZuWEZ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A36C61690;
-	Wed, 14 Feb 2024 16:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401A761695;
+	Wed, 14 Feb 2024 16:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707928946; cv=none; b=WhOXRdtTcRfQAQFP8xUFZKnABSCbhbxLRgB45UcsAQkmy3M2Zx2u1eHzpUOGTIMoILz0I7r/C/SFJDJT/2GiVFmTC47VECrwfZSiNdMTydTrMSA3IHmwxtxO/LpYn63Kgiik9inIy1973YFNYRm18URHY9lL9VV0fljiS/MjBeE=
+	t=1707928947; cv=none; b=uZl5QRCvb852R/GPCacDcDhwHFPXlthGbVcfH0iLcR3bONJU/2+f5QFYp5N6bbrXf7V8VIcEhBPFgLLST9/yRBiWKfPIiYoMyO75kNf7k85YA5TNviD9oWambqPd/2LCIMvJzqSeBTXKVThigOvbT+c9jT2WEg0a7hw2d7Isddo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707928946; c=relaxed/simple;
-	bh=bH6vWRw60xnuXV0jlirxZDKuiOZGmQa5D7tTxE57gpM=;
+	s=arc-20240116; t=1707928947; c=relaxed/simple;
+	bh=n/Ct+FOCPnbG6TCxKfw5AO3FWijGxGRtmVbb789OJTM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=EFVsLQOekGiNBqQwrjFcDvv2hc/7Pz2EiD7F02stiqIKuAbazCdhFDTbU/3ZAGG2rr8uThjXwPIJbO0u56xICu2Lysc262i7z+LwlsMksEjHQf3eH8UcK/GU3j0oPWpICPLm5rV82cXXVlBJP24kVpezKcQN4mrVybJwIUCG/tY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=d/BdmOG0; arc=none smtp.client-ip=216.71.154.45
+	 In-Reply-To:To:Cc; b=ILtSj1VWUASBZGvy/KXiwnqdu7GORtmE1twnAR5NFSErthNGku1yPjdEtI1w1FdgkbLo0nmvuVYmUOOxtXcJDNwLCo4QgtxrYKx/lHxA9b9+GqvHeeRxxNauNtiCUIqabA3k9K3Z+DJv+YtWkSmDGdVEACXXYo5Y8+HXUdzxyk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=BqTZuWEZ; arc=none smtp.client-ip=216.71.154.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -36,32 +36,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1707928945; x=1739464945;
   h=from:date:subject:mime-version:content-transfer-encoding:
    message-id:references:in-reply-to:to:cc;
-  bh=bH6vWRw60xnuXV0jlirxZDKuiOZGmQa5D7tTxE57gpM=;
-  b=d/BdmOG0rUTis69cavNFSxT/qUmh+8lAB4x2Rw/OlCqlLqkAP2E2JVUf
-   9HhskvMWb1tr+/NfNjZ26vo2InuOFhCZJT1KJ0FJ6hWohJzkZ98YA8F5Y
-   A+ETILS0xBMaCLpFAuAD7khkrnLpq3AnRyPhXN0A2tYP3YDAB8QIkg+Lw
-   Is8PwkOEXvjgLDKNy3yQ/dCpy6OfTxe8zlNufEo1Tkewj8MJKQM2xJGTV
-   3O5lnggEF8NKfNvZt+6dY5rZZpRlKzFGty1izQsINT5Kskerkubq1q333
-   1Gi1g3+vnOtvb29v7EK78e/9dXjbQdKEmVtc5GzI9tdeuAWlSUzuga9fV
-   g==;
-X-CSE-ConnectionGUID: 9drc1YFoQvaidyriv7WFXA==
-X-CSE-MsgGUID: 1iiedHrNQFeM2XliwCveJw==
+  bh=n/Ct+FOCPnbG6TCxKfw5AO3FWijGxGRtmVbb789OJTM=;
+  b=BqTZuWEZE8YUEPxhjGR4fbzg1nQbl4ttkg14Bs3PCw5WOX0bh+X1UHZy
+   kX216bsZwX6lcZwjhu68P/HtyH8DYx0OcJbojGT+XiKhiAvaRbZYG/kdE
+   iRgvLvRLA3fHCxggF+kM2SfxGBnd0Sy/FNOAjLT7VG9G/zyD0uh9jbxnl
+   /XM7weEPIy5g0DS771TjTq9tBavolPHGu6b0hVvmclv2hyxfw+OVlws6A
+   72nWsI5FK00mLti2H7/xD7lxYYHqN+eA+Q+o5mPQg4p1NPb/E+TK7sC5a
+   SBmV1Uz4v7GHPbjN2UHZ3khkOCnQmG3FhssqauFoCiepqRrCjyVgMO4Yq
+   A==;
+X-CSE-ConnectionGUID: 3PqAXj1mRHCgh1akvRC+cw==
+X-CSE-MsgGUID: qvE74kfMRh+XStqcluh2OA==
 X-IronPort-AV: E=Sophos;i="6.06,159,1705334400"; 
-   d="scan'208";a="9294745"
+   d="scan'208";a="9294747"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Feb 2024 00:42:23 +0800
-IronPort-SDR: HDZ2Vp1/6Jl6rHnVkIgbbev376ZIPH6QAGHVdQ4BFcUDRhNY7aAjSM2HQQNk+XuE6RhaTJrLSc
- 2a80kDhOYg9A==
+  by ob1.hgst.iphmx.com with ESMTP; 15 Feb 2024 00:42:24 +0800
+IronPort-SDR: F6k1MLOE5/8J8qKOpxUSURReH5Yusmwr/nIa58Ltsl2GXDjoysUKZnXpdmsY27sfc0rQGqJpsI
+ Da6NvglNaSQg==
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Feb 2024 07:51:58 -0800
-IronPort-SDR: sQgZ3eP1XpqDvjkE+iOQ0S3gHN20lFei3m2a7KcuC3C15nUIrDy/vEBRQRaz8S+T2zm0rZY0YB
- iia0adWGSQxQ==
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Feb 2024 07:51:59 -0800
+IronPort-SDR: gqvyFZhGSaw04+Ud78YXDxHFnxQddOfK8ygif5khsnA6k0J5jME4Cy2ASv3MXe0GseQVdGmh5s
+ aDi1iUDBXXGg==
 WDCIronportException: Internal
 Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip02.wdc.com with ESMTP; 14 Feb 2024 08:42:20 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 14 Feb 2024 08:42:22 -0800
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Date: Wed, 14 Feb 2024 08:42:15 -0800
-Subject: [PATCH 4/5] btrfs: open block devices after superblock creation
+Date: Wed, 14 Feb 2024 08:42:16 -0800
+Subject: [PATCH 5/5] btrfs: use the super_block as holder when mounting
+ file systems
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -70,7 +71,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240214-hch-device-open-v1-4-b153428b4f72@wdc.com>
+Message-Id: <20240214-hch-device-open-v1-5-b153428b4f72@wdc.com>
 References: <20240214-hch-device-open-v1-0-b153428b4f72@wdc.com>
 In-Reply-To: <20240214-hch-device-open-v1-0-b153428b4f72@wdc.com>
 To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
@@ -78,146 +79,50 @@ To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
 Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>, 
  linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707928933; l=4352;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707928933; l=1407;
  i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
- bh=BhQPNDpB6/btBxArh/7gqFHYFe5pci1QG9ex6aK98P8=;
- b=v3u1ICI2D2ErbuWaEOekpBh2t3TtBEN3cbKtZ8iM6jF6pkBBUMzIEybn0Do9bfzM/wXANeICX
- QTKnpY1mqK3B6BtWioo70IqPyFlv4LU2/jLdo32dTbJ408sqVww6yC+
+ bh=5rfa6IXupj7Jvp1HyDQOjFATBDPTi0LqbzcMFjmSCro=;
+ b=YI3WD5e/SUmGdIE0DfNpjyBwSXRjmr39hdskYzorTvIHh9L6oUFmy4XE+lzd7sgCkziaYG8x2
+ iNlLie//3u3DKi7tZZpXW/p1nuhTq0YEolIZFV0utmEplJ4NRDB7IDR
 X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
  pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
 
 From: Christoph Hellwig <hch@lst.de>
 
-Currently btrfs_mount_root opens the block devices before committing to
-allocating a super block. That creates problems for restricting the
-number of writers to a device, and also leads to a unusual and not very
-helpful holder (the fs_type).
+The file system type is not a very useful holder as it doesn't allow us
+to go back to the actual file system instance.  Pass the super_block
+instead which is useful when passed back to the file system driver.
 
-Reorganize the code to first check whether the superblock for a
-particular fsid does already exist and open the block devices only if it
-doesn't, mirroring the recent changes to the VFS mount helpers.  To do
-this the increment of the in_use counter moves out of btrfs_open_devices
-and into the only caller in btrfs_mount_root so that it happens before
-dropping uuid_mutex around the call to sget.
+This matches what is done for all other block device based file systems.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/super.c   | 41 +++++++++++++++++++++++++----------------
- fs/btrfs/volumes.c | 15 +++++----------
- 2 files changed, 30 insertions(+), 26 deletions(-)
+ fs/btrfs/super.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 51b8fd272b15..1fa7d83d02c1 100644
+index 1fa7d83d02c1..0c7956e8f21e 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -1794,7 +1794,6 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 	struct btrfs_fs_info *fs_info = fc->s_fs_info;
- 	struct btrfs_fs_context *ctx = fc->fs_private;
- 	struct btrfs_fs_devices *fs_devices = NULL;
--	struct block_device *bdev;
- 	struct btrfs_device *device;
- 	struct super_block *sb;
- 	blk_mode_t mode = btrfs_open_mode(fc);
-@@ -1817,15 +1816,8 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 	fs_devices = device->fs_devices;
- 	fs_info->fs_devices = fs_devices;
+@@ -1843,7 +1843,7 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 		struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
  
--	ret = btrfs_open_devices(fs_devices, mode, &btrfs_fs_type);
-+	fs_devices->in_use++;
- 	mutex_unlock(&uuid_mutex);
--	if (ret)
--		return ret;
--
--	if (!(fc->sb_flags & SB_RDONLY) && fs_devices->rw_devices == 0)
--		return -EACCES;
--
--	bdev = fs_devices->latest_dev->bdev;
- 
- 	/*
- 	 * From now on the error handling is not straightforward.
-@@ -1843,24 +1835,41 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 	set_device_specific_options(fs_info);
- 
- 	if (sb->s_root) {
--		if ((fc->sb_flags ^ sb->s_flags) & SB_RDONLY)
-+		if ((fc->sb_flags ^ sb->s_flags) & SB_RDONLY) {
- 			ret = -EBUSY;
-+			goto error_deactivate;
-+		}
- 	} else {
--		snprintf(sb->s_id, sizeof(sb->s_id), "%pg", bdev);
-+		struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+
-+		mutex_lock(&uuid_mutex);
-+		ret = btrfs_open_devices(fs_devices, mode, &btrfs_fs_type);
-+		mutex_unlock(&uuid_mutex);
-+		if (ret)
-+			goto error_deactivate;
-+
-+		if (!(fc->sb_flags & SB_RDONLY) && !fs_devices->rw_devices) {
-+			ret = -EACCES;
-+			goto error_deactivate;
-+		}
-+
-+		snprintf(sb->s_id, sizeof(sb->s_id), "%pg",
-+			 fs_devices->latest_dev->bdev);
+ 		mutex_lock(&uuid_mutex);
+-		ret = btrfs_open_devices(fs_devices, mode, &btrfs_fs_type);
++		ret = btrfs_open_devices(fs_devices, mode, sb);
+ 		mutex_unlock(&uuid_mutex);
+ 		if (ret)
+ 			goto error_deactivate;
+@@ -1856,7 +1856,7 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 		snprintf(sb->s_id, sizeof(sb->s_id), "%pg",
+ 			 fs_devices->latest_dev->bdev);
  		shrinker_debugfs_rename(sb->s_shrink, "sb-btrfs:%s", sb->s_id);
- 		btrfs_sb(sb)->bdev_holder = &btrfs_fs_type;
+-		btrfs_sb(sb)->bdev_holder = &btrfs_fs_type;
++		btrfs_sb(sb)->bdev_holder = sb;
  		ret = btrfs_fill_super(sb, fs_devices, NULL);
--	}
--
--	if (ret) {
--		deactivate_locked_super(sb);
--		return ret;
-+		if (ret)
-+			goto error_deactivate;
- 	}
- 
- 	btrfs_clear_oneshot_options(fs_info);
- 
- 	fc->root = dget(sb->s_root);
- 	return 0;
-+
-+error_deactivate:
-+	deactivate_locked_super(sb);
-+	return ret;
- }
- 
- /*
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index f27af155abf0..6e82bd7ce501 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1220,8 +1220,6 @@ static int devid_cmp(void *priv, const struct list_head *a,
- int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 		       blk_mode_t flags, void *holder)
- {
--	int ret;
--
- 	lockdep_assert_held(&uuid_mutex);
- 	/*
- 	 * The device_list_mutex cannot be taken here in case opening the
-@@ -1230,14 +1228,11 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 	 * We also don't need the lock here as this is called during mount and
- 	 * exclusion is provided by uuid_mutex
- 	 */
--	if (!fs_devices->is_open) {
--		list_sort(NULL, &fs_devices->devices, devid_cmp);
--		ret = open_fs_devices(fs_devices, flags, holder);
--		if (ret)
--			return ret;
--	}
--	fs_devices->in_use++;
--	return 0;
-+	ASSERT(fs_devices->in_use);
-+	if (fs_devices->is_open)
-+		return 0;
-+	list_sort(NULL, &fs_devices->devices, devid_cmp);
-+	return open_fs_devices(fs_devices, flags, holder);
- }
- 
- void btrfs_release_disk_super(struct btrfs_super_block *super)
+ 		if (ret)
+ 			goto error_deactivate;
 
 -- 
 2.43.0
