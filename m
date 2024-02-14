@@ -1,139 +1,159 @@
-Return-Path: <linux-btrfs+bounces-2377-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2379-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29E36854410
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 09:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BB8B85445A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 09:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D01E91F227A6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 08:32:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20FE91F2A663
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 08:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB89524F;
-	Wed, 14 Feb 2024 08:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 861C9C2C6;
+	Wed, 14 Feb 2024 08:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ItQxqSkH"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gsmEeDvU";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gsmEeDvU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E661A33DD
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Feb 2024 08:32:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9311779DC;
+	Wed, 14 Feb 2024 08:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707899543; cv=none; b=JpUIBI996rxWg0X3CXbJSenFHoL1iFL1gJHk9ByAyEtk2GG6NU+wTgZCcPnuxDh+sBBvfTMueFoM1pyH+0pXAtUJrDnHK36CocHRdfES6jn6ZkRS0Pll2QAKkhcvBE010tRAAwk67WIrKI/SVP15K7LxndXG3oR5TFbaLbQ9EUQ=
+	t=1707900777; cv=none; b=Dgi9XAcrJ7PnU5D0Z2uodEecAsaHRC5Pk2dcJK2ti006HFZlQyUFLLly3xOOtYH8o3WrXubax+hrzRrV3RY08ZMgrfGH7wx8SDy1+b/6vBxdsczDKq4D/e3J7u6wZd3ur1SFZYAvFJ4f4s8m2CkqMGf6zdFDDwSpwTfdYApRFs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707899543; c=relaxed/simple;
-	bh=eBozQ+YksG3ivkyMDxvQRWaJPYs/4TVo7mL9HEQi4gw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cKCL1PbXLm/nV5Fq5ON+CX63X55yG3ACrM4BGba9Pgex4B6LOKh6o+2YyQ72q/a4YLJVghOF2odiOOzox3/3zwkVevFIkxE/gHV+S7uen4XKHOWgcRnxC7QWcd2msPVbyyI3ibI+MujTixtkR0D4keqIb9INJRcFRtBcLU9w9to=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ItQxqSkH; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1707899532; x=1708504332; i=quwenruo.btrfs@gmx.com;
-	bh=eBozQ+YksG3ivkyMDxvQRWaJPYs/4TVo7mL9HEQi4gw=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=ItQxqSkHuRUUV73Ej29c96wURusNaSxxx9442FJ1QBTXGdYaCL7VIArIwndSdIdO
-	 Sllpy8zTUf4qjZ7eSQSfOzAhTPvSUPG1i65n51kYryOVTmxxGp6/NbCrfTT3i+HwZ
-	 14Fbw8DK0i0kEu7Fo2Yb46DlFqDreBgSCeH4dzqn/rK/dbGmWTID9A/4ltxw/Urny
-	 SbBgBbRLrpucEGpM1ZBMoVMCS4eiNEhdtioHkZqx8+/FuvB5HAl6QD7ecwr6Jh147
-	 OEdpJKJz6BiS0B3Kkx6AA0gLWvU8gxzJ2Wag9LzzZpIG2setifK1cmTRBlrlxQ/SA
-	 +QNPgYWngetV/+S/Ig==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MowGU-1rBVBq0KYo-00qUGe; Wed, 14
- Feb 2024 09:32:12 +0100
-Message-ID: <ff18404f-ca7e-4c48-a3d5-e7fab921ade1@gmx.com>
-Date: Wed, 14 Feb 2024 19:02:08 +1030
+	s=arc-20240116; t=1707900777; c=relaxed/simple;
+	bh=ZPwTvzWqlx9OchF3dRxEloHfDxUOdPKkuSspueE//3Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n69/XG5wGAQYsHAuaqzVU0XB7M/U+ji/d4sNPBfOwE+YyvgPlFfRkWd4e4vBagl3ynLVNsRxZSmy5pVKLweG4ITpXHdxKFeRl3tvW65i3B6D44FIaMfb3ageFdJsd0cqu5gGIEFsS/SOyACLgKFhfG4fmLIDMlmdzfEbvXvMQqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gsmEeDvU; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gsmEeDvU; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9824A21CA8;
+	Wed, 14 Feb 2024 08:52:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707900773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=UOx70PD5yft0dm9BWWOGLZJRxlYjfx2O3KH0qlJiMP4=;
+	b=gsmEeDvUy129QcVQX50fOQYWCdIkI3/pHGH1RR9+ug0sV2n1Pd2If2C03PGh1/8u1YAAVT
+	M2thyEFwqysHX4FXCyYiwsRiyHgcBlyJBIGwUgx9BntIXLTz1pI62s6BA7GnZq79OKvYli
+	2aptoB8s2GJ5d+TkR5Mbn4x7TPA6PBo=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707900773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=UOx70PD5yft0dm9BWWOGLZJRxlYjfx2O3KH0qlJiMP4=;
+	b=gsmEeDvUy129QcVQX50fOQYWCdIkI3/pHGH1RR9+ug0sV2n1Pd2If2C03PGh1/8u1YAAVT
+	M2thyEFwqysHX4FXCyYiwsRiyHgcBlyJBIGwUgx9BntIXLTz1pI62s6BA7GnZq79OKvYli
+	2aptoB8s2GJ5d+TkR5Mbn4x7TPA6PBo=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 90BD213A0B;
+	Wed, 14 Feb 2024 08:52:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id JNhQI2V/zGUMPwAAn2gu4w
+	(envelope-from <dsterba@suse.com>); Wed, 14 Feb 2024 08:52:53 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.8-rc5
+Date: Wed, 14 Feb 2024 09:52:16 +0100
+Message-ID: <cover.1707900530.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: move all btree initialization into
- btrfs_init_btree_inode
-Content-Language: en-US
-To: dsterba@suse.cz
-Cc: Christoph Hellwig <hch@lst.de>, clm@fb.com, josef@toxicpanda.com,
- dsterba@suse.com, linux-btrfs@vger.kernel.org
-References: <20230219181022.3499088-1-hch@lst.de>
- <7fbe36d5-3ebb-4daa-9c92-0761ba49686b@gmx.com>
- <20240214071240.GK355@twin.jikos.cz>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240214071240.GK355@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:L1z3eFwXROBgF73V6iqrlENcW1KqD0fkU6cN8XcRiHGgUUlvWxJ
- 9ujzndFgsT2DG9tLT5muQMFPoLvVi525/DdOD2YJWIRixg0lC4ucOeQAU5eJUaQzXtxnUN0
- Q4tHajazLOceXc9eoE8p79VNQwahcI+I9Z1kC/RA6H5Jp6ALPS2OEA2rwG3jyrmfjC7iGLL
- oA2qzKoMr+1N9Tkhe3skQ==
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [1.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: *
+X-Spam-Score: 1.90
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:iU2A8p7jgvY=;MVN5lQLSFIWV52KTSRY752wHyL5
- Ql5nnhFfCpUga4Fbh2pl+MAAwAbbzeEeXWavMEh5OHDPVobwJN9yeItzAdSsvnX5I5KY6iGr3
- upKxa+5hMfG+L5SFIo01m6VWo2ejFyjLutuOEUtpoRKdFU308yTNfd1AYd9KxNsRuukYJZEQn
- iypbWDuE1PMHKMRme0KTIPh2KWZrtXMruUsCHGedpOVBTg+ZzJXVrN1WUosVrkce0GUlRtc86
- idM0itS+66+hZeZsgktiFpro8mEaMyqtSD0KLK66CsoDoCKNk27PkymXpfZbz6nghIPfuk8z8
- DZpuADTP9zUyIfa8fz3OGg8aEjiPevKpb6XeUHnqsqC07HKrcHctGGcDZxOs+gkjaqaajIkgA
- 2KGCjCXTxwjO3VTRR6wfXgauuMPeZBEfEEuNqDa/2cmXR0GFjszfQ35a1AE2JxjuXJKmVASdb
- ABTHZrKV7iqi/s2a5HyncVi4jpxyo2riIhNK89lHpxSGyXCZluBzKnsH3t7Chwo+jICRBGq1c
- ymZD4ba888V2rDeF91QZEUg8e+9xJYiPjI3c1Q2u+svPwATAcrSOrcxW4u6b2lKbeLyr7qNT7
- J9KLX/+ntJUOsqtdH+Tfi//xx6gzcn8bpQhTgu65cmdPosA03K1N7Tlw1hc6C3F+fSA2NJlcM
- VPFb7YZIy+tX7hzoouYXsyUi8B0WB3NMKvDme3YQbIiO0nnqffeTkH6PvN5ckt/Ppsmaql0j5
- RGGlKnjW0k/F2QYJXMS9GYQ3RatccEPyYclc3laJxBXOBX3UEr2ukjsZpi4My5NcZaRa0Wa3N
- sIP+BK5cczq0yXJZ3YP9bySdUvdN7mUcXOOghteUbxOK4=
 
+Hi,
 
+a few regular fixes and one fix for space reservation regression since
+6.7 that users have been reporting.
 
-=E5=9C=A8 2024/2/14 17:42, David Sterba =E5=86=99=E9=81=93:
-> On Wed, Feb 14, 2024 at 04:58:55PM +1030, Qu Wenruo wrote:
->>
->>
->> =E5=9C=A8 2023/2/20 04:40, Christoph Hellwig =E5=86=99=E9=81=93:
->>> Move the remaining code that deals with initializing the btree
->>> inode into btrfs_init_btree_inode instead of splitting it between
->>> that helpers and its only caller.
->>>
->>> Signed-off-by: Christoph Hellwig <hch@lst.de>
->>
->> Reviewed-by: Qu Wenruo <wqu@suse.com>
->>
->> Just one small nitpick.
->
-> The patch is almost one year old, it does not make much sense to send
-> reviews, if there's something to be fixed please send a new patch.
+Please pull, thanks.
 
-My bad, I'm re-setting up my mail client, and this one popped up and I
-thought it's new...
+- fix over-reservation of metadata chunks due to not keeping proper balance
+  between global block reserve and delayed refs reserve;
+  in practice this leaves behind empty metadata block groups, the workaround
+  is to reclaim them by using the '-musage=1' balance filter
 
-Sorry for the noise,
-Qu
+- other space reservation fixes:
+  - do not delete unused block group if it may be used soon
+  - do not reserve space for checksums for NOCOW files
+
+- fix extent map assertion failure when writing out free space inode
+
+- reject encoded write if inode has nodatasum flag set
+
+- fix chunk map leak when loading block group zone info
+
+----------------------------------------------------------------
+The following changes since commit e03ee2fe873eb68c1f9ba5112fee70303ebf9dfb:
+
+  btrfs: do not ASSERT() if the newly created subvolume already got read (2024-01-31 08:42:53 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.8-rc4-tag
+
+for you to fetch changes up to 2f6397e448e689adf57e6788c90f913abd7e1af8:
+
+  btrfs: don't refill whole delayed refs block reserve when starting transaction (2024-02-13 18:39:09 +0100)
+
+----------------------------------------------------------------
+Filipe Manana (7):
+      btrfs: add and use helper to check if block group is used
+      btrfs: do not delete unused block group if it may be used soon
+      btrfs: add new unused block groups to the list of unused block groups
+      btrfs: don't reserve space for checksums when writing to nocow files
+      btrfs: reject encoded write if inode has nodatasum flag set
+      btrfs: zoned: fix chunk map leak when loading block group zone info
+      btrfs: don't refill whole delayed refs block reserve when starting transaction
+
+Josef Bacik (1):
+      btrfs: don't drop extent_map for free space inode on write error
+
+ fs/btrfs/block-group.c    | 80 +++++++++++++++++++++++++++++++++++++++++++++--
+ fs/btrfs/block-group.h    |  7 +++++
+ fs/btrfs/delalloc-space.c | 29 +++++++++++------
+ fs/btrfs/inode.c          | 26 +++++++++++++--
+ fs/btrfs/transaction.c    | 38 ++--------------------
+ fs/btrfs/zoned.c          |  1 +
+ 6 files changed, 131 insertions(+), 50 deletions(-)
 
