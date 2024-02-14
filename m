@@ -1,130 +1,155 @@
-Return-Path: <linux-btrfs+bounces-2386-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2387-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A596C854EE3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 17:44:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00F6F8551DB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 19:15:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 584B41F23D76
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 16:44:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28C051C28CC4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 18:15:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1ACC63107;
-	Wed, 14 Feb 2024 16:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E50129A82;
+	Wed, 14 Feb 2024 18:12:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="BqTZuWEZ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kZKthVG1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tnNEZuCU";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kZKthVG1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="tnNEZuCU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401A761695;
-	Wed, 14 Feb 2024 16:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B238527F
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 Feb 2024 18:12:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707928947; cv=none; b=uZl5QRCvb852R/GPCacDcDhwHFPXlthGbVcfH0iLcR3bONJU/2+f5QFYp5N6bbrXf7V8VIcEhBPFgLLST9/yRBiWKfPIiYoMyO75kNf7k85YA5TNviD9oWambqPd/2LCIMvJzqSeBTXKVThigOvbT+c9jT2WEg0a7hw2d7Isddo=
+	t=1707934341; cv=none; b=CXOE/8Fu/hXii3FHImwkMTtHJReshRnrdQY7GNSBXDMBp6XM10nsYbKuFsdVleuPE0bghtyDnyyzO3Adm3oiADk5KQMijg2nC6DogzER4xI1Oy9HLtTbb9tWPCdq3CYLrLkpcX/3Lh1eJIF4M/Cq2NpV5dkLF8fI7a97tK91Q90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707928947; c=relaxed/simple;
-	bh=n/Ct+FOCPnbG6TCxKfw5AO3FWijGxGRtmVbb789OJTM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ILtSj1VWUASBZGvy/KXiwnqdu7GORtmE1twnAR5NFSErthNGku1yPjdEtI1w1FdgkbLo0nmvuVYmUOOxtXcJDNwLCo4QgtxrYKx/lHxA9b9+GqvHeeRxxNauNtiCUIqabA3k9K3Z+DJv+YtWkSmDGdVEACXXYo5Y8+HXUdzxyk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=BqTZuWEZ; arc=none smtp.client-ip=216.71.154.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1707928945; x=1739464945;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=n/Ct+FOCPnbG6TCxKfw5AO3FWijGxGRtmVbb789OJTM=;
-  b=BqTZuWEZE8YUEPxhjGR4fbzg1nQbl4ttkg14Bs3PCw5WOX0bh+X1UHZy
-   kX216bsZwX6lcZwjhu68P/HtyH8DYx0OcJbojGT+XiKhiAvaRbZYG/kdE
-   iRgvLvRLA3fHCxggF+kM2SfxGBnd0Sy/FNOAjLT7VG9G/zyD0uh9jbxnl
-   /XM7weEPIy5g0DS771TjTq9tBavolPHGu6b0hVvmclv2hyxfw+OVlws6A
-   72nWsI5FK00mLti2H7/xD7lxYYHqN+eA+Q+o5mPQg4p1NPb/E+TK7sC5a
-   SBmV1Uz4v7GHPbjN2UHZ3khkOCnQmG3FhssqauFoCiepqRrCjyVgMO4Yq
-   A==;
-X-CSE-ConnectionGUID: 3PqAXj1mRHCgh1akvRC+cw==
-X-CSE-MsgGUID: qvE74kfMRh+XStqcluh2OA==
-X-IronPort-AV: E=Sophos;i="6.06,159,1705334400"; 
-   d="scan'208";a="9294747"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Feb 2024 00:42:24 +0800
-IronPort-SDR: F6k1MLOE5/8J8qKOpxUSURReH5Yusmwr/nIa58Ltsl2GXDjoysUKZnXpdmsY27sfc0rQGqJpsI
- Da6NvglNaSQg==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 Feb 2024 07:51:59 -0800
-IronPort-SDR: gqvyFZhGSaw04+Ud78YXDxHFnxQddOfK8ygif5khsnA6k0J5jME4Cy2ASv3MXe0GseQVdGmh5s
- aDi1iUDBXXGg==
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip02.wdc.com with ESMTP; 14 Feb 2024 08:42:22 -0800
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Date: Wed, 14 Feb 2024 08:42:16 -0800
-Subject: [PATCH 5/5] btrfs: use the super_block as holder when mounting
- file systems
+	s=arc-20240116; t=1707934341; c=relaxed/simple;
+	bh=tpmAAJ6RM2quuEt4xCnQLaefmyFyYookWXq2Nt/8WPg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rb75X4cnb2fSfjLLsj5w67RWI9sRYBcvNi4hEKldSROmlqyMsDahyUlph04PL5s9coJXsf5VGPxcRhtpwYCxrKHL3cWdPTYWHh5GTmEJVg57/DiHfwLImjDn0Rl7jE3qJ3KCrBXVY+74uObzQWIu8AgL639//QJWhdpRJyvdFSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kZKthVG1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tnNEZuCU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kZKthVG1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=tnNEZuCU; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BA8511F815;
+	Wed, 14 Feb 2024 18:12:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707934337;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NDZ2wFy5NX9E582XA/Z2VjQaMVtMmtTxVvm/ndSuIyI=;
+	b=kZKthVG1nFp3ZN/Psa7C9JPA6RR/PttpTkVq2BUJCnVv8JLNbD0vr4ytfvmWgq9rb5hR2D
+	sfdOx0FNs0c8lPQPpi5yUByHqYJiqqcQ7XcBnEhwD3rjM0Y3ObLemfBi5MbVT7eHnkBTR5
+	ANOpF/Hrqh8yh7C4w4+25R3HReyty50=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707934337;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NDZ2wFy5NX9E582XA/Z2VjQaMVtMmtTxVvm/ndSuIyI=;
+	b=tnNEZuCUhIGMkCblgRuOpA6SLDYKjskmvXeytY/9W+G5e17+0/x0+jAUarKNKgrws61hs7
+	zNPUTAWZpwx9+BAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707934337;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NDZ2wFy5NX9E582XA/Z2VjQaMVtMmtTxVvm/ndSuIyI=;
+	b=kZKthVG1nFp3ZN/Psa7C9JPA6RR/PttpTkVq2BUJCnVv8JLNbD0vr4ytfvmWgq9rb5hR2D
+	sfdOx0FNs0c8lPQPpi5yUByHqYJiqqcQ7XcBnEhwD3rjM0Y3ObLemfBi5MbVT7eHnkBTR5
+	ANOpF/Hrqh8yh7C4w4+25R3HReyty50=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707934337;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NDZ2wFy5NX9E582XA/Z2VjQaMVtMmtTxVvm/ndSuIyI=;
+	b=tnNEZuCUhIGMkCblgRuOpA6SLDYKjskmvXeytY/9W+G5e17+0/x0+jAUarKNKgrws61hs7
+	zNPUTAWZpwx9+BAQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A6C8D13A35;
+	Wed, 14 Feb 2024 18:12:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 2DhKKIECzWUkQQAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Wed, 14 Feb 2024 18:12:17 +0000
+Date: Wed, 14 Feb 2024 19:11:39 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>,
+	Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	Naohiro Aota <naohiro.aota@wdc.com>, HAN Yuwei <hrx@bupt.moe>
+Subject: Re: [PATCH] btrfs: zoned: don't skip block group profile checks on
+ conv zones
+Message-ID: <20240214181139.GS355@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <0cd08a6b0f5285498811504d3713ced3afe3b8d2.1707812175.git.johannes.thumshirn@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240214-hch-device-open-v1-5-b153428b4f72@wdc.com>
-References: <20240214-hch-device-open-v1-0-b153428b4f72@wdc.com>
-In-Reply-To: <20240214-hch-device-open-v1-0-b153428b4f72@wdc.com>
-To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
- David Sterba <dsterba@suse.com>, Christoph Hellwig <hch@lst.de>
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>, 
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707928933; l=1407;
- i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
- bh=5rfa6IXupj7Jvp1HyDQOjFATBDPTi0LqbzcMFjmSCro=;
- b=YI3WD5e/SUmGdIE0DfNpjyBwSXRjmr39hdskYzorTvIHh9L6oUFmy4XE+lzd7sgCkziaYG8x2
- iNlLie//3u3DKi7tZZpXW/p1nuhTq0YEolIZFV0utmEplJ4NRDB7IDR
-X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
- pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0cd08a6b0f5285498811504d3713ced3afe3b8d2.1707812175.git.johannes.thumshirn@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.00
+X-Spamd-Result: default: False [-1.00 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,suse.cz,gmx.com,wdc.com,bupt.moe];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[42.71%]
+X-Spam-Flag: NO
 
-From: Christoph Hellwig <hch@lst.de>
+On Tue, Feb 13, 2024 at 12:16:15AM -0800, Johannes Thumshirn wrote:
+> On a zoned filesystem with conventional zones, we're skipping the block
+> group profile checks for the conventional zones.
+> 
+> This allows converting a zoned filesystem's data block groups to RAID when
+> all of the zones backing the chunk are on conventional zones.  But this
+> will lead to problems, once we're trying to allocate chunks backed by
+> sequential zones.
+> 
+> So also check for conventional zones when loading a block group's profile
+> on them.
+> 
+> Reported-by: HAN Yuwei <hrx@bupt.moe>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-The file system type is not a very useful holder as it doesn't allow us
-to go back to the actual file system instance.  Pass the super_block
-instead which is useful when passed back to the file system driver.
+Reviewed-by: David Sterba <dsterba@suse.com>
 
-This matches what is done for all other block device based file systems.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/super.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 1fa7d83d02c1..0c7956e8f21e 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1843,7 +1843,7 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 		struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
- 
- 		mutex_lock(&uuid_mutex);
--		ret = btrfs_open_devices(fs_devices, mode, &btrfs_fs_type);
-+		ret = btrfs_open_devices(fs_devices, mode, sb);
- 		mutex_unlock(&uuid_mutex);
- 		if (ret)
- 			goto error_deactivate;
-@@ -1856,7 +1856,7 @@ static int btrfs_get_tree_super(struct fs_context *fc)
- 		snprintf(sb->s_id, sizeof(sb->s_id), "%pg",
- 			 fs_devices->latest_dev->bdev);
- 		shrinker_debugfs_rename(sb->s_shrink, "sb-btrfs:%s", sb->s_id);
--		btrfs_sb(sb)->bdev_holder = &btrfs_fs_type;
-+		btrfs_sb(sb)->bdev_holder = sb;
- 		ret = btrfs_fill_super(sb, fs_devices, NULL);
- 		if (ret)
- 			goto error_deactivate;
-
--- 
-2.43.0
-
+Please add link to the report (as Link: tag), I think it is interesting
+how the root cause was discovered.
 
