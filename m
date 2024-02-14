@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-2390-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2391-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B412085522C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 19:33:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30C5985522D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 19:33:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D89B21C29907
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 18:33:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1D8A2853F4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Feb 2024 18:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC1A313B785;
-	Wed, 14 Feb 2024 18:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB1413B7B4;
+	Wed, 14 Feb 2024 18:32:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YizPtY5L";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="q+nHBQx0"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AyinW9Na";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AyinW9Na"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9E5413B794
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Feb 2024 18:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F5A13B78C
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 Feb 2024 18:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707935556; cv=none; b=rQCd/UpBALehNcTocS0xmHCcTcYz2iIrWZBrGfD41ghdZWfnaBE2et4KaxqB/rC0AyhFNPTXxFtqSkRJBIy4gIlr8BUx2mrlpMiZmcMB03HtGmjUrFqwCdu9b6dGMqQcaeI3MAyEjMb2GP1W5Jc/1qMi/RSC0+facFTR2cLCEhc=
+	t=1707935558; cv=none; b=ZRrOQBoMog1VWrpTxIg7Wimkxj8hGroOkSRa3J8Udv1a73f75oLj6H2DrwnvC4h6I94w5eZXBcuYYZZ+XgX/Ij0IrSGs6qb3/etyAWaS455IcHg52uE3S25ROhY9xBz9ZPS9HFExQXLSBb/+k2d8j1w1L5XBPX/1XfVot+SDq1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707935556; c=relaxed/simple;
-	bh=JdEn6opk2zXSoyThB2Qn0wpBA9eLqsKnIS6N/qYqn1w=;
+	s=arc-20240116; t=1707935558; c=relaxed/simple;
+	bh=HY6vSqKu8jtFgQ/hP+S1/Hfait+BkU2/8tWy2eB12zY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ns6VkZ1YFjfcr16qIHhLZxqhFTTwCqG7jhVUq4UvKg8LYIr3cTXMPZPB5RTmpXWTXnitFOlUta99rlVCDQjot7tYqluRkJpv+P05E8QK972ueaZzvYDY4sECetole8frgpJfxqdqaEgRoErvkkIosEjTQeBJdmWzd5Fuw/fkSEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YizPtY5L; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=q+nHBQx0; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=a0siDoyD3fL2vyH+zhF3wtqMPXUvgY59xFcd/7nFj0vhanpxP+qwcYr5NX4cwYu56Zz3Fn1HOFx2hA/sAn72nyqGJlZVT+BX0DMO88dfRq39uPXDUqGGmanoCvKG/hId6V/a1ZMO+2Tb1Ss6O523WM/ERgbW3dI/iu7Dt5NjdWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AyinW9Na; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AyinW9Na; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EBA581F815;
-	Wed, 14 Feb 2024 18:32:31 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4D1C91F81C;
+	Wed, 14 Feb 2024 18:32:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707935552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1707935554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xqz0jMirbO5Wod0toRgSsM0lxoRM9O9IDYgq+XnjNXI=;
-	b=YizPtY5LNHvA7QM3/0joTXGaaAIklJa//p4FYMIbPo2/elVOkX7zcdxx8du7oPbFpjFHEd
-	miElu3QcKWLbhIX6z8YeJTbdjOnjwBta5J1mJpuexQ3qN6viVJuKxgdfYlqX4liso3mS8W
-	ylzqY2kgEGqOT6Dt/cAzlNSZjjdV/qw=
+	bh=ajjn+9CdkwMmVNhVEe/HLphOKMt8OYmxGx6+Ly/QGtA=;
+	b=AyinW9NaxLKYT+oi42S//vomA6GGgaR0WnVYoiC4lS6YUnDHjWCJ43oO3HRQN4KrigNzIe
+	PEeEBiCIsiyyJXVpNCJsJzMkZfwJwZ0bzftfHSNw/bExE4m+PHbMJnp3/qRLHMtPjEdy+b
+	MSYcSwHdX22H8fd826b6SOYn0Slds8g=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707935551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1707935554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xqz0jMirbO5Wod0toRgSsM0lxoRM9O9IDYgq+XnjNXI=;
-	b=q+nHBQx0wj2Q3Z8i+k4XRdbTnSJNA01eOInS9f67IdzBqaaoD4TOcN69uAj2uS0WbcnCws
-	XMZZasKR+owo+9AXvJGV4lI1fqACHZbGjiuCVAcEO0meblJYqDsXpS0NPJdMGQueama/fP
-	R3gCa3qzUQkuAV+UojTghID9ZTkMD50=
+	bh=ajjn+9CdkwMmVNhVEe/HLphOKMt8OYmxGx6+Ly/QGtA=;
+	b=AyinW9NaxLKYT+oi42S//vomA6GGgaR0WnVYoiC4lS6YUnDHjWCJ43oO3HRQN4KrigNzIe
+	PEeEBiCIsiyyJXVpNCJsJzMkZfwJwZ0bzftfHSNw/bExE4m+PHbMJnp3/qRLHMtPjEdy+b
+	MSYcSwHdX22H8fd826b6SOYn0Slds8g=
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DA7B313A0B;
-	Wed, 14 Feb 2024 18:32:31 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 463DF13A0B;
+	Wed, 14 Feb 2024 18:32:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 6RBVNT8HzWULRQAAn2gu4w
-	(envelope-from <dsterba@suse.com>); Wed, 14 Feb 2024 18:32:31 +0000
+	id 6dcwEUIHzWUNRQAAn2gu4w
+	(envelope-from <dsterba@suse.com>); Wed, 14 Feb 2024 18:32:34 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 1/3] btrfs: factor out validation of btrfs_ioctl_vol_args::name
-Date: Wed, 14 Feb 2024 19:31:59 +0100
-Message-ID: <00446761eaf4f11f6dcde4ead3ff2464a2f96b6d.1707935035.git.dsterba@suse.com>
+Subject: [PATCH 2/3] btrfs: factor out validation of btrfs_ioctl_vol_args_v2::name
+Date: Wed, 14 Feb 2024 19:32:01 +0100
+Message-ID: <cc7eabb5443c7166c8c8a914f52fbbd9c8e23db2.1707935035.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <cover.1707935035.git.dsterba@suse.com>
 References: <cover.1707935035.git.dsterba@suse.com>
@@ -85,8 +85,8 @@ Content-Transfer-Encoding: 8bit
 Authentication-Results: smtp-out2.suse.de;
 	none
 X-Spam-Level: 
-X-Spam-Score: -3.30
-X-Spamd-Result: default: False [-3.30 / 50.00];
+X-Spam-Score: -0.30
+X-Spamd-Result: default: False [-0.30 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
@@ -106,51 +106,36 @@ X-Spamd-Result: default: False [-3.30 / 50.00];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
+	 RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
 
-The validation of vol args name in several ioctls is not done properly.
-a terminating NUL is written to the end of the buffer unconditionally,
-assuming that this would be the last place in case the buffer is used
-completely. This does not communicate back the actual error (either an
-invalid or too long path).
+The validation of vol args v2 name in snapshot and device remove ioctls
+is not done properly. A terminating NUL is written to the end of the
+buffer unconditionally, assuming that this would be the last place in
+case the buffer is used completely. This does not communicate back the
+actual error (either an invalid or too long path).
 
 Factor out all such cases and use a helper to do the verification,
-simply look for NUL in the buffer. There's no expected practical change,
-the size of buffer is 4088, this is enough for most paths or names.
+simply look for NUL in the buffer.  There's no expected practical
+change, the size of buffer is 4088, this is enough for most paths or
+names.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/fs.h    |  2 ++
- fs/btrfs/ioctl.c | 34 +++++++++++++++++++++++++++++-----
- fs/btrfs/super.c |  5 ++++-
- 3 files changed, 35 insertions(+), 6 deletions(-)
+ fs/btrfs/ioctl.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index f8bb73d6ab68..3c8fbc5ab082 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -922,6 +922,8 @@ void btrfs_exclop_finish(struct btrfs_fs_info *fs_info);
- void btrfs_exclop_balance(struct btrfs_fs_info *fs_info,
- 			  enum btrfs_exclusive_operation op);
- 
-+int btrfs_check_ioctl_vol_args_path(const struct btrfs_ioctl_vol_args *vol_args);
-+
- /* Compatibility and incompatibility defines */
- void __btrfs_set_fs_incompat(struct btrfs_fs_info *fs_info, u64 flag,
- 			     const char *name);
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index ac3316e0d11c..69d2ad24a4ca 100644
+index 69d2ad24a4ca..b8895c0e8259 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -231,6 +231,13 @@ static int check_fsflags_compatible(struct btrfs_fs_info *fs_info,
+@@ -238,6 +238,13 @@ int btrfs_check_ioctl_vol_args_path(const struct btrfs_ioctl_vol_args *vol_args)
  	return 0;
  }
  
-+int btrfs_check_ioctl_vol_args_path(const struct btrfs_ioctl_vol_args *vol_args)
++static int btrfs_check_ioctl_vol_args2_subvol_name(const struct btrfs_ioctl_vol_args_v2 *vol_args2)
 +{
-+	if (memchr(vol_args->name, 0, sizeof(vol_args->name)) == NULL)
++	if (memchr(vol_args2->name, 0, sizeof(vol_args2->name)) == NULL)
 +		return -ENAMETOOLONG;
 +	return 0;
 +}
@@ -158,108 +143,40 @@ index ac3316e0d11c..69d2ad24a4ca 100644
  /*
   * Set flags/xflags from the internal inode flags. The remaining items of
   * fsxattr are zeroed.
-@@ -1128,7 +1135,10 @@ static noinline int btrfs_ioctl_resize(struct file *file,
- 		ret = PTR_ERR(vol_args);
- 		goto out_drop;
- 	}
--	vol_args->name[BTRFS_PATH_NAME_MAX] = '\0';
-+	ret = btrfs_check_ioctl_vol_args_path(vol_args);
-+	if (ret < 0)
-+		goto out_free;
-+
- 	sizestr = vol_args->name;
- 	cancel = (strcmp("cancel", sizestr) == 0);
- 	ret = exclop_start_or_cancel_reloc(fs_info, BTRFS_EXCLOP_RESIZE, cancel);
-@@ -1328,12 +1338,15 @@ static noinline int btrfs_ioctl_snap_create(struct file *file,
+@@ -1365,7 +1372,9 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
  	vol_args = memdup_user(arg, sizeof(*vol_args));
  	if (IS_ERR(vol_args))
  		return PTR_ERR(vol_args);
--	vol_args->name[BTRFS_PATH_NAME_MAX] = '\0';
-+	ret = btrfs_check_ioctl_vol_args_path(vol_args);
+-	vol_args->name[BTRFS_SUBVOL_NAME_MAX] = '\0';
++	ret = btrfs_check_ioctl_vol_args2_subvol_name(vol_args);
 +	if (ret < 0)
-+		goto out;
++		goto free_args;
  
- 	ret = __btrfs_ioctl_snap_create(file, file_mnt_idmap(file),
- 					vol_args->name, vol_args->fd, subvol,
- 					false, NULL);
+ 	if (vol_args->flags & ~BTRFS_SUBVOL_CREATE_ARGS_MASK) {
+ 		ret = -EOPNOTSUPP;
+@@ -2395,7 +2404,9 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 		 * name, same as v1 currently does.
+ 		 */
+ 		if (!(vol_args2->flags & BTRFS_SUBVOL_SPEC_BY_ID)) {
+-			vol_args2->name[BTRFS_SUBVOL_NAME_MAX] = 0;
++			err = btrfs_check_ioctl_vol_args2_subvol_name(vol_args2);
++			if (err < 0)
++				goto out;
+ 			subvol_name = vol_args2->name;
  
-+out:
- 	kfree(vol_args);
- 	return ret;
- }
-@@ -2466,7 +2479,10 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
- 		if (IS_ERR(vol_args))
- 			return PTR_ERR(vol_args);
- 
--		vol_args->name[BTRFS_PATH_NAME_MAX] = 0;
-+		err = btrfs_check_ioctl_vol_args_path(vol_args);
-+		if (err < 0)
-+			goto out;
-+
- 		subvol_name = vol_args->name;
- 
- 		err = mnt_want_write_file(file);
-@@ -2677,12 +2693,16 @@ static long btrfs_ioctl_add_dev(struct btrfs_fs_info *fs_info, void __user *arg)
+ 			err = mnt_want_write_file(file);
+@@ -2734,7 +2745,10 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
  		goto out;
  	}
  
--	vol_args->name[BTRFS_PATH_NAME_MAX] = '\0';
-+	ret = btrfs_check_ioctl_vol_args_path(vol_args);
-+	if (ret < 0)
-+		goto out_free;
-+
- 	ret = btrfs_init_new_device(fs_info, vol_args->name);
- 
- 	if (!ret)
- 		btrfs_info(fs_info, "disk added %s", vol_args->name);
- 
-+out_free:
- 	kfree(vol_args);
- out:
- 	if (restore_op)
-@@ -2774,7 +2794,10 @@ static long btrfs_ioctl_rm_dev(struct file *file, void __user *arg)
- 	if (IS_ERR(vol_args))
- 		return PTR_ERR(vol_args);
- 
--	vol_args->name[BTRFS_PATH_NAME_MAX] = '\0';
-+	ret = btrfs_check_ioctl_vol_args_path(vol_args);
-+	if (ret < 0)
-+		goto out_free;
-+
- 	if (!strcmp("cancel", vol_args->name)) {
- 		cancel = true;
- 	} else {
-@@ -2801,6 +2824,7 @@ static long btrfs_ioctl_rm_dev(struct file *file, void __user *arg)
- 		bdev_release(bdev_handle);
- out:
- 	btrfs_put_dev_args_from_path(&args);
-+out_free:
- 	kfree(vol_args);
- 	return ret;
- }
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 101f786963d4..bbc9efa7157b 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2203,7 +2203,9 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- 	vol = memdup_user((void __user *)arg, sizeof(*vol));
- 	if (IS_ERR(vol))
- 		return PTR_ERR(vol);
--	vol->name[BTRFS_PATH_NAME_MAX] = '\0';
-+	ret = btrfs_check_ioctl_vol_args_path(vol);
+-	vol_args->name[BTRFS_SUBVOL_NAME_MAX] = '\0';
++	ret = btrfs_check_ioctl_vol_args2_subvol_name(vol_args);
 +	if (ret < 0)
 +		goto out;
- 
- 	switch (cmd) {
- 	case BTRFS_IOC_SCAN_DEV:
-@@ -2245,6 +2247,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- 		break;
- 	}
- 
-+out:
- 	kfree(vol);
- 	return ret;
- }
++
+ 	if (vol_args->flags & BTRFS_DEVICE_SPEC_BY_ID) {
+ 		args.devid = vol_args->devid;
+ 	} else if (!strcmp("cancel", vol_args->name)) {
 -- 
 2.42.1
 
