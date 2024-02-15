@@ -1,168 +1,205 @@
-Return-Path: <linux-btrfs+bounces-2438-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2439-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCC53856E01
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 20:47:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B285A856E44
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 21:04:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D81AE285B85
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 19:47:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6CCD1C2262C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 20:04:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B64513A89E;
-	Thu, 15 Feb 2024 19:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 847C313A896;
+	Thu, 15 Feb 2024 20:04:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S7qJ/RpN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ub8q/FXB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8F313699A;
-	Thu, 15 Feb 2024 19:46:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472411384B8
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Feb 2024 20:04:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708026417; cv=none; b=PtTGBN8pNdhjlFewM3dk8cJ22B48m+8jogmRUDC6JDKzUmSBv3NrPhQHODfhW1AU3Jgfj/Lap3P2LaWDnUZtYvc0cuIiNc5it3/vyDLEkxFBL0i41B+lKOUp+UpjQ9OMEDk4M0JcnJnwc/PLUvHyOkW6/lzL+MBQR/haz609AH0=
+	t=1708027481; cv=none; b=NNXt6om+PqUHRhGD11ST/wncYYhJhv84lAOq3t/28Vn5DYd1kGfmMTreMvjMAqFG4DtwiJRPEt+q9sP1ZcN7LznMHHfWQExS/j7TN/See2L80nu12wY/QCkh7PX79XSnCFq9rMuKm2c9dqRYDTuOY01ML6Tz/QCELD3DBksah14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708026417; c=relaxed/simple;
-	bh=SvNJx9ibctbQXoy8zzAv4TWr8cJ8eTvpaV2PlD9kGZI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZXYx6mLADD7uXbO+cRU2phyU7cjktrnRng0EfLCpHy0VTmEpff/WZos01zIOln8D9KUM7+HFPlZLqvBE0ttq5JyhjrewnSV4Jo9FePXWNkOczWzkwv7Ae0Yz0eKZV7sEmm5NECxVHAgrM9b2nzRMEH3YddnharMTTyHcZFnbUmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S7qJ/RpN; arc=none smtp.client-ip=209.85.219.45
+	s=arc-20240116; t=1708027481; c=relaxed/simple;
+	bh=2GgUHsxcrCkupzuZEwDPba7ihglwpzedcJTuK7ABEB0=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=PM9SM5c0ZUyqMxF5oKu8PlsXmkqDaH54GMukI4tCflG2GyVk4HB66eyiDLZPxZybwyyeT8rhjcmjEwmSjNKuxygVJPRU6cQLMu9o/tPiqKU7rr1S1owar/94P70Hu9J8GF6kSfybii9aZioMsRNhwb6beH0LV9/E06ykdlsJOSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ub8q/FXB; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-68873473ce6so7464436d6.0;
-        Thu, 15 Feb 2024 11:46:55 -0800 (PST)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-296df89efd2so1156283a91.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Feb 2024 12:04:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708026415; x=1708631215; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0a9EFonqMBn2eHbLHRvN6s4nh6pQCa5EAdO92aYTphs=;
-        b=S7qJ/RpNM0gy/KaCy3biAl6HWtM4rqsdcPnB/YH9ruIPIVcYUXUrmLhleYjk3QkJoV
-         v9/s7T+LnuvmwZbsmFXf+7K7yO2uvnSZ4eYcA5XTxVdqbzK9ewTKIPVQdg85EkpcqVzl
-         aknkR6wPxin6kyR+vc/8stG93q0rYTEayUV5ydy0nS/SltBHUuwXnDwBOYdZXhiUhm7O
-         EGHyTnoIYo9ZRqB8lvrNJOboBWIhbuqZJgkRKqMmOheMbax7NlvJMWqpXFMo4hqMk47F
-         yJTY0LjfV2i1cwgoWkr2jZVSZyV042djwAzEDIWEz2oLMpVYg29//0TkebfBGSKj36ar
-         ZLBA==
+        d=gmail.com; s=20230601; t=1708027479; x=1708632279; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=58GDLZa64im//2gtlNwjy+4xdvBW5mcPLth20gzX37I=;
+        b=Ub8q/FXBJeg6TRCqIjrJEjXl29vJEH15ux1fv86wsNL5LhWvlWChhGbIaRvaEk9xUS
+         9EbIp3ydMOup2yQ3j2M0TdW1XIYNW54Ml4fGChN71UMgoqfK3ahX6Gl94y5lXFqM1d5i
+         uEjJYAbtnUosjF7XpbDr+sqTh2OuhLp5qFnx8KpHKh9Ov1DfHoAS6fePMga2xyokmhxY
+         i9DlmdS+GhJ6VnrVPb5aCuxKCuBzTCn1x4lbJ92i4GepvtalfdIaad8++2VAO+tN67kx
+         Dp2KtmtsUrdGPFV2/c1a3+g0QWA9FzgV2vKMOTUo95fe6lPVpd4C3fcQ8b5SWwhQZleU
+         ZlnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708026415; x=1708631215;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0a9EFonqMBn2eHbLHRvN6s4nh6pQCa5EAdO92aYTphs=;
-        b=Up/D3sB2rgK7FKKWo13QtrdusJKRXjrHQx8qvuETFCcykMXlm9MK0n9u4CiHzMnPVF
-         9kdPAr7+5nUWNkbUWF+0qyz8aLpzfhxEesEktCj5voAQ3u5qhcLsYgHJBhkpPc6zzfEX
-         PwG65k32jvUJv/41fjjIHZe60/yZWluTidSRZajvVjj646Am0JgjK65gkvzguJ9Vv/BI
-         Td7b5L+cD+jhoIMW29A1AiZn9bFLOyBUwrsrebefxLLt9XpuB8SHaIl5rZx3l783JmX4
-         tgTaEOfX3ZBgX8u3/X9rKaInpfrXuPc+WmgfsCw6HF8C1F5mpivL0cK4Do2J2XbULNmA
-         ov5A==
-X-Forwarded-Encrypted: i=1; AJvYcCWw/GIEoW9E6ZvIh+Btku6EMFefuIclZgk9wOslmteXC+CzqPr37wZ7K4M5IrmZzuyIo1yJLHXQVgQm60/TShMSAyBpb6zdPjl4hom0nqNEMa9u5GKVtcstbcUOyDuQ1RNgkVWsvu/vftMGwIH2xsm3vkipZ092NyPR2Mn1mwo+ZtMcnxfTdGA=
-X-Gm-Message-State: AOJu0Yz0xDN3SprO38la5PNsdNAthoYl9JRNfC2MaLiXSCJgHj8BS113
-	gjTBUJHNrC41jseBPC2ICqbkUSthykt+sflPKNxg3XtiSQdnMyehIuDt3VVNWHD6Rw==
-X-Google-Smtp-Source: AGHT+IFUlCyEzpVqAiRhaKG/YKslsjBvW/1ZGIwwpMuMpyt9VGtgXczGDx9ymu2IxKEw8fJvFKJiLQ==
-X-Received: by 2002:ad4:5c8f:0:b0:686:a185:dc11 with SMTP id o15-20020ad45c8f000000b00686a185dc11mr3520139qvh.55.1708026414655;
-        Thu, 15 Feb 2024 11:46:54 -0800 (PST)
-Received: from [10.56.180.189] (184-057-057-014.res.spectrum.com. [184.57.57.14])
-        by smtp.gmail.com with ESMTPSA id og11-20020a056214428b00b0068f2b1d9415sm413691qvb.23.2024.02.15.11.46.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Feb 2024 11:46:54 -0800 (PST)
-Message-ID: <da1e04bf-7dcc-46c8-af30-d1f92941740d@gmail.com>
-Date: Thu, 15 Feb 2024 14:46:52 -0500
+        d=1e100.net; s=20230601; t=1708027479; x=1708632279;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=58GDLZa64im//2gtlNwjy+4xdvBW5mcPLth20gzX37I=;
+        b=li7oY5cQiylV/VFVuN49MWHcJNqNIPF2bi6hrQiQujM6nZ8qqGP5XPmAfUnTLY+mh6
+         9S+WjwxLn55hLHyANtvuzTCgzCvrqAw23IPuyIpmD33L6thLg0k4wxpTM6wWu3yhyF27
+         qd+2II+jXBec875KIua/jTJ4KEMId0WQUL2YiymaCJXRGzMFHpSLWedjoyxtg0imOfjh
+         nSHOwwXmioeSIbqK4D0yT7dZTEjhR8nMBUXfXuG7bKhHrr5hNUGdZ5baR6izYNZo2FGz
+         cM07FZv1zfj9QhjA6fFe96gTJxzAn/GFoSt1aRbDXHBERx2vYsXEVDt/MB/CcM9ho5pJ
+         2mVg==
+X-Gm-Message-State: AOJu0Yzg/jbrckXqaX35AAfCMSeDf1FXbBdHSAWqbadGzCyyP9N5b/DB
+	+q+afUvyS6COJJXf5TqeA6GcLJ4irxk4jkMZ7qsIdib2eeAdoYYAqxttAD1vK2Sg6DuXLvip5cV
+	9LA5OXjq3tnKw05uVwuJTUh5HvI4jYHUKqz0=
+X-Google-Smtp-Source: AGHT+IGNhy3NoFaanFzeQwHJAqG5N+pdXgypjy066xlTNM4G8R1qCAVlDP9Z+WIyxUWZGQl+tBgS9kDEvS2HJC//7lA=
+X-Received: by 2002:a17:90b:e8a:b0:293:fc07:22c7 with SMTP id
+ fv10-20020a17090b0e8a00b00293fc0722c7mr2362001pjb.47.1708027479170; Thu, 15
+ Feb 2024 12:04:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [LSF/MM/BPF TOPIC] Dropping page cache of individual fs
-To: Jan Kara <jack@suse.cz>
-Cc: Matthew Wilcox <willy@infradead.org>,
- Christian Brauner <brauner@kernel.org>, lsf-pc@lists.linux-foundation.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org,
- Christoph Hellwig <hch@infradead.org>
-References: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
- <20240116114519.jcktectmk2thgagw@quack3>
- <20240117-tupfen-unqualifiziert-173af9bc68c8@brauner>
- <20240117143528.idmyeadhf4yzs5ck@quack3>
- <ZafpsO3XakIekWXx@casper.infradead.org>
- <3107a023-3173-4b3d-9623-71812b1e7eb6@gmail.com>
- <20240215135709.4zmfb7qlerztbq6b@quack3>
-Content-Language: en-US
-From: Adrian Vovk <adrianvovk@gmail.com>
-In-Reply-To: <20240215135709.4zmfb7qlerztbq6b@quack3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Kyle Smith <mr.kyle.smith@gmail.com>
+Date: Thu, 15 Feb 2024 12:04:28 -0800
+Message-ID: <CAKb79g0cM38YmV7rqeoC1EpO9vU856Y8LH2Kh7zxT5frDFfZDA@mail.gmail.com>
+Subject: mounting causes errors after power loss
+To: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/15/24 08:57, Jan Kara wrote:
-> On Mon 29-01-24 19:13:17, Adrian Vovk wrote:
->> Hello! I'm the "GNOME people" who Christian is referring to
-> Got back to thinking about this after a while...
->
->> On 1/17/24 09:52, Matthew Wilcox wrote:
->>> I feel like we're in an XY trap [1].  What Christian actually wants is
->>> to not be able to access the contents of a file while the device it's
->>> on is suspended, and we've gone from there to "must drop the page cache".
->> What we really want is for the plaintext contents of the files to be gone
->> from memory while the dm-crypt device backing them is suspended.
->>
->> Ultimately my goal is to limit the chance that an attacker with access to a
->> user's suspended laptop will be able to access the user's encrypted data. I
->> need to achieve this without forcing the user to completely log out/power
->> off/etc their system; it must be invisible to the user. The key word here is
->> limit; if we can remove _most_ files from memory _most_ of the time Ithink
->> luksSuspend would be a lot more useful against cold boot than it is today.
-> Well, but if your attack vector are cold-boot attacks, then how does
-> freeing pages from the page cache help you? I mean sure the page allocator
-> will start tracking those pages with potentially sensitive content as free
-> but unless you also zero all of them, this doesn't help anything against
-> cold-boot attacks? The sensitive memory content is still there...
->
-> So you would also have to enable something like zero-on-page-free and
-> generally the cost of this is going to be pretty big?
+Hello,
 
-Yes you are right. Just marking pages as free isn't enough.
+I have noticed the occasional btrfs error after a hard power cycle and
+wanted to get a better understanding of the issue. These errors only
+happen after the btrfs partition is mounted, and running "btrfs check"
+before mounting does not find any errors.
 
-I'm sure it's reasonable enough to zero out the pages that are getting 
-free'd at our request. But the difficulty here is to try and clear pages 
-that were freed previously for other reasons, unless we're zeroing out 
-all pages on free. So I suppose that leaves me with a couple questions:
+I am using btrfs on Linux 5.10.176 on an encrypted LUKS2 partition on
+an eMMC device. The LUKS2 partition is configured to allow-discards
+and btrfs is mounted with  "-o acl,noatime,nodiratime,compress=lzo".
 
-- As far as I know, the kernel only naturally frees pages from the page 
-cache when they're about to be given to some program for imminent use. 
-But then in the case the page isn't only free'd, but also zero'd out 
-before it's handed over to the program (because giving a program access 
-to a page filled with potentially sensitive data is a bad idea!). Is 
-this correct?
+# uname -a
+Linux (none) 5.10.176 #0 SMP PREEMPT Thu Apr 27 20:28:15 2023 aarch64 GNU/Linux
 
-- Are there other situations (aside from drop_caches) where the kernel 
-frees pages from the page cache? Especially without having to zero them 
-anyway? In other words, what situations would turning on some 
-zero-pages-on-free setting actually hurt performance?
+# btrfs --version
+btrfs-progs v6.0.1
 
-- Does dismounting a filesystem completely zero out the removed fs's 
-pages from the page cache?
+# btrfs fi show
+Label: none  uuid: d90b7698-7ef5-4c1e-8365-b7631a6eafba
+    Total devices 1 FS bytes used 92.16MiB
+    devid    1 size 2.53GiB used 808.00MiB path /dev/mapper/luks-part
 
-- I remember hearing somewhere of some Linux support for zeroing out all 
-pages in memory if they're free'd from the page cache. However, I spent 
-a while trying to find this (how to turn it on, benchmarks) and I 
-couldn't find it. Do you know if such a thing exists, and if so how to 
-turn it on? I'm curious of the actual performance impact of it.
+# mount -t btrfs -o acl,noatime,nodiratime,compress=lzo
+/dev/mapper/luks-part /mnt/btrfs
+[  185.443505] BTRFS: device fsid d90b7698-7ef5-4c1e-8365-b7631a6eafba
+devid 1 transid 17201265 /dev/mapper/luks-part scanned by mount (2976)
+[  185.455314] BTRFS info (device dm-0): flagging fs with big metadata feature
+[  185.461689] BTRFS info (device dm-0): use lzo compression, level 0
+[  185.467924] BTRFS info (device dm-0): using free space tree
+[  185.473563] BTRFS info (device dm-0): has skinny extents
+[  185.486490] BTRFS info (device dm-0): enabling ssd optimizations
 
->> I understand that perfectly wiping all the files out of memory without
->> completely unmounting the filesystem isn't feasible, and that's probably OK
->> for our use-case. As long as most files can be removed from memory most of
->> the time, anyway...
-> OK, understood. I guess in that case something like BLKFLSBUF ioctl on
-> steroids (to also evict filesystem caches, not only the block device) could
-> be useful for you.
->
-> 								Honza
+# btrfs fi df /mnt/btrfs
+Data, single: total=280.00MiB, used=91.46MiB
+System, DUP: total=8.00MiB, used=16.00KiB
+Metadata, DUP: total=256.00MiB, used=704.00KiB
+GlobalReserve, single: total=3.25MiB, used=0.00B
 
-Best,
+Here is an example of the errors found by "btrfs check" after
+mounting. These errors don't happen often but they are reproducible
+and persistent.
 
-Adrian
+# btrfs check --mode=lowmem --readonly -p /dev/mapper/luks-part
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/luks-part
+UUID: d90b7698-7ef5-4c1e-8365-b7631a6eafba
+[1/7] checking root items                      (0:00:00 elapsed, 1456
+items checked)
+[2/7] checking extents                         (0:00:01 elapsed, 42
+items checked)
+[3/7] checking free space tree                 (0:00:00 elapsed, 5
+items checked)
+ERROR: root 5 INODE_ITEM[27535265] index 55000957 name .sharedContents
+filetype 1 missing
+ERROR: root 5 INODE_ITEM[27535266] index 55000959 name .sharedContents
+filetype 1 missing
+ERROR: root 5 DIR INODE [256] size 668 not equal to 698
+[4/7] checking fs roots                        (0:00:00 elapsed, 15
+items checked)
+ERROR: errors found in fs roots
+found 96636928 bytes used, error(s) found
+total csum bytes: 93652
+total tree bytes: 737280
+total fs tree bytes: 376832
+total extent tree bytes: 147456
+btree space waste bytes: 231395
+file data blocks allocated: 95899648
+ referenced 92807168
+Command exited with non-zero status 1
 
+# btrfs check --readonly -p /dev/mapper/luks-part
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/luks-part
+UUID: d90b7698-7ef5-4c1e-8365-b7631a6eafba
+[1/7] checking root items                      (0:00:00 elapsed, 1456
+items checked)
+[2/7] checking extents                         (0:00:00 elapsed, 54
+items checked)
+[3/7] checking free space tree                 (0:00:00 elapsed, 5
+items checked)
+root 5 inode 256 errors 200, dir isize wrong   (0:00:00 elapsed, 1
+items checked)
+root 5 inode 27535265 errors 1, no inode item
+    unresolved ref dir 256 index 55000957 namelen 15 name
+.sharedContents filetype 1 errors 5, no dir item, no inode ref
+root 5 inode 27535266 errors 1, no inode item
+    unresolved ref dir 256 index 55000959 namelen 15 name
+.sharedContents filetype 1 errors 5, no dir item, no inode ref
+[4/7] checking fs roots                        (0:00:00 elapsed, 22
+items checked)
+ERROR: errors found in fs roots
+found 96636928 bytes used, error(s) found
+total csum bytes: 93652
+total tree bytes: 737280
+total fs tree bytes: 376832
+total extent tree bytes: 147456
+btree space waste bytes: 231395
+file data blocks allocated: 95899648
+ referenced 92807168
+Command exited with non-zero status 1
+
+Here is the "btrfs ins dump-tree" output of the above inodes.
+
+# btrfs ins dump-tree -t 5 /dev/mapper/luks-part | grep -A5 "(27535265 "
+        location key (27535265 INODE_ITEM 0) type FILE
+        transid 17119099 data_len 0 name_len 15
+        name: .sharedContents
+    item 62 key (256 DIR_INDEX 55000959) itemoff 13593 itemsize 45
+        location key (27535266 INODE_ITEM 0) type FILE
+        transid 17119099 data_len 0 name_len 15
+# btrfs ins dump-tree -t 5 /dev/mapper/luks-part | grep -A5 "(27535266 "
+        location key (27535266 INODE_ITEM 0) type FILE
+        transid 17119099 data_len 0 name_len 15
+        name: .sharedContents
+    item 63 key (256 DIR_INDEX 55415388) itemoff 13545 itemsize 48
+        location key (27743503 INODE_ITEM 0) type FILE
+        transid 17188721 data_len 0 name_len 18
+
+Is this a known issue with btrfs and power loss? Running "btrfs check
+--repair" can fix this issue but I would like to prevent it in the
+first place. This issue looks similar to the one in a previous message
+on this list, "Filesystem inconsistency on power cycle" [0].
+
+
+Thank you,
+Kyle
+
+[0]: https://lore.kernel.org/linux-btrfs/CA+XNQ=ixcfB1_CXHf5azsB4gX87vvdmei+fxv5dj4K_4=H1=ag@mail.gmail.com/
 
