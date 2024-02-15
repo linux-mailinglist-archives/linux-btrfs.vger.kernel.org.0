@@ -1,105 +1,154 @@
-Return-Path: <linux-btrfs+bounces-2423-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2424-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B076856257
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 12:58:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE4978562D5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 13:14:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07C3528BDB3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 11:58:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DC361F21769
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 12:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C0012C802;
-	Thu, 15 Feb 2024 11:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C27012C7ED;
+	Thu, 15 Feb 2024 12:13:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XrF/zM9t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jgOMV/Bm"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE6712C7E0;
-	Thu, 15 Feb 2024 11:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84C0512AAE4;
+	Thu, 15 Feb 2024 12:13:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707998272; cv=none; b=IN1ea3yIwYnhxTaIkd4UBo61A2h/zJZCjSk6AoWnVBc6J+jjgNtJGPGBg6t+2elSVEfEewibo4UxcF9Qp7Z/BOujoaJ5LjpTxwwpmKfg49rPEF3tlI7VzKKbUx5s5BJarH6EL8o21sIjF1wVL3XjO6z8JHUNn8L3H53/qheiaDk=
+	t=1707999231; cv=none; b=oe/JJV/xfROgzA0U4XHcGO9oZFwp+rSSraNJK1JaErYq1Mn3/aRha9zKINiAUPW0Vdfw+gcNTvH2EV3AW31/dB4RJI9bmmvm3z/I8k4ghEb9nJRzH/HaBHdgM4a+DejFvSJt/nzrCzGD+DZdRhW1LR3C2qUcGfSF8YmhtvOuucs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707998272; c=relaxed/simple;
-	bh=Zi+9ekP8in+SzpmUGUfcCJMcONAIsFt2q+i/F3vi5z8=;
+	s=arc-20240116; t=1707999231; c=relaxed/simple;
+	bh=+iQdl/CjMrsDc5ZyN4diEbw6PxNNUCwtTXlb2r1tpws=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qKxJQ21z5fYjtNsaTWR9MiLFPxJjoumbW6oe75TV7yj06tdFk8GTWVL1jonPoeb/bQRtPVUd570Ws0Pks+aIDiQGAwWjC84m0R4+o9VmMrsjDL0jQGyJdRYyZyAeSDISnoAj/ND/48IqWCcqonNCGCD3t03EdLLYhAttBt5DCX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XrF/zM9t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09C24C43390;
-	Thu, 15 Feb 2024 11:57:52 +0000 (UTC)
+	 To:Cc:Content-Type; b=Zzl8+FEkg8Jslc//oEkKssLsC7tSOd/pgCTwoJT79/MrYpTUCcW/RFt+yCGoWm7YzVodSw8C/UMMdMlDuo/le08qs4S/CFA0Fr//u9zhyjG5//H0pouGFVK/ek1kRpPxO7xgQgGfGaiURp/wevr3NTeBRumBleanmISPrV+tRn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jgOMV/Bm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C126C43394;
+	Thu, 15 Feb 2024 12:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707998272;
-	bh=Zi+9ekP8in+SzpmUGUfcCJMcONAIsFt2q+i/F3vi5z8=;
+	s=k20201202; t=1707999231;
+	bh=+iQdl/CjMrsDc5ZyN4diEbw6PxNNUCwtTXlb2r1tpws=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XrF/zM9t+Kk6nUarYpeyqv0RFNPp5pxBHGUwSHHQqgLIlNpz9WCN/9+S270J+ziW9
-	 p5BUggR2TplLmBtFKe+UYSZniUHL4Tg7hy/1eXtQzxhOguVnlPNWsaqBNB19X8/Nnp
-	 qcQdhZRbYb7LMk7RMJN58Nf8MhPm54dxErNGdHx3Nt7L19W3Ujm0v5lYPQuTw9azYQ
-	 IGbw4oZwtS1xXUSSGduCKuYXrdbwoavWUCdAIwFCPmT+W9+5XdZk1qCzksf7vusFke
-	 T79YwCztM44lWo9JywcELWfpIc7ZkNXjjz1wBBRQayUfVYOMp3tp0Fw1ie2iEthEse
-	 rOIqtV0/EQBjA==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d0d7985dfdso10721831fa.2;
-        Thu, 15 Feb 2024 03:57:51 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXUJWeBU+eyFUhX5KhaLQTjKVdyJ7q7RA7U9TGiMbPQ0MLqEQ4pLVxgrqkOKig76M0CDwTSS2jHdBBsob3WiksJ5FH9HwKcpOE5jBE=
-X-Gm-Message-State: AOJu0Yx6dCoww4mRysepxoUmVbG/M6idQANcc5L/kcASjA3C6HNdeO7y
-	mZr7mvdLmjTRbFpNkOS+DgGAowgDDaz8W48NHDxbaySS5emmT8Sd2EKqnAZaWNAFh+xstLdJQqK
-	xqAE5wB9tPhT19/tSP3Rc6tLw6SE=
-X-Google-Smtp-Source: AGHT+IGQSmzUsz5K8ksWPNWh0TEHkA+u9qG7A9v/BAx1nAacDtLS/yFb4QSYIw+HFQ0gAe/EPXjmnz3faJwWYoYDPDo=
-X-Received: by 2002:ac2:5f83:0:b0:511:6e10:b80e with SMTP id
- r3-20020ac25f83000000b005116e10b80emr1342997lfe.33.1707998270236; Thu, 15 Feb
- 2024 03:57:50 -0800 (PST)
+	b=jgOMV/Bmr+A+NjI1YD2ZAQ774jFXoC6n4G4Ddv1e0dNpQgspAyCwEgMmJl72nXf1l
+	 AHZv8asGAl8sNQiRtvpvppu3O7kVdiYY9VtSKsbqJEMoQyF4OtQ+8KiJoWZNvvhURB
+	 8xPJtDQAo/qi7fBuBh4BlDKfpnBqOK2ok/jQoApnO+ItqDWnyES7+uVgzCr3+yWGBY
+	 TWPqcU/oHpQsglgqsHPK5AsdL/j5rF5abz+zJrdCDAeaz7YSCp++1WoMlwjHHL0I1g
+	 P2bprdGUCMr2tDzUDnZBlU+fDx2mpTrZb4guro3UhD55kAH8leejAHd5yN/dkdhUX1
+	 7rQK7dSamyNng==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a34c5ca2537so91269966b.0;
+        Thu, 15 Feb 2024 04:13:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVp+O44yinjZ+wW5x+xBJSlNRvXVny8tI8ACJ85gBvtGDCLaQRHdYk83O2Fq9ILPn9HVmet6r3mjBeANY1bITU3ZNe3qNbwTyCAgyA=
+X-Gm-Message-State: AOJu0YwRF/BsF/BOQXMBXf01va0lc9ZUIfy6rYLRwXcgPTYZ1HbAKWB/
+	H4IKYLVwJ5/LUl1kMCySWa5v9c83qWyNsDVyH08kQ5BQdUk/EULxIrq+fvtYLfAdjIDCQYPi/ou
+	uICAbcK2OZkNzfx34Kc9YOaYNN4s=
+X-Google-Smtp-Source: AGHT+IEDOqOIN+2XinL8JHgecbJX/rJI4xbPtRRcxoY1Sg6AgwjyQgoHH5n1qZ/9s0mnvfV7BlAX7LEBeuOVN1e/CMI=
+X-Received: by 2002:a17:906:cc9b:b0:a3d:14ce:5b84 with SMTP id
+ oq27-20020a170906cc9b00b00a3d14ce5b84mr1092496ejb.7.1707999229515; Thu, 15
+ Feb 2024 04:13:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1707969354.git.anand.jain@oracle.com> <8b09597200b5ef28be39ed3658d84e9b22febea7.1707969354.git.anand.jain@oracle.com>
-In-Reply-To: <8b09597200b5ef28be39ed3658d84e9b22febea7.1707969354.git.anand.jain@oracle.com>
+References: <cover.1707969354.git.anand.jain@oracle.com> <cd8342fb284a1983d7645698464debecf417e52a.1707969354.git.anand.jain@oracle.com>
+In-Reply-To: <cd8342fb284a1983d7645698464debecf417e52a.1707969354.git.anand.jain@oracle.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 15 Feb 2024 11:57:13 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6q=52q5OwXX0TmTLWCnSE4Zapwawg6vxPfHDGbtZeamw@mail.gmail.com>
-Message-ID: <CAL3q7H6q=52q5OwXX0TmTLWCnSE4Zapwawg6vxPfHDGbtZeamw@mail.gmail.com>
-Subject: Re: [PATCH 03/12] btrfs: introduce tempfsid test group
+Date: Thu, 15 Feb 2024 12:13:12 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H72+YEPoo4c1LDj8j2YpPQoui74OwXKyKxH2ckeiD9pMQ@mail.gmail.com>
+Message-ID: <CAL3q7H72+YEPoo4c1LDj8j2YpPQoui74OwXKyKxH2ckeiD9pMQ@mail.gmail.com>
+Subject: Re: [PATCH 04/12] btrfs: create a helper function, check_fsid(), to
+ verify the tempfsid
 To: Anand Jain <anand.jain@oracle.com>
 Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 6:37=E2=80=AFAM Anand Jain <anand.jain@oracle.com> =
+On Thu, Feb 15, 2024 at 6:35=E2=80=AFAM Anand Jain <anand.jain@oracle.com> =
 wrote:
 >
-> Introducing a new test group named tempfsid.
->
-> Tempfsid is a feature of the Btrfs filesystem. When encountering another
-> device with the same fsid as one already mounted, the system will mount
-> the new device with a temporary, randomly generated in-memory fsid.
+> check_fsid() provides a method to verify if the given device is mounted
+> with the tempfsid in the kernel. Function sb() is an internal only
+> function.
 >
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  common/btrfs | 34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+>
+> diff --git a/common/btrfs b/common/btrfs
+> index e1b29c613767..5cba9b16b4de 100644
+> --- a/common/btrfs
+> +++ b/common/btrfs
+> @@ -792,3 +792,37 @@ _has_btrfs_sysfs_feature_attr()
+>
+>         test -e /sys/fs/btrfs/features/$feature_attr
+>  }
+> +
+> +# Dump key members of the on-disk super-block from the given disk; helps=
+ debug
+> +sb()
+> +{
+> +       local dev1=3D$1
+> +       local parameters=3D"device|devid|^metadata_uuid|^fsid|^incom|^gen=
+eration|\
+> +               ^flags| \|$| \)$|compat_flags|compat_ro_flags|dev_item.uu=
+id"
+> +
+> +       $BTRFS_UTIL_PROG inspect-internal dump-super $dev1 | egrep "$para=
+meters"
+> +}
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Don't add such a short function name that doesn't minimally indicate
+what it does.... especially taking into account that it's polluting
+the global namespace and isn't used anywhere else.
+So this code should be in the function below, as it's only used once....
+
+> +
+> +check_fsid()
+> +{
+> +       local dev1=3D$1
+> +       local fsid
+> +
+> +       # on disk fsid
+> +       fsid=3D$(sb $dev1 | grep ^fsid | awk -d" " '{print $2}')
+
+Please use $AWK_PROG instead.
+
+Again this sb() function is pointless, even because here we only care
+about the fsid line, yet the function is extracting a lot of other
+lines without any users.
+
+> +       echo -e "On disk fsid:\t\t$fsid" | sed -e "s/$fsid/FSID/g"
+> +
+> +       echo -e -n "Metadata uuid:\t\t"
+> +       cat /sys/fs/btrfs/$fsid/metadata_uuid | sed -e "s/$fsid/FSID/g"
+
+Ok, so why do we care about printing the fsid and metadata uuid lines
+if we always replace the IDs with the constant FSID?
+It seems pointless to print them... At the very least this deserves a
+comment, a rationale on what this accomplishes.
 
 Thanks.
 
-> ---
->  doc/group-names.txt | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/doc/group-names.txt b/doc/group-names.txt
-> index 2ac95ac83a79..50262e02f681 100644
-> --- a/doc/group-names.txt
-> +++ b/doc/group-names.txt
-> @@ -131,6 +131,7 @@ swap                        swap files
->  swapext                        XFS_IOC_SWAPEXT ioctl
->  symlink                        symbolic links
->  tape                   dump and restore with a tape
-> +tempfsid               temporary fsid
->  thin                   thin provisioning
->  trim                   FITRIM ioctl
->  udf                    UDF functionality tests
+> +
+> +       # This returns the temp_fsid if set
+> +       tempfsid=3D$(_btrfs_get_fsid $dev1)
+> +       if [[ $tempfsid =3D=3D $fsid ]]; then
+> +               echo -e "Temp fsid:\t\tFSID"
+> +       else
+> +               echo -e "Temp fsid:\t\tTEMPFSID"
+> +       fi
+> +
+> +       echo -e -n "Tempfsid status:\t"
+> +       cat /sys/fs/btrfs/$tempfsid/temp_fsid
+> +}
 > --
 > 2.39.3
 >
