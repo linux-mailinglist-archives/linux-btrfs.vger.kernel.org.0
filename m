@@ -1,232 +1,177 @@
-Return-Path: <linux-btrfs+bounces-2432-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2433-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05AA58563EF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 14:04:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF0E585646A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 14:31:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2881C1C23AAD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 13:03:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64F6F2884EA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 13:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B9B712F58A;
-	Thu, 15 Feb 2024 13:03:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C1B8130AE1;
+	Thu, 15 Feb 2024 13:31:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qx6E4KOf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F1Un70Mb"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F2A58ABC;
-	Thu, 15 Feb 2024 13:03:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA7F3130AC4
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Feb 2024 13:31:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708002230; cv=none; b=tG0z0UrUM4o6mU+Raza1gHkKVj5qxRIRUicdyu3zQ1ux0eng0zkX4SokXCbKm/29ovmVsxwCN/OUkdc2BacPoHy6ZOxJp73kpLIERmhHcbbIXMJQJcxMJeB7K5//yuqG447EKWoBbfrR2GsEOsK2aqdBbtAS52FtWeVOh8ieqp4=
+	t=1708003878; cv=none; b=U1HXsnG+EQdDHvd8g7L9PrC86g+GHD3tAt68cXbvH/1S3r833azY6kw4O5RyCAdlhsb3hGnyJAZTcEk3OSpq0lKD4ROphaXdRy1flJBUcUciMega9hWcdKGzH+qGTeDEkvSnjRfUS1i4XXQIcI5unBTUx2fWHdWpt6vz1hoYiLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708002230; c=relaxed/simple;
-	bh=cSiqPdkGsSl5r6mRmKhcO/Xcytc2FP/LhJihLhlLWpg=;
+	s=arc-20240116; t=1708003878; c=relaxed/simple;
+	bh=t608W+COzEH3PPfJooHlB8hfALcO3r8qQTUJZKXS97I=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D9Y/A920iT7G8EJ7CWOPhZJkZe4m1Yfa5gTwZnIJOMjKdPcWjZ2ExJGylymGoZcRc3l2j6XUMEPyrw6wUkJpD6blCMJk7dBgRQQGXKxSyrtukzaD0EGor93cvEBG2toeaXwR0Zj72U7Tghj/K9KYgG3OYU0Tnm1pwD5wj28q77w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qx6E4KOf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D844C433F1;
-	Thu, 15 Feb 2024 13:03:49 +0000 (UTC)
+	 To:Cc:Content-Type; b=PkIZcJS6uvLOni7WpK1fuTX3lcUMB/fCxAY7D1BggsWrWp40dLaao4xKV/LRH4aCa8gTquDCkk9PA/68g34JhVz1XQAC5sXH583VQK6IvETO7n8KkUOYgkBtKgNVYX76ujp0PEbbS3vdiFwiWfcl3vfr1b06bhi4+QftZoYL00E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F1Un70Mb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3385AC433F1
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Feb 2024 13:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708002229;
-	bh=cSiqPdkGsSl5r6mRmKhcO/Xcytc2FP/LhJihLhlLWpg=;
+	s=k20201202; t=1708003878;
+	bh=t608W+COzEH3PPfJooHlB8hfALcO3r8qQTUJZKXS97I=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=qx6E4KOfljMTlXZOoiQfrlpyhCdAv+fF2RlZWf9mubVeFs/PolEhAUI5nyW7kGWHQ
-	 dcIKBisxKcsQsMoMiJqpcbNDrn83jwvQCNITinf6Vbc5HzDb2XoyAVNhmMaNK7jWrb
-	 /5wP1YKvgBeWDWSNMzJdnmnfwWHpUPwvl7hpBjImiNEmVU7WmJPTdv5fyUdbg9JS2l
-	 HykDWQaWjLf1x67Fws1M5jVq1BJqQbYS+W+7I7LR2BzbapHK9uGcYGQJRKSGpJ+tB4
-	 xaTCK0JdDzLjNhenFK43HnVMn4N7srv3bycGzB5OLEfG9huV9+ijoya4OfKRCknpxA
-	 IdwcuDUP8POOA==
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55ad2a47b7aso1165209a12.3;
-        Thu, 15 Feb 2024 05:03:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCViX0ety8yDmlBuTZ5x386pASwl8x0phxr/vmvYpPeTmOvMgJ857kvh2mZf3ahE10h1tqf/4rDl+5dE6uoluf9ZQ6FnsrDhB2dt0OE=
-X-Gm-Message-State: AOJu0YxgaoQzZmNHY9XcebeO9gef6ohgijXU4vPeXLyf7tBBwj1KehOV
-	/+gdfG0Q3O3k6ucwHSqZI3Pli2mT3h1644uaAbQxedNX3vQfdYTBf4r/II1VBb6tiqsFNtyc0yo
-	u3ZXSv9xfQ3IG297HVJ3E7kaH6rg=
-X-Google-Smtp-Source: AGHT+IE6XqtyNUy5RgHToqWjbeCSja3zyxdUFeT16JMuR11Iz3fTdDz5P1hCUu1twYFbXczawvDxNqy+NjbYJdAy3QY=
-X-Received: by 2002:a17:906:395b:b0:a3c:d7a5:6ab1 with SMTP id
- g27-20020a170906395b00b00a3cd7a56ab1mr1223256eje.0.1708002227971; Thu, 15 Feb
- 2024 05:03:47 -0800 (PST)
+	b=F1Un70MbHWZkcff7PTBa8ez9Jd0H8dkEnuFSV/5zA+TKCpCTNOIc+2qyi757k2FlG
+	 nymHVBNG8xxRFWVXUPl8ha1xzJnZbPH5+BiHphYSVvA4ZQ7GuWFviqvuJ4C7Pgik+i
+	 gVp7iUgOsLTnCp8EIW809MhB3idxHYbJbUvu7vEbgxJQ6E1nvNKhkQzsC+VEEsYzQi
+	 nBrJC5V++zdeILKHFUz9Xf/iFBsAQDEEV3z9AjvU7/hQYSQ3bggvjxX+wI5+x1akgN
+	 daw/92+1HOWflXXs6vkwmtdzetZ200okRteMuQznbvnSbJROFkLzKZacGUDBZdXWM2
+	 E4Bgwztr3335w==
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d10ad265d5so11502361fa.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Feb 2024 05:31:18 -0800 (PST)
+X-Gm-Message-State: AOJu0YxxhYNKcUM699QXjyrFOVjBBaXD/92Vx7ksmSzCNgdiWvajiM3d
+	pR9giGgs9E3fU+Offt48PUNNG8Wzv8ITdxKqxr2cC5P6FCjCb4A6o/+LHWQcK9yRIPAHuO/yVXP
+	8XmfmzFq8VHkUgTxZAOjhFP/2Lg8=
+X-Google-Smtp-Source: AGHT+IEQgFoyL5tfJvRXJr4vtiyLUKuyCkXcpAaocMDuRxrIwKAqahOczGkunD+HlW1LmMe4W8QCr4aiUJ4p0T4hu9k=
+X-Received: by 2002:ac2:46ee:0:b0:511:9579:1be7 with SMTP id
+ q14-20020ac246ee000000b0051195791be7mr1457950lfo.43.1708003876380; Thu, 15
+ Feb 2024 05:31:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1707969354.git.anand.jain@oracle.com> <325a9476e06cebee3752d32fd06e75b2f478b8bc.1707969354.git.anand.jain@oracle.com>
-In-Reply-To: <325a9476e06cebee3752d32fd06e75b2f478b8bc.1707969354.git.anand.jain@oracle.com>
+References: <eba624e8cef9a1e84c9e1ba0c8f32347aa487e63.1706892030.git.fdmanana@suse.com>
+ <20240213152144.GA4107730@perftesting>
+In-Reply-To: <20240213152144.GA4107730@perftesting>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 15 Feb 2024 13:03:11 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H77SEYPongbHn9auS7jyvOetD-8gD3oyQ3e+7pJuPVbSQ@mail.gmail.com>
-Message-ID: <CAL3q7H77SEYPongbHn9auS7jyvOetD-8gD3oyQ3e+7pJuPVbSQ@mail.gmail.com>
-Subject: Re: [PATCH 12/12] btrfs: test tempfsid with device add, seed, and balance
-To: Anand Jain <anand.jain@oracle.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Date: Thu, 15 Feb 2024 13:30:39 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6VszmT0Nb+tGbLD8kQ_ExOvieWjccPjRy5af_mKwVzGA@mail.gmail.com>
+Message-ID: <CAL3q7H6VszmT0Nb+tGbLD8kQ_ExOvieWjccPjRy5af_mKwVzGA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: don't refill whole delayed refs block reserve when
+ starting transaction
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 6:35=E2=80=AFAM Anand Jain <anand.jain@oracle.com> =
+On Tue, Feb 13, 2024 at 3:21=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
 wrote:
 >
-> Make sure that basic functions such as seeding and device add fail,
-> while balance runs successfully with tempfsid.
+> On Fri, Feb 02, 2024 at 04:42:32PM +0000, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > Since commit 28270e25c69a ("btrfs: always reserve space for delayed ref=
+s
+> > when starting transaction") we started not only to reserve metadata spa=
+ce
+> > for the delayed refs a caller of btrfs_start_transaction() might genera=
+te
+> > but also to try to fully refill the delayed refs block reserve, because
+> > there are several case where we generate delayed refs and haven't reser=
+ved
+> > space for them, relying on the global block reserve. Relying too much o=
+n
+> > the global block reserve is not always safe, and can result in hitting
+> > -ENOSPC during transaction commits or worst, in rare cases, being unabl=
+e
+> > to mount a filesystem that needs to do orphan cleanup or anything that
+> > requires modifying the filesystem during mount, and has no more
+> > unallocated space and the metadata space is nearly full. This was
+> > explained in detail in that commit's change log.
+> >
+> > However the gap between the reserved amount and the size of the delayed
+> > refs block reserve can be huge, so attempting to reserve space for such
+> > a gap can result in allocating many metadata block groups that end up
+> > not being used. After a recent patch, with the subject:
+> >
+> >   "btrfs: add new unused block groups to the list of unused block group=
+s"
+> >
+> > We started to add new block groups that are unused to the list of unuse=
+d
+> > block groups, to avoid having them around for a very long time in case
+> > they are never used, because a block group is only added to the list of
+> > unused block groups when we deallocate the last extent or when mounting
+> > the filesystem and the block group has 0 bytes used. This is not a prob=
+lem
+> > introduced by the commit mentioned earlier, it always existed as our
+> > metadata space reservations are, most of the time, pessimistic and end =
+up
+> > not using all the space they reserved, so we can occasionally end up wi=
+th
+> > one or two unused metadata block groups for a long period. However afte=
+r
+> > that commit mentioned earlier, we are just more pessimistic in the
+> > metadata space reservations when starting a transaction and therefore t=
+he
+> > issue is more likely to happen.
+> >
+> > This however is not always enough because we might create unused metada=
+ta
+> > block groups when reserving metadata space at a high rate if there's
+> > always a gap in the delayed refs block reserve and the cleaner kthread
+> > isn't triggered often enough or is busy with other work (running delaye=
+d
+> > iputs, cleaning deleted roots, etc), not to mention the block group's
+> > allocated space is only usable for a new block group after the transact=
+ion
+> > used to remove it is committed.
 >
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  common/filter.btrfs |  6 ++++
->  tests/btrfs/315     | 79 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/315.out | 11 +++++++
->  3 files changed, 96 insertions(+)
->  create mode 100755 tests/btrfs/315
->  create mode 100644 tests/btrfs/315.out
->
-> diff --git a/common/filter.btrfs b/common/filter.btrfs
-> index 8ab76fcb193a..d48e96c6f66b 100644
-> --- a/common/filter.btrfs
-> +++ b/common/filter.btrfs
-> @@ -68,6 +68,12 @@ _filter_btrfs_device_stats()
->         sed -e "s/ *$NUMDEVS /<NUMDEVS> /g"
->  }
->
-> +_filter_btrfs_device_add()
-> +{
-> +       _filter_scratch_pool | \
-> +               sed -E 's/\(([0-9]+(\.[0-9]+)?)[a-zA-Z]+B\)/\(NUM\)/'
+> We should probably stop abusing the cleaner thread for this and just use =
+work
+> items for the different categories of cleanup operations.  But that's jus=
+t an
+> aside.
 
-Why do we need this new filter?
-We are testing for a failure, where none of this is relevant except
-filtering device names.
+Exactly, and I have had that in mind for quite a while, to move
+everything the cleaner
+does into separate workqueue jobs, and then eventually get rid of the clean=
+er.
 
-The test can just filter with  _filter_scratch_pool only.
-
-> +}
-> +
->  _filter_transaction_commit() {
->         sed -e "/Transaction commit: none (default)/d" \
->             -e "s/Delete subvolume [0-9]\+ (.*commit):/Delete subvolume/g=
-" \
-> diff --git a/tests/btrfs/315 b/tests/btrfs/315
-> new file mode 100755
-> index 000000000000..7ad0dfbc9c32
-> --- /dev/null
-> +++ b/tests/btrfs/315
-> @@ -0,0 +1,79 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 YOUR NAME HERE.  All Rights Reserved.
-> +#
-> +# FS QA Test 315
-> +#
-> +# Verify if the seed and device add to a tempfsid filesystem fails.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick volume seed tempfsid
-> +
-> +_cleanup()
-> +{
-> +       cd /
-> +       umount $tempfsid_mnt 2>/dev/null
-
-$UMOUNT_PROG
-
-> +       rm -r -f $tmp.*
-> +       rm -r -f $tempfsid_mnt
-> +}
-> +
-> +. ./common/filter.btrfs
-> +
-> +_supported_fs btrfs
-> +_require_btrfs_sysfs_fsid
-> +_require_scratch_dev_pool 3
-> +_require_btrfs_fs_feature temp_fsid
-> +_require_btrfs_command inspect-internal dump-super
-> +_require_btrfs_mkfs_uuid_option
-> +
-> +_scratch_dev_pool_get 3
-> +
-> +# mount point for the tempfsid device
-> +tempfsid_mnt=3D$TEST_DIR/$seq/tempfsid_mnt
-> +
-> +seed_device_must_fail()
-> +{
-> +       echo ---- $FUNCNAME ----
-> +
-> +       mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
-> +
-> +       $BTRFS_TUNE_PROG -S 1 ${SCRATCH_DEV}
-> +       $BTRFS_TUNE_PROG -S 1 ${SCRATCH_DEV_NAME[1]}
-> +
-> +       _scratch_mount 2>&1 | _filter_scratch
-> +       _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt} 2>&1 | _filter_test=
-_dir
-> +}
-> +
-> +device_add_must_fail()
-> +{
-> +       echo ---- $FUNCNAME ----
-> +
-> +       mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
-> +       _scratch_mount
-> +       _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
-> +
-> +       $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' $SCRATCH_MNT/foo | \
-> +                                                       _filter_xfs_io
-> +
-> +$BTRFS_UTIL_PROG device add -f ${SCRATCH_DEV_NAME[2]} ${tempfsid_mnt} 2>=
-&1 |\
-> +                                                       _filter_btrfs_dev=
-ice_add
-
-We are testing for failure, so no need for the new filter
-_filter_btrfs_device_add.
-Just filter through  _filter_scratch_pool here and nothing more.
+Once I finish what I'm currently working on, I'll do that.
 
 Thanks.
 
-> +
-> +       echo Balance must be successful
-> +       _run_btrfs_balance_start ${tempfsid_mnt}
-> +}
-> +
-> +mkdir -p $tempfsid_mnt
-> +
-> +seed_device_must_fail
-> +
-> +_scratch_unmount
-> +_cleanup
-> +mkdir -p $tempfsid_mnt
-> +
-> +device_add_must_fail
-> +
-> +_scratch_dev_pool_put
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/315.out b/tests/btrfs/315.out
-> new file mode 100644
-> index 000000000000..32149972beb4
-> --- /dev/null
-> +++ b/tests/btrfs/315.out
-> @@ -0,0 +1,11 @@
-> +QA output created by 315
-> +---- seed_device_must_fail ----
-> +mount: SCRATCH_MNT: WARNING: source write-protected, mounted read-only.
-> +mount: TEST_DIR/315/tempfsid_mnt: mount(2) system call failed: File exis=
-ts.
-> +---- device_add_must_fail ----
-> +wrote 9000/9000 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +ERROR: error adding device 'SCRATCH_DEV': Invalid argument
-> +Performing full device TRIM SCRATCH_DEV (NUM) ...
-> +Balance must be successful
-> +Done, had to relocate 3 out of 3 chunks
-> --
-> 2.39.3
 >
+> >
+> > A user reported that he's getting a lot of allocated metadata block gro=
+ups
+> > but the usage percentage of metadata space was very low compared to the
+> > total allocated space, specially after running a series of block group
+> > relocations.
+> >
+> > So for now stop trying to refill the gap in the delayed refs block rese=
+rve
+> > and reserve space only for the delayed refs we are expected to generate
+> > when starting a transaction.
+> >
+> > CC: stable@vger.kernel.org # 6.7+
+> > Reported-by: Ivan Shapovalov <intelfx@intelfx.name>
+> > Link: https://lore.kernel.org/linux-btrfs/9cdbf0ca9cdda1b4c84e15e548af7=
+d7f9f926382.camel@intelfx.name/
+> > Link: https://lore.kernel.org/linux-btrfs/CAL3q7H6802ayLHUJFztzZAVzBLJA=
+GdFx=3D6FHNNy87+obZXXZpQ@mail.gmail.com/
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 >
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>
+> Thanks,
+>
+> Josef
 
