@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-2427-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2428-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A114856347
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 13:34:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3311A85635C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 13:38:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09AE2283FD5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 12:34:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 654F61C23219
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 12:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F8912CDAC;
-	Thu, 15 Feb 2024 12:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF0D812CDB1;
+	Thu, 15 Feb 2024 12:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RhAxA3xF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fp6uR0k+"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B974912C7E9;
-	Thu, 15 Feb 2024 12:34:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D530612E1D5;
+	Thu, 15 Feb 2024 12:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708000465; cv=none; b=IvdI0PuiQkYDMGvqLCVz0PRyrqk3vYQ4zyee0pFq+SLpxhQX5L45jj2hwWw6UP04k9gqmQXErPZciUocz0ICd2W9Glvh1vL5q7JHbVpSpqimpaRu/MgX1hMIQRtXwq9GN0SqkkRvQjZ1AcFVJ2y8jaaD9ZntLR/na1ORXBJ96RA=
+	t=1708000693; cv=none; b=BFryn0WEoG5RRn5ocQ2So+Ih1PoL1A7bP8YmIF+EEMa26OOnsLD+cVJxmgUA/1BQbiJoMpX2N2I10rATmlFVS1iOzOFkKSjOHDmh6vpSiBKVAfijy0b0lXbh16dIxa3FD4mB5JQt0eH1fGBuIh2b6rt/hhgkKqC23wj2CHeZmDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708000465; c=relaxed/simple;
-	bh=ucHEhBeiHSYzxMwZQQN1dygieiOSGNNnYp1SGoBGXTQ=;
+	s=arc-20240116; t=1708000693; c=relaxed/simple;
+	bh=40gCfgfmhfXLzoCYPysdSxavHkn2U3BJps1u9cTy4Y4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fOuzlYbUtvao7O/CkkTzSsTonSWeyhOH6zQMgskDJDzqmFF2OUTwcr0Yu01lgf31lvslEZGqKA9j/KWX55lsyGzJF83d+rVhb9Yj/mngk2aYF9ThlFL/QHiObvr/v7EvKHM7gaCWlPFcpswYpuuzcUsicReJtpHKnoPENb1SP38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RhAxA3xF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CEEDC43394;
-	Thu, 15 Feb 2024 12:34:25 +0000 (UTC)
+	 To:Cc:Content-Type; b=Wo/jpfSC+ptu68CyVD6Y6cuaF3YDkBIeMInpWTnUispWS2Bdn8KaFvYpkfGas++tkZwFYJ17UAHEbyoB8lsSMG+ZhIBUr4IZWlM8FMvlzWGzl/q9EA8kpLAVPN70oYbovkcPmCG/ZqfqqP+qy1ZYb8wZvadCb/t4XxWFgTc5Uas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fp6uR0k+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9CE6C43394;
+	Thu, 15 Feb 2024 12:38:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708000465;
-	bh=ucHEhBeiHSYzxMwZQQN1dygieiOSGNNnYp1SGoBGXTQ=;
+	s=k20201202; t=1708000693;
+	bh=40gCfgfmhfXLzoCYPysdSxavHkn2U3BJps1u9cTy4Y4=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=RhAxA3xFszANt8xxiUvp2QlFcGgFWz9LjZZaxR594bTfp9MGSOd6MdQ+RUJmI/odO
-	 HLnIhgt2vSb9MwjmOC+Lgnal9aYb7T+4lEYNs4uWqJxo0BaI9UbpklcyD0LT3z5jEL
-	 bb9dgNd/rf0wYay3GXek7fG4wU4JdvKktL12PaHS8HuZ/B3ohi4iaHPWxQuMher06C
-	 G9C8mYW/4lDBL+STz6d0yffSP+HpLxEmjvBoEI5YKzrzc+RkT0LdwOAysf7Hrq0xnW
-	 CvK4P00b+lvi+2nyYxgnugTANPV45Gwdqo+uzxTbGlPagmQ6lDum9nDYyxi12d87e0
-	 PTArlpbsH9Z3g==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51147d0abd1so917387e87.1;
-        Thu, 15 Feb 2024 04:34:25 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW1G28M7RMZP/0g8rw/wl8iRtDrLhkuZlQzHkvpyNtVg++dMZWsa/3SQHUQGUxgYs2NLCBPDV75/hACFw/tiC3v1IG6eX4o19hdiEE=
-X-Gm-Message-State: AOJu0YzLx8WcnQfy1z1wtK82Bt9FBNwmyg9LGQ4yPQcTg7TvE+WRiNRO
-	WWBERNd2jEK1w85xzdAXb66CEZ9z9+sDM/hXnq4Iu/NEGb7lWEj68q1NxU04jLs5aK3Xsz+YbVr
-	ZrcvwUA/84CeHo+mTStAn/Mlx+rQ=
-X-Google-Smtp-Source: AGHT+IEOjOZGq7WB2zSMauQdhO3Vc/TyK/yHC0Kja5gCp4Aa2d3p9qMMw86F1CFOO3cooYNZUc52laF6Syva9MlPE3o=
-X-Received: by 2002:a05:6512:11eb:b0:511:8bb1:fa6e with SMTP id
- p11-20020a05651211eb00b005118bb1fa6emr1042105lfs.22.1708000463316; Thu, 15
- Feb 2024 04:34:23 -0800 (PST)
+	b=fp6uR0k+8C42rH31QfOLQGndmOfhovbhdTEAQAa/qL0L8EqW98wCcOD3Q6TY4XYzp
+	 rRG9ePS4WQ5pF7UOWfJc/1f72uTVowFfhBRaVSNPSWoUoXyd21kFaOoMhkgZdiaggB
+	 kw/ck9FzsWr/vq8Jo0YTM0IB4/WmWElRziiInpAtIWOPcFM5pkmGoDY5d0QZ65PBDl
+	 bG8kCDnqc2Z2DKP8x5PACqJZ/3e83VGjd7f+SLiH/zjuwMHfZALfSLy/NCzZk1B45R
+	 ZtGznWdtdIQ8hHHiclIONbvypLsJBKgzPZ0DUp3+Ka/lacOd56i7dtYTbTuippp+Vd
+	 ArGXSgh5+zN4A==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3d62da9d25so98964866b.3;
+        Thu, 15 Feb 2024 04:38:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVLVEr1V8FfLDGoyH5xJ/K9AKggViYUmmyzmkcVTP92EXQcDc3vFSOa894S3oX+41KUr1jnDhZQica53R1amhShe96FMePh0/E5Nb8=
+X-Gm-Message-State: AOJu0YwXB/li4PiQWZ5QAJwBe4PWkNL1SVpoewlMgXF62qMe8R1Rm8AZ
+	sfRxRdzy8HUeD839X2LSsJq/chu/TZpisVtijFXDjh/riRrR8F1agIRasepIRlnmhDl17izfLTL
+	3Edp47Ox3d7ry89NFmcrDLe8IVFY=
+X-Google-Smtp-Source: AGHT+IE8F0sLNfU1U8lDWJTiY3N19FUUhOflSd56hnl+Bq+eDoGxo8mU/Ajns2HrayWY/W9I9G0+GOk8RGJqKA+TVkc=
+X-Received: by 2002:a17:906:390a:b0:a3d:7e5b:bbef with SMTP id
+ f10-20020a170906390a00b00a3d7e5bbbefmr1121905eje.5.1708000692087; Thu, 15 Feb
+ 2024 04:38:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1707969354.git.anand.jain@oracle.com> <7b0f9a055c331aba64405adf60f616c5922c90a5.1707969354.git.anand.jain@oracle.com>
-In-Reply-To: <7b0f9a055c331aba64405adf60f616c5922c90a5.1707969354.git.anand.jain@oracle.com>
+References: <cover.1707969354.git.anand.jain@oracle.com> <4d9c26252329f9cbbe48a77c58e8ff42d0b45275.1707969354.git.anand.jain@oracle.com>
+In-Reply-To: <4d9c26252329f9cbbe48a77c58e8ff42d0b45275.1707969354.git.anand.jain@oracle.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 15 Feb 2024 12:33:46 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H55q2C2-+9k1EcEuYTwwhfhm2-ewgfor6=iAaegv5JSvQ@mail.gmail.com>
-Message-ID: <CAL3q7H55q2C2-+9k1EcEuYTwwhfhm2-ewgfor6=iAaegv5JSvQ@mail.gmail.com>
-Subject: Re: [PATCH 07/12] btrfs: check if cloned device mounts with tempfsid
+Date: Thu, 15 Feb 2024 12:37:35 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6h3177KhLckKrXPtExcpb05ZSwQ6Ud_SH2LMPdavpNgg@mail.gmail.com>
+Message-ID: <CAL3q7H6h3177KhLckKrXPtExcpb05ZSwQ6Ud_SH2LMPdavpNgg@mail.gmail.com>
+Subject: Re: [PATCH 08/12] btrfs: test case prerequisite _require_btrfs_mkfs_uuid_option
 To: Anand Jain <anand.jain@oracle.com>
 Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -72,144 +72,55 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, Feb 15, 2024 at 6:35=E2=80=AFAM Anand Jain <anand.jain@oracle.com> =
 wrote:
 >
-> If another device with the same fsid and uuid would mount then verify if
-> it mounts with a temporary fsid.
+> For easier and more effective testing of btrfs tempfsid, newer versions
+> of mkfs.btrfs contain options such as --device-uuid. Check if the
+> currently running mkfs.btrfs contains this option.
 >
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > ---
->  tests/btrfs/312     | 67 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/312.out | 19 +++++++++++++
->  2 files changed, 86 insertions(+)
->  create mode 100755 tests/btrfs/312
->  create mode 100644 tests/btrfs/312.out
+>  common/btrfs | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 >
-> diff --git a/tests/btrfs/312 b/tests/btrfs/312
-> new file mode 100755
-> index 000000000000..782490b1c62f
-> --- /dev/null
-> +++ b/tests/btrfs/312
-> @@ -0,0 +1,67 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 Oracle.  All Rights Reserved.
-> +#
-> +# FS QA Test 312
-> +#
-> +# On a clone a device check to see if tempfsid is activated.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick tempfsid
-
-Also add the 'clone' group, as it uses reflinks.
-
-> +
-> +_cleanup()
+> diff --git a/common/btrfs b/common/btrfs
+> index 61d5812d49d9..9a7fa2c71ec5 100644
+> --- a/common/btrfs
+> +++ b/common/btrfs
+> @@ -88,6 +88,22 @@ _require_btrfs_mkfs_feature()
+>                 _notrun "Feature $feat not supported in the available ver=
+sion of mkfs.btrfs"
+>  }
+>
+> +_require_btrfs_mkfs_uuid_option()
 > +{
-> +       cd /
-> +       umount $mnt1 > /dev/null 2>&1
-
-Use $UMOUNT_PROG.
-
-> +       rm -r -f $tmp.*
-> +       rm -r -f $mnt1
-> +}
+> +       local cnt
+> +       local feature
 > +
-> +. ./common/filter.btrfs
-> +. ./common/reflink
-> +
-> +_supported_fs btrfs
-> +_require_btrfs_sysfs_fsid
-> +_require_btrfs_fs_feature temp_fsid
-> +_require_btrfs_command inspect-internal dump-super
-> +_require_scratch_dev_pool 2
-> +_scratch_dev_pool_get 2
-> +
-> +mnt1=3D$TEST_DIR/$seq/mnt1
-> +mkdir -p $mnt1
-> +
-> +mount_cloned_device()
-> +{
-> +       local ret
-> +
-> +       echo ---- $FUNCNAME ----
-> +       create_cloned_devices ${SCRATCH_DEV_NAME[0]} ${SCRATCH_DEV_NAME[1=
-]}
-> +
-> +       echo Mounting original device
-> +       _mount ${SCRATCH_DEV_NAME[0]} $SCRATCH_MNT
-> +       $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' $SCRATCH_MNT/foo | \
-> +                                                               _filter_x=
-fs_io
-> +       check_fsid ${SCRATCH_DEV_NAME[0]}
-> +
-> +       echo Mounting cloned device
-> +       _mount ${SCRATCH_DEV_NAME[1]} $mnt1 || \
-> +                               _fail "mount failed, tempfsid didn't work=
-"
-> +
-> +       echo cp reflink must fail
-> +       _cp_reflink $SCRATCH_MNT/foo $mnt1/bar > $tmp.cp.out 2>&1
-> +       ret=3D$?
-> +       cat $tmp.cp.out | _filter_testdir_and_scratch
-> +       if [ $ret -ne 1 ]; then
-> +               _fail "reflink failed to fail"
+> +       if [ -z $1 ]; then
+> +               echo "Missing option name argument for _require_btrfs_mkf=
+s_option"
+> +               exit 1
 > +       fi
+> +       feature=3D$1
+> +       cnt=3D$($MKFS_BTRFS_PROG --help 2>&1 |grep -E --count "\-\-uuid|\=
+-\-device-uuid")
 
-Such complexity to check if a reflink fails...
+A space between | and grep would make things more readable and match
+the general coding style.
 
-All this could be accomplished with a single line:
+> +       if [ $cnt !=3D 2 ]; then
+> +               _notrun "Require $MKFS_BTRFS_PROG with --uuid and --devic=
+e-uuid option"
 
-_cp_reflink $SCRATCH_MNT/foo $mnt1/bar
+option -> options.
 
-And then have the golden output expect an error message. That's the
-most standard and prefered way to do things in fstests.
-No need to redirect stdout and stderr to a temporary file, check
-return value, check the temporary file, etc...
+Otherwise it looks fine, thanks.
 
-> +
-> +       check_fsid ${SCRATCH_DEV_NAME[1]}
+> +       fi
 > +}
 > +
-> +mount_cloned_device
-
-Really, why have all the test code inside a function that is called only on=
-ce?
-Get rid of the function...
-
-Thanks.
-
-> +
-> +_scratch_dev_pool_put
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/312.out b/tests/btrfs/312.out
-> new file mode 100644
-> index 000000000000..b7de6ce3cc6e
-> --- /dev/null
-> +++ b/tests/btrfs/312.out
-> @@ -0,0 +1,19 @@
-> +QA output created by 312
-> +---- mount_cloned_device ----
-> +Creating cloned device...wrote 9000/9000 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +done
-> +Mounting original device
-> +wrote 9000/9000 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +On disk fsid:          FSID
-> +Metadata uuid:         FSID
-> +Temp fsid:             FSID
-> +Tempfsid status:       0
-> +Mounting cloned device
-> +cp reflink must fail
-> +cp: failed to clone 'TEST_DIR/312/mnt1/bar' from 'SCRATCH_MNT/foo': Inva=
-lid cross-device link
-> +On disk fsid:          FSID
-> +Metadata uuid:         FSID
-> +Temp fsid:             TEMPFSID
-> +Tempfsid status:       1
+>  _require_btrfs_fs_feature()
+>  {
+>         if [ -z $1 ]; then
 > --
 > 2.39.3
 >
