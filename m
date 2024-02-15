@@ -1,67 +1,67 @@
-Return-Path: <linux-btrfs+bounces-2417-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2418-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D72856203
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 12:47:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1C9D856205
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 12:47:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96C741F2517A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 11:47:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87416287AAC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 11:47:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE9C12B15C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C95AE12B16F;
 	Thu, 15 Feb 2024 11:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="aQqfS5kK"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="e05V8upb"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817CF57872;
-	Thu, 15 Feb 2024 11:47:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673D612AAF4;
+	Thu, 15 Feb 2024 11:47:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707997633; cv=none; b=MIquC905qV1TsHazALfe0T51jyv5Yh5CcG8f7hfTbi6dj8V8tAd95lap80KRgepYSf8bs3Ea6dK0h7GRFe9YAd+UNoNXJjyZY8yPxeZb83OUBoZPj0YJWPtCQvtamAn9y7RvVPxTBL5FnvTI6kHqNUN7p7gJ6NqYLICvMX7vDqM=
+	t=1707997634; cv=none; b=t4K+a7ajaWA2C3vuvFeHJk5gUd+oOM5ff/6oS5pvbFvhDClzOf2844fGgaLb23fiRBBaLlvOss1sqOJs4bb7MEVNhcMZHMJa2cg05K7UeGDFWLwadkXM/VWhnbVZliGPCCP6FCXICOhwKwx2pgu/Y5JJ7aUGxNOFpMH+hF91nOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707997633; c=relaxed/simple;
-	bh=DHagoA8SxeV0zdtLBbp+ii5HURLfR7Zs9XqY6fKNRik=;
+	s=arc-20240116; t=1707997634; c=relaxed/simple;
+	bh=YMPebLD6MMvH6YOxwWD2dlU27sq8q43dhhOqdaoKwJI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=K9nYWVQ5uCVQ8omPIG5sOmnypRC3VZURN5WssXYwCXpHcCPkOAcD913DnGF+e7wL0BXZx1aheOZ2PwS1SpP2MM1rzuMLJVpcm0LVqh62BeQjjt+CI1v4C87U416KlMPu36TvXrrSGgcPQsKGFqBWiipOvmVeFospAyIW4RUvwnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=aQqfS5kK; arc=none smtp.client-ip=216.71.154.42
+	 In-Reply-To:To:Cc; b=DOuzh9J87kqgpBq6Hev18aO8GFiPsZHwdzp5fBr2FAEWFppAHDWf9n8l4smI0WM8IFYGZCFceZXJBkN8cWA92EnGEoI3A3DuP7S2xjXFJ052EiaICxMKd5aN4zVwtdBUk6SvLQjPO/G953wG700djyMY8BK/eofyEXvSko8mdl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=e05V8upb; arc=none smtp.client-ip=216.71.154.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1707997631; x=1739533631;
+  t=1707997632; x=1739533632;
   h=from:date:subject:mime-version:content-transfer-encoding:
    message-id:references:in-reply-to:to:cc;
-  bh=DHagoA8SxeV0zdtLBbp+ii5HURLfR7Zs9XqY6fKNRik=;
-  b=aQqfS5kKyi6m7FGQyQ5kYPU9gcTTDR8Z8Y03BvX3ZnwnqZcjKSgJFaSg
-   05mNt9zKdys7FASsDf41kA5ATvoqNIO6vl10beaKA4/z0JrK2h5wuyfMK
-   Ux4e2UA9NofKC8XDUz2y+WIRTiEy5GnO801KTqKArbc6X5epLKk7ogcgb
-   vZWngyLDieDEAq4TfmsRbwC42JtW/EcFoxIaFB4+L5tJ/YCu7JVdVUc1v
-   j30mFxig9ApGKhsHkZg2sWPjq4TWMek47/GdfWl65gOpSgN1abJ9GAR6a
-   KYH/Ie0w+WEQI/+3Ahwi0/7lcTldl9bV2VE9WLqkaBgeTfBiBn9+8zV3s
-   g==;
-X-CSE-ConnectionGUID: 8usngS0wTOGmcJihwIGnRQ==
-X-CSE-MsgGUID: WknTjTS1QiyGhHx5LLMDRg==
+  bh=YMPebLD6MMvH6YOxwWD2dlU27sq8q43dhhOqdaoKwJI=;
+  b=e05V8upbTN6ce4Gnb4G8RN9UqBYnBlxn9zJXw3IlPHq/WnGyu75eqTIy
+   cuwCMOM35JykTHKVSTsA8oRhfiuLkH1VysdfWurvl53VKyumVI+jXXaFs
+   HNxi84LoGQeGJaeMDTAVc38V2eu7GyX8R0QzXlomM1EubRZo6SQ4T0UMP
+   PHLcktbcBpYY4Mxu003ZlVWnLZwNc7HIdpm5KqvX9Jktn/Vwrw6Oz3rPU
+   swisYDm2CUBcKOANWWFkEUgcwfampouHJMGjQ63ii12urB7EAuyPk5DcZ
+   qG75SFLxuVMAdgEci6Qlb3zUwhyZ/9J96XN5nHOTGinsMb9Lq0rC+bSRV
+   A==;
+X-CSE-ConnectionGUID: NAByAfOJQ6Wf5ftSjAiBfw==
+X-CSE-MsgGUID: ZXU2fwbvRNaaeT8BXeYY8g==
 X-IronPort-AV: E=Sophos;i="6.06,161,1705334400"; 
-   d="scan'208";a="8967196"
+   d="scan'208";a="8967200"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Feb 2024 19:47:10 +0800
-IronPort-SDR: oed83op9MxeQp0xlzQOAL9xBWV/fNyP2PsbXx9N1gtKqgFkATz2KsQBcTNWCzurTcZH8AAeZ4r
- i26sF1rdwYGw==
+  by ob1.hgst.iphmx.com with ESMTP; 15 Feb 2024 19:47:11 +0800
+IronPort-SDR: Vfs/peU3/GksZp/eFwGH/hYXPN/VyfyW/Wx2BlT2Qa3zD+2ArVr42XqSPXHrLYgNyw5JOR+zLj
+ NRSRZ9SuzabA==
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Feb 2024 02:56:44 -0800
-IronPort-SDR: 51EBZHP2vdY1P9iiEyS46m5CkKlo9g2Se/y7xLOQ9cAqf4nHD9T155R10Pi/eQMUI0NVOEFFB3
- eE0v3/+9fd2w==
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Feb 2024 02:56:45 -0800
+IronPort-SDR: vYV5JL2MzQaXZTHmo0ak1RKYdXoUvSuOPQO5pcafvHm8LOxwrRMKrTRuwxmTfqR1CeoAxb2xzl
+ NQ4T7I2HCBwA==
 WDCIronportException: Internal
 Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip02.wdc.com with ESMTP; 15 Feb 2024 03:47:09 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 15 Feb 2024 03:47:10 -0800
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Date: Thu, 15 Feb 2024 03:47:04 -0800
-Subject: [PATCH v3 1/3] filter.brtfs: add filter for conversion
+Date: Thu, 15 Feb 2024 03:47:05 -0800
+Subject: [PATCH v3 2/3] filter.btrfs: add filter for btrfs device add
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240215-balance-fix-v3-1-79df5d5a940f@wdc.com>
+Message-Id: <20240215-balance-fix-v3-2-79df5d5a940f@wdc.com>
 References: <20240215-balance-fix-v3-0-79df5d5a940f@wdc.com>
 In-Reply-To: <20240215-balance-fix-v3-0-79df5d5a940f@wdc.com>
 To: Anand Jain <anand.jain@oracle.com>
@@ -78,35 +78,38 @@ Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
  Zorro Lang <zlang@redhat.com>, linux-btrfs@vger.kernel.org, 
  fstests@vger.kernel.org, fdmanana@suse.com
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1707997627; l=728;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1707997627; l=796;
  i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
- bh=DHagoA8SxeV0zdtLBbp+ii5HURLfR7Zs9XqY6fKNRik=;
- b=piMOqiexYFPPqFDJUCeTymh/WVHsZeKJaaIPWNUjauWnQ5zlzgKop7AdaIEj/g2ve55pD2tY2
- vN2GhHdTBhLAh2dCsQn6tEGyhp7xV1DOsT+abYPVkLvERCpEE0Hl/J5
+ bh=YMPebLD6MMvH6YOxwWD2dlU27sq8q43dhhOqdaoKwJI=;
+ b=NHwOg+0OhiLR/s6ALvd/8bsv42q4kY2cNW5F8979H1u2mVm4SLSZQ4j3y5yZyvH9E43GBT75+
+ qUnyeEHqFriCr5B3qooSfrzxqJz3DukdMn5hU586xFfqIAvvUsI/Mtb
 X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
  pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
 
-Add a filter for the output of btrfs-balance with a convert argument.
+Add a filter for the output of btrfs device add.
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- common/filter.btrfs | 6 ++++++
- 1 file changed, 6 insertions(+)
+ common/filter.btrfs | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/common/filter.btrfs b/common/filter.btrfs
-index 8ab76fcb193a..ea76e7291108 100644
+index ea76e7291108..a1c3013ecb5d 100644
 --- a/common/filter.btrfs
 +++ b/common/filter.btrfs
-@@ -141,5 +141,11 @@ _filter_stripe_tree()
- 		-e "s/bytes used [0-9]+/bytes used XXXXXX/"
+@@ -147,5 +147,14 @@ _filter_balance_convert()
+ 	_filter_scratch | \
+ 	sed -e "s/relocate [0-9]\+ out of [0-9]\+ chunks/relocate X out of X chunks/g"
  }
- 
-+# filter output of "btrfs balance start -[smd] convert
-+_filter_balance_convert()
++
++# filter output of "btrfs device add"
++_filter_device_add()
 +{
-+	_filter_scratch | \
-+	sed -e "s/relocate [0-9]\+ out of [0-9]\+ chunks/relocate X out of X chunks/g"
++	_filter_scratch | _filter_scratch_pool | \
++	sed -e "s/Resetting device zones SCRATCH_DEV ([0-9]\+/Resetting device zones SCRATCH_DEV (XXX/g"
++
 +}
++
  # make sure this script returns success
  /bin/true
 
