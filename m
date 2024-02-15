@@ -1,160 +1,105 @@
-Return-Path: <linux-btrfs+bounces-2422-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2423-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED81685624A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 12:56:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B076856257
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 12:58:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A852C2882AD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 11:56:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07C3528BDB3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Feb 2024 11:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C15F12D755;
-	Thu, 15 Feb 2024 11:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C0012C802;
+	Thu, 15 Feb 2024 11:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LJKVAdM4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XrF/zM9t"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED3612CD8F;
-	Thu, 15 Feb 2024 11:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE6712C7E0;
+	Thu, 15 Feb 2024 11:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707998160; cv=none; b=PKhV3iNCV9cC2N6hSGYCOViniMW1U7uWkLOARRozjGdkjVoIxSnBqmY9FIZVYP+FVHUvB9R8V/Pzh6oAA3VztXLuuBh/eu+lvF4dG2z7aFPDF+eKnh8xYqsNSBxcuDilJWF5BwOVmgcDrRUpAIu2/2zShOajnWThrVzoQn1hW8U=
+	t=1707998272; cv=none; b=IN1ea3yIwYnhxTaIkd4UBo61A2h/zJZCjSk6AoWnVBc6J+jjgNtJGPGBg6t+2elSVEfEewibo4UxcF9Qp7Z/BOujoaJ5LjpTxwwpmKfg49rPEF3tlI7VzKKbUx5s5BJarH6EL8o21sIjF1wVL3XjO6z8JHUNn8L3H53/qheiaDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707998160; c=relaxed/simple;
-	bh=f9zfpmaVTJb1BUrp1MS2qxmQK0p69U+fbg+EWDYYqQE=;
+	s=arc-20240116; t=1707998272; c=relaxed/simple;
+	bh=Zi+9ekP8in+SzpmUGUfcCJMcONAIsFt2q+i/F3vi5z8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rrs8y8E1b8aq9reFI2hi2AbMIrg8SnPhiMc27fJlP9axo97TtkPUpy9qzK51dBQydhdG7wXYmpBmqDLJBL6dOOE3Fx88eS4j9/9CzQcMsmSAM/ITKGQDNVW7PGybAJ24EiHlYgiqfi2Cb+VBx3DvvJEKTYR20shCxqQI34WVG50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LJKVAdM4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7159BC433A6;
-	Thu, 15 Feb 2024 11:55:59 +0000 (UTC)
+	 To:Cc:Content-Type; b=qKxJQ21z5fYjtNsaTWR9MiLFPxJjoumbW6oe75TV7yj06tdFk8GTWVL1jonPoeb/bQRtPVUd570Ws0Pks+aIDiQGAwWjC84m0R4+o9VmMrsjDL0jQGyJdRYyZyAeSDISnoAj/ND/48IqWCcqonNCGCD3t03EdLLYhAttBt5DCX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XrF/zM9t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09C24C43390;
+	Thu, 15 Feb 2024 11:57:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707998159;
-	bh=f9zfpmaVTJb1BUrp1MS2qxmQK0p69U+fbg+EWDYYqQE=;
+	s=k20201202; t=1707998272;
+	bh=Zi+9ekP8in+SzpmUGUfcCJMcONAIsFt2q+i/F3vi5z8=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=LJKVAdM4BXsnzIqxKurKs2IFIdx/r1F4LaCF1XXjJp8el5W7jEnq+wq2gXLtukB+r
-	 tU/iDlnKGRiQh8u6wVoqqzp/dlqwjcGtupz87KudnOD85OxybnIi+4tq37eJ38usWU
-	 UrZDiSznHVFZ42MRQSrfGhLfz9QLwgfK984LCZ99dZCtGJWlWS975XAMvQcPDHgGxq
-	 f52WvV6nfvcu6eIlOsYK6R73akvR26UOXBVv7ShE7UGB/Q/bzuxRVuvLZ6yzzNYNOv
-	 JIrm2G6sPYwndSTacfwNqd9dvmgRM2zJ4QQ5AGwSF7u2tQ+IcJAoFXhNkCD0di5URh
-	 X1Gi13TwXTV5A==
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5638aa9a5c2so1117810a12.3;
-        Thu, 15 Feb 2024 03:55:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWyorTWtFwag9rZwsgO77f61cjSgkQXeYbjIXrZQCxgumBKbnbdU8mAWttrQ+E7ZWcikn7trNitMNm42FksMWWdL/+Y6ULdCJWa420=
-X-Gm-Message-State: AOJu0YzlA7g3HEcbPcR9xYIMbRKgiMU9pEabj7u/DQUeV6VNG7iV99pM
-	3wLGbSiyRK6V6djn/R+sKWP9079um88/TFVKZCOyQ1KcQqIsJdlBIVhwWhxPYa7ecG8t3c+cHTM
-	I41EeIC7LAriuGk3hXEj2cGI7klQ=
-X-Google-Smtp-Source: AGHT+IGm7sHHNDplO93DZv4X2GmL0MkacuPDWu3gaVOiwjKUBMLP2UtweInf3qFhDMziEkzThHYUkwcP6tDH9mLRtdA=
-X-Received: by 2002:a17:906:7fd5:b0:a3d:b100:cdc1 with SMTP id
- r21-20020a1709067fd500b00a3db100cdc1mr182830ejs.57.1707998157660; Thu, 15 Feb
- 2024 03:55:57 -0800 (PST)
+	b=XrF/zM9t+Kk6nUarYpeyqv0RFNPp5pxBHGUwSHHQqgLIlNpz9WCN/9+S270J+ziW9
+	 p5BUggR2TplLmBtFKe+UYSZniUHL4Tg7hy/1eXtQzxhOguVnlPNWsaqBNB19X8/Nnp
+	 qcQdhZRbYb7LMk7RMJN58Nf8MhPm54dxErNGdHx3Nt7L19W3Ujm0v5lYPQuTw9azYQ
+	 IGbw4oZwtS1xXUSSGduCKuYXrdbwoavWUCdAIwFCPmT+W9+5XdZk1qCzksf7vusFke
+	 T79YwCztM44lWo9JywcELWfpIc7ZkNXjjz1wBBRQayUfVYOMp3tp0Fw1ie2iEthEse
+	 rOIqtV0/EQBjA==
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d0d7985dfdso10721831fa.2;
+        Thu, 15 Feb 2024 03:57:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXUJWeBU+eyFUhX5KhaLQTjKVdyJ7q7RA7U9TGiMbPQ0MLqEQ4pLVxgrqkOKig76M0CDwTSS2jHdBBsob3WiksJ5FH9HwKcpOE5jBE=
+X-Gm-Message-State: AOJu0Yx6dCoww4mRysepxoUmVbG/M6idQANcc5L/kcASjA3C6HNdeO7y
+	mZr7mvdLmjTRbFpNkOS+DgGAowgDDaz8W48NHDxbaySS5emmT8Sd2EKqnAZaWNAFh+xstLdJQqK
+	xqAE5wB9tPhT19/tSP3Rc6tLw6SE=
+X-Google-Smtp-Source: AGHT+IGQSmzUsz5K8ksWPNWh0TEHkA+u9qG7A9v/BAx1nAacDtLS/yFb4QSYIw+HFQ0gAe/EPXjmnz3faJwWYoYDPDo=
+X-Received: by 2002:ac2:5f83:0:b0:511:6e10:b80e with SMTP id
+ r3-20020ac25f83000000b005116e10b80emr1342997lfe.33.1707998270236; Thu, 15 Feb
+ 2024 03:57:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1707969354.git.anand.jain@oracle.com> <366147ad0c29a6e4d4e0faa60231e66b81c7d678.1707969354.git.anand.jain@oracle.com>
-In-Reply-To: <366147ad0c29a6e4d4e0faa60231e66b81c7d678.1707969354.git.anand.jain@oracle.com>
+References: <cover.1707969354.git.anand.jain@oracle.com> <8b09597200b5ef28be39ed3658d84e9b22febea7.1707969354.git.anand.jain@oracle.com>
+In-Reply-To: <8b09597200b5ef28be39ed3658d84e9b22febea7.1707969354.git.anand.jain@oracle.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 15 Feb 2024 11:55:20 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6iCvMTu65Ngb3c+fNWMYoRVZRTqRcXJ4s0rM0HS66M1w@mail.gmail.com>
-Message-ID: <CAL3q7H6iCvMTu65Ngb3c+fNWMYoRVZRTqRcXJ4s0rM0HS66M1w@mail.gmail.com>
-Subject: Re: [PATCH 02/12] assign SCRATCH_DEV_POOL to an array
+Date: Thu, 15 Feb 2024 11:57:13 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6q=52q5OwXX0TmTLWCnSE4Zapwawg6vxPfHDGbtZeamw@mail.gmail.com>
+Message-ID: <CAL3q7H6q=52q5OwXX0TmTLWCnSE4Zapwawg6vxPfHDGbtZeamw@mail.gmail.com>
+Subject: Re: [PATCH 03/12] btrfs: introduce tempfsid test group
 To: Anand Jain <anand.jain@oracle.com>
 Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 6:34=E2=80=AFAM Anand Jain <anand.jain@oracle.com> =
+On Thu, Feb 15, 2024 at 6:37=E2=80=AFAM Anand Jain <anand.jain@oracle.com> =
 wrote:
 >
-> Many test cases uses local variable to manage the names of each devices i=
-n
-
-uses -> use
-variable -> variables
-devices -> device
-
-> SCRATCH_DEV_POOL. Let _scratch_dev_pool_get set an array for it.
+> Introducing a new test group named tempfsid.
 >
-> Usage:
->
->         _scratch_dev_pool_get <n>
->
->         # device names are in the array SCRATCH_DEV_NAME.
->         ${SCRATCH_DEV_NAME[0]} ${SCRATCH_DEV_NAME[1]} ...
->
->         _scratch_dev_pool_put
+> Tempfsid is a feature of the Btrfs filesystem. When encountering another
+> device with the same fsid as one already mounted, the system will mount
+> the new device with a temporary, randomly generated in-memory fsid.
 >
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  common/rc | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
->
-> diff --git a/common/rc b/common/rc
-> index 524ffa02aa6a..5e4afb2cd484 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -830,6 +830,8 @@ _spare_dev_put()
->  # required number of scratch devices by a-test-case excluding
->  # the replace-target and spare device. So this function will
->  # set SCRATCH_DEV_POOL to the specified number of devices.
-> +# Also, this functions assigns array SCRATCH_DEV_NAME to the
-> +# array SCRATCH_DEV_POOL.
->  #
->  # Usage:
->  #  _scratch_dev_pool_get() <ndevs>
-> @@ -860,19 +862,28 @@ _scratch_dev_pool_get()
->         export SCRATCH_DEV_POOL_SAVED
->         SCRATCH_DEV_POOL=3D${devs[@]:0:$test_ndevs}
->         export SCRATCH_DEV_POOL
-> +       SCRATCH_DEV_NAME=3D( $SCRATCH_DEV_POOL )
-> +       export SCRATCH_DEV_NAME
->  }
->
->  _scratch_dev_pool_put()
->  {
-> +       local ret1
-> +       local ret2
-> +
->         typeset -p SCRATCH_DEV_POOL_SAVED >/dev/null 2>&1
-> -       if [ $? -ne 0 ]; then
-> +       ret1=3D$?
-> +       typeset -p SCRATCH_DEV_NAME >/dev/null 2>&1
-> +       ret2=3D$?
-> +       if [[ $ret1 -ne 0 || $ret2 -ne 0 ]]; then
->                 _fail "Bug: unset val, must call _scratch_dev_pool_get be=
-fore _scratch_dev_pool_put"
->         fi
->
-> -       if [ -z "$SCRATCH_DEV_POOL_SAVED" ]; then
-> +       if [[ -z "$SCRATCH_DEV_POOL_SAVED" || -z SCRATCH_DEV_NAME ]]; the=
-n
 
-missing dollar before SCRATCH_DEV_NAME... and should all be inside
-double quotes, as -z is meant to test strings.
-And as it's supposed to be an array, test it like:
-
--z "${SCRATCH_DEV_NAME[@]}"
-
->                 _fail "Bug: str empty, must call _scratch_dev_pool_get be=
-fore _scratch_dev_pool_put"
->         fi
->
-> +       export SCRATCH_DEV_NAME=3D""
-
-Would rather assign an empty array (), as the variable is set to an
-array in the get function.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
 Thanks.
 
->         export SCRATCH_DEV_POOL=3D$SCRATCH_DEV_POOL_SAVED
->         export SCRATCH_DEV_POOL_SAVED=3D""
->  }
+> ---
+>  doc/group-names.txt | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/doc/group-names.txt b/doc/group-names.txt
+> index 2ac95ac83a79..50262e02f681 100644
+> --- a/doc/group-names.txt
+> +++ b/doc/group-names.txt
+> @@ -131,6 +131,7 @@ swap                        swap files
+>  swapext                        XFS_IOC_SWAPEXT ioctl
+>  symlink                        symbolic links
+>  tape                   dump and restore with a tape
+> +tempfsid               temporary fsid
+>  thin                   thin provisioning
+>  trim                   FITRIM ioctl
+>  udf                    UDF functionality tests
 > --
 > 2.39.3
 >
