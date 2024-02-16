@@ -1,155 +1,208 @@
-Return-Path: <linux-btrfs+bounces-2456-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2457-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57362858000
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Feb 2024 16:02:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C5D0858175
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Feb 2024 16:40:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FCF8B22241
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Feb 2024 15:02:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BDAAB222CE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Feb 2024 15:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C43812F380;
-	Fri, 16 Feb 2024 15:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35071131750;
+	Fri, 16 Feb 2024 15:36:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AGT9aZS4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qplysR5q"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E1312F371
-	for <linux-btrfs@vger.kernel.org>; Fri, 16 Feb 2024 15:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E152130E4A
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 Feb 2024 15:36:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708095734; cv=none; b=MpUxQVsfbPkErB8z6JkP+9NxNdjfRijUBGs/B2MANIYNJoDXoMVAmqCKYFuzqDcz94tGkdkibYG8como1dai2wVgF8p//3Wrn0+brYf0QfRzwtBJAbADanWdEOZ2Ev09dk2sG9CMI9Jj6iocnrInjtaHXlDlrDtPs0aTgje5EOM=
+	t=1708097774; cv=none; b=uUGxFlWOGxjRjnY1+9ACOLYVjR+2vhrr/gvsRMtuvacXiR9bi2ADR8OVjpTEk0GH9yXxIngMsCTTz+6yRkS0K6ZDBhDbImDMOB1D3lRPtXpevtCPBYU/72GONt5Jw0Ze1p8wOYkxzqcqI//s8oiyWkVj3qETQ28g6wAfKuDj3KA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708095734; c=relaxed/simple;
-	bh=VY15cb4sPWY/OGxNmTWPbGHd6YcBZkubimp6kxl3e9c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=icLvD88q/xt6TEvhpqRmBKInU3rOkdaqf2VAttW695DWda+mCFtmgso4BItRzHDIYroRqp4c8drGTeKir0SQ3gqnSzBl6pw+biMLf9Dl3U1xOVta3Nm4RnjZgxWNH8GpdLYaLVTPitCt5RJ4axa9JO6yclwk4gE2t5zXcqr8GZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AGT9aZS4; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708095731;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uCSjgbj1ymwLX1C6dMEt9pKF79OFfPS7StJJLrlC8i0=;
-	b=AGT9aZS4bV4XSN3YXHD+3AJOSdmMkZ4gWaDzGYSW9IIXGTNcKWttX8ViPZ7IE+AvZxRZYA
-	RNBG2N/NAwV4jvfP57f2Ti+rxlh+JHwicCNz6PjVvUFi9Xdl4ZSB7L8Mg+fo0SizP364uw
-	ysknvzZDpq7yWkrMhG8IqF2FZyQpSV8=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-688-W50AwuKCMfCKSIkPGtLX0Q-1; Fri, 16 Feb 2024 10:02:09 -0500
-X-MC-Unique: W50AwuKCMfCKSIkPGtLX0Q-1
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6e0de722d43so1666996b3a.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Feb 2024 07:02:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708095728; x=1708700528;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uCSjgbj1ymwLX1C6dMEt9pKF79OFfPS7StJJLrlC8i0=;
-        b=rAk+gkYt1r/Q3qkTk9Kd8b5xrlxFkwe/3XkJqfFr4tRXCd5HrtBFzdh8Fs1UOWMuss
-         VGoxJH67iqMxwiER2JnRQaxqzPVzz87j9hgaewnQ5n0wtrdWQBvimjoyYzsuCXwy5h1O
-         oCt5ZIS18VyQBp7XwtHkMpqsIqLv4by/tXf3eS8vbbn+HFVhiSQfKlU1JR6EaL9CgEDw
-         AVFJIJAt80wxppjzR97xflwPoV6a/4OijhDY0wREgdQt5GGnVAS02r9n2+1BAAX8BhKG
-         qvw2gA+PzMrE1zows63BK4nJwQKhfomM21oVFgkriisJj0rd8Pgq9ZXm1srbsqUqCu9s
-         hyjw==
-X-Forwarded-Encrypted: i=1; AJvYcCWah7AIQUYSh3fB7y6aqu80PhIH++pqUKagFgav9LA5QHDfy/ejiDC+7sHZeQjBKnvZEcN89WVVl+HxDaNCO5Ui1ucxigiRcSVO1AY=
-X-Gm-Message-State: AOJu0YzXs47BE8hEsCROIFbY3KsgR52dF/2LfkTwB8ZxAsdfegd+Zh4+
-	13EUROvAxmYYcSbN1hECVH6uVWj9eZGHBhYxUOJYK7HsLMDC87XVK53sMtGyDAnenvlhSCifjdo
-	qbOyWh1DjD0S9QjcdmMYVXeF48pL6RzLeaV8QPwW0VWUrDwSGD0UkmTuShkY6
-X-Received: by 2002:a05:6a00:2291:b0:6e0:e52f:dbdd with SMTP id f17-20020a056a00229100b006e0e52fdbddmr6478797pfe.26.1708095727990;
-        Fri, 16 Feb 2024 07:02:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFLHqe+sLnHRZaNmnvRIKB/n+wsjsx1DGh4ifROLPJCNnMazL6yVB+FIfvvQ9OYaciVNQgcGg==
-X-Received: by 2002:a05:6a00:2291:b0:6e0:e52f:dbdd with SMTP id f17-20020a056a00229100b006e0e52fdbddmr6478758pfe.26.1708095727542;
-        Fri, 16 Feb 2024 07:02:07 -0800 (PST)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id k18-20020a628e12000000b006e09140e686sm41816pfe.60.2024.02.16.07.02.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 07:02:07 -0800 (PST)
-Date: Fri, 16 Feb 2024 23:02:02 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 04/12] btrfs: create a helper function, check_fsid(), to
- verify the tempfsid
-Message-ID: <20240216150202.vjkedtqtka3i5lec@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1707969354.git.anand.jain@oracle.com>
- <cd8342fb284a1983d7645698464debecf417e52a.1707969354.git.anand.jain@oracle.com>
+	s=arc-20240116; t=1708097774; c=relaxed/simple;
+	bh=upE5npUkd6W3gH18uW+PoDmZGjjIl6bKbcpiJyyaBic=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jXzTAimLCJrLWXhCyrpWW4sH1x5fVb9AJyDOLBjDLHPn7piaRp3h2GZMhfvw+yNUKjO4aR/J7oYzDjwoFM5cpMCagjMVwKJYTaXFyaDk3kiL0gBk9RkXWACTm+g2yTyp/QoqUmW9YCQ+C0bNPwib+g2niy1tEIl7dJ0KM9MCtwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qplysR5q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C912AC43394
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 Feb 2024 15:36:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708097773;
+	bh=upE5npUkd6W3gH18uW+PoDmZGjjIl6bKbcpiJyyaBic=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=qplysR5qu6dEIHHP2xz9ADh/zBSssrOcgChLvXWunvUko87yrFxzs2B3A2rCCmYGX
+	 IsYUMRbz7rqe1dJlNimm1p4teL4QLPHN3wvUV9D7Inm9Psv8hPmLDKy4ZUB/aLsKGS
+	 /kicfBo9YdDG5FswCQCccxr4BpKqV4w9P322XVJRFeS3k2Ogv2PHOjI9LJExd4cfA7
+	 /L9crsipFRzvuIwW786dchVXdZFkwgIHQ1XCNTZ4CE4pYGooivrfK5lgdXwvUpgDtD
+	 1P5BKhApemtCiS/9+w78WHPQE2K9vX4gsRiIzTgKns4EYjtvi0745pPQP23Wh3WjHJ
+	 LE8rF8lXUd+Tw==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5101cd91017so2863082e87.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Feb 2024 07:36:13 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy7px0myUgZoMz7JgZu6dXMDvSGDl7FJ5Pa5meVaktsUzBtpiUq
+	MNpmeNWcwnmhIxB6ypp0o67NaHsBIPyDciRtbYCsBJIrjER/PZ0D9bdNXF2D3ysvp65UuZK3sMf
+	Rr+y96QLNquBIcnrY0sXVdUAseAY=
+X-Google-Smtp-Source: AGHT+IF3aGR6xgU9mFSHs+d2GBAl55pZVpH0tKsbiHrIvYHZCBYX9xEqa6zX4S28o4+9YglPpREECerD6BJj+GHd1I0=
+X-Received: by 2002:a05:6512:2253:b0:512:999e:671b with SMTP id
+ i19-20020a056512225300b00512999e671bmr1051055lfu.54.1708097771956; Fri, 16
+ Feb 2024 07:36:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cd8342fb284a1983d7645698464debecf417e52a.1707969354.git.anand.jain@oracle.com>
+References: <c0bf7818-9c45-46a8-b3d3-513230d0c86e@inix.me> <CAL3q7H6tvCTdwrCXZ0tgOfkHhF=VWEW05_u3vr_rVv0u_PvvXg@mail.gmail.com>
+ <20b3b98b-b165-4fd7-b026-8f3c8440a631@inix.me> <29b50a95-025d-41c3-bee6-f51888b28487@inix.me>
+In-Reply-To: <29b50a95-025d-41c3-bee6-f51888b28487@inix.me>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 16 Feb 2024 15:35:35 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H41FJ1KV281OQKpozbtONLcEFoaMpZ2nCKhgTNR36GUCg@mail.gmail.com>
+Message-ID: <CAL3q7H41FJ1KV281OQKpozbtONLcEFoaMpZ2nCKhgTNR36GUCg@mail.gmail.com>
+Subject: Re: incremental stream after fstrim on thinly provisioned disk file
+To: Dorai Ashok S A <dash.btrfs@inix.me>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 02:34:07PM +0800, Anand Jain wrote:
-> check_fsid() provides a method to verify if the given device is mounted
-> with the tempfsid in the kernel. Function sb() is an internal only
-> function.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  common/btrfs | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
-> 
-> diff --git a/common/btrfs b/common/btrfs
-> index e1b29c613767..5cba9b16b4de 100644
-> --- a/common/btrfs
-> +++ b/common/btrfs
-> @@ -792,3 +792,37 @@ _has_btrfs_sysfs_feature_attr()
->  
->  	test -e /sys/fs/btrfs/features/$feature_attr
->  }
-> +
-> +# Dump key members of the on-disk super-block from the given disk; helps debug
-> +sb()
-> +{
-> +	local dev1=$1
-> +	local parameters="device|devid|^metadata_uuid|^fsid|^incom|^generation|\
-> +		^flags| \|$| \)$|compat_flags|compat_ro_flags|dev_item.uuid"
-> +
-> +	$BTRFS_UTIL_PROG inspect-internal dump-super $dev1 | egrep "$parameters"
+On Fri, Feb 16, 2024 at 2:04=E2=80=AFPM Dorai Ashok S A <dash.btrfs@inix.me=
+> wrote:
+>
+>
+>  > seq 10000000 > 76mb.file
+>
+> This should be: seq 10000000 > thin-mount/76mb.file
+>
+> Either ways, I get a large send stream (2.5GB / 2.8GB)
 
-Please don't use "egrep", it's deprecated, might hit a warning output.
-Replace it with "grep -E" :)
+Ok, now I understand your use case.
+So I simplified the script to:
 
-> +}
-> +
-> +check_fsid()
-> +{
-> +	local dev1=$1
-> +	local fsid
-> +
-> +	# on disk fsid
-> +	fsid=$(sb $dev1 | grep ^fsid | awk -d" " '{print $2}')
-> +	echo -e "On disk fsid:\t\t$fsid" | sed -e "s/$fsid/FSID/g"
-> +
-> +	echo -e -n "Metadata uuid:\t\t"
-> +	cat /sys/fs/btrfs/$fsid/metadata_uuid | sed -e "s/$fsid/FSID/g"
-> +
-> +	# This returns the temp_fsid if set
-> +	tempfsid=$(_btrfs_get_fsid $dev1)
-> +	if [[ $tempfsid == $fsid ]]; then
-> +		echo -e "Temp fsid:\t\tFSID"
-> +	else
-> +		echo -e "Temp fsid:\t\tTEMPFSID"
-> +	fi
-> +
-> +	echo -e -n "Tempfsid status:\t"
-> +	cat /sys/fs/btrfs/$tempfsid/temp_fsid
-> +}
-> -- 
-> 2.39.3
-> 
-> 
+#!/bin/bash
 
+DEV=3D/dev/sdh
+MNT=3D/mnt/sdh
+
+umount $DEV &> /dev/null
+mkfs.btrfs -f $DEV >/dev/null
+mount $DEV $MNT
+
+pushd .
+cd $MNT
+
+truncate -s +3G thin-disk
+mkfs.btrfs thin-disk >& /dev/null
+mkdir thin-mount
+mount thin-disk thin-mount/
+
+fstrim thin-mount
+
+btrfs subvolume snapshot -r . 1.s
+btrfs subvolume snapshot -r . 2.s
+seq 10000000 > thin-mount/76mb.file
+btrfs filesystem sync thin-mount
+btrfs subvolume snapshot -r . 3.s
+
+tree -h
+
+btrfs send 1.s | wc -c | numfmt --to=3Diec
+
+btrfs send 2.s | wc -c | numfmt --to=3Diec
+
+btrfs send 3.s | wc -c | numfmt --to=3Diec
+
+btrfs send -p 1.s 2.s | wc -c | numfmt --to=3Diec
+
+btrfs send -p 2.s 3.s | wc -c | numfmt --to=3Diec
+du -hs thin-disk
+fstrim thin-mount
+du -hs thin-disk
+btrfs send -p 2.s 3.s | wc -c | numfmt --to=3Diec
+
+tree -h
+
+btrfs subvolume delete *.s
+umount thin-mount
+rm -f thin-disk
+rmdir thin-mount
+
+popd
+
+umount $DEV
+
+
+Which reproduces the 2.5G stream:
+
+$ ./test.sh
+Create a readonly snapshot of '.' in './1.s'
+Create a readonly snapshot of '.' in './2.s'
+Create a readonly snapshot of '.' in './3.s'
+[  56]  .
+=E2=94=9C=E2=94=80=E2=94=80 [  38]  1.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [3.0G]  thin-disk
+=E2=94=82   =E2=94=94=E2=94=80=E2=94=80 [   0]  thin-mount
+=E2=94=9C=E2=94=80=E2=94=80 [  44]  2.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [   0]  1.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [3.0G]  thin-disk
+=E2=94=82   =E2=94=94=E2=94=80=E2=94=80 [   0]  thin-mount
+=E2=94=9C=E2=94=80=E2=94=80 [  50]  3.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [   0]  1.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [   0]  2.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [3.0G]  thin-disk
+=E2=94=82   =E2=94=94=E2=94=80=E2=94=80 [   0]  thin-mount
+=E2=94=9C=E2=94=80=E2=94=80 [3.0G]  thin-disk
+=E2=94=94=E2=94=80=E2=94=80 [  18]  thin-mount
+    =E2=94=94=E2=94=80=E2=94=80 [ 75M]  76mb.file
+
+11 directories, 5 files
+At subvol 1.s
+1.3M
+At subvol 2.s
+1.3M
+At subvol 3.s
+77M
+At subvol 2.s
+170
+At subvol 3.s
+2.5G
+77M thin-disk
+77M thin-disk
+At subvol 3.s
+2.5G
+[  56]  .
+=E2=94=9C=E2=94=80=E2=94=80 [  38]  1.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [3.0G]  thin-disk
+=E2=94=82   =E2=94=94=E2=94=80=E2=94=80 [   0]  thin-mount
+=E2=94=9C=E2=94=80=E2=94=80 [  44]  2.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [   0]  1.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [3.0G]  thin-disk
+=E2=94=82   =E2=94=94=E2=94=80=E2=94=80 [   0]  thin-mount
+=E2=94=9C=E2=94=80=E2=94=80 [  50]  3.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [   0]  1.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [   0]  2.s
+=E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 [3.0G]  thin-disk
+=E2=94=82   =E2=94=94=E2=94=80=E2=94=80 [   0]  thin-mount
+=E2=94=9C=E2=94=80=E2=94=80 [3.0G]  thin-disk
+=E2=94=94=E2=94=80=E2=94=80 [  18]  thin-mount
+    =E2=94=94=E2=94=80=E2=94=80 [ 75M]  76mb.file
+
+11 directories, 5 files
+Delete subvolume (no-commit): '/mnt/sdh/1.s'
+Delete subvolume (no-commit): '/mnt/sdh/2.s'
+Delete subvolume (no-commit): '/mnt/sdh/3.s'
+/mnt
+
+So this is normal, because the file backing the thin device has holes,
+its size is 3G but only about ~77M are used.
+The thing is send doesn't support hole punching, so holes are sent as
+writes full of zeroes in most cases.
+
+>
+> Regards,
+> -Ashok.
+>
 
