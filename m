@@ -1,53 +1,75 @@
-Return-Path: <linux-btrfs+bounces-2475-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2476-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7028A8592BE
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Feb 2024 21:39:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D594F85939B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Feb 2024 00:24:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEA481F22419
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Feb 2024 20:39:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 053061C211A2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Feb 2024 23:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7427B7F7E1;
-	Sat, 17 Feb 2024 20:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D958003B;
+	Sat, 17 Feb 2024 23:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="mKBFCJgq"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Y76w/wXl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 945E0433A9;
-	Sat, 17 Feb 2024 20:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85ACA6D1AC
+	for <linux-btrfs@vger.kernel.org>; Sat, 17 Feb 2024 23:24:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708202358; cv=none; b=O5p5pY+L3aWK+VSilDchx28MHe0F1QSGgwfOZ9AJKxyrD52OviJb6O0n7OP8eJepMzKnewUFFj9ufSvBXEOR0TSjnwSeKv+OgOW3FumwWraA/rczTUFIukGGI78tnyLEEcee89Mmbi9yJ9euErDrpIsVUhk7u9DKsgyjcItUfes=
+	t=1708212261; cv=none; b=OtogMWUCUevEZC3rZ/OhOMwfTDqyhITC6xs6Olp+NK7UEfyROBEopvJE1T5OjKJBteeayVReQj5xkjrMRaJ4jBQSpuJCOeieBWaq/k8b3pc6Abtjn7lX44tYyNLZ0JlemBcLPmUQIJ2STuhLzzKHNXEfovYzqI4hXu803O4ssss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708202358; c=relaxed/simple;
-	bh=5XHGfPMQ7QEK72tJR2yT0FWsYoGir0pOIQNrP63mse0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nQkA9EwtZOUB7CxmVzXgjRRzs1Yl5U/gLIpaz++Sv98EvMEJ7s8lKaTmAm/vBlg3/TAlOBZFh9cCJHRVncy61kx6lARGk1ZtttFFOUwQn26CqEPRtsE0L9jwO2Pi8MyPTjMDC2YrjGZI93ta9p/B2A5ALQuR7zgp6cj3OIu4sHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=mKBFCJgq; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1708202348; x=1708807148; i=quwenruo.btrfs@gmx.com;
-	bh=5XHGfPMQ7QEK72tJR2yT0FWsYoGir0pOIQNrP63mse0=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=mKBFCJgqlu0y8gKgf7WK6dK8Z8KzWM0ts4ZRxoZEBFSrc8lz5RxYkloEJm+ogHw3
-	 YkF4VbP2ICMT0UHldmbTff7nJ6CLxOcAvbTq909cS72OJvyeXVjES6A51VRgjMhIg
-	 01QWYshab/XDJaAoL2LW9pF0lXpHqmDaylFEZM7a+gbxQxchyHOPJRzzHaZkUP9Ss
-	 xAC9GZUS4pFzZwO6IDnxeffjKEXEJ8nbhHnX0oy9rPUOS3yftuIE5z7NE9Do76ELz
-	 EjDwsnHlq0VzBZTC0VUhPUGi8j9z1gg3UgGXh87YxWs+hupX4LbijGBUn6NYklGgZ
-	 Rf3OB8VxdKVwdzjH2g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N8obG-1qqvPe09Be-015pG0; Sat, 17
- Feb 2024 21:39:08 +0100
-Message-ID: <cdad94b0-6593-440d-96b1-ae4a5df4abb1@gmx.com>
-Date: Sun, 18 Feb 2024 07:09:04 +1030
+	s=arc-20240116; t=1708212261; c=relaxed/simple;
+	bh=UGZhcmL5masgoj3zBez45W4RnJdRRxTTA+QFwGQYw6w=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=cSygvTOb2Ff3dGt0GLFluEskWhYv55K3EFV9DEDf9Ppg0MPZaI9hXq3DrVv9TJQT8IzjypPBHIrs9Ti3j/oR/MieFqUGWqeTqQU04DaIccd1uI2SDaVQ0naHeNRlZGEP2/3Z+NusZbFgTfHA3Nv+/kVRZja/UTv3KGc6H8mi+xU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Y76w/wXl; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33d26da3e15so694058f8f.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 17 Feb 2024 15:24:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1708212257; x=1708817057; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OpCoNreY2yfqccoiXU3wkd4sTcBEvr7Eq0xk9Q/NfLQ=;
+        b=Y76w/wXlM6OtlBFm53zy4JeA8UJfogLIMSp2iuh3XSMBo5KOHrjHEx6PA1B2+ZcGoF
+         jzF+DcbX/VdZmSzPw5cblcMR29r8Pdi1qpSY5wIbF3RjDzY7yBi5OcpDaaLuo6ij5qLG
+         ThBFR1hQSX4A2pq2fHtZbgVvVy/YXwx9yMTukD88/v2gJ0jmyfBhzkNCh58vHC0tBX3n
+         cL5MKs5pu4CGzpo0Q2t3OB7vexREgROCvYxypyJn9+QZtB6L8TRDPJwMKgBxDVXyLmyr
+         a8ESkvjeihd2hfKGbbcU1IBx5neb/g+s1AUOctnI11YBr8PbjN8v3Y5M+JcklYqNH3FJ
+         Sphg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708212257; x=1708817057;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OpCoNreY2yfqccoiXU3wkd4sTcBEvr7Eq0xk9Q/NfLQ=;
+        b=WG4a6yqhZvEgFBkRbEqRWdDIJlWo+GzSkWbarhnKln288rmtY2yKFLevUXDY5OlVym
+         1JuCBSdcsMy1Eq68GgorVXEDeB4kuQHhZQ5Qx7ZNccABDHxAXsGH6kXSCidV4ihilFyB
+         9Jul59tNKNjrIeZ4vLx3tnli3MvdAhFAxwM0kv5L/LHpOHtNXz9fhaM6AeU8KBNIpfHy
+         nl2NyRWFZdWwNiqx4Lni3Q8O+d+JL+ew2Fy+gN+t4tM7nW/0W0XOoAOpEwi+9b0eXOIx
+         97LOgFYsJXakp/Iha0DX+SLjoZ+/EOnvIJ5eTpS+G+5I4CGh8qXsOEL9GT3oiavyyRPa
+         CGyg==
+X-Gm-Message-State: AOJu0YzB5FZiU0Mpv2frcx305dzUDnCxteY7Qs+B2Qag78MKLhUwPVy3
+	O9qC7Dhf9f5yYmljMqKtHqNB4isQwNgy2JUERja+kOPMq89GIDU3H96DXugCY1ZO4whxO+tmNK0
+	iEnQ=
+X-Google-Smtp-Source: AGHT+IFcLJCcLzMz6VC/R94v39qAUKMX+5xwfGMThS9CiuTxuQ4CjEw7pDkrCGBkQUNMemXosSHmjg==
+X-Received: by 2002:adf:f144:0:b0:33d:3cea:8484 with SMTP id y4-20020adff144000000b0033d3cea8484mr408512wro.1.1708212256724;
+        Sat, 17 Feb 2024 15:24:16 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id nc15-20020a17090b37cf00b00295fac343cfsm2342541pjb.8.2024.02.17.15.24.14
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Feb 2024 15:24:16 -0800 (PST)
+Message-ID: <f6d63a22-934c-45c0-9cb0-ba32dd5cf672@suse.com>
+Date: Sun, 18 Feb 2024 09:54:11 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,252 +77,206 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs/016: fix a false alert due to xattrs mismatch
+Subject: Re: [PATCH] btrfs: make find_lock_delalloc_range() to search until
+ the page end.
 Content-Language: en-US
-To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-References: <ae441bd376587124becd9141ed690598d4ed281a.1703741660.git.wqu@suse.com>
- <CAL3q7H4SoEdTUNpkkotux5ZbNmmjsN8vJsC_JCBsJvsXM_y3Qg@mail.gmail.com>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+References: <0e21cf35395fd49b87c940cb86332961c1236157.1708160640.git.wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H4SoEdTUNpkkotux5ZbNmmjsN8vJsC_JCBsJvsXM_y3Qg@mail.gmail.com>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <0e21cf35395fd49b87c940cb86332961c1236157.1708160640.git.wqu@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iD3n3znbTrEoQrsVLH1eVygwYeHNFwqB+EX/qj/D087ehJkpivg
- cR1chCrX8yx4gFxzEFNqqqrH24UeLBX4gitPYm0+YJIi3FK/tRwtGOo3RGbIosR+EArX6k8
- tbS6/Xupe3A496HhQXbvPqBtzQrO/1UOaS9lcvmXScvjFC5/Z8fvJgJIaYbq+aTSJ5nA42N
- vIK7g8KIBIVVbjK6h1ecw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:jbpyU0NQLh4=;xK3WReG8pWm16AnIeFlp+eWANgu
- 3MmJz6Q3k1Emmjfup/qrFTsmxgPAG5K+6EKCh9G30A8fhZoRQqjhyTs7QsMa9tdBH4FTKyeIT
- Ilj8gyos7/D++qOb2hCRJqzGeS8G81559MckTYpAkyk08KXdyGAkIk5qSUQxQwaoGh8tZyfpy
- 8ZX8IA5mAVsqCMcPR2hefwRGsWl7aQxpIZCt5GFlgOtP4Id8LEGvYJSafDcEBNCkCMyTvnEpI
- GMpGUUU1v8tlgaCK6WE4CsLqHOIgBDJ/dp9TaQ4ubO0T0ppkoNekNAlyJWClNzwoWQJzJSDO1
- Ww55+SD/hCw7C8Cj2mlocWZIWmIzBNXvBu0dNOwm7N1UF5u5pAB1MZUQUWhCNu39vs3C3IKFZ
- HhSTlC5QwflQz5fqSc/WEzkuELxEHAR9SLCQ/GEf4ayjxHaDx4zHZOxpK5y/jteZTI8N/taKe
- v/2I2SGdlkI6kmRTcwkCRPYPI6W+c2LvE9T1hl3dQmQxxAcecqx3iMloByMFyR/MyevniyV61
- Mq9ycEix5TIG/X8Zh62oy/LgUOagbJcfXmRhVLgfFZpNN1dl9XmpBff8nj0H0B7ZIe2g8d0Dg
- 4W/FpnivM3MYI3+DaW5nGfFWxKuB5Y5Wp86VCYxYp6KPWmlnfevPzIg25b/Dfm6oincaeJ169
- WGZkrrRdNWSKxf0FLppbnMeX6QOrZMbjSxbfOv5XTvmjTcfwwe2uM19gQG1lPxPbWeWVfE3Ay
- TIfP7lMdIAZIB6TsQSLdjiz8JwK2eDkqWmgNXNRvaUg+QXzB/iGElRaVBDhFAP7ATC1w255Ea
- +uV3soJlx+/817A6p5PoRW8bBFC7QSgj3HX7yP9KGp8zg=
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2024/2/17 22:55, Filipe Manana =E5=86=99=E9=81=93:
-> On Thu, Dec 28, 2023 at 5:36=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->>
->> [BUG]
->> When running btrfs/016 after any other test case, it would fail on a
->> SELinux enabled environment:
->>
->>    btrfs/015 1s ...  0s
->>    btrfs/016 1s ... [failed, exit status 1]- output mismatch (see ~/xfs=
-tests-dev/results//btrfs/016.out.bad)
->>        --- tests/btrfs/016.out   2023-12-28 10:39:36.481027970 +1030
->>        +++ ~/xfstests-dev/results//btrfs/016.out.bad     2023-12-28 15:=
-53:10.745436664 +1030
->>        @@ -1,2 +1,3 @@
->>         QA output created by 016
->>        -Silence is golden
->>        +fssum failed
->>        +(see ~/xfstests-dev/results//btrfs/016.full for details)
->>        ...
->>        (Run 'diff -u ~/xfstests-dev/tests/btrfs/016.out ~/xfstests-dev/=
-results//btrfs/016.out.bad'  to see the entire diff)
->>    Ran: btrfs/015 btrfs/016
->>    Failures: btrfs/016
->>    Failed 1 of 2 tests
->>
->> [CAUSE]
->> The test case itself would try to use a blank SELinux context for the
->> SCRATCH_MNT, to control the xattrs.
->>
->> But the initial send stream is generated from $TEST_DIR, which may stil=
-l
->> have the default SELinux mount context.
->>
->> And such mismatch in the SELinux xattr (source on $TEST_DIR still has
->> the extra xattr, meanwhile the receve end on $SCRATCH_MNT doesn't) woul=
-d
->> lead to above mismatch.
->>
->> [FIX]
->> Instead of doing all the edge juggling using $TEST_DIR, this time we do
->> all the work on $SCRATCH_MNT.
->>
->> This means we would generate the initial send stream from $SCRATCH_MNT,
->> then reformat the fs, mount scratch again, receive and verify.
->>
->> This does not only fix the above false alerts, but also simplify the
->> cleanup.
->> We no longer needs to cleanup the extra file for the initial send
->> stream, as they are on the scratch device and would be formatted anyway=
-.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   tests/btrfs/016 | 46 ++++++++++++++++++++++------------------------
->>   1 file changed, 22 insertions(+), 24 deletions(-)
->>
->> diff --git a/tests/btrfs/016 b/tests/btrfs/016
->> index 35609329ba0e..9371b3316332 100755
->> --- a/tests/btrfs/016
->> +++ b/tests/btrfs/016
->> @@ -12,22 +12,11 @@ _begin_fstest auto quick send prealloc
->>   tmp=3D`mktemp -d`
->>   tmp_dir=3Dsend_temp_$seq
->>
->> -# Override the default cleanup function.
->> -_cleanup()
->> -{
->> -       $BTRFS_UTIL_PROG subvolume delete $TEST_DIR/$tmp_dir/snap > /de=
-v/null 2>&1
->> -       $BTRFS_UTIL_PROG subvolume delete $TEST_DIR/$tmp_dir/snap1 > /d=
-ev/null 2>&1
->> -       $BTRFS_UTIL_PROG subvolume delete $TEST_DIR/$tmp_dir/send > /de=
-v/null 2>&1
->> -       rm -rf $TEST_DIR/$tmp_dir
->> -       rm -f $tmp.*
->> -}
->> -
->>   # Import common functions.
->>   . ./common/filter
->>
->>   # real QA test starts here
->>   _supported_fs btrfs
->> -_require_test
->>   _require_scratch
->>   _require_fssum
->>   _require_xfs_io_command "falloc"
->> @@ -41,29 +30,33 @@ export SELINUX_MOUNT_OPTIONS=3D""
->>
->>   _scratch_mount
->>
->> -mkdir $TEST_DIR/$tmp_dir
->> -$BTRFS_UTIL_PROG subvolume create $TEST_DIR/$tmp_dir/send \
->> +mkdir $SCRATCH_MNT/$tmp_dir
->> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/$tmp_dir/send \
->>          > $seqres.full 2>&1 || _fail "failed subvolume create"
->>
->> -_ddt of=3D$TEST_DIR/$tmp_dir/send/foo bs=3D1M count=3D10 >> $seqres.fu=
-ll \
->> +_ddt of=3D$SCRATCH_MNT/$tmp_dir/send/foo bs=3D1M count=3D10 >> $seqres=
-.full \
->>          2>&1 || _fail "dd failed"
->> -$BTRFS_UTIL_PROG subvolume snapshot -r $TEST_DIR/$tmp_dir/send \
->> -       $TEST_DIR/$tmp_dir/snap >> $seqres.full 2>&1 || _fail "failed s=
-nap"
->> -$XFS_IO_PROG -c "fpunch 1m 1m" $TEST_DIR/$tmp_dir/send/foo
->> -$BTRFS_UTIL_PROG subvolume snapshot -r $TEST_DIR/$tmp_dir/send \
->> -       $TEST_DIR/$tmp_dir/snap1 >> $seqres.full 2>&1 || _fail "failed =
-snap"
->> +$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/$tmp_dir/send \
->> +       $SCRATCH_MNT/$tmp_dir/snap >> $seqres.full 2>&1 || _fail "faile=
-d snap"
->> +$XFS_IO_PROG -c "fpunch 1m 1m" $SCRATCH_MNT/$tmp_dir/send/foo
->> +$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/$tmp_dir/send \
->> +       $SCRATCH_MNT/$tmp_dir/snap1 >> $seqres.full 2>&1 || _fail "fail=
-ed snap"
->>
->> -$FSSUM_PROG -A -f -w $tmp/fssum.snap $TEST_DIR/$tmp_dir/snap >> $seqre=
-s.full \
->> +$FSSUM_PROG -A -f -w $tmp/fssum.snap $SCRATCH_MNT/$tmp_dir/snap >> $se=
-qres.full \
->>          2>&1 || _fail "fssum gen failed"
->> -$FSSUM_PROG -A -f -w $tmp/fssum.snap1 $TEST_DIR/$tmp_dir/snap1 >> $seq=
-res.full \
->> +$FSSUM_PROG -A -f -w $tmp/fssum.snap1 $SCRATCH_MNT/$tmp_dir/snap1 >> $=
-seqres.full \
->>          2>&1 || _fail "fssum gen failed"
->>
->> -$BTRFS_UTIL_PROG send -f $tmp/send.snap $TEST_DIR/$tmp_dir/snap >> \
->> +$BTRFS_UTIL_PROG send -f $tmp/send.snap $SCRATCH_MNT/$tmp_dir/snap >> =
-\
->>          $seqres.full 2>&1 || _fail "failed send"
->> -$BTRFS_UTIL_PROG send -p $TEST_DIR/$tmp_dir/snap \
->> -       -f $tmp/send.snap1 $TEST_DIR/$tmp_dir/snap1 \
->> +$BTRFS_UTIL_PROG send -p $SCRATCH_MNT/$tmp_dir/snap \
->> +       -f $tmp/send.snap1 $SCRATCH_MNT/$tmp_dir/snap1 \
->>          >> $seqres.full 2>&1 || _fail "failed send"
->>
->> +_scratch_unmount
->> +_scratch_mkfs > /dev/null 2>&1
->> +_scratch_mount
->> +
->>   $BTRFS_UTIL_PROG receive -f $tmp/send.snap $SCRATCH_MNT >> $seqres.fu=
-ll 2>&1 \
->>          || _fail "failed recv"
->>   $BTRFS_UTIL_PROG receive -f $tmp/send.snap1 $SCRATCH_MNT >> $seqres.f=
-ull 2>&1 \
->> @@ -74,5 +67,10 @@ $FSSUM_PROG -r $tmp/fssum.snap $SCRATCH_MNT/snap >> =
-$seqres.full 2>&1 \
->>   $FSSUM_PROG -r $tmp/fssum.snap1 $SCRATCH_MNT/snap1 >> $seqres.full 2>=
-&1 \
->>          || _fail "fssum failed"
->>
->> +# Unset the selinux mount options and restore whatever the default one=
- for
->> +# test device.
->> +unset SELINUX_MOUNT_OPTIONS
->> +_test_cycle_mount
->
-> Why do we need to _test_cycle_mount?
->
-> We're not using the test device anymore after this change, so
-> unsetting SELINUX_MOUNT_OPTIONS should be enough.
->
-> A simpler alternative fix would be just to pass -T to fssum, so that
-> it ignores xattrs when computing/verifying checksums, which is ok
-> since the tests' goal is to verify file data and that the hole
-> punching worked.
+在 2024/2/17 19:34, Qu Wenruo 写道:
+> Currently all caller of lock_delalloc_pages() would assigned @end to the
+> end of the page, thus if we return false, there is no more delalloc
+> range in the page.
+> 
+> Thus there is really no need to update @start/@end when we return false,
+> callers doesn't really utilize that value either.
+> 
+> Finally since the end is always the page end, we only need to make sure
+> the @start is inside the locked page, thus the ASSERT()s can be
+> simplified.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-That makes sense. In that case we can completely remove the
-SELINUX_MOUNT_OPTIONS related setup.
+Please ignore this one (at least for now).
 
-> Or just not use fssum and compare md5sum in the
-> original fs and the new fs.
->
-> Either way, it looks good to me except that confusing part of the
-> _test_cycle_mount which seems irrelevant to me.
+Under certain fsstress seed, it can lead to a crash caused by some 
+dirtied range not covered by an ordered extent.
 
-Thanks for the review, would update this fix soon.
+The current debug shows by somehow the newer find_lock_delalloc_range() 
+can ignore some delalloc range.
+
+Would update it to fix the regression.
 
 Thanks,
 Qu
-
->
-> Thanks.
->
->> +
->>   echo "Silence is golden"
->>   status=3D0 ; exit
->> --
->> 2.43.0
->>
->>
->
+> ---
+>   fs/btrfs/extent_io.c             | 34 +++++++++++++-------------------
+>   fs/btrfs/tests/extent-io-tests.c | 10 ----------
+>   2 files changed, 14 insertions(+), 30 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 197b9f50e75c..50c58c8568ff 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -306,16 +306,19 @@ static noinline int lock_delalloc_pages(struct inode *inode,
+>    * Find and lock a contiguous range of bytes in the file marked as delalloc, no
+>    * more than @max_bytes.
+>    *
+> - * @start:	The original start bytenr to search.
+> - *		Will store the extent range start bytenr.
+> - * @end:	The original end bytenr of the search range
+> - *		Will store the extent range end bytenr.
+> + * @start:	INPUT and OUTPUT.
+> + *		INPUT for the original start bytenr to search.
+> + *		OUTPUT to store the found delalloc range start bytenr.
+> + *		The output value is still inside the locked page.
+> + * @end:	OUTPUT only.
+> + *		OUTPUT to store the delalloc range end bytenr.
+> + *		The output value can go beyond the locked page.
+>    *
+>    * Return true if we find a delalloc range which starts inside the original
+>    * range, and @start/@end will store the delalloc range start/end.
+>    *
+>    * Return false if we can't find any delalloc range which starts inside the
+> - * original range, and @start/@end will be the non-delalloc range start/end.
+> + * original range and @start/@end won't be touched.
+>    */
+>   EXPORT_FOR_TESTS
+>   noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+> @@ -325,7 +328,7 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+>   	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+>   	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+>   	const u64 orig_start = *start;
+> -	const u64 orig_end = *end;
+> +	const u64 orig_end = page_offset(locked_page) + PAGE_SIZE - 1;
+>   	/* The sanity tests may not set a valid fs_info. */
+>   	u64 max_bytes = fs_info ? fs_info->max_extent_size : BTRFS_MAX_EXTENT_SIZE;
+>   	u64 delalloc_start;
+> @@ -335,12 +338,10 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+>   	int ret;
+>   	int loops = 0;
+>   
+> -	/* Caller should pass a valid @end to indicate the search range end */
+> -	ASSERT(orig_end > orig_start);
+> +	/* The original start must be inside the @locked page. */
+> +	ASSERT(orig_start >= page_offset(locked_page) &&
+> +	       orig_start < page_offset(locked_page) + PAGE_SIZE);
+>   
+> -	/* The range should at least cover part of the page */
+> -	ASSERT(!(orig_start >= page_offset(locked_page) + PAGE_SIZE ||
+> -		 orig_end <= page_offset(locked_page)));
+>   again:
+>   	/* step one, find a bunch of delalloc bytes starting at start */
+>   	delalloc_start = *start;
+> @@ -348,10 +349,6 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+>   	found = btrfs_find_delalloc_range(tree, &delalloc_start, &delalloc_end,
+>   					  max_bytes, &cached_state);
+>   	if (!found || delalloc_end <= *start || delalloc_start > orig_end) {
+> -		*start = delalloc_start;
+> -
+> -		/* @delalloc_end can be -1, never go beyond @orig_end */
+> -		*end = min(delalloc_end, orig_end);
+>   		free_extent_state(cached_state);
+>   		return false;
+>   	}
+> @@ -1206,12 +1203,9 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+>   	int ret = 0;
+>   
+>   	while (delalloc_start < page_end) {
+> -		delalloc_end = page_end;
+>   		if (!find_lock_delalloc_range(&inode->vfs_inode, page,
+> -					      &delalloc_start, &delalloc_end)) {
+> -			delalloc_start = delalloc_end + 1;
+> -			continue;
+> -		}
+> +					      &delalloc_start, &delalloc_end))
+> +			break;
+>   
+>   		ret = btrfs_run_delalloc_range(inode, page, delalloc_start,
+>   					       delalloc_end, wbc);
+> diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
+> index 865d4af4b303..371ec714d500 100644
+> --- a/fs/btrfs/tests/extent-io-tests.c
+> +++ b/fs/btrfs/tests/extent-io-tests.c
+> @@ -179,7 +179,6 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
+>   	 */
+>   	set_extent_bit(tmp, 0, sectorsize - 1, EXTENT_DELALLOC, NULL);
+>   	start = 0;
+> -	end = start + PAGE_SIZE - 1;
+>   	found = find_lock_delalloc_range(inode, locked_page, &start,
+>   					 &end);
+>   	if (!found) {
+> @@ -210,7 +209,6 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
+>   	}
+>   	set_extent_bit(tmp, sectorsize, max_bytes - 1, EXTENT_DELALLOC, NULL);
+>   	start = test_start;
+> -	end = start + PAGE_SIZE - 1;
+>   	found = find_lock_delalloc_range(inode, locked_page, &start,
+>   					 &end);
+>   	if (!found) {
+> @@ -244,18 +242,12 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
+>   		goto out_bits;
+>   	}
+>   	start = test_start;
+> -	end = start + PAGE_SIZE - 1;
+>   	found = find_lock_delalloc_range(inode, locked_page, &start,
+>   					 &end);
+>   	if (found) {
+>   		test_err("found range when we shouldn't have");
+>   		goto out_bits;
+>   	}
+> -	if (end != test_start + PAGE_SIZE - 1) {
+> -		test_err("did not return the proper end offset");
+> -		goto out_bits;
+> -	}
+> -
+>   	/*
+>   	 * Test this scenario
+>   	 * [------- delalloc -------|
+> @@ -265,7 +257,6 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
+>   	 */
+>   	set_extent_bit(tmp, max_bytes, total_dirty - 1, EXTENT_DELALLOC, NULL);
+>   	start = test_start;
+> -	end = start + PAGE_SIZE - 1;
+>   	found = find_lock_delalloc_range(inode, locked_page, &start,
+>   					 &end);
+>   	if (!found) {
+> @@ -300,7 +291,6 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
+>   	/* We unlocked it in the previous test */
+>   	lock_page(locked_page);
+>   	start = test_start;
+> -	end = start + PAGE_SIZE - 1;
+>   	/*
+>   	 * Currently if we fail to find dirty pages in the delalloc range we
+>   	 * will adjust max_bytes down to PAGE_SIZE and then re-search.  If
 
