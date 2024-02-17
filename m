@@ -1,198 +1,156 @@
-Return-Path: <linux-btrfs+bounces-2463-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2464-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75A06858A84
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Feb 2024 01:07:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2EBF858D1D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Feb 2024 05:04:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 019BE1F22C12
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Feb 2024 00:07:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A902B20E9E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Feb 2024 04:04:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E254E3D71;
-	Sat, 17 Feb 2024 00:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123B71CAA5;
+	Sat, 17 Feb 2024 04:04:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="k+x4ARHf"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="v2eKsfr4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F77EC9;
-	Sat, 17 Feb 2024 00:07:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29A41C691
+	for <linux-btrfs@vger.kernel.org>; Sat, 17 Feb 2024 04:04:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708128454; cv=none; b=TLhuCd/tD2FiGaGTGPwG4QSoGsrE5jPBbd8geQ93fEi0x0OmhKIr/U9gbA9/m0JxoDVTmFhsz5S9qhrwKhf2rleWyQ7XP80oURB175N6JBsvMmSNBy/SqVrPJ5Nkhakqi2Jq6zFMRng47AvcFY3YGrKT/ebx429AuoO4MZQCEHo=
+	t=1708142682; cv=none; b=L+pov2jtX6QxktiEmMIOE7f+flMpnh5vCNh1y9mUeV6gJ1lCucJIUoAoPe96g0o3KCBIxrI0ul6XRyqLQ8byMNSuL6kRtQ3ezEOqG2zlVGfQILYthBUroOCpMj5buPhj4UnE6smTtX+U6bohnO1Prnvdkr9EBioBz4s7kej1WGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708128454; c=relaxed/simple;
-	bh=8pXpHaVfgZnmkIkSWzFd8+SXpitFE5+MCfM8ku/fHyA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZyfUFh5squyfafFWaiP2cSVD4Cy7KMM3x0zvuqCYB/FVDM05uu4LO0tZL4pDJRsSu4XDeOM8LUZA7ctNjCgJW3r/xl7khJJUimNKrB3Fpc2QB4QIBKhnu0FSFiMVrvXMduOB+8nkup4UlsBcnRxiIIjf3jjwRdrlid9BZZVyFxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=k+x4ARHf; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1708128436; x=1708733236; i=quwenruo.btrfs@gmx.com;
-	bh=8pXpHaVfgZnmkIkSWzFd8+SXpitFE5+MCfM8ku/fHyA=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=k+x4ARHfsUFkWwaZk95HBo5uMTHFlcCLoi534culucD6oPnKVWutq+3nuiNLm7l3
-	 5SnA3C17/DqOh0yzVsuRZps3Gd+vRcq9Hqq7D25tLw4zhH+e7P6bwcQWt6jVW1Lam
-	 /Tij4ZL/B8V0SPFDMk4Y9I1rsQ7CddPY7sXIvpXcPcp42E6PFyZTBaJdwzW7SN7x1
-	 jLWNLiqTcpqR/3rJ4NkIZSDvWIGp4JQxeREiUgPxfYFHdnLeMF7rCQP7C0vcpdEhS
-	 sXWHowx7fu9dxOvVpaQ/ZpjYoRDzB5mawuDHdnL3BuVId5OKr47fBqeTDTjfzQviT
-	 5XFJ9wymGWWHveeLAQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MpDNf-1rAol22hXb-00qlgt; Sat, 17
- Feb 2024 01:07:16 +0100
-Message-ID: <25afb718-9aa1-417a-95fb-144b39010932@gmx.com>
-Date: Sat, 17 Feb 2024 10:37:11 +1030
+	s=arc-20240116; t=1708142682; c=relaxed/simple;
+	bh=2JsnIW9Dfqx/Kpyym0cyn0LZDbDtWBPrNM0fZ46Ie2A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vDy8Eg66Qt/J8fxef9GrNLmLq7ua9PzOw35Quuy7KRLBCh3FtWKORKufoZtVmeB/20vYjq/q4tBv/uGlSWIaVUpDx2qKVd7Q8XedJZ+dgybG1Fa156+uTK+mdHKgJdxmq0pOu/6Gux/fFY7f6MKq8c5YnemdXIxRUD48lHQhhqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=v2eKsfr4; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 16 Feb 2024 23:04:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708142677;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A4r5aIV7VuIBs+wO/sCkDN27DEyy8EZefu5EInHNYN4=;
+	b=v2eKsfr4RqJiPyoh2Vo0edhLedLN1wz4yD9ORWOpRo9yJFXqX4BKGIZpRKN+FPclQD/Enc
+	Q32XVIPBwxtM+OUDrbBQc1VlgMToH0H5+lxWd7l7rEFIXmYoqzJRTFkh9PKsjgMd+RXgYd
+	ZILDKHzg/QofJ0EzNQR7JGLKUctiiKQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Christian Brauner <brauner@kernel.org>
+Cc: lsf-pc@lists.linux-foundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org, 
+	Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [LSF/MM/BPF TOPIC] Dropping page cache of individual fs
+Message-ID: <h5wq7dsi6r7cjjmkpo2dvn5x662eseluzd2kmzbkzegntzlptd@ncjzyaurmiwb>
+References: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: reject zoned RW mount if sectorsize is smaller
- than page size
-Content-Language: en-US
-To: dsterba@suse.cz
-Cc: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, Qu Wenruo
- <wqu@suse.com>, "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
- HAN Yuwei <hrx@bupt.moe>, "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <2a19a500ccb297397018dac23d30106977153d62.1707714970.git.wqu@suse.com>
- <11533563-8e88-4b4f-acc3-0846ec3e8d1f@wdc.com>
- <1150c409-f2ed-4e5a-a2b6-9f410fb7aff5@gmx.com>
- <20240214072931.GN355@twin.jikos.cz>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240214072931.GN355@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fMq/OdpVeWBbZ7LvyK5ZiOwZSFH+hf5Fr1v/3Tme5olJSWNnz97
- xT1YI5pZ4xr8UkcBxS0e7kCOiazFOHtzr7vHh9Id2eGb4hOzXNMDWewT43dRat8VDyFmtNJ
- LsR9Si4yGMUhyggbETslfVQwgzKpgt8kVx/2BgTPK3kIrKS7HHRuFV7Sc70TlIukwgSqHLn
- EzKVMftBbBcsZCTs3UzcQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:NBVXDrQXdHA=;kB70LvvLwUP7IgmQyi46+gtzGnB
- Ksp+K9MpeaRiwX6B3CV5E/9WbyPv8n2SkOAqwe2+lkeBqx8ebft6ZQHO31nOyjPRTBOMoN69m
- mSCNzqJjv2rO+dt6ec2opeXGMIA09cX+yQ4w/kdS7eGsYljShfL5Rx6gTsOb/CVvKtU+vUtaB
- EO8rmNSzmpII9GlFxh66a5BKYQHiPwG5ToXD1t+IiHrYJh+Ap57yAH4vB2wkF366qqyVLrafo
- seySKuq1HPBh1pTTxqr6j6ElcqRz/pJMbihRHM9oFCdHwYrtAgNicwfLq7jod8JUe99VZcCxa
- yVtt+MzTUnW0G250+DnnDu2w4vDpJj/DgpNnsLgbenIsPvQnMMDq1/164wz275X/CmN5DjTJ1
- AGtixRt9Q+9wYr6pUYN7Xh5dtGA7eB+M3N44i6nuQokB+Q4XsDh+9EBHhbdDU+rljEQh+c+Ml
- HWMVBw9+jQAFKuU+OURUIxgcRtz88c1I/VRVQnrHDzYpWKkn8vc1knkmbKrLA6NiyLEMs4cp8
- JGdA415AVVMV90TobFgIKkNOrkOoPudCQDGmIlj1zuPe6OdmarxB7L+FZHSM0OXaAtNEf39dX
- OcZ/3TpKJGyx4R+zi+1s9PjGbH2UgUA1c47SnqFSjSlwjjfEdOjr5gHs0LQFFvINsnM9bEr77
- 5iSkg1w50328y299ym9CChu8R+56uBgW8sjshdtbKx6ISpYPAnTWJb3uzST9JJCNL7WKasUH/
- St/lwl4edOhZ5nW5ywi4lcvzjGqxQypvVJu1ZWioae/c8QM+ThlVJflStqvOEwFeJIUu9WKAH
- 963ZMbJm7BSHpO4jzFhH+BPDs50nsrAF8HQhSBPRWHd6o=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116-tagelang-zugnummer-349edd1b5792@brauner>
+X-Migadu-Flow: FLOW_OUT
 
+On Tue, Jan 16, 2024 at 11:50:32AM +0100, Christian Brauner wrote:
+> Hey,
+> 
+> I'm not sure this even needs a full LSFMM discussion but since I
+> currently don't have time to work on the patch I may as well submit it.
+> 
+> Gnome recently got awared 1M Euro by the Sovereign Tech Fund (STF). The
+> STF was created by the German government to fund public infrastructure:
+> 
+> "The Sovereign Tech Fund supports the development, improvement and
+>  maintenance of open digital infrastructure. Our goal is to sustainably
+>  strengthen the open source ecosystem. We focus on security, resilience,
+>  technological diversity, and the people behind the code." (cf. [1])
+> 
+> Gnome has proposed various specific projects including integrating
+> systemd-homed with Gnome. Systemd-homed provides various features and if
+> you're interested in details then you might find it useful to read [2].
+> It makes use of various new VFS and fs specific developments over the
+> last years.
+> 
+> One feature is encrypting the home directory via LUKS. An approriate
+> image or device must contain a GPT partition table. Currently there's
+> only one partition which is a LUKS2 volume. Inside that LUKS2 volume is
+> a Linux filesystem. Currently supported are btrfs (see [4] though),
+> ext4, and xfs.
+> 
+> The following issue isn't specific to systemd-homed. Gnome wants to be
+> able to support locking encrypted home directories. For example, when
+> the laptop is suspended. To do this the luksSuspend command can be used.
+> 
+> The luksSuspend call is nothing else than a device mapper ioctl to
+> suspend the block device and it's owning superblock/filesystem. Which in
+> turn is nothing but a freeze initiated from the block layer:
+> 
+> dm_suspend()
+> -> __dm_suspend()
+>    -> lock_fs()
+>       -> bdev_freeze()
+> 
+> So when we say luksSuspend we really mean block layer initiated freeze.
+> The overall goal or expectation of userspace is that after a luksSuspend
+> call all sensitive material has been evicted from relevant caches to
+> harden against various attacks. And luksSuspend does wipe the encryption
+> key and suspend the block device. However, the encryption key can still
+> be available clear-text in the page cache. To illustrate this problem
+> more simply:
+> 
+> truncate -s 500M /tmp/img
+> echo password | cryptsetup luksFormat /tmp/img --force-password
+> echo password | cryptsetup open /tmp/img test
+> mkfs.xfs /dev/mapper/test
+> mount /dev/mapper/test /mnt
+> echo "secrets" > /mnt/data
+> cryptsetup luksSuspend test
+> cat /mnt/data
+> 
+> This will still happily print the contents of /mnt/data even though the
+> block device and the owning filesystem are frozen because the data is
+> still in the page cache.
+> 
+> To my knowledge, the only current way to get the contents of /mnt/data
+> or the encryption key out of the page cache is via
+> /proc/sys/vm/drop_caches which is a big hammer.
+> 
+> My initial reaction is to give userspace an API to drop the page cache
+> of a specific filesystem which may have additional uses. I initially had
+> started drafting an ioctl() and then got swayed towards a
+> posix_fadvise() flag. I found out that this was already proposed a few
+> years ago but got rejected as it was suspected this might just be
+> someone toying around without a real world use-case. I think this here
+> might qualify as a real-world use-case.
+> 
+> This may at least help securing users with a regular dm-crypt setup
+> where dm-crypt is the top layer. Users that stack additional layers on
+> top of dm-crypt may still leak plaintext of course if they introduce
+> additional caching. But that's on them.
+> 
+> Of course other ideas welcome.
 
+This isn't entirely unlike snapshot deletion, where we also need to
+shoot down the pagecache.
 
-=E5=9C=A8 2024/2/14 17:59, David Sterba =E5=86=99=E9=81=93:
-> On Mon, Feb 12, 2024 at 08:20:21PM +1030, Qu Wenruo wrote:
->>
->>
->> On 2024/2/12 20:15, Johannes Thumshirn wrote:
->>> On 12.02.24 06:16, Qu Wenruo wrote:
->>>> Reported-by: HAN Yuwei <hrx@bupt.moe>
->>>> Link: https://lore.kernel.org/all/1ACD2E3643008A17+da260584-2c7f-432a=
--9e22-9d390aae84cc@bupt.moe/
->>>> CC: stable@vger.kernel.org # 5.10+
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>>     fs/btrfs/disk-io.c | 3 ++-
->>>>     1 file changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->>>> index c3ab268533ca..85cd23aebdd6 100644
->>>> --- a/fs/btrfs/disk-io.c
->>>> +++ b/fs/btrfs/disk-io.c
->>>> @@ -3193,7 +3193,8 @@ int btrfs_check_features(struct btrfs_fs_info *=
-fs_info, bool is_rw_mount)
->>>>     	 * part of @locked_page.
->>>>     	 * That's also why compression for subpage only work for page al=
-igned ranges.
->>>>     	 */
->>>> -	if (fs_info->sectorsize < PAGE_SIZE && btrfs_is_zoned(fs_info) && i=
-s_rw_mount) {
->>>> +	if (fs_info->sectorsize < PAGE_SIZE &&
->>>> +	    btrfs_fs_incompat(fs_info, ZONED) && is_rw_mount) {
->>>>     		btrfs_warn(fs_info,
->>>>     	"no zoned read-write support for page size %lu with sectorsize %=
-u",
->>>>     			   PAGE_SIZE, fs_info->sectorsize);
->>>
->>> Please keep btrfs_is_zoned(fs_info) instead of using
->>> btrfs_fs_incompat(fs_info, ZONED).
->>
->> At the time of calling, we haven't yet populate fs_info->zone_size, thu=
-s
->> we have to use super flags to verify if it's zoned.
->>
->> If needed, I can add a comment for it.
->
-> Yes please add a comment the difference is quite subtle.
->
+Technically, the code I have now for snapshot deletion isn't quite what
+I want; snapshot deletion probably wants something closer to revoke()
+instead of waiting for files to be closed. But maybe the code I have is
+close to what you need - maybe we could turn this into a common shared
+API?
 
-I'd say this patch can be dropped.
+https://evilpiepirate.org/git/bcachefs.git/tree/fs/bcachefs/fs.c#n1569
 
-The reason is:
-
-- I'm already working on the proper subpage handling for the
-   @locked_page of a delalloc range
-
-   The patchset is under testing now, the results looks fine for
-   both regular and subpage cases.
-   Will queue extra testing for subpage zoned.
-
-- The rejection would cause future problems for detecting whether we
-   have proper subpage + zoned support.
-   Either we do not detect, or introduce a complex mechanism only for
-   this one edge case.
-
-   Thus I prefer not to detect.
-
-- Subage + zoned is too niche for now
-   The most common subpage usage would be aarch64 (especially for Apple
-   M1/2 chips).
-   For those Apple based ones, they have no ability to expand, thus won't
-   hit any real zoned devices.
-   For other aarch64 servers, they should have the ability to choose a 4K
-   page size kernel if they really want to go zoned devices.
-
-   This bug is only exposed with a helpful reporter using 16K page sized
-   loongson board with SATA zoned disk.
-
-Due to above reasons, I really prefer to keep the current situation, and
-focus on the proper fix instead.
-
-Thanks,
-Qu
+The need for page zeroing is pretty orthogonal; if you want page zeroing
+you want that enabled for all page cache folios at all times.
 
