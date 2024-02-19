@@ -1,77 +1,56 @@
-Return-Path: <linux-btrfs+bounces-2495-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2496-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10A985A1AF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 12:13:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FAF085A1B0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 12:14:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41C18B22403
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 11:13:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D89CEB226F9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 11:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3952C686;
-	Mon, 19 Feb 2024 11:13:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MFa1zipl";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MFa1zipl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E18D2C694;
+	Mon, 19 Feb 2024 11:13:40 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508642C191
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 11:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633D32C192
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 11:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708341218; cv=none; b=V2r4sUXnygcfYQYW3pvXaGYyj6zDS6eHWQPppAOAlXYcxhU76ANO7VlkJKugl5VLUKUjS5obYYbXBD1uAB5EwgQFzxVgxJzpgAGJm0XdgsAvoZd4JVw11bExNCQG5uLVn7DIKUPH66z7AwyIGEtAa2zCw++3phEoKMMY+HBRaog=
+	t=1708341220; cv=none; b=Xi7+yvMtQWcHvfLn3GNh2C1NIYjbA+SQ494KEPjCFSICdR5mAkzOlTYWPcEnFOVEnvbxzYKJAR2f52ifCmYPMqSXYdrJ5YAvR5PDbOEZldlu9RP446nVf+AFnx8sl2vX5xpKrXfbYpSQpGeIkH57sRKmiEf66oNPp5CFPOeWyNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708341218; c=relaxed/simple;
-	bh=pVYu11PqIFUN9kbrSLNsRd21/C0V/a4QaIQl9ViMGxE=;
+	s=arc-20240116; t=1708341220; c=relaxed/simple;
+	bh=zq5XQzV5FDQG3rrfDrD1thTle8erYeqO8YWqhZOSUcA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ReUWFR60A+Q3CQEFnylldLOz3N/GBIQAEjCNdvQ1A0PmgOubqwH4BUoiUtMuHt7svuYexDAegb7KQfUdEW5mcSK1ltTHWPPecUi+UN4U03OcU/ZZvXZB6occcnojpQYl2XZV6gAq8m4tB3RU4J3D3wQ4kclog8XCkd6drrtJuDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MFa1zipl; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MFa1zipl; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=byyN3oNvAlKAp9Z+LW+sHuXEEfDmthRb27eWo6vaRMs+Dxv4EEtGTDbxaFRbDV6+X1KJOCawH6yN4Hgvbh5tHx8oM0KR041PvZlq4yKfp/2HvVGJlnj2xIzTAJD0tVyQmmhGcH8JpjXIoNBRrPZw0cZZBA51GmYp/K+bTUKuFdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8D77B1F7F2;
-	Mon, 19 Feb 2024 11:13:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708341214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k7VT6qGXrkwydx+mRbNje6FUFQfWIMMnbiz92ev+uxc=;
-	b=MFa1ziplanq+eV6IE5oRJpAuTAYAwTSGQVZ8ezLw1fJAJFbt0EGWsS/ObQakWnz/Q3HSMO
-	8GwzIJ1NxYzuZ39GZ+6A/yBQWK5P8BHolWHhoC4V/rsc5++HySwbmOgIABUikbDkvGWUfm
-	7GDpRogyIfkq6glBDwLWq9G3TwwVEBs=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708341214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k7VT6qGXrkwydx+mRbNje6FUFQfWIMMnbiz92ev+uxc=;
-	b=MFa1ziplanq+eV6IE5oRJpAuTAYAwTSGQVZ8ezLw1fJAJFbt0EGWsS/ObQakWnz/Q3HSMO
-	8GwzIJ1NxYzuZ39GZ+6A/yBQWK5P8BHolWHhoC4V/rsc5++HySwbmOgIABUikbDkvGWUfm
-	7GDpRogyIfkq6glBDwLWq9G3TwwVEBs=
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E9C4722301;
+	Mon, 19 Feb 2024 11:13:36 +0000 (UTC)
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 86224139C6;
-	Mon, 19 Feb 2024 11:13:34 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E3654139C6;
+	Mon, 19 Feb 2024 11:13:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id amm9IN4302WPZgAAn2gu4w
-	(envelope-from <dsterba@suse.com>); Mon, 19 Feb 2024 11:13:34 +0000
+	id HjeCN+A302WfZgAAn2gu4w
+	(envelope-from <dsterba@suse.com>); Mon, 19 Feb 2024 11:13:36 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 06/10] btrfs: drop static inline specifiers from tree-mod-log.c
-Date: Mon, 19 Feb 2024 12:12:59 +0100
-Message-ID: <225864132018de6b29f90403b21bd74817313b36.1708339010.git.dsterba@suse.com>
+Subject: [PATCH 07/10] btrfs: uninline some static inline helpers from tree-log.h
+Date: Mon, 19 Feb 2024 12:13:01 +0100
+Message-ID: <8657859ac2592fef34919e577c84ec2a3d4b6a6e.1708339010.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <cover.1708339010.git.dsterba@suse.com>
 References: <cover.1708339010.git.dsterba@suse.com>
@@ -82,86 +61,142 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spamd-Result: default: False [0.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLY(-4.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[27.12%]
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: E9C4722301
 X-Spam-Level: 
+X-Spam-Score: -4.00
 X-Spam-Flag: NO
-X-Spam-Score: 0.90
 
-Using static inline in a .c file should be justified, e.g. when
-functions are on a hot path but none of the affected functions seem to
-be. As it's all in one compilation unit let the compiler decide.
+The helpers are doing an initialization or release work, none of which
+is performance critical that it would require a static inline, so move
+them to the .c file.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/tree-mod-log.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ fs/btrfs/tree-log.c | 46 +++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/tree-log.h | 48 +++------------------------------------------
+ 2 files changed, 49 insertions(+), 45 deletions(-)
 
-diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
-index 3df6153d5d5a..43b3accbed7a 100644
---- a/fs/btrfs/tree-mod-log.c
-+++ b/fs/btrfs/tree-mod-log.c
-@@ -44,7 +44,7 @@ struct tree_mod_elem {
- /*
-  * Pull a new tree mod seq number for our operation.
-  */
--static inline u64 btrfs_inc_tree_mod_seq(struct btrfs_fs_info *fs_info)
-+static u64 btrfs_inc_tree_mod_seq(struct btrfs_fs_info *fs_info)
- {
- 	return atomic64_inc_return(&fs_info->tree_mod_seq);
- }
-@@ -170,8 +170,7 @@ static noinline int tree_mod_log_insert(struct btrfs_fs_info *fs_info,
-  * this until all tree mod log insertions are recorded in the rb tree and then
-  * write unlock fs_info::tree_mod_log_lock.
-  */
--static inline bool tree_mod_dont_log(struct btrfs_fs_info *fs_info,
--				    struct extent_buffer *eb)
-+static bool tree_mod_dont_log(struct btrfs_fs_info *fs_info, struct extent_buffer *eb)
- {
- 	if (!test_bit(BTRFS_FS_TREE_MOD_LOG_USERS, &fs_info->flags))
- 		return true;
-@@ -188,7 +187,7 @@ static inline bool tree_mod_dont_log(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index d7693368f34f..472918a5bc73 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -2818,6 +2818,52 @@ static void wait_for_writer(struct btrfs_root *root)
+ 	finish_wait(&root->log_writer_wait, &wait);
  }
  
- /* Similar to tree_mod_dont_log, but doesn't acquire any locks. */
--static inline bool tree_mod_need_log(const struct btrfs_fs_info *fs_info,
-+static bool tree_mod_need_log(const struct btrfs_fs_info *fs_info,
- 				    struct extent_buffer *eb)
++void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx, struct inode *inode)
++{
++	ctx->log_ret = 0;
++	ctx->log_transid = 0;
++	ctx->log_new_dentries = false;
++	ctx->logging_new_name = false;
++	ctx->logging_new_delayed_dentries = false;
++	ctx->logged_before = false;
++	ctx->inode = inode;
++	INIT_LIST_HEAD(&ctx->list);
++	INIT_LIST_HEAD(&ctx->ordered_extents);
++	INIT_LIST_HEAD(&ctx->conflict_inodes);
++	ctx->num_conflict_inodes = 0;
++	ctx->logging_conflict_inodes = false;
++	ctx->scratch_eb = NULL;
++}
++
++void btrfs_init_log_ctx_scratch_eb(struct btrfs_log_ctx *ctx)
++{
++	struct btrfs_inode *inode = BTRFS_I(ctx->inode);
++
++	if (!test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags) &&
++	    !test_bit(BTRFS_INODE_COPY_EVERYTHING, &inode->runtime_flags))
++		return;
++
++	/*
++	 * Don't care about allocation failure. This is just for optimization,
++	 * if we fail to allocate here, we will try again later if needed.
++	 */
++	ctx->scratch_eb = alloc_dummy_extent_buffer(inode->root->fs_info, 0);
++}
++
++void btrfs_release_log_ctx_extents(struct btrfs_log_ctx *ctx)
++{
++	struct btrfs_ordered_extent *ordered;
++	struct btrfs_ordered_extent *tmp;
++
++	ASSERT(inode_is_locked(ctx->inode));
++
++	list_for_each_entry_safe(ordered, tmp, &ctx->ordered_extents, log_list) {
++		list_del_init(&ordered->log_list);
++		btrfs_put_ordered_extent(ordered);
++	}
++}
++
++
+ static inline void btrfs_remove_log_ctx(struct btrfs_root *root,
+ 					struct btrfs_log_ctx *ctx)
  {
- 	if (!test_bit(BTRFS_FS_TREE_MOD_LOG_USERS, &fs_info->flags))
-@@ -367,9 +366,9 @@ int btrfs_tree_mod_log_insert_move(struct extent_buffer *eb,
- 	return ret;
- }
+diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
+index 254082a189c3..22e9cbc81577 100644
+--- a/fs/btrfs/tree-log.h
++++ b/fs/btrfs/tree-log.h
+@@ -55,51 +55,9 @@ struct btrfs_log_ctx {
+ 	struct extent_buffer *scratch_eb;
+ };
  
--static inline int tree_mod_log_free_eb(struct btrfs_fs_info *fs_info,
--				       struct tree_mod_elem **tm_list,
--				       int nritems)
-+static int tree_mod_log_free_eb(struct btrfs_fs_info *fs_info,
-+				struct tree_mod_elem **tm_list,
-+				int nritems)
+-static inline void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx,
+-				      struct inode *inode)
+-{
+-	ctx->log_ret = 0;
+-	ctx->log_transid = 0;
+-	ctx->log_new_dentries = false;
+-	ctx->logging_new_name = false;
+-	ctx->logging_new_delayed_dentries = false;
+-	ctx->logged_before = false;
+-	ctx->inode = inode;
+-	INIT_LIST_HEAD(&ctx->list);
+-	INIT_LIST_HEAD(&ctx->ordered_extents);
+-	INIT_LIST_HEAD(&ctx->conflict_inodes);
+-	ctx->num_conflict_inodes = 0;
+-	ctx->logging_conflict_inodes = false;
+-	ctx->scratch_eb = NULL;
+-}
+-
+-static inline void btrfs_init_log_ctx_scratch_eb(struct btrfs_log_ctx *ctx)
+-{
+-	struct btrfs_inode *inode = BTRFS_I(ctx->inode);
+-
+-	if (!test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags) &&
+-	    !test_bit(BTRFS_INODE_COPY_EVERYTHING, &inode->runtime_flags))
+-		return;
+-
+-	/*
+-	 * Don't care about allocation failure. This is just for optimization,
+-	 * if we fail to allocate here, we will try again later if needed.
+-	 */
+-	ctx->scratch_eb = alloc_dummy_extent_buffer(inode->root->fs_info, 0);
+-}
+-
+-static inline void btrfs_release_log_ctx_extents(struct btrfs_log_ctx *ctx)
+-{
+-	struct btrfs_ordered_extent *ordered;
+-	struct btrfs_ordered_extent *tmp;
+-
+-	ASSERT(inode_is_locked(ctx->inode));
+-
+-	list_for_each_entry_safe(ordered, tmp, &ctx->ordered_extents, log_list) {
+-		list_del_init(&ordered->log_list);
+-		btrfs_put_ordered_extent(ordered);
+-	}
+-}
++void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx, struct inode *inode);
++void btrfs_init_log_ctx_scratch_eb(struct btrfs_log_ctx *ctx);
++void btrfs_release_log_ctx_extents(struct btrfs_log_ctx *ctx);
+ 
+ static inline void btrfs_set_log_full_commit(struct btrfs_trans_handle *trans)
  {
- 	int i, j;
- 	int ret;
 -- 
 2.42.1
 
