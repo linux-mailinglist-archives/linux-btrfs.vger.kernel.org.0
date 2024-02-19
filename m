@@ -1,141 +1,166 @@
-Return-Path: <linux-btrfs+bounces-2478-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2479-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383A28599A7
-	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Feb 2024 23:00:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31214859AD7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 03:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FF411C20A18
-	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Feb 2024 22:00:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FB001C20D83
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 02:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C28745C6;
-	Sun, 18 Feb 2024 22:00:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8104D23BD;
+	Mon, 19 Feb 2024 02:55:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=uvic.ca header.i=@uvic.ca header.b="R4j/L3AA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OAKNOIZM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from isopod.comp.uvic.ca (isopod.comp.uvic.ca [142.104.177.239])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0956A1E86E
-	for <linux-btrfs@vger.kernel.org>; Sun, 18 Feb 2024 22:00:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=142.104.177.239
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FE31FC8
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 02:55:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708293637; cv=none; b=RVVz5GLHvskC4rS66sY7LI1sEPghVMmmUVCPaH+mmy0o+cT3iXY9JrW50spNI3zNd7i+a5kAWudCDMuJALdeMAVo5nBvwxOOChv2b9S32FTm4LdTWXEzguZrgM1qds1aSL6zw/ulpBjZRczBKzCHnEcO7jh1Nee5jnxUPemGTGY=
+	t=1708311316; cv=none; b=MwmIkxQAtWgqpZMQZuAmWucMGKq/f6FhbzEQN/c7+ryKJVbFm8IEmnAAlt+jir0qtl+DCuJeaqXINT83ULebPMbTDkNLu60g+Wc/8QRF2I8QuxWcOF3KbMsDSbiHHPBV/7UqhktUdDZsU2+vk0RCjJGvw8wRs3NgGCiLCZshyV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708293637; c=relaxed/simple;
-	bh=0Mr0lJkxTWo0V42Vz5ZSw9bjsDCoLmqRG8J/Uu9gdAE=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=gomDSQJQEvtWIqQBvRVIBX1HjpmRSdV5sFc5aEK3wUyHgr53eNjcFFnYv2Zn3KePM68ZxJ8apArMf3f/Ygrk5bNi1NGEN+TiSoOkNCMIHF5vK4Ptbd85Ay+QxtNTrr/moAa6w0Eq2u7223ip71qo2lusoFZf4eS2hjRB4wLICPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uvic.ca; spf=pass smtp.mailfrom=uvic.ca; dkim=pass (1024-bit key) header.d=uvic.ca header.i=@uvic.ca header.b=R4j/L3AA; arc=none smtp.client-ip=142.104.177.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uvic.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uvic.ca
-Received: from valais.uvic.ca (valais.uvic.ca [142.104.225.15])
-	by isopod.comp.uvic.ca (8.14.4/8.14.4) with ESMTP id 41IM0YTm018190
-	(version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL)
-	for <linux-btrfs@vger.kernel.org>; Sun, 18 Feb 2024 14:00:35 -0800
-Received: from angora.uvic.ca (142.104.224.13) by valais.uvic.ca
- (142.104.225.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 18 Feb
- 2024 14:00:02 -0800
-Received: from angora.uvic.ca ([fe80::68b1:e757:9b99:5910]) by angora.uvic.ca
- ([fe80::68b1:e757:9b99:5910%3]) with mapi id 15.01.2507.035; Sun, 18 Feb 2024
- 14:00:22 -0800
-From: Ryan Taylor <rptaylor@uvic.ca>
-To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: unresolved ref dir errors (no dir item, no inode ref, no dir index)
- with blob storage
-Thread-Topic: unresolved ref dir errors (no dir item, no inode ref, no dir
- index) with blob storage
-Thread-Index: AQHaYrXeHvmvO9gTx0W9av6VlBfaww==
-Date: Sun, 18 Feb 2024 22:00:22 +0000
-Message-ID: <dc96dfb53835c6c5ff3614c3fade276eaa1092e2.camel@uvic.ca>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-x-tm-as-product-ver: SMEX-14.0.0.3152-9.1.1006-28200.001
-x-tm-as-result: No-10--13.274700-5.000000
-x-tmase-matchedrid: TxbrEr7oi5yvxJaYc6X9S6zSsZt54aj7oBe8oeqCz7Pgm7lSO4VWy3uL
-	dMlaRil5g4Xtz31CEYMVYUBO1fgbB5GZilTi8ctSIVybEvvop46ZmLDnd2pI3+fdksK3etFJJEb
-	gebEoSmW52iSWYVSDCKUWLdaCfonFTUKe5cExMcvece0aRiX9Wk0s9CXRACW0/kWkeuI3AgUteS
-	BVDS/hEwDddf3t8m3wPk+OpnRLoHEz5pZcUDYjcPi9hrAKwILaBGvINcfHqhfgmDZo451ggody9
-	x5D78Kl4K9FmervsqVV6m6JPINuuoYCBZzro74fxVQFfLw4zf82ZWOmuJUS2Za5+gecZQ1+4rl+
-	FHG3VoBbdScq6YVMbtGXbHm+gYIXYh5uOPXd4paeAiCmPx4NwJwhktVkBBrQovSVS26nOBcqtq5
-	d3cxkNW+OOV+GMO7MmAFJj76Sqs18MzG/mpqRVvXhP+MZOav93mFeuwYwb94=
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10--13.274700-5.000000
-x-tmase-version: SMEX-14.0.0.3152-9.1.1006-28200.001
-x-tm-snts-smtp: 12A1554941C7F8E17D865E6BEA0ED3C5262B57A30A32D00046DCFBC54342C4EA2000:9
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <49C1448214F7FB42B083E83932E0D60E@local.uvic.ca>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1708311316; c=relaxed/simple;
+	bh=np+fSNY4Fyv6gOC1+bva0G1kgQohdVEMr/yi3OVovns=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=mJcFWwkYYSGJhXTae7c7GT3F/Jkrlxktlw3SdxfWB6orc0C9nMUI2eBwkCGZRmxnApoARAUT3YLXm9I7hvt9M+D3sn2F0wr5UGPunWuKSVCegtC7e/nU4Y/WrG/3IJOuUqGxCJQlAu/iQ0htJeWdehOboQTcN6PIRKvGatAcJWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OAKNOIZM; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d21a68dd3bso31890151fa.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 18 Feb 2024 18:55:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708311312; x=1708916112; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8G/VkrBvxQ2tJzygfFaOFz6a9Cz/of2dMWzbtP7HjQs=;
+        b=OAKNOIZMFwFkbIkC/222Z155bDAy3MsY4V6pOGUusKNOp4AasRfy2kpMA/yOaQxnKw
+         n5BTlzGeHAEXeMWoFZUa1BNJBgJZjmjETAa0A642D32MsuNUxZ5jz9xJtjt3XzcrT8tg
+         pg8BgB+0TdhBjsq3EoKM+nyTrAIHGNQvfU/AhhCSbkTNkSAKnn560pKjBMmlY1rOcESx
+         p6DGZlibM9IMJ3sYFsrCZz/rUfRAW4cP8XsRa+OWlK+VFSExNWWP60zLomrD94EDh0x3
+         9eu16LAiE5ud2j7JTtbTs+GPaRDLDawruBzKxI4Hb8sX5OWMPJIuNn2ContmWAeJT1+c
+         hk3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708311312; x=1708916112;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8G/VkrBvxQ2tJzygfFaOFz6a9Cz/of2dMWzbtP7HjQs=;
+        b=KJWge9EYBm69MhfHD0TmV5ViBhqhZGAeQ33aos28+bkzzGVxTVOQnKXzf+bEO/NMf8
+         nIp7JBzspoDr8+Dts+Ya00Ns4Z5BA/fib1sK2vgZ8n6k18xMMzECCpP56bQr0ftXYkNX
+         KNc14U51aAQW1CYLq/24zYIdNas3LGcgzvYglnRLTPG1mqXNif+riZD1U57elscVnBav
+         ZrcBMO05nX6uoAVRoU1CIq8vQnLuiI0HOUBit+wMV3pbfPR7ZH3YyT0BP3uMh9EkHLOr
+         OGgGxLEPk7uxB1xNIe5Q7ZnSB1l6M2Horv4/sUYdl1eJpG0Rt9Gx+MGdfwSFN4/Q+4gK
+         BpIQ==
+X-Gm-Message-State: AOJu0YwN0tAkhyOSCQajbfYQqIXB38CnnABmJgAW6JuEpJaDBb/04N3l
+	0kmJH5Hh9g29GXrMgPqjiJeS4StGInPsc8U0B1sw91hkFroUKnzKWoScEE3xf4hEfYn5558lCrY
+	FLVK2Sfpp3JVzUs3xlfGHdPrAK/XHZD9/
+X-Google-Smtp-Source: AGHT+IHUF2YCnChkwnr1nmDyYbvXOUdfSaPzU24D8tqGFqrvpaIvfuhFsW82UF4QF8SDPXBY0ujIOz0PdrdjIBuXsp8=
+X-Received: by 2002:a2e:9a85:0:b0:2d2:2b78:70eb with SMTP id
+ p5-20020a2e9a85000000b002d22b7870ebmr2471214lji.21.1708311312288; Sun, 18 Feb
+ 2024 18:55:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-UVic-Virus-Scanned: OK - Passed virus scan by ClamAV (clamd) on isopod
-X-UVic-Scan: isopod.comp.uvic.ca filter_version 3.7.9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=uvic.ca; h=from:to:subject:date:message-id:content-type:content-id:content-transfer-encoding:mime-version; s=default; bh=0Mr0lJkxTWo0V42Vz5ZSw9bjsDCoLmqRG8J/Uu9gdAE=; b=R4j/L3AAewkkakWUCXS46iSS7wcjk+c8T0ypaxYA0OPvb/bczDedeb+BKFhicVi8XUJBf1wSbAuyMeMtdkPOIr5XT9gKM89SzabIU7Stje0oKYEUQ/ISEzgSBPWf2cPDnNGyA1SSI1slOJUjdMLXsBwP5PChfu0LCusqWcXLDAE=
-X-Scanned-By: MIMEDefang 2.78
+References: <CAOCpoWd1jzP6Y=nOpz_LHHSNnqGg8O=itW-OcQb6D2x7vRUfSw@mail.gmail.com>
+In-Reply-To: <CAOCpoWd1jzP6Y=nOpz_LHHSNnqGg8O=itW-OcQb6D2x7vRUfSw@mail.gmail.com>
+From: Patrick Plenefisch <simonpatp@gmail.com>
+Date: Sun, 18 Feb 2024 21:55:11 -0500
+Message-ID: <CAOCpoWcgZ3ZZi3LhZ7kR-zg+q8Th7n1DCvECdfCsYJ7ckQFL=w@mail.gmail.com>
+Subject: Re: error while submitting device barriers: BTRFS read-only on newer kernels
+To: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SGVsbG8sDQoNCkkgaGF2ZSBhIHZlcnkgc2ltaWxhciBwcm9ibGVtIGFzIGRlc2NyaWJlZCBpbiBo
-dHRwczovL3d3dy5zcGluaWNzLm5ldC9saXN0cy9saW51eC1idHJmcy9tc2cxMzkxNzYuaHRtbA0K
-DQpJbiBteSBjYXNlIHRoZSBjb3JydXB0ZWQgZmlsZXMgYXJlOg0KDQokIGxzIC1sIH4vLmNvbmZp
-Zy9nb29nbGUtY2hyb21lL0RlZmF1bHQvYmxvYl9zdG9yYWdlLw0KbHM6IGNhbm5vdCBhY2Nlc3Mg
-Jy9ob21lL3VzZXIvLmNvbmZpZy9nb29nbGUtY2hyb21lL0RlZmF1bHQvYmxvYl9zdG9yYWdlL2Yy
-NWJlNjNkLTBmODgtNDU0MS05OTI4LTNmMTg2ZmI1MmViNyc6IE5vIHN1Y2ggZmlsZSBvciBkaXJl
-Y3RvcnkNCnRvdGFsIDANCmRyd3gtLS0tLS0uIDEgdXNlciB1c2VyIDAgRGVjIDE0IDE4OjQxIDkx
-MjQwN2Q2LTMyMDMtNGNkYS05YzQ4LWNhYzYyMmViNDZkZQ0KZD8/Pz8/Pz8/Pz8gPyA/ICAgICAg
-ICA/ICAgICAgICA/ICAgICAgICAgICAgPyBmMjViZTYzZC0wZjg4LTQ1NDEtOTkyOC0zZjE4NmZi
-NTJlYjcNCg0KSG93ZXZlciBpbiBib3RoIGNhc2VzLCB0aGUgYWZmZWN0ZWQgZmlsZXMgYXJlIG9m
-IHRoZSBzYW1lIGJsb2Jfc3RvcmFnZS88aGFzaD4gZm9ybWF0LCBzbyBtYXliZSB0aGVyZSBpcyBz
-b21lIGJsb2Igc3RvcmFnZSBsaWJyYXJ5IHVzZWQgYnkNCmJvdGggR29vZ2xlIENocm9tZSBhbmQg
-VmlzdWFsIFN0dWRpbywgd2hpY2ggZG9lcyBzb21lIHBhcnRpY3VsYXIgZmlsZSBvcGVyYXRpb25z
-IHRoYXQgdHJpZ2dlciBhIGJ0cmZzIGJ1Zy4NCg0KVGhlIHN5c3RlbSB3YXMgaW5zdGFsbGVkIHVz
-aW5nIEZlZG9yYSAzNyBpbiBOb3YgMjAyMiwgdXNpbmcga2VybmVsLWNvcmUtNi4wLjctMzAxLmZj
-MzcueDg2XzY0IGF0IHRoYXQgdGltZS4NCg0KTW9yZSBkZXRhaWxzIGFyZSBzaG93biBiZWxvdy4g
-SSB0aGluayB0aGVzZSBkaXJlY3RvcmllcyBhcmUgbGlrZWx5IG5vdCBpbXBvcnRhbnQgYnV0IEkg
-Y2FuJ3QgZmluZCBhIHdheSB0byBkZWxldGUgdGhlbS4NCkFsc28gYnRyZnMgcmVwYWlyIHNlZW1z
-IHRvIGJlIHdpZGVseSBjb25zaWRlcmVkIGRhbmdlcm91cy4gSG93IGNhbiBJIHJlc29sdmUgdGhl
-c2UgZXJyb3JzPw0KDQoNCiQgc3VkbyBidHJmcyBjaGVjayAtLWZvcmNlIC1wIC0tcmVhZG9ubHkg
-IC9kZXYvZGlzay9ieS1sYWJlbC9mZWRvcmENCk9wZW5pbmcgZmlsZXN5c3RlbSB0byBjaGVjay4u
-Lg0KV0FSTklORzogZmlsZXN5c3RlbSBtb3VudGVkLCBjb250aW51aW5nIGJlY2F1c2Ugb2YgLS1m
-b3JjZQ0KQ2hlY2tpbmcgZmlsZXN5c3RlbSBvbiAvZGV2L2Rpc2svYnktbGFiZWwvZmVkb3JhDQpV
-VUlEOiA4ZTU5MzBjOC1kNjZjLTQzNjQtOWU5Mi1hNTdhNGVmODQxMTENClsxLzddIGNoZWNraW5n
-IHJvb3QgaXRlbXMgICAgICAgICAgICAgICAgICAgICAgKDA6MDA6MDEgZWxhcHNlZCwgODM4Mzk5
-IGl0ZW1zIGNoZWNrZWQpDQpbMi83XSBjaGVja2luZyBleHRlbnRzICAgICAgICAgICAgICAgICAg
-ICAgICAgICgwOjAwOjA0IGVsYXBzZWQsIDYyMTYwIGl0ZW1zIGNoZWNrZWQpDQpbMy83XSBjaGVj
-a2luZyBmcmVlIHNwYWNlIHRyZWUgICAgICAgICAgICAgICAgICgwOjAwOjAwIGVsYXBzZWQsIDI0
-MSBpdGVtcyBjaGVja2VkKQ0Kcm9vdCAyNTcgaW5vZGUgMzk5Mzg3NSBlcnJvcnMgMSwgbm8gaW5v
-ZGUgaXRlbSAoMDowMDowMSBlbGFwc2VkLCAyMzg2NCBpdGVtcyBjaGVja2VkKQ0KCXVucmVzb2x2
-ZWQgcmVmIGRpciA1MDk5MSBpbmRleCAyNzUgbmFtZWxlbiAzNiBuYW1lIGYyNWJlNjNkLTBmODgt
-NDU0MS05OTI4LTNmMTg2ZmI1MmViNyBmaWxldHlwZSAyIGVycm9ycyA1LCBubyBkaXIgaXRlbSwg
-bm8gaW5vZGUNCnJlZg0KCXVucmVzb2x2ZWQgcmVmIGRpciA1MDk5MSBpbmRleCAyNzUgbmFtZWxl
-biAzNiBuYW1lIGZjYjMyMDI3LTFkYTEtNDgwNi05Y2MxLTU1YjZkOTgxM2JhNyBmaWxldHlwZSAy
-IGVycm9ycyAyLCBubyBkaXIgaW5kZXgNCls0LzddIGNoZWNraW5nIGZzIHJvb3RzICAgICAgICAg
-ICAgICAgICAgICAgICAgKDA6MDA6MDIgZWxhcHNlZCwgNDEyODkgaXRlbXMgY2hlY2tlZCkNCkVS
-Uk9SOiBlcnJvcnMgZm91bmQgaW4gZnMgcm9vdHMNCmZvdW5kIDIxOTc2MDYxNTQyNCBieXRlcyB1
-c2VkLCBlcnJvcihzKSBmb3VuZA0KdG90YWwgY3N1bSBieXRlczogMjEzNTU5MDA0DQp0b3RhbCB0
-cmVlIGJ5dGVzOiAxMDE4MTgzNjgwDQp0b3RhbCBmcyB0cmVlIGJ5dGVzOiA2Nzg5MjAxOTINCnRv
-dGFsIGV4dGVudCB0cmVlIGJ5dGVzOiA4MTM2Mjk0NA0KYnRyZWUgc3BhY2Ugd2FzdGUgYnl0ZXM6
-IDE5OTczOTY2OA0KZmlsZSBkYXRhIGJsb2NrcyBhbGxvY2F0ZWQ6IDI1MDM2MTQyNTkyMA0KIHJl
-ZmVyZW5jZWQgMjI2OTMyMDM1NTg0DQoNCiQgc3VkbyBidHJmcyBmaSBzaG93DQpMYWJlbDogJ2Zl
-ZG9yYScgIHV1aWQ6IDgjIyMjIyMjLSMjIyMtIyMjIy0jIyMjLSMjIyMjIyMjIyMjIw0KCVRvdGFs
-IGRldmljZXMgMiBGUyBieXRlcyB1c2VkIDIwNC42N0dpQg0KCWRldmlkICAgIDEgc2l6ZSA0NDku
-OThHaUIgdXNlZCAyMzkuMDNHaUIgcGF0aCAvZGV2L21hcHBlci9sdWtzLTEjIyMjIyMjLSMjIyMt
-IyMjIy0jIyMjLSMjIyMjIyMjIyMjIw0KCWRldmlkICAgIDIgc2l6ZSA0NDkuOThHaUIgdXNlZCAy
-MzkuMDNHaUIgcGF0aCAvZGV2L21hcHBlci9sdWtzLTIjIyMjIyMjLSMjIyMtIyMjIy0jIyMjLSMj
-IyMjIyMjIyMjIw0KDQokIHN1ZG8gYnRyZnMgZmkgZGYgL2hvbWUNCkRhdGEsIFJBSUQxOiB0b3Rh
-bD0yMzYuMDBHaUIsIHVzZWQ9MjAzLjcyR2lCDQpTeXN0ZW0sIFJBSUQxOiB0b3RhbD0zMi4wME1p
-QiwgdXNlZD02NC4wMEtpQg0KTWV0YWRhdGEsIFJBSUQxOiB0b3RhbD0zLjAwR2lCLCB1c2VkPTk3
-MC45N01pQg0KR2xvYmFsUmVzZXJ2ZSwgc2luZ2xlOiB0b3RhbD0zMjMuNzBNaUIsIHVzZWQ9MC4w
-MEINCg0KJCB1bmFtZSAtYQ0KTGludXggc2VydmVyIDYuNy40LTEwMC5mYzM4Lng4Nl82NCAjMSBT
-TVAgUFJFRU1QVF9EWU5BTUlDIE1vbiBGZWIgIDUgMjI6MTk6MDYgVVRDIDIwMjQgeDg2XzY0IEdO
-VS9MaW51eA0KJCBidHJmcyAtLXZlcnNpb24NCmJ0cmZzLXByb2dzIHY2LjcNCg0KDQpUaGFua3Mh
-DQotcnQNCg0KDQo=
+After talking with some folks on irc, I tried a few things, including
+confirming that the 6.6 kernel exhibits the same behaviors.
+
+They recommended I bump this message again for more help
+
+Thanks,
+Patrick
+
+On Sun, Feb 11, 2024 at 10:15=E2=80=AFPM Patrick Plenefisch <simonpatp@gmai=
+l.com> wrote:
+>
+> This is a very weird error I'm getting. I have a system that I'm
+> migrating from Debian 11 (5.10 kernel) to Debian 12 (6.1 kernel). As a
+> part of this process, I'm dual booting both systems, with a LVM pool
+> that contains three relevant LV's with three BTRFS partitions. Two of
+> these BTRFS partitions (single) are working just fine. The other one
+> (also single) only works on 5.10 kernels. Whenever I boot it on 6.1
+> kernels, I can mount it just fine until I (presumably) read a file and
+> trigger an `atime` write. Then the BTRFS partition is locked ro until
+> a reboot with this in dmesg:
+>
+> BTRFS info (device dm-75): first mount of filesystem
+> 00d78dac-3576-435d-b575-61c3d951ff66
+> BTRFS info (device dm-75): using crc32c (crc32c-intel) checksum algorithm
+> BTRFS info (device dm-75): disk space caching is enabled
+> BTRFS info: devid 1 device path /dev/mapper/lvm-brokenDisk changed to
+> /dev/dm-75 scanned by (udev-worker) (11442)
+> BTRFS info: devid 1 device path /dev/dm-75 changed to
+> /dev/mapper/lvm-brokenDisk scanned by (udev-worker) (11442)
+> BTRFS error (device dm-75): bdev /dev/mapper/lvm-brokenDisk errs: wr
+> 0, rd 0, flush 1, corrupt 0, gen 0
+> BTRFS warning (device dm-75): chunk 13631488 missing 1 devices, max
+> tolerance is 0 for writable mount
+> BTRFS: error (device dm-75) in write_all_supers:4379: errno=3D-5 IO
+> failure (errors while submitting device barriers.)
+> BTRFS info (device dm-75: state E): forced readonly
+> BTRFS warning (device dm-75: state E): Skipping commit of aborted transac=
+tion.
+> BTRFS: error (device dm-75: state EA) in cleanup_transaction:1992:
+> errno=3D-5 IO failure
+>
+> My thought was that maybe I created it with a new broken format, like
+> space_cache_=3Dv2, but nope, all variants work in the other working
+> btrfs partitions on 6.1:
+>
+> /dev/mapper/lvm-newWorking on /media/Foo type btrfs
+> (rw,noatime,ssd,discard=3Dasync,space_cache=3Dv2,subvolid=3D258,subvol=3D=
+/@foo)
+> /dev/mapper/lvm-oldWorking on /media/Bar type btrfs
+> (rw,nosuid,nodev,relatime,discard=3Dasync,space_cache,subvolid=3D5,subvol=
+=3D/,uhelper=3Dudisks2)
+> /dev/mapper/lvm-brokenDisk on /media/Grr type btrfs
+> (rw,nosuid,nodev,relatime,discard=3Dasync,space_cache,subvolid=3D5,subvol=
+=3D/,uhelper=3Dudisks2)
+>
+> The only thing I can seem to find online is posts warning that you
+> should backup your data. But that clearly isn't the case here, because
+> none of the devices in the lvm pool are giving smart warnings or
+> reallocation counts. Further, reading is fine, I can read the whole
+> disk. Finally, I can just reboot back to the 5.10 kernel and it just
+> works again. 6.5bpo kernel also exhibits 6.1 behavior
+>
+> What is going on here?
+>
+>
+> % uname -a
+> Linux pollux 6.5.0-0.deb12.4-amd64 #1 SMP PREEMPT_DYNAMIC Debian
+> 6.5.10-1~bpo12+1 (2023-11-23) x86_64 GNU/Linux
+> % btrfs --version
+> btrfs-progs v6.2
+> % btrfs fi show /media/Grr
+> Label: 'BrokenDisk'  uuid: 00d78dac-3576-435d-b575-61c3d951ff66
+>         Total devices 1 FS bytes used 1.90TiB
+>         devid    1 size 2.00TiB used 1.92TiB path /dev/mapper/lvm-brokenD=
+isk
+>
+> % btrfs fi df /media/Grr
+> Data, single: total=3D1.91TiB, used=3D1.89TiB
+> System, DUP: total=3D8.00MiB, used=3D240.00KiB
+> Metadata, DUP: total=3D6.00GiB, used=3D4.88GiB
+> GlobalReserve, single: total=3D512.00MiB, used=3D16.00KiB
+>
+> Patrick
 
