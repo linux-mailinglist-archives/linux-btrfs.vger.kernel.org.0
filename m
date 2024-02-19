@@ -1,419 +1,271 @@
-Return-Path: <linux-btrfs+bounces-2485-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2486-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EF31859BE0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 07:09:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DB25859BF7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 07:23:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0632B20968
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 06:09:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D06381F21727
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 06:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458D120327;
-	Mon, 19 Feb 2024 06:08:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4238200B7;
+	Mon, 19 Feb 2024 06:23:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OfPF/irP";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OfPF/irP"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=merlins.org header.i=@merlins.org header.b="c8Dx5JAC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail1.merlins.org (magic.merlins.org [209.81.13.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7726820305
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 421DE200AD
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.81.13.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708322931; cv=none; b=OwaTkh46Lv7zpuAKQda99ZhU6f1TBkaHOOweXadAccroHBKVZVgVjp7OgrXS/DJ8zdIjTBHENRE7ePj/VoT1oLecZxL+SFOrEQH102BaH3V9Mro6GBDSHE0y55n5WDiMG91qvFbBHwB6QWQAn9Zfs5D6y12L5QOa3pkG++CG3jo=
+	t=1708323824; cv=none; b=jm4zryIniEOfzT/zWSeZM25q1PzCCeLaeCf+MlA4TCHQEnBw4SUQrQvC2bBrQfVtaMZj1AMqJyO68b04mgK1W9/cXiElAZHYRRhjTY6UfR8IKNDkTnCf0gUBXeYfJ6hQbOUhNdpAf/80WWVeZdmVTAXLzliQ3ZmQkYyj4f+YwSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708322931; c=relaxed/simple;
-	bh=/qzu7El7NjgfrYP0SjByKAPmVJZntDHAc4W+9AbSsR4=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kUo4DXbFfy9eGEwqDUSJzfBYnOMLnPzSC8PR7v14gAUK2fGqO1E5Nz8weaEOvUOhOz8zEEBfxYzFtu0l0kekVG2ttKAzMyoaToIggUh9bOkn+7UvPKenHhuLrKH2/pljqw8wBC50xE3/N6my3Rg12mUOhVVNcYYppX2PP6oOxUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OfPF/irP; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OfPF/irP; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B27F321F78
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708322927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O6vigV5uAsAeBB7X8wW8+dttDSHn8WsVR2JA8F20i9o=;
-	b=OfPF/irPxHZDI2f9pu+2F+BB2BYp613mDUK+UKMpFhb6Q6+lhjGy5SH1WAHq3c2tLams7u
-	fscNir8McvP5u/uobDieyiXFTSyy6YRrDcag5ZXWG3LxJOaDPJAdiVSWvg+FFEHqJSUsGQ
-	e6ZK3JfId/VPnewKiXI3/6SrDXeLtqU=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708322927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O6vigV5uAsAeBB7X8wW8+dttDSHn8WsVR2JA8F20i9o=;
-	b=OfPF/irPxHZDI2f9pu+2F+BB2BYp613mDUK+UKMpFhb6Q6+lhjGy5SH1WAHq3c2tLams7u
-	fscNir8McvP5u/uobDieyiXFTSyy6YRrDcag5ZXWG3LxJOaDPJAdiVSWvg+FFEHqJSUsGQ
-	e6ZK3JfId/VPnewKiXI3/6SrDXeLtqU=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C044513585
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id KNDHHG7w0mXcJQAAn2gu4w
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:46 +0000
-From: Qu Wenruo <wqu@suse.com>
+	s=arc-20240116; t=1708323824; c=relaxed/simple;
+	bh=wp7PHn+XxrOsAouDmdbRj//U8MOBEv7hC1CVtUo6tg0=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=TLLBhs5f6WMydZPu/tCrDWazYdM820qnYTfnawzbWEcBWe5TrHew1z4my0EESbIjJ67BXing7yk1PLyhhLN/iw84TbW3NUv9raTJitU+JD4tNDi2aJz4QWemBZbfYNBY1XBoWPbkwdfenhF/BYdY1CCpV+VtZcXeHc7syL0bLoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=merlins.org; spf=pass smtp.mailfrom=merlins.org; dkim=fail (0-bit key) header.d=merlins.org header.i=@merlins.org header.b=c8Dx5JAC reason="key not found in DNS"; arc=none smtp.client-ip=209.81.13.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=merlins.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=merlins.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=merlins.org
+	; s=key; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Sender:
+	Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=OlzsQmJkKad9zDfGDgH4POZgudENK3xAR9hq4lilgtU=; b=c8Dx5JACqpOY+yHZDjlGN27Hcr
+	UeRmvOSzSNJuuSfu8YdQTsUQr6RV5V2De5CdyQ/BqpNO/7NUSmMBLR0rHbRJdGoGbfTihYn+p4yrN
+	vi+lcELi7JDaSKOovcxDxK5Q3vyJj+shBLIkDS5EbZXAqFUgK6O+VSi4Myw6aDmB7NGpi6F9uVGew
+	TQwvQrPz1tSs81A74iM43dTNLlxgwXTAhB6xrD1pyrnrH0LWj8j+MGHyg3VujrM2v6Cbu1I655zT8
+	1KTfMgeWVUsZyeTK7uHDs4E7efhsx3ZImwb8HdeHxCBiiIYDYjYKLDEjF/vRd2w9OMa8P7fp/S78d
+	aDSdrXdA==;
+Received: from 107-182-46-89.volcanocom.com ([107.182.46.89]:45524 helo=sauron.svh.merlins.org)
+	by mail1.merlins.org with esmtpsa 
+	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.94.2 #2)
+	id 1rbx3x-0003t0-6C by authid <merlins.org> with srv_auth_plain; Sun, 18 Feb 2024 22:23:37 -0800
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.96)
+	(envelope-from <marc@merlins.org>)
+	id 1rbx4O-00GymR-19;
+	Sun, 18 Feb 2024 22:24:04 -0800
+Date: Sun, 18 Feb 2024 22:24:04 -0800
+From: Marc MERLIN <marc@merlins.org>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/4] btrfs: migrate writepage_delalloc() to use subpage helpers
-Date: Mon, 19 Feb 2024 16:38:37 +1030
-Message-ID: <a55a05914ee860eb53dafaad491b176fd5969cdf.1708322044.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <cover.1708322044.git.wqu@suse.com>
-References: <cover.1708322044.git.wqu@suse.com>
+Subject: 6.4 and 6.9 btrfs blocked and btrfs_work_helper workqueue lockup, is
+ it an IO bug/hang though?
+Message-ID: <ZdL0BJjuyhtS8vn1@merlins.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_DN_NONE(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-0.987];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Sysadmin: BOFH
+X-URL: http://marc.merlins.org/
+X-SA-Exim-Connect-IP: 107.182.46.89
+X-SA-Exim-Mail-From: marc@merlins.org
 
-Currently writepage_delalloc() is using a list based solution to save
-locked subpage ranges, but that would introduce extra memory allocation
-thus extra error paths.
+I've seen this with both 6.4.9 and 6.6.9 and had to sysrq reboot both
+times to recover.
+I'm trying to see if it's a hang of my raid card.
 
-On the other hand, we already have subpage locked bitmap and helpers to
-set and find a subpage locked range, we can use those helpers to record
-locked subpage ranges without allocating new memory.
+That's the more recent hang with 6.6.9:
 
-Although we still have several small pitfalls:
+The one with 6.4.9 is longer, so I put it here: https://pastebin.com/xz11JXWM
 
-- We still need to record the last delalloc range end
-  This is because subpage bitmap can only record ranges inside the page,
-  while the last delalloc range end can go beyond the page boundary.
+Here's the 6.6.9 one here. Can someone help me confirm that at least
+this one is likely not btrfs' fault but just underlying I/O hang?
 
-- We still need to handle errors in previous iteration
-  Since we can have multiple locked delalloc ranges thus we have to call
-  run_delalloc_ranges() multiple times.
-  If we hit an error half way, we still need to unlock the remaining
-  ranges.
+If so, idoes the 6.4.9 match the same symptom, or is it a different issue?
 
-- We can not longer touch the page if we have run the last delalloc
-  range.
-  This is for zoned subpage support, as for non-zoned subpage, the async
-  submission can only happen for full page aligned ranges.
+Thanks,
+Marc
 
-  For zoned subpage, if we hit the last delalloc range, it would unlock
-  the full page, and if we continue to do the search,
-  btrfs_subpage_find_writer_locked() would throw an ASSERT() as the
-  page is no longer locked.
+135577.600958] INFO: task md12_raid1:1276 blocked for more than 120 seconds.
+[135577.621963]       Not tainted 6.6.9-amd64-volpre-sysrq-20240101 #19
+[135577.641401] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[135577.665522] task:md12_raid1      state:D stack:0     pid:1276  ppid:2      flags:0x00004000
+[135577.691381] Call Trace:
+[135577.699494]  <TASK>
+[135577.706627]  __schedule+0x6af/0x702
+[135577.717853]  schedule+0x8b/0xbd
+[135577.727933]  md_super_wait+0x5d/0x9c
+[135577.739287]  ? __pfx_autoremove_wake_function+0x40/0x40
+[135577.755602]  write_sb_page+0x242/0x25d
+[135577.767482]  md_update_sb+0x4c1/0x679
+[135577.779072]  md_check_recovery+0x276/0x484
+[135577.791965]  raid1d+0x46/0x10db
+[135577.802178]  ? raw_spin_rq_unlock_irq+0x5/0x10
+[135577.816122]  ? finish_task_switch.isra.0+0x129/0x202
+[135577.831629]  ? __schedule+0x6b7/0x702
+[135577.843292]  ? lock_timer_base+0x38/0x5f
+[135577.855662]  ? schedule+0x8b/0xbd
+[135577.866222]  ? __list_add+0x12/0x2f
+[135577.877341]  ? _raw_spin_unlock_irqrestore+0xe/0x2e
+[135577.892618]  md_thread+0x113/0x140
+[135577.903553]  ? __pfx_autoremove_wake_function+0x40/0x40
+[135577.920016]  ? __pfx_md_thread+0x40/0x40
+[135577.932413]  kthread+0xe8/0xf0
+[135577.942221]  ? __pfx_kthread+0x40/0x40
+[135577.954084]  ret_from_fork+0x24/0x36
+[135577.965583]  ? __pfx_kthread+0x40/0x40
+[135577.977475]  ret_from_fork_asm+0x1b/0x80
+[135577.989877]  </TASK>
+[135577.997078] INFO: task md13_raid1:1278 blocked for more than 121 seconds.
+[135578.018044]       Not tainted 6.6.9-amd64-volpre-sysrq-20240101 #19
+[135578.037405] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[135578.061454] task:md13_raid1      state:D stack:0     pid:1278  ppid:2      flags:0x00004000
+[135578.087065] Call Trace:
+[135578.094972]  <TASK>
+[135578.102074]  __schedule+0x6af/0x702
+[135578.113302]  schedule+0x8b/0xbd
+[135578.123297]  md_super_wait+0x5d/0x9c
+[135578.134757]  ? __pfx_autoremove_wake_function+0x40/0x40
+[135578.151023]  write_sb_page+0x242/0x25d
+[135578.162869]  md_update_sb+0x4c1/0x679
+[135578.174470]  md_check_recovery+0x276/0x484
+[135578.187342]  raid1d+0x46/0x10db
+[135578.197352]  ? raw_spin_rq_unlock_irq+0x5/0x10
+[135578.211262]  ? finish_task_switch.isra.0+0x129/0x202
+[135578.226731]  ? __schedule+0x6b7/0x702
+[135578.238278]  ? lock_timer_base+0x38/0x5f
+[135578.250688]  ? _raw_spin_unlock_irqrestore+0xe/0x2e
+[135578.265933]  ? __try_to_del_timer_sync+0x64/0x8b
+[135578.280350]  ? __timer_delete_sync+0x2e/0x3d
+[135578.293706]  ? __list_add+0x12/0x2f
+[135578.304886]  ? _raw_spin_unlock_irqrestore+0xe/0x2e
+[135578.320238]  md_thread+0x113/0x140
+[135578.331038]  ? __pfx_autoremove_wake_function+0x40/0x40
+[135578.347265]  ? __pfx_md_thread+0x40/0x40
+[135578.359599]  kthread+0xe8/0xf0
+[135578.369323]  ? __pfx_kthread+0x40/0x40
+[135578.381272]  ret_from_fork+0x24/0x36
+[135578.392702]  ? __pfx_kthread+0x40/0x40
+[135578.404534]  ret_from_fork_asm+0x1b/0x80
+[135578.416877]  </TASK>
+[135578.424012] INFO: task dmcrypt_write/2:2017 blocked for more than 121 seconds.
+[135578.446256]       Not tainted 6.6.9-amd64-volpre-sysrq-20240101 #19
+[135578.465619] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[135578.489691] task:dmcrypt_write/2 state:D stack:0     pid:2017  ppid:2      flags:0x00004000
+[135578.515301] Call Trace:
+[135578.523384]  <TASK>
+[135578.530433]  __schedule+0x6af/0x702
+[135578.541490]  schedule+0x8b/0xbd
+[135578.551650]  md_write_start+0x160/0x1a7
+[135578.563748]  ? __pfx_autoremove_wake_function+0x40/0x40
+[135578.579993]  raid1_make_request+0x89/0x880
+[135578.592962]  ? sugov_update_single_freq+0x20/0x106
+[135578.607926]  ? update_load_avg+0x372/0x39b
+[135578.620814]  ? get_sd_balance_interval+0xf/0x3d
+[135578.635156]  md_handle_request+0x126/0x16d
+[135578.648040]  ? __pfx_dmcrypt_write+0x40/0x40 [dm_crypt 721219ef82f7f7c3ecde59f70e81b621d3b8f858]
+[135578.674973]  ? _raw_spin_unlock+0xa/0x1d
+[135578.687325]  ? raw_spin_rq_unlock_irq+0x5/0x10
+[135578.701386]  ? finish_task_switch.isra.0+0x129/0x202
+[135578.716851]  __submit_bio+0x63/0x89
+[135578.728043]  submit_bio_noacct_nocheck+0x181/0x258
+[135578.743026]  ? __pfx_dmcrypt_write+0x40/0x40 [dm_crypt 721219ef82f7f7c3ecde59f70e81b621d3b8f858]
+[135578.769994]  dmcrypt_write+0xd1/0xfd [dm_crypt 721219ef82f7f7c3ecde59f70e81b621d3b8f858]
+[135578.794848]  kthread+0xe8/0xf0
+[135578.804612]  ? __pfx_kthread+0x40/0x40
+[135578.816438]  ret_from_fork+0x24/0x36
+[135578.827741]  ? __pfx_kthread+0x40/0x40
+[135578.839744]  ret_from_fork_asm+0x1b/0x80
+[135578.852280]  </TASK>
+[135578.859445] INFO: task btrfs-transacti:2415 blocked for more than 122 seconds.
+[135578.881710]       Not tainted 6.6.9-amd64-volpre-sysrq-20240101 #19
+[135578.901270] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[135578.925345] task:btrfs-transacti state:D stack:0     pid:2415  ppid:2      flags:0x00004000
+[135578.950996] Call Trace:
+[135578.958960]  <TASK>
+[135578.965902]  __schedule+0x6af/0x702
+[135578.976995]  schedule+0x8b/0xbd
+[135578.987195]  io_schedule+0x12/0x38
+[135578.998015]  folio_wait_bit_common+0x157/0x202
+[135579.011950]  ? __pfx_wake_page_function+0x40/0x40
+[135579.026658]  folio_wait_writeback+0x30/0x38
+[135579.039897]  __filemap_fdatawait_range+0x74/0xbf
+[135579.054353]  ? __update_freelist_fast+0x17/0x1e
+[135579.068568]  ? __clear_extent_bit+0x323/0x338
+[135579.082257]  filemap_fdatawait_range+0xf/0x19
+[135579.096112]  __btrfs_wait_marked_extents.isra.0+0x98/0xf3
+[135579.113089]  btrfs_write_and_wait_transaction+0x5d/0xbf
+[135579.129372]  btrfs_commit_transaction+0x67c/0xa62
+[135579.144094]  ? start_transaction+0x3f7/0x463
+[135579.157540]  transaction_kthread+0x105/0x17a
+[135579.170970]  ? __pfx_transaction_kthread+0x40/0x40
+[135579.185951]  kthread+0xe8/0xf0
+[135579.195732]  ? __pfx_kthread+0x40/0x40
+[135579.207593]  ret_from_fork+0x24/0x36
+[135579.218942]  ? __pfx_kthread+0x40/0x40
+[135579.230778]  ret_from_fork_asm+0x1b/0x80
+[135579.243146]  </TASK>
+[135579.250316] INFO: task dmcrypt_write/2:5016 blocked for more than 122 seconds.
+[135579.272593]       Not tainted 6.6.9-amd64-volpre-sysrq-20240101 #19
+[135579.291991] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[135579.316244] task:dmcrypt_write/2 state:D stack:0     pid:5016  ppid:2      flags:0x00004000
+[135579.341930] Call Trace:
+[135579.349929]  <TASK>
+[135579.356826]  __schedule+0x6af/0x702
+[135579.367910]  schedule+0x8b/0xbd
+[135579.377939]  md_write_start+0x160/0x1a7
+[135579.390216]  ? __pfx_autoremove_wake_function+0x40/0x40
+[135579.406491]  raid1_make_request+0x89/0x880
+[135579.419401]  ? update_cfs_rq_load_avg+0x176/0x189
+[135579.434131]  ? update_load_avg+0x46/0x39b
+[135579.446738]  ? get_sd_balance_interval+0xf/0x3d
+[135579.461129]  md_handle_request+0x126/0x16d
+[135579.474037]  ? __pfx_dmcrypt_write+0x40/0x40 [dm_crypt 721219ef82f7f7c3ecde59f70e81b621d3b8f858]
+[135579.500975]  ? _raw_spin_unlock+0xa/0x1d
+[135579.513370]  ? raw_spin_rq_unlock_irq+0x5/0x10
+[135579.527308]  ? finish_task_switch.isra.0+0x129/0x202
+[135579.542831]  __submit_bio+0x63/0x89
+[135579.553918]  submit_bio_noacct_nocheck+0x181/0x258
+[135579.568943]  ? __pfx_dmcrypt_write+0x40/0x40 [dm_crypt 721219ef82f7f7c3ecde59f70e81b621d3b8f858]
+[135579.595885]  dmcrypt_write+0xd1/0xfd [dm_crypt 721219ef82f7f7c3ecde59f70e81b621d3b8f858]
+[135579.620760]  kthread+0xe8/0xf0
+[135579.630682]  ? __pfx_kthread+0x40/0x40
+[135579.642699]  ret_from_fork+0x24/0x36
+[135579.654188]  ? __pfx_kthread+0x40/0x40
+[135579.666045]  ret_from_fork_asm+0x1b/0x80
+[135579.678418]  </TASK>
+[135579.685606] INFO: task dmcrypt_write/2:5286 blocked for more than 122 seconds.
+[135579.707870]       Not tainted 6.6.9-amd64-volpre-sysrq-20240101 #19
+[135579.727445] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[135579.751591] task:dmcrypt_write/2 state:D stack:0     pid:5286  ppid:2      flags:0x00004000
+[135579.777266] Call Trace:
+[135579.785223]  <TASK>
+[135579.792124]  __schedule+0x6af/0x702
+[135579.803200]  ? __pfx_wbt_inflight_cb+0x40/0x40
+[135579.817139]  ? __pfx_wbt_cleanup_cb+0x40/0x40
+[135579.830818]  schedule+0x8b/0xbd
+[135579.840951]  io_schedule+0x12/0x38
+[135579.851745]  rq_qos_wait+0xe8/0x126
+[135579.862795]  ? __pfx_rq_qos_wake_function+0x40/0x40
+[135579.878021]  ? __pfx_wbt_inflight_cb+0x40/0x40
+[135579.891951]  wbt_wait+0x95/0xe4
+[135579.902022]  __rq_qos_throttle+0x23/0x33
+[135579.914398]  blk_mq_submit_bio+0x2b6/0x4dd
+[135579.927273]  __submit_bio+0x29/0x89
+[135579.938356]  submit_bio_noacct_nocheck+0x121/0x258
+[135579.953357]  ? __pfx_dmcrypt_write+0x40/0x40 [dm_crypt 721219ef82f7f7c3ecde59f70e81b621d3b8f858]
+[135579.980432]  dmcrypt_write+0xd1/0xfd [dm_crypt 721219ef82f7f7c3ecde59f70e81b621d3b8f858]
+[135580.005323]  kthread+0xe8/0xf0
+[135580.015088]  ? __pfx_kthread+0x40/0x40
+[135580.026929]  ret_from_fork+0x24/0x36
+[135580.038259]  ? __pfx_kthread+0x40/0x40
+[135580.050266]  ret_from_fork_asm+0x1b/0x80
+[135580.062628]  </TASK>
+[135580.069774] Future hung task reports are suppressed, see sysctl kernel.hung_task_warnings
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 195 ++++++++++++++-----------------------------
- fs/btrfs/subpage.c   |   6 ++
- 2 files changed, 69 insertions(+), 132 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index e79676422c16..522bfa9670b3 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1185,101 +1185,6 @@ static inline void contiguous_readpages(struct page *pages[], int nr_pages,
- 	}
- }
- 
--struct locked_delalloc_range {
--	struct list_head list;
--	u64 delalloc_start;
--	u32 delalloc_len;
--};
--
--/*
-- * Save the locked delalloc range.
-- *
-- * This is for subpage only, as for regular sectorsize, there will be at most
-- * one locked delalloc range for a page.
-- */
--struct locked_delalloc_list {
--	u64 last_delalloc_start;
--	u32 last_delalloc_len;
--	struct list_head head;
--};
--
--static void init_locked_delalloc_list(struct locked_delalloc_list *locked_list)
--{
--	INIT_LIST_HEAD(&locked_list->head);
--	locked_list->last_delalloc_start = 0;
--	locked_list->last_delalloc_len = 0;
--}
--
--static void release_locked_delalloc_list(struct locked_delalloc_list *locked_list)
--{
--	while (!list_empty(&locked_list->head)) {
--		struct locked_delalloc_range *entry;
--
--		entry = list_entry(locked_list->head.next,
--				   struct locked_delalloc_range, list);
--
--		list_del_init(&entry->list);
--		kfree(entry);
--	}
--}
--
--static int add_locked_delalloc_range(struct btrfs_fs_info *fs_info,
--				     struct locked_delalloc_list *locked_list,
--				     u64 start, u32 len)
--{
--	struct locked_delalloc_range *entry;
--
--	entry = kmalloc(sizeof(*entry), GFP_NOFS);
--	if (!entry)
--		return -ENOMEM;
--
--	if (locked_list->last_delalloc_len == 0) {
--		locked_list->last_delalloc_start = start;
--		locked_list->last_delalloc_len = len;
--		return 0;
--	}
--	/* The new entry must be beyond the current one. */
--	ASSERT(start >= locked_list->last_delalloc_start +
--			locked_list->last_delalloc_len);
--
--	/* Only subpage case can have more than one delalloc ranges inside a page. */
--	ASSERT(fs_info->sectorsize < PAGE_SIZE);
--
--	entry->delalloc_start = locked_list->last_delalloc_start;
--	entry->delalloc_len = locked_list->last_delalloc_len;
--	locked_list->last_delalloc_start = start;
--	locked_list->last_delalloc_len = len;
--	list_add_tail(&entry->list, &locked_list->head);
--	return 0;
--}
--
--static void __cold unlock_one_locked_delalloc_range(struct btrfs_inode *binode,
--						    struct page *locked_page,
--						    u64 start, u32 len)
--{
--	u64 delalloc_end = start + len - 1;
--
--	unlock_extent(&binode->io_tree, start, delalloc_end, NULL);
--	__unlock_for_delalloc(&binode->vfs_inode, locked_page, start,
--			      delalloc_end);
--}
--
--static void unlock_locked_delalloc_list(struct btrfs_inode *binode,
--					struct page *locked_page,
--					struct locked_delalloc_list *locked_list)
--{
--	struct locked_delalloc_range *entry;
--
--	list_for_each_entry(entry, &locked_list->head, list)
--		unlock_one_locked_delalloc_range(binode, locked_page,
--				entry->delalloc_start, entry->delalloc_len);
--	if (locked_list->last_delalloc_len) {
--		unlock_one_locked_delalloc_range(binode, locked_page,
--				locked_list->last_delalloc_start,
--				locked_list->last_delalloc_len);
--	}
--}
--
- /*
-  * helper for __extent_writepage, doing all of the delayed allocation setup.
-  *
-@@ -1294,16 +1199,21 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 		struct page *page, struct writeback_control *wbc)
- {
- 	struct btrfs_fs_info *fs_info = inode_to_fs_info(&inode->vfs_inode);
-+	struct folio *folio = page_folio(page);
- 	const u64 page_start = page_offset(page);
- 	const u64 page_end = page_start + PAGE_SIZE - 1;
--	struct locked_delalloc_list locked_list;
--	struct locked_delalloc_range *entry;
-+	/*
-+	 * Saves the last found delalloc end. As the delalloc end can go beyond
-+	 * page boundary, thus we can not rely on subpage bitmap to locate
-+	 * the last dealloc end.
-+	 */
-+	u64 last_delalloc_end = 0;
- 	u64 delalloc_start = page_start;
- 	u64 delalloc_end = page_end;
- 	u64 delalloc_to_write = 0;
- 	int ret = 0;
- 
--	init_locked_delalloc_list(&locked_list);
-+	/* Lock all (subpage) dealloc ranges inside the page first. */
- 	while (delalloc_start < page_end) {
- 		delalloc_end = page_end;
- 		if (!find_lock_delalloc_range(&inode->vfs_inode, page,
-@@ -1311,48 +1221,68 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 			delalloc_start = delalloc_end + 1;
- 			continue;
- 		}
--		ret = add_locked_delalloc_range(fs_info, &locked_list,
--				delalloc_start, delalloc_end + 1 - delalloc_start);
--		if (ret < 0) {
--			unlock_locked_delalloc_list(inode, page, &locked_list);
--			release_locked_delalloc_list(&locked_list);
--			return ret;
--		}
--
-+		btrfs_folio_set_writer_lock(fs_info, folio, delalloc_start,
-+					    min(delalloc_end, page_end) + 1 -
-+					    delalloc_start);
-+		last_delalloc_end = delalloc_end;
- 		delalloc_start = delalloc_end + 1;
- 	}
--	list_for_each_entry(entry, &locked_list.head, list) {
--		delalloc_end = entry->delalloc_start + entry->delalloc_len - 1;
-+	delalloc_start = page_start;
-+	/* Run the delalloc ranges for above locked ranges. */
-+	while (last_delalloc_end && delalloc_start < page_end) {
-+		u64 found_start;
-+		u32 found_len;
-+		bool found;
- 
--		/*
--		 * Hit error in the previous run, cleanup the locked
--		 * extents/pages.
--		 */
--		if (ret < 0) {
--			unlock_one_locked_delalloc_range(inode, page,
--					entry->delalloc_start, entry->delalloc_len);
--			continue;
-+		if (!btrfs_is_subpage(fs_info, page->mapping)) {
-+			/*
-+			 * For non-subpage case, the found delalloc range must
-+			 * cover this page and there must be only one locked
-+			 * delalloc range.
-+			 */
-+			found_start = page_start;
-+			found_len = last_delalloc_end + 1 - found_start;
-+			found = true;
-+		} else {
-+			found = btrfs_subpage_find_writer_locked(fs_info, folio,
-+					delalloc_start, &found_start, &found_len);
- 		}
--		ret = btrfs_run_delalloc_range(inode, page, entry->delalloc_start,
--					       delalloc_end, wbc);
--	}
--	if (locked_list.last_delalloc_len) {
--		delalloc_end = locked_list.last_delalloc_start +
--			       locked_list.last_delalloc_len - 1;
-+		if (!found)
-+			break;
-+		/*
-+		 * The subpage range covers the last sector, the delalloc range may
-+		 * end beyonds the page boundary, use the saved delalloc_end
-+		 * instead.
-+		 */
-+		if (found_start + found_len >= page_end)
-+			found_len = last_delalloc_end + 1 - found_start;
- 
--		if (ret < 0)
--			unlock_one_locked_delalloc_range(inode, page,
--					locked_list.last_delalloc_start,
--					locked_list.last_delalloc_len);
--		else
--			ret = btrfs_run_delalloc_range(inode, page,
--					locked_list.last_delalloc_start,
--					delalloc_end, wbc);
-+		if (ret < 0) {
-+			/* Cleanup the remaining locked ranges. */
-+			unlock_extent(&inode->io_tree, found_start,
-+				      found_start + found_len - 1, NULL);
-+			__unlock_for_delalloc(&inode->vfs_inode, page, found_start,
-+					      found_start + found_len - 1);
-+		} else {
-+			ret = btrfs_run_delalloc_range(inode, page, found_start,
-+						       found_start + found_len - 1, wbc);
-+		}
-+		/*
-+		 * Above btrfs_run_delalloc_range() may have unlocked the page,
-+		 * Thus for the last range, we can not touch the page anymore.
-+		 */
-+		if (found_start + found_len >= last_delalloc_end + 1)
-+			break;
-+
-+		delalloc_start = found_start + found_len;
- 	}
--	release_locked_delalloc_list(&locked_list);
- 	if (ret < 0)
- 		return ret;
- 
-+	if (last_delalloc_end)
-+		delalloc_end = last_delalloc_end;
-+	else
-+		delalloc_end = page_end;
- 	/*
- 	 * delalloc_end is already one less than the total length, so
- 	 * we don't subtract one from PAGE_SIZE
-@@ -1624,7 +1554,8 @@ static int __extent_writepage(struct page *page, struct btrfs_bio_ctrl *bio_ctrl
- 					       PAGE_SIZE, !ret);
- 		mapping_set_error(page->mapping, ret);
- 	}
--	unlock_page(page);
-+
-+	btrfs_folio_end_all_writers(inode_to_fs_info(inode), folio);
- 	ASSERT(ret <= 0);
- 	return ret;
- }
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 162a10eee3fd..8793c6f6edc1 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -865,6 +865,7 @@ bool btrfs_subpage_find_writer_locked(const struct btrfs_fs_info *fs_info,
- void btrfs_folio_end_all_writers(const struct btrfs_fs_info *fs_info,
- 				 struct folio *folio)
- {
-+	struct btrfs_subpage *subpage = folio_get_private(folio);
- 	u64 folio_start = folio_pos(folio);
- 	u64 cur = folio_start;
- 
-@@ -874,6 +875,11 @@ void btrfs_folio_end_all_writers(const struct btrfs_fs_info *fs_info,
- 		return;
- 	}
- 
-+	/* The page has no new delalloc range locked on it. Just plain unlock. */
-+	if (atomic_read(&subpage->writers) == 0) {
-+		folio_unlock(folio);
-+		return;
-+	}
- 	while (cur < folio_start + PAGE_SIZE) {
- 		u64 found_start;
- 		u32 found_len;
 -- 
-2.43.2
-
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
 
