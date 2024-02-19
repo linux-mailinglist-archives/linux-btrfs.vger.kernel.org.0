@@ -1,73 +1,80 @@
-Return-Path: <linux-btrfs+bounces-2481-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2482-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49849859BDD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 07:08:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79BDA859BDC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 07:08:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C10901F219A6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 06:08:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 317E92812EB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 06:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63838200C8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 612AA200C7;
 	Mon, 19 Feb 2024 06:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="A2UauhDM";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="A2UauhDM"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OhQp0Vnn";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OhQp0Vnn"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74E221CD0F
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71C871CD38
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708322927; cv=none; b=sZrso0/vdc1Vv/8A7LW0v/Dyw/lsKmCqUGVwJ9UbbxWUuNTYkGGpouI8Quz8SSRIjW/L1VeMiBZAPfkXslcl3/RryApw7Hi2zrEW1w0R4EpOgZRlGSzHbi8JTblEFFwZ22MOHRo63g0Rx/U51Jc6QBbUQvyRT6sKcUZnku1hXbo=
+	t=1708322927; cv=none; b=pn+00KEThlpXZLY+I8iPAJCm28q1Y2jvlPqhT25eenWD9uGKJdCn8H8tdYRVvz9H5JjmRr7H/62aqKfUmG8v6o1qmg+Zb7p6h3TpQM6FX2rDLln9jBt600rPUrMuvmaZPJ9WK7MmFjTY/a1dd+WSzI46StKThSKnmdbufvlGMjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708322927; c=relaxed/simple;
-	bh=HdI+pnsuzNc3PlPgc7r5VQWblJTt0UmGT08lnlY0Rig=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=tfuLUTsiFgyvWRnKnjO+wlWwHUYNRcvvGBsYvyo8G6OG2vFHSiRR4pmGfeycx0aKRv8MHdQgFP0zOlrfp+6T3UMtT/rIDKSSRWTxs231LSCrVX3SKydGgLYt8kbme7co6XuvYrD9H4f2QU86XSfIcoAvnqlv8Fei0vFX8IXFwpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=A2UauhDM; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=A2UauhDM; arc=none smtp.client-ip=195.135.223.131
+	bh=/wT1A6V53b2MIYvmrLWLpyiswDyTl9uZmkksJQNa8zw=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ddxkODhvikVJPML1HLrjwMTHGBYimeycF1cFazeXQiUOZsJ7O5rc+t6aYD0y8moML2PUJE1zaupEx05CLunBo9r+MDUZonyKSCpZUMOeLAlEtwI7cTo8wHbZ0bvNU4NmANMea2IWjRzCrTpsD37dCfICFEhmdHPQPvGAVCto2UA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OhQp0Vnn; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OhQp0Vnn; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 239081FD04
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:42 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9B1351FD06
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708322922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=FvseK5ItHIRHKhTtp9Ul+Obp7gCVshHUt36onQkSxDs=;
-	b=A2UauhDM+Cq2VBjSu7iQlcZ7d6qqswVY8kmsFpGty3jHd89IOhxsJejdtS+KNh6EFEYA/y
-	lIyE/5u7oRpnmD8R3ZGccSMarJc5xTc0b9ULyoXc7mAEvp8KBrWB2gwcjB0xGuVaGZNBCC
-	QGPDvGcNSjJjfV+Xgssp3gtePGdey/I=
+	t=1708322923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SFR5NlIIyJP/Cr9r0FcoVZwTcXLlYfYE1hd7mUaPC6Q=;
+	b=OhQp0VnnFNNXGWdOH/t8MQ9pMQXddYKgSpRJNLqqoLvim+94ccQndk1m+UUv2Z3T7/xh3F
+	sjLDVmatv92NufzJLXTPDh7wobSe8iVOT10xYkr1yPJkxsyelnR3KIUsr3pN8GvH9iHvak
+	L68wB0+wot6sSIUnjT743qdzV4NNbwM=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708322922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=FvseK5ItHIRHKhTtp9Ul+Obp7gCVshHUt36onQkSxDs=;
-	b=A2UauhDM+Cq2VBjSu7iQlcZ7d6qqswVY8kmsFpGty3jHd89IOhxsJejdtS+KNh6EFEYA/y
-	lIyE/5u7oRpnmD8R3ZGccSMarJc5xTc0b9ULyoXc7mAEvp8KBrWB2gwcjB0xGuVaGZNBCC
-	QGPDvGcNSjJjfV+Xgssp3gtePGdey/I=
+	t=1708322923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SFR5NlIIyJP/Cr9r0FcoVZwTcXLlYfYE1hd7mUaPC6Q=;
+	b=OhQp0VnnFNNXGWdOH/t8MQ9pMQXddYKgSpRJNLqqoLvim+94ccQndk1m+UUv2Z3T7/xh3F
+	sjLDVmatv92NufzJLXTPDh7wobSe8iVOT10xYkr1yPJkxsyelnR3KIUsr3pN8GvH9iHvak
+	L68wB0+wot6sSIUnjT743qdzV4NNbwM=
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 260A513585
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:40 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A8F3A13585
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id N1V3NWjw0mXcJQAAn2gu4w
+	id OAL/Fmrw0mXcJQAAn2gu4w
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:40 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 06:08:42 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/4] btrfs: initial subpage support for zoned devices
-Date: Mon, 19 Feb 2024 16:38:33 +1030
-Message-ID: <cover.1708322044.git.wqu@suse.com>
+Subject: [PATCH 1/4] btrfs: make __extent_writepage_io() to write specified range only
+Date: Mon, 19 Feb 2024 16:38:34 +1030
+Message-ID: <b465aa249051dba5bc273a9c03fafe8351410604.1708322044.git.wqu@suse.com>
 X-Mailer: git-send-email 2.43.2
+In-Reply-To: <cover.1708322044.git.wqu@suse.com>
+References: <cover.1708322044.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,7 +84,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Level: 
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=A2UauhDM
+	dkim=pass header.d=suse.com header.s=susede1 header.b=OhQp0Vnn
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-1.51 / 50.00];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
@@ -103,120 +110,172 @@ X-Spamd-Result: default: False [-1.51 / 50.00];
 	 RCPT_COUNT_ONE(0.00)[1];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 RCVD_TLS_ALL(0.00)[]
 X-Spam-Score: -1.51
-X-Rspamd-Queue-Id: 239081FD04
+X-Rspamd-Queue-Id: 9B1351FD06
 X-Spam-Flag: NO
 
-[REPO]
-https://github.com/adam900710/linux/tree/subpage_delalloc
+Function __extent_writepage_io() is designed to find all dirty range of
+a page, and add that dirty range into the bio_ctrl for submission.
+It requires all the dirtied range to be covered by a delalloc range.
 
-Please fetch the whole series for testing, as it relies on 3 submitted
-patches.
+It get called in two locations, but one call site is not subpage aware:
 
-[BUG]
-When running subpage btrfs (sectorsize < PAGE_SIZE) with zoned device,
-btrfs can easily crash (with CONFIG_BTRFS_ASSERT enabled) with an
-ASSERT():
+- __extent_writepage()
+  It get called when writepage_delalloc() returned 0, which means
+  writepage_delalloc() has handled dellalloc for all subpage sectors
+  inside the page.
 
- assertion failed: block_start != EXTENT_MAP_HOLE, in fs/btrfs/extent_io.c:1384
- ------------[ cut here ]------------
- kernel BUG at fs/btrfs/extent_io.c:1384!
- CPU: 2 PID: 1711 Comm: fsstress Tainted: G           OE      6.8.0-rc4-custom+ #9
- Hardware name: QEMU KVM Virtual Machine, BIOS edk2-20231122-12.fc39 11/22/2023
- pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
- pc : __extent_writepage_io+0x404/0x460 [btrfs]
- lr : __extent_writepage_io+0x404/0x460 [btrfs]
- Call trace:
-  __extent_writepage_io+0x404/0x460 [btrfs]
-  extent_write_locked_range+0x16c/0x460 [btrfs]
-  run_delalloc_cow+0x88/0x118 [btrfs]
-  btrfs_run_delalloc_range+0x128/0x228 [btrfs]
-  writepage_delalloc+0xb8/0x178 [btrfs]
-  __extent_writepage+0xc8/0x3a0 [btrfs]
-  extent_write_cache_pages+0x1cc/0x460 [btrfs]
-  extent_writepages+0x8c/0x120 [btrfs]
-  btrfs_writepages+0x18/0x30 [btrfs]
-  do_writepages+0x94/0x1f8
-  filemap_fdatawrite_wbc+0x88/0xc8
-  __filemap_fdatawrite_range+0x6c/0xa8
-  filemap_flush+0x24/0x38
-  btrfs_remap_file_range_prep+0x100/0x1a8 [btrfs]
-  btrfs_remap_file_range+0x2ec/0x448 [btrfs]
-  vfs_copy_file_range+0x4cc/0x520
-  __do_sys_copy_file_range+0xc4/0x2e8
-  __arm64_sys_copy_file_range+0x30/0xd0
-  invoke_syscall+0x78/0x100
-  el0_svc_common.constprop.0+0x48/0xf0
-  do_el0_svc+0x24/0x38
-  el0_svc+0x3c/0x138
-  el0t_64_sync_handler+0x120/0x130
-  el0t_64_sync+0x194/0x198
- Code: 9108c021 90000be0 913d8000 9402bfad (d4210000)
- ---[ end trace 0000000000000000 ]---
+  So this call site is fine.
 
-[CAUSE]
-There are several problems involved in this case:
+- extent_write_locked_range()
+  This call site is utilized by zoned support, and in this case, we may
+  only run delalloc range for a subset of the page.
 
-- __extent_writepage_io() would always try writeback the whole page
-- extent_write_locked_range() would only lock the first delalloc range
+  In that case, __extent_writepage_io() can hit range which is not yet
+  covered by delalloc range, and hit various ASSERT()s.
 
-This two limits combined, result the following page cache layout to
-cause the problem:
+Fix this problem by:
 
-     0     4K     8K    12K    16K
-     |/////|      |/////|
+- Introducing range parameters (@start and @len) to specify the range
+  where __extent_writepage_io() should write check for.
 
-- btrfs_run_delalloc_range() called on the above page
-- run_dealloc_cow() ran for range [0, 4K)
-- __extent_writepage_io() called for the whole page
-- __extent_writepage_io() submitted bio for [0, 4K)
-- __extent_writepage_io() try to submit IO for [8K, 12K)
-  But this range has no OE covered, and the existing extent map is a
-  hole, and triggered the ASSERT().
+  For the first call site, we just pass the whole page, and the behavior
+  is not touched.
 
-  Even if we ignore the ASSERT(), we would still hit other problems.
+  For the second call site, we would avoid touching anything beyond the
+  range, thus avoid the dirty range which is not yet covered by any
+  delalloc range.
 
-- run_delalloc_cow() would unlock the full page.
-- btrfs_run_delalloc_range() called again on the page
-  The page is no longer locked, triggering another ASSERT() on
-  PageLocked.
+- Making btrfs_folio_assert_not_dirty() subpage aware
+  The only caller is inside __extent_writepage_io(), and since that
+  caller now accepts a subpage range, we should also check the subpage
+  range other than the whole page.
 
-[FIX]
-This series would try to fix the problem by:
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/extent_io.c | 18 +++++++++++-------
+ fs/btrfs/subpage.c   | 22 ++++++++++++++++------
+ fs/btrfs/subpage.h   |  3 ++-
+ 3 files changed, 29 insertions(+), 14 deletions(-)
 
-- making __extent_writepage_io() to only write the specified range
-- making writepage_delalloc() to lock all delalloc range first
-  Then btrfs_run_delalloc_range() for each locked range.
-
-  This patch is a temporaray solution, until needed subpage interfaces
-  are introduced, and allowing me to do extra testing to make sure the
-  lock-in-one-go behavior is safe.
-
-  This is a preparation for allowing subpage delalloc async submission.
-
-- adding subpage interfaces to go through all subpage locked ranges
-
-- using new subpage interfaces to make sure the full page is only
-  unlocked when the last writer lock owner is releasing the lock
-
-But please note, this fix is only for the above mentioned problems.
-There can still be other problems related to zoned+subpage, but at least
-we won't trigger ASSERT()s and crash.
-
-Qu Wenruo (4):
-  btrfs: make __extent_writepage_io() to write specified range only
-  btrfs: lock subpage ranges in one go for writepage_delalloc()
-  btrfs: subpage: introduce helpers to handle subpage delalloc locking
-  btrfs: migrate writepage_delalloc() to use subpage helpers
-
- fs/btrfs/extent_io.c |  95 +++++++++++++++++++++++-----
- fs/btrfs/subpage.c   | 144 +++++++++++++++++++++++++++++++++++++++++--
- fs/btrfs/subpage.h   |  10 ++-
- 3 files changed, 228 insertions(+), 21 deletions(-)
-
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 197b9f50e75c..556ec44fdf8e 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1311,20 +1311,23 @@ static void find_next_dirty_byte(struct btrfs_fs_info *fs_info,
+  * < 0 if there were errors (page still locked)
+  */
+ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+-				 struct page *page,
++				 struct page *page, u64 start, u32 len,
+ 				 struct btrfs_bio_ctrl *bio_ctrl,
+ 				 loff_t i_size,
+ 				 int *nr_ret)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	u64 cur = page_offset(page);
+-	u64 end = cur + PAGE_SIZE - 1;
++	u64 cur = start;
++	u64 end = start + len - 1;
+ 	u64 extent_offset;
+ 	u64 block_start;
+ 	struct extent_map *em;
+ 	int ret = 0;
+ 	int nr = 0;
+ 
++	ASSERT(start >= page_offset(page) &&
++	       start + len <= page_offset(page) + PAGE_SIZE);
++
+ 	ret = btrfs_writepage_cow_fixup(page);
+ 	if (ret) {
+ 		/* Fixup worker will requeue */
+@@ -1413,7 +1416,7 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 		nr++;
+ 	}
+ 
+-	btrfs_folio_assert_not_dirty(fs_info, page_folio(page));
++	btrfs_folio_assert_not_dirty(fs_info, page_folio(page), start, len);
+ 	*nr_ret = nr;
+ 	return 0;
+ 
+@@ -1471,7 +1474,8 @@ static int __extent_writepage(struct page *page, struct btrfs_bio_ctrl *bio_ctrl
+ 	if (ret)
+ 		goto done;
+ 
+-	ret = __extent_writepage_io(BTRFS_I(inode), page, bio_ctrl, i_size, &nr);
++	ret = __extent_writepage_io(BTRFS_I(inode), page, page_offset(page),
++				    PAGE_SIZE, bio_ctrl, i_size, &nr);
+ 	if (ret == 1)
+ 		return 0;
+ 
+@@ -2223,8 +2227,8 @@ void extent_write_locked_range(struct inode *inode, struct page *locked_page,
+ 			clear_page_dirty_for_io(page);
+ 		}
+ 
+-		ret = __extent_writepage_io(BTRFS_I(inode), page, &bio_ctrl,
+-					    i_size, &nr);
++		ret = __extent_writepage_io(BTRFS_I(inode), page, cur, cur_len,
++					    &bio_ctrl, i_size, &nr);
+ 		if (ret == 1)
+ 			goto next_page;
+ 
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index 3b3ef8bffe05..b33e43de7f93 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -706,19 +706,29 @@ IMPLEMENT_BTRFS_PAGE_OPS(checked, folio_set_checked, folio_clear_checked,
+  * Make sure not only the page dirty bit is cleared, but also subpage dirty bit
+  * is cleared.
+  */
+-void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info, struct folio *folio)
++void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
++				  struct folio *folio, u64 start, u32 len)
+ {
+-	struct btrfs_subpage *subpage = folio_get_private(folio);
++	struct btrfs_subpage *subpage;
++	int start_bit;
++	int nbits;
++	unsigned long flags;
+ 
+ 	if (!IS_ENABLED(CONFIG_BTRFS_ASSERT))
+ 		return;
+ 
+-	ASSERT(!folio_test_dirty(folio));
+-	if (!btrfs_is_subpage(fs_info, folio->mapping))
++	if (!btrfs_is_subpage(fs_info, folio->mapping)) {
++		ASSERT(!folio_test_dirty(folio));
+ 		return;
++	}
+ 
+-	ASSERT(folio_test_private(folio) && folio_get_private(folio));
+-	ASSERT(subpage_test_bitmap_all_zero(fs_info, subpage, dirty));
++	start_bit = subpage_calc_start_bit(fs_info, folio, dirty, start, len);
++	nbits = len >> fs_info->sectorsize_bits;
++	subpage = folio_get_private(folio);
++	ASSERT(subpage);
++	spin_lock_irqsave(&subpage->lock, flags);
++	ASSERT(bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits));
++	spin_unlock_irqrestore(&subpage->lock, flags);
+ }
+ 
+ /*
+diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+index b6dc013b0fdc..4b363d9453af 100644
+--- a/fs/btrfs/subpage.h
++++ b/fs/btrfs/subpage.h
+@@ -156,7 +156,8 @@ DECLARE_BTRFS_SUBPAGE_OPS(checked);
+ bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
+ 					struct folio *folio, u64 start, u32 len);
+ 
+-void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info, struct folio *folio);
++void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
++				  struct folio *folio, u64 start, u32 len);
+ void btrfs_folio_unlock_writer(struct btrfs_fs_info *fs_info,
+ 			       struct folio *folio, u64 start, u32 len);
+ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
 -- 
 2.43.2
 
