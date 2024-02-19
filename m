@@ -1,70 +1,140 @@
-Return-Path: <linux-btrfs+bounces-2527-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2528-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B481485ABC0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 20:07:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76C0D85ABC9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 20:11:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 504CEB2166F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 19:07:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A078E285336
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 19:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC324BABE;
-	Mon, 19 Feb 2024 19:07:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F614F8A7;
+	Mon, 19 Feb 2024 19:10:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="K7rWX3Uf"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ylizK438";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BKRi3Vm7";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ylizK438";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BKRi3Vm7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F72341A82
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 19:07:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.144.250
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25C44F60C
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 19:10:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708369645; cv=none; b=kXhE7wstkcw+ZP3Z8UkKQM8ekhR7zZKqXOKptOynJXzrAjU7OjFMv9wFcp0H+4+GRh9puI4yxEpEZeHUMrJtykEn07p3dl7JlU2FxeoFYOOFzKyhcUf/fk2eNcCv0qj5riTd4bT1GEQDf4WdPPAwqefbd8vKM3GrJmdfP5bytes=
+	t=1708369855; cv=none; b=OvCvqpKFzJanffr8fBfJvCWqBezs0VxgL4nDPswxm2FdbAetSLpCh4y0t6hapNg5VFtv1kJ709bnlSGb+YTHBQvGMlkNPF3GBI879YC35bu5GrWelT4tmaUN1+VXBxcHiO3M8Q61Ebpzga313faZAb6ytxhQGyhC2UmiuVR1wYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708369645; c=relaxed/simple;
-	bh=0PZFoDpgMk/2WU5pGwHLz9Ci4bxC5APke/QbCGbt1WE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=PVQ9tBbk84mi3/WXes+6LdfClWiwGN0pq91ZiMt3xWCi5vK7dDiSI5ITF5ffFqNYZAIrbT5ywrVY7Hrn6CFHlEP1eeu5dwd7wUcrfi9t7F9PqNe0ga1svyqQPQ0AHLtnYiCKzq0PyvLr+f6ua362jWwM+wTSLuVFulGtVA8LGUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me; spf=pass smtp.mailfrom=dorminy.me; dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b=K7rWX3Uf; arc=none smtp.client-ip=71.19.144.250
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	s=arc-20240116; t=1708369855; c=relaxed/simple;
+	bh=4LccE5qClJ/ClXJXFNQMHrkFVWzyBTYWVhRRp6Jnyl4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=obUQH19+Sv1GmUtVBfLwN1W/Ow1R6Hr4i6jrHdBq2I1I0zwCvQB60ZUrloDJc/x7fhwQ8kowVdLMTJck4vTMB0xgD6glRpZCbv/Mo7/uunwd1UTDKpZJJBjreb9LKOWCOyIYe9Qfe3ReG0/qYi0/nzTU9fcYFvTKdFuwJiwxnSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ylizK438; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BKRi3Vm7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ylizK438; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BKRi3Vm7; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by box.fidei.email (Postfix) with ESMTPSA id C2E99827D9;
-	Mon, 19 Feb 2024 14:00:01 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-	t=1708369202; bh=0PZFoDpgMk/2WU5pGwHLz9Ci4bxC5APke/QbCGbt1WE=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=K7rWX3UfOUXp73mxetk5GDK8jnmna6u8BmrGpzmOZ2WGQqH+UOaE98pl4VW0WqeeB
-	 pj6tTdFciJxehw/+PV8+PaQA1v0hKOfTE6CjrMg9gZdlKEUREFObBAEgbJ59Pce620
-	 UA/d8a3xRwDkT2mSvm7Cl+j1gReZ3GyZB9owZVK0IPhVpmGwwqqrSBfjrYp/8+bopI
-	 PijTkbanUAF90qIi3EVNpUPrhQJgsP5yHSXCsI99VGqqYQRLjPD94C1jP4aK4qtrol
-	 4T1MJkvyq22WcQZdyLay2WW2vlwm3Y3RZSCCF4+yilpPN+Mvo4js4h2Xxv5KCPGCey
-	 E5oYJCU1cvL6A==
-Message-ID: <9e08b071-63af-4ad1-975a-7fe68902ca7c@dorminy.me>
-Date: Mon, 19 Feb 2024 14:00:00 -0500
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7B03F22165;
+	Mon, 19 Feb 2024 19:10:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708369851;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=df4jRYL55dFZHvFTfs2Rn3gHvy4oIZ/q1cUHvbRMkgk=;
+	b=ylizK4386jiStvxB2NEr+81Fow3piJw9SeNJtGAPJ0M6zHNOq3Z+FUMOh3VVjEgA+1+hRH
+	nbBEN0gh+ILx51ZCR19VTqqhGMKiPekL8Hey7NKdcrGBlJcOeI9SxDDGvjpYZtWD02QWLV
+	R3+rU94aoxSbNpVsu0Yqh9dLFJ8HXG0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708369851;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=df4jRYL55dFZHvFTfs2Rn3gHvy4oIZ/q1cUHvbRMkgk=;
+	b=BKRi3Vm7/ZqKPuoRakfHO8scEzGuQ6RsxMcoyzfbFfeUWAsFumLGLdg++4/6NTPDSgdHvo
+	s3T/5o5zOL5cbOBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708369851;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=df4jRYL55dFZHvFTfs2Rn3gHvy4oIZ/q1cUHvbRMkgk=;
+	b=ylizK4386jiStvxB2NEr+81Fow3piJw9SeNJtGAPJ0M6zHNOq3Z+FUMOh3VVjEgA+1+hRH
+	nbBEN0gh+ILx51ZCR19VTqqhGMKiPekL8Hey7NKdcrGBlJcOeI9SxDDGvjpYZtWD02QWLV
+	R3+rU94aoxSbNpVsu0Yqh9dLFJ8HXG0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708369851;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=df4jRYL55dFZHvFTfs2Rn3gHvy4oIZ/q1cUHvbRMkgk=;
+	b=BKRi3Vm7/ZqKPuoRakfHO8scEzGuQ6RsxMcoyzfbFfeUWAsFumLGLdg++4/6NTPDSgdHvo
+	s3T/5o5zOL5cbOBQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CDF5139C6;
+	Mon, 19 Feb 2024 19:10:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id ZUtpGrun02XKUAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Mon, 19 Feb 2024 19:10:51 +0000
+Date: Mon, 19 Feb 2024 20:10:11 +0100
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] btrfs: some optimizations for send
+Message-ID: <20240219191011.GX355@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1708260967.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 0/2] btrfs: some optimizations for send
-Content-Language: en-US
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1708260967.git.fdmanana@suse.com>
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <cover.1708260967.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ylizK438;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BKRi3Vm7
+X-Spamd-Result: default: False [-0.01 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 TO_DN_NONE(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[30.09%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -0.01
+X-Rspamd-Queue-Id: 7B03F22165
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-
-
-On 2/19/24 06:59, fdmanana@kernel.org wrote:
+On Mon, Feb 19, 2024 at 11:59:29AM +0000, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
 > The following are two optimizations for send, one to avoid sending
@@ -75,13 +145,8 @@ On 2/19/24 06:59, fdmanana@kernel.org wrote:
 > avoid repeating a btree search. More details in the respective change logs.
 > 
 > Filipe Manana (2):
->    btrfs: send: don't issue unnecessary zero writes for trailing hole
->    btrfs: send: avoid duplicated search for last extent when sending hole
-> 
->   fs/btrfs/send.c | 44 +++++++++++++++++++++++++-------------------
->   1 file changed, 25 insertions(+), 19 deletions(-)
-> 
+>   btrfs: send: don't issue unnecessary zero writes for trailing hole
+>   btrfs: send: avoid duplicated search for last extent when sending hole
 
-For both:
-Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Reviewed-by: David Sterba <dsterba@suse.com>
 
