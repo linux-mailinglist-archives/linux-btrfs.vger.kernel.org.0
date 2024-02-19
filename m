@@ -1,135 +1,177 @@
-Return-Path: <linux-btrfs+bounces-2530-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2531-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0389085ABEF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 20:21:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF05E85AC24
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 20:39:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FB80B224B1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 19:21:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85EA7281B51
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 19:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8918C5101A;
-	Mon, 19 Feb 2024 19:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA1C51026;
+	Mon, 19 Feb 2024 19:39:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rDI2Tw7l"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JNlRQs0y";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AzMqHY98";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JNlRQs0y";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AzMqHY98"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DCC1BF3D;
-	Mon, 19 Feb 2024 19:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1024B50A7E
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 19:38:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708370478; cv=none; b=SBF0I3XXx/ucgvyIoBHQXPkIz+aL/h2rpfRYye/znGquht+KP7tOJP+n9sIfIZdCv5ge82naMRc8nK4O4SHoLQUfkYkP2axvbzGG08tBZ9QyLNbtRYK3GHdRzCDsljVKU3BaY3KpOOHWIl/Zek084+fXTmmOw3m/xPyyQBMY5tw=
+	t=1708371540; cv=none; b=r4f+/6i7TCNrCmMU1MMdwgYk6qojz2ULxzhU3+GwRb/PmexvP5tx+/JeBeBCZyA5XMkbpVLbuR+dhi65AnoEX+2J8l3SNKcTeqVBaMl8tDK0ZCqvJvxBAH+9/hXdfJwjydjLexLGls3XD92m0kvGcKvD5EKixK/2iZ7p998Hq9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708370478; c=relaxed/simple;
-	bh=BU7vmtS91LW14umqdRks1US1wmoCN7BfyNRskJ+lpzg=;
+	s=arc-20240116; t=1708371540; c=relaxed/simple;
+	bh=dKwmDuDHqJDrVAp3NHMWwykp2FGyNgyUGWCgz0pvKiU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mc6sb+9HBgxmwuyl+D3F8kK0kW7JHCuVYq9kP6piFBor4padm1iphrSgCmg9epJn39UJRg4riEp68mo56byjdRtjz7C43fUxZoRFP9r7I/dME9A3YrQ6vlIiNLaXZTf/joYaCOhu6V7XTg7fqkX+b912k9VEK11b86JJOPXxmYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rDI2Tw7l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5BB4C433F1;
-	Mon, 19 Feb 2024 19:21:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708370478;
-	bh=BU7vmtS91LW14umqdRks1US1wmoCN7BfyNRskJ+lpzg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rDI2Tw7lYr17vYfRVT31/CFWOTvQvw8vu8Kd10WZDkZAfAUrzH8Df4KP6kxyUwmrK
-	 rGFpMcWC60IsJ/xONKcoIBQHrAldlZdG91Eo5stQQ7g0kxVAFfd9FHlI499h6X/V9X
-	 uV3aNuG/f+xnORzGFBi12Jq9+lalxrUM0mCfg2eSqcmNxdvWWWj0HLY4KndwAixZ5R
-	 QrIt0Synm8G4YerLcrr4Ta1M2jUeYFvwJyqYGsqzjANrsTGlgG6z54InG3nSN7NzBy
-	 lWYK1LwZxKgM45/cm2HfebVej40pz17i5AFt4n/v5CPx9+emInzhElr3yhPEDIr6p7
-	 ynArQJ8jnkTMw==
-Date: Mon, 19 Feb 2024 12:21:14 -0700
-From: Keith Busch <kbusch@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	io-uring@vger.kernel.org, nilay@linux.ibm.com,
-	ritesh.list@gmail.com, Alan Adamson <alan.adamson@oracle.com>
-Subject: Re: [PATCH v4 10/11] nvme: Atomic write support
-Message-ID: <ZdOqKr6Js_nlobh5@kbusch-mbp>
-References: <20240219130109.341523-1-john.g.garry@oracle.com>
- <20240219130109.341523-11-john.g.garry@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pcko8mngWKfAeeSNt3Vz4ZEzdoqwTIePzsreDnjFzeZbH5NZ8+RgWgxe8bKWQhZ7AFxe4yvYrDAAh7bt6S8jJGraY9medEEvuAQ/GH+8F+Gx8QJCVjYAmyK1xZ1e/YfvkN7ekKiwED3OGga25IAmPpgFQUmd3VvimEMqaGY9z/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JNlRQs0y; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AzMqHY98; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JNlRQs0y; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AzMqHY98; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1D3941F81C;
+	Mon, 19 Feb 2024 19:38:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708371537;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s0APygDZcKdnMRDgF/qcJlTW6T1Rlt1tudCyjAohrpA=;
+	b=JNlRQs0yFOw9VVZNzJHeNm8psyL8HvLei2VuFsVPFIE6h29Y8flQZw/PAyNE5h+ho7gwzp
+	YJOw74OKvLiO4Eo8uTdyF3Oar2E2kMN1J1pKtf+bKKLwUFvXacPzsCM76kBVVG8VIXjUuZ
+	4b1MMd6sXX+mFBMYf7hpkNOkNZ46QV8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708371537;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s0APygDZcKdnMRDgF/qcJlTW6T1Rlt1tudCyjAohrpA=;
+	b=AzMqHY98aXguCR5vG+Zfm0B46GRjXktx/ANP57FHkTe0y+C85W8LtNtFE7jYmQOBPWCsmB
+	0fB9LFl8KtVt4lCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708371537;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s0APygDZcKdnMRDgF/qcJlTW6T1Rlt1tudCyjAohrpA=;
+	b=JNlRQs0yFOw9VVZNzJHeNm8psyL8HvLei2VuFsVPFIE6h29Y8flQZw/PAyNE5h+ho7gwzp
+	YJOw74OKvLiO4Eo8uTdyF3Oar2E2kMN1J1pKtf+bKKLwUFvXacPzsCM76kBVVG8VIXjUuZ
+	4b1MMd6sXX+mFBMYf7hpkNOkNZ46QV8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708371537;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s0APygDZcKdnMRDgF/qcJlTW6T1Rlt1tudCyjAohrpA=;
+	b=AzMqHY98aXguCR5vG+Zfm0B46GRjXktx/ANP57FHkTe0y+C85W8LtNtFE7jYmQOBPWCsmB
+	0fB9LFl8KtVt4lCQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EEF9B13585;
+	Mon, 19 Feb 2024 19:38:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id uCrXOVCu02XPVQAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Mon, 19 Feb 2024 19:38:56 +0000
+Date: Mon, 19 Feb 2024 20:38:20 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Boris Burkov <boris@bur.io>
+Cc: David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: Re: [RFC PATCH 0/6] btrfs: dynamic and periodic block_group reclaim
+Message-ID: <20240219193820.GZ355@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1706914865.git.boris@bur.io>
+ <20240206145524.GQ355@twin.jikos.cz>
+ <ZcKrE0iFnga94kIA@devvm12410.ftw0.facebook.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240219130109.341523-11-john.g.garry@oracle.com>
+In-Reply-To: <ZcKrE0iFnga94kIA@devvm12410.ftw0.facebook.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JNlRQs0y;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=AzMqHY98
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Score: -4.21
+X-Rspamd-Queue-Id: 1D3941F81C
+X-Spam-Flag: NO
 
-On Mon, Feb 19, 2024 at 01:01:08PM +0000, John Garry wrote:
-> From: Alan Adamson <alan.adamson@oracle.com>
+On Tue, Feb 06, 2024 at 02:07:52PM -0800, Boris Burkov wrote:
+> On Tue, Feb 06, 2024 at 03:55:24PM +0100, David Sterba wrote:
+> > On Fri, Feb 02, 2024 at 03:12:42PM -0800, Boris Burkov wrote:
+> > A common workload on distros is regular system update (rolling distro)
+> > with snapshots (snapper) and cleanup. This can create a lot of under
+> > used block groups, both data and metadata. Reclaiming that preriodically
+> > was one of the ground ideas for the btrfsmaintenance project.
 > 
-> Add support to set block layer request_queue atomic write limits. The
-> limits will be derived from either the namespace or controller atomic
-> parameters.
+> I believe this is pretty similar to my workload 2 in spirit, except I
+> haven't done much with snapshots. I would love to run this workload so
+> I'll try to set it up with a VM. If you have a script for it already, or
+> even tips for setting it up, I would be quite grateful :)
 > 
-> NVMe atomic-related parameters are grouped into "normal" and "power-fail"
-> (or PF) class of parameter. For atomic write support, only PF parameters
-> are of interest. The "normal" parameters are concerned with racing reads
-> and writes (which also applies to PF). See NVM Command Set Specification
-> Revision 1.0d section 2.1.4 for reference.
-> 
-> Whether to use per namespace or controller atomic parameters is decided by
-> NSFEAT bit 1 - see Figure 97: Identify - Identify Namespace Data Structure,
-> #NVM Command Set.
-> 
-> NVMe namespaces may define an atomic boundary, whereby no atomic guarantees
-> are provided for a write which straddles this per-lba space boundary. The
-> block layer merging policy is such that no merges may occur in which the
-> resultant request would straddle such a boundary.
-> 
-> Unlike SCSI, NVMe specifies no granularity or alignment rules. In addition,
-> again unlike SCSI, there is no dedicated atomic write command - a write
-> which adheres to the atomic size limit and boundary is implicitly atomic.
-> 
-> If NSFEAT bit 1 is set, the following parameters are of interest:
-> - NAWUPF (Namespace Atomic Write Unit Power Fail)
-> - NABSPF (Namespace Atomic Boundary Size Power Fail)
-> - NABO (Namespace Atomic Boundary Offset)
-> 
-> and we set request_queue limits as follows:
-> - atomic_write_unit_max = rounddown_pow_of_two(NAWUPF)
-> - atomic_write_max_bytes = NAWUPF
-> - atomic_write_boundary = NABSPF
-> 
-> If in the unlikely scenario that NABO is non-zero, then atomic writes will
-> not be supported at all as dealing with this adds extra complexity. This
-> policy may change in future.
-> 
-> In all cases, atomic_write_unit_min is set to the logical block size.
-> 
-> If NSFEAT bit 1 is unset, the following parameter is of interest:
-> - AWUPF (Atomic Write Unit Power Fail)
-> 
-> and we set request_queue limits as follows:
-> - atomic_write_unit_max = rounddown_pow_of_two(AWUPF)
-> - atomic_write_max_bytes = AWUPF
-> - atomic_write_boundary = 0
-> 
-> The block layer requires that the atomic_write_boundary value is a
-> power-of-2. However, it is really only required that atomic_write_boundary
-> be a multiple of atomic_write_unit_max. As such, if NABSPF were not a
-> power-of-2, atomic_write_unit_max could be reduced such that it was
-> divisible into NABSPF. However, this complexity will not be yet supported.
-> 
-> A helper function, nvme_valid_atomic_write(), is also added for the
-> submission path to verify that a request has been submitted to the driver
-> will actually be executed atomically.
+> I think that the "lots of random deletes leave empty block groups"
+> workload is the most interesting one in general for reclaim, and I
+> think it's cool that it happens in the real world :)
 
-Maybe patch 11 should be folded into this one. No bigged, the series as
-a whole looks good.
+As a simulation of that I'm using git based workload that randomly
+checks out commits and does a snapshot. A once working script is
+herehttps://github.com/kdave/testunion/blob/master/test-snapgit/startme
+(I maybe have some updates but I'd have to find the most recent version).
 
-Reviewed-by: Keith Busch <kbusch@kernel.org>
+The used git repo should provide large files too so it's closer to what
+eg. rpm does.
+
+> > The exact parameters of auto reclaim also depend on the storage type, an
+> > NVMe would be probably fine with any amount of data, HDD not so much.
+> 
+> Good point, have only tested on NVMe. Definitely needs to be tunable to
+> not abuse HDDs.
+
+I think we'll need an automatic classification of devices, now it's
+third type that I know could use it (raid mirror balancing, checksum
+offload and this one).
+
+There's more to reply to, I'll continue on another day.
 
