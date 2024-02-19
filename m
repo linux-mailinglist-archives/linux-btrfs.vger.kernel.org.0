@@ -1,251 +1,121 @@
-Return-Path: <linux-btrfs+bounces-2504-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2505-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7760585A2E6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 13:12:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A17A885A30F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 13:20:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26478284603
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 12:12:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41C7A1F2527B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 12:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF4D2E63B;
-	Mon, 19 Feb 2024 12:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971902D638;
+	Mon, 19 Feb 2024 12:20:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ewb6TjyA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HHAo2b7V"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7A922E620;
-	Mon, 19 Feb 2024 12:12:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE56F2D05D
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 12:20:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708344757; cv=none; b=ajKRlCjGbykY3LNISLL+pR7K5OmWtQXTVhkfpqVBYejnnnl0etaXCerUO4cwW/gYtzcY5iC/V9rKcd0mT9MOOz/F4dVKwDyT7RvtUixVTiU/M9Cwyk5AtC46mGaFgue4HnJYq2Ug+XVg+eViJ16v22kyPIld8Yb3gIFB38Zgda4=
+	t=1708345202; cv=none; b=UmpW/8gUh8mkeB+ARj2aDrSXis8uTTpGRgyrS++rYfm/KY2ydpgpGzwc3C7HI/fu1AIe82xQbOmThxycIZdu0Ib67kpl4au93vrs0Rul34nJHa+LQf8q+hdB4brW2is1sr5K97hVLdO+MY+eSFmrpa7GQXcuPS3pxB7Vn8pLDvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708344757; c=relaxed/simple;
-	bh=z6jp3CY0GaKsqK8dwyOQX0uBMqrjyZNNLTEvdVRdYlc=;
+	s=arc-20240116; t=1708345202; c=relaxed/simple;
+	bh=noVq4bc7dnRPWFIIfMG4cgZiOJV/t9EJeRTr1qC+Nbs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I/xNsmD7E6hhHdgMRm1FmJDHbDXg/3VHuN7YZaLoL8sCVwdIQ0gEkUAaWlR5eKD321dFi5WvgtM2VfmztdRTX2asJzQcwVeWqPI/1hpEqr29tZ8TlgIejTOfVrZXt2h0XhXiDWZpStDIiyJwIqW1OUb0IG+YK6p1Ju5pbdgsIk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ewb6TjyA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63561C433F1;
-	Mon, 19 Feb 2024 12:12:37 +0000 (UTC)
+	 To:Cc:Content-Type; b=L7J+EucuE/JnBJcArbxOjAqR/dmUarIsxAtVR5SuBAmWaFQjYh7BQbyg1kglWpBMyGImspvDTi0Hytbaw3KogiK+EPIK9UPwUQbWkymSH5PdCzEQUIXDm+HXMyfcD5cN063wkwlSEas7u2Li9Niiyru4g6WkeO6nYJvmLsAk+5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HHAo2b7V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27686C433C7
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 12:20:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708344757;
-	bh=z6jp3CY0GaKsqK8dwyOQX0uBMqrjyZNNLTEvdVRdYlc=;
+	s=k20201202; t=1708345202;
+	bh=noVq4bc7dnRPWFIIfMG4cgZiOJV/t9EJeRTr1qC+Nbs=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ewb6TjyAqmiN+KNS+1fAk+KX6ZZaDm3s81LsaaQmvr7JT1BSj6+B9gg7NUG3l2WpU
-	 X2I3ACWaQNQcxE3Dn575HDsJxanIjEVVjExbowjLxLttAVfsll5PCeTOLjxU8owG92
-	 S3IuzkpWTiemF3P7u6+gOxlc0rTXBPa387bk1rYIXb/8T8lAFDoTsM2nh6SPV/9IbK
-	 qv+SDF0h3sTmEDqFraFk/H6xtQ+/EfRMS0R/bkkZ+R9zW66GLBg5guAhypfO4kvrmb
-	 TOBA9wktWkw3q0svt1hKl0kFx3pb0XIqOa1OiP6PL4FVfxutUHAXQYxFAgq9muVLtd
-	 VdrTJaG+6Latw==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a36126ee41eso559223866b.2;
-        Mon, 19 Feb 2024 04:12:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWFmsbEJk0vhNzmbKn7TU8FCIAbZ95Mn1bYQutucmgGWvFW8Vfz5ixVuATHfJtHLVtt1MrsoOiXLZl49nwjz38ZbMWHxBc4Nw==
-X-Gm-Message-State: AOJu0YwXrAV+NC0V7GwVSGv8bUNnzZa2dn0KJk9idxk3EMLcf/1Lg7yy
-	khUSNTFKbCc15MLxvgb/MrjDSCEyaoODNdvof6R/+pgzMi5PSeiijZECaSMiZZBAgLIAaVnvtK0
-	W2n2acXucBtweI7ubDAkcJUi+jtI=
-X-Google-Smtp-Source: AGHT+IEeyJ2w88JbVusXtZ30xx469nhIopberr76JjLS87AgryMP5Nt1kF1YhRKy3l/XxAV1UZzTaF0yW/FFlVQU23I=
-X-Received: by 2002:a17:906:b309:b0:a3d:48cf:65a6 with SMTP id
- n9-20020a170906b30900b00a3d48cf65a6mr8901363ejz.18.1708344755733; Mon, 19 Feb
- 2024 04:12:35 -0800 (PST)
+	b=HHAo2b7VogCcf0COARLEVg4mNIY4ysGFuQgZ1QTvLTTq1sWBKCIuOrLrpnNJOOjSW
+	 /1iYPh/FnCnAYih6p1wHHo1zBvEl1iJShDGWPxxhVkVfbhJilsziX0YtHxTfHClo6N
+	 1IsCTohLBZc47TMXb9ydjjdCAu1Sju0cXO5lJQxq+4YQYsJSoaeWfv2gvS6R0a46lB
+	 CDTcB6HZX+mh2BDWs/hzdtK3rLh1zmd0wGP1MRRjk5Qp7VGF4HsiwwYHfJiJkFW6x2
+	 tUrkz7N2PFH8ce7KwDYESEoY29EY66X7YqZ3P+TgZzB1PbjzH/YyjGTGXQeNRoYcja
+	 CzKdKnoeljpeQ==
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso729031766b.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 04:20:02 -0800 (PST)
+X-Gm-Message-State: AOJu0YwGRR+GvCQjp7VsB9dtGQ8+uFH69rcXGcoqEMayFqEnUendjkeq
+	Ds6VxavKGBAks7tTjvUWvRJeOs8cRhAk0eGz8dLTk/3rx/w7iUut5x9osVwWZoDG4c8fl1DHxmp
+	7228wBj3pghJU6UGJvn3ewBSOIaE=
+X-Google-Smtp-Source: AGHT+IHl98tbu2NTQtVjdrbTar6SlFMWQkxRFJZnqh/DlELlwxeLqn/RIPVAT2cvIG3xsGxeaL0YUwI19m/dARcN01A=
+X-Received: by 2002:a17:906:d968:b0:a3e:c2aa:adfd with SMTP id
+ rp8-20020a170906d96800b00a3ec2aaadfdmr1069074ejb.23.1708345200461; Mon, 19
+ Feb 2024 04:20:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219080007.70318-1-wqu@suse.com>
-In-Reply-To: <20240219080007.70318-1-wqu@suse.com>
+References: <c0bf7818-9c45-46a8-b3d3-513230d0c86e@inix.me> <CAL3q7H6tvCTdwrCXZ0tgOfkHhF=VWEW05_u3vr_rVv0u_PvvXg@mail.gmail.com>
+ <20b3b98b-b165-4fd7-b026-8f3c8440a631@inix.me> <29b50a95-025d-41c3-bee6-f51888b28487@inix.me>
+ <CAL3q7H41FJ1KV281OQKpozbtONLcEFoaMpZ2nCKhgTNR36GUCg@mail.gmail.com>
+ <762c0677-56d9-4a02-bfc2-581b9f3309c9@inix.me> <CAL3q7H7-iO_CqR5PPaqTM2GdpsNtV2-EeSU=mxOwE2++Ggg1EA@mail.gmail.com>
+ <e1ca1af6-7222-4f33-870b-a5e1acea2315@inix.me>
+In-Reply-To: <e1ca1af6-7222-4f33-870b-a5e1acea2315@inix.me>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 19 Feb 2024 12:11:58 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H69SsWkmvysP-mDm1h6DJ1YMFSRkzs87yyQG2YbgRt26Q@mail.gmail.com>
-Message-ID: <CAL3q7H69SsWkmvysP-mDm1h6DJ1YMFSRkzs87yyQG2YbgRt26Q@mail.gmail.com>
-Subject: Re: [PATCH] btrfs/016: fix a false alert due to xattrs mismatch
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Date: Mon, 19 Feb 2024 12:19:23 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6VL3O9J3Xu62x=UoknoNB9mZE+3GBDPiuja5OPtyPCZQ@mail.gmail.com>
+Message-ID: <CAL3q7H6VL3O9J3Xu62x=UoknoNB9mZE+3GBDPiuja5OPtyPCZQ@mail.gmail.com>
+Subject: Re: incremental stream after fstrim on thinly provisioned disk file
+To: Dorai Ashok S A <dash.btrfs@inix.me>
+Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 19, 2024 at 8:18=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+On Sat, Feb 17, 2024 at 12:34=E2=80=AFPM Dorai Ashok S A <dash.btrfs@inix.m=
+e> wrote:
 >
-> [BUG]
-> When running btrfs/016 after any other test case, it would fail on a
-> SELinux enabled environment:
+>  >> One surprise is, for any change to the disk file, such as I could jus=
+t
+>  >> do `touch thin-disk` and it will still be a large send stream.
+>  >>
+> ..snip..
+>  >>
+>  >> # btrfs send -p 5.s 6.s | wc -c | numfmt --to=3Diec
+>  >> At subvol 6.s
+>  >> 2.4G
+>  >>
+>  >> Is this expected?
+>  >
+>  > There are a few cases where we send the writes with zeroes where it's
+>  > actually not needed.
+>  > I just noticed an hour ago about one such case triggered by that use
+> case.
+>  >
+>  > So that can be improved, I'll send a patch for that on monday and let
+> you know.
 >
->   btrfs/015 1s ...  0s
->   btrfs/016 1s ... [failed, exit status 1]- output mismatch (see ~/xfstes=
-ts-dev/results//btrfs/016.out.bad)
->       --- tests/btrfs/016.out   2023-12-28 10:39:36.481027970 +1030
->       +++ ~/xfstests-dev/results//btrfs/016.out.bad     2023-12-28 15:53:=
-10.745436664 +1030
->       @@ -1,2 +1,3 @@
->        QA output created by 016
->       -Silence is golden
->       +fssum failed
->       +(see ~/xfstests-dev/results//btrfs/016.full for details)
->       ...
->       (Run 'diff -u ~/xfstests-dev/tests/btrfs/016.out ~/xfstests-dev/res=
-ults//btrfs/016.out.bad'  to see the entire diff)
->   Ran: btrfs/015 btrfs/016
->   Failures: btrfs/016
->   Failed 1 of 2 tests
->
-> [CAUSE]
-> The test case itself would try to use a blank SELinux context for the
-> SCRATCH_MNT, to control the xattrs.
->
-> But the initial send stream is generated from $TEST_DIR, which may still
-> have the default SELinux mount context.
->
-> And such mismatch in the SELinux xattr (source on $TEST_DIR still has
-> the extra xattr, meanwhile the receve end on $SCRATCH_MNT doesn't) would
-> lead to above mismatch.
->
-> [FIX]
-> Fix the false alerts by disable XATTR checks.
->
-> Furthermore instead of doing all the edge juggling using $TEST_DIR, this
-> time we do all the work on $SCRATCH_MNT.
->
-> This means we would generate the initial send stream from $SCRATCH_MNT,
-> then reformat the fs, mount scratch again, receive and verify.
->
-> We no longer needs to cleanup the extra file for the initial send
-> stream, as they are on the scratch device and would be formatted anyway.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog:
-> v2:
-> - Add -T option to avoid xattrs checks
->   Since this test case is only verify the hole punching behavior, XATTR
->   is not our interest.
-> ---
->  tests/btrfs/016 | 53 ++++++++++++++++++++-----------------------------
->  1 file changed, 22 insertions(+), 31 deletions(-)
->
-> diff --git a/tests/btrfs/016 b/tests/btrfs/016
-> index 35609329..37119363 100755
-> --- a/tests/btrfs/016
-> +++ b/tests/btrfs/016
-> @@ -12,58 +12,48 @@ _begin_fstest auto quick send prealloc
->  tmp=3D`mktemp -d`
->  tmp_dir=3Dsend_temp_$seq
->
-> -# Override the default cleanup function.
-> -_cleanup()
-> -{
-> -       $BTRFS_UTIL_PROG subvolume delete $TEST_DIR/$tmp_dir/snap > /dev/=
-null 2>&1
-> -       $BTRFS_UTIL_PROG subvolume delete $TEST_DIR/$tmp_dir/snap1 > /dev=
-/null 2>&1
-> -       $BTRFS_UTIL_PROG subvolume delete $TEST_DIR/$tmp_dir/send > /dev/=
-null 2>&1
-> -       rm -rf $TEST_DIR/$tmp_dir
-> -       rm -f $tmp.*
-> -}
-> -
->  # Import common functions.
->  . ./common/filter
->
->  # real QA test starts here
->  _supported_fs btrfs
-> -_require_test
->  _require_scratch
->  _require_fssum
->  _require_xfs_io_command "falloc"
->
->  _scratch_mkfs > /dev/null 2>&1
-> -
-> -#receive needs to be able to setxattrs, including the selinux context, i=
-f we use
-> -#the normal nfs context thing it screws up our ability to set the
-> -#security.selinux xattrs so we need to disable this for this test
-> -export SELINUX_MOUNT_OPTIONS=3D""
-> -
->  _scratch_mount
->
-> -mkdir $TEST_DIR/$tmp_dir
-> -$BTRFS_UTIL_PROG subvolume create $TEST_DIR/$tmp_dir/send \
-> +mkdir $SCRATCH_MNT/$tmp_dir
-> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/$tmp_dir/send \
->         > $seqres.full 2>&1 || _fail "failed subvolume create"
->
-> -_ddt of=3D$TEST_DIR/$tmp_dir/send/foo bs=3D1M count=3D10 >> $seqres.full=
- \
-> +_ddt of=3D$SCRATCH_MNT/$tmp_dir/send/foo bs=3D1M count=3D10 >> $seqres.f=
-ull \
->         2>&1 || _fail "dd failed"
-> -$BTRFS_UTIL_PROG subvolume snapshot -r $TEST_DIR/$tmp_dir/send \
-> -       $TEST_DIR/$tmp_dir/snap >> $seqres.full 2>&1 || _fail "failed sna=
-p"
-> -$XFS_IO_PROG -c "fpunch 1m 1m" $TEST_DIR/$tmp_dir/send/foo
-> -$BTRFS_UTIL_PROG subvolume snapshot -r $TEST_DIR/$tmp_dir/send \
-> -       $TEST_DIR/$tmp_dir/snap1 >> $seqres.full 2>&1 || _fail "failed sn=
-ap"
-> +$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/$tmp_dir/send \
-> +       $SCRATCH_MNT/$tmp_dir/snap >> $seqres.full 2>&1 || _fail "failed =
-snap"
-> +$XFS_IO_PROG -c "fpunch 1m 1m" $SCRATCH_MNT/$tmp_dir/send/foo
-> +$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/$tmp_dir/send \
-> +       $SCRATCH_MNT/$tmp_dir/snap1 >> $seqres.full 2>&1 || _fail "failed=
- snap"
->
-> -$FSSUM_PROG -A -f -w $tmp/fssum.snap $TEST_DIR/$tmp_dir/snap >> $seqres.=
-full \
-> +# -A disable access time check.
-> +# And -T disable xattrs to prevent SELinux changes causing false alerts,=
- and the
-> +# test case only cares about hole punching.
-> +$FSSUM_PROG -AT -f -w $tmp/fssum.snap $SCRATCH_MNT/$tmp_dir/snap >> $seq=
-res.full \
->         2>&1 || _fail "fssum gen failed"
-> -$FSSUM_PROG -A -f -w $tmp/fssum.snap1 $TEST_DIR/$tmp_dir/snap1 >> $seqre=
-s.full \
-> +$FSSUM_PROG -AT -f -w $tmp/fssum.snap1 $SCRATCH_MNT/$tmp_dir/snap1 >> $s=
-eqres.full \
->         2>&1 || _fail "fssum gen failed"
->
-> -$BTRFS_UTIL_PROG send -f $tmp/send.snap $TEST_DIR/$tmp_dir/snap >> \
-> +$BTRFS_UTIL_PROG send -f $tmp/send.snap $SCRATCH_MNT/$tmp_dir/snap >> \
->         $seqres.full 2>&1 || _fail "failed send"
-> -$BTRFS_UTIL_PROG send -p $TEST_DIR/$tmp_dir/snap \
-> -       -f $tmp/send.snap1 $TEST_DIR/$tmp_dir/snap1 \
-> +$BTRFS_UTIL_PROG send -p $SCRATCH_MNT/$tmp_dir/snap \
-> +       -f $tmp/send.snap1 $SCRATCH_MNT/$tmp_dir/snap1 \
->         >> $seqres.full 2>&1 || _fail "failed send"
->
-> +_scratch_unmount
-> +_scratch_mkfs > /dev/null 2>&1
-> +_scratch_mount
-> +
->  $BTRFS_UTIL_PROG receive -f $tmp/send.snap $SCRATCH_MNT >> $seqres.full =
-2>&1 \
->         || _fail "failed recv"
->  $BTRFS_UTIL_PROG receive -f $tmp/send.snap1 $SCRATCH_MNT >> $seqres.full=
- 2>&1 \
-> @@ -75,4 +65,5 @@ $FSSUM_PROG -r $tmp/fssum.snap1 $SCRATCH_MNT/snap1 >> $=
-seqres.full 2>&1 \
->         || _fail "fssum failed"
->
->  echo "Silence is golden"
-> -status=3D0 ; exit
-> +status=3D0
-> +exit
+> Sounds good. Thanks.
 
-This hunk is unrelated and unnecessary.
+For this particular case, here's the patch:
 
-But other than that, it looks good to me:
+https://lore.kernel.org/linux-btrfs/2888e22ef71003ad9dff455c7f4fb990b807754=
+8.1708260967.git.fdmanana@suse.com/
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Thanks.
-
-> --
-> 2.43.1
 >
+>  >> If we could support send/receive holes, it will be useful for
+>  >> incremental backup of disk images.
+>  >
+>  > Yes indeed. That however requires a change to the protocol to support
+>  > a new command (hole punching), and changing the kernel and
+>  > btrfs-progs' receive implementation, not something that can be easily
+>  > and quickly done, but has been on hold for years.
+>  >
+>
+> Makes sense. Thanks for clarifying.
+>
+> Regards,
+> -Ashok.
 >
 
