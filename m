@@ -1,82 +1,87 @@
-Return-Path: <linux-btrfs+bounces-2526-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2527-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7749285ABA9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 19:58:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B481485ABC0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 20:07:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB29B1C220EE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 18:58:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 504CEB2166F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 19:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB55D4C60E;
-	Mon, 19 Feb 2024 18:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC324BABE;
+	Mon, 19 Feb 2024 19:07:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ByWPm0we"
+	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="K7rWX3Uf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB3A4878A;
-	Mon, 19 Feb 2024 18:57:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F72341A82
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 19:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.144.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708369079; cv=none; b=HlGnKrGG8hQo3gEgVoLS/4Pm376n93lCgMBWkYtOVT55cx9InZzIDmI+M/u7rKUuWmAuFZxjvUbltVbuyz36sJicm9evQpbizaPwgE0Sl/S9jn+74sOIX+IYLozjCZrmC52nc2qJjk2thUqMET8DO3bE0wzjnJhsyfi6isoACkc=
+	t=1708369645; cv=none; b=kXhE7wstkcw+ZP3Z8UkKQM8ekhR7zZKqXOKptOynJXzrAjU7OjFMv9wFcp0H+4+GRh9puI4yxEpEZeHUMrJtykEn07p3dl7JlU2FxeoFYOOFzKyhcUf/fk2eNcCv0qj5riTd4bT1GEQDf4WdPPAwqefbd8vKM3GrJmdfP5bytes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708369079; c=relaxed/simple;
-	bh=WX+/BwKaMoi4eZrIDNE+tT6bRVlFBx1G/86vGVtXqD4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t6q0jRk83u0MfQIMuu10jp9MLjmBTIzwmWkyqKE23hO2YBYII9pJtdf6kwFT7qQf0dSxit6+uFsfDW/oOF0ZOm/RpiI/VYNGdZvrlC/rAZU35KA9tVPyPCk5yBVU+S1AhT4+iuidSYUhFSH0KrrOcenogMB9FYUEj9WzXqZOKeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ByWPm0we; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D104AC43399;
-	Mon, 19 Feb 2024 18:57:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708369079;
-	bh=WX+/BwKaMoi4eZrIDNE+tT6bRVlFBx1G/86vGVtXqD4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ByWPm0weIZLIZDkeu9F7U3wLzNAxvJ0wCc0RX9kGhgdhcJfvd6woVFl/GnXE1TSmM
-	 COFe07bO2b5emaS1mCXplG7Nyp/lAlqeDf6IoQ9f8bPe+rUntxpHDqCnExMiY7kJ47
-	 KiwTKH06LtDIHzNkYCwqAsiuJvnjz4kdzONe4y5nqyZ40xBUm010Vz30bGq053wPcE
-	 +ONYB1Np8G22L8MxHL7VziiI7QiaCYtoXbZ21PR0m6EN4hIiN9NUFXFLyO6dqrPXPJ
-	 gBrd6UUtBmYPhuyFFd3uerXJdoDrUxB06wlm4ih5guvURtYgzliLa/DRz5pLQJVpJx
-	 RB9hrKDCMCVDg==
-Date: Mon, 19 Feb 2024 11:57:55 -0700
-From: Keith Busch <kbusch@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	io-uring@vger.kernel.org, nilay@linux.ibm.com,
-	ritesh.list@gmail.com
-Subject: Re: [PATCH v4 01/11] block: Pass blk_queue_get_max_sectors() a
- request pointer
-Message-ID: <ZdOks-bU2kDY6S6Z@kbusch-mbp>
-References: <20240219130109.341523-1-john.g.garry@oracle.com>
- <20240219130109.341523-2-john.g.garry@oracle.com>
+	s=arc-20240116; t=1708369645; c=relaxed/simple;
+	bh=0PZFoDpgMk/2WU5pGwHLz9Ci4bxC5APke/QbCGbt1WE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=PVQ9tBbk84mi3/WXes+6LdfClWiwGN0pq91ZiMt3xWCi5vK7dDiSI5ITF5ffFqNYZAIrbT5ywrVY7Hrn6CFHlEP1eeu5dwd7wUcrfi9t7F9PqNe0ga1svyqQPQ0AHLtnYiCKzq0PyvLr+f6ua362jWwM+wTSLuVFulGtVA8LGUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me; spf=pass smtp.mailfrom=dorminy.me; dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b=K7rWX3Uf; arc=none smtp.client-ip=71.19.144.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	(No client certificate requested)
+	by box.fidei.email (Postfix) with ESMTPSA id C2E99827D9;
+	Mon, 19 Feb 2024 14:00:01 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+	t=1708369202; bh=0PZFoDpgMk/2WU5pGwHLz9Ci4bxC5APke/QbCGbt1WE=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=K7rWX3UfOUXp73mxetk5GDK8jnmna6u8BmrGpzmOZ2WGQqH+UOaE98pl4VW0WqeeB
+	 pj6tTdFciJxehw/+PV8+PaQA1v0hKOfTE6CjrMg9gZdlKEUREFObBAEgbJ59Pce620
+	 UA/d8a3xRwDkT2mSvm7Cl+j1gReZ3GyZB9owZVK0IPhVpmGwwqqrSBfjrYp/8+bopI
+	 PijTkbanUAF90qIi3EVNpUPrhQJgsP5yHSXCsI99VGqqYQRLjPD94C1jP4aK4qtrol
+	 4T1MJkvyq22WcQZdyLay2WW2vlwm3Y3RZSCCF4+yilpPN+Mvo4js4h2Xxv5KCPGCey
+	 E5oYJCU1cvL6A==
+Message-ID: <9e08b071-63af-4ad1-975a-7fe68902ca7c@dorminy.me>
+Date: Mon, 19 Feb 2024 14:00:00 -0500
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219130109.341523-2-john.g.garry@oracle.com>
+Subject: Re: [PATCH 0/2] btrfs: some optimizations for send
+Content-Language: en-US
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1708260967.git.fdmanana@suse.com>
+From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <cover.1708260967.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 19, 2024 at 01:00:59PM +0000, John Garry wrote:
-> Currently blk_queue_get_max_sectors() is passed a enum req_op. In future
-> the value returned from blk_queue_get_max_sectors() may depend on certain
-> request flags, so pass a request pointer.
+
+
+On 2/19/24 06:59, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Also use rq->cmd_flags instead of rq->bio->bi_opf when possible.
+> The following are two optimizations for send, one to avoid sending
+> unnecessary holes (writes full of zeros), which can waste a lot of space
+> at the receiver and increase stream size for cases where sparse files are
+> used, such as images of thin provisioned filesystems for example as
+> recently reported by a user. The second is just a small optimization to
+> avoid repeating a btree search. More details in the respective change logs.
+> 
+> Filipe Manana (2):
+>    btrfs: send: don't issue unnecessary zero writes for trailing hole
+>    btrfs: send: avoid duplicated search for last extent when sending hole
+> 
+>   fs/btrfs/send.c | 44 +++++++++++++++++++++++++-------------------
+>   1 file changed, 25 insertions(+), 19 deletions(-)
+> 
 
-Looks good.
-
-Reviewed-by: Keith Busch <kbusch@kernel.org>
+For both:
+Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
