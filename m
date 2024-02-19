@@ -1,77 +1,56 @@
-Return-Path: <linux-btrfs+bounces-2491-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2492-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26A7C85A1AB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 12:13:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2699A85A1AC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 12:13:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D09D71F22D0A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 11:13:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58ACA1C213F4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Feb 2024 11:13:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADDC2C1AA;
-	Mon, 19 Feb 2024 11:13:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="c+tENkvr";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="c+tENkvr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D332C197;
+	Mon, 19 Feb 2024 11:13:31 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E252C2C18E
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 11:13:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E10342C1A7
+	for <linux-btrfs@vger.kernel.org>; Mon, 19 Feb 2024 11:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708341208; cv=none; b=PmbVuZy7DdU+BIMC4dQ5l0Q1+uo++BLRzs8IBKCchTnXE3ObkNvSjqm5l8SY6Jg0xfhMiNX+5IaMZt04BxURuFd5VmH20YVp/zs8FcpMjhuWc+Mt1nGeb4CPwG5n+v6N5jbaz+33FrLf1GWFHNSjXiPcQiBuSnGiZnWTpiECGOE=
+	t=1708341210; cv=none; b=TIppMQkh99rIDw/FQWNc+5H1Ou0F0RDJEp/XZPJBtBy3We0JzOXc6xMnTW/4Wakg8HAYR2RPHYCwUuBA8QFGg616Xwd6DKXgM3NOX9PDBdvC5wOXlkK+MPbpTon//PJ1aKdgsckF7nxDHYl3m7Uyw1kfdkHjpO+h7SIfC3EhfEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708341208; c=relaxed/simple;
-	bh=SiiQLWI+uVonLmlXhTP7H6oHOCxAFJ3dnmeFvjlyV8A=;
+	s=arc-20240116; t=1708341210; c=relaxed/simple;
+	bh=E3J5EdY+VsU+foO/gXvJFFxshUZfre5kqdmy0Q/jN68=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GWI9+QXzdGEmQchWsNku3vf6FrKBBwRaWONPdXDpL02kooOLDWei6B1fKcVh11etLS9ItJa5hVuDqvgAxNpHIa289gutU6eq6rwWRowK8XWOR0D9Be6yqc/8a4092p3HjgIKJLKggX0ubdjjsIAmToRRXF9DsewP2Otbh8zDqJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=c+tENkvr; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=c+tENkvr; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=eCe2U4Q0t/gMxN83HGmm4gilBkmoSgobWkZPbvnQQNWqFHNB7SoRCWXJrCSIWmcKruMtC7iNfeC9NdKZdtN0H7udtZQ+OxeEhjw5/5wuOeL3zo15MinViAr8uL4MZ/0PaoAdj6hiVFVIqB7F+a6o9lpQ28h1j94kL6/1TQA0jBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 18B8022300;
-	Mon, 19 Feb 2024 11:13:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708341205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NxiKKdf1NYV8KrvHaSVaQjfWqcRvIdNjJGXAx33fgtk=;
-	b=c+tENkvrkgdMekG8BdOAcsg0j5ot7WRkMkLbRCTqV/c66PsJq1dZ+TwsaChKUhZ8BYl5zD
-	ukGao4l0hdf+i4QasZ307xINGseR9g1dEe6QcZXy11u3HfHRpyfZ8xMsqTuF19C8VTB4XC
-	EihNziiWnGZK1BL62cwLTP8yQ0Fo4SM=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708341205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NxiKKdf1NYV8KrvHaSVaQjfWqcRvIdNjJGXAx33fgtk=;
-	b=c+tENkvrkgdMekG8BdOAcsg0j5ot7WRkMkLbRCTqV/c66PsJq1dZ+TwsaChKUhZ8BYl5zD
-	ukGao4l0hdf+i4QasZ307xINGseR9g1dEe6QcZXy11u3HfHRpyfZ8xMsqTuF19C8VTB4XC
-	EihNziiWnGZK1BL62cwLTP8yQ0Fo4SM=
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 75EC01FD0F;
+	Mon, 19 Feb 2024 11:13:27 +0000 (UTC)
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 11EC2139C6;
-	Mon, 19 Feb 2024 11:13:25 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7011E139C6;
+	Mon, 19 Feb 2024 11:13:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id Ft5dBNU302WCZgAAn2gu4w
-	(envelope-from <dsterba@suse.com>); Mon, 19 Feb 2024 11:13:25 +0000
+	id 4VRaG9c302WHZgAAn2gu4w
+	(envelope-from <dsterba@suse.com>); Mon, 19 Feb 2024 11:13:27 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 02/10] btrfs: open code btrfs_backref_iter_free()
-Date: Mon, 19 Feb 2024 12:12:49 +0100
-Message-ID: <5dd7da97f6874bdd4d99ae277821d16aaa3a0fa5.1708339010.git.dsterba@suse.com>
+Subject: [PATCH 03/10] btrfs: open code btrfs_backref_get_eb()
+Date: Mon, 19 Feb 2024 12:12:52 +0100
+Message-ID: <069e65b3bddad3e52705fae6157135d682be0919.1708339010.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <cover.1708339010.git.dsterba@suse.com>
 References: <cover.1708339010.git.dsterba@suse.com>
@@ -82,74 +61,67 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLY(-4.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[20.42%]
 X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 75EC01FD0F
 X-Spam-Flag: NO
-X-Spam-Score: 0.90
 
-The helper is trivial and used only once, open code it. It's safe to
-remove the 'if', the pointer is validated in build_backref_tree().
+The helper is trivial, we can inline it. It's safe to remove the 'if' as
+the iterator is always valid when used, the potential NULL was never
+checked anyway.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/backref.h    | 8 --------
- fs/btrfs/relocation.c | 3 ++-
- 2 files changed, 2 insertions(+), 9 deletions(-)
+ fs/btrfs/backref.c | 4 ++--
+ fs/btrfs/backref.h | 8 --------
+ 2 files changed, 2 insertions(+), 10 deletions(-)
 
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index fe05e2f55bf7..1b57c8289de6 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -2960,7 +2960,7 @@ int btrfs_backref_iter_start(struct btrfs_backref_iter *iter, u64 bytenr)
+  */
+ int btrfs_backref_iter_next(struct btrfs_backref_iter *iter)
+ {
+-	struct extent_buffer *eb = btrfs_backref_get_eb(iter);
++	struct extent_buffer *eb = iter->path->nodes[0];
+ 	struct btrfs_root *extent_root;
+ 	struct btrfs_path *path = iter->path;
+ 	struct btrfs_extent_inline_ref *iref;
+@@ -3438,7 +3438,7 @@ int btrfs_backref_add_tree_node(struct btrfs_trans_handle *trans,
+ 		int type;
+ 
+ 		cond_resched();
+-		eb = btrfs_backref_get_eb(iter);
++		eb = iter->path->nodes[0];
+ 
+ 		key.objectid = iter->bytenr;
+ 		if (btrfs_backref_iter_is_inline_ref(iter)) {
 diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index 523e594ac753..493ea47db426 100644
+index 493ea47db426..04b82c512bf1 100644
 --- a/fs/btrfs/backref.h
 +++ b/fs/btrfs/backref.h
 @@ -283,14 +283,6 @@ struct btrfs_backref_iter {
  
  struct btrfs_backref_iter *btrfs_backref_iter_alloc(struct btrfs_fs_info *fs_info);
  
--static inline void btrfs_backref_iter_free(struct btrfs_backref_iter *iter)
+-static inline struct extent_buffer *btrfs_backref_get_eb(
+-		struct btrfs_backref_iter *iter)
 -{
 -	if (!iter)
--		return;
--	btrfs_free_path(iter->path);
--	kfree(iter);
+-		return NULL;
+-	return iter->path->nodes[0];
 -}
 -
- static inline struct extent_buffer *btrfs_backref_get_eb(
- 		struct btrfs_backref_iter *iter)
- {
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 2fca67f2b39b..f96f267fb4aa 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -523,7 +523,8 @@ static noinline_for_stack struct btrfs_backref_node *build_backref_tree(
- 	if (handle_useless_nodes(rc, node))
- 		node = NULL;
- out:
--	btrfs_backref_iter_free(iter);
-+	btrfs_free_path(iter->path);
-+	kfree(iter);
- 	btrfs_free_path(path);
- 	if (err) {
- 		btrfs_backref_error_cleanup(cache, node);
+ /*
+  * For metadata with EXTENT_ITEM key (non-skinny) case, the first inline data
+  * is btrfs_tree_block_info, without a btrfs_extent_inline_ref header.
 -- 
 2.42.1
 
