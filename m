@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-2592-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2593-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 542DA85C1A4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Feb 2024 17:45:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EA7885C1AA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Feb 2024 17:47:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CAA1283441
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Feb 2024 16:45:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E73FE2870B0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Feb 2024 16:47:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1099C76C60;
-	Tue, 20 Feb 2024 16:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21AB57641C;
+	Tue, 20 Feb 2024 16:47:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cJyU5m9F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RS0MlfZ1"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B2F96D1A8;
-	Tue, 20 Feb 2024 16:45:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F6D626C6;
+	Tue, 20 Feb 2024 16:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708447537; cv=none; b=pP3VlFtS5W7gmptTdBIOd2+7y6IJ0xb0N54hT+JHzd6Ir4pvX4lK+WTwha4D4e+3+UB22qegSrfhFO1BX2Qji+WtDp9e1yRGNqksdEHlOA8uB3LvZs3HReiURRgi7zHCTgDNfYQrwCRTaitnKIzGcbTJpw+FAnei1wSGGtXeINo=
+	t=1708447668; cv=none; b=Thsa4V9h1fyKa0ON+AFwBW16Yf2Yed/BRUTyQm5H8Mir7nTicwq5ZlBet1lw28yWF3NO6LIab30I9O3Ci+I/TNfmhZqCxnHFo7s9FmuIMA5FpJtRhrh6Iiyx1HejP1Jt6Ea2GItp7/npqVkCN7nciisSzUk9hO/BdMotlEdtcaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708447537; c=relaxed/simple;
-	bh=ct6nIOvbL8M7wH03UIWAUXfe/Nj9uCdY68ykTkdU/iE=;
+	s=arc-20240116; t=1708447668; c=relaxed/simple;
+	bh=FqygevkAe5lcGz7Su6avNkzg3RCKESgcbPZMqlQ1HSA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mLgBeq3I7EtIcBJSJuXajv+ff//vXe09CLEvxBvuUnsJPUfCoWLVF4ayHWlRHXzdz+qcUPMQ0d4q/KzepwUIxbQIvFUWqRulGU4XiArIYVKE/yK1jkDKCPe3J3+yeaY99Yxl5uIPpEV/3hBmBN29wlBZaywF4P59Ru5p/pb4LHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cJyU5m9F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5327C43394;
-	Tue, 20 Feb 2024 16:45:36 +0000 (UTC)
+	 To:Cc:Content-Type; b=ePlw863tEUGUzyfSAF/inq1/8wpQ4894gXgeeRmF7v3mUDFszEDwhJIi+vTn/ZXq4x0Iou0fh27ibf1gjuoXD+Z38fbYx4MvHHz6aviQ0zHFfami2PfnsjQgk0+9g8nsERuRIHvcnr1JdRhmuWwLMj6pi4/jPiVuper9+IWL6Tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RS0MlfZ1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1544AC433F1;
+	Tue, 20 Feb 2024 16:47:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708447536;
-	bh=ct6nIOvbL8M7wH03UIWAUXfe/Nj9uCdY68ykTkdU/iE=;
+	s=k20201202; t=1708447668;
+	bh=FqygevkAe5lcGz7Su6avNkzg3RCKESgcbPZMqlQ1HSA=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=cJyU5m9FfAOp2rBpdpmo3uKYrqVOEVHzoXx5vyHulG4kufgt8KWTlUG1sVSEqYXwP
-	 yZeLAdFdQKualJKsYOKNpSBZ5WoFATnIDAAwt8Q7clK+wKoCsLLBu+fVfVmNXETrTY
-	 EL4V377iBPWWbjNHJP9GXuMFTjQL194TOxBZ2lVleny9fK0f6ZDIhYWnSRb7RkgRuk
-	 IP9ikL7In1Q8Gj9RcCkkkZEpix+IOHM3lyYOIfUCZg24wgquY/Aqa0KuXw5EcAorUl
-	 zcSM+nXVgVsJqiHNtJvoG7b04opYN+OaJrIKTZogSkre1hEm1yk9OIEOVdvq7jj2TL
-	 78hx0pykVk6og==
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-563b7b3e3ecso7026544a12.0;
-        Tue, 20 Feb 2024 08:45:36 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU+2N8xBm6vA/suWEAw++5V1Z+l4QBNY6Got2bQpbBN2KJgpp37RZxOS/FtomOzUBZEW2CAm+pp7MuZuaucFxCQAks6bUhFTPDM9fc=
-X-Gm-Message-State: AOJu0YytobUV11A2/CS/UoaxBRLu9s9StwvD0PjpF6wd98p/LjQaUgVS
-	gdsjP29W64vGHu4fFuc8paBfRbYVi8xsvS5kW5M6KUKDlZZ01ovATr+tjlzPqwJeZgNWTKE7Aho
-	ZCj+Tgl3TZJps8y6Jfb5gTIfty6M=
-X-Google-Smtp-Source: AGHT+IGxJWAIucmvpfodSNr0f+k2oAISnhyOPh4htLFWOuXWrTSW6p5P4bDucY3W3hKtlDrzRmiy2TJABOMzm5PE0Eo=
-X-Received: by 2002:a17:906:48c7:b0:a3f:17b:d439 with SMTP id
- d7-20020a17090648c700b00a3f017bd439mr1441397ejt.71.1708447535071; Tue, 20 Feb
- 2024 08:45:35 -0800 (PST)
+	b=RS0MlfZ15ThXuaqwuIVLYNuwgcbOXEhYFyxCT5nMvfoWPG16S3k5lkVTI7b8CAFQz
+	 obmcOdgtRj2hNDjOaYe0Qb25mgzE7Fd8Z1I27utLO5jcqWtuay3yaEPk+3ixQd2fYd
+	 CBPeNXt8VuUwEyBaAx5DH7jYZy4UO24J/CVgXYIWiEPoVJZQXTGdcMMCMwre2cl1Su
+	 XVgZDaBdfcCuQZa3z54Aeu1al7iqX5rwCpaQDLPyIyDC4XYLUfR/ngy1ztgWXrPdkP
+	 5Xwznke5dRr6Hsf5cG3PSJZ+z0m6xmEVIoxCwyS6SfYTjCMrebiKakxmXETSxikhX5
+	 NzoHp/RQG8N2g==
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3e706f50beso334085966b.0;
+        Tue, 20 Feb 2024 08:47:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUMeaEmMWqxW0gw3oTQLBBTG45YXXzXE25X5LkXGrwE+HWkPbUoYfdapV5G7Tvv+8grJORmoGaSpM/8DDIlRLv1r+ox/+ZNqQ6XS+E=
+X-Gm-Message-State: AOJu0Yyt8MgEqccOqydz0teLn+xaqescC0IF9TUafV2bMWpyqvleGdDb
+	ij00GPOooaD+07+FnNsWU9l7AkT81eLb96d9Xc5ixlJvsZUSoFeygPZzhkQmKHw9gIgzSLkXXde
+	5q379fq9JWgl32waNrk81ZQTFICQ=
+X-Google-Smtp-Source: AGHT+IGNaDedGK63L2eKjneJeEryDXwPEq98aAzOfzllmwZGivfthI3VkmkTzObS5KAUvt/ufREITCVmP5LIKv7E8Ks=
+X-Received: by 2002:a17:906:3451:b0:a3f:18c4:a2a8 with SMTP id
+ d17-20020a170906345100b00a3f18c4a2a8mr818303ejb.29.1708447666426; Tue, 20 Feb
+ 2024 08:47:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1708362842.git.anand.jain@oracle.com> <a59c46c581dd2219c1aad6d7d82e1527e8a4d35d.1708362842.git.anand.jain@oracle.com>
-In-Reply-To: <a59c46c581dd2219c1aad6d7d82e1527e8a4d35d.1708362842.git.anand.jain@oracle.com>
+References: <cover.1708362842.git.anand.jain@oracle.com> <664d640d44d787f0b7c5cfba1b57abd2260b747c.1708362842.git.anand.jain@oracle.com>
+In-Reply-To: <664d640d44d787f0b7c5cfba1b57abd2260b747c.1708362842.git.anand.jain@oracle.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 20 Feb 2024 16:44:58 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5ngKVpTHGMEF-WyyTtt+-4fQ=BeMvuCUuRc9FNtrzwXA@mail.gmail.com>
-Message-ID: <CAL3q7H5ngKVpTHGMEF-WyyTtt+-4fQ=BeMvuCUuRc9FNtrzwXA@mail.gmail.com>
-Subject: Re: [PATCH v2 05/10] btrfs: check if cloned device mounts with tempfsid
+Date: Tue, 20 Feb 2024 16:47:09 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6r9mhWQmFbDHTGRa0dD8M8N0WiqOHbP9j2nt7XyQ7PcA@mail.gmail.com>
+Message-ID: <CAL3q7H6r9mhWQmFbDHTGRa0dD8M8N0WiqOHbP9j2nt7XyQ7PcA@mail.gmail.com>
+Subject: Re: [PATCH v2 06/10] btrfs: test case prerequisite _require_btrfs_mkfs_uuid_option
 To: Anand Jain <anand.jain@oracle.com>
 Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, zlang@redhat.com
 Content-Type: text/plain; charset="UTF-8"
@@ -72,163 +72,49 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Feb 19, 2024 at 7:49=E2=80=AFPM Anand Jain <anand.jain@oracle.com> =
 wrote:
 >
-> If another device with the same fsid and uuid would mount then verify if
-> it mounts with a temporary fsid.
+> For easier and more effective testing of btrfs tempfsid, newer versions
+> of mkfs.btrfs contain options such as --device-uuid. Check if the
+> currently running mkfs.btrfs contains this option.
 >
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Looks good, thanks.
+
 > ---
 > v2:
-> Bring create_cloned_devices() into the testcase.
-> Just use _cp_reflink output to match with golden output.
+>  Fix coding style, add space before grep
+>  Fix typp option -> options
 >
->  tests/btrfs/312     | 85 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/312.out | 19 ++++++++++
->  2 files changed, 104 insertions(+)
->  create mode 100755 tests/btrfs/312
->  create mode 100644 tests/btrfs/312.out
+>  common/btrfs | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 >
-> diff --git a/tests/btrfs/312 b/tests/btrfs/312
-> new file mode 100755
-> index 000000000000..6dd5811ddaa5
-> --- /dev/null
-> +++ b/tests/btrfs/312
-> @@ -0,0 +1,85 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 Oracle.  All Rights Reserved.
-> +#
-> +# FS QA Test 312
-> +#
-> +# On a clone a device check to see if tempfsid is activated.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick tempfsid
-
-This exercises reflinks, so it should have the 'clone' group as well.
-
-> +
-> +_cleanup()
+> diff --git a/common/btrfs b/common/btrfs
+> index 797f6a794dfc..f694afac3d13 100644
+> --- a/common/btrfs
+> +++ b/common/btrfs
+> @@ -88,6 +88,17 @@ _require_btrfs_mkfs_feature()
+>                 _notrun "Feature $feat not supported in the available ver=
+sion of mkfs.btrfs"
+>  }
+>
+> +_require_btrfs_mkfs_uuid_option()
 > +{
-> +       cd /
-> +       umount $mnt1 > /dev/null 2>&1
-
-Same as mentioned before, use $UMOUNT_PROG
-
-> +       rm -r -f $tmp.*
-> +       rm -r -f $mnt1
+> +       local cnt
+> +
+> +       cnt=3D$($MKFS_BTRFS_PROG --help 2>&1 | \
+> +                               grep -E --count "\-\-uuid|\-\-device-uuid=
+")
+> +       if [ $cnt !=3D 2 ]; then
+> +               _notrun "Require $MKFS_BTRFS_PROG with --uuid and --devic=
+e-uuid options"
+> +       fi
 > +}
 > +
-> +. ./common/filter.btrfs
-> +. ./common/reflink
-> +
-> +_supported_fs btrfs
-> +_require_btrfs_sysfs_fsid
-> +_require_btrfs_fs_feature temp_fsid
-> +_require_btrfs_command inspect-internal dump-super
-
-Instead of requiring here the inspect-internal command, it should be
-inside check_fsid()
-
-That's the pattern we usually do, common functions have the _require_*
-calls, avoiding the caller test to have to know each dependency and
-copy-paste it.
-
-Other than that, it looks fine.
-Thanks.
-
-> +_require_scratch_dev_pool 2
-> +_scratch_dev_pool_get 2
-> +
-> +mnt1=3D$TEST_DIR/$seq/mnt1
-> +mkdir -p $mnt1
-> +
-> +create_cloned_devices()
-> +{
-> +       local dev1=3D$1
-> +       local dev2=3D$2
-> +
-> +       [[ -z $dev1 || -z $dev2 ]] && \
-> +               _fail "create_cloned_devices() requires two devices as ar=
-guments"
-> +
-> +       echo -n Creating cloned device...
-> +       _mkfs_dev -fq -b $((1024 * 1024 * 300)) $dev1
-> +
-> +       _mount $dev1 $SCRATCH_MNT
-> +
-> +       $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' $SCRATCH_MNT/foo | \
-> +                                                               _filter_x=
-fs_io
-> +       $UMOUNT_PROG $SCRATCH_MNT
-> +       # device dump of $dev1 to $dev2
-> +       dd if=3D$dev1 of=3D$dev2 bs=3D300M count=3D1 conv=3Dfsync status=
-=3Dnone || \
-> +                                                       _fail "dd failed:=
- $?"
-> +       echo done
-> +}
-> +
-> +mount_cloned_device()
-> +{
-> +       local ret
-> +
-> +       echo ---- $FUNCNAME ----
-> +       create_cloned_devices ${SCRATCH_DEV_NAME[0]} ${SCRATCH_DEV_NAME[1=
-]}
-> +
-> +       echo Mounting original device
-> +       _mount ${SCRATCH_DEV_NAME[0]} $SCRATCH_MNT
-> +       $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' $SCRATCH_MNT/foo | \
-> +                                                               _filter_x=
-fs_io
-> +       check_fsid ${SCRATCH_DEV_NAME[0]}
-> +
-> +       echo Mounting cloned device
-> +       _mount ${SCRATCH_DEV_NAME[1]} $mnt1 || \
-> +                               _fail "mount failed, tempfsid didn't work=
-"
-> +
-> +       echo cp reflink must fail
-> +       _cp_reflink $SCRATCH_MNT/foo $mnt1/bar 2>&1 | \
-> +                                               _filter_testdir_and_scrat=
-ch
-> +
-> +       check_fsid ${SCRATCH_DEV_NAME[1]}
-> +}
-> +
-> +mount_cloned_device
-> +
-> +_scratch_dev_pool_put
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/312.out b/tests/btrfs/312.out
-> new file mode 100644
-> index 000000000000..b7de6ce3cc6e
-> --- /dev/null
-> +++ b/tests/btrfs/312.out
-> @@ -0,0 +1,19 @@
-> +QA output created by 312
-> +---- mount_cloned_device ----
-> +Creating cloned device...wrote 9000/9000 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +done
-> +Mounting original device
-> +wrote 9000/9000 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +On disk fsid:          FSID
-> +Metadata uuid:         FSID
-> +Temp fsid:             FSID
-> +Tempfsid status:       0
-> +Mounting cloned device
-> +cp reflink must fail
-> +cp: failed to clone 'TEST_DIR/312/mnt1/bar' from 'SCRATCH_MNT/foo': Inva=
-lid cross-device link
-> +On disk fsid:          FSID
-> +Metadata uuid:         FSID
-> +Temp fsid:             TEMPFSID
-> +Tempfsid status:       1
+>  _require_btrfs_fs_feature()
+>  {
+>         if [ -z $1 ]; then
 > --
 > 2.39.3
 >
