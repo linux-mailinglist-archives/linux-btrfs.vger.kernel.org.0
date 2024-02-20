@@ -1,223 +1,155 @@
-Return-Path: <linux-btrfs+bounces-2597-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2598-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F342585C1FC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Feb 2024 18:05:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4565085C376
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Feb 2024 19:13:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A952B2856E6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Feb 2024 17:05:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAC8AB25419
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Feb 2024 18:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765D176908;
-	Tue, 20 Feb 2024 17:05:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBE678665;
+	Tue, 20 Feb 2024 18:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YndGKXkR"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UQMCGWag";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="x7UEVYjO";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UQMCGWag";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="x7UEVYjO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E122768F3;
-	Tue, 20 Feb 2024 17:05:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48AD57764C;
+	Tue, 20 Feb 2024 18:13:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708448740; cv=none; b=MEn2+LVvnhW4jJUnWP6uYFFoPrUdJxpYaatvu0onC6B/isJDRyNKRPkxT/570YUl1y5cYmIcqOPUL08szA5HLyFj0Csa4YMUD2rY3cvwmPbV9M19zyQwRwa6bHarQx08p+EG/FVS0lS3n31DVjEXRSiwS6GwhVU9hbauvb/e2Tk=
+	t=1708452797; cv=none; b=tFrFHgY5WMcoyIIU7SWg8z9AFmKtcY/EQpFjfBRbbJQkqzozBY+IPLGleikif9G4/XkEHiWS8k4he1vm3Q75cbTgJTEmaQLLgf1QtP4TWaD0Qhjhql4bMiDA786l1RPWpTiWDpy9A1Hl2Jc29/plWnkilJGjEKWGajZLHEqJRgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708448740; c=relaxed/simple;
-	bh=RnU3sWGshZPuiiFG3B6xS1J9IoNHulqhv/N+LIER66k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M7YM3X7Ro/x+ayfSvGzD2zBZ6E1tL4CZCeSu7q31GGYgw0oUSd+bG4IUaLNxMAqEJQbxQPuKOBOPHapjIe19feyiQqg06pyTfI0OozET6cYudh0E4+ZFylx61OE3FywN3bTNtfDyWy3DlUAf1wf8ai/vOUtnAjbUR/KcV8f42ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YndGKXkR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C7D2C43394;
-	Tue, 20 Feb 2024 17:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708448740;
-	bh=RnU3sWGshZPuiiFG3B6xS1J9IoNHulqhv/N+LIER66k=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YndGKXkRSKa1lYfn7L7CpMa1arjG+nizzN8MxNI7NaKQhL+L1STdsAvZxTYAWm9gb
-	 AnqJUfaOI6NMYd1hVSqF/+fz2iW5ii+8L+2+wtiN6om6s3STkwL6IUTl2U4CHvROKJ
-	 2UhgWP/bSQ9YvxYAwZIvw3EGztdKB9ia8bTWoC0ug/qr8P0oWbCbZobKtCqqRf6sIX
-	 522SZgQP+I6JV3hQoB8C5z2dlZeLeX4XibV4Nt37aD40W/JiSZjEZpvpF3M9KaDpMp
-	 rateIq9R3qV8dFSLbh2Bi7LEOa+XA5PJPvq9TGlGDpBb11P77H95embJPp0yLe3jRP
-	 /IUm9ffcDVm6w==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so792623666b.0;
-        Tue, 20 Feb 2024 09:05:40 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX2VtGNBOs+kAmph3omoxJOAEKd4CMSUy8n92j92luqlxfzsIain6H9P5dDZBQ6YrdubSs+4Tz8QAP4DkA4P4LfCwrSQsKFYT7trSk=
-X-Gm-Message-State: AOJu0YwFeRw80NuhHLWYWGJBDKAD0ACrKOcN5Ra1MV18FH97LWTbbs4y
-	qucE09FnOzZjgMPvXpNeiYf9bPqAWZywZ53Busm5lUbtaS10NEgcWyKV1R4agiInaC/9Wfj5EGL
-	GUzEs6dIzYA6DPpVGIQGCNtYdTp8=
-X-Google-Smtp-Source: AGHT+IEL1iR/UBTMnQNNYTpcxwRNTpOFGFxwPdSokNnWX+qQyqwQViC4YPRrGTrdSIoGkX6T6Z7hPoeV02Rxs6XDCIo=
-X-Received: by 2002:a17:906:1c02:b0:a3e:4cfc:2186 with SMTP id
- k2-20020a1709061c0200b00a3e4cfc2186mr7234014ejg.17.1708448738485; Tue, 20 Feb
- 2024 09:05:38 -0800 (PST)
+	s=arc-20240116; t=1708452797; c=relaxed/simple;
+	bh=EqcKyO3P7dppHSuzNcw0smmf/DhyVg96kMAjvjcqGTo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CAhXBS7svoVMwdPgc2YtiBoRRjryc3zo0oSbnAQfsLviA+vPfjevBDw8S5T+6SRdwOqwDmLVfbp9z8hjypgBtYE7f4K+y0i6KAXZlEU3+CvNpXjqhxJjUVkRX4SCASQrmFQoGHQnesQcdOesAXKrNzxMDgW+1rYn+rd4RtQPt1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UQMCGWag; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=x7UEVYjO; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UQMCGWag; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=x7UEVYjO; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 605EA21DBD;
+	Tue, 20 Feb 2024 18:13:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708452793;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UOCOp+pOd/LrYT1vXNYbEllONUwin50q8/G6oCcTLxE=;
+	b=UQMCGWagPB137wK/YpauccnrD3ApbBzw975mAPxhMIJghA4fLOjm5yy1m+6di1pHcG6KV2
+	H1hl/AXFVpqYpMR+ofKH4zJYC4PvEeB1rmAT7O/btHYD7Sywi0KAl5Aib3DZ0rAZ/0hoJF
+	/kLKBcOfTMo7Th00k9fdW7f48EK2P6Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708452793;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UOCOp+pOd/LrYT1vXNYbEllONUwin50q8/G6oCcTLxE=;
+	b=x7UEVYjO4SsRB3Q6K5h0OWWbmg234tA0+vMQei9FAFy7XbpmdIxlvANPVOD7iprd3FacZz
+	uROFOqIQLpdCG+CQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708452793;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UOCOp+pOd/LrYT1vXNYbEllONUwin50q8/G6oCcTLxE=;
+	b=UQMCGWagPB137wK/YpauccnrD3ApbBzw975mAPxhMIJghA4fLOjm5yy1m+6di1pHcG6KV2
+	H1hl/AXFVpqYpMR+ofKH4zJYC4PvEeB1rmAT7O/btHYD7Sywi0KAl5Aib3DZ0rAZ/0hoJF
+	/kLKBcOfTMo7Th00k9fdW7f48EK2P6Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708452793;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UOCOp+pOd/LrYT1vXNYbEllONUwin50q8/G6oCcTLxE=;
+	b=x7UEVYjO4SsRB3Q6K5h0OWWbmg234tA0+vMQei9FAFy7XbpmdIxlvANPVOD7iprd3FacZz
+	uROFOqIQLpdCG+CQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 445681358A;
+	Tue, 20 Feb 2024 18:13:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id zoh5ELnr1GWoXwAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Tue, 20 Feb 2024 18:13:13 +0000
+Date: Tue, 20 Feb 2024 19:12:36 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
+	dsterba@suse.com, aromosan@gmail.com, bernd.feige@gmx.net,
+	CHECK_1234543212345@protonmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: do not skip re-registration for the mounted
+ device
+Message-ID: <20240220181236.GF355@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <88673c60b1d866c289ef019945647adfc8ab51d0.1707781507.git.anand.jain@oracle.com>
+ <20240214071620.GL355@twin.jikos.cz>
+ <CAL3q7H5wx5rKmSzGWP7mRqaSfAY88g=35N4OBrbJB61rK0mt2w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1708362842.git.anand.jain@oracle.com> <bd72599f2b44e4062262421ca52f83c3dedca1c8.1708362842.git.anand.jain@oracle.com>
-In-Reply-To: <bd72599f2b44e4062262421ca52f83c3dedca1c8.1708362842.git.anand.jain@oracle.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 20 Feb 2024 17:05:01 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4tNZ5uLzyojf3rU36Pnsz3sWPVgQ6H1y+Vw8PtFCV50A@mail.gmail.com>
-Message-ID: <CAL3q7H4tNZ5uLzyojf3rU36Pnsz3sWPVgQ6H1y+Vw8PtFCV50A@mail.gmail.com>
-Subject: Re: [PATCH v2 10/10] btrfs: test tempfsid with device add, seed, and balance
-To: Anand Jain <anand.jain@oracle.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, zlang@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H5wx5rKmSzGWP7mRqaSfAY88g=35N4OBrbJB61rK0mt2w@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.19
+X-Spamd-Result: default: False [-2.19 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.net,protonmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-1.19)[89.06%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[oracle.com,vger.kernel.org,suse.com,gmail.com,gmx.net,protonmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Flag: NO
 
-On Mon, Feb 19, 2024 at 7:50=E2=80=AFPM Anand Jain <anand.jain@oracle.com> =
-wrote:
->
-> Make sure that basic functions such as seeding and device add fail,
-> while balance runs successfully with tempfsid.
->
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> v2:
->  Remove unnecessary function.
->  Add clone group
->  use $UMOUNT_PROG
->  Let _cp_reflink fail on the stdout.
->
->  tests/btrfs/315     | 79 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/315.out |  9 ++++++
->  2 files changed, 88 insertions(+)
->  create mode 100755 tests/btrfs/315
->  create mode 100644 tests/btrfs/315.out
->
-> diff --git a/tests/btrfs/315 b/tests/btrfs/315
-> new file mode 100755
-> index 000000000000..4376c7f1849c
-> --- /dev/null
-> +++ b/tests/btrfs/315
-> @@ -0,0 +1,79 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 YOUR NAME HERE.  All Rights Reserved.
+On Tue, Feb 20, 2024 at 02:08:00PM +0000, Filipe Manana wrote:
+> On Wed, Feb 14, 2024 at 7:17 AM David Sterba <dsterba@suse.cz> wrote:
+> > On Tue, Feb 13, 2024 at 09:13:56AM +0800, Anand Jain wrote:
+> > https://btrfs.readthedocs.io/en/latest/dev/Developer-s-FAQ.html#ordering
+> 
+> So this introduces a regression.
+> 
+> $ ./check btrfs/14[6-9] btrfs/15[8-9]
 
-Your name here...
-
-> +#
-> +# FS QA Test 315
-> +#
-> +# Verify if the seed and device add to a tempfsid filesystem fails.
-
-And balance too...
-
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick volume seed tempfsid
-
-Missing 'balance' group.
-
-> +
-> +_cleanup()
-> +{
-> +       cd /
-> +       $UMOUNT_PROG $tempfsid_mnt 2>/dev/null
-> +       rm -r -f $tmp.*
-> +       rm -r -f $tempfsid_mnt
-> +}
-> +
-> +. ./common/filter.btrfs
-> +
-> +_supported_fs btrfs
-> +_require_btrfs_sysfs_fsid
-> +_require_scratch_dev_pool 3
-> +_require_btrfs_fs_feature temp_fsid
-> +_require_btrfs_command inspect-internal dump-super
-> +_require_btrfs_mkfs_uuid_option
-
-So same as before, these last 2 _require_* are because of the
-mkfs_clone() function,
-defined at common/btrfs, so they should be in the function and not
-spread over every test case that calls it.
-
-> +
-> +_scratch_dev_pool_get 3
-> +
-> +# mount point for the tempfsid device
-> +tempfsid_mnt=3D$TEST_DIR/$seq/tempfsid_mnt
-> +
-> +seed_device_must_fail()
-> +{
-> +       echo ---- $FUNCNAME ----
-> +
-> +       mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
-> +
-> +       $BTRFS_TUNE_PROG -S 1 ${SCRATCH_DEV}
-> +       $BTRFS_TUNE_PROG -S 1 ${SCRATCH_DEV_NAME[1]}
-> +
-> +       _scratch_mount 2>&1 | _filter_scratch
-> +       _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt} 2>&1 | _filter_test=
-_dir
-> +}
-> +
-> +device_add_must_fail()
-> +{
-> +       echo ---- $FUNCNAME ----
-> +
-> +       mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
-> +       _scratch_mount
-> +       _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
-> +
-> +       $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' $SCRATCH_MNT/foo | \
-> +                                                       _filter_xfs_io
-> +
-> +$BTRFS_UTIL_PROG device add -f ${SCRATCH_DEV_NAME[2]} ${tempfsid_mnt} >>=
- \
-> +                       $seqres.full 2>&1 && _fail "Failed to file device=
- add"
-
-Can't we do without the && _fail?
-Just call device add and put the expected error message in the golden outpu=
-t.
-It's the preferred pattern in fstests in general, and makes everything
-shorter and easier to read.
-
-Thanks.
-
-> +
-> +       echo Balance must be successful
-> +       _run_btrfs_balance_start ${tempfsid_mnt}
-> +}
-> +
-> +mkdir -p $tempfsid_mnt
-> +
-> +seed_device_must_fail
-> +
-> +_scratch_unmount
-> +_cleanup
-> +mkdir -p $tempfsid_mnt
-> +
-> +device_add_must_fail
-> +
-> +_scratch_dev_pool_put
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/315.out b/tests/btrfs/315.out
-> new file mode 100644
-> index 000000000000..e882fe41146d
-> --- /dev/null
-> +++ b/tests/btrfs/315.out
-> @@ -0,0 +1,9 @@
-> +QA output created by 315
-> +---- seed_device_must_fail ----
-> +mount: SCRATCH_MNT: WARNING: source write-protected, mounted read-only.
-> +mount: TEST_DIR/315/tempfsid_mnt: mount(2) system call failed: File exis=
-ts.
-> +---- device_add_must_fail ----
-> +wrote 9000/9000 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +Balance must be successful
-> +Done, had to relocate 3 out of 3 chunks
-> --
-> 2.39.3
->
+Thanks, with this I can reproduce it and have some ideas what could go
+wrong.
 
