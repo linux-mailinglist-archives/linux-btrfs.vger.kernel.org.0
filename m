@@ -1,150 +1,100 @@
-Return-Path: <linux-btrfs+bounces-2603-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2604-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65FA985D68F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 12:13:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC0EB85D6C9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 12:26:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B5641F220A5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 11:13:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 249FE1C20FA6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 11:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7283FE4F;
-	Wed, 21 Feb 2024 11:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 890A53FE35;
+	Wed, 21 Feb 2024 11:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dGxRgMqy";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iaINkpDh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dGxRgMqy";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iaINkpDh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dI6mMiYn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3E53FE3F
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Feb 2024 11:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54EF28363
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Feb 2024 11:25:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708514002; cv=none; b=Od9x/Gzt1PNGqbGRds2cQCcyY/Z8YYOy9XJlvisx4oFA2Cw1ikFl1m2trQvBhhyY9Ph+dDkcU+PWx1eh4HXPlteEFcbBI4ydIZLRuZGZ8O/DRRJz1x3tWMuhcF0yoCQDKxgKi/QvAt1kw+41XUQ1aGvIXk5K7hkLatY837qJRPw=
+	t=1708514755; cv=none; b=HFAkus7rqturWx8/KrVhOPbeoJmhoqCQLJX5X+fmhQWCC79+Ql7WP/b9DcVXkipPWiZeBTdmb4Edl75yn6I3Sh7HUzkrNSuQ8Ob2xl8j4ZfkBtH3UX1VfiwMELZfz/75Yl4dl1e/aG86w18/7eh7F65M+mFCoWJZPKkAW1Cc3dM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708514002; c=relaxed/simple;
-	bh=WlEjcMaPXWj5XYAdu7eT7FtJekxkRHkIJuR9cNoEUq8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qGxCViNGC/aPayruRK+ko/b7Gg9zVfswAAn7axilW6q9TL/zhgy1IFaDFXZo4kl3mMWfl4PEcOVlmA0dVEtl2ohzNxjF7gyWFZamS4XZHIzAf3VY8r1Wm25FbnFJfjIb1ddbpzWR7agtdE0hzKEqJWThVfVGDFVr2sf//WSZIJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dGxRgMqy; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iaINkpDh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dGxRgMqy; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iaINkpDh; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9AD8E2203A;
-	Wed, 21 Feb 2024 11:13:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708513998;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MhRjIwIm0DAZH3YS+eRbVSBH9Vova5rr6YVGI7jszfI=;
-	b=dGxRgMqygNzgxTkYbjkzGQOSCP7Dz2LyO3Ph6PgCM4/tdvJd0DN4Hl6Q+Ms4JPjPWrfuXM
-	DL8HQMEZoj4Evo+ePxOYyfDKvhu3VuUEExXzNMf4C+KrHGi2LkETDrbfXn1A5dFxMKQDl2
-	r1EVOqIrY8Mxa0rd/0mdB2qLaEx/bAU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708513998;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MhRjIwIm0DAZH3YS+eRbVSBH9Vova5rr6YVGI7jszfI=;
-	b=iaINkpDh25ekjhAX9nU80MRt198hodIdmhz76bf5CUaXjCmuiCRId7dF+yQ/HJ9JV8N4/p
-	3Ok846rzUEMpiBCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708513998;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MhRjIwIm0DAZH3YS+eRbVSBH9Vova5rr6YVGI7jszfI=;
-	b=dGxRgMqygNzgxTkYbjkzGQOSCP7Dz2LyO3Ph6PgCM4/tdvJd0DN4Hl6Q+Ms4JPjPWrfuXM
-	DL8HQMEZoj4Evo+ePxOYyfDKvhu3VuUEExXzNMf4C+KrHGi2LkETDrbfXn1A5dFxMKQDl2
-	r1EVOqIrY8Mxa0rd/0mdB2qLaEx/bAU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708513998;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MhRjIwIm0DAZH3YS+eRbVSBH9Vova5rr6YVGI7jszfI=;
-	b=iaINkpDh25ekjhAX9nU80MRt198hodIdmhz76bf5CUaXjCmuiCRId7dF+yQ/HJ9JV8N4/p
-	3Ok846rzUEMpiBCQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8307A13A25;
-	Wed, 21 Feb 2024 11:13:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 2hu2H87a1WXOHwAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Wed, 21 Feb 2024 11:13:18 +0000
-Date: Wed, 21 Feb 2024 12:12:41 +0100
-From: David Sterba <dsterba@suse.cz>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs: fix a couple KCSAN warnings
-Message-ID: <20240221111241.GG355@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1708429856.git.fdmanana@suse.com>
+	s=arc-20240116; t=1708514755; c=relaxed/simple;
+	bh=y93AIhI8jL5LLXCyvV1q9aq1jy2VfzFHMC2loOs7tJI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sf7FSXXFFr+8w0CTL24UIyIZ7NAP/k8vWxBSm5i+g/wLDWDWqUhzSuKr/y3zvBvGv/N15ZCv2VGV3M76u7CT9oG7RXyf+gqiyw1lQUnB/i8a6ZWFZkj8Xs6gTHLCujF9V5Sknstt0QwIiUnRIM/JUzZWAhO8JsytJ9zQ9jzdlK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dI6mMiYn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D0F4C43394
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Feb 2024 11:25:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708514755;
+	bh=y93AIhI8jL5LLXCyvV1q9aq1jy2VfzFHMC2loOs7tJI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=dI6mMiYnl0WDviB/4BhssPY4uHB5fipfsTLas/7GafOchRJLqScUfUzSZYOKf27ij
+	 hGRfLu7mYgUwGEVWNeN3mG7XpJJRtMGlwCWQY913zPZPLt22sGdz75ouQuyDCd1v/b
+	 3lN3gZLw4TEykvzD7Gpk4ZCPxA2hKemOElpn2lUMIZOyF8uccdR9/OYeAhFg6ynmzO
+	 YUp/G5N+47Eo2Vio8blFdhBvDGjbobs/dgxEBNEthCQXSUdWubEd/md9PPgRza9+gQ
+	 4xEmJ2Boid24iLjJu3t3lCNaUpgeIEOW9LRhvMJG3JSinf0jH4xNkGQHiaiCeVS2CM
+	 3UdQfJRmOr7vQ==
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso6616170a12.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Feb 2024 03:25:55 -0800 (PST)
+X-Gm-Message-State: AOJu0YybI3HYSLLT7HoPxMy7f88y2+sRKmvHBQRzSBf/UdfSFAfntWfq
+	+jNRi8ms9XDrfwC0jpP3ZTZYwoerMs9Q4Z6fqMknsIhjHDcM2JQf56oOwx3s+t7lXPQ6PMe7a8H
+	3FIHKO4e2jmJsGm7eC8WWHS6GToo=
+X-Google-Smtp-Source: AGHT+IFWvF2/tW8KPI0iAu2wZgJkN0Dj3RWujvhzaRLbAMr/NpyV+VCyTmeXkUzvH3QORiXOLX5gOEkYZ/YlOwnWWuw=
+X-Received: by 2002:a17:906:cb9a:b0:a3e:9ce3:1b2 with SMTP id
+ mf26-20020a170906cb9a00b00a3e9ce301b2mr5525365ejb.5.1708514753535; Wed, 21
+ Feb 2024 03:25:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1708429856.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.03
-X-Spamd-Result: default: False [-1.03 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 TO_DN_NONE(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.03)[55.52%]
-X-Spam-Flag: NO
+References: <cover.1708429856.git.fdmanana@suse.com> <20240221111241.GG355@twin.jikos.cz>
+In-Reply-To: <20240221111241.GG355@twin.jikos.cz>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 21 Feb 2024 11:25:16 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H78JY7ogkGpbhEyNio2QiPOHFmT3U+d3YVcuqot2OS-0w@mail.gmail.com>
+Message-ID: <CAL3q7H78JY7ogkGpbhEyNio2QiPOHFmT3U+d3YVcuqot2OS-0w@mail.gmail.com>
+Subject: Re: [PATCH 0/2] btrfs: fix a couple KCSAN warnings
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 20, 2024 at 12:24:32PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> KCSAN reports a couple data races around access to block reserves.
-> While they are very likely harmless it generates some noise and reports
-> will keep coming, so address these.
-> 
-> Filipe Manana (2):
->   btrfs: fix data races when accessing the reserved amount of block reserves
->   btrfs: fix data race at btrfs_use_block_rsv() when accessing block reserve
+On Wed, Feb 21, 2024 at 11:13=E2=80=AFAM David Sterba <dsterba@suse.cz> wro=
+te:
+>
+> On Tue, Feb 20, 2024 at 12:24:32PM +0000, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > KCSAN reports a couple data races around access to block reserves.
+> > While they are very likely harmless it generates some noise and reports
+> > will keep coming, so address these.
+> >
+> > Filipe Manana (2):
+> >   btrfs: fix data races when accessing the reserved amount of block res=
+erves
+> >   btrfs: fix data race at btrfs_use_block_rsv() when accessing block re=
+serve
+>
+> Thre's another way to "fix" the KCSAN warnings, adding a data_race()
+> annotation to the access when it does not matter if the lock is taken or
+> not.
+>
+> In commit 748f553c3c4c "btrfs: add KCSAN annotations for unlocked access
+> to block_rsv->full" this was added for 'full', have you considered that
+> for 'reserved' too? The spin lock is also correct regarding the warning
+> but still increases the lock contention.
 
-Thre's another way to "fix" the KCSAN warnings, adding a data_race()
-annotation to the access when it does not matter if the lock is taken or
-not.
-
-In commit 748f553c3c4c "btrfs: add KCSAN annotations for unlocked access
-to block_rsv->full" this was added for 'full', have you considered that
-for 'reserved' too? The spin lock is also correct regarding the warning
-but still increases the lock contention.
+Yes, I have considered that, and in the change logs of the patches I
+mention why I chose to take the lock instead.
+As for the contention,, these aren't that heavy given the contexts
+where they are used and how much little work they do.
 
