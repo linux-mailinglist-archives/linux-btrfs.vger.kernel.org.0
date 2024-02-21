@@ -1,214 +1,260 @@
-Return-Path: <linux-btrfs+bounces-2612-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2608-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1896E85DA70
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 14:31:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 187B985D93A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 14:16:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA8D6286116
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 13:31:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C02CB2845E6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 13:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14D917EEFF;
-	Wed, 21 Feb 2024 13:28:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A166278B68;
+	Wed, 21 Feb 2024 13:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="YUa80MJk"
+	dkim=pass (2048-bit key) header.d=web.de header.i=devzero@web.de header.b="GpiJG5pQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C35B69D2E;
-	Wed, 21 Feb 2024 13:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E7977A03
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Feb 2024 13:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708522084; cv=none; b=rGPBdZsUN6w7UJqYxyvaf9CeswLz0n49p50+0Vr5l0J8NqPas8k33f2c/DFy43nYgATuWVZCsNRfvZAbpzl2goRz/VU6syFSdt+AfBqv+ftwCrmZUsXdadpTxsLhlj+HfkyQ4XnDEcGaHLEoh1jhWsCYa4pmXaolh94nsfi9zyE=
+	t=1708521352; cv=none; b=ruB2bOyaxISZcLoDlLESZnganNzY3JWHQpIbwRQOwmeMBz4XtqN9oiFhdYukbdHYskuDwJkfQbZaLRpaqwDxcqJeuuyJqbM9jk9GUJrk8OOkTk7sNF5oxrWAEul3J3R2Hk4ToDtoDd9KA3TBBGLlRXiIIZJFbDC9HSMq9rxyMDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708522084; c=relaxed/simple;
-	bh=tjLQtH4WQ+Nf5I4zn1vDAdjWwY9YhNMDCa+GKPKt6h8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tT06X6D3/tZjfyn3Uimwc/WH9HpZy36Uf/8gFu49z/HbKFVe7ER0+pInrcGLiLGhQtlvitWgrd9dLKdr+YMcb5NnVkZnaFMoUeFSf239GsdnG1mP1oQ6+EotHtXHk884TVXnTv0KUCgoXaNulO7vxzJ6jTrCPS+MIuB6GMHtJV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=YUa80MJk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A226DC433F1;
-	Wed, 21 Feb 2024 13:28:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708522084;
-	bh=tjLQtH4WQ+Nf5I4zn1vDAdjWwY9YhNMDCa+GKPKt6h8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YUa80MJk5ys7Nhu5oP7+uKe6kmUyVO75KFGe1bt6MxGKoc88HOW9xvxlzVdtfnTwp
-	 sQ6RiSYeJW7lvrvZa7r4DoSYt5278khL8o6kJq+U/8j4u7Q28Qwpq0+AHYYwyATPDa
-	 4p0zdkDYXUWH3vNBNH3Rc7Dw173u/cQ9JObQ0tF0=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org,
-	linux-btrfs@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	ken <ken@bllue.org>,
-	syzbot+d13490c82ad5353c779d@syzkaller.appspotmail.com,
-	Filipe Manana <fdmanana@suse.com>,
-	David Sterba <dsterba@suse.com>,
-	Eugeniu Rosca <eugeniu.rosca@bosch.com>
-Subject: [PATCH 5.15 075/476] btrfs: fix race between reading a directory and adding entries to it
-Date: Wed, 21 Feb 2024 14:02:06 +0100
-Message-ID: <20240221130010.744121743@linuxfoundation.org>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240221130007.738356493@linuxfoundation.org>
-References: <20240221130007.738356493@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+	s=arc-20240116; t=1708521352; c=relaxed/simple;
+	bh=EdRAOohke/zYN9xl8rce+/o08xSjgtGRfZcohBXf0Io=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=IP9SaeFGn8OqNDu7XjIqjqE2DrdcOa4XGOcSKHeoQVmSyMZiTzW622YwYVqEHyq2kVpQUva2I0BHUY9GR0PysRn8qN7p8rR6S6XRLUJsoJhu2PnBPQGa3/ZlCrWbu69cJiblBkc4Xqz9uqfeJxDpXUpSdIC0ZYZAJ1itF6yQ9Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=devzero@web.de header.b=GpiJG5pQ; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1708521342; x=1709126142; i=devzero@web.de;
+	bh=EdRAOohke/zYN9xl8rce+/o08xSjgtGRfZcohBXf0Io=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=GpiJG5pQAH5dT+01x7KsPz0fBoufwPmgnstA7w2d+Wfq2VhExQA8x/wa+k0W38Ft
+	 rpjw0YNsnsiT4GBvdmrHr5Eb4UsKpgOrruZdkJe+V7u7TQUerfzUdDe9Bwhi1oH2j
+	 SzyMBWiB38gjjEkxzJKlZcEYhbyiKA1ZFqtRzR4ZgHZr6CoQSddGZFJtY8Ua5cKEI
+	 vkUWNjXWuWrENOSqesq0mT0e5aTnwxckt8srrDlYsPDiLQjzzZm1xAjPfKKWUlCya
+	 wQIj2IeLCS+kQisMmUOcboJqqprsozzDYiRmnsOPjtK/ZRhLumaz1xZ7VqAI9m4Zw
+	 yi9jWQEardjOHWkoNA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [172.20.35.190] ([37.24.118.138]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MvKXb-1qlVAl0sKH-00qoNV; Wed, 21
+ Feb 2024 14:15:42 +0100
+Message-ID: <2790f277-fc10-43fc-b7d3-9a3cef1eced2@web.de>
+Date: Wed, 21 Feb 2024 14:15:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: apply different compress/compress-force settings on different
+ subvolumes ?
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <5bd227d2-187a-4e0a-9ae8-c199bf6d0c85@web.de>
+ <1597160e-0b54-403b-8e9d-9435425f14f3@gmx.com>
+From: Roland <devzero@web.de>
+In-Reply-To: <1597160e-0b54-403b-8e9d-9435425f14f3@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:CSazrZBeY0teF+ds8Sb9Za4ddZ82sei40W8m85DvrZfZ/ngIKr2
+ WlIKORlyspsgmqTtIOjUWHRVFNRSp/m73HXbWryX1Pq0E4+b4s/F4C+fUpsIBfR4763HXX2
+ CFXAJa4aNTBqqn+inBJmWowbUky0N8SfiS4TNOLv/Z26C9UMSx05obyd/wJpk2IKtN0yXsQ
+ JkZkXku5rCbFUOohUYv4Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:QIPR4Lvetps=;CC7IqjTCbDerdogkFvr0Nz5Mu6R
+ 6zRj6HXQU6pRkVezn95D57/7pM/ByaUhn8BGfkLNpQ/Ar0Kv6qhpxCkRjBdcU7aUXVXLv+cVQ
+ R90W/TxdUXfOGGeOSbt8y6sxembpL0J6ZotjxuvKaNk3y2gmVLrj+KjhoSAqF5IwWhr2PZ0ax
+ 7y/g/xHVzFbSXY95VJweysbgFnx9ws0bWTGG7SxxzkS5J6m64Cu5QuUx65VmsUf135oepKwm4
+ KNV2qo6b0AvYBhpUzEueFCsu0g4rLPses8O0KlukXl+6NIhyPBnlgoBhhcgyJlawmg2CVpXtW
+ 3q34f8y5QMZvGiO4uqkzF6L/YF9ITQwjAV66KcamjV0CS/3viFHvHngMXiy5sTB/LM2v0HRo4
+ OMNLdLB3tYpGSBZBUz4XF/HEEeJwBh8Fmnzt2vZ3Z5pMry2afmTGgFDPWR62bT3XbblVp56zW
+ WXBjWdUjjJcODvXLiKR+Ur5TtkYwzud2/RJ/O8LAhEFpDnNReQrQ0Hr5ckmFXkCzAXjfYinvV
+ GDjSx3sDE/VHmZ7KES6JnOHGowIDPThH/czVADgcVjTBSTs2QNVEmRs1vm6bbI+Kc4qCOPcRg
+ pCZ79OTuppQiHsIIY6YSUjRbinPMEawwW7GTaqPt3BBOzenpQ+iMN3CMA5lGwz0k0Ld1T5d9G
+ y7zg6KMUxTMzCv2ai0zXEQB4FJSTUd2xYhbtwbs7l2pcl1GuvO3l9YoQrB8EOuKia2jKc/IED
+ 6C0oRjmriAiiz2s1FJwRy3POo8ZjwVCqwZeCV922heYngMnlJH4vw0qFp096vuPfvEvgHgvG2
+ iwcOBkdKMgvhRqdN/70lzkqIE38uQRL7+wdde/8ZRZcs8=
 
-5.15-stable review patch.  If anyone has any objections, please let me know.
+Am 21.02.24 um 10:33 schrieb Qu Wenruo:
 
-------------------
+> =E5=9C=A8 2024/2/21 19:19, Roland =E5=86=99=E9=81=93:
+>> hello,
+>>
+>> what can be the reason , that multiple compress mount option do not wor=
+k
+>> on subvolume level , i.e. it's always the first that wins ?
+> In that case, you may want to use "btrfs prop" subcommand to setup
+> compression for each subvolume.
+>
+> The mount option one is really affecting the whole filesystem.
+>>
+>> and why is compress-force silently ignored? (see below)
+> Compress-force has no coresponding per-inode prop option though.
+>
+> But I don't think compress-force would cause much difference against
+> regular compress.
 
-From: Filipe Manana <fdmanana@suse.com>
+apparently, force-compress can make a big difference (and compress only
+can lead to no compression at all):
 
-commit 8e7f82deb0c0386a03b62e30082574347f8b57d5 upstream.
-
-When opening a directory (opendir(3)) or rewinding it (rewinddir(3)), we
-are not holding the directory's inode locked, and this can result in later
-attempting to add two entries to the directory with the same index number,
-resulting in a transaction abort, with -EEXIST (-17), when inserting the
-second delayed dir index. This results in a trace like the following:
-
-  Sep 11 22:34:59 myhostname kernel: BTRFS error (device dm-3): err add delayed dir index item(name: cockroach-stderr.log) into the insertion tree of the delayed node(root id: 5, inode id: 4539217, errno: -17)
-  Sep 11 22:34:59 myhostname kernel: ------------[ cut here ]------------
-  Sep 11 22:34:59 myhostname kernel: kernel BUG at fs/btrfs/delayed-inode.c:1504!
-  Sep 11 22:34:59 myhostname kernel: invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
-  Sep 11 22:34:59 myhostname kernel: CPU: 0 PID: 7159 Comm: cockroach Not tainted 6.4.15-200.fc38.x86_64 #1
-  Sep 11 22:34:59 myhostname kernel: Hardware name: ASUS ESC500 G3/P9D WS, BIOS 2402 06/27/2018
-  Sep 11 22:34:59 myhostname kernel: RIP: 0010:btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel: Code: eb dd 48 (...)
-  Sep 11 22:34:59 myhostname kernel: RSP: 0000:ffffa9980e0fbb28 EFLAGS: 00010282
-  Sep 11 22:34:59 myhostname kernel: RAX: 0000000000000000 RBX: ffff8b10b8f4a3c0 RCX: 0000000000000000
-  Sep 11 22:34:59 myhostname kernel: RDX: 0000000000000000 RSI: ffff8b177ec21540 RDI: ffff8b177ec21540
-  Sep 11 22:34:59 myhostname kernel: RBP: ffff8b110cf80888 R08: 0000000000000000 R09: ffffa9980e0fb938
-  Sep 11 22:34:59 myhostname kernel: R10: 0000000000000003 R11: ffffffff86146508 R12: 0000000000000014
-  Sep 11 22:34:59 myhostname kernel: R13: ffff8b1131ae5b40 R14: ffff8b10b8f4a418 R15: 00000000ffffffef
-  Sep 11 22:34:59 myhostname kernel: FS:  00007fb14a7fe6c0(0000) GS:ffff8b177ec00000(0000) knlGS:0000000000000000
-  Sep 11 22:34:59 myhostname kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  Sep 11 22:34:59 myhostname kernel: CR2: 000000c00143d000 CR3: 00000001b3b4e002 CR4: 00000000001706f0
-  Sep 11 22:34:59 myhostname kernel: Call Trace:
-  Sep 11 22:34:59 myhostname kernel:  <TASK>
-  Sep 11 22:34:59 myhostname kernel:  ? die+0x36/0x90
-  Sep 11 22:34:59 myhostname kernel:  ? do_trap+0xda/0x100
-  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel:  ? do_error_trap+0x6a/0x90
-  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel:  ? exc_invalid_op+0x50/0x70
-  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel:  ? asm_exc_invalid_op+0x1a/0x20
-  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel:  ? btrfs_insert_delayed_dir_index+0x1da/0x260
-  Sep 11 22:34:59 myhostname kernel:  btrfs_insert_dir_item+0x200/0x280
-  Sep 11 22:34:59 myhostname kernel:  btrfs_add_link+0xab/0x4f0
-  Sep 11 22:34:59 myhostname kernel:  ? ktime_get_real_ts64+0x47/0xe0
-  Sep 11 22:34:59 myhostname kernel:  btrfs_create_new_inode+0x7cd/0xa80
-  Sep 11 22:34:59 myhostname kernel:  btrfs_symlink+0x190/0x4d0
-  Sep 11 22:34:59 myhostname kernel:  ? schedule+0x5e/0xd0
-  Sep 11 22:34:59 myhostname kernel:  ? __d_lookup+0x7e/0xc0
-  Sep 11 22:34:59 myhostname kernel:  vfs_symlink+0x148/0x1e0
-  Sep 11 22:34:59 myhostname kernel:  do_symlinkat+0x130/0x140
-  Sep 11 22:34:59 myhostname kernel:  __x64_sys_symlinkat+0x3d/0x50
-  Sep 11 22:34:59 myhostname kernel:  do_syscall_64+0x5d/0x90
-  Sep 11 22:34:59 myhostname kernel:  ? syscall_exit_to_user_mode+0x2b/0x40
-  Sep 11 22:34:59 myhostname kernel:  ? do_syscall_64+0x6c/0x90
-  Sep 11 22:34:59 myhostname kernel:  entry_SYSCALL_64_after_hwframe+0x72/0xdc
-
-The race leading to the problem happens like this:
-
-1) Directory inode X is loaded into memory, its ->index_cnt field is
-   initialized to (u64)-1 (at btrfs_alloc_inode());
-
-2) Task A is adding a new file to directory X, holding its vfs inode lock,
-   and calls btrfs_set_inode_index() to get an index number for the entry.
-
-   Because the inode's index_cnt field is set to (u64)-1 it calls
-   btrfs_inode_delayed_dir_index_count() which fails because no dir index
-   entries were added yet to the delayed inode and then it calls
-   btrfs_set_inode_index_count(). This functions finds the last dir index
-   key and then sets index_cnt to that index value + 1. It found that the
-   last index key has an offset of 100. However before it assigns a value
-   of 101 to index_cnt...
-
-3) Task B calls opendir(3), ending up at btrfs_opendir(), where the VFS
-   lock for inode X is not taken, so it calls btrfs_get_dir_last_index()
-   and sees index_cnt still with a value of (u64)-1. Because of that it
-   calls btrfs_inode_delayed_dir_index_count() which fails since no dir
-   index entries were added to the delayed inode yet, and then it also
-   calls btrfs_set_inode_index_count(). This also finds that the last
-   index key has an offset of 100, and before it assigns the value 101
-   to the index_cnt field of inode X...
-
-4) Task A assigns a value of 101 to index_cnt. And then the code flow
-   goes to btrfs_set_inode_index() where it increments index_cnt from
-   101 to 102. Task A then creates a delayed dir index entry with a
-   sequence number of 101 and adds it to the delayed inode;
-
-5) Task B assigns 101 to the index_cnt field of inode X;
-
-6) At some later point when someone tries to add a new entry to the
-   directory, btrfs_set_inode_index() will return 101 again and shortly
-   after an attempt to add another delayed dir index key with index
-   number 101 will fail with -EEXIST resulting in a transaction abort.
-
-Fix this by locking the inode at btrfs_get_dir_last_index(), which is only
-only used when opening a directory or attempting to lseek on it.
-
-Reported-by: ken <ken@bllue.org>
-Link: https://lore.kernel.org/linux-btrfs/CAE6xmH+Lp=Q=E61bU+v9eWX8gYfLvu6jLYxjxjFpo3zHVPR0EQ@mail.gmail.com/
-Reported-by: syzbot+d13490c82ad5353c779d@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/linux-btrfs/00000000000036e1290603e097e0@google.com/
-Fixes: 9b378f6ad48c ("btrfs: fix infinite directory reads")
-CC: stable@vger.kernel.org # 6.5+
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Reviewed-by: Eugeniu Rosca <eugeniu.rosca@bosch.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/btrfs/inode.c |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6173,21 +6173,24 @@ out:
- 
- static int btrfs_get_dir_last_index(struct btrfs_inode *dir, u64 *index)
- {
--	if (dir->index_cnt == (u64)-1) {
--		int ret;
-+	int ret = 0;
- 
-+	btrfs_inode_lock(&dir->vfs_inode, 0);
-+	if (dir->index_cnt == (u64)-1) {
- 		ret = btrfs_inode_delayed_dir_index_count(dir);
- 		if (ret) {
- 			ret = btrfs_set_inode_index_count(dir);
- 			if (ret)
--				return ret;
-+				goto out;
- 		}
- 	}
- 
- 	/* index_cnt is the index number of next new entry, so decrement it. */
- 	*index = dir->index_cnt - 1;
-+out:
-+	btrfs_inode_unlock(&dir->vfs_inode, 0);
- 
--	return 0;
-+	return ret;
- }
- 
- /*
+https://bugzilla.proxmox.com/show_bug.cgi?id=3D5250#c6
 
 
+>> regarding compress mount option, it seems that this can be overriden vi=
+a
+>> subvolume property, which can work around the problem and have multiple
+>> compression settings.
+>>
+>> but how to fix compress-force in the same way, i.e. how can we have
+>> differenty compress-force settings with one btrfs fs ?
+>>
+>> wouldn't it make sense to introduce compress-force property for this ?
+>>
+>> what about replacing compress with compress-force (i.e. make it the
+>> default), as there is not much overhead with modern/fast cpu ?
+>>
+>> i think compress-force / compress is VERY confusing from and end user
+>> perspective - and even worse, i have set "compress" on a subvolume used
+>> for virtual machines and they do not get compressed at all (not a singl=
+e
+>> bit) . so i think, compress option is pretty short-sighted and not, wha=
+t
+>> an average user would expect (
+>> https://marc.info/?l=3Dlinux-btrfs&m=3D154523409314147&w=3D2 )
+>
+> IIRC compress prop needs to be set to all inodes.
+> If you set it on a directory, only new inodes would inherit the prop,
+> the existing ones won't get the new prop.
+
+
+that's clear, and no different from zfs.
+
+the big advantage of btrfs is, that we have btrfs filesystem defragment
+to recompress everything
+in place, whereas in zfs we need to move it forth and back to a
+different dataset.
+
+regards
+Roland
+
+>
+> Thanks,
+> Qu
+>>
+>> i'd be happy on some feedback. not subscribed to this list, so please
+>> CC.
+>>
+>> roland
+>>
+>>
+>> zstd compression applied to all subvolumes, though specified otherwise:
+>>
+>> cat /etc/fstab|grep btrfs
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/zstd btrfs
+>> subvol=3Dzstd,compress=3Dzstd,defaults 0 1
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/lzo=C2=A0 btrfs
+>> subvol=3Dlzo,compress=3Dlzo,defaults 0 1
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/none btrfs
+>> subvol=3Dnone,compress=3Dnone,defaults 0 1
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/zstd-force btrfs
+>> subvol=3Dzstd-force,compress-force=3Dzstd,defaults 0 1
+>>
+>> mount|grep btrfs
+>> /dev/sdb1 on /btrfs/zstd type btrfs
+>> (rw,relatime,compress=3Dzstd:3,ssd,discard=3Dasync,space_cache=3Dv2,sub=
+volid=3D259,subvol=3D/zstd)
+>>
+>> /dev/sdb1 on /btrfs/lzo type btrfs
+>> (rw,relatime,compress=3Dzstd:3,ssd,discard=3Dasync,space_cache=3Dv2,sub=
+volid=3D257,subvol=3D/lzo)
+>>
+>> /dev/sdb1 on /btrfs/none type btrfs
+>> (rw,relatime,compress=3Dzstd:3,ssd,discard=3Dasync,space_cache=3Dv2,sub=
+volid=3D258,subvol=3D/none)
+>>
+>> /dev/sdb1 on /btrfs/zstd-force type btrfs
+>> (rw,relatime,compress=3Dzstd:3,ssd,discard=3Dasync,space_cache=3Dv2,sub=
+volid=3D260,subvol=3D/zstd-force)
+>>
+>>
+>>
+>> different order in fstab has different result - first wins:
+>>
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/lzo=C2=A0 btrfs
+>> subvol=3Dlzo,compress=3Dlzo,defaults 0 1
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/zstd btrfs
+>> subvol=3Dzstd,compress=3Dzstd,defaults 0 1
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/none btrfs
+>> subvol=3Dnone,compress=3Dnone,defaults 0 1
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/zstd-force btrfs
+>> subvol=3Dzstd-force,compress-force=3Dzstd,defaults 0 1
+>>
+>> /dev/sdb1 on /btrfs/lzo type btrfs
+>> (rw,relatime,compress=3Dlzo,ssd,discard=3Dasync,space_cache=3Dv2,subvol=
+id=3D257,subvol=3D/lzo)
+>>
+>> /dev/sdb1 on /btrfs/zstd type btrfs
+>> (rw,relatime,compress=3Dlzo,ssd,discard=3Dasync,space_cache=3Dv2,subvol=
+id=3D259,subvol=3D/zstd)
+>>
+>> /dev/sdb1 on /btrfs/none type btrfs
+>> (rw,relatime,compress=3Dlzo,ssd,discard=3Dasync,space_cache=3Dv2,subvol=
+id=3D258,subvol=3D/none)
+>>
+>> /dev/sdb1 on /btrfs/zstd-force type btrfs
+>> (rw,relatime,compress=3Dlzo,ssd,discard=3Dasync,space_cache=3Dv2,subvol=
+id=3D260,subvol=3D/zstd-force)
+>>
+>>
+>>
+>> compress-force silently ignored:
+>>
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/zstd btrfs
+>> subvol=3Dzstd,compress=3Dzstd,defaults 0 1
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/lzo=C2=A0 btrfs
+>> subvol=3Dlzo,compress=3Dlzo,defaults 0 1
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/none btrfs
+>> subvol=3Dnone,compress=3Dnone,defaults 0 1
+>> UUID=3Dda0fadf1-5db4-4f5b-a77e-2f0730f4e872 /btrfs/zstd-force btrfs
+>> subvol=3Dzstd-force,compress-force=3Dzstd,defaults 0 1
+>>
+>> /dev/sdb1 on /btrfs/zstd type btrfs
+>> (rw,relatime,compress=3Dzstd:3,ssd,discard=3Dasync,space_cache=3Dv2,sub=
+volid=3D259,subvol=3D/zstd)
+>>
+>> /dev/sdb1 on /btrfs/lzo type btrfs
+>> (rw,relatime,compress=3Dzstd:3,ssd,discard=3Dasync,space_cache=3Dv2,sub=
+volid=3D257,subvol=3D/lzo)
+>>
+>> /dev/sdb1 on /btrfs/none type btrfs
+>> (rw,relatime,compress=3Dzstd:3,ssd,discard=3Dasync,space_cache=3Dv2,sub=
+volid=3D258,subvol=3D/none)
+>>
+>> /dev/sdb1 on /btrfs/zstd-force type btrfs
+>> (rw,relatime,compress=3Dzstd:3,ssd,discard=3Dasync,space_cache=3Dv2,sub=
+volid=3D260,subvol=3D/zstd-force)
+>>
+>>
+>>
+>>
+>> this is the write speed i get with compress-force=3Dzstd on i7-7700
+>>
+>> # dd if=3D/dev/zero of=3Dtest.dat bs=3D1024k count=3D10240 ;time sync
+>> 10240+0 records in
+>> 10240+0 records out
+>> 10737418240 bytes (11 GB, 10 GiB) copied, 3.76111 s, 2.9 GB/s
+>>
+>> real=C2=A0=C2=A0=C2=A0 0m0.224s
+>> user=C2=A0=C2=A0=C2=A0 0m0.000s
+>> sys=C2=A0=C2=A0=C2=A0 0m0.081s
+>>
+>>
+>>
 
