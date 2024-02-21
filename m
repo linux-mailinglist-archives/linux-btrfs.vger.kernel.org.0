@@ -1,127 +1,111 @@
-Return-Path: <linux-btrfs+bounces-2618-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2619-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47D7385E4D9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 18:46:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED7FD85E971
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 22:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 798BC1C2371D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 17:46:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB8A91F2282E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Feb 2024 21:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41D684A31;
-	Wed, 21 Feb 2024 17:45:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137C4126F14;
+	Wed, 21 Feb 2024 21:05:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RENZryMO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GN1UAiLa"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A81BC82D9B
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Feb 2024 17:45:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D05478B7C
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Feb 2024 21:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708537506; cv=none; b=KFX1f3CrMYBjX/ILe5zrEY3MivKpSwE5ckFNmBThpmpjxS7MBypl6EXBp+SH0PL2/sjvtfngCP5gN1iQUQDgw58DUJmfk5AytOTPEKhaQA3lL/0c1jL7kAYHyStnRiOS+VcJ6Wa7PJ7RzmsycrtAfcUScRcBbQwmrZJXsViRuvg=
+	t=1708549508; cv=none; b=jlb1SHvw8XQkWCbPGU4H1uEvVU1Eq11LK3ojhBfubgWHk8ah90zrflae5/U69otWWrFwyIvpkfy7PBGsmuwpUdoS5XmrekUKmNAEsJqlzGCKTFTm99lC7+XuRuCzL8FNen3aZINRfZAj8dm73cH5blmD5q3AH5vv55OpA1Ms5OY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708537506; c=relaxed/simple;
-	bh=lFgKfVC7rYsmOrNvd6Y06DVmwQOqhrvw/XpwbvgSrdU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=s0aa6MXyU7wGqrEoWjw5LKd6Bom3ji6Jn70SP0krYyy3MSKHryAIovExx4gM/rEPv/iJ4qWeJUny2y+Aob8L1oCWH/amy37tevlTiYbSR+0LMzBwiIQk6ZXXJc9uoSyIaNpcoiqruk4IjdPwRYWFaPXSWmE7Ggqwh7seTF8THZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RENZryMO; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc745927098so903026276.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Feb 2024 09:45:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708537503; x=1709142303; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=GSlvk88STqoeI0yaiEvAd6UzcCBL54rpJ6MmZkiTUVk=;
-        b=RENZryMOnaHT/hNktdPIEBKe5yO83QwFygsfyqqtPQ3Hka+VbVxB3H/R5Orvky0gVn
-         1ViWkxeDgvRS8YfYdYWc7rr2LiwGDm2ucucKdVlzb3bbTs+K44I8s/Mg1eFJ191E9ABx
-         xNoMCQhYA22E21bsuIVXNKBQwgbzwumgsBu0zyVDAHsNnrdyPZBW3nzaQ2Zu097Ne4ED
-         QHp719pWE5caywHxHsSSWS7yCSHazHJHgyrJrTtP2/iJwE+6Qyp4NxuvVnaOBcEZaz7m
-         14MC9Yejuh2ewNaKof3L+xQg7/94JKmoLmx5xc9A/P4gNsRHpEFDTGPTPBQ03rCkLWFI
-         1gLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708537503; x=1709142303;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GSlvk88STqoeI0yaiEvAd6UzcCBL54rpJ6MmZkiTUVk=;
-        b=lmYynDEbFA/DSbBhM2olr347r5a19dpJV/iYM7uKR+gjabq4+ecP+qmPyrhpNtUAGr
-         Tw5bKG25JOp0FUSTHs5b7kWbQjk6hieF8qvUWJBpT/OH8luPrm0D+iNrg0pSGlLrQz51
-         HccT0b7JsiXQ3R88IwivuMNfAVk7YttealouBmtzznj3T9RK1KOh5uUwGixNsxwDFGko
-         JK6rtwBAicXsVwtz67AF+z3blBjB7LPTrDyf+vF6FG7Ajm5GgAwNldHX8FbfLNpgzJsJ
-         tHOcJ+wqFafeuzp1nMTgwANhYJsarEYl8mVurziISxnc3/Ya4csB741zV0TEtehSQmO1
-         vKVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/a5oHn/aZjpaSkEpTAogxr4BrIoA6QdBtGtUx4kivFjiiJdoRLGwgT17HQFPhDEKRdngKJp5lRSYEyV6RDiqzxBeIOioR6RUAUR0=
-X-Gm-Message-State: AOJu0YwQZoY1hIYRqGjfWR41FrPBRqy3PgsZmneWSI+KNoQPcbobqqql
-	c9M6FHoJDnqv7nA9jhlO/CI11el9CZEHyygCyW01LGLR2AkSWAK8
-X-Google-Smtp-Source: AGHT+IEvQfEltE6fZWjU9XllwHzk9Ea9v5XNcJtNeoG8aJVPL1vmrXA+q6DunySOA93Y+kwKjh9S3g==
-X-Received: by 2002:a05:6902:2201:b0:dcc:2caa:578b with SMTP id dm1-20020a056902220100b00dcc2caa578bmr16787412ybb.40.1708537501996;
-        Wed, 21 Feb 2024 09:45:01 -0800 (PST)
-Received: from ?IPV6:2600:1700:a624:b6b0:2a78:c1a0:a8d8:cf6f? ([2600:1700:a624:b6b0:2a78:c1a0:a8d8:cf6f])
-        by smtp.gmail.com with ESMTPSA id j27-20020a05620a0a5b00b0078719b3b55bsm4505458qka.14.2024.02.21.09.45.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Feb 2024 09:45:01 -0800 (PST)
-Message-ID: <469f04cd-0cde-4355-9299-9a9006aac2e2@gmail.com>
-Date: Wed, 21 Feb 2024 12:45:00 -0500
+	s=arc-20240116; t=1708549508; c=relaxed/simple;
+	bh=43K2olQjRDLoK2JMYHwSGAyFBao6TRTJN3RH0Z7TSso=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dpk5NBZccV3DYtac70B3eqGmt2pYKH9pNlfR/vEiH0LDDoRL7oUeFwhlOeXjNkWQ0paJyG5pOIkr1YWwifg7moqAtG71d+gucSM0lyECEEWKkSh5SVinvf+Bp6WO3Pj4Ym5RqtUfo3eyQ7ZITJQzzOIgQLwuoDftHXIjRmfQpfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GN1UAiLa; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 21 Feb 2024 16:04:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708549504;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sTsivf6BMqQt+BMiZsHRmWuFS0uMyL6NGhUqEyvJOuc=;
+	b=GN1UAiLazx0hAHCknbnw+5J5Jk4KgDCGiMBtjacLlmDCfCDnypK0OiNv0O54sjDEFM5cDr
+	Owr9egG5ffC6VA2iPwiYqkMRQMHQENEgUoGGmJQSMXAeDpv/iI8/f6RUH2jXdW1/yZ+gqg
+	+dXYq/BJcaIgLAfpcT1URpK4q5B5Fvg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, lsf-pc@lists.linux-foundation.org, 
+	NeilBrown <neilb@suse.de>
+Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems &
+ more
+Message-ID: <l4o3zai7j5a4g3masz3a4tah3lji3bnro7vylcuitleixjmg4p@j4bpnwffgldg>
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: apply different compress/compress-force settings on different
- subvolumes ?
-To: Roland <devzero@web.de>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
- linux-btrfs@vger.kernel.org
-References: <5bd227d2-187a-4e0a-9ae8-c199bf6d0c85@web.de>
- <1597160e-0b54-403b-8e9d-9435425f14f3@gmx.com>
- <2790f277-fc10-43fc-b7d3-9a3cef1eced2@web.de>
-Content-Language: en-US
-From: "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-In-Reply-To: <2790f277-fc10-43fc-b7d3-9a3cef1eced2@web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
+On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
+> On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> >
+> > Recently we had a pretty long discussion on statx extensions, which
+> > eventually got a bit offtopic but nevertheless hashed out all the major
+> > issues.
+> >
+> > To summarize:
+> >  - guaranteeing inode number uniqueness is becoming increasingly
+> >    infeasible, we need a bit to tell userspace "inode number is not
+> >    unique, use filehandle instead"
+> 
+> This is a tough one.   POSIX says "The st_ino and st_dev fields taken
+> together uniquely identify the file within the system."
+> 
+> Adding a bit that says "from now the above POSIX rule is invalid"
+> doesn't instantly fix all the existing applications that rely on it.
 
-On 2/21/24 08:15, Roland wrote:
-> Am 21.02.24 um 10:33 schrieb Qu Wenruo:
->
->> 在 2024/2/21 19:19, Roland 写道:
->>> and why is compress-force silently ignored? (see below)
->> Compress-force has no coresponding per-inode prop option though.
->>
->> But I don't think compress-force would cause much difference against
->> regular compress.
->
-> apparently, force-compress can make a big difference (and compress only
-> can lead to no compression at all):
->
-> https://bugzilla.proxmox.com/show_bug.cgi?id=5250#c6
-I can attest that this is indeed the case, though it’s very dependent on 
-the exact usage. For the case of large files with highly varied data 
-(think filesystem images, VM disk images, large databases, etc) that 
-don’t include inherent compression, it’s very normal for compression to 
-actually be a huge help, but the early parts of the file to have very 
-high entropy and thus not compress well, resulting in regular `compress` 
-not actually helping at all (because BTRFS quickly decides it’s not 
-worth it for that file and chooses to not compress it at all).
+Even POSIX must bend when faced with reality. 64 bits is getting
+uncomfortably cramped already and with filesystems getting bigger it's
+going to break sooner or later.
 
-As an example, the VM disk images I’m storing on my home server take up 
-roughly 40% less space with `compress-force=zstd:1` compared to just 
-`compress=zstd:1`.
+We don't want to be abusing st_dev, and snapshots and inode number
+sharding mean we're basically out of bits today.
 
-In comparison, I see no effective difference when doing it on the root 
-filesystem of said home server, so like I said above, it’s rather 
-dependent on exact usage.
+> doing (see documentation) is generally the right direction.  It makes
+> various compromises but not to uniqueness, and we haven't had
+> complaints (fingers crossed).
 
-There is of course some extra overhead to attempting compression n every 
-write, but at least for me, on the lower compression levels when dealing 
-with ‘slow’ storage, it’s not enough to cause problems.
+I haven't seen anything in overlayfs that looked like a real solution,
+just hacks that would break sooner or later if more filesystems are
+being stacked.
+
+> Nudging userspace developers to use file handles would also be good,
+> but they should do so unconditionally, not based on a flag that has no
+> well defined meaning.
+
+If we define it, it has a perfectly well defined meaning.
+
+I wouldn't be against telling userspace to use file handles
+unconditionally; they should only need to query it for a file that has
+handlinks, anyways.
+
+But I think we _do_ need this bit, if nothing else, as exactly that
+nudge.
 
