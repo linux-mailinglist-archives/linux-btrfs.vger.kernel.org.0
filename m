@@ -1,78 +1,85 @@
-Return-Path: <linux-btrfs+bounces-2647-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2648-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB2C285FCE7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 16:46:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 492D385FCFA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 16:48:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 460381F269EB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 15:46:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0044B28D0FE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 15:48:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E01A14E2FB;
-	Thu, 22 Feb 2024 15:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95AD61509A6;
+	Thu, 22 Feb 2024 15:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="WCrjLG2Q"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="RIEywIvv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C31739FFC
-	for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 15:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 233D414E2E8
+	for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 15:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708616671; cv=none; b=Yv5G9E6bqfUTBFSasAYcahfAMcwjvCGKpbjbEqLqS1Hx43hkLWc3i7oL7v/kbJ3fIufk8lrU93jMcqEv8+b6YZl1/pj7GJocFnyyPIu4grvZw1vM04JfbBhGO8b3SH54ke40UENZUjzF2HD/qVYqN6nHeDuazyEYfssa7cs0h9s=
+	t=1708616886; cv=none; b=NkN3UZfcw8owcwN2np6dibsFpOpc+8bexEcI9XZcwnZ0fMZS+B+wPhob2zaMwNWWzquwNdLEpwg3z8BINt2Jw4RMvJ8nyFB6XKwAVoazJf3ef6PpPZiA1NbNw7PLYuTPoKOrm4U8eIaZoSLqAmxKEzvya7n8mdKIv3AY5jasqq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708616671; c=relaxed/simple;
-	bh=duiRt2peBuQ9/Ht+v3aW7fbI0YpFU+wvmcN1YiOzXeI=;
+	s=arc-20240116; t=1708616886; c=relaxed/simple;
+	bh=/URg4PQnQQuQavo2tWzU6iVHhXxnRjfAkpj2MvvU244=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j53B3mqKy0HMNVHyxaAsNiW532Twa7Tc2qmxh11gpoAZZX6oR7wwYrUfPap1RwNAI8BFLOLOoDX4wMvpaU3jgki05J7yeQNg0m4rEIQPJZvOA3kbAIuPlh7dG2SQr/HidZ0k0oYGWDRuPTDQwp6iwID0oeKp1yO0ZWRftgSJeKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=WCrjLG2Q; arc=none smtp.client-ip=209.85.128.175
+	 Content-Type:Content-Disposition:In-Reply-To; b=XIvISMy3yojNr8HlmF1rwCtVcNnwIkSTtf5m0/XLdiRsf44UoT2oPOf5FFekSqggvvJ+qycLhW/jLDbheT2ulk7fUvSJEaNXfVq61Gvp2X8bm6TS1A3aNfYEW/qYrWQ3mIHhnWa6YkKPG7EDqYLAhlb1rMEfMBthLJIOhj47khU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=RIEywIvv; arc=none smtp.client-ip=209.85.219.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6089b64f4eeso7926977b3.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 07:44:29 -0800 (PST)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc238cb1b17so2137784276.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 07:48:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1708616668; x=1709221468; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1708616884; x=1709221684; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oc7/wvuAFHr4+O6wqMY0sCQlIXMNkC5yYb64gIXk4fA=;
-        b=WCrjLG2Qvm6IeMppRICIGl6YIXh8H77fbEW0v/E7803yK7U5CB2bxAAi2ceJbXPYRF
-         7w54TnjDNSec70hDunoKX2zBKOdEQ+DaY8EibKcSyj2jGpETBK/OyCfcqccRajPr6PfC
-         Z2GsMEky13oELsWiB6hgoZlGOi+o65XAqfKn9DqquT8Fbofvpx2UOyRO8YsYNvFwOc9u
-         yTtC/hkUHjDAoBN1UY/8HGdQTCwYUiM6HBDZdQKUshKWqIbsyYd9j7ynHE6zN1eapHUE
-         6JJ50MH0uwGShidhT5cR9FP0jTO07XqwOaPZX4iq2j1YPezs9lnNrclvHiI4iGkN1id3
-         1h7w==
+        bh=QIa8oVIZuT7lP1k8X8l2WJQdq609coU/Nz2aGnBWwe4=;
+        b=RIEywIvvscu1E8xViuV4ZuAJOikoT2p1+xmOQaCMPZpoQ5BUx/TnMjs2uOiFXVRR5t
+         Phh57Z4wdTLREqHqs61NjoO3Iknt5R4e49VX887QUDXR/WQfNIjffCEOLEp+hzX2JfSQ
+         7mYiEamFKSWVW4qKy756x+ZdsL850EDSFBQ6aT2vDN0O6LWiu1D1IsEHpKgwq/EUuk+w
+         fy1d5afa6gPYlpjt/rxtXtUmLRtfYb4zRb0KJR/wAf/ZwfTJ3VurlPCdyt1ySZZwf7Ey
+         MW3R+XNomF88wZDCrC9WcSAzOoWZSHsPQfwAC2w8ZgWdrfCdK4VZeLpiBusKI1ZhDuIb
+         BdSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708616668; x=1709221468;
+        d=1e100.net; s=20230601; t=1708616884; x=1709221684;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oc7/wvuAFHr4+O6wqMY0sCQlIXMNkC5yYb64gIXk4fA=;
-        b=ErlO/IPjfXjgWXDfLo764QVM9O23yGPFwi4wJJpYHVgljrHcpoeC3F7Y1zNAxbPvHD
-         J4Zzq8hYiQi5q4qVFhoIuOBJn/h2gTVQum2a8r9AHSVO6503uyBXSnesGtkk8UwffHCm
-         1aBWnmVeBXysiqBGZovnZla7KSIsd35Gn55X37cw/ETt8gwKcec500Wa92+MX5vuztnH
-         VWEmjV/DQdpe8PA1HyKAJNqO3YQeS723zipN+zApgF1b/FDcTLREhrhGlkYkUAqQPAAD
-         0L5JyURVNkpPpybQui6mumDocCLPeO7U4CMnpbmYvkiyvD+AiTMpFnbvK2XwZrqYukMK
-         reKQ==
-X-Gm-Message-State: AOJu0Yy9nlFj5SLZNGIvivrRd7TKk9M6HQZa/VHOHWcArmdVMqjcy7BL
-	nBnqE+E5KCOaeOvxTR7feaf1w4SiI+Ay+9kQh9jlzfqEF+TJMo15iyla8SxrEHQ29V/k3seCulL
-	C
-X-Google-Smtp-Source: AGHT+IH7nGdivKycxKwSQwGP1n+FtKIBiqy1JKuXZdwgyrwt4sT+VbecNll1kZJGW7FpBZsVTkq9BA==
-X-Received: by 2002:a81:9297:0:b0:607:cd29:8ae7 with SMTP id j145-20020a819297000000b00607cd298ae7mr23191212ywg.15.1708616668475;
-        Thu, 22 Feb 2024 07:44:28 -0800 (PST)
+        bh=QIa8oVIZuT7lP1k8X8l2WJQdq609coU/Nz2aGnBWwe4=;
+        b=E06+f/V9hQx/RfIwaCIZLqPAUbejHqlBiNJKzSJvleRRMRlOC+Q1mRqvzjz93oW+3Q
+         zfMLPhP7kFe8IMxqNPNwMqPsA6LoRFBaPMNE1Lt7yIBk3RQ/sFubnTFuzEHM0FEMtMTs
+         j8KdiXhdalzjW2Y8mzfNDUU2fYTBCnDe4wTPZ3PT41ntAxSSy1mGwA9Fkdj8BCcmUN4s
+         A5TmlECXPtgZ2gmdWgWAf+8g1md1L5tL04OIlXJkCgF54MvtvSZuIZFWPbcUqMO0gICU
+         Gsfjak8nwuuo2JorjqiFcKUJ8qwBw23G+khUGVWObXxjuBdkUC8iwjE7577HiQ2G+m3T
+         g2HA==
+X-Forwarded-Encrypted: i=1; AJvYcCULNgu+1CcyHFrv8gy4XbCGcTLwE1mjCY6D7UzD3lIZsnByzlozeBcW4LCPACPmJm1UEOHUtDAzSKG9+ephq0FZ3P7RiUl/fjPWAnU=
+X-Gm-Message-State: AOJu0YxKaqlZ6rm+RhXDVWuBvsyMNSh2qWh5aRZDq5KKhNcdnbpPIF0y
+	ktjc4e63l70YEV1AjLuRzEXr3+RDagtMov6me+qofkzQJYQFClEA1dP+dFYlQIE=
+X-Google-Smtp-Source: AGHT+IHeRNYTHAQHlTw6FyZDjFXRERNo4oRgHEr44ZmqBtCgNvJrfmcbtG60abBs4SP3t2oerm+vSw==
+X-Received: by 2002:a25:8b85:0:b0:dcd:2f2d:7a05 with SMTP id j5-20020a258b85000000b00dcd2f2d7a05mr2616558ybl.35.1708616884094;
+        Thu, 22 Feb 2024 07:48:04 -0800 (PST)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id j206-20020a816ed7000000b00607af248292sm3133680ywc.49.2024.02.22.07.44.27
+        by smtp.gmail.com with ESMTPSA id w131-20020a253089000000b00dc25d5f4c75sm2942698ybw.10.2024.02.22.07.48.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 07:44:27 -0800 (PST)
-Date: Thu, 22 Feb 2024 10:44:27 -0500
+        Thu, 22 Feb 2024 07:48:03 -0800 (PST)
+Date: Thu, 22 Feb 2024 10:48:02 -0500
 From: Josef Bacik <josef@toxicpanda.com>
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/4] Simple cleanups
-Message-ID: <20240222154427.GA1219460@perftesting>
-References: <cover.1708603965.git.dsterba@suse.com>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	lsf-pc@lists.linux-foundation.org
+Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems &
+ more
+Message-ID: <20240222154802.GA1219527@perftesting>
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+ <20240221210811.GA1161565@perftesting>
+ <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -81,19 +88,61 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1708603965.git.dsterba@suse.com>
+In-Reply-To: <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
 
-On Thu, Feb 22, 2024 at 01:14:07PM +0100, David Sterba wrote:
-> David Sterba (4):
->   btrfs: handle transaction commit errors in flush_reservations()
->   btrfs: pass btrfs_device to btrfs_scratch_superblocks()
->   btrfs: merge btrfs_del_delalloc_inode() helpers
->   btrfs: pass a valid extent map cache pointer to __get_extent_map()
+On Thu, Feb 22, 2024 at 10:14:20AM +0100, Miklos Szeredi wrote:
+> On Wed, 21 Feb 2024 at 22:08, Josef Bacik <josef@toxicpanda.com> wrote:
+> >
+> > On Wed, Feb 21, 2024 at 04:06:34PM +0100, Miklos Szeredi wrote:
+> > > On Wed, 21 Feb 2024 at 01:51, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > > >
+> > > > Recently we had a pretty long discussion on statx extensions, which
+> > > > eventually got a bit offtopic but nevertheless hashed out all the major
+> > > > issues.
+> > > >
+> > > > To summarize:
+> > > >  - guaranteeing inode number uniqueness is becoming increasingly
+> > > >    infeasible, we need a bit to tell userspace "inode number is not
+> > > >    unique, use filehandle instead"
+> > >
+> > > This is a tough one.   POSIX says "The st_ino and st_dev fields taken
+> > > together uniquely identify the file within the system."
+> > >
+> >
+> > Which is what btrfs has done forever, and we've gotten yelled at forever for
+> > doing it.  We have a compromise and a way forward, but it's not a widely held
+> > view that changing st_dev to give uniqueness is an acceptable solution.  It may
+> > have been for overlayfs because you guys are already doing something special,
+> > but it's not an option that is afforded the rest of us.
 > 
+> Overlayfs tries hard not to use st_dev to give uniqueness and instead
+> partitions the 64bit st_ino space within the same st_dev.  There are
+> various fallback cases, some involve switching st_dev and some using
+> non-persistent st_ino.
+> 
+> What overlayfs does may or may not be applicable to btrfs/bcachefs,
+> but that's not my point.  My point is that adding a flag to statx does
+> not solve anything.   You can't just say that from now on btrfs
+> doesn't have use unique st_ino/st_dev because we've just indicated
+> that in statx and everything is fine.   That will trigger the
+> no-regressions rule and then it's game over.  At least I would expect
+> that to happen.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Right, nobody is arguing that.  Our plan is to
 
-Thanks,
+1) Introduce some sort of statx mechanism to expose this information.
+2) Introduce an incompat fs feature flag to give unique inode numbers for people
+   that want them, and there stop doing the st_dev thing we currently do.
+3) Continue doing the st_dev thing we currently do for the non-feature flag
+   case.
+4) Wait 50 years and then maybe stop doing the st_dev thing once people have
+   adopted whatever statx flag has been introduced.  God willing I will have
+   been hit by a bus well before then.
+
+Nobody is arguing about reverting existing behavior, we're stuck with it.
+
+We're trying to define how we'd like it to look going forward, and start working
+towards that.  Thanks,
 
 Josef
 
