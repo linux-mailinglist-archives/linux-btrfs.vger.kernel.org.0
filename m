@@ -1,180 +1,144 @@
-Return-Path: <linux-btrfs+bounces-2649-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2650-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DFD485FDA6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 17:08:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A17A28603B2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 21:32:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FE501C23AAE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 16:08:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 408011F26A25
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 20:32:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ACBC1509BB;
-	Thu, 22 Feb 2024 16:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43096E602;
+	Thu, 22 Feb 2024 20:32:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ePxFagu8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2WLpqt/e";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ePxFagu8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2WLpqt/e"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HyZhTj9A"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCAA414F9CB;
-	Thu, 22 Feb 2024 16:08:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 640444414
+	for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 20:32:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708618111; cv=none; b=BjMMUIz680Ig4eWzCH5qeQmUKjB1GEkSoD3ku4GGaV+J19hHMz/4r/+M2JcMctpotTPtF496grioLtUqxfNAhDda3BamLH7m7p7XihZQmnzzuyAKBxka8g4E0GkVc9nz6CwfOGu6eBOYv0ElU5tgBoz3zB+NxaK9uFtUvC8Rl60=
+	t=1708633968; cv=none; b=VYU9JkfhVIXIPmlYDbEaxUh8C6PKgaVRydPa+/e3hau2JejFUfRAhq9azaFlpM3Z8v0OWXfxGlRBbmMGX4Tiz+r8f7Kyj3LdauHis1s2Kd221xklm57GhYQ01nEFnAXYWWNLjqmPkxtzDhzaGu0BM87PyYseIKipv8hiM+jUosM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708618111; c=relaxed/simple;
-	bh=48BXanacAVUSV46yQ32xR3V/Cq8Aa0DPP/5keWQqljg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MyAlpM8BnF4J9Pw6E1G/DftALKylUct45mgzzxGjZ4A3ZnEuM8+c5IsSmXnzWnWhNnCMNFYwT4Dtgy3IAMpQiLrKe+FyoUtkdpBYPOYqBS0d+A/H4q9sNS5bEr7MrGn4mhm3aS4+zIIICfB9wmaEn6PtjCtLK6stEDvsuuUPi7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ePxFagu8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2WLpqt/e; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ePxFagu8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2WLpqt/e; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 035B3222CA;
-	Thu, 22 Feb 2024 16:08:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708618108; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1KMBzPDx1ur8HmYjTZ/70Mhlnz+IVPKsaUfFS7zXjNc=;
-	b=ePxFagu8i0lj4DsKzPI17lRX4vqKZW9FTg8nGFozKqIPfQqrP5m5wKeQkV7rrkLVzkLv7/
-	7q8OVxHyi4+vyTc0hN3hRlqhuwJIF40pymCfE4Gl3hAiltelvqm75LVgK/GZZhijAm5DMu
-	Hxrnoluxhyn/Rcj3pVV51zNmHsrztjk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708618108;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1KMBzPDx1ur8HmYjTZ/70Mhlnz+IVPKsaUfFS7zXjNc=;
-	b=2WLpqt/eod4ZPqZz/l8x5G34c8ziq1ZzbWZF2kFTZSoQCKDiXiDTSsdsREN8fMjlMObeQ8
-	WH0J00m1ziqL+uAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708618108; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1KMBzPDx1ur8HmYjTZ/70Mhlnz+IVPKsaUfFS7zXjNc=;
-	b=ePxFagu8i0lj4DsKzPI17lRX4vqKZW9FTg8nGFozKqIPfQqrP5m5wKeQkV7rrkLVzkLv7/
-	7q8OVxHyi4+vyTc0hN3hRlqhuwJIF40pymCfE4Gl3hAiltelvqm75LVgK/GZZhijAm5DMu
-	Hxrnoluxhyn/Rcj3pVV51zNmHsrztjk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708618108;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1KMBzPDx1ur8HmYjTZ/70Mhlnz+IVPKsaUfFS7zXjNc=;
-	b=2WLpqt/eod4ZPqZz/l8x5G34c8ziq1ZzbWZF2kFTZSoQCKDiXiDTSsdsREN8fMjlMObeQ8
-	WH0J00m1ziqL+uAA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EB6CC13A6B;
-	Thu, 22 Feb 2024 16:08:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id g/1vOXtx12XbegAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 22 Feb 2024 16:08:27 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 6F625A0807; Thu, 22 Feb 2024 17:08:23 +0100 (CET)
-Date: Thu, 22 Feb 2024 17:08:23 +0100
-From: Jan Kara <jack@suse.cz>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Jan Kara <jack@suse.cz>, Kent Overstreet <kent.overstreet@linux.dev>,
-	Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	lsf-pc@lists.linux-foundation.org, linux-btrfs@vger.kernel.org
-Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
- filesystems & more
-Message-ID: <20240222160823.pclx6isoyaf7l64r@quack3>
-References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
- <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
- <20240221210811.GA1161565@perftesting>
- <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
- <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
- <20240222110138.ckai4sxiin3a74ku@quack3>
- <CAJfpegtUZ4YWhYqqnS_BcKKpwhHvdUsQPQMf4j49ahwAe2_AXQ@mail.gmail.com>
+	s=arc-20240116; t=1708633968; c=relaxed/simple;
+	bh=2GeDByVcyZwoSCjEJ2IgupVFlKtUweGESljAzB1rfho=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=X0tbFk2O9ZVhh5RgbwU84XnJgJVak/nI5DXK2dJ7irXiyGEQIzjEW02PQEtiTgdNVy3RRqaCLqXqbpfDoSyEOhYAJrVVnAz86Jwmu4Ts5799v29W4+BJw7hqNQxwR+U2tGIkuywsed4KxfLwG91u2cerDng5v1NHop/EQzaHU14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HyZhTj9A; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d23114b19dso2820171fa.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 12:32:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1708633964; x=1709238764; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k00FHEga49EJbIZWCcIEQrs8Vm4fiz3nzVBOMywvEIc=;
+        b=HyZhTj9AmTa2QQ1kLoc71A0eJjMLANiMEkoJanjBgOexwFckF8B3qEG2xTNpclzcEm
+         e7hGXj6uewBdwDvgqTASW2mK2Sto5zRNMzVBODxqyC0Fc+qfOCHdxLqK6hEHmTpjrESS
+         YhqKI+QC+YU6Lon3f48ReEB4djYo3Cgt9Veegpvzm21YIRW1dB+p9FnjOUmuIlPSpCTl
+         zNmfgqMkD6OvYSWbjjBEaivzN8ldMq+Ah5NNcpFOraniF9ghhGodh3waiKnf1ds3vvzq
+         RWwyt2zyy/7s7eIiTeM2vylevmAwZ5TgTN76sPPj6P2U6KEm2TcDZO9hHnlnJlul/33N
+         vIAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708633964; x=1709238764;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k00FHEga49EJbIZWCcIEQrs8Vm4fiz3nzVBOMywvEIc=;
+        b=lpWec741SbwyvbHSjN2Agk35yGtJBHlmE4GtP5ENDzRWesPxQEGQOnJhCrSMDgxONl
+         rY6u78l+jqPHiYeJfOwGRU2dV8lrWhGS9e7JHnCcyFoZK/SzcIaKxMzLU6fUs7jHybDB
+         6/RcylIoxyl9XBUE8joiysB20Wu3KdXfjZuYsVEtNwjRlKuWYoZ2b9GTT/iKVjcszdAV
+         YuvxXo0U5wHMV4vKrjeFDXhlMkhWP4q/NmCBOGuhn5o6vRel5Kd5ISKX2xO+ZWVhUxeU
+         +6fWpJuFAnPcIaUFX+gAEZ4rnv0ajpx5TdUI+xS2p79qvtf7Rl4xqTzYAynVx0uJmBGB
+         N4AQ==
+X-Gm-Message-State: AOJu0Yzu0DidPisNoT1yhxXWgLrpAalGJ8D2zxO1iwbQ+J8wcVbRKT+c
+	A7BHCVR0zJDZHcu7GMSGcyReTsymp44bv26vpA48Jxfdh61S4DigOrr6WV7neUgOXqeEnXdH+5+
+	dkxU=
+X-Google-Smtp-Source: AGHT+IEWtf8PMzd0LM0TVHZAd3HQlH02Q6PP/CHeK3rvIYR9MCxI0xlAscDiFt1cOwvzUqjXMzCXHQ==
+X-Received: by 2002:a05:651c:1030:b0:2d2:6ae9:3eb9 with SMTP id w16-20020a05651c103000b002d26ae93eb9mr88558ljm.15.1708633964479;
+        Thu, 22 Feb 2024 12:32:44 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id u5-20020a170902e20500b001dc1088357asm5925350plb.1.2024.02.22.12.32.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Feb 2024 12:32:43 -0800 (PST)
+Message-ID: <d40c1cb8-a4f6-44ca-a5a1-2b598baa521c@suse.com>
+Date: Fri, 23 Feb 2024 07:02:39 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpegtUZ4YWhYqqnS_BcKKpwhHvdUsQPQMf4j49ahwAe2_AXQ@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.80
-X-Spamd-Result: default: False [-0.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[42.06%]
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: compression: remove dead comments on
+ btrfs_compress_heuristic()
+Content-Language: en-US
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+References: <6ddea79ce1701adca117880a492a3e08282e318c.1708572619.git.wqu@suse.com>
+ <20240222104656.GM355@twin.jikos.cz>
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <20240222104656.GM355@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu 22-02-24 13:48:45, Miklos Szeredi wrote:
-> On Thu, 22 Feb 2024 at 12:01, Jan Kara <jack@suse.cz> wrote:
+
+
+在 2024/2/22 21:16, David Sterba 写道:
+> On Thu, Feb 22, 2024 at 02:00:25PM +1030, Qu Wenruo wrote:
+>> Since commit a440d48c7f93 ("Btrfs: heuristic: implement sampling
+>> logic"), btrfs_compress_heuristic() is no longer a simple "return true",
+>> but more complex system to determine if we should compress.
+>>
+>> Thus the comment is dead and can be confusing, just remove it.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > 
-> > I think for "unique inode identifier" we don't even have to come up with
-> > new APIs. The file handle + fsid pair is an established way to do this,
 > 
-> Why not uuid?
+> Reviewed-by: David Sterba <dsterba@suse.com>
 > 
-> fsid seems to be just a degraded uuid.   We can do better with statx
-> and/or statmount.
-
-fanotify uses fsid because we have standard interface for querying fsid
-(statfs(2)) and because not all filesystems (in particular virtual ones)
-bother with uuid. At least the first thing is being changed now.
-
-> > fanotify successfully uses this as object identifier and Amir did quite
-> > some work for this to be usable for vast majority of filesystems (including
+>> ---
+>> Furthermore, the current btrfs_compress_heuristic() looks a little too
+>> conservative, resulting a pretty low compression ratio for some common
+>> workload, and driving end users to go "compress-force" options.
 > 
-> Vast majority != all.
+> We'd need the samples of data where the heuristic is too pessimistic but
+> the compression would work.
 
-True. If we are going to use this scheme more widely, we need to have a
-look whether the remaining cases need fixing or we can just ignore them.
-They were not very interesting for fanotify so we moved on.
+Here you go:
 
-> Also even uuid is just a statistically unique
-> identifier, while st_dev was guaranteed to be unique (but not
-> persistent, like uuid).
+https://bugzilla.proxmox.com/show_bug.cgi?id=5250#c6
 
-Well, everything is just statistically true in this world :) If you have
-conflicting uuids, you are likely to see also other problems so I would not
-be too concerned about that.
-
-> If we are going to start fixing userspace, then we better make sure to
-> use the right interfaces, that won't have issues in the future.
-
-I agree we should give this a good thought which identification of a
-filesystem is the best.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+Qu
 
