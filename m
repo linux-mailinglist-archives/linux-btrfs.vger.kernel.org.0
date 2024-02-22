@@ -1,116 +1,99 @@
-Return-Path: <linux-btrfs+bounces-2646-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2647-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C80C85F932
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 14:11:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB2C285FCE7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 16:46:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E3122850F9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 13:11:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 460381F269EB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 15:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E6B3132C1B;
-	Thu, 22 Feb 2024 13:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E01A14E2FB;
+	Thu, 22 Feb 2024 15:44:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="Yc3SpNAl"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="WCrjLG2Q"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59BB12EBD4
-	for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 13:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C31739FFC
+	for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 15:44:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708607455; cv=none; b=E6GdGcH3BUUssiSKqUgYD8l63mdoNi0vfJELhmThfICwYZNSX6g8v0hVUuMDSlPSQamIdnTuO/3mhQxjOQ17DMR8Is4KYCSv3kJvma+2DNO2/EXLQZqMXDMv0f70q9+TpRgephtC6sdTufseJX8pDqGqL10PVrWPAKkdawduIe4=
+	t=1708616671; cv=none; b=Yv5G9E6bqfUTBFSasAYcahfAMcwjvCGKpbjbEqLqS1Hx43hkLWc3i7oL7v/kbJ3fIufk8lrU93jMcqEv8+b6YZl1/pj7GJocFnyyPIu4grvZw1vM04JfbBhGO8b3SH54ke40UENZUjzF2HD/qVYqN6nHeDuazyEYfssa7cs0h9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708607455; c=relaxed/simple;
-	bh=SGQVs5xxceT8/USGNqqeQ6uWxE7eZGHnoNAkPYvICYQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pxJ4ObfgRKzOqVVVYh1+C0iMqpHn8jTDTqYv91pq2KJ8yatjCo4k9WZISXPiT2Hn0lSsh0a0MaxlWELcFS9+DZEJE60qzg74fMZtM0DBjuE+UazI+WwuBRg+xN9vi160pfpTra3y6lPR38yhZj5Ppi+Vy2TZ6x+mrC+953PqQPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=Yc3SpNAl; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so144733266b.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 05:10:53 -0800 (PST)
+	s=arc-20240116; t=1708616671; c=relaxed/simple;
+	bh=duiRt2peBuQ9/Ht+v3aW7fbI0YpFU+wvmcN1YiOzXeI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j53B3mqKy0HMNVHyxaAsNiW532Twa7Tc2qmxh11gpoAZZX6oR7wwYrUfPap1RwNAI8BFLOLOoDX4wMvpaU3jgki05J7yeQNg0m4rEIQPJZvOA3kbAIuPlh7dG2SQr/HidZ0k0oYGWDRuPTDQwp6iwID0oeKp1yO0ZWRftgSJeKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=WCrjLG2Q; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6089b64f4eeso7926977b3.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 07:44:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1708607452; x=1709212252; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=se6gwk0fwHmTpR5MGtDkHZ8SwA4LJ2DR5cRZWhWZG0c=;
-        b=Yc3SpNAlrmTHJGX0w2qrDJv0r3ScLH1awPDKhzSWU7MZNWrAhrj8hI/Z7Zu3msbQCX
-         JEXO5xYeavatsIIlwbLwxXorZFZhWkvpqpP3jUAmj5PNp5OXAg4xwXWzkAD3fC+TtbuJ
-         TA61CmzecgsmGHK1eldjxeT1t2Xwt9W2mo0oE=
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1708616668; x=1709221468; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oc7/wvuAFHr4+O6wqMY0sCQlIXMNkC5yYb64gIXk4fA=;
+        b=WCrjLG2Qvm6IeMppRICIGl6YIXh8H77fbEW0v/E7803yK7U5CB2bxAAi2ceJbXPYRF
+         7w54TnjDNSec70hDunoKX2zBKOdEQ+DaY8EibKcSyj2jGpETBK/OyCfcqccRajPr6PfC
+         Z2GsMEky13oELsWiB6hgoZlGOi+o65XAqfKn9DqquT8Fbofvpx2UOyRO8YsYNvFwOc9u
+         yTtC/hkUHjDAoBN1UY/8HGdQTCwYUiM6HBDZdQKUshKWqIbsyYd9j7ynHE6zN1eapHUE
+         6JJ50MH0uwGShidhT5cR9FP0jTO07XqwOaPZX4iq2j1YPezs9lnNrclvHiI4iGkN1id3
+         1h7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708607452; x=1709212252;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=se6gwk0fwHmTpR5MGtDkHZ8SwA4LJ2DR5cRZWhWZG0c=;
-        b=CQoIWx6X4325aeXNhxnalCJ6eKu4FoWsK57Y2vZpQ7OYMWklhZnyeBh+Op0zU1Uw4i
-         r/XZiX/bcKId3u+dhmYpS56I91hRpa9CqZxnH4DTdhujLyLvOwNHRQzvv56EEc3D54QZ
-         2g8a0flPw1+kQpt/2isANCuAT9O0w/cutJKE59eN7/Z0Y25L3PsSuHFsmkJ8l01c8qfY
-         vLw9oU8PpAJ3TJ4v5lhNWVCUvb/Wr7H2jGB88KZgfhUuJ3HVklu7WZ58yF9BhxillMx3
-         Oz9AE7X6yKYgxJzTxtr0RNch1RDCWAcuOwHNPMmU9QOUWw74egU0JKcfJi2OhRjpmzIB
-         GXMA==
-X-Forwarded-Encrypted: i=1; AJvYcCUESCdrh9FtWaoc+So7Rc96U7g6Fsn2oqxOHFEAs4eh3OU+uQNgrFid5ywTJWCwDHpjJ1IgNeUKxfS6nazFdwE38tHB0UIWiRGQZQI=
-X-Gm-Message-State: AOJu0YzCsMa9vJaIdF04787ZvMP+DgjZlIOX0wTtul9XK3b+iop5Clnz
-	XvRmmMuFXM31CUyB820oLAcxqmD2y82vtnV5rwJulb7dyS08TEgfPoCzUyOJf4sP3uyCUSIXoT3
-	+V1IWXW2bRCttXVkMIxiKVkg00WxQ94E9ygPVmg==
-X-Google-Smtp-Source: AGHT+IEKz+crKs+wjRqOw0ZOK6TJKCGag7XXciDUGUNsfdyRPPgjaSMU2GrS1sJv9HgRuG8BjodWUuYih63QgGNfnfk=
-X-Received: by 2002:a17:907:76f7:b0:a3e:b57f:2b8a with SMTP id
- kg23-20020a17090776f700b00a3eb57f2b8amr2222160ejc.10.1708607452084; Thu, 22
- Feb 2024 05:10:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708616668; x=1709221468;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oc7/wvuAFHr4+O6wqMY0sCQlIXMNkC5yYb64gIXk4fA=;
+        b=ErlO/IPjfXjgWXDfLo764QVM9O23yGPFwi4wJJpYHVgljrHcpoeC3F7Y1zNAxbPvHD
+         J4Zzq8hYiQi5q4qVFhoIuOBJn/h2gTVQum2a8r9AHSVO6503uyBXSnesGtkk8UwffHCm
+         1aBWnmVeBXysiqBGZovnZla7KSIsd35Gn55X37cw/ETt8gwKcec500Wa92+MX5vuztnH
+         VWEmjV/DQdpe8PA1HyKAJNqO3YQeS723zipN+zApgF1b/FDcTLREhrhGlkYkUAqQPAAD
+         0L5JyURVNkpPpybQui6mumDocCLPeO7U4CMnpbmYvkiyvD+AiTMpFnbvK2XwZrqYukMK
+         reKQ==
+X-Gm-Message-State: AOJu0Yy9nlFj5SLZNGIvivrRd7TKk9M6HQZa/VHOHWcArmdVMqjcy7BL
+	nBnqE+E5KCOaeOvxTR7feaf1w4SiI+Ay+9kQh9jlzfqEF+TJMo15iyla8SxrEHQ29V/k3seCulL
+	C
+X-Google-Smtp-Source: AGHT+IH7nGdivKycxKwSQwGP1n+FtKIBiqy1JKuXZdwgyrwt4sT+VbecNll1kZJGW7FpBZsVTkq9BA==
+X-Received: by 2002:a81:9297:0:b0:607:cd29:8ae7 with SMTP id j145-20020a819297000000b00607cd298ae7mr23191212ywg.15.1708616668475;
+        Thu, 22 Feb 2024 07:44:28 -0800 (PST)
+Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id j206-20020a816ed7000000b00607af248292sm3133680ywc.49.2024.02.22.07.44.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Feb 2024 07:44:27 -0800 (PST)
+Date: Thu, 22 Feb 2024 10:44:27 -0500
+From: Josef Bacik <josef@toxicpanda.com>
+To: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/4] Simple cleanups
+Message-ID: <20240222154427.GA1219460@perftesting>
+References: <cover.1708603965.git.dsterba@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
- <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
- <20240221210811.GA1161565@perftesting> <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
- <w534uujga5pqcbhbc5wad7bdt5lchxu6gcmwvkg6tdnkhnkujs@wjqrhv5uqxyx>
- <20240222110138.ckai4sxiin3a74ku@quack3> <u4btyvpsohnf77r5rm43tz426u3advjc4goea4obt2wtv6xyog@7bukhgoyumed>
- <20240222114417.wpcdkgsed7wklv3h@quack3> <2tsfxaf2blhcxlkfcagfavz3mnuga3qsjgpytbstvykmcq2prj@icc7vub55i3p>
-In-Reply-To: <2tsfxaf2blhcxlkfcagfavz3mnuga3qsjgpytbstvykmcq2prj@icc7vub55i3p>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Thu, 22 Feb 2024 14:10:40 +0100
-Message-ID: <CAJfpegsinKngjHmZPxXvGULusEw359FhBkVh4A9O_+pqccjUzw@mail.gmail.com>
-Subject: Re: [Lsf-pc] [LSF TOPIC] statx extensions for subvol/snapshot
- filesystems & more
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Jan Kara <jack@suse.cz>, Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	lsf-pc@lists.linux-foundation.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1708603965.git.dsterba@suse.com>
 
-On Thu, 22 Feb 2024 at 12:55, Kent Overstreet <kent.overstreet@linux.dev> wrote:
->
-> On Thu, Feb 22, 2024 at 12:44:17PM +0100, Jan Kara wrote:
-> > On Thu 22-02-24 06:27:14, Kent Overstreet wrote:
+On Thu, Feb 22, 2024 at 01:14:07PM +0100, David Sterba wrote:
+> David Sterba (4):
+>   btrfs: handle transaction commit errors in flush_reservations()
+>   btrfs: pass btrfs_device to btrfs_scratch_superblocks()
+>   btrfs: merge btrfs_del_delalloc_inode() helpers
+>   btrfs: pass a valid extent map cache pointer to __get_extent_map()
+> 
 
-> > > My intent is to make a real effort towards getting better interfaces
-> > > going, prod those maintainers, _then_ look at adding those hacks (that
-> > > will necessarily be short term solutions since 64 bits is already
-> > > looking cramped).
-> >
-> > OK, fine by me :) So one thing is still not quite clear to me - how do you
-> > expect the INO_NOT_UNIQUE flag to be used by these apps? Do you expect them
-> > to use st_dev + st_ino by default and fall back to fsid + fhandle only when
-> > INO_NOT_UNIQUE is set?
->
-> Shouldn't matter. If they care about performance and they're in some
-> strange situation where the syscal overhead matters,
-
-If it's expensive, then just make the overhead smaller (by adding fh
-and uuid to statx(2), for example).
-
-Using st_ino is also racy in some filesystems, due to the fact that
-the ino can be reused.  If userspace is converted, it should be
-converted properly, there's just no excuse to add conditional code
-like that, which makes things more complex and less reliable.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
 Thanks,
-Miklos
+
+Josef
 
