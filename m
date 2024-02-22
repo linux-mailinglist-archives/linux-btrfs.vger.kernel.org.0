@@ -1,74 +1,73 @@
-Return-Path: <linux-btrfs+bounces-2650-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2651-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A17A28603B2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 21:32:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 547C98603B4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 21:34:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 408011F26A25
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 20:32:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FBDAB2326C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 20:34:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A43096E602;
-	Thu, 22 Feb 2024 20:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A0A6E602;
+	Thu, 22 Feb 2024 20:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HyZhTj9A"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DJR5J9Gh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 640444414
-	for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 20:32:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 374A710A05
+	for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 20:34:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708633968; cv=none; b=VYU9JkfhVIXIPmlYDbEaxUh8C6PKgaVRydPa+/e3hau2JejFUfRAhq9azaFlpM3Z8v0OWXfxGlRBbmMGX4Tiz+r8f7Kyj3LdauHis1s2Kd221xklm57GhYQ01nEFnAXYWWNLjqmPkxtzDhzaGu0BM87PyYseIKipv8hiM+jUosM=
+	t=1708634048; cv=none; b=BDHAKsHNHbbNbneqsG/19pq1HQOvnLG6Qh0xtsmjyIHNYaOr7wDH7f0DVFYiyfq3tIpSVjJHm5Vi5s/Ub9tyGVp7lHHXACriQ//KpoxedWCnrJx7QwLk/Vey5TI+klzV9Ze+SWKCvwtIVFvqxj3RfFDYFnWKTK1tPwd8Tvhl0v0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708633968; c=relaxed/simple;
-	bh=2GeDByVcyZwoSCjEJ2IgupVFlKtUweGESljAzB1rfho=;
+	s=arc-20240116; t=1708634048; c=relaxed/simple;
+	bh=rcH5ippQxZg14dfHlQ4UtSa+EHGd1Kzc4OuTGH+X6lc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X0tbFk2O9ZVhh5RgbwU84XnJgJVak/nI5DXK2dJ7irXiyGEQIzjEW02PQEtiTgdNVy3RRqaCLqXqbpfDoSyEOhYAJrVVnAz86Jwmu4Ts5799v29W4+BJw7hqNQxwR+U2tGIkuywsed4KxfLwG91u2cerDng5v1NHop/EQzaHU14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HyZhTj9A; arc=none smtp.client-ip=209.85.208.181
+	 In-Reply-To:Content-Type; b=bzBPjxwiJf/6LQB9zGw0r3w1nPpE2xuqfwylS1uWfPv2c9mKFLAY3quCNty0TBC4aXhIxqmfnWK9TsmfWtCfy77Wb7fwsg0Ya9tNChp75zTNM2EYXQHOvJxRllciIho36kH9H2pS2rVa40y6wYe37Pxzh3jJVWRqSqGmbw3fDcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DJR5J9Gh; arc=none smtp.client-ip=209.85.208.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d23114b19dso2820171fa.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 12:32:46 -0800 (PST)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d180d6bd32so2730831fa.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 12:34:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1708633964; x=1709238764; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1708634044; x=1709238844; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=k00FHEga49EJbIZWCcIEQrs8Vm4fiz3nzVBOMywvEIc=;
-        b=HyZhTj9AmTa2QQ1kLoc71A0eJjMLANiMEkoJanjBgOexwFckF8B3qEG2xTNpclzcEm
-         e7hGXj6uewBdwDvgqTASW2mK2Sto5zRNMzVBODxqyC0Fc+qfOCHdxLqK6hEHmTpjrESS
-         YhqKI+QC+YU6Lon3f48ReEB4djYo3Cgt9Veegpvzm21YIRW1dB+p9FnjOUmuIlPSpCTl
-         zNmfgqMkD6OvYSWbjjBEaivzN8ldMq+Ah5NNcpFOraniF9ghhGodh3waiKnf1ds3vvzq
-         RWwyt2zyy/7s7eIiTeM2vylevmAwZ5TgTN76sPPj6P2U6KEm2TcDZO9hHnlnJlul/33N
-         vIAw==
+        bh=nybO0QDsvP8znZ+cHOr0WHOhMbopeKUPUyqzg12JGkc=;
+        b=DJR5J9Gh+jes+Dd4rHPxSDV+YJeC9uXgTO0eitajuRzbcLxcEkV5heIW08F0JHZaaa
+         JNxyXQlLEd0MmjImuzLialF9DfCzqcJWBWM+JVsSqEIfV2Hj5JW4f+NbWEF+iOyl9qcc
+         E2ugQxju1JvveNcMcNaFMfoqq3fdzg1BSSMZhpn22KKd33bUN+oEvUS90mvy0CPSt44I
+         zato3EDu/Uys2ScRIAIaxJtf+bG/EczXPqdBgdxMTx5hVhbkM+7k93fs2T6APe0gpX9w
+         KJ10UqR68dqcS2ZaGRYbVMAHpWi6kZAsC75UDGbd0DNO7quYn+HV3Gw32kyTqNhWQQTv
+         3xmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708633964; x=1709238764;
+        d=1e100.net; s=20230601; t=1708634044; x=1709238844;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k00FHEga49EJbIZWCcIEQrs8Vm4fiz3nzVBOMywvEIc=;
-        b=lpWec741SbwyvbHSjN2Agk35yGtJBHlmE4GtP5ENDzRWesPxQEGQOnJhCrSMDgxONl
-         rY6u78l+jqPHiYeJfOwGRU2dV8lrWhGS9e7JHnCcyFoZK/SzcIaKxMzLU6fUs7jHybDB
-         6/RcylIoxyl9XBUE8joiysB20Wu3KdXfjZuYsVEtNwjRlKuWYoZ2b9GTT/iKVjcszdAV
-         YuvxXo0U5wHMV4vKrjeFDXhlMkhWP4q/NmCBOGuhn5o6vRel5Kd5ISKX2xO+ZWVhUxeU
-         +6fWpJuFAnPcIaUFX+gAEZ4rnv0ajpx5TdUI+xS2p79qvtf7Rl4xqTzYAynVx0uJmBGB
-         N4AQ==
-X-Gm-Message-State: AOJu0Yzu0DidPisNoT1yhxXWgLrpAalGJ8D2zxO1iwbQ+J8wcVbRKT+c
-	A7BHCVR0zJDZHcu7GMSGcyReTsymp44bv26vpA48Jxfdh61S4DigOrr6WV7neUgOXqeEnXdH+5+
-	dkxU=
-X-Google-Smtp-Source: AGHT+IEWtf8PMzd0LM0TVHZAd3HQlH02Q6PP/CHeK3rvIYR9MCxI0xlAscDiFt1cOwvzUqjXMzCXHQ==
-X-Received: by 2002:a05:651c:1030:b0:2d2:6ae9:3eb9 with SMTP id w16-20020a05651c103000b002d26ae93eb9mr88558ljm.15.1708633964479;
-        Thu, 22 Feb 2024 12:32:44 -0800 (PST)
+        bh=nybO0QDsvP8znZ+cHOr0WHOhMbopeKUPUyqzg12JGkc=;
+        b=Ww0gjwZHMlPnFSAuD+TwEseW5MfumRHyFkbZXTNU5ZKAEZk1rBJpC6LhKQ46fHyQjd
+         HUSQlEZegvAJGs5hBT2x5oB0OTV8+oDoc+SSbz/49eFfrEMddsH7K4hR2qr4txJt/vAk
+         EfZt5upwheu4wbNla+SwfBqdPVpsOyemrwUqo4Fc0aIWUDks01jZQk9FCoqL9ZgNpJWt
+         JKARr/LQIl/iE4cxiBd4hcUgmBRH+Z22NO7P/Vz4fB7wsCQEcizH2Ca3+9GEBWK6MOta
+         UkV1E/Jolh/FxWtjDkmuUAn9SJ0aSfx3bt2tGWt+H0Hf75+Ot1ekAoCfXcI3bsEPOFis
+         Vu6g==
+X-Gm-Message-State: AOJu0YwRwaT3kaaLTUxedO5H9lzguXZ2NXBOwNWVhZI2saA9EKi0hjMm
+	DoUOX8WqCQMzzWKlL39vgLwUYOZq/KUF0geAi8/tqWWuI8FHcVZI4m4xcEU0OGY=
+X-Google-Smtp-Source: AGHT+IHc9oM5gAaIgZl7k2uY2gPH+eBn0mNHwC/8o8As3I8GDyKA/JrT98UQYtIxF9ebwSbrg3v79A==
+X-Received: by 2002:a05:651c:b1f:b0:2d2:3758:8c30 with SMTP id b31-20020a05651c0b1f00b002d237588c30mr83637ljr.43.1708634044264;
+        Thu, 22 Feb 2024 12:34:04 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id u5-20020a170902e20500b001dc1088357asm5925350plb.1.2024.02.22.12.32.42
+        by smtp.gmail.com with ESMTPSA id u5-20020a170902e20500b001dc1088357asm5925350plb.1.2024.02.22.12.34.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Feb 2024 12:32:43 -0800 (PST)
-Message-ID: <d40c1cb8-a4f6-44ca-a5a1-2b598baa521c@suse.com>
-Date: Fri, 23 Feb 2024 07:02:39 +1030
+        Thu, 22 Feb 2024 12:34:03 -0800 (PST)
+Message-ID: <dbda7023-97f7-4635-a913-7032f350d36b@suse.com>
+Date: Fri, 23 Feb 2024 07:04:02 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -76,13 +75,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: compression: remove dead comments on
- btrfs_compress_heuristic()
+Subject: Re: [PATCH v2 0/3] btrfs: make subpage reader/writer counter to be
+ sector aware
 Content-Language: en-US
 To: dsterba@suse.cz
 Cc: linux-btrfs@vger.kernel.org
-References: <6ddea79ce1701adca117880a492a3e08282e318c.1708572619.git.wqu@suse.com>
- <20240222104656.GM355@twin.jikos.cz>
+References: <cover.1708151123.git.wqu@suse.com>
+ <20240222115406.GN355@twin.jikos.cz>
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -108,37 +107,66 @@ Autocrypt: addr=wqu@suse.com; keydata=
  bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
  AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
  ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <20240222104656.GM355@twin.jikos.cz>
+In-Reply-To: <20240222115406.GN355@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2024/2/22 21:16, David Sterba 写道:
-> On Thu, Feb 22, 2024 at 02:00:25PM +1030, Qu Wenruo wrote:
->> Since commit a440d48c7f93 ("Btrfs: heuristic: implement sampling
->> logic"), btrfs_compress_heuristic() is no longer a simple "return true",
->> but more complex system to determine if we should compress.
+在 2024/2/22 22:24, David Sterba 写道:
+> On Sat, Feb 17, 2024 at 04:59:47PM +1030, Qu Wenruo wrote:
+>> [CHANGELOG]
+>> v2:
+>> - Add btrfs_subpage_dump_bitmap() support for locked bitmap
 >>
->> Thus the comment is dead and can be confusing, just remove it.
+>> - Add spinlock to protect the bitmap and locked bitmap operation
+>>    In theory, this opeartion should always be single threaded, since the
+>>    page is locked.
+>>    But to keep the behavior consistent, use spin lock to protect bitmap
+>>    and atomic reader/write updates.
 >>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> This can be fetched from github, and the branch would be utilized for
+>> all newer subpage delalloc update to support full sector sized
+>> compression and zoned:
+>> https://github.com/adam900710/linux/tree/subpage_delalloc
+>>
+>> Currently we just trace subpage reader/writer counter using an atomic.
+>>
+>> It's fine for the current subpage usage, but for the future, we want to
+>> be aware of which subpage sector is locked inside a page, for proper
+>> compression (we only support full page compression for now) and zoned support.
+>>
+>> So here we introduce a new bitmap, called locked bitmap, to trace which
+>> sector is locked for read/write.
+>>
+>> And since reader/writer are both exclusive (to each other and to the same
+>> type of lock), we can safely use the same bitmap for both reader and
+>> writer.
+>>
+>> In theory we can use the bitmap (the weight of the locked bitmap) to
+>> indicate how many bytes are under reader/write lock, but it's not
+>> possible yet:
+>>
+>> - No weight support for bitmap range
+>>    The bitmap API only provides bitmap_weight(), which always starts at
+>>    bit 0.
+>>
+>> - Need to distinguish read/write lock
+>>
+>> Thus we still keep the reader/writer atomic counter.
+>>
+>> Qu Wenruo (3):
+>>    btrfs: unexport btrfs_subpage_start_writer() and
+>>      btrfs_subpage_end_and_test_writer()
+>>    btrfs: subpage: make reader lock to utilize bitmap
+>>    btrfs: subpage: make writer lock to utilize bitmap
 > 
-> 
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> 
->> ---
->> Furthermore, the current btrfs_compress_heuristic() looks a little too
->> conservative, resulting a pretty low compression ratio for some common
->> workload, and driving end users to go "compress-force" options.
-> 
-> We'd need the samples of data where the heuristic is too pessimistic but
-> the compression would work.
+> So this is preparatory work and looks safe to me, only adding the
+> bitmaps to counters, you can add it to for-next.
 
-Here you go:
+Got it.
 
-https://bugzilla.proxmox.com/show_bug.cgi?id=5250#c6
-
-Thanks,
-Qu
+BTW, this series is only stable enough after testing the whole series 
+(so that no new extra changes required by later subpage delalloc behavior),
+which ran fine locally at least.
 
