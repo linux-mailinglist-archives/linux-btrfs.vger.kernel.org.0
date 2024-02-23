@@ -1,139 +1,190 @@
-Return-Path: <linux-btrfs+bounces-2657-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2658-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A2D9860A97
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 07:04:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F25B4860B71
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 08:44:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC8391C22F62
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 06:04:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8AC728739B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 07:44:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31BD0134A3;
-	Fri, 23 Feb 2024 06:04:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9D514297;
+	Fri, 23 Feb 2024 07:44:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Ea9HbKAK";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Ea9HbKAK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4596112B60
-	for <linux-btrfs@vger.kernel.org>; Fri, 23 Feb 2024 06:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B48F412E7D
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 Feb 2024 07:44:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708668275; cv=none; b=AfK+lXgz5BmoApKkblFztJfAYNe5oJGQr6th6WbMe9MijCzS0L/6gpzCCaWoRvqf9j0nJzUIfpWAhyTQ9FMBnz6w22/yI91gVZH9TbG602zjAfHi8LYXHsKcLyjQSN+HSxeKzBAilNpcoyeOyxehcG03aimKWPsh/6uMwEj3nME=
+	t=1708674250; cv=none; b=l2ejGJZ8RAdrx8x1p5my+5Bko55WxmYGCM4PXL4v87MTEVfzd/P6/me7LlxGQuS7GwLl2TTUFWnJnVNUJYgza7a1Hk7ExKcyRmb8wGJerDWV8Apy0RG1sVQb44Atp7zpKNX9Txe2j2E/e7jkdrk2GRXzCiD3iY1GuoyR1oTeqH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708668275; c=relaxed/simple;
-	bh=0NKzQCLtuKQmnXjNttL+pCw9kx0LdMVa/ys9hMUiF+0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=edvBsPjYMF+xeSQBoM8YDxaHVlM1h34QQCvFFdHRfwvQBy7DuXTy9aZI7v8rnlT2dJdA15/0QZDXQbM5r46nEI6js+1MF6q795BjH0XOFi97cPBKQyEmGRBIJiR16EzRzzXoh6PSCPkRbnk1S5EdJuXwx5jUluc1tyjh+sBJChc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c4a0dc9f57so61149439f.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 22:04:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708668263; x=1709273063;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5yfL9ZgM+xNjftalFROFDZTzyqRtfFJqv19NzNVxKQs=;
-        b=cFOshIRqmNejKcceBlE7buwo98VFe5M2F1Ai0cqWgrQlnKua1Qki2adfDs0JAt0aKT
-         sZhxBjlBAHhHZw653oZUQO2xe3ToTCCZF2sm2BC7oLYAYIB8N52LAaVecfx9ksGiq15c
-         9TEZXMiriSVbugXE1+NesvDcZyqRJjvKE7y65XIEbShMar0odYNi+Q0BBZM3j/Oqusxh
-         E6FasHgVT1ixgp22Af5fNvWdKHzX6t8YSFPb3q70CRFfSgXpfiHfMH4PwWmJX6rsaX1/
-         xI8sjoi/gvaDK4ASdd6cMosPuwBSRsMNWIKo8YoOS75PjXgGoX7HEOTg0tl2WePlKMF5
-         GyuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXrCltzeobN4lQp2zODeV8fT/xIfWBXhUZpubVPb/4LiUB/Q0h/0JzsY61fX7DQNe9WtFEEG8qSSz2bMwIHrQ8lExNUnqZMZAOdQqU=
-X-Gm-Message-State: AOJu0YzJFeo+lQ8ajCgR94U3Q1Nlxe/pUg5U+5T28xL8C9/RClrUbW6O
-	c7y/34i48arWWVNnl0ii477qOsGzQBP2GF83f+JKjdObcGZTxH5/4maJdBUn6caVqDpfja7puU8
-	GJukYez7TkxCeUuyg1LUzTi1tpqJU4qifAMr7sSyIQLIJpDdLcyuib2M=
-X-Google-Smtp-Source: AGHT+IEyq7wJnEDBhPSFjf5QgnBawSRxxTdeBiKNw9U+oHR8c8CQHxv9ZiRKlRDatNHLxEexvwhlSY/0woJ4pj7aHnRroKXJF5vg
+	s=arc-20240116; t=1708674250; c=relaxed/simple;
+	bh=CrZgHlnLBrnpL3ohIIpBctM4A/NbmGy3eJDHp3xYif0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=R8196olquWcQFzeU/1ctmfU+igfiajuEhYm65sti5wFIMbiTwkBQID5FWo1HS3/nBlu5wVRFKGkr6HtiBMJoDFdUD7lRi39kUsmhxMNU0HsYsJuXt6b19RIQicSxehw9VAvvXvoRJ8WtyK/LsCbUGWxpyV/FjzhKlUU//OPvHs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Ea9HbKAK; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Ea9HbKAK; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 64C3E21E5A;
+	Fri, 23 Feb 2024 07:44:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708674241; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=mDI4x3Eukw47OmUe0/980RlkUhxAPJRzXusiRepqcRk=;
+	b=Ea9HbKAKGaD2ZeL+Yf6rf+10Ge6SrdxXE0EsC9hD4WvXG0p4rH4381Y4f2NnFPM7MsMlJy
+	ZW5AGuUkWZg9iJZklUO8w6kgR0RxwXsISrvfTW7uhiDwVX+Iy7X6EI/e39nJRUUO74FThT
+	mUv2QhXwgkIciLQKbotPPtGIuzxvAAY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708674241; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=mDI4x3Eukw47OmUe0/980RlkUhxAPJRzXusiRepqcRk=;
+	b=Ea9HbKAKGaD2ZeL+Yf6rf+10Ge6SrdxXE0EsC9hD4WvXG0p4rH4381Y4f2NnFPM7MsMlJy
+	ZW5AGuUkWZg9iJZklUO8w6kgR0RxwXsISrvfTW7uhiDwVX+Iy7X6EI/e39nJRUUO74FThT
+	mUv2QhXwgkIciLQKbotPPtGIuzxvAAY=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 696E713776;
+	Fri, 23 Feb 2024 07:44:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id DjtzB8BM2GUsKQAAn2gu4w
+	(envelope-from <wqu@suse.com>); Fri, 23 Feb 2024 07:44:00 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Fabian Vogt <fvogt@suse.com>
+Subject: [PATCH] btrfs: qgroup: always free reserved space for extent records
+Date: Fri, 23 Feb 2024 18:13:38 +1030
+Message-ID: <aa1dd06ced5ae3d775646ffa2eff05d0ce6da6df.1708674214.git.wqu@suse.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:164d:b0:365:1c10:9cfa with SMTP id
- v13-20020a056e02164d00b003651c109cfamr90947ilu.5.1708668263435; Thu, 22 Feb
- 2024 22:04:23 -0800 (PST)
-Date: Thu, 22 Feb 2024 22:04:23 -0800
-In-Reply-To: <000000000000f673a1061202f630@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e1a463061206549f@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_get_root_ref
-From: syzbot <syzbot+623a623cfed57f422be1@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [1.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:url];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: *
+X-Spam-Score: 1.90
+X-Spam-Flag: NO
 
-syzbot has found a reproducer for the following issue on:
+[BUG]
+If qgroup is marked inconsistent (e.g. caused by operations needing full
+subtree rescan, like creating a snapshot and assign to a higher level
+qgroup), btrfs would immediately start leaking its data reserved space.
 
-HEAD commit:    1c892cdd8fe0 Merge tag 'vfs-6.8-rc6.fixes' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17dbda8a180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=eff9f3183d0a20dd
-dashboard link: https://syzkaller.appspot.com/bug?extid=623a623cfed57f422be1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=166f9002180000
+The following script can easily reproduce it:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b749aed7a8d1/disk-1c892cdd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8734e56ba943/vmlinux-1c892cdd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e0bfc6f22fe8/bzImage-1c892cdd.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/8c78af1bc0b5/mount_0.gz
+ mkfs.btrfs -O quota -f $dev
+ mount $dev $mnt
+ btrfs subv create $mnt/subv1
+ btrfs qgroup create 1/0 $mnt
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+623a623cfed57f422be1@syzkaller.appspotmail.com
+ # This snapshot creation would mark qgroup inconsistent,
+ # as the ownership involves different higher level qgroup, thus
+ # we have to rescan both source and snapshot, which can be very
+ # time consuming, thus here btrfs just choose to mark qgroup
+ # inconsistent, and let users to determine when to do the rescan.
+ btrfs subv snapshot -i 1/0 $mnt/subv1 $mnt/snap1
 
-------------[ cut here ]------------
-ida_free called for id=46 which is not allocated.
-WARNING: CPU: 0 PID: 5197 at lib/idr.c:525 ida_free+0x370/0x420 lib/idr.c:525
-Modules linked in:
-CPU: 0 PID: 5197 Comm: syz-executor.1 Not tainted 6.8.0-rc5-syzkaller-00121-g1c892cdd8fe0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-RIP: 0010:ida_free+0x370/0x420 lib/idr.c:525
-Code: 10 42 80 3c 28 00 74 05 e8 7d 86 9b f6 48 8b 7c 24 40 4c 89 fe e8 a0 89 17 00 90 48 c7 c7 80 c9 c5 8c 89 de e8 21 72 fd f5 90 <0f> 0b 90 90 eb 3d e8 45 67 39 f6 49 bd 00 00 00 00 00 fc ff df 4d
-RSP: 0018:ffffc90004a1f300 EFLAGS: 00010246
-RAX: a25cdedaf9286500 RBX: 000000000000002e RCX: ffff888025b58000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc90004a1f3f0 R08: ffffffff81577ab2 R09: 1ffff92000943db4
-R10: dffffc0000000000 R11: fffff52000943db5 R12: 0000000000000246
-R13: dffffc0000000000 R14: ffffffff8e256d00 R15: 0000000000000246
-FS:  00007f51d0a726c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000056090d5db000 CR3: 000000007b920000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- btrfs_get_root_ref+0xa48/0xaf0 fs/btrfs/disk-io.c:1346
- create_pending_snapshot+0xff2/0x2bc0 fs/btrfs/transaction.c:1837
- create_pending_snapshots+0x195/0x1d0 fs/btrfs/transaction.c:1931
- btrfs_commit_transaction+0xf1c/0x3740 fs/btrfs/transaction.c:2404
- create_snapshot+0x507/0x880 fs/btrfs/ioctl.c:848
- btrfs_mksubvol+0x5d0/0x750 fs/btrfs/ioctl.c:998
- btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1044
- __btrfs_ioctl_snap_create+0x387/0x4b0 fs/btrfs/ioctl.c:1306
- btrfs_ioctl_snap_create_v2+0x1ca/0x400 fs/btrfs/ioctl.c:1393
- btrfs_ioctl+0xa74/0xd40
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xfe/0x170 fs/ioctl.c:857
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7f51cfc7dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f51d0a720c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f51cfdabf80 RCX: 00007f51cfc7dda9
-RDX: 00000000200005c0 RSI: 0000000050009417 RDI: 0000000000000003
-RBP: 00007f51cfcca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f51cfdabf80 R15: 00007fff8ee6fb18
- </TASK>
+ # Now this write would lead to qgroup rsv leak.
+ xfs_io -f -c "pwrite 0 64k" $mnt/file1
 
+ # And at unmount time, btrfs would report 64K DATA rsv space leaked.
+ umount $mnt
 
+And we would have the following dmesg output for the unmount:
+
+ BTRFS info (device dm-1): last unmount of filesystem 14a3d84e-f47b-4f72-b053-a8a36eef74d3
+ BTRFS warning (device dm-1): qgroup 0/5 has unreleased space, type 0 rsv 65536
+
+[CAUSE]
+Since commit e15e9f43c7ca ("btrfs: introduce
+BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING to skip qgroup accounting"),
+we introduce a mode for btrfs qgroup to skip the timing consuming
+backref walk, if the qgroup is already inconsistent.
+
+But this skip also covered the data reserved freeing, thus the qgroup
+reserved space for each newly created data extent would not be freed,
+thus cause the leakage.
+
+[FIX]
+Make the data extent reserved space freeing mandatory.
+
+The qgroup reserved space handling is way cheaper compared to the
+backref walking part, and we always have the super sensitive leak
+detector, thus it's definitely worthy to always free the qgroup
+reserved data space.
+
+Fixes: e15e9f43c7ca ("btrfs: introduce BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING to skip qgroup accounting")
+Reported-by: Fabian Vogt <fvogt@suse.com>
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1216196
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+ fs/btrfs/qgroup.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 3846433d83d9..b3bf08fc2a39 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -2957,11 +2957,6 @@ int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans)
+ 				ctx.roots = NULL;
+ 			}
+ 
+-			/* Free the reserved data space */
+-			btrfs_qgroup_free_refroot(fs_info,
+-					record->data_rsv_refroot,
+-					record->data_rsv,
+-					BTRFS_QGROUP_RSV_DATA);
+ 			/*
+ 			 * Use BTRFS_SEQ_LAST as time_seq to do special search,
+ 			 * which doesn't lock tree or delayed_refs and search
+@@ -2985,6 +2980,11 @@ int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans)
+ 			record->old_roots = NULL;
+ 			new_roots = NULL;
+ 		}
++		/* Free the reserved data space */
++		btrfs_qgroup_free_refroot(fs_info,
++				record->data_rsv_refroot,
++				record->data_rsv,
++				BTRFS_QGROUP_RSV_DATA);
+ cleanup:
+ 		ulist_free(record->old_roots);
+ 		ulist_free(new_roots);
+-- 
+2.43.2
+
 
