@@ -1,216 +1,173 @@
-Return-Path: <linux-btrfs+bounces-2665-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2666-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63F8E860E14
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 10:36:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9812A860F29
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 11:25:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0C441F265F3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 09:36:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2391A2858C7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 10:25:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088AB5C903;
-	Fri, 23 Feb 2024 09:36:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E9605CDF2;
+	Fri, 23 Feb 2024 10:25:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NNaLxdt1";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NNaLxdt1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZcJFsKj7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFEC15C5F5;
-	Fri, 23 Feb 2024 09:36:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DFD85CDC9
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 Feb 2024 10:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708680971; cv=none; b=ljbE6NyVmVWhGSGgspnLLSSBilbDk1MuXwKcOJ/iy8Rz7wrdE0EceLMS8wJpv5boG4y5iJSo1TTJg+G9Uk433D3bYwms0KYsnSG/jK6eU//zkN5p/xdnkC4ktueWsjqlEYQX+k02Vvluoax6wlmgeF4w3/Q85SZKANt9b1HxGVg=
+	t=1708683914; cv=none; b=BQHEvirHokEw9+BH6vXgu3+vnHsdeKC69YcNvboNFi8NlxumkhvIDaB69b3mKpt2hyMUEo1oj/5q1E6PTqd2YS6rNO7BBSF9PToCe1h8/d9DdZWzicNbFCkFeYfq8Vg11XB2RF6yHfSsAXemE4MPF9km3MdfZ5qVQdYlWVi68RQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708680971; c=relaxed/simple;
-	bh=SfD1x2uXOhQiq8D1e6uxb+w+Vx35SJavUl99hHFJ8ok=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RgFu0lO7JLrS+ikaMkVZgL9rM2HGuCov0XnMw3KdS+2X480NNfQlpGjWymWz/XG4F6u2kkLeHyQ9T3FYIF5R2/Xlhj+sJ99JjmwBT/gYTNc2C/M0P7+bZehzyOkPubqHLD5Q4r6gAdgs13eKcoOI05nuCpge25JwlyoKWkv9U+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NNaLxdt1; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NNaLxdt1; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0AA6521ECB;
-	Fri, 23 Feb 2024 09:36:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708680967; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=s0P6TwD58I1gF/AjXUxapwkwMmSmoaZckwOmPRuBWUU=;
-	b=NNaLxdt1E6+yZOHcNfvBAOMJyfaALSIHW9Xt/pbsnovo/WJWL9Bxa0JgRb0bNnwKfI7HnK
-	qYXaqr0odC3FDwWvMJfvgKoZIw3ydfTbxhDjoQs0kKZ1Kx0pfbGrmG4jaW3zYUP8Prk/Zh
-	1KPZDMluyT9LCZRUub+nVd+HpYD46aw=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708680967; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=s0P6TwD58I1gF/AjXUxapwkwMmSmoaZckwOmPRuBWUU=;
-	b=NNaLxdt1E6+yZOHcNfvBAOMJyfaALSIHW9Xt/pbsnovo/WJWL9Bxa0JgRb0bNnwKfI7HnK
-	qYXaqr0odC3FDwWvMJfvgKoZIw3ydfTbxhDjoQs0kKZ1Kx0pfbGrmG4jaW3zYUP8Prk/Zh
-	1KPZDMluyT9LCZRUub+nVd+HpYD46aw=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8506613776;
-	Fri, 23 Feb 2024 09:36:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id uWuGDwVn2GUsQgAAn2gu4w
-	(envelope-from <wqu@suse.com>); Fri, 23 Feb 2024 09:36:05 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2] fstests: btrfs: add a test case to make sure inconsitent qgroup won't leak reserved data space
-Date: Fri, 23 Feb 2024 20:05:47 +1030
-Message-ID: <20240223093547.150915-1-wqu@suse.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1708683914; c=relaxed/simple;
+	bh=PYCjZNeDdOk2UnVQz4ga2cdZQa+GxWDW3Yd57LXY6gg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Bn41Sv6bPeO/MLhgYfb5KL9GiEYwfpKvy2gFs+0Xjy5dZFmS+8xXTMpB/hnZAtfu7R34594jeoB1oAaMTlGaxqEjNH1nzG9e2+0rUk3NeTvzzrv5hEVYYY4GcSkFMfuINUvyYnJccXQospq9uT2uLLTwEI3iwvJsWo46CsgtmJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZcJFsKj7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC238C433F1
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 Feb 2024 10:25:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708683913;
+	bh=PYCjZNeDdOk2UnVQz4ga2cdZQa+GxWDW3Yd57LXY6gg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ZcJFsKj7CR/G3eh1FCCB3JV/OEzN8FstnV/HKBxsTQcXUqRuS47poz0dZcXe8yp1C
+	 m3GAuohSakEtgYFoV6ONyF0TvbKM1VHfZimJzpsFygP7dOx+yRnopQpxNiF6Gv1YNV
+	 bhDYLh7kYuDMNG3dRjLdc57v60y87pXrHk0B4j0rvp4CdOIGFKZ/KvFjO0hHGlL1qb
+	 5jsq0E0CGql4tIwVcfr7WU/OzyQROT1qZqTbppESHReZFW890FUX/NAZhs5ctPoB8Y
+	 lPxRr2iplhGX4zEoIQIL5zCccCJ13BkgGG885ZqF21fz23/xyar8AiRmRE1zExEBI4
+	 4HIYbAirrnG8w==
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso125759166b.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 23 Feb 2024 02:25:13 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxxh6cSjGn8VC3Q/cp62Vfbm4kRPN1LPqhU7hdKI8GDuKRLOF51
+	UryJg2v1XHEfV2Sdp43l8xX7cXY8JFw7a9ORvnOfpK/fGRfap9rNTatd/9E2IfKy1F+H/sNwCJ2
+	3XJZFA3AH23ra+bMn/zevBLwn+fM=
+X-Google-Smtp-Source: AGHT+IHPm3JYw9jYZrXtog/77XNnXca7AVQCs9qa7BUfKg4rxWD1a51gpWYslpRod9y3TQg0aDmg7jhsYuxguVd2qIo=
+X-Received: by 2002:a17:907:11c5:b0:a3f:899e:d3ac with SMTP id
+ va5-20020a17090711c500b00a3f899ed3acmr1193799ejb.35.1708683912153; Fri, 23
+ Feb 2024 02:25:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+References: <aa1dd06ced5ae3d775646ffa2eff05d0ce6da6df.1708674214.git.wqu@suse.com>
+In-Reply-To: <aa1dd06ced5ae3d775646ffa2eff05d0ce6da6df.1708674214.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 23 Feb 2024 10:24:35 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H741jSULRwtPeF4fbvt1TwxULi-Baf5YLEkWGfHA3odow@mail.gmail.com>
+Message-ID: <CAL3q7H741jSULRwtPeF4fbvt1TwxULi-Baf5YLEkWGfHA3odow@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: qgroup: always free reserved space for extent records
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, Fabian Vogt <fvogt@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There is a kernel regression caused by commit e15e9f43c7ca ("btrfs:
-introduce BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING to skip qgroup
-accounting"), where if qgroup is inconsistent (not that hard to trigger)
-btrfs would leak its qgroup data reserved space, and cause a warning at
-unmount time.
+On Fri, Feb 23, 2024 at 7:44=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [BUG]
+> If qgroup is marked inconsistent (e.g. caused by operations needing full
+> subtree rescan, like creating a snapshot and assign to a higher level
+> qgroup), btrfs would immediately start leaking its data reserved space.
+>
+> The following script can easily reproduce it:
+>
+>  mkfs.btrfs -O quota -f $dev
+>  mount $dev $mnt
+>  btrfs subv create $mnt/subv1
+>  btrfs qgroup create 1/0 $mnt
+>
+>  # This snapshot creation would mark qgroup inconsistent,
+>  # as the ownership involves different higher level qgroup, thus
+>  # we have to rescan both source and snapshot, which can be very
+>  # time consuming, thus here btrfs just choose to mark qgroup
+>  # inconsistent, and let users to determine when to do the rescan.
+>  btrfs subv snapshot -i 1/0 $mnt/subv1 $mnt/snap1
+>
+>  # Now this write would lead to qgroup rsv leak.
+>  xfs_io -f -c "pwrite 0 64k" $mnt/file1
+>
+>  # And at unmount time, btrfs would report 64K DATA rsv space leaked.
+>  umount $mnt
+>
+> And we would have the following dmesg output for the unmount:
+>
+>  BTRFS info (device dm-1): last unmount of filesystem 14a3d84e-f47b-4f72-=
+b053-a8a36eef74d3
+>  BTRFS warning (device dm-1): qgroup 0/5 has unreleased space, type 0 rsv=
+ 65536
+>
+> [CAUSE]
+> Since commit e15e9f43c7ca ("btrfs: introduce
+> BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING to skip qgroup accounting"),
+> we introduce a mode for btrfs qgroup to skip the timing consuming
+> backref walk, if the qgroup is already inconsistent.
+>
+> But this skip also covered the data reserved freeing, thus the qgroup
+> reserved space for each newly created data extent would not be freed,
+> thus cause the leakage.
+>
+> [FIX]
+> Make the data extent reserved space freeing mandatory.
+>
+> The qgroup reserved space handling is way cheaper compared to the
+> backref walking part, and we always have the super sensitive leak
+> detector, thus it's definitely worthy to always free the qgroup
+> reserved data space.
+>
+> Fixes: e15e9f43c7ca ("btrfs: introduce BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOU=
+NTING to skip qgroup accounting")
+> Reported-by: Fabian Vogt <fvogt@suse.com>
+> Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1216196
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-The test case would verify the behavior by:
-
-- Enable qgroup first
-
-- Intentionally mark qgroup inconsistent
-  This is done by taking a snapshot and assign it to a higher level
-  qgroup, meanwhile the source has no higher level qgroup.
-
-- Trigger a large enough write to cause qgroup data space leak
-
-- Unmount and check the dmesg for the qgroup rsv leak warning
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/303     | 59 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/303.out |  2 ++
- 2 files changed, 61 insertions(+)
- create mode 100755 tests/btrfs/303
- create mode 100644 tests/btrfs/303.out
----
-Changelog:
-v2:
-- Fix various spelling errors
 
-- Remove a copied _fixed_by_kernel_commit line
-  Which was used to align the number of 'x', but forgot to remove
+Looks good, thanks.
 
-diff --git a/tests/btrfs/303 b/tests/btrfs/303
-new file mode 100755
-index 00000000..9f7605ab
---- /dev/null
-+++ b/tests/btrfs/303
-@@ -0,0 +1,59 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 303
-+#
-+# Make sure btrfs qgroup won't leak its reserved data space if qgroup is
-+# marked inconsistent.
-+#
-+# This exercises a regression introduced in v6.1 kernel by the following commit:
-+#
-+# e15e9f43c7ca ("btrfs: introduce BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING to skip qgroup accounting")
-+#
-+. ./common/preamble
-+_begin_fstest auto quick qgroup
-+
-+_supported_fs btrfs
-+_require_scratch
-+
-+_fixed_by_kernel_commit xxxxxxxxxxxx \
-+	"btrfs: qgroup: always free reserved space for extent records"
-+
-+_scratch_mkfs >> $seqres.full
-+_scratch_mount
-+
-+$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
-+$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
-+
-+$BTRFS_UTIL_PROG qgroup create 1/0 $SCRATCH_MNT >> $seqres.full
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subv1 >> $seqres.full
-+
-+# This would mark qgroup inconsistent, as the snapshot belongs to a different
-+# higher level qgroup, we have to do full rescan on both source and snapshot.
-+# This can be very slow for large subvolumes, so btrfs only marks qgroup
-+# inconsistent and let users to determine when to do a full rescan
-+$BTRFS_UTIL_PROG subvolume snapshot -i 1/0 $SCRATCH_MNT/subv1 $SCRATCH_MNT/snap1 >> $seqres.full
-+
-+# This write would lead to a qgroup extent record holding the reserved 128K.
-+# And for unpatched kernels, the reserved space would not be freed properly
-+# due to qgroup is inconsistent.
-+_pwrite_byte 0xcd 0 128K $SCRATCH_MNT/foobar >> $seqres.full
-+
-+# The qgroup leak detection is only triggered at unmount time.
-+_scratch_unmount
-+
-+# Check the dmesg warning for data rsv leak.
-+#
-+# If CONFIG_BTRFS_DEBUG is enabled, we would have a kernel warning with
-+# backtrace, but for release builds, it's just a warning line.
-+# So here we manually check the warning message.
-+if _dmesg_since_test_start | grep -q "leak"; then
-+	_fail "qgroup data reserved space leaked"
-+fi
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/303.out b/tests/btrfs/303.out
-new file mode 100644
-index 00000000..d48808e6
---- /dev/null
-+++ b/tests/btrfs/303.out
-@@ -0,0 +1,2 @@
-+QA output created by 303
-+Silence is golden
--- 
-2.42.0
-
+> ---
+>  fs/btrfs/qgroup.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 3846433d83d9..b3bf08fc2a39 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -2957,11 +2957,6 @@ int btrfs_qgroup_account_extents(struct btrfs_tran=
+s_handle *trans)
+>                                 ctx.roots =3D NULL;
+>                         }
+>
+> -                       /* Free the reserved data space */
+> -                       btrfs_qgroup_free_refroot(fs_info,
+> -                                       record->data_rsv_refroot,
+> -                                       record->data_rsv,
+> -                                       BTRFS_QGROUP_RSV_DATA);
+>                         /*
+>                          * Use BTRFS_SEQ_LAST as time_seq to do special s=
+earch,
+>                          * which doesn't lock tree or delayed_refs and se=
+arch
+> @@ -2985,6 +2980,11 @@ int btrfs_qgroup_account_extents(struct btrfs_tran=
+s_handle *trans)
+>                         record->old_roots =3D NULL;
+>                         new_roots =3D NULL;
+>                 }
+> +               /* Free the reserved data space */
+> +               btrfs_qgroup_free_refroot(fs_info,
+> +                               record->data_rsv_refroot,
+> +                               record->data_rsv,
+> +                               BTRFS_QGROUP_RSV_DATA);
+>  cleanup:
+>                 ulist_free(record->old_roots);
+>                 ulist_free(new_roots);
+> --
+> 2.43.2
+>
+>
 
