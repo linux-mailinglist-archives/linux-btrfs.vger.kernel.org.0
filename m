@@ -1,132 +1,124 @@
-Return-Path: <linux-btrfs+bounces-2653-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2654-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AE8C86051A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 22:49:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC54860803
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 02:07:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 163D7286198
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Feb 2024 21:49:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F867B2227D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 01:07:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 826D312D200;
-	Thu, 22 Feb 2024 21:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB0AC2E9;
+	Fri, 23 Feb 2024 01:06:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="K9Co68Gb"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="eCPtdtmR";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kvwm/INw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 248B312D1EC
-	for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 21:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985B8BE7F
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 Feb 2024 01:06:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708638547; cv=none; b=iiGabtAidNDhG64dFvoGzz2Cs7JP5NodXldWJtXvF405H6s3vO/2y8wQ8HlTz+HhquW9HSLrBDaVLt63uCM2F3U5YIcvqMH7Rpmq0Rz3NsL8Xulc5AFeLF9FP8svupp6qXGqhRuI8dR9qH5lhKksJ576oxSLiZzTFPQAopVHK54=
+	t=1708650408; cv=none; b=X+KfK9dAzpWqWuN6JaeAxISnRHYxBBtjMlZMB1LWlp/SMDN+N0EEMpN473AkdtKGl3E6fbQcnVWbjy4xzxMqTEsTLGAGiyQDP2ot8SWSAtuTMYuoLLJ05hg4CSGKBSFTssnZTTe+3KDFdneURDljjiGvgmrcdqNdEfJVezoZdsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708638547; c=relaxed/simple;
-	bh=4hLIeCkD6/19DNRCRxxJPIw7fPVeg9USkKEgJb9WA2w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=L0E/qHoh0mO8B/bCbpmi1MV8+mOPhUDzL8YAn9CxMmknm8/trT7+fldrfOUJtrudx7nWh0s5jaqAIzFul/5Ydlom+w2coQg/K5MizVjvzhcnObYa7+IDzFN9tv/235EvfI1vRZTECZMmvL+P5UqS0On/uz/Wftza3Jv+Yc5Nsuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=K9Co68Gb; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1708638542; x=1709243342; i=quwenruo.btrfs@gmx.com;
-	bh=4hLIeCkD6/19DNRCRxxJPIw7fPVeg9USkKEgJb9WA2w=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=K9Co68GbLSNXJgT4kZmE49i+Xz0GcJuNXfyaqhQBb6TxNgWVgPOeCmNB+hncnjUc
-	 R8KjxxaQq9Zb0AVBcrE9/lu3/LO5/J8uzpdOcE8cEAWYC7Ha7s+mnkpFIlaWGazPc
-	 vNh1CibP6QCl5fwdJ9N7cTxbMuh7KTdsSK/XSM3gt035WcPBAe2J34/883WY9u1ti
-	 ny8xdvPhS3PcjwzH3XoWC69h3wBhFayx5wWWDA6VTaLbzwbfZV6jP/tgV5YCWpbMG
-	 8Lxz/hcfKqw4m38q0dq3DRVauDSp1b6GLAmd6Jfzf0+ozfNhT55t0W/gAdF3o2+Pz
-	 4n3MW3qt7fl/RqCpUA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MD9T7-1rlpWh01bd-0095Ga; Thu, 22
- Feb 2024 22:49:02 +0100
-Message-ID: <7654cae9-d6b4-433a-8d6f-25b9ca30195f@gmx.com>
-Date: Fri, 23 Feb 2024 08:18:59 +1030
+	s=arc-20240116; t=1708650408; c=relaxed/simple;
+	bh=B/vIRDfzx02F213bdbkAheuqKbP2Cb20iYu5zv+mbDE=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
+	 Subject:Content-Type; b=J9eXORVlJKBJMHfv+oLxKRWntw2xU4yNv/EdtmmHJV2sZUWuH3JShhNZgRGoLgHtb5N1I3Tob6G6SFoIkkBA7qDZuAM1a+z6zVmQICjvjbsIEVlquukEw6HwGxlh+uzcX8ibS5Oq/BeGE5SGYnjqlw5jfVoXAwZqLERUoe2lWrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=eCPtdtmR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kvwm/INw; arc=none smtp.client-ip=64.147.123.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailout.west.internal (Postfix) with ESMTP id 95E943200A32;
+	Thu, 22 Feb 2024 20:06:45 -0500 (EST)
+Received: from imap50 ([10.202.2.100])
+  by compute4.internal (MEProxy); Thu, 22 Feb 2024 20:06:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:content-type:content-type:date:date:from
+	:from:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1708650405; x=
+	1708736805; bh=8oAzIhp4x3r8xh5pTeyxL5PLGOjmScT9/H7lyYMtlos=; b=e
+	CPtdtmRJ7tBm6aWOAHMfpc/Nkbk4aSioCxlC7XM6QkbjlqsAwqhUDpBGGB0lQ0Se
+	rPA4JbhzQXAnSqk8Lhvt5ubdvdGYEQI3YhtIjJLjJLZ1QhRKziMQaD7+dOZcmYLM
+	DVzNk0vzocLQKX7b8mZEXcwmoRB0NV7hjk3c8uUzSWoe238Br5TTIP+ZwMyGlthT
+	dgOq567F5j0nBoZRCMpwkq0StmaqutEYgaOXVMoPud5+DSPa7WMRtYYhWmjx9ayT
+	lReAPhp5V5SKAZ98w6WJORwCCMKatszN6QoHn8iPCwZHx4g1N0ti4fdX8Rylj3kv
+	EmpOzT9xgD5lvocfoqVhw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1708650405; x=1708736805; bh=8oAzIhp4x3r8xh5pTeyxL5PLGOjm
+	ScT9/H7lyYMtlos=; b=kvwm/INwI55MvHMqmCiN7yvh/+VkwpuOwsDkOvUdv180
+	Q84nlyCM2DTBnNJzvc28DJ11G+tVff5tRpfOk/dugXEBloMyiX4Eexewhp7ytwsd
+	lyimUx2CZMnOSZgemdpaVCNDns/9TX3KBaZ5hSiPRikRXkh32prv0Fq4fwpD85t/
+	eAUkTEAzIWzrdq+tO28xytYOjul0MlGBrpcdTcLR73PxrXs1g6IRO8SQDgURp4bA
+	wv7yqiV143fVpEs4rArOqW/dBY8Mz7uw8uYFseqNs27ReMyBhDbD2cvfX4IhIsPQ
+	uWtusctxbw4x07B7NV1e2zGleTg0a5Ghql6yUBQPDA==
+X-ME-Sender: <xms:pO_XZRY3cwj4vbxNdBi0TMyCAoEsJ0h21DjONVTqx59Dm8tLAGpgyQ>
+    <xme:pO_XZYZUykBZuaeRKnEF2w3JfQ4GEZdRXWmg-_6sNvy9db2JenLImcVUz9zLvuIY0
+    qhKNZ3gX8-RYqcLZ9I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeehgddvlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfvehhrhhi
+    shcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqe
+    enucggtffrrghtthgvrhhnpeduheeiveeutefghfekteekleevffeuledtjedvjeevvedv
+    gefgfefhgedvudegueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhm
+X-ME-Proxy: <xmx:pO_XZT-5_nTruyQtoJSNu45QvbyUdv3cMzTluiQNLgf4SV1yANQ6aw>
+    <xmx:pO_XZfrl2lf65GNZLdfZGKorGR576pCw2L8JKhnCRt60YV8dEWwHqw>
+    <xmx:pO_XZcpLjh0q5Jhm9WlqOTrp5i5EFLid4f0nDSJKk1D0TQwLjUvINg>
+    <xmx:pe_XZTQfTFmUmNi1qDQqw2V2u7scLnSeA1tI-W1SHLaN4lstd6EMXA>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id CA9A11700096; Thu, 22 Feb 2024 20:06:44 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] Simple cleanups
-Content-Language: en-US
-To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1708603965.git.dsterba@suse.com>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <cover.1708603965.git.dsterba@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UB0BVrYGbSmkFX1gc0Dxl4haVzAPaYA/gEUBxe8FqP3iOZMVltL
- jSe0Iwqa8UdclzDFgmDuU1YN/uez4xLt9r3M20z/HaB7s/spn7TGbNxrylXpFTF2Nz31IoQ
- 9rg0pqlNNix9DpP064G4IsUm0RfQSA6OhXECqbI0/lUoQ3wxnTWRF4aAVGHYs+h8NaWjiRv
- zqQwa11ff2XyX0itZl/rA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:4/Elr5PiFu0=;H+r+BWTYUP+m4BIcT/47anN35oF
- lVLgDfEOOSLtT+Td6RU+U7anhZ1AHceN3ESPbwwErZ1CEAFPK7YQqnEo8KVjO89aEbOD6N8fG
- cDq5T7ittmlCOEnx6i+qxTeZJzCmXNKXXJIlpzeMGtbT0DMAVOzBL2QayllvH/+NLLW9rdfED
- Wn75HJiEI5ARmX1x1lTABPH1fpdDGi3HmlrIjABpP3g2DPwtZVFrEV5ZwvfDgCnb4C0vm1C52
- 4Ugx6z7aDxRBCQQoVTMIQRj26EyEZQWbv1XyQnwoJSlkxMUBb9NbJud4cVs6oj/JQOZnBd3vD
- BP+z1zq+3q8kUWT1XM7qLpRW6e/4Wzbs54Ds+XZVrO26dUmSMv4E7c0+vrIVMCVMb0BYmxKVz
- RpgqRGyBfmCwAfRiGpv2NO4pnjWtxEoW41foAuWmUecHMexdFzG4e5OGEbSEDnnb6fxc4hFVY
- NFQKtjyVoNes5JRax1ieP15TpaVOC7KffevKIvBNOK8XUxRVRQZtrZ8tEieZV2ndWWdZTRgxZ
- 2kIuR6NP/TgFi+daYkuqaJA17qdK9GFTVOUsikQyCx3NfnFvfH3LSFXP6zCHlECx7PShoDf9U
- lV7l4aIejzCHAGtrpT+/BPiy5GFj5Im4Fjs8mHxLqpGm0LgAz1eAEXvshYGIT0Qxk5pBmU9wZ
- vcID7bl9kfvJpGWLH5rOY0B2PCiGpoUel7OBgW5zRZKhwo1+62aHMI77fjWdVXWOKNyFEfDbF
- jke1I3E4+OU0lBNMZHCtIMwq2YgIaIYOqdbkG/mGiI6OE0uTEAcwlo8UX6+My6/2T3WgVysyB
- n14RZZ86sLhsOXop+H8whzZEw2HofkTII+po6kYs3wX4Y=
+Message-Id: <b235b81b-6a84-4026-adf0-9d4f202ea890@app.fastmail.com>
+In-Reply-To: <7f994558-e786-4bc1-97bc-7090b9955de3@gmx.com>
+References: <5bd227d2-187a-4e0a-9ae8-c199bf6d0c85@web.de>
+ <1597160e-0b54-403b-8e9d-9435425f14f3@gmx.com>
+ <2790f277-fc10-43fc-b7d3-9a3cef1eced2@web.de>
+ <7f994558-e786-4bc1-97bc-7090b9955de3@gmx.com>
+Date: Thu, 22 Feb 2024 18:06:23 -0700
+From: "Chris Murphy" <lists@colorremedies.com>
+To: "Qu Wenruo" <quwenruo.btrfs@gmx.com>, Roland <devzero@web.de>,
+ "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Subject: Re: apply different compress/compress-force settings on different subvolumes ?
+Content-Type: text/plain
 
 
 
-=E5=9C=A8 2024/2/22 22:44, David Sterba =E5=86=99=E9=81=93:
-> David Sterba (4):
->    btrfs: handle transaction commit errors in flush_reservations()
->    btrfs: pass btrfs_device to btrfs_scratch_superblocks()
->    btrfs: merge btrfs_del_delalloc_inode() helpers
->    btrfs: pass a valid extent map cache pointer to __get_extent_map()
+On Wed, Feb 21, 2024, at 8:25 PM, Qu Wenruo wrote:
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
+> OK, didn't expect the compression ratio detection to cause so much
+> difference.
 >
->   fs/btrfs/btrfs_inode.h |  2 +-
->   fs/btrfs/dev-replace.c |  3 +--
->   fs/btrfs/disk-io.c     |  2 +-
->   fs/btrfs/extent_io.c   | 11 ++++++++---
->   fs/btrfs/inode.c       | 14 +++++---------
->   fs/btrfs/qgroup.c      |  2 +-
->   fs/btrfs/volumes.c     | 13 +++++--------
->   fs/btrfs/volumes.h     |  4 +---
->   8 files changed, 23 insertions(+), 28 deletions(-)
+> Which also means, we can further improve the compression detection.
 >
+> In that case, I would purpose to change "compress-force" to
+> "skip_compress_heuristic" or something similar, and get rid of the
+> compression string/level for the new option.
+
+But which heuristic is skipped? I assume it can only be the btrfs built-in one? I'm not sure about other compression algorithms but zstandard has its own bail-out heuristic.
+
+Another potentially large difference between compress and compress-force is extent size is limited to 512 KIB even when not compressed using compress-force. Whereas the upper limit on extent size for compress option, is (I think) bg size. An upper limit of 512 KiB on extent size can significantly increase the metadata requirement, leading to tall trees. That then makes me wonder if such setups should have a larger node/leaf size than 16KiB default. 
+
+I'm also not sure which heuristic is cheaper, or more accurate, the built-in Btrfs one or zstandard.
+
+
+-- 
+Chris Murphy
 
