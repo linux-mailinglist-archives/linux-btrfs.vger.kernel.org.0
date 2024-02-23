@@ -1,52 +1,52 @@
-Return-Path: <linux-btrfs+bounces-2689-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2690-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13661861D07
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 20:56:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BF63861D10
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 20:57:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7FBB2876EC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 19:56:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 064451C24CC7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 19:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE63614535B;
-	Fri, 23 Feb 2024 19:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418B614535B;
+	Fri, 23 Feb 2024 19:57:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="PZYDWBuW"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ktbCiF1X"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D187313DBA8
-	for <linux-btrfs@vger.kernel.org>; Fri, 23 Feb 2024 19:56:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F80113DBA8
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 Feb 2024 19:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708718197; cv=none; b=qRNCtmgkgqmS6jM1pKQhvEA3/vPJUas4RJR7dco29jZLs0nPxrK29Rav3CIl918GtdUccjhTCdGB5XY4TGcZX7i2PLhIe2464TGmOX6eS5gFMGFT71uVvuDfNYpjqgWMMcyNOYnWOUP2JWt2l4w0VmNqQr/eAOUvTq+nxtXnqCw=
+	t=1708718270; cv=none; b=PvqGEDrOd1+czpYs8iR+TNEiTnz3knzevodQ/qCLnq2TuOe6RPOHGtzZXJ2EHtfmOaAymY5tGKQlvZh+caZ7C1TM0euovPv+tiI88+AO07yJEyzXx9J5TEkl9kLbQFs5OxWlgx2PcupnE2w23okPqYq5EAaYV0/4Ayoy1NUhm/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708718197; c=relaxed/simple;
-	bh=6VhihhivP0dCX55qoj+AKdKnQMd8yuQfHPBSUWDxanQ=;
+	s=arc-20240116; t=1708718270; c=relaxed/simple;
+	bh=s9h+MZAl8XFTbb+IyAJpPXQ5HyswYEkWuyjo3VttUYo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=hQGLLqEVOu8sXPjbMtdRKHWEq0fEVUWc5g3f5vEPZD2Mo2N97UGmF0y9wnb2ESoh+oiYerJoptqn+1WK6kbuYoSCi4z5L3WMchh/MWR4T3EUAtZRnc3o2C5o/f5fMkqfWYdzGIh+kILVNEzfRw6s6nAyVNpCLV479rMAbkZWVGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=PZYDWBuW; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=dXHtRRaDbh1mmW1BPfmPBHkJzy5ShfqYtDtXhkkVjcmTPH5V/mTnkixL91yamPMepVwc+6ZzTE1zDC5Qfnu+OOvVKpnQ+IR2pgTqA75h4QFTqjt98Hvs+NU+/kRqXyJ1sDNPV3oAjnxqLt9uXQ6376K9ykUSq7AbZHpUkGqYD2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ktbCiF1X; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1708718145; x=1709322945; i=quwenruo.btrfs@gmx.com;
-	bh=6VhihhivP0dCX55qoj+AKdKnQMd8yuQfHPBSUWDxanQ=;
+	s=s31663417; t=1708718263; x=1709323063; i=quwenruo.btrfs@gmx.com;
+	bh=s9h+MZAl8XFTbb+IyAJpPXQ5HyswYEkWuyjo3VttUYo=;
 	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=PZYDWBuWGIcPEmGjydWj1pGtdbQnQdHGEaGXjmPAqpKasggc36w3nNG1/P2jPV7n
-	 gB6FKNVNsyqbb7bQt0w2hV1ELYtQKr2hoxTaIHL9AxBTOsCv/HZuwOAEY88Bx5hxM
-	 Ury+AMATKdjLoAbAz0jC2S0qRe96KJpRWmmqjer+iekBt8kqDS3okfFm9wzJs+fM2
-	 y/V4yt6phjWD6bQKuCJ2p6o1WQlRe8tO87ZJW76nJJPWj7Xr7HNUTh346bc5fKY0y
-	 EiITLiq2vmHC7/bglabdWw5bUklAMeDQCowOaukrd1MEZ0+k60wqI0t4T/Hs9fSmT
-	 zzbQ8r39F32fnsRHhg==
+	b=ktbCiF1XJYArzyd/KDY6nQd1d1jZJBoShQhzj7m0P3NWsgir3uuiTV1lv14vnkfL
+	 TIG7WYkHGFmljwCsWjikoc8WUcobK0IiVf+hEYhNNDYO1JWWibNXBFD2fOotnLg7n
+	 sY/xzC+OEmajtg5XBM3IPsqOJvCHfi4br1Q+sVU9urRmGvBvGtBfyiNoq/p4Kt2ew
+	 LCTSbWGRNqKxqPpHJrU8XPIT/hkqQA+5y0vj6CrkmuEJlKGNeKoP+l0RN6rTW3YMi
+	 xe+N4FgVDjjorKEa13yEE04t3WHATNWvadE8E7+WEg9fEY1m8ykSHlbB5AoLB4lTf
+	 n0nqU33sN2jFTx+jKA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MA7GM-1rkiOg1Rqk-00BgMB; Fri, 23
- Feb 2024 20:55:45 +0100
-Message-ID: <e18d4a17-12ed-438a-bceb-b1a2e10d15d4@gmx.com>
-Date: Sat, 24 Feb 2024 06:25:40 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MY6Cb-1rPSWp2vi1-00YPZE; Fri, 23
+ Feb 2024 20:57:43 +0100
+Message-ID: <7f2d1ad7-3c5c-41e9-a797-895e2ec76ed6@gmx.com>
+Date: Sat, 24 Feb 2024 06:27:40 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,10 +54,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: How to repair BTRFS
+Subject: Re: [PATCH] btrfs: include device major and minor numbers in the
+ device scan notice
 Content-Language: en-US
-To: Matthew Jurgens <default@edcint.co.nz>, linux-btrfs@vger.kernel.org
-References: <cb434383-5dfb-4748-8039-1496e09a2a80@edcint.co.nz>
+To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <9b8ddccde70488086ea466b33b9cc1e52d0dee3e.1708687432.git.anand.jain@oracle.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -83,442 +84,75 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <cb434383-5dfb-4748-8039-1496e09a2a80@edcint.co.nz>
+In-Reply-To: <9b8ddccde70488086ea466b33b9cc1e52d0dee3e.1708687432.git.anand.jain@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:WAhnpMRfczz05wzgLJPue66Z/SqEYySwZ03Wc/1Dql/+JwpFMyD
- n2OfHQEWtbsDU5mMEP4UVuhT9iN9az1fGspZChcp614juszgXq/MDkhWqa+vtye5UtCiIpt
- Nmhv1EsgrEI6iJVhlk/XyxSCxAu/fjNedO7sw22TrCAbKecWdvfM0oe8XBCZcP0G6ekjf8D
- Nwtb9NROk6cJ9/N9RP2FQ==
+X-Provags-ID: V03:K1:fxlHr4oTxEoAWXW3T/ZS53H4hL2FnuPa9t0qeaUIfvAg0wV8kCt
+ FmgHahyi5lDHIz4lhW+dVDwedbFpACBizxNFpMqTiI/6DdnbPrVdBSPaRw+cA3DMg/2wjHM
+ nZXCIKSpcR8p9wET1G+/wGQsSQ0tCZv1/fM21Vd6zSQtfdat6ODiq1GcmWEXijX5/02gEg2
+ Opg+BEPIfaUrf1JRfFGeQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8l+3Tw1ZJDw=;zKXVQsp7ei/m9IARn3bMB7C4wUN
- /6ni2T+ujknJ6rByX7MRutdl8SWJ8qXdYKZcyUB7yPuIC8/421A7Nm1jZF2UzgMxoXI/ETyFD
- hYc0IEZaWUhJdlLjKQeGZr7hMwRfH5YazlRcBIEvoq8x58YkUqo9F2FuenMA7hBsKcb3BNqGD
- XjoORL/zclpPXC1jRVJ7pczwJ0I1vJh2/aPu17DFPSOo2tFi7RT4kHHRhVhxkUJVsAmLdUnCd
- oCCDgpInsS6/T+Lz1ss07dJ3nMhCyw/xFwCyLPyZt+pkvXIs3uMXqT0eG5FyNuNT9NMvcetoQ
- 86eWOnQ3WSN3+43ez91yA3iDuB5QTKRS5lhiav4zpF7rpyoJhwjPV3HLOn24eXse+28b56Xlm
- spphOtv45QKYetyO+osFXzXy2we59blD/3wUsKI9JV3HJrKUF+ydZ7SKLPhiyFGgwyVjMBAcx
- Ylj7Pu3HmmtakJtnUZmNM8DDsZvMhsEXwG6SNusUxy9h/JVzw6TbYQr3S5iGeFL6/weCPwo35
- yQT2PkGm5rrnKW6kdqD559pPArJq4kN2iYAVLLTteuaTy5mwgsDWMrrybzVtcaqscOEvAF2Dn
- OzSWISkYUqeRwG+fwpaA373GaCwLU5sEPcml7dR5k7KE9n8qpf8dfrUxfw1IY8mL+ShVOOXKs
- vmh+UZQ3TOB9i93UTTQBoa0ivaeYYSfjnD93eY9j19PeZtm6FVNBF1bhEvPxW/7k9nbFH+nq9
- Owhm2ikyfIq/xMHEq2iRfwYPOWsd5zvj/af2h9TwzV0tj5fLMv0M3jRe+Qwz9H5B+x5QrTxq2
- YHNnp7KbAXKTbvlnYszrplb+MtFU5wn3+v/gy3qhEuQ0k=
+UI-OutboundReport: notjunk:1;M01:P0:Df1mPqwPDKg=;bwLZaRyZjq36RvSR8aHnbJHiXmz
+ Ot1SdgT1Fe2sxkl9I+uolmdBHj1/ixcHlN8jwtOMLFdFI8fLocwxAGIsh+pwLJtsH7sm0xOWx
+ 0MePMmuxsH1Wh+kQA2eYbjq7OSOerq6T4HC+qJ17iX3oEvBxwU5hVNHMTq0OMrTWBZ5ApwQmS
+ L3+hmckBSOUJGR7VK7rxu11PuDBX0LVesizNsFTZgcdS71Cf4sw+5xKXCaYKn2YTFclfTmYYE
+ HCnEXh3U6M+Kw7jd8ZYUnFTzI3wv5liRzY7nsmyCNhx8xB/5yAJ19Adn3ebgCWgGgfw1tXYRx
+ Bn8301ttL8nPN05Xt74px9t1faHivnRx1QXY+JfCGOfWKHEuB0ZcJjh+QM7kflG8ETKxHf53L
+ g7RbTBh2P+HARIiSoclxxUuQAl0bVcqxPV49HgrMOalHucGrSbPZJjZxfr9GTewOkY9yq6WC8
+ 7qXTIeC5KVqXZ/Hf3FzXbAm6d/GhQLqhkslHFETrjArR6EnmIzLVSBFgX8P+pOaVdTSJeWX3r
+ QNE+M6CQymuznFUq74qOOP88TIf3QLrjsERYxnWNjc68Itqm2yY/ljW3ooK96egvrZ+/8fKGZ
+ 6n2dXXbkAYntNKCcGssGc8uH3q+kcRZv+Iluhtj8x9IztyBANrx+E4BH8mU+K+CyC4842DasA
+ SaWGryfTwKwFAK+/nDGGEN5NZWnSgvgxVPUEq5Iad6ui+ZbKyDUoqFZiQnGuDy9DUt8X6SvII
+ SS9sBmTNaz7pt89U40Zhc22bc+MwncQBicmBZREyCTbPcGgWocisQMoC86Okx5rY7lGyINVw6
+ yZt9eQk0XMwNx8UQU8sRAiGLk2d5LMcUGPET/C7SxpVOA=
 
 
 
-=E5=9C=A8 2024/2/23 21:39, Matthew Jurgens =E5=86=99=E9=81=93:
-> If I can't run --repair, then how do I repair my file system?
+=E5=9C=A8 2024/2/23 21:56, Anand Jain =E5=86=99=E9=81=93:
+> To better debug issues surrounding device scans, include the device's
+> major and minor numbers in the device scan notice for btrfs.
 >
-> I ran a scrub which reported 8 errors that could not be fixed.
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-The scrub report and corresponding dmesg please.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
->
-> ------------------------------------------------------------------------=
-------------------------------------------------------
->
-> Then I ran a btrfs check while mounted which looks like:
->
-> WARNING: filesystem mounted, continuing because of --force
+Maybe you want to expand the device number to all other device name output=
+?
 
-Do not run btrfs check --force on RW mounted fs.
-
-It's pretty common to hit false transid mismatch (which normally should
-be a death sentence to your fs) due to the IO.
+Especially considering the recent device name problem, device
+major/minor looks a much better supplement.
 
 Thanks,
 Qu
-> Opening filesystem to check...
-> Checking filesystem on /dev/sdg
-> UUID: 021756e1-c9b4-41e7-bfd3-bc4e930eae46
-> parent transid verify failed on 18344238039040 wanted 4416296 found
-> 4416299s checked)
-> parent transid verify failed on 18344238039040 wanted 4416296 found 4416=
-299
-> parent transid verify failed on 18344238039040 wanted 4416296 found 4416=
-299
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D18344237924352 item=3D1 paren=
-t
-> level=3D2 child bytenr=3D18344238039040 child level=3D0
-> [1/7] checking root items=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 (0:00:06 elapsed, 69349
-> items checked)
-> ERROR: failed to repair root items: Input/output error
-> parent transid verify failed on 18344253374464 wanted 4416296 found 4416=
-300
-> parent transid verify failed on 18344253374464 wanted 4416296 found 4416=
-300
-> parent transid verify failed on 18344253374464 wanted 4416296 found 4416=
-300
-> Ignoring transid failure
-> parent transid verify failed on 18344264335360 wanted 4416296 found 4416=
-301
-> parent transid verify failed on 18344264335360 wanted 4416296 found 4416=
-301
-> parent transid verify failed on 18344264335360 wanted 4416296 found 4416=
-301
-> Ignoring transid failure
-> parent transid verify failed on 18344243511296 wanted 4416296 found 4416=
-301
-> parent transid verify failed on 18344243511296 wanted 4416296 found 4416=
-301
-> parent transid verify failed on 18344243511296 wanted 4416296 found 4416=
-301
-> Ignoring transid failure
-> parent transid verify failed on 18344246345728 wanted 4416296 found 4416=
-301
-> parent transid verify failed on 18344246345728 wanted 4416296 found 4416=
-301
-> parent transid verify failed on 18344246345728 wanted 4416296 found 4416=
-301
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D18344243445760 item=3D4 paren=
-t
-> level=3D1 child bytenr=3D18344246345728 child level=3D2
-> [2/7] checking extents=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 (0:00:00 elapsed)
-> ERROR: errors found in extent allocation tree or chunk allocation
-> parent transid verify failed on 18344238039040 wanted 4416296 found 4416=
-299
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D18344237924352 item=3D1 paren=
-t
-> level=3D2 child bytenr=3D18344238039040 child level=3D0
-> [3/7] checking free space cache=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (0:00:00 elapsed)
-> parent transid verify failed on 18344241594368 wanted 4416296 found
-> 4416300ecked)
-> parent transid verify failed on 18344241594368 wanted 4416296 found 4416=
-300
-> parent transid verify failed on 18344241594368 wanted 4416296 found 4416=
-300
-> Ignoring transid failure
-> root 5 root dir 256 not found
-> parent transid verify failed on 18344253374464 wanted 4416296 found 4416=
-300
-> Ignoring transid failure
-> ERROR: free space cache inode 958233742 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233743 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233744 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233745 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233746 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233747 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233748 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233749 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233750 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233751 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233752 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233753 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233754 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233755 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233756 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233757 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233758 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233759 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233760 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233761 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233762 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233763 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233764 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233765 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233766 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233767 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233768 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233769 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233770 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233771 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233772 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233773 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958233774 has invalid mode: has 0100644
-> expect 0100600
-> parent transid verify failed on 18344264335360 wanted 4416296 found 4416=
-301
-> Ignoring transid failure
-> ERROR: free space cache inode 958232811 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232812 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232813 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232814 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232815 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232816 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232817 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232818 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232819 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232820 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232821 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232822 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232823 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232824 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232825 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232826 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232827 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232828 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232829 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958232830 has invalid mode: has 0100644
-> expect 0100600
-> parent transid verify failed on 18344243511296 wanted 4416296 found 4416=
-301
-> Ignoring transid failure
-> ERROR: free space cache inode 958231543 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231544 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231545 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231546 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231547 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231548 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231549 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231550 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231551 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231552 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231553 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231554 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231555 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231556 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231557 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231558 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231559 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231560 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231561 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231562 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231563 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231564 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231565 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231566 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231567 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231568 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231569 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231570 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231571 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231572 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231573 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231574 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231575 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231576 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231577 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231578 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231579 has invalid mode: has 0100644
-> expect 0100600
-> ERROR: free space cache inode 958231580 has invalid mode: has 0100644
-> expect 0100600
-> parent transid verify failed on 18344246345728 wanted 4416296 found 4416=
-301
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D18344243445760 item=3D4 paren=
-t
-> level=3D1 child bytenr=3D18344246345728 child level=3D2
-> [4/7] checking fs roots=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 (0:00:00 elapsed, 1 items
-> checked)
-> ERROR: errors found in fs roots
-> found 0 bytes used, error(s) found
-> total csum bytes: 0
-> total tree bytes: 0
-> total fs tree bytes: 0
-> total extent tree bytes: 0
-> btree space waste bytes: 0
-> file data blocks allocated: 0
->  =C2=A0referenced 0
+> ---
+>   fs/btrfs/volumes.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
 >
-> ------------------------------------------------------------------------=
-------------------------------------------------------
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 32312f0de2bb..6db37615a3e5 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -824,13 +824,15 @@ static noinline struct btrfs_device *device_list_a=
+dd(const char *path,
 >
-> I then ran a btrfs check again whilst not mounted and I won't put the
-> output here since the file is 1.5GB and full of things like:
-> root 5 inode 437187144 errors 2000, link count wrong
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved ref dir 942513356=
- index 9 namelen 14 name
-> _tokenizer.pyc filetype 1 errors 0
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved ref dir 945696631=
- index 9 namelen 14 name
-> _tokenizer.pyc filetype 1 errors 0
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved ref dir 948998753=
- index 9 namelen 14 name
-> _tokenizer.pyc filetype 0 errors 3, no dir item, no dir index
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved ref dir 952510365=
- index 9 namelen 14 name
-> _tokenizer.pyc filetype 0 errors 3, no dir item, no dir index
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved ref dir 954421030=
- index 9 namelen 14 name
-> _tokenizer.pyc filetype 0 errors 3, no dir item, no dir index
+>   		if (disk_super->label[0])
+>   			pr_info(
+> -	"BTRFS: device label %s devid %llu transid %llu %s scanned by %s (%d)\=
+n",
+> +"BTRFS: device label %s devid %llu transid %llu %s(%d:%d) scanned by %s=
+ (%d)\n",
+>   				disk_super->label, devid, found_transid, path,
+> +				MAJOR(path_devt), MINOR(path_devt),
+>   				current->comm, task_pid_nr(current));
+>   		else
+>   			pr_info(
+> -	"BTRFS: device fsid %pU devid %llu transid %llu %s scanned by %s (%d)\=
+n",
+> +"BTRFS: device fsid %pU devid %llu transid %llu %s(%d:%d) scanned by %s=
+ (%d)\n",
+>   				disk_super->fsid, devid, found_transid, path,
+> +				MAJOR(path_devt), MINOR(path_devt),
+>   				current->comm, task_pid_nr(current));
 >
-> and
->
-> root 5 inode 957948416 errors 2001, no inode item, link count wrong
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved ref dir 690084 in=
-dex 17960 namelen 19 name
-> 20240222_084117.jpg filetype 1 errors 4, no inode ref
-> root 5 inode 957957996 errors 2001, no inode item, link count wrong
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unresolved ref dir 890819470=
- index 4463 namelen 8 name hourly.3
-> filetype 2 errors 4, no inode ref
->
-> and ends like:
->
-> [4/7] checking fs roots=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 (0:00:58 elapsed, 415857
-> items checked)
-> ERROR: errors found in fs roots
-> found 4967823106048 bytes used, error(s) found
-> total csum bytes: 4834452504
-> total tree bytes: 17343725568
-> total fs tree bytes: 10449027072
-> total extent tree bytes: 1109393408
-> btree space waste bytes: 3064698357
-> file data blocks allocated: 5472482066432
->  =C2=A0referenced 5313641955328
->
->
-> ------------------------------------------------------------------------=
-------------------------------------------------------
->
-> I have tried to see if I can find out which files are impacted by doing =
-eg
->
-> btrfs inspect-internal logical-resolve 18344253374464 /export/shared
->
-> using a what I think is a logical block number from the scrub or btrfs
-> check, but these always give an error like:
->
-> ERROR: logical ino ioctl: No such file or directory
->
-> ------------------------------------------------------------------------=
-------------------------------------------------------
->
-> after mounting it again, subsequent checks while mounted look like the
-> first one
->
-> I have also run
->
-> btrfs rescue clear-uuid-tree /dev/sdg
-> btrfs rescue clear-space-cache v1 /dev/sdg
-> btrfs rescue clear-space-cache v2 /dev/sdg
->
->
-> I am currently running another scrub so I will see what that looks like
-> in a few hours
->
->
-> ------------------------------------------------------------------------=
-------------------------------------------------------
->
-> Other Generic Info:
->
-> uname -a
-> Linux gw.home.arpa 6.5.7-200.fc38.x86_64 #1 SMP PREEMPT_DYNAMIC Wed Oct
-> 11 04:07:58 UTC 2023 x86_64 GNU/Linux
->
-> btrfs --version
-> btrfs-progs v6.6.2
->
-> btrfs fi show
-> Label: 'SHARED'=C2=A0 uuid: 021756e1-c9b4-41e7-bfd3-bc4e930eae46
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 4 FS bytes use=
-d 4.52TiB
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 si=
-ze 2.73TiB used 2.55TiB path /dev/sdg
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 2 si=
-ze 2.73TiB used 2.56TiB path /dev/sdf
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 3 si=
-ze 2.73TiB used 2.55TiB path /dev/sdb
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 4 si=
-ze 2.73TiB used 2.56TiB path /dev/sdc
->
-> btrfs fi df /export/shared
-> Data, RAID1: total=3D5.09TiB, used=3D4.50TiB
-> System, RAID1: total=3D64.00MiB, used=3D768.00KiB
-> Metadata, RAID1: total=3D24.00GiB, used=3D16.14GiB
-> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
->
->
+>   	} else if (!device->name || strcmp(device->name->str, path)) {
 
