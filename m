@@ -1,124 +1,155 @@
-Return-Path: <linux-btrfs+bounces-2654-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2655-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC54860803
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 02:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A2758608AA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 03:03:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F867B2227D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 01:07:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E40DEB21D4C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Feb 2024 02:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB0AC2E9;
-	Fri, 23 Feb 2024 01:06:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="eCPtdtmR";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kvwm/INw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E77FBA34;
+	Fri, 23 Feb 2024 02:03:25 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985B8BE7F
-	for <linux-btrfs@vger.kernel.org>; Fri, 23 Feb 2024 01:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98078C2DA
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 Feb 2024 02:03:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708650408; cv=none; b=X+KfK9dAzpWqWuN6JaeAxISnRHYxBBtjMlZMB1LWlp/SMDN+N0EEMpN473AkdtKGl3E6fbQcnVWbjy4xzxMqTEsTLGAGiyQDP2ot8SWSAtuTMYuoLLJ05hg4CSGKBSFTssnZTTe+3KDFdneURDljjiGvgmrcdqNdEfJVezoZdsM=
+	t=1708653805; cv=none; b=eTaWPPiE6Z0axfBW65yb9TwXkY2nxD4WTMqTNm0Au2aOeY6zcApATepmvnh6lEZvQ0Z38MJtUKRe894RGrCQi6271geCMt8OnULzhVHnmUdbeAPVQTZKQBX31+fyHFyF4UwTXdEP1xz4m1RTYc+mBERYfOE4pfTu1C+PmuGHGj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708650408; c=relaxed/simple;
-	bh=B/vIRDfzx02F213bdbkAheuqKbP2Cb20iYu5zv+mbDE=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
-	 Subject:Content-Type; b=J9eXORVlJKBJMHfv+oLxKRWntw2xU4yNv/EdtmmHJV2sZUWuH3JShhNZgRGoLgHtb5N1I3Tob6G6SFoIkkBA7qDZuAM1a+z6zVmQICjvjbsIEVlquukEw6HwGxlh+uzcX8ibS5Oq/BeGE5SGYnjqlw5jfVoXAwZqLERUoe2lWrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=eCPtdtmR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kvwm/INw; arc=none smtp.client-ip=64.147.123.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=colorremedies.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.west.internal (Postfix) with ESMTP id 95E943200A32;
-	Thu, 22 Feb 2024 20:06:45 -0500 (EST)
-Received: from imap50 ([10.202.2.100])
-  by compute4.internal (MEProxy); Thu, 22 Feb 2024 20:06:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	colorremedies.com; h=cc:content-type:content-type:date:date:from
-	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1708650405; x=
-	1708736805; bh=8oAzIhp4x3r8xh5pTeyxL5PLGOjmScT9/H7lyYMtlos=; b=e
-	CPtdtmRJ7tBm6aWOAHMfpc/Nkbk4aSioCxlC7XM6QkbjlqsAwqhUDpBGGB0lQ0Se
-	rPA4JbhzQXAnSqk8Lhvt5ubdvdGYEQI3YhtIjJLjJLZ1QhRKziMQaD7+dOZcmYLM
-	DVzNk0vzocLQKX7b8mZEXcwmoRB0NV7hjk3c8uUzSWoe238Br5TTIP+ZwMyGlthT
-	dgOq567F5j0nBoZRCMpwkq0StmaqutEYgaOXVMoPud5+DSPa7WMRtYYhWmjx9ayT
-	lReAPhp5V5SKAZ98w6WJORwCCMKatszN6QoHn8iPCwZHx4g1N0ti4fdX8Rylj3kv
-	EmpOzT9xgD5lvocfoqVhw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1708650405; x=1708736805; bh=8oAzIhp4x3r8xh5pTeyxL5PLGOjm
-	ScT9/H7lyYMtlos=; b=kvwm/INwI55MvHMqmCiN7yvh/+VkwpuOwsDkOvUdv180
-	Q84nlyCM2DTBnNJzvc28DJ11G+tVff5tRpfOk/dugXEBloMyiX4Eexewhp7ytwsd
-	lyimUx2CZMnOSZgemdpaVCNDns/9TX3KBaZ5hSiPRikRXkh32prv0Fq4fwpD85t/
-	eAUkTEAzIWzrdq+tO28xytYOjul0MlGBrpcdTcLR73PxrXs1g6IRO8SQDgURp4bA
-	wv7yqiV143fVpEs4rArOqW/dBY8Mz7uw8uYFseqNs27ReMyBhDbD2cvfX4IhIsPQ
-	uWtusctxbw4x07B7NV1e2zGleTg0a5Ghql6yUBQPDA==
-X-ME-Sender: <xms:pO_XZRY3cwj4vbxNdBi0TMyCAoEsJ0h21DjONVTqx59Dm8tLAGpgyQ>
-    <xme:pO_XZYZUykBZuaeRKnEF2w3JfQ4GEZdRXWmg-_6sNvy9db2JenLImcVUz9zLvuIY0
-    qhKNZ3gX8-RYqcLZ9I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeehgddvlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfvehhrhhi
-    shcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqe
-    enucggtffrrghtthgvrhhnpeduheeiveeutefghfekteekleevffeuledtjedvjeevvedv
-    gefgfefhgedvudegueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhm
-X-ME-Proxy: <xmx:pO_XZT-5_nTruyQtoJSNu45QvbyUdv3cMzTluiQNLgf4SV1yANQ6aw>
-    <xmx:pO_XZfrl2lf65GNZLdfZGKorGR576pCw2L8JKhnCRt60YV8dEWwHqw>
-    <xmx:pO_XZcpLjh0q5Jhm9WlqOTrp5i5EFLid4f0nDSJKk1D0TQwLjUvINg>
-    <xmx:pe_XZTQfTFmUmNi1qDQqw2V2u7scLnSeA1tI-W1SHLaN4lstd6EMXA>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id CA9A11700096; Thu, 22 Feb 2024 20:06:44 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
+	s=arc-20240116; t=1708653805; c=relaxed/simple;
+	bh=EqwwQgShDPZSCFmD4EAzdDLI0VQyrLpY6aA9djXYpBo=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=eKh2lDDA91lsAawT3+Tzh4c7cVUE9BvV4Vp4Na3WGeSV+PTbLYtz53+YtiyB2M5r+7kNUB7/PEuW88WwFLJV2KNMBCCNhkeKVrBktBnjSXoAE5V3A+BZlPjpEILcJ7xXoWluPGnyyKzHBWLODPcgMpLKnCAe11df4rrgm3CISHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3651d2b88aeso3531045ab.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Feb 2024 18:03:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708653803; x=1709258603;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MKrgf129mFrg2kPZfg0LvclHW3UF997R10zWrzVHdFM=;
+        b=qk3lzhUUH0vLxI2InV8BCG/Ebp/iqu7mKpTfSUTk0y7dPDQWvOHOmrUe4FMMvsvKds
+         rPXF9zZ1lNlkaavgWqiM1/amiDTq0wrvA1QHCpdbK7So1FWV3MF7pt2dyfwUTA1HuKM3
+         2aftGMw/AvH5D56A1dnqUnPIhqWTot81A6JWOkVGOMI556Prdw5sPub7JODQOidzI1J/
+         MqFX75of6uF7nS9Lhdjh5SUENCUZ63AYgG6Iu2GFMcX3R9T+P+kO1A/gzMh8i2cHChJC
+         rLXyKI6ntz99FaBTMeaLw0H04Aq4nSP8Kyg1e9AWy5P/MgnD4TFQmWroZj5O/NHYC3PZ
+         uBPw==
+X-Forwarded-Encrypted: i=1; AJvYcCUtM2b1SjhiFux8o+wIO1n0L1PklMRE+8R1Z1Qm4bs3k38/E5Qo3T9+DE/MenH0rNJNrknQytXZGHFrhKTwaGCut9jORtIdEhRpGc4=
+X-Gm-Message-State: AOJu0YzsZjJPJXoCZGuZKXHSThpUwBEDPBphuOeH3lzMCLb6Rw+b3MjO
+	fXDpZTAR7SLIBjOhVpORR3FNlL0H+m0myj9Sj4qPIl/oBEs2psr9G11E4jkApOF8uIdhi9NSZtu
+	0HBrwvValMYaUDMR4dRjbSPoV70DnMREj4sdhCbqzBNupwfWoC10z7RI=
+X-Google-Smtp-Source: AGHT+IGM0alMyQC7fdJq8wc8McpSrAwflkSLEWNeVF2I359YAzIrPa++BCY4VhsMhFclFulIY0oVvWm6SJWzmNZE0f6fuuUQxP4C
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <b235b81b-6a84-4026-adf0-9d4f202ea890@app.fastmail.com>
-In-Reply-To: <7f994558-e786-4bc1-97bc-7090b9955de3@gmx.com>
-References: <5bd227d2-187a-4e0a-9ae8-c199bf6d0c85@web.de>
- <1597160e-0b54-403b-8e9d-9435425f14f3@gmx.com>
- <2790f277-fc10-43fc-b7d3-9a3cef1eced2@web.de>
- <7f994558-e786-4bc1-97bc-7090b9955de3@gmx.com>
-Date: Thu, 22 Feb 2024 18:06:23 -0700
-From: "Chris Murphy" <lists@colorremedies.com>
-To: "Qu Wenruo" <quwenruo.btrfs@gmx.com>, Roland <devzero@web.de>,
- "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Subject: Re: apply different compress/compress-force settings on different subvolumes ?
-Content-Type: text/plain
+X-Received: by 2002:a92:c56f:0:b0:365:1f2b:7be8 with SMTP id
+ b15-20020a92c56f000000b003651f2b7be8mr49353ilj.5.1708653802842; Thu, 22 Feb
+ 2024 18:03:22 -0800 (PST)
+Date: Thu, 22 Feb 2024 18:03:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f673a1061202f630@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_get_root_ref
+From: syzbot <syzbot+623a623cfed57f422be1@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    c02197fc9076 Merge tag 'powerpc-6.8-3' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16765b8a180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=caa42dd2796e3ac1
+dashboard link: https://syzkaller.appspot.com/bug?extid=623a623cfed57f422be1
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7b2a3f729cc3/disk-c02197fc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b4f10e6eb1ca/vmlinux-c02197fc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8488781d739e/bzImage-c02197fc.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+623a623cfed57f422be1@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+ida_free called for id=51 which is not allocated.
+WARNING: CPU: 1 PID: 31038 at lib/idr.c:525 ida_free+0x370/0x420 lib/idr.c:525
+Modules linked in:
+CPU: 1 PID: 31038 Comm: syz-executor.2 Not tainted 6.8.0-rc4-syzkaller-00410-gc02197fc9076 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+RIP: 0010:ida_free+0x370/0x420 lib/idr.c:525
+Code: 10 42 80 3c 28 00 74 05 e8 6d a3 9b f6 48 8b 7c 24 40 4c 89 fe e8 a0 89 17 00 90 48 c7 c7 00 ca c5 8c 89 de e8 01 91 fd f5 90 <0f> 0b 90 90 eb 3d e8 e5 85 39 f6 49 bd 00 00 00 00 00 fc ff df 4d
+RSP: 0018:ffffc90015a67300 EFLAGS: 00010246
+RAX: be5130472f5dd000 RBX: 0000000000000033 RCX: 0000000000040000
+RDX: ffffc90009a7a000 RSI: 000000000003ffff RDI: 0000000000040000
+RBP: ffffc90015a673f0 R08: ffffffff81577992 R09: 1ffff92002b4cdb4
+R10: dffffc0000000000 R11: fffff52002b4cdb5 R12: 0000000000000246
+R13: dffffc0000000000 R14: ffffffff8e256b80 R15: 0000000000000246
+FS:  00007fca3f4b46c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f167a17b978 CR3: 000000001ed26000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ btrfs_get_root_ref+0xa48/0xaf0 fs/btrfs/disk-io.c:1346
+ create_pending_snapshot+0xff2/0x2bc0 fs/btrfs/transaction.c:1837
+ create_pending_snapshots+0x195/0x1d0 fs/btrfs/transaction.c:1931
+ btrfs_commit_transaction+0xf1c/0x3740 fs/btrfs/transaction.c:2404
+ create_snapshot+0x507/0x880 fs/btrfs/ioctl.c:848
+ btrfs_mksubvol+0x5d0/0x750 fs/btrfs/ioctl.c:998
+ btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1044
+ __btrfs_ioctl_snap_create+0x387/0x4b0 fs/btrfs/ioctl.c:1306
+ btrfs_ioctl_snap_create_v2+0x1ca/0x400 fs/btrfs/ioctl.c:1393
+ btrfs_ioctl+0xa74/0xd40
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xfe/0x170 fs/ioctl.c:857
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7fca3e67dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fca3f4b40c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fca3e7abf80 RCX: 00007fca3e67dda9
+RDX: 00000000200005c0 RSI: 0000000050009417 RDI: 0000000000000003
+RBP: 00007fca3e6ca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fca3e7abf80 R15: 00007fff6bf95658
+ </TASK>
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-On Wed, Feb 21, 2024, at 8:25 PM, Qu Wenruo wrote:
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-> OK, didn't expect the compression ratio detection to cause so much
-> difference.
->
-> Which also means, we can further improve the compression detection.
->
-> In that case, I would purpose to change "compress-force" to
-> "skip_compress_heuristic" or something similar, and get rid of the
-> compression string/level for the new option.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-But which heuristic is skipped? I assume it can only be the btrfs built-in one? I'm not sure about other compression algorithms but zstandard has its own bail-out heuristic.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Another potentially large difference between compress and compress-force is extent size is limited to 512 KIB even when not compressed using compress-force. Whereas the upper limit on extent size for compress option, is (I think) bg size. An upper limit of 512 KiB on extent size can significantly increase the metadata requirement, leading to tall trees. That then makes me wonder if such setups should have a larger node/leaf size than 16KiB default. 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-I'm also not sure which heuristic is cheaper, or more accurate, the built-in Btrfs one or zstandard.
-
-
--- 
-Chris Murphy
+If you want to undo deduplication, reply with:
+#syz undup
 
