@@ -1,331 +1,654 @@
-Return-Path: <linux-btrfs+bounces-2698-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2699-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB6F4862161
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Feb 2024 01:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8295E8621E4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Feb 2024 02:24:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 683861F247CC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Feb 2024 00:54:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13C681F28EF4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Feb 2024 01:24:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A971870;
-	Sat, 24 Feb 2024 00:53:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73FCA4688;
+	Sat, 24 Feb 2024 01:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="iF9ip3sy";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="HzyaOKXZ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=edcint.co.nz header.i=@edcint.co.nz header.b="aa1YHBde"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from h1.out4.mxs.au (h1.out4.mxs.au [110.232.143.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829D5138A;
-	Sat, 24 Feb 2024 00:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708736034; cv=fail; b=jug3G53Zihehh5YVs+b/0vONjFDGrDBBUxTh9yTf3fMF+vdGO9edNF9KYWRIZvPhu36NPplwS10llsGExXWf8nMCF+DucuE0rD2OE8EHK/qjup70Y+MvmhaZWD9cswX14vZ5IkVGtwaHPNvbuaBFYfgT7eNja9eDLMgrC9kWZzc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708736034; c=relaxed/simple;
-	bh=3dJ+XCC/JVsHLk3b9SM+TOen+/7MeIm/OeUqqnpR0JI=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Qllma1M3KVuxAmScuaOSzTHYOiTM68OVCDTfGVuTSGDDnOKaGBLy1iBjMxtAM0gJ5ITNjWeeiPSu5bbzlmi9ix0SjU74tdF52JrOjIDaiPZT42tCcreLn83Ly3mUE6F3Zi/sF+aznbu3NK0wqtKokkBrTWAtGDi5OAvpaBdKOSM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=iF9ip3sy; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=HzyaOKXZ; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41NLjsUk006926;
-	Sat, 24 Feb 2024 00:53:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=iMdMBlV7N+mKVRXNNCcZNAz4eGH5kI6eC2Dppu6jSPc=;
- b=iF9ip3syanUC60EP4DWF/rxKGTIeUsY1yF6t57Hlc6xiWtjjTOX3F8GdK96RTtH5a/dR
- A+nVAihJskfNQn88fu2aWdT0ryY52acUbRaiK7Sg/uPd843N/z4wPhZETq1mopWV+pWJ
- 29Oztt+G/0We9fpN1H55ltiPVFz677Rbcrakc3jjMQwMbT8+C6vmTfnzP383UFsTyJr6
- /dkdUH1bj8nVhalX9trzabwpf4pmWznGf+cDf4YBtZo+6oK9ziedtG1hauKhRU+g9HLg
- MFRPCZJO4dXHGE/uFGgVtndH3C1L/tXp8idao3gCt0BpGEA10ZayDwnQiSHYVHatBRO4 sA== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wakqch4mu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 24 Feb 2024 00:53:46 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41NNhJa2016966;
-	Sat, 24 Feb 2024 00:53:46 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wak8ddx2m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 24 Feb 2024 00:53:46 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=apWF8+95WUpW4Gp0sko0WAHSTP1nfTVM74h/9vNp276Xyp/8mz53+hAa0khmKs1K0HsyvYLlS80KzUIjpY09f7dhrYrlWvMrjHctg2p74chxm1yfmYXyPs50OAynJwxlBaP8sNds4dYX1YniLYVaQDl0XhsyKwU+nqKnN4sFKOVeg1xp7JEiP/nVRqOBjci85wlYs4oTPDsgvS/1Dx6KoaRDPy/2a0D8y4FeLtRzmkdZEIobtwygSyJGbllrp9+iPhiMx6OavVhGHT7IOMtwMiUIUlmIIa0TdV4lYchS/qjoxgaBSp6/IGehcmWiUoMkLaxVu5165MNQOlsc7g+xTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iMdMBlV7N+mKVRXNNCcZNAz4eGH5kI6eC2Dppu6jSPc=;
- b=VTBVwAmWvr4HCLjOE3udmHguOgJUaaUhpTBT1Hn34HoWRft5ByVwSDBjIw8F7g7ng40Da8nTbYdPxaBzySYEkg7vLE1A0SywpDe/40gmebkwwyi+e4rIpDjqlI70Bh0bREteCjFB3Dxz7piMeu0Lhfv9MR9DOu3ZlKEbD7tN6XJs4js9q8QeEsN40U3NUBDTaWOKURJpMBJEbZy9tghz7tLiqeqyI6nVWL3B/DG01IKduKW0mG9Q9Yfw73VpBVjQQZZYGcTpN0+jG4yaEF2QjSTptv6Qi1FtcUf+L2EWFL+gbq2VdxYgAx0baoXDxc8B4+XsuzbR7WhG2GbAoKbhbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iMdMBlV7N+mKVRXNNCcZNAz4eGH5kI6eC2Dppu6jSPc=;
- b=HzyaOKXZHHyAUGHSsEFYGG5k1r3Wp6IGBh7FyM6YKtuIOLAcg7jOi4SsbQi8p52appAkxiKNsIBu+y1mlDDF9K1x1l3jPu/FWLWJP9Or8jFuOymOdwuBF4hcKFmf9hgsra9mD7xzSlLtkwpb1GCE/LGqJvDRIba9rM9gBi5s+OA=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by PH7PR10MB6553.namprd10.prod.outlook.com (2603:10b6:510:204::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Sat, 24 Feb
- 2024 00:53:43 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::9a3e:7f11:fbb:1690]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::9a3e:7f11:fbb:1690%3]) with mapi id 15.20.7292.029; Sat, 24 Feb 2024
- 00:53:41 +0000
-Message-ID: <dfcf8ae7-0194-496f-9628-abfa51da72cb@oracle.com>
-Date: Sat, 24 Feb 2024 06:23:34 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 09/10] btrfs: validate send-receive operation with
- tempfsid.
-Content-Language: en-US
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, zlang@redhat.com
-References: <cover.1708362842.git.anand.jain@oracle.com>
- <7d0b939fdcb0052c184e18226fcbbc4454508243.1708362842.git.anand.jain@oracle.com>
- <CAL3q7H6JwgSbcnN4fs8poyOj_z8P9HxqBEUUduiuLqUdnWK_0w@mail.gmail.com>
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <CAL3q7H6JwgSbcnN4fs8poyOj_z8P9HxqBEUUduiuLqUdnWK_0w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MAXPR01CA0096.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:5d::14) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A038017C9
+	for <linux-btrfs@vger.kernel.org>; Sat, 24 Feb 2024 01:24:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=110.232.143.238
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708737860; cv=none; b=qaZLHq9tAUP+xLGz62K5jYSPSvH8jQlFsjfAC9j29MjrR3ym7w56ZKQUlMywELb+I01g80j6gK5ZsZvlofPr/FtB4kHTrSQQ95UfKrv1hlZsG/Cf9p27rih/3G20ltxRgDkPWcFPEuVNcaS+QVNA5MHjC2H9tgbk5BzNl9OXH6c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708737860; c=relaxed/simple;
+	bh=mHyiIdzDz8ei8iupUiUx8uofwZ4qhNtvysFL3pJh2sU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=u2yYegN0sgYv1mb1mVZTAT6LpMuw+g7Wx5sMd66BmKiamWYsTU+GrbxTDbmQuvluMceeHk9Um+7UAgi2/cWBqbpMlSxX+O3Kbc0Zm8kTdfN9bcFdDsGzxhawMSJ9GsJS59lmYRZYURM4649xIfBO2s0byPhbkGwNKOI6arCumK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=edcint.co.nz; spf=fail smtp.mailfrom=edcint.co.nz; dkim=pass (2048-bit key) header.d=edcint.co.nz header.i=@edcint.co.nz header.b=aa1YHBde; arc=none smtp.client-ip=110.232.143.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=edcint.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=edcint.co.nz
+Received: from s02bd.syd2.hostingplatform.net.au (s02bd.syd2.hostingplatform.net.au [103.27.32.42])
+	by out4.mxs.au (Halon) with ESMTPS (TLSv1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	id 3f8fc457-d2b3-11ee-8d83-00163c87da3f
+	for <linux-btrfs@vger.kernel.org>;
+	Sat, 24 Feb 2024 12:23:00 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=edcint.co.nz; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=7HpLWsjCTEe/dM62k6VtAsURvTRoxsuc+Xz2/NKiGYc=; b=aa1YHBdePjd3AMSgjVj7Jw6TVY
+	gmiLn7ZMWrfL3RwLYkHXXIrmU3RLIM50YSeRT1H/2H7+SNOgkbcE7KAbz/l/7B6Dn4xDQHDtKNV/W
+	vpi2bUGaRAJDthvU4WR5vQ+vGwEBibcWnDzdahUQXDzKF70lSRNcHh2wnXVNMokQML+Wi84g/pZ5O
+	DGzOIcqZYhNH0ArsfMcZoQs7Wpwq0ctgwobfix+XWVGT9MJgkWQOuN+20NuMkQD/s5XdnaC1/3uaR
+	mKcGmCZMoWFOwGSA26mNRXQT/n1GB9hh0Or259H4cKkPIMxXRHA11VLZLTafCQQ1KRfPBhdef+N9+
+	c4zTEDZA==;
+Received: from [159.196.20.165] (port=23159 helo=[192.168.2.80])
+	by s02bd.syd2.hostingplatform.net.au with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <default@edcint.co.nz>)
+	id 1rdgkm-002JFs-0N;
+	Sat, 24 Feb 2024 12:23:00 +1100
+Message-ID: <0dd56988-e191-45c7-a3d7-60f43fc4b7fd@edcint.co.nz>
+Date: Sat, 24 Feb 2024 12:22:59 +1100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH7PR10MB6553:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4af0e118-3f02-415b-4c6c-08dc34d30b53
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	znpac32rdaNDPnhwoLdird2hhTtycIVEW34/MXjQseSWtpmVzvUAqwZEtLHCKE2DGtpgIwpmMOaqA4yN6u32k5+xDd+3K0+OpE549JAjAw2GT/YjHF6EIwMlvdWzNNQS5cB5QcedkXXjhyu6F438Vs7Sf5wlWB7DvZJx2f0qZ2M2qwbFKuJ47xcwa1osiwpKOPfj1ZiLBnu1I82I6m2yKxreAM6vQSJi0WPmIvqhy16oPFO95LtYjcLz1k01hsMOLalIEEbaDfg+1TwOPRMSkqH8T5s+d+Sa4d2LHURnDQWHyOr+2+icMcdBHzam/NCwPGe1G4EK9CPKxjCroPawcvol5OGGX2ItyfbpcZrzkB6n/IzSCfneydF1/8DwgiQHfsePggclhVTum8Xyow7B5t/e3md5nX5LX9UJ7NRYKHUnfCb1rh4O2hX6kkoDAliEo3PjzPA0YDZfYZtOw68p7titV5blowXU+rqGJoTOcO6sWtxPrnS7lYEUWRODKNO5GKP4yjJMG93bS9AfUBx5tuOw0+0zgKwzr6DDIVtvyng=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?eEM3NWlXQnlTZ2c2Q25ZcVNHc1RyaTNLbktoMy8xSnBSOHl6T0ZPVDhDK0dH?=
- =?utf-8?B?ZnIzWDVDUXJFZmg1THJpWEZTeXJNdkhYVGZ1WGVJZTNEVWhRUVU2Nkd2VFZM?=
- =?utf-8?B?M1pod3dYMU5UNjVhMldnSUdUNU1pMmJpd0VhMFJnTGpNYy83Y1pTNkZrNCtN?=
- =?utf-8?B?UHROUDlwT0NUVm9CcnJZcVdOUk8zWTB4UGVjanZtUHAwb080U0l5eEY3YlRp?=
- =?utf-8?B?bjBEb0dXMFdCNXNmM3YzZzc3NjU4UlhLMDYrNUdIT1c3ODk0VHlXUHlGSWdK?=
- =?utf-8?B?cDhvWHIxa0NRSWVIcVFEOHh3ODhERW5vQllvQTV1UGc3QU1sUFhIZHBXaENz?=
- =?utf-8?B?QllDWWRGNDFiUUNkeE53dXIrQWxxV1lBOHV2alVlUjU1dEZqK213RTNhR21a?=
- =?utf-8?B?RytCSk5PcUtwMndxNXZ3K1V4MGVya0J0VVdVVzRTelYyZjFCaHoyWDZSNUZa?=
- =?utf-8?B?YWxrYzBRdFBuTjkvbGlITlc2ZmYyM0tmL2w5VktsWlN6enVYV2FvWXQzNHcr?=
- =?utf-8?B?cUhCdk5XMTRRdXM2UCtKb1krME0zbVFlanNUWTNWaVJuR3JqY0toOGdEZUJJ?=
- =?utf-8?B?NFgxc2pTeUdVQ043ZlRrQ09nUmI2TitpZE9XejBGMnUraTkraVV5NHUzN0g4?=
- =?utf-8?B?aERNeVJjWTdxZlprcUtPY0paREJqTG5ObmxyUkxwYTdPamljRGVrZXlGcytx?=
- =?utf-8?B?Qm5vUFJqblhHUkExZ2MrWEZ4TVVQVDczdERVSE03T2l0NjF6R3cwZ3JBKzVh?=
- =?utf-8?B?STE5YVU2cUYxU2FxYitTWVYwRW1lTXRtajZEYkhuTWYvdDI1ZWR3VEo4WlpL?=
- =?utf-8?B?bDVVYXdlUUJiWkVjM285MFk3eWY0UytLWW9oVjB1ajlMR2JnNXI2QmlFc29I?=
- =?utf-8?B?QUN6Y3lzaWdHM3pFaFdCOTR4ejFFU0swczJ1MjEzMUdKV1VBOVZNcm81M21j?=
- =?utf-8?B?WExEbDZ4bUNLUHNkMWpQc0hUdmlYRTVzYzBMNmJLdFNpRmliejZac2xldEZJ?=
- =?utf-8?B?TG9yalByNGc5NTZqMFVtam9ZR0FGTmdXMW1GTlQwdlVJTTdIU1pubm5OWXFX?=
- =?utf-8?B?V3dJVU9KSDRBZnNXallFaXF2OEtHS3NUM0xpdGpBeXM4THUvVUpDOUNJUGhm?=
- =?utf-8?B?a3lkRlF3b1JCYzFSdUhOdXU0bjJmZ0h2UVptdlU4eGRyYVAxTFY4dFU1aTR1?=
- =?utf-8?B?SkVpSFpyb0VBYUpYYnoxQTVLM2YyOWV3Y2MyQzIwZS9RWTduRWpzaXlyWnNE?=
- =?utf-8?B?MVNYb0ZzcFpERzR5ajUrTjNvY210OUVrNnhUbFV6M2EyVXcvdnhDbnZ5enNP?=
- =?utf-8?B?NlNiUCtvTXlySnM5R2VqellMZGluNjFSMzF0aFFoWFFINGUyK3FEWXA1WXQ3?=
- =?utf-8?B?YlA4aUdIcisySyt0V0pTR2xxSnh1WDBrQWpiNU1ybG40REppS2hqb084RHcw?=
- =?utf-8?B?Z3dSNlBEZXRsMHdCMlAzU1VvZWlQdWNQcW4wRzB5L2VNYWZKckYyVDlwcjZY?=
- =?utf-8?B?dGNhdVIrZU5mbm81NjcwVytzM2ZkZmVUYURoOC8xeUw1a3JYR2NzTlFVK0RM?=
- =?utf-8?B?UTY3R1VZbUNsRlN5cmlQOW5jViszZUlyWC81QlN1SXVQMFlmUXVLQzJQNjhv?=
- =?utf-8?B?UHEvMjdOT1NybXVoZmlDSk5qb3RURFIwRzdxbU92SXhMZlhBbnZ0K3ovbjhQ?=
- =?utf-8?B?bHlsY05JY2crcGVCeXdzL2VEc2tvbnEzRXlGbW1vZkZuYURqVEFzbmxIb081?=
- =?utf-8?B?K2trQmF2RkR3b0c0NUpYbXppOGFjQ2VJV3FkUjFxcE1RNUtDcjNKMzZ5Q1JF?=
- =?utf-8?B?RXdRQ2s4OHNKcUlsOFEya1ZZMDZTKzVuY21CdkhKTmhRbi9VNkdsOFFDdThL?=
- =?utf-8?B?YUtMT2V6Z3VpMXVMMWJIMFlXK2FTUnY3Tld6NUgvVE9wQWhuenBhbE5VK0lj?=
- =?utf-8?B?eU5qSDlsRyswT3FRNmtDdUZYeTdsbGVzN2VZcklYRFFPQXluYVZoOUtNUWJ1?=
- =?utf-8?B?bHQyMVBKQ3VnaGZwaFpCQU03S3gwd1RQRkV2QmlwVmhTM0RNVCtEdmtReFZ3?=
- =?utf-8?B?WlJPR1k5Rld6YTdRQnpzdEhDUE1reTlWTDV1SUpQR1BGNWVScm9XakI2VzY2?=
- =?utf-8?Q?sB0gogZtaZL1zCJzub/QsM9eW?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	dIO549qje/pw6+38JVN3bOJ+o6JjLP6jz3I8TVua+c9CiuzWgAKt+EQVdym4PmaQsVS9ya0aJUvxdhhjUD/Octvp+7XaTfJiphEpalym1YilNuo5F6nSVlpWlCmJoRDrs/UrCJ0npDEn86a4ZMR4JNBfod/va9u+rqHXsoQLTGzWq8t4ybc9AJt8fkowmzuGt2+pSLD1/87nQ0eTRQxOm3lqtcENtymUUrwaGIktdFESbQjO57W5DSuZqB+r3JwUEEJGo7ORr3TUXQjvN/vp4HpW6BAUmKm3zP/dsb8PjEBjnrjVb5dVG3n1l3LwTzFblFqzZmBVZ6guOCLgGS/ND5nPGfhmYSkTI5GWBEUGdmPlwORvU0lC89wiv4/xUygSN5Ma2xUgdsmSBlVpx7wwl258xI7BqDLxL5guJqK7GD9Emz3spMt9jtQ+LHBi1CZxKjNZmbctBs1r0WY0w5TdEWVrdJQtGfdu4Iq4z5UhlyKENKJQuWMCNh+sABOxZumKI3S/s49BYT3zwz6ys3Pb6yjcmIGS30QUYsfBHu1ov5nE5Sqzh8KphcNri/GIyOY5oEdC8JM+qRam/j1oFYJnPMN+tCIoL+kd4tICRD7ulbw=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4af0e118-3f02-415b-4c6c-08dc34d30b53
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2024 00:53:41.5918
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6OjJtbr9+i7NP238AblXOZAXDeJo2Q167OGvA9BzERONyyzWC3FAI95C/ShT6Wi9movlBn0UWJLCegb1sCZxlQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6553
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-23_08,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402240005
-X-Proofpoint-GUID: cnD72nfNy9Onw1RrIUhzyNz4UDmWw0Ti
-X-Proofpoint-ORIG-GUID: cnD72nfNy9Onw1RrIUhzyNz4UDmWw0Ti
+User-Agent: Mozilla Thunderbird
+Subject: Re: How to repair BTRFS
+To: Qu Wenruo <wqu@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ linux-btrfs@vger.kernel.org
+References: <cb434383-5dfb-4748-8039-1496e09a2a80@edcint.co.nz>
+ <e18d4a17-12ed-438a-bceb-b1a2e10d15d4@gmx.com>
+ <be5917ba-4940-4800-9fbf-c1a24f4d82be@edcint.co.nz>
+ <7382a5c8-726f-41b3-9cbf-b2c67f0a5419@suse.com>
+Content-Language: en-US
+From: Matthew Jurgens <default@edcint.co.nz>
+In-Reply-To: <7382a5c8-726f-41b3-9cbf-b2c67f0a5419@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - s02bd.syd2.hostingplatform.net.au
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - edcint.co.nz
+X-Get-Message-Sender-Via: s02bd.syd2.hostingplatform.net.au: authenticated_id: default@edcint.co.nz
+X-Authenticated-Sender: s02bd.syd2.hostingplatform.net.au: default@edcint.co.nz
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-On 2/20/24 22:27, Filipe Manana wrote:
-> On Mon, Feb 19, 2024 at 7:50 PM Anand Jain <anand.jain@oracle.com> wrote:
->>
->> Given concurrent mounting of both the original and its clone device on
->> the same system, this test confirms the integrity of send and receive
->> operations in the presence of active tempfsid.
->>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> ---
->> v2:
->>   Organize changes to its right patch.
->>   Fix _fail erorr message.
->>   Declare local variables for fsid and uuid.
->>
->>   tests/btrfs/314     | 81 +++++++++++++++++++++++++++++++++++++++++++++
->>   tests/btrfs/314.out | 23 +++++++++++++
->>   2 files changed, 104 insertions(+)
->>   create mode 100755 tests/btrfs/314
->>   create mode 100644 tests/btrfs/314.out
->>
->> diff --git a/tests/btrfs/314 b/tests/btrfs/314
->> new file mode 100755
->> index 000000000000..59c6359a2ad8
->> --- /dev/null
->> +++ b/tests/btrfs/314
->> @@ -0,0 +1,81 @@
->> +#! /bin/bash
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright (c) 2024 Oracle.  All Rights Reserved.
->> +#
->> +# FS QA Test 314
->> +#
->> +# Send and receive functionality test between a normal and
->> +# tempfsid filesystem.
->> +#
->> +. ./common/preamble
->> +_begin_fstest auto quick snapshot send tempfsid
->> +
->> +_cleanup()
->> +{
->> +       cd /
->> +       $UMOUNT_PROG $tempfsid_mnt 2>/dev/null
->> +       rm -r -f $tmp.*
->> +       rm -r -f $sendfile
->> +       rm -r -f $tempfsid_mnt
->> +}
->> +
->> +. ./common/filter.btrfs
->> +
->> +_supported_fs btrfs
->> +_require_btrfs_sysfs_fsid
->> +_require_scratch_dev_pool 2
->> +_require_btrfs_fs_feature temp_fsid
->> +_require_btrfs_command inspect-internal dump-super
->> +_require_btrfs_mkfs_uuid_option
-> 
-> So same as before, these last 2 _require_* are because of the
-> mkfs_clone() function,
-> defined at common/btrfs, so they should be in the function and not
-> spread over every test case that calls it.
-> 
+As I understand rescue=all, I don't need it for allowing me to mount 
+(since I can already mount the file system) but it will allow me to copy 
+damaged files out of the file system. However, I don't know what is 
+damaged. I do have backups.
 
-Yep. Fixed it.
+Commands like  btrfs inspect-internal logical-resolve 20647087898624  
+/export/shared
 
-Thanks, Anand
+just return
+ERROR: logical ino ioctl: No such file or directory
 
-> Thanks.
-> 
->> +
->> +_scratch_dev_pool_get 2
->> +
->> +# mount point for the tempfsid device
->> +tempfsid_mnt=$TEST_DIR/$seq/tempfsid_mnt
->> +sendfile=$TEST_DIR/$seq/replicate.send
->> +
->> +send_receive_tempfsid()
->> +{
->> +       local src=$1
->> +       local dst=$2
->> +
->> +       # Use first 2 devices from the SCRATCH_DEV_POOL
->> +       mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
->> +       _scratch_mount
->> +       _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
->> +
->> +       $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' ${src}/foo | _filter_xfs_io
->> +       $BTRFS_UTIL_PROG subvolume snapshot -r ${src} ${src}/snap1 | \
->> +                                               _filter_testdir_and_scratch
->> +
->> +       echo Send ${src} | _filter_testdir_and_scratch
->> +       $BTRFS_UTIL_PROG send -f ${sendfile} ${src}/snap1 2>&1 | \
->> +                                               _filter_testdir_and_scratch
->> +       echo Receive ${dst} | _filter_testdir_and_scratch
->> +       $BTRFS_UTIL_PROG receive -f ${sendfile} ${dst} | \
->> +                                               _filter_testdir_and_scratch
->> +       echo -e -n "Send:\t"
->> +       md5sum  ${src}/foo | _filter_testdir_and_scratch
->> +       echo -e -n "Recv:\t"
->> +       md5sum ${dst}/snap1/foo | _filter_testdir_and_scratch
->> +}
->> +
->> +mkdir -p $tempfsid_mnt
->> +
->> +echo -e \\nFrom non-tempfsid ${SCRATCH_MNT} to tempfsid ${tempfsid_mnt} | \
->> +                                               _filter_testdir_and_scratch
->> +send_receive_tempfsid $SCRATCH_MNT $tempfsid_mnt
->> +
->> +_scratch_unmount
->> +_cleanup
->> +mkdir -p $tempfsid_mnt
->> +
->> +echo -e \\nFrom tempfsid ${tempfsid_mnt} to non-tempfsid ${SCRATCH_MNT} | \
->> +                                               _filter_testdir_and_scratch
->> +send_receive_tempfsid $tempfsid_mnt $SCRATCH_MNT
->> +
->> +_scratch_dev_pool_put
->> +
->> +# success, all done
->> +status=0
->> +exit
->> diff --git a/tests/btrfs/314.out b/tests/btrfs/314.out
->> new file mode 100644
->> index 000000000000..21963899c2b2
->> --- /dev/null
->> +++ b/tests/btrfs/314.out
->> @@ -0,0 +1,23 @@
->> +QA output created by 314
->> +
->> +From non-tempfsid SCRATCH_MNT to tempfsid TEST_DIR/314/tempfsid_mnt
->> +wrote 9000/9000 bytes at offset 0
->> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->> +Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap1'
->> +Send SCRATCH_MNT
->> +At subvol SCRATCH_MNT/snap1
->> +Receive TEST_DIR/314/tempfsid_mnt
->> +At subvol snap1
->> +Send:  42d69d1a6d333a7ebdf64792a555e392  SCRATCH_MNT/foo
->> +Recv:  42d69d1a6d333a7ebdf64792a555e392  TEST_DIR/314/tempfsid_mnt/snap1/foo
->> +
->> +From tempfsid TEST_DIR/314/tempfsid_mnt to non-tempfsid SCRATCH_MNT
->> +wrote 9000/9000 bytes at offset 0
->> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->> +Create a readonly snapshot of 'TEST_DIR/314/tempfsid_mnt' in 'TEST_DIR/314/tempfsid_mnt/snap1'
->> +Send TEST_DIR/314/tempfsid_mnt
->> +At subvol TEST_DIR/314/tempfsid_mnt/snap1
->> +Receive SCRATCH_MNT
->> +At subvol snap1
->> +Send:  42d69d1a6d333a7ebdf64792a555e392  TEST_DIR/314/tempfsid_mnt/foo
->> +Recv:  42d69d1a6d333a7ebdf64792a555e392  SCRATCH_MNT/snap1/foo
->> --
->> 2.39.3
+On 24/02/2024 9:12 am, Qu Wenruo wrote:
+>
+>
+> 在 2024/2/24 08:11, Matthew Jurgens 写道:
 >>
-
+>> On 24/02/2024 6:55 am, Qu Wenruo wrote:
+>>>
+>>>
+>>> 在 2024/2/23 21:39, Matthew Jurgens 写道:
+>>>> If I can't run --repair, then how do I repair my file system?
+>>>>
+>>>> I ran a scrub which reported 8 errors that could not be fixed.
+>>>
+>>> The scrub report and corresponding dmesg please.
+>>>
+>> The latest scrub report is
+>>
+>> UUID:             021756e1-c9b4-41e7-bfd3-bc4e930eae46
+>> Scrub started:    Fri Feb 23 21:42:13 2024
+>> Status:           finished
+>> Duration:         5:52:50
+>> Total to scrub:   9.00TiB
+>> Rate:             447.36MiB/s
+>> Error summary:    verify=8
+>>    Corrected:      0
+>>    Uncorrectable:  8
+>>    Unverified:     0
+>>
+>>
+>> Probably the most relevant dmesg lines:
+> [...]
+>> [10226.535987] BTRFS warning (device sdg): tree block 20647087931392 
+>> mirror 2 has bad csum, has 0x97fa472a want 0xccdf090b
+>> [10226.615321] BTRFS warning (device sdg): tree block 20647087931392 
+>> mirror 2 has bad csum, has 0x97fa472a want 0xccdf090b
+>> [10226.615524] BTRFS warning (device sdg): tree block 20647087931392 
+>> mirror 2 has bad csum, has 0x97fa472a want 0xccdf090b
+>> [10226.615731] BTRFS warning (device sdg): tree block 20647087931392 
+>> mirror 2 has bad csum, has 0x97fa472a want 0xccdf090b
+>
+> This is not good, this means both tree block copies are having csum 
+> mismatch.
+>
+> Since both metadata copies are corrupted, it's not some on-disk data 
+> corruption, but more likely some runtime corruption leads to bad csum 
+> (like runtime memory corruption).
+>
+> Since the unmounted fsck still gave tons of error on fs tree, I'd say 
+> at least some of the corrupted tree blocks are in subvolume trees.
+> (aka, affecting data salvage)
+>
+> The first thing I'd recommend is to do a full memory tests (if it's 
+> not ECC memory), to make sure the hardware is not the cause. Or it 
+> would just show up again no matter whatever filesystem you're using in 
+> the next try.
+>
+> Anyway, since the fs is really corrupted, data salvage is recommended 
+> before doing any writes into the fs.
+> You can salvage the data by "-o ro,rescue=all" mount option.
+>
+> I won't recommend any further rescue/writes until you have verified 
+> the hardware memory and rescued whatever you need.
+>
+> Thanks,
+> Qu
+>
+>> [10226.615733] BTRFS error (device sdg): unable to fixup (regular) 
+>> error at logical 20647087898624 on dev /dev/sdb physical 1597612949504
+>> [10226.615741] BTRFS error (device sdg): unable to fixup (regular) 
+>> error at logical 20647087898624 on dev /dev/sdb physical 1597612949504
+>> [10226.615742] BTRFS error (device sdg): unable to fixup (regular) 
+>> error at logical 20647087898624 on dev /dev/sdb physical 1597612949504
+>> [10226.615744] BTRFS error (device sdg): unable to fixup (regular) 
+>> error at logical 20647087898624 on dev /dev/sdb physical 1597612949504
+>> [10871.525097] BTRFS warning (device sdg): tree block 20647087931392 
+>> mirror 1 has bad csum, has 0x97fa472a want 0xccdf090b
+>> [10871.538286] BTRFS warning (device sdg): tree block 20647087931392 
+>> mirror 1 has bad csum, has 0x97fa472a want 0xccdf090b
+>> [10871.546525] BTRFS warning (device sdg): tree block 20647087931392 
+>> mirror 1 has bad csum, has 0x97fa472a want 0xccdf090b
+>> [10871.551011] BTRFS warning (device sdg): tree block 20647087931392 
+>> mirror 1 has bad csum, has 0x97fa472a want 0xccdf090b
+>> [10871.551033] BTRFS error (device sdg): unable to fixup (regular) 
+>> error at logical 20647087898624 on dev /dev/sdg physical 1600879263744
+>> [10871.551055] BTRFS error (device sdg): unable to fixup (regular) 
+>> error at logical 20647087898624 on dev /dev/sdg physical 1600879263744
+>> [10871.551063] BTRFS error (device sdg): unable to fixup (regular) 
+>> error at logical 20647087898624 on dev /dev/sdg physical 1600879263744
+>> [10871.551069] BTRFS error (device sdg): unable to fixup (regular) 
+>> error at logical 20647087898624 on dev /dev/sdg physical 1600879263744
+>> [12097.231261] btrfs_validate_extent_buffer: 12 callbacks suppressed
+>> [12097.231264] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 2 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12097.257496] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 1 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12097.399518] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 2 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12097.437847] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 1 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12097.456673] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 2 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12097.507496] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 1 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12097.539579] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 2 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12097.562906] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 1 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12097.610849] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 2 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12097.616316] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 1 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12817.886430] btrfs_validate_extent_buffer: 12 callbacks suppressed
+>> [12817.886437] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 2 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12817.911375] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 1 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12818.002768] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 2 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12818.031952] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 1 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12818.066655] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 2 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12818.108668] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 1 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12818.136420] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 2 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12818.169702] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 1 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12818.207071] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 2 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [12818.235735] BTRFS warning (device sdg): checksum verify failed on 
+>> logical 20647087931392 mirror 1 wanted 0x97fa472a found 0xccdf090b 
+>> level 0
+>> [20654.902312] BTRFS info (device sdg): scrub: finished on devid 3 
+>> with status: 0
+>> [20790.498498] BTRFS info (device sdg): scrub: finished on devid 4 
+>> with status: 0
+>> [21228.046956] BTRFS info (device sdg): scrub: finished on devid 1 
+>> with status: 0
+>> [21333.526634] BTRFS info (device sdg): scrub: finished on devid 2 
+>> with status: 0
+>>
+>> The complete dmesg is at https://www.edcint.co.nz/tmp/dmesg_1.txt
+>>
+>>>>
+>>>> ------------------------------------------------------------------------------------------------------------------------------ 
+>>>>
+>>>>
+>>>> Then I ran a btrfs check while mounted which looks like:
+>>>>
+>>>> WARNING: filesystem mounted, continuing because of --force
+>>>
+>>> Do not run btrfs check --force on RW mounted fs.
+>>>
+>>> It's pretty common to hit false transid mismatch (which normally should
+>>> be a death sentence to your fs) due to the IO.
+>> Ok, thanks for the info
+>>>
+>>> Thanks,
+>>> Qu
+>>>> Opening filesystem to check...
+>>>> Checking filesystem on /dev/sdg
+>>>> UUID: 021756e1-c9b4-41e7-bfd3-bc4e930eae46
+>>>> parent transid verify failed on 18344238039040 wanted 4416296 found
+>>>> 4416299s checked)
+>>>> parent transid verify failed on 18344238039040 wanted 4416296 found 
+>>>> 4416299
+>>>> parent transid verify failed on 18344238039040 wanted 4416296 found 
+>>>> 4416299
+>>>> Ignoring transid failure
+>>>> ERROR: child eb corrupted: parent bytenr=18344237924352 item=1 parent
+>>>> level=2 child bytenr=18344238039040 child level=0
+>>>> [1/7] checking root items                      (0:00:06 elapsed, 69349
+>>>> items checked)
+>>>> ERROR: failed to repair root items: Input/output error
+>>>> parent transid verify failed on 18344253374464 wanted 4416296 found 
+>>>> 4416300
+>>>> parent transid verify failed on 18344253374464 wanted 4416296 found 
+>>>> 4416300
+>>>> parent transid verify failed on 18344253374464 wanted 4416296 found 
+>>>> 4416300
+>>>> Ignoring transid failure
+>>>> parent transid verify failed on 18344264335360 wanted 4416296 found 
+>>>> 4416301
+>>>> parent transid verify failed on 18344264335360 wanted 4416296 found 
+>>>> 4416301
+>>>> parent transid verify failed on 18344264335360 wanted 4416296 found 
+>>>> 4416301
+>>>> Ignoring transid failure
+>>>> parent transid verify failed on 18344243511296 wanted 4416296 found 
+>>>> 4416301
+>>>> parent transid verify failed on 18344243511296 wanted 4416296 found 
+>>>> 4416301
+>>>> parent transid verify failed on 18344243511296 wanted 4416296 found 
+>>>> 4416301
+>>>> Ignoring transid failure
+>>>> parent transid verify failed on 18344246345728 wanted 4416296 found 
+>>>> 4416301
+>>>> parent transid verify failed on 18344246345728 wanted 4416296 found 
+>>>> 4416301
+>>>> parent transid verify failed on 18344246345728 wanted 4416296 found 
+>>>> 4416301
+>>>> Ignoring transid failure
+>>>> ERROR: child eb corrupted: parent bytenr=18344243445760 item=4 parent
+>>>> level=1 child bytenr=18344246345728 child level=2
+>>>> [2/7] checking extents                         (0:00:00 elapsed)
+>>>> ERROR: errors found in extent allocation tree or chunk allocation
+>>>> parent transid verify failed on 18344238039040 wanted 4416296 found 
+>>>> 4416299
+>>>> Ignoring transid failure
+>>>> ERROR: child eb corrupted: parent bytenr=18344237924352 item=1 parent
+>>>> level=2 child bytenr=18344238039040 child level=0
+>>>> [3/7] checking free space cache                (0:00:00 elapsed)
+>>>> parent transid verify failed on 18344241594368 wanted 4416296 found
+>>>> 4416300ecked)
+>>>> parent transid verify failed on 18344241594368 wanted 4416296 found 
+>>>> 4416300
+>>>> parent transid verify failed on 18344241594368 wanted 4416296 found 
+>>>> 4416300
+>>>> Ignoring transid failure
+>>>> root 5 root dir 256 not found
+>>>> parent transid verify failed on 18344253374464 wanted 4416296 found 
+>>>> 4416300
+>>>> Ignoring transid failure
+>>>> ERROR: free space cache inode 958233742 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233743 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233744 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233745 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233746 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233747 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233748 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233749 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233750 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233751 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233752 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233753 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233754 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233755 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233756 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233757 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233758 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233759 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233760 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233761 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233762 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233763 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233764 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233765 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233766 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233767 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233768 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233769 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233770 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233771 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233772 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233773 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958233774 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> parent transid verify failed on 18344264335360 wanted 4416296 found 
+>>>> 4416301
+>>>> Ignoring transid failure
+>>>> ERROR: free space cache inode 958232811 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232812 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232813 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232814 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232815 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232816 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232817 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232818 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232819 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232820 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232821 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232822 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232823 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232824 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232825 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232826 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232827 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232828 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232829 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958232830 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> parent transid verify failed on 18344243511296 wanted 4416296 found 
+>>>> 4416301
+>>>> Ignoring transid failure
+>>>> ERROR: free space cache inode 958231543 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231544 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231545 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231546 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231547 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231548 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231549 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231550 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231551 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231552 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231553 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231554 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231555 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231556 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231557 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231558 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231559 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231560 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231561 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231562 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231563 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231564 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231565 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231566 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231567 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231568 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231569 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231570 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231571 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231572 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231573 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231574 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231575 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231576 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231577 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231578 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231579 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> ERROR: free space cache inode 958231580 has invalid mode: has 0100644
+>>>> expect 0100600
+>>>> parent transid verify failed on 18344246345728 wanted 4416296 found 
+>>>> 4416301
+>>>> Ignoring transid failure
+>>>> ERROR: child eb corrupted: parent bytenr=18344243445760 item=4 parent
+>>>> level=1 child bytenr=18344246345728 child level=2
+>>>> [4/7] checking fs roots                        (0:00:00 elapsed, 1 
+>>>> items
+>>>> checked)
+>>>> ERROR: errors found in fs roots
+>>>> found 0 bytes used, error(s) found
+>>>> total csum bytes: 0
+>>>> total tree bytes: 0
+>>>> total fs tree bytes: 0
+>>>> total extent tree bytes: 0
+>>>> btree space waste bytes: 0
+>>>> file data blocks allocated: 0
+>>>>   referenced 0
+>>>>
+>>>> ------------------------------------------------------------------------------------------------------------------------------ 
+>>>>
+>>>>
+>>>> I then ran a btrfs check again whilst not mounted and I won't put the
+>>>> output here since the file is 1.5GB and full of things like:
+>>>> root 5 inode 437187144 errors 2000, link count wrong
+>>>>          unresolved ref dir 942513356 index 9 namelen 14 name
+>>>> _tokenizer.pyc filetype 1 errors 0
+>>>>          unresolved ref dir 945696631 index 9 namelen 14 name
+>>>> _tokenizer.pyc filetype 1 errors 0
+>>>>          unresolved ref dir 948998753 index 9 namelen 14 name
+>>>> _tokenizer.pyc filetype 0 errors 3, no dir item, no dir index
+>>>>          unresolved ref dir 952510365 index 9 namelen 14 name
+>>>> _tokenizer.pyc filetype 0 errors 3, no dir item, no dir index
+>>>>          unresolved ref dir 954421030 index 9 namelen 14 name
+>>>> _tokenizer.pyc filetype 0 errors 3, no dir item, no dir index
+>>>>
+>>>> and
+>>>>
+>>>> root 5 inode 957948416 errors 2001, no inode item, link count wrong
+>>>>          unresolved ref dir 690084 index 17960 namelen 19 name
+>>>> 20240222_084117.jpg filetype 1 errors 4, no inode ref
+>>>> root 5 inode 957957996 errors 2001, no inode item, link count wrong
+>>>>          unresolved ref dir 890819470 index 4463 namelen 8 name 
+>>>> hourly.3
+>>>> filetype 2 errors 4, no inode ref
+>>>>
+>>>> and ends like:
+>>>>
+>>>> [4/7] checking fs roots                        (0:00:58 elapsed, 
+>>>> 415857
+>>>> items checked)
+>>>> ERROR: errors found in fs roots
+>>>> found 4967823106048 bytes used, error(s) found
+>>>> total csum bytes: 4834452504
+>>>> total tree bytes: 17343725568
+>>>> total fs tree bytes: 10449027072
+>>>> total extent tree bytes: 1109393408
+>>>> btree space waste bytes: 3064698357
+>>>> file data blocks allocated: 5472482066432
+>>>>   referenced 5313641955328
+>>>>
+>>>>
+>>>> ------------------------------------------------------------------------------------------------------------------------------ 
+>>>>
+>>>>
+>>>> I have tried to see if I can find out which files are impacted by 
+>>>> doing eg
+>>>>
+>>>> btrfs inspect-internal logical-resolve 18344253374464 /export/shared
+>>>>
+>>>> using a what I think is a logical block number from the scrub or btrfs
+>>>> check, but these always give an error like:
+>>>>
+>>>> ERROR: logical ino ioctl: No such file or directory
+>>>>
+>>>> ------------------------------------------------------------------------------------------------------------------------------ 
+>>>>
+>>>>
+>>>> after mounting it again, subsequent checks while mounted look like the
+>>>> first one
+>>>>
+>>>> I have also run
+>>>>
+>>>> btrfs rescue clear-uuid-tree /dev/sdg
+>>>> btrfs rescue clear-space-cache v1 /dev/sdg
+>>>> btrfs rescue clear-space-cache v2 /dev/sdg
+>>>>
+>>>>
+>>>> I am currently running another scrub so I will see what that looks 
+>>>> like
+>>>> in a few hours
+>>>>
+>>>>
+>>>> ------------------------------------------------------------------------------------------------------------------------------ 
+>>>>
+>>>>
+>>>> Other Generic Info:
+>>>>
+>>>> uname -a
+>>>> Linux gw.home.arpa 6.5.7-200.fc38.x86_64 #1 SMP PREEMPT_DYNAMIC Wed 
+>>>> Oct
+>>>> 11 04:07:58 UTC 2023 x86_64 GNU/Linux
+>>>>
+>>>> btrfs --version
+>>>> btrfs-progs v6.6.2
+>>>>
+>>>> btrfs fi show
+>>>> Label: 'SHARED'  uuid: 021756e1-c9b4-41e7-bfd3-bc4e930eae46
+>>>>          Total devices 4 FS bytes used 4.52TiB
+>>>>          devid    1 size 2.73TiB used 2.55TiB path /dev/sdg
+>>>>          devid    2 size 2.73TiB used 2.56TiB path /dev/sdf
+>>>>          devid    3 size 2.73TiB used 2.55TiB path /dev/sdb
+>>>>          devid    4 size 2.73TiB used 2.56TiB path /dev/sdc
+>>>>
+>>>> btrfs fi df /export/shared
+>>>> Data, RAID1: total=5.09TiB, used=4.50TiB
+>>>> System, RAID1: total=64.00MiB, used=768.00KiB
+>>>> Metadata, RAID1: total=24.00GiB, used=16.14GiB
+>>>> GlobalReserve, single: total=512.00MiB, used=0.00B
+>>>>
+>>>>
+>>>
+>>
+>
 
