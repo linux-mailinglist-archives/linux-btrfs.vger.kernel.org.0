@@ -1,92 +1,288 @@
-Return-Path: <linux-btrfs+bounces-2757-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2758-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66FA7862D26
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Feb 2024 22:26:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02895862D5E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Feb 2024 23:13:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B7281F227CF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Feb 2024 21:26:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50292B21060
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Feb 2024 22:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199D21B978;
-	Sun, 25 Feb 2024 21:26:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A511BC36;
+	Sun, 25 Feb 2024 22:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=edcint.co.nz header.i=@edcint.co.nz header.b="HVCQ5bWz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+Received: from h1.out3.mxs.au (h1.out3.mxs.au [110.232.143.237])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D898E1B94D
-	for <linux-btrfs@vger.kernel.org>; Sun, 25 Feb 2024 21:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C6F53AA
+	for <linux-btrfs@vger.kernel.org>; Sun, 25 Feb 2024 22:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=110.232.143.237
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708896398; cv=none; b=BCgVbArlj+ZwyFcJbC8I5Y2QomKdcsZt6msmhv09pm9AXM+dCoTcJwE9U9i/QQLbk4mLB36lVsam1XbWgFW0LVAMSKli6ftI6bXo5mRLkTMwrlb3ON4tkeXTZKH8yqaAB/N/qUnLu1ZK+vVC1OJvR5BqllYjG9a6oxxBZ6K14xI=
+	t=1708899180; cv=none; b=VHE2bdZjAfddgj+a4e5+kKCBz0aYm4U2I42IdW3NYJFPe6s9jBlFe3TH95J/zOmEJ72kZPiuEaoFHQ0wc8EIn89yMA1uU3Mu2X4HsBGhbWO40G52yeKIhoGlOZocJrYZMQpZURncDHAwxA9h7MHqDQJVyvoUsZJQIyw/c8q1kDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708896398; c=relaxed/simple;
-	bh=awr8kJdI5qgszjd7wAljG4lLyehoh2HbKi7+xw41HO4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=KvdzkBVwVcaLZdslzgKyyP2JDnZoc8z5SdYiyO7dWs/jklbrLsz5GDlB862Kw3rAir0OOPPxk86ehv2XPJuAQfIPhC8Vn5nG2fRjLMQNHhIFu8b932/Tqp0Y72NdKsR6RA2JxvmFWuLoq3K8QDmo7ILHu5fdiCsYNTw9RICdoUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-274-tAV88Qm8MBmPtn9Zj4ylcQ-1; Sun, 25 Feb 2024 21:26:33 +0000
-X-MC-Unique: tAV88Qm8MBmPtn9Zj4ylcQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 25 Feb
- 2024 21:26:32 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 25 Feb 2024 21:26:32 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Linus Torvalds' <torvalds@linux-foundation.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Netdev
-	<netdev@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>, Jens Axboe <axboe@kernel.dk>, "Matthew
- Wilcox (Oracle)" <willy@infradead.org>, Christoph Hellwig
-	<hch@infradead.org>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "David S . Miller"
-	<davem@davemloft.net>, Dan Carpenter <dan.carpenter@linaro.org>, Jani Nikula
-	<jani.nikula@linux.intel.com>
-Subject: RE: [PATCH next v2 08/11] minmax: Add min_const() and max_const()
-Thread-Topic: [PATCH next v2 08/11] minmax: Add min_const() and max_const()
-Thread-Index: AdpoCy246SYrYUdtTu+AtQRSWe90RAAAtXgAAAim0gA=
-Date: Sun, 25 Feb 2024 21:26:31 +0000
-Message-ID: <59ae7d89368a4dd5a8b8b3f7bc2ae957@AcuMS.aculab.com>
-References: <0fff52305e584036a777f440b5f474da@AcuMS.aculab.com>
- <c6924533f157497b836bff24073934a6@AcuMS.aculab.com>
- <CAHk-=wgNh5Gw7RTuaRe7mvf3WrSGDRKzdA55KKdTzKt3xPCnLg@mail.gmail.com>
-In-Reply-To: <CAHk-=wgNh5Gw7RTuaRe7mvf3WrSGDRKzdA55KKdTzKt3xPCnLg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1708899180; c=relaxed/simple;
+	bh=/Uqg3DJ9pgzYo8aVc76pQXIHFdPI+I5vcYkiakeZ9Hg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=emy3mtQkkZQMriDmN5KpMakMzynhH9Rrxt8APVZIesdD041SXna4t6E+su92i0hRaCVpNmcsNI+wLsuj5NacVOp1rXlffwJvr+9JvQnGnzdHyVLnU6vwUD8oLxnJWXvOBeBpAwmw00AGEzv1tMdQlOM1OJK42EyghGIZJskQfXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=edcint.co.nz; spf=fail smtp.mailfrom=edcint.co.nz; dkim=pass (2048-bit key) header.d=edcint.co.nz header.i=@edcint.co.nz header.b=HVCQ5bWz; arc=none smtp.client-ip=110.232.143.237
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=edcint.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=edcint.co.nz
+Received: from s02bd.syd2.hostingplatform.net.au (s02bd.syd2.hostingplatform.net.au [103.27.32.42])
+	by out3.mxs.au (Halon) with ESMTPS (TLSv1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	id 00621770-d42b-11ee-990f-00163c573069
+	for <linux-btrfs@vger.kernel.org>;
+	Mon, 26 Feb 2024 09:12:45 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=edcint.co.nz; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=I6DldoqwN70OCEVrhcia6qLcFmxmNHfsXFkymnjVjDI=; b=HVCQ5bWzDUMR+ZNFsU3jvmmxSL
+	3BQAP6FOcKuskTX7I6+8kd7GJHiBOm2nnki9TvMrcNP0PnF6LHlNnk5ehzA+u4lXIYK30QLxy+s0b
+	MqclzNG02MI+4ioDPyCXKzr9R8nVXZUTcFINBkyToi8n2rYEtHBKvmY9DjNErBGizd+FVW5bRv/63
+	3z3BiwvaHAL+EtPgOyHYqIOszaQDhsTWvY4EDfkvsvPb+qnjOZPhwH1v+EMz2xjhNcOCU8PzwQ7h5
+	Z5CT77HfQ4tS5lJLDgGkIHI8fHjPAeidur2gFmb7nO4RMc1B/hp1es6PBxQ+I1YcEEE0UoyvMqzl/
+	EgTA1bQw==;
+Received: from [159.196.20.165] (port=24778 helo=[192.168.2.80])
+	by s02bd.syd2.hostingplatform.net.au with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <mjurgens@edcint.co.nz>)
+	id 1reMjk-004AHZ-2v;
+	Mon, 26 Feb 2024 09:12:44 +1100
+Message-ID: <ef994ad0-c5b7-4991-a71b-e54feb70c6e0@edcint.co.nz>
+Date: Mon, 26 Feb 2024 09:12:44 +1100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: How to repair BTRFS
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+To: Matthew Jurgens <default@edcint.co.nz>, Qu Wenruo
+ <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs@vger.kernel.org
+References: <cb434383-5dfb-4748-8039-1496e09a2a80@edcint.co.nz>
+ <e18d4a17-12ed-438a-bceb-b1a2e10d15d4@gmx.com>
+ <be5917ba-4940-4800-9fbf-c1a24f4d82be@edcint.co.nz>
+ <7382a5c8-726f-41b3-9cbf-b2c67f0a5419@suse.com>
+ <0dd56988-e191-45c7-a3d7-60f43fc4b7fd@edcint.co.nz>
+ <2b2d37d2-d618-44eb-97f8-549b99b7b4d1@edcint.co.nz>
+ <4e2faa16-3021-4d53-9121-f41d86b428fd@gmx.com>
+ <cf9db9ba-96cf-440c-8ce0-d1caf7afa1c9@edcint.co.nz>
+ <09cfb22a-597c-4fbe-939f-aa10d8d461a6@gmx.com>
+ <706e9108-fd37-497d-9638-44cfb64e0365@edcint.co.nz>
+From: Matthew Jurgens <mjurgens@edcint.co.nz>
+In-Reply-To: <706e9108-fd37-497d-9638-44cfb64e0365@edcint.co.nz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - s02bd.syd2.hostingplatform.net.au
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - edcint.co.nz
+X-Get-Message-Sender-Via: s02bd.syd2.hostingplatform.net.au: authenticated_id: mjurgens@edcint.co.nz
+X-Authenticated-Sender: s02bd.syd2.hostingplatform.net.au: mjurgens@edcint.co.nz
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-Li4uDQo+IFllcywgeWVzLCB0aGF0IG1heSBlbmQgdXAgcmVxdWlyaW5nIGdldHRpbmcgcmlkIG9m
-IHNvbWUgY3VycmVudCB1c2VycyBvZg0KPiANCj4gICAjZGVmaW5lIE1JTihhLGIpICgoYSk8KGIp
-ID8gKGEpOihiKSkNCj4gDQo+IGJ1dCBkYW1taXQsIHdlIGRvbid0IGFjdHVhbGx5IGhhdmUgX3Ro
-YXRfIG1hbnkgb2YgdGhlbSwgYW5kIHdoeSBzaG91bGQNCj4gd2UgaGF2ZSByYW5kb20gZHJpdmVy
-cyBkb2luZyB0aGF0IGFueXdheT8NCg0KVGhleSBsb29rIGxpa2UgdGhleSBjb3VsZCBiZSBjaGFu
-Z2VkIHRvIG1pbigpLg0KSXQgaXMgZXZlbiBsaWtlbHkgdGhlIGhlYWRlciBnZXRzIHB1bGxlZCBp
-biBzb21ld2hlcmUuDQoNCkknbSBub3Qgc3VyZSBhYm91dCB0aGUgb25lcyBpbiBkcml2ZXJzL2dw
-dS9kcm0vYW1kL2Rpc3BsYXkvKi4uKi8qLmMsIGJ1dCBpdA0Kd291bGRuJ3Qgc3VycHJpc2UgbWUg
-aWYgdGhhdCBjb2RlIGRvZXNuJ3QgdXNlIGFueSBzdGFuZGFyZCBrZXJuZWwgaGVhZGVycy4NCklz
-bid0IHRoYXQgYWxzbyB0aGUgY29kZSB0aGF0IG1hbmFnZXMgdG8gcGFzcyA0MiBpbnRlZ2VyIHBh
-cmFtZXRlcnMNCnRvIGZ1bmN0aW9ucz8NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVz
-cyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEg
-MVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
+On 25/02/2024 8:03 am, Matthew Jurgens wrote:
+>
+>>>
+>>> Is it safe to run "btrfs check --repair" now?
+>>>
+>>
+>> OK, not hardware problem, then not sure how the problem happened.
+>>
+>> You can "try" --repair, but as mentioned, you may want to run it
+>> multiple times until it reports no error or no new repair.
+>>
+>> Thanks,
+>> Qu
+>
+>
+> Repair has been going for many hours now. I take it that even though 
+> the repair looks like it is repeating itself a lot, that it is expected?
+>
+> Sample below:
+>
+> [2/7] checking extents
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> Csum didn't match
+> owner ref check failed [20647087931392 16384]
+> repair deleting extent record: key [20647087931392,168,16384]
+> adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+> Repaired extent references for 20647087931392
+> super bytes used 4955205607424 mismatches actual used 4955205623808
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> Csum didn't match
+> owner ref check failed [20647087931392 16384]
+> repair deleting extent record: key [20647087931392,168,16384]
+> adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+> Repaired extent references for 20647087931392
+> super bytes used 4955205607424 mismatches actual used 4955205623808
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> Csum didn't match
+> owner ref check failed [20647087931392 16384]
+> repair deleting extent record: key [20647087931392,168,16384]
+> adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+> Repaired extent references for 20647087931392
+> super bytes used 4955205607424 mismatches actual used 4955205623808
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> Csum didn't match
+> owner ref check failed [20647087931392 16384]
+> repair deleting extent record: key [20647087931392,168,16384]
+> adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+> Repaired extent references for 20647087931392
+> super bytes used 4955205607424 mismatches actual used 4955205623808
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> Csum didn't match
+> owner ref check failed [20647087931392 16384]
+> repair deleting extent record: key [20647087931392,168,16384]
+> adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+> Repaired extent references for 20647087931392
+> super bytes used 4955205607424 mismatches actual used 4955205623808
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> Csum didn't match
+> metadata level mismatch on [20647087931392, 16384]
+> owner ref check failed [20647087931392 16384]
+> repair deleting extent record: key [20647087931392,168,16384]
+> adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+> Repaired extent references for 20647087931392
+> super bytes used 4955205607424 mismatches actual used 4955205623808
+> ERROR: tree block 20647087931392 has bad backref level, has 59 expect 
+> [0, 7]
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> Csum didn't match
+> ref mismatch on [20647087931392 16384] extent item 0, found 1
+> tree extent[20647087931392, 16384] root 5 has no backref item in 
+> extent tree
+> backpointer mismatch on [20647087931392 16384]
+> owner ref check failed [20647087931392 16384]
+> repair deleting extent record: key [20647087931392,168,16384]
+> adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+> Repaired extent references for 20647087931392
+> super bytes used 4955205607424 mismatches actual used 4955205623808
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> Csum didn't match
+> owner ref check failed [20647087931392 16384]
+> repair deleting extent record: key [20647087931392,168,16384]
+> adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+> Repaired extent references for 20647087931392
+> super bytes used 4955205607424 mismatches actual used 4955205623808
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> Csum didn't match
+> owner ref check failed [20647087931392 16384]
+> repair deleting extent record: key [20647087931392,168,16384]
+> adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+> Repaired extent references for 20647087931392
+> super bytes used 4955205607424 mismatches actual used 4955205623808
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> checksum verify failed on 20647087931392 wanted 0x97fa472a found 
+> 0xccdf090b
+> Csum didn't match
+> metadata level mismatch on [20647087931392, 16384]
+> owner ref check failed [20647087931392 16384]
+> repair deleting extent record: key [20647087931392,168,16384]
+> adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+> Repaired extent references for 20647087931392
+> super bytes used 4955205607424 mismatches actual used 4955205623808
+> ERROR: tree block 20647087931392 has bad backref level, has 116 expect 
+> [0, 7]
+>
+The repair completed after about 36 hours. I started another one
+
+It seems to repeat itself a lot and, if I pick one specific example, 
+this line is still appearing in the 2nd --repair run
+
+"ERROR: tree block 20647087931392 has bad backref level, has 227 expect 
+[0, 7]"
+
+The exact same line appeared 28 times in the first run
+
+Here is a sample extract:
+
+Repaired extent references for 20647087931392
+super bytes used 4955205607424 mismatches actual used 4955205623808
+checksum verify failed on 20647087931392 wanted 0x97fa472a found 0xccdf090b
+checksum verify failed on 20647087931392 wanted 0x97fa472a found 0xccdf090b
+checksum verify failed on 20647087931392 wanted 0x97fa472a found 0xccdf090b
+Csum didn't match
+metadata level mismatch on [20647087931392, 16384]
+owner ref check failed [20647087931392 16384]
+repair deleting extent record: key [20647087931392,168,16384]
+adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+Repaired extent references for 20647087931392
+super bytes used 4955205607424 mismatches actual used 4955205623808
+ERROR: tree block 20647087931392 has bad backref level, has 227 expect 
+[0, 7]
+checksum verify failed on 20647087931392 wanted 0x97fa472a found 0xccdf090b
+checksum verify failed on 20647087931392 wanted 0x97fa472a found 0xccdf090b
+checksum verify failed on 20647087931392 wanted 0x97fa472a found 0xccdf090b
+Csum didn't match
+ref mismatch on [20647087931392 16384] extent item 0, found 1
+tree extent[20647087931392, 16384] root 5 has no backref item in extent tree
+backpointer mismatch on [20647087931392 16384]
+owner ref check failed [20647087931392 16384]
+repair deleting extent record: key [20647087931392,168,16384]
+adding new tree backref on start 20647087931392 len 16384 parent 0 root 5
+Repaired extent references for 20647087931392
+
+Is it actually fixing anything?
 
