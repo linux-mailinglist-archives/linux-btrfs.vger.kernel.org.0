@@ -1,176 +1,110 @@
-Return-Path: <linux-btrfs+bounces-2767-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2768-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DFB6866B9F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 09:01:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 036E2866BE1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 09:15:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0855B229B9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 08:01:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 355B91C21C1B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 08:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 211351CA8E;
-	Mon, 26 Feb 2024 08:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 489A81CAB1;
+	Mon, 26 Feb 2024 08:15:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fgm/64c0"
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="Iv1w8886"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F185C1CA81
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Feb 2024 08:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41111C6B4
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Feb 2024 08:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708934501; cv=none; b=Imnt3L7tkVaqqDL+Ym4hCzYHzibuQhDuy0j8qik99btEsMgRxgN7fEtpWPCY8c8RXTwrLg7cVw+TqFMuRy2mc/KTa8niIgJBG3GpS1M9RwQ4nhzRYcnxRlBzp2DkVrqgkJTm4eLVeb2lKYrY0HiYKtuEvToeduLfPoPhAR3/vfU=
+	t=1708935307; cv=none; b=WcxqMjfRVIhgRFod6BFyQ0rUSYuHedrx9q5oAAyuO727LfDff/HXKY0QuaJYVH75KcRDFND/XIoB57YBj/2XdL5cTxxTblqKIhFJ8bC6oeAs542RTfHLKb22cW9Ex87eu9Zton5fYSKP2gsnuNYq6nAtTHC3IaRvAMvUvaJUGqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708934501; c=relaxed/simple;
-	bh=ChlTkJdoRIcTPEm5INNJMu+ECH3w0pCZC/rM0eTbZ4w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=dMxG1TM7nHpfK+upDabBfQeI82BoqhVjl/Sxc6TdVa2pUuONEcbzVIG5tbgRFRp9aVC/jus90Bn132f84bD+LtuvbuaAZ3e6TQJ017wJVeM5uiJNyOzI/Div+jL8+HDri52JsS6VJStwS78iwXBJmTjynE+3iBcz4C0HveTVFbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fgm/64c0; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512bce554a5so3382066e87.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Feb 2024 00:01:38 -0800 (PST)
+	s=arc-20240116; t=1708935307; c=relaxed/simple;
+	bh=wc6imTjryGlZEGM8Hd8Jr4/OgAt8z10WVDMkwzjaplg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nl5JUWcwloCs+WHkfyMmyxBH5IDk00W7MLXqRs5oxo7Nfc43akaPztO+YMIoggy3zzauNRWigkll+jk2GmWChfImUasQMRKeOBGf/gB/tT17AeqDcHeuH2BXnR6ODGuuJ65PAku+vmuMkvOeFET1iQkZ9OQkzb9mlyQXetLPsz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=Iv1w8886; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3e706f50beso349223266b.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Feb 2024 00:15:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1708934497; x=1709539297; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1wOgetBj7kTlzEZY9MZ/bv98My8Au0BZDB6BD5byc9o=;
-        b=fgm/64c0w0KzeD5aXMESlUOLnVSITTDiyG7yi1gWUg6m3Bk7Js+LFDwkUhjIjgLlNa
-         VJS5CDQK2PGzPHsSlcwWJIqL6wq5NLY1g8TcV9UMdMG5bh3nIjMQvZqLbHAqRpnQcNBU
-         qOLTuRDjyltBjN9ncd+W4qAsMtqsG6HhokuAPfqTUJ3ibT6rV4CEEhaynBh9s220fPeR
-         asMMwNz6hhXptBPprLJFwhovXKu7AmWxQNH2swbw+HVmy23eVP3E2jdvqsoxnZ3Zm+u+
-         Z93WxubDBjh2/fQ2a+/P/H45ComOAm8KoHvt2uif3V7iwYkEupl2vBP+DjY/5xzOl8cz
-         RQXA==
+        d=szeredi.hu; s=google; t=1708935303; x=1709540103; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tXChnYM6jqoevNoB06P78tnxuorT/1Io0Mk4HtClhXM=;
+        b=Iv1w8886SfgA19CpcF2knQdSFAMl+enITl8gv1lm9dBe3PwBmUuUPD2vm0BEu+YFfe
+         eF9Wn7aQ+52lonyWUn1a0crWNWzTYP8bahasZi+RGlu6/0nyK3b5qWuTEmocvB6FeHMh
+         To0jQbVy9polW3MgJemaT4cG4ovUH2+8XuMAQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708934497; x=1709539297;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1wOgetBj7kTlzEZY9MZ/bv98My8Au0BZDB6BD5byc9o=;
-        b=REyel9/SGkdI27SsUh6chAocE2OzkEvrCZ4VKweCigMsy/QJYL0hQxtMzMhoUBLqFX
-         nGxR2msRQBhXx5IGMKeeU34reNFjmd02sUl+I0qk6+fZJyROzeaQcRWoEwTw+RYju7dV
-         NUPRhNHvbFeF39gbI6y5YOmW+aQGJxEHLx39/pl+nnXQYuzhd/7tTtVeac07m0FR7eps
-         jVzqGjszjnDvT4Ya9lQ+oOEVezhxSYMD3vKwRYxL+UBjdcYvqQdfhG6fSYgkayyJICQA
-         sB9llYdAwXHSp7cmY1R5tba28TebkwMZX2eHRxHkG9ILelXndkCg8qebXMBrC5EB9FsN
-         lQDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVeo3Pe3aYeutYhmYg1GuwAn784eio/3rOhtO1Dr02a6Ptt1SM30RcKLmp2UjP2xeCXlYgZfh/w/Qp0ciInlzk12PxLKoc0nvovBy8=
-X-Gm-Message-State: AOJu0YyVmR6n5iwQ51s8Z9PIFFjGRcsjYc93YmRQXysjAVvUFbXvyv/a
-	z3zU4Z5BfOq+BkuufjLP5O0umWCfZwtCsGshoOYEDZSEV7QzWkh+6Jp8A6D4jHc=
-X-Google-Smtp-Source: AGHT+IG5lgF+BKQjMgKPZQzUq39O7D+KNOnPQb8jPVcS2mbNCEouaP1WuRNfXcHFWTJR3ZDOvi6FKw==
-X-Received: by 2002:a05:6512:11c9:b0:512:fab6:6df6 with SMTP id h9-20020a05651211c900b00512fab66df6mr1611451lfr.4.1708934497107;
-        Mon, 26 Feb 2024 00:01:37 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id o7-20020a63f147000000b005dc9439c56bsm3414673pgk.13.2024.02.26.00.01.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 00:01:36 -0800 (PST)
-Message-ID: <57068435-f797-4eec-ab7d-79161269cd0d@suse.com>
-Date: Mon, 26 Feb 2024 18:31:31 +1030
+        d=1e100.net; s=20230601; t=1708935303; x=1709540103;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tXChnYM6jqoevNoB06P78tnxuorT/1Io0Mk4HtClhXM=;
+        b=UvoMGgTVkuMaVp8Jc225o2/s0ePtrCt0lMD2gNzEnlnLsSs0E9eFEs6mSifeRNAJsh
+         +Olhj0bou8S32rj1Qm1BexD9xplBOfjd0TgeGYnnSkUUFQrFSa6VyIYdrUGAhjiTMlys
+         42GfVPHkMQkaNeiabrDlJqIgYBA1EwWIydqL5bwguVVeTmBZ9d4ayV05ieWtsKQbHP9d
+         3axrpQTVdSL9FZQoio69GYPg8/u8pzeog946pDF/71+wOGvlXGJKrocaHiABJcN1ujDT
+         cDsclsEkq8I15OtjlQwK2rp5xACOfYYeG0CpbzQZWbWpazk/YDTuUnlrqP+3PWM579ej
+         QwAA==
+X-Forwarded-Encrypted: i=1; AJvYcCUkQLYiKwJxCA/gmgf5cqE7iYFMeYYt06gmSm9a4961DB3c4bMh8aEc/2XLj9ILOmJ6TY5utavPi+P9HzOK+DGOQi6v1nggGgs6TC4=
+X-Gm-Message-State: AOJu0YyPmgePmBvQM+ueSpZoO3OfwCwi5PLphNLMKdzLO4m9GS3p4WfU
+	J7A32BnjDvVelJTxdlPG6zWB4bu+Fz7hnLolV9dUEzR3DR/rmnfHc7fuvO4yfLOfme39MTMEOdh
+	48TpBbreIYBN6gustP8enMCsG2uHZC2+1rOssIQ==
+X-Google-Smtp-Source: AGHT+IH2bEcWWKZhtSpcqVfNN3HRnSrKljnvZLVLF3StAQMjpLEdFDMGIoyyE/VYuQFRBAyUtqaGPeKO+HUcp1F2vGo=
+X-Received: by 2002:a17:906:3657:b0:a3e:127b:690e with SMTP id
+ r23-20020a170906365700b00a3e127b690emr3685184ejb.70.1708935303115; Mon, 26
+ Feb 2024 00:15:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fstests: btrfs/224: do not assign snapshot to a subvolume
- qgroup
-Content-Language: en-US
-To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
- fstests@vger.kernel.org, Sidong Yang <realwakka@gmail.com>
-References: <20240226040234.102767-1-wqu@suse.com>
- <e4703a32-9b16-48c2-b5ea-9477be071a9b@oracle.com>
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <e4703a32-9b16-48c2-b5ea-9477be071a9b@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq>
+ <CAJfpeguBzbhdcknLG4CjFr12_PdGo460FSRONzsYBKmT9uaSMA@mail.gmail.com>
+ <20240221210811.GA1161565@perftesting> <CAJfpegucM5R_pi_EeDkg9yPNTj_esWYrFd6vG178_asram0=Ew@mail.gmail.com>
+ <20240222154802.GA1219527@perftesting>
+In-Reply-To: <20240222154802.GA1219527@perftesting>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Mon, 26 Feb 2024 09:14:51 +0100
+Message-ID: <CAJfpeguEbd1h96OVhDAPEwoWGrF0Nk7q0GD9W6FhGp+eVgVRCQ@mail.gmail.com>
+Subject: Re: [LSF TOPIC] statx extensions for subvol/snapshot filesystems & more
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, linux-bcachefs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org, 
+	lsf-pc@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Thu, 22 Feb 2024 at 16:48, Josef Bacik <josef@toxicpanda.com> wrote:
 
+> Right, nobody is arguing that.  Our plan is to
+>
+> 1) Introduce some sort of statx mechanism to expose this information.
+> 2) Introduce an incompat fs feature flag to give unique inode numbers for people
+>    that want them, and there stop doing the st_dev thing we currently do.
 
-在 2024/2/26 16:58, Anand Jain 写道:
-> On 2/26/24 09:32, Qu Wenruo wrote:
->> For "btrfs subvolume snapshot -i <qgroupid>", we only expect the target
->> qgroup to be a higher level one.
->>
->> Assigning a 0 level qgroup to another 0 level qgroup is only going to
->> cause confusion, and I'm planning to do extra sanity checks both in
->> kernel and btrfs-progs to reject such behavior.
->>
->> So change the test case to do regular higher level qgroup assignment
->> only.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> 
-> looks good.
-> 
-> Reviewed-by: Anand Jain <anand.jain@oracle.com>
-> 
->   Applied to
->     https://github.com/asj/fstests.git for-next
+I don't get it.   What does the filesystem (the actual bits on disk)
+have anything to do with how st_dev is exposed to userspace
+applications?
 
-Thanks for the review and merge, although I'd also like to get some 
-feedback from the original author, to make sure there are not some weird 
-use case.
+This is not a filesystem feature, this is an interface feature.  And I
+even doubt that salvaging st_dev is worth it.  Userspace should just
+be converted to use something else.  In other words st_ino *and*
+st_dev are legacy and we need to find superior alternatives.
+
+Seems like there's an agreement about file handle being able to replace st_ino.
+
+I'm not quite sure fsid or uuid can replace st_dev, but that's up for
+discussion.
 
 Thanks,
-Qu
-> 
-> Thanks, Anand
-> 
->> ---
->>   tests/btrfs/224 | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/tests/btrfs/224 b/tests/btrfs/224
->> index de10942f..611df3ab 100755
->> --- a/tests/btrfs/224
->> +++ b/tests/btrfs/224
->> @@ -67,7 +67,7 @@ assign_no_shared_test()
->>       _check_scratch_fs
->>   }
->> -# Test snapshot with assigning qgroup for submodule
->> +# Test snapshot with assigning qgroup for higher level qgroup
->>   snapshot_test()
->>   {
->>       _scratch_mkfs > /dev/null 2>&1
->> @@ -78,9 +78,9 @@ snapshot_test()
->>       _qgroup_rescan $SCRATCH_MNT >> $seqres.full
->>       $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
->> +    $BTRFS_UTIL_PROG qgroup create 1/0 $SCRATCH_MNT >> $seqres.full
->>       _ddt of="$SCRATCH_MNT"/a/file1 bs=1M count=1 >> $seqres.full 2>&1
->> -    subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT a)
->> -    $BTRFS_UTIL_PROG subvolume snapshot -i 0/$subvolid $SCRATCH_MNT/a 
->> $SCRATCH_MNT/b >> $seqres.full
->> +    $BTRFS_UTIL_PROG subvolume snapshot -i 1/0 $SCRATCH_MNT/a 
->> $SCRATCH_MNT/b >> $seqres.full
->>       _scratch_unmount
->>       _check_scratch_fs
-> 
+Miklos
 
