@@ -1,190 +1,152 @@
-Return-Path: <linux-btrfs+bounces-2794-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2795-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B8F786742A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 13:01:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88037867438
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 13:02:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E6E21C28A70
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 12:01:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26E021F2C959
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 12:02:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D88C5B5A5;
-	Mon, 26 Feb 2024 12:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFAC35B206;
+	Mon, 26 Feb 2024 12:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IK1/xK/9"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PU1+U8qg";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FjGl/u3Q";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PU1+U8qg";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FjGl/u3Q"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65EEC5A792;
-	Mon, 26 Feb 2024 12:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820141D532;
+	Mon, 26 Feb 2024 12:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708948838; cv=none; b=aKCQnF9J72T4/T1BaXUm7dXwfn8LPsKJ6n7T3ZkcJEqS6e+0biiROuJZNfOSEym5T+svplpVBEO5ocHNAWrMVx7EJZuccRWFkcfkNPJpr6kROu2+mWkwu8O6+iEDprfuqfxSGVkZxHckMwwE3yPDKr5UEL57pSCo+t4C6iMwLBM=
+	t=1708948957; cv=none; b=PiI8a7v27XjuKcodnpWXx1NSy2s7FJOzdCcecyRLweiBYu5Kz2/GDwjgck/iRIE2UeSv3L9MI8niRi8ESLPgt5jmfLuf5dJLTQLBcQ0t60CSeZ4OZg8gMUEfUsg7kR1hQRPnuvJX+TDseQd3eO0liXJaJAtfRhRuqP378/LPeQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708948838; c=relaxed/simple;
-	bh=gMqghz6+4yc1mGDaSVAAdMjQ24hUBvLzBkk/wGM1r7c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sZqo45u8egYgL/VPmrhCBQ1V+iNbYr27Xgb6Pi/bfyA/7tW/a1jpbefQ994rKkJ+NzFnvGroCERHzWhKw6wZ00o15o6zqH1mQU9rWzNdJ27Mv6KvesmMbpePRJPKd2gmyPE1ePx68xt9rXMzwtzc3hUJO0pWwtbnZeJfQLDooC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IK1/xK/9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7AECC43390;
-	Mon, 26 Feb 2024 12:00:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708948837;
-	bh=gMqghz6+4yc1mGDaSVAAdMjQ24hUBvLzBkk/wGM1r7c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=IK1/xK/9WGC7ibhxQsDN9emhHpT71Vz8BhnoXrNf9Ek/gCmAV1gJUR9HWtBTeSLsg
-	 XUcO/38ldIqr6UtyOh45Fct7J2YHEs6Qr+e0JRjb4xUglrSA58ketM5bVEt6udz1dk
-	 8iLyd9ZUqXXIHJAI4l6FCpfMOB2QoCIYYq86ncCSOwmYSRSud5CxJhN59FVY2s6sdQ
-	 bbWNqTNsKxwb/Y/D48OEExzuhUqFfUET/wMLuSII3tQJac1vl7Ou4PWlbbUOIHoAkV
-	 L5K4Jjbli23dbSuljXCCBb4TB7cIqiPUWAJX3kO82uFZmbFA77EwUVUFuz0tT/CXW6
-	 FJ8EdZugK2B/w==
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5643ae47cd3so3858370a12.3;
-        Mon, 26 Feb 2024 04:00:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWflE+7vGFLKQ/ELU8cm+c1nRUWyRc5PqTCpM5qQTR627EzpHXf78/2Zi4Klj9PGfG+qjbVohLt1dflpQQH036A9SYPI+yjx9a2xCE=
-X-Gm-Message-State: AOJu0Yyh0+Z9G4fuQcZzP/hfUffHHK1p8rG/1WVMJuBJCpkwr78i/zIr
-	BBt5/WQVGDED4S+O9ymSXzcYgEvNE+mjRmBBy1djB4nAWgFlZcHf7exK+67VVMKsoFdVdERIgYV
-	nWFeN53E8sGWZHycQIDtonRoD1pQ=
-X-Google-Smtp-Source: AGHT+IGXCdfLA7xLrzPJ1dWPxa2qpiUIw7Na7HL5cbsdLn3+tvPSJpPqbabbHTPX3576gLMXQ28SZ+FUWhn38tBJ7yg=
-X-Received: by 2002:a17:906:f899:b0:a3f:804f:c1a4 with SMTP id
- lg25-20020a170906f89900b00a3f804fc1a4mr4692800ejb.74.1708948836225; Mon, 26
- Feb 2024 04:00:36 -0800 (PST)
+	s=arc-20240116; t=1708948957; c=relaxed/simple;
+	bh=R0bYipXFlTOZvTe5fV+Adrs80Qr5LxNydRcEE3UlGf0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KA6mvDU8EOcBg8tDxAjOj42eZBlS3WdLzipgGkrHdrpB3dIiEpG8Gxnh/4wMCEOC48Sb4CJeY9c2UQ0bBlXCeGwRk647LDB5ieq8qWCcPYg1FRSytHbv79A8ElbrwjznC066VSlXMIwUzFLMyCRL6S6CZiIl+yPZxzYslyCBlLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PU1+U8qg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FjGl/u3Q; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PU1+U8qg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FjGl/u3Q; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 613381FB45;
+	Mon, 26 Feb 2024 12:02:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708948953;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YvU0aeOcgvZwzKTSEwnjKYR9fxJF8eCUqO3achE2sHo=;
+	b=PU1+U8qgbDw+Zr33sjPUkMjcg6lA7lv3NpmW9iQNDevk4JWvJZP+wddq/z2TFbpfqorL0x
+	ph/AEvprYLltWgwaakUPozCKZB1ALEW7In9T5OUFKPVRYi8LtwO715BzX5Sncpa1nhXMIY
+	WpJORZwdUl4qcoNO+N9EalteCHtiNXc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708948953;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YvU0aeOcgvZwzKTSEwnjKYR9fxJF8eCUqO3achE2sHo=;
+	b=FjGl/u3Ql1ILaii+3NS8eVvDAgrDG35o3oQdV6iiMx8gRXnzjWn80OCnGDmkTt/SEZ6vvN
+	y6UH1AfpZLzPmTCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708948953;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YvU0aeOcgvZwzKTSEwnjKYR9fxJF8eCUqO3achE2sHo=;
+	b=PU1+U8qgbDw+Zr33sjPUkMjcg6lA7lv3NpmW9iQNDevk4JWvJZP+wddq/z2TFbpfqorL0x
+	ph/AEvprYLltWgwaakUPozCKZB1ALEW7In9T5OUFKPVRYi8LtwO715BzX5Sncpa1nhXMIY
+	WpJORZwdUl4qcoNO+N9EalteCHtiNXc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708948953;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YvU0aeOcgvZwzKTSEwnjKYR9fxJF8eCUqO3achE2sHo=;
+	b=FjGl/u3Ql1ILaii+3NS8eVvDAgrDG35o3oQdV6iiMx8gRXnzjWn80OCnGDmkTt/SEZ6vvN
+	y6UH1AfpZLzPmTCg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 50A0C1329E;
+	Mon, 26 Feb 2024 12:02:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id /lIqE9l93GWLOAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Mon, 26 Feb 2024 12:02:33 +0000
+Date: Mon, 26 Feb 2024 13:01:49 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: Re: [PATCH] fstests: btrfs/224: do not assign snapshot to a
+ subvolume qgroup
+Message-ID: <20240226120149.GD17966@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240226040234.102767-1-wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1708772619.git.anand.jain@oracle.com> <b51143afd6776abf1741fda00a007c594e8d54f1.1708772619.git.anand.jain@oracle.com>
-In-Reply-To: <b51143afd6776abf1741fda00a007c594e8d54f1.1708772619.git.anand.jain@oracle.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 26 Feb 2024 11:59:59 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5RaRyi4rPiMdDS3qjOScHxhxoCAieX8hM092XWP=RXOA@mail.gmail.com>
-Message-ID: <CAL3q7H5RaRyi4rPiMdDS3qjOScHxhxoCAieX8hM092XWP=RXOA@mail.gmail.com>
-Subject: Re: [PATCH v3 08/10] btrfs: verify tempfsid clones using mkfs
-To: Anand Jain <anand.jain@oracle.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226040234.102767-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PU1+U8qg;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="FjGl/u3Q"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.09)[88.06%]
+X-Spam-Score: -3.80
+X-Rspamd-Queue-Id: 613381FB45
+X-Spam-Flag: NO
 
-On Sat, Feb 24, 2024 at 4:44=E2=80=AFPM Anand Jain <anand.jain@oracle.com> =
-wrote:
->
-> Create appearing to be a clone using the mkfs.btrfs option and test if
-> the tempfsid is active.
->
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> v3:
-> prerequisite checks are in the function mkfs_clone(), remove from the
-> testcase.
->
-> v2:
->  Remove unnecessary function.
->  Add clone group
->  use $UMOUNT_PROG
->  Let _cp_reflink fail on the stdout.
->
->  tests/btrfs/313     | 53 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/313.out | 16 ++++++++++++++
->  2 files changed, 69 insertions(+)
->  create mode 100755 tests/btrfs/313
->  create mode 100644 tests/btrfs/313.out
->
-> diff --git a/tests/btrfs/313 b/tests/btrfs/313
-> new file mode 100755
-> index 000000000000..1f50ee78ab99
-> --- /dev/null
-> +++ b/tests/btrfs/313
-> @@ -0,0 +1,53 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 Oracle.  All Rights Reserved.
-> +#
-> +# FS QA Test 313
-> +#
-> +# Functional test for the tempfsid, clone devices created using the mkfs=
- option.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick clone tempfsid
-> +
-> +_cleanup()
-> +{
-> +       cd /
-> +       $UMOUNT_PROG $mnt1 > /dev/null 2>&1
-> +       rm -r -f $tmp.*
-> +       rm -r -f $mnt1
-> +}
-> +
-> +. ./common/filter.btrfs
-> +. ./common/reflink
-> +
-> +_supported_fs btrfs
-> +_require_cp_reflink
-> +_require_btrfs_sysfs_fsid
+On Mon, Feb 26, 2024 at 02:32:34PM +1030, Qu Wenruo wrote:
+> For "btrfs subvolume snapshot -i <qgroupid>", we only expect the target
+> qgroup to be a higher level one.
+> 
+> Assigning a 0 level qgroup to another 0 level qgroup is only going to
+> cause confusion, and I'm planning to do extra sanity checks both in
+> kernel and btrfs-progs to reject such behavior.
 
-This requirement should be inside the check_fsid() helper, as pointed befor=
-e.
-
-Thanks.
-
-> +_require_scratch_dev_pool 2
-> +_require_btrfs_fs_feature temp_fsid
-> +
-> +_scratch_dev_pool_get 2
-> +
-> +mnt1=3D$TEST_DIR/$seq/mnt1
-> +mkdir -p $mnt1
-> +
-> +echo ---- clone_uuids_verify_tempfsid ----
-> +mkfs_clone ${SCRATCH_DEV_NAME[0]} ${SCRATCH_DEV_NAME[1]}
-> +
-> +echo Mounting original device
-> +_mount ${SCRATCH_DEV_NAME[0]} $SCRATCH_MNT
-> +check_fsid ${SCRATCH_DEV_NAME[0]}
-> +
-> +echo Mounting cloned device
-> +_mount ${SCRATCH_DEV_NAME[1]} $mnt1
-> +check_fsid ${SCRATCH_DEV_NAME[1]}
-> +
-> +$XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' $SCRATCH_MNT/foo | _filter_xfs_=
-io
-> +echo cp reflink must fail
-> +_cp_reflink $SCRATCH_MNT/foo $mnt1/bar 2>&1 | _filter_testdir_and_scratc=
-h
-> +
-> +_scratch_dev_pool_put
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/313.out b/tests/btrfs/313.out
-> new file mode 100644
-> index 000000000000..7a089d2c29c5
-> --- /dev/null
-> +++ b/tests/btrfs/313.out
-> @@ -0,0 +1,16 @@
-> +QA output created by 313
-> +---- clone_uuids_verify_tempfsid ----
-> +Mounting original device
-> +On disk fsid:          FSID
-> +Metadata uuid:         FSID
-> +Temp fsid:             FSID
-> +Tempfsid status:       0
-> +Mounting cloned device
-> +On disk fsid:          FSID
-> +Metadata uuid:         FSID
-> +Temp fsid:             TEMPFSID
-> +Tempfsid status:       1
-> +wrote 9000/9000 bytes at offset 0
-> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-> +cp reflink must fail
-> +cp: failed to clone 'TEST_DIR/313/mnt1/bar' from 'SCRATCH_MNT/foo': Inva=
-lid cross-device link
-> --
-> 2.39.3
->
+I think this was never intended, the higher level were meant to group
+the leaf subvolumes. But it's possible that somebody is using it like
+is in the test. In that case we'd have to define the semantics or at
+least start warning about that and then remove it completely.
 
