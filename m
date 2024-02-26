@@ -1,152 +1,229 @@
-Return-Path: <linux-btrfs+bounces-2795-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2796-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88037867438
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 13:02:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2495867457
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 13:07:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26E021F2C959
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 12:02:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58474286FE9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 12:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFAC35B206;
-	Mon, 26 Feb 2024 12:02:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA66A5FDAC;
+	Mon, 26 Feb 2024 12:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PU1+U8qg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FjGl/u3Q";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PU1+U8qg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FjGl/u3Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B2TPGvI4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820141D532;
-	Mon, 26 Feb 2024 12:02:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C2D5B1F6;
+	Mon, 26 Feb 2024 12:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708948957; cv=none; b=PiI8a7v27XjuKcodnpWXx1NSy2s7FJOzdCcecyRLweiBYu5Kz2/GDwjgck/iRIE2UeSv3L9MI8niRi8ESLPgt5jmfLuf5dJLTQLBcQ0t60CSeZ4OZg8gMUEfUsg7kR1hQRPnuvJX+TDseQd3eO0liXJaJAtfRhRuqP378/LPeQA=
+	t=1708949240; cv=none; b=Mbhkpy70HY70XDA44rY0C1Pj6SnSAnUIsIonHqMp96tLx4q9iBS01G0THh0xSjGkItJEbIjiRmAuYtmapsBMqRYGYgYcXl46u2ILhTbdhCfHSxbKN39/s+Vzk8NMxrlpa7Pxj+45mT0e4MYhuI4djwziFCEmCivoPgY2TWFl9tc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708948957; c=relaxed/simple;
-	bh=R0bYipXFlTOZvTe5fV+Adrs80Qr5LxNydRcEE3UlGf0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KA6mvDU8EOcBg8tDxAjOj42eZBlS3WdLzipgGkrHdrpB3dIiEpG8Gxnh/4wMCEOC48Sb4CJeY9c2UQ0bBlXCeGwRk647LDB5ieq8qWCcPYg1FRSytHbv79A8ElbrwjznC066VSlXMIwUzFLMyCRL6S6CZiIl+yPZxzYslyCBlLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PU1+U8qg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FjGl/u3Q; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PU1+U8qg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FjGl/u3Q; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 613381FB45;
-	Mon, 26 Feb 2024 12:02:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708948953;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YvU0aeOcgvZwzKTSEwnjKYR9fxJF8eCUqO3achE2sHo=;
-	b=PU1+U8qgbDw+Zr33sjPUkMjcg6lA7lv3NpmW9iQNDevk4JWvJZP+wddq/z2TFbpfqorL0x
-	ph/AEvprYLltWgwaakUPozCKZB1ALEW7In9T5OUFKPVRYi8LtwO715BzX5Sncpa1nhXMIY
-	WpJORZwdUl4qcoNO+N9EalteCHtiNXc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708948953;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YvU0aeOcgvZwzKTSEwnjKYR9fxJF8eCUqO3achE2sHo=;
-	b=FjGl/u3Ql1ILaii+3NS8eVvDAgrDG35o3oQdV6iiMx8gRXnzjWn80OCnGDmkTt/SEZ6vvN
-	y6UH1AfpZLzPmTCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708948953;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YvU0aeOcgvZwzKTSEwnjKYR9fxJF8eCUqO3achE2sHo=;
-	b=PU1+U8qgbDw+Zr33sjPUkMjcg6lA7lv3NpmW9iQNDevk4JWvJZP+wddq/z2TFbpfqorL0x
-	ph/AEvprYLltWgwaakUPozCKZB1ALEW7In9T5OUFKPVRYi8LtwO715BzX5Sncpa1nhXMIY
-	WpJORZwdUl4qcoNO+N9EalteCHtiNXc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708948953;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YvU0aeOcgvZwzKTSEwnjKYR9fxJF8eCUqO3achE2sHo=;
-	b=FjGl/u3Ql1ILaii+3NS8eVvDAgrDG35o3oQdV6iiMx8gRXnzjWn80OCnGDmkTt/SEZ6vvN
-	y6UH1AfpZLzPmTCg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 50A0C1329E;
-	Mon, 26 Feb 2024 12:02:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id /lIqE9l93GWLOAAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Mon, 26 Feb 2024 12:02:33 +0000
-Date: Mon, 26 Feb 2024 13:01:49 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH] fstests: btrfs/224: do not assign snapshot to a
- subvolume qgroup
-Message-ID: <20240226120149.GD17966@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240226040234.102767-1-wqu@suse.com>
+	s=arc-20240116; t=1708949240; c=relaxed/simple;
+	bh=ZrFpr2mlIM2plcM+1aB+JVIIoirbM/ogUVRtLtjJCWc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UDoiNkmfgiTbDxfK6agJwGLJvXQ/tMdQ7bZX+THaOaMAi09WXg5jzKUrFf0fNPrgO3x2ttYUTvC52HP+GIKo+ZR8WyO/TFRH5vQ87tgbvusRRWc4qIO4KAFcxH/6dtQE/hTQ6TFVNVq85baTNWnSKEvdNX8jyFLWjxAQOTPHhBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B2TPGvI4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FD37C433F1;
+	Mon, 26 Feb 2024 12:07:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708949240;
+	bh=ZrFpr2mlIM2plcM+1aB+JVIIoirbM/ogUVRtLtjJCWc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=B2TPGvI49iL4cXIcAlF0bAb7qeLycLYhlUlKQBPT9oC5w17EnnJivUiRwsop85DyW
+	 Zro2znSyIfQldoW6giKMw16RIiWR3MYcChACGQ1hnkQsceZZtWxIjoWbI5xt4hO+vk
+	 5m4pn/TwVSu/mMzWNf+cQRL8NegHeS9XNVOttGDeQ/LnXT/o4Gohh6W2FhnCqy59yP
+	 ULhKpxUBgDsab4NIrn+0xjSKqAzpoV68IeZgNT9dE2zcsmS/2ihj6wFTv0jSNkln2m
+	 PHcIuz+l0iSFR9dKGoe485s3X3RPj6OWp+j/8FKWuUwOz4fmm29rgrugNaBbEF7Igm
+	 b3ACbWWZwMrig==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a43037e40dcso201271766b.3;
+        Mon, 26 Feb 2024 04:07:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVP32wymPAlGq9WWE1mABW9qxpuBoY6p+5Sdc7ZRR0o0EiBPzp9kZR7kw/x3YlvJwdzkMV6uc+ctsDvjDMLqjbfHOd/8ar+WAR6AN0=
+X-Gm-Message-State: AOJu0YyVynQrL8LmX0cuagXBwf5dKdn1Ptger//nBy714HKWsp7/owCm
+	FRk5iHHFwYzkiQLwVHd2jknfZsWlDBVskdzH3CSt9XEDKomH6dRFhTm27+JEjtCk0j1TMoKF/iX
+	5Cq1EzFIoRv/giord0/89zfmB0k4=
+X-Google-Smtp-Source: AGHT+IFzSBHVR/CJU/Ebdjm7dU1iIEV4mIBPeK5YUvaoePvTj80o98GSGOXfazOcgAEpYxVCI85KgrV6EZ5uj1HutSg=
+X-Received: by 2002:a17:906:6701:b0:a3e:d7fe:4c4d with SMTP id
+ a1-20020a170906670100b00a3ed7fe4c4dmr4372809ejp.57.1708949238911; Mon, 26 Feb
+ 2024 04:07:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226040234.102767-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PU1+U8qg;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="FjGl/u3Q"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.09)[88.06%]
-X-Spam-Score: -3.80
-X-Rspamd-Queue-Id: 613381FB45
-X-Spam-Flag: NO
+References: <cover.1708772619.git.anand.jain@oracle.com> <afc075746adfa6c6c9b6cdc73387606bc33b6933.1708772619.git.anand.jain@oracle.com>
+In-Reply-To: <afc075746adfa6c6c9b6cdc73387606bc33b6933.1708772619.git.anand.jain@oracle.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 26 Feb 2024 12:06:42 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H48P5NFqvihh2MJWrSEz_Kuup7VXMBSTmeGer4Gy788sg@mail.gmail.com>
+Message-ID: <CAL3q7H48P5NFqvihh2MJWrSEz_Kuup7VXMBSTmeGer4Gy788sg@mail.gmail.com>
+Subject: Re: [PATCH v3 09/10] btrfs: validate send-receive operation with tempfsid.
+To: Anand Jain <anand.jain@oracle.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 02:32:34PM +1030, Qu Wenruo wrote:
-> For "btrfs subvolume snapshot -i <qgroupid>", we only expect the target
-> qgroup to be a higher level one.
-> 
-> Assigning a 0 level qgroup to another 0 level qgroup is only going to
-> cause confusion, and I'm planning to do extra sanity checks both in
-> kernel and btrfs-progs to reject such behavior.
+On Sat, Feb 24, 2024 at 4:44=E2=80=AFPM Anand Jain <anand.jain@oracle.com> =
+wrote:
+>
+> Given concurrent mounting of both the original and its clone device on
+> the same system, this test confirms the integrity of send and receive
+> operations in the presence of active tempfsid.
+>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v3:
+>  Drop prerequisite check in the testcase
+>
+> v2:
+>  Organize changes to its right patch.
+>  Fix _fail erorr message.
+>  Declare local variables for fsid and uuid.
+>
+>  tests/btrfs/314     | 79 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/314.out | 23 +++++++++++++
+>  2 files changed, 102 insertions(+)
+>  create mode 100755 tests/btrfs/314
+>  create mode 100644 tests/btrfs/314.out
+>
+> diff --git a/tests/btrfs/314 b/tests/btrfs/314
+> new file mode 100755
+> index 000000000000..4a5b1ed2c06f
+> --- /dev/null
+> +++ b/tests/btrfs/314
+> @@ -0,0 +1,79 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2024 Oracle.  All Rights Reserved.
+> +#
+> +# FS QA Test 314
+> +#
+> +# Send and receive functionality test between a normal and
+> +# tempfsid filesystem.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick snapshot send tempfsid
+> +
+> +_cleanup()
+> +{
+> +       cd /
+> +       $UMOUNT_PROG $tempfsid_mnt 2>/dev/null
+> +       rm -r -f $tmp.*
+> +       rm -r -f $sendfile
+> +       rm -r -f $tempfsid_mnt
+> +}
+> +
+> +. ./common/filter.btrfs
+> +
+> +_supported_fs btrfs
+> +_require_btrfs_sysfs_fsid
 
-I think this was never intended, the higher level were meant to group
-the leaf subvolumes. But it's possible that somebody is using it like
-is in the test. In that case we'd have to define the semantics or at
-least start warning about that and then remove it completely.
+This requirement of the sysfs fsid path is not needed in the test, as
+it's not used anywhere in this test (likely copy-pasted from other
+tests in this patchset).
+
+Thanks.
+
+> +_require_scratch_dev_pool 2
+> +_require_btrfs_fs_feature temp_fsid
+> +
+> +_scratch_dev_pool_get 2
+> +
+> +# mount point for the tempfsid device
+> +tempfsid_mnt=3D$TEST_DIR/$seq/tempfsid_mnt
+> +sendfile=3D$TEST_DIR/$seq/replicate.send
+> +
+> +send_receive_tempfsid()
+> +{
+> +       local src=3D$1
+> +       local dst=3D$2
+> +
+> +       # Use first 2 devices from the SCRATCH_DEV_POOL
+> +       mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
+> +       _scratch_mount
+> +       _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
+> +
+> +       $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' ${src}/foo | _filter_xfs=
+_io
+> +       $BTRFS_UTIL_PROG subvolume snapshot -r ${src} ${src}/snap1 | \
+> +                                               _filter_testdir_and_scrat=
+ch
+> +
+> +       echo Send ${src} | _filter_testdir_and_scratch
+> +       $BTRFS_UTIL_PROG send -f ${sendfile} ${src}/snap1 2>&1 | \
+> +                                               _filter_testdir_and_scrat=
+ch
+> +       echo Receive ${dst} | _filter_testdir_and_scratch
+> +       $BTRFS_UTIL_PROG receive -f ${sendfile} ${dst} | \
+> +                                               _filter_testdir_and_scrat=
+ch
+> +       echo -e -n "Send:\t"
+> +       md5sum  ${src}/foo | _filter_testdir_and_scratch
+> +       echo -e -n "Recv:\t"
+> +       md5sum ${dst}/snap1/foo | _filter_testdir_and_scratch
+> +}
+> +
+> +mkdir -p $tempfsid_mnt
+> +
+> +echo -e \\nFrom non-tempfsid ${SCRATCH_MNT} to tempfsid ${tempfsid_mnt} =
+| \
+> +                                               _filter_testdir_and_scrat=
+ch
+> +send_receive_tempfsid $SCRATCH_MNT $tempfsid_mnt
+> +
+> +_scratch_unmount
+> +_cleanup
+> +mkdir -p $tempfsid_mnt
+> +
+> +echo -e \\nFrom tempfsid ${tempfsid_mnt} to non-tempfsid ${SCRATCH_MNT} =
+| \
+> +                                               _filter_testdir_and_scrat=
+ch
+> +send_receive_tempfsid $tempfsid_mnt $SCRATCH_MNT
+> +
+> +_scratch_dev_pool_put
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/314.out b/tests/btrfs/314.out
+> new file mode 100644
+> index 000000000000..21963899c2b2
+> --- /dev/null
+> +++ b/tests/btrfs/314.out
+> @@ -0,0 +1,23 @@
+> +QA output created by 314
+> +
+> +From non-tempfsid SCRATCH_MNT to tempfsid TEST_DIR/314/tempfsid_mnt
+> +wrote 9000/9000 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap1'
+> +Send SCRATCH_MNT
+> +At subvol SCRATCH_MNT/snap1
+> +Receive TEST_DIR/314/tempfsid_mnt
+> +At subvol snap1
+> +Send:  42d69d1a6d333a7ebdf64792a555e392  SCRATCH_MNT/foo
+> +Recv:  42d69d1a6d333a7ebdf64792a555e392  TEST_DIR/314/tempfsid_mnt/snap1=
+/foo
+> +
+> +From tempfsid TEST_DIR/314/tempfsid_mnt to non-tempfsid SCRATCH_MNT
+> +wrote 9000/9000 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +Create a readonly snapshot of 'TEST_DIR/314/tempfsid_mnt' in 'TEST_DIR/3=
+14/tempfsid_mnt/snap1'
+> +Send TEST_DIR/314/tempfsid_mnt
+> +At subvol TEST_DIR/314/tempfsid_mnt/snap1
+> +Receive SCRATCH_MNT
+> +At subvol snap1
+> +Send:  42d69d1a6d333a7ebdf64792a555e392  TEST_DIR/314/tempfsid_mnt/foo
+> +Recv:  42d69d1a6d333a7ebdf64792a555e392  SCRATCH_MNT/snap1/foo
+> --
+> 2.39.3
+>
 
