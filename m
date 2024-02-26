@@ -1,227 +1,176 @@
-Return-Path: <linux-btrfs+bounces-2766-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2767-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3392A866A23
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 07:36:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DFB6866B9F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 09:01:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47D33B21729
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 06:36:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0855B229B9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Feb 2024 08:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2BBD1BF27;
-	Mon, 26 Feb 2024 06:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 211351CA8E;
+	Mon, 26 Feb 2024 08:01:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="CtigOxWC";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="NIFzdVOL"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fgm/64c0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82721BDE7;
-	Mon, 26 Feb 2024 06:36:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708929383; cv=fail; b=K5FCq7MgylMkEs/CAC8gQ9d9c4WBxPeHjlVEvPS/tRrRWi6aWheHAHk+MhCG+q40G1iW09qiVtkQRVHVbHv9MrwMlWDik3WsX8AqcQ63ozPrZ6lcTFVJ8aSNW5+eNpFTkInPdG2IbsrVZjp+yC34X6W8gjJM8lUqFPXmUYNI62Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708929383; c=relaxed/simple;
-	bh=wa8jh7RuphnMtHceFGo5UXOek4TdR70oJPpuG+QHW24=;
-	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SJsybAnUQ7iJ9e9BsFRm/nY7jTnkL4evTW4nU8YEJ7A3ErAwziB4nDIVQWX3hKXwqecX8SSisEkrqkek+73+ceXeT2on6wid3qXGvLnRJXX1duT1CpKITwO6CK+OdkST7puedY7c1HGDBvt1F1zBOiy3ZSW4uvESd3KF8Qw6/bk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=CtigOxWC; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=NIFzdVOL; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41PLPoYE023296;
-	Mon, 26 Feb 2024 06:36:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=cf8km+QXILkiHj5wQE5L0w5cHLVJsW1gpa9AIu4Chzw=;
- b=CtigOxWCD2C61X5l7x5MuFUDETw695qjpxmH2H0FmQDt4XfnLzEIk1b20o3Z+ubOR/Zr
- xIACNEU/0wdSnjLwbBwzuC5cD4k9XBlkIvwsswnMS5FLP7h6dXlzKD8+s/PINNyNdCiE
- AB5lHxbhj3ObUOBy76U/KTyB17HuuduN6I1qjt2lVBDr6gwJx4BwPqfzxthJo1bAF0xU
- w6FMbosFok55w1+77oh6D8w1t9gcFmzG7/L/5lhwHggl3bJSQP0D6Cgm1s6sa/PPJsum
- swUD37fqULG2Div2W1c/96xouahbSdHx6awzGDg7hnBNqZ0mjSfejxjccQDUbRx+z1J9 iw== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf7ccbr53-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 26 Feb 2024 06:36:19 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41Q5GcYZ012720;
-	Mon, 26 Feb 2024 06:36:18 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wf6w53cgp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 26 Feb 2024 06:36:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HOJnUFU4CasZZazYfHSBzTuzbd0jUj5diJmC2HK0JnpbpF7WvtGrI/ZtdxqSoWpc7VZ0vsemRUmVLtagXP3ivm/l7ZPteiV7uEgaLfnjOPEKzPQtfvssh52WX1iHgQvBgYWxCaQ8BG2OO1XElUkQDm/aDWjVP0+lIRkJTw7E09KALCt8f8vziisoPSL9muptWY8nDvPvIKZyWYzkSgtNaSuR/Wp5pXZbx9lP2FrP2LRTRasoUrFFe4jHTkgiXzQP5WLKR6EAhhFZVQw92WvNK7mr4QbvfJBO7jLFyo6M7iIe8g8Zsvayr7QoXxMoku+121qWeeNL2/WWuMXDnQJM0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cf8km+QXILkiHj5wQE5L0w5cHLVJsW1gpa9AIu4Chzw=;
- b=fj/iX9XADI+VNkDT3BN6rYZEvg/174HW4lwZOd/Onjxqi/Peyt0FumS0zHvhv0DydDhOTzmU1rMZVLD9hnVyLDxseWUFrmn4ZlrIWgGBSosYuiJ4DQx8JB5f5xnmBaL37WBvlNsld4EQeq0QeqTMQwSGImAM3lEI6davofySC1wXXZ3+Bg7D6dy+EtjUYmHvYsNsik3jLnFpaBZvfS8gQXYfkUTzKJ+wzJ7bvpuqDmyHdvgyeOnorpfAl1UFdqhtKdLgMlEbVK7KRjjHSC0gDGH0X0/7nQmQ8z9YhCiOvQtgCmrukNGEP1lT8oFBdQGBn36Tf7jLDc62eL0fdPSlDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F185C1CA81
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Feb 2024 08:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708934501; cv=none; b=Imnt3L7tkVaqqDL+Ym4hCzYHzibuQhDuy0j8qik99btEsMgRxgN7fEtpWPCY8c8RXTwrLg7cVw+TqFMuRy2mc/KTa8niIgJBG3GpS1M9RwQ4nhzRYcnxRlBzp2DkVrqgkJTm4eLVeb2lKYrY0HiYKtuEvToeduLfPoPhAR3/vfU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708934501; c=relaxed/simple;
+	bh=ChlTkJdoRIcTPEm5INNJMu+ECH3w0pCZC/rM0eTbZ4w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=dMxG1TM7nHpfK+upDabBfQeI82BoqhVjl/Sxc6TdVa2pUuONEcbzVIG5tbgRFRp9aVC/jus90Bn132f84bD+LtuvbuaAZ3e6TQJ017wJVeM5uiJNyOzI/Div+jL8+HDri52JsS6VJStwS78iwXBJmTjynE+3iBcz4C0HveTVFbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fgm/64c0; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512bce554a5so3382066e87.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Feb 2024 00:01:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cf8km+QXILkiHj5wQE5L0w5cHLVJsW1gpa9AIu4Chzw=;
- b=NIFzdVOLAhfS0biR/OrezAZvJDDt877S5/+579KwwgYx1NYZhWL0uZMF1whlxY9cmOtNAwJ3GdDoh3fuk63e2ueGS1rd1ZCmdLdGaOyOVzA99W0vgjz3csz/3tre1nptpjI6soUB4uqjdEquhDZtI8rL5cZpoB0cTB3MU2rc0uE=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by CH0PR10MB7497.namprd10.prod.outlook.com (2603:10b6:610:18b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Mon, 26 Feb
- 2024 06:36:16 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::814:3d5c:443b:17b%6]) with mapi id 15.20.7316.032; Mon, 26 Feb 2024
- 06:36:16 +0000
-Message-ID: <9ee33bad-717c-4d6c-9fb2-0ae579bc2370@oracle.com>
-Date: Mon, 26 Feb 2024 12:06:09 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fstests: btrfs: detect regular qgroup for older kernels
- correctly
-Content-Language: en-US
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org
-References: <20240220040134.81084-1-wqu@suse.com>
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20240220040134.81084-1-wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MAXP287CA0023.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a00:49::31) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=suse.com; s=google; t=1708934497; x=1709539297; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1wOgetBj7kTlzEZY9MZ/bv98My8Au0BZDB6BD5byc9o=;
+        b=fgm/64c0w0KzeD5aXMESlUOLnVSITTDiyG7yi1gWUg6m3Bk7Js+LFDwkUhjIjgLlNa
+         VJS5CDQK2PGzPHsSlcwWJIqL6wq5NLY1g8TcV9UMdMG5bh3nIjMQvZqLbHAqRpnQcNBU
+         qOLTuRDjyltBjN9ncd+W4qAsMtqsG6HhokuAPfqTUJ3ibT6rV4CEEhaynBh9s220fPeR
+         asMMwNz6hhXptBPprLJFwhovXKu7AmWxQNH2swbw+HVmy23eVP3E2jdvqsoxnZ3Zm+u+
+         Z93WxubDBjh2/fQ2a+/P/H45ComOAm8KoHvt2uif3V7iwYkEupl2vBP+DjY/5xzOl8cz
+         RQXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708934497; x=1709539297;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1wOgetBj7kTlzEZY9MZ/bv98My8Au0BZDB6BD5byc9o=;
+        b=REyel9/SGkdI27SsUh6chAocE2OzkEvrCZ4VKweCigMsy/QJYL0hQxtMzMhoUBLqFX
+         nGxR2msRQBhXx5IGMKeeU34reNFjmd02sUl+I0qk6+fZJyROzeaQcRWoEwTw+RYju7dV
+         NUPRhNHvbFeF39gbI6y5YOmW+aQGJxEHLx39/pl+nnXQYuzhd/7tTtVeac07m0FR7eps
+         jVzqGjszjnDvT4Ya9lQ+oOEVezhxSYMD3vKwRYxL+UBjdcYvqQdfhG6fSYgkayyJICQA
+         sB9llYdAwXHSp7cmY1R5tba28TebkwMZX2eHRxHkG9ILelXndkCg8qebXMBrC5EB9FsN
+         lQDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVeo3Pe3aYeutYhmYg1GuwAn784eio/3rOhtO1Dr02a6Ptt1SM30RcKLmp2UjP2xeCXlYgZfh/w/Qp0ciInlzk12PxLKoc0nvovBy8=
+X-Gm-Message-State: AOJu0YyVmR6n5iwQ51s8Z9PIFFjGRcsjYc93YmRQXysjAVvUFbXvyv/a
+	z3zU4Z5BfOq+BkuufjLP5O0umWCfZwtCsGshoOYEDZSEV7QzWkh+6Jp8A6D4jHc=
+X-Google-Smtp-Source: AGHT+IG5lgF+BKQjMgKPZQzUq39O7D+KNOnPQb8jPVcS2mbNCEouaP1WuRNfXcHFWTJR3ZDOvi6FKw==
+X-Received: by 2002:a05:6512:11c9:b0:512:fab6:6df6 with SMTP id h9-20020a05651211c900b00512fab66df6mr1611451lfr.4.1708934497107;
+        Mon, 26 Feb 2024 00:01:37 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id o7-20020a63f147000000b005dc9439c56bsm3414673pgk.13.2024.02.26.00.01.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 00:01:36 -0800 (PST)
+Message-ID: <57068435-f797-4eec-ab7d-79161269cd0d@suse.com>
+Date: Mon, 26 Feb 2024 18:31:31 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CH0PR10MB7497:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5d04d453-91b4-440e-cb91-08dc36953bcd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	ThilGVzfIemHI9cyu7DyXAo1mzF1ZJp/qN1FhOStWYQBeAVI8yUym0FKTbAQT7Il0RL9JACcp5ivBeQODo+bCh5bZivxg5C4ZoDZYWeSaWEJctg+CL2p1GAy3MkHlDJNN8JoSWxpHEJvMR+mWWEtV8UtnUDchneU8UEv2YQpUechxtkq0isLhVOuaNuMn4m4T3OQ6d/wRs6SvxwvEMaOUJmjORGREDfLL8yEyQWv/6MwrhOkB5OW7yULLvaqo4SqiiI08w5mBmDiIH1bgGL5tJDV5wnUASNZdkXgaeGhA1fYQSZUV+7uIsBChdZW2/KHd4a4OJQ4/P1Q3E+CTQbvCed2N7fljrzvmnIrlQQ+Ga9P700oaGGbO1C2SqSMVdfAtzNJUXSVxYwHPFhp7FWP4C16vvXhgYDg7h3rtqjinzhqSFnyQKNH7cjuDIHyRaJy6bIJrdmHo2ihypbx+qPssLrmZuL3xaVPTVT6TGcVwiqNdbVgPXVt2RAKIoID1l12EDfsQA0KxO6MTToKD7xmDi2yzFZnmMAt1eS3joWyIEIOQHVkfaOWtyo3jNQWThy421oysH1B8EW7TQlcWShjTFbgUBwkMvNh3e9gPnfUgU9EtkNE/yMuRlE9gHCDDW7mcI2I3auulYIyxTglVBNsBQ==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?bzEwQ1QwOVUxNXNlMW9iLzR5TmpwZmJhN0NUUlFOcE1DbFlTMHRxVmlHbS90?=
- =?utf-8?B?VWVob3BXc1k2T3llNWJoemNDWWJYQ1N5bjY1Y0xVdjQyWG5zTGlSYUpJOXFu?=
- =?utf-8?B?UXhwZnN2WW1wWDVlcld2eU8rUnhsZ2xncDVPd01EWDJpa0lmU1RaZ2V2TGt1?=
- =?utf-8?B?eVZ3enR0bmFPSGhtUGR5QmNNeW9vRVZGUXNwQ1VuUzZLWitMY1d0dlNjQlVy?=
- =?utf-8?B?VXhXaGd5UWxBR2NYWTlhbVZpVVNiUWJzWk5qWldvK291b2tsWHZCVk9yUEY0?=
- =?utf-8?B?QkJpOVFGYzNQMGJLOVF2aXJCMlduMG8waEEvclhiaFRRV2tMRXdva0hzaUg1?=
- =?utf-8?B?K2RIL1ZZd2doZlNuUXZESmFlVHI1U1NPVnVRayt3Z3FUNkpJR3pkeVdoelNw?=
- =?utf-8?B?dGphYXcrQVFFRTlLQzJFWkxLZVVqajFtRGNXK1hwU0REc3BtUk9MQWhuK0pt?=
- =?utf-8?B?REUrNnpTNXF0WlVKdEh2WVg2cXRjS3lIQWN6SEFjZWg4VTZFYjZqSnZtYnBz?=
- =?utf-8?B?L3Y5MmEyTnlPS1VPQlgrYmVLWkV1Uy9LZVR2YS9zam5vT3YyNmpMRDB5TFpp?=
- =?utf-8?B?YjZTanM2WUEvNFVnWlFLMTluN2FDenVUd3g3VTBvRHgxdVdQdStHWXhMelVn?=
- =?utf-8?B?eXQ2QmVvamk5cVBQTjRXLzVCdXMxL3Znc1A4Q0h5TFlPeUF6SnlQQlhBNUgr?=
- =?utf-8?B?VXlUOVhJSVZFcjdrK1J2SEtFUFlXTDRaY0s1NURRRHA0eVNWMnpNUVlhYWd6?=
- =?utf-8?B?aEt6dnBUSXgwOWtnTWNqZ01lN2cxVjUzVkZiNlRQeU5tbnBYUXFDS1pBVjRW?=
- =?utf-8?B?S3owVVhHeThLb1Job0FvWGdtWkpocldHUDc4U0pHMDRXY2RzdGtjTmR2L0p2?=
- =?utf-8?B?TlRYOURKSzE1Y0c4MlBOczBpY0RkWnVVMVhOMk54ZGZRajBKQzJHKy90ck5m?=
- =?utf-8?B?WU05ZHczSzRtbDlzbmt2U3o3emtLdW1pOVkyc3U1NHBjeEdlclMxS2ZSR01T?=
- =?utf-8?B?bFZQcFp1dUU2b3gyZlNoQlNaNEM5aURCa1d6SmYzcUJDVmVNSWFPZFgwYTEy?=
- =?utf-8?B?WGg4TGt6R0ozWlRPZkNmUXZRQVZLZGMzek5uZVB2dm9rTjNBa3FVWXdMZGlv?=
- =?utf-8?B?S1lRWjlhOWtrbGNyZ1ZxZExpMVVCdW9iZTE1akZaUlJsV3dURWZUdWNNMXU2?=
- =?utf-8?B?RnpBQWx5UXlwU0l3UENiU2EzR0d4UENDcjE4bHBVam1GYWtST1FKZllOTjlW?=
- =?utf-8?B?dWs5M0FvOTh0NHJSN0pLa0ZoZ0lsem16TDdXZ3V3b290NFNUTWRXTkk0Rm0r?=
- =?utf-8?B?cjZmNXRWVWZaSzZXQVlYUHVIcm9UaEpjVlhyMWtXMEw5eEJuMTk5UVVFMHI2?=
- =?utf-8?B?T3pJV1M2SkRCd0s4TVZRbEVZMXM5YjVSYXZ0SlR3SXdHbEhQNFhtNlVEdmJL?=
- =?utf-8?B?NTdlUHFxY1h1VjVXTU1iTVQ2RjJ6WG9rbzFuRHZoUG83Ky9WVUFPOEdIVkpU?=
- =?utf-8?B?VlhCdUJ0UTNISi9RdWRITW5UMml5dUhCMTBXR0UxZEJrUUwreEFtdktzQ3F3?=
- =?utf-8?B?cHZISk0xNEZsSUdiWmxaaXlHZXVpRjlXNW9KQ054aTB2Tzgwd3YxWXdBU1Z3?=
- =?utf-8?B?R2xEdnJKVzNyT1g4b2dHM1c1L2N2ZFJpbGtRSGlmek1CSVNUdmIzM2x4cFNi?=
- =?utf-8?B?RmVMMThEMGJvTnhOck9KdDA3NnhVQ25xRHhBRWt2WnYyRlZIRTJqc0w3bUxJ?=
- =?utf-8?B?UmZiMGs2NDNHTXRKK05NUFZZWnJQZ3pueEczR3dVWDc1Z0MrSE1HQ045alN1?=
- =?utf-8?B?cEhyMmVXYURuTEt0ZEZoZGczSjZPbk5aS1piRXB3TUowd3lIcEZ4QzNQUnNi?=
- =?utf-8?B?dTN4U2g0QzdqN0FzWDExQkU2QkFhaVpMcFRycVlvaEtHcnZLK3J0endCMnpq?=
- =?utf-8?B?NGJnMjVFZG43WFptekJpVHF1WitxcWFqR01POEh3d1lRK0xPRVpESGtxeklX?=
- =?utf-8?B?dkhZSUI3TVA0Wml0WmgrN0FoMktmN0x3aXh6QkptZldWZTROYWcxQ3Z4ZUdN?=
- =?utf-8?B?VWNiczFWREgwcHlaSFBaU3ZEM0dLQjNUNklYNHc2eDhlVE1vZjNReWwrWE0r?=
- =?utf-8?Q?PZgXm9syUt0eICT9fU+eMyXBv?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	6w1JKzlpO72QQzQYpORq2Px3lG+oKHvpbFMJAhNxwIMUwFvzcWqxAoL56tbHHcHBSB6lD5FDiVvZeQef9AcOqb+xboApRIZjfu8h+UBlEzynTA7sKTWjBkGoHKlIhZUOcb+aEMCb5Jr3WzmCdNNkKHeUFAcA1MKzwnQVTAQtO/ki4d+o33W6gjIRBcmB8QRogbjc7Rfsr1gySBEvy4M7N5vDOG0JOElXCO0+ufXJ9be3Or4nR+Y50RSs4OPHO+Y2M0dNwOKK03fYYf3ZyarLnnrLkXUbz+BQPpeTL7AybD76Jsaf+/MntghwghrBKDlYD1hjCEm4gEK5tfcAFhRirBwMkIQbDigFNr8ooQbYY5P9NjQONTruH7Liy89HHjUz8YNI/je++Wl2TWEjDlDujzbAcBJSoxEJNSrt7AfBUHh+AeS5MWWgxSV9C0WqAHTEvdqLBWqB0CR9FA+hIEaaDDH9BTulK8AZtcFMY9cLSJMpY2A7K5sxe4/PNFcFqMlcK/G5BadTJs22eQQY5VRdbFEw46781144omkbAneQSfGDTg5FZ54k7L0SzV8Kw6o8TmpvzWFzGz5YhnCDfyl9e0jwdo4i2V2J8IVldr5R0Hk=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d04d453-91b4-440e-cb91-08dc36953bcd
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 06:36:16.4295
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tN8lQbV27WMwpD1w3e5bdC20Rzx/1oRpnFxBGTZs3YDmnPhAXbCCyw1Ec6p9k6Rs6MOSdsHmkiOq2i+IBQ03qQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB7497
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_03,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
- mlxscore=0 mlxlogscore=999 phishscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402260048
-X-Proofpoint-ORIG-GUID: V0yP-eYM_1-sd5G1aFyRLAtsf7Bdoa9d
-X-Proofpoint-GUID: V0yP-eYM_1-sd5G1aFyRLAtsf7Bdoa9d
-
-On 2/20/24 09:31, Qu Wenruo wrote:
-> [BUG]
-> When running an older (vendoer v6.4) kernel, some qgroup test cases
-> would be skipped:
-> 
->    btrfs/017 1s ... [not run] not running normal qgroups
-> 
-> [CAUSE]
-> With the introduce of simple quota mode, there is a new sysfs interface,
-> /sys/fs/btrfs/<uuid>/qgroups/mode to indicate the currently running
-> qgroup modes.
-> 
-> And _qgroup_mode() from `common/btrfs` is using that new interface to
-> detect the mode.
-> 
-> Unfortuantely for older kernels without simple quota support,
-> _qgroup_mode() would return "disabled" directly, causing those test case
-> to be skipped.
-> 
-> [FIX]
-> Fallback to regular qgroup if that sysfs interface is not accessible, as
-> qgroup is introduced from the very beginning of btrfs, thus the regular
-> qgroup is always supported.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fstests: btrfs/224: do not assign snapshot to a subvolume
+ qgroup
+Content-Language: en-US
+To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
+ fstests@vger.kernel.org, Sidong Yang <realwakka@gmail.com>
+References: <20240226040234.102767-1-wqu@suse.com>
+ <e4703a32-9b16-48c2-b5ea-9477be071a9b@oracle.com>
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <e4703a32-9b16-48c2-b5ea-9477be071a9b@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-Sorry for missing this patch. Now, applied and staged for the next PR.
-
-Thanks.
-
-> ---
->   common/btrfs | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+在 2024/2/26 16:58, Anand Jain 写道:
+> On 2/26/24 09:32, Qu Wenruo wrote:
+>> For "btrfs subvolume snapshot -i <qgroupid>", we only expect the target
+>> qgroup to be a higher level one.
+>>
+>> Assigning a 0 level qgroup to another 0 level qgroup is only going to
+>> cause confusion, and I'm planning to do extra sanity checks both in
+>> kernel and btrfs-progs to reject such behavior.
+>>
+>> So change the test case to do regular higher level qgroup assignment
+>> only.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > 
-> diff --git a/common/btrfs b/common/btrfs
-> index e1b29c61..0a3f0f0b 100644
-> --- a/common/btrfs
-> +++ b/common/btrfs
-> @@ -728,7 +728,7 @@ _qgroup_mode()
->   	if _has_fs_sysfs_attr $dev /qgroups/mode; then
->   		_get_fs_sysfs_attr $dev qgroups/mode
->   	else
-> -		echo "disabled"
-> +		echo "qgroup"
->   	fi
->   }
->   
+> looks good.
+> 
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> 
+>   Applied to
+>     https://github.com/asj/fstests.git for-next
 
+Thanks for the review and merge, although I'd also like to get some 
+feedback from the original author, to make sure there are not some weird 
+use case.
+
+Thanks,
+Qu
+> 
+> Thanks, Anand
+> 
+>> ---
+>>   tests/btrfs/224 | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/tests/btrfs/224 b/tests/btrfs/224
+>> index de10942f..611df3ab 100755
+>> --- a/tests/btrfs/224
+>> +++ b/tests/btrfs/224
+>> @@ -67,7 +67,7 @@ assign_no_shared_test()
+>>       _check_scratch_fs
+>>   }
+>> -# Test snapshot with assigning qgroup for submodule
+>> +# Test snapshot with assigning qgroup for higher level qgroup
+>>   snapshot_test()
+>>   {
+>>       _scratch_mkfs > /dev/null 2>&1
+>> @@ -78,9 +78,9 @@ snapshot_test()
+>>       _qgroup_rescan $SCRATCH_MNT >> $seqres.full
+>>       $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a >> $seqres.full
+>> +    $BTRFS_UTIL_PROG qgroup create 1/0 $SCRATCH_MNT >> $seqres.full
+>>       _ddt of="$SCRATCH_MNT"/a/file1 bs=1M count=1 >> $seqres.full 2>&1
+>> -    subvolid=$(_btrfs_get_subvolid $SCRATCH_MNT a)
+>> -    $BTRFS_UTIL_PROG subvolume snapshot -i 0/$subvolid $SCRATCH_MNT/a 
+>> $SCRATCH_MNT/b >> $seqres.full
+>> +    $BTRFS_UTIL_PROG subvolume snapshot -i 1/0 $SCRATCH_MNT/a 
+>> $SCRATCH_MNT/b >> $seqres.full
+>>       _scratch_unmount
+>>       _check_scratch_fs
+> 
 
