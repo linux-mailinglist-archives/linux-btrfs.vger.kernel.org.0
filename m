@@ -1,283 +1,205 @@
-Return-Path: <linux-btrfs+bounces-2827-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2828-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D8618687A5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 04:16:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFA508687C2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 04:21:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78F4EB23A9A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 03:16:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2A9F1C222CC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 03:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D6C1BF24;
-	Tue, 27 Feb 2024 03:16:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E161B7E9;
+	Tue, 27 Feb 2024 03:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HaZAfJ2H";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AG4ejUXE"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="VbJs7zfG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190E01B27D;
-	Tue, 27 Feb 2024 03:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0188C1DA21
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Feb 2024 03:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.154.54.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709003763; cv=none; b=ual9wi80V0KTnZCOgCUkhskt3H7iY2GTg3v70s2G37nYV0dVCEGf7hPcSF38rTSykRMCtpOBSj6nE7LdTaVnor7fSQITsy8wKZSV6Sf6L9nYuK0A6U9Lqn4Lgu3Bi0e4oG8svHV6hVE5ncCoA5RUfrMNVdNjdSaxKZeFH5pYbds=
+	t=1709004067; cv=none; b=cAWPQBBlqCQfw8F8zjbWNkHKQIG2Uht2uR9Z9diN3DyeYJjBcrjIoGF2JtMtCh8l8ZvLYeFVfJX62nD5977e9gq6kkiovXuCgLNaflpMqge5BlMkNtGa5jc3kjlHdt52LyzIpiPGmGWpGGxx4qBeZ0F9JLz3VakE1JR6Mbz4NRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709003763; c=relaxed/simple;
-	bh=UrM7wTpq4+dmPWPePjxgFqA69mKlm97Ulf9b+n6ijaQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pmeUN5Axz6BFdPeuiFRna33EepRxq3XevRBhssp1L2zdQU+7UKaIvVhJ52GB7giLYIveLh6pIGkI1zjt1PufQKwaFfCrGbxr37o0sJ4gK7EA7wKrd9F1yYq4XSBqoM5mOu2Z+1bOiNiH/m6FMCHoxtTrTmXIzuQgl3ozHupVs4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HaZAfJ2H; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AG4ejUXE; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E20F02274E;
-	Tue, 27 Feb 2024 03:15:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709003759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=W5Ef0/U5YnlZfi8ZjQ3e3gx56JTtT3S0QwsgnGFnK7o=;
-	b=HaZAfJ2HAA62guvcQj4QkGGKaccHFpPozMZ8NjWoMCTu63ArKzJexvubdO2Pnz46SGMTqC
-	GxZxJ4vUoCGp3hrrtDtuIFwC8iqeKpWPyQYKc73vRXo+d5FPaURVtTemhQP13Vp/62kafS
-	+Wa+3b2tmEVZU+zKTv0lImRMwbU1mLo=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709003758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=W5Ef0/U5YnlZfi8ZjQ3e3gx56JTtT3S0QwsgnGFnK7o=;
-	b=AG4ejUXEAzWdPMMuCwLBedo1ZLvIbQGVBSfrHD9RLtBN+RU9EW3n2tNqPwVGlYa7nc/FSZ
-	in9d9lX63lqM3CCuABrL5mRENopa9JUVs7A3KyxhW5GnicAqYehIVhDzhht8zZfLaFu4fN
-	rACwVFkzqDzqdWPmSplueUq2v9yB8IE=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AFC7D13419;
-	Tue, 27 Feb 2024 03:15:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id A4z2G+1T3WXhbwAAn2gu4w
-	(envelope-from <wqu@suse.com>); Tue, 27 Feb 2024 03:15:57 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH] btrfs: qgroup: verify btrfs_qgroup_inherit parameter
-Date: Tue, 27 Feb 2024 13:45:35 +1030
-Message-ID: <bde2887da38aaa473ca60801b37ac735b3ab2d6d.1709003728.git.wqu@suse.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1709004067; c=relaxed/simple;
+	bh=IpoxsNghvHycwMHjWSSb+QK8/2A5GGfEgXk0QFyFSjI=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=sIt7tvUWT1GGLIkhymqGqjmrJLuXrbLJszcWpgYPbluftvuXO1c7YaUCxayhMCRqZL0PgDWqdcljK0ySgvm6zSMiUuBWylMEovdCZuumnkF8RK8PhY6jCDgVPdZWXXRXZCc9FqPzWAq1yzbHnqfZp7X6rfIOvcpTbxKGqnK6cl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=VbJs7zfG; arc=none smtp.client-ip=43.154.54.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1709004049;
+	bh=IpoxsNghvHycwMHjWSSb+QK8/2A5GGfEgXk0QFyFSjI=;
+	h=Message-ID:Date:MIME-Version:To:Subject:From;
+	b=VbJs7zfGS8vr4HpLKLZjqSHbpyViWLD0rz2gamIgjvHsmDuPAkzW6s3W4wEuMTWX9
+	 AavD90SsEcMQV0e5X643t4W/PVmWy4+xoiWYLElBEygfTa/747l81cxKzRJhkH799t
+	 kfSvjuMT1DrbLKVxIy5bVDsvEo4HzFZRD7c5bff8=
+X-QQ-mid: bizesmtp83t1709004047tc60z7fs
+X-QQ-Originating-IP: u8Kcn4FMG2t3AYW7utIsizD8524RFsZ/82UvMs7h+UM=
+Received: from [192.168.1.136] ( [223.150.232.63])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Tue, 27 Feb 2024 11:20:45 +0800 (CST)
+X-QQ-SSF: 00100000000000E0Z000000A0000000
+X-QQ-FEAT: J5JfekO1Wshwy21ivLpXCYi4eSmVl0usrmWEJLqPIZWhXWI4eckI2WXk3d7hy
+	zAhuBpxIAFPXGConT20dpt0wzsgkF4+GXTciUF/7popU5wKeYrh6SmrYpApIjdvUEHufw36
+	BvT+A8GAe5Xgde/8nISVbDXtNU7kxPZinbdRP7tlUE4+mtHRTObhWFkPSx4IDRhFsejWXfe
+	7tzc4bNhZNhFb03T6Fa3etd//X75Flt9kUiGX6wCumGKcApzsfBhzek3QxwBnbNjEcV5MfG
+	y71EA1PA5aYQSlHCOBCOIN1jRBz8WUiIrFykzs8bPHOOHReqxuBDfhn2U0jP64yjez5fn+6
+	uhi7yqjy5zHowXDWohJM030BaEB2c7x6EtLTlnLGnTOsxtLbss=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 10810783671633817371
+Message-ID: <644D15E850597B18+ccced28b-1cc6-4f5d-9bd6-dbbf57f904d0@bupt.moe>
+Date: Tue, 27 Feb 2024 11:20:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [1.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_DN_NONE(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: *
-X-Spam-Score: 1.90
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+To: quwenruo.btrfs@gmx.com
+Cc: johannes.thumshirn@wdc.com, linux-btrfs@vger.kernel.org,
+ naohiro.aota@wdc.com, waautomata@gmail.com
+References: <e88f9520-1d10-4d66-94fa-3ee86c515118@gmx.com>
+Subject: Re: Super blocks checksum error on HM-SMR device
+Content-Language: en-US
+From: HAN Yuwei <hrx@bupt.moe>
+In-Reply-To: <e88f9520-1d10-4d66-94fa-3ee86c515118@gmx.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------bBet7nhQRa2BJPirTPgMpPEC"
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-[BUG]
-Currently btrfs can create subvolume with an invalid qgroup inherit
-without triggering any error:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------bBet7nhQRa2BJPirTPgMpPEC
+Content-Type: multipart/mixed; boundary="------------JA38uq7H0sUxROfc3rpkjXKi";
+ protected-headers="v1"
+From: HAN Yuwei <hrx@bupt.moe>
+To: quwenruo.btrfs@gmx.com
+Cc: johannes.thumshirn@wdc.com, linux-btrfs@vger.kernel.org,
+ naohiro.aota@wdc.com, waautomata@gmail.com
+Message-ID: <ccced28b-1cc6-4f5d-9bd6-dbbf57f904d0@bupt.moe>
+Subject: Re: Super blocks checksum error on HM-SMR device
+References: <e88f9520-1d10-4d66-94fa-3ee86c515118@gmx.com>
+In-Reply-To: <e88f9520-1d10-4d66-94fa-3ee86c515118@gmx.com>
+Autocrypt-Gossip: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
 
- # mkfs.btrfs -O quota -f $dev
- # mount $dev $mnt
- # btrfs subvolume create -i 2/0 $mnt/subv1
- # btrfs qgroup show -prce --sync $mnt
- Qgroupid    Referenced    Exclusive   Path
- --------    ----------    ---------   ----
- 0/5           16.00KiB     16.00KiB   <toplevel>
- 0/256         16.00KiB     16.00KiB   subv1
+--------------JA38uq7H0sUxROfc3rpkjXKi
+Content-Type: multipart/mixed; boundary="------------W1fEIIK0Z0v3TLUprFNfpmNr"
 
-[CAUSE]
-We only do a very basic size check for btrfs_qgroup_inherit structure,
-but never really verify if the values are correct.
+--------------W1fEIIK0Z0v3TLUprFNfpmNr
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Thus in btrfs_qgroup_inherit() function, we have to skip non-existing
-qgroups, and never return any error.
+PiDlnKggMjAyNC8yLzI0IDIyOjQ2LCBXQSBBTSDlhpnpgZM6DQo+ID4gR3JlZXRpbmdzLCA+
+ID4gSSBoYXZlIGEgV2VzdGVybiBEaWdpdGFsIFVsdHJhc3RhciBEQyBIQzYyMCAoSHMxNCks
+IGEgSE0tU01SIA0KPiBkZXZpY2UuID4gSXQgaXMgZm9ybWF0dGVkIHRvIHpvbmVkIEJUUkZT
+IGJ5IGBta2ZzLmJ0cmZzYCA+IGBidHJmcyANCj4gc2NydWJgIHJlcG9ydHMgdGhlIGZvbGxv
+d2luZyBlcnJvcnM6ID4gPiBTY3J1YiBzdGFydGVkOiBTYXQgRmViIDI0IA0KPiAxNTo0Mjoz
+OCAyMDI0ID4gU3RhdHVzOiBmaW5pc2hlZCA+IER1cmF0aW9uOiAwOjA5OjM0ID4gVG90YWwg
+dG8gc2NydWI6IA0KPiA3Ni42NEdpQiA+IFJhdGU6IDEzNi43Mk1pQi9zID4gRXJyb3Igc3Vt
+bWFyeTogc3VwZXI9MiA+IENvcnJlY3RlZDogMCA+IA0KPiBVbmNvcnJlY3RhYmxlOiAwID4g
+VW52ZXJpZmllZDogMCA+ID4gW1NhdCBGZWIgMjQgMTU6NDI6MzggMjAyNF0gQlRSRlMgDQo+
+IGluZm8gKGRldmljZSBzZGIpOiBzY3J1Yjogc3RhcnRlZCBvbiBkZXZpZCAxID4gW1NhdCBG
+ZWIgMjQgMTU6NDI6MzggDQo+IDIwMjRdIEJUUkZTIGVycm9yIChkZXZpY2Ugc2RiKTogc3Vw
+ZXIgYmxvY2sgYXQgPiBwaHlzaWNhbCA2NTUzNiBkZXZpZCANCj4gMSBoYXMgYmFkIGNzdW0g
+PiBbU2F0IEZlYiAyNCAxNTo0MjozOCAyMDI0XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYik6
+IA0KPiBzdXBlciBibG9jayBhdCA+IHBoeXNpY2FsIDY3MTA4ODY0IGRldmlkIDEgaGFzIGJh
+ZCBjc3VtID4gW1NhdCBGZWIgMjQgDQo+IDE1OjUyOjEyIDIwMjRdIEJUUkZTIGluZm8gKGRl
+dmljZSBzZGIpOiBzY3J1YjogZmluaXNoZWQgb24gPiBkZXZpZCAxIA0KPiB3aXRoIHN0YXR1
+czogMCA+ID4gPiBXaGF0IHdlbnQgd3Jvbmcgd2l0aCB0aGUgc3VwZXIgYmxvY2tzPw0KPiBJ
+IGJlbGlldmUgaXQncyBhIGZhbHNlIGFsZXJ0Lg0KPg0KPiBBcyBmb3Igem9uZWQgZGV2aWNl
+cyBidHJmcyBubyBsb25nZXIgcHV0cyBzdXBlciBibG9ja3MgYXQgZml4ZWQgcGh5c2ljYWwN
+Cj4gbG9jYXRpb25zLCBidXQgSSdtIG5vdCBhbiBleHBlcnQgb24gem9uZWQgZGV0YWlsZWQu
+DQpodHRwczovL2J0cmZzLnJlYWR0aGVkb2NzLmlvL2VuL2xhdGVzdC9ab25lZC1tb2RlLmh0
+bWwgaXMgc3RpbGwgc2F5aW5nDQo+IEFzIHNhaWQgYWJvdmUsIHN1cGVyIGJsb2NrIGlzIGhh
+bmRsZWQgaW4gYSBzcGVjaWFsIHdheS4gSW4gb3JkZXIgdG8gYmUgDQo+IGNyYXNoIHNhZmUs
+IGF0IGxlYXN0IG9uZSB6b25lIGluIGEga25vd24gbG9jYXRpb24gbXVzdCBjb250YWluIGEg
+dmFsaWQgDQo+IHN1cGVyYmxvY2suIFRoaXMgaXMgaW1wbGVtZW50ZWQgYXMgYSByaW5nIGJ1
+ZmZlciBpbiB0d28gY29uc2VjdXRpdmUgDQo+IHpvbmVzLCBzdGFydGluZyBmcm9tIGtub3du
+IG9mZnNldHMgMEIsIDUxMkdpQiBhbmQgNFRpQi4NClNob3VsZCB0aGlzIGJlIHVwZGF0ZWQ/
+DQo+IEBKb2hhbm5lcyBhbmQgQG5hb2hpcm8sIG1pbmQgdG8gY2hlY2sgdGhlIHNpdHVhdGlv
+bj8NCj4NCj4gVGhhbmtzLA0KPiBRdQ0KPg0KPiA+IFRoYW5rcy4gPiA+IE15IGVudmlyb25t
+ZW50OiA+ICQgdW5hbWUgLXIgPiA2LjYuMTgtMS1sdHMgPiAkIGJ0cmZzIC0tdmVyc2lvbiA+
+IA0KPiBidHJmcy1wcm9ncyB2Ni43LjEgPg0KDQo=
+--------------W1fEIIK0Z0v3TLUprFNfpmNr
+Content-Type: application/pgp-keys; name="OpenPGP_0xCC7801A4C3E3A368.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xCC7801A4C3E3A368.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-[FIX]
-Fix the behavior and introduce extra checks:
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-- Introduce early check for btrfs_qgroup_inherit structure
-  Not only the size, but also all the qgroup ids would be verifyed.
+xjMEYd2CwRYJKwYBBAHaRw8BAQdA+Cjl7faceXuI8bf4TOInbIgM8RRMSrlNqkJM
+iX6XUOjNLUhBTiBZdXdlaSAoaGFueXV3ZWk3MCkgPGhhbnl1d2VpNzBAZ21haWwu
+Y29tPsKQBBMWCAA4FiEE5jAMjRwseUJjIHytzHgBpMPjo2gFAmHdg0QCGwEFCwkI
+BwIGFQoJCAsCBBYCAwECHgECF4AACgkQzHgBpMPjo2huYQD+IBK5NHWTngw/Ujcf
+wnTmjXVBqJdrjC8XSHoMQepgwE4BALosq8/PFwesiQjXRo5a7dGyvswgkWtr0LMo
+Bp5SQXkKzSXpn6nkuo7mg58gKGhhbnl1d2VpNzApIDxocnhAYnVwdC5tb2U+wpAE
+ExYIADgWIQTmMAyNHCx5QmMgfK3MeAGkw+OjaAUCYd2CwQIbAQULCQgHAgYVCgkI
+CwIEFgIDAQIeAQIXgAAKCRDMeAGkw+OjaLlDAP9Wh3ee0/6NIL76n6qx9jvM3EKm
+51/AzDdLEz1T26b+fwEAg9vWtLc8gPfjVGsKsXMBJAv57qkz+kws/229mux51wHN
+HemfqeS6juaDnyA8aGFueXV3ZWk3MEBxcS5jb20+wpAEExYIADgWIQTmMAyNHCx5
+QmMgfK3MeAGkw+OjaAUCYd2DJAIbAQULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAK
+CRDMeAGkw+OjaIxvAP9PxxZKTM60lDb/SbyDbfP8Bzi4LfZSa8T6GcBK5gUbGQD/
+cw7hCEHEYdqIa1HATmXIsWozofsrlc4nRVeOjBm7SAbOMwRh3YXMFgkrBgEEAdpH
+DwEBB0BjhXs3EEqaQMMe+y6eQPrN/iijsRn0+V7Yfxgv3LZNMsLANQQYFggAJhYh
+BOYwDI0cLHlCYyB8rcx4AaTD46NoBQJh3YXMAhsCBQkJZgGAAIEJEMx4AaTD46No
+diAEGRYIAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCYd2FzAAKCRBLkKfpYfpB
+U/OHAP98maDWlKN7WlOaIlIuL4nnmeeKlW1zRweQ4nbngJWTZQD+IZ07dJMb41M7
+3k3jPaT+uspGa+D3HivKAvnYGogLAw14AQEAywpAA/ze6ujATllsN9bQFOMThnaC
+FYS3fYEVucLp57sA/RBfjnsQxA4ADe1EJaE0YYwDMo5UKga/wT9Wk90a5LIPzjgE
+Yd2DUhIKKwYBBAGXVQEFAQEHQObBEtGrlnW9aBtHCkwYROmOqVF9AZuLZnAyJotA
+j/4KAwEIB8J+BBgWCAAmFiEE5jAMjRwseUJjIHytzHgBpMPjo2gFAmHdg1ICGwwF
+CQlmAYAACgkQzHgBpMPjo2jG2gD+LkrU5GPlDTUEYxBYBEyfd4igkf2TyeGbwFU5
+pUwrFtgA/0tbB+3oaUUI3jwAbGWlUpXn2+iROFfqokr+fGa4SSUM
+=3D/880
+-----END PGP PUBLIC KEY BLOCK-----
 
-  And the timing is very early, so we can return error early.
-  This early check is very important for snapshot creation, as snapshot
-  is delayed to transaction commit.
+--------------W1fEIIK0Z0v3TLUprFNfpmNr--
 
-- Drop support for btrfs_qgroup_inherit::num_ref_copies and
-  num_excl_copies
-  Those two members are used to specify to copy refr/excl numbers from
-  other qgroups.
-  This would definitely mark qgroup inconsistent, and btrfs-progs has
-  dropped the support for them for a long time.
-  It's time to drop the support for kernel.
+--------------JA38uq7H0sUxROfc3rpkjXKi--
 
-- Verify the supported btrfs_qgroup_inherit::flags
-  Just in case we want to add extra flags for btrfs_qgroup_inherit.
+--------------bBet7nhQRa2BJPirTPgMpPEC
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-Now above subvolume creation would fail with -ENOENT other than silently
-ignore the non-existing qgroup.
+-----BEGIN PGP SIGNATURE-----
 
-CC: stable@vger.kernel.org
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ioctl.c           | 16 +++---------
- fs/btrfs/qgroup.c          | 52 ++++++++++++++++++++++++++++++++++++++
- fs/btrfs/qgroup.h          |  3 +++
- include/uapi/linux/btrfs.h |  1 +
- 4 files changed, 59 insertions(+), 13 deletions(-)
+iHUEARYKAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCZd1U8AAKCRBLkKfpYfpB
+Uw9SAP94C/sGIhldczSvWQZHGyiij6IKEKJTcdoh57lMYbaU7gEAuUoPLI3IecP8
+zkoRbNAQxbrlRhXs4QTecZoc4Co7LAs=
+=d4TW
+-----END PGP SIGNATURE-----
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 8b80fbea1e72..c19ce2e292dc 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1382,7 +1382,7 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
- 	if (vol_args->flags & BTRFS_SUBVOL_RDONLY)
- 		readonly = true;
- 	if (vol_args->flags & BTRFS_SUBVOL_QGROUP_INHERIT) {
--		u64 nums;
-+		struct btrfs_fs_info *fs_info = inode_to_fs_info(file_inode(file));
- 
- 		if (vol_args->size < sizeof(*inherit) ||
- 		    vol_args->size > PAGE_SIZE) {
-@@ -1395,19 +1395,9 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
- 			goto free_args;
- 		}
- 
--		if (inherit->num_qgroups > PAGE_SIZE ||
--		    inherit->num_ref_copies > PAGE_SIZE ||
--		    inherit->num_excl_copies > PAGE_SIZE) {
--			ret = -EINVAL;
-+		ret = btrfs_qgroup_check_inherit(fs_info, inherit, vol_args->size);
-+		if (ret < 0)
- 			goto free_inherit;
--		}
--
--		nums = inherit->num_qgroups + 2 * inherit->num_ref_copies +
--		       2 * inherit->num_excl_copies;
--		if (vol_args->size != struct_size(inherit, qgroups, nums)) {
--			ret = -EINVAL;
--			goto free_inherit;
--		}
- 	}
- 
- 	ret = __btrfs_ioctl_snap_create(file, file_mnt_idmap(file),
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 4fa83c76b37b..66968092b554 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3046,6 +3046,58 @@ int btrfs_run_qgroups(struct btrfs_trans_handle *trans)
- 	return ret;
- }
- 
-+int btrfs_qgroup_check_inherit(struct btrfs_fs_info *fs_info,
-+			       struct btrfs_qgroup_inherit *inherit,
-+			       size_t size)
-+{
-+	if (inherit->flags & ~BTRFS_QGROUP_INHERIT_FLAGS_SUPP)
-+		return -EOPNOTSUPP;
-+	if (size < sizeof(*inherit) || size > PAGE_SIZE)
-+		return -EINVAL;
-+
-+	/*
-+	 * In the past we allow btrfs_qgroup_inherit to specify to copy
-+	 * refr/excl numbers directly from other qgroups.
-+	 * This behavior has been disable in btrfs-progs for a very long time,
-+	 * but here we should also disable them for kernel, as this behavior
-+	 * is known to mark qgroup inconsistent, and a rescan would wipe out the
-+	 * change anyway.
-+	 *
-+	 * So here we just reject any btrfs_qgroup_inherit with num_ref_copies or
-+	 * num_excl_copies.
-+	 */
-+	if (inherit->num_ref_copies || inherit->num_excl_copies)
-+		return -EINVAL;
-+
-+	if (inherit->num_qgroups > PAGE_SIZE)
-+		return -EINVAL;
-+
-+	if (size != struct_size(inherit, qgroups, inherit->num_qgroups))
-+		return -EINVAL;
-+
-+	/*
-+	 * Now check all the remaining qgroups, they should all:
-+	 * - Exist
-+	 * - Be higher level qgroups.
-+	 */
-+	for (int i = 0; i < inherit->num_qgroups; i++) {
-+		struct btrfs_qgroup *qgroup;
-+		u64 qgroupid = inherit->qgroups[i];
-+
-+		if (btrfs_qgroup_level(qgroupid) == 0)
-+			return -EINVAL;
-+
-+		spin_lock(&fs_info->qgroup_lock);
-+		qgroup = find_qgroup_rb(fs_info, qgroupid);
-+		if (!qgroup) {
-+			spin_unlock(&fs_info->qgroup_lock);
-+			return -ENOENT;
-+		}
-+		spin_unlock(&fs_info->qgroup_lock);
-+	}
-+	return 0;
-+}
-+
- static int qgroup_auto_inherit(struct btrfs_fs_info *fs_info,
- 			       u64 inode_rootid,
- 			       struct btrfs_qgroup_inherit **inherit)
-diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-index 1f664261c064..706640be0ec2 100644
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -350,6 +350,9 @@ int btrfs_qgroup_account_extent(struct btrfs_trans_handle *trans, u64 bytenr,
- 				struct ulist *new_roots);
- int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans);
- int btrfs_run_qgroups(struct btrfs_trans_handle *trans);
-+int btrfs_qgroup_check_inherit(struct btrfs_fs_info *fs_info,
-+			       struct btrfs_qgroup_inherit *inherit,
-+			       size_t size);
- int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 			 u64 objectid, u64 inode_rootid,
- 			 struct btrfs_qgroup_inherit *inherit);
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index f8bc34a6bcfa..cdf6ad872149 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -92,6 +92,7 @@ struct btrfs_qgroup_limit {
-  * struct btrfs_qgroup_inherit.flags
-  */
- #define BTRFS_QGROUP_INHERIT_SET_LIMITS	(1ULL << 0)
-+#define BTRFS_QGROUP_INHERIT_FLAGS_SUPP (BTRFS_QGROUP_INHERIT_SET_LIMITS)
- 
- struct btrfs_qgroup_inherit {
- 	__u64	flags;
--- 
-2.43.2
-
+--------------bBet7nhQRa2BJPirTPgMpPEC--
 
