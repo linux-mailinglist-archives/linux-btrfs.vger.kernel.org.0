@@ -1,106 +1,213 @@
-Return-Path: <linux-btrfs+bounces-2843-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2844-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5C0186A1BD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 22:32:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B384386A1C1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 22:35:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6FA71C2316A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 21:32:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02757281D62
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 21:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4768214EFED;
-	Tue, 27 Feb 2024 21:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADFC614EFF0;
+	Tue, 27 Feb 2024 21:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hJlba0W/"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DMNAPuzs"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8BA4DA0C
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Feb 2024 21:32:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C95A14A0A0
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Feb 2024 21:35:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709069569; cv=none; b=Z2/IP2sSCnFKVLGc9wPC2Rpo0GEncc3yVvg0XK6C7zHvm4mJDhfFOJ8qGd4szcgo7o9l99NQwk6woNGsf1fOuHFmKFQ8bvFiVpHvtabxKEixf2wYzX4Qxk+3Ky5rPmpwuO331T39qiYmd3zxiR+vIoqMWUa+70CEsx4/a0GnsPM=
+	t=1709069708; cv=none; b=Z+PBD7jYdbsbQko/mmksZ55YjopGSjwxXwwHXdcKkLbKxYDV6cZwRWQ4q93o1S4fl5Idl0VnDSUqlqX3FzQUF05ecNxDnxrqjp4L+R7FoFKQl7dIgjm7yUFiSkGJRfKXKR+kEDIakpaNBKOCkHBG7sRQR4KolxdpxCOepMUp1qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709069569; c=relaxed/simple;
-	bh=oCj0tN9x+1eH5UebNFaZuFJ09V00E5Fmdvj/bye6/K0=;
+	s=arc-20240116; t=1709069708; c=relaxed/simple;
+	bh=H7XOzoHYeaTiVtdCTGlW0SP8XPqxWXlW0ora9SbN/84=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JQa6bOSqngSVlxy74L2WD/kVNok/uV6W964TR7sb/cqFayQDhmwOweBnW4E58UIemWsLZEWU0GcQVK1UiTwotFBm0JfvIHU9W6xuiPsdp3qnebg96usfSsyus7oAbHLmoieQNlqyWnR2m0wkxN9JwTPUilZQA+K6xOdox7DCuaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hJlba0W/; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=RuY2oNglgTKLUyYsDmUwMuO+2RBYtSQo740T6R2XBXYr34bVVQyZfPJ9lljxfhScvrX6OKdwoWkfbS0ntGDvxuHDci1ix07D2Cfog5j1qIgpNiEm10CWainMGJu62NObUkUMo69PW82TK3dgos66Wi1Q2HpGiwbFyyCJlZIbH88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DMNAPuzs; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=QgmUhHXJfA2qg6FNpwCwzSFEwTcl+PDccGm+ZrtjjsA=; b=hJlba0W/zUyTmcqEo5Rl/uOAYx
-	C3pM4XXxNqy3SQ/9enA6lmpRbJaDHXvJAlSSKCjTkmCrI4uzkQhfu8gFcfU2BU8xxELui6a/tNo+5
-	k5M2N7NHtRZJCSf7pVIwZobgKRT5Xc0+X2SM568xe0xD0Olhi0AbTlYXs8M0afyiuLC0ukdIqf8ll
-	W+B0mKy6LxYDdRDzXqMmeFDXK2q7OBa4X2nC1rJJa1VIKWdnHvn6tKVED4tnPMY/JcAtGiiUxWd/U
-	t1sfl1fOlramiP8dL/Ef1/uveii/vgCXoRcOPjYPhM4QHYFAFFHwbcyYw3WVDyeLLkTUxTaGZxWRA
-	BvpnY6oA==;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=z4Luj0HagvmRkjG7XUPgzidzXssF3XmKMcoP6vMzIMQ=; b=DMNAPuzsi5dYHPqiRQMqx6N80y
+	LjOtsvBxu1Yld2U+WFYRWT0oY15wdk0jaXhxpHHssGcWPDnkTH2EnjGdho/Y3WHJ5s8XBzbgaGHi9
+	0zDDRKBtLH6A3dS3DAi1KgvTsglAtxKDetwUmeLOXs/fZbLgjCl9GjXtrBvWkYOAh7L3Xxe8VqKnH
+	YoOkrBi6IgD5o7v4B0GnsbYMeiVgVJDPR9oQiI/XIfWskPE1z0ib0z7q8qWkG3tN+vrX20gqhRNHA
+	IKi8eBOUJ4OVRLb/dM56wzQENymmRpX1JR2WsdUCnpPcMLu3a+H7TMmy1ans8n14rtGQpDn157PFA
+	8wg5mSXw==;
 Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rf549-00000003QlA-2vIX;
-	Tue, 27 Feb 2024 21:32:45 +0000
-Date: Tue, 27 Feb 2024 21:32:45 +0000
+	id 1rf56P-00000003Qwv-0dXn;
+	Tue, 27 Feb 2024 21:35:05 +0000
+Date: Tue, 27 Feb 2024 21:35:05 +0000
 From: Matthew Wilcox <willy@infradead.org>
 To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-	David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH RFC 2/2] btrfs: defrag: prepare defrag for larger data
- folio size
-Message-ID: <Zd5U_bSQabhuc4iv@casper.infradead.org>
-References: <cover.1706068026.git.wqu@suse.com>
- <5708df27430cdeaf472266b5c13dc8c4315f539c.1706068026.git.wqu@suse.com>
- <Zc5y0IRJdqjmstvp@casper.infradead.org>
- <fedffe54-abfe-4ef7-a66e-a5a60bb59576@gmx.com>
+Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Convert add_ra_bio_pages() to use a folio
+Message-ID: <Zd5ViSKqkVl-g2wG@casper.infradead.org>
+References: <20240126065631.3055974-1-willy@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fedffe54-abfe-4ef7-a66e-a5a60bb59576@gmx.com>
+In-Reply-To: <20240126065631.3055974-1-willy@infradead.org>
 
-On Fri, Feb 16, 2024 at 09:37:01AM +1030, Qu Wenruo wrote:
-> 在 2024/2/16 06:53, Matthew Wilcox 写道:
-> > On Wed, Jan 24, 2024 at 02:29:08PM +1030, Qu Wenruo wrote:
-> > > Although we have migrated defrag to use the folio interface, we can
-> > > still further enhance it for the future larger data folio size.
-> > 
-> > This patch is wrong.  Please drop it.
-> > 
-> > >   {
-> > >   	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> > >   	struct extent_changeset *data_reserved = NULL;
-> > >   	const u64 start = target->start;
-> > >   	const u64 len = target->len;
-> > > -	unsigned long last_index = (start + len - 1) >> PAGE_SHIFT;
-> > > -	unsigned long start_index = start >> PAGE_SHIFT;
-> > > +	unsigned long last_index = (start + len - 1) >> fs_info->folio_shift;
-> > > +	unsigned long start_index = start >> fs_info->folio_shift;
-> > 
-> > indices are always in multiples of PAGE_SIZE.
+On Fri, Jan 26, 2024 at 06:56:29AM +0000, Matthew Wilcox (Oracle) wrote:
+> Allocate order-0 folios instead of pages.  Saves twelve hidden calls
+> to compound_head().
+
+Ping?  This is one of the few remaining callers of
+add_to_page_cache_lru() and I'd like to get rid of it soon.
+
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  fs/btrfs/compression.c | 58 ++++++++++++++++++++----------------------
+>  1 file changed, 28 insertions(+), 30 deletions(-)
 > 
-> So is the fs_info->folio_shift. It would always be >= PAGE_SHIFT.
-
-No, you don't understand.  folio->index * PAGE_SIZE == byte offset of folio
-in the file.  What you've done here breaks that.
-
-> > >   	unsigned long first_index = folios[0]->index;
-> > 
-> > ... so if you've shifted a file position by some "folio_shift" and then
-> > subtracted it from folio->index, you have garbage.
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 68345f73d429..517f9bc58749 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -421,7 +421,6 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+>  	u64 cur = cb->orig_bbio->file_offset + orig_bio->bi_iter.bi_size;
+>  	u64 isize = i_size_read(inode);
+>  	int ret;
+> -	struct page *page;
+>  	struct extent_map *em;
+>  	struct address_space *mapping = inode->i_mapping;
+>  	struct extent_map_tree *em_tree;
+> @@ -447,6 +446,7 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+>  	end_index = (i_size_read(inode) - 1) >> PAGE_SHIFT;
+>  
+>  	while (cur < compressed_end) {
+> +		struct folio *folio;
+>  		u64 page_end;
+>  		u64 pg_index = cur >> PAGE_SHIFT;
+>  		u32 add_size;
+> @@ -454,8 +454,12 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+>  		if (pg_index > end_index)
+>  			break;
+>  
+> -		page = xa_load(&mapping->i_pages, pg_index);
+> -		if (page && !xa_is_value(page)) {
+> +		folio = xa_load(&mapping->i_pages, pg_index);
+> +		if (folio && !xa_is_value(folio)) {
+> +			/*
+> +			 * We don't have a reference count on the folio,
+> +			 * so it is unsafe to refer to folio_size()
+> +			 */
+>  			sectors_missed += (PAGE_SIZE - offset_in_page(cur)) >>
+>  					  fs_info->sectorsize_bits;
+>  
+> @@ -471,38 +475,38 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+>  			continue;
+>  		}
+>  
+> -		page = __page_cache_alloc(mapping_gfp_constraint(mapping,
+> -								 ~__GFP_FS));
+> -		if (!page)
+> +		folio = filemap_alloc_folio(mapping_gfp_constraint(mapping,
+> +				~__GFP_FS), 0);
+> +		if (!folio)
+>  			break;
+>  
+> -		if (add_to_page_cache_lru(page, mapping, pg_index, GFP_NOFS)) {
+> -			put_page(page);
+> +		if (filemap_add_folio(mapping, folio, pg_index, GFP_NOFS)) {
+> +			folio_put(folio);
+>  			/* There is already a page, skip to page end */
+>  			cur = (pg_index << PAGE_SHIFT) + PAGE_SIZE;
+>  			continue;
+>  		}
+>  
+> -		if (!*memstall && PageWorkingset(page)) {
+> +		if (!*memstall && folio_test_workingset(folio)) {
+>  			psi_memstall_enter(pflags);
+>  			*memstall = 1;
+>  		}
+>  
+> -		ret = set_page_extent_mapped(page);
+> +		ret = set_folio_extent_mapped(folio);
+>  		if (ret < 0) {
+> -			unlock_page(page);
+> -			put_page(page);
+> +			folio_unlock(folio);
+> +			folio_put(folio);
+>  			break;
+>  		}
+>  
+> -		page_end = (pg_index << PAGE_SHIFT) + PAGE_SIZE - 1;
+> +		page_end = folio_pos(folio) + folio_size(folio) - 1;
+>  		lock_extent(tree, cur, page_end, NULL);
+>  		read_lock(&em_tree->lock);
+>  		em = lookup_extent_mapping(em_tree, cur, page_end + 1 - cur);
+>  		read_unlock(&em_tree->lock);
+>  
+>  		/*
+> -		 * At this point, we have a locked page in the page cache for
+> +		 * At this point, we have a locked folio in the page cache for
+>  		 * these bytes in the file.  But, we have to make sure they map
+>  		 * to this compressed extent on disk.
+>  		 */
+> @@ -511,28 +515,22 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+>  		    (em->block_start >> SECTOR_SHIFT) != orig_bio->bi_iter.bi_sector) {
+>  			free_extent_map(em);
+>  			unlock_extent(tree, cur, page_end, NULL);
+> -			unlock_page(page);
+> -			put_page(page);
+> +			folio_unlock(folio);
+> +			folio_put(folio);
+>  			break;
+>  		}
+>  		free_extent_map(em);
+>  
+> -		if (page->index == end_index) {
+> -			size_t zero_offset = offset_in_page(isize);
+> -
+> -			if (zero_offset) {
+> -				int zeros;
+> -				zeros = PAGE_SIZE - zero_offset;
+> -				memzero_page(page, zero_offset, zeros);
+> -			}
+> -		}
+> +		if (folio->index == end_index)
+> +			folio_zero_segment(folio, offset_in_page(isize),
+> +					folio_size(folio));
+>  
+>  		add_size = min(em->start + em->len, page_end + 1) - cur;
+> -		ret = bio_add_page(orig_bio, page, add_size, offset_in_page(cur));
+> +		ret = bio_add_folio(orig_bio, folio, add_size, offset_in_page(cur));
+>  		if (ret != add_size) {
+>  			unlock_extent(tree, cur, page_end, NULL);
+> -			unlock_page(page);
+> -			put_page(page);
+> +			folio_unlock(folio);
+> +			folio_put(folio);
+>  			break;
+>  		}
+>  		/*
+> @@ -541,9 +539,9 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+>  		 * subpage::readers and to unlock the page.
+>  		 */
+>  		if (fs_info->sectorsize < PAGE_SIZE)
+> -			btrfs_subpage_start_reader(fs_info, page_folio(page),
+> +			btrfs_subpage_start_reader(fs_info, folio,
+>  						   cur, add_size);
+> -		put_page(page);
+> +		folio_put(folio);
+>  		cur += add_size;
+>  	}
+>  	return 0;
+> -- 
+> 2.43.0
 > 
-> For the future larger folio support, all folio would be in the size of
-> sectorsize.
-
-Yes, folios are always an integer multiple of sector size.  But their
-_index_ is expressed as a multiple of the page size.
-
 
