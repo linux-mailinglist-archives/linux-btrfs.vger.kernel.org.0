@@ -1,72 +1,72 @@
-Return-Path: <linux-btrfs+bounces-2829-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2830-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81387868819
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 05:03:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6F49868822
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 05:11:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ED902851FF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 04:03:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1DA628445D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 04:11:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5B024D110;
-	Tue, 27 Feb 2024 04:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF18E4D131;
+	Tue, 27 Feb 2024 04:11:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nR1AgGit";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="FMfp7EJf"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QRnWBCVm";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QRnWBCVm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB0C4C3CD
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Feb 2024 04:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C766C3717F
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Feb 2024 04:11:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709006582; cv=none; b=foytjbIo/ZsCLyZ6Qa/OItsjvfpNukhZLAI+z+y4c7uDACNQj0ZnPGeuowXwFum39MlEZMZ0SoU6MN9WLfsWCS6QT3YKPNLey3w+Xt+lwbPY+jV9JvMS/zlkwua79WaiyU+n8LZpE8Y+oG8jGXe7EyQaOxhKTULHGf/844jrDME=
+	t=1709007106; cv=none; b=G7DFJekZ+JvtL71HUwnHg9Gjo8YTp04zp/gJmXIBs8VuOxD73cpAmcbUDhsoJewQEI6N1qUvyFbpJ4Sc4p0SNMT+BInt1RhmbRidUjptv14EsTCsbqWt51QVoSORrxbOS6tAwwNa+GSceJP5U239UwpYMMTnMAvs08394wNJwEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709006582; c=relaxed/simple;
-	bh=mu6MZPV7xwAA8umtpVomgPhS5y8Bn7vrwWCw7Q9RT2E=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=pqD+hrpfSpQEHaAs7P7Pyt6hJFawj4M5EsKlKO1exN3hg9FObZbQPKVBNochPYPYHrE0aBvYIDUk+Un4D3Mrw0lWgkh0mvK7Wg+qOzRrsCG7sb586Zlb5EY+fGgXT29YEzloePVpK2yt8kR8Vm6mabxq0xStlcJ1/911yInWcmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nR1AgGit; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=FMfp7EJf; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1709007106; c=relaxed/simple;
+	bh=45XMya2WieG9gdCKQu4xBY3F12mCRAqDjDy9FfVb5ns=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=ZB58zb44q5AMaXNX2TLh4W+B64i34jZ6kWY5bxXAUkLygFqVlJ4RNpCGc1GoKCQZgph6VtXYm4+TWTATTiFdqCoseRe92neZx2tPXunz8Vc1u7bp5mmaW+z2DXuqBkeJNZac8Ch92lmBeVae6Sx5b6VwAPd9FSVDqq9zdJVbcrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QRnWBCVm; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QRnWBCVm; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E52CB22722
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Feb 2024 04:02:56 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2BEBE1FB8C
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Feb 2024 04:11:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709006577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1709007095; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Z3Aa2QLU58bWFZdsatt9YQ+cuVnJgzvjzhAMKSnZBKs=;
-	b=nR1AgGitTTHIIEmQ/XPtiIqEQsOONxdP/kW/2uZ9I4EpUU3VOb3cabiEy6aX6Dq8uZAHRf
-	aOFjxz1qR0Fll9rr51+4GQdM+5MpHMnYEqkA16XFPPfjQMz8FHX/yy1VXL3nnDgFP2aPQ3
-	9s7jBipbYEy6wCupyMweDyF3pPJAqJY=
+	bh=WfsZAaOYu8CRDvQMSomPYSvvWreg8iebnytnH7RtNr4=;
+	b=QRnWBCVmfr3trY062nq30H9/27cYpf8RfDemuzGbh5jgBm/6178CG27yyNbpiIHHEC1vOG
+	4KMbeVx518xef6Ku0wWr4I1axx9xtC9jbZH4nNb2pELaVMqwnbe9Y9FXUJebb037x/CW6l
+	L4OSGpEB3afFvycP9CLktHp4QHJ7lY4=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709006576; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1709007095; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Z3Aa2QLU58bWFZdsatt9YQ+cuVnJgzvjzhAMKSnZBKs=;
-	b=FMfp7EJfPHiaUdZDM4ab789lIOLH2Y5cpWfaCmC4mLd/W/0dTSSFMl75RGsY2JoXJp1I9g
-	CiwcCpDky0oireUsbBrgCeTCnaniASefhkK1k2JOsm4a2qo0lR+ksoCfzb5+h/cI1eAL7S
-	E9Q5Kj7xpj9wzpFlT/985tf7RCp21pw=
+	bh=WfsZAaOYu8CRDvQMSomPYSvvWreg8iebnytnH7RtNr4=;
+	b=QRnWBCVmfr3trY062nq30H9/27cYpf8RfDemuzGbh5jgBm/6178CG27yyNbpiIHHEC1vOG
+	4KMbeVx518xef6Ku0wWr4I1axx9xtC9jbZH4nNb2pELaVMqwnbe9Y9FXUJebb037x/CW6l
+	L4OSGpEB3afFvycP9CLktHp4QHJ7lY4=
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EF03413479
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Feb 2024 04:02:55 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 67CFB13479
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Feb 2024 04:11:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id sAlAKO9e3WXvdgAAn2gu4w
+	id UfAfCPZg3WU3eAAAn2gu4w
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Feb 2024 04:02:55 +0000
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Feb 2024 04:11:34 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove btrfs_qgroup_inherit_add_copy()
-Date: Tue, 27 Feb 2024 14:32:33 +1030
-Message-ID: <25d16c7c81b93d33d23fcbcaa35c24ce07cc00ef.1709006537.git.wqu@suse.com>
+Subject: [PATCH] btrfs-progs: subvolume: output the prompt line only when the ioctl succeeded
+Date: Tue, 27 Feb 2024 14:41:16 +1030
+Message-ID: <7d1ce9fe71dac086bb0037b517e2d932bb2a5b04.1709007014.git.wqu@suse.com>
 X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -75,15 +75,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=FMfp7EJf
-X-Spamd-Result: default: False [1.69 / 50.00];
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [1.90 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
 	 FROM_HAS_DN(0.00)[];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
 	 R_MISSING_CHARSET(2.50)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
@@ -93,162 +90,98 @@ X-Spamd-Result: default: False [1.69 / 50.00];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 TO_DN_NONE(0.00)[];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
 	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 RCVD_TLS_ALL(0.00)[];
 	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.69
-X-Rspamd-Queue-Id: E52CB22722
 X-Spam-Level: *
+X-Spam-Score: 1.90
 X-Spam-Flag: NO
-X-Spamd-Bar: +
 
-The function btrfs_qgroup_inherit_add_copy() is designed to add a pair
-of source/destination qgroups into btrfs_qgroup_inherit structure, so
-that rfer/excl numbers would be copied from the source qgroup into the
-destination one.
+[BUG]
+With the latest kernel patch to reject invalid qgroupids in
+btrfs_qgroup_inherit structure, "btrfs subvolume create" or "btrfs
+subvolume snapshot" can lead to the following output:
 
-This behavior is intentionally hidden since 2016, as such copy will
-cause qgroup inconsistent immediately and a rescan would reset whatever
-numbers copied anyway.
+ # mkfs.btrfs -O quota -f $dev
+ # mount $dev $mnt
+ # btrfs subvolume create -i 2/0 $mnt/subv1
+ Create subvolume '/mnt/btrfs/subv1'
+ ERROR: cannot create subvolume: No such file or directory
 
-Now we're going to reject the copy behaviors from kernel, there is no
-need to keep those hidden (and already disabled for "subvolume create")
-behaviors.
+The "btrfs subvolume" command output the first line, seemingly to
+indicate a successful subvolume creation, then followed by an error
+message.
 
-This patch would remove btrfs_qgroup_inherit_add_copy() call, and
-cleanup those undocumented options.
+This can be a little confusing on whether if the subvolume is created or
+not.
+
+[FIX]
+Fix the output by only outputting the regular line if the ioctl
+succeeded.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- cmds/qgroup.c    | 41 -----------------------------------------
- cmds/qgroup.h    |  2 --
- cmds/subvolume.c | 23 +----------------------
- 3 files changed, 1 insertion(+), 65 deletions(-)
+ cmds/subvolume.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/cmds/qgroup.c b/cmds/qgroup.c
-index 20cc14aa8a58..72d68d918f7e 100644
---- a/cmds/qgroup.c
-+++ b/cmds/qgroup.c
-@@ -1687,47 +1687,6 @@ int btrfs_qgroup_inherit_add_group(struct btrfs_qgroup_inherit **inherit, char *
- 	return 0;
- }
- 
--int btrfs_qgroup_inherit_add_copy(struct btrfs_qgroup_inherit **inherit, char *arg,
--			    int type)
--{
--	int ret;
--	u64 qgroup_src;
--	u64 qgroup_dst;
--	char *p;
--	int pos = 0;
--
--	p = strchr(arg, ':');
--	if (!p) {
--bad:
--		error("invalid copy specification, missing separator :");
--		return -EINVAL;
--	}
--	*p = 0;
--	qgroup_src = parse_qgroupid_or_path(arg);
--	qgroup_dst = parse_qgroupid_or_path(p + 1);
--	*p = ':';
--
--	if (!qgroup_src || !qgroup_dst)
--		goto bad;
--
--	if (*inherit)
--		pos = (*inherit)->num_qgroups +
--		      (*inherit)->num_ref_copies * 2 * type;
--
--	ret = qgroup_inherit_realloc(inherit, 2, pos);
--	if (ret)
--		return ret;
--
--	(*inherit)->qgroups[pos++] = qgroup_src;
--	(*inherit)->qgroups[pos++] = qgroup_dst;
--
--	if (!type)
--		++(*inherit)->num_ref_copies;
--	else
--		++(*inherit)->num_excl_copies;
--
--	return 0;
--}
- static const char * const qgroup_cmd_group_usage[] = {
- 	"btrfs qgroup <command> [options] <path>",
- 	NULL
-diff --git a/cmds/qgroup.h b/cmds/qgroup.h
-index db48c0c2f8e2..1fc107221c3b 100644
---- a/cmds/qgroup.h
-+++ b/cmds/qgroup.h
-@@ -38,8 +38,6 @@ struct btrfs_qgroup_stats {
- 
- int btrfs_qgroup_inherit_size(struct btrfs_qgroup_inherit *p);
- int btrfs_qgroup_inherit_add_group(struct btrfs_qgroup_inherit **inherit, char *arg);
--int btrfs_qgroup_inherit_add_copy(struct btrfs_qgroup_inherit **inherit, char *arg,
--			    int type);
- int btrfs_qgroup_query(int fd, u64 qgroupid, struct btrfs_qgroup_stats *stats);
- 
- #endif
 diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-index 30ddf178221f..00c5eacfa694 100644
+index 00c5eacfa694..1549adaca642 100644
 --- a/cmds/subvolume.c
 +++ b/cmds/subvolume.c
-@@ -281,13 +281,6 @@ static int cmd_subvolume_create(const struct cmd_struct *cmd, int argc, char **a
- 			break;
+@@ -229,7 +229,6 @@ static int create_one_subvolume(const char *dst, struct btrfs_qgroup_inherit *in
+ 		goto out;
+ 	}
  
- 		switch (c) {
--		case 'c':
--			ret = btrfs_qgroup_inherit_add_copy(&inherit, optarg, 0);
--			if (ret) {
--				retval = ret;
--				goto out;
--			}
--			break;
- 		case 'i':
- 			ret = btrfs_qgroup_inherit_add_group(&inherit, optarg);
- 			if (ret) {
-@@ -685,18 +678,11 @@ static int cmd_subvolume_snapshot(const struct cmd_struct *cmd, int argc, char *
- 	memset(&args, 0, sizeof(args));
- 	optind = 0;
- 	while (1) {
--		int c = getopt(argc, argv, "c:i:r");
-+		int c = getopt(argc, argv, "i:r");
- 		if (c < 0)
- 			break;
+-	pr_verbose(LOG_DEFAULT, "Create subvolume '%s/%s'\n", dstdir, newname);
+ 	if (inherit) {
+ 		struct btrfs_ioctl_vol_args_v2	args;
  
- 		switch (c) {
--		case 'c':
--			res = btrfs_qgroup_inherit_add_copy(&inherit, optarg, 0);
--			if (res) {
--				retval = res;
--				goto out;
--			}
--			break;
- 		case 'i':
- 			res = btrfs_qgroup_inherit_add_group(&inherit, optarg);
- 			if (res) {
-@@ -707,13 +693,6 @@ static int cmd_subvolume_snapshot(const struct cmd_struct *cmd, int argc, char *
- 		case 'r':
- 			readonly = true;
- 			break;
--		case 'x':
--			res = btrfs_qgroup_inherit_add_copy(&inherit, optarg, 1);
--			if (res) {
--				retval = res;
--				goto out;
--			}
--			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
- 		}
+@@ -253,6 +252,7 @@ static int create_one_subvolume(const char *dst, struct btrfs_qgroup_inherit *in
+ 		error("cannot create subvolume: %m");
+ 		goto out;
+ 	}
++	pr_verbose(LOG_DEFAULT, "Create subvolume '%s/%s'\n", dstdir, newname);
+ 
+ out:
+ 	close(fddst);
+@@ -754,16 +754,8 @@ static int cmd_subvolume_snapshot(const struct cmd_struct *cmd, int argc, char *
+ 	if (fd < 0)
+ 		goto out;
+ 
+-	if (readonly) {
++	if (readonly)
+ 		args.flags |= BTRFS_SUBVOL_RDONLY;
+-		pr_verbose(LOG_DEFAULT,
+-			   "Create a readonly snapshot of '%s' in '%s/%s'\n",
+-			   subvol, dstdir, newname);
+-	} else {
+-		pr_verbose(LOG_DEFAULT,
+-			   "Create a snapshot of '%s' in '%s/%s'\n",
+-			   subvol, dstdir, newname);
+-	}
+ 
+ 	args.fd = fd;
+ 	if (inherit) {
+@@ -784,6 +776,15 @@ static int cmd_subvolume_snapshot(const struct cmd_struct *cmd, int argc, char *
+ 
+ 	retval = 0;	/* success */
+ 
++	if (readonly)
++		pr_verbose(LOG_DEFAULT,
++			   "Create a readonly snapshot of '%s' in '%s/%s'\n",
++			   subvol, dstdir, newname);
++	else
++		pr_verbose(LOG_DEFAULT,
++			   "Create a snapshot of '%s' in '%s/%s'\n",
++			   subvol, dstdir, newname);
++
+ out:
+ 	close(fddst);
+ 	close(fd);
 -- 
 2.43.2
 
