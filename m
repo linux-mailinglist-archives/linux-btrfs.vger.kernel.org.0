@@ -1,197 +1,283 @@
-Return-Path: <linux-btrfs+bounces-2826-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2827-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17AD98685FA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 02:35:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D8618687A5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 04:16:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B95C1F2517A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 01:35:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78F4EB23A9A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Feb 2024 03:16:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F25826AB8;
-	Tue, 27 Feb 2024 01:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D6C1BF24;
+	Tue, 27 Feb 2024 03:16:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EIdJrt2S"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HaZAfJ2H";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AG4ejUXE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37EE84C9B;
-	Tue, 27 Feb 2024 01:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190E01B27D;
+	Tue, 27 Feb 2024 03:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708997710; cv=none; b=M+gon6SqGXvrH0VLJD/iASuJzANumKLe+3UKWLj1osuf3VoNwnifrHdFuVrJC51TLZsCbPHZtqx+z/M73ThVN97ELWcvtJBAXHlBawC//8HGlxM48LunQHg5xU3dD4CDs99f6iONKmVldAeRH/taqqd74ANLfrIKH0wC2ZW/0Gs=
+	t=1709003763; cv=none; b=ual9wi80V0KTnZCOgCUkhskt3H7iY2GTg3v70s2G37nYV0dVCEGf7hPcSF38rTSykRMCtpOBSj6nE7LdTaVnor7fSQITsy8wKZSV6Sf6L9nYuK0A6U9Lqn4Lgu3Bi0e4oG8svHV6hVE5ncCoA5RUfrMNVdNjdSaxKZeFH5pYbds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708997710; c=relaxed/simple;
-	bh=I4qbGa1x1CoD5kBOxiBqkFTCRyoMQhZk9v2T6sCcWaQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ubo69MVLXjG9sEbpzdpC3I+If73irYS9VABMVz4Upt7Z+hWuEiiZYZM3dfMZc6rS9RCH7LDoULc4LCUCzdiFWU/mSWwAxum6XQ/C5pg2HWybLCRfKHF0WkcoyBzXcmQcYdhONxw+pRuI9mvzjb2KirTuRqNngG4lOyDYUqg1GpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EIdJrt2S; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708997708; x=1740533708;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=I4qbGa1x1CoD5kBOxiBqkFTCRyoMQhZk9v2T6sCcWaQ=;
-  b=EIdJrt2SFctd8f6JU0tYY8NaeZT6YaxZv3uiN0t/1MwlRQYXVWIsGi55
-   h+VbPwvwWdNIk9kzkhFSkAp1x4xZBlpAUKIuVO55agnNW542EVZsC1Gaz
-   LogpP4vE+7PmgxiABd3fhYaewqVGEVUEpZNWEbv07uwbus2Ibm0kk04R2
-   hAtkqEVfccssrZeFth7uh4xFqWVRwb0CUu2fCh0bU9xuGv6Wnt59InNx3
-   nQKwvSiLZvMAYoe/bPJsFthzaZVonckwFEbVfINGJY3c2PZm0q7BR3ujl
-   kNHYT/MB/0ByUTFCBT4oJVCjyN9nREFvknc0rm4pu7dDXxm73kNkIJVhN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14757284"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="14757284"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 17:35:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="7406508"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa008.jf.intel.com with ESMTP; 26 Feb 2024 17:35:02 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1remN1-000Apj-0j;
-	Tue, 27 Feb 2024 01:34:59 +0000
-Date: Tue, 27 Feb 2024 09:34:25 +0800
-From: kernel test robot <lkp@intel.com>
-To: David Laight <David.Laight@aculab.com>,
-	"'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-	'Linus Torvalds' <torvalds@linux-foundation.org>,
-	'Netdev' <netdev@vger.kernel.org>,
-	"'dri-devel@lists.freedesktop.org'" <dri-devel@lists.freedesktop.org>
-Cc: oe-kbuild-all@lists.linux.dev, 'Jens Axboe' <axboe@kernel.dk>,
-	"'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-	'Christoph Hellwig' <hch@infradead.org>,
-	"'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>,
-	'Andrew Morton' <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-	"'David S . Miller'" <davem@davemloft.net>,
-	'Dan Carpenter' <dan.carpenter@linaro.org>,
-	'Jani Nikula' <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH next v2 03/11] minmax: Simplify signedness check
-Message-ID: <202402270937.9kmO5PFt-lkp@intel.com>
-References: <8657dd5c2264456f8a005520a3b90e2b@AcuMS.aculab.com>
+	s=arc-20240116; t=1709003763; c=relaxed/simple;
+	bh=UrM7wTpq4+dmPWPePjxgFqA69mKlm97Ulf9b+n6ijaQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pmeUN5Axz6BFdPeuiFRna33EepRxq3XevRBhssp1L2zdQU+7UKaIvVhJ52GB7giLYIveLh6pIGkI1zjt1PufQKwaFfCrGbxr37o0sJ4gK7EA7wKrd9F1yYq4XSBqoM5mOu2Z+1bOiNiH/m6FMCHoxtTrTmXIzuQgl3ozHupVs4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HaZAfJ2H; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AG4ejUXE; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E20F02274E;
+	Tue, 27 Feb 2024 03:15:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1709003759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=W5Ef0/U5YnlZfi8ZjQ3e3gx56JTtT3S0QwsgnGFnK7o=;
+	b=HaZAfJ2HAA62guvcQj4QkGGKaccHFpPozMZ8NjWoMCTu63ArKzJexvubdO2Pnz46SGMTqC
+	GxZxJ4vUoCGp3hrrtDtuIFwC8iqeKpWPyQYKc73vRXo+d5FPaURVtTemhQP13Vp/62kafS
+	+Wa+3b2tmEVZU+zKTv0lImRMwbU1mLo=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1709003758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=W5Ef0/U5YnlZfi8ZjQ3e3gx56JTtT3S0QwsgnGFnK7o=;
+	b=AG4ejUXEAzWdPMMuCwLBedo1ZLvIbQGVBSfrHD9RLtBN+RU9EW3n2tNqPwVGlYa7nc/FSZ
+	in9d9lX63lqM3CCuABrL5mRENopa9JUVs7A3KyxhW5GnicAqYehIVhDzhht8zZfLaFu4fN
+	rACwVFkzqDzqdWPmSplueUq2v9yB8IE=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AFC7D13419;
+	Tue, 27 Feb 2024 03:15:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id A4z2G+1T3WXhbwAAn2gu4w
+	(envelope-from <wqu@suse.com>); Tue, 27 Feb 2024 03:15:57 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: stable@vger.kernel.org
+Subject: [PATCH] btrfs: qgroup: verify btrfs_qgroup_inherit parameter
+Date: Tue, 27 Feb 2024 13:45:35 +1030
+Message-ID: <bde2887da38aaa473ca60801b37ac735b3ab2d6d.1709003728.git.wqu@suse.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8657dd5c2264456f8a005520a3b90e2b@AcuMS.aculab.com>
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [1.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_DN_NONE(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWO(0.00)[2];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: *
+X-Spam-Score: 1.90
+X-Spam-Flag: NO
 
-Hi David,
+[BUG]
+Currently btrfs can create subvolume with an invalid qgroup inherit
+without triggering any error:
 
-kernel test robot noticed the following build warnings:
+ # mkfs.btrfs -O quota -f $dev
+ # mount $dev $mnt
+ # btrfs subvolume create -i 2/0 $mnt/subv1
+ # btrfs qgroup show -prce --sync $mnt
+ Qgroupid    Referenced    Exclusive   Path
+ --------    ----------    ---------   ----
+ 0/5           16.00KiB     16.00KiB   <toplevel>
+ 0/256         16.00KiB     16.00KiB   subv1
 
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on linux/master mkl-can-next/testing kdave/for-next akpm-mm/mm-nonmm-unstable axboe-block/for-next linus/master v6.8-rc6 next-20240226]
-[cannot apply to next-20240223 dtor-input/next dtor-input/for-linus horms-ipvs/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+[CAUSE]
+We only do a very basic size check for btrfs_qgroup_inherit structure,
+but never really verify if the values are correct.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/David-Laight/minmax-Put-all-the-clamp-definitions-together/20240226-005902
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/8657dd5c2264456f8a005520a3b90e2b%40AcuMS.aculab.com
-patch subject: [PATCH next v2 03/11] minmax: Simplify signedness check
-config: alpha-defconfig (https://download.01.org/0day-ci/archive/20240227/202402270937.9kmO5PFt-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240227/202402270937.9kmO5PFt-lkp@intel.com/reproduce)
+Thus in btrfs_qgroup_inherit() function, we have to skip non-existing
+qgroups, and never return any error.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402270937.9kmO5PFt-lkp@intel.com/
+[FIX]
+Fix the behavior and introduce extra checks:
 
-All warnings (new ones prefixed by >>):
+- Introduce early check for btrfs_qgroup_inherit structure
+  Not only the size, but also all the qgroup ids would be verifyed.
 
-   In file included from include/linux/kernel.h:28,
-                    from include/linux/cpumask.h:10,
-                    from include/linux/smp.h:13,
-                    from include/linux/lockdep.h:14,
-                    from include/linux/spinlock.h:63,
-                    from include/linux/swait.h:7,
-                    from include/linux/completion.h:12,
-                    from include/linux/crypto.h:15,
-                    from include/crypto/aead.h:13,
-                    from include/crypto/internal/aead.h:11,
-                    from crypto/skcipher.c:12:
-   crypto/skcipher.c: In function 'skcipher_get_spot':
->> include/linux/minmax.h:31:70: warning: ordered comparison of pointer with integer zero [-Wextra]
-      31 |         (is_unsigned_type(typeof(x)) || (__is_constexpr(x) ? (x) + 0 >= 0 : 0))
-         |                                                                      ^~
-   include/linux/minmax.h:39:11: note: in expansion of macro '__is_ok_unsigned'
-      39 |          (__is_ok_unsigned(x) && __is_ok_unsigned(y)))
-         |           ^~~~~~~~~~~~~~~~
-   include/linux/minmax.h:49:24: note: in expansion of macro '__types_ok'
-      49 |         _Static_assert(__types_ok(x, y),                        \
-         |                        ^~~~~~~~~~
-   include/linux/minmax.h:56:17: note: in expansion of macro '__cmp_once'
-      56 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
-         |                 ^~~~~~~~~~
-   include/linux/minmax.h:70:25: note: in expansion of macro '__careful_cmp'
-      70 | #define max(x, y)       __careful_cmp(max, x, y)
-         |                         ^~~~~~~~~~~~~
-   crypto/skcipher.c:83:16: note: in expansion of macro 'max'
-      83 |         return max(start, end_page);
-         |                ^~~
->> include/linux/minmax.h:31:70: warning: ordered comparison of pointer with integer zero [-Wextra]
-      31 |         (is_unsigned_type(typeof(x)) || (__is_constexpr(x) ? (x) + 0 >= 0 : 0))
-         |                                                                      ^~
-   include/linux/minmax.h:39:34: note: in expansion of macro '__is_ok_unsigned'
-      39 |          (__is_ok_unsigned(x) && __is_ok_unsigned(y)))
-         |                                  ^~~~~~~~~~~~~~~~
-   include/linux/minmax.h:49:24: note: in expansion of macro '__types_ok'
-      49 |         _Static_assert(__types_ok(x, y),                        \
-         |                        ^~~~~~~~~~
-   include/linux/minmax.h:56:17: note: in expansion of macro '__cmp_once'
-      56 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
-         |                 ^~~~~~~~~~
-   include/linux/minmax.h:70:25: note: in expansion of macro '__careful_cmp'
-      70 | #define max(x, y)       __careful_cmp(max, x, y)
-         |                         ^~~~~~~~~~~~~
-   crypto/skcipher.c:83:16: note: in expansion of macro 'max'
-      83 |         return max(start, end_page);
-         |                ^~~
+  And the timing is very early, so we can return error early.
+  This early check is very important for snapshot creation, as snapshot
+  is delayed to transaction commit.
 
+- Drop support for btrfs_qgroup_inherit::num_ref_copies and
+  num_excl_copies
+  Those two members are used to specify to copy refr/excl numbers from
+  other qgroups.
+  This would definitely mark qgroup inconsistent, and btrfs-progs has
+  dropped the support for them for a long time.
+  It's time to drop the support for kernel.
 
-vim +31 include/linux/minmax.h
+- Verify the supported btrfs_qgroup_inherit::flags
+  Just in case we want to add extra flags for btrfs_qgroup_inherit.
 
-     9	
-    10	/*
-    11	 * min()/max()/clamp() macros must accomplish several things:
-    12	 *
-    13	 * - Avoid multiple evaluations of the arguments (so side-effects like
-    14	 *   "x++" happen only once) when non-constant.
-    15	 * - Retain result as a constant expressions when called with only
-    16	 *   constant expressions (to avoid tripping VLA warnings in stack
-    17	 *   allocation usage).
-    18	 * - Perform signed v unsigned type-checking (to generate compile
-    19	 *   errors instead of nasty runtime surprises).
-    20	 * - Unsigned char/short are always promoted to signed int and can be
-    21	 *   compared against signed or unsigned arguments.
-    22	 * - Unsigned arguments can be compared against non-negative signed constants.
-    23	 * - Comparison of a signed argument against an unsigned constant fails
-    24	 *   even if the constant is below __INT_MAX__ and could be cast to int.
-    25	 */
-    26	#define __typecheck(x, y) \
-    27		(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
-    28	
-    29	/* Allow unsigned compares against non-negative signed constants. */
-    30	#define __is_ok_unsigned(x) \
-  > 31		(is_unsigned_type(typeof(x)) || (__is_constexpr(x) ? (x) + 0 >= 0 : 0))
-    32	
+Now above subvolume creation would fail with -ENOENT other than silently
+ignore the non-existing qgroup.
 
+CC: stable@vger.kernel.org
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/ioctl.c           | 16 +++---------
+ fs/btrfs/qgroup.c          | 52 ++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/qgroup.h          |  3 +++
+ include/uapi/linux/btrfs.h |  1 +
+ 4 files changed, 59 insertions(+), 13 deletions(-)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 8b80fbea1e72..c19ce2e292dc 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1382,7 +1382,7 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
+ 	if (vol_args->flags & BTRFS_SUBVOL_RDONLY)
+ 		readonly = true;
+ 	if (vol_args->flags & BTRFS_SUBVOL_QGROUP_INHERIT) {
+-		u64 nums;
++		struct btrfs_fs_info *fs_info = inode_to_fs_info(file_inode(file));
+ 
+ 		if (vol_args->size < sizeof(*inherit) ||
+ 		    vol_args->size > PAGE_SIZE) {
+@@ -1395,19 +1395,9 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
+ 			goto free_args;
+ 		}
+ 
+-		if (inherit->num_qgroups > PAGE_SIZE ||
+-		    inherit->num_ref_copies > PAGE_SIZE ||
+-		    inherit->num_excl_copies > PAGE_SIZE) {
+-			ret = -EINVAL;
++		ret = btrfs_qgroup_check_inherit(fs_info, inherit, vol_args->size);
++		if (ret < 0)
+ 			goto free_inherit;
+-		}
+-
+-		nums = inherit->num_qgroups + 2 * inherit->num_ref_copies +
+-		       2 * inherit->num_excl_copies;
+-		if (vol_args->size != struct_size(inherit, qgroups, nums)) {
+-			ret = -EINVAL;
+-			goto free_inherit;
+-		}
+ 	}
+ 
+ 	ret = __btrfs_ioctl_snap_create(file, file_mnt_idmap(file),
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 4fa83c76b37b..66968092b554 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3046,6 +3046,58 @@ int btrfs_run_qgroups(struct btrfs_trans_handle *trans)
+ 	return ret;
+ }
+ 
++int btrfs_qgroup_check_inherit(struct btrfs_fs_info *fs_info,
++			       struct btrfs_qgroup_inherit *inherit,
++			       size_t size)
++{
++	if (inherit->flags & ~BTRFS_QGROUP_INHERIT_FLAGS_SUPP)
++		return -EOPNOTSUPP;
++	if (size < sizeof(*inherit) || size > PAGE_SIZE)
++		return -EINVAL;
++
++	/*
++	 * In the past we allow btrfs_qgroup_inherit to specify to copy
++	 * refr/excl numbers directly from other qgroups.
++	 * This behavior has been disable in btrfs-progs for a very long time,
++	 * but here we should also disable them for kernel, as this behavior
++	 * is known to mark qgroup inconsistent, and a rescan would wipe out the
++	 * change anyway.
++	 *
++	 * So here we just reject any btrfs_qgroup_inherit with num_ref_copies or
++	 * num_excl_copies.
++	 */
++	if (inherit->num_ref_copies || inherit->num_excl_copies)
++		return -EINVAL;
++
++	if (inherit->num_qgroups > PAGE_SIZE)
++		return -EINVAL;
++
++	if (size != struct_size(inherit, qgroups, inherit->num_qgroups))
++		return -EINVAL;
++
++	/*
++	 * Now check all the remaining qgroups, they should all:
++	 * - Exist
++	 * - Be higher level qgroups.
++	 */
++	for (int i = 0; i < inherit->num_qgroups; i++) {
++		struct btrfs_qgroup *qgroup;
++		u64 qgroupid = inherit->qgroups[i];
++
++		if (btrfs_qgroup_level(qgroupid) == 0)
++			return -EINVAL;
++
++		spin_lock(&fs_info->qgroup_lock);
++		qgroup = find_qgroup_rb(fs_info, qgroupid);
++		if (!qgroup) {
++			spin_unlock(&fs_info->qgroup_lock);
++			return -ENOENT;
++		}
++		spin_unlock(&fs_info->qgroup_lock);
++	}
++	return 0;
++}
++
+ static int qgroup_auto_inherit(struct btrfs_fs_info *fs_info,
+ 			       u64 inode_rootid,
+ 			       struct btrfs_qgroup_inherit **inherit)
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index 1f664261c064..706640be0ec2 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -350,6 +350,9 @@ int btrfs_qgroup_account_extent(struct btrfs_trans_handle *trans, u64 bytenr,
+ 				struct ulist *new_roots);
+ int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans);
+ int btrfs_run_qgroups(struct btrfs_trans_handle *trans);
++int btrfs_qgroup_check_inherit(struct btrfs_fs_info *fs_info,
++			       struct btrfs_qgroup_inherit *inherit,
++			       size_t size);
+ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 			 u64 objectid, u64 inode_rootid,
+ 			 struct btrfs_qgroup_inherit *inherit);
+diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+index f8bc34a6bcfa..cdf6ad872149 100644
+--- a/include/uapi/linux/btrfs.h
++++ b/include/uapi/linux/btrfs.h
+@@ -92,6 +92,7 @@ struct btrfs_qgroup_limit {
+  * struct btrfs_qgroup_inherit.flags
+  */
+ #define BTRFS_QGROUP_INHERIT_SET_LIMITS	(1ULL << 0)
++#define BTRFS_QGROUP_INHERIT_FLAGS_SUPP (BTRFS_QGROUP_INHERIT_SET_LIMITS)
+ 
+ struct btrfs_qgroup_inherit {
+ 	__u64	flags;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.2
+
 
