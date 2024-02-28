@@ -1,72 +1,72 @@
-Return-Path: <linux-btrfs+bounces-2869-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2870-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE01686B4E5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 17:28:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA4886B4EB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 17:28:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A98D28DAA4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 16:28:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7912128E099
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 16:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C8643FB87;
-	Wed, 28 Feb 2024 16:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B353FB85;
+	Wed, 28 Feb 2024 16:28:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dNYKXt9z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nhtfm+mL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10FB26EEFC;
-	Wed, 28 Feb 2024 16:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77EA6EEEC;
+	Wed, 28 Feb 2024 16:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709137658; cv=none; b=UCPIZ5VRTetQqrmT61nXQMs4rLZ46XEONLAKhCF946Uu06oFnAmEr5+CcCvaWQqV5/pVM/8qc63dD0fLO/GqQv1BKZEO6vbnNmQwkIVcp6XvNiD5EgycSRYcEGfFCxifhGx2/04yxSHmQsVS0Q2swRoLzEFAODeBFaHIFkdItXo=
+	t=1709137713; cv=none; b=RzwllKGV9lzhhDnkgjrz5K89zvj2A1oprPokbtjCp8zOx1vnKx2EU/C12XKYqYMbidobU2kEU5MgQANrD/zyQCb0rXU0XsoWOEg0FtpbDqWt2C/aNJTJRMG0i6Z7SuxE4OC4Do1ftgMvB5dVBGDPqJWqt3gDhXA/4w4aPnHsIF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709137658; c=relaxed/simple;
-	bh=XsYfI28aCpKhqEa677qx/0xf73cpFk22FTtXQK4wgpI=;
+	s=arc-20240116; t=1709137713; c=relaxed/simple;
+	bh=rzJSJkva3PtBW+oA0aOjMOzhlLevnC0c9zdiruimJy8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FUAWOvZGxMEreV1WI+sa/Ox2EKE8UagQ/NLg/FMgz0i8NTFoyH8/OPuLC10p8wYc/AdHDDOw+/yBAVYJ9grlL4fxwbRTnuQRZWpl7qbNFtxdYuPts69aIsqwF5qoTGFVI21UTxYdoO2XmGd0UKHmHX85hTBHTc6dekMBJv/eVSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dNYKXt9z; arc=none smtp.client-ip=209.85.219.171
+	 Content-Type:Content-Disposition:In-Reply-To; b=JpDIyQF0UoYfyoUNhCRUbKAQJlmnPmAh2aNXgEO5H5lSvaOfaHEHkokxzEXyNSkyj6cFBLIfQGb+hyCSCmM2/NYwrQu4Vjl6OR8Mp6wJ7b7uEXykCtQnQ96hTIXnoP2X7NLi4/frTvlKZUd7FT990ELsegtBpC6RtRjK/2I8apw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nhtfm+mL; arc=none smtp.client-ip=209.85.128.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcbf82cdf05so5805340276.2;
-        Wed, 28 Feb 2024 08:27:36 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60908e5fb9eso36713037b3.2;
+        Wed, 28 Feb 2024 08:28:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709137656; x=1709742456; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709137711; x=1709742511; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hWtL7++GjICFukUAoP4h+KhEWcLjTOAu9lMF7xAGsyw=;
-        b=dNYKXt9zA7SXwNI3Hz5/tmwGULpsXm/cceD7uMJEYVGkqwPSdk+LEBbFRK8qOFhlmB
-         zPcUxAFOww6Jx0oNcWLbGlFuU6UAilb4Fb+KrKUI2BuEF3MGiC6G41V3q9Vwk38mvlgl
-         X54ws/YbYNCNC4dup0YxVADuhjfVYPd3a0B0vN8xnr546XcjvOmqvxUksfSnexH4qupB
-         mEd3+sk6M2tybeTTOzbpz/6bE+qkzoVZTz+c+5WTWII6VT4xd0YIGXAubVHT17pk8zN8
-         tmN+RWy9ICQvcNa05v3qDwO4aKQLbY900n0H3Q20B5n6Ct5MErcWM5teOcUmY0QsGUhP
-         WDpA==
+        bh=J9xXOsuu/zrmE8tx8GTKpJgtMByVr0NI+8cB4bxXCLw=;
+        b=nhtfm+mLR7XXUMae7YnmQ/wbUlmleogyBvYN0su8bpt8BUyeM853aycc1bpuoypPZy
+         pxS4xUgS8+ZoGmO1XPjRzdTOWcY57oyoiQuAUeUEWmotZJHLYAW4VeGAhkdAujV2gTEV
+         862ir61rpgbtVf9whYpJPzig4jP9wicCrETG+Kh/eblGp+j7tbkTlwLltw9SnqOSepX2
+         EcuovhYcDG1KLPr3UM6JhjLdvJO5MW3GaYUTXrpunScQpEaMaoGNzwB94RHjr+68pIa7
+         nNRKwcNIrDXYfo7DvwKrxcRW9LJZtCuF03KUrXg5zaAZeDNa8758zhMutVLBcMP3+BOH
+         JXMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709137656; x=1709742456;
+        d=1e100.net; s=20230601; t=1709137711; x=1709742511;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hWtL7++GjICFukUAoP4h+KhEWcLjTOAu9lMF7xAGsyw=;
-        b=DNEkzb0vbgxZ4P1wsQvO57dPqfXG54v5L/zg5ptyga2vSHu+velYQVQCAvDxE9/wIb
-         pvjIxVFwb5yjy1iOBANWewlCwQfr4K8sJATGarQX1sK2OsOirGhYKaUP4G+6XwPNIPSG
-         H+59x5Mg+6GaVXzlzDSFaO5wJWfB4jSAF52kLFEQmvGDkBasrlsZVeUC6/hh9qyRb2Rj
-         Pwj7jzf5rU4gz2xRdAQQ4jh9XVarrQxpTiY+fCVgcN6wT/U7TFnrY9Er+N8G2DkD+nQB
-         7wAIbaxU1s97EVCEhsgihwrVB8mzYVi8G+oYPMGaeA459tThLk4u+tkorEu9yQb35qp8
-         SHPg==
-X-Forwarded-Encrypted: i=1; AJvYcCWFcCVzrfSqaVo9evkHBG9r4CScRk1JlFa0yATX5nvKEYDBTZrXJShdKMCwGdU27jgz9hj+3zQNs5XWTofuxaROV5edFf7Tj6k0UtsYdUlFWaeVWeupib3QQ1VhqSvnaNOxVnex8wNHAgJhbJbnxBk/i3sHdtC6WvF320c2A2jINT1mIfhWP1jhn3CtvOFw0ftNtI8/FckB9oa7sY30
-X-Gm-Message-State: AOJu0Yxh09/U8offsmf0OXxKrKcuSNv2GHGsNLdl6IkOyr0mWd28g1Rd
-	0JbeWRwBYkFs3F0Z4P2mh8cqMwlMmid3gmynEdSuB8qwpP5WbnZZ
-X-Google-Smtp-Source: AGHT+IGgZ4Kkae23Sonz0Wy+ywJ8k8WbRQHuZh38JY+GnbqJ6cshhsv99aWcYpDQ6qckCPnCgMPxgg==
-X-Received: by 2002:a25:e04e:0:b0:dcb:cdce:3902 with SMTP id x75-20020a25e04e000000b00dcbcdce3902mr2751167ybg.55.1709137655985;
-        Wed, 28 Feb 2024 08:27:35 -0800 (PST)
+        bh=J9xXOsuu/zrmE8tx8GTKpJgtMByVr0NI+8cB4bxXCLw=;
+        b=A0/MaZHJRzztbtp0cR9dhD8BOrl4K+XdPq9ouBypnJydYOn+vLDt471jNsHTIn/EzC
+         na6AfczSUqaoDKrBiezXhnZyllnQiWXFB4AEznKhEPNFi6iEykBAFxDCEBUxsdfAIkEY
+         M5/4PdFChr+xTq6zSstGOivRk6O81qmfRFZplSA2EYxK+vgwC9fr7TxNIz3CdbPZglvO
+         gAfFWnf+H0uGfWAshqqS16Sl1DuGQf5LQ+19nHTMNO6hbh7KIvI4y3D9IFr8O69Cv0fs
+         lLMkXZqDRIRXMlWTmTC/q12tVBp2xjVDuGVgXJePTflJpE10QeJgj7gKazHFhJRBtOKb
+         P/Xg==
+X-Forwarded-Encrypted: i=1; AJvYcCWijixBnxXQ0gtD+w06ZUmYvD4nYWFkonjQgWbliDqe0pu/+lHJaZJPpCafFtnJHqPiPcOD5jF0RXN4fWr5/MlQLNgcARIlb5HSjsxjbk6Q9Mx4dOvJsi6xCcYdPCUm1tefR3K3P+NOfR+9xupoiFdMXjRrhcNEyPVu+huOvLb6QXXww8uBmMM5vGiz1+EVxGjxQIEltzA5bpaunGVm
+X-Gm-Message-State: AOJu0YwpLHh/6Ql+UcQ5tfyBsYYmJihh7LbnFVxJl6Il4UgYESq5BcVF
+	PFtXW+jAxcr+wu1y7KcMsv0J0zAw4ne7JtNCQ//H4WhPsfoWqx3b
+X-Google-Smtp-Source: AGHT+IF7XbBhR5dwgNTUI3cgJlRp6cCPJaEGoJEGT6h5P61G+BSbNJ3st82/ffk1EVnm0MCnhDNYjg==
+X-Received: by 2002:a81:e70c:0:b0:609:24ff:bf5b with SMTP id x12-20020a81e70c000000b0060924ffbf5bmr5536903ywl.22.1709137710910;
+        Wed, 28 Feb 2024 08:28:30 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:2256:57ae:919c:373f])
-        by smtp.gmail.com with ESMTPSA id s17-20020a5b0751000000b00dcc3c85f6a1sm1956317ybq.6.2024.02.28.08.27.35
+        by smtp.gmail.com with ESMTPSA id x6-20020a818706000000b0060499d3a893sm2464776ywf.116.2024.02.28.08.28.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 08:27:35 -0800 (PST)
-Date: Wed, 28 Feb 2024 08:27:34 -0800
+        Wed, 28 Feb 2024 08:28:30 -0800 (PST)
+Date: Wed, 28 Feb 2024 08:28:29 -0800
 From: Yury Norov <yury.norov@gmail.com>
 To: Alexander Lobakin <aleksander.lobakin@intel.com>
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -83,13 +83,12 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Simon Horman <horms@kernel.org>, linux-btrfs@vger.kernel.org,
 	dm-devel@redhat.com, ntfs3@lists.linux.dev,
 	linux-s390@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH net-next v5 10/21] btrfs: rename bitmap_set_bits() ->
- btrfs_bitmap_set_bits()
-Message-ID: <Zd9e9i6FQzGWfHBq@yury-ThinkPad>
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 11/21] tools: move alignment-related macros
+ to new <linux/align.h>
+Message-ID: <Zd9fLYP0uzqqwOdO@yury-ThinkPad>
 References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
- <20240201122216.2634007-11-aleksander.lobakin@intel.com>
+ <20240201122216.2634007-12-aleksander.lobakin@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,16 +97,16 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240201122216.2634007-11-aleksander.lobakin@intel.com>
+In-Reply-To: <20240201122216.2634007-12-aleksander.lobakin@intel.com>
 
-On Thu, Feb 01, 2024 at 01:22:05PM +0100, Alexander Lobakin wrote:
-> bitmap_set_bits() does not start with the FS' prefix and may collide
-> with a new generic helper one day. It operates with the FS-specific
-> types, so there's no change those two could do the same thing.
-> Just add the prefix to exclude such possible conflict.
+On Thu, Feb 01, 2024 at 01:22:06PM +0100, Alexander Lobakin wrote:
+> Currently, tools have *ALIGN*() macros scattered across the unrelated
+> headers, as there are only 3 of them and they were added separately
+> each time on an as-needed basis.
+> Anyway, let's make it more consistent with the kernel headers and allow
+> using those macros outside of the mentioned headers. Create
+> <linux/align.h> inside the tools/ folder and include it where needed.
 > 
-> Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-> Acked-by: David Sterba <dsterba@suse.com>
 > Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 
 Reviewed-by: Yury Norov <yury.norov@gmail.com>
