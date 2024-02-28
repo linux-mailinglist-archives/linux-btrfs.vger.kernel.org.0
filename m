@@ -1,152 +1,160 @@
-Return-Path: <linux-btrfs+bounces-2860-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2861-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4284386B268
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 15:53:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B922B86B44F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 17:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F2C91C22D9E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 14:53:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC7C81C223E2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 16:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD00641C73;
-	Wed, 28 Feb 2024 14:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B86A15E5DD;
+	Wed, 28 Feb 2024 16:11:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QUwEYaa3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bM+6BRjj";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QUwEYaa3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bM+6BRjj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aR5LDzrK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5969414AD28
-	for <linux-btrfs@vger.kernel.org>; Wed, 28 Feb 2024 14:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BDC15DBBA;
+	Wed, 28 Feb 2024 16:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709132015; cv=none; b=U2D+YDm6VcmZ5RB+tbSqzPVdS3xgzDYzOuuw3oc4CaDxOD2hwmp6DgRhZDsblVhSfB27cvJlgw4kLAEOdTcvNIaBUy8oYv2mmnGtgQeLC4ZNqMkEmGA//CYHTaCiBHc3FPKFsVKjNNI5F1biZlGJMgUSS0Wqx8LdAdEHSJu0Kpk=
+	t=1709136663; cv=none; b=SItcfcQoqFm+7xWaCSabs7fQoLTJ6MhBqg97Tw+iWcP/R2CGs7xhuFWvkX/1UsVbtva9K8eIBEra8bsatlQX5oxmcQvk8uemwvtSVxZxCdWVFOtRKiqgkJ5sUwTXwZtBjqHcekzNIukvj64PkyZ8ZuKMSlep+dzhiKey9m7gUuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709132015; c=relaxed/simple;
-	bh=rAYHF4pEd0RMCpK0CSMET5FftETP+oVXDBBBbEQUo6A=;
+	s=arc-20240116; t=1709136663; c=relaxed/simple;
+	bh=x4cppwy5kuHxn1Xdw/R0WLbMpw8zlt+UyW3XE5G3RSw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aXcxnLS4IvKP6Yjjw2rLRhzVuyXRpEm/9wsjIG360wzkvn4O+xbWFBfqGyET7ZHrjEkSGCDay8Ku2L6xTm5O8skPWSXhImWCu15nGVwKI2TAeB8LTyes9SdQe3eV8yCQ7zdSY9VsYtMdMgI+/iQuBwa8q7BgSwrM0s07MjxPvgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QUwEYaa3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bM+6BRjj; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QUwEYaa3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bM+6BRjj; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 865931F45E;
-	Wed, 28 Feb 2024 14:53:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709132011;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GciAcVQDeTwWHg/ciKoOK0KzCgboKUvR4r0j507vjYA=;
-	b=QUwEYaa3SydoqxruuBybYiyWt/xN7Fz5pzFOiyOkLcYsBnoHp1UEesCYGfcPeUm2YZ59eo
-	HUpdDXZmKJklNbrN/3xYkyzd5tV8Xs0uq6jaHUxVCPpp6ZG2tZSMobxYBbK2X7tC/HDJEz
-	XviZDpX2s+XUdb0Rib4QoNqkOdgiVxo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709132011;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GciAcVQDeTwWHg/ciKoOK0KzCgboKUvR4r0j507vjYA=;
-	b=bM+6BRjjmSRnZhFMRKi19tHzLFb6Ja34ODFEHF18vtNIippTXHuKJRNfzwsijkaBAPeun/
-	zRn6n/BulsjwYnBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709132011;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GciAcVQDeTwWHg/ciKoOK0KzCgboKUvR4r0j507vjYA=;
-	b=QUwEYaa3SydoqxruuBybYiyWt/xN7Fz5pzFOiyOkLcYsBnoHp1UEesCYGfcPeUm2YZ59eo
-	HUpdDXZmKJklNbrN/3xYkyzd5tV8Xs0uq6jaHUxVCPpp6ZG2tZSMobxYBbK2X7tC/HDJEz
-	XviZDpX2s+XUdb0Rib4QoNqkOdgiVxo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709132011;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GciAcVQDeTwWHg/ciKoOK0KzCgboKUvR4r0j507vjYA=;
-	b=bM+6BRjjmSRnZhFMRKi19tHzLFb6Ja34ODFEHF18vtNIippTXHuKJRNfzwsijkaBAPeun/
-	zRn6n/BulsjwYnBg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F9E0134FB;
-	Wed, 28 Feb 2024 14:53:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id TycMG+tI32U3HQAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Wed, 28 Feb 2024 14:53:31 +0000
-Date: Wed, 28 Feb 2024 15:52:50 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: remove btrfs_qgroup_inherit_add_copy()
-Message-ID: <20240228145250.GP17966@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <25d16c7c81b93d33d23fcbcaa35c24ce07cc00ef.1709006537.git.wqu@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PeGYpb9bXkn9VdRpZbL4gxt65nXRH3hS7uIATzhvdhtOBTDlVpLsoEPhzUlpwI6YiYF6794gqOgBrmwi86vFwtOZ8vNEqHhIfB79Xid9R07nZuEnRoor1tAyZY8KOBRBashH/ZlJkLrLoxmQEN1t8mbqCQLavyBVfEOzjLzdpcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aR5LDzrK; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a0a19c9bb7so1914960eaf.3;
+        Wed, 28 Feb 2024 08:11:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709136661; x=1709741461; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UM7fB83xrY7g3CIrUJgpt+5lWVhOTXwWDbWvr1lXm3o=;
+        b=aR5LDzrKBVpQoLw5bR2v3dc+uWVkN5IFLzc7kb/OWdpF9k67QbUSzCkjLX7gDlG11o
+         gP6smNiQXiqCW3rvqs4aQoOjwF7pM4TuFbPbi/Tav6ML7ak9NY0bYOV218axG683V4vV
+         VAag+pv81zLuB7O3YAfkK1eWgm2TYZ84omougYKbYOOt39QmM+SpG03B0ZSeiPyAhSV9
+         zCYulM3PAnvcGLb7Ap/90w/OouC+Z8tVN2cN//3PXh6x2U2x0kKx+SeBXKu6CvUgRLtP
+         4Why03SmMW6geYuZvb4ztjhT7Bht+rNUXcIkb5czeyeHJMihcOxRe5IEaacIThVxtgb1
+         aX2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709136661; x=1709741461;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UM7fB83xrY7g3CIrUJgpt+5lWVhOTXwWDbWvr1lXm3o=;
+        b=G+9kmGSHVdh+qj3gTGdsWeraTgFODlHWGqfLr8FQxs5sk3m7WqMXjXbko3h6XSgC1m
+         9VqvV6CMFL8qAPEkBELJcjDCA+1G00V1umKJ3gN3u7DOkJB4c4OIknNzN9281M7LTHsr
+         K6noDvlOKOI6IfqDzQZT88yDdhHTgDVYK47RTqrCkBdVXXNZLmwL3EzOLrg70fFPO5XV
+         AcS/6v6bz03UO7/OrU4eB6IEabJo1j1LxxnHjxdEqnljbjrpJIQjlxMifjxoEDWt9+UB
+         UWE17yM5ADcbhrVkaBoz4EZazc62JtancXwa/lwn4UE2MFBXCtOa7ZvNoAEejTUdT1xu
+         6AAw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2lXB9q/oa/FB+pBjxjnyyU3hvxR4Ev8dPdx5x6FOpo95I2uNMqE/GHxpmGqZCeXLFqiZuoOTkkyK2F9aSaekmoVluKvA0m6/rEZuUkhVGihBcvZQ15rF5W32rKX3qXtJFeLuuOW/i/oE57tqWIX98ol0iUoYUVi1BODnobCwAYE7eyFb9NSmR7XFg+M7XsrBHr4hs1Qr4r4hBTKCH
+X-Gm-Message-State: AOJu0YzcUMAUheJpb5q2PrywtTKcxaSE1VujbR5NqIJd31f0Gc1xxMqB
+	efk1DXtH81WvN2HQDdkashMbFtfI9Maj67AL7xDRO12XK4eXC39z
+X-Google-Smtp-Source: AGHT+IHVqmXgCjjpeT3Ayfgm29V7pLwkYccA07WjeKQIvCijKqteNCHyaFrBaReNdiJYMkPFdwfJlQ==
+X-Received: by 2002:a05:6359:4c0f:b0:178:94bc:72ef with SMTP id kj15-20020a0563594c0f00b0017894bc72efmr17459234rwc.25.1709136660774;
+        Wed, 28 Feb 2024 08:11:00 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:2256:57ae:919c:373f])
+        by smtp.gmail.com with ESMTPSA id h8-20020a255f48000000b00dcda5ddeccasm1939107ybm.30.2024.02.28.08.10.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 08:11:00 -0800 (PST)
+Date: Wed, 28 Feb 2024 08:10:59 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Alexander Potapenko <glider@google.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+	Marcin Szycik <marcin.szycik@linux.intel.com>,
+	Wojciech Drewek <wojciech.drewek@intel.com>,
+	Andy Shevchenko <andy@kernel.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Jiri Pirko <jiri@resnulli.us>, Ido Schimmel <idosch@nvidia.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Simon Horman <horms@kernel.org>, linux-btrfs@vger.kernel.org,
+	dm-devel@redhat.com, ntfs3@lists.linux.dev,
+	linux-s390@vger.kernel.org,
+	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+	Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+	Syed Nayyar Waris <syednwaris@gmail.com>,
+	William Breathitt Gray <william.gray@linaro.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH net-next v5 01/21] lib/bitmap: add bitmap_{read,write}()
+Message-ID: <Zd9bE0Z3djvj3+As@yury-ThinkPad>
+References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+ <20240201122216.2634007-2-aleksander.lobakin@intel.com>
+ <3f6df876-4b25-4dc8-bbac-ce678c428d86@app.fastmail.com>
+ <CAG_fn=Wb81V+axD2eLLiE9SfdbJ8yncrkhuyw8b+6OBJJ_M9Sw@mail.gmail.com>
+ <b4309c85-026c-4fc9-8c26-61689ac38fa1@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <25d16c7c81b93d33d23fcbcaa35c24ce07cc00ef.1709006537.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.02
-X-Spamd-Result: default: False [-3.02 / 50.00];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-2.02)[95.16%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b4309c85-026c-4fc9-8c26-61689ac38fa1@app.fastmail.com>
 
-On Tue, Feb 27, 2024 at 02:32:33PM +1030, Qu Wenruo wrote:
-> The function btrfs_qgroup_inherit_add_copy() is designed to add a pair
-> of source/destination qgroups into btrfs_qgroup_inherit structure, so
-> that rfer/excl numbers would be copied from the source qgroup into the
-> destination one.
+On Thu, Feb 01, 2024 at 03:02:50PM +0100, Arnd Bergmann wrote:
+> On Thu, Feb 1, 2024, at 14:45, Alexander Potapenko wrote:
+> > On Thu, Feb 1, 2024 at 2:23 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >> On Thu, Feb 1, 2024, at 13:21, Alexander Lobakin wrote:
+> >>
+> >> As far as I can tell, the header ends up being included
+> >> indirectly almost everywhere, so just parsing these functions
+> >> likey adds not just dependencies but also compile time.
+> >>
+> >
+> > Removing particular functions from a header to reduce compilation time
+> > does not really scale.
+> > Do we know this case has a noticeable impact on the compilation time?
+> > If yes, maybe we need to tackle this problem in a different way (e.g.
+> > reduce the number of dependencies on it)?
 > 
-> This behavior is intentionally hidden since 2016, as such copy will
-> cause qgroup inconsistent immediately and a rescan would reset whatever
-> numbers copied anyway.
+> Cleaning up the header dependencies is definitely possible in
+> theory, and there are other places we could start this, but
+> it's also a multi-year effort that several people have tried
+> without much success.
 > 
-> Now we're going to reject the copy behaviors from kernel, there is no
-> need to keep those hidden (and already disabled for "subvolume create")
-> behaviors.
+> All I'm asking here is to not make it worse by adding this
+> one without need. If the function is not normally inlined
+> anyway, there is no benefit to having it in the header.
 > 
-> This patch would remove btrfs_qgroup_inherit_add_copy() call, and
-> cleanup those undocumented options.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>       Arnd
 
-Ok let's remove the support, I don't think we have a clear use case for
-that. Added to devel, thanks.
+Hi Arnd,
+
+I think Alexander has shown that the functions are normally inlined.
+If for some target that doesn't hold, we'd use __always_inline.
+
+They are very lightweight by nature - one or at max two word fetches
+followed by some shifting. We spent quite some cycles making sure
+that the generated code looks efficient, at least not worse than the
+existing bitmap_{get,set}_value8(), which is a special case of the
+bitmap_{read,write}.
+
+I agree that bitmap header is overwhelmed (like many other kernel
+headers), and I'm working on unloading it.
+
+I checked allyesconfig build time before and after this patch, and
+I found no difference for me. So if you're concerned about compilation
+time, this patch doesn't make things worse in this department.
+
+With all that, Alexander, can you please double-check that the
+functions get inlined, and if so:
+
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
 
