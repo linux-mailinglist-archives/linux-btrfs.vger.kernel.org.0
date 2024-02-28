@@ -1,72 +1,72 @@
-Return-Path: <linux-btrfs+bounces-2868-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2869-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A84BC86B4D2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 17:27:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE01686B4E5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 17:28:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5161E1F26647
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 16:27:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A98D28DAA4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 16:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D2F13FB81;
-	Wed, 28 Feb 2024 16:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C8643FB87;
+	Wed, 28 Feb 2024 16:27:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MqQpyYuF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dNYKXt9z"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C12A6EF02;
-	Wed, 28 Feb 2024 16:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10FB26EEFC;
+	Wed, 28 Feb 2024 16:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709137608; cv=none; b=sR8u1EnUI7y9rqqrJeRvLJ5sPpxBfc+fyawLwj07xOnjmA7GvxIQTMIcGIflpAlYa3uQ1+k0mxMx0vfrGJVzUBiIlbrIFocdSz2ptddcYFLFAXz4JaaIjZmlMVmBOMpva++9TEtzLX1KvazKfm70+j0uvvMp9FhXmOtqNsWd1Ik=
+	t=1709137658; cv=none; b=UCPIZ5VRTetQqrmT61nXQMs4rLZ46XEONLAKhCF946Uu06oFnAmEr5+CcCvaWQqV5/pVM/8qc63dD0fLO/GqQv1BKZEO6vbnNmQwkIVcp6XvNiD5EgycSRYcEGfFCxifhGx2/04yxSHmQsVS0Q2swRoLzEFAODeBFaHIFkdItXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709137608; c=relaxed/simple;
-	bh=cX0mbhq0/BEYvXkOM7RWyssC+Bf7DhBCperd504OjNA=;
+	s=arc-20240116; t=1709137658; c=relaxed/simple;
+	bh=XsYfI28aCpKhqEa677qx/0xf73cpFk22FTtXQK4wgpI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OyFePebAodLKkfITlpLPC7/P/0FopQ9SX7HbqvsX2v+tR7dPE0bWLCIB1BSPhV83aJmYVJfEm9NhIP/kILNMxr9LQ51wzZk8hDmIDhVRc5SCJT4Shrufeuruk50ob5nQvFEwuPRHQAd+ntSSdr/4mn8JzDk21LGKGtbgP1ul3Q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MqQpyYuF; arc=none smtp.client-ip=209.85.219.181
+	 Content-Type:Content-Disposition:In-Reply-To; b=FUAWOvZGxMEreV1WI+sa/Ox2EKE8UagQ/NLg/FMgz0i8NTFoyH8/OPuLC10p8wYc/AdHDDOw+/yBAVYJ9grlL4fxwbRTnuQRZWpl7qbNFtxdYuPts69aIsqwF5qoTGFVI21UTxYdoO2XmGd0UKHmHX85hTBHTc6dekMBJv/eVSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dNYKXt9z; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so5184274276.0;
-        Wed, 28 Feb 2024 08:26:46 -0800 (PST)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcbf82cdf05so5805340276.2;
+        Wed, 28 Feb 2024 08:27:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709137606; x=1709742406; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709137656; x=1709742456; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jKTyKBoJ+zqx71icHaiIJXRtovwN+h+pKT79UfPo2co=;
-        b=MqQpyYuFnbCOlGmRNbh/QSk7cYJl6W5gYFYTb16H2t6X9Yil5lWRX+J/UvpESS0bBX
-         aZC9udLC+9bznVKxZJ/8okYEonOdXddLtihmeiJHMrWT8AjJM680P9eIfN+iE1tdBuUF
-         KlCXDI6fqK/g6r/q4oEfJvDGL8uGeO2f/CgczTW1ew1+0+huTjubOlTrEOoYW5Lrk34N
-         cCGnWSk/FUH2gI3QFyNs552u2oylH+8b/Q4VIM6j01lQoprzBNEluwgkQqLCGSHOWi4F
-         6w40MXgMS5C8hqMrZCr8IWqR61kVA4qr5KR9fHkVkHfIZA4dJ8bdhBfmvPwq5IE/fwtl
-         E1VQ==
+        bh=hWtL7++GjICFukUAoP4h+KhEWcLjTOAu9lMF7xAGsyw=;
+        b=dNYKXt9zA7SXwNI3Hz5/tmwGULpsXm/cceD7uMJEYVGkqwPSdk+LEBbFRK8qOFhlmB
+         zPcUxAFOww6Jx0oNcWLbGlFuU6UAilb4Fb+KrKUI2BuEF3MGiC6G41V3q9Vwk38mvlgl
+         X54ws/YbYNCNC4dup0YxVADuhjfVYPd3a0B0vN8xnr546XcjvOmqvxUksfSnexH4qupB
+         mEd3+sk6M2tybeTTOzbpz/6bE+qkzoVZTz+c+5WTWII6VT4xd0YIGXAubVHT17pk8zN8
+         tmN+RWy9ICQvcNa05v3qDwO4aKQLbY900n0H3Q20B5n6Ct5MErcWM5teOcUmY0QsGUhP
+         WDpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709137606; x=1709742406;
+        d=1e100.net; s=20230601; t=1709137656; x=1709742456;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jKTyKBoJ+zqx71icHaiIJXRtovwN+h+pKT79UfPo2co=;
-        b=kSPfSEMAeYHwB1prHIgsntA5X7Wke03t7hA2sRhvHdOvspoWyWtoVqS2mSE2mtb+3M
-         4VyBFJn8CQzKLPP8SUUbGd86I02kEL/6b8rv37dWiTOhP53tBjmwWOo+9Ixof77l3cCT
-         u6Kvqk5IFoHfefLZ3gMC/GAxRlC/KXen2pP7zWfBHhRWeRQ06Qg0fRgvci27t03XhCQr
-         RS8K69k9zULC4+aI/fFYBzTd885KVvgmIlcYBT2cntXKk1GG8xjZRAMgyx1zO0JyzLMp
-         AMBSdDw9N3xKR+wKAlDx0fjFiar6ACnaBiWu66yVPgoK4TZl387jh12V3+RH1SoffLbH
-         4wKg==
-X-Forwarded-Encrypted: i=1; AJvYcCVMPWE7oREciuCBlgPta/tKZ/uXiHVhjuqn9fcR/DeMgW2qzI8HYNzR5kx3npZv5v36AXYzAheHpSFZxZrxMTv3IOQfnHk9J3OpVJ5EYZG6FfjG0PFdoGm42Gz517fizogRtPI7wT6OfpsRMT7Ync/3U5/0LwIRqoW9Djw/LIgk/tRQovFTcO7f1rqKHAW2MbsixM7zuOzC3OAlPxD0
-X-Gm-Message-State: AOJu0YxCb6micPftnuNlr36+8qxHjsfhMcx6UyLE/qpJi/gWoPofXDVa
-	GqsDp0At4o4PJKgSrXsaYCVD4PSS/NFbJnInS11hqwBGMBqTZCDq
-X-Google-Smtp-Source: AGHT+IEzDdshAZPifjikVHSc+ExEKZEbNWC8tYDB1UrSX7QHB04ABcGjvuz4tLQbulb0mZqEO3cKSg==
-X-Received: by 2002:a25:c5ca:0:b0:dc2:2f4f:757 with SMTP id v193-20020a25c5ca000000b00dc22f4f0757mr2619998ybe.7.1709137606029;
-        Wed, 28 Feb 2024 08:26:46 -0800 (PST)
+        bh=hWtL7++GjICFukUAoP4h+KhEWcLjTOAu9lMF7xAGsyw=;
+        b=DNEkzb0vbgxZ4P1wsQvO57dPqfXG54v5L/zg5ptyga2vSHu+velYQVQCAvDxE9/wIb
+         pvjIxVFwb5yjy1iOBANWewlCwQfr4K8sJATGarQX1sK2OsOirGhYKaUP4G+6XwPNIPSG
+         H+59x5Mg+6GaVXzlzDSFaO5wJWfB4jSAF52kLFEQmvGDkBasrlsZVeUC6/hh9qyRb2Rj
+         Pwj7jzf5rU4gz2xRdAQQ4jh9XVarrQxpTiY+fCVgcN6wT/U7TFnrY9Er+N8G2DkD+nQB
+         7wAIbaxU1s97EVCEhsgihwrVB8mzYVi8G+oYPMGaeA459tThLk4u+tkorEu9yQb35qp8
+         SHPg==
+X-Forwarded-Encrypted: i=1; AJvYcCWFcCVzrfSqaVo9evkHBG9r4CScRk1JlFa0yATX5nvKEYDBTZrXJShdKMCwGdU27jgz9hj+3zQNs5XWTofuxaROV5edFf7Tj6k0UtsYdUlFWaeVWeupib3QQ1VhqSvnaNOxVnex8wNHAgJhbJbnxBk/i3sHdtC6WvF320c2A2jINT1mIfhWP1jhn3CtvOFw0ftNtI8/FckB9oa7sY30
+X-Gm-Message-State: AOJu0Yxh09/U8offsmf0OXxKrKcuSNv2GHGsNLdl6IkOyr0mWd28g1Rd
+	0JbeWRwBYkFs3F0Z4P2mh8cqMwlMmid3gmynEdSuB8qwpP5WbnZZ
+X-Google-Smtp-Source: AGHT+IGgZ4Kkae23Sonz0Wy+ywJ8k8WbRQHuZh38JY+GnbqJ6cshhsv99aWcYpDQ6qckCPnCgMPxgg==
+X-Received: by 2002:a25:e04e:0:b0:dcb:cdce:3902 with SMTP id x75-20020a25e04e000000b00dcbcdce3902mr2751167ybg.55.1709137655985;
+        Wed, 28 Feb 2024 08:27:35 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:2256:57ae:919c:373f])
-        by smtp.gmail.com with ESMTPSA id x11-20020a25accb000000b00dc6d6dc9771sm2072223ybd.8.2024.02.28.08.26.45
+        by smtp.gmail.com with ESMTPSA id s17-20020a5b0751000000b00dcc3c85f6a1sm1956317ybq.6.2024.02.28.08.27.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 08:26:45 -0800 (PST)
-Date: Wed, 28 Feb 2024 08:26:44 -0800
+        Wed, 28 Feb 2024 08:27:35 -0800 (PST)
+Date: Wed, 28 Feb 2024 08:27:34 -0800
 From: Yury Norov <yury.norov@gmail.com>
 To: Alexander Lobakin <aleksander.lobakin@intel.com>
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -83,12 +83,13 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Simon Horman <horms@kernel.org>, linux-btrfs@vger.kernel.org,
 	dm-devel@redhat.com, ntfs3@lists.linux.dev,
 	linux-s390@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v5 09/21] fs/ntfs3: add prefix to bitmap_size()
- and use BITS_TO_U64()
-Message-ID: <Zd9exCzbAnOxAY50@yury-ThinkPad>
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH net-next v5 10/21] btrfs: rename bitmap_set_bits() ->
+ btrfs_bitmap_set_bits()
+Message-ID: <Zd9e9i6FQzGWfHBq@yury-ThinkPad>
 References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
- <20240201122216.2634007-10-aleksander.lobakin@intel.com>
+ <20240201122216.2634007-11-aleksander.lobakin@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -97,18 +98,16 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240201122216.2634007-10-aleksander.lobakin@intel.com>
+In-Reply-To: <20240201122216.2634007-11-aleksander.lobakin@intel.com>
 
-On Thu, Feb 01, 2024 at 01:22:04PM +0100, Alexander Lobakin wrote:
-> bitmap_size() is a pretty generic name and one may want to use it for
-> a generic bitmap API function. At the same time, its logic is
-> NTFS-specific, as it aligns to the sizeof(u64), not the sizeof(long)
-> (although it uses ideologically right ALIGN() instead of division).
-> Add the prefix 'ntfs3_' used for that FS (not just 'ntfs_' to not mix
-> it with the legacy module) and use generic BITS_TO_U64() while at it.
+On Thu, Feb 01, 2024 at 01:22:05PM +0100, Alexander Lobakin wrote:
+> bitmap_set_bits() does not start with the FS' prefix and may collide
+> with a new generic helper one day. It operates with the FS-specific
+> types, so there's no change those two could do the same thing.
+> Just add the prefix to exclude such possible conflict.
 > 
-> Suggested-by: Yury Norov <yury.norov@gmail.com> # BITS_TO_U64()
 > Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+> Acked-by: David Sterba <dsterba@suse.com>
 > Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 
 Reviewed-by: Yury Norov <yury.norov@gmail.com>
