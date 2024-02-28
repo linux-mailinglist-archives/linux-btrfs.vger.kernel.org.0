@@ -1,142 +1,157 @@
-Return-Path: <linux-btrfs+bounces-2876-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2877-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7C2C86B542
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 17:46:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E9E486B5F1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 18:26:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D0DA2883F0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 16:46:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A3741C23905
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Feb 2024 17:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED7A208D5;
-	Wed, 28 Feb 2024 16:46:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 952DF15A495;
+	Wed, 28 Feb 2024 17:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DRSXZdSn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f3n8Kt8f"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5AC6EEE4;
-	Wed, 28 Feb 2024 16:46:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57C315A4A2;
+	Wed, 28 Feb 2024 17:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709138794; cv=none; b=jBxdT7/IYKvA9/6OwUtnizzbuCqEffo4NLSmJ5MpOLvbCJgNh7IoPOQOt0y11lXIg7owtp2Tx6Wqia9/mK/KHUGHWn24+41gmsjcKtFc4k/mi6+Rlr+I6yOKWNpqN1brCXbeIJRm2C3C4AZXqBkbDVSUtGzgdN8230ZHJdtfhdw=
+	t=1709141171; cv=none; b=YLCCbeTMgIieIMiIis4311PqUGlL1jNp4aJlTxO7kSybY+ZTMOJzc8oyKTL21u6ScThsVbYyBWLx9OnC+h5mFOy1CW/n2+MhU3fuUV6z8K4i0xakdtSeydPs8UpzTJa0cYTkGDyNaDwh3TL+4BlMK/xcZOTI0JKD7Fdj5bSyZNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709138794; c=relaxed/simple;
-	bh=V+Wes0yro1vaPybdAdIYTu58twkZIP8KrE4+vLrxbsI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fJDCU6bzZgDObSzdAj/wfkw7SxuiR0CN/4aPBKVy+SRxA5kQDWvo2q11yW7WxiWy0gIyZ0oZHFxf1hQLuTv44pzWGUrrZQIgtXuTzJc5fHlZIr2D3jTztaPcshl6fS5Hsii86X8K5yxNEEFz+qQoQSmdm65EtOGQA4nUSVPfEaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DRSXZdSn; arc=none smtp.client-ip=209.85.219.171
+	s=arc-20240116; t=1709141171; c=relaxed/simple;
+	bh=UNTgcEBBg73DjZmytlJ3R7l8+M00JW1cu/+Tjop0kzs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YgI27yG1PjraJwcPyQt4ISTXqPi0cpp5qtL25Gdt/ZfS5vvlVZN4WEbl8ZRRL1Ti/zuwGsgy3Vm7jTsmktawc8xLwicJ9ITJiocieAq3mW3tVJQzfIjjEBpS+jr7Wdk7LoZWkVS4mfJR7sc8vjTFOAKq4X1trLEC1ZvGKTmASlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f3n8Kt8f; arc=none smtp.client-ip=209.85.208.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so1118638276.0;
-        Wed, 28 Feb 2024 08:46:32 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d28e465655so47399831fa.0;
+        Wed, 28 Feb 2024 09:26:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709138791; x=1709743591; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DxwTMwCJVFMBDDvjxN0uaNIVMWBc/m50PoGk4vNalyY=;
-        b=DRSXZdSn37qd1kKt+dhafidPKpXvIpn+/ObqdhivrtC3F6e7ddTn5l0YtNgaRKGK+M
-         d9MQ9UTXf4FbnpAV1R5XwfiT79PBjpgF+VSWxQoms07ghIBsJt9l9X0V0bZUWn5pvFi9
-         SMRb4BM5i8GqKWF6xtBRccDsVisltO0HNlOm2pUdMvbiYCxNJnKjCpNQ7xvMzCWEOl9U
-         FPiP2lA92mTaALlKGf9KEjmm6zlmTO6nhzCvlOKzyEXaKH/36SB3tArGkhSeFElCnv9E
-         S2h1Tby5FPY1XGorSyWLSt17PR++PDYbmqjrQr7PqUIPzyZZTbLLxX2W3NJJsOj9X676
-         qKAw==
+        d=gmail.com; s=20230601; t=1709141168; x=1709745968; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UNTgcEBBg73DjZmytlJ3R7l8+M00JW1cu/+Tjop0kzs=;
+        b=f3n8Kt8f3Mfk2/rg6mfpV9FjOeCL+EUjGNlB58HlWl07I9TBsbc5MzUgJmYCQNrKjF
+         f/yE2GpsB2gsR/IIimruiK6LG5McQ1AuvMnTslgrOPG/8HC3aLDk0ex33+vR8wuWUvMu
+         1S0EVQbAN0QNwt3xthjWEuzMqS+vQGJsRI7VOjLlKxWmTWmHFhsla/dpMBtYkqap9l0r
+         2xmEMVu4F1j44gNVTbRLPmw/58oyuFIyKvPhagnU/6BtmF8dCS7xfof9DEwKOqVhg2cw
+         8VU+QfznfIoBjvoR1E7wep/pNIaHe0iYpli/hGQtwfbULxOAr7o1cleZaNYQBXEkgxQ7
+         rJbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709138791; x=1709743591;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DxwTMwCJVFMBDDvjxN0uaNIVMWBc/m50PoGk4vNalyY=;
-        b=a50gL7jA1ORb2QEq2pYlynwcNl0O52+fwa0MV9XzhcKv5+ciUASQQ71Y1QySSYYfUA
-         WeqI5LW+5lVJm8C8vBb5guu1JvWre0maYL2yprNwwKq8DZEzrBuW+leOvIW887Cg18aW
-         NwNd2I+CnV0iRENfqbsjXzEJSYk30KwJGIeIChfW9PMvH9KGcoQN5IMJ12fNhQngNtDd
-         1Lmkj89KsB8ubmHanAtu26cY86bpOaRY7iiVdg1nbH0IhyzEED6FvWwos3uvcjYtAOOs
-         JWpN7fpeDD29z1N22+b/dPyxmaN5iWTwcUThf0wt3FCBgKYLjly4wonrevKIxOiy0j/+
-         s2Bg==
-X-Forwarded-Encrypted: i=1; AJvYcCUywO9m1zecZ3ofWeU4sUrDKcNKkLn2VCQMyXB7ROcp4X+Vdxi7mpbbg9PD2sUb2LbwwINZN3xFiWr6kFRX4tgGmmVSM6GfkCljFuy/sJaFWqnQ0NeFRikRTp3HCYNf/Qm4zGzoDePoM9aQJhKIjHqDXS/VWGD28XkWhcbI+7fWOcDAbakQ0Fp5lfLOM3D6ZFSY2f6M78ZvrgAKsl7z
-X-Gm-Message-State: AOJu0Yw4HKJSOkFC79K8pPJKgiFkUlYMrSkS/iDvlwmRKYtukMLTgMW3
-	h5/PHqjWSIk45Hua/eVOSfgCPIcC9qeqQRjebQy2VFf2af8GswLkAzvPJxgjThw=
-X-Google-Smtp-Source: AGHT+IG+T6i0Kg6hK0OXQQpUI7eVIpugJ4UsU/eSwtZUJTDnNAIjX3r6X/tjo8tk0qDTO98RF+EAJQ==
-X-Received: by 2002:a25:72c1:0:b0:dc7:3362:4b2f with SMTP id n184-20020a2572c1000000b00dc733624b2fmr2053330ybc.13.1709138791147;
-        Wed, 28 Feb 2024 08:46:31 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:2256:57ae:919c:373f])
-        by smtp.gmail.com with ESMTPSA id t13-20020a25aa8d000000b00dcc620f4139sm2082379ybi.14.2024.02.28.08.46.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 08:46:30 -0800 (PST)
-Date: Wed, 28 Feb 2024 08:46:29 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Andy Shevchenko <andy@kernel.org>,
-	linux-s390@vger.kernel.org, ntfs3@lists.linux.dev,
-	Wojciech Drewek <wojciech.drewek@intel.com>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>, dm-devel@redhat.com,
-	linux-kernel@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
-	Eric Dumazet <edumazet@google.com>,
-	Marcin Szycik <marcin.szycik@linux.intel.com>,
-	Alexander Potapenko <glider@google.com>,
-	Simon Horman <horms@kernel.org>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-btrfs@vger.kernel.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [Intel-wired-lan] [PATCH net-next v5 00/21] ice: add PFCP filter
- support
-Message-ID: <Zd9jZZafcVyDGOTw@yury-ThinkPad>
-References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
- <c90e7c78-47e9-46d0-a4e5-cb4aca737d11@intel.com>
- <20240207070535.37223e13@kernel.org>
- <4f4f3d68-7978-44c4-a7d3-6446b88a1c8e@intel.com>
+        d=1e100.net; s=20230601; t=1709141168; x=1709745968;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UNTgcEBBg73DjZmytlJ3R7l8+M00JW1cu/+Tjop0kzs=;
+        b=EM6kjJwNbNsxFgQ12hQs8Qa+HQsMHu2Dc2S1qDVCmrFAzS28GjO5t7A3bh6+2cwHEa
+         8Juj6fQIiwmTUO9dapJw/S/YuNItF5Y4PVdXPl/PkmCj8zMoUv45ZuH5qbhSVbGMjtXJ
+         lhopXgwzOanXj/+CJrQT9wJKLGjLoCIMLkIvbLCq7ckZJxcIrI4oH4ANxAo3+3FECzSF
+         QmXHXedecm0vRYH3KYGSh4HNFG2KTMp2NjAn3ug3bRzju7FxHDy+FIBe42DvPtF7XIsT
+         8+TjbfWwUkFW7JnptzWQVeeeBJ1Z3MrUMSXSCj6AMcEmZgpZIF7UXEVBSYE8FUYS7zwr
+         rNjw==
+X-Forwarded-Encrypted: i=1; AJvYcCWGjrlnB+V5OeouG2yZtlVpyZ6ndtu31I3PPCVQwFpoMVl0A4hnXEfK8zX9aGLoOSpUC2ITzJJZNywoSEEVvon/8KwaMt4rOcpvuJ0aBrwLF/LrHgdHth4t7tzCXHGUPkImJae1WeBAWVc=
+X-Gm-Message-State: AOJu0YwWh/gX1Nfqcm3hkuGLnT5r+yyyH4PT6LEWWlXffRSU1b1zUIN2
+	gIf22uf+QZRqGu+CAswnBOSYopQNclX8jfdSpBb0RrP3TkN8itOE1wQ0eVpBhDYgWkykSwQXqrE
+	PyahzcqRF+C4WBiHrblGnoQ5f6wT8+Uqn0733FA==
+X-Google-Smtp-Source: AGHT+IH1rWoewQvMELMlYHG8fdSakqFW164fjWcxkcHfJKS1Eql5fp55rbAcnXR8nYl+LnUARZaIVQMv/On3PTITdrk=
+X-Received: by 2002:a05:651c:4d3:b0:2d2:c8ee:c99b with SMTP id
+ e19-20020a05651c04d300b002d2c8eec99bmr2003504lji.29.1709141167712; Wed, 28
+ Feb 2024 09:26:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f4f3d68-7978-44c4-a7d3-6446b88a1c8e@intel.com>
+References: <CAOCpoWc_HQy4UJzTi9pqtJdO740Wx5Yd702O-mwXBE6RVBX1Eg@mail.gmail.com>
+ <CAOCpoWf3TSQkUUo-qsj0LVEOm-kY0hXdmttLE82Ytc0hjpTSPw@mail.gmail.com>
+In-Reply-To: <CAOCpoWf3TSQkUUo-qsj0LVEOm-kY0hXdmttLE82Ytc0hjpTSPw@mail.gmail.com>
+From: Patrick Plenefisch <simonpatp@gmail.com>
+Date: Wed, 28 Feb 2024 12:25:57 -0500
+Message-ID: <CAOCpoWeNYsMfzh8TSnFqwAG1BhAYnNt_J+AcUNqRLF7zmJGEFA@mail.gmail.com>
+Subject: Re: [REGRESSION] LVM-on-LVM: error while submitting device barriers
+To: stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>, 
+	Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+	David Sterba <dsterba@suse.com>, regressions@lists.linux.dev, dm-devel@lists.linux.dev, 
+	linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Feb 12, 2024 at 12:35:38PM +0100, Alexander Lobakin wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> Date: Wed, 7 Feb 2024 07:05:35 -0800
-> 
-> > On Tue, 6 Feb 2024 13:46:44 +0100 Alexander Lobakin wrote:
-> >>> Add support for creating PFCP filters in switchdev mode. Add pfcp module
-> >>> that allows to create a PFCP-type netdev. The netdev then can be passed to
-> >>> tc when creating a filter to indicate that PFCP filter should be created.  
-> >>
-> >> I believe folks agreed that bitmap_{read,write}() should stay inline,
-> >> ping then?
-> > 
-> > Well, Dave dropped this from PW, again. Can you ping people to give you
-> 
-> Why was it dropped? :D
-> 
-> > the acks and repost? What's your plan?
-> 
-> Ufff, I thought people read their emails...
-> 
-> Yury, Konstantin, s390 folks? Could you please give some missing acks? I
-> don't want to ping everyone privately :z
+I'm unsure if this is just an LVM bug, or a BTRFS+LVM interaction bug,
+but LVM is definitely involved somehow.
+Upgrading from 5.10 to 6.1, I noticed one of my filesystems was
+read-only. In dmesg, I found:
 
-Hi Alexander, Jakub,
+BTRFS error (device dm-75): bdev /dev/mapper/lvm-brokenDisk errs: wr
+0, rd 0, flush 1, corrupt 0, gen 0
+BTRFS warning (device dm-75): chunk 13631488 missing 1 devices, max
+tolerance is 0 for writable mount
+BTRFS: error (device dm-75) in write_all_supers:4379: errno=-5 IO
+failure (errors while submitting device barriers.)
+BTRFS info (device dm-75: state E): forced readonly
+BTRFS warning (device dm-75: state E): Skipping commit of aborted transaction.
+BTRFS: error (device dm-75: state EA) in cleanup_transaction:1992:
+errno=-5 IO failure
 
-I reviewed the series again and added my SOBs for bitmap-related
-patches, and Acks or RBs for the rest, where appropriate.
+At first I suspected a btrfs error, but a scrub found no errors, and
+it continued to be read-write on 5.10 kernels.
 
-Regarding the patch #17, I don't think that network-related tests
-should be hosted in lib/test-bitmap. This is not a critical issue,
-but Alexander, can you find a better place for the code?
+Here is my setup:
 
-The rest of the series is OK for me. I think Jakub wants to pull this
-as a whole in his -net branch? If so please go ahead, if not - I can
-pull bitmap-related part in bitmap-for-next.
+/dev/lvm/brokenDisk is a lvm-on-lvm volume. I have /dev/sd{a,b,c,d}
+(of varying sizes) in a lower VG, which has three LVs, all raid1
+volumes. Two of the volumes are further used as PV's for an upper VGs.
+One of the upper VGs has no issues. The non-PV LV has no issue. The
+remaining one, /dev/lowerVG/lvmPool, hosting nested LVM, is used as a
+PV for VG "lvm", and has 3 volumes inside. Two of those volumes have
+no issues (and are btrfs), but the last one is /dev/lvm/brokenDisk.
+This volume is the only one that exhibits this behavior, so something
+is special.
 
-Thanks,
-Yury
+Or described as layers:
+/dev/sd{a,b,c,d} => PV => VG "lowerVG"
+/dev/lowerVG/single (RAID1 LV) => BTRFS, works fine
+/dev/lowerVG/works (RAID1 LV) => PV => VG "workingUpper"
+/dev/workingUpper/{a,b,c} => BTRFS, works fine
+/dev/lowerVG/lvmPool (RAID1 LV) => PV => VG "lvm"
+/dev/lvm/{a,b} => BTRFS, works fine
+/dev/lvm/brokenDisk => BTRFS, Exhibits errors
+
+After some investigation, here is what I've found:
+
+1. This regression was introduced in 5.19. 5.18 and earlier kernels I
+can keep this filesystem rw and everything works as expected, while
+5.19.0 and later the filesystem is immediately ro on any write
+attempt. I couldn't build rc1, but I did confirm rc2 already has this
+regression.
+2. Passing /dev/lvm/brokenDisk to a KVM VM as /dev/vdb with an
+unaffected kernel inside the vm exhibits the ro barrier problem on
+unaffected kernels.
+3. Passing /dev/lowerVG/lvmPool to a KVM VM as /dev/vdb with an
+affected kernel inside the VM and using LVM inside the VM exhibits
+correct behavior (I can keep the filesystem rw, no barrier errors on
+host or guest)
+4. A discussion in IRC with BTRFS folks, and they think the BTRFS
+filesystem is fine (btrfs check and btrfs scrub also agree)
+5. The dmesg error can be delayed indefinitely by not writing to the
+disk, or reading with noatime
+6. This affects Debian, Ubuntu, NixOS, and Solus, so I'm fairly
+certain it's distro-agnostic, and purely a kernel issue.
+7. I can't reproduce this with other LVM-on-LVM setups, so I think the
+asymmetric nature of the raid1 volume is potentially contributing
+8. There are no new smart errors/failures on any of the disks, disks are healthy
+9. I previously had raidintegrity=y and caching enabled. They didn't
+affect the issue
+
+
+#regzbot introduced v5.18..v5.19-rc2
+
+Patrick
 
