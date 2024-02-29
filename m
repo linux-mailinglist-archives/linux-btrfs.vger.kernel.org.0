@@ -1,250 +1,285 @@
-Return-Path: <linux-btrfs+bounces-2954-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2955-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD5DD86D6EF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 23:43:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB39B86D7DF
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 00:31:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7B742878CE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 22:43:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFB301F21913
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 23:31:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD90381AA;
-	Thu, 29 Feb 2024 22:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1F275814;
+	Thu, 29 Feb 2024 23:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="I/6LbYGK"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="KS/+/uy9";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HOAp1roy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10242200A6
-	for <linux-btrfs@vger.kernel.org>; Thu, 29 Feb 2024 22:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA5A55E76;
+	Thu, 29 Feb 2024 23:31:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709246600; cv=none; b=ItzUEBreTmY0+cYktj+e7aXzEI8X3CBWx9yjEHzs2Ux55ePoKfq+dEcw4RUPcxO/qjW7W8CaKV+wW7GdmqnlFXAU3u8xFCCn4reqZWT/6CCU4BXSnzAFKe9chdzE8UbWbTbp5CJ6hqVLmvicSFt2j4RWb1vf7WMBZuBAGRF3Ehw=
+	t=1709249493; cv=none; b=c5j8QGjvg3uP0WRmFifYTKg2rTcsPssT7t2DRS62bnRxD0c0RNcryShV5bCsiy3UjahFnaEfCHDyVoow8tWYo1/QpY/3NOMz6S0rD9i/bvTSPouTlFbzEHVyhvwfk2vZZwejUfstdRWk67PwUCWSpUs8SjxFC0ytCHi7FWsKiHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709246600; c=relaxed/simple;
-	bh=YSAxvckeO4ZuhDRxZTLzWR7r6mpCOsNuLq9Nh6Irm3I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Dt3BwtYYma2hR5giZyWRyl1LA5Ix7OWSiaU/tJ6z0Hyfn/LV2BP0XEcmW0S34gfx9v2ESnecq4WkyLL/bfrNV2E+ffechVw5NRk3NMEPq9y6Q56QCIAnTBkXQfNSW4LTSWL+FTrYpZDBxCvW5V7lYXoeIyhRpQE3sD3lLG8LTS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=I/6LbYGK; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512bde3d197so1429734e87.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Feb 2024 14:43:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1709246596; x=1709851396; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xSKOOAGk9osl6vJ5sno9k2xJRSG6CSocJGKejz2PBwg=;
-        b=I/6LbYGKk+n3G03aa631+wplmu3343bMkWqyNXD5Y0pfbHoVgl6bjkqguhd7+HXAPe
-         CR0EK0Xsi3TQ6QcXmhdQrZVZyJ1nyrWxDP2G2v03Pkv4Pbpb/9kfyYBTulAIkKMm6RK5
-         PpwwCoo+9Yl9sOGinvB7/kdu5gowlYiVdPPyiotuqYjWcVjj/ZwoD8fJ3kyO2s1P/AQh
-         CFVsP9gMOmvDaVP7auPrUPDljYk+Nj96V1th2AWUu5hJu8kC+uKLIu4sBe3zxLwu2Dmd
-         2f+ZgG1C1Ix3hhR8pb3HRkk6eX4y7hVeJhZahPl4BM3yz30zkyZhPfSPCPhDQh8g14PX
-         6YKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709246596; x=1709851396;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xSKOOAGk9osl6vJ5sno9k2xJRSG6CSocJGKejz2PBwg=;
-        b=lU+KXYrMwW+gTZwLo9Tt7vcc50Ch3XOyTpvKv1g23fbNIsmEyoVIi03CEgC2H2HdM/
-         O2ywyJjvfwZZ+rX6iGcmTtT+f+yMJZzReZhPUHmbifqjhIdwZVk9044IS5MnThHBP275
-         4gkNjMqooB2lE3VpxyvZIcmoHI/7gqWEkG6O0SPKjWjTkHq8SPJ0ihV2rQA8oK/9zlxK
-         BNoClSXJ6sYMY/fYIgzqzGll17X+y/zry4yrhkyZkJ0V0SAHT9JRb/frS9Hf4uB+2lc3
-         OOLk2Z5pdoYxpaGuPoDcJjyLw723Ohs6gVHM7bw0pbukW8QFYtKUIq2kKc9u2Bu0d3dM
-         qWfg==
-X-Forwarded-Encrypted: i=1; AJvYcCVo7d5ck7gdatoi+df1uAJPN5DPbKPw/sKIbCEeVW1WTUAIsMMmqH+3td1JUpy5K8SGAiD49dg7xJSKmflTBm1zp3AiRotaudH/dqA=
-X-Gm-Message-State: AOJu0YxPGJl9S3c0SBF/hoBW34ACrDFG5SMltPXvYRFwxWsStSvyACjM
-	mX2E1WVjNTOns+N7cqRPUxL8KbZUURwsdEhJ1Jq56rPdSbNDYGSluWs2IVHVa3M=
-X-Google-Smtp-Source: AGHT+IEwmww/spekHhZ7Br7FkL7H3YzUeXqf3m1My0mJtrthYjU2rzo4r+lR9+mWFI7IybN0CAb7kg==
-X-Received: by 2002:ac2:5985:0:b0:512:fe3d:a991 with SMTP id w5-20020ac25985000000b00512fe3da991mr2185277lfn.61.1709246596128;
-        Thu, 29 Feb 2024 14:43:16 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id y39-20020a056a00182700b006e58920c572sm1773140pfa.128.2024.02.29.14.43.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Feb 2024 14:43:15 -0800 (PST)
-Message-ID: <ccafcbe4-dc05-4b49-8be0-651c08d9171d@suse.com>
-Date: Fri, 1 Mar 2024 09:13:10 +1030
+	s=arc-20240116; t=1709249493; c=relaxed/simple;
+	bh=HTzbY+8vxLKQQqFf7V17Hpy9/TsUTY4T2yxeLQj7sH0=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DwZtiBNS/WC3FDRqe6EXR/8g9ty39RrnFk9w2HKii9hg0X1RwYFLHCDBGkGzVXZdrHIdycmpfeseNQ19j3FtoC01afWrhuj4zVysUgb3bS0PqslxuRPk1bOaI2WiCrauxOIBWYJ4ebQKtEbJx3CFHexhblsLME2xv8bUsnD9y5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=KS/+/uy9; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=HOAp1roy; arc=none smtp.client-ip=64.147.123.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id 643673200A91;
+	Thu, 29 Feb 2024 18:31:29 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 29 Feb 2024 18:31:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1709249488; x=1709335888; bh=yeqqb4gtfY
+	X/6l8Ur5nv7zJk04vGMoYp8+PwYU6YTvg=; b=KS/+/uy9+TLubk2fVoAepM9abu
+	uIgsXWYAd320sew0Z5lyeor+dqfVVVQq+05MTwDhKvI2Zr+IfyfMy7XkIlwK8B9r
+	Iz/XSfFTZV8RvfyYZ+ek720bwFI7l0mFs/GIlRNnAwCfB7SJzEj9kDkU+OXV6ROj
+	VBXHRIvchJ8UAzVfWK/K0U65UPRl9/XrSFL5esYSRVTRP+wLKauV72tE+iqlL6tn
+	bvNJew5aYujnjimjuJwkVz5nNupwmsUccW3IwghBgKmCxu1G2ff566QmEDW09VUS
+	vPcwU9B/lWHYL90nRp9i7WLUOzvoAupCaBZPmVl3cOkpgJIXPzsXrs+xa/4g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709249488; x=1709335888; bh=yeqqb4gtfYX/6l8Ur5nv7zJk04vG
+	MoYp8+PwYU6YTvg=; b=HOAp1royy9E5SVX4dvB+TZO2W/WIXwlyQCgYojQl2aBl
+	s4oYnHcsu9Ys8JUtG1XfJjwlIhUjwFnTKYBmR/EMC60ZjUu57TgAMreD+iGUwmX/
+	LuhBVGGVCWywjFozDTAThXUjGB3RQFxBe6YLGlwA5fxocxjIEZ5GBcGrLyNvluQd
+	CXKrFiFR9iXBEJTn5QjjJqADIGHpD7jclAvHOVA0xNTHfwhQepuSdvVPvWFOnv4p
+	3TiN17sZp/XBsYP1lJyQFdX+wS0Idm26NelO5CHeWnz9NWKz6Lm1hT9hypW4/oEJ
+	K6uKJMMG/T6/xoJOINd7m7JqgCYn318soQnfy9ZFTA==
+X-ME-Sender: <xms:0BPhZRoXzqvOCi8ZbwfArazim6714k3mEPnhKY6Azeg2Dx7uI45kXw>
+    <xme:0BPhZTpOb2-kFeAvsFkvZe4XG4clIuuiyUr5I1oHo4x5QdJP9zhp8HXjPxYFLrHpc
+    1tlZmDv683B7otELgU>
+X-ME-Received: <xmr:0BPhZePChNN8l6iXWsvtuHb0nyLQ_-G4us07eOIiZRl73BWIXqd1PJ6uJdUUlmW6xevKXgdmyg4Nut1VWaVD5FqCOs0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrhedtgddtlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttdertd
+    dttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhepheduveelkeeiteelveeiuefhudehtdeigfehkeeffe
+    egledvueevgefgudeuveefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:0BPhZc5Yxh5yS-7Br8x5QSd1sc6gyey07njxqX0CCPp_gUjVSQuuXQ>
+    <xmx:0BPhZQ6oaAwuB_zTokxxX6-hWJn4B_FW7ovWtOFanBonYoDxEzpy3w>
+    <xmx:0BPhZUi-WuHnCYSQbzNuFEUypckXm4orozWasgo3b4JcCJzMWYvpdg>
+    <xmx:0BPhZeRv1guj-RBMo8JAEVCPEIzDl49r_N21hUTdTf1RpC0k2Bjclw>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 29 Feb 2024 18:31:28 -0500 (EST)
+Date: Thu, 29 Feb 2024 15:32:40 -0800
+From: Boris Burkov <boris@bur.io>
+To: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+	fstests@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add test for shifting devt
+Message-ID: <20240229233240.GA1799927@zen.localdomain>
+References: <27bad2e06121a6cd5cb34146e37b8e2dc46dec0c.1709231457.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Zero sized file that should have 512KB size with 6.6
-Content-Language: en-US
-To: Martin Raiber <martin@urbackup.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <0102018df1b2a3a2-9359bfe7-9155-4af6-a0d1-7cee1faf77e4-000000@eu-west-1.amazonses.com>
- <103dacd5-d97c-42e2-8a13-39d1800a85bf@gmx.com>
- <0102018df692cd2a-d4b9b332-cd3e-4cf1-b1e3-469381c2dd5f-000000@eu-west-1.amazonses.com>
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <0102018df692cd2a-d4b9b332-cd3e-4cf1-b1e3-469381c2dd5f-000000@eu-west-1.amazonses.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <27bad2e06121a6cd5cb34146e37b8e2dc46dec0c.1709231457.git.boris@bur.io>
 
+This is a pretty poor submission, I forgot to write a commit message and
+there are some random obvious problems with the style of the test
+itself. Please disregard until I resend.
 
+Sorry for the spam!
+Boris
 
-在 2024/3/1 07:03, Martin Raiber 写道:
-> On 29.02.2024 04:02 Qu Wenruo wrote:
->>
->>
->> 在 2024/2/29 08:20, Martin Raiber 写道:
->>> Hi,
->>>
->>> when upgrading to kernel 6.6 I have a zero sized file after a few days
->>> of running. I'm pretty sure the app has written 512KB into this file
->>> (using normal write()). Yet stat etc. return zero. But fiemap has some
->>> extents!
->>
->> Have you found a reliable way to reproduce such files manually?
->> Or that application is required to create such files?
+On Thu, Feb 29, 2024 at 10:36:41AM -0800, Boris Burkov wrote:
+> ---
+>  common/config       |   1 +
+>  common/rc           |   4 ++
+>  tests/btrfs/303     | 127 ++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/303.out |   2 +
+>  4 files changed, 134 insertions(+)
+>  create mode 100755 tests/btrfs/303
+>  create mode 100644 tests/btrfs/303.out
 > 
-> Thanks. No, I'll try to think of a way to make this more reproducable. I 
-> think as a next step I'll disable compression.
-> 
-> One unusal thing might be that shortly after creating the file with a 
-> few pwrite() calls it writes into the file using io_uring splice. But 
-> idk from logs if it then had size zero afterwards or if that came later.
-> 
->>
->> If you have a reproducer that would be a perfect case for us to fix (and
->> add a test case for it).
->>
->>>
->>> The machine is not power cycled or restarted between the writing and the
->>> zero size issue.
->>>
->>> Kernel 6.6.17 mounted with
->>> rw,noatime,compress=lzo,ssd,discard=async,nospace_cache,skip_balance,metadata_ratio=8,subvolid=5,subvol=/
->>> Running with ECC RAM (but data=single on one device).
->>>
->>> $ filefrag -v ./73c0138c00
->>> Filesystem type is: 9123683e
->>> File size of ./73c0138c00 is 0 (0 blocks of 4096 bytes)
->>>   ext:     logical_offset:        physical_offset: length: expected: 
->>> flags:
->>>     0:       32..      63:  229943374.. 229943405:     32: 32: 
->>> encoded,eof
->>>     1:       64..      95:  231710261.. 231710292:     32: 229943406:
->>> encoded,eof
->>>     2:       96..     127:  231741406.. 231741437:     32: 231710293:
->>> last,encoded,eof
->>> ./73c0138c00: 3 extents found
->>>
->>> $ stat ./73c0138c00
->>>    File: ./73c0138c00
->>>    Size: 0               Blocks: 768        IO Block: 4096 regular empty
->>> file
->>> Device: 34h/52d Inode: 424931256   Links: 1
->>> Access: (0750/-rwxr-x---)  Uid: (    0/    root)   Gid: (    0/ root)
->>> Access: 2024-02-28 10:52:08.421899782 +0100
->>> Modify: 2024-02-28 10:52:10.809908158 +0100
->>> Change: 2024-02-28 10:52:10.809908158 +0100
->>>   Birth: 2024-02-28 10:52:08.421899782 +0100
->>
->> Could you please dump the contents of the inode?
->>
->> # btrfs ins dump-tree -t 5 <device> | grep -A7 'item .* key (424931256 '
-> 
-> $ btrfs ins dump-tree -t 6945 /dev/mapper/dev| grep -A7 'item .* key 
-> (424931256'
->          item 114 key (424931256 INODE_ITEM 0) itemoff 9161 itemsize 160
->                  generation 2775889 transid 2775890 size 0 nbytes 393216
->                  block group 0 mode 100750 links 1 uid 0 gid 0 rdev 0
->                  sequence 36 flags 0x800(COMPRESS)
->                  atime 1709113928.421899782 (2024-02-28 10:52:08)
->                  ctime 1709113930.809908158 (2024-02-28 10:52:10)
->                  mtime 1709113930.809908158 (2024-02-28 10:52:10)
->                  otime 1709113928.421899782 (2024-02-28 10:52:08)
->          item 115 key (424931256 INODE_REF 480) itemoff 9141 itemsize 20
->                  index 1597091 namelen 10 name: 73c0138c00
->          item 116 key (424931256 XATTR_ITEM 550297449) itemoff 9091 
-> itemsize 50
->                  location key (0 UNKNOWN.0 0) type XATTR
->                  transid 2775889 data_len 3 name_len 17
->                  name: btrfs.compression
->                  data lzo
->          item 117 key (424931256 EXTENT_DATA 131072) itemoff 9038 
-> itemsize 53
->                  generation 2775890 type 1 (regular)
->                  extent data disk byte 941848059904 nr 73728
->                  extent data offset 0 nr 131072 ram 131072
->                  extent compression 2 (lzo)
->          item 118 key (424931256 EXTENT_DATA 262144) itemoff 8985 
-> itemsize 53
->                  generation 2775890 type 1 (regular)
->                  extent data disk byte 949085229056 nr 81920
->                  extent data offset 0 nr 131072 ram 131072
->                  extent compression 2 (lzo)
->          item 119 key (424931256 EXTENT_DATA 393216) itemoff 8932 
-> itemsize 53
->                  generation 2775890 type 1 (regular)
->                  extent data disk byte 949212798976 nr 65536
->                  extent data offset 0 nr 131072 ram 131072
->                  extent compression 2 (lzo)
-
-Thanks for the dump, really nothing especially wrong, except the file size.
-
-This looks like an ordinary file got truncated to zero size.
-
-It shouldn't be a big problem (except the extra wasted space) for now.
-
-But I still believe we need to check why this is happening.
-
-Thanks,
-Qu
-
->          item 120 key (424931257 INODE_ITEM 0) itemoff 8772 itemsize 160
->                  generation 2775889 transid 2775890 size 524288 nbytes 
-> 524288
->                  block group 0 mode 100750 links 1 uid 0 gid 0 rdev 0
-> 
->>
->> Thanks,
->> Qu
->>>
->>> * Nothing in dmesg
->>> * Btrfs scrub has no errors
->>> * Rebooting does not fix size
->>> * Btrfs check has no errors
->>>
->>> Let me know if there is anything else I can provide. Will leave this
->>> as-is till the end of this week.
->>>
->>> Regards,
->>> Martin Raiber
->>>
->>>
-> 
+> diff --git a/common/config b/common/config
+> index a3b15b96f..43b517fda 100644
+> --- a/common/config
+> +++ b/common/config
+> @@ -235,6 +235,7 @@ export BLKZONE_PROG="$(type -P blkzone)"
+>  export GZIP_PROG="$(type -P gzip)"
+>  export BTRFS_IMAGE_PROG="$(type -P btrfs-image)"
+>  export BTRFS_MAP_LOGICAL_PROG=$(type -P btrfs-map-logical)
+> +export PARTED_PROG="$(type -P parted)"
+>  
+>  # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
+>  # newer systems have udevadm command but older systems like RHEL5 don't.
+> diff --git a/common/rc b/common/rc
+> index 30c44dddd..8e009aca9 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -5375,6 +5375,10 @@ _require_unshare() {
+>  		_notrun "unshare $*: command not found, should be in util-linux"
+>  }
+>  
+> +_require_parted() {
+> +	$PARTED_PROG --list &>/dev/null || _notrun "parted: command not found"
+> +}
+> +
+>  # Return a random file in a directory. A directory is *not* followed
+>  # recursively.
+>  _random_file() {
+> diff --git a/tests/btrfs/303 b/tests/btrfs/303
+> new file mode 100755
+> index 000000000..dece3eacc
+> --- /dev/null
+> +++ b/tests/btrfs/303
+> @@ -0,0 +1,127 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2024 Meta, Inc. All Rights Reserved.
+> +#
+> +# FS QA Test 303
+> +#
+> +# Test an edge case of multi device volume management in btrfs.
+> +# If a device changes devt between mounts of a multi device fs, we can trick
+> +# btrfs into mounting the same device twice fully (not as a bind mount). From
+> +# there, it is trivial to induce corruption.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick volume
+> +
+> +# Override the default cleanup function.
+> +# _cleanup()
+> +# {
+> +# 	cd /
+> +# 	rm -r -f $tmp.*
+> +# }
+> +
+> +# Import common functions.
+> +# . ./common/filter
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_require_test
+> +_require_parted
+> +
+> +#BARE_MOUNT_PROG=$here/src/bare-mount
+> +
+> +_cleanup() {
+> +	cd /
+> +	umount $MNT
+> +	umount $BIND
+> +	losetup -d $DEV0
+> +	losetup -d $DEV1
+> +	losetup -d $DEV2
+> +	rm $IMG0
+> +	rm $IMG1
+> +	rm $IMG2
+> +}
+> +
+> +do_mkpart() {
+> +	local dev=$1
+> +	$PARTED_PROG $dev 'mkpart mypart 1M 100%' --script
+> +}
+> +
+> +do_rmpart() {
+> +	local dev=$1
+> +	$PARTED_PROG $dev 'rm 1' --script
+> +}
+> +
+> +# Prepare 3 loop devices on the test device
+> +IMG0=$TEST_DIR/$$.img0
+> +IMG1=$TEST_DIR/$$.img1
+> +IMG2=$TEST_DIR/$$.img2
+> +truncate -s 1G $IMG0
+> +truncate -s 1G $IMG1
+> +truncate -s 1G $IMG2
+> +DEV0=$(losetup -f $IMG0 --show)
+> +DEV1=$(losetup -f $IMG1 --show)
+> +DEV2=$(losetup -f $IMG2 --show)
+> +D0P1=$DEV0"p1"
+> +D1P1=$DEV1"p1"
+> +MNT=$TEST_DIR/mnt
+> +BIND=$TEST_DIR/bind
+> +
+> +# Setup partition table with one partition on each device
+> +$PARTED_PROG $DEV0 'mktable gpt' --script
+> +$PARTED_PROG $DEV1 'mktable gpt' --script
+> +do_mkpart $DEV0
+> +do_mkpart $DEV1
+> +
+> +# mkfs with two devices to avoid clearing devices on close
+> +# single raid to allow removing DEV2
+> +$MKFS_BTRFS_PROG -f -msingle -dsingle $D0P1 $DEV2 &>/dev/null
+> +
+> +# Cycle mount the two device fs to populate both devices into the
+> +# stale device cache
+> +mkdir -p $MNT
+> +mount $D0P1 $MNT
+> +umount $MNT
+> +
+> +# Swap the partition dev_ts. This leaves the dev_t in the cache out of date.
+> +do_rmpart $DEV0
+> +do_rmpart $DEV1
+> +do_mkpart $DEV1
+> +do_mkpart $DEV0
+> +
+> +# Mount with mismatched dev_t!
+> +mount $D0P1 $MNT || _fail "failed to remount; don't proceed and do dangerous stuff on raw mount point"
+> +
+> +# Remove extra device to bring temp-fsid back in the fray
+> +$BTRFS_UTIL_PROG device remove $DEV2 $MNT
+> +
+> +# Create the should be bind mount
+> +mkdir -p $BIND
+> +mount $D0P1 $BIND
+> +mount_show=$($BTRFS_UTIL_PROG filesystem show $MNT)
+> +bind_show=$($BTRFS_UTIL_PROG filesystem show $BIND)
+> +# If they're different, we are in trouble.
+> +[ "$mount_show" = "$bind_show" ] || echo "$mount_show != $bind_show"
+> +
+> +# now prove it by corrupting it
+> +for i in $(seq 20); do
+> +	# TODO diff prog
+> +	dd if=/dev/urandom of=$MNT/foo.$i bs=50M count=1 &>/dev/null
+> +done
+> +for i in $(seq 20); do
+> +	# TODO diff prog
+> +	dd if=/dev/urandom of=$BIND/foo.$i bs=50M count=1 &>/dev/null
+> +done
+> +sync
+> +find $BIND -type f -delete
+> +sync
+> +$FSTRIM_PROG $BIND
+> +sleep 5
+> +echo 3 > /proc/sys/vm/drop_caches
+> +$BTRFS_UTIL_PROG scrub start -B $MNT >>$seqres.full 2>&1
+> +
+> +# success, all done
+> +echo "Silence is golden"
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/303.out b/tests/btrfs/303.out
+> new file mode 100644
+> index 000000000..d48808e60
+> --- /dev/null
+> +++ b/tests/btrfs/303.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 303
+> +Silence is golden
+> -- 
+> 2.43.0
 > 
 
