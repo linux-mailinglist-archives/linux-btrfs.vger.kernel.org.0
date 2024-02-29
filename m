@@ -1,87 +1,88 @@
-Return-Path: <linux-btrfs+bounces-2934-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2935-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA4786D265
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 19:35:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07AD586D266
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 19:35:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AB0DB22B37
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 18:35:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3ABF288067
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 18:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A84978270;
-	Thu, 29 Feb 2024 18:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A1367A156;
+	Thu, 29 Feb 2024 18:35:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="WM6FS2KC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KxCA8EBL"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="PZ7t1AFE";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GvUhn2H6"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEE22A8D7
-	for <linux-btrfs@vger.kernel.org>; Thu, 29 Feb 2024 18:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0654B381C4;
+	Thu, 29 Feb 2024 18:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709231705; cv=none; b=MSBcyICH2Z4p1GMet5c5kcEjwARwpfrIlUA/bughVZMte1ILPwY972BQZdwSz+ASB9iTIGiyn77CvJCaAr/HlNixr+tGk3SJGFzHBHuHAdRXen8g6KMRHbXA/9Fqw3xKCYgsZzmavfHdchuivb/UOAkTckSeoQUkasgNDTMbIWw=
+	t=1709231732; cv=none; b=I7UHatyWYMxI4FdxYl32gdX05pLOcGCOX6pQDtql3uTvyXuUGB+zbPslSGsQQy5Ok/FJ9rFZrn6YtEm9CskmKl6K4isIj0WpwXNgapWkTvA2TjVIA2Hqin1iozt3qzbDFAp/yJSEHPIEB/W8oec2gHfpXdDIjUtG+/DGeEVKhRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709231705; c=relaxed/simple;
-	bh=8cjH9XKm4OPpaevvsx5ABeuzzZFXPj+Pu0aMfYFNU+M=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=ApQ4HXzrqVJO/9XVQcXpglgW64hWSp55inaSzmeoypF/J6QcW70t46khgksnlYs8EdYHz38Id7durum5Bwbmqnavn2Z/6RF7dGOjruFGqKNVflmYWAoYI4ACiRX1gCocs3SQEb0LY+8Ev85gxMPxd57C8qHul8yDjAhYxO/Zgx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=WM6FS2KC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KxCA8EBL; arc=none smtp.client-ip=64.147.123.20
+	s=arc-20240116; t=1709231732; c=relaxed/simple;
+	bh=F/bemvYPNWTCS8rNBpNXnSl5Zag4FxUsJ8prmVI1Kwo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=saentz88IEK0eRMCc4qG2pppC1IEWZp3kFvgiNHFd3IC5cFlr65N308LQjQj2087pRHHrowO8GWX+ZTRshTMHVW3xc8+2Wdq4M4SoyUo3d/SYhpy7eo1qMWVC+XUaCaRD7v/A9r9jYdbvrQ16v+ZPuKwPR/l7g3pcznM2mBniZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=PZ7t1AFE; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GvUhn2H6; arc=none smtp.client-ip=64.147.123.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id B192E32003D3;
-	Thu, 29 Feb 2024 13:35:01 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 29 Feb 2024 13:35:02 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id D84BE3200906;
+	Thu, 29 Feb 2024 13:35:28 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 29 Feb 2024 13:35:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
 	:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm2; t=1709231701; x=1709318101; bh=Lo2u21PdO/jeb4ey3Phfq
-	fZ25f2Zlx7vLYcemXco06k=; b=WM6FS2KC0AuWe6IkVxViazkfoIhl2jbV6HsC7
-	fFDJWpQZeWB2hiOiDHUNbVwmcB/4mIIFmXTUZqR+Yv6Obm5YL3dKE0DgIZ/b76DP
-	1ZOgqW1cDki9iKkSvVyELY/whqe8ZBGg5NPtYe1WpaNntIiLQ+G5xSe9vZj4/kMf
-	aD9002hAtCFeoZbjqfmDLu47vxp20wct+WrHLSiV5n8Qlc1cDHvrQJsD/8yqZfU5
-	0qcBbl5CZBZ+IJtw4DFf7YQ4nXUTncl/PlegiaEWzu/mQyjO1zD8p0kWNo4/KnK9
-	fpJp9HNukzUm02fgGt11BOf4waZ5T8uWIJZFMf6XIyI3N/z6A==
+	:to; s=fm2; t=1709231728; x=1709318128; bh=JStfRPPwT87i2TqPbIeZ+
+	DSFcE5INSSmLGon9NIRu8w=; b=PZ7t1AFEuAOojWSMBazYTItp+cb+5XNstOCzH
+	HVrUpO1fCUJ1vcIAGWtqbnMAUFToGVHG4emm1zY8mXR0bgrPo+C54y2bXa9BHuQo
+	7xl96txqsaW1VlHCGYhxf3dmzwkqBuylvGh5OY4Kd5fIEjZC3bHzWTqS/bLbgr4c
+	GI2ZUBlt3RRVAMxyRu5KJA9bQsC4s8bwiVTolBeHCR16enjQdxNShzgsymsOTtEr
+	K89u9+HxmPHDlDxOJbgXYDyVVbl+1OFmQ1L9co0GDwy/23+nkUBq8UJP3FR90Tnq
+	dypy3uEGpi0XO/7Xhq9d/y7Butcs8cl418x4/u+OYwMqAM1jQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:content-transfer-encoding:content-type
 	:date:date:feedback-id:feedback-id:from:from:in-reply-to
 	:message-id:mime-version:reply-to:subject:subject:to:to
 	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709231701; x=1709318101; bh=Lo2u21PdO/jeb4ey3PhfqfZ25f2Z
-	lx7vLYcemXco06k=; b=KxCA8EBLivE3501T4fcYsb0F6Nt7hlVaSW55pGSkjVu8
-	nxBQLhgqWGjzVzrAPTzkUqc3pMwpRYHDoGA8ZGbAJBQL/r+YM92DIaWqeWFmYH3N
-	mMyvHLAFsFGzAdVGA7cBnORPdP8Jb2XqUIzX4GzDcMi0acmpf1mdGjVff6MOSvoJ
-	X2BvQHqQkZPcBY8kaBEVL9+0qZgPiWnx0sHWJn3sxUW1whzr2/S2bcJu6mbxSDl9
-	iw44jb10cZsl7F4nQp8ZsILiCL6CbP8HmnIU/sb+Y4+axwQIBJHzCnsDB5sRJQI/
-	38p0FaVx2qaBGTFDiKFjwAqKOvi7wIA9418UiNdAwg==
-X-ME-Sender: <xms:VM7gZU6D1rmx2ShLvYh5lyPIKm7oOWsbrUgI-8Kswrar0l3fLIgTxw>
-    <xme:VM7gZV4YLNKMTVI2YFc99c8raiPfdfzVDD5ZsHlhJ66NuIQAkkqVZNeg2DLPVXXWz
-    HvAsYSFCRWwEkn-VWE>
-X-ME-Received: <xmr:VM7gZTcsswwDWAsK-vINvLZJ2nUP_S3N4GemVH_fBNgMwjTelRlpKWFEQNDuMeGeADZfVXWxsu3roBRN8rwWHWXInJA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeelgdduudefucetufdoteggodetrfdotf
+	fm1; t=1709231728; x=1709318128; bh=JStfRPPwT87i2TqPbIeZ+DSFcE5I
+	NSSmLGon9NIRu8w=; b=GvUhn2H6cc38WrMM1sG9GtZLAkPKw3Xx83kL81ixuFTi
+	/leMNRpFsQs203isNMFowxLSwVGbP8wJSkSozBl7NJEee1Bjl8TaquqIVLAVYk5O
+	gvNtIvxsR7+32zkmZGn/t3rSd+L6FgzoNJaj2QBAL8B06/jWXhhANGDP4lg+R0ts
+	mxYsPwg3FcUjtCOn04qyHGP+zWeC1wQZ0ND9J8DsRcI8xEFuPk6fU64TD/Dm6eF3
+	giJxQOwN6DcFGBtO4IQY8uiMitwL1mOsg8/aVE8TP0HZsLAdf+ciEQ0Jf8TJVlRK
+	EuvCMV+dXoe8c+lugoL/5D7uxfBIM4lBfKNEQqayYw==
+X-ME-Sender: <xms:cM7gZd7nY7pEj-vOiUOC9JV_eoHbEGM4FMyAxDndbnApFChnl9Zxpg>
+    <xme:cM7gZa5Jeas5OpwaaamCtAOdvpShq_vjuHLJe4uzsBlO6h78iD20MJ4f34IX6oEdy
+    auz9tLkuImhgDe7D90>
+X-ME-Received: <xmr:cM7gZUcLn8Krv6t2esHAtClO-Ix0B7vaLLDeAC7LhPTEGkj6wHRyuiA-MtZvAuOyFRJm89epP8d71iPpXybMvVefdj4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeelgdduudegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
     dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
     qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
     etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
     ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:VM7gZZKpmhvfK68BeUa5Uk-zMuCfu657zL4FG3Kt8_9HQMKHvdexgg>
-    <xmx:VM7gZYIjD-CZ2ZKM-4N4uwQ3h_UJ8zvhaEjbvX6cfQgjPQVZ6zloFA>
-    <xmx:VM7gZayGF_mdQYS9Ih4InEcE-Xl5QCwGKD5ebHTw8b0M8PxCDifCOw>
-    <xmx:Vc7gZSz5zqAPy48mKrX0BdnoCGDxjjYne493McAECSe_aySmV4gRWg>
+X-ME-Proxy: <xmx:cM7gZWIDMf4FwxrqRMNx3nISpZ3-Ej6Bh7gFJepjH_4CQftVCMxZZg>
+    <xmx:cM7gZRJBhJpdV94Oe0wu7iWeu8A48SQV6I7hHYaNB2aWGiBrdJfwGA>
+    <xmx:cM7gZfx8RLa-EstjFpNkKQ3v1sOtJeaZPnfN1vLA7bgrQ5y_X6wGSg>
+    <xmx:cM7gZfhY7Ku_uucBqpBBdhkmRObMdo6TzsOpK1y4V4cFqvlvychRmw>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Feb 2024 13:35:00 -0500 (EST)
+ 29 Feb 2024 13:35:27 -0500 (EST)
 From: Boris Burkov <boris@bur.io>
 To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH] btrfs: support device name lookup in forget
-Date: Thu, 29 Feb 2024 10:36:06 -0800
-Message-ID: <659b811232f9c647e8a2250f6d4acd6a12751b6c.1709231726.git.boris@bur.io>
+	kernel-team@fb.com,
+	fstests@vger.kernel.org
+Subject: [PATCH] btrfs: add test for shifting devt
+Date: Thu, 29 Feb 2024 10:36:41 -0800
+Message-ID: <27bad2e06121a6cd5cb34146e37b8e2dc46dec0c.1709231457.git.boris@bur.io>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -91,186 +92,183 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-btrfs forget assumes the device still exists in the block layer and
-that we can lookup its dev_t. For handling some tricky cases with
-changing devt across device recreation, we need udev rules that run on
-device removal. However, at that point, there is no node to lookup, so
-we need to rely on the cached name. Refactor the forget code to handle
-this case, while still preferring to use dev_t when possible.
-
-Tested by a new fstest btrfs/303 which uses parted to trigger a
-partition to take on different devts between remounts. That test passing
-also assumes btrfs-progs patches which takes advantage of this kernel
-change in `device scan -u` and udev.
-
-Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/super.c   | 11 ++++-------
- fs/btrfs/volumes.c | 46 +++++++++++++++++++++++++++++++++++++---------
- fs/btrfs/volumes.h |  1 +
- 3 files changed, 42 insertions(+), 16 deletions(-)
+ common/config       |   1 +
+ common/rc           |   4 ++
+ tests/btrfs/303     | 127 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/303.out |   2 +
+ 4 files changed, 134 insertions(+)
+ create mode 100755 tests/btrfs/303
+ create mode 100644 tests/btrfs/303.out
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 7e44ccaf348f..3609b9a773f7 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2192,7 +2192,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- {
- 	struct btrfs_ioctl_vol_args *vol;
- 	struct btrfs_device *device = NULL;
--	dev_t devt = 0;
-+	char *name = NULL;
- 	int ret = -ENOTTY;
+diff --git a/common/config b/common/config
+index a3b15b96f..43b517fda 100644
+--- a/common/config
++++ b/common/config
+@@ -235,6 +235,7 @@ export BLKZONE_PROG="$(type -P blkzone)"
+ export GZIP_PROG="$(type -P gzip)"
+ export BTRFS_IMAGE_PROG="$(type -P btrfs-image)"
+ export BTRFS_MAP_LOGICAL_PROG=$(type -P btrfs-map-logical)
++export PARTED_PROG="$(type -P parted)"
  
- 	if (!capable(CAP_SYS_ADMIN))
-@@ -2217,12 +2217,9 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- 		mutex_unlock(&uuid_mutex);
- 		break;
- 	case BTRFS_IOC_FORGET_DEV:
--		if (vol->name[0] != 0) {
--			ret = lookup_bdev(vol->name, &devt);
--			if (ret)
--				break;
--		}
--		ret = btrfs_forget_devices(devt);
-+		if (vol->name[0] != 0)
-+			name = vol->name;
-+		ret = btrfs_forget_devices_by_name(name);
- 		break;
- 	case BTRFS_IOC_DEVICES_READY:
- 		mutex_lock(&uuid_mutex);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 3cc947a42116..68fb0b64ab3f 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -503,11 +503,13 @@ btrfs_get_bdev_and_sb(const char *device_path, blk_mode_t flags, void *holder,
+ # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
+ # newer systems have udevadm command but older systems like RHEL5 don't.
+diff --git a/common/rc b/common/rc
+index 30c44dddd..8e009aca9 100644
+--- a/common/rc
++++ b/common/rc
+@@ -5375,6 +5375,10 @@ _require_unshare() {
+ 		_notrun "unshare $*: command not found, should be in util-linux"
  }
  
- /*
-- *  Search and remove all stale devices (which are not mounted).  When both
-+ *  Search and remove all stale devices (which are not mounted).  When all
-  *  inputs are NULL, it will search and release all stale devices.
-  *
-  *  @devt:         Optional. When provided will it release all unmounted devices
-- *                 matching this devt only.
-+ *                 matching this devt only. Don't set together with name.
-+ *  @name:         Optional. When provided will it release all unmounted devices
-+ *                 matching this name only. Don't set together with devt.
-  *  @skip_device:  Optional. Will skip this device when searching for the stale
-  *                 devices.
-  *
-@@ -515,14 +517,16 @@ btrfs_get_bdev_and_sb(const char *device_path, blk_mode_t flags, void *holder,
-  *		-EBUSY if @devt is a mounted device.
-  *		-ENOENT if @devt does not match any device in the list.
-  */
--static int btrfs_free_stale_devices(dev_t devt, struct btrfs_device *skip_device)
-+static int btrfs_free_stale_devices(dev_t devt, char *name, struct btrfs_device *skip_device)
- {
- 	struct btrfs_fs_devices *fs_devices, *tmp_fs_devices;
- 	struct btrfs_device *device, *tmp_device;
- 	int ret;
- 	bool freed = false;
-+	bool searching = devt || name;
- 
- 	lockdep_assert_held(&uuid_mutex);
-+	ASSERT(!(devt && name));
- 
- 	/* Return good status if there is no instance of devt. */
- 	ret = 0;
-@@ -533,14 +537,18 @@ static int btrfs_free_stale_devices(dev_t devt, struct btrfs_device *skip_device
- 					 &fs_devices->devices, dev_list) {
- 			if (skip_device && skip_device == device)
- 				continue;
-+			if (!searching)
-+				goto found;
- 			if (devt && devt != device->devt)
- 				continue;
-+			if (name && device->name && strcmp(device->name->str, name))
-+				continue;
-+found:
- 			if (fs_devices->opened) {
--				if (devt)
-+				if (searching)
- 					ret = -EBUSY;
- 				break;
- 			}
--
- 			/* delete the stale device */
- 			fs_devices->num_devices--;
- 			list_del(&device->dev_list);
-@@ -561,7 +569,7 @@ static int btrfs_free_stale_devices(dev_t devt, struct btrfs_device *skip_device
- 	if (freed)
- 		return 0;
- 
--	return ret;
-+	return ret ? ret : -ENODEV;
- }
- 
- static struct btrfs_fs_devices *find_fsid_by_device(
-@@ -1288,12 +1296,32 @@ static struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev
- 	return disk_super;
- }
- 
-+int btrfs_forget_devices_by_name(char *name)
-+{
-+	int ret;
-+	dev_t devt = 0;
-+
-+	/*
-+	 * Ideally, use devt, but if not, use name.
-+	 * Note: Assumes lookup_bdev handles NULL name gracefully.
-+	 */
-+	ret = lookup_bdev(name, &devt);
-+	if (!ret)
-+		name = NULL;
-+
-+	mutex_lock(&uuid_mutex);
-+	ret = btrfs_free_stale_devices(devt, name, NULL);
-+	mutex_unlock(&uuid_mutex);
-+
-+	return ret;
++_require_parted() {
++	$PARTED_PROG --list &>/dev/null || _notrun "parted: command not found"
 +}
 +
- int btrfs_forget_devices(dev_t devt)
- {
- 	int ret;
- 
- 	mutex_lock(&uuid_mutex);
--	ret = btrfs_free_stale_devices(devt, NULL);
-+	ret = btrfs_free_stale_devices(devt, NULL, NULL);
- 	mutex_unlock(&uuid_mutex);
- 
- 	return ret;
-@@ -1364,7 +1392,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 			btrfs_warn(NULL, "lookup bdev failed for path %s: %d",
- 				   path, ret);
- 		else
--			btrfs_free_stale_devices(devt, NULL);
-+			btrfs_free_stale_devices(devt, NULL, NULL);
- 
- 		pr_debug("BTRFS: skip registering single non-seed device %s\n", path);
- 		device = NULL;
-@@ -1373,7 +1401,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 
- 	device = device_list_add(path, disk_super, &new_device_added);
- 	if (!IS_ERR(device) && new_device_added)
--		btrfs_free_stale_devices(device->devt, device);
-+		btrfs_free_stale_devices(device->devt, NULL, device);
- 
- free_disk_super:
- 	btrfs_release_disk_super(disk_super);
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index feba8d53526c..a5388a6b2969 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -681,6 +681,7 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 		       blk_mode_t flags, void *holder);
- struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 					   bool mount_arg_dev);
-+int btrfs_forget_devices_by_name(char *name);
- int btrfs_forget_devices(dev_t devt);
- void btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
- void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices);
+ # Return a random file in a directory. A directory is *not* followed
+ # recursively.
+ _random_file() {
+diff --git a/tests/btrfs/303 b/tests/btrfs/303
+new file mode 100755
+index 000000000..dece3eacc
+--- /dev/null
++++ b/tests/btrfs/303
+@@ -0,0 +1,127 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2024 Meta, Inc. All Rights Reserved.
++#
++# FS QA Test 303
++#
++# Test an edge case of multi device volume management in btrfs.
++# If a device changes devt between mounts of a multi device fs, we can trick
++# btrfs into mounting the same device twice fully (not as a bind mount). From
++# there, it is trivial to induce corruption.
++#
++. ./common/preamble
++_begin_fstest auto quick volume
++
++# Override the default cleanup function.
++# _cleanup()
++# {
++# 	cd /
++# 	rm -r -f $tmp.*
++# }
++
++# Import common functions.
++# . ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_require_test
++_require_parted
++
++#BARE_MOUNT_PROG=$here/src/bare-mount
++
++_cleanup() {
++	cd /
++	umount $MNT
++	umount $BIND
++	losetup -d $DEV0
++	losetup -d $DEV1
++	losetup -d $DEV2
++	rm $IMG0
++	rm $IMG1
++	rm $IMG2
++}
++
++do_mkpart() {
++	local dev=$1
++	$PARTED_PROG $dev 'mkpart mypart 1M 100%' --script
++}
++
++do_rmpart() {
++	local dev=$1
++	$PARTED_PROG $dev 'rm 1' --script
++}
++
++# Prepare 3 loop devices on the test device
++IMG0=$TEST_DIR/$$.img0
++IMG1=$TEST_DIR/$$.img1
++IMG2=$TEST_DIR/$$.img2
++truncate -s 1G $IMG0
++truncate -s 1G $IMG1
++truncate -s 1G $IMG2
++DEV0=$(losetup -f $IMG0 --show)
++DEV1=$(losetup -f $IMG1 --show)
++DEV2=$(losetup -f $IMG2 --show)
++D0P1=$DEV0"p1"
++D1P1=$DEV1"p1"
++MNT=$TEST_DIR/mnt
++BIND=$TEST_DIR/bind
++
++# Setup partition table with one partition on each device
++$PARTED_PROG $DEV0 'mktable gpt' --script
++$PARTED_PROG $DEV1 'mktable gpt' --script
++do_mkpart $DEV0
++do_mkpart $DEV1
++
++# mkfs with two devices to avoid clearing devices on close
++# single raid to allow removing DEV2
++$MKFS_BTRFS_PROG -f -msingle -dsingle $D0P1 $DEV2 &>/dev/null
++
++# Cycle mount the two device fs to populate both devices into the
++# stale device cache
++mkdir -p $MNT
++mount $D0P1 $MNT
++umount $MNT
++
++# Swap the partition dev_ts. This leaves the dev_t in the cache out of date.
++do_rmpart $DEV0
++do_rmpart $DEV1
++do_mkpart $DEV1
++do_mkpart $DEV0
++
++# Mount with mismatched dev_t!
++mount $D0P1 $MNT || _fail "failed to remount; don't proceed and do dangerous stuff on raw mount point"
++
++# Remove extra device to bring temp-fsid back in the fray
++$BTRFS_UTIL_PROG device remove $DEV2 $MNT
++
++# Create the should be bind mount
++mkdir -p $BIND
++mount $D0P1 $BIND
++mount_show=$($BTRFS_UTIL_PROG filesystem show $MNT)
++bind_show=$($BTRFS_UTIL_PROG filesystem show $BIND)
++# If they're different, we are in trouble.
++[ "$mount_show" = "$bind_show" ] || echo "$mount_show != $bind_show"
++
++# now prove it by corrupting it
++for i in $(seq 20); do
++	# TODO diff prog
++	dd if=/dev/urandom of=$MNT/foo.$i bs=50M count=1 &>/dev/null
++done
++for i in $(seq 20); do
++	# TODO diff prog
++	dd if=/dev/urandom of=$BIND/foo.$i bs=50M count=1 &>/dev/null
++done
++sync
++find $BIND -type f -delete
++sync
++$FSTRIM_PROG $BIND
++sleep 5
++echo 3 > /proc/sys/vm/drop_caches
++$BTRFS_UTIL_PROG scrub start -B $MNT >>$seqres.full 2>&1
++
++# success, all done
++echo "Silence is golden"
++status=0
++exit
+diff --git a/tests/btrfs/303.out b/tests/btrfs/303.out
+new file mode 100644
+index 000000000..d48808e60
+--- /dev/null
++++ b/tests/btrfs/303.out
+@@ -0,0 +1,2 @@
++QA output created by 303
++Silence is golden
 -- 
 2.43.0
 
