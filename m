@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-2937-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2938-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDF7F86D268
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 19:35:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6927886D269
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 19:35:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A95F287EA7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 18:35:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ADC91C22013
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 18:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D287D7BAF0;
-	Thu, 29 Feb 2024 18:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 263E712EBD0;
+	Thu, 29 Feb 2024 18:35:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="UwG+JGyb";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CDqE4P+B"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Bm8NQJ7v";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cWFM9qME"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782B37A129
-	for <linux-btrfs@vger.kernel.org>; Thu, 29 Feb 2024 18:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B7617D08C
+	for <linux-btrfs@vger.kernel.org>; Thu, 29 Feb 2024 18:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709231747; cv=none; b=TUCmxWbPHTrIleiAYxpOfivWB98bSsZ7DWuP8fhF4Vm8O2xN2I3ZtK3BJnKn9pitSuTGzGfcdRYAo2H8/YcQwxo3kogwOacJFHvbTzfH6ewWfxQ2R54lC12RWqfHVHmdCcUJtmsySijY0BuQWOzOfufyx/tIZ451Yll3umaGVHE=
+	t=1709231750; cv=none; b=je1aVQbPvHjcT8S6CeII/fPs0gubsEloq9xJtOQMpKaJ8Exchts/0RU23bv0oEqPCdi8pROPv2kyAAHcx/fo9TB7AOQT91MOqIDfQiefhAkzmBYWCqveaEv/3iGoGA3LCUeRk9vTzyP53atMdrdi6d+Jhs8ZiWXcwNo62tajrFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709231747; c=relaxed/simple;
-	bh=2f141CeyGb6LZHuFY6AJEpqChgD7yUgJ8np/y8pkn9s=;
+	s=arc-20240116; t=1709231750; c=relaxed/simple;
+	bh=zJTuLzwBsc+GktzAV2F12LWbXkN7rb4zoGHEmGmIUyA=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JPdAKgNS3S4USVbTYLnVenNcCjvJ3u4JnjR0u4pXg8JgOP63kEaGVHnzdiykZJRhr8jMSWbJFsd/ybLH9PzAxf5EN1xZSMYwDj8UU1u2sxtVcdDgRX/76NMQc06C+ohWKK2sw6xL9980RZy8qFM6a75KfWzrQsjnTsO18IAQl2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=UwG+JGyb; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CDqE4P+B; arc=none smtp.client-ip=64.147.123.20
+	 MIME-Version; b=X93yRNLoqzuTgXVcO1S4LS//RUkOUB6nyJsldz2X6zrCNaUX3952BUNtBmU5CoOKHukB0I/gZcmnJX0yOxirUeQ+wXSvtcBWskXU5jD1IVUSqNGsVMJVdu3j5ZDjYBVL7ziAWZhTPsFxGn+sfxtbz+qOuBiqLGLXOZu+H37oJKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Bm8NQJ7v; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cWFM9qME; arc=none smtp.client-ip=64.147.123.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.west.internal (Postfix) with ESMTP id ED80732009FA;
-	Thu, 29 Feb 2024 13:35:44 -0500 (EST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 8DC843200A02;
+	Thu, 29 Feb 2024 13:35:47 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 29 Feb 2024 13:35:45 -0500
+  by compute5.internal (MEProxy); Thu, 29 Feb 2024 13:35:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
 	:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1709231744; x=
-	1709318144; bh=nfr+1EojT87M7FndXT9axj3DAlpjly4PlDf8YDn4yrc=; b=U
-	wG+JGybdRunx4Kgxc3/Ib8F2u2s7P/XIOHd3PNcd4S1KcEmw2SwiHDIcfcKGGJpk
-	cDv1yCTsChn0IhANlVpdYq8Cs2G4WaY9twfsXfwX7kKe5GeF2nhuoTgsjNxMV/xu
-	SO+MuwV6xItc3PKHJ5Ed+RwInGg4KvAZ2T5lNOaaOoTZseTNVOY2WQhs7VTcKX5d
-	oGVK0tdYyCAqpMN+hoeUlIrzkFTRfM9De6V+dh7lnd0Zz/dZDPRMZUubnBfsaSor
-	vYxVooJoPWPfD3R2NcZeYeOIOBDDshn8NqDbEqOn+5rWJe+hqUyRyRud3RgLOBOT
-	uNalO8Wu79oGjdWomSKJw==
+	:reply-to:subject:subject:to:to; s=fm2; t=1709231747; x=
+	1709318147; bh=uF7DrAP+uQKfMQxckXDW7DyCs3jNrR5H8RK6ew28bZA=; b=B
+	m8NQJ7vTZDqFowDCH0tDxR7JRNl3dssiRXXxi7NnwkUOza3MnApqunJoF383XN3o
+	Q7vBmzvbai6OKxwrr2745v+FT+mNh93TxRLEu194Bt5Ndwm/59P3AbyxiL8d9OLe
+	OhiJHVDlLV96rtnIXaVpwGDX0YaagmUQh/lT4Rehbru/m5rDBlFLxpHvtITS1p0u
+	2BVCak17HQspH0eXGJX3OgL1EUPNo8zU5NKc8n1o82KPrjV22LXumA8ljU7/xMoM
+	IjyExMV2mJxy8rFJVNZlq91FqdI3br3firZ86HB18jgmgjP9fngzprJmaNXIuLed
+	jl67Uriju7jOvd9+BamTw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:content-transfer-encoding:content-type
 	:date:date:feedback-id:feedback-id:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
 	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1709231744; x=1709318144; bh=nfr+1EojT87M7
-	FndXT9axj3DAlpjly4PlDf8YDn4yrc=; b=CDqE4P+BtaUe7V4INqo845xIclDhg
-	683CFUBqHxGlMkLv+VZr0RtInV29bKmK545bpvlcwKyTcFzJ/G0Lby4gppEIdFH/
-	Q40a+vkiqVYHb06loNcssDOFNi7NcbkL/W+dgSgI7VL4jwQzcrXNc+HIoIuVP17+
-	/bkC17wEhl2a5UjwN+2o7aYL7yx5fh5f+JDUIofmwiNhfnBUaZI7+D/1ziN1npgx
-	qeUtETcz6kPz7S5jpddkrXaeC2/0TG7iUZnvHI7V63IoGyu/uf4MVIwFvSVmNb0n
-	3sMeuTZJNwV8w7WecCtDOEP8h6kE6tXEA/rOyLWN4YrACzk96/VCRVvYw==
-X-ME-Sender: <xms:gM7gZVpjuVPF0AH0WjZx5Q_GckmQFKUkE3xSS_LGUTpRYabseha4cQ>
-    <xme:gM7gZXpFICB_brkX9LhJAeLOjnHNfHRYP1Fyinj0HsgzXtyIAFmzJAlyLgz0IF4uz
-    9YHizn5KIuVNHYpHDc>
-X-ME-Received: <xmr:gM7gZSOJAXyqxxdT8Z3bqCWTCxeoxle3j5ipdEBC0VeUts-w7SCi4Py7OT4c_i1P_uwLfqBZT4B9Yi6ocndcSbrVqiM>
+	:x-sasl-enc; s=fm1; t=1709231747; x=1709318147; bh=uF7DrAP+uQKfM
+	QxckXDW7DyCs3jNrR5H8RK6ew28bZA=; b=cWFM9qME9g2k/HJthky8Zx0jSdf/f
+	TE2AbyHbCyevjVUJ8x0TmMIUkMmmXRekRpKPbWi898sWJ9Tw30wjzWny9UHWviZT
+	7jWPWXVguTcuvmqpriscyeaQ5fRc7sbesRKm97ATOO71srvBCwIDzItVM0GddMwS
+	2wT2/oL5B1P16viuJZViKiBZwt47wBdSSlJPp6IuGbajbv0ZGNJ4rVU42u+U7wDB
+	DatYIJ7RWQ0CyS+DvNBrScrstqnv3/RC8lzEfjk54GlX1ZaudTylnYPoywoFjHl4
+	HDxZulwV12n62S0kgstsJVLzU0ajUbbRRHO8bWf5sBzb+yTZyHKwUSn+g==
+X-ME-Sender: <xms:gs7gZcYC7On0amYGnO_wQuT4n3MOTh3gcpbqoYCk5vfIOSCouUllKg>
+    <xme:gs7gZXYueS77RxxD1di46ZYziwmImpjYwXmXSa0WYShYbmEHDPPAImUDy08t-rm7F
+    Bf_fDT3zasPcsLk0y8>
+X-ME-Received: <xmr:gs7gZW8kf8nksnDMTwjPMXLdgICcMLg8cBhdqo8xUcwZjhEjG-iFZXQeuFDEMTou3F1AEKlmTXEaGvFgVvy7fsrzCC8>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeelgdduudegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -71,19 +71,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeelgdduudegucetufdoteggod
     ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
     dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
     mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:gM7gZQ5CBDnZ-uck45DPLK7ViOXXnYksVEWwFKmRfv5tTGKx24j-QQ>
-    <xmx:gM7gZU54VF-iuCoApPO0mWRV56EFu1kR4DZxnGZMg62Spuf_oeODjw>
-    <xmx:gM7gZYjp24f5_XUJS8A1qzsGuvrl14sA78SFG1QwFi52Qt3FyXeWCw>
-    <xmx:gM7gZZiHu6ffNc-gSM9GbzjqL_a32lGF2fsl5KB65ST3kefk0tT6KQ>
+X-ME-Proxy: <xmx:gs7gZWqpFSOpi-ga7rn8XRqL9d2OezWO6-zGGUck45W8QY76esLUgg>
+    <xmx:gs7gZXoiarzhj7C29Vt8YHvPlOlTRKPQrF2ex9-v_ejFoe6rciUk8A>
+    <xmx:gs7gZUTmiKmmfg1xxkYynSyIl9NSXUB0JHZRB7at--_qrdL168MBkg>
+    <xmx:g87gZWTAXE5sDkKUeqj-0HlFg1nyOjupth36YHkallCNSArNqyAFmA>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Feb 2024 13:35:43 -0500 (EST)
+ 29 Feb 2024 13:35:46 -0500 (EST)
 From: Boris Burkov <boris@bur.io>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 1/2] btrfs-progs: allow btrfs device scan -u on dead dev
-Date: Thu, 29 Feb 2024 10:36:54 -0800
-Message-ID: <a53859401bc98e7266808ecfa32af54d7ea43851.1709231441.git.boris@bur.io>
+Subject: [PATCH 2/2] btrfs-progs: add udev rule to forget removed device
+Date: Thu, 29 Feb 2024 10:36:55 -0800
+Message-ID: <80545243dec10a48562bf8a9b5d10b8ba6f16983.1709231441.git.boris@bur.io>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1709231441.git.boris@bur.io>
 References: <cover.1709231441.git.boris@bur.io>
@@ -95,32 +95,44 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If a device has been removed from the system, it lingers on in the btrfs
-stale device cache. It is useful to be able to forget it, so allow that
-by not checking for the file being a proper device file for the forget
-path. Kernels that don't handle dead devices by name will do a devt
-lookup which will fail, if there is no device, so this isn't a strictly
-necessary check, so this isn't a strictly necessary check, so this isn't
-a strictly necessary check.
+Now that btrfs supports forgetting devices that don't exist, we can add
+a udev rule to take advantage of that. This avoids bad edge cases
+with cached devices in multi-device filesystems without having to rescan
+all the devices on every change.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
+Signed-of-by: Boris Burkov <boris@bur.io>
 ---
- cmds/device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ 64-btrfs-rm.rules | 7 +++++++
+ Makefile          | 2 +-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+ create mode 100644 64-btrfs-rm.rules
 
-diff --git a/cmds/device.c b/cmds/device.c
-index 4b34300b5..d52bde2e3 100644
---- a/cmds/device.c
-+++ b/cmds/device.c
-@@ -487,7 +487,7 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
- 	for( i = devstart ; i < argc ; i++ ){
- 		char *path;
+diff --git a/64-btrfs-rm.rules b/64-btrfs-rm.rules
+new file mode 100644
+index 000000000..852155d28
+--- /dev/null
++++ b/64-btrfs-rm.rules
+@@ -0,0 +1,7 @@
++SUBSYSTEM!="block", GOTO="btrfs_rm_end"
++ACTION!="remove", GOTO="btrfs_rm_end"
++ENV{ID_FS_TYPE}!="btrfs", GOTO="btrfs_rm_end"
++
++RUN+="/usr/local/bin/btrfs device scan -u $devnode"
++
++LABEL="btrfs_rm_end"
+diff --git a/Makefile b/Makefile
+index 374f59b99..eaeed9baf 100644
+--- a/Makefile
++++ b/Makefile
+@@ -271,7 +271,7 @@ tune_objects = tune/main.o tune/seeding.o tune/change-uuid.o tune/change-metadat
+ all_objects = $(objects) $(cmds_objects) $(libbtrfs_objects) $(convert_objects) \
+ 	      $(mkfs_objects) $(image_objects) $(tune_objects) $(libbtrfsutil_objects)
  
--		if (path_is_block_device(argv[i]) != 1) {
-+		if (!forget && path_is_block_device(argv[i]) != 1) {
- 			error("not a block device: %s", argv[i]);
- 			ret = 1;
- 			goto out;
+-udev_rules = 64-btrfs-dm.rules 64-btrfs-zoned.rules
++udev_rules = 64-btrfs-dm.rules 64-btrfs-zoned.rules 64-btrfs-rm.rules
+ 
+ ifeq ("$(origin V)", "command line")
+   BUILD_VERBOSE = $(V)
 -- 
 2.43.0
 
