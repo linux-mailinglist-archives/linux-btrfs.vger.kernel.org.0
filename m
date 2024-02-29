@@ -1,121 +1,212 @@
-Return-Path: <linux-btrfs+bounces-2916-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2918-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E612D86C84C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 12:44:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A05886C856
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 12:45:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86E391F23D90
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 11:44:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1997F1C21030
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 11:45:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA267C6C6;
-	Thu, 29 Feb 2024 11:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55EF77C6DE;
+	Thu, 29 Feb 2024 11:45:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dOpZgSuj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723B159B6A
-	for <linux-btrfs@vger.kernel.org>; Thu, 29 Feb 2024 11:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A617C6DF;
+	Thu, 29 Feb 2024 11:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709207048; cv=none; b=nvoS1sgW2ljAgupgPOHvDBtHym7A/xkNSgqbnxlWnwRq4oJriuLul3HXlwyqimD9cCVTu5f+6oiA9zAC3yt6Hl0dJsHUseveYUtD8NEHOp0RGAV/BPLT9etyiAGBKcJnWatnImPW7ESBKkvWFAWDkUs//oBMerVFb+LNObrjq6w=
+	t=1709207127; cv=none; b=nJwnmldDOPt5SlgYUwI5J0iUUYguWIfFjIkPajdbZDHjksyTjvDEIqqMC3AzCIeF5ThrfTdoc87mdtJiL1YH18b5SM2bXZRHVUJLm3ADJYypgLe+3G0ai8+kE+//gduZYSvD6cPHAyRyKZs00NMRHYCDBRnG0RDAe1KG1nEAhW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709207048; c=relaxed/simple;
-	bh=nULYOB42vLXe1AcD65ptNWQm7A94wOs7FpstKAIgtHs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u9Xl4uTMOlLd/KzZ1jqHxJSeRg/ZPylqAuAv80V8we8SGZ8Dbydfh+wgVnNTmfnrzJL2530MQfM/k/IUgEj0849dHFEhQp6BqAzEeQXtoy2RRC+aUFPnWoc3lct0/0y/EghzKU0ZAF25q6EL8L8wJ/Ozbpf//Ua03J6exjibmGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-565ef8af2f5so1261704a12.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Feb 2024 03:44:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709207045; x=1709811845;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E3XKwOyjvmljLBtbasbW8LOOoe3TSZI9XpGa+J2wGZU=;
-        b=aqQJISdu2fruEcRb1UgMr25J+CcmSUyCi/Ub2ZzTSRgUGBvSNOYkIcMWbVVyBrOsVx
-         akpHJDKmdPsoOz6yz2h80kEAE1Ey/DXxdQYYcKd3rYOOrztuijxAPBTwQxIa3ThkwSM/
-         8eWtAQODNY2izRhlS0ITwC1X4ZdenAM/xljzD5e+A47RLZoF76YZwTY7HHzrKplxfEmU
-         v6cDX2MKnVhWL4YYxKaJrtDCmnvTBqeNgJ/OV8ed/1Kx5VTc6KKUP1JYV52qxK/W8RTx
-         brQmJ0Y1VdHbxCjUqLJAy2XOLwqgVQ/T9io+V442s5ykAOq6j+IAynji6jmT+PkC69RG
-         ir3g==
-X-Gm-Message-State: AOJu0YyF/cOsvrGymGQSzyqbiezn5F6Q2zg7l5wvg5hsGzsWn40VA+6s
-	AENIgBlYBhVTygbKwf6D7azOLLJIv7MgnRREdsrrzLN/HG2lG0hom8S81lRE
-X-Google-Smtp-Source: AGHT+IFElVRHQi0avJgTcoO7+tPzY/ZtWiGTfQyPPfz+jxjrsHRZUqswUS7gUbL31LybClAOcJV40A==
-X-Received: by 2002:a05:6402:95a:b0:566:b2e1:58f with SMTP id h26-20020a056402095a00b00566b2e1058fmr221297edz.41.1709207044568;
-        Thu, 29 Feb 2024 03:44:04 -0800 (PST)
-Received: from nuc.fritz.box (p200300f6f7068b00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f706:8b00:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id fg11-20020a056402548b00b00565efe074f4sm536790edb.85.2024.02.29.03.44.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 03:44:04 -0800 (PST)
-From: Johannes Thumshirn <jth@kernel.org>
-To: linux-btrfs@vger.kernel.org
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	WA AM <waautomata@gmail.com>
-Subject: [PATCH] btrfs: zoned: use zone aware sb location for scrub
-Date: Thu, 29 Feb 2024 12:43:56 +0100
-Message-Id: <933562c5bf37ad3e03f1a6b2ab5a9eb741ee0192.1709206779.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.35.3
+	s=arc-20240116; t=1709207127; c=relaxed/simple;
+	bh=BwGxvTIC5QfyAHuNmavEUlUkmJvI9bEW1N2gwc6Wxtk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MIJZOH+7KXyzTzGjMkJDnRpyYcLHaTThHqMjwb63pMFwCnrAdRlurNa+3zD8BP5x4kuEbZ9d21HTDMovKnSWXPxktIXvTWnpI+wRRBRHx7MZZDPmVFPc3E0OSaL4Q9F83aMiESlR/yj8IqBqUzsXHtv4WhryD1sSMrO2XYQjYmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dOpZgSuj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3707C43390;
+	Thu, 29 Feb 2024 11:45:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709207126;
+	bh=BwGxvTIC5QfyAHuNmavEUlUkmJvI9bEW1N2gwc6Wxtk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=dOpZgSujJQ+dOuaRf3n4anNtRFm5chUAcAhNnyc7BAMnQk4MZE9rlexIqsN4mxaqn
+	 0IOzELg9p68qLKXjjXqcyYqQXmKDnmFhR4PcR98oeGfaow508TASWxaRYbD25A1IQl
+	 j21pvJgFwiJ8CW6GHApqjzjw5lZAiyvY/emCQUejaI04IOxWSDw3YeL2rXkd3NeBfw
+	 XJ3v/ot09Uofj40cwDZFlb+0GtLxmyQNMaCKWq1cKJoz0xoSsQEmN4QO24CTmBLxuD
+	 AiZt+KRG/pFhyFo7HN9NaSwFpK7kGqw3J++VxHVhC9A+jeDP2PrEfxca1xsuwozS/S
+	 sbjQxyYN/FMCA==
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-564647bcdbfso1043471a12.2;
+        Thu, 29 Feb 2024 03:45:25 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV9iQl3GoIY20GKNOzynQwZJG6dj7BgW07wVmSOvI6g2BR3OyVlvgjzR5hoHrk+2W1CgxKS6WjxPZouNSUR053m5//mI1Ykbsybt5I=
+X-Gm-Message-State: AOJu0Yw6V6sKouY1K8c+F7zYeYxeDCnyla0vuxwhxmS/wcTnT6hYrX2T
+	x4sWLQNUkbL5qCgZ9UEFOlgoNUFiardEbQTdYmkYEsY0J4dPe2H0Qo5Dec5YrD1bpbOkmQMHSxR
+	HBUIdeDXg0JU9UFfJQJP4aWoV5ac=
+X-Google-Smtp-Source: AGHT+IFIlZ+110Y14vIyDA3oT2S+t3yiHoZJMWfNlGjDGIspH7vaAGC5HO4Lk1wsaFi901SXGLzc5qSSuEsLx2aoX5I=
+X-Received: by 2002:a17:906:495a:b0:a3f:384a:73ab with SMTP id
+ f26-20020a170906495a00b00a3f384a73abmr1209686ejt.71.1709207124463; Thu, 29
+ Feb 2024 03:45:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1709162170.git.anand.jain@oracle.com> <f5c5894f51e8d19f292f5fb7df3976e397c8e4eb.1709162170.git.anand.jain@oracle.com>
+In-Reply-To: <f5c5894f51e8d19f292f5fb7df3976e397c8e4eb.1709162170.git.anand.jain@oracle.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 29 Feb 2024 11:44:47 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5BAVoMMqwqwQC5bqq_f9i7fzZ8Xb7Caps_+hpRVY7G0w@mail.gmail.com>
+Message-ID: <CAL3q7H5BAVoMMqwqwQC5bqq_f9i7fzZ8Xb7Caps_+hpRVY7G0w@mail.gmail.com>
+Subject: Re: [PATCH v4 10/10] btrfs: test tempfsid with device add, seed, and balance
+To: Anand Jain <anand.jain@oracle.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Thu, Feb 29, 2024 at 1:51=E2=80=AFAM Anand Jain <anand.jain@oracle.com> =
+wrote:
+>
+> Make sure that basic functions such as seeding and device add fail,
+> while balance runs successfully with tempfsid.
+>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-At the moment scrub_supers() doesn't grab the super block's location via
-the zoned device aware btrfs_sb_log_location() but via btrfs_sb_offset().
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-This leads to checksum errors on 'scrub' as we're not accessing the
-correct location of the super block.
+Thanks.
 
-So use btrfs_sb_log_location() for getting the super blocks location on
-scrub.
-
-Reported-by: WA AM <waautomata@gmail.com>
-Link: http://lore.kernel.org/linux-btrfs/CANU2Z0EvUzfYxczLgGUiREoMndE9WdQnbaawV5Fv5gNXptPUKw@mail.gmail.com
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/scrub.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index c4bd0e60db59..3c8fd9c9fa1d 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -2812,7 +2812,10 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
- 		gen = btrfs_get_last_trans_committed(fs_info);
- 
- 	for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
--		bytenr = btrfs_sb_offset(i);
-+		ret = btrfs_sb_log_location(scrub_dev, i, 0, &bytenr);
-+		if (ret)
-+			goto out_free_page;
-+
- 		if (bytenr + BTRFS_SUPER_INFO_SIZE >
- 		    scrub_dev->commit_total_bytes)
- 			break;
-@@ -2828,6 +2831,13 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
- 	}
- 	__free_page(page);
- 	return 0;
-+
-+out_free_page:
-+	spin_lock(&sctx->stat_lock);
-+	sctx->stat.malloc_errors++;
-+	spin_unlock(&sctx->stat_lock);
-+	__free_page(page);
-+	return ret;
- }
- 
- static void scrub_workers_put(struct btrfs_fs_info *fs_info)
--- 
-2.35.3
-
+> ---
+>  tests/btrfs/315     | 91 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/315.out | 10 +++++
+>  2 files changed, 101 insertions(+)
+>  create mode 100755 tests/btrfs/315
+>  create mode 100644 tests/btrfs/315.out
+>
+> diff --git a/tests/btrfs/315 b/tests/btrfs/315
+> new file mode 100755
+> index 000000000000..7e5c74df4316
+> --- /dev/null
+> +++ b/tests/btrfs/315
+> @@ -0,0 +1,91 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2024 Oracle. All Rights Reserved.
+> +#
+> +# FS QA Test 315
+> +#
+> +# Verify if the seed and device add to a tempfsid filesystem fails
+> +# and balance devices is successful.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick volume seed balance tempfsid
+> +
+> +_cleanup()
+> +{
+> +       cd /
+> +       $UMOUNT_PROG $tempfsid_mnt 2>/dev/null
+> +       rm -r -f $tmp.*
+> +       rm -r -f $tempfsid_mnt
+> +}
+> +
+> +. ./common/filter.btrfs
+> +
+> +_supported_fs btrfs
+> +_require_scratch_dev_pool 3
+> +_require_btrfs_fs_feature temp_fsid
+> +
+> +_scratch_dev_pool_get 3
+> +
+> +# mount point for the tempfsid device
+> +tempfsid_mnt=3D$TEST_DIR/$seq/tempfsid_mnt
+> +
+> +_filter_mount_error()
+> +{
+> +       # There are two different errors that occur at the output when
+> +       # mounting fails; as shown below, pick out the common part. And,
+> +       # remove the dmesg line.
+> +
+> +       # mount: <mnt-point>: mount(2) system call failed: File exists.
+> +
+> +       # mount: <mnt-point>: fsconfig system call failed: File exists.
+> +       # dmesg(1) may have more information after failed mount system ca=
+ll.
+> +
+> +       grep -v dmesg | _filter_test_dir | sed -e "s/mount(2)\|fsconfig//=
+g"
+> +}
+> +
+> +seed_device_must_fail()
+> +{
+> +       echo ---- $FUNCNAME ----
+> +
+> +       mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
+> +
+> +       $BTRFS_TUNE_PROG -S 1 ${SCRATCH_DEV}
+> +       $BTRFS_TUNE_PROG -S 1 ${SCRATCH_DEV_NAME[1]}
+> +
+> +       _scratch_mount 2>&1 | _filter_scratch
+> +       _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt} 2>&1 | _filter_moun=
+t_error
+> +}
+> +
+> +device_add_must_fail()
+> +{
+> +       echo ---- $FUNCNAME ----
+> +
+> +       mkfs_clone ${SCRATCH_DEV} ${SCRATCH_DEV_NAME[1]}
+> +       _scratch_mount
+> +       _mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
+> +
+> +       $XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' $SCRATCH_MNT/foo | \
+> +                                                       _filter_xfs_io
+> +
+> +$BTRFS_UTIL_PROG device add -f ${SCRATCH_DEV_NAME[2]} ${tempfsid_mnt} 2>=
+&1 | \
+> +               grep -v "Performing full device TRIM" | _filter_scratch_p=
+ool
+> +
+> +       echo Balance must be successful
+> +       _run_btrfs_balance_start ${tempfsid_mnt}
+> +}
+> +
+> +mkdir -p $tempfsid_mnt
+> +
+> +seed_device_must_fail
+> +
+> +_scratch_unmount
+> +_cleanup
+> +mkdir -p $tempfsid_mnt
+> +
+> +device_add_must_fail
+> +
+> +_scratch_dev_pool_put
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/315.out b/tests/btrfs/315.out
+> new file mode 100644
+> index 000000000000..3ea7a35ab040
+> --- /dev/null
+> +++ b/tests/btrfs/315.out
+> @@ -0,0 +1,10 @@
+> +QA output created by 315
+> +---- seed_device_must_fail ----
+> +mount: SCRATCH_MNT: WARNING: source write-protected, mounted read-only.
+> +mount: TEST_DIR/315/tempfsid_mnt:  system call failed: File exists.
+> +---- device_add_must_fail ----
+> +wrote 9000/9000 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +ERROR: error adding device 'SCRATCH_DEV': Invalid argument
+> +Balance must be successful
+> +Done, had to relocate 3 out of 3 chunks
+> --
+> 2.39.3
+>
 
