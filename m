@@ -1,231 +1,175 @@
-Return-Path: <linux-btrfs+bounces-2946-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2948-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D1BE86D3D1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 20:59:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE0A686D3FD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 21:14:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDDA22897A5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 19:59:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF4991C21FB2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 20:14:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B95513F453;
-	Thu, 29 Feb 2024 19:59:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26CC313F447;
+	Thu, 29 Feb 2024 20:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="mBjgJsd2"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ENxPk2bh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dZ++Ahzx";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ENxPk2bh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dZ++Ahzx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B710513C9F7
-	for <linux-btrfs@vger.kernel.org>; Thu, 29 Feb 2024 19:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA0C7E76F
+	for <linux-btrfs@vger.kernel.org>; Thu, 29 Feb 2024 20:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709236745; cv=none; b=OQjuVfu1Th/bx+uOAhYGmf1kIPQrpnJww71LHqbESBL4KSUwOET3GxuCgVe5qujdYK8NcZ+xqMCW/OvXA0KATEu7Ujurc1+73yyy3fIdcTnfxJTqe7c9LQA/UjIyG3R8MJPv5I/W9jN9b2WtSxdYqm+4CFV+ojh+5iBKbonImXk=
+	t=1709237652; cv=none; b=iVbD5aFzgsYGgB7+6dnbBKfr+KgprtTxGun+ZXGwQE2GFF2gtvIZzkn2JU9Yc/Fv2In01Lak39Pq5cM1AUc82ufyXUg06Qe51xzgefW55Amm3x1gX5qAxKsr91IEh+W25OfWaZlcvlBmeJVnBF53rFVnk4nHfDKQddp97aL3lrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709236745; c=relaxed/simple;
-	bh=+/0AdQcFnCfKSegEZy9hvrIJ2WMIF7WuqRskgOhMmvQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g2v16WXYTc8Ln8n00fLZ+jCmbraGuYdxS0SVF94lv+P9GyK35aud1mgciCPcfWtg2CjuzJzmgy3K7MXqO+XEt7ZmnZv4VH1BmdReIKUi8VorOKB0JHbcU3CAOjtZ6KovT7YidjR4lS9OCVu/xonbQBwDedxi7JEoFnpAPCLNw/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it; spf=pass smtp.mailfrom=inwind.it; dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b=mBjgJsd2; arc=none smtp.client-ip=213.209.10.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-16.iol.local with ESMTPA
-	id fmVzrGLJ8Qc3jfmVzrPC4e; Thu, 29 Feb 2024 20:56:24 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-	t=1709236584; bh=KNMmVtwjCgAMs7Ls0x332y2Nu0DyVg7DMv03VS4jYnw=;
-	h=From;
-	b=mBjgJsd2FOM5gF2X3VPG0AuVkNN6Bm8VfgzC0+ewg4jEWxiSA1A5QXp/H2hb89RHa
-	 bgfOVBAAV19uFqXAqfL8eol3Hbmq1DmxiNyhPK22ojbAApB2pzizRcrVvnUd56/nNg
-	 cRis+zv4GThU+oS9Y/MkfK3uhf1PEir76RU6bJwm8ZZQj2SK+c2N8sObqEvYcnfPJs
-	 DMeLI+Y/8ItwwZ/cLvPhI9SGgpDLVCuNMZvWwkePjF5FKtaw0v569VKBigaQHtyh+X
-	 vW8Uhv4zOvxjhu84QdVIzN9LtHdURh0/RHMGJXW5re2loQ/csVbBZj4p+tIkL4QUx7
-	 /ARychO+EPSbQ==
-X-CNFS-Analysis: v=2.4 cv=eux8zZpX c=1 sm=1 tr=0 ts=65e0e168 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=9R-lXduunLBbFm3wDKoA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-Message-ID: <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it>
-Date: Thu, 29 Feb 2024 20:56:23 +0100
+	s=arc-20240116; t=1709237652; c=relaxed/simple;
+	bh=9/39jl9MyYDC6+WPyySq+4kZgv2bg2TPcqvBS4PuwF0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dnErt1n6uiYz+sI/+PafUggYuAVxJ61nzquSOrT/XjFDSn6I36ZOaWPAY2f1nGmas8yX0OJyYcW9ZBY7vqixk4oSyrqqe3lvbcpYIvNoKF+nCtL31AB9MAy8nkTg4Vw1AKIPBfvSgWRBxdwIo3Ry81D/+0FJDuIPOIi9TMoJtdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ENxPk2bh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dZ++Ahzx; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ENxPk2bh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dZ++Ahzx; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A7CCB1F807;
+	Thu, 29 Feb 2024 20:14:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709237648;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YVud7Mf0oVDAUcZi71UFTr925eL0yW/kMM5wh4LzUcM=;
+	b=ENxPk2bhtUtMTr1KLccnG9ZYlINfdz9iPJJBBav+AMVAKE9ag01iq1v0VZxV14dBp1X9xn
+	cpoWBCruD4JUzCarR18QEBNEnXEg/JOIsa8vAnRnZNNBsdbUp5tkH9XjWQtMAlAp5KwHYx
+	jZMtgR6wa+cfFxMWeIGxib2v3RrDsiY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709237648;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YVud7Mf0oVDAUcZi71UFTr925eL0yW/kMM5wh4LzUcM=;
+	b=dZ++AhzxRh/JJ/BsEICFRuPKItShw25oBrcvVRVModg38IiP4V+IU3UmVhRRXowVmoMgTv
+	YwV6U/WQ00xVQSBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709237648;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YVud7Mf0oVDAUcZi71UFTr925eL0yW/kMM5wh4LzUcM=;
+	b=ENxPk2bhtUtMTr1KLccnG9ZYlINfdz9iPJJBBav+AMVAKE9ag01iq1v0VZxV14dBp1X9xn
+	cpoWBCruD4JUzCarR18QEBNEnXEg/JOIsa8vAnRnZNNBsdbUp5tkH9XjWQtMAlAp5KwHYx
+	jZMtgR6wa+cfFxMWeIGxib2v3RrDsiY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709237648;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YVud7Mf0oVDAUcZi71UFTr925eL0yW/kMM5wh4LzUcM=;
+	b=dZ++AhzxRh/JJ/BsEICFRuPKItShw25oBrcvVRVModg38IiP4V+IU3UmVhRRXowVmoMgTv
+	YwV6U/WQ00xVQSBQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 96A6513451;
+	Thu, 29 Feb 2024 20:14:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id fe6eJJDl4GUuAwAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Thu, 29 Feb 2024 20:14:08 +0000
+Date: Thu, 29 Feb 2024 21:07:01 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH v2] btrfs: qgroup: allow quick inherit if a snapshot if
+ created and added to the same parent
+Message-ID: <20240229200701.GG2604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <77ffdac5a4f20ae19c35142f03f59fb1a086495b.1709177609.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: [REGRESSION] LVM-on-LVM: error while submitting device barriers
-To: Patrick Plenefisch <simonpatp@gmail.com>
-Cc: stable@vger.kernel.org, linux-kernel@vger.kernel.org,
- Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
- Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- regressions@lists.linux.dev, dm-devel@lists.linux.dev,
- linux-btrfs@vger.kernel.org
-References: <CAOCpoWc_HQy4UJzTi9pqtJdO740Wx5Yd702O-mwXBE6RVBX1Eg@mail.gmail.com>
- <CAOCpoWf3TSQkUUo-qsj0LVEOm-kY0hXdmttLE82Ytc0hjpTSPw@mail.gmail.com>
- <CAOCpoWeNYsMfzh8TSnFqwAG1BhAYnNt_J+AcUNqRLF7zmJGEFA@mail.gmail.com>
- <672e88f2-8ac3-45fe-a2e9-730800017f53@libero.it>
- <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
-Content-Language: en-US
-From: Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfFFPqikg0kgTh/gIJQWHawLgDrsbPCU3GCW7mI9p9TSSqH9ewwJnrsRrMdphS9tkBIF5fOvJni9wo8Gah+BIW7X+kkX5zc6NSs3NqYbBFaiquGYpqp+/
- kezzOE5v/asqjI4k/ZfXiQC/iciMe0oDQCZOdqceT4R+QNdO76S+w6I39N+czryMoJMIZQW2ViS2RJd4D6OhdHfLpyoOPEa7d+I37byQMUvwLTwLkVbD4Yi5
- MdyTy9Dr0PZA66HKuRZKIIH3Y6Fdbo1dJIdi5bkHEVAIUSPRnYGePlWlzY2Hzf/s6tajwwmxFTjjF14t1UfQOlhtbEBWmXZevo+t7kgvyfF6iuBFzBcAF382
- 7otqpKvUDLut7JHTiGQBuOkiwiD00LGAbYJocSh/Aoq/7zOmwzdMg2a2YRtkP3hlM3rZZoqtVXX+tu8f68NSHfEGFy1+GwgTHW3DpF/PVuNfHx3JBv5pB2Zz
- 9A26lW/pGrfxGMQIBNyTtrljGtrtjQzb5q8MagRRNIZFt2yzW6Ww/V2CL1HWW1X2yrcXsJk/xqNz48tP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <77ffdac5a4f20ae19c35142f03f59fb1a086495b.1709177609.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ENxPk2bh;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=dZ++Ahzx
+X-Spamd-Result: default: False [-0.07 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.06)[61.69%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -0.07
+X-Rspamd-Queue-Id: A7CCB1F807
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-On 28/02/2024 20.37, Patrick Plenefisch wrote:
-> On Wed, Feb 28, 2024 at 2:19 PM Goffredo Baroncelli <kreijack@libero.it> wrote:
->>
->> On 28/02/2024 18.25, Patrick Plenefisch wrote:
->>> I'm unsure if this is just an LVM bug, or a BTRFS+LVM interaction bug,
->>> but LVM is definitely involved somehow.
->>> Upgrading from 5.10 to 6.1, I noticed one of my filesystems was
->>> read-only. In dmesg, I found:
->>>
->>> BTRFS error (device dm-75): bdev /dev/mapper/lvm-brokenDisk errs: wr
->>> 0, rd 0, flush 1, corrupt 0, gen 0
->>> BTRFS warning (device dm-75): chunk 13631488 missing 1 devices, max
->>> tolerance is 0 for writable mount
->>> BTRFS: error (device dm-75) in write_all_supers:4379: errno=-5 IO
->>> failure (errors while submitting device barriers.)
->>> BTRFS info (device dm-75: state E): forced readonly
->>> BTRFS warning (device dm-75: state E): Skipping commit of aborted transaction.
->>> BTRFS: error (device dm-75: state EA) in cleanup_transaction:1992:
->>> errno=-5 IO failure
->>>
->>> At first I suspected a btrfs error, but a scrub found no errors, and
->>> it continued to be read-write on 5.10 kernels.
->>>
->>> Here is my setup:
->>>
->>> /dev/lvm/brokenDisk is a lvm-on-lvm volume. I have /dev/sd{a,b,c,d}
->>> (of varying sizes) in a lower VG, which has three LVs, all raid1
->>> volumes. Two of the volumes are further used as PV's for an upper VGs.
->>> One of the upper VGs has no issues. The non-PV LV has no issue. The
->>> remaining one, /dev/lowerVG/lvmPool, hosting nested LVM, is used as a
->>> PV for VG "lvm", and has 3 volumes inside. Two of those volumes have
->>> no issues (and are btrfs), but the last one is /dev/lvm/brokenDisk.
->>> This volume is the only one that exhibits this behavior, so something
->>> is special.
->>>
->>> Or described as layers:
->>> /dev/sd{a,b,c,d} => PV => VG "lowerVG"
->>> /dev/lowerVG/single (RAID1 LV) => BTRFS, works fine
->>> /dev/lowerVG/works (RAID1 LV) => PV => VG "workingUpper"
->>> /dev/workingUpper/{a,b,c} => BTRFS, works fine
->>> /dev/lowerVG/lvmPool (RAID1 LV) => PV => VG "lvm"
->>> /dev/lvm/{a,b} => BTRFS, works fine
->>> /dev/lvm/brokenDisk => BTRFS, Exhibits errors
->>
->> I am a bit curious about the reasons of this setup.
+On Thu, Feb 29, 2024 at 02:04:44PM +1030, Qu Wenruo wrote:
+> Currently "btrfs subvolume snapshot -i <qgroupid>" would always mark the
+> qgroup inconsistent.
 > 
-> The lowerVG is supposed to be a pool of storage for several VM's &
-> containers. [workingUpper] is for one VM, and [lvm] is for another VM.
-> However right now I'm still trying to organize the files directly
-> because I don't have all the VM's fully setup yet
+> This can be annoying if the fs has a lot of snapshots, and needs qgroup
+> to get the accounting for the amount of bytes it can free for each
+> snapshot.
 > 
->> However I understood that:
->>
->> /dev/sda -+                +-- single (RAID1) -> ok             +-> a   ok
->> /dev/sdb  |                |                                    |-> b   ok
->> /dev/sdc  +--> [lowerVG]>--+-- works (RAID1) -> [workingUpper] -+-> c   ok
->> /dev/sdd -+                |
->>                              |                       +-> a          -> ok
->>                              +-- lvmPool (raid1)-> [lvm] ->-|
->>                                                      +-> b          -> ok
->>                                                      |
->>                                                      +->brokenDisk  -> fail
->>
->> [xxx] means VG, the others are LVs that may act also as PV in
->> an upper VG
+> Although we have the new simple quote as a solution, there is also a
+> case where we can skip the full scan, if all the following conditions
+> are met:
 > 
-> Note that lvmPool is also RAID1, but yes
+> - The source subvolume belongs to a higher level parent qgroup
+> - The parent qgroup already owns all its bytes exclusively
+> - The new snapshot is also added to the same parent qgroup
 > 
->>
->> So, it seems that
->>
->> 1) lowerVG/lvmPool/lvm/a
->> 2) lowerVG/lvmPool/lvm/a
->> 3) lowerVG/lvmPool/lvm/brokenDisk
->>
->> are equivalent ... so I don't understand how 1) and 2) are fine but 3) is
->> problematic.
+> In that case, we only need to add nodesize to the parent qgroup and
+> avoid a full rescan.
 > 
-> I assume you meant  lvm/b for 2?
+> Add the extra quick accounting update for such inherit.
+> 
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/qgroup.c | 74 ++++++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 67 insertions(+), 7 deletions(-)
+> ---
+> Changelog:
+> v2:
+> - Move the case of source subvolume without a parent into
+>   qgroup_snapshot_quick_inherit()
+> 
+> - Exit early if the source subvolume has too many parents
+> 
+> - Small commit message update on the last sentence
 
-Yes
-
->>
->> Is my understanding of the LVM layouts correct ?
-> 
-> Your understanding is correct. The only thing that comes to my mind to
-> cause the problem is asymmetry of the SATA devices. I have one 8TB
-> device, plus a 1.5TB, 3TB, and 3TB drives. Doing math on the actual
-> extents, lowerVG/single spans (3TB+3TB), and
-> lowerVG/lvmPool/lvm/brokenDisk spans (3TB+1.5TB). Both obviously have
-> the other leg of raid1 on the 8TB drive, but my thought was that the
-> jump across the 1.5+3TB drive gap was at least "interesting"
-
-
-what about lowerVG/works ?
-
-However yes, I agree that the pair of disks involved may be the answer
-of the problem.
-
-Could you show us the output of
-
-$ sudo pvdisplay -m
-
-> 
->>
->>
->>>
->>> After some investigation, here is what I've found:
->>>
->>> 1. This regression was introduced in 5.19. 5.18 and earlier kernels I
->>> can keep this filesystem rw and everything works as expected, while
->>> 5.19.0 and later the filesystem is immediately ro on any write
->>> attempt. I couldn't build rc1, but I did confirm rc2 already has this
->>> regression.
->>> 2. Passing /dev/lvm/brokenDisk to a KVM VM as /dev/vdb with an
->>> unaffected kernel inside the vm exhibits the ro barrier problem on
->>> unaffected kernels.
->>
->> Is /dev/lvm/brokenDisk *always* problematic with affected ( >= 5.19 ) and
->> UNaffected ( < 5.19 ) kernel ?
-> 
-> Yes, I didn't test it in as much depth, but 5.15 and 6.1 in the VM
-> (and 6.1 on the host) are identically problematic
-> 
->>
->>> 3. Passing /dev/lowerVG/lvmPool to a KVM VM as /dev/vdb with an
->>> affected kernel inside the VM and using LVM inside the VM exhibits
->>> correct behavior (I can keep the filesystem rw, no barrier errors on
->>> host or guest)
->>
->> Is /dev/lowerVG/lvmPool problematic with only "affected" kernel ?
-> 
-> Uh, passing lvmPool directly to the VM is never problematic. I tested
-> 5.10 and 6.1 in the VM (and 6.1 on the host), and neither setup throws
-> barrier errors.
-> 
->> [...]
->>
->> --
->> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
->> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
->>
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
+Reviewed-by: David Sterba <dsterba@suse.com>
 
