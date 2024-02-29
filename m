@@ -1,162 +1,296 @@
-Return-Path: <linux-btrfs+bounces-2951-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2953-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A356786D443
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 21:33:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9352886D68B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 23:05:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF9941C20CBB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 20:33:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93BCE1C2209C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Feb 2024 22:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A23ED1428F1;
-	Thu, 29 Feb 2024 20:33:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C6D74BF1;
+	Thu, 29 Feb 2024 22:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="RqWE8bpH";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ha/CQsGS"
+	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="mOa9X+RF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87F6C7BAEB
-	for <linux-btrfs@vger.kernel.org>; Thu, 29 Feb 2024 20:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 434546D536
+	for <linux-btrfs@vger.kernel.org>; Thu, 29 Feb 2024 22:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709238782; cv=none; b=XnPCn8qGmwFHgofQngBOm5vRf3wMOfVghkKnTrWjhSTdl0rd2qZEeJnUR+o2M46BprSi1QAzhzq8+kjZFX2MEX3kKspzzvnRFKU/v1KXuQTFSaXZLdx8/c9Got8dTOnWAIMKzAxl9w6/JVoACtH1ag6y5smIQW/pUyjuX1QW0XU=
+	t=1709244325; cv=none; b=pt/h+tyhjhvTqndLZe/B0LFLmmgDEA4VA6gP/Ch+wqE4fVUnsrq6mHuwywNbSdyKnRkMY5nzXmihaVhmjll2eA5i0yzdTfHR+fmHPKVi/5GOiqUMkCv+ojekxRb9zAiNSoKfrF0vq1UxS6d7uamrcaNIiPc/PAyzHyduefrlgTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709238782; c=relaxed/simple;
-	bh=rNb7QAv2ydfHFTdoNAmq+peAlZmgeFvxPF+fDEUhAMY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iBpNabIJvAppSa9z+WIBEeQOj7gGlKTU5eGm3lJ6ivGrSl/tulWpEiZHG01fD0NnffKBrO7uJcPbIxdQbqyTiD2vkvvAqp6j21fYeSim9OZxDwrhlO8c0YTAgNBcgau7pM2234ZJMpDP3tYppc/3EIycT0YRt68/iVOBBBIevvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=RqWE8bpH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ha/CQsGS; arc=none smtp.client-ip=64.147.123.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.west.internal (Postfix) with ESMTP id 4A3673200392;
-	Thu, 29 Feb 2024 15:32:58 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 29 Feb 2024 15:32:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1709238777; x=1709325177; bh=RgsTh2cDTS
-	QUS6uCF9NwpyaE58OPuaBqdqmsjIMYdto=; b=RqWE8bpHKpCr/pDTtOiNioMd+c
-	XzrfLlWplkrxR5zcB3cjIKveeMIQOPCnfdaUw7EZa+nqtzNe8pl24vf69t7hEpi3
-	6Z2kpOJCSBQAzG8QG91HlwwZnE2S803n+cg9goDHOro4T69CYMEt1p2BTZSi9Rln
-	c4Od6beA5BK+jp4Yb3VI/AR9jOBAegHFW3BpzpE6d46CYsq8RtUIzo5+cz+BEP5X
-	P7d0nJW9dbNnA5AveVrGxIPcbWm3UUibvNapnySnb7lVh1D8Te5r3ny5i1zxqRz/
-	EzutZHRYYPnHF3UM77sGUyVBjSO71PY+18mdbBtMMIhGvvadBlq57sqzDPNQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709238777; x=1709325177; bh=RgsTh2cDTSQUS6uCF9NwpyaE58OP
-	uaBqdqmsjIMYdto=; b=ha/CQsGSBaoillvvUJPPztStZpWSgIZm2fP52xsv4InJ
-	Yf5x91XDtkwYoTic7mT3NRgIEP0hc4KrYvKWM/NY+GZ7VsRZSpEy2J8iI0mf2TSR
-	cnLyyVVmLH2ThB/FMXzUeusLZu8aHtLLQ0hMC2PV/lBd3jcToWUQHBi8ZT55b6ib
-	i8D8e7J/LKG2OCOu1UrWHn+KEkz0oiyt9j2o9KLtT+R+GnU0k1Xpc6d3RaUxbTHz
-	IEmZBxGeb9t8Xu1dtU2HJLJCCpr2j/NIIkprvbJTyjVz5cbevMbdj+XfDuD9FBqF
-	uN5AJz0A1Rsvpj9psBrNQG/NMlPHvKReFDXYvNgMKA==
-X-ME-Sender: <xms:-engZUUutLYgWgCpBC1S16_CJAJ-LSgFDlcivmMTIblnNLc1urKfSA>
-    <xme:-engZYnN23G7B-1qZu_dob4WfYSpUEW_40wZK9sIF1gS_aMyVs8RJ2WHw_VbA0ty4
-    TMDsLtwPv8oZAY1fXs>
-X-ME-Received: <xmr:-engZYbx6zRMazNUIUP2YCC7mqUY5JJBR0qHlTRIpd09nKKjH64P9FiHdrbr7y3__xZMDzX_YEew7sAK_9fDEVg5Okc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeelgddufeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:-engZTWm36P_ahh4OXGB9nwnLs5PIHJeV9cTNhX6cpJWmXHPyePe_Q>
-    <xmx:-engZekmrSBbqnW3Tm9sWEMg9pR-teaJh_xY0jMmyZ2xns4AAcU0AQ>
-    <xmx:-engZYeDYegOzbagnFjb-R6jnnHkyrqsI5-bPqNJNK12ZIgre4eHwg>
-    <xmx:-engZStjDxQ90ZNKolJHzZ_731SONBJlVtG6otiyUJqQg9FplJ395w>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Feb 2024 15:32:57 -0500 (EST)
-Date: Thu, 29 Feb 2024 12:34:09 -0800
-From: Boris Burkov <boris@bur.io>
-To: David Sterba <dsterba@suse.cz>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 2/2] btrfs-progs: add udev rule to forget removed device
-Message-ID: <20240229203409.GA1754735@zen.localdomain>
-References: <cover.1709231441.git.boris@bur.io>
- <80545243dec10a48562bf8a9b5d10b8ba6f16983.1709231441.git.boris@bur.io>
- <20240229195339.GF2604@twin.jikos.cz>
+	s=arc-20240116; t=1709244325; c=relaxed/simple;
+	bh=WH9N2nGE9wF9zeEhcX5YQJXmxdCM+BrtfCHSzAb23pE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CeoZk/azB66wr99jJf8J6aIMZ+fGgyaYvxunH1zYxaQ5QkcweU4ep2Hvj1gsQ5V5NWpKNC+Aq8gnxrx0Yu+hmKKvD3h5zNZ5hG67AdOo7SZsXae/8XGTqbtysO/NcazySts5TttiL1Ps0DIsDWCxLQBULauuWthsB31aSAIyBYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it; spf=pass smtp.mailfrom=inwind.it; dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b=mOa9X+RF; arc=none smtp.client-ip=213.209.10.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-16.iol.local with ESMTPA
+	id foWlrHHVGQc3jfoWlrPW3C; Thu, 29 Feb 2024 23:05:20 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+	t=1709244320; bh=7JoWB01ufRE74I5GTXo+K0ciaCmPX3Y8/xI5JEkDWl0=;
+	h=From;
+	b=mOa9X+RFLOKx0GliWr4UvYNIcGBchwoV68Co3xehNjSdpX0e3kq0YGbGMckPbFy+6
+	 cerA4pN7npa8cUv6jUzL1HxXJp+zWzOxe4s19XnINdYHIZJxSpGmNboq8SoehDVhwH
+	 03SoujRY4gqsx3i2As7tULt3JGofyWotP1mOyPVFR3XeGiLUO6GT5pP3GlZ412kkHa
+	 9SOulFrLfOwrn/XgAgG/ZQH+TolQasovSc68dXVy2AgpZmzBUiDpmYTXfhVtFgclfa
+	 UPFwpQhzlnWqOxDf6GtcSpvvclQQrTs2SEM0JZ7kSewGRI9/zLE3gKvr9q7csNOl0p
+	 9Y20qj+0fWxGw==
+X-CNFS-Analysis: v=2.4 cv=eux8zZpX c=1 sm=1 tr=0 ts=65e0ffa0 cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=p0WdMEafAAAA:8 a=U-wgw_aUbNXxtflkicMA:9 a=3ZKOabzyN94A:10
+ a=QEXdDO2ut3YA:10 a=CEsIH-8HjQcA:10 a=EFd53GHqFYiFSGm04UA1:22
+Message-ID: <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it>
+Date: Thu, 29 Feb 2024 23:05:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229195339.GF2604@twin.jikos.cz>
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: [REGRESSION] LVM-on-LVM: error while submitting device barriers
+Content-Language: en-US
+To: Patrick Plenefisch <simonpatp@gmail.com>
+Cc: stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
+ Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ regressions@lists.linux.dev, dm-devel@lists.linux.dev,
+ linux-btrfs@vger.kernel.org
+References: <CAOCpoWc_HQy4UJzTi9pqtJdO740Wx5Yd702O-mwXBE6RVBX1Eg@mail.gmail.com>
+ <CAOCpoWf3TSQkUUo-qsj0LVEOm-kY0hXdmttLE82Ytc0hjpTSPw@mail.gmail.com>
+ <CAOCpoWeNYsMfzh8TSnFqwAG1BhAYnNt_J+AcUNqRLF7zmJGEFA@mail.gmail.com>
+ <672e88f2-8ac3-45fe-a2e9-730800017f53@libero.it>
+ <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
+ <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it>
+ <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
+From: Goffredo Baroncelli <kreijack@inwind.it>
+In-Reply-To: <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfNqcLHk+pE4wHu/qk8irv70ZVHY76ly3H5UQjYaPVPJgqhzk8jIBU9DmO3r299cZrbhVPhUc2nqgB84zm7RaGdzrWSbtKHVDCGitCX1Px4wCLfYfauvu
+ VqxQ6mFzBt85iY2BCcb7CJgUhfXL7zIedQxaK480T4BpmdQbwKf/oRuDRr1epZFlYOamIDmrHPxZqBtg7uN1omKVoyq8rAXJuEjL79qsFZnYx3PRrwIceOPh
+ n0SNS9NQsj9MZDASyCLZp+0bGfj61gI/C/8FW+bhBQgm9KYnpGQAr07ZAaDY/D74RFHCVuvA+3fDUJwFK1FJjzfKU4m4WZiwIbElkYAdId6YJe243pM9iwgC
+ Dk0vT5yJz1oJLjqEVt9WIG4+DCgRKIYZSsmpb09EWkFDElg17FTTuRB71ZPlJAsXv3hW95q1eSALtMLDsINwhoh8ckac7xUkkkZEtndhYb0vZ77pzQYuzSn5
+ DT0S+SBoQG40oAB/aOM1molcPnrLY1ujGymfGONKUvBouZzQktYtQxC/caVta5sw/m+vXwAFCtHJN6Zv
 
-On Thu, Feb 29, 2024 at 08:53:39PM +0100, David Sterba wrote:
-> On Thu, Feb 29, 2024 at 10:36:55AM -0800, Boris Burkov wrote:
-> > Now that btrfs supports forgetting devices that don't exist, we can add
-> > a udev rule to take advantage of that. This avoids bad edge cases
-> > with cached devices in multi-device filesystems without having to rescan
-> > all the devices on every change.
-> > 
-> > Signed-of-by: Boris Burkov <boris@bur.io>
-> > ---
-> >  64-btrfs-rm.rules | 7 +++++++
-> >  Makefile          | 2 +-
-> >  2 files changed, 8 insertions(+), 1 deletion(-)
-> >  create mode 100644 64-btrfs-rm.rules
-> > 
-> > diff --git a/64-btrfs-rm.rules b/64-btrfs-rm.rules
-> > new file mode 100644
-> > index 000000000..852155d28
-> > --- /dev/null
-> > +++ b/64-btrfs-rm.rules
-> > @@ -0,0 +1,7 @@
+On 29/02/2024 21.22, Patrick Plenefisch wrote:
+> On Thu, Feb 29, 2024 at 2:56 PM Goffredo Baroncelli <kreijack@inwind.it> wrote:
+>>
+>>> Your understanding is correct. The only thing that comes to my mind to
+>>> cause the problem is asymmetry of the SATA devices. I have one 8TB
+>>> device, plus a 1.5TB, 3TB, and 3TB drives. Doing math on the actual
+>>> extents, lowerVG/single spans (3TB+3TB), and
+>>> lowerVG/lvmPool/lvm/brokenDisk spans (3TB+1.5TB). Both obviously have
+>>> the other leg of raid1 on the 8TB drive, but my thought was that the
+>>> jump across the 1.5+3TB drive gap was at least "interesting"
+>>
+>>
+>> what about lowerVG/works ?
+>>
 > 
-> Please add a comment that explains when and why this udev rule should be
-> used.
-> 
+> That one is only on two disks, it doesn't span any gaps
 
-Definitely happy to add a comment.
+Sorry, but re-reading the original email I found something that I missed before:
 
-This is certainly the discussion I was hoping to have, as well, but I
-thiiink we just always want this? Basically if we don't have it,
-multi-device users are in danger of accidentally making a stale device
-cache between mounts. It's probably not that big of a risk in general,
-but we did hit an easier to hit variant in v5.19 at Meta.
+> BTRFS error (device dm-75): bdev /dev/mapper/lvm-brokenDisk errs: wr
+> 0, rd 0, flush 1, corrupt 0, gen 0
+> BTRFS warning (device dm-75): chunk 13631488 missing 1 devices, max
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> tolerance is 0 for writable mount
+> BTRFS: error (device dm-75) in write_all_supers:4379: errno=-5 IO
+> failure (errors while submitting device barriers.)
 
-OTOH, there is also the problem that this is a no-op unless the kernel
-has the patch I sent at the same time:
-btrfs: support device name lookup in forget
+Looking at the code, it seems that if a FLUSH commands fails, btrfs
+considers that the disk is missing. The it cannot mount RW the device.
 
-I don't think there is any downside to running this command which will
-simply fail on an older kernel.
+I would investigate with the LVM developers, if it properly passes
+the flush/barrier command through all the layers, when we have an
+lvm over lvm (raid1). The fact that the lvm is a raid1, is important because
+a flush command to be honored has to be honored by all the
+devices involved.
 
-If this becomes ubiquitous, then we can also remove the special case for
-single device cache clearing from the btrfs unmount code.
-
-> > +SUBSYSTEM!="block", GOTO="btrfs_rm_end"
-> > +ACTION!="remove", GOTO="btrfs_rm_end"
-> > +ENV{ID_FS_TYPE}!="btrfs", GOTO="btrfs_rm_end"
-> > +
-> > +RUN+="/usr/local/bin/btrfs device scan -u $devnode"
-> 
-> Is the full path mandatory or is 'btrfs' sufficient? I think systemd
-> uses own tool of the same name.
-
-Unfortunately, it did not work for me. I saw logs saying
-/usr/lib/udev/rules.d/btrfs file not found or something like that in
-dmesg.
-
-I also considered the btrfs udev "builtin" but from experimenting and
-checking out the code, it looks like that only does device ready, not
-all device commands.
 
 > 
-> Please use long option name so it's more obvious what it does.
+>> However yes, I agree that the pair of disks involved may be the answer
+>> of the problem.
+>>
+>> Could you show us the output of
+>>
+>> $ sudo pvdisplay -m
+>>
+>>
+> 
+> I trimmed it, but kept the relevant bits (Free PE is thus not correct):
+> 
+> 
+>    --- Physical volume ---
+>    PV Name               /dev/lowerVG/lvmPool
+>    VG Name               lvm
+>    PV Size               <3.00 TiB / not usable 3.00 MiB
+>    Allocatable           yes
+>    PE Size               4.00 MiB
+>    Total PE              786431
+>    Free PE               82943
+>    Allocated PE          703488
+>    PV UUID               7p3LSU-EAHd-xUg0-r9vT-Gzkf-tYFV-mvlU1M
+> 
+>    --- Physical Segments ---
+>    Physical extent 0 to 159999:
+>      Logical volume      /dev/lvm/brokenDisk
+>      Logical extents     0 to 159999
+>    Physical extent 160000 to 339199:
+>      Logical volume      /dev/lvm/a
+>      Logical extents     0 to 179199
+>    Physical extent 339200 to 349439:
+>      Logical volume      /dev/lvm/brokenDisk
+>      Logical extents     160000 to 170239
+>    Physical extent 349440 to 351999:
+>      FREE
+>    Physical extent 352000 to 460026:
+>      Logical volume      /dev/lvm/brokenDisk
+>      Logical extents     416261 to 524287
+>    Physical extent 460027 to 540409:
+>      FREE
+>    Physical extent 540410 to 786430:
+>      Logical volume      /dev/lvm/brokenDisk
+>      Logical extents     170240 to 416260
+> 
+> 
+>    --- Physical volume ---
+>    PV Name               /dev/sda3
+>    VG Name               lowerVG
+>    PV Size               <2.70 TiB / not usable 3.00 MiB
+>    Allocatable           yes
+>    PE Size               4.00 MiB
+>    Total PE              707154
+>    Free PE               909
+>    Allocated PE          706245
+>    PV UUID               W8gJ0P-JuMs-1y3g-b5cO-4RuA-MoFs-3zgKBn
+> 
+>    --- Physical Segments ---
+>    Physical extent 0 to 52223:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
+>      Logical extents     629330 to 681553
+>    Physical extent 52224 to 628940:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
+>      Logical extents     0 to 576716
+>    Physical extent 628941 to 628941:
+>      Logical volume      /dev/lowerVG/single_corig_rmeta_0
+>      Logical extents     0 to 0
+>    Physical extent 628942 to 628962:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
+>      Logical extents     681554 to 681574
+>    Physical extent 628963 to 634431:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_0_imeta
+>      Logical extents     0 to 5468
+>    Physical extent 634432 to 654540:
+>      FREE
+>    Physical extent 654541 to 707153:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_0_iorig
+>      Logical extents     576717 to 629329
+> 
+>    --- Physical volume ---
+>    PV Name               /dev/sdf2
+>    VG Name               lowerVG
+>    PV Size               <7.28 TiB / not usable 4.00 MiB
+>    Allocatable           yes
+>    PE Size               4.00 MiB
+>    Total PE              1907645
+>    Free PE               414967
+>    Allocated PE          1492678
+>    PV UUID               my0zQM-832Z-HYPD-sNfW-68ms-nddg-lMyWJM
+> 
+>    --- Physical Segments ---
+>    Physical extent 0 to 0:
+>      Logical volume      /dev/lowerVG/single_corig_rmeta_1
+>      Logical extents     0 to 0
+>    Physical extent 1 to 681575:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_1_iorig
+>      Logical extents     0 to 681574
+>    Physical extent 681576 to 687044:
+>      Logical volume      /dev/lowerVG/single_corig_rimage_1_imeta
+>      Logical extents     0 to 5468
+>    Physical extent 687045 to 687045:
+>      Logical volume      /dev/lowerVG/lvmPool_rmeta_0
+>      Logical extents     0 to 0
+>    Physical extent 687046 to 1049242:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_0
+>      Logical extents     0 to 362196
+>    Physical extent 1049243 to 1056551:
+>      FREE
+>    Physical extent 1056552 to 1473477:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_0
+>      Logical extents     369506 to 786431
+>    Physical extent 1473478 to 1480786:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_0
+>      Logical extents     362197 to 369505
+>    Physical extent 1480787 to 1907644:
+>      FREE
+> 
+>    --- Physical volume ---
+>    PV Name               /dev/sdb3
+>    VG Name               lowerVG
+>    PV Size               1.33 TiB / not usable 3.00 MiB
+>    Allocatable           yes (but full)
+>    PE Size               4.00 MiB
+>    Total PE              349398
+>    Free PE               0
+>    Allocated PE          349398
+>    PV UUID               Ncmgdw-ZOXS-qTYL-1jAz-w7zt-38V2-f53EpI
+> 
+>    --- Physical Segments ---
+>    Physical extent 0 to 0:
+>      Logical volume      /dev/lowerVG/lvmPool_rmeta_1
+>      Logical extents     0 to 0
+>    Physical extent 1 to 349397:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_1
+>      Logical extents     0 to 349396
+> 
+> 
+>    --- Physical volume ---
+>    PV Name               /dev/sde2
+>    VG Name               lowerVG
+>    PV Size               2.71 TiB / not usable 3.00 MiB
+>    Allocatable           yes
+>    PE Size               4.00 MiB
+>    Total PE              711346
+>    Free PE               255111
+>    Allocated PE          456235
+>    PV UUID               xUG8TG-wvp0-roBo-GPo7-sbvn-aE7I-NAHU07
+> 
+>    --- Physical Segments ---
+>    Physical extent 0 to 416925:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_1
+>      Logical extents     369506 to 786431
+>    Physical extent 416926 to 437034:
+>      Logical volume      /dev/lowerVG/lvmPool_rimage_1
+>      Logical extents     349397 to 369505
+>    Physical extent 437035 to 711345:
+>      FREE
+> 
+> 
+> Finally, I am not sure if it's relevant, but I did struggle to expand
+> the raid1 volumes across gaps when creating this setup. I did file a
+> bug about that, though I am not sure if it's relevant, as I removed
+> integrity and cache for brokenDisk & lvmPool:
+> https://gitlab.com/lvmteam/lvm2/-/issues/6
+> 
+> Patrick
+> 
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
 
