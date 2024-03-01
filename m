@@ -1,193 +1,212 @@
-Return-Path: <linux-btrfs+bounces-2974-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2975-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 974C186E68F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 18:00:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CCFE86E9EE
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 20:46:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A7BDB24EA0
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 17:00:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A2481C23277
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 19:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719FF2568;
-	Fri,  1 Mar 2024 17:00:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88AF23B780;
+	Fri,  1 Mar 2024 19:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="bfvXBaCi";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="shDo9I8t"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="cm+lJ6ca";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jb5XEKo3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A874417
-	for <linux-btrfs@vger.kernel.org>; Fri,  1 Mar 2024 16:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709312401; cv=fail; b=F7KIUgWl2Kdj30pT6VEdd0M5jI+SYpSSPhIimmG7hGMUWBNVT3b2UCipwRNMb7Px9wJ3H+YxNIrkHXQluyK3uJV3PnN+L7aV07BMo5PtrRyHdP7WE67MY7Izbv7Ss5KnBHfseRLEMXHi9AobVnpcdC2lzBdRgZAONbyn1LY8uHI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709312401; c=relaxed/simple;
-	bh=AMU6KDAhGq/nXhwQsxkif3zpQouiuqW7EEwoQXtEdiE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=KKICHocG14UT2v7bpOuKQlsBS6reyON+cay3Fyee+G+5t8NX01pux8KpdLNOIfr9rebjcA/PsAmf3DbSduRBYoaLwsdjM6QHYsfLHb9TH2s+vvTDas2C7fzN3HTbl30MH+8CIvEN8adXPcFZNy278ybyYRQshkjijdVBtzJkVjQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=bfvXBaCi; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=shDo9I8t; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 421GBWGo026129;
-	Fri, 1 Mar 2024 16:59:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=hXgkTmWSRF2fDFUrkrwmKWjwQodYMU+6sJNsSob0Yew=;
- b=bfvXBaCi2WSF49HSXQJLmFPzQVkwVMt8WZfbc05hDtLJJCz7R8aWy0vi0nUSOX2zx7mv
- aewyrEyDrYVTkAGgQc41ZF4WYWpn1q/MWI7VEPdUMbjtnwLIeDrrwZGyok816k4fHOYS
- mZ+weIfmVKtM+iDmq6ertuaEj0/DAiIzrfSp1cDTtg3FEL4dAv6KehRPop7f171EOfkC
- 8C+apOqz1RnLntbTf/k9F/Xpq0BgzBlEEWeSdtiQ+lhPeTPj2GuKYVoqbSoWj2z6NdRs
- 5wsuBo2Q1GwG0C1hYFpIdxhrCb7hllcqnMnzzf6bejjBLpLzhGJAqFUVw3UgqCZWgpng lw== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf90vhdb6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 01 Mar 2024 16:59:54 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 421GhpDu015485;
-	Fri, 1 Mar 2024 16:59:53 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2040.outbound.protection.outlook.com [104.47.56.40])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wf6wckgkm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 01 Mar 2024 16:59:53 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BHUJYB6a5wvI9Kf8RkBaG8PDLSPdI/c9dW5aTKtA/qG9lhOGrTXg9WbIiEYwxV0kJ5Kj2gsAik39ynniqx7HoR99jVaCa0eliBnJmDvXt1D3tyzd4uBFBnehjUZar5Drqbr+uZfzlJ5qpzSDOOamzWN2+eMUg8L1vt4fmULsnhILQm6oV6JQs8iwfD061nRWlxmsGErn+/TgPQxXVzCrxqMuiNhwQ1B8mrEij5TNBvHhbixF1QC7XXo4/HqUmfYoT1r5f7p5mc0ZCO3KP0rdLIICo+5sV6wR320nMLgfUI0CNHytAZRNCcFb9jFaMusB0OqkggHiWO/WNUJI9ocOhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hXgkTmWSRF2fDFUrkrwmKWjwQodYMU+6sJNsSob0Yew=;
- b=JNm31ebtb5dAHjvc9ACgkbyBXUmPNdOBCPZFdLY/B8FjxfaiGqH1ln/iAPnIKZmUO/pDwBp/pdGIMIvsn57o9jjzADcXkDh/jyUG2NBv5Efuv/zBaKLkMhwH5KRefSQW/8aNRGSlIa50Ur8eaEi6rk1Qsh1EQ55pqEXS9h2rqZ6/Hw6mbSIDgw/FiX9mvXcI1teXdbmN6hc4BAUHKFS56XNcGuoVm7kSZLRGf7QATb5GBCQ5kb4VNCKhqP3UnmLzBIcah/UdbFwS6mMZWeHD8sDSoU/UkIQmjHvfGm+eOWuhuEMcLktePfJbLo8cY/klf9HwlvLtxWyr33B6kMCV7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hXgkTmWSRF2fDFUrkrwmKWjwQodYMU+6sJNsSob0Yew=;
- b=shDo9I8txYa0rA/tSsddaApifYrswuY5rryiB00bJCc8fcgTNWV2GwNtvIWYmzm/AQr+q3ri3aEqcWSPk5bizTvnAnz86wpg5EG7m22SWbKL9V1lpQ3oKQQ4MSxeYh+y01GPGiCxfmktPD/jI1/V3IG6oOt4VyZ+8cb/1pJirLs=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by CY5PR10MB6011.namprd10.prod.outlook.com (2603:10b6:930:28::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Fri, 1 Mar
- 2024 16:59:51 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::814:3d5c:443b:17b%6]) with mapi id 15.20.7316.032; Fri, 1 Mar 2024
- 16:59:51 +0000
-Message-ID: <4f6ea05f-81ca-4ec9-a585-7118a7395434@oracle.com>
-Date: Fri, 1 Mar 2024 22:29:44 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: validate device maj:min during open
-Content-Language: en-US
-To: Boris Burkov <boris@bur.io>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E41220DCD
+	for <linux-btrfs@vger.kernel.org>; Fri,  1 Mar 2024 19:46:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709322403; cv=none; b=PyOK1KJPSnTexFvNICIWWewoyd30VQexfVGbYUECNo7t3j6FjHw32tbdqGz6vlkX7xg803klakaNYyd/bpkedbYtiEa9Vjuyrg799ivm7zTmnp9TkNkHdxouIsBEWZ2V4snL76ool/MlNGkM+0pxWJK6TicpgMnndxZM6b+tKDA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709322403; c=relaxed/simple;
+	bh=5SV6jS2AP7sF2PNE6R1WJOkj4OrxNZ2Z6g0fgOkyz0Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KPRTHSOQ1Tz6DUkqpTTALOduzdJfM21jHXl0iM1NxfdvSvPEegAn+B2gUQcvug5K0PxrifZilZWXG+wvY1D2RDKPIsLV6NT33RRRa9sBmVSU0vg6sHTzzrgwP4wxRQ2QqpUN9jYHRo+wTBGFnCqY3XfFZ9MDoMOxY9ybHE1HvCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=cm+lJ6ca; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jb5XEKo3; arc=none smtp.client-ip=66.111.4.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.nyi.internal (Postfix) with ESMTP id 090765C0181;
+	Fri,  1 Mar 2024 14:46:39 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Fri, 01 Mar 2024 14:46:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1709322399; x=1709408799; bh=1LfpmZ3jYl
+	ZH8eHvhxlVctz8slhBBEDpT3y7cix+Lg4=; b=cm+lJ6caa/1g2Xm8HCBKCpaMw8
+	5oq9kBjT/UVjI2UBAraU8VEK9qyaWiqjfGG6bWP4ArKknrJzKvTaei4sKFRzm+SK
+	BG+Fqw0grLnCbvPXb3joXtTGOIWt8WqqGDyEk1sxApefh+piaSYL3rraPDJvBtA2
+	knI0xV+EK9yT95Cchak+N7H1/VioGmHgvG3glv7wmbp1Fuedu4z9r7+B4ls3NoGJ
+	iADQb/hFy2pfUAfNTe+AB0ClT4JJoayGhbc2/GMso+vC8rcS1xD74euNrzZ4ADyF
+	8Kfulp7l3SJC/5AwNGklz5osvDvuYjGOiHU3beKJxOmkRA0jsiFxsFVNyhQg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709322399; x=1709408799; bh=1LfpmZ3jYlZH8eHvhxlVctz8slhB
+	BEDpT3y7cix+Lg4=; b=jb5XEKo34aeJQwz/J71Tu9Zsfh4Sce4eU8V2Bu8sSsgP
+	r1yqZfzvtAuwHpAhPY5MDUDqSf5JLWe0Z+QrFst0pKHArOf9CidRK29Crhf5MulK
+	X9G7fQ6EqDaB4t7XH/0LV7OnfFBmdQHACwzTaNYoXC5fmdwo1Nd+4E8/Zqeen/Mq
+	E8tT0mdb7oz2a6jYGJJmeYDtvnnm6H/KMKxLAKn4OgSQbE/VN5UL2nepsvMCCOkq
+	Svethw8O6kFA3xb5tL9SQR5t5npCcFlPfo1ffQVpv+zqYvArKKZumKJYAnVAInhv
+	SLOLuKS4QiD9960YL0vyzqGeLJd+FKncCpOs4W7OTA==
+X-ME-Sender: <xms:njDiZakoHFMBPPNuws8r9ucUwvTqHJr38EyZ6LhmyWunj--LBLrOMw>
+    <xme:njDiZR1CRwFuyCt2q5clw-nlklhikSwNwUhvK3osqG-0yKumz9cBADzNXHNw71H40
+    zrFVSC_qJKOV439TXk>
+X-ME-Received: <xmr:njDiZYqM2aDp0IMBJmDLErCMij3hQyCjKipJsvIZkF7i7-5OoJU3ZXZOJZJZF1DuRJDb3GhJZcmLOmI7r9DHwy0rCn0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrhedugdduvdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:njDiZek-AHGi_5mCdviatV4ej8LGY5MisOOEoNCo5cd07h8bUq26qA>
+    <xmx:njDiZY3jr57jP7fzg2dDivHbMvpwn7ajurEQsXBkv2h3GXIcHb0wIg>
+    <xmx:njDiZVstNyRJPeQv9wwOHInvvXbp-6ZtkKkhHPsfYlL2XtDCE_8v8A>
+    <xmx:nzDiZV_eHqLWpZNtwtRnP0qRo4LwFuRRZyeG9Nbr-dLzOgUce376hw>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 1 Mar 2024 14:46:38 -0500 (EST)
+Date: Fri, 1 Mar 2024 11:47:49 -0800
+From: Boris Burkov <boris@bur.io>
+To: Anand Jain <anand.jain@oracle.com>
 Cc: linux-btrfs@vger.kernel.org, dsterba@suse.cz
+Subject: Re: [PATCH] btrfs: validate device maj:min during open
+Message-ID: <20240301194749.GA1841098@zen.localdomain>
 References: <752b8526be21d984e0ee58c7f66d312664ff5ac5.1709256891.git.anand.jain@oracle.com>
  <20240301153440.GA1832434@zen.localdomain>
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20240301153440.GA1832434@zen.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MA0PR01CA0002.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:80::8) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+ <3edcf934-ba56-4ac3-8edb-1663f327ab3a@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CY5PR10MB6011:EE_
-X-MS-Office365-Filtering-Correlation-Id: 77a6c417-15b8-4f6e-7157-08dc3a110285
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	2AHcsadGrF9JELU1pbH7TQhd3uF9Yl+FokaBiIbSGtROjHQ9C9fFWTEAfYZks37RqiJ63TXBSS5JUof5BZP6od+iuTm936oNEPeGt0P+5Do892eg0TgssjlSde6JRCvc5Z9cCg/zwTwy6Ocms9ZvZpZhFvV49JhyH5u1Qpy47s0f9uqs+erpDrT5vcbZFFsnJlazcizFVPsKQ7sHLHuysV0TtasiNYy4mby0y6yytWRPZYAgJhkQD+FZsUMjSZzGu6Cl9+VB07XiCDSrSaVCA5aYeTePLmt8vfUYDFNe+MZXZ7x1L/G17bs6+izm/OYsohvIj/g/mf7mYy/NdAfqKNUSFC9VGMbnLIU/pRctzZFOTnA7kKKtJdNb7Owu/Ar0QhE/4fEiBmXBsIH/zwqvSPG2OJtg/KIfbBZrxPtsXqx9mjdTfXkFybyr1feVRm08KfUJbELO47vqz3wtTwTgS+wBecSEe97hYc2vmTJEV/XXWm2X8nT+eG0U1pRMCN+JU2wT97xk+k2mMwdNO4H5RBZfGzH361MPR2eAXfTNOTlbdmqQHU3Hcb26Xdn7pQJRierRvQoUM5vuHb986B/b5VCXK6gNQeNeZAWNAxZR4TpnP+fgwrqHhEf5MlCC/oOEd0CWbCPfAHw3FRHvlbGpEw==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?SlJkdHFsWlpoN3EzU2ZHZ3FQNjZXQlBWREkwRU13WjJLQ1kyVTFFNEdDYWph?=
- =?utf-8?B?MEN0dVUyZlpXc0hlSUhaSENUNHh2czBUM0lxWXVxNkhiY3dYT2poVTZNK2ds?=
- =?utf-8?B?T3hpZU4wOHd5L2ZaU2l6cXNibnJyMlZUeXR6NndrVDlvMTI1MXUzS3o0bkdo?=
- =?utf-8?B?TXRtLy82YzBiTzh6c0RUd3oveFByMFhlZEVFcnJTd1J6RXVXMGF4QmZXRjB3?=
- =?utf-8?B?TExpVHpBZmxuaWJQckdsbVViT0pMSmdkS3R6dXJzV3krUm1XM1RoR1kvdCt0?=
- =?utf-8?B?N0laUURFRXF5K1N1Rk5lTEU4R3RqMlZCRitJczhRdmxYWTZVeDVGdzdlSXZX?=
- =?utf-8?B?b2Q0NFdvR2hHVklBb2xJWEIvNkovMWNGR25NOHgycU5YNUVJVTFqc2V6K2Nx?=
- =?utf-8?B?amlFcnVIZFBrbUI4OURSS0dTek4wV0J4UHhHV3VZaEg0UHQwRjBBbDZuakFV?=
- =?utf-8?B?L2dLek5FTUpCSGFZY2REVUZUR1BhUGVFZmVoZitUUmdRS1Nxd05OZTJSVHlJ?=
- =?utf-8?B?b3Q2YVBDNWltTU9wK3VnVllNQ1UxVDA0M2ZZUnZTbVhJeGZTZFh2ZXh6Qi9t?=
- =?utf-8?B?dzl5eGJXRm1tTEMzZ3dicVhjYmtaZ09WSFVlVmhLZVpxNnNuWjlOWHovc09u?=
- =?utf-8?B?N0paNGNVdXhqMm9lcy8vWkhGb1MxNERwT1M4UjhLM0oxeXQwcFNLdFBQVi9S?=
- =?utf-8?B?NFFPaWRSNHdic3BDSmIvaEE0ZlhDVUlXbDR5NEwvUlc0emlYQWlPdytnVUZ3?=
- =?utf-8?B?TndjRXQvRW91eEQySXIxWWcrSUIrMW1HVWNZVWsvVjZWU3FsU3ZUSU42Ly9y?=
- =?utf-8?B?SmxNZ0hyWTcrY2JoM0dqcTg1UUx1OWxYSUpGemlHMGt5M2xMblAveS9jcmxy?=
- =?utf-8?B?NzFzSGcvOXE1Zllrb2Fnb3VNdWdJMkV4cm95RE54MzB0ZGNyMmtSQWw0ZUpP?=
- =?utf-8?B?Qjczd0FNSHpuOHNIRFBvSnFVUG1QQ0dkbFJHUFlsZzhjYmwyazRzbWxuQ05G?=
- =?utf-8?B?NC9GTm1KN281Ukc5eThxTnoyRlZiQVpjalpWdjl2RGltR2dDcWJMcnltSzc1?=
- =?utf-8?B?SGoxbmk4NG5CNnkyWFFWRk5YM3BEakgwTENYY05XeldLbFI0L203K0hUNlYx?=
- =?utf-8?B?TkNvR3hLV2J4U2NFOGtjWDFwNVRuUGdWb2pzTlZoNnkzTGpGazR5ZkM1azNS?=
- =?utf-8?B?NWhseHM3V2E0RUtsWXRnQ3ArSDVDNFhhOExGeFkvODBBZmloZHpNSFMvdm5L?=
- =?utf-8?B?VFo1eTYvSFFCUEdDQVRGZ1ZNVWJnTVpocGlQQXhpZExPTTBoZ0NKZjl3QU5w?=
- =?utf-8?B?NkM5eXd0cG9LZ21HRitQWUorLzhTckVKTG5XTFpjMjNra1A3Qk8xVk5RcHlF?=
- =?utf-8?B?VmhudXVnT0VMemJ4VTRTUC9nUC9udXB1RzUrREhOTkI1VjIvTFBLSjArVDBq?=
- =?utf-8?B?SEFMemg2VFJMTnc2ZTBtN1JPVnpWNDZ5aWJwaDA0OWZKWjBwWmpGaXZRUnVu?=
- =?utf-8?B?VE9yMFJEZlduQlluclVGZTZZYk5vWU11MFJxemdoMXltM3I4bzlnbitCK1RO?=
- =?utf-8?B?UW1BR0dRSVVwb2piOEVSTFRvcWUxaWczQnNRbWhBUUMwSzkxU04vRDl6bVQz?=
- =?utf-8?B?S2lnb3VkYkp2azZ6clZWSU5SZDRITHVnN3lLZDJjUHNGbkpnUG5PMEd5Ymgr?=
- =?utf-8?B?c0ZCcEl1a1VEVlpERkEyQU9sYUNiUGtCMkxEdXRodEgyUDF3NlJzSVJKUkZr?=
- =?utf-8?B?VWFrZForYmNzNkUwWjJzSy9yczN2NFRSc0RZUG5TWURmaHdtdVVKdHlxSWhj?=
- =?utf-8?B?Q0ZNTWcxYmc5b0JzbjE3UGVxOXBGQjVWQWs2TVBoVzdUTWdFeCtuY1dvOTA5?=
- =?utf-8?B?emxHSEMvS3RudUZTMlBjTDVPVU9UTG1YYk4zMWttdUlXTzVFRmpTc1d0Q25z?=
- =?utf-8?B?NWlDcG9ZMmVEVGlKbEozWkU1aEsxTUZlTUtLay95M2V4TTJwK1NsdkltQ09y?=
- =?utf-8?B?c3JZQWJTQVFzbkRGYS9QWlBzWUw5ckZsbnRoWkkxUkpTSnhjMWVMK0ZITkow?=
- =?utf-8?B?VFFvVkxaWDNmMHJkcmg3RXBxQVI5WVE1VHA4RDhTeE9HbHB0VlZ3Zmlpbnlo?=
- =?utf-8?B?c0orbzNVc0pYOGs1OWo1NmRpYWJoOGpZNklFZVkvQTJEUGxINkF6clF6TUUx?=
- =?utf-8?Q?2mLLZ2QbHQVysiKq8hxL3EDxHX00dqBriECxQSMlsBpx?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	/7fsXUk+lm94qqJMTwTYvD8AVR69a0CO5W7jej+0v4ch0FuBDkcswbZxD9VN/XpzanOK3izX9GWnS6GB3+AbeQX87vvaHg6QX3SyZ0yWq2qfj4wSjBsqVU2xdfuDtar3IBnoj+wCY2cDwXjmjUtpJ7seQEjrQECgHfQqJKwU0hqDQOA7DQMty2z7tGDySSUvoYmgz7Ecv2rMcPG/LOx89Eu5+LaiJ8/Jmxfi5QQLseE1pgYDCgKSh7Ca0k9gU36t8KS35TIPNyhOFS8o0QzEbhliUOhtPSP39yxzHIO/LHz5fFGOqly8/Or1w+0T76nPG/2p50kQv+8Q9qGI3F+4BfUyB/sPCNyLdYXPXFO6sFomL2uP4G8cOfkFV5Pam9eLUR1JJunk/BEe2XRbZHLOFuu3A/RMZODwc8BruG+1G7MVPo2UBnyKpUKLT803vYvQ9ZrrTH5MKx+j0dQTgnV8xma0TAGLcXN/BbrNZVq5i/vhWcDt4Q6uiL2uw+eMNw7NcMj82tQkd+n7PNAcstcoYRM2QvH2VMsjwbpErjK2w2c4AthLUQ9O3QM4LjF7NmMejTlWygLp/NsEAcXZvbcuj3X7YPGR+tC1SdYErJwrlgs=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77a6c417-15b8-4f6e-7157-08dc3a110285
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 16:59:51.5990
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zRDKReJeBKtyvfNHav5t82E2l9vM1vvExtkimXm6zY7O3ZDmmhjSaQlSkbkygsn+Z+l6rDx5LmkDejrUGkgRoQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB6011
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-01_19,2024-03-01_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2403010141
-X-Proofpoint-GUID: vza4JIKQLjEorg2E5VWaTsN6qrpqdkYh
-X-Proofpoint-ORIG-GUID: vza4JIKQLjEorg2E5VWaTsN6qrpqdkYh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3edcf934-ba56-4ac3-8edb-1663f327ab3a@oracle.com>
 
-
-I missed a comment.
-
->> @@ -692,6 +693,24 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
->>   	device->bdev = bdev_handle->bdev;
->>   	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
->>   
->> +	ret = lookup_bdev(device->name->str, &devt);
+On Fri, Mar 01, 2024 at 10:17:41PM +0530, Anand Jain wrote:
 > 
-> It should be fine to just use the dev_t in bdev_handle->bdev->bd_dev.
+> 
+> On 3/1/24 21:04, Boris Burkov wrote:
+> > On Fri, Mar 01, 2024 at 07:21:32AM +0530, Anand Jain wrote:
+> > > Boris managed to create a device capable of changing its maj:min without
+> > > altering its device path.
+> > > 
+> > > Only multi-devices can be scanned. A device that gets scanned and remains
+> > > in the Btrfs kernel cache might end up with an incorrect maj:min.
+> > > 
+> > > Despite the tempfsid feature patch did not introduce this bug, it could
+> > > lead to issues if the above multi-device is converted to a single device
+> > > with a stale maj:min. Subsequently, attempting to mount the same device
+> > > with the correct maj:min might mistake it for another device with the same
+> > > fsid, potentially resulting in wrongly auto-enabling the tempfsid feature.
+> > > 
+> > > To address this, this patch validates the device's maj:min at the time of
+> > > device open and updates it if it has changed since the last scan.
+> > 
+> 
+> > I do believe this patch is correct for fixing my test case,
+> 
+> Right. It fixes the bug reported in the testcase only.
+> 
+> > but I don't
+> > believe that it is the proper fix for this issue.
+> 
+> Indeed, I anticipated that it might be confusing. As I've clarified
+> elsewhere, this isn't the solution for the already known multi-nodes
+> single-device issue. The resolution is currently being discussed.
 
-  Oh. That's much improved. I'll fix.
+I'm not familiar with the the multi-nodes single-device issue.
 
-Thanks,
--Anand
+My point was that while I agree that this fix works for the issue I do
+know about, an invalid devt in the btrfs device cache, I do not like it
+as a matter of taste.
 
+We have an invalid cache and instead of invalidating it in a general
+way at the point of invalidation, you are proposing that we just fix it
+up when we happen to notice. I believe that is a fragile solution that
+will simply leave the door open for more bugs in the future. (if not
+present).
+
+If we do go this way, at the very least I think we should do something a
+bit more general. Spitballing here, but perhaps we can get rid of all
+redundant caching of random values like devt in btrfs_device and just
+use the contents of the bdev struct as it is currently in the block
+layer. Or we need a way to treat a btrfs_device as invalid unless
+open_one_device has run on it.
+
+> 
+> I think I've come up with a better idea now. I'll send out the
+> proposal soon for discussions.
+> 
+> However, my first challenge is to simulate a multi-nodes
+> single-device environment for testing.
+> 
+> Thx, Anand
+> 
+> > This is just plugging
+> > one more hole in a leaky dam.
+> 
+> > > Fixes: a5b8a5f9f835 ("btrfs: support cloned-device mount capability")
+> > > Reported-by: Boris Burkov <boris@bur.io>
+> > > Co-developed-by: Boris Burkov <boris@bur.io>
+> > > Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> > > ---
+> > >   fs/btrfs/volumes.c | 19 +++++++++++++++++++
+> > >   1 file changed, 19 insertions(+)
+> > > 
+> > > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> > > index deb4f191730d..4c498f088302 100644
+> > > --- a/fs/btrfs/volumes.c
+> > > +++ b/fs/btrfs/volumes.c
+> > > @@ -644,6 +644,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+> > >   	struct bdev_handle *bdev_handle;
+> > >   	struct btrfs_super_block *disk_super;
+> > >   	u64 devid;
+> > > +	dev_t devt;
+> > >   	int ret;
+> > >   	if (device->bdev)
+> > > @@ -692,6 +693,24 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+> > >   	device->bdev = bdev_handle->bdev;
+> > >   	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
+> > > +	ret = lookup_bdev(device->name->str, &devt);
+> > 
+> > It should be fine to just use the dev_t in bdev_handle->bdev->bd_dev.
+> > 
+> > > +	if (ret) {
+> > > +		btrfs_err(NULL,
+> > > +	"failed to validate (%d:%d) maj:min for device %s %d resetting to 0",
+> > > +			  MAJOR(device->devt), MINOR(device->devt),
+> > > +			  device->name->str, ret);
+> > > +		device->devt = 0;
+> > > +	} else {
+> > > +		if (device->devt != devt) {
+> > > +			btrfs_warn(NULL,
+> > > +				"device %s maj:min changed from %d:%d to %d:%d",
+> > > +				   device->name->str, MAJOR(device->devt),
+> > > +				   MINOR(device->devt), MAJOR(devt),
+> > > +				   MINOR(devt));
+> > > +			device->devt = devt;
+> > > +		}
+> > > +	}
+> > > +
+> > >   	fs_devices->open_devices++;
+> > >   	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
+> > >   	    device->devid != BTRFS_DEV_REPLACE_DEVID) {
+> > > -- 
+> > > 2.38.1
+> > > 
 
