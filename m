@@ -1,212 +1,175 @@
-Return-Path: <linux-btrfs+bounces-2975-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2976-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CCFE86E9EE
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 20:46:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A1586EA3E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 21:22:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A2481C23277
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 19:46:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 842511F25A4C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 20:22:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88AF23B780;
-	Fri,  1 Mar 2024 19:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86453D0A8;
+	Fri,  1 Mar 2024 20:22:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="cm+lJ6ca";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jb5XEKo3"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="S62s3in4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E41220DCD
-	for <linux-btrfs@vger.kernel.org>; Fri,  1 Mar 2024 19:46:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392AA3D0DF;
+	Fri,  1 Mar 2024 20:22:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709322403; cv=none; b=PyOK1KJPSnTexFvNICIWWewoyd30VQexfVGbYUECNo7t3j6FjHw32tbdqGz6vlkX7xg803klakaNYyd/bpkedbYtiEa9Vjuyrg799ivm7zTmnp9TkNkHdxouIsBEWZ2V4snL76ool/MlNGkM+0pxWJK6TicpgMnndxZM6b+tKDA=
+	t=1709324528; cv=none; b=ic13MptUxqPI0uV3oOvQ4j1/UBO70oTEtT8gXJtfI2U/UhjE/tDoRt2ivDWm0UrMdtB2NBSQA9jQjz4Vt4Wzu7dDSZ9+yLDDAg3ci7bhJSX4ewhoIyuTb/3qIXdIfbTof433X8EGN5umF/f50WMJG+rXwfftoHhg2W7WMD+PocY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709322403; c=relaxed/simple;
-	bh=5SV6jS2AP7sF2PNE6R1WJOkj4OrxNZ2Z6g0fgOkyz0Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KPRTHSOQ1Tz6DUkqpTTALOduzdJfM21jHXl0iM1NxfdvSvPEegAn+B2gUQcvug5K0PxrifZilZWXG+wvY1D2RDKPIsLV6NT33RRRa9sBmVSU0vg6sHTzzrgwP4wxRQ2QqpUN9jYHRo+wTBGFnCqY3XfFZ9MDoMOxY9ybHE1HvCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=cm+lJ6ca; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jb5XEKo3; arc=none smtp.client-ip=66.111.4.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.nyi.internal (Postfix) with ESMTP id 090765C0181;
-	Fri,  1 Mar 2024 14:46:39 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Fri, 01 Mar 2024 14:46:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1709322399; x=1709408799; bh=1LfpmZ3jYl
-	ZH8eHvhxlVctz8slhBBEDpT3y7cix+Lg4=; b=cm+lJ6caa/1g2Xm8HCBKCpaMw8
-	5oq9kBjT/UVjI2UBAraU8VEK9qyaWiqjfGG6bWP4ArKknrJzKvTaei4sKFRzm+SK
-	BG+Fqw0grLnCbvPXb3joXtTGOIWt8WqqGDyEk1sxApefh+piaSYL3rraPDJvBtA2
-	knI0xV+EK9yT95Cchak+N7H1/VioGmHgvG3glv7wmbp1Fuedu4z9r7+B4ls3NoGJ
-	iADQb/hFy2pfUAfNTe+AB0ClT4JJoayGhbc2/GMso+vC8rcS1xD74euNrzZ4ADyF
-	8Kfulp7l3SJC/5AwNGklz5osvDvuYjGOiHU3beKJxOmkRA0jsiFxsFVNyhQg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709322399; x=1709408799; bh=1LfpmZ3jYlZH8eHvhxlVctz8slhB
-	BEDpT3y7cix+Lg4=; b=jb5XEKo34aeJQwz/J71Tu9Zsfh4Sce4eU8V2Bu8sSsgP
-	r1yqZfzvtAuwHpAhPY5MDUDqSf5JLWe0Z+QrFst0pKHArOf9CidRK29Crhf5MulK
-	X9G7fQ6EqDaB4t7XH/0LV7OnfFBmdQHACwzTaNYoXC5fmdwo1Nd+4E8/Zqeen/Mq
-	E8tT0mdb7oz2a6jYGJJmeYDtvnnm6H/KMKxLAKn4OgSQbE/VN5UL2nepsvMCCOkq
-	Svethw8O6kFA3xb5tL9SQR5t5npCcFlPfo1ffQVpv+zqYvArKKZumKJYAnVAInhv
-	SLOLuKS4QiD9960YL0vyzqGeLJd+FKncCpOs4W7OTA==
-X-ME-Sender: <xms:njDiZakoHFMBPPNuws8r9ucUwvTqHJr38EyZ6LhmyWunj--LBLrOMw>
-    <xme:njDiZR1CRwFuyCt2q5clw-nlklhikSwNwUhvK3osqG-0yKumz9cBADzNXHNw71H40
-    zrFVSC_qJKOV439TXk>
-X-ME-Received: <xmr:njDiZYqM2aDp0IMBJmDLErCMij3hQyCjKipJsvIZkF7i7-5OoJU3ZXZOJZJZF1DuRJDb3GhJZcmLOmI7r9DHwy0rCn0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrhedugdduvdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:njDiZek-AHGi_5mCdviatV4ej8LGY5MisOOEoNCo5cd07h8bUq26qA>
-    <xmx:njDiZY3jr57jP7fzg2dDivHbMvpwn7ajurEQsXBkv2h3GXIcHb0wIg>
-    <xmx:njDiZVstNyRJPeQv9wwOHInvvXbp-6ZtkKkhHPsfYlL2XtDCE_8v8A>
-    <xmx:nzDiZV_eHqLWpZNtwtRnP0qRo4LwFuRRZyeG9Nbr-dLzOgUce376hw>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 1 Mar 2024 14:46:38 -0500 (EST)
-Date: Fri, 1 Mar 2024 11:47:49 -0800
-From: Boris Burkov <boris@bur.io>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: linux-btrfs@vger.kernel.org, dsterba@suse.cz
-Subject: Re: [PATCH] btrfs: validate device maj:min during open
-Message-ID: <20240301194749.GA1841098@zen.localdomain>
-References: <752b8526be21d984e0ee58c7f66d312664ff5ac5.1709256891.git.anand.jain@oracle.com>
- <20240301153440.GA1832434@zen.localdomain>
- <3edcf934-ba56-4ac3-8edb-1663f327ab3a@oracle.com>
+	s=arc-20240116; t=1709324528; c=relaxed/simple;
+	bh=vdbqnh5RNmGAKsfLX4EKIq7UzlyBosJQQrRRRXr6T3o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ND2s7Gmsl2SQN9PnZxPCyjAgEn/V48u5XnI8bGrXzvPz/V6wTzV/v83RSF6tPzoapBbww/CG9v2ospAGlVJii7j8/FhFECSyKs6tlD1kx9roG/AbLy4568rUushT1oJgvJLMNGXh5XSQXNuJveZ/+zWLI0tazhp/636lqASKdoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=S62s3in4; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1709324522; x=1709929322; i=quwenruo.btrfs@gmx.com;
+	bh=vdbqnh5RNmGAKsfLX4EKIq7UzlyBosJQQrRRRXr6T3o=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=S62s3in4T4UuzLASHMDyRwJWvG1IksNJXa/vFFc6KVUOEnVl2/yn/1mPmWmHjcF1
+	 nkXtSOKnqLMNFZ0ZJZKc2FUyMMUkwBjkIc6ExyNpBrjjTwvw3z9q0RVhA+RtyWm4R
+	 xiC/DPmfJq2vMz3I3UpqADg1nXvFTOmnCmf4R5+RZTrBXy2SgJB0w/qsW2ihgFoCh
+	 +XB6aZcSVg6tP5Tly6hNyi9T3pkDnVDxQJ+1BWfyWGFwrFycpkKd7M+0cCRtyJLap
+	 QpOogRdESyuzkItVhjvROi+k/bAOoOWvZZSzURTJoUo32wZSGPHwipb+f2UXeGBAC
+	 /GXAaidkHmcV7HnH5g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M5wLZ-1rmS7W3I7v-007RJY; Fri, 01
+ Mar 2024 21:22:02 +0100
+Message-ID: <19762dc9-2834-46fd-91ce-26a542356adb@gmx.com>
+Date: Sat, 2 Mar 2024 06:51:58 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3edcf934-ba56-4ac3-8edb-1663f327ab3a@oracle.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: qgroup: verify btrfs_qgroup_inherit parameter
+Content-Language: en-US
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+References: <bde2887da38aaa473ca60801b37ac735b3ab2d6d.1709003728.git.wqu@suse.com>
+ <20240301120138.GJ2604@twin.jikos.cz>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240301120138.GJ2604@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sIE7zMVdS7HerzU4ApwCegohYa4uGxv7m/7U1esZWBxVtJNr8OC
+ p2t/WWwS2bS/rUS9M/klZgLrqJOcf7kM31FbR53T+WnctjmReTldAp9k7ouedRCIy/d4ACt
+ M/ebsrjYa0OAfMrE9JV3Pcloe5Sn0MhLs+QQwLJbjGVR73NTEOrAQUdTz1ZC9HqCLt1JR/3
+ 71MFmgXlPBJIbLOMEwPyA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:NdmN/0vgahw=;tmLq5+ugDvrm1KGDTZMHHQe3BDq
+ xJyox8WlHlcIz0i/3LfMPHK6Cd/cRUh4ZYmU/o2lRKn/d9xRiDMHSSdXLYjZgCh9B1r0vb85C
+ zY+6IWttUo0hj9qtx4zt0eegD/0MJDkyDkU9kw9MdmW4Uil5uyCzsSjETtttbQLLc8DqSu0rQ
+ 6xSA1vQgTj16zNzmanK8O6Yp7PsPEHUcpRz/JTlW/N/anLQr8fpLYk+h0VUZxyb99sYOyRU1m
+ vcuqsIfxNBaKbOIRnjLvOEmMCbRn5pACq+t/9NJGlzw6ejE/FYM7kcpCcV+QTNOglu9xcHg+W
+ WUl/K8xjm5JbwF191hRTbQckx3M+Lo+UQq+7IxCOy1xLbQp5VsO4X2OphOfxrhFpoO9FIAWJd
+ EkIK/xXoYykS2k6ufgUPVzNR7xyIB1OH5BB31OEW9mpdBQ/2usGNtgfqZiM/W7PWfcFjg5pKg
+ MecU0cvRKx+jVi+4cCBhm72ihWug6sEAL9RtFH05f3WYKu8RpyFIohFYhYEUIAJokfl4YlpMv
+ dtPKJS2z49OhqwsYxtjBBIjvqrryKk1ZDtsrzhDTQE8UrogSThSUSjgWYzO/aP2kyhvf082Kr
+ h0gsSUHk5wDNfPpbIQaPHdUoc/AVN4o6Hkd+6hWC0Q9PGzgJsLTYmlxYi84hCJ8/4IleuZOuq
+ uAy/nxqqLzm5YaoE1rGyuQjoc2JVvXCE9oO5B7d6dM90Tg1skWRbBvCfJb2pJudIVxjTwLmJv
+ VbCeWeRjD6gkUCCPE8pUOonpiUbsqJDKr15NNQGPvlPw/VqoyEU986SgnPpzFD1gU1APQY0wW
+ 9LeLdfhMabnLox9fVtIrvOuxv8A+ylvNUVy8SmFhrTLlo=
 
-On Fri, Mar 01, 2024 at 10:17:41PM +0530, Anand Jain wrote:
-> 
-> 
-> On 3/1/24 21:04, Boris Burkov wrote:
-> > On Fri, Mar 01, 2024 at 07:21:32AM +0530, Anand Jain wrote:
-> > > Boris managed to create a device capable of changing its maj:min without
-> > > altering its device path.
-> > > 
-> > > Only multi-devices can be scanned. A device that gets scanned and remains
-> > > in the Btrfs kernel cache might end up with an incorrect maj:min.
-> > > 
-> > > Despite the tempfsid feature patch did not introduce this bug, it could
-> > > lead to issues if the above multi-device is converted to a single device
-> > > with a stale maj:min. Subsequently, attempting to mount the same device
-> > > with the correct maj:min might mistake it for another device with the same
-> > > fsid, potentially resulting in wrongly auto-enabling the tempfsid feature.
-> > > 
-> > > To address this, this patch validates the device's maj:min at the time of
-> > > device open and updates it if it has changed since the last scan.
-> > 
-> 
-> > I do believe this patch is correct for fixing my test case,
-> 
-> Right. It fixes the bug reported in the testcase only.
-> 
-> > but I don't
-> > believe that it is the proper fix for this issue.
-> 
-> Indeed, I anticipated that it might be confusing. As I've clarified
-> elsewhere, this isn't the solution for the already known multi-nodes
-> single-device issue. The resolution is currently being discussed.
 
-I'm not familiar with the the multi-nodes single-device issue.
 
-My point was that while I agree that this fix works for the issue I do
-know about, an invalid devt in the btrfs device cache, I do not like it
-as a matter of taste.
+=E5=9C=A8 2024/3/1 22:31, David Sterba =E5=86=99=E9=81=93:
+> On Tue, Feb 27, 2024 at 01:45:35PM +1030, Qu Wenruo wrote:
+>> [BUG]
+>> Currently btrfs can create subvolume with an invalid qgroup inherit
+>> without triggering any error:
+>>
+>>   # mkfs.btrfs -O quota -f $dev
+>>   # mount $dev $mnt
+>>   # btrfs subvolume create -i 2/0 $mnt/subv1
+>>   # btrfs qgroup show -prce --sync $mnt
+>>   Qgroupid    Referenced    Exclusive   Path
+>>   --------    ----------    ---------   ----
+>>   0/5           16.00KiB     16.00KiB   <toplevel>
+>>   0/256         16.00KiB     16.00KiB   subv1
+>>
+>> [CAUSE]
+>> We only do a very basic size check for btrfs_qgroup_inherit structure,
+>> but never really verify if the values are correct.
+>>
+>> Thus in btrfs_qgroup_inherit() function, we have to skip non-existing
+>> qgroups, and never return any error.
+>>
+>> [FIX]
+>> Fix the behavior and introduce extra checks:
+>>
+>> - Introduce early check for btrfs_qgroup_inherit structure
+>>    Not only the size, but also all the qgroup ids would be verifyed.
+>>
+>>    And the timing is very early, so we can return error early.
+>>    This early check is very important for snapshot creation, as snapsho=
+t
+>>    is delayed to transaction commit.
+>>
+>> - Drop support for btrfs_qgroup_inherit::num_ref_copies and
+>>    num_excl_copies
+>>    Those two members are used to specify to copy refr/excl numbers from
+>>    other qgroups.
+>>    This would definitely mark qgroup inconsistent, and btrfs-progs has
+>>    dropped the support for them for a long time.
+>>    It's time to drop the support for kernel.
+>>
+>> - Verify the supported btrfs_qgroup_inherit::flags
+>>    Just in case we want to add extra flags for btrfs_qgroup_inherit.
+>>
+>> Now above subvolume creation would fail with -ENOENT other than silentl=
+y
+>> ignore the non-existing qgroup.
+>>
+>> CC: stable@vger.kernel.org
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+> Reviewed-by: David Sterba <dsterba@suse.com>
+>
+Just one thing to notice, this would cause certain test cases to fail,
+as previously any incorrect qgroup inherit would just be ignored, but
+now it would error out explicitly.
 
-We have an invalid cache and instead of invalidating it in a general
-way at the point of invalidation, you are proposing that we just fix it
-up when we happen to notice. I believe that is a fragile solution that
-will simply leave the door open for more bugs in the future. (if not
-present).
+IIRC there are 2 or 3 failures, one already fixed.
+I'll send out the remaining fixes for fstests.
 
-If we do go this way, at the very least I think we should do something a
-bit more general. Spitballing here, but perhaps we can get rid of all
-redundant caching of random values like devt in btrfs_device and just
-use the contents of the bdev struct as it is currently in the block
-layer. Or we need a way to treat a btrfs_device as invalid unless
-open_one_device has run on it.
-
-> 
-> I think I've come up with a better idea now. I'll send out the
-> proposal soon for discussions.
-> 
-> However, my first challenge is to simulate a multi-nodes
-> single-device environment for testing.
-> 
-> Thx, Anand
-> 
-> > This is just plugging
-> > one more hole in a leaky dam.
-> 
-> > > Fixes: a5b8a5f9f835 ("btrfs: support cloned-device mount capability")
-> > > Reported-by: Boris Burkov <boris@bur.io>
-> > > Co-developed-by: Boris Burkov <boris@bur.io>
-> > > Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> > > ---
-> > >   fs/btrfs/volumes.c | 19 +++++++++++++++++++
-> > >   1 file changed, 19 insertions(+)
-> > > 
-> > > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > > index deb4f191730d..4c498f088302 100644
-> > > --- a/fs/btrfs/volumes.c
-> > > +++ b/fs/btrfs/volumes.c
-> > > @@ -644,6 +644,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
-> > >   	struct bdev_handle *bdev_handle;
-> > >   	struct btrfs_super_block *disk_super;
-> > >   	u64 devid;
-> > > +	dev_t devt;
-> > >   	int ret;
-> > >   	if (device->bdev)
-> > > @@ -692,6 +693,24 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
-> > >   	device->bdev = bdev_handle->bdev;
-> > >   	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
-> > > +	ret = lookup_bdev(device->name->str, &devt);
-> > 
-> > It should be fine to just use the dev_t in bdev_handle->bdev->bd_dev.
-> > 
-> > > +	if (ret) {
-> > > +		btrfs_err(NULL,
-> > > +	"failed to validate (%d:%d) maj:min for device %s %d resetting to 0",
-> > > +			  MAJOR(device->devt), MINOR(device->devt),
-> > > +			  device->name->str, ret);
-> > > +		device->devt = 0;
-> > > +	} else {
-> > > +		if (device->devt != devt) {
-> > > +			btrfs_warn(NULL,
-> > > +				"device %s maj:min changed from %d:%d to %d:%d",
-> > > +				   device->name->str, MAJOR(device->devt),
-> > > +				   MINOR(device->devt), MAJOR(devt),
-> > > +				   MINOR(devt));
-> > > +			device->devt = devt;
-> > > +		}
-> > > +	}
-> > > +
-> > >   	fs_devices->open_devices++;
-> > >   	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
-> > >   	    device->devid != BTRFS_DEV_REPLACE_DEVID) {
-> > > -- 
-> > > 2.38.1
-> > > 
+Thanks,
+Qu
 
