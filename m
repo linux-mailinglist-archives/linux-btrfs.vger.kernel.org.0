@@ -1,79 +1,112 @@
-Return-Path: <linux-btrfs+bounces-2977-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2978-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 189ED86EA68
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 21:37:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D408386EAE6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 22:07:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48AF61C253DB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 20:37:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 729B31F23573
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 21:07:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CD1D3D3B3;
-	Fri,  1 Mar 2024 20:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E45B856B8A;
+	Fri,  1 Mar 2024 21:06:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Grf8UXQg"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="EfO40S4t"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781EF3D0A4;
-	Fri,  1 Mar 2024 20:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2667D535DE
+	for <linux-btrfs@vger.kernel.org>; Fri,  1 Mar 2024 21:06:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709325441; cv=none; b=h2AvzFMr4byw4dxJ0TbQ+LVmysW5HYwVLnRmS5czUfMYCxqiGxcptVBejIbT+K7wopHgrbBOxuZQYTcdSn55eLaX+VVSQDP9YnMY2qk88HOf5zSU31lvUxL0RMmLIw2I0DyXpbntJZb7HoQOs6d+hcKLJvDioKPF9/WLfrFIV6k=
+	t=1709327218; cv=none; b=mXYsh37/WC32O0Ns2yOepPD2j6B4DM4N17ZkWYIUSespGBYwjBniK8JDjhVrXjDGRZ3kelrB6Qf1+07NUZnaqybwvDuVJ/0qI4i20O10U5tjijwj/Z1lIiOSacGtbtct7a2AsWlC9oOs+3ED0Xq/g8ECf/fBwGXbE8PA2R7zNKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709325441; c=relaxed/simple;
-	bh=Fd5/S5DUr9PfoAyFh05f8SSDmVc33i8fOGZwceK3YE8=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=ZK2Rfjg7rL8fjdfJnyNDcC1BKO5WH7rBsGAErmRNOM9HUEtxp/YjOXmznoTc3Ea9H3zFQ7GwGJlDOPbS2Aw/yAlrMWJBJlg7hRlUA5PDf77KZ2gWKYzT3yrSqD7nx9YbtQhvv6WjrszxBWA2zCKNhDKa5s3b239QI1CD4AKjz4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Grf8UXQg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 54BCDC43390;
-	Fri,  1 Mar 2024 20:37:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709325441;
-	bh=Fd5/S5DUr9PfoAyFh05f8SSDmVc33i8fOGZwceK3YE8=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=Grf8UXQghbNlOIz8uh5aC5ihvIaiav+ggKzqv1cFUah9+gLsqLTt/lE2rVUgNI+5n
-	 QRwJ30itb+gbJr6yKV89RkJGh0EyLmpqbeFX7ghVtp9i/Fb45u7gvdPa098Jt1Q1yN
-	 M2Tu7pjE6NwqTGwcApeMGFqDxb6BBxRkhWElss+LGl7Yh2gdM8ps1ilvhpl9vqm5y4
-	 198eE3FwSzhuebOV9Moe45zsUbt1Jy4xPnXxfPXKm9BX7ZNpn4oDF6br62g5qW581i
-	 Eb3aUBIG/SH+XUIei77CuLiY9xxHm1WkkD/A1RMVcmUkXX3c36ZQb+u4tzZtiWvM+k
-	 ZY7OJuwzmIRkg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 41585D84BBA;
-	Fri,  1 Mar 2024 20:37:21 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc7, part 2
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1709299316.git.dsterba@suse.com>
-References: <cover.1709299316.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1709299316.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.8-rc6-tag
-X-PR-Tracked-Commit-Id: e2b54eaf28df0c978626c9736b94f003b523b451
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7505aa147adb10913c1b72e947006b6070753eb6
-Message-Id: <170932544126.4935.6759162785846007356.pr-tracker-bot@kernel.org>
-Date: Fri, 01 Mar 2024 20:37:21 +0000
-To: David Sterba <dsterba@suse.com>
-Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1709327218; c=relaxed/simple;
+	bh=mNde+gTsSkChbTdKjSLipqdY0qCAeMFPch7SH2PQ2EA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uVCJkUAsSUV0F8eCoDQYaj47d7TI+ic6J7sMFZ0eSWnvTtfGTHgB88I+UMj/bXAMUtTdZwEMOnZ6/ObuLY+lO6AiryKt6R3EqtvP0aU+Tk68cL29fXOdePRLL9jhz1Ij6LyW3hNsUyii08NszMOj0HwikcP0AyifiXVNLFia3mY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=EfO40S4t; arc=none smtp.client-ip=209.85.167.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c19b7d9de7so1501608b6e.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Mar 2024 13:06:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1709327216; x=1709932016; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dXta0zViG17ecbh6Vju52MJfZdjTtx5UTdv4Waj/JhM=;
+        b=EfO40S4tQ+177YvZi5vlqYxRXIgMm2nMqgpN4MhOIZnaupvFg8J627jggiUyDWduzV
+         UfXAKv0lyNlliDOcAXjg0soTsh6Qx3+cjziAQWdu4a4jEf0q+TPWI5hyUidSB4vb2Jo5
+         chR1rRkywdJVHo1xae7Hf4zv6vewcN7at1ltcq6E7juVMswIq7heV3JuFgV2ywONISk7
+         mh8J0TQSg0i8X7KP7MXkOb9oNenGJ7QqJBH5j6T8cPaIzb2J2PoQuB06ltRFsaSJrWI9
+         nlHJgxLMwTIbIL7GEsYcYnVpfTLbAJ6LHhdjjUTPZk1iQEnm3NqgfWqxb9a3JtA7UY6s
+         T85w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709327216; x=1709932016;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dXta0zViG17ecbh6Vju52MJfZdjTtx5UTdv4Waj/JhM=;
+        b=N2KvNkkPnQNXisTh5zS3jzfXzpUZa46ZSpGBgIQqD5nkNXJWWF1me4XtzAJ7lVdiS7
+         SVAPXi1SY5CYN42XEp08XhmN18ZVe6wN36VHXySFfVp/Ilkw5EFYn3YS9qq1y7SxuWNO
+         bNyPfJKkYjmT7XKStG4tRLCLRyEh9WpGGjN7BgJiWX6hIE5uKwJN/CZXnfrQYZDG4hSL
+         Y8SmrYfNzM5hjaakXBQUDSjUfp6FBVGZJe6EJbQ8dY/fMN4n0BnknLXYqMyTOo4OHCfK
+         IjCLBB7SllLbGK7sZx7MuwmAurgTk3ujB0N68aSQAaDaNuOgpa+jkL5tOH9vGa5cPoWA
+         5dDQ==
+X-Gm-Message-State: AOJu0YwDMkPi0oceYuH/mj6CNWTzmQyMUx5k4Xwb38rzapxwOuOwaRQ4
+	dvziL3wX00bsoIznVoQc1YM1EOyD0HmBi+yt8Oa6W9zyHd5NCFgh2JrJW1u9/zdCb84jtDnuBMh
+	8
+X-Google-Smtp-Source: AGHT+IE45AlfBDPrp6W9Uj2oPC1q4IkfX9JV/9qp9nk6V+mi6XQvoDCF9RBrKengyzsVB9PcGCV9PQ==
+X-Received: by 2002:a05:6808:7c1:b0:3be:d941:621b with SMTP id f1-20020a05680807c100b003bed941621bmr2794523oij.26.1709327216205;
+        Fri, 01 Mar 2024 13:06:56 -0800 (PST)
+Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id a19-20020a05620a125300b00787b93d8df1sm1980770qkl.99.2024.03.01.13.06.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 13:06:55 -0800 (PST)
+Date: Fri, 1 Mar 2024 16:06:54 -0500
+From: Josef Bacik <josef@toxicpanda.com>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] btrfs: fiemap fix and optimization
+Message-ID: <20240301210654.GA2112259@perftesting>
+References: <cover.1709202499.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1709202499.git.fdmanana@suse.com>
 
-The pull request you sent on Fri,  1 Mar 2024 14:32:55 +0100:
+On Thu, Feb 29, 2024 at 11:56:20AM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> One more fix for a regression introduced recently introduced to fiemap,
+> which can actually have serious consequences, as explained in the change
+> log of the first patch. The other is just a small optimization.
+> More details in the change logs.
+> 
+> Filipe Manana (2):
+>   btrfs: fix race when detecting delalloc ranges during fiemap
+>   btrfs: reuse cloned extent buffer during fiemap to avoid re-allocations
+> 
+>  fs/btrfs/extent_io.c | 253 +++++++++++++++++++++++++++++++------------
+>  1 file changed, 184 insertions(+), 69 deletions(-)
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.8-rc6-tag
+Man I just made a whole mess of this whole thing.  I didn't take into account
+the cloned leaf buffer thing.  I really hate our reliance on the extent lock to
+protect so much vood here, but in the end I don't think there's much we can do
+about it.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7505aa147adb10913c1b72e947006b6070753eb6
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Thank you!
+Thanks,
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Josef
 
