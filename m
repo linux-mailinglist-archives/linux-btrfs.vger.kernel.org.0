@@ -1,278 +1,172 @@
-Return-Path: <linux-btrfs+bounces-2969-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2970-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8500486E313
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 15:12:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72FFE86E3CA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 15:56:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FBFC1F216A3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 14:12:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27D431F25F36
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Mar 2024 14:56:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA1D6F068;
-	Fri,  1 Mar 2024 14:12:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998D83AC01;
+	Fri,  1 Mar 2024 14:56:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L4luTfMw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vMcoo8/m"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A64667E8D
-	for <linux-btrfs@vger.kernel.org>; Fri,  1 Mar 2024 14:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE35239FE4;
+	Fri,  1 Mar 2024 14:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709302361; cv=none; b=k3h5VkFubnsGBxGsGF6e+ZLvS/myAbi1MEjTrwACr7woHD35kK1okw8gbKzLpTfx8uU6IFAwrvZsXW91t2vhdsFWWVIN6oLuZbSey5bzYibLgijUujrKjzLQMFYTTBTey51Pt8YdbRPL5Ylb/iyafr8OsvjQZ+0/U2hFADcHYdc=
+	t=1709304965; cv=none; b=cObwbaINFtInFkQ54jMNV+UDtJXHD6s62KzHJWfEH1FcjOG9NQcYv8Hc6AoxmdZi5yKThyC238tRG0WiteIijCUs+6PdPytkkOVdFLcq7/FPw05U7BUh0ty/UlI6/C7S6n4XN9xfo7shBdtnNXk4SWbTLHDHKJ8QtWPj+GyH+Rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709302361; c=relaxed/simple;
-	bh=pIfWibMpp5XPXyNj1sNFiUM1Hfjlj5ujCxHao5zNgEM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=laMZJgMhyA7/v+aeLmhRvWcif2nDgly++C2XGlNqLU6XqFFoArauGYAYO3pdiphJeSfBT8Fw622ocKEWyV56o4NOkNBGvIDMsY7DSc35ZZ5cK3vHSNA1ZX+mWtoMx5JhtCmBsRFqJscXdnRZvz4yvaj+Ehb/csIZn4utd3K6Vxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L4luTfMw; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709302358;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2YSORZ73UJDAidZR+pC0izmOtZN3r6vj44aflxQx8oM=;
-	b=L4luTfMw4dfQZubert2zLPB6zIrnVJdwK5ZFa/F9inb0RBDS3J5eIfjpMZmcJFYw96w+az
-	Nz315YQLaM1nxcxAdnUiAjDS/ooJZ9ovyWyLQxc0N3APBizoSCwrasugq64lPAjUor8ahM
-	EKbVVoZ/MnFzyuv8WPd3accghS6Wno0=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-627-nk1h_tOpNdii3kEiG-E09w-1; Fri, 01 Mar 2024 09:12:37 -0500
-X-MC-Unique: nk1h_tOpNdii3kEiG-E09w-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6e5ad4376e7so1390556b3a.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 01 Mar 2024 06:12:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709302356; x=1709907156;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2YSORZ73UJDAidZR+pC0izmOtZN3r6vj44aflxQx8oM=;
-        b=k/f130chtwTcEbhItSod7TKMLLdrpPFT1IjcVV2Ei9rfUZCjKhhvFc9HhDSDCG5iVI
-         xKammtCLQYa9CuKf2o79VHa1RMwnOqp2ObXchy88QZBe8fVHZKc2DS/m6EjbAXqm0/Wy
-         ZaZTnMD+rvQcGnPzcrTta4MlBaKUgl4ruCPBAfpYwbfQZ8OWCJPCE2ItoOWB4ZgL9HL3
-         /vVo/8naY47YesH5eM50htHbtShQz0BNqczXVVbIEwERUODjk/SVLtckxMFN4VIMac3o
-         o67NkZJM4jxLp7RRkp8zT/1b7JBfa4VL1D1BNh5obWkZDb1WDHrf4RRLcFinQlPax+lR
-         oAYg==
-X-Gm-Message-State: AOJu0YyiiG5L9+iALAKYCnjuE4KfYdUsoHMyL7QquWL5bpckFm4+Cq8k
-	6HlSoHuYnQ05fJOswveqKlRDHgWxQJcLl1LOZ9s4GTXvItsD2UencvjnlNOBv+ZTmFvRxues5Le
-	w/3qdGa6RfFcg/FyqL3r7YpI6iwEYpN4gob0gAIAWJUL1GM40hcOn1+IEZ/yS
-X-Received: by 2002:a05:6a00:cc5:b0:6e1:482b:8c8e with SMTP id b5-20020a056a000cc500b006e1482b8c8emr1989362pfv.17.1709302356376;
-        Fri, 01 Mar 2024 06:12:36 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFuxBK7zBihtdvgKHRlq/iODTmyT4skyvDkmj2PsD0ftCUsDrOJPIG5oa8I6dVTHxivHy0kBw==
-X-Received: by 2002:a05:6a00:cc5:b0:6e1:482b:8c8e with SMTP id b5-20020a056a000cc500b006e1482b8c8emr1989332pfv.17.1709302355968;
-        Fri, 01 Mar 2024 06:12:35 -0800 (PST)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id w5-20020a056a0014c500b006e543b59587sm2963979pfu.126.2024.03.01.06.12.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 06:12:35 -0800 (PST)
-Date: Fri, 1 Mar 2024 22:12:32 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-	fstests@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs/310: test qgroup deletion
-Message-ID: <20240301141232.komz4o2ir63nptfj@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <ce4a79cafb6790ef6d1e141d65195f72f469ae4d.1706035378.git.boris@bur.io>
+	s=arc-20240116; t=1709304965; c=relaxed/simple;
+	bh=/8e4n4keYQlLa9223HzAGst+I0zKCUGxT4R0w+TpmXE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mnubKs/SM9g3aJK7pOhrHCQSmIEbB+roOasHigeBy6+TniBxZA6VTJlU4RnEp1js059s78B81ma7K9QIVacpHgHTSZvs7bXfMeu1hEGnHCEA+PmqDmBatMS7E9648YXInrQSO8Ob5zJcpgQ7xQsPBQwhsAvnL3TjtteX4qepGN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vMcoo8/m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F965C433C7;
+	Fri,  1 Mar 2024 14:56:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709304965;
+	bh=/8e4n4keYQlLa9223HzAGst+I0zKCUGxT4R0w+TpmXE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=vMcoo8/maHaApx6XsoccXyfjZN4jC01DbAZlJOlGQ5+atQADyH0iOG6p5pawvNsrQ
+	 QEyhudSqizc4HlNhkw4fbxLHbtR25Ai8kSq1hjP/cuHhk0ld8tgv4Cm+UXpSPoFLCJ
+	 NiuL5o+jWQbKgm7SXBNZWjbndMT2BmJ9tQPClHnSGrZMd3wKt8MgmBLsofgNyShqCD
+	 0/obgT80bEVCmpBwc6u3mLJE8kVJspN5w1cIU0z/cc7Tvs3yd4qmVnFMF7UZaFX0JH
+	 OKhI2r2vBTgwyUtOku2cWDt8ohhmrS7qmEluKZEKsVva0+rHovtB9ZDapS+iHcL96r
+	 RwrRBz+BkmShg==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a43f922b2c5so272667066b.3;
+        Fri, 01 Mar 2024 06:56:05 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXR3+S2hxw6jfYny+Se99BbDoA44m1BXGxo+QxGgNAZAgRKVGlA2C/eKSgyADe4BMD3Gi9cpuHmI5V28VX6QlYf4zt1r1c9TcX248h/SHHq4mCioUE1Vq6RKK5D8qaxhYHw1w05
+X-Gm-Message-State: AOJu0YxovS8MjR0TQc3OuBaHr+Q+pfin8mjFFhuETfl4bBFSDUEuT2bq
+	Hq2FqivtAdKvLesEvQqtdlVL0jANHx2N91VlaqpP6Xzxh0/b5JSJPMuMIVL6vvsGaNTSRUyHnjA
+	hpk2hiAODKUjv+00uemWIu9fpk9U=
+X-Google-Smtp-Source: AGHT+IFn0NauetGFyDbj6fis8Q9V8S8MaCaIN9ppLBTeRUy8gRV0V5p1wJMVVdXHwa+kHf4kytKSTQU9Ks2vMtg9scw=
+X-Received: by 2002:a17:906:560e:b0:a44:1b36:22c3 with SMTP id
+ f14-20020a170906560e00b00a441b3622c3mr1392318ejq.42.1709304963738; Fri, 01
+ Mar 2024 06:56:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce4a79cafb6790ef6d1e141d65195f72f469ae4d.1706035378.git.boris@bur.io>
+References: <20240215140236.29171-1-l@damenly.org> <20240301134914.dgcv4vh2jbx2egfp@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+In-Reply-To: <20240301134914.dgcv4vh2jbx2egfp@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 1 Mar 2024 14:55:26 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H53QTzMVdJwEJBOyoB3fBem-2zi3FH411JugRDkq9Bqvg@mail.gmail.com>
+Message-ID: <CAL3q7H53QTzMVdJwEJBOyoB3fBem-2zi3FH411JugRDkq9Bqvg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs/172,206: call _log_writes_cleanup in _cleanup
+To: Zorro Lang <zlang@redhat.com>
+Cc: Su Yue <glass.su@suse.com>, fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	l@damenly.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 10:45:12AM -0800, Boris Burkov wrote:
-> When using squotas, an extent's OWNER_REF can long outlive the subvolume
-> that is the owner, since it could pick up a different reference that
-> keeps it around, but the subvolume can go away.
-> 
-> Test this case, as originally, it resulted in a read only btrfs.
-> 
-> Since we can blow up the subvolume in the same transaction as the extent
-> is written, we can also increment the usage of a non-existent subvolume.
-> 
-> This leaves an OWNER_REF behind with no corresponding incremented usage
-> in a qgroup, so if we re-create that qgroup, we can then underflow its
-> usage.
-> 
-> Both of these cases are fixed in the kernel by disallowing
-> creating subvol qgroups and by disallowing deleting qgroups that still
-> have usage.
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
-> Changelog:
-> v2:
-> - removed enable quota helper
-> - removed unneeded commented cleanup boilerplate
-> - change test number 304 -> 310 (based on v2024.01.14)
+On Fri, Mar 1, 2024 at 1:49=E2=80=AFPM Zorro Lang <zlang@redhat.com> wrote:
+>
+> On Thu, Feb 15, 2024 at 10:02:36PM +0800, Su Yue wrote:
+> > From: Su Yue <glass.su@suse.com>
+> >
+> > Because block group tree requires require no-holes feature,
+> > _log_writes_mkfs "-O ^no-holes" fails when "-O block-group-tree" is
+> > given in MKFS_OPTION.
+> > Without explicit _log_writes_cleanup, the two tests fail with
+> > logwrites-test device left. And all next tests will fail due to
+> > SCRATCH DEVICE EBUSY.
+> >
+> > Fix it by overriding _cleanup to call _log_writes_cleanup.
+> >
+> > Signed-off-by: Su Yue <glass.su@suse.com>
+> > ---
+> >  tests/btrfs/172 | 6 ++++++
+> >  tests/btrfs/206 | 6 ++++++
+> >  2 files changed, 12 insertions(+)
+> >
+> > diff --git a/tests/btrfs/172 b/tests/btrfs/172
+> > index f5acc6982cd7..fceff56c9d37 100755
+> > --- a/tests/btrfs/172
+> > +++ b/tests/btrfs/172
+> > @@ -13,6 +13,12 @@
+> >  . ./common/preamble
+> >  _begin_fstest auto quick log replay recoveryloop
+> >
+> > +# Override the default cleanup function.
+> > +_cleanup()
+> > +{
+> > +     _log_writes_cleanup &> /dev/null
+>
+> This _cleanup will override the default one, so better to copy the
+> default cleanup in this function,
+>
+>   cd /
+>   rm -r -f $tmp.*
 
-You don't need to write the number of a test case in commit subject, due to
-it might be changed. If you write a new case, the subject can be "btrfs: ...."
-or "fstests/btrfs: ..." or others similar you like.
+Zorro,
 
-Thanks,
-Zorro
+You had already replied to v2 of this patch with exactly the same comments:
 
-> 
->  tests/btrfs/301     | 14 ++------
->  tests/btrfs/310     | 83 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/310.out |  6 ++++
->  3 files changed, 91 insertions(+), 12 deletions(-)
->  create mode 100755 tests/btrfs/310
->  create mode 100644 tests/btrfs/310.out
-> 
-> diff --git a/tests/btrfs/301 b/tests/btrfs/301
-> index db4697247..4c1127aa0 100755
-> --- a/tests/btrfs/301
-> +++ b/tests/btrfs/301
-> @@ -157,16 +157,6 @@ do_enospc_falloc()
->  	do_falloc $file $sz
->  }
->  
-> -enable_quota()
-> -{
-> -	local mode=$1
-> -
-> -	[ $mode == "n" ] && return
-> -	arg=$([ $mode == "s" ] && echo "--simple")
-> -
-> -	$BTRFS_UTIL_PROG quota enable $arg $SCRATCH_MNT
-> -}
-> -
->  get_subvid()
->  {
->  	_btrfs_get_subvolid $SCRATCH_MNT subv
-> @@ -186,7 +176,7 @@ prepare()
->  {
->  	_scratch_mkfs >> $seqres.full
->  	_scratch_mount
-> -	enable_quota "s"
-> +	$BTRFS_UTIL_PROG quota enable --simple $SCRATCH_MNT
->  	$BTRFS_UTIL_PROG subvolume create $subv >> $seqres.full
->  	local subvid=$(get_subvid)
->  	set_subvol_limit $subvid $limit
-> @@ -397,7 +387,7 @@ enable_mature()
->  	# Sync before enabling squotas to reliably *not* count the writes
->  	# we did before enabling.
->  	sync
-> -	enable_quota "s"
-> +	$BTRFS_UTIL_PROG quota enable --simple $SCRATCH_MNT
->  	set_subvol_limit $subvid $limit
->  	_scratch_cycle_mount
->  	usage=$(get_subvol_usage $subvid)
-> diff --git a/tests/btrfs/310 b/tests/btrfs/310
-> new file mode 100755
-> index 000000000..02714d261
-> --- /dev/null
-> +++ b/tests/btrfs/310
-> @@ -0,0 +1,83 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 310
-> +#
-> +# Test various race conditions between qgroup deletion and squota writes
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick qgroup subvol clone
-> +
-> +# Import common functions.
-> +. ./common/reflink
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +_require_scratch_reflink
-> +_require_cp_reflink
-> +_require_scratch_enable_simple_quota
-> +_require_no_compress
-> +
-> +_fixed_by_kernel_commit xxxxxxxxxxxx "btrfs: forbid deleting live subvol qgroup"
-> +_fixed_by_kernel_commit xxxxxxxxxxxx "btrfs: forbid creating subvol qgroups"
-> +
-> +subv1=$SCRATCH_MNT/subv1
-> +subv2=$SCRATCH_MNT/subv2
-> +
-> +prepare()
-> +{
-> +    _scratch_mkfs >> $seqres.full
-> +    _scratch_mount
-> +    $BTRFS_UTIL_PROG quota enable --simple $SCRATCH_MNT
-> +    $BTRFS_UTIL_PROG subvolume create $subv1 >> $seqres.full
-> +    $BTRFS_UTIL_PROG subvolume create $subv2 >> $seqres.full
-> +    $XFS_IO_PROG -fc "pwrite -q 0 128K" $subv1/f
-> +    _cp_reflink $subv1/f $subv2/f
-> +}
-> +
-> +# An extent can long outlive its owner. Test this by deleting the owning
-> +# subvolume, committing the transaction, then deleting the reflinked copy.
-> +# Deleting the copy will attempt to free space from the missing owner, which
-> +# should be a no-op.
-> +free_from_deleted_owner()
-> +{
-> +    echo "free from deleted owner"
-> +    prepare
-> +    subvid1=$(_btrfs_get_subvolid $SCRATCH_MNT subv1)
-> +
-> +    $BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
-> +    $BTRFS_UTIL_PROG subvolume delete $subv1 >> $seqres.full
-> +    $BTRFS_UTIL_PROG qgroup destroy 0/$subvid1 $SCRATCH_MNT >> $seqres.full
-> +    $BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
-> +    rm $subv2/f
-> +    _scratch_unmount
-> +}
-> +
-> +# A race where we delete the owner in the same transaction as writing the
-> +# extent leads to incrementing the squota usage of the missing qgroup.
-> +# This leaves behind an owner ref with an owner id that cannot exist, so
-> +# freeing the extent now frees from that qgroup, but there has never
-> +# been a corresponding usage to free.
-> +add_to_deleted_owner()
-> +{
-> +    echo "add to deleted owner"
-> +    prepare
-> +    subvid1=$(_btrfs_get_subvolid $SCRATCH_MNT subv1)
-> +
-> +    $BTRFS_UTIL_PROG subvolume delete $subv1 >> $seqres.full
-> +    $BTRFS_UTIL_PROG qgroup destroy 0/$subvid1 $SCRATCH_MNT >> $seqres.full
-> +    $BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
-> +    $BTRFS_UTIL_PROG qgroup create 0/$subvid1 $SCRATCH_MNT >> $seqres.full
-> +    rm $subv2/f
-> +    _scratch_unmount
-> +}
-> +
-> +free_from_deleted_owner
-> +add_to_deleted_owner
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/310.out b/tests/btrfs/310.out
-> new file mode 100644
-> index 000000000..d7d4bc0ae
-> --- /dev/null
-> +++ b/tests/btrfs/310.out
-> @@ -0,0 +1,6 @@
-> +QA output created by 310
-> +free from deleted owner
-> +ERROR: unable to destroy quota group: Device or resource busy
-> +add to deleted owner
-> +ERROR: unable to destroy quota group: Device or resource busy
-> +ERROR: unable to create quota group: Invalid argument
-> -- 
-> 2.43.0
-> 
-> 
+https://lore.kernel.org/fstests/20240225162212.qcidpyb2bhdburl6@dell-per750=
+-06-vm-08.rhts.eng.pek2.redhat.com/
 
+It's trivial to do those changes.
+Do you expect Su to send yet another version just for that, or could
+you amend the patch?
+
+Can you please be more clear in future replies about that, i.e. if you
+expect the author to send a new version or if you'll amend the patch
+for trivial changes?
+
+Speaking for myself, I very often get confused with your replies, and
+I feel that some patches often get stalled for that reason.
+Usually with Eryu or Dave that didn't happen, the course of action was clea=
+r.
+
+Thanks.
+
+>
+> You can refer to btrfs/196 or generic/482 etc.
+>
+> > +}
+> > +
+> >  # Import common functions.
+> >  . ./common/filter
+> >  . ./common/dmlogwrites
+> > diff --git a/tests/btrfs/206 b/tests/btrfs/206
+> > index f6571649076f..e05adf75b67e 100755
+> > --- a/tests/btrfs/206
+> > +++ b/tests/btrfs/206
+> > @@ -14,6 +14,12 @@
+> >  . ./common/preamble
+> >  _begin_fstest auto quick log replay recoveryloop punch prealloc
+> >
+> > +# Override the default cleanup function.
+> > +_cleanup()
+> > +{
+> > +     _log_writes_cleanup &> /dev/null
+>
+>
+> Same as above.
+>
+> Thanks,
+> Zorro
+>
+> > +}
+> > +
+> >  # Import common functions.
+> >  . ./common/filter
+> >  . ./common/dmlogwrites
+> > --
+> > 2.43.0
+> >
+> >
+>
+>
 
