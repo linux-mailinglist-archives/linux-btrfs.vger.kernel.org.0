@@ -1,154 +1,253 @@
-Return-Path: <linux-btrfs+bounces-2980-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2981-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F391B86ED7B
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Mar 2024 01:35:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7C6D86EF03
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Mar 2024 08:03:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFF041C210C3
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Mar 2024 00:35:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D8D3B24D27
+	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Mar 2024 07:03:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91BB51878;
-	Sat,  2 Mar 2024 00:35:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C51D10A3A;
+	Sat,  2 Mar 2024 07:03:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="hvGSG2RQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CoNhYu7X"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD52637
-	for <linux-btrfs@vger.kernel.org>; Sat,  2 Mar 2024 00:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C5C7490
+	for <linux-btrfs@vger.kernel.org>; Sat,  2 Mar 2024 07:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709339745; cv=none; b=qvBQHYMGJCrAhW1gNWxLb/rXxlPXJRAhMcgicY9jTNPO+jv8FwwmDbqlHgibGYLCA0gZw9cvxfYDItf5cyio/zt7TK2mOX8UCI2wNtGHuEoOK3YC6WwQTeA7lUIIEvUnwCePE4z4W+7Gfb0RP0mOEz9P87aIR2S96MMVFWxfNIc=
+	t=1709363004; cv=none; b=I4ekcO7IpaBMhkJFlu7IcDsn2wXhm+vaog3gBlgEbnG0rjzekVb+r0CU/baKfnmJkCHei5J7vT388lR7fhP0QFifq4d9HRdkrXv1mu1YJUi9kEuYcJ7G2eq4AhIIEM0jyBJ+oi/0nouLm7hjx/CQMIFTwUY+1XdwZH7gpkMzn/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709339745; c=relaxed/simple;
-	bh=xBuSFPF9CsZynvPwoLixo/ZHb0S0m4NXBySOD2gOEEA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=MHoTPi9aQvh1zUoEvEiSosT5xfec7HY2TWSC1QXhwShYFuOD4w7jmc1H48g887FtRl0hBnmWA/dWSFyWlvUaoYkXniHC2/oDsDOUcNGERnzGulShgspfsTedqvzA6WgM6S/1fEHpknY57E5eQkLtPsSI7voI9vF4vltDOGxb+sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=hvGSG2RQ; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1709339736; x=1709944536; i=quwenruo.btrfs@gmx.com;
-	bh=xBuSFPF9CsZynvPwoLixo/ZHb0S0m4NXBySOD2gOEEA=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=hvGSG2RQK1RXjRGlg/VpPr1rEzgsSCfJ0E8vUP6nxsIM0rQ5r3c8Y4cExllrO+7q
-	 pPGSMHm4LMTxVVVMTJGBmEtLCiRU/DC7JoVfF2bjZv+7eksunoXgP9kUP5DDtJbil
-	 UMGg9zUzGbsUOyx7pvy2DSFWo9sA0goNPNDwdOGpQlPR3WSVzlMMarfI+BJiiIxrc
-	 TelOKOp6Ryi7nXmnf1lIEl4YcAh1/vXoGbcssrsw4bkgViC4DYox7gV9X8dTq3Huw
-	 OWvFV/TMb3liEdvU6kBRPl+AXsE+Ci9/EP9hhQHPF86C+6CjOpo6vTcTwQP8kIWX0
-	 HL/zqCCh+lqlC3vnyg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MryTF-1r44ib13Zt-00nvv5; Sat, 02
- Mar 2024 01:35:36 +0100
-Message-ID: <9c51fc5f-0151-4444-92f1-3922d749c936@gmx.com>
-Date: Sat, 2 Mar 2024 11:05:33 +1030
+	s=arc-20240116; t=1709363004; c=relaxed/simple;
+	bh=Oe8LCqQk6Jl5vQmSQQGx4uSLWfw29owThSDN4hwrknw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tMBMW6uDr+1z5WhVQCPY5/SOYQEN8J2XMVTyN1wNnw/01xSwey/tU4/fkz4NsaFNkq7CyOExlGfyjTRaTVU5+Im2zTwVpeENEZUJc2IWjg1PjMocf94bvlme639FUHOID/+57en5YPkswWs6UZG0Io8f7oV8/9gY45gmhRk+2qI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CoNhYu7X; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709363001;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sLZNvbOpD8vnvAhMOsSvxCiLNlhv5ugl0GHIOirJo7w=;
+	b=CoNhYu7XP5jBMmtCs1I7Ay4N9Bcv/AicwoqMkwhQqULIf1JnGlaUa2tnVS8MdQnxMlo/4S
+	iNG9pec3RGtmKENBhQ0yq/+kyEVUw/gQ0txm9u23K8HOs3W5m0shjNjwM/iyww3mmw2Qf8
+	NqzJExClex2CB2Kn+gX6ySuzOeGBI2s=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-561-k4khgBFkNnag3Il9Irw3rw-1; Sat, 02 Mar 2024 02:03:18 -0500
+X-MC-Unique: k4khgBFkNnag3Il9Irw3rw-1
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5dcab65d604so2259319a12.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Mar 2024 23:03:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709362997; x=1709967797;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sLZNvbOpD8vnvAhMOsSvxCiLNlhv5ugl0GHIOirJo7w=;
+        b=fvWjRSLTLLV71sIZay3susr3tnlnx0w00/1yZvF4Ok82GcuD4QcQT/G8jNsSQSYk9t
+         VnJhlZEKDZOjWfUyhoe8+TEdA5SB2Ibqpic3ZiMC+8AaktkPJ6IomZ6adHMBTp6Xcm9i
+         pe8NZDe/GioY5SmohUOBcix48OhlZiDeJH9OU87Jxd5qFFtBhDkF8j9gxSwj0SihjQcu
+         Kqbd1mkGqhuev9dlOF0ECgPxWl7yQh/GhalWsTzzCrsIEph8WHMMzJ6OtVFrJE/ecm3g
+         uxCb083vTfcst/x/QvdesumlP1URuxGeNx97lhU0N1ZqAru4LHnXQoQ8XZEbOEoLkhBq
+         wu8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV77h1DxBaNNJe9jcha3UZH2ZG97I/ZbqfwPrgbe4vAPK+m0JNRH/nnyR2/s1/rId+w9vHVPjfsdlpGtk0KUwQFdPt0kzwzvB93OK4=
+X-Gm-Message-State: AOJu0Yx3xGs3QtFXtckhKXWJ4o6eL8hNhfSfOw8GkKPeCy6U5P/qAWer
+	mVup2Sg/lx5tHfktMFeL27dDa2mS2qj7thqlya4RBVqSAx8sh7ytaFgrzlTbsoccBTTA7FwoeCS
+	coy0rBMJpjylfzN0ApVoiZQofcqF8mLR5DpuIQDZj0PLIW9XaqwiMa5VTCJ8A
+X-Received: by 2002:a05:6a20:5483:b0:1a0:9117:5892 with SMTP id i3-20020a056a20548300b001a091175892mr4608218pzk.15.1709362997450;
+        Fri, 01 Mar 2024 23:03:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEosXbcldllceXlJufOqOXih0rmRhxQ8ndh1/suLKPTqpBH1Dv3IV87x/FLE+eV4CKXDKweew==
+X-Received: by 2002:a05:6a20:5483:b0:1a0:9117:5892 with SMTP id i3-20020a056a20548300b001a091175892mr4608202pzk.15.1709362997118;
+        Fri, 01 Mar 2024 23:03:17 -0800 (PST)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id y9-20020a62f249000000b006e535bf8da4sm3894283pfl.57.2024.03.01.23.03.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 23:03:16 -0800 (PST)
+Date: Sat, 2 Mar 2024 15:03:13 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Su Yue <glass.su@suse.com>, fstests@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, l@damenly.org
+Subject: Re: [PATCH] btrfs/172,206: call _log_writes_cleanup in _cleanup
+Message-ID: <20240302070313.5tc5ylqpv6dyjgmf@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20240215140236.29171-1-l@damenly.org>
+ <20240301134914.dgcv4vh2jbx2egfp@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <CAL3q7H53QTzMVdJwEJBOyoB3fBem-2zi3FH411JugRDkq9Bqvg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix off-by-one chunk length calculation at
- contains_pending_extent()
-Content-Language: en-US
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <daee5e8b14d706fe4dd96bd910fd46038512861b.1709203710.git.fdmanana@suse.com>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <daee5e8b14d706fe4dd96bd910fd46038512861b.1709203710.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:T5kHiHONITJ2BM3KjPqfSJ0RgbRdY9HfDuAx9S/aYpmsVsq4aWZ
- GeBYZY7ulj7fA+dUMufwApglTcCbp26adyN7MmYtV15q6kRjVpfc30eJP3u8l4W28USGmmH
- Deb3P/3ZUBqbKRCIRCOip+i1qBGIxR2n69DhSQnKphdnCm3d1Ma65SrFEw7q83X6LaXV54m
- Si3sSiwNpbceFqApRwx0g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:0KErGj7fMqo=;EpO/XXWgp43BwAclX7W9t99Evpk
- 92z414k9UpB8Y0qiQJfk5SxnnN2R21myu0uC8Y1V2bTYEa703biIT4KMMAO+O4ErWayB8xBJe
- UPlB8PS+tGrl4OxADe9ZqYaDX+EuIMwBB+uOVK3ciFYd/Th1s6nLn7Oj8+5XkZhrJ9VCuY3AA
- w85jQBaX2EV1FrEdaDXn7TCUA6sHyg6Ug/EUNwy3Oa67sFRObgocl1Bc7LQIO162HN2lIEZDK
- wiYHaf89OsXJc+0Bfz74gvYr7GmxnIDbWNcx6G29ojqSJyShNUyz00Chf2sY0RVoNvpTrHudR
- 1LPDvEWOyt2oaFXaFXUDXLNFfylYdZGmrNsQ4VhQdTpL3K1oR9ghCCXIOWjlZOWjHtKCxoI4W
- Gbx+QIYy9rqYPbWLaNo5/Vy5ruNOo0ud5EKvgsCEvcwJxe4ovXuFL517KqGJ/0u2IQrNmU2DZ
- EPt1HYD2fWU3cL3E5n3xvtDzW8SMUzz3u39xrmKb4A4a7w+R8+ihl3Y1xLQf7wBRt7X9YwtnM
- S+cCeJvOi2/jZ2RtUmzFnwAdk5bq9F3UeOsc9jwTcfTG3N1+WOJk1HVJqyHLXW8qStzzLZyfR
- j5FlCImNcCKBE3zaBZWhON/tTW8QbsDz9WUStf2dAQ7ujsom5XX/k4/D+Iz9caXGPGf7Wd0fh
- MlgR1NoDuACNkF8ItuIA+m1W6uO871tV7u9v1ziqVW1kWnOX40xLd0mMKXLln/Gkn/WQka1Uj
- eEbXjq8OdaLwJJJ4+tEF8hR01I7NUV0vCKsLM8othIccIPmRrw0bC+exI/R962/Ps3JcIZWKY
- SXgNfJ0phlBtrkNBdkUMQOns1tqEBVjEyRysfzFFCUdtE=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H53QTzMVdJwEJBOyoB3fBem-2zi3FH411JugRDkq9Bqvg@mail.gmail.com>
 
+On Fri, Mar 01, 2024 at 02:55:26PM +0000, Filipe Manana wrote:
+> On Fri, Mar 1, 2024 at 1:49 PM Zorro Lang <zlang@redhat.com> wrote:
+> >
+> > On Thu, Feb 15, 2024 at 10:02:36PM +0800, Su Yue wrote:
+> > > From: Su Yue <glass.su@suse.com>
+> > >
+> > > Because block group tree requires require no-holes feature,
+> > > _log_writes_mkfs "-O ^no-holes" fails when "-O block-group-tree" is
+> > > given in MKFS_OPTION.
+> > > Without explicit _log_writes_cleanup, the two tests fail with
+> > > logwrites-test device left. And all next tests will fail due to
+> > > SCRATCH DEVICE EBUSY.
+> > >
+> > > Fix it by overriding _cleanup to call _log_writes_cleanup.
+> > >
+> > > Signed-off-by: Su Yue <glass.su@suse.com>
+> > > ---
+> > >  tests/btrfs/172 | 6 ++++++
+> > >  tests/btrfs/206 | 6 ++++++
+> > >  2 files changed, 12 insertions(+)
+> > >
+> > > diff --git a/tests/btrfs/172 b/tests/btrfs/172
+> > > index f5acc6982cd7..fceff56c9d37 100755
+> > > --- a/tests/btrfs/172
+> > > +++ b/tests/btrfs/172
+> > > @@ -13,6 +13,12 @@
+> > >  . ./common/preamble
+> > >  _begin_fstest auto quick log replay recoveryloop
+> > >
+> > > +# Override the default cleanup function.
+> > > +_cleanup()
+> > > +{
+> > > +     _log_writes_cleanup &> /dev/null
+> >
+> > This _cleanup will override the default one, so better to copy the
+> > default cleanup in this function,
+> >
+> >   cd /
+> >   rm -r -f $tmp.*
+> 
+> Zorro,
+> 
+> You had already replied to v2 of this patch with exactly the same comments:
+> 
+> https://lore.kernel.org/fstests/20240225162212.qcidpyb2bhdburl6@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com/
 
+Hi Filipe,
 
-=E5=9C=A8 2024/2/29 21:20, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> At contains_pending_extent() the value of the end offset of a chunk we
-> found in the device's allocation state io tree is inclusive, so when
-> we calculate the length we pass to the in_range() macro, we must sum
-> 1 to the expression "physical_end - physical_offset".
->
-> In practice the wrong calculation should be harmless as chunks sizes
-> are never 1 byte and we should never have 1 byte ranges of unallocated
-> space. Nevertheless fix the wrong calculation.
->
-> Fixes: 1c11b63eff2a ("btrfs: replace pending/pinned chunks lists with io=
- tree")
-> Reported-by: Alex Lyakas <alex.lyakas@zadara.com>
-> Link: https://lore.kernel.org/linux-btrfs/CAOcd+r30e-f4R-5x-S7sV22RJPe7+=
-pgwherA6xqN2_qe7o4XTg@mail.gmail.com/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Oh, sorry for this duplicated review, I tried to scan the email list to
+make sure I didn't miss something.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+> 
+> It's trivial to do those changes.
+> Do you expect Su to send yet another version just for that, or could
+> you amend the patch?
 
-Thankfully it's mostly harmless.
+I expect to get a simple response from the author, for his patch.
+E.g.:
+1) "Yes, agree, could you help to change that when you merge it?"
+2) "No, I think it doesn't make sense"
+3) "Sure, I'll make a bit change in next version"
+4) "Oh, that reminds me, I should cleanup more, I think I can change more about that"
+...
+
+Is that hard?
+
+If the author doesn't have any opinions, just asks for the amending from me,
+I'll do that if there's not risk. Or I suppose the author always hope to change
+his code by himself, maybe not follow the review points 100%.
+
+> 
+> Can you please be more clear in future replies about that, i.e. if you
+> expect the author to send a new version or if you'll amend the patch
+> for trivial changes?
+
+You think it's trivial, due to you think you don't need more changes about
+that. But I'm not sure before you say that. You can check the list, I say
+"I'll help to change that when I merge it", but just when I'm sure it's clear
+enough. You shouldn't use your measure to think my standard.
+
+I didn't say I'll amend that means my review point is a reference, to check
+if you have more ideas.
+We just got a big regression in a _cleanup function which does:
+  cd /
+  rm -r -f $tmp.*
+  specific_xxxx_cleanup
+
+Then that specific_xxxx_cleanup() remove all things in "/".
+
+If it's
+  specific_xxxx_cleanup
+  cd /
+  rm -r -f $tmp.*
+
+things might be different or not.
+
+I'm not saying that change must makes differences. But the cleanup things
+(e.g. theorder of the steps) might worth a bit evaluating, not just changed
+by myself without any response. And a reply from the author to the review
+points of his patch is not hard. Even just say "yes, please help that",
+that means you reviewed and agreed my review points at least.
+
+I'm not anyone else. Each one has his distinctive style. I don't know what's
+wrong with that way to deal with patches, to make you such unsatisfied. It is
+difficult to cater to all tastes.
 
 Thanks,
-Qu
-> ---
->   fs/btrfs/volumes.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 3cc947a42116..473fe92274d9 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1401,7 +1401,7 @@ static bool contains_pending_extent(struct btrfs_d=
-evice *device, u64 *start,
->
->   		if (in_range(physical_start, *start, len) ||
->   		    in_range(*start, physical_start,
-> -			     physical_end - physical_start)) {
-> +			     physical_end + 1 - physical_start)) {
->   			*start =3D physical_end + 1;
->   			return true;
->   		}
+Zorro
+
+> 
+> Speaking for myself, I very often get confused with your replies, and
+> I feel that some patches often get stalled for that reason.
+> Usually with Eryu or Dave that didn't happen, the course of action was clear.
+> 
+> Thanks.
+> 
+> >
+> > You can refer to btrfs/196 or generic/482 etc.
+> >
+> > > +}
+> > > +
+> > >  # Import common functions.
+> > >  . ./common/filter
+> > >  . ./common/dmlogwrites
+> > > diff --git a/tests/btrfs/206 b/tests/btrfs/206
+> > > index f6571649076f..e05adf75b67e 100755
+> > > --- a/tests/btrfs/206
+> > > +++ b/tests/btrfs/206
+> > > @@ -14,6 +14,12 @@
+> > >  . ./common/preamble
+> > >  _begin_fstest auto quick log replay recoveryloop punch prealloc
+> > >
+> > > +# Override the default cleanup function.
+> > > +_cleanup()
+> > > +{
+> > > +     _log_writes_cleanup &> /dev/null
+> >
+> >
+> > Same as above.
+> >
+> > Thanks,
+> > Zorro
+> >
+> > > +}
+> > > +
+> > >  # Import common functions.
+> > >  . ./common/filter
+> > >  . ./common/dmlogwrites
+> > > --
+> > > 2.43.0
+> > >
+> > >
+> >
+> >
+> 
+
 
