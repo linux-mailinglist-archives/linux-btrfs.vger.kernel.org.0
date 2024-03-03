@@ -1,177 +1,257 @@
-Return-Path: <linux-btrfs+bounces-2986-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8652A86F3D7
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Mar 2024 07:53:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB88686F4D9
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Mar 2024 13:38:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40318282E5D
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Mar 2024 06:53:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 993971F21D0D
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Mar 2024 12:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5675179F5;
-	Sun,  3 Mar 2024 06:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XEXJaeNI";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XEXJaeNI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26860BE6B;
+	Sun,  3 Mar 2024 12:38:33 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.helgefjell.de (mail.helgefjell.de [142.132.201.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735391869;
-	Sun,  3 Mar 2024 06:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946D3883D
+	for <linux-btrfs@vger.kernel.org>; Sun,  3 Mar 2024 12:38:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=142.132.201.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709448800; cv=none; b=URQJBvpLm0vBySp1Zg7zlqSpviAvZ76i0t87i09FdZEJGHtyhbSG8Na8XQF0rOTpfx4xyporlc3ry0zRnM3Obe2DGG7Zv6E0EN9le8Uma32mZzhcN6baR+eMl45lai71smugXVeNiXkzOsTBKr+oU/ggJ6HsqP/EjesK0cxFiVg=
+	t=1709469512; cv=none; b=c5AxKR5vhs+7q2l7kSumPGVlhdjUIP6np4sODlInhaZaOoFNBb4ZtQNPVmPIGM8IkkzwU/LKro7TaDKI/NGI6AWOd6gnURH1N3folqR/1XlsIQxDPTC7fPZ5mYEmjisDIldHL1xeI1alEtv8khjYftduAfscr/WjLLuoaHXSym8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709448800; c=relaxed/simple;
-	bh=JZYlh57dA/FGjvp/vNYvOfBSnBWJgCn4AEfwDQmrdd8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=lpTXzzRMorNkvpCpQx6i8QOKSTvrrC8Vp15RL90593jtWAXhN4Swt9w0zSvOXdubKHqFTKc724a0EYfMyzpEuiXVbIDmHq6+Tcsh6uyYpHIGKgimW/gz/U9TTdiA/0ZQolvGW/kBos2+hWkePCzVJllel2LFDCxwWXjpuLAfipc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XEXJaeNI; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XEXJaeNI; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 534BD38386;
-	Sun,  3 Mar 2024 06:53:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709448791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=cE5ZtzSla9kbiTxnqEwsKKvmr5RV35bJfa7H3lUceI8=;
-	b=XEXJaeNIw3HBymcOeXiy62UNNi1mEYlLOg4Lhq284h3Ag/fJ+dP3BkM9I5IG17OBJb5m6B
-	+fQ8ngGojWHxpNvar300YtvxuTfGdD60O6DPgzWZd3iNPA9ificab3PXwPNN/lvv5Nu8pe
-	7TfPl+GygAGocDghyjGLJa5b34AjEg4=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709448791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=cE5ZtzSla9kbiTxnqEwsKKvmr5RV35bJfa7H3lUceI8=;
-	b=XEXJaeNIw3HBymcOeXiy62UNNi1mEYlLOg4Lhq284h3Ag/fJ+dP3BkM9I5IG17OBJb5m6B
-	+fQ8ngGojWHxpNvar300YtvxuTfGdD60O6DPgzWZd3iNPA9ificab3PXwPNN/lvv5Nu8pe
-	7TfPl+GygAGocDghyjGLJa5b34AjEg4=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 12B25139D1;
-	Sun,  3 Mar 2024 06:53:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id llTIL1Ue5GVoegAAn2gu4w
-	(envelope-from <wqu@suse.com>); Sun, 03 Mar 2024 06:53:09 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: [PATCH] fstests: btrfs/121: allow snapshot with invalid qgroup to return error
-Date: Sun,  3 Mar 2024 17:22:51 +1030
-Message-ID: <20240303065251.111868-1-wqu@suse.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1709469512; c=relaxed/simple;
+	bh=6AAVgYgfoZwA4gVhJFHPuUVH7IkcgWnly0/MhyIXfzo=;
+	h=Date:From:To:Subject:Message-ID:Mime-Version:Content-Type:
+	 Content-Disposition; b=QoGuRYTisRVLrl2FJGhUrI6CTKxKuCuHKr/J7YsGsn6v+sbSF7sb/9HvAXRa1jSVYTh2Vnr2G3uyvPXjYqWLKZgh1kelymom1WstC539OuhcierthLzccXmTcrXDBn5WaNsbIqLZoyGNsCX9REG37hc3saQuoUZSK+r1CLXSyOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helgefjell.de; spf=pass smtp.mailfrom=helgefjell.de; arc=none smtp.client-ip=142.132.201.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helgefjell.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helgefjell.de
+Received: from localhost (localhost [127.0.0.1])
+  (uid 1002)
+  by mail.helgefjell.de with local
+  id 000000000002016C.0000000065E46E10.00395568; Sun, 03 Mar 2024 12:33:20 +0000
+Date: Sun, 3 Mar 2024 12:33:20 +0000
+From: Helge Kreutzmann <debian@helgefjell.de>
+To: linux-btrfs@vger.kernel.org
+Subject: Issues in man pages of btrfs-progs
+Message-ID: <ZeRuEH029j3enMr0@meinfjell.helgefjelltest.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [1.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_DN_NONE(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: *
-X-Spam-Score: 1.90
-X-Spam-Flag: NO
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256; protocol="application/pgp-signature"; boundary="=_meinfjell-3757416-1709469200-0001-2"
+Content-Disposition: inline
+X-Public-Key-URL: http://www.helgefjell.de/data/debian_neu.asc
+X-homepage: http://www.helgefjell.de/debian
 
-[BUG]
-After incoming kernel commit "btrfs: qgroup: verify btrfs_qgroup_inherit
-parameter", test case btrfs/121 would fail like this:
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-btrfs/121 1s ... [failed, exit status 1]- output mismatch (see /xfstests/results//btrfs/121.out.bad)
-    --- tests/btrfs/121.out	2022-05-11 09:55:30.739999997 +0800
-    +++ /xfstests/results//btrfs/121.out.bad	2024-03-03 13:33:38.076666665 +0800
-    @@ -1,2 +1,3 @@
-     QA output created by 121
-    -Silence is golden
-    +failed: '/usr/bin/btrfs subvolume snapshot -i 1/10 /mnt/scratch /mnt/scratch/snap1'
-    +(see /xfstests/results//btrfs/121.full for details)
-    ...
-    (Run 'diff -u /xfstests/tests/btrfs/121.out /xfstests/results//btrfs/121.out.bad'  to see the entire diff)
+--=_meinfjell-3757416-1709469200-0001-2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[CAUSE]
-The incoming kernel commit would do early qgroups validation before
-subvolume/snapshot creation, and reject invalid qgroups immediately.
+Dear brtfs maintainer,
+the manpage-l10n project maintains a large number of translations of
+man pages both from a large variety of sources (including btrfs) as
+well for a large variety of target languages.
 
-Meanwhile that test case itself still assume the ioctl would go on
-without any error, thus the new behavior would break the test case.
+During their work translators notice different possible issues in the
+original (english) man pages. Sometimes this is a straightforward
+typo, sometimes a hard to read sentence, sometimes this is a
+convention not held up and sometimes we simply do not understand the
+original.
 
-[FIX]
-Instead of relying on the snapshot creation ioctl return value, we just
-completely ignore the output of that snapshot creation.
-Then manually check if the fs is still read-write.
+We use several distributions as sources and update regularly (at
+least every 2 month). This means we are fairly recent (some
+distributions like archlinux also update frequently) but might miss
+the latest upstream version once in a while, so the error might be
+already fixed. We apologize and ask you to close the issue immediately
+if this should be the case, but given the huge volume of projects and
+the very limited number of volunteers we are not able to double check
+each and every issue.
 
-For different kernels (3 cases), they would lead to the following
-results:
+Secondly we translators see the manpages in the neutral po format,
+i.e. converted and harmonized, but not the original source (be it man,
+groff, xml or other). So we cannot provide a true patch (where
+possible), but only an approximation which you need to convert into
+your source format.
 
-- Older unpatched kernel
-  The filesystem would trigger a transaction abort (would be caught by
-  dmesg filter), and also fail the "touch" command.
+Finally the issues I'm reporting have accumulated over time and are
+not always discovered by me, so sometimes my description of the
+problem my be a bit limited - do not hesitate to ask so we can clarify
+them.
 
-- Older but patched kernel
-  The filesystem continues to create the snapshot, while still keeps the
-  fs read-write.
+I'm now reporting the errors for your project. If future reports
+should use another channel, please let me know.
 
-- Latest kernel with qgroup validation
-  The filesystem refuses to create the snapshot, while still keeps the
-  fs read-write.
+Man page: btrfs.8
+Issue:    I<\\%btrfs(5)> =E2=86=92 B<\\%btrfs>(5)
 
-Both "older but patched" and "latest" kernels would still pass the test
-case, even with different behaviors.
+"For other topics (mount options, etc) please refer to the separate manual "
+"page I<\\%btrfs(5)>\\&."
+--
+Man page: btrfs.8
+Issue 1:  I<\\%numfmt(1)> =E2=86=92 B<\\%numfmt>(1)
+Issue 2:  I<\\%locale(7)> =E2=86=92 B<\\%locale>(7)
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/btrfs/121 | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+"I<Sizes>, both upon input and output, can be expressed in either SI or IEC=
+-I "
+"units (see I<\\%numfmt(1)>)  with the suffix I<B> appended.  All numbers "
+"will be formatted according to the rules of the I<C> locale (ignoring the "
+"shell locale, see I<\\%locale(7)>)."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-balance(8)> =E2=86=92 B<btrfs-balance>(8)
 
-diff --git a/tests/btrfs/121 b/tests/btrfs/121
-index f4d54962..15a54274 100755
---- a/tests/btrfs/121
-+++ b/tests/btrfs/121
-@@ -24,8 +24,14 @@ _require_scratch
- _scratch_mkfs >/dev/null
- _scratch_mount
- _run_btrfs_util_prog quota enable $SCRATCH_MNT
--# The qgroup '1/10' does not exist and should be silently ignored
--_run_btrfs_util_prog subvolume snapshot -i 1/10 $SCRATCH_MNT $SCRATCH_MNT/snap1
-+# The qgroup '1/10' does not exist. The kernel should either gives an error
-+# (newer kernel with invalid qgroup detection) or ignore it (older kernel with
-+# above fix).
-+# Either way, we just ignore the output completely, and we will check if the fs
-+# is still RW later.
-+$BTRFS_UTIL_PROG subvolume snapshot -i 1/10 $SCRATCH_MNT $SCRATCH_MNT/snap1 &> /dev/null
-+
-+touch $SCRATCH_MNT/foobar
- 
- echo "Silence is golden"
- 
--- 
-2.42.0
+"Balance btrfs filesystem chunks across single or several devices.  See I<\=
+\"
+"%btrfs-balance(8)> for details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-check(8)> =E2=86=92 B<btrfs-check>(8)
 
+"Do off-line check on a btrfs filesystem.  See I<\\%btrfs-check(8)> for "
+"details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-device(8)> =E2=86=92 B<btrfs-device>(8)
+
+"Manage devices managed by btrfs, including add/delete/scan and so on.  See=
+ "
+"I<\\%btrfs-device(8)> for details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-filesystem(8)> =E2=86=92 B<\\%btrfs-filesystem>(8)
+
+"Manage a btrfs filesystem, including label setting/sync and so on.  See I<=
+\\"
+"%btrfs-filesystem(8)> for details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-inspect-internal(8)> =E2=86=92 B<\\%btrfs-inspect-inte=
+rnal>(8)
+
+"Debug tools for developers/hackers.  See I<\\%btrfs-inspect-internal(8)> f=
+or "
+"details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-property(8)> =E2=86=92 B<\\%btrfs-property>(8)
+
+"Get/set a property from/to a btrfs object.  See I<\\%btrfs-property(8)> fo=
+r "
+"details."
+--
+Man page: btrfs.8
+Issue:   I<\\%btrfs-qgroup(8)> =E2=86=92 B<\\%btrfs-qgroup>(8)
+
+"Manage quota group(qgroup) for btrfs filesystem.  See I<\\%btrfs-qgroup(8)=
+> "
+"for details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-quota(8)> and I<\\%btrfs-qgroup(8)> =E2=86=92 B<\\%btr=
+fs-quota>(8) and B<\\%btrfs-qgroup>(8)
+
+"Manage quota on btrfs filesystem like enabling/rescan and etc.  See I<\\"
+"%btrfs-quota(8)> and I<\\%btrfs-qgroup(8)> for details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-receive(8)> =E2=86=92 B<\\%btrfs-receive>(8)
+
+"Receive subvolume data from stdin/file for restore and etc.  See I<\\%btrf=
+s-"
+"receive(8)> for details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-replace(8)> =E2=86=92 B<\\%btrfs-replace>(8)
+
+"Replace btrfs devices.  See I<\\%btrfs-replace(8)> for details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-rescue(8)> =E2=86=92 B<\\%btrfs-rescue>(8)
+
+"Try to rescue damaged btrfs filesystem.  See I<\\%btrfs-rescue(8)> for "
+"details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-restore(8)> =E2=86=92 B<\\%btrfs-restore>(8)
+
+"Try to restore files from a damaged btrfs filesystem.  See I<\\%btrfs-"
+"restore(8)> for details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-scrub(8)> =E2=86=92 B<\\%btrfs-scrub>(8)
+
+"Scrub a btrfs filesystem.  See I<\\%btrfs-scrub(8)> for details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-send(8)> =E2=86=92 B<\\%btrfs-send>(8)
+
+"Send subvolume data to stdout/file for backup and etc.  See I<\\%btrfs-"
+"send(8)> for details."
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs-subvolume(8)> =E2=86=92 B<\\%btrfs-subvolume>(8)
+
+"Create/delete/list/manage btrfs subvolume.  See I<\\%btrfs-subvolume(8)> f=
+or "
+"details."
+--
+Man page: btrfs.8
+Issue:    btrfs wiki I<\\%http://btrfs.wiki.kernel.org> =E2=86=92 E<.UR htt=
+p://btrfs.wiki.kernel.org>btrfs wiki<.UE> (Note: https)
+
+"B<btrfs> is part of btrfs-progs.  Please refer to the documentation at I<\=
+\"
+"%https://btrfs.readthedocs.io>\\&."
+--
+Man page: btrfs.8
+Issue:    section number in such links must not be bold: I<btrfs(5)> =E2=86=
+=92 B<btrfs>(5) etc.
+
+"I<\\%btrfs(5)>, I<\\%btrfs-balance(8)>, I<\\%btrfs-check(8)>, I<\\%btrfs-"
+"convert(8)>, I<\\%btrfs-device(8)>, I<\\%btrfs-filesystem(8)>, I<\\%btrfs-"
+"inspect-internal(8)>, I<\\%btrfs-property(8)>, I<\\%btrfs-qgroup(8)>, I<\\"
+"%btrfs-quota(8)>, I<\\%btrfs-receive(8)>, I<\\%btrfs-replace(8)>, I<\\%btr=
+fs-"
+"rescue(8)>, I<\\%btrfs-restore(8)>, I<\\%btrfs-scrub(8)>, I<\\%btrfs-"
+"send(8)>, I<\\%btrfs-subvolume(8)>, I<\\%btrfstune(8)>, I<\\%mkfs.btrfs(8)=
+>"
+
+--=20
+      Dr. Helge Kreutzmann                     debian@helgefjell.de
+           Dipl.-Phys.                   http://www.helgefjell.de/debian.php
+        64bit GNU powered                     gpg signed mail preferred
+           Help keep free software "libre": http://www.ffii.de/
+
+--=_meinfjell-3757416-1709469200-0001-2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEbZZfteMW0gNUynuwQbqlJmgq5nAFAmXkbg0ACgkQQbqlJmgq
+5nB2yBAAgj33IabCxu45JHTm7UV11EU5MbAdWWMuJQfLLp/Bz7uX8oIYbslWhBjI
+psdZAvnZSK+q2+/w0uDGsCssuLv7H+M8OfXWUuPuRqHCNNCeJ49jI4ZRm8g9dKHU
+Txzoc7y8apaojk+2WbCM0DQ2lXXXoG7g6gRxR4lt5IL6nVOo7FNT32h2ss3cswnd
+tqFdb59Yg36FuZdmXbZ3y3WgFFUpG8Ii3zLrXebaFkpFlA5cIalqOzptZfnF0z5Y
+RS+TpWeqpIuQM5oE9NZJdJQ2bgyZy6VeK51PiE4QNWxunpj4YuvnRzj7QuvwUJwb
+foGwPzJoAB5AKDy8A5lPx0B4qyATyUBao8ZTu1pWsh+S1WNayAZPk3nFnBpnrLG8
+hZC8LuVjcX5onMwKKGpwzDJzOt1TjvcCKM8pdaZjz0Ye9DXOAJWbEUpxdAPawiy3
+doz8UHmgWJ+83SU3nja4bc3an6rJz49Pj8XP4eR4jodLgesBhPurethPBAltcqTe
+NjNMxVSHx1IvIWYqzPBanB910pz5zhWF6qvmiOQDUECU+EUD5KgijOBjIjD1ZDL5
+RXsO10LkVb62NbeljDDQP0+ZaUyv4/YZaSCWvswaEeJEdppviEy8rVDESAW8meKP
+eKG4Twr1vZaZ338ppKiLpaSRFdyY4IysUj4F45ApVPiS52p0qKQ=
+=bgGX
+-----END PGP SIGNATURE-----
+
+--=_meinfjell-3757416-1709469200-0001-2--
 
