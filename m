@@ -1,172 +1,111 @@
-Return-Path: <linux-btrfs+bounces-2992-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-2993-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71A4D86F946
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Mar 2024 05:41:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 797AF86F967
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Mar 2024 06:10:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 124491F216A5
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Mar 2024 04:41:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26BC01F218EE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Mar 2024 05:10:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9EA46138;
-	Mon,  4 Mar 2024 04:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BJx95N8t"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2939E6FA9;
+	Mon,  4 Mar 2024 05:10:43 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05CD17C8;
-	Mon,  4 Mar 2024 04:41:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E7628FC
+	for <linux-btrfs@vger.kernel.org>; Mon,  4 Mar 2024 05:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709527285; cv=none; b=XYH0MkTuX220qPZcMspip7iy8x0Pysbv6ITEBTR3LVe5R6BYbgsEnYwkQ7Dod/ScXJazRPi/hcuq1A0iQwYfSUj1FuoqajzxvVBqYLZR4TtIBd1w2OqoGy/PJ7cyygxnq15zhe93+GCa2yteAE9Y+qq9cqRyAnHrImiRBYupXvg=
+	t=1709529042; cv=none; b=DSWMVNtlYOzxcOu6vBzThElWoyN8PmnaKIdi9HRxv/RP5KzxpkbfkeWpSNItRi28fW6U8Yi0tfXY+8V3VjmFewCOoKfiArOQ9lraq3/gmUpxdIDVeZxH4xBA47q4xAi1I3TcVXLqcLH6oVij3gYWpWYZShYvd2N4/q9L7YJT84E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709527285; c=relaxed/simple;
-	bh=D5UrnjkSVi1B31YirTTPQjJwrThMIxeGFHPF9BbjHKI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SwmGCUq1/tJQEy0i7WviZzTL1uACvhDspNdmDabA33RWaBOTCyO6Zk52yz2uKgmEUek0PCpIaq565W/q2QySO6coqSNBU0RGRmEt/z5kdQ9IVcuvv6Y+I9YadZ/tdjpdnGu43mJ7PWzqoxuN4qwj6wZ1uCSpJPXe3/r2PF4XXGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BJx95N8t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11E68C433C7;
-	Mon,  4 Mar 2024 04:41:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709527285;
-	bh=D5UrnjkSVi1B31YirTTPQjJwrThMIxeGFHPF9BbjHKI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BJx95N8tqkOpYlrv78wdeXTaFI4Mc6UZ8F9IpIy4t6x6MPXIBCNxF1LYGwUwITSBH
-	 aHV2Q5dyx7iWyAxXi1J3fI29vL/qbP1S9tEmue2q4P60iznGV6LGZNwapw+NkelJWO
-	 oh2EcHaaCWMx6JsbPT32dKCY7yTH6X+TF0EB3uOUP6Xn0F1iaUkxLT53gj29hSQgVQ
-	 MIQjo2rERVQS/rKjpOSEnvLVqTPaPogbqjeR3CsQKwxrVTB9WINiUofsHRPWajfGxM
-	 Of2Vo2Ay1hrso7T0ZREV9nGa6g5h8r2GlJ9sup6ocu0A5qbXaGypKyir4Ur47bNk/X
-	 sjStMf6mfoMnQ==
-Date: Mon, 4 Mar 2024 12:41:19 +0800
-From: Zorro Lang <zlang@kernel.org>
-To: Qu Wenruo <wqu@suse.com>
-Cc: Zorro Lang <zlang@redhat.com>, linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: Re: [PATCH] fstests: btrfs/121: allow snapshot with invalid qgroup
- to return error
-Message-ID: <20240304044119.oqndhpriif5lfvju@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20240303065251.111868-1-wqu@suse.com>
- <20240304041840.rfn6mhkk5a6mlxnf@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <25153f23-a1b0-41b1-9cb7-4f18f08d659b@suse.com>
+	s=arc-20240116; t=1709529042; c=relaxed/simple;
+	bh=YHI/6A6K34rweZs2svjhE1Dg5c0AJr3DPXMfdQKU3yg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hOtq0fc1oS0ool5PJogAmX+ZRjBvUXErURit42csOxk661u3Pf25zhu+MRGVExhB3UY8NXatt2dMiYkh7xxhQfOOP/FzHjAH4chwDwy2GcKRWan8a9Kqea82MRMrrXWupCgtqmGJMPhC0C9qfliBZj1eaxkeGUJfnvULImXMjis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so663437366b.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 03 Mar 2024 21:10:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709529039; x=1710133839;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YHI/6A6K34rweZs2svjhE1Dg5c0AJr3DPXMfdQKU3yg=;
+        b=DMMWVYf3R7AG+ZCq8/82E5nHE3Hl9se1d9EuD6sFZZsIpha6NTR5P5gaqeJvTflAv8
+         3FPdSd9qsUfGsXvCccFc7TbMx00Qz0aRkLQYYARRkIe8r98j0WCPPqnjezRb+E4Y6ehc
+         CE2OQT+155kK4VilWH9FNE3D5CPzZZTIOl87e6Ddbla0qS/DuyVdYVzVBicKik3BkYQy
+         xCdjnRL0nG5LubAEp6LMdze3W66Va4NcIIc5zQvNUCWNJ5QpVZcRY3HBH32S2SWh557K
+         EaHd3e1zaUPXrvCgZvA8jk2DNnW24s/JYPqffRCGREEGjiopbbY+09HmCwv2RRIftWYH
+         1asQ==
+X-Gm-Message-State: AOJu0YwYl7TJs/9dvjTGtYEpgMy8ViZZqwsFPsk58NL9at4R0Grxhvqv
+	Fx1z5PGf8EyZMFFVvsBxohozmEQExXMpQTaH4HLlo/EaP5mZfXN0fVKgJVnjcBrdMg==
+X-Google-Smtp-Source: AGHT+IH14p10lIGJ2zjQ4zkWVXyayjntNxMgXjt5bUIhcfXPWU0oa2M3dCXF2lS8zR3jmYAAAXYkrw==
+X-Received: by 2002:a17:906:b84e:b0:a45:3fb7:eed5 with SMTP id ga14-20020a170906b84e00b00a453fb7eed5mr1124945ejb.71.1709529038746;
+        Sun, 03 Mar 2024 21:10:38 -0800 (PST)
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
+        by smtp.gmail.com with ESMTPSA id ts3-20020a170907c5c300b00a3d4dc76454sm4363485ejc.159.2024.03.03.21.10.38
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Mar 2024 21:10:38 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so663436066b.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 03 Mar 2024 21:10:38 -0800 (PST)
+X-Received: by 2002:a17:906:b253:b0:a45:2621:d74d with SMTP id
+ ce19-20020a170906b25300b00a452621d74dmr1539142ejb.53.1709529038476; Sun, 03
+ Mar 2024 21:10:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <25153f23-a1b0-41b1-9cb7-4f18f08d659b@suse.com>
+References: <cover.1708322044.git.wqu@suse.com> <f9be8d16-a1ae-4fb3-8670-c6c7a2615d36@suse.com>
+In-Reply-To: <f9be8d16-a1ae-4fb3-8670-c6c7a2615d36@suse.com>
+From: Neal Gompa <neal@gompa.dev>
+Date: Mon, 4 Mar 2024 00:10:01 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je-tpYX5rikHjf3mXeqN1Rj+3Tr9arAift2j+Ycj+ma-sQ@mail.gmail.com>
+Message-ID: <CAEg-Je-tpYX5rikHjf3mXeqN1Rj+3Tr9arAift2j+Ycj+ma-sQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] btrfs: initial subpage support for zoned devices
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 02:57:45PM +1030, Qu Wenruo wrote:
-> 
-> 
-> 在 2024/3/4 14:48, Zorro Lang 写道:
-> > On Sun, Mar 03, 2024 at 05:22:51PM +1030, Qu Wenruo wrote:
-> > > [BUG]
-> > > After incoming kernel commit "btrfs: qgroup: verify btrfs_qgroup_inherit
-> > > parameter", test case btrfs/121 would fail like this:
-> > > 
-> > > btrfs/121 1s ... [failed, exit status 1]- output mismatch (see /xfstests/results//btrfs/121.out.bad)
-> > >      --- tests/btrfs/121.out	2022-05-11 09:55:30.739999997 +0800
-> > >      +++ /xfstests/results//btrfs/121.out.bad	2024-03-03 13:33:38.076666665 +0800
-> > >      @@ -1,2 +1,3 @@
-> > >       QA output created by 121
-> > >      -Silence is golden
-> > >      +failed: '/usr/bin/btrfs subvolume snapshot -i 1/10 /mnt/scratch /mnt/scratch/snap1'
-> > >      +(see /xfstests/results//btrfs/121.full for details)
-> > >      ...
-> > >      (Run 'diff -u /xfstests/tests/btrfs/121.out /xfstests/results//btrfs/121.out.bad'  to see the entire diff)
-> > > 
-> > > [CAUSE]
-> > > The incoming kernel commit would do early qgroups validation before
-> > > subvolume/snapshot creation, and reject invalid qgroups immediately.
-> > > 
-> > > Meanwhile that test case itself still assume the ioctl would go on
-> > > without any error, thus the new behavior would break the test case.
-> > > 
-> > > [FIX]
-> > > Instead of relying on the snapshot creation ioctl return value, we just
-> > > completely ignore the output of that snapshot creation.
-> > > Then manually check if the fs is still read-write.
-> > > 
-> > > For different kernels (3 cases), they would lead to the following
-> > > results:
-> > > 
-> > > - Older unpatched kernel
-> > >    The filesystem would trigger a transaction abort (would be caught by
-> > >    dmesg filter), and also fail the "touch" command.
-> > > 
-> > > - Older but patched kernel
-> > >    The filesystem continues to create the snapshot, while still keeps the
-> > >    fs read-write.
-> > > 
-> > > - Latest kernel with qgroup validation
-> > >    The filesystem refuses to create the snapshot, while still keeps the
-> > >    fs read-write.
-> > > 
-> > > Both "older but patched" and "latest" kernels would still pass the test
-> > > case, even with different behaviors.
-> > > 
-> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > > ---
-> > >   tests/btrfs/121 | 10 ++++++++--
-> > >   1 file changed, 8 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/tests/btrfs/121 b/tests/btrfs/121
-> > > index f4d54962..15a54274 100755
-> > > --- a/tests/btrfs/121
-> > > +++ b/tests/btrfs/121
-> > > @@ -24,8 +24,14 @@ _require_scratch
-> > >   _scratch_mkfs >/dev/null
-> > >   _scratch_mount
-> > >   _run_btrfs_util_prog quota enable $SCRATCH_MNT
-> > > -# The qgroup '1/10' does not exist and should be silently ignored
-> > > -_run_btrfs_util_prog subvolume snapshot -i 1/10 $SCRATCH_MNT $SCRATCH_MNT/snap1
-> > > +# The qgroup '1/10' does not exist. The kernel should either gives an error
-> > > +# (newer kernel with invalid qgroup detection) or ignore it (older kernel with
-> > > +# above fix).
-> > > +# Either way, we just ignore the output completely, and we will check if the fs
-> > > +# is still RW later.
-> > 
-> > The explanation makes sense to me, just ask if you might want to output to .full
-> > file, to save some information for debug if the test fails? I can help to change
-> > the "&> /dev/null" to "&> $seqres.full" if you only need to change.
-> 
-> Oh, that's very kind of you.
-> 
-> Although in that case "&>" would overwrite the .full file,
-> ">> $seqres.full 2>&1" would be better IHMO.
+On Sun, Mar 3, 2024 at 10:13=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+> Ping?
+>
+> I know this is a very niche scenario (subpage + zoned), and the change
+> itself looks very scary, but the change should be safe for non-subpage
+> routine (as the new lock all delalloc ranges covers the page would still
+> at most lock one delalloc range for normal cases).
+>
+> Furthermore without this series, there seems be no proper way to support
+> subpage + zoned, unless we do a much larger change to merge
+> extent_writepage_io() into run_delalloc_range() (which I believe it's
+> still needed, but can be done in the future).
+>
 
-Oh, you're right, thanks for point out that! It's in "patches-in-queue" branch now,
-and will be in next release if no more review points from others.
+On the contrary, I don't think this is a niche scenario at all. Quite
+the opposite: I expect this to be a *very* common scenario because we
+will see AArch64 systems increasingly rely on subpage because 16K
+AArch64 Linux is used on two very popular platforms: Apple Silicon
+Macs (Fedora Asahi Remix) and Raspberry Pi 5 (Raspbian/RPi OS).
 
-Thanks,
-Zorro
+We *need* this series, but I do not have the hardware to stress this
+patch set, unfortunately.
 
-> 
-> Thanks,
-> Qu
-> 
-> > 
-> > Reviewed-by: Zorro Lang <zlang@redhat.com>
-> > 
-> > Thanks,
-> > Zorro
-> > 
-> > > +$BTRFS_UTIL_PROG subvolume snapshot -i 1/10 $SCRATCH_MNT $SCRATCH_MNT/snap1 &> /dev/null
-> > > +
-> > > +touch $SCRATCH_MNT/foobar
-> > >   echo "Silence is golden"
-> > > -- 
-> > > 2.42.0
-> > > 
-> > > 
-> > 
-> 
+The code otherwise looks reasonable to me, though.
+
+Acked-by: Neal Gompa <neal@gompa.dev>
+
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
