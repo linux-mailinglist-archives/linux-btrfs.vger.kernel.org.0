@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-3021-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3022-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14AE8872724
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Mar 2024 19:59:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8178E872725
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Mar 2024 19:59:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A98B9B29213
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Mar 2024 18:59:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED4481F2A1EA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Mar 2024 18:59:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F4C24215;
-	Tue,  5 Mar 2024 18:59:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195951BF5D;
+	Tue,  5 Mar 2024 18:59:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BPk8g1Oo";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gh+5JYgm"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="vRcE29nN";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="vRcE29nN"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5941AACF;
-	Tue,  5 Mar 2024 18:59:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F7F624B59;
+	Tue,  5 Mar 2024 18:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709665153; cv=none; b=PaHdzLm8eSv8koSQ8wPfvL5GUOBfzmLelzZKVEMkNM3n69pX9S+pRDFoUx4UH46TytK4jCNY4sfCUFZZpfh59/kAKbd7YlVRJkCuaI0xib1zZmxibm2DJVGxKP24/ct6NwOIBoHOe+rnUUZ9XwQMHeXnJEbAiZs5M019z+tPodU=
+	t=1709665160; cv=none; b=jOhA9enyVvlhTHgDm1m5lBcmxiJl1lCARtDL7jsyekSUbhBzlM8vzKoRHkxlq2HDJrsRYwXjYBjUpOcsEqYr8w+oyPc9/5ogt+cD3lXjf5rL+7oYhNuh9K8IMuKfPTraZE+6f1vAZQjxekv3sn0CAtkrXdt0IjkMYHQ4ZKTrLeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709665153; c=relaxed/simple;
-	bh=jhZXT5QS+sQTsR4Zf5MCOXotkTXbHc16FYvPDYj719w=;
+	s=arc-20240116; t=1709665160; c=relaxed/simple;
+	bh=/EBrijUi7iFImBEkOH2iUNg/uuOpjavggEz044N7zLw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YJkQE0hnd5GEM07UPMyL5K7JaSbhZDVu8MljFC6NcwoZ7J2sELIM9+/Rsx0D/SMyikxwjV/Lf78RXON/UCNxrHzxLHjZuVPKWFYwG08jFZW+qG0mR9rEo8tgQv6zw5D4QkT+E3ljpyQ2ILv1+Is40gewlYgnAb9WvJHgX7fsXN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BPk8g1Oo; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gh+5JYgm; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=PJ3/eJKPQnCAmf8LwxtOxf+G3ug182UOVauqRlfRhi+ufcJtpFlt6fL4YEJOAcvpAWbMcPMkHPLqkTR8mTOv6VEaGGttzyY3aMx83c4LpQkLs+Z8GiEBb+cKDJ/FKcqC0kvTUzc4G4Iu8OP5OrjogFromYfarEmok1aR27IB/e8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=vRcE29nN; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=vRcE29nN; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D0D9B22A92;
-	Tue,  5 Mar 2024 18:59:08 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3843934E57;
+	Tue,  5 Mar 2024 18:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709665149; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1709665155; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gJ3RPk3x0DG3aRdeJlgXiel7sD0/H3U+Tb6ibktVg9k=;
-	b=BPk8g1OoO6JF0GHB8gPmoT2/0UJ4ZlJtM+z4glT0eanMVgR+0XsDpTaFjd84NCmjFTaDGL
-	PF6qb/h20qIYmryWNgSJpM3GxqdXzcRwd4/scaS74utsmiKk6iQhbFmiDSu7DzD6XutwE8
-	REic+NN4uAjvIgZEzZdqEFl4+oGMIKo=
+	bh=TqRZ/Ar6QGLPWQ+QMxyU6AQLlbfPBjk21kd13L0lwOc=;
+	b=vRcE29nNfHs9Nzc9YNWTi6DMARWexAQB3fsSmblS7YoXeXP6cq4kLRDH60H502xX+2fB1x
+	9iMcPe3p5Yg9gyXL03EHRMZgLpekbaXmBTb25176A1S6Dl3vLGz/9wiRJPJ0Lmmykc+JDW
+	29g+ZIvTesn+1mFVlD7fp7K/J9JWSSQ=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709665148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1709665155; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gJ3RPk3x0DG3aRdeJlgXiel7sD0/H3U+Tb6ibktVg9k=;
-	b=gh+5JYgmKoyq2tYT8v3UHEfSbe+4sHjM2KZvC8nM/O5AMtjvystv34Fri9UTKr6diX8EsF
-	Pc8KRklCiJInr91pyCstp1wmpVsh/sDTU9l/eVaZm2+ukce+SV3jFUROWB04pDiErVjb9p
-	TcYOJMNzcCryS6HvT7xssevrugCvG2M=
+	bh=TqRZ/Ar6QGLPWQ+QMxyU6AQLlbfPBjk21kd13L0lwOc=;
+	b=vRcE29nNfHs9Nzc9YNWTi6DMARWexAQB3fsSmblS7YoXeXP6cq4kLRDH60H502xX+2fB1x
+	9iMcPe3p5Yg9gyXL03EHRMZgLpekbaXmBTb25176A1S6Dl3vLGz/9wiRJPJ0Lmmykc+JDW
+	29g+ZIvTesn+1mFVlD7fp7K/J9JWSSQ=
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CA24F13466;
-	Tue,  5 Mar 2024 18:59:08 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 31E1613466;
+	Tue,  5 Mar 2024 18:59:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 5z1YMXxr52U3BQAAn2gu4w
-	(envelope-from <dsterba@suse.com>); Tue, 05 Mar 2024 18:59:08 +0000
+	id Yo0rDINr52U+BQAAn2gu4w
+	(envelope-from <dsterba@suse.com>); Tue, 05 Mar 2024 18:59:15 +0000
 From: David Sterba <dsterba@suse.com>
 To: fstests@vger.kernel.org
 Cc: Josef Bacik <josef@toxicpanda.com>,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/8] btrfs/011: increase the runtime for replace cancel
-Date: Tue,  5 Mar 2024 19:52:03 +0100
-Message-ID: <84c96df7a1fc1fd43e543f0342d46c85b31d4143.1709664047.git.dsterba@suse.com>
+Subject: [PATCH 2/8] btrfs/012: adjust how we populate the fs to convert
+Date: Tue,  5 Mar 2024 19:52:06 +0100
+Message-ID: <0b465808ecd272a04d5ea16383043b91afb6c2b0.1709664047.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <cover.1709664047.git.dsterba@suse.com>
 References: <cover.1709664047.git.dsterba@suse.com>
@@ -83,12 +83,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: ***
-X-Spamd-Bar: +++
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=gh+5JYgm
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [3.48 / 50.00];
+	dkim=pass header.d=suse.com header.s=susede1 header.b=vRcE29nN
+X-Spamd-Result: default: False [1.69 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
@@ -100,7 +97,6 @@ X-Spamd-Result: default: False [3.48 / 50.00];
 	 MIME_GOOD(-0.10)[text/plain];
 	 BROKEN_CONTENT_TYPE(1.50)[];
 	 TO_DN_SOME(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	 DKIM_TRACE(0.00)[suse.com:+];
@@ -110,63 +106,91 @@ X-Spamd-Result: default: False [3.48 / 50.00];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.01)[45.79%]
-X-Spam-Score: 3.48
-X-Rspamd-Queue-Id: D0D9B22A92
+	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 1.69
+X-Rspamd-Queue-Id: 3843934E57
+X-Spam-Level: *
 X-Spam-Flag: NO
+X-Spamd-Bar: +
 
 From: Josef Bacik <josef@toxicpanda.com>
 
-This test exercises the btrfs replace cancel path, but in order to do
-this we have to have enough work to do in order to successfully cancel
-the balance, otherwise the test fails because the operation has
-completed before we're able to cancel.  This test has a very low pass
-rate because we do not generate a large enough file system for replace
-to have enough work, passing around 5% of the time.  Increase the time
-spent to 10x the time we wait for the replace to start its work before
-we cancel, this allows us to consistently pass this test.
+/lib/modules/$(uname -r)/ can have symlinks to the source tree where the
+kernel was built from, which can have all sorts of stuff, which will
+make the runtime for this test exceedingly long.  We're just trying to
+copy some data into our tree to test with, we don't need the entire
+devel tree of whatever we're doing.  Additionally VM's that aren't built
+with modules will fail this test.
+
+Update the test to use /etc, which will always exist.  Additionally use
+timeout just in case there's large files or some other shenanigans so
+the test doesn't run forever copying large amounts of files.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- tests/btrfs/011 | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ tests/btrfs/012 | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/tests/btrfs/011 b/tests/btrfs/011
-index ff52ada94a17d0..d8b5a978275032 100755
---- a/tests/btrfs/011
-+++ b/tests/btrfs/011
-@@ -60,6 +60,7 @@ wait_time=1
- fill_scratch()
- {
- 	local fssize=$1
-+	local with_cancel=$2
- 	local filler_pid
+diff --git a/tests/btrfs/012 b/tests/btrfs/012
+index d9faf81ce1ad8e..7bc0c3ce59d28f 100755
+--- a/tests/btrfs/012
++++ b/tests/btrfs/012
+@@ -33,6 +33,8 @@ _require_non_zoned_device "${SCRATCH_DEV}"
+ _require_loop
+ _require_extra_fs ext4
  
- 	# Fill inline extents.
-@@ -88,7 +89,11 @@ fill_scratch()
- 	$XFS_IO_PROG -f -d -c "pwrite -b 64k 0 1E" "$SCRATCH_MNT/t_filler" &>\
- 		$tmp.filler_result &
- 	filler_pid=$!
--	sleep $((2 * $wait_time))
-+	if [ "${with_cancel}" = "cancel" ]; then
-+		sleep $((10 * $wait_time))
-+	else
-+		sleep $((2 * $wait_time))
-+	fi
- 	kill -KILL $filler_pid &> /dev/null
- 	wait $filler_pid &> /dev/null
++SOURCE_DIR=/etc
++BASENAME=$(basename $SOURCE_DIR)
+ BLOCK_SIZE=`_get_block_size $TEST_DIR`
  
-@@ -125,7 +130,7 @@ workout()
- 	_scratch_mount
- 	_require_fs_space $SCRATCH_MNT $((2 * 512 * 1024)) #2.5G
+ # Create & populate an ext4 filesystem
+@@ -41,9 +43,9 @@ $MKFS_EXT4_PROG -F -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
+ # Manual mount so we don't use -t btrfs or selinux context
+ mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
  
--	fill_scratch $fssize
-+	fill_scratch $fssize $with_cancel
- 	_run_btrfs_util_prog filesystem show -m $SCRATCH_MNT
+-_require_fs_space $SCRATCH_MNT $(du -s /lib/modules/`uname -r` | ${AWK_PROG} '{print $1}')
++_require_fs_space $SCRATCH_MNT $(du -s $SOURCE_DIR | ${AWK_PROG} '{print $1}')
  
- 	echo -e "Replace from $source_dev to $SPARE_DEV\\n" >> $seqres.full
+-cp -aR /lib/modules/`uname -r`/ $SCRATCH_MNT
++timeout 10 cp -aRP $SOURCE_DIR $SCRATCH_MNT
+ _scratch_unmount
+ 
+ # Convert it to btrfs, mount it, verify the data
+@@ -51,7 +53,7 @@ $BTRFS_CONVERT_PROG $SCRATCH_DEV >> $seqres.full 2>&1 || \
+ 	_fail "btrfs-convert failed"
+ _try_scratch_mount || _fail "Could not mount new btrfs fs"
+ # (Ignore the symlinks which may be broken/nonexistent)
+-diff -r /lib/modules/`uname -r`/ $SCRATCH_MNT/`uname -r`/ 2>&1 | grep -vw "source\|build"
++diff --no-dereference -r $SOURCE_DIR $SCRATCH_MNT/$BASENAME/ 2>&1
+ 
+ # Old ext4 image file should exist & be consistent
+ $E2FSCK_PROG -fn $SCRATCH_MNT/ext2_saved/image >> $seqres.full 2>&1 || \
+@@ -62,12 +64,12 @@ mkdir -p $SCRATCH_MNT/mnt
+ mount -o loop $SCRATCH_MNT/ext2_saved/image $SCRATCH_MNT/mnt || \
+ 	_fail "could not loop mount saved ext4 image"
+ # Ignore the symlinks which may be broken/nonexistent
+-diff -r /lib/modules/`uname -r`/ $SCRATCH_MNT/mnt/`uname -r`/ 2>&1 | grep -vw "source\|build"
++diff --no-dereference -r $SOURCE_DIR $SCRATCH_MNT/mnt/$BASENAME/ 2>&1
+ umount $SCRATCH_MNT/mnt
+ 
+ # Now put some fresh data on the btrfs fs
+ mkdir -p $SCRATCH_MNT/new 
+-cp -aR /lib/modules/`uname -r`/ $SCRATCH_MNT/new
++timeout 10 cp -aRP $SOURCE_DIR $SCRATCH_MNT/new
+ 
+ _scratch_unmount
+ 
+@@ -82,7 +84,7 @@ $E2FSCK_PROG -fn $SCRATCH_DEV >> $seqres.full 2>&1 || \
+ # Mount the un-converted ext4 device & check the contents
+ mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
+ # (Ignore the symlinks which may be broken/nonexistent)
+-diff -r /lib/modules/`uname -r`/ $SCRATCH_MNT/`uname -r`/ 2>&1 | grep -vw "source\|build"
++diff --no-dereference -r $SOURCE_DIR $SCRATCH_MNT/$BASENAME/ 2>&1
+ 
+ _scratch_unmount
+ 
 -- 
 2.42.1
 
