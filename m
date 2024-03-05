@@ -1,212 +1,142 @@
-Return-Path: <linux-btrfs+bounces-3012-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3013-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C29B68718FF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Mar 2024 10:07:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98067871C53
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Mar 2024 11:55:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 508661F23CE8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Mar 2024 09:07:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C79BD1C22E0C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Mar 2024 10:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D8D524B4;
-	Tue,  5 Mar 2024 09:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9C935810C;
+	Tue,  5 Mar 2024 10:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="W7hZDFO2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S6APm+q4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE534F8A1
-	for <linux-btrfs@vger.kernel.org>; Tue,  5 Mar 2024 09:06:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A17548F6
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Mar 2024 10:47:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709629563; cv=none; b=A12mtatLIrqjlaurmcfJSsIqk0vf+klzQw2qbfwt9Qyubm9dayedpfqCgrol6HcrT/hVpZk214hrFBTUy8AunXuLmrxsmZeS9cEWJxDK8LMJSzE85DcglVhjkq4fJGj0qEpUgx/VKleE6ziJBXzFE0gcumUAjio+f/VgUBvPS/w=
+	t=1709635634; cv=none; b=kQ9EODQ+mBro66OszBz2CdTYoleks/rcrd/9LHMsARwUG61IREr7NMzXWADPQLTCsk8vFGgban0b/Vwjz0ffXnXveV8VpdHkOVt/o7HF1RiBhiyqkts00sggwdPkrRN6/VZHHFZgGq8yIQB1WArU1hFsy+fwfkuRlip1kZvZDtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709629563; c=relaxed/simple;
-	bh=VKOiHav/yw7Z8MKppwEQwdcpsKQuNnB4Tx+CoLuu32Q=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=pgtNMRxL7kRC2TBTiXfHfuRJP09kHobmRltc5/tIdZc7dKq7l1vANprXiFzF1Aw6GxBxCkSTVTHV3byQzPkbpfwclEUkjxALSwKLzhjZuZmefJmN9ayIm71NtWrlJTwfxXoLc76bl7wXf9X2i3G8JdgLbjmMvZO4h716gpLSlko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=W7hZDFO2; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d24a727f78so66010421fa.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Mar 2024 01:06:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1709629559; x=1710234359; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Q9mhdYZ9+rxVPecvuffO5o2Xu+p4/LqccpCPzMg9nQ=;
-        b=W7hZDFO2e3RCS6IiwyKdxgv3F91IHMIepPaerNvQMVOX8YbeHW1ssES6mhT372RQOY
-         FVC41b+0zT4e+UyaKfjbsfAA/EJQtiJoTjUTmsXrNjiWDd7wQInE46KZUFGOjO1MKjB6
-         wkzV1T4tCPdRVbglm3N2WUhi9iRXPC/rfdjlqZoIk7qv5ksNzb5R5mUEFvJxtk05ejfG
-         6g2U3AxLVhmvBeUGWTMgi2yG1ndLlp1l6YIQUea+64/bgGazeseCf5awXslauGTkZmnx
-         GAs4MKTiYRAznMeJyLrACoMhcLxSuXeC1uwCm8N1pNGFwl9VIbiN2gM0AXH6TWSrkxNf
-         Dbdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709629559; x=1710234359;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0Q9mhdYZ9+rxVPecvuffO5o2Xu+p4/LqccpCPzMg9nQ=;
-        b=Bwd2t3UvdsOhbEQgdaAc1pxU1/wljmLCBiYUpE0d6WGo5NU+WjLn8LRtpHIqo20a7t
-         pa1Rfur8GgWU6jKElbLwoBKqFJj2h46JIG7Wny8V8YIb0Lkd43WQFF+fmaPYjuxPyYiO
-         GSjNivucqsb5a/5rL/sP60aoX5ytfmcQtWcmTGBnakQFi12JY3zOxOLGlcYQORmEVvTN
-         6ZiYsXH9Nvs8ZPR0ZfVwt7xFBpa5Wsd+B2nlsk2QcIls4Ui1WZR8mQ9oHTaLpfVl0rCB
-         rMkyWW9qYo8khgJKjeDNFw9qHD7vbpVrWTodYDH8nVOR+5hG9TFSgqYpTe+VQoDwAqiQ
-         VYsQ==
-X-Gm-Message-State: AOJu0YyNv/BD5Jrm/opDvhkSmj2nU2DrpIGQK2bYEIxaAT29xtgCSNuY
-	+uNLhbKv5xfvzpq69Sl34R9LK1B5boy5LTPx5StjYZAXP9ObbWQqhy/Qu5F+9OgIERUUDgievkv
-	1cPE=
-X-Google-Smtp-Source: AGHT+IEYXy/KzlV8JcnTJ2uHzZRkWZYy8YkWQJUjryhcEiJKX0XEkypvow3owRnIy6/yfcDhosVCpg==
-X-Received: by 2002:a2e:9804:0:b0:2d2:37d6:350c with SMTP id a4-20020a2e9804000000b002d237d6350cmr1074331ljj.12.1709629559379;
-        Tue, 05 Mar 2024 01:05:59 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id y33-20020a17090a53a400b0029ab5abcbe1sm12329178pjh.20.2024.03.05.01.05.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 01:05:58 -0800 (PST)
-Message-ID: <12c38978-9371-48c0-bc73-aa15f8c462b6@suse.com>
-Date: Tue, 5 Mar 2024 19:35:54 +1030
+	s=arc-20240116; t=1709635634; c=relaxed/simple;
+	bh=UAvw/o5DWI7aRcrPu2A0EsK+imRicMtNovVvt3PK57A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PGQ5KI0xbyBcLpIZ2NjXUroqcnUotc00wwcfXyzPNsvQ6iGsn97fcrRMDaB+IysnTF0/aZSG0qn89UsndU9PCfpM00k8VY5SvKbXneNu8x2hM2RqIIFrp4SZW4uAr6lPTF4ChzprrIZQmaCs+iMTDzfHQyPQi+U5nx1cJJ9mKD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S6APm+q4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC8AAC433F1
+	for <linux-btrfs@vger.kernel.org>; Tue,  5 Mar 2024 10:47:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709635633;
+	bh=UAvw/o5DWI7aRcrPu2A0EsK+imRicMtNovVvt3PK57A=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=S6APm+q4fnCFlJUETVVZp0WJgj8hNMCA1bRMw8jlmPmFd6AbHxLh/W4H3ELGXmbxJ
+	 bJipdi3giM7uqDML+1Y2mIMxXYaozSIPcDSm9Exv19uwnuqCL06Gsy39o2ybrRzfQf
+	 kRnWRXC0ntnjA1OoL3F3NZm4yY5RBbpFubKvgLjoj6rJGOha7ob8gcgSCxg+t8TSgs
+	 EEp/0qiqMT7H6RLMjZ7WQyMw/Dbr97a8ETZztE+SJj4+DFkB9zCum29PtO8Ft3EJZQ
+	 y0n3KuLKPwsF8gjLUQ89oUCNPh8YKqdAf/KyaGZeVm+rY+mCfITMxK4EK9mEHbv1fQ
+	 J1G7zXJt6ysMQ==
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a456ab934eeso244088166b.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Mar 2024 02:47:13 -0800 (PST)
+X-Gm-Message-State: AOJu0YwlkLVECVebqZn52WRC1eHTfUmbQLFNIvj7Z68XuqTzdOEZzrQF
+	CnxWjrJ9Af7Q/SNFPxIQvcfExHXf48/JggZDkgwjPIDl2tDQ0qQm9J6+HEpPW/7CP5eBz/ddgIV
+	n4uCL1wRv+KsdVHCLUQrbIHkSygg=
+X-Google-Smtp-Source: AGHT+IFEv02+1oD5gK7pLuiVVQzbCvAd1nyyD6dXT+MRXTkhWNP3JBIMOZre8IwYbNxIN55AzDr/1VfPp3oRNPWs3tg=
+X-Received: by 2002:a17:906:3b17:b0:a45:47c6:84d8 with SMTP id
+ g23-20020a1709063b1700b00a4547c684d8mr3537450ejf.13.1709635632282; Tue, 05
+ Mar 2024 02:47:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: scrub: fix false alerts on zoned device
- scrubing
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: WA AM <waautomata@gmail.com>, stable@vger.kernel.org,
- Naohiro Aota <naohiro.aota@wdc.com>,
- Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-References: <cf93c10bb94755f1bee7e70b333db72ba9f0896b.1709629215.git.wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <cf93c10bb94755f1bee7e70b333db72ba9f0896b.1709629215.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <fb513314c27317128426ab6e84bbb644603e65f5.1709628782.git.jth@kernel.org>
+In-Reply-To: <fb513314c27317128426ab6e84bbb644603e65f5.1709628782.git.jth@kernel.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 5 Mar 2024 10:46:35 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7-GVYr8S1mgim9khOLM7y-6rAhGyj7auEPX_BMUFpHGg@mail.gmail.com>
+Message-ID: <CAL3q7H7-GVYr8S1mgim9khOLM7y-6rAhGyj7auEPX_BMUFpHGg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix memory leak in btrfs_read_folio
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, 
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Please ignore this patch.
+On Tue, Mar 5, 2024 at 8:54=E2=80=AFAM Johannes Thumshirn <jth@kernel.org> =
+wrote:
+>
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>
+> A recent fstests run with enabled kmemleak revealed the following splat:
+>
+>   unreferenced object 0xffff88810276bf80 (size 128):
+>     comm "fssum", pid 2428, jiffies 4294909974
+>     hex dump (first 32 bytes):
+>       80 bf 76 02 81 88 ff ff 00 00 00 00 00 00 00 00  ..v.............
+>       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     backtrace (crc 1d0b936a):
+>       [<000000000fe42cf8>] kmem_cache_alloc+0x196/0x310
+>       [<00000000adb72ffd>] alloc_extent_map+0x15/0x40
+>       [<000000008d9259d5>] btrfs_get_extent+0xa3/0x8e0
+>       [<0000000015a05e9a>] btrfs_do_readpage+0x1a5/0x730
+>       [<0000000060fddacb>] btrfs_read_folio+0x77/0x90
+>       [<00000000509dda36>] filemap_read_folio+0x24/0x1e0
+>       [<00000000dee3c1b4>] do_read_cache_folio+0x79/0x2c0
+>       [<00000000bf294762>] read_cache_page+0x14/0x40
+>       [<0000000048653172>] page_get_link+0x25/0xe0
+>       [<0000000094b5d096>] vfs_readlink+0x86/0xf0
+>       [<00000000698ab966>] do_readlinkat+0x97/0xf0
+>       [<00000000a55a2b4c>] __x64_sys_readlink+0x19/0x20
+>       [<000000006e1b608e>] do_syscall_64+0x77/0x150
+>       [<000000008fcc6e49>] entry_SYSCALL_64_afer_hwframe+0x6e/0x76
+>
+> This leaked object is the 'em_cached' extent map, which will not be freed
+> when btrfs_read_folio() finishes if it is set.
 
-Johannes sent out his version before me and it's all my bad I didn't 
-check the ML before sending out my version.
+Ok, so this fixes "btrfs: pass a valid extent map cache pointer to
+__get_extent_map()".
 
-Sorry for the noise.
-
-Thanks,
-Qu
-
-在 2024/3/5 19:31, Qu Wenruo 写道:
-> [BUG]
-> When using zoned devices (zbc), scrub would always report super block
-> errors like the following:
-> 
->    # btrfs scrub start -fB /mnt/btrfs/
->    Starting scrub on devid 1
->    scrub done for b7b5c759-1baa-4561-a0ca-b8d0babcde56
->    Scrub started:    Tue Mar  5 12:49:14 2024
->    Status:           finished
->    Duration:         0:00:00
->    Total to scrub:   288.00KiB
->    Rate:             288.00KiB/s
->    Error summary:    super=2
->      Corrected:      0
->      Uncorrectable:  0
->      Unverified:     0
-> 
-> [CAUSE]
-> Since the very beginning of scrub, we always go with btrfs_sb_offset()
-> to grab the super blocks.
-> This is fine for regular btrfs filesystems, but for zoned btrfs, super
-> blocks are stored in dedicated zones with a ring buffer like structure.
-> 
-> This means the old btrfs_sb_offset() is not able to give the correct
-> bytenr for us to grabbing the super blocks, thus except the primary
-> super block, the rest would be garbage and cause the above false alerts.
-> 
-> [FIX]
-> Instead of btrfs_sb_offset(), go with btrfs_sb_log_location() which is
-> zoned friendly, to grab the correct super block location.
-> 
-> This would introduce new error patterns, as btrfs_sb_log_location() can
-> fail with extra errors.
-> 
-> Here for -ENOENT we just end the scrub as there are no more super
-> blocks.
-> For other errors, we record it as a super block error and exit.
-> 
-> Reported-by: WA AM <waautomata@gmail.com>
-> Link: https://lore.kernel.org/all/CANU2Z0EvUzfYxczLgGUiREoMndE9WdQnbaawV5Fv5gNXptPUKw@mail.gmail.com/
-> CC: stable@vger.kernel.org # 5.15+
-> Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>
-> Signed-off-by: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->   fs/btrfs/scrub.c | 13 +++++++++++--
->   1 file changed, 11 insertions(+), 2 deletions(-)
-> ---
-> Changelog:
-> v2:
-> - Use READ to replace the number 0
-> - Continue checking the next super block if we hit a non-ENOENT error
-> 
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index c4bd0e60db59..201b547aac4c 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -2788,7 +2788,6 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
->   					   struct btrfs_device *scrub_dev)
->   {
->   	int	i;
-> -	u64	bytenr;
->   	u64	gen;
->   	int ret = 0;
->   	struct page *page;
-> @@ -2812,7 +2811,17 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
->   		gen = btrfs_get_last_trans_committed(fs_info);
->   
->   	for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
-> -		bytenr = btrfs_sb_offset(i);
-> +		u64 bytenr;
-> +
-> +		ret = btrfs_sb_log_location(scrub_dev, i, READ, &bytenr);
-> +		if (ret == -ENOENT)
-> +			break;
-> +		if (ret < 0) {
-> +			spin_lock(&sctx->stat_lock);
-> +			sctx->stat.super_errors++;
-> +			spin_unlock(&sctx->stat_lock);
-> +			continue;
-> +		}
->   		if (bytenr + BTRFS_SUPER_INFO_SIZE >
->   		    scrub_dev->commit_total_bytes)
->   			break;
+>  fs/btrfs/extent_io.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 65e4c8fc89b1..832be9030aa1 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -1162,6 +1162,8 @@ int btrfs_read_folio(struct file *file, struct foli=
+o *folio)
+>         btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
+>
+>         ret =3D btrfs_do_readpage(page, &em_cached, &bio_ctrl, NULL);
+> +       if (em_cached)
+> +               free_extent_map(em_cached);
+
+There's no need for the if not-NULL check.
+Like most freeing functions in the kernel (kfree, kvfree, most of
+btrfs' own) and user space, free_extent_map() ignores a NULL pointer.
+
+Otherwise it looks good.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+>         /*
+>          * If btrfs_do_readpage() failed we will want to submit the assem=
+bled
+>          * bio to do the cleanup.
+> --
+> 2.35.3
+>
+>
 
