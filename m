@@ -1,278 +1,226 @@
-Return-Path: <linux-btrfs+bounces-3060-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3061-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1754A874EAB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Mar 2024 13:12:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0674A874F0D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Mar 2024 13:30:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FED61C20CB8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Mar 2024 12:12:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA216B20D2B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Mar 2024 12:30:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E060612A15C;
-	Thu,  7 Mar 2024 12:12:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0370112B148;
+	Thu,  7 Mar 2024 12:30:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ECltKrmq"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="KD3/7lST";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="JPKRFcbr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71531129A8C
-	for <linux-btrfs@vger.kernel.org>; Thu,  7 Mar 2024 12:12:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709813554; cv=none; b=LOEf/AWPTjjDJ+TMJS2GHhfSL7YacRUT2XQz4zc+wcnRZaiB1Hf/b4J6OsTzViHE8WKW74n7ye8qIF1G/q4Rroy2mgRvsyMJ0ivZ+cz3DNnulJTt0x2tD4eosXUjIO5i61pmFsks9Lk44CMzjl1kcLLT54A5QAv324A8agacdVc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709813554; c=relaxed/simple;
-	bh=WGaqhP6DT8CDzb+ZhZnIghrvJqWi8uEbanrv8ljKi5w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ye8lIKYRkI7tp39FeS2icqKMNTN7jEdLFyElazPWViyBPsk5M6oKJ/sQMX2YmpxKPpP9hYYJrnUCBC+5T8qnTGfxWc/ZTz7n/42oSOTPAucRRF0KHo1oSiT9UWkmISzC0wveF2d7xRaXMlph4VBaZLa2VUNw01Xj0rbdqNRpbE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ECltKrmq; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6098bf69909so7156537b3.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 07 Mar 2024 04:12:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E0812A17B;
+	Thu,  7 Mar 2024 12:30:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709814606; cv=fail; b=Ru7Z8nqLrKhqCrOLoMfouA60/pPu3zMk7S2fpEJxWIOjJDtB7FbOvPln51Qdz7TnoYl3+nbip7XM2JeYzK1UkkCmr2LFL8IcSkMrt2XmVmMX0zh1TwOsVXv/69O6TK56W9a7H2K0QqbXZ4PE6NYi1ZEZq1TViZFMPKZ6oCYCJss=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709814606; c=relaxed/simple;
+	bh=WW2Z35UiXvP9IZDsQJc8AgUsn22J+KFZWMwiUJ9HGmo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=sJ1rnGqTX/IVqyzfekZP9Omd2pkwm9SD9mt6nOMcgu+Twdiq2/N1r8tGLMN7pylSz4yEtaMxdTAMhEP6P+JYyAYIdmQDmv25Y6QqFU+rQyiLAOs6OEV9LbVfClsNt22140l5vlT3huDt4t1w9C2HyCIiXUbkYgEIpT/KenshY3w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=KD3/7lST; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=JPKRFcbr; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4279nTJ5019333;
+	Thu, 7 Mar 2024 12:30:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=pnZIRSi+3oFdIABX9Snx66QFJEPleMmghS3D15Mteh0=;
+ b=KD3/7lST2hSMhUvg2FH/DW1sNQA+aXL8rlEnX2Aklmvw1Y38pTsps7nGMvvSsN19XH+S
+ hD/NfeVGh3IlJuSo2OFggeEmXV/appB0wQhPD48vNlTbb4mxFji2PN4HrXJHkPXNPKIP
+ Rr5Nef/whYrexKkHqi4fmhhiYX0rtfATz01TC0Op96YTHZrbUVB4mfJqJ52Z/YRXA5UV
+ X8BYkU/N4qCPEBS9tGlg3f3++M7+NuCjCdPrtenB9NsNe9CCQX0W6WE/Wj0srAuNpCLG
+ giRhQnOF2GdyqitVB8jtslDJI1By5Zzm2gMlqjzO0WGL9c20DPGg7lwMF/kXnQ1QDNc/ 8Q== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wkv5dkyk3-15
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 07 Mar 2024 12:30:01 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 427B8aF8016033;
+	Thu, 7 Mar 2024 12:28:09 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wktjb5rp2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 07 Mar 2024 12:28:09 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OQD1LzRjewjBmqLJljIk75G5VfWjaT0Be6Fi83CdHi0IhH3/nx/ZsY7oh4c2Z42uPCS7ppMM9fpemkm0UFJqBLw3BHISd3qeaIZ0PCff9TkSZja/g9LxSwb+r/EGLPOf2Of+Zdt1ABaX01xwItGweoM9MsCOOis5KtJ3gC/IHXvQsnpc8cPgB364Cx1uFHLbnbSgIeQ43VPFNxemVrp/OjsSXTSl6aWheO3msJv+YKsfXKR7C9xr+GU5n/2J1CwKwb2nN0iZojRiKTbqzKSKnVPHQAh0o/opjGJcjKaLBAo4WpSPbQxdZQI8vY42PiglZ8/5rZUF/C1wMd8qX4RVrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pnZIRSi+3oFdIABX9Snx66QFJEPleMmghS3D15Mteh0=;
+ b=TAFTMtZZAIGNCw1b0K85HxS4i1g+KHD47///9gMr64LFkwgxl2OnXKBJcxzmdiBzypCjUKo1hK4OopPXs/ftDijEnGQYFFQKyObEYDBWR1xoqqxp0rQQIso3NvyeGglQSBitwWK/xLFy8iDYXd3EPS6nkwOL5GDKR0/ymlak3mSJi31ShGnDSEznOoY4bOyieloO3OX63X6dkb1E9BuUKn8k0eOgwC+Uh57jNKZSTdr4Gb6974SSNRvjvJxK2cW8sxXqbLyO4WQqgJ0u50rR7KWXZ/gs6cNkFPO55s6hFhcH6JJNX0S+UaxtTmpfPaMpecmAoUB10m5YMPOUxTb5HA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709813550; x=1710418350; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jFRhgMQpI32YCjYYqDof0+4B5eIcITmJVsFr0lF3iHo=;
-        b=ECltKrmqBZWp5+UGEMnGskMkm+RCOSEs9iCs1AK5UUElRkoDetDwWYjuBwERyLA8YV
-         nEWdT6a+uA6J/pt3e1QYgegTJb2xnf86dM6FQinIlZs6xy+7XN9XvHqcAAHEHB6t7t3N
-         bAMf6dm39/srn4aeMQcjzcu5sSNA2TjLl32QCwmLwJgarNDc15I6jOUdHyrehbZZIuwJ
-         qer1KXazZdwu7BKlJBnMt58mkH4zKLxXHqo8DNfUTfTv2dbPXG8sFqg5Qfz5kbCxNxvi
-         LLHfY8lrMikslqMsjCgRv/xY3zr1wHuDQdPMAAoizQ4dCuVW4Hc53rgzphFQ+Mlgt1cR
-         QaPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709813550; x=1710418350;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jFRhgMQpI32YCjYYqDof0+4B5eIcITmJVsFr0lF3iHo=;
-        b=pNMsUzHp8QEDCltL1ComI41erg49SwQEbHlvXzhHKQIQHLaISXd16JuYKC9XIjOOyz
-         V5oWrh9NE67zuxIRHWJepQCFKS8rLgZJi0YLtuTtLDW6CwgvsikYiExe2JoU1/9rupxp
-         9hMi5NL/6pRgDZEYKDxm2tnn2TxcePVzc/Bu71x0IPQShu/eD8hJRSZjmG/Uog7E8qyC
-         FcHdvQJlumotylfK/bHlh3Rxw12yXiiS/GEaCN27DNaLevsenVu1zro5+H+o3yKme6Af
-         ULkpe2JJiqjd0lLx/cMX78qeZy0SJMySqVUM+SEpWmtJTtpBhKiHiepJt+hJd653VGD8
-         ErLg==
-X-Gm-Message-State: AOJu0YxiGYudG+/daCQBc6G1PSOHDeB8u+dYDrq4s0KHxKG3x89al2cF
-	mXGAuMXbXsCgab3PZajw9EBjmednPfqVOpIkaSGNng+2ZYkPJh6fAOVkT/4YlHKeN/TwD+dHRX6
-	n6mhuj+tdMzx5Mpp7d6iC16FH2e4=
-X-Google-Smtp-Source: AGHT+IFObyk65glHafq16ne/3cOwqzPsifUKSUTjhZZ5iBii0FtcHXJV5WLZ1u2LBYLRb1sPxq+RZ4gpKlRC61okk7I=
-X-Received: by 2002:a0d:d8cd:0:b0:609:b1ec:3ffb with SMTP id
- a196-20020a0dd8cd000000b00609b1ec3ffbmr716666ywe.6.1709813550248; Thu, 07 Mar
- 2024 04:12:30 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pnZIRSi+3oFdIABX9Snx66QFJEPleMmghS3D15Mteh0=;
+ b=JPKRFcbrWQgTRAc8p20XGdwRLFzoETMxjawR92WMx35Rav/empBLOpfICfsMcb5Ps6KhixZZpO2FqapL5xusszJHB8CJyzexkPUsqRFbT0J8B1cmjjNYU3jnGgWjAh0+ITJiEdJ3DE1vgXZJfjjYPz7/902uC3v+zZCtx686u/Y=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by DM4PR10MB6719.namprd10.prod.outlook.com (2603:10b6:8:111::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Thu, 7 Mar
+ 2024 12:28:07 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::814:3d5c:443b:17b%7]) with mapi id 15.20.7362.024; Thu, 7 Mar 2024
+ 12:28:07 +0000
+Message-ID: <7c26f258-f110-4997-b809-c5f239ed0db0@oracle.com>
+Date: Thu, 7 Mar 2024 17:58:00 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/8] Btrfs fstests fixups
+Content-Language: en-US
+To: David Sterba <dsterba@suse.com>, fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+References: <cover.1709664047.git.dsterba@suse.com>
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <cover.1709664047.git.dsterba@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA0PR01CA0003.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:80::16) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <65a11e853a31b18b620f31cbbddf03e277fe3edf.1709809171.git.anand.jain@oracle.com>
-In-Reply-To: <65a11e853a31b18b620f31cbbddf03e277fe3edf.1709809171.git.anand.jain@oracle.com>
-From: Alex Romosan <aromosan@gmail.com>
-Date: Thu, 7 Mar 2024 13:12:18 +0100
-Message-ID: <CAKLYge+crQ73TJMvd6k2YtLSnT8rQ44AYb5q1HCkL4GB+gb4Xg@mail.gmail.com>
-Subject: Re: [PATCH v4 RFC] btrfs: do not skip re-registration for the mounted device
-To: Anand Jain <anand.jain@oracle.com>
-Cc: linux-btrfs@vger.kernel.org, CHECK_1234543212345@protonmail.com, 
-	David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DM4PR10MB6719:EE_
+X-MS-Office365-Filtering-Correlation-Id: d19e7da9-2853-4b95-49f7-08dc3ea20afb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	Cn3GAaclEM9rLCb0KB2BR/6pq4GoAw4VI7zEKRikeT6tQciBwROoLVKzU4cYtowjc8u88iQJepSbZT7oAMBxO9vakM0WOPtXxbwES/vBZ8FNxkKjVTK2Qg2SiiIzZVJlK6hmbpadvrufuYsFalWkVvxon7F2B7i68tEkQtoARz8kA0U9kSvWPn9zLE+I6Y3cOt4V/z/1aW1gT0RV863V6rbuWrUrN6UBHg283+nfLPV1HKfyPydyuCuzogT1bHSqUTp+veONYD6V+/53YzJwOnn2dotPlwbFK0zOODTo8CP1Xp9KoVxZtPbyTj1uWtKTK0zUaFv1VjWsHYco2+OAXea2780jO/5tgMepIrimgwRGI2MPHN3AKzG5ib5rGAcls3o7QznEI1RrYNDp2kridKEwgDojCJGVuvp5SR83Z+27uRj+Bl94HgKU1uYNxzzZItBJ1zL4tL5jrC6y9hndZnlFPxJZkQtWcbhpKoACYDDXS+lELHpS7Thc7IZ/MArskDp8m02+xz1NarRt+dliobrgydK4rjpv3RvB2AXFzq7G+5PacdG0XHcxnLBCHSy/2d9xqVRW+Bm9HxRWQ37j+MmRlLLZv+f91k2yuZjCdPAFJM2GI0/3DZfjf1/fLaseLLakyN4OoLk3WVKwmeFt33sNu8VnRsRU9xRM+hIMMgA=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?U3hRUnhmZmhBa3MvSWJIR0pUUjZQZUhGSDByUHd3L1JIWXpEbzc3MldEbEw5?=
+ =?utf-8?B?L1hBcGlYWWZ6SzlRR2hzMkJNOUdvR1BNbGdCWW5Bck84aXBCQ2RIZmZtcTJX?=
+ =?utf-8?B?L1BxOWVSeHN4d3FIRWo2U3ZsZ1E2Q3VaUURQZVUzZU53d2ZTYmhsclI2OXRG?=
+ =?utf-8?B?ZHhjSzRVYXluSk9leTVNTHloaDZBQkJjWW8vN1VvQXdJUHg3NkkwYkI5NVJa?=
+ =?utf-8?B?anhuZlFMaFk3emRNd3VpVSt6c0gyUWFyZmZmMlNTK01OcDhKeWdJb3RaTmZJ?=
+ =?utf-8?B?U1hxVlptY1hDNFo3QUw5aEdGRVJEWUU1c3NjU0xkU0ZXMEkrUmY1NTFEZGV3?=
+ =?utf-8?B?a1hHUUhQZkxjMXZoUmp4UUE3UFRVQzVxNVV3WjVlRmZISTBQT0JVdXozUnJQ?=
+ =?utf-8?B?aUJSNngwcTl3TVBpR08wQlF5Z2NkUURhTUNhNXpWNjljVWhmRDRkM29kU3pQ?=
+ =?utf-8?B?eE5jL2VtT1ZVZkorcTgxRUtrVXkzSllzVndVNm9LMlU1WTJtSU5hVWt1MXdw?=
+ =?utf-8?B?VFI4N2RkUlpNaXhiRGpUVGJZYjdiZ0dyRGs0UnpOdG5xRHJVY0QrdEkvZWZv?=
+ =?utf-8?B?NmFSemk0eDd2WlFPRkl3WXFINGJkdHJWM3FlbkhGWWtFdHFYMGxhZWwrOUs5?=
+ =?utf-8?B?VnBLSTZaNXNOK1FCdDhNVWFWVkJjUGdNOUIvOUsxLzBYVFRWT05ieHNldnZN?=
+ =?utf-8?B?MEUxdVhkUGlJN0dMRCs4QXExS0dJcktxMHNEeHVJY3M4a0tCVi9CbzVuaklm?=
+ =?utf-8?B?aUxtdUVjSGRiRzdVMEt0QnBNelo0aW5OdFdiYytheUFtWFFsTml5S1pkejRa?=
+ =?utf-8?B?VVpxTlplRGM0am5hNVRlWTkvY0d0ODJCS2RlMjdLd1FEWG44eFYxZmdLZ1lx?=
+ =?utf-8?B?OU8wTU15UlFuL2JnbnZpN3lCdDJybFFyNnhyWmh6c0ZlTGQwaHRKYzYwQVJh?=
+ =?utf-8?B?Mk5HMjZFbk55K3JFK2RibXJGNmM0WGhOaFh3VWozMW9hWEYxbmwydy91akdS?=
+ =?utf-8?B?S3ZOc0xZemd0UGlOMkpwbzVWcVlkVG5SY0RrTDFVSGprb3MreDB1cXZnaU85?=
+ =?utf-8?B?d282d1BXQ1JQb0tySEg2Y29QeWx3MkE4eFlHeTZmL2ZFMHhrazBTSE5PUy9t?=
+ =?utf-8?B?ck14VTVmaDFoQVBQalB0dUhyRUhkQXNUZnlnVDJobGphaEZnZ3hjK25WL2t5?=
+ =?utf-8?B?bFF4RUZEdDhZekZ0dSsxNEh6YURRbS9wSkpBTW5jOFdFbWlvemFHUWJRTU1E?=
+ =?utf-8?B?YTBHUCtmYUM3bTVqUVRlZ3ZidU1QcDk1SVoxNmJJWnVHQjMxUUZlQzRhWXJC?=
+ =?utf-8?B?NCt4WUV0TGt4WS9oK3ptcGdRVE9HTzRtemliOVBXYm1ScExUQk9LTUs4aGh6?=
+ =?utf-8?B?OTNDQktSVDlVSE1YRGNPei9PTmxSMDZFQ3J4b3FtakdMS29xN0NVN3pBSG1V?=
+ =?utf-8?B?NWtPSHFmZWFnUEhVVWtiQ2RFSXF6aTlWVHdDUW14WHY2S1JBVHdsK3dzRTlB?=
+ =?utf-8?B?TXBwcUtYNlYyNG1DNnp2eHZPeW5vNXhoUGVWVE4rbCtvL3hBTGhCbmMwMi9O?=
+ =?utf-8?B?NWQvY3g1b2ZWVmx5MEJYQyt0dUxkUG5XYldoVUxndldRbkJaWFdFYSs2UG9P?=
+ =?utf-8?B?cmRKUnoxQTA0bHFscFptY25qd0xMbTdkbEtsS01EYi9XcDdhdTRvOU01dEdy?=
+ =?utf-8?B?VHB6dGRpYjdSQm9reFNWTTVVbXBhOXd1Qk1sR0VlRlN5dkNKTjhXOEJuam5r?=
+ =?utf-8?B?UDVFalg4VEtxQVFGNHR2dzZkVUcyYklxaW5IbkRySCtxdTYwc0hyM1p2eVVB?=
+ =?utf-8?B?dXhqYnBRcXRwS1VsRXJsQ1pSdG5tN2xkaWxmdVZQUk5OdmtVbEFmbXB2ZkNa?=
+ =?utf-8?B?RDFIdExhV0ppeGp1dHMwSzBHQVAzUFhwdW9BOEVpbnBUWEN4NURYdWtNdFpP?=
+ =?utf-8?B?Z2dQMnJTSUFaQzVqcXQ0SjRSYnR4RHcrZHhsOHorNnp0ajRjUWJFUjlZaWxL?=
+ =?utf-8?B?V1J0K1AxWHplZXl0SGV1YkttdkdpT2RMeDNTcVdZYWpuWFJFc2E1RlZySk5O?=
+ =?utf-8?B?V2ZsRUZuL1lydFlPMkRucHFQOG5MTFY1eWZ1K2xJb0dvUzhlNGYyQUxNaEla?=
+ =?utf-8?Q?fpmVEeTwNzJupgJbgaMZLTf+u?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	shpo8iURG/ulrNXRglbWK95ZPJuHo+6SMy5p8ZNny204avQuHrF+L20j/4tZFUaMknQbG1CjeNDX5nYfmxRn0a4VGW3/NqnHo1dRvkoKNLrP4ZSBqREHropvVo78eABXmopDolPUuj/xECbYU7iKTIZzdEposY2QP8vq+B8+2siKjAQdFfwwvhOEy+F7G+S2OzCnW8Y7Oi/lSKWwtpvpfqKdZ11YTXvWjOMAlWOhzumJTpGZjIcEJBxeVE8GuIUUisPmgdF5oJ9rBPFQb6rQH3hF5PP0e2ru8v/VF+W8JhDgdVEeHTNyEFTYNXXcFhvxOyQGZ+TU5FBpzh5BGNe2NTB/HjCc3P23h45p+2Bq3vE4W+gsA4glsG6hMUq8Ztlh4CM/C+yBGAMygvDWHJhhLXBhcJNtJ6ENFdkSXRsCjE4lWc7wVcarGoBNi5RYo8PySlOgDgDzQbaxWzv7U22RiUtqzaFbTwQXXjlpC56ZZICG2MVWlycMw/MHOpsCBqAW1de/VDq4CyDAjGMzAeIxEKmNab5KPcqxW4o9hWq/822TYH01cTPSO1o7LS8n9mQV1Y4P4bz/rA4zkFoW9R8LIlFH9fcIk3GD7WnuIWq58NA=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d19e7da9-2853-4b95-49f7-08dc3ea20afb
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 12:28:07.3021
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RitTkyOMKIa8TlccfBICp5mm9WzeKHJE0sbOw11Qex9DtK5BtD7VxIObM6DvaGFd3g1iveXd+IZi+JpE6yp0+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6719
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403070087
+X-Proofpoint-GUID: IDPYH-NRlKuPwSwDM6TodyhK9fNX5BUr
+X-Proofpoint-ORIG-GUID: IDPYH-NRlKuPwSwDM6TodyhK9fNX5BUr
 
-finally sorted out the spaces vs tabs problem. compared the latest
-patch to the original one i've been applying since and they are
-identical so everything works fine. i thought at some point there was
-an add on patch from david sterba but maybe i'm wrong. thanks.
 
-On Thu, Mar 7, 2024 at 12:08=E2=80=AFPM Anand Jain <anand.jain@oracle.com> =
-wrote:
->
-> There are reports that since version 6.7 update-grub fails to find the
-> device of the root on systems without initrd and on a single device.
->
-> This looks like the device name changed in the output of
-> /proc/self/mountinfo:
->
-> 6.5-rc5 working
->
->   18 1 0:16 / / rw,noatime - btrfs /dev/sda8 ...
->
-> 6.7 not working:
->
->   17 1 0:15 / / rw,noatime - btrfs /dev/root ...
->
-> and "update-grub" shows this error:
->
->   /usr/sbin/grub-probe: error: cannot find a device for / (is /dev mounte=
-d?)
->
-> This looks like it's related to the device name, but grub-probe
-> recognizes the "/dev/root" path and tries to find the underlying device.
-> However there's a special case for some filesystems, for btrfs in
-> particular.
->
-> The generic root device detection heuristic is not done and it all
-> relies on reading the device infos by a btrfs specific ioctl. This ioctl
-> returns the device name as it was saved at the time of device scan (in
-> this case it's /dev/root).
->
-> The change in 6.7 for temp_fsid to allow several single device
-> filesystem to exist with the same fsid (and transparently generate a new
-> UUID at mount time) was to skip caching/registering such devices.
->
-> This also skipped mounted device. One step of scanning is to check if
-> the device name hasn't changed, and if yes then update the cached value.
->
-> This broke the grub-probe as it always read the device /dev/root and
-> couldn't find it in the system. A temporary workaround is to create a
-> symlink but this does not survive reboot.
->
-> The right fix is to allow updating the device path of a mounted
-> filesystem even if this is a single device one.
->
-> In the fix, check if the device's major:minor number matches with the
-> cached device. If they do, then we can allow the scan to happen so that
-> device_list_add() can take care of updating the device path. The file
-> descriptor remains unchanged.
->
-> This does not affect the temp_fsid feature, the UUID of the mounted
-> filesystem remains the same and the matching is based on device major:min=
-or
-> which is unique per mounted filesystem.
->
-> This covers the path when the device (that exists for all mounted
-> devices) name changes, updating /dev/root to /dev/sdx. Any other single
-> device with filesystem and is not mounted is still skipped.
->
-> Note that if a system is booted and initial mount is done on the
-> /dev/root device, this will be the cached name of the device. Only after
-> the command "btrfs device scan" it will change as it triggers the
-> rename.
->
-> The fix was verified by users whose systems were affected.
->
-> Fixes: bc27d6f0aa0e ("btrfs: scan but don't register device on single dev=
-ice filesystem")
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D218353
-> Link: https://lore.kernel.org/lkml/CAKLYgeJ1tUuqLcsquwuFqjDXPSJpEiokrWK2g=
-isPKDZLs8Y2TQ@mail.gmail.com/
-> Tested-by: Alex Romosan <aromosan@gmail.com>
-> Tested-by: CHECK_1234543212345@protonmail.com
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> v4:
-> I removed CC: stable@vger.kernel.org # 6.7+ as this is still in the RFC s=
-tage.
-> I need this patch verified by the bug filer.
-> Use devt from bdev->bd_dev
-> Rebased on mainline kernel.org master branch
->
-> v3:
-> https://lore.kernel.org/linux-btrfs/e2add8d54fbbd813305ba014c11d21d297ad8=
-7d0.1709782041.git.anand.jain@oracle.com/T/#u
->
->  fs/btrfs/volumes.c | 57 ++++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 47 insertions(+), 10 deletions(-)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index d67785be2c77..75bfef1b973b 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1301,6 +1301,47 @@ int btrfs_forget_devices(dev_t devt)
->         return ret;
->  }
->
-> +static bool btrfs_skip_registration(struct btrfs_super_block *disk_super=
-,
-> +                                   const char *path, dev_t devt,
-> +                                   bool mount_arg_dev)
-> +{
-> +       struct btrfs_fs_devices *fs_devices;
-> +
-> +       /*
-> +        * Do not skip device registration for mounted devices with match=
-ing
-> +        * maj:min but different paths. Booting without initrd relies on
-> +        * /dev/root initially, later replaced with the actual root devic=
-e.
-> +        * A successful scan ensures update-grub selects the correct devi=
-ce.
-> +        */
-> +       list_for_each_entry(fs_devices, &fs_uuids, fs_list) {
-> +               struct btrfs_device *device;
-> +
-> +               mutex_lock(&fs_devices->device_list_mutex);
-> +
-> +               if (!fs_devices->opened) {
-> +                       mutex_unlock(&fs_devices->device_list_mutex);
-> +                       continue;
-> +               }
-> +
-> +               list_for_each_entry(device, &fs_devices->devices, dev_lis=
-t) {
-> +                       if ((device->devt =3D=3D devt) &&
-> +                           strcmp(device->name->str, path)) {
-> +                               mutex_unlock(&fs_devices->device_list_mut=
-ex);
-> +
-> +                               /* Do not skip registration */
-> +                               return false;
-> +                       }
-> +               }
-> +               mutex_unlock(&fs_devices->device_list_mutex);
-> +       }
-> +
-> +       if (!mount_arg_dev && btrfs_super_num_devices(disk_super) =3D=3D =
-1 &&
-> +           !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING))
-> +               return true;
-> +
-> +       return false;
-> +}
-> +
->  /*
->   * Look for a btrfs signature on a device. This may be called out of the=
- mount path
->   * and we are not allowed to call set_blocksize during the scan. The sup=
-erblock
-> @@ -1357,18 +1398,14 @@ struct btrfs_device *btrfs_scan_one_device(const =
-char *path, blk_mode_t flags,
->                 goto error_bdev_put;
->         }
->
-> -       if (!mount_arg_dev && btrfs_super_num_devices(disk_super) =3D=3D =
-1 &&
-> -           !(btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_SEEDING)) =
-{
-> -               dev_t devt;
-> +       if (btrfs_skip_registration(disk_super, path, bdev_handle->bdev->=
-bd_dev,
-> +                                   mount_arg_dev)) {
-> +               pr_debug("BTRFS: skip registering single non-seed device =
-%s (%d:%d)\n",
-> +                         path, MAJOR(bdev_handle->bdev->bd_dev),
-> +                         MINOR(bdev_handle->bdev->bd_dev));
->
-> -               ret =3D lookup_bdev(path, &devt);
-> -               if (ret)
-> -                       btrfs_warn(NULL, "lookup bdev failed for path %s:=
- %d",
-> -                                  path, ret);
-> -               else
-> -                       btrfs_free_stale_devices(devt, NULL);
-> +               btrfs_free_stale_devices(bdev_handle->bdev->bd_dev, NULL)=
-;
->
-> -               pr_debug("BTRFS: skip registering single non-seed device =
-%s\n", path);
->                 device =3D NULL;
->                 goto free_disk_super;
->         }
-> --
-> 2.38.1
->
+Looks good.
+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+
+for the whole series.
+
+Staged for the PR
+
+Thanks, Anand
+
+On 3/6/24 00:21, David Sterba wrote:
+> Hi,
+> 
+> I'm sending first batch of fixups on behalf of Josef.  I think most of
+> them have been sent to fstests@ at some point.  They have been in our CI
+> branch and consider them tested and working for our needs. All of them
+> are btrfs-specific and will not affect other filesystems.  (The change
+> in common/rc only moves a helper.) The last patch is a new test split
+> from another one.
+> 
+> Josef Bacik (8):
+>    btrfs/011: increase the runtime for replace cancel
+>    btrfs/012: adjust how we populate the fs to convert
+>    btrfs/131: don't run with subpage blocksizes
+>    btrfs/213: make the test more reliable
+>    btrfs/271: adjust failure condition
+>    btrfs/287,btrfs/293: filter all btrfs subvolume delete calls
+>    btrfs/291: remove image file after teardown
+>    btrfs/400: test normal qgroup operations in a compress friendly way
+> 
+>   check               |   6 ---
+>   common/rc           |   5 +++
+>   tests/btrfs/011     |   9 +++-
+>   tests/btrfs/012     |  14 +++---
+>   tests/btrfs/022     |  86 ++---------------------------------
+>   tests/btrfs/131     |   4 ++
+>   tests/btrfs/213     |  20 ++++-----
+>   tests/btrfs/271     |  11 ++---
+>   tests/btrfs/287     |   4 +-
+>   tests/btrfs/287.out |   2 +-
+>   tests/btrfs/291     |   2 +-
+>   tests/btrfs/293     |   6 +--
+>   tests/btrfs/293.out |   4 +-
+>   tests/btrfs/400     | 107 ++++++++++++++++++++++++++++++++++++++++++++
+>   tests/btrfs/400.out |   2 +
+>   15 files changed, 161 insertions(+), 121 deletions(-)
+>   create mode 100755 tests/btrfs/400
+>   create mode 100644 tests/btrfs/400.out
+> 
+
 
