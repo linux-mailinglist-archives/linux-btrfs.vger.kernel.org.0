@@ -1,69 +1,87 @@
-Return-Path: <linux-btrfs+bounces-3136-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3138-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFDF1876C7F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 22:46:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDCDE876C91
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 22:57:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBA28B2197A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 21:46:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1D4AB21965
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 21:57:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A145FB8F;
-	Fri,  8 Mar 2024 21:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24A55FB90;
+	Fri,  8 Mar 2024 21:57:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q3157iZM"
+	dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b="cW5xr0+t"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from mta-p5.oit.umn.edu (mta-p5.oit.umn.edu [134.84.196.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD82A5D746
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 21:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.84.196.205
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709935061; cv=none; b=cU3tar/Zpp+mxuL/FwDYtzVaddCk/v2u4xbX4G9IUfM3S+4RruM+AAzj1ioUUyOVvp3JwEfD4rKmaX8ml2XoCBwhj1jJ6AY8Ak0KpDQygnxAqUT3ybX6BUesnVjOSKkEAX1PIUO13rKT5154wVYtmNj7y72NpmMIiJLGx5P42/E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709935061; c=relaxed/simple;
+	bh=jjNC9p1Nb1Fx7+sBb+DNOZWjZuDNAp4fGVuubePEAkk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Oqf49urPezeeC6bpXftcbynM6vj7DdCLwwjbOAW/OvNZpOTqT6cIyvB49HjTirjtxR//bQ3v+TCGeATQS7/FM3b2dN5pMKNs187IaQgtGPYidLI375uARVXmD/eI1uAae7Aa4G7p2tURHA+JG3PRMEc/yheb9kTzGyfo4n76qjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu; spf=pass smtp.mailfrom=d.umn.edu; dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b=cW5xr0+t; arc=none smtp.client-ip=134.84.196.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=d.umn.edu
+Received: from localhost (unknown [127.0.0.1])
+	by mta-p5.oit.umn.edu (Postfix) with ESMTP id 4Ts0Cr36Qrz9vpvC
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 21:48:24 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p5.oit.umn.edu ([127.0.0.1])
+	by localhost (mta-p5.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id XlTFe_sXiX_Q for <linux-btrfs@vger.kernel.org>;
+	Fri,  8 Mar 2024 15:48:24 -0600 (CST)
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B26965D471
-	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 21:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709934403; cv=none; b=DafxlbtIL0omFcfFeZ/hSu57VKy3LCQrVMqqtq3GsvnlYrMwbygkx8K/tfRvTe3K/R7SVLhi1f6bwfWtQbrQMdI6SHaXsKunsSCnrDxqtSlxGA2Qk6/x+mIgd4IuZBvKuZSzFbWHUEGoq9p16LaVBIBbGk/M2eJi0kJnxZz60Ko=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709934403; c=relaxed/simple;
-	bh=zXTQXzHxnyJpcwa3u17Mqa6kH0jbArdyId7YE1uHggU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nc9uBNBBdPaHZFycBEKckUsWiJ0bfYtXs3lB62EClpgU2dbbQLcazbvqZ4gEoMGexWXdnpH12p3PdezopNPs58fpfE7c39zLBERzYaKEJmaJwqpI0tvE+eAqVZaSDkurqFFsWwcXLTw5SXx8yf+zW0U3eG9kW7uDotPlsLiNrCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q3157iZM; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5683093ffbbso1588054a12.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 08 Mar 2024 13:46:41 -0800 (PST)
+	by mta-p5.oit.umn.edu (Postfix) with ESMTPS id 4Ts0Cr0n1Mz9vpvG
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 15:48:24 -0600 (CST)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p5.oit.umn.edu 4Ts0Cr0n1Mz9vpvG
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p5.oit.umn.edu 4Ts0Cr0n1Mz9vpvG
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5d8df7c5500so1921905a12.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Mar 2024 13:48:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709934400; x=1710539200; darn=vger.kernel.org;
+        d=d.umn.edu; s=google; t=1709934503; x=1710539303; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zXTQXzHxnyJpcwa3u17Mqa6kH0jbArdyId7YE1uHggU=;
-        b=Q3157iZMaW3dNLl14f78lRVUTWWZUSTJY1Q85qMTH+lIfp+0grnEe9zqZK01o20t98
-         9DkVcrF/mBrrK0lKIN0Xrro3wMQz9MjhwUPTEvNuNHDCy24rjGs9hd6yDm8aIZqvutHW
-         omUo3EkP/tgtuAOhOesQjnvr2HufzgScEykAZEJQg1wGwZTP8H8baJ5jH8zjD21nXlRx
-         F12PJ5FtbFTvqI3i5CY8U2aQkememOX2jL2SWqTMI2TSztpSern+4OJCp+O9Fiauhh3j
-         aVjq0oJsgrxfOEbBymvs34iP5TLa8n+GUSX6OJoYERL+WUjE3RZmwT9WXmcRTsw+Hlr6
-         vjnQ==
+        bh=jjNC9p1Nb1Fx7+sBb+DNOZWjZuDNAp4fGVuubePEAkk=;
+        b=cW5xr0+tN+A/WfcPkU1gr/HZi7aWvOf1sYvcgftJ+pB9H8F2SwCra48SZo6/BNQj+c
+         JGwESdIHAlqzP9sXHiuQF7nYmHsRV03w2tyfvUiCyIeo+7s8ZkzPN4ZX7qX9SS7ggqZg
+         JyYUFLfOha1G9gjeLpnTa0SiYj2ENhIxv9RVZocQs8gAiT4CDIFZPAFuWvGNe8uraj/U
+         aZBEE+PVVUzjpsFQ50rda7JHAJVdK7UfxWWwLv2FC81+avCfgNFxxXSAvELHvZg71z7K
+         vkum4pFpvYy11oM9tuCZ8v6ySnyv+EuXGiXaYJHXl7yCIwgO0ZZPl2QRDNR+jpgMXMc2
+         XGVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709934400; x=1710539200;
+        d=1e100.net; s=20230601; t=1709934503; x=1710539303;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zXTQXzHxnyJpcwa3u17Mqa6kH0jbArdyId7YE1uHggU=;
-        b=f8HD6Sf0gQ7by1cfRmQGCThRfuAOl+FCLgqAtsbKdehvz68FyWrof+uJ9LPuZYr0xb
-         BxVr7vVKCL9GR2sdcrIShXjhzLUc6bNnvImfkPZO9YR86L+yf54vMkGzFBNsG/TupyDq
-         vKCGq7F2D6fkDPPDeXGj9YjdJniEI9PqVcomEg7LNHGcb31Sb6zP/WmEG/bW6v77pm2d
-         4pzad1RQgGLtdHW0pe4BBO3oaAwXqNJ6sJai0V4peIebiaZIs0hsNS2MsqyeYHqZfcFQ
-         Gvju3En4BlpA4XQCTo3PHKdPVsy+x86BPkLXx16t9VX58s3sOW25WvM2NHqWPhFonf96
-         iUwA==
-X-Gm-Message-State: AOJu0Yxwwm5gK/657+fiRpNEFp3qDP1h7SODG3qxNlhmo8GbBcV+OvY8
-	jiZDzBnr+rR5CtpLGyscEW4Wi1kp2FYhUHTOlFU+FzpjFFj8Itihkc5CwdZdyxhiNbzq6YsVYpv
-	jBSVVIsWYHkCPH775wVOfRXzZDQA=
-X-Google-Smtp-Source: AGHT+IGquSfkLqkLWP6lXlf1aYlGwCvEI0Z7aczkXO0WOGKvaemN9jRGuRgS2JKVJBbT0uCtWSHUNw77coH3JoRNebo=
-X-Received: by 2002:a50:f61e:0:b0:566:4654:4fac with SMTP id
- c30-20020a50f61e000000b0056646544facmr332284edn.5.1709934399829; Fri, 08 Mar
- 2024 13:46:39 -0800 (PST)
+        bh=jjNC9p1Nb1Fx7+sBb+DNOZWjZuDNAp4fGVuubePEAkk=;
+        b=J4Gn6CRofvhqyr3+Weapco+iOSbZ8pKlma4+WMxDpvTD3rGrD31/oNfofcD4AaL7K9
+         CXhBhm6hDQzENoaHfFqo65sKohuFYZ1V0WyrnCi3cqojK5+/dpOTPMoPO80kq2TSLoZ9
+         ET798igBAPsNeKYJ54jkasH14O3R1SmOBwf0tO5K7lTCcwOO/nyDNPcNtgqC8kY4k+sO
+         hfFbaIyLTqsNy2MTInbh347DJuRuy5QWZliUaVg9O1Nl4Ex5ItcuJo5cf6jXjXfyAuVm
+         wcse0KHOhEwbqPKijhkXH90orK7rpKMdoFuqth5fmd/wo1QtIc2kSLSVRJ5GSaF8N/U6
+         h45Q==
+X-Gm-Message-State: AOJu0YzlhZ/tPoQIuIWrBzu/WUIEhjjAk0vUok+eJqRtWB25NalpkIRq
+	RqvCCYGBIhBtjc1z2qlaqj4+gC7SVb2DV4Z4zw8tUnltdO+wE1NkUNiCAaz4/MU1UaOAQvS9OHe
+	tWwfkgUeJ6mNDczwfFLaW822us4PBOXIA9QCTQp9IGJ+/7cNJoyP2/jDe6RYi1miPQif8fC8jqs
+	pWxltsdlniGEXZpYTTbCbSFUOwX41yxXjbwLut/G+SiwXVUg==
+X-Received: by 2002:a17:90a:f609:b0:29b:b478:b8fd with SMTP id bw9-20020a17090af60900b0029bb478b8fdmr425507pjb.35.1709934503127;
+        Fri, 08 Mar 2024 13:48:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHHLTFsp5ND180v5v/dhJOQooubNrgsDWhSzjzTx0ja1yG5Wrbhw9lhJqyfvcsYSmfU3dLRi93sPtsree0Udp4=
+X-Received: by 2002:a17:90a:f609:b0:29b:b478:b8fd with SMTP id
+ bw9-20020a17090af60900b0029bb478b8fdmr425498pjb.35.1709934502848; Fri, 08 Mar
+ 2024 13:48:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -71,34 +89,44 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
-In-Reply-To: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
-From: Matthew Warren <matthewwarren101010@gmail.com>
-Date: Fri, 8 Mar 2024 16:46:28 -0500
-Message-ID: <CA+H1V9x-pFAM-YQ1ncAqZE4e7j6R2xQXX6Ah9v1tMNf8CrW+yw@mail.gmail.com>
+ <CA+H1V9x-pFAM-YQ1ncAqZE4e7j6R2xQXX6Ah9v1tMNf8CrW+yw@mail.gmail.com>
+In-Reply-To: <CA+H1V9x-pFAM-YQ1ncAqZE4e7j6R2xQXX6Ah9v1tMNf8CrW+yw@mail.gmail.com>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Date: Fri, 8 Mar 2024 15:48:11 -0600
+Message-ID: <CAOLfK3We92ZBrvyvSDky9jrQwJNONeOE9qoaewbFCr02H8PuTw@mail.gmail.com>
 Subject: Re: raid1 root device with efi
-To: Matt Zagrabelny <mzagrabe@d.umn.edu>
+To: Matthew Warren <matthewwarren101010@gmail.com>
 Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 8, 2024 at 3:46=E2=80=AFPM Matt Zagrabelny <mzagrabe@d.umn.edu>=
- wrote:
->
-> Greetings,
->
-> I've read some conflicting info online about the best way to have a
-> raid1 btrfs root device.
->
-> I've got two disks, with identical partitioning and I tried the
-> following scenario (call it scenario 1):
->
-> partition 1: EFI
-> partition 2: btrfs RAID1 (/)
->
-> There are some docs that claim that the above is possible...
+Hi Qu and Matthew,
 
-This is definitely possible. I use it on both my server and desktop with GR=
-UB.
+On Fri, Mar 8, 2024 at 3:46=E2=80=AFPM Matthew Warren
+<matthewwarren101010@gmail.com> wrote:
+>
+> On Fri, Mar 8, 2024 at 3:46=E2=80=AFPM Matt Zagrabelny <mzagrabe@d.umn.ed=
+u> wrote:
+> >
+> > Greetings,
+> >
+> > I've read some conflicting info online about the best way to have a
+> > raid1 btrfs root device.
+> >
+> > I've got two disks, with identical partitioning and I tried the
+> > following scenario (call it scenario 1):
+> >
+> > partition 1: EFI
+> > partition 2: btrfs RAID1 (/)
+> >
+> > There are some docs that claim that the above is possible...
+>
+> This is definitely possible. I use it on both my server and desktop with =
+GRUB.
 
-Matthew Warren
+Are there any docs you follow for this setup?
+
+Thanks for the info!
+
+-m
 
