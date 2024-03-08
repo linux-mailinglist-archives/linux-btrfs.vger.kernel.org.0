@@ -1,53 +1,69 @@
-Return-Path: <linux-btrfs+bounces-3093-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3094-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F4298760F4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 10:30:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13EB2876148
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 10:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3521E282F33
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 09:30:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 920641F23DEB
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 09:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 144E452F89;
-	Fri,  8 Mar 2024 09:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0966535CA;
+	Fri,  8 Mar 2024 09:51:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="U3yh3xm8"
+	dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b="q3Mdw5qk";
+	dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b="g10KV6r+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [213.138.97.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1685535A2
-	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 09:30:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C948535C2
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 09:51:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.138.97.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709890220; cv=none; b=u/TMNkzWr6gOKhbZBDx5++Aj8xiI88sFeieBUDgqqCGg16KDPQjsAfRvIt92NO/4rOCOdmg8Rd+9L/D7n8kbDrBpXd7LXtxZLuuTAtLGCPxpzK82l0Uany/QrnFoVw+D1JSL5+iDlzzJQXNrxeiXQmV2jjFfFKLV03ez8cpjpRM=
+	t=1709891514; cv=none; b=HBrpBnb6r2TwdlIm0zQGqF8R8esYa1V4cVDS6o4N8S4Ks4pgTzmbOyQQvaLtTjmjTo5RGktUlOrIjNRIF29KW1nDJZstutzLlpBqQ2bS6jLH3gZo/susp2vgANlVFcR7syDZ+YbR6umqkPlbCepeDoQXN4OWcNsm2gYkAcuhDL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709890220; c=relaxed/simple;
-	bh=gJ35yz8PrAKZOTNWsPfH4LPdU6b3h9SjCEz8JdDHGZQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E39TjxGE4XYa/6Xb40dKv2bYOjjsOi9e5wckf4eZpAEX/9U1VkKxbacYHohwUar1uryGUAm1LrisQ1VVE67a55EPiXs6mFHkr4+GXf/0f102ndcgwhy/tPI4e3ZMmWDbuyXiPYWfA+rydt9m2pN6lE/NfzOCufsWWwDQjKP0vBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=U3yh3xm8; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1709890208; x=1710495008; i=quwenruo.btrfs@gmx.com;
-	bh=gJ35yz8PrAKZOTNWsPfH4LPdU6b3h9SjCEz8JdDHGZQ=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=U3yh3xm8Ork6Lb835SLYpvoNtPNyODafkIelvDBQiKKRgVe0yyP3C2FSYCl6cHP8
-	 N3mY0PzxuzfwX7iDUo7FUctJZw6ckOKlhGxeuhtRix+qVRhPGt9I7uL41L1PV4XYw
-	 kfpCt9hftXoRxWJd81mFEaw4wBzR5CchhpqN3CS/uu9uNJbJQRKCbzNExQTSh9pX5
-	 USiOHLedznnAHx+WNm7xnG2r31Ij0Xe78QAXUZZbyXono3f9nGFpIQZwHC0aqbJT2
-	 BHB/M4gHVO0d7WXJwbnYm4lpog/7YNijQ53QW3I4qEzrG2P6SW90a4LhAo7RrtV4v
-	 VK9X+O3P5A+rru9ocA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeU0q-1rAICB1bzo-00aZGZ; Fri, 08
- Mar 2024 10:30:07 +0100
-Message-ID: <3d4c4e93-36b7-438d-b1b5-53b561852275@gmx.com>
-Date: Fri, 8 Mar 2024 20:00:03 +1030
+	s=arc-20240116; t=1709891514; c=relaxed/simple;
+	bh=2YcJtj8w4ZcCzjwQy3ZhxICG1eCZZtHdXSDGrLZhT2o=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:References:Cc:
+	 In-Reply-To:Content-Type; b=mG3Ikx1kB0cOzyGUDMj7HLd/HqT6TD8sICtaMpIB0KwrV6WiCrc3z2MbOv0c7q3kkOAJjcky9cQliNtECnwue6NfYQIU/cMUJbsJk/fQiZQAaOVYjyVfP4mUInK6w6vEUXDpBI6ud2cZM2CL+A/+KKFb9j2Af5GtAX5TKyrN3NA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net; spf=pass smtp.mailfrom=cobb.uk.net; dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b=q3Mdw5qk; dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b=g10KV6r+; arc=none smtp.client-ip=213.138.97.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cobb.uk.net
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+	id 9D3849B92F; Fri,  8 Mar 2024 09:45:46 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+	s=201703; t=1709891146;
+	bh=2YcJtj8w4ZcCzjwQy3ZhxICG1eCZZtHdXSDGrLZhT2o=;
+	h=Date:From:Subject:To:References:Cc:In-Reply-To:From;
+	b=q3Mdw5qkQPaGIv56DzhHQlZMy7P9noEc7kzT1EJqZJ+lTQX/2p/nIo0rPgQzqWJcq
+	 zQrjDUppVialmgjBA7+c9aKYMbTUtovhbT+aFl1nO2sOLgxmDyo3E94fjLGh7Ah7eM
+	 ThaRm/PuxiywfybNJetrf8o+TSt3EY1T2vKq57JK+3VfgFxWz6W4Ab9OodXJeXm7G9
+	 RX3iDVoYSbJNSKXoi1yieq+cA4+mSk2HQEWc1tdHUlosbH3KIiL6LJke8KGrRmSbKE
+	 HgU7tfG/S1V8l1NoNPZPki3QmabUrSYyUC6TwiUNZmrFvklhafDqd9KsFvwkRJNzFd
+	 Jmiwm3QdId0eA==
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+	by zaphod.cobb.me.uk (Postfix) with ESMTP id 9AA789B909;
+	Fri,  8 Mar 2024 09:45:17 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+	s=201703; t=1709891117;
+	bh=2YcJtj8w4ZcCzjwQy3ZhxICG1eCZZtHdXSDGrLZhT2o=;
+	h=Date:From:Subject:To:References:Cc:In-Reply-To:From;
+	b=g10KV6r+iqR4uiLAXUBRv6ziOiq9ATtcSt+9zD4NrWfuKm2/OQc7GpT/UzloxQVdm
+	 B79Wy/2WhWyxkQ5aHIRBKDhuUGgzTM3HJ16WAHflW/B2lhkyL1I3/K1KmckaIlG+ce
+	 uep6ksZvpH1L+awY/zUQmr5Z1OZ7xRbw8qHa4irudeLsZlCuo/ZiVhlZkwA9gRvaa2
+	 i/QPNh5TzJcyS0m2evFoOt5fY9QDt2jCleVge2ZPxDGIazsWNx2u/UYxbNgSfhORG/
+	 htcP5XiHv4CpCOsnR8nfyqbM+YsadsxdbhZmqLaM2NwIISIpinv/HcdpqeC8mrIFRK
+	 AgHGuK1bUI9gg==
+Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
+	by black.home.cobb.me.uk (Postfix) with ESMTP id 6A6C81C3EDE;
+	Fri,  8 Mar 2024 09:45:17 +0000 (GMT)
+Message-ID: <fcfab114-c1a0-4059-990d-e4724b457437@cobb.uk.net>
+Date: Fri, 8 Mar 2024 09:45:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,120 +71,185 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] btrfs: zoned: use zone aware sb location for scrub
+From: Graham Cobb <g.btrfs@cobb.uk.net>
+Subject: Re: scrub: last_physical not always updated when scrub is cancelled
 Content-Language: en-US
-To: Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org
-Cc: WA AM <waautomata@gmail.com>, Qu Wenru <wqu@suse.com>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <4d3e8c5cd6ba3e178a1e820c318d96317ac12845.1709890038.git.jth@kernel.org>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <4d3e8c5cd6ba3e178a1e820c318d96317ac12845.1709890038.git.jth@kernel.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+References: <CAMFk-+igFTv2E8svg=cQ6o3e6CrR5QwgQ3Ok9EyRaEvvthpqCQ@mail.gmail.com>
+ <ba3a8690-1604-429e-9e8a-7c381e6592f8@gmx.com>
+Cc: Michel Palleau <michel.palleau@gmail.com>, linux-btrfs@vger.kernel.org
+In-Reply-To: <ba3a8690-1604-429e-9e8a-7c381e6592f8@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UMpU3QKvk2qzb4KBveFiy7KhKsmH2wRXvC+zgvNN+kzOGS6ZALD
- QwQBXhoi1Y+h7ECg/SDUeLsaVRSLnJCzeVe0limPAyM/9f0Md1sGnuwq5s8D4STfXqp2gDh
- ogJvhNme2qWAsfs6V27uKQ1bl1muDUYWq7YeYv6XVTzryGIi8HXpDlnijgLwKuOu2+Zg+bc
- PWnvbnyscZVcB0VWrGiDA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:SqZcsK6Rle8=;5neCkY72T40LcERte94G8V+z/zT
- 49A4h1aEdQefQdV3uxw4ANcu4qtHm56c3WrrWZQPoDBsYIDh8jnocUCrGOeJzzAlWrjPuyVf1
- 0KhQ++/SjkVYFpadScf6ylanBJ/ErGgRmtXV9cZUEmMGuBJkIDcFzKYfduhlP9lc9YZJPGj38
- yzhgBEJ3eiifxvXh3E8za5QRRky8bpMJH0xtltJ23uGmhPIpK3hOHboLLC5PEcmngYfxrOX38
- tfvMjYx4/prXFCnOjXukL1kGtvSnFz9/OcXMD21QMU/AGyVCBjhdt6vp1KHmCz4qcH+qtzf+K
- hlK1XFOf8n4zcOk+52EqC3TXi4XhrpOzP3cnWsl3MD5GidBPqucIPurVj34dvPGBJVbISrCJt
- mdvIK4hgZAv6Bhc3J8Z9z/GbF9UMfnh2b53y6wcMnE9W8lI9VH23+yU6+/5r8E3w5bgJTUYDQ
- n/jsIMtNYlL7Cta7c+cbFYZQC1PH8ETgxk2VsHTGnBMJhh/YMsnwhX8GKT/4DUPnddnXas0AU
- dR1uHOugzYK7f2rYH08UGYYoOsGNbryqFpSJI0d9XfOzIF1YTXVRejaH7N5aFYLaFTGHLvaAL
- LHCOfdc/PtMWY9ObCkeVrtHHY880khgM1nQJA1tDCqDLuLJM+0ZH9q082Hqem5HVNmOvHTgaD
- wQtGarUHDVxptF975RfV8MD/9Yljt4fxMsJw0b3019EuTnwSgJMDjD6bA/kM0Wcm9A7nE7w10
- BasBXgnd/BdLM6SvZEdSFlXvdGK8LVv/8UmS5X8RMriiAMMFd1IF/wNb96ZubAhSQ4M6k5unI
- 4B0WIbEYwmPjbhNqunjndwu4y5c38cHITBCm+f2fe/cag=
+Content-Transfer-Encoding: 8bit
+
+By the way, I have noticed this problem for some time, but haven't got 
+around to analysing it, sorry. I had actually assumed it was a race 
+condition in the user mode processing of cancelling/resuming scrubs.
+
+In my case, I do regular scrubs of several disks. However, this is very 
+intrusive to the overall system performance and so I have scripts which 
+suspend critical processing which causes problems if it times out (such 
+as inbound mail handling) during the scrub. I suspend these processes, 
+run the scrub for a short while, then cancel the scrub and run the mail 
+for a while, then back to suspending the mail and resuming the scrub. 
+Typically it means scrubs on the main system and backup disks take 
+several days and get cancelled and resumed *many* times.
+
+This has worked for many years - until recently-ish (some months ago), 
+when I noticed that scrub was losing track of where it had got to. It 
+was jumping backwards, or even, in some cases, setting last_physical 
+back to 0 and starting all over again!!
+
+I haven't had time to track it down - I just hacked the scripts to 
+terminate if it happened. Better to have the scrub not complete than to 
+hobble performance forever!
+
+If anyone wants to try the scripts they are in 
+https://github.com/GrahamCobb/btrfs-balance-slowly (see 
+btrfs-scrub-slowly). A typical invocation looks like:
+
+/usr/local/sbin/btrfs-scrub-slowly --debug --portion-time $((10*60)) 
+--interval $((5*60)) --hook hook-nomail /mnt/data/
+
+As this script seem to be able to reproduce the problem fairly reliably 
+(although after several hours - the filesystems I use this for range 
+from 7TB to 17TB and each take 2-3 days to fully scrub with this script) 
+they may be useful to someone else. Unfortunately I do not expect to be 
+able to build a kernel to test the proposed fix myself in the next 
+couple of weeks.
+
+Graham
 
 
+On 08/03/2024 00:26, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/3/8 07:07, Michel Palleau 写道:
+>> Hello everyone,
+>>
+>> While playing with the scrub operation, using cancel and resume (with
+>> btrfs-progs), I saw that my scrub operation was taking much more time
+>> than expected.
+>> Analyzing deeper, I think I found an issue on the kernel side, in the
+>> update of last_physical field.
+>>
+>> I am running a 6.7.5 kernel (ArchLinux: 6.7.5-arch1-1), with a basic
+>> btrfs (single device, 640 GiB used out of 922 GiB, SSD).
+>>
+>> Error scenario:
+>> - I start a scrub, monitor it with scrub status and when I see no
+>> progress in the last_physical field (likely because it is scrubbing a
+>> big chunk), I cancel the scrub,
+>> - then I resume the scrub operation: if I do a scrub status,
+>> last_physical is 0. If I do a scrub cancel, last_physical is still 0.
+>> The state file saves 0, and so next resume will start from the very
+>> beginning. Progress has been lost!
+>>
+>> Note that for my fs, if I do not cancel it, I can see the
+>> last_physical field remaining constant for more than 3 minutes, while
+>> the data_bytes_scrubbed is increasing fastly. The complete scrub needs
+>> less than 10 min.
+>>
+>> I have put at the bottom the outputs of the start/resume commands as
+>> well as the scrub.status file after each operation.
+>>
+>> Looking at kernel code, last_physical seems to be rarely updated. And
+>> in case of scrub cancel, the current position is not written into
+>> last_physical, so the value remains the last written value. Which can
+>> be 0 if it has not been written since the scrub has been resumed.
+>>
+>> I see 2 problems here:
+>> 1. when resuming a scrub, the returned last_physical shall be at least
+>> equal to the start position, so that the scrub operation is not doing
+>> a step backward,
+>> 2. on cancel, the returned last_physical shall be as near as possible
+>> to the current scrub position, so that the resume operation is not
+>> redoing the same operations again. Several minutes without an update
+>> is a waste.
+>>
+>> Pb 1 is pretty easy to fix: in btrfs_scrub_dev(), fill the
+>> last_physical field with the start parameter after initialization of
+>> the context.
+> 
+> Indeed, we're only updating last_physical way too infrequently.
+> 
+>> Pb 2 looks more difficult: updating last_physical more often implies
+>> the capability to resume from this position.
+> 
+> The truth is, every time we finished a stripe, we should update
+> last_physical, so that in resume case, we would waste at most a stripe
+> (64K), which should be minimal compared to the size of the fs.
+> 
+> This is not hard to do inside flush_scrub_stripes() for non-RAID56 
+> profiles.
+> 
+> It may needs a slightly more handling for RAID56, but overall I believe
+> it can be done.
+> 
+> Let me craft a patch for you to test soon.
+> 
+> Thanks,
+> Qu
+> 
+> 
+>>
+>> Here are output of the different steps:
+>>
+>> # btrfs scrub start -BR /mnt/clonux_btrfs
+>> Starting scrub on devid 1
+>> scrub canceled for 4c61ff6d-a903-42f6-b490-a3ce3690604e
+>> Scrub started:    Thu Mar  7 17:11:17 2024
+>> Status:           aborted
+>> Duration:         0:00:22
+>>          data_extents_scrubbed: 1392059
+>>          tree_extents_scrubbed: 57626
+>>          data_bytes_scrubbed: 44623339520
+>>          tree_bytes_scrubbed: 944144384
+>>          read_errors: 0
+>>          csum_errors: 0
+>>          verify_errors: 0
+>>          no_csum: 1853
+>>          csum_discards: 0
+>>          super_errors: 0
+>>          malloc_errors: 0
+>>          uncorrectable_errors: 0
+>>          unverified_errors: 0
+>>          corrected_errors: 0
+>>          last_physical: 36529242112
+>>
+>> # cat scrub.status.4c61ff6d-a903-42f6-b490-a3ce3690604e
+>> scrub status:1
+>> 4c61ff6d-a903-42f6-b490-a3ce3690604e:1|data_extents_scrubbed:1392059|tree_extents_scrubbed:57626|data_bytes_scrubbed:44623339520|tree_bytes_scrubbed:944144384|read_errors:0|csum_errors:0|verify_errors:0|no_csum:1853|csum_discards:0|super_errors:0|malloc_errors:0|uncorrectable_errors:0|corrected_errors:0|last_physical:36529242112|t_start:1709827877|t_resumed:0|duration:22|canceled:1|finished:1
+>>
+>> # btrfs scrub resume -BR /mnt/clonux_btrfs
+>> Starting scrub on devid 1
+>> scrub canceled for 4c61ff6d-a903-42f6-b490-a3ce3690604e
+>> Scrub started:    Thu Mar  7 17:13:07 2024
+>> Status:           aborted
+>> Duration:         0:00:07
+>>          data_extents_scrubbed: 250206
+>>          tree_extents_scrubbed: 0
+>>          data_bytes_scrubbed: 14311002112
+>>          tree_bytes_scrubbed: 0
+>>          read_errors: 0
+>>          csum_errors: 0
+>>          verify_errors: 0
+>>          no_csum: 591
+>>          csum_discards: 0
+>>          super_errors: 0
+>>          malloc_errors: 0
+>>          uncorrectable_errors: 0
+>>          unverified_errors: 0
+>>          corrected_errors: 0
+>>          last_physical: 0
+>>
+>> # cat scrub.status.4c61ff6d-a903-42f6-b490-a3ce3690604e
+>> scrub status:1
+>> 4c61ff6d-a903-42f6-b490-a3ce3690604e:1|data_extents_scrubbed:1642265|tree_extents_scrubbed:57626|data_bytes_scrubbed:58934341632|tree_bytes_scrubbed:944144384|read_errors:0|csum_errors:0|verify_errors:0|no_csum:2444|csum_discards:0|super_errors:0|malloc_errors:0|uncorrectable_errors:0|corrected_errors:0|last_physical:0|t_start:1709827877|t_resumed:1709827987|duration:29|canceled:1|finished:1
+>>
+>> Best Regards,
+>> Michel Palleau
+>>
+> 
 
-=E5=9C=A8 2024/3/8 19:58, Johannes Thumshirn =E5=86=99=E9=81=93:
-> At the moment scrub_supers() doesn't grab the super block's location via
-> the zoned device aware btrfs_sb_log_location() but via btrfs_sb_offset()=
-.
->
-> This leads to checksum errors on 'scrub' as we're not accessing the
-> correct location of the super block.
->
-> So use btrfs_sb_log_location() for getting the super blocks location on
-> scrub.
->
-> Reported-by: WA AM <waautomata@gmail.com>
-> Cc: Qu Wenru <wqu@suse.com>
-> Link: http://lore.kernel.org/linux-btrfs/CANU2Z0EvUzfYxczLgGUiREoMndE9Wd=
-QnbaawV5Fv5gNXptPUKw@mail.gmail.com
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-> ---
-> Changes to v2:
-> - Handle -ENOENT return from btrfs_sb_log_location
-> Link to v2:
-> - https://lore.kernel.org/linux-btrfs/75f3da872a8c1094ef0f6ed93aac9bf774=
-ef895b.1709554485.git.jth@kernel.org
-> Changes to v1:
-> - Increase super_errors
-> - Don't break out after 1st error
-> Link to v1:
-> - https://lore.kernel.org/linux-btrfs/933562c5bf37ad3e03f1a6b2ab5a9eb741=
-ee0192.1709206779.git.johannes.thumshirn@wdc.com
-> ---
->   fs/btrfs/scrub.c | 12 +++++++++++-
->   1 file changed, 11 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index c4bd0e60db59..fa25004ab04e 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -2812,7 +2812,17 @@ static noinline_for_stack int scrub_supers(struct=
- scrub_ctx *sctx,
->   		gen =3D btrfs_get_last_trans_committed(fs_info);
->
->   	for (i =3D 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
-> -		bytenr =3D btrfs_sb_offset(i);
-> +		ret =3D btrfs_sb_log_location(scrub_dev, i, 0, &bytenr);
-> +		if (ret =3D=3D -ENOENT)
-> +			break;
-> +
-> +		if (ret) {
-> +			spin_lock(&sctx->stat_lock);
-> +			sctx->stat.super_errors++;
-> +			spin_unlock(&sctx->stat_lock);
-> +			continue;
-> +		}
-> +
->   		if (bytenr + BTRFS_SUPER_INFO_SIZE >
->   		    scrub_dev->commit_total_bytes)
->   			break;
 
