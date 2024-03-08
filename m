@@ -1,194 +1,393 @@
-Return-Path: <linux-btrfs+bounces-3097-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3098-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D570B876379
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 12:43:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41CEB8763B8
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 12:56:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0568A1C20B56
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 11:43:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAE9028288B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 11:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7ECD5676F;
-	Fri,  8 Mar 2024 11:43:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E755647F;
+	Fri,  8 Mar 2024 11:56:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f9XVWRYD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C9C256442;
-	Fri,  8 Mar 2024 11:43:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A00156469;
+	Fri,  8 Mar 2024 11:56:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709898188; cv=none; b=kC0tyEMVaaN21/enNfTZxSGXrUARFE/GVgtBRjM74MvyAKgFrBX0MejgCUoxjnxwHVwBlzj6cP2T5/ZcWlueeYEsqI2KTYaUGmA82ljxMcIBpPbOqglhgNJtzxOuTG3CVUhoL+UzTA18UBa/eGuIn2goY3ZpfQ5GR8Adligfuns=
+	t=1709898961; cv=none; b=T0RqDtSYGAu82QSUFQqvfMeuBGu93BRXTge9ngwYrhQKc3nBCLf78e3eoLoLsQ2uU65dTMdoMe1M7j3edZHevAMnt0nznYTbsJg8NtOWRBH69vco666CpZro/9QeoQCS980LvWLr1bY5WF0pRzeTHio1iaWwSdqr3lpx3AqHRwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709898188; c=relaxed/simple;
-	bh=WTPvxiS0Pg6ITS1Vn/YcEGXqyGDADSyjVlPQRD+qkaU=;
+	s=arc-20240116; t=1709898961; c=relaxed/simple;
+	bh=o1KL2OUzDYLLHy0ZeKQ+tSRnHeVvEpLLb3s0xqTPeXI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n/hBe9M21jQhzI83oBYPUTTFNmWhZqGmaQfxhu/gQQm1n9PAWhBHV8Hy9XmU7qYJFmaeyaVZFYHP+MvdkJjChP0solQqVcISOliHj1dzPir4H44GH+sSpD4UEHXf14vSPt+7QZcVkRYNi2OLGH48NSfOa6JtX8vScbZ6DokZx7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so307699366b.0;
-        Fri, 08 Mar 2024 03:43:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709898184; x=1710502984;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tEeqI5MDotFb9rK23HKrypgCTWc+8alatdFbrADbmRM=;
-        b=AIKvBpcnoHbJ1KfnNfYjGnFEYwUvAEmtiqMEyxvtEWindIiNSnVWQJMoiQ82w+5B2+
-         KnI/V6HSomH7ZR0uicDWwfKXJkZFpazI9KS6aX25K7cbOB9r7J+wHVN8lOf32a8x9RSY
-         UBBB/DfInKLp7YUZNxlczxTbj45V6kGUvo8LvJEkC1u1NvO2cQ04cTza7sZdchpIic1a
-         +QkWx9aSOGEnvJCvyKIuB7lCpj40q1sVXir9u3tFeEVSizjbfbMQBtZiNIWf07VZxk70
-         55dgrEyhr25rq8/20JFluyd5s/vd0gCvhd/DtIZLix8/1mEKrUQ/0LJfug69MYtLp4eY
-         wZIg==
-X-Forwarded-Encrypted: i=1; AJvYcCXEn9PSlY4Gzmx69YBZMtnEtdxqk9FfBTaUP9Qq/mCqBJ3ODBHh7kiOkMyk8xygL3uvoqf3wjlsad+5iDXy8WscecB4cgMEgLXbnzMWsmMIuQE4kaLPBdc/+bds5Hh8D5+svKG6Xr2vCaKStjTAxR0hwtKQCpAh60Eb0691Qs93qYuelIbLURyV7Q==
-X-Gm-Message-State: AOJu0YyO4e3ICSKxvo3kBjVIoGhx+ki9F5iISUiryKoiferPM8cD8dGf
-	0WKaTso/q++RlLczPvH53OkWEKOu2fFOAUWtn9HmlxmZrkhP6N+mSqOdmuwDRuHbSA==
-X-Google-Smtp-Source: AGHT+IE3UmlIiSrN6kGt37gheJvIaN9i1n/e1DDihhUotOur3u44x9+yXyxyY24z6Or64iUDH6gLKg==
-X-Received: by 2002:a17:906:cc93:b0:a43:3f37:4d94 with SMTP id oq19-20020a170906cc9300b00a433f374d94mr14075198ejb.16.1709898184428;
-        Fri, 08 Mar 2024 03:43:04 -0800 (PST)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id pv25-20020a170907209900b00a3ee9305b02sm9174088ejb.20.2024.03.08.03.43.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Mar 2024 03:43:04 -0800 (PST)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3122b70439so263165966b.3;
-        Fri, 08 Mar 2024 03:43:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVdymFqckKDeVaAk+9+2ml6OoDpzcbT5z9V7qrC/sSY0GB0s6b/WnWsdnVlP/ajFvk0h57c1TMwL6DfiO/yHzrTkBimmJie8B32BsnWqNGZMo/jC2sff6r5Wvfb4StK28Di6pwLtSID1gbkNbVEDgDSnnHl0Zxj3GrYlHi9KXUN33G4735vcoCwgA==
-X-Received: by 2002:a17:907:a786:b0:a45:f33a:1382 with SMTP id
- vx6-20020a170907a78600b00a45f33a1382mr881603ejc.9.1709898184163; Fri, 08 Mar
- 2024 03:43:04 -0800 (PST)
+	 To:Cc:Content-Type; b=RIR2To8y3Y31G7AXO9IAb91dqPuor475y0qn2hP6xhWEk9ypu4tr6A904hpT6+PE3aYASHWC07qN/rhkTbEAQv8KOxM1aFSLRYAWyFDp3/UlQzNQ7niQsMV4T9A4S25ZssKyW1b577ASLsPwiaduwT3fMFDah/hOhPXWm5d2tpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f9XVWRYD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E3DC43394;
+	Fri,  8 Mar 2024 11:56:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709898960;
+	bh=o1KL2OUzDYLLHy0ZeKQ+tSRnHeVvEpLLb3s0xqTPeXI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=f9XVWRYDtgy+Y4JTrqGFkLAbH7sdbkSRDTbGyTP1OXvx1rozwF06A/sVVZDC/7mUC
+	 SGlEIj//60CixgfYg+9MlkzLuKHBVrg73U8PyoGFiQJyu7ugBFQVt5/QCMCYNweT3k
+	 qRFHDJylF424UyOjzVpwUUxnFQhW7tDYYx2TiNihAe5Z+/ivRERwUpze09BIdffT9o
+	 xNUzDF2OcE4Cme8ERudrNlis7PNLZ8IGYNtyMIoP8j3Is2d/nMKBU+cmV4iUVB3cxP
+	 8shKjdYiy+iySd+pbukK5tUYTd8AJHoyyTy+s2HFZvV+RWfZ7kWk9/7LP6eP1hAKnh
+	 r1osRyf7Qrcqg==
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5682360e095so1113729a12.1;
+        Fri, 08 Mar 2024 03:56:00 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU5ycEQNcRixb1CUmp3Uh2cFR/32rhJmR80Dv2JoroxNEn/sIhszs1x1xv+xAK3ImyrvoeSrkH2Io2F74D7cy5eQ42M0xp+pg==
+X-Gm-Message-State: AOJu0Yw6fJZfv74iEhFhEFans0fw+pOO6bWHDLrBYGyRK1Zs4GMjYcUR
+	+uqL+oDqyh7VG43Mi6ZYl49HoTTJrpRNGNpk8xRJmFQO+6wcEawtd6raplAKse7G937AlCH12Rg
+	H5w3ExuOQb7jHWHJNUYrKIgc8Q74=
+X-Google-Smtp-Source: AGHT+IHyw4Q2qzBvN7i5TGj+BbDpIiYN8RI/y84Fz6F3OO21MgwdrCvdkU6leltouo1cbRzI/vsY9pU8ql+Olab5CFA=
+X-Received: by 2002:a17:907:1708:b0:a43:dc5f:f271 with SMTP id
+ le8-20020a170907170800b00a43dc5ff271mr13860523ejc.42.1709898959056; Fri, 08
+ Mar 2024 03:55:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
-In-Reply-To: <20240308022914.196982-1-kent.overstreet@linux.dev>
-From: Neal Gompa <neal@gompa.dev>
-Date: Fri, 8 Mar 2024 06:42:27 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
-Message-ID: <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Josef Bacik <josef@toxicpanda.com>, Miklos Szeredi <mszeredi@redhat.com>, 
-	Christian Brauner <brauner@kernel.org>, David Howells <dhowells@redhat.com>
+References: <f40e347d5a4b4b28201b1a088d38a3c75dd10ebd.1709251328.git.boris@bur.io>
+ <CAL3q7H4rYdJidxKja2YZDdXcu3NtsYhKS--YhTUHRi5OqzwijQ@mail.gmail.com> <20240307204936.GA2446256@zen.localdomain>
+In-Reply-To: <20240307204936.GA2446256@zen.localdomain>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 8 Mar 2024 11:55:22 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6Es-_Zr+zcaGfky5ePET6k-_vJhhxk4WrhyUZGtkb7AA@mail.gmail.com>
+Message-ID: <CAL3q7H6Es-_Zr+zcaGfky5ePET6k-_vJhhxk4WrhyUZGtkb7AA@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs/311: new test for devt change between mounts
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, fstests@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 7, 2024 at 9:29=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
+On Thu, Mar 7, 2024 at 8:48=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
 >
-> Add a new statx field for (sub)volume identifiers, as implemented by
-> btrfs and bcachefs.
+> On Tue, Mar 05, 2024 at 12:13:07PM +0000, Filipe Manana wrote:
+> > On Fri, Mar 1, 2024 at 12:02=E2=80=AFAM Boris Burkov <boris@bur.io> wro=
+te:
+> > >
+> > > It is possible to confuse the btrfs device cache (fs_devices) by
+> > > starting with a multi-device filesystem, then removing and re-adding =
+a
+> > > device in a way which changes its dev_t while the filesystem is
+> > > unmounted. After this procedure, if we remount, then we are in a funn=
+y
+> > > state where struct btrfs_device's "devt" field does not match the bd_=
+dev
+> > > of the "bdev" field. I would say this is bad enough, as we have viola=
+ted
+> > > a pretty clear invariant.
+> > >
+> > > But for style points, we can then remove the extra device from the fs=
+,
+> > > making it a single device fs, which enables the "temp_fsid" feature,
+> > > which permits multiple separate mounts of different devices with the
+> > > same fsid. Since btrfs is confused and *thinks* there are different
+> > > devices (based on device->devt), it allows a second redundant mount o=
+f
+> > > the same device (not a bind mount!). This then allows us to corrupt t=
+he
+> > > original mount by doing stuff to the one that should be a bind mount.
+> > >
+> > > This is fixed by the combination of the kernel patch: > > btrfs: supp=
+ort device name lookup in forget
+> > > and the btrfs-progs patches:
+> > > btrfs-progs: allow btrfs device scan -u on dead dev
+> > > btrfs-progs: add udev rule to forget removed device
+> >
+> > May I suggest to make this more readable, easier to the eye?
+> > My inserting blank lines and indenting the lines with the patch
+> > subjects, like for example:
+> >
+> > """
+> > This is fixed by the combination of the kernel patch:
+> >
+> >     btrfs: support device name lookup in forget
+> >
+> > and the btrfs-progs patches:
+> >
+> >    btrfs-progs: allow btrfs device scan -u on dead dev
+> >    btrfs-progs: add udev rule to forget removed device
+> > """
+> >
+> > And these should be placed in the test case itself with:
+> >
+> >    _fixed_by_git_commit btrfs-progs xxxxxxxxxx "btrfs-progs: allow
+> > btrfs device scan -u on dead dev"
+> >
+> > For btrfs-progs commits, and for the kernel:
+> >
+> >    _fixed_by_kernel_commit xxxxxxxxxxxx "btrfs: support device name
+> > lookup in forget"
 >
-> This includes bcachefs support; we'll definitely want btrfs support as
-> well.
+> I'll do so going forward, thanks.
 >
-> Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3p=
-adagaeqcbiavjyiis6prl@yjm725bizncq/
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: Miklos Szeredi <mszeredi@redhat.com>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: David Howells <dhowells@redhat.com>
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> ---
->  fs/bcachefs/fs.c          | 3 +++
->  fs/stat.c                 | 1 +
->  include/linux/stat.h      | 1 +
->  include/uapi/linux/stat.h | 4 +++-
->  4 files changed, 8 insertions(+), 1 deletion(-)
+> >
+> > I see however that there's discussion for those patches between you,
+> > Anand and David, and it
+> > seems there's a chance those patches won't be merged to fix this bug,
+> > especially the kernel one
+> > for which Anand submitted an alternative. If those are added to the
+> > test case itself, can always be
+> > updated later if needed.
 >
-> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> index 3f073845bbd7..6a542ed43e2c 100644
-> --- a/fs/bcachefs/fs.c
-> +++ b/fs/bcachefs/fs.c
-> @@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
->         stat->blksize   =3D block_bytes(c);
->         stat->blocks    =3D inode->v.i_blocks;
->
-> +       stat->subvol    =3D inode->ei_subvol;
-> +       stat->result_mask |=3D STATX_SUBVOL;
-> +
->         if (request_mask & STATX_BTIME) {
->                 stat->result_mask |=3D STATX_BTIME;
->                 stat->btime =3D bch2_time_to_timespec(c, inode->ei_inode.=
-bi_otime);
-> diff --git a/fs/stat.c b/fs/stat.c
-> index 77cdc69eb422..70bd3e888cfa 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __use=
-r *buffer)
->         tmp.stx_mnt_id =3D stat->mnt_id;
->         tmp.stx_dio_mem_align =3D stat->dio_mem_align;
->         tmp.stx_dio_offset_align =3D stat->dio_offset_align;
-> +       tmp.stx_subvol =3D stat->subvol;
->
->         return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
->  }
-> diff --git a/include/linux/stat.h b/include/linux/stat.h
-> index 52150570d37a..bf92441dbad2 100644
-> --- a/include/linux/stat.h
-> +++ b/include/linux/stat.h
-> @@ -53,6 +53,7 @@ struct kstat {
->         u32             dio_mem_align;
->         u32             dio_offset_align;
->         u64             change_cookie;
-> +       u64             subvol;
->  };
->
->  /* These definitions are internal to the kernel for now. Mainly used by =
-nfsd. */
-> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> index 2f2ee82d5517..67626d535316 100644
-> --- a/include/uapi/linux/stat.h
-> +++ b/include/uapi/linux/stat.h
-> @@ -126,8 +126,9 @@ struct statx {
->         __u64   stx_mnt_id;
->         __u32   stx_dio_mem_align;      /* Memory buffer alignment for di=
-rect I/O */
->         __u32   stx_dio_offset_align;   /* File offset alignment for dire=
-ct I/O */
-> +       __u64   stx_subvol;     /* Subvolume identifier */
->         /* 0xa0 */
-> -       __u64   __spare3[12];   /* Spare space for future expansion */
-> +       __u64   __spare3[11];   /* Spare space for future expansion */
->         /* 0x100 */
->  };
->
-> @@ -155,6 +156,7 @@ struct statx {
->  #define STATX_MNT_ID           0x00001000U     /* Got stx_mnt_id */
->  #define STATX_DIOALIGN         0x00002000U     /* Want/got direct I/O al=
-ignment info */
->  #define STATX_MNT_ID_UNIQUE    0x00004000U     /* Want/got extended stx_=
-mount_id */
-> +#define STATX_SUBVOL           0x00008000U     /* Want/got stx_subvol */
->
->  #define STATX__RESERVED                0x80000000U     /* Reserved for f=
-uture struct statx expansion */
->
-> --
-> 2.43.0
->
->
+> I'm leaning towards omitting this part from the commit message and we
+> can update the test case once we pick a winner. Is that OK with you?
 
-I think it's generally expected that patches that touch different
-layers are split up. That is, we should have a patch that adds the
-capability and a separate patch that enables it in bcachefs. This also
-helps make it clearer to others how a new feature should be plumbed
-into a filesystem.
+Yes, thanks.
 
-I would prefer it to be split up in this manner for this reason.
-
-
-
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+>
+> >
+> > Also avoid putting the test number in the subject - there's no
+> > guarantee it will end up with that number when merged.
+> >
+> > >
+> > > Signed-off-by: Boris Burkov <boris@bur.io>
+> > > ---
+> > >  common/config       |   1 +
+> > >  common/rc           |   4 ++
+> > >  tests/btrfs/311     | 101 ++++++++++++++++++++++++++++++++++++++++++=
+++
+> > >  tests/btrfs/311.out |   2 +
+> > >  4 files changed, 108 insertions(+)
+> > >  create mode 100755 tests/btrfs/311
+> > >  create mode 100644 tests/btrfs/311.out
+> > >
+> > > diff --git a/common/config b/common/config
+> > > index a3b15b96f..43b517fda 100644
+> > > --- a/common/config
+> > > +++ b/common/config
+> > > @@ -235,6 +235,7 @@ export BLKZONE_PROG=3D"$(type -P blkzone)"
+> > >  export GZIP_PROG=3D"$(type -P gzip)"
+> > >  export BTRFS_IMAGE_PROG=3D"$(type -P btrfs-image)"
+> > >  export BTRFS_MAP_LOGICAL_PROG=3D$(type -P btrfs-map-logical)
+> > > +export PARTED_PROG=3D"$(type -P parted)"
+> > >
+> > >  # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
+> > >  # newer systems have udevadm command but older systems like RHEL5 do=
+n't.
+> > > diff --git a/common/rc b/common/rc
+> > > index 30c44dddd..8e009aca9 100644
+> > > --- a/common/rc
+> > > +++ b/common/rc
+> > > @@ -5375,6 +5375,10 @@ _require_unshare() {
+> > >                 _notrun "unshare $*: command not found, should be in =
+util-linux"
+> > >  }
+> > >
+> > > +_require_parted() {
+> >
+> > These three last functions from common/rc use that style, the { after
+> > the function name in the same line,
+> > but everywhere else the { is on a new line, and that's the most common
+> > style in fstests.
+> > I wish we had some consistency.
+> >
+> > > +       $PARTED_PROG --list &>/dev/null || _notrun "parted: command n=
+ot found"
+> >
+> > Why not just call:
+> >
+> > _require_command "$PARTED_PROG" parted
+> >
+> > Could even do that in the test and no need for a common function in
+> > this file, as we do in many other tests
+> > (grep for "'_require_command'" in tests/generic for example).
+> >
+> > > +}
+> > > +
+> > >  # Return a random file in a directory. A directory is *not* followed
+> > >  # recursively.
+> > >  _random_file() {
+> > > diff --git a/tests/btrfs/311 b/tests/btrfs/311
+> > > new file mode 100755
+> > > index 000000000..887c46ba0
+> > > --- /dev/null
+> > > +++ b/tests/btrfs/311
+> > > @@ -0,0 +1,101 @@
+> > > +#! /bin/bash
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +# Copyright (C) 2024 Meta, Inc. All Rights Reserved.
+> > > +#
+> > > +# FS QA Test 311
+> > > +#
+> > > +# Test an edge case of multi device volume management in btrfs.
+> > > +# If a device changes devt between mounts of a multi device fs, we c=
+an trick
+> > > +# btrfs into mounting the same device twice fully (not as a bind mou=
+nt). From
+> > > +# there, it is trivial to induce corruption.
+> > > +#
+> > > +. ./common/preamble
+> > > +_begin_fstest auto quick volume
+> >
+> > Missing 'scrub' group.
+> >
+> > > +
+> > > +# real QA test starts here
+> > > +_supported_fs btrfs
+> > > +_require_test
+> > > +_require_parted
+> > > +
+> > > +_cleanup() {
+> > > +       cd /
+> > > +       umount $MNT
+> > > +       umount $BIND
+> > > +       losetup -d $DEV0
+> > > +       losetup -d $DEV1
+> > > +       losetup -d $DEV2
+> > > +       rm $IMG0
+> > > +       rm $IMG1
+> > > +       rm $IMG2
+> > > +}
+> > > +
+> > > +IMG0=3D$TEST_DIR/$$.img0
+> > > +IMG1=3D$TEST_DIR/$$.img1
+> > > +IMG2=3D$TEST_DIR/$$.img2
+> > > +truncate -s 1G $IMG0
+> > > +truncate -s 1G $IMG1
+> > > +truncate -s 1G $IMG2
+> > > +DEV0=3D$(losetup -f $IMG0 --show)
+> > > +DEV1=3D$(losetup -f $IMG1 --show)
+> > > +DEV2=3D$(losetup -f $IMG2 --show)
+> > > +D0P1=3D$DEV0"p1"
+> > > +D1P1=3D$DEV1"p1"
+> > > +MNT=3D$TEST_DIR/mnt
+> > > +BIND=3D$TEST_DIR/bind
+> > > +
+> > > +# Setup partition table with one partition on each device.
+> > > +$PARTED_PROG $DEV0 'mktable gpt' --script
+> > > +$PARTED_PROG $DEV1 'mktable gpt' --script
+> > > +$PARTED_PROG $DEV0 'mkpart mypart 1M 100%' --script
+> > > +$PARTED_PROG $DEV1 'mkpart mypart 1M 100%' --script
+> > > +
+> > > +# mkfs with two devices to avoid clearing devices on close
+> > > +# single raid to allow removing DEV2.
+> > > +$MKFS_BTRFS_PROG -f -msingle -dsingle $D0P1 $DEV2 &>/dev/null
+> >
+> > Please redirect to the $seqres.full instead, and _fail if mkfs fails.
+> > That's what we do nowadays due to unpleasant surprises in the past.
+> >
+> > > +
+> > > +# Cycle mount the two device fs to populate both devices into the
+> > > +# stale device cache.
+> > > +mkdir -p $MNT
+> > > +mount $D0P1 $MNT
+> >
+> > Use the _mount() helper.
+> >
+> > > +umount $MNT
+> >
+> > We use $UMOUNT_PROG in fstests.
+> >
+> > > +
+> > > +# Swap the partition dev_ts. This leaves the dev_t in the cache out =
+of date.
+> > > +$PARTED_PROG $DEV0 'rm 1' --script
+> > > +$PARTED_PROG $DEV1 'rm 1' --script
+> > > +$PARTED_PROG $DEV1 'mkpart mypart 1M 100%' --script
+> > > +$PARTED_PROG $DEV0 'mkpart mypart 1M 100%' --script
+> > > +
+> > > +# Mount with mismatched dev_t!
+> > > +mount $D0P1 $MNT || _fail "failed to remount; don't proceed and do d=
+angerous stuff on raw mount point"
+> >
+> > Same here.
+> >
+> > > +
+> > > +# Remove the extra device to bring temp-fsid back in the fray.
+> > > +$BTRFS_UTIL_PROG device remove $DEV2 $MNT
+> > > +
+> > > +# Create the would be bind mount.
+> > > +mkdir -p $BIND
+> > > +mount $D0P1 $BIND
+> >
+> > Same here.
+> >
+> > > +mount_show=3D$($BTRFS_UTIL_PROG filesystem show $MNT)
+> > > +bind_show=3D$($BTRFS_UTIL_PROG filesystem show $BIND)
+> > > +# If they're different, we are in trouble.
+> > > +[ "$mount_show" =3D "$bind_show" ] || echo "$mount_show !=3D $bind_s=
+how"
+> > > +
+> > > +# Now really prove it by corrupting the first mount with the second.
+> > > +for i in $(seq 20); do
+> > > +       $XFS_IO_PROG -f -c "pwrite 0 50M" $MNT/foo.$i >$seqres.full 2=
+>&1
+> >
+> > This is overriding the .full file, use >>
+> >
+> > > +done
+> > > +for i in $(seq 20); do
+> > > +       $XFS_IO_PROG -f -c "pwrite 0 50M" $BIND/foo.$i >$seqres.full =
+2>&1
+> >
+> > Same here, this is overriding the .full file, use >>
+> >
+> > > +done
+> > > +sync
+> >
+> > Can we please have a comment mentioning why the sync is needed?
+> >
+> > > +find $BIND -type f -delete
+> > > +sync
+> >
+> > Same here.
+> >
+> > > +
+> > > +# This should blow up both mounts, if the writes somehow didn't over=
+lap at all.
+> > > +$FSTRIM_PROG $BIND
+> >
+> > Since it's using the fstrim program and needs trim to be supported,
+> > the test misses a:
+> >
+> > _require_batched_discard "$TEST_DIR"
+> >
+> > at the top.
+> >
+> > > +echo 3 > /proc/sys/vm/drop_caches
+> >
+> > Please add a comment mentioning why we are dropping caches.
+> >
+> > > +$BTRFS_UTIL_PROG scrub start -B $MNT >>$seqres.full 2>&1
+> >
+> > The test passes whether scrub fails or succeeds, as it's redirecting
+> > stdout and stderr to the .full file and ignoring the exit status of
+> > the command.
+> >
+> > The ideal fstests way is to put the expected output in the golden
+> > output file and just call the command without redirecting anything.
+> > If that's not doable for some reason, at the very least do a (...) ||
+> > echo "Scrub failed, check $seqres.full for details."
+> >
+> > Thanks.
+> >
+> > > +
+> > > +# success, all done
+> > > +echo "Silence is golden"
+> > > +status=3D0
+> > > +exit
+> > > diff --git a/tests/btrfs/311.out b/tests/btrfs/311.out
+> > > new file mode 100644
+> > > index 000000000..62f253029
+> > > --- /dev/null
+> > > +++ b/tests/btrfs/311.out
+> > > @@ -0,0 +1,2 @@
+> > > +QA output created by 311
+> > > +Silence is golden
+> > > --
+> > > 2.43.0
+> > >
+> > >
 
