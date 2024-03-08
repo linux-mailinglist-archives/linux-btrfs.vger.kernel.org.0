@@ -1,255 +1,173 @@
-Return-Path: <linux-btrfs+bounces-3094-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3095-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13EB2876148
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 10:52:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B472876363
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 12:36:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 920641F23DEB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 09:52:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A1F21C20BA3
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 11:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0966535CA;
-	Fri,  8 Mar 2024 09:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 886E055E7E;
+	Fri,  8 Mar 2024 11:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b="q3Mdw5qk";
-	dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b="g10KV6r+"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="M7NmgGFC";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="lq0Jpnkz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [213.138.97.131])
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C948535C2
-	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 09:51:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.138.97.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709891514; cv=none; b=HBrpBnb6r2TwdlIm0zQGqF8R8esYa1V4cVDS6o4N8S4Ks4pgTzmbOyQQvaLtTjmjTo5RGktUlOrIjNRIF29KW1nDJZstutzLlpBqQ2bS6jLH3gZo/susp2vgANlVFcR7syDZ+YbR6umqkPlbCepeDoQXN4OWcNsm2gYkAcuhDL0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709891514; c=relaxed/simple;
-	bh=2YcJtj8w4ZcCzjwQy3ZhxICG1eCZZtHdXSDGrLZhT2o=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:References:Cc:
-	 In-Reply-To:Content-Type; b=mG3Ikx1kB0cOzyGUDMj7HLd/HqT6TD8sICtaMpIB0KwrV6WiCrc3z2MbOv0c7q3kkOAJjcky9cQliNtECnwue6NfYQIU/cMUJbsJk/fQiZQAaOVYjyVfP4mUInK6w6vEUXDpBI6ud2cZM2CL+A/+KKFb9j2Af5GtAX5TKyrN3NA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net; spf=pass smtp.mailfrom=cobb.uk.net; dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b=q3Mdw5qk; dkim=pass (2048-bit key) header.d=cobb.uk.net header.i=@cobb.uk.net header.b=g10KV6r+; arc=none smtp.client-ip=213.138.97.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cobb.uk.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cobb.uk.net
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-	id 9D3849B92F; Fri,  8 Mar 2024 09:45:46 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-	s=201703; t=1709891146;
-	bh=2YcJtj8w4ZcCzjwQy3ZhxICG1eCZZtHdXSDGrLZhT2o=;
-	h=Date:From:Subject:To:References:Cc:In-Reply-To:From;
-	b=q3Mdw5qkQPaGIv56DzhHQlZMy7P9noEc7kzT1EJqZJ+lTQX/2p/nIo0rPgQzqWJcq
-	 zQrjDUppVialmgjBA7+c9aKYMbTUtovhbT+aFl1nO2sOLgxmDyo3E94fjLGh7Ah7eM
-	 ThaRm/PuxiywfybNJetrf8o+TSt3EY1T2vKq57JK+3VfgFxWz6W4Ab9OodXJeXm7G9
-	 RX3iDVoYSbJNSKXoi1yieq+cA4+mSk2HQEWc1tdHUlosbH3KIiL6LJke8KGrRmSbKE
-	 HgU7tfG/S1V8l1NoNPZPki3QmabUrSYyUC6TwiUNZmrFvklhafDqd9KsFvwkRJNzFd
-	 Jmiwm3QdId0eA==
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-	by zaphod.cobb.me.uk (Postfix) with ESMTP id 9AA789B909;
-	Fri,  8 Mar 2024 09:45:17 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-	s=201703; t=1709891117;
-	bh=2YcJtj8w4ZcCzjwQy3ZhxICG1eCZZtHdXSDGrLZhT2o=;
-	h=Date:From:Subject:To:References:Cc:In-Reply-To:From;
-	b=g10KV6r+iqR4uiLAXUBRv6ziOiq9ATtcSt+9zD4NrWfuKm2/OQc7GpT/UzloxQVdm
-	 B79Wy/2WhWyxkQ5aHIRBKDhuUGgzTM3HJ16WAHflW/B2lhkyL1I3/K1KmckaIlG+ce
-	 uep6ksZvpH1L+awY/zUQmr5Z1OZ7xRbw8qHa4irudeLsZlCuo/ZiVhlZkwA9gRvaa2
-	 i/QPNh5TzJcyS0m2evFoOt5fY9QDt2jCleVge2ZPxDGIazsWNx2u/UYxbNgSfhORG/
-	 htcP5XiHv4CpCOsnR8nfyqbM+YsadsxdbhZmqLaM2NwIISIpinv/HcdpqeC8mrIFRK
-	 AgHGuK1bUI9gg==
-Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
-	by black.home.cobb.me.uk (Postfix) with ESMTP id 6A6C81C3EDE;
-	Fri,  8 Mar 2024 09:45:17 +0000 (GMT)
-Message-ID: <fcfab114-c1a0-4059-990d-e4724b457437@cobb.uk.net>
-Date: Fri, 8 Mar 2024 09:45:17 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F38355C3A
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 11:36:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.144
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709897763; cv=fail; b=KlhloGIMN0CJ5acY45u6lhPsO6Tr0XnCVHptFAsdxv6yKcuJCCpxf7neTDdKhAHqeWoWp6dP3oB+H7L7NDtcIwk6JbxvXZXtFsKKReBIHhMW5V+2nCimDMA4zi5P9MFM42JU9LBGTj9evYl8X64YOfpZTKEGe69BkoDRzhpXzfw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709897763; c=relaxed/simple;
+	bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=YljMnAVzQm69qylzQz7PXNghJbaouEpWFs8PR9g47fxScdBtR/AV/Z568+82AGNfDR0V3yyMvbGtGNwmwBWuZpeVKdpqGIUNE6fU/yDGCOjJcMzAHCLl91UUj29w0BT+CW2o6OCkhgqeePtARx4cbBX5DCeia9QxbqSeW8J9YPc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=M7NmgGFC; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=lq0Jpnkz; arc=fail smtp.client-ip=216.71.153.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1709897761; x=1741433761;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+  b=M7NmgGFC7VChtJSTq8xeo1oedrd7tFrb8ryM3+OB/k4RKLmWFhh9MgCX
+   64EX2Ma2t2N5bgjTyCMPyeHvfj9mcIUhkmJKG/9JkiyMSAaE9IWF6z1YO
+   YXoWKfNZ3Qz/iiRycHUejusXPwJz+iOUYqKQJvY7G4EpzvTyYaDBgkGv9
+   Y1ejDB8oPEZDFjwsnFlFRT8rfgSB0+AdhggACN7kxMWJR+zQc/Bpo5Hf1
+   NrAq2fgXGHomWaHPaVYTODmAdS+udvnVPC6AhaIcHYEmXKXx6RdEvec0K
+   mOqSxL4KxT7RM94MY5AXleQZMw5R8x11hPCi75Kw7+3sEf153sM/EDOux
+   A==;
+X-CSE-ConnectionGUID: ZMSDIWGPS+KICzXoYq4lxA==
+X-CSE-MsgGUID: gK1dH+OxR4K7b2uqP4uGtA==
+X-IronPort-AV: E=Sophos;i="6.07,109,1708358400"; 
+   d="scan'208";a="11733391"
+Received: from mail-mw2nam12lp2040.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.40])
+  by ob1.hgst.iphmx.com with ESMTP; 08 Mar 2024 19:35:59 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DXMpn4o0TBpOdn3Z6AG/5PXqc8j5RKfUT8d6VLcTA9tEH58OxN6CZe4umD4/mGlYB+lUzepgYa3MkAHnSZiIZk3ibxkPyeYSeF0JKXgNFrYtCOuSj8nMXLrW0Tja4s/2xjwaDyjHfiC4KVqeLM1iQJgKyGAA0Agd7LX12nsqX05p7dPBhZ2/9MTpCRqbMMakTcy2DIIQzKAG+XwqrCOnlhF3VA7fKWrg49bzcifc+DnAh105qCV0SJs/JHt5EP3omSCUnjro4muvIy8n6kANHqWMIcnC6ntZxGuJLFJ6WXIPIZEFWJfjWoFdoWf6f6bE9OSjPn6Aft8ky8T/0PGI6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=BRZlvs27Ffx6bW6tCiDe+WOiWzjev214YBn/8+ebRe/2sn4A+QKqeV1YlR/S+M6gwQ8B73I9h5zhWeewvWoIHhGMEMuuYzHwzZXX3pApvrCwtGTx/t99sFWJCNTp3h6GLsaLvfyHLAhYFHC7b0VoPDul1fuitD0XE9iwkxlgSK7BbVIGube9wxgp846hGj+aLVhhTjdixNzsXH/qjNTjLAeZdwhxXOjlkEehDLiMqwOZPQ9OF7WoQx3eAs4Upw95Hil1dQlExlnOyo4bhWi6azquXeVNxvNeCfjKz4ZWw5Niul+I3ql/Zt8Yc3cu71aLEq0KD/iL0/lQcfUjVaL+aA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=lq0JpnkzSLXSKAWSDMfDVF2V0gRLj+wjxg13O2OGm0voGj1dYsboBFw4yJfV4pWuIoGNWWG+CLR0gkxDytW90hIyhVZoUZUTGIrw38uXKl2NyIe9cCpAo6FjwSIgsEE2+pDzUNvGUso1T8NXQk9azRFjdHgCkIVCMoTBWY4CsBI=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by DM6PR04MB6636.namprd04.prod.outlook.com (2603:10b6:5:24e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Fri, 8 Mar
+ 2024 11:35:58 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::a814:67f1:24ab:508e]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::a814:67f1:24ab:508e%7]) with mapi id 15.20.7362.024; Fri, 8 Mar 2024
+ 11:35:58 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: "fdmanana@kernel.org" <fdmanana@kernel.org>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: remove pointless BUG_ON() when creating snapshot
+Thread-Topic: [PATCH] btrfs: remove pointless BUG_ON() when creating snapshot
+Thread-Index: AQHacKjJsoxgVB4q1kS4jI9k1PGGLbEtuEIA
+Date: Fri, 8 Mar 2024 11:35:58 +0000
+Message-ID: <7b207aa5-ef46-4c38-8437-c2a83eb353c6@wdc.com>
+References:
+ <0d0347a460b26e36966f95604ca8c69b956f1c62.1709814676.git.fdmanana@suse.com>
+In-Reply-To:
+ <0d0347a460b26e36966f95604ca8c69b956f1c62.1709814676.git.fdmanana@suse.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|DM6PR04MB6636:EE_
+x-ms-office365-filtering-correlation-id: 1d711a49-5fa0-4751-bd5d-08dc3f63ec8e
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ KFUp1KLKm8xVzBn6KqQncvFOJ1SkOh4xadvpM8JMgWtesxBArdK683K0kTYOK59o2srkJ1ahUvhHFyGCLzTgtjk4zX+5/V48x2kOX8XYBU5mc+Rz04mMErhCbI/biUfmYKl96Ib+iuajiBaHOepe9NehBMYyltfTe9SByVt0KcXmMluNwMJe4X6wdcmrH2CzpEXgr4/Wg66fbWi2CvkDy8Y7w/OQ3gfDkPSowdZkjVEEAV8TRHUzEVCA8PJAlJE4/ldnvpaJ+bPcBDCqw8kn9KpzpuPVKG5DbHVStdzF1QI4jnw/p1RjtspGBWKGVsYHLahlx4gMT3lIsTgcKy7fFofSqCYLLYl55OcwpLMj3uSh0Dpnvn2OMKqsTX/FL4mC9LmLP8Y5dw5+jo0P4czDvvR5Lg3WAgOvPmXWdYxGkOWkYqXZMC340w2BrkdEIRYtyODo32QB/cf8TLIGfVCIO13v3OeNnXbO0m3E5C+Lay2ZuJpEHXhhrAt+WIlAUGgKv2MRtjKY0B+G/LHA1X4Rk3/eAvceAAZ2O0Ti0j2ZhNt1T3mtNIPoKrq83c5mlZ7b4hByI6uF8qL258ul6kkKF8b76dxeKvEMgSC/jnCacJl8OL4+YPR4Vef68rJMWDzI/5VW9W++UTLV20k+zh7jjBt170KPrOJp0dzgulRVMo5/M819z54RyBNvAG0cNC0cqroNV2fh2ORD3SZEAad1kjSBqBFehy1LPny5iMAkY34=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?bnRuR0NEWGM3Tytjekp6Z1Z6elc4OFJMMDhYeDJVK2tUczdERUFWVUVUMVpk?=
+ =?utf-8?B?NkorOUVHU3JHQVlHa2pXaGliLzFIYmc4Yk9vRXJnMWRSZmU2UEhKcjV0YXUv?=
+ =?utf-8?B?aEdvcU9JUG5xekFpSm5vVHFjWXBXTHJSckhlWFhwa1p2bEl0V2k1ckV6NkRy?=
+ =?utf-8?B?OUloOWJISkxiK25xNnNLRmFERjl4VEM4T3Bxd1BmMGxCdS96RUpwQndvcGVm?=
+ =?utf-8?B?UXRDc0hyak56UmdBWkFjd0gvNmp0bVJmSldXZjVDL3c0RTJ4MGZxdU9HRVJj?=
+ =?utf-8?B?cmxVNG4yVzFmVGY5OStzMGlGVmVDdk5jTjhuZy90TEljUDJUbDZDQzlrSkpR?=
+ =?utf-8?B?RGhzUHBKSVFQcWJXNVc1dkthMURYSE8reHluZUZIeDhBTExSM1FteDVvSnNU?=
+ =?utf-8?B?c1NxUTRBdXhmemVDNi91Z21QR3ovSnB0WXZ1M0wxaHNVeFJXMU5HOE8yTmls?=
+ =?utf-8?B?ZWdhdmZ6aExiMDIrenhMbEVCWXMzL2ludzUvS2xmaktIUmhHQWMwNFF0Y1V5?=
+ =?utf-8?B?RjQ0cHk1RjNMZWMwV1hPTWUyQ3RTV0tnOVNhRzduUks0eFQ4eEM3ZXUxS3g2?=
+ =?utf-8?B?cmdVdDdaMkV4b1I3N1kvQXpFUVZDK1V3b2JZZHVGZlMwa0tXQ1hBMlVHSEk1?=
+ =?utf-8?B?UElFcmVhWTRBanVRTmRZSmhqdWowZm5XMU5ZS3luQlhvc3B1Kzh5NTRWTHJE?=
+ =?utf-8?B?aUQwaHJueE1vVXRtWVp2cnF0M1QwdVdYNXBWbkZPa1hudVE3NWgyVE5uR1VC?=
+ =?utf-8?B?MmErU015eTZVczd2elhqQWtLOW5WUlBZQUVqZHBIQmZYWEhFeHdJN0lGQjhP?=
+ =?utf-8?B?dU5YRFJZY3R4Y2RCeUdJV2ZwTW5UakZaYVFZbFIwZ0R0aW1jWmt0bWVhUVpO?=
+ =?utf-8?B?YkRxM2pVM2QzREU5UzFwZm9COUFNdzU3dndJcnNlNEY4eEpDOCswUmVIdDlV?=
+ =?utf-8?B?VEh1UGttT3VJelRtQkJzZGJycSsvNGFhaVVaZGVPai9CU1kwUHZ6aURhd3o0?=
+ =?utf-8?B?bEVBOEFDb2tGUS9veGEwaU5XQUQrcm1WbWV0RXphTDVPMWo0Yk8za1Nud3By?=
+ =?utf-8?B?MitDNXB5MWJYVTJoVEcvanJqNkhuVE1hbncyNjBpWnppOEtHN1ZDVHlrcGty?=
+ =?utf-8?B?MHd0NzRFNWpxbnNhZ2hBSTNkZEJIT1JTUHNWdmtxOThJR1Jxelo1c1R5d3l5?=
+ =?utf-8?B?bXpnVmFrVFhBcTZiLzU2Y2hZUkhhQlZxNXVPOFNyTHlQR3pXZ0hNTXZJcGhG?=
+ =?utf-8?B?blR3VTFPZDZKeGlXV2srS0NtU1JlSFpDTzNIU1VFUGxqSFdPK0ZPdmVrQTNk?=
+ =?utf-8?B?UmY3R2ErYTE2cGNubXIxT3kraUtkbmpGVHg0T3B4M0tLL1dmY2pjQXpuMmRv?=
+ =?utf-8?B?ZUcxVFptTTJTUGIrL2MzT0lDV0ZXNVpqQ0ZJYVlnb0dmdXp6QThHSm1ubnJ3?=
+ =?utf-8?B?dWxIV2hYZVF1WFl0ZFNaTHkyS0FuUEJ1OCsxMEsxV0VuT0M1TUt5YXhoTjBP?=
+ =?utf-8?B?MW5iWTJHbTNiY3hTQmlQQnVhT2t3NndmUTlGQVB6R1BIVDlUZDBoNXZPb1Jo?=
+ =?utf-8?B?K2lkb3ZCRStEbklXcEFOY1JucmliS054TkNaaXJIUWorbmdwK2tiQnl1Q05O?=
+ =?utf-8?B?R09SL0hFMUJzbjhzTTl1VlFXbko1OGptdXJCNmtnYnVYV2xKYUljVGcyMERJ?=
+ =?utf-8?B?Nm9McEs4ZC9SL2tybW12cHE1TE5tYU1naURsaUpGVUFUQjdzYjhsczFTOS8z?=
+ =?utf-8?B?V2RGRU1KLy84SERTYzYzZW9RaExocDBRanRHNGE1S2plNERCdGRPT3dXTm1H?=
+ =?utf-8?B?UzRzZjRuZGN6RkpydVRBVWZ5eGpEcmE3dTF3eTljSHZMMkNyQjFRWjUrVW9x?=
+ =?utf-8?B?NjhzcUVQUnhPaTF2TUQ5QmFMeDdlRmROY1lWcHd2TnEyUzJHbGtpNzY1Qitx?=
+ =?utf-8?B?WExLR2Z6b0NtbnZoWVEzeXFlY2pKNjZ0ekVRNW1Ba05Bc21IQ0hyM3RJUFZp?=
+ =?utf-8?B?WmZWYnRaT0VXWG54VmFWNmRPOGdXQklyb0Z1RkR5dW10TDZLZ202WlpaN0pj?=
+ =?utf-8?B?anZYMlBSUE1hVWlvem9VRTZRTlFUdHhTLzdtbVZyK0JWVnJnNjQzaUtac3hY?=
+ =?utf-8?B?bEMrcEJFdGZnRXJOU2kwVjRnYjF4Qld4N0p3YmNNU0VXNXYzMjR4V2pxMXVX?=
+ =?utf-8?B?Wnc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <911D512DA183794FB0FFCE901F2488F3@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Graham Cobb <g.btrfs@cobb.uk.net>
-Subject: Re: scrub: last_physical not always updated when scrub is cancelled
-Content-Language: en-US
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-References: <CAMFk-+igFTv2E8svg=cQ6o3e6CrR5QwgQ3Ok9EyRaEvvthpqCQ@mail.gmail.com>
- <ba3a8690-1604-429e-9e8a-7c381e6592f8@gmx.com>
-Cc: Michel Palleau <michel.palleau@gmail.com>, linux-btrfs@vger.kernel.org
-In-Reply-To: <ba3a8690-1604-429e-9e8a-7c381e6592f8@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	NPoS9lqlw4hL2viMxjXvwsOwIgxeMVBYQMSLXGaz4YcTDC8g4XcipFsyf4iM+h01yN/F8Ubz3+bzo33q4xoquOYOYeZZfeogmNIqImZyYei7SXd5TeK8We69KvJEMP8miA2IFpfWsq7fksuoF+HK852LbUsq9O+WjvhxqHn6fOmSpvKz2beKoXRl+H8Cw7kBf76Cyu8XgCvy24gLvxSQhroTGNiJ1wbW9HVC6TkLgAEvF/W9nGgrOEE3Am3/D9c+/Zkf1xCxJe1s+5GDt1ZNoTsjktzf86NNCzLlHMAR50O8RJAYspgTZ6cU1KrsuBvZmLIHVyUGN36JysTCY6cw9ngiFdgMayLmC6GCpOZbUNNleyk8vxjyP+Wkc5+RTpGJwt0YW1Oxhpx8NSVUwPVCq1ggSOXDwfJ99Tut4Il5LNbz3dhmjtY6siNe4a4cw+i5uYqXoMBovfKIib5mCRelz6RdL7CVcnLHFyHrjjBmxQOYme9HCwNjLhEiyy5LHDkwAXVsYWb08saoVbbRhKzVB1+FKyXFVj8qAW44ROYWUvb2kD08D9zgxt2eQVdqk17Ddpx9KuwfQJoZ84uWZ7uo74rN/C5u2dQpwDZeGjzKhOIDm0fQfqa9pwb8hzhwNyra
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d711a49-5fa0-4751-bd5d-08dc3f63ec8e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2024 11:35:58.2595
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q8HRFO4wOs+GAGXz4yYzTnTGB4uNK3kMzK7mBidEDYR8TQSETT53jvG2MOHn+lXQSwyRogqyTr18gx4Ln5H0BTLydFhqRAHx7eCFXDokYAY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6636
 
-By the way, I have noticed this problem for some time, but haven't got 
-around to analysing it, sorry. I had actually assumed it was a race 
-condition in the user mode processing of cancelling/resuming scrubs.
-
-In my case, I do regular scrubs of several disks. However, this is very 
-intrusive to the overall system performance and so I have scripts which 
-suspend critical processing which causes problems if it times out (such 
-as inbound mail handling) during the scrub. I suspend these processes, 
-run the scrub for a short while, then cancel the scrub and run the mail 
-for a while, then back to suspending the mail and resuming the scrub. 
-Typically it means scrubs on the main system and backup disks take 
-several days and get cancelled and resumed *many* times.
-
-This has worked for many years - until recently-ish (some months ago), 
-when I noticed that scrub was losing track of where it had got to. It 
-was jumping backwards, or even, in some cases, setting last_physical 
-back to 0 and starting all over again!!
-
-I haven't had time to track it down - I just hacked the scripts to 
-terminate if it happened. Better to have the scrub not complete than to 
-hobble performance forever!
-
-If anyone wants to try the scripts they are in 
-https://github.com/GrahamCobb/btrfs-balance-slowly (see 
-btrfs-scrub-slowly). A typical invocation looks like:
-
-/usr/local/sbin/btrfs-scrub-slowly --debug --portion-time $((10*60)) 
---interval $((5*60)) --hook hook-nomail /mnt/data/
-
-As this script seem to be able to reproduce the problem fairly reliably 
-(although after several hours - the filesystems I use this for range 
-from 7TB to 17TB and each take 2-3 days to fully scrub with this script) 
-they may be useful to someone else. Unfortunately I do not expect to be 
-able to build a kernel to test the proposed fix myself in the next 
-couple of weeks.
-
-Graham
-
-
-On 08/03/2024 00:26, Qu Wenruo wrote:
-> 
-> 
-> 在 2024/3/8 07:07, Michel Palleau 写道:
->> Hello everyone,
->>
->> While playing with the scrub operation, using cancel and resume (with
->> btrfs-progs), I saw that my scrub operation was taking much more time
->> than expected.
->> Analyzing deeper, I think I found an issue on the kernel side, in the
->> update of last_physical field.
->>
->> I am running a 6.7.5 kernel (ArchLinux: 6.7.5-arch1-1), with a basic
->> btrfs (single device, 640 GiB used out of 922 GiB, SSD).
->>
->> Error scenario:
->> - I start a scrub, monitor it with scrub status and when I see no
->> progress in the last_physical field (likely because it is scrubbing a
->> big chunk), I cancel the scrub,
->> - then I resume the scrub operation: if I do a scrub status,
->> last_physical is 0. If I do a scrub cancel, last_physical is still 0.
->> The state file saves 0, and so next resume will start from the very
->> beginning. Progress has been lost!
->>
->> Note that for my fs, if I do not cancel it, I can see the
->> last_physical field remaining constant for more than 3 minutes, while
->> the data_bytes_scrubbed is increasing fastly. The complete scrub needs
->> less than 10 min.
->>
->> I have put at the bottom the outputs of the start/resume commands as
->> well as the scrub.status file after each operation.
->>
->> Looking at kernel code, last_physical seems to be rarely updated. And
->> in case of scrub cancel, the current position is not written into
->> last_physical, so the value remains the last written value. Which can
->> be 0 if it has not been written since the scrub has been resumed.
->>
->> I see 2 problems here:
->> 1. when resuming a scrub, the returned last_physical shall be at least
->> equal to the start position, so that the scrub operation is not doing
->> a step backward,
->> 2. on cancel, the returned last_physical shall be as near as possible
->> to the current scrub position, so that the resume operation is not
->> redoing the same operations again. Several minutes without an update
->> is a waste.
->>
->> Pb 1 is pretty easy to fix: in btrfs_scrub_dev(), fill the
->> last_physical field with the start parameter after initialization of
->> the context.
-> 
-> Indeed, we're only updating last_physical way too infrequently.
-> 
->> Pb 2 looks more difficult: updating last_physical more often implies
->> the capability to resume from this position.
-> 
-> The truth is, every time we finished a stripe, we should update
-> last_physical, so that in resume case, we would waste at most a stripe
-> (64K), which should be minimal compared to the size of the fs.
-> 
-> This is not hard to do inside flush_scrub_stripes() for non-RAID56 
-> profiles.
-> 
-> It may needs a slightly more handling for RAID56, but overall I believe
-> it can be done.
-> 
-> Let me craft a patch for you to test soon.
-> 
-> Thanks,
-> Qu
-> 
-> 
->>
->> Here are output of the different steps:
->>
->> # btrfs scrub start -BR /mnt/clonux_btrfs
->> Starting scrub on devid 1
->> scrub canceled for 4c61ff6d-a903-42f6-b490-a3ce3690604e
->> Scrub started:    Thu Mar  7 17:11:17 2024
->> Status:           aborted
->> Duration:         0:00:22
->>          data_extents_scrubbed: 1392059
->>          tree_extents_scrubbed: 57626
->>          data_bytes_scrubbed: 44623339520
->>          tree_bytes_scrubbed: 944144384
->>          read_errors: 0
->>          csum_errors: 0
->>          verify_errors: 0
->>          no_csum: 1853
->>          csum_discards: 0
->>          super_errors: 0
->>          malloc_errors: 0
->>          uncorrectable_errors: 0
->>          unverified_errors: 0
->>          corrected_errors: 0
->>          last_physical: 36529242112
->>
->> # cat scrub.status.4c61ff6d-a903-42f6-b490-a3ce3690604e
->> scrub status:1
->> 4c61ff6d-a903-42f6-b490-a3ce3690604e:1|data_extents_scrubbed:1392059|tree_extents_scrubbed:57626|data_bytes_scrubbed:44623339520|tree_bytes_scrubbed:944144384|read_errors:0|csum_errors:0|verify_errors:0|no_csum:1853|csum_discards:0|super_errors:0|malloc_errors:0|uncorrectable_errors:0|corrected_errors:0|last_physical:36529242112|t_start:1709827877|t_resumed:0|duration:22|canceled:1|finished:1
->>
->> # btrfs scrub resume -BR /mnt/clonux_btrfs
->> Starting scrub on devid 1
->> scrub canceled for 4c61ff6d-a903-42f6-b490-a3ce3690604e
->> Scrub started:    Thu Mar  7 17:13:07 2024
->> Status:           aborted
->> Duration:         0:00:07
->>          data_extents_scrubbed: 250206
->>          tree_extents_scrubbed: 0
->>          data_bytes_scrubbed: 14311002112
->>          tree_bytes_scrubbed: 0
->>          read_errors: 0
->>          csum_errors: 0
->>          verify_errors: 0
->>          no_csum: 591
->>          csum_discards: 0
->>          super_errors: 0
->>          malloc_errors: 0
->>          uncorrectable_errors: 0
->>          unverified_errors: 0
->>          corrected_errors: 0
->>          last_physical: 0
->>
->> # cat scrub.status.4c61ff6d-a903-42f6-b490-a3ce3690604e
->> scrub status:1
->> 4c61ff6d-a903-42f6-b490-a3ce3690604e:1|data_extents_scrubbed:1642265|tree_extents_scrubbed:57626|data_bytes_scrubbed:58934341632|tree_bytes_scrubbed:944144384|read_errors:0|csum_errors:0|verify_errors:0|no_csum:2444|csum_discards:0|super_errors:0|malloc_errors:0|uncorrectable_errors:0|corrected_errors:0|last_physical:0|t_start:1709827877|t_resumed:1709827987|duration:29|canceled:1|finished:1
->>
->> Best Regards,
->> Michel Palleau
->>
-> 
-
+TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
+dW1zaGlybkB3ZGMuY29tPg0K
 
