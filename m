@@ -1,121 +1,94 @@
-Return-Path: <linux-btrfs+bounces-3123-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3124-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6174F87697E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 18:18:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C08C88769CC
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 18:24:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E5B41C20A67
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 17:18:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BC6C283A04
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 17:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0BFF495CC;
-	Fri,  8 Mar 2024 17:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26542381D4;
+	Fri,  8 Mar 2024 17:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="yTo4HQNQ"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="yoEU1rwB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52003288DF
-	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 17:18:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE77840861;
+	Fri,  8 Mar 2024 17:23:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709918291; cv=none; b=P7BtPn2etTwBvqpAHtWdcvDwA34i2qYH7ZSA3qd8ck3r/IY+qy6KHoaLP40/VU10muWf5TUkMQKUWr3Y6A85D8mkTbobHEE10ThtlFCimjNAk7TRc9mnfYsQrtR4VavAXsQH4wOURmK1QZv1KMA0W97H4cJiskJYzpAqAtxniYk=
+	t=1709918634; cv=none; b=tIT7f8XLvTebYVeBXSt/BHlyKPsuj5s7QAzkAPLHqTmc/YB6YdF5iNhAhvfsna+p3NNc9H/tOTCWI9xBAdebfmYQI/H/1WBy7BwdvjOEIcsqwzIvyr/SS9Xuwr5B+6TyVIH9U03pVFGKkLIF17WmE4oTMBJV+nlwl1TnfZmwGi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709918291; c=relaxed/simple;
-	bh=4QZFZIY/kmodj4JF06VYmGkSZCD9gnX1+VV1k7bwbbM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aqvRVFLFkdWXRWHOzCKmXMxnh1K2H2veizzNfbfGrFAdlyXIEuF3ZuKpKaig/R/Vvw450ORMTpFlwNqbvBpcOUgqHRTYZmOU6fG5Ikx9PQVwnRFyKW/Sp1bH01EldLNzYlp6bXinoOc/5kJreR4lVj8IR4ISHg9CXz0l7a3/6rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=yTo4HQNQ; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-365b5050622so1911075ab.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 08 Mar 2024 09:18:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709918288; x=1710523088; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OzUtklwPlJOuPJluAgACqxyTfZzplj9AthRwSYyjjp8=;
-        b=yTo4HQNQDwfnjLZWlMPcHvoibIB96tsEqA9VKV1rvfdWH3cFsJcwVHWxEtFgAaga+X
-         aKxk6r2GveOb1qd9TOhItsYIqtOXTWbjo4xsTZjRsMj4u51EhJLwJ5ugTebljVf0kda4
-         +3/O/F9HD/ynzyFE4iCXfFLx/gjSKcf35VHGDhNmOT3o7FETuf9gj0GvkY2LhmhGhLxB
-         de/ulcSmzTEbOuhG5BOxklup1aDj3cR4qUC6e0XzZSk15rTtANQ5rdJYgxz51jJhQvJ6
-         dRkiAW8s9HiD3+hA/6dTbGeNjGLIUZo4S37nxzsQxqJDkgj/qBDgU24FfOI2yrg7USYN
-         3RWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709918288; x=1710523088;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OzUtklwPlJOuPJluAgACqxyTfZzplj9AthRwSYyjjp8=;
-        b=LYTmA7VfMF97oPdDoUAJAEbhcjOTkZQEMXV0nI0tdRr6zr1V1+QzhpVoP1IhyWoFbv
-         8zFbdOu+YkVBUvZ5CUQq3Fzmc6zcqGuDrxMSKIGA9QWHha3kQojqn2lbXrQ3+bBk/J9c
-         Izhrc6EHTbxRs7L1vDmiFHoFqW6uPBpB7wkWJEr+N5SehzRisA3H7jYZmX+qmBtQz8jA
-         YUOzOuVwSUL8HWesDe2IswL4vAekdRsMRwzNXjaymTWahNzJBQQLu181IwHxa3whRABZ
-         rwY18N0PfIuRFMAVlMzKLvMZinaf7gVCT9kacaqVBQWK/q69TZ5LHO8TWnPNtGkdSl5a
-         0HCg==
-X-Forwarded-Encrypted: i=1; AJvYcCVP5Eo/1M02JTQ5rs8PQU76jJAdCa/rHF/fIcrXgT4i2ir/whd5dOe5g/ENNdmYncktgopNokmQ9UbRZpJYHKihmLlOleoN5/CgQwk=
-X-Gm-Message-State: AOJu0Yz4klyRHwsRqqBW3jiKCKim863VCnWswvRi/otzTaeBxVB88NpV
-	lbykhjSKdQIINRKui+yjVHqSIMclprFGLGZ/g7yR5joRjCRwAOJ/G17X5n6piX0=
-X-Google-Smtp-Source: AGHT+IHxACDHwXpB1DRHc3vyvQVo+hhXIx+dv77eD2O+Lwu72LmdLkTlNoD1vGHkQjkQPAl9xihoxQ==
-X-Received: by 2002:a6b:7709:0:b0:7c8:7471:2f59 with SMTP id n9-20020a6b7709000000b007c874712f59mr2596113iom.0.1709918288476;
-        Fri, 08 Mar 2024 09:18:08 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id do32-20020a0566384ca000b004743bc59379sm4533416jab.59.2024.03.08.09.18.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Mar 2024 09:18:08 -0800 (PST)
-Message-ID: <30c3773b-4db3-4278-a127-df8c075e8109@kernel.dk>
-Date: Fri, 8 Mar 2024 10:18:06 -0700
+	s=arc-20240116; t=1709918634; c=relaxed/simple;
+	bh=JdhC2lc9HrS1dcjMT+E2Ue8bjLpIuTMFAeGj12xwZLQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CrhSpWsyE3ykqHFCGxQ62uUsdrAYJgqyqi44kj6qrD4VkJlzuhxU4EALd4HJO2HClOy7o6ZGzHTD0IxD13tdn2G6yp/MUo4exUj5Ki+egz/kHyvsy366LL2RrBfvqo4ei6Zq2Pc7O4JdVXfeLXR7M52MoqCmcGb0E9IdcxVA4GU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=yoEU1rwB; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=h3hF6RNjd/OEL9wHy1dbF2LdOLelVx+45qSHoPQalzc=; b=yoEU1rwBug2LfydZImJYIUpvbi
+	AUE4rfCNzywlInAXqiJvjLoaof5qrFMuDuq8ltcVtHqeE5FEei/g2cQxJ6FTWrYqS64r1gsMaEpD8
+	Z4xP/kZnWyOIiP7ugyxqVFqZnsDHCUCLVwMc6B1UJqYhJ0Lcqpv+Q5pJS3rOE7Wb2VIDeSmn0LPzi
+	ciQpheoO6p3RlGHYOVNfNTpCcit+SuvvvUXt7IyQ8j6++K0sMRckgF4rLQQ86lr/2BPq4oTnkHWVI
+	9qVDYfThQixqZaJ7INs2ZBBjp+UwSXjD0h+SuOYtIQRasgGR1Fwty4NmtCyEdwMgNIa6FEh+b/N+d
+	wlmDlY4w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ridwm-0000000AUVy-0yWT;
+	Fri, 08 Mar 2024 17:23:52 +0000
+Date: Fri, 8 Mar 2024 09:23:52 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: Christoph Hellwig <hch@infradead.org>, boris@bur.io, dsterba@suse.com,
+	linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: validate device maj:min during open
+Message-ID: <ZetJqJH-K-fC-pC-@infradead.org>
+References: <845dfb4fbf36dae204020c6a0a0e027cab42bcf0.1709865032.git.anand.jain@oracle.com>
+ <ZeszQwa8721XnZsY@infradead.org>
+ <be3571d7-2bfe-4bad-b2c6-84a0bf121140@oracle.com>
+ <Zes4i3qvFk2nWjyY@infradead.org>
+ <9a59cfac-2ab4-4c6c-933a-70dcd3e3d80b@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 03/10] fs: Initial atomic write support
-Content-Language: en-US
-To: John Garry <john.g.garry@oracle.com>, kbusch@kernel.org, hch@lst.de,
- sagi@grimberg.me, jejb@linux.ibm.com, martin.petersen@oracle.com,
- djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
- dchinner@redhat.com, jack@suse.cz
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
- ojaswin@linux.ibm.com, linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
- io-uring@vger.kernel.org, nilay@linux.ibm.com, ritesh.list@gmail.com,
- Prasad Singamsetty <prasad.singamsetty@oracle.com>
-References: <20240226173612.1478858-1-john.g.garry@oracle.com>
- <20240226173612.1478858-4-john.g.garry@oracle.com>
- <1f68ab8c-e8c2-4669-a59a-65a645e568a3@kernel.dk>
- <67aa0476-e449-414c-8953-a5d3d0fe6857@oracle.com>
- <eef12540-84b6-4591-a797-6cfea7b28d48@kernel.dk>
- <8fde7b95-fed0-4cfd-a47e-455cccf1a190@oracle.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <8fde7b95-fed0-4cfd-a47e-455cccf1a190@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a59cfac-2ab4-4c6c-933a-70dcd3e3d80b@oracle.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 3/8/24 10:15 AM, John Garry wrote:
-> On 08/03/2024 17:05, Jens Axboe wrote:
->>> And the callers can hardcode rw_type?
->> Yep, basically making the change identical to the aio one. Not sure why
->> you did it differently in those two spots.
+On Fri, Mar 08, 2024 at 09:53:07PM +0530, Anand Jain wrote:
+> It's a bit complex, as Boris discovered and has provided a testcase
+> for here:
 > 
-> In the aio code, rw_type was readily available. For io_uring it was
-> not, and I chose to derive from something locally available. But
-> that's a bit awkward and is not good for performance, so I'll follow
-> your suggestion.
+> https://lore.kernel.org/fstests/f40e347d5a4b4b28201b1a088d38a3c75dd10ebd.1709251328.git.boris@bur.io/
+> 
+> In essence:
+> 
+>  - Create two devices, d1 and d2.
+>  - Both devices will be scanned into the kernel by Mfks.
+>  - Use an external method to alter the devt of the d2 device.
+>  - Mount using d1.
+>  - You end up with a 2 devices Btrfs with an incorrect device->devt.
+>  - Delete d1.
+>  - Now you have a single-device Btrfs on d2 with a stale device->devt.
 
-It's literally just one caller back, it's not like you had to look hard
-to spot this. Don't take lazy shortcuts -  it's not very confidence
-inspiring if this is the level of attention to detail that went into
-this patchset.
+But how do you get mismatching devices in this exact place?
 
--- 
-Jens Axboe
+  - bdev->bd_dev is immutable and never updated
+  - device->devt can be changed by device_list_add, but if that happens
+    underneath us here between btrfs_get_bdev_and_sb and the code a few
+    lines below the call to it in btrfs_open_one_device there is a huge
+    synchronization problem
 
 
