@@ -1,127 +1,172 @@
-Return-Path: <linux-btrfs+bounces-3134-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3135-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A19D7876BFA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 21:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 23EE8876C3A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 22:02:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E93B2835C7
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 20:45:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3642281535
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 21:02:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5275E08A;
-	Fri,  8 Mar 2024 20:45:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3BB17745;
+	Fri,  8 Mar 2024 21:02:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b="DpWNVNxM"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RydWUsC7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mta-p7.oit.umn.edu (mta-p7.oit.umn.edu [134.84.196.207])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF742B9A0
-	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 20:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.84.196.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 547D05B20C
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 21:02:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709930724; cv=none; b=SOLEciHz80nMWqeK/uDKTH6rwycLbDRHLdv8Z4OIJ9t3Mu15f7Q3dxpDYBRzhS3FctOSEBJKtWx2XEHSue+YK1sGtVmDqmHgLDuZn31yuvp0gEyQVpiSpNLYPnH27d0gRIMhanDh89iwhVJvOkLQ8cA7kqp04rUFAE5KCHPdIXU=
+	t=1709931756; cv=none; b=nHsj8wJ1/bQt+rAjVWX5fLUvV3FMa1s/vwzPKm5s6lls9roStbQT/6vtEvXuZ2izZthBvK3w7Wlga4eFE/6OyI/0ArJtuVf9G93erGBdgQoM+OC80w1j6NSfOf6g21QsUH0v/jChIHSpLW62m5xog+ajnU9RWI/dRTd5sjlsT+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709930724; c=relaxed/simple;
-	bh=lpDrlI0nhlooJyZ7Vq5/rMDQtL/Xq4MijUhgxZ+09hU=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=UQKI53EaB708Z8vQOv8aqt/D7y9fglIDRO0hMGRChgQHGtrCMHCJrevE9YJvuh0YOFbascihUlIRIYbb+8ypqesxGqlaRnAsD4QZxuvpx1ttdHxq4rUch794oEm4sVYN9ePCFsRX528UupA6ahzGFr3UEHG9u+jKqOb2xxO9o6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu; spf=pass smtp.mailfrom=d.umn.edu; dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b=DpWNVNxM; arc=none smtp.client-ip=134.84.196.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=d.umn.edu
-Received: from localhost (unknown [127.0.0.1])
-	by mta-p7.oit.umn.edu (Postfix) with ESMTP id 4TryhH58g8z9vJrl
-	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 20:39:27 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p7.oit.umn.edu ([127.0.0.1])
-	by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 04CDKOZV9H3H for <linux-btrfs@vger.kernel.org>;
-	Fri,  8 Mar 2024 14:39:27 -0600 (CST)
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 4TryhH2qnHz9vJrW
-	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 14:39:27 -0600 (CST)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 4TryhH2qnHz9vJrW
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4TryhH2qnHz9vJrW
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-299783294a6so2026191a91.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 08 Mar 2024 12:39:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=d.umn.edu; s=google; t=1709930366; x=1710535166; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lpDrlI0nhlooJyZ7Vq5/rMDQtL/Xq4MijUhgxZ+09hU=;
-        b=DpWNVNxMX6wSEhMY582u6uDuYaYdbXVLYLt4Sh52HVW01fnHCZt/Mv0JndNfmHMuJR
-         n/qay7HMc99pG+P//OWWByxFxToab5nx3Y1MF3t9DqgX6YY8zW0MVg9lKTzjwpE1QGX/
-         vdRqnb4WV4/DHeNT3e6NY9MTMcaMyGEXcxMO6XVoFlRGuSk2ay9+aFhSt91fwHp817Ai
-         S0PLsH/2OCnGq7rQnJvzO8JnK+LlDiUBG1ykcRxOx3cA99uZlV9OG09BBTwrP5DfxbQo
-         lOsds4rxsIuI7LGeVdz9xspYXXtQea91JrUY+WOlEHnYUXiagq/jA5mSOqnyp+8rV8SQ
-         fYUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709930366; x=1710535166;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lpDrlI0nhlooJyZ7Vq5/rMDQtL/Xq4MijUhgxZ+09hU=;
-        b=aQBWTCL867d0e6MgEEfmlKxq8b2YDVU1sjitDhcfeC4yTSg5ttXcund6OO2689Df9w
-         +oXK5nwuwUUGQpQ0GbDkChzEruiRyZNO8BAjOvWcODkz9tLLRQOADnzdgV93MrcnN050
-         gG6u+CuxkPgHZWQy61GOCtM5LnSrzSXgQa03Zck3eNLlOjMSPIQSX05xNiTzNIlr/nPk
-         cvB6lRHGiV8XojpfbEz3JA3DWxioyOZ2q7rmRLKurp0cuAd+kIRqM8zjKOuC49pkYEFr
-         OGHixT8YMgjXHXP7jgTg8Kl3HV/OQjtyLSyfvSB5kWXSamwap88f7CFvs8ZjEwBAxhRk
-         tNSw==
-X-Gm-Message-State: AOJu0YzY+8IX13P4AqUgDg/PC8wA2zOcxzUG1NwKCbfzNbmOJfUOftXI
-	lau/gvpu5IuUL7oixfkxKv6Z07ma4oluJ9sfdzTdJiIYZE3mxBLLgwH2EZf6300JOMp1rs/qeWr
-	aADjcuOgJ0wQscD/iHm6Ssg1tSMrL9URjPt5sZ0T+E0KeRpreF1o+wrAmfOAc3Eokp1xcP4Cb5c
-	dOkJ1eEEzXsWGCupi11DL0QMqoZlb8xGXCLuCKiNGshv5p1nXG
-X-Received: by 2002:a17:90a:66c8:b0:29b:2d64:68e5 with SMTP id z8-20020a17090a66c800b0029b2d6468e5mr296890pjl.31.1709930366472;
-        Fri, 08 Mar 2024 12:39:26 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF33fNmI4rMu5mTGcNslhzvkY3nL3NkkyKcI2oM9P8kEr9hXod1KhVAo/xpyFYAu0+WMmIJz0nUEXGAeuN5vaw=
-X-Received: by 2002:a17:90a:66c8:b0:29b:2d64:68e5 with SMTP id
- z8-20020a17090a66c800b0029b2d6468e5mr296879pjl.31.1709930366171; Fri, 08 Mar
- 2024 12:39:26 -0800 (PST)
+	s=arc-20240116; t=1709931756; c=relaxed/simple;
+	bh=uBo6sozDcH7heyuPigVLX7YZuPh3Y0p9PS8rPYiSi8Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=aOzOv8pXF9IEHcHizBC6CdxtGe/GsPfRMBPq6e+whIhxgPPqxifcB+L/H7jVAN6ZRCVkcQAuAXkyfIrjZqwF5kuIemNT4I1FOV+V4SGCnbSzSxexd/ooq1spiJ15kijy0Hni3c1jpZBP/wvp8m9aKABspWXmcgPu3/Ps9YII1uQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RydWUsC7; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1709931749; x=1710536549; i=quwenruo.btrfs@gmx.com;
+	bh=uBo6sozDcH7heyuPigVLX7YZuPh3Y0p9PS8rPYiSi8Q=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=RydWUsC7IbDgY3bDKLYAA5hadp/yPLklQfhY8f5LWLcNTUsMxqv9cSKT+DT/YTQR
+	 01XqdkvsLTt+zacfYsCFV1XiRrQEMPZaKaO3zLQFPp+RKdO7mLU6tTRtpTWXcmCgf
+	 WXkAEk+mdpH87LdPxs14uR4VHkKt015XKeOsNufRb8a3KKorWUiZeYY457i0ceYNj
+	 giYUGFGTSPGPvyBhD2iaNUi9msUISjCCbiguSzn0PAIsux+To1C2jOb8peONbsScQ
+	 5leVUsjD1Nz3cA9naHp5qexpk1ODTk5gdCm9lqvNde0R69JnejkiyJJyT9NPfRY70
+	 C4ySDPCtvRl8nDfOsA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MUGeB-1rHNIc1Dc3-00RIq0; Fri, 08
+ Mar 2024 22:02:29 +0100
+Message-ID: <5b35783e-941e-4f1e-9c55-84fd319e6322@gmx.com>
+Date: Sat, 9 Mar 2024 07:32:24 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Date: Fri, 8 Mar 2024 14:39:14 -0600
-Message-ID: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
-Subject: raid1 root device with efi
-To: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: raid1 root device with efi
+Content-Language: en-US
+To: Matt Zagrabelny <mzagrabe@d.umn.edu>,
+ Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:LU66TnTvDKGDybWxas1FGiRi1s0UbrtoSWWTUwwqg3tnvEWRFBZ
+ 79dK7sN+SGCHDAmVaMTzmRW1+4FFquTAb+I601Iodrx/VoRG7oSBqfF8Z/p4APNF/wuloTI
+ qk8NVfuk8IkxIZqG50DWU7170/y3fk4VzMif2CZ0chgnfIPlevnPfxFBYrK7gsrRqVKhlbQ
+ k4Uq84Do2dIpRyj8G9wnA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:qvhIlUrXm04=;ZyY2rbu/tk8y/csFOQ9jDGbbKp/
+ qfaC44B0r77ILu923K3fAR73ncLM7QNYd0PqY/9SMMsYoI0pPRnNAhz5I2UupfHGn0O7NXkug
+ XyHIBBDT/uBtrRWZ0pTc6vYaUXapVPf1jkw4kWN/CuKiH3Pa69Bk4vAPvWWCw5hq0j1HdWP+f
+ iKA0F7iUA4XHivx0HaJqO+5wkAuuBzf5ZRKJh0ViOlSLfrG1wUfu/bDMsm5LTjHoXvmGFXL3f
+ CIjL54/1ayh2KOfniEuEnUErlKdMyvKwVJYngfQhokaXRccjYmy6cDb3HaU3NrlpMczUFKP+x
+ gUW12kYroOOydi3t97TsMOpgxWveY079rnrT3bK1kYl0nZovo9vc8qBZaVSaF+iS+qqznGWkh
+ mp1H+FL0otcAhEV5/PS6fHoo/ZBNyhnjABDKxg38/ezLj991F6qq9ZMULWtexsQ/6TnfcX4Uh
+ YK9jfbtwop/rljrmJCsJJjSrND9SDB0+M2jmnpLRHXVCxed1M2C/6qGCXncaSC0KIlNRKZ8Ue
+ DStiylwx9u+jvhoelZc1cL4RNL9POa3RVVxxTL/L05DFqWOV+3Nyhd7OYcbI8my3NJZjTHSnm
+ 2442+JtS2lqZipIdgBHjnVv5PYOi4PvU0pTeMyeVr9Txrl/67BvYyHMQtFMVLnr44jDGvwiQp
+ 21gURSpkEFYzJF3YmkN/24xVOhsmn+U7Tg5LmMC4V7ws15sUAhOXVJBxkTsRRUniU6R+EUzWb
+ uEceC4nGT9std1owEpi6kqIKQ4NXnwh9GJlfewmI9I0AP/JuezDvTl3G46xLTUAogLvD06waa
+ fHB9PgfmBxzRQmuPFXc+o+qtqpnBWHQxHefm60K0CbaUw=
 
-Greetings,
 
-I've read some conflicting info online about the best way to have a
-raid1 btrfs root device.
 
-I've got two disks, with identical partitioning and I tried the
-following scenario (call it scenario 1):
+=E5=9C=A8 2024/3/9 07:09, Matt Zagrabelny =E5=86=99=E9=81=93:
+> Greetings,
+>
+> I've read some conflicting info online about the best way to have a
+> raid1 btrfs root device.
+>
+> I've got two disks, with identical partitioning and I tried the
+> following scenario (call it scenario 1):
+>
+> partition 1: EFI
+> partition 2: btrfs RAID1 (/)
 
-partition 1: EFI
-partition 2: btrfs RAID1 (/)
+This really depends on how you want to setup your bootloader.
 
-There are some docs that claim that the above is possible and others
-that say you need the following scenario, call it scenario 2:
+In my case, I hate GRUB2 so much that I always go with:
 
-partition 1: EFI
-partition 2: MD RAID1 (/boot)
-partition 3: btrfs RAID1 (/)
+- Partition 1: EFI (also as /boot)
+   This includes both the EFI bootloader (systemd-boot), along with
+   kernel and its initramfs.
 
-What do folks think? Is the first scenario setup possible? or is the
-second setup the preferred way to achieve a btrfs RAID1 root
-filesystem?
+   The disadvantage is, if you go LUKS, your kernel/initramfs will never
+   be encrypted, thus exporting some risks (e.g. some attacker with
+   physical access to your system can implant some rootkit into your
+   initramfs and steal your credential)
 
-The reason I ask is that I followed a guide (for scenario 1) and
-rebooted the computer after each step to verify that things worked.
-After I finished the whole guide, I unplugged one of the disks (with
-the system off) and the BIOS could no longer find the disk. I then
-plugged the disk back in and the BIOS could still not find the disk,
-so something is amiss.
+- Partition 2: Whatever you want
+   It can be btrfs RAID*, or even other fs over LUKS over LVM etc.
 
-Thanks for any commentary and help!
 
--m
+>
+> There are some docs that claim that the above is possible and others
+> that say you need the following scenario, call it scenario 2:
+>
+> partition 1: EFI
+> partition 2: MD RAID1 (/boot)
+> partition 3: btrfs RAID1 (/)
+
+At least OpenSUSE TumbleWeed doesn't need a dedicated /boot, and it is
+using GRUB2.
+
+So I don't think a dedicated /boot is mandatory.
+
+Thanks,
+Qu
+
+>
+> What do folks think? Is the first scenario setup possible? or is the
+> second setup the preferred way to achieve a btrfs RAID1 root
+> filesystem?
+>
+> The reason I ask is that I followed a guide (for scenario 1) and
+> rebooted the computer after each step to verify that things worked.
+> After I finished the whole guide, I unplugged one of the disks (with
+> the system off) and the BIOS could no longer find the disk. I then
+> plugged the disk back in and the BIOS could still not find the disk,
+> so something is amiss.
+>
+> Thanks for any commentary and help!
+>
+> -m
+>
 
