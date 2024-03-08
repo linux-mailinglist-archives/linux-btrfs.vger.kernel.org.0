@@ -1,297 +1,127 @@
-Return-Path: <linux-btrfs+bounces-3133-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3134-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06580876A65
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 19:04:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A19D7876BFA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 21:45:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4852285101
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 18:04:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E93B2835C7
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Mar 2024 20:45:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7B6D5A7B4;
-	Fri,  8 Mar 2024 18:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5275E08A;
+	Fri,  8 Mar 2024 20:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="BAIeDFA1"
+	dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b="DpWNVNxM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+Received: from mta-p7.oit.umn.edu (mta-p7.oit.umn.edu [134.84.196.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF742B9A0
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 20:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.84.196.207
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709930724; cv=none; b=SOLEciHz80nMWqeK/uDKTH6rwycLbDRHLdv8Z4OIJ9t3Mu15f7Q3dxpDYBRzhS3FctOSEBJKtWx2XEHSue+YK1sGtVmDqmHgLDuZn31yuvp0gEyQVpiSpNLYPnH27d0gRIMhanDh89iwhVJvOkLQ8cA7kqp04rUFAE5KCHPdIXU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709930724; c=relaxed/simple;
+	bh=lpDrlI0nhlooJyZ7Vq5/rMDQtL/Xq4MijUhgxZ+09hU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=UQKI53EaB708Z8vQOv8aqt/D7y9fglIDRO0hMGRChgQHGtrCMHCJrevE9YJvuh0YOFbascihUlIRIYbb+8ypqesxGqlaRnAsD4QZxuvpx1ttdHxq4rUch794oEm4sVYN9ePCFsRX528UupA6ahzGFr3UEHG9u+jKqOb2xxO9o6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu; spf=pass smtp.mailfrom=d.umn.edu; dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b=DpWNVNxM; arc=none smtp.client-ip=134.84.196.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=d.umn.edu
+Received: from localhost (unknown [127.0.0.1])
+	by mta-p7.oit.umn.edu (Postfix) with ESMTP id 4TryhH58g8z9vJrl
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 20:39:27 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p7.oit.umn.edu ([127.0.0.1])
+	by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 04CDKOZV9H3H for <linux-btrfs@vger.kernel.org>;
+	Fri,  8 Mar 2024 14:39:27 -0600 (CST)
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D825916D;
-	Fri,  8 Mar 2024 18:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.144.250
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709921018; cv=none; b=FbS3bg2FHzUF80C6NYyiDRtGoxpk17E1WRmmaqczZhX91BHoa+0WATEFfIeLVHMdX4oEMu+gJCnMhAFbOnRiuh8TIcLMn+ct/VL1daei6isKR6m6bDWpjIrt49Hq7T2RVaTGKKSPiNfk+sIa+nSacSiNoQ8CzIPtCe7TRFcEIlk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709921018; c=relaxed/simple;
-	bh=Ok/nnTe+/+xwLdjd+7wLl1FtDqtT6GVQPQmwMIQZK8Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=beAFqbSq5KebrwtUKSQTkXjsrqxX0na3BjIVwTlK/cntkFngKQMYvlVSGwZwd6WPlkaXrnzdRyD7o+dCNCNZf8ocKK+OShBKpzihFY6PmnJKAdSiznxhuvP7f6LS1t6kfsYY4ip2V01QQehPWyF/6J9T/NpOTnCn9B33q+8gDBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me; spf=pass smtp.mailfrom=dorminy.me; dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b=BAIeDFA1; arc=none smtp.client-ip=71.19.144.250
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	by box.fidei.email (Postfix) with ESMTPSA id 38ABD82571;
-	Fri,  8 Mar 2024 13:03:30 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-	t=1709921010; bh=Ok/nnTe+/+xwLdjd+7wLl1FtDqtT6GVQPQmwMIQZK8Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BAIeDFA1lMC6Z/F3pB/Vaoi/k1oPwKaB4QIfe3M0zOXmQK2Yq8YQ70NEMuUhIfO7b
-	 EX6ZhAb8/fd919Mlwbh1K7WHlT4zNvfoz76iQqBxY3Jz2Dk9KwQ5g110OtTeB96vW1
-	 lUB7Mro+RpsUwxY1kF8Xg6TgzqDeHtOPtmijeQetVvHHeFgc6RbXxJsiS0PevKT6W6
-	 UPqs+L8B7ZqEYMhw5JAFwe/E2mS/+ngXXj6ob7yynTy7H1FYwBwbtw+d4Jcuu3HXNN
-	 JGHr2bYv8El9D9Mcsxw8SUWuqDciK11k0b0FPXbKVy4+dpRu92fJp2kDyDR94LdbXo
-	 pEs/GGDinRnIA==
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To: corbet@lwn.net,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	clm@meta.com,
-	dsterba@suse.com,
-	josef@toxicpanda.com
-Cc: jbacik@toxicpanda.com,
-	kernel-team@meta.com,
-	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH 3/3] btrfs: fiemap: return extent physical size
-Date: Fri,  8 Mar 2024 13:03:20 -0500
-Message-ID: <28089fc747eb8673ae147b7af38a3919bfa52144.1709918025.git.sweettea-kernel@dorminy.me>
-In-Reply-To: <cover.1709918025.git.sweettea-kernel@dorminy.me>
-References: <cover.1709918025.git.sweettea-kernel@dorminy.me>
+	by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 4TryhH2qnHz9vJrW
+	for <linux-btrfs@vger.kernel.org>; Fri,  8 Mar 2024 14:39:27 -0600 (CST)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 4TryhH2qnHz9vJrW
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4TryhH2qnHz9vJrW
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-299783294a6so2026191a91.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Mar 2024 12:39:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=d.umn.edu; s=google; t=1709930366; x=1710535166; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lpDrlI0nhlooJyZ7Vq5/rMDQtL/Xq4MijUhgxZ+09hU=;
+        b=DpWNVNxMX6wSEhMY582u6uDuYaYdbXVLYLt4Sh52HVW01fnHCZt/Mv0JndNfmHMuJR
+         n/qay7HMc99pG+P//OWWByxFxToab5nx3Y1MF3t9DqgX6YY8zW0MVg9lKTzjwpE1QGX/
+         vdRqnb4WV4/DHeNT3e6NY9MTMcaMyGEXcxMO6XVoFlRGuSk2ay9+aFhSt91fwHp817Ai
+         S0PLsH/2OCnGq7rQnJvzO8JnK+LlDiUBG1ykcRxOx3cA99uZlV9OG09BBTwrP5DfxbQo
+         lOsds4rxsIuI7LGeVdz9xspYXXtQea91JrUY+WOlEHnYUXiagq/jA5mSOqnyp+8rV8SQ
+         fYUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709930366; x=1710535166;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lpDrlI0nhlooJyZ7Vq5/rMDQtL/Xq4MijUhgxZ+09hU=;
+        b=aQBWTCL867d0e6MgEEfmlKxq8b2YDVU1sjitDhcfeC4yTSg5ttXcund6OO2689Df9w
+         +oXK5nwuwUUGQpQ0GbDkChzEruiRyZNO8BAjOvWcODkz9tLLRQOADnzdgV93MrcnN050
+         gG6u+CuxkPgHZWQy61GOCtM5LnSrzSXgQa03Zck3eNLlOjMSPIQSX05xNiTzNIlr/nPk
+         cvB6lRHGiV8XojpfbEz3JA3DWxioyOZ2q7rmRLKurp0cuAd+kIRqM8zjKOuC49pkYEFr
+         OGHixT8YMgjXHXP7jgTg8Kl3HV/OQjtyLSyfvSB5kWXSamwap88f7CFvs8ZjEwBAxhRk
+         tNSw==
+X-Gm-Message-State: AOJu0YzY+8IX13P4AqUgDg/PC8wA2zOcxzUG1NwKCbfzNbmOJfUOftXI
+	lau/gvpu5IuUL7oixfkxKv6Z07ma4oluJ9sfdzTdJiIYZE3mxBLLgwH2EZf6300JOMp1rs/qeWr
+	aADjcuOgJ0wQscD/iHm6Ssg1tSMrL9URjPt5sZ0T+E0KeRpreF1o+wrAmfOAc3Eokp1xcP4Cb5c
+	dOkJ1eEEzXsWGCupi11DL0QMqoZlb8xGXCLuCKiNGshv5p1nXG
+X-Received: by 2002:a17:90a:66c8:b0:29b:2d64:68e5 with SMTP id z8-20020a17090a66c800b0029b2d6468e5mr296890pjl.31.1709930366472;
+        Fri, 08 Mar 2024 12:39:26 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF33fNmI4rMu5mTGcNslhzvkY3nL3NkkyKcI2oM9P8kEr9hXod1KhVAo/xpyFYAu0+WMmIJz0nUEXGAeuN5vaw=
+X-Received: by 2002:a17:90a:66c8:b0:29b:2d64:68e5 with SMTP id
+ z8-20020a17090a66c800b0029b2d6468e5mr296879pjl.31.1709930366171; Fri, 08 Mar
+ 2024 12:39:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Date: Fri, 8 Mar 2024 14:39:14 -0600
+Message-ID: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
+Subject: raid1 root device with efi
+To: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Now that fiemap allows returning extent physical size, make btrfs return
-the appropriate extent's actual disk size.
+Greetings,
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- fs/btrfs/extent_io.c | 63 +++++++++++++++++++++++++++-----------------
- 1 file changed, 39 insertions(+), 24 deletions(-)
+I've read some conflicting info online about the best way to have a
+raid1 btrfs root device.
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index cdf662b9fb5b..4374c531e088 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2456,7 +2456,8 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
- struct btrfs_fiemap_entry {
- 	u64 offset;
- 	u64 phys;
--	u64 len;
-+	u64 log_len;
-+	u64 phys_len;
- 	u32 flags;
- };
- 
-@@ -2514,7 +2515,8 @@ struct fiemap_cache {
- 	/* Fields for the cached extent (unsubmitted, not ready, extent). */
- 	u64 offset;
- 	u64 phys;
--	u64 len;
-+	u64 log_len;
-+	u64 phys_len;
- 	u32 flags;
- 	bool cached;
- };
-@@ -2527,8 +2529,8 @@ static int flush_fiemap_cache(struct fiemap_extent_info *fieinfo,
- 		int ret;
- 
- 		ret = fiemap_fill_next_extent(fieinfo, entry->offset,
--					      entry->phys, entry->len,
--					      entry->flags);
-+					      entry->phys, entry->log_len,
-+					      entry->phys_len, entry->flags);
- 		/*
- 		 * Ignore 1 (reached max entries) because we keep track of that
- 		 * ourselves in emit_fiemap_extent().
-@@ -2553,7 +2555,8 @@ static int flush_fiemap_cache(struct fiemap_extent_info *fieinfo,
-  */
- static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 				struct fiemap_cache *cache,
--				u64 offset, u64 phys, u64 len, u32 flags)
-+				u64 offset, u64 phys, u64 log_len,
-+				u64 phys_len, u32 flags)
- {
- 	struct btrfs_fiemap_entry *entry;
- 	u64 cache_end;
-@@ -2596,7 +2599,7 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 	 * or equals to what we have in cache->offset. We deal with this as
- 	 * described below.
- 	 */
--	cache_end = cache->offset + cache->len;
-+	cache_end = cache->offset + cache->log_len;
- 	if (cache_end > offset) {
- 		if (offset == cache->offset) {
- 			/*
-@@ -2620,10 +2623,10 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 			 * where a previously found file extent item was split
- 			 * due to an ordered extent completing.
- 			 */
--			cache->len = offset - cache->offset;
-+			cache->log_len = offset - cache->offset;
- 			goto emit;
- 		} else {
--			const u64 range_end = offset + len;
-+			const u64 range_end = offset + log_len;
- 
- 			/*
- 			 * The offset of the file extent item we have just found
-@@ -2660,7 +2663,7 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 				phys += cache_end - offset;
- 
- 			offset = cache_end;
--			len = range_end - cache_end;
-+			log_len = range_end - cache_end;
- 			goto emit;
- 		}
- 	}
-@@ -2670,15 +2673,17 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 	 * 1) Their logical addresses are continuous
- 	 *
- 	 * 2) Their physical addresses are continuous
--	 *    So truly compressed (physical size smaller than logical size)
--	 *    extents won't get merged with each other
- 	 *
- 	 * 3) Share same flags
-+	 *
-+	 * 4) Not compressed
- 	 */
--	if (cache->offset + cache->len  == offset &&
--	    cache->phys + cache->len == phys  &&
--	    cache->flags == flags) {
--		cache->len += len;
-+	if (cache->offset + cache->log_len  == offset &&
-+	    cache->phys + cache->log_len == phys  &&
-+	    cache->flags == flags &&
-+	    !(flags & FIEMAP_EXTENT_ENCODED)) {
-+		cache->log_len += log_len;
-+		cache->phys_len += phys_len;
- 		return 0;
- 	}
- 
-@@ -2695,7 +2700,7 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 		 * to miss it.
- 		 */
- 		entry = &cache->entries[cache->entries_size - 1];
--		cache->next_search_offset = entry->offset + entry->len;
-+		cache->next_search_offset = entry->offset + entry->log_len;
- 		cache->cached = false;
- 
- 		return BTRFS_FIEMAP_FLUSH_CACHE;
-@@ -2704,7 +2709,8 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 	entry = &cache->entries[cache->entries_pos];
- 	entry->offset = cache->offset;
- 	entry->phys = cache->phys;
--	entry->len = cache->len;
-+	entry->log_len = cache->log_len;
-+	entry->phys_len = cache->phys_len;
- 	entry->flags = cache->flags;
- 	cache->entries_pos++;
- 	cache->extents_mapped++;
-@@ -2717,7 +2723,8 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 	cache->cached = true;
- 	cache->offset = offset;
- 	cache->phys = phys;
--	cache->len = len;
-+	cache->log_len = log_len;
-+	cache->phys_len = phys_len;
- 	cache->flags = flags;
- 
- 	return 0;
-@@ -2743,7 +2750,8 @@ static int emit_last_fiemap_cache(struct fiemap_extent_info *fieinfo,
- 		return 0;
- 
- 	ret = fiemap_fill_next_extent(fieinfo, cache->offset, cache->phys,
--				      cache->len, cache->len, cache->flags);
-+				      cache->log_len, cache->phys_len,
-+				      cache->flags);
- 	cache->cached = false;
- 	if (ret > 0)
- 		ret = 0;
-@@ -2937,13 +2945,15 @@ static int fiemap_process_hole(struct btrfs_inode *inode,
- 			}
- 			ret = emit_fiemap_extent(fieinfo, cache, prealloc_start,
- 						 disk_bytenr + extent_offset,
--						 prealloc_len, prealloc_flags);
-+						 prealloc_len, prealloc_len,
-+						 prealloc_flags);
- 			if (ret)
- 				return ret;
- 			extent_offset += prealloc_len;
- 		}
- 
- 		ret = emit_fiemap_extent(fieinfo, cache, delalloc_start, 0,
-+					 delalloc_end + 1 - delalloc_start,
- 					 delalloc_end + 1 - delalloc_start,
- 					 FIEMAP_EXTENT_DELALLOC |
- 					 FIEMAP_EXTENT_UNKNOWN);
-@@ -2984,7 +2994,8 @@ static int fiemap_process_hole(struct btrfs_inode *inode,
- 		}
- 		ret = emit_fiemap_extent(fieinfo, cache, prealloc_start,
- 					 disk_bytenr + extent_offset,
--					 prealloc_len, prealloc_flags);
-+					 prealloc_len, prealloc_len,
-+					 prealloc_flags);
- 		if (ret)
- 			return ret;
- 	}
-@@ -3130,6 +3141,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		u64 extent_offset = 0;
- 		u64 extent_gen;
- 		u64 disk_bytenr = 0;
-+		u64 disk_size = 0;
- 		u64 flags = 0;
- 		int extent_type;
- 		u8 compression;
-@@ -3192,7 +3204,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 			flags |= FIEMAP_EXTENT_DATA_INLINE;
- 			flags |= FIEMAP_EXTENT_NOT_ALIGNED;
- 			ret = emit_fiemap_extent(fieinfo, &cache, key.offset, 0,
--						 extent_len, flags);
-+						 extent_len, extent_len, flags);
- 		} else if (extent_type == BTRFS_FILE_EXTENT_PREALLOC) {
- 			ret = fiemap_process_hole(inode, fieinfo, &cache,
- 						  &delalloc_cached_state,
-@@ -3207,6 +3219,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 						  backref_ctx, 0, 0, 0,
- 						  key.offset, extent_end - 1);
- 		} else {
-+			disk_size = btrfs_file_extent_disk_num_bytes(leaf, ei);
- 			/* We have a regular extent. */
- 			if (fieinfo->fi_extents_max) {
- 				ret = btrfs_is_data_extent_shared(inode,
-@@ -3221,7 +3234,9 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 
- 			ret = emit_fiemap_extent(fieinfo, &cache, key.offset,
- 						 disk_bytenr + extent_offset,
--						 extent_len, flags);
-+						 extent_len,
-+						 disk_size - extent_offset,
-+						 flags);
- 		}
- 
- 		if (ret < 0) {
-@@ -3259,7 +3274,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		prev_extent_end = range_end;
- 	}
- 
--	if (cache.cached && cache.offset + cache.len >= last_extent_end) {
-+	if (cache.cached && cache.offset + cache.log_len >= last_extent_end) {
- 		const u64 i_size = i_size_read(&inode->vfs_inode);
- 
- 		if (prev_extent_end < i_size) {
--- 
-2.44.0
+I've got two disks, with identical partitioning and I tried the
+following scenario (call it scenario 1):
 
+partition 1: EFI
+partition 2: btrfs RAID1 (/)
+
+There are some docs that claim that the above is possible and others
+that say you need the following scenario, call it scenario 2:
+
+partition 1: EFI
+partition 2: MD RAID1 (/boot)
+partition 3: btrfs RAID1 (/)
+
+What do folks think? Is the first scenario setup possible? or is the
+second setup the preferred way to achieve a btrfs RAID1 root
+filesystem?
+
+The reason I ask is that I followed a guide (for scenario 1) and
+rebooted the computer after each step to verify that things worked.
+After I finished the whole guide, I unplugged one of the disks (with
+the system off) and the BIOS could no longer find the disk. I then
+plugged the disk back in and the BIOS could still not find the disk,
+so something is amiss.
+
+Thanks for any commentary and help!
+
+-m
 
