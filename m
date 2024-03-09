@@ -1,97 +1,97 @@
-Return-Path: <linux-btrfs+bounces-3141-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3142-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69D4F877038
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Mar 2024 11:11:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC4B877039
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Mar 2024 11:11:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D76911F2149A
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Mar 2024 10:11:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EDA11F21385
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Mar 2024 10:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523F038388;
-	Sat,  9 Mar 2024 10:11:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3108338391;
+	Sat,  9 Mar 2024 10:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="oWFjcyYP";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="jggOfjaI"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="kV9dvq3v";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="FPNjt61i"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D00C23DB;
-	Sat,  9 Mar 2024 10:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB2423DB;
+	Sat,  9 Mar 2024 10:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709979096; cv=fail; b=Um0KLgOgSk0AbHeuUvngMhKRp/wDBmCU1wB8HLgzkuKGDzGeVCepWLrhWK8xIO5TIN5YUhroCRfXrmQoJMZzAtqJRQkpU+UnbPYxi6HH/yi92CEtbn+XssYtSYG5kwn27tGPs7VpO/GSmPY7zDOTJZfUS8l71A6TP1bERbGCM88=
+	t=1709979102; cv=fail; b=dJ+Dzjfp6WcD+fS5+RKVmsXd9+I/22JH7hb2OG1IcXzENm9d9DUSAzUZD3S0PEXPjLPoKRvFNVRsQB2MJe4JzHvoDz349XzO6vw2KaV71c3Y6XLRPyhRTQujPYP77xkPfZm7MQ2gZZBMASZcy53NlOHaUxPxwPiO2PfVDQWGF5w=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709979096; c=relaxed/simple;
-	bh=VTh7aFh5lP2egBx3ga4ll8Es6ZAbuPe3StAcVxAmH2k=;
+	s=arc-20240116; t=1709979102; c=relaxed/simple;
+	bh=znaFIi9YtH1kOJ36Pb1/XoC23oDEadO1Y742hfXJGp8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=B9MUCANRN0R2S82j+2nvVNzRcOYz5mkYJPXgIZ/4TyM+7/bq23sEvFMU90tz0Xy7r0uPYaF4tiBFKgqvMEsgSIa8AsdYUfchQGOfdNCtsNr55KJZGr8KaYvHJ9jXC/lmB5+oFWaVDnBQXS3cHOxv0aUDcm23tzLbeQZMVBcIJIE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=oWFjcyYP; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=jggOfjaI; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=uWiyWYz/gXAGGcK5CV1Et15uk5edHo7yY6He7koL8SshPZxCPYDhM6lnHHIm9RKkRiKPlbM9T6HqhZo60JX1CEfH6yB8yRfFPuXUpZcf32Tum1zvbda5O+/Lzf+Mw12nisteSSGipD0lvmIp35tyMgcp+ml7GJm8C9wRlc+lH3k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=kV9dvq3v; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=FPNjt61i; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4299i37I012647;
-	Sat, 9 Mar 2024 10:11:33 GMT
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4299hlln019752;
+	Sat, 9 Mar 2024 10:11:39 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2023-11-20; bh=xNl0F1Yu2pKiFNJ8QCurEFdMsNW9WPN/0T0Jo3RNW9A=;
- b=oWFjcyYPGTWQnEkRR40KnShML4ehvSXVK1DvfY+AXXEE6YK2b4EUo1nX0MBXRJAU3zog
- 2MfLF63P+dMI7xpwTFkiWOwu6rUURlJ+TB08J3xev4ZhKZXGciDdesnay2gWtjQb8OLT
- 7k2GSyBeUxTTIK3N+DZsGLMfkWirrAHIydiYPHQF3NK+s3l+nerfr9ti/tDSaCwNmMFm
- RlJxUOVNUlA6fFEA090Xoo8CcqEAUiMuMI35M22Miuz2984TnS+LG/9dWGpQSuAMfrWN
- Z+3Kfjb9566vI136M1YEhzEkQeNR5Qb3dy42OCsOKA2dBHeTT3VcdmmgvZ55swOdL+Nl yg== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wrfnbgdxu-1
+ s=corp-2023-11-20; bh=IMMgDt09wh84d+pFkBxsH0C5IRlEOMS5ZDZ9lcfbLb4=;
+ b=kV9dvq3v6ScxAic2zZPp1Htss/t31aXq78g2sm0oPVNBNINwiwYLR/It+aHyIJulqcoM
+ 0FkS+kUPAxQxqG329Vo+Yk3g/tl02spCvIhT+VX6Wskei6HMai+ipSdqi/gu2b96gLv+
+ 21jjnD8YNFTzge9RmMy1T73Hwu8YH+LKilWxLKaUPGmZd1pfyXM/zXIQEMFZ1E0px1B6
+ 8OTV4YNQwN66ah2GqA05LmQkh438Iszm3pcIT+oiYzeFUlaQA5VsPyUQ1wEnejdOZa0z
+ svYJIlrd2K7wa4eBxsxnslrhjZ3swLuVbNaTh3HG9tft3xoQc1sbzbuk2XM80axv189h wQ== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wre6e8e9j-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 09 Mar 2024 10:11:32 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42963JeG020051;
-	Sat, 9 Mar 2024 10:11:31 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wre740jwt-1
+	Sat, 09 Mar 2024 10:11:39 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4299td7x037842;
+	Sat, 9 Mar 2024 10:11:38 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wre73s65c-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 09 Mar 2024 10:11:31 +0000
+	Sat, 09 Mar 2024 10:11:38 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YLMTQDOIi9occwViV6ZoAtlawZZKZIzPNbLtNZBuhYrQe0D6HzpARb1KH1c71Csj5gWKF9Upz0dBkJCrC/wBWy/4bzano8fky882XpabpzCfBYwP1OHsbw/KzP4E1YTOsxo8r9jvtGFR7rPyS8ugxu7abbzX7oAF0aIdPC5xcjvjaZN91sZXCH/yioObRX/ZFrxfrSbtB+FPnzVt3B259B0Vhme7ju59E1swCGJ6RwyJoIHc6QgYXvkZAuW6WiFmYoNZptbw3KtLzLZXkN04k+t3QUb1+aBKItQy+dQHIG7qYHD/FlL6R2+1tkinFMsBduGl3oKgNYb8In7nC/xdTw==
+ b=cLBqC5tO+WngxCqcMjx1kKzQnpEUTWzJMlEvYKVhLeMBYWa8vl62/53EyipHfL+FzZaLRTVWoqx9i8hQbyZ5OP6ukZFUUcywNaMFGdhHSadML/msVaAfJs3k398VHtBL26fv8bhIkhfwgw5rA7HsEvwiyVqJ03fMcZBObn43MsVOJbPKWn1HmsTrzq9FlDHFmo7aV8Z92Xt1V4rTUGmlm3nzSSHTXCjj+mMq2++q7vRDLbHmRFs97o2/nsEmNlAkuIocHSdjZQsnws4pH78+VkRWKHY8z2p8CS+Kc+Z1MOcau9nHFNu/bZz8q+m0lhOdrXtDfrFmeXo8d0T814JFeA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xNl0F1Yu2pKiFNJ8QCurEFdMsNW9WPN/0T0Jo3RNW9A=;
- b=MfSr0vy51wrT60MS/6VeCKlJ3V2lz3EZ8MdrvOPw8suwEBG28j+Ifw4wP98100IF9fY1Lc6qO1FkjTbPvGcnAGEsFs/wWOQptVi/lDJKZF2kxe0TyVP8FYg16NbpmvmGVRCa79pFFgQP8cVFDqHpqhSo6G6efeKU4n1tYpbqBCffpeR95OPO2FKQUh38zOEsPsLw3bfHjF6kOALUPBIVCO6lwe32vJCSr2pHaZ3eDih9T4f8gl/rkh3Mww86RPxuswoZN65cRXFppqG4FTrlDIOV52MM14qh3TJ6Zs84frWZhqnObuxGcj7/m7OB1NvMXxxo3/CHtecIGaO/T5aomg==
+ bh=IMMgDt09wh84d+pFkBxsH0C5IRlEOMS5ZDZ9lcfbLb4=;
+ b=LDerNpecee9fReahsMTBSfo6/lWkDflGo2CWlfcbh21NgOY019v5Hxkt1HNutNVxvFp4ogIG3fx5hPMfY3LN6+g4GUolu9P20T/P1rxo/j9ZNmYUCRcV8cjJmukS+fiDEAqF5e74Ab/sg78b1nL2habwrOt+3+4FNabF+bP4sFRfx/8hnx21WICs3eOPMWJbxtiWetmcskjDTG6Xj+Oxsse6s5Zzuqig1ESMAEmtpwWeW1TnPx2gv/dm4YSToJIzU1VQhh4zWHm3xmpfKIS3jAKugVWep3ZdFE89FiZ01WRrOkotseSViX0rnDZ9otsTCGVy44ClgNlAMejnk7HSmA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xNl0F1Yu2pKiFNJ8QCurEFdMsNW9WPN/0T0Jo3RNW9A=;
- b=jggOfjaImjsp7H4DmCH8LvKBsDm/DrQvzDwhtBSm+hBzIO9y2rzzWR2BOqf+QKpH5BsP4dgVvnv8+KhmwDNXK+3m/yrZ9cxwOn/N7PIf80vnsPywoC693vUZBNRYVU2VKFvIIWUBePSO3vsN4+Gk+xNGFAjVqHXoL+hAXEWaopQ=
+ bh=IMMgDt09wh84d+pFkBxsH0C5IRlEOMS5ZDZ9lcfbLb4=;
+ b=FPNjt61i5xv3FfcnBQIBB++X95Y1xGU0loe6Htlm16cISgimYi4qPtYKObbKc0y+9UbcqJ61aQhQgjSe7jineqQj5q/ZbSbbh1HTcwGqOMJ4JvkfHVDBwnhsvwvsmsQbFt0yYbZ9bNalwxjESE2h7LQQZGyVoAgBifq6OyTkbZI=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
  by DS7PR10MB5167.namprd10.prod.outlook.com (2603:10b6:5:38e::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.33; Sat, 9 Mar
- 2024 10:11:30 +0000
+ 2024 10:11:36 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::814:3d5c:443b:17b%7]) with mapi id 15.20.7362.024; Sat, 9 Mar 2024
- 10:11:29 +0000
+ 10:11:36 +0000
 From: Anand Jain <anand.jain@oracle.com>
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] generic: move btrfs clone device testcase to the generic group
-Date: Sat,  9 Mar 2024 15:40:34 +0530
-Message-ID: <dd10c332377f315cd17abc46e08f296b87aed31c.1709970025.git.anand.jain@oracle.com>
+Subject: [PATCH 2/2] generic: test mount fails on physical device with configured dm volume
+Date: Sat,  9 Mar 2024 15:40:35 +0530
+Message-ID: <16996ed4a60e1bd4d3cb44d035bf9202e8ad9f80.1709970025.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1709970025.git.anand.jain@oracle.com>
 References: <cover.1709970025.git.anand.jain@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MA0PR01CA0065.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:ad::9) To PH0PR10MB5706.namprd10.prod.outlook.com
+X-ClientProxiedBy: MA0PR01CA0076.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:ad::17) To PH0PR10MB5706.namprd10.prod.outlook.com
  (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -101,297 +101,156 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DS7PR10MB5167:EE_
-X-MS-Office365-Filtering-Correlation-Id: e00868fc-3026-4849-ce74-08dc402149cc
+X-MS-Office365-Filtering-Correlation-Id: a03442aa-cc4d-4962-6e8d-08dc40214d70
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	AOqDR+JywcV70VchjLzibkzZ+frd6qapHH6Ze+V6KbE0Fh19aK3flcVgktKRideOWKyyvHmgZSX2DAYA6vFr1ttdl8aa3LwWbxs+hfh0PhDJUHRN1CsP2x+8vWZb2d3bWL6dKq+dlQ0rszOYj7XzIjlhadQKpz+Ynk9Gv7RQDBxdpsWOTx74QkutXscnYfr5ZQzmUXQ5H7Iq7X+V9nYFXdNtV7o0bUZR4QtkSV/XFkBEK+oZykPqdTwLWVD8JMI8jlzCANa3Pu/wkUInOdy6JH6uoZ9h10B9Gf5kPOTnLAbu+Np7ZlayJQCtYjsPrdwTS5AHzNdgUg9mXcjJc56Hv8ggVNQVvofVviDfy1Jr3RjBNO0D2oEEGaD5BU9Do3ISskiqBBFUxX9mpD1kJw7X6EzuuNLeCV2IaORFyM/hYinuPhkFuxo9W33dfHn9eIhyvRHvZZL5+fsth0D85ijE8Jxk6donhpQkvUHXguVXjcwld+IiuE/p/XtKEhseO+PHZk3sHLlRPzUB1xBorg5RnR/RBkzszYkU46gEO6OzCdFo91p5Ccod1w0/CmAkmFTxW/cOZfWyiVIxJfHtOq5IMbP/EEm/lOxkD01bVCqM1qqmK5j6CGLmn4sXZz79+N0N2gue50FPRiQJJTpA4+h9OM1grQzH2uLPhqktqwYVUdE=
+	nMMJ3Dfdhu+PEEp+FjuTJ+DYIwR7ibXrCRP1LtQrJz7FGjUQvHFuyjbJchbFrLcfZX8ErKrFGmxy3ktK5/iHg2f1FjFStMF8tfC7Z4ow/pbLRDc8ETi31f1jG9SVnUfNzci0E0ks0WsNoPkAFWXYXnAClEvaCL1te5G6r0aa22QTNqhqBY+OZku7ZKoti88IYhfZGB3CGjP0QPDCzMvIOSmuJ/NStMMn/22bO5DJ8dUADHteXBsAz9v+Gy2WSG7QtrCNB6Zv8lK805m0t+V4NqLndWXTpYeVFpZsTAnWXavUnWPIh3zB749DT32O6/UV7nI+zdn03+3ZIF4McdCoXKIfqG516Q5dIIyyAWYaLjid+Hcsv3/KXHNvVeRbjjyS7byD8OIn3HTo5exHolb5QRQJEVvkjthJBFITEzIBfmLV0SVU+ctA7PB2q35zBdtk5ipDNpD5rFytVXVjMXf27OCAVmqGv/We9OlFYEOXfsq2ew2m7GFGQY4kj22sXs/R4ZD/AI9SvjvxwxE2YY/iv/jlEoxx3tMelcwEPZQW4LzE36RpYMDbTgzW35b/uyFz+j1Efd0yzi30tZ4JOt0cwyrYUvEtFnMJu5hYzhdOxcYvSgk76s/PJT8xahrEBkPZuUwCP6tOZtuqzH1M3RasGkhZWH78uUEbLYJNWJD55IQ=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?iKNUaAIgMf0BDHCBPThpGgxU32jNYeJqaZUIMF3Lxy/tEpfNJvuTTRX+64VX?=
- =?us-ascii?Q?wlShX5PgyzrhQXUOLD7Sy3jRJtU/DatFSNNh3wyShk6e2bNYJaHVEHvdtruj?=
- =?us-ascii?Q?8IbFfIEVZih2ONc55mMGU8U1xiou/jVAyyJi3RpXTZp/vxcud/O+k9spaGyg?=
- =?us-ascii?Q?9gqNFyTw52rbtYRGpOKQHrmHrOV8bETb8rJoR0NRquITEuqa4wslxzTwipnk?=
- =?us-ascii?Q?dO1ED23blzEeLzAZ5wiU6mZre6u4bLhkIIbMD6scp68UsOWpZw2dJIk5Bw89?=
- =?us-ascii?Q?XyeS6qYOTimNifRaE2VvU86lVe9gh/RIjpdcMoa3BTrC2R/f5gQdzQcE+RaP?=
- =?us-ascii?Q?ycTgdNOif8WS3PCQA1P71VrMk2Ty9zMMQaBUTvgdnxz5tnLqTesE7XZhAMJ1?=
- =?us-ascii?Q?/FcdWIwjIQi+c7tHKX2lqmxbR4Uaely0XC1LxsP4yNj9VNmjNFPcLDCDQ9GH?=
- =?us-ascii?Q?j3jNMXvHyswU2DOH4OvJmJd+TvUohA3KrOs+Mj4WEY6MC7Az7Sinofz+Fafd?=
- =?us-ascii?Q?xSCQZZajfao8m2oTlADgGahsPUO7IGHS99+Ps5XA7cG3vv7cEPGny3Zugp/C?=
- =?us-ascii?Q?cqGbnQkWdoSKN7+tdwhCu/hWTT+Rv0ITEHOhQL3ZbNWZYBdjHnyplnkAspOu?=
- =?us-ascii?Q?x/EY0DqfxTsVivRFiaw2tXubAI4Z/8ExunNvIORkCensrDk8n99czA//GDG+?=
- =?us-ascii?Q?IACH+2iDRKW6tYmSEqv3piXGawZDBWxR05TWR37lO6PicGAJtMTfPfvd09MP?=
- =?us-ascii?Q?fOYz8pb64IJLBvxpKxiq4g1ixmkNgtX0nxSGoCWJ2OHNOnDMdRRaK5O2Qi8c?=
- =?us-ascii?Q?varCxRgWroG9Y7IYD4PAODFo7ACDFXaYxCzWXzjVZEpsOXLRHVt434ySOaH2?=
- =?us-ascii?Q?hBjyw29iFltOBjVS+JGKMkh/43WiE4gkWCuBtieBD78NkXPrquxFcsMLXg1R?=
- =?us-ascii?Q?n3Q7TD51zS77+zW/93qZvXoCaxYK6/Hlyz82P1XK8UAU7s95oQf2xYhWDyYN?=
- =?us-ascii?Q?lVZbj4Y7960N2BUpV6Xb4c0fAJn5pZid/weERa/HoUehiKr33AyxQGpx3O45?=
- =?us-ascii?Q?7TkXB3PkTFtvDiPdxJsK7iOApjIAvkQD8wQs1SOo6xslyDYbitHV7eLuOgwq?=
- =?us-ascii?Q?OnpHC9U+oTn6HVtT8aXZ05A7OtwXwQItoFwkGu5xhXgKVzVEZxAaicGzVy/Y?=
- =?us-ascii?Q?2zKyS7R081E1SPVMYNo5EQzRUZZ2LcPwyz6hzEdobWnGxchEL5ZcGcFz4vAa?=
- =?us-ascii?Q?378Ne2YkH9DwCmvwRCppX6fusfsoZ5yKwR4DoQCso+HS0xLt6F2dmXrcR77d?=
- =?us-ascii?Q?rpWTkHNBfdpBrQrCwMjS5nae5RZRRspkZ/n4TQgGh2Gz8KGIXz2otNqBY7HK?=
- =?us-ascii?Q?S4KLAPkmL+ZGQAo4mC4JLf1EbB+W0v1++jBER8SizWfHuWGL0h4VYuBZYGsf?=
- =?us-ascii?Q?4QKUpF8c4buo0TLQ6IFFoMBz/7yIz0TX2nZs7nZ0TZO63SYFOJLiPJA42mAO?=
- =?us-ascii?Q?7zrZyM+CYkkUNh+/RGTV6l1vmtekONXiGu5wbxsyNAvZcC8mSdBUpSATiA/Y?=
- =?us-ascii?Q?HcHXZAgaG8gHf/jhaqehvUMeYHuttW6EdX3TW/W645iO54r0Nx1Cb002r45X?=
- =?us-ascii?Q?cylKK0MqR/Fn7ztcOy9x5r/RjTY9ACmzPKBYROlwW3dz?=
+	=?us-ascii?Q?/+cyIF57IyJkHCAEj8EZp3WOYmiwMyY4M0IuXPH+vrQ5vUhowoNgTIgV1oIg?=
+ =?us-ascii?Q?/69wMXBtMkQCm24m0zch2t1D3RbOxr5ZduaJ9mKlb+CNYREQAoMK9c6REBdh?=
+ =?us-ascii?Q?nFsLUozVebFtr6ngJ/u4oGSkkjzANyecKGLvtFVDkAkLxocU0NXwkDE5TEyP?=
+ =?us-ascii?Q?2De82JpuIMYLzTkX4Fn3oyO5DjnfXSqDtgQQjNdtXixPlnH2+hWq5Q7b5ti6?=
+ =?us-ascii?Q?4EVBW142XkPDjbhFrDJDmhiaZ9RK0Da2/vCflDn41O9SpXt8QDggNvoi8mid?=
+ =?us-ascii?Q?HzhX9OBjlsCQIJu2Dd+Uc3Mktke5zxMQFfYOXIY4EsYa5KuVJYQN4d7KAGwW?=
+ =?us-ascii?Q?4PbSwv4dyRrJk6y4lAal0WZKF+HjpiMJ/dLIANv9RT6Cfhg0rPbhQSidz5Fd?=
+ =?us-ascii?Q?1SjRBXYX/vwIPKsy+oUulgsUQr7TcPDl4ixP5HQrxrv/udN2RzRlro5MOyUS?=
+ =?us-ascii?Q?qTXMP6WPla/ZMCiXOdosZW6+nbFsgZfsOTTPA2EY9fc/3tiDPWL7H2luOrbX?=
+ =?us-ascii?Q?vm6z19mrZhCD+viUwGcy6AL7J3CRKBUAUDMZjU+28BOfZiOxyqTzHexsDe0y?=
+ =?us-ascii?Q?tv+GF/zv8VLBgi/GJd6I8evw8fHY1pZKcEx8bVS8la/EUODOrzoF1AUFHEnL?=
+ =?us-ascii?Q?3lm5pRyP1S8MQdlkPcdSixrx1tpdp7GLyWY59JoMyf2OM10NHKZva3m54l7s?=
+ =?us-ascii?Q?/uG7ySx5PZiinqqz3jXpjLx4xQQbnOGbCxcDe5TyXHOgSWGWYpBXp0Wfmoed?=
+ =?us-ascii?Q?kNNd3PE8Tf5sLLn5vGi4UtKc4hNif6LYclJTjwKgPLCHhHK5eswL4mr9ncen?=
+ =?us-ascii?Q?TxOklV1FwVCW+93gbjjBc6JfK93Z/9HH6H1zjTEsa6Geg2hqKYXwENO2SS9x?=
+ =?us-ascii?Q?vVHi4BXVjXPzqkIZ7YnHLiNSau2aeFXkbpuOr/Ogpp/3PZLR2mn3+f1m1fDf?=
+ =?us-ascii?Q?cOnjHLFKlYeZnkNpWBhMqv6Ky57FiGkZjpMX+jZqUOSuA3AFT8SGp6AZ93pb?=
+ =?us-ascii?Q?LQIRYncE6MGIBLOZw89nGi7JR7qBmDSZM2dZH4R02Xi3g2IMt2Qc/GEgEYjF?=
+ =?us-ascii?Q?/5KWVmQB5cLCK2+exMmga+33DI3or9aAeH3PzdyKn1dhEL+6R2V8ksV/R0dS?=
+ =?us-ascii?Q?sw8hqPaAJkLxxX5NRWHyjuXSA37YbVSAJZciJ6bXCVIk5xzFQxwkIBi0pbLs?=
+ =?us-ascii?Q?p3tuzNvehGmZoE/gWbs/OlgkfSjjMDPQZieO35APRBndpNSYHE+gojcaK/A1?=
+ =?us-ascii?Q?a9k93R1wfQHrD8pFJSBzqAIoQIewMoLP8J8xSsYNmQOlJ+KXf+sqmUa2/OEB?=
+ =?us-ascii?Q?kCJbdCLTXM9TqEet1pfZouBjwmolse8MBRvoy/SomzT0zNMx4QqCNx6JwsEC?=
+ =?us-ascii?Q?898IKyCVnvCJk7BVAk2zuYsZnXVQ63OtlRLophDsZqkOIwNEx/yIQPtARKv5?=
+ =?us-ascii?Q?SfVoiQ4J10wuV+4hQDGsbRwZw9HfTaUvRp7zFK/yaraSuFAEeOEC0nHO9f2h?=
+ =?us-ascii?Q?oR5MxMYFhTpqWhLduIV8lqZVurpdfnUsv+6hFaXmfP3OH14a6AZZCKmlIfs8?=
+ =?us-ascii?Q?vQ3Or5i+cFQjU+PnNg7wlhWrf7yHGaa6gD0TsFeBx6BoEp6s9KWEGPwY/IPb?=
+ =?us-ascii?Q?nqJF2SJ1VzzAJDXLdmHRsofcP+clc85mUYxv+hWH10zTpPd+pi7z6DRRwrnM?=
+ =?us-ascii?Q?GYhPtw=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	bmUqr0IhvzCpXua36nxOYU9UvbyFCGMnVsveMY2p3wVW6tLoKUQe52rM0SsC8VaPjLxnvGusVMrsY3tQQpfGiJMIJ2tr5iJnZCMuHpceBJmJekbhdZbQYEeiKV4YpYHlUN4kjaoM/FHhvWzz3ocYgn6FnoFDeHRK+KV7rh39KP3zWa2kXzQqS9EeUn45utddD717lWByM7saC6iOZs206W0IACicTSXqNNB7n98vOQ6SpTCWi5NBRSufEWnf2IRczkyqVSaB1lg4icSlJl/pZ2dS6LcXqvU3+BKBttKdH6UX1dzHnLk3yCzudd8oaFh2JZOeE+0eIfHlp6YFSgUzk17m6m1klTUwXZU0rL9ZIr/+wHQ9H/Rqx3F72R2zW4YGmeY/aY6kcYESlAxRru3wMfYjPQW1jsbrbG7BIWLAhSImZSO61iP1d00Sq+6/iUmj/RMnugxx/JHSWACTxU8t+hVGLexkOya8GYbzHu4nl/gwo/NEn/PdlshhK+yaTKLG4JbnkFJU2+SNvKBogZiJAy7zzbJV/04TISVpXrcegfttUKzvdmKMY0TrjRt9g8XJ8w998xvVRnLJdgQXHdmu1pZzzbnZCop3/mEh0WpPpJc=
+	Ai8zIc7/lQVV+cItQ75rAL5LhmCETkrIn7rl9yg/w8cSjMUOoHPEtBmUyEexJ0xXmJo6HOmn7buJ0yjlBZjm9ILzLMqVy3rjvF9/lRG7CdWE0j2MNK2k9+0UEsyCvUFTlJzLvZcfdPVK5Z4YMTTqGlLBWZ+PD35hYxkTYxVIAtQqe4uobQzfvA0zhGmXA9AiA9cB43Q7w3OVBlE9BVZb2HhOMe1k9q2cPbWDpWcae9icRwGUsXu23oQ8LODetSekLreIJ2TaIbFHpaeVBSNHf8wP3sHbBkrigSglnz7WPQNPl7gJTzO1m7qzgP4XKqTzTDSk2Emw2dEAsd4a2vJ4v0+D6iJ1h13k+SEeIT8AymYi7SdHjXvlCJ7JJ1G9bDCRWK5zeN700EvT88r6Awijz+mUxnnYcJ+P7+FWamMUyepFyWYbYCmIyrIRZhTQm78TCmu59ObJmZyzf9ggTgIbgCFfEasDopXkevfDPhc42e9obAHA710zqL5gtRb7n7MSP6aikGHwUkLVM9vXYJPCCfJ4rpreHKRF92ZypxqVjom2uBQL32/P4aKN78yu+eVQSjZkZgePmKEO26b12WZkgxTsuQxDSURONljsQUJGDuA=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e00868fc-3026-4849-ce74-08dc402149cc
+X-MS-Exchange-CrossTenant-Network-Message-Id: a03442aa-cc4d-4962-6e8d-08dc40214d70
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2024 10:11:29.9443
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2024 10:11:35.9956
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7vacDYS+aYM3chTZqG8iD0KYfmjl99rkfbF+7xqD2v8ZFt3UvwR4XR4yl7I5caYJ/DbsvobDBIOIVjk6CSsEbQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: rsTRAS31WA+3GbYv4O3mFMcGb6u0VvCDlYIH9TXCuNCtycjW5BhYShu4p33u4DSFQWK0VWr81bo+L0QaWRo7LA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5167
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- malwarescore=0 spamscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ mlxlogscore=999 malwarescore=0 mlxscore=0 bulkscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311290000 definitions=main-2403090081
-X-Proofpoint-GUID: oRfsE6BWkqg3viYL8IxI-DTCuW1ZfZ1G
-X-Proofpoint-ORIG-GUID: oRfsE6BWkqg3viYL8IxI-DTCuW1ZfZ1G
+X-Proofpoint-GUID: 2zCX7sXnQx_63XLgu1Xx2NrSvpnTn8_J
+X-Proofpoint-ORIG-GUID: 2zCX7sXnQx_63XLgu1Xx2NrSvpnTn8_J
 
-Given that ext4 also allows mounting of a cloned filesystem, the btrfs
-test case btrfs/312, which assesses the functionality of cloned filesystem
-support, can be refactored to be under the generic group.
+When a dm Flakey device is configured, we have access to both the physical
+device and the dm flakey device, ensure that the physical device mount
+fails.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- tests/btrfs/312       | 78 --------------------------------------
- tests/btrfs/312.out   | 19 ----------
- tests/generic/740     | 88 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/740.out |  4 ++
- 4 files changed, 92 insertions(+), 97 deletions(-)
- delete mode 100755 tests/btrfs/312
- delete mode 100644 tests/btrfs/312.out
- create mode 100755 tests/generic/740
- create mode 100644 tests/generic/740.out
+ tests/generic/741     | 60 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/741.out |  3 +++
+ 2 files changed, 63 insertions(+)
+ create mode 100755 tests/generic/741
+ create mode 100644 tests/generic/741.out
 
-diff --git a/tests/btrfs/312 b/tests/btrfs/312
-deleted file mode 100755
-index eedcf11a2308..000000000000
---- a/tests/btrfs/312
-+++ /dev/null
-@@ -1,78 +0,0 @@
--#! /bin/bash
--# SPDX-License-Identifier: GPL-2.0
--# Copyright (c) 2024 Oracle.  All Rights Reserved.
--#
--# FS QA Test 312
--#
--# On a clone a device check to see if tempfsid is activated.
--#
--. ./common/preamble
--_begin_fstest auto quick clone tempfsid
--
--_cleanup()
--{
--	cd /
--	$UMOUNT_PROG $mnt1 > /dev/null 2>&1
--	rm -r -f $tmp.*
--	rm -r -f $mnt1
--}
--
--. ./common/filter.btrfs
--. ./common/reflink
--
--_supported_fs btrfs
--_require_scratch_dev_pool 2
--_scratch_dev_pool_get 2
--_require_btrfs_fs_feature temp_fsid
--
--mnt1=$TEST_DIR/$seq/mnt1
--mkdir -p $mnt1
--
--create_cloned_devices()
--{
--	local dev1=$1
--	local dev2=$2
--
--	echo -n Creating cloned device...
--	_mkfs_dev -fq -b $((1024 * 1024 * 300)) $dev1
--
--	_mount $dev1 $SCRATCH_MNT
--
--	$XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' $SCRATCH_MNT/foo | \
--								_filter_xfs_io
--	$UMOUNT_PROG $SCRATCH_MNT
--	# device dump of $dev1 to $dev2
--	dd if=$dev1 of=$dev2 bs=300M count=1 conv=fsync status=none || \
--							_fail "dd failed: $?"
--	echo done
--}
--
--mount_cloned_device()
--{
--	echo ---- $FUNCNAME ----
--	create_cloned_devices ${SCRATCH_DEV_NAME[0]} ${SCRATCH_DEV_NAME[1]}
--
--	echo Mounting original device
--	_mount ${SCRATCH_DEV_NAME[0]} $SCRATCH_MNT
--	$XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' $SCRATCH_MNT/foo | \
--								_filter_xfs_io
--	check_fsid ${SCRATCH_DEV_NAME[0]}
--
--	echo Mounting cloned device
--	_mount ${SCRATCH_DEV_NAME[1]} $mnt1 || \
--				_fail "mount failed, tempfsid didn't work"
--
--	echo cp reflink must fail
--	_cp_reflink $SCRATCH_MNT/foo $mnt1/bar 2>&1 | \
--						_filter_testdir_and_scratch
--
--	check_fsid ${SCRATCH_DEV_NAME[1]}
--}
--
--mount_cloned_device
--
--_scratch_dev_pool_put
--
--# success, all done
--status=0
--exit
-diff --git a/tests/btrfs/312.out b/tests/btrfs/312.out
-deleted file mode 100644
-index b7de6ce3cc6e..000000000000
---- a/tests/btrfs/312.out
-+++ /dev/null
-@@ -1,19 +0,0 @@
--QA output created by 312
------ mount_cloned_device ----
--Creating cloned device...wrote 9000/9000 bytes at offset 0
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--done
--Mounting original device
--wrote 9000/9000 bytes at offset 0
--XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--On disk fsid:		FSID
--Metadata uuid:		FSID
--Temp fsid:		FSID
--Tempfsid status:	0
--Mounting cloned device
--cp reflink must fail
--cp: failed to clone 'TEST_DIR/312/mnt1/bar' from 'SCRATCH_MNT/foo': Invalid cross-device link
--On disk fsid:		FSID
--Metadata uuid:		FSID
--Temp fsid:		TEMPFSID
--Tempfsid status:	1
-diff --git a/tests/generic/740 b/tests/generic/740
+diff --git a/tests/generic/741 b/tests/generic/741
 new file mode 100755
-index 000000000000..2b2bff96b8ec
+index 000000000000..f8f9a7be7619
 --- /dev/null
-+++ b/tests/generic/740
-@@ -0,0 +1,88 @@
++++ b/tests/generic/741
+@@ -0,0 +1,60 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2024 Oracle. All Rights Reserved.
++# Copyright (c) 2024 Oracle.  All Rights Reserved.
 +#
-+# FS QA Test 740
++# FS QA Test 741
 +#
-+# Set up a filesystem, create a clone, mount both, and verify if the cp reflink
-+# operation between these two mounts fails.
++# Attempt to mount both the DM physical device and the DM flakey device.
++# Verify the returned error message.
 +#
 +. ./common/preamble
-+_begin_fstest auto quick clone volume tempfsid
++_begin_fstest auto quick volume tempfsid
 +
++# Override the default cleanup function.
 +_cleanup()
 +{
++	umount $extra_mnt &> /dev/null
++	rm -rf $extra_mnt
++	_unmount_flakey
++	_cleanup_flakey
 +	cd /
 +	rm -r -f $tmp.*
-+
-+	$UMOUNT_PROG $mnt2 &> /dev/null
-+	rm -r -f $mnt2
-+	_destroy_loop_device $loop_dev2 &> /dev/null
-+	rm -r -f $loop_file2
-+
-+	$UMOUNT_PROG $mnt1 &> /dev/null
-+	rm -r -f $mnt1
-+	_destroy_loop_device $loop_dev1 &> /dev/null
-+	rm -r -f $loop_file1
-+
 +}
 +
++# Import common functions.
 +. ./common/filter
-+. ./common/reflink
++. ./common/dmflakey
 +
-+# Modify as appropriate.
-+_supported_fs btrfs ext4
-+_require_cp_reflink
++# real QA test starts here
++_supported_fs generic
 +_require_test
-+_require_loop
++_require_scratch
++_require_dm_target flakey
 +
-+[[ $FSTYP == "btrfs" ]] && _require_btrfs_fs_feature temp_fsid
++[ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit XXXXXXXXXXXX \
++			"btrfs: return accurate error code on open failure"
 +
-+clone_filesystem()
-+{
-+	local dev1=$1
-+	local dev2=$2
++_scratch_mkfs >> $seqres.full
++_init_flakey
++_mount_flakey
 +
-+	_mkfs_dev $dev1
++extra_mnt=$TEST_DIR/extra_mnt
++rm -rf $extra_mnt
++mkdir -p $extra_mnt
 +
-+	_mount $dev1 $mnt1
-+	$XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' $mnt1/foo >> $seqres.full
-+	$UMOUNT_PROG $mnt1
++# Mount must fail because the physical device has a dm created on it.
++# Filters alter the return code of the mount.
++_mount $SCRATCH_DEV $extra_mnt 2>&1 | \
++			_filter_testdir_and_scratch | _filter_error_mount
 +
-+	# device dump of $dev1 to $dev2
-+	dd if=$dev1 of=$dev2 conv=fsync status=none || _fail "dd failed: $?"
-+}
++# Try again with flakey unmounted, must fail.
++_unmount_flakey
++_mount $SCRATCH_DEV $extra_mnt 2>&1 | \
++			_filter_testdir_and_scratch | _filter_error_mount
 +
-+mnt1=$TEST_DIR/$seq/mnt1
-+rm -r -f $mnt1
-+mkdir -p $mnt1
++# Removing dm should make mount successful.
++_cleanup_flakey
++_scratch_mount
 +
-+mnt2=$TEST_DIR/$seq/mnt2
-+rm -r -f $mnt2
-+mkdir -p $mnt2
-+
-+loop_file1="$TEST_DIR/$seq/image1"
-+rm -r -f $loop_file1
-+truncate -s 300m "$loop_file1"
-+loop_dev1=$(_create_loop_device "$loop_file1")
-+
-+loop_file2="$TEST_DIR/$seq/image2"
-+rm -r -f $loop_file2
-+truncate -s 300m "$loop_file2"
-+loop_dev2=$(_create_loop_device "$loop_file2")
-+
-+clone_filesystem ${loop_dev1} ${loop_dev2}
-+
-+# Mounting original device
-+_mount $loop_dev1 $mnt1
-+$XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' $mnt1/foo | _filter_xfs_io
-+
-+# Mounting cloned device
-+_mount $loop_dev2 $mnt2 || _fail "mount of cloned device failed"
-+
-+# cp reflink across two different filesystems must fail
-+_cp_reflink $mnt1/foo $mnt2/bar 2>&1 | _filter_test_dir
-+
-+# success, all done
 +status=0
 +exit
-diff --git a/tests/generic/740.out b/tests/generic/740.out
+diff --git a/tests/generic/741.out b/tests/generic/741.out
 new file mode 100644
-index 000000000000..6ca8bb7e1b21
+index 000000000000..b694f5fad6b8
 --- /dev/null
-+++ b/tests/generic/740.out
-@@ -0,0 +1,4 @@
-+QA output created by 740
-+wrote 9000/9000 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+cp: failed to clone 'TEST_DIR/740/mnt2/bar' from 'TEST_DIR/740/mnt1/foo': Invalid cross-device link
++++ b/tests/generic/741.out
+@@ -0,0 +1,3 @@
++QA output created by 741
++mount: TEST_DIR/extra_mnt: SCRATCH_DEV already mounted or mount point busy
++mount: TEST_DIR/extra_mnt: SCRATCH_DEV already mounted or mount point busy
 -- 
 2.39.3
 
