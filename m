@@ -1,265 +1,146 @@
-Return-Path: <linux-btrfs+bounces-3160-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3162-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 238218777B4
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Mar 2024 18:17:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 557828777F6
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Mar 2024 19:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 838491F21682
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Mar 2024 17:17:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 032CE1F21270
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Mar 2024 18:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32CC3383A1;
-	Sun, 10 Mar 2024 17:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060B439AE7;
+	Sun, 10 Mar 2024 18:18:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c8/XCi4B"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=tnonline.net header.i=@tnonline.net header.b="jQg9e0Fp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx.tnonline.net (mx.tnonline.net [65.109.230.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FC734CD5;
-	Sun, 10 Mar 2024 17:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 814A03984A
+	for <linux-btrfs@vger.kernel.org>; Sun, 10 Mar 2024 18:17:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.230.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710091025; cv=none; b=riPtjISybmZ1X9+EN6wMy1qbImGxOn6piVqGvOoJhdLuAe1RuJlUTmOCKvbO7rqiGKyWlYR8iNjhWw+091i7ly9A56BaV5eeqvssj/Mf/tM9dyr+Mv3rFD6ojDREQBBWQuuQC0pQ8D8Ga0HxYTSIOkWuELVhyLzZaXVP83E0pGk=
+	t=1710094680; cv=none; b=g5cevmDQs+bOT+s3BryMaxG8tnL73jw4kFYQgMe1a1SDlw3qG58jrrrV3w3lHwKLYHJRttCaLhJyHSx1nIAgxW96SZyISM5kLUPcemIVMVTbJbMtoHh0pRuQoQXynxDWGGp4I76lKtHJq4f52x0exK7effNE9HErDGGam6AEfBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710091025; c=relaxed/simple;
-	bh=R5st3OtZPxFq6/X1mhigQsYpUvB5OFFyd7hUwnjq4ME=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gICRCPdHIElfPc9Yg4YtDD1OzMri3Oc5qseembznnjKXN44mWPqyH41B05MTwsqIB4HIlt+MScW4/8HaMnXhl0KffZuhWJCWitLFrAzRaPcQXUi5UN5cHF/xwgsZEfGuONoh0JN3IEHN2UoOEqZHePYX9USExc2xSyt2gF7dfRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c8/XCi4B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA0E7C433C7;
-	Sun, 10 Mar 2024 17:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710091024;
-	bh=R5st3OtZPxFq6/X1mhigQsYpUvB5OFFyd7hUwnjq4ME=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=c8/XCi4BmgquN48G4veBMZrCmU+Uc2CwWwNgQqdWVZ494ywFUD6qM2tP2YVCX1c5h
-	 bURdkRyFUyYS4JvZQ4K7Jhb1qVlvxPScvwi2CN08/J0D4OBlux/kRxEwdgGxsf3iZK
-	 f9Bs7DyIKwYEQ2Z85v8WC0B9eLs5OHSDTpd0lhFdQmpSGIkU2pYep0vzpPILXMsVyv
-	 TVeM2RUzdFJ+yZdfJYvvJ2FX7Nrs142Ih59z6fNzVrUurbyqHDhJmsL9Wq/KGxfDOd
-	 IvBbGH9hTTxZSzm4mruNmLqxaVY7F/P9N/WuW7dB97w/vuXHbbwZ4hROWAjLXNrr0u
-	 D1ln9ZfDLhhSQ==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a461c50deccso54174766b.0;
-        Sun, 10 Mar 2024 10:17:04 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWADhQSNWPyUzaIAtyjtMFv1HecfBVZmh2DF9fQCEUVxdAPY7pQb26hTFVhoH/KJgnosrSwJUIEnXeeZS6f8tnWbAcmskZuIA==
-X-Gm-Message-State: AOJu0YyA+iHK6/VIc5zy7W1H92f4ATc0Vkz7TrTK57cUzDv2kn6/CiR5
-	/WV7CUfQV9pE2v1QRIl9yexBv1g/UqaCzHikojvlcV2epyaqNz2dRvOWlMNV7Q4Ela+RUC8D4k1
-	F/ra7XO66PM7QzYd0QWPmWMSL/6E=
-X-Google-Smtp-Source: AGHT+IGfsIqhCETYcuLnWMEMicOfiaJKPyMkeBi+9a3G86Dq/T4ykuYLXOhKKZKQ2rrBzFk9D+0S6HYJStlBB/Ko98U=
-X-Received: by 2002:a17:906:5947:b0:a45:c931:5703 with SMTP id
- g7-20020a170906594700b00a45c9315703mr2139521ejr.70.1710091023242; Sun, 10 Mar
- 2024 10:17:03 -0700 (PDT)
+	s=arc-20240116; t=1710094680; c=relaxed/simple;
+	bh=a3lMIb9GWJpSGL7aoIlHcAJLFfk4BU2Fim3+4cFRAt4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mzc7cACSFTz3jGspvNazSgqR0NvVuYdDcgfuf+5DtlDEP98nMz1pO2FUVOxxmBrYOEgUcyBje/waOZ04w5AbUue4qETKpIFnprVcex5yra4vz2WuOZkFxa+11L4AwJmpkTNtKTbbnEqnRJw0H87s25XJC8mfpksRAEIAxb+t8Hk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tnonline.net; spf=pass smtp.mailfrom=tnonline.net; dkim=pass (2048-bit key) header.d=tnonline.net header.i=@tnonline.net header.b=jQg9e0Fp; arc=none smtp.client-ip=65.109.230.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tnonline.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tnonline.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=tnonline.net; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=xwUEy5tagTrTc9terYHewyrWW2auSkXgZVVfP+9oPwg=; t=1710094678; x=1711304278; 
+	b=jQg9e0FpL/4jf6GxGpPRcQA7bRjz3Jq765BUpK3KjfbTiRcSKmuowBd9Gl564qq/PRP0d+jk3YY
+	igpHOdiON5FVrzhzboV83TMK5JKaCVdgoxC2/wO7DP5uXbtQeHLddbMiEHbqCh5OUL6BtMhkiLXlk
+	EiOGs8RJWk7wGJhWYC0l8h/O3LXM1hC7Srk1y9ozqMfNnRbT0nsVINLcPgifnQd+2ljizdPcmsgta
+	+DdklFBVdYQvoKGGI6dn2j2QJcJ4DvsoAChj0FqcxOCqvXIv/8cxBF3fzTOOhSNZw2AzCgT94hJxy
+	Zy2fWnEPOJ69Bm+9U4ZsToQ8g2uosfFHoPyA==;
+Received: from tnonline.net ([2001:470:28:704::1]:60892)
+	by mx.tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.97.1)
+	(envelope-from <postmaster@tnonline.net>)
+	id 1rjNQ4-00000000121-2zRU;
+	Sun, 10 Mar 2024 17:57:09 +0000
+Received: from [192.168.0.122] (port=41184)
+	by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.97.1)
+	(envelope-from <forza@tnonline.net>)
+	id 1rjNQ4-000000005SX-2VXx;
+	Sun, 10 Mar 2024 18:57:08 +0100
+Message-ID: <1eac6d15-4ead-46bc-9b60-02f1d120c885@tnonline.net>
+Date: Sun, 10 Mar 2024 18:57:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <9dde3b18f00a30cae78197c9069db503f720fe71.1709844612.git.boris@bur.io>
-In-Reply-To: <9dde3b18f00a30cae78197c9069db503f720fe71.1709844612.git.boris@bur.io>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sun, 10 Mar 2024 17:16:26 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5FPa8336s3ZXtScvjTnUHjBaFETBa3eUDAtxzb46jBcw@mail.gmail.com>
-Message-ID: <CAL3q7H5FPa8336s3ZXtScvjTnUHjBaFETBa3eUDAtxzb46jBcw@mail.gmail.com>
-Subject: Re: [PATCH v3] btrfs: new test for devt change between mounts
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: raid1 root device with efi
+Content-Language: sv-SE, en-GB
+To: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc: Matthew Warren <matthewwarren101010@gmail.com>
+References: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
+ <CA+H1V9x-pFAM-YQ1ncAqZE4e7j6R2xQXX6Ah9v1tMNf8CrW+yw@mail.gmail.com>
+ <CAOLfK3We92ZBrvyvSDky9jrQwJNONeOE9qoaewbFCr02H8PuTw@mail.gmail.com>
+ <CA+H1V9xjufQpsZHeMNmKNrV0BfuUsJ5G=x_-BEcRw7eNFhYPAw@mail.gmail.com>
+ <CAOLfK3UEOMN-O9-u6j22CJ0jpRZUwB7R_x-zEH6-FXdgmqB7Lg@mail.gmail.com>
+From: Forza <forza@tnonline.net>
+In-Reply-To: <CAOLfK3UEOMN-O9-u6j22CJ0jpRZUwB7R_x-zEH6-FXdgmqB7Lg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -3.8 (---)
 
-On Fri, Mar 8, 2024 at 5:42=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> It is possible to confuse the btrfs device cache (fs_devices) by
-> starting with a multi-device filesystem, then removing and re-adding a
-> device in a way which changes its dev_t while the filesystem is
-> unmounted. After this procedure, if we remount, then we are in a funny
-> state where struct btrfs_device's "devt" field does not match the bd_dev
-> of the "bdev" field. I would say this is bad enough, as we have violated
-> a pretty clear invariant.
->
-> But for style points, we can then remove the extra device from the fs,
-> making it a single device fs, which enables the "temp_fsid" feature,
-> which permits multiple separate mounts of different devices with the
-> same fsid. Since btrfs is confused and *thinks* there are different
-> devices (based on device->devt), it allows a second redundant mount of
-> the same device (not a bind mount!). This then allows us to corrupt the
-> original mount by doing stuff to the one that should be a bind mount.
->
-> Signed-off-by: Boris Burkov <boris@bur.io>
 
-It fails on for-next (as expected) and it passes with the following
-patch applied:
 
-    "btrfs: validate device maj:min during open"
+On 2024-03-08 22:58, Matt Zagrabelny wrote:
+> On Fri, Mar 8, 2024 at 3:54 PM Matthew Warren
+> <matthewwarren101010@gmail.com> wrote:
+>>
+>> On Fri, Mar 8, 2024 at 4:48 PM Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
+>>>
+>>> Hi Qu and Matthew,
+>>>
+>>> On Fri, Mar 8, 2024 at 3:46 PM Matthew Warren
+>>> <matthewwarren101010@gmail.com> wrote:
+>>>>
+>>>> On Fri, Mar 8, 2024 at 3:46 PM Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
+>>>>>
+>>>>> Greetings,
+>>>>>
+>>>>> I've read some conflicting info online about the best way to have a
+>>>>> raid1 btrfs root device.
+>>>>>
+>>>>> I've got two disks, with identical partitioning and I tried the
+>>>>> following scenario (call it scenario 1):
+>>>>>
+>>>>> partition 1: EFI
+>>>>> partition 2: btrfs RAID1 (/)
+>>>>>
+>>>>> There are some docs that claim that the above is possible...
+>>>>
+>>>> This is definitely possible. I use it on both my server and desktop with GRUB.
+>>>
+>>> Are there any docs you follow for this setup?
+>>>
+>>> Thanks for the info!
+>>>
+>>> -m
+>>
+>> The main important thing is that mdadm has several metadata versions.
+>> Versions 0.9 and 1.0 store the metadata at the end of the partition
+>> which allows UEFI to think the filesystem is EFI rather than mdadm
+>> raid.
+>> https://raid.wiki.kernel.org/index.php/RAID_superblock_formats#Sub-versions_of_the_version-1_superblock
+>>
+>> I followed the arch wiki for setting it up, so here's what I followed.
+>> https://wiki.archlinux.org/title/EFI_system_partition#ESP_on_software_RAID1
+> 
+> Thanks for the hints. Hopefully there aren't any more unexpected issues.
+> 
+> Cheers!
+> 
+> -m
+> 
 
-If the consensus is to use that patch as a fix, we can later add the
-_fixed_by_kernel_commit call to the test.
-Also, the test number 311 has been taken for a week now.
+An alternative to mdadm is to simply have separate ESP partitions on 
+each device. You can manually copy the contents between the two if you 
+were to update the EFI bootloader. This way you can keep the 'other' ESP 
+as backup during GRUB/EFI updates.
 
-Anyway:
+This solution is what I use on one of my servers. GRUB2 supports Btrfs 
+RAID1 so you do not need to have the kernel and initramfs on the ESP, 
+though that works very well too.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Good Luck!
 
-Thanks.
-
-> ---
-> Changelog:
-> v3:
-> - fstests convention improvements (helpers, output, comments, etc...)
-> v2:
-> - fix numerous fundamental issues, v1 wasn't really ready
->
->  common/config       |   1 +
->  tests/btrfs/311     | 105 ++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/311.out |   2 +
->  3 files changed, 108 insertions(+)
->  create mode 100755 tests/btrfs/311
->  create mode 100644 tests/btrfs/311.out
->
-> diff --git a/common/config b/common/config
-> index a3b15b96f..43b517fda 100644
-> --- a/common/config
-> +++ b/common/config
-> @@ -235,6 +235,7 @@ export BLKZONE_PROG=3D"$(type -P blkzone)"
->  export GZIP_PROG=3D"$(type -P gzip)"
->  export BTRFS_IMAGE_PROG=3D"$(type -P btrfs-image)"
->  export BTRFS_MAP_LOGICAL_PROG=3D$(type -P btrfs-map-logical)
-> +export PARTED_PROG=3D"$(type -P parted)"
->
->  # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
->  # newer systems have udevadm command but older systems like RHEL5 don't.
-> diff --git a/tests/btrfs/311 b/tests/btrfs/311
-> new file mode 100755
-> index 000000000..a7fa541c4
-> --- /dev/null
-> +++ b/tests/btrfs/311
-> @@ -0,0 +1,105 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2024 Meta, Inc. All Rights Reserved.
-> +#
-> +# FS QA Test 311
-> +#
-> +# Test an edge case of multi device volume management in btrfs.
-> +# If a device changes devt between mounts of a multi device fs, we can t=
-rick
-> +# btrfs into mounting the same device twice fully (not as a bind mount).=
- From
-> +# there, it is trivial to induce corruption.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick volume scrub
-> +
-> +# real QA test starts here
-> +_supported_fs btrfs
-> +_require_test
-> +_require_command "$PARTED_PROG" parted
-> +_require_batched_discard "$TEST_DIR"
-> +
-> +_cleanup() {
-> +       cd /
-> +       $UMOUNT_PROG $MNT
-> +       $UMOUNT_PROG $BIND
-> +       losetup -d $DEV0
-> +       losetup -d $DEV1
-> +       losetup -d $DEV2
-> +       rm $IMG0
-> +       rm $IMG1
-> +       rm $IMG2
-> +}
-> +
-> +IMG0=3D$TEST_DIR/$$.img0
-> +IMG1=3D$TEST_DIR/$$.img1
-> +IMG2=3D$TEST_DIR/$$.img2
-> +truncate -s 1G $IMG0
-> +truncate -s 1G $IMG1
-> +truncate -s 1G $IMG2
-> +DEV0=3D$(losetup -f $IMG0 --show)
-> +DEV1=3D$(losetup -f $IMG1 --show)
-> +DEV2=3D$(losetup -f $IMG2 --show)
-> +D0P1=3D$DEV0"p1"
-> +D1P1=3D$DEV1"p1"
-> +MNT=3D$TEST_DIR/mnt
-> +BIND=3D$TEST_DIR/bind
-> +
-> +# Setup partition table with one partition on each device.
-> +$PARTED_PROG $DEV0 'mktable gpt' --script
-> +$PARTED_PROG $DEV1 'mktable gpt' --script
-> +$PARTED_PROG $DEV0 'mkpart mypart 1M 100%' --script
-> +$PARTED_PROG $DEV1 'mkpart mypart 1M 100%' --script
-> +
-> +# mkfs with two devices to avoid clearing devices on close
-> +# single raid to allow removing DEV2.
-> +$MKFS_BTRFS_PROG -f -msingle -dsingle $D0P1 $DEV2 >>$seqres.full 2>&1 ||=
- _fail "failed to mkfs.btrfs"
-> +
-> +# Cycle mount the two device fs to populate both devices into the
-> +# stale device cache.
-> +mkdir -p $MNT
-> +_mount $D0P1 $MNT
-> +$UMOUNT_PROG $MNT
-> +
-> +# Swap the partition dev_ts. This leaves the dev_t in the cache out of d=
-ate.
-> +$PARTED_PROG $DEV0 'rm 1' --script
-> +$PARTED_PROG $DEV1 'rm 1' --script
-> +$PARTED_PROG $DEV1 'mkpart mypart 1M 100%' --script
-> +$PARTED_PROG $DEV0 'mkpart mypart 1M 100%' --script
-> +
-> +# Mount with mismatched dev_t!
-> +_mount $D0P1 $MNT || _fail "failed to remount; don't proceed and do dang=
-erous stuff on raw mount point"
-> +
-> +# Remove the extra device to bring temp-fsid back in the fray.
-> +$BTRFS_UTIL_PROG device remove $DEV2 $MNT
-> +
-> +# Create the would be bind mount.
-> +mkdir -p $BIND
-> +_mount $D0P1 $BIND
-> +mount_show=3D$($BTRFS_UTIL_PROG filesystem show $MNT)
-> +bind_show=3D$($BTRFS_UTIL_PROG filesystem show $BIND)
-> +# If they're different, we are in trouble.
-> +[ "$mount_show" =3D "$bind_show" ] || echo "$mount_show !=3D $bind_show"
-> +
-> +# Now really prove it by corrupting the first mount with the second.
-> +for i in $(seq 20); do
-> +       $XFS_IO_PROG -f -c "pwrite 0 50M" $MNT/foo.$i >>$seqres.full 2>&1
-> +done
-> +for i in $(seq 20); do
-> +       $XFS_IO_PROG -f -c "pwrite 0 50M" $BIND/foo.$i >>$seqres.full 2>&=
-1
-> +done
-> +
-> +# sync so that we really write the large file data out to the shared dev=
-ice
-> +sync
-> +
-> +# now delete from one view of the shared device
-> +find $BIND -type f -delete
-> +# sync so that fstrim definitely has deleted data to trim
-> +sync
-> +# This should blow up both mounts, if the writes somehow didn't overlap =
-at all.
-> +$FSTRIM_PROG $BIND
-> +# drop caches to improve the odds we read from the corrupted device whil=
-e scrubbing.
-> +echo 3 > /proc/sys/vm/drop_caches
-> +$BTRFS_UTIL_PROG scrub start -B $MNT | grep "Error summary:"
-> +
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/311.out b/tests/btrfs/311.out
-> new file mode 100644
-> index 000000000..70a6db809
-> --- /dev/null
-> +++ b/tests/btrfs/311.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 311
-> +Error summary:    no errors found
-> --
-> 2.43.0
->
->
+~Forza
 
