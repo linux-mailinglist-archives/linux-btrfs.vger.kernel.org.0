@@ -1,403 +1,403 @@
-Return-Path: <linux-btrfs+bounces-3161-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3163-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83E9B8777E3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Mar 2024 19:11:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 641DD877853
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Mar 2024 20:43:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF9B0B20CDA
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Mar 2024 18:11:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9942DB20DD4
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Mar 2024 19:43:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93BF39AEC;
-	Sun, 10 Mar 2024 18:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B233A8CD;
+	Sun, 10 Mar 2024 19:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YNFvxQSs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G2B0XOWQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BC91383AA;
-	Sun, 10 Mar 2024 18:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F733A8C0
+	for <linux-btrfs@vger.kernel.org>; Sun, 10 Mar 2024 19:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710094275; cv=none; b=n6QYiflvU4flzeg++rCRxnm4X1P/jQawDYEg01uqj7ret8drTtGoCYRc14NYJkgmzOye65Lb5QbFtzmd7O23Xy1XATkSXh1l9QM8HLuppGzLcz4umq4h1OIH8Ke7295hmJUj1iLN4mjPvP3fow5YNBkYlkOmAJADIPUQs8d10ag=
+	t=1710099814; cv=none; b=vBH06fOgLTp4H6NErQTKWraH6vCw8gK2mwrmwTy5EXvcT8M67P74HSeSP1QpEETlLzZWcCVU5HP2HYIAq7MLUAFxcUVQjnIxWa0dU+0st9QUQUJuzXnxMoQBUkUwHLJK/PWdNBSa7F0ZoPKBtURhC1BQZVDGPJdGovehiWC4VnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710094275; c=relaxed/simple;
-	bh=XN1a6+HBLhW5BU/9FsxOQ5YYAtcfzFgEnYY55GqLggs=;
+	s=arc-20240116; t=1710099814; c=relaxed/simple;
+	bh=SAOv7/APHsENTKK26T9Xnl24WOXmaetss14PS4GdjoM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P9r9LXXPbao2I65Bu8k49gpyETZ8bkV7J406utojV9dhBGQ2UZZXX0HJ26bXyB/ewlJTMLw1jpDmqYty6bGJfHTIlFm1G9uZDUAN9WIKh7XG9I3C41v+epIJsLFz6ooYq/s09lz3RkLXsz/SWfx4AhIzL7tjFLNq9GKxTRz/j2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YNFvxQSs; arc=none smtp.client-ip=209.85.208.177
+	 To:Cc:Content-Type; b=nGZHpwXMXIy0y4dzAA6neNOvvStAASW8Ps2Tv8TvgRCWbDdUbyBTgdEzWKBSle6WWx0BjjQfwyCU0NGDgIhwXmD4iAw7hI73DElTH7dFVUpJmY1weaaLG4LD6XccVEs/6iLgB8q8Z1feTBlPCB+DkGeRfauz8rTact1Uj7RGnXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G2B0XOWQ; arc=none smtp.client-ip=209.85.128.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d382a78c38so42982031fa.1;
-        Sun, 10 Mar 2024 11:11:12 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60a0599f631so16752467b3.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Mar 2024 12:43:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710094271; x=1710699071; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710099812; x=1710704612; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Mqrw6Q+LFP8qXMK/DUxJEU5Q3nQYogfywNL5K+4/HXU=;
-        b=YNFvxQSsbPRAt0LWqYfsVQEFLXWVEQ1L4R4Splt3OoODjxh1+nvMF+S2V54W482ME4
-         Udb08emty+gsshtqbI/Yz8imibwvB56bGl3h5raBg/EW+0rnGE1caisEY5HS6kC0Rclh
-         l6HFA8PgS+yYTWWbTzSKTC8nq8tJ3L7Zh09tT6VkZpWN0d6VGmJp7EESZZYefzRJZ90Q
-         hXzXtfhlTR8UOa4KV6BExKpAQT/Dteqd1V3UlKGPSNIpaNqiN4Cc5Q4QjnuWelX2S/+g
-         XotjRNelI433LcqpzorAdGhsfPz0b63CMVjgHSeTYDWw+nZ2sCDHCoOoKjt9baWFY2aj
-         yM7Q==
+        bh=si+PXZWbSGGxMQtdhgRdQETODv7G2cbIVzmgtlZrSOE=;
+        b=G2B0XOWQ860POZZWNOa0QJi+FSFW0/0eJYGiwys0zdw1Pm2EPvb1+xVPjgzZImJmaS
+         rcaUs5v8qCfAvUbLVBzwa1JoK9skAtsm+RM3/PyAWss4YZ7exJOhNoFz0vUBsN4se+jR
+         EjNallTrOBWXpIArmRmaYNVirV7QNtGmjJKskrFp1DNwbv33K1K29lDJvZbWv/+oBcDM
+         3i+MXnGVpbqOpGZgKcaLGhZ8RrzsoaMp9B8qdfSSZ+NonI/mB92QRQW6A6qhqlPWUISf
+         xz2nplEztF2ui2k19QVQfMeYRWE5hqvXvl1Q8qxCdeB0Kl5542ZimGsc8t5fwuj3LDfi
+         JsRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710094271; x=1710699071;
+        d=1e100.net; s=20230601; t=1710099812; x=1710704612;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Mqrw6Q+LFP8qXMK/DUxJEU5Q3nQYogfywNL5K+4/HXU=;
-        b=hMgHSaryqtlrXeWoeM00wWdSWW68uzqJZKKGFJy0zTiUBg9ZnkM0QohsS/MeBDTGDq
-         0oUfbA3MN2Hx7XqLZWeDB7FzXqodubuFepXzFsa0wLt465N90uZIm+nGdTRBCrETb2pu
-         Lpo2mvd7mejDTOUCW6QtjpiPQtnla29m/qW8/R7TFtufudKpg2Lmvz8uV0UzGhTL6rJG
-         pWbIpJE1ZnweoX+K4o4ZZv+JBD8AzxseJ9QZSPXZsq5fw+sOZtbNmJjnExdIKrAH47yM
-         gsA2zgWcJxyx1TzJQebRnhF5r6azM2gfzQLOVpYfDAumHXRHt2gCD+rv8NR5Dmxr2d4B
-         cNHg==
-X-Forwarded-Encrypted: i=1; AJvYcCXVW6UHCAscdCUD5bl5UdkLJsS70ObKsNMXMCeLYGTHNHGx2D9RtAZZ1I5B54Vbm6qdQYV2jBjgaT5Eke/sYYw2NPuk6Rd+PrA8muuuykLoGZ1qo7Zo7IIfF2utOPtntl6Cke0TnYgfEIc=
-X-Gm-Message-State: AOJu0YxwsvOloj0nYXkWJRzeTIgMh/Umj6KjOY/qEcUSOk1L++sw8wZR
-	BCTtjKBhFE5Lsg+EcVLP0/ueiYnHRvEkCwWkgoaMKuRD2Cm/CabmqgGwVY9CEerHPpYkWCw32QD
-	gtYvC750myRDXNlKLGflK+el/Wrw=
-X-Google-Smtp-Source: AGHT+IEIV0xUkOPS6tZdzQzmgx8f0OZxJOoFaYY2bCEmdZ32mGDXIZGZwPSEl+WSlQ+yGh5T4SzF7X1yNf/9cUrG7dM=
-X-Received: by 2002:a2e:300b:0:b0:2d3:f866:fdc6 with SMTP id
- w11-20020a2e300b000000b002d3f866fdc6mr2759565ljw.5.1710094270859; Sun, 10 Mar
- 2024 11:11:10 -0700 (PDT)
+        bh=si+PXZWbSGGxMQtdhgRdQETODv7G2cbIVzmgtlZrSOE=;
+        b=A4uJd/fFaen5tO09dKCd7ZB/489Dx79Y82EXXQxQ3++SuoQirI/rnxeGPxyehbHmLU
+         LZIhKJ1T6UcDbkhngJCFIwhsfk3fKaRfb5FBeo/0hxMFxxrUssdJNZKGWfSPb0X0MxT7
+         GeNmaIYs/Or0FuRNq3nBV1zqmhargz77cWMOyY98HGPjVnnAONvB0OZvNuXQsNfRits1
+         LC2i5HKU3Ft5EWfUonPt0eVwsIy/qfXp8W124mhvBmJayuDPS5ivrMsOjgb9aedYVyDN
+         LTq813YplVl7jW7xxHW6Dr2HZy8LKcdTnVvHNSl4QGl0N6GQfwBVT62LJe/9HUbQ1MBU
+         vqVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXGRlbN1Nqwb37+ui9SmuGDzjHzhw7A0MuV6fMEP84ZKgY869ynubE959KSHWkF4iEtGKKqFyGC1XO5Frf6mjcBa5iTeO+gTRofXjE=
+X-Gm-Message-State: AOJu0YwnMc+yrXd972ZQAV61ZqXYT60DLzk/HosgZQJPH57TRZClnKTd
+	cRUUqGM+Mspkk0CVZn6M27FALHUJc3p7Rraq7NdmfNVrgzDPLzkj1Eyvj2nYDDHHCnSfswIWzW3
+	RCEssp5PGmEYBrwUjttSy5K/m+VAM1F2b
+X-Google-Smtp-Source: AGHT+IEVNYJWMxYE0GhPkv2OpvwxF183mb+NBRMJGEkOfJ0jRRtsh3cBN9UqSs2pHFTPawSaIyX/HywoHk6M0MLiLhA=
+X-Received: by 2002:a0d:e651:0:b0:60a:3b3:608c with SMTP id
+ p78-20020a0de651000000b0060a03b3608cmr4023527ywe.42.1710099811688; Sun, 10
+ Mar 2024 12:43:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAOCpoWeNYsMfzh8TSnFqwAG1BhAYnNt_J+AcUNqRLF7zmJGEFA@mail.gmail.com>
- <672e88f2-8ac3-45fe-a2e9-730800017f53@libero.it> <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
- <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it> <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
- <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it> <ZedaKUge-EBo4CuT@redhat.com>
- <ZeiS/bjJaRcrerWW@fedora> <CAOCpoWeoQMh_-MxzxGBnK2Kf5EhvTLs=GrGwJ5XcfGVRTp73Eg@mail.gmail.com>
- <Ze2azGlb1WxVFv7Z@fedora> <Ze3RWqLvG18cQ4dz@redhat.com>
-In-Reply-To: <Ze3RWqLvG18cQ4dz@redhat.com>
-From: Patrick Plenefisch <simonpatp@gmail.com>
-Date: Sun, 10 Mar 2024 14:11:11 -0400
-Message-ID: <CAOCpoWf7C=B1sdeUL46sVVtVUDH8+o_T9LGJNTOYqA317uMdmA@mail.gmail.com>
-Subject: Re: LVM-on-LVM: error while submitting device barriers
-To: Mike Snitzer <snitzer@kernel.org>
-Cc: Ming Lei <ming.lei@redhat.com>, Goffredo Baroncelli <kreijack@inwind.it>, 
-	linux-kernel@vger.kernel.org, Alasdair Kergon <agk@redhat.com>, 
-	Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, regressions@lists.linux.dev, dm-devel@lists.linux.dev, 
-	linux-btrfs@vger.kernel.org
+References: <CAMFk-+igFTv2E8svg=cQ6o3e6CrR5QwgQ3Ok9EyRaEvvthpqCQ@mail.gmail.com>
+ <ba3a8690-1604-429e-9e8a-7c381e6592f8@gmx.com> <fcfab114-c1a0-4059-990d-e4724b457437@cobb.uk.net>
+ <CAMFk-+ifZiN4PhqyLAbsCZxcaJ6CU_gXUxZRMPr3eC741X=4sQ@mail.gmail.com> <08a65231-59c2-4606-9be9-5182b7e47087@gmx.com>
+In-Reply-To: <08a65231-59c2-4606-9be9-5182b7e47087@gmx.com>
+From: Michel Palleau <michel.palleau@gmail.com>
+Date: Sun, 10 Mar 2024 20:43:20 +0100
+Message-ID: <CAMFk-+g5ztbJDPw4bDo5Bo3Z8mPstZpXSB9n_UwP+sGbSGwDAQ@mail.gmail.com>
+Subject: Re: scrub: last_physical not always updated when scrub is cancelled
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Graham Cobb <g.btrfs@cobb.uk.net>, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 10, 2024 at 11:27=E2=80=AFAM Mike Snitzer <snitzer@kernel.org> =
-wrote:
+That's perfectly fine for me.
+I was just testing corner cases and reporting my findings.
+Indeed, cancelling or even getting the progress right after scrub
+starting is not a use case.
+
+Thank you for the fast support.
+Michel
+
+
+Le sam. 9 mars 2024 =C3=A0 21:31, Qu Wenruo <quwenruo.btrfs@gmx.com> a =C3=
+=A9crit :
 >
-> On Sun, Mar 10 2024 at  7:34P -0400,
-> Ming Lei <ming.lei@redhat.com> wrote:
 >
-> > On Sat, Mar 09, 2024 at 03:39:02PM -0500, Patrick Plenefisch wrote:
-> > > On Wed, Mar 6, 2024 at 11:00=E2=80=AFAM Ming Lei <ming.lei@redhat.com=
-> wrote:
-> > > >
-> > > > #!/usr/bin/bpftrace
-> > > >
-> > > > #ifndef BPFTRACE_HAVE_BTF
-> > > > #include <linux/blkdev.h>
-> > > > #endif
-> > > >
-> > > > kprobe:submit_bio_noacct,
-> > > > kprobe:submit_bio
-> > > > / (((struct bio *)arg0)->bi_opf & (1 << __REQ_PREFLUSH)) !=3D 0 /
-> > > > {
-> > > >         $bio =3D (struct bio *)arg0;
-> > > >         @submit_stack[arg0] =3D kstack;
-> > > >         @tracked[arg0] =3D 1;
-> > > > }
-> > > >
-> > > > kprobe:bio_endio
-> > > > /@tracked[arg0] !=3D 0/
-> > > > {
-> > > >         $bio =3D (struct bio *)arg0;
-> > > >
-> > > >         if (($bio->bi_flags & (1 << BIO_CHAIN)) && $bio->__bi_remai=
-ning.counter > 1) {
-> > > >                 return;
-> > > >         }
-> > > >
-> > > >         if ($bio->bi_status !=3D 0) {
-> > > >                 printf("dev %s bio failed %d, submitter %s completi=
-on %s\n",
-> > > >                         $bio->bi_bdev->bd_disk->disk_name,
-> > > >                         $bio->bi_status, @submit_stack[arg0], kstac=
-k);
-> > > >         }
-> > > >         delete(@submit_stack[arg0]);
-> > > >         delete(@tracked[arg0]);
-> > > > }
-> > > >
-> > > > END {
-> > > >         clear(@submit_stack);
-> > > >         clear(@tracked);
-> > > > }
-> > > >
-> > >
-> > > Attaching 4 probes...
-> > > dev dm-77 bio failed 10, submitter
-> > >        submit_bio_noacct+5
-> > >        __send_duplicate_bios+358
-> > >        __send_empty_flush+179
-> > >        dm_submit_bio+857
-> > >        __submit_bio+132
-> > >        submit_bio_noacct_nocheck+345
-> > >        write_all_supers+1718
-> > >        btrfs_commit_transaction+2342
-> > >        transaction_kthread+345
-> > >        kthread+229
-> > >        ret_from_fork+49
-> > >        ret_from_fork_asm+27
-> > > completion
-> > >        bio_endio+5
-> > >        dm_submit_bio+955
-> > >        __submit_bio+132
-> > >        submit_bio_noacct_nocheck+345
-> > >        write_all_supers+1718
-> > >        btrfs_commit_transaction+2342
-> > >        transaction_kthread+345
-> > >        kthread+229
-> > >        ret_from_fork+49
-> > >        ret_from_fork_asm+27
-> > >
-> > > dev dm-86 bio failed 10, submitter
-> > >        submit_bio_noacct+5
-> > >        write_all_supers+1718
-> > >        btrfs_commit_transaction+2342
-> > >        transaction_kthread+345
-> > >        kthread+229
-> > >        ret_from_fork+49
-> > >        ret_from_fork_asm+27
-> > > completion
-> > >        bio_endio+5
-> > >        clone_endio+295
-> > >        clone_endio+295
-> > >        process_one_work+369
-> > >        worker_thread+635
-> > >        kthread+229
-> > >        ret_from_fork+49
-> > >        ret_from_fork_asm+27
-> > >
-> > >
-> > > For context, dm-86 is /dev/lvm/brokenDisk and dm-77 is /dev/lowerVG/l=
-vmPool
+>
+> =E5=9C=A8 2024/3/10 05:56, Michel Palleau =E5=86=99=E9=81=93:
+> > Hello Qu,
 > >
-> > io_status is 10(BLK_STS_IOERR), which is produced in submission code pa=
-th on
-> > /dev/dm-77(/dev/lowerVG/lvmPool) first, so looks it is one device mappe=
-r issue.
+> > I have tested your patches today, with
+> > - btrfs scrub status | fgrep last_phys in one console, every second
+> > - btrfs scrub start/resume in another
 > >
-> > The error should be from the following code only:
+> > last_phys is now increasing steadily (while before it was remaining
+> > constant for several minutes).
 > >
-> > static void __map_bio(struct bio *clone)
+> > But there is still a small window after resuming a scrub where the
+> > value reported by scrub status is not consistent.
+> > Here is the output of btrfs scrub status | fgrep last_phys every second=
+:
+> >         last_physical: 0
+> >         last_physical: 80805888
+> >         last_physical: 1986068480
+> > ...
+> >         last_physical: 50135564288
+> >         last_physical: 52316602368
+> >         last_physical: 52769587200
+> > ... (scrub has been cancelled)
+> >         last_physical: 52769587200
+> >         last_physical: 52719255552  <-- reported value is smaller than =
+before
+>
+> IIRC restarted scrub doesn't fully follow the start/end parameter passed
+> in, mostly due to our current scrub code is fully chunk based.
+>
+> This means, even if we updated our last_physical correctly on a
+> per-stripe basis, after resuming a canceled one, we would still restart
+> at the last chunk, not the last extent.
+>
+> To change this behavior, it would require some extra work.
+>
+> >         last_physical: 54866739200
+> >         last_physical: 57014222848
+> > ...
+> >         last_physical: 74621911040
+> >         last_physical: 76844892160
+> >         last_physical: 77566312448
+> > ... (scrub has been cancelled)
+> >         last_physical: 77566312448
+> >         last_physical: 0            <-- reported value is 0, scrub
+> > process has not updated last_phys field yet
+> >         last_physical: 79562801152
+> >         last_physical: 81819336704
 > >
-> >       ...
-> >       if (r =3D=3D DM_MAPIO_KILL)
-> >               dm_io_dec_pending(io, BLK_STS_IOERR);
-> >       else
-> >               dm_io_dec_pending(io, BLK_STS_DM_REQUEUE);
-> >     break;
+> > I think a smaller last_physical indicates that the resume operation
+> > has not started exactly from last_physical, but somewhere before.
+> > It can be a little surprising, but not a big deal.
 >
-> I agree that the above bpf stack traces for dm-77 indicate that
-> dm_submit_bio failed, which would end up in the above branch if the
-> target's ->map() returned DM_MAPIO_KILL or DM_MAPIO_REQUEUE.
+> Yes, the resume would only start at the beginning of the last chunk.
 >
-> But such an early failure speaks to the flush bio never being
-> submitted to the underlying storage. No?
->
-> dm-raid.c:raid_map does return DM_MAPIO_REQUEUE with:
->
->         /*
->          * If we're reshaping to add disk(s)), ti->len and
->          * mddev->array_sectors will differ during the process
->          * (ti->len > mddev->array_sectors), so we have to requeue
->          * bios with addresses > mddev->array_sectors here or
->          * there will occur accesses past EOD of the component
->          * data images thus erroring the raid set.
->          */
->         if (unlikely(bio_end_sector(bio) > mddev->array_sectors))
->                 return DM_MAPIO_REQUEUE;
->
-> But a flush doesn't have an end_sector (it'd be 0 afaik).. so it seems
-> weird relative to a flush.
->
-> > Patrick, you mentioned lvmPool is raid1, can you explain how lvmPool is
-> > built? It is dm-raid1 target or over plain raid1 device which is
-> > build over /dev/lowerVG?
-
-LVM raid1:
-lvcreate --type raid1 -m 1 ...
-
-I had previously added raidintegrity and caching like
-"lowerVG/single", but I had removed them in trying to root cause this
-bug
-
->
-> In my earlier reply I asked Patrick for both:
-> lsblk
-> dmsetup table
-
-Oops, here they are, trimmed for relevance:
-
-
-NAME
-sdb
-=E2=94=94=E2=94=80sdb2
-  =E2=94=9C=E2=94=80lowerVG-single_corig_rmeta_1
-  =E2=94=82 =E2=94=94=E2=94=80lowerVG-single_corig
-  =E2=94=82   =E2=94=94=E2=94=80lowerVG-single
-  =E2=94=9C=E2=94=80lowerVG-single_corig_rimage_1_imeta
-  =E2=94=82 =E2=94=94=E2=94=80lowerVG-single_corig_rimage_1
-  =E2=94=82   =E2=94=94=E2=94=80lowerVG-single_corig
-  =E2=94=82     =E2=94=94=E2=94=80lowerVG-single
-  =E2=94=9C=E2=94=80lowerVG-single_corig_rimage_1_iorig
-  =E2=94=82 =E2=94=94=E2=94=80lowerVG-single_corig_rimage_1
-  =E2=94=82   =E2=94=94=E2=94=80lowerVG-single_corig
-  =E2=94=82     =E2=94=94=E2=94=80lowerVG-single
-  =E2=94=9C=E2=94=80lowerVG-lvmPool_rmeta_0
-  =E2=94=82 =E2=94=94=E2=94=80lowerVG-lvmPool
-  =E2=94=82   =E2=94=9C=E2=94=80lvm-a
-  =E2=94=82   =E2=94=94=E2=94=80lvm-brokenDisk
-  =E2=94=9C=E2=94=80lowerVG-lvmPool_rimage_0
-  =E2=94=82 =E2=94=94=E2=94=80lowerVG-lvmPool
-  =E2=94=82   =E2=94=9C=E2=94=80lvm-a
-  =E2=94=82   =E2=94=94=E2=94=80lvm-brokenDisk
-sdc
-=E2=94=94=E2=94=80sdc3
-  =E2=94=9C=E2=94=80lowerVG-single_corig_rmeta_0
-  =E2=94=82 =E2=94=94=E2=94=80lowerVG-single_corig
-  =E2=94=82   =E2=94=94=E2=94=80lowerVG-single
-  =E2=94=9C=E2=94=80lowerVG-single_corig_rimage_0_imeta
-  =E2=94=82 =E2=94=94=E2=94=80lowerVG-single_corig_rimage_0
-  =E2=94=82   =E2=94=94=E2=94=80lowerVG-single_corig
-  =E2=94=82     =E2=94=94=E2=94=80lowerVG-single
-  =E2=94=9C=E2=94=80lowerVG-single_corig_rimage_0_iorig
-  =E2=94=82 =E2=94=94=E2=94=80lowerVG-single_corig_rimage_0
-  =E2=94=82   =E2=94=94=E2=94=80lowerVG-single_corig
-  =E2=94=82     =E2=94=94=E2=94=80lowerVG-single
-sdd
-=E2=94=94=E2=94=80sdd3
-  =E2=94=9C=E2=94=80lowerVG-lvmPool_rmeta_1
-  =E2=94=82 =E2=94=94=E2=94=80lowerVG-lvmPool
-  =E2=94=82   =E2=94=9C=E2=94=80lvm-a
-  =E2=94=82   =E2=94=94=E2=94=80lvm-brokenDisk
-  =E2=94=94=E2=94=80lowerVG-lvmPool_rimage_1
-    =E2=94=94=E2=94=80lowerVG-lvmPool
-      =E2=94=9C=E2=94=80lvm-a
-      =E2=94=94=E2=94=80lvm-brokenDisk
-sdf
-=E2=94=9C=E2=94=80sdf2
-=E2=94=82 =E2=94=9C=E2=94=80lowerVG-lvmPool_rimage_1
-=E2=94=82 =E2=94=82 =E2=94=94=E2=94=80lowerVG-lvmPool
-=E2=94=82 =E2=94=82   =E2=94=9C=E2=94=80lvm-a
-=E2=94=82 =E2=94=82   =E2=94=94=E2=94=80lvm-brokenDisk
-
-
-
-lowerVG-single: 0 5583462400 cache 254:32 254:31 254:71 128 2
-metadata2 writethrough mq 0
-lowerVG-singleCache_cvol: 0 104857600 linear 259:13 104859648
-lowerVG-singleCache_cvol-cdata: 0 104775680 linear 254:30 81920
-lowerVG-singleCache_cvol-cmeta: 0 81920 linear 254:30 0
-lowerVG-single_corig: 0 5583462400 raid raid1 3 0 region_size 4096 2
-254:33 254:36 254:67 254:70
-lowerVG-single_corig_rimage_0: 0 5583462400 integrity 254:35 0 4 J 8
-meta_device:254:34 recalculate journal_sectors:130944
-interleave_sectors:1 buffer_sectors:128 journal_watermark:50
-commit_time:10000 internal_hash:crc32c
-lowerVG-single_corig_rimage_0_imeta: 0 44802048 linear 8:35 5152466944
-lowerVG-single_corig_rimage_0_iorig: 0 4724465664 linear 8:35 427821056
-lowerVG-single_corig_rimage_0_iorig: 4724465664 431005696 linear 8:35 53620=
-01920
-lowerVG-single_corig_rimage_0_iorig: 5155471360 427819008 linear 8:35 2048
-lowerVG-single_corig_rimage_0_iorig: 5583290368 172032 linear 8:35 51522949=
-12
-lowerVG-single_corig_rimage_1: 0 5583462400 integrity 254:69 0 4 J 8
-meta_device:254:68 recalculate journal_sectors:130944
-interleave_sectors:1 buffer_sectors:128 journal_watermark:50
-commit_time:10000 internal_hash:crc32c
-lowerVG-single_corig_rimage_1_imeta: 0 44802048 linear 8:18 5583472640
-lowerVG-single_corig_rimage_1_iorig: 0 5583462400 linear 8:18 10240
-lowerVG-single_corig_rmeta_0: 0 8192 linear 8:35 5152286720
-lowerVG-single_corig_rmeta_1: 0 8192 linear 8:18 2048
-lowerVG-lvmPool: 0 6442450944 raid raid1 3 0 region_size 4096 2 254:73
-254:74 254:75 254:76
-lowerVG-lvmPool_rimage_0: 0 2967117824 linear 8:18 5628282880
-lowerVG-lvmPool_rimage_0: 2967117824 59875328 linear 8:18 12070733824
-lowerVG-lvmPool_rimage_0: 3026993152 3415457792 linear 8:18 8655276032
-lowerVG-lvmPool_rimage_1: 0 2862260224 linear 8:51 10240
-lowerVG-lvmPool_rimage_1: 2862260224 164732928 linear 8:82 3415459840
-lowerVG-lvmPool_rimage_1: 3026993152 3415457792 linear 8:82 2048
-lowerVG-lvmPool_rmeta_0: 0 8192 linear 8:18 5628274688
-lowerVG-lvmPool_rmeta_1: 0 8192 linear 8:51 2048
-lvm-a: 0 1468006400 linear 254:77 1310722048
-lvm-brokenDisk: 0 1310720000 linear 254:77 2048
-lvm-brokenDisk: 1310720000 83886080 linear 254:77 2778728448
-lvm-brokenDisk: 1394606080 2015404032 linear 254:77 4427040768
-lvm-brokenDisk: 3410010112 884957184 linear 254:77 2883586048
-
-
-
-As a side note, is there a way to make lsblk only show things the
-first time they come up?
-
->
-> Picking over the described IO stacks provided earlier (or Goffredo's
-> interpretation of it, via ascii art) isn't really a great way to see
-> the IO stacks that are in use/question.
->
-> > Mike, the logic in the following code doesn't change from v5.18-rc2 to
-> > v5.19, but I still can't understand why STS_IOERR is set in
-> > dm_io_complete() in case of BLK_STS_DM_REQUEUE && !__noflush_suspending=
-(),
-> > since DMF_NOFLUSH_SUSPENDING is only set in __dm_suspend() which
-> > is supposed to not happen in Patrick's case.
+> > last_physical: 0 indicates that scrub has not yet written last_phys.
 > >
-> > dm_io_complete()
-> >       ...
-> >       if (io->status =3D=3D BLK_STS_DM_REQUEUE) {
-> >               unsigned long flags;
-> >               /*
-> >                * Target requested pushing back the I/O.
-> >                */
-> >               spin_lock_irqsave(&md->deferred_lock, flags);
-> >               if (__noflush_suspending(md) &&
-> >                   !WARN_ON_ONCE(dm_is_zone_write(md, bio))) {
-> >                       /* NOTE early return due to BLK_STS_DM_REQUEUE be=
-low */
-> >                       bio_list_add_head(&md->deferred, bio);
-> >               } else {
-> >                       /*
-> >                        * noflush suspend was interrupted or this is
-> >                        * a write to a zoned target.
-> >                        */
-> >                       io->status =3D BLK_STS_IOERR;
-> >               }
-> >               spin_unlock_irqrestore(&md->deferred_lock, flags);
-> >       }
+> > Then I chained scrub resume and scrub cancel. I saw once that
+> > last_physical was getting smaller than before.
+> > But I never saw a reset of last_physical. It looks like last_phys is
+> > always written before exiting the scrub operation.
+> >
+> > To fix progress reporting a last_physical at 0, I propose the following=
+ change:
+> > diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> > index 9a39f33dc..a43dcfd6a 100644
+> > --- a/fs/btrfs/scrub.c
+> > +++ b/fs/btrfs/scrub.c
+> > @@ -2910,6 +2910,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info
+> > *fs_info, u64 devid, u64 start,
+> >     sctx =3D scrub_setup_ctx(fs_info, is_dev_replace);
+> >     if (IS_ERR(sctx))
+> >         return PTR_ERR(sctx);
+> > +    sctx->stat.last_physical =3D start;
+> >
+> >     ret =3D scrub_workers_get(fs_info);
+> >     if (ret)
 >
-> Given the reason from dm-raid.c:raid_map returning DM_MAPIO_REQUEUE
-> I think the DM device could be suspending without flush.
+> The snippet looks mostly fine, but as I explained above, the scrub
+> progress always restarts at the last chunk, thus even if we reset the
+> last_physical here, it would soon be reset to a bytenr smaller than
+> @start, and can be a little confusing.
 >
-> But regardless, given you logged BLK_STS_IOERR lets assume it isn't,
-> the assumption that "noflush suspend was interrupted" seems like a
-> stale comment -- especially given that target's like dm-raid are now
-> using DM_MAPIO_REQUEUE without concern for the historic tight-coupling
-> of noflush suspend (which was always the case for the biggest historic
-> reason for this code: dm-multipath, see commit 2e93ccc1933d0 from
-> 2006 -- predates my time with developing DM).
+> Although I don't really have any better idea on the value to set.
 >
-> So all said, this code seems flawed for dm-raid (and possibly other
-> targets that return DM_MAPIO_REQUEUE).  I'll look closer this week.
+> Maybe @last_physical set to 0 for a small window won't be that bad?
+> (Indicating scrub has not yet scrubbed any content?)
 >
-> Mike
+> Thanks,
+> Qu
+> >
+> > Best Regards,
+> > Michel
+> >
+> > Cordialement,
+> > Michel Palleau
+> >
+> >
+> > Le ven. 8 mars 2024 =C3=A0 10:45, Graham Cobb <g.btrfs@cobb.uk.net> a =
+=C3=A9crit :
+> >>
+> >> By the way, I have noticed this problem for some time, but haven't got
+> >> around to analysing it, sorry. I had actually assumed it was a race
+> >> condition in the user mode processing of cancelling/resuming scrubs.
+> >>
+> >> In my case, I do regular scrubs of several disks. However, this is ver=
+y
+> >> intrusive to the overall system performance and so I have scripts whic=
+h
+> >> suspend critical processing which causes problems if it times out (suc=
+h
+> >> as inbound mail handling) during the scrub. I suspend these processes,
+> >> run the scrub for a short while, then cancel the scrub and run the mai=
+l
+> >> for a while, then back to suspending the mail and resuming the scrub.
+> >> Typically it means scrubs on the main system and backup disks take
+> >> several days and get cancelled and resumed *many* times.
+> >>
+> >> This has worked for many years - until recently-ish (some months ago),
+> >> when I noticed that scrub was losing track of where it had got to. It
+> >> was jumping backwards, or even, in some cases, setting last_physical
+> >> back to 0 and starting all over again!!
+> >>
+> >> I haven't had time to track it down - I just hacked the scripts to
+> >> terminate if it happened. Better to have the scrub not complete than t=
+o
+> >> hobble performance forever!
+> >>
+> >> If anyone wants to try the scripts they are in
+> >> https://github.com/GrahamCobb/btrfs-balance-slowly (see
+> >> btrfs-scrub-slowly). A typical invocation looks like:
+> >>
+> >> /usr/local/sbin/btrfs-scrub-slowly --debug --portion-time $((10*60))
+> >> --interval $((5*60)) --hook hook-nomail /mnt/data/
+> >>
+> >> As this script seem to be able to reproduce the problem fairly reliabl=
+y
+> >> (although after several hours - the filesystems I use this for range
+> >> from 7TB to 17TB and each take 2-3 days to fully scrub with this scrip=
+t)
+> >> they may be useful to someone else. Unfortunately I do not expect to b=
+e
+> >> able to build a kernel to test the proposed fix myself in the next
+> >> couple of weeks.
+> >>
+> >> Graham
+> >>
+> >>
+> >> On 08/03/2024 00:26, Qu Wenruo wrote:
+> >>>
+> >>>
+> >>> =E5=9C=A8 2024/3/8 07:07, Michel Palleau =E5=86=99=E9=81=93:
+> >>>> Hello everyone,
+> >>>>
+> >>>> While playing with the scrub operation, using cancel and resume (wit=
+h
+> >>>> btrfs-progs), I saw that my scrub operation was taking much more tim=
+e
+> >>>> than expected.
+> >>>> Analyzing deeper, I think I found an issue on the kernel side, in th=
+e
+> >>>> update of last_physical field.
+> >>>>
+> >>>> I am running a 6.7.5 kernel (ArchLinux: 6.7.5-arch1-1), with a basic
+> >>>> btrfs (single device, 640 GiB used out of 922 GiB, SSD).
+> >>>>
+> >>>> Error scenario:
+> >>>> - I start a scrub, monitor it with scrub status and when I see no
+> >>>> progress in the last_physical field (likely because it is scrubbing =
+a
+> >>>> big chunk), I cancel the scrub,
+> >>>> - then I resume the scrub operation: if I do a scrub status,
+> >>>> last_physical is 0. If I do a scrub cancel, last_physical is still 0=
+.
+> >>>> The state file saves 0, and so next resume will start from the very
+> >>>> beginning. Progress has been lost!
+> >>>>
+> >>>> Note that for my fs, if I do not cancel it, I can see the
+> >>>> last_physical field remaining constant for more than 3 minutes, whil=
+e
+> >>>> the data_bytes_scrubbed is increasing fastly. The complete scrub nee=
+ds
+> >>>> less than 10 min.
+> >>>>
+> >>>> I have put at the bottom the outputs of the start/resume commands as
+> >>>> well as the scrub.status file after each operation.
+> >>>>
+> >>>> Looking at kernel code, last_physical seems to be rarely updated. An=
+d
+> >>>> in case of scrub cancel, the current position is not written into
+> >>>> last_physical, so the value remains the last written value. Which ca=
+n
+> >>>> be 0 if it has not been written since the scrub has been resumed.
+> >>>>
+> >>>> I see 2 problems here:
+> >>>> 1. when resuming a scrub, the returned last_physical shall be at lea=
+st
+> >>>> equal to the start position, so that the scrub operation is not doin=
+g
+> >>>> a step backward,
+> >>>> 2. on cancel, the returned last_physical shall be as near as possibl=
+e
+> >>>> to the current scrub position, so that the resume operation is not
+> >>>> redoing the same operations again. Several minutes without an update
+> >>>> is a waste.
+> >>>>
+> >>>> Pb 1 is pretty easy to fix: in btrfs_scrub_dev(), fill the
+> >>>> last_physical field with the start parameter after initialization of
+> >>>> the context.
+> >>>
+> >>> Indeed, we're only updating last_physical way too infrequently.
+> >>>
+> >>>> Pb 2 looks more difficult: updating last_physical more often implies
+> >>>> the capability to resume from this position.
+> >>>
+> >>> The truth is, every time we finished a stripe, we should update
+> >>> last_physical, so that in resume case, we would waste at most a strip=
+e
+> >>> (64K), which should be minimal compared to the size of the fs.
+> >>>
+> >>> This is not hard to do inside flush_scrub_stripes() for non-RAID56
+> >>> profiles.
+> >>>
+> >>> It may needs a slightly more handling for RAID56, but overall I belie=
+ve
+> >>> it can be done.
+> >>>
+> >>> Let me craft a patch for you to test soon.
+> >>>
+> >>> Thanks,
+> >>> Qu
+> >>>
+> >>>
+> >>>>
+> >>>> Here are output of the different steps:
+> >>>>
+> >>>> # btrfs scrub start -BR /mnt/clonux_btrfs
+> >>>> Starting scrub on devid 1
+> >>>> scrub canceled for 4c61ff6d-a903-42f6-b490-a3ce3690604e
+> >>>> Scrub started:    Thu Mar  7 17:11:17 2024
+> >>>> Status:           aborted
+> >>>> Duration:         0:00:22
+> >>>>           data_extents_scrubbed: 1392059
+> >>>>           tree_extents_scrubbed: 57626
+> >>>>           data_bytes_scrubbed: 44623339520
+> >>>>           tree_bytes_scrubbed: 944144384
+> >>>>           read_errors: 0
+> >>>>           csum_errors: 0
+> >>>>           verify_errors: 0
+> >>>>           no_csum: 1853
+> >>>>           csum_discards: 0
+> >>>>           super_errors: 0
+> >>>>           malloc_errors: 0
+> >>>>           uncorrectable_errors: 0
+> >>>>           unverified_errors: 0
+> >>>>           corrected_errors: 0
+> >>>>           last_physical: 36529242112
+> >>>>
+> >>>> # cat scrub.status.4c61ff6d-a903-42f6-b490-a3ce3690604e
+> >>>> scrub status:1
+> >>>> 4c61ff6d-a903-42f6-b490-a3ce3690604e:1|data_extents_scrubbed:1392059=
+|tree_extents_scrubbed:57626|data_bytes_scrubbed:44623339520|tree_bytes_scr=
+ubbed:944144384|read_errors:0|csum_errors:0|verify_errors:0|no_csum:1853|cs=
+um_discards:0|super_errors:0|malloc_errors:0|uncorrectable_errors:0|correct=
+ed_errors:0|last_physical:36529242112|t_start:1709827877|t_resumed:0|durati=
+on:22|canceled:1|finished:1
+> >>>>
+> >>>> # btrfs scrub resume -BR /mnt/clonux_btrfs
+> >>>> Starting scrub on devid 1
+> >>>> scrub canceled for 4c61ff6d-a903-42f6-b490-a3ce3690604e
+> >>>> Scrub started:    Thu Mar  7 17:13:07 2024
+> >>>> Status:           aborted
+> >>>> Duration:         0:00:07
+> >>>>           data_extents_scrubbed: 250206
+> >>>>           tree_extents_scrubbed: 0
+> >>>>           data_bytes_scrubbed: 14311002112
+> >>>>           tree_bytes_scrubbed: 0
+> >>>>           read_errors: 0
+> >>>>           csum_errors: 0
+> >>>>           verify_errors: 0
+> >>>>           no_csum: 591
+> >>>>           csum_discards: 0
+> >>>>           super_errors: 0
+> >>>>           malloc_errors: 0
+> >>>>           uncorrectable_errors: 0
+> >>>>           unverified_errors: 0
+> >>>>           corrected_errors: 0
+> >>>>           last_physical: 0
+> >>>>
+> >>>> # cat scrub.status.4c61ff6d-a903-42f6-b490-a3ce3690604e
+> >>>> scrub status:1
+> >>>> 4c61ff6d-a903-42f6-b490-a3ce3690604e:1|data_extents_scrubbed:1642265=
+|tree_extents_scrubbed:57626|data_bytes_scrubbed:58934341632|tree_bytes_scr=
+ubbed:944144384|read_errors:0|csum_errors:0|verify_errors:0|no_csum:2444|cs=
+um_discards:0|super_errors:0|malloc_errors:0|uncorrectable_errors:0|correct=
+ed_errors:0|last_physical:0|t_start:1709827877|t_resumed:1709827987|duratio=
+n:29|canceled:1|finished:1
+> >>>>
+> >>>> Best Regards,
+> >>>> Michel Palleau
+> >>>>
+> >>>
+> >>
 
