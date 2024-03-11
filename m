@@ -1,338 +1,198 @@
-Return-Path: <linux-btrfs+bounces-3170-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3172-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A26E9877AD7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 07:09:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BB1B877B8C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 09:13:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 571C6281F5B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 06:09:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D54A4B210DD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 08:12:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F5AF9CC;
-	Mon, 11 Mar 2024 06:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B6F11C83;
+	Mon, 11 Mar 2024 08:12:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OqqsAibt";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OqqsAibt"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Nl2U+CFZ";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="e7545sbr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA292CA47
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 06:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710137356; cv=none; b=FtzEay2pGxE84QCNtfPHNkN5pOdLKrZW+kt4f5SnHoa5oDhQH2N5ygvCTkwuNneLHkaX7XrGPMZBDSOUaZX1seaa9s58My3k/0jDXzQVDLAJE2VcfiR+qOHl3VXFxOBU4Pf9WTjeI4ln91WGdI7huBDJUB9yCvgMaR6bQwDN+m4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710137356; c=relaxed/simple;
-	bh=w/kutI9lG3yu22EJADSX7+ZgSoLRaTTvVcAYPc4Ozr4=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t12kSmTRi8QCy78947l+La+6kOn11PvYW1V8e3o4o9EyBZ5kiS4XLFFGBEOK9NAkKstwjst9YgH+ICQzu8LNEcrhLLzgCZ5UDYCw1THHNHDuA0CKg0zuumQNP2baGFLM3c/XD77/DDp6dFjzfabH026gKngEssvcTQbiL5LI/PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OqqsAibt; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OqqsAibt; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E33EB5C2C0
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 06:09:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710137351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=h/2fjreSP9rkIOB3bDImFeEEKUVVSHQpWjpeuXoYtq8=;
-	b=OqqsAibtsjpXR3Q46ZIZ8NKyuND1j6qZYlE/XOgK0UYdVFT2O5g5dKVwkjPAFLtNRlwq0W
-	2JzeVYpocx0ObMDwanbFFtn4SXD9uRUrxJ/9kBMaDoe3o8fJcojFP6+PA1pLUwsWZSv/uV
-	H+wYBt2Ph5n4BzaoV23qw/xabg22l9Y=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710137351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=h/2fjreSP9rkIOB3bDImFeEEKUVVSHQpWjpeuXoYtq8=;
-	b=OqqsAibtsjpXR3Q46ZIZ8NKyuND1j6qZYlE/XOgK0UYdVFT2O5g5dKVwkjPAFLtNRlwq0W
-	2JzeVYpocx0ObMDwanbFFtn4SXD9uRUrxJ/9kBMaDoe3o8fJcojFP6+PA1pLUwsWZSv/uV
-	H+wYBt2Ph5n4BzaoV23qw/xabg22l9Y=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED15D1386D
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 06:09:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6DA1Kgag7mUdQwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 06:09:10 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs: defrag: allow fine-tuning defrag behavior based on file extent usage
-Date: Mon, 11 Mar 2024 16:38:45 +1030
-Message-ID: <d87c011eca11395aafa23cf7ea3ac8c0c8812fe6.1710137066.git.wqu@suse.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1710137066.git.wqu@suse.com>
-References: <cover.1710137066.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D2C12B8D;
+	Mon, 11 Mar 2024 08:12:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710144765; cv=fail; b=jw/eS/UFv1tluY/7dY/OyzIgSfZ5bdYgz7XZXJ5mI1SQTunio/WRlYjNvnky2ATlwUeXVRjCeCz65hPSvnZxypfw9dPKK6nMieSflYWrdxUou08G5mNu8P7WGW+ctzmgI22zIw2sF+L4qgk09euNNu6M8Adi+F1gQl8fEWU8aow=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710144765; c=relaxed/simple;
+	bh=Pa4mWPM5xGeEb+426mKJO+Tw23sS2KqlELMjyIdxB9I=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=LWstkUCJMxf0WW0NAmKXf7MBrCxiVAcKsstMTEwqnav36UyuWmcRLussycPGgdu0/aJc6q51pZKB7iQbBNPKlxe/hBn58mrvxS+ZRQg6ZhqncHb5sOVIt6akD2W1rm7UbfzF7nydyqMOTZk1pjLmF71JAmn6hdZf058ezpPCHRw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Nl2U+CFZ; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=e7545sbr; arc=fail smtp.client-ip=216.71.154.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1710144763; x=1741680763;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Pa4mWPM5xGeEb+426mKJO+Tw23sS2KqlELMjyIdxB9I=;
+  b=Nl2U+CFZF+3qAgG0HgPqJfuOBsM+5Oa/mqtxa0WKLy/LU6D9y7UnRaPQ
+   2AvzptScSWE25QvBI1SfRHU/tmrkbaToCtyMUsvRQRMkwjSKOgbBXK6kr
+   ptOk43S60CHncdsshEHUFNUGcxHiir2FPaKX3l+BAXAzrZpwrLLUwiI0S
+   qZMzqE37zlMJFZyYw5dHdf2Tk80FPR//b4lQ4Mew0JiWoNi7QVKzVByHY
+   f5dPCRmpoDumtdttMM8A9uk8WtfqdLi44B+tb06IZsp/SoT8RvNP1/gPZ
+   X9bnQnFjVpOkZzcpkXF3xK9sq7p1JNpkgVuSpamEFvN7wPdYaw4BSVoO2
+   A==;
+X-CSE-ConnectionGUID: Jn48NFH3SsOpPBxAHfJEQQ==
+X-CSE-MsgGUID: Vxq4j1avTkeieudgT1X9HQ==
+X-IronPort-AV: E=Sophos;i="6.07,116,1708358400"; 
+   d="scan'208";a="10806332"
+Received: from mail-mw2nam10lp2100.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.100])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Mar 2024 16:12:35 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KvAYmwqQah0vvVnm0VKgZEsA6U6uH5/m0g6SFCaMnsLWsO49Cty5k7aGMPx7HDFJLDLd6gKzR0b9ZvhU5k3z72wsliSP0hkYqBHGeAGc54WbzANt968zndP7UPjJ+8pHM4OS64ZEDWBlWPr4e/dNzTny7LGClXTeWBGk+vcK04O+QY5x/hFKXnj5Pq0ZpT/VoQP1FhuyBIZdNuEwW+TVQMNE5cGnaniN4W8FY3R+MLUDQ7xxoDFv4e6tmd/TRTqKdn8F0f791BkOWLElz2BBLz7DPArndmq21fs2eB+H4BmWlOJ4iUN+QG4iYZFC6Y6GH6c+oxTVxmenVDrLWeLUdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Pa4mWPM5xGeEb+426mKJO+Tw23sS2KqlELMjyIdxB9I=;
+ b=ZqkSaB79s0mi+H7e7/zZUNfnxVssXE6B6a8BSLoSGi/s09vOhDGtjN2rBG7y5LILenasbrWwHvTXwBEQBlgrDl1GQKptPaAHmepCTtVZzDl2+AqxcvNUlMPpFEEL3jvbUigICcJRvIu4dtv6bogxdWV1HT+0+nOMr9YvoYPMO0Qa09nE/aoA/PoPKPMOTsmisHrQoluDH9kBWJnLdIZbOIoRQCT41oa12JL0CdVX3tQwC5UR/KKOYDfYRkoefu5HJDBj6FJ/Znq1OJmE8S5fcEJ5j+Sb1W4PaguMm7o6pRMHWAfAjYPBQAKi9h4Y1RxpcsQnXvbf6B5eSNM5hZyBXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Pa4mWPM5xGeEb+426mKJO+Tw23sS2KqlELMjyIdxB9I=;
+ b=e7545sbrswtRaGBdY3xn56+XYC+Iew+gPmz8Gyx8LTYObWevUAIkKdYgI2a4d0tUv5/5nRvVfOOraNr8d2RYv38KSXOv1j+/Mq0jDycY0O57y0tqt7oS9iq+DcrHPfus9OxlFJ8n9D2RFfdJml3j6weovLBUymxBYQ7z/ZAWv3U=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by SA0PR04MB7450.namprd04.prod.outlook.com (2603:10b6:806:d9::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
+ 2024 08:12:33 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::a814:67f1:24ab:508e]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::a814:67f1:24ab:508e%7]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
+ 08:12:33 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+CC: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Josef Bacik
+	<josef@toxicpanda.com>, Miklos Szeredi <mszeredi@redhat.com>, Christian
+ Brauner <brauner@kernel.org>, David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH v2] statx: stx_subvol
+Thread-Topic: [PATCH v2] statx: stx_subvol
+Thread-Index: AQHacQB7a0OzBoIW0EyYceG+9ps3fLEyNboA
+Date: Mon, 11 Mar 2024 08:12:33 +0000
+Message-ID: <2f598709-fccb-4364-bf15-f9c171b440aa@wdc.com>
+References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+In-Reply-To: <20240308022914.196982-1-kent.overstreet@linux.dev>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|SA0PR04MB7450:EE_
+x-ms-office365-filtering-correlation-id: 565d7f92-9763-4950-859e-08dc41a3011c
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ lwGexL7GTiTjjyIdljOoQuciJTIonYMfiwnK57OZWo4Wxl1INfMGVB7759gQxhrOl+mxCBGxr1nRHyXC9hqhGsFYFyxP/yNnNYDLqYUEMkxY5vGAiT37vCLBq/VPaPE937d/yxNy+mqSIyacVi9K2CB1otNaHmTcDBIEjUYI6Hwt6LiHaYYJucAUtSCb8ezIARBnpz9gSNCOxs1+97JauRL5B3LXlSY+VJ7UM3f5f/GT11neokG/sj9hQzNV/Tqoz+VitXLMir04JZH+zNbZgCQrm0eHnjHsN02R277JiAhrI4rXe33MJiWv2DV2t+ZX8AHIm1RNJMmTe3S7jt5Bqs25/JB1JyS5eZIjtxRh1l05z14JRFwftApo5Pl4bNMphg/ylBn847IiAU5Y3kAk6q421sGExWF2BIOMsO6llxZe+QBsCvjyMYhFdS7T94O/geAR53dVVYnri9y9KJvRsGjuLC+ZJG6nEEmij3+t106iu2aSEbH9nNtZ0PjUin82QbYzm5PchMfFaVIKHeAjyAE8Iix7P89yT37Uk2Zd0FFPCW60mudhE5SkW+zUeloolXvB+472esOMX12tlozuviVxsS0sv0IwOnUD6QurZZhW6f1UVxDVWd7MYMPKpUv5SujuFB57tu/DETnbEMYP94y7LDnsvaN454L3XYvAonOtOee8SUvLzFhdJv9Y2yjq+XQ0/sqmf9z2jCI+1YctNRF1c5qc8APFedBk191ilmw=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?TWxuVFJCckNtOXR2N3N1SUxRcFFMcEdqa0RqbjN3cGNKTUsyNUR4RTBEcUxi?=
+ =?utf-8?B?SndjSHE4b2E3Q0wybUpBdGx5ZmpqKzlsT09lODlLVXFxbjdjUWJCWHlUNkY2?=
+ =?utf-8?B?SlE3RExVRzNQN25CdUh2MUtaTjhJTmkrUFlHemwzRjg2cVVYRERCYlRtM01D?=
+ =?utf-8?B?bGxnVmE5NFZUUEhMcXpPOUJoUTV5aFBDNnhZSzNvY05MVW9ucFlSVWhUSk91?=
+ =?utf-8?B?cXJDWnprYW9zNU9UL3BWb0JSUktjTkRLNDBjTE55a2JTdmVsSWp5Ky9oWXhG?=
+ =?utf-8?B?Qnp2eUliTWFMN3lGU0w0VExHa0NNUllnNGl5ZWY5bzdRdEFxaVVPSUxzMnQ0?=
+ =?utf-8?B?TjhYSzJNam1mYW5sU0RUNVh4Y1M3UkhSTFBFd3F6KzdtOTZEaHpQenpwN0ph?=
+ =?utf-8?B?d3hIK04yRTFnMXBHMHVXbzhEV2NOeVBVMkRSS05Ba1BNUUNyYjhsMTkyMUhu?=
+ =?utf-8?B?SWQ1aTZKV3RNdGFUTzJLSkozNUtQWU5YRVRubGd2aUZYSDY1M1ViY01YbGVJ?=
+ =?utf-8?B?WWkrdDd5Z0RuOXdVeEsvK1cxazNFVldWNmhpbkNPUi9mR2dMRVkxM3hxSGpG?=
+ =?utf-8?B?V3FxQyttTGZjbTdSQWlveVBKa3pOV09rMWY4MERqNW9rQ0d2ekx5UU5YQ0hL?=
+ =?utf-8?B?NUdSbW9tdldETTQ1MW9pK3huWUh0bjRBckpoTW9aMFlVMUtaNXF4d1ExOTRR?=
+ =?utf-8?B?MTFKOGVKQTA2L2UvOEVDeDF3dU5uWTBCWlF6bG9DbE9pZUlzWkFxK0cwY1B4?=
+ =?utf-8?B?cVF0UmYyam50WHpuY1Y1WlRsMnU1QnMrbmRZSjRzUjhxa3VvYmFzbTRFMmdv?=
+ =?utf-8?B?eWo4ZVZZOFgycFB2WUtlU0VDMFgwUldWN003S2dhUG1jQ082Zm9xZlR6TzRV?=
+ =?utf-8?B?eTdEREdIemlmWUk5S2hkaXQwV21ORm1QZFk1eTQwQ2drSmI2MUIxQXhUQnhx?=
+ =?utf-8?B?Vm1pTjlGd2owSW45dTNKeDFIc3FlYU9GU096QldrZCt3Rzg3V1k3WVBMVVo1?=
+ =?utf-8?B?VWVJWGdVb2tvN0VNSm9GOFBnTnZoQVQ4d3hKS2Z1R3o4QlVFcW1WNkpObllM?=
+ =?utf-8?B?YUZVaER2MW02VmxOU29FVDUxRjlzYkJqa3pKbVpxajkvOHBqN0xoc1lJaUZs?=
+ =?utf-8?B?bDUySnNHWmlqbDBZUUVOakJNdXg2alYrTXQ5RXo5N2l4RHF0NUFaM3FtWThN?=
+ =?utf-8?B?SnhGb0M3ZFoyaysrYUhzZXJWeGlxVm5qOUZjZ1JjN25LazRidUFLU3R4UVA5?=
+ =?utf-8?B?czF4R3N0ZWlUOU9PeGQxVTJNa0xmMzJRTVNnVkZqd1lxakxTSmdxdUJUaDQx?=
+ =?utf-8?B?MW1tS2RTR2tOVEFlQUJRNWw4NmRCTWx0cG5qUVZmemwvNHllZzRWSVMvN2RJ?=
+ =?utf-8?B?WWR1d094WHVjK2JLU2VIS2ovRjJ3cEczWnczYjByQlVENmlab1lPTUFiOUJQ?=
+ =?utf-8?B?Wmx5Vm9MTFd5Z2ZMZGphUkNQUkVwWWFTZ0xkMXd5Y2ErTHBWWW9BOCtOTExS?=
+ =?utf-8?B?Q3oyd2ZZWmcyYXdrOFFWL2d5VVQ5OU1IZ0ZZb3JySC9LMDlUODZqMWx6SVRI?=
+ =?utf-8?B?cWczd2NpeXRiWXh6bG5DeWJYb2hrWSs0Ry9aMUxoK2dxdlBHSDljaHhwSDU2?=
+ =?utf-8?B?K1hNUHphVXBOYVEybnUxSjN4Q0FOeVQ5ZDRWT2sza2RpNkhhN09xV3I0RXIx?=
+ =?utf-8?B?R0s4ZCtseTd5VnUraHBLM1VkQ3E0K3JzQ0ErTm5UMW5TS0VSUWlQZ0wvWXll?=
+ =?utf-8?B?OTd0bEJaYXJRS3Q4c2NSWDZQUUJDRDJTZ3BkNmE1cFl2NGZWWVZRejM1d2x3?=
+ =?utf-8?B?cEhEVTl4N3FkemNPTkVxNy9GN25VL2EzcG1KMkl6UFRnRGNqMnlsMUROWVli?=
+ =?utf-8?B?L3N2UGs4Z0ZON0h0aHZ1YUxYODdLeVNhM1A1WVdtek5PRk5pNlJvSWt3enpr?=
+ =?utf-8?B?c2hVZDFlcEVNZVBjTzdibXI1cXVGY3U0ek93MlJvekR6Rm8zRW1BTFpJcThz?=
+ =?utf-8?B?RGxxeUE4THg2RGlZVHp6S215MHBKZElZQkdCTHlITXNIdno0VWlQUlpPUzBX?=
+ =?utf-8?B?UWdYM0VRYVBSNmoxQVcrY1VDMngveGdOSVRPQjgvRnRiY0d1anBEMmF1NGxy?=
+ =?utf-8?B?SEZXT3JkUnlIclIrNFhzRFNSbXhRM1lxcXZXbndjN0EydUhVNi82eHlLMXdS?=
+ =?utf-8?B?Vnc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FCF1A465172C4A4EB42FD170C7C55BC3@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_DN_NONE(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	kRlsrMsusrUZUt/bQdUvslGcR8xQLROK1xcgOO+XVXB1nkxACnPKdZKK0hqtJNLiwKT2potaZJvJBAAkvu0Ccj7wri0jUuB0/A7wfBuP7KXz8YygsRSVh5QTpjKvB7Q32AQS7I5SazeiqIKlEk771dOOabOaW8QRrD1XD2PAnukYAzEQs9jON7XUXOpblm6bVvEw6af6ZS4egp8OFM1JPeEQ7gnCrefvfbpdvo92XtEvYw689lcC/JIvZC4MuM5/MZaUJfxgGjEnlnkNZ1ySrvU043s9FvXU/neHOtfvv5VtAeAidLmWdzgHS7itcNyWiCeYpkvYHVBi+ynz8LHXt3p6t7ThTjFr9WXZKj1udKXOTaMykdkQbL5k3A52nYmAvumE/R57B7blb+TpsAiip3mUcDNit6XNW/EzDxdvi0fm18ChalIEVuHHsr+ds0rxUZWD9+nprtuE/sUOSBz8oJeWCCi6jvc69IUkid2GZ4gGqFZ/xWl5FnVwxwnH/QWwmgwmswHdgLWdurhn3JinqZ+w6DEUAdngjcurz4/XaGrrMCuNFwdCJVptJzi8hMR066hxr7kw/nKpcb5cFMyxkwsBVqZ5yFB1PfZQLRHOmU+kUjapRAG9FG7e2Z9ClxsQ
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 565d7f92-9763-4950-859e-08dc41a3011c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Mar 2024 08:12:33.3430
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wDAg9FLRsIHoOdJbawczmGqClAbJ2bSvfc+a6aSkT7YkdFnjdq/jIYnsPMFxbC1LuLxjSt6rWxGkmtuq2urUtZMyQqAh5GR46+zwORlg9dI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR04MB7450
 
-Previously we're using a fixed usage ratio and wasted bytes for file
-extents which can not be merged with any adjacent ones, but may still
-free up some space.
-
-This patch would enhance the behavior by allowing fine-tuning using some
-extra members inside btrfs_ioctl_defrag_range_args.
-
-This would introduce two flags and two new members:
-
-- BTRFS_DEFRAG_RANGE_USAGE_RATIO and BTRFS_DEFRAG_RANGE_WASTED_BYTES
-  With these flags set, defrag would consider file extents with their
-  usage ratio and wasted bytes as a defrag condition.
-
-- usage_ratio
-  This is a u32 value, but only [0, 100] is allowed.
-  0 means disable usage ratio detection, aka no extra file extents
-  would be defragged based on their usage ratio at all.
-
-  1 means file extents which refer less than 1% of the on-disk extent
-  size would be defragged.
-
-- wasted_bytes
-  This is a u32 value.
-  The "wasted" bytes are just the difference between file extent size
-  against on-disk extent size. (That's if the file extent size is
-  smaller than the on-disk extent size).
-
-  This "wasted" calculation doesn't take other file extents into
-  consideration, thus it's not ensured to free up space.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/defrag.c          | 38 +++++++++++++++++-------------------
- fs/btrfs/ioctl.c           |  6 ++++++
- include/uapi/linux/btrfs.h | 40 +++++++++++++++++++++++++++++++++-----
- 3 files changed, 59 insertions(+), 25 deletions(-)
-
-diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index 42f59d1456f9..ed9cf8cd3da0 100644
---- a/fs/btrfs/defrag.c
-+++ b/fs/btrfs/defrag.c
-@@ -958,26 +958,16 @@ struct defrag_target_range {
-  * any adjacent ones), but we may still want to defrag them, to free up
-  * some space if possible.
-  */
--static bool should_defrag_under_utilized(struct extent_map *em)
-+static bool should_defrag_under_utilized(struct extent_map *em,
-+					 u32 usage_ratio, u32 wasted_bytes)
- {
--	/*
--	 * Ratio based check.
--	 *
--	 * If the current extent is only utilizing 1/16 of its on-disk size,
--	 * it's definitely under-utilized, and defragging it may free up
--	 * the whole extent.
--	 */
--	if (em->len < em->orig_block_len / 16)
-+	/* Ratio based check. */
-+	if (em->len < em->orig_block_len * usage_ratio / 100)
- 		return true;
- 
--	/*
--	 * Wasted space based check.
--	 *
--	 * If we can free up at least 16MiB, then it may be a good idea
--	 * to defrag.
--	 */
-+	/* Wasted space based check. */
- 	if (em->len < em->orig_block_len &&
--	    em->orig_block_len - em->len > SZ_16M)
-+	    em->orig_block_len - em->len > wasted_bytes)
- 		return true;
- 	return false;
- }
-@@ -999,6 +989,7 @@ static bool should_defrag_under_utilized(struct extent_map *em)
- static int defrag_collect_targets(struct btrfs_inode *inode,
- 				  u64 start, u64 len, u32 extent_thresh,
- 				  u64 newer_than, bool do_compress,
-+				  u32 usage_ratio, u32 wasted_bytes,
- 				  bool locked, struct list_head *target_list,
- 				  u64 *last_scanned_ret)
- {
-@@ -1109,7 +1100,8 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
- 			 * But if we may free up some space, it is still worth
- 			 * defragging.
- 			 */
--			if (should_defrag_under_utilized(em))
-+			if (should_defrag_under_utilized(em, usage_ratio,
-+							 wasted_bytes))
- 				goto add;
- 
- 			/* Empty target list, no way to merge with last entry */
-@@ -1241,6 +1233,7 @@ static int defrag_one_locked_target(struct btrfs_inode *inode,
- 
- static int defrag_one_range(struct btrfs_inode *inode, u64 start, u32 len,
- 			    u32 extent_thresh, u64 newer_than, bool do_compress,
-+			    u32 usage_ratio, u32 wasted_bytes,
- 			    u64 *last_scanned_ret)
- {
- 	struct extent_state *cached_state = NULL;
-@@ -1286,7 +1279,8 @@ static int defrag_one_range(struct btrfs_inode *inode, u64 start, u32 len,
- 	 * so that we won't relock the extent range and cause deadlock.
- 	 */
- 	ret = defrag_collect_targets(inode, start, len, extent_thresh,
--				     newer_than, do_compress, true,
-+				     newer_than, do_compress, usage_ratio,
-+				     wasted_bytes, true,
- 				     &target_list, last_scanned_ret);
- 	if (ret < 0)
- 		goto unlock_extent;
-@@ -1319,6 +1313,7 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
- 			      struct file_ra_state *ra,
- 			      u64 start, u32 len, u32 extent_thresh,
- 			      u64 newer_than, bool do_compress,
-+			      u32 usage_ratio, u32 wasted_bytes,
- 			      unsigned long *sectors_defragged,
- 			      unsigned long max_sectors,
- 			      u64 *last_scanned_ret)
-@@ -1330,7 +1325,8 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
- 	int ret;
- 
- 	ret = defrag_collect_targets(inode, start, len, extent_thresh,
--				     newer_than, do_compress, false,
-+				     newer_than, do_compress, usage_ratio,
-+				     wasted_bytes, false,
- 				     &target_list, NULL);
- 	if (ret < 0)
- 		goto out;
-@@ -1370,6 +1366,7 @@ static int defrag_one_cluster(struct btrfs_inode *inode,
- 		 */
- 		ret = defrag_one_range(inode, entry->start, range_len,
- 				       extent_thresh, newer_than, do_compress,
-+				       usage_ratio, wasted_bytes,
- 				       last_scanned_ret);
- 		if (ret < 0)
- 			break;
-@@ -1495,7 +1492,8 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
- 			BTRFS_I(inode)->defrag_compress = compress_type;
- 		ret = defrag_one_cluster(BTRFS_I(inode), ra, cur,
- 				cluster_end + 1 - cur, extent_thresh,
--				newer_than, do_compress, &sectors_defragged,
-+				newer_than, do_compress, range->usage_ratio,
-+				range->wasted_bytes, &sectors_defragged,
- 				max_to_defrag, &last_scanned);
- 
- 		if (sectors_defragged > prev_sectors_defragged)
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 38459a89b27c..b6d1844b5bbe 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2635,6 +2635,12 @@ static int btrfs_ioctl_defrag(struct file *file, void __user *argp)
- 				range.flags |= BTRFS_DEFRAG_RANGE_START_IO;
- 				range.extent_thresh = (u32)-1;
- 			}
-+
-+			if (range.flags & BTRFS_DEFRAG_RANGE_LONE_RATIO &&
-+			    range.usage_ratio > 100) {
-+				ret = -EINVAL;
-+				goto out;
-+			}
- 		} else {
- 			/* the rest are all set to zero by kzalloc */
- 			range.len = (u64)-1;
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index cdf6ad872149..6c9d9cfa5b8a 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -613,10 +613,14 @@ struct btrfs_ioctl_clone_range_args {
-  * Used by:
-  * struct btrfs_ioctl_defrag_range_args.flags
-  */
--#define BTRFS_DEFRAG_RANGE_COMPRESS 1
--#define BTRFS_DEFRAG_RANGE_START_IO 2
--#define BTRFS_DEFRAG_RANGE_FLAGS_SUPP	(BTRFS_DEFRAG_RANGE_COMPRESS |		\
--					 BTRFS_DEFRAG_RANGE_START_IO)
-+#define BTRFS_DEFRAG_RANGE_COMPRESS		(1ULL << 0)
-+#define BTRFS_DEFRAG_RANGE_START_IO		(1ULL << 1)
-+#define BTRFS_DEFRAG_RANGE_LONE_RATIO		(1ULL << 2)
-+#define BTRFS_DEFRAG_RANGE_LONE_WASTED_BYTES	(1ULL << 3)
-+#define BTRFS_DEFRAG_RANGE_FLAGS_SUPP	(BTRFS_DEFRAG_RANGE_COMPRESS |	\
-+					 BTRFS_DEFRAG_RANGE_START_IO |	\
-+					 BTRFS_DEFRAG_RANGE_LONE_RATIO |\
-+					 BTRFS_DEFRAG_RANGE_LONE_WASTED_BYTES)
- 
- struct btrfs_ioctl_defrag_range_args {
- 	/* start of the defrag operation */
-@@ -645,8 +649,34 @@ struct btrfs_ioctl_defrag_range_args {
- 	 */
- 	__u32 compress_type;
- 
-+	/*
-+	 * File extents which has lower usage ratio than this would be defragged.
-+	 *
-+	 * Valid values are [0, 100].
-+	 *
-+	 * 0 means no check based on usage ratio.
-+	 * 1 means one file extent would be defragged if its referred size
-+	 * (file extent num bytes) is smaller than 1% of its on-disk extent size.
-+	 * 100 means one file extent would be defragged if its referred size
-+	 * (file extent num bytes) is smaller than 100% of its on-disk extent size.
-+	 */
-+	__u32 usage_ratio;
-+
-+	/*
-+	 * File extents which has more "wasted" bytes than this would be
-+	 * defragged.
-+	 *
-+	 * "Wasted" bytes just means the difference between the file extent size
-+	 * (file extent num bytes) against the on-disk extent size
-+	 * (file extent disk num bytes).
-+	 *
-+	 * Valid values are [0, U32_MAX], but values larger than
-+	 * BTRFS_MAX_EXTENT_SIZE would not make much sense.
-+	 */
-+	__u32 wasted_bytes;
-+
- 	/* spare for later */
--	__u32 unused[4];
-+	__u32 unused[2];
- };
- 
- 
--- 
-2.44.0
-
+T24gMDguMDMuMjQgMDM6MjksIEtlbnQgT3ZlcnN0cmVldCB3cm90ZToNCj4gQWRkIGEgbmV3IHN0
+YXR4IGZpZWxkIGZvciAoc3ViKXZvbHVtZSBpZGVudGlmaWVycywgYXMgaW1wbGVtZW50ZWQgYnkN
+Cj4gYnRyZnMgYW5kIGJjYWNoZWZzLg0KPiANCj4gVGhpcyBpbmNsdWRlcyBiY2FjaGVmcyBzdXBw
+b3J0OyB3ZSdsbCBkZWZpbml0ZWx5IHdhbnQgYnRyZnMgc3VwcG9ydCBhcw0KPiB3ZWxsLg0KDQpG
+b3IgYnRyZnMgeW91IGNhbiBhZGQgdGhlIGZvbGxvd2luZzoNCg0KDQogRnJvbSA4MjM0M2I3Y2Iy
+YTk0N2JjYTQzMjM0YzQ0M2I5YzIyMzM5MzY3ZjY4IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0K
+RnJvbTogSm9oYW5uZXMgVGh1bXNoaXJuIDxqb2hhbm5lcy50aHVtc2hpcm5Ad2RjLmNvbT4NCkRh
+dGU6IE1vbiwgMTEgTWFyIDIwMjQgMDk6MDk6MzYgKzAxMDANClN1YmplY3Q6IFtQQVRDSF0gYnRy
+ZnM6IHByb3ZpZGUgc3Vidm9sdW1lIGlkIGZvciBzdGF0eA0KDQpBZGQgdGhlIGlub2RlJ3Mgc3Vi
+dm9sdW1lIGlkIHRvIHRoZSBuZXdseSBwcm9wb3NlZCBzdGF0eCBzdWJ2b2wgZmllbGQuDQoNClNp
+Z25lZC1vZmYtYnk6IEpvaGFubmVzIFRodW1zaGlybiA8am9oYW5uZXMudGh1bXNoaXJuQHdkYy5j
+b20+DQotLS0NCiAgZnMvYnRyZnMvaW5vZGUuYyB8IDMgKysrDQogIDEgZmlsZSBjaGFuZ2VkLCAz
+IGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2lub2RlLmMgYi9mcy9idHJm
+cy9pbm9kZS5jDQppbmRleCAzNzcwMTUzMWVlYjEuLjhjZjY5MmM3MDhkNyAxMDA2NDQNCi0tLSBh
+L2ZzL2J0cmZzL2lub2RlLmMNCisrKyBiL2ZzL2J0cmZzL2lub2RlLmMNCkBAIC04Nzc5LDYgKzg3
+NzksOSBAQCBzdGF0aWMgaW50IGJ0cmZzX2dldGF0dHIoc3RydWN0IG1udF9pZG1hcCAqaWRtYXAs
+DQogIAlnZW5lcmljX2ZpbGxhdHRyKGlkbWFwLCByZXF1ZXN0X21hc2ssIGlub2RlLCBzdGF0KTsN
+CiAgCXN0YXQtPmRldiA9IEJUUkZTX0koaW5vZGUpLT5yb290LT5hbm9uX2RldjsNCg0KKwlzdGF0
+LT5zdWJ2b2wgPSBCVFJGU19JKGlub2RlKS0+cm9vdC0+cm9vdF9rZXkub2JqZWN0aWQ7DQorCXN0
+YXQtPnJlc3VsdF9tYXNrIHw9IFNUQVRYX1NVQlZPTDsNCisNCiAgCXNwaW5fbG9jaygmQlRSRlNf
+SShpbm9kZSktPmxvY2spOw0KICAJZGVsYWxsb2NfYnl0ZXMgPSBCVFJGU19JKGlub2RlKS0+bmV3
+X2RlbGFsbG9jX2J5dGVzOw0KICAJaW5vZGVfYnl0ZXMgPSBpbm9kZV9nZXRfYnl0ZXMoaW5vZGUp
+Ow0KLS0gDQoyLjM1LjMNCg0KDQo=
 
