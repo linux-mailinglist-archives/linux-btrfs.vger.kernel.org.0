@@ -1,46 +1,45 @@
-Return-Path: <linux-btrfs+bounces-3186-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3187-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27A5087835A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 16:24:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04183878394
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 16:29:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58DFC1C2185D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 15:24:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98E26B24940
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 15:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2003612E1;
-	Mon, 11 Mar 2024 15:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9056930D;
+	Mon, 11 Mar 2024 15:14:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JSTcZAKX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cvqz9/Gj"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC172612C0;
-	Mon, 11 Mar 2024 15:13:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A086E41C7F;
+	Mon, 11 Mar 2024 15:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710170038; cv=none; b=lQkF0lz5FMGTfMUksOSSf8EzddhV5evFkcCNLQ0Mm1U4eVrWcTDuvojvNcvog3GT0gs3kXCP9QAPrhrMTXmK4D7zDkvPKgybvcrhBmXV3xg/RRXBhcZfdDbtDVkhqhqgOfLKfglsSUBe9nKYZAWhuJGtFpqXS6bYbQsjC3hUO1E=
+	t=1710170088; cv=none; b=DDVvn1m0khOcmCrqnkvwYvrcyYL103ADatiKfoQolgGHsoXv83aIG5iK7x2Z4Ljv7VsKeYyZM4TL3kz1HtaxEZ7adiGa1vM4wg/E5lfvDxqjzlJ2bPjO437ieJpYb/Tj7m9mGla6OQApf1mKFNEIpylH7f5V0cMTuvI0TUh/PO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710170038; c=relaxed/simple;
-	bh=CR7U7I7o3JFIb3W4qXtfs6CITzpzPRT0IhtO4lEfgVQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=a8PKUis6xouvNTgUNl7e6H29hAEcihoX/9iPtA7I3uXcZziTYs4/URzH5rsZu0w3rNHW6PF9qwveJ3jCXd+SKGNGwz14uy6UxpJ9T7Bc3+WhaEj1jpVFlYlHVhDA6XZTCYxBk0e3r8O20pza9lWpIpgLP/DA5EEXMkZRsQK682k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JSTcZAKX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ED32C43394;
-	Mon, 11 Mar 2024 15:13:57 +0000 (UTC)
+	s=arc-20240116; t=1710170088; c=relaxed/simple;
+	bh=vFZ03WCOn1wR1bZjKIw44TLC5EW/38on4bVp+puNMPs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fXCo+zXWIak7uH0ntzZuiKX/svwHt5/zVwrBQ3vvhUeQEAyZIbA/4veW+vKIQU7wkbCoFl1MyMp3MbOO0o5479mFsrcE31TTjlfmpUjTUBeSu9tBNC+pE2siSCYRw7b+tis3ykBIGrcYQtrkMJuRQ7u5jOG4USNE0OnwMO5Vj40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cvqz9/Gj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FFD6C433F1;
+	Mon, 11 Mar 2024 15:14:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710170038;
-	bh=CR7U7I7o3JFIb3W4qXtfs6CITzpzPRT0IhtO4lEfgVQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JSTcZAKXeHQM2QEITST9jb3qsrktl9q4n4Zvmk+7lhzFESfqAfB+pKn5gsW39Om2Z
-	 5QPxz9Es97FJ2dqqXUoo049B7asN8Gr9DkJPkf0G5sj9DMkIJQwmioMKkfFi89nhZk
-	 PpzMtsWWux8Yvm4A8IdksDEFwCy2gl1iilpj1J04P7532XWE9pVUI4cQhTXCgP7OGZ
-	 bjA5hPYodbKkdEqAbJL0YBnaHn7jH4KdbvaS1m767aqO6/SXoiWIa0mRNCuHST2YsQ
-	 wz9wMUtne2DX1ciz2V7yyypnQ0EW/LDy1l+AApg4AqjPggSupVVbG9SJx+3T1SZkdY
-	 eJOzMpnl3AZsQ==
+	s=k20201202; t=1710170088;
+	bh=vFZ03WCOn1wR1bZjKIw44TLC5EW/38on4bVp+puNMPs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=cvqz9/GjVnwayj56yWZJBk59c3DTDGBTjB4pYr9Y6+HEwOMYvamL9u3fHeO8Ezqx4
+	 pGIzWaG1uTqot34NInTWKNBax58I8Heez3wxdCzItUx0iwRrTdXOIQjGKSDydbGZyr
+	 TAP+iOuj6/PCEC/p4UP7T8hHZU52xuisZS8GR92Bn6M2+65KqWXfqoskkI/IErdMAb
+	 rgScic2xdChg5AHEJpXyo+bPI3yyDArlvQ1MMJPF1pagNhpqDcdKBze5B7V/9wHq5a
+	 w1WBqxCwjIKwyO0CwYp7d5ly0KzNxcw13J5dTFc9eXkQTDMy6rnAVqOczdcvTPRXx2
+	 Lgy4h4d90o3jQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,12 +49,10 @@ Cc: Filipe Manana <fdmanana@suse.com>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 02/13] btrfs: fix data race at btrfs_use_block_rsv() when accessing block reserve
-Date: Mon, 11 Mar 2024 11:13:37 -0400
-Message-ID: <20240311151354.318293-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 1/4] btrfs: fix data race at btrfs_use_block_rsv() when accessing block reserve
+Date: Mon, 11 Mar 2024 11:14:41 -0400
+Message-ID: <20240311151445.318822-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240311151354.318293-1-sashal@kernel.org>
-References: <20240311151354.318293-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -64,7 +61,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.81
+X-stable-base: Linux 5.4.271
 Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
@@ -125,10 +122,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 17 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index 507b44d18572d..4cbf386166209 100644
+index 36ef3228bac86..63205d2f4d84c 100644
 --- a/fs/btrfs/block-rsv.c
 +++ b/fs/btrfs/block-rsv.c
-@@ -512,7 +512,7 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
+@@ -392,7 +392,7 @@ struct btrfs_block_rsv *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
  
  	block_rsv = get_block_rsv(trans, root);
  
@@ -138,11 +135,11 @@ index 507b44d18572d..4cbf386166209 100644
  again:
  	ret = btrfs_block_rsv_use_bytes(block_rsv, blocksize);
 diff --git a/fs/btrfs/block-rsv.h b/fs/btrfs/block-rsv.h
-index cda79d3e0c263..df87c4949d065 100644
+index d1428bb73fc5a..69770360917cb 100644
 --- a/fs/btrfs/block-rsv.h
 +++ b/fs/btrfs/block-rsv.h
-@@ -117,4 +117,20 @@ static inline u64 btrfs_block_rsv_reserved(struct btrfs_block_rsv *rsv)
- 	return ret;
+@@ -98,4 +98,20 @@ static inline void btrfs_unuse_block_rsv(struct btrfs_fs_info *fs_info,
+ 	btrfs_block_rsv_release(fs_info, block_rsv, 0);
  }
  
 +/*
