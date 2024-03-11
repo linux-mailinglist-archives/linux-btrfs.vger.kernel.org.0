@@ -1,198 +1,345 @@
-Return-Path: <linux-btrfs+bounces-3172-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3173-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BB1B877B8C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 09:13:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83AD6877C6F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 10:16:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D54A4B210DD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 08:12:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30A9228233A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 09:16:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B6F11C83;
-	Mon, 11 Mar 2024 08:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7381F2261F;
+	Mon, 11 Mar 2024 09:15:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Nl2U+CFZ";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="e7545sbr"
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="VoylY6yu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D2C12B8D;
-	Mon, 11 Mar 2024 08:12:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710144765; cv=fail; b=jw/eS/UFv1tluY/7dY/OyzIgSfZ5bdYgz7XZXJ5mI1SQTunio/WRlYjNvnky2ATlwUeXVRjCeCz65hPSvnZxypfw9dPKK6nMieSflYWrdxUou08G5mNu8P7WGW+ctzmgI22zIw2sF+L4qgk09euNNu6M8Adi+F1gQl8fEWU8aow=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710144765; c=relaxed/simple;
-	bh=Pa4mWPM5xGeEb+426mKJO+Tw23sS2KqlELMjyIdxB9I=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LWstkUCJMxf0WW0NAmKXf7MBrCxiVAcKsstMTEwqnav36UyuWmcRLussycPGgdu0/aJc6q51pZKB7iQbBNPKlxe/hBn58mrvxS+ZRQg6ZhqncHb5sOVIt6akD2W1rm7UbfzF7nydyqMOTZk1pjLmF71JAmn6hdZf058ezpPCHRw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Nl2U+CFZ; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=e7545sbr; arc=fail smtp.client-ip=216.71.154.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1710144763; x=1741680763;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=Pa4mWPM5xGeEb+426mKJO+Tw23sS2KqlELMjyIdxB9I=;
-  b=Nl2U+CFZF+3qAgG0HgPqJfuOBsM+5Oa/mqtxa0WKLy/LU6D9y7UnRaPQ
-   2AvzptScSWE25QvBI1SfRHU/tmrkbaToCtyMUsvRQRMkwjSKOgbBXK6kr
-   ptOk43S60CHncdsshEHUFNUGcxHiir2FPaKX3l+BAXAzrZpwrLLUwiI0S
-   qZMzqE37zlMJFZyYw5dHdf2Tk80FPR//b4lQ4Mew0JiWoNi7QVKzVByHY
-   f5dPCRmpoDumtdttMM8A9uk8WtfqdLi44B+tb06IZsp/SoT8RvNP1/gPZ
-   X9bnQnFjVpOkZzcpkXF3xK9sq7p1JNpkgVuSpamEFvN7wPdYaw4BSVoO2
-   A==;
-X-CSE-ConnectionGUID: Jn48NFH3SsOpPBxAHfJEQQ==
-X-CSE-MsgGUID: Vxq4j1avTkeieudgT1X9HQ==
-X-IronPort-AV: E=Sophos;i="6.07,116,1708358400"; 
-   d="scan'208";a="10806332"
-Received: from mail-mw2nam10lp2100.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.100])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Mar 2024 16:12:35 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KvAYmwqQah0vvVnm0VKgZEsA6U6uH5/m0g6SFCaMnsLWsO49Cty5k7aGMPx7HDFJLDLd6gKzR0b9ZvhU5k3z72wsliSP0hkYqBHGeAGc54WbzANt968zndP7UPjJ+8pHM4OS64ZEDWBlWPr4e/dNzTny7LGClXTeWBGk+vcK04O+QY5x/hFKXnj5Pq0ZpT/VoQP1FhuyBIZdNuEwW+TVQMNE5cGnaniN4W8FY3R+MLUDQ7xxoDFv4e6tmd/TRTqKdn8F0f791BkOWLElz2BBLz7DPArndmq21fs2eB+H4BmWlOJ4iUN+QG4iYZFC6Y6GH6c+oxTVxmenVDrLWeLUdw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Pa4mWPM5xGeEb+426mKJO+Tw23sS2KqlELMjyIdxB9I=;
- b=ZqkSaB79s0mi+H7e7/zZUNfnxVssXE6B6a8BSLoSGi/s09vOhDGtjN2rBG7y5LILenasbrWwHvTXwBEQBlgrDl1GQKptPaAHmepCTtVZzDl2+AqxcvNUlMPpFEEL3jvbUigICcJRvIu4dtv6bogxdWV1HT+0+nOMr9YvoYPMO0Qa09nE/aoA/PoPKPMOTsmisHrQoluDH9kBWJnLdIZbOIoRQCT41oa12JL0CdVX3tQwC5UR/KKOYDfYRkoefu5HJDBj6FJ/Znq1OJmE8S5fcEJ5j+Sb1W4PaguMm7o6pRMHWAfAjYPBQAKi9h4Y1RxpcsQnXvbf6B5eSNM5hZyBXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Pa4mWPM5xGeEb+426mKJO+Tw23sS2KqlELMjyIdxB9I=;
- b=e7545sbrswtRaGBdY3xn56+XYC+Iew+gPmz8Gyx8LTYObWevUAIkKdYgI2a4d0tUv5/5nRvVfOOraNr8d2RYv38KSXOv1j+/Mq0jDycY0O57y0tqt7oS9iq+DcrHPfus9OxlFJ8n9D2RFfdJml3j6weovLBUymxBYQ7z/ZAWv3U=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by SA0PR04MB7450.namprd04.prod.outlook.com (2603:10b6:806:d9::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Mon, 11 Mar
- 2024 08:12:33 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::a814:67f1:24ab:508e]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::a814:67f1:24ab:508e%7]) with mapi id 15.20.7362.035; Mon, 11 Mar 2024
- 08:12:33 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-CC: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Josef Bacik
-	<josef@toxicpanda.com>, Miklos Szeredi <mszeredi@redhat.com>, Christian
- Brauner <brauner@kernel.org>, David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-Thread-Topic: [PATCH v2] statx: stx_subvol
-Thread-Index: AQHacQB7a0OzBoIW0EyYceG+9ps3fLEyNboA
-Date: Mon, 11 Mar 2024 08:12:33 +0000
-Message-ID: <2f598709-fccb-4364-bf15-f9c171b440aa@wdc.com>
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
-In-Reply-To: <20240308022914.196982-1-kent.overstreet@linux.dev>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|SA0PR04MB7450:EE_
-x-ms-office365-filtering-correlation-id: 565d7f92-9763-4950-859e-08dc41a3011c
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- lwGexL7GTiTjjyIdljOoQuciJTIonYMfiwnK57OZWo4Wxl1INfMGVB7759gQxhrOl+mxCBGxr1nRHyXC9hqhGsFYFyxP/yNnNYDLqYUEMkxY5vGAiT37vCLBq/VPaPE937d/yxNy+mqSIyacVi9K2CB1otNaHmTcDBIEjUYI6Hwt6LiHaYYJucAUtSCb8ezIARBnpz9gSNCOxs1+97JauRL5B3LXlSY+VJ7UM3f5f/GT11neokG/sj9hQzNV/Tqoz+VitXLMir04JZH+zNbZgCQrm0eHnjHsN02R277JiAhrI4rXe33MJiWv2DV2t+ZX8AHIm1RNJMmTe3S7jt5Bqs25/JB1JyS5eZIjtxRh1l05z14JRFwftApo5Pl4bNMphg/ylBn847IiAU5Y3kAk6q421sGExWF2BIOMsO6llxZe+QBsCvjyMYhFdS7T94O/geAR53dVVYnri9y9KJvRsGjuLC+ZJG6nEEmij3+t106iu2aSEbH9nNtZ0PjUin82QbYzm5PchMfFaVIKHeAjyAE8Iix7P89yT37Uk2Zd0FFPCW60mudhE5SkW+zUeloolXvB+472esOMX12tlozuviVxsS0sv0IwOnUD6QurZZhW6f1UVxDVWd7MYMPKpUv5SujuFB57tu/DETnbEMYP94y7LDnsvaN454L3XYvAonOtOee8SUvLzFhdJv9Y2yjq+XQ0/sqmf9z2jCI+1YctNRF1c5qc8APFedBk191ilmw=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?TWxuVFJCckNtOXR2N3N1SUxRcFFMcEdqa0RqbjN3cGNKTUsyNUR4RTBEcUxi?=
- =?utf-8?B?SndjSHE4b2E3Q0wybUpBdGx5ZmpqKzlsT09lODlLVXFxbjdjUWJCWHlUNkY2?=
- =?utf-8?B?SlE3RExVRzNQN25CdUh2MUtaTjhJTmkrUFlHemwzRjg2cVVYRERCYlRtM01D?=
- =?utf-8?B?bGxnVmE5NFZUUEhMcXpPOUJoUTV5aFBDNnhZSzNvY05MVW9ucFlSVWhUSk91?=
- =?utf-8?B?cXJDWnprYW9zNU9UL3BWb0JSUktjTkRLNDBjTE55a2JTdmVsSWp5Ky9oWXhG?=
- =?utf-8?B?Qnp2eUliTWFMN3lGU0w0VExHa0NNUllnNGl5ZWY5bzdRdEFxaVVPSUxzMnQ0?=
- =?utf-8?B?TjhYSzJNam1mYW5sU0RUNVh4Y1M3UkhSTFBFd3F6KzdtOTZEaHpQenpwN0ph?=
- =?utf-8?B?d3hIK04yRTFnMXBHMHVXbzhEV2NOeVBVMkRSS05Ba1BNUUNyYjhsMTkyMUhu?=
- =?utf-8?B?SWQ1aTZKV3RNdGFUTzJLSkozNUtQWU5YRVRubGd2aUZYSDY1M1ViY01YbGVJ?=
- =?utf-8?B?WWkrdDd5Z0RuOXdVeEsvK1cxazNFVldWNmhpbkNPUi9mR2dMRVkxM3hxSGpG?=
- =?utf-8?B?V3FxQyttTGZjbTdSQWlveVBKa3pOV09rMWY4MERqNW9rQ0d2ekx5UU5YQ0hL?=
- =?utf-8?B?NUdSbW9tdldETTQ1MW9pK3huWUh0bjRBckpoTW9aMFlVMUtaNXF4d1ExOTRR?=
- =?utf-8?B?MTFKOGVKQTA2L2UvOEVDeDF3dU5uWTBCWlF6bG9DbE9pZUlzWkFxK0cwY1B4?=
- =?utf-8?B?cVF0UmYyam50WHpuY1Y1WlRsMnU1QnMrbmRZSjRzUjhxa3VvYmFzbTRFMmdv?=
- =?utf-8?B?eWo4ZVZZOFgycFB2WUtlU0VDMFgwUldWN003S2dhUG1jQ082Zm9xZlR6TzRV?=
- =?utf-8?B?eTdEREdIemlmWUk5S2hkaXQwV21ORm1QZFk1eTQwQ2drSmI2MUIxQXhUQnhx?=
- =?utf-8?B?Vm1pTjlGd2owSW45dTNKeDFIc3FlYU9GU096QldrZCt3Rzg3V1k3WVBMVVo1?=
- =?utf-8?B?VWVJWGdVb2tvN0VNSm9GOFBnTnZoQVQ4d3hKS2Z1R3o4QlVFcW1WNkpObllM?=
- =?utf-8?B?YUZVaER2MW02VmxOU29FVDUxRjlzYkJqa3pKbVpxajkvOHBqN0xoc1lJaUZs?=
- =?utf-8?B?bDUySnNHWmlqbDBZUUVOakJNdXg2alYrTXQ5RXo5N2l4RHF0NUFaM3FtWThN?=
- =?utf-8?B?SnhGb0M3ZFoyaysrYUhzZXJWeGlxVm5qOUZjZ1JjN25LazRidUFLU3R4UVA5?=
- =?utf-8?B?czF4R3N0ZWlUOU9PeGQxVTJNa0xmMzJRTVNnVkZqd1lxakxTSmdxdUJUaDQx?=
- =?utf-8?B?MW1tS2RTR2tOVEFlQUJRNWw4NmRCTWx0cG5qUVZmemwvNHllZzRWSVMvN2RJ?=
- =?utf-8?B?WWR1d094WHVjK2JLU2VIS2ovRjJ3cEczWnczYjByQlVENmlab1lPTUFiOUJQ?=
- =?utf-8?B?Wmx5Vm9MTFd5Z2ZMZGphUkNQUkVwWWFTZ0xkMXd5Y2ErTHBWWW9BOCtOTExS?=
- =?utf-8?B?Q3oyd2ZZWmcyYXdrOFFWL2d5VVQ5OU1IZ0ZZb3JySC9LMDlUODZqMWx6SVRI?=
- =?utf-8?B?cWczd2NpeXRiWXh6bG5DeWJYb2hrWSs0Ry9aMUxoK2dxdlBHSDljaHhwSDU2?=
- =?utf-8?B?K1hNUHphVXBOYVEybnUxSjN4Q0FOeVQ5ZDRWT2sza2RpNkhhN09xV3I0RXIx?=
- =?utf-8?B?R0s4ZCtseTd5VnUraHBLM1VkQ3E0K3JzQ0ErTm5UMW5TS0VSUWlQZ0wvWXll?=
- =?utf-8?B?OTd0bEJaYXJRS3Q4c2NSWDZQUUJDRDJTZ3BkNmE1cFl2NGZWWVZRejM1d2x3?=
- =?utf-8?B?cEhEVTl4N3FkemNPTkVxNy9GN25VL2EzcG1KMkl6UFRnRGNqMnlsMUROWVli?=
- =?utf-8?B?L3N2UGs4Z0ZON0h0aHZ1YUxYODdLeVNhM1A1WVdtek5PRk5pNlJvSWt3enpr?=
- =?utf-8?B?c2hVZDFlcEVNZVBjTzdibXI1cXVGY3U0ek93MlJvekR6Rm8zRW1BTFpJcThz?=
- =?utf-8?B?RGxxeUE4THg2RGlZVHp6S215MHBKZElZQkdCTHlITXNIdno0VWlQUlpPUzBX?=
- =?utf-8?B?UWdYM0VRYVBSNmoxQVcrY1VDMngveGdOSVRPQjgvRnRiY0d1anBEMmF1NGxy?=
- =?utf-8?B?SEZXT3JkUnlIclIrNFhzRFNSbXhRM1lxcXZXbndjN0EydUhVNi82eHlLMXdS?=
- =?utf-8?B?Vnc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <FCF1A465172C4A4EB42FD170C7C55BC3@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB67733070;
+	Mon, 11 Mar 2024 09:15:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710148538; cv=none; b=JIf6UaIMQZQr3NsL7iZI+B8HEXrsses38xXThxo+gxOuJ9Apgch1/V+NJfkoxeYsZOTjATYM0eL+e9sNGO8Gkq3ofh+omgbUpNeAHY2+eVSV7LWyEXNMJSrLR29ECmfe59nwJY0zUB4i5m4MyUrh6MS6XSeeOlZWNhGRV7WuPvE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710148538; c=relaxed/simple;
+	bh=fDcyWtsKLpMUlBDZfvyHMi0/iqNhwLjnewlmBXGhQeg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=d2gOmZSZUmLkBLA4TqOygCzCbZC59DwGNeTZkxzpehrlrjWs5Al1p8wZoMy5GvZSI6JhtrzLe9LtHof0KfD4VnkpAuc+k6WyC0AoFh4a5pOgLztQSLZR/RDPRbQQiU7J1a4eWzKevfJmypP+5oUP2XR/GNflbp/eVYdWlnJIAoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=VoylY6yu; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:Reply-To:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=rm2u1DC2SQLO/GhCuJ2mUooy8fntRke757nFqBbgD2k=;
+	t=1710148535; x=1710580535; b=VoylY6yuRK/0sU0/64QivCQqs7GgA+0GYsaXHS9Y8ujtSUD
+	ECdC4j18kyxN08AF6biBu3ezMk89hwF/TYJjXcYBYPWM9zy4BJJ7jheGQiQsUdoLvOfKfJ7Mlytgf
+	rSDrEg/4Gas0CZUBVx9GLLj2HxOFZ7dmGyuIw7LdIlWLUXcpgHZNUCXZ8i42bvn750pVPZx+gFEt2
+	2O2GmZHc3s73uQB2ovJ9N3LhNqZgBwkIOIFd7QyE4K5tzKlD/rlWaItPU6/ij9kb2FHZfrNktLwvS
+	qXgwD83WYQjibFrnB9pM7SxjZ9LpGg+6/SwWwXLe4kU1rSNsYxQe6Um1w5pjsK3g==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rjbkq-0001Hx-Kh; Mon, 11 Mar 2024 10:15:32 +0100
+Message-ID: <da17e97b-1880-415d-8cdb-07e79808e702@leemhuis.info>
+Date: Mon, 11 Mar 2024 10:15:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	kRlsrMsusrUZUt/bQdUvslGcR8xQLROK1xcgOO+XVXB1nkxACnPKdZKK0hqtJNLiwKT2potaZJvJBAAkvu0Ccj7wri0jUuB0/A7wfBuP7KXz8YygsRSVh5QTpjKvB7Q32AQS7I5SazeiqIKlEk771dOOabOaW8QRrD1XD2PAnukYAzEQs9jON7XUXOpblm6bVvEw6af6ZS4egp8OFM1JPeEQ7gnCrefvfbpdvo92XtEvYw689lcC/JIvZC4MuM5/MZaUJfxgGjEnlnkNZ1ySrvU043s9FvXU/neHOtfvv5VtAeAidLmWdzgHS7itcNyWiCeYpkvYHVBi+ynz8LHXt3p6t7ThTjFr9WXZKj1udKXOTaMykdkQbL5k3A52nYmAvumE/R57B7blb+TpsAiip3mUcDNit6XNW/EzDxdvi0fm18ChalIEVuHHsr+ds0rxUZWD9+nprtuE/sUOSBz8oJeWCCi6jvc69IUkid2GZ4gGqFZ/xWl5FnVwxwnH/QWwmgwmswHdgLWdurhn3JinqZ+w6DEUAdngjcurz4/XaGrrMCuNFwdCJVptJzi8hMR066hxr7kw/nKpcb5cFMyxkwsBVqZ5yFB1PfZQLRHOmU+kUjapRAG9FG7e2Z9ClxsQ
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 565d7f92-9763-4950-859e-08dc41a3011c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Mar 2024 08:12:33.3430
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wDAg9FLRsIHoOdJbawczmGqClAbJ2bSvfc+a6aSkT7YkdFnjdq/jIYnsPMFxbC1LuLxjSt6rWxGkmtuq2urUtZMyQqAh5GR46+zwORlg9dI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR04MB7450
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH 6.7 001/162] btrfs: fix deadlock with fiemap and extent
+ locking
+Content-Language: en-US, de-DE
+To: Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+ Josef Bacik <josef@toxicpanda.com>, Sasha Levin <sashal@kernel.org>,
+ Linux kernel regressions list <regressions@lists.linux.dev>,
+ Chris Mason <clm@fb.com>, linux-btrfs <linux-btrfs@vger.kernel.org>,
+ Linux kernel regressions list <regressions@lists.linux.dev>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20240304211551.833500257@linuxfoundation.org>
+ <20240304211551.880347593@linuxfoundation.org>
+ <CAKisOQGCiJUUc62ptxp08LkR88T5t1swcBPYi84y2fLP6Tag7g@mail.gmail.com>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+In-Reply-To: <CAKisOQGCiJUUc62ptxp08LkR88T5t1swcBPYi84y2fLP6Tag7g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1710148535;60c88d1c;
+X-HE-SMSGID: 1rjbkq-0001Hx-Kh
 
-T24gMDguMDMuMjQgMDM6MjksIEtlbnQgT3ZlcnN0cmVldCB3cm90ZToNCj4gQWRkIGEgbmV3IHN0
-YXR4IGZpZWxkIGZvciAoc3ViKXZvbHVtZSBpZGVudGlmaWVycywgYXMgaW1wbGVtZW50ZWQgYnkN
-Cj4gYnRyZnMgYW5kIGJjYWNoZWZzLg0KPiANCj4gVGhpcyBpbmNsdWRlcyBiY2FjaGVmcyBzdXBw
-b3J0OyB3ZSdsbCBkZWZpbml0ZWx5IHdhbnQgYnRyZnMgc3VwcG9ydCBhcw0KPiB3ZWxsLg0KDQpG
-b3IgYnRyZnMgeW91IGNhbiBhZGQgdGhlIGZvbGxvd2luZzoNCg0KDQogRnJvbSA4MjM0M2I3Y2Iy
-YTk0N2JjYTQzMjM0YzQ0M2I5YzIyMzM5MzY3ZjY4IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0K
-RnJvbTogSm9oYW5uZXMgVGh1bXNoaXJuIDxqb2hhbm5lcy50aHVtc2hpcm5Ad2RjLmNvbT4NCkRh
-dGU6IE1vbiwgMTEgTWFyIDIwMjQgMDk6MDk6MzYgKzAxMDANClN1YmplY3Q6IFtQQVRDSF0gYnRy
-ZnM6IHByb3ZpZGUgc3Vidm9sdW1lIGlkIGZvciBzdGF0eA0KDQpBZGQgdGhlIGlub2RlJ3Mgc3Vi
-dm9sdW1lIGlkIHRvIHRoZSBuZXdseSBwcm9wb3NlZCBzdGF0eCBzdWJ2b2wgZmllbGQuDQoNClNp
-Z25lZC1vZmYtYnk6IEpvaGFubmVzIFRodW1zaGlybiA8am9oYW5uZXMudGh1bXNoaXJuQHdkYy5j
-b20+DQotLS0NCiAgZnMvYnRyZnMvaW5vZGUuYyB8IDMgKysrDQogIDEgZmlsZSBjaGFuZ2VkLCAz
-IGluc2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2lub2RlLmMgYi9mcy9idHJm
-cy9pbm9kZS5jDQppbmRleCAzNzcwMTUzMWVlYjEuLjhjZjY5MmM3MDhkNyAxMDA2NDQNCi0tLSBh
-L2ZzL2J0cmZzL2lub2RlLmMNCisrKyBiL2ZzL2J0cmZzL2lub2RlLmMNCkBAIC04Nzc5LDYgKzg3
-NzksOSBAQCBzdGF0aWMgaW50IGJ0cmZzX2dldGF0dHIoc3RydWN0IG1udF9pZG1hcCAqaWRtYXAs
-DQogIAlnZW5lcmljX2ZpbGxhdHRyKGlkbWFwLCByZXF1ZXN0X21hc2ssIGlub2RlLCBzdGF0KTsN
-CiAgCXN0YXQtPmRldiA9IEJUUkZTX0koaW5vZGUpLT5yb290LT5hbm9uX2RldjsNCg0KKwlzdGF0
-LT5zdWJ2b2wgPSBCVFJGU19JKGlub2RlKS0+cm9vdC0+cm9vdF9rZXkub2JqZWN0aWQ7DQorCXN0
-YXQtPnJlc3VsdF9tYXNrIHw9IFNUQVRYX1NVQlZPTDsNCisNCiAgCXNwaW5fbG9jaygmQlRSRlNf
-SShpbm9kZSktPmxvY2spOw0KICAJZGVsYWxsb2NfYnl0ZXMgPSBCVFJGU19JKGlub2RlKS0+bmV3
-X2RlbGFsbG9jX2J5dGVzOw0KICAJaW5vZGVfYnl0ZXMgPSBpbm9kZV9nZXRfYnl0ZXMoaW5vZGUp
-Ow0KLS0gDQoyLjM1LjMNCg0KDQo=
+On 06.03.24 13:39, Filipe Manana wrote:
+> On Mon, Mar 4, 2024 at 9:26 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+>>
+>> 6.7-stable review patch.  If anyone has any objections, please let me know.
+> 
+> It would be better to delay the backport of this patch (and the
+> followup fix) to any stable release, because it introduced another
+> regression for which there is a reviewed fix but it's not yet in
+> Linus' tree:
+> 
+> https://lore.kernel.org/linux-btrfs/cover.1709202499.git.fdmanana@suse.com/
+
+Those two missed 6.8 afaics. Will those be heading to mainline any time
+soon? And how fast afterwards will it be wise to backport them to 6.8?
+Will anyone ask Greg for that when the time has come? Same for
+backporting "btrfs: fix deadlock with fiemap and extent locking", the
+followup fix and the two fixed mentioned above for 6.6 and 6.7?
+
+Cioa, Thorsten
+
+>> ------------------
+>>
+>> From: Josef Bacik <josef@toxicpanda.com>
+>>
+>> [ Upstream commit b0ad381fa7690244802aed119b478b4bdafc31dd ]
+>>
+>> While working on the patchset to remove extent locking I got a lockdep
+>> splat with fiemap and pagefaulting with my new extent lock replacement
+>> lock.
+>>
+>> This deadlock exists with our normal code, we just don't have lockdep
+>> annotations with the extent locking so we've never noticed it.
+>>
+>> Since we're copying the fiemap extent to user space on every iteration
+>> we have the chance of pagefaulting.  Because we hold the extent lock for
+>> the entire range we could mkwrite into a range in the file that we have
+>> mmap'ed.  This would deadlock with the following stack trace
+>>
+>> [<0>] lock_extent+0x28d/0x2f0
+>> [<0>] btrfs_page_mkwrite+0x273/0x8a0
+>> [<0>] do_page_mkwrite+0x50/0xb0
+>> [<0>] do_fault+0xc1/0x7b0
+>> [<0>] __handle_mm_fault+0x2fa/0x460
+>> [<0>] handle_mm_fault+0xa4/0x330
+>> [<0>] do_user_addr_fault+0x1f4/0x800
+>> [<0>] exc_page_fault+0x7c/0x1e0
+>> [<0>] asm_exc_page_fault+0x26/0x30
+>> [<0>] rep_movs_alternative+0x33/0x70
+>> [<0>] _copy_to_user+0x49/0x70
+>> [<0>] fiemap_fill_next_extent+0xc8/0x120
+>> [<0>] emit_fiemap_extent+0x4d/0xa0
+>> [<0>] extent_fiemap+0x7f8/0xad0
+>> [<0>] btrfs_fiemap+0x49/0x80
+>> [<0>] __x64_sys_ioctl+0x3e1/0xb50
+>> [<0>] do_syscall_64+0x94/0x1a0
+>> [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>>
+>> I wrote an fstest to reproduce this deadlock without my replacement lock
+>> and verified that the deadlock exists with our existing locking.
+>>
+>> To fix this simply don't take the extent lock for the entire duration of
+>> the fiemap.  This is safe in general because we keep track of where we
+>> are when we're searching the tree, so if an ordered extent updates in
+>> the middle of our fiemap call we'll still emit the correct extents
+>> because we know what offset we were on before.
+>>
+>> The only place we maintain the lock is searching delalloc.  Since the
+>> delalloc stuff can change during writeback we want to lock the extent
+>> range so we have a consistent view of delalloc at the time we're
+>> checking to see if we need to set the delalloc flag.
+>>
+>> With this patch applied we no longer deadlock with my testcase.
+>>
+>> CC: stable@vger.kernel.org # 6.1+
+>> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> Reviewed-by: David Sterba <dsterba@suse.com>
+>> Signed-off-by: David Sterba <dsterba@suse.com>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> ---
+>>  fs/btrfs/extent_io.c | 62 ++++++++++++++++++++++++++++++++------------
+>>  1 file changed, 45 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 8f724c54fc8e9..197b41d02735b 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -2645,16 +2645,34 @@ static int fiemap_process_hole(struct btrfs_inode *inode,
+>>          * it beyond i_size.
+>>          */
+>>         while (cur_offset < end && cur_offset < i_size) {
+>> +               struct extent_state *cached_state = NULL;
+>>                 u64 delalloc_start;
+>>                 u64 delalloc_end;
+>>                 u64 prealloc_start;
+>> +               u64 lockstart;
+>> +               u64 lockend;
+>>                 u64 prealloc_len = 0;
+>>                 bool delalloc;
+>>
+>> +               lockstart = round_down(cur_offset, inode->root->fs_info->sectorsize);
+>> +               lockend = round_up(end, inode->root->fs_info->sectorsize);
+>> +
+>> +               /*
+>> +                * We are only locking for the delalloc range because that's the
+>> +                * only thing that can change here.  With fiemap we have a lock
+>> +                * on the inode, so no buffered or direct writes can happen.
+>> +                *
+>> +                * However mmaps and normal page writeback will cause this to
+>> +                * change arbitrarily.  We have to lock the extent lock here to
+>> +                * make sure that nobody messes with the tree while we're doing
+>> +                * btrfs_find_delalloc_in_range.
+>> +                */
+>> +               lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+>>                 delalloc = btrfs_find_delalloc_in_range(inode, cur_offset, end,
+>>                                                         delalloc_cached_state,
+>>                                                         &delalloc_start,
+>>                                                         &delalloc_end);
+>> +               unlock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+>>                 if (!delalloc)
+>>                         break;
+>>
+>> @@ -2822,15 +2840,15 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+>>                   u64 start, u64 len)
+>>  {
+>>         const u64 ino = btrfs_ino(inode);
+>> -       struct extent_state *cached_state = NULL;
+>>         struct extent_state *delalloc_cached_state = NULL;
+>>         struct btrfs_path *path;
+>>         struct fiemap_cache cache = { 0 };
+>>         struct btrfs_backref_share_check_ctx *backref_ctx;
+>>         u64 last_extent_end;
+>>         u64 prev_extent_end;
+>> -       u64 lockstart;
+>> -       u64 lockend;
+>> +       u64 range_start;
+>> +       u64 range_end;
+>> +       const u64 sectorsize = inode->root->fs_info->sectorsize;
+>>         bool stopped = false;
+>>         int ret;
+>>
+>> @@ -2841,12 +2859,11 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+>>                 goto out;
+>>         }
+>>
+>> -       lockstart = round_down(start, inode->root->fs_info->sectorsize);
+>> -       lockend = round_up(start + len, inode->root->fs_info->sectorsize);
+>> -       prev_extent_end = lockstart;
+>> +       range_start = round_down(start, sectorsize);
+>> +       range_end = round_up(start + len, sectorsize);
+>> +       prev_extent_end = range_start;
+>>
+>>         btrfs_inode_lock(inode, BTRFS_ILOCK_SHARED);
+>> -       lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+>>
+>>         ret = fiemap_find_last_extent_offset(inode, path, &last_extent_end);
+>>         if (ret < 0)
+>> @@ -2854,7 +2871,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+>>         btrfs_release_path(path);
+>>
+>>         path->reada = READA_FORWARD;
+>> -       ret = fiemap_search_slot(inode, path, lockstart);
+>> +       ret = fiemap_search_slot(inode, path, range_start);
+>>         if (ret < 0) {
+>>                 goto out_unlock;
+>>         } else if (ret > 0) {
+>> @@ -2866,7 +2883,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+>>                 goto check_eof_delalloc;
+>>         }
+>>
+>> -       while (prev_extent_end < lockend) {
+>> +       while (prev_extent_end < range_end) {
+>>                 struct extent_buffer *leaf = path->nodes[0];
+>>                 struct btrfs_file_extent_item *ei;
+>>                 struct btrfs_key key;
+>> @@ -2889,19 +2906,19 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+>>                  * The first iteration can leave us at an extent item that ends
+>>                  * before our range's start. Move to the next item.
+>>                  */
+>> -               if (extent_end <= lockstart)
+>> +               if (extent_end <= range_start)
+>>                         goto next_item;
+>>
+>>                 backref_ctx->curr_leaf_bytenr = leaf->start;
+>>
+>>                 /* We have in implicit hole (NO_HOLES feature enabled). */
+>>                 if (prev_extent_end < key.offset) {
+>> -                       const u64 range_end = min(key.offset, lockend) - 1;
+>> +                       const u64 hole_end = min(key.offset, range_end) - 1;
+>>
+>>                         ret = fiemap_process_hole(inode, fieinfo, &cache,
+>>                                                   &delalloc_cached_state,
+>>                                                   backref_ctx, 0, 0, 0,
+>> -                                                 prev_extent_end, range_end);
+>> +                                                 prev_extent_end, hole_end);
+>>                         if (ret < 0) {
+>>                                 goto out_unlock;
+>>                         } else if (ret > 0) {
+>> @@ -2911,7 +2928,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+>>                         }
+>>
+>>                         /* We've reached the end of the fiemap range, stop. */
+>> -                       if (key.offset >= lockend) {
+>> +                       if (key.offset >= range_end) {
+>>                                 stopped = true;
+>>                                 break;
+>>                         }
+>> @@ -3005,29 +3022,41 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+>>         btrfs_free_path(path);
+>>         path = NULL;
+>>
+>> -       if (!stopped && prev_extent_end < lockend) {
+>> +       if (!stopped && prev_extent_end < range_end) {
+>>                 ret = fiemap_process_hole(inode, fieinfo, &cache,
+>>                                           &delalloc_cached_state, backref_ctx,
+>> -                                         0, 0, 0, prev_extent_end, lockend - 1);
+>> +                                         0, 0, 0, prev_extent_end, range_end - 1);
+>>                 if (ret < 0)
+>>                         goto out_unlock;
+>> -               prev_extent_end = lockend;
+>> +               prev_extent_end = range_end;
+>>         }
+>>
+>>         if (cache.cached && cache.offset + cache.len >= last_extent_end) {
+>>                 const u64 i_size = i_size_read(&inode->vfs_inode);
+>>
+>>                 if (prev_extent_end < i_size) {
+>> +                       struct extent_state *cached_state = NULL;
+>>                         u64 delalloc_start;
+>>                         u64 delalloc_end;
+>> +                       u64 lockstart;
+>> +                       u64 lockend;
+>>                         bool delalloc;
+>>
+>> +                       lockstart = round_down(prev_extent_end, sectorsize);
+>> +                       lockend = round_up(i_size, sectorsize);
+>> +
+>> +                       /*
+>> +                        * See the comment in fiemap_process_hole as to why
+>> +                        * we're doing the locking here.
+>> +                        */
+>> +                       lock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+>>                         delalloc = btrfs_find_delalloc_in_range(inode,
+>>                                                                 prev_extent_end,
+>>                                                                 i_size - 1,
+>>                                                                 &delalloc_cached_state,
+>>                                                                 &delalloc_start,
+>>                                                                 &delalloc_end);
+>> +                       unlock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+>>                         if (!delalloc)
+>>                                 cache.flags |= FIEMAP_EXTENT_LAST;
+>>                 } else {
+>> @@ -3038,7 +3067,6 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+>>         ret = emit_last_fiemap_cache(fieinfo, &cache);
+>>
+>>  out_unlock:
+>> -       unlock_extent(&inode->io_tree, lockstart, lockend, &cached_state);
+>>         btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
+>>  out:
+>>         free_extent_state(delalloc_cached_state);
+>> --
+>> 2.43.0
+>>
+>>
+>>
 
