@@ -1,60 +1,105 @@
-Return-Path: <linux-btrfs+bounces-3200-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3201-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF50A8789B6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 21:51:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F3E8789C5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 22:01:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6535E1F2239D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 20:51:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 751911C20EB4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 21:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 808F254FA9;
-	Mon, 11 Mar 2024 20:51:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D791C56B62;
+	Mon, 11 Mar 2024 21:00:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dcG1ZRBQ"
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="lSAnos9U"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620E743AAC
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 20:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 062A44D5AB;
+	Mon, 11 Mar 2024 21:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710190266; cv=none; b=p6HE/iiPCnDTbQaPLeBxwzX12v/8nk/SD7YlE8e7wTqpRpGMZmb8WHzMuGmNQFWS7IeVjZpY5MuhnEX3kRLBXZwdkIeg/RsAFwOL2Mali2gZHafsMz9b+vBOxLQfIiT3czlIyaUvkAWxKKYZkostAqxQEra0PwBn/afS6XSG1sE=
+	t=1710190856; cv=none; b=XJ0FSypZZ3QAJsZ3EHss00yqlx14yu8T8W+yH1tIGU79liW8tXLI44zQOUZeKvu31hoVNh8XR9aUgBkyom88we83gXGDe6dyC1Fw28gVm1KxvqRrJDI/MeMzibZ3YjHTXRnkx/uk46RwJs0CZUy91V+ySbaBTSTB/LXNiXpC+Q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710190266; c=relaxed/simple;
-	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=kGryc+JeWsp6xtK5Kh4/8vPz3vlY1Q1Oqye+K80tq/RnCiEA8HyhKccfr1Efy0Y9T7+urSkuGLc3Z9C4IT/W/96s/oX9rxfmA85oK94ndbe1Ta1XpJJnW1UDKTMLayvfwDGP35kV3Tqky3EqRuH0b2cevZjL1B3E8IByWeLA+UY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dcG1ZRBQ; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 11 Mar 2024 16:50:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710190260;
+	s=arc-20240116; t=1710190856; c=relaxed/simple;
+	bh=huiYCD6OSOOJ73LaTGApkyTSW1a8n0YAyt7Da0lmbuQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k90+im5BAoAzKULl5yBSBJM5zY+yx8mxgasR2xTOlYn+glD6amW9z1qcgg1TyG8Pugml5aBBVF+/fbUHwx1L4CBZqRYdAKgbl4ojIMJe79bray4qfuvolKNr5gH8BnTc/GlTlGvIo6o20MT0XUWnUXEl5V3Yko4yxF6sMLHEjy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=lSAnos9U; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id EDB461C006B; Mon, 11 Mar 2024 22:00:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1710190843;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-	b=dcG1ZRBQcLZmT76Th3z0ZDHaO1VoWS8kwtes+UHuJK/R1U8ImYDMfBK3WUqPfH8QFMlyPi
-	C5oSChnMfXPE+U6FcA51V1Z2jg6syjAd1ZxdH8wUGwNG1VVDPzk0sWMSbkBbbl+GfTc3AP
-	Vl0PvO5lKkZ72p62Lav6zjgd3+hdI0E=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eRG5QydhOxCq5Uyj5YlfVbwbsUoHAirIzqiitHT1/Wo=;
+	b=lSAnos9UsUozQksq3TeKs8y9lTnD38UPL2hfSMIn1nodKNZZ2qKuCvmjggHhgfCPipB/+8
+	WjkRmt25zJVh5E1QPMSqU6aDu06tCP2bp6fq9al+kJnj+/N7Hav69CCv+NzxdN2/PMl/I4
+	ZCOIQi1DccJr+BwUjOfRyX00MvZkwnM=
+Date: Mon, 11 Mar 2024 22:00:43 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	Josef Bacik <josef@toxicpanda.com>, Boris Burkov <boris@bur.io>,
+	David Sterba <dsterba@suse.com>, clm@fb.com,
 	linux-btrfs@vger.kernel.org
-Subject: more on subvolumes
-Message-ID: <76j2jzc7zwuvfl4nlyycoufp75nkwwngho67rwz6ipg26lnge6@66olqpcffwa5>
+Subject: Re: [PATCH AUTOSEL 5.10 1/7] btrfs: add and use helper to check if
+ block group is used
+Message-ID: <Ze9w+3cUTI0mSDlL@duo.ucw.cz>
+References: <20240229155112.2851155-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="fhKTT6iKPlPYyrIx"
+Content-Disposition: inline
+In-Reply-To: <20240229155112.2851155-1-sashal@kernel.org>
+
+
+--fhKTT6iKPlPYyrIx
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
 
+> From: Filipe Manana <fdmanana@suse.com>
+>=20
+> [ Upstream commit 1693d5442c458ae8d5b0d58463b873cd879569ed ]
+>=20
+> Add a helper function to determine if a block group is being used and make
+> use of it at btrfs_delete_unused_bgs(). This helper will also be used in
+> future code changes.
+
+Does not fix a bug and does not seem to be preparation for anything,
+so probably should not be here.
+
+Best regards,
+								Pavel
+
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--fhKTT6iKPlPYyrIx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZe9w+wAKCRAw5/Bqldv6
+8sMpAJ0aS87z23pKrfRwqSQ9hkpnZ7ED2QCfZoSpbpYedTtyY1hcI6paA5MRvlY=
+=k/uE
+-----END PGP SIGNATURE-----
+
+--fhKTT6iKPlPYyrIx--
 
