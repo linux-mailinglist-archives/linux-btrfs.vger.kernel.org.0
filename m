@@ -1,166 +1,159 @@
-Return-Path: <linux-btrfs+bounces-3191-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3192-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F4C878859
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 19:55:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC7B587885A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 19:55:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3098B229FA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 18:55:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 645591F21604
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 18:55:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF275D908;
-	Mon, 11 Mar 2024 18:48:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D244559175;
+	Mon, 11 Mar 2024 18:49:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JDtWb1dI";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ONKc+iQJ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JDtWb1dI";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ONKc+iQJ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PQLjN7Rq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vP+yZ5sM";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PQLjN7Rq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vP+yZ5sM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C7D59148;
-	Mon, 11 Mar 2024 18:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0EF59162
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 18:49:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710182905; cv=none; b=Me1edpeErImkqf+IsBhrgQ7t/DqvpQIG6tNaHh+hOzmOMX+SOsISEUXDP9jbxYVZj42sYbICNHl7fu9K15zXnqGea8EaUFsRriEcvJrTWdglGbrdq895zbrr38sa/e7fEijcR9AYsmAyqVaUq/Me+dahBPbrzRkAM010WllV8gk=
+	t=1710182949; cv=none; b=c5GzJzP2O8jBeOshkGBRMSy7knvdzB+RYXU/YPm67nZ55C9xUc0DXHwqqjlGhBxTno35oxC/ejVMe6hZkkBfl8cY1RsncXN+E7hMq8e58o9zILhB309FC5WXSaQt68iC66o8NUELTbNFiPCSAUI1QjGse9TgRlT3FDO45ypIiYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710182905; c=relaxed/simple;
-	bh=1ITc6fS71N5fn7IPkKbleMIYuCc76Gh9T8fxKOMottU=;
+	s=arc-20240116; t=1710182949; c=relaxed/simple;
+	bh=0dfVRSbag9n63PAjlLMe6G+Ju22njctKQwaS9DGcn5c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rb8pYfVxTsBq7kcj8KR6J6yRiNTCgETPDLgTO4H9rwHEHNHqBPaukTMGZ+CEXw5kOzpEaHfEAo3xn7APrp3iOOgNBi3tvA2T1/B25MM6GyqvtjwtXhpFZGEedZkCzeWdCDZM08RvnjFrx+otBMCTCr14qGbuc463iFxJyGkCWZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JDtWb1dI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ONKc+iQJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JDtWb1dI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ONKc+iQJ; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=lKeOBZRnVMuqpiqjg6bf1E0BZ3LQcuFQdFdHJLsySi1YhuPJb63WdS0M+GGty14yWipU4xqRN1pRpinpKjrGBmn1FsMUi/09SHOkNS3vwqeLnTkN76SLsK66mQyVGhP7h5ctcUXVGXEyEazmG9HCH0IKzQg1+C/eA28Suau3EBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PQLjN7Rq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vP+yZ5sM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PQLjN7Rq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vP+yZ5sM; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3DB2C34F83;
-	Mon, 11 Mar 2024 18:48:22 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8C6BF5CA53;
+	Mon, 11 Mar 2024 18:49:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710182902;
+	t=1710182945;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1gW/cs08wXpsQGb0z1TBwnPJpVO0bgSQkKtya/Mw1tM=;
-	b=JDtWb1dIVDo474APekp8jGZqIYnb5BuGINDaN5Z3ma10FGfu46gVu8BQWhs/NyZQ78Jc2u
-	eVNpxURRPl7VwL8a02g6kHU2Oa5w8XSygLFfsynoAyYsKq/MHSYz4NzlFAtYdGYtjxr8M+
-	IO1IwwmXCn2HWvUje6oDIgQmFy4NNhE=
+	bh=TMNtI8V2+HMm+mob5wLXpbpRoLPC7g/3ArIEpVpzGqY=;
+	b=PQLjN7RqEUtgJf22dKAHp1E+PLzQHAngXYzm66FAl1AJwhmNArOqhGs96aJeIAKdlkh36E
+	f6is6ennfS4na+JgyLcCFmcdM0W7uTsRedvF4SFTr+ST2UNrmqxXAujvWz4b+Qv7UxWJvp
+	xXZ6M/XKT7xNWjkEIC3E1/SxMPa5JBk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710182902;
+	s=susede2_ed25519; t=1710182945;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1gW/cs08wXpsQGb0z1TBwnPJpVO0bgSQkKtya/Mw1tM=;
-	b=ONKc+iQJ3kxSAOVx+wwG3+eiJG/5N8bgOYFm8/FOxIvmZJPHxb1vtex62a9lFWvoEbtJHk
-	juSbLDUsIh+t/qCA==
+	bh=TMNtI8V2+HMm+mob5wLXpbpRoLPC7g/3ArIEpVpzGqY=;
+	b=vP+yZ5sM5jz1fxLN7maQZUUxl0QwSMoK8QCvEsacMwDGrQQPNXHmseL0i9Hu8DWI+R0oFU
+	qAtz+3rN051shVAQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710182902;
+	t=1710182945;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1gW/cs08wXpsQGb0z1TBwnPJpVO0bgSQkKtya/Mw1tM=;
-	b=JDtWb1dIVDo474APekp8jGZqIYnb5BuGINDaN5Z3ma10FGfu46gVu8BQWhs/NyZQ78Jc2u
-	eVNpxURRPl7VwL8a02g6kHU2Oa5w8XSygLFfsynoAyYsKq/MHSYz4NzlFAtYdGYtjxr8M+
-	IO1IwwmXCn2HWvUje6oDIgQmFy4NNhE=
+	bh=TMNtI8V2+HMm+mob5wLXpbpRoLPC7g/3ArIEpVpzGqY=;
+	b=PQLjN7RqEUtgJf22dKAHp1E+PLzQHAngXYzm66FAl1AJwhmNArOqhGs96aJeIAKdlkh36E
+	f6is6ennfS4na+JgyLcCFmcdM0W7uTsRedvF4SFTr+ST2UNrmqxXAujvWz4b+Qv7UxWJvp
+	xXZ6M/XKT7xNWjkEIC3E1/SxMPa5JBk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710182902;
+	s=susede2_ed25519; t=1710182945;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1gW/cs08wXpsQGb0z1TBwnPJpVO0bgSQkKtya/Mw1tM=;
-	b=ONKc+iQJ3kxSAOVx+wwG3+eiJG/5N8bgOYFm8/FOxIvmZJPHxb1vtex62a9lFWvoEbtJHk
-	juSbLDUsIh+t/qCA==
+	bh=TMNtI8V2+HMm+mob5wLXpbpRoLPC7g/3ArIEpVpzGqY=;
+	b=vP+yZ5sM5jz1fxLN7maQZUUxl0QwSMoK8QCvEsacMwDGrQQPNXHmseL0i9Hu8DWI+R0oFU
+	qAtz+3rN051shVAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1E96713695;
-	Mon, 11 Mar 2024 18:48:22 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7DCC313695;
+	Mon, 11 Mar 2024 18:49:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KvM0B/ZR72VwQgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 11 Mar 2024 18:48:22 +0000
-Date: Mon, 11 Mar 2024 19:41:08 +0100
+	id Mv6NHiFS72WkQgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 11 Mar 2024 18:49:05 +0000
+Date: Mon, 11 Mar 2024 19:41:56 +0100
 From: David Sterba <dsterba@suse.cz>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
-	stable@vger.kernel.org, patches@lists.linux.dev,
-	Josef Bacik <josef@toxicpanda.com>, Sasha Levin <sashal@kernel.org>,
-	Chris Mason <clm@fb.com>, linux-btrfs <linux-btrfs@vger.kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 6.7 001/162] btrfs: fix deadlock with fiemap and extent
- locking
-Message-ID: <20240311184108.GS2604@twin.jikos.cz>
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, WA AM <waautomata@gmail.com>,
+	Qu Wenru <wqu@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH v3] btrfs: zoned: use zone aware sb location for scrub
+Message-ID: <20240311184156.GT2604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20240304211551.833500257@linuxfoundation.org>
- <20240304211551.880347593@linuxfoundation.org>
- <CAKisOQGCiJUUc62ptxp08LkR88T5t1swcBPYi84y2fLP6Tag7g@mail.gmail.com>
- <da17e97b-1880-415d-8cdb-07e79808e702@leemhuis.info>
+References: <4d3e8c5cd6ba3e178a1e820c318d96317ac12845.1709890038.git.jth@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <da17e97b-1880-415d-8cdb-07e79808e702@leemhuis.info>
+In-Reply-To: <4d3e8c5cd6ba3e178a1e820c318d96317ac12845.1709890038.git.jth@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	none
 X-Spam-Level: 
-X-Spam-Score: -3.39
-X-Spamd-Result: default: False [-3.39 / 50.00];
-	 ARC_NA(0.00)[];
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PQLjN7Rq;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=vP+yZ5sM
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.21 / 50.00];
 	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
 	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCPT_COUNT_FIVE(0.00)[5];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.11)[-0.550];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-0.986];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.48)[97.64%]
+	 BAYES_HAM(-0.01)[45.86%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,suse.com,wdc.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -1.21
+X-Rspamd-Queue-Id: 8C6BF5CA53
 X-Spam-Flag: NO
 
-On Mon, Mar 11, 2024 at 10:15:31AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 06.03.24 13:39, Filipe Manana wrote:
-> > On Mon, Mar 4, 2024 at 9:26 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> >>
-> >> 6.7-stable review patch.  If anyone has any objections, please let me know.
-> > 
-> > It would be better to delay the backport of this patch (and the
-> > followup fix) to any stable release, because it introduced another
-> > regression for which there is a reviewed fix but it's not yet in
-> > Linus' tree:
-> > 
-> > https://lore.kernel.org/linux-btrfs/cover.1709202499.git.fdmanana@suse.com/
+On Fri, Mar 08, 2024 at 10:28:44AM +0100, Johannes Thumshirn wrote:
+> At the moment scrub_supers() doesn't grab the super block's location via
+> the zoned device aware btrfs_sb_log_location() but via btrfs_sb_offset().
 > 
-> Those two missed 6.8 afaics. Will those be heading to mainline any time
-> soon?
+> This leads to checksum errors on 'scrub' as we're not accessing the
+> correct location of the super block.
+> 
+> So use btrfs_sb_log_location() for getting the super blocks location on
+> scrub.
+> 
+> Reported-by: WA AM <waautomata@gmail.com>
+> Cc: Qu Wenru <wqu@suse.com>
+> Link: http://lore.kernel.org/linux-btrfs/CANU2Z0EvUzfYxczLgGUiREoMndE9WdQnbaawV5Fv5gNXptPUKw@mail.gmail.com
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Yes, in the 6.9 pull request.
-
-> And how fast afterwards will it be wise to backport them to 6.8?
-> Will anyone ask Greg for that when the time has come?
-
-The commits have stable tags and will be processed in the usual way.
+Reviewed-by: David Sterba <dsterba@suse.com>
 
