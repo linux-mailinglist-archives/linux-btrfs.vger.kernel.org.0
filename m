@@ -1,82 +1,61 @@
-Return-Path: <linux-btrfs+bounces-3174-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3176-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01742878054
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 14:13:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68B138780CA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 14:43:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 754FE1F22268
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 13:13:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 236C9281FB9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 13:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A724E3D964;
-	Mon, 11 Mar 2024 13:13:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 016FD3FBA8;
+	Mon, 11 Mar 2024 13:42:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RzAF3VmN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ykb14C9x"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE173C493
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 13:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EFB03FB3C;
+	Mon, 11 Mar 2024 13:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710162805; cv=none; b=uVKKrEpIq4Q5nxbkKFhj333VQNwTBpvvKaOqMNNSV11ng2Yzonvmxhi5kx9Q2kVDJYrxOupLUGQQ5eJxcj6vgJEHAanrwUggfExnMGXUrryuikTLHlmcSEsD8ExXCeSsDlIMtyuu+9XbgIKP4+Dsq+/XwO/rhqpLq4orFKil5Pw=
+	t=1710164567; cv=none; b=F7nJW4rGlS8c9XSfFrU25FGTl8AHScR70Oy0bIGsz3xtTWlO0gVzAnk9hO4TLvm4SxEUBGjbt+TFlwrKP9r2/PGPgK51HMHhD/AoHOW2e58Yv3QisBFLrY/mGfTRhV6rpcumGK+jgD8i/WCu5HBQyCb1Tlft5Qxvc1q7Hhx7D24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710162805; c=relaxed/simple;
-	bh=oklUwL+uJA6fNtuusqrKD0mu1H8aZpzPS0lrskntuAA=;
+	s=arc-20240116; t=1710164567; c=relaxed/simple;
+	bh=+I/Wk9Nub0tk6WhdxOcXtTKXBuiR4vGpTpqcFipyRjc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YdMTVTky1DPgRBLoZHvc9ZtBJSAEn7QfNiH83jA9r+NCB1R8DwzBnnVZDArWunWJn2oFxx/V4rCdz9EH1onkcPSJBle8nWPJ9qJry2SFCvEu1IP/O4e02MwKIimt8p8rGaf0UC4AXAwK6IK8BkXMFssbvswkGieaZIZbcssZlJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RzAF3VmN; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710162803;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SF+hHbhR6PmZRbNnvRDOIoP+U+GWHfuAJbw7MsIUXN0=;
-	b=RzAF3VmNC8pdD51JRqQpFVROoKWgsgL43TW3xnvLJmXxTN0fBK7Olr/Abhsy2FObXnIZiW
-	JWbMMS+ddX+oU5EJbN7AmxYtGHysfKB0r4RA3HwNCFAFdtlGigjOu1jgNcQ68sW/z7ThL2
-	1VwEz0JZnHQ0h9eik+p0ZOoF6KxL/5A=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-182-Udhoi6WwMIqlcHlVxvW-Ng-1; Mon,
- 11 Mar 2024 09:13:20 -0400
-X-MC-Unique: Udhoi6WwMIqlcHlVxvW-Ng-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5ED1538000B0;
-	Mon, 11 Mar 2024 13:13:19 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.5])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 2A3C7C04125;
-	Mon, 11 Mar 2024 13:13:12 +0000 (UTC)
-Date: Mon, 11 Mar 2024 21:13:08 +0800
-From: Ming Lei <ming.lei@redhat.com>
-To: Patrick Plenefisch <simonpatp@gmail.com>
-Cc: Mike Snitzer <snitzer@kernel.org>,
-	Goffredo Baroncelli <kreijack@inwind.it>,
-	linux-kernel@vger.kernel.org, Alasdair Kergon <agk@redhat.com>,
-	Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	regressions@lists.linux.dev, dm-devel@lists.linux.dev,
-	linux-btrfs@vger.kernel.org, ming.lei@redhat.com
-Subject: Re: LVM-on-LVM: error while submitting device barriers
-Message-ID: <Ze8DZLBHhCxgzc+r@fedora>
-References: <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
- <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it>
- <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
- <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it>
- <ZedaKUge-EBo4CuT@redhat.com>
- <ZeiS/bjJaRcrerWW@fedora>
- <CAOCpoWeoQMh_-MxzxGBnK2Kf5EhvTLs=GrGwJ5XcfGVRTp73Eg@mail.gmail.com>
- <Ze2azGlb1WxVFv7Z@fedora>
- <Ze3RWqLvG18cQ4dz@redhat.com>
- <CAOCpoWf7C=B1sdeUL46sVVtVUDH8+o_T9LGJNTOYqA317uMdmA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JUaazorI+dJNtFwIsIpnnRKeyMFZzEW5PdYU2f/Tyk3AZBwtSYobQTP5l41Nw4wZU2LlKfmmLQQW6sztVaUdUdicyzCOivE0RP1jgy/VqwkBTRAihYAkKuc/9D/UC+IP2LQvgofESnAtq8TVKK+5VUfiPPurr5vbwG5Vi9wzoak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ykb14C9x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31A6AC433C7;
+	Mon, 11 Mar 2024 13:42:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710164566;
+	bh=+I/Wk9Nub0tk6WhdxOcXtTKXBuiR4vGpTpqcFipyRjc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ykb14C9xDvUI6EhvVZQRIzqqHG8W0Jb0uw63NWw4hLZ6Yrokcqa6OrCpIHiNMm8rt
+	 s+h07Wjqc+lUjPymS7X/gqkluiWcPzai72t4kUNk4swW0NW5aNaBTwwUj9OpqSH7sr
+	 G/SoUmqAlfkX8JhjM2lfwv37A2ebD1RQY/l09K+AawioH5eyo2VsPKOBt9KqapJHea
+	 eN6vhASYUmI6/Nb1tfTIWofukRJPyH5Nzk/qR+qeTBLJm5MXyo4SCakkEr5uEz51pR
+	 DCubKYwMYTF0d68ay6SaBfuU2vytZ6i2eaCxMGgcNjvCZjHhh9Diff3cYm2TT2nE9K
+	 1tSymQSy2xkCg==
+Date: Mon, 11 Mar 2024 14:42:40 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, 
+	Neal Gompa <neal@gompa.dev>, linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Miklos Szeredi <mszeredi@redhat.com>, David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH v2] statx: stx_subvol
+Message-ID: <20240311-anbringen-pelle-1d1eaa78961a@brauner>
+References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+ <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
+ <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
+ <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
+ <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
+ <20240308165633.GO6184@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -86,170 +65,143 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOCpoWf7C=B1sdeUL46sVVtVUDH8+o_T9LGJNTOYqA317uMdmA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+In-Reply-To: <20240308165633.GO6184@frogsfrogsfrogs>
 
-On Sun, Mar 10, 2024 at 02:11:11PM -0400, Patrick Plenefisch wrote:
-> On Sun, Mar 10, 2024 at 11:27 AM Mike Snitzer <snitzer@kernel.org> wrote:
-> >
-> > On Sun, Mar 10 2024 at  7:34P -0400,
-> > Ming Lei <ming.lei@redhat.com> wrote:
-> >
-> > > On Sat, Mar 09, 2024 at 03:39:02PM -0500, Patrick Plenefisch wrote:
-> > > > On Wed, Mar 6, 2024 at 11:00 AM Ming Lei <ming.lei@redhat.com> wrote:
-> > > > >
-> > > > > #!/usr/bin/bpftrace
-> > > > >
-> > > > > #ifndef BPFTRACE_HAVE_BTF
-> > > > > #include <linux/blkdev.h>
-> > > > > #endif
-> > > > >
-> > > > > kprobe:submit_bio_noacct,
-> > > > > kprobe:submit_bio
-> > > > > / (((struct bio *)arg0)->bi_opf & (1 << __REQ_PREFLUSH)) != 0 /
-> > > > > {
-> > > > >         $bio = (struct bio *)arg0;
-> > > > >         @submit_stack[arg0] = kstack;
-> > > > >         @tracked[arg0] = 1;
-> > > > > }
-> > > > >
-> > > > > kprobe:bio_endio
-> > > > > /@tracked[arg0] != 0/
-> > > > > {
-> > > > >         $bio = (struct bio *)arg0;
-> > > > >
-> > > > >         if (($bio->bi_flags & (1 << BIO_CHAIN)) && $bio->__bi_remaining.counter > 1) {
-> > > > >                 return;
-> > > > >         }
-> > > > >
-> > > > >         if ($bio->bi_status != 0) {
-> > > > >                 printf("dev %s bio failed %d, submitter %s completion %s\n",
-> > > > >                         $bio->bi_bdev->bd_disk->disk_name,
-> > > > >                         $bio->bi_status, @submit_stack[arg0], kstack);
-> > > > >         }
-> > > > >         delete(@submit_stack[arg0]);
-> > > > >         delete(@tracked[arg0]);
-> > > > > }
-> > > > >
-> > > > > END {
-> > > > >         clear(@submit_stack);
-> > > > >         clear(@tracked);
-> > > > > }
-> > > > >
+On Fri, Mar 08, 2024 at 08:56:33AM -0800, Darrick J. Wong wrote:
+> On Fri, Mar 08, 2024 at 11:48:31AM -0500, Kent Overstreet wrote:
+> > On Fri, Mar 08, 2024 at 11:44:48AM -0500, Neal Gompa wrote:
+> > > On Fri, Mar 8, 2024 at 11:34 AM Kent Overstreet
+> > > <kent.overstreet@linux.dev> wrote:
 > > > >
-> > > > Attaching 4 probes...
-> > > > dev dm-77 bio failed 10, submitter
-> > > >        submit_bio_noacct+5
-> > > >        __send_duplicate_bios+358
-> > > >        __send_empty_flush+179
-> > > >        dm_submit_bio+857
-> > > >        __submit_bio+132
-> > > >        submit_bio_noacct_nocheck+345
-> > > >        write_all_supers+1718
-> > > >        btrfs_commit_transaction+2342
-> > > >        transaction_kthread+345
-> > > >        kthread+229
-> > > >        ret_from_fork+49
-> > > >        ret_from_fork_asm+27
-> > > > completion
-> > > >        bio_endio+5
-> > > >        dm_submit_bio+955
-> > > >        __submit_bio+132
-> > > >        submit_bio_noacct_nocheck+345
-> > > >        write_all_supers+1718
-> > > >        btrfs_commit_transaction+2342
-> > > >        transaction_kthread+345
-> > > >        kthread+229
-> > > >        ret_from_fork+49
-> > > >        ret_from_fork_asm+27
+> > > > On Fri, Mar 08, 2024 at 06:42:27AM -0500, Neal Gompa wrote:
+> > > > > On Thu, Mar 7, 2024 at 9:29 PM Kent Overstreet
+> > > > > <kent.overstreet@linux.dev> wrote:
+> > > > > >
+> > > > > > Add a new statx field for (sub)volume identifiers, as implemented by
+> > > > > > btrfs and bcachefs.
+> > > > > >
+> > > > > > This includes bcachefs support; we'll definitely want btrfs support as
+> > > > > > well.
+> > > > > >
+> > > > > > Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
+> > > > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > > > Cc: Josef Bacik <josef@toxicpanda.com>
+> > > > > > Cc: Miklos Szeredi <mszeredi@redhat.com>
+> > > > > > Cc: Christian Brauner <brauner@kernel.org>
+> > > > > > Cc: David Howells <dhowells@redhat.com>
+> > > > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > > > ---
+> > > > > >  fs/bcachefs/fs.c          | 3 +++
+> > > > > >  fs/stat.c                 | 1 +
+> > > > > >  include/linux/stat.h      | 1 +
+> > > > > >  include/uapi/linux/stat.h | 4 +++-
+> > > > > >  4 files changed, 8 insertions(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> > > > > > index 3f073845bbd7..6a542ed43e2c 100644
+> > > > > > --- a/fs/bcachefs/fs.c
+> > > > > > +++ b/fs/bcachefs/fs.c
+> > > > > > @@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
+> > > > > >         stat->blksize   = block_bytes(c);
+> > > > > >         stat->blocks    = inode->v.i_blocks;
+> > > > > >
+> > > > > > +       stat->subvol    = inode->ei_subvol;
+> > > > > > +       stat->result_mask |= STATX_SUBVOL;
+> > > > > > +
+> > > > > >         if (request_mask & STATX_BTIME) {
+> > > > > >                 stat->result_mask |= STATX_BTIME;
+> > > > > >                 stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
+> > > > > > diff --git a/fs/stat.c b/fs/stat.c
+> > > > > > index 77cdc69eb422..70bd3e888cfa 100644
+> > > > > > --- a/fs/stat.c
+> > > > > > +++ b/fs/stat.c
+> > > > > > @@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+> > > > > >         tmp.stx_mnt_id = stat->mnt_id;
+> > > > > >         tmp.stx_dio_mem_align = stat->dio_mem_align;
+> > > > > >         tmp.stx_dio_offset_align = stat->dio_offset_align;
+> > > > > > +       tmp.stx_subvol = stat->subvol;
+> > > > > >
+> > > > > >         return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+> > > > > >  }
+> > > > > > diff --git a/include/linux/stat.h b/include/linux/stat.h
+> > > > > > index 52150570d37a..bf92441dbad2 100644
+> > > > > > --- a/include/linux/stat.h
+> > > > > > +++ b/include/linux/stat.h
+> > > > > > @@ -53,6 +53,7 @@ struct kstat {
+> > > > > >         u32             dio_mem_align;
+> > > > > >         u32             dio_offset_align;
+> > > > > >         u64             change_cookie;
+> > > > > > +       u64             subvol;
+> > > > > >  };
+> > > > > >
+> > > > > >  /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
+> > > > > > diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> > > > > > index 2f2ee82d5517..67626d535316 100644
+> > > > > > --- a/include/uapi/linux/stat.h
+> > > > > > +++ b/include/uapi/linux/stat.h
+> > > > > > @@ -126,8 +126,9 @@ struct statx {
+> > > > > >         __u64   stx_mnt_id;
+> > > > > >         __u32   stx_dio_mem_align;      /* Memory buffer alignment for direct I/O */
+> > > > > >         __u32   stx_dio_offset_align;   /* File offset alignment for direct I/O */
+> > > > > > +       __u64   stx_subvol;     /* Subvolume identifier */
+> > > > > >         /* 0xa0 */
+> > > > > > -       __u64   __spare3[12];   /* Spare space for future expansion */
+> > > > > > +       __u64   __spare3[11];   /* Spare space for future expansion */
+> > > > > >         /* 0x100 */
+> > > > > >  };
+> > > > > >
+> > > > > > @@ -155,6 +156,7 @@ struct statx {
+> > > > > >  #define STATX_MNT_ID           0x00001000U     /* Got stx_mnt_id */
+> > > > > >  #define STATX_DIOALIGN         0x00002000U     /* Want/got direct I/O alignment info */
+> > > > > >  #define STATX_MNT_ID_UNIQUE    0x00004000U     /* Want/got extended stx_mount_id */
+> > > > > > +#define STATX_SUBVOL           0x00008000U     /* Want/got stx_subvol */
+> > > > > >
+> > > > > >  #define STATX__RESERVED                0x80000000U     /* Reserved for future struct statx expansion */
+> > > > > >
+> > > > > > --
+> > > > > > 2.43.0
+> > > > > >
+> > > > > >
+> > > > >
+> > > > > I think it's generally expected that patches that touch different
+> > > > > layers are split up. That is, we should have a patch that adds the
+> > > > > capability and a separate patch that enables it in bcachefs. This also
+> > > > > helps make it clearer to others how a new feature should be plumbed
+> > > > > into a filesystem.
+> > > > >
+> > > > > I would prefer it to be split up in this manner for this reason.
 > > > >
-> > > > dev dm-86 bio failed 10, submitter
-> > > >        submit_bio_noacct+5
-> > > >        write_all_supers+1718
-> > > >        btrfs_commit_transaction+2342
-> > > >        transaction_kthread+345
-> > > >        kthread+229
-> > > >        ret_from_fork+49
-> > > >        ret_from_fork_asm+27
-> > > > completion
-> > > >        bio_endio+5
-> > > >        clone_endio+295
-> > > >        clone_endio+295
-> > > >        process_one_work+369
-> > > >        worker_thread+635
-> > > >        kthread+229
-> > > >        ret_from_fork+49
-> > > >        ret_from_fork_asm+27
+> > > > I'll do it that way if the patch is big enough that it ought to be
+> > > > split up. For something this small, seeing how it's used is relevant
+> > > > context for both reviewers and people looking at it afterwards.
 > > > >
-> > > >
-> > > > For context, dm-86 is /dev/lvm/brokenDisk and dm-77 is /dev/lowerVG/lvmPool
-> > >
-> > > io_status is 10(BLK_STS_IOERR), which is produced in submission code path on
-> > > /dev/dm-77(/dev/lowerVG/lvmPool) first, so looks it is one device mapper issue.
-> > >
-> > > The error should be from the following code only:
-> > >
-> > > static void __map_bio(struct bio *clone)
-> > >
-> > >       ...
-> > >       if (r == DM_MAPIO_KILL)
-> > >               dm_io_dec_pending(io, BLK_STS_IOERR);
-> > >       else
-> > >               dm_io_dec_pending(io, BLK_STS_DM_REQUEUE);
-> > >     break;
-> >
-> > I agree that the above bpf stack traces for dm-77 indicate that
-> > dm_submit_bio failed, which would end up in the above branch if the
-> > target's ->map() returned DM_MAPIO_KILL or DM_MAPIO_REQUEUE.
-> >
-> > But such an early failure speaks to the flush bio never being
-> > submitted to the underlying storage. No?
-> >
-> > dm-raid.c:raid_map does return DM_MAPIO_REQUEUE with:
-> >
-> >         /*
-> >          * If we're reshaping to add disk(s)), ti->len and
-> >          * mddev->array_sectors will differ during the process
-> >          * (ti->len > mddev->array_sectors), so we have to requeue
-> >          * bios with addresses > mddev->array_sectors here or
-> >          * there will occur accesses past EOD of the component
-> >          * data images thus erroring the raid set.
-> >          */
-> >         if (unlikely(bio_end_sector(bio) > mddev->array_sectors))
-> >                 return DM_MAPIO_REQUEUE;
-> >
-> > But a flush doesn't have an end_sector (it'd be 0 afaik).. so it seems
-> > weird relative to a flush.
-> >
-> > > Patrick, you mentioned lvmPool is raid1, can you explain how lvmPool is
-> > > built? It is dm-raid1 target or over plain raid1 device which is
-> > > build over /dev/lowerVG?
+> > > 
+> > > It needs to also be split up because fs/ and fs/bcachefs are
+> > > maintained differently. And while right now bcachefs is the only
+> > > consumer of the API, btrfs will add it right after it's committed, and
+> > > for people who are cherry-picking/backporting accordingly, having to
+> > > chop out part of a patch would be unpleasant.
+> > 
+> > It's a new feature, not a bugfix, this should never get backported. And
+> > I the bcachefs maintainer wrote the patch, and I'm submitting it to the
+> > VFS maintainer, so if it's fine with him it's fine with me.
 > 
-> LVM raid1:
-> lvcreate --type raid1 -m 1 ...
+> But then how am I supposed to bikeshed the structure of the V2 patchset
+> by immediately asking you to recombine the patches and spit out a V3?
+> 
+> </sarcasm>
 
-OK, that is the reason, as Mike mentioned.
+I see no reason to split this up. Especially given how small the patch
+is. If there's a good reason such as meaningful merge conflicts then we
+can always move to a stable branch for the infrastructure changes that
+everyone else can pull from.
 
-dm-raid.c:raid_map returns DM_MAPIO_REQUEUE, which is translated into
-BLK_STS_IOERR in dm_io_complete().
+> 
+> But, seriously, can you update the manpage too?  Is stx_subvol a u64
+> cookie where userspace mustn't try to read anything into its contents?
+> Just like st_ino and st_dev are (supposed) to be?
 
-Empty flush bio is sent from btrfs, both .bi_size and .bi_sector are set
-as zero, but the top dm is linear, which(linear_map()) maps new
-bio->bi_iter.bi_sector, and the mapped bio is sent to dm-raid(raid_map()),
-then DM_MAPIO_REQUEUE is returned.
-
-The one-line patch I sent in last email should solve this issue.
-
-https://lore.kernel.org/dm-devel/a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it/T/#m8fce3ecb2f98370b7d7ce8db6714bbf644af5459
-
-But DM_MAPIO_REQUEUE misuse needs close look, and I believe Mike is working
-on that bigger problem.
-
-I guess most of dm targets don't deal with empty bio well, at least
-linear & dm-raid, not look into others yet, :-(
-
-
-Thanks,
-Ming
-
+I was honestly hoping for a more elaborate patch description that would
+have explained this. But I can just add this and yes, this is how I
+conceptualized it and how we've always discussed it before.
 
