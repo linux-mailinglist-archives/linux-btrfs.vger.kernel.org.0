@@ -1,209 +1,202 @@
-Return-Path: <linux-btrfs+bounces-3178-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3179-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 852DE878111
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 14:56:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBF1F8781B1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 15:35:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39EC31F24046
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 13:56:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 806BA286FF9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 14:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FAC3FB3D;
-	Mon, 11 Mar 2024 13:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B409740BF9;
+	Mon, 11 Mar 2024 14:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mwfLAmXp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PV8Wpwsr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE044120B
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 13:54:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F4640BE1
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 14:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710165291; cv=none; b=ZDrNmzak5PD9XLQ+8pU2Y1q05VNcpGjLjJ7di8A953K6cG8tWCdmn7MKiMFt5jjFNxL91UpXzPMftDn2pV0QDaPucYUlQIOkAvRt91dsidNe8ezCdp7FrnSkm1Vtgp6C9X3DbpreVr5WejCDrNysWcCqTzXjxgeiuNlRtaQba1s=
+	t=1710167713; cv=none; b=alGLxcE2C9lilM64geQlpY3IRlMxKZOrqu7owZhoAIpcmhRO32+00jKz2eN9M+DeLLXTdL3nUYklDs8Whfdo9fXPtNbb+WDnMh73ANaJ/fWZQE6Gp0K/qEqJixfJkGSTXL/Nv9Ha8M3d//8qGzbNrOTiPTibPC5leCWsZlsFOa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710165291; c=relaxed/simple;
-	bh=B1Lpj+Hb9WLEiqwpHaD0tYio8braNfFDb2G3PVMRKbQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CbTWZ+0LEoIfD85hkQfH2LlHqsjDMOmIbcAlh8hSS7xVJf+6cF3zm5C29ssLPuFEd0iZTlWkkFZ+L49Joagg89qa6w8RLaVKCuohI+3u+ATsjwNcFDoayw0HZObiyNSSMCQdA4HBossrUetqseCxJKwoMY9vp70Izsvo1IJ8OBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mwfLAmXp; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710165289; x=1741701289;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=B1Lpj+Hb9WLEiqwpHaD0tYio8braNfFDb2G3PVMRKbQ=;
-  b=mwfLAmXpUSThp1kJOqnWad9WTqGAhyIGj86Wk4c0oaW5rQOPhA1G+fFc
-   wIeDH0zr4XxLuKtupa9/fX0OJXungF3zqrOkgOBd2EFzb/ulTQHMMnf75
-   os7qvs2mZyFV1JYAxIZCMzU3+JZt8SPjsL2Ylvpwr21j7dsd1gPq1uRQ/
-   fLRJXM9BJOceBohOgI0LKZPK18tqLm1yM0PfMbAbJxfItkQuETSNUQ5th
-   ZTq4fHay3SQawLmCH6B3axtYnXB1OY9Ou0C2TPsohWGqayRpzz1L4kg1k
-   1Zo2mfZ0rt55VAMEdeSCTOzDOEjPZiUlIuBKi2K+6VCG3IRpEF3snJT5N
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="4963963"
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="4963963"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 06:54:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="15666951"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 11 Mar 2024 06:54:45 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rjg70-0009A7-1F;
-	Mon, 11 Mar 2024 13:54:42 +0000
-Date: Mon, 11 Mar 2024 21:54:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v2 2/2] btrfs: defrag: allow fine-tuning defrag behavior
- based on file extent usage
-Message-ID: <202403112159.IQpF7kcT-lkp@intel.com>
-References: <d87c011eca11395aafa23cf7ea3ac8c0c8812fe6.1710137066.git.wqu@suse.com>
+	s=arc-20240116; t=1710167713; c=relaxed/simple;
+	bh=g5wwBuijHwLZaanPyI8VdU/ZIQA2OMstrXknCUvPLbk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z6mtFtAJ3r2dhHC3hiEjQvPhV90imWRtzapRQz8sYZgrcZrk+o6pVmtDKaMy4X8yjFlZPuiQ71YQysORZ4VZTXpkbuBpFPxYalO7WQTOU86doVL5629F5iyo14xjKe+iqG8RTFiboxIP3NUJPyCTkohWks15wlWbT6ib04d4VQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PV8Wpwsr; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5a1fa3cf5eeso655880eaf.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 07:35:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710167711; x=1710772511; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g5wwBuijHwLZaanPyI8VdU/ZIQA2OMstrXknCUvPLbk=;
+        b=PV8WpwsrdharFiv9s4LDTRETAEXGVnGaYfQiEHsF7G6DFLecABXh7ebwLo3fulxpew
+         UC6KqT7PzN1weslcbigiNcXAMGdrD5EzXRyZWzxVJaVVbuyTfq7HCYkrZv/Unm7RFvi4
+         QE2D2yC+qtvKp7IUQ9XY1sxFZzO5+jLDss/UB66sIiJnpAETxBYUtPHnEAK9FdmZmTOQ
+         8OxNnZ5u+N/MEmhH+/Ooxm5o67W3Qe0VBGJll9Txe2zQqw5ZePsaxzO9AFdj0891gsOk
+         f7iaLRrElkxFbH6eCXZDtYJWlAErrNaXAI8MVDVVtolBmNJU9B2YXeZdJUr46zpXinMb
+         kC4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710167711; x=1710772511;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g5wwBuijHwLZaanPyI8VdU/ZIQA2OMstrXknCUvPLbk=;
+        b=GTgPoEdV4r6vqIWxQvWsAjfqS3wuI7xrhMzzVHE6V5pws36mJAeAX1LgQ0AsFU1xEg
+         JVajkyW6J3yMJlF3AZ1HluFKa7EUVl2UYtjc9KT6mYwd3KhGV1vTOi+75C/as2vH88eU
+         v6sMCl+STqbRvb5TKao6QThVGkFE4kg7NPUiDZHL+JnCm8wM6t69KCnSGA3OdnUfpLo+
+         dmJyY/aUHI+RTr93K7lO7nppVim8ij1bAuRtNIs0TK9UcNoETAgwIKMd6EGg+ibSPcJE
+         mbxtc2+5jKZ6t0RNRMmw2AW6TX4jsTBA6Y8EVoqU9g0QlgTTN1dbbvrew3lmEcDwC4PY
+         XF+A==
+X-Gm-Message-State: AOJu0YxBtWuJldo+VqWbagt5xfuaf3krfjwWfNEbttGXDh5SnEZuAtLf
+	emN643VU4xilJBUId0EMUOn6aFE2vXpj6smYIcHIRHpoosyTh4c54d23OR+d1FwybrYawfxYjOp
+	oI8R2oFgMXouUy3TsEC40PTbt7no=
+X-Google-Smtp-Source: AGHT+IHOToVkvVs3mxKMK/aDCl7rvUDQiQzfgwtrTT85c5vmJMdWpgol7QLOgUr91EsWw2osbhi4l9ZyH/tzDkZ2awg=
+X-Received: by 2002:a05:6358:5286:b0:17e:68ac:6435 with SMTP id
+ g6-20020a056358528600b0017e68ac6435mr689377rwa.8.1710167710766; Mon, 11 Mar
+ 2024 07:35:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d87c011eca11395aafa23cf7ea3ac8c0c8812fe6.1710137066.git.wqu@suse.com>
+References: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
+ <CA+H1V9x-pFAM-YQ1ncAqZE4e7j6R2xQXX6Ah9v1tMNf8CrW+yw@mail.gmail.com>
+ <CAOLfK3We92ZBrvyvSDky9jrQwJNONeOE9qoaewbFCr02H8PuTw@mail.gmail.com>
+ <CA+H1V9xjufQpsZHeMNmKNrV0BfuUsJ5G=x_-BEcRw7eNFhYPAw@mail.gmail.com>
+ <CAOLfK3UEOMN-O9-u6j22CJ0jpRZUwB7R_x-zEH6-FXdgmqB7Lg@mail.gmail.com> <1eac6d15-4ead-46bc-9b60-02f1d120c885@tnonline.net>
+In-Reply-To: <1eac6d15-4ead-46bc-9b60-02f1d120c885@tnonline.net>
+From: Kai Krakow <hurikhan77+btrfs@gmail.com>
+Date: Mon, 11 Mar 2024 15:34:44 +0100
+Message-ID: <CAMthOuO56J5OhCnedJLxTuFxTPq7ryCGP_TxMrcXS+4jLj0aiA@mail.gmail.com>
+Subject: Re: raid1 root device with efi
+To: Forza <forza@tnonline.net>
+Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
+	Matthew Warren <matthewwarren101010@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Qu,
+Hello!
 
-kernel test robot noticed the following build errors:
+Am So., 10. M=C3=A4rz 2024 um 19:18 Uhr schrieb Forza <forza@tnonline.net>:
+>
+>
+>
+> On 2024-03-08 22:58, Matt Zagrabelny wrote:
+> > On Fri, Mar 8, 2024 at 3:54=E2=80=AFPM Matthew Warren
+> > <matthewwarren101010@gmail.com> wrote:
+> >>
+> >> On Fri, Mar 8, 2024 at 4:48=E2=80=AFPM Matt Zagrabelny <mzagrabe@d.umn=
+.edu> wrote:
+> >>>
+> >>> Hi Qu and Matthew,
+> >>>
+> >>> On Fri, Mar 8, 2024 at 3:46=E2=80=AFPM Matthew Warren
+> >>> <matthewwarren101010@gmail.com> wrote:
+> >>>>
+> >>>> On Fri, Mar 8, 2024 at 3:46=E2=80=AFPM Matt Zagrabelny <mzagrabe@d.u=
+mn.edu> wrote:
+> >>>>>
+> >>>>> Greetings,
+> >>>>>
+> >>>>> I've read some conflicting info online about the best way to have a
+> >>>>> raid1 btrfs root device.
 
-[auto build test ERROR on kdave/for-next]
-[also build test ERROR on linus/master v6.8 next-20240308]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I think the main issue here that leads to conflicting ideas is:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-defrag-add-under-utilized-extent-to-defrag-target-list/20240311-141116
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/d87c011eca11395aafa23cf7ea3ac8c0c8812fe6.1710137066.git.wqu%40suse.com
-patch subject: [PATCH v2 2/2] btrfs: defrag: allow fine-tuning defrag behavior based on file extent usage
-config: m68k-defconfig (https://download.01.org/0day-ci/archive/20240311/202403112159.IQpF7kcT-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240311/202403112159.IQpF7kcT-lkp@intel.com/reproduce)
+Grub records the locations (or extent index) of the boot files during
+re-configuration for non-trivial filesystems. If you later move the
+files, or need to switch to the mirror, it will no longer be able to
+read the boot files. Grub doesn't have a full btrfs implementation to
+read all the metadata, nor does it know or detect the member devices
+of the pool. So in this context, it supports btrfs raid1 under certain
+conditions, if, and only if, just two devices are used, and the grub
+device remains the same. If you add a third device, both raid1 stripes
+for boot files may end up on devices of the pool that grub doesn't
+consider. As an example, bees is known to mess up grub boot on btrfs
+because it relocates the boot files without letting grub know:
+https://github.com/Zygo/bees/issues/249
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403112159.IQpF7kcT-lkp@intel.com/
+I'd argue that grub can only boot reliably from single-device btrfs
+unless you move boot file extents without re-configuring it. Grub only
+has very basic support for btrfs.
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
+mdadm for ESP is not supported for very similar reasons (because EFI
+doesn't open the filesystem read-only): It will break the mirror.
 
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/sysv/sysv.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/smb/common/cifs_arc4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/smb/common/cifs_md4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/hpfs/hpfs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/ufs/ufs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/qnx4/qnx4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/qnx6/qnx6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/autofs/autofs4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/btrfs/btrfs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in fs/bcachefs/mean_and_variance_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in security/keys/encrypted-keys/encrypted-keys.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in crypto/cast_common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in crypto/af_alg.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in crypto/algif_hash.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in crypto/algif_skcipher.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in crypto/ecc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in crypto/curve25519-generic.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in crypto/xor.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/kunit/kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/kunit/kunit-test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/kunit/kunit-example-test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/math/prime_numbers.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/crypto/libchacha.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/crypto/libarc4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/crypto/libdes.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/crypto/libpoly1305.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/crypto/libsha256.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_string.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test-string_helpers.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_hexdump.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/find_bit_benchmark.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_bpf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_dhry.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_firmware.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/cpumask_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_sysctl.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_hash.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_ida.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test-kstrtox.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_list_sort.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_min_heap.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_module.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_rhashtable.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_sort.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_user_copy.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_static_keys.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_static_key_base.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_printf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_scanf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_bitmap.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_uuid.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_xarray.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_maple_tree.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_kmod.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_memcat_p.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_blackhole_dev.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_meminit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_free_pages.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/zlib_deflate/zlib_deflate.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/ts_kmp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/ts_bm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/ts_fsm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/atomic64_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/asn1_decoder.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/bitfield_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/checksum_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/list-test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/hashtable_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_linear_ranges.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_bits.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/cmdline_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/slub_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/memcpy_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/is_signed_type_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/overflow_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/stackinit_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/strcat_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/strscpy_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/siphash_kunit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/dsp56k.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/lp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/dax/dax.o
-WARNING: modpost: drivers/input/mouse/amimouse: section mismatch in reference: amimouse_driver+0x8 (section: .data) -> amimouse_remove (section: .exit.text)
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/tests/input_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/rtc/lib_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-a4tech.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-belkin.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-cherry.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-cypress.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-ezkey.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-kensington.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-microsoft.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-monterey.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/parport/parport.o
-WARNING: modpost: drivers/parport/parport_amiga: section mismatch in reference: amiga_parallel_driver+0x4 (section: .data) -> amiga_parallel_remove (section: .exit.text)
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/oss/dmasound/dmasound_core.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/oss/dmasound/dmasound_atari.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/oss/dmasound/dmasound_paula.o
-WARNING: modpost: sound/oss/dmasound/dmasound_paula: section mismatch in reference: amiga_audio_driver+0x8 (section: .data) -> amiga_audio_remove (section: .exit.text)
->> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+The best way, as outlined in the thread already, is two have two ESP,
+not put the kernel boot files in btrfs but in ESP instead, and adjust
+your kernel-install plugins to mirror the boot files to the other ESP
+partition.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Personally, I've got a USB stick where I keep a copy of my ESP created
+with major configuration changes (e.g. major kernel update, boot
+configuration changes), and the ESP is also included in my daily
+backup. I keep blank reserve partitions on all other devices which I
+can copy the ESP to in case of disaster. This serves an additional
+purpose of keeping some part of the devices trimmed for wear-leveling.
+
+
+> >>>>>
+> >>>>> I've got two disks, with identical partitioning and I tried the
+> >>>>> following scenario (call it scenario 1):
+> >>>>>
+> >>>>> partition 1: EFI
+> >>>>> partition 2: btrfs RAID1 (/)
+> >>>>>
+> >>>>> There are some docs that claim that the above is possible...
+> >>>>
+> >>>> This is definitely possible. I use it on both my server and desktop =
+with GRUB.
+> >>>
+> >>> Are there any docs you follow for this setup?
+> >>>
+> >>> Thanks for the info!
+> >>>
+> >>> -m
+> >>
+> >> The main important thing is that mdadm has several metadata versions.
+> >> Versions 0.9 and 1.0 store the metadata at the end of the partition
+> >> which allows UEFI to think the filesystem is EFI rather than mdadm
+> >> raid.
+> >> https://raid.wiki.kernel.org/index.php/RAID_superblock_formats#Sub-ver=
+sions_of_the_version-1_superblock
+> >>
+> >> I followed the arch wiki for setting it up, so here's what I followed.
+> >> https://wiki.archlinux.org/title/EFI_system_partition#ESP_on_software_=
+RAID1
+> >
+> > Thanks for the hints. Hopefully there aren't any more unexpected issues=
+.
+> >
+> > Cheers!
+> >
+> > -m
+> >
+>
+> An alternative to mdadm is to simply have separate ESP partitions on
+> each device. You can manually copy the contents between the two if you
+> were to update the EFI bootloader. This way you can keep the 'other' ESP
+> as backup during GRUB/EFI updates.
+>
+> This solution is what I use on one of my servers. GRUB2 supports Btrfs
+> RAID1 so you do not need to have the kernel and initramfs on the ESP,
+> though that works very well too.
+>
+> Good Luck!
+>
+> ~Forza
+
+Regards,
+Kai
 
