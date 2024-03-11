@@ -1,103 +1,157 @@
-Return-Path: <linux-btrfs+bounces-3168-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3169-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86519877AC6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 06:49:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA2BF877AD6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 07:09:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B65971C21463
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 05:49:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DA72281FEE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 06:09:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630E910A3D;
-	Mon, 11 Mar 2024 05:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE61DCA50;
+	Mon, 11 Mar 2024 06:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oERJMVAJ"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KYd14mg0";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KYd14mg0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59962FC17
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 05:49:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0464B647
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 06:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710136156; cv=none; b=NgTJgxU81FxsGotgYF2s5emMkRO5aSXM8ZdP+bLwWFRr36KhMRyu4W3zLKFJBGASAKwWdGP0I5D42okXqoppzJrSAcVMSOcgW9FTJ9mQ9HbaSQVZVPSnD8lyfRqL+2VhUeDTwkkdf1i8TfFZb37vBMDGS3yy6KvFg/shSRTzEY8=
+	t=1710137352; cv=none; b=NxMK+2lo/rdSSK7iwqk/X7IDSVV4cVCfb7kFIBUbVy0Iefz4p4bPoV+OFm1uvMKzkHO764pxiRTZt+AXc9ir3GcDi5kX+xGfyEVXsOefgtg2MkgR1YBup4OoOU3sx4+YrjZvKXLL86O39P6Jguq94u7ExwFQNdMyuDJ2sSVuA1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710136156; c=relaxed/simple;
-	bh=Z6cqolKDpJQd55JrfdXxt3JoNMl424ciH8Eaawonlck=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kXyHH8jM5xVaCi4NmJAo7lywrFLGJ332ilnwMB1jKiRlaZYChX5wmARNSIqjhdXZ32qTtutXLEOwkv8DjX2mueJ0+WZAmmDxEfI6mczqU+aXh8IhPSLkgF50rPBawvdA3IUB58BB59H/qy3cu9n8JfrEJkRkMLiw/upiPY+PRuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oERJMVAJ; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 11 Mar 2024 01:49:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710136152;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nPF/wGUlrmECSHZ02Z5/7MM0dASCOcabKL9s7iF20VE=;
-	b=oERJMVAJEYNR5cNfxivh4EkpcUHWVBNtOjyFQfNZglN71yqjIbZR+jJpG6vJhhlEJ+5/vu
-	RTe7m2axVJZZ9bCkDsD16CLoyamv/pvr1hFUG3fwQlRS2q6HTo8gwXTJAr1DoDt/jyVQ83
-	nqZ0IqyWkb/i76wINxKImvheGWU9IHI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Dave Chinner <david@fromorbit.com>, 
-	"Darrick J. Wong" <djwong@kernel.org>, Neal Gompa <neal@gompa.dev>, linux-fsdevel@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Josef Bacik <josef@toxicpanda.com>, Miklos Szeredi <mszeredi@redhat.com>, 
-	Christian Brauner <brauner@kernel.org>, David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-Message-ID: <nsfwsznghuaeimuk2waym3ioghcviidlgt3ozdzpaozw4g3z3o@o5lttjrqcin4>
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
- <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
- <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
- <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
- <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
- <20240308165633.GO6184@frogsfrogsfrogs>
- <Ze5ppBOFpVm1jyb+@dread.disaster.area>
- <CAJfpeguu=DCvtU7dudXNncbxvy5joqS1Xp0Yf590UFPna6qZ2A@mail.gmail.com>
+	s=arc-20240116; t=1710137352; c=relaxed/simple;
+	bh=d2uQaeIlFywFhxHgAsdj+gqP1KPq2r1t9XQTwDNWWKM=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Mult1TaqxJoEVz/5snNoamCtKD5nfDlc0/IdHhlQIVzUQtThiEZOtVG1BJACjhSoPISLalovHvBlKR8fu8s0m230o/smVcujOZjgYj3PrY1jyTVqt0HXHCzZ8gb2Jr8BoyPytdeq2to3JWI1L6wrDPJd+iwOxnkM4qRLDIkN4PA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KYd14mg0; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KYd14mg0; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D11245C2BF
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 06:09:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710137348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=rMY0LYFAWrEEyuub4uwSqhg+0ZGAMeW3H0o+JtQsfSw=;
+	b=KYd14mg0F6VlxfzsvZWQxaUyBprjhUvayewPjt9QjmTsJ+OP1mDwBHG2lY63C1Q9+EZ1HH
+	/V+zkYuEUGKzzn6wbAsfkbpGVrfx2SUYmN1nyk2doMTILaUmzD5aBzBYKDZ6QomzwV1c+6
+	qL0avEu/E719ekAHNU2g/0pKxzLcd/k=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710137348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=rMY0LYFAWrEEyuub4uwSqhg+0ZGAMeW3H0o+JtQsfSw=;
+	b=KYd14mg0F6VlxfzsvZWQxaUyBprjhUvayewPjt9QjmTsJ+OP1mDwBHG2lY63C1Q9+EZ1HH
+	/V+zkYuEUGKzzn6wbAsfkbpGVrfx2SUYmN1nyk2doMTILaUmzD5aBzBYKDZ6QomzwV1c+6
+	qL0avEu/E719ekAHNU2g/0pKxzLcd/k=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D79B01383D
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 06:09:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id nKUYJAOg7mUdQwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 06:09:07 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/2] btrfs: defrag: better lone extent handling
+Date: Mon, 11 Mar 2024 16:38:43 +1030
+Message-ID: <cover.1710137066.git.wqu@suse.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpeguu=DCvtU7dudXNncbxvy5joqS1Xp0Yf590UFPna6qZ2A@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: ****
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [4.89 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCPT_COUNT_ONE(0.00)[1];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_DN_NONE(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.01)[47.61%]
+X-Spam-Score: 4.89
+X-Spam-Flag: NO
 
-On Mon, Mar 11, 2024 at 06:30:21AM +0100, Miklos Szeredi wrote:
-> On Mon, 11 Mar 2024 at 03:17, Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Fri, Mar 08, 2024 at 08:56:33AM -0800, Darrick J. Wong wrote:
-> > > Should the XFS data and rt volumes be reported with different stx_vol
-> > > values?
-> >
-> > No, because all the inodes are on the data volume and the same inode
-> > can have data on the data volume or the rt volume. i.e. "data on rt,
-> > truncate, clear rt, copy data back into data dev".  It's still the
-> > same inode, and may have exactly the same data, so why should change
-> > stx_vol and make it appear to userspace as being a different inode?
-> 
-> Because stx_vol must not be used by userspace to distinguish between
-> unique inodes.  To determine if two inodes are distinct within a
-> filesystem (which may have many volumes) it should query the file
-> handle and compare that.
-> 
-> If we'll have a filesystem that has a different stx_vol but the same
-> fh, all the better.
+[CHANGELOG]
+v2:
+- Remove the "lone" naming
+  Now the two new members would be named "usage_ratio" and
+  "wasted_bytes".
+  
+- Make "usage_ratio" to be in range [0, 100]
+  This should be much easier to understand.
 
-I agree that stx_vol should not be used for uniqueness testing, but
-that's a non sequitar here; Dave's talking about the fact that volume
-isn't a constatn for a given inode on XFS. And that's a good point;
-volumes on XFS don't map to the filesystem path heirarchy in a nice
-clean way like on btrfs and bcachefs (and presumably ZFS).
+When a file extent which can not be merged with any adjacent ones (e.g.
+created by truncating a large file extent) is involved, it would haven no
+chance to be touched by defrag.
 
-Subvolumes on btrfs and bcachefs form a tree, and that's something we
-should document about stx_subvol - recursively enumerable things are
-quite nice to work with.
+This would mean that, if we have some truncated extents with very low
+utilization ratio, or defragging it can free up a lot of space, defrag
+would not touch them no matter what.
+
+This is not ideal for some situations, e.g.:
+
+  # mkfs.btrfs -f $dev
+  # mount $dev $mnt
+  # xfs_io -f -c "pwrite 0 128M" $mnt/foobar
+  # sync
+  # truncate -s 4k $mnt/foobar
+  # btrfs filesystem defrag $mnt/foobar
+  # sync
+
+In above case, if defrag touches the 4k extent, it would free up the
+whole 128M extent, which should be a good win.
+
+This patchset would address the problem by introducing a special
+entrance for such file extents.
+Those file extents meeting either usage ratio or wasted bytes threshold
+would be considered as a defrag target, allowing end uesrs to address
+above situation.
+
+This change requires progs support (or direct ioctl() calling), by
+default they would be disabled.
+
+And my personal recommendation for the ratio would be 5%, and 16MiB.
+
+Qu Wenruo (2):
+  btrfs: defrag: add under utilized extent to defrag target list
+  btrfs: defrag: allow fine-tuning defrag behavior based on file extent
+    usage
+
+ fs/btrfs/defrag.c          | 46 +++++++++++++++++++++++++++++++++++---
+ fs/btrfs/ioctl.c           |  6 +++++
+ include/uapi/linux/btrfs.h | 40 ++++++++++++++++++++++++++++-----
+ 3 files changed, 84 insertions(+), 8 deletions(-)
+
+-- 
+2.44.0
+
 
