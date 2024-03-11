@@ -1,216 +1,150 @@
-Return-Path: <linux-btrfs+bounces-3197-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3198-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95B848788F0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 20:29:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 836A4878941
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 21:07:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AC1D1F20C37
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 19:29:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF6401C21346
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Mar 2024 20:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC3555782;
-	Mon, 11 Mar 2024 19:29:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798E956B63;
+	Mon, 11 Mar 2024 20:07:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="TO8cWIMi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HVBgKaj4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0D8154F83
-	for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 19:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A282252F82;
+	Mon, 11 Mar 2024 20:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710185356; cv=none; b=XdP30TZ1F+7031wOD+WAwl0QsXFGShRh3cQtBcuTv+mOUDzZh7jJz8xRQIcvNr0Wj+upHxSUtSRgq0A6s1DBXWLCXulXqwggiBZBWZmzKOri+24ekvkSjEoESMC61WrI4gd/1jqvC4TcPjbrOp9uwbmkvOgUtSiQTLKbiPuQwfA=
+	t=1710187629; cv=none; b=dnrVjkd+zySwYvVe7Qw9D7FZtPrF2PyrOq9+Ff0kkSDt/6pEdO4qbjjD4AujxyCRFSEDBDka0ZIbqiSfeIpIXKQI5a5r5KAT535GylV3EcJRq3OOdJbB3zvXGhh3E6OXOJkDt4svxPQbdw1bec1WG7PQ6OAlqqaxwhRVs4UsjYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710185356; c=relaxed/simple;
-	bh=wpGiuyImpzQejV2S0CWam5lu9wbRualfvo3u7LoxIPQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ai6uP300iFFq4tWDdh0uay4U8K03DpBoir37ZwoVLliiUexO8jIdtHnx3iHkpgs/SHTH2MuNwo1dmGIxJ8YlPVH9d5/69+kIsy6jfZ6s/T+y9i1Olt8U3NMSZs2kmYDvnJ1uxLK3DiwWrnnSI7pZFJ7/lssaq07iQpCIR0gtlz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it; spf=pass smtp.mailfrom=libero.it; dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b=TO8cWIMi; arc=none smtp.client-ip=213.209.10.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libero.it
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-18.iol.local with ESMTPA
-	id jlI9rdIAawDoyjlIArzr4F; Mon, 11 Mar 2024 20:26:34 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-	t=1710185194; bh=J29m8Nr8kcQPxHAO+9ir4S8uX0lIDJ1pLW0sKg321sQ=;
-	h=From;
-	b=TO8cWIMiMLknJHtCoaNOYhx8gG5yQUvBIbTq7dee+iPyKSZ8QxjlarX+oUY0UXqY8
-	 TP68BpFPyNDx/eIH4JJCuk166a73KTmm+IyHKMl4SPLA8I+2eD0DMrNsbXYlloYXxF
-	 hTDTDvz4o9E9YTuT83J3xmt7DvsbtfCvcMPdf1FxwtkMSQ7B36ScvtANc1EgI3uE5T
-	 yVauyhnd2vix4p69F/67pUYsBx44OrW/YN9jnbIC+tyNKrQ29Eh6OlZQqQNfAHzrM9
-	 P6fswlKkAYha+SBUheVioV75mpyoS4/mibLsFZOa4sezAblRBMLKqoDMybWDzj4rJ9
-	 /JBxvGifxYPqQ==
-X-CNFS-Analysis: v=2.4 cv=N5qKFH9B c=1 sm=1 tr=0 ts=65ef5aea cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=O-dTtCbMAAAA:8 a=pGLkceISAAAA:8 a=NEAV23lmAAAA:8
- a=VwQbUJbxAAAA:8 a=Br9LfDWDAAAA:8 a=4FwvDv67h4z814avhCcA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=YQZzFssXFEgA:10 a=p5snsyuY6O_wh2DS_HCF:22
- a=AjGcO6oz07-iQ99wixmX:22 a=gR_RJRYUad_6_ruzA8cR:22
-Message-ID: <4feb955c-cc91-4f0b-8e62-b6a089eea7ae@libero.it>
-Date: Mon, 11 Mar 2024 20:26:33 +0100
+	s=arc-20240116; t=1710187629; c=relaxed/simple;
+	bh=DrWeY4URI4asygk4lhluNXO0hGNpWVzUWRGv0/b6Xp8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j4Pci1mGHPd6BQzq3BTNOa/mWWK+35rJd+ezpOcZUbNoQlOL+pVvDXkRvoys+kznCmyUqthNeUdL9eam76p+PejNIEzG4jueCEkppmsnX728xTv4IauGJpthuoW1+qD6L7VLW0EfnW9EZqsCodJcEPvInsIrW/6PtQfNywxoIFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HVBgKaj4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A55EC433B2;
+	Mon, 11 Mar 2024 20:07:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710187629;
+	bh=DrWeY4URI4asygk4lhluNXO0hGNpWVzUWRGv0/b6Xp8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=HVBgKaj46DDvlZF7YVALiNNlcZMWlXZCyWPePJUojTwe/IsQjYcpidHteFQXZ90GU
+	 lrfrELPvZpShwB1BeWiQeX6R28l9OP7a7z029bFzBVphkSrnVOMPF4ewuPHOKKfXJN
+	 C6CprsF7WC+czo7KhkYIRmnxeK5ob2m1XUlzYJZT7esJTe1E36C1O7QvGnXp8TqNqe
+	 hR7MmBkoAqkgySmfRBcQ5Xpf82Z8VY3YWD5b5geTMn6z48aBfKJSj8brxsReXo7fXq
+	 IegWjghbF+NWRmLaLMh1YFKwQQSwW74xIHUGHnmDC9ld1+dZMWbkGcBDf/rjyWHLUb
+	 Xcc/jrRjzyGsg==
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a461d0c90c1so206782166b.2;
+        Mon, 11 Mar 2024 13:07:09 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWoN+lOiQPmnJarbciFFkbB3xRor937uKo6ZTghjxn5a7fusFA7RftA3Ad4UZOpQmXBYubqCoCEXZXVg3tIxsipoj9JzW4ooGeH1hUlch5Ri0eaENPeDcmVAC596TUnh1phCfY=
+X-Gm-Message-State: AOJu0YxAOEUkPpJDASy/zEwMTLVQ+2FNlmDZ9Ji98tH09ZZz512EeWTO
+	yVh95eXlv7B93x+p7STGtfaw5bP1/ULkuJmPdaU7EFL8J0unSDjLvqus5l9YbA1kwUJn6CxAMAQ
+	l4n+ad3IHzmMexnY1/6zjDqGMAHk=
+X-Google-Smtp-Source: AGHT+IG18EuAA35kdphCrB2tABhQCQA2nnSt3znj87TE2dP669Iykk9AuOQnThtnLt0Pt9+VxTpa3FQyOl2ZdHBH/4o=
+X-Received: by 2002:a17:906:d14b:b0:a46:389b:2351 with SMTP id
+ br11-20020a170906d14b00b00a46389b2351mr818583ejb.59.1710187627597; Mon, 11
+ Mar 2024 13:07:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: raid1 root device with efi
-Content-Language: en-US
-To: Kai Krakow <hurikhan77+btrfs@gmail.com>, Forza <forza@tnonline.net>
-Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
- Matthew Warren <matthewwarren101010@gmail.com>
-References: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
- <CA+H1V9x-pFAM-YQ1ncAqZE4e7j6R2xQXX6Ah9v1tMNf8CrW+yw@mail.gmail.com>
- <CAOLfK3We92ZBrvyvSDky9jrQwJNONeOE9qoaewbFCr02H8PuTw@mail.gmail.com>
- <CA+H1V9xjufQpsZHeMNmKNrV0BfuUsJ5G=x_-BEcRw7eNFhYPAw@mail.gmail.com>
- <CAOLfK3UEOMN-O9-u6j22CJ0jpRZUwB7R_x-zEH6-FXdgmqB7Lg@mail.gmail.com>
- <1eac6d15-4ead-46bc-9b60-02f1d120c885@tnonline.net>
- <CAMthOuO56J5OhCnedJLxTuFxTPq7ryCGP_TxMrcXS+4jLj0aiA@mail.gmail.com>
-From: Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <CAMthOuO56J5OhCnedJLxTuFxTPq7ryCGP_TxMrcXS+4jLj0aiA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfFYtV+1tHrLo+Y09bD4c6C29+5EftHZANctBkxpxXPqP2usIqfahNGAYSbw/O/5nw/8WH9Wjj5VatOIUGKfqkTK0ohQ2JqZ6omLwyrjbRmXvv+jvJqZY
- lt7hmNkHRrpsWpDJ/Lceysh+7CK7nFLWFkQsDfo1tjitNFIZCHLne2bJgZclvI4FUdiX++vpDlJg2EtvwSjH7mQ/RBZbZEqWMJJI6HznASzsLuaDEJ0SbdFA
- kMLV33SpCVoDJLOlSrgFgk/jrdBh3nWXbfQ48sCHvNfNqFBwxebUyvjc3KPNqlNg0Cz8FCi/BKvMd40cxm+A0g==
+References: <20240304211551.833500257@linuxfoundation.org> <20240304211551.880347593@linuxfoundation.org>
+ <CAKisOQGCiJUUc62ptxp08LkR88T5t1swcBPYi84y2fLP6Tag7g@mail.gmail.com>
+ <da17e97b-1880-415d-8cdb-07e79808e702@leemhuis.info> <20240311184108.GS2604@twin.jikos.cz>
+ <d9d46e16-ae73-4495-98a4-ab08ac501132@leemhuis.info>
+In-Reply-To: <d9d46e16-ae73-4495-98a4-ab08ac501132@leemhuis.info>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 11 Mar 2024 20:06:30 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7kZkTMfzb0Xg_m1EbNyjj1eqqs4m=ovHM80MqCCCD7gw@mail.gmail.com>
+Message-ID: <CAL3q7H7kZkTMfzb0Xg_m1EbNyjj1eqqs4m=ovHM80MqCCCD7gw@mail.gmail.com>
+Subject: Re: [PATCH 6.7 001/162] btrfs: fix deadlock with fiemap and extent locking
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: dsterba@suse.cz, Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>, 
+	stable@vger.kernel.org, patches@lists.linux.dev, 
+	Josef Bacik <josef@toxicpanda.com>, Sasha Levin <sashal@kernel.org>, Chris Mason <clm@fb.com>, 
+	linux-btrfs <linux-btrfs@vger.kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/03/2024 15.34, Kai Krakow wrote:
-> Hello!
-> 
-> Am So., 10. März 2024 um 19:18 Uhr schrieb Forza <forza@tnonline.net>:
->>
->>
->>
->> On 2024-03-08 22:58, Matt Zagrabelny wrote:
->>> On Fri, Mar 8, 2024 at 3:54 PM Matthew Warren
->>> <matthewwarren101010@gmail.com> wrote:
->>>>
->>>> On Fri, Mar 8, 2024 at 4:48 PM Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
->>>>>
->>>>> Hi Qu and Matthew,
->>>>>
->>>>> On Fri, Mar 8, 2024 at 3:46 PM Matthew Warren
->>>>> <matthewwarren101010@gmail.com> wrote:
->>>>>>
->>>>>> On Fri, Mar 8, 2024 at 3:46 PM Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
->>>>>>>
->>>>>>> Greetings,
->>>>>>>
->>>>>>> I've read some conflicting info online about the best way to have a
->>>>>>> raid1 btrfs root device.
-> 
-> I think the main issue here that leads to conflicting ideas is:
-> 
-> Grub records the locations (or extent index) of the boot files during
-> re-configuration for non-trivial filesystems. If you later move the
-> files, or need to switch to the mirror, it will no longer be able to
-> read the boot files. Grub doesn't have a full btrfs implementation to
-> read all the metadata, nor does it know or detect the member devices
-> of the pool.
+On Mon, Mar 11, 2024 at 7:23=E2=80=AFPM Linux regression tracking (Thorsten
+Leemhuis) <regressions@leemhuis.info> wrote:
+>
+> On 11.03.24 19:41, David Sterba wrote:
+> > On Mon, Mar 11, 2024 at 10:15:31AM +0100, Linux regression tracking (Th=
+orsten Leemhuis) wrote:
+> >> On 06.03.24 13:39, Filipe Manana wrote:
+> >>> On Mon, Mar 4, 2024 at 9:26=E2=80=AFPM Greg Kroah-Hartman
+> >>> <gregkh@linuxfoundation.org> wrote:
+> >>>>
+> >>>> 6.7-stable review patch.  If anyone has any objections, please let m=
+e know.
+> >>>
+> >>> It would be better to delay the backport of this patch (and the
+> >>> followup fix) to any stable release, because it introduced another
+> >>> regression for which there is a reviewed fix but it's not yet in
+> >>> Linus' tree:
+> >>>
+> >>> https://lore.kernel.org/linux-btrfs/cover.1709202499.git.fdmanana@sus=
+e.com/
+> >>
+> >> Those two missed 6.8 afaics. Will those be heading to mainline any tim=
+e
+> >> soon?
+> >
+> > Yes, in the 6.9 pull request.
+>
+> Great!
+>
+> >> And how fast afterwards will it be wise to backport them to 6.8?
+> >> Will anyone ask Greg for that when the time has come?
+> > The commits have stable tags and will be processed in the usual way.
+>
+> I'm missing something. The first change from Filipe's series linked
+> above has a fixes tag, but no stable tag afaics:
+> https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/commit/?h=
+=3Dfor-6.9&id=3D978b63f7464abcfd364a6c95f734282c50f3decf
 
-I don't think that what you describe is really accurate. Grub (in the NON uefi version)
-stores some code in the first 2MB of the disk (this is one of the reason why fdisk by
-default starts the first partition at the 1st MB of the disk). This code is mapped as
-you wrote. And if you mess with this disk area grub gets confused.
+It has no stable tag because when I sent the patch there was yet no
+kernel release with the buggy commit, which landed in 6.8-rc6.
+Now it would make sense to add the stable tag because 6.8 was released
+yesterday and it's the first release with the buggy commit.
 
-And the btrfs grub module is stored in this area. After this module is loaded, grub
-has a full access to a btrfs partition.
+>
+> So there is no guarantee that Greg will pick it up; and I assume if he
+> does he only will do so after -rc1 (or later, if the CVE stuff continues
+> to keep him busy).
 
-The fact in some condition grub is not able to access anymore to a btrfs filesystem
-is more related to a not mature btrfs implementation in grub.
+Don't worry, we are paying attention to that and we'll remind Greg if neces=
+sary.
 
-I am quite sure that grub access a btrfs filesystem dynamically, without using a
-pre-stored table with the location of a file.
+> As Filipe wrote "can actually have serious
+> consequences" this got me slightly worried. That's why I'm a PITA here,
+> sorry -- but as I said, maybe I'm missing something.
+>
+> The second of the patches has none of those tags, but well, from the
+> patch descriptions it seems that is just a optimization, so that is
+> likely not something to worry about:
+> https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/commit/?h=
+=3Dfor-6.9&id=3D1cab1375ba6d5337a25acb346996106c12bb2dd0
 
-To verify that, try to access a random file or directory in a btrfs location (e.g.
-ls /bin) that is not related to a 'boot' process.
+Yes, it's an optimization. If it were a bug fix, I would have added a
+Fixes tag and would have described what the bug was.
 
-> So in this context, it supports btrfs raid1 under certain
-> conditions, if, and only if, just two devices are used, and the grub
-> device remains the same. If you add a third device, both raid1 stripes
-> for boot files may end up on devices of the pool that grub doesn't
-> consider. As an example, bees is known to mess up grub boot on btrfs
-> because it relocates the boot files without letting grub know:
-> https://github.com/Zygo/bees/issues/249
-> 
-> I'd argue that grub can only boot reliably from single-device btrfs
-> unless you move boot file extents without re-configuring it. Grub only
-> has very basic support for btrfs.
-> 
-> mdadm for ESP is not supported for very similar reasons (because EFI
-> doesn't open the filesystem read-only): It will break the mirror.
-> 
-> The best way, as outlined in the thread already, is two have two ESP,
-> not put the kernel boot files in btrfs but in ESP instead, and adjust
-> your kernel-install plugins to mirror the boot files to the other ESP
-> partition.
-> 
-> Personally, I've got a USB stick where I keep a copy of my ESP created
-> with major configuration changes (e.g. major kernel update, boot
-> configuration changes), and the ESP is also included in my daily
-> backup. I keep blank reserve partitions on all other devices which I
-> can copy the ESP to in case of disaster. This serves an additional
-> purpose of keeping some part of the devices trimmed for wear-leveling.
-> 
-> 
->>>>>>>
->>>>>>> I've got two disks, with identical partitioning and I tried the
->>>>>>> following scenario (call it scenario 1):
->>>>>>>
->>>>>>> partition 1: EFI
->>>>>>> partition 2: btrfs RAID1 (/)
->>>>>>>
->>>>>>> There are some docs that claim that the above is possible...
->>>>>>
->>>>>> This is definitely possible. I use it on both my server and desktop with GRUB.
->>>>>
->>>>> Are there any docs you follow for this setup?
->>>>>
->>>>> Thanks for the info!
->>>>>
->>>>> -m
->>>>
->>>> The main important thing is that mdadm has several metadata versions.
->>>> Versions 0.9 and 1.0 store the metadata at the end of the partition
->>>> which allows UEFI to think the filesystem is EFI rather than mdadm
->>>> raid.
->>>> https://raid.wiki.kernel.org/index.php/RAID_superblock_formats#Sub-versions_of_the_version-1_superblock
->>>>
->>>> I followed the arch wiki for setting it up, so here's what I followed.
->>>> https://wiki.archlinux.org/title/EFI_system_partition#ESP_on_software_RAID1
->>>
->>> Thanks for the hints. Hopefully there aren't any more unexpected issues.
->>>
->>> Cheers!
->>>
->>> -m
->>>
->>
->> An alternative to mdadm is to simply have separate ESP partitions on
->> each device. You can manually copy the contents between the two if you
->> were to update the EFI bootloader. This way you can keep the 'other' ESP
->> as backup during GRUB/EFI updates.
->>
->> This solution is what I use on one of my servers. GRUB2 supports Btrfs
->> RAID1 so you do not need to have the kernel and initramfs on the ESP,
->> though that works very well too.
->>
->> Good Luck!
->>
->> ~Forza
-> 
-> Regards,
-> Kai
-> 
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
+>
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
+>
 
