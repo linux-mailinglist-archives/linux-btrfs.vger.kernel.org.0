@@ -1,296 +1,198 @@
-Return-Path: <linux-btrfs+bounces-3204-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F272878BE1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 01:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6A6B878C3A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 02:22:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E91001F226CC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 00:21:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DC641F221C6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 01:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E2710E6;
-	Tue, 12 Mar 2024 00:21:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A6F6FB9;
+	Tue, 12 Mar 2024 01:22:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="vnHcEE/A"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="QFtomXvB";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="kqIOa5nx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79527370
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 00:21:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710202901; cv=none; b=uhpfbqGEEE3XimPuzVrLvSJ9kS3Vtu3d8UfdQK7t8PsbtnTuzO3nnv0uUl8pdaIjdTF/J/NQzbKEhgOE4p2FkamvVnoisdqKb5izx0KJaKIFoyYRsXBh55MiCRLxKrVgXEWuQ5AUAo3iJiYa8npkMIWGPAl1Ywmq1Fd0xdfuy88=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710202901; c=relaxed/simple;
-	bh=wok4YHjHzCm35RvpC9w/b8FyNi1LqxjvfyXAqdd7HtI=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=IPn/mjPU+NYH5AnTIRZntVLdbedX4fTC0teobUP3ZAaGnNk1/24cAAW7mm40Ww6zaE24nzq6yAL09sYotDCbPrHzc0ri6FsWS3Gv+v5e5bR8D0hj35IhkMFW/1luc1OnRoN6PGUhtaRQM0M4l/55VvLCHlz5IiTGlVpdvW8bMfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=vnHcEE/A; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e676ea4e36so2709033b3a.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Mar 2024 17:21:38 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C7E5CAC
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 01:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.143.124
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710206535; cv=fail; b=OMrWMBr7At/VL2vUdf1MJ63T+Y+ChY8Gql1LLP9gcElLiccOaDmffUJnU6wu5QTFug+3MtiJs3Obd7um8uSYrZ1Gn7zIBJ3g4ItiaeA+FwRhZsGV8ur6sGOAcP4BbuOQb1NIkhcF2E7sZRt/AF5wAlT4ZB2Jp9K5W8/8mTWzNBE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710206535; c=relaxed/simple;
+	bh=ryGBm/tNrBnaWFF3NhQse5fFGYxMXmsDLP3wwTeBeUg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=tn/RSAe3Dr27HCYlehvDeTwJmfd4XY1AfmfUadZ0oLLcQqL0E1w5l/GUCS9ilTTVJH9FdnDMZQImhdVleVzlbyUdRNwpMJ4iX79xmbn46QReqi0qmV/zUh2q53Q1IkK0ZaHEw44mD4vNst+ABK8BITgSMXqZwFAqriOOcNYT7Nw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=QFtomXvB; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=kqIOa5nx; arc=fail smtp.client-ip=68.232.143.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1710206533; x=1741742533;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=ryGBm/tNrBnaWFF3NhQse5fFGYxMXmsDLP3wwTeBeUg=;
+  b=QFtomXvBSYTrGIPGbDJ6Lj2THo2zsCsZ+brVWK8RD18Td+8wx/rMWqyg
+   i6W3puiaw60tY/Lf6/nvkChh9CrVIf22IGtqk14bw7xrmyaCkDjWOK9pB
+   Trz95LxgwLd4GumvLshr6aVHCvp3s0rW7h0XTS/r/KocUaTAN+IbmBJeE
+   tlgL7l8M9mV8hfun3d3EYgT2Zso/sOYlx++rS4tLuSqec28b6avu9DikD
+   ppXNX6a3g+VEkV97pA3EC5pkvGY4pQ2Y9SoQmAhbAF7lDnW8Btukd0g/9
+   fbk8XW1gk1Vw88EjjW2CYbZbcJv1hKuv3LYaf9ZeuCTavmlpT3agX1GW9
+   g==;
+X-CSE-ConnectionGUID: ZcmqK9T2RSGJ9MIaS10G7A==
+X-CSE-MsgGUID: XpPIkhOSSv+ga7jntO9a/Q==
+X-IronPort-AV: E=Sophos;i="6.07,118,1708358400"; 
+   d="scan'208";a="11331795"
+Received: from mail-bn8nam12lp2169.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.169])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Mar 2024 09:22:05 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OEzerZht7BHwzqI2Eszdl057zCTrVgdJAwaQuvuEabEBOIlUqlsiub6s+QxO8Wr6WZfFkR2yZn37O8IXexyWI1t+V7XuGM5VyGDHf53TQG2v8VUu9JAO56kJ1HPtULEP72qODJVDz/qFr2XpjV4ScLdTc1cEQXTqqYXY9breGfrVRAuikXOVQEC5FaDcv7Hfe/1w2IdbqdnS9IoR7ZADv7OtgM8oUgm4nEjkxQ0n6cbnPxQrWxEmsAIku05wP0kfgeYR9QpYvPn9gUNs8T3TJGjJb8Z1knbV3UYtPe+I1Da7ql0eQsFAWm44dbEeQ1a+/Pu9EqakhNpaRpFH3wdo+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=r5IITwllngPFXGeuaXaLEwi7WyxRvQsZIdql5iMnyTk=;
+ b=Sc7TiUXPERGUKOteglgTyMmvCdVTNTY5tQyxXqwc5UDmsXMOOQaC3ue6foXVtEBrD8vKxmUoN4NRS3GS/kusYBlhwXIFxaK1V27edwFmYNYlGOo48RIqk8zjKYBl0ctw1QnFnzMfUFPFFLk20XWMoB/smoUVKriXb7sWi7jkfmy0+na3nSLfkfwFOEgxToY1hbjaitjJgssapuFbPCfH4F5H58tOE7mDa6/8yQHVCFBOFrAC96ZBcV76f2lVrePOE3Yxlpqq7SPDVFt/gk+mtu3gVAj2k1tUSLDaucaMdIGycS+YplqAgQIXdJZl9WSTEXcfiKSxUoYGWsIolpTqpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1710202898; x=1710807698; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7DlyNepupAOlfFd1hu/C7y4DR5yqWMh4x21bU4t8Ipo=;
-        b=vnHcEE/Ach84/PJR5b8pFFmku2tR0CHAivWjsrhJz0SxGrOBrzCAN2Aa/jBVLtUu+D
-         j76A7pic0rScXbSav50GmhBzx0UNKdX1JjADiITgnSD+LBr387Hl8vGH9drJg595O3lY
-         FVnEi5gbPjGa/NLoxo1s8Xw2938BWO6jwdVjHbb5Sb7CLWnrE4W/EbvE0GBQqMfpyaWW
-         yENtIMap1jnEdyPivh2YljpMadlnk4XpNVDJ1uxDAP3sU5E4WtkuwSf+ImL0hVgEj0ep
-         gIVuOO5X6VqSXL+FfYrfwCYJn3P4NeFYDtr7GNwCNFPKgbxDBqCCMBryZ90aJBPpwOPq
-         1/tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710202898; x=1710807698;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7DlyNepupAOlfFd1hu/C7y4DR5yqWMh4x21bU4t8Ipo=;
-        b=k66JlH8OHX2fSNyMrKJS40BVXxG65xMJPdtAi482K7reWoJq4Ow28GyKAXI/foFqGx
-         6GO6CE/yNQ09sgibVT5n6B/LsKDIciLAFR46YQxofjEZE7SfpDGvm0kfyQqnh88QyIzv
-         aWD8hvSCtqKUQU9amEtQYokVMtNZdAopBUOuxaiABYe+a531p19JAECQUyInhDuvma48
-         dApyhcXKDn5+NYI8eNl6GOZyGoUpmhVAR1+M0djk+9P+rvhbnmggT6TAGanEWdSXmPZr
-         pl1KUVLsC/kCaQuQF2KsBbyz2otQVnqhgo+iCCNKbBmdXGYsVZwAj9KyN+gl2gbx2xq5
-         ucqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU+/lKLNGUvk8Tn5DKdmxBPdEyvO4Iv0s98LmsN9B2WvzP0R39+EfKVLDttUWd1Jsf+OxutP+EQjcq62vLf6uJ2sDjXU/DGNoUkayw=
-X-Gm-Message-State: AOJu0YzS192sAqMUoZWCyqVn234yoVa1MtKr3kVi0TYt/F4E2ACqAfIM
-	HZfBI9hT6IPNDLsFTT52nQIN8b0w7VcbkmeYdfvHxg9A+WLElzRmU8r8+9dBIfI=
-X-Google-Smtp-Source: AGHT+IGtXX4nda2KFsEiX5pBRBxZOEK1e/R1gB6h/W9ovkrbHGYxxqnTJVinlBMPEx4vaMs/aCV3nw==
-X-Received: by 2002:a05:6a00:928e:b0:6e6:9ad2:903a with SMTP id jw14-20020a056a00928e00b006e69ad2903amr2084465pfb.34.1710202897690;
-        Mon, 11 Mar 2024 17:21:37 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id r2-20020a056a00216200b006e69ef5c79bsm714428pff.93.2024.03.11.17.21.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Mar 2024 17:21:36 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <D8407E1D-F188-4115-A963-9EFBB515C45D@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_0B942F10-F546-413C-AFD4-3D5B482470C1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r5IITwllngPFXGeuaXaLEwi7WyxRvQsZIdql5iMnyTk=;
+ b=kqIOa5nxObq9Ww5SAbd3xO6fcDonaTpcYkcNk1GTr8+cA/nnBMFtp80jefu2cahwLz//uuo57qn+T89+kNWO0FsUBlRiD0JSSR1JsPZpO9eZeVTmVI+n26LqeLcZ0xotuL8xFcczNV4rMhn2M4swqBz09V7sntnJmawWMoyjjkM=
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
+ by CH2PR04MB6743.namprd04.prod.outlook.com (2603:10b6:610:9f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.35; Tue, 12 Mar
+ 2024 01:22:03 +0000
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::117f:b6cf:b354:c053]) by SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::117f:b6cf:b354:c053%7]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
+ 01:22:03 +0000
+From: Naohiro Aota <Naohiro.Aota@wdc.com>
+To: Johannes Thumshirn <jth@kernel.org>
+CC: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, WA AM
+	<waautomata@gmail.com>, Qu Wenru <wqu@suse.com>, Johannes Thumshirn
+	<Johannes.Thumshirn@wdc.com>
+Subject: Re: [PATCH v3] btrfs: zoned: use zone aware sb location for scrub
+Thread-Topic: [PATCH v3] btrfs: zoned: use zone aware sb location for scrub
+Thread-Index: AQHacTsakT272unr3EeVmOmJOgar4LEzVOkA
+Date: Tue, 12 Mar 2024 01:22:03 +0000
+Message-ID: <kugi7fun34vzbvcdwkojohiz4q4heneout7ukfjg6ui3ge4nbs@s2egym54mcht>
+References:
+ <4d3e8c5cd6ba3e178a1e820c318d96317ac12845.1709890038.git.jth@kernel.org>
+In-Reply-To:
+ <4d3e8c5cd6ba3e178a1e820c318d96317ac12845.1709890038.git.jth@kernel.org>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|CH2PR04MB6743:EE_
+x-ms-office365-filtering-correlation-id: 2eed8626-5a31-40f9-98d1-08dc4232d2e5
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ OxV6QvE/pQc1/bvHrc3PUYoXRr0JKZJvJvibgXLlqxTMhIylAoPLXl0XEwFkxnEaMrM2SvlGYgTJpjBVKccn1tHreJF7MtmuXOoHs1bynGUHJo8MxutVbp6RI1YrAa2MNAheO9SXQ9Qa0Wppdr9Bnqx5vGyxFhBtAvANMYPN/buhug2AGOAfShU5Vwr/Nd79LiBbQP1EB09h052DsndgJIh25WCHd9fIBsxlrkya3gNiC93ThIYn39PgCPfuAwRic6GiJL8Vc9dD4CfQu8MW/s423HagGgEgKfDSlJ/pLn8IRWK3FEgjjDsgdcEbRyTiSf6QOsf1B3NbNQ5TW3zpiSG1U5K+h2/yeHMzOT4f89VfULUgXoE8/EZgBQ/pvYBcA3GrxXafEh57/tOtT1llq1KW8I3LXotVPANCSL+xJhrM8ifWGtgYjmuNvftnzBU3yR+92YKs+u1ZYR1D/NWpFuyG20ynsXGVE4q9ZzbcmglPpQ162kM+SGaG62uX7LXWHItbh/ae8rDTdRwu31YmAhE2CdAoFi7oH638byroAWvs8VqolIdlm1qJ2fOmpiHvFC/6TV/0dM6vFG3XprHkWzd8mhoLzKIQpTTHyq0GVz1/fZGeEDRvbnZz7vuq+oSj4i0eKIjNGBYYem5lhjFun5zMGkcP1oK1CoxB3tt/kTg=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?iMJuu/ZxigtKkYiZJXgqBO/YJZa+aQJwSqeslI4obxMA/e8n5U5lSsMhTW+U?=
+ =?us-ascii?Q?QZoRiKSXw0SirEhWNTSXkJpPPsgewJwCebVpByBy/dPsu7SPegQnNFrJaAFW?=
+ =?us-ascii?Q?zDs+4B796Ch7vHvPaP/tzetJT6mG7te6BO6r9Lgzmqg3BHYhCOx1thRUExbi?=
+ =?us-ascii?Q?fjjIwlbikpcCaC6BJ71JuJjCMngco37fKDVoQn4dqNkkPDep+AL552nqTXd7?=
+ =?us-ascii?Q?SbsRUaY72eP6YcFMUj/xXkEqBvvtEWbMZ+aBoixwSIsAk8tOOomGAJW4hKNL?=
+ =?us-ascii?Q?chgouayAIJnIu6DrMtWNKxuVmyY7chx3//3Dfw4O1da7ZLnwmmklitu7c0ha?=
+ =?us-ascii?Q?WW3l6WRrXkQsM5Nwbt+t//40SQbnv1E1Ur9tETrwZTjgYUFX2P6TUNLqtsNH?=
+ =?us-ascii?Q?HK5d32btvBufZ7Jhta04hemjtomoRrCrklqtNlXpXiYfJnCcAb+tpzvURTIu?=
+ =?us-ascii?Q?/SydlyExcnZP2nsMDG31zK5qfk8lmChjQuwl9gl+wlvpITuX2Db43AhPYzr2?=
+ =?us-ascii?Q?4/sdbIChwK9jDHcjhA8FG74pVkEE6jtAXt5NSWC2QNNMdAMW1VUHVgZkqdFs?=
+ =?us-ascii?Q?dXPeHs9FZArfQy3YC3OLGRze8LZ8le7/XEHTH92YrjyarbkOOvJar+IiYX0Y?=
+ =?us-ascii?Q?ixg6VHqcEsIiCcznm3oG8dfQie8i1jjFMA+QqgfcbmzVTdvUpiT1HqbQ7G2L?=
+ =?us-ascii?Q?6i5r+909UjwJ5XLrCwkD/ni0jw5Q12Zqg5NUsGn2TFQPBFswc1mv+YEV07XG?=
+ =?us-ascii?Q?mVySoZtufzNcAYsvxG7SW304I/oVdw+rtUSiPk0VoCclH0V33982al8p30N/?=
+ =?us-ascii?Q?qa1hhZyxNTXVrlZpE02+bDkIU8V+DPZZ3o+npSD6HAcnAFoJ6O1EdlAx+DKJ?=
+ =?us-ascii?Q?zg7BRjzhkfD8t2+3cuGyd0KGNxB6AG2TIlkt+n3t3bVNB2KLX2oJSB65BXWs?=
+ =?us-ascii?Q?4KGg9VpyWjl8tAyYIuialalEBUOaqPgIXV61gq8ahWb6EMjDG9j2J1Rg1RiU?=
+ =?us-ascii?Q?7/DZA/nBPgElL9oaIno8fc7jktw0ihflz4ocIZ+Y50qAf6hTUyM9H6+rzJIH?=
+ =?us-ascii?Q?zJr4eheURoTCBvLAI37Z0HDmnX06TrJz58qGcR3yef16DeN+E9FMcpwRt7+Q?=
+ =?us-ascii?Q?U7XgeJUh8cPlF7UV+eC4VK0UD0PAlofihptNkZiVzztqAkB+79Fz2gceYvCm?=
+ =?us-ascii?Q?VbXAh+2fJMwBJXVCMWs8hBUZLppWs7PGXYtGGS1aS/cQe0eVoupWKeUXsFwi?=
+ =?us-ascii?Q?K6HnVoZsEzryCBZ0mGWhP5lOcrTna2qI2urqBC/5bNaVMabwJSsYawiyg9XQ?=
+ =?us-ascii?Q?mVVtncYxuOU4X7q1l3GtMLPewDZ9It8zluhb83BagUtqUAcYmm7SNlNGlSn8?=
+ =?us-ascii?Q?bTt70xbUJOHEHAg2uokkhtXSGSFiqql1dg1hbGOdjkECaYopFwSlRaomUQP1?=
+ =?us-ascii?Q?uAr12Sjs3Eq2lZZe8stE98qu/zvvlR96gZVkOtl1fKI5HXqk7m1wdLAUgG3g?=
+ =?us-ascii?Q?N2AvTZRPC+QVZPz8A4BHQer+3L4j8k8X7KOENX80rFZwot03K5mLFr+3pxAe?=
+ =?us-ascii?Q?dPCyao+JzS/kn9ENtYArH/4C6TAb2DGozXW8Ixy0Jj/VXwpPOmMd57wTuQjZ?=
+ =?us-ascii?Q?RA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <E9ABD91E1A6C984EBF4D54722388459E@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 1/3] add physical_length field to fiemap extents
-Date: Mon, 11 Mar 2024 18:22:02 -0600
-In-Reply-To: <0b423d44538f3827a255f1f842b57b4a768b7629.1709918025.git.sweettea-kernel@dorminy.me>
-Cc: corbet@lwn.net,
- Al Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>,
- Jan Kara <jack@suse.cz>,
- linux-doc@vger.kernel.org,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-btrfs <linux-btrfs@vger.kernel.org>,
- Chris Mason <clm@meta.com>,
- David Sterba <dsterba@suse.com>,
- Josef Bacik <josef@toxicpanda.com>,
- jbacik@toxicpanda.com,
- kernel-team@meta.com
-To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-References: <cover.1709918025.git.sweettea-kernel@dorminy.me>
- <0b423d44538f3827a255f1f842b57b4a768b7629.1709918025.git.sweettea-kernel@dorminy.me>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	eTuCibAr8boR8kPFOxmEps3C3+PlNU2fi7GWagcA5itVZeKQ7nPDRiEaFiHQp5RAL1dF2O2bOsXnI6Jdx31I74OvjwXmOzcXzSgDKP0n/IeyDo/NyHCwJtVgJLHaT8GpFAt4bu7e+Bx3Sm3dCnptCQPnWpmxkqD5RyyxFmhD6M5LzbdHlp/jbd6tSUxuucij4t9EEqIbRIWJwRVcsAScvdfdOgQMfi+DRsVNvr8mMVXIeNwwxhbynzAnt+XMA8R+pwbx2CbCH0prdiceTHmXlGPig/gz1DLbUY1zaLFGHeT2SN/FkoC0ltwLDHQ8klrHMWo6Nnx1dm967Jd80Iy/fWURq9zFXCvkkcnEGBCm7pz/hm1RSOB/zGtXEnMDTC4zzX8U63yv8M7tLYfd+gUBIXJ5L74bdaLSduEwMRRQDKWGUwZkB+U7PCRd200E89zRhsrJpC+2RM4NMPOS0pyeLBghGq0ng4ZTzbsu1s2Rj/LlnxiRLxrf5MHAEyPPyitVo43qtzGn9lxUkywb+i1rLnX6DN1u2XXGoHID1Rw/cwSlBfU9LDRXfvG9oAmcqzmRK1qmQENelWCpaF1bVTHDrNAvVk/xvjctGNJwqFSM1cbyS6fTdm7EKdKUfe8ODyVi
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2eed8626-5a31-40f9-98d1-08dc4232d2e5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2024 01:22:03.3598
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: v+Q9ip4p5g45OwvfUfDLmOrqvTOQClBXYjJBreIyRpm5nr/kmvSiZlX/lZrM9P4NkZmgt0yCluY5cP74pu3roQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6743
 
-
---Apple-Mail=_0B942F10-F546-413C-AFD4-3D5B482470C1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-On Mar 8, 2024, at 11:03 AM, Sweet Tea Dorminy =
-<sweettea-kernel@dorminy.me> wrote:
+On Fri, Mar 08, 2024 at 10:28:44AM +0100, Johannes Thumshirn wrote:
+> At the moment scrub_supers() doesn't grab the super block's location via
+> the zoned device aware btrfs_sb_log_location() but via btrfs_sb_offset().
 >=20
-> Some filesystems support compressed extents which have a larger =
-logical
-> size than physical, and for those filesystems, it can be useful for
-> userspace to know how much space those extents actually use. For
-> instance, the compsize [1] tool for btrfs currently uses =
-btrfs-internal,
-> root-only ioctl to find the actual disk space used by a file; it would
-> be better and more useful for this information to require fewer
-> privileges and to be usable on more filesystems. Therefore, use one of
-> the padding u64s in the fiemap extent structure to return the actual
-> physical length; and, for now, return this as equal to the logical
-> length.
-
-Thank you for working on this patch.  Note that there was a patch from
-David Sterba and a lengthy discussion about exactly this functionality
-several years ago.  If you haven't already read the details, it would be
-useful to do so. I think the thread had mostly come to good conclusions,
-but the patch never made it into the kernel.
-
-=
-https://patchwork.ozlabs.org/project/linux-ext4/patch/4f8d5dc5b51a43efaf16=
-c39398c23a6276e40a30.1386778303.git.dsterba@suse.cz/
-
-One of those conclusions was that the kernel should always fill in the
-fe_physical_length field in the returned extent, and set a flag:
-
-#define FIEMAP_EXTENT_PHYS_LENGTH      0x00000010
-
-to indicate to userspace that the physical length field is valid.
-
-There should also be a separate flag for extents that are compressed:
-
-#define FIEMAP_EXTENT_DATA_COMPRESSED  0x00000040
-
-Rename fe_length to fe_logical_length and #define fe_length =
-fe_logical_length
-so that it is more clear which field is which in the data structure, but
-does not break compatibility.
-
-I think this patch gets most of this right, except the presence of the
-flags to indicate the PHYS_LENGTH and DATA_COMPRESSED state in the =
-extent.
-
-Cheers, Andreas
-
-> [1] https://github.com/kilobyte/compsize
+> This leads to checksum errors on 'scrub' as we're not accessing the
+> correct location of the super block.
 >=20
-> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> So use btrfs_sb_log_location() for getting the super blocks location on
+> scrub.
+>=20
+> Reported-by: WA AM <waautomata@gmail.com>
+> Cc: Qu Wenru <wqu@suse.com>
+> Link: http://lore.kernel.org/linux-btrfs/CANU2Z0EvUzfYxczLgGUiREoMndE9WdQ=
+nbaawV5Fv5gNXptPUKw@mail.gmail.com
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
-> Documentation/filesystems/fiemap.rst | 26 ++++++++++++++++++--------
-> fs/ioctl.c                           |  1 +
-> include/uapi/linux/fiemap.h          | 24 +++++++++++++++++-------
-> 3 files changed, 36 insertions(+), 15 deletions(-)
->=20
-> diff --git a/Documentation/filesystems/fiemap.rst =
-b/Documentation/filesystems/fiemap.rst
-> index 93fc96f760aa..e3e84573b087 100644
-> --- a/Documentation/filesystems/fiemap.rst
-> +++ b/Documentation/filesystems/fiemap.rst
-> @@ -80,14 +80,24 @@ Each extent is described by a single fiemap_extent =
-structure as
-> returned in fm_extents::
->=20
->     struct fiemap_extent {
-> -	    __u64	fe_logical;  /* logical offset in bytes for the =
-start of
-> -				* the extent */
-> -	    __u64	fe_physical; /* physical offset in bytes for the =
-start
-> -				* of the extent */
-> -	    __u64	fe_length;   /* length in bytes for the extent =
-*/
-> -	    __u64	fe_reserved64[2];
-> -	    __u32	fe_flags;    /* FIEMAP_EXTENT_* flags for this =
-extent */
-> -	    __u32	fe_reserved[3];
-> +            /*
-> +             * logical offset in bytes for the start of
-> +             * the extent from the beginning of the file
-> +             */
-> +            __u64 fe_logical;
-> +            /*
-> +             * physical offset in bytes for the start
-> +             * of the extent from the beginning of the disk
-> +             */
-> +            __u64 fe_physical;
-> +            /* length in bytes for this extent */
-> +            __u64 fe_length;
-> +            /* physical length in bytes for this extent */
-> +            __u64 fe_physical_length;
-> +            __u64 fe_reserved64[1];
-> +            /* FIEMAP_EXTENT_* flags for this extent */
-> +            __u32 fe_flags;
-> +            __u32 fe_reserved[3];
->     };
->=20
-> All offsets and lengths are in bytes and mirror those on disk.  It is =
-valid
-> diff --git a/fs/ioctl.c b/fs/ioctl.c
-> index 1d5abfdf0f22..f8e5d6dfc62d 100644
-> --- a/fs/ioctl.c
-> +++ b/fs/ioctl.c
-> @@ -139,6 +139,7 @@ int fiemap_fill_next_extent(struct =
-fiemap_extent_info *fieinfo, u64 logical,
-> 	extent.fe_logical =3D logical;
-> 	extent.fe_physical =3D phys;
-> 	extent.fe_length =3D len;
-> +	extent.fe_physical_length =3D len;
-> 	extent.fe_flags =3D flags;
->=20
-> 	dest +=3D fieinfo->fi_extents_mapped;
-> diff --git a/include/uapi/linux/fiemap.h b/include/uapi/linux/fiemap.h
-> index 24ca0c00cae3..fd3c7d380666 100644
-> --- a/include/uapi/linux/fiemap.h
-> +++ b/include/uapi/linux/fiemap.h
-> @@ -15,13 +15,23 @@
-> #include <linux/types.h>
->=20
-> struct fiemap_extent {
-> -	__u64 fe_logical;  /* logical offset in bytes for the start of
-> -			    * the extent from the beginning of the file =
-*/
-> -	__u64 fe_physical; /* physical offset in bytes for the start
-> -			    * of the extent from the beginning of the =
-disk */
-> -	__u64 fe_length;   /* length in bytes for this extent */
-> -	__u64 fe_reserved64[2];
-> -	__u32 fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
-> +	/*
-> +	 * logical offset in bytes for the start of
-> +	 * the extent from the beginning of the file
-> +	 */
-> +	__u64 fe_logical;
-> +	/*
-> +	 * physical offset in bytes for the start
-> +	 * of the extent from the beginning of the disk
-> +	 */
-> +	__u64 fe_physical;
-> +	/* length in bytes for this extent */
-> +	__u64 fe_length;
-> +	/* physical length in bytes for this extent */
-> +	__u64 fe_physical_length;
-> +	__u64 fe_reserved64[1];
-> +	/* FIEMAP_EXTENT_* flags for this extent */
-> +	__u32 fe_flags;
-> 	__u32 fe_reserved[3];
-> };
->=20
-> --
-> 2.44.0
->=20
->=20
+> Changes to v2:
+> - Handle -ENOENT return from btrfs_sb_log_location
+> Link to v2:
+> - https://lore.kernel.org/linux-btrfs/75f3da872a8c1094ef0f6ed93aac9bf774e=
+f895b.1709554485.git.jth@kernel.org
+> Changes to v1:
+> - Increase super_errors
+> - Don't break out after 1st error
+> Link to v1:
+> - https://lore.kernel.org/linux-btrfs/933562c5bf37ad3e03f1a6b2ab5a9eb741e=
+e0192.1709206779.git.johannes.thumshirn@wdc.com
+> ---
+>  fs/btrfs/scrub.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
 
+Looks good,
 
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_0B942F10-F546-413C-AFD4-3D5B482470C1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmXvoCsACgkQcqXauRfM
-H+ADrw/+IqVgAGJbtVo0A+Nnn5mi7kEp8aNx8/JUszvksrlE0q1ePkrgnikbX4Ma
-u1yllA4aMDXpI/HqMbSc3IuT7aYoC7pWFbPHR///w9BvUHnTk7lMQO4aYRXJuyUZ
-9YarzeWQLI88ZaU8gtNMZGNn9KWGcxQEyv2J2m4rpoYupHciVC9yb0L6yJuqEZWd
-E9/3kqp5NeAQ2tiYFKxAJNlMeHhGOfoTP7sgPafqAzNtAemzsOX/ixFbx+of+hY2
-XxKKeLZMNsslyLruBwXgUUVPtStDlS9qMrw3hgHK3BhNrkDbnBmAX/6trhzc4S1W
-U1UiqYXl7BxRHJbIPQmfLInM7OTAU0xieCwohZ5Q2cg9sm41yjwMIOJkYJ/zh/l/
-Ly8YHoxnKj9tNxQqkOoRqGJSqHHWCvax+8yoeA4ea9OczaowSMYJ4jMqyk7dWYFv
-tnNC6RZ0bDMWgBuvnT2jNbfaxZRDjKaAbs2ixku8/9HKHH6sttQWVf8mFnEzAsNX
-YH6Y+RLaJk1kH3uDWCnOulU02Qe8Gja4sMeOBXIB0PKxLjdKt+zFH3acrsqzJF4P
-++BOzCq2WyBFgLmiWep8lBaFYjt0qkRNUFUaw/GU9j/mv/yJsksBHknDuZV1D776
-Fcw2Uj3Mi24jzEkchKQN0NR5g51wm/cJDf02Kwg4mnYtl1++zag=
-=Cbgk
------END PGP SIGNATURE-----
-
---Apple-Mail=_0B942F10-F546-413C-AFD4-3D5B482470C1--
+Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>=
 
