@@ -1,134 +1,118 @@
-Return-Path: <linux-btrfs+bounces-3231-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3232-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B76D879A82
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 18:18:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42171879BFB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 19:58:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D63201C217D5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 17:18:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 739261C203F5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 18:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D89831386A0;
-	Tue, 12 Mar 2024 17:18:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2651420CA;
+	Tue, 12 Mar 2024 18:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="ZVgdiLrg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB02C7D409;
-	Tue, 12 Mar 2024 17:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EBD13A89F
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 18:57:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710263901; cv=none; b=GqjfWKJl2YPz/uyeQ5VlAKVeOtTpM0Rc0saKmxGv9roH5kGkLrYVknP32sty1P5YfIbiGclI2i+MNn8+O2A5UEtvm7/XD0j0ibcj7V0yhOl+c+DNL2tqwuK6BoAYP6+olMe/OtmVIp+PXTOgjrtSFHlpgFFrgmZkl9r4H7sf0xk=
+	t=1710269883; cv=none; b=hSIsTBCm2jdjS+gGBjX3i9jv/0kw8niSLaLa0izzRHzozLcZy6qKK6EKTpI5QZwKLrD3nMHJc7V2mbLZD2f6QNfLgpshEzCyWaNMywUe4Vq58keOu90y0/yvfOKEAIaRs0072sKEMUT0OWygo2C6Q6zZnrwOH5uyupCAiD2xX6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710263901; c=relaxed/simple;
-	bh=plX6EgCmcJWhUvceDb/7oSiljuyjZpOsiV3pjRLCfiM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Uj0nc5DcIcaEq6T+GXpfrdk0CV/nJLDEqUnVkkwZjtnsJ+AxKn2s/r2ysm1B+MaPPxSlaTQI/pifYITomk8xViMEnY8LsOrlyWxsR8QiDcdafP6ZDRh0NZAZQE8HLcZ5u1ycraaJ/k6DGpkTEakgjpBDzdUjqvG1bkMdueoYxbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5682ecd1f81so163959a12.0;
-        Tue, 12 Mar 2024 10:18:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710263898; x=1710868698;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4zdMrue1cvNB0PeW8F/5e6/jetcP3kc0nJi/2UVb+5g=;
-        b=NyKdikQXaLkqRw9Ohj24dypf8Hcm/I3/AYDsxji73KofiNQ50VEUn0iKLycN60nbAc
-         zVoVN8qjwVW9rIkxoAa6/qhkLBDcHEAUhCdR/5P72VdWI3i4GdAHCUogofQq5aMl2I7C
-         eJct3wKKlwcABxFcC36DD8GE8CDY8jw2lCpbl0wi87w16oseOKb0+VfoCBbeQkyubT63
-         Fl6cF9LCW+tFYokxN2BFImEbj7QMnU6DX1SnIoH+hyGn4Nkvb0z6iGBMo+gvik679YQ2
-         Lm5mMolbthbd9eyPqsv9xHQmat47YbYe6+8XKxnF5YTdElWLfpFE4Cg4Rq7+3P69tAUO
-         3+Yw==
-X-Forwarded-Encrypted: i=1; AJvYcCWrarWKoI1mWWUyB60BN8LCGBNSN6lyURS4Z1VXugCIVyWT7nB7IdCdwcBS1PhPghxOAZdvnJ0rnV84murQUYVOFTq7mxMCeDR2bnKLHVW3S7PkqEGXWvNIy+jiCFDqFwJnM5M3yI6mIJlg3dAyZRWRyENn/HM03zJNidT3L4qvabVIBo6NkF6ybtHpJH1kPZTtuksv1i+6TPXIVVQlQ4pAuZ807tXe1F0=
-X-Gm-Message-State: AOJu0Yw47mxkEA1RJxKRlYGNHpQjLVnQyXSLZ+653WVkyEqcAXz44GU6
-	EfayZCmwgzMuWB4Bd3LORqW5ixxqt3pfhp31MxFtF3/+FwJrbGRqZ+fTDb+4Kws=
-X-Google-Smtp-Source: AGHT+IGgHx0iwc0ZmqQ8wRKsOrJJRTQOOCfWJKcfS7tMxDoNdqJsGAsMN2QL5+AP9Bc5BbfiYEVhGg==
-X-Received: by 2002:a50:d582:0:b0:565:f9c1:d925 with SMTP id v2-20020a50d582000000b00565f9c1d925mr754137edi.0.1710263897640;
-        Tue, 12 Mar 2024 10:18:17 -0700 (PDT)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id o8-20020a056402038800b00567566227a5sm4091472edv.18.2024.03.12.10.18.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 10:18:17 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a461c50deccso29608166b.0;
-        Tue, 12 Mar 2024 10:18:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWKHV3Zcj3T8Y+3LeF7Aa6mwTAHLPWTgZKspoPSxFeRUREzIa/MJPfUdX5HnyKPfDkhvUwYGpoA22b/Vl1infVvXLME2lXdiS1IneSqI3kZOzjy119sSlVKMiIjPSoP4MYPNr/9zLyjcdTS0hmVeJYzxeEUNMs4xylJ8CGhEH6LnuOD/Lv5UlUj8hmAtIoB5ZhBHQe2Iq6ZP1rzsOrKylqv+OqZgWHaoJ8=
-X-Received: by 2002:a17:907:c287:b0:a45:ed7f:2667 with SMTP id
- tk7-20020a170907c28700b00a45ed7f2667mr759548ejc.17.1710263896947; Tue, 12 Mar
- 2024 10:18:16 -0700 (PDT)
+	s=arc-20240116; t=1710269883; c=relaxed/simple;
+	bh=IH7F26mMEDVHxSSQ/59sclVQWPoHcOnEEzinRTdWca8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D0UAzVqUU3YzDhxDl+8/UFIt69Zz34zhclaXEnqeIRLFryT1WeC/6JQlcg2HwgvmNQkBEe5zII802ghWStV2J4F2p371/8CGP1fqXcHNcW68iRG+9i+uBJr2uqZyuOA6oxs1JI6I1PFZeYa3yHwzmf7Kwj08zmGE1QWguVO9R8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it; spf=pass smtp.mailfrom=inwind.it; dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b=ZVgdiLrg; arc=none smtp.client-ip=213.209.10.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-16.iol.local with ESMTPA
+	id k7HUr0kNvQc3jk7HVrIZuq; Tue, 12 Mar 2024 19:55:21 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+	t=1710269721; bh=KBP2olF/DX0pbYMNilkyBPbSF/hYpJzy3q+9JJNl/n4=;
+	h=From;
+	b=ZVgdiLrgjKjAM75fnYRsBK0dPbpWEynq2q6Kq8FoV/HrMchOLj6rgRQMJ7UozvxmT
+	 JzkmuHYDsWJN5A4dsphXhnYXmXtvdfbnEjbvhgIM+o2lv/0yNVFxUKR/qKloerSQib
+	 jV7n28u9PmgWGGQx4KOTOd+JJJoYg2Ek2V4VNlK7wf4ugVIr1XSY+uQOXFKsXpKGz0
+	 /jTCVhryU19c4/zXSZSaaUgd02OYW/4hh06hG2VEXrfLDAklRo3fwu0hGVYZOdGIsu
+	 peuIDOHfs31Iw4hj9P1O9je3xu1HW7Jt80bYuH5T8JTG6tipRz8lQ1dhhvPSoTCHug
+	 NG0HgVugUsYOw==
+X-CNFS-Analysis: v=2.4 cv=eux8zZpX c=1 sm=1 tr=0 ts=65f0a519 cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=s_cqgyDIn9OVIfsKff4A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+Message-ID: <c8a4e4d4-8fed-4815-8cd0-fd6df354e99e@inwind.it>
+Date: Tue, 12 Mar 2024 19:55:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
- <2f598709-fccb-4364-bf15-f9c171b440aa@wdc.com> <20240311-zugeparkt-mulden-48b143bf51e0@brauner>
- <20240311224259.GV2604@twin.jikos.cz> <20240312-ruhephase-belegen-d4ab0b192203@brauner>
-In-Reply-To: <20240312-ruhephase-belegen-d4ab0b192203@brauner>
-From: Neal Gompa <neal@gompa.dev>
-Date: Tue, 12 Mar 2024 10:17:40 -0700
-X-Gmail-Original-Message-ID: <CAEg-Je-XoSd_5HtBi8p7O8STB9_J4RZKKDtJqaQWtG_3vdbdRw@mail.gmail.com>
-Message-ID: <CAEg-Je-XoSd_5HtBi8p7O8STB9_J4RZKKDtJqaQWtG_3vdbdRw@mail.gmail.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-To: Christian Brauner <brauner@kernel.org>
-Cc: David Sterba <dsterba@suse.cz>, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, 
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
-	Miklos Szeredi <mszeredi@redhat.com>, David Howells <dhowells@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: raid1 root device with efi
+Content-Language: en-US
+To: Kai Krakow <hurikhan77+btrfs@gmail.com>
+Cc: Forza <forza@tnonline.net>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+ Matthew Warren <matthewwarren101010@gmail.com>
+References: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
+ <CA+H1V9x-pFAM-YQ1ncAqZE4e7j6R2xQXX6Ah9v1tMNf8CrW+yw@mail.gmail.com>
+ <CAOLfK3We92ZBrvyvSDky9jrQwJNONeOE9qoaewbFCr02H8PuTw@mail.gmail.com>
+ <CA+H1V9xjufQpsZHeMNmKNrV0BfuUsJ5G=x_-BEcRw7eNFhYPAw@mail.gmail.com>
+ <CAOLfK3UEOMN-O9-u6j22CJ0jpRZUwB7R_x-zEH6-FXdgmqB7Lg@mail.gmail.com>
+ <1eac6d15-4ead-46bc-9b60-02f1d120c885@tnonline.net>
+ <CAMthOuO56J5OhCnedJLxTuFxTPq7ryCGP_TxMrcXS+4jLj0aiA@mail.gmail.com>
+ <4feb955c-cc91-4f0b-8e62-b6a089eea7ae@libero.it>
+ <CAMthOuPQDMWGOA9O+StwnmUhZXxsF3ePZKMBgDZdPZ8gxQ+sdg@mail.gmail.com>
+From: Goffredo Baroncelli <kreijack@inwind.it>
+In-Reply-To: <CAMthOuPQDMWGOA9O+StwnmUhZXxsF3ePZKMBgDZdPZ8gxQ+sdg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfKxtBa0Zo4Fohnr940ff/4bPdih8ezU5tc1m/bU7hNdQh6Fu1YyocfrwkLiuOF2BNNh6Rde2iHw5UG5q1lKj8CMFnD2D0u3KEKePbBYTlbdMZ37XrJ5T
+ nkm1gIhNKHuZI2F701M8R6E3AxqEG50tXRjKp6sGv3tqeZwcYkpuV6Gy15T3KFKr1YsxNasbezrP17bRxq1r3bOMnuHL9QsX8aKVF5F6dQvDLTh5ECD7he2p
+ Qf4QYN33RofqvJzYKmsvW6sqa8qlHcAXq/CGeJcuF4l0gLfRQbF9UNqqCqjIkRwDFQ9kYfTbgVhanwrjYfvKwg==
 
-On Tue, Mar 12, 2024 at 7:27=E2=80=AFAM Christian Brauner <brauner@kernel.o=
-rg> wrote:
->
-> On Mon, Mar 11, 2024 at 11:43:00PM +0100, David Sterba wrote:
-> > On Mon, Mar 11, 2024 at 02:43:11PM +0100, Christian Brauner wrote:
-> > > On Mon, Mar 11, 2024 at 08:12:33AM +0000, Johannes Thumshirn wrote:
-> > > > On 08.03.24 03:29, Kent Overstreet wrote:
-> > > > > Add a new statx field for (sub)volume identifiers, as implemented=
- by
-> > > > > btrfs and bcachefs.
-> > > > >
-> > > > > This includes bcachefs support; we'll definitely want btrfs suppo=
-rt as
-> > > > > well.
-> > > >
-> > > > For btrfs you can add the following:
-> > > >
-> > > >
-> > > >  From 82343b7cb2a947bca43234c443b9c22339367f68 Mon Sep 17 00:00:00 =
-2001
-> > > > From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> > > > Date: Mon, 11 Mar 2024 09:09:36 +0100
-> > > > Subject: [PATCH] btrfs: provide subvolume id for statx
-> > > >
-> > > > Add the inode's subvolume id to the newly proposed statx subvol fie=
-ld.
-> > > >
-> > > > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> > > > ---
-> > >
-> > > Thanks, will fold, once I hear from Josef.
-> >
-> > We're OK with it.
->
-> Thanks!
+On 12/03/2024 13.39, Kai Krakow wrote:
+> Am Mo., 11. März 2024 um 20:26 Uhr schrieb Goffredo Baroncelli
+> <kreijack@libero.it>:
+[...]
+>> I am quite sure that grub access a btrfs filesystem dynamically, without using a
+>> pre-stored table with the location of a file.
+> 
+> Yes, it probably can work its way through the various trees but the
+> extent resolver and reader is very basic.
+> 
+> This means, at least for now: do not let anything touch the boot files
+> grub is using, and do not use compression, then it SHOULD work well
+> most of the time.
+> 
+> I'd still avoid complex filesystems involved in the grub booting process.
+> 
+The other options are not better: using a dedicated filesystem is not without
+shortcomings: do you think that the implementations of VFAT in the UEFI bioseS
+are better ? The fact that the FAT filesystem is far simpler is a plus but...
 
+As sd-boot user, I like the simplicity of this bootloader. But in some
+context it is limited. My efi partition has a size of 1GB, but now the
+kernel+initrd images are in the order of 100MB....so it can't contain more than
+10-12 images. This is fine for the standard user, but it may be not enough
+for some hobbyist...
 
-Well, I guess I'm fine with the whole thing then if everyone else is.
+grub is over-complicated, but it can withstand complex filesystem layout...
 
-Reviewed-by: Neal Gompa <neal@gompa.dev>
+May be a kernel with a dedicated initrd which kexec the real kernel ?
 
+BR
 
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
 
