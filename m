@@ -1,118 +1,142 @@
-Return-Path: <linux-btrfs+bounces-3232-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3233-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42171879BFB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 19:58:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50724879C24
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 20:14:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 739261C203F5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 18:58:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E48251F23AB9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 19:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D2651420CA;
-	Tue, 12 Mar 2024 18:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5F4142634;
+	Tue, 12 Mar 2024 19:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="ZVgdiLrg"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="m2RDJtZ/";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jNfKB0hG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EBD13A89F
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 18:57:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB91142620
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 19:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710269883; cv=none; b=hSIsTBCm2jdjS+gGBjX3i9jv/0kw8niSLaLa0izzRHzozLcZy6qKK6EKTpI5QZwKLrD3nMHJc7V2mbLZD2f6QNfLgpshEzCyWaNMywUe4Vq58keOu90y0/yvfOKEAIaRs0072sKEMUT0OWygo2C6Q6zZnrwOH5uyupCAiD2xX6c=
+	t=1710270844; cv=none; b=iKRItpQxMQyauth6iU1lM6PP7Kzn+I/BqC1LaFhfOXKI7UybUKbO5fZTc9NMNoFY3+Z/0+57GWxTP4BSMv6BwBhMesO4NPPga5hFx9L3buY/y3r4JD2GWpZDO10TQc6EFDgs3VJ9wjF0vZpJVk67gCOVqEYfGMW2HdT9KIFL9iQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710269883; c=relaxed/simple;
-	bh=IH7F26mMEDVHxSSQ/59sclVQWPoHcOnEEzinRTdWca8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=D0UAzVqUU3YzDhxDl+8/UFIt69Zz34zhclaXEnqeIRLFryT1WeC/6JQlcg2HwgvmNQkBEe5zII802ghWStV2J4F2p371/8CGP1fqXcHNcW68iRG+9i+uBJr2uqZyuOA6oxs1JI6I1PFZeYa3yHwzmf7Kwj08zmGE1QWguVO9R8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it; spf=pass smtp.mailfrom=inwind.it; dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b=ZVgdiLrg; arc=none smtp.client-ip=213.209.10.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-16.iol.local with ESMTPA
-	id k7HUr0kNvQc3jk7HVrIZuq; Tue, 12 Mar 2024 19:55:21 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-	t=1710269721; bh=KBP2olF/DX0pbYMNilkyBPbSF/hYpJzy3q+9JJNl/n4=;
-	h=From;
-	b=ZVgdiLrgjKjAM75fnYRsBK0dPbpWEynq2q6Kq8FoV/HrMchOLj6rgRQMJ7UozvxmT
-	 JzkmuHYDsWJN5A4dsphXhnYXmXtvdfbnEjbvhgIM+o2lv/0yNVFxUKR/qKloerSQib
-	 jV7n28u9PmgWGGQx4KOTOd+JJJoYg2Ek2V4VNlK7wf4ugVIr1XSY+uQOXFKsXpKGz0
-	 /jTCVhryU19c4/zXSZSaaUgd02OYW/4hh06hG2VEXrfLDAklRo3fwu0hGVYZOdGIsu
-	 peuIDOHfs31Iw4hj9P1O9je3xu1HW7Jt80bYuH5T8JTG6tipRz8lQ1dhhvPSoTCHug
-	 NG0HgVugUsYOw==
-X-CNFS-Analysis: v=2.4 cv=eux8zZpX c=1 sm=1 tr=0 ts=65f0a519 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=s_cqgyDIn9OVIfsKff4A:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-Message-ID: <c8a4e4d4-8fed-4815-8cd0-fd6df354e99e@inwind.it>
-Date: Tue, 12 Mar 2024 19:55:20 +0100
+	s=arc-20240116; t=1710270844; c=relaxed/simple;
+	bh=/7QRYPzxqWo3sAuRURvsIN0ts8CsaavS5+tAVaGnisU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bJPparhvbbRA8FcX42dgui5F29XkZaI+xrGbqaW0bFw35MV/VCeCk0Y+Ft59TXAzWJD8bmuTAVVeWm30x+Vceqngwf5ZVPh+8sXPuWIQLZ1qlL7Zt3pBFtB2CYtx0tdqhQ7Ym5FhFc6U8d485r/ltXrdiJsKtmE3v0EduSFdbaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=m2RDJtZ/; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jNfKB0hG; arc=none smtp.client-ip=66.111.4.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.nyi.internal (Postfix) with ESMTP id AAB675C003F;
+	Tue, 12 Mar 2024 15:14:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Tue, 12 Mar 2024 15:14:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1710270840; x=1710357240; bh=LgDLJvmX+h
+	QMF7gsHtrJ083mjl83djxJ2AYy3XAC34A=; b=m2RDJtZ/s3czPXVxce1+KFK3Q1
+	iMWjdeJO9d3z4ST4tIdf+K+o0lmZcZj0ST54YZTLrSjbi3qHjOt8iPg3CieDSIB5
+	e9e3hdwGH3ZnRG+cZN4Y16/rn0F03r6dXbTlUTgkH9f0Y2bKd8julX+oATY48FUy
+	x+O/3+uWW7OJaEFmZz8eJBnxUIuXbCFSoet2Vn3gmeCtAVPWE2PZhT9EFPeN6xuR
+	ZZjHsbGBTX7EEvFRGGT7cE42mu4xFyqXzZcswFHogSxCX0BRgM41aQRovA+85Ym9
+	ErrVc2vZPX1XIdel2fLR02zfq6i/E/kn53vtE8TUR7fCPnEiZuDbsVqIHPZw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1710270840; x=1710357240; bh=LgDLJvmX+hQMF7gsHtrJ083mjl83
+	djxJ2AYy3XAC34A=; b=jNfKB0hGs4264qbXITN68vmuz7fyTATSlHczvCE9XcuQ
+	8wlAVwI0RMH5fc55DmmPzDGNv/DA0uHtOAI/9OpIx2CjqrfkJv0+xuH7f0Bzjmtz
+	po19GrcD3gCYLQpWi33jwy3q+T0MpAfUgrEtMit7mkQZUwKqVQBo/Ey0oxHzQDX9
+	QMEKmvrxnmPTvJFtYJIh42/LcnaKe1OGmASgmHFCXCIPATR6hJP3EhmUwQVT7D/+
+	XcqXvz0aiRaz1W6jRTvw09shF6JZTA1l+J3YK+5TVskI9crZA8sZaZ7itMePTQhO
+	GQiddo71h3DPC38UlM8HuiAD8DUkrRfdyEJu8Svbaw==
+X-ME-Sender: <xms:eKnwZaDvIwsfPR5tDFfJliyOa6ZY6FzvD8Pm2Q2jqtzf4X29CUDp6Q>
+    <xme:eKnwZUjjDPeg31YewGXas58ZPW7CcIjDt_yxfZC0zBhSOAb6TTExrOEY49yqhzkce
+    mJvVxX55uFFc1nZb5Y>
+X-ME-Received: <xmr:eKnwZdnNb7IDloPKwzl6_iKMUq7lsw44mAvdUwov6hFFMuz4SY-sz4wAhlR6GSPo_HePA7At2c-fEjoO7n_m-6KlFcI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeefgdduvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:eKnwZYwHe6Mi8-SYK9MX44UHlNAp7nSnJQxOWYHx2T7tV0E3_sHESg>
+    <xmx:eKnwZfTCfb2VlJ7sJ4767ay0NIf0q9pNL2vnke7mxS-49Dl7odlG3g>
+    <xmx:eKnwZTbWiX0MeftKZEBHuZ590I23QfdpzMNRSCKqwe4lAq7_CB0yHg>
+    <xmx:eKnwZYRKigosdi6hXd0fd0I7XW9h62MM3FgEoJZOBJ424lBaeaUBFA>
+    <xmx:eKnwZWL4HqPXDxX8NGq-zIx3_Wa1BdFgAM3_USplROUjXPXUci7Zlw>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Mar 2024 15:13:59 -0400 (EDT)
+Date: Tue, 12 Mar 2024 12:14:53 -0700
+From: Boris Burkov <boris@bur.io>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: validate device maj:min during scan
+Message-ID: <20240312191453.GA2898816@zen.localdomain>
+References: <ea6a2384807500090943f95c164e9f6b899efc58.1710246349.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: raid1 root device with efi
-Content-Language: en-US
-To: Kai Krakow <hurikhan77+btrfs@gmail.com>
-Cc: Forza <forza@tnonline.net>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
- Matthew Warren <matthewwarren101010@gmail.com>
-References: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
- <CA+H1V9x-pFAM-YQ1ncAqZE4e7j6R2xQXX6Ah9v1tMNf8CrW+yw@mail.gmail.com>
- <CAOLfK3We92ZBrvyvSDky9jrQwJNONeOE9qoaewbFCr02H8PuTw@mail.gmail.com>
- <CA+H1V9xjufQpsZHeMNmKNrV0BfuUsJ5G=x_-BEcRw7eNFhYPAw@mail.gmail.com>
- <CAOLfK3UEOMN-O9-u6j22CJ0jpRZUwB7R_x-zEH6-FXdgmqB7Lg@mail.gmail.com>
- <1eac6d15-4ead-46bc-9b60-02f1d120c885@tnonline.net>
- <CAMthOuO56J5OhCnedJLxTuFxTPq7ryCGP_TxMrcXS+4jLj0aiA@mail.gmail.com>
- <4feb955c-cc91-4f0b-8e62-b6a089eea7ae@libero.it>
- <CAMthOuPQDMWGOA9O+StwnmUhZXxsF3ePZKMBgDZdPZ8gxQ+sdg@mail.gmail.com>
-From: Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <CAMthOuPQDMWGOA9O+StwnmUhZXxsF3ePZKMBgDZdPZ8gxQ+sdg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfKxtBa0Zo4Fohnr940ff/4bPdih8ezU5tc1m/bU7hNdQh6Fu1YyocfrwkLiuOF2BNNh6Rde2iHw5UG5q1lKj8CMFnD2D0u3KEKePbBYTlbdMZ37XrJ5T
- nkm1gIhNKHuZI2F701M8R6E3AxqEG50tXRjKp6sGv3tqeZwcYkpuV6Gy15T3KFKr1YsxNasbezrP17bRxq1r3bOMnuHL9QsX8aKVF5F6dQvDLTh5ECD7he2p
- Qf4QYN33RofqvJzYKmsvW6sqa8qlHcAXq/CGeJcuF4l0gLfRQbF9UNqqCqjIkRwDFQ9kYfTbgVhanwrjYfvKwg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ea6a2384807500090943f95c164e9f6b899efc58.1710246349.git.anand.jain@oracle.com>
 
-On 12/03/2024 13.39, Kai Krakow wrote:
-> Am Mo., 11. März 2024 um 20:26 Uhr schrieb Goffredo Baroncelli
-> <kreijack@libero.it>:
-[...]
->> I am quite sure that grub access a btrfs filesystem dynamically, without using a
->> pre-stored table with the location of a file.
+On Tue, Mar 12, 2024 at 06:32:41PM +0530, Anand Jain wrote:
+> The maj:min of a device can change without altering the device path.
+> When the device is re-scanned, only the device path change is fixed,
+> if any, but the changed maj:min remains (bug). This patch fixes it by
+> also checking for the changed maj:min.
 > 
-> Yes, it probably can work its way through the various trees but the
-> extent resolver and reader is very basic.
+> However, please note that we still need to validate the maj:min during
+> open as in the patch ("btrfs: validate device maj:min during open") because
+> only the device specified in the mount command gets scanned during mount.
 > 
-> This means, at least for now: do not let anything touch the boot files
-> grub is using, and do not use compression, then it SHOULD work well
-> most of the time.
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+
+Is this a real problem you can reproduce? I'm pretty sure we can't hit
+this code path with single dev fs due to the temp_fsid logic. But it
+does seem plausible to hit it with a multi device fs.
+
+If you can in fact reproduce it, please feel free to add:
+
+Reviewed-by: Boris Burkov <boris@bur.io>
+
+and please also send an fstests patch with the reproducer!
+
+> ---
+>  fs/btrfs/volumes.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> I'd still avoid complex filesystems involved in the grub booting process.
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 8a35605822bf..473f03965f26 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -854,7 +854,8 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>  				MAJOR(path_devt), MINOR(path_devt),
+>  				current->comm, task_pid_nr(current));
+>  
+> -	} else if (!device->name || strcmp(device->name->str, path)) {
+> +	} else if (!device->name || strcmp(device->name->str, path) ||
+> +		   device->devt != path_devt) {
+>  		/*
+>  		 * When FS is already mounted.
+>  		 * 1. If you are here and if the device->name is NULL that
+> -- 
+> 2.31.1
 > 
-The other options are not better: using a dedicated filesystem is not without
-shortcomings: do you think that the implementations of VFAT in the UEFI bioseS
-are better ? The fact that the FAT filesystem is far simpler is a plus but...
-
-As sd-boot user, I like the simplicity of this bootloader. But in some
-context it is limited. My efi partition has a size of 1GB, but now the
-kernel+initrd images are in the order of 100MB....so it can't contain more than
-10-12 images. This is fine for the standard user, but it may be not enough
-for some hobbyist...
-
-grub is over-complicated, but it can withstand complex filesystem layout...
-
-May be a kernel with a dedicated initrd which kexec the real kernel ?
-
-BR
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
 
