@@ -1,102 +1,92 @@
-Return-Path: <linux-btrfs+bounces-3220-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3221-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FED987925A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 11:45:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E310E8792C6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 12:12:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C933CB2110D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 10:45:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20D041C2156E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 11:12:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623C877655;
-	Tue, 12 Mar 2024 10:44:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b="wu3gF9SN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1AC79B8D;
+	Tue, 12 Mar 2024 11:12:05 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mxex2.tik.uni-stuttgart.de (mxex2.tik.uni-stuttgart.de [129.69.192.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3366B59147
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 10:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.69.192.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A50879954
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 11:12:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710240296; cv=none; b=dHXDtvuvRiDa9Dyl4ZG0C/0+rNeE+t0k4xzjuWWJHapIXh8wqjKZMPhroOXNyYAGrvIwNY/g+NIvETCfoFxDklGkMQAYja0UNq6vF90ULHmoMwwBNen5jkPMJLZ/D+DD8RIPZ+vl6EGDJszpPS03Kg1vNdW/XDvzmgUZL079YM0=
+	t=1710241925; cv=none; b=sPVbtH62QrAjQ6iSTixao8mtpyRyeX1fE53UhMBZQzIk3rLGgq8rpbunGLP8hU1SRRSoshl8lHJ/FOG/YNsyAqnjR1RVmu07U+IIZDilPn92V63SiWDgpQlwM2WvHl7V0IzfQrrT7SXmCIVcE3efb1qbyi3ALvvIK8oFzwsbt1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710240296; c=relaxed/simple;
-	bh=ZWJFt9ArA4iplleYU0mIx7skKLELMaKDxiFxsDWlCbI=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=JkYFXu1q0G/41MytIpQUDSRmaRzUlBY1hd2+HRf1RPVZdbVCQ7OvgxdWCnA9vb9FQZNOrkxWvcM3rb2A5VeiLNqdWmT4kKpOTTi+4wgCoHi3Cyw32p3HU+8jzuKK9d+phPdZuOS34tF0z89Q4C8fTx7eE1DBLbesg8U3qBCIwTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de; spf=pass smtp.mailfrom=rus.uni-stuttgart.de; dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b=wu3gF9SN; arc=none smtp.client-ip=129.69.192.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rus.uni-stuttgart.de
-Received: from localhost (localhost [127.0.0.1])
-	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTP id 73F8460C7F
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 11:39:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=uni-stuttgart.de;
-	 h=x-mailer:user-agent:content-disposition:content-type
-	:content-type:mime-version:message-id:subject:subject:from:from
-	:date:date; s=dkim; i=@rus.uni-stuttgart.de; t=1710239958; x=
-	1711978759; bh=ZWJFt9ArA4iplleYU0mIx7skKLELMaKDxiFxsDWlCbI=; b=w
-	u3gF9SN3+67aaIg/BwlcM6iFxlE7dghGbMIauSJu0dTCnjHquOlViq6q+9tqi4zC
-	blvZh3edZyDGxGgjqx2l992eGyjC91iDDjNK/dHgAce7Fg0swu4A7vmxRZCNskQZ
-	xtOkgYFcVfMB05rQjfme2yknTcH9l+PYpIsg/YkqM8PAiIGebUfF/nlEsIJm1HmB
-	dCUAG+BYgnIrM7CwX5uOdNF3dq55yi/kFwqUrdn2yXeXWYzboQ1ymU16kS6Jq0ag
-	eq/LiMsNlFi/hfZFr/FpmdN39vQEvtZFAX9BXxitohx7U34g6dlkvnsUx3So4w6x
-	anh8asj2XXwCGIHYDhb/w==
-X-Virus-Scanned: USTUTT mailrelay AV services at mxex2.tik.uni-stuttgart.de
-Received: from mxex2.tik.uni-stuttgart.de ([127.0.0.1])
- by localhost (mxex2.tik.uni-stuttgart.de [127.0.0.1]) (amavis, port 10031)
- with ESMTP id cdT-gwx_zhQo for <linux-btrfs@vger.kernel.org>;
- Tue, 12 Mar 2024 11:39:18 +0100 (CET)
-Received: from authenticated client
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTPSA
-Date: Tue, 12 Mar 2024 11:39:18 +0100
-From: Ulli Horlacher <framstag@rus.uni-stuttgart.de>
-To: linux-btrfs@vger.kernel.org
-Subject: mount ... or other error?
-Message-ID: <20240312103918.GA374710@tik.uni-stuttgart.de>
-Mail-Followup-To: linux-btrfs@vger.kernel.org
+	s=arc-20240116; t=1710241925; c=relaxed/simple;
+	bh=F/F5iY7dNNbeFNuDWmqJTXlF4HeuHZwN+TMZQ4coK0g=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=jNZPkLwpxTCfV7pQAvpJ6ta0zrW+EVxewqn896eXTDBc7hGO7javdOTGW2PYAzGY69ITgj8fRYdPQVKz6FrXB2n/hJGcXQ9aDGPZCs4GzB2ZxPNYKilIOhcvMmVEDKHZw15NYmWzYR3ZvmUMWihj8hcjUFdTbpCwobdGd89QYcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c8b4d00be6so169003239f.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 04:12:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710241923; x=1710846723;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HZbS9O7jYNBOBghH7cVJooPu+oqs6wIvnfHd3EqYfcA=;
+        b=fJL9gqlBe69z6SqX/dozmPZgsiS2w7GuAuGtt3Ji8GjEeF2qM8Q/VaF3kAstLje1fS
+         a+f0CXWskD/pCQOMks1bXCbV9Ff0tFj2t2/IRFsOdvkropAoeNUVkQ6ugu3Uh8o9Nync
+         9ugz9bcv2Bd8C1SC3xrcrCdc9cFMyUNlfE3gzDpG+wKWJskAbjnpWHPTqYZQBxrppx7q
+         RDb3QuXHJypFCaRr8PstgiTupeeBHv/iqXh7NXs9+sRmvkUHZBZVNEXt+4Howo5XfNW3
+         NnNe4jX3OEGz8V3BIdKiG2QiPoi1KaDCYRCZvcGaY0MOY9f7XCrH61hYFXpyGdyNbBqP
+         pF1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUi98rwOSKsGDWN8DSinqOE1PzZyMF92PdMwB8kwgYavfhKog89Gq+w+0mU/7pxBXdWHxpRpGwLneeVBcG+MrVs/AtJWV6g8Atu6Ec=
+X-Gm-Message-State: AOJu0YzrddZs0LxoNDmiD6nwZZuHeqcThuQ7Bb3gnnCRfmiwEtLPYyCO
+	PuGE692bJ+XxzB/Fa5Fm69yZ+6cyn5JrRV1BWfQJXgi2MDqQkoqKaDHHbFbEDViIyxri+dv3rvI
+	x3qfyWUPTv1rrC88Nwq434TGzoPix4I8V5b2HlY0LVCrS0FmNbvTBQII=
+X-Google-Smtp-Source: AGHT+IGfGq3rEfX/wKWwVeENmMXpKFCaNRe2flrJiSKzamE5rF5j9cNAunR0ycSD57ABQVQD/SPDwd6rXQp4sBQlhp4bVx5bvynT
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Mailer: smtpsend-20230822
+X-Received: by 2002:a05:6602:3fcc:b0:7c8:b6cb:9201 with SMTP id
+ fc12-20020a0566023fcc00b007c8b6cb9201mr138082iob.2.1710241922914; Tue, 12 Mar
+ 2024 04:12:02 -0700 (PDT)
+Date: Tue, 12 Mar 2024 04:12:02 -0700
+In-Reply-To: <000000000000fc57030601f44e7a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004babdc061374bab1@google.com>
+Subject: Re: [syzbot] [btrfs?] INFO: task hung in extent_writepages
+From: syzbot <syzbot+d9d40a56a26bdd36922e@syzkaller.appspotmail.com>
+To: anand.jain@oracle.com, brauner@kernel.org, clm@fb.com, dsterba@suse.com, 
+	johannes.thumshirn@wdc.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+syzbot suspects this issue was fixed by commit:
 
-I have (on Ubuntu 22.04):
+commit a1912f712188291f9d7d434fba155461f1ebef66
+Author: Josef Bacik <josef@toxicpanda.com>
+Date:   Wed Nov 22 17:17:55 2023 +0000
 
-root@fextest:~# lsblk -o NAME,SIZE,FSTYPE,LABEL /dev/sdd
-NAME    SIZE FSTYPE LABEL
-sdd    13.5T
-`-sdd1 13.5T btrfs  spool
+    btrfs: remove code for inode_cache and recovery mount options
 
-root@fextest:~# blkid | grep sdd1
-/dev/sdd1: LABEL="spool" UUID="4d8b313d-5710-406b-bdba-b01625bf45ef" UUID_SUB="a57d255f-24af-4562-9421-a1eb6e76c051" BLOCK_SIZE="4096" TYPE="btrfs" PARTUUID="a409c49c-2b2d-654f-a0aa-9d0b5ea4307f"
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13a76f71180000
+start commit:   861deac3b092 Linux 6.7-rc7
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=10c7857ed774dc3e
+dashboard link: https://syzkaller.appspot.com/bug?extid=d9d40a56a26bdd36922e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13db2979e80000
 
-root@fextest:~# file -s /dev/sdd1
-/dev/sdd1: BTRFS Filesystem label "spool", sectorsize 4096, nodesize 16384, leafsize 16384, UUID=4d8b313d-5710-406b-bdba-b01625bf45ef, 223643512832/44530217717760 bytes used, 3 devices
+If the result looks correct, please mark the issue as fixed by replying with:
 
-root@fextest:~# mount -t btrfs /dev/sdd1 /mnt/tmp
-mount: /mnt/tmp: wrong fs type, bad option, bad superblock on /dev/sdd1, missing codepage or helper program, or other error.
+#syz fix: btrfs: remove code for inode_cache and recovery mount options
 
-How can I debug this further?
-
-
--- 
-Ullrich Horlacher              Server und Virtualisierung
-Rechenzentrum TIK
-Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
-Allmandring 30a                Tel:    ++49-711-68565868
-70569 Stuttgart (Germany)      WWW:    https://www.tik.uni-stuttgart.de/
-REF:<20240312103918.GA374710@tik.uni-stuttgart.de>
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
