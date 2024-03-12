@@ -1,180 +1,93 @@
-Return-Path: <linux-btrfs+bounces-3234-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3235-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E311879C2E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 20:16:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 611BB879DB0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 22:45:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAD32287959
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 19:16:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 180CC1F2147F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 21:45:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E96E14263B;
-	Tue, 12 Mar 2024 19:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="c+gh9Z/J";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kOp69Aly"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA65D14567E;
+	Tue, 12 Mar 2024 21:43:07 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47BF97E761;
-	Tue, 12 Mar 2024 19:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7589514534D
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 21:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710271002; cv=none; b=hdc3EZOWVYtcs+dDeR/RpRy5t/4h4Rn0C9lmGagniBXG2hI6avovFW0FvJUxD1ILHf3jRlTH+Db6cun7EH3g1jDCPTHaroDdl9YbB9Zitv2aN6odBt14TJjz2B1PJpo1uJ/kotozRIKRnR9L57Lh+1mFlo7FgplDkDRipCBLqls=
+	t=1710279787; cv=none; b=CamLLMzF4AxG1gcmziOKtuyFEURzYbxW2+05umxEAwMPujcmiKp1LewFAY1B2VuZOHFBcx+hVIQQcwTwxmXK8nLCopxMSryWLj9DQBvvfIl5CgTO8l47SgxYGL2+qgEbqNKtXVctYJqJpBHiN6VvybJfsamB5wM6GjYvTLxW7uQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710271002; c=relaxed/simple;
-	bh=5j6QeDtWO58mmaTdwshkUJxyTsa96Ky/7JBvc4Mgyzk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kBfPL4qs8Sd+jPO3F5mhas+CFean433LyOiHscZmOdGYZc3k+3NNqeOR+Isb2h4jS0e43iw78VNYsQxeUcoYxTeKPEvq+qXNDst21QdYMdX0buEnOBtTRBOKmwl5Nz47EzMVjGhjeJ+QNbyUU2up5WQJsV+UEcysg4A6INf+x+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=c+gh9Z/J; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kOp69Aly; arc=none smtp.client-ip=66.111.4.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 2D20D5C0062;
-	Tue, 12 Mar 2024 15:16:39 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 12 Mar 2024 15:16:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1710270999; x=1710357399; bh=zSAHdQop2U
-	bbpk6h+DLvM6shV2H5ZnQtgNpwK+0CbOA=; b=c+gh9Z/J2ZJp92oKM8eS25+0As
-	nL6K0MLg+eO75RuF8SYHM9T2JddWJXPhc+7CE6kvGT8HSPsUpfTae7r2vRj8QLej
-	qHY8n9BbFL60ZI5R1nEnE/Xlqp5kHASAssJF2P9ZNM14LMOLodnyvlNpw85e9K+H
-	PXaOKuc6U1aavqofj4rHnSvbWSvniFW14z/ZaFxzjdxEHWVSeuIKdRhvL3WKrUuD
-	T+Yyw+MG3ENJyiN4tGBceWcDqJB98MZWcphQPT8xDoTwG2ST4WgY96IsZi3v46eZ
-	0nuG2Og71m2SxfCwr36nmKOlFtrTpMlYLCXiRSyVJ+Tutnq2IAnh5mjbxAaA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1710270999; x=1710357399; bh=zSAHdQop2Ubbpk6h+DLvM6shV2H5
-	ZnQtgNpwK+0CbOA=; b=kOp69Aly9CeH215lxdoBYXlN6cj0NG0oiGALCY6MRil/
-	nmW7OqAbRF/NbfVjFcJdwoEvz9ezeD51bbBvjM1Fy60t6o/WZo+fyB+wSH/4lTNN
-	ST0JjVfIz0Y5Ziu3984wa8TJUNWAAS7m3ACA4BQ9/+JcpgiJIAZsLHP+gbhwlwuJ
-	mKmH+ZIgQEoQOn+0gcnpgcIk5hkYLl6NBkCx0Cpw+BCCtv8nS6ZBeQ81hbFye6Np
-	k9io4rlmCU/ZhQ4ndqi9aoCDKL8doldkm/3i5O5OKOBnWiZc5yNdgxmHLaAX/UA6
-	T2/P0bnJyP9WzJ8BaK27KojkfTLbO9efzIpRcKCM7A==
-X-ME-Sender: <xms:FqrwZSZxFrQftV9BZC7acTEbaWa6rCsW2Tw6pIDn8W2lIMNL5QSWag>
-    <xme:FqrwZVZtNGLtpUr3Fqisz1gUFwwNpyWRwDukRI5OXrw2uNL7vZTo0iO7bq4cN0R7T
-    s2GVfwpRmu0Cz-lXOk>
-X-ME-Received: <xmr:FqrwZc8pNkEHSemM64KAbdUKXtORgkzQMD9NCF5BBjPVnDY1Q1iyYLqVj9UXxKHx62gVn9UCdo1-Nigg1NO-C1fn944>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeefgdduvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ehtdfhvefghfdtvefghfelhffgueeugedtveduieehieehteelgeehvdefgeefgeenucff
-    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:F6rwZUozV78bl_55lLyUAPU2mKxoMJbWcXLvADlAwowC2fnVoYVCSg>
-    <xmx:F6rwZdoWsYDRRzjXySkNUfWxwNaghGVY3tk7unzhlIdR7gLInEuAcA>
-    <xmx:F6rwZSQzzYN6H6ODehdZOdd7UA9Hx2UE9ATB3L4NS57xyHoZDxj4EQ>
-    <xmx:F6rwZdqvHkqnHtYbiw6-a4VzxfdNPZXcidILtQS2SMghnw-GVWr2ug>
-    <xmx:F6rwZUVZExbnFB_GQWQetMmQndEd-MvFixUcZYWTZq9JWAc73yId6g>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 12 Mar 2024 15:16:38 -0400 (EDT)
-Date: Tue, 12 Mar 2024 12:17:32 -0700
-From: Boris Burkov <boris@bur.io>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: dsterba@suse.com, linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: validate device maj:min during open
-Message-ID: <20240312191732.GB2898816@zen.localdomain>
-References: <845dfb4fbf36dae204020c6a0a0e027cab42bcf0.1709865032.git.anand.jain@oracle.com>
- <20240308174138.GB2469063@zen.localdomain>
+	s=arc-20240116; t=1710279787; c=relaxed/simple;
+	bh=+ntyJa0Ew8nKgl61n+Nh2FH6rWw/YsnJ8ujp1FK4Ip4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ZJh2g7IVtQazgObcuzBBOPzSZDDfl+7Qwp1oXOlzTNY4W+Xi8yV4B8LoBGBgmzE0nN6oeTvVX3SifGpPJ2QzjmWsK6nIRqwVmRRRRgeJHazo1vV/YGIaXxF+NVoHPOwthzuXon3gcFzdwC0ZMfY/ys4c/4/dESFz0q+NupR0gsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3666f119204so2992775ab.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 14:43:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710279784; x=1710884584;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WPwkHRiTWni56jLRMYYCYOfrKQED61Y88uUu4x05NAw=;
+        b=c98Rxi1pZT4QTKJ7gY2NqTm7Jh6ls+I2/QiGp/o8IBudL27FTjYLgqHsDnznEnepVp
+         9guTzPWSFBxqnwvKKI+ng2qTdAE+dvOo0FNUaP7jHNaR3Vi7RlBvsS7Y3aAk1PDX9H8d
+         n0dX1ta1SCMP+xElIf3rnGDlSyrsv/kPpYQHt3jcfvWa1BjfhwUiBeFZtn4impzG8yQi
+         ga2dghDupaUm24A8AP1ckEAg9u1BLmqlkQ7Hl3NX5Nwm5J31eWFU0fB+ie6YgJKur1JQ
+         nBQA5yCd2BoqGgjPl/AW9CmRlmHwLmli3UD6up7xa0AMMKo4G6fBmxtPEeYprwtiZp8Y
+         NcVw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+9G5UPMD8eEod4r9joH7LOztcXYPr7bUCkLwu6wixRD92gaAj27e1jTgcTRqnsrQ19cqQTWdWXjNhLW3TwJhOCo4i8LDNBO/DvM0=
+X-Gm-Message-State: AOJu0YwAqbti9HUWsxE6kmAVk6xcampH3Kp8H7IxolWRscaXxHH68YzK
+	pCBEGBPDHfpFaagkEIn57xGUBqxzxOr44L1aXKX85vfn/A4j9YtfW6TJR2hpRJMEQnJA6+joJGe
+	elHH0Fag9odDza1kvRrcact1MtWiEEmXY+8Pxo0u0uDy9X3zIYEbfcTs=
+X-Google-Smtp-Source: AGHT+IFOpyNj3FNGoLTzOFEnZ+tR7pSAuEVi60fFlN8TuPJlT3LzUp25kdsOJOotvBru3ani52Sg/5sSOVe3e3YqU/YqtNadiw2j
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308174138.GB2469063@zen.localdomain>
+X-Received: by 2002:a05:6e02:b2c:b0:365:fe0a:b366 with SMTP id
+ e12-20020a056e020b2c00b00365fe0ab366mr42803ilu.1.1710279784538; Tue, 12 Mar
+ 2024 14:43:04 -0700 (PDT)
+Date: Tue, 12 Mar 2024 14:43:04 -0700
+In-Reply-To: <000000000000ac8cda0603cbb34c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000634c606137d8b99@google.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in insert_state (2)
+From: syzbot <syzbot+d21c74a99c319e88007a@syzkaller.appspotmail.com>
+To: anand.jain@oracle.com, brauner@kernel.org, clm@fb.com, dsterba@suse.com, 
+	johannes.thumshirn@wdc.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Mar 08, 2024 at 09:41:38AM -0800, Boris Burkov wrote:
-> On Fri, Mar 08, 2024 at 08:15:07AM +0530, Anand Jain wrote:
-> > Boris managed to create a device capable of changing its maj:min without
-> > altering its device path.
-> > 
-> > Only multi-devices can be scanned. A device that gets scanned and remains
-> > in the Btrfs kernel cache might end up with an incorrect maj:min.
-> > 
-> > Despite the tempfsid feature patch did not introduce this bug, it could
-> > lead to issues if the above multi-device is converted to a single device
-> > with a stale maj:min. Subsequently, attempting to mount the same device
-> > with the correct maj:min might mistake it for another device with the same
-> > fsid, potentially resulting in wrongly auto-enabling the tempfsid feature.
-> > 
-> > To address this, this patch validates the device's maj:min at the time of
-> > device open and updates it if it has changed since the last scan.
-> 
-> You and Dave have convinced me that it is important to fix this in the
-> kernel. I still have a hope of simplifying this further, while we are
-> here and have the code kicking around in our heads.
-> 
+syzbot suspects this issue was fixed by commit:
 
-I don't want to get stuck on this forever, so feel free to add
-Reviewed-by: Boris Burkov <boris@bur.io>
+commit a1912f712188291f9d7d434fba155461f1ebef66
+Author: Josef Bacik <josef@toxicpanda.com>
+Date:   Wed Nov 22 17:17:55 2023 +0000
 
-However, I would still love to get rid of device->devt if possible. It
-seems like it might be needed for that other grub bug you fixed. Though
-perhaps not, since we do skip stale devices in much of the logic.
+    btrfs: remove code for inode_cache and recovery mount options
 
-Anyway, let's move forward with this! Thanks for hacking on it with me.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14342f8e180000
+start commit:   f7757129e3de Merge tag 'v6.5-p3' of git://git.kernel.org/p..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
+dashboard link: https://syzkaller.appspot.com/bug?extid=d21c74a99c319e88007a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1202e640680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e949f3a80000
 
-> > 
-> > CC: stable@vger.kernel.org # 6.7+
-> > Fixes: a5b8a5f9f835 ("btrfs: support cloned-device mount capability")
-> > Reported-by: Boris Burkov <boris@bur.io>
-> > Co-developed-by: Boris Burkov <boris@bur.io>
-> > Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> > ---
-> > v2:
-> > Drop using lookup_bdev() instead, get it from device->bdev->bd_dev.
-> > 
-> > v1:
-> > https://lore.kernel.org/linux-btrfs/752b8526be21d984e0ee58c7f66d312664ff5ac5.1709256891.git.anand.jain@oracle.com/
-> > 
-> >  fs/btrfs/volumes.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> > 
-> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > index e49935a54da0..c318640b4472 100644
-> > --- a/fs/btrfs/volumes.c
-> > +++ b/fs/btrfs/volumes.c
-> > @@ -692,6 +692,16 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
-> >  	device->bdev = bdev_handle->bdev;
-> >  	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
-> >  
-> > +	if (device->devt != device->bdev->bd_dev) {
-> > +		btrfs_warn(NULL,
-> > +			   "device %s maj:min changed from %d:%d to %d:%d",
-> > +			   device->name->str, MAJOR(device->devt),
-> > +			   MINOR(device->devt), MAJOR(device->bdev->bd_dev),
-> > +			   MINOR(device->bdev->bd_dev));
-> > +
-> > +		device->devt = device->bdev->bd_dev;
-> > +	}
-> > +
-> 
-> If we are permanently maintaining an invariant that device->devt ==
-> device->bdev->bd_dev, do we even need device->devt? As far as I can
-> tell, all the logic that uses device->devt assumes that the device is
-> not stale, both in the temp_fsid found_by_devt lookup and in the "device
-> changed name" check. If so, we could just always use
-> device->bdev->bd_dev and eliminate this confusion/source of bugs
-> entirely.
-> 
-> >  	fs_devices->open_devices++;
-> >  	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
-> >  	    device->devid != BTRFS_DEV_REPLACE_DEVID) {
-> > -- 
-> > 2.38.1
-> > 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: btrfs: remove code for inode_cache and recovery mount options
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
