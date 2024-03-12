@@ -1,265 +1,194 @@
-Return-Path: <linux-btrfs+bounces-3223-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3224-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79A2C879449
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 13:39:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 302958794C5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 14:04:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E2CD1C23452
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 12:39:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BF281F235C4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 13:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28DD856B92;
-	Tue, 12 Mar 2024 12:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C7D6997E;
+	Tue, 12 Mar 2024 13:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AlJHN3nO"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="lEvLk0nS";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="L1ngAoTO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D3B1EA95
-	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 12:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710247185; cv=none; b=YlShhxY//GKYbiPZekrcsZcow2jmB8WqQBLDO/ez6QJ/07lM5rZZ8LJpIW2KSPYitq6HrhnliryvZK8AqmIf+9zR2B7sUOKvqpROA9B6sVeenQcLIw/b0JgstSu8pQwBOMWe/GEADuLSPjGiT4l4MldHSavWGqXk4DHn6W94m90=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710247185; c=relaxed/simple;
-	bh=JrLOHxrQvSRrvzF8+NkRSbTS5vvxT/3ZMfBfXPE8BIo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rlR1RQ2gs2xfk7OGcOGj7tDaLM7rkXRA9B8jFX8OC6Sxq2QM/tsM63jNQEQRp1amkb53NnqZmVfxGywIIGkmnoHylPxBURjhWLaU4kFJwPUyF1oJ1XtNgS/WT45ZIkHQP5xSjTPOheO+l+C+Epu9viNYavkOAXGdIs78Xg/Ea3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AlJHN3nO; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-42f0df98361so24380151cf.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 05:39:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A607811
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 13:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710248673; cv=fail; b=AAOzDxYsaJ9mHGvpdUmmtfOUIwZndYA8bzAj04Ct0JG+kwAaAP7n0i7S+7uH3sHSpOPHE1aE0qpO+TzLmf/V/xIgSvpZOz6Y72OQs1XPQJ9I8k8X9/k5OyHUyzHjc7Vkj1XO34fabBYSVPTgB+XThGavK0aauVnX5z0/Rxt9g5k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710248673; c=relaxed/simple;
+	bh=B3DNJvlbQx59PJm66g5lqnZkFfs/9DHgwv9blwTWx+0=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=R0+XeLIiVViHTmEnAt9iXFZC9Fk8yATn0pVq5xeb3PXjabuSrRJMANmp2mVNEPuQQX3C3UXO6zvthcdmi51wx8yQmqNOXHul5v1azUCGb0K/pkuwxdttZW4qTep7XXraLsvSy5nNDlmS2a9q84EGCDkQfd2AuFBlK8VoVwzg+bc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=lEvLk0nS; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=L1ngAoTO; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42CCZ02R010161
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 13:04:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=pgIgZ6bapWrTGX97vm8TuYHxMe8EULr9cxufU1If++E=;
+ b=lEvLk0nSX69aUgiVrTS0DLNl7aimYZe1gqMUPV0dWpMo4tV7tmeWMFC4Sn4SdYS/c0Iv
+ RHoa0xB6u+Esjnmnt5rnYslZqRH74Ii9p3LRzRuPcAqnFo2bRpn95XiSTRXfPWKJXIUs
+ 0P4bNsdil3xPrWIn5F+vxl2yUhw1CpQD/RnKJRhy34bt6DVMHVxrFCyMoREVX8/wbPIx
+ iJT7F0TmsEFYHK5824sdoPTO+Br/XrWTSbbp5Q5qSA7dl9AdR3AipEjSg7Edtb7Dmlr0
+ tQxyMfJ1Kgrd7YMlCW+FR5VquAvvrcKxguqDiOePuN184/faOIbTkikmmWE3erLcL3tZ JA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wrej3wynd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 13:04:28 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42CC9Z8C004777
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 13:04:27 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wre77bxjc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 13:04:27 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vs8g23r2Si/4y5rFt+GzFNAiYmWFFgOsYDCzcNVzQDpr/+UeNbX2+xfsfwn/W0Sxl/iolMyfzQ/p7pAmsZFyxCpJofujbZWl8VPuqdko4fsPOOsLQIeGVFanlHE4cqdzNNh6SPhdAktlmD1s6zma55hMi1IL2HadF7VxnFHRPPgtq0IVenzTcmxdTeTNwbNsuRhZjKjSzF0Nb32vJ+YIrOyBnNA8+NUYtjbJhIzQhsdNLaMivAb9elSObTv4WOkPh386rDmH+r/9LUnJ4Xan7DGCRL3XoxNFpHo3fGXwazNr+4JLAHV4N0M9L8JpKrGDmxCVhNFG8p/6rvDLWgHHrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pgIgZ6bapWrTGX97vm8TuYHxMe8EULr9cxufU1If++E=;
+ b=XYEVLhhrIIzi6eJCh0m/1u6fGPoPik8eEd2SLo0b8Muvg+2w/HKAKgeeFEx36J3b+l55Gcm2b/iVA40ieGPQinB1ZnoqVwureY4cj2fg1mJwHsTh0TtNJm9eD4XegPfxzTXOzzNSNt+Ua0df1RgW+liqQexRwe1bnhLVEndiDuMpCpkA28cApPqfOfJJJjTsGnpbF/UfAOxUEdf5xzg2UBnf1obX75bzDMURwXmadOn9A6/GXove8ROvyI+i3tbJQ3mfhUOkEJYyUCjZrdmxRzgwxkEKxPex8whOezOaMmKV67m76q4niE/bdfTS3X208eLw3sl/Ej4XZG0gT4iJ0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710247182; x=1710851982; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4Wantg+e6guzVSkthB0+MTUCVVZShGG9yUM/Yl9cSpg=;
-        b=AlJHN3nOY/27wBYDvJhTj2fmZ/cnjpL9PhMa+GTFaVSRT1AFfcjdLX+d2te1xsPOu8
-         vwdGWI9NDRlsQuL9KKU93/ganvPgBUcNWsGlTCZF+xJgeg8GOO8YNwybwbbpiWje9YbN
-         lYld8L5ihFzqQ1aMY7h6XJvNB0PM9bfwOp+SAUuWJtY7kOmghkh7Jn5QUY+Kzi/Ubub1
-         kjSPeQao1RTx+wkmrmgaeVx9Zlm76xhitLUPYmNd4vHPC5ELj+gRTccPZ2UeLC4Bdcws
-         jdm9Dkzcuonv3qrxR00AJrSwTzitHdOGfGyQbsaahu15fftxZxypKxa0dJ+YN4lCT1Pn
-         zw3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710247182; x=1710851982;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4Wantg+e6guzVSkthB0+MTUCVVZShGG9yUM/Yl9cSpg=;
-        b=fuXBw0FfK4N3sSPNuRHEKb00E4t/sJXdJxAvZ7gbMZdEZ34MOzNGO4fcBFEQcPLRAn
-         dv5nY4lgVbpeDBqZNwNY8auwpxw7dkSu/Qhvf+EfjF4g6ZcevRNSzR+s/P2o+Xr60AME
-         sAojEKt67J9ufL13UlQ26GxT7nj/hKFeqjcg5lWDvRZMgrBc0vhRJJ38c7sNONB1QgE1
-         Q/jBfxdXVqaNZ5b3IdNQJy7olvBWpdcCFoVolLmfGdgS+2z4BLwcZVZN2x/8YfQ9zKt3
-         IHvew5htaqqrn7YVoixWZM/e5JoPb9VO6j+mXzecrHTU05CzoT/e3X7wUXsI+Sw0J5JA
-         OHsw==
-X-Forwarded-Encrypted: i=1; AJvYcCX7Dkwd7lT7Bz1H2gSYI3NharaS3hZ8T8LMMW5WVJOlWAgBuWpH/KYOC35ejweKTYFkmJJ/JQuI4WNfr7BcPu+B8cgEIoPy3gX/qP8=
-X-Gm-Message-State: AOJu0YywbQ+kZocPHkdnSS0VjFwvD4ZlG9LkllTM6DDVIwha39pZ1P9e
-	P8/WwBrYuhW8DtbPf/UQbr3yed/QqxWIkAGgGjoIaUKd+Suse7P1WEmcEyM2qk/g0TZPIAaX5P2
-	RRX4A606LnhkErpDlmCtJk7VLNEhoNIQn
-X-Google-Smtp-Source: AGHT+IE0WU56U3SGOfHlLYyHHzbHj+TRl2Fp9U+bV++zaksoQmSYoigEXyBuplYA85ftPHAwL+dKpznRlZsSRNT0Z4c=
-X-Received: by 2002:a05:622a:14c:b0:42e:7afb:b5c0 with SMTP id
- v12-20020a05622a014c00b0042e7afbb5c0mr106772qtw.17.1710247182473; Tue, 12 Mar
- 2024 05:39:42 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pgIgZ6bapWrTGX97vm8TuYHxMe8EULr9cxufU1If++E=;
+ b=L1ngAoTOYrqjdt6Rg5sCA7LL0vRvgixqP2Y8DMTFJcx/Av3AxwAQuQi+THCfUw4IOyMJ3QATHk45sCCzMPQp1hBIT2+Dxo0B7+yJnz5iMSRSRED3I4MA/CTh916wrYsd1wHfOBjwv5mlN+NcjpbouNZRcAD/Dn74WQKeC18GmT4=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by PH0PR10MB5626.namprd10.prod.outlook.com (2603:10b6:510:f9::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Tue, 12 Mar
+ 2024 13:03:25 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::814:3d5c:443b:17b%7]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
+ 13:03:25 +0000
+From: Anand Jain <anand.jain@oracle.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH] btrfs: validate device maj:min during scan
+Date: Tue, 12 Mar 2024 18:32:41 +0530
+Message-ID: <ea6a2384807500090943f95c164e9f6b899efc58.1710246349.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.42.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MA0PR01CA0095.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:af::6) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
- <CA+H1V9x-pFAM-YQ1ncAqZE4e7j6R2xQXX6Ah9v1tMNf8CrW+yw@mail.gmail.com>
- <CAOLfK3We92ZBrvyvSDky9jrQwJNONeOE9qoaewbFCr02H8PuTw@mail.gmail.com>
- <CA+H1V9xjufQpsZHeMNmKNrV0BfuUsJ5G=x_-BEcRw7eNFhYPAw@mail.gmail.com>
- <CAOLfK3UEOMN-O9-u6j22CJ0jpRZUwB7R_x-zEH6-FXdgmqB7Lg@mail.gmail.com>
- <1eac6d15-4ead-46bc-9b60-02f1d120c885@tnonline.net> <CAMthOuO56J5OhCnedJLxTuFxTPq7ryCGP_TxMrcXS+4jLj0aiA@mail.gmail.com>
- <4feb955c-cc91-4f0b-8e62-b6a089eea7ae@libero.it>
-In-Reply-To: <4feb955c-cc91-4f0b-8e62-b6a089eea7ae@libero.it>
-From: Kai Krakow <hurikhan77+btrfs@gmail.com>
-Date: Tue, 12 Mar 2024 13:39:16 +0100
-Message-ID: <CAMthOuPQDMWGOA9O+StwnmUhZXxsF3ePZKMBgDZdPZ8gxQ+sdg@mail.gmail.com>
-Subject: Re: raid1 root device with efi
-To: kreijack@inwind.it
-Cc: Forza <forza@tnonline.net>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
-	Matthew Warren <matthewwarren101010@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH0PR10MB5626:EE_
+X-MS-Office365-Filtering-Correlation-Id: a1dd4f16-81be-40c7-090d-08dc4294cd72
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	9gaawxubBfK0BGzNOIsJzftyrRo5VzjGOPFhtjLFNUJnoMVeXUSmXwoQGaeuffgn5yARkff1X0AsmkNH5qreb1RR1pyby7rdPxicGDoQ5uIIeH4wjeTZldnL+YlG/tmt1Nrd4nh1vc7E5eWknuk2juQgFWobBHqoMtzsEot8A/Ttj/1P57t16/wqaEBkCQReG1zaKrmAOqe3xq1pTQMNlm3sun+/d5pPJnFv8l8//s2jRraRS2BgJdAqdgOMSKwgFfBMz2r13x+XkntT9CrvkxRouPqFPWMfggXzSi0+baCYjpVguKA1vR4M3kqmzmrHUbKCCiZ5GYtBlgJ9fMYQXiMQnjRW4ZLi3ZGkxsflTgSuKwd+ZGfkzddU/L3W7yo6zA3IngDtOqDDKue0cG1P/YjgkIMr5zTs4HL7nw8hiPIBm2ZVp/Dv7Gps4K3ajF399UV5daYLMhcURR3EzLB0Ije/pZbC29kcFBZVjGGcnLmTPA5d9TXTX+TwPFTaetA2AmBTE/XCaGC3RvYYw7F4kWoIu7BNn0AjaAQ60AqDEIj+/BivuGaww7ZMK/MnlAHXY5osalcQRuDw4hfA8xux7BPytKTReooj8xL9RAgdlapVzBVLYodGgHwXBr3/OnIVfSE5M/BIOMNEstMscERGaQIO3ajQ6m4VAIOdqisNTe8=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?IslYWURXKx4ck2PB0yAI6263jOquOQZYN2czMJnyjVHll8aiKT2EM+9Wq1LV?=
+ =?us-ascii?Q?RzUZbUJWOQvHsxz8DjyUhBkZg6plBbsfyyPuryO3jHG+agjClA9Ds1aiSVK9?=
+ =?us-ascii?Q?R1n2U0j8QoavYmQFR+d3YI40c9K6bnzq//dAf/BiRjk14ljM2Nhs3MMnPJJ0?=
+ =?us-ascii?Q?Utb5G8rejlgGfHTEE9EbkWudzAzxIl9hzYoCBgNLRviAT3DVNrpwaFyu8rC7?=
+ =?us-ascii?Q?dWUPuHaWAJYiSD0Hkv8EugYKNMj/aOVoT3tcim6Lvwnkt/qvTTp/Z051jfpt?=
+ =?us-ascii?Q?XfkPvgGEL3LbJG2Xw8K9kJPXmvPh92963AcyXi/K1MUMBG8T1dH/xYomc61I?=
+ =?us-ascii?Q?09tKxNMZwj9VAjmbGJQlBKaxAMBvNhD59MDtgB3mWgGoga5sJImIERojp2cE?=
+ =?us-ascii?Q?Tm7/2EvCeHtlqs38O7nwuHqVe/LifkFmMuipinBN9knf3pjk/ILIQlh4sQAm?=
+ =?us-ascii?Q?5i5Xp8v6Dq8yxWYife96Jsc/kVsardXvMw1w/okuhkr2izxzL/vEHJ/igLGl?=
+ =?us-ascii?Q?L4c8khpdkwT2iuVwuTiue/eqxhXNuKWPiI6OxVkFGJmhE8rlvo1kL7IHA3G1?=
+ =?us-ascii?Q?AOyMrF0MamM/NCRzaQmJ31l+CxeQX2NsN/3bTCKbhT+2dy0nJBmlZ9DeIieB?=
+ =?us-ascii?Q?y3EUGiVMndxT9UmUU7pfzY2SOBOK2oc2FYPWhiJqPgE97Yj+RoLKiWUpjFYr?=
+ =?us-ascii?Q?L+5YlV928Szj+mSXU44TNFkoPCws0Y6JguZ+XdPteMl8pOL1rVjHKV3Dsqsu?=
+ =?us-ascii?Q?FyRHRzXYbYJBWofmz+gvm/JRK4xpA8OYH9GBJ7TbqlfBqkDcJKGgsfdDOXVT?=
+ =?us-ascii?Q?EPGL1oQLyarEj2dyajUGdMV6DNzwmfK384FV8b3z8UGCEpGFeV12cO/uFIMF?=
+ =?us-ascii?Q?y8D10S060zJiPfbINE7I5h0zB32agRbOztaam8MlZGEgJZnLSBpI6U/gM+0E?=
+ =?us-ascii?Q?ebgswQXe4iDBP5119k3/CbjyBSqA3EQTXgG2YEY2Jamb70vTPQZ3AtgrZ78I?=
+ =?us-ascii?Q?xkkvSJ2C8T1KwpbziqS5Yr4tJujOgdrS8EOwCv4jeFQaw2Eh9K7v/2mo/gLa?=
+ =?us-ascii?Q?BWkr9672RoUvEQTKHsKhgqZUn7MPhIzEyMNQo+bSC4HD1/nqXFdssYGVNfQx?=
+ =?us-ascii?Q?dJsqxfj15va+BH/ykZG9DJCvquZf/1DfFxaS1T9+IRvYHBRMBPE6BtknTOag?=
+ =?us-ascii?Q?6oQlSzPDyt6armaoqEk+EoE6Io/hvNkJteRbxKidmYn8CR2mNJeXYc31zfe5?=
+ =?us-ascii?Q?segR/wMy9psAc/cZhJTlSAtx0bA5gRsp5vwnfEEwykyWH5gSTKjXbpk/lIho?=
+ =?us-ascii?Q?OeTGtysDorsWqPbJedQU6sf519jMmp+j/fjsDsG4HWKJnEix+U399Y8KgW2s?=
+ =?us-ascii?Q?YglsL1b41SpXCq2m1xZ6ZrwAcrk/1GiddQkWxuOvK8Ihmd3v1LNhz90rs/sr?=
+ =?us-ascii?Q?OHKMeKjUJ01yzdmB/0ACzvTe76Opr7SkCczK4k4S3uxdB2hM0ztt1CejbHph?=
+ =?us-ascii?Q?cDgjepfVGyWU/i3W94g0IPbPHpIqHGxaoTHro+cjG4uH81xhOd3TiZNs91P9?=
+ =?us-ascii?Q?R6CQSULfR5RDR3Dr+pZwztNMGmGFUicrzNzZmCe5jh5Zhf2u+yFhEHC2w4IE?=
+ =?us-ascii?Q?I4qtigupsH92/HWTsnlXzvQig3j9ceepkVvVdFgS8Qkk?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	/1KejoBIrtDBFevSS8ZmVQasVv5oTbum5hvZ2MkgxQ0Cm4Eeno2EMQMtXTfTFqs0bwCRcp4hZqlNiNPSfG2xXy7Z14tRTVOKSu2dCbscgrvG+agSX5+V4kQvyeHe3388RxEa6Rv7nUFOmwBfLsYcgecVRGzunkJ2foDQdbZm4vJL1VkLTys/nqe8wqiPjNLjCaPCGOP5DW5dkTBQw5cbDMesGPub/Nz6fXNSdZejf0LaoWrGotzXSC3He7ThmvdU6EbQfinBfq5CAEGHJ92+i6RmeZDPd6u08ngyfssHzivL1EuRHah30CzeuYFUeR/lJzVz0C3mP/fNs6WAAiYJh1Qo1pazVnuPBHywY+swav4R2I7mumLBPX84TtoLm+lI3hAvMJFxO3XRdSdGGgOs9mVqSCAKFAK5Z2mjK5ZGqbsSm+bD8oVFN4QzdFFDYO6CnJ3wakhEss02/GWq2FQxh23aCAOEVuE7ay1xxb4exnMMjx6tvSfu395rnWMMpVBTawA07C6aj6eSrrHMqPwUyjMVtQwy9EAcSCKStIRQs3SBJf5UrPcHtHXq5KXUqR36H6kstNGKwu1uBerr497cy+14ETZqyiSUFlTHuxi8gLI=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1dd4f16-81be-40c7-090d-08dc4294cd72
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 13:03:25.0603
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zxz3pPpuRA3Vf7iibj9+hqesUauYNXz4QfxzDwFGmgFe1c0c1cJdt2XcKEQPKxkZ4CYBa0H8M3FvTS7qYyWyzg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5626
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-12_08,2024-03-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ spamscore=0 suspectscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403120100
+X-Proofpoint-GUID: FFPNIhbeQ8oeV6QNSrNQdIlscNAT06LN
+X-Proofpoint-ORIG-GUID: FFPNIhbeQ8oeV6QNSrNQdIlscNAT06LN
 
-Am Mo., 11. M=C3=A4rz 2024 um 20:26 Uhr schrieb Goffredo Baroncelli
-<kreijack@libero.it>:
->
-> On 11/03/2024 15.34, Kai Krakow wrote:
-> > Hello!
-> >
-> > Am So., 10. M=C3=A4rz 2024 um 19:18 Uhr schrieb Forza <forza@tnonline.n=
-et>:
-> >>
-> >>
-> >>
-> >> On 2024-03-08 22:58, Matt Zagrabelny wrote:
-> >>> On Fri, Mar 8, 2024 at 3:54=E2=80=AFPM Matthew Warren
-> >>> <matthewwarren101010@gmail.com> wrote:
-> >>>>
-> >>>> On Fri, Mar 8, 2024 at 4:48=E2=80=AFPM Matt Zagrabelny <mzagrabe@d.u=
-mn.edu> wrote:
-> >>>>>
-> >>>>> Hi Qu and Matthew,
-> >>>>>
-> >>>>> On Fri, Mar 8, 2024 at 3:46=E2=80=AFPM Matthew Warren
-> >>>>> <matthewwarren101010@gmail.com> wrote:
-> >>>>>>
-> >>>>>> On Fri, Mar 8, 2024 at 3:46=E2=80=AFPM Matt Zagrabelny <mzagrabe@d=
-.umn.edu> wrote:
-> >>>>>>>
-> >>>>>>> Greetings,
-> >>>>>>>
-> >>>>>>> I've read some conflicting info online about the best way to have=
- a
-> >>>>>>> raid1 btrfs root device.
-> >
-> > I think the main issue here that leads to conflicting ideas is:
-> >
-> > Grub records the locations (or extent index) of the boot files during
-> > re-configuration for non-trivial filesystems. If you later move the
-> > files, or need to switch to the mirror, it will no longer be able to
-> > read the boot files. Grub doesn't have a full btrfs implementation to
-> > read all the metadata, nor does it know or detect the member devices
-> > of the pool.
->
-> I don't think that what you describe is really accurate. Grub (in the NON=
- uefi version)
-> stores some code in the first 2MB of the disk (this is one of the reason =
-why fdisk by
-> default starts the first partition at the 1st MB of the disk). This code =
-is mapped as
-> you wrote. And if you mess with this disk area grub gets confused.
+The maj:min of a device can change without altering the device path.
+When the device is re-scanned, only the device path change is fixed,
+if any, but the changed maj:min remains (bug). This patch fixes it by
+also checking for the changed maj:min.
 
-I've looked into the source code, and it seems the btrfs code is very
-basic. It looks like it could handle multiple devices. But it clearly
-cannot handle some of the extent flags, doesn't handle compressed
-extents (bees, as in my example, does create such extents), has
-problems with holes and inline extents (indicated by the source code
-comments) and requires extents to be contiguous to read data reliably.
+However, please note that we still need to validate the maj:min during
+open as in the patch ("btrfs: validate device maj:min during open") because
+only the device specified in the mount command gets scanned during mount.
 
-> And the btrfs grub module is stored in this area. After this module is lo=
-aded, grub
-> has a full access to a btrfs partition.
->
-> The fact in some condition grub is not able to access anymore to a btrfs =
-filesystem
-> is more related to a not mature btrfs implementation in grub.
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ fs/btrfs/volumes.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Agreed.
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 8a35605822bf..473f03965f26 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -854,7 +854,8 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+ 				MAJOR(path_devt), MINOR(path_devt),
+ 				current->comm, task_pid_nr(current));
+ 
+-	} else if (!device->name || strcmp(device->name->str, path)) {
++	} else if (!device->name || strcmp(device->name->str, path) ||
++		   device->devt != path_devt) {
+ 		/*
+ 		 * When FS is already mounted.
+ 		 * 1. If you are here and if the device->name is NULL that
+-- 
+2.31.1
 
-> I am quite sure that grub access a btrfs filesystem dynamically, without =
-using a
-> pre-stored table with the location of a file.
-
-Yes, it probably can work its way through the various trees but the
-extent resolver and reader is very basic.
-
-This means, at least for now: do not let anything touch the boot files
-grub is using, and do not use compression, then it SHOULD work well
-most of the time.
-
-I'd still avoid complex filesystems involved in the grub booting process.
-
-
-> To verify that, try to access a random file or directory in a btrfs locat=
-ion (e.g.
-> ls /bin) that is not related to a 'boot' process.
->
-> > So in this context, it supports btrfs raid1 under certain
-> > conditions, if, and only if, just two devices are used, and the grub
-> > device remains the same. If you add a third device, both raid1 stripes
-> > for boot files may end up on devices of the pool that grub doesn't
-> > consider. As an example, bees is known to mess up grub boot on btrfs
-> > because it relocates the boot files without letting grub know:
-> > https://github.com/Zygo/bees/issues/249
-> >
-> > I'd argue that grub can only boot reliably from single-device btrfs
-> > unless you move boot file extents without re-configuring it. Grub only
-> > has very basic support for btrfs.
-> >
-> > mdadm for ESP is not supported for very similar reasons (because EFI
-> > doesn't open the filesystem read-only): It will break the mirror.
-> >
-> > The best way, as outlined in the thread already, is two have two ESP,
-> > not put the kernel boot files in btrfs but in ESP instead, and adjust
-> > your kernel-install plugins to mirror the boot files to the other ESP
-> > partition.
-> >
-> > Personally, I've got a USB stick where I keep a copy of my ESP created
-> > with major configuration changes (e.g. major kernel update, boot
-> > configuration changes), and the ESP is also included in my daily
-> > backup. I keep blank reserve partitions on all other devices which I
-> > can copy the ESP to in case of disaster. This serves an additional
-> > purpose of keeping some part of the devices trimmed for wear-leveling.
-> >
-> >
-> >>>>>>>
-> >>>>>>> I've got two disks, with identical partitioning and I tried the
-> >>>>>>> following scenario (call it scenario 1):
-> >>>>>>>
-> >>>>>>> partition 1: EFI
-> >>>>>>> partition 2: btrfs RAID1 (/)
-> >>>>>>>
-> >>>>>>> There are some docs that claim that the above is possible...
-> >>>>>>
-> >>>>>> This is definitely possible. I use it on both my server and deskto=
-p with GRUB.
-> >>>>>
-> >>>>> Are there any docs you follow for this setup?
-> >>>>>
-> >>>>> Thanks for the info!
-> >>>>>
-> >>>>> -m
-> >>>>
-> >>>> The main important thing is that mdadm has several metadata versions=
-.
-> >>>> Versions 0.9 and 1.0 store the metadata at the end of the partition
-> >>>> which allows UEFI to think the filesystem is EFI rather than mdadm
-> >>>> raid.
-> >>>> https://raid.wiki.kernel.org/index.php/RAID_superblock_formats#Sub-v=
-ersions_of_the_version-1_superblock
-> >>>>
-> >>>> I followed the arch wiki for setting it up, so here's what I followe=
-d.
-> >>>> https://wiki.archlinux.org/title/EFI_system_partition#ESP_on_softwar=
-e_RAID1
-> >>>
-> >>> Thanks for the hints. Hopefully there aren't any more unexpected issu=
-es.
-> >>>
-> >>> Cheers!
-> >>>
-> >>> -m
-> >>>
-> >>
-> >> An alternative to mdadm is to simply have separate ESP partitions on
-> >> each device. You can manually copy the contents between the two if you
-> >> were to update the EFI bootloader. This way you can keep the 'other' E=
-SP
-> >> as backup during GRUB/EFI updates.
-> >>
-> >> This solution is what I use on one of my servers. GRUB2 supports Btrfs
-> >> RAID1 so you do not need to have the kernel and initramfs on the ESP,
-> >> though that works very well too.
-> >>
-> >> Good Luck!
-> >>
-> >> ~Forza
-> >
-> > Regards,
-> > Kai
-> >
->
-> --
-> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
->
 
