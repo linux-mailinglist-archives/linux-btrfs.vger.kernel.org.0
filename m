@@ -1,278 +1,233 @@
-Return-Path: <linux-btrfs+bounces-3237-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3238-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82E35879F28
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 23:56:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E233C879FB2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 00:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9A48B2251D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 22:56:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11A471C212BC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 23:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C568E46551;
-	Tue, 12 Mar 2024 22:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E5084779C;
+	Tue, 12 Mar 2024 23:32:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DFtwX40D"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="fq0qvAPl";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="CWiSsPhl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD9A446AC;
-	Tue, 12 Mar 2024 22:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710284114; cv=none; b=ZbEY1vAsomZ1Ot3XHN5EgV/HFswMCnHjJqK/ByU/JwT/FHNQTkj5Rb5LioPTz+u0nqQUprWc2P2TbHMr0kW1OwmoTp2EHG37OPG4on9lToRGIJqeVjaOQNAfgrEQSYvgJe+Gfx8RREnkgL5maDF6V93sGHZwCTVqqS1AapAGecE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710284114; c=relaxed/simple;
-	bh=pqB0kQNo2lOrlfpuu3b2oAK++B35JKyT39mKFe8+dtc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TV+FImfA5AB90WxsnXeBZWwRMkrD6Z68NxzGvqETJFPTtSqhYFd3GegddOR1TfAzWS5Qnsp+0sjZEVIr8RKlpIiCQUzFFGzZiFJ03T7F9oB3uI3aUjFmHVRkvtkhJxlkCGZi1aTjRECeDRc892IjsDouaejlrXLc2GoTCcXfHsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DFtwX40D; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d29111272eso101575581fa.0;
-        Tue, 12 Mar 2024 15:55:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98EFA26286
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 23:32:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710286378; cv=fail; b=cN5zGh+TjZxN4gEivaVM6T8LFbGypvRmgesVV9ssElOlcxhNRIWiW/QxG9aSsDK61P97N991QERx8STP2vIpAZ+FLBlws6ehdOPZ4GU1vVYNp5PReUt5DmnB3UouczY7L2iHaPyyyxE94KtUJEvPIti3hTiJGKlhoPMRtdmRnvg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710286378; c=relaxed/simple;
+	bh=mMGnpZjBVkvOd/aryScBZXD8bWg9X5pgOljMjjMkzMc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=QCWPyNU0DP0NXxBKA/k9I88zbRsyc2byO7s/gCbYE0TFu5EWdLbmityqbVB2lMO813TddzQozDPSgMAvSOKnSF2Lnm0j0axXrOUkivrrAhX2ebtWOvPI5taxZlTzEz9uSWTXo84UivqIxHdoCjWAiLzDPykNJAd+OokGO+kbKJ8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=fq0qvAPl; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=CWiSsPhl; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42CKQ3uc007800;
+	Tue, 12 Mar 2024 23:32:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=GllTe/RQgczMHmUno78j/do76J1oEdlSS6Fi1XuvkuE=;
+ b=fq0qvAPltOKhPzGRKiJZ00leE+K+TI62R2j5eFJRclNZjsDsF67WUWYEw8P0lrvYFqim
+ UIZt9sjU9hjX0tOEn5heIHR+aq2kgRPibYwIn7IxxZR+k/iPLLB4svhMXW9MyGFNoWhu
+ vUAPjcSx33iIn0Jg8ha43xR2qUcj+yk5HSdxi6QC3ZyjC9PNhUIeKllSP5ohIWENIcXg
+ +S+htK7LXHo4dLjNiuVf+qwKDWZqFPQxSlhZ0GDD6VDOU1Mbo9DmFym9L7dktWt3JSG9
+ SzDFL5ydkcuIs96VuXeu6JMWNxR8qdvg7A4W7dyfad6ThV+CKjb4e6NLoYgKT3KaQjZV Sw== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wrej3ydpw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 12 Mar 2024 23:32:53 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42CMTKq7019752;
+	Tue, 12 Mar 2024 23:32:52 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wre77xw2d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 12 Mar 2024 23:32:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f3+sU3nnvZXocadfGt/UoUEACyfQztZIJN3uBPoP9FmPt5g1D53r6vyr9NW85g28+/jNqbLoWhpLDYXQz9SbD4GmdvdOh2ShlREjJYwxs6gWMPE+5nXM0R9ox7PRvOBC6/kYmo8jIZADUaQmXt7a1widbT5vJqcFhzzFfe962KvR2xGLISJ/Pm7aAIDQSLN6dgAWhuhzhdubINAuNEz1RKfhqUjrc409AsdO1VqYIBVuI7pw8C/dFFmDmI9vpDkjBI9VknwosW9BOCKlj0PshlyMUV2oZRSQxeC4i3oFyzPIBVOs1flUoSTOWD1ZefMVvDFkIOynR3pAbrUpyYNx4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GllTe/RQgczMHmUno78j/do76J1oEdlSS6Fi1XuvkuE=;
+ b=PMVC15mD8f5v6tOM/lWAOcAF0gceQOhgkdkmYld3WBdQ4k5GBAaZrKDkop6vaqb6Jt/KMwCkbqCtgLylqKO2bNBypHnPGEie/aoDX5PAO0P3Rk5eT12ytG6o52KLbJI0xUVA6HBmmhgWjquc6m6WMYx8gaxOVxC3Zlce24KKoeVmzyb0Km8eXwPVtvsKeOW7h4yZQlmvfyVZ4w1hNT2mKkxBNUohAihSztYPpkNDVRs6UVFUrjmBFq6xpwYsorzYJ66XBvaJlDRZXDr2AA9vI+Zsbzo2e6RPjg/I5TR4EHmBGph2TAf++gMZ29ynOvAf2JWGIhs+Rrgkn3hRJJ1B3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710284110; x=1710888910; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dn4o2EhSzw/dPcbf0I+GhuZZGnLjYr0VW9p4Ognw3lA=;
-        b=DFtwX40DTpA1ESUPV8sJR56EUf0c9+qNJjP8KPyPS2NknXIl8JKqC2NOjRk3GBOfnK
-         iLT6My59Je3s9OBwaiCO/IprHf8YrVs30QSn60dAmMqT+0pVlO3b/DBT8VrBcn/jdxQ6
-         gWZk9LLXV2BAdKYPsI+8/WuNu/1/8KlsE/Bg9vTUeFVR65zWNi9ZrA9EATpRbYJoUGYf
-         Z54BA/OxLGfFzUue+yZihS0USuMCATXW4j8nNBEIrvo7QdLXyymmLlXlUc0uzZ6bA2nY
-         iDgFOI87H+NFqddsERgg9nvyty4enf6KnwNkz/LaOKtYQHy5VJampv6oHavbYwljlXr1
-         ssxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710284110; x=1710888910;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dn4o2EhSzw/dPcbf0I+GhuZZGnLjYr0VW9p4Ognw3lA=;
-        b=ExrLFIbDyxj4RQgFsz3xa7h0a3nxbpZMhmzpiMt2AHV+0WLP4qzZvqIrUkmCFTcrWy
-         tPFiDejlTtounSpnezYeZ2Qhk6st+bPA0iyDOhBH94IyysuqXMq2RbK3zOlp8kA3VYEI
-         dvvh0f0BO09wTx10YVzoum2WG7Ahz3ubjagv4eujHE0R0s7DU5j2wAwSlYP/xN6Li+TL
-         P9K5OTaMIpo8Hdr9raa8STJY7TssTvlF9fg5CbKS/mroT+r4gFlB6XFzscc6f1p0mpJJ
-         HkLzQ7VGqmvk4pibtDIA0cJDbkjOKATGMNk/m9OH1fKXFmbfky98rsHJZlDOeUwto5kM
-         1WNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXFs99Hznk+FI3Y0v2tcVmkwJ76vgVKErB9LXwbxDZKCmmIuaK3j2YB85v7Xo9uTjuiDGQmX8cLAvls3tA/7X1o8S487lUz7KNHzz1EFvIzNnpK1Wk688hFMI/94eQPNg0cU2lG/jGCmGQ=
-X-Gm-Message-State: AOJu0YxjnARnZpY5snCOcf+1CYEiKd4Zn2dkv8zWvZH0AndnEdu1Hmno
-	iFm4wt5dD5OsO73iyg60Hxl27N4ywgJDH1QxRAPF3QBUQPb3eMhxysyGEu5Wvj2WlW5oA4Qw9Yk
-	3k7KgkdN7e+gdODaShp54/f5BFJ1YKeaq
-X-Google-Smtp-Source: AGHT+IFbWul1azbb7FTg9EddCY7T7oYsUqF6TE3i9r9b9TycKD6mwZxOcnZoYoeU6Y0yDRibf8dC3NEMMFfQCe9VDFo=
-X-Received: by 2002:a05:651c:222b:b0:2d2:751f:abb2 with SMTP id
- y43-20020a05651c222b00b002d2751fabb2mr2507208ljq.3.1710284110049; Tue, 12 Mar
- 2024 15:55:10 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GllTe/RQgczMHmUno78j/do76J1oEdlSS6Fi1XuvkuE=;
+ b=CWiSsPhlVOvm2ZZ90ijSOiftpLm/3udopq1uwqL5fko9Id0d1GN9S9DUaLErgq7qahROAJEFpVt9V38Z8pmci2EVhKi8rkTYjcAfZyyMuGE1iwyGmyFbu2PklG3YyBwmL1JOSJ8wTycthkq8cN5xDZLAufWM6KLpeqw2vc549yU=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by SA3PR10MB6972.namprd10.prod.outlook.com (2603:10b6:806:31f::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Tue, 12 Mar
+ 2024 23:32:50 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::814:3d5c:443b:17b%7]) with mapi id 15.20.7362.035; Tue, 12 Mar 2024
+ 23:32:50 +0000
+Message-ID: <c87c39b1-04df-4420-ae82-81956ae0d063@oracle.com>
+Date: Wed, 13 Mar 2024 05:02:43 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: validate device maj:min during scan
+Content-Language: en-US
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+References: <ea6a2384807500090943f95c164e9f6b899efc58.1710246349.git.anand.jain@oracle.com>
+ <20240312191453.GA2898816@zen.localdomain>
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20240312191453.GA2898816@zen.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA0P287CA0004.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a01:d9::14) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
- <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it> <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
- <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it> <ZedaKUge-EBo4CuT@redhat.com>
- <ZeiS/bjJaRcrerWW@fedora> <CAOCpoWeoQMh_-MxzxGBnK2Kf5EhvTLs=GrGwJ5XcfGVRTp73Eg@mail.gmail.com>
- <Ze2azGlb1WxVFv7Z@fedora> <Ze3RWqLvG18cQ4dz@redhat.com> <CAOCpoWf7C=B1sdeUL46sVVtVUDH8+o_T9LGJNTOYqA317uMdmA@mail.gmail.com>
- <Ze8DZLBHhCxgzc+r@fedora>
-In-Reply-To: <Ze8DZLBHhCxgzc+r@fedora>
-From: Patrick Plenefisch <simonpatp@gmail.com>
-Date: Tue, 12 Mar 2024 18:54:59 -0400
-Message-ID: <CAOCpoWd5VWZnAaYvkFDYo736ZXDK0bExC9NkwVGfLv_CATj9Rw@mail.gmail.com>
-Subject: Re: LVM-on-LVM: error while submitting device barriers
-To: Ming Lei <ming.lei@redhat.com>
-Cc: Mike Snitzer <snitzer@kernel.org>, Goffredo Baroncelli <kreijack@inwind.it>, linux-kernel@vger.kernel.org, 
-	Alasdair Kergon <agk@redhat.com>, Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, regressions@lists.linux.dev, 
-	dm-devel@lists.linux.dev, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 11, 2024 at 9:13=E2=80=AFAM Ming Lei <ming.lei@redhat.com> wrot=
-e:
->
-> On Sun, Mar 10, 2024 at 02:11:11PM -0400, Patrick Plenefisch wrote:
-> > On Sun, Mar 10, 2024 at 11:27=E2=80=AFAM Mike Snitzer <snitzer@kernel.o=
-rg> wrote:
-> > >
-> > > On Sun, Mar 10 2024 at  7:34P -0400,
-> > > Ming Lei <ming.lei@redhat.com> wrote:
-> > >
-> > > > On Sat, Mar 09, 2024 at 03:39:02PM -0500, Patrick Plenefisch wrote:
-> > > > > On Wed, Mar 6, 2024 at 11:00=E2=80=AFAM Ming Lei <ming.lei@redhat=
-.com> wrote:
-> > > > > >
-> > > > > > #!/usr/bin/bpftrace
-> > > > > >
-> > > > > > #ifndef BPFTRACE_HAVE_BTF
-> > > > > > #include <linux/blkdev.h>
-> > > > > > #endif
-> > > > > >
-> > > > > > kprobe:submit_bio_noacct,
-> > > > > > kprobe:submit_bio
-> > > > > > / (((struct bio *)arg0)->bi_opf & (1 << __REQ_PREFLUSH)) !=3D 0=
- /
-> > > > > > {
-> > > > > >         $bio =3D (struct bio *)arg0;
-> > > > > >         @submit_stack[arg0] =3D kstack;
-> > > > > >         @tracked[arg0] =3D 1;
-> > > > > > }
-> > > > > >
-> > > > > > kprobe:bio_endio
-> > > > > > /@tracked[arg0] !=3D 0/
-> > > > > > {
-> > > > > >         $bio =3D (struct bio *)arg0;
-> > > > > >
-> > > > > >         if (($bio->bi_flags & (1 << BIO_CHAIN)) && $bio->__bi_r=
-emaining.counter > 1) {
-> > > > > >                 return;
-> > > > > >         }
-> > > > > >
-> > > > > >         if ($bio->bi_status !=3D 0) {
-> > > > > >                 printf("dev %s bio failed %d, submitter %s comp=
-letion %s\n",
-> > > > > >                         $bio->bi_bdev->bd_disk->disk_name,
-> > > > > >                         $bio->bi_status, @submit_stack[arg0], k=
-stack);
-> > > > > >         }
-> > > > > >         delete(@submit_stack[arg0]);
-> > > > > >         delete(@tracked[arg0]);
-> > > > > > }
-> > > > > >
-> > > > > > END {
-> > > > > >         clear(@submit_stack);
-> > > > > >         clear(@tracked);
-> > > > > > }
-> > > > > >
-> > > > >
-> > > > > Attaching 4 probes...
-> > > > > dev dm-77 bio failed 10, submitter
-> > > > >        submit_bio_noacct+5
-> > > > >        __send_duplicate_bios+358
-> > > > >        __send_empty_flush+179
-> > > > >        dm_submit_bio+857
-> > > > >        __submit_bio+132
-> > > > >        submit_bio_noacct_nocheck+345
-> > > > >        write_all_supers+1718
-> > > > >        btrfs_commit_transaction+2342
-> > > > >        transaction_kthread+345
-> > > > >        kthread+229
-> > > > >        ret_from_fork+49
-> > > > >        ret_from_fork_asm+27
-> > > > > completion
-> > > > >        bio_endio+5
-> > > > >        dm_submit_bio+955
-> > > > >        __submit_bio+132
-> > > > >        submit_bio_noacct_nocheck+345
-> > > > >        write_all_supers+1718
-> > > > >        btrfs_commit_transaction+2342
-> > > > >        transaction_kthread+345
-> > > > >        kthread+229
-> > > > >        ret_from_fork+49
-> > > > >        ret_from_fork_asm+27
-> > > > >
-> > > > > dev dm-86 bio failed 10, submitter
-> > > > >        submit_bio_noacct+5
-> > > > >        write_all_supers+1718
-> > > > >        btrfs_commit_transaction+2342
-> > > > >        transaction_kthread+345
-> > > > >        kthread+229
-> > > > >        ret_from_fork+49
-> > > > >        ret_from_fork_asm+27
-> > > > > completion
-> > > > >        bio_endio+5
-> > > > >        clone_endio+295
-> > > > >        clone_endio+295
-> > > > >        process_one_work+369
-> > > > >        worker_thread+635
-> > > > >        kthread+229
-> > > > >        ret_from_fork+49
-> > > > >        ret_from_fork_asm+27
-> > > > >
-> > > > >
-> > > > > For context, dm-86 is /dev/lvm/brokenDisk and dm-77 is /dev/lower=
-VG/lvmPool
-> > > >
-> > > > io_status is 10(BLK_STS_IOERR), which is produced in submission cod=
-e path on
-> > > > /dev/dm-77(/dev/lowerVG/lvmPool) first, so looks it is one device m=
-apper issue.
-> > > >
-> > > > The error should be from the following code only:
-> > > >
-> > > > static void __map_bio(struct bio *clone)
-> > > >
-> > > >       ...
-> > > >       if (r =3D=3D DM_MAPIO_KILL)
-> > > >               dm_io_dec_pending(io, BLK_STS_IOERR);
-> > > >       else
-> > > >               dm_io_dec_pending(io, BLK_STS_DM_REQUEUE);
-> > > >     break;
-> > >
-> > > I agree that the above bpf stack traces for dm-77 indicate that
-> > > dm_submit_bio failed, which would end up in the above branch if the
-> > > target's ->map() returned DM_MAPIO_KILL or DM_MAPIO_REQUEUE.
-> > >
-> > > But such an early failure speaks to the flush bio never being
-> > > submitted to the underlying storage. No?
-> > >
-> > > dm-raid.c:raid_map does return DM_MAPIO_REQUEUE with:
-> > >
-> > >         /*
-> > >          * If we're reshaping to add disk(s)), ti->len and
-> > >          * mddev->array_sectors will differ during the process
-> > >          * (ti->len > mddev->array_sectors), so we have to requeue
-> > >          * bios with addresses > mddev->array_sectors here or
-> > >          * there will occur accesses past EOD of the component
-> > >          * data images thus erroring the raid set.
-> > >          */
-> > >         if (unlikely(bio_end_sector(bio) > mddev->array_sectors))
-> > >                 return DM_MAPIO_REQUEUE;
-> > >
-> > > But a flush doesn't have an end_sector (it'd be 0 afaik).. so it seem=
-s
-> > > weird relative to a flush.
-> > >
-> > > > Patrick, you mentioned lvmPool is raid1, can you explain how lvmPoo=
-l is
-> > > > built? It is dm-raid1 target or over plain raid1 device which is
-> > > > build over /dev/lowerVG?
-> >
-> > LVM raid1:
-> > lvcreate --type raid1 -m 1 ...
->
-> OK, that is the reason, as Mike mentioned.
->
-> dm-raid.c:raid_map returns DM_MAPIO_REQUEUE, which is translated into
-> BLK_STS_IOERR in dm_io_complete().
->
-> Empty flush bio is sent from btrfs, both .bi_size and .bi_sector are set
-> as zero, but the top dm is linear, which(linear_map()) maps new
-> bio->bi_iter.bi_sector, and the mapped bio is sent to dm-raid(raid_map())=
-,
-> then DM_MAPIO_REQUEUE is returned.
->
-> The one-line patch I sent in last email should solve this issue.
->
-> https://lore.kernel.org/dm-devel/a783e5ed-db56-4100-956a-353170b1b7ed@inw=
-ind.it/T/#m8fce3ecb2f98370b7d7ce8db6714bbf644af5459
-
-With this patch on a 6.6.13 base, I can modify files and the BTRFS
-volume stays RW, while no errors are logged in dmesg!
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SA3PR10MB6972:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3b5b2ab6-ee15-4da1-6a15-08dc42ecbb3f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	ZXDnKdBJZN/uhJp30Cb0K1HwFWiH0GCj4Z+rg5dOs8E5urrutTbabf9fBG64u6VAN6rZ3NITgdGgtPDeWBS9i5JSzkJtme4cVw7Zl9EotqBiOwETezeKqyCH4eWtxiC/oO1WI1anNNs7kTZ51Xo9i/PjYv4zWY+b3aZNyMaD1o5zuWUJpIRgkO5N0fiN01Z3kJZzUbBsHgPEeJctYi15B9l/kc7LX1b+p3BzmP0ysq45uJsmUBpdM/pPDN3q703N39yDBYCwJNSUFSkvmByVd9+eoh2cwo8bHHmDnvWX8m6iiP/ZJ9t9ABmvahxH9Am/WfVhznZ6nw9fFAFRdePDPBL/C31XnEQDZ59GpVlS5E+h+tOVpI5B/ZrWB9BAbJA5anc1sErwewXqWVEfxDeZf1tPQ/rpvMNYhxBzvbYGnmKqCovxgNMy36ENcoci+88GDeDrzoegBBF+/VylcpSM5EVkoGFinZ1qyEz09RcOFUOHneTck+SRXKANmKruuZZFr9yDApgdkRiJeO+SAw4XVDfGrSj4mtphXGlMOxzfUttpvxxTzdzMB36HT7aHCy/L6LUowd3tl7OBvMepomx8JRTaUrQ7hVN4g8sSvlzIezns5y7SQU7tsWgoAUJC6RWvbPaATQ2ePj4KD7AbmQm5r7BlfUiJGtX1fUIhJ+LjY5g=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?VWFqWDMraUJQWnBVWWt2bnNDSkxvdWZDMDB0eTRZb3BKTGlMTjBrRXBYcm8z?=
+ =?utf-8?B?WjRYenQ0dmlXdEZNREZKOVJQOE5NUjZjYy81RG1hV2xsYit6Q2N6blFLQm5n?=
+ =?utf-8?B?RGlBUStiSEdQR3VEdUROMmRBemdJeTdBRHdrQ0ZEVlpEOTFhc1RiVURwQjJN?=
+ =?utf-8?B?Q2g1RXR4cEFNamxzOXNOUjVwYThCMlRqSFFGeks2TkdUdFg1aEtCWWVIU1pS?=
+ =?utf-8?B?YjFBQW4za3U2OWRsMnNGMG90MlpVM0JSS0thOHZLUTZ6a29nUVdIZ1ZRaEV0?=
+ =?utf-8?B?SFZaOHhlTlZXT0t1WW9DYzIvN0pHQS9GU3NCRkZuWVcxbnY5S1JZU3BudHBL?=
+ =?utf-8?B?Um5KQ05uUC9wMWJRK0lxU0w0QVRPY3lpaStuL3gvWXY1WHZqNnpJT09QUU1n?=
+ =?utf-8?B?UXZTSWRyM1FnYTFKSjBqN2s5RDg0aTdMSFhHNHAvcEJ5TWR5N0dOTHI3UXV0?=
+ =?utf-8?B?dVBOL0RaTG1ud1RSMFJRNzgrOXlJNElQYW9RTVZxK3ErSDVsOTJLbzlzRXg4?=
+ =?utf-8?B?UjJ1Qy9wQU5WVER1VWZaL2VQSDRzYmlKSldSeXJOSDB0SHdFRmFrbDZucmV6?=
+ =?utf-8?B?emZNWVZwSm5ieFRqdHE5TUJXc25sNmRCSlJ2Rm82cDVvTTkrV095eXoxeDBO?=
+ =?utf-8?B?d1cvV21wdCtjTzh0ZmIxWWlsZXl2djhOYWFHQ3RpeWlNakt1VGVRYUpVSzdX?=
+ =?utf-8?B?bHVYdjlRbmw3QXBpVUFSS3VIM1YyZmcyU2gzT0hvSStPT2svYk9aMUxwdWJh?=
+ =?utf-8?B?TU9PSHdoM1pCMUI2WGhEYmNJTytWM0JOdEpHSUhzU1p2aWF6V25Ydk41Mk00?=
+ =?utf-8?B?eTZ3NkUrekJVbWJaN3h4blltcmRyWW5vcDMrZUU1dk5XMTJ4WExjTnE2S1J4?=
+ =?utf-8?B?c1RLNDZ1MHF4Wkg4Y3pkc0VBSjBNaDBVUEcyb2xkSW9RdUE0d0UzejlPMkJs?=
+ =?utf-8?B?cGE0RzJFTTR0NTNtU0VwNFM1bUcvSGxSelRIcmZ3T21PTTlNM2RaTEs3L0Z4?=
+ =?utf-8?B?cFgxV1I0ZTU2dHFvaW5GclAvenBFQjJXSGpRZ1dzcUFjaWg5NkVzNEw1cldi?=
+ =?utf-8?B?TkxpZU9LVExFZUhFdzhkd3V1YUVObWJUNmNIbnh1eHFIZWJwZlhIdC9vZ0hl?=
+ =?utf-8?B?K25sVktzKzRubEplYjFMa1FQOEJXZ01kV2NlM3BQZVV0U0RBL29zMmorMFc5?=
+ =?utf-8?B?ODAvOTJmOGF5NG9CaFBDYkx3eXd4d1dVcHNKb3JqL083K29NY2lrZk1saWls?=
+ =?utf-8?B?YUtDSG1nVmtBLzdzRlY3czdXSjBibm4raStkVXJBMjRvd0NOVUs1cHV0eWg1?=
+ =?utf-8?B?QnhuVVBYbWVxK1ZreHZFNWdlL2dEbUh6YzZacWtCQ3EwSzFqb3hDYmZHdjF1?=
+ =?utf-8?B?QUJmMmlwWmVFbllRaXFocVNTZlBnWS9IcXh3U0hZdFZDTXJmV3ZGK2w3ZWR4?=
+ =?utf-8?B?ZUE3ZkRaWFhkdzhUc1pGR3BJL21uVUErVW93dHMrOWxFQUw4SnVjcldoTTdR?=
+ =?utf-8?B?bGFNTms3VTZ3UUFsQ1VxNjlLdmJ0MzJoU1oxU2wvSnVJY3NHb3YwbC9tK09H?=
+ =?utf-8?B?Rm5DcjBFYU11V2Nmb1VNR3kvTW9TSGlTWFo4MWZaa2Jodk5MdkNGWTg4enFz?=
+ =?utf-8?B?bDFuTDZUVXlSbzVqWjlPdmpkTDV0UTZQMDJwYmRvNDJBVklnZktHKzJvNkxZ?=
+ =?utf-8?B?RmZxcG1xa1lYVFRNQjl5UUNveGhjQTRwSG4xNDRJWW1WNEpEdmxLeGhoc0Va?=
+ =?utf-8?B?eFhocmZBVEg3R09JbDNIdHh5VGNldUFRa0loaFNVb0xqZSsyNFJ2WEU0bVFW?=
+ =?utf-8?B?eW1EOWRVYnVSUGdhSzEzMXpCZDlMaDk4ZFpvZGdsYzI4WDZMQmFGWGNqNWFw?=
+ =?utf-8?B?Wkh3Y2FIVHIvQXNEM203OE9LYThxZWU1dkxwbUN5dmdWVU5xZG9xaGExR2xT?=
+ =?utf-8?B?TS9vMEMvVHowYXpGQko2ZTNtamJlUEIzUktmbm54T0hYK3hHTTRvUElOWm1O?=
+ =?utf-8?B?blBvWHA3UkdEVVFJZmpWdjZCOUtBVTVyTVZiTVpOaGMwYkdqdXpES3lFVUZq?=
+ =?utf-8?B?SnFiV2VVTCtJK0lRajJNOVh6ekpBZmgzTm9tdnVWUmZBK3pQMlpPL3lyc1pm?=
+ =?utf-8?B?T21QbmlHUk5NUk5pcHBLTFMwVHdSNDFoZm82ZE04eDVqRVI5NTBxU2pVbHdu?=
+ =?utf-8?Q?p6M0LA4V+5s31J3EVaFESi/TPHwMNXSUqQBLE1mt+T7l?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	stI6COnYwtytdijgiwsNHixNM/gmhIJNxlA1immF+shtw46M56mN8P/crVPw0Ztybt02AllKiioRkN+UzZ+82+4lKjX6eDxBx4GaCdQKNQujRSVQ7atP04HzsofMZlOKD3tiZxNYSlvCgrYtY61BlVMr/FzOl7kEzlcynM52PzbJFm8hscRX5f9pYKuv3bhDUc8jGzR9x2JPEYUt+BsPqQgiLctRQAYVH7G+qn+b+ZyBe7FmLtAK6wH8hgtE3ox8ostMdJ9dSrEyCx3bjgnvHHaO9prQTK+IivbVM36g4pTqP4J/AL4ioqczEdqfEg1+SaSpSuswfqSrsGcvkqre2ginyW6Tcv0JMFzl9JQw30bB2RzIfCFR5EQZbAs/+PzukjUTUZQkkqgJoR7fYIJYxiSXKFGRNEx8y7tWAwaV5+kJ/T5NJE8vEYgB3Ds67pLVfAZM55i0gdzaG79ChKrIpHdEz7naNANgD+nguEjb5q+uyE6shCnkYA6pp6WyKfudFnRmetO7rFVTibmaErGFaqqZ9EfjqstBWKsGdpvwXOfl/P8ETvqZgWzIzb4wCF5Wy8WI/XCshxegW1IrVf4H5b1gkr9KW9bXe/MlHmRXiAE=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b5b2ab6-ee15-4da1-6a15-08dc42ecbb3f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2024 23:32:50.4127
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nt/XIhBWn3m2OQridrLA8VBjz0KsgDSyfoNdeJQRt0UqZdEX0wz0jvWr3lFhyldJ2sPITBXNJhTItrrCnOy1iA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR10MB6972
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-12_14,2024-03-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 spamscore=0
+ bulkscore=0 phishscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2403120181
+X-Proofpoint-GUID: pNqbB5OYqHeIi6R9iBlcSUfdoXgqgFUV
+X-Proofpoint-ORIG-GUID: pNqbB5OYqHeIi6R9iBlcSUfdoXgqgFUV
 
 
->
-> But DM_MAPIO_REQUEUE misuse needs close look, and I believe Mike is worki=
-ng
-> on that bigger problem.
->
-> I guess most of dm targets don't deal with empty bio well, at least
-> linear & dm-raid, not look into others yet, :-(
->
->
-> Thanks,
-> Ming
->
+
+On 3/13/24 00:44, Boris Burkov wrote:
+> On Tue, Mar 12, 2024 at 06:32:41PM +0530, Anand Jain wrote:
+>> The maj:min of a device can change without altering the device path.
+>> When the device is re-scanned, only the device path change is fixed,
+>> if any, but the changed maj:min remains (bug). This patch fixes it by
+>> also checking for the changed maj:min.
+>>
+>> However, please note that we still need to validate the maj:min during
+>> open as in the patch ("btrfs: validate device maj:min during open") because
+>> only the device specified in the mount command gets scanned during mount.
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> 
+> Is this a real problem you can reproduce? I'm pretty sure we can't hit
+> this code path with single dev fs due to the temp_fsid logic. But it
+> does seem plausible to hit it with a multi device fs.
+> 
+> If you can in fact reproduce it, please feel free to add:
+> 
+> Reviewed-by: Boris Burkov <boris@bur.io>
+> 
+> and please also send an fstests patch with the reproducer!
+
+Hm. It is only theoretical. I do not have a test case because I am
+assuming the patch ("btrfs: validate device maj:min during open")
+is integrated, which means any stale devt gets fixed during mount.
+So it is hard to break.
+
+If you have any ideas for a test case, please share.
+
+Thanks, Anand
+
+
+>> ---
+>>   fs/btrfs/volumes.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 8a35605822bf..473f03965f26 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -854,7 +854,8 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>>   				MAJOR(path_devt), MINOR(path_devt),
+>>   				current->comm, task_pid_nr(current));
+>>   
+>> -	} else if (!device->name || strcmp(device->name->str, path)) {
+>> +	} else if (!device->name || strcmp(device->name->str, path) ||
+>> +		   device->devt != path_devt) {
+>>   		/*
+>>   		 * When FS is already mounted.
+>>   		 * 1. If you are here and if the device->name is NULL that
+>> -- 
+>> 2.31.1
+>>
 
