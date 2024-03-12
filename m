@@ -1,124 +1,138 @@
-Return-Path: <linux-btrfs+bounces-3214-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3215-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50EE8878D88
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 04:35:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14B36878DAF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 04:58:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FF5F2819AC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 03:35:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E95E0B2173E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Mar 2024 03:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65C7BB66F;
-	Tue, 12 Mar 2024 03:35:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD9A8BA22;
+	Tue, 12 Mar 2024 03:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BCuLpwmg"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Y1fn47LE";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Y1fn47LE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A40CAD53;
-	Tue, 12 Mar 2024 03:35:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED924AD58
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 03:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710214516; cv=none; b=H2R9k2OTqaYe/h3V77ozBoe7VK/oiGIS943MXvQiGNfjypDX1D/mwYSjbh+UWzLgynMuBt/XtnP4tv8biodAuhHDg/16tbMAyHYrIKn6lvM2Guf2N/yQcw7cyuIg/9pI5bZ9zocJ3KUPnBk6XX6HSWP4WpR+oGmKV1aKSjG0jSI=
+	t=1710215873; cv=none; b=b3OKFsgStcRuuJgnuN27IcR/yB7EvJUVkN8IeEannMJCyR5e55fr/gFcBia7LTsxX7h88E1wPuEdjqmUtnpFdcvaq6jqCfC51s7QeasiOIX165etj7y0CJEQc5a8a2ECk0eGo7vqSU5+o7TOjBE30Dj5hsP/mWhCmyRF/qKEg4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710214516; c=relaxed/simple;
-	bh=AUQ7xAWBTS5Ia7CJFyHPV3xL7WfXiWahy9TRf8nEfkQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gVGSnO9lkKk8Bg19SClPFvTMkmMpEG2mvThwfJA0/7DWz2a4HJ1xmrg1pHX2S+5ENdcZackYPVUC2MmKn7cULenNWtRuEo+Zh9wYqAV1rwTRBifuMu8Kwv6VHl7Yp84/RRvKglM2J7EBAftcuaQQYamuaWHYJerF1zdoBQGT82Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BCuLpwmg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D088C433C7;
-	Tue, 12 Mar 2024 03:35:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710214516;
-	bh=AUQ7xAWBTS5Ia7CJFyHPV3xL7WfXiWahy9TRf8nEfkQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BCuLpwmgvPExgGzXP91YpQQyZHNSwLE6gYj8a59LYvTDeg7NR7VjLrYJY+HfNVvm0
-	 /xaAi2Rt4p1UP+ij3ErLabhUyXs+22Uxm7fOuswqU4ZM/Dv/hxDm41XneOn0Ni/vKb
-	 qIP5JqQP1AQ4FuU6LE8sW1fMpkY/4Ztj12buxLdNeQlYD2Y3/CrDFqKxqCorKiZ5GK
-	 zTs98KPkFLoQzbIMBc4rX63WjWRkfwGhjILdEdslp2JTifMaja/icz7VXjrCOXJuia
-	 cz38SP1NQuot3QHtF0VKBC7TdzFZMg5XeT7af/DhaPOmkfleHa6PaHd6zBd+eMpbzo
-	 k1neHLj6jkruw==
-Date: Mon, 11 Mar 2024 20:35:13 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Andreas Dilger <adilger@dilger.ca>
-Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>, corbet@lwn.net,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	linux-doc@vger.kernel.org,
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	linux-btrfs <linux-btrfs@vger.kernel.org>,
-	Chris Mason <clm@meta.com>, David Sterba <dsterba@suse.com>,
-	Josef Bacik <josef@toxicpanda.com>, jbacik@toxicpanda.com,
-	kernel-team@meta.com
-Subject: Re: [PATCH 1/3] add physical_length field to fiemap extents
-Message-ID: <20240312033513.GG1182@sol.localdomain>
-References: <cover.1709918025.git.sweettea-kernel@dorminy.me>
- <0b423d44538f3827a255f1f842b57b4a768b7629.1709918025.git.sweettea-kernel@dorminy.me>
- <D8407E1D-F188-4115-A963-9EFBB515C45D@dilger.ca>
+	s=arc-20240116; t=1710215873; c=relaxed/simple;
+	bh=tNiAr9i5t/NK7H5NpaktqohRY1UTyEPQRfPJRyEnv08=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=IwU/YPlIWcFegfDiQ1Hh7aVckxm+aP4iLirJz1qJoX1pnUge6PgdZ7BXqdN6vjERZBzM2IQrJil+lpwwQNIcpK5MUUoWhQdky1wNldznpbAdv59eFlLMbqaX7UcoHUsd92NlK+SOJhp4Ti7vU9XzNHXZIBrHJYHfy/1RqXOHkSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Y1fn47LE; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Y1fn47LE; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1BD52371D3
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 03:57:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710215870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=2xaOXK7kaLYcyqeoEcfKsAvI9gRmkx8Y804MfpCmW+0=;
+	b=Y1fn47LEGKsHB4xcQdQ/ohvQI3RcwXyFPrJMfoiOmPwbi8WH3ygAOVJrYM8kerIHa3yzSb
+	+Sg1XW/FFiHBaCpjQj3rtsJaLjeLaaU+p2NJXQwn7xtezxmEvRkTt6z0KVQL4GJ+jAbY8A
+	pbK/3PElge0RO/b7L4z6qW50PCscWKE=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710215870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=2xaOXK7kaLYcyqeoEcfKsAvI9gRmkx8Y804MfpCmW+0=;
+	b=Y1fn47LEGKsHB4xcQdQ/ohvQI3RcwXyFPrJMfoiOmPwbi8WH3ygAOVJrYM8kerIHa3yzSb
+	+Sg1XW/FFiHBaCpjQj3rtsJaLjeLaaU+p2NJXQwn7xtezxmEvRkTt6z0KVQL4GJ+jAbY8A
+	pbK/3PElge0RO/b7L4z6qW50PCscWKE=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2EEE313879
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 03:57:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id mMB4OLzS72VNVgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 12 Mar 2024 03:57:48 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/2] btrfs-progs: cmds/filesystem: add --usage-ratio and --wasted-bytes options
+Date: Tue, 12 Mar 2024 14:27:29 +1030
+Message-ID: <cover.1710214834.git.wqu@suse.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D8407E1D-F188-4115-A963-9EFBB515C45D@dilger.ca>
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: ****
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [4.03 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCPT_COUNT_ONE(0.00)[1];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_DN_NONE(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.87)[85.60%]
+X-Spam-Score: 4.03
+X-Spam-Flag: NO
 
-On Mon, Mar 11, 2024 at 06:22:02PM -0600, Andreas Dilger wrote:
-> On Mar 8, 2024, at 11:03 AM, Sweet Tea Dorminy <sweettea-kernel@dorminy.me> wrote:
-> > 
-> > Some filesystems support compressed extents which have a larger logical
-> > size than physical, and for those filesystems, it can be useful for
-> > userspace to know how much space those extents actually use. For
-> > instance, the compsize [1] tool for btrfs currently uses btrfs-internal,
-> > root-only ioctl to find the actual disk space used by a file; it would
-> > be better and more useful for this information to require fewer
-> > privileges and to be usable on more filesystems. Therefore, use one of
-> > the padding u64s in the fiemap extent structure to return the actual
-> > physical length; and, for now, return this as equal to the logical
-> > length.
-> 
-> Thank you for working on this patch.  Note that there was a patch from
-> David Sterba and a lengthy discussion about exactly this functionality
-> several years ago.  If you haven't already read the details, it would be
-> useful to do so. I think the thread had mostly come to good conclusions,
-> but the patch never made it into the kernel.
-> 
-> https://patchwork.ozlabs.org/project/linux-ext4/patch/4f8d5dc5b51a43efaf16c39398c23a6276e40a30.1386778303.git.dsterba@suse.cz/
-> 
-> One of those conclusions was that the kernel should always fill in the
-> fe_physical_length field in the returned extent, and set a flag:
-> 
-> #define FIEMAP_EXTENT_PHYS_LENGTH      0x00000010
-> 
-> to indicate to userspace that the physical length field is valid.
-> 
-> There should also be a separate flag for extents that are compressed:
-> 
-> #define FIEMAP_EXTENT_DATA_COMPRESSED  0x00000040
-> 
-> Rename fe_length to fe_logical_length and #define fe_length fe_logical_length
-> so that it is more clear which field is which in the data structure, but
-> does not break compatibility.
-> 
-> I think this patch gets most of this right, except the presence of the
-> flags to indicate the PHYS_LENGTH and DATA_COMPRESSED state in the extent.
-> 
-> Cheers, Andreas
+[CHANGELOG]
+v2:
+- Sync the newer kernel uapi
+- Remove the "lone" mentions
+  Now the new options would be "--usage-ratio" and "--wasted-bytes".
 
-Thanks for resurrecting this.  Andreas's suggestions sound good to me.  And yes,
-please try to search for any past discussions on this topic.
+This the progs support for the new kernel defrag parameters.
 
-It may be a good idea to Cc the f2fs mailing list
-(linux-f2fs-devel@lists.sourceforge.net), since this will be useful for f2fs
-too, since f2fs supports compression.
+This adds 2 new fine tunning parameters, --usage-ratio and
+--wasted-bytes.
 
-One use case is that this will make testing the combination of
-compression+encryption (e.g. as xfstest f2fs/002 tries to do) easier.
+The ratio is between [0, 100] (aka, percentage value), and wasted bytes
+is between [0, U32_MAX], but in reality the value only makes sense below
+max file extent size (for both compressed and regular extents).
+Any value higher than max file extent size would mostly disable the
+wasted bytes check (as it would always be false).
 
-- Eric
+The default usage ratio is 5%, and 16MiB wasted bytes.
+If the kernel doesn't support the new options, it would fall back to
+the old ioctl flags without the 2 new flags.
+
+Qu Wenruo (2):
+  btrfs-progs: defrag: sync the usage ratio/wasted bytes fine-tunning
+    from kernel
+  btrfs-progs: cmds/filesystem: add --usage-ratio and --wasted-bytes for
+    defrag
+
+ Documentation/btrfs-filesystem.rst | 21 ++++++++++++
+ cmds/filesystem.c                  | 53 ++++++++++++++++++++++++++++--
+ kernel-shared/uapi/btrfs.h         | 39 ++++++++++++++++++++--
+ 3 files changed, 107 insertions(+), 6 deletions(-)
+
+--
+2.44.0
+
 
