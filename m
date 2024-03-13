@@ -1,126 +1,166 @@
-Return-Path: <linux-btrfs+bounces-3251-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3252-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BD1787AA04
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 16:05:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51A4A87AA97
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 16:41:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA9111F26072
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 15:05:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 523281C20B25
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 15:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E2247A7C;
-	Wed, 13 Mar 2024 15:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE5A47A73;
+	Wed, 13 Mar 2024 15:41:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="DX5ukTQk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HHGjV+xR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFABB4778C;
-	Wed, 13 Mar 2024 15:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.144.250
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E648C47A40;
+	Wed, 13 Mar 2024 15:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710342317; cv=none; b=d8HZDPgaH9jRNlPUMWfZIQuBmy/GofwGh/m+X66BbJFFdFnJPWwzU/CEwkMyzOu7rjB1w9fP+BuOawt4QWU6p7EIgWWkPQJz69KTO5q/Zp5wsvwGnlxjnC8KAtQjERRcVwSIn2sA6lhV1NbomUNGk8TWg+P9A5FF7ZGStmBCV+g=
+	t=1710344505; cv=none; b=QgZR/tz7xt93/hoQG4QWXpVU764iHE4Cy0xXiIYCm+84rnYGZO9fJDfTv37fxKB0Kfkl3+AzvAtcL5XsQ8ZR7trsspkJpwo3qVaCQ37sY9vjgaLBadrOyPUmMJFrSRowSvvA2pWQadnD79hjzyrhp0oN68Xf95j9VQFgnPM100s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710342317; c=relaxed/simple;
-	bh=iMnS8ZGEFpxUyyW9drRJ6JBVm+281k0oK57TGx+F1Qg=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=nesCinalHRI6dvnSG5y5Ev/C+HYa3kYHST5mofKpN2B/mRFe+8FfIaNkxV47A6nsQaNv/GExCyKEu3gcLWoEfxPP+NNApY/xCpweTyyzlBq047MKTwapq/BqIihm8xeCeyNYQNBieeFX0//yZpqASuUOFCfA3joFKTADOK2FSPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me; spf=pass smtp.mailfrom=dorminy.me; dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b=DX5ukTQk; arc=none smtp.client-ip=71.19.144.250
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	by box.fidei.email (Postfix) with ESMTPSA id 94DCA8043E;
-	Wed, 13 Mar 2024 11:05:10 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-	t=1710342310; bh=iMnS8ZGEFpxUyyW9drRJ6JBVm+281k0oK57TGx+F1Qg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=DX5ukTQk6tKvpEuCn0px4VNAaAVmncdYvgwtF6zi959+eFamyAPjH8ApYehtL6R+G
-	 P+O8ALWTyCJEOMEyWx1I6mCPmKCHJtXy//MPP+yJjI968LoheXSceWhAcD9dIg5xqs
-	 AuFfTl98Nrd1TYGkFAc8qL7FuiJlRUspSW5nhn7OCTPa5f/xhypc5OjvxdIDvm+xo1
-	 zI9zbcElOIsYxmp7Qtse7+ddQ5/0TnPS8yuKAZzjNQn9BDJNAGFEW2kY2BbQY8cY9L
-	 vSFnKZfH6TZNG03QQchl5XNdqp19tq9ELnR0uPuaRla6gF/aZzNg/QmBGmFqjG5QTL
-	 rXAs3VdfR8Idg==
+	s=arc-20240116; t=1710344505; c=relaxed/simple;
+	bh=fyhfEQPReRMuaos4/P9XywQjRZMuFhsSVcOru9ShhrM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N3v8xWfrntHwmecIOQW0FQkUesbAANtX9rkrSjrN+A+UpTAzGoMT9mbZ7jG4U1+0xzvko1/mnbDFpwUiGIU6arltZnLAnuyrFzxSfZ7R+DBDD1dHRTru73M02xb6WWF7imHYZS5VsQ0RDsWktfP4IElSDKc+VDS6Q7fX5/OXECQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HHGjV+xR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0D36C433C7;
+	Wed, 13 Mar 2024 15:41:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710344504;
+	bh=fyhfEQPReRMuaos4/P9XywQjRZMuFhsSVcOru9ShhrM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=HHGjV+xRi+wYwbNbRyxNi5wha8Vgxd6YEwXMXS/eoatM3p7ZXrMV/aQhpzm60fq5t
+	 enterQyNlkSDHONqoeeIyMhqnRS/rvGqolwivVY8LUDiphw0UCiaYGPo8VQNWZl3L4
+	 vWv6TJeTmAaqZOJxU1iMDnQky6UGJRR34L0RwL1tNVuvwfV9X21MSg6gyuqV/ZWCY6
+	 ejH16UOM/q3aWETPIepzLI834wPJMWjV7niJOoWYFMXOvRw3LwN0j2eZ9ywg3U/+GL
+	 1LBfZYQjmh3To2mI7cweWcFGuSqo5aV5s+HAC2kcJvI3cnLLL7wVhfmSkRxJQTaoHf
+	 xbjUvX4MnQkTg==
+From: fdmanana@kernel.org
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v2] fstests: add missing commit IDs to some tests
+Date: Wed, 13 Mar 2024 15:41:36 +0000
+Message-ID: <198116c12575e5a3f76fe7ef47e1fe7f82a22695.1710344411.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 13 Mar 2024 11:05:10 -0400
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To: Andreas Dilger <adilger@dilger.ca>
-Cc: corbet@lwn.net, Al Viro <viro@zeniv.linux.org.uk>, Christian Brauner
- <brauner@kernel.org>, Jan Kara <jack@suse.cz>, linux-doc@vger.kernel.org,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-btrfs
- <linux-btrfs@vger.kernel.org>, Chris Mason <clm@meta.com>, David Sterba
- <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
- jbacik@toxicpanda.com, kernel-team@meta.com
-Subject: Re: [PATCH 1/3] add physical_length field to fiemap extents
-In-Reply-To: <D8407E1D-F188-4115-A963-9EFBB515C45D@dilger.ca>
-References: <cover.1709918025.git.sweettea-kernel@dorminy.me>
- <0b423d44538f3827a255f1f842b57b4a768b7629.1709918025.git.sweettea-kernel@dorminy.me>
- <D8407E1D-F188-4115-A963-9EFBB515C45D@dilger.ca>
-Message-ID: <d29c6482853ded9b1c14620c0523068a@dorminy.me>
-X-Sender: sweettea-kernel@dorminy.me
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2024-03-11 20:22, Andreas Dilger wrote:
-> On Mar 8, 2024, at 11:03 AM, Sweet Tea Dorminy
-> <sweettea-kernel@dorminy.me> wrote:
->> 
->> Some filesystems support compressed extents which have a larger 
->> logical
->> size than physical, and for those filesystems, it can be useful for
->> userspace to know how much space those extents actually use. For
->> instance, the compsize [1] tool for btrfs currently uses 
->> btrfs-internal,
->> root-only ioctl to find the actual disk space used by a file; it would
->> be better and more useful for this information to require fewer
->> privileges and to be usable on more filesystems. Therefore, use one of
->> the padding u64s in the fiemap extent structure to return the actual
->> physical length; and, for now, return this as equal to the logical
->> length.
-> 
-> Thank you for working on this patch.  Note that there was a patch from
-> David Sterba and a lengthy discussion about exactly this functionality
-> several years ago.  If you haven't already read the details, it would 
-> be
-> useful to do so. I think the thread had mostly come to good 
-> conclusions,
-> but the patch never made it into the kernel.
-> 
-> https://patchwork.ozlabs.org/project/linux-ext4/patch/4f8d5dc5b51a43efaf16c39398c23a6276e40a30.1386778303.git.dsterba@suse.cz/
-> 
-> One of those conclusions was that the kernel should always fill in the
-> fe_physical_length field in the returned extent, and set a flag:
-> 
-> #define FIEMAP_EXTENT_PHYS_LENGTH      0x00000010
-> 
-> to indicate to userspace that the physical length field is valid.
-> 
-> There should also be a separate flag for extents that are compressed:
-> 
-> #define FIEMAP_EXTENT_DATA_COMPRESSED  0x00000040
-> 
-> Rename fe_length to fe_logical_length and #define fe_length 
-> fe_logical_length
-> so that it is more clear which field is which in the data structure, 
-> but
-> does not break compatibility.
-> 
-> I think this patch gets most of this right, except the presence of the
-> flags to indicate the PHYS_LENGTH and DATA_COMPRESSED state in the 
-> extent.
-> 
-> Cheers, Andreas
-> 
-I had not seen that; thank you for the pointers, I'll add the flags in 
-v2.
+From: Filipe Manana <fdmanana@suse.com>
+
+Some tests are still using a 'xxx...' commit ID but the respective patches
+were already merged to Linus' tree or btrfs-progs, so update them with the
+correct commit IDs and in two cases update the subject as well, because it
+was modified after the test case was added and before being sent to Linus
+(btrfs/317 and generic/707).
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+
+V2: Also add a missing btrfs-progs commit ID to btrfs/249 and ext4 commit ID
+    to generic/707.
+
+ tests/btrfs/249   | 2 +-
+ tests/btrfs/303   | 2 +-
+ tests/btrfs/309   | 2 +-
+ tests/btrfs/316   | 2 +-
+ tests/btrfs/317   | 4 ++--
+ tests/generic/707 | 4 ++--
+ 6 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/tests/btrfs/249 b/tests/btrfs/249
+index 06cc444b..0355434b 100755
+--- a/tests/btrfs/249
++++ b/tests/btrfs/249
+@@ -28,7 +28,7 @@ _require_command "$WIPEFS_PROG" wipefs
+ _require_btrfs_forget_or_module_loadable
+ _wants_kernel_commit a26d60dedf9a \
+ 	"btrfs: sysfs: add devinfo/fsid to retrieve actual fsid from the device"
+-_fixed_by_git_commit btrfs-progs xxxxxxxxxxxx \
++_fixed_by_git_commit btrfs-progs 32c2e57c65b9 \
+ 	"btrfs-progs: read fsid from the sysfs in device_is_seed"
+ 
+ _scratch_dev_pool_get 2
+diff --git a/tests/btrfs/303 b/tests/btrfs/303
+index 26bcfe41..ed3abcc1 100755
+--- a/tests/btrfs/303
++++ b/tests/btrfs/303
+@@ -25,7 +25,7 @@ _require_test
+ _require_scratch
+ _require_xfs_io_command "fiemap"
+ 
+-_fixed_by_kernel_commit XXXXXXXXXXXX \
++_fixed_by_kernel_commit 5897710b28ca \
+ 	"btrfs: send: don't issue unnecessary zero writes for trailing hole"
+ 
+ send_files_dir=$TEST_DIR/btrfs-test-$seq
+diff --git a/tests/btrfs/309 b/tests/btrfs/309
+index 5cbcd223..d1eb953f 100755
+--- a/tests/btrfs/309
++++ b/tests/btrfs/309
+@@ -12,7 +12,7 @@ _begin_fstest auto quick snapshot subvol
+ _supported_fs btrfs
+ _require_scratch
+ _require_test_program t_snapshot_deleted_subvolume
+-_fixed_by_kernel_commit XXXXXXXXXXXX \
++_fixed_by_kernel_commit 7081929ab257 \
+ 	"btrfs: don't abort filesystem when attempting to snapshot deleted subvolume"
+ 
+ _scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
+diff --git a/tests/btrfs/316 b/tests/btrfs/316
+index 07a94334..f78a0235 100755
+--- a/tests/btrfs/316
++++ b/tests/btrfs/316
+@@ -17,7 +17,7 @@ _begin_fstest auto quick qgroup
+ _supported_fs btrfs
+ _require_scratch
+ 
+-_fixed_by_kernel_commit xxxxxxxxxxxx \
++_fixed_by_kernel_commit d139ded8b9cd \
+ 	"btrfs: qgroup: always free reserved space for extent records"
+ 
+ _scratch_mkfs >> $seqres.full
+diff --git a/tests/btrfs/317 b/tests/btrfs/317
+index 59686b72..b17ba584 100755
+--- a/tests/btrfs/317
++++ b/tests/btrfs/317
+@@ -10,8 +10,8 @@
+ . ./common/preamble
+ _begin_fstest auto volume raid convert
+ 
+-_fixed_by_kernel_commit XXXXXXXXXX \
+-	"btrfs: zoned: don't skip block group profile checks on conv zones"
++_fixed_by_kernel_commit 5906333cc4af \
++	"btrfs: zoned: don't skip block group profile checks on conventional zones"
+ 
+ . common/filter.btrfs
+ 
+diff --git a/tests/generic/707 b/tests/generic/707
+index ad1592a1..da9dc5b6 100755
+--- a/tests/generic/707
++++ b/tests/generic/707
+@@ -16,8 +16,8 @@ _require_scratch
+ 
+ _fixed_by_kernel_commit f950fd052913 \
+ 	"udf: Protect rename against modification of moved directory"
+-_fixed_by_kernel_commit XXXXXXXXXXXX \
+-	"ext4: fix possible corruption when moving a directory"
++_fixed_by_kernel_commit 0813299c586b \
++	"ext4: Fix possible corruption when moving a directory"
+ 
+ _scratch_mkfs >>$seqres.full 2>&1
+ _scratch_mount
+-- 
+2.43.0
+
 
