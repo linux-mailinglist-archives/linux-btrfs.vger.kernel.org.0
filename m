@@ -1,52 +1,52 @@
-Return-Path: <linux-btrfs+bounces-3239-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3240-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92BE387A2DA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 07:07:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6109E87A2F6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 07:26:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 497BC283427
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 06:07:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1AAC1F224A2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 06:26:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480BD134BE;
-	Wed, 13 Mar 2024 06:07:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E63B13ADD;
+	Wed, 13 Mar 2024 06:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="OQJDRMZO"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TS4edoqN"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF0C111A9
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 06:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE0B11738
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 06:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710310054; cv=none; b=GKfVwI+wnPhP0yBhYT/K0wMB4shM5eS0CBSHwgivsGtH7+GjPptid9GCE9A630BqVR2i8aCoC1C1sxQSSihsAb/2srHpBSdDmeb7HjEq/cZ1RYSzcWxKqb97LkTxH/VzsC0qlvrZNzTFk+MqAjY0aQva2bA1KLLVFW7JVwGvXiU=
+	t=1710311186; cv=none; b=dKZ2kbcOO97/IHyQF7tam58yWytfhBv/6fDXx1LLesUdSTrK9eKfoi41OO0KIZaXNlV8+JKviInJhdJY8zSCgnnhMLxyBfhlOEGIgs57H5zOzgx+101dD1zYECDKn7MNf5SvKZdQqOfMYdfED867FxSUMyt9IH0prfJ0PwK8nx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710310054; c=relaxed/simple;
-	bh=ZgbQSWrGTQRkNvc+eXFEg9FjeGUzVV9ViFWR5/Quy+0=;
-	h=Content-Type:Message-ID:Date:MIME-Version:To:From:Subject; b=SCHz+pdS8sLMFwYO+DdymqfGXABik6rELIADNi0oMOGMvXTL6/orfA5mf6kIZCQ+WUQhUWd6/CDDProf7+mTVa776Gx0xBKJi+I2Fgt+kB8ISwT8Yuu/3s5C5FHwHCkGRejYYo3eYb/Qw8Qo1fJhwI9DLvqN7wjsffHyn4DOXTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=OQJDRMZO; arc=none smtp.client-ip=212.227.17.22
+	s=arc-20240116; t=1710311186; c=relaxed/simple;
+	bh=TL3uzTyI4BTwEwjhZ9G/xkkfgwDgIOWY4Ph+gtHelIk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=g428Solfm4zBNDo/C6LpQNbEfHXdvwA9vILb5DAYkvPKA95OBuy2D6chS19Shuw5uOYQvTMhEhH+lP8qgFBewuD95/ffi0YAsT8Iu5p5WSwPoXOu/ukBhUL2+fSa4TOlE1SLe8yBvg40HmHi72ai66KDpzuQeU3PlezKwNKR9cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=TS4edoqN; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1710310046; x=1710914846; i=quwenruo.btrfs@gmx.com;
-	bh=ZgbQSWrGTQRkNvc+eXFEg9FjeGUzVV9ViFWR5/Quy+0=;
-	h=X-UI-Sender-Class:Date:To:From:Subject;
-	b=OQJDRMZOiAKSJL5AhgdboM/9JTwQkgMvVIgUQofgUWEiYYXrx6GpqJQKLw2XOLVy
-	 szKfjwpGVG3aBWG5ehOx58sPF1vDxfHhjEp2ODxKTHNi2gm7F0btwINDdPYceLmMV
-	 DfFXShNST04iKNQ+QTk1yijaxeyIdxdYx0TqycYKjxc1/cB1ylmpMXzmswe+CJMIX
-	 anv5i+s+WWH+yM0ngl1/a6cEv2nv6C02oHNxGan2A4MaiNlmymc+NmC0WblkkXveN
-	 RR+QQCuHnYpYgkE2eLCJjbqEaSMqW/gGrI4W03/u/u2pTO/spwkjb7E50c9GtDkHj
-	 IUXhnA0viMej4X/9bg==
+	s=s31663417; t=1710311181; x=1710915981; i=quwenruo.btrfs@gmx.com;
+	bh=TL3uzTyI4BTwEwjhZ9G/xkkfgwDgIOWY4Ph+gtHelIk=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=TS4edoqNiOucI7XBLSJVQomtSNgm+vsrFccPMdh3c8Y9Bo/R91UdeMikf2Qc1DGY
+	 /0c5lE9LLYxgOHcF5EsZRXgJIfYIXI0Zeyww73Uum5jTKSwkrO08YrbvWvsPktV+p
+	 8AKn7MhAIyyPAHn0nxnHOard5OwDDeT13yaFgptn7a0Gek25mC8pu26rdAGRCCH9r
+	 WGVlqtumdQdcEwa02qJuFj2eWpjbEDLBZCi9Vb4L6atqqQ0OLVaNMD3JeRmXwomXd
+	 MWMhtfwK6OB5pqvzrIYULbHp3dOdtZbbFyep+/AQtfaqKQ7LRjA9vlKyZ5CkihbY5
+	 q/X/USuxluUCT3LDYA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MUXpQ-1rJqyE16UC-00QQfj; Wed, 13
- Mar 2024 07:07:26 +0100
-Content-Type: multipart/mixed; boundary="------------raABw2pHrMCLk2Qp9D5IEH8a"
-Message-ID: <c7241ea4-fcc6-48d2-98c8-b5ea790d6c89@gmx.com>
-Date: Wed, 13 Mar 2024 16:37:23 +1030
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MCbEp-1rbnUV2kUt-009dBZ; Wed, 13
+ Mar 2024 07:26:21 +0100
+Message-ID: <9d66a2e0-96a5-4aea-acf3-732d6667e60e@gmx.com>
+Date: Wed, 13 Mar 2024 16:56:17 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,11 +54,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: slow performance due to frequent memalloc_retry_wait in
+ btrfs_alloc_page_array
 Content-Language: en-US
-To: Tavian Barnes <tavianator@tavianator.com>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+To: Julian Taylor <julian.taylor@1und1.de>, linux-btrfs@vger.kernel.org
+References: <8966c095-cbe7-4d22-9784-a647d1bf27c3@1und1.de>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: About the weird tree block corruption
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -83,203 +84,211 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-X-Provags-ID: V03:K1:mWYNF9AnpSvuk6Iddle76TjKyEJuur9PJkX0QD3tEAgYMLY4T6t
- 4rIxcGyuMUONzLzGVQ4L+So7ito8V8YofBd2F8RfD4U0EzOFLCNwQtl51qdxaygwz+Veqjr
- vrbkQNn0QtKYv0CkDEUXsHD/+tbbIPFW499ix1960o5wtn1PxoLdYpA2Y1uW9kTy56dt41O
- TlE0ENsF1wadFskdbOtVQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:nPyU2UWjPJU=;0/HDd4Oixe654ugasBRGNK64y/V
- kOn1s2JhYNRzEnyIqpfe9z5BFEZT1K+YEzWP3ITmw/muIgBPokb5dhRbDLJrz9WYKLLfMNb7N
- OIe/bnomLCWPfU7kH5iR6aNCpdwusTIiplvtinJROrX2e0tPQoV3d18gjaCmFeqlfJ5q82frD
- O1Gb3dfl0bRz7sGunwWtOw701pmHVFYvEXPN3fAdDrf03yfWOLl5ubdCz+QGlTh12iQF4Qawl
- UpPlB7jXDF72q5yv0osTcCBIznch9tlsx/D/og9/8FR9ZyZA1oOHPL1/GhaEH0qflO2sm74uY
- NJe80cO3qV9UoTbXcdmF5/g6wAqbGtZ58GWdLFyXNINr2SlNGZsDs6By+RJQ7VxsCpf5JlWrY
- 9HwTD87Y2yPt93cPjD33fVwVqtjTNawpokGnFj3GCENYBBwI7/omPncuQbE8zpcLbbZs4l0hp
- uG1CBKxCFeptwlKNce6+OQY6y0+tBpgQTnET2DHvhIJjjemppY7lj1JLFlczgdF7y9nqYd/gg
- SbUvioLmuJC8rig+Q5lOntWnwEV8rdGp7Kl4Y0gn+f21x9S4iefPH5SWk33L2oski8ONP2tdi
- ACzmc8pTBS7j1S+COfXrUjU92ZuUnTppAgUCJPiWnFzD6jXP1YWhU8L/EvQLf8BNg+lOb6sYn
- 05r/uaRcjVYGfUef+ML2SnJNUwjLPnLJaUYbtfgDeN6SrgVbQEyZlrQWqo88K0XKXrcOLnmto
- D2QW1vDZ4Gp1QuOLMmpbleD5KQs8df7iC7F9l2rlcvpF3JEPxPFTYBLt3bkeymwuZ7L1R42Ad
- 13QOJd25Xh5KYCgvZIY1z8HGl6k7lLJ1A+5AGXY4P3ukw=
-
-This is a multi-part message in MIME format.
---------------raABw2pHrMCLk2Qp9D5IEH8a
+In-Reply-To: <8966c095-cbe7-4d22-9784-a647d1bf27c3@1und1.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:eCRN98hUq/WogCU2CBpFtiXFbtaN/Ja09b6X5HIw+dz23sZPmii
+ HO0+1BB9WpRSbzmyi1HRh5RZsbTYB4+0fZdvwq5Li/k37rZuEIfFo19oGl5pQoZbgBzosoE
+ eQx/ErLNSC0RWlkZ1vr/h11q93vUTVtLGlhOe4fmSwQuV5t8lql5mm7j4XO7QWt6mwlZYnB
+ +J71xxf69bfHh9M5rky8w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:AvKchCFPSD4=;umBJmepfyS0W6rxu1WmNZif+8D5
+ Dcy5eDpR8/znHUdIrvL+8+cZloQqkTWTr9SeTKxINlYVSs/frotMvIJ94LU6RAHhfnCBorsOo
+ h0fctyNVi1eoEoelHDtsHOvj6RFPZsN394YBzpXSkuf5ewAGW2AF9kIMT03R38aUzuMysBrjr
+ 4/qWAXy/89Hbri5AC+oo5vjKbBrIhVoEp5miDtIY7HKnJLG/47N58oOHnKkfLhWq1j1B7CKam
+ 3LoQzjWxyZgsOH/u02Ae0odquk9MGia+BAtZg2YbxMfWOqQhxjZj2Gk8hvvx2zo81Ul4mkb/M
+ E74gCRA9KdJPoJFHPeliouDi3W6gyVZFWzpS4sLBaUQZTIoOr0FH3g36MwJCNgCF0V5nc07Tw
+ P233bS8eLl91gUpczYOfTG4WHM/IgvP02/eRDeWJSPRFnjwOTovSKn74QLNu4eYsgy38b9pIb
+ HXr45TQvoQCbB2uFRYmnXm421kQSQZOkbU7q8W1fapGnd3XJr4LB9/PmyiMLjwU2jTlNS33xI
+ JHVRfCsdg99X6bMgYg0t+v8Hq4Ic7oAwX1/XRcZ20YIYwtxf62eUhzxeE6Ktwymx9VS7dNjH2
+ DgGpTjAEYdJ0boN1T5xf7oQ27Kf2WcrZ2MpXgo77Ss/4riQG+aG9baELXmUcK0T7m/3a4Qb8i
+ Cpv0vAehTaMwKFgIDvxzmmsOgvQhVUgq3kwfL2lD9aIhKAwMymr26cHDwgeOa1YfSK+WAeJx6
+ a+dViOuz6wjnoXxP4IMY2V9ogPiY17qhURyjk3uV4kYa2ldhwRVPsIICmW6FdHw4I7qzKlGm4
+ CAZz2l/5giJZYSNno6kaZrxc91ILE32sOvNsvf6XeIgAE=
 
-Hi Tavian,
 
-Thanks for all the awesome help debugging the weird tree block corruption.
-And sorry for the late reply.
 
-Unfortunately I still failed to reproduce the bug, so I can only craft a
-debug patchset for you to test.
+=E5=9C=A8 2024/3/13 00:05, Julian Taylor =E5=86=99=E9=81=93:
+> Hello,
+>
+> After upgrading a machine using btrfs to a 6.1 kernel from 5.10 we are
+> experiencing very low read performance on some (compressed) files when
+> most of the nodes memory is in use by applications and the filesystem
+> cache. Reading some files does not exceed 5MiB/second while the
+> underlying disks can sustain ~800MiB/s. The load on the machine while
+> reading the files slowly is basically zero
+>
+> The filesystem is mounted with
+>
+>  =C2=A0btrfs (rw,relatime,compress=3Dzstd:3,space_cache=3Dv2,subvolid=3D=
+5,subvol=3D/)
+>
+> The filesystem contains several snapshot volumes.
+>
+> Checking with blktrace we noticed a lot of queue unplug events which
+> when traced showed that the cause is most likely io_schedule_timeout
+> being called extremely frequent from btrfs_alloc_page_array which since
+> 5.19 (91d6ac1d62c3dc0f102986318f4027ccfa22c638) uses bulk page
+> allocations with a memalloc_retry_wait on failure:
+>
+> $ perf record -e block:block_unplug -g
+>
+> $ perf script
+>
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ffffffffa3bbff86 blk_mq_flus=
+h_plug_list.part.0+0x246
+> ([kernel.kallsyms])
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ffffffffa3bbff86 blk_mq_flus=
+h_plug_list.part.0+0x246
+> ([kernel.kallsyms])
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ffffffffa3bb1205 __blk_flush=
+_plug+0xf5 ([kernel.kallsyms])
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ffffffffa4213f15 io_schedule=
+_timeout+0x45 ([kernel.kallsyms])
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ffffffffc0c74d42 btrfs_alloc=
+_page_array+0x42 ([kernel.kallsyms])
 
-The patchset contains 2 patches, the first one is adding the extra
-trace_printk() into btrfs.
-It requires CONFIG_FTRACE and CONFIG_DYNAMIC_FTRACE kernel configs to be
-enabled.
+Btrfs needs to allocate all the pages for the compressed extents, which
+can be very large (as large as 128K, even if the read may only be 4K).
 
-You can use ftrace-cmd to help setting up your environment, but for my
-case I normally go with the following bash snippet:
+Furthermore, since your system have very high memory pressure, it also
+means the page cache doesn't have much chance to cache the decompressed
+contents.
 
-  tracefs=3D"/sys/kernel/debug/tracing"
-  begin_trace()
-  {
-	trace-cmd clear
-	echo 1 > $tracefs/tracing_on
-  }
+Thus I'm afraid for your high memory pressure cases, it is not really
+not a good use case with compression.
+(Both compressed read and write would need extra pages other than the
+inode page cache).
 
-  stop_trace()
-  {
-	cp $tracefs/trace /tmp
-	chmod 666 /tmp/trace
-	trace-cmd clear
-  }
+And considering your storage is very fast (800+MiB/s), there is really
+little benefit for compression (other than saving disk usages).
 
-  # Setup the environment
-  begin_trace
-  workload
-  stop_trace
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ffffffffc0ca8c2e btrfs_submi=
+t_compressed_read+0x16e
+> ([kernel.kallsyms])
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ffffffffc0c724f8 submit_one_=
+bio+0x48 ([kernel.kallsyms])
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ffffffffc0c75295 btrfs_do_re=
+adpage+0x415 ([kernel.kallsyms])
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ffffffffc0c766d1 extent_read=
+ahead+0x2e1 ([kernel.kallsyms])
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ffffffffa3904bf2 read_pages+=
+0x82 ([kernel.kallsyms])
+>
+> When bottlenecked in this code the allocations of less than 10 pages
+> only receives a single page per loop so it runs into the
+> io_schedule_timeout every time.
+>
+> Tracing the arguments while reading on slow performance shows:
+>
+> # bpftrace -e "kfunc:btrfs_alloc_page_array {@pages =3D
+> lhist(args->nr_pages, 0, 20, 1)} kretfunc:__alloc_pages_bulk {@allocret
+> =3D lhist(retval, 0, 20, 1)}"
+> Attaching 2 probes...
+>
+>
+> @allocret:
+> [1, 2)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 298
+> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+> [2, 3)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 295
+> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+> [3, 4)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 295
+> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
+> [4, 5)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 300
+> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+>
+> @pages:
+> [4, 5)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 295
+> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+>
+>
+> Further checking why the bulk page allocations only return a single page
+> we noticed this is only happening when all memory of the node is tied up
+> even if still reclaimable.
+>
+> It can be reliably reproduced on the machine when filling the page cache
+> with data from the disk (just via cat * >/dev/null) until we are have
+> following memory situation on the node with two sockets:
+>
+> $numactl --hardware
+>
+> available: 2 nodes (0-1)
+>
+> node 0 cpus: 0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40
+> 42 44 46 48 50 52 54 56 58 60 62
+> node 0 size: 192048 MB
+> node 0 free: 170340 MB
+> node 1 cpus: 1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39 41
+> 43 45 47 49 51 53 55 57 59 61 63
+> node 1 size: 193524 MB
+> node 1 free: 224 MB=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <<< nothin=
+g free due to cache
 
-The second patch is to making tree-checker to BUG_ON() when something
-went wrong.
-This patch should only be applied if you can reliably reproduce it
-inside a VM.
+This is interesting, such unbalanced free memory is indeed going to
+cause problems.
 
-When using the 2nd patch, it's strongly recommended to enable the
-following sysctl:
+>
+> $ top
+>
+> MiB Mem : 385573.2 total, 170093.0 free,=C2=A0 19379.1 used, 201077.9 bu=
+ff/cache
+> MiB Swap:=C2=A0=C2=A0 3812.0 total,=C2=A0=C2=A0 3812.0 free,=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 0.0 used. 366194.1 avail Mem
+>
+>
+> When now reading a file with a process bound to a cpu on node 1 (taskset
+> -c cat $file) we see the high io_schedule_timeout rate and very low read
+> performance.
+>
+> This is seen with linux 6.1.76 (debian 12 stable) and linux 6.7.9
+> (debian unstable).
+>
+>
+> It appears the bulk page allocations used by btrfs_alloc_page_array will
+> have a high failure rate when the per cpu page lists are empty and they
+> do not appear to attempt to reclaim memory from the page cache but
+> instead return a single page via the normal page allocations. But this
+> combined with memalloc_retry_wait called on each iteration causes very
+> slow performance.
 
-  kernel.ftrace_dump_on_oops =3D 1
-  kernel.panic =3D 5
-  kernel.panic_on_oops =3D 1
+Not an expert on NUMA, but I guess there should be some way to balance
+the free memory between different numa nodes?
 
-And you need a way to reliably access the VM (either netconsole or a
-serial console setup).
-In that case, you would got all the ftrace buffer to be dumped into the
-netconsole/serial console.
+Can it be done automatically/periodically as a workaround?
 
-This has the extra benefit of reducing the noise. But really needs a
-reliable VM setup and can be a little tricky to setup.
+>
+> Increasing sysctl vm.percpu_pagelist_high_fraction did not yield any
+> improvement for the situation, the only workaround seems to be to free
+> the page cache on the nodes before reading the data.
+>
+> Assuming the bulk page allocations functions are intended to not reclaim
+> memory when the per core lists are empty probably the way
+> btrfs_alloc_page_array handles failure of bulk allocation should be
+> revised.
 
-Feel free to ask for any extra help to setup the environment, as you're
-our last hope to properly pin down the bug.
+Any suggestion for improvement?
+
+In our usage, we can not afford to reclaim page cache, as that may
+trigger page writeback, meanwhile we may also in the page writeback path
+and can lead to deadlock.
+
+On the other hand, if we allocate pages for compressed read/write from
+other NUMA nodes, wouldn't that cause different performance problems?
+E.g. we still need to do compression using the page from the remote numa
+nodes, wouldn't that also greatly reduce the compression speed?
 
 Thanks,
 Qu
-
---------------raABw2pHrMCLk2Qp9D5IEH8a
-Content-Type: text/x-patch; charset=UTF-8;
- name="0002-btrfs-trigger-BUG_ON-when-tree-checker-failed.patch"
-Content-Disposition: attachment;
- filename="0002-btrfs-trigger-BUG_ON-when-tree-checker-failed.patch"
-Content-Transfer-Encoding: base64
-
-RnJvbSA4NjMyYTIxZDYxNmIzNThkNGRiMzA3OTZiNTdlNmYwNWIyOTY0NDY0IE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpNZXNzYWdlLUlEOiA8ODYzMmEyMWQ2MTZiMzU4ZDRkYjMwNzk2
-YjU3ZTZmMDViMjk2NDQ2NC4xNzEwMzA5NDQwLmdpdC53cXVAc3VzZS5jb20+CkluLVJlcGx5
-LVRvOiA8Y292ZXIuMTcxMDMwOTQ0MC5naXQud3F1QHN1c2UuY29tPgpSZWZlcmVuY2VzOiA8
-Y292ZXIuMTcxMDMwOTQ0MC5naXQud3F1QHN1c2UuY29tPgpGcm9tOiBRdSBXZW5ydW8gPHdx
-dUBzdXNlLmNvbT4KRGF0ZTogV2VkLCAxMyBNYXIgMjAyNCAxNjoyNjo0NyArMTAzMApTdWJq
-ZWN0OiBbUEFUQ0ggMi8yXSBidHJmczogdHJpZ2dlciBCVUdfT04oKSB3aGVuIHRyZWUtY2hl
-Y2tlciBmYWlsZWQKClRoaXMgYWxsb3dzIGtlcm5lbCB0byBjcmFzaCBhbmQgZHVtcCBpdCBm
-dHJhY2UgYnVmZmVyLgoKU2lnbmVkLW9mZi1ieTogUXUgV2VucnVvIDx3cXVAc3VzZS5jb20+
-Ci0tLQogZnMvYnRyZnMvdHJlZS1jaGVja2VyLmMgfCA4ICsrKysrKy0tCiAxIGZpbGUgY2hh
-bmdlZCwgNiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2Zz
-L2J0cmZzL3RyZWUtY2hlY2tlci5jIGIvZnMvYnRyZnMvdHJlZS1jaGVja2VyLmMKaW5kZXgg
-YzhmYmNhZTRlODhlLi5lYmYwMTljOTZhZGEgMTAwNjQ0Ci0tLSBhL2ZzL2J0cmZzL3RyZWUt
-Y2hlY2tlci5jCisrKyBiL2ZzL2J0cmZzL3RyZWUtY2hlY2tlci5jCkBAIC0xOTQyLDggKzE5
-NDIsMTAgQEAgaW50IGJ0cmZzX2NoZWNrX2xlYWYoc3RydWN0IGV4dGVudF9idWZmZXIgKmxl
-YWYpCiAJZW51bSBidHJmc190cmVlX2Jsb2NrX3N0YXR1cyByZXQ7CiAKIAlyZXQgPSBfX2J0
-cmZzX2NoZWNrX2xlYWYobGVhZik7Ci0JaWYgKHVubGlrZWx5KHJldCAhPSBCVFJGU19UUkVF
-X0JMT0NLX0NMRUFOKSkKKwlpZiAodW5saWtlbHkocmV0ICE9IEJUUkZTX1RSRUVfQkxPQ0tf
-Q0xFQU4pKSB7CisJCUJVR19PTigxKTsKIAkJcmV0dXJuIC1FVUNMRUFOOworCX0KIAlyZXR1
-cm4gMDsKIH0KIEFMTE9XX0VSUk9SX0lOSkVDVElPTihidHJmc19jaGVja19sZWFmLCBFUlJO
-Tyk7CkBAIC0yMDA2LDggKzIwMDgsMTAgQEAgaW50IGJ0cmZzX2NoZWNrX25vZGUoc3RydWN0
-IGV4dGVudF9idWZmZXIgKm5vZGUpCiAJZW51bSBidHJmc190cmVlX2Jsb2NrX3N0YXR1cyBy
-ZXQ7CiAKIAlyZXQgPSBfX2J0cmZzX2NoZWNrX25vZGUobm9kZSk7Ci0JaWYgKHVubGlrZWx5
-KHJldCAhPSBCVFJGU19UUkVFX0JMT0NLX0NMRUFOKSkKKwlpZiAodW5saWtlbHkocmV0ICE9
-IEJUUkZTX1RSRUVfQkxPQ0tfQ0xFQU4pKSB7CisJCUJVR19PTigxKTsKIAkJcmV0dXJuIC1F
-VUNMRUFOOworCX0KIAlyZXR1cm4gMDsKIH0KIEFMTE9XX0VSUk9SX0lOSkVDVElPTihidHJm
-c19jaGVja19ub2RlLCBFUlJOTyk7Ci0tIAoyLjQ0LjAKCg==
---------------raABw2pHrMCLk2Qp9D5IEH8a
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-btrfs-add-extra-debug-for-eb-read-path.patch"
-Content-Disposition: attachment;
- filename="0001-btrfs-add-extra-debug-for-eb-read-path.patch"
-Content-Transfer-Encoding: base64
-
-RnJvbSBmYWQxZDVmZjY3ZTE4Y2VhYThmYTQzOWYwOWJlN2Y0MzIwZjMyN2RmIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpNZXNzYWdlLUlEOiA8ZmFkMWQ1ZmY2N2UxOGNlYWE4ZmE0Mzlm
-MDliZTdmNDMyMGYzMjdkZi4xNzEwMzA5NDQwLmdpdC53cXVAc3VzZS5jb20+CkluLVJlcGx5
-LVRvOiA8Y292ZXIuMTcxMDMwOTQ0MC5naXQud3F1QHN1c2UuY29tPgpSZWZlcmVuY2VzOiA8
-Y292ZXIuMTcxMDMwOTQ0MC5naXQud3F1QHN1c2UuY29tPgpGcm9tOiBRdSBXZW5ydW8gPHdx
-dUBzdXNlLmNvbT4KRGF0ZTogV2VkLCAxMyBNYXIgMjAyNCAxNjoyNDowMyArMTAzMApTdWJq
-ZWN0OiBbUEFUQ0ggMS8yXSBidHJmczogYWRkIGV4dHJhIGRlYnVnIGZvciBlYiByZWFkIHBh
-dGgKClRoaXMgaXMgZm9yIHRoZSByZWNlbnRseSBleHBvc2VkIGJ1dCB2ZXJ5IGhhcmQgdG8g
-cmVwcm9kdWNlIChmb3IKZXZlcnlvbmUgZXhjZXB0IGF3ZXNvbWUgYW5kIGhlbHBmdWwgVGF2
-aWFuIEJhcm5lcykgYnVnLCB3aGVyZSB3ZSBzZWVtIHRvCmdvdCB0cmFzaCBjb250ZW50cyBm
-b3Igb3VyIGV4dGVudCBidWZmZXIuCgpTaWduZWQtb2ZmLWJ5OiBRdSBXZW5ydW8gPHdxdUBz
-dXNlLmNvbT4KLS0tCiBmcy9idHJmcy9leHRlbnRfaW8uYyB8IDI0ICsrKysrKysrKysrKysr
-KysrKysrKysrLQogMSBmaWxlIGNoYW5nZWQsIDIzIGluc2VydGlvbnMoKyksIDEgZGVsZXRp
-b24oLSkKCmRpZmYgLS1naXQgYS9mcy9idHJmcy9leHRlbnRfaW8uYyBiL2ZzL2J0cmZzL2V4
-dGVudF9pby5jCmluZGV4IGJiMjI1Nzk4YmI4OS4uNDMzMzFiYTc0YzY0IDEwMDY0NAotLS0g
-YS9mcy9idHJmcy9leHRlbnRfaW8uYworKysgYi9mcy9idHJmcy9leHRlbnRfaW8uYwpAQCAt
-OTAsNiArOTAsMTggQEAgdm9pZCBidHJmc19leHRlbnRfYnVmZmVyX2xlYWtfZGVidWdfY2hl
-Y2soc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8pCiAjZGVmaW5lIGJ0cmZzX2xlYWtf
-ZGVidWdfZGVsX2ViKGViKQkJCWRvIHt9IHdoaWxlICgwKQogI2VuZGlmCiAKK3N0YXRpYyBp
-bmxpbmUgdm9pZCBkdW1wX2V4dGVudF9idWZmZXIoY29uc3QgY2hhciAqcHJlZml4LCBzdHJ1
-Y3QgZXh0ZW50X2J1ZmZlciAqZWIpCit7CisJdTggZnNpZFtCVFJGU19GU0lEX1NJWkVdID0g
-eyAwIH07CisKKwlyZWFkX2V4dGVudF9idWZmZXIoZWIsICZmc2lkLCBvZmZzZXRvZihzdHJ1
-Y3QgYnRyZnNfaGVhZGVyLCBmc2lkKSwKKwkJCSAgIEJUUkZTX0ZTSURfU0laRSk7CisKKwl0
-cmFjZV9wcmludGsoIiVzLCBlYj0lbGx1IHBhZ2VfcmVmcz0lZCBlYiBsZXZlbD0lZCBmc2lk
-PSVwVWJcbiIsCisJCQlwcmVmaXgsIGViLT5zdGFydCwgYXRvbWljX3JlYWQoJmViLT5yZWZz
-KSwKKwkJCWJ0cmZzX2hlYWRlcl9sZXZlbChlYiksIGZzaWQpOworfQorCiAvKgogICogU3Ry
-dWN0dXJlIHRvIHJlY29yZCBpbmZvIGFib3V0IHRoZSBiaW8gYmVpbmcgYXNzZW1ibGVkLCBh
-bmQgb3RoZXIgaW5mbyBsaWtlCiAgKiBob3cgbWFueSBieXRlcyBhcmUgdGhlcmUgYmVmb3Jl
-IHN0cmlwZS9vcmRlcmVkIGV4dGVudCBib3VuZGFyeS4KQEAgLTM0ODEsNiArMzQ5Myw3IEBA
-IHN0YXRpYyB2b2lkIGJ0cmZzX3JlbGVhc2VfZXh0ZW50X2J1ZmZlcl9wYWdlcyhzdHJ1Y3Qg
-ZXh0ZW50X2J1ZmZlciAqZWIpCiB7CiAJQVNTRVJUKCFleHRlbnRfYnVmZmVyX3VuZGVyX2lv
-KGViKSk7CiAKKwlkdW1wX2V4dGVudF9idWZmZXIoImJlZm9yZSByZWxlYXNlIiwgZWIpOwog
-CWZvciAoaW50IGkgPSAwOyBpIDwgSU5MSU5FX0VYVEVOVF9CVUZGRVJfUEFHRVM7IGkrKykg
-ewogCQlzdHJ1Y3QgZm9saW8gKmZvbGlvID0gZWItPmZvbGlvc1tpXTsKIApAQCAtMzQ5OSw2
-ICszNTEyLDcgQEAgc3RhdGljIHZvaWQgYnRyZnNfcmVsZWFzZV9leHRlbnRfYnVmZmVyX3Bh
-Z2VzKHN0cnVjdCBleHRlbnRfYnVmZmVyICplYikKICAqLwogc3RhdGljIGlubGluZSB2b2lk
-IGJ0cmZzX3JlbGVhc2VfZXh0ZW50X2J1ZmZlcihzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqZWIp
-CiB7CisJdHJhY2VfcHJpbnRrKCJjYWxsZWQgZnJvbSAlcyIsIF9fZnVuY19fKTsKIAlidHJm
-c19yZWxlYXNlX2V4dGVudF9idWZmZXJfcGFnZXMoZWIpOwogCWJ0cmZzX2xlYWtfZGVidWdf
-ZGVsX2ViKGViKTsKIAlfX2ZyZWVfZXh0ZW50X2J1ZmZlcihlYik7CkBAIC0zNTMyLDYgKzM1
-NDYsNyBAQCBzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqYnRyZnNfY2xvbmVfZXh0ZW50X2J1ZmZl
-cihjb25zdCBzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqc3JjKQogCWludCBudW1fZm9saW9zID0g
-bnVtX2V4dGVudF9mb2xpb3Moc3JjKTsKIAlpbnQgcmV0OwogCisJdHJhY2VfcHJpbnRrKCIl
-czogYWxsb2MgZWI9JWxsdSBsZW49JXVcbiIsIF9fZnVuY19fLCBzcmMtPnN0YXJ0LCBzcmMt
-Pmxlbik7CiAJbmV3ID0gX19hbGxvY19leHRlbnRfYnVmZmVyKHNyYy0+ZnNfaW5mbywgc3Jj
-LT5zdGFydCwgc3JjLT5sZW4pOwogCWlmIChuZXcgPT0gTlVMTCkKIAkJcmV0dXJuIE5VTEw7
-CkBAIC0zNTczLDYgKzM1ODgsNyBAQCBzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqX19hbGxvY19k
-dW1teV9leHRlbnRfYnVmZmVyKHN0cnVjdCBidHJmc19mc19pbmZvICpmc19pbmZvLAogCWlu
-dCBudW1fZm9saW9zID0gMDsKIAlpbnQgcmV0OwogCisJdHJhY2VfcHJpbnRrKCIlczogYWxs
-b2MgZWI9JWxsdSBsZW49JWx1XG4iLCBfX2Z1bmNfXywgc3RhcnQsIGxlbik7CiAJZWIgPSBf
-X2FsbG9jX2V4dGVudF9idWZmZXIoZnNfaW5mbywgc3RhcnQsIGxlbik7CiAJaWYgKCFlYikK
-IAkJcmV0dXJuIE5VTEw7CkBAIC0zODkzLDYgKzM5MDksNyBAQCBzdHJ1Y3QgZXh0ZW50X2J1
-ZmZlciAqYWxsb2NfZXh0ZW50X2J1ZmZlcihzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5m
-bywKIAlpZiAoZWIpCiAJCXJldHVybiBlYjsKIAorCXRyYWNlX3ByaW50aygiJXM6IGFsbG9j
-IGViPSVsbHUgbGVuPSVsdVxuIiwgX19mdW5jX18sIHN0YXJ0LCBsZW4pOwogCWViID0gX19h
-bGxvY19leHRlbnRfYnVmZmVyKGZzX2luZm8sIHN0YXJ0LCBsZW4pOwogCWlmICghZWIpCiAJ
-CXJldHVybiBFUlJfUFRSKC1FTk9NRU0pOwpAQCAtNDExNCw2ICs0MTMxLDggQEAgc3RhdGlj
-IGludCByZWxlYXNlX2V4dGVudF9idWZmZXIoc3RydWN0IGV4dGVudF9idWZmZXIgKmViKQog
-CQl9CiAKIAkJYnRyZnNfbGVha19kZWJ1Z19kZWxfZWIoZWIpOworCisJCXRyYWNlX3ByaW50
-aygiY2FsbGVkIGZyb20gJXMiLCBfX2Z1bmNfXyk7CiAJCS8qIFNob3VsZCBiZSBzYWZlIHRv
-IHJlbGVhc2Ugb3VyIHBhZ2VzIGF0IHRoaXMgcG9pbnQgKi8KIAkJYnRyZnNfcmVsZWFzZV9l
-eHRlbnRfYnVmZmVyX3BhZ2VzKGViKTsKICNpZmRlZiBDT05GSUdfQlRSRlNfRlNfUlVOX1NB
-TklUWV9URVNUUwpAQCAtNDM0Nyw5ICs0MzY2LDEyIEBAIHN0YXRpYyB2b2lkIGVuZF9iYmlv
-X21ldGFfcmVhZChzdHJ1Y3QgYnRyZnNfYmlvICpiYmlvKQogCiAJZWItPnJlYWRfbWlycm9y
-ID0gYmJpby0+bWlycm9yX251bTsKIAorCWR1bXBfZXh0ZW50X2J1ZmZlcigicmVhZCBkb25l
-IiwgZWIpOwogCWlmICh1cHRvZGF0ZSAmJgotCSAgICBidHJmc192YWxpZGF0ZV9leHRlbnRf
-YnVmZmVyKGViLCAmYmJpby0+cGFyZW50X2NoZWNrKSA8IDApCisJICAgIGJ0cmZzX3ZhbGlk
-YXRlX2V4dGVudF9idWZmZXIoZWIsICZiYmlvLT5wYXJlbnRfY2hlY2spIDwgMCkgeworCQl0
-cmFjZV9wcmludGsoIiEhISBWYWxpZGF0aW9uIGZhaWxlZCwgZWI9JWxsdSAhISFcbiIsIGVi
-LT5zdGFydCk7CiAJCXVwdG9kYXRlID0gZmFsc2U7CisJfQogCiAJaWYgKHVwdG9kYXRlKSB7
-CiAJCXNldF9leHRlbnRfYnVmZmVyX3VwdG9kYXRlKGViKTsKLS0gCjIuNDQuMAoK
-
---------------raABw2pHrMCLk2Qp9D5IEH8a--
+>
+>
+> Cheers,
+>
+> Julian Taylor
+>
+>
 
