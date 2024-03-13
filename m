@@ -1,165 +1,196 @@
-Return-Path: <linux-btrfs+bounces-3249-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3250-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E67F87A8B8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 14:48:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C46287A9A4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 15:41:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9E77286F8F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 13:48:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 931951F21E32
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 14:41:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D042E4436C;
-	Wed, 13 Mar 2024 13:48:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 367E641740;
+	Wed, 13 Mar 2024 14:41:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gysu9iY5"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ibIdFjO6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03ECB46535;
-	Wed, 13 Mar 2024 13:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEFEF3F9E0
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 14:41:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710337707; cv=none; b=F00m24NjhJhdYfEuH3DHLqdgNyF87cIXzGql9ks3RW76tTJ38LSQm+3hv+8cXGHWg8UaT2k49vyuvCz0XvZXbW0j6TAou84H2XjdMNOaVBNpRQmkZZ3yHIdkUncj2lJuDF4Ta19z9g9k8sigYhKXkoR9W+i+ynTrkBzWnkwNPg0=
+	t=1710340896; cv=none; b=FBISzed0eN4Hp09XblNcx3UXPPs/Qyx2UkK5bJjt+W3Wy1jHC/pKRMAKsoLxdlvVBL9rr3ziuTRaVgOS9IGr1C7EKsk6Klvc01joyxFW/0poMABN6aD0drwlSOgX268/qDSgiMRXFXLRYF8Ha5ntQnzs9B6pgQwpk79TBkoKjD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710337707; c=relaxed/simple;
-	bh=1vk1dW5yulwl98bZqyU0j1DXY9vZePqONTWNRuWKVdo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aV7G/JKGr2Yb0qqvTEHhofzhzQfQRkbpVx1RKrYtcAM2P66oYexP+nmLCXrYxALaeAOJ0CIy7Js/7qSNW+KzTADzP8tgzonMtwgp4e6R5yVqalrI0rWL1stz42yP2QU9iQ5eiZZha3zptx31Xzmf7wHtONyuHF5TwUvbZAFEOZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gysu9iY5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FA89C433C7;
-	Wed, 13 Mar 2024 13:48:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710337706;
-	bh=1vk1dW5yulwl98bZqyU0j1DXY9vZePqONTWNRuWKVdo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Gysu9iY5eVpRhX+phTpgU7qWi+1P/J7ppsO2XIJV2IF3chQKSZl5ivxrwyX5DJNSl
-	 NtWBtv2cdlajq4nh9JXqMqxgOzGK1au+i+HYkH0vFf03azCLLRtzSg4vYEDMTpqkOK
-	 86pxiLz1VTyt7oROFfDPB2BEtREw5zbQaKS3vclmPn5CRL9O2apuMSyKq01YfHbJpg
-	 2+r/IiKrX9zxIm8zYpr/9tCxYL6praPAwBnZMbepCdLK8Fakn1nI7HSdkOZlv/jB8v
-	 JusNJOWSGss+0rKb/niI+7tm7jf4CkW/ryvjIsN8Q0zgzvQhZHjU71cwR5zxZfbylK
-	 xLJO4Xts3rhqQ==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512e4f4e463so1201171e87.1;
-        Wed, 13 Mar 2024 06:48:26 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWvvtCVz71dsVQY43/C47Qt65gI2onZjLdbpO0/muyyyNNu0rRvMrRVAVKMKFqL52ec3yOTMaCKlqZyW0JdGtHmbsyag1/pps/O8ZXusgTu2dTW+Dx2+sFIehKV6YoiZmJFCYI=
-X-Gm-Message-State: AOJu0Yyp/pE9S0H+SKc5vBGdLZlc6eeWGQkQcn3dlMMRGCsibwhabx1O
-	ox0FvsujEzq1yqe4aHcIdCcGVYzad6Gz2YCwIcbC2DlPKMV/kt8LzRTxGMrkZyLxqSYSSDHdQKW
-	hdXtazHH5Wh70ZTdk1fgzyRMsrIY=
-X-Google-Smtp-Source: AGHT+IEVlJlsAN6K07N+wQAFEo4ls5fHweELumESuiLz248WzwUqQxvzIc75kcPW8hPB8rs4CfPlqS16WCiaYe9WXAc=
-X-Received: by 2002:ac2:4c42:0:b0:513:3dc5:cd5f with SMTP id
- o2-20020ac24c42000000b005133dc5cd5fmr6564753lfk.40.1710337704736; Wed, 13 Mar
- 2024 06:48:24 -0700 (PDT)
+	s=arc-20240116; t=1710340896; c=relaxed/simple;
+	bh=jnxLycoHz4+VE8tt+3N42QLiFq3YOj8fC9Xir+iIqwk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EvQCNUA8BTeZT4NW2NGj3sO7GeJFk5fteQEnFMJ8jpbkJAbz1owty+nW7s9G4t+FOTctFhx2++o3ztqlQ82wi9gpylEERqj8yg05XRyOoB51mmnpEzqtDrXCSvWKotgiThevTS7O8+ou/vFva6uBrQWGzINMG0LZjBbQZ0R2Sak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ibIdFjO6; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710340893;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QAxdYfMVZ7obWsme/6RW48NcFPVYMqabsFQXS2eu+Z0=;
+	b=ibIdFjO68cTRF4R4fp6AVcyD3bXjHSQfSZ0hxChCPIjhHYMGM8p6vmqS+MbLbFn9CUl3uJ
+	7PeI1PeSR1xL4JgDUgFbwFL13R+PxdoKnJXG7RJ8pR0XE2QxYc8NvVbqJXIKos7Ov7pjEC
+	q38Yj57o9F/0no7opUBrDfe9FwYFyzA=
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
+ [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-416-ZcIP11bOO6q3nwNN3SoxEg-1; Wed, 13 Mar 2024 10:41:32 -0400
+X-MC-Unique: ZcIP11bOO6q3nwNN3SoxEg-1
+Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-22216b64ffeso2622773fac.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 07:41:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710340891; x=1710945691;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QAxdYfMVZ7obWsme/6RW48NcFPVYMqabsFQXS2eu+Z0=;
+        b=uuVCOiVnABNwmmgbwiSSxDjyXosZNMKtV4rTl2hk9LX4mkdV7aNXeBJ+KxuoauVos2
+         23IvErolRU+JRJMlUcqanNSknbywetsU1q2oZRqts0FfDSa60MIOjaa6PzJGY097SfMr
+         JxS7tbivYQlGNiJdk8rlva/7dK/ScfP6PfYgoa1sLry+tXDTYD1BqLz4MiI5nfdEEca2
+         BC68cmAVkrxAMMwrB/+iVGTm6lBqfnt502kpWGgMJpE6TyAwqUAZ23CPfjKVFhOZRhH6
+         RPV28hrR3gcKDHiHAYC/zepUj+dxGZ51gwA/RBHvGlwnnxyB5slpeO7Wk+Cw92lI+Byl
+         7hMA==
+X-Forwarded-Encrypted: i=1; AJvYcCUfOaY/Yi4CuVWXerwe8TguopaVAOnFQmJUaSB1xTkiwmpVHL5x/7r/NrzD4m0O4/G60dLf9Sf8KIiRIxJBhfsWef34Jl3VJ4lM1Yk=
+X-Gm-Message-State: AOJu0YzIJqzXGy8URpWBPUFjPm1WXMDpesA+hOmaUSNWqTgW+kl7bfO3
+	g+VwmILdcwXLsKZd84whSWPfpTRdsP6Ylx3562DUH8EMJlYOlA3AoZMO1cqntCuSUoWcD6HUOeH
+	wuf4dk39KmWbyKukfuwVZOXJfsF5KoMb/CHC8pu33fckTCrCydXYAxXBwHGwoNhd+aFSctNM=
+X-Received: by 2002:a05:6870:d1c9:b0:221:14e3:7f6e with SMTP id b9-20020a056870d1c900b0022114e37f6emr13880402oac.46.1710340891200;
+        Wed, 13 Mar 2024 07:41:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEO2ouw3nBpbigMVivdz0bUyw6AgoHMQkuM8vrXRJ1i2sYqF8DGA7GwTOQSbBDUna+tFs3Dvw==
+X-Received: by 2002:a05:6870:d1c9:b0:221:14e3:7f6e with SMTP id b9-20020a056870d1c900b0022114e37f6emr13880382oac.46.1710340890834;
+        Wed, 13 Mar 2024 07:41:30 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id v22-20020a634656000000b005dccf9e3b74sm7703389pgk.92.2024.03.13.07.41.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Mar 2024 07:41:30 -0700 (PDT)
+Date: Wed, 13 Mar 2024 22:41:27 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: fdmanana@kernel.org
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: add missing kernel commit IDs to
+ _fixed_by_kernel_commit() calls
+Message-ID: <20240313144127.5etpc7ja33orjrf6@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <d0c99b30b1f0b777375fa3512ff21b35d1d3a805.1710337140.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304211551.833500257@linuxfoundation.org> <20240304211551.880347593@linuxfoundation.org>
- <CAKisOQGCiJUUc62ptxp08LkR88T5t1swcBPYi84y2fLP6Tag7g@mail.gmail.com>
- <da17e97b-1880-415d-8cdb-07e79808e702@leemhuis.info> <20240311184108.GS2604@twin.jikos.cz>
- <d9d46e16-ae73-4495-98a4-ab08ac501132@leemhuis.info> <CAL3q7H7kZkTMfzb0Xg_m1EbNyjj1eqqs4m=ovHM80MqCCCD7gw@mail.gmail.com>
- <5f7b720c-3516-42b2-826c-68fb5ba18353@leemhuis.info>
-In-Reply-To: <5f7b720c-3516-42b2-826c-68fb5ba18353@leemhuis.info>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 13 Mar 2024 13:47:47 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6jVfg2GkhEsJk64+TdRq5CdapfSfSgXvqoCa4U6zXbKg@mail.gmail.com>
-Message-ID: <CAL3q7H6jVfg2GkhEsJk64+TdRq5CdapfSfSgXvqoCa4U6zXbKg@mail.gmail.com>
-Subject: Re: [PATCH 6.7 001/162] btrfs: fix deadlock with fiemap and extent locking
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: dsterba@suse.cz, Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>, 
-	stable@vger.kernel.org, patches@lists.linux.dev, 
-	Josef Bacik <josef@toxicpanda.com>, Sasha Levin <sashal@kernel.org>, Chris Mason <clm@fb.com>, 
-	linux-btrfs <linux-btrfs@vger.kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d0c99b30b1f0b777375fa3512ff21b35d1d3a805.1710337140.git.fdmanana@suse.com>
 
-On Wed, Mar 13, 2024 at 1:42=E2=80=AFPM Linux regression tracking (Thorsten
-Leemhuis) <regressions@leemhuis.info> wrote:
->
-> On 11.03.24 21:06, Filipe Manana wrote:
-> > On Mon, Mar 11, 2024 at 7:23=E2=80=AFPM Linux regression tracking (Thor=
-sten
-> > Leemhuis) <regressions@leemhuis.info> wrote:
-> >>
-> >> On 11.03.24 19:41, David Sterba wrote:
-> >>> On Mon, Mar 11, 2024 at 10:15:31AM +0100, Linux regression tracking (=
-Thorsten Leemhuis) wrote:
-> >>>> On 06.03.24 13:39, Filipe Manana wrote:
-> >>>>> On Mon, Mar 4, 2024 at 9:26=E2=80=AFPM Greg Kroah-Hartman
-> >>>>> <gregkh@linuxfoundation.org> wrote:
-> >>>>>>
-> >>>>>> 6.7-stable review patch.  If anyone has any objections, please let=
- me know.
-> >>>>> It would be better to delay the backport of this patch (and the
-> >>>>> followup fix) to any stable release, because it introduced another
-> >>>>> regression for which there is a reviewed fix but it's not yet in
-> >>>>> Linus' tree:
-> >>>>> https://lore.kernel.org/linux-btrfs/cover.1709202499.git.fdmanana@s=
-use.com/
-> >>>> Those two missed 6.8 afaics. Will those be heading to mainline any t=
-ime
-> >>>> soon?
-> >>> Yes, in the 6.9 pull request.
-> >> Great!
-> >>
-> >>>> And how fast afterwards will it be wise to backport them to 6.8?
-> >>>> Will anyone ask Greg for that when the time has come?
-> >>> The commits have stable tags and will be processed in the usual way.
-> >
-> >> I'm missing something. The first change from Filipe's series linked
-> >> above has a fixes tag, but no stable tag afaics:
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/commit=
-/?h=3Dfor-6.9&id=3D978b63f7464abcfd364a6c95f734282c50f3decf
-> >
-> > It has no stable tag because when I sent the patch there was yet no
-> > kernel release with the buggy commit
->
-> Obviously, no need to explain, the discussion got unintentionally
-> sideways after David mistakenly said "The commits have stable tags
-> [...]". Happens, no worries.
->
-> >> So there is no guarantee that Greg will pick it up; and I assume if he
-> >> does he only will do so after -rc1 (or later, if the CVE stuff continu=
-es
-> >> to keep him busy).
-> >
-> > Don't worry, we are paying attention to that and we'll remind Greg if n=
-ecessary.
->
-> Thx. But well, for the record: I would really have liked if you or David
-> would simply have just answered my earlier "And how fast afterwards will
-> it be wise to backport them to 6.8?" question instead of avoiding it.
+On Wed, Mar 13, 2024 at 01:39:28PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Some tests are still using a 'xxx...' commit ID but the respective patches
+> were already merged to Linus' tree, so update them with the correct commit
+> IDs and in one case update the subject as well, because it was modified
+> after the test case was added and before being sent to Linus (btrfs/317).
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  tests/btrfs/303 | 2 +-
+>  tests/btrfs/309 | 2 +-
+>  tests/btrfs/316 | 2 +-
+>  tests/btrfs/317 | 4 ++--
 
-If I avoided that question it's because I can't give an answer to it.
+Thanks for this updating. As you're doing this job, would you like
+to help to update below line of *btrfs/249* by the way:
 
-David is the maintainer who picks patches for Linus and does the pull reque=
-sts.
-So the "how fast" depends on him and then how fast Linus merges and
-then how fast Greg and the stable people pick it.
+_fixed_by_git_commit btrfs-progs xxxxxxxxxxxx \
+	"btrfs-progs: read fsid from the sysfs in device_is_seed"
 
-> Just knowing a rough estimate would have helped. And I guess Greg might
-> have liked to know the answer, too. But whatever.
->
-> Side note: I'm here to "worry". It's not that I don't trust you or would
-> ask Greg behind your back to pick the patches up. It's just that we are
-> all humans[1]. And regression tracking is here to help with the flaws
-> humans have: they miss things, they suddenly need to go to hospitals for
-> a while, they become preoccupied with solving the next complicated and
-> big bug of the month, or just forget something they wanted to do because
-> something unexpected happens, like aliens landing in a unidentified
-> flying object. And from all the regressions I see that are not handled
-> well and the feedback I got it seems doing this work seems to be worth it=
-.
->
-> Ciao, Thorsten
->
-> [1] at least I think so...
-> https://en.wikipedia.org/wiki/On_the_Internet,_nobody_knows_you%27re_a_do=
-g
-> :-D
->
+And ... if would like to go a step further, you can change one more
+line in generic/707 to:
+
+_fixed_by_kernel_commit 0813299c586b \
+	"ext4: Fix possible corruption when moving a directory"
+
+Then I think you can change the subject of this patch to:
+
+"fstests: fix missing commit IDs of _fixed_by_*_commit calls"
+
+due to all current missing IDs in fstests will be fixed, don't need
+one more other patch :)
+
+Of course, with this change I'm glad to:
+
+Reviewed-by: Zorro Lang <zlang@redhat.com>
+
+Thanks,
+Zorro
+
+>  4 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tests/btrfs/303 b/tests/btrfs/303
+> index 26bcfe41..ed3abcc1 100755
+> --- a/tests/btrfs/303
+> +++ b/tests/btrfs/303
+> @@ -25,7 +25,7 @@ _require_test
+>  _require_scratch
+>  _require_xfs_io_command "fiemap"
+>  
+> -_fixed_by_kernel_commit XXXXXXXXXXXX \
+> +_fixed_by_kernel_commit 5897710b28ca \
+>  	"btrfs: send: don't issue unnecessary zero writes for trailing hole"
+>  
+>  send_files_dir=$TEST_DIR/btrfs-test-$seq
+> diff --git a/tests/btrfs/309 b/tests/btrfs/309
+> index 5cbcd223..d1eb953f 100755
+> --- a/tests/btrfs/309
+> +++ b/tests/btrfs/309
+> @@ -12,7 +12,7 @@ _begin_fstest auto quick snapshot subvol
+>  _supported_fs btrfs
+>  _require_scratch
+>  _require_test_program t_snapshot_deleted_subvolume
+> -_fixed_by_kernel_commit XXXXXXXXXXXX \
+> +_fixed_by_kernel_commit 7081929ab257 \
+>  	"btrfs: don't abort filesystem when attempting to snapshot deleted subvolume"
+>  
+>  _scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
+> diff --git a/tests/btrfs/316 b/tests/btrfs/316
+> index 07a94334..f78a0235 100755
+> --- a/tests/btrfs/316
+> +++ b/tests/btrfs/316
+> @@ -17,7 +17,7 @@ _begin_fstest auto quick qgroup
+>  _supported_fs btrfs
+>  _require_scratch
+>  
+> -_fixed_by_kernel_commit xxxxxxxxxxxx \
+> +_fixed_by_kernel_commit d139ded8b9cd \
+>  	"btrfs: qgroup: always free reserved space for extent records"
+>  
+>  _scratch_mkfs >> $seqres.full
+> diff --git a/tests/btrfs/317 b/tests/btrfs/317
+> index 59686b72..b17ba584 100755
+> --- a/tests/btrfs/317
+> +++ b/tests/btrfs/317
+> @@ -10,8 +10,8 @@
+>  . ./common/preamble
+>  _begin_fstest auto volume raid convert
+>  
+> -_fixed_by_kernel_commit XXXXXXXXXX \
+> -	"btrfs: zoned: don't skip block group profile checks on conv zones"
+> +_fixed_by_kernel_commit 5906333cc4af \
+> +	"btrfs: zoned: don't skip block group profile checks on conventional zones"
+>  
+>  . common/filter.btrfs
+>  
+> -- 
+> 2.43.0
+> 
+> 
+
 
