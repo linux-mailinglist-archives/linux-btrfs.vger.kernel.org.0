@@ -1,124 +1,79 @@
-Return-Path: <linux-btrfs+bounces-3259-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3256-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66E4F87AFF7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 19:40:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 376B387AFF3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 19:39:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F1D528BE98
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 18:40:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 691941C25F6C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 18:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8154384A33;
-	Wed, 13 Mar 2024 17:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34B8F83CCD;
+	Wed, 13 Mar 2024 17:28:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b="PsC8qfKv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQVqtA1v"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mxex2.tik.uni-stuttgart.de (mxex2.tik.uni-stuttgart.de [129.69.192.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E668E63410
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 17:28:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.69.192.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A4782D8B
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 17:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710350909; cv=none; b=RpUQfZSNR0mbFSIZ+8Yz+2j/kNs/uLu6gcviY8eF4N9hsI/ZTo6wXJXHAbePmHdrsBLfScPFqCti1IV5yTRUqqOa7Bc3ngbFqyzgYBX8rYD8BEJZW+J0iGBaxcoJ5K1HH5tvAr5Z2RGeL3ya3RsmmmCP6JZt6Q5KmSZYy1n8dAc=
+	t=1710350906; cv=none; b=eAb14YlekSbQcl6YVatUAjUxBHjuZTKTyFfL/D3HWVWm2BTh4Z7O4mq9WBLqgREPgvDcB1rKCZCsgHSQuqj3tuauga62E6ulPRmEt06hnzOjz3HPEowHANg+EqjPKHpR0BGKfbhZRlPUtuK4UCl7rQvYxweJr/2QiJx8W5wt4d0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710350909; c=relaxed/simple;
-	bh=06Noxf5EIYXk0dje/xJdxPZMIIIkMvf+PbQD/GFD7PU=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LmuamlJpCmN8plzD7AGEnOCZKV52qBSTUPmGvxhfOH5aNEkbEK+ncJlSbXoyd8RCvlvgGK2AxDmu0xIOA4fgtbc9wJv+IB0jcaHK8l97s1Yxq2CfOkOWbtHFksiHoqV+K0J91YuO+roqcxNXu5LXmJIkHWti8TULsL87qJETRTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de; spf=pass smtp.mailfrom=rus.uni-stuttgart.de; dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b=PsC8qfKv; arc=none smtp.client-ip=129.69.192.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rus.uni-stuttgart.de
-Received: from localhost (localhost [127.0.0.1])
-	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTP id D79B760B45
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 18:28:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=uni-stuttgart.de;
-	 h=x-mailer:user-agent:in-reply-to:content-disposition
-	:content-type:content-type:mime-version:references:message-id
-	:subject:subject:from:from:date:date; s=dkim; i=
-	@rus.uni-stuttgart.de; t=1710350890; x=1712089691; bh=06Noxf5EIY
-	Xk0dje/xJdxPZMIIIkMvf+PbQD/GFD7PU=; b=PsC8qfKvytgQRhhZMs+UHPqgO4
-	2t7IsJi6IWOHYKxbKDmBKROmYDr48nkaRRHdnu/rggzZ9KHF79SCn+jyfc1cyXSL
-	fCgdfYQRsMCg71NzogVXvHXbvN70uRVzQdCxcVO+EL7bc9e2dv1hsEBSR75gWZYS
-	bk1sT4HEDVYJKlctjSYY9iyh90cg1+TWeaelMokZdAFOZZ5DhUvI33zI5xNCtNx4
-	xK0zwLYncL0kMjh7JsNVgqLIr4SOsWRUcoHQZyU/eFIXRy2PTOaYodT4m5nBIOw3
-	EHMBOzPlw/zSMFv7hFhmq3UkXZ9PwQlZYwIhr0zVP1voeC+LLj/bFUwMNhZg==
-X-Virus-Scanned: USTUTT mailrelay AV services at mxex2.tik.uni-stuttgart.de
-Received: from mxex2.tik.uni-stuttgart.de ([127.0.0.1])
- by localhost (mxex2.tik.uni-stuttgart.de [127.0.0.1]) (amavis, port 10031)
- with ESMTP id UbSjIqOyGHRN for <linux-btrfs@vger.kernel.org>;
- Wed, 13 Mar 2024 18:28:10 +0100 (CET)
-Received: from authenticated client
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTPSA
-Date: Wed, 13 Mar 2024 18:28:10 +0100
-From: Ulli Horlacher <framstag@rus.uni-stuttgart.de>
+	s=arc-20240116; t=1710350906; c=relaxed/simple;
+	bh=/ioWMCF+2e6KqENBs1BYosnANX67w2UnD8onw3zjB8Q=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=IwXx4nLmLZMz4bTOLRBW7FEH6m+iz8BlGlfvTB3xaLQ64Mxh+2lgJgnyknG9wKmtuBR4WVAy+VS92Q1wtjY9KhviI2ZR4TydcI+gtiTsiCzSuvetKs+2TpOk5uEXexFPLtAAFlHQ5TRoHuD3alxehVzCNJhty0o/jBla6f6y/fY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hQVqtA1v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64F29C433F1
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 17:28:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710350906;
+	bh=/ioWMCF+2e6KqENBs1BYosnANX67w2UnD8onw3zjB8Q=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=hQVqtA1vPiE78lJdztyixyGBLBhP4UYgtpNNhEEH5Bz7X8b7UhFec6+s1c4EUsj+c
+	 mhX/+X20LU3dn0CtZoQRg58ex3QRPBWQR07N+SMcTtgs/hWsiEHu234ELWwxSzlhyi
+	 mFO0Sp08QDGVe0KK2pfui/KeK94IjGbeg8K2dspio8cb2c3gnMQg3b6DEdLR+a2Icz
+	 j8f5/Th7A/82LGeJTQDA633s2aAqDhPOSEi6tODBnAhkVVPGVk+hMwSTuMb0t0vZmy
+	 EMEDQlJRAxOVsImE6KnjavBdkqNAhdpFhu4SJ7jut7g7YDoG814uFICyZPuf+QGzJ3
+	 PS90XwabJKYjg==
+From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: Re: mount ... or other error?
-Message-ID: <20240313172810.GA394502@tik.uni-stuttgart.de>
-Mail-Followup-To: linux-btrfs@vger.kernel.org
-References: <20240312103918.GA374710@tik.uni-stuttgart.de>
- <CAA91j0XZGSA1oNTDZXm_PRTjnaFcYbf5F+gXTSJ9kCivPuZ1gQ@mail.gmail.com>
+Subject: [PATCH v2 0/4] btrfs: some minor fixes around extent maps
+Date: Wed, 13 Mar 2024 17:28:18 +0000
+Message-Id: <cover.1710350741.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1710335452.git.fdmanana@suse.com>
+References: <cover.1710335452.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA91j0XZGSA1oNTDZXm_PRTjnaFcYbf5F+gXTSJ9kCivPuZ1gQ@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Mailer: smtpsend-20230822
+Content-Transfer-Encoding: 8bit
 
-On Tue 2024-03-12 (15:24), Andrei Borzenkov wrote:
+From: Filipe Manana <fdmanana@suse.com>
 
-> dmesg output would be useful.
+Some minor fixes around extent maps for unexpected error cases.
+More details in the change logs.
 
-root@fextest:~# dmesg | tail
-[110309.184692] BTRFS: device label spool devid 1 transid 15334 /dev/sdd1 scanned by mount (5281)
-[110309.190879] BTRFS info (device sdd1): using crc32c (crc32c-intel) checksum algorithm
-[110309.190886] BTRFS info (device sdd1): disk space caching is enabled
-[110309.190886] BTRFS info (device sdd1): has skinny extents
-[110309.196830] BTRFS error (device sdd1): devid 3 uuid 24b0f302-ada1-41fe-8aec-0b353b592046 is missing
-[110309.196834] BTRFS error (device sdd1): failed to read the system array: -2
-[110309.196940] BTRFS error (device sdd1): open_ctree failed
+V2: Added patch 4/4.
 
-Ahhh.. I have an idea:
+Filipe Manana (4):
+  btrfs: fix extent map leak in unexpected scenario at unpin_extent_cache()
+  btrfs: fix warning messages not printing interval at unpin_extent_range()
+  btrfs: fix message not properly printing interval when adding extent map
+  btrfs: use btrfs_warn() to log message at btrfs_add_extent_mapping()
 
-root@fextest:~# lshd sdd
-Device    Size Type      Label               Mountpoint
-sdd     13824G SCSI:GPT  "NETAPP_LUN_C-Mode"
- sdd1   13824G btrfs     "spool"
-
-This is probably an iSCSI device which was part of a RAID0 btrfs
-filesystem and has been retired some years ago.
-
-My storage admin gave me on my request a "new LUN" which is indeed this
-old retired LUN. Some meta data like filesystem id and label are still
-there but I cannot mount it anymore, because the second part of the RAID0
-is missing.
-
-Could this be an explanation?
-
-I do not need the data any longer, I just want to know what happend.
-
-Addon question:
-
-Why does the mount command not also display the error messages from dmesg? 
-Or at least say something like "for more information, call dmesg"?
-
-
+ fs/btrfs/extent_map.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 -- 
-Ullrich Horlacher              Server und Virtualisierung
-Rechenzentrum TIK
-Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
-Allmandring 30a                Tel:    ++49-711-68565868
-70569 Stuttgart (Germany)      WWW:    https://www.tik.uni-stuttgart.de/
-REF:<CAA91j0XZGSA1oNTDZXm_PRTjnaFcYbf5F+gXTSJ9kCivPuZ1gQ@mail.gmail.com>
+2.43.0
+
 
