@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-3257-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3258-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DAF287AFF4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 19:39:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F92B87AFF5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 19:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DA4D1F2AF87
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 18:39:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE42E28BC64
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 18:39:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D31D83CD8;
-	Wed, 13 Mar 2024 17:28:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AE7184055;
+	Wed, 13 Mar 2024 17:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VWdO8o/K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XkjBhpsC"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0B883CD0
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 17:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B00783CDB
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 17:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710350907; cv=none; b=fN7Pi/XQv+mRTiD8K9kXHlvJIhkVjI12a1lye11q75izphwy6l+GpD55307OljSRH3YIjlyk5ZFSXrldONTxTWFiIyVtX84hr465zpZ5/iM6hXuLZz13EwP/WwsRMlsN2+fS8FoX99MEphEjss5mTxG/ao7FOC59ZIznY/sZNuw=
+	t=1710350908; cv=none; b=BIYVs0jFxAWF6B2d5ktFBVcGCndG/EFhlOfOkv0/xZ86UhZ2aathihLtEExw4a5sx5PetOcJzdZaA4p6eGypsSH2hz0JbSyZ/xqfKWEkIG27MaobAGZ4r3vPThpnNZvQ0iLrHf0SUfAqB1rS5zmWKav+Y26cU6y+JSb9GNmgBoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710350907; c=relaxed/simple;
-	bh=QGx4x/dap8z34uSrgy9vLkFO9eETVAAiMwooC5u/gFY=;
+	s=arc-20240116; t=1710350908; c=relaxed/simple;
+	bh=0qHg+kqnHcIbRamgUH5v7fnWmZdE08NLcXsJknoxAbc=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n9Yp+5l2C56eJXfFm4YjXHuPFMuEbVWek8sYKKmnwXMdm8LmWRwYhPOtDuGe7ld+AsFyHlGnTxoez52exObc4BctobTgGVI6OPgBoc61MrNsh16Og2ovqk1/jmkMVE7JO7yeYlGLLCtuOyA9tj7RDMf8B77W1NVgwL9O4WDDvh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VWdO8o/K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B413C43394
-	for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 17:28:26 +0000 (UTC)
+	 MIME-Version; b=ETCb9/n2BeeYRtypNEWyNtPBL5eFFV5xXjTMXbPDYSCK0y+zT+mX3sPzw0S5SD0l+rlO9+TQDIVVo3/YnxpZ3S005z/pr0iNU+9OMFzbnud7MKad6KZfCz9fS5QgUJMPnebv7dIn79bLQIGFElgSQeX3By8MYBLJ1mTCC9eiI7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XkjBhpsC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66C2EC433C7
+	for <linux-btrfs@vger.kernel.org>; Wed, 13 Mar 2024 17:28:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1710350907;
-	bh=QGx4x/dap8z34uSrgy9vLkFO9eETVAAiMwooC5u/gFY=;
+	bh=0qHg+kqnHcIbRamgUH5v7fnWmZdE08NLcXsJknoxAbc=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=VWdO8o/KXD3Aua6WJgbn7fFqupLxI+FviGXCt5xwFkXGgLeCZ4bCcIcJMehlwa9up
-	 Xn1PmBLi6O189PQDfHgjt+JU4oMLOUcA03rjXTYwBbnhj7PEwoTLgMh98lJaJeRKzi
-	 7qtd8foy2B0ftHWx+7fQphL94/St/2t5lK3uTIYaRQ++ERYZUM+vfzhvdMSaohQaci
-	 DejqUuEFsAxJT2YkEytbwx3vQ+78bVh8UNMqQnuhP/s/GEDKD2RI9RD8+Jcdv+YHNj
-	 QxlselXlP2Ia0O7Tiba5P9wN0g3bbztYj3H7hIK0K3RsMdL5QZQWVTPhKaBwk5R4MN
-	 lsZfoOhcPGLRA==
+	b=XkjBhpsCUyRi9Uvw2R7xQToAH9NvCsqq8ry3ScqliJKRpD2/tMdMsNOrQzpLq88/t
+	 VxxsBkhJnl05UMUuLFSorVuKVnEeI4+swNzCTUSUzQk9cTwbf2WBp8fhjyOduP0PE/
+	 1RbVsfFeq9ETwgQyT3Wi/w4Gxe/0EhOFftbIchAYrerTxZeNEKl6ri8gvb7vnXrllk
+	 ISqNUAFuEqSfMnUJm13aM/l/d82L0NuvrZW+bun/TIdrXOOlmXngiXVaR4lRCL6SRh
+	 Hm/bvf20nxrZlJtShYwmYIFBG8FG/pa4fwEghVL+/+gMqXdvpdsUk06DvXI/Nw6NHO
+	 1w1RBqFnb8xPg==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 1/4] btrfs: fix extent map leak in unexpected scenario at unpin_extent_cache()
-Date: Wed, 13 Mar 2024 17:28:19 +0000
-Message-Id: <f3c7f68caa8f3568fbf2d561b35604823bb5985f.1710350741.git.fdmanana@suse.com>
+Subject: [PATCH v2 2/4] btrfs: fix warning messages not printing interval at unpin_extent_range()
+Date: Wed, 13 Mar 2024 17:28:20 +0000
+Message-Id: <7039902fc65bb3ec188a461436d19afbc71da1c1.1710350741.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1710350741.git.fdmanana@suse.com>
 References: <cover.1710350741.git.fdmanana@suse.com>
@@ -59,33 +59,41 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At unpin_extent_cache() if we happen to find an extent map with an
-unexpected start offset, we jump to the 'out' label and never release the
-reference we added to the extent map through the call to
-lookup_extent_mapping(), therefore resulting in a leak. So fix this by
-moving the free_extent_map() under the 'out' label.
+At unpin_extent_range() we print warning messages that are supposed to
+print an interval in the form "[X, Y)", with the first element being an
+inclusive start offset and the second element being the exclusive end
+offset of a range. However we end up printing the range's length instead
+of the range's exclusive end offset, so fix that to avoid having confusing
+and non-sense messages in case we hit one of these unexpected scenarios.
 
-Fixes: c03c89f821e5 ("btrfs: handle errors returned from unpin_extent_cache()")
+Fixes: 00deaf04df35 ("btrfs: log messages at unpin_extent_range() during unexpected cases")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_map.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/extent_map.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 347ca13d15a9..e03953dbcd5e 100644
+index e03953dbcd5e..2cfc6e8cf76f 100644
 --- a/fs/btrfs/extent_map.c
 +++ b/fs/btrfs/extent_map.c
-@@ -340,9 +340,9 @@ int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len, u64 gen)
- 		em->mod_len = em->len;
+@@ -309,7 +309,7 @@ int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len, u64 gen)
+ 		btrfs_warn(fs_info,
+ "no extent map found for inode %llu (root %lld) when unpinning extent range [%llu, %llu), generation %llu",
+ 			   btrfs_ino(inode), btrfs_root_id(inode->root),
+-			   start, len, gen);
++			   start, start + len, gen);
+ 		ret = -ENOENT;
+ 		goto out;
  	}
- 
--	free_extent_map(em);
- out:
- 	write_unlock(&tree->lock);
-+	free_extent_map(em);
- 	return ret;
- 
- }
+@@ -318,7 +318,7 @@ int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len, u64 gen)
+ 		btrfs_warn(fs_info,
+ "found extent map for inode %llu (root %lld) with unexpected start offset %llu when unpinning extent range [%llu, %llu), generation %llu",
+ 			   btrfs_ino(inode), btrfs_root_id(inode->root),
+-			   em->start, start, len, gen);
++			   em->start, start, start + len, gen);
+ 		ret = -EUCLEAN;
+ 		goto out;
+ 	}
 -- 
 2.43.0
 
