@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-3267-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3268-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E10F187B55F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 00:51:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 537DD87B560
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 00:52:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E3ED1F22C7E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 23:51:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D74D8B21387
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Mar 2024 23:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3282C5D75A;
-	Wed, 13 Mar 2024 23:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47CDA5D75A;
+	Wed, 13 Mar 2024 23:52:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GVGIVh6I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YPrCYZON"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 578401E480;
-	Wed, 13 Mar 2024 23:51:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 644235336D;
+	Wed, 13 Mar 2024 23:52:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710373890; cv=none; b=gb8/xnsCeEeVbosmNXzQRLbIspncZPPPJULV53Ochhknheq0H9yfJ97jJqHqTYubLvlhKbGVccGoSLjDEcIvajdYa+IWsMWe8MLjK7Q3NF4hy8miaMh/+ulaL/OkuSyfXaiTWvleKCZAENC1mGGILIO/KxsByMqMVdEjwiHlRUk=
+	t=1710373964; cv=none; b=elodZQHYIJha6t/SJM7rPTgw3OQnG3KLYcvNucJt5mkHV3rJNRfrR5jdr5OW0juCL0k5RVfHgdZm1eaTAOpTCQ6hKh/cEzbEdGT147pYQ6wp0MdW1Hzgfg39vHoziODz/a9oD1lnE4iFO6it1lQpTQzzrWPOdHAe7vJ4FQIEyJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710373890; c=relaxed/simple;
-	bh=GjpCbexXpLMXd1IAkFUOU7wqs4IKJrvCV6IEnuALe98=;
+	s=arc-20240116; t=1710373964; c=relaxed/simple;
+	bh=XLUdf/+18fHFF/RZeMw0wb0oJw4ouiemeHvr3Ts9dAo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hOC4s5r7MFZrVjVn+6tPorm59aNqEYeuSrKiBELHrYfKWZwcempgbxhRVe4juCQrdZCky6hEDwTjlgr9nNYlcaudNiuqveOBm8gdwXDqUjAvkjzlDwNgUTsPdgNzcJlXEkdVqJxeLPXKckoKYcxaVlJmnIb0XPAMskn6KmTFbXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GVGIVh6I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D03FEC43394;
-	Wed, 13 Mar 2024 23:51:29 +0000 (UTC)
+	 To:Cc:Content-Type; b=mZZHGnjyAevMlYRsEz1klH9P9XUOkGE5BNfUjFIvvtoDX0+pryQrFjiN51dhCfKwVopA8Wf3ndappRfnwFqC//wm1plqNfnxGOgKbheK9awXEDRN4okcc30GDpXx/bdnPv/Lts5IZ/FmHbxHkbpgQR/TtRorEz02ivgI0GC51O0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YPrCYZON; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC52BC433F1;
+	Wed, 13 Mar 2024 23:52:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710373889;
-	bh=GjpCbexXpLMXd1IAkFUOU7wqs4IKJrvCV6IEnuALe98=;
+	s=k20201202; t=1710373963;
+	bh=XLUdf/+18fHFF/RZeMw0wb0oJw4ouiemeHvr3Ts9dAo=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=GVGIVh6IOeTDcCB8cC1zNzFsxvG6HSKYsnSbCTkfVaggCJMHXgEKBYvlz4r+37r+L
-	 tD7lvDZTr9+ctljUSVnsy5sTceIdrZhsZNc7XbkdSOjk2BPlsbrL5VlcPyNE0HOTrO
-	 ru86NZ8BL/Cv8lDxuSj+qkFAMrRJLe/iKOtt+yAPQ73TnNBXlNDlnCXYYZu0gBkgTK
-	 9aWF6bh/TNNfDONIE2FFl+AUdhTS1cJJIqtj0mxt/rL8wy2sS2IQO50jXboPolIZdW
-	 QRAD/yFryRJ5oxqf8T5/LaJlCoc9lzXCCWkt0ZR+e+VnOGZvgeGHSb7q1TdgdQOzIA
-	 u+jxs+9hw3Tbg==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-513a08f2263so534101e87.3;
-        Wed, 13 Mar 2024 16:51:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUFWaWwJkZJrsSE9RH88stvRb16dr2bdB+ir2MVi9Zfzp8L8ZcE3oHDjfiPOfiTpGCTm5g3UubH1jTjtPgDk5Z1du3iXiDTrw==
-X-Gm-Message-State: AOJu0YwL5igbSQMum20SC0PyLYLIzE8tI0/XSKoCrIc9Yf3qkcRLG9XJ
-	6ArsZjoZsD/KPiE+Wl7VBgHgDMqWluGQ6poDSrUFiIXsbKTWWhgiqtaTVfXi1n2j2Ffc9zwtoPh
-	N6DcE7b7DjtNmdHGxUok/4PsbGjA=
-X-Google-Smtp-Source: AGHT+IFC5MqtiTG9CU8SOHsz4iN2pmyLhf2pX4wh4MP+q/nEkLjV+TWBOIt1RyzmP2XK7X8aCjpyC1oJ1Z5fPL6cTY4=
-X-Received: by 2002:ac2:5b5b:0:b0:513:3435:5120 with SMTP id
- i27-20020ac25b5b000000b0051334355120mr40147lfp.32.1710373887867; Wed, 13 Mar
- 2024 16:51:27 -0700 (PDT)
+	b=YPrCYZONAhCfMahjHearYTE05uFcAd7y52CmXWrvVRajtFcRwblbHRRL259nETDWd
+	 3Dnuy7s3fr5Us7VaRLBfCe3zy2xa+G9rUTmLYYK3wrlNZ1KW21QJ5EtxMGd6yiMK5H
+	 UH/YR4qd4lnrGV29RhZMTV/njNnOwkhW0MRHTpd3/rlOhj0jB9qLge63QW1kWCm2P8
+	 i7wG4YGl/8ZMBvBp+UM7YDc7RVYNGhXjql+Pzf+wj6k0DhnAJJhEo/IZma3HgpbIFG
+	 yW8c9AYn6yWS7U7Vd4JXE0ZC42k4A6ZtFIwvV/shRS1cKnmYUG4MifnolYBeN6uxHc
+	 WhQX4RzwyP8rA==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a446b5a08f0so76757766b.1;
+        Wed, 13 Mar 2024 16:52:43 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWslrcnevu6ueTJ9qglgpu3oQcSc2wGxavhZhK6b02YEsJ6Nl1B62FYLSAjL9YOGPYd7CCfwuVqQu99LPUoVPh1d5NeW0SDaw==
+X-Gm-Message-State: AOJu0YxpuPGZp0J0idHwnTqVdxkM1aPGsKdAA6RCtZ6uOhauV7rbceJl
+	R2r9HWgRMM90HZG/VQRxOsNpFPP190A56FoF2tC+1tiv2/OgStoGEJ2fKUO16mVDKEKk199y4hW
+	HknArJXUKkIj/t+Z4XIijjdRGBBo=
+X-Google-Smtp-Source: AGHT+IHag13wxjAuUt1V4cZU4qFMQDFc2AWGIY5NqxCAVIkJ23NjAaE/56Y/twKNZNHYW5cVaqfC09q/rH7fK/gUEhE=
+X-Received: by 2002:a17:907:a0cc:b0:a45:73b0:bcc3 with SMTP id
+ hw12-20020a170907a0cc00b00a4573b0bcc3mr22838ejc.34.1710373962345; Wed, 13 Mar
+ 2024 16:52:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,56 +58,52 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <3528774789271f9e46918f8b1d1461dad0e11cc4.1710373423.git.boris@bur.io>
- <37d57d3ae473b67270137151e4fa18ed7464cba1.1710373423.git.boris@bur.io>
-In-Reply-To: <37d57d3ae473b67270137151e4fa18ed7464cba1.1710373423.git.boris@bur.io>
+ <5c2dd52fecbc5ac86068a725875882e3000bc969.1710373423.git.boris@bur.io>
+In-Reply-To: <5c2dd52fecbc5ac86068a725875882e3000bc969.1710373423.git.boris@bur.io>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 13 Mar 2024 23:50:51 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4yP5r3NOEjT3ddMkaoGhgz39+sJqkdNoBgD9WDG986YQ@mail.gmail.com>
-Message-ID: <CAL3q7H4yP5r3NOEjT3ddMkaoGhgz39+sJqkdNoBgD9WDG986YQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix _require_btrfs_mkfs_uuid_option
+Date: Wed, 13 Mar 2024 23:52:05 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5iohxGGxJp90JM0+d4FwhygRFLb2BbDexpWyWqe+Deog@mail.gmail.com>
+Message-ID: <CAL3q7H5iohxGGxJp90JM0+d4FwhygRFLb2BbDexpWyWqe+Deog@mail.gmail.com>
+Subject: Re: [PATCH] btrfs/316: use rescan wrapper
 To: Boris Burkov <boris@bur.io>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, fstests@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 13, 2024 at 11:46=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
+On Wed, Mar 13, 2024 at 11:45=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
 >
-> currently, this helper causes tests to fail on my system due to
-> unexpected warning messages about dangling '\' characters from grep.
-> Change the invocation to not escape the '-' characters but instead to
-> use -- to instruct grep that the options list is over. Fixes
-> btrfs/31[345] for me (and I believe the btrfs github ci)
+> btrfs/316 is broken on the squota configuration because it uses a raw
+> rescan call which fails, instead of using the rescan wrapper. The test
+> passes with squota, so run it (instead of requiring rescan) though I
+> suspect it isn't the most meaningful test.
 >
 > Signed-off-by: Boris Burkov <boris@bur.io>
 > ---
->  common/btrfs | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  tests/btrfs/316 | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/common/btrfs b/common/btrfs
-> index 3eb2a91b7..aa344706c 100644
-> --- a/common/btrfs
-> +++ b/common/btrfs
-> @@ -93,7 +93,7 @@ _require_btrfs_mkfs_uuid_option()
->         local cnt
+> diff --git a/tests/btrfs/316 b/tests/btrfs/316
+> index 07a94334a..36fcad7f8 100755
+> --- a/tests/btrfs/316
+> +++ b/tests/btrfs/316
+> @@ -24,7 +24,8 @@ _scratch_mkfs >> $seqres.full
+>  _scratch_mount
 >
->         cnt=3D$($MKFS_BTRFS_PROG --help 2>&1 | \
-> -                               grep -E --count "\-\-uuid|\-\-device-uuid=
-")
-> +                               grep -E --count -- "--uuid|--device-uuid"=
-)
+>  $BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
+> -$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
+> +#$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
 
-This was already fixed and it's in the patches-in-queue branch:
+Why the comment and not remove the line? Seems like unintentional.
 
-https://lore.kernel.org/fstests/ef2df19486ef71adccd14b3df0bf475ecc7f3b38.17=
-09737287.git.fdmanana@suse.com/
+> +_qgroup_rescan $SCRATCH_MNT >> $seqres.full
 
-https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/log/?h=3Dpatches-in-=
-queue
+With that fixed:
 
->         if [ $cnt !=3D 2 ]; then
->                 _notrun "Require $MKFS_BTRFS_PROG with --uuid and --devic=
-e-uuid options"
->         fi
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+>
+>  $BTRFS_UTIL_PROG qgroup create 1/0 $SCRATCH_MNT >> $seqres.full
+>  $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subv1 >> $seqres.full
 > --
 > 2.43.0
 >
