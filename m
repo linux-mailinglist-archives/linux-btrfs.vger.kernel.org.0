@@ -1,134 +1,240 @@
-Return-Path: <linux-btrfs+bounces-3295-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3297-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DB3187C1C6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 18:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E5E9787C1E2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 18:11:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B00A1F2214A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 17:04:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E7161F220E3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 17:11:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E497441E;
-	Thu, 14 Mar 2024 17:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5EDF745CB;
+	Thu, 14 Mar 2024 17:11:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="o0adAcgQ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NcIONeim"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZoyW81ja"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687E818E20
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Mar 2024 17:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C1487172C
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Mar 2024 17:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710435869; cv=none; b=nTgyUX/byp01c7Ncp8othO4mrUOVolecXLmVGR3g3YnGztugnz7eai4J51AOrV32kN2L5AA6lZO+nAAqtnJXPSrhobuM+5rU8NsLJg+7j4ILILRQdXQmkaFKhDg5TfolZ79+lRIsEY7gqiEo6TDWlYeZahKeKDMCDl5oWYFJC7c=
+	t=1710436286; cv=none; b=nDcULizSr00k60jnesZUc8CT+5s+j7sAGjt9qDrwOOg+195M5iuTwCDj8hzBGERc2ovv/6NkdblrUpEqf5zQglv9b/Lkkr6obMkkTVkSNNxvjUENrXh+8x2NzSQe7vPfmIkzlaB2zxEIJjZrER3Usuo5nHpQRQAflmtJVGmsQ6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710435869; c=relaxed/simple;
-	bh=hACYea5m6gwzn1Zup85zBeVH2i18wXEyCOk6mcqegW0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tbYGqoL/DhlszDjr9MBLIv9vznSqb6FVPokmVkhURYqHOkpE0IEEWBMQNeQXO4dVTCUs4MX0sOHCwyNu+WQpymXdxQER5TLaHTb2B75drK+0fWXB3r1XURdy5ECjDphZrhqPvJytPkb0aLAbD0tFhrrUCKbY628Cn0DenzKVDTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=o0adAcgQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=NcIONeim; arc=none smtp.client-ip=66.111.4.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.nyi.internal (Postfix) with ESMTP id 914555C007B;
-	Thu, 14 Mar 2024 13:04:26 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 14 Mar 2024 13:04:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1710435866; x=1710522266; bh=RaUkM6fAXo
-	XZGZnoy/howh+UlkNDq2HGLSrtnP/WvC4=; b=o0adAcgQaRgF2lrc2nj/RaFFe4
-	gN/1rjKlayi2G08mkPhvXg/NB4oW6FVYNH8a7Xteg+equo9s2g44k/0YMUyComQ3
-	0XFT4ToOui6kNJciaDmTtHUeWjsqbhGWWnZlzd74diWARkZTXOQOPbtDPCp6u5up
-	Mvrrh722mSeIhmB4iID7WrlWGFqbDSXIaxBhaCjiYF1m44uVFfGYjBzWkS07qJGG
-	4YmKuLjvV7zmKNaQE5r6YS7iL0xmeNlUT5P6QZCtf+6e2lZ2PTd5/1Va5JmeJd5w
-	njHduNSXwp6+TEkod1DGAKcvnSfevSejyamRLKzyGZ1VboRmVnwcZY+BBmXg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1710435866; x=1710522266; bh=RaUkM6fAXoXZGZnoy/howh+UlkND
-	q2HGLSrtnP/WvC4=; b=NcIONeimDEj/yj33GQVGTGSg0IGowbGoIEW/3xZ/uP7g
-	HATN9h0dsXPbJhtRgGSaVddlwGk37PyH2xjANWEPG6Iaz+X7z4HANRxUw6K55lOq
-	gTRiK/HCu6MDq4jfvetBt0K04J5O3UFs+Sc7xB4ZemsRRGCbL0ORsYHz/US/U4ET
-	MLjPmovt4gTiX+0xP+VAAQbipQOMss+gj8HOnsUJQbkte3Depuv8ODRq7KAbfgRq
-	uGWX4xC/8HcktF0dVTKCSfhjJWwFm35GyNgErIQZIrYr4/Wo57ymRRbSh4pj5/uz
-	2ii1ETLDzLKaWQkWrUU2/4UkbuRsKd3ZSzccj4hRJQ==
-X-ME-Sender: <xms:Gi7zZWm63kwc_iXXHn3yb6Fr2neQ3Mhk909C1A9M3TzKEBIGF8jORg>
-    <xme:Gi7zZd3QEQWs5N7fCU0L3Bc-vkQPNrz65qdxXBhFiVUq0LGc5zu-oJhMxA9fJvgkS
-    RRVOcnlWt9SRsCROvc>
-X-ME-Received: <xmr:Gi7zZUrUWFMbCHaqHCbtYXcz8E1cLZdusLowwRPuR4vnWpaK3ftfkkdTAM43pR5rl1nqVak4ih_WyjZI7HzIDrKHKpU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeejgdelfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepke
-    dvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihho
-X-ME-Proxy: <xmx:Gi7zZalLqHDsgA_ax-8bZSo5FXNqL794_np-lYsfb4KK9yo51AUVRA>
-    <xmx:Gi7zZU3RsbXQfR_zIkej4V2_Et0qqa-3iTANiqKwa66VmgzUmP35ZQ>
-    <xmx:Gi7zZRvoo1gmY1YACWNZ1IfjSB3J91uw2atc1NClFCkrizUzam-Zvw>
-    <xmx:Gi7zZQWn09X7qEaQ4tYbNinLjBOv3j4Ddpu2Tq18beB6_NOz-FgOQw>
-    <xmx:Gi7zZR_Dcw6FaLEE0Yr4PsUEx1VuFpaw18b632DwSKJMTxWOgSXB6w>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Mar 2024 13:04:26 -0400 (EDT)
-Date: Thu, 14 Mar 2024 10:05:16 -0700
-From: Boris Burkov <boris@bur.io>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/4] btrfs: forget stray device on failed open
-Message-ID: <20240314170516.GC3483638@zen.localdomain>
-References: <cover.1709991203.git.anand.jain@oracle.com>
- <7abddd87a9b1be4b6da6173478f2ccbcd3117dba.1709991203.git.anand.jain@oracle.com>
+	s=arc-20240116; t=1710436286; c=relaxed/simple;
+	bh=Wl8oRXyjCuCOSOrW6xLOXOdzQT0r12vbUmEOMLgrCmE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bzhjDC34HkiggcPdtazlK4AMt3CGgzNMjdr6wlplTWiOtnH7yBQwmPRJXbDG/WbZp9fqLRwqHSFd6aCjt4zs+n1NxF0Qve2pHi/YGqs5FYz/7twr1fbsVh5VEq43ZeaBYHQ/u5KV79pCUclz+gQ4eU9od5kgnhCrD8e2SSUqiEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZoyW81ja; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74F3AC433C7
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Mar 2024 17:11:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710436285;
+	bh=Wl8oRXyjCuCOSOrW6xLOXOdzQT0r12vbUmEOMLgrCmE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ZoyW81ja2+ixt3ILUb5Fdsok9A9lzZNGAL0n2BLsUZslbyvfqWEYfV9cfTkosCWiF
+	 fhdhLSpm8dwN0ny6b8h13zuGy9ObC6PSVid5RdDF/BGDkzTpnHgEVhiWpeTElpNzEC
+	 MJtzY41bt2bHjiinIEpiOLg4c2XkzpZrdnW0m3jDNvrIrdIHF0ZGp0fxxK6bXXXVS0
+	 +cBuP8D35sqjgEaKXnNOYwo5yp5HBfRzp+4vlMWMxYCSroEImrAEdfXnS39b83W+gG
+	 2Lfeld0KyGOdBnQx8ekGM1VHX2+CG0frjuerDsM/OspYDs4ShQ4/oLKJLbPkjBfjx/
+	 u3qcgxNVfVnSg==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d485886545so764691fa.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Mar 2024 10:11:25 -0700 (PDT)
+X-Gm-Message-State: AOJu0YymajKlsySeAzlURw9dPKHnKnntXUdZugMlRtO1hsOyQcrI4Lpr
+	xWYaahOTv3Pb0yA1zgXXihZkV1aU7PCnPgbS2huf1QDbefeyVqCjmQqpW6Z2u+1KVfzcCL/1uZJ
+	CwCWBmNQUZcDcwSWlM4wx5qeXq2M=
+X-Google-Smtp-Source: AGHT+IF1ML7M4TZLOnDV6dRzLLa1aWO2/YLavmR/d18eC7uOK0Uv+5WDzQEFOIkEIATnTClVvD2w7yduSzz5VydaKDA=
+X-Received: by 2002:a2e:9849:0:b0:2d4:6c1c:46d with SMTP id
+ e9-20020a2e9849000000b002d46c1c046dmr465548ljj.31.1710436283762; Thu, 14 Mar
+ 2024 10:11:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7abddd87a9b1be4b6da6173478f2ccbcd3117dba.1709991203.git.anand.jain@oracle.com>
+References: <cover.1710409033.git.wqu@suse.com> <ad7fa3eaa14b93b96cd09dae3657eb825d96d696.1710409033.git.wqu@suse.com>
+In-Reply-To: <ad7fa3eaa14b93b96cd09dae3657eb825d96d696.1710409033.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 14 Mar 2024 17:10:46 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4CT=Jbusvo39pCjd6Xk7QFQ-zF79kqCMfGSkHERufqSQ@mail.gmail.com>
+Message-ID: <CAL3q7H4CT=Jbusvo39pCjd6Xk7QFQ-zF79kqCMfGSkHERufqSQ@mail.gmail.com>
+Subject: Re: [PATCH 1/7] btrfs: scrub: fix incorrectly reported
+ logical/physical address
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 09, 2024 at 07:14:29PM +0530, Anand Jain wrote:
-> If the physical device of a flakey dm device is tried mounting it fails
-> to open the device with handle, and leaves behind a stray single device
-> in the device list.
-> 
-> Remove it if the open fails and if it is a single device. As we don't
-> register a single device in the device list unless it is mounted.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+On Thu, Mar 14, 2024 at 9:50=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [BUG]
+> Scrub is not reporting the correct logical/physical address, it can be
+> verified by the following script:
+>
+>  # mkfs.btrfs -f $dev1
+>  # mount $dev1 $mnt
+>  # xfs_io -f -c "pwrite -S 0xaa 0 128k" $mnt/file1
+>  # umount $mnt
+>  # xfs_io -f -c "pwrite -S 0xff 13647872 4k" $dev1
+>  # mount $dev1 $mnt
+>  # btrfs scrub start -fB $mnt
+>  # umount $mnt
+>
+> Note above 13647872 is the physical address for logical 13631488 + 4K.
+>
+> Scrub would report the following error:
+>
+>  BTRFS error (device dm-2): unable to fixup (regular) error at logical 13=
+631488 on dev /dev/mapper/test-scratch1 physical 13631488
+>  BTRFS warning (device dm-2): checksum error at logical 13631488 on dev /=
+dev/mapper/test-scratch1, physical 13631488, root 5, inode 257, offset 0, l=
+ength 4096, links 1 (path: file1)
+>
+> On the other hand, "btrfs check --check-data-csum" is reporting the
+> correct logical/physical address:
+>
+>  Checking filesystem on /dev/test/scratch1
+>  UUID: db2eb621-b09d-4f24-8199-da17dc7b3201
+>  [5/7] checking csums against data
+>  mirror 1 bytenr 13647872 csum 0x13fec125 expected csum 0x656bd64e
+>  ERROR: errors found in csum tree
+>
+> [CAUSE]
+> In the function scrub_stripe_report_errors(), we always use the
+> stripe->logical and its physical address to print the error message, not
+> taking the sector number into consideration at all.
+>
+> [FIX]
+> Fix the error reporting function by calculating logical/physical with
+> the sector number.
+>
+> Now the scrub report is correct:
+>
+>  BTRFS error (device dm-2): unable to fixup (regular) error at logical 13=
+647872 on dev /dev/mapper/test-scratch1 physical 13647872
+>  BTRFS warning (device dm-2): checksum error at logical 13647872 on dev /=
+dev/mapper/test-scratch1, physical 13647872, root 5, inode 257, offset 1638=
+4, length 4096, links 1 (path: file1)
+>
+> Fixes: 0096580713ff ("btrfs: scrub: introduce error reporting functionali=
+ty for scrub_stripe")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Looks good, just one minor and optional comment below.
+
 > ---
->  fs/btrfs/super.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 29fab56c8152..4b73c3a2d7ab 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -1820,6 +1820,9 @@ static int btrfs_get_tree_super(struct fs_context *fc)
->  	fs_info->fs_devices = fs_devices;
->  
->  	ret = btrfs_open_devices(fs_devices, mode, &btrfs_fs_type);
-> +	if (ret && fs_devices->total_devices == 1)
-> +		btrfs_free_stale_devices(device->devt, NULL);
-> +
+>  fs/btrfs/scrub.c | 22 +++++++++++++---------
+>  1 file changed, 13 insertions(+), 9 deletions(-)
+>
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index fa25004ab04e..119e98797b21 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -870,7 +870,7 @@ static void scrub_stripe_report_errors(struct scrub_c=
+tx *sctx,
+>                                       DEFAULT_RATELIMIT_BURST);
+>         struct btrfs_fs_info *fs_info =3D sctx->fs_info;
+>         struct btrfs_device *dev =3D NULL;
+> -       u64 physical =3D 0;
+> +       u64 stripe_physical =3D stripe->physical;
+>         int nr_data_sectors =3D 0;
+>         int nr_meta_sectors =3D 0;
+>         int nr_nodatacsum_sectors =3D 0;
+> @@ -903,13 +903,17 @@ static void scrub_stripe_report_errors(struct scrub=
+_ctx *sctx,
+>                  */
+>                 if (ret < 0)
+>                         goto skip;
+> -               physical =3D bioc->stripes[stripe_index].physical;
+> +               stripe_physical =3D bioc->stripes[stripe_index].physical;
+>                 dev =3D bioc->stripes[stripe_index].dev;
+>                 btrfs_put_bioc(bioc);
+>         }
+>
+>  skip:
+>         for_each_set_bit(sector_nr, &stripe->extent_sector_bitmap, stripe=
+->nr_sectors) {
+> +               u64 logical =3D stripe->logical +
+> +                             (sector_nr << fs_info->sectorsize_bits);
+> +               u64 physical =3D stripe_physical +
+> +                             (sector_nr << fs_info->sectorsize_bits);
 
-It feels like we need to do this free no matter what the mount error is
-after this point, not just in this one place.
+These could be made const to make it clear they're not supposed to change.
 
->  	mutex_unlock(&uuid_mutex);
->  	if (ret)
->  		return ret;
-> -- 
-> 2.38.1
-> 
+Thanks.
+
+>                 bool repaired =3D false;
+>
+>                 if (stripe->sectors[sector_nr].is_metadata) {
+> @@ -938,12 +942,12 @@ static void scrub_stripe_report_errors(struct scrub=
+_ctx *sctx,
+>                         if (dev) {
+>                                 btrfs_err_rl_in_rcu(fs_info,
+>                         "fixed up error at logical %llu on dev %s physica=
+l %llu",
+> -                                           stripe->logical, btrfs_dev_na=
+me(dev),
+> +                                           logical, btrfs_dev_name(dev),
+>                                             physical);
+>                         } else {
+>                                 btrfs_err_rl_in_rcu(fs_info,
+>                         "fixed up error at logical %llu on mirror %u",
+> -                                           stripe->logical, stripe->mirr=
+or_num);
+> +                                           logical, stripe->mirror_num);
+>                         }
+>                         continue;
+>                 }
+> @@ -952,26 +956,26 @@ static void scrub_stripe_report_errors(struct scrub=
+_ctx *sctx,
+>                 if (dev) {
+>                         btrfs_err_rl_in_rcu(fs_info,
+>         "unable to fixup (regular) error at logical %llu on dev %s physic=
+al %llu",
+> -                                           stripe->logical, btrfs_dev_na=
+me(dev),
+> +                                           logical, btrfs_dev_name(dev),
+>                                             physical);
+>                 } else {
+>                         btrfs_err_rl_in_rcu(fs_info,
+>         "unable to fixup (regular) error at logical %llu on mirror %u",
+> -                                           stripe->logical, stripe->mirr=
+or_num);
+> +                                           logical, stripe->mirror_num);
+>                 }
+>
+>                 if (test_bit(sector_nr, &stripe->io_error_bitmap))
+>                         if (__ratelimit(&rs) && dev)
+>                                 scrub_print_common_warning("i/o error", d=
+ev, false,
+> -                                                    stripe->logical, phy=
+sical);
+> +                                                    logical, physical);
+>                 if (test_bit(sector_nr, &stripe->csum_error_bitmap))
+>                         if (__ratelimit(&rs) && dev)
+>                                 scrub_print_common_warning("checksum erro=
+r", dev, false,
+> -                                                    stripe->logical, phy=
+sical);
+> +                                                    logical, physical);
+>                 if (test_bit(sector_nr, &stripe->meta_error_bitmap))
+>                         if (__ratelimit(&rs) && dev)
+>                                 scrub_print_common_warning("header error"=
+, dev, false,
+> -                                                    stripe->logical, phy=
+sical);
+> +                                                    logical, physical);
+>         }
+>
+>         spin_lock(&sctx->stat_lock);
+> --
+> 2.44.0
+>
+>
 
