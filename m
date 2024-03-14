@@ -1,153 +1,137 @@
-Return-Path: <linux-btrfs+bounces-3296-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3298-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8807A87C1E1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 18:11:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBB0387C205
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 18:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E328283E74
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 17:11:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13D361C20C35
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 17:18:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03DFF745E0;
-	Thu, 14 Mar 2024 17:11:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6A7745EF;
+	Thu, 14 Mar 2024 17:18:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="I7517JuI";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iCOXsH+i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GYnVVOyw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA899745C5
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Mar 2024 17:11:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234A81EA6F;
+	Thu, 14 Mar 2024 17:18:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710436271; cv=none; b=P8jzpKRV9GoebGbb1cNuej7zffh6ciAnjwz83IWnqM0wzlB+GeDaqUKPHdyw6s1RuDN5KMb7WnXnRHghleVeTWihgWmz2tuz/B4pGecdsFOjxVs6kc8dP7NbdEdqeti35ErFfscadY96PGTHRusXGar/KYMED10XkfH3VJ6PV4o=
+	t=1710436715; cv=none; b=mFSBaNMfnCwlHNLcnwdQ7mCEUWVKxr7aSTiXKecjTZC+bnSbG42ToubHqniwQFSUwWHt9mLBKfz6aThWZ9ht1f5qO0+U5QtArh2JzRCdZAem+k+3jWTIiwUABhGFlTV+BOYz7hinvRKXbNWorpJiAQDmcVHQBHq8FQHWnk8Ze9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710436271; c=relaxed/simple;
-	bh=sHqrX7U02t+IOVDct12T+ZMYYcin5p7bYAjYjeUKIPE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gy6ZTZ2BCBUL/dpMrVS+qRnhGNANz2WraShZT/ZOQ3KqDb1/XgXAPRBhaIQr0NtGe/IewQCHsazPXTF8zitOKJlvCYkE51hK3mbb4BZoo11kk1DBEbf5yZSF7/T/4at6joVAGC81HQACdlqq62EPD/SzZRT6ZZArCy6j0BEz8MQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=I7517JuI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iCOXsH+i; arc=none smtp.client-ip=66.111.4.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.nyi.internal (Postfix) with ESMTP id EE0D05C008C;
-	Thu, 14 Mar 2024 13:11:07 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Thu, 14 Mar 2024 13:11:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1710436267; x=1710522667; bh=/3RFwaeDsI
-	NhOA3XGRsSKvWRV3kQlTeC3qSAwwWnJI4=; b=I7517JuIo8gjy0ZI38V6bFxQFb
-	riDekW/YStUJhzNwEM6DLrB86m0UWVSCsR4Yis914rlTv7RkY938tKA/jYQsILUa
-	kVL5tjk6ztos/V6LYKQVqG32n3hr7farH2fwO5CRcUABvVGmWHObYcNWN/9UNC/G
-	j9nMxcGBJhGruVNhh+JKIa2T7QHjDHKLzg2ZVKOvct+qsnoEu/T2zvpDpJRgBCw4
-	dUlcfKmPAYzpijLPjvX+nt7YCE6GhueTn0wQZXdI0WS9OGr8204FTMbEDIp3Ejoy
-	mTlwrfFydnaq7T1z6YxYOvEqGNtEMRJF9km6eIwwaeV+zZjmOQqaQNkX9Onw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1710436267; x=1710522667; bh=/3RFwaeDsINhOA3XGRsSKvWRV3kQ
-	lTeC3qSAwwWnJI4=; b=iCOXsH+iHRZb1jN5kL/wX67C4VOsL1oMEh44QYu2N3w8
-	6kTXvK84d8hnzAFSAYCPSDy+DAJODJdntE7Le7WIrOPF4dYWlytiLzVrMIhBIkjB
-	ROD/bAC6aLGtDxlfXfQGCiS5SWfhUmnMk/nVMYXxjQMZ6Kbhc7I0GEDYyaT1eiIv
-	An3x08HDb7rBgAH0IJar1g/burBzcq2cuqzT9/S0rdf3jI7DkYzXif9bviY5LYO4
-	GHeIBRLLENH/oUguXJzGnPOrJnw7fLg935sYA+UkwPWl430CwOorCX3iuKbvmLdo
-	ym0kesokQqG8zgzHo+knYtUxKJ/njp49XFBBONCYww==
-X-ME-Sender: <xms:qy_zZS8gxkIFiIOEn_EvBoS7aIKM1sc8R1fSFExlI3qx0jz35b3yBA>
-    <xme:qy_zZSsKkCTGVpSuDA08n-vajxf0-9_hs_3aDmkPCDZz_g6yGNSnYaac6dnKaqg2O
-    y02M5cYcbZkCgwmnAw>
-X-ME-Received: <xmr:qy_zZYBOe5s8sprxWLJm8Y4_Y9TBMKjHnNHyU6WDQzQlL5AhH5rTN0lB8dLKJSnQ2UGr1f8KfYvunK-7jzOjtiOG2ys>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeejgdelhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepke
-    dvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihho
-X-ME-Proxy: <xmx:qy_zZafY6p7c3PAGVms-FNm9diMvqGG22K80vJBjwvL6armBLLNURA>
-    <xmx:qy_zZXMN3HBTwqolf265squiy30tDZuFFPJwBaiszooXDHAsywcMQA>
-    <xmx:qy_zZUmosWKLYtLVDohwvDq3xBEVENzJiBkFA9wxusRWWU2hRs3CVg>
-    <xmx:qy_zZZvOv4YaHHMmiBOw-WwdReQDT_m_VtV0BFiS7mcXKbIACq6UPw>
-    <xmx:qy_zZd2xT32IFcXrHcSKfC5rUvNr93LBHMXvBfP-sieF1GxCW3CKbA>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Mar 2024 13:11:07 -0400 (EDT)
-Date: Thu, 14 Mar 2024 10:11:58 -0700
-From: Boris Burkov <boris@bur.io>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/4] btrfs: validate device_list at scan for stray free
-Message-ID: <20240314171158.GD3483638@zen.localdomain>
-References: <cover.1709991203.git.anand.jain@oracle.com>
- <87d75575e16637a84b82326d5c53cb78cdf9a7e0.1709991203.git.anand.jain@oracle.com>
+	s=arc-20240116; t=1710436715; c=relaxed/simple;
+	bh=ohDZGdMDrrJS14ToVZBClFrspQXk+4CJZdS+EJmy7Ac=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KU+lWtkXgj01KKzhzXj2fPJDN93nX1s27dp9J1qjwY6J7C65BjPJzBVzsK5Yl3eiCHLj7YXg+S1tsWNOCSPFiCcnBh2PpQrj+os4xVJRcdVg0M5fxbTQ9y+jp7mVR7QyxQZYjHwvnM8NoPFOOXpO3zH0tkudUBBmqnpPiCK64jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GYnVVOyw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98410C433F1;
+	Thu, 14 Mar 2024 17:18:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710436714;
+	bh=ohDZGdMDrrJS14ToVZBClFrspQXk+4CJZdS+EJmy7Ac=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=GYnVVOywPAYqGCj4yHOGMwMJvzwGx30unKTxXy/NRdJOrtpoRlIB86SWq7jn7qLeo
+	 8utfXyMCpwC17lKhtGf9NjGQ0cPdYEZigEeDE+yGXxOSF5lpogsZB28u2rixjs+PFf
+	 AC6R/+sEA7rvLsVk5up+eIOzRcyBjxkrx2d2V1Gub+rUTrZUaC0x6xjH/irvY8XeBI
+	 yeu+/Wa8/D9Wo6/A/M7RRhChVJQYhONImqrUk0tHqtLJqNLR9FI+pusy2u48TtfIUQ
+	 oB+EAKB0sZbOpuUS1oeU5L08ujk8SFqn8GF9VdO9/y48R/vtetWASkM3Td5Qej5IfZ
+	 CkZXFrA0fVftQ==
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a46644fee93so171644266b.2;
+        Thu, 14 Mar 2024 10:18:34 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVzCAySnt/YRu5n9x62hLdSmYtmT5dxut6I2IFEd22RFLFNY8j4oCISAoo7IQyNqLURHcCsKfvSx193QqViO/ssmA47dOiG
+X-Gm-Message-State: AOJu0YwZA0IWZHoecuLm9L+zhbi9HpvC2cUpXsJD3a2oS4Tu7OdQbH4G
+	EdPNVzufbDPPhpywIhmXFncBIqzhJQMi7lN/5pRsJB0v+MUS82t7auxjDRSNktrcf8nzDs+M6wW
+	3MckdW8ghx5j2++sgdFGpcXPa/v8=
+X-Google-Smtp-Source: AGHT+IG/ys2gnE/GEOxAamM1inX7INBoxrWSpB2U3nqqWxpczR+UlJH3889HCYrelziAVG4u4vYWoid19GVGS8luIZU=
+X-Received: by 2002:a17:906:3c11:b0:a45:f371:c109 with SMTP id
+ h17-20020a1709063c1100b00a45f371c109mr1603163ejg.24.1710436713211; Thu, 14
+ Mar 2024 10:18:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87d75575e16637a84b82326d5c53cb78cdf9a7e0.1709991203.git.anand.jain@oracle.com>
+References: <cover.1710409033.git.wqu@suse.com> <c54030e9a9e202f36e6002fb533810bc5e8a6b9b.1710409033.git.wqu@suse.com>
+In-Reply-To: <c54030e9a9e202f36e6002fb533810bc5e8a6b9b.1710409033.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 14 Mar 2024 17:17:56 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7hMVH+YcTY1LufgjTHjKKc6AQyOb-RmppHBskf4h0wDQ@mail.gmail.com>
+Message-ID: <CAL3q7H7hMVH+YcTY1LufgjTHjKKc6AQyOb-RmppHBskf4h0wDQ@mail.gmail.com>
+Subject: Re: [PATCH 2/7] btrfs: reduce the log level for btrfs_dev_stat_inc_and_print()
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 09, 2024 at 07:14:31PM +0530, Anand Jain wrote:
-> Tempfsid assumes all registered single devices in the fs_devicies list are
-> to be mounted; otherwise, they won't be in the btrfs_device list.
-> 
-> We recently fixed a related bug caused by leaving failed-open device in
-> the list. This triggered tempfsid activation upon subsequent mounts of the
-> same fsid wrongly.
-> 
-> To prevent this, scan the entire device list at mount for any stray
-> device and free them in btrfs_scan_one_device().
+On Thu, Mar 14, 2024 at 9:54=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> Currently when we increase the device statistics, it would always lead
+> to an error message in the kernel log.
+>
+> I would argue this behavior is not ideal:
+>
+> - It would flood the dmesg and bury real important messages
+>   One common scenario is scrub.
+>   If scrub hit some errors, it would cause both scrub and
+>   btrfs_dev_stat_inc_and_print() to print error messages.
+>
+>   And in that case, btrfs_dev_stat_inc_and_print() is completely
+>   useless.
+>
+> - The results of btrfs_dev_stat_inc_and_print() is mostly for history
+>   monitoring, doesn't has enough details
+>
+>   If we trigger the errors during regular read, such messages from
+>   btrfs_dev_stat_inc_and_print() won't help us to locate the cause
+>   either.
+>
+> The real usage for the btrfs device statistics is for some user space
+> daemon to check if there is any new errors, acting like some checks on
+> SMART, thus we don't really need/want those messages in dmesg.
+>
+> This patch would reduce the log level to debug (disabled by default) for
+> btrfs_dev_stat_inc_and_print().
+> For users really want to utilize btrfs devices statistics, they should
+> go check "btrfs device stats" periodically, and we should focus the
+> kernel error messages to more important things.
 
-Is this an additional precaution on top of maintaining an invariant on
-every umount/failed mount that we have freed stale devices of single
-device fs-es? Or is it fundamentally impossible for us to enforce that
-invariant?
+Not sure if this is the right thing to do.
 
-It feels like overkill to hack up free_stale_devices in this way,
-compared to just ensuring that we manage cleaning up single devices
-fs-es correctly when we are in a cleanup context. If this is practically
-the best way to ensure we don't get caught with our pants down by a
-random stale device, then I suppose it's fine.
+In the scrub context it can be annoying for sure.
+Other cases I'm not so sure about, because having error messages in
+dmesg/syslog may help notice issues more quickly.
 
-A total aside I just thought of:
-I think it might also make sense to consider adding logic to look for
-single device fs-es with a device->bdev that is stale from the block
-layer's perspective, and somehow marking those in a way that tempfsid
-cares about. That would help with things that like that case where we
-delete the block dev out from under a mounted fs and mount it a second
-time with tempfsid after it's recreated. Not a huge deal, as we've
-already discussed, though.
-
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>
+> CC: stable@vger.kernel.org
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/volumes.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+>  fs/btrfs/volumes.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
 > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 60d848392cd0..bb0857cfbef2 100644
+> index e49935a54da0..126145950ed3 100644
 > --- a/fs/btrfs/volumes.c
 > +++ b/fs/btrfs/volumes.c
-> @@ -1382,6 +1382,8 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
->  
->  	lockdep_assert_held(&uuid_mutex);
->  
-> +	btrfs_free_stale_devices(0, NULL, true);
-> +
->  	/*
->  	 * we would like to check all the supers, but that would make
->  	 * a btrfs mount succeed after a mkfs from a different FS.
-> -- 
-> 2.38.1
-> 
+> @@ -7828,7 +7828,7 @@ void btrfs_dev_stat_inc_and_print(struct btrfs_devi=
+ce *dev, int index)
+>
+>         if (!dev->dev_stats_valid)
+>                 return;
+> -       btrfs_err_rl_in_rcu(dev->fs_info,
+> +       btrfs_debug_rl_in_rcu(dev->fs_info,
+>                 "bdev %s errs: wr %u, rd %u, flush %u, corrupt %u, gen %u=
+",
+>                            btrfs_dev_name(dev),
+>                            btrfs_dev_stat_read(dev, BTRFS_DEV_STAT_WRITE_=
+ERRS),
+> --
+> 2.44.0
+>
+>
 
