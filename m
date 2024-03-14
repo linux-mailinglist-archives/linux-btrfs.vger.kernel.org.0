@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-3312-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3313-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5548387C44C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 21:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC26087C453
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 21:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7010B20FF6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 20:31:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32EA9B222F5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 20:32:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2E31763E5;
-	Thu, 14 Mar 2024 20:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D73D763E3;
+	Thu, 14 Mar 2024 20:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TeGQHDbj"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RLPWb42e"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B526FE28
-	for <linux-btrfs@vger.kernel.org>; Thu, 14 Mar 2024 20:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D4E673539
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Mar 2024 20:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710448252; cv=none; b=tBvVKL40Lr5fJNxy4iHCbAf5lb+4ybyzE/HKRIYQJw6ExOvYugluZQBL5ES9yzS/TURHiHzJj5fxFjep5SGoyAJuPhQ0vxu8VlWkKBQdnRVfghQayaH6wOjufqbBPA5zxImPc6NdrUeWaReI9qyFrsF8oRVBAPtAMX7gUUhSVDY=
+	t=1710448354; cv=none; b=bZZH8CN2YR5OG2/rCktc2gk8kZJEaG+4xiGUh9CQehktq0OBDhiQraQHT+cA7GBd9MjLLvnTpNw30esXBDZU1e5vV/3Z3GQ6db4UepEXJuG/1Zlbf/tWjjbnOIibeLlfDiWJtqhbF9iWaMmueqjMKSbRq7Z6gFRXTYd2vUsikiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710448252; c=relaxed/simple;
-	bh=WRaWu3kl1N7bsvmdTPbJlwgxVXRhYd8ZWbg5Q0sv8fw=;
+	s=arc-20240116; t=1710448354; c=relaxed/simple;
+	bh=meYeCB8uKZP6PomYWp82+qFvScOBZsBTGaTXaorbQIg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cM9ifzZigfEkmlmKvUlHh7KzOQ6oVksoWs9NaqYE0ovA39B/UOlerwctMvc7vzYde/OQTHa9C+qDe//fWzogjHhlMY4P6q36nmqhsOq5037+67r773D1VzruUK81K/JAwGH4TYx+6G4uhKE32YrmikbDBTFM1Wdt4SnqMqLrhB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=TeGQHDbj; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=KtVhUEaK/XsRUEulk2/KKE+JyIdf1RLg6xvkci6+k1WTwa4n0PExviqtB71F2wbHgPr77m06ImZIRlfdETLVZ8kuKYAw96UOPBHuF6Rv+yLNgnEnJIakSo3fPRrV7SJnOoTPFoUxax8X8UoIOtRwtICM8jNJ02xdhQI0SU7Kvss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RLPWb42e; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1710448244; x=1711053044; i=quwenruo.btrfs@gmx.com;
-	bh=LVnIhnDtLYDJ7GIUkSy13VZ8Ych7k46WlNVBTz0E9J0=;
+	s=s31663417; t=1710448346; x=1711053146; i=quwenruo.btrfs@gmx.com;
+	bh=2BBgEu4J+qpmmJ8zzMSyxi7vcx7+97i1gT1OKxsSPY0=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=TeGQHDbjt7XWndKnqluorsII1oPrc3JJgAmp7sN07YN+TKLWR9jZj2XWQN8RrBze
-	 haw3jUbJl1Dk7ApKm/NPSvv/+b2OS2ZyNAtbFPrIFKxe//wty4rjYQK5PSHg/GYvh
-	 MHBzXzs8uED6/KSIXj7IIHbQt3NcSdXKKU+tELYVQu0BwpzOTnaEVaf70upF7RMEF
-	 jU6UbRvywyUPIa4UVAfQ46mZcmFOJD0gP5vkUasRkpIpQoJKDxoWE7J8Qzb8WIKx6
-	 t1ml/DSQvfhXQwUjoHBZWdyj8bNH898Fo/fTIzazv3WiKJGcT4cocTfWRia2C3vsf
-	 1rCJs6FNlQVJnY0GDg==
+	b=RLPWb42eTKS5AgMRbsYZQoECWvDNpJlMhJJDTHFD7DRS1MGP/so3pbcgKqvrGmXk
+	 fwKGiBxokPQQKw+0JszwtI0iD5jQLdiO2gHIIzjBIYb4+grnry/XlgK5pQuBTj75H
+	 fRUiuJy+1Na8MIWoCiqTiKmyk7Op6jBJJdsgHk1umQqQuBNK2QbxGD6vUqjzbekNN
+	 30UQFqc7OVey9TtFQEpL0BGBiYqxHhJoeCSukObrJqmDueiBi1bcfXeeMbCfqBTSQ
+	 8xErlRjY0fuc46cBRDqTYKAer2/nJy7zzU3cRU+8DzUIjG8vwT1ofmkNJlZNdDtb2
+	 YNBoT+/RE5KXtQEimQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MI5QF-1rXx923EbX-00FAZP; Thu, 14
- Mar 2024 21:30:44 +0100
-Message-ID: <45f95dc2-cd2b-47af-a02b-d306efd2e85a@gmx.com>
-Date: Fri, 15 Mar 2024 07:00:40 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMGRK-1rTk2Z2IT8-00JLQg; Thu, 14
+ Mar 2024 21:32:26 +0100
+Message-ID: <1d612afa-3332-4edb-b459-e6aef91445c2@gmx.com>
+Date: Fri, 15 Mar 2024 07:02:24 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,12 +55,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/6] btrfs: scrub: refine the error messages
+Subject: Re: [PATCH 7/7] btrfs: scrub: fix the frequency of error messages
 Content-Language: en-US
-To: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
+To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
 References: <cover.1710409033.git.wqu@suse.com>
- <20240314173512.GA3485866@zen.localdomain>
+ <c46343633e6198f315876179d31b3a66b66a8aa2.1710409033.git.wqu@suse.com>
+ <CAL3q7H7Tn87T=Qcmo2-nZR-jSeTw7ZPdZWbUN7AQARpGsQYyBw@mail.gmail.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -86,145 +87,81 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240314173512.GA3485866@zen.localdomain>
+In-Reply-To: <CAL3q7H7Tn87T=Qcmo2-nZR-jSeTw7ZPdZWbUN7AQARpGsQYyBw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:kTETq8IHiry9YYYxKg+4s7W7mYpDx0v5NRLkjxMU1yVGCkmKX7C
- jnTxXYKTu0OHky94f/yF54TknmtkJGKOMirpbW9VdK82p9SPE0qbblvkAev4LKOdzmI1k+R
- maSnB3GwGnaSYWDJEHIav32+aeWp1Fwgdd825U/25OUWBjhixIUI74xVhz46a1od0MNj5uN
- xudQ0UfNSGHaN3u6eqNiA==
+X-Provags-ID: V03:K1:RDwpjbNzQv0eBgxiDpg/zChY0HXRDq8ulsHXlgaIJuo+qHDvTYl
+ eKT32o1JxnGcIgGDnmASAmuYKPnxv087GCUEwIcrEt4brELrrolXyRZqWZN5b/PJovfk22+
+ dg88JRzq2k/GDnXytOaxRprJy9mvd8lk/P/kqpcdi6/lfeYSS/N4vSNQzJpz1C9RddevMw0
+ 04uijyPu3gshP+7GysLOg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:frqYF+enhUk=;wT0eJbOx+R8jHhn6vHWmqbu+mdE
- fdKZ6O2olfRqGb1w1Enuz5Vp21f7FGZfuZn/BD0bL0kaGWC54Rolj0EQacFvcR8BdWQ5Xqsin
- HvwT5jK7Ks0ABaZz1pdm9SUl+BIae73+OBpUCSRhGX2jBt9VImg2AVkKOtYX3fzMPz+LGHS91
- 4O/QTG9thQoi5TCDASWfSycRaXQcxC2g+II39RLHbmJ8lFKE/TY1dAtdKzMJVvaiISV6sCxTy
- HHaCwZLDoWEduYGrN+6d6vB3h+//7VP5djDn4267fnm9n3Dn9qX+kWaQma9vavaO9LtE/4qee
- qG4EMwPE4ZvrhkNWg7j3Rks/RH2aKnhlUuEz736WJ7hFEwOvdUxY+CVXLVpvfHgYByQJ9cfkx
- RVeraxOf0h2tPYrmp3lffGXRMl+mc6SYoioyoV/vY1aXjcWlKHR8QnRZcoAAPoPpJfz0jOZyu
- /TuhkPyjCgBho8CN/qPFueQDxki8+I754eCYOSSga1K0a9yJVV0ScUbrXn5nxwJrxLiN303p2
- 2iZGZE0P9GW2H6L9pd0pMjtRgJov3Wuf9rETZd4z6ZzcUmdhUXwzwAIqozTVH6j0T7RypNL3g
- aKx7KO12r8ZJk73eHY3zqHmJBBdKSKKNxN+gFLoH1+YMir2i9+8OpSEqwJEAq8UBio/k1gPJX
- q4l8H6QR60ovYHTcr/TnS3rE5swPVaDWK2mfmgWrkGq2+7W5ZJ0tAPgHBh3etfXeuR8pm3xEO
- mZyNnexsLRBmnwpqN1MBabFZw25spZi9kHHDkMgt0HI42UA9UwXw6YDCjpcU8CJL9mvygyjAb
- rTOv1aB0/mjFKvw45SaiK9j868PvedrJAxBCZ7CrFvYZ4=
+UI-OutboundReport: notjunk:1;M01:P0:GsTsQ7d+jGM=;0INXrRIF9gIvYVL5SDKl3KzKI0U
+ 2AEvI7SMcrFFXSJiSlWIiej5V3zKHkZJxANi/g2Ez15F0etnhJOJwITrEu0Yu4t/bAX/9vuIG
+ LRYJ3MZEruqFz/kZPb7QPib8+CRYkBIURxVzmzcxfvd9V80PonIwMxSuS/O0yDq9r8rcD0Trd
+ OG8mDaPwfKPCMAQwB025FHJnynxTIhFWe4pCLq2WRUBOlO0i2QX2QCIbsaWlhguXdhc7+15Xl
+ PKQn/voRPkhZcbY2mHsnKE2W+eyJiRkPNejLVarFtXTY622FzV25qhrS8HWxt7VidOUB0O7Au
+ uvLmsFUBKOeAzTLoX3RRetfb0TgxE2PMV9MbNegQorsi5NkAG0mXj8Ax0QpZq35oX00jijChe
+ 6uEBUFyc9rsDkhfok5B2jZ5v6UAWK/wO+rfjkrmQb4TBJLpc7HHjucgNTSKpJHsx/Ycmrrhmp
+ XvBSZY39XyRMv6iQNUz5E0LK5rGMB9EotTVhBOjjw/IaIHnSOLLPJNwheKiVxa1clSRgDmzuZ
+ zSWANmeRhFLy0dymw0bnePB4LXJpDYcBx2yaB5oL0Ml4TXG4SknUl0NXBoA8wlF+grjsdhzeh
+ PD31zXHQqxB00rLJq4AGgeLPPU0FXQb+NrJdKym0v/npiFDPkcMdjySUakGE5G1A38Dzz7d22
+ N9MQAPmqgEZjN2rcg+XTuWd3gZu9jv3u+DGUc3FAUJyrZq6Hl292EqFCkC8cIvgtIw2VqKHa8
+ I3U14UyQmbRETgCn6gkc7Ysli5N8EcnIXk64dznqF+33r47mC3iazSAjYoa9oYMqy/Zt2ig7L
+ uwBaJ9K+IvaQ0war8ILs7j19AZbmATpPsqULs2Cl+7H68=
 
 
 
-=E5=9C=A8 2024/3/15 04:05, Boris Burkov =E5=86=99=E9=81=93:
-> On Thu, Mar 14, 2024 at 08:20:13PM +1030, Qu Wenruo wrote:
->> During some support sessions, I found older kernels are always report
->> very unuseful scrub error messages like:
->>
->>   BTRFS error (device dm-0): bdev /dev/mapper/sys-rootlv errs: wr 0, rd=
- 0, flush 0, corrupt 2823, gen 0
->>   BTRFS error (device dm-0): unable to fixup (regular) error at logical=
- 1563504640 on dev /dev/mapper/sys-rootlv
->>   BTRFS error (device dm-0): bdev /dev/mapper/sys-rootlv errs: wr 0, rd=
- 0, flush 0, corrupt 2824, gen 0
->>   BTRFS error (device dm-0): unable to fixup (regular) error at logical=
- 1579016192 on dev /dev/mapper/sys-rootlv
->>
->> There are two problems:
->> - No proper details about the corruption
->>    No metadata or data indication, nor the filename or the tree id.
->>    Even the involved kernel (and newer kernels after the scrub rework)
->>    has the ability to do backref walk and find out the file path or the
->>    tree backref.
->>
->>    My guess is, for data sometimes the corrupted sector is no longer
->>    referred by any data extent.
->>
->> - Too noisy and useless error message from
->>    btrfs_dev_stat_inc_and_print()
->>    I'd argue we should not output any error message just for
->>    btrfs_dev_stat_inc_and_print().
->>
->> After the series, the error message would look like this:
->>
->>   BTRFS warning (device dm-2): checksum error at inode 5/257(file1) fil=
-eoff 16384, logical 13647872(1) physical 1(/dev/mapper/test-scratch1)13647=
-872
+=E5=9C=A8 2024/3/15 04:21, Filipe Manana =E5=86=99=E9=81=93:
+[...]
+>> +               }
 >
-> Stoked on this series, thanks for doing it!
+> No need for the curly braces here, it's a single statement, so we
+> follow the style of dropping them.
 >
-> qq: would it be helpful to also include the actual/expected csum? I
-> think it's particularly helpful when one or the other is either zeros or
-> the checksum of the zero block.
+>
+>>          }
+>> -
+>>   out:
+>>          btrfs_free_path(path);
+>>   }
+>> @@ -889,12 +905,6 @@ static void scrub_stripe_report_errors(struct scru=
+b_ctx *sctx,
+>>                  }
+>>
+>>                  /* The remaining are all for unrepaired. */
+>> -               btrfs_err_rl_in_rcu(fs_info,
+>> -       "unable to fixup (regular) error at logical %llu(%u) physical %=
+llu(%s)%llu",
+>> -                                           logical, stripe->mirror_num=
+,
+>> -                                           dev->devid, btrfs_dev_name(=
+dev),
+>> -                                           physical);
+>> -
+>
+> This hunk seems unintentional?
 
-It's a little too long to add (especially considering SHA256).
-And even with CRC32C, I have difficulty to expose any all zero/one checksu=
-m.
-(Maybe I did too few support recently?)
+This is intentional:
+
+  - Remove the "unable to fixup" error message
+   Since we have ensured at least one error message is outputted for each
+   unrepairable corruption, there is no need for that fallback one.
+
+Since we have ensured we would at least output one line for each
+unrepaired corruption (before rate limit though), that line is duplicated.
 
 Thanks,
 Qu
-
 >
->>
->> This involves the following enhancement:
->>
->> - Single line
->>    And we ensure we output at least one line for the error we hit.
->>    No more unrelated btrfs_dev_stat_inc_and_print() output.
->>
->> - Proper fall backs
->>    We have the following different fall back options
->>    * Repaired
->>      Just a line of something repaired for logical/physical address.
->>
->>    * Detailed data info
->>      Including the following elements (if possible), and if higher
->>      priority ones can not be fetched, it would be skipped and try
->>      lower priority items:
->>      + file path (can have multiple ones)
->>      + root/inode number and offset
->>      + logical/physical address (always output)
->>
->>    * Detaile metadata info
->>      The priority list is:
->>      + root ref/level
->>      + logical/physical address (always output)
->>
->>    For the worst case of data corruption, we would still have some like=
-:
->>
->>     BTRFS warning (device dm-2): checksum error at data, logical 136478=
-72(1) physical 1(/dev/mapper/test-scratch1)13647872
->>
->>    And similar ones for metadata:
->>
->>     BTRFS warning (device dm-2): checksum error at meta, logical 136478=
-72(1) physical 1(/dev/mapper/test-scratch1)13647872
->>
->> The first patch is fixing a regression in the error message, which lead=
-s
->> to bad logical/physical bytenr.
->> The second one would reduce the log level for
->> btrfs_dev_stat_inc_and_print().
->>
->> Path 3~4 are cleanups to remove unnecessary parameters.
->>
->> The remaining reworks the format and refine the error message frequency=
-.
->>
->> Qu Wenruo (7):
->>    btrfs: scrub: fix incorrectly reported logical/physical address
->>    btrfs: reduce the log level for btrfs_dev_stat_inc_and_print()
->>    btrfs: scrub: remove unused is_super parameter from
->>      scrub_print_common_warning()
->>    btrfs: scrub: remove unnecessary dev/physical lookup for
->>      scrub_stripe_report_errors()
->>    btrfs: scrub: simplify the inode iteration output
->>    btrfs: scrub: unify and shorten the error message
->>    btrfs: scrub: fix the frequency of error messages
->>
->>   fs/btrfs/scrub.c   | 185 ++++++++++++++++----------------------------=
--
->>   fs/btrfs/volumes.c |   2 +-
->>   2 files changed, 66 insertions(+), 121 deletions(-)
->>
+> Thanks.
+>
+>>                  if (test_bit(sector_nr, &stripe->io_error_bitmap))
+>>                          scrub_print_common_warning("i/o error", dev,
+>>                                                       logical, physical=
+,
 >> --
 >> 2.44.0
+>>
 >>
 >
 
