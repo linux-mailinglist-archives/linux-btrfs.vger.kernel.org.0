@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-3310-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3311-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22D9A87C445
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 21:26:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F4FF87C447
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 21:28:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4682E1C213CC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 20:26:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED0531F22140
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Mar 2024 20:28:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD89762C1;
-	Thu, 14 Mar 2024 20:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8DB07604D;
+	Thu, 14 Mar 2024 20:28:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="GuccfZr/"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="D74AxCCO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877D775804;
-	Thu, 14 Mar 2024 20:26:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F4C6FE0B
+	for <linux-btrfs@vger.kernel.org>; Thu, 14 Mar 2024 20:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710447987; cv=none; b=KbFNrxfSUBlFHZH9G86ctHS/Fqp49DW9/QQI4jnjAWJCAzjn/DRyKj9aGpCipQIJyMwnZ58+k9Uy2yFk20vOYfdq0i6Tz2QmrZu/vR9xDxlGtBjy0ZqDPaGCACUI3iKe+CP8YCuQuAmyvmbwuYlRnx/McURihyS4xR2WDPVkeI4=
+	t=1710448125; cv=none; b=W+TxlVYTb/kq2VapVWXKiN1nAzfFCdTd8wsybkBM45qSV7EPZQTPpLv8ixkfhqXQoQz7KDG+o+ULChEES9TMtjOGk/u5BscG2FUjowY0sFgMeIhwlsd70IpLG2po3OF/g9sw2KlVYkd4Ptb7lpNezwa/hI0x+zF61IP+KoaN1Os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710447987; c=relaxed/simple;
-	bh=ZnBeDeSWfjCdJ7GYR4YJ2BGIWkdAPDjPmlCB+KR8pGY=;
+	s=arc-20240116; t=1710448125; c=relaxed/simple;
+	bh=ejLpfM/ZNxfz9cluz4+FtV4Wu6EfPGPZ/XS0/Vjck/A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Jxv1dFZE6ZUTzlJfWXPkY3kw90nHkB5Pz59hmhPRPfNi+jsi4sDHv7VU+Y2jxFZ9UkctXpeA9XxV9wOZ3Haj6ZS0z5O/Mjz6wYetQrvZr3+ABF2X26nlNLoXR2v+eaULo36SF1haKVu/MeZYJoDoFNpHCIrRni9Rdp7wPJzMALI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=GuccfZr/; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=ODFNQdqi3FQxEF/EX8vtvf4xhGOwPQFoPY2+yWChAIjRDi0Tvz1Qr5+aeQ5loFD4pICiASPRNWwWOfW3Wi/BdtbfROJtUKEdVSwt1tCsJNnrBUOG1cYDaSsvEDMIACwrljUOvBWJjV7AJaqL17kYg20iO/3ZPvfZTQs/oSyPHQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=D74AxCCO; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1710447977; x=1711052777; i=quwenruo.btrfs@gmx.com;
-	bh=ArEIYza25ugOhcZyVqXmWy4/8AuxskIzLfppu6JE7CI=;
+	s=s31663417; t=1710448115; x=1711052915; i=quwenruo.btrfs@gmx.com;
+	bh=tMSSWRbRQOQX1dLUT3guWIugqHR/AjUv4Vd6SkRuLFY=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=GuccfZr/sAHTqm7eEm06/5ZRVydWLt/5eg9njIC9IeOC3va1XKbtN+2Dx+eGK6uh
-	 shsKop2jOCbxsbU+tdEYegM67gM8bfXUib6eBmVSTJetMvThRBTVRWzrrnADhIucx
-	 vMY8XlI3juWqYScGBRHUU5nNvsVx8mnKmnL0afXpkY3THnei+O7Hq5w5TNWrXrXxX
-	 vPlDo+pCqD4cmWp+Vc9lGSq3tPJSvt5xCfluXHbUz6qCg5biUriIpSVv3kzyT+VsH
-	 xUqU2YGx3/nvXp9YyLLHHMvWXU0xVtCEvJSg5LKZmnJODAzKaG4fOq5DDztcfZPDY
-	 dJpPxuuCKSDnpIg+Cw==
+	b=D74AxCCOwXypLXfmrwgoic+mSV+pJOc3xWj21PhFc5VpA4OZCwj0JV3dIUtncgq0
+	 gnzhghDcudl82z4YcNr38IhLctbvh1apf/i6ZYomidHWMkb+D7pslqeAJdflFNgt3
+	 +N1qxnHL/qIJW0552z9+/qYRUMcp+rmkOHLUDX5KoBua9DNjlGRZ8ckIlCtxxb2U1
+	 XMgHsLRXPwgUg8fOZnQECOe9b2mQH0WiM3Dg5gi+ENdESRWgEhBZqloB0kQg2SZFx
+	 DVTZRyKKULHgLGNFZnbr2/A3rYjIy5ZzPALTxoOcdSVFVJsn3iD9hJ96R9a5QBuUm
+	 cKgZs7EM2BE8lgpSRg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MoO6C-1r0oWO3nKq-00om1B; Thu, 14
- Mar 2024 21:26:17 +0100
-Message-ID: <0d28c03f-56f1-4c7c-b278-bf5ea6de08e7@gmx.com>
-Date: Fri, 15 Mar 2024 06:56:13 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXp9Y-1rJImF12Z2-00YCGR; Thu, 14
+ Mar 2024 21:28:35 +0100
+Message-ID: <c3f5aafc-9c9b-4b16-a71c-56985964318c@gmx.com>
+Date: Fri, 15 Mar 2024 06:58:32 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,14 +55,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/7] btrfs: reduce the log level for
- btrfs_dev_stat_inc_and_print()
+Subject: Re: [PATCH 4/7] btrfs: scrub: remove unnecessary dev/physical lookup
+ for scrub_stripe_report_errors()
 Content-Language: en-US
 To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org
 References: <cover.1710409033.git.wqu@suse.com>
- <c54030e9a9e202f36e6002fb533810bc5e8a6b9b.1710409033.git.wqu@suse.com>
- <CAL3q7H7hMVH+YcTY1LufgjTHjKKc6AQyOb-RmppHBskf4h0wDQ@mail.gmail.com>
+ <348c07314744f4914f5d613c516e9790f8c725b5.1710409033.git.wqu@suse.com>
+ <CAL3q7H5Wgh4VEiNjX5_UOEftg55FAsi9Gy3SMZOVtkfKCszGoQ@mail.gmail.com>
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -88,110 +88,195 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H7hMVH+YcTY1LufgjTHjKKc6AQyOb-RmppHBskf4h0wDQ@mail.gmail.com>
+In-Reply-To: <CAL3q7H5Wgh4VEiNjX5_UOEftg55FAsi9Gy3SMZOVtkfKCszGoQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iNKl2Nq0qJafbMgKJq/vzSmiGUrpvY7T6aCMBR69xiF1btZbgdM
- FwkEQtK59tordXI1rKB8cS3GoclsqSsyFuKKLn7FAjFTh8n9UTLK7S1R3Oeiuw4OUVi8mDn
- +548wa+PCu9oRhLkHj/AYQeatArYMEThBtSHBsAuufQLdZnmrE1zEp3pf2Czp9557oVOFhI
- 9WA3+5ARaU9iFmcwUZaKQ==
+X-Provags-ID: V03:K1:hc0rC4VlMu9Xc0weXBNgZR1zOufe2oGptAzqa5pmY1RNdtblFDI
+ U9WPgFkb82tjMCVy4b7jzeGeUywMoZevHPji7F981+zEKAw5LIas874702MJh/5eVSacNtG
+ IaVERGAYiqGIKZkdbJUR0Uj1Hfy2/Q5/cfBFnDdM4uRYvuab5rxqrb2Qin/znoNI6/gadGy
+ rL6+C72YKeKswh4iT16yQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:LBt8tWnH1oI=;+CqIdXUX9MdaMDd1etLZ0u5+Rdx
- 2YdaJBGE4tVLeGkFNx9ZbqZPhgn/7kIUnG9Z+P12gBep/N7ZgdwvIjNSbhNTIZL/NnYgc11fG
- L0JqvhanMcLZCNrMH9FDRfx5TXGB/tZmm9WMIFKro3lSyhxF4LlHuJJCox7x8mnAKW/l1+Hiz
- nmTvhOSEhCrDQEmflzXbnsrwxFvjdExzY9cRaf+wSQfOwN8nobfEk+jXAWeOgzVzCm+7IQXVY
- y1kz9G7DA8geiVFYNJrdl+CiqkEBscjaiSCCw+Z8tfr3PxYkxposnAtC4au+tVAmxMuL7npsJ
- YthM7T9SoqYd5GoTkpeYwl2uiiGMIgR1yOTKK+Rys20sjCKRghc6+62q/1nBgL6brcKXMm7Vu
- hJKfEjIKFgWtOnYOW0NEo2hUnVkHMzoiA8Rw6Pwf7ho0QyNr4z4vXXrNOtChmQOpLO8IpSGIR
- AaErTq+WxBJqMkIsio+5UtGKRhBZLQpr1SEg3P98PoqUvjJPTi7UjsGmKHbagmmoxWwvrfVWl
- 1ZMQm9GiI2F9btJNe/dqWXMjTfhYHePvmI2oNP72zNP9QpYb2IcoOfeMAwmrSH2VZqcMfZAAH
- ZOI8oUl37PmiLCJNMncOjS3/YjRYjF9mRPqf4/Xc9UzBpYZAILojwp4Sk4l78qSybElk5131t
- VBh4GR4Y1LFMcbEhvbvv0e46eC97OPf862jhozViDmNu9uUi22/js03/M8Bktnu06Rpltyax9
- y4IvSBmra8gy8tVQeWqMFx4unvKHgwJhgo0tfgDMgS6hYiHWfQI72vBZIQ0BiK4HYlbCuiUBn
- ixD6rQJVdDxsu/OgxqW80iliUm6mfNVx3BYDAx4NfFddU=
+UI-OutboundReport: notjunk:1;M01:P0:ODN75xZKxaQ=;672PZo6MJs4AIyHtLeWmYcQmsjD
+ 6i2m95qR8lSKsUA9vOol9PYZos8fmY0EeLtYqeW8+MxZrC7rB8PhpJZbY8S/I0Qy6dMxbALni
+ aV7HNHiAQcPySWlxcZzdyMnex2P1ChimPkqoWe9KwS13DQA9hEJLYvxL0+wNHgmYj7JmmivG9
+ ktKSosAtFWoV26CElzWKYmrWiVBD4hHblWzpuh6xRvNOHmTayGY15TlBdoDSwvKPdc5RJQ2Un
+ 7gujUF2knws63rmrUNAzXuZC02IIqnlmjJ6nM3ijrksB0FW1n7FdSwrKYjUanfyLos/HRPUdt
+ N5iU5AuX06a6UWZrsh/VjrVaJouC4vaKPSrwwIqQd62CGRwej2rkKPwgg9bP3lVXWO0Ytn9ac
+ 841JRtBlmnVXu4IS78pRzUcP4B9Tm7JjvewUh1xu+HbhugxMiSCijLvhdSGYZZ/bXpCiZOcMS
+ u6hCoC6Zi0DmqPnzyg+4+HHy0Sx8rMrlGZbHOnuR+8tNp4xw0ds9tSJN+HLUVZ3LP8JMu5ZkI
+ B+DVsplmdGVOaB1EVGJj/mn2rESE7gAFYJBqZFeGkttxgV/W792ywUxfgZizyyxHzIwH17NpK
+ OsVVmWiwk9KLasftei3QommpD8zmpcQdqiLGc81WZH91yAw8wSHNjAcOTiZhDB2QNQyY19vmN
+ rAL8FsmdHuwFeJa6MWdditpd4/hr5kc78JtGxc8m1d+tSz9XQL3l8QB16R+wm+4YgIzxyCWKb
+ hKgwY7BFWyLLVCflcJSBi1pB/m/4h6UgKz7lMdm0BOV+H6++y+SmyXdPcevK4MwU4Zf0Ed3Lz
+ l8AgyHz3oXPzZJ+v1dIRnOL7dGOFVXAXXseAf0PLAZquo=
 
 
 
-=E5=9C=A8 2024/3/15 03:47, Filipe Manana =E5=86=99=E9=81=93:
-> On Thu, Mar 14, 2024 at 9:54=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+=E5=9C=A8 2024/3/15 03:56, Filipe Manana =E5=86=99=E9=81=93:
+> On Thu, Mar 14, 2024 at 9:50=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >>
->> Currently when we increase the device statistics, it would always lead
->> to an error message in the kernel log.
+>> The @stripe passed into scrub_stripe_report_errors() either has
+>> stripe->dev and stripe->physical properly populated (regular data
+>> stripes) or stripe->flags would have SCRUB_STRIPE_FLAG_NO_REPORT
+>> (RAID56 P/Q stripes).
 >>
->> I would argue this behavior is not ideal:
+>> Thus there is no need to go with btrfs_map_block() to get the
+>> dev/physical.
 >>
->> - It would flood the dmesg and bury real important messages
->>    One common scenario is scrub.
->>    If scrub hit some errors, it would cause both scrub and
->>    btrfs_dev_stat_inc_and_print() to print error messages.
+>> Just add an extra ASSERT() to make sure we get stripe->dev populated
+>> correctly.
 >>
->>    And in that case, btrfs_dev_stat_inc_and_print() is completely
->>    useless.
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/scrub.c | 59 ++++++-----------------------------------------=
+-
+>>   1 file changed, 7 insertions(+), 52 deletions(-)
 >>
->> - The results of btrfs_dev_stat_inc_and_print() is mostly for history
->>    monitoring, doesn't has enough details
+>> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+>> index 5e371ffdb37b..277583464371 100644
+>> --- a/fs/btrfs/scrub.c
+>> +++ b/fs/btrfs/scrub.c
+>> @@ -860,10 +860,8 @@ static void scrub_stripe_submit_repair_read(struct=
+ scrub_stripe *stripe,
+>>   static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
+>>                                         struct scrub_stripe *stripe)
+>>   {
+>> -       static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
+>> -                                     DEFAULT_RATELIMIT_BURST);
+>>          struct btrfs_fs_info *fs_info =3D sctx->fs_info;
+>> -       struct btrfs_device *dev =3D NULL;
+>> +       struct btrfs_device *dev =3D stripe->dev;
+>>          u64 stripe_physical =3D stripe->physical;
+>>          int nr_data_sectors =3D 0;
+>>          int nr_meta_sectors =3D 0;
+>> @@ -874,35 +872,7 @@ static void scrub_stripe_report_errors(struct scru=
+b_ctx *sctx,
+>>          if (test_bit(SCRUB_STRIPE_FLAG_NO_REPORT, &stripe->state))
+>>                  return;
 >>
->>    If we trigger the errors during regular read, such messages from
->>    btrfs_dev_stat_inc_and_print() won't help us to locate the cause
->>    either.
+>> -       /*
+>> -        * Init needed infos for error reporting.
+>> -        *
+>> -        * Although our scrub_stripe infrastructure is mostly based on =
+btrfs_submit_bio()
+>> -        * thus no need for dev/physical, error reporting still needs d=
+ev and physical.
+>> -        */
+>> -       if (!bitmap_empty(&stripe->init_error_bitmap, stripe->nr_sector=
+s)) {
+>> -               u64 mapped_len =3D fs_info->sectorsize;
+>> -               struct btrfs_io_context *bioc =3D NULL;
+>> -               int stripe_index =3D stripe->mirror_num - 1;
+>> -               int ret;
+>> -
+>> -               /* For scrub, our mirror_num should always start at 1. =
+*/
+>> -               ASSERT(stripe->mirror_num >=3D 1);
+>> -               ret =3D btrfs_map_block(fs_info, BTRFS_MAP_GET_READ_MIR=
+RORS,
+>> -                                     stripe->logical, &mapped_len, &bi=
+oc,
+>> -                                     NULL, NULL);
+>> -               /*
+>> -                * If we failed, dev will be NULL, and later detailed r=
+eports
+>> -                * will just be skipped.
+>> -                */
+>> -               if (ret < 0)
+>> -                       goto skip;
+>> -               stripe_physical =3D bioc->stripes[stripe_index].physica=
+l;
+>> -               dev =3D bioc->stripes[stripe_index].dev;
+>> -               btrfs_put_bioc(bioc);
+>> -       }
+>> -
+>> -skip:
+>> +       ASSERT(dev);
+>>          for_each_set_bit(sector_nr, &stripe->extent_sector_bitmap, str=
+ipe->nr_sectors) {
+>>                  u64 logical =3D stripe->logical +
+>>                                (sector_nr << fs_info->sectorsize_bits);
+>> @@ -933,42 +903,27 @@ static void scrub_stripe_report_errors(struct scr=
+ub_ctx *sctx,
+>>                   * output the message of repaired message.
+>>                   */
+>>                  if (repaired) {
+>> -                       if (dev) {
+>> -                               btrfs_err_rl_in_rcu(fs_info,
+>> +                       btrfs_err_rl_in_rcu(fs_info,
+>>                          "fixed up error at logical %llu on dev %s phys=
+ical %llu",
+>>                                              logical, btrfs_dev_name(de=
+v),
+>>                                              physical);
+>> -                       } else {
+>> -                               btrfs_err_rl_in_rcu(fs_info,
+>> -                       "fixed up error at logical %llu on mirror %u",
+>> -                                           logical, stripe->mirror_num=
+);
+>> -                       }
+>>                          continue;
+>>                  }
 >>
->> The real usage for the btrfs device statistics is for some user space
->> daemon to check if there is any new errors, acting like some checks on
->> SMART, thus we don't really need/want those messages in dmesg.
+>>                  /* The remaining are all for unrepaired. */
+>> -               if (dev) {
+>> -                       btrfs_err_rl_in_rcu(fs_info,
+>> +               btrfs_err_rl_in_rcu(fs_info,
+>>          "unable to fixup (regular) error at logical %llu on dev %s phy=
+sical %llu",
+>>                                              logical, btrfs_dev_name(de=
+v),
+>>                                              physical);
+>> -               } else {
+>> -                       btrfs_err_rl_in_rcu(fs_info,
+>> -       "unable to fixup (regular) error at logical %llu on mirror %u",
+>> -                                           logical, stripe->mirror_num=
+);
+>> -               }
 >>
->> This patch would reduce the log level to debug (disabled by default) fo=
-r
->> btrfs_dev_stat_inc_and_print().
->> For users really want to utilize btrfs devices statistics, they should
->> go check "btrfs device stats" periodically, and we should focus the
->> kernel error messages to more important things.
+>>                  if (test_bit(sector_nr, &stripe->io_error_bitmap))
+>> -                       if (__ratelimit(&rs) && dev)
+>> -                               scrub_print_common_warning("i/o error",=
+ dev,
+>> +                       scrub_print_common_warning("i/o error", dev,
+>>                                                       logical, physical=
+);
+>>                  if (test_bit(sector_nr, &stripe->csum_error_bitmap))
+>> -                       if (__ratelimit(&rs) && dev)
+>> -                               scrub_print_common_warning("checksum er=
+ror", dev,
+>> +                       scrub_print_common_warning("checksum error", de=
+v,
+>>                                                       logical, physical=
+);
+>>                  if (test_bit(sector_nr, &stripe->meta_error_bitmap))
+>> -                       if (__ratelimit(&rs) && dev)
+>> -                               scrub_print_common_warning("header erro=
+r", dev,
+>> +                       scrub_print_common_warning("header error", dev,
 >
-> Not sure if this is the right thing to do.
->
-> In the scrub context it can be annoying for sure.
-> Other cases I'm not so sure about, because having error messages in
-> dmesg/syslog may help notice issues more quickly.
+> Why are we removing the rate limiting?
+> This seems like an unrelated change.
 
-For non-scrub cases, I'd argue we already have enough output:
+Because the ratelimit is not consistent.
 
-No matter if the error is fixed or not, every time a mirror got csum
-mismatch or other errors, we already have error message output:
+E.g. the "fixed up error" line is not rated limited by @rs, but by
+btrfs_err_rl_in_rcu().
 
-  Data: btrfs_print_data_csum_error()
-  Meta: btrfs_validate_extent_buffer()
-
-For repaired ones, we have extra output from bio layer for both metadata
-and data:
-  btrfs_repair_io_failure()
-
-So I'd say the dev_stat ones are already duplicated.
+And we would have scrub_print_common_warning() to go btrfs_*_rl() helper
+in the coming patches.
 
 Thanks,
 Qu
 >
+> Everything else looks ok.
+>
+> Thanks.
+>
+>>                                                       logical, physical=
+);
+>>          }
 >>
->> CC: stable@vger.kernel.org
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/volumes.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index e49935a54da0..126145950ed3 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -7828,7 +7828,7 @@ void btrfs_dev_stat_inc_and_print(struct btrfs_de=
-vice *dev, int index)
->>
->>          if (!dev->dev_stats_valid)
->>                  return;
->> -       btrfs_err_rl_in_rcu(dev->fs_info,
->> +       btrfs_debug_rl_in_rcu(dev->fs_info,
->>                  "bdev %s errs: wr %u, rd %u, flush %u, corrupt %u, gen=
- %u",
->>                             btrfs_dev_name(dev),
->>                             btrfs_dev_stat_read(dev, BTRFS_DEV_STAT_WRI=
-TE_ERRS),
 >> --
 >> 2.44.0
 >>
