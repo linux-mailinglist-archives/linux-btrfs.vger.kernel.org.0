@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-3322-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3323-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A7EC87CD7D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Mar 2024 13:56:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42E6987CD7E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Mar 2024 13:56:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB9AD1C22208
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Mar 2024 12:56:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66FC11C22448
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Mar 2024 12:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F8D25565;
-	Fri, 15 Mar 2024 12:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5562577A;
+	Fri, 15 Mar 2024 12:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oCRnxo1u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yk/DCK/I"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D6D5250E2
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Mar 2024 12:55:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC84325564
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Mar 2024 12:55:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710507359; cv=none; b=LDL5lNJjT2exLmxEiNNGtKkATzamjY2gOA/yoAs3ak5j4KM2fwmjbtlxOj3kk/mjMtaPvhDg3s2BOWid+30RTgI88wWJRLqn/YEyO8QH3241B+P+SrzukYKHlIXYV5jwKARFhsZRc8ViDr0GkPFqkhtsX8ppX/T0Oo8yA9Aurk0=
+	t=1710507359; cv=none; b=S81C0ecHmHmekK9ep9EBAUa3cE2dM6WZsIdLTgtr1G06sItXp2r+e0CAoceTIk4L0pBMytwRGBTugezM83iiLTYHfj/f4rOlcTX6pKX8qbwHtZj/nX8brfMkZ03sm424fh1Xc5YonXIn19yO6MMKAmV+ditLe6DqHEQ8NXgBRCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710507359; c=relaxed/simple;
-	bh=2F96YG1ToDWWPydaoCjNGP5ZVmHJqa70vaDH5vYXocU=;
+	bh=XNs34h/8H+2V5H9TqIqYzafDgXse7wKVlvLJL8/xPAk=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=h+YrYrmTmqPA4JUCvKEYjha4eDXPIzPqi3cWDDbeTUyGYhDy3c/xfp8iUOdxfVddmFE5gMabLcxeIvlOQH4bORjm5czpY5pxh7f8hZUoBtswm0IYfW4h8OyjBQ7wDFS4/A0AyK7RNfwqW9xSZsV1PiLtCAJwDPETJoqH/P8pL/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oCRnxo1u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 270E0C433F1
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Mar 2024 12:55:57 +0000 (UTC)
+	 MIME-Version; b=a3fT5sx2vnsBNIkRu82jnn9B9YFnM3s2vytKRSxkEGIUN9g/ftDER6MBQE8QXg8qe74ulk86Nd/BT5JAdcUk8/z8aix26uqgw6eUXY/Qi4aSQzNgZfi2e32G13I81FLkMtg+TyE5PPN3aaYtqFltNbMkCXRVx2hIX6OsNYWvdUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yk/DCK/I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E19BC433C7
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Mar 2024 12:55:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710507358;
-	bh=2F96YG1ToDWWPydaoCjNGP5ZVmHJqa70vaDH5vYXocU=;
+	s=k20201202; t=1710507359;
+	bh=XNs34h/8H+2V5H9TqIqYzafDgXse7wKVlvLJL8/xPAk=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=oCRnxo1uE29AzxaEDUaEQR7MVoT27ZjOu0/XVMa57e6a3ghNADkAqJutarmX1wcVL
-	 tuH1HoCM6yE40lKsch1GOB9KSycshUtCEQPlQTWcj6kBWi1xRWDN2kBmcN63jIIi3f
-	 N3QS3iVjnez7bq57r7VCxDWltQdC34Z2mHYeOJ6ufZaQhS9vVKDEBVbj2T2CjkoRhV
-	 bAGeGKFkFodSzHzwmdW+U41r4KoQO0vy+e9D/CuTOBWILvdpxBS/a/F5tRPO9CsUVF
-	 Irl8JyUcCvck5eMF9/4mlapBxPB2tyhdgdinoVlu7ALAzBPa3C9fZs1ps9sx6N07wb
-	 i634I7nBF2H7w==
+	b=Yk/DCK/IUM2ncfvK/5XfRkWpWdBeuuqj+a1o2wNPXZEhNIW8rxWBLosE2yd4a52jQ
+	 /6ihfANUT5ny1NXynRsKumobVG3a/AhwybLJB59JlbWn7eI1WR75vH62je+fqmBd8h
+	 2tYiDOtHbN7gc/IxZDgdJBHf4WiH83PMgGs/ZL+L3Qk0xRkTo0E1ETeij+jXyXHTi8
+	 J6faN2YwVDVZz2PC7EUbp5+sVIxLvSVgirH6X1BW2fcBwL1uCFGmw+SN8H4sI8hwdS
+	 XakGGIQu9SCm6hE3i/1dIF4gY+adqoh/DexOeq8DamKIW6k4GWzOe+XDWAKnSPtCLs
+	 1fyHfYBApx6Wg==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: inline btrfs_tree_lock() and btrfs_tree_read_lock()
-Date: Fri, 15 Mar 2024 12:55:52 +0000
-Message-Id: <b281571ee54c81fac0861b7d896497501fa3f278.1710506834.git.fdmanana@suse.com>
+Subject: [PATCH 2/2] btrfs: rename __btrfs_tree_lock() and __btrfs_tree_read_lock()
+Date: Fri, 15 Mar 2024 12:55:53 +0000
+Message-Id: <ba792d935e76901a16ed978115fa7a84d42f4cfb.1710506834.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1710506834.git.fdmanana@suse.com>
 References: <cover.1710506834.git.fdmanana@suse.com>
@@ -59,133 +59,149 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The functions btrfs_tree_lock() and btrfs_tree_read_lock() are very
-trivial so that can be made inline and avoid call overhead, as they
-are very often called inside critical sections (when searching a btree
-for example, attempting to lock a child node/leaf while holding a lock
-on the parent).
-
-So make them static inline, which even reduces the size of the btrfs
-module a little bit.
-
-Before this change:
-
-   $ size fs/btrfs/btrfs.ko
-      text	   data	    bss	    dec	    hex	filename
-   1718786	 156276	  16920	1891982	 1cde8e	fs/btrfs/btrfs.ko
-
-After this change:
-
-   $ size fs/btrfs/btrfs.ko
-      text	   data	    bss	    dec	    hex	filename
-   1718650	 156260	  16920	1891830	 1cddf6	fs/btrfs/btrfs.ko
-
-Running fs_mark also showed a tiny improvement with this script:
-
-   $ cat test.sh
-   #!/bin/bash
-
-   DEV=/dev/nullb0
-   MNT=/mnt/nullb0
-   FILES=100000
-   THREADS=$(nproc --all)
-
-   echo "performance" | \
-       tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-
-   umount $DEV &> /dev/null
-   mkfs.btrfs -f $DEV
-   mount $DEV $MNT
-
-   OPTS="-S 0 -L 5 -n $FILES -s 0 -t $THREADS -k"
-   for ((i = 1; i <= $THREADS; i++)); do
-        OPTS="$OPTS -d $MNT/d$i"
-   done
-
-   fs_mark $OPTS
-
-   umount $MNT
-
-Before this change:
-
-   FSUse%        Count         Size    Files/sec     App Overhead
-       10      1200000            0     180894.0         10705410
-       16      2400000            0     228211.4         10765738
-       23      3600000            0     215969.6         11011072
-       30      4800000            0     199077.1         11145587
-       46      6000000            0     176624.1         11658470
-
-After this change:
-
-   FSUse%        Count         Size    Files/sec     App Overhead
-       10      1200000            0     185312.3         10708377
-       16      2400000            0     229320.4         10858013
-       23      3600000            0     217958.7         11006167
-       30      4800000            0     205122.9         11112899
-       46      6000000            0     178039.1         11438852
+The __btrfs_tree_lock() and __btrfs_tree_read_lock() are using a naming
+with a double underscore prefix, which is specially not proper for
+exported functions. Rename the double underscore from their name and add
+the "_nested" prefix.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/locking.c | 10 ----------
- fs/btrfs/locking.h | 14 ++++++++++++--
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ fs/btrfs/ctree.c       | 12 ++++++------
+ fs/btrfs/extent-tree.c |  2 +-
+ fs/btrfs/locking.c     |  6 +++---
+ fs/btrfs/locking.h     |  8 ++++----
+ 4 files changed, 14 insertions(+), 14 deletions(-)
 
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index aaf53fd84358..f6a98e7cf006 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -1003,7 +1003,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 			goto out;
+ 		}
+ 
+-		__btrfs_tree_lock(left, BTRFS_NESTING_LEFT);
++		btrfs_tree_lock_nested(left, BTRFS_NESTING_LEFT);
+ 		wret = btrfs_cow_block(trans, root, left,
+ 				       parent, pslot - 1, &left,
+ 				       BTRFS_NESTING_LEFT_COW);
+@@ -1021,7 +1021,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 			goto out;
+ 		}
+ 
+-		__btrfs_tree_lock(right, BTRFS_NESTING_RIGHT);
++		btrfs_tree_lock_nested(right, BTRFS_NESTING_RIGHT);
+ 		wret = btrfs_cow_block(trans, root, right,
+ 				       parent, pslot + 1, &right,
+ 				       BTRFS_NESTING_RIGHT_COW);
+@@ -1205,7 +1205,7 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
+ 		if (IS_ERR(left))
+ 			return PTR_ERR(left);
+ 
+-		__btrfs_tree_lock(left, BTRFS_NESTING_LEFT);
++		btrfs_tree_lock_nested(left, BTRFS_NESTING_LEFT);
+ 
+ 		left_nr = btrfs_header_nritems(left);
+ 		if (left_nr >= BTRFS_NODEPTRS_PER_BLOCK(fs_info) - 1) {
+@@ -1265,7 +1265,7 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
+ 		if (IS_ERR(right))
+ 			return PTR_ERR(right);
+ 
+-		__btrfs_tree_lock(right, BTRFS_NESTING_RIGHT);
++		btrfs_tree_lock_nested(right, BTRFS_NESTING_RIGHT);
+ 
+ 		right_nr = btrfs_header_nritems(right);
+ 		if (right_nr >= BTRFS_NODEPTRS_PER_BLOCK(fs_info) - 1) {
+@@ -3267,7 +3267,7 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
+ 	if (IS_ERR(right))
+ 		return PTR_ERR(right);
+ 
+-	__btrfs_tree_lock(right, BTRFS_NESTING_RIGHT);
++	btrfs_tree_lock_nested(right, BTRFS_NESTING_RIGHT);
+ 
+ 	free_space = btrfs_leaf_free_space(right);
+ 	if (free_space < data_size)
+@@ -3483,7 +3483,7 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
+ 	if (IS_ERR(left))
+ 		return PTR_ERR(left);
+ 
+-	__btrfs_tree_lock(left, BTRFS_NESTING_LEFT);
++	btrfs_tree_lock_nested(left, BTRFS_NESTING_LEFT);
+ 
+ 	free_space = btrfs_leaf_free_space(left);
+ 	if (free_space < data_size) {
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index beedd6ed64d3..1a1191efe59e 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -5093,7 +5093,7 @@ btrfs_init_new_buffer(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 	 */
+ 	btrfs_set_buffer_lockdep_class(lockdep_owner, buf, level);
+ 
+-	__btrfs_tree_lock(buf, nest);
++	btrfs_tree_lock_nested(buf, nest);
+ 	btrfs_clear_buffer_dirty(trans, buf);
+ 	clear_bit(EXTENT_BUFFER_STALE, &buf->bflags);
+ 	clear_bit(EXTENT_BUFFER_ZONED_ZEROOUT, &buf->bflags);
 diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-index 99ccab86bb86..1f355ca65910 100644
+index 1f355ca65910..508a3fdfcd58 100644
 --- a/fs/btrfs/locking.c
 +++ b/fs/btrfs/locking.c
-@@ -147,11 +147,6 @@ void __btrfs_tree_read_lock(struct extent_buffer *eb, enum btrfs_lock_nesting ne
- 	trace_btrfs_tree_read_lock(eb, start_ns);
- }
- 
--void btrfs_tree_read_lock(struct extent_buffer *eb)
--{
--	__btrfs_tree_read_lock(eb, BTRFS_NESTING_NORMAL);
--}
--
- /*
-  * Try-lock for read.
-  *
-@@ -211,11 +206,6 @@ void __btrfs_tree_lock(struct extent_buffer *eb, enum btrfs_lock_nesting nest)
- 	trace_btrfs_tree_lock(eb, start_ns);
- }
- 
--void btrfs_tree_lock(struct extent_buffer *eb)
--{
--	__btrfs_tree_lock(eb, BTRFS_NESTING_NORMAL);
--}
--
- /*
-  * Release the write lock.
+@@ -129,14 +129,14 @@ static void btrfs_set_eb_lock_owner(struct extent_buffer *eb, pid_t owner) { }
   */
+ 
+ /*
+- * __btrfs_tree_read_lock - lock extent buffer for read
++ * btrfs_tree_read_lock_nested - lock extent buffer for read
+  * @eb:		the eb to be locked
+  * @nest:	the nesting level to be used for lockdep
+  *
+  * This takes the read lock on the extent buffer, using the specified nesting
+  * level for lockdep purposes.
+  */
+-void __btrfs_tree_read_lock(struct extent_buffer *eb, enum btrfs_lock_nesting nest)
++void btrfs_tree_read_lock_nested(struct extent_buffer *eb, enum btrfs_lock_nesting nest)
+ {
+ 	u64 start_ns = 0;
+ 
+@@ -193,7 +193,7 @@ void btrfs_tree_read_unlock(struct extent_buffer *eb)
+  *
+  * Returns with the eb->lock write locked.
+  */
+-void __btrfs_tree_lock(struct extent_buffer *eb, enum btrfs_lock_nesting nest)
++void btrfs_tree_lock_nested(struct extent_buffer *eb, enum btrfs_lock_nesting nest)
+ 	__acquires(&eb->lock)
+ {
+ 	u64 start_ns = 0;
 diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
-index 9576f485a300..c30aff66e86f 100644
+index c30aff66e86f..1bc8e6738879 100644
 --- a/fs/btrfs/locking.h
 +++ b/fs/btrfs/locking.h
-@@ -164,11 +164,21 @@ static_assert(BTRFS_NESTING_MAX <= MAX_LOCKDEP_SUBCLASSES,
+@@ -163,20 +163,20 @@ enum btrfs_lockdep_trans_states {
+ static_assert(BTRFS_NESTING_MAX <= MAX_LOCKDEP_SUBCLASSES,
  	      "too many lock subclasses defined");
  
- void __btrfs_tree_lock(struct extent_buffer *eb, enum btrfs_lock_nesting nest);
--void btrfs_tree_lock(struct extent_buffer *eb);
-+
-+static inline void btrfs_tree_lock(struct extent_buffer *eb)
-+{
-+	__btrfs_tree_lock(eb, BTRFS_NESTING_NORMAL);
-+}
-+
+-void __btrfs_tree_lock(struct extent_buffer *eb, enum btrfs_lock_nesting nest);
++void btrfs_tree_lock_nested(struct extent_buffer *eb, enum btrfs_lock_nesting nest);
+ 
+ static inline void btrfs_tree_lock(struct extent_buffer *eb)
+ {
+-	__btrfs_tree_lock(eb, BTRFS_NESTING_NORMAL);
++	btrfs_tree_lock_nested(eb, BTRFS_NESTING_NORMAL);
+ }
+ 
  void btrfs_tree_unlock(struct extent_buffer *eb);
  
- void __btrfs_tree_read_lock(struct extent_buffer *eb, enum btrfs_lock_nesting nest);
--void btrfs_tree_read_lock(struct extent_buffer *eb);
-+
-+static inline void btrfs_tree_read_lock(struct extent_buffer *eb)
-+{
-+	__btrfs_tree_read_lock(eb, BTRFS_NESTING_NORMAL);
-+}
-+
+-void __btrfs_tree_read_lock(struct extent_buffer *eb, enum btrfs_lock_nesting nest);
++void btrfs_tree_read_lock_nested(struct extent_buffer *eb, enum btrfs_lock_nesting nest);
+ 
+ static inline void btrfs_tree_read_lock(struct extent_buffer *eb)
+ {
+-	__btrfs_tree_read_lock(eb, BTRFS_NESTING_NORMAL);
++	btrfs_tree_read_lock_nested(eb, BTRFS_NESTING_NORMAL);
+ }
+ 
  void btrfs_tree_read_unlock(struct extent_buffer *eb);
- int btrfs_try_tree_read_lock(struct extent_buffer *eb);
- int btrfs_try_tree_write_lock(struct extent_buffer *eb);
 -- 
 2.43.0
 
