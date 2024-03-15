@@ -1,52 +1,53 @@
-Return-Path: <linux-btrfs+bounces-3327-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3328-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D093987D497
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Mar 2024 20:46:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02FA487D4A7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Mar 2024 20:52:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 001DC1C20F31
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Mar 2024 19:46:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8BD2284E29
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Mar 2024 19:52:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B1E53803;
-	Fri, 15 Mar 2024 19:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8F952F99;
+	Fri, 15 Mar 2024 19:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=devzero@web.de header.b="k2OPjkZM"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ZTyM8rho"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63AEE537E3
-	for <linux-btrfs@vger.kernel.org>; Fri, 15 Mar 2024 19:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E691436B15
+	for <linux-btrfs@vger.kernel.org>; Fri, 15 Mar 2024 19:52:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710531985; cv=none; b=FLn/G5Bn75uqJEgnZ7+azrNs5Ms3UHSddbDeRqGcR+D4yohUg1DqI8qMRmAEUSytXVJrzPNHOA/9TZz/tvQA05BkkbCMW/NqLe0uIGm6H8yCp7ro8BO/WrkBYaMaDIxiABCrbzkv9bGOHR5Ed1j1twmG99PWjD7kfFVm2ywun24=
+	t=1710532332; cv=none; b=s1eZG5zuQZKcwCowVx+E4M+HlLwZR+MOwRYOQ6zbeD9lWkpTyeNnZhBinq9mvAlFGlKQn51oJYxrTawRWAQDefMqDeYw02sX9ElhJV4cEgcm0ffkrtMhVccGNkEiMGrTIQQwPUtLDX9ZzdRlj5sVa9w+fYp14ax/WLdzX3QO3fk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710531985; c=relaxed/simple;
-	bh=x4h3Jvok6x/jyf/1jeNZRxMpf7pN+lWk3OAW11kPYB8=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=bUiSSLibr1Po+0PKj4zkoDxj8M7XhLnF9vWZw2AYjC/eW/q0FRFduFO1uMNZHlAWLQqL+pybMCHRf1efK2NEbLHDMkiyVfa77BMkHICdfMAVeEnLOVYItWX3xph4WwV6xYgPi2o1sV3q9Dbse019PI1SpZsmRhBd0L4tR28D1Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=devzero@web.de header.b=k2OPjkZM; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1710531980; x=1711136780; i=devzero@web.de;
-	bh=x4h3Jvok6x/jyf/1jeNZRxMpf7pN+lWk3OAW11kPYB8=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:References:In-Reply-To;
-	b=k2OPjkZMmNARQUQTnrv4s7SNkQkUf7Fmb/3CkWTQuQYvWpotRM9m2QnBhLuDJTer
-	 bZqa1B7g8WmCUWWymPfThwimm5jDnex3s9iDRxsMwoQW5NKF+05Y2RA+Upi7jBF7C
-	 baRnAOykHNYmcSPfq1fZPUBH3waDClnkkN0OtrWkFWKmJKejt9D+dKwYVemKTWqqu
-	 vaGz954Lo3DFpFUXlswRGTO6iAhSwG3TAdl6vROsj0oz2xU0LjWM27NKMKC7iCpQU
-	 4ZxVBiTMk2g4KLEwjCSKtMHeAEx0X1EKcHbCjBXRhuBOUGSmUj7CySAlec0yfX9ME
-	 65NbEFOZvU6fXJHNpw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.179.103] ([213.196.208.136]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MHEXc-1rY06e26sK-00DDbY for
- <linux-btrfs@vger.kernel.org>; Fri, 15 Mar 2024 20:46:20 +0100
-Message-ID: <617ae25d-6b8e-4ae0-8d07-685a59417035@web.de>
-Date: Fri, 15 Mar 2024 20:46:20 +0100
+	s=arc-20240116; t=1710532332; c=relaxed/simple;
+	bh=2j/lTgt6Gep5fD2dk1SUtA9mFhfPQ62Y3Wk8gQNIjZ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T5To6a6rJLvXMszPf2tReO32be9cZOwErTCxVfRAf7w8GWv9kyNMgW8Ts03pO5ruveciowKru9ZI4i8vz65KrAkjb+l5olnbcPASMaotbxkzCvHM8qSIYHpoe5lG5BecSacrmA3GBEGS6tkBoKEaNPtszDFEJ7aisVBQPAu0Row=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ZTyM8rho; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1710532321; x=1711137121; i=quwenruo.btrfs@gmx.com;
+	bh=/NGDhoWcp/WV50RaRZZ1h4/QKWv8pQcr6tg+UZ826Gk=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=ZTyM8rhocSGoc9LRNh0PZqmXjwCfaTgZXrtOSeW1gLPeICx6HUb97RpY9SfZzitP
+	 ot7n0LgehLvUb/KwU8KrgDhIjFE74dy5H2+AdBCpkpHLjqhpytO5mq46QE/fukB4G
+	 Fkz+liE+mGoumFPzeunBPaBmboBz2zIxcgPqaOvqmaENqaOQmaLoz5HEoqAG93G2M
+	 2jZbUF2uP8dO/dQYDQVvaDyqwRKIPcT742KP659UcvqvzbcyDUVUSR9WcH2DT1j2B
+	 uVElnHVGVS2QSZtkxTWXaoZPVgaiZ57iXt24aYj5B0O7thUknOOTgx2oWGgER13q6
+	 3tQaTHGLHfjNX5J6Pw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJmKX-1rWAki0zov-00K7zB; Fri, 15
+ Mar 2024 20:52:01 +0100
+Message-ID: <49c7a4c8-852c-4b9c-ba57-938a097aaa6a@gmx.com>
+Date: Sat, 16 Mar 2024 06:21:58 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,187 +55,168 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: compression silently skipped with O_DIRECT & checksum/corruption
- issue with qemu live migration ?
-From: Roland <devzero@web.de>
-To: linux-btrfs@vger.kernel.org
-References: <e7ce9995-93cb-4904-875c-684d4494765f@web.de>
-In-Reply-To: <e7ce9995-93cb-4904-875c-684d4494765f@web.de>
+Subject: Re: About the weird tree block corruption
+Content-Language: en-US
+To: Tavian Barnes <tavianator@tavianator.com>
+Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <c7241ea4-fcc6-48d2-98c8-b5ea790d6c89@gmx.com>
+ <CABg4E-nKSZR4kvAGfxKLwAoH1_fJXwQb91spFAMsU9L1vqEpiA@mail.gmail.com>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <CABg4E-nKSZR4kvAGfxKLwAoH1_fJXwQb91spFAMsU9L1vqEpiA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nY15WqkwKYDJNDZIOa4Sofwdv2M85XTXgr8xEmOJV9rYIf3Ns5F
- BPtlUchr2h2UXHsUcpc1tZ7PrjTu86j07pwgo/G87tI5Cbe2P3vICaGoWKwyi21t1t0pvXD
- BhnRew36WC5QS8xlIxUBeUA8LpF6bROErPzvrTsrTv0aL17GdgMlM3/ZbhKACYmzLQkPx86
- dj8Uuvazwrx46Dk88F/kQ==
+X-Provags-ID: V03:K1:QdkgIfmwOn/Q3oLkOQaEha/7ZnrH1b1aQpdux66Gxa2wvS008p5
+ /B6PmEcTDBYPRqrsWZpw9blhfDeJbznlwEzRtAiDpT3Zuzu1PTWTiPOCZb5hvuXDcjQLtd6
+ hoGWfSi+1tForuBFtExeemnyjqdca4H5daq3DQb+dJwuBPcu73THDX78Lhxc2+L7TEil68N
+ Z1u/Q+kLritChilAzRt+w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:m50ev1gJ1L0=;au577WwYoc1/7/9x1hj+IkuP2tM
- Y2Wonv1GaQO0LJPyFkcsw7S2Ihd/A3zUIx7ovTlpdilQLGmKycd9N92WISwKOejGJyPA6Vhom
- FAcXq1yxV8u7OtEejiOpyj8NQzDkekUfqh6AxR8VvhECTdT2IVkACVewi5RO4KcOW5CqDNwMH
- vgDCMWkXZnm2lCQWyTPoPHcGrxWZ479Q6swgWqnNVzWdagrr0ykzuSsDym6sP5iES0pIA2ORz
- yug1gg0wCEkeOFKoYuB5swmzROi/C3J7Q74pnv/3qVUdvo1eVlP7lWxfXaHWN2sMJCjcJn72a
- vB2h7Quq4BBkdhbhWxMWbxPSEUfxH14upkEGSeg74N4KPGRrRhaySJ/jRU75+mhduENUCDLo4
- RE7blExj+Hf41EC3Ffk/7lm9+8h8X6JWf4njY25Duz97jOzTgu6XPtJQZ8zc8vNG3NpsB/hR4
- Dz/RhY4vtYBb+lapDTxlhqkrsMIUXSojACtsmSQInJ9S/HUS/HqkvZU8tGW4Tk8vek2H9zHub
- V6Y4aEMa97LuKotok4mClPM4Duk9ADd67sXtng8lohyXG/RVyOyDJZEXRG173zrnGpjlGSOaA
- 2l/EazxrLa6B8YhVeUNNcKcEv2Zn14b/a4ISdHAoeLTs+AReZmOavtZI3T2IRUXImjDbfU9mf
- CMSWCVxucG04Pa0iVowg0ZUdyziseR22GRGD/ixhQiBXvZMizEcRan0xEUUmtziJfdqj2h/f2
- 4FK9qgYEaTBab8mAHUCEA+aTppPfIcGtKDB+CJ0CiJYbEThtH8L6u/os8I2caG36KSZ3DeJZC
- DezPQppYBBx2eU1roLEibNR5D2wEfowxRte0OFPfWe3To=
+UI-OutboundReport: notjunk:1;M01:P0:iidbhNrW0Uo=;OwIz1/QvlsymZSjB2obRewxRQMB
+ 1NLXr06IN2j8lWpeIDeuNeetwIyRqZemfFxug0Z7/kUlzQBr6KhoIVmTYiW/N9QCyY/LdWUkD
+ Y2thmZjDlw6bR6rtGLa3ETqwFqqwdeSNu4rR3OPRPj9fn/sVeIqCR+pQ4Hl0F6TXZry/5YJM8
+ +wrECuLTyVeiOMv/DvOZmVa5gNZnoqOu706DqBej6hQUBLA4PPI2LCQRd1nB4LwxFQqRoaaur
+ WDyt6wXRFALumUhGBQL3AW14mdNp2PCYzFZmzWwfTtaBZB+jEIZABvOPwmlPFqT3XZcmWuTbC
+ IFn18Rt5MalGfaHm1putxlBVdWJ22ufC+nLDLzM8vSzwffixmVQd7AuRhNTQu65+n2awRbzZw
+ yQ2csH2EiqAOZCqnxRS5igEf3Fg/BImG+geMsGQfC2IN3uTEIIUNriTrUflAcC1O9iAoh76+3
+ U99xPFP8A1Pvlz7M/ufVHdsiJZhCUbuejgl5e4SzWrh8+OxzAGlHLWzvq1M4V0eKVw31x9/TO
+ 3jtiwFEZ1vvj4J+Qpd0a5H0vRSbp2TnXsG/JmD6cqzcy7DvEZLufjOYoHXT9b3PXDykaWJlqP
+ rM31vdNSWH12gwW83gaFFACPKxnpoPnvEF7VCQ2j+vII6yu/I/UPyoA44+9X+BKGxYoGLBgtu
+ XCoWHUJ7MWfnC2bwmTNuPr8Ng1R6TvZK/jB6UZHEL7/53DQgmDA6EmW41Ej7cSzYMaiF/F5LU
+ 3pRMHmyK9cfcpyWZSYT4waa6Yv6H4gd2FgZ+5mnRBwcghvo5Vqmr33c1bx9Op0FEhSxXuqVhL
+ odIXqZutzd6Larrkkhe9D8GeBPgNPp/4xG1xo6wgpkO0c=
 
- > happens on hdd and also on hdd, so this seems not to be disk related
 
-sorry, i meant hdd + ssd , and it happens with compress + compress-force
 
-# cat /etc/fstab |grep btrfs
-UUID=3D2fb42259-2c95-4250-b49c-5f3067f2f991 /btrfs-ssd-zstd btrfs
-compress=3Dzstd,defaults 0 1
-UUID=3D2578a21c-0ba1-408a-b2cc-b54653a65b33 /btrfs-hdd-zstd btrfs
-compress-force=3Dzstd,defaults 0 2
+=E5=9C=A8 2024/3/16 01:53, Tavian Barnes =E5=86=99=E9=81=93:
+> On Wed, Mar 13, 2024 at 2:07=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.co=
+m> wrote:
+>> [SNIP]
+>>
+>> The second patch is to making tree-checker to BUG_ON() when something
+>> went wrong.
+>> This patch should only be applied if you can reliably reproduce it
+>> inside a VM.
+>
+> Okay, I have finally reproduced this in a VM.  I had to add this hunk
+> to your patch 0002 in order to trigger the BUG_ON:
+>
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index c8fbcae4e88e..4ee7a717642a 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -2047,6 +2051,7 @@ int btrfs_check_eb_owner(const struct
+> extent_buffer *eb, u64 root_owner)
+>                                  btrfs_header_level(eb) =3D=3D 0 ? "leaf=
+" : "node",
+>                                  root_owner, btrfs_header_bytenr(eb), eb=
+_owner,
+>                                  root_owner);
+> +                       BUG_ON(1);
+>                          return -EUCLEAN;
+>                  }
+>                  return 0;
+> @@ -2062,6 +2067,7 @@ int btrfs_check_eb_owner(const struct
+> extent_buffer *eb, u64 root_owner)
+>                          btrfs_header_level(eb) =3D=3D 0 ? "leaf" : "nod=
+e",
+>                          root_owner, btrfs_header_bytenr(eb), eb_owner,
+>                          BTRFS_FIRST_FREE_OBJECTID, BTRFS_LAST_FREE_OBJE=
+CTID);
+> +               BUG_ON(1);
+>                  return -EUCLEAN;
+>          }
+>          return 0;
+>
+>> When using the 2nd patch, it's strongly recommended to enable the
+>> following sysctl:
+>>
+>>    kernel.ftrace_dump_on_oops =3D 1
+>>    kernel.panic =3D 5
+>>    kernel.panic_on_oops =3D 1
+>
+> I also set kernel.oops_all_cpu_backtrace =3D 1, and ran with nowatchdog,
+> otherwise I got watchdog backtraces (due to slow console) interspersed
+> with the traces which was hard to read.
 
-Am 15.03.24 um 20:39 schrieb Roland:
-> Hello,
+oops_all_cpu_backtrace looks a little overkilled, and it seems to flood
+the output.
+
 >
-> can someone explain why compression is skipped when writing with
-> direct-i/o ?
+>> And you need a way to reliably access the VM (either netconsole or a
+>> serial console setup).
+>> In that case, you would got all the ftrace buffer to be dumped into the
+>> netconsole/serial console.
+>>
+>> This has the extra benefit of reducing the noise. But really needs a
+>> reliable VM setup and can be a little tricky to setup.
 >
-> is this to be expected ?
+> I got this to work, the console logs are attached.  I added
 >
-> i wondered why i got uncompressed raw disk images in proxmox after
-> disk migration to btrfs fs with compress-force=3Dzstd, so i tried with
-> dd if i can reproduce - and i can.
+>      echo 1 > $tracefs/buffer_size_kb
 >
-> the problem is, that i cannot seem to disable direct I/O for different
-> proxmox gui actions, will discuss in proxmox community what can be
-> done, but i need more infos on this behaviour.
+> otherwise it tried to dump 48MiB over the serial console which I
+> didn't have the patience for.  Hopefully that's a big enough buffer, I
+> can re-run it if you need more logs.
+
+That's totally fine, and that's exactly what I do during debugging.
+
 >
-> root@pve-test1:/btrfs-hdd-zstd/vms-raw/images/106/vm-106-disk-0# dd
-> if=3Ddisk.raw of=3Dtest.dat bs=3D1024k
-> 20480+0 Datens=C3=A4tze ein
-> 20480+0 Datens=C3=A4tze aus
-> 21474836480 Bytes (21 GB, 20 GiB) kopiert, 46,411 s, 463 MB/s
+>> Feel free to ask for any extra help to setup the environment, as you're
+>> our last hope to properly pin down the bug.
 >
-> root@pve-test1:/btrfs-hdd-zstd/vms-raw/images/106/vm-106-disk-0#
-> compsize test.dat
-> Processed 1 file, 161844 regular extents (161844 refs), 0 inline,
-> 85412 fragments.
-> Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Perc=C2=A0=C2=A0=C2=A0=C2=A0 Di=
-sk Usage=C2=A0=C2=A0 Uncompressed Referenced
-> TOTAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 7%=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 1.5G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20G=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20G
-> none=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 339M=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 339M=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 339M
-> zstd=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6%=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 1.2G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- 19G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 19G
+> Hopefully this trace helps you debug this.  Let me know whenever you
+> have something else for me to test.
+
+The btrfs_crit() line is using btrfs_header_bytenr(), which can be
+corrupted.
+
+So it's much better to add extra trace_printk() to print eb->start so
+that we can match the output.
+
+But there is some interesting output, the trace_printk() in
+btrfs_release_extent_buffer_pages() are already showing the page refs is
+already 0, and its contents is already incorrect.
+
+It may be a clue, but without the proper matching trace, it's still hard
+to say.
+
+I'm afraid you will need to add the extra trace_printk() lines, much
+like this to all the return -EUCLEAN locations:
+
+	trace_printk("eb=3D%llu\n", eb->start);
+
 >
-> root@pve-test1:/btrfs-hdd-zstd/vms-raw/images/106/vm-106-disk-0# dd
-> if=3Ddisk.raw of=3Dtest.dat oflag=3Ddirect bs=3D1024k
-> 20480+0 Datens=C3=A4tze ein
-> 20480+0 Datens=C3=A4tze aus
-> 21474836480 Bytes (21 GB, 20 GiB) kopiert, 161,319 s, 133 MB/s
+> I can also try to send you the VM, but I'm not sure how to package it
+> up exactly.  It has two (emulated) NVMEs with LUKS and BTRFS raid0 on
+> top.
 >
-> root@pve-test1:/btrfs-hdd-zstd/vms-raw/images/106/vm-106-disk-0#
-> compsize test.dat
-> Processed 1 file, 20480 regular extents (20480 refs), 0 inline, 1035
-> fragments.
-> Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Perc=C2=A0=C2=A0=C2=A0=C2=A0 Di=
-sk Usage=C2=A0=C2=A0 Uncompressed Referenced
-> TOTAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 20G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20G=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20G
-> none=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 20G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20G=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20G
->
-> furthermore,=C2=A0 with qemu/proxmox virtual disk live migration, i'm
-> getting reproducible checksum error with btrfs/compress-force=3Dzstd
-> when live migrating virtual disk within same harddisk , whereas
-> copying the same disk/file with dd (cached and direct) does not
-> trigger that.
->
-> happens on hdd and also on hdd, so this seems not to be disk related
->
-> # uname -a
-> Linux pve-test1 6.5.13-1-pve #1 SMP PREEMPT_DYNAMIC PMX 6.5.13-1
-> (2024-02-05T13:50Z) x86_64 GNU/Linux
->
-> regards
-> Roland
->
->
-> [Fr M=C3=A4r 15 20:07:23 2024] BTRFS warning (device sda1): csum failed
-> root 260 ino 257 off 6655332352 csum 0x5517115a expected csum
-> 0x6b2af31e mirror 1
-> [Fr M=C3=A4r 15 20:07:23 2024] BTRFS error (device sda1): bdev /dev/sda1
-> errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
-> [Fr M=C3=A4r 15 20:07:23 2024] BTRFS warning (device sda1): direct IO
-> failed ino 257 op 0x0 offset 0x18cb05000 len 4096 err no 10
-> [Fr M=C3=A4r 15 20:08:24 2024] BTRFS warning (device sda1): csum failed
-> root 260 ino 257 off 6655332352 csum 0xd1d1c892 expected csum
-> 0x0c24b5cd mirror 1
-> [Fr M=C3=A4r 15 20:08:24 2024] BTRFS error (device sda1): bdev /dev/sda1
-> errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
-> [Fr M=C3=A4r 15 20:08:24 2024] BTRFS warning (device sda1): direct IO
-> failed ino 257 op 0x0 offset 0x18cb05000 len 4096 err no 10
-> [Fr M=C3=A4r 15 20:09:25 2024] BTRFS warning (device sda1): csum failed
-> root 260 ino 257 off 6655332352 csum 0x809096c2 expected csum
-> 0x56b58dc6 mirror 1
-> [Fr M=C3=A4r 15 20:09:25 2024] BTRFS error (device sda1): bdev /dev/sda1
-> errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
-> [Fr M=C3=A4r 15 20:09:25 2024] BTRFS warning (device sda1): direct IO
-> failed ino 257 op 0x0 offset 0x18cb05000 len 4096 err no 10
-> [Fr M=C3=A4r 15 20:29:10 2024] BTRFS warning (device sda1): csum failed
-> root 260 ino 257 off 6655332352 csum 0xc8a6977d expected csum
-> 0xdfc1f678 mirror 1
-> [Fr M=C3=A4r 15 20:29:10 2024] BTRFS error (device sda1): bdev /dev/sda1
-> errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
-> [Fr M=C3=A4r 15 20:29:10 2024] BTRFS warning (device sda1): direct IO
-> failed ino 257 op 0x0 offset 0x18cb05000 len 4096 err no 10
->
-> [Fr M=C3=A4r 15 20:33:41 2024] BTRFS warning (device sdc1): csum failed
-> root 260 ino 257 off 6655332352 csum 0x20ff0887 expected csum
-> 0x08ed0bce mirror 1
-> [Fr M=C3=A4r 15 20:33:41 2024] BTRFS error (device sdc1): bdev /dev/sdc1
-> errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
-> [Fr M=C3=A4r 15 20:33:41 2024] BTRFS warning (device sdc1): direct IO
-> failed ino 257 op 0x0 offset 0x18cb02000 len 16384 err no 10
-> [Fr M=C3=A4r 15 20:35:18 2024] BTRFS warning (device sdc1): csum failed
-> root 256 ino 290 off 6655332352 csum 0xb023863a expected csum
-> 0x4f8e355d mirror 1
-> [Fr M=C3=A4r 15 20:35:18 2024] BTRFS error (device sdc1): bdev /dev/sdc1
-> errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
-> [Fr M=C3=A4r 15 20:35:18 2024] BTRFS warning (device sdc1): direct IO
-> failed ino 290 op 0x0 offset 0x18cb05000 len 4096 err no 10
->
-> create full clone of drive scsi0
-> (btrfs-ssd-zstd-qcow2:106/vm-106-disk-0.raw)
-> drive mirror is starting for drive-scsi0
-> drive-scsi0: transferred 34.2 MiB of 20.0 GiB (0.17%) in 0s
-> drive-scsi0: transferred 301.6 MiB of 20.0 GiB (1.47%) in 1s
-> drive-scsi0: transferred 489.1 MiB of 20.0 GiB (2.39%) in 2s
-> drive-scsi0: transferred 679.9 MiB of 20.0 GiB (3.32%) in 3s
-> drive-scsi0: transferred 1.1 GiB of 20.0 GiB (5.70%) in 4s
-> drive-scsi0: transferred 1.4 GiB of 20.0 GiB (6.89%) in 5s
-> drive-scsi0: transferred 1.7 GiB of 20.0 GiB (8.55%) in 6s
-> drive-scsi0: transferred 1.9 GiB of 20.0 GiB (9.53%) in 7s
-> drive-scsi0: transferred 2.2 GiB of 20.0 GiB (10.97%) in 8s
-> drive-scsi0: transferred 2.4 GiB of 20.0 GiB (11.84%) in 9s
-> drive-scsi0: transferred 2.8 GiB of 20.0 GiB (13.89%) in 10s
-> drive-scsi0: transferred 2.9 GiB of 20.0 GiB (14.74%) in 11s
-> drive-scsi0: transferred 6.2 GiB of 20.0 GiB (31.14%) in 12s
-> drive-scsi0: transferred 8.2 GiB of 20.0 GiB (41.17%) in 13s
-> drive-scsi0: transferred 10.3 GiB of 20.0 GiB (51.27%) in 14s
-> drive-scsi0: transferred 10.5 GiB of 20.0 GiB (52.75%) in 15s
-> drive-scsi0: transferred 19.2 GiB of 20.0 GiB (95.86%) in 16s
-> drive-scsi0: transferred 19.3 GiB of 20.0 GiB (96.66%) in 17s
-> drive-scsi0: transferred 19.5 GiB of 20.0 GiB (97.46%) in 18s
-> drive-scsi0: transferred 19.7 GiB of 20.0 GiB (98.27%) in 19s
-> drive-scsi0: transferred 19.8 GiB of 20.0 GiB (99.08%) in 20s
-> drive-scsi0: Cancelling block job
-> drive-scsi0: Done.
-> TASK ERROR: storage migration failed: block job (mirror) error:
-> drive-scsi0: 'mirror' has been cancelled
->
+
+Just send me the rootfs qcow2 would be more than enough.
+I can setup LUKS and btrfs all by myself here.
+
+Thanks,
+Qu
 
