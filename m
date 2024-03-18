@@ -1,54 +1,64 @@
-Return-Path: <linux-btrfs+bounces-3350-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3351-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7355287E92E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 13:15:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D08F187E993
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 13:50:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 335BD1F23328
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 12:15:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C0351C21350
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 12:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3917638387;
-	Mon, 18 Mar 2024 12:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y1/grPR0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC6F38FA6;
+	Mon, 18 Mar 2024 12:49:55 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56626381CD
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 12:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9336738DDC
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 12:49:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710764101; cv=none; b=g/GV9PUYCNy6CaXdyTRov20CtdbOWoirRI0EDXsSZmTZPcamPoIajPytf7+jhxWEakkSf/8I3VK2rKh2znrare/OmozdaD20+L8NJuIFElrqDBCFsWtBQ3L7CIZJLp4RrRkN1XCSp/tNEBExJ/dnHaODdb0QGj4uL/gHQDsVf7M=
+	t=1710766195; cv=none; b=T2+0Sr0c0g7fDQXZ5PZ5+aczMtMvuydizfmhSTpTnLa9Nct8+9NyweLzzx/hpCM8ewbltacOA6Ae0OPYPWa6KrUJyvzo5BD0HRSamWzxIpQ5V98L+JEsdaZ+1U9cBhBNJYj9I8m25VOwBpiTC6cI45XDpJC0VDq0f6M+XFAlp7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710764101; c=relaxed/simple;
-	bh=RH71WcPEamHSx6e7r6FxnRbbIvtTCwEcEhYWJBznk1s=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JySVzAdxL8l1UJBnEaQLKmvQKETvRWhbUegLq/5QL7UrJmGFRjy6AQyIFSxgECDcfq/wEYmFGlJzgI4nZ058H+EQOdakeSJv1drFLD2hJB8o457lIKVy3MYSSE/82SipifcYIH7hLxI5Olgh3CSPqJP+jWP0DJYiu0cgcZAWvhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y1/grPR0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A555BC433C7
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 12:15:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710764101;
-	bh=RH71WcPEamHSx6e7r6FxnRbbIvtTCwEcEhYWJBznk1s=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=Y1/grPR0QaZlpymefpUCxB3rEZKoWiQ16im7cjwiAQjFHGF4z95lr4SD7vqGBcFm6
-	 6bXP4F8+VdD6xbi4fhDx406FlcYeJfpbYyPAkVLAsEQVX+f0f8Kv5Rt5f4RmZPKg5a
-	 BfZOGWNfg1rwncRS0/Jh5TPz1ryXf6MhcbESFLgm88tVR/+ROoO3hO97R8g/rf+twU
-	 N1NrfAhq0zFzck/ZHaP9C2bsUXyPgFi5cM7Y7L+LIe6RsXnOYeMJnI0lJC+9tSp4KM
-	 bcaPe6xRBSYbrDycW3Z6FulM2LVUldig7mS+xoEbpHDuyMQks0OtdJryMoWNxpE3Lt
-	 iZVQIGKeE1Gpg==
-From: fdmanana@kernel.org
+	s=arc-20240116; t=1710766195; c=relaxed/simple;
+	bh=OdpP6Lx+ElclbLk+UIjJ74djk6pYahfbxcixCWqXySw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=amcZdyoeLyd28T7qU0DxCQ3NbZjguE55YAOugPQQvdTOMacGXiMIkx+n9oDUZa8FXLjiax9N25B0DOqRgGEdXuzcckq4DQKTLhv7jHFxJ1oZ6+fY5evH6puvnTFYIU0b755PvR3olAQcXkYzC8W0px/815aDwCBEPEXcoNztq4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a46ac74611bso256737066b.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 05:49:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710766192; x=1711370992;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6F9RWas7r1/659HOJAKYZzWiYw54oPL4Gm/LoDrY9b8=;
+        b=thxmCHIqlxic8ZsxbwQqZKclMr1436nlNVbTlkhgBzQQRsyLqvPm6SLYymUZJQLkGa
+         WWgqFe+54xKk2+FPbF2hSnVdjCJrlDTaIhs0Z7IK8a1Nf5InWaHaOYvmCiSRg3VXfqTH
+         tfnD5/3esqh/GGSERRm2N6J9jw0cDuZhX6qVHj+2+SCxK5s21t4BSSe6TSvs/QRk0W5d
+         kxXY1bc8oNv2bn5T6YFupESH89mGua7pD+hZL/JxmfnJizXtutEUxfN35qNg1HK4vabG
+         fHkdEOsPbRizTqbWEVL4OInRDB+1AuyPK1sZGkjrqePAJMFVeAAzV4LLzmh0jcGifJ05
+         2Y9A==
+X-Gm-Message-State: AOJu0YwvmUg4/7Su0Int0w3O02x6DYp23Gyqwh0kweWNr/wGKIo2v9Lj
+	qTVe6c5U6uSZnHHHmOyQKM324io1+Mp/tv/naXiQ6Ss5Sl72lXnQG8Meu0MR
+X-Google-Smtp-Source: AGHT+IH4g/PmkODN1LmTjISOqg0SRONUg6yb7ISeH4Szi8Qda5NzX/zUbTGbLF0oLsisOBM5TNNwSQ==
+X-Received: by 2002:a17:906:6c8e:b0:a46:b9eb:ae5 with SMTP id s14-20020a1709066c8e00b00a46b9eb0ae5mr2961320ejr.24.1710766191721;
+        Mon, 18 Mar 2024 05:49:51 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f7068b00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f706:8b00:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id lg21-20020a170906f89500b00a46cc25b550sm539339ejb.5.2024.03.18.05.49.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 05:49:51 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: remove pointless writepages callback wrapper
-Date: Mon, 18 Mar 2024 12:14:56 +0000
-Message-Id: <12ee7ad204aa7f76ca28df5d6eb2f0dcdc85ce64.1710763611.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1710763611.git.fdmanana@suse.com>
-References: <cover.1710763611.git.fdmanana@suse.com>
+Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: zoned: don't skip bgs with 100% zone unusable
+Date: Mon, 18 Mar 2024 13:49:43 +0100
+Message-Id: <b46794f0115a70b4d0dd1ececa993bd0186a80d8.1710766178.git.jth@kernel.org>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -57,66 +67,42 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-There's no point in having a static writepages callback in inode.c that
-does nothing besides calling extent_writepages from extent_io.c.
-So just remove the callback at inode.c and rename extent_writepages()
-to btrfs_writepages().
+Commit f4a9f219411f ("btrfs: do not delete unused block group if it may be
+used soon") changed the behaviour of deleting unused block-groups on zoned
+filesystems. Starting with this commit, we're using
+btrfs_space_info_used() to calculate the number of used bytes in a
+space_info. But btrfs_space_info_used() also accounts
+btrfs_space_info::bytes_zone_unusable as used bytes.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+So if a block group is 100% zone_unusable it is skipped from the deletion
+step.
+
+In order not to skip fully zone_unusable block-groups, also check if the
+block-group has bytes left that can be used on a zoned filesystem.
+
+Fixes: f4a9f219411f ("btrfs: do not delete unused block group if it may be used soon")
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/extent_io.c | 3 +--
- fs/btrfs/extent_io.h | 3 +--
- fs/btrfs/inode.c     | 6 ------
- 3 files changed, 2 insertions(+), 10 deletions(-)
+ fs/btrfs/block-group.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 47a299b0fa2d..4a684251fd96 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2256,8 +2256,7 @@ void extent_write_locked_range(struct inode *inode, struct page *locked_page,
- 	submit_write_bio(&bio_ctrl, found_error ? ret : 0);
- }
- 
--int extent_writepages(struct address_space *mapping,
--		      struct writeback_control *wbc)
-+int btrfs_writepages(struct address_space *mapping, struct writeback_control *wbc)
- {
- 	struct inode *inode = mapping->host;
- 	int ret = 0;
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index eb123b0499e1..818431b37124 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -237,8 +237,7 @@ int btrfs_read_folio(struct file *file, struct folio *folio);
- void extent_write_locked_range(struct inode *inode, struct page *locked_page,
- 			       u64 start, u64 end, struct writeback_control *wbc,
- 			       bool pages_dirty);
--int extent_writepages(struct address_space *mapping,
--		      struct writeback_control *wbc);
-+int btrfs_writepages(struct address_space *mapping, struct writeback_control *wbc);
- int btree_write_cache_pages(struct address_space *mapping,
- 			    struct writeback_control *wbc);
- void btrfs_readahead(struct readahead_control *rac);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index e447a4f1d926..1fd2ea80caef 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7913,12 +7913,6 @@ static int btrfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
- 	return ret;
- }
- 
--static int btrfs_writepages(struct address_space *mapping,
--			    struct writeback_control *wbc)
--{
--	return extent_writepages(mapping, wbc);
--}
--
- /*
-  * For release_folio() and invalidate_folio() we have a race window where
-  * folio_end_writeback() is called but the subpage spinlock is not yet released.
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 5f7587ca1ca7..1e09aeea69c2 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1559,7 +1559,8 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+ 		 * needing to allocate extents from the block group.
+ 		 */
+ 		used = btrfs_space_info_used(space_info, true);
+-		if (space_info->total_bytes - block_group->length < used) {
++		if (space_info->total_bytes - block_group->length < used &&
++		    block_group->zone_unusable < block_group->length) {
+ 			/*
+ 			 * Add a reference for the list, compensate for the ref
+ 			 * drop under the "next" label for the
 -- 
-2.43.0
+2.35.3
 
 
