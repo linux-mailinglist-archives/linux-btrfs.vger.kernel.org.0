@@ -1,126 +1,106 @@
-Return-Path: <linux-btrfs+bounces-3353-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3354-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19AF187E9B6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 14:03:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D27787EA76
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 14:58:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C847C2831C6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 13:02:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DCAF1C21296
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 13:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58AD383B2;
-	Mon, 18 Mar 2024 13:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAB734C3D0;
+	Mon, 18 Mar 2024 13:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jHiDK/BI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GAaFYi+H"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E527138387
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 13:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9F54AED2;
+	Mon, 18 Mar 2024 13:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710766968; cv=none; b=kBjMXLuY9C6HhSljwmYbN15EIMXaVKhHQn3MUdN+JyMIYmj/H3n48hFHzgHFdgcrhA5/sqhkjoWrreosBMFOqm/tBYHLFD31iyNTL4QSktbKO5uUJoduqwfYvrx60ODsxaI5PrIjti0F2LNYNPyQE8mLr1h1qbAA+iNTMbUV4dM=
+	t=1710770299; cv=none; b=plj1cDLXbni2xfGjfBuFkVM7jFoLhqA+YsYyOq/lWpd7SjYRRVFbRgsQZlHynKz36Ob9yhnrUzBYCC5IkEHBigMGCYlRojSkA8j4YP4GovleGzZtInX7RT108BhvuLIYS6qz9+wSl2PeFSEfIp4eKmbHnYl3alf16KsrKNEErZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710766968; c=relaxed/simple;
-	bh=CFlsGWv61liP0EyveJhhDTS+ciRMbtr+YTJFQOH8LBg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aMg2IvTtBQsQqAaTDWlPXMYmj1KUdM51d0Hrp8Zt/iiEIlCIHsp3BQtkZbQeVIjKoJoTolWsN0EcS4o7z0x92/umxHyrLBlJXpsyz5KqyhGMopOO+idedY1ycAEMY1Eh1q/NY0fO3+6PHw2KmBlxNEsHz7/c3YLlBVDr9oSlrH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jHiDK/BI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71434C433B1
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 13:02:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710766967;
-	bh=CFlsGWv61liP0EyveJhhDTS+ciRMbtr+YTJFQOH8LBg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=jHiDK/BIzdn3zgcm76gn9oZ+Wa1+E8g7mxdGvhrG7PYJyFgpnr/Qjasd38lGSnY5n
-	 m8Xncs6Mc4L7UwTvI3UuxKLpdPqzSoM5Ticvg1a3fmUpaKBeaC4qLDOOI2JWdfoViC
-	 BUf6OTN6f6uElpk80+RObgyXOnmByF0c1QRIRUWrGB7E83hTTebYw88MS171uogNLO
-	 99wEbj5C/wHhbYqlr1HNio+m85ZJlgJdU5cE2la9G9S6chTjf9G/DFfICUYhjXMz/r
-	 2zAKpWS7zlMDN6V2qSTblfo5GF9zQC5Zi6jKby1TRcC8B1fV9v0cb3j6tsrWFBizZ1
-	 W/mYhmV2zazFA==
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a46cc947929so76847966b.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 06:02:47 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yzmkwrj7AC30ck8ZWdeaBy+UKXFDf1DQuqaY4rjfwNjhFXc2R+V
-	vYtxltrxysp1WxL7EXkwDvi7naPNoWsXBPlojt4W9sP8eTfelerW+UHhjcf9s8ZK0gocAucEAjQ
-	YJKhh5Tqmo37ebOsyzbOz53VPY7I=
-X-Google-Smtp-Source: AGHT+IHty+dQfEq1nmHibKNFxK+yQ0uaSGGMNupRJBlW53GNNZHuAQOkGF9XfEfHRKxGpW4O5BsVZTlKWefRC4/6mvk=
-X-Received: by 2002:a17:907:1119:b0:a46:2c22:7f4c with SMTP id
- qu25-20020a170907111900b00a462c227f4cmr5912624ejb.35.1710766966033; Mon, 18
- Mar 2024 06:02:46 -0700 (PDT)
+	s=arc-20240116; t=1710770299; c=relaxed/simple;
+	bh=6QxRV6tobGzrYtTQEDu1f/p08nKI5Bg5eQskEppiJiM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n/baQTbcT6uO2crTHG60dVWnX1I5HyLcAEbu6xaNrdk8U0LGC9SKKUcbaDY6U/D4BdPB2StmzbAfvWj+/Bvj7ioI4Ks2hrE5tHPZYt86H9UyvnbMzG/nmucKL715Lk2QMC0sKDbTbceTWSIohTH5TrAn6HJlR8D6qCM2Tr56yYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tavianator.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GAaFYi+H; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tavianator.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-789db18e169so336053385a.1;
+        Mon, 18 Mar 2024 06:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710770296; x=1711375096; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=CvFCY++I3zBVjUi32budzYz2qcp/D+ixqQd6wPMXSKE=;
+        b=GAaFYi+H4pn+fo1GQ8YC4fQKZeZUNzUYyzeicEoBiOZw0aFIhgTfzKllyBeBgBygO3
+         IZ2lyBllpXm+ArWMKI/M866rjfm4kCV4hZvQT/Fom3QhIvLe68CL0vN4BB71cDtiyng5
+         JMIjwTAAqe//GMcpoqAC+F/aqER1H+2rlWLZ270uyQOGC+nEQ1mY+LPxmZAde2JmDNKt
+         7eBiSqphiCFGWVIlmN6djSReuAb5iBSrPPzOYgyzIUdgnIMOaJ5zS6cqsZLsu/Zy28c0
+         /KQRZbjK1nB731Z2B6O2B47/KmDB4pSaVhMXkUSyAQhLjSyajkEYvUwdMTJDTFK7U0Kk
+         lfew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710770296; x=1711375096;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CvFCY++I3zBVjUi32budzYz2qcp/D+ixqQd6wPMXSKE=;
+        b=vDhpMC8RfDEoGHFmM2Mtv2jey79CF1aOb/+sYQmEcFtNQ5iWpDQEzeFc1uduoDQCXL
+         zxbFC0/3wu5xwJOB9US5e2tULi4RB1rSTMr568Zgp1XCFj8MeCjQQ8m10jt8uoI/23g5
+         VuADWWgIalYOUY9TW5uZly0F1KWgln6SsN/hvfd+04zQEVmWuVxV5ObeRMF9M7mNwNvI
+         vEd0baaxOzFNU5r6dlp5suV3G7YsNwje+W9FxzOeMbnTHEdnbsgv25j06zOfUvMwWDRz
+         kTK9ctO59XBizgETQf8KwZzcqKjloyfdsYv+N8CG6f8GaMVMpTj60oSvCMkaAelPjsz/
+         chbA==
+X-Forwarded-Encrypted: i=1; AJvYcCWHE6Ax+xSVufLaxVgCiMK1pI3bg5M7LJ79l1/0HeISi3XKkfiw9W4hDM2489oKauDPwRQ/gWXPFcF72VK6AQv6mhEiemNGUdmErgZ3
+X-Gm-Message-State: AOJu0YyGBqoxQd1VbJz3poSFSgaDfpvm6OZS68nJZVrM0E3ss2Gk6K0u
+	efodfFKnd5vXvuGQkUO8xP6VB3PA4h9zr/NhUysSnGubd8mQmx/LhbUXUoyXvlQ=
+X-Google-Smtp-Source: AGHT+IFrDSG0OxhDXEIdkz7aCXoxkObfKaZBsCA7h/JGfjIjXnXNl3+CAMq1vxFEW0BLtYDvXDUoVg==
+X-Received: by 2002:a05:622a:191e:b0:42e:9146:a0bd with SMTP id w30-20020a05622a191e00b0042e9146a0bdmr12885414qtc.49.1710770296308;
+        Mon, 18 Mar 2024 06:58:16 -0700 (PDT)
+Received: from tachyon.tail92c87.ts.net ([192.159.180.233])
+        by smtp.gmail.com with ESMTPSA id fb19-20020a05622a481300b004309cf16815sm1284968qtb.39.2024.03.18.06.58.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 06:58:15 -0700 (PDT)
+Sender: Tavian Barnes <tavianator@gmail.com>
+From: Tavian Barnes <tavianator@tavianator.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Qu Wenruo <wqu@suse.com>,
+	Tavian Barnes <tavianator@tavianator.com>,
+	Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] extent_buffer read cleanups
+Date: Mon, 18 Mar 2024 09:56:52 -0400
+Message-ID: <cover.1710769876.git.tavianator@tavianator.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <b46794f0115a70b4d0dd1ececa993bd0186a80d8.1710766178.git.jth@kernel.org>
-In-Reply-To: <b46794f0115a70b4d0dd1ececa993bd0186a80d8.1710766178.git.jth@kernel.org>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 18 Mar 2024 13:02:09 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7=VvC1_O81fsdVYxL5AyS0PESO5_5m2oOV_9HU_Eu4=g@mail.gmail.com>
-Message-ID: <CAL3q7H7=VvC1_O81fsdVYxL5AyS0PESO5_5m2oOV_9HU_Eu4=g@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: zoned: don't skip bgs with 100% zone unusable
-To: Johannes Thumshirn <jth@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, 
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>, Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 18, 2024 at 12:50=E2=80=AFPM Johannes Thumshirn <jth@kernel.org=
-> wrote:
->
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->
-> Commit f4a9f219411f ("btrfs: do not delete unused block group if it may b=
-e
-> used soon") changed the behaviour of deleting unused block-groups on zone=
-d
-> filesystems. Starting with this commit, we're using
-> btrfs_space_info_used() to calculate the number of used bytes in a
-> space_info. But btrfs_space_info_used() also accounts
-> btrfs_space_info::bytes_zone_unusable as used bytes.
->
-> So if a block group is 100% zone_unusable it is skipped from the deletion
-> step.
->
-> In order not to skip fully zone_unusable block-groups, also check if the
-> block-group has bytes left that can be used on a zoned filesystem.
->
-> Fixes: f4a9f219411f ("btrfs: do not delete unused block group if it may b=
-e used soon")
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+This small series refactors some duplicated code introduced by a recent
+bugfix (which was intentionally duplicated to make stable backports
+easier), and adds a WARN_ON() to make it easier to debug similar issues
+in the future.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Link: https://lore.kernel.org/linux-btrfs/20240317203508.GA5975@lst.de/T/
 
-Looks good, thanks.
+Tavian Barnes (2):
+  btrfs: New helper to clear EXTENT_BUFFER_READING
+  btrfs: WARN if EXTENT_BUFFER_UPTODATE is set while reading
 
-> ---
->  fs/btrfs/block-group.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 5f7587ca1ca7..1e09aeea69c2 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1559,7 +1559,8 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *=
-fs_info)
->                  * needing to allocate extents from the block group.
->                  */
->                 used =3D btrfs_space_info_used(space_info, true);
-> -               if (space_info->total_bytes - block_group->length < used)=
- {
-> +               if (space_info->total_bytes - block_group->length < used =
-&&
-> +                   block_group->zone_unusable < block_group->length) {
->                         /*
->                          * Add a reference for the list, compensate for t=
-he ref
->                          * drop under the "next" label for the
-> --
-> 2.35.3
->
->
+ fs/btrfs/extent_io.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+-- 
+2.44.0
+
 
