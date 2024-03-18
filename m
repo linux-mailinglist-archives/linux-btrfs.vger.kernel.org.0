@@ -1,195 +1,268 @@
-Return-Path: <linux-btrfs+bounces-3358-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3359-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BB8F87EB8E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 16:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4EE187ED45
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 17:18:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 903491F21D9C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 15:01:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4116E1F229E5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Mar 2024 16:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D424EB4C;
-	Mon, 18 Mar 2024 15:01:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553C854665;
+	Mon, 18 Mar 2024 16:17:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="SGNmh30p";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="nHSjVeV6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s4Qfm1g3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C6E433D2
-	for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 15:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710774068; cv=fail; b=cacG1pJ2UfGCbnH9bjkeHTtoNSpME3cEAMT+XtNK1k9JMq+TDlSrJ0nAOmQbMF34JzPtNIkNpatIFeCAgW6lhVOdqBU+3rQ93hzZPbi6O5D4HiwbkZxNVhFwPYCop93hg4ZHXLeafo/mqd9axPO0TYrxtTjvHssVYWi9VXrM2a8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710774068; c=relaxed/simple;
-	bh=bh5dY/cORrvJIwoGB6MhhPhyAJ8jF5A8kieVosNTDQw=;
-	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=IhFuPtzwl9wZ56gPuYUxT6mqppd0eoHNIdkwMbS+TAdrmNNnL1xMPBYDow9FuwcqY0d1nFhC+mE0wcJnE/QwDJ+CoSDvLNnhjJG3YtUdcUJwYCY9GqWAc7U8LGNCZw1YFpK5iMnQx9TXCgQWz7uyPn/ZI6vWTY38YZJwbLjTDQY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=SGNmh30p; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=nHSjVeV6; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42IDNxhI010424;
-	Mon, 18 Mar 2024 15:01:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=kfTco9EdZahi5T/oFGmP2mNhp35Uq8eLOv6n99ftqXQ=;
- b=SGNmh30pgPle74TBirqNI41N+g6IRmOz2zyXbnNlzWQRiXrIyqwPOJ+lxniwX7z5Rj1M
- BAg8SWhqOmpz9tmtQSksxGpJ3us1FoA53ZFcmAKEbQ/iY3zzne7+eglwR8ch6PL3u39s
- orCzgq/n0Pl5rucNR/6596BMnY70kwPrZZkr4T7uP0E4WvvWd+oWc0rSiiasuQ/IN4X0
- gk/ZFMn6U6n+PLl/C2iRpB6rh5DihU3x7Ze+Dkgs87+nkgXJSpwIa/R5osWE+iJKXl0F
- bINny7ILKqi0Wifp7oGCtk2dhshyR12zv4Bx068wGyzHbDA6kFiH+e4JAWfJ1Hrpkasl iQ== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ww1udb8u6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 18 Mar 2024 15:01:00 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42IDkiBU007503;
-	Mon, 18 Mar 2024 15:00:59 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2168.outbound.protection.outlook.com [104.47.73.168])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ww1v4yhnn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 18 Mar 2024 15:00:59 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CZf/e7SUa74N1P/HYulplmwsDYoalX1z/Yo6LS0YL3WgzDJIQ3LuRiLaIndFi94vJ9W/98zCwuo5INEjIEyQDzokt1AWo0GAU93op9LU1hPU3CtwlMN6vz/rEbmGkIN3hwewfaonC5zrhG4zskEfKtxQnGn5/TmR78NolOnNdSo1Q3i87c9s5qiuJiVj3qYO3H5afZWJkGxNLk088E807lh3as/CaAXHGmVz2Si67CRNn0d/ggCXnoff2GCCv08XfqQ8Uh+Qbq05pJQGW3wNXD79dmnUJyyNuOm/8YS4hTaouJ4K2gMy9/bzaSzZf/06aQu7onpqmrozvp/O1SU7Rg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kfTco9EdZahi5T/oFGmP2mNhp35Uq8eLOv6n99ftqXQ=;
- b=ZJBu/IabAdBTaZMzOUhsGH+IEPhDOXg4gD7RsGUEoGgN8Ajx/xk8/WA+5h8ecdcWem0TPwllzeHxavWl4aRNtGQTfnFjkA+fHuh4ynpUbeHbUfQU8WgyCuD2eE4W6yWdx1JaYZgywkWCC7540SuqX/iwdcA1qRE7OXYxPKaMqDlQjJZCmYTPTG9ZKrLvUzxjYRMdcoVEv+F2CWbm7TAeN1QAS3ZWNLTgfTKjk8Z6TBedVfNbYu0AS4zzX9td9Xqcc3IK45UT/oyH4skSlBNz4VJyqRQ+YVpi+cwqQTUd+8mYAxFQ44kz8R8oMld5I2x4RXcA1sefIQtpdMxR+5eSEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kfTco9EdZahi5T/oFGmP2mNhp35Uq8eLOv6n99ftqXQ=;
- b=nHSjVeV6Zo3wXBeqHAESAJe/kP8AtUaefxYtzenI1qoKOEzZd+FBOtYw42wrhaNcv/legaepJ5zzAkpY47H8mY8hWXEHPdjeyjhg1qn293Zv7Tn0PP+0olIGPd/3iAAw0Tek+MnxjMgJN3aRi/OP3S9rmvl8ZtmVGIPv+YBhG9k=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by SJ0PR10MB6429.namprd10.prod.outlook.com (2603:10b6:a03:486::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Mon, 18 Mar
- 2024 15:00:57 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::814:3d5c:443b:17b%7]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
- 15:00:57 +0000
-Message-ID: <2f0c4a6c-f95c-4610-ab58-0cf4d3a00352@oracle.com>
-Date: Mon, 18 Mar 2024 20:30:50 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] btrfs: remove a couple pointless callback wrappers
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1710763611.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <cover.1710763611.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MA0PR01CA0120.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:11d::9) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD3D54279
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 16:17:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710778656; cv=none; b=L7oOcNlGV8V749DGOD5TVyGu4mEG6VnOOJ1qyxYTQn2/8SpXC/kxnJRr1odrNjBejLnqi8vnDctBvVxe1F/mrjwEhwR9uhCj/tN7z7DMzJVSCrcoMUIMG5P8YF0VlYTfAR7k+P8zgS8XQ8hwWD5mFQ8JHxgVDsy4RAjmrBFOrJQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710778656; c=relaxed/simple;
+	bh=Jq7JUAck3p6gLBZKHIJJGgqROC2Itkcyh1of8e1v3rY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UUf1xcRgZbXlpwWADNzr4UcH/dDce40oLoDyFyLpLz/3ELIJ4An9qwE9qK2DZZDsLBYswyciazdtPIwWugXJXl61BwLrjmqdQhU3CX8V+yU4vyStbloxGomWkUrsB1e0wG0mxpOQ2Gk/N5Xak/1w1wlkaZOUKtuxiZskhDYdAYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s4Qfm1g3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1274DC43390
+	for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 16:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710778656;
+	bh=Jq7JUAck3p6gLBZKHIJJGgqROC2Itkcyh1of8e1v3rY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=s4Qfm1g3lNDO3MB1+KbxN+sNOBpTrW2Ay+IaUHQeL2sXKEgUD6rDwRJQDgfROO+qx
+	 RgZcLuG4KTKQKPEmedaaEfdei9zmmV+8eS4PLv2wWjEdQoIiYoWAsacQq2Z8lyBKGP
+	 Luvgu0SRJ+myuTZsqK9zD0ZaZocs2GEAUsDyRmhftMRzIN/+n/ILIUFFKP7+V1XqyD
+	 7bnhUxj+zjLyMx59iekES8hPQSRBvFWKKaMerJkivU7DE7svTloTDzG1hF+ZlmtNU5
+	 aObMREUs+0OHOejUZlRnz1bzwJDUTHsSF3DLbM4oTaAiV0q5OnqrL4qg/3U4Zut3dz
+	 ikhmuiyUgehPQ==
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a46ba938de0so192341666b.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 09:17:35 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUE0O77jB9bgKAFd8FyMHgzRK5oD/F7/pZBqC+0KJz3e3s5Iou1US70hD/aCask1I7OIxddj2qL68xKCs25w0qb+A9esQBNxDiX1KY=
+X-Gm-Message-State: AOJu0YxAMh665yNEavkX3jomMoQzvDe+nA9a6JQamwiBpmCZeCAc9ooe
+	WJCQgOakmMs/mt78HrLmvR1pHzIe99nrAkK5dzJY3MwbEioYSaWyhYPhQOHUXtBViTJW3F71hnu
+	JRih6mqj4UP/CPkvBf/fCCpR4E3c=
+X-Google-Smtp-Source: AGHT+IH5wVReZxVBtiO86YaM9vkCw+DMDdvhzxTvlIS1ry5E49FQsBD/tylm+ExK1C3CAs24+T0/qUIlpgIOlqqLBuI=
+X-Received: by 2002:a17:906:370c:b0:a46:c183:9ed8 with SMTP id
+ d12-20020a170906370c00b00a46c1839ed8mr1944484ejc.10.1710778654608; Mon, 18
+ Mar 2024 09:17:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SJ0PR10MB6429:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7a89c191-2294-4dcd-3eac-08dc475c36ec
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	De7mI9RnVENHhWbKcImqFymzN0L8NBFdLrinUnRU0bLjtfjPWxqo1Dj/9TenLEWmZ60hwqwTMtkRWcejjIInco8EQVt13NWwm2RB764T5GKyL5LrqIcfBL3He5J5a0mSfSGU3TiDWhhSUCQ+qLpyqmH9c797Jhw848m11Q63LHoVk/j+kXP/1J4UK4+cd4gCGqIgMru6d3FbQDghq4OWcDbJFeo/kkkglfBy0Xnt2zGmWZwq6XXixZld4Ji3ItcV+H6CrbF1zurhlv7M2GFZhYeROERYMkZywgJaEulLxjzpnp3MEF44cplR8kXhLoq2kQszsh5ZRryksQKiBU63XwJ0rQrfcuowAtr0TxSb3YQwmDL7JN+fKnEP6g3VJEmf487kFHOG5c1ahwOrIHw+nWAJVNs1gMHOimJCwirfEktysYIM8Gais3W9SXk+0c+GEjKifVeIFauRFqyl4pf9OAJz0FLRfcvjNzd+jeenFnmSxcBcaWcDFQrY/cLJRdFzYNAu/PiRGeoYfhUyMRQnfnmgVXaKyvOcld4QrSfC3wOQ/Lk90/Hs9XLzdCJa/Otll0fzSWeGygYTpfY1Y56bAtYGjFqdw00UkZLex6/mmixlmw0aX4WmXGGFlnrYETDvVMgjxSyERXjI+YlhQSHj4oMedsUk3ZqLtt3LoHIjHEQ=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?SXdvOGQ2b1JFL0ViM2RNa0w1aWRTNGJnT1BDeVFuY0xFMzZtSXBxRXRueEpy?=
- =?utf-8?B?V1hYVjEyckEzU3ZHZzIyYmxJOUc5SVdhOWJ2TzFzTjhyeS9DdHh1alZsRHp3?=
- =?utf-8?B?Sm9pcGRhZnZGUVRmaDBjT1h4Ym40Z2hRYk5maUl6cTgvcVduZUp5aVppMTJI?=
- =?utf-8?B?dWk2SXNIclIvc2NlNHFwbjdFZWhnR2lvNkVXRFZUK1pIU0RHalJGa3JBTEJt?=
- =?utf-8?B?N0FESGpaRmpnOTQ0VHVHZ2JjVUFDeTQ5UEhreHFybVB3V20yOXpoN296YzFD?=
- =?utf-8?B?VnltSjdkRW1VOVJXK2NvWGJ2aHMwdnF2VzVPYkwrYWU2Z0R0bTdGTlpkS2F1?=
- =?utf-8?B?MGJwZXpqRkFXV3djelpiV1A1dUVFRlliUmNja1FWTzI1T3JNcWFMOFc2S1lI?=
- =?utf-8?B?V1JFTER0MFUzdFNKWXczbzJIaHo0UVZ0cDZNS3FJdW9CU0R2eUw5b3l1K3FM?=
- =?utf-8?B?OUxzOVRTR3ZFM1NOdTBGQUpsV3VzMFBNVFZ6bVRCVDJSVFlYZEtnZ3I5MEdB?=
- =?utf-8?B?UnNHYjk4QVlrY2dScVBSbFFwbEI3amVSOUdYTFRqeG4zcFZndE5UOFVoSTFC?=
- =?utf-8?B?N0N6NEpKWHhaa0pEOW52MlRvc0V4ZVUxNWJib2FYQkdtZmdPZU56WVFFc0Z5?=
- =?utf-8?B?SVcyVHhvUytpQ2RxaEZxZXFVOFd6NnVVaVpPL1lGaTd5RkJqWWhWakp3TzVr?=
- =?utf-8?B?UTdVVFE1WEF3WTJHc1lLQWhBdGREWENFNVRKdGdSdEhHQ3RRbE92dDVWWFNF?=
- =?utf-8?B?alM1RkpiakVJSHVrR294NURLTnlFeTYrUzdqeWVKRWhkUXNwb1hOTW1TbUht?=
- =?utf-8?B?SldtZ1IvN0VOTWJBYnFiUVN4eVZaNitFaFY5eDI4TkZhdkF2TkE2eG1TWVpJ?=
- =?utf-8?B?MnFCZHl1MzdLaURYRXE2WmN0REhrL2RhSVhJeWEzaXVaMnRmUFhWSzlFc1Z1?=
- =?utf-8?B?L3hPdnVvT1Btd1FScHVmUkp1dS8zYTM3YisxUmRUTEtSZE5jTVRqN01WU0xq?=
- =?utf-8?B?WEl6eFpJV3ZRY1l5RlRvNDFkdHVUOUdoR2JFeEVSTnhpbWRFWjBJQWdBNUhO?=
- =?utf-8?B?ZG53MzFzTER6QS93a1RzdGdFTHVUZlhibHdXN2tYdjZQQmxGa3hWTUp4MFVZ?=
- =?utf-8?B?czl0L0dtQUlVMk5JVXVnS2ZoSk1SOGpxVEZha1k4TFFaS0NJOS8xdy9Zc0Jq?=
- =?utf-8?B?TFBvUXNIdExNY0F1eTJ0TDhkbXpQdVVSa0ZlaVU1bWhiTkdMaXRwYTVFcDM1?=
- =?utf-8?B?L2VySHJKKzRCK3lhMFMzb25uYUE3aUhEOEFMNEl3Tyt1WVdrYUNoenUvajEr?=
- =?utf-8?B?MUVyRW94RzRremN5VUh4dmhhdnI0Skwxbll0YmlRVmNPUmE0V0NCQUpuZktO?=
- =?utf-8?B?MjhPY0oydXBOd3dpL1paWkFIbUphdmcwZXNIZ1cyaTM5NGZvYkVyUVF3L2JE?=
- =?utf-8?B?Z3lST0tVMHE2Um8za05lZmpXYThuS3lzVW1YYkVDbkozajVHZUxXakxqd0JS?=
- =?utf-8?B?SUlkN0VUazFwTzFrSnpxRjJienBoVnZyZU9PcmdBcGxGekJMNkRzdHN0QTBJ?=
- =?utf-8?B?RDB1L1FOdDZDdjZtcEFsaTBRYUhyWWwzc3dYbFlXeFVjM05tb0Fidnl3aVRm?=
- =?utf-8?B?aWtLbmNjZHZ6TUhVSHQ4U1g5cnQ3OHBxV2R6cmZDQlZJYXNTOGpYclhvTHZE?=
- =?utf-8?B?SGV0YUFuOSt6bS81TlhUNFAvcEF2czYwQm4reGNZUXNEaTlQSDQ1bFJBTzR0?=
- =?utf-8?B?WXpGdWRTUU5RN08yakNGWEZOWGhpUC9tRXRWRVAwcHQ5RVRIMzN5SGhiR1Zm?=
- =?utf-8?B?Zk5OTWxQVzFIRTJ3bkZUMVZ2eDBpWFpQRVFPT1UvM0xpVTg2N21zSXFnTjlM?=
- =?utf-8?B?TmVkM09NSTlIaTN4bHR4SVhsMk84Q25GVDlLOFF0THphdEF6ZFpSSzZORVUv?=
- =?utf-8?B?Vi9QN1dWNWtITXpLUHF0NmQvOExackNKcUwxVGJ2eHNVaEdDY0VMQlpRSFVM?=
- =?utf-8?B?N2s4R1YvL0N6QUdUNXl6cTh3Sm5EVCtjdTlyYllrV3ZxZVlmS0w1VXlVQ09Y?=
- =?utf-8?B?Rm1rNkVGZUEvdHJaV1N2SXpZTDc0clA1REIwMjV0MTgvZmorQldGWFhZU3JV?=
- =?utf-8?Q?gDparwXuxuZmyKkSNC5xpTVBm?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	duBpgXCz/f1PqmBy5OL6+WAfy9Yrd6s9HB9pAdTaHOWct4lrtJ8smeNSCfKy2/0cPExWniwZzaWUZw3XVfHxyLT5mXYUd9GLUTH0LrOhNhGSZ0dughNsUd2pR6MZih0gXZS6UFlQscGRDwFYVD/+vMiiy84/mLO2fYZHpJ81/w9BtIrqgk6r/oajbut5JCH4jMJARZvoYVVM/GkumHEFpI3WYGwjgk99YP/htz189fhmi+NOZJDobKbo6qMlWhNkw5TfFmrsa1vcEGyCrHUEO7d/gZHlFKLtgFiTYVfNhlJCfpT7LgfrAY2uDm29aogphBb14NYAmwzfbwUkvyarBuf8ZDyyGjXnVQBMk9V4KOVtMuQQ1HFzcygk0+WSuE7zuKf0LOtCyu4RxoSGjp4os9wNFJTO1hnGO46L/nq1iEM3hw5Q4GpIgezqXT5w/jMq52gnyHpZUBdn7VTB4XXtT+YlNfuZCoxQ9JTVPKbrmYzPysBsPznqiAPUfiEFfma/knGmILOBN1x6kY9TwdLvYMxMU8/Td8PP5gsy13aZyhxj2RzCPYvxtX6rT5DrE1WhLvTkv6K8oHPKxx8Bwcriw9E0LPWJjyZ0PrlsBaG9o7w=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a89c191-2294-4dcd-3eac-08dc475c36ec
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 15:00:56.9261
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0J6D+cBK3hM0qza1el8n2gLVYbYWdOroDrxKtwz5jgGknvpul5BpGEI+lOFbEZKJX/07SpqeUvO/MrB+VNVfcg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB6429
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-18_06,2024-03-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 adultscore=0 suspectscore=0 mlxscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403180111
-X-Proofpoint-GUID: GxIboUqkZJQGY5uKkfbND55YmmP-DB_H
-X-Proofpoint-ORIG-GUID: GxIboUqkZJQGY5uKkfbND55YmmP-DB_H
+References: <cover.1710409033.git.wqu@suse.com> <348c07314744f4914f5d613c516e9790f8c725b5.1710409033.git.wqu@suse.com>
+ <CAL3q7H5Wgh4VEiNjX5_UOEftg55FAsi9Gy3SMZOVtkfKCszGoQ@mail.gmail.com> <c3f5aafc-9c9b-4b16-a71c-56985964318c@gmx.com>
+In-Reply-To: <c3f5aafc-9c9b-4b16-a71c-56985964318c@gmx.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 18 Mar 2024 16:16:57 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H67XsqdDXAS57r8i8QZZsSVoMsEZZjGSeY=si7GNbiM1A@mail.gmail.com>
+Message-ID: <CAL3q7H67XsqdDXAS57r8i8QZZsSVoMsEZZjGSeY=si7GNbiM1A@mail.gmail.com>
+Subject: Re: [PATCH 4/7] btrfs: scrub: remove unnecessary dev/physical lookup
+ for scrub_stripe_report_errors()
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/18/24 17:44, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Trivial stuff, details in the change logs.
-> 
-> Filipe Manana (2):
+On Thu, Mar 14, 2024 at 8:28=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
+>
+>
+>
+> =E5=9C=A8 2024/3/15 03:56, Filipe Manana =E5=86=99=E9=81=93:
+> > On Thu, Mar 14, 2024 at 9:50=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+> >>
+> >> The @stripe passed into scrub_stripe_report_errors() either has
+> >> stripe->dev and stripe->physical properly populated (regular data
+> >> stripes) or stripe->flags would have SCRUB_STRIPE_FLAG_NO_REPORT
+> >> (RAID56 P/Q stripes).
+> >>
+> >> Thus there is no need to go with btrfs_map_block() to get the
+> >> dev/physical.
+> >>
+> >> Just add an extra ASSERT() to make sure we get stripe->dev populated
+> >> correctly.
+> >>
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >> ---
+> >>   fs/btrfs/scrub.c | 59 ++++++----------------------------------------=
+--
+> >>   1 file changed, 7 insertions(+), 52 deletions(-)
+> >>
+> >> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> >> index 5e371ffdb37b..277583464371 100644
+> >> --- a/fs/btrfs/scrub.c
+> >> +++ b/fs/btrfs/scrub.c
+> >> @@ -860,10 +860,8 @@ static void scrub_stripe_submit_repair_read(struc=
+t scrub_stripe *stripe,
+> >>   static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
+> >>                                         struct scrub_stripe *stripe)
+> >>   {
+> >> -       static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
+> >> -                                     DEFAULT_RATELIMIT_BURST);
+> >>          struct btrfs_fs_info *fs_info =3D sctx->fs_info;
+> >> -       struct btrfs_device *dev =3D NULL;
+> >> +       struct btrfs_device *dev =3D stripe->dev;
+> >>          u64 stripe_physical =3D stripe->physical;
+> >>          int nr_data_sectors =3D 0;
+> >>          int nr_meta_sectors =3D 0;
+> >> @@ -874,35 +872,7 @@ static void scrub_stripe_report_errors(struct scr=
+ub_ctx *sctx,
+> >>          if (test_bit(SCRUB_STRIPE_FLAG_NO_REPORT, &stripe->state))
+> >>                  return;
+> >>
+> >> -       /*
+> >> -        * Init needed infos for error reporting.
+> >> -        *
+> >> -        * Although our scrub_stripe infrastructure is mostly based on=
+ btrfs_submit_bio()
+> >> -        * thus no need for dev/physical, error reporting still needs =
+dev and physical.
+> >> -        */
+> >> -       if (!bitmap_empty(&stripe->init_error_bitmap, stripe->nr_secto=
+rs)) {
+> >> -               u64 mapped_len =3D fs_info->sectorsize;
+> >> -               struct btrfs_io_context *bioc =3D NULL;
+> >> -               int stripe_index =3D stripe->mirror_num - 1;
+> >> -               int ret;
+> >> -
+> >> -               /* For scrub, our mirror_num should always start at 1.=
+ */
+> >> -               ASSERT(stripe->mirror_num >=3D 1);
+> >> -               ret =3D btrfs_map_block(fs_info, BTRFS_MAP_GET_READ_MI=
+RRORS,
+> >> -                                     stripe->logical, &mapped_len, &b=
+ioc,
+> >> -                                     NULL, NULL);
+> >> -               /*
+> >> -                * If we failed, dev will be NULL, and later detailed =
+reports
+> >> -                * will just be skipped.
+> >> -                */
+> >> -               if (ret < 0)
+> >> -                       goto skip;
+> >> -               stripe_physical =3D bioc->stripes[stripe_index].physic=
+al;
+> >> -               dev =3D bioc->stripes[stripe_index].dev;
+> >> -               btrfs_put_bioc(bioc);
+> >> -       }
+> >> -
+> >> -skip:
+> >> +       ASSERT(dev);
+> >>          for_each_set_bit(sector_nr, &stripe->extent_sector_bitmap, st=
+ripe->nr_sectors) {
+> >>                  u64 logical =3D stripe->logical +
+> >>                                (sector_nr << fs_info->sectorsize_bits)=
+;
+> >> @@ -933,42 +903,27 @@ static void scrub_stripe_report_errors(struct sc=
+rub_ctx *sctx,
+> >>                   * output the message of repaired message.
+> >>                   */
+> >>                  if (repaired) {
+> >> -                       if (dev) {
+> >> -                               btrfs_err_rl_in_rcu(fs_info,
+> >> +                       btrfs_err_rl_in_rcu(fs_info,
+> >>                          "fixed up error at logical %llu on dev %s phy=
+sical %llu",
+> >>                                              logical, btrfs_dev_name(d=
+ev),
+> >>                                              physical);
+> >> -                       } else {
+> >> -                               btrfs_err_rl_in_rcu(fs_info,
+> >> -                       "fixed up error at logical %llu on mirror %u",
+> >> -                                           logical, stripe->mirror_nu=
+m);
+> >> -                       }
+> >>                          continue;
+> >>                  }
+> >>
+> >>                  /* The remaining are all for unrepaired. */
+> >> -               if (dev) {
+> >> -                       btrfs_err_rl_in_rcu(fs_info,
+> >> +               btrfs_err_rl_in_rcu(fs_info,
+> >>          "unable to fixup (regular) error at logical %llu on dev %s ph=
+ysical %llu",
+> >>                                              logical, btrfs_dev_name(d=
+ev),
+> >>                                              physical);
+> >> -               } else {
+> >> -                       btrfs_err_rl_in_rcu(fs_info,
+> >> -       "unable to fixup (regular) error at logical %llu on mirror %u"=
+,
+> >> -                                           logical, stripe->mirror_nu=
+m);
+> >> -               }
+> >>
+> >>                  if (test_bit(sector_nr, &stripe->io_error_bitmap))
+> >> -                       if (__ratelimit(&rs) && dev)
+> >> -                               scrub_print_common_warning("i/o error"=
+, dev,
+> >> +                       scrub_print_common_warning("i/o error", dev,
+> >>                                                       logical, physica=
+l);
+> >>                  if (test_bit(sector_nr, &stripe->csum_error_bitmap))
+> >> -                       if (__ratelimit(&rs) && dev)
+> >> -                               scrub_print_common_warning("checksum e=
+rror", dev,
+> >> +                       scrub_print_common_warning("checksum error", d=
+ev,
+> >>                                                       logical, physica=
+l);
+> >>                  if (test_bit(sector_nr, &stripe->meta_error_bitmap))
+> >> -                       if (__ratelimit(&rs) && dev)
+> >> -                               scrub_print_common_warning("header err=
+or", dev,
+> >> +                       scrub_print_common_warning("header error", dev=
+,
+> >
+> > Why are we removing the rate limiting?
+> > This seems like an unrelated change.
+>
+> Because the ratelimit is not consistent.
+>
+> E.g. the "fixed up error" line is not rated limited by @rs, but by
+> btrfs_err_rl_in_rcu().
 
+That I don't understand.
 
->    btrfs: remove pointless readahead callback wrapper
->    btrfs: remove pointless writepages callback wrapper
+What I see is that scrub_print_common_warning() calls
+btrfs_warn_in_rcu() or btrfs_warn() or scrub_print_warning_inode()
+(which calls btrfs_warn_in_rcu()).
+I don't see where btrfs_err_rl_in_rcu() is called. So to me it seems
+@rs is doing the rate limiting.
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+>
+> And we would have scrub_print_common_warning() to go btrfs_*_rl() helper
+> in the coming patches.
+
+Ok, but if @rs is indeed doing the rate limiting here, then from an
+organization point of view, it should be removed in the later patch
+that makes scrub_print_common_warning() use the btrfs_*_rl() helpers.
 
 Thanks.
 
->   fs/btrfs/extent_io.c |  5 ++---
->   fs/btrfs/extent_io.h |  5 ++---
->   fs/btrfs/inode.c     | 11 -----------
->   3 files changed, 4 insertions(+), 17 deletions(-)
-> 
-
+>
+> Thanks,
+> Qu
+> >
+> > Everything else looks ok.
+> >
+> > Thanks.
+> >
+> >>                                                       logical, physica=
+l);
+> >>          }
+> >>
+> >> --
+> >> 2.44.0
+> >>
+> >>
+> >
 
