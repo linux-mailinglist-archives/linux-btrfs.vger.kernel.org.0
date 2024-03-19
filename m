@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-3435-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3436-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CF688803F2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 18:53:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABB29880404
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 18:55:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB1CF285862
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 17:53:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23B381F2472B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 17:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3DE2CCB4;
-	Tue, 19 Mar 2024 17:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F1E2B9D2;
+	Tue, 19 Mar 2024 17:54:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="wIJKiqWZ"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="eEeZZxLz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FAD2C84C
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 17:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E03D828DD0
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 17:54:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710870811; cv=none; b=NoRbFE/Neq8VJNFmixHpObtFmxpLKQzgpv17adPQqBT1rL5wlFPaR/FjgccaOXeaV3ENA0dJBtnF97IODrxx9Yf6b2bKnxGpoOCeSV1Cs6bEwb/A6VyrH/JuSgxw1ctiiApO9AOzT/mCKr7OElCI2vB3anHFkPC12ZFuRWyPPX0=
+	t=1710870884; cv=none; b=Jbha1rq6hGXCUrl2CkotpQt2pUj+FZ1iLOwZUE7pV6APw64fd/hDTib5uzrrE/ikzfDNrdFKd5Kj0J43Z+S0E9wJ8nFtOnY5R3PXX6LfzAw4Csv48mSk8WWWmLqEY9l3BYJ2bZB4E/+jf7rTFIznvec3XpHQfunkyDgwnjB9OIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710870811; c=relaxed/simple;
-	bh=ifnuAoPqbt00EnIs/YnFdaHuK0DmA4Uqc34Do9y2wR4=;
+	s=arc-20240116; t=1710870884; c=relaxed/simple;
+	bh=2VxAVuhNh7FTJv09iwofS9003lmE/Lbo8dEd4R2oKvc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ImV7bADFEVegOqd5Qsv9fjzKL+gQNMQrjXulMmBe52z2VUmrj0XTlTbdd2dHQQZKi4Xa34SNw0nr8aqIDoSPkQ4WbFkzlOav2boWEo8Z3FgHpsoha2MV9qPBpC1tGv5bnVt6o9bDMWthdV/VVzf545P8MeE5bQsUBFwoT6CiihM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=wIJKiqWZ; arc=none smtp.client-ip=209.85.221.178
+	 Content-Type:Content-Disposition:In-Reply-To; b=OLLKhSLYPGKtrIeFNRvrNnmGlYxx9L1/5olZPQAw1Gx7adSJ4jOt/XxhJddKO8nSPLG8zw2kawZzLrcpDU/t/YGSNgVvll9n9mLhfZqEFRkYXDZuvVc78BFxXm5cKnY5FGug3BQPuoTBa3W7Q0SArtRL34m/u0EeUkw9IO04yoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=eEeZZxLz; arc=none smtp.client-ip=209.85.222.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4d42d18bd63so1815422e0c.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 10:53:29 -0700 (PDT)
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-78a16114b69so12850885a.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 10:54:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1710870809; x=1711475609; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1710870882; x=1711475682; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TwUFl7F3pKIzfMXRT96c83edoWqdKbPZXSriTg/4xM0=;
-        b=wIJKiqWZpwxDVwVwzUQqxcH0J4w5lHlsnYAIAp2Eo5/MirjSYxHGevcHVc5rpCwslP
-         7n63vQbAnXruVYLk8wWpBNMKTnG2423ze6vi6Jhffu85egyxm/h/jLsAzhkDzNxLIB30
-         ogE8bydUKAEQmYrAhZR9yAhlJT8L3o15OJxqO4jtFsDpSsOb1sY6oXST/IUkrFz+JhoR
-         CPlb/u/o7EzTJK9bDn2SueBEQruf0MVbrGvqfWvs9kYZUJP8FmZsnVF1m9x7DL+skgPb
-         tWdAL9/hiLAGTzLQJuP1xVPZhHbMfJYZndQN4ZIxSl3SFjgWn3htkQN3/2431nx6EtcC
-         VxMg==
+        bh=Y7XelpAnpXZSYAyMvD382cEg9etSspU6rGD+gKaQPvU=;
+        b=eEeZZxLzxCXdcTDiQNThKBxL0jzuHo4u5YgYyPgc1bX+Rj4R6dXujg1sosKXAFM/W1
+         wSIN0YcgLivtZ7rH9wYnUWP2COqLoIdwU7wCLqnYjJTIttTgJhiAtS4dkSCe0gMVtVIG
+         FJ5Oh9JIkaTveD5VbmLOq4EU5J8qu0g4ldl22xPWE6uMn9pKWXRRKCObguvZPTdiotOk
+         VUt3MiVntAIG+N0K0t7tOn7sz01ZcWfmm6GdpCT9PQzaKMa4M4Jruj0V9g5BxTL0KGO6
+         6rKm8jd2f409TFvyz0KOFyLR2Rwg9mJi/KVqw2U1Pk4a5eX0mO43CvcMR+WV5HJu3VS9
+         cMKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710870809; x=1711475609;
+        d=1e100.net; s=20230601; t=1710870882; x=1711475682;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TwUFl7F3pKIzfMXRT96c83edoWqdKbPZXSriTg/4xM0=;
-        b=aAZ0KTUx/QMeCUNfZYdAPte2/rmEWEoHUYhSiZn2I3Z1yOvhjFga0wOhmhz1u7KKBv
-         L2JS8GDVqtL6xrZ4cvgODxwN9lWcPeh0BnwqBWhRDe4jfmqt24LN5ZjXtC73O94LfRYy
-         TVgS9ZohQfiNijTBa0xnUcgRqaeiyZUOurpKvahb8WM1AFqx85CNmsHHtpFAWZ3j/YjP
-         cHPkjgJ2QylK4LJISdgwuNe0VViZF2f9CHL7rgWbfDw/NoL1WOHlIipNLdpL/rVmP0WR
-         bg9QqgjV9ZQiWW7ZkFAKGHV3qOjEFA8nLLeXnSG+ax5dK5hYKnr4gmwT73X0TMF/z6Jw
-         Oi5w==
-X-Gm-Message-State: AOJu0YyPF6gRDr6eQX1KyhvhPpGmorT/KfxYePD4/Vz3JPLv3j2Ixqzt
-	67thWgIZgkJqTVeoGa/1O+Q+xMxy9/qPfWdl/vo8TIdEoVeCphPo/hrNtOv8D2k=
-X-Google-Smtp-Source: AGHT+IHE7Xf5gM52XveJ/64j7rHwZyZZ7mcjnFPs/KwpQDaAoBwHucEY8lr+YqKh3hn0uSjT/Otqcg==
-X-Received: by 2002:a1f:f28b:0:b0:4d4:3e64:8e6c with SMTP id q133-20020a1ff28b000000b004d43e648e6cmr2351615vkh.13.1710870808896;
-        Tue, 19 Mar 2024 10:53:28 -0700 (PDT)
+        bh=Y7XelpAnpXZSYAyMvD382cEg9etSspU6rGD+gKaQPvU=;
+        b=jQe2l0aN5bLQBUFMaQ2KN9ojOgrEH+TWZ2C7ngZ1PdnSqrI9qxXnSz/5Bv4fYcUTae
+         o96dyFV3zHoOCgIsiTTcjQFJ/oZVK9t3UTQk6k3Rw7qvD66jDtzfhVqoiu1T/31XyfJ6
+         mKFn9YthV/yrUIibIuCJCXO2torDBktXoD5sLgzJkuPMMhjb5jsVcqOMlwB5OUBSl1Z7
+         Sgg47z/wwJslGwmWdtFKudybkjwafixzrr9ANDij9OMeSm2Rwv7VBFdwtG1hQqulcwM8
+         81YIvjnhfm3fZVObDYdsMpTYNX6a+/FzYA9LevK+Cc+fKQ3Nj9UkHDJYFOSaNvh04nUT
+         QXkA==
+X-Gm-Message-State: AOJu0Ywu+H0o5mp7GLLCDKKfbFKAc/DVU5jQc9nFZcYqMUAmiNdZ714J
+	eywZEH/5Se3ViTfnW+vCjDucJioue1PQGWX22430lAesNYf1VNOWCvwx0zLUCtY=
+X-Google-Smtp-Source: AGHT+IFoFKGKVrU7s3v1vxB49RJpY2kYvJUIxopuq6dA2/S/yWxgSIDY0uwMfA6kUzalrNQCugaGvA==
+X-Received: by 2002:ae9:c20f:0:b0:789:e91a:f1ed with SMTP id j15-20020ae9c20f000000b00789e91af1edmr246289qkg.38.1710870881809;
+        Tue, 19 Mar 2024 10:54:41 -0700 (PDT)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id z10-20020a056214040a00b00690d951b7d9sm6692154qvx.6.2024.03.19.10.53.28
+        by smtp.gmail.com with ESMTPSA id x14-20020ae9e90e000000b00789ea3555acsm3653543qkf.19.2024.03.19.10.54.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 10:53:28 -0700 (PDT)
-Date: Tue, 19 Mar 2024 13:53:27 -0400
+        Tue, 19 Mar 2024 10:54:41 -0700 (PDT)
+Date: Tue, 19 Mar 2024 13:54:40 -0400
 From: Josef Bacik <josef@toxicpanda.com>
 To: Anand Jain <anand.jain@oracle.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 12/29] btrfs: btrfs_write_marked_extents rename werr to
+Subject: Re: [PATCH 13/29] btrfs: __btrfs_wait_marked_extents rename werr to
  ret err to ret2
-Message-ID: <20240319175327.GC2982591@perftesting>
+Message-ID: <20240319175440.GD2982591@perftesting>
 References: <cover.1710857863.git.anand.jain@oracle.com>
- <14bd267ea479d4c4d104966d4dae2d88ff403a99.1710857863.git.anand.jain@oracle.com>
+ <2e8fef09405de09488a3dde439d213dee33e117e.1710857863.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,78 +82,64 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <14bd267ea479d4c4d104966d4dae2d88ff403a99.1710857863.git.anand.jain@oracle.com>
+In-Reply-To: <2e8fef09405de09488a3dde439d213dee33e117e.1710857863.git.anand.jain@oracle.com>
 
-On Tue, Mar 19, 2024 at 08:25:20PM +0530, Anand Jain wrote:
-> Rename the function's local variable werr to ret and err to ret2, then
-> move ret2 to the local variable of the while loop. Drop the initialization
-> there since it's immediately assigned below.
+On Tue, Mar 19, 2024 at 08:25:21PM +0530, Anand Jain wrote:
+> Rename the function's local variable werr to ret, and err to ret2.
+> Also, align these two variable declarations with the other declarations in
+> the function for better function space alignment.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > ---
->  fs/btrfs/transaction.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
+>  fs/btrfs/transaction.c | 26 +++++++++++++-------------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
 > 
 > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index feffff91c6fe..167893457b58 100644
+> index 167893457b58..f344f97a6035 100644
 > --- a/fs/btrfs/transaction.c
 > +++ b/fs/btrfs/transaction.c
-> @@ -1119,8 +1119,7 @@ int btrfs_end_transaction_throttle(struct btrfs_trans_handle *trans)
->  int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
->  			       struct extent_io_tree *dirty_pages, int mark)
+> @@ -1173,12 +1173,12 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
+>  static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
+>  				       struct extent_io_tree *dirty_pages)
 >  {
 > -	int err = 0;
 > -	int werr = 0;
-> +	int ret = 0;
 >  	struct address_space *mapping = fs_info->btree_inode->i_mapping;
 >  	struct extent_state *cached_state = NULL;
 >  	u64 start = 0;
-> @@ -1128,9 +1127,10 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
+>  	u64 end;
+> +	int ret = 0;
+> +	int ret2 = 0;
 >  
 >  	while (find_first_extent_bit(dirty_pages, start, &start, &end,
->  				     mark, &cached_state)) {
-> +		int ret2;
->  		bool wait_writeback = false;
->  
-> -		err = convert_extent_bit(dirty_pages, start, end,
-> +		ret2 = convert_extent_bit(dirty_pages, start, end,
->  					 EXTENT_NEED_WAIT,
->  					 mark, &cached_state);
->  		/*
-> @@ -1146,22 +1146,22 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
->  		 * We cleanup any entries left in the io tree when committing
->  		 * the transaction (through extent_io_tree_release()).
+>  				     EXTENT_NEED_WAIT, &cached_state)) {
+> @@ -1190,22 +1190,22 @@ static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
+>  		 * concurrently - we do it only at transaction commit time when
+>  		 * it's safe to do it (through extent_io_tree_release()).
 >  		 */
-> -		if (err == -ENOMEM) {
+> -		err = clear_extent_bit(dirty_pages, start, end,
+> -				       EXTENT_NEED_WAIT, &cached_state);
+> -		if (err == -ENOMEM)
 > -			err = 0;
-> +		if (ret2 == -ENOMEM) {
-> +			ret2 = 0;
->  			wait_writeback = true;
->  		}
 > -		if (!err)
-> -			err = filemap_fdatawrite_range(mapping, start, end);
+> -			err = filemap_fdatawait_range(mapping, start, end);
 > -		if (err)
 > -			werr = err;
+> +		ret2 = clear_extent_bit(dirty_pages, start, end,
+> +					EXTENT_NEED_WAIT, &cached_state);
+> +		if (ret2 == -ENOMEM)
+> +			ret2 = 0;
 > +		if (!ret2)
-> +			ret2 = filemap_fdatawrite_range(mapping, start, end);
+> +			ret2 = filemap_fdatawait_range(mapping, start, end);
 > +		if (ret2)
 > +			ret = ret2;
->  		else if (wait_writeback)
-> -			werr = filemap_fdatawait_range(mapping, start, end);
-> +			ret = filemap_fdatawait_range(mapping, start, end);
 
-Ok so this is a correct conversion, but we'll lose "ret" here.  Can you follow
-up with a different series to fix this?  I think we just say
+Same comment here as the previous one.  In fact now that I think about it I'd
+rather you fix this problem first, and then do the cleanup, so we can easily
+backport the fix to stable kernels.
 
-free_extent_state(cached_state);
-if (ret)
-	break;
-
-otherwise this patch looks fine, you can add
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
+Then once you clean everything up you can change this to just use one ret
+variable.  Thanks,
 
 Josef
 
