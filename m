@@ -1,79 +1,80 @@
-Return-Path: <linux-btrfs+bounces-3426-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3428-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F4178802C6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 17:56:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07DBF8802CA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 17:56:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF1AB283E5B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 16:56:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ACF91C228B8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 16:56:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E12517550;
-	Tue, 19 Mar 2024 16:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF30421364;
+	Tue, 19 Mar 2024 16:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="JRIu7jeD"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="vb1X+Tg7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D05810A0E
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 16:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 969EC18C05
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 16:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710867369; cv=none; b=Sl90WEihEVQmHF1XdFVYort2qy23Y/MzSmzx1T+gZrP/GnbFdPfR2L53gEKnA5PlIk10b7J4KLT3d/TdgGO4BVS2CsKHnU0nnxBZs27Gr6QT6FEAhjjJ+RpZu49QtMhvVojYnriXuabDtfydB4Rw9PvSHCszCmR2DpPzmIADITs=
+	t=1710867373; cv=none; b=ulU5SnsYPBg3lw9qSam9KnOOeKeHP+64c1HEwhlPtWSRnddtZ6jpaxObmUycNDscogp5cXWQfDyM+tdKVkTYg1Sm2TEBS8fHEf7QmT0AobRjXoNuUMcPruW6X/oElDH+X6q4K1N3mUGoq5hCkVDDM6ONeIwrKStZtL3jC1+3clU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710867369; c=relaxed/simple;
-	bh=28rqPOzqrzU2xeKeaX/cB7xe1OCGgfzJP9tXmwdNDho=;
+	s=arc-20240116; t=1710867373; c=relaxed/simple;
+	bh=hsYvutvV8mZq4tJxDZlF8Y4bVOiUIuvjHFVje3QQG4E=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z4aLfkNIyWT/eJ/pNGulCQ1vnO72hG4PBhONgD481uf68edSPUykVnUyxWGlC00tRf9n1vldAavBV3If9hPEX+Jt6G+PanGlqJ5cIojHmxZJahreCHBRUOYOlx70Yd/f6Qj6oI+mFVtMq8HHHtA0/Kr6Murh2UzAxGbl0T82t8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=JRIu7jeD; arc=none smtp.client-ip=209.85.219.50
+	 MIME-Version; b=TGUv7GvesDfQLNd+lQ4ShBxq3IB5528HyuvqklczmIIHIRCjGls+39EdZE5Qn+9oOzDVYE6b6qfaQLuyRpRdigrycEgo2SP/qewy6prKW3+lOeJEOlZZE46SuNDN6QRUpBZ1Kjldt1oOqipshVBNgKRjuLag28O2dETXOpIlX0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=vb1X+Tg7; arc=none smtp.client-ip=209.85.222.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-690bd329df2so40035226d6.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 09:56:08 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-78a16114b69so6242285a.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 09:56:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1710867367; x=1711472167; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1710867370; x=1711472170; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=nrknpnmmhSsDGdPuq/gQ6JDl7KQ3ZMmkGR/31N88j1s=;
-        b=JRIu7jeDlPDSX+a8JeyjgGEO1t6Xo1tr6me6qswNClQ1yVYjVRGy6xAOu4fjDwthq/
-         0Q60oK55Ok31DTXQhP6PYrl4l0JiAOUbbxdgEKNQKuE/Sd20t8s2Z4vuV9DfXGUcko2x
-         d+Sl1QPyCpO8v0xEZqXB6VlHEm+MvdKANokn0W8z8eZY2UPhRy9gziX8qjDk9IhJAoKB
-         +eCnkoXLfDd9BkuuZzAX977tCm7HTOl1enOC+cyCbZZVs1Fca6lwTVmhx3y156L/ryKn
-         gzp2AqLfdzCBHXSbyRY9PvSIZyEuuurG/hxNTSvL7i15WEEyLYbayv99Wt0oFWcoJU/G
-         Fhzg==
+        bh=6gDXQ3N6RtQpFHt8yWxl41S3QndLvHgv4UXULQuqMXs=;
+        b=vb1X+Tg7WGH/pFXqde7NcO2rOGdRbPu4nYuMA066teC0c/iFSMFPFcTBSlQx7DkhIT
+         ZAckckLQzTLsGPM72lbuA4dIiMFhJa31GlSbVYz7ia41AxjrHxcHjcpb03s1Zg0VXiuq
+         CyU6AHIz1u4zAeytOpvG9qHdgussDOm3aSrzi3rEPPcniRk1Wg0Xmg0Jqn3u7atquIET
+         Osar45gUGdKTtDKnZM8vaXWhf7uHAkFbI1OQeFhnTiqwfZYeiLBsYLuGfgVe4nS0rLQS
+         QBTxjPj6bI+7Fd2Gsgw24pGT9fmkhopJxnj8g+hxTw8K3r8XOMHu7xEgvTnd6FM60R3r
+         E8DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710867367; x=1711472167;
+        d=1e100.net; s=20230601; t=1710867370; x=1711472170;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nrknpnmmhSsDGdPuq/gQ6JDl7KQ3ZMmkGR/31N88j1s=;
-        b=bhe3iLYh5MT267ssE58IhCohRs6DmgSgfsOxL6fKvD62SmjSDPptGeXTExtD/CcWkW
-         ActGeeoedUw16cPKBd6nUx/kBevAgjbk1EayoKBFQ+hb4hobAHencFRUwiEsKaCF7Orz
-         DmGDlioS0xhugZd4mHVES0gIDZBYPv/8DgOPzuB5XCMoLvKktvLk/pxPM24vuwj+paCL
-         JFafTeFqBe0HsPxPl3xbJF/PbNpTfp5f2AOkRTgmqDWRAxP9IPkHtwwDbMRWY/ZgCXQN
-         gFSqgcL+SAdXU+5DMkvQakinYE02l9gh2jrDhm+S8eC3YapHR5XSGnCGzrbhD6tb/ZZc
-         nMSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU4bkvduGp2nj95EOp0NMt4mpRfh7kfOw9BZMXKOK6IWazARXsqm57AigL+5meFGEFQZpenIbqkULfvs55nTG2XTh/waaf30/niIys=
-X-Gm-Message-State: AOJu0YxLEonVQmumnEdjDSyXtmPg/RAn/QTq7WZX2QOkZF9ZRN/VlWif
-	60J7H6ydtnG3mFKkVVnsgKW/K96gDYL+jdpBsr/ss39eoJP8d+cZbF2Q4d38xEs=
-X-Google-Smtp-Source: AGHT+IFwH3KOQnVS99ANDSdHHQg7PS9aFQr53dY6vRcG7MYR/xNMzijOJJiHH6OsEwa9qfkSN7N01w==
-X-Received: by 2002:ad4:44b2:0:b0:690:4942:dd89 with SMTP id n18-20020ad444b2000000b006904942dd89mr3238946qvt.28.1710867367281;
-        Tue, 19 Mar 2024 09:56:07 -0700 (PDT)
+        bh=6gDXQ3N6RtQpFHt8yWxl41S3QndLvHgv4UXULQuqMXs=;
+        b=A5cFBch5FBCUjLv2b7X70quSXml60Icj2aGrZohePqvzh78ArAe4n6px0z3QrqAbJQ
+         uD/Frjk1zhJvLjvf/xycyhRW9Qb1JpB/Gk+PpxYvwktHtAF1EQHZkKLnZRPhdbo38TSf
+         qrCCUYdUgRGywBSbg4FF2UV5+/cJcvvvtXtOkHCI4inQTtrHQWksCj8odmf7RBZVROwo
+         cKqbQGa3Y/uMI8thjzprPTboSL8rdhVbRectDaw+acnFuKjwcNe3ptcsL4lFBFQtNG69
+         CKgw9peT065Yfi9KXFeaafltKLJiPv3sKWZb6kUx+gjY95UsHqXnmLevuHhRNP5v0lKo
+         yPug==
+X-Forwarded-Encrypted: i=1; AJvYcCX5OBrsz86sCj9ilKcq9riA/4rk5PA7ZOj/y2fDUzQ/NMmSg5UGSTWx2AHGAMLHrHl/It//Oby0YCR0M0QYmpVBbQRRSDuVeRZdbv8=
+X-Gm-Message-State: AOJu0Yyu+KZJpgKmd9POWp5J2A7ymn2cy1qpjelDMkv7ICXS7m567VJO
+	W0HGDRJm1RmV+yvfmLmHxet8wK6JjumFyj5fl0z/ZIIdsVpkVoPGKyoH+LKSh6nOlKBsZHaGOTZ
+	7
+X-Google-Smtp-Source: AGHT+IFTbbZANqwVDpPXm0qhhIO5T/inGJXfRHNivqf/EGirubaBEluOGNsGjwc/QjeOyXLop9kSog==
+X-Received: by 2002:a05:620a:4116:b0:78a:1b8d:e0e5 with SMTP id j22-20020a05620a411600b0078a1b8de0e5mr1613591qko.14.1710867370571;
+        Tue, 19 Mar 2024 09:56:10 -0700 (PDT)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 1-20020a05621420a100b006961c9a2ed8sm2552906qvd.47.2024.03.19.09.56.06
+        by smtp.gmail.com with ESMTPSA id z1-20020ae9e601000000b00788287e3430sm5547220qkf.130.2024.03.19.09.56.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 09:56:06 -0700 (PDT)
+        Tue, 19 Mar 2024 09:56:10 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: fstests@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 2/3] fstests: btrfs/195: skip raid setups not in the profile configs
-Date: Tue, 19 Mar 2024 12:55:57 -0400
-Message-ID: <c19995ea42066da0eae381b499475c81679c8f0e.1710867187.git.josef@toxicpanda.com>
+Subject: [PATCH 3/3] fstests: add _require_btrfs_fs_feature raid56 to a few tests
+Date: Tue, 19 Mar 2024 12:55:58 -0400
+Message-ID: <13ca87a192f4eb8a8f10415ae1ff06682c3b40a0.1710867187.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1710867187.git.josef@toxicpanda.com>
 References: <cover.1710867187.git.josef@toxicpanda.com>
@@ -85,42 +86,57 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-You can specify a custom BTRFS_PROFILE_CONFIGS to skip certain raid
-configurations in the tests, however btrfs/195 doesn't honor this
-currently.  Fix this up by getting the profile configs and skipping any
-configurations that are not listed in BTRFS_PROFILE_CONFIGS.
+There are a few tests that don't have the required
+
+_require_btrfs_fs_feature raid56
+
+check in them even tho they are raid5/6 related tests.  Add this check
+in order to make sure environments that don't have raid5/6 support don't
+improperly fail them.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- tests/btrfs/195 | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ tests/btrfs/197 | 1 +
+ tests/btrfs/198 | 1 +
+ tests/btrfs/297 | 1 +
+ 3 files changed, 3 insertions(+)
 
-diff --git a/tests/btrfs/195 b/tests/btrfs/195
-index 96cc4134..df8f5ed6 100755
---- a/tests/btrfs/195
-+++ b/tests/btrfs/195
-@@ -21,6 +21,9 @@ _require_scratch_dev_pool 4
+diff --git a/tests/btrfs/197 b/tests/btrfs/197
+index d259fd99..8a034fdc 100755
+--- a/tests/btrfs/197
++++ b/tests/btrfs/197
+@@ -32,6 +32,7 @@ _require_scratch
+ _require_scratch_dev_pool 5
  # Zoned btrfs only supports SINGLE profile
+ _require_non_zoned_device ${SCRATCH_DEV}
++_require_btrfs_fs_feature raid56
+ 
+ workout()
+ {
+diff --git a/tests/btrfs/198 b/tests/btrfs/198
+index 7d23ffce..ecce81cd 100755
+--- a/tests/btrfs/198
++++ b/tests/btrfs/198
+@@ -20,6 +20,7 @@ _require_scratch
+ _require_scratch_dev_pool 4
+ # Zoned btrfs only supports SINGLE profile
+ _require_non_zoned_device ${SCRATCH_DEV}
++_require_btrfs_fs_feature raid56
+ _fixed_by_kernel_commit 96c2e067ed3e3e \
+ 	"btrfs: skip devices without magic signature when mounting"
+ 
+diff --git a/tests/btrfs/297 b/tests/btrfs/297
+index a0023861..990b83b1 100755
+--- a/tests/btrfs/297
++++ b/tests/btrfs/297
+@@ -15,6 +15,7 @@ _supported_fs btrfs
+ _require_odirect
  _require_non_zoned_device "${SCRATCH_DEV}"
+ _require_scratch_dev_pool 3
++_require_btrfs_fs_feature raid56
+ _fixed_by_kernel_commit 486c737f7fdc \
+ 	"btrfs: raid56: always verify the P/Q contents for scrub"
  
-+# Load up the available configs
-+_btrfs_get_profile_configs
-+
- declare -a TEST_VECTORS=(
- # $nr_dev_min:$data:$metadata:$data_convert:$metadata_convert
- "4:single:raid1"
-@@ -38,6 +41,11 @@ run_testcase() {
- 	src_type=${args[1]}
- 	dst_type=${args[2]}
- 
-+	if [[ ! "${_btrfs_profile_configs[@]}" =~ "$dst_type" ]]; then
-+		echo "=== Skipping test: $1 ===" >> $seqres.full
-+		return
-+	fi
-+
- 	_scratch_dev_pool_get $num_disks
- 
- 	echo "=== Running test: $1 ===" >> $seqres.full
 -- 
 2.43.0
 
