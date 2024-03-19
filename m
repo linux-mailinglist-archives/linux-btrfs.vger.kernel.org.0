@@ -1,80 +1,79 @@
-Return-Path: <linux-btrfs+bounces-3433-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3434-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52AF488039D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 18:39:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9A218803CE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 18:45:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84B081C22A85
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 17:39:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A05AB22C36
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 17:45:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65752033E;
-	Tue, 19 Mar 2024 17:38:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 884342B9C4;
+	Tue, 19 Mar 2024 17:44:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="H9zwPQQb"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Y5dlS+Rw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1558919BDC
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 17:38:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD397286AD
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 17:44:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710869930; cv=none; b=Y6vKj0hQ92nZby2cNo7c2T3Woz82471EIFqWS06WQ2UBS6vy6AjNhUSMKUMbyXjZoqoTtF9JWaO3t4VX7A9CudUYoGTL967LvaeWMx/6KV2pWfwzGYZKN+dMmPKqI27rK4DA0TO4OCi+LblYkmTZtMBTjKkUK8FEL8MPVLcPJ50=
+	t=1710870250; cv=none; b=CL8GkV0LYABKqploMnwBMxDc/ue99xc1wadlWIHsWdocCRdqn17zPi2XN6NE9xfKeHCLeO+y30Pc3gBCEB035OOFuoIkH/wR2HdjcLE0HDbi43YdNcH3UZp9gpgnuCssVQKxVL7pmmH8yTpVUawXDcS9i0/JdJw9PF1n1Imztb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710869930; c=relaxed/simple;
-	bh=t/f5hO4Ods5x1ISfTIey3m+HRaw2T6BgIk/2b+JSmI8=;
+	s=arc-20240116; t=1710870250; c=relaxed/simple;
+	bh=GUoGg0w8XtQ+ImuTrhR5cl3MB36tYftXlYwJ4OKPkuU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kIWfyhN9Nn4/wE4fPoyY75MnQw2Jv0Rwj/WAXWvtonPvNMNDJ59LGJeIbK1kjGG1v0cgxiNPKEByzdLwhLkkOs9lQK51FQ/s82DL8Nucf0MU5EyNAOet75+KPV4uagbcKY0RlPwmAZco6WU5vZlXL+GGrGUTaJVzMNr4d9puEos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=H9zwPQQb; arc=none smtp.client-ip=209.85.128.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=ihsYJbt66Ah+u5rH0M65dnxr5fuCJQZLNuGRY3I2KiM6f6lX0Fva/xFc/VILRnjYF/9kmS0iMN1n0NeLd1Srx86GEoalVHakJpIwv514u4fEkc8S/eRtj4M+zx54ssTFNop9EsJhWB3NMKnDKUw069Sp5PXZilEY3hdS2643YX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Y5dlS+Rw; arc=none smtp.client-ip=209.85.222.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-607c5679842so61625767b3.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 10:38:48 -0700 (PDT)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-789d0c90cadso359425085a.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 10:44:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1710869928; x=1711474728; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1710870248; x=1711475048; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hr7Ru1qv6sZdy/EO578FLOKmg6GaZz+1W9NjYNGbXa4=;
-        b=H9zwPQQbhk317DJU8QxIkvpSADGLoAqXcWwpjr2wvfl++ANjZOVlOZuRT4zHcAwPGg
-         nV7puDccqdlfhU4dcD0xXdkJp0OzOhEYerfnXBRFt/fQfHTrro+Y7qPvE3ZGjGeQ+RA0
-         DRIopJq6pC7hZuj59tPuOlDPABAlcYW87uCDGGFRuSGQzwfkvIaPDH/H9LI9x2EsLFqw
-         GX1WS7mVAz31YnRNnEr4Vrjyj7xKj6Y5ftfRwWq2jujPRNuQaT8z6R6rGfxXNNxJuoSd
-         LjPmzvopN5zRJAWMiixI7vsAiRv8k8o5H5ERplKmN9rtx6lGRvW/ifjvULMuJSnlzI2d
-         LB1w==
+        bh=W3ZpiLCuEUZj1JXUW0QL1hAfKnbbS8ODi1ifZWkXGPg=;
+        b=Y5dlS+Rw5vUfm0lLYP/HEuGQjWuVGkROKuoUIkQVKyUgq6pQVzTGfXBHc4Vmxdhafp
+         ddzJ7UeP+Kp8X3Ej5TCzQkXQnI/ScS4CDPBkx5hcEEQA1Cu7FI0TstSLHcqopxD5baLd
+         PwkeUJZvZfZJO/Ni/jhl8KdeZEDcCriBgs9ZUAl3WqHn0hkEN7mqJj+Zgwn0lFGTaBXn
+         QS5oLmCJ4xRMnWdjlnaB6CXvJtdUtIkyikmJJQOoBHJSmw3RqfyAc2/zxrx/UysIXbkX
+         ZcoWc42EUEWTx9TJ2box4NZyvP61Zmz16+8Re9o9bAm4MY/Rofu4dTh8o306RpvtEP+B
+         zc9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710869928; x=1711474728;
+        d=1e100.net; s=20230601; t=1710870248; x=1711475048;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hr7Ru1qv6sZdy/EO578FLOKmg6GaZz+1W9NjYNGbXa4=;
-        b=sRt5MteD2O4TdFFFwf2puthrfgl+mZKMLlSXECmd5w0eQ5rRZD6Z8J2l9wKFJlkbkB
-         1MJVxBbY/rtmckS+RI5mchDjcEDBy1dLsru8dT4L7GjsXwYUYy3jGxhmyR/4TmmzyqHH
-         YqTTxob1s+b9syK1CJBWYbbQzx2JD4mRecq4RTYBpVsQMrVublmFkVmAUG9g0Ih4oCEK
-         UlvYkHFEoccWBQlgq4jNKl2KS0/6LUFvpWUZ08eXEomoSn0J0lm7OJBcrOby3I6Hzgui
-         2oV0UFk2CjepSKKUxC5tdEkWCTvAgyijPh3KossWiI+vs9akv7OmEZt5I9/e7NKVEnJr
-         1BHQ==
-X-Gm-Message-State: AOJu0YzMK8T4xMA67hUzwgNm+E4ncw0w92gRGcSjtTJ9oI0tSJjWwO0L
-	0M+E9JhbgSQ580HAQ1/j+fSFWa3c6/LV1tTTdRtJRcU3IZOLuwnt61qV2OWDLVTtBW2zJ3fE3JQ
-	K
-X-Google-Smtp-Source: AGHT+IF0mzGjqicuiHMcnI5sbgMfCychBVQqT0G+7oOIwW2GhRj9BngreFhpGzegeb8mQEoE3GTxFQ==
-X-Received: by 2002:a05:6902:512:b0:dcb:aa26:50f9 with SMTP id x18-20020a056902051200b00dcbaa2650f9mr12257615ybs.46.1710869928075;
-        Tue, 19 Mar 2024 10:38:48 -0700 (PDT)
+        bh=W3ZpiLCuEUZj1JXUW0QL1hAfKnbbS8ODi1ifZWkXGPg=;
+        b=X8DTY9kXWw22hjA77TaqoiAYuacZX3Ta0Y4OHNwFL8vAm1QqHu5Z8Rr+qRI4NUapgH
+         N4uaKBzLTfNzhyGO6tcKcYl0efNg7vr6sn++FEwBxIGGrLwGPcpqJrqikCNv4OzBx7eV
+         Q9QsxBEjA1ckyL9WpbzYcNeYv4ldH3DhDkk6b61B5v1sjSflNc5S7ozyP4W2ckbuO6tw
+         9I6i65sDfnmJqYyk6texFavEb+sbieQrt+SvWEWZ234qd/M37dBkJR+9To8G1O2qfjex
+         8ao2CmgUhvQgGJu4LUra0mbGvX5TrOT1S9g6E7+huCJvVr7DN1LzjcXgiRZGRi3WdkuG
+         YEpw==
+X-Gm-Message-State: AOJu0Yy+ZWszXX326QIrutGmVFH1tuvo3Rommeu17TtYbvgf/pQxBbeS
+	hsC9ezU+g7oLu/w0nV7xXTTAdlAPAF2L76oG49A0KDBHyiLf3UnXX3sipoJk+pc=
+X-Google-Smtp-Source: AGHT+IHjSHiCqMHgvqlnnr8vKH8K+ZyIl6WAyz4lyCijFF6tNo25UYH6PA6oLjYCwMzJdhu6ZsNItw==
+X-Received: by 2002:a05:620a:4044:b0:789:c797:16ff with SMTP id i4-20020a05620a404400b00789c79716ffmr4500180qko.60.1710870247809;
+        Tue, 19 Mar 2024 10:44:07 -0700 (PDT)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id k20-20020ac86054000000b0042f43a486c9sm6085431qtm.77.2024.03.19.10.38.47
+        by smtp.gmail.com with ESMTPSA id dc33-20020a05620a522100b007885cd1c058sm5688529qkb.103.2024.03.19.10.44.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 10:38:47 -0700 (PDT)
-Date: Tue, 19 Mar 2024 13:38:47 -0400
+        Tue, 19 Mar 2024 10:44:07 -0700 (PDT)
+Date: Tue, 19 Mar 2024 13:44:06 -0400
 From: Josef Bacik <josef@toxicpanda.com>
 To: Anand Jain <anand.jain@oracle.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 01/29] btrfs: btrfs_cleanup_fs_roots rename ret to ret2
+Subject: Re: [PATCH 07/29] btrfs: btrfs_find_orphan_roots rename ret to ret2
  and err to ret
-Message-ID: <20240319173847.GA2982591@perftesting>
+Message-ID: <20240319174406.GB2982591@perftesting>
 References: <cover.1710857863.git.anand.jain@oracle.com>
- <b1eaaa193879d4ae920a76dfa3bc5f2e6c7f8a4d.1710857863.git.anand.jain@oracle.com>
+ <a5b8d4ef4c88f3c6bb87c81e58a75e91af1053c8.1710857863.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,24 +82,16 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b1eaaa193879d4ae920a76dfa3bc5f2e6c7f8a4d.1710857863.git.anand.jain@oracle.com>
+In-Reply-To: <a5b8d4ef4c88f3c6bb87c81e58a75e91af1053c8.1710857863.git.anand.jain@oracle.com>
 
-On Tue, Mar 19, 2024 at 08:25:09PM +0530, Anand Jain wrote:
-> Since err represents the function return value, rename it as ret,
-> and rename the original ret, which serves as a helper return value,
-> to ret2.
+On Tue, Mar 19, 2024 at 08:25:15PM +0530, Anand Jain wrote:
+> Variable err is the actual return value of this function, and variable ret
+> is a helper variable for err. So, rename them to ret and ret2 respectively.
 > 
 
-I hate to be that guy right out the gate, but since we're just using ret2 as the
-return value of radix_tree_gang_lookup, and that's just the number of fs_roots,
-lets instead a variation of
-
-unsigned int nr_found = 0;
-unsigned int nr = 0;
-unsigned int found = 0;
-
-since we know this isn't just a temporary ret value, it actually corresponds to
-something.  Thanks,
+This is just overkill, we don't ever need to hold both ret and ret2 in
+consistent state, you can just to a straight conversion of err to ret and it'll
+be fine.  Thanks,
 
 Josef
 
