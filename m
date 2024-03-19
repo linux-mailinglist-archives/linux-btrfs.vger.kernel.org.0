@@ -1,59 +1,52 @@
-Return-Path: <linux-btrfs+bounces-3386-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3387-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDA5087F64F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 05:16:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 884C687F653
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 05:19:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81E19282B1A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 04:16:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A0AA1C21C28
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 04:19:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331CD7BB1C;
-	Tue, 19 Mar 2024 04:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 089BE7C080;
+	Tue, 19 Mar 2024 04:19:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="AVW5hCNc"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="idekPTvq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570307C083
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 04:16:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.154.54.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50AAF1D540
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 04:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710821814; cv=none; b=XlTMQrcrMpo9qGI6FCy7NCsvaokTe1prx7n+L1K1sUTg0JlBlkfJKPrMcI2dTZ8lRe1xkPfwnn7b6pxKkd+zyvgzR5mxZKN+bH+FZjKExFXYwyIvkzu3anx4xwOUzp62fEqVsA2/DiZF35i62RpTl7JQRc1TDMBMdfx5ktvc8cU=
+	t=1710821953; cv=none; b=tpkIhMy87pmcsxZJTVwoshg3qpGKbeLtgC8KKiIInCTH3P2qY484ltFPC+13GDMUOlVOnpRonPIiV3xzZyDr0WmVExItS+7eyTnU0v8hkjeBerVHPx4KPjXYbhy63aSznFXYC2AK8EOe7TtBIqgUVqPWli+8/joXG9cMJMGHLL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710821814; c=relaxed/simple;
-	bh=pxsLfQPzJeZnOmmbk2yTB2sVpYGHEVWtzQDAXmuMPCw=;
+	s=arc-20240116; t=1710821953; c=relaxed/simple;
+	bh=Y3O+gj3XoshB0MccNRRDS0gT7NSJBS/nWH3AzPQD0Ug=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=GS2FZhci0GW2KoidZ99uujA5ecnImtsAlO1hdnTsfzNgHBnRoqgg1099MXmI+XcTaElHklzyIn/BD5aIJC+GSFr4JBLSpU+v68jUBQGAObLE+ebeZFyMoSl8Y0zX29hq0Yhx5eWAbpynoU/BBycr0U+jw5Lt3prdbZ7csxjLvqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=AVW5hCNc; arc=none smtp.client-ip=43.154.54.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
-	s=qqmb2301; t=1710821797;
-	bh=pxsLfQPzJeZnOmmbk2yTB2sVpYGHEVWtzQDAXmuMPCw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=AVW5hCNc9rj2zA4xS2+kpnQaT+rlHhBT/twgSCct/9R7QOZHlv4Xlaxa1MAwHKMuv
-	 Ut6KUVlTWgX9y+igD4ZnzyAnAnN7qCeKi2NC8tNfEhXdYooLEhOBcSZ3ApwTAJtPIB
-	 BvhR7J3TRQRty+vYYx5qy2B8eggSZY9arL6FtK8s=
-X-QQ-mid: bizesmtpipv602t1710821795trhf
-X-QQ-Originating-IP: 7XfbsXp0bXinYHKlybt0GVeyYLTd6qMpOunMmNOwvnU=
-Received: from [IPV6:240e:381:70b1:9300:14a5:b ( [255.36.242.6])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Tue, 19 Mar 2024 12:16:34 +0800 (CST)
-X-QQ-SSF: 00100000000000E0Z000000A0000000
-X-QQ-FEAT: 5t5I+dY+gqr4PljStVwDhlOkMxWk8eU73JtG6o+7wE8ETdVXrBoo3lxdPgKV8
-	pVCPEdYhhGM6GP/XKw0HwMTABmjtnTlNqi+74PtBbXD/eRI4WYe0tbLCSw/RS/i2rFgU8M+
-	oVH3BEmws8qOnCJwAu9PrW0mwADuEPsPZDZ/srE7BsJeMkDel1j+LTgUY/pfRYuBbRX/6hJ
-	8znQjgr0bSEFPxHvDzNmzLw2PRKzYEaem8GAq7+1FtHL9fdPeQ4+ELZiyu9DjuwSPNs8ul4
-	XdVGUApFzJVFmQ7OqVZ1LCrqUgN5Mmzn0pitGZMvM1YDF6jVhyTyn/xFlUxxeFG4Lca7xC0
-	q5kn5trujN+6XKGepDQvuLTk+a9eP69+CtHi0pM
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 9956275628573362831
-Message-ID: <B9AE3A7AE8BC6048+54d80a89-2099-4378-a615-ce05899ecf40@bupt.moe>
-Date: Tue, 19 Mar 2024 12:16:33 +0800
+	 In-Reply-To:Content-Type; b=AIYr9wE/2uVHqVba2jhZp0S8Yq5tKf9j1y4UezW5nRDUJ8vT3Tl5E0U0UfedB7t4BhbhsjqGwg3SCYbm/nnxL7boQV8VKwfU7AkbGS2Qrfvc+zVJe4CZjwxbub7ndmk6Kw+avB3uPV/CKaV7pQz5IujLxW4EWy87M9VPOW7YDl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=idekPTvq; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1710821943; x=1711426743; i=quwenruo.btrfs@gmx.com;
+	bh=Y3O+gj3XoshB0MccNRRDS0gT7NSJBS/nWH3AzPQD0Ug=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=idekPTvq+ukZqd7n8tecuOu8R3FtO6x3QeMCG93eHU0f/loAWR1TIxNxdNBBMrSZ
+	 BpV8w/TYLCOanQleCuYDljiBo4r+Ub4HN8Xj4/AcitzW+gSIvj2KFkj2qsfRi45f8
+	 RFVcD4f3sVQ9IrL884gb9Sw0WKhAsy895b3mtH461gx36jFBFXLt/FlF2DSARMImH
+	 Pxv32FmBqdvCCcp4e4FcSLXOq8moMwDaYzpe5gX9x0yDpyZIav7wLrNcTOFmT2rlx
+	 vdx9JuRB1SnkvP6OLyoJi3TiivcKwJfQJJ+Y5WK4vLQHmMuR091KqamG87S2r6cPy
+	 Qlkwwxf+guEXDoTyrg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N8XPt-1qiO6p28G1-014WaM; Tue, 19
+ Mar 2024 05:19:03 +0100
+Message-ID: <6ccab6fe-b6b7-4c04-b631-6b450a05b021@gmx.com>
+Date: Tue, 19 Mar 2024 14:48:59 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -64,32 +57,13 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: compression silently skipped with O_DIRECT & checksum/corruption
  issue with qemu live migration ?
 Content-Language: en-US
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Roland <devzero@web.de>,
+To: HAN Yuwei <hrx@bupt.moe>, Roland <devzero@web.de>,
  linux-btrfs@vger.kernel.org
 References: <e7ce9995-93cb-4904-875c-684d4494765f@web.de>
  <89d0cad2-64b2-4699-b6de-6727398d50d6@gmx.com>
-From: HAN Yuwei <hrx@bupt.moe>
-In-Reply-To: <89d0cad2-64b2-4699-b6de-6727398d50d6@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------KIV6GVjtzQT3GfspmGMpCzTL"
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpipv:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------KIV6GVjtzQT3GfspmGMpCzTL
-Content-Type: multipart/mixed; boundary="------------Gj3ffd389kJuXXlzFM8hgiT0";
- protected-headers="v1"
-From: HAN Yuwei <hrx@bupt.moe>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Roland <devzero@web.de>,
- linux-btrfs@vger.kernel.org
-Message-ID: <54d80a89-2099-4378-a615-ce05899ecf40@bupt.moe>
-Subject: Re: compression silently skipped with O_DIRECT & checksum/corruption
- issue with qemu live migration ?
-References: <e7ce9995-93cb-4904-875c-684d4494765f@web.de>
- <89d0cad2-64b2-4699-b6de-6727398d50d6@gmx.com>
-In-Reply-To: <89d0cad2-64b2-4699-b6de-6727398d50d6@gmx.com>
-Autocrypt-Gossip: addr=quwenruo.btrfs@gmx.com; keydata=
+ <B9AE3A7AE8BC6048+54d80a89-2099-4378-a615-ce05899ecf40@bupt.moe>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
@@ -113,172 +87,239 @@ Autocrypt-Gossip: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-
---------------Gj3ffd389kJuXXlzFM8hgiT0
+In-Reply-To: <B9AE3A7AE8BC6048+54d80a89-2099-4378-a615-ce05899ecf40@bupt.moe>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:2vnvtN+pHeMVWuVnokkFRiihhuEJHIHz7Zj+a6ji2KzcU1SFCA5
+ hP3eb/IH8jr4zQi+08l8mlQEhLLvRhNa/th6dV1HcuagQnJIonWbRNj+VWvVZFSRC4rGdfY
+ 8XC7COApkqw1mlfFLhdJs7gYtyd+2Tojl9fNR8YfZ2YKtN3jUejA6MLc4zh8YvnrRcQrXGK
+ et5ZQ1OKiNqwmVtX//A6A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:9UT8JXMAMdQ=;mh7uaz3ZimevdtjCp4p7UXgkVrn
+ pP0bAT8yDJxPGFWFsm+Y97Ita/Vi/JZiy6unaf37mzjfGHUmxbUsxK/CGYfc7PZMYI3yHvcuS
+ X4UI0bvLq3gF5xnuLPoeeeBTjTw71cOON2/DgJf50eMA0GvqBgSrMHhvc+m/yYICCBJxs1gVz
+ 9Bgd9SIYzy4LA7EoUp+Bxl7mjZarYyLsbNpD6ayZDzTbBtR/he83nv4Dv1Dq491fM/7kmH635
+ pD/zqOWg3ZgveRddOHfRFn1hn/9FTuTSpn7OZm7yfdnDWOgLgxkXj+5hZyvlinnsXuX6C+1TJ
+ j4cskPo4TmNqLZJ0qasboQYmSDR5NQezQSIcgN53RLPFeCedBzvZiWnEUsslyi5PZyqf1PUSa
+ jKZRMNnEF9UwirRjmhBBpPqb0+cR80QChCkkbQLgBNf1gFEQrmbo9KezGqfsS6xnu1P9ZJsXr
+ LgU3F9HsLXIzMfDtx9vVo3LDA70nB6+kGe4FE+oFXeKldrRK/ZY850bepNLlsZLRQ2gUff97A
+ C0DaWG3T/iOFczmTJoeyWcIS8U2UDbNdP3i4TLdEzge/nzhzmSPvamzMlUsCYHbwIH2p/nIGd
+ j9kpA2KJz3NHaXdHCch+E9RZ2RxdqK0AqAvq0KaPIPskwu3n5v2U729Nd6sk4J8adHx5CdsTM
+ v5PAM44blAxGQNhBzKF4I+YK3uLJLpsV/LRNpyAZuu5mbWBXbMrUI7G65IfSPPKpdSvImNPBN
+ NdlAda5LbxIf63EzyzIne4ywCsAOYCA/BjqZza4QkUIDsSD37vFVGcUZ5+2bRLrV57wQl6Jct
+ 72oyQt1gLKvb3GlSWDbAZ1KrNtrN8y2x1VHTbKRt0qEPY=
 
-DQrlnKggMjAyNC8zLzE4IDE3OjE5LCBRdSBXZW5ydW8g5YaZ6YGTOg0KPg0KPg0KPiDlnKgg
-MjAyNC8zLzE2IDA2OjA5LCBSb2xhbmQg5YaZ6YGTOg0KPj4gSGVsbG8sDQo+Pg0KPj4gY2Fu
-IHNvbWVvbmUgZXhwbGFpbiB3aHkgY29tcHJlc3Npb24gaXMgc2tpcHBlZCB3aGVuIHdyaXRp
-bmcgd2l0aA0KPj4gZGlyZWN0LWkvbyA/DQo+DQo+IEJlY2F1c2UgY29tcHJlc3Npb24gb25s
-eSBoYXBwZW4gd2l0aCBidWZmZXJlZCB3cml0ZS4NCj4NCj4gRm9yIGRpcmVjdCBJTyB3ZSBl
-aXRoZXIgZ28gTk9DT1cgb3IgcmVndWxhciBDT1csIG5vIGNvbXByZXNzaW9uIHN1cHBvcnQu
-DQo+DQpTaG91bGQgd2UgbWVudGlvbiB0aGlzIChubyBjb21wcmVzc2lvbiBpbiBPX0RJUkVD
-VCkgaW4gZG9jPyBJIGhhdmVuJ3QgDQppbXByZXNzaW9uIHRoYXQgZG9jIHNhaWQgdGhpcy4N
-Cj4gVGhlIGN1cnJlbnQgY29tcHJlc3Npb24gY29kZSBpcyBhbHdheXMgdXNpbmcgcGFnZSBj
-YWNoZSwganVzdCBjaGVjayB0aGUNCj4gZGlmZmVyZW50IGFsZ28gaW1wbGVtZW50YXRpb25z
-IG9mIGJ0cmZzX2NvbXByZXNzX3BhZ2VzKCksIHdoaWNoIGFsbA0KPiBmZXRjaCB0aGVpciBk
-YXRhIGZyb20gcGFnZSBjYWNoZS4NCj4NCj4gRS5nLiBpbiB6c3RkX2NvbXByZXNzX3BhZ2Vz
-KCksIHdlIGdvIGZpbmRfZ2V0X3BhZ2UoKSB0byBncmFiIHRoZSBwYWdlDQo+IGZyb20gcGFn
-ZSBjYWNoZSBhcyBjb21wcmVzc2lvbiBzb3VyY2UuDQo+DQo+IFRoaXMgaXMgaW5jb21wYXRp
-YmxlIHdpdGggdGhlIGRpcmVjdCBJTyBzY2hlbWUsIHdoaWNoIGlzIGRlc2lnbmVkIHRvDQo+
-IGF2b2lkIHBhZ2UgY2FjaGUgY29tcGxldGVseSAodW5sZXNzIGZhbGwgYmFjayB0byBidWZm
-ZXJlZCB3cml0ZSkuDQo+DQo+IE1heWJlIGl0J3MgcG9zc2libGUgdG8gbWFrZSBhbGwgdGhv
-c2UgKl9jb21wcmVzc19wYWdlcygpIHRvIHN1cHBvcnQNCj4gZGlyZWN0IElPLCBidXQgdGhh
-dCBkb2Vzbid0IGxvb2tzIHNhbmUgdG8gbWUuDQo+DQo+IEFzIHRoZSBpZGVhIG9mIGRpcmVj
-dCBJTyBpcyB0byBmdWxseSBhdm9pZCBwYWdlIGNhY2hlLCBhbmQgYWxsb3cgdGhlDQo+IHVz
-ZXIgc3BhY2UgcHJvZ3JhbSB0byB0YWtlIGZ1bGwgY29udHJvbCBvZiBpdHMgb3duIGNhY2hl
-LCBkb2luZw0KPiBjb21wcmVzc2lvbiB3b3VsZCBpbnRyb2R1Y2UgZXh0cmEgbGF0ZW5jeSBh
-bmQgbWFrZSB0aGUgcGVyZm9ybWFuY2UNCj4gY2hhcmFjdGVyaXN0aWMgbXVjaCBjb21wbGV4
-IHRvIHVzZXIgc3BhY2UuDQo+DQo+IFRoYW5rcywNCj4gUXUNCj4NCj4+DQo+PiBpcyB0aGlz
-IHRvIGJlIGV4cGVjdGVkID8NCj4+DQo+PiBpIHdvbmRlcmVkIHdoeSBpIGdvdCB1bmNvbXBy
-ZXNzZWQgcmF3IGRpc2sgaW1hZ2VzIGluIHByb3htb3ggYWZ0ZXIgZGlzaw0KPj4gbWlncmF0
-aW9uIHRvIGJ0cmZzIGZzIHdpdGggY29tcHJlc3MtZm9yY2U9enN0ZCwgc28gaSB0cmllZCB3
-aXRoIGRkIGlmIGkNCj4+IGNhbiByZXByb2R1Y2UgLSBhbmQgaSBjYW4uDQo+Pg0KPj4gdGhl
-IHByb2JsZW0gaXMsIHRoYXQgaSBjYW5ub3Qgc2VlbSB0byBkaXNhYmxlIGRpcmVjdCBJL08g
-Zm9yIGRpZmZlcmVudA0KPj4gcHJveG1veCBndWkgYWN0aW9ucywgd2lsbCBkaXNjdXNzIGlu
-IHByb3htb3ggY29tbXVuaXR5IHdoYXQgY2FuIGJlIGRvbmUsDQo+PiBidXQgaSBuZWVkIG1v
-cmUgaW5mb3Mgb24gdGhpcyBiZWhhdmlvdXIuDQo+Pg0KPj4gcm9vdEBwdmUtdGVzdDE6L2J0
-cmZzLWhkZC16c3RkL3Ztcy1yYXcvaW1hZ2VzLzEwNi92bS0xMDYtZGlzay0wIyBkZA0KPj4g
-aWY9ZGlzay5yYXcgb2Y9dGVzdC5kYXQgYnM9MTAyNGsNCj4+IDIwNDgwKzAgRGF0ZW5zw6R0
-emUgZWluDQo+PiAyMDQ4MCswIERhdGVuc8OkdHplIGF1cw0KPj4gMjE0NzQ4MzY0ODAgQnl0
-ZXMgKDIxIEdCLCAyMCBHaUIpIGtvcGllcnQsIDQ2LDQxMSBzLCA0NjMgTUIvcw0KPj4NCj4+
-IHJvb3RAcHZlLXRlc3QxOi9idHJmcy1oZGQtenN0ZC92bXMtcmF3L2ltYWdlcy8xMDYvdm0t
-MTA2LWRpc2stMCMNCj4+IGNvbXBzaXplIHRlc3QuZGF0DQo+PiBQcm9jZXNzZWQgMSBmaWxl
-LCAxNjE4NDQgcmVndWxhciBleHRlbnRzICgxNjE4NDQgcmVmcyksIDAgaW5saW5lLCA4NTQx
-Mg0KPj4gZnJhZ21lbnRzLg0KPj4gVHlwZcKgwqDCoMKgwqDCoCBQZXJjwqDCoMKgwqAgRGlz
-ayBVc2FnZcKgwqAgVW5jb21wcmVzc2VkIFJlZmVyZW5jZWQNCj4+IFRPVEFMwqDCoMKgwqDC
-oMKgwqAgNyXCoMKgwqDCoMKgIDEuNUfCoMKgwqDCoMKgwqDCoMKgwqAgMjBHwqDCoMKgwqDC
-oMKgwqDCoMKgIDIwRw0KPj4gbm9uZcKgwqDCoMKgwqDCoCAxMDAlwqDCoMKgwqDCoCAzMzlN
-wqDCoMKgwqDCoMKgwqDCoCAzMzlNwqDCoMKgwqDCoMKgwqDCoCAzMzlNDQo+PiB6c3RkwqDC
-oMKgwqDCoMKgwqDCoCA2JcKgwqDCoMKgwqAgMS4yR8KgwqDCoMKgwqDCoMKgwqDCoCAxOUfC
-oMKgwqDCoMKgwqDCoMKgwqAgMTlHDQo+Pg0KPj4gcm9vdEBwdmUtdGVzdDE6L2J0cmZzLWhk
-ZC16c3RkL3Ztcy1yYXcvaW1hZ2VzLzEwNi92bS0xMDYtZGlzay0wIyBkZA0KPj4gaWY9ZGlz
-ay5yYXcgb2Y9dGVzdC5kYXQgb2ZsYWc9ZGlyZWN0IGJzPTEwMjRrDQo+PiAyMDQ4MCswIERh
-dGVuc8OkdHplIGVpbg0KPj4gMjA0ODArMCBEYXRlbnPDpHR6ZSBhdXMNCj4+IDIxNDc0ODM2
-NDgwIEJ5dGVzICgyMSBHQiwgMjAgR2lCKSBrb3BpZXJ0LCAxNjEsMzE5IHMsIDEzMyBNQi9z
-DQo+Pg0KPj4gcm9vdEBwdmUtdGVzdDE6L2J0cmZzLWhkZC16c3RkL3Ztcy1yYXcvaW1hZ2Vz
-LzEwNi92bS0xMDYtZGlzay0wIw0KPj4gY29tcHNpemUgdGVzdC5kYXQNCj4+IFByb2Nlc3Nl
-ZCAxIGZpbGUsIDIwNDgwIHJlZ3VsYXIgZXh0ZW50cyAoMjA0ODAgcmVmcyksIDAgaW5saW5l
-LCAxMDM1DQo+PiBmcmFnbWVudHMuDQo+PiBUeXBlwqDCoMKgwqDCoMKgIFBlcmPCoMKgwqDC
-oCBEaXNrIFVzYWdlwqDCoCBVbmNvbXByZXNzZWQgUmVmZXJlbmNlZA0KPj4gVE9UQUzCoMKg
-wqDCoMKgIDEwMCXCoMKgwqDCoMKgwqAgMjBHwqDCoMKgwqDCoMKgwqDCoMKgIDIwR8KgwqDC
-oMKgwqDCoMKgwqDCoCAyMEcNCj4+IG5vbmXCoMKgwqDCoMKgwqAgMTAwJcKgwqDCoMKgwqDC
-oCAyMEfCoMKgwqDCoMKgwqDCoMKgwqAgMjBHwqDCoMKgwqDCoMKgwqDCoMKgIDIwRw0KPj4N
-Cj4+IGZ1cnRoZXJtb3JlLMKgIHdpdGggcWVtdS9wcm94bW94IHZpcnR1YWwgZGlzayBsaXZl
-IG1pZ3JhdGlvbiwgaSdtIGdldHRpbmcNCj4+IHJlcHJvZHVjaWJsZSBjaGVja3N1bSBlcnJv
-ciB3aXRoIGJ0cmZzL2NvbXByZXNzLWZvcmNlPXpzdGQgd2hlbiBsaXZlDQo+PiBtaWdyYXRp
-bmcgdmlydHVhbCBkaXNrIHdpdGhpbiBzYW1lIGhhcmRkaXNrICwgd2hlcmVhcyBjb3B5aW5n
-IHRoZSBzYW1lDQo+PiBkaXNrL2ZpbGUgd2l0aCBkZCAoY2FjaGVkIGFuZCBkaXJlY3QpIGRv
-ZXMgbm90IHRyaWdnZXIgdGhhdC4NCj4+DQo+PiBoYXBwZW5zIG9uIGhkZCBhbmQgYWxzbyBv
-biBoZGQsIHNvIHRoaXMgc2VlbXMgbm90IHRvIGJlIGRpc2sgcmVsYXRlZA0KPj4NCj4+ICMg
-dW5hbWUgLWENCj4+IExpbnV4IHB2ZS10ZXN0MSA2LjUuMTMtMS1wdmUgIzEgU01QIFBSRUVN
-UFRfRFlOQU1JQyBQTVggNi41LjEzLTENCj4+ICgyMDI0LTAyLTA1VDEzOjUwWikgeDg2XzY0
-IEdOVS9MaW51eA0KPj4NCj4+IHJlZ2FyZHMNCj4+IFJvbGFuZA0KPj4NCj4+DQo+PiBbRnIg
-TcOkciAxNSAyMDowNzoyMyAyMDI0XSBCVFJGUyB3YXJuaW5nIChkZXZpY2Ugc2RhMSk6IGNz
-dW0gZmFpbGVkIHJvb3QNCj4+IDI2MCBpbm8gMjU3IG9mZiA2NjU1MzMyMzUyIGNzdW0gMHg1
-NTE3MTE1YSBleHBlY3RlZCBjc3VtIDB4NmIyYWYzMWUNCj4+IG1pcnJvciAxDQo+PiBbRnIg
-TcOkciAxNSAyMDowNzoyMyAyMDI0XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYTEpOiBiZGV2
-IC9kZXYvc2RhMQ0KPj4gZXJyczogd3IgMCwgcmQgMCwgZmx1c2ggMCwgY29ycnVwdCAxLCBn
-ZW4gMA0KPj4gW0ZyIE3DpHIgMTUgMjA6MDc6MjMgMjAyNF0gQlRSRlMgd2FybmluZyAoZGV2
-aWNlIHNkYTEpOiBkaXJlY3QgSU8gZmFpbGVkDQo+PiBpbm8gMjU3IG9wIDB4MCBvZmZzZXQg
-MHgxOGNiMDUwMDAgbGVuIDQwOTYgZXJyIG5vIDEwDQo+PiBbRnIgTcOkciAxNSAyMDowODoy
-NCAyMDI0XSBCVFJGUyB3YXJuaW5nIChkZXZpY2Ugc2RhMSk6IGNzdW0gZmFpbGVkIHJvb3QN
-Cj4+IDI2MCBpbm8gMjU3IG9mZiA2NjU1MzMyMzUyIGNzdW0gMHhkMWQxYzg5MiBleHBlY3Rl
-ZCBjc3VtIDB4MGMyNGI1Y2QNCj4+IG1pcnJvciAxDQo+PiBbRnIgTcOkciAxNSAyMDowODoy
-NCAyMDI0XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYTEpOiBiZGV2IC9kZXYvc2RhMQ0KPj4g
-ZXJyczogd3IgMCwgcmQgMCwgZmx1c2ggMCwgY29ycnVwdCAyLCBnZW4gMA0KPj4gW0ZyIE3D
-pHIgMTUgMjA6MDg6MjQgMjAyNF0gQlRSRlMgd2FybmluZyAoZGV2aWNlIHNkYTEpOiBkaXJl
-Y3QgSU8gZmFpbGVkDQo+PiBpbm8gMjU3IG9wIDB4MCBvZmZzZXQgMHgxOGNiMDUwMDAgbGVu
-IDQwOTYgZXJyIG5vIDEwDQo+PiBbRnIgTcOkciAxNSAyMDowOToyNSAyMDI0XSBCVFJGUyB3
-YXJuaW5nIChkZXZpY2Ugc2RhMSk6IGNzdW0gZmFpbGVkIHJvb3QNCj4+IDI2MCBpbm8gMjU3
-IG9mZiA2NjU1MzMyMzUyIGNzdW0gMHg4MDkwOTZjMiBleHBlY3RlZCBjc3VtIDB4NTZiNThk
-YzYNCj4+IG1pcnJvciAxDQo+PiBbRnIgTcOkciAxNSAyMDowOToyNSAyMDI0XSBCVFJGUyBl
-cnJvciAoZGV2aWNlIHNkYTEpOiBiZGV2IC9kZXYvc2RhMQ0KPj4gZXJyczogd3IgMCwgcmQg
-MCwgZmx1c2ggMCwgY29ycnVwdCAzLCBnZW4gMA0KPj4gW0ZyIE3DpHIgMTUgMjA6MDk6MjUg
-MjAyNF0gQlRSRlMgd2FybmluZyAoZGV2aWNlIHNkYTEpOiBkaXJlY3QgSU8gZmFpbGVkDQo+
-PiBpbm8gMjU3IG9wIDB4MCBvZmZzZXQgMHgxOGNiMDUwMDAgbGVuIDQwOTYgZXJyIG5vIDEw
-DQo+PiBbRnIgTcOkciAxNSAyMDoyOToxMCAyMDI0XSBCVFJGUyB3YXJuaW5nIChkZXZpY2Ug
-c2RhMSk6IGNzdW0gZmFpbGVkIHJvb3QNCj4+IDI2MCBpbm8gMjU3IG9mZiA2NjU1MzMyMzUy
-IGNzdW0gMHhjOGE2OTc3ZCBleHBlY3RlZCBjc3VtIDB4ZGZjMWY2NzgNCj4+IG1pcnJvciAx
-DQo+PiBbRnIgTcOkciAxNSAyMDoyOToxMCAyMDI0XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNk
-YTEpOiBiZGV2IC9kZXYvc2RhMQ0KPj4gZXJyczogd3IgMCwgcmQgMCwgZmx1c2ggMCwgY29y
-cnVwdCA0LCBnZW4gMA0KPj4gW0ZyIE3DpHIgMTUgMjA6Mjk6MTAgMjAyNF0gQlRSRlMgd2Fy
-bmluZyAoZGV2aWNlIHNkYTEpOiBkaXJlY3QgSU8gZmFpbGVkDQo+PiBpbm8gMjU3IG9wIDB4
-MCBvZmZzZXQgMHgxOGNiMDUwMDAgbGVuIDQwOTYgZXJyIG5vIDEwDQo+Pg0KPj4gW0ZyIE3D
-pHIgMTUgMjA6MzM6NDEgMjAyNF0gQlRSRlMgd2FybmluZyAoZGV2aWNlIHNkYzEpOiBjc3Vt
-IGZhaWxlZCByb290DQo+PiAyNjAgaW5vIDI1NyBvZmYgNjY1NTMzMjM1MiBjc3VtIDB4MjBm
-ZjA4ODcgZXhwZWN0ZWQgY3N1bSAweDA4ZWQwYmNlDQo+PiBtaXJyb3IgMQ0KPj4gW0ZyIE3D
-pHIgMTUgMjA6MzM6NDEgMjAyNF0gQlRSRlMgZXJyb3IgKGRldmljZSBzZGMxKTogYmRldiAv
-ZGV2L3NkYzENCj4+IGVycnM6IHdyIDAsIHJkIDAsIGZsdXNoIDAsIGNvcnJ1cHQgMSwgZ2Vu
-IDANCj4+IFtGciBNw6RyIDE1IDIwOjMzOjQxIDIwMjRdIEJUUkZTIHdhcm5pbmcgKGRldmlj
-ZSBzZGMxKTogZGlyZWN0IElPIGZhaWxlZA0KPj4gaW5vIDI1NyBvcCAweDAgb2Zmc2V0IDB4
-MThjYjAyMDAwIGxlbiAxNjM4NCBlcnIgbm8gMTANCj4+IFtGciBNw6RyIDE1IDIwOjM1OjE4
-IDIwMjRdIEJUUkZTIHdhcm5pbmcgKGRldmljZSBzZGMxKTogY3N1bSBmYWlsZWQgcm9vdA0K
-Pj4gMjU2IGlubyAyOTAgb2ZmIDY2NTUzMzIzNTIgY3N1bSAweGIwMjM4NjNhIGV4cGVjdGVk
-IGNzdW0gMHg0ZjhlMzU1ZA0KPj4gbWlycm9yIDENCj4+IFtGciBNw6RyIDE1IDIwOjM1OjE4
-IDIwMjRdIEJUUkZTIGVycm9yIChkZXZpY2Ugc2RjMSk6IGJkZXYgL2Rldi9zZGMxDQo+PiBl
-cnJzOiB3ciAwLCByZCAwLCBmbHVzaCAwLCBjb3JydXB0IDIsIGdlbiAwDQo+PiBbRnIgTcOk
-ciAxNSAyMDozNToxOCAyMDI0XSBCVFJGUyB3YXJuaW5nIChkZXZpY2Ugc2RjMSk6IGRpcmVj
-dCBJTyBmYWlsZWQNCj4+IGlubyAyOTAgb3AgMHgwIG9mZnNldCAweDE4Y2IwNTAwMCBsZW4g
-NDA5NiBlcnIgbm8gMTANCj4+DQo+PiBjcmVhdGUgZnVsbCBjbG9uZSBvZiBkcml2ZSBzY3Np
-MA0KPj4gKGJ0cmZzLXNzZC16c3RkLXFjb3cyOjEwNi92bS0xMDYtZGlzay0wLnJhdykNCj4+
-IGRyaXZlIG1pcnJvciBpcyBzdGFydGluZyBmb3IgZHJpdmUtc2NzaTANCj4+IGRyaXZlLXNj
-c2kwOiB0cmFuc2ZlcnJlZCAzNC4yIE1pQiBvZiAyMC4wIEdpQiAoMC4xNyUpIGluIDBzDQo+
-PiBkcml2ZS1zY3NpMDogdHJhbnNmZXJyZWQgMzAxLjYgTWlCIG9mIDIwLjAgR2lCICgxLjQ3
-JSkgaW4gMXMNCj4+IGRyaXZlLXNjc2kwOiB0cmFuc2ZlcnJlZCA0ODkuMSBNaUIgb2YgMjAu
-MCBHaUIgKDIuMzklKSBpbiAycw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVycmVkIDY3OS45
-IE1pQiBvZiAyMC4wIEdpQiAoMy4zMiUpIGluIDNzDQo+PiBkcml2ZS1zY3NpMDogdHJhbnNm
-ZXJyZWQgMS4xIEdpQiBvZiAyMC4wIEdpQiAoNS43MCUpIGluIDRzDQo+PiBkcml2ZS1zY3Np
-MDogdHJhbnNmZXJyZWQgMS40IEdpQiBvZiAyMC4wIEdpQiAoNi44OSUpIGluIDVzDQo+PiBk
-cml2ZS1zY3NpMDogdHJhbnNmZXJyZWQgMS43IEdpQiBvZiAyMC4wIEdpQiAoOC41NSUpIGlu
-IDZzDQo+PiBkcml2ZS1zY3NpMDogdHJhbnNmZXJyZWQgMS45IEdpQiBvZiAyMC4wIEdpQiAo
-OS41MyUpIGluIDdzDQo+PiBkcml2ZS1zY3NpMDogdHJhbnNmZXJyZWQgMi4yIEdpQiBvZiAy
-MC4wIEdpQiAoMTAuOTclKSBpbiA4cw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVycmVkIDIu
-NCBHaUIgb2YgMjAuMCBHaUIgKDExLjg0JSkgaW4gOXMNCj4+IGRyaXZlLXNjc2kwOiB0cmFu
-c2ZlcnJlZCAyLjggR2lCIG9mIDIwLjAgR2lCICgxMy44OSUpIGluIDEwcw0KPj4gZHJpdmUt
-c2NzaTA6IHRyYW5zZmVycmVkIDIuOSBHaUIgb2YgMjAuMCBHaUIgKDE0Ljc0JSkgaW4gMTFz
-DQo+PiBkcml2ZS1zY3NpMDogdHJhbnNmZXJyZWQgNi4yIEdpQiBvZiAyMC4wIEdpQiAoMzEu
-MTQlKSBpbiAxMnMNCj4+IGRyaXZlLXNjc2kwOiB0cmFuc2ZlcnJlZCA4LjIgR2lCIG9mIDIw
-LjAgR2lCICg0MS4xNyUpIGluIDEzcw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVycmVkIDEw
-LjMgR2lCIG9mIDIwLjAgR2lCICg1MS4yNyUpIGluIDE0cw0KPj4gZHJpdmUtc2NzaTA6IHRy
-YW5zZmVycmVkIDEwLjUgR2lCIG9mIDIwLjAgR2lCICg1Mi43NSUpIGluIDE1cw0KPj4gZHJp
-dmUtc2NzaTA6IHRyYW5zZmVycmVkIDE5LjIgR2lCIG9mIDIwLjAgR2lCICg5NS44NiUpIGlu
-IDE2cw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVycmVkIDE5LjMgR2lCIG9mIDIwLjAgR2lC
-ICg5Ni42NiUpIGluIDE3cw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVycmVkIDE5LjUgR2lC
-IG9mIDIwLjAgR2lCICg5Ny40NiUpIGluIDE4cw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVy
-cmVkIDE5LjcgR2lCIG9mIDIwLjAgR2lCICg5OC4yNyUpIGluIDE5cw0KPj4gZHJpdmUtc2Nz
-aTA6IHRyYW5zZmVycmVkIDE5LjggR2lCIG9mIDIwLjAgR2lCICg5OS4wOCUpIGluIDIwcw0K
-Pj4gZHJpdmUtc2NzaTA6IENhbmNlbGxpbmcgYmxvY2sgam9iDQo+PiBkcml2ZS1zY3NpMDog
-RG9uZS4NCj4+IFRBU0sgRVJST1I6IHN0b3JhZ2UgbWlncmF0aW9uIGZhaWxlZDogYmxvY2sg
-am9iIChtaXJyb3IpIGVycm9yOg0KPj4gZHJpdmUtc2NzaTA6ICdtaXJyb3InIGhhcyBiZWVu
-IGNhbmNlbGxlZA0KPj4NCj4+DQo+DQo=
 
---------------Gj3ffd389kJuXXlzFM8hgiT0--
 
---------------KIV6GVjtzQT3GfspmGMpCzTL
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+=E5=9C=A8 2024/3/19 14:46, HAN Yuwei =E5=86=99=E9=81=93:
+>
+> =E5=9C=A8 2024/3/18 17:19, Qu Wenruo =E5=86=99=E9=81=93:
+>>
+>>
+>> =E5=9C=A8 2024/3/16 06:09, Roland =E5=86=99=E9=81=93:
+>>> Hello,
+>>>
+>>> can someone explain why compression is skipped when writing with
+>>> direct-i/o ?
+>>
+>> Because compression only happen with buffered write.
+>>
+>> For direct IO we either go NOCOW or regular COW, no compression support=
+.
+>>
+> Should we mention this (no compression in O_DIRECT) in doc? I haven't
+> impression that doc said this.
 
------BEGIN PGP SIGNATURE-----
+I'd say yes, since there is already some confusion, feel free to submit
+a patch for the doc.
 
-iHUEARYKAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCZfkRogAKCRBLkKfpYfpB
-U5M6AQC5+Q4k/WB7EZBmCRUZri6+OaYHow0ANFI/E5tAAaMhiAD8D20HhIer1m9P
-4MmiqQrdcz+CUhX6NqEUfHXV9OCxVwg=
-=7yIE
------END PGP SIGNATURE-----
+Thanks,
+Qu
 
---------------KIV6GVjtzQT3GfspmGMpCzTL--
+>> The current compression code is always using page cache, just check the
+>> different algo implementations of btrfs_compress_pages(), which all
+>> fetch their data from page cache.
+>>
+>> E.g. in zstd_compress_pages(), we go find_get_page() to grab the page
+>> from page cache as compression source.
+>>
+>> This is incompatible with the direct IO scheme, which is designed to
+>> avoid page cache completely (unless fall back to buffered write).
+>>
+>> Maybe it's possible to make all those *_compress_pages() to support
+>> direct IO, but that doesn't looks sane to me.
+>>
+>> As the idea of direct IO is to fully avoid page cache, and allow the
+>> user space program to take full control of its own cache, doing
+>> compression would introduce extra latency and make the performance
+>> characteristic much complex to user space.
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>> is this to be expected ?
+>>>
+>>> i wondered why i got uncompressed raw disk images in proxmox after dis=
+k
+>>> migration to btrfs fs with compress-force=3Dzstd, so i tried with dd i=
+f i
+>>> can reproduce - and i can.
+>>>
+>>> the problem is, that i cannot seem to disable direct I/O for different
+>>> proxmox gui actions, will discuss in proxmox community what can be don=
+e,
+>>> but i need more infos on this behaviour.
+>>>
+>>> root@pve-test1:/btrfs-hdd-zstd/vms-raw/images/106/vm-106-disk-0# dd
+>>> if=3Ddisk.raw of=3Dtest.dat bs=3D1024k
+>>> 20480+0 Datens=C3=A4tze ein
+>>> 20480+0 Datens=C3=A4tze aus
+>>> 21474836480 Bytes (21 GB, 20 GiB) kopiert, 46,411 s, 463 MB/s
+>>>
+>>> root@pve-test1:/btrfs-hdd-zstd/vms-raw/images/106/vm-106-disk-0#
+>>> compsize test.dat
+>>> Processed 1 file, 161844 regular extents (161844 refs), 0 inline, 8541=
+2
+>>> fragments.
+>>> Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Perc=C2=A0=C2=A0=C2=A0=C2=A0 =
+Disk Usage=C2=A0=C2=A0 Uncompressed Referenced
+>>> TOTAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 7%=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 1.5G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20=
+G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20G
+>>> none=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 339M=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 339M=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 339M
+>>> zstd=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6%=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 1.2G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ 19G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 19G
+>>>
+>>> root@pve-test1:/btrfs-hdd-zstd/vms-raw/images/106/vm-106-disk-0# dd
+>>> if=3Ddisk.raw of=3Dtest.dat oflag=3Ddirect bs=3D1024k
+>>> 20480+0 Datens=C3=A4tze ein
+>>> 20480+0 Datens=C3=A4tze aus
+>>> 21474836480 Bytes (21 GB, 20 GiB) kopiert, 161,319 s, 133 MB/s
+>>>
+>>> root@pve-test1:/btrfs-hdd-zstd/vms-raw/images/106/vm-106-disk-0#
+>>> compsize test.dat
+>>> Processed 1 file, 20480 regular extents (20480 refs), 0 inline, 1035
+>>> fragments.
+>>> Type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Perc=C2=A0=C2=A0=C2=A0=C2=A0 =
+Disk Usage=C2=A0=C2=A0 Uncompressed Referenced
+>>> TOTAL=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 20G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20G=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20G
+>>> none=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 100%=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 20G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20G=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20G
+>>>
+>>> furthermore,=C2=A0 with qemu/proxmox virtual disk live migration, i'm =
+getting
+>>> reproducible checksum error with btrfs/compress-force=3Dzstd when live
+>>> migrating virtual disk within same harddisk , whereas copying the same
+>>> disk/file with dd (cached and direct) does not trigger that.
+>>>
+>>> happens on hdd and also on hdd, so this seems not to be disk related
+>>>
+>>> # uname -a
+>>> Linux pve-test1 6.5.13-1-pve #1 SMP PREEMPT_DYNAMIC PMX 6.5.13-1
+>>> (2024-02-05T13:50Z) x86_64 GNU/Linux
+>>>
+>>> regards
+>>> Roland
+>>>
+>>>
+>>> [Fr M=C3=A4r 15 20:07:23 2024] BTRFS warning (device sda1): csum faile=
+d root
+>>> 260 ino 257 off 6655332352 csum 0x5517115a expected csum 0x6b2af31e
+>>> mirror 1
+>>> [Fr M=C3=A4r 15 20:07:23 2024] BTRFS error (device sda1): bdev /dev/sd=
+a1
+>>> errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
+>>> [Fr M=C3=A4r 15 20:07:23 2024] BTRFS warning (device sda1): direct IO =
+failed
+>>> ino 257 op 0x0 offset 0x18cb05000 len 4096 err no 10
+>>> [Fr M=C3=A4r 15 20:08:24 2024] BTRFS warning (device sda1): csum faile=
+d root
+>>> 260 ino 257 off 6655332352 csum 0xd1d1c892 expected csum 0x0c24b5cd
+>>> mirror 1
+>>> [Fr M=C3=A4r 15 20:08:24 2024] BTRFS error (device sda1): bdev /dev/sd=
+a1
+>>> errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
+>>> [Fr M=C3=A4r 15 20:08:24 2024] BTRFS warning (device sda1): direct IO =
+failed
+>>> ino 257 op 0x0 offset 0x18cb05000 len 4096 err no 10
+>>> [Fr M=C3=A4r 15 20:09:25 2024] BTRFS warning (device sda1): csum faile=
+d root
+>>> 260 ino 257 off 6655332352 csum 0x809096c2 expected csum 0x56b58dc6
+>>> mirror 1
+>>> [Fr M=C3=A4r 15 20:09:25 2024] BTRFS error (device sda1): bdev /dev/sd=
+a1
+>>> errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
+>>> [Fr M=C3=A4r 15 20:09:25 2024] BTRFS warning (device sda1): direct IO =
+failed
+>>> ino 257 op 0x0 offset 0x18cb05000 len 4096 err no 10
+>>> [Fr M=C3=A4r 15 20:29:10 2024] BTRFS warning (device sda1): csum faile=
+d root
+>>> 260 ino 257 off 6655332352 csum 0xc8a6977d expected csum 0xdfc1f678
+>>> mirror 1
+>>> [Fr M=C3=A4r 15 20:29:10 2024] BTRFS error (device sda1): bdev /dev/sd=
+a1
+>>> errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
+>>> [Fr M=C3=A4r 15 20:29:10 2024] BTRFS warning (device sda1): direct IO =
+failed
+>>> ino 257 op 0x0 offset 0x18cb05000 len 4096 err no 10
+>>>
+>>> [Fr M=C3=A4r 15 20:33:41 2024] BTRFS warning (device sdc1): csum faile=
+d root
+>>> 260 ino 257 off 6655332352 csum 0x20ff0887 expected csum 0x08ed0bce
+>>> mirror 1
+>>> [Fr M=C3=A4r 15 20:33:41 2024] BTRFS error (device sdc1): bdev /dev/sd=
+c1
+>>> errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
+>>> [Fr M=C3=A4r 15 20:33:41 2024] BTRFS warning (device sdc1): direct IO =
+failed
+>>> ino 257 op 0x0 offset 0x18cb02000 len 16384 err no 10
+>>> [Fr M=C3=A4r 15 20:35:18 2024] BTRFS warning (device sdc1): csum faile=
+d root
+>>> 256 ino 290 off 6655332352 csum 0xb023863a expected csum 0x4f8e355d
+>>> mirror 1
+>>> [Fr M=C3=A4r 15 20:35:18 2024] BTRFS error (device sdc1): bdev /dev/sd=
+c1
+>>> errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
+>>> [Fr M=C3=A4r 15 20:35:18 2024] BTRFS warning (device sdc1): direct IO =
+failed
+>>> ino 290 op 0x0 offset 0x18cb05000 len 4096 err no 10
+>>>
+>>> create full clone of drive scsi0
+>>> (btrfs-ssd-zstd-qcow2:106/vm-106-disk-0.raw)
+>>> drive mirror is starting for drive-scsi0
+>>> drive-scsi0: transferred 34.2 MiB of 20.0 GiB (0.17%) in 0s
+>>> drive-scsi0: transferred 301.6 MiB of 20.0 GiB (1.47%) in 1s
+>>> drive-scsi0: transferred 489.1 MiB of 20.0 GiB (2.39%) in 2s
+>>> drive-scsi0: transferred 679.9 MiB of 20.0 GiB (3.32%) in 3s
+>>> drive-scsi0: transferred 1.1 GiB of 20.0 GiB (5.70%) in 4s
+>>> drive-scsi0: transferred 1.4 GiB of 20.0 GiB (6.89%) in 5s
+>>> drive-scsi0: transferred 1.7 GiB of 20.0 GiB (8.55%) in 6s
+>>> drive-scsi0: transferred 1.9 GiB of 20.0 GiB (9.53%) in 7s
+>>> drive-scsi0: transferred 2.2 GiB of 20.0 GiB (10.97%) in 8s
+>>> drive-scsi0: transferred 2.4 GiB of 20.0 GiB (11.84%) in 9s
+>>> drive-scsi0: transferred 2.8 GiB of 20.0 GiB (13.89%) in 10s
+>>> drive-scsi0: transferred 2.9 GiB of 20.0 GiB (14.74%) in 11s
+>>> drive-scsi0: transferred 6.2 GiB of 20.0 GiB (31.14%) in 12s
+>>> drive-scsi0: transferred 8.2 GiB of 20.0 GiB (41.17%) in 13s
+>>> drive-scsi0: transferred 10.3 GiB of 20.0 GiB (51.27%) in 14s
+>>> drive-scsi0: transferred 10.5 GiB of 20.0 GiB (52.75%) in 15s
+>>> drive-scsi0: transferred 19.2 GiB of 20.0 GiB (95.86%) in 16s
+>>> drive-scsi0: transferred 19.3 GiB of 20.0 GiB (96.66%) in 17s
+>>> drive-scsi0: transferred 19.5 GiB of 20.0 GiB (97.46%) in 18s
+>>> drive-scsi0: transferred 19.7 GiB of 20.0 GiB (98.27%) in 19s
+>>> drive-scsi0: transferred 19.8 GiB of 20.0 GiB (99.08%) in 20s
+>>> drive-scsi0: Cancelling block job
+>>> drive-scsi0: Done.
+>>> TASK ERROR: storage migration failed: block job (mirror) error:
+>>> drive-scsi0: 'mirror' has been cancelled
+>>>
+>>>
+>>
 
