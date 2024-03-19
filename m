@@ -1,97 +1,97 @@
-Return-Path: <linux-btrfs+bounces-3402-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3403-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67F77880008
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 15:57:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E314D880009
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 15:57:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C5C71C21E4A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 14:57:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F5E0B222B0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 14:57:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8FB1651B6;
-	Tue, 19 Mar 2024 14:57:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A77651B4;
+	Tue, 19 Mar 2024 14:57:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VQqYXj2h";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="q5KvSb6P"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="TzVhds26";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="S/926Gss"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5CD657B5
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 14:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3F454FA0
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 14:57:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710860223; cv=fail; b=skL2Ch1Ay5b092Mevj9WE0c44XIXZ09HzbPBYF8Om8DszpJX9kDszoPictAhSGG5ENye+/Z/k4g55wQGRK8ojKm0Dz9xzl1n/O4QsFP5LxiT8yWhBxON4oKr5L7ZTcER/jJpWlucBOwmkATPUQirYUv1WmK/XaGK+8E5V3vh6Bo=
+	t=1710860230; cv=fail; b=YXSKxv8KuN3qAhn0swCgPxLv3kxf9lfwN+XDxMzuS0sL8bEBDlLZC4P8plD+rBa8ZxqcjvoIeQlWcQgimEnFH+UhRj/p4s1QR1ik08Bwg5eiv/S2gJG0UnXBjpqYXrUnaWBfsh1e1cFKZLj5qxDgvhXZ6+pYSMRMFKvlneAHCZ8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710860223; c=relaxed/simple;
-	bh=TWXmomw0F1SQM/vBUMG2u7vYz0wptc6EE6D1AblcIOo=;
+	s=arc-20240116; t=1710860230; c=relaxed/simple;
+	bh=wZwnBX4UgfUrMFynw5IukvUWkBxgL10B8p9SEuFZktY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LlbfGHwJyPiUnVsyzAvnFX4z8qkdftnOBiv5iJqiG2f898afXQTLBeFW0gi4oajIxSUUWFn8GAxynlZOkjVUSjiQrt3ck6Lm4IhwX4H/n73zYtjhLnwuX4tDqKyWr4Q1wJeUPl/I2zacAzpGkG6xN9t/9e7FUkU27wKyl6+oMo4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VQqYXj2h; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=q5KvSb6P; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=j12P9mTB51dKfPlVWSjfqP4amhiteU5R+/3nnaIhJC8IPgvTiNahE5+JfsOvwziHXDpeynUetmO+1/I8Gyg59ktcZTpdYAqBmJn9RDuvQo1ozid9SB/iieHYOja8ecoe9rrZxKZa7ITdx/6ZSLXPQV3ZWCx4gzPBfE8m6+WYt+g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=TzVhds26; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=S/926Gss; arc=fail smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42JAHns1005068
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 14:57:01 GMT
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42JAHU0J021005
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 14:57:08 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2023-11-20; bh=Xdbm0TVvuw7hZ9oVffHRXuHYrdRNme9J2Czw5BAfO/8=;
- b=VQqYXj2h5NcazWZYUJ0+Hx1+MT5ON0xjx+hhpwmcw9kqef1R3lqLU6aWtkHYK/IjhUav
- 68fYXAIpym47x8kRm2+pcM6KmjuXIlGim13LhPnurfeDzopzGOmEL4+V/cgHuWSpbri3
- SDjyrRf1NBkp9bhlXrKsFP03rHix9ONmi/GRHB7pOVK7+MofyesLKmgnlLGPfa2CY3h7
- 8/yWM2mdmTvIW5J9dfW3F5FuotrDkZ3FTEPpLGMIoNcViVxRHGxzJI3REHN8LVUvvEJw
- kx15teeHfM4PMt4xLjpcSohwBxaj5ZUPdMEvbI6QH/JtoKgBWBo98tMtdwFiGxJ22Pyb 8w== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ww3aadneu-1
+ s=corp-2023-11-20; bh=7XnEnGDHTSXFSBl0yBiKecok7eaf/76QZfkSnZQXXxE=;
+ b=TzVhds26+DzK1KnMJ+oezVyxXy1oKel+jT3R4hOOhvTgxLf6rod1ruJXNWRnGoZ9MS/q
+ 8AeuHl9b1UJHlEt7VeYafF8FcPgdPqG8bCcGVo5r1FDToWVTop3OlCKP5XzMann/1TpC
+ /qu3iDlvH5U/N+aIodokwgCxKIYEaylis7aS5NfUsO+m3uvBrDzojYYaAK6SWmR0LV8h
+ +jjAwwqdrTe21RF7PpNfZ0gLX+QDWsn+NVBCui2c8j9SiiR8OvhWnrVcDoabICGivNLc
+ S1bvKuhKnYN/MRKeEFsePRCR4yvLruURlcmid+/ZZYyyeAR4EfnFfJC24VFS4eqn19hj eQ== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ww2bbns1y-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 14:57:00 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42JEo5KE007490
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 14:56:59 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ww1v6cmtn-1
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 14:57:07 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42JEDZ4E024144
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 14:57:06 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ww1v6mrau-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 14:56:59 +0000
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 14:57:06 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bXAn9ztWAbxf+yNpyVgAoRY5AQSKuZdPuTg8Pgqa1qRsKRdg6ItnkJ1+VXYKT0vopgpcKvekXi2/9sGYUapRoynkUceOMBaPKoj9lsKkd1hDBih0TV1SR+aNtDDb9fNFoRIu/+dLt30N6ERmHizn9in252o9qo2Folc4CAsH9eEHhgsH/eT6t4OkUtdT0vxflo0ub2mEsd0i0Dj04yFxSkhYotyykbbkjwUrmde0rawjtA0RGSVrSbK6czPB8N5tHw3Ndvvbw0k3GH+UncBvwPO5SDT3uNX5BTDqw8LfTPfqM88hWbJ246I3ftgn2zBOYxnsBwLpD0XZfGsKW/szFg==
+ b=c/isTdlyIQrtwRZCj/23vCowlevbA8dUAK70EKPXZdBNC1qei3DAcOdqaqX+768RfVr3VNEBF71Zi/RePb73uO+geE+z4T+AZXQqO3xd2dxGSCclP8WoQcj+QCXi8JPXyVbt1ZMjEqyrlgtHsjIZFK7Fg7YcY2N4aeC8MNZkPRiCzMeubzjlHprhdXpNib5Y2yoRWMgnBg2K8PyHX2efEz8cCChWqoTiJfvBJ3Oo504nIAOvLjoE0m33j594f2uylR+R7t4b79xsAETFLnCtADQf5/a1ZDIQ/KmwEG0FXa+vLyL2ytiIt63djVFBwK093KVkol/aScXVv05yRayYSQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Xdbm0TVvuw7hZ9oVffHRXuHYrdRNme9J2Czw5BAfO/8=;
- b=IWjI8i6X+vQ0zJls5QuIM7zSNL6LhA2RgaHucs6cJ6zepd96eCMYtNHMdT3klBxW6ZfIF/xRW2QDiA93kEEDYKeNRxCr2NaHurOgWiToDBMjJtsvsunzBrJ6I5XSdB6zjjep1UxicJDDE5Qa2xL0NK6qkVA2cLlSJdCCNFvV3h0uw8x0AJLApTqliNrMu+7js1N27LRedM2piBD7dAVyK7/j0M34xxnF32gCraVhc8tgnkvjnPSJmLAAS9CSwBsJ1PL9yRqAJBghNepW6ImMdGVNrQJy0ckz2SgqVonKNScdueV3uEuOUzWtiTsQNx/h38z2nJaFv8f1e/QuvdAA5w==
+ bh=7XnEnGDHTSXFSBl0yBiKecok7eaf/76QZfkSnZQXXxE=;
+ b=Y1YnkzOiau8yVoq4KJ329QE//zr8VyW2VP5qMDBfvB0n8EkzzpJstMTfAB6L+2zkufN0oSGPyiSlomtK95m0uqsvq1GOY1+KdEwnIaiShkhFwHcWZ5xpSy3sFpwLtGXMNVgEYEIuRXTAXj6KKLYQAIwyamj9LmtnaFd1jBUbhkJ6d1bSNGRQcbdG78opBn8EL67+30fM7Owa7j595kDFvur6p5ckMnjHVcwRov1TsqOSBXwzGG021SJ/XhgV9mSk5F29J9IKw2kW4DLajMvxZtU7T4UYgxSvWFau8oLfCs8qPI0WFEGAESNGFLfujocpkVZUli1hz/WyYH+hrds2eg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xdbm0TVvuw7hZ9oVffHRXuHYrdRNme9J2Czw5BAfO/8=;
- b=q5KvSb6P/AV0MLpAjtzqC5Y1Z4YxQlgbVw7D0pAnGIBlRNY8uXPIvJwIaxO9jenDPl2erxlOygFYurBwn/Rjg2FVnoOSQ/d4SJBvC4+P1K64k90guuU59bm1/zfcfmBFoirC8uTqqaPrD5HvT8LXCH7bk9nd84UyOOwI3na+kkE=
+ bh=7XnEnGDHTSXFSBl0yBiKecok7eaf/76QZfkSnZQXXxE=;
+ b=S/926GssKP01VJvJEOXYk/3C1V9SdFhG1C/usqZvbCBiQ+F94eeGtkssuP/oK5IG2YPYiTGl3usbzdndjC//VcOSE4osEmJFaMgpAwCtIIFKkqVAvOQj9n3rYBCcrAn+LtEnTflzIJzdomRFBq/uaNifhlULZknYGpHdgF2NOiw=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by CH3PR10MB7460.namprd10.prod.outlook.com (2603:10b6:610:15e::20) with
+ by PH8PR10MB6479.namprd10.prod.outlook.com (2603:10b6:510:22d::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28; Tue, 19 Mar
- 2024 14:56:57 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.34; Tue, 19 Mar
+ 2024 14:57:04 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::814:3d5c:443b:17b%7]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 14:56:57 +0000
+ 14:57:04 +0000
 From: Anand Jain <anand.jain@oracle.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Anand Jain <anand.jain@oracle.com>
-Subject: [PATCH 07/29] btrfs: btrfs_find_orphan_roots rename ret to ret2 and err to ret
-Date: Tue, 19 Mar 2024 20:25:15 +0530
-Message-ID: <a5b8d4ef4c88f3c6bb87c81e58a75e91af1053c8.1710857863.git.anand.jain@oracle.com>
+Subject: [PATCH 08/29] btrfs: btrfs_ioctl_snap_destroy rename err to ret
+Date: Tue, 19 Mar 2024 20:25:16 +0530
+Message-ID: <5c15288e61a39d24273b402721be934e2e400368.1710857863.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1710857863.git.anand.jain@oracle.com>
 References: <cover.1710857863.git.anand.jain@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MA0PR01CA0103.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:af::17) To PH0PR10MB5706.namprd10.prod.outlook.com
+X-ClientProxiedBy: MA0PR01CA0104.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:af::10) To PH0PR10MB5706.namprd10.prod.outlook.com
  (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -100,161 +100,271 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CH3PR10MB7460:EE_
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|PH8PR10MB6479:EE_
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	5dwGBcdE3muXzG0Zg5w1/CGi7bqB+Zp0pGeB+CM86bNBNNVEIdDAPXj7tm55A66hi6R+JC3pVhHeQ8Ig0//UMgekhUd1hbmf4CQbAtXy+a8IJ+c96LEGfLCOASQGywC5DOujOFSDJXKZCU5n9ZBNx4lKJTcM0QtZv7TRWBGA4/3KDaxH7UzzWdqAhaleOct05FNteEtlaYXGHQOezIhcNf7rLM9cxHq/B91MNDDsTYJXo3IsSpg+mRyWceYfMVfbYVA+VlKbyRVjLjPaTJW8XWFLKFZrxvlYXi31OgTPvHcutUE8U1h5gQMqith5e8ED05jgFUnU2+gUt5LP0KY2y9JEWfbkh4lJEfOaKxxJfg/aI4ZrizrGF43ZYZY0o00yjnjBaHb2SbZl4DoKnx9NKIQccAY+5+PIZOAMx6lUtAon+eMN7WQmUoYzj7MXhfiEHM1vTNISlJw1xBoH64N+7zfQtLvw/3qn0tLOMtXnYIHHtEaRe7TsYt7ixkq2kHunneOaSXuD0cDfwPnJmkF9VXEUoeowO8GKf+0sHR4SQ2FC7SaJ2HSC9yXn4DVw3IWaYhgKgGFv8Szk3WKPWKCiXYWgC+2moYe+JK7AnK72MO8oTf0QeoLXUMTPI8JaxA4u7W4a7xaQjsQQbzMp6R7X34MIdks9FZVe3g5nUPctJjs=
+	GH74kYL2nNG37umYlWd/FBqIuBb78fi7AnefZZwcDpRwboc70vjii9q175pV/a/XgpQ8mWrj5hjjwTSYaywXQEMIIrE1EaufV8FQi+Iwv2Ml4CZh8RvhjpWh6Op26tONMzrhgA89+iP+9TGHPT6DZXlWD2XR7oULdqGf3oejsfOoI1yNEmhzw8orGadJpCht1Oa2xeRiDsU6uEmJQ3+ZXjatEBElj7BKStfa2tlaoa9cyakdoGY5lBzKROp/cv9MiBx29gXXPt4TckNezLeRsDSybrk6lxjZA2LJDG70Oi9Dc2OGqKWW8aPCRt1Nbd0WBeoWlsxrtUbs3hUWMxkICsPr+hHVak4TJmw5HH+Gb2O6yLoX9IpcD7iOGzqMqLtNDFTC+XHjyIcHWCC5G3wsZK1/VAhB6UQpvhOFp2Ch7rT74YzBJhnXGbA804vpnLxcurRaHHvqDi78kNYU8uTzlPTx0eUhKhX0cEECW70Sd/czXVvtebw2oveT1kCSJnem6ZLpPsqWP2A0w8KmoQv0+6F6Raz7b6k2lm9WQcByCX9qbJ5b9mIwx4Jme6QCPRd3oIKbr7CGPgT4urunYloq06zpmu6WaGtbWvx9XksNpOnKxMKQThAzEjaoXIX7dKKVIk22eEzXXvwmEaOhwlVL3nwheAI+vUABkkABG2G3bf0=
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?9gEiC3DW1w6wVU0XehAa8c9GCbboQyE/RRw82FpY974AVTn4ScR1eDJlH16w?=
- =?us-ascii?Q?aQd+zwh6wYQ+eBXa6+DDHr/biQqUv9gTLVnegt/2YXRGmwCLxzZI3uUtsbDR?=
- =?us-ascii?Q?SJpgtFtYgLtCsyhIn5E74VcTqaA5EMqioN5wcvWyf5BQqpyZm3mbFpL/zI/I?=
- =?us-ascii?Q?+FHj/0TenVie2nINEhYwhHCeBoYZMCf8ToiFSjP+m1s6CSTPZjjfHAGAKyXM?=
- =?us-ascii?Q?hnqIkHlqdk9/YHpw1fWXsbx4GZClS+phfo5MNc9i72r1/UhoWBy3umcZaVjZ?=
- =?us-ascii?Q?AQFwxSkdMO/e2480d5E1sTA7dyr/srQYvjIgM+nNomQBdg6vE1YR7SL3IJ5+?=
- =?us-ascii?Q?B/bXgDSuvQ+hlolXqF0wZ4dsD+ynH6V3d/Vl8O2H1jGeLjitIF2nojZB3Cn3?=
- =?us-ascii?Q?ay5qMueK23YsWt+Nv725VhGtfXkt3Ako7pHz/qT3036c74p0ulBK79p2riDJ?=
- =?us-ascii?Q?VVH29KMBqGHYdTX47I9ep6mubhq6S0FT0MIhj3Q1zTZP2+FqiQdD5yCbFmre?=
- =?us-ascii?Q?EV75/+EnB1ZmdanJXOXKUw7SwaIxWD9Vj5NFo+S0xh19BGLeXUZB8gcpml1O?=
- =?us-ascii?Q?O9UgTCDSQinFrKb6KXWuqDp/+RU1iKK1fPF7T1/1hVtbKto9ByfUIXfeeNA0?=
- =?us-ascii?Q?NBnh5sOl6Vwwzx035wfncnXOjGUiW3YaDwZ4y0mCDL0iHs7OlBWzKsyiTFzr?=
- =?us-ascii?Q?4D7lrEh0jtKzaajyylcnvOHDUMBWkuABGBRcTCfW9YWdosvwVH39J304bqWL?=
- =?us-ascii?Q?nMiuTiSnV/w6YBrySDDBQmsm+jeZHTx7NTVTZtU8zzcWsqLzOm37NsDSgtii?=
- =?us-ascii?Q?Ug95EjMy1TtNCPz32Fsm5K0cwgnmWPlScnIJfe5v7bi543XOwugGO54jWekM?=
- =?us-ascii?Q?Sl2AnIWYcYSBHd5UBlTWBm7bcgoD2KlyeCDlu1AKoqF/1EEIRsh5QVhWVRsx?=
- =?us-ascii?Q?yVBZ01l4EDiArcwIjPpBx42PNMLKj7R8ywSxJXCcQQ/C3de/tXYrulREsKVT?=
- =?us-ascii?Q?y840p2jnCSo1jU39Z7evMleN2ZSVhlm+FnSZsqODGKPs6qU3AAt0akcCp0Vs?=
- =?us-ascii?Q?RAqcBjRS1EGByUMPiHlVfXQS/n6XpqHY8bzkrRYwqSGd2XyqficHtodpmd+F?=
- =?us-ascii?Q?/VoaLb6tcDrjZuvZGWTj9dn31qF0crSYg0S7CpkXvQ3ImVM/WyfCmfupDAnt?=
- =?us-ascii?Q?ID2Pw4ydh5lioNuuFDdbMOQOAFepO5MZZQYVIe5A5TtJoV3sQ530yApj8jJ+?=
- =?us-ascii?Q?PFtntBFo/eGkOmSZ5g/nYzopJaB+ccbeFr8dOXM3aiu80GQM7lKGJVnE+yAu?=
- =?us-ascii?Q?OAu8qlzTTho0aZeyJVY3eF/Ak5R7VQcWD14R4Jzl16C2jDf6h0Db7xEIHXmL?=
- =?us-ascii?Q?PLTAzW+SQPV9sEGj58YI8zXPcJ7P62Jb1ZpvwD195/LktR3q2gStsDmup5hi?=
- =?us-ascii?Q?+oA2rdP9F2YlsoF+ucrG1uUnT1+YEaTkw6g+JUHR6x9v8TitBYKiNbRa3u0Y?=
- =?us-ascii?Q?p6gcnbY/ec11qqbkTmOaA2d7LVvSkG6KAN+PhQJi3TXOJWuLJfap2uLG6wOl?=
- =?us-ascii?Q?0WfLyXKuPLv6A+XJuRUtUBb6oq8lBI4ajO4QEVtkrQIutkmssliG+kIGF0Nu?=
- =?us-ascii?Q?OLRvcEq6FBRvV+YuwktRVdiv+hzxBkZPbdUUEGcNOxrC?=
+	=?us-ascii?Q?JUZU6AkHPWtEUYe9Tdd17jt2hNf4JC33U2SmKnCEBgYnwc/8zsAZ7tLHODl/?=
+ =?us-ascii?Q?By0Y1A8gzA1Hkza5U3CBgx2vd0v1oOQrNUm8hqPikipwjKrbbBR9Aro/JQCy?=
+ =?us-ascii?Q?JSGGL4gQJ0GUz5mlcjGWcihyTgQ5S++DOVKAcLF66LakKXn6cJHmxHMg1ofk?=
+ =?us-ascii?Q?OFZyGZK/3uE9U42AHP45UtitNPhH4qrSAdgkS6V6v9flCOAHeE8upiJxol7E?=
+ =?us-ascii?Q?ZKC/70yYSO2JFQfCzwRA7IUF/PYInpoVA1xN3T+bc+SSHQn7kxZgV1vynkyt?=
+ =?us-ascii?Q?nVM7h+0OhZ47M9asbKwuyRvvD7nFVwg6WD4Q8XggXyOJuFzBulULmgaU72lY?=
+ =?us-ascii?Q?ie7GiKBxIgwHvXXvxd2A4g+LTn/LZVsblO53djdCQQd/40VzqZY5gG+xVIvj?=
+ =?us-ascii?Q?Ta3mjznAEdiVYVjiGV5zP6Zh4I0izZD2Vd7qDpDdqE9gDIBr6X8zYa8G4bsd?=
+ =?us-ascii?Q?FEsa5KmuL7hawQPnSCbanXkSp2Jafi64Ll4qi5xPuJWrQjnoJLTpMIw7rFPl?=
+ =?us-ascii?Q?GfrcIt7IE4PZYm/go6Nx9edllOnhixG0xVV+AcePIJqmYDi2Nl0fhYuQqffC?=
+ =?us-ascii?Q?c0V2fKOFrM+R2oiHAiNDzIdcy7OkNBeMMVGnY/NAXgXgq7crS9hikgD2/Skm?=
+ =?us-ascii?Q?aObrcJlyVwHvnEJvIXhqE0YgvYljyWEyJGL4UMZuXDh8pgoyuCgs0HLK1LtU?=
+ =?us-ascii?Q?A/2jBtG5UzGt456LuRqzJmG/eUBqm6xjpTFjTVCk4g7qMIg4unzkEfpvMKEk?=
+ =?us-ascii?Q?uLEMPQJSFVt077euZZq/ahH3aUj+t3ZIXQKsvz6G2nGSwBp6q1moBVni1ynH?=
+ =?us-ascii?Q?2BMoMKe0ojmUPlYnZtEEVwUQh2yq2ACDsQcX4Yil+YJKD+34Rk3r7GUW3xow?=
+ =?us-ascii?Q?55/QpsjLHFTZFrYAROKoA/Q8oTJvgRDIjpLmbedlqqQ6e5jlIJVQR8BtMJGK?=
+ =?us-ascii?Q?Il5DaivxxhVDRHjjFlqRftg9Tlz4fRpwyg/Kp5QFMTghZ2OMlBbnlzhJe4F/?=
+ =?us-ascii?Q?sFlxjTxv5rgwJFvdwF44rjI560ulZTEX2rGuDlOinWuLlg2P5MmcPcnehec7?=
+ =?us-ascii?Q?7C1vVVpRl0kxcAO27A23RJy3V5NLobseHe5BlImttFBbxCynKT6Y9Lwzs8c2?=
+ =?us-ascii?Q?Io8uEP04Cz2OqjpRpLoEiL3FC6y8j7zLu7CSh4FFeKWq7i//VFEcJ2XIcWdP?=
+ =?us-ascii?Q?ncpu3G5HCQQf+EiTH+MeO3smxJtX2a9OY89VJA6UoJRfuElMNWvBkEUAtjeN?=
+ =?us-ascii?Q?6SC83QBfGUNqqlIQg79vCtOZ/Ru6R0ZAPB4OjoZQiJ55JhJSx3+wLizgw50K?=
+ =?us-ascii?Q?mmyqKiBCi3z/7tWWPTIyez1urJocoqZfput+hHQfMUimS98mBNGORhKp5wD0?=
+ =?us-ascii?Q?S+E9lJR1SlXoRFZcX6Qf4Mm92VTlwLzG9NDdP/3m8oN/hVCvmCWp+K2M/gb/?=
+ =?us-ascii?Q?y5KqyXLoCGVFzHqIwD1NOVdnr7R2QehMjHAw7EdsCm1GLYTtRaEjAVcEfiP4?=
+ =?us-ascii?Q?AIfeBc9dn+PoEx2xgYPHkQjWdBoFFZp3XUeHCjcwRtVuYOcRxhV1Fyx678P8?=
+ =?us-ascii?Q?8cJFKQz8AddhCQDr9yfwKaq6DiiG+haRWiBiwGaxrrEt4YfhTmIn3QmQD5IW?=
+ =?us-ascii?Q?FthWtIXrDV/vdZ9ERBDwbQwwRPo9/rEVblCF547XOVQO?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	rUHS0wCvtY4pI/IHZKlmGJQ/hGOcouLcs8twXKoYbcAnJkbRkuIYaeK8zy73fJYiL/pa6SFdRF94gPNsls9EzB2mHCHN8ByLXkzcD5IF1r6Cp5+a2XTf95Mk6PeD5KR1B8YvQ4fKiPp6zwTyuEJZSo2a44JpV1L/hWankeZKV7ftHnmHLmd/XpsChPIbjzYXJg8PjJSTi7mhghO1CRkOkLUV45NVR1yegl/jOm2JyHNvZo4XOtk/EVeVtw1i5VH7yhErJoNII5DdVxMuKBWFPjcMc5OkyxzzHB6jpCEBeCDw9JBc5/J+vJLBJjoh7oNtMzhG2SwzjBkz+S4MtrrtnsBR8YTajc/8n8iOJ3EqE2sPnrcpH+fn5rXwuxLz7x/Wh2tSDN9Obt1JoOvnWgp1nzJVa2wdOIeM2zFYcdXooZpUmcEsp0DUqfxpNj+7TC0+2l0sG8vzKSIWTQD6r7+4gI1QYvS/vSvIrO9A92uPrMhD/TUAGBcZ/TvbDVywvoDbrPlC8OM1h7f6jZmkdIoLbsH3Sw6Zgz7ebqm/Pth3Vt/pQgBRZ+95xj8QxeoB0UG/yDDkDJA87VN2T+Fxaq+woc4Qj4LNsximWpyr8nendLY=
+	aFY6Hgl5TWT+VgxfbN/n+8kf9dHh+vv/vBITXSF2MUeyKy3PBGaWRnKsOnvvcpxbIPMeZhZLwwhzJMXCJ0+5RDdurkSrpMtubGTWMKHiRag6k9g0RbaGBENMiM3X7C/5yLdZ5WLWVYe/TZWgVoQvQao97coqQXo4Tm2MPn8qIQyyyuzEJLeQGnA7hTAX1ycEAhziJ1MVsCo93/4/yj9UdIo9jTZ3VaM8U6yU/PYakGeH0tHOgJ4fl4nxHi+dredacYvfg+NDopSTDAZ5pi4XYm6kVmt/ZYVeZf6U4yQ/GabmhKDq0FnUhvUBlYKQicZbNYsMTb1IERXvGsMAZBEVUydRTD8WHHZwOVckhulmErU4mqRptk991V0N3Sb0mzEdnnovDFQWtDv5p3vornXoZLs7smfP3zC/htbBOXhNgftqtxARaOQRP/xp2ojhHWNsCb5/d8JTe3e+OwVw2M79+1fEbwQlq/d8M/1WbByz6JFRkpkSIocFd+s4oY7w28CQFxCASSFVTm2ziLBu0WDLNovO4OnUyEJ2205o8CzhIb9Mk6oyTN8K5C4Tmxt94gERphG82O0XnmfJGUpUwDkjAuxRlEJXYLUrxItOrkQkCQg=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64154b6c-6879-4153-f39e-08dc4824d2e7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 963f0f67-da2d-4254-998d-08dc4824d6bc
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 14:56:57.5884
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 14:57:04.1686
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /eQGk5OE1oOUgPz3P3fLEnws0CUg9SOzDh392T1ib2XPkgL+FFWDUBZZB0mnrcKtJ2hzbgf8WDFkWxRCpqxkhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB7460
+X-MS-Exchange-CrossTenant-UserPrincipalName: /7B1+0cp7bYN3Fpy/y6kGGsVKBTNZK6RB+HMP+/kbKBC+0N8UWc4f0CU5LYTdIp2qaCdhcT5LddlULfU295C9A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR10MB6479
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-19_04,2024-03-18_03,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 adultscore=0 suspectscore=0 mlxscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ phishscore=0 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2403140000 definitions=main-2403190113
-X-Proofpoint-ORIG-GUID: JS-pFTmkxn4qQOrPYnugJihXFxk3BaP7
-X-Proofpoint-GUID: JS-pFTmkxn4qQOrPYnugJihXFxk3BaP7
+X-Proofpoint-ORIG-GUID: gU5Dp_ZQQ2HxQtq7Xfrs8-usDzke1A71
+X-Proofpoint-GUID: gU5Dp_ZQQ2HxQtq7Xfrs8-usDzke1A71
 
-Variable err is the actual return value of this function, and variable ret
-is a helper variable for err. So, rename them to ret and ret2 respectively.
+Simple renaming of the local variable err to ret.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/root-tree.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+ fs/btrfs/ioctl.c | 66 ++++++++++++++++++++++++------------------------
+ 1 file changed, 33 insertions(+), 33 deletions(-)
 
-diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
-index 4bb538a372ce..869b50f05f39 100644
---- a/fs/btrfs/root-tree.c
-+++ b/fs/btrfs/root-tree.c
-@@ -221,8 +221,8 @@ int btrfs_find_orphan_roots(struct btrfs_fs_info *fs_info)
- 	struct btrfs_path *path;
- 	struct btrfs_key key;
- 	struct btrfs_root *root;
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 38459a89b27c..692f6ca9f897 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -2367,7 +2367,7 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 	struct mnt_idmap *idmap = file_mnt_idmap(file);
+ 	char *subvol_name, *subvol_name_ptr = NULL;
+ 	int subvol_namelen;
 -	int err = 0;
--	int ret;
 +	int ret = 0;
-+	int ret2;
+ 	bool destroy_parent = false;
  
- 	path = btrfs_alloc_path();
- 	if (!path)
-@@ -235,18 +235,18 @@ int btrfs_find_orphan_roots(struct btrfs_fs_info *fs_info)
- 	while (1) {
- 		u64 root_objectid;
+ 	/* We don't support snapshots with extent tree v2 yet. */
+@@ -2383,7 +2383,7 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 			return PTR_ERR(vol_args2);
  
--		ret = btrfs_search_slot(NULL, tree_root, &key, path, 0, 0);
--		if (ret < 0) {
--			err = ret;
-+		ret2 = btrfs_search_slot(NULL, tree_root, &key, path, 0, 0);
-+		if (ret2 < 0) {
-+			ret = ret2;
- 			break;
+ 		if (vol_args2->flags & ~BTRFS_SUBVOL_DELETE_ARGS_MASK) {
+-			err = -EOPNOTSUPP;
++			ret = -EOPNOTSUPP;
+ 			goto out;
  		}
  
- 		leaf = path->nodes[0];
- 		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
--			ret = btrfs_next_leaf(tree_root, path);
--			if (ret < 0)
--				err = ret;
--			if (ret != 0)
-+			ret2 = btrfs_next_leaf(tree_root, path);
-+			if (ret2 < 0)
-+				ret = ret2;
-+			if (ret2 != 0)
- 				break;
- 			leaf = path->nodes[0];
- 		}
-@@ -262,26 +262,26 @@ int btrfs_find_orphan_roots(struct btrfs_fs_info *fs_info)
- 		key.offset++;
+@@ -2392,31 +2392,31 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 		 * name, same as v1 currently does.
+ 		 */
+ 		if (!(vol_args2->flags & BTRFS_SUBVOL_SPEC_BY_ID)) {
+-			err = btrfs_check_ioctl_vol_args2_subvol_name(vol_args2);
+-			if (err < 0)
++			ret = btrfs_check_ioctl_vol_args2_subvol_name(vol_args2);
++			if (ret < 0)
+ 				goto out;
+ 			subvol_name = vol_args2->name;
  
- 		root = btrfs_get_fs_root(fs_info, root_objectid, false);
--		err = PTR_ERR_OR_ZERO(root);
--		if (err && err != -ENOENT) {
-+		ret = PTR_ERR_OR_ZERO(root);
-+		if (ret && ret != -ENOENT) {
- 			break;
--		} else if (err == -ENOENT) {
-+		} else if (ret == -ENOENT) {
- 			struct btrfs_trans_handle *trans;
+-			err = mnt_want_write_file(file);
+-			if (err)
++			ret = mnt_want_write_file(file);
++			if (ret)
+ 				goto out;
+ 		} else {
+ 			struct inode *old_dir;
  
- 			btrfs_release_path(path);
- 
- 			trans = btrfs_join_transaction(tree_root);
- 			if (IS_ERR(trans)) {
--				err = PTR_ERR(trans);
--				btrfs_handle_fs_error(fs_info, err,
-+				ret = PTR_ERR(trans);
-+				btrfs_handle_fs_error(fs_info, ret,
- 					    "Failed to start trans to delete orphan item");
- 				break;
+ 			if (vol_args2->subvolid < BTRFS_FIRST_FREE_OBJECTID) {
+-				err = -EINVAL;
++				ret = -EINVAL;
+ 				goto out;
  			}
--			err = btrfs_del_orphan_item(trans, tree_root,
-+			ret = btrfs_del_orphan_item(trans, tree_root,
- 						    root_objectid);
- 			btrfs_end_transaction(trans);
--			if (err) {
--				btrfs_handle_fs_error(fs_info, err,
-+			if (ret) {
-+				btrfs_handle_fs_error(fs_info, ret,
- 					    "Failed to delete root orphan item");
- 				break;
+ 
+-			err = mnt_want_write_file(file);
+-			if (err)
++			ret = mnt_want_write_file(file);
++			if (ret)
+ 				goto out;
+ 
+ 			dentry = btrfs_get_dentry(fs_info->sb,
+ 					BTRFS_FIRST_FREE_OBJECTID,
+ 					vol_args2->subvolid, 0);
+ 			if (IS_ERR(dentry)) {
+-				err = PTR_ERR(dentry);
++				ret = PTR_ERR(dentry);
+ 				goto out_drop_write;
  			}
-@@ -312,7 +312,7 @@ int btrfs_find_orphan_roots(struct btrfs_fs_info *fs_info)
+ 
+@@ -2436,7 +2436,7 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 			 */
+ 			dput(dentry);
+ 			if (IS_ERR(parent)) {
+-				err = PTR_ERR(parent);
++				ret = PTR_ERR(parent);
+ 				goto out_drop_write;
+ 			}
+ 			old_dir = dir;
+@@ -2460,14 +2460,14 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 			 * to delete without an idmapped mount.
+ 			 */
+ 			if (old_dir != dir && idmap != &nop_mnt_idmap) {
+-				err = -EOPNOTSUPP;
++				ret = -EOPNOTSUPP;
+ 				goto free_parent;
+ 			}
+ 
+ 			subvol_name_ptr = btrfs_get_subvol_name_from_objectid(
+ 						fs_info, vol_args2->subvolid);
+ 			if (IS_ERR(subvol_name_ptr)) {
+-				err = PTR_ERR(subvol_name_ptr);
++				ret = PTR_ERR(subvol_name_ptr);
+ 				goto free_parent;
+ 			}
+ 			/* subvol_name_ptr is already nul terminated */
+@@ -2478,14 +2478,14 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 		if (IS_ERR(vol_args))
+ 			return PTR_ERR(vol_args);
+ 
+-		err = btrfs_check_ioctl_vol_args_path(vol_args);
+-		if (err < 0)
++		ret = btrfs_check_ioctl_vol_args_path(vol_args);
++		if (ret < 0)
+ 			goto out;
+ 
+ 		subvol_name = vol_args->name;
+ 
+-		err = mnt_want_write_file(file);
+-		if (err)
++		ret = mnt_want_write_file(file);
++		if (ret)
+ 			goto out;
  	}
  
- 	btrfs_free_path(path);
+@@ -2493,26 +2493,26 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 
+ 	if (strchr(subvol_name, '/') ||
+ 	    strncmp(subvol_name, "..", subvol_namelen) == 0) {
+-		err = -EINVAL;
++		ret = -EINVAL;
+ 		goto free_subvol_name;
+ 	}
+ 
+ 	if (!S_ISDIR(dir->i_mode)) {
+-		err = -ENOTDIR;
++		ret = -ENOTDIR;
+ 		goto free_subvol_name;
+ 	}
+ 
+-	err = down_write_killable_nested(&dir->i_rwsem, I_MUTEX_PARENT);
+-	if (err == -EINTR)
++	ret = down_write_killable_nested(&dir->i_rwsem, I_MUTEX_PARENT);
++	if (ret == -EINTR)
+ 		goto free_subvol_name;
+ 	dentry = lookup_one(idmap, subvol_name, parent, subvol_namelen);
+ 	if (IS_ERR(dentry)) {
+-		err = PTR_ERR(dentry);
++		ret = PTR_ERR(dentry);
+ 		goto out_unlock_dir;
+ 	}
+ 
+ 	if (d_really_is_negative(dentry)) {
+-		err = -ENOENT;
++		ret = -ENOENT;
+ 		goto out_dput;
+ 	}
+ 
+@@ -2532,7 +2532,7 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 		 * Users who want to delete empty subvols should try
+ 		 * rmdir(2).
+ 		 */
+-		err = -EPERM;
++		ret = -EPERM;
+ 		if (!btrfs_test_opt(fs_info, USER_SUBVOL_RM_ALLOWED))
+ 			goto out_dput;
+ 
+@@ -2543,29 +2543,29 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 		 * of the subvol, not a random directory contained
+ 		 * within it.
+ 		 */
+-		err = -EINVAL;
++		ret = -EINVAL;
+ 		if (root == dest)
+ 			goto out_dput;
+ 
+-		err = inode_permission(idmap, inode, MAY_WRITE | MAY_EXEC);
+-		if (err)
++		ret = inode_permission(idmap, inode, MAY_WRITE | MAY_EXEC);
++		if (ret)
+ 			goto out_dput;
+ 	}
+ 
+ 	/* check if subvolume may be deleted by a user */
+-	err = btrfs_may_delete(idmap, dir, dentry, 1);
+-	if (err)
++	ret = btrfs_may_delete(idmap, dir, dentry, 1);
++	if (ret)
+ 		goto out_dput;
+ 
+ 	if (btrfs_ino(BTRFS_I(inode)) != BTRFS_FIRST_FREE_OBJECTID) {
+-		err = -EINVAL;
++		ret = -EINVAL;
+ 		goto out_dput;
+ 	}
+ 
+ 	btrfs_inode_lock(BTRFS_I(inode), 0);
+-	err = btrfs_delete_subvolume(BTRFS_I(dir), dentry);
++	ret = btrfs_delete_subvolume(BTRFS_I(dir), dentry);
+ 	btrfs_inode_unlock(BTRFS_I(inode), 0);
+-	if (!err)
++	if (!ret)
+ 		d_delete_notify(dir, dentry);
+ 
+ out_dput:
+@@ -2582,7 +2582,7 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ out:
+ 	kfree(vol_args2);
+ 	kfree(vol_args);
 -	return err;
 +	return ret;
  }
  
- /* drop the root item for 'key' from the tree root */
+ static int btrfs_ioctl_defrag(struct file *file, void __user *argp)
 -- 
 2.38.1
 
