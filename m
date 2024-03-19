@@ -1,138 +1,284 @@
-Return-Path: <linux-btrfs+bounces-3385-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3386-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55C0487F64E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 05:16:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDA5087F64F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 05:16:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D38D1282D68
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 04:16:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81E19282B1A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 04:16:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A1067C08D;
-	Tue, 19 Mar 2024 04:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331CD7BB1C;
+	Tue, 19 Mar 2024 04:16:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TyC1NtZW"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="AVW5hCNc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294307C086
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 04:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570307C083
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 04:16:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.154.54.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710821808; cv=none; b=jNPEQ9XVM4RSgX3pCxWTPv0MaySDHMY17o1+zs3u864yUTIV8RJIcmlWEu8Rfq/SchICvk53qxo6mn7K9ocqHnDFWkGmF9yGPFdExksY62Eiqj34OwGYzt9wbV2ZVUuaqXe7+7ajneAR4Lf9U30bD3yLcvbCXo0W3YvT/ztP778=
+	t=1710821814; cv=none; b=XlTMQrcrMpo9qGI6FCy7NCsvaokTe1prx7n+L1K1sUTg0JlBlkfJKPrMcI2dTZ8lRe1xkPfwnn7b6pxKkd+zyvgzR5mxZKN+bH+FZjKExFXYwyIvkzu3anx4xwOUzp62fEqVsA2/DiZF35i62RpTl7JQRc1TDMBMdfx5ktvc8cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710821808; c=relaxed/simple;
-	bh=oBUFix4xJ9HmyXtK0FS0msR1Uprvu8MvzrmK3K0DUcQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cnhu5M421tnCBpvX3zO/Ntt/C/Tr2hrXSmcm1CkO//Geptm+LpY55k8q1MaQUf3m5mmDi3kvWhlrE9SQdAeQDZ1BWSpM1eQDLi7N8ReiFDF0OGWgvNq55syAJ9xYNWcb7P78zzGXZMcN8xOiQM/7Ju5iC3bP7K9O9d8iMzJ0CXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TyC1NtZW; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710821802;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0cFtfNnxEJ01CephbW6v2igIJA6n9Y9cgi1+keL4pqM=;
-	b=TyC1NtZWbmIFZfXHoU+vFOy6+O1Hm8KZPiAB/G5uDU3UMPOeX2IoFvXd+sTwyM/WNygUl/
-	e4VttoOc09927N16pa2EFNKDUf8G1RMgURaXw6frd/7HiptVoTu6VTCzMbPHWFUGcx/i1c
-	Y4miyJak7+U1qjyzyu3ne1BbjArOAlA=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-43-jl8D41O9P62GSygEcUXbOw-1; Tue, 19 Mar 2024 00:16:38 -0400
-X-MC-Unique: jl8D41O9P62GSygEcUXbOw-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5dc4ffda13fso4508351a12.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Mar 2024 21:16:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710821797; x=1711426597;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0cFtfNnxEJ01CephbW6v2igIJA6n9Y9cgi1+keL4pqM=;
-        b=VrmM6raZG8Am19yllVgXqrOLrnrKFsZ1cpdlESVQwz2EsaTjv5I8H6sZxu7Jvl5Mcy
-         3aNTsmRbd+3KGmpvF3EfggfRq99owXWkffW6U8x4RI1SMICZpMLMnfNQN2WZCX88ASYA
-         pEymi5fwVGecwOq4K0dXpji5QRQQi4KzNnW3/rc3VGTpWg5xWIX2q721vDb26urcsUEo
-         kQfnpKOhWDMXpXjjGJA+PSnXzNS5D4tXXvhdho62TYSZLBGArpqFWSI01BXjOhdcKFdu
-         xmzX5mKIh9+qsaisCsghucgezXuPb7p/Fqhf54j1/wcSOCt39mk5frE/a51zwX+0xnsa
-         5M0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUUhUJ9GpHw2Uwz8VssiCYHU5o3WZCaVdzrJ28M17f/TgnaWHqhyuYuamikTVaRwi2u4aWOO5hyq2IzmVz0zbBNA+FgfKyLtpIhiqw=
-X-Gm-Message-State: AOJu0YwceTZXDK8ZIggO3AVd5dB5OXT15vnENlTzgrgDrksyQqbKhT+f
-	PgGJDQIeKrHhMsWP6SgDNkSeYkoNBSNxzFPxLq1IOIbyyER9I4ahIPUKRwL5l44rO0XmHR/fMoK
-	bdRuhK1NXinyph0jMZowBA05aIer7BeSz7iJWTT7Q/Ta8iq16JEZSLPi6dYtB
-X-Received: by 2002:a17:903:28c7:b0:1e0:16e0:b28e with SMTP id kv7-20020a17090328c700b001e016e0b28emr1771082plb.34.1710821797370;
-        Mon, 18 Mar 2024 21:16:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGXqPBbawYv4+8ogQd1QC/W45is8KfuwC92ZEvUpNhC7nvb5U26hp8nT3MoMN1hCB0pmM35Cg==
-X-Received: by 2002:a17:903:28c7:b0:1e0:16e0:b28e with SMTP id kv7-20020a17090328c700b001e016e0b28emr1771060plb.34.1710821796769;
-        Mon, 18 Mar 2024 21:16:36 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id t188-20020a625fc5000000b006e6f8e9ab6asm7247539pfb.15.2024.03.18.21.16.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 21:16:36 -0700 (PDT)
+	s=arc-20240116; t=1710821814; c=relaxed/simple;
+	bh=pxsLfQPzJeZnOmmbk2yTB2sVpYGHEVWtzQDAXmuMPCw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=GS2FZhci0GW2KoidZ99uujA5ecnImtsAlO1hdnTsfzNgHBnRoqgg1099MXmI+XcTaElHklzyIn/BD5aIJC+GSFr4JBLSpU+v68jUBQGAObLE+ebeZFyMoSl8Y0zX29hq0Yhx5eWAbpynoU/BBycr0U+jw5Lt3prdbZ7csxjLvqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=AVW5hCNc; arc=none smtp.client-ip=43.154.54.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1710821797;
+	bh=pxsLfQPzJeZnOmmbk2yTB2sVpYGHEVWtzQDAXmuMPCw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=AVW5hCNc9rj2zA4xS2+kpnQaT+rlHhBT/twgSCct/9R7QOZHlv4Xlaxa1MAwHKMuv
+	 Ut6KUVlTWgX9y+igD4ZnzyAnAnN7qCeKi2NC8tNfEhXdYooLEhOBcSZ3ApwTAJtPIB
+	 BvhR7J3TRQRty+vYYx5qy2B8eggSZY9arL6FtK8s=
+X-QQ-mid: bizesmtpipv602t1710821795trhf
+X-QQ-Originating-IP: 7XfbsXp0bXinYHKlybt0GVeyYLTd6qMpOunMmNOwvnU=
+Received: from [IPV6:240e:381:70b1:9300:14a5:b ( [255.36.242.6])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Tue, 19 Mar 2024 12:16:34 +0800 (CST)
+X-QQ-SSF: 00100000000000E0Z000000A0000000
+X-QQ-FEAT: 5t5I+dY+gqr4PljStVwDhlOkMxWk8eU73JtG6o+7wE8ETdVXrBoo3lxdPgKV8
+	pVCPEdYhhGM6GP/XKw0HwMTABmjtnTlNqi+74PtBbXD/eRI4WYe0tbLCSw/RS/i2rFgU8M+
+	oVH3BEmws8qOnCJwAu9PrW0mwADuEPsPZDZ/srE7BsJeMkDel1j+LTgUY/pfRYuBbRX/6hJ
+	8znQjgr0bSEFPxHvDzNmzLw2PRKzYEaem8GAq7+1FtHL9fdPeQ4+ELZiyu9DjuwSPNs8ul4
+	XdVGUApFzJVFmQ7OqVZ1LCrqUgN5Mmzn0pitGZMvM1YDF6jVhyTyn/xFlUxxeFG4Lca7xC0
+	q5kn5trujN+6XKGepDQvuLTk+a9eP69+CtHi0pM
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9956275628573362831
+Message-ID: <B9AE3A7AE8BC6048+54d80a89-2099-4378-a615-ce05899ecf40@bupt.moe>
 Date: Tue, 19 Mar 2024 12:16:33 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: David Sterba <dsterba@suse.cz>
-Cc: Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, fdmanana@kernel.org
-Subject: Re: [PATCH v2 1/2] shared: move btrfs clone device testcase to the
- shared group
-Message-ID: <20240319041633.l75ifryeidjxltat@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1710599671.git.anand.jain@oracle.com>
- <440eff6d16407f12ec55df69db283ba6eb9b278c.1710599671.git.anand.jain@oracle.com>
- <20240318220219.GI16737@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318220219.GI16737@twin.jikos.cz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: compression silently skipped with O_DIRECT & checksum/corruption
+ issue with qemu live migration ?
+Content-Language: en-US
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Roland <devzero@web.de>,
+ linux-btrfs@vger.kernel.org
+References: <e7ce9995-93cb-4904-875c-684d4494765f@web.de>
+ <89d0cad2-64b2-4699-b6de-6727398d50d6@gmx.com>
+From: HAN Yuwei <hrx@bupt.moe>
+In-Reply-To: <89d0cad2-64b2-4699-b6de-6727398d50d6@gmx.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------KIV6GVjtzQT3GfspmGMpCzTL"
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpipv:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-On Mon, Mar 18, 2024 at 11:02:19PM +0100, David Sterba wrote:
-> On Sat, Mar 16, 2024 at 10:32:33PM +0530, Anand Jain wrote:
-> > Given that ext4 also allows mounting of a cloned filesystem, the btrfs
-> > test case btrfs/312, which assesses the functionality of cloned filesystem
-> > support, can be refactored to be under the shared group.
-> > 
-> > Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> > ---
-> > v2:
-> > Move to shared testcase instead of generic.
-> 
-> What's the purpose of shared/ ? We have tests that make sense for a
-> subset of supported filesystems in generic/, with proper _required and
-> other the checks it works fine.
-> 
-> I see that v1 did the move to generic/ but then the 'shared' got
-> suggested, which is IMHO the wrong direction. I remember some distant
-> past discussions about shared/ and what to put there. Right now there
-> are 3 remaining tests which I think is a good opportunity to make it 0.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------KIV6GVjtzQT3GfspmGMpCzTL
+Content-Type: multipart/mixed; boundary="------------Gj3ffd389kJuXXlzFM8hgiT0";
+ protected-headers="v1"
+From: HAN Yuwei <hrx@bupt.moe>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Roland <devzero@web.de>,
+ linux-btrfs@vger.kernel.org
+Message-ID: <54d80a89-2099-4378-a615-ce05899ecf40@bupt.moe>
+Subject: Re: compression silently skipped with O_DIRECT & checksum/corruption
+ issue with qemu live migration ?
+References: <e7ce9995-93cb-4904-875c-684d4494765f@web.de>
+ <89d0cad2-64b2-4699-b6de-6727398d50d6@gmx.com>
+In-Reply-To: <89d0cad2-64b2-4699-b6de-6727398d50d6@gmx.com>
+Autocrypt-Gossip: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
 
-I didn't suggest to make it a shared case directly, I asked if there's a
-_require_xxxx helper to make this case notrun on "not proper" fs, not
-just use "btrfs ext4" to be whitelist :
+--------------Gj3ffd389kJuXXlzFM8hgiT0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-https://lore.kernel.org/fstests/20240312044629.hpaqdkl24nxaa3dv@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com/
+DQrlnKggMjAyNC8zLzE4IDE3OjE5LCBRdSBXZW5ydW8g5YaZ6YGTOg0KPg0KPg0KPiDlnKgg
+MjAyNC8zLzE2IDA2OjA5LCBSb2xhbmQg5YaZ6YGTOg0KPj4gSGVsbG8sDQo+Pg0KPj4gY2Fu
+IHNvbWVvbmUgZXhwbGFpbiB3aHkgY29tcHJlc3Npb24gaXMgc2tpcHBlZCB3aGVuIHdyaXRp
+bmcgd2l0aA0KPj4gZGlyZWN0LWkvbyA/DQo+DQo+IEJlY2F1c2UgY29tcHJlc3Npb24gb25s
+eSBoYXBwZW4gd2l0aCBidWZmZXJlZCB3cml0ZS4NCj4NCj4gRm9yIGRpcmVjdCBJTyB3ZSBl
+aXRoZXIgZ28gTk9DT1cgb3IgcmVndWxhciBDT1csIG5vIGNvbXByZXNzaW9uIHN1cHBvcnQu
+DQo+DQpTaG91bGQgd2UgbWVudGlvbiB0aGlzIChubyBjb21wcmVzc2lvbiBpbiBPX0RJUkVD
+VCkgaW4gZG9jPyBJIGhhdmVuJ3QgDQppbXByZXNzaW9uIHRoYXQgZG9jIHNhaWQgdGhpcy4N
+Cj4gVGhlIGN1cnJlbnQgY29tcHJlc3Npb24gY29kZSBpcyBhbHdheXMgdXNpbmcgcGFnZSBj
+YWNoZSwganVzdCBjaGVjayB0aGUNCj4gZGlmZmVyZW50IGFsZ28gaW1wbGVtZW50YXRpb25z
+IG9mIGJ0cmZzX2NvbXByZXNzX3BhZ2VzKCksIHdoaWNoIGFsbA0KPiBmZXRjaCB0aGVpciBk
+YXRhIGZyb20gcGFnZSBjYWNoZS4NCj4NCj4gRS5nLiBpbiB6c3RkX2NvbXByZXNzX3BhZ2Vz
+KCksIHdlIGdvIGZpbmRfZ2V0X3BhZ2UoKSB0byBncmFiIHRoZSBwYWdlDQo+IGZyb20gcGFn
+ZSBjYWNoZSBhcyBjb21wcmVzc2lvbiBzb3VyY2UuDQo+DQo+IFRoaXMgaXMgaW5jb21wYXRp
+YmxlIHdpdGggdGhlIGRpcmVjdCBJTyBzY2hlbWUsIHdoaWNoIGlzIGRlc2lnbmVkIHRvDQo+
+IGF2b2lkIHBhZ2UgY2FjaGUgY29tcGxldGVseSAodW5sZXNzIGZhbGwgYmFjayB0byBidWZm
+ZXJlZCB3cml0ZSkuDQo+DQo+IE1heWJlIGl0J3MgcG9zc2libGUgdG8gbWFrZSBhbGwgdGhv
+c2UgKl9jb21wcmVzc19wYWdlcygpIHRvIHN1cHBvcnQNCj4gZGlyZWN0IElPLCBidXQgdGhh
+dCBkb2Vzbid0IGxvb2tzIHNhbmUgdG8gbWUuDQo+DQo+IEFzIHRoZSBpZGVhIG9mIGRpcmVj
+dCBJTyBpcyB0byBmdWxseSBhdm9pZCBwYWdlIGNhY2hlLCBhbmQgYWxsb3cgdGhlDQo+IHVz
+ZXIgc3BhY2UgcHJvZ3JhbSB0byB0YWtlIGZ1bGwgY29udHJvbCBvZiBpdHMgb3duIGNhY2hl
+LCBkb2luZw0KPiBjb21wcmVzc2lvbiB3b3VsZCBpbnRyb2R1Y2UgZXh0cmEgbGF0ZW5jeSBh
+bmQgbWFrZSB0aGUgcGVyZm9ybWFuY2UNCj4gY2hhcmFjdGVyaXN0aWMgbXVjaCBjb21wbGV4
+IHRvIHVzZXIgc3BhY2UuDQo+DQo+IFRoYW5rcywNCj4gUXUNCj4NCj4+DQo+PiBpcyB0aGlz
+IHRvIGJlIGV4cGVjdGVkID8NCj4+DQo+PiBpIHdvbmRlcmVkIHdoeSBpIGdvdCB1bmNvbXBy
+ZXNzZWQgcmF3IGRpc2sgaW1hZ2VzIGluIHByb3htb3ggYWZ0ZXIgZGlzaw0KPj4gbWlncmF0
+aW9uIHRvIGJ0cmZzIGZzIHdpdGggY29tcHJlc3MtZm9yY2U9enN0ZCwgc28gaSB0cmllZCB3
+aXRoIGRkIGlmIGkNCj4+IGNhbiByZXByb2R1Y2UgLSBhbmQgaSBjYW4uDQo+Pg0KPj4gdGhl
+IHByb2JsZW0gaXMsIHRoYXQgaSBjYW5ub3Qgc2VlbSB0byBkaXNhYmxlIGRpcmVjdCBJL08g
+Zm9yIGRpZmZlcmVudA0KPj4gcHJveG1veCBndWkgYWN0aW9ucywgd2lsbCBkaXNjdXNzIGlu
+IHByb3htb3ggY29tbXVuaXR5IHdoYXQgY2FuIGJlIGRvbmUsDQo+PiBidXQgaSBuZWVkIG1v
+cmUgaW5mb3Mgb24gdGhpcyBiZWhhdmlvdXIuDQo+Pg0KPj4gcm9vdEBwdmUtdGVzdDE6L2J0
+cmZzLWhkZC16c3RkL3Ztcy1yYXcvaW1hZ2VzLzEwNi92bS0xMDYtZGlzay0wIyBkZA0KPj4g
+aWY9ZGlzay5yYXcgb2Y9dGVzdC5kYXQgYnM9MTAyNGsNCj4+IDIwNDgwKzAgRGF0ZW5zw6R0
+emUgZWluDQo+PiAyMDQ4MCswIERhdGVuc8OkdHplIGF1cw0KPj4gMjE0NzQ4MzY0ODAgQnl0
+ZXMgKDIxIEdCLCAyMCBHaUIpIGtvcGllcnQsIDQ2LDQxMSBzLCA0NjMgTUIvcw0KPj4NCj4+
+IHJvb3RAcHZlLXRlc3QxOi9idHJmcy1oZGQtenN0ZC92bXMtcmF3L2ltYWdlcy8xMDYvdm0t
+MTA2LWRpc2stMCMNCj4+IGNvbXBzaXplIHRlc3QuZGF0DQo+PiBQcm9jZXNzZWQgMSBmaWxl
+LCAxNjE4NDQgcmVndWxhciBleHRlbnRzICgxNjE4NDQgcmVmcyksIDAgaW5saW5lLCA4NTQx
+Mg0KPj4gZnJhZ21lbnRzLg0KPj4gVHlwZcKgwqDCoMKgwqDCoCBQZXJjwqDCoMKgwqAgRGlz
+ayBVc2FnZcKgwqAgVW5jb21wcmVzc2VkIFJlZmVyZW5jZWQNCj4+IFRPVEFMwqDCoMKgwqDC
+oMKgwqAgNyXCoMKgwqDCoMKgIDEuNUfCoMKgwqDCoMKgwqDCoMKgwqAgMjBHwqDCoMKgwqDC
+oMKgwqDCoMKgIDIwRw0KPj4gbm9uZcKgwqDCoMKgwqDCoCAxMDAlwqDCoMKgwqDCoCAzMzlN
+wqDCoMKgwqDCoMKgwqDCoCAzMzlNwqDCoMKgwqDCoMKgwqDCoCAzMzlNDQo+PiB6c3RkwqDC
+oMKgwqDCoMKgwqDCoCA2JcKgwqDCoMKgwqAgMS4yR8KgwqDCoMKgwqDCoMKgwqDCoCAxOUfC
+oMKgwqDCoMKgwqDCoMKgwqAgMTlHDQo+Pg0KPj4gcm9vdEBwdmUtdGVzdDE6L2J0cmZzLWhk
+ZC16c3RkL3Ztcy1yYXcvaW1hZ2VzLzEwNi92bS0xMDYtZGlzay0wIyBkZA0KPj4gaWY9ZGlz
+ay5yYXcgb2Y9dGVzdC5kYXQgb2ZsYWc9ZGlyZWN0IGJzPTEwMjRrDQo+PiAyMDQ4MCswIERh
+dGVuc8OkdHplIGVpbg0KPj4gMjA0ODArMCBEYXRlbnPDpHR6ZSBhdXMNCj4+IDIxNDc0ODM2
+NDgwIEJ5dGVzICgyMSBHQiwgMjAgR2lCKSBrb3BpZXJ0LCAxNjEsMzE5IHMsIDEzMyBNQi9z
+DQo+Pg0KPj4gcm9vdEBwdmUtdGVzdDE6L2J0cmZzLWhkZC16c3RkL3Ztcy1yYXcvaW1hZ2Vz
+LzEwNi92bS0xMDYtZGlzay0wIw0KPj4gY29tcHNpemUgdGVzdC5kYXQNCj4+IFByb2Nlc3Nl
+ZCAxIGZpbGUsIDIwNDgwIHJlZ3VsYXIgZXh0ZW50cyAoMjA0ODAgcmVmcyksIDAgaW5saW5l
+LCAxMDM1DQo+PiBmcmFnbWVudHMuDQo+PiBUeXBlwqDCoMKgwqDCoMKgIFBlcmPCoMKgwqDC
+oCBEaXNrIFVzYWdlwqDCoCBVbmNvbXByZXNzZWQgUmVmZXJlbmNlZA0KPj4gVE9UQUzCoMKg
+wqDCoMKgIDEwMCXCoMKgwqDCoMKgwqAgMjBHwqDCoMKgwqDCoMKgwqDCoMKgIDIwR8KgwqDC
+oMKgwqDCoMKgwqDCoCAyMEcNCj4+IG5vbmXCoMKgwqDCoMKgwqAgMTAwJcKgwqDCoMKgwqDC
+oCAyMEfCoMKgwqDCoMKgwqDCoMKgwqAgMjBHwqDCoMKgwqDCoMKgwqDCoMKgIDIwRw0KPj4N
+Cj4+IGZ1cnRoZXJtb3JlLMKgIHdpdGggcWVtdS9wcm94bW94IHZpcnR1YWwgZGlzayBsaXZl
+IG1pZ3JhdGlvbiwgaSdtIGdldHRpbmcNCj4+IHJlcHJvZHVjaWJsZSBjaGVja3N1bSBlcnJv
+ciB3aXRoIGJ0cmZzL2NvbXByZXNzLWZvcmNlPXpzdGQgd2hlbiBsaXZlDQo+PiBtaWdyYXRp
+bmcgdmlydHVhbCBkaXNrIHdpdGhpbiBzYW1lIGhhcmRkaXNrICwgd2hlcmVhcyBjb3B5aW5n
+IHRoZSBzYW1lDQo+PiBkaXNrL2ZpbGUgd2l0aCBkZCAoY2FjaGVkIGFuZCBkaXJlY3QpIGRv
+ZXMgbm90IHRyaWdnZXIgdGhhdC4NCj4+DQo+PiBoYXBwZW5zIG9uIGhkZCBhbmQgYWxzbyBv
+biBoZGQsIHNvIHRoaXMgc2VlbXMgbm90IHRvIGJlIGRpc2sgcmVsYXRlZA0KPj4NCj4+ICMg
+dW5hbWUgLWENCj4+IExpbnV4IHB2ZS10ZXN0MSA2LjUuMTMtMS1wdmUgIzEgU01QIFBSRUVN
+UFRfRFlOQU1JQyBQTVggNi41LjEzLTENCj4+ICgyMDI0LTAyLTA1VDEzOjUwWikgeDg2XzY0
+IEdOVS9MaW51eA0KPj4NCj4+IHJlZ2FyZHMNCj4+IFJvbGFuZA0KPj4NCj4+DQo+PiBbRnIg
+TcOkciAxNSAyMDowNzoyMyAyMDI0XSBCVFJGUyB3YXJuaW5nIChkZXZpY2Ugc2RhMSk6IGNz
+dW0gZmFpbGVkIHJvb3QNCj4+IDI2MCBpbm8gMjU3IG9mZiA2NjU1MzMyMzUyIGNzdW0gMHg1
+NTE3MTE1YSBleHBlY3RlZCBjc3VtIDB4NmIyYWYzMWUNCj4+IG1pcnJvciAxDQo+PiBbRnIg
+TcOkciAxNSAyMDowNzoyMyAyMDI0XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYTEpOiBiZGV2
+IC9kZXYvc2RhMQ0KPj4gZXJyczogd3IgMCwgcmQgMCwgZmx1c2ggMCwgY29ycnVwdCAxLCBn
+ZW4gMA0KPj4gW0ZyIE3DpHIgMTUgMjA6MDc6MjMgMjAyNF0gQlRSRlMgd2FybmluZyAoZGV2
+aWNlIHNkYTEpOiBkaXJlY3QgSU8gZmFpbGVkDQo+PiBpbm8gMjU3IG9wIDB4MCBvZmZzZXQg
+MHgxOGNiMDUwMDAgbGVuIDQwOTYgZXJyIG5vIDEwDQo+PiBbRnIgTcOkciAxNSAyMDowODoy
+NCAyMDI0XSBCVFJGUyB3YXJuaW5nIChkZXZpY2Ugc2RhMSk6IGNzdW0gZmFpbGVkIHJvb3QN
+Cj4+IDI2MCBpbm8gMjU3IG9mZiA2NjU1MzMyMzUyIGNzdW0gMHhkMWQxYzg5MiBleHBlY3Rl
+ZCBjc3VtIDB4MGMyNGI1Y2QNCj4+IG1pcnJvciAxDQo+PiBbRnIgTcOkciAxNSAyMDowODoy
+NCAyMDI0XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYTEpOiBiZGV2IC9kZXYvc2RhMQ0KPj4g
+ZXJyczogd3IgMCwgcmQgMCwgZmx1c2ggMCwgY29ycnVwdCAyLCBnZW4gMA0KPj4gW0ZyIE3D
+pHIgMTUgMjA6MDg6MjQgMjAyNF0gQlRSRlMgd2FybmluZyAoZGV2aWNlIHNkYTEpOiBkaXJl
+Y3QgSU8gZmFpbGVkDQo+PiBpbm8gMjU3IG9wIDB4MCBvZmZzZXQgMHgxOGNiMDUwMDAgbGVu
+IDQwOTYgZXJyIG5vIDEwDQo+PiBbRnIgTcOkciAxNSAyMDowOToyNSAyMDI0XSBCVFJGUyB3
+YXJuaW5nIChkZXZpY2Ugc2RhMSk6IGNzdW0gZmFpbGVkIHJvb3QNCj4+IDI2MCBpbm8gMjU3
+IG9mZiA2NjU1MzMyMzUyIGNzdW0gMHg4MDkwOTZjMiBleHBlY3RlZCBjc3VtIDB4NTZiNThk
+YzYNCj4+IG1pcnJvciAxDQo+PiBbRnIgTcOkciAxNSAyMDowOToyNSAyMDI0XSBCVFJGUyBl
+cnJvciAoZGV2aWNlIHNkYTEpOiBiZGV2IC9kZXYvc2RhMQ0KPj4gZXJyczogd3IgMCwgcmQg
+MCwgZmx1c2ggMCwgY29ycnVwdCAzLCBnZW4gMA0KPj4gW0ZyIE3DpHIgMTUgMjA6MDk6MjUg
+MjAyNF0gQlRSRlMgd2FybmluZyAoZGV2aWNlIHNkYTEpOiBkaXJlY3QgSU8gZmFpbGVkDQo+
+PiBpbm8gMjU3IG9wIDB4MCBvZmZzZXQgMHgxOGNiMDUwMDAgbGVuIDQwOTYgZXJyIG5vIDEw
+DQo+PiBbRnIgTcOkciAxNSAyMDoyOToxMCAyMDI0XSBCVFJGUyB3YXJuaW5nIChkZXZpY2Ug
+c2RhMSk6IGNzdW0gZmFpbGVkIHJvb3QNCj4+IDI2MCBpbm8gMjU3IG9mZiA2NjU1MzMyMzUy
+IGNzdW0gMHhjOGE2OTc3ZCBleHBlY3RlZCBjc3VtIDB4ZGZjMWY2NzgNCj4+IG1pcnJvciAx
+DQo+PiBbRnIgTcOkciAxNSAyMDoyOToxMCAyMDI0XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNk
+YTEpOiBiZGV2IC9kZXYvc2RhMQ0KPj4gZXJyczogd3IgMCwgcmQgMCwgZmx1c2ggMCwgY29y
+cnVwdCA0LCBnZW4gMA0KPj4gW0ZyIE3DpHIgMTUgMjA6Mjk6MTAgMjAyNF0gQlRSRlMgd2Fy
+bmluZyAoZGV2aWNlIHNkYTEpOiBkaXJlY3QgSU8gZmFpbGVkDQo+PiBpbm8gMjU3IG9wIDB4
+MCBvZmZzZXQgMHgxOGNiMDUwMDAgbGVuIDQwOTYgZXJyIG5vIDEwDQo+Pg0KPj4gW0ZyIE3D
+pHIgMTUgMjA6MzM6NDEgMjAyNF0gQlRSRlMgd2FybmluZyAoZGV2aWNlIHNkYzEpOiBjc3Vt
+IGZhaWxlZCByb290DQo+PiAyNjAgaW5vIDI1NyBvZmYgNjY1NTMzMjM1MiBjc3VtIDB4MjBm
+ZjA4ODcgZXhwZWN0ZWQgY3N1bSAweDA4ZWQwYmNlDQo+PiBtaXJyb3IgMQ0KPj4gW0ZyIE3D
+pHIgMTUgMjA6MzM6NDEgMjAyNF0gQlRSRlMgZXJyb3IgKGRldmljZSBzZGMxKTogYmRldiAv
+ZGV2L3NkYzENCj4+IGVycnM6IHdyIDAsIHJkIDAsIGZsdXNoIDAsIGNvcnJ1cHQgMSwgZ2Vu
+IDANCj4+IFtGciBNw6RyIDE1IDIwOjMzOjQxIDIwMjRdIEJUUkZTIHdhcm5pbmcgKGRldmlj
+ZSBzZGMxKTogZGlyZWN0IElPIGZhaWxlZA0KPj4gaW5vIDI1NyBvcCAweDAgb2Zmc2V0IDB4
+MThjYjAyMDAwIGxlbiAxNjM4NCBlcnIgbm8gMTANCj4+IFtGciBNw6RyIDE1IDIwOjM1OjE4
+IDIwMjRdIEJUUkZTIHdhcm5pbmcgKGRldmljZSBzZGMxKTogY3N1bSBmYWlsZWQgcm9vdA0K
+Pj4gMjU2IGlubyAyOTAgb2ZmIDY2NTUzMzIzNTIgY3N1bSAweGIwMjM4NjNhIGV4cGVjdGVk
+IGNzdW0gMHg0ZjhlMzU1ZA0KPj4gbWlycm9yIDENCj4+IFtGciBNw6RyIDE1IDIwOjM1OjE4
+IDIwMjRdIEJUUkZTIGVycm9yIChkZXZpY2Ugc2RjMSk6IGJkZXYgL2Rldi9zZGMxDQo+PiBl
+cnJzOiB3ciAwLCByZCAwLCBmbHVzaCAwLCBjb3JydXB0IDIsIGdlbiAwDQo+PiBbRnIgTcOk
+ciAxNSAyMDozNToxOCAyMDI0XSBCVFJGUyB3YXJuaW5nIChkZXZpY2Ugc2RjMSk6IGRpcmVj
+dCBJTyBmYWlsZWQNCj4+IGlubyAyOTAgb3AgMHgwIG9mZnNldCAweDE4Y2IwNTAwMCBsZW4g
+NDA5NiBlcnIgbm8gMTANCj4+DQo+PiBjcmVhdGUgZnVsbCBjbG9uZSBvZiBkcml2ZSBzY3Np
+MA0KPj4gKGJ0cmZzLXNzZC16c3RkLXFjb3cyOjEwNi92bS0xMDYtZGlzay0wLnJhdykNCj4+
+IGRyaXZlIG1pcnJvciBpcyBzdGFydGluZyBmb3IgZHJpdmUtc2NzaTANCj4+IGRyaXZlLXNj
+c2kwOiB0cmFuc2ZlcnJlZCAzNC4yIE1pQiBvZiAyMC4wIEdpQiAoMC4xNyUpIGluIDBzDQo+
+PiBkcml2ZS1zY3NpMDogdHJhbnNmZXJyZWQgMzAxLjYgTWlCIG9mIDIwLjAgR2lCICgxLjQ3
+JSkgaW4gMXMNCj4+IGRyaXZlLXNjc2kwOiB0cmFuc2ZlcnJlZCA0ODkuMSBNaUIgb2YgMjAu
+MCBHaUIgKDIuMzklKSBpbiAycw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVycmVkIDY3OS45
+IE1pQiBvZiAyMC4wIEdpQiAoMy4zMiUpIGluIDNzDQo+PiBkcml2ZS1zY3NpMDogdHJhbnNm
+ZXJyZWQgMS4xIEdpQiBvZiAyMC4wIEdpQiAoNS43MCUpIGluIDRzDQo+PiBkcml2ZS1zY3Np
+MDogdHJhbnNmZXJyZWQgMS40IEdpQiBvZiAyMC4wIEdpQiAoNi44OSUpIGluIDVzDQo+PiBk
+cml2ZS1zY3NpMDogdHJhbnNmZXJyZWQgMS43IEdpQiBvZiAyMC4wIEdpQiAoOC41NSUpIGlu
+IDZzDQo+PiBkcml2ZS1zY3NpMDogdHJhbnNmZXJyZWQgMS45IEdpQiBvZiAyMC4wIEdpQiAo
+OS41MyUpIGluIDdzDQo+PiBkcml2ZS1zY3NpMDogdHJhbnNmZXJyZWQgMi4yIEdpQiBvZiAy
+MC4wIEdpQiAoMTAuOTclKSBpbiA4cw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVycmVkIDIu
+NCBHaUIgb2YgMjAuMCBHaUIgKDExLjg0JSkgaW4gOXMNCj4+IGRyaXZlLXNjc2kwOiB0cmFu
+c2ZlcnJlZCAyLjggR2lCIG9mIDIwLjAgR2lCICgxMy44OSUpIGluIDEwcw0KPj4gZHJpdmUt
+c2NzaTA6IHRyYW5zZmVycmVkIDIuOSBHaUIgb2YgMjAuMCBHaUIgKDE0Ljc0JSkgaW4gMTFz
+DQo+PiBkcml2ZS1zY3NpMDogdHJhbnNmZXJyZWQgNi4yIEdpQiBvZiAyMC4wIEdpQiAoMzEu
+MTQlKSBpbiAxMnMNCj4+IGRyaXZlLXNjc2kwOiB0cmFuc2ZlcnJlZCA4LjIgR2lCIG9mIDIw
+LjAgR2lCICg0MS4xNyUpIGluIDEzcw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVycmVkIDEw
+LjMgR2lCIG9mIDIwLjAgR2lCICg1MS4yNyUpIGluIDE0cw0KPj4gZHJpdmUtc2NzaTA6IHRy
+YW5zZmVycmVkIDEwLjUgR2lCIG9mIDIwLjAgR2lCICg1Mi43NSUpIGluIDE1cw0KPj4gZHJp
+dmUtc2NzaTA6IHRyYW5zZmVycmVkIDE5LjIgR2lCIG9mIDIwLjAgR2lCICg5NS44NiUpIGlu
+IDE2cw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVycmVkIDE5LjMgR2lCIG9mIDIwLjAgR2lC
+ICg5Ni42NiUpIGluIDE3cw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVycmVkIDE5LjUgR2lC
+IG9mIDIwLjAgR2lCICg5Ny40NiUpIGluIDE4cw0KPj4gZHJpdmUtc2NzaTA6IHRyYW5zZmVy
+cmVkIDE5LjcgR2lCIG9mIDIwLjAgR2lCICg5OC4yNyUpIGluIDE5cw0KPj4gZHJpdmUtc2Nz
+aTA6IHRyYW5zZmVycmVkIDE5LjggR2lCIG9mIDIwLjAgR2lCICg5OS4wOCUpIGluIDIwcw0K
+Pj4gZHJpdmUtc2NzaTA6IENhbmNlbGxpbmcgYmxvY2sgam9iDQo+PiBkcml2ZS1zY3NpMDog
+RG9uZS4NCj4+IFRBU0sgRVJST1I6IHN0b3JhZ2UgbWlncmF0aW9uIGZhaWxlZDogYmxvY2sg
+am9iIChtaXJyb3IpIGVycm9yOg0KPj4gZHJpdmUtc2NzaTA6ICdtaXJyb3InIGhhcyBiZWVu
+IGNhbmNlbGxlZA0KPj4NCj4+DQo+DQo=
 
-In my personal opinion, the "shared" directory is a place to store the cases
-which are nearly to be generic, but not ready. It's a place to remind us
-there're still some cases use something likes "supported btrfs ext4" as the
-hard condition of _notrun, rather than a flexible _require_xxx helper. These
-cases in shared better to be moved to generic, if we can improve it in one day.
+--------------Gj3ffd389kJuXXlzFM8hgiT0--
 
-It more likes a "TODO" list of generic. If we just write it in generic/
-directory, I'm afraid we'll leave it in hundreds of generic cases then forget it.
+--------------KIV6GVjtzQT3GfspmGMpCzTL
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-What do you think?
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Zorro
+iHUEARYKAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCZfkRogAKCRBLkKfpYfpB
+U5M6AQC5+Q4k/WB7EZBmCRUZri6+OaYHow0ANFI/E5tAAaMhiAD8D20HhIer1m9P
+4MmiqQrdcz+CUhX6NqEUfHXV9OCxVwg=
+=7yIE
+-----END PGP SIGNATURE-----
 
-> 
-
+--------------KIV6GVjtzQT3GfspmGMpCzTL--
 
