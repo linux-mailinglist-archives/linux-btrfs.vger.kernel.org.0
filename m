@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-3442-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3443-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BD7E880490
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 19:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4DC98804A4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 19:20:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55B132845B9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 18:17:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ACF82839ED
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 18:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3D212C6A9;
-	Tue, 19 Mar 2024 18:17:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FFF43985A;
+	Tue, 19 Mar 2024 18:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="2rk/6KSY"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="kezibaO+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1573D2B9D3
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 18:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0B438384
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 18:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710872243; cv=none; b=NVO+WgRycWMyEAhOnh7f7+GNVEQPRfLS+BCUOUCMLRrqur4YRBtxPKtxyKAsdAN6pt6BIxoPBb9lVlYZo3OZGyS2RQLZr6SRivQ8q7QZA0FgE3S6W28K+MG70MQljeOsZimLd2/Hz+r6icvC0JltjBZhHO5PM8fo80vi0uZA5cE=
+	t=1710872416; cv=none; b=tn7DqV9+GnsjWGX7IiDq9fnBBAoljd/2yACWARnEkv6VMv/31LSqVWS6ak/KN2GfG1atTWUDcSBGtRs9HmP1pzdG3QwNBqkglwJY2pzH/RoAotX2WsdGxZzc4PaYfmHKXcO7VWyZX2CI2c2DFDwEpLWSgSyyv5YBGAbmNQ49gpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710872243; c=relaxed/simple;
-	bh=iL7EgPU4x4tlOH4YymZQidOI98jwelNNQ8bKcW7Oo1s=;
+	s=arc-20240116; t=1710872416; c=relaxed/simple;
+	bh=kNt8X2CDNvpmVH+Z3Syn9hSKFdnUh//QJi5674o1owc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X4nXzQK2RbD9Fwuvkkfvi/M7vmFvVQ8kt+lCS2mIAD4dUy2XmqZbrgRfm1JKhnu9jjHv8Jqmslmg9hjkYSc5Og9+Ywx7OGvdvF0UkYC4TYkqsjp4AHMaXu6o9jFp0mgGQAk17bsEr+xCBT9ISGwo2ofMlNA0SbBwBSgbdKxZxIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=2rk/6KSY; arc=none smtp.client-ip=209.85.219.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=KXZvAw72bSiWHFSq5n0e8YI51G7K6fXj3pGvwkazdXV+bo3EfEnXAE10rLqgilyJRle4A9WoYPm2nyohZJxfHjD1//N3wKQcy35yKnBqJfI9r/hK21Fv1nP5tSdp7Q9y1cVV7wypglhgdI3t6eiTa9w6icFTWb+COSAgN9JJkIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=kezibaO+; arc=none smtp.client-ip=209.85.222.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-690bd329df2so40623066d6.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 11:17:21 -0700 (PDT)
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78a16114b69so15503585a.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 11:20:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1710872241; x=1711477041; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1710872413; x=1711477213; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8NwDgKlO8LqLXnS4qXBtuht02N+hON2q8fkR+NxEKmU=;
-        b=2rk/6KSY0F2s+xL0vs+SzvvOO0EU5adYJY2mQQSGv0QMaBPocbHC6wNUn2DUxdRw8I
-         iWfEvf1XxGOfEImE4E961MrID2aC7pQjrc7BW1bZGxhnr66IrHsUricHs0HWgvRQei2t
-         3g3dD2KAqDsMR7dfkfHU/awqOvUFUjA3YPrlARXJSGGTmMHnN6V34ogx75iBDAalQ396
-         rVJVmh2N1CoP234wG06ZivfLfM7+eZgypDiQ93CVnf3oiCqF5ZtfkPy5hcnq254xqA5a
-         ymEETnJQ/1/2e2/0INYKI/5u5hKm/GSmjg6MyPaVnUheKM5Corrw+n5rKSb0F2YIwCWf
-         2waQ==
+        bh=YNhQcqNbxqFwsL2AIBGyZ00e0ZolzLkpOfs8NReh3gI=;
+        b=kezibaO+cY8cQGxL354k06pNy/7UiEXCwq5khBY+cKL7aMY1iff5BVj6jt/qfTO4KO
+         gjksG5/6K8rfhIsejCscx0zTAJ+jjfPhZZn4Kl/90aV5/qxSOSBzEZUdjqD409/zXXzO
+         MEJef6Dvei278y3ejFQB5CX7tFkfY7J2GRExFZKGgAeXVApx80lIlNdHU3YdwqfItXuJ
+         qfUW5+ICEus/U0aL2or99mQtcxbcoI/4s83Hd7X3vw5cpIQrTURSLssvHGoGfwJ3Ebav
+         9MldbizVA/lINIPykjYoHYcHvxKC+hyg76vMsxV/bnpUrZCyvklejdx13DjrSR6AZ8pf
+         tXkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710872241; x=1711477041;
+        d=1e100.net; s=20230601; t=1710872413; x=1711477213;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8NwDgKlO8LqLXnS4qXBtuht02N+hON2q8fkR+NxEKmU=;
-        b=qUX0qFwB+3vCu356UlkXOBOYNwseur7kWMRJ4TO6Kh87zT0dB9FTdIsKkC9HfMFxKl
-         xf37Dm934VM5j0hNR0c6WKFxsB+e5HE3XhfvREK1DvPifNX2ddk0c4TRBPKy7IAKwnmu
-         h7tZTGd+Jg2pFAy8uVhtZ7sxZmoSkwWZ7Qm/rrmXbewJtMjMLE1/kGu8stul81KxnIlT
-         I541T8gGg3gIdArKR4PpTpzTs7/Ry/s6176EN9wOBNw9STzN5//9IfvHcnN/b9EH/qDP
-         lnAROSvaTGWYn9A0CLX7B+NyN3R4qXU1EQHT0giBZRaz5JIGBV9mW0jm8vGbCFULcqre
-         q6jA==
-X-Gm-Message-State: AOJu0YzbJbaIBNASwR3RZVArZ0M7Bs9YqGUXyF9LOrRpRpSEyvWch9iw
-	d1Rp1fjazHqSArOaGRg4jUnyjaRV/ddymP5hfCCwoqaUQdY/IjskdqhE/orDoas=
-X-Google-Smtp-Source: AGHT+IH4J1Th8efzq53jvQSMMyUYJamRhv/u1Sw/ne6WUHahw+9huNLPbzsOYfp4427057o5qO8Tjw==
-X-Received: by 2002:a05:6214:1e1:b0:696:3375:bb2c with SMTP id c1-20020a05621401e100b006963375bb2cmr3652478qvu.25.1710872241070;
-        Tue, 19 Mar 2024 11:17:21 -0700 (PDT)
+        bh=YNhQcqNbxqFwsL2AIBGyZ00e0ZolzLkpOfs8NReh3gI=;
+        b=G6JgaTlJirG7z4yrW1XdYF5+/5q1rad+vzUGKoAhRGIJTLPGep7+ikLMloXxnze1UT
+         Z0WrXDFD4+ap5ZYeXBQ5uuo2rn++YZB3xRnbAPmJkcod289jxfhyBnm6nVV+zMTi25cg
+         0/DZmKXWvKW1/C7FXvzrDtOPxH6YSFvBtRNJkzVIH45w82MqkkvUfhH4vcQDg/1K+xj3
+         +46E9BrlhWvJLEEmaC72KN1rawSpB+upz6omwRvPuG1nIom/pC5G22qEYVvJ9fVZU/Kz
+         TbntgzBY7DMBCaSv0nf1ge3MbRga9itVaCcy51o3jkSA5cntIaaEeVr3gM7SpvJVN1lI
+         AOmA==
+X-Gm-Message-State: AOJu0Ywt/KlgNqtO1tlKXMzJDibVS+GOaMOHiQuYjOFlgbgiqDNYyFwK
+	c9zUYxjMTTpzyVgTIZUmrwimiaxnnbpR8jT60+/n3JgnQ/UeCTrpH9iUOnZPgA4=
+X-Google-Smtp-Source: AGHT+IFOzUED2XaS75LJgew8uyzi1qt9Et1lwdSxPF6TMjCIzAqkoatOx1w2Qh/GVTnP8q6jtrxYug==
+X-Received: by 2002:a05:620a:31a3:b0:789:e3ee:c6a2 with SMTP id bi35-20020a05620a31a300b00789e3eec6a2mr417863qkb.37.1710872413654;
+        Tue, 19 Mar 2024 11:20:13 -0700 (PDT)
 Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id a9-20020ad45c49000000b0068fef1264f6sm6679413qva.101.2024.03.19.11.17.20
+        by smtp.gmail.com with ESMTPSA id d7-20020a05620a136700b0078863e0f829sm4805168qkl.12.2024.03.19.11.20.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 11:17:20 -0700 (PDT)
-Date: Tue, 19 Mar 2024 14:17:20 -0400
+        Tue, 19 Mar 2024 11:20:13 -0700 (PDT)
+Date: Tue, 19 Mar 2024 14:20:12 -0400
 From: Josef Bacik <josef@toxicpanda.com>
 To: Anand Jain <anand.jain@oracle.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 23/29] btrfs: lookup_extent_data_ref rename ret to ret2
- and err to ret
-Message-ID: <20240319181720.GJ2982591@perftesting>
+Subject: Re: [PATCH 24/29] btrfs: btrfs_drop_snapshot rename ret to ret2 and
+ err to ret
+Message-ID: <20240319182012.GK2982591@perftesting>
 References: <cover.1710857863.git.anand.jain@oracle.com>
- <3dacbcffa8d7c4e70e934b8b977676a1072878f4.1710857863.git.anand.jain@oracle.com>
+ <d7c6a92fa4199b7b0e95eb02ac5d10689d7222d7.1710857863.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,85 +82,207 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3dacbcffa8d7c4e70e934b8b977676a1072878f4.1710857863.git.anand.jain@oracle.com>
+In-Reply-To: <d7c6a92fa4199b7b0e95eb02ac5d10689d7222d7.1710857863.git.anand.jain@oracle.com>
 
-On Tue, Mar 19, 2024 at 08:25:31PM +0530, Anand Jain wrote:
-> First, rename ret to ret2, compile, and then rename err to 'ret',
-> to ensure that no original ret remains as the new ret.
+On Tue, Mar 19, 2024 at 08:25:32PM +0530, Anand Jain wrote:
+> To fix code style for the return variable, first rename ret to ret2
+> comopile and then rename err to ret.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > ---
->  fs/btrfs/extent-tree.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
+>  fs/btrfs/extent-tree.c | 82 +++++++++++++++++++++---------------------
+>  1 file changed, 41 insertions(+), 41 deletions(-)
 > 
 > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 1a1191efe59e..4b0a55e66a55 100644
+> index 4b0a55e66a55..acea2a7be4e5 100644
 > --- a/fs/btrfs/extent-tree.c
 > +++ b/fs/btrfs/extent-tree.c
-> @@ -448,9 +448,9 @@ static noinline int lookup_extent_data_ref(struct btrfs_trans_handle *trans,
->  	struct btrfs_extent_data_ref *ref;
->  	struct extent_buffer *leaf;
->  	u32 nritems;
+> @@ -5858,8 +5858,8 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+>  	struct btrfs_root_item *root_item = &root->root_item;
+>  	struct walk_control *wc;
+>  	struct btrfs_key key;
+> -	int err = 0;
 > -	int ret;
+> +	int ret = 0;
 > +	int ret2;
->  	int recow;
-> -	int err = -ENOENT;
-> +	int ret = -ENOENT;
+>  	int level;
+>  	bool root_dropped = false;
+>  	bool unfinished_drop = false;
+> @@ -5868,14 +5868,14 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
 >  
->  	key.objectid = bytenr;
->  	if (parent) {
-> @@ -463,14 +463,14 @@ static noinline int lookup_extent_data_ref(struct btrfs_trans_handle *trans,
->  	}
->  again:
->  	recow = 0;
-> -	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
-> -	if (ret < 0) {
-> -		err = ret;
-> +	ret2 = btrfs_search_slot(trans, root, &key, path, -1, 1);
-> +	if (ret2 < 0) {
-> +		ret = ret2;
->  		goto fail;
+>  	path = btrfs_alloc_path();
+>  	if (!path) {
+> -		err = -ENOMEM;
+> +		ret = -ENOMEM;
+>  		goto out;
 >  	}
 >  
->  	if (parent) {
-> -		if (!ret)
-> +		if (!ret2)
->  			return 0;
-
-You don't need ret2, you can just rework this to
-
-if (parent) {
-	if (ret)
-		return -ENOENT;
-	return 0;
-}
-
->  		goto fail;
+>  	wc = kzalloc(sizeof(*wc), GFP_NOFS);
+>  	if (!wc) {
+>  		btrfs_free_path(path);
+> -		err = -ENOMEM;
+> +		ret = -ENOMEM;
+>  		goto out;
 >  	}
-> @@ -479,10 +479,10 @@ static noinline int lookup_extent_data_ref(struct btrfs_trans_handle *trans,
->  	nritems = btrfs_header_nritems(leaf);
->  	while (1) {
->  		if (path->slots[0] >= nritems) {
-> -			ret = btrfs_next_leaf(root, path);
-> -			if (ret < 0)
+>  
+> @@ -5888,12 +5888,12 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+>  	else
+>  		trans = btrfs_start_transaction(tree_root, 0);
+>  	if (IS_ERR(trans)) {
+> -		err = PTR_ERR(trans);
+> +		ret = PTR_ERR(trans);
+>  		goto out_free;
+>  	}
+>  
+> -	err = btrfs_run_delayed_items(trans);
+> -	if (err)
+> +	ret = btrfs_run_delayed_items(trans);
+> +	if (ret)
+>  		goto out_end_trans;
+>  
+>  	/*
+> @@ -5922,13 +5922,13 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+>  		level = btrfs_root_drop_level(root_item);
+>  		BUG_ON(level == 0);
+>  		path->lowest_level = level;
+> -		ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+> +		ret2 = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+>  		path->lowest_level = 0;
+> -		if (ret < 0) {
+> -			err = ret;
+> +		if (ret2 < 0) {
+> +			ret = ret2;
+>  			goto out_end_trans;
+>  		}
+> -		WARN_ON(ret > 0);
+> +		WARN_ON(ret2 > 0);
+>  
+>  		/*
+>  		 * unlock our path, this is safe because only this
+> @@ -5941,12 +5941,12 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+>  			btrfs_tree_lock(path->nodes[level]);
+>  			path->locks[level] = BTRFS_WRITE_LOCK;
+>  
+> -			ret = btrfs_lookup_extent_info(trans, fs_info,
+> +			ret2 = btrfs_lookup_extent_info(trans, fs_info,
+>  						path->nodes[level]->start,
+>  						level, 1, &wc->refs[level],
+>  						&wc->flags[level], NULL);
+> -			if (ret < 0) {
 > -				err = ret;
-> -			if (ret)
-> +			ret2 = btrfs_next_leaf(root, path);
-> +			if (ret2 < 0)
+> +			if (ret2 < 0) {
 > +				ret = ret2;
-> +			if (ret2)
->  				goto fail;
+>  				goto out_end_trans;
+>  			}
+>  			BUG_ON(wc->refs[level] == 0);
+> @@ -5971,21 +5971,21 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+>  
+>  	while (1) {
+>  
+> -		ret = walk_down_tree(trans, root, path, wc);
+> -		if (ret < 0) {
+> -			btrfs_abort_transaction(trans, ret);
+> -			err = ret;
+> +		ret2 = walk_down_tree(trans, root, path, wc);
+> +		if (ret2 < 0) {
+> +			btrfs_abort_transaction(trans, ret2);
+> +			ret = ret2;
+>  			break;
+>  		}
+>  
+> -		ret = walk_up_tree(trans, root, path, wc, BTRFS_MAX_LEVEL);
+> -		if (ret < 0) {
+> -			btrfs_abort_transaction(trans, ret);
+> -			err = ret;
+> +		ret2 = walk_up_tree(trans, root, path, wc, BTRFS_MAX_LEVEL);
+> +		if (ret2 < 0) {
+> +			btrfs_abort_transaction(trans, ret2);
+> +			ret = ret2;
+>  			break;
+>  		}
+>  
+> -		if (ret > 0) {
+> +		if (ret2 > 0) {
+>  			BUG_ON(wc->stage != DROP_REFERENCE);
 
-Just rework this to
+This can be changed to
 
-ret = btrfs_next_leaf(root, path);
-if (ret) {
-	if (ret > 1)
-		return -ENOENT;
-	return ret;
+if (ret > 0) {
+	BUG_ON(wc->stage != DROP_REFERENCE);
+	ret = 0;
+	break;
 }
 
+>  			break;
+>  		}
+> @@ -6003,12 +6003,12 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+>  		BUG_ON(wc->level == 0);
+>  		if (btrfs_should_end_transaction(trans) ||
+>  		    (!for_reloc && btrfs_need_cleaner_sleep(fs_info))) {
+> -			ret = btrfs_update_root(trans, tree_root,
+> +			ret2 = btrfs_update_root(trans, tree_root,
+>  						&root->root_key,
+>  						root_item);
+> -			if (ret) {
+> -				btrfs_abort_transaction(trans, ret);
+> -				err = ret;
+> +			if (ret2) {
+> +				btrfs_abort_transaction(trans, ret2);
+> +				ret = ret2;
+>  				goto out_end_trans;
+>  			}
+>  
+> @@ -6019,7 +6019,7 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+>  			if (!for_reloc && btrfs_need_cleaner_sleep(fs_info)) {
+>  				btrfs_debug(fs_info,
+>  					    "drop snapshot early exit");
+> -				err = -EAGAIN;
+> +				ret = -EAGAIN;
+>  				goto out_free;
+>  			}
+>  
+> @@ -6033,30 +6033,30 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+>  			else
+>  				trans = btrfs_start_transaction(tree_root, 0);
+>  			if (IS_ERR(trans)) {
+> -				err = PTR_ERR(trans);
+> +				ret = PTR_ERR(trans);
+>  				goto out_free;
+>  			}
+>  		}
+>  	}
+>  	btrfs_release_path(path);
+> -	if (err)
+> +	if (ret)
+>  		goto out_end_trans;
+>  
+> -	ret = btrfs_del_root(trans, &root->root_key);
+> -	if (ret) {
+> -		btrfs_abort_transaction(trans, ret);
+> -		err = ret;
+> +	ret2 = btrfs_del_root(trans, &root->root_key);
+> +	if (ret2) {
+> +		btrfs_abort_transaction(trans, ret2);
+> +		ret = ret2;
+>  		goto out_end_trans;
+>  	}
+>  
+>  	if (!is_reloc_root) {
+> -		ret = btrfs_find_root(tree_root, &root->root_key, path,
+> +		ret2 = btrfs_find_root(tree_root, &root->root_key, path,
+>  				      NULL, NULL);
+> -		if (ret < 0) {
+> -			btrfs_abort_transaction(trans, ret);
+> -			err = ret;
+> +		if (ret2 < 0) {
+> +			btrfs_abort_transaction(trans, ret2);
+> +			ret = ret2;
+>  			goto out_end_trans;
+> -		} else if (ret > 0) {
+> +		} else if (ret2 > 0) {
+
+And then here we just set ret = 0 again, and then we have no need for ret2.
 Thanks,
 
-Josef	
+Josef
 
