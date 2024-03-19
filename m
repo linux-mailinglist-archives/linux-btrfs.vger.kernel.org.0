@@ -1,106 +1,124 @@
-Return-Path: <linux-btrfs+bounces-3449-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3450-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59C5288063A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 21:46:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC4DA880640
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 21:46:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15FC8283718
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 20:46:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA967B22A5B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Mar 2024 20:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E82B5FB99;
-	Tue, 19 Mar 2024 20:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C8F40859;
+	Tue, 19 Mar 2024 20:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="HRXK1mI4";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dMRDBEtr"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="P3IPnAA7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBFA34F881
-	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 20:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD7E83BBEC
+	for <linux-btrfs@vger.kernel.org>; Tue, 19 Mar 2024 20:46:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710881086; cv=none; b=Iu15IDxa8Iz8PX5l8uNOCBemCqH3hziAhchVdRUFfc8nvAO7ENsbOBNONnxQufYe3Ea3fOSddaPzlVP3NrR6DBEjJbrZTYL8M7EwQnD1CCWuSlZi/xV95VL7CrRDzyySAKJMJMuZwJlIM7prCg0qAvxuMjbsmmcCzdF0Ezle0vs=
+	t=1710881168; cv=none; b=jVSi0TLTHkLKAGM8mVtaTojoo2S2fzeRYDFcK5/BHCvXX0Wpv0CMbwA3b/OhbyfbeqGpvMlSr6p2InYzSKPUwcWaYIl9mSSrfm/aH39ie9YfexLoetrpnbqlWjWdNAqyv8lr5q5Ormtep1nN19mIW1xrADQsPBm1Joc2oMKM6uA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710881086; c=relaxed/simple;
-	bh=fiP62xRw7iCv6pthoucqQBcWECYx+XsARKoVh1FeEkI=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
-	 Subject:Content-Type; b=u1JrvwEDTgVGkq1SFTrad8kGNyp0DgiKliWr0i5J1VUeU3BWNFxh2mb6mkwKSYkzZqJLmso6+Pmj74o9Bm2x56kbH3qc6yBBLmjg4W4WHthDXCuUofjjUfZwAn/4FeAssQHM2BmULeLYJjaA8gTigtwpC+gulTvuZtCBtB0BvMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=HRXK1mI4; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dMRDBEtr; arc=none smtp.client-ip=66.111.4.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id 8BAAE5C007F;
-	Tue, 19 Mar 2024 16:44:43 -0400 (EDT)
-Received: from imap53 ([10.202.2.103])
-  by compute6.internal (MEProxy); Tue, 19 Mar 2024 16:44:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
-	cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1710881083; x=1710967483; bh=Xf1lVzxVht
-	a7sPrVS5cvb5GNs9PF92Sr4PSyfJMMBtk=; b=HRXK1mI4YSH63ImMRNoGTdv5fA
-	ZN4Y5QVZnNz2mv1Xni9diPWul8dqBQ5zQtRb1gJGrpw0sLO8SBHZJv6/DyaAh4XW
-	Xe5/TeGeuNDPrigu6TB0Sb/iw+Q5EGF5Eehfngak4IF6ZSOji1jIB3+Ac5bkaBYM
-	2OTxu34XI6IqD40HFEZsKf3K2OSCnOhs8JgHn7eRN6o2ckHK4WIENTTX5RPXJlQ9
-	voERhXdGn0bcuYWq4hagFGRprdzArP7P45ylenI/ycS3fs2lm0haVSnTnPStHbM1
-	2PkZWhQWbqXmZuoJYDtnFVIahRbvPSIE9CZ123+bz9FI+yBLt7xDCbdNVbqw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1710881083; x=1710967483; bh=Xf1lVzxVhta7sPrVS5cvb5GNs9PF
-	92Sr4PSyfJMMBtk=; b=dMRDBEtrFyB1zzjX1XRkKMTrS7EpOTLm0gixiOi0yVNF
-	7X00WG7rPrV3PbGx/pWW62SUq1abbToL1t3TDeQ+TjXqTHGN8m7mXXGbZQ5piEIe
-	dAuSq0qK7I710vdUlW3RTaMDETSOxeVa+tDkCEfIsDaFludGBuM7LTfsHsYBeH6f
-	jXlHuIsAizCu6yABQMQf6xMpUYWzTBYuIJevjPtW75sTT832FhKAkoXBuGE4+B/E
-	QEIukNYjN1pVmkgfIhi1PSKYvrfvwoYxLsdacClwi+AOgEGvac/XAjDv6Vup/DDg
-	cxTvmfusBfQp7qBsGF0IDHuoUTnKgxp+INQYH0qpqw==
-X-ME-Sender: <xms:O_n5ZboCxDpcNPbTZtHj5mBdEHpScmofEAtHjqjupHKNWt7vSEOsmw>
-    <xme:O_n5ZVphVjc5mya1N2zSTZpAUpk_i4OmOaqwtyvQvBcMmJbWyEHNjppCH_yafo-dQ
-    cWEo8_EgPlnQDm6Gd0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrledtgdduudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtsehttd
-    ertderredtnecuhfhrohhmpehkihhnugdrmhhoohhnudekiedvsehfrghsthhmrghilhdr
-    tghomhenucggtffrrghtthgvrhhnpefhgfehtedvueeuveekkeekgefgfeevjeekveeuie
-    evteevheeugeeltefhteffvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpehkihhnugdrmhhoohhnudekiedvsehfrghsthhmrghilhdrtghomh
-X-ME-Proxy: <xmx:O_n5ZYOnlu2fGW2mG-uIZf05091vl5WyrKTqoNmK9OCAkKFpVSN4nQ>
-    <xmx:O_n5Ze5wTM_svqy57Y4RksEeEJ3HcoJMQ8VFErDR5zl7EbOaX92Y6Q>
-    <xmx:O_n5Za6traw-bjWb_CtDs4tuolcNHV1z1PZvsNuSSPUTqAtObg5ZPA>
-    <xmx:O_n5ZWjjSxHbG-ih41Tp7Pgm2Bnitw8U6QREBSHf0n4QfXvnGb8nVw>
-    <xmx:O_n5ZQRsu3LyTBXvN3hebMoikv4Q9gSUzsmiHoOZAewn9UHebKjAXw>
-Feedback-ID: i35d941ae:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 53FB036400B5; Tue, 19 Mar 2024 16:44:43 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-300-gdee1775a43-fm-20240315.001-gdee1775a
+	s=arc-20240116; t=1710881168; c=relaxed/simple;
+	bh=Dq+kndkLL4Jh+Dkp1ZFP62jLdjXS+xu3u7pkADWzc6Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=FxEY0oUlBqH4T3ux/zGmx1q9TpPrrxCPnGcJZk5nuZFtbG8g8tYT/nou3cz/5/j7DcHg4uZbvKWjCZBV4lRAdeJrJD+AZIoxsXY5/IfWl5CcHK83tv+JYccg8Wogdclesbqjjyi0yDLoswDnVlMlyHh2rnJWkE8cgN1UddaIYzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=P3IPnAA7; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1710881161; x=1711485961; i=quwenruo.btrfs@gmx.com;
+	bh=C5Zm0R1SLbiXwI3dxbdFM0l5bb2dFdlO39AmQISo2Uc=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=P3IPnAA760GcqintQQFiPXsOZX8NqHbScSIuFoEXl6Ia8c6/eEQBp73JfA/tJjDy
+	 TrHDXkCpKKOCHOSEBAlEycmmIpVZpXy9AuB+8jbbCh+4BmDaLTJNRkTsbV3bIkkNK
+	 s4tgg6u3m1b1MNauNJjHDfeOUK0hGXC5xJkYgFLnpLySA9Y1Ht13j8rI/Og/VBAgX
+	 J7NY/jJcAq541lZG+8Ri2w8MQMEWz5N00cdYvCb4iKS/bwPv+d4HJdcNO1YkXVWa3
+	 lzXYdeVMpufIUTG3tfKGary1iGUNyhxuuo+7IKwrtE9mpm3/IVwGJphOQi28NL0V0
+	 mW2Xh2GNnX4F08n7QA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mplc7-1qyiPs0jGf-00qEKO; Tue, 19
+ Mar 2024 21:46:01 +0100
+Message-ID: <168839ea-34b3-48b8-9d82-78f0dc92a468@gmx.com>
+Date: Wed, 20 Mar 2024 07:15:58 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <6f97071f-2c47-46f7-89f1-b0a80530ad38@app.fastmail.com>
-In-Reply-To: <1cfe630d-ddb4-42fc-ac42-54fa53cab747@gmx.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Help requested: btrfs can't read superblock
+Content-Language: en-US
+To: kind.moon1862@fastmail.com, linux-btrfs@vger.kernel.org
 References: <37de8ead-fefa-4fab-a0ed-bbdb2bf15cf4@app.fastmail.com>
  <e52a27e8-3b6f-4e33-bf0b-a225d7681454@gmx.com>
  <c233ac4a-dbce-4851-a8f3-78de0827ef19@app.fastmail.com>
  <1cfe630d-ddb4-42fc-ac42-54fa53cab747@gmx.com>
-Date: Tue, 19 Mar 2024 13:44:14 -0700
-From: kind.moon1862@fastmail.com
-To: "Qu Wenruo" <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Subject: Re: Help requested: btrfs can't read superblock
-Content-Type: text/plain
+ <6f97071f-2c47-46f7-89f1-b0a80530ad38@app.fastmail.com>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <6f97071f-2c47-46f7-89f1-b0a80530ad38@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:LJCY5U3hUhiNG6l2QuZXUO0X+xSWQb1Yo7vEPnsTH8Bqa+/Znm4
+ 4Pv6Y/JAbdWx6NEwLR/AcMcpP6DQ64WYxk819TnEHOZizB4ycZnDUGCngOy4WqKrgxvXdj4
+ dooLAtI2it8EJoCEiIOxO0FQdmXls76WfnH/EnoeBxUBpfMOnWgQATJulZZfGJsl+PFLDq0
+ 8c0R4wmj7kHeOcnJiGa/Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:+3VfQ/hOeCU=;4oYOnoe0jnSt2LLPGYDnT1vaG9C
+ ynsqkXfxQjk6Hg/RWpZQLOqBRwl7cZj6NwJLXcMYD7iPn/PNEP41nIX49fxlBAb59X22aw8FC
+ 76k8n6kSJ173gT1LV4Xa+zSl0lHVVn/u1axMChUh6UBSuE8BRpA92d/iifQ555n380n/olzGo
+ +47++kx181nSZtodngTEmUTYpNW+GjPv4/6MgbTtTEYlX2ZeoGuLuJvpqczyyZ887TLT+lQo9
+ BJrppG8u1guId1P8l+NclBiDarIzzYZfsHRadvFGJUvmdiM+f0P+qvk0/aQesCXVDotJeaZ9M
+ r1G8/EtRyMmLFBCpJW8REpDalg8GvAuVaACXRs4HBdlLJUCaAU/g6tsOVzEWrJk83QeCPR4WN
+ hKKpMWiX5iL8ESixTALyrHYQGDOOOH8h6c7v3v2mgpAsyaZcwgVTMdj+xMts6ioDi977wmWXX
+ k641VojITrdl2DwsA2iL9jSmVx6DnqXALWGGCheY1rsnM2aPQ3l0456kVSP0sji5t53xj4VI9
+ uEYIusJlqPi/vORCDg8MoAoG9Ha6DpKs3HdV0lZfqBrY7Di+TbNJaOVeJ6B8ovU1eTh984qLh
+ Q8VD7gtfp7YuFoM1xK5WkCOKlllUcMHJFcYQFJa/cKUJJ/MhgIAb0sFM1qQOTNMmXtv0y40qs
+ 4vDsfUj07Az6K+LiBRde9bLO/MVBddcVkuiBu1l97vy6sCp8g73PTbFbJxVaGQaboajZmo/U6
+ k1QVpNQ1QTJ5/oxdqQ7wolk7vFfyDBwOVvSOR9W6O/IwqIqCWfy8ukSF9LJnZSdcB0pBDfw6p
+ q574tT31cK3gNCRxCrjAQrV9/qooIWcHKHTNF8DyJXNu0=
 
-On Mon, Mar 18, 2024, at 17:53, Qu Wenruo wrote:
 
-> And still, please run memtest before doing any rescue.
-> As faulty hardware can always lead to weird problems no matter what.
 
-memtest86+ found bad RAM.  I will replace that before proceeding.  Thanks again.
+=E5=9C=A8 2024/3/20 07:14, kind.moon1862@fastmail.com =E5=86=99=E9=81=93:
+> On Mon, Mar 18, 2024, at 17:53, Qu Wenruo wrote:
+>
+>> And still, please run memtest before doing any rescue.
+>> As faulty hardware can always lead to weird problems no matter what.
+>
+> memtest86+ found bad RAM.  I will replace that before proceeding.  Thank=
+s again.
+
+Btrfs tree-checker, the second best memory tester. :)
 
