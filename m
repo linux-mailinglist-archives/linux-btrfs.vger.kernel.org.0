@@ -1,284 +1,171 @@
-Return-Path: <linux-btrfs+bounces-3474-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3475-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F23F88813B4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 15:52:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AA348813F7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 15:59:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7FD2282357
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 14:52:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F36A1C22BE7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 14:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4334879E;
-	Wed, 20 Mar 2024 14:52:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8E104AECF;
+	Wed, 20 Mar 2024 14:59:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JHSoHK0Q"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="KGvp75dB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752AD1EEE8;
-	Wed, 20 Mar 2024 14:52:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67BE9482D8
+	for <linux-btrfs@vger.kernel.org>; Wed, 20 Mar 2024 14:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710946363; cv=none; b=oFyqiPPF4Xb8Qb+MARyU+mMCMenCl+VFkGnMf/9zFHMqywWfF498NDpctXEIeraMfoMvQLuMUdRrDP2mX60zWFwYlBGBm1BvIJ5uVuiIkrFHgn5hUM9c0HhmeQQIEQPikr5ank2VfI9bzNfX0TAm8FmZznxekjMDsmG42LpFIIU=
+	t=1710946786; cv=none; b=sgwpM1Kv5eqJkaZ5fjt7MdZSJdX9BqSZbuRDpVLgZyDmqew9ClXLfhnRMPth1ojdXFQ4S0T06ctShWFDch/pPHm6fX7Dr8UusFDQA1Xaw2ASjdUWbHJsPE0PHsVhX0/m+WSmy5ZMqisvJrS2CJGyACGVDiSTjLZTY4CnPFb4pM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710946363; c=relaxed/simple;
-	bh=fRbF43tNR5LaOasnSZnpHwYr16/BZe/ldjMrxKzQ+8s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ULUuG97ley5XHtwG7K4nGUgkj2pEUIixHdvXzdwmIBipTPC1/3A27Na1ilxCBzxp9pUQ3dOcybL7b+UoaR2jzgmyYVMh0tocvj4bQ8NwZ/fFZrxA9/6FqspWoU3EcTO2OkDIT+TdxyoTQ6tGv4S66zjEWcMzXhwwr9l8btQwFUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JHSoHK0Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 441ABC433C7;
-	Wed, 20 Mar 2024 14:52:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710946363;
-	bh=fRbF43tNR5LaOasnSZnpHwYr16/BZe/ldjMrxKzQ+8s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=JHSoHK0Q8o7bBD7NxsRV4OKA0Mj+LpjFZ5iy3lROg6ovzOGJmJHKTYTAUsrGyfSw7
-	 JJiTr80xACaz7PXY94Nld+qn962BZBAuXkIipCtXWgWHa0Exrfl7ROkJF1GYXVR6mG
-	 s16jLEm8ve3RPkUqz2Vz3L7SfZvuRjtYpBA0eLd25RL1G/GaC08cM+PF+5lc6txAuK
-	 TjOuytLhIRxtXNUwAVxOQI8iUH6rHfasXzY5VFesxcb5Uc73NrcnsnF6oCjBEd0jix
-	 cXAz9VkKYKHdkp+FrU5Gv720MU3atkoKTsyf/yjPCfNMl+KiaKy9SFNzIgRJuCfSVS
-	 3KeSjKH9AhMIA==
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a46dd7b4bcbso270113866b.3;
-        Wed, 20 Mar 2024 07:52:43 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUc7V/8MNyywZ1Jp9mHo/SDiiyzxjK5QB4varr2/NO3iMugYYsZhoPp5RysZYbU/acgA+wh2rNJhKRMdqjjAcacj5YUkuK0tJqanT4=
-X-Gm-Message-State: AOJu0YzpiBHRUuRaadQYewdyixr9LKQrmL2GfKz87zsSRn/ALercseS9
-	QHlSzL/lu8xE6baMOyqxOteaOZIBjfSIdO7rKFEwuOPZ8V0LiTR6Kn2Vcx4NCDlUJgcvVuYAquG
-	rPxQFwZe90k3jZorrUEemI/vZqnU=
-X-Google-Smtp-Source: AGHT+IGR1ZHMVFjR9FEAFzRaXWGxNLcDiZVyTfcjsTREJCNk2pGYM0KvdSzIZeUXy8yrR2yzIqApgo/HvEALsfumqF4=
-X-Received: by 2002:a17:906:1707:b0:a46:708d:a9d3 with SMTP id
- c7-20020a170906170700b00a46708da9d3mr11075106eje.71.1710946361795; Wed, 20
- Mar 2024 07:52:41 -0700 (PDT)
+	s=arc-20240116; t=1710946786; c=relaxed/simple;
+	bh=h21dVuyNVfTNxshX0y44q1WoJE9/g2XJg21dr2VXt1Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XNNB9QjfS/tsGTMCzECpCJ126d+Onayx7DhMNr53T0f5c7AGg27vheSqixx47XYFfs+ROUv9b+GNJsBNL1L/H04Gv/zAQVejSgIYwKfVO4MmEIgX+jihA3lqAgmstHfGNRj5E2Ehaw7CtB36zxBnmvAwUobUa+KFZhQSh/dOcLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=KGvp75dB; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-607c5679842so74010047b3.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Mar 2024 07:59:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1710946783; x=1711551583; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OaLfQuD/RFNvrlkL0TXrzelPsLSljoHmWGFGdVJgfII=;
+        b=KGvp75dBS/ZBPsNB+goeGhKMi1LJh0rqTW/PClLa6qFz8/AMVvlvijpoCUOmGoRmtb
+         GsOSBcvQJJr6EsSfdCyVNKxrDSNUovv5fdsI+5eWZ0AfWagf/Y6w+Y0Q5NjB2ukeoAWd
+         Q3ADiQ2MPieIQqMJoFp/JYf88L/33sXmhIUUhnWKEQ2Q2TkMb7QMvFq1pDIKbbPARecr
+         QGp8W+CLP+oMpKYT0/W2T92G+ommwHTIEia1v2hjnNgzcHEMY1EwsfZH6KCDs0jnIo6O
+         y+MZHSrSskGIKL15LmmpKj+0uWIF3kNmLKO5tReRd8lEZ8I9V5/IRSPfdX5htSokb+Ba
+         MCsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710946783; x=1711551583;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OaLfQuD/RFNvrlkL0TXrzelPsLSljoHmWGFGdVJgfII=;
+        b=rXqAtWT9MN5eSALw0gSuKyhdAGmMhUoEpj/6ACPAzmTO4vd/elaoCMm7U5bzyTSUfw
+         io12veP/nt7mxovv1FQ6leIp2FCitPdoxt2/xc0/RHyAY6G3c8Sm01grDcmggWUVpm41
+         vFFQ0vEjvgAtVgzal7edPkppLhpOay6acuWMG0gops4txrwnjwJlqd2wTJQv2rmuPMVF
+         j2Ik/IviYgTN1QWaWBUenfB5LETi/iF+i5ghG8VMdZGY9ArB0J2hKjm4WWFQf6NQRJ0S
+         EmrghHuty/uJRmxODRKwLu/p5U3lBtIDgMvap4Ww0xMvYBctLtNcEbdoJyaqu8qzg5Sh
+         A4mg==
+X-Forwarded-Encrypted: i=1; AJvYcCUNQ3/nza0Qt5RWOyfXiw36xNJKJx8JAoNjVU16xnMqC+TmCON9HPHtLK/xHWOj9GWLPFqvg7e4Yegacmd4xx8xHqZ+HoLUc1pcUO8=
+X-Gm-Message-State: AOJu0YzpPsr/vwm4+YvbfA8BJcPD1Vi+836h6KUvy9ZInEYMoAOfE3+p
+	6w67yyjdxUzRmJov6A8JUYOzdGePjyPivR+BA2cRuNTvOB6eRKF6WJ9n1+oi0v/36srZ05sSy0c
+	5
+X-Google-Smtp-Source: AGHT+IHKiq3fb8pd30iGz2G/+xyd0suwqzfLoUXk6KZ4kMpmBz/3c/gyBY5wDRO4JwMKv3QJTm6U5g==
+X-Received: by 2002:a0d:f744:0:b0:609:fad9:1faa with SMTP id h65-20020a0df744000000b00609fad91faamr2249288ywf.40.1710946783240;
+        Wed, 20 Mar 2024 07:59:43 -0700 (PDT)
+Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id fg14-20020a05622a580e00b00430bddc75a5sm5254090qtb.23.2024.03.20.07.59.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 07:59:42 -0700 (PDT)
+Date: Wed, 20 Mar 2024 10:59:42 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Zorro Lang <zlang@kernel.org>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] fstests: add a regression test for fiemap into an
+ mmap range
+Message-ID: <20240320145942.GB3091349@perftesting>
+References: <b8160b6dbaf4899ff95928a7af006a126baa8f9c.1707756045.git.josef@toxicpanda.com>
+ <20240313154851.zvawwfmoufhdwtel@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <076b7d22d653a046bf3710c4fa04cc155b6cf07b.1710945314.git.josef@toxicpanda.com>
-In-Reply-To: <076b7d22d653a046bf3710c4fa04cc155b6cf07b.1710945314.git.josef@toxicpanda.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 20 Mar 2024 14:52:04 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4CE5WSWXhDF4qy+yPjmkGiTPw2nUVFauOazbYyMUkw6Q@mail.gmail.com>
-Message-ID: <CAL3q7H4CE5WSWXhDF4qy+yPjmkGiTPw2nUVFauOazbYyMUkw6Q@mail.gmail.com>
-Subject: Re: [PATCH v3] generic/808: add a regression test for fiemap into an
- mmap range
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313154851.zvawwfmoufhdwtel@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 
-On Wed, Mar 20, 2024 at 2:36=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
-wrote:
->
-> Btrfs had a deadlock that you could trigger by mmap'ing a large file and
-> using that as the buffer for fiemap.  This test adds a c program to do
-> this, and the fstest creates a large enough file and then runs the
-> reproducer on the file.  Without the fix btrfs deadlocks, with the fix
-> we pass fine.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+On Wed, Mar 13, 2024 at 11:48:51PM +0800, Zorro Lang wrote:
+> On Mon, Feb 12, 2024 at 11:41:14AM -0500, Josef Bacik wrote:
+> > Btrfs had a deadlock that you could trigger by mmap'ing a large file and
+> > using that as the buffer for fiemap.  This test adds a c program to do
+> > this, and the fstest creates a large enough file and then runs the
+> > reproducer on the file.  Without the fix btrfs deadlocks, with the fix
+> > we pass fine.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> > v1->v2:
+> > - Add the fiemap group to the test.
+> > - Actually include the reproducer helper program.
+> 
+> Looks like this patch is missed (except the author changed the patch subject:),
+> correct me if I'm wrong. The last review point hoped to add "src/fiemap-fault"
+> to .gitignore.
+> 
+> > 
+> >  src/Makefile          |  2 +-
+> >  src/fiemap-fault.c    | 73 +++++++++++++++++++++++++++++++++++++++++++
+> >  tests/generic/740     | 41 ++++++++++++++++++++++++
+> >  tests/generic/740.out |  2 ++
+> >  4 files changed, 117 insertions(+), 1 deletion(-)
+> >  create mode 100644 src/fiemap-fault.c
+> >  create mode 100644 tests/generic/740
+> >  create mode 100644 tests/generic/740.out
+> > 
+> 
+> [snip]
+> 
+> > diff --git a/tests/generic/740 b/tests/generic/740
+> > new file mode 100644
+> > index 00000000..30ace1dd
+> > --- /dev/null
+> > +++ b/tests/generic/740
+> > @@ -0,0 +1,41 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (c) 2023 Meta Platforms, Inc.  All Rights Reserved.
+> > +#
+> > +# FS QA Test 708
+> > +#
+> > +# Test fiemap into an mmaped buffer of the same file
+> > +#
+> > +# Create a reasonably large file, then run a program which mmaps it and uses
+> > +# that as a buffer for an fiemap call.  This is a regression test for btrfs
+> > +# where we used to hold a lock for the duration of the fiemap call which would
+> > +# result in a deadlock if we page faulted.
+> > +#
+> > +. ./common/preamble
+> > +_begin_fstest quick auto fiemap
+> > +[ $FSTYP == "btrfs" ] && \
+> > +	_fixed_by_kernel_commit xxxxxxxxxxxx \
+> 
+> This commit id is "b0ad381fa769" now.
+> 
+> > +		"btrfs: fix deadlock with fiemap and extent locking"
+> > +
+> > +# real QA test starts here
+> > +_supported_fs generic
+> > +_require_test
+> > +_require_odirect
+> > +_require_test_program fiemap-fault
+> > +dst=$TEST_DIR/fiemap-fault-$seq
+> > +
+> > +echo "Silence is golden"
+> > +
+> > +for i in $(seq 0 2 1000)
+> > +do
+> > +	$XFS_IO_PROG -d -f -c "pwrite -q $((i * 4096)) 4096" $dst
+> > +done
+> 
+> _require_sparse_files ?
+> 
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+This is the only comment I didn't incorporate, I'm not looking for sparse files,
+I'm just looking for a lot of extents.  If smb fills in the holes I suppose this
+will only be a problem if it fills them in contiguously, but it'll just create a
+4gib file instead of a 2gib file.  Thanks,
 
-Looks good to me now, thanks.
-
-> ---
-> v2->v3:
-> - Add fiemap-fault to .gitignore
-> - Added a _cleanup() helper
-> - Just let the output of fiemap-fault go instead of using || _fail
-> - Added the munmap
-> - Moved $dst to $TEST_DIR/$seq
->
->  .gitignore            |  1 +
->  src/Makefile          |  2 +-
->  src/fiemap-fault.c    | 74 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/808     | 48 ++++++++++++++++++++++++++++
->  tests/generic/808.out |  2 ++
->  5 files changed, 126 insertions(+), 1 deletion(-)
->  create mode 100644 src/fiemap-fault.c
->  create mode 100755 tests/generic/808
->  create mode 100644 tests/generic/808.out
->
-> diff --git a/.gitignore b/.gitignore
-> index 3b160209..f0fb72bd 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -205,6 +205,7 @@ tags
->  /src/vfs/mount-idmapped
->  /src/log-writes/replay-log
->  /src/perf/*.pyc
-> +/src/filemap-fault
->
->  # Symlinked files
->  /tests/generic/035.out
-> diff --git a/src/Makefile b/src/Makefile
-> index e7442487..ab98a06f 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -34,7 +34,7 @@ LINUX_TARGETS =3D xfsctl bstat t_mtab getdevicesize pre=
-allo_rw_pattern_reader \
->         attr_replace_test swapon mkswap t_attr_corruption t_open_tmpfiles=
- \
->         fscrypt-crypt-util bulkstat_null_ocount splice-test chprojid_fail=
- \
->         detached_mounts_propagation ext4_resize t_readdir_3 splice2pipe \
-> -       uuid_ioctl t_snapshot_deleted_subvolume
-> +       uuid_ioctl t_snapshot_deleted_subvolume fiemap-fault
->
->  EXTRA_EXECS =3D dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
->               btrfs_crc32c_forged_name.py popdir.pl popattr.py \
-> diff --git a/src/fiemap-fault.c b/src/fiemap-fault.c
-> new file mode 100644
-> index 00000000..73260068
-> --- /dev/null
-> +++ b/src/fiemap-fault.c
-> @@ -0,0 +1,74 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
-> + */
-> +
-> +#include <sys/ioctl.h>
-> +#include <sys/mman.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <linux/fs.h>
-> +#include <linux/types.h>
-> +#include <linux/fiemap.h>
-> +#include <err.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +
-> +int prep_mmap_buffer(int fd, void **addr)
-> +{
-> +       struct stat st;
-> +       int ret;
-> +
-> +       ret =3D fstat(fd, &st);
-> +       if (ret)
-> +               err(1, "failed to stat %d", fd);
-> +
-> +       *addr =3D mmap(NULL, st.st_size, PROT_READ|PROT_WRITE, MAP_SHARED=
-, fd, 0);
-> +       if (*addr =3D=3D MAP_FAILED)
-> +               err(1, "failed to mmap %d", fd);
-> +
-> +       return st.st_size;
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +       struct fiemap *fiemap;
-> +       size_t sz, last =3D 0;
-> +       void *buf =3D NULL;
-> +       int ret, fd;
-> +
-> +       if (argc !=3D 2)
-> +               errx(1, "no in and out file name arguments given");
-> +
-> +       fd =3D open(argv[1], O_RDWR, 0666);
-> +       if (fd =3D=3D -1)
-> +               err(1, "failed to open %s", argv[1]);
-> +
-> +       sz =3D prep_mmap_buffer(fd, &buf);
-> +
-> +       fiemap =3D (struct fiemap *)buf;
-> +       fiemap->fm_flags =3D 0;
-> +       fiemap->fm_extent_count =3D (sz - sizeof(struct fiemap)) /
-> +                                 sizeof(struct fiemap_extent);
-> +
-> +       while (last < sz) {
-> +               int i;
-> +
-> +               fiemap->fm_start =3D last;
-> +               fiemap->fm_length =3D sz - last;
-> +
-> +               ret =3D ioctl(fd, FS_IOC_FIEMAP, (unsigned long)fiemap);
-> +               if (ret < 0)
-> +                       err(1, "fiemap failed %d", errno);
-> +               for (i =3D 0; i < fiemap->fm_mapped_extents; i++)
-> +                      last =3D fiemap->fm_extents[i].fe_logical +
-> +                              fiemap->fm_extents[i].fe_length;
-> +       }
-> +
-> +       munmap(buf, sz);
-> +       close(fd);
-> +       return 0;
-> +}
-> diff --git a/tests/generic/808 b/tests/generic/808
-> new file mode 100755
-> index 00000000..36015f35
-> --- /dev/null
-> +++ b/tests/generic/808
-> @@ -0,0 +1,48 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 808
-> +#
-> +# Test fiemap into an mmaped buffer of the same file
-> +#
-> +# Create a reasonably large file, then run a program which mmaps it and =
-uses
-> +# that as a buffer for an fiemap call.  This is a regression test for bt=
-rfs
-> +# where we used to hold a lock for the duration of the fiemap call which=
- would
-> +# result in a deadlock if we page faulted.
-> +#
-> +. ./common/preamble
-> +_begin_fstest quick auto fiemap
-> +[ $FSTYP =3D=3D "btrfs" ] && \
-> +       _fixed_by_kernel_commit b0ad381fa769 \
-> +               "btrfs: fix deadlock with fiemap and extent locking"
-> +
-> +_cleanup()
-> +{
-> +       rm -f $dst
-> +       cd /
-> +       rm -r -f $tmp.*
-> +}
-> +
-> +# real QA test starts here
-> +_supported_fs generic
-> +_require_test
-> +_require_odirect
-> +_require_test_program fiemap-fault
-> +dst=3D$TEST_DIR/$seq/fiemap-fault
-> +
-> +mkdir -p $TEST_DIR/$seq
-> +
-> +echo "Silence is golden"
-> +
-> +for i in $(seq 0 2 1000)
-> +do
-> +       $XFS_IO_PROG -d -f -c "pwrite -q $((i * 4096)) 4096" $dst
-> +done
-> +
-> +$here/src/fiemap-fault $dst
-> +
-> +# success, all done
-> +status=3D$?
-> +exit
-> +
-> diff --git a/tests/generic/808.out b/tests/generic/808.out
-> new file mode 100644
-> index 00000000..88253428
-> --- /dev/null
-> +++ b/tests/generic/808.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 808
-> +Silence is golden
-> --
-> 2.43.0
->
->
+Josef
 
