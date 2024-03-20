@@ -1,79 +1,78 @@
-Return-Path: <linux-btrfs+bounces-3457-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3458-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873DF880A3B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 04:55:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53091880A3D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 04:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB3EC1C21C7E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 03:55:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC611B23062
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 03:55:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCEDF12E4A;
-	Wed, 20 Mar 2024 03:55:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF98134C9;
+	Wed, 20 Mar 2024 03:55:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hxRbw/um";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CGQvNMA0"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qitHLOI2";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qitHLOI2"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD74111712;
-	Wed, 20 Mar 2024 03:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C37511721;
+	Wed, 20 Mar 2024 03:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710906909; cv=none; b=KA+YRGq+y3VmgHfeSi8VzB/skbBJrJht9DFbEv8NLLtoZ5riXns5gtC6UsF+W94im0bqN4U522HQFqAKwPWs9yZp8HW4ygpPnXn1pXwgxzjI3f8r9eujEcdkoP04uRLf7FBpEa3DwH9kzUNWCVjlBWxDhqC+IjG5qmnHLB6WC9Q=
+	t=1710906909; cv=none; b=UrgoJP6H/VBlSP88FsesGoLp5tl7Z9dsbHL/ltax9XmXaV0U9eG16KhyD8PrcLvUD+vlDBtmewp/IziR4XLTOexBoBDvAU0Tc2eXSX/ikWZ6riydZx1H9T4W/eIx2zoco/6u77uc7Oj/TtI2OH9a62OP3yoMzn4WmuLF716RBfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710906909; c=relaxed/simple;
-	bh=DTEY7VYqjVWSVgeUO3pStLySDT5CX8L0ns649WPhDlA=;
+	bh=0MkS8Vs1qJYWPfUsCU7D2Mq8IVfHXzGvwv7l/XeFkcQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mhmsaZ3UWjyPQvcp8zchGvlaiprAb7NIcDXIx+5YfbeomAPWaOA6MC5ggv3bIR092NpITWCZPU5k8TSJv3X5WuzORls/dtg0HTx2J1yc1BeoveQJvirVrFeG0CN4IQv29DC8wOW+GjQRzxPTruxyb6hc7brn/xXfwe+IU/wllVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hxRbw/um; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CGQvNMA0; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=Ul1ubzFY5xroSCiEoGHAdtSBvncHsE3Xj6iVlcmwrz+EnKQCnu/O7GWRMiRGR7qX7bm+d2TXHbEk2FX+jWfZn4snQzunVX76laYpta3KIq5/7K2k4vpG21ZrOXsxNmYDeitQE/+98oe/2YCCor43banVVa9n5OZzlcj2e/QsVS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qitHLOI2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qitHLOI2; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D823233B83;
-	Wed, 20 Mar 2024 03:55:03 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CBB6633B82;
+	Wed, 20 Mar 2024 03:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710906904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1710906905; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NOxSiBDQicq7TRu9hGdzVU0YxChxJdPEKDdU6Tanj/A=;
-	b=hxRbw/umnp4NqPupWqjK+s1owcD6rjp5OL6FgPxMKBFNrGT94/ba2SewPTOjxb3kl8c94N
-	2dq72CqodsurDdKLWySnPllIsEqnb0yCDTYMNE7Zq01XEf/ARKc1iHmOZqyvQ2ztl3ztFp
-	nE53nM0M7QmxEgGdgg6yNdSXEvavqTg=
+	bh=kmdTrfE3q3JEsO18FddVR9pA5yAPIye6EJlyDX73DU0=;
+	b=qitHLOI2IjsCS0gSVHmBKUyxou0fUckLtAu+Ab70tty07cZOQn5hzfWQ8P6HllywztM8RO
+	VKxouxP/zTH2RnocJCeo8mMgg3gn+PNyxMTYxuhjwgiBxX78eLm81NW4vTdTFGjOCjs36M
+	SaeZa7Pml/pCelrLjNwm2LHVAo00gR4=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710906903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1710906905; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NOxSiBDQicq7TRu9hGdzVU0YxChxJdPEKDdU6Tanj/A=;
-	b=CGQvNMA0KCarSSMPVh7NIB5BPaK8SraSEw3n/WUU7tDi7zY4B0hmOzveBkWvNzJFVM4Mwt
-	BjhZN/2zCs1Hhw/4azAXI6um+ysOmePzNWbbYAWI9jMkec4bIJpUsRWGqHJtxmLqUtImHY
-	ZOqzrTXyMJSbLI6TQYLA+H5yNmk4r6E=
+	bh=kmdTrfE3q3JEsO18FddVR9pA5yAPIye6EJlyDX73DU0=;
+	b=qitHLOI2IjsCS0gSVHmBKUyxou0fUckLtAu+Ab70tty07cZOQn5hzfWQ8P6HllywztM8RO
+	VKxouxP/zTH2RnocJCeo8mMgg3gn+PNyxMTYxuhjwgiBxX78eLm81NW4vTdTFGjOCjs36M
+	SaeZa7Pml/pCelrLjNwm2LHVAo00gR4=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1DD57136AE;
-	Wed, 20 Mar 2024 03:55:01 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6564E136AE;
+	Wed, 20 Mar 2024 03:55:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GJqKMRVe+mVlbgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 20 Mar 2024 03:55:01 +0000
+	id cCM/Chhe+mVlbgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 20 Mar 2024 03:55:04 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: stable@vger.kernel.org,
-	Anand Jain <anand.jain@oracle.com>,
 	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2 1/7] btrfs: scrub: fix incorrectly reported logical/physical address
-Date: Wed, 20 Mar 2024 14:24:51 +1030
-Message-ID: <c8f46ab5595efb752b9a7a624a13cada66d73a04.1710906371.git.wqu@suse.com>
+Subject: [PATCH v2 2/7] btrfs: reduce the log level for btrfs_dev_stat_inc_and_print()
+Date: Wed, 20 Mar 2024 14:24:52 +1030
+Message-ID: <8f3e7a57b40973e62c0d758922971566ca96fb2e.1710906371.git.wqu@suse.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1710906371.git.wqu@suse.com>
 References: <cover.1710906371.git.wqu@suse.com>
@@ -84,15 +83,15 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
+X-Spam-Score: -1.50
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.50 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
+	 RCPT_COUNT_THREE(0.00)[3];
 	 R_MISSING_CHARSET(2.50)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
@@ -100,148 +99,75 @@ X-Spamd-Result: default: False [0.70 / 50.00];
 	 TO_DN_SOME(0.00)[];
 	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
 	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,suse.com:email];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.19)[-0.934];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+	 BAYES_HAM(-3.00)[100.00%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=qitHLOI2
+X-Rspamd-Queue-Id: CBB6633B82
 
-[BUG]
-Scrub is not reporting the correct logical/physical address, it can be
-verified by the following script:
+Currently when we increase the device statistics, it would always lead
+to an error message in the kernel log.
 
- # mkfs.btrfs -f $dev1
- # mount $dev1 $mnt
- # xfs_io -f -c "pwrite -S 0xaa 0 128k" $mnt/file1
- # umount $mnt
- # xfs_io -f -c "pwrite -S 0xff 13647872 4k" $dev1
- # mount $dev1 $mnt
- # btrfs scrub start -fB $mnt
- # umount $mnt
+However this output is mostly duplicated with the existing ones:
 
-Note above 13647872 is the physical address for logical 13631488 + 4K.
+- For scrub operations
+  We always have the following messages:
+  * "fixed up error at logical %llu"
+  * "unable to fixup (regular) error at logical %llu"
 
-Scrub would report the following error:
+  So no matter if the corruption is repaired or not, it scrub would
+  output an error message to indicate the problem.
 
- BTRFS error (device dm-2): unable to fixup (regular) error at logical 13631488 on dev /dev/mapper/test-scratch1 physical 13631488
- BTRFS warning (device dm-2): checksum error at logical 13631488 on dev /dev/mapper/test-scratch1, physical 13631488, root 5, inode 257, offset 0, length 4096, links 1 (path: file1)
+- For non-scrub read operations
+  We also have the following messages:
+  * "csum failed root %lld inode %llu off %llu" for data csum mismatch
+  * "bad (tree block start|fsid|tree block level)" for metadata
+  * "read error corrected: ino %llu off %llu" for repaired data/metadata
 
-On the other hand, "btrfs check --check-data-csum" is reporting the
-correct logical/physical address:
+So the error message from btrfs_dev_stat_inc_and_print() is duplicated.
 
- Checking filesystem on /dev/test/scratch1
- UUID: db2eb621-b09d-4f24-8199-da17dc7b3201
- [5/7] checking csums against data
- mirror 1 bytenr 13647872 csum 0x13fec125 expected csum 0x656bd64e
- ERROR: errors found in csum tree
+The real usage for the btrfs device statistics is for some user space
+daemon to check if there is any new errors, acting like some checks on
+SMART, thus we don't really need/want those messages in dmesg.
 
-[CAUSE]
-In the function scrub_stripe_report_errors(), we always use the
-stripe->logical and its physical address to print the error message, not
-taking the sector number into consideration at all.
+This patch would reduce the log level to debug (disabled by default) for
+btrfs_dev_stat_inc_and_print().
+For users really want to utilize btrfs devices statistics, they should
+go check "btrfs device stats" periodically, and we should focus the
+kernel error messages to more important things.
 
-[FIX]
-Fix the error reporting function by calculating logical/physical with
-the sector number.
-
-Now the scrub report is correct:
-
- BTRFS error (device dm-2): unable to fixup (regular) error at logical 13647872 on dev /dev/mapper/test-scratch1 physical 13647872
- BTRFS warning (device dm-2): checksum error at logical 13647872 on dev /dev/mapper/test-scratch1, physical 13647872, root 5, inode 257, offset 16384, length 4096, links 1 (path: file1)
-
-Fixes: 0096580713ff ("btrfs: scrub: introduce error reporting functionality for scrub_stripe")
-CC: stable@vger.kernel.org #6.4+
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+CC: stable@vger.kernel.org
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ fs/btrfs/volumes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index fa25004ab04e..72aa74310612 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -870,7 +870,7 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
- 				      DEFAULT_RATELIMIT_BURST);
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
- 	struct btrfs_device *dev = NULL;
--	u64 physical = 0;
-+	u64 stripe_physical = stripe->physical;
- 	int nr_data_sectors = 0;
- 	int nr_meta_sectors = 0;
- 	int nr_nodatacsum_sectors = 0;
-@@ -903,13 +903,17 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
- 		 */
- 		if (ret < 0)
- 			goto skip;
--		physical = bioc->stripes[stripe_index].physical;
-+		stripe_physical = bioc->stripes[stripe_index].physical;
- 		dev = bioc->stripes[stripe_index].dev;
- 		btrfs_put_bioc(bioc);
- 	}
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index e49935a54da0..126145950ed3 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -7828,7 +7828,7 @@ void btrfs_dev_stat_inc_and_print(struct btrfs_device *dev, int index)
  
- skip:
- 	for_each_set_bit(sector_nr, &stripe->extent_sector_bitmap, stripe->nr_sectors) {
-+		const u64 logical = stripe->logical +
-+				    (sector_nr << fs_info->sectorsize_bits);
-+		const u64 physical = stripe_physical +
-+				     (sector_nr << fs_info->sectorsize_bits);
- 		bool repaired = false;
- 
- 		if (stripe->sectors[sector_nr].is_metadata) {
-@@ -938,12 +942,12 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
- 			if (dev) {
- 				btrfs_err_rl_in_rcu(fs_info,
- 			"fixed up error at logical %llu on dev %s physical %llu",
--					    stripe->logical, btrfs_dev_name(dev),
-+					    logical, btrfs_dev_name(dev),
- 					    physical);
- 			} else {
- 				btrfs_err_rl_in_rcu(fs_info,
- 			"fixed up error at logical %llu on mirror %u",
--					    stripe->logical, stripe->mirror_num);
-+					    logical, stripe->mirror_num);
- 			}
- 			continue;
- 		}
-@@ -952,26 +956,26 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
- 		if (dev) {
- 			btrfs_err_rl_in_rcu(fs_info,
- 	"unable to fixup (regular) error at logical %llu on dev %s physical %llu",
--					    stripe->logical, btrfs_dev_name(dev),
-+					    logical, btrfs_dev_name(dev),
- 					    physical);
- 		} else {
- 			btrfs_err_rl_in_rcu(fs_info,
- 	"unable to fixup (regular) error at logical %llu on mirror %u",
--					    stripe->logical, stripe->mirror_num);
-+					    logical, stripe->mirror_num);
- 		}
- 
- 		if (test_bit(sector_nr, &stripe->io_error_bitmap))
- 			if (__ratelimit(&rs) && dev)
- 				scrub_print_common_warning("i/o error", dev, false,
--						     stripe->logical, physical);
-+						     logical, physical);
- 		if (test_bit(sector_nr, &stripe->csum_error_bitmap))
- 			if (__ratelimit(&rs) && dev)
- 				scrub_print_common_warning("checksum error", dev, false,
--						     stripe->logical, physical);
-+						     logical, physical);
- 		if (test_bit(sector_nr, &stripe->meta_error_bitmap))
- 			if (__ratelimit(&rs) && dev)
- 				scrub_print_common_warning("header error", dev, false,
--						     stripe->logical, physical);
-+						     logical, physical);
- 	}
- 
- 	spin_lock(&sctx->stat_lock);
+ 	if (!dev->dev_stats_valid)
+ 		return;
+-	btrfs_err_rl_in_rcu(dev->fs_info,
++	btrfs_debug_rl_in_rcu(dev->fs_info,
+ 		"bdev %s errs: wr %u, rd %u, flush %u, corrupt %u, gen %u",
+ 			   btrfs_dev_name(dev),
+ 			   btrfs_dev_stat_read(dev, BTRFS_DEV_STAT_WRITE_ERRS),
 -- 
 2.44.0
 
