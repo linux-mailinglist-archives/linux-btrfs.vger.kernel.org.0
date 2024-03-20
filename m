@@ -1,172 +1,172 @@
-Return-Path: <linux-btrfs+bounces-3480-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3481-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1F2C881586
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 17:22:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CFA18818FC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 22:20:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D30BBB232D3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 16:22:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAF9B2837CC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 21:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6DB854FBB;
-	Wed, 20 Mar 2024 16:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A63285955;
+	Wed, 20 Mar 2024 21:20:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bF5heiU9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="McsXNZ/m";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JDIcfAXn";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZQHvRJC6"
+	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="K4C37thQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081F754BFD;
-	Wed, 20 Mar 2024 16:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A304F8B2
+	for <linux-btrfs@vger.kernel.org>; Wed, 20 Mar 2024 21:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710951716; cv=none; b=gSpy9NnFdV2MCxoUKcsGLwnDmjQ00jUh0zWePc994zC/pI7/Aq/peIKigdWQ45ykDBVEwbsLaZCbWlCsiktJojXVUYIy27mMAfZ+6JyZMJ/3vzA5JSowT2RUG3TXr7MSf1rfy07c7Aol60MbKtDCMWjZJ2aVUY1S7VV++iIqxKY=
+	t=1710969601; cv=none; b=m2pcv7Iw5hQn5wqe/S3vrFtd8R4Ra5DBc+qKFv8Xax58IPpCn6/rE0mhBhEoRA88Vd5riBVh8lESRoUi6YFzkFzjnKwCwnrjrFTBLP/4A9dYjSoXSikzY5yxWWo3QN8ZzTVVBOc8/o8f/u4KJvHR0XyMyDvBXhhDxD0ph3LQC1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710951716; c=relaxed/simple;
-	bh=ZmXcOT2M7y1OmxH/SEp9ytHnYcwwQWvq2UwG3089PQU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tI7I/EE+OEjwglGlKl/FvrCeq6jUrJV3mDHfoalaXDYvHoNwmZrVGk8ph2+9DqqjB0FVmGLoSeeS5k0m2LMeuFkF9IqOlMNQVSW+dtq4PlCOL9A5ALaETxtRZiDFMFiLDvxmwqX+cqk/z/VkPAnR8xclgKv+NCxHKPqZdXGem6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bF5heiU9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=McsXNZ/m; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JDIcfAXn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZQHvRJC6; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BD1BF5BF34;
-	Wed, 20 Mar 2024 16:21:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710951712;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
-	b=bF5heiU9lZlOxJ7sb27QO9chlKb3kbhK7em6NtYKoN7YBYVxitQCBUUh36OYpm3pmjGcnF
-	3waG4fSEVrUyNMY3+9Zxn4z260/sd1qo1jBfjyJ4OSOCyAjDy8GPH3rPEwUfwRm2MUwqhJ
-	gzCcHCr/x0HzFdGKMF0KVFBuf/sZJZQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710951712;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
-	b=McsXNZ/mbf8MeBIaJemGCPCpS4SUFpZLu87Gl5brQVnG8obcHAecuE99YzRQk7DM78ZxyK
-	rwfO4KfVQ8oeAHBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710951711;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
-	b=JDIcfAXnDteeFPv+o9oBlO1bHyYU0fRPgMQ5j7Htgnz0KLdk4TLUa0tnRv3I1POz+O4tXl
-	T6ciwjBmFIV32CwBSfcUm8w+TpDuPK2/1H1Ks9lHO3ZOg98+SsZCMWzOuq4pJGn6jxj4mv
-	Pq/uzGDP6fHruG5ikDHmVWzyRrsWBPY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710951711;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ulbF0+b/Gh4h1bLzsnJVEAgXjbVqI/QZ2p0fDeGTGWc=;
-	b=ZQHvRJC6fn4T+b6WK/fikmf2EAXzHJWDlsbn0Ym/bnnWofpPtSjM8OIolzNG5rFMNTPWBr
-	38hXFWq+fPpU9zBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9922C136D6;
-	Wed, 20 Mar 2024 16:21:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id m4YzJR8N+2WdZgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 20 Mar 2024 16:21:51 +0000
-Date: Wed, 20 Mar 2024 17:14:33 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Maximilian Heyne <mheyne@amazon.de>
-Cc: Goldwyn Rodrigues <rgoldwyn@suse.com>,
-	Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.com>,
-	stable@vger.kernel.org, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: allocate btrfs_ioctl_defrag_range_args on stack
-Message-ID: <20240320161433.GF14596@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20240320113156.22283-1-mheyne@amazon.de>
+	s=arc-20240116; t=1710969601; c=relaxed/simple;
+	bh=O0NyS2tAlYjn72Mc5iGSUnA9rKMdkK2ylPJexRPn9BM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=kczs/Cfy9vKeTV0mx5/9boAZcZM0EnZpJXiIOj8974EMzbWwNXbdQlMA35jEZpVBllh1lUGP3W25HUSXQpghuPCzOH5QbdCnr5qEyEkZjeK3g22rv1UpVGT5mA9wt2E6l8eM6h7iqQnVUb4jnoU0+wruOKipN1gkBgji91CW5hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it; spf=pass smtp.mailfrom=libero.it; dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b=K4C37thQ; arc=none smtp.client-ip=213.209.10.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libero.it
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-18.iol.local with ESMTPA
+	id n3JHrElBYwDoyn3JHr66ks; Wed, 20 Mar 2024 22:17:19 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+	t=1710969439; bh=iL1e33md96VwKNQwarO8vX0OoIcPitoCyjAlT7+Myps=;
+	h=From;
+	b=K4C37thQUhpxmO8IWrWD4GERAtzn7jAqXz5p7lLObJpnFTnOT8IvtBWFa6gKBTCyI
+	 Ng+Z29ES8e9PDIXRdDzoqZg+nwzvSjlUIWcJxraPcRDipAk/lrVnPl47F3WekzH6wh
+	 ltuV1bTQ93fbAuaoWlXSBnHBk66YPDulezDDzHu55OeG75TbdbIu/Fkr11F0fbHynv
+	 XQFJwP3szq7dh+3WT9+HV2QYU8zIqBxrHsU3lacUMysc3JpFbAgQna5PwgE6a2EF64
+	 rFtZZIodal68MUJ5OQiT4bAhMdXEiCz2CqkVIBj+/mhzyLK6erOhhW3xq7K2fwCFzM
+	 x8nf37YN1MFrw==
+X-CNFS-Analysis: v=2.4 cv=N5qKFH9B c=1 sm=1 tr=0 ts=65fb525f cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=yPCof4ZbAAAA:8 a=CDD-V8FDm4eWBCFA3boA:9 a=QEXdDO2ut3YA:10
+ a=cMe9W2YZAC63McFW2YE1:22
+Message-ID: <38144688-ec35-4c35-bf5b-4e7a581c4d1f@libero.it>
+Date: Wed, 20 Mar 2024 22:17:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240320113156.22283-1-mheyne@amazon.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JDIcfAXn;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=ZQHvRJC6
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.31 / 50.00];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-0.10)[65.31%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,oracle.com:email,amazon.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -1.31
-X-Rspamd-Queue-Id: BD1BF5BF34
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH 01/29] btrfs: btrfs_cleanup_fs_roots rename ret to ret2
+ and err to ret
+Content-Language: en-US
+To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <cover.1710857863.git.anand.jain@oracle.com>
+ <b1eaaa193879d4ae920a76dfa3bc5f2e6c7f8a4d.1710857863.git.anand.jain@oracle.com>
+From: Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <b1eaaa193879d4ae920a76dfa3bc5f2e6c7f8a4d.1710857863.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfOie61XDtljm5i0Qv70xMSq6rNr7dNTxpq2MmAAkNNLV/bB3T1rj5whmGmJKKmse+WBzuX5iGz3GNNNldACjJoz5kYjqGrrpNO6nLuKuEMZBQPlIW+e0
+ i5nPGVUiT+1wJgej2dE6XF6rO4l860RfxWJSFiIjX2SjZodPLvqfX+2aI0Q2NJ67xojE3E6rdWR1Pw0srQc8SvROuCe5S3dt/8OhoThTcUWAmm4boEts0Zlt
 
-On Wed, Mar 20, 2024 at 11:31:56AM +0000, Maximilian Heyne wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On 19/03/2024 15.55, Anand Jain wrote:
+> Since err represents the function return value, rename it as ret,
+> and rename the original ret, which serves as a helper return value,
+> to ret2.
 > 
-> commit c853a5783ebe123847886d432354931874367292 upstream.
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>   fs/btrfs/disk-io.c | 22 +++++++++++-----------
+>   1 file changed, 11 insertions(+), 11 deletions(-)
 > 
-> Instead of using kmalloc() to allocate btrfs_ioctl_defrag_range_args,
-> allocate btrfs_ioctl_defrag_range_args on stack, the size is reasonably
-> small and ioctls are called in process context.
-> 
-> sizeof(btrfs_ioctl_defrag_range_args) = 48
-> 
-> Reviewed-by: Anand Jain <anand.jain@oracle.com>
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> CC: stable@vger.kernel.org # 4.14+
-> [ This patch is needed to fix a memory leak of "range" that was
-> introduced when commit 173431b274a9 ("btrfs: defrag: reject unknown
-> flags of btrfs_ioctl_defrag_range_args") was backported to kernels
-> lacking this patch. Now with these two patches applied in reverse order,
-> range->flags needed to change back to range.flags.
-> This bug was discovered and resolved using Coverity Static Analysis
-> Security Testing (SAST) by Synopsys, Inc.]
-> Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 3df5477d48a8..d28de2cfb7b4 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2918,21 +2918,21 @@ static int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
+>   	u64 root_objectid = 0;
+>   	struct btrfs_root *gang[8];
+>   	int i = 0;
 
-Acked-by: David Sterba <dsterba@suse.com>
+I suggest to change also the line above in
+         unsigned int = 0;
 
-for backport to stable as a prerequisite for 173431b274a9a5 ("btrfs:
-defrag: reject unknown flags of btrfs_ioctl_defrag_range_args").
+This to avoid a comparation signed with unsigned in the two for() loop.
+In this case this should be not a problem but in general is better to avoid
+mix signed and unsigned.
+
+
+> -	int err = 0;
+> -	unsigned int ret = 0;
+> +	int ret = 0;
+> +	unsigned int ret2 = 0;
+
+In this *specific* case, instead of renaming 'ret' in 'ret2', it would be better
+rename 'ret' in 'items_count' or something like that. This because
+radix_tree_gang_lookup() doesn't return a status (ok or an error), but the number of
+the items found.
+
+>   
+>   	while (1) {
+>   		spin_lock(&fs_info->fs_roots_radix_lock);
+> -		ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
+> +		ret2 = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
+>   					     (void **)gang, root_objectid,
+>   					     ARRAY_SIZE(gang));
+> -		if (!ret) {
+> +		if (!ret2) {
+>   			spin_unlock(&fs_info->fs_roots_radix_lock);
+>   			break;
+>   		}
+> -		root_objectid = gang[ret - 1]->root_key.objectid + 1;
+> +		root_objectid = gang[ret2 - 1]->root_key.objectid + 1;
+>   
+> -		for (i = 0; i < ret; i++) {
+> +		for (i = 0; i < ret2; i++) {
+>   			/* Avoid to grab roots in dead_roots. */
+>   			if (btrfs_root_refs(&gang[i]->root_item) == 0) {
+>   				gang[i] = NULL;
+> @@ -2943,12 +2943,12 @@ static int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
+>   		}
+>   		spin_unlock(&fs_info->fs_roots_radix_lock);
+>   
+> -		for (i = 0; i < ret; i++) {
+> +		for (i = 0; i < ret2; i++) {
+
+Comparation signed (i) with unsigned (ret2).
+
+>   			if (!gang[i])
+>   				continue;
+>   			root_objectid = gang[i]->root_key.objectid;
+> -			err = btrfs_orphan_cleanup(gang[i]);
+> -			if (err)
+> +			ret = btrfs_orphan_cleanup(gang[i]);
+> +			if (ret)
+>   				goto out;
+>   			btrfs_put_root(gang[i]);
+>   		}
+> @@ -2956,11 +2956,11 @@ static int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
+>   	}
+>   out:
+>   	/* Release the uncleaned roots due to error. */
+> -	for (; i < ret; i++) {
+> +	for (; i < ret2; i++) {
+
+Comparation signed (i) with unsigned (ret2).
+
+>   		if (gang[i])
+>   			btrfs_put_root(gang[i]);
+>   	}
+> -	return err;
+> +	return ret;
+>   }
+>   
+>   /*
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
 
