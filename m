@@ -1,78 +1,77 @@
-Return-Path: <linux-btrfs+bounces-3458-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3459-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53091880A3D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 04:55:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20F09880A3E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 04:55:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC611B23062
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 03:55:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFC1C1F22F47
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 03:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF98134C9;
-	Wed, 20 Mar 2024 03:55:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D277A14287;
+	Wed, 20 Mar 2024 03:55:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qitHLOI2";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qitHLOI2"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="tErxUQpb";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="tErxUQpb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C37511721;
-	Wed, 20 Mar 2024 03:55:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31C30134C0
+	for <linux-btrfs@vger.kernel.org>; Wed, 20 Mar 2024 03:55:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710906909; cv=none; b=UrgoJP6H/VBlSP88FsesGoLp5tl7Z9dsbHL/ltax9XmXaV0U9eG16KhyD8PrcLvUD+vlDBtmewp/IziR4XLTOexBoBDvAU0Tc2eXSX/ikWZ6riydZx1H9T4W/eIx2zoco/6u77uc7Oj/TtI2OH9a62OP3yoMzn4WmuLF716RBfc=
+	t=1710906912; cv=none; b=ETVK1mBcF6m6OPnbTUNO3fGO8mriPE0lVFGDNbUmjrcnMAmz9/LHsD7skK+ZdOt8x7XQ+ZE+tWWy/wVVrVllnDCsDXZJOuDdKIKndPUx8Y8UKb46NPojm2Blswx+4f9RK12IKZ9sFYnW41NTWGRyVim9CLvzfuapYiSfmBxU+S4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710906909; c=relaxed/simple;
-	bh=0MkS8Vs1qJYWPfUsCU7D2Mq8IVfHXzGvwv7l/XeFkcQ=;
+	s=arc-20240116; t=1710906912; c=relaxed/simple;
+	bh=2ewjlbayvlR+kyhPeFxwAwDt5ksgN5GBgasc0Zoov1k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ul1ubzFY5xroSCiEoGHAdtSBvncHsE3Xj6iVlcmwrz+EnKQCnu/O7GWRMiRGR7qX7bm+d2TXHbEk2FX+jWfZn4snQzunVX76laYpta3KIq5/7K2k4vpG21ZrOXsxNmYDeitQE/+98oe/2YCCor43banVVa9n5OZzlcj2e/QsVS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qitHLOI2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qitHLOI2; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=WUGb9ccV+F+D6buih7VJFcP7wvfDuHdU4QhnwTNRPkscWczPv8yI2EB5thmtXmeihLP9VTL9qCInT3kx1KGCuWY55XocBqdNhnEIyJjn8W59UxYCj9uq5R8pD3NZLvamr79NNhKhhXv/MMIZnK4cK9bz3JMA5RsUc62MlzLwa0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=tErxUQpb; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=tErxUQpb; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CBB6633B82;
-	Wed, 20 Mar 2024 03:55:05 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5A4BE205F1;
+	Wed, 20 Mar 2024 03:55:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710906905; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1710906907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kmdTrfE3q3JEsO18FddVR9pA5yAPIye6EJlyDX73DU0=;
-	b=qitHLOI2IjsCS0gSVHmBKUyxou0fUckLtAu+Ab70tty07cZOQn5hzfWQ8P6HllywztM8RO
-	VKxouxP/zTH2RnocJCeo8mMgg3gn+PNyxMTYxuhjwgiBxX78eLm81NW4vTdTFGjOCjs36M
-	SaeZa7Pml/pCelrLjNwm2LHVAo00gR4=
+	bh=EWpv+N8/OT3BCt1ChDItsMAc4WMDyy7oVUy5iztOm6A=;
+	b=tErxUQpbIy2tBAnBuMNaCX9sEsrC22KOYdVD42+zaexI8AdLC83LxGZu7yhKCmckZGgbOn
+	KT0HWY6I6U9SuFlMEdCnMdy+fn0xGXA4tuwJsQ8WtElQ/F+bMLn6iVz+WKukO2UbZPEbbo
+	w805aDflQYmssQIN0i5K7G2FK2xXPrg=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710906905; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1710906907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kmdTrfE3q3JEsO18FddVR9pA5yAPIye6EJlyDX73DU0=;
-	b=qitHLOI2IjsCS0gSVHmBKUyxou0fUckLtAu+Ab70tty07cZOQn5hzfWQ8P6HllywztM8RO
-	VKxouxP/zTH2RnocJCeo8mMgg3gn+PNyxMTYxuhjwgiBxX78eLm81NW4vTdTFGjOCjs36M
-	SaeZa7Pml/pCelrLjNwm2LHVAo00gR4=
+	bh=EWpv+N8/OT3BCt1ChDItsMAc4WMDyy7oVUy5iztOm6A=;
+	b=tErxUQpbIy2tBAnBuMNaCX9sEsrC22KOYdVD42+zaexI8AdLC83LxGZu7yhKCmckZGgbOn
+	KT0HWY6I6U9SuFlMEdCnMdy+fn0xGXA4tuwJsQ8WtElQ/F+bMLn6iVz+WKukO2UbZPEbbo
+	w805aDflQYmssQIN0i5K7G2FK2xXPrg=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6564E136AE;
-	Wed, 20 Mar 2024 03:55:04 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4C8F7136AE;
+	Wed, 20 Mar 2024 03:55:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id cCM/Chhe+mVlbgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 20 Mar 2024 03:55:04 +0000
+	id QDM+Axpe+mVlbgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 20 Mar 2024 03:55:06 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2 2/7] btrfs: reduce the log level for btrfs_dev_stat_inc_and_print()
-Date: Wed, 20 Mar 2024 14:24:52 +1030
-Message-ID: <8f3e7a57b40973e62c0d758922971566ca96fb2e.1710906371.git.wqu@suse.com>
+Cc: Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v2 3/7] btrfs: scrub: remove unused is_super parameter from scrub_print_common_warning()
+Date: Wed, 20 Mar 2024 14:24:53 +1030
+Message-ID: <30e61128c374874aeb55ce1bfffabc645651fb13.1710906371.git.wqu@suse.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1710906371.git.wqu@suse.com>
 References: <cover.1710906371.git.wqu@suse.com>
@@ -83,91 +82,92 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.50
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-1.50 / 50.00];
+X-Spam-Score: 0.80
+X-Spamd-Result: default: False [0.80 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
 	 R_MISSING_CHARSET(2.50)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
 	 BROKEN_CONTENT_TYPE(1.50)[];
-	 TO_DN_SOME(0.00)[];
 	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.10)[-0.477];
+	 RCPT_COUNT_TWO(0.00)[2];
 	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.19)[-0.934];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+	 BAYES_HAM(-3.00)[100.00%]
 X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=qitHLOI2
-X-Rspamd-Queue-Id: CBB6633B82
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Flag: NO
 
-Currently when we increase the device statistics, it would always lead
-to an error message in the kernel log.
+Since commit 2a2dc22f7e9d ("btrfs: scrub: use dedicated super block
+verification function to scrub one super block"), the super block
+scrubbing is handled in a dedicated helper, thus
+scrub_print_common_warning() no longer needs to print warning for super
+block errors.
 
-However this output is mostly duplicated with the existing ones:
+Just remove the parameter.
 
-- For scrub operations
-  We always have the following messages:
-  * "fixed up error at logical %llu"
-  * "unable to fixup (regular) error at logical %llu"
-
-  So no matter if the corruption is repaired or not, it scrub would
-  output an error message to indicate the problem.
-
-- For non-scrub read operations
-  We also have the following messages:
-  * "csum failed root %lld inode %llu off %llu" for data csum mismatch
-  * "bad (tree block start|fsid|tree block level)" for metadata
-  * "read error corrected: ino %llu off %llu" for repaired data/metadata
-
-So the error message from btrfs_dev_stat_inc_and_print() is duplicated.
-
-The real usage for the btrfs device statistics is for some user space
-daemon to check if there is any new errors, acting like some checks on
-SMART, thus we don't really need/want those messages in dmesg.
-
-This patch would reduce the log level to debug (disabled by default) for
-btrfs_dev_stat_inc_and_print().
-For users really want to utilize btrfs devices statistics, they should
-go check "btrfs device stats" periodically, and we should focus the
-kernel error messages to more important things.
-
-CC: stable@vger.kernel.org
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/volumes.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/scrub.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index e49935a54da0..126145950ed3 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7828,7 +7828,7 @@ void btrfs_dev_stat_inc_and_print(struct btrfs_device *dev, int index)
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 72aa74310612..a5a9fef2bdb2 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -476,7 +476,7 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 num_bytes,
+ }
  
- 	if (!dev->dev_stats_valid)
+ static void scrub_print_common_warning(const char *errstr, struct btrfs_device *dev,
+-				       bool is_super, u64 logical, u64 physical)
++				       u64 logical, u64 physical)
+ {
+ 	struct btrfs_fs_info *fs_info = dev->fs_info;
+ 	struct btrfs_path *path;
+@@ -488,12 +488,6 @@ static void scrub_print_common_warning(const char *errstr, struct btrfs_device *
+ 	u32 item_size;
+ 	int ret;
+ 
+-	/* Super block error, no need to search extent tree. */
+-	if (is_super) {
+-		btrfs_warn_in_rcu(fs_info, "%s on device %s, physical %llu",
+-				  errstr, btrfs_dev_name(dev), physical);
+-		return;
+-	}
+ 	path = btrfs_alloc_path();
+ 	if (!path)
  		return;
--	btrfs_err_rl_in_rcu(dev->fs_info,
-+	btrfs_debug_rl_in_rcu(dev->fs_info,
- 		"bdev %s errs: wr %u, rd %u, flush %u, corrupt %u, gen %u",
- 			   btrfs_dev_name(dev),
- 			   btrfs_dev_stat_read(dev, BTRFS_DEV_STAT_WRITE_ERRS),
+@@ -966,15 +960,15 @@ static void scrub_stripe_report_errors(struct scrub_ctx *sctx,
+ 
+ 		if (test_bit(sector_nr, &stripe->io_error_bitmap))
+ 			if (__ratelimit(&rs) && dev)
+-				scrub_print_common_warning("i/o error", dev, false,
++				scrub_print_common_warning("i/o error", dev,
+ 						     logical, physical);
+ 		if (test_bit(sector_nr, &stripe->csum_error_bitmap))
+ 			if (__ratelimit(&rs) && dev)
+-				scrub_print_common_warning("checksum error", dev, false,
++				scrub_print_common_warning("checksum error", dev,
+ 						     logical, physical);
+ 		if (test_bit(sector_nr, &stripe->meta_error_bitmap))
+ 			if (__ratelimit(&rs) && dev)
+-				scrub_print_common_warning("header error", dev, false,
++				scrub_print_common_warning("header error", dev,
+ 						     logical, physical);
+ 	}
+ 
 -- 
 2.44.0
 
