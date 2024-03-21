@@ -1,55 +1,75 @@
-Return-Path: <linux-btrfs+bounces-3481-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3482-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CFA18818FC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 22:20:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4BD4881B71
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Mar 2024 04:21:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAF9B2837CC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Mar 2024 21:20:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 737AB282092
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Mar 2024 03:21:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A63285955;
-	Wed, 20 Mar 2024 21:20:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C529F79C3;
+	Thu, 21 Mar 2024 03:21:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="K4C37thQ"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="M3vZ4VCG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A304F8B2
-	for <linux-btrfs@vger.kernel.org>; Wed, 20 Mar 2024 21:19:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2622E1C05
+	for <linux-btrfs@vger.kernel.org>; Thu, 21 Mar 2024 03:21:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710969601; cv=none; b=m2pcv7Iw5hQn5wqe/S3vrFtd8R4Ra5DBc+qKFv8Xax58IPpCn6/rE0mhBhEoRA88Vd5riBVh8lESRoUi6YFzkFzjnKwCwnrjrFTBLP/4A9dYjSoXSikzY5yxWWo3QN8ZzTVVBOc8/o8f/u4KJvHR0XyMyDvBXhhDxD0ph3LQC1k=
+	t=1710991287; cv=none; b=C37Gf/qQt2CjnZgIBvb/JK0xzCoO3HiAC0YQrrc7yDi1gXkBTU12G8EunOghZsuuR1Pk28uCM1x6nX1trR+pIxmAo6KERum0ytDey2GBlYffHja0tT624UpEbQOQ9ZxBwKeqyKfHtGyU2Gr6A2n1T/gPDfojmeWQ+HWPsm7oYEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710969601; c=relaxed/simple;
-	bh=O0NyS2tAlYjn72Mc5iGSUnA9rKMdkK2ylPJexRPn9BM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=kczs/Cfy9vKeTV0mx5/9boAZcZM0EnZpJXiIOj8974EMzbWwNXbdQlMA35jEZpVBllh1lUGP3W25HUSXQpghuPCzOH5QbdCnr5qEyEkZjeK3g22rv1UpVGT5mA9wt2E6l8eM6h7iqQnVUb4jnoU0+wruOKipN1gkBgji91CW5hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it; spf=pass smtp.mailfrom=libero.it; dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b=K4C37thQ; arc=none smtp.client-ip=213.209.10.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libero.it
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-18.iol.local with ESMTPA
-	id n3JHrElBYwDoyn3JHr66ks; Wed, 20 Mar 2024 22:17:19 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-	t=1710969439; bh=iL1e33md96VwKNQwarO8vX0OoIcPitoCyjAlT7+Myps=;
-	h=From;
-	b=K4C37thQUhpxmO8IWrWD4GERAtzn7jAqXz5p7lLObJpnFTnOT8IvtBWFa6gKBTCyI
-	 Ng+Z29ES8e9PDIXRdDzoqZg+nwzvSjlUIWcJxraPcRDipAk/lrVnPl47F3WekzH6wh
-	 ltuV1bTQ93fbAuaoWlXSBnHBk66YPDulezDDzHu55OeG75TbdbIu/Fkr11F0fbHynv
-	 XQFJwP3szq7dh+3WT9+HV2QYU8zIqBxrHsU3lacUMysc3JpFbAgQna5PwgE6a2EF64
-	 rFtZZIodal68MUJ5OQiT4bAhMdXEiCz2CqkVIBj+/mhzyLK6erOhhW3xq7K2fwCFzM
-	 x8nf37YN1MFrw==
-X-CNFS-Analysis: v=2.4 cv=N5qKFH9B c=1 sm=1 tr=0 ts=65fb525f cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=yPCof4ZbAAAA:8 a=CDD-V8FDm4eWBCFA3boA:9 a=QEXdDO2ut3YA:10
- a=cMe9W2YZAC63McFW2YE1:22
-Message-ID: <38144688-ec35-4c35-bf5b-4e7a581c4d1f@libero.it>
-Date: Wed, 20 Mar 2024 22:17:19 +0100
+	s=arc-20240116; t=1710991287; c=relaxed/simple;
+	bh=rs+L0AQdC/betsdSuUMEKZdRhyHzLn51lanm39pIQEw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=VzLMzy0SBgok5y9tUY4Fa3xc1rp8RAvMbS5x74x1pUDbF306qmBd2htW1nNqlSy07H8EvPNXJPe2l9eSNcbF8phoBuG7jpPiFrxMwmG3o3YYJmZfS+oVsLxhFsrlFUpDE01G2m1o7jm+JCNdJja88+zcY82bgn66c3SPz2120mg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=M3vZ4VCG; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33ed6078884so904830f8f.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Mar 2024 20:21:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1710991282; x=1711596082; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=p56a2z+cAqnsTfs06gQP96z3RZVqE4tRXZwlrZMujzU=;
+        b=M3vZ4VCGiuKhP6/2zxqQZ7eT6U+JZ/3EH1Mlakad4/e5dY6LBuHSeEuH4snRZLfGYS
+         wVNiz6SZYns7xfxJnavMh1eVZ+chWM4lkDPw1WTOXctgT3bPrh622YhGr+l3uwRrKtdF
+         nje6Hx0z7lU3HbnUjyM2q1b6OSUZA1Y2KZBXlPytTwgw8yc0g7nYL90Nb1exRZy+aJ5R
+         wpnWP3CMUtiWiStPXGiVi/nAPU2ry/c9Tq7plVqrfMfCfOnxPsBsQpeTRgMGrqmI0PM0
+         CtyJ5B+OG13NtcylnUXPd0wiXK5U7yuU8DPh9DWCGu0saZQH+dEJwKLQl9AF8Ayxa0RZ
+         sing==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710991282; x=1711596082;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p56a2z+cAqnsTfs06gQP96z3RZVqE4tRXZwlrZMujzU=;
+        b=GgL5J+YQ/IeTUSJTfphOsJ/yDRGBIh9EKDcBG+vaICJ01InCVVGBFCpxd1uE3u//s6
+         lmt1/MmzFoLKoHoXOACa+IpRRvLol995acIZRViDKQcQu/L+lhXwIeK+ds91/ig9y0QN
+         M04q7o1Pq2jujBIbheRxXNs1HgD+ZpJPqQTJUcISBr+AfV5+7Z9GddQWtzCExzjSQAQk
+         wx53VgXcXHzdl9/zoDF3pvo8eSYgVhpSDg0Ybeh8/s2/s6MBTiC8mA6vuw0+w2+OYUtY
+         HqnsEnMtHCAO9tYxmsgkwu6NXitusFSVpugHC6F9ONH8PV6Sb/RwMmdHiKnyv5lwDOnk
+         PU5A==
+X-Gm-Message-State: AOJu0YwxBPw+xzapJX+LrOY7HoT0jvgikbuYHLKNiZ5joB5Z9N0DQpUd
+	8KUtwXt1brsvb+XrhXweYiLa1yHm9PgTe7xgv/dnb20Fp1yp0HNXwvGo2dExBCIZ7L/GtJOu5r8
+	H
+X-Google-Smtp-Source: AGHT+IFEdxd96frBAeXO9TZnYpHNp2TNmekbhI1ZyX6gSxFuEuqe66rrU5EAhDeCIOT5zjrjJ5Kjug==
+X-Received: by 2002:adf:e6c9:0:b0:33e:5970:e045 with SMTP id y9-20020adfe6c9000000b0033e5970e045mr1172179wrm.21.1710991282329;
+        Wed, 20 Mar 2024 20:21:22 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id rr3-20020a17090b2b4300b0029e0e9ccf6esm2456124pjb.8.2024.03.20.20.21.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 20:21:21 -0700 (PDT)
+Message-ID: <8f062313-1d73-4bfd-9cf8-259ad0fe4fe0@suse.com>
+Date: Thu, 21 Mar 2024 13:51:16 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -57,116 +77,89 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH 01/29] btrfs: btrfs_cleanup_fs_roots rename ret to ret2
- and err to ret
+Subject: Re: [PATCH 0/3] btrfs-progs: subvolume-list: add qgroup sizes output
 Content-Language: en-US
-To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <cover.1710857863.git.anand.jain@oracle.com>
- <b1eaaa193879d4ae920a76dfa3bc5f2e6c7f8a4d.1710857863.git.anand.jain@oracle.com>
-From: Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <b1eaaa193879d4ae920a76dfa3bc5f2e6c7f8a4d.1710857863.git.anand.jain@oracle.com>
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
+Cc: william.brown@suse.com
+References: <cover.1701160698.git.wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <cover.1701160698.git.wqu@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfOie61XDtljm5i0Qv70xMSq6rNr7dNTxpq2MmAAkNNLV/bB3T1rj5whmGmJKKmse+WBzuX5iGz3GNNNldACjJoz5kYjqGrrpNO6nLuKuEMZBQPlIW+e0
- i5nPGVUiT+1wJgej2dE6XF6rO4l860RfxWJSFiIjX2SjZodPLvqfX+2aI0Q2NJ67xojE3E6rdWR1Pw0srQc8SvROuCe5S3dt/8OhoThTcUWAmm4boEts0Zlt
+Content-Transfer-Encoding: 8bit
 
-On 19/03/2024 15.55, Anand Jain wrote:
-> Since err represents the function return value, rename it as ret,
-> and rename the original ret, which serves as a helper return value,
-> to ret2.
+A gentle ping?
+
+Any feedback on the new columns?
+
+Thanks,
+Qu
+
+在 2023/11/28 19:14, Qu Wenruo 写道:
+> ZFS' management tool is way better received than btrfs-progs, one of the
+> user-friendly point is the default `zpool list`, which includes the size
+> of each subvolume.
 > 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->   fs/btrfs/disk-io.c | 22 +++++++++++-----------
->   1 file changed, 11 insertions(+), 11 deletions(-)
+> I'm not sure how ZFS handles it, but for btrfs we need qgroups (or the
+> faster but slightly less accurate squota) to get the accurate numbers.
 > 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 3df5477d48a8..d28de2cfb7b4 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -2918,21 +2918,21 @@ static int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
->   	u64 root_objectid = 0;
->   	struct btrfs_root *gang[8];
->   	int i = 0;
-
-I suggest to change also the line above in
-         unsigned int = 0;
-
-This to avoid a comparation signed with unsigned in the two for() loop.
-In this case this should be not a problem but in general is better to avoid
-mix signed and unsigned.
-
-
-> -	int err = 0;
-> -	unsigned int ret = 0;
-> +	int ret = 0;
-> +	unsigned int ret2 = 0;
-
-In this *specific* case, instead of renaming 'ret' in 'ret2', it would be better
-rename 'ret' in 'items_count' or something like that. This because
-radix_tree_gang_lookup() doesn't return a status (ok or an error), but the number of
-the items found.
-
->   
->   	while (1) {
->   		spin_lock(&fs_info->fs_roots_radix_lock);
-> -		ret = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
-> +		ret2 = radix_tree_gang_lookup(&fs_info->fs_roots_radix,
->   					     (void **)gang, root_objectid,
->   					     ARRAY_SIZE(gang));
-> -		if (!ret) {
-> +		if (!ret2) {
->   			spin_unlock(&fs_info->fs_roots_radix_lock);
->   			break;
->   		}
-> -		root_objectid = gang[ret - 1]->root_key.objectid + 1;
-> +		root_objectid = gang[ret2 - 1]->root_key.objectid + 1;
->   
-> -		for (i = 0; i < ret; i++) {
-> +		for (i = 0; i < ret2; i++) {
->   			/* Avoid to grab roots in dead_roots. */
->   			if (btrfs_root_refs(&gang[i]->root_item) == 0) {
->   				gang[i] = NULL;
-> @@ -2943,12 +2943,12 @@ static int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
->   		}
->   		spin_unlock(&fs_info->fs_roots_radix_lock);
->   
-> -		for (i = 0; i < ret; i++) {
-> +		for (i = 0; i < ret2; i++) {
-
-Comparation signed (i) with unsigned (ret2).
-
->   			if (!gang[i])
->   				continue;
->   			root_objectid = gang[i]->root_key.objectid;
-> -			err = btrfs_orphan_cleanup(gang[i]);
-> -			if (err)
-> +			ret = btrfs_orphan_cleanup(gang[i]);
-> +			if (ret)
->   				goto out;
->   			btrfs_put_root(gang[i]);
->   		}
-> @@ -2956,11 +2956,11 @@ static int btrfs_cleanup_fs_roots(struct btrfs_fs_info *fs_info)
->   	}
->   out:
->   	/* Release the uncleaned roots due to error. */
-> -	for (; i < ret; i++) {
-> +	for (; i < ret2; i++) {
-
-Comparation signed (i) with unsigned (ret2).
-
->   		if (gang[i])
->   			btrfs_put_root(gang[i]);
->   	}
-> -	return err;
-> +	return ret;
->   }
->   
->   /*
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
+> But considering a lot of distro is enabling qgroup by default for
+> exactly the same reason, and during the years qgroup itself is also
+> under a lot of optimization, I believe adding sizes output for `btrfs
+> subvolume list` is an overall benefit for end uesrs.
+> 
+> This patch would do exactly so, the output example is:
+> 
+>   # ./btrfs subv list -t /mnt/btrfs/
+>   ID	gen	top level	rfer	excl	path
+>   --	---	---------	----	----	----
+>   256	11	5		1064960	1064960	subvol1
+>   257	11	5		4210688	4210688	subvol2
+> 
+> The extra columns are added depending on if qgroup is enabled, and we
+> allow users to force such output, but if qgroup is not enabled and we're
+> forced to output such sizes, a warning would be outputted and fill all
+> the sizes value as 0.
+> 
+> Thanks William Brown for the UI suggestion.
+> 
+> Although there are still some pitfalls, mentioned in the last patch.
+> 
+> Qu Wenruo (3):
+>    btrfs-progs: separate root attributes into a dedicated structure from
+>      root_info
+>    btrfs-progs: use root_attr structure to pass various attributes
+>    btrfs-progs: subvolume-list: output qgroup sizes for subvolumes
+> 
+>   Documentation/btrfs-subvolume.rst |  12 +-
+>   cmds/subvolume-list.c             | 572 ++++++++++++++++++------------
+>   2 files changed, 349 insertions(+), 235 deletions(-)
+> 
+> --
+> 2.42.1
+> 
+> 
 
