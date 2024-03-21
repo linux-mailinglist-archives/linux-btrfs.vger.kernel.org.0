@@ -1,143 +1,137 @@
-Return-Path: <linux-btrfs+bounces-3501-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3502-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 758698860DC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Mar 2024 20:06:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24E73886187
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Mar 2024 21:17:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FBE62851D0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Mar 2024 19:06:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DA511C2216A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Mar 2024 20:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9747B1339AB;
-	Thu, 21 Mar 2024 19:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0322D134CD0;
+	Thu, 21 Mar 2024 20:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="DFM5Vg2K";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Qzye/aDi"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="HqViL/1B"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69CD45CB5
-	for <linux-btrfs@vger.kernel.org>; Thu, 21 Mar 2024 19:06:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67FAA13442F
+	for <linux-btrfs@vger.kernel.org>; Thu, 21 Mar 2024 20:17:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711048006; cv=none; b=ZG1g7Y8ETPObL4rLRJCBksTnJFQqYIZgSv2v+I9ZGDI50bq3HYxs/iFO2sDLdhZC0NJ0J6aEMQ/0sdXRjNlSu3p9rKjlY/ksoZpqJED/8aurqHZGulh0fooEcLblLMXzP2LDIbK2Nr6Y6FkbXoW0lvFs7VFxjFHn+zq+zE6g2hA=
+	t=1711052239; cv=none; b=jg9JOvJTmVWsZvayVq58pmY/AExpaoIxDDmw560qgqC0z7JYoI4nWb7SP/HpuPHcEOHXGPqbpjLTjvAZyDmuxq+whZTl4MOTOuFmuI5wIaOu28CVr3lrvO/4sSAfy6ZPNmhpOW7La6wcdb2O4qDoQ2Nby9KZFlyuXHeea8eQ6+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711048006; c=relaxed/simple;
-	bh=Nvhz4gFkVP4gxKaKZdpdgnq9DiRYq/wKKEzAyrCOKKA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BddP9W4uF9kLFIJwefUWb5GXMOu1vP/MkvS3rfJ+GbIHQv9yPGUr2z3rtZOoSZ+u+P1U/yDJ9Wj6Tw0ZVnOc6LhqqJm5yfUlzFYKmDoDhdYGkYJevKhkRl807R1ExptJaizePKsoktFXK+0SlTadxsoJj5Hg/iHReSJCfZ38SmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=DFM5Vg2K; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Qzye/aDi; arc=none smtp.client-ip=66.111.4.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id 3B6FD5C0087;
-	Thu, 21 Mar 2024 15:06:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 21 Mar 2024 15:06:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1711048002; x=1711134402; bh=SwH7nYsGfl
-	6lP5supB1dNCsFYBWiwHwI6HnQWevsly8=; b=DFM5Vg2KCuv9P0En2J9XKxHHGH
-	toSALEMihDzK7vWHmx6dS8pH98Xc+hfI8AiHy05hae3veBkMCWim+vys8jIbwNso
-	ErdN3c8cMlAkjP+clj9dytfnQKFmN9NIDtWQFrpYtkdXJYaoS5Z+P6iWtc1vBE2S
-	FJ41541Awm+zjzuSlPvGxc77C3uwmCEZxXcvbyqFAE9nojyZOoPpkabBuCMKFuSQ
-	nzJ7V1vd88QigBXeTbUbNnheDt8ior76QiGsuDHmNvdKQBXe4dMaQbMryTqZcc6g
-	1KufSkPlTD3+wCbJELH4Xj3eKf9WHBCyy9Kfxi0D51534mUt2y01nlWmvayw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711048002; x=1711134402; bh=SwH7nYsGfl6lP5supB1dNCsFYBWi
-	wHwI6HnQWevsly8=; b=Qzye/aDifPag5jrk8Ryy96tMMWrBR1atHHCeE4E8RRDr
-	a/68amjbIKDAxv6ltiXfPScF8buAk1GfJXYeIXTNEyzQfprZ1ZI4i7cz2M2ZC/b7
-	x+ASj3t8KmxUTRNb71r3eiaTd/gMhOsIBgms08e7I8grHGXE7vab5i3qaITBL6Nz
-	sy5RUNA5ZPJJDhsEWG58MdeEXrMqpUdldOqfJ1uPGn51YO7Tc8fK8/RB31guMO7Q
-	IgiHfLfjVCxXOWKhM3oiah7pmPXVMvzdpk7e9w2c6XERNe5dWKmkxbP3ohu8+1D6
-	/OxblWUvJ8LakJ5whOkWpdqRg0QX4kUGpj99hB4kCw==
-X-ME-Sender: <xms:QoX8ZSEdcd0ugPUPTlFluIz5ZE1pLrmsnBlxZT5oFup45ImNozhcrg>
-    <xme:QoX8ZTUpt6kVSHSECUQdWM7kjby2d4osol4nsYYzrkiqAuHd-ug1pduclK1sH8iPq
-    U2I9E12QshM-2X_yfg>
-X-ME-Received: <xmr:QoX8ZcKBPry0x2nSQ1t-27GM3CsjZkYTAZks5HLvEnmqb35huuVqFvngz8Vtac-aNBJxB2NAAIPxL4gZ1FOIUMzwoHU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrleejgdehlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepke
-    dvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihho
-X-ME-Proxy: <xmx:QoX8ZcH37G7plAzD7GCwgcjw1KAyyDqUTyoLLqKRvYhltDeo1nWPtQ>
-    <xmx:QoX8ZYWnrCGsXUCqP5kODOMksSm3SyWJb79pUBxEV7D_wcSzuOkC1g>
-    <xmx:QoX8ZfNth7rbOnyTl_e7MfJ-RjXkzPR0MBt3cc50vDZn7U0bRcdDEg>
-    <xmx:QoX8Zf2zE6Ekvj3cMlcZ1UCNYEXd3lPy_VLbHUJjX-r1SjT8HHfahQ>
-    <xmx:QoX8ZVhAUSFH6xlyN0DSTofSya7WXI625FcNEA1rl3eBjP4ASd7Ddg>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 21 Mar 2024 15:06:41 -0400 (EDT)
-Date: Thu, 21 Mar 2024 12:08:57 -0700
-From: Boris Burkov <boris@bur.io>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC] btrfs: reflink: disable cross-subvolume clone/dedupe
- for simple quota
-Message-ID: <20240321190857.GA107915@zen.localdomain>
-References: <74730c411b0fd87484c8d894878c5cd8bac1d434.1710992258.git.wqu@suse.com>
- <20240321185135.GB3186943@perftesting>
+	s=arc-20240116; t=1711052239; c=relaxed/simple;
+	bh=Jaq0MSWU8sPahMDxU0UN8MUyla1AjzIz21GpkGwohr4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Tra94tj2rKpZxRKHUYDxwKWzj0LfloTBimSXAgndv8a3HipmZ1kizyJ3JW3LVSiqxSKOUqGd05jWNol6Fn6hyD91wfa2kIQuDkg5Jo2mo4oJspoCfDMRszvdLtOVg9nsxVltz5LNzsXcJy9ocWp5pL+xqty3UNXK8jJfofWJYB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=HqViL/1B; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1711052233; x=1711657033; i=quwenruo.btrfs@gmx.com;
+	bh=Jaq0MSWU8sPahMDxU0UN8MUyla1AjzIz21GpkGwohr4=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=HqViL/1B93FZCHNXLcHxIR5Gd9FN0kGrFG7QXQMxhD8K35IfHIkP0FIJY/BBTG8N
+	 EkEDJJ6Kv0xwiWoN6EsyKarcwwWwWX85WQYBLW/wg7fAj2ruwNnkw10wItTQ2Mp65
+	 +liBxnz6CrMgwqgCn1LnFMIKdcW+sY1ydLjLc60IituZ9z1I/0627v9LNk70Y0WKR
+	 5Uenh5klJD7sQxL3U5Ra6tDfalOsgTsq3nlNFTiUSXqVBaENZcQZAJolV3Y66hr+0
+	 ic6MEG8aZpmbyJZGDwRh+chtm5MmttDzhB3fXwMJ/+3QczoeQ+5233dvAazw/fYvx
+	 F8VZn8h/FZnlpOjI8Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBDj4-1rbtKg2pUk-00CfIX; Thu, 21
+ Mar 2024 21:17:13 +0100
+Message-ID: <88553d8e-81fd-4fe1-bd3d-d5244de162ba@gmx.com>
+Date: Fri, 22 Mar 2024 06:47:09 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321185135.GB3186943@perftesting>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC] btrfs: reflink: disable cross-subvolume clone/dedupe
+ for simple quota
+Content-Language: en-US
+To: David Disseldorp <ddiss@suse.de>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <74730c411b0fd87484c8d894878c5cd8bac1d434.1710992258.git.wqu@suse.com>
+ <20240322002544.6904f696@echidna>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240322002544.6904f696@echidna>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:lfqtz+vy3cNAPGfUGhO/15gPCNZY42xZ4cEKSGgx/2o6ILWQzTI
+ BOwfS8f6vVCZhAdr1NNOuMmHpFhqgfVzuMAmPoOp8Q9HuafZ/NN2p7BlgaU1XM2ke+S0+pA
+ 576buHUT/KsTCeu6qjMUyzNw1hP0OGPZnaBLD20REFyAuHEPg+Qdlj0dBf+KwCat8JNyysv
+ dvd5ZzaiSSBTuv6RIvWYw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:3x6QA4e15q4=;KW1mQ0RpyIgzYDQ+hczujE+qKUO
+ ZBnEOdFHVSuYVQtB6EGMo6gLhed4yjfrDBRgXEqq6boNq/dxbKcd7AN4Yr8o/3+qUpjz0SLMg
+ NgAq0eSRzLdlHQQY65AWnNWaWptqrsVJFF/oXbSazeB3b10X1su3njaeTslr0VFpOLI7m5yN5
+ d5IlgLDh7CU/JR+EFuqFz+IDlLnW5RHvYVLaJUZmopshQ9OadryuVj3+K8ydiKWEPQ11BMbpo
+ v9iuAChJifmsyPMg4A7TgWLx9wyzLFuc9Iql48zYPjRLSvYomVVv9xnRqTcc3a2vyLy1k5WgS
+ CzquMj9Gq4E2amT1kyFjiURM7YAqvgOc7ZwNRrDeJJqhKj4JHv9TvzFMGO6eNQ4Oa9MMPpgw/
+ BC9cHIyEwhDLdQ+v/w3UIKa1jsmofVfZpVyDIagIe12Mh85cmw+hlmOzfSsvTgE4zmUSJtp6p
+ aDbEkbh7mJSbtrW36BAPHVCkMf737lpuXFcuXV4xHl8QVXGpyPeHjLJB1icaK2AQbmY2vZMoF
+ gXe8EVUns/4GB2cfAGx3B7AnwwSDcH9opCzIJaCn+a/dD9oa7IYgr039Zqs4Y8hQx72w1vbSg
+ TmzGXWG604GCyDPaIPuAWwQpyeNet68mXlCkGmy/nZcjyz9a0bEcIGj3hA/SXGXYcNsmNmmIi
+ EFpdtzK1s8Svdosq6sRUbQjIJ6vkUXvG9pZpwYuBHA3TPjW5n0pJDNGy5DQRTnGC8jp6qvNi+
+ ebuYwVlEenFSQjqk2XDO9G2yBW/ur4i2rTjzY0lLfteHtOpK24P8X266lmXCHmjBNUtCAvsZI
+ 3AL1/k4VJsmiCwRqq5BNNwnYONdeFLXNc7RKBQoeM3d+Y=
 
-On Thu, Mar 21, 2024 at 02:51:35PM -0400, Josef Bacik wrote:
-> On Thu, Mar 21, 2024 at 02:09:38PM +1030, Qu Wenruo wrote:
-> > Unlike the full qgroup, simple quota no longer makes backref walk to
-> > properly make accurate accounting for each subvolume.
-> > 
-> > Instead it goes a much faster and much simpler way, anything modified by
-> > the subvolume would be accounted to that subvolume.
-> > 
-> > Although it brings some small accuracy problem, mostly related to shared
-> > extents between different subvolumes, the reduced overhead is more than
-> > good enough.
-> > 
-> > Considering there are only 2 ways to share extents between subvolumes:
-> > 
-> > - Snapshotting
-> > - Cross-subvolume clone/dedupe
-> > 
-> > And since snapshotting is the core functionality of btrfs, we will never
-> > disable that.
-> > 
-> > But on the other hand, cross-subvolume snapshotting is not so critical,
-> > and disabling that for simple quota would improve the accuracy of it,
-> > I'd say it's worthy to do that.
-> > 
-> 
-> We did this on purpose, and absolutely want to leave this functionality in
-> place.  Boris made sure to document this behavior explicitly, because we are
-> absolutely taking advantage of this internally by having the package management
-> subvolume managed under a different quota, and then reflinking those packages
-> into their containers volume.  This is the price of squotas, you aren't getting
-> full tracking, but you're getting limits and speed.  Thanks,
-> 
-> Josef
 
-For a little extra context, if we hadn't wanted to support reflinking,
-then squotas would have been yet simplER, and wouldn't have needed the
-new inline owner refs. For better or worse, we decided it was in fact
-quite important, so we added the owner refs. Now that we did the hard
-work and committed to the incompat change, I certainly think it makes
-sense to leave the support.
 
-Boris
+=E5=9C=A8 2024/3/21 23:55, David Disseldorp =E5=86=99=E9=81=93:
+> On Thu, 21 Mar 2024 14:09:38 +1030, Qu Wenruo wrote:
+> ...
+>> [REASON FOR RFC]
+>> I'm not sure how important the cross-subvolume clone functionality is i=
+n
+>> real-world.
+>>
+>> But considering squota is mostly designed for container usage, in that
+>> case disabling cross-subvolume clone should be completely fine.
+>
+> I think copy_file_range() is reasonably common nowadays, and this would
+> impact such workloads. I don't find the creator-subvol-pays simple quota
+> behaviour too confusing, so would vote too keep things as is.
+>
+> Cheers, David
+>
+OK, thanks for all the feedback.
+
+Please drop this patch.
+
+Thanks,
+Qu
 
