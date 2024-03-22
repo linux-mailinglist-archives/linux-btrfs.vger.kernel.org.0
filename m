@@ -1,178 +1,197 @@
-Return-Path: <linux-btrfs+bounces-3513-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3514-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79AEF887392
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Mar 2024 20:07:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 998C88873E9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Mar 2024 20:28:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C772285007
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Mar 2024 19:07:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED1A4B22B48
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Mar 2024 19:28:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E8576F1D;
-	Fri, 22 Mar 2024 19:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D17B7A137;
+	Fri, 22 Mar 2024 19:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EUWwWrEA"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HI4XygVi";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="l9+9b/4l";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iEAR/L4U";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rNQIK5np"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30CD35B5D9
-	for <linux-btrfs@vger.kernel.org>; Fri, 22 Mar 2024 19:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B8C79B86;
+	Fri, 22 Mar 2024 19:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711134447; cv=none; b=VzxnlVZmiWGSxWeIvi/H8W+nLe4xK96D4PImkbM9I+eSQY+eUzUlq7SQTxiNhfdaEPpb7BPn7u9tR9RKAd6qoBWspN0UpOyTQpo3B9ZALs3IdWYk9LVYu9ucpP2UJaTyD2EtB2lG0Hrvj5jOMoQCyr4CRGwb3dZq0kwZqaG/OU4=
+	t=1711135708; cv=none; b=bjENnjCPIQPbTUZy1y9FzD5WtY4pz3pu2h/+EdFM7i0v3Q9SyBjPYqD43aMW969yQl3B3kIIOOEQptRKCctVtBowLMLF22O8ovoj8KrSdReyLr3yFIUzaviXgY6Uo7S9WWlBtN6p189uSYibxnFDX0mXEMSt9aRZbTtJrERbnG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711134447; c=relaxed/simple;
-	bh=qYK6veJM5lkdtTJrHCphjI+ftyObuLaN0xBb+FdOtQQ=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=APnmdhLDEW3bPyB3sP8PDPDzandsiP/CqEDucq7f5PVwJE7bsoxQ++RkLra/2WHdvSOFU9sk7GoPqB6Af58BXkgHWHiix4V2RZtwkTPuF4OvJvNPHAIVjooY0MlUqyqFQ/7xDaeBShP+EDHlLmDgaNpj48GZpX/YBWpQaU5aXiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EUWwWrEA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47C74C43394
-	for <linux-btrfs@vger.kernel.org>; Fri, 22 Mar 2024 19:07:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711134445;
-	bh=qYK6veJM5lkdtTJrHCphjI+ftyObuLaN0xBb+FdOtQQ=;
-	h=From:To:Subject:Date:From;
-	b=EUWwWrEAeoxx74oGwzftWrOhOSALI4kQMFXPJJSt4ibWT0Rcrhv04egb8JNMvOvaS
-	 Os5h/0f5T6z7UwsGjzWk8wX4ah0NdsNwpukwsdHLTWNou53U2etdCavCvDUm2gPK7N
-	 Yaag2vRGh1QVn/8CLRWrfd4C5WcPzBTJY1W9ILMPPZ+K2lKRq6Q+RHNDwJvEaucsH+
-	 82D6cw3t7qrCZDa36y1jaodIgFYUeHtPT3h2Xo9yefH2bRL7ayEbhSA+fngubFIta1
-	 W/p/Iru2e4YeFr/PEGtsMFGeQFXIIgE6fNZOWUvexHE3btaTkFLF6W+9RPDs5e/4NY
-	 zJuhp6rJvE55w==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: stop locking the source extent range during reflink
-Date: Fri, 22 Mar 2024 19:07:18 +0000
-Message-Id: <09a3da957a5b7f60a1dba5f4609971a62b3f7c23.1711134182.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1711135708; c=relaxed/simple;
+	bh=gjBO/n3tvNmqzJTwN1vMsW3KvoK7d6Ksag+l88ycBNQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PCMH2wdpAESDNRAC13otH9WQEfGEcs+sIUQ/L6bsPgjXKlrFaqkKzP+BvlKn56vZwDDFSG/GdO6zkqllCC/ldgKgwKnUzfNMalABdmTqJPx6r33dE001bI0aYQHe9sdK06R8ZIy5Yr4/UIeCOnPJjvzSzQhjvYl0Le+FjBKonMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HI4XygVi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=l9+9b/4l; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iEAR/L4U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rNQIK5np; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id ED5EA38917;
+	Fri, 22 Mar 2024 19:28:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711135704;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MlXKbWYWf6ZszMJFknPMYT3hDt5uq28CojVsP5eYUQg=;
+	b=HI4XygVileQBgOlO3oxKBk5qvy/FD1U9riFbB0clDw9ZdKc6sKToAIJGxIbjVN0nlAhIaJ
+	Q1ZZ2wJEgkYD8uJ/gevZOrv0XpWmVRFV3ORb64xNPfgKLi7t6gEcxGjfI384cRTwgh6Q1k
+	ltXPhNzd3klxOjKA4DcmFP0hlljJB8Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711135704;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MlXKbWYWf6ZszMJFknPMYT3hDt5uq28CojVsP5eYUQg=;
+	b=l9+9b/4lAwnZo6EzAjsoa4+UTcENRACdLdQ84xKNdNpweIwbG2z1PphynFVrSEU0Xtb49E
+	0qPichFqjJQ92bCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711135703;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MlXKbWYWf6ZszMJFknPMYT3hDt5uq28CojVsP5eYUQg=;
+	b=iEAR/L4UcAVyozNbJg2EWDUw6wakuDp9lxWd+RZevlUiAxm+Ql/uHB1aXPwmCWUFvxWDMF
+	WWrav2zkCXG3n3MHnRHSghmf7QHtHvFuXr+rFi7HUK9ZAp/WKwuzCA9/tNXv4Qgp6bvaqc
+	kFRXxp3JOxxchdPX8CzFNOYAcZYjxGE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711135703;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MlXKbWYWf6ZszMJFknPMYT3hDt5uq28CojVsP5eYUQg=;
+	b=rNQIK5npFbBT4BOwts65yq8c7DLMY5YBrBG8cHRx7PvxKCBddA4+iJF5dNZsvjjRKMj/nE
+	ak0HP8hSfczkc6BQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CCEBA138E8;
+	Fri, 22 Mar 2024 19:28:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id Uc5sMdfb/WV5KwAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Fri, 22 Mar 2024 19:28:23 +0000
+Date: Fri, 22 Mar 2024 20:21:08 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Tavian Barnes <tavianator@tavianator.com>
+Cc: linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+	Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Fix race in read_extent_buffer_pages()
+Message-ID: <20240322192108.GK14596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <1ca6e688950ee82b1526bb3098852af99b75e6ba.1710551459.git.tavianator@tavianator.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ca6e688950ee82b1526bb3098852af99b75e6ba.1710551459.git.tavianator@tavianator.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="iEAR/L4U";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=rNQIK5np
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 MX_GOOD(-0.01)[];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -4.21
+X-Rspamd-Queue-Id: ED5EA38917
+X-Spam-Flag: NO
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, Mar 15, 2024 at 09:14:29PM -0400, Tavian Barnes wrote:
+> To prevent concurrent reads for the same extent buffer,
+> read_extent_buffer_pages() performs these checks:
+> 
+>     /* (1) */
+>     if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
+>         return 0;
+> 
+>     /* (2) */
+>     if (test_and_set_bit(EXTENT_BUFFER_READING, &eb->bflags))
+>         goto done;
+> 
+> At this point, it seems safe to start the actual read operation. Once
+> that completes, end_bbio_meta_read() does
+> 
+>     /* (3) */
+>     set_extent_buffer_uptodate(eb);
+> 
+>     /* (4) */
+>     clear_bit(EXTENT_BUFFER_READING, &eb->bflags);
+> 
+> Normally, this is enough to ensure only one read happens, and all other
+> callers wait for it to finish before returning.  Unfortunately, there is
+> a racey interleaving:
+> 
+>     Thread A | Thread B | Thread C
+>     ---------+----------+---------
+>        (1)   |          |
+>              |    (1)   |
+>        (2)   |          |
+>        (3)   |          |
+>        (4)   |          |
+>              |    (2)   |
+>              |          |    (1)
+> 
+> When this happens, thread B kicks of an unnecessary read. Worse, thread
+> C will see UPTODATE set and return immediately, while the read from
+> thread B is still in progress.  This race could result in tree-checker
+> errors like this as the extent buffer is concurrently modified:
+> 
+>     BTRFS critical (device dm-0): corrupted node, root=256
+>     block=8550954455682405139 owner mismatch, have 11858205567642294356
+>     expect [256, 18446744073709551360]
+> 
+> Fix it by testing UPTODATE again after setting the READING bit, and if
+> it's been set, skip the unnecessary read.
+> 
+> Fixes: d7172f52e993 ("btrfs: use per-buffer locking for extent_buffer reading")
+> Link: https://lore.kernel.org/linux-btrfs/CAHk-=whNdMaN9ntZ47XRKP6DBes2E5w7fi-0U3H2+PS18p+Pzw@mail.gmail.com/
+> Link: https://lore.kernel.org/linux-btrfs/f51a6d5d7432455a6a858d51b49ecac183e0bbc9.1706312914.git.wqu@suse.com/
+> Link: https://lore.kernel.org/linux-btrfs/c7241ea4-fcc6-48d2-98c8-b5ea790d6c89@gmx.com/
+> Signed-off-by: Tavian Barnes <tavianator@tavianator.com>
 
-Nowadays before starting a reflink operation we do this:
-
-1) Take the VFS lock of the inodes in exlcusive mode (a rw semaphore);
-
-2) Take the  mmap lock of the inodes (struct btrfs_inode::i_mmap_lock);
-
-3) Flush all dealloc in the source and target ranges;
-
-4) Wait for all ordered extents in the source and target ranges to
-   complete;
-
-5) Lock the source and destination ranges in the inodes' io trees.
-
-In step 5 we don't need anymore to lock the source range because nowadays
-we have the mmap lock (step 2) and locking the source range was just to
-avoid races with mmap writes before we had that mmap lock, which was added
-in commit 8c99516a8cdd ("btrfs: exclude mmaps while doing remap").
-
-So stop locking the source file range, allowing concurrent reads to happen
-in parallel and making test case generic/733 pass.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/reflink.c | 42 +++++++++---------------------------------
- 1 file changed, 9 insertions(+), 33 deletions(-)
-
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index 08d0fb46ceec..6e7a3970394b 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -616,35 +616,6 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
- 	return ret;
- }
- 
--static void btrfs_double_extent_unlock(struct inode *inode1, u64 loff1,
--				       struct inode *inode2, u64 loff2, u64 len)
--{
--	unlock_extent(&BTRFS_I(inode1)->io_tree, loff1, loff1 + len - 1, NULL);
--	unlock_extent(&BTRFS_I(inode2)->io_tree, loff2, loff2 + len - 1, NULL);
--}
--
--static void btrfs_double_extent_lock(struct inode *inode1, u64 loff1,
--				     struct inode *inode2, u64 loff2, u64 len)
--{
--	u64 range1_end = loff1 + len - 1;
--	u64 range2_end = loff2 + len - 1;
--
--	if (inode1 < inode2) {
--		swap(inode1, inode2);
--		swap(loff1, loff2);
--		swap(range1_end, range2_end);
--	} else if (inode1 == inode2 && loff2 < loff1) {
--		swap(loff1, loff2);
--		swap(range1_end, range2_end);
--	}
--
--	lock_extent(&BTRFS_I(inode1)->io_tree, loff1, range1_end, NULL);
--	lock_extent(&BTRFS_I(inode2)->io_tree, loff2, range2_end, NULL);
--
--	btrfs_assert_inode_range_clean(BTRFS_I(inode1), loff1, range1_end);
--	btrfs_assert_inode_range_clean(BTRFS_I(inode2), loff2, range2_end);
--}
--
- static void btrfs_double_mmap_lock(struct inode *inode1, struct inode *inode2)
- {
- 	if (inode1 < inode2)
-@@ -662,6 +633,8 @@ static void btrfs_double_mmap_unlock(struct inode *inode1, struct inode *inode2)
- static int btrfs_extent_same_range(struct inode *src, u64 loff, u64 len,
- 				   struct inode *dst, u64 dst_loff)
- {
-+	const u64 end = dst_loff + len - 1;
-+	struct extent_state *cached_state = NULL;
- 	struct btrfs_fs_info *fs_info = BTRFS_I(src)->root->fs_info;
- 	const u64 bs = fs_info->sectorsize;
- 	int ret;
-@@ -670,9 +643,9 @@ static int btrfs_extent_same_range(struct inode *src, u64 loff, u64 len,
- 	 * Lock destination range to serialize with concurrent readahead() and
- 	 * source range to serialize with relocation.
- 	 */
--	btrfs_double_extent_lock(src, loff, dst, dst_loff, len);
-+	lock_extent(&BTRFS_I(dst)->io_tree, dst_loff, end, &cached_state);
- 	ret = btrfs_clone(src, dst, loff, len, ALIGN(len, bs), dst_loff, 1);
--	btrfs_double_extent_unlock(src, loff, dst, dst_loff, len);
-+	unlock_extent(&BTRFS_I(dst)->io_tree, dst_loff, end, &cached_state);
- 
- 	btrfs_btree_balance_dirty(fs_info);
- 
-@@ -724,6 +697,7 @@ static int btrfs_extent_same(struct inode *src, u64 loff, u64 olen,
- static noinline int btrfs_clone_files(struct file *file, struct file *file_src,
- 					u64 off, u64 olen, u64 destoff)
- {
-+	struct extent_state *cached_state = NULL;
- 	struct inode *inode = file_inode(file);
- 	struct inode *src = file_inode(file_src);
- 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
-@@ -731,6 +705,7 @@ static noinline int btrfs_clone_files(struct file *file, struct file *file_src,
- 	int wb_ret;
- 	u64 len = olen;
- 	u64 bs = fs_info->sectorsize;
-+	u64 end;
- 
- 	/*
- 	 * VFS's generic_remap_file_range_prep() protects us from cloning the
-@@ -766,9 +741,10 @@ static noinline int btrfs_clone_files(struct file *file, struct file *file_src,
- 	 * Lock destination range to serialize with concurrent readahead() and
- 	 * source range to serialize with relocation.
- 	 */
--	btrfs_double_extent_lock(src, off, inode, destoff, len);
-+	end = destoff + len - 1;
-+	lock_extent(&BTRFS_I(inode)->io_tree, destoff, end, &cached_state);
- 	ret = btrfs_clone(src, inode, off, olen, len, destoff, 0);
--	btrfs_double_extent_unlock(src, off, inode, destoff, len);
-+	unlock_extent(&BTRFS_I(inode)->io_tree, destoff, end, &cached_state);
- 
- 	/*
- 	 * We may have copied an inline extent into a page of the destination
--- 
-2.43.0
-
+Thank you very much for taking the time to debug the issue and for the
+fix. It is a rare occurrence that a tough bug is followed by a fix from
+the same person (outside of the developer group) and is certainly
+appreciated.
 
