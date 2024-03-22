@@ -1,175 +1,172 @@
-Return-Path: <linux-btrfs+bounces-3505-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3506-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 973A588642D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Mar 2024 00:59:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93C95886534
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Mar 2024 03:36:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40FDC1F21567
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Mar 2024 23:59:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4880285DBE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Mar 2024 02:36:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 937A931A8F;
-	Thu, 21 Mar 2024 23:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6A74C85;
+	Fri, 22 Mar 2024 02:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AbzPVFtv"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aX8j7w7P";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Mb2qfQ2/";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rotp3kjv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eR0HoxU0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF683232
-	for <linux-btrfs@vger.kernel.org>; Thu, 21 Mar 2024 23:59:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9C64A04
+	for <linux-btrfs@vger.kernel.org>; Fri, 22 Mar 2024 02:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711065571; cv=none; b=teVXPlxUizMbEifWXdAg6SiUxwgLmKjoHLXTsJCgrNN3HTCUXHH2Txzr9Fsv05yne+4rUpaTSV3AnMUETjwDmzdH/RoOuzY2mihZDZqcH9K7GcTPJIYP4m0uUAVhCgxXfusw4WKpN+LQXSKj3O/Q2RqmN3X7AkWq3um+vhmXeZs=
+	t=1711075001; cv=none; b=ZzcXFpnx4Q8V4tp6JnU5wiZTLnyatu94oXbveaO2eVBHfL9oUv5O7G//s6MrJuGnrzYF+WjEgt3OAWcs7E+y4M8QTnnw0xuk9dFdptxa9Wo552GAe0plKaoEV1GIAvUnHwECsM3KzB9ZDJfRiTPyMeTLlcWzFGg18F0axgelmrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711065571; c=relaxed/simple;
-	bh=Lz3oc5PuPFAVKQW4nJxXCCzdELjce/C/PMvHdazaWI8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Kly4csnLyPYqeBLy7SsLtb3Bnjbx/UmPFdvPBimuitGT8L20p8xy6Kphy69vwZqlbIHPu0dQXv+2dr2/Y+otNJzxvgTG4fW8L5bntohvi1eouhu5g2eHYI1VhXumIwG4tAKVqO5Pn6gPlH/iEme5JoaA0gKd1k1HeXkTULamxtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AbzPVFtv; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d094bc2244so22187341fa.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Mar 2024 16:59:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1711065566; x=1711670366; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/VzTlGd8NCvOViYJGspvmltYNuzNPZSemHZyxJhYluM=;
-        b=AbzPVFtvFrjf5DbmmU7U+jxMAWkUBJnSrDbIIvNhIRBdBVBvvsR5teo/H/J9BmQRt0
-         TyesRq4uKQD7ER0/kccMDiQNHJ2DJ50HEmGkcbhQK7SnKLUb3kTLMVUMIJzZ1B4QB9BP
-         Z6LF08XieqbHnIuXUWFSCwCRBXoxuvi1RRz9RQ4Vzn/P7go3g5pyeQT/K46DJa0cm8YG
-         2AYfy9pddWTvwVLphYFdqSXv1nilr22WxAYiKL+t4ZtbEcgZlw/U7Dr0c+5u5TlZcOk2
-         PHeEgZLkhVeAj8S7mYETShY6WCVZGdTpg2TEj6gfLvEirXCh5TqA6f+W2LZ1HZI3dji6
-         RaMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711065566; x=1711670366;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/VzTlGd8NCvOViYJGspvmltYNuzNPZSemHZyxJhYluM=;
-        b=XuM+BUULTPPy57QNg5i61nTWVwRrGMSBrlWu5lYuAYT8mkAbLB/wORSbW7ZUmDFY2a
-         Qs8hOZP8J3FAXVpBMr0ChHjOeG/2S9WhkIKmRd1dmte4FzB1eYwANz04vcA/xX7f1J85
-         YKvW5x5P6abF0uyrhMz//qCdm3hUW94kAYgMw5CabItArpYqc23cjAneguQ9IUc/rHuB
-         ZcPUAiPLT0EMEqWV/soNub2/x1M/Lrl5uQ+a2u8AaMi20hMEKyOVRjotKUk8pGPFlVkS
-         cLwk/i7o95mH+idHGoNPq1UfUHzjAkghA7QryyuKCKPSyI6iCtXNzMMW35Ek1KCKyMBY
-         fDDQ==
-X-Gm-Message-State: AOJu0YzrM6EXRddPQ5liJu0iLMJ4O3iQhc3otwCp3Hp0wHVfldP+QTi4
-	vbaJPyJos06n4qxsEuOAjzAPLzBPXfGvrcEVn41GIDlciJ3UrABJBV53ctsvvuUIUckKaFHxj+N
-	8
-X-Google-Smtp-Source: AGHT+IF0wx/D6BGXtaN7O3N+r15mFpHL5+nGsDvaxLqFSGZfzeP3dOxqFPmChCkeU9nXESMaPpBN1Q==
-X-Received: by 2002:a05:651c:1058:b0:2d4:49f5:2ae1 with SMTP id x24-20020a05651c105800b002d449f52ae1mr599120ljm.41.1711065566259;
-        Thu, 21 Mar 2024 16:59:26 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id fa26-20020a056a002d1a00b006ea80e5090csm320465pfb.109.2024.03.21.16.59.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Mar 2024 16:59:25 -0700 (PDT)
-Message-ID: <0ed44a68-ec4e-437d-9d0b-a89ccff3d60f@suse.com>
-Date: Fri, 22 Mar 2024 10:29:21 +1030
+	s=arc-20240116; t=1711075001; c=relaxed/simple;
+	bh=eRxGOOflTDZPBLheACM/qTC+mtSKE0dxLotFRxHdhIw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JOxfhDWZwmaNS7G9rB4MWn7gM/J4kig0RqajivUJm0b4JOgb1T/qibEIrs8nFxFDadBN5oEYwePu5v61QbSHelrslpIl9kNTjkn0GmwQpS/S/sUol0dUHyvvm92NvMc+/mHPvSiRVW27mdVzEda8+F5zPOfMS6As3ELKm0/pEgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=aX8j7w7P; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Mb2qfQ2/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rotp3kjv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eR0HoxU0; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 38DF92286B;
+	Fri, 22 Mar 2024 02:36:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711074997;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wXaZ53hEfJUkd584//ADyZQVxgqvd0k0hvtN+G3D+FI=;
+	b=aX8j7w7PouUU9LywamjU6IfB/4JypJruYrG/V22+rRNrjVuBBX9h7Lwz0rNPI0NcZVa8sP
+	BsbyVRnaQhy5EfKgjDH+vDUskX+befZkXO9J+3qudmNh5qTBtq8BDhQkqsHxqJO5QUtkSP
+	swbsK2H3rzyS5dIhzyY3afrYmnUMWTk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711074997;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wXaZ53hEfJUkd584//ADyZQVxgqvd0k0hvtN+G3D+FI=;
+	b=Mb2qfQ2/1jtw45nHN+w1cyzE9SxmNE2l16ltFMI0yNDtXq/Fb2ZUs2gSyYkSJSV/8Jk6LP
+	9+GhcebWFI8lskDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711074996;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wXaZ53hEfJUkd584//ADyZQVxgqvd0k0hvtN+G3D+FI=;
+	b=rotp3kjvMmTaJggoZJcWxxnjKjyCyjcn0egKg7LKy06hXK70fcx6OxWCNKmkemqhgsoATH
+	bZMMeyaZL9GpHQxlMxW2A2q4SBuW+K6w+nCwwArwziUS6GRYFoc+tjiX1C5+1++v41j/vs
+	O7+ci0MYp1jVQe2nFAkvHM4PCyLuiXU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711074996;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wXaZ53hEfJUkd584//ADyZQVxgqvd0k0hvtN+G3D+FI=;
+	b=eR0HoxU0MO3XxJrUWLpF9wsTySmm0bV7Z8pkGWFib2VHVSsDFXQQuJrtEx16/VKEf4SA3K
+	YSEz5vhUzXOpUvDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2816E137D4;
+	Fri, 22 Mar 2024 02:36:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 3B2bCbTu/GVISgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 22 Mar 2024 02:36:36 +0000
+Date: Fri, 22 Mar 2024 03:29:21 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 19/29] btrfs: mark_garbage_root rename err to ret2
+Message-ID: <20240322022921.GI14596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1710857863.git.anand.jain@oracle.com>
+ <417f039ffc4db265a98214c8f86e9a36dbfb1c31.1710857863.git.anand.jain@oracle.com>
+ <20240319180748.GH2982591@perftesting>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC] btrfs: reflink: disable cross-subvolume clone/dedupe
- for simple quota
-Content-Language: en-US
-To: Boris Burkov <boris@bur.io>, Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <74730c411b0fd87484c8d894878c5cd8bac1d434.1710992258.git.wqu@suse.com>
- <20240321185135.GB3186943@perftesting>
- <20240321190857.GA107915@zen.localdomain>
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <20240321190857.GA107915@zen.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319180748.GH2982591@perftesting>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -1.48
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.48 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,oracle.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.27)[74.04%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=rotp3kjv;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=eR0HoxU0
+X-Rspamd-Queue-Id: 38DF92286B
 
-
-
-在 2024/3/22 05:38, Boris Burkov 写道:
-> On Thu, Mar 21, 2024 at 02:51:35PM -0400, Josef Bacik wrote:
->> On Thu, Mar 21, 2024 at 02:09:38PM +1030, Qu Wenruo wrote:
->>> Unlike the full qgroup, simple quota no longer makes backref walk to
->>> properly make accurate accounting for each subvolume.
->>>
->>> Instead it goes a much faster and much simpler way, anything modified by
->>> the subvolume would be accounted to that subvolume.
->>>
->>> Although it brings some small accuracy problem, mostly related to shared
->>> extents between different subvolumes, the reduced overhead is more than
->>> good enough.
->>>
->>> Considering there are only 2 ways to share extents between subvolumes:
->>>
->>> - Snapshotting
->>> - Cross-subvolume clone/dedupe
->>>
->>> And since snapshotting is the core functionality of btrfs, we will never
->>> disable that.
->>>
->>> But on the other hand, cross-subvolume snapshotting is not so critical,
->>> and disabling that for simple quota would improve the accuracy of it,
->>> I'd say it's worthy to do that.
->>>
->>
->> We did this on purpose, and absolutely want to leave this functionality in
->> place.  Boris made sure to document this behavior explicitly, because we are
->> absolutely taking advantage of this internally by having the package management
->> subvolume managed under a different quota, and then reflinking those packages
->> into their containers volume.  This is the price of squotas, you aren't getting
->> full tracking, but you're getting limits and speed.  Thanks,
->>
->> Josef
+On Tue, Mar 19, 2024 at 02:07:48PM -0400, Josef Bacik wrote:
+> On Tue, Mar 19, 2024 at 08:25:27PM +0530, Anand Jain wrote:
+> > In this function, the variable err is used as the second return value. If
+> > it is not zero, rename it to ret2.
+> > 
+> > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 > 
-> For a little extra context, if we hadn't wanted to support reflinking,
-> then squotas would have been yet simplER,
+> This is fine but terrible, a good follow up cleanup would be to make
+> btrfs_end_transaction() a void and remove the random places we check for an
+> error.  We don't really need it to tell use we have EROFS, we'll get it in some
+> other operation down the line if we didn't get it somewhere in here.  Thanks,
 
-I guess that's why my initial impression on squota, which can be even 
-simpler without the extra extent tree change.
+I'm not sure we can ignore it everywhere, in many places it's ok, namely
+after transaction abort but if some control flow depends on the return
+value and starts doing updates that would hit the abort much later then
+I'd rather keep it.
 
-> and wouldn't have needed the
-> new inline owner refs. For better or worse, we decided it was in fact
-> quite important, so we added the owner refs. Now that we did the hard
-> work and committed to the incompat change, I certainly think it makes
-> sense to leave the support.
+Examples I found:
 
-Considering you guys have the real world usage and have already 
-committed so much to this feature, it's definitely worthy keeping.
+btrfs_delete_subvolume() line 4611, restore dead root status back
+btrfs_ioctl_qgroup_assign() if end_transaction fails we don't have any
+                            way to communicate errors from the ioctl
+btrfs_ioctl_qgroup_create() same
+btrfs_ioctl_qgroup_limit() same
+... and there are similar cases
 
-The patch would be dropped.
+It's not just EROFS but also the error code of transaction abort. I'd
+rather see the failures detected as early as possible, the delayed error
+would only become confusing to debug.
 
-Thanks,
-Qu
-
-> 
-> Boris
+We can have 2 versions so it's semantically clear which one is supposed
+to be handled and leave one void for the majority of cases.
 
