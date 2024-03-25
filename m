@@ -1,237 +1,173 @@
-Return-Path: <linux-btrfs+bounces-3574-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3573-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1AC188B4E6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 00:02:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5814588B497
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Mar 2024 23:58:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAFD01C3196C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Mar 2024 23:02:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2A5F1F3E2B7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Mar 2024 22:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87628823D5;
-	Mon, 25 Mar 2024 23:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2FCD82D6C;
+	Mon, 25 Mar 2024 22:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="kIu89AHQ"
+	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="gf8QaoDX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from rusty.tulip.relay.mailchannels.net (rusty.tulip.relay.mailchannels.net [23.83.218.252])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E3680C00;
-	Mon, 25 Mar 2024 23:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.83.218.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30DD6823DB
+	for <linux-btrfs@vger.kernel.org>; Mon, 25 Mar 2024 22:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.144.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711407715; cv=none; b=okP44X73wRGB/3/LOo5S8ijaUpil6wlpQPRiZBtkt7tkyIEsptxMBfIk0/Jabu4u/h0O8TR7Zik85FscrPaLeNc71KUkYpo295Vnx3xMVAbQdLKvYGAt0lW2Xm12OmfWZ3QUmmO0uw9dfbCeEpttD+GbNKAoibOOu+ZeQ9B2hgU=
+	t=1711407471; cv=none; b=Aa9AHw+Aen9Qow4lSWTTM6do4TJBQcj0CWzHMICe9e0j0Y0ld8fNA569KQMYnWanIK7xoS1Uxb4vNFKzIeXrsLbaysoCPVBZjbeaG4rwzzE0j2fre38CkIEeeSHi6/gZhudm8ld3qm4QxI7ZX5SHgXXlCx6sJ0NYJ9G1NT/L3no=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711407715; c=relaxed/simple;
-	bh=pGelYWSesGbNVG/XxXeoAsq3pYrN4VEi9EG/XhDcCCw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IkVZj4s/ukPeEInwno5Vm0QOsH9ICNc/4MNVP/bQfby4I37kcnPO4jsWDUpIw1KCkodbDdLAzzPylBljqSGCzYQ2Joco/AaGINBJlHanrEYFQcwCdpOLRa70ZDQsXbfj1Ru2MXjMxo2EYoNIzrb1iFLVfEv89/NMHs4BESsNbk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=kIu89AHQ; arc=none smtp.client-ip=23.83.218.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 143072C1855;
-	Mon, 25 Mar 2024 22:56:20 +0000 (UTC)
-Received: from pdx1-sub0-mail-a262.dreamhost.com (unknown [127.0.0.6])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id B467D2C3A47;
-	Mon, 25 Mar 2024 22:56:19 +0000 (UTC)
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Bottle-Madly: 630645f44f809046_1711407379945_2575901930
-X-MC-Loop-Signature: 1711407379945:2338995249
-X-MC-Ingress-Time: 1711407379945
-Received: from pdx1-sub0-mail-a262.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.123.121.28 (trex/6.9.2);
-	Mon, 25 Mar 2024 22:56:19 +0000
-Received: from offworld (unknown [108.175.208.151])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	s=arc-20240116; t=1711407471; c=relaxed/simple;
+	bh=8yHuW646JTUOXNDxx4etIyTFAlf7TWe7t3eS400nNxU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g/BrvA3nTy4JeU09UiDc+llzZuhz3Rgb5meuRRf+ypC3IFbaqG0jOKhC7Tfd2Z+GeBVhFaIQtSaOUg2BNWWTjtVnvZlDhV4ylbrYESlnOQtfDYTbd6RzSHvR186Kv810YQwGDJQjz9KayXUEjc5gQ3BvwFhXmegY8DjM1DQi4Yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me; spf=pass smtp.mailfrom=dorminy.me; dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b=gf8QaoDX; arc=none smtp.client-ip=71.19.144.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
 	(No client certificate requested)
-	(Authenticated sender: dave@stgolabs.net)
-	by pdx1-sub0-mail-a262.dreamhost.com (Postfix) with ESMTPSA id 4V3SwL6Zw5z49;
-	Mon, 25 Mar 2024 15:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-	s=dreamhost; t=1711407379;
-	bh=yns6TRenEI0BrHKQHDVuKFZ63algNuE6vnQKEMLKhbQ=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=kIu89AHQSAuj20+il8QKkPjfIKfaMO99Yvs13+s7U3jApyfI6v+oeJtGql5gk+ZTx
-	 Wc2l+PfY9ez0xKcUzfUy1g8auNl45COEKm0W3XzYX59s2W8W0p4lCtkmXCSnwt5y7t
-	 BhXrWoT3byG1vmFDER+RgqsdvQ7II6NjA2w2roA9iaAdFlWkmQQhvLMgCpz99KMz+h
-	 D6q014ATT/34xHZl5OF9pNmzsUOGHt7nulgxz2CE4FurrdqaG2/f3Lw7c15G99runi
-	 zDkjBkp51WvOJ+mLPSbHgYvCi1JiETVrN1Qel1AikrT/yIcdCSKm79kfppnrAZV5Wo
-	 Mu/esq8fXhVew==
-Date: Mon, 25 Mar 2024 15:56:15 -0700
-From: Davidlohr Bueso <dave@stgolabs.net>
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Navneet Singh <navneet.singh@intel.com>, 
-	Dan Williams <dan.j.williams@intel.com>, Alison Schofield <alison.schofield@intel.com>, 
-	Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/26] cxl/mbox: Flag support for Dynamic Capacity
- Devices (DCD)
-Message-ID: <aczotz4a2xv6x4cse3hh5vpk57ekuwqii67pu46okdvdciae7i@qsopoigqhvw5>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-1-b7b00d623625@intel.com>
+	by box.fidei.email (Postfix) with ESMTPSA id CEFE18282E;
+	Mon, 25 Mar 2024 18:57:45 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+	t=1711407469; bh=8yHuW646JTUOXNDxx4etIyTFAlf7TWe7t3eS400nNxU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gf8QaoDX5hBu7ulHVZwxHHVE2BcsQ7t4LJfZ5JV2g8ksWjilQOCjX0VojK7Yi/3uh
+	 G2kFE3oc7jK4gx4JQq5ma0fJc/kz9OuYayUgoFmJX7BfWnPpSF8A7iwglHH/L/Q/QD
+	 jHA6t7k2fRDJUkdcEEeqeZ5kjULiciPKPPvTfHAFhYDhDKNAYmFK4t9iLlWMvn1xhJ
+	 dR7FaL18FpScFFf+b/RCDoMDff2sc3tMuH/CJ1GiOBnkk2InpiLbNi6gewZOyyYp0s
+	 XJR+I6rX8B3rFybp0DQWy7A0qMsnx+4Y0xsdSNv8xPno+AUrm2mdlB1yd1ctOHotIc
+	 s5qobwT0u2hGA==
+Message-ID: <6502f543-1fb6-4aaf-bbba-effd69c1cc7f@dorminy.me>
+Date: Mon, 25 Mar 2024 18:57:37 -0400
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-1-b7b00d623625@intel.com>
-User-Agent: NeoMutt/20231221
+Subject: Re: [PATCH v2] btrfs: do not wait for short bulk allocation
+Content-Language: en-US
+To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc: Julian Taylor <julian.taylor@1und1.de>, Filipe Manana <fdmanana@suse.com>
+References: <3484c7d6ad25872c59039702f4a7c08ae72771a2.1711406789.git.wqu@suse.com>
+From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <3484c7d6ad25872c59039702f4a7c08ae72771a2.1711406789.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, 24 Mar 2024, ira.weiny@intel.com wrote:
+Thanks!!
 
->From: Navneet Singh <navneet.singh@intel.com>
->
->Per the CXL 3.1 specification software must check the Command Effects
->Log (CEL) to know if a device supports dynamic capacity (DC).  If the
->device does support DC the specifics of the DC Regions (0-7) are read
->through the mailbox.
+On 3/25/24 18:46, Qu Wenruo wrote:
+> [BUG]
+> There is a recent report that when memory pressure is high (including
+> cached pages), btrfs can spend most of its time on memory allocation in
+> btrfs_alloc_page_array() for compressed read/write.
+> 
+> [CAUSE]
+> For btrfs_alloc_page_array() we always go alloc_pages_bulk_array(), and
+> even if the bulk allocation failed (fell back to single page
+> allocation) we still retry but with extra memalloc_retry_wait().
+> 
+> If the bulk alloc only returned one page a time, we would spend a lot of
+> time on the retry wait.
+> 
+> The behavior was introduced in commit 395cb57e8560 ("btrfs: wait between
+> incomplete batch memory allocations").
+> 
+> [FIX]
+> Although the commit mentioned that other filesystems do the wait, it's
+> not the case at least nowadays.
+> 
+> All the mainlined filesystems only call memalloc_retry_wait() if they
+> failed to allocate any page (not only for bulk allocation).
+> If there is any progress, they won't call memalloc_retry_wait() at all.
+> 
+> For example, xfs_buf_alloc_pages() would only call memalloc_retry_wait()
+> if there is no allocation progress at all, and the call is not for
+> metadata readahead.
+> 
+> So I don't believe we should call memalloc_retry_wait() unconditionally
+> for short allocation.
+> 
+> This patch would only call memalloc_retry_wait() if failed to allocate
+> any page for tree block allocation (which goes with __GFP_NOFAIL and may
+> not need the special handling anyway), and reduce the latency for
+> btrfs_alloc_page_array().
+> 
+> Reported-by: Julian Taylor <julian.taylor@1und1.de>
+> Tested-by: Julian Taylor <julian.taylor@1und1.de>
+> Link: https://lore.kernel.org/all/8966c095-cbe7-4d22-9784-a647d1bf27c3@1und1.de/
+> Fixes: 395cb57e8560 ("btrfs: wait between incomplete batch memory allocations")
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-I vote to fold this into patch 3, favoring reduced patch count in the
-series to trvially enlarging that particular patch.
-
->Flag DC Device (DCD) commands in a device if they are supported.
->Subsequent patches will key off these bits to configure DCD.
-
-It would be good to mention these here explicitly (if this patch will
-live on). For example, that config will be the driver's way of telling
-if dcd is enabled or disabled - we could have cases of that zeroed bit
-but the rest enabled.
-
-lgtm otherwise.
-
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-
->Signed-off-by: Navneet Singh <navneet.singh@intel.com>
->Co-developed-by: Ira Weiny <ira.weiny@intel.com>
->Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->---
->Changes for v1
->[iweiny: update to latest master]
->[iweiny: update commit message]
->[iweiny: Based on the fix:
->	https://lore.kernel.org/all/20230903-cxl-cel-fix-v1-1-e260c9467be3@intel.com/
->[jonathan: remove unneeded format change]
->[jonathan: don't split security code in mbox.c]
->---
-> drivers/cxl/core/mbox.c | 33 +++++++++++++++++++++++++++++++++
-> drivers/cxl/cxlmem.h    | 15 +++++++++++++++
-> 2 files changed, 48 insertions(+)
->
->diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
->index 9adda4795eb7..ed4131c6f50b 100644
->--- a/drivers/cxl/core/mbox.c
->+++ b/drivers/cxl/core/mbox.c
->@@ -161,6 +161,34 @@ static void cxl_set_security_cmd_enabled(struct cxl_security_state *security,
->	}
-> }
->
->+static bool cxl_is_dcd_command(u16 opcode)
->+{
->+#define CXL_MBOX_OP_DCD_CMDS 0x48
->+
->+	return (opcode >> 8) == CXL_MBOX_OP_DCD_CMDS;
->+}
->+
->+static void cxl_set_dcd_cmd_enabled(struct cxl_memdev_state *mds,
->+					u16 opcode)
->+{
->+	switch (opcode) {
->+	case CXL_MBOX_OP_GET_DC_CONFIG:
->+		set_bit(CXL_DCD_ENABLED_GET_CONFIG, mds->dcd_cmds);
->+		break;
->+	case CXL_MBOX_OP_GET_DC_EXTENT_LIST:
->+		set_bit(CXL_DCD_ENABLED_GET_EXTENT_LIST, mds->dcd_cmds);
->+		break;
->+	case CXL_MBOX_OP_ADD_DC_RESPONSE:
->+		set_bit(CXL_DCD_ENABLED_ADD_RESPONSE, mds->dcd_cmds);
->+		break;
->+	case CXL_MBOX_OP_RELEASE_DC:
->+		set_bit(CXL_DCD_ENABLED_RELEASE, mds->dcd_cmds);
->+		break;
->+	default:
->+		break;
->+	}
->+}
->+
-> static bool cxl_is_poison_command(u16 opcode)
-> {
-> #define CXL_MBOX_OP_POISON_CMDS 0x43
->@@ -733,6 +761,11 @@ static void cxl_walk_cel(struct cxl_memdev_state *mds, size_t size, u8 *cel)
->			enabled++;
->		}
->
->+		if (cxl_is_dcd_command(opcode)) {
->+			cxl_set_dcd_cmd_enabled(mds, opcode);
->+			enabled++;
->+		}
->+
->		dev_dbg(dev, "Opcode 0x%04x %s\n", opcode,
->			enabled ? "enabled" : "unsupported by driver");
->	}
->diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
->index 20fb3b35e89e..79a67cff9143 100644
->--- a/drivers/cxl/cxlmem.h
->+++ b/drivers/cxl/cxlmem.h
->@@ -238,6 +238,15 @@ struct cxl_event_state {
->	struct mutex log_lock;
-> };
->
->+/* Device enabled DCD commands */
->+enum dcd_cmd_enabled_bits {
->+	CXL_DCD_ENABLED_GET_CONFIG,
->+	CXL_DCD_ENABLED_GET_EXTENT_LIST,
->+	CXL_DCD_ENABLED_ADD_RESPONSE,
->+	CXL_DCD_ENABLED_RELEASE,
->+	CXL_DCD_ENABLED_MAX
->+};
->+
-> /* Device enabled poison commands */
-> enum poison_cmd_enabled_bits {
->	CXL_POISON_ENABLED_LIST,
->@@ -454,6 +463,7 @@ struct cxl_dev_state {
->  *                (CXL 2.0 8.2.9.5.1.1 Identify Memory Device)
->  * @mbox_mutex: Mutex to synchronize mailbox access.
->  * @firmware_version: Firmware version for the memory device.
->+ * @dcd_cmds: List of DCD commands implemented by memory device
->  * @enabled_cmds: Hardware commands found enabled in CEL.
->  * @exclusive_cmds: Commands that are kernel-internal only
->  * @total_bytes: sum of all possible capacities
->@@ -481,6 +491,7 @@ struct cxl_memdev_state {
->	size_t lsa_size;
->	struct mutex mbox_mutex; /* Protects device mailbox and firmware */
->	char firmware_version[0x10];
->+	DECLARE_BITMAP(dcd_cmds, CXL_DCD_ENABLED_MAX);
->	DECLARE_BITMAP(enabled_cmds, CXL_MEM_COMMAND_ID_MAX);
->	DECLARE_BITMAP(exclusive_cmds, CXL_MEM_COMMAND_ID_MAX);
->	u64 total_bytes;
->@@ -551,6 +562,10 @@ enum cxl_opcode {
->	CXL_MBOX_OP_UNLOCK		= 0x4503,
->	CXL_MBOX_OP_FREEZE_SECURITY	= 0x4504,
->	CXL_MBOX_OP_PASSPHRASE_SECURE_ERASE	= 0x4505,
->+	CXL_MBOX_OP_GET_DC_CONFIG	= 0x4800,
->+	CXL_MBOX_OP_GET_DC_EXTENT_LIST	= 0x4801,
->+	CXL_MBOX_OP_ADD_DC_RESPONSE	= 0x4802,
->+	CXL_MBOX_OP_RELEASE_DC		= 0x4803,
->	CXL_MBOX_OP_MAX			= 0x10000
-> };
->
->
->--
->2.44.0
->
+> ---
+> Changelog:
+> v2:
+> - Still use bulk allocation function
+>    Since alloc_pages_bulk_array() would fall back to single page
+>    allocation by itself, there is no need to go alloc_page() manually.
+> 
+> - Update the commit message to indicate other fses do not call
+>    memalloc_retry_wait() unconditionally
+>    In fact, they only call it when they need to retry hard and can not
+>    really fail.
+> ---
+>   fs/btrfs/extent_io.c | 22 +++++++++-------------
+>   1 file changed, 9 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 7441245b1ceb..c96089b6f388 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -681,31 +681,27 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
+>   int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
+>   			   gfp_t extra_gfp)
+>   {
+> +	const gfp_t gfp = GFP_NOFS | extra_gfp;
+>   	unsigned int allocated;
+>   
+>   	for (allocated = 0; allocated < nr_pages;) {
+>   		unsigned int last = allocated;
+>   
+> -		allocated = alloc_pages_bulk_array(GFP_NOFS | extra_gfp,
+> -						   nr_pages, page_array);
+> +		allocated = alloc_pages_bulk_array(gfp, nr_pages, page_array);
+> +		if (unlikely(allocated == last)) {
+> +			/* Can not fail, wait and retry. */
+> +			if (extra_gfp & __GFP_NOFAIL) {
+> +				memalloc_retry_wait(GFP_NOFS);
+> +				continue;
+> +			}
+>   
+> -		if (allocated == nr_pages)
+> -			return 0;
+> -
+> -		/*
+> -		 * During this iteration, no page could be allocated, even
+> -		 * though alloc_pages_bulk_array() falls back to alloc_page()
+> -		 * if  it could not bulk-allocate. So we must be out of memory.
+> -		 */
+> -		if (allocated == last) {
+> +			/* Allowed to fail, error out. */
+>   			for (int i = 0; i < allocated; i++) {
+>   				__free_page(page_array[i]);
+>   				page_array[i] = NULL;
+>   			}
+>   			return -ENOMEM;
+>   		}
+> -
+> -		memalloc_retry_wait(GFP_NOFS);
+>   	}
+>   	return 0;
+>   }
 
