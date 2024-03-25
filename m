@@ -1,234 +1,379 @@
-Return-Path: <linux-btrfs+bounces-3552-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3553-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BDF788A364
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Mar 2024 14:59:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48BC188A572
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Mar 2024 15:57:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF9CC1C398C7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Mar 2024 13:59:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90F7F2E81FF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Mar 2024 14:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08AB4159902;
-	Mon, 25 Mar 2024 10:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9735333E1;
+	Mon, 25 Mar 2024 11:58:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="LvmJbzJY";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="r6Fbv/Wx"
+	dkim=pass (2048-bit key) header.d=1und1.de header.i=@1und1.de header.b="Nga8sD6A"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from moint.1and1.com (moint.1and1.com [212.227.15.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27C815920E
-	for <linux-btrfs@vger.kernel.org>; Mon, 25 Mar 2024 09:37:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711359468; cv=fail; b=hVPAqSspD6H21EZE8CkLJvqL9sqzbuCZZ/GeQAnObFO1wi9nmKkZi8QU6wYrYkDRwsa4XXYps8rzEt3vJdnk5AGhZ0dhqx+E4yeriGh22equ7TlULBm3T2it3Ts3rZMByIxQDbYBxhb+fboygWHT/eDIhgGCIVquqmY3i2ftdxY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711359468; c=relaxed/simple;
-	bh=7Mb2ObNO7HWOboNNtUw7bKP4qs9/gxq5q2QV2NM1YYA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=dEWSIbk9zC0BHDGwMWeLP7GfnezXAsJrmka034ZyqTqxwdUo8yPnyYvGqo1yYnMupHwa0RfsOLYgEunpL7897i61yCaEcGJTmehFVPKUuVjDCN06r3i2Wwl0r+r3ShAXF/YAmChzFXUnpmhhcz1i6VySY1sqBUImddFo1ceYAKg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=LvmJbzJY; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=r6Fbv/Wx; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42P8pOgi020272;
-	Mon, 25 Mar 2024 09:37:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=IthhbbNldihGEsU7jv0Gh0YqORmg0Aam0Yysd4zXht8=;
- b=LvmJbzJYXoO18ZA0vSZ01nbtAVk/OVJsBkqbJfrWUaYKEu3DftKK1GIKz/dNFWqOkffN
- iZgULMMiVypgFM86ThBx1+yvhODMRcizpDNSIy0dVxE8ErHi5NDPzJlfC3NrxGtHVVbL
- Y4yQoWpYpaKTDaVQ+eliSQx2okwlFr6AyZZhLY2xxG03gaTTASWIYGC4ysnFn7+E9IzQ
- Gr+47cRH+Eds+tjyR+X/3uxupA3s/1Zk/iN8vbCgqVtNXRfV0XIx1vri/0gNHcAORUH4
- NxRE47nd1LnAckIKg3C1ylJQxHU2WQxw/h5OEUcFYEWVNI3AepnsgUpfsTFI6GujWS5i 2A== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x1np2aarm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 25 Mar 2024 09:37:33 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42P7HaGq036823;
-	Mon, 25 Mar 2024 09:37:33 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2040.outbound.protection.outlook.com [104.47.56.40])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3x1nh58hhx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 25 Mar 2024 09:37:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AB6nNWh510pn6cSMTU4vYhEWaL0v1EfOW1i/g2jGsyVJVsyGX5poqHlRId3o2yWyufS7gsW8mGtCeg3jkubUQCTtkB7sG/+QB8j1CfmTBlMa9dpxmJJnGmG71HrQOxAxx+cpMirxhC5gNZ/Qq/6N/lnV+KieRO71uPSLIWMAZuc8GvcSu5GDdN7055ayy2NVmKnmNJKC173HLXKI3UVKFVh1LB2d/HfDpKIHBZGgk9qwJVuXsPXUk/VKXCB0nkq5ncQVRZQ1QRksxm3FxRIUmQOusJxVPQmbIa/+m2NxFsVvU0u9F5F0YAYDOyXVLS/TD85Oq2kRvRsl5iShuGXTjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IthhbbNldihGEsU7jv0Gh0YqORmg0Aam0Yysd4zXht8=;
- b=fp4VV0SyHcfjjPEa/+QSVhpK9sLz8SnD5C8ZxwzTS80xAEsmMDdWcoDDbE7vERfaMtu6fYDVRCU4evKT30WnGX2EUsW2XZ7HKnznAno6tp+hGBqBot7g4xeTg8Cn27jMEcmJR+Vsvp1KZnMwuCt11+9oEsEMwvTJhMqKHYVAfhqpgz/kv+SGXaMhdPnGyq9nIIRbqKMFC4kU5L3QqOAaFXb4Z5xKCg8hK/vmjNov1CY1VIYoLkWdLgSYIn7CLzoamRDBRDHmcdrvCsnHzXgNuo2bUHxoc8QLz/6Wb8X6tk7UdrOXoJ8nQ6NdqJU7oRT7uiJJBd/btiVerOWEfaXHew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IthhbbNldihGEsU7jv0Gh0YqORmg0Aam0Yysd4zXht8=;
- b=r6Fbv/Wx7OBiVXaCj8zvXFJfXvaqeQgFULqTS3MH3jef4W8ixQ1VkQAHgw8+VUuFKHZdxiT48P+pWNHJLz3gabGr60dhl+j97AlrHanURWkpC1wZSyNAN7J8flI3sdya/7IIDXtyZ8fiTHiGQAKDjhr7muxHlX4YTO8S8lt6BoM=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by MN2PR10MB4175.namprd10.prod.outlook.com (2603:10b6:208:1d9::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Mon, 25 Mar
- 2024 09:37:31 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::814:3d5c:443b:17b%7]) with mapi id 15.20.7409.028; Mon, 25 Mar 2024
- 09:37:30 +0000
-Message-ID: <9f809cf1-1b76-4551-b096-6a0844ea8d79@oracle.com>
-Date: Mon, 25 Mar 2024 15:07:24 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/29] trivial adjustments for return variable coding
- style
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1710857863.git.anand.jain@oracle.com>
- <20240322023201.GJ14596@twin.jikos.cz>
-Content-Language: en-US
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20240322023201.GJ14596@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MA1P287CA0003.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a00:35::16) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72FCD137758
+	for <linux-btrfs@vger.kernel.org>; Mon, 25 Mar 2024 11:35:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.8
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711366545; cv=none; b=f2ztcIOc75O1t9br+HyIpDnWCV750lM3OQVwCwCC2uxQ0iWkm85XU2yToUM9/ljtaeuymF275gSnKWMRYQLVyLHeZ39HerpEBDS4uEqj3nthNDLncz/VaU/6ShzUHB5UQplbLMq6S8H4sJZGWk7dYw/vqvwumgueYTaV7nHCpH4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711366545; c=relaxed/simple;
+	bh=nQuUpg6nmsEeQnd0MoThKxE6gBSAeRU3rU+OXZDHh4M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=q5XYiIGtJlXXuoX3XxBLTnWaKyh9syy4K+fQ7TWgBdHAMFzHvlJkBQrHbyLfWzWrKkcYC0Po5jypqHp7uuLndemGTwkxYuNOxJxhDrNACA9tTuhc5J97zKsPLvnC3ikS0D4+1c9YWB3/Xk3Lsrza+lX4Fg3+m4dbQpqzovcRAG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=1und1.de; spf=pass smtp.mailfrom=1und1.de; dkim=pass (2048-bit key) header.d=1und1.de header.i=@1und1.de header.b=Nga8sD6A; arc=none smtp.client-ip=212.227.15.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=1und1.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1und1.de
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=1und1.de;
+	 s=corp1; h=From:To:Subject:MIME-Version:Date:Message-ID:cc:sender:reply-to;
+	 bh=hDnvSI6ynptwz2Qm03Pkj6qL6sUaoeru2cusiooNvWw=; b=Nga8sD6AZ4ZxEW5IP++93xly9
+	QBhAgyp0ip8zNJeKb526X9z3V6D9/FlWYD3b9H+gRBtn7xH2CqzmjH1QlufRVSMFPA2JAEE7IYa2L
+	294D5hShlR5iYrkyg7uQtTgdaICt2HxJ1ibn+tB6PXhX/dG7aoKXZkv271fgfQU6DZ9LqtMwcca3G
+	gdw6IsGe8/iRv+1wDv53I/CIwp1MoD/1l1sm82+6hPrIPlIPbn6isxCPsKYDbNBjgqz3O8u3o1nn7
+	SUKlnyDkaPgR4uzNACJN1RrpHOSNQLzHYGWsJkStc9hll0xuaYV6t3HmFJMAkSO9DytQ4yDgeKYVA
+	N6mWvgM1w==;
+Received: from [10.98.28.7] (helo=KAPPEX022.united.domain)
+	by mrint.1and1.com with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <julian.taylor@1und1.de>)
+	id 1roiZc-0008Uf-6Z; Mon, 25 Mar 2024 12:33:04 +0100
+Message-ID: <5921e2eb-6017-42db-984b-a074bade40b2@1und1.de>
+Date: Mon, 25 Mar 2024 12:33:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|MN2PR10MB4175:EE_
-X-MS-Office365-Filtering-Correlation-Id: 59fda910-051e-44cb-e776-08dc4caf30f6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	GPnmcPxezf87PlosUDJ6MYl2alOL4kc8VF7i5q2E+lhf4jDBgEPvAhSLA1DeLDWYfANuXqa4LzWTM5UT8SvnqLo//965rm2BPVDxzb+4oWJ3HLLQiC7Vq65qLyvMv1qgUMKiCNj63H8p9NWUH1EpShCSgw5vkk4oG+VF3Q/aG+RMqVCnl90Aufe58WrYgGAIWBJv5UZT+sNQlEh65IYEy3Pn0VtjJIIMreIq3412VJNyG/xRscF33ezkZtIRNpW3Zlc1f3McaosdbE2oI0daH1KXow22sbGbJKtDq+LIJQ+dtsVsbil53KrJ6qcctSNcfU/5mzU+B/tnmQiw9HNAY6NPlja+2qHxGSIbR78HrUK9j1zyU7e+sMaH461r84Lg15dGT/+h3cKbxu7wjS5YQBWl86NU4UFxWW6DBwvvFyXt3Oq09UXP30ZdOJvB5zKLDlqG/NrjqkWtLDmtW+XdyjL2srB1ZDToo17FvrCpDknZuyflmct2tWiq4eyVO1kQK6Sbce6ShaewHKlrqwZZIR3JXJMKenWm5g1OKtfcy9LWdNgHxx78ek5+njOPrkaLnZG7nLTFiZlhAkgpc0eCU2rLPtLdWWVzqvYK6B0r3WY=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?SEFjSDNpTmFBMnAvai9EMlYzeWtYbld4UEtGdjlDc2c2MkFYQXllams3SDlF?=
- =?utf-8?B?YnNpc2tWRVE2Q09LUmhYWENITFdMUjQ5cXlWM1dKVHZJVk5PVTMrMG4za3cy?=
- =?utf-8?B?RGJVYmdtaTgxTEl1MXRZb2srQWRDd1dIaXJkS2pHQnJyWW8vU1ZrK1NTOGFQ?=
- =?utf-8?B?Sm0yN3JpOWxMa21DNC9XRStuQTgwZU1zTmdETlRmRE5SdHE2eFlRRWtaM2V2?=
- =?utf-8?B?OTUzYXZuYStlRExlSUUyL2R2cVoxcTRGdmlIaHNKQzJnY2NFSXBiMmYwT1NX?=
- =?utf-8?B?THYyT2o2RXhzTjZtZ2VHVG45WDZ5VUt3S1ZMVmJDTTBudko2YUhuckdxS1po?=
- =?utf-8?B?WHNSTlMvY0pkbGZ3Wm81NjFYTW0rNWczSDdyM0tmN0sveUhjb0tISWVOcVdu?=
- =?utf-8?B?amo3Qmt6bnNIVC91TzVWUXFDWE5ZWXBBZHUwdlVoL2N0VDdWMFBIZVBWS3ox?=
- =?utf-8?B?OGp1ZHk2NkZQVEoxUDZ0S0dncEdxMVFUcEhjU24wR0Nna1FQbW1LQTZMVHJZ?=
- =?utf-8?B?d3JaRFpwSEhGeWlRemVyUWlVZGtJZE9DdHpYNmNzaS9WQXNZNjRadGxzYVln?=
- =?utf-8?B?QTZtSFk2VU5rU0t4TCtVdEtVanVaejBZSWZmcVJsZXdjS0g4VHFiY0dOVW1N?=
- =?utf-8?B?OXh1OS9pODB2QmIvTlJQM2dSNTRQNTk5L21VTXFHNTc0MlN2bG9XV1pVTDM3?=
- =?utf-8?B?Ym5zUjhiMkNGTGo1Umhkb2pidk9kdU5rdHpNb0JxUmt4cFltOTlJZlR6Nk5G?=
- =?utf-8?B?NzJvSFFNYXV5enlMdW5iL1poRTJVTCs3SG1EU1dGQmxzYkhyYlFMZXJzRnBW?=
- =?utf-8?B?eFBmS3Bva2tCaTVFYUZkMWpuMWNYTDhvUXVYbEpGMFA4Zllyc3B5WDVUa2RF?=
- =?utf-8?B?SzdkOE9kcUdDSkpxTVRmRFowKzByOXQ0NWJUZmdJQkxTcmJRMzhvMXVNTzRh?=
- =?utf-8?B?TlB3RlBQdXR1MHFyUGEwd1RObDZZUHJBT3pCWTU2NUFxdG5aZGdjc0JXL01s?=
- =?utf-8?B?RUYzNDQ3bVNoL3ppakk0NHpWcHhmL1F4ems3RGxtQmFpaS9QYzFJSmR6Wmsy?=
- =?utf-8?B?elp1ZWxud0RoRkhnN3FFV3JWako5bkpOR1BpZXorZVRTU0JLV0V3NWVJL0xO?=
- =?utf-8?B?eElRbjM0cDQ2T3U2SHZad21ISmUwcE92R293UndVbVhiNkpDKzFreC9JbHp1?=
- =?utf-8?B?SmROcUloaE15b2FYQVA2TERoMkVvVkhPcUV3R2hlekx5ODJkdk1ieXV1dVVH?=
- =?utf-8?B?a1g2M0xibFp6L0I4d05ZNXliNUIzSEE4Y25jeUI1TWU4VEdYbThNRW9Gay9O?=
- =?utf-8?B?VmgwdGUzV3BwZDU5M2RoeVlvMjlhY3A3YVlNTkdySW9JazNmOFE5V2VKSEhM?=
- =?utf-8?B?WWlSelNMVHNPdHVwVGVHQ2hVUGtRc1JLZ082UHM2MnJNeGZla0N2dndlSXNO?=
- =?utf-8?B?NHhidC96NjA3dEdkeWE0NVpoNUlPS1RvM0JVNmJUZW40bkNvYWI3MFV1SENw?=
- =?utf-8?B?ZWtSQTdSdVAxdFNqQ0k2UzV5T1djWS9VVVNNNEdkY0RWWFp0dkpmSVBiVzN6?=
- =?utf-8?B?MUlVYXNKUUtJWDBvZEMrS2xVeFI1MVF2b1psaWFadTZPZURVS3pyb3dHTmJm?=
- =?utf-8?B?dkZST1RqU25PZmpidy9SSHBLbzFrQjBqenpzZDdoVm94L3laZDIwWlIva0tj?=
- =?utf-8?B?b2I3ZlJtRjA0emJBd3VzT2hab0JuWnlSbG9FUjcvcTFUR2lCWGRySmpWYk4x?=
- =?utf-8?B?VUlhZkh5di96eVpIbWZhTS9aQjRQcDlrd1dhSFB6OGFoOUZBeFZSNXliaHl2?=
- =?utf-8?B?QmJqZTk1aTRreGIvSkJrbHdhU0hxOWxKTEF2TWVKSElNcmF3RktVQTRaLzhR?=
- =?utf-8?B?TUxoRW05QUQ0T2YrUjR3ZkxtNmtqM1ZSSGFwcEJxK3RXZkZlVEtXRmhwNWxq?=
- =?utf-8?B?cWgvVnBKdVdEenJ3VUpOcTE0eWhDekNHOWEvWjFycHZaV2pCOFhsMnpBY3dY?=
- =?utf-8?B?SC9vYUhNWDR1alltN1hCajhyYkVxUE80NTR0SjF4aXB3NTArVkIxMlhkNXVo?=
- =?utf-8?B?amgxTS9OWGh5SnNQQytqYWJGbHZTNVNCdHUxdDd0VUFoTzI3TEpPcStFcGlX?=
- =?utf-8?Q?JjapMCiezJDFr0d3SjjyM2+Dw?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	qoFqoW+k8Dd6YbZlYdPP8UVufsVO7QbqEE3Vc4j051nr2ol0aQV84G6A4yAOmtBeJ2YrodsYRuJeLICfjvp+wJm8TriHrH5JjcLgmSOxB44cLEhABgS+5gypVtxanycs+xaxTkdjdgFPtGLLvu9h+mWwqpewBdhOocZZlkyjiYnTYF2TS7bTB77WRr2Acp/XZcdWNFRuhbYrb6deIArnkTGxZqpKhTpTxbl+sk42xpIn2PoYAVFDvWEgt4VHhYX+m8wnk7Z0YxHwSTOVNoxKa+zjT0i5ka/IALCeuak3QdBGcqVMoH35KUfY1izPhKQCs4mWu2grwotuJRgxwARj6CQr1acjTW45EZ6HuQvnhZF6sbUixfk5C1jkzcUzSe2pqL9BCIDkl5PHJpovMYbmZfOXuVKoR2PzDGW6S3Ld5iLAxqw2J7HtgiFOiXphO6ICFrIdHscsRyI4HLHwZxOJ7EMa5olqO/P4nGvLOAHDtE1YkftqjzNsSLGvcW3qyCmRGB9/L5XG1wjvPxo61YV1HWjb/F5EIFcMQtGBdpSumXdnQwWdpy0RSmsyi4HvDUMKDO6crwApAKc2f6DNsPElCKtfKCuS0g28WLaoIK1aJe0=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59fda910-051e-44cb-e776-08dc4caf30f6
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2024 09:37:30.7564
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lchOJjO7FIN1Gg8qooMc2OGlgyqtBZ7os/5+it4N+S5zYQLsf1+Zum+nwZtaVjbPr4EGFXPcR4vHXGgRSD518A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4175
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-25_07,2024-03-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=987
- suspectscore=0 adultscore=0 mlxscore=0 spamscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2403250052
-X-Proofpoint-GUID: 7DYXA5yzYcEyzJyKVtghT2LHYh2igawp
-X-Proofpoint-ORIG-GUID: 7DYXA5yzYcEyzJyKVtghT2LHYh2igawp
+User-Agent: Mozilla Thunderbird
+Subject: Re: slow performance due to frequent memalloc_retry_wait in
+ btrfs_alloc_page_array
+To: Qu Wenruo <wqu@suse.com>, <linux-btrfs@vger.kernel.org>
+References: <8966c095-cbe7-4d22-9784-a647d1bf27c3@1und1.de>
+ <9d66a2e0-96a5-4aea-acf3-732d6667e60e@gmx.com>
+ <5f527804-9d52-4f96-b0a7-72d49e524e18@1und1.de>
+ <d4955b70-f379-43b0-ab8f-7aaa8bafb41c@suse.com>
+Content-Language: en-US
+From: Julian Taylor <julian.taylor@1und1.de>
+Autocrypt: addr=julian.taylor@1und1.de; keydata=
+ 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
+ 7oKCuVqh8kE3PYxoRHbuOnFcKDL7dV8w3Mak
+In-Reply-To: <d4955b70-f379-43b0-ab8f-7aaa8bafb41c@suse.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: KAPPEX024.united.domain (10.98.28.9) To
+ KAPPEX022.united.domain (10.98.28.7)
+X-Virus-Scanned: ClamAV@mvs-ha-bs
 
-On 3/22/24 08:02, David Sterba wrote:
-> On Tue, Mar 19, 2024 at 08:25:08PM +0530, Anand Jain wrote:
->> Rename variable 'err'; instead, use 'ret', and the 'ret' helper variable
->> is renamed to 'ret2'.
+
+On 22.03.24 08:37, Qu Wenruo wrote:
+>
+>
+> 在 2024/3/13 20:06, Julian Taylor 写道:
 >>
->> https://btrfs.readthedocs.io/en/latest/dev/Development-notes.html#code
+>> On 13.03.24 07:26, Qu Wenruo wrote:
+>>>
+>>>
+>>> 在 2024/3/13 00:05, Julian Taylor 写道:
+>>>> Hello,
+>>>>
+>>>> After upgrading a machine using btrfs to a 6.1 kernel from 5.10 we are
+>>>> experiencing very low read performance on some (compressed) files when
+>>>> most of the nodes memory is in use by applications and the filesystem
+>>>> cache. Reading some files does not exceed 5MiB/second while the
+>>>> underlying disks can sustain ~800MiB/s. The load on the machine while
+>>>> reading the files slowly is basically zero
+>>>>
+>>>> The filesystem is mounted with
+>>>>
+>>>>   btrfs 
+>>>> (rw,relatime,compress=zstd:3,space_cache=v2,subvolid=5,subvol=/)
+>>>>
+>>>> The filesystem contains several snapshot volumes.
+>>>>
+>>>> Checking with blktrace we noticed a lot of queue unplug events which
+>>>> when traced showed that the cause is most likely io_schedule_timeout
+>>>> being called extremely frequent from btrfs_alloc_page_array which 
+>>>> since
+>>>> 5.19 (91d6ac1d62c3dc0f102986318f4027ccfa22c638) uses bulk page
+>>>> allocations with a memalloc_retry_wait on failure:
+>>>>
+>>>> $ perf record -e block:block_unplug -g
+>>>>
+>>>> $ perf script
+>>>>
+>>>>          ffffffffa3bbff86 blk_mq_flush_plug_list.part.0+0x246
+>>>> ([kernel.kallsyms])
+>>>>          ffffffffa3bbff86 blk_mq_flush_plug_list.part.0+0x246
+>>>> ([kernel.kallsyms])
+>>>>          ffffffffa3bb1205 __blk_flush_plug+0xf5 ([kernel.kallsyms])
+>>>>          ffffffffa4213f15 io_schedule_timeout+0x45 ([kernel.kallsyms])
+>>>>          ffffffffc0c74d42 btrfs_alloc_page_array+0x42 
+>>>> ([kernel.kallsyms])
+>>>
+>>> Btrfs needs to allocate all the pages for the compressed extents, which
+>>> can be very large (as large as 128K, even if the read may only be 4K).
+>>>
+>>> Furthermore, since your system have very high memory pressure, it also
+>>> means the page cache doesn't have much chance to cache the decompressed
+>>> contents.
+>>>
+>>> Thus I'm afraid for your high memory pressure cases, it is not really
+>>> not a good use case with compression.
+>>> (Both compressed read and write would need extra pages other than the
+>>> inode page cache).
+>>>
+>>> And considering your storage is very fast (800+MiB/s), there is really
+>>> little benefit for compression (other than saving disk usages).
 >>
->> In functions where 'ret' is already used as a return helper (but not the
->> actual return), to avoid oversight, first rename the original 'ret'
->> variable to 'ret2', compile it, and then rename 'err' to 'ret'.
+>> The machine does not have high memory pressure it has 380Gi of memory 
+>> and the applications on it only use a small fraction of it, it is 
+>> just a machine handling backups most of the time.
 >>
->> Anand Jain (29):
->>    btrfs: btrfs_cleanup_fs_roots rename ret to ret2 and err to ret
->>    btrfs: btrfs_initxattrs rename err to ret
->>    btrfs: send_extent_data rename err to ret
->>    btrfs: btrfs_rmdir rename err to ret
->>    btrfs: btrfs_cont_expand rename err to ret
->>    btrfs: btrfs_setsize rename err to ret2
->>    btrfs: btrfs_find_orphan_roots rename ret to ret2 and err to ret
->>    btrfs: btrfs_ioctl_snap_destroy rename err to ret
->>    btrfs: __set_extent_bit rename err to ret
->>    btrfs: convert_extent_bit rename err to ret
->>    btrfs: __btrfs_end_transaction rename err to ret
->>    btrfs: btrfs_write_marked_extents rename werr to ret err to ret2
->>    btrfs: __btrfs_wait_marked_extents rename werr to ret err to ret2
->>    btrfs: build_backref_tree rename err to ret and ret to ret2
->>    btrfs: relocate_tree_blocks rename ret to ret2 and err to ret
->>    btrfs: relocate_block_group rename ret to ret2 and err to ret
->>    btrfs: create_reloc_inode rename err to ret
->>    btrfs: btrfs_relocate_block_group rename ret to ret2 and err ro ret
->>    btrfs: mark_garbage_root rename err to ret2
->>    btrfs: btrfs_recover_relocation rename ret to ret2 and err to ret
->>    btrfs: quick_update_accounting rename err to ret2
->>    btrfs: btrfs_qgroup_rescan_worker rename ret to ret2 and err to ret
->>    btrfs: lookup_extent_data_ref rename ret to ret2 and err to ret
->>    btrfs: btrfs_drop_snapshot rename ret to ret2 and err to ret
->>    btrfs: btrfs_drop_subtree rename retw to ret2
->>    btrfs: btrfs_dirty_pages rename variable err to ret
->>    btrfs: prepare_pages rename err to ret
->>    btrfs: btrfs_direct_write rename err to ret
->>    btrfs: fixup_tree_root_location rename ret to ret2 and err to ret
-> 
-> Several patches got coments that would need an update but I think for
-> the simple err -> ret renames that did not involve anything else you can
-> add it to for-next.
+>> The memory is all just used by the page cache and is reclaimable. The 
+>> bulk page allocation functions just do not do that without falling 
+>> back to single page allocations.
+>>
+>>
+>>>
+>>>>
+>>>>
+>>>> Further checking why the bulk page allocations only return a single 
+>>>> page
+>>>> we noticed this is only happening when all memory of the node is 
+>>>> tied up
+>>>> even if still reclaimable.
+>>>>
+>>>> It can be reliably reproduced on the machine when filling the page 
+>>>> cache
+>>>> with data from the disk (just via cat * >/dev/null) until we are have
+>>>> following memory situation on the node with two sockets:
+>>>>
+>>>> $numactl --hardware
+>>>>
+>>>> available: 2 nodes (0-1)
+>>>>
+>>>> node 0 cpus: 0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40
+>>>> 42 44 46 48 50 52 54 56 58 60 62
+>>>> node 0 size: 192048 MB
+>>>> node 0 free: 170340 MB
+>>>> node 1 cpus: 1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39 41
+>>>> 43 45 47 49 51 53 55 57 59 61 63
+>>>> node 1 size: 193524 MB
+>>>> node 1 free: 224 MB        <<< nothing free due to cache
+>>>
+>>> This is interesting, such unbalanced free memory is indeed going to
+>>> cause problems.
+>>>
+>>>>
+>>>> $ top
+>>>>
+>>>> MiB Mem : 385573.2 total, 170093.0 free,  19379.1 used, 201077.9 
+>>>> buff/cache
+>>>> MiB Swap:   3812.0 total,   3812.0 free,      0.0 used. 366194.1 
+>>>> avail Mem
+>>>>
+>>>>
+>>>> When now reading a file with a process bound to a cpu on node 1 
+>>>> (taskset
+>>>> -c cat $file) we see the high io_schedule_timeout rate and very low 
+>>>> read
+>>>> performance.
+>>>>
+>>>> This is seen with linux 6.1.76 (debian 12 stable) and linux 6.7.9
+>>>> (debian unstable).
+>>>>
+>>>>
+>>>> It appears the bulk page allocations used by btrfs_alloc_page_array 
+>>>> will
+>>>> have a high failure rate when the per cpu page lists are empty and 
+>>>> they
+>>>> do not appear to attempt to reclaim memory from the page cache but
+>>>> instead return a single page via the normal page allocations. But this
+>>>> combined with memalloc_retry_wait called on each iteration causes very
+>>>> slow performance.
+>>>
+>>> Not an expert on NUMA, but I guess there should be some way to balance
+>>> the free memory between different numa nodes?
+>>>
+>>> Can it be done automatically/periodically as a workaround?
+>>
+>> Dropping data from the page cache is the workaround we are using, via 
+>> fadvice(DONTNEED) on the data.
+>>
+>> Balancing the memory between numa nodes will not help. At some point 
+>> both nodes memory is in the caches and the same situation will occur 
+>> on both nodes.
+>>
+>> I have verified this loading the caches on both nodes:
+>>
+>> # numactl --hardware
+>> available: 2 nodes (0-1)
+>> node 0 cpus: 0 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 
+>> 40 42 44 46 48 50 52 54 56 58 60 62
+>> node 0 size: 192048 MB
+>> node 0 free: 2316 MB
+>> node 1 cpus: 1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39 
+>> 41 43 45 47 49 51 53 55 57 59 61 63
+>> node 1 size: 193524 MB
+>> node 1 free: 327 MB
+>>
+>> and now loading files with processes bound to either node is affected 
+>> by this. ]
+>>
+>>
+>>>
+>>>>
+>>>> Increasing sysctl vm.percpu_pagelist_high_fraction did not yield any
+>>>> improvement for the situation, the only workaround seems to be to free
+>>>> the page cache on the nodes before reading the data.
+>>>>
+>>>> Assuming the bulk page allocations functions are intended to not 
+>>>> reclaim
+>>>> memory when the per core lists are empty probably the way
+>>>> btrfs_alloc_page_array handles failure of bulk allocation should be
+>>>> revised.
+>>>
+>>> Any suggestion for improvement?
+>>>
+>>> In our usage, we can not afford to reclaim page cache, as that may
+>>> trigger page writeback, meanwhile we may also in the page writeback 
+>>> path
+>>> and can lead to deadlock.
+>>>
+>>> On the other hand, if we allocate pages for compressed read/write from
+>>> other NUMA nodes, wouldn't that cause different performance problems?
+>>> E.g. we still need to do compression using the page from the remote 
+>>> numa
+>>> nodes, wouldn't that also greatly reduce the compression speed?
+>>
+>> The problem we see is not the page allocation itself but the looping 
+>> on memalloc_retry_wait when the bulk allocation falls back to single 
+>> page allocations due to empty per cpu page lists.
+>>
+>> My naive suggestion would be to revert the bulk allocation 
+>> (91d6ac1d62c3dc0f102986318f4027ccfa22c638) and do single page 
+>> allocations again. As far as I can tell the bulk allocation was done 
+>> for performance reasons not to avoid deadlocks due to writeback.
+>>
+>> If the performance gain by the bulk allocation is very significant 
+>> maybe the looping on memalloc_retry_wait can be done in some better 
+>> way but I am unfamiliar with the details here on why the single page 
+>> allocation did not need to do a retry-wait loop and the bulk page 
+>> allocation does.
+>
+> I believe you're right.
+>
+> The common scheme for bulk allocation should be try the bulk/optimized 
+> version, if failed fallback to the single allocation one.
+>
+> In fact, that's exactly what's I'm trying to do for larger folio 
+> support for btrfs metadata.
+> In that case, we try larger folio first, then fallback to regular 
+> btrfs_alloc_page_array().
+>
+> So mind to test the attached patch to see if it solves the problem for 
+> you?
+> The patch would exactly do what I said above, try bulk allocation 
+> first, then go single page allocation for the remaining ones, since 
+> this version no longer do any way, the behavior should be more or less 
+> the same, meanwhile still keep the bulk attempt to benefit from it.
 
-Yeah, to better manage the patches, I have just pushed the patch
-which are direct err->ret renames and does not involve ret2 and
-have comments/suggestions for better ideas.
 
-I'll be sending v2 for the remaining patches.
+I have applied the patch to the running 6.1 kernel (just needed 
+extra_gfp removed) and the problem is not reproducible anymore.
 
-Thanks, Anand
+# ensure all memory is used by page cache by reading arbitrary data.
 
-> If you're not sure about some case then send it in
-> v2.
+find . -size +100M | taskset -c 1 xargs cat > /dev/null
+
+6.1 unpatched:
+
+# reading compressed file that triggers btrfs_alloc_page_array
+
+  python3 /tmp/drop-caches.py $f; taskset -c 1 cat $f | pv > /dev/null
+   2  399MiB 0:02:03 [3.23MiB/s]
+
+
+6.1 patched:
+
+python3 /tmp/drop-caches.py $f; taskset -c 1 cat $f | pv > /dev/null
+  399MiB 0:00:00 [ 710MiB/s] [   <=>
+
+
+To verify the bulk allocation still returns one only page in the patched 
+kernel I ran this trace during reading:
+
+# bpftrace -e "kretfunc:__alloc_pages_bulk {if (args->nr_pages != 
+retval) {@allocret = lhist(retval, 0, 20, 1);}}"
+Attaching 1 probe...
+^C
+
+@allocret:
+[1, 2)              9516 
+|@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+
+
+So the patch does solve the problem for us.
+
+
+
++    const gfp_t gfp = GFP_NOFS | extra_gfp;
++    allocated = alloc_pages_bulk_array(GFP_NOFS | gfp, nr_pages, 
+page_array);
+
+The GFP_NOFS | is on alloc_pages_bulk_array redundant.
+
+
+Thanks,
+
+Julian
 
 
