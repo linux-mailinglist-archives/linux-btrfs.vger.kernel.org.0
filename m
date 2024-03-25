@@ -1,213 +1,229 @@
-Return-Path: <linux-btrfs+bounces-3566-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3568-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 836F588B67E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 02:06:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EF6188B3C8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Mar 2024 23:17:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27346B636F4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Mar 2024 21:39:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2807E1C3F74E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Mar 2024 22:16:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5475B6F085;
-	Mon, 25 Mar 2024 21:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78C5274404;
+	Mon, 25 Mar 2024 22:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="kti1ijWf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ktmjtw6O"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from toucan.tulip.relay.mailchannels.net (toucan.tulip.relay.mailchannels.net [23.83.218.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B896E611;
-	Mon, 25 Mar 2024 21:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.254
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711402727; cv=pass; b=k5AxNpI3hhY+B7aQNT5Y2HLzFRFMlL2l5JKOlgAz/rzFzGX0ATJFjnPFZ71Is5LPotz+e646MfE6s37tPusmL7tAtdXyq2HxJqMPTAFZr4GYWi1+yV/XjKG8sn6SLN7yo1epM8l5eDD88v2FO6Qtk/TT5unfNCYJKIalL0yYhzU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711402727; c=relaxed/simple;
-	bh=BfrzovaPTYaILJssWn7Nx3MRnvGgWgiVAjq8TUTlxVo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IpRGK1FjSlI/vN9B1m6k3VKZxYAarSiKIx9CmlgO3BalGohvzjmwUuf7/aTb+tHHNgN4xSmgOm8LD4uWp7xKBc18sTwhnNPE11EOPF5WXYTSR11z7PPiT4r/zEQCQ/ek1bscI+OY87zgqVdkklD+CnG8Ufyglran7aU6Aj1Y+1A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=kti1ijWf; arc=pass smtp.client-ip=23.83.218.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 0B75A8028C2;
-	Mon, 25 Mar 2024 21:38:38 +0000 (UTC)
-Received: from pdx1-sub0-mail-a262.dreamhost.com (unknown [127.0.0.6])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 53B7F802C11;
-	Mon, 25 Mar 2024 21:38:36 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1711402716; a=rsa-sha256;
-	cv=none;
-	b=i5bITHOKqnVTANPsw49tZ57giJYI+BYyApaK4/xvMagW2Juff9HvvLpVEyTRClHeCbBaiS
-	LSL4Fuuhj4YAMnc2owh5c4tZN9SnZXtAPBkjZnG/dyEfUOHBmWqUQ4EgoIx4dl/AwxH9z7
-	XiREcygxgTGpMXwYtvM8rKABo5jO66JljT1OIL0aWoJNBCj+E6CcoyDoVtMW4vr4ngZqOX
-	uOb0TGk+702D3YfiXuPbUoJY6S5sTISB1W41CCFxx2ZiBuQ5QTywbospLigSNNMBZ5HFkb
-	wxzjVjrfLXvqE/pEqieCtKdvv1P7UmmdwZT9v1xCVtMPRi7XySNouDfNyHtlAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1711402716;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=tGiXBBfXzTceW9Ljl6Rv6G/RrkyUx/LLQsKTU8/y7os=;
-	b=SgrGv7iShKvm6soic3/LQ3WvJcGjBi0d6MBegsNxx7hY9FUJwkZac99rnxITeH9yZQ/8xg
-	wTSAvQeVQr6AWC9pmGeAukrZWzMDhHtvyc68k9KdVzY1+fhkqIWYbZlW/Iu7rj4H2FxcSM
-	cPR2N6Y8t8FDqpO00mZyALrLMwMYPZu2HFFvdbrNcyrY7HGbD6av6LhGwefOwYVvwoQfPV
-	xyXrfT381mifkAU6ANOiuNg0z3ogtc5HGQXqRqoqEdDkgbkp0va245NUvx/6nH+Y33a2QM
-	ohxgCPeLP4j9Bu26kDQdUGI8G5QruoUBVc5SCMPcVVR9pithv30YvlM7rZVpFQ==
-ARC-Authentication-Results: i=1;
-	rspamd-dbbfdf895-ljm6h;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Lyrical-Lettuce: 72d0b04e04bf5627_1711402717849_4055661056
-X-MC-Loop-Signature: 1711402717848:1809582852
-X-MC-Ingress-Time: 1711402717848
-Received: from pdx1-sub0-mail-a262.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.123.121.28 (trex/6.9.2);
-	Mon, 25 Mar 2024 21:38:37 +0000
-Received: from offworld (unknown [108.175.208.151])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dave@stgolabs.net)
-	by pdx1-sub0-mail-a262.dreamhost.com (Postfix) with ESMTPSA id 4V3RBg3ghDzNp;
-	Mon, 25 Mar 2024 14:38:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-	s=dreamhost; t=1711402716;
-	bh=tGiXBBfXzTceW9Ljl6Rv6G/RrkyUx/LLQsKTU8/y7os=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=kti1ijWf5x4DWhuiZZ4asypF67MJzo8S+vRjxKsozYDMz44zIgKp5f8uQOcOsMUxy
-	 4Fzx6rcVkI7aQOB9H/sBcAmCq0Z1OPOKPc7DSbbSh2Etjq+FeEQfcTaOyLjJo9MgLd
-	 l9mhf31ezB5NWye/vpHgN2ueYtNnd5yZHbomrrqDzSZWRiRjadsqWoRSysxVFIVbxy
-	 7JuytwMVxMnEGn96MKOwwije30H4ddsii+ig0KJ0wMq4qEQnFtfOcNm8pS2dK1WIw2
-	 mwPxUNgktHsXkYPWoE95iSEvL995qNBLYgrF5UscBmqR7bPqgh7a0XBuIJgthWRM7Z
-	 h2dukTrWj4L2A==
-Date: Mon, 25 Mar 2024 14:38:32 -0700
-From: Davidlohr Bueso <dave@stgolabs.net>
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Navneet Singh <navneet.singh@intel.com>, 
-	Dan Williams <dan.j.williams@intel.com>, Alison Schofield <alison.schofield@intel.com>, 
-	Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org, 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3376D70CC2;
+	Mon, 25 Mar 2024 22:16:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711405008; cv=none; b=jnHJiRkk+1BVgLwEbQIBFA5KV/LU7duzI+NUBC2oUbs25J0FEALpdJGz1J1TSTGduAqQqPYtfxpNzbT3gK6y9TtsahweUjH5HSFgSPI3He66Q+ZGxUbwznyQEuVLJaK4GbCXVt/zwJ/jAs3nFNh9dJSaYvQx32t13b7vSPoRwSQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711405008; c=relaxed/simple;
+	bh=nr56uDI4dsTykVLBSLuHrShEGXRxM84RwQ2Wm2KBo9I=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vBGnz8nbJ7yVGjNKOvX73YTcfHnDlrTsO28y+pP2qi4fe5mprlJwNgZTbKk3134TNW/mjMq/lzqTNIJaR0kAHZFPA6/Wa30K+aLq2x29LYhu1Mm2ZnyG+8T33sUAVEVNEJY8LM0hZEgOa+VHhmmhQPpJnKIU8RvqZ+eDSZOWhjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ktmjtw6O; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ea9a605ca7so1223512b3a.0;
+        Mon, 25 Mar 2024 15:16:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711405006; x=1712009806; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MWDVUXHZy1dy1NggSOObsYezisgpNSCRe/ZyyTRQIgA=;
+        b=ktmjtw6OxFJHhGdEmxRGzHHqA9waJz0BwQeh3jaZ+zWmaHd4mQAQZoJxP846EitHhY
+         JXrwFgKfb+YCTcafSdUfffckh+NcZfrKuN6PXZcnG/Jti9ytkXxE3DQjWPzCcV8L1NA4
+         A6TXXPQhuydzDs2WjFbQ7i83dNwDRx57kwHbyhdyNyCLQ0Hb16RAuHNo2Fn/3D9bIbpJ
+         3CEZlxwSykPIUoyck3LzmMc17/hChaHdmRpl54YZupXqT8/Ul0a5d01RpY79XgcbpnQ7
+         OYcVcuUDnEaSv0aAT6QVX6x97bH5NgYHLgy9qbvB/ur78dsWCJbX9SROQm26sdBVFqKN
+         HJBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711405006; x=1712009806;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MWDVUXHZy1dy1NggSOObsYezisgpNSCRe/ZyyTRQIgA=;
+        b=sb4bRW4WQ7AT+RABzKQdiZzCNqAEJJD/on6wFIRTFyTJgdifXwWb3GiCJO+EHTfaYO
+         a5TohW2l+1UVP3wnnmJuwgpy+Bfh5YuZMIy5mHHDpheQteryEZkInxxbnUIL4mQzKwT3
+         SLhOMLNzVpuy1bOib9J8okqmeyAtKwcSCkiybJrmcyNKXFALMhUUtS2ixEViT/CiyHDj
+         22u2cSCi7YGWD6Q9wJd1/7jF8PwfARPilNJsY0svPb5ED1SiHoYEV0F7Sis/Fb9P47Lk
+         Af1h2g9NB+rV00n7dt19+AchZe4RJpr61ILC7MTlw3cGS9EK9gxfJPL32Y6VO/PE7ESQ
+         IqUg==
+X-Forwarded-Encrypted: i=1; AJvYcCX0R5ca4ocXfBsGeUR/IZdcjLBcDVgVadQBo43Po58Yr5wbVTmLczovKCFbqNwga1h1shZskuXf+b/L7ng8WBfTG2Fb74Tw/EiMAOBLjANMAh1xHGmIkHO2+ltPyGCdkMT64PHCmIWvHDFFWE255haFbbkJR9qXoKVpP9m6WEC9ezwVx3Q=
+X-Gm-Message-State: AOJu0YwDQBykx1/bqCtxezEGzDIsOStJznf2UFyR9EcqEjO5DswsXFym
+	TA8fZnCyJXsVyTrpJmfKxRZ/7g63rKiXWTOSASOj7dDh8/2RgoK6
+X-Google-Smtp-Source: AGHT+IFoBmjnTGx2FKLWJkGlqytyAfXEM9ejP33L+WVDjrrUAyfpmzrKK59iB5rTkI1i9iTmb0o+vw==
+X-Received: by 2002:a05:6a00:a0d:b0:6e7:82f4:d904 with SMTP id p13-20020a056a000a0d00b006e782f4d904mr11159603pfh.11.1711405006210;
+        Mon, 25 Mar 2024 15:16:46 -0700 (PDT)
+Received: from debian ([2601:641:300:14de:dbc3:c81c:2ddb:208c])
+        by smtp.gmail.com with ESMTPSA id u2-20020a056a00098200b006e5a09708f8sm4737663pfg.174.2024.03.25.15.16.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 15:16:45 -0700 (PDT)
+From: fan <nifan.cxl@gmail.com>
+X-Google-Original-From: fan <fan@debian>
+Date: Mon, 25 Mar 2024 15:16:20 -0700
+To: ira.weiny@intel.com
+Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/26] cxl/core: Simplify cxl_dpa_set_mode()
-Message-ID: <zmcr2lththfsr2zvmgksmmbaupfss2lmgjkyegpvqokynnaknq@ssp2xxvyl222>
+Subject: Re: [PATCH 01/26] cxl/mbox: Flag support for Dynamic Capacity
+ Devices (DCD)
+Message-ID: <ZgH3tCnG0Bkljfdy@debian>
 References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-5-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-1-b7b00d623625@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-5-b7b00d623625@intel.com>
-User-Agent: NeoMutt/20231221
+In-Reply-To: <20240324-dcd-type2-upstream-v1-1-b7b00d623625@intel.com>
 
-On Sun, 24 Mar 2024, Ira Weiny wrote:
+On Sun, Mar 24, 2024 at 04:18:04PM -0700, ira.weiny@intel.com wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
+> 
+> Per the CXL 3.1 specification software must check the Command Effects
+> Log (CEL) to know if a device supports dynamic capacity (DC).  If the
+> device does support DC the specifics of the DC Regions (0-7) are read
+> through the mailbox.
+> 
+> Flag DC Device (DCD) commands in a device if they are supported.
+> Subsequent patches will key off these bits to configure DCD.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
 
->cxl_dpa_set_mode() checks the mode for validity two times, once outside
->of the DPA RW semaphore and again within.  The function is not in a
->critical path.  Prior to Dynamic Capacity the extra check was not much
->of an issue.  The addition of DC modes increases the complexity of
->the check.
+Reviewed-by: Fan Ni <fan.ni@samsung.com>
 
-I agree (also to pick this up regardless of dcd work).
-
->
->Simplify the mode check before adding the more complex DC modes.
-
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-
->Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->
->---
->Changes for v1:
->[iweiny: new patch]
->[Jonathan: based on getting rid of the loop in cxl_dpa_set_mode]
->[Jonathan: standardize on resource_size() == 0]
->---
-> drivers/cxl/core/hdm.c | 45 ++++++++++++++++++---------------------------
-> 1 file changed, 18 insertions(+), 27 deletions(-)
->
->diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
->index 7d97790b893d..66b8419fd0c3 100644
->--- a/drivers/cxl/core/hdm.c
->+++ b/drivers/cxl/core/hdm.c
->@@ -411,44 +411,35 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
->	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
->	struct cxl_dev_state *cxlds = cxlmd->cxlds;
->	struct device *dev = &cxled->cxld.dev;
->-	int rc;
->
->+	guard(rwsem_write)(&cxl_dpa_rwsem);
->+	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE)
->+		return -EBUSY;
->+
->+	/*
->+	 * Check that the mode is supported by the current partition
->+	 * configuration
->+	 */
->	switch (mode) {
->	case CXL_DECODER_RAM:
->+		if (!resource_size(&cxlds->ram_res)) {
->+			dev_dbg(dev, "no available ram capacity\n");
->+			return -ENXIO;
->+		}
->+		break;
->	case CXL_DECODER_PMEM:
->+		if (!resource_size(&cxlds->pmem_res)) {
->+			dev_dbg(dev, "no available pmem capacity\n");
->+			return -ENXIO;
->+		}
->		break;
->	default:
->		dev_dbg(dev, "unsupported mode: %d\n", mode);
->		return -EINVAL;
->	}
->
->-	down_write(&cxl_dpa_rwsem);
->-	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE) {
->-		rc = -EBUSY;
->-		goto out;
->-	}
->-
->-	/*
->-	 * Only allow modes that are supported by the current partition
->-	 * configuration
->-	 */
->-	if (mode == CXL_DECODER_PMEM && !resource_size(&cxlds->pmem_res)) {
->-		dev_dbg(dev, "no available pmem capacity\n");
->-		rc = -ENXIO;
->-		goto out;
->-	}
->-	if (mode == CXL_DECODER_RAM && !resource_size(&cxlds->ram_res)) {
->-		dev_dbg(dev, "no available ram capacity\n");
->-		rc = -ENXIO;
->-		goto out;
->-	}
->-
->	cxled->mode = mode;
->-	rc = 0;
->-out:
->-	up_write(&cxl_dpa_rwsem);
->-
->-	return rc;
->+	return 0;
-> }
->
-> int cxl_dpa_alloc(struct cxl_endpoint_decoder *cxled, unsigned long long size)
->
->--
->2.44.0
->
+> Changes for v1
+> [iweiny: update to latest master]
+> [iweiny: update commit message]
+> [iweiny: Based on the fix:
+> 	https://lore.kernel.org/all/20230903-cxl-cel-fix-v1-1-e260c9467be3@intel.com/
+> [jonathan: remove unneeded format change]
+> [jonathan: don't split security code in mbox.c]
+> ---
+>  drivers/cxl/core/mbox.c | 33 +++++++++++++++++++++++++++++++++
+>  drivers/cxl/cxlmem.h    | 15 +++++++++++++++
+>  2 files changed, 48 insertions(+)
+> 
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index 9adda4795eb7..ed4131c6f50b 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -161,6 +161,34 @@ static void cxl_set_security_cmd_enabled(struct cxl_security_state *security,
+>  	}
+>  }
+>  
+> +static bool cxl_is_dcd_command(u16 opcode)
+> +{
+> +#define CXL_MBOX_OP_DCD_CMDS 0x48
+> +
+> +	return (opcode >> 8) == CXL_MBOX_OP_DCD_CMDS;
+> +}
+> +
+> +static void cxl_set_dcd_cmd_enabled(struct cxl_memdev_state *mds,
+> +					u16 opcode)
+> +{
+> +	switch (opcode) {
+> +	case CXL_MBOX_OP_GET_DC_CONFIG:
+> +		set_bit(CXL_DCD_ENABLED_GET_CONFIG, mds->dcd_cmds);
+> +		break;
+> +	case CXL_MBOX_OP_GET_DC_EXTENT_LIST:
+> +		set_bit(CXL_DCD_ENABLED_GET_EXTENT_LIST, mds->dcd_cmds);
+> +		break;
+> +	case CXL_MBOX_OP_ADD_DC_RESPONSE:
+> +		set_bit(CXL_DCD_ENABLED_ADD_RESPONSE, mds->dcd_cmds);
+> +		break;
+> +	case CXL_MBOX_OP_RELEASE_DC:
+> +		set_bit(CXL_DCD_ENABLED_RELEASE, mds->dcd_cmds);
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +}
+> +
+>  static bool cxl_is_poison_command(u16 opcode)
+>  {
+>  #define CXL_MBOX_OP_POISON_CMDS 0x43
+> @@ -733,6 +761,11 @@ static void cxl_walk_cel(struct cxl_memdev_state *mds, size_t size, u8 *cel)
+>  			enabled++;
+>  		}
+>  
+> +		if (cxl_is_dcd_command(opcode)) {
+> +			cxl_set_dcd_cmd_enabled(mds, opcode);
+> +			enabled++;
+> +		}
+> +
+>  		dev_dbg(dev, "Opcode 0x%04x %s\n", opcode,
+>  			enabled ? "enabled" : "unsupported by driver");
+>  	}
+> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+> index 20fb3b35e89e..79a67cff9143 100644
+> --- a/drivers/cxl/cxlmem.h
+> +++ b/drivers/cxl/cxlmem.h
+> @@ -238,6 +238,15 @@ struct cxl_event_state {
+>  	struct mutex log_lock;
+>  };
+>  
+> +/* Device enabled DCD commands */
+> +enum dcd_cmd_enabled_bits {
+> +	CXL_DCD_ENABLED_GET_CONFIG,
+> +	CXL_DCD_ENABLED_GET_EXTENT_LIST,
+> +	CXL_DCD_ENABLED_ADD_RESPONSE,
+> +	CXL_DCD_ENABLED_RELEASE,
+> +	CXL_DCD_ENABLED_MAX
+> +};
+> +
+>  /* Device enabled poison commands */
+>  enum poison_cmd_enabled_bits {
+>  	CXL_POISON_ENABLED_LIST,
+> @@ -454,6 +463,7 @@ struct cxl_dev_state {
+>   *                (CXL 2.0 8.2.9.5.1.1 Identify Memory Device)
+>   * @mbox_mutex: Mutex to synchronize mailbox access.
+>   * @firmware_version: Firmware version for the memory device.
+> + * @dcd_cmds: List of DCD commands implemented by memory device
+>   * @enabled_cmds: Hardware commands found enabled in CEL.
+>   * @exclusive_cmds: Commands that are kernel-internal only
+>   * @total_bytes: sum of all possible capacities
+> @@ -481,6 +491,7 @@ struct cxl_memdev_state {
+>  	size_t lsa_size;
+>  	struct mutex mbox_mutex; /* Protects device mailbox and firmware */
+>  	char firmware_version[0x10];
+> +	DECLARE_BITMAP(dcd_cmds, CXL_DCD_ENABLED_MAX);
+>  	DECLARE_BITMAP(enabled_cmds, CXL_MEM_COMMAND_ID_MAX);
+>  	DECLARE_BITMAP(exclusive_cmds, CXL_MEM_COMMAND_ID_MAX);
+>  	u64 total_bytes;
+> @@ -551,6 +562,10 @@ enum cxl_opcode {
+>  	CXL_MBOX_OP_UNLOCK		= 0x4503,
+>  	CXL_MBOX_OP_FREEZE_SECURITY	= 0x4504,
+>  	CXL_MBOX_OP_PASSPHRASE_SECURE_ERASE	= 0x4505,
+> +	CXL_MBOX_OP_GET_DC_CONFIG	= 0x4800,
+> +	CXL_MBOX_OP_GET_DC_EXTENT_LIST	= 0x4801,
+> +	CXL_MBOX_OP_ADD_DC_RESPONSE	= 0x4802,
+> +	CXL_MBOX_OP_RELEASE_DC		= 0x4803,
+>  	CXL_MBOX_OP_MAX			= 0x10000
+>  };
+>  
+> 
+> -- 
+> 2.44.0
+> 
 
