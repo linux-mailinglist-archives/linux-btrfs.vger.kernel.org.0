@@ -1,92 +1,89 @@
-Return-Path: <linux-btrfs+bounces-3609-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3610-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0199C88C86B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 17:03:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D799888C8D1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 17:17:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84C191F80CA6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 16:03:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 764A4B23CF4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 16:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0EE713C903;
-	Tue, 26 Mar 2024 16:02:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A373913C9D4;
+	Tue, 26 Mar 2024 16:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="TOHOMprZ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SZZ/45Ef"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M240uKMo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E592813C8ED
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 16:02:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D292FC0E;
+	Tue, 26 Mar 2024 16:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711468978; cv=none; b=aGVEaewkz7wVuvm6d4Qd9X68+OxZxe1EOdZQ0IK3eSZMOkNXRXA0CvDRwDgdXxcjSlBRqnVsbLkdxNHJMJlrYDBLVYmUm3FANTFoSqdA1u5DLjPyAzsYrauQCMIwWioxBDh5cbEnk1ADiVUtffAaQDdNQo5MhPZWofspiCup6oY=
+	t=1711469839; cv=none; b=EDUyzLkS+CTaAGReUTvT2X/8kNE8MVQZzT7b9rqiR4one6ZTuhSxwRhxhbyEOrdIbzCQ2koGokrzO8wgXgDetsOday+2zVC5x+xJLqor9HyR+WOkI6OGAcV16RsmL/AGTtSZkOcDPfaVEZBDngYFYUOHO/lk+dJAEZAwgxi0qAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711468978; c=relaxed/simple;
-	bh=rIviVUIV/Zp4jIGkKqT8vgge3kV0ieDAB0vsPVn+xNU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m8aAnm4/pQ1ygYY4YsnpC9WmmjLgd+cMNGXyDLXpda9qtnZnLtBiGYsW+VO8uJXBuOVQuvW8Qh8ytNDLZ0rgFETIlPa+9HAXXFyUKsfRjCRUt0vP1AtlH+mjix2aqvhyKFOECwEYqTYPVOmRxqMWi00dGnn/5XZy9BHuHfTw7DM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=TOHOMprZ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SZZ/45Ef; arc=none smtp.client-ip=64.147.123.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id BA66332001C6;
-	Tue, 26 Mar 2024 12:02:53 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 26 Mar 2024 12:02:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1711468973; x=1711555373; bh=pgmiw5gNm9
-	HtgoPDAuqifdiAwA7eIp9KNuS8SgbNQIY=; b=TOHOMprZ20Tn3Irm475wdsg20m
-	U9OCmGBSrrvcyzWHqqdZa1TPxilg46Toyt9RcT7VsQWufKyVrFijsXGpaRCJN82N
-	/M7j9BXUytNmgR98N4SFAVs29Oi0qqWVeb+oHfglCmmWdY/iEwkkhkr8/Dg8DSO9
-	741VA5oGA/p+q6a9QnHBw8gOC/5rprFMuKIs6PO52J+5Ws1P+b7n6qCLwwh+bbeq
-	/NPGtrJS8ichv8kiqFSfcBAM1kfuFP5lKT6ATtOZGKkuqbd0qtEMTCHJaaWZC9DF
-	OKoM2GYCPs3KzhxpnvBG65KuCt2AY8ONn+IlLQf2vp0pbxYqtGLV3tuwDtGA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711468973; x=1711555373; bh=pgmiw5gNm9HtgoPDAuqifdiAwA7e
-	Ip9KNuS8SgbNQIY=; b=SZZ/45EfmrDKE2Milicx20f9f7L1pohhp1l0Mf5joLAM
-	BZ3V+/ocSPbK5KQSpAMCmMxavGty/vUZUA114FrO8sHLGPhD8D90mX/wzMeaLdiO
-	iI1grY0CjTIWMV4LHfLEskOVpLnmHKeCo2/w7PFxoRYp5Xsq4CoGcbJdsSzyhGCB
-	vQh0qKQQ3xJyGinRpMWHKva3JSj5Nxtw1V2d3ESrHVW4aNy/0Si3SL46KXjssOx0
-	wpFJUqigX06l+2NLrie4Ri4fhWCRDsxKNqgcHPVCTgy3QrtiaxB7fyffcMHtO8L9
-	EU70zCN0J/l2eS6GIfhO8dHUh2uyW5ynfMcdkPxP6g==
-X-ME-Sender: <xms:rPECZoAfVNu1IHPuWhvDKzyH7_H71WQFQxQrieXFRK2JonKLALjucw>
-    <xme:rPECZqiFFEnoB_6SxdDQlrpog2Mtot9pelMt7IJ_YS3_cO58Z7A_IoDe5B8q0-QTD
-    xPohEfXDI0q-PgZZy0>
-X-ME-Received: <xmr:rPECZrkwEmxv4mysA4XupWSljuQzG9DW9lFPF9PnROAp_4wPSWfSwDJTjPHWqNWCdpW-Vl_6c9DjkRWlI1O0W-Oy63s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddufedgkeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
-    rdhioheqnecuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvve
-    eiieeiudfguefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:rPECZuxg9PiuIOg3uJlXjaCrYqqAxSukL4GbBPPkSbQAAm72ucD7AA>
-    <xmx:rfECZtQQ9czxqDV0hbzyIZE_1lzVxytrjJ5C_FP1OIvZn_JR2k5DQw>
-    <xmx:rfECZpY-zU3ZCUZzDeBaddfuqytCNNwD2TnhZoRGahTq7EPNmqFUkA>
-    <xmx:rfECZmT7g7-XEU_YbfqMUXebJYGoq4DRbuEDGp5ycvqzXr2o1HFFWQ>
-    <xmx:rfECZsIdJpFHyZoxNPJpW-Tt-XMqEqgbl4XG4Tc8w9-vKkWcrlR4bg>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 26 Mar 2024 12:02:52 -0400 (EDT)
-Date: Tue, 26 Mar 2024 09:05:00 -0700
-From: Boris Burkov <boris@bur.io>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: stop locking the source extent range during
- reflink
-Message-ID: <20240326160500.GA286197@zen.localdomain>
-References: <09a3da957a5b7f60a1dba5f4609971a62b3f7c23.1711134182.git.fdmanana@suse.com>
- <5fe82cceb3b6f3434172a7fb0e85a21a2f07e99c.1711199153.git.fdmanana@suse.com>
+	s=arc-20240116; t=1711469839; c=relaxed/simple;
+	bh=v+x+wIzt9WoMwClOTOi85a6vxjpW1ve14tDBOfs979k=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nBvs+w19KAHC1HpaKC3CUHGAj7hvxqeFKLXdstpdHp1RVVrY/ZH0463JzvsalDoly9BNy/U3pyFajnzDOmiNRahQKaDQEnqHpVFI4DQvQTHD/cQ9URrZyLNMN1KjLYxTZ1qtC8XQkRxL/GUUpOyANatEKaI67sEW1vWqZ74zYJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M240uKMo; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e6b6f86975so3653451b3a.1;
+        Tue, 26 Mar 2024 09:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711469838; x=1712074638; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nkGrsiL0PGhtupH/pRTPQX22cb/ucEuifyohzZbt/i8=;
+        b=M240uKMopkR42gVN6GK0EmQa+tWSprDbxaQhvlnC71KS6xtd1mtzo1RPXfdHbLe/C6
+         GB8m+JvSdDTGZGTTigscN92KCwxyj58mRwFyiTP/72eKqmsuJ2ZvFgXrDZVASP1DNJkM
+         WtKSGoS38ZQezNmq14Z0QkyiElJzmB/bOQqst64zKLNHpFFw/9jZe5gxPvkgLfVuqn/e
+         AdEypghPPSwEpf+V5Tm0kkJMzpGNVVeEjDgKaa4nKLY2bNGNNx2n9NFrgH0lDIv2jn2n
+         Z9t5drvG3yEZvd556J4HokNRaj/vQRuoW9mmhMNQgBIcBYHpMhNLpGrM57ITU91J4zOe
+         Gntw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711469838; x=1712074638;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nkGrsiL0PGhtupH/pRTPQX22cb/ucEuifyohzZbt/i8=;
+        b=IWTVgnbKnTvPLK32pEk5xdhBX8z60tbENTPfLtQDzMhJadI5qAagYinv+hngmGgW7W
+         YMn99ygb/3CySRt14awPnexWZTeL+PN2WHvXhqXsftj24es3EcHPEuNLV/MCgnKJPGP5
+         RO2Y1NR3tdM0UbgWR1kJUtRc8PUyeTJlaGcciYggBnK6Rw4p73Qg/WZZgF09VEcNZ/D7
+         fzrHh8AZ8838aGA3r7Ccp7Rs/1wcV+WY6gnRYQaiQpHjQ33i51OaEJl+ZWmXUNSqmerA
+         E32JQSCFc4IhuCUtTLuHqtk6blYXqnoJdrgBC/xfIf2dW+J0AARJrSiQ/CmCzzDJ6y27
+         6ZfA==
+X-Forwarded-Encrypted: i=1; AJvYcCV/R4TDVEChW0KpTgNRkI9KKw1WNsV+BPqOGJ+mbIP+NXSPl2j4JCpXwbSphBFQqC0D2YcTwJwpC8W2EeoJElisMDUe34rO9TV9lRepK8skG9HJho/BN8+PxY9cVO8ZAkhoT59MPLB6GB12+O+OlAiHTEy6xQpXOY6yH3zhWGQkzaudXlw=
+X-Gm-Message-State: AOJu0Ywe5KGs4ZqbVCX5GJC48jF3XVqFk4Y94Y5dwpQYsCwNvuFBppU9
+	lwIPf2STD1Bo4qZNY9Kz46KoTwx/nIuLuEQ2EJWBAtALTGpgtJH5
+X-Google-Smtp-Source: AGHT+IGvMT+T8wid1bYGF1iIVxBvSebpxFFTKK1GulfUHh66T+GzKie0K382YfbIrosD1nZcHoPgnA==
+X-Received: by 2002:a05:6a00:883:b0:6ea:92a7:fb82 with SMTP id q3-20020a056a00088300b006ea92a7fb82mr1884116pfj.27.1711469837696;
+        Tue, 26 Mar 2024 09:17:17 -0700 (PDT)
+Received: from debian ([2601:641:300:14de:69a2:b1ff:1efd:f4a9])
+        by smtp.gmail.com with ESMTPSA id o29-20020a637e5d000000b005dc816b2369sm7679751pgn.28.2024.03.26.09.17.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 09:17:17 -0700 (PDT)
+From: fan <nifan.cxl@gmail.com>
+X-Google-Original-From: fan <fan@debian>
+Date: Tue, 26 Mar 2024 09:17:10 -0700
+To: ira.weiny@intel.com
+Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/26] cxl/region: Add dynamic capacity decoder and
+ region modes
+Message-ID: <ZgL1BkFwq5hRyKji@debian>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-4-b7b00d623625@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -95,213 +92,121 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5fe82cceb3b6f3434172a7fb0e85a21a2f07e99c.1711199153.git.fdmanana@suse.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-4-b7b00d623625@intel.com>
 
-On Sat, Mar 23, 2024 at 01:29:25PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Sun, Mar 24, 2024 at 04:18:07PM -0700, ira.weiny@intel.com wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
 > 
-> Nowadays before starting a reflink operation we do this:
-> 
-> 1) Take the VFS lock of the inodes in exclusive mode (a rw semaphore);
-> 
-> 2) Take the  mmap lock of the inodes (struct btrfs_inode::i_mmap_lock);
-> 
-> 3) Flush all dealloc in the source and target ranges;
-> 
-> 4) Wait for all ordered extents in the source and target ranges to
->    complete;
-> 
-> 5) Lock the source and destination ranges in the inodes' io trees.
-> 
-> In step 5 we lock the source range because:
-> 
-> 1) We needed to serialize against mmap writes, but that is not needed
->    anymore because nowadays we do that through the inode's i_mmap_lock
->    (step 2). This happens since commit 8c99516a8cdd ("btrfs: exclude mmaps
->    while doing remap");
-> 
-> 2) To serialize against a concurrent relocation and avoid generating
->    a delayed ref for an extent that was just dropped by relocation, see
->    commit d8b552424210 (Btrfs: fix race between reflink/dedupe and
->    relocation").
+> Region mode must reflect a general dynamic capacity type which is
+> associated with a specific Dynamic Capacity (DC) partitions in each
+s/partitions/partition/
 
-Great catch! Did you notice this via blame or did a test catch it?
-Should we try to write a test which exercises concurrent reflink and
-relocation if we don't have one?
+Otherwise,
 
+Reviewed-by: Fan Ni <fan.ni@samsung.com>
+
+> device decoder within the region.  DC partitions are also know as DC
+> regions per CXL 3.1.
 > 
-> Locking the source range however blocks any concurrent reads for that
-> range and makes test case generic/733 fail.
+> Decoder mode reflects a specific DC partition.
 > 
-> So instead of locking the source range during reflinks, make relocation
-> read lock the inode's i_mmap_lock, so that it serializes with a concurrent
-> reflink while still able to run concurrently with mmap writes and allow
-> concurrent reads too.
-
-The local locking logic (order, releasing, error-paths) all looks good
-to me. It also seems to restore a similar amount of serialization as the
-range locking with relocation, so with that said, you can add:
-Reviewed-by: Boris Burkov <boris@bur.io>
-
-However, since I missed it the first time around, now I'm a bit more
-curious about how this works.
-
-Clone doesn't seem to commit its transaction, so is there something else
-that gets relocation to see the new reference and move it as well? It
-just keeps looping until there are no inodes pointing at the block
-group? Or is there something about the order of adding the delayed refs
-that makes the delayed ref merging handle it better?
-
-On the other hand, if relocation wins the race for the mmap lock, then
-reflink will re-create the ref with an add_delayed_extent? How come that
-doesn't happen without the extra locking?
-
-Hope my questions make sense :)
-Boris
-
+> Define the new modes to use in subsequent patches and the helper
+> functions required to make the association between these new modes.
 > 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 > ---
+> Changes for v1
+> [iweiny: split out from: Add dynamic capacity cxl region support.]
+> ---
+>  drivers/cxl/core/region.c |  4 ++++
+>  drivers/cxl/cxl.h         | 23 +++++++++++++++++++++++
+>  2 files changed, 27 insertions(+)
 > 
-> V2: Protect against concurrent relocation of the source extents and
->     update comment.
-> 
->  fs/btrfs/reflink.c    | 54 ++++++++++++++-----------------------------
->  fs/btrfs/relocation.c |  8 ++++++-
->  2 files changed, 24 insertions(+), 38 deletions(-)
-> 
-> diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-> index 08d0fb46ceec..f12ba2b75141 100644
-> --- a/fs/btrfs/reflink.c
-> +++ b/fs/btrfs/reflink.c
-> @@ -616,35 +616,6 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
->  	return ret;
+> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+> index 1723d17f121e..ec3b8c6948e9 100644
+> --- a/drivers/cxl/core/region.c
+> +++ b/drivers/cxl/core/region.c
+> @@ -1690,6 +1690,8 @@ static bool cxl_modes_compatible(enum cxl_region_mode rmode,
+>  		return true;
+>  	if (rmode == CXL_REGION_PMEM && dmode == CXL_DECODER_PMEM)
+>  		return true;
+> +	if (rmode == CXL_REGION_DC && cxl_decoder_mode_is_dc(dmode))
+> +		return true;
+>  
+>  	return false;
+>  }
+> @@ -2824,6 +2826,8 @@ cxl_decoder_to_region_mode(enum cxl_decoder_mode mode)
+>  		return CXL_REGION_RAM;
+>  	case CXL_DECODER_PMEM:
+>  		return CXL_REGION_PMEM;
+> +	case CXL_DECODER_DC0 ... CXL_DECODER_DC7:
+> +		return CXL_REGION_DC;
+>  	case CXL_DECODER_MIXED:
+>  	default:
+>  		return CXL_REGION_MIXED;
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index 9a0cce1e6fca..3b8935089c0c 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -365,6 +365,14 @@ enum cxl_decoder_mode {
+>  	CXL_DECODER_NONE,
+>  	CXL_DECODER_RAM,
+>  	CXL_DECODER_PMEM,
+> +	CXL_DECODER_DC0,
+> +	CXL_DECODER_DC1,
+> +	CXL_DECODER_DC2,
+> +	CXL_DECODER_DC3,
+> +	CXL_DECODER_DC4,
+> +	CXL_DECODER_DC5,
+> +	CXL_DECODER_DC6,
+> +	CXL_DECODER_DC7,
+>  	CXL_DECODER_MIXED,
+>  	CXL_DECODER_DEAD,
+>  };
+> @@ -375,6 +383,14 @@ static inline const char *cxl_decoder_mode_name(enum cxl_decoder_mode mode)
+>  		[CXL_DECODER_NONE] = "none",
+>  		[CXL_DECODER_RAM] = "ram",
+>  		[CXL_DECODER_PMEM] = "pmem",
+> +		[CXL_DECODER_DC0] = "dc0",
+> +		[CXL_DECODER_DC1] = "dc1",
+> +		[CXL_DECODER_DC2] = "dc2",
+> +		[CXL_DECODER_DC3] = "dc3",
+> +		[CXL_DECODER_DC4] = "dc4",
+> +		[CXL_DECODER_DC5] = "dc5",
+> +		[CXL_DECODER_DC6] = "dc6",
+> +		[CXL_DECODER_DC7] = "dc7",
+>  		[CXL_DECODER_MIXED] = "mixed",
+>  	};
+>  
+> @@ -383,10 +399,16 @@ static inline const char *cxl_decoder_mode_name(enum cxl_decoder_mode mode)
+>  	return "mixed";
 >  }
 >  
-> -static void btrfs_double_extent_unlock(struct inode *inode1, u64 loff1,
-> -				       struct inode *inode2, u64 loff2, u64 len)
-> -{
-> -	unlock_extent(&BTRFS_I(inode1)->io_tree, loff1, loff1 + len - 1, NULL);
-> -	unlock_extent(&BTRFS_I(inode2)->io_tree, loff2, loff2 + len - 1, NULL);
-> -}
-> -
-> -static void btrfs_double_extent_lock(struct inode *inode1, u64 loff1,
-> -				     struct inode *inode2, u64 loff2, u64 len)
-> -{
-> -	u64 range1_end = loff1 + len - 1;
-> -	u64 range2_end = loff2 + len - 1;
-> -
-> -	if (inode1 < inode2) {
-> -		swap(inode1, inode2);
-> -		swap(loff1, loff2);
-> -		swap(range1_end, range2_end);
-> -	} else if (inode1 == inode2 && loff2 < loff1) {
-> -		swap(loff1, loff2);
-> -		swap(range1_end, range2_end);
-> -	}
-> -
-> -	lock_extent(&BTRFS_I(inode1)->io_tree, loff1, range1_end, NULL);
-> -	lock_extent(&BTRFS_I(inode2)->io_tree, loff2, range2_end, NULL);
-> -
-> -	btrfs_assert_inode_range_clean(BTRFS_I(inode1), loff1, range1_end);
-> -	btrfs_assert_inode_range_clean(BTRFS_I(inode2), loff2, range2_end);
-> -}
-> -
->  static void btrfs_double_mmap_lock(struct inode *inode1, struct inode *inode2)
->  {
->  	if (inode1 < inode2)
-> @@ -662,17 +633,21 @@ static void btrfs_double_mmap_unlock(struct inode *inode1, struct inode *inode2)
->  static int btrfs_extent_same_range(struct inode *src, u64 loff, u64 len,
->  				   struct inode *dst, u64 dst_loff)
->  {
-> +	const u64 end = dst_loff + len - 1;
-> +	struct extent_state *cached_state = NULL;
->  	struct btrfs_fs_info *fs_info = BTRFS_I(src)->root->fs_info;
->  	const u64 bs = fs_info->sectorsize;
->  	int ret;
+> +static inline bool cxl_decoder_mode_is_dc(enum cxl_decoder_mode mode)
+> +{
+> +	return (mode >= CXL_DECODER_DC0 && mode <= CXL_DECODER_DC7);
+> +}
+> +
+>  enum cxl_region_mode {
+>  	CXL_REGION_NONE,
+>  	CXL_REGION_RAM,
+>  	CXL_REGION_PMEM,
+> +	CXL_REGION_DC,
+>  	CXL_REGION_MIXED,
+>  };
 >  
->  	/*
-> -	 * Lock destination range to serialize with concurrent readahead() and
-> -	 * source range to serialize with relocation.
-> +	 * Lock destination range to serialize with concurrent readahead(), and
-> +	 * we are safe from concurrency with relocation of source extents
-> +	 * because we have already locked the inode's i_mmap_lock in exclusive
-> +	 * mode.
->  	 */
-> -	btrfs_double_extent_lock(src, loff, dst, dst_loff, len);
-> +	lock_extent(&BTRFS_I(dst)->io_tree, dst_loff, end, &cached_state);
->  	ret = btrfs_clone(src, dst, loff, len, ALIGN(len, bs), dst_loff, 1);
-> -	btrfs_double_extent_unlock(src, loff, dst, dst_loff, len);
-> +	unlock_extent(&BTRFS_I(dst)->io_tree, dst_loff, end, &cached_state);
+> @@ -396,6 +418,7 @@ static inline const char *cxl_region_mode_name(enum cxl_region_mode mode)
+>  		[CXL_REGION_NONE] = "none",
+>  		[CXL_REGION_RAM] = "ram",
+>  		[CXL_REGION_PMEM] = "pmem",
+> +		[CXL_REGION_DC] = "dc",
+>  		[CXL_REGION_MIXED] = "mixed",
+>  	};
 >  
->  	btrfs_btree_balance_dirty(fs_info);
->  
-> @@ -724,6 +699,7 @@ static int btrfs_extent_same(struct inode *src, u64 loff, u64 olen,
->  static noinline int btrfs_clone_files(struct file *file, struct file *file_src,
->  					u64 off, u64 olen, u64 destoff)
->  {
-> +	struct extent_state *cached_state = NULL;
->  	struct inode *inode = file_inode(file);
->  	struct inode *src = file_inode(file_src);
->  	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
-> @@ -731,6 +707,7 @@ static noinline int btrfs_clone_files(struct file *file, struct file *file_src,
->  	int wb_ret;
->  	u64 len = olen;
->  	u64 bs = fs_info->sectorsize;
-> +	u64 end;
->  
->  	/*
->  	 * VFS's generic_remap_file_range_prep() protects us from cloning the
-> @@ -763,12 +740,15 @@ static noinline int btrfs_clone_files(struct file *file, struct file *file_src,
->  	}
->  
->  	/*
-> -	 * Lock destination range to serialize with concurrent readahead() and
-> -	 * source range to serialize with relocation.
-> +	 * Lock destination range to serialize with concurrent readahead(), and
-> +	 * we are safe from concurrency with relocation of source extents
-> +	 * because we have already locked the inode's i_mmap_lock in exclusive
-> +	 * mode.
->  	 */
-> -	btrfs_double_extent_lock(src, off, inode, destoff, len);
-> +	end = destoff + len - 1;
-> +	lock_extent(&BTRFS_I(inode)->io_tree, destoff, end, &cached_state);
->  	ret = btrfs_clone(src, inode, off, olen, len, destoff, 0);
-> -	btrfs_double_extent_unlock(src, off, inode, destoff, len);
-> +	unlock_extent(&BTRFS_I(inode)->io_tree, destoff, end, &cached_state);
->  
->  	/*
->  	 * We may have copied an inline extent into a page of the destination
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index f96f267fb4aa..8fe495d74776 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -1127,16 +1127,22 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
->  						    fs_info->sectorsize));
->  				WARN_ON(!IS_ALIGNED(end, fs_info->sectorsize));
->  				end--;
-> +				/* Take mmap lock to serialize with reflinks. */
-> +				if (!down_read_trylock(&BTRFS_I(inode)->i_mmap_lock))
-> +					continue;
->  				ret = try_lock_extent(&BTRFS_I(inode)->io_tree,
->  						      key.offset, end,
->  						      &cached_state);
-> -				if (!ret)
-> +				if (!ret) {
-> +					up_read(&BTRFS_I(inode)->i_mmap_lock);
->  					continue;
-> +				}
->  
->  				btrfs_drop_extent_map_range(BTRFS_I(inode),
->  							    key.offset, end, true);
->  				unlock_extent(&BTRFS_I(inode)->io_tree,
->  					      key.offset, end, &cached_state);
-> +				up_read(&BTRFS_I(inode)->i_mmap_lock);
->  			}
->  		}
->  
+> 
 > -- 
-> 2.43.0
+> 2.44.0
 > 
 
