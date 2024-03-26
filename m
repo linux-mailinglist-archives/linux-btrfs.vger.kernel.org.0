@@ -1,75 +1,75 @@
-Return-Path: <linux-btrfs+bounces-3636-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3637-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6114688D085
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 23:09:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 302A388D094
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 23:12:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE134B218DC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 22:09:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B2B01F61B21
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 22:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C681613D8AF;
-	Tue, 26 Mar 2024 22:09:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7838813DB88;
+	Tue, 26 Mar 2024 22:12:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KBnhU6Kt"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="L+pI6RhJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C82A23CB
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 22:09:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF0013D8AF
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 22:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711490943; cv=none; b=FgQj08fHB8UCEUQ8nQjLk6Qk5pYEG7TA/IdEvOwzoVGwfk7xU3zwFnRZsx1G67bPEHBQ4fwrIeRKf0TU4CVeW6MFS306nOZc+bLNR7FdvdnX8BKcF92jMa+wdDxPhplr1P+qSucghGELL33amaMeu/YjBgVG1ToHKn2mVSdMYsw=
+	t=1711491164; cv=none; b=CKfaNkOjLBbybSEg5dnOtoDuU5DPU+axBUs/cLtrMHY80Ac8sEAzrl9nudZ9d8p8CqX5qEkh1j87xU0zK5yYAizlEmBgNP7TAqZWuLgxvYy2mYEEdyDR2EemPhJFPOVaJeB6B2EgWhi7GmTgq/vqPTogakfsG/p7RaBQpMMGCTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711490943; c=relaxed/simple;
-	bh=DvF6pk9hDwTS27iL1PVDK3/kmbwn2POg0+gI6G8qKxQ=;
+	s=arc-20240116; t=1711491164; c=relaxed/simple;
+	bh=Mec+Q1651SKpK0/MC9cLozmdt2texvmShcLcks34YGo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KqPaRGclY8IRefGj08xoAAz3yMYcJ/isLMBHKmv2QnFGvVLQILRhaQrfGzojEEE4gay2J/Itb9KdKxu8yY3NpPe28erTOlUygV3amSE5FL9NpFP39RnfBhH+dlN2qVgjkQS5ISZW6qLa9+Jx/LkWKsm7lVHifbnNV6Z7Y9l05lA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KBnhU6Kt; arc=none smtp.client-ip=209.85.208.180
+	 In-Reply-To:Content-Type; b=AnHCt66jbzZj3a0nfVJdNJvXiZ6L2+gKyNu/1nN262dFQ1aPIZYafOhFGoT2D7CpbGCN4sp3S/DifRbX83ToRh2v0w2G1kQrgWfZLHtW76wy1UERV0aJky2nzkUBVv2br1LpDEuX8OZwN0EZUZVh/6UxJiBXA9I77D/lVr4IhIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=L+pI6RhJ; arc=none smtp.client-ip=209.85.208.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d4886a1cb4so79824381fa.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 15:08:59 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d6c8d741e8so55467251fa.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 15:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1711490938; x=1712095738; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1711491160; x=1712095960; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=cUcUuY9rXqX6rNM38wPnKpLe4DL/k79KtRlPjBRYRtU=;
-        b=KBnhU6KtB8Fm5VOyjRyMXMV2CTxZc/U7P0ngVjESEofwynjMRRWCjVTxn3hICGrm4Y
-         /owjXZeahOFm2z+aFjdXrgztQTA0Pt1fwiT3r+RrsEHmPnYi2KOq+x6ZlKpbsmdOpbSL
-         Vgjrz8sLBbFRK+InyvQtIS0hslfkfonUgkAs/n9nLgZveRNgjeJkeDrKFXbFE8kWhOym
-         pKs1CcpX11QI9KuqRZEHLT0F5rq0BY/+C3sTqeP1y8T5ShuysIDp+Ue4+c+BWC8p0+ZM
-         QIrOqhvsFwBztmN7jyMqQgEguLePC/PiT2VklnakxFWp2taGQthpd//weBnRaTi/S++R
-         O7xg==
+        bh=XVWsmDWSuIZUhIcY5WXdi3/AIp6b2U4+FTq/6NHOA9s=;
+        b=L+pI6RhJLJLggfqV0LTGblq3CsF8/p7AVdmy36+jYDUhaglvneiSjWuuFQl8CjWZBV
+         3xLgGiSESIwV6Nx2E8PljnLOFuAY5kNsjKFl0umce/Pjkd5xzdDMIzEfzBwXv1tU/okT
+         Xdy5CapTDNJomf9OKF2W1JvSoj5zZW/PLsCsS7jv00dxgxWSWWTG/e+Z60cKc1wkpG48
+         2oCdeFJ3uFymqDAY0+kBw86uu7HzmZdEYsOTuIQuS0GZ7/Q2/d9lDhT3FvdD2uFI1Ens
+         xg4/oen/j4vk8cisBUowAyymGhibF91c1wO59DL9hxW9QPdeBqiDnge+oLYT4FjHnUlX
+         cK9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711490938; x=1712095738;
+        d=1e100.net; s=20230601; t=1711491160; x=1712095960;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=cUcUuY9rXqX6rNM38wPnKpLe4DL/k79KtRlPjBRYRtU=;
-        b=lBTVRKw2rTemtGob8V78TMlnWM6FO53JYYwcibaGSddzR1w3ozRojx7ZV12fRwMhaz
-         WDP//Bk+AITS6+oo7UAb//PGYPNAoWPKO08XiwvH+zhaTyMH5OBQ6nGtx+A8eUM/2Y6R
-         i5YaZ+A+QanJYsDSID76pB0w75/BNEXnijN+WTasxwYrEtJK1tk2U2uTMa82oD4zxiK1
-         kNU+NW4bFwzBl33xQNzd7fYb6xW3xUq0mPOuG4rhJA336qcrNRIHzHyrxwRitbgytUz1
-         bhvRkj+Aya0S2arTQdxOUwpVUkef6Jm8CFeRIfC5xdyn97j90ABch5DumRc4GigyFjTN
-         xflQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUIbdyDPWh/gMrUZmTytBgYwYY9Nm23OBzAxb9lQcAsBr+lRwpcu7ly5jmUpMRttGQtolOOS5kwmz75Cwatsr5PA59EltvzJ4W7GS4=
-X-Gm-Message-State: AOJu0YzISzteKlStf86TaiPHx9j6qY9D2doo54v+ii85PUuNE0xoVG/L
-	1HjRMMU4A71vorn8XupHeALfTc9jb9Q4Pyoq5LuiNSBPZcZYwRurOtOaqEnghI0=
-X-Google-Smtp-Source: AGHT+IGaclBWo8ynDn7GrJEwuze7XeSIMoCM1SToL8GaykUdjzXsV5QIoKPiiybCjTQMlxHMZ5yPpg==
-X-Received: by 2002:a2e:3809:0:b0:2d4:71b9:4e3 with SMTP id f9-20020a2e3809000000b002d471b904e3mr6790235lja.51.1711490938276;
-        Tue, 26 Mar 2024 15:08:58 -0700 (PDT)
+        bh=XVWsmDWSuIZUhIcY5WXdi3/AIp6b2U4+FTq/6NHOA9s=;
+        b=WGGSiiNVku7ShMUU0f+6YBPHNKee5iqR634+dXMaOo3ME29f+yaHfKaL6hTfIQCB2u
+         uFyc5L27/3TH1R5azXfeRqUKsQfUDLjx+dA2qV1ouwmPlio35iXI/RR1/Kj/NgNsNMd+
+         rbb45Z1vHFqn89+OFFaRx2xQW2axZrrgZS15Sdy7NEobwSVFatOdCyeW8q8h28+EhoGi
+         +5weCuSYq0qNk7gfddoWOIJLXM3/z/SC1WhFEj0uOXkYkE8xTonPYfSUy/Keprvg79aC
+         GpeajE7a2faeHpw0VwYYVEZlaURjCv3rgGnG80O1j5YMOcSiUyBQeU96fTMSZ98HpM79
+         KaSg==
+X-Forwarded-Encrypted: i=1; AJvYcCU7uH1cimjQ/CwXAEmAJaYVNS+WF3+lqGCDjYM49ud7vzuT2W2ayP8LJKLdSBsXm5eJBT5YWpq5WAe1pul1Fz3a+4ZRZuAdPrDPIbM=
+X-Gm-Message-State: AOJu0YylbBcGCKyXTptbFdJOCGCa5Pc7J15YAozlYOGXMa/mP+89WYmA
+	AK3pSTpSCIq9SsSnFCbyDeowpxtMCUFgs4JR0gV/JB6c7HZ0SPSARw99iVT+ClU=
+X-Google-Smtp-Source: AGHT+IGwQGaJgkdOEi6NCnTwBtEdT6vrgMygMNtYPDW14pHqdvNjC/4hW+BJc+Gn5b5yyxOe75RPjg==
+X-Received: by 2002:a05:651c:19aa:b0:2d6:d51f:5146 with SMTP id bx42-20020a05651c19aa00b002d6d51f5146mr680307ljb.49.1711491160176;
+        Tue, 26 Mar 2024 15:12:40 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id b3-20020a170902d50300b001e0b76bcfa5sm5225490plg.54.2024.03.26.15.08.55
+        by smtp.gmail.com with ESMTPSA id i6-20020a17090332c600b001e0abeb8fb5sm6579710plr.271.2024.03.26.15.12.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 15:08:57 -0700 (PDT)
-Message-ID: <b88f00db-117e-43b6-ada6-4790c5030417@suse.com>
-Date: Wed, 27 Mar 2024 08:38:53 +1030
+        Tue, 26 Mar 2024 15:12:39 -0700 (PDT)
+Message-ID: <e5b26756-9fee-414c-96bc-d92c9664d9b8@suse.com>
+Date: Wed, 27 Mar 2024 08:42:34 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,11 +77,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/7] btrfs: record delayed inode root in transaction
+Subject: Re: [PATCH 4/7] btrfs: convert PREALLOC to PERTRANS after
+ record_root_in_trans
 To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
  kernel-team@fb.com
 References: <cover.1711488980.git.boris@bur.io>
- <cadc31b0278e4e362f71f7c57ebccb0c94af693b.1711488980.git.boris@bur.io>
+ <acdebc0c8ca16f410a5d13487d1b9e69ae7240aa.1711488980.git.boris@bur.io>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -108,43 +109,70 @@ Autocrypt: addr=wqu@suse.com; keydata=
  bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
  AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
  ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <cadc31b0278e4e362f71f7c57ebccb0c94af693b.1711488980.git.boris@bur.io>
+In-Reply-To: <acdebc0c8ca16f410a5d13487d1b9e69ae7240aa.1711488980.git.boris@bur.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
 在 2024/3/27 08:09, Boris Burkov 写道:
-> When running delayed inode updates, we do not record the inode's root in
-> the transaction, but we do allocate PREALLOC and thus converted PERTRANS
-> space for it. To be sure we free that PERTRANS meta rsv, we must ensure
-> that we record the root in the transaction.
+> The transaction is only able to free PERTRANS reservations for a root
+> once that root has been recorded with the TRANS tag on the roots radix
+> tree. Therefore, until we are sure that this root will get tagged, it
+> isn't safe to convert. Generally, this is not an issue as *some*
+> transaction will likely tag the root before long and this reservation
+> will get freed in that transaction, but technically it could stick
+> around until unmount and result in a warning about leaked metadata
+> reservation space.
 > 
-> Fixes: 4f5427ccce5d ("btrfs: delayed-inode: Use new qgroup meta rsv for delayed inode and item")
+> This path is most exercised by running the generic/269 xfstest with
+> CONFIG_BTRFS_DEBUG.
+> 
+> Fixes: a6496849671a ("btrfs: fix start transaction qgroup rsv double free")
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Just curious, do you have a case that hits this particular bug only?
 
 Thanks,
 Qu
 > Signed-off-by: Boris Burkov <boris@bur.io>
 > ---
->   fs/btrfs/delayed-inode.c | 3 +++
->   1 file changed, 3 insertions(+)
+>   fs/btrfs/transaction.c | 17 ++++++++---------
+>   1 file changed, 8 insertions(+), 9 deletions(-)
 > 
-> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> index dd6f566a383f..121ab890bd05 100644
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1133,6 +1133,9 @@ __btrfs_commit_inode_delayed_items(struct btrfs_trans_handle *trans,
->   	if (ret)
->   		return ret;
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index feffff91c6fe..1c449d1cea1b 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -745,14 +745,6 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+>   		h->reloc_reserved = reloc_reserved;
+>   	}
 >   
-> +	ret = btrfs_record_root_in_trans(trans, node->root);
-> +	if (ret)
-> +		return ret;
->   	ret = btrfs_update_delayed_inode(trans, node->root, path, node);
->   	return ret;
->   }
+> -	/*
+> -	 * Now that we have found a transaction to be a part of, convert the
+> -	 * qgroup reservation from prealloc to pertrans. A different transaction
+> -	 * can't race in and free our pertrans out from under us.
+> -	 */
+> -	if (qgroup_reserved)
+> -		btrfs_qgroup_convert_reserved_meta(root, qgroup_reserved);
+> -
+>   got_it:
+>   	if (!current->journal_info)
+>   		current->journal_info = h;
+> @@ -786,8 +778,15 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+>   		 * not just freed.
+>   		 */
+>   		btrfs_end_transaction(h);
+> -		return ERR_PTR(ret);
+> +		goto reserve_fail;
+>   	}
+> +	/*
+> +	 * Now that we have found a transaction to be a part of, convert the
+> +	 * qgroup reservation from prealloc to pertrans. A different transaction
+> +	 * can't race in and free our pertrans out from under us.
+> +	 */
+> +	if (qgroup_reserved)
+> +		btrfs_qgroup_convert_reserved_meta(root, qgroup_reserved);
+>   
+>   	return h;
+>   
 
