@@ -1,90 +1,93 @@
-Return-Path: <linux-btrfs+bounces-3620-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3621-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B61B88CC07
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 19:31:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4837A88CE38
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 21:21:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E1191C657BE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 18:31:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE5EDB2515E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 20:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BED112AAC0;
-	Tue, 26 Mar 2024 18:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 445D213D2B6;
+	Tue, 26 Mar 2024 20:21:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kdvVyUnw"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="OlNqAa5Z";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="faVLjkaW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3E0126F1E;
-	Tue, 26 Mar 2024 18:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7059D13D2A3
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 20:21:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711477844; cv=none; b=YeWKXdoVCMc8l07WBO2mV03AK0M0SETDNoYEkUAtEBU5imquXnnlBkEuhuAXF/DeFejx8rGrotJ1iMLMM7q6atuHc47bTtgN0YMryDXWV4SQAPBqRuZfojon3YWQd2vCSvueo5I4yCnFVIsDeNtvJneH7SSsiKaE2DUQTXaWBlc=
+	t=1711484507; cv=none; b=QNqjTZUIlBq72pJ7nBchHHAPvVhfdBpX7GIPPc2NC9ZRp8rUeTN5EvW0nAd7o6sg/Lpcq6iX9JtYfzsowLtGW/I4G5EzbN72MhG1gnSgTdpYDqowAMJbvsB8u9VERTaizS8tW8+trX8vvdxyHFnt99PzlYRShbSrps+BgVvte1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711477844; c=relaxed/simple;
-	bh=sAyOUEKczk4vCaBI7fCgM6yZpeBEglMUpPYimbD3Wuk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KbCqMNDzkTV3vlv/bpARPKNj/RfxUO+XmQR/dgmVFbjT4yvI4ZYNeUuILT4y2F/yFNJzwdSB/KUV/tnatDUtpYkNQb24rn9P6dfVX5YsmyXgwOkp5Fd8tIbXpRDzuAM85ffy6Ezu0OjIzfHIqrn+Wl2MuSsY+Odi72X5W4y7wxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kdvVyUnw; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e0411c0a52so43850265ad.0;
-        Tue, 26 Mar 2024 11:30:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711477842; x=1712082642; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iUdKOd7rx0WMRV6Jyf1lEVlg1MEyH9tPtK2n/H0R3Jk=;
-        b=kdvVyUnwuw/NoXtocv9KZPkO6Q0B00DUWa3qUrgcUIB+nZxDOiGb76T5hk3T/0Fxs1
-         meuoUDt6m1Tj1UYAAzyfzNvWkb6KJU/lqgMpfq/HEke3RIPM2gEtfeoTXdV4QME4ZASL
-         UyFrB6v7Ft5rapQ7Tz6au2wI43/Y+NaTdeBMN8gZjiKe4pLI32ijmsDj6qC7BisvS3+Y
-         yvmAkdVTeSmM6gglnd8rvVhzdvL6quf2RKTty2clFP/yfVT08ziQcCGqHU4pk+JQ6vDt
-         LpdJ2jKqI07wmijtDwBEATzhx7ux/YKm72qGCxMuBpaotz5qy/8SaWMhFDWTpAx0s6Vq
-         jz5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711477842; x=1712082642;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iUdKOd7rx0WMRV6Jyf1lEVlg1MEyH9tPtK2n/H0R3Jk=;
-        b=RsYjdf+kWbt+yMrqQyTDwBp/u+Mbyw5gJPxIN6+3JVwMseo/WO9GydJnhLsFiOVdcj
-         xK1L/kKoklMp8hMty9f/wkfhYFO5Ej9GINSyRTZfWq/RUi+Q9dHzWiOI41RM8WH6J7v8
-         VLGxf6rXI+G+AZKCtSzFXANjzo74ejw2uV1WvshIuQcaWsKPEgkgQCWdDpnli8bRXnhf
-         jchcp+CCwWBODsn7ccDMkrBYfT+hUPcaXJe08CaZlpbzogJ3NMFroBcsHdCY2z+U0ETQ
-         rssSyb9WTSxUV56MQKpeHeBB51+n9eyeZUMT7mEK2tzMTRLonypzdjuUcKo9Lm9vY+hO
-         MXOw==
-X-Forwarded-Encrypted: i=1; AJvYcCW/EIxbmPZg9RY8R5tB1JFn7XQlcgR4HCPdBTXq8O3xsnxTjD+nIp4JEs8CTz04lxFEmRjrP/BM9j9yocNNn4CQhJ+1ZNWM++6/6mnh6DuGS1GlC4t2ML1HFJw7nlVrrJXpci3L7LU81ytxcBFewNKblE7/o1tfYdeV9A7R7M1taz+/PUw=
-X-Gm-Message-State: AOJu0Yza8mOB9A8V4627snxwLKjRalbdEm/owkMgSKlooYnWoO0uUAUH
-	Nd8/REnGVoYHrhvC221Z5JuhiiKNu5rqwum3OgAZXkNZI+5oLjh7
-X-Google-Smtp-Source: AGHT+IHh6JX3lwXrIJoiJWTgBiw0gt3RVc2+M2dHJ2GjDbmxIo2EmZBN6zLFVtqAVrcjEF8ZgUfndA==
-X-Received: by 2002:a17:902:da8c:b0:1e0:b60e:1a1f with SMTP id j12-20020a170902da8c00b001e0b60e1a1fmr7673040plx.8.1711477841957;
-        Tue, 26 Mar 2024 11:30:41 -0700 (PDT)
-Received: from debian ([2601:641:300:14de:69a2:b1ff:1efd:f4a9])
-        by smtp.gmail.com with ESMTPSA id x3-20020a170902ec8300b001e035cecd27sm7185044plg.129.2024.03.26.11.30.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 11:30:41 -0700 (PDT)
-From: fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date: Tue, 26 Mar 2024 11:30:38 -0700
-To: Davidlohr Bueso <dave@stgolabs.net>
-Cc: ira.weiny@intel.com, Dave Jiang <dave.jiang@intel.com>,
-	Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/26] cxl/mem: Expose device dynamic capacity
- capabilities
-Message-ID: <ZgMUTq6HasHOiR15@debian>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-8-b7b00d623625@intel.com>
- <w4jkueqpvh7hzbywk42m7gxclg56nbgzhaqcgeb3q2b6dt3w6n@5vwicganqpsu>
+	s=arc-20240116; t=1711484507; c=relaxed/simple;
+	bh=a+qrEG3PN19xPI/PaNlwVUPD2UInFO/1qdqf/643Sb0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f4nbQKMLqhHIBcFpJ8jGJIBpX9/8r4ayhipbHuVxNHAFE8hKHB71QnFjq12r9aSKZ5/w97AgmDwDKfCIaoPpHtoJpf3eiz8rROeLuRpqNLcjrDAMSbZ6Rq6e8VwhVocwro2YlTABfHTONRcUHTfVG8yN3F8+glpZKWCGfcyX16A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=OlNqAa5Z; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=faVLjkaW; arc=none smtp.client-ip=64.147.123.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailout.west.internal (Postfix) with ESMTP id 46D653200564;
+	Tue, 26 Mar 2024 16:21:44 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 26 Mar 2024 16:21:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1711484503; x=1711570903; bh=gj4MXk5AiV
+	qn89KVYR29Gh0Lt3MTsyLPg7Lnbswr6E8=; b=OlNqAa5ZgOJdCUuw1m/g1O1dwv
+	7tH3Ay4onAcPmN56JgTBMpcWohrg2PfiaG03Gd1l/sy6k9FQEPuReGnnFsFJSTWv
+	9AKJrWflpL8ranRc2QAgNrZ9UmIW8UElEQ4iIAWTNW752+Bm/sMp9Y84umAtzR2w
+	AGgrsXJyEtYdYoKx/Msu9oIt66c+puIBDb4qHiRPXEK6JdJmn70Y8SmAs3Ixh/bX
+	pj7EFQsrzu7PadFnEXXVkGs1REyMvHzofwO5CTffjIhIZbgtmsY7im+qUm/QeEvW
+	3nF/EMJ/mB+WuJx4zk+eivWYy/VSvQmZVZ2n7b0Hy9n7yTel7tvXoAEkCJ7A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711484503; x=1711570903; bh=gj4MXk5AiVqn89KVYR29Gh0Lt3MT
+	syLPg7Lnbswr6E8=; b=faVLjkaWkDaF+v5A2SxpnLkq/q/FXD3Ds7Harz71wNgR
+	7CUGYYm5XXQ77vCTZmQeeJgmBj2MwHevOAz4D4yM9r9dgEeeetLFNvQnxXks7Blq
+	VhgwV0ifCoAVV6fRhPDgrTEz4gWbWrbbcHYuXSA5jVWz11fmg/RoxWjazOnQRu/P
+	4KHcg8r8oNwZAM/hFVlAuz+E7XeT7FFUb+dFSylScZcoUVKSQfG4gE6RT2oRAn6M
+	ZYNt+5v1uulldMGQRux1C8Nc4cbWlKmq6JUlkcxL+tEgLUvA/yqVmCYJUpGHIdPf
+	icvowicQtyKSF9m7MLeIPEVeTzE+xEVzYIah3KHgHw==
+X-ME-Sender: <xms:Vy4DZlTk-21izGXwuYb5Igcn4-WljEFt-41cXdandg0afId8Rh1Qog>
+    <xme:Vy4DZuzLycAGm3diEx_Nc5Kmvf7wI7sOvoRUtIiWuASg0XiOx_dn5LLO6cYSsFpT5
+    fIL5q05q2zBpg3dkGA>
+X-ME-Received: <xmr:Vy4DZq0zEgBQgTWsfOOO4nikLEXKhWAscGVD28zxI-m1nOWn47Tu1Zgshisx6fflB3WHX9FfPXd2lLPhyf-wFELQ0ag>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddufedgudefiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfguefgtdejgfefleejnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
+    essghurhdrihho
+X-ME-Proxy: <xmx:Vy4DZtDajFDtq5ZN1--9I6gRLdzIk_iNSvqw3k-nViGNNO9Q2u_LIA>
+    <xmx:Vy4DZujOkyzeHga6_bmoIUr2w8yjhiuRAL_xZ_SAmYJlGbxMRSx6cw>
+    <xmx:Vy4DZholmjU2HwCTnoPi_7dnNBhu7tqIUUoR1dZIda9eMrUKwq4F1A>
+    <xmx:Vy4DZpi5jIKI-GCgSivMZ8RokJI-Vxwsu0CHVL87E2XGmb1h40iOTA>
+    <xmx:Vy4DZhvR4khWlGKnJ_Z84WqyqS7ZLwimr10_QgmbLbysIP71hHVOJw>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 26 Mar 2024 16:21:42 -0400 (EDT)
+Date: Tue, 26 Mar 2024 13:23:49 -0700
+From: Boris Burkov <boris@bur.io>
+To: David Sterba <dsterba@suse.cz>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: subvolume: output the prompt line only when
+ the ioctl succeeded
+Message-ID: <20240326202349.GA1575630@zen.localdomain>
+References: <7d1ce9fe71dac086bb0037b517e2d932bb2a5b04.1709007014.git.wqu@suse.com>
+ <20240301125631.GK2604@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -93,45 +96,42 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <w4jkueqpvh7hzbywk42m7gxclg56nbgzhaqcgeb3q2b6dt3w6n@5vwicganqpsu>
+In-Reply-To: <20240301125631.GK2604@twin.jikos.cz>
 
-On Mon, Mar 25, 2024 at 04:40:16PM -0700, Davidlohr Bueso wrote:
-> On Sun, 24 Mar 2024, ira.weiny@intel.com wrote:
+On Fri, Mar 01, 2024 at 01:56:31PM +0100, David Sterba wrote:
+> On Tue, Feb 27, 2024 at 02:41:16PM +1030, Qu Wenruo wrote:
+> > [BUG]
+> > With the latest kernel patch to reject invalid qgroupids in
+> > btrfs_qgroup_inherit structure, "btrfs subvolume create" or "btrfs
+> > subvolume snapshot" can lead to the following output:
+> > 
+> >  # mkfs.btrfs -O quota -f $dev
+> >  # mount $dev $mnt
+> >  # btrfs subvolume create -i 2/0 $mnt/subv1
+> >  Create subvolume '/mnt/btrfs/subv1'
+> >  ERROR: cannot create subvolume: No such file or directory
+> > 
+> > The "btrfs subvolume" command output the first line, seemingly to
+> > indicate a successful subvolume creation, then followed by an error
+> > message.
+> > 
+> > This can be a little confusing on whether if the subvolume is created or
+> > not.
+> > 
+> > [FIX]
+> > Fix the output by only outputting the regular line if the ioctl
+> > succeeded.
+> > 
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > 
-> > +What:		/sys/bus/cxl/devices/memX/dc/region_count
-> > +Date:		June, 2024
-> > +KernelVersion:	v6.10
-> > +Contact:	linux-cxl@vger.kernel.org
-> > +Description:
-> > +		(RO) Number of Dynamic Capacity (DC) regions supported on the
-> > +		device.  May be 0 if the device does not support Dynamic
-> > +		Capacity.
-> 
-> If dcd is not supported then we should not have the dc/ directory
-> altogether.
-> 
-> Thanks,
-> Davidlohr 
+> Added to devel, thanks.
 
-I also think so. However, I also noticed one thing (not DCD related).
-Even for a PMEM device, for example, we have a ram directory under the
-device directory.
+This patch breaks every test that creates snapshots or subvolumes and
+expects the output in the outfile.
 
-===================
-root@DT:~# cxl list
-[
-  {
-    "memdev":"mem0",
-    "pmem_size":536870912,
-    "serial":0,
-    "host":"0000:0d:00.0"
-  }
-]
-root@DT:~# ls /sys/bus/cxl/devices/mem0/
-dc  dev  driver  firmware  firmware_version  label_storage_size  numa_node  payload_max  pmem  pmem0  ram  security  serial  subsystem	trigger_poison_list  uevent
-root@DT:~#
-===================
+That's because it did:
+s/Create a snapshot/Create snapshot/
 
-Fan
-
+Please run the tests when making changes! This failed on btrfs/001, so
+it would have taken 1 second to see.
 
