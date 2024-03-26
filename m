@@ -1,247 +1,211 @@
-Return-Path: <linux-btrfs+bounces-3614-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3615-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C975A88C978
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 17:35:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8024A88C9D3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 17:51:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BE4F1F81E86
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 16:35:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B44BB267B1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 16:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2CAC15EA6;
-	Tue, 26 Mar 2024 16:35:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81DCD12E75;
+	Tue, 26 Mar 2024 16:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eknk38Ai"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="d0xGUJHF";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="swkT/jgZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A9E4C65;
-	Tue, 26 Mar 2024 16:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711470930; cv=none; b=TtFBHar+urpBoVVYyzEUXAGAs/+UB1vk0kOYOC8u8xGEL6e+aL48h2CPSklnTj9kB6pZTnLzdQPCongNYABPitk/NZKuYVAdGGSS91VLHWr8weryjgu2Ad9TQjo6tC27fUwBybVrivecvWlkPHquKH0h5FazmsKZtv1LGSyso3M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711470930; c=relaxed/simple;
-	bh=CFqQchIyPIzRsUeJ/rg+uqvzWrlRpidgL7wMY10wNLE=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cl4THNa5UJX1QtvuOo18FsRXMeRWi702myYunIZG8CCObpiMhsxcBBAhxkam/k2M1L/v1vj4GIpV1578/2dwbqi6qqf+IovhLJppoml+sTfAAF2DhSz8xokTROsx2lKCyU2+CI0Z9up3PuRAENO9YIuCrfvFnGFNwucuVU+B36w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eknk38Ai; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e8f51d0bf0so4571528b3a.3;
-        Tue, 26 Mar 2024 09:35:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD4814A82
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 16:50:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711471856; cv=fail; b=J/tYwtHaJ8uQcC1IbtBcbtHs7ODyEJfV+6x33cwNw72IEi9znFRazRRyoXdZ6Kd66+hQhMWcmfEyGWs4ZBc/1TEGb2dA8tKuMsnW2BDJtKalnn7+EYq1SlWFuwesaxSLydl5V9eiX9jyTb3TROkilRaiiVtKgS84ycEdGjHPv1o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711471856; c=relaxed/simple;
+	bh=OSlY+2zfvyokAaln3OSjOjG83wBh9CixS+I6oy8g/N0=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=czC6Po1oVIsTVQR/W7QzbJ4xjegmQjLjKGHReIu5P+BKwcYwG1ydXKXjhz5xF3x/ddSmu9Oq62sMZRiJAAE0Hs24rjvtvoChRak8GOaKaSAE8695uFpSlLGtYumyGsV3UIBmJW4DoLyOmvUX42nPgdshvNlO6aILf5RFgZhOvcY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=d0xGUJHF; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=swkT/jgZ; arc=fail smtp.client-ip=216.71.154.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1711471854; x=1743007854;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=OSlY+2zfvyokAaln3OSjOjG83wBh9CixS+I6oy8g/N0=;
+  b=d0xGUJHFRIC0hj7uy6+bjR9zjd9gbP4Sbm/invLL9zAjXsqLqZUmq59W
+   TRHVPoFKazlTWlMoaQSyP4GT4y8MoL4VZzuMdRupD3r05BI1NvrJqjzwV
+   DZVKuQuu9JA8ZhRMC3VUFllIO1mb3wBE+bqh6nnrXOdUkznm9d8lWhfbf
+   1Srb0htep24thV3W98L88uskmLiKXJgS2gM1/K7ki7Zw5q7nc4a03J9BF
+   v296D6AXwa2Z+dYvHpEYyFBUmTJMiLJN2aFnep7/OaDzvn6rrr2+p1lz5
+   wqy4iRSPHj6VjB1ko6jTgcbDXZU/1kSZRHns3a1bV/kVeF/yzUnpqTEXQ
+   Q==;
+X-CSE-ConnectionGUID: iqobjsaQQfepqDJmjrsQWQ==
+X-CSE-MsgGUID: rQcUWLdXQpaF81OAVXQ4wQ==
+X-IronPort-AV: E=Sophos;i="6.07,156,1708358400"; 
+   d="scan'208";a="12534180"
+Received: from mail-dm6nam10lp2100.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.100])
+  by ob1.hgst.iphmx.com with ESMTP; 27 Mar 2024 00:50:51 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RzZ/Tlizmw2c+pJnI1UQpYmiMXkbOpCoEfLuM1abcp4noYOI0JnfNSeW8HTvakFuPcfenMtqxO9sWjrYwGTY/ddZKMCIFXovtlB3/OWG7KcU4nr+XKe7Qx0IHQza6Q2ie0ZH5P6wfBpdCJttSaGxCM7BxLxkGRUqXrIM0/9PopGdlpMsEYKQWDNm9/44ZK+XrYeBTYJ6p4ukoqAkRQ+Ke5pcymXusutvZxuDcgqP63vnfn3AZ7wxHp52A9pxCRFCXnO+LtQXyeWnCeK8itgA0MKxkzEgQaXMPBGnMg64WnWAGqyx763DC9JcOEQ4YdBfjSbF88qogL+NSPqujqnZdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OSlY+2zfvyokAaln3OSjOjG83wBh9CixS+I6oy8g/N0=;
+ b=T8OCB/qQodh9MzQZvOo2O45p6vimlcGdL7MgJF0J7Zc7NrbTrfYr2CODW2uJclunyOeP5Quzb31lJ52Ha2GCJTzRi0HfjXme+3jrDzF8UOo3hsW61r0LZbpupuXoYD1rVH3pcGVo8tQNzOCwCu13ooWuNDTS5PAYqYWU8ch4GxEVtUOVB5gzwSyn+IoGWmwqSVZm7tsG/OyRPetSA6m0WctSKjGLzKhhDa3y+fIfhZ08QQlcuAugeh9OQzoZ0bPJAJDyPzwMSbu+1cAsnC43bcg+hyYlvxw12O2KM9jXjuw526pHUK4I6GLX2hnL1dqdDkU/MBILgAWbX3CFlq32Bg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711470927; x=1712075727; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CK3impwWJ72tM59fZvJpJBu1tBnhrzrXHR4AUN5lySw=;
-        b=eknk38AiG+vAOZubWmmoCy/5WhZsR1zTxcnzxYUdob5fVLUHLu3rpoma7CZGmMTG2X
-         liQaN95ewRKviLxaiJsqNabDeLybRKtOR45MobOb+ESlRETK9POIdOpW1JpRdbSyb+5i
-         3DCZRb0UUc9umxaqdaqrjTevwOMlkz2HqmKq207IKh9H191wfo3iCrQxJ9ser9Q9FcM/
-         p64CYnNx6n+CyUxFGFW8FZ5mvDQXvHdAr4Bfc1N5+p1C0JHsfr8s4mAA8YPN0NHvTlQT
-         1I3VxPKDEKarqBu0mswCq/bgdfDLq9iTLPWySHtGPrmaujLNwd78D6kVf7YeRb1ZbWh2
-         cmXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711470927; x=1712075727;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CK3impwWJ72tM59fZvJpJBu1tBnhrzrXHR4AUN5lySw=;
-        b=Zw2/+p6b9EB8gh0PN4aR+FVLSlb8B8zeVszoRanboT+raOA5JqKpR3VSyH/aWrYFen
-         ei8a0cOuRvSr45RgxmGwJs2Yg/dSaylx8EUvZXF/e6XlTGpYB4JhRQjNhzSk/Td9VdsG
-         jFUEhIjkOO7CSZiYeFgxgnzLYvhhMrGvMYAFJEa393lBFUt8kJCfDe/xEqpRvTefBnTb
-         HUZr2udYdabU5ZZvkg2hFOwpDLtJtADpmGkkObXGuflmmEbTIeJ1z+rTg0OYeX7/Kbit
-         0FdZV9bnYf5oDU3krluvij+7plA59JzYl9SN3DuM7RKMJUSr4VHx1kIncx4J0U4nAwWB
-         KT7A==
-X-Forwarded-Encrypted: i=1; AJvYcCXBJ2n4lZegYQa0w7ODsGxv0lIXABtZuYSqPOdp3qv3yZ7/RX5S6g2/TuSWh6LbNURH4oU6WX4nVHQFG/TIIXCw17dHHS67dq4leoYwew6Y6yduvuUKxYF7T6WLULMgDQdP5cpqBaQiyfbUKWlCJrx5s961EVKdVUhlS9BWkIag9tbdlxk=
-X-Gm-Message-State: AOJu0YwWsLd8MrFms/mzyGybUa3kTYlY0g2i6JAWWehn5DWlvAJyGOcB
-	Qp73DViuvGP5GerQpa3F2d0fuUCw/x1Fnp57UuDlpXeWQGBfvE8f8LGIEFEI
-X-Google-Smtp-Source: AGHT+IEUwKYaUfi9JjyN7Z6XAZKu7wPXR4jMdNx0iiFb5+fN830vWsGeqH07RQ9Nu45uPutvAIel9w==
-X-Received: by 2002:a05:6a00:99c:b0:6e7:4ab3:f8fe with SMTP id u28-20020a056a00099c00b006e74ab3f8femr4243470pfg.7.1711470927552;
-        Tue, 26 Mar 2024 09:35:27 -0700 (PDT)
-Received: from debian ([2601:641:300:14de:69a2:b1ff:1efd:f4a9])
-        by smtp.gmail.com with ESMTPSA id bx41-20020a056a02052900b005dc120fa3b2sm6623851pgb.18.2024.03.26.09.35.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 09:35:27 -0700 (PDT)
-From: fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date: Tue, 26 Mar 2024 09:35:21 -0700
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/26] cxl/port: Add Dynamic Capacity mode support to
- endpoint decoders
-Message-ID: <ZgL5SdGCori3Dh3O@debian>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-6-b7b00d623625@intel.com>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OSlY+2zfvyokAaln3OSjOjG83wBh9CixS+I6oy8g/N0=;
+ b=swkT/jgZP/CMLfseXUF2H6W1BFae8bCT4WWxSH1Z5SOzcNPAkAOCeyUGNB98zwPP1U2pXW9pM3dHdT1ztMgKwcJLE5iWdrJIvOGzhJKDLGu/Z6WKFhuyX8UeJ2Uv04mQNpN6JK19wzUTNEHzWNr4bl2zvIEb0Fkrp+0VNslhsGY=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by CH0PR04MB8067.namprd04.prod.outlook.com (2603:10b6:610:fc::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Tue, 26 Mar
+ 2024 16:50:47 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::a814:67f1:24ab:508e]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::a814:67f1:24ab:508e%7]) with mapi id 15.20.7409.031; Tue, 26 Mar 2024
+ 16:50:46 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: Naohiro Aota <Naohiro.Aota@wdc.com>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2 0/2] btrfs: zoned: fix EXTENT_BUFFER_ZONED_ZEROOUT
+ handling
+Thread-Topic: [PATCH v2 0/2] btrfs: zoned: fix EXTENT_BUFFER_ZONED_ZEROOUT
+ handling
+Thread-Index: AQHaf0APJwuamYBO80uJClLt0WK+3LFKPP4A
+Date: Tue, 26 Mar 2024 16:50:46 +0000
+Message-ID: <7a93db1b-f851-4577-9635-f5c1f61710e2@wdc.com>
+References: <cover.1711416290.git.naohiro.aota@wdc.com>
+In-Reply-To: <cover.1711416290.git.naohiro.aota@wdc.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|CH0PR04MB8067:EE_
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ GhYNv0sd2goswpLNXLadAUGGua/AdP3jn03IlUNuIoWqd5CWFT4jsUWyWu+g4uDXJ/gDg3acBvDbwmm16ETO71L4uTUYeHaBjnZvC+c7J2xp+T53dSKfCdc7FQEl4xV+JoPxUoEBnt0ehLnxe4wW45g1gA61IHtOh5qjFArVqTT6aFnamLVJa+klNMDiuD/39wLnARBxubE2kMgRsEy1+3NQeTfXuLLwCdNUbXSJ686qXV69Wfod1UqIy9IyI7E79rGvmjRhvgCuQiVoDAAXgmztoij04/kgn5obKLo2vdSxc63moYpTNv5QLEKLhgrfqDrZSk2x/Qz/nrE3CvpGHZz9S/fjAYKFdirG8T99dEuehh3jHZbEYwnxnrMlrxXM/kCFpehtbIoFCcqRdMNNENyFZQCSb4XLmHQxrCXA/L9mYeiwjhrqZgqEGHsn5nKaagU6ltNH7EmQDuVA900j+F4go/CBKFxcX7H5DGm1ND0Tt9dI2yB7Zz1u8PrlszV9cb/8Pt/uGRAjPeW0NMKQ4atLDapD4sOTrL7t6DiVPNeyTzF75RJ8wrbftKtmqnoqwi9xg6NiYomFJExr9ntavkQE/Q/yxdexCov9Vzvjtw0=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?SXhzV3ZaUVcwK0QyREwxd3k4M3JUalJMN0E2cEF0bGUzZFdZTnF1bFc3ZkNv?=
+ =?utf-8?B?K1R1NkJyZWdIWG1NU0d2citrUDNUaDArMHpBR3FYMWxyQk95ZlloNSttcUx2?=
+ =?utf-8?B?V3NNT2Z5VldyR1dSMGVLeWhMeFQ4dS80eERQYnFUOU9sK0FUMWI4V1dBR1lt?=
+ =?utf-8?B?SnJZb09BalRFRjFYRm5jRnUwK1FxajljMUxyTFM5djl0UVpjeVJlY0ZSeG9n?=
+ =?utf-8?B?RHZZRlZaMDA1Y0ZPc1YxcytJSGFKNUlPd2hQc1M5UTJ2VVN1c1dhcG9UdGxo?=
+ =?utf-8?B?TnJQTGhtaUx0R1RJb2lPQTZUeFJxN3R2WTZSWHVPOWJkNHBPREhuTytRUkR2?=
+ =?utf-8?B?VTJCNHpZM3o4bWJKc1BuOHBDaVJRSjJWZEk2SjRTTk1OKzZ5anJyNU5wQ3ps?=
+ =?utf-8?B?N1lNb2tzY1lrb0NzNVppVXk4cTRwdDBuUHlLRTl4NkRpNllta0RabzMvbmZB?=
+ =?utf-8?B?a250cHJBVitUMGpaSk1tLzhtY3AyVmx3dGI1VXJJTi9rNlQyNkQvRm83cjQ2?=
+ =?utf-8?B?RG4xbW5qWDRYd0pVSTU2L1dxSGErV29IU3VwNFFaelR4R2J1dFpzaGxDcHhY?=
+ =?utf-8?B?TFJ5SFZQbEovdXdDSHRNd3NTVm4zZXVUQzBsVjl2V0pHVTNBSmVXYnlqMGJl?=
+ =?utf-8?B?SjhYQTF6eUtCazd2TEZyQlpOdk5zaUxaMzE5cHZVUHE3MHlVY214UVNxOWRZ?=
+ =?utf-8?B?b2FydDBkV241QUJxMlhBZmEyR0l5UjZ6cnc2MnNMVXhDVG1NQVRBei9PYjli?=
+ =?utf-8?B?ZGd0NytvdHhCNVlqT1I4YTZnRTNmRUoraWtiM2plaEIwNkJ0N0ZTZUFzYi9C?=
+ =?utf-8?B?QzhoV2tnbkIvL2xEM3JSU1REQldJTFZTREtIYUJFTXl4Vk1ML2Y4V1hmUzdo?=
+ =?utf-8?B?S2hWVTVCeHJNbHJFeUlrQW1QOUJ3azZucE1pSmtjOXdMRUtnQzJlTmo5TjRO?=
+ =?utf-8?B?dVhVd3NlOGk3S3YvNXpGRHFhTTZhaUdkWlJaaTRmbzdyMzRJN1JlMHp2SE9E?=
+ =?utf-8?B?UkI2M20yUFVnbUNvODJOb2NzYVk5dlNKV1lsL1cwWWpHUlgvT2FmSG1BUU1M?=
+ =?utf-8?B?UVhHN3d5SkZVOG45TzJNakt3aGdrakUyb0VER2RhNnlhcG5mNkJ0RTVjUHQ0?=
+ =?utf-8?B?S0RYN3RhUjM3Y1lvYnhTSzkvWVlwSStMdCtjYVJTUjNrOWordzRIRFExbmdQ?=
+ =?utf-8?B?MUhSNjJPb1F6WFZIbXRwNUR2ZldzSk41TWIvQkxYZkVwekx0bG5OZVlucXhk?=
+ =?utf-8?B?R3FXV1BobXFrc09oNXppZWhVSHdmYnA3QWE2MUkwNU9DL2JLYlQ4U2k4SzBG?=
+ =?utf-8?B?Z2pNcGlYcDhLdStSOXJhS2xTYU9XSHRPbC9aQ1ZNLzBPdjYyYjRMc3pUUHRP?=
+ =?utf-8?B?UWkxOHBjeUFTSm1TaFJtak9aQS9XVUFLREpCcnI0L0JFMWRHcngwR3ZPWVdY?=
+ =?utf-8?B?YmVubHpTdVNqT0VxdlBmSEdvNDYvTDJaclNrMXhMdG9iUXF0UFVnL2xNWGFs?=
+ =?utf-8?B?bWRxbmg5RDVVUS9DYnVNN0xGd1ZvQStDNmxtcG8wNk1teUE3V1dzVUQwRDd5?=
+ =?utf-8?B?Nmtna01kby9iODN4Z0syR3FEeGxqUWVpYnVHZTVxUzVsSm1MNk9WS2pQYVlw?=
+ =?utf-8?B?ODFJRy9pTHlLdUtubm5hZzk3MkhxMU9zSlZVMHlQc1F0NXVZYUpXa2Zrb3ZF?=
+ =?utf-8?B?dkZKT2VmTG1hWHAreDBWYlk3cGMwZmJaeXVPYWpvQmdzZElXYnpFVkVTUm1M?=
+ =?utf-8?B?ckV0Y01pYzUxUnBRM1VyVXk1dExJdDNaVUNsZmEvZEo4b2xHa0MzYzZxN2Rn?=
+ =?utf-8?B?UU8vR2FRR2V3TDJXellWT3NyMlI0VDVvS2xWV0VaT0JHZnhSZlNDZWJHUytP?=
+ =?utf-8?B?SURKblVxTjB6NFhqNlFUOVNLSStmblFQNlloNEprRXhKSmtvVzJ5VzRycVNJ?=
+ =?utf-8?B?WTFnYm43UHBPRGxNY2dSbEVFaFAyN2ZUTTExQ01rMjlETFYzVEZkMThFOWtB?=
+ =?utf-8?B?ajJvNjlKRmhwYWh1dXdmRThiWFBXZ1NreDF0Uy8rOEQ3NmJCaWVhWUo2WlB1?=
+ =?utf-8?B?NEt4dCt1Z292UXlTWmFuUE1oYVdva0MyamNPc0gwZ2c0Z3JNcDF5TjZQVHR6?=
+ =?utf-8?B?aUJKOHFYTm9maTlJbFdPMW9RS01wRW9SdnRZYUFjdUxudHk5NHZyNWk0WjFi?=
+ =?utf-8?B?R2FxVzQ3SE9IMWVBMFFNQ0RjYUgrc1RGaGZOOENPeEd5b0xGWDhLVlhJeTdL?=
+ =?utf-8?B?YWVXUlJGQmZPeHkvemFCMHVoSlFnPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AA6407AC0D326F438968B29F7022C169@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-6-b7b00d623625@intel.com>
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	dQIAbspwUI0QlUChfSvT6IaC0Y0JSAOCMSYb7ELfTD1QCziUBxu5keVOECzlTfUj1Avf3vxFMTc1KyzFPhBuVlo7Og6QUAUg13ZzIll2mxmmUfp+ekga7AJq+BgjDsMFUy839XtVut3lQLNBq+fdZQ4GMMfTpWR2LBn6VMeJarOlTAojflVk3oUvFHZ6Mbns0fn1AUxFxuye/FYfa1mLSgszVvi9U90xnflgqFUmaFJpYDGYtpNzpiV4aPJco2PJE9ljRI3/TLfjtzKjsRi7szOcaJ5x3C1+DBat9UW2fhZ59Pg4YHSx5RW7OzqoNV0B9pryWk2zU+G7eFBJDnPxbO00ieHn1VszWKSGMMM2MXLpBay3kw/v79VHBCbKkV/2sQQ2McAa+CyVhRLFZcphAPG5A51QPWrOBV422z8fxWJp+Ru0oTkpFniyFYMzD7yo2srxTbupVPBxSl3+aQOtv+colbfq9+f9f46UTX6533oOCE6JlyLHpIupq6r8nkuBEykwo4k0zRxppYRxoanNLkruWbu3nB5ZRViXbXJEpInk/UlKp7ta2enVKPMAAfIhzO/UP3aVwO7cGWXQfQyUjdOS+lILREYsd5t3KN41tF/tyLXhX11vLMGOS99uZJ80
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 887fec93-2c0c-4ad8-b382-08dc4db4e279
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2024 16:50:46.8471
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5RFyrCunVAHnu2WqeQai3gCeOzv13N8hcS4YU1dg7VkBG69HjGYqmIGy1Ku9Le4KnOOx7Mn4OkG4R87C/cAw8RvBaeyUwfDpBTebMDpNOao=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR04MB8067
 
-On Sun, Mar 24, 2024 at 04:18:09PM -0700, ira.weiny@intel.com wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
-> 
-> Endpoint decoders which are used to map Dynamic Capacity must be
-> configured to point to the correct Dynamic Capacity (DC) Region.  The
-> decoder mode currently represents the partition the decoder points to
-> such as ram or pmem.
-> 
-> Expand the mode to include DC regions [partitions].
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
-Minor comments below.
-
-> 
-> ---
-> Changes for v1:
-> [iweiny: eliminate added gotos]
-> [iweiny: Mark DC support for 6.10 kernel]
-> ---
->  Documentation/ABI/testing/sysfs-bus-cxl | 21 +++++++++++----------
->  drivers/cxl/core/hdm.c                  | 19 +++++++++++++++++++
->  drivers/cxl/core/port.c                 | 16 ++++++++++++++++
->  3 files changed, 46 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
-> index fff2581b8033..8b3efaf6563c 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-cxl
-> +++ b/Documentation/ABI/testing/sysfs-bus-cxl
-> @@ -316,23 +316,24 @@ Description:
->  
->  
->  What:		/sys/bus/cxl/devices/decoderX.Y/mode
-> -Date:		May, 2022
-> -KernelVersion:	v6.0
-> +Date:		May, 2022, June 2024
-> +KernelVersion:	v6.0, v6.10 (dcY)
->  Contact:	linux-cxl@vger.kernel.org
->  Description:
->  		(RW) When a CXL decoder is of devtype "cxl_decoder_endpoint" it
->  		translates from a host physical address range, to a device local
->  		address range. Device-local address ranges are further split
-> -		into a 'ram' (volatile memory) range and 'pmem' (persistent
-> -		memory) range. The 'mode' attribute emits one of 'ram', 'pmem',
-> -		'mixed', or 'none'. The 'mixed' indication is for error cases
-> -		when a decoder straddles the volatile/persistent partition
-> -		boundary, and 'none' indicates the decoder is not actively
-> -		decoding, or no DPA allocation policy has been set.
-> +		into a 'ram' (volatile memory) range, 'pmem' (persistent
-> +		memory) range, or Dynamic Capacity (DC) range. The 'mode'
-> +		attribute emits one of 'ram', 'pmem', 'dcY', 'mixed', or
-> +		'none'. The 'mixed' indication is for error cases when a
-> +		decoder straddles the volatile/persistent partition boundary,
-> +		and 'none' indicates the decoder is not actively decoding, or
-> +		no DPA allocation policy has been set.
->  
->  		'mode' can be written, when the decoder is in the 'disabled'
-> -		state, with either 'ram' or 'pmem' to set the boundaries for the
-> -		next allocation.
-> +		state, with 'ram', 'pmem', or 'dcY' to set the boundaries for
-> +		the next allocation.
->  
->  
->  What:		/sys/bus/cxl/devices/decoderX.Y/dpa_resource
-> diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
-> index 66b8419fd0c3..e22b6f4f7145 100644
-> --- a/drivers/cxl/core/hdm.c
-> +++ b/drivers/cxl/core/hdm.c
-> @@ -255,6 +255,14 @@ static void devm_cxl_dpa_release(struct cxl_endpoint_decoder *cxled)
->  	__cxl_dpa_release(cxled);
->  }
->  
-> +static int dc_mode_to_region_index(enum cxl_decoder_mode mode)
-> +{
-> +	if (mode < CXL_DECODER_DC0 || CXL_DECODER_DC7 < mode)
-
-To me, it is more natural to have something like x<a || x>b other than
-x<a || b < x for out of range check.
-
-> +		return -EINVAL;
-> +
-> +	return mode - CXL_DECODER_DC0;
-> +}
-> +
->  static int __cxl_dpa_reserve(struct cxl_endpoint_decoder *cxled,
->  			     resource_size_t base, resource_size_t len,
->  			     resource_size_t skipped)
-> @@ -411,6 +419,7 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
->  	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
->  	struct cxl_dev_state *cxlds = cxlmd->cxlds;
->  	struct device *dev = &cxled->cxld.dev;
-> +	int rc;
->  
->  	guard(rwsem_write)(&cxl_dpa_rwsem);
->  	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE)
-> @@ -433,6 +442,16 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
->  			return -ENXIO;
->  		}
->  		break;
-> +	case CXL_DECODER_DC0 ... CXL_DECODER_DC7:
-> +		rc = dc_mode_to_region_index(mode);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		if (resource_size(&cxlds->dc_res[rc]) == 0) {
-
-The other similar checks above use "!resource_size(...)".
-
-Fan
-
-> +			dev_dbg(dev, "no available dynamic capacity\n");
-> +			return -ENXIO;
-> +		}
-> +		break;
->  	default:
->  		dev_dbg(dev, "unsupported mode: %d\n", mode);
->  		return -EINVAL;
-> diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
-> index e59d9d37aa65..80c0651794eb 100644
-> --- a/drivers/cxl/core/port.c
-> +++ b/drivers/cxl/core/port.c
-> @@ -208,6 +208,22 @@ static ssize_t mode_store(struct device *dev, struct device_attribute *attr,
->  		mode = CXL_DECODER_PMEM;
->  	else if (sysfs_streq(buf, "ram"))
->  		mode = CXL_DECODER_RAM;
-> +	else if (sysfs_streq(buf, "dc0"))
-> +		mode = CXL_DECODER_DC0;
-> +	else if (sysfs_streq(buf, "dc1"))
-> +		mode = CXL_DECODER_DC1;
-> +	else if (sysfs_streq(buf, "dc2"))
-> +		mode = CXL_DECODER_DC2;
-> +	else if (sysfs_streq(buf, "dc3"))
-> +		mode = CXL_DECODER_DC3;
-> +	else if (sysfs_streq(buf, "dc4"))
-> +		mode = CXL_DECODER_DC4;
-> +	else if (sysfs_streq(buf, "dc5"))
-> +		mode = CXL_DECODER_DC5;
-> +	else if (sysfs_streq(buf, "dc6"))
-> +		mode = CXL_DECODER_DC6;
-> +	else if (sysfs_streq(buf, "dc7"))
-> +		mode = CXL_DECODER_DC7;
->  	else
->  		return -EINVAL;
->  
-> 
-> -- 
-> 2.44.0
-> 
+T24gMjYuMDMuMjQgMDY6NDAsIE5hb2hpcm8gQW90YSB3cm90ZToNCj4gQnRyZnMgY2xlYXJzIHRo
+ZSBjb250ZW50IG9mIGFuIGV4dGVudCBidWZmZXIgbWFya2VkIGFzDQo+IEVYVEVOVF9CVUZGRVJf
+Wk9ORURfWkVST09VVCBiZWZvcmUgdGhlIGJpbyBzdWJtaXNzaW9uLiBUaGlzIG1lY2hhbmlzbSBp
+cw0KPiBpbnRyb2R1Y2VkIHRvIHByZXZlbnQgYSB3cml0ZSBob2xlIG9mIGFuIGV4dGVudCBidWZm
+ZXIsIHdoaWNoIGlzIG9uY2UNCj4gYWxsb2NhdGVkLCBtYXJrZWQgZGlydHksIGJ1dCB0dXJucyBv
+dXQgdW5uZWNlc3NhcnkgYW5kIGNsZWFuZWQgdXAgd2l0aGluDQo+IG9uZSB0cmFuc2FjdGlvbiBv
+cGVyYXRpb24uDQo+IA0KPiBDdXJyZW50bHksIGJ0cmZzX2NsZWFyX2J1ZmZlcl9kaXJ0eSgpIG1h
+cmtzIHRoZSBleHRlbnQgYnVmZmVyIGFzDQo+IEVYVEVOVF9CVUZGRVJfWk9ORURfWkVST09VVCwg
+YW5kIHNraXAgdGhlIGVudGVyaSBmdW5jdGlvbi4gSWYgdGhpcyBjYWxsDQo+IGhhcHBlbnMgd2hp
+bGUgdGhlIGJ1ZmZlciBpcyB1bmRlciBJTyAod2l0aCB0aGUgV1JJVEVCQUNLIGZsYWcgc2V0LCB3
+aXRob3V0DQo+IHRoZSBESVJUWSBmbGFnKSwgd2UgY2FuIGFkZCB0aGUgWkVST09VVCBmbGFnIGFu
+ZCBjbGVhciB0aGUgYnVmZmVyJ3MgY29udGVudA0KPiBqdXN0IGJlZm9yZSBhIGJpbyBzdWJtaXNz
+aW9uLiBBcyBhIHJlc3VsdCwgMSkgaXQgY2FuIGxlYWQgdG8gYWRkaW5nIGZhdWx0eQ0KPiBkZWxh
+eWVkIHJlZmVyZW5jZSBpdGVtIHdoaWNoIGxlYWRzIHRvIGEgRlMgY29ycnVwdGVkIChFVUNMRUFO
+KSBlcnJvciwgYW5kDQo+IDIpIGl0IHdyaXRlcyBvdXQgY2xlYXJlZCB0cmVlIG5vZGUgb24gZGlz
+aw0KPiANCj4gRml4IHRoZW0gYnkgc2tpcHBpbmcgYSBub24tZGlydHkgZXh0ZW50IGJ1ZmZlci4g
+QWxzbywgdGhlIHNlY29uZCBwYXRjaCBhZGRzDQo+IEFTU0VSVCBhbmQgV0FSTiB0byBjYXRjaCBp
+bnZhbGlkIEVYVEVOVF9CVUZGRVJfWk9ORURfWkVST09VVCBzdGF0ZS4NCj4gDQo+IE5hb2hpcm8g
+QW90YSAoMik6DQo+ICAgIGJ0cmZzOiB6b25lZDogZG8gbm90IGZsYWcgWkVST09VVCBvbiBub24t
+ZGlydHkgZXh0ZW50IGJ1ZmZmZXINCj4gICAgYnRyZnM6IHpvbmVkOiBhZGQgQVNTRVJUIGFuZCBX
+QVJOIGZvciBFWFRFTlRfQlVGRkVSX1pPTkVEX1pFUk9PVVQNCj4gICAgICBoYW5kbGluZw0KPiAN
+Cj4gICBmcy9idHJmcy9leHRlbnQtdHJlZS5jIHwgOCArKysrKysrKw0KPiAgIGZzL2J0cmZzL2V4
+dGVudF9pby5jICAgfCAzICsrLQ0KPiAgIDIgZmlsZXMgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygr
+KSwgMSBkZWxldGlvbigtKQ0KPiANCg0KTG9va3MgZ29vZCwgdGhhbmtzDQoNClJldmlld2VkLWJ5
+OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRodW1zaGlybkB3ZGMuY29tPg0KDQpPbmUg
+bWlub3Igbml0LCBjb2Rlc3BlbGwgZmxhZ2dlZCBhIHR5cG8sIGJ1dCBJJ20gdG9vIGJsaW5kIHRv
+IGZpbmQgaXQ6DQoNCmpvaGFubmVzQG51YzpsaW51eCAocmV2aWV3KSQgYjQgc2hhemFtIA0KY292
+ZXIuMTcxMTQxNjI5MC5naXQubmFvaGlyby5hb3RhQHdkYy5jb20NCkdyYWJiaW5nIHRocmVhZCBm
+cm9tIA0KbG9yZS5rZXJuZWwub3JnL2FsbC9jb3Zlci4xNzExNDE2MjkwLmdpdC5uYW9oaXJvLmFv
+dGFAd2RjLmNvbS90Lm1ib3guZ3ogDQogDQoNCkNoZWNraW5nIGZvciBuZXdlciByZXZpc2lvbnMN
+CkdyYWJiaW5nIHNlYXJjaCByZXN1bHRzIGZyb20gbG9yZS5rZXJuZWwub3JnIA0KDQpBbmFseXpp
+bmcgMyBtZXNzYWdlcyBpbiB0aGUgdGhyZWFkDQpDaGVja2luZyBhdHRlc3RhdGlvbiBvbiBhbGwg
+bWVzc2FnZXMsIG1heSB0YWtlIGEgbW9tZW50Li4uDQotLS0NCiAgIOKckyBbUEFUQ0ggdjIgMS8y
+XSBidHJmczogem9uZWQ6IGRvIG5vdCBmbGFnIFpFUk9PVVQgb24gbm9uLWRpcnR5IA0KZXh0ZW50
+IGJ1ZmZmZXINCiAgIOKckyBbUEFUQ0ggdjIgMi8yXSBidHJmczogem9uZWQ6IGFkZCBBU1NFUlQg
+YW5kIFdBUk4gZm9yIA0KRVhURU5UX0JVRkZFUl9aT05FRF9aRVJPT1VUIGhhbmRsaW5nIA0KDQog
+ICAtLS0NCiAgIOKckyBTaWduZWQ6IERLSU0vd2RjLmNvbQ0KLS0tDQpUb3RhbCBwYXRjaGVzOiAy
+DQotLS0NCkFwcGx5aW5nOiBidHJmczogem9uZWQ6IGRvIG5vdCBmbGFnIFpFUk9PVVQgb24gbm9u
+LWRpcnR5IGV4dGVudCBidWZmZmVyIA0KDQpBcHBseWluZzogYnRyZnM6IHpvbmVkOiBhZGQgQVNT
+RVJUIGFuZCBXQVJOIGZvciANCkVYVEVOVF9CVUZGRVJfWk9ORURfWkVST09VVCBoYW5kbGluZw0K
+L2hvbWUvam9oYW5uZXMvc3JjL2xpbnV4Ly5naXQvcmViYXNlLWFwcGx5L2ZpbmFsLWNvbW1pdDox
+OiBidWZmZmVyID09PiANCmJ1ZmZlcg0K
 
