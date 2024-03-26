@@ -1,75 +1,76 @@
-Return-Path: <linux-btrfs+bounces-3637-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3638-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 302A388D094
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 23:12:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D3DD88D09A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 23:17:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B2B01F61B21
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 22:12:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 301181C2A825
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 22:17:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7838813DB88;
-	Tue, 26 Mar 2024 22:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF95413DDAA;
+	Tue, 26 Mar 2024 22:16:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="L+pI6RhJ"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="RKyh9beR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF0013D8AF
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 22:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C152A13D8B8
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 22:16:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711491164; cv=none; b=CKfaNkOjLBbybSEg5dnOtoDuU5DPU+axBUs/cLtrMHY80Ac8sEAzrl9nudZ9d8p8CqX5qEkh1j87xU0zK5yYAizlEmBgNP7TAqZWuLgxvYy2mYEEdyDR2EemPhJFPOVaJeB6B2EgWhi7GmTgq/vqPTogakfsG/p7RaBQpMMGCTA=
+	t=1711491409; cv=none; b=hneMLUwQtbv/foRdHrqCP6fpeFlvUBtFgcE37MSAFSkY9z8DsokRhPYYHEZ4dtpAvZDpOr5rz6Ih0+z/49NZ2Zs4bsbSZGQUSbsxJI8yAjuKZ5is8AKed9pN3wOuByfc7P11pPffr2nOPmo3Q/QiawLP81nlsmHZiKbFhkBGTmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711491164; c=relaxed/simple;
-	bh=Mec+Q1651SKpK0/MC9cLozmdt2texvmShcLcks34YGo=;
+	s=arc-20240116; t=1711491409; c=relaxed/simple;
+	bh=/2B0Lbl3G1w3ZjvI0Mz6g6ICfCFqDds6MVMiCIzbF38=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=AnHCt66jbzZj3a0nfVJdNJvXiZ6L2+gKyNu/1nN262dFQ1aPIZYafOhFGoT2D7CpbGCN4sp3S/DifRbX83ToRh2v0w2G1kQrgWfZLHtW76wy1UERV0aJky2nzkUBVv2br1LpDEuX8OZwN0EZUZVh/6UxJiBXA9I77D/lVr4IhIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=L+pI6RhJ; arc=none smtp.client-ip=209.85.208.175
+	 In-Reply-To:Content-Type; b=hFXMfP13C6dxM0Rvx2UbnUc5HPeY3g/PGq+227emeJXvzbmLPrxRf2s2nnO2XTmQ4lJSw0rPP3Fz3XJe9LANUtw6ISTjVhO+0CYulY3LTNEVOkHqrNWp10pntcplQ3d2wL/JyRJpsWqC4Buj9QKFVR2filLXynJtxlTqjDdCUnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=RKyh9beR; arc=none smtp.client-ip=209.85.208.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d6c8d741e8so55467251fa.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 15:12:41 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso80511251fa.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 15:16:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1711491160; x=1712095960; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1711491405; x=1712096205; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=XVWsmDWSuIZUhIcY5WXdi3/AIp6b2U4+FTq/6NHOA9s=;
-        b=L+pI6RhJLJLggfqV0LTGblq3CsF8/p7AVdmy36+jYDUhaglvneiSjWuuFQl8CjWZBV
-         3xLgGiSESIwV6Nx2E8PljnLOFuAY5kNsjKFl0umce/Pjkd5xzdDMIzEfzBwXv1tU/okT
-         Xdy5CapTDNJomf9OKF2W1JvSoj5zZW/PLsCsS7jv00dxgxWSWWTG/e+Z60cKc1wkpG48
-         2oCdeFJ3uFymqDAY0+kBw86uu7HzmZdEYsOTuIQuS0GZ7/Q2/d9lDhT3FvdD2uFI1Ens
-         xg4/oen/j4vk8cisBUowAyymGhibF91c1wO59DL9hxW9QPdeBqiDnge+oLYT4FjHnUlX
-         cK9A==
+        bh=sXkkYBlzKQCtQdfRJe+nC6cBY9CQu1ZGnxztlMZix30=;
+        b=RKyh9beR/6QbJ7fiyhDU+B6yKFFDdN85xvUmFAIAkmvbWn2SKm70k0nUHPQ1W1BWCO
+         Xi0ti/dZz0cpXci4GUaJinzUOJ+ZK8YOHXcbWUnr9H0j530vGrwjGztubRZthQwguM/T
+         aeUsIfUSiYnlOl/5m0wqJQx+B76FcZlOAYh/YAsMuvuUDTpN90eEoKwKV8Qab6GjfG/Z
+         6MyafbzX1mkcASzcUsL5Q9PhsnEEKOWwJtzsb76hh9p0CJbizDYIaE3M5aV3p7EkNaSO
+         vilpvd+ZO08PRsi+axmwXqNE+50s3IoDp1QvoNFqPdtcEbcPtrLYLhKxGu+c4HyGlEca
+         CFdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711491160; x=1712095960;
+        d=1e100.net; s=20230601; t=1711491405; x=1712096205;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XVWsmDWSuIZUhIcY5WXdi3/AIp6b2U4+FTq/6NHOA9s=;
-        b=WGGSiiNVku7ShMUU0f+6YBPHNKee5iqR634+dXMaOo3ME29f+yaHfKaL6hTfIQCB2u
-         uFyc5L27/3TH1R5azXfeRqUKsQfUDLjx+dA2qV1ouwmPlio35iXI/RR1/Kj/NgNsNMd+
-         rbb45Z1vHFqn89+OFFaRx2xQW2axZrrgZS15Sdy7NEobwSVFatOdCyeW8q8h28+EhoGi
-         +5weCuSYq0qNk7gfddoWOIJLXM3/z/SC1WhFEj0uOXkYkE8xTonPYfSUy/Keprvg79aC
-         GpeajE7a2faeHpw0VwYYVEZlaURjCv3rgGnG80O1j5YMOcSiUyBQeU96fTMSZ98HpM79
-         KaSg==
-X-Forwarded-Encrypted: i=1; AJvYcCU7uH1cimjQ/CwXAEmAJaYVNS+WF3+lqGCDjYM49ud7vzuT2W2ayP8LJKLdSBsXm5eJBT5YWpq5WAe1pul1Fz3a+4ZRZuAdPrDPIbM=
-X-Gm-Message-State: AOJu0YylbBcGCKyXTptbFdJOCGCa5Pc7J15YAozlYOGXMa/mP+89WYmA
-	AK3pSTpSCIq9SsSnFCbyDeowpxtMCUFgs4JR0gV/JB6c7HZ0SPSARw99iVT+ClU=
-X-Google-Smtp-Source: AGHT+IGwQGaJgkdOEi6NCnTwBtEdT6vrgMygMNtYPDW14pHqdvNjC/4hW+BJc+Gn5b5yyxOe75RPjg==
-X-Received: by 2002:a05:651c:19aa:b0:2d6:d51f:5146 with SMTP id bx42-20020a05651c19aa00b002d6d51f5146mr680307ljb.49.1711491160176;
-        Tue, 26 Mar 2024 15:12:40 -0700 (PDT)
+        bh=sXkkYBlzKQCtQdfRJe+nC6cBY9CQu1ZGnxztlMZix30=;
+        b=k4guYx3ubRSLFKeU59f8vP1bJ9AmKyx+o+XAqdY4MNV3JL6w87U4bQ+qBQy81njhpI
+         POZcjV/AC4F3/8Q1DzhlDZgqYuuHQNDwJaP4m6Ndaa8E641Y9h4xu/h42jdSZO5a+vQh
+         SFl4J1Z1ULkTUD8G8HLb2x2dSghISHomEzFb7gf2IqTqhP7hjA5pK59X6YamK6/47Y9J
+         NUAhoTipBaGeGcOuNbe+ffuLxSEZnWa4eedHnCSmwLYBariorgXiG5X5xFKNSqEgCXso
+         SxKrrizjwGMUJw3fSFTry3pOY/bv9dbWFfRdoeJCHe9G6/hCz9UNdixrVrkEmZPMNwa1
+         px+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWtUxwEtKKFKi4rsyFQdZGcehnzLY4Gh34HaQgSPDoVv+3SVj8qJLlf5kLrjziz6GLjPL61ct401K1dtIYTKugoVPf9yCDraUhvEiE=
+X-Gm-Message-State: AOJu0YzVoQdwENc2nVCxwmYELJWmCkAjagacA8AAPNM0QyGKUJXd1u1m
+	QULmzT/kvGEHUpCKyEJ67FzMRFcia9Mb1baf7loMmuCVUuB6tZEd5O9nZp0146KgHMBLsxfLpzr
+	S
+X-Google-Smtp-Source: AGHT+IG9O+pT5Diw2wZMybPrndDYyBQAZBEiIMP48mP6EDHV3s3DUxBYE2HYX2NSU+Toelz6B7FAlw==
+X-Received: by 2002:a2e:840b:0:b0:2d2:a3bb:e319 with SMTP id z11-20020a2e840b000000b002d2a3bbe319mr605893ljg.1.1711491404932;
+        Tue, 26 Mar 2024 15:16:44 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id i6-20020a17090332c600b001e0abeb8fb5sm6579710plr.271.2024.03.26.15.12.37
+        by smtp.gmail.com with ESMTPSA id ld8-20020a170902fac800b001e009717560sm7404546plb.232.2024.03.26.15.16.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 15:12:39 -0700 (PDT)
-Message-ID: <e5b26756-9fee-414c-96bc-d92c9664d9b8@suse.com>
-Date: Wed, 27 Mar 2024 08:42:34 +1030
+        Tue, 26 Mar 2024 15:16:44 -0700 (PDT)
+Message-ID: <78f3a17b-4b74-4b8e-b7c9-fa8a5eaecefe@suse.com>
+Date: Wed, 27 Mar 2024 08:46:39 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,12 +78,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/7] btrfs: convert PREALLOC to PERTRANS after
- record_root_in_trans
+Subject: Re: [PATCH 5/7] btrfs: free pertrans at end of cleanup_transaction
 To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
  kernel-team@fb.com
 References: <cover.1711488980.git.boris@bur.io>
- <acdebc0c8ca16f410a5d13487d1b9e69ae7240aa.1711488980.git.boris@bur.io>
+ <1697680236677896913e26948a76a2dd01dad235.1711488980.git.boris@bur.io>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -109,70 +109,53 @@ Autocrypt: addr=wqu@suse.com; keydata=
  bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
  AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
  ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <acdebc0c8ca16f410a5d13487d1b9e69ae7240aa.1711488980.git.boris@bur.io>
+In-Reply-To: <1697680236677896913e26948a76a2dd01dad235.1711488980.git.boris@bur.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
 在 2024/3/27 08:09, Boris Burkov 写道:
-> The transaction is only able to free PERTRANS reservations for a root
-> once that root has been recorded with the TRANS tag on the roots radix
-> tree. Therefore, until we are sure that this root will get tagged, it
-> isn't safe to convert. Generally, this is not an issue as *some*
-> transaction will likely tag the root before long and this reservation
-> will get freed in that transaction, but technically it could stick
-> around until unmount and result in a warning about leaked metadata
-> reservation space.
+> Some of the operations after the free might convert more pertrans
+> metadata. Do the freeing as late as possible to eliminate a source of
+> leaked pertrans metadata.
 > 
-> This path is most exercised by running the generic/269 xfstest with
-> CONFIG_BTRFS_DEBUG.
+> Helps with the pass rate of generic/269 and generic/475.
 > 
-> Fixes: a6496849671a ("btrfs: fix start transaction qgroup rsv double free")
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Well, you can also move other fs level cleanup out of the 
+btrfs_cleanup_one_transaction() call.
+(e.g. destory_delayed_inodes()).
+
+For qgroup part, it looks fine to me as a precautious behavior.
 
 Thanks,
 Qu
-> Signed-off-by: Boris Burkov <boris@bur.io>
+
 > ---
->   fs/btrfs/transaction.c | 17 ++++++++---------
->   1 file changed, 8 insertions(+), 9 deletions(-)
+>   fs/btrfs/disk-io.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index feffff91c6fe..1c449d1cea1b 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -745,14 +745,6 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
->   		h->reloc_reserved = reloc_reserved;
->   	}
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 3df5477d48a8..4d7893cc0d4e 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -4850,8 +4850,6 @@ void btrfs_cleanup_one_transaction(struct btrfs_transaction *cur_trans,
+>   				     EXTENT_DIRTY);
+>   	btrfs_destroy_pinned_extent(fs_info, &cur_trans->pinned_extents);
 >   
-> -	/*
-> -	 * Now that we have found a transaction to be a part of, convert the
-> -	 * qgroup reservation from prealloc to pertrans. A different transaction
-> -	 * can't race in and free our pertrans out from under us.
-> -	 */
-> -	if (qgroup_reserved)
-> -		btrfs_qgroup_convert_reserved_meta(root, qgroup_reserved);
+> -	btrfs_free_all_qgroup_pertrans(fs_info);
 > -
->   got_it:
->   	if (!current->journal_info)
->   		current->journal_info = h;
-> @@ -786,8 +778,15 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
->   		 * not just freed.
->   		 */
->   		btrfs_end_transaction(h);
-> -		return ERR_PTR(ret);
-> +		goto reserve_fail;
->   	}
-> +	/*
-> +	 * Now that we have found a transaction to be a part of, convert the
-> +	 * qgroup reservation from prealloc to pertrans. A different transaction
-> +	 * can't race in and free our pertrans out from under us.
-> +	 */
-> +	if (qgroup_reserved)
-> +		btrfs_qgroup_convert_reserved_meta(root, qgroup_reserved);
+>   	cur_trans->state =TRANS_STATE_COMPLETED;
+>   	wake_up(&cur_trans->commit_wait);
+>   }
+> @@ -4904,6 +4902,7 @@ static int btrfs_cleanup_transaction(struct btrfs_fs_info *fs_info)
+>   	btrfs_assert_delayed_root_empty(fs_info);
+>   	btrfs_destroy_all_delalloc_inodes(fs_info);
+>   	btrfs_drop_all_logs(fs_info);
+> +	btrfs_free_all_qgroup_pertrans(fs_info);
+>   	mutex_unlock(&fs_info->transaction_kthread_mutex);
 >   
->   	return h;
->   
+>   	return 0;
 
