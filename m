@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-3622-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3623-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E90F88CEE9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 21:34:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A1F688CEFD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 21:37:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAC00326A0B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 20:34:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E66B2B22A2B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 20:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FAE413E3FC;
-	Tue, 26 Mar 2024 20:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3877E12AAF8;
+	Tue, 26 Mar 2024 20:30:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="C+0mtxtL"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PXbN+5qb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5266D13E3F6
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 20:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98FB1EF1D
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 20:30:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711484879; cv=none; b=d/ebLM04bBVC1FrXuQSqFRVi0hnawAYK+FYZkvz8C44ZelJhVqbN2r/ThF2L0qaGJtvuWlZ/VuZrt4jYzd3xU8byNOAe2nQKCKNx8e85ha8H3lz+u+BDKDBbzBt3zZt9c89WplEdPEWAT5c8kYc9e8I+PQFDvhzoYxy4E5pECkw=
+	t=1711485038; cv=none; b=gPkrOA2prFD+iA5tQOn6QgSohAG2W5ctj3Wx+xlyXPZLtCimoa+Wzy/p+OdF46WkdOn1sS963Wo3UahrFBVT4V2vPPk+nESh+jsZp4l+m41/M7bFvOstRPjCutRPfGfXEJeEkZxiq5HZj4UJz+Firri39sN/DKM3tk/Wj6NBnpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711484879; c=relaxed/simple;
-	bh=kSgM35gNr0gjriNWrDFzdoYK0XN/xbRf6EjVT09qNIM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fli4idBZ5aQNCc/7OEyk1MdzTp0CpN6k/mW6HwfEITxF2ddGG805F5lgRjkFJY82pS3pm8MXSaKrfILSGfuihp5vx03WXBaHd9XmNQMQ+kgjr6YzwGuk4qDIvVOpNubNfjrhyOTdLmRzH0p4OcNmou8LSy596ZqcnQZGF9Jb7Ik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=C+0mtxtL; arc=none smtp.client-ip=209.85.221.50
+	s=arc-20240116; t=1711485038; c=relaxed/simple;
+	bh=9yYiJxdQlPqo0eLA1FMjKbMJCEp/JzxmA1HBLLXsiKc=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=g0NgM/tSVck+tl/6xjMkYnXhQTdrGJhCMnWVdSbi34kz/s9nWFQkPn+U6nuqgdZF6HAP0kT851qCI/KrQosMzHc+JtbZR5HQlVQ9PP/vn64zPIK8pHqeHDIy6GWuU8Zp3q56bCqe8cSTT8kNoGA6+rIXR3BmUlz8A0DjENP8zgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PXbN+5qb; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33ed4dd8659so132266f8f.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 13:27:57 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33ddd1624beso127188f8f.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 13:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1711484875; x=1712089675; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=HAbFKQ41cf59OhU1G44xV3mLQv3wUEgsWgtwEAk2Zds=;
-        b=C+0mtxtLpWWyiBUgaF7TKk4gDoaSzYNJ3Lp7O7It7VgCf38K+9QECiTCK8L6zgM6z7
-         iTE+wwGXoV29waAKx/dAWnSHp2OiN5FzWcO22XsltsbTeSbjJi6IDX5Y8AFc6zjN9cRh
-         w21+F3oMOHQU88SahVotydIf9DE3yYpda8uvQ2aiH3ZA4U4XYoOAfZpnowIIEYGic7YA
-         Sx+ovAgBtiL1QVzyiHPcMNYWthKEMF95YTxVad6iac6MW6FuTmojxfkbLh38sDtXtr1T
-         r+3BvgPESGVwfz5MiYJBYkOPepgLfUJnC53ECN4RaoFqUhoc3qpZolgVd6QLjjccjQI7
-         qARA==
+        d=suse.com; s=google; t=1711485034; x=1712089834; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=QWBXCWRzagZ/ApSDtpOUedwGlOJ0X9aE+f59fU36DUk=;
+        b=PXbN+5qbglFUUIjcqpXh/t99ARj1cqN9irvYVyM8xAMbRBh1Pm5bUVERPJufkVNhXM
+         qPBkWoKk/nhYucVHccAFYz4jL5EXVSfPyaGYo+XBc74UnvXkSD9HjA6t99TEfPebD1XP
+         Z51NjYK/IPMlL3eET9ypiDjQwQa9dhOmeUuGQ43AXRTGKBaUNxc2+ZCaSwNK6pmuHQv8
+         xlh79W/rGvBVNm1knAhmURV6RcHjbma63lWgC1EFow3DEXhMaQ2JtlhdOWNM2TppZXx0
+         KmkMWLchxCNLNCoSErlBxBAtOrB77ylOFYNn3GKX90+TJ3L/VjNBlOa8DbkbJzCNkkKJ
+         qtMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711484875; x=1712089675;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HAbFKQ41cf59OhU1G44xV3mLQv3wUEgsWgtwEAk2Zds=;
-        b=PlWbAo2atLT38A6/kCUgfZFXqAtJJc6pbWtiphudmmBvBSwCHz13z+H0jPxxjTJUuT
-         YBQ+OTGspG/9fIHobcrX6fkshX+7i6Jbr73fRdd7VlBwWhebaXcE9yAFhk5uQj5e4ZVY
-         HJ2wcvUJZs6k2OdbGRCnHpuZ7gEj3svmmA8yRJIp3fqH+NNoxgA1YkAFy17gkiJuwVOh
-         gKQw+fqFGqCLpF16tNmBtwgsQ4vXiVyk7rJ3H5uarmWBmNkwBBJtSqk0bf4WzOzauSVF
-         WcYbDX4YX7J8mS5V2etKDDydBW8MRrYY0YJ5ZWRsiO8DPhCDcrQtfGw8xF8rjx8VRepX
-         PsWQ==
-X-Gm-Message-State: AOJu0Yx4GKpqwuLEIHQcO9j4XP4+eJtCC/ZPal/hmXgcrsO+geNMtUjr
-	A20ryCAuh3PURcqn/1ENZVTydO8AbBzDeIe/MzULzE76cSoZOehJXyarLUhLjEw=
-X-Google-Smtp-Source: AGHT+IEotxvMHwVRcmWYiv5H+qJ2gNoD605LE9hGTF5fK1yR+l7L0LK5Ki1ZLh1eUnhAQTPGEgLuDw==
-X-Received: by 2002:a5d:6b82:0:b0:33e:c6c4:43bb with SMTP id n2-20020a5d6b82000000b0033ec6c443bbmr2518618wrx.6.1711484875528;
-        Tue, 26 Mar 2024 13:27:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711485034; x=1712089834;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QWBXCWRzagZ/ApSDtpOUedwGlOJ0X9aE+f59fU36DUk=;
+        b=o00sGrm6MY95I4QhetQRCBjlS+m7JZK0ILzQXxnh9v7AcCezB8tB1kBKXorUS7ab/L
+         qJNtdrqbkmJRgH/ETJpmOQt9nS++8vIT6w3FYztNtsDCoF8NIcazAUU9BYsYyYp/7i6J
+         OTyZfeCpFwnGy7686xy9mN0uiSyiyXZnP3UMTswnU9ytdGUEIu0T+3ce+MaDuqH9YgVW
+         131gJZmDVvV3+7DTYqamVejW3zKw20rh1QEyvWKuWZ/OcnJ47sa/rK9QBuDmgXBykdQK
+         elWLImRAEEHSDwB11xyuDDSqQXCEmla8K4Qv92ptwU7LryWj81Bcc6oyauX1tLSrswUu
+         mlyQ==
+X-Gm-Message-State: AOJu0YxKxz/j0VD9k/aLQ3SQlqlcXGnEmvLPciw5wj7Tao8dP8QfGbDM
+	yP2WuiicVdI9fj5YNHE9dp0yNcOCJMNw0EgnQ9wFj3y5CEErvHPV9bh1GABO/hs=
+X-Google-Smtp-Source: AGHT+IF8RXlQah+Vjjm8/S3vU9UUKDKZhZjUSlpXGgwOMEdCuqRWLXARGM5mFt7j0R8PiO7qkRFoGA==
+X-Received: by 2002:a05:6000:1376:b0:341:ab6c:71e4 with SMTP id q22-20020a056000137600b00341ab6c71e4mr2542104wrz.19.1711485034140;
+        Tue, 26 Mar 2024 13:30:34 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id si13-20020a17090b528d00b0029fe0b8859fsm1556109pjb.1.2024.03.26.13.27.52
+        by smtp.gmail.com with ESMTPSA id z189-20020a6265c6000000b006e71e3d1172sm6672696pfb.101.2024.03.26.13.30.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Mar 2024 13:27:54 -0700 (PDT)
-Message-ID: <bafb239d-5c78-451d-b981-8d79aa3c1200@suse.com>
-Date: Wed, 27 Mar 2024 06:57:48 +1030
+        Tue, 26 Mar 2024 13:30:33 -0700 (PDT)
+Message-ID: <32c3c2fc-3f76-40e2-b876-36370f4aed85@suse.com>
+Date: Wed, 27 Mar 2024 07:00:29 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -78,13 +78,14 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs-progs: subvolume: output the prompt line only when
  the ioctl succeeded
+From: Qu Wenruo <wqu@suse.com>
 To: Boris Burkov <boris@bur.io>, David Sterba <dsterba@suse.cz>
 Cc: linux-btrfs@vger.kernel.org
 References: <7d1ce9fe71dac086bb0037b517e2d932bb2a5b04.1709007014.git.wqu@suse.com>
  <20240301125631.GK2604@twin.jikos.cz>
  <20240326202349.GA1575630@zen.localdomain>
+ <bafb239d-5c78-451d-b981-8d79aa3c1200@suse.com>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -109,67 +110,78 @@ Autocrypt: addr=wqu@suse.com; keydata=
  bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
  AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
  ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <20240326202349.GA1575630@zen.localdomain>
+In-Reply-To: <bafb239d-5c78-451d-b981-8d79aa3c1200@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2024/3/27 06:53, Boris Burkov 写道:
-> On Fri, Mar 01, 2024 at 01:56:31PM +0100, David Sterba wrote:
->> On Tue, Feb 27, 2024 at 02:41:16PM +1030, Qu Wenruo wrote:
->>> [BUG]
->>> With the latest kernel patch to reject invalid qgroupids in
->>> btrfs_qgroup_inherit structure, "btrfs subvolume create" or "btrfs
->>> subvolume snapshot" can lead to the following output:
+在 2024/3/27 06:57, Qu Wenruo 写道:
+> 
+> 
+> 在 2024/3/27 06:53, Boris Burkov 写道:
+>> On Fri, Mar 01, 2024 at 01:56:31PM +0100, David Sterba wrote:
+>>> On Tue, Feb 27, 2024 at 02:41:16PM +1030, Qu Wenruo wrote:
+>>>> [BUG]
+>>>> With the latest kernel patch to reject invalid qgroupids in
+>>>> btrfs_qgroup_inherit structure, "btrfs subvolume create" or "btrfs
+>>>> subvolume snapshot" can lead to the following output:
+>>>>
+>>>>   # mkfs.btrfs -O quota -f $dev
+>>>>   # mount $dev $mnt
+>>>>   # btrfs subvolume create -i 2/0 $mnt/subv1
+>>>>   Create subvolume '/mnt/btrfs/subv1'
+>>>>   ERROR: cannot create subvolume: No such file or directory
+>>>>
+>>>> The "btrfs subvolume" command output the first line, seemingly to
+>>>> indicate a successful subvolume creation, then followed by an error
+>>>> message.
+>>>>
+>>>> This can be a little confusing on whether if the subvolume is 
+>>>> created or
+>>>> not.
+>>>>
+>>>> [FIX]
+>>>> Fix the output by only outputting the regular line if the ioctl
+>>>> succeeded.
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >>>
->>>   # mkfs.btrfs -O quota -f $dev
->>>   # mount $dev $mnt
->>>   # btrfs subvolume create -i 2/0 $mnt/subv1
->>>   Create subvolume '/mnt/btrfs/subv1'
->>>   ERROR: cannot create subvolume: No such file or directory
->>>
->>> The "btrfs subvolume" command output the first line, seemingly to
->>> indicate a successful subvolume creation, then followed by an error
->>> message.
->>>
->>> This can be a little confusing on whether if the subvolume is created or
->>> not.
->>>
->>> [FIX]
->>> Fix the output by only outputting the regular line if the ioctl
->>> succeeded.
->>>
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> Added to devel, thanks.
 >>
->> Added to devel, thanks.
+>> This patch breaks every test that creates snapshots or subvolumes and
+>> expects the output in the outfile.
+>>
+>> That's because it did:
+>> s/Create a snapshot/Create snapshot/
+>>
+>> Please run the tests when making changes! This failed on btrfs/001, so
+>> it would have taken 1 second to see.
 > 
-> This patch breaks every test that creates snapshots or subvolumes and
-> expects the output in the outfile.
+> Wrong patch to blame?
 > 
-> That's because it did:
-> s/Create a snapshot/Create snapshot/
+> The message is kept the same in the patch:
 > 
-> Please run the tests when making changes! This failed on btrfs/001, so
-> it would have taken 1 second to see.
+> -        pr_verbose(LOG_DEFAULT,
+> -               "Create a readonly snapshot of '%s' in '%s/%s'\n",
+> -               subvol, dstdir, newname);
+> -        pr_verbose(LOG_DEFAULT,
+> -               "Create a snapshot of '%s' in '%s/%s'\n",
+> -               subvol, dstdir, newname);
+> 
+> +        pr_verbose(LOG_DEFAULT,
+> +               "Create a readonly snapshot of '%s' in '%s/%s'\n",
+> +               subvol, dstdir, newname);
+> +        pr_verbose(LOG_DEFAULT,
+> +               "Create a snapshot of '%s' in '%s/%s'\n",
+> +               subvol, dstdir, newname);
+> 
+> Thanks,
+> Qu
 
-Wrong patch to blame?
+OK, David seems to changed the output line when merging the patch...
 
-The message is kept the same in the patch:
-
--		pr_verbose(LOG_DEFAULT,
--			   "Create a readonly snapshot of '%s' in '%s/%s'\n",
--			   subvol, dstdir, newname);
--		pr_verbose(LOG_DEFAULT,
--			   "Create a snapshot of '%s' in '%s/%s'\n",
--			   subvol, dstdir, newname);
-
-+		pr_verbose(LOG_DEFAULT,
-+			   "Create a readonly snapshot of '%s' in '%s/%s'\n",
-+			   subvol, dstdir, newname);
-+		pr_verbose(LOG_DEFAULT,
-+			   "Create a snapshot of '%s' in '%s/%s'\n",
-+			   subvol, dstdir, newname);
+That's something out of my reach.
 
 Thanks,
 Qu
