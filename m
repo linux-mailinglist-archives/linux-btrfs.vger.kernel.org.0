@@ -1,229 +1,137 @@
-Return-Path: <linux-btrfs+bounces-3619-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3620-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 331D488CB69
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 18:58:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B61B88CC07
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 19:31:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FD5EB2216E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 17:58:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E1191C657BE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 18:31:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1721985293;
-	Tue, 26 Mar 2024 17:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BED112AAC0;
+	Tue, 26 Mar 2024 18:30:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a0ReI+rw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kdvVyUnw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3361E6F07B;
-	Tue, 26 Mar 2024 17:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3E0126F1E;
+	Tue, 26 Mar 2024 18:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711475909; cv=none; b=i7VZwFH19jRsUKZVLJYqdAGLqurEOJHJjdZDOCNHdGOu7eB11MjpI6cegaPu8lWS6ut9HRvtE/thPnt59lGvMAgQaNcm1b72jLmPtvoFvesXiY2bhCJDuOxAr3fSta4fr1eCaeTn3dSuPyYN+mY9McmxzrzHw66HDKw8FmJx2hk=
+	t=1711477844; cv=none; b=YeWKXdoVCMc8l07WBO2mV03AK0M0SETDNoYEkUAtEBU5imquXnnlBkEuhuAXF/DeFejx8rGrotJ1iMLMM7q6atuHc47bTtgN0YMryDXWV4SQAPBqRuZfojon3YWQd2vCSvueo5I4yCnFVIsDeNtvJneH7SSsiKaE2DUQTXaWBlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711475909; c=relaxed/simple;
-	bh=+0f2wjx5PoGT9oU7SA9Y1LHXUjBgVOpupO+S6BJi8lw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Lw6FbQDH/sfLtz8kPkyd7j/t9JYinPQQR1mEUmW73C0lDSLWWaDVIzF7RNZ8i5RgCLQuyaVovwi4C5dz6PKrYH1iRz8P51dINM4IeF81QYBhYy0yWr+6s4jmEOVx+3hGRxlddYkeKFonDq4XPMJrh1z4Mv8TP7h+Nm/doXKPI6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a0ReI+rw; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711475907; x=1743011907;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+0f2wjx5PoGT9oU7SA9Y1LHXUjBgVOpupO+S6BJi8lw=;
-  b=a0ReI+rwtsDmOfY/Y0oocISTmonIi1YYOMNgEhBQBe3JKFLr3yt6T1Yb
-   g9F/R4hsvJ6G6fZiMwlCI2PBOgbPpwe28qwlVSbkcfTPHAqkuvW/zTwFs
-   4BdI1ipQ5HuNCvRHqsM+ldvpd0g+czJaEFGkm9Dqz4bhzOtSXWO4E0mhJ
-   ljpi6w8RVKoVcCWyF295TfHTkuodSTF6Bt6tdglnDwMMzgpU7Dmk1W+1b
-   fyjtlRcW7CFybmtleMXg8KRW4rkvXi2hGZbQYNzFqv7ZLOcAs0EgV/yDL
-   +ou90bdTP/kqvhML9r2RRbItNcBuApepW/da9GY/KEhEePS3LISls4ada
-   Q==;
-X-CSE-ConnectionGUID: qClSmqHsRGmT1vOiKq94yQ==
-X-CSE-MsgGUID: KkgAdeTySGmIuj6TJdhOUg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6400934"
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="6400934"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 10:58:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
-   d="scan'208";a="16426044"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.212.112.247]) ([10.212.112.247])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 10:58:25 -0700
-Message-ID: <891efc78-4f4b-494b-8c51-4f15db68ef23@intel.com>
-Date: Tue, 26 Mar 2024 10:58:24 -0700
+	s=arc-20240116; t=1711477844; c=relaxed/simple;
+	bh=sAyOUEKczk4vCaBI7fCgM6yZpeBEglMUpPYimbD3Wuk=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KbCqMNDzkTV3vlv/bpARPKNj/RfxUO+XmQR/dgmVFbjT4yvI4ZYNeUuILT4y2F/yFNJzwdSB/KUV/tnatDUtpYkNQb24rn9P6dfVX5YsmyXgwOkp5Fd8tIbXpRDzuAM85ffy6Ezu0OjIzfHIqrn+Wl2MuSsY+Odi72X5W4y7wxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kdvVyUnw; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e0411c0a52so43850265ad.0;
+        Tue, 26 Mar 2024 11:30:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711477842; x=1712082642; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iUdKOd7rx0WMRV6Jyf1lEVlg1MEyH9tPtK2n/H0R3Jk=;
+        b=kdvVyUnwuw/NoXtocv9KZPkO6Q0B00DUWa3qUrgcUIB+nZxDOiGb76T5hk3T/0Fxs1
+         meuoUDt6m1Tj1UYAAzyfzNvWkb6KJU/lqgMpfq/HEke3RIPM2gEtfeoTXdV4QME4ZASL
+         UyFrB6v7Ft5rapQ7Tz6au2wI43/Y+NaTdeBMN8gZjiKe4pLI32ijmsDj6qC7BisvS3+Y
+         yvmAkdVTeSmM6gglnd8rvVhzdvL6quf2RKTty2clFP/yfVT08ziQcCGqHU4pk+JQ6vDt
+         LpdJ2jKqI07wmijtDwBEATzhx7ux/YKm72qGCxMuBpaotz5qy/8SaWMhFDWTpAx0s6Vq
+         jz5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711477842; x=1712082642;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iUdKOd7rx0WMRV6Jyf1lEVlg1MEyH9tPtK2n/H0R3Jk=;
+        b=RsYjdf+kWbt+yMrqQyTDwBp/u+Mbyw5gJPxIN6+3JVwMseo/WO9GydJnhLsFiOVdcj
+         xK1L/kKoklMp8hMty9f/wkfhYFO5Ej9GINSyRTZfWq/RUi+Q9dHzWiOI41RM8WH6J7v8
+         VLGxf6rXI+G+AZKCtSzFXANjzo74ejw2uV1WvshIuQcaWsKPEgkgQCWdDpnli8bRXnhf
+         jchcp+CCwWBODsn7ccDMkrBYfT+hUPcaXJe08CaZlpbzogJ3NMFroBcsHdCY2z+U0ETQ
+         rssSyb9WTSxUV56MQKpeHeBB51+n9eyeZUMT7mEK2tzMTRLonypzdjuUcKo9Lm9vY+hO
+         MXOw==
+X-Forwarded-Encrypted: i=1; AJvYcCW/EIxbmPZg9RY8R5tB1JFn7XQlcgR4HCPdBTXq8O3xsnxTjD+nIp4JEs8CTz04lxFEmRjrP/BM9j9yocNNn4CQhJ+1ZNWM++6/6mnh6DuGS1GlC4t2ML1HFJw7nlVrrJXpci3L7LU81ytxcBFewNKblE7/o1tfYdeV9A7R7M1taz+/PUw=
+X-Gm-Message-State: AOJu0Yza8mOB9A8V4627snxwLKjRalbdEm/owkMgSKlooYnWoO0uUAUH
+	Nd8/REnGVoYHrhvC221Z5JuhiiKNu5rqwum3OgAZXkNZI+5oLjh7
+X-Google-Smtp-Source: AGHT+IHh6JX3lwXrIJoiJWTgBiw0gt3RVc2+M2dHJ2GjDbmxIo2EmZBN6zLFVtqAVrcjEF8ZgUfndA==
+X-Received: by 2002:a17:902:da8c:b0:1e0:b60e:1a1f with SMTP id j12-20020a170902da8c00b001e0b60e1a1fmr7673040plx.8.1711477841957;
+        Tue, 26 Mar 2024 11:30:41 -0700 (PDT)
+Received: from debian ([2601:641:300:14de:69a2:b1ff:1efd:f4a9])
+        by smtp.gmail.com with ESMTPSA id x3-20020a170902ec8300b001e035cecd27sm7185044plg.129.2024.03.26.11.30.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Mar 2024 11:30:41 -0700 (PDT)
+From: fan <nifan.cxl@gmail.com>
+X-Google-Original-From: fan <fan@debian>
+Date: Tue, 26 Mar 2024 11:30:38 -0700
+To: Davidlohr Bueso <dave@stgolabs.net>
+Cc: ira.weiny@intel.com, Dave Jiang <dave.jiang@intel.com>,
+	Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/26] cxl/mem: Expose device dynamic capacity
+ capabilities
+Message-ID: <ZgMUTq6HasHOiR15@debian>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-8-b7b00d623625@intel.com>
+ <w4jkueqpvh7hzbywk42m7gxclg56nbgzhaqcgeb3q2b6dt3w6n@5vwicganqpsu>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 06/26] cxl/port: Add Dynamic Capacity mode support to
- endpoint decoders
-Content-Language: en-US
-To: ira.weiny@intel.com, Fan Ni <fan.ni@samsung.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Navneet Singh <navneet.singh@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>,
- Davidlohr Bueso <dave@stgolabs.net>,
- Alison Schofield <alison.schofield@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
- linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-6-b7b00d623625@intel.com>
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-6-b7b00d623625@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <w4jkueqpvh7hzbywk42m7gxclg56nbgzhaqcgeb3q2b6dt3w6n@5vwicganqpsu>
 
-
-
-On 3/24/24 4:18 PM, ira.weiny@intel.com wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
+On Mon, Mar 25, 2024 at 04:40:16PM -0700, Davidlohr Bueso wrote:
+> On Sun, 24 Mar 2024, ira.weiny@intel.com wrote:
 > 
-> Endpoint decoders which are used to map Dynamic Capacity must be
-> configured to point to the correct Dynamic Capacity (DC) Region.  The
-> decoder mode currently represents the partition the decoder points to
-> such as ram or pmem.
+> > +What:		/sys/bus/cxl/devices/memX/dc/region_count
+> > +Date:		June, 2024
+> > +KernelVersion:	v6.10
+> > +Contact:	linux-cxl@vger.kernel.org
+> > +Description:
+> > +		(RO) Number of Dynamic Capacity (DC) regions supported on the
+> > +		device.  May be 0 if the device does not support Dynamic
+> > +		Capacity.
 > 
-> Expand the mode to include DC regions [partitions].
+> If dcd is not supported then we should not have the dc/ directory
+> altogether.
 > 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes for v1:
-> [iweiny: eliminate added gotos]
-> [iweiny: Mark DC support for 6.10 kernel]
-> ---
->  Documentation/ABI/testing/sysfs-bus-cxl | 21 +++++++++++----------
->  drivers/cxl/core/hdm.c                  | 19 +++++++++++++++++++
->  drivers/cxl/core/port.c                 | 16 ++++++++++++++++
->  3 files changed, 46 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
-> index fff2581b8033..8b3efaf6563c 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-cxl
-> +++ b/Documentation/ABI/testing/sysfs-bus-cxl
-> @@ -316,23 +316,24 @@ Description:
->  
->  
->  What:		/sys/bus/cxl/devices/decoderX.Y/mode
-> -Date:		May, 2022
-> -KernelVersion:	v6.0
-> +Date:		May, 2022, June 2024
-> +KernelVersion:	v6.0, v6.10 (dcY)
->  Contact:	linux-cxl@vger.kernel.org
->  Description:
->  		(RW) When a CXL decoder is of devtype "cxl_decoder_endpoint" it
->  		translates from a host physical address range, to a device local
->  		address range. Device-local address ranges are further split
-> -		into a 'ram' (volatile memory) range and 'pmem' (persistent
-> -		memory) range. The 'mode' attribute emits one of 'ram', 'pmem',
-> -		'mixed', or 'none'. The 'mixed' indication is for error cases
-> -		when a decoder straddles the volatile/persistent partition
-> -		boundary, and 'none' indicates the decoder is not actively
-> -		decoding, or no DPA allocation policy has been set.
-> +		into a 'ram' (volatile memory) range, 'pmem' (persistent
-> +		memory) range, or Dynamic Capacity (DC) range. The 'mode'
-> +		attribute emits one of 'ram', 'pmem', 'dcY', 'mixed', or
-> +		'none'. The 'mixed' indication is for error cases when a
-> +		decoder straddles the volatile/persistent partition boundary,
-> +		and 'none' indicates the decoder is not actively decoding, or
-> +		no DPA allocation policy has been set.
->  
->  		'mode' can be written, when the decoder is in the 'disabled'
-> -		state, with either 'ram' or 'pmem' to set the boundaries for the
-> -		next allocation.
-> +		state, with 'ram', 'pmem', or 'dcY' to set the boundaries for
-> +		the next allocation.
->  
->  
->  What:		/sys/bus/cxl/devices/decoderX.Y/dpa_resource
-> diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
-> index 66b8419fd0c3..e22b6f4f7145 100644
-> --- a/drivers/cxl/core/hdm.c
-> +++ b/drivers/cxl/core/hdm.c
-> @@ -255,6 +255,14 @@ static void devm_cxl_dpa_release(struct cxl_endpoint_decoder *cxled)
->  	__cxl_dpa_release(cxled);
->  }
->  
-> +static int dc_mode_to_region_index(enum cxl_decoder_mode mode)
-> +{
-> +	if (mode < CXL_DECODER_DC0 || CXL_DECODER_DC7 < mode)
+> Thanks,
+> Davidlohr 
 
-I second what Fan said about readability here if you do (mode > CXL_DECODER_DC7) for upper bound check instead.
+I also think so. However, I also noticed one thing (not DCD related).
+Even for a PMEM device, for example, we have a ram directory under the
+device directory.
 
-> +		return -EINVAL;
-> +
-> +	return mode - CXL_DECODER_DC0;
-> +}
-> +
->  static int __cxl_dpa_reserve(struct cxl_endpoint_decoder *cxled,
->  			     resource_size_t base, resource_size_t len,
->  			     resource_size_t skipped)
-> @@ -411,6 +419,7 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
->  	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
->  	struct cxl_dev_state *cxlds = cxlmd->cxlds;
->  	struct device *dev = &cxled->cxld.dev;
-> +	int rc;
->  
->  	guard(rwsem_write)(&cxl_dpa_rwsem);
->  	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE)
-> @@ -433,6 +442,16 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
->  			return -ENXIO;
->  		}
->  		break;
-> +	case CXL_DECODER_DC0 ... CXL_DECODER_DC7:
-> +		rc = dc_mode_to_region_index(mode);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		if (resource_size(&cxlds->dc_res[rc]) == 0) {
-> +			dev_dbg(dev, "no available dynamic capacity\n");
-> +			return -ENXIO;
-> +		}
-> +		break;
->  	default:
->  		dev_dbg(dev, "unsupported mode: %d\n", mode);
->  		return -EINVAL;
-> diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
-> index e59d9d37aa65..80c0651794eb 100644
-> --- a/drivers/cxl/core/port.c
-> +++ b/drivers/cxl/core/port.c
-> @@ -208,6 +208,22 @@ static ssize_t mode_store(struct device *dev, struct device_attribute *attr,
->  		mode = CXL_DECODER_PMEM;
->  	else if (sysfs_streq(buf, "ram"))
->  		mode = CXL_DECODER_RAM;
-> +	else if (sysfs_streq(buf, "dc0"))
-> +		mode = CXL_DECODER_DC0;
-> +	else if (sysfs_streq(buf, "dc1"))
-> +		mode = CXL_DECODER_DC1;
-> +	else if (sysfs_streq(buf, "dc2"))
-> +		mode = CXL_DECODER_DC2;
-> +	else if (sysfs_streq(buf, "dc3"))
-> +		mode = CXL_DECODER_DC3;
-> +	else if (sysfs_streq(buf, "dc4"))
-> +		mode = CXL_DECODER_DC4;
-> +	else if (sysfs_streq(buf, "dc5"))
-> +		mode = CXL_DECODER_DC5;
-> +	else if (sysfs_streq(buf, "dc6"))
-> +		mode = CXL_DECODER_DC6;
-> +	else if (sysfs_streq(buf, "dc7"))
-> +		mode = CXL_DECODER_DC7;
+===================
+root@DT:~# cxl list
+[
+  {
+    "memdev":"mem0",
+    "pmem_size":536870912,
+    "serial":0,
+    "host":"0000:0d:00.0"
+  }
+]
+root@DT:~# ls /sys/bus/cxl/devices/mem0/
+dc  dev  driver  firmware  firmware_version  label_storage_size  numa_node  payload_max  pmem  pmem0  ram  security  serial  subsystem	trigger_poison_list  uevent
+root@DT:~#
+===================
 
-I think maybe create a static string table that correlates cxl_decoder_mode to string. Then you can simplify cxl_decoder_mode_name() and as well as here. And here I think you can just do a for loop and go through the entire static table. 
+Fan
 
->  	else
->  		return -EINVAL;
->  
-> 
 
