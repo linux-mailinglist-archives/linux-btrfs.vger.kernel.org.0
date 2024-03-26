@@ -1,52 +1,63 @@
-Return-Path: <linux-btrfs+bounces-3617-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3618-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E586888CA79
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 18:13:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DBE488CB45
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 18:47:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14DB6B242E2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 17:12:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1997308BF7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 17:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591576F07B;
-	Tue, 26 Mar 2024 17:12:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E544C63A;
+	Tue, 26 Mar 2024 17:47:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LmNciYel"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JJ70/IdX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1F617BA0;
-	Tue, 26 Mar 2024 17:11:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7782C1F947;
+	Tue, 26 Mar 2024 17:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473121; cv=none; b=YNLFIn08pMYtrt5xNK6nVw24BpXHJjs4mb5NX6zBxsxmuWafU3THlU4uQqP6EbTVYMhbVPynIqsck7k4NCD7ETxUSir2UIqshH2tMpAmQ9/Gx9yarl0hhAxVr6EXhouAM2VZ9xeLwOzFsZ51GSQrTytYgXorGKfciwVT8Q3m0M4=
+	t=1711475223; cv=none; b=UqAChL9HgxmDkupsDyUhZLUD2tftqNmN8wAX/jVxINUT9umZ6919oRi15ljNWtt4tv6TSekSjpXjZobLOx/xH1N6T1ncMM3af/WoBDnf0NT7VVGe6+Jrlu7vzd8DRRB/OFwnPwYFYWUfsEgwdK/kTpTUwxfeFKKh7E7M4CschN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473121; c=relaxed/simple;
-	bh=31wGWIPo+c/oEpudO5XMXBMQ2M8snO+1qTCP8lP1PGw=;
+	s=arc-20240116; t=1711475223; c=relaxed/simple;
+	bh=OH8Qcawkekbg6pcnA21z3HohYq8UPhZ0okXs6Jts+Sk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SCPuSMet0V/1vkZVHOikSpowLpbgp14Spx9I575uSD7e+Ytt4DRu2pLHqhV4icdHVA8QodGWbaRzUjtiTCosO1tW3MmtJ4G+SaJVAI7xuc83OPxfrwnJgiWYPDCXg1lsmEqAoAPOvQlaizmAVCKb8mQGEi6UYLOzDnLrOkN7clE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LmNciYel; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=2DVDjn14jcmXI06omFunOWKNfCuEsxTlBPssx+oZvkM=; b=LmNciYel9AIIAuzc17ceAVCp4g
-	SbWXMbuqF6BpYr+UBRhH6+7v138c15rv0K1vu4kkMs/Yv2xP1GTKqnU9ETniAAOycQJ8800JZOd4E
-	g6YdRztEFr1RkREzfq9RTioqjtEH/RpE0qVk7dNPc9S2sDl3NH43rPuPsEk9Bpi+lHsv900qmgpp3
-	Dx1FtKrUU9PByLpEOW4IprjBfozF7Ot5IDSA0GXlfV9QDGSVo89HjFptoGs6cmLnaM1ByvE2LoMOe
-	z9xp6yo4C3CN+GitFK6P7RyI0kS05Q0L7D8yb9YRmKu/s1OrZnEARY49fPZ2moMzKJhZDisXprzPw
-	ZUIgocCw==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpAL2-00000005fKX-32AV;
-	Tue, 26 Mar 2024 17:11:52 +0000
-Message-ID: <0a9fb564-7129-4153-97d6-76e9b3a1b6c1@infradead.org>
-Date: Tue, 26 Mar 2024 10:11:50 -0700
+	 In-Reply-To:Content-Type; b=E/USPs+qUnPfUmwDRlIwQ7VaPon0nID6LiMl11l4O+a80Q5cCW6caKT3EL6UiiAWD2KAZYajrFbZt8gwpkfIU/N1/luv9ObKmoxLFsQgp1mxPV6ktX4zxjNUtswTLUL/tnvqb241or/fpZdEPbfmHzUFWB4Y0735o1WHxyBZZYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JJ70/IdX; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711475222; x=1743011222;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=OH8Qcawkekbg6pcnA21z3HohYq8UPhZ0okXs6Jts+Sk=;
+  b=JJ70/IdXU2fVE77FJthM3hbqid94GDSP+Vkd0qBvuLcBXsqvRGXLBIeQ
+   sMshJp1NCDRXnh9KARjyDVedbOnHc+T1UMpNUpc+E6nlUn/8M5Meb9Bid
+   WIPSaTQG5OpbEPT63Zb+RWQLO8Lak6qhVR/Q7KashyavCF7elWb54N00O
+   p8UVFFMKR5qcwq5ZLvlrM6I0EFn3mVLTl7NiSxe79Ty1qcd0tDwLvy3A4
+   PDTGV/uV6/+q0T+j0GDvo4lkn8qQeYq+1wveYU9OaUBLhR3jzyjl7u5er
+   WKE1gCMh1X+piP4/BAaUKixvKP/+m57F72FVmlCDkRwNQaCNjKkXf/+vq
+   Q==;
+X-CSE-ConnectionGUID: ZWFZG+RWS1uuVwYhLU0hag==
+X-CSE-MsgGUID: f2tDbwEWRs+eG1nIqLlAWQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11025"; a="6408545"
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="6408545"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 10:47:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,156,1708416000"; 
+   d="scan'208";a="20735657"
+Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.212.112.247]) ([10.212.112.247])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2024 10:47:00 -0700
+Message-ID: <922007a0-3f85-4a40-80e4-5c906e6dd2c8@intel.com>
+Date: Tue, 26 Mar 2024 10:46:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,94 +65,115 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 05/10] block: Add core atomic write support
+Subject: Re: [PATCH 05/26] cxl/core: Simplify cxl_dpa_set_mode()
 Content-Language: en-US
-To: John Garry <john.g.garry@oracle.com>, axboe@kernel.dk, kbusch@kernel.org,
- hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
- martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
- brauner@kernel.org, dchinner@redhat.com, jack@suse.cz
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
- ojaswin@linux.ibm.com, linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
- io-uring@vger.kernel.org, nilay@linux.ibm.com, ritesh.list@gmail.com,
- willy@infradead.org, Himanshu Madhani <himanshu.madhani@oracle.com>
-References: <20240326133813.3224593-1-john.g.garry@oracle.com>
- <20240326133813.3224593-6-john.g.garry@oracle.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240326133813.3224593-6-john.g.garry@oracle.com>
+To: Ira Weiny <ira.weiny@intel.com>, Fan Ni <fan.ni@samsung.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Navneet Singh <navneet.singh@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
+ linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-5-b7b00d623625@intel.com>
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-5-b7b00d623625@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Hi,
 
-On 3/26/24 06:38, John Garry wrote:
-> diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
-> index 1fe9a553c37b..4c775f4bdefe 100644
-> --- a/Documentation/ABI/stable/sysfs-block
-> +++ b/Documentation/ABI/stable/sysfs-block
-> @@ -21,6 +21,58 @@ Description:
->  		device is offset from the internal allocation unit's
->  		natural alignment.
+
+On 3/24/24 4:18 PM, Ira Weiny wrote:
+> cxl_dpa_set_mode() checks the mode for validity two times, once outside
+> of the DPA RW semaphore and again within.  The function is not in a
+> critical path.  Prior to Dynamic Capacity the extra check was not much
+> of an issue.  The addition of DC modes increases the complexity of
+> the check.
+> 
+> Simplify the mode check before adding the more complex DC modes.
+
+I would augment this by saying simplify "by using scope-based resource menagement".
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> 
+> ---
+> Changes for v1:
+> [iweiny: new patch]
+> [Jonathan: based on getting rid of the loop in cxl_dpa_set_mode]
+> [Jonathan: standardize on resource_size() == 0]
+> ---
+>  drivers/cxl/core/hdm.c | 45 ++++++++++++++++++---------------------------
+>  1 file changed, 18 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
+> index 7d97790b893d..66b8419fd0c3 100644
+> --- a/drivers/cxl/core/hdm.c
+> +++ b/drivers/cxl/core/hdm.c
+> @@ -411,44 +411,35 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
+>  	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
+>  	struct cxl_dev_state *cxlds = cxlmd->cxlds;
+>  	struct device *dev = &cxled->cxld.dev;
+> -	int rc;
 >  
-> +What:		/sys/block/<disk>/atomic_write_max_bytes
-> +Date:		February 2024
-> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
-> +Description:
-> +		[RO] This parameter specifies the maximum atomic write
-> +		size reported by the device. This parameter is relevant
-> +		for merging of writes, where a merged atomic write
-> +		operation must not exceed this number of bytes.
-> +		This parameter may be greater to the value in
-
-		                              than
-
-> +		atomic_write_unit_max_bytes as
-> +		atomic_write_unit_max_bytes will be rounded down to a
-> +		power-of-two and atomic_write_unit_max_bytes may also be
-> +		limited by some other queue limits, such as max_segments.
-> +		This parameter - along with atomic_write_unit_min_bytes
-> +		and atomic_write_unit_max_bytes - will not be larger than
-> +		max_hw_sectors_kb, but may be larger than max_sectors_kb.
+> +	guard(rwsem_write)(&cxl_dpa_rwsem);
+> +	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE)
+> +		return -EBUSY;
 > +
-> +
-> +What:		/sys/block/<disk>/atomic_write_unit_min_bytes
-> +Date:		February 2024
-> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
-> +Description:
-> +		[RO] This parameter specifies the smallest block which can
-> +		be written atomically with an atomic write operation. All
-> +		atomic write operations must begin at a
-> +		atomic_write_unit_min boundary and must be multiples of
-> +		atomic_write_unit_min. This value must be a power-of-two.
-> +
-> +
-> +What:		/sys/block/<disk>/atomic_write_unit_max_bytes
-> +Date:		February 2024
-> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
-> +Description:
-> +		[RO] This parameter defines the largest block which can be
-> +		written atomically with an atomic write operation. This
-> +		value must be a multiple of atomic_write_unit_min and must
-> +		be a power-of-two. This value will not be larger than
-> +		atomic_write_max_bytes.
-> +
-> +
-> +What:		/sys/block/<disk>/atomic_write_boundary_bytes
-> +Date:		February 2024
-> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
-> +Description:
-> +		[RO] A device may need to internally split I/Os which
-> +		straddle a given logical block address boundary. In that
-> +		case a single atomic write operation will be processed as
-> +		one of more sub-operations which each complete atomically.
-
-		    or
-
-> +		This parameter specifies the size in bytes of the atomic
-> +		boundary if one is reported by the device. This value must
-> +		be a power-of-two.
-
--- 
-#Randy
+> +	/*
+> +	 * Check that the mode is supported by the current partition
+> +	 * configuration
+> +	 */
+>  	switch (mode) {
+>  	case CXL_DECODER_RAM:
+> +		if (!resource_size(&cxlds->ram_res)) {
+> +			dev_dbg(dev, "no available ram capacity\n");
+> +			return -ENXIO;
+> +		}
+> +		break;
+>  	case CXL_DECODER_PMEM:
+> +		if (!resource_size(&cxlds->pmem_res)) {
+> +			dev_dbg(dev, "no available pmem capacity\n");
+> +			return -ENXIO;
+> +		}
+>  		break;
+>  	default:
+>  		dev_dbg(dev, "unsupported mode: %d\n", mode);
+>  		return -EINVAL;
+>  	}
+>  
+> -	down_write(&cxl_dpa_rwsem);
+> -	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE) {
+> -		rc = -EBUSY;
+> -		goto out;
+> -	}
+> -
+> -	/*
+> -	 * Only allow modes that are supported by the current partition
+> -	 * configuration
+> -	 */
+> -	if (mode == CXL_DECODER_PMEM && !resource_size(&cxlds->pmem_res)) {
+> -		dev_dbg(dev, "no available pmem capacity\n");
+> -		rc = -ENXIO;
+> -		goto out;
+> -	}
+> -	if (mode == CXL_DECODER_RAM && !resource_size(&cxlds->ram_res)) {
+> -		dev_dbg(dev, "no available ram capacity\n");
+> -		rc = -ENXIO;
+> -		goto out;
+> -	}
+> -
+>  	cxled->mode = mode;
+> -	rc = 0;
+> -out:
+> -	up_write(&cxl_dpa_rwsem);
+> -
+> -	return rc;
+> +	return 0;
+>  }
+>  
+>  int cxl_dpa_alloc(struct cxl_endpoint_decoder *cxled, unsigned long long size)
+> 
 
