@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-3581-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3582-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F85B88B5FB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 01:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D46E888B5FC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 01:23:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 054381F3BE4E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 00:23:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 899141F3BC43
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Mar 2024 00:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDBAC33FD;
-	Tue, 26 Mar 2024 00:23:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C51E7F6;
+	Tue, 26 Mar 2024 00:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oOxw7fGv";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oOxw7fGv"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iLu9ybSD";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iLu9ybSD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D3F1C32
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 00:23:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB2023B1
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 00:23:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711412598; cv=none; b=YBgMPxgf5Iwq37Ep9pRYQQrWNDR3Q57HIRlBDEAe4w9ROIOTeObcW0O8r+VOd4VHDr2IWnUg4s9/ZODs7QTAlY/nLcMwRJUz2NoskMlvo/295kfUPV6nmnpTftCWiWG+QbZ0UKpZgT3BHxumivIQuq4NbrOWuuPDxWtG1FLFLgE=
+	t=1711412599; cv=none; b=TQN4b0WBLakdXSVI/Z1QCSLJt60iBN4zkTxNiY/Epe7uSEr/8J4BKr7pfaTTsDUHVvicPhC4X6+J4vWt7MBj0/8Rh2J8wGLD51e0BXS7X/X8E6jyzVewbCWNVxXoUzGhKCbIkIboXr0cp+FQ9VGX5DLn7NdHtAAyfPGhnaC7V3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711412598; c=relaxed/simple;
-	bh=MlpIsCa5jFcKIuYVY7LL8bDrWcMJbFMIZEPxJs92X7I=;
+	s=arc-20240116; t=1711412599; c=relaxed/simple;
+	bh=TLoZzAJgFtclxdz+bVm4I/xypgDh65k1pLqIZ4rMdiM=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jGy++H7FtAX+MRkIRFN/yEFNcgDJZn4grR6mo2PJwUyibls06EHkkO0bn8XBQrK4+XqKK8THONYmy5Od9KuXGnfT+4pT254s+KNPBK0cNKvE2vFF12UXWZOVkE0p8decehmcekUcJiMAD6xgsBF/ptxHwdY1jJZjxREbj+hjay0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oOxw7fGv; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oOxw7fGv; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=VXXJbFWn4cSJyngn0Yosl/gUbLsjCibWmN1R4nyfbwbKA0k6DFhLzhNJqPCuGTHuvcBYLvNYQ0Bb35ViOKzJjbb7V4FEwKwWJ4JdtOJ4zIfXyKUx55Eb5n30AP79s60XyYY22oJfQXt9M5LCh5Ekh++zqSPI32fXIj23CuIZQlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iLu9ybSD; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iLu9ybSD; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5D0C05CE29
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 00:23:14 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B0B8822590
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 00:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1711412594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1711412595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KnQpUzP5gvjlC5TorASiHrgBpUrmdj1oNN2dAjhatTY=;
-	b=oOxw7fGv8GgTc1QIFR9LouhPa4dM9PZVaInriiA6D1BFC+ERxNgS7nmlpma/wkzAySf3ac
-	NZXdJZEbKMqaxMm2KjJ5AL0iIu/zjxGwyOdkjTHqbIoPBe/7Pkr85XbIBl41MOb+mg58nw
-	iezU0s2RtFanrkkzl5pRhRE+Z8nRC20=
+	bh=yn0I+VPJzKyPgs88lBqX0OtuZejhij5xS0iXaj0iFkA=;
+	b=iLu9ybSDQQsRURjuggMODp65YHOdGjULVIMrC/23/63Kt6uJLkMSU/F+yolV3HKY9xqrnv
+	Wwsm/lIf5e4nWceUNzgwmJzgdFZ7j2S2lTvg+WqPGO+MXotDz1QmZiYYui4FVM/nodAHZC
+	9I0qCDAEeDHwhxQMMeev1+1VuK1S5CQ=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1711412594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1711412595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KnQpUzP5gvjlC5TorASiHrgBpUrmdj1oNN2dAjhatTY=;
-	b=oOxw7fGv8GgTc1QIFR9LouhPa4dM9PZVaInriiA6D1BFC+ERxNgS7nmlpma/wkzAySf3ac
-	NZXdJZEbKMqaxMm2KjJ5AL0iIu/zjxGwyOdkjTHqbIoPBe/7Pkr85XbIBl41MOb+mg58nw
-	iezU0s2RtFanrkkzl5pRhRE+Z8nRC20=
+	bh=yn0I+VPJzKyPgs88lBqX0OtuZejhij5xS0iXaj0iFkA=;
+	b=iLu9ybSDQQsRURjuggMODp65YHOdGjULVIMrC/23/63Kt6uJLkMSU/F+yolV3HKY9xqrnv
+	Wwsm/lIf5e4nWceUNzgwmJzgdFZ7j2S2lTvg+WqPGO+MXotDz1QmZiYYui4FVM/nodAHZC
+	9I0qCDAEeDHwhxQMMeev1+1VuK1S5CQ=
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 86CEF13586
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 00:23:13 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EDE7713586
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 00:23:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 2L99EnEVAmbOJAAAn2gu4w
+	id UITWJ3IVAmbOJAAAn2gu4w
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 00:23:13 +0000
+	for <linux-btrfs@vger.kernel.org>; Tue, 26 Mar 2024 00:23:14 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/6] btrfs-progs: mkfs: use proper zoned compatible write for bgt feature
-Date: Tue, 26 Mar 2024 10:52:43 +1030
-Message-ID: <a02d6663b98c19782dc553028b9683fe2929bb37.1711412540.git.wqu@suse.com>
+Subject: [PATCH 4/6] btrfs-progs: tune: properly open zoned devices for RW
+Date: Tue, 26 Mar 2024 10:52:44 +1030
+Message-ID: <e9b5485ae6d5c11196e0fb0c611f256dbf606171.1711412540.git.wqu@suse.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1711412540.git.wqu@suse.com>
 References: <cover.1711412540.git.wqu@suse.com>
@@ -82,8 +82,8 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: 0.79
-X-Spamd-Result: default: False [0.79 / 50.00];
+X-Spam-Score: 3.82
+X-Spamd-Result: default: False [3.82 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
@@ -97,83 +97,91 @@ X-Spamd-Result: default: False [0.79 / 50.00];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 TO_DN_NONE(0.00)[];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.11)[-0.572];
+	 NEURAL_HAM_SHORT(-0.08)[-0.400];
 	 MID_CONTAINS_FROM(1.00)[];
 	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
+	 BAYES_HAM(-0.00)[14.73%]
+X-Spam-Level: ***
+Authentication-Results: smtp-out1.suse.de;
 	none
 X-Spam-Flag: NO
 
 [BUG]
-There is a bug report that mkfs.btrfs can not specify block-group-tree
-feature along with zoned devices:
+There is a report that, for zoned devices btrfstune is unable to convert
+it to block group tree.
 
-  # mkfs.btrfs /dev/nullb0 -O block-group-tree,zoned
-  btrfs-progs v6.7.1
-  See https://btrfs.readthedocs.io for more information.
-
-  Resetting device zones /dev/nullb0 (40 zones) ...
-  NOTE: several default settings have changed in version 5.15, please make sure
-        this does not affect your deployments:
-        - DUP for metadata (-m dup)
-        - enabled no-holes (-O no-holes)
-        - enabled free-space-tree (-R free-space-tree)
-
-  ERROR: error during mkfs: Invalid argument
+ # btrfstune /dev/nullb0 --convert-to-block-group-tree
+ Error reading 1342193664, -1
+ Error reading 1342193664, -1
+ ERROR: cannot read chunk root
+ ERROR: open ctree failed
 
 [CAUSE]
-During mkfs, we need to write all the 7 or 8 tree blocks into the
-metadata zone, and since it's zoned device, we need to fulfill all the
-requirement for zoned writes, including:
+For read-write opened zoned devices, all the read/write has to be
+aligned to its sector size.
 
-- All writes must be in sequential bytenr
-- Buffer must be aligned to sector size
+However btrfs stores its metadata by extent_buffer::data[], which has
+all the structures before it, thus never aligned to zoned device sector
+size.
 
-The sequential bytenr requirement is already met by the mkfs design, but
-the second requirement on memory alignment is never met for metadata, as
-we put the contents of a leaf in extent_buffer::data[], which is after a
-lot of small members.
+Normally we would require btrfs_pread() and btrfs_pwrite() to do the
+extra alignment, but during open_ctree(), we are not aware if a device
+is zoned or not.
 
-Thus metadata IO buffer would never be aligned to sector size (normally
-4K).
-And we require btrfs_pwrite() and btrfs_pread() to handle the memory
-alignment for us.
+Thus we rely on if the fd is opened with O_DIRECT flag, if the fd has
+O_DIRECT, then we would temporarily set fs_info->zoned for chunk tree
+read.
 
-However in create_block_group_tree() we didn't use btrfs_pwrite(), but
-plain pwrite() call directly, which would lead to -EINVAL error due to
-memory alignment problem.
+Unforunately not all open_ctree_fd() callers have the flags set
+properly, and btrfstune is one of the missing call site.
+
+This makes all the read not properly aligned and cause read failure.
 
 [FIX]
-Just call btrfs_pwrite() instead of the plain pwrite() in
-create_block_group_tree().
+Just manually check if the target device is a zoned one, and set
+O_DIRECT accordingly.
 
 Issue: #765
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- mkfs/common.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tune/main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/mkfs/common.c b/mkfs/common.c
-index 5e56b33dda6d..3c48a6c120e7 100644
---- a/mkfs/common.c
-+++ b/mkfs/common.c
-@@ -249,8 +249,8 @@ static int create_block_group_tree(int fd, struct btrfs_mkfs_config *cfg,
- 	btrfs_set_header_nritems(buf, 1);
- 	csum_tree_block_size(buf, btrfs_csum_type_size(cfg->csum_type), 0,
- 			     cfg->csum_type);
--	ret = pwrite(fd, buf->data, cfg->nodesize,
--		     cfg->blocks[MKFS_BLOCK_GROUP_TREE]);
-+	ret = btrfs_pwrite(fd, buf->data, cfg->nodesize,
-+			   cfg->blocks[MKFS_BLOCK_GROUP_TREE], cfg->zone_size);
- 	if (ret != cfg->nodesize)
- 		return ret < 0 ? -errno : -EIO;
- 	return 0;
+diff --git a/tune/main.c b/tune/main.c
+index aa9f39d987ec..397549837c18 100644
+--- a/tune/main.c
++++ b/tune/main.c
+@@ -29,6 +29,7 @@
+ #include "kernel-shared/transaction.h"
+ #include "kernel-shared/volumes.h"
+ #include "kernel-shared/free-space-tree.h"
++#include "kernel-shared/zoned.h"
+ #include "common/utils.h"
+ #include "common/open-utils.h"
+ #include "common/device-scan.h"
+@@ -193,6 +194,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 	u64 super_flags = 0;
+ 	int quota = 0;
+ 	int fd = -1;
++	int oflags = O_RDWR;
+ 
+ 	btrfs_config_init();
+ 
+@@ -336,7 +338,9 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 		}
+ 	}
+ 
+-	fd = open(device, O_RDWR);
++	if (zoned_model(device) == ZONED_HOST_MANAGED)
++		oflags |= O_DIRECT;
++	fd = open(device, oflags);
+ 	if (fd < 0) {
+ 		error("mount check: cannot open %s: %m", device);
+ 		ret = 1;
 -- 
 2.44.0
 
