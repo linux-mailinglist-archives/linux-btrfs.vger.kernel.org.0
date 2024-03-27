@@ -1,71 +1,71 @@
-Return-Path: <linux-btrfs+bounces-3667-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3668-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FF3288EC68
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 18:19:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8932488EC72
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 18:20:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED23F29F8EF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 17:19:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAD1C1C319ED
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 17:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0BC14E2C9;
-	Wed, 27 Mar 2024 17:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 839DA149DE0;
+	Wed, 27 Mar 2024 17:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Otr2a2Gq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bePMxTCm"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="pslnqaV0";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="sU/uAxHN"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF80B14D718
-	for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 17:19:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DE559B74
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 17:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711559957; cv=none; b=RXnCVlnnb9WFYba4afVmISPXdOo4eXX7U7h1sEWpljVM0HcjBiUAFwj8u5xyGnv2ApGNgxzE5mUI4yX4XrdMKBdZnCS5bit119kHp2skj6KtRzgCeYngeVVYVVhES2WemsEsjtxZJal7wonLwQigQafpFPdrPa+qDfaasuK8KZo=
+	t=1711560031; cv=none; b=gHLJTreEIzrRyqF4OmURn0yJkLPAVkudMU5xLZxbdfGPeRgeJO3d0TDO9BEFSX5P1iRXy6qwipA2GBec+D3Eusv/W0gqHQOop+PY+BBrG4m3AvphWnjsdYH60LKuySqdZob1QpchCtDRAoe1DYYSvWi4NPyJJC2z0McB8wqLQLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711559957; c=relaxed/simple;
-	bh=GM9Kjupa4oL2XTz5E9pZCqIV6VaagDadZM59Au4GqrU=;
+	s=arc-20240116; t=1711560031; c=relaxed/simple;
+	bh=tRTuW6PuG1YAJyEl/cyO259out7tAGONUGaOVzw1s0A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qX/BuuL/h2mmwDMsyvM2MXffqHvqoV+vXmeOarTTA7p3iogv3IVegPs4XzVWerhvYPpL4IBGenG4ubKhwZxdqmgsx0Uu860cpOVcFMoXE8nyxO7WlJP3vH2n9dpmVIzg68jfQg4UBtlluLlEA8VmJ83k83UwfiJcoSUjI4X9pJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Otr2a2Gq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=bePMxTCm; arc=none smtp.client-ip=64.147.123.24
+	 Content-Type:Content-Disposition:In-Reply-To; b=GFJOXa7S34QnLCaz3ruCJYbIzBApIP/XHU6n11PtZF2DZcCvqlf2lPJDdTALmYszf9YsQf6ESgIGF0GYj/3T1zKvjrHUFDz8yLKDIzEGA0aU58QsTXnz5PTVtPB/LcDlKbcefNRpHxI73+niD3RruNyUA4wlSBvgZXwhrKsSWo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=pslnqaV0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=sU/uAxHN; arc=none smtp.client-ip=64.147.123.24
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.west.internal (Postfix) with ESMTP id B33223200258;
-	Wed, 27 Mar 2024 13:19:14 -0400 (EDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id A68F63200A32;
+	Wed, 27 Mar 2024 13:20:28 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 27 Mar 2024 13:19:15 -0400
+  by compute5.internal (MEProxy); Wed, 27 Mar 2024 13:20:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-transfer-encoding:content-type:content-type:date:date
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1711559954;
-	 x=1711646354; bh=3d6oilyd9ml9OfgiADgs0/agyOcrhaZ0Rc4NSqEUi24=; b=
-	Otr2a2GqUQpX1OpPCocpnn9jlaC6mAaP2p6SFjMg01tMxfdpAm1TEUqg6PBNhX+F
-	c0z1sC8UJPLi2PtvBan4rj7R+tW99MnO4/1Nr7xpR5U6OEfZQgRXkUQmudA2tvIF
-	7JmapNwKQKDpVOK1GRZIoh9iIqu+67r9C8MdXe9rLWxTgLFjQQQUsosw9pziGcyU
-	cxKKZbyQlTQC84/FXoB1wUm6DFLPeifSIfE5w9odDVXewroz/sQEtRQNudtnZ8kb
-	RrGHzU5cWiTETb6OhyI+p6yJ1JR2GWBiZsMRgAmUuAFYD4pvGKvL7vnSVkH4rZmI
-	mNBU2BzGlJABqyQxwVEdRQ==
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1711560028;
+	 x=1711646428; bh=I6Md6zWCY0Q6ZD59GNivQ6btYarOYktcu7ptzbmyPh8=; b=
+	pslnqaV0qTqZq+TwhqUkcawJ/Rvux+yV25i1RBFKvEEqcv/GaO5Tg5Um8US2MBtN
+	5lbVps8aScQDkDJC6spk5eFrdVIgswoubUM0Wq3XOkqTSqhBqZyFCOX/bUy/oJpC
+	7KJ3uHuhNmJN7ScFGkLGWqr98HVHINJe4YTD5h5gxh2iPuTU4XWu1lrVMoY8cqUb
+	+67vAagnRRrrBED21aLXTfD2P8wEjji1kQ9PLhN8ZLeZvGGF5KohT0WRIx01XGrq
+	qtoFNBr2CPfTccZ9gt8f+X2bNMbzIIf/+8ud8oDvns4jWneyHaOzDpW14Bzkka6X
+	VYvIuJS5jEKWqfWbVxKUAQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1711559954; x=
-	1711646354; bh=3d6oilyd9ml9OfgiADgs0/agyOcrhaZ0Rc4NSqEUi24=; b=b
-	ePMxTCm5Dh4I9KsjWSx3sRD3nCmqhlyx3hd8fXLwuyM65CavCZCDW93g/utiJV7L
-	hP2/Vn4Aki6b0bmNlRBHf5Cy7HvFOus0Rgqg/nrLVHVBzJr1pRAwaJSyqV+FKGrc
-	FVpuKbiTCzHscb2szPb2UljF9TiY+6Ou0jYi1ptMvEGigtZOqrpGktCKBows0SZx
-	ZzFBSxLu0zi4KV0Q+pSVCy2gg5nO3fIftSvKd3wjHxhwmKAYHn0OpeF6yo3RZVhc
-	2zYSuwf9G+t6Vs8hm1vxpcne1zhhYpniGAFr2rMahSU42HM9dG0trMf73EPkc3Ib
-	PSzuQZlo74gRg85PK/TvA==
-X-ME-Sender: <xms:EVUEZpP6cRrLU_l2vf-bReWt4IOx8Kk-J9Md41XcaOChr7W5JT5A5A>
-    <xme:EVUEZr_eIWvRD-RQbHDN4q5PTKkE6mCnULpMSKr2sHR3f7QP8oMLq75cce_7URqLC
-    g7K2YDvAtfWKHZ8XAw>
-X-ME-Received: <xmr:EVUEZoTJ__zE3Dk0XD43DcUCYic6ev8gT9-Zgx2zG6Y-zKmAQtgB08O6UugA9YsC1MjN0Piv5mqL8LKH_YZnzkMBoTc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedgjeegucetufdoteggodetrfdotf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1711560028; x=
+	1711646428; bh=I6Md6zWCY0Q6ZD59GNivQ6btYarOYktcu7ptzbmyPh8=; b=s
+	U/uAxHNVGxbI9Zr/prgI+D6IxptMy08wNS4/Zooz1K1OfrvI4ybs3vweT4lksh8n
+	Of4uKvf0y2SvfXbauLY2lY57tNzELEdJ++sp1oA8gxkyQ8blrg+h9oEU66WZriYq
+	OdVUs5Z+MI5FlYFsPRpDMpZnf7biIkLjfo8cTJMQGFSP7Ep+XBQHGMRVj4X+42jR
+	aIWnx0aKhr/q8ue6gM9L99+kWlsEAb//nrrCO1mjJROToDJqHfGadRh7N62ID723
+	rptlpI1lddmW+q0F/Piy5FG4b0cBwyHR2JBDV2DlDqqP02LyaoGazvYvh+1d1Ozf
+	DtIMUqeiDQwHSqX0l/QJw==
+X-ME-Sender: <xms:W1UEZg5fsSTYQvHGmVgQdx4dsyEKld51dJrZsVv5UO0FQhSJxH51uw>
+    <xme:W1UEZh4pygcguPT9aWddUuUX-KxbYruWdhQnN8mYMUmsswoDUc2igon-dhmmyuMPw
+    lZPN7oDvkZDKUJRldI>
+X-ME-Received: <xmr:W1UEZvfNDNUlO7K1kBx6uPtgR8EvQQUuvDw9cXqkpApcS4zFsEZo0LkD20pVdvhrDgGNTHKTEqeKFwH8FpIOycdXR1c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedgjeehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhr
@@ -73,23 +73,23 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedgjeegucetufdoteggod
     epudelhfdthfetuddvtefhfedtiedtteehvddtkedvledtvdevgedtuedutdeitdeinecu
     vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
     essghurhdrihho
-X-ME-Proxy: <xmx:ElUEZlvRiApCGb_cNi-nqr2QrivPrltalRXBMn880jp8cJp0YauH7g>
-    <xmx:ElUEZheqgI75vV4fFy5w4aA0BHxHtxbZP0gBGquuco0CrGQYqnXz-Q>
-    <xmx:ElUEZh2ys4WHcdOmNzEHv8ZcKxYZBZ-nxeUl5N1Fv068hMIhW363bA>
-    <xmx:ElUEZt914iperBW-3CEutwUULP3nExqsWvo9o36docetxQrJBLZ7oA>
-    <xmx:ElUEZipDWOPDLiWKDnTgHAe931RjUinr9nCHcDwVgLB58Esm47IpXw>
+X-ME-Proxy: <xmx:XFUEZlIIF46PBsjVy9zdVhJNFYRJAyezESSUR7f43UBgsMG2BT2ZbQ>
+    <xmx:XFUEZkL7IzXI61UDEQrZuijKk097TxaE7u9zwED8RtutlhxSkz5t6Q>
+    <xmx:XFUEZmzjzVEEby0oFC0fP2hBYyToxLxJJfsfErLboO0bKxL9zX5Jew>
+    <xmx:XFUEZoJuKpFrtZQtn8p1tCzYg0UWM2wTa3rV8o-R7byOaF2RrRokcA>
+    <xmx:XFUEZrVuBj7QzZME4r1FxosUdAaBZAJ4MJ81TZbYgDsSIDLn5b0Y0A>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Mar 2024 13:19:13 -0400 (EDT)
-Date: Wed, 27 Mar 2024 10:21:20 -0700
+ 27 Mar 2024 13:20:27 -0400 (EDT)
+Date: Wed, 27 Mar 2024 10:22:34 -0700
 From: Boris Burkov <boris@bur.io>
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 3/7] btrfs: record delayed inode root in transaction
-Message-ID: <20240327172120.GB2470028@zen.localdomain>
+Subject: Re: [PATCH 5/7] btrfs: free pertrans at end of cleanup_transaction
+Message-ID: <20240327172234.GC2470028@zen.localdomain>
 References: <cover.1711488980.git.boris@bur.io>
- <cadc31b0278e4e362f71f7c57ebccb0c94af693b.1711488980.git.boris@bur.io>
- <b88f00db-117e-43b6-ada6-4790c5030417@suse.com>
+ <1697680236677896913e26948a76a2dd01dad235.1711488980.git.boris@bur.io>
+ <78f3a17b-4b74-4b8e-b7c9-fa8a5eaecefe@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -99,46 +99,56 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b88f00db-117e-43b6-ada6-4790c5030417@suse.com>
+In-Reply-To: <78f3a17b-4b74-4b8e-b7c9-fa8a5eaecefe@suse.com>
 
-On Wed, Mar 27, 2024 at 08:38:53AM +1030, Qu Wenruo wrote:
+On Wed, Mar 27, 2024 at 08:46:39AM +1030, Qu Wenruo wrote:
 > 
 > 
 > 在 2024/3/27 08:09, Boris Burkov 写道:
-> > When running delayed inode updates, we do not record the inode's root in
-> > the transaction, but we do allocate PREALLOC and thus converted PERTRANS
-> > space for it. To be sure we free that PERTRANS meta rsv, we must ensure
-> > that we record the root in the transaction.
+> > Some of the operations after the free might convert more pertrans
+> > metadata. Do the freeing as late as possible to eliminate a source of
+> > leaked pertrans metadata.
 > > 
-> > Fixes: 4f5427ccce5d ("btrfs: delayed-inode: Use new qgroup meta rsv for delayed inode and item")
+> > Helps with the pass rate of generic/269 and generic/475.
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
 > 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> Well, you can also move other fs level cleanup out of the
+> btrfs_cleanup_one_transaction() call.
+> (e.g. destory_delayed_inodes()).
 > 
-> Just curious, do you have a case that hits this particular bug only?
+> For qgroup part, it looks fine to me as a precautious behavior.
 
-I tested all of these fixes just by running generic/269 and generic/475
-in a loop and driving the meta rsv failures down to 0. I *believe* all
-of them are necessary to get to fully 0.
+Since the call isn't per transaction, do you think it just makes more
+sense to call it once per cleanup not once per trans per cleanup?
+
+Or would you rather I refactored it some other way?
 
 > 
 > Thanks,
 > Qu
-> > Signed-off-by: Boris Burkov <boris@bur.io>
+> 
 > > ---
-> >   fs/btrfs/delayed-inode.c | 3 +++
-> >   1 file changed, 3 insertions(+)
+> >   fs/btrfs/disk-io.c | 3 +--
+> >   1 file changed, 1 insertion(+), 2 deletions(-)
 > > 
-> > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> > index dd6f566a383f..121ab890bd05 100644
-> > --- a/fs/btrfs/delayed-inode.c
-> > +++ b/fs/btrfs/delayed-inode.c
-> > @@ -1133,6 +1133,9 @@ __btrfs_commit_inode_delayed_items(struct btrfs_trans_handle *trans,
-> >   	if (ret)
-> >   		return ret;
-> > +	ret = btrfs_record_root_in_trans(trans, node->root);
-> > +	if (ret)
-> > +		return ret;
-> >   	ret = btrfs_update_delayed_inode(trans, node->root, path, node);
-> >   	return ret;
+> > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> > index 3df5477d48a8..4d7893cc0d4e 100644
+> > --- a/fs/btrfs/disk-io.c
+> > +++ b/fs/btrfs/disk-io.c
+> > @@ -4850,8 +4850,6 @@ void btrfs_cleanup_one_transaction(struct btrfs_transaction *cur_trans,
+> >   				     EXTENT_DIRTY);
+> >   	btrfs_destroy_pinned_extent(fs_info, &cur_trans->pinned_extents);
+> > -	btrfs_free_all_qgroup_pertrans(fs_info);
+> > -
+> >   	cur_trans->state =TRANS_STATE_COMPLETED;
+> >   	wake_up(&cur_trans->commit_wait);
 > >   }
+> > @@ -4904,6 +4902,7 @@ static int btrfs_cleanup_transaction(struct btrfs_fs_info *fs_info)
+> >   	btrfs_assert_delayed_root_empty(fs_info);
+> >   	btrfs_destroy_all_delalloc_inodes(fs_info);
+> >   	btrfs_drop_all_logs(fs_info);
+> > +	btrfs_free_all_qgroup_pertrans(fs_info);
+> >   	mutex_unlock(&fs_info->transaction_kthread_mutex);
+> >   	return 0;
 
