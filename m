@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-3678-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3679-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F18F88EF47
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 20:35:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D2BA88EF6B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 20:40:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B28711C34D68
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 19:35:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAD1AB27525
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 19:40:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 279E514E2C1;
-	Wed, 27 Mar 2024 19:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262261509A1;
+	Wed, 27 Mar 2024 19:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="kZmwkTSQ"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="EYlA/HOB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB78380
-	for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 19:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC72F13E3E4
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 19:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711568141; cv=none; b=XGCS43V2LXQiKJmhLKiEXeVBccTPjqqwCRPiwg4WXFY2SzqRyoDR9tjO4u3JKW3m4kleYJwyAS9HKtDKo7mC/Kuy6YGkp+MNd9yiALEq0Nf8I2ohS8eV/OW1Ofi1gxKeejtLW0RxTmdf4qCQ5lyPyMELuO6l300Clg/DamFHGa0=
+	t=1711568406; cv=none; b=QtQC6KSBO1BCBdEmnOFgYHKlU4xh8bsQDGcqeW30qTpXqYPy8S7vLEO+7qxz8Do58sBxLEYOcvBhNUKeZGtmhx4B+MKvnhTNOVmh/K0XWJep5iuZQtqCGpN52mHuKIf1JZ/Rgd/DXyhh/tGljael4Gg5TNUBHw6Z2lHuIvuyd+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711568141; c=relaxed/simple;
-	bh=IT/1f2w6O5reHJ/+QmmDck2ptlMt+qsNK8nj5tdMbg8=;
+	s=arc-20240116; t=1711568406; c=relaxed/simple;
+	bh=Qwo5s98+D0gdISZafRbTm1NQfEgS7OSjmGxCZlQeE0w=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MRUm0XEfuthr2E3Q7hCUu5OYBua2kgKCfvedsbmfbZxZi0ajs1zvuxCop3S4kKh9iO+LLvCn3vPheSnG7JMbMG4kxwUWbGcXmmhxGwabPBfGfgMZ3WmatRUAn6a6ApQeWh89Lq1MezP1TcE6l0+M5OhZu8MNP1Oney9Ms0svmgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=kZmwkTSQ; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=sjpKByQfs9LLeKUvO2Unh//KF/Tgbo8pxIGRbTlHOmKFGLN6kLF7S0IZzlSF0RYfBt8Y6Z2K3lgsrvNw5OlVG5nyfeSTd5RH5WgBwpvUZK+QgMG4Eq6yzZYHRDflw4t7QkshezBifVNphQh81BmUcA0p5DjrPoN7MCdmN80qwGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=EYlA/HOB; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1711568129; x=1712172929; i=quwenruo.btrfs@gmx.com;
-	bh=O2A+eFslvr4Zfnu8asjjt3c2vNHOMwk2qABBAkexrV8=;
+	s=s31663417; t=1711568382; x=1712173182; i=quwenruo.btrfs@gmx.com;
+	bh=9IzEAwVCsGgrdmKNUPrh1XH1mP5SWp1D6ZLA1ADzmSI=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=kZmwkTSQH6J6neMQjrvsFlnPSETQtUFOfi1YZNV+tI/gVNcq/I+xyF1LW0mDjsV5
-	 ZBCTx79+0NAFsdcjNm56vQhXt2zdjYY4Rj82SxdBuAXsgo7ZJmG8eBZHN+aGIIeCW
-	 vYiqjQiS7PKE0kEhu9+yv4tx+vqXwLnM9Mk1OxMeRWfA8DNG8jo/CbfpDXl1Axjg8
-	 7C00fIwQTlNwgAHXXYXIDlAVPM4vv8AIYzFxSFaBbGq1H5ykbHuIFXv2BxI7txHvZ
-	 YyZAWZMeY9EDVVuuPqyydKdDONj2bqJBZwhh3sWGq7jmk+e4/Z9yLhUon9vX5eLBR
-	 /nTiPzEu61zVhdNkBg==
+	b=EYlA/HOBFkFpz2EhoqoJZW4nW7wLnHfHHYmf8iX6Liyrmecq0QId+eAWhyFF0jHH
+	 71Ry2eQlHlF+L13G0MkePcl8Nau/E5quShvs9EykNCmfGRx8AKCdFrnkKng4yH2jv
+	 DtBsHFpRyVflo6FArVB6K/KHASTRAb1RhiIxQ0lIJc34mI3X0AaCp1QuMEoAv1Pjt
+	 PELawjZBdCOGlGarvdD7d7WGJuC94nCGo48JMTEF0AxCxc/jd2iG/kbI1cNGSmu0W
+	 Kj5vOW2NEdMg2gzpiNrayiD6lqtTEnic2HpQbY70wwvy6gZF7zIwF6ZdURWzeA9ip
+	 OqAZWWMl3OXQqPVJFQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3siA-1spCCW2urw-00zoB0; Wed, 27
- Mar 2024 20:35:29 +0100
-Message-ID: <700d7bf5-2ffa-4ff6-9ca1-2497bb700d56@gmx.com>
-Date: Thu, 28 Mar 2024 06:05:24 +1030
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8ofE-1st1dD2rTi-015s9Q; Wed, 27
+ Mar 2024 20:39:42 +0100
+Message-ID: <8cd1d0e0-adcb-4f15-b0e7-b0e3b9b98ee7@gmx.com>
+Date: Thu, 28 Mar 2024 06:09:38 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,13 +55,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] btrfs: correctly model root qgroup rsv in convert
+Subject: Re: [PATCH 6/7] btrfs: btrfs_clear_delalloc_extent frees rsv
 To: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
 References: <cover.1711488980.git.boris@bur.io>
- <71f49d2923b8bff3a06006abfcb298b10e7a0683.1711488980.git.boris@bur.io>
- <245057c8-e7fb-4ad0-9e88-d21ae31cf375@suse.com>
- <20240327172031.GA2470028@zen.localdomain>
+ <ce7db2df5f2f7617ac37f7c715a69e476acc7f1d.1711488980.git.boris@bur.io>
+ <586364af-9082-4b9f-b1fe-3ed75797d87d@suse.com>
+ <20240327172640.GD2470028@zen.localdomain>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,100 +88,108 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240327172031.GA2470028@zen.localdomain>
+In-Reply-To: <20240327172640.GD2470028@zen.localdomain>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9SybuEdRYX/Vrgw43QSGYfJtHKa/0CFL8UvwFOpw7DJCAu+NjNR
- I6+eJyCEoXRSN18XV14rgBGS/8dosNj2+SzytQe899ulX1alGUtQo/uDQpzvnYSbj+iKgkL
- rrP7cyyF1nNXWKykf7k9X1F+qEt0DAJshBbn3GVoi/4JEvy8otkNKLGAhWPrICkCwPOTpTi
- JWRGBIL+BbeenEtK9tEOg==
+X-Provags-ID: V03:K1:0rCvpX2iaFVMno+SgKXQWhVhvSdqUZq/F+8IU2q2loWwSdk+1aK
+ ie3FaU6wUGFU53Eh3E9hMG6Ff6dT39S48/gaJuTr4t613cWsmFmZTmpjVW04qy4dbfdOb8w
+ DaS/pMG5GmY0H5NTRpopisfNbDwPliRH42+EIeaxTV1GAHgLlpKs1BQdfuRV97gTv+1Ctca
+ MrTAwIzFQ6N28Zo0ftIMQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:oKweKNiaEnk=;qBFyBVgW6XNuzsvDRTUsv5p41nj
- 1ww57v9Eb/iAjYzfZIgAsr4HjE3WVpoLH0oGxR+MDN/rKN+V/U4PHmjA0+ySZZ4fFf46lOUny
- kA7SB8GexFB1gHF0u00thBzIB7HusrplNdC6aol2QkbEyXRcbk+FCs03fpZtprk/a3QvncT8y
- GpRGgg9lo5ySjbbBCGRRU+7jMIga8TwK6o8Ia+ihPkjWjWA4/3db7AhhykymgLRUKZ7C1Ux+a
- QTzHsIl9D8eUMB/SpWwayrFSHIXFRwpJRUYcBNvPD9XxNGsSO2g+hNbwM1IvxE9SfS+wpbeev
- 9gRsZ1G3Yw1FtFUMJqsm0m56QPNFiS78ulmPL6B5RpWFBK/a1wpW5Ou1M6ofydyaX3I9Ucm3/
- P+F5rIMooOdd3oD39tgMlQ+MrDV8G1uijPvn/iY2ltJxaStRIL130iFDrMDELgl15mpSowV0C
- eF/NzyGSpDFBqlM7wlUnOvjla4A1MImdqur4HhIQ3CR3DUSVCnhqsHtksJvJGqLBRmuFBaOee
- 9GVsIPwX9EhCn2S9e5SlreLWWBsDo1hh+CMc5V8gGuiYPovvoGckJjkW+RIO8+LtY3W9Lb45L
- KyQAKE+CUX8EVV7zZgsVXTFGgwwRJTb7LIEMY/yUfg3xUMQ9THzOSPgCm1rxYquQsqT37sLfI
- 8EaApIo4nF2nV8hPlcKWuIw/VP43R79ZVESIS097EGpQ+ukRc/Zej+t6EAYaPs84bvhoyLYNZ
- Kswdz/f12Sk0LrslCvw7Op1YDSLdiHjxB2e89BiV+q4vb1Vh6ggCwk4QIRpaZFDgmh2uhYwn7
- CB3u2u4WuS0yxhna6Tk1/zkDDpjlc19y9WzJzhWHg9k2k=
+UI-OutboundReport: notjunk:1;M01:P0:dbOQifent/o=;9eiHLwGUGO4/penvIMCsbb8vKwE
+ HuFXDtjdKHWPjXQhh8wYtVYo736JjR5mrF4N8j2Gn9whDudcjz6JwOBEmg44xh9IlIJDslcys
+ JO7UkjFA1msPJlbRtxLsMZt6cVGNBcLNU5hpfW+4+6C558d02HMJuIwBFPgiNy41JoFMHNhz/
+ 7GVpe4BjuxJGNXcCGfbFoEzbiZdyD1FMv0ILfTUOvgZxdKUgXeqUi6xaQUQeNOl4c/3LkLqIP
+ EAhjgkKj4P56u1ob9aRQSVe3D+ybs36FgBKT0duQOQNWGjCdhJKbwEKZCfWd6qASoHQVvZ0yB
+ Lwhun2SVNaj/9Rmy3WzUfrSbG7Gg+hwbEVL6/YXtIasNc38u/L4ArvrddkqNPH1oVu4NjRwDh
+ G8R28YEpmGLrsMJWRWgdeAdBCi6pYw5FIvbaLvtc1nzRGd2imifyIl4DUlQWVfbX6vwJk7ewn
+ ltOKm4Ir/gVEvJUOejNH9oadSn7rHxZiSRT/t9mAEynXEoxptn8cNq/EXAnXJuE+Pjf5U/Ini
+ SidMgT98kruJ+SBEgrfM5tp7GxM2SnoKIKGxLdXLJuKhpalqW2cU29pglHziB/nXOyXDhXeBd
+ zyZuM87Q+brtrJsKuIaiOLCj+WtHWcXgv/PyCqi5xAi131n5U1By9Sh9MtdJN4WtIlVx2Ebna
+ d1X6NluGW9UgILZyAPJKeEkpYwGOjPhEdbszk18JrSoaAcmk6vji8HX0l+0XIYQJgdnSAj2bH
+ FTcBSlYUvUuJbVOD6TDDHzECRXH+TrBc6k9Q6iVDbOVdPp7NMJjoD1mWBAwOW09geooMXe0w4
+ kb4J6h0gDPaMcm/s9k8byMrQf8yly8nX3rrqDWQ6c8bNg=
 
 
 
-=E5=9C=A8 2024/3/28 03:50, Boris Burkov =E5=86=99=E9=81=93:
-> On Wed, Mar 27, 2024 at 08:30:47AM +1030, Qu Wenruo wrote:
+=E5=9C=A8 2024/3/28 03:56, Boris Burkov =E5=86=99=E9=81=93:
+> On Wed, Mar 27, 2024 at 08:56:20AM +1030, Qu Wenruo wrote:
 >>
 >>
 >> =E5=9C=A8 2024/3/27 08:09, Boris Burkov =E5=86=99=E9=81=93:
->>> We use add_root_meta_rsv and sub_root_meta_rsv to track prealloc and
->>> pertrans reservations for subvols when quotas are enabled. The convert
->>> function does not properly increment pertrans after decrementing
->>> prealloc, so the count is not accurate.
+>>> Currently, this callsite only converts the reservation. We are marking
+>>> it not delalloc, so I don't think it makes sense to keep the rsv aroun=
+d.
+>>> This is a path where we are not sure to join a transaction, so it lead=
+s
+>>> to incorrect free-ing during umount.
 >>>
->>> Note: we check that the fs is not read-only to mirror the logic in
->>> qgroup_convert_meta, which checks that before adding to the pertrans r=
-sv.
->>>
->>> Fixes: 8287475a2055 ("btrfs: qgroup: Use root::qgroup_meta_rsv_* to re=
-cord qgroup meta reserved space")
->>> Signed-off-by: Boris Burkov <boris@bur.io>
->>> ---
->>>    fs/btrfs/qgroup.c | 2 ++
->>>    1 file changed, 2 insertions(+)
->>>
->>> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
->>> index a8197e25192c..2cba6451d164 100644
->>> --- a/fs/btrfs/qgroup.c
->>> +++ b/fs/btrfs/qgroup.c
->>> @@ -4492,6 +4492,8 @@ void btrfs_qgroup_convert_reserved_meta(struct b=
-trfs_root *root, int num_bytes)
->>>    				      BTRFS_QGROUP_RSV_META_PREALLOC);
->>>    	trace_qgroup_meta_convert(root, num_bytes);
->>>    	qgroup_convert_meta(fs_info, root->root_key.objectid, num_bytes);
->>> +	if (!sb_rdonly(fs_info->sb))
->>> +		add_root_meta_rsv(root, num_bytes, BTRFS_QGROUP_RSV_META_PERTRANS);
+>>> Helps with the pass rate of generic/269 and generic/475
 >>
->> Don't we already call qgroup_rsv_add() inside qgroup_convert_meta()?
->> This sounds like a double add here.
+>> I guess the problem of all these ENOSPC/hutdown test cases is their
+>> reproducibility.
 >
-> qgroup_rsv_add doesn't call add_root_meta_rsv. AFAICT, this is the
-> separate accounting in root->qgroup_meta_rsv_pertrans to fixup underflow
-> errors as we free.
+> Yeah, it is definitely annoying to have to run generic/269 and
+> generic/475 hundreds of times to hit various different flavors of bugs
+> and try to drive it to 0. :/ It's hard to be sure that you are actually
+> successful and which fixes are definitely 100% necessary.
 
-My bad, it's true that we have extra per-root accounting that's not the
-same as qgroup rsv.
+I'm wondering if it's possible to add fsstress workload to inject errors
+(to specified injection points).
 
+IIRC we have error injection points for ENOSPC and ENOMEM, and fsstress
+is so far the most reliable reproducer.
+
+I hope that can greatly improve our reproducibility on the error paths.
 
 >
 >>
->> And if you have any example to show the problem in a more detailed way,=
- it
->> would be great help.
+>> Unlike regular fsstress which can be very reproducible with its seed, i=
+t's
+>> pretty hard to reproduce a situation where you hit a certain qgroup lea=
+k.
+>>
+>> Maybe the qgroup rsv leak detection is a little too strict for aborted
+>> transactions?
 >
-> I don't have a reproducer for this, it was just something I noticed. I'm
-> fine to drop this patch if you don't think it's worth the churn (and
-> certainly if I'm just a dummy and didn't see where we already call it)
+> I agree for aborted transactions. It feels like a cheat just to beat the
+> warning. There are many failure paths that don't end in an aborted
+> transaction that we probably do actually care about, though.
 
-In that case, I think you're correct and the patch looks good to me.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Indeed, despite the aborted transactions, we still have a lot of ENOMEM
+(less common though) and ENOSPC (much more common).
 
 Thanks,
 Qu
-
 >
-> In fact, this counter only exists to avoid underflow, but PERTRANS is
-> cleared by exact amount, and not via btrfs_qgroup_free_meta_pertrans, so
-> it might just be moot to track it at all in this way.
+>>
+>> Anyway, the patch itself looks fine.
 >
+> Thanks for all the review on this series, btw!
+>
+>>
+>> Reviewed-by: Qu Wenruo <wqu@suse.com>
 >>
 >> Thanks,
 >> Qu
->>>    }
->>>    /*
+>>>
+>>> Signed-off-by: Boris Burkov <boris@bur.io>
+>>> ---
+>>>    fs/btrfs/inode.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>>> index 2587a2e25e44..273adbb6b812 100644
+>>> --- a/fs/btrfs/inode.c
+>>> +++ b/fs/btrfs/inode.c
+>>> @@ -2533,7 +2533,7 @@ void btrfs_clear_delalloc_extent(struct btrfs_in=
+ode *inode,
+>>>    		 */
+>>>    		if (bits & EXTENT_CLEAR_META_RESV &&
+>>>    		    root !=3D fs_info->tree_root)
+>>> -			btrfs_delalloc_release_metadata(inode, len, false);
+>>> +			btrfs_delalloc_release_metadata(inode, len, true);
+>>>    		/* For sanity tests. */
+>>>    		if (btrfs_is_testing(fs_info))
 >
 
