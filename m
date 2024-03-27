@@ -1,45 +1,45 @@
-Return-Path: <linux-btrfs+bounces-3649-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3650-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83EDB88DD40
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 13:07:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE2CD88DE7E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 13:16:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D8592960AA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 12:07:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B9851F2B8DC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 12:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C2F112D76F;
-	Wed, 27 Mar 2024 12:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC33212F58B;
+	Wed, 27 Mar 2024 12:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ehs0SS4W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TL+goa6L"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C04D12D74B;
-	Wed, 27 Mar 2024 12:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB951386C8;
+	Wed, 27 Mar 2024 12:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711541202; cv=none; b=rf7IU6bQM0Yz/GL96UnL5XPqnqRMh4sDnanFIC2yitrNEM8bZuXRhqH8mWu/AbS44MsXFX2DKdRAuZ/trB1HC5kgdrLc+TuOeacNOm+VeIFEhGegF/gl6XOCngrfTCoCh6vqv+Pr5YFkHDTzpuAVNioLXJslaHvGSXDjr8436g0=
+	t=1711541314; cv=none; b=jk9WikkQHxtcfhphnQGJpZO38c/lOsBY1CQ6c5dUBJH/UmwTYTd0gdV9qGFGzkdqge2tSLx8+lqjYpC1QZeILhtdyqP9zMeCoKj0nZGjE4P0vmOn2Y7wCzm4eU+nn13y0eYZ52+j02t3oTcNQQzvVIxPOc+b2vEgvxXpjpZ4bJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711541202; c=relaxed/simple;
-	bh=0OQ336bep++kKIQyJEzYmRY4+v8R19DmwIPkk0OSlWM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ULhCZO3mko1X3ibBW5mjFRr1mKaU5m6rXQfsF+sfGrb0HV3zu8NQyqK9YXBzH4I6ECYeLmcB0Vl9NNesBgSZcTO0HP66utmD31Eit/l4+72mgRhcpfyBzObR98xOZDLvsfXrq8FDo0PKLGEkW1QYEimBXMgNqRe1exFaU/kaG/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ehs0SS4W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D840C433C7;
-	Wed, 27 Mar 2024 12:06:41 +0000 (UTC)
+	s=arc-20240116; t=1711541314; c=relaxed/simple;
+	bh=Zr46nRlYjoUsEVPBenqevJUPJNe1JhAQWxh0vKrZIDM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o/OE6oG9DjH44n/u/xKp3cr3xhcnfWh/PIodQPRUnauYeN1N8KDYL3Dwq+pt0zBiIBaM3qnul5fNBfneX1veMhhUK7bcO0BbHld1p6r1aChfAn2X/MK5P/niE+OxKiKJqozgHr/SIJyipDTD9Yjp3TcKToeidQfU/Et2rGwkQc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TL+goa6L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9EDEC433A6;
+	Wed, 27 Mar 2024 12:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711541202;
-	bh=0OQ336bep++kKIQyJEzYmRY4+v8R19DmwIPkk0OSlWM=;
+	s=k20201202; t=1711541313;
+	bh=Zr46nRlYjoUsEVPBenqevJUPJNe1JhAQWxh0vKrZIDM=;
 	h=From:To:Cc:Subject:Date:From;
-	b=Ehs0SS4WJVsNiav/efY2vPwPpCygEZHBOYHh9j0lgntf0/5WVw7gaKwSAI8Jjp44b
-	 pZGaDvogUHa5uIiBct+RNq126XRl6TVzQkNg6PYlLk+DpfvHMXtzR4cemepm0N4S46
-	 QQaz/s68bJ2Rpqx9n/iSznxZCITt76CeV700wwZdiOn8WmV9wJiz6KyQ/XEaMi8M1M
-	 O8Az2ywnMVoOhngsKflcK6CwasKojtJNwCYsLxNJf1syWCquZdLSmL1IEkNBa5bZF/
-	 VnnsfHkPLweE3Q5Xj1ssnikML6F/p5EPejjMGq2TSrVZ4xP1+osEVyS44TNjQmpLGv
-	 vZZQRmAyDCCDQ==
+	b=TL+goa6Lkr4ij6SsEBWqosdnbFQBus/U4zZvWCUNSnfyb6/6L0UBPsBUBXfQBC7lW
+	 /9ESGmW+3mGKqnAuNoAfSUbMaijtVOe5232vjsgeaJxDBv2rFKCtf7IQqYl/sPsMd9
+	 9pTy7quxIcTbaITYYyUmVPKM/VAe9SYygvlXllik2LkuFh6D9yDuYiNc3JtD19LxBA
+	 5sul+3a9Yq2h9iWBXgkU5U3DvKo5UxJvELe5BU2A0XZtgRpVe+b9TvnPHpjpGrNI5h
+	 uIusAE3wTKAbNIq7FDYb1vPFzm/Y14bQygz1KIkEmVZBQzI7YoMmm2BayVF3eJSbzx
+	 8rJkWF4LV5FGA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
 	anand.jain@oracle.com
@@ -48,9 +48,9 @@ Cc: Alex Romosan <aromosan@gmail.com>,
 	David Sterba <dsterba@suse.com>,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "btrfs: do not skip re-registration for the mounted device" failed to apply to 6.8-stable tree
-Date: Wed, 27 Mar 2024 08:06:40 -0400
-Message-ID: <20240327120640.2824671-1-sashal@kernel.org>
+Subject: FAILED: Patch "btrfs: do not skip re-registration for the mounted device" failed to apply to 6.7-stable tree
+Date: Wed, 27 Mar 2024 08:08:31 -0400
+Message-ID: <20240327120831.2826276-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -62,7 +62,7 @@ X-Patchwork-Hint: ignore
 X-stable: review
 Content-Transfer-Encoding: 8bit
 
-The patch below does not apply to the 6.8-stable tree.
+The patch below does not apply to the 6.7-stable tree.
 If someone wants it applied there, or to any other stable or longterm
 tree, then please email the backport, including the original git commit
 id to <stable@vger.kernel.org>.
