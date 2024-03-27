@@ -1,179 +1,271 @@
-Return-Path: <linux-btrfs+bounces-3680-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3681-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE5F588EF89
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 20:51:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC7BA88F01D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 21:30:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 243381F3291D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 19:51:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44C05B2663D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 20:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F0A15216E;
-	Wed, 27 Mar 2024 19:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E849D152E1C;
+	Wed, 27 Mar 2024 20:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UA6SJtJ8"
+	dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b="doTJat+a"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mta-p6.oit.umn.edu (mta-p6.oit.umn.edu [134.84.196.206])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B692528366
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 20:30:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.84.196.206
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711571435; cv=none; b=hZRtfXgEPYdM045UjmkvJRMQzFxxo6Z/Yd3Y3zvuyH9xvI6kmfV9ERAX5thQPnPkqxZuHCuDa67Pjzf42l5bX1mE2p6eVDRsdvnDJ0fUYRXj1u0V1Xn55s7uA5enRGbP+8AH2RapOzyOJkVlLZNCvit8Y2NWtkcO3PX0QVkNR9c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711571435; c=relaxed/simple;
+	bh=W4DaU4ojL2zd2ZVVHnc5/jG2wKt48mgyh7ShENLXD9Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pDM2whSiB97laxkOBojaWQ6dUxeifXHMZGxlIIOfDPat0NIenZzs5pbE+1P451Cc+Wm6VX8arUkfChg+9bS3Vq4/R6Ur+eTRSsvTS2iaS8bhKSM8CGsrF1Eb4Mjyd8HYoP22p5r2e2TLcAxSDjmiGwe1+lGWb8MWZKmdXJDuF/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu; spf=pass smtp.mailfrom=d.umn.edu; dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b=doTJat+a; arc=none smtp.client-ip=134.84.196.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=d.umn.edu
+Received: from localhost (unknown [127.0.0.1])
+	by mta-p6.oit.umn.edu (Postfix) with ESMTP id 4V4dPT3FJWz9xgkh
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 20:22:05 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p6.oit.umn.edu ([127.0.0.1])
+	by localhost (mta-p6.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id lwOumEa4nlsU for <linux-btrfs@vger.kernel.org>;
+	Wed, 27 Mar 2024 15:22:05 -0500 (CDT)
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839951E52C
-	for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 19:51:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711569076; cv=none; b=o8qeIq8CbESRWKhfAx0djqdj7PvNd0cD3y6yLoHQ1zab82hoEVi9+JEPqQItk/6Xrg72fGpsasjGbHgEuqobT84JRyWEs3pObYSsJckozY3ZNAHMq30pWH6VWP1gETP9yXaFrk+2SmcQ0c5G4ko3tUOg++RPCV0uPK1a4R6jADs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711569076; c=relaxed/simple;
-	bh=JO1PuXqWqX4yUuXIME1M1zgrbMSYqBLM+QqUbDfjUag=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MEWvEvqfKkn37nhBU3s0jz8+nvfYONIGfuOPk54jUMb7rjEP/chsNOxyvaQ/H6TPKBFqPckat05/XhbJdqeCF2FCFg4yQR1Z/BgBnluDtzPNxG36ON9GPKGb9S2NJpQZ0DVv6trQ/PF07325JPmOUBAGlfKL1RrteggFy4VBuQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UA6SJtJ8; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4148c6132b4so7861555e9.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 12:51:12 -0700 (PDT)
+	by mta-p6.oit.umn.edu (Postfix) with ESMTPS id 4V4dPT0kVPz9xgks
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 15:22:05 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p6.oit.umn.edu 4V4dPT0kVPz9xgks
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p6.oit.umn.edu 4V4dPT0kVPz9xgks
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5d8df7c5500so128402a12.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 13:22:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1711569071; x=1712173871; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=8qCE9KtIXnSJg0e8fWKVE6zAwwbsf5RobrnWawLyVqk=;
-        b=UA6SJtJ84vm9zR1LRyIsf8sXvuZlsFDo2MsvK53u32nciY7FW2ME4BsJGuG0SCroO4
-         pdFX7PV2Tume1bBtchdO2FS29Qh6c9QYweBVlAXyLPfMq69PlChxqIzuKr/Bd7JQ4Hci
-         s964dyWPiKDORoa5LHWhgx+tnbzirtdlYMJ/vnqX2OTC+G2spYFugdcf0ab6H+YDszdZ
-         rA9hMkpdkS38CHDQ0/qTYtHpzYhsC1K1xntDbmvBuTo0WFyn9dPlrVaJ7RTozXgRSqBt
-         VRCo85lTVcXsL3/vf3ser1e6P7zHz3O1DszE01536xKwfuhUIEORNaMwYh5iVWwktYdU
-         ERug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711569071; x=1712173871;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=d.umn.edu; s=google; t=1711570924; x=1712175724; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8qCE9KtIXnSJg0e8fWKVE6zAwwbsf5RobrnWawLyVqk=;
-        b=h6HbnbxrNAQAEIf8XfavdR5JiBJn3SLv1y4eWRlnBBBEq119uxeSzKh+yPfIYjj2zg
-         yxoSDYaCIGJc7zccWgEH9GKwRBaX4VTGT9AmRI95xagFDqCk04zU316/HjagCv+3hbsJ
-         MOu9ekluU+AJ9+F0jI0ftkoKKdONUcVLHEgTFZUk4i4wvJRb1SyAZPEGWxyRXjs1TyNy
-         XFTu2hr7XAS6yh42FqnwcmLc0bAGsMZTedlLuUU4HlfVfs22XTuXTLr24I6YxsIo08Is
-         xbdUUjmoi/nZfjFBXxNp35sQEnOIQgMGjjpYOvZA9FBit+BDG6sMN/Vx/M5mWyGw+/2o
-         Hgrw==
-X-Gm-Message-State: AOJu0YwcIQLTFpj1XpAhnxFXEG3EfPeDz57JDYuhlEXYnzRyeEMq/NL/
-	raIV4Tn65ChiisgRaLzBv3uvCK1S6yLBmk1exEb5Wm9egU03IDp80Vh5Xq/YkpY=
-X-Google-Smtp-Source: AGHT+IGhv2Nha/tvFn6yfe+WF6g7ulbH8/0UaegE/HMUw7Pe6ZNKCcPAknYgHBaln0BwlnT9y5aeyA==
-X-Received: by 2002:a5d:4ccc:0:b0:33e:c0fc:5e4b with SMTP id c12-20020a5d4ccc000000b0033ec0fc5e4bmr232977wrt.2.1711569070750;
-        Wed, 27 Mar 2024 12:51:10 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id f21-20020a170902e99500b001dd55986b75sm9373299plb.183.2024.03.27.12.51.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Mar 2024 12:51:10 -0700 (PDT)
-Message-ID: <fe0c22e7-f886-46ab-8225-596f4182bd37@suse.com>
-Date: Thu, 28 Mar 2024 06:21:05 +1030
+        bh=YhuRO176jZi7M0wkcIU4DQVyPWuTw+7fIPLajSVwdeM=;
+        b=doTJat+aIcey98yuD8BI0GvkXbZsQA5kf1PjszSGs4eddlqpbyWLiuk2mFec9l1AuN
+         UbfpMYwHIB6FLR8W66pz6GtaxXjBBO60FuI5D44yXA6rjLWpAYkTN52JhaUh8Y4rxbbu
+         aEXaJNjv/dQ9cZmB1yyFYP6w9ugsKNxfzHVSqEF6PxPueold6Kvcuiv4EC9R6xOjiBB+
+         vIBMQF+zGm3xs+rUkHRa5ZHOwJHuppppLIq3Yntqc4dMbA9Wj5MjDma3vdIG56FXTk8O
+         qagJKp4z3EILWmQ7DfW2NuxAUB1nz3JPBT4BruSkcqq1fwOLQrXXzAamoP80TOpMIpC5
+         xVfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711570924; x=1712175724;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YhuRO176jZi7M0wkcIU4DQVyPWuTw+7fIPLajSVwdeM=;
+        b=VscH5hcXzlxu3x5p9c9kzRGe81WEDZk5Zz0UBF4FLBonBauXaiaZLYnscvPu65x1KU
+         ddu5/gQt7OsEylwqu9GMd1J2QfnjYRQTNiX/gZCFwZIebUxPzAQWoSIp7qIUnC+00zk5
+         dkjFzb/I7eBSdzF3iOxzyqdrLoiZKRmz+p8aT8dw6f9i4k/RDIBjGY7W1s4weDgJqjPe
+         tAXB4HyxE4nagawSKLfqlNjvIJzdfmmZMIigncBbVZ2v9i79RewBmOAoBNm9eqgZbPRw
+         Zb2Mtvmv+Mod7DkS5gUNjCzLvSBDv3wqXqBZKpd8OSBfXC5Phe6SrtsO1fo6OaDMuChS
+         Nq0w==
+X-Gm-Message-State: AOJu0Yw0FGQe1vB3MdSKhDSWfTd5nnOtKLn3kSBsJnbeEF1AE3tHXhe0
+	H5NXmgHnEuhL5df3ONIGQkRYOEFEtDuQfg4Gek5aA8wBh0Ta4u/JNtRgRDMhH0AfwOyKCK8JiIL
+	8y20YcxsQKq0K1Guxd08SYTyDeYh2vcUnb+MVPd0cS4hA5/qSckHTfO1W35wcv+aat/MBi6mkkk
+	wZZD8Q/k5d/XjvM7WS4gXQbuUPtwv55+kAfX43Rh4B7CnuCSSn
+X-Received: by 2002:a17:90a:d70b:b0:2a1:ff27:3fa3 with SMTP id y11-20020a17090ad70b00b002a1ff273fa3mr296076pju.28.1711570923985;
+        Wed, 27 Mar 2024 13:22:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHqHw7oSKlmwwgoWzmnbcXxghC0YeEA1nVTw6fyOm0mhEQYfLA2BZv22+BeWes0/NcecOyM30SuDdDTzKtSPQk=
+X-Received: by 2002:a17:90a:d70b:b0:2a1:ff27:3fa3 with SMTP id
+ y11-20020a17090ad70b00b002a1ff273fa3mr296061pju.28.1711570923627; Wed, 27 Mar
+ 2024 13:22:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/7] btrfs: free pertrans at end of cleanup_transaction
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1711488980.git.boris@bur.io>
- <1697680236677896913e26948a76a2dd01dad235.1711488980.git.boris@bur.io>
- <78f3a17b-4b74-4b8e-b7c9-fa8a5eaecefe@suse.com>
- <20240327172234.GC2470028@zen.localdomain>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <20240327172234.GC2470028@zen.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <CAOLfK3UccL8z7Xf_KSp=foS6hM8Byf5n_21uwO96=9ND=-j84A@mail.gmail.com>
+ <CA+H1V9x-pFAM-YQ1ncAqZE4e7j6R2xQXX6Ah9v1tMNf8CrW+yw@mail.gmail.com>
+ <CAOLfK3We92ZBrvyvSDky9jrQwJNONeOE9qoaewbFCr02H8PuTw@mail.gmail.com>
+ <CA+H1V9xjufQpsZHeMNmKNrV0BfuUsJ5G=x_-BEcRw7eNFhYPAw@mail.gmail.com>
+ <CAOLfK3UEOMN-O9-u6j22CJ0jpRZUwB7R_x-zEH6-FXdgmqB7Lg@mail.gmail.com> <1eac6d15-4ead-46bc-9b60-02f1d120c885@tnonline.net>
+In-Reply-To: <1eac6d15-4ead-46bc-9b60-02f1d120c885@tnonline.net>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Date: Wed, 27 Mar 2024 15:21:51 -0500
+Message-ID: <CAOLfK3UuMNn1Q2t-seqcOXu4xVbWQU4rOSVkY2qn4RsyOcBCAA@mail.gmail.com>
+Subject: Re: raid1 root device with efi
+To: Forza <forza@tnonline.net>
+Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
+	Matthew Warren <matthewwarren101010@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Forza and others,
+
+On Sun, Mar 10, 2024 at 1:20=E2=80=AFPM Forza <forza@tnonline.net> wrote:
+>
+>
+>
+> On 2024-03-08 22:58, Matt Zagrabelny wrote:
+> > On Fri, Mar 8, 2024 at 3:54=E2=80=AFPM Matthew Warren
+> > <matthewwarren101010@gmail.com> wrote:
+> >>
+> >> On Fri, Mar 8, 2024 at 4:48=E2=80=AFPM Matt Zagrabelny <mzagrabe@d.umn=
+.edu> wrote:
+> >>>
+> >>> Hi Qu and Matthew,
+> >>>
+> >>> On Fri, Mar 8, 2024 at 3:46=E2=80=AFPM Matthew Warren
+> >>> <matthewwarren101010@gmail.com> wrote:
+> >>>>
+> >>>> On Fri, Mar 8, 2024 at 3:46=E2=80=AFPM Matt Zagrabelny <mzagrabe@d.u=
+mn.edu> wrote:
+> >>>>>
+> >>>>> Greetings,
+> >>>>>
+> >>>>> I've read some conflicting info online about the best way to have a
+> >>>>> raid1 btrfs root device.
+> >>>>>
+> >>>>> I've got two disks, with identical partitioning and I tried the
+> >>>>> following scenario (call it scenario 1):
+> >>>>>
+> >>>>> partition 1: EFI
+> >>>>> partition 2: btrfs RAID1 (/)
+> >>>>>
+> >>>>> There are some docs that claim that the above is possible...
+> >>>>
+> >>>> This is definitely possible. I use it on both my server and desktop =
+with GRUB.
+> >>>
+> >>> Are there any docs you follow for this setup?
+> >>>
+> >>> Thanks for the info!
+> >>>
+> >>> -m
+> >>
+> >> The main important thing is that mdadm has several metadata versions.
+> >> Versions 0.9 and 1.0 store the metadata at the end of the partition
+> >> which allows UEFI to think the filesystem is EFI rather than mdadm
+> >> raid.
+> >> https://raid.wiki.kernel.org/index.php/RAID_superblock_formats#Sub-ver=
+sions_of_the_version-1_superblock
+> >>
+> >> I followed the arch wiki for setting it up, so here's what I followed.
+> >> https://wiki.archlinux.org/title/EFI_system_partition#ESP_on_software_=
+RAID1
+> >
+> > Thanks for the hints. Hopefully there aren't any more unexpected issues=
+.
+> >
+> > Cheers!
+> >
+> > -m
+> >
+>
+> An alternative to mdadm is to simply have separate ESP partitions on
+> each device. You can manually copy the contents between the two if you
+> were to update the EFI bootloader. This way you can keep the 'other' ESP
+> as backup during GRUB/EFI updates.
+>
+> This solution is what I use on one of my servers. GRUB2 supports Btrfs
+> RAID1 so you do not need to have the kernel and initramfs on the ESP,
+> though that works very well too.
+
+Are folks using the "degraded" option in /etc/fstab or the grub mount
+options for the btrfs mount?
+
+I've read online [0] that the degraded option can cause issues due to
+timeouts being exceeded.
+
+Also, I'm seeing some confusing results of looking at the UUID of my disks:
+
+root@achilles:~# blkid | grep /dev/sd
+/dev/sdb2: UUID=3D"9a46a8ad-de37-48c0-ad96-2c54df42dd5a"
+UUID_SUB=3D"7737fc5f-036d-4126-9d7c-f1726d550444" BLOCK_SIZE=3D"4096"
+TYPE=3D"btrfs" PARTUUID=3D"3a22621c-a4e1-8641-aa0f-990a824fabf4"
+/dev/sdb1: UUID=3D"BD42-AEB1" BLOCK_SIZE=3D"512" TYPE=3D"vfat"
+PARTUUID=3D"43e432b1-6c68-4b5c-9c30-793fcc10a700"
+/dev/sda2: UUID=3D"9a46a8ad-de37-48c0-ad96-2c54df42dd5a"
+UUID_SUB=3D"9436f570-6d15-4c74-aff8-5bd85995d92d" BLOCK_SIZE=3D"4096"
+TYPE=3D"btrfs" PARTUUID=3D"e3b4b268-99e8-4043-a879-acfc8318232b"
+/dev/sda1: UUID=3D"BD42-AEB1" BLOCK_SIZE=3D"512" TYPE=3D"vfat"
+PARTUUID=3D"02568ee9-db21-4d03-a898-3d1a106ecbec"
+
+...why does /dev/sdb2 show up in the following /dev/disk/by-uuid, but
+not /dev/sda2:
+
+root@achilles:~# ls -alh /dev/disk/by-uuid/
+total 0
+drwxr-xr-x 2 root root  80 Mar 25 21:16 .
+drwxr-xr-x 7 root root 140 Mar 25 21:16 ..
+lrwxrwxrwx 1 root root  10 Mar 25 21:16
+9a46a8ad-de37-48c0-ad96-2c54df42dd5a -> ../../sdb2
+lrwxrwxrwx 1 root root  10 Mar 25 21:16 BD42-AEB1 -> ../../sda1
+
+What do folks think about the following fstab?
+
+root@achilles:~# cat /etc/fstab
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID=3D as a more robust way to name device=
+s
+# that works even if disks are added and removed. See fstab(5).
+#
+# systemd generates mount units based on this file, see systemd.mount(5).
+# Please run 'systemctl daemon-reload' after making changes here.
+#
+# <file system>                           <mount point>   <type>
+<options>                      <dump>  <pass>
+# / was on /dev/sda2 during installation
+UUID=3D9a46a8ad-de37-48c0-ad96-2c54df42dd5a /               btrfs
+defaults,degraded,subvol=3D@     0       0
+UUID=3D9a46a8ad-de37-48c0-ad96-2c54df42dd5a /home           btrfs
+defaults,degraded,subvol=3D@home 0       0
+# /boot/efi was on /dev/sda1 during installation
+UUID=3DBD42-AEB1                            /boot/efi       vfat
+umask=3D0077                     0       1
+
+Some extra info, in case it is useful...
+
+root@achilles:~# mount | grep /dev/sd
+/dev/sda2 on / type btrfs
+(rw,relatime,degraded,ssd,space_cache=3Dv2,subvolid=3D256,subvol=3D/@)
+/dev/sda2 on /home type btrfs
+(rw,relatime,degraded,ssd,space_cache=3Dv2,subvolid=3D257,subvol=3D/@home)
+/dev/sda1 on /boot/efi type vfat
+(rw,relatime,fmask=3D0077,dmask=3D0077,codepage=3D437,iocharset=3Dascii,sho=
+rtname=3Dmixed,utf8,errors=3Dremount-ro)
+
+
+root@achilles:~# btrfs device usage /
+/dev/sda2, ID: 1
+   Device size:           237.97GiB
+   Device slack:              0.00B
+   Data,RAID1:              2.00GiB
+   Metadata,RAID1:          1.00GiB
+   System,RAID1:           32.00MiB
+   Unallocated:           234.94GiB
+
+/dev/sdb2, ID: 2
+   Device size:           237.97GiB
+   Device slack:              0.00B
+   Data,RAID1:              2.00GiB
+   Metadata,RAID1:          1.00GiB
+   System,RAID1:           32.00MiB
+   Unallocated:           234.94GiB
 
 
 
-在 2024/3/28 03:52, Boris Burkov 写道:
-> On Wed, Mar 27, 2024 at 08:46:39AM +1030, Qu Wenruo wrote:
->>
->>
->> 在 2024/3/27 08:09, Boris Burkov 写道:
->>> Some of the operations after the free might convert more pertrans
->>> metadata. Do the freeing as late as possible to eliminate a source of
->>> leaked pertrans metadata.
->>>
->>> Helps with the pass rate of generic/269 and generic/475.
->>>
->>> Signed-off-by: Boris Burkov <boris@bur.io>
->>
->> Well, you can also move other fs level cleanup out of the
->> btrfs_cleanup_one_transaction() call.
->> (e.g. destory_delayed_inodes()).
->>
->> For qgroup part, it looks fine to me as a precautious behavior.
-> 
-> Since the call isn't per transaction, do you think it just makes more
-> sense to call it once per cleanup not once per trans per cleanup?
+Thanks for any help and/or advice!
 
-Yes, just like what you did for btrfs_free_all_qgroup_pertrans().
+-m
 
-> 
-> Or would you rather I refactored it some other way?
 
-Just an idea for future cleanups (moving all global cleanups out of 
-btrfs_cleanup_one_transaction()).
-
-Thanks,
-Qu
-
-> 
->>
->> Thanks,
->> Qu
->>
->>> ---
->>>    fs/btrfs/disk-io.c | 3 +--
->>>    1 file changed, 1 insertion(+), 2 deletions(-)
->>>
->>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->>> index 3df5477d48a8..4d7893cc0d4e 100644
->>> --- a/fs/btrfs/disk-io.c
->>> +++ b/fs/btrfs/disk-io.c
->>> @@ -4850,8 +4850,6 @@ void btrfs_cleanup_one_transaction(struct btrfs_transaction *cur_trans,
->>>    				     EXTENT_DIRTY);
->>>    	btrfs_destroy_pinned_extent(fs_info, &cur_trans->pinned_extents);
->>> -	btrfs_free_all_qgroup_pertrans(fs_info);
->>> -
->>>    	cur_trans->state =TRANS_STATE_COMPLETED;
->>>    	wake_up(&cur_trans->commit_wait);
->>>    }
->>> @@ -4904,6 +4902,7 @@ static int btrfs_cleanup_transaction(struct btrfs_fs_info *fs_info)
->>>    	btrfs_assert_delayed_root_empty(fs_info);
->>>    	btrfs_destroy_all_delalloc_inodes(fs_info);
->>>    	btrfs_drop_all_logs(fs_info);
->>> +	btrfs_free_all_qgroup_pertrans(fs_info);
->>>    	mutex_unlock(&fs_info->transaction_kthread_mutex);
->>>    	return 0;
+[0] https://www.reddit.com/r/btrfs/comments/kguqsg/degraded_boot_with_syste=
+md/
 
