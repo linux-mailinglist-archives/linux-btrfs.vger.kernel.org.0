@@ -1,162 +1,184 @@
-Return-Path: <linux-btrfs+bounces-3682-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3683-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4001988F022
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 21:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C4EC88F046
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 21:39:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9BCA1F21B66
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 20:32:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83D2C1F30024
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 20:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F18C152DE3;
-	Wed, 27 Mar 2024 20:31:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E432E1534F4;
+	Wed, 27 Mar 2024 20:39:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="WdV7v24D"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AsNXxNm2";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="c/+uD66h"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AED614F13F
-	for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 20:31:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D73814D6EB;
+	Wed, 27 Mar 2024 20:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711571511; cv=none; b=VVNnNa6qc36VIAxd3dDFdEmUdOgfPofo+iHMwmzmykKOHv8/SlkQdc6cpLPP2VjR9RDD/zVaVEdQQgODzlJrNViVRt6tydcJ43GjtAKfHNScIqnux/ExNk8RFreodyWwvFVfjdhiU5Hs1YOWzFHyyTZ+K+Wd9OJJd6Se0/UEki4=
+	t=1711571986; cv=none; b=qnqJDiZTvGTZCUciQ7vCAK7HBUwMcxkvBsSbfsCl7WMH6lme1dQ3HXvi5T54ToXyiqYpZ9ofmB/OVmfW96FC6TtMkOXKHShcANt8oMmzL32iurMdG9yU7n84bt7A5Y/zMcCNLperL1FAc8JnpFEoEkcyuB71g8yeaURbhc6Ho9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711571511; c=relaxed/simple;
-	bh=t9C9+riY1OxmsAmH5QBPtHJT8HnbNBNjvpO0E8IF0BE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m+BxtZx3nKt7qUBcyG57CzO1N9CVxLjVWqhqdJQQMJ92OyAUOAdGFN8KhKhDoN5JonYqdXbdXAVwY5jOvx6w0US+Nq0sJatUFHrF+YFJIvp8QMrs1su7Se31w/gwvbrv/UugzZCeXALTaEbs4rVLdBuRgOaUCkH3KPt7GyyJ28E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=WdV7v24D; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e0411c0a52so2711965ad.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 13:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1711571509; x=1712176309; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xsbDq/umAVs2THPOn+dgmzNcXWhcjS94eKkuWI7aCcw=;
-        b=WdV7v24DFxW8nfNW5OWhAwfjj+i+ZVdBXd9AjRVX3+FR6PNQyPvX86pyquKqdmn6BS
-         bfc15NGU+fFCY9xMyEo0TctEynV+f47N5thGqFoiVeZ9Leo0Hqd9BEL7Urs4kMSYNY+v
-         uMYHsfFr6osUaF6beCF3AsA02QuXQ58hVSP4ADsOivo2jCCgU1tKef5h3bICgvuqLECd
-         t75vl4QJfwrdmNsiMu8say58xXLMtyw0PuQAqFH6gvfQLrmN4cKCefKboz5ZDBLeM9Pe
-         TEiwmjp1GzixsJWd7GzRU50cLPloHmf0kM1OBSEn37xY0s7glSCfe+zFvhF+Q0ziQCgW
-         MaIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711571509; x=1712176309;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xsbDq/umAVs2THPOn+dgmzNcXWhcjS94eKkuWI7aCcw=;
-        b=nzSoZiYClxMHGZekVZJCTkiCXmrUd0DOh0Rr9RdB6O2bqmOjvMID7xiyE45e0/9Xh2
-         rBUEtoYmyhCZIQuRpbbiZaho6hMhDRyrsBaXfeaMETc0tRrdShKklgi4UXnKnPOGMrJ/
-         RV5TZUL1KFmMQAkPsY+QqTz+q8So3ywIt/2fNwlvi6CjblcqajqUIy+amfb6ptffQGmg
-         Jx299AngN2n2zZGQkdVfkpfYutKxO22zQQk2BCQ7B0Am9VC5bUA0rgozTm8dhfm+jZa1
-         E/ExnbF3VdcQ8z9yH/SB+rHcfFHcwimwp8YlZ5jeXoBcNqfiY1+6xX2hzzV5CCR9l/2k
-         +WaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXabKI6t5V34UKsrgdP4iZeUj9mBDlzTH12JaHbdupwN3ympgFaD/YmP9mH1tQITip7s+lA70v/kpFPsMmNWDJbZI3ecxmtHBFD64U=
-X-Gm-Message-State: AOJu0YyeFSeHoi1QBDX6um1DAJrHJJ0yTgsl+YnT5vtSENvS/OBRjcJo
-	kNTqQ3Y6LlScX2Ilbkg597/VRQTzFu20deW4YYjnVbJQOctq/5nlt6LmcUpfbuQ=
-X-Google-Smtp-Source: AGHT+IHM4Tr0BQ+ZyOuGEh7PBr8lX9a5mFa0hqjuG33bAQkeUreuKwQCfXdzVyFJvoKTjvvS6rj26w==
-X-Received: by 2002:a17:903:8cd:b0:1df:fa1a:529f with SMTP id lk13-20020a17090308cd00b001dffa1a529fmr955250plb.24.1711571509203;
-        Wed, 27 Mar 2024 13:31:49 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-56-237.pa.nsw.optusnet.com.au. [49.181.56.237])
-        by smtp.gmail.com with ESMTPSA id l13-20020a170903120d00b001deed044b7dsm4122560plh.185.2024.03.27.13.31.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 13:31:48 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rpZw1-00CItN-2k;
-	Thu, 28 Mar 2024 07:31:45 +1100
-Date: Thu, 28 Mar 2024 07:31:45 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
-	kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	io-uring@vger.kernel.org, nilay@linux.ibm.com,
-	ritesh.list@gmail.com
-Subject: Re: [PATCH v6 00/10] block atomic writes
-Message-ID: <ZgSCMXKtcYWhxR7e@dread.disaster.area>
-References: <20240326133813.3224593-1-john.g.garry@oracle.com>
- <ZgOXb_oZjsUU12YL@casper.infradead.org>
+	s=arc-20240116; t=1711571986; c=relaxed/simple;
+	bh=MYjXKGml4yTVTChKso7uNGqldcMcIKtOtNKtzVnHsmc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mcCDWvhDzJ9MJM6fFakHuLtRgVwfRL4+/qUXwVT2zMx6VVwA2RVvaghLD4SkAQbb+1hyk5SB4G9DKn3u6RUqJkcucn/gu1OxOdRV+pMZTtHIPFKf4gN0R/Kjp/k/WLZRMhXpVAugs9X3vJlxzJIiBYl3Hri09drVqRAjXMUIWOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AsNXxNm2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=c/+uD66h; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C28DE229B9;
+	Wed, 27 Mar 2024 20:39:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1711571982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=/IKbn2oj33so0jZy+ftN03yc0feDXvMhZ5ZgHhL7tD0=;
+	b=AsNXxNm2pZNhDHZEweT6VY5xGt5B8qgWaYhOgi3bBG5zaafR12F46jEt00GqbIao/rjmlD
+	I+61S66YhhqzD3KiJvevlZNgIYI+FvHH8Ucv863V46TNpSqLnAV+yI6WyEh/4bYGcR0ma6
+	Pt8x1x+x9hNu46I3fyNTvaTdPashRj4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1711571981; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=/IKbn2oj33so0jZy+ftN03yc0feDXvMhZ5ZgHhL7tD0=;
+	b=c/+uD66hnaQgGXhed0gnWJzk9V5YrzEc2vxRPGrwIjSS5IypRqPeF+W0JJk5aHTtkIi9fW
+	mVQcX8hXkNCmbX5CO2twPLm5k4abgW6soisUEXyXl5oIDx+Ull2IUsI243TrNC7RWBR398
+	CQ1PSFhurU/fGpdX8PBIlEJdjnF2rh8=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B8E0613AB3;
+	Wed, 27 Mar 2024 20:39:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id IS7bLA2EBGYcFAAAn2gu4w
+	(envelope-from <dsterba@suse.com>); Wed, 27 Mar 2024 20:39:41 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.9-rc2
+Date: Wed, 27 Mar 2024 21:32:19 +0100
+Message-ID: <cover.1711571199.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgOXb_oZjsUU12YL@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.51
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 TO_DN_SOME(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="c/+uD66h"
+X-Rspamd-Queue-Id: C28DE229B9
 
-On Wed, Mar 27, 2024 at 03:50:07AM +0000, Matthew Wilcox wrote:
-> On Tue, Mar 26, 2024 at 01:38:03PM +0000, John Garry wrote:
-> > The goal here is to provide an interface that allows applications use
-> > application-specific block sizes larger than logical block size
-> > reported by the storage device or larger than filesystem block size as
-> > reported by stat().
-> > 
-> > With this new interface, application blocks will never be torn or
-> > fractured when written. For a power fail, for each individual application
-> > block, all or none of the data to be written. A racing atomic write and
-> > read will mean that the read sees all the old data or all the new data,
-> > but never a mix of old and new.
-> > 
-> > Three new fields are added to struct statx - atomic_write_unit_min,
-> > atomic_write_unit_max, and atomic_write_segments_max. For each atomic
-> > individual write, the total length of a write must be a between
-> > atomic_write_unit_min and atomic_write_unit_max, inclusive, and a
-> > power-of-2. The write must also be at a natural offset in the file
-> > wrt the write length. For pwritev2, iovcnt is limited by
-> > atomic_write_segments_max.
-> > 
-> > There has been some discussion on supporting buffered IO and whether the
-> > API is suitable, like:
-> > https://lore.kernel.org/linux-nvme/ZeembVG-ygFal6Eb@casper.infradead.org/
-> > 
-> > Specifically the concern is that supporting a range of sizes of atomic IO
-> > in the pagecache is complex to support. For this, my idea is that FSes can
-> > fix atomic_write_unit_min and atomic_write_unit_max at the same size, the
-> > extent alignment size, which should be easier to support. We may need to
-> > implement O_ATOMIC to avoid mixing atomic and non-atomic IOs for this. I
-> > have no proposed solution for atomic write buffered IO for bdev file
-> > operations, but I know of no requirement for this.
-> 
-> The thing is that there's no requirement for an interface as complex as
-> the one you're proposing here.  I've talked to a few database people
-> and all they want is to increase the untorn write boundary from "one
-> disc block" to one database block, typically 8kB or 16kB.
-> 
-> So they would be quite happy with a much simpler interface where they
-> set the inode block size at inode creation time, and then all writes to
-> that inode were guaranteed to be untorn.  This would also be simpler to
-> implement for buffered writes.
+Hi,
 
-You're conflating filesystem functionality that applications will use
-with hardware and block-layer enablement that filesystems and
-filesystem utilities need to configure the filesystem in ways that
-allow users to make use of atomic write capability of the hardware.
+here's another batch of stability fixes.
 
-The block layer functionality needs to export everything that the
-hardware can do and filesystems will make use of. The actual
-application usage and setup of atomic writes at the filesystem/page
-cache layer is a separate problem.  i.e. The block layer interfaces
-need only support direct IO and expose limits for issuing atomic
-direct IO, and nothing more. All the more complex stuff to make it
-"easy to use" is filesystem level functionality and completely
-outside the scope of this patchset....
+The first fix is for the bug you also hit after 6.8-rc2 pull request [1].
+We got another report, fortunately it was reproducible and in the end we also
+got the fix.
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+[1] https://lore.kernel.org/linux-btrfs/CAHk-=whNdMaN9ntZ47XRKP6DBes2E5w7fi-0U3H2+PS18p+Pzw@mail.gmail.com/
+
+The rest is usual mix of fixes, zoned mode, device status handling and
+error handling.
+
+Please pull, thanks.
+
+- fix race when reading extent buffer and 'uptodate' status is missed by one
+  thread (introduced in 6.5)
+
+- do additional validation of devices using major:minor numbers
+
+- zoned mode fixes:
+  - use zone-aware super block access during scrub
+  - fix use-after-free during device replace (found by KASAN)
+  - also delete zones that are 100% unusable to reclaim space
+
+- extent unpinning fixes
+  - fix extent map leak after error handling
+  - print correct range in error message
+
+- error code and message updates
+
+----------------------------------------------------------------
+The following changes since commit 1cab1375ba6d5337a25acb346996106c12bb2dd0:
+
+  btrfs: reuse cloned extent buffer during fiemap to avoid re-allocations (2024-03-05 18:14:19 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.9-rc1-tag
+
+for you to fetch changes up to ef1e68236b9153c27cb7cf29ead0c532870d4215:
+
+  btrfs: fix race in read_extent_buffer_pages() (2024-03-26 16:42:39 +0100)
+
+----------------------------------------------------------------
+Anand Jain (2):
+      btrfs: validate device maj:min during open
+      btrfs: return accurate error code on open failure in open_fs_devices()
+
+Filipe Manana (4):
+      btrfs: fix extent map leak in unexpected scenario at unpin_extent_cache()
+      btrfs: fix warning messages not printing interval at unpin_extent_range()
+      btrfs: fix message not properly printing interval when adding extent map
+      btrfs: use btrfs_warn() to log message at btrfs_add_extent_mapping()
+
+Johannes Thumshirn (3):
+      btrfs: zoned: use zone aware sb location for scrub
+      btrfs: zoned: fix use-after-free in do_zone_finish()
+      btrfs: zoned: don't skip block groups with 100% zone unusable
+
+Tavian Barnes (1):
+      btrfs: fix race in read_extent_buffer_pages()
+
+ fs/btrfs/block-group.c |  3 ++-
+ fs/btrfs/extent_io.c   | 13 +++++++++++++
+ fs/btrfs/extent_map.c  | 16 ++++++++--------
+ fs/btrfs/scrub.c       | 12 +++++++++++-
+ fs/btrfs/volumes.c     | 27 ++++++++++++++++++++++-----
+ fs/btrfs/zoned.c       | 14 +++++++-------
+ 6 files changed, 63 insertions(+), 22 deletions(-)
 
