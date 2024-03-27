@@ -1,798 +1,157 @@
-Return-Path: <linux-btrfs+bounces-3665-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3666-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BD8188EC38
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 18:12:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D86FA88EC64
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 18:19:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFDBF29C443
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 17:12:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91C6A29FCCC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 17:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF0B14F111;
-	Wed, 27 Mar 2024 17:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D08142E9E;
+	Wed, 27 Mar 2024 17:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pza8ACff"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="DiXvlUru";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="wWyDlYDD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA14513774D;
-	Wed, 27 Mar 2024 17:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A7D1EEE4
+	for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 17:18:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711559526; cv=none; b=C0iaokcoFUiwNcoMyff4o/84Sau7cack8IJeSA9ToR7+VhLRvdVCVMpLz1ZeP2o6GPazmcA9r/Zbtf7FCPbMFD3YGBsXx7JZYCXatUsWd/UCerNJGgq27pBJu6PBmcW1vB7MaeRIhLYQ4AkuIywJgDwBYYrUfC8R9rIKKsjAkz8=
+	t=1711559910; cv=none; b=ZG9WkpwWm3rHFJzdFm5+hAoqcyGdo9SoD6j34JBWqnYrE+Rv3v9Zdjj8VPXxCk0NEe/Q0vlyDA6iUNN/Zm+a9HxQPPHDwzjjJu0fVIZblBw3FHE7B+Q+OMZ4st/nrRE/neMgg/oYXx14J3aWObdI8++yBJr6GlWZFhFGih8uxhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711559526; c=relaxed/simple;
-	bh=v5pf0lSa3h+btHzVGfzTgJcWCE5ool7jkXrROY+POeA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=haqe9jioNabssigd/wn55oEdKhCTAYzI9/COrUHCfCMgzN/WkM5kF/KocT5H2UXSKdt0irNeNJXmfiSsAMOsb7ohQvvuHSu0ZWsZMCO32TJvs4yfb4ijp9OMq0/ubt62k6f/Dez6n7R19LW7KCuK58TtGMWIP0Z5YjlN1AGzyl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pza8ACff; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5622C433F1;
-	Wed, 27 Mar 2024 17:12:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711559526;
-	bh=v5pf0lSa3h+btHzVGfzTgJcWCE5ool7jkXrROY+POeA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pza8ACffRZ/fDde3XhkKZMJNfMpP8vHZfEh3JrIDG0Y0AyLVb7PvS6aOAntxEEqAB
-	 Sy0RTBUqbNN9EmZbCthzfDPEuHEMGQeuNZ9S7j4VkFl6+FZQIQSqqsC2VJHkmr/qaR
-	 LwtaqQg0aATjmdsofwX8kF/imTNxrb3Pi/mpvEkTfzaYawFRfB7sf5vDH4oGVjG4cD
-	 xhAJBNZbq0j5+Ez63QVh7N89itlLEqvrEap30KMZkX6M/1XVMir59r6fPAnMmEFLA5
-	 x4uu+jRTR6fYC/bNTaLfyJmERitu7OFbTY3JdcaQskrQuum5Eb3C2wfEhUCX33ZO1y
-	 d5+ENzIK6DwDA==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 10/10] btrfs/06[0-9]..07[0-4]: kill all background tasks when test is killed/interrupted
-Date: Wed, 27 Mar 2024 17:11:44 +0000
-Message-ID: <48866623524ab565944db6f7fa61f6a0ce0c0996.1711558345.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1711558345.git.fdmanana@suse.com>
-References: <cover.1711558345.git.fdmanana@suse.com>
+	s=arc-20240116; t=1711559910; c=relaxed/simple;
+	bh=okcrDmnykW4KbibuV4a4tuXN6M2Z9Vo6EAxUVjmYsFo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I7kC2DLWEBYouGM6FFXKjklQhfy2tZLtLrOYzGLpeHChc4ojCsfbMkfcS/B98iXwiYnzpege9VlqBQGuYvz8knJqEzgal7IyUY5KXd9U/ECzoostK8/HchqNQh010C6GxOv8LqRms+ov65ayfISPPT4pJbb9I77eTHeZ4S6C4eA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=DiXvlUru; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=wWyDlYDD; arc=none smtp.client-ip=64.147.123.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.west.internal (Postfix) with ESMTP id AE7083200906;
+	Wed, 27 Mar 2024 13:18:26 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 27 Mar 2024 13:18:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1711559906;
+	 x=1711646306; bh=pZI1yGYmdT1sSxIuBUrWQrf84MTyktUcm+SuPNuiiWg=; b=
+	DiXvlUrurh7xPpCDYe2Pe8jTauv8epjqYjCgLAvzDTrKeyrQyyKI6IU7yGPyVwp7
+	sJU+txe8CXsyDIbQYHsAQ7bKALOaymjvbQ6XdgovwW8Eb2kXdkVDXo5CVgS6IpmK
+	uuHAlUOYa5fOAM6xCROInLooLEIOKPbvIa18eDqx6m59GYsmCDK7GXfOYeW0DnXy
+	TgkkGkc/n9vBZis7Tkx5aldivHg/CkhxTusGIxmrUo/nRnualwFP6SEFnZgCkeVU
+	rFQLCZYVNLtQD96fZWPJ9OqqihBD56Wc+vwlLZ8THFBhXKkbNnf4vsiQXvT/RTog
+	Dcbo9dYBZDXVZuQxCtmCFQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1711559906; x=
+	1711646306; bh=pZI1yGYmdT1sSxIuBUrWQrf84MTyktUcm+SuPNuiiWg=; b=w
+	WyDlYDD6puPS4NUopmPgxvOaQo5iKTbcE42BHMrGrndkQhPx5YBPCTfdQvBkwgMD
+	iem7+ndb62dBJwmu3oyHzTY4GeHgCkvOsg10SO6VB4Z7p8f5vQqwIwS1VueQLW46
+	iYp0rm/OUSb8qx86s8FKjd0rXFYqFKyvSC7ti2FRH7o5ckHSKbm7dIssn7qzVj1w
+	tZgnRDo5kpKPDDCyZ+IufkQZ+2A19mPq5i9l5fHq9vbaRBLbKo028qbIxcV1TIfC
+	/MRu15zB7vo/MfqZuaqu8fQSy73pTYBXebRhCSN7euMxTpTRmpwRP1oZF2rxjcCm
+	WTEGBO8xRe03z2vwN9few==
+X-ME-Sender: <xms:4lQEZvqQ8XIFq4Wi_qWebayIcZfH4KHYj_lXM9udEvWL_zPwI1q3Lw>
+    <xme:4lQEZppyibM1iuantiZiO-x0qGg3XbBON8ih-kxVGXCYnc24ZMkEe8NU5KrhHK3ZL
+    Qrx3KXQX-s7ilgePIk>
+X-ME-Received: <xmr:4lQEZsN_1BfGT3F_Drp7t60pbsKTwrXwbqTgcWABSuqcsiRMtfUNk1y46H0m6eVUF-muJLu1CwQcJxbuElx2aAjVu-Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedgjeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epudelhfdthfetuddvtefhfedtiedtteehvddtkedvledtvdevgedtuedutdeitdeinecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
+    essghurhdrihho
+X-ME-Proxy: <xmx:4lQEZi4E6zZGPXHidfqsPDvFUTXvwYZjuIjiAtuzibvMPsdna1iUQQ>
+    <xmx:4lQEZu7ffYKXgjAfn6yVcQcM1mGv8Hnd9j5cWVeWuh_itpUFssqvLw>
+    <xmx:4lQEZqjIFvvgQyIQE_BTBrZBFnjnDx6_PVwq4t6WAtemVxZkkM9tHA>
+    <xmx:4lQEZg7xd35Z9Sm8dkGOzQ9Vnvyg5RXZy2BzmqOi-uqskJENf2tLsA>
+    <xmx:4lQEZuG8f-wJPTqcIIAK8UvHcUDolsYgn7WTqI7wO05DawR0G2NoBQ>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 27 Mar 2024 13:18:25 -0400 (EDT)
+Date: Wed, 27 Mar 2024 10:20:31 -0700
+From: Boris Burkov <boris@bur.io>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 1/7] btrfs: correctly model root qgroup rsv in convert
+Message-ID: <20240327172031.GA2470028@zen.localdomain>
+References: <cover.1711488980.git.boris@bur.io>
+ <71f49d2923b8bff3a06006abfcb298b10e7a0683.1711488980.git.boris@bur.io>
+ <245057c8-e7fb-4ad0-9e88-d21ae31cf375@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <245057c8-e7fb-4ad0-9e88-d21ae31cf375@suse.com>
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Mar 27, 2024 at 08:30:47AM +1030, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/3/27 08:09, Boris Burkov 写道:
+> > We use add_root_meta_rsv and sub_root_meta_rsv to track prealloc and
+> > pertrans reservations for subvols when quotas are enabled. The convert
+> > function does not properly increment pertrans after decrementing
+> > prealloc, so the count is not accurate.
+> > 
+> > Note: we check that the fs is not read-only to mirror the logic in
+> > qgroup_convert_meta, which checks that before adding to the pertrans rsv.
+> > 
+> > Fixes: 8287475a2055 ("btrfs: qgroup: Use root::qgroup_meta_rsv_* to record qgroup meta reserved space")
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >   fs/btrfs/qgroup.c | 2 ++
+> >   1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> > index a8197e25192c..2cba6451d164 100644
+> > --- a/fs/btrfs/qgroup.c
+> > +++ b/fs/btrfs/qgroup.c
+> > @@ -4492,6 +4492,8 @@ void btrfs_qgroup_convert_reserved_meta(struct btrfs_root *root, int num_bytes)
+> >   				      BTRFS_QGROUP_RSV_META_PREALLOC);
+> >   	trace_qgroup_meta_convert(root, num_bytes);
+> >   	qgroup_convert_meta(fs_info, root->root_key.objectid, num_bytes);
+> > +	if (!sb_rdonly(fs_info->sb))
+> > +		add_root_meta_rsv(root, num_bytes, BTRFS_QGROUP_RSV_META_PERTRANS);
+> 
+> Don't we already call qgroup_rsv_add() inside qgroup_convert_meta()?
+> This sounds like a double add here.
 
-Test cases btrfs/06[0-9] and btrfs/07[0-4] exercise multiple concurrent
-operations while fsstress is running in parallel, and all these are left
-as child processes running in the background, which are correctly stopped
-if the tests are not interrupted/killed. However if any of these tests is
-interrupted/killed, it often leaves child processes still running in the
-background, which prevent further running fstests again. For example:
+qgroup_rsv_add doesn't call add_root_meta_rsv. AFAICT, this is the
+separate accounting in root->qgroup_meta_rsv_pertrans to fixup underflow
+errors as we free.
 
-  $ /check -g auto
-  (...)
-  btrfs/060 394s ...  264s
-  btrfs/061 83s ...  69s
-  btrfs/062 109s ...  105s
-  btrfs/063 52s ...  67s
-  btrfs/064 53s ...  51s
-  btrfs/065 88s ...  271s
-  btrfs/066 127s ...  241s
-  btrfs/067 435s ...  248s
-  btrfs/068 161s ... ^C^C
-  ^C
+> 
+> And if you have any example to show the problem in a more detailed way, it
+> would be great help.
 
-  $ ./check btrfs/068
-  FSTYP         -- btrfs
-  PLATFORM      -- Linux/x86_64 debian0 6.8.0-rc7-btrfs-next-153+ #1 SMP PREEMPT_DYNAMIC Mon Mar  4 17:19:19 WET 2024
-  MKFS_OPTIONS  -- /dev/sdb
-  MOUNT_OPTIONS -- /dev/sdb /home/fdmanana/btrfs-tests/scratch_1
+I don't have a reproducer for this, it was just something I noticed. I'm
+fine to drop this patch if you don't think it's worth the churn (and
+certainly if I'm just a dummy and didn't see where we already call it)
 
-  our local _scratch_mkfs routine ...
-  btrfs-progs v6.6.2
-  See https://btrfs.readthedocs.io for more information.
+In fact, this counter only exists to avoid underflow, but PERTRANS is
+cleared by exact amount, and not via btrfs_qgroup_free_meta_pertrans, so
+it might just be moot to track it at all in this way.
 
-  ERROR: unable to open /dev/sdb: Device or resource busy
-  check: failed to mkfs $SCRATCH_DEV using specified options
-  Interrupted!
-  Passed all 0 tests
-
-In this case there was still a process running _btrfs_stress_subvolume()
-from common/btrfs.
-
-This is a bit annoying because it requires manually finding out which
-process is preventing unmounting the scratch device and then properly
-stop/kill it.
-
-So fix this by adding a _cleanup() function to all these tests and then
-making sure it stops all the child processes it spawned and are running
-in the background.
-
-All these tests have the same structure as they were part of the same
-patchset and from the same author.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/060 | 22 +++++++++++++++++++++-
- tests/btrfs/061 | 19 +++++++++++++++++++
- tests/btrfs/062 | 19 +++++++++++++++++++
- tests/btrfs/063 | 19 +++++++++++++++++++
- tests/btrfs/064 | 19 +++++++++++++++++++
- tests/btrfs/065 | 22 +++++++++++++++++++++-
- tests/btrfs/066 | 22 +++++++++++++++++++++-
- tests/btrfs/067 | 22 +++++++++++++++++++++-
- tests/btrfs/068 | 22 +++++++++++++++++++++-
- tests/btrfs/069 | 19 +++++++++++++++++++
- tests/btrfs/070 | 19 +++++++++++++++++++
- tests/btrfs/071 | 19 +++++++++++++++++++
- tests/btrfs/072 | 19 +++++++++++++++++++
- tests/btrfs/073 | 19 +++++++++++++++++++
- tests/btrfs/074 | 19 +++++++++++++++++++
- 15 files changed, 295 insertions(+), 5 deletions(-)
-
-diff --git a/tests/btrfs/060 b/tests/btrfs/060
-index 53cbd3a0..f74d9593 100755
---- a/tests/btrfs/060
-+++ b/tests/btrfs/060
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto balance subvol scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
-+		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	fi
-+	if [ ! -z "$balance_pid" ]; then
-+		_btrfs_kill_stress_balance_pid $balance_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -20,11 +36,12 @@ _require_scratch_nocheck
- _require_scratch_dev_pool 4
- _btrfs_get_profile_configs
- 
-+stop_file=$TEST_DIR/$seq.stop.$$
-+
- run_test()
- {
- 	local mkfs_opts=$1
- 	local subvol_mnt=$TEST_DIR/$seq.mnt
--	local stop_file=$TEST_DIR/$seq.stop.$$
- 
- 	echo "Test $mkfs_opts" >>$seqres.full
- 
-@@ -53,9 +70,12 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 
- 	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	unset subvol_pid
- 	_btrfs_kill_stress_balance_pid $balance_pid
-+	unset balance_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/061 b/tests/btrfs/061
-index b8b2706c..fec90882 100755
---- a/tests/btrfs/061
-+++ b/tests/btrfs/061
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto balance scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$balance_pid" ]; then
-+		_btrfs_kill_stress_balance_pid $balance_pid
-+	fi
-+	if [ ! -z "$scrub_pid" ]; then
-+		_btrfs_kill_stress_scrub_pid $scrub_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -51,8 +67,11 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 	_btrfs_kill_stress_balance_pid $balance_pid
-+	unset balance_pid
- 	_btrfs_kill_stress_scrub_pid $scrub_pid
-+	unset scrub_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/062 b/tests/btrfs/062
-index 59d581be..0b57681f 100755
---- a/tests/btrfs/062
-+++ b/tests/btrfs/062
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto balance defrag compress scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$balance_pid" ]; then
-+		_btrfs_kill_stress_balance_pid $balance_pid
-+	fi
-+	if [ ! -z "$defrag_pid" ]; then
-+		_btrfs_kill_stress_defrag_pid $defrag_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -52,8 +68,11 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 	_btrfs_kill_stress_balance_pid $balance_pid
-+	unset balance_pid
- 	_btrfs_kill_stress_defrag_pid $defrag_pid
-+	unset defrag_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/063 b/tests/btrfs/063
-index 5ee2837f..99d9d2c1 100755
---- a/tests/btrfs/063
-+++ b/tests/btrfs/063
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto balance remount compress scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$balance_pid" ]; then
-+		_btrfs_kill_stress_balance_pid $balance_pid
-+	fi
-+	if [ ! -z "$remount_pid" ]; then
-+		_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -51,8 +67,11 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 	_btrfs_kill_stress_balance_pid $balance_pid
-+	unset balance_pid
- 	_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
-+	unset remount_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/064 b/tests/btrfs/064
-index 9e0b3b30..663442c6 100755
---- a/tests/btrfs/064
-+++ b/tests/btrfs/064
-@@ -12,6 +12,22 @@
- . ./common/preamble
- _begin_fstest auto balance replace volume scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$balance_pid" ]; then
-+		_btrfs_kill_stress_balance_pid $balance_pid
-+	fi
-+	if [ ! -z "$replace_pid" ]; then
-+		_btrfs_kill_stress_replace_pid $replace_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -63,8 +79,11 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 	_btrfs_kill_stress_balance_pid $balance_pid
-+	unset balance_pid
- 	_btrfs_kill_stress_replace_pid $replace_pid
-+	unset replace_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/065 b/tests/btrfs/065
-index f9e43cdc..b1e54fc8 100755
---- a/tests/btrfs/065
-+++ b/tests/btrfs/065
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto subvol replace volume scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
-+		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	fi
-+	if [ ! -z "$replace_pid" ]; then
-+		_btrfs_kill_stress_replace_pid $replace_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -21,12 +37,13 @@ _require_scratch_dev_pool 5
- _require_scratch_dev_pool_equal_size
- _btrfs_get_profile_configs replace
- 
-+stop_file=$TEST_DIR/$seq.stop.$$
-+
- run_test()
- {
- 	local mkfs_opts=$1
- 	local saved_scratch_dev_pool=$SCRATCH_DEV_POOL
- 	local subvol_mnt=$TEST_DIR/$seq.mnt
--	local stop_file=$TEST_DIR/$seq.stop.$$
- 
- 	echo "Test $mkfs_opts" >>$seqres.full
- 
-@@ -61,9 +78,12 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 
- 	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	unset subvol_pid
- 	_btrfs_kill_stress_replace_pid $replace_pid
-+	unset replace_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/066 b/tests/btrfs/066
-index b6f904ac..feb6062e 100755
---- a/tests/btrfs/066
-+++ b/tests/btrfs/066
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto subvol scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
-+		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	fi
-+	if [ ! -z "$scrub_pid" ]; then
-+		_btrfs_kill_stress_scrub_pid $scrub_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -20,11 +36,12 @@ _require_scratch_nocheck
- _require_scratch_dev_pool 4
- _btrfs_get_profile_configs
- 
-+stop_file=$TEST_DIR/$seq.stop.$$
-+
- run_test()
- {
- 	local mkfs_opts=$1
- 	local subvol_mnt=$TEST_DIR/$seq.mnt
--	local stop_file=$TEST_DIR/$seq.stop.$$
- 
- 	echo "Test $mkfs_opts" >>$seqres.full
- 
-@@ -53,9 +70,12 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 
- 	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	unset subvol_pid
- 	_btrfs_kill_stress_scrub_pid $scrub_pid
-+	unset scrub_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/067 b/tests/btrfs/067
-index 7be09d52..0bbfe83f 100755
---- a/tests/btrfs/067
-+++ b/tests/btrfs/067
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto subvol defrag compress scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
-+		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	fi
-+	if [ ! -z "$defrag_pid" ]; then
-+		_btrfs_kill_stress_defrag_pid $defrag_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -20,12 +36,13 @@ _require_scratch_nocheck
- _require_scratch_dev_pool 4
- _btrfs_get_profile_configs
- 
-+stop_file=$TEST_DIR/$seq.stop.$$
-+
- run_test()
- {
- 	local mkfs_opts=$1
- 	local with_compress=$2
- 	local subvol_mnt=$TEST_DIR/$seq.mnt
--	local stop_file=$TEST_DIR/$seq.stop.$$
- 
- 	echo "Test $mkfs_opts with $with_compress" >>$seqres.full
- 
-@@ -54,9 +71,12 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 
- 	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	unset subvol_pid
- 	_btrfs_kill_stress_defrag_pid $defrag_pid
-+	unset defrag_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/068 b/tests/btrfs/068
-index 19e37010..7ab6feca 100755
---- a/tests/btrfs/068
-+++ b/tests/btrfs/068
-@@ -11,6 +11,22 @@
- . ./common/preamble
- _begin_fstest auto subvol remount compress scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
-+		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	fi
-+	if [ ! -z "$remount_pid" ]; then
-+		_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -21,11 +37,12 @@ _require_scratch_nocheck
- _require_scratch_dev_pool 4
- _btrfs_get_profile_configs
- 
-+stop_file=$TEST_DIR/$seq.stop.$$
-+
- run_test()
- {
- 	local mkfs_opts=$1
- 	local subvol_mnt=$TEST_DIR/$seq.mnt
--	local stop_file=$TEST_DIR/$seq.stop.$$
- 
- 	echo "Test $mkfs_opts with $with_compress" >>$seqres.full
- 
-@@ -54,9 +71,12 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 
- 	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	unset subvol_pid
- 	_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
-+	unset remount_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/069 b/tests/btrfs/069
-index ad1609d4..3fbfecdb 100755
---- a/tests/btrfs/069
-+++ b/tests/btrfs/069
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto replace scrub volume
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$replace_pid" ]; then
-+		_btrfs_kill_stress_replace_pid $replace_pid
-+	fi
-+	if [ ! -z "$scrub_pid" ]; then
-+		_btrfs_kill_stress_scrub_pid $scrub_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -59,8 +75,11 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 	_btrfs_kill_stress_scrub_pid $scrub_pid
-+	unset scrub_pid
- 	_btrfs_kill_stress_replace_pid $replace_pid
-+	unset replace_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/070 b/tests/btrfs/070
-index 3054c270..11fddc86 100755
---- a/tests/btrfs/070
-+++ b/tests/btrfs/070
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto replace defrag compress volume scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$replace_pid" ]; then
-+		_btrfs_kill_stress_replace_pid $replace_pid
-+	fi
-+	if [ ! -z "$defrag_pid" ]; then
-+		_btrfs_kill_stress_defrag_pid $defrag_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -60,8 +76,11 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 	_btrfs_kill_stress_replace_pid $replace_pid
-+	unset replace_pid
- 	_btrfs_kill_stress_defrag_pid $defrag_pid
-+	unset defrag_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/071 b/tests/btrfs/071
-index 36b39341..1a91ec45 100755
---- a/tests/btrfs/071
-+++ b/tests/btrfs/071
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto replace remount compress volume scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$replace_pid" ]; then
-+		_btrfs_kill_stress_replace_pid $replace_pid
-+	fi
-+	if [ ! -z "$remount_pid" ]; then
-+		_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -59,8 +75,11 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 	_btrfs_kill_stress_replace_pid $replace_pid
-+	unset replace_pid
- 	_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
-+	unset remount_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/072 b/tests/btrfs/072
-index 505d0b57..e66e49c9 100755
---- a/tests/btrfs/072
-+++ b/tests/btrfs/072
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto scrub defrag compress
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$defrag_pid" ]; then
-+		_btrfs_kill_stress_defrag_pid $defrag_pid
-+	fi
-+	if [ ! -z "$scrub_pid" ]; then
-+		_btrfs_kill_stress_scrub_pid $scrub_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -52,9 +68,12 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 
- 	_btrfs_kill_stress_defrag_pid $defrag_pid
-+	unset defrag_pid
- 	_btrfs_kill_stress_scrub_pid $scrub_pid
-+	unset scrub_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/073 b/tests/btrfs/073
-index 50358286..e6cfd92a 100755
---- a/tests/btrfs/073
-+++ b/tests/btrfs/073
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto scrub remount compress
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$remount_pid" ]; then
-+		_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
-+	fi
-+	if [ ! -z "$scrub_pid" ]; then
-+		_btrfs_kill_stress_scrub_pid $scrub_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -51,8 +67,11 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 	_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
-+	unset remount_pid
- 	_btrfs_kill_stress_scrub_pid $scrub_pid
-+	unset scrub_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-diff --git a/tests/btrfs/074 b/tests/btrfs/074
-index 6e93b36a..1dd88bcd 100755
---- a/tests/btrfs/074
-+++ b/tests/btrfs/074
-@@ -10,6 +10,22 @@
- . ./common/preamble
- _begin_fstest auto defrag remount compress scrub
- 
-+_cleanup()
-+{
-+	cd /
-+	rm -rf $tmp.*
-+	if [ ! -z "$remount_pid" ]; then
-+		_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
-+	fi
-+	if [ ! -z "$defrag_pid" ]; then
-+		_btrfs_kill_stress_defrag_pid $defrag_pid
-+	fi
-+	if [ ! -z "$fsstress_pid" ]; then
-+		kill $fsstress_pid &> /dev/null
-+		wait $fsstress_pid &> /dev/null
-+	fi
-+}
-+
- # Import common functions.
- . ./common/filter
- 
-@@ -52,8 +68,11 @@ run_test()
- 
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
-+	unset fsstress_pid
- 	_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
-+	unset remount_pid
- 	_btrfs_kill_stress_defrag_pid $defrag_pid
-+	unset defrag_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
- 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
--- 
-2.43.0
-
+> 
+> Thanks,
+> Qu
+> >   }
+> >   /*
 
