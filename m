@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-3663-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3664-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2B6188EC4A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 18:14:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D749388EC37
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 18:12:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33F27B27F9F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 17:12:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 154041C27793
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 17:12:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A15E14EC65;
-	Wed, 27 Mar 2024 17:12:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1FB14EC5B;
+	Wed, 27 Mar 2024 17:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z94/qJ7C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vOrE8dsP"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2B314D70A;
-	Wed, 27 Mar 2024 17:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C969D13E043;
+	Wed, 27 Mar 2024 17:12:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711559524; cv=none; b=AyHLjdIaEvRDcBLJ14bduyiTSUKPoOkWOsDk4hmfj2NftoeTL79lH7lWtIEmRypReZfJXXPwVmBIuneOZ+qQpevUgy6xK6aK1XM93qRvejvyDJG8PANM+RpxtnSfOhKfV+5hLMJpAe4oqyKv5zWFSzL6oBg5uhrIOBEMDlm9VoM=
+	t=1711559525; cv=none; b=etQQ4rVydA5Ir3ObraQbthgD3Ht8Ywc0VtL4pTH61OHPUhY1aYfFuHygd/m7Ky48eXrHBB8Laq4fP0OmSloJEXjJy5hrZ8td8GwYUqe8jSirOPyI1SM2UgnZyO3hBB4gC0NcPfKlwlzx3E2OGfHTe4J7VFLPE117TNeygnGN59M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711559524; c=relaxed/simple;
-	bh=f/azJUMBGXsfSJOxJFP4khx7N7IMoR4krNW88Ug1bgo=;
+	s=arc-20240116; t=1711559525; c=relaxed/simple;
+	bh=rf8bzn44A2EaONt7W6/bPCIPHdoJKNHcHV0jFhxBPtA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fCGn11ZsUHmoGEW50H3zeEgisuA16TBt8f2rpB2CcsYiViZfLBmKzJy7k3L5dtMJKsrmhvup3MLXYOUmBqTHZRxyV9+SVMMJDGGJL5QyUAyw5fNeu5C+PzpkzrHvWL9KtvdvAebilzHT97mr+qzqjIk72MNMoeidUXGoP+lM1rU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z94/qJ7C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BBF7C433F1;
-	Wed, 27 Mar 2024 17:12:02 +0000 (UTC)
+	 MIME-Version; b=krVwWkZ3/A0VE2DQzjjvLYgHlGQ4QiKGQEqlZeGM2y+lPkWwovELkb/gMQQAuYgVKhAh9rnoYRi2GkK15Kuyt/JzlPtiWtLaYmX/0jU8eAgfQF6hpQr6449cVdEG7qF1v89GXzdRNG22jo1e19w7tcrsnna+VE5ia0wNyOuBW1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vOrE8dsP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A633C433C7;
+	Wed, 27 Mar 2024 17:12:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711559524;
-	bh=f/azJUMBGXsfSJOxJFP4khx7N7IMoR4krNW88Ug1bgo=;
+	s=k20201202; t=1711559525;
+	bh=rf8bzn44A2EaONt7W6/bPCIPHdoJKNHcHV0jFhxBPtA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Z94/qJ7CKI4Qi6JLdI0QlPPiJEEwWMvGkh+z5BlbVOoHT5C/kRoj9YkPdbDYU2UMM
-	 c1tPhuBn574M9bGQrcVeYoc9XzDCDHCo2ry6MHvLWoExpKwwuqJviLD3CpXEmN77t/
-	 XHfttjAaq5S4M/yt6Wef8OtxhLS3Gu57QtyY/9eA/Og7Mnn7+XfEy1QGt8A0SY6lxE
-	 +k0UE4i509erLfFwAIa6EqehYV4Cw5r1AP9hONHNPHvVwyn50UA0xWErlnkbfRPlDU
-	 ssMYBrpTT/Wadm+bRgJy7TZH66hH1vjk9z1D/8sdBkSwLntiRxOYzKQ8aFqJYIB9ow
-	 9jSIWMh08IWxQ==
+	b=vOrE8dsPvjLVPW3fdB9P9pJXMNaL3kv6mRhlncKYHugDqFe0ATY6i7ex5btyQ/K1c
+	 9aUcOr2zUpfEDdYxswcChUrcMQ0FSoSENDgtex7Pd7QsGLAUxgsURxGwJORrMaXiwU
+	 vH5SJ+7DBb1U7SgFQF/8wgyD+oejLuLKXSc8mppw85kMG8iFRpSpZ6rN9N7sYuqlqr
+	 BlsJJiDm9nwhEZaUG2uIwC7JTsnY7MhIygE6f3YttFKT4c3o4sHeuyGFfJyDmlEKk9
+	 P6FxMSat+XMnsGA+nm+u2GSkok2NH2o3RYaYsal4wsOJXBYH4A8yWGAKKUuxKsmY7A
+	 q/lLnjDFaAyMA==
 From: fdmanana@kernel.org
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
 	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 08/10] btrfs: add helper to stop background process running _btrfs_stress_subvolume
-Date: Wed, 27 Mar 2024 17:11:42 +0000
-Message-ID: <478d09248cf2a98a59853718197104735edd52c7.1711558345.git.fdmanana@suse.com>
+Subject: [PATCH 09/10] btrfs: remove stop file early at _btrfs_stress_subvolume
+Date: Wed, 27 Mar 2024 17:11:43 +0000
+Message-ID: <5b91f615f28c14274d9ad96c69cd098c1a9a6f9b.1711558345.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1711558345.git.fdmanana@suse.com>
 References: <cover.1711558345.git.fdmanana@suse.com>
@@ -61,121 +61,98 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We have this logic to stop a process running _btrfs_stress_subvolume()
-spread in several test cases:
-
-   touch $stop_file
-   wait $subvol_pid
-
-Add a helper to encapsulate that logic and also remove the stop file after
-the process terminated as there's no point having it around anymore.
-
-This will help to avoid repeating the same code again several times in
-upcoming changes.
+Instead of having every test case that uses _btrfs_stress_subvolume()
+removing the stop file before calling that function, do the file
+remove at _btrfs_stress_subvolume(). There's no point in doing it in
+every single test case.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- common/btrfs    | 12 ++++++++++++
- tests/btrfs/060 |  3 +--
- tests/btrfs/065 |  3 +--
- tests/btrfs/066 |  3 +--
- tests/btrfs/067 |  3 +--
- tests/btrfs/068 |  3 +--
- 6 files changed, 17 insertions(+), 10 deletions(-)
+ common/btrfs    | 1 +
+ tests/btrfs/060 | 2 --
+ tests/btrfs/065 | 2 --
+ tests/btrfs/066 | 2 --
+ tests/btrfs/067 | 2 --
+ tests/btrfs/068 | 2 --
+ 6 files changed, 1 insertion(+), 10 deletions(-)
 
 diff --git a/common/btrfs b/common/btrfs
-index 6d7e7a68..e19a6ad1 100644
+index e19a6ad1..29061c23 100644
 --- a/common/btrfs
 +++ b/common/btrfs
-@@ -340,6 +340,18 @@ _btrfs_stress_subvolume()
- 	done
- }
+@@ -331,6 +331,7 @@ _btrfs_stress_subvolume()
+ 	local subvol_mnt=$4
+ 	local stop_file=$5
  
-+# Kill a background process running _btrfs_stress_subvolume()
-+_btrfs_kill_stress_subvolume_pid()
-+{
-+	local subvol_pid=$1
-+	local stop_file=$2
-+
-+	touch $stop_file
-+	# Ignore if process already died.
-+	wait $subvol_pid &> /dev/null
 +	rm -f $stop_file
-+}
-+
- # stress btrfs by running scrub in a loop
- _btrfs_stress_scrub()
- {
+ 	mkdir -p $subvol_mnt
+ 	while [ ! -e $stop_file ]; do
+ 		$BTRFS_UTIL_PROG subvolume create $btrfs_mnt/$subvol_name
 diff --git a/tests/btrfs/060 b/tests/btrfs/060
-index 58167cc6..87823aba 100755
+index 87823aba..53cbd3a0 100755
 --- a/tests/btrfs/060
 +++ b/tests/btrfs/060
-@@ -56,8 +56,7 @@ run_test()
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
+@@ -46,8 +46,6 @@ run_test()
+ 	balance_pid=$!
+ 	echo "$balance_pid" >>$seqres.full
  
--	touch $stop_file
--	wait $subvol_pid
-+	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
- 	_btrfs_kill_stress_balance_pid $balance_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
+-	# make sure the stop sign is not there
+-	rm -f $stop_file
+ 	echo -n "Start subvolume worker: " >>$seqres.full
+ 	_btrfs_stress_subvolume $SCRATCH_DEV $SCRATCH_MNT subvol_$$ $subvol_mnt $stop_file >/dev/null 2>&1 &
+ 	subvol_pid=$!
 diff --git a/tests/btrfs/065 b/tests/btrfs/065
-index d2b04178..ddc28616 100755
+index ddc28616..f9e43cdc 100755
 --- a/tests/btrfs/065
 +++ b/tests/btrfs/065
-@@ -64,8 +64,7 @@ run_test()
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
+@@ -49,8 +49,6 @@ run_test()
+ 	$FSSTRESS_PROG $args >>$seqres.full &
+ 	fsstress_pid=$!
  
--	touch $stop_file
--	wait $subvol_pid
-+	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
- 	_btrfs_kill_stress_replace_pid $replace_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
+-	# make sure the stop sign is not there
+-	rm -f $stop_file
+ 	echo -n "Start subvolume worker: " >>$seqres.full
+ 	_btrfs_stress_subvolume $SCRATCH_DEV $SCRATCH_MNT subvol_$$ $subvol_mnt $stop_file >/dev/null 2>&1 &
+ 	subvol_pid=$!
 diff --git a/tests/btrfs/066 b/tests/btrfs/066
-index 29821fdd..c7488602 100755
+index c7488602..b6f904ac 100755
 --- a/tests/btrfs/066
 +++ b/tests/btrfs/066
-@@ -56,8 +56,7 @@ run_test()
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
+@@ -41,8 +41,6 @@ run_test()
+ 	$FSSTRESS_PROG $args >>$seqres.full &
+ 	fsstress_pid=$!
  
--	touch $stop_file
--	wait $subvol_pid
-+	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
- 	_btrfs_kill_stress_scrub_pid $scrub_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
+-	# make sure the stop sign is not there
+-	rm -f $stop_file
+ 	echo -n "Start subvolume worker: " >>$seqres.full
+ 	_btrfs_stress_subvolume $SCRATCH_DEV $SCRATCH_MNT subvol_$$ $subvol_mnt $stop_file >/dev/null 2>&1 &
+ 	subvol_pid=$!
 diff --git a/tests/btrfs/067 b/tests/btrfs/067
-index 2bb00b87..ebbec1be 100755
+index ebbec1be..7be09d52 100755
 --- a/tests/btrfs/067
 +++ b/tests/btrfs/067
-@@ -57,8 +57,7 @@ run_test()
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
+@@ -42,8 +42,6 @@ run_test()
+ 	$FSSTRESS_PROG $args >>$seqres.full &
+ 	fsstress_pid=$!
  
--	touch $stop_file
--	wait $subvol_pid
-+	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
- 	_btrfs_kill_stress_defrag_pid $defrag_pid
- 
- 	echo "Scrub the filesystem" >>$seqres.full
+-	# make sure the stop sign is not there
+-	rm -f $stop_file
+ 	echo -n "Start subvolume worker: " >>$seqres.full
+ 	_btrfs_stress_subvolume $SCRATCH_DEV $SCRATCH_MNT subvol_$$ $subvol_mnt $stop_file >/dev/null 2>&1 &
+ 	subvol_pid=$!
 diff --git a/tests/btrfs/068 b/tests/btrfs/068
-index db53254a..5f41fb74 100755
+index 5f41fb74..19e37010 100755
 --- a/tests/btrfs/068
 +++ b/tests/btrfs/068
-@@ -57,8 +57,7 @@ run_test()
- 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
- 	wait $fsstress_pid
+@@ -42,8 +42,6 @@ run_test()
+ 	$FSSTRESS_PROG $args >>$seqres.full &
+ 	fsstress_pid=$!
  
--	touch $stop_file
--	wait $subvol_pid
-+	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
- 	_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
- 
- 	echo "Scrub the filesystem" >>$seqres.full
+-	# make sure the stop sign is not there
+-	rm -f $stop_file
+ 	echo -n "Start subvolume worker: " >>$seqres.full
+ 	_btrfs_stress_subvolume $SCRATCH_DEV $SCRATCH_MNT subvol_$$ $subvol_mnt $stop_file >/dev/null 2>&1 &
+ 	subvol_pid=$!
 -- 
 2.43.0
 
