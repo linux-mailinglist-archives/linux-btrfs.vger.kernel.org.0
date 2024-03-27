@@ -1,162 +1,332 @@
-Return-Path: <linux-btrfs+bounces-3669-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3670-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAE9B88EC90
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 18:24:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE6D688EC9D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 18:27:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53E0F1F31C07
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 17:24:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4E022A39DF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 17:27:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5078214D2B7;
-	Wed, 27 Mar 2024 17:24:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592F214D44E;
+	Wed, 27 Mar 2024 17:27:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="DepJfeXC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="m50FrM+s"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aTBl3vHx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA48F137929
-	for <linux-btrfs@vger.kernel.org>; Wed, 27 Mar 2024 17:24:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7197E12FB3E;
+	Wed, 27 Mar 2024 17:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711560277; cv=none; b=pFokzsLuJ+aemAhnXF4HMlGEJoDOKI1+dtzRJHGgoewca0kFjy0fTbFvj7ymb0uMqPRbfrAAltkPLRK2jhaLFjIa1J/L3T1d1rWfQdW1elcZBPg24fdMKyk95OewDhW2xOzYplQHLS5kncEqUJJO+DzIaf1+kGUymLJZKmp0c+E=
+	t=1711560466; cv=none; b=b4AvYmV5NUcvsylrZSosdbtxol+ku+VAeQVsgsnjaupt7SL8ZSCBb1W08aGWnvycLEyGG/emnqV90PDVv34R0GaQ2Zijegn3yRzeDXz08byObPlPdODDW4AmSxzXT/lYWrn1ayAZSpH8o100DwLaUn6Q7RnBINr8RugPhElp2JI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711560277; c=relaxed/simple;
-	bh=t17r0vREiELZCkory1PUyWE9ToCwROWn/XFv90Gx3Rc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hjsFlj8y2vCuarauheagCqX0a6u4yd1W7Xn+M7k2lZYcHBHQ19Cd+O2aW/8phY8nmdCENle7UKBN91wYufSHwEn+TF71KPByWWd6wUQQxK2KY+/l8Katxw98QnFAinJ1gW6FB6LVKDGBi0CiHIXpsqlwlZgdaIQEzjh0W/WSQpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=DepJfeXC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=m50FrM+s; arc=none smtp.client-ip=64.147.123.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 7DE2B3200906;
-	Wed, 27 Mar 2024 13:24:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 27 Mar 2024 13:24:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1711560274;
-	 x=1711646674; bh=Zrb8jsma23GFnT0xJl7QM+WPIQE1cT+9KW63Hgc9b2g=; b=
-	DepJfeXCk7H34XFxtNZSV2yZIUo5zftHTaAOXYCYaUQorSCh+8KIoy5sIVTkPx8B
-	x9ydNbeQQsOS++XRy+H6/PvsfPcdFwU5Ay2nXOHrCoXGpiGi4lPs2IOywmuBJHuZ
-	KoXf4mvzR/AJ2r0OY6NvsS1cLi2Bhn70V48+1a/T2nEEFvmNdjOw5a61HiACk9k7
-	vEv1C9duZB5Yoxh0G4cH/ZgGevqbF2Otzppcq00xRbHRW9erU2ldzuUVRPqqz8Vy
-	ny0RVPtPxpEUfgn2Yd/nJynRllMb0KBPUNhB+Qd/2g2GzhqrfkQKN2aCofbmTiut
-	rweyCU5TtAlP5Pjzno4Z/A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1711560274; x=
-	1711646674; bh=Zrb8jsma23GFnT0xJl7QM+WPIQE1cT+9KW63Hgc9b2g=; b=m
-	50FrM+sLjvQfN4r6xqMy7rqa2CPUU5fJjwtuWAkTXRNDCKFNzdMTqMDdviShOz76
-	7wWaKBCq/M5IPvjmhjnG8oU4e6DMUhmKmzvPbOMKNS/HTRa845q6QJSfl/ONABOV
-	Khh/rQgF1zvo+GmcaOrRp3dYGhXbrIYYaAx8USgEznUgnIddsFFvqXr1PlOvE3ub
-	gOAfagpku7McwobnsD+aY9jipblvlsdDvKGv8wLrAoZhYbpBrYdXFtMnP32uX0XQ
-	PdUF1ts3ni8LyYxwcvgL8www1nHC6+dLgZwtxsQXvRabj7XE/50YBcLlDhxouBqz
-	xQm2lMFUfE7VeHLHmhfkQ==
-X-ME-Sender: <xms:UVYEZg2u7igDHMj_vFULRQwPV60E2CNyqPMxdQngn9N81W4nsbkavw>
-    <xme:UVYEZrHl8d94uTHfyzuGK8eqyGe3L4iV9JUlZ2kNDmga8E5HDTugolCQr_Dg39wPh
-    X6twYADCPiDo1nFn4U>
-X-ME-Received: <xmr:UVYEZo4q6OKlxyx9m46grn4dQHJhQcZMRiSdH9J541T-GUEcVzTmtpoZn-R-x5k4gQUEp77UQ6a2FW68QsmustPskHA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudduiedgjeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhr
-    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
-    epudelhfdthfetuddvtefhfedtiedtteehvddtkedvledtvdevgedtuedutdeitdeinecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
-    essghurhdrihho
-X-ME-Proxy: <xmx:UVYEZp0e4dbI3nWmnvGK6-BWTLiSWecPbEYfVEJHQ0IBU9YGXm0b8A>
-    <xmx:UVYEZjHbWlqz0Dk6J8hY_bctG6QAH1_zPI8f80H88fdOA6ubUm2GlA>
-    <xmx:UVYEZi_2rylXSk64AT7IHlECnhMGy4GJ2Vta6UqKwsXeYeJUrPXG-A>
-    <xmx:UVYEZomdC__8dpCX-znVdcWrrg-WPPzzRNISrqVWCPYlNhMJtQezwQ>
-    <xmx:UlYEZoS9ue34xfSo8cEMiy2FxAOGlPuadQH43S0YCHKglgkqGSxL6g>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Mar 2024 13:24:33 -0400 (EDT)
-Date: Wed, 27 Mar 2024 10:26:40 -0700
-From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 6/7] btrfs: btrfs_clear_delalloc_extent frees rsv
-Message-ID: <20240327172640.GD2470028@zen.localdomain>
-References: <cover.1711488980.git.boris@bur.io>
- <ce7db2df5f2f7617ac37f7c715a69e476acc7f1d.1711488980.git.boris@bur.io>
- <586364af-9082-4b9f-b1fe-3ed75797d87d@suse.com>
+	s=arc-20240116; t=1711560466; c=relaxed/simple;
+	bh=xq4tevDffl124Rs0SAZHCv/vVKGMDoRQlDy6HZvW3zk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RVBAQquHCYnVtn0iBjUvkwAVEsDWsGhfzH88wIVjnZgAajlQ+NbW/7hSqbGPncIiGky9JJ/jUdmHnPeYq8Qq5oJvCEdU0jCT+FaE4grG4H9HYcuW7uKW0w3xQdgXITjZ9GqdT/lF0i656MSTH3g5CrgUdPjaPvkOhE2YfqODGIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aTBl3vHx; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711560465; x=1743096465;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=xq4tevDffl124Rs0SAZHCv/vVKGMDoRQlDy6HZvW3zk=;
+  b=aTBl3vHxEhYtt+5IgZ8tQDyZq4SZlFZqlphwAYmHjfl2PVWN1fbkIlD0
+   HFYH07iJiKqn9nvp6W7Hb5vKQXBs+UYuBwEqfOA4PkAv1PJK5NLQsOrvN
+   LCgLN5VolMSzjbnXEJGrT3XWsvm7hBVxdTfi+J1KImNq6YkNGUARLCCu/
+   555kn/Sy3IxnA6sePIjxeokbNeBy7ihVo7n5mpG/M4aP0HOZfUBotZH54
+   Al7Xv0HhLiXLHhdtRBxGIrISoWjeLNb8WEq1K1Z1BiiR+6SuvE3H3OSAC
+   RUC2VSeKxHf2XGjK3fJEwEPgN9/Mv1j5BT2IDp6iTa630/2DYlWSFRusq
+   A==;
+X-CSE-ConnectionGUID: wpXd1wosRnG4cypRbuUULw==
+X-CSE-MsgGUID: S+Tg85n7SqiNIfhGmfJIDg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="9640692"
+X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
+   d="scan'208";a="9640692"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 10:27:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,159,1708416000"; 
+   d="scan'208";a="16287061"
+Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.212.56.222]) ([10.212.56.222])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 10:27:43 -0700
+Message-ID: <dde02c34-fcf3-4adc-8920-7fd7fe202d54@intel.com>
+Date: Wed, 27 Mar 2024 10:27:42 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <586364af-9082-4b9f-b1fe-3ed75797d87d@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/26] cxl/region: Add Dynamic Capacity CXL region support
+Content-Language: en-US
+To: ira.weiny@intel.com, Fan Ni <fan.ni@samsung.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Navneet Singh <navneet.singh@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
+ linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-9-b7b00d623625@intel.com>
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-9-b7b00d623625@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 27, 2024 at 08:56:20AM +1030, Qu Wenruo wrote:
-> 
-> 
-> 在 2024/3/27 08:09, Boris Burkov 写道:
-> > Currently, this callsite only converts the reservation. We are marking
-> > it not delalloc, so I don't think it makes sense to keep the rsv around.
-> > This is a path where we are not sure to join a transaction, so it leads
-> > to incorrect free-ing during umount.
-> > 
-> > Helps with the pass rate of generic/269 and generic/475
-> 
-> I guess the problem of all these ENOSPC/hutdown test cases is their
-> reproducibility.
 
-Yeah, it is definitely annoying to have to run generic/269 and
-generic/475 hundreds of times to hit various different flavors of bugs
-and try to drive it to 0. :/ It's hard to be sure that you are actually
-successful and which fixes are definitely 100% necessary.
 
+On 3/24/24 4:18 PM, ira.weiny@intel.com wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
 > 
-> Unlike regular fsstress which can be very reproducible with its seed, it's
-> pretty hard to reproduce a situation where you hit a certain qgroup leak.
+> CXL devices optionally support dynamic capacity.  CXL Regions must be
+> configured correctly to access this capacity.  Similar to ram and pmem
+> partitions, DC Regions, as they are called in CXL 3.1, represent
+> different partitions of the DPA space.
 > 
-> Maybe the qgroup rsv leak detection is a little too strict for aborted
-> transactions?
+> Introduce the concept of a sparse DAX region.  Add the create_dc_region
+> sysfs entry to create sparse DC DAX regions.  Special case DC capable
+> regions to create a 0 sized seed DAX device to maintain backwards
+> compatibility with older software which needs a default DAX device to
+> hold the region reference.
+> 
+> Flag sparse DAX regions to indicate 0 capacity available until such time
+> as DC capacity is added.
+> 
+> Interleaving is deferred in this series.  Add an early check.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes for v1:
+> [djiang: mark sysfs entries to be in 6.10 kernel including date]
+> [djbw: change dax region typing to be 'sparse' rather than 'dynamic']
+> [iweiny: rebase changes to master instead of type2 patches]
+> ---
+>  Documentation/ABI/testing/sysfs-bus-cxl | 22 +++++++++++-----------
+>  drivers/cxl/core/core.h                 |  1 +
+>  drivers/cxl/core/port.c                 |  1 +
+>  drivers/cxl/core/region.c               | 33 +++++++++++++++++++++++++++++++++
+>  drivers/dax/bus.c                       |  8 ++++++++
+>  drivers/dax/bus.h                       |  1 +
+>  drivers/dax/cxl.c                       | 15 +++++++++++++--
+>  7 files changed, 68 insertions(+), 13 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
+> index 8a4f572c8498..f0cf52fff9fa 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-cxl
+> +++ b/Documentation/ABI/testing/sysfs-bus-cxl
+> @@ -411,20 +411,20 @@ Description:
+>  		interleave_granularity).
+>  
+>  
+> -What:		/sys/bus/cxl/devices/decoderX.Y/create_{pmem,ram}_region
+> -Date:		May, 2022, January, 2023
+> -KernelVersion:	v6.0 (pmem), v6.3 (ram)
+> +What:		/sys/bus/cxl/devices/decoderX.Y/create_{pmem,ram,dc}_region
+> +Date:		May, 2022, January, 2023, June 2024
+> +KernelVersion:	v6.0 (pmem), v6.3 (ram), v6.10 (dc)
+>  Contact:	linux-cxl@vger.kernel.org
+>  Description:
+>  		(RW) Write a string in the form 'regionZ' to start the process
+> -		of defining a new persistent, or volatile memory region
+> -		(interleave-set) within the decode range bounded by root decoder
+> -		'decoderX.Y'. The value written must match the current value
+> -		returned from reading this attribute. An atomic compare exchange
+> -		operation is done on write to assign the requested id to a
+> -		region and allocate the region-id for the next creation attempt.
+> -		EBUSY is returned if the region name written does not match the
+> -		current cached value.
+> +		of defining a new persistent, volatile, or Dynamic Capacity
+> +		(DC) memory region (interleave-set) within the decode range
+> +		bounded by root decoder 'decoderX.Y'. The value written must
+> +		match the current value returned from reading this attribute.
+> +		An atomic compare exchange operation is done on write to assign
+> +		the requested id to a region and allocate the region-id for the
+> +		next creation attempt.  EBUSY is returned if the region name
 
-I agree for aborted transactions. It feels like a cheat just to beat the
-warning. There are many failure paths that don't end in an aborted
-transaction that we probably do actually care about, though.
+-EBUSY?
 
-> 
-> Anyway, the patch itself looks fine.
+> +		written does not match the current cached value.
+>  
+>  
+>  What:		/sys/bus/cxl/devices/decoderX.Y/delete_region
+> diff --git a/drivers/cxl/core/core.h b/drivers/cxl/core/core.h
+> index 3b64fb1b9ed0..91abeffbe985 100644
+> --- a/drivers/cxl/core/core.h
+> +++ b/drivers/cxl/core/core.h
+> @@ -13,6 +13,7 @@ extern struct attribute_group cxl_base_attribute_group;
+>  #ifdef CONFIG_CXL_REGION
+>  extern struct device_attribute dev_attr_create_pmem_region;
+>  extern struct device_attribute dev_attr_create_ram_region;
+> +extern struct device_attribute dev_attr_create_dc_region;
+>  extern struct device_attribute dev_attr_delete_region;
+>  extern struct device_attribute dev_attr_region;
+>  extern const struct device_type cxl_pmem_region_type;
+> diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
+> index 036b61cb3007..661177b575f7 100644
+> --- a/drivers/cxl/core/port.c
+> +++ b/drivers/cxl/core/port.c
+> @@ -335,6 +335,7 @@ static struct attribute *cxl_decoder_root_attrs[] = {
+>  	&dev_attr_qos_class.attr,
+>  	SET_CXL_REGION_ATTR(create_pmem_region)
+>  	SET_CXL_REGION_ATTR(create_ram_region)
+> +	SET_CXL_REGION_ATTR(create_dc_region)
+>  	SET_CXL_REGION_ATTR(delete_region)
+>  	NULL,
+>  };
+> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+> index ec3b8c6948e9..0d7b09a49dcf 100644
+> --- a/drivers/cxl/core/region.c
+> +++ b/drivers/cxl/core/region.c
+> @@ -2205,6 +2205,7 @@ static struct cxl_region *devm_cxl_add_region(struct cxl_root_decoder *cxlrd,
+>  	switch (mode) {
+>  	case CXL_REGION_RAM:
+>  	case CXL_REGION_PMEM:
+> +	case CXL_REGION_DC:
+>  		break;
+>  	default:
+>  		dev_err(&cxlrd->cxlsd.cxld.dev, "unsupported mode %s\n",
+> @@ -2314,6 +2315,32 @@ static ssize_t create_ram_region_store(struct device *dev,
+>  }
+>  DEVICE_ATTR_RW(create_ram_region);
+>  
+> +static ssize_t create_dc_region_show(struct device *dev,
+> +				     struct device_attribute *attr, char *buf)
+> +{
+> +	return __create_region_show(to_cxl_root_decoder(dev), buf);
+> +}
+> +
+> +static ssize_t create_dc_region_store(struct device *dev,
+> +				      struct device_attribute *attr,
+> +				      const char *buf, size_t len)
+> +{
+> +	struct cxl_root_decoder *cxlrd = to_cxl_root_decoder(dev);
+> +	struct cxl_region *cxlr;
+> +	int rc, id;
+> +
+> +	rc = sscanf(buf, "region%d\n", &id);
+> +	if (rc != 1)
+> +		return -EINVAL;
+> +
+> +	cxlr = __create_region(cxlrd, CXL_REGION_DC, id);
+> +	if (IS_ERR(cxlr))
+> +		return PTR_ERR(cxlr);
+> +
+> +	return len;
+> +}
+> +DEVICE_ATTR_RW(create_dc_region);
+> +
+>  static ssize_t region_show(struct device *dev, struct device_attribute *attr,
+>  			   char *buf)
+>  {
+> @@ -2759,6 +2786,11 @@ static int devm_cxl_add_dax_region(struct cxl_region *cxlr)
+>  	struct device *dev;
+>  	int rc;
+>  
+> +	if (cxlr->mode == CXL_REGION_DC && cxlr->params.interleave_ways != 1) {
+> +		dev_err(&cxlr->dev, "Interleaving DC not supported\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	cxlr_dax = cxl_dax_region_alloc(cxlr);
+>  	if (IS_ERR(cxlr_dax))
+>  		return PTR_ERR(cxlr_dax);
+> @@ -3040,6 +3072,7 @@ static int cxl_region_probe(struct device *dev)
+>  	case CXL_REGION_PMEM:
+>  		return devm_cxl_add_pmem_region(cxlr);
+>  	case CXL_REGION_RAM:
+> +	case CXL_REGION_DC:
+>  		/*
+>  		 * The region can not be manged by CXL if any portion of
+>  		 * it is already online as 'System RAM'
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index cb148f74ceda..903566aff5eb 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -181,6 +181,11 @@ static bool is_static(struct dax_region *dax_region)
+>  	return (dax_region->res.flags & IORESOURCE_DAX_STATIC) != 0;
+>  }
+>  
+> +static bool is_sparse(struct dax_region *dax_region)
+> +{
+> +	return (dax_region->res.flags & IORESOURCE_DAX_SPARSE_CAP) != 0;
+> +}
+> +
+>  bool static_dev_dax(struct dev_dax *dev_dax)
+>  {
+>  	return is_static(dev_dax->region);
+> @@ -304,6 +309,9 @@ static unsigned long long dax_region_avail_size(struct dax_region *dax_region)
+>  
+>  	WARN_ON_ONCE(!rwsem_is_locked(&dax_region_rwsem));
+>  
+> +	if (is_sparse(dax_region))
+> +		return 0;
+> +
+>  	for_each_dax_region_resource(dax_region, res)
+>  		size -= resource_size(res);
+>  	return size;
+> diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
+> index cbbf64443098..783bfeef42cc 100644
+> --- a/drivers/dax/bus.h
+> +++ b/drivers/dax/bus.h
+> @@ -13,6 +13,7 @@ struct dax_region;
+>  /* dax bus specific ioresource flags */
+>  #define IORESOURCE_DAX_STATIC BIT(0)
+>  #define IORESOURCE_DAX_KMEM BIT(1)
+> +#define IORESOURCE_DAX_SPARSE_CAP BIT(2)
+>  
+>  struct dax_region *alloc_dax_region(struct device *parent, int region_id,
+>  		struct range *range, int target_node, unsigned int align,
+> diff --git a/drivers/dax/cxl.c b/drivers/dax/cxl.c
+> index c696837ab23c..415d03fbf9b6 100644
+> --- a/drivers/dax/cxl.c
+> +++ b/drivers/dax/cxl.c
+> @@ -13,19 +13,30 @@ static int cxl_dax_region_probe(struct device *dev)
+>  	struct cxl_region *cxlr = cxlr_dax->cxlr;
+>  	struct dax_region *dax_region;
+>  	struct dev_dax_data data;
+> +	resource_size_t dev_size;
+> +	unsigned long flags;
+>  
+>  	if (nid == NUMA_NO_NODE)
+>  		nid = memory_add_physaddr_to_nid(cxlr_dax->hpa_range.start);
+>  
+> +	flags = IORESOURCE_DAX_KMEM;
+> +	if (cxlr->mode == CXL_REGION_DC)
+> +		flags |= IORESOURCE_DAX_SPARSE_CAP;
+> +
+>  	dax_region = alloc_dax_region(dev, cxlr->id, &cxlr_dax->hpa_range, nid,
+> -				      PMD_SIZE, IORESOURCE_DAX_KMEM);
+> +				      PMD_SIZE, flags);
+>  	if (!dax_region)
+>  		return -ENOMEM;
+>  
+> +	dev_size = range_len(&cxlr_dax->hpa_range);
+> +	/* Add empty seed dax device */
+> +	if (cxlr->mode == CXL_REGION_DC)
+> +		dev_size = 0;
 
-Thanks for all the review on this series, btw!
+Nit. Just do if/else so dev_size isn't set twice if mode is DC.
 
+> +
+>  	data = (struct dev_dax_data) {
+>  		.dax_region = dax_region,
+>  		.id = -1,
+> -		.size = range_len(&cxlr_dax->hpa_range),
+> +		.size = dev_size,
+>  		.memmap_on_memory = true,
+>  	};
+>  
 > 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> 
-> Thanks,
-> Qu
-> > 
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >   fs/btrfs/inode.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index 2587a2e25e44..273adbb6b812 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -2533,7 +2533,7 @@ void btrfs_clear_delalloc_extent(struct btrfs_inode *inode,
-> >   		 */
-> >   		if (bits & EXTENT_CLEAR_META_RESV &&
-> >   		    root != fs_info->tree_root)
-> > -			btrfs_delalloc_release_metadata(inode, len, false);
-> > +			btrfs_delalloc_release_metadata(inode, len, true);
-> >   		/* For sanity tests. */
-> >   		if (btrfs_is_testing(fs_info))
 
