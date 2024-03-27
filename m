@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-3658-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3659-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0EB888EC32
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 18:12:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC46E88EC33
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 18:12:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F023B1C26986
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 17:12:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FFD91F2D3DE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Mar 2024 17:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B63B414E2E4;
-	Wed, 27 Mar 2024 17:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4BE712F5A0;
+	Wed, 27 Mar 2024 17:11:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uaVh9Ks5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K0pmoB4s"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1AF51304A6;
-	Wed, 27 Mar 2024 17:11:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E603214D439;
+	Wed, 27 Mar 2024 17:11:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711559518; cv=none; b=q+zHGbbY3QSGqxYMsvVklQ4KKcAhXWBsCZ8AY456CuJ0NHbHGMJH+fR78Q5bvUnulVOXMg4UwshyCmkBRk/IaRJK1jcOYBOFzX/ik+ayZ/nv7QFnEtitPaJBY0q1/3NjMRq2IoTFAUY0X1pK7Tz1ssB77MrZSllvSC+0HsDw+ug=
+	t=1711559519; cv=none; b=KC+PVKzuHZJVxJS/ZawdrTOC24uOPrZs4Nb9a/OobTLi0+ykSnLGU3M9kcBe3Gj11qQJAJ4wrPZZ1Q0VUP2Hhir8xmpHOh+gixk8jA3Q+vR1OtiGUqTlc6S5Mu1redNgFBS/k3PO8ULU+s+sOkKxvz9OGCy0EFQ4eLsRONmKZfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711559518; c=relaxed/simple;
-	bh=ykXCDwMyRWtbED3Ezmvr40N9Yt2CVj0igZe+WCNHjz4=;
+	s=arc-20240116; t=1711559519; c=relaxed/simple;
+	bh=6/kSIBnnTuaxbsOQsIl08wSEZZOIpHWuf3lwX6fTGRs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=vB2FXsX0SGV36Y5FrJ6Sob7G6qr8nyU+kwk+a9061EqFot1/YsTaq6hGBVhJ9vJd+EK5byxubLtVCfDL9jZYsYGBt/W+Vx984d6z0rb5vW+huY//SOLE+mMz4wCBf689KsQm3FfwGyqd2T9tu88RpgT5GQfkX5RN92qNJU1msX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uaVh9Ks5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91B32C433B1;
-	Wed, 27 Mar 2024 17:11:56 +0000 (UTC)
+	 MIME-Version; b=LV64uyNuhOpNOLEAroDE+mAjuA4cj0W9FS2mYmIWcDrTZo5+AxuOX6yraIgSNHWkR4UzAoY2Htd4WEEk3hQUqvlXXbCeJGNIO00BtzS40k/u+3neWYHkpeyCGh52Sl7Dh5H4eEHiTXmgKvytllz1erWCXMheivwiMDtIShhqql0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K0pmoB4s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBB6DC43390;
+	Wed, 27 Mar 2024 17:11:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711559517;
-	bh=ykXCDwMyRWtbED3Ezmvr40N9Yt2CVj0igZe+WCNHjz4=;
+	s=k20201202; t=1711559518;
+	bh=6/kSIBnnTuaxbsOQsIl08wSEZZOIpHWuf3lwX6fTGRs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uaVh9Ks5BLLWNTYtfgEzmOkrZ6S8WTXcSnsK6dtP00rpth9RapmsFvlDZqN7IWGYD
-	 X7irz6DYzTGN5wk6XYeKoJFZH51H95cvVuLWq8OlzOCWArTDuqAuFMRiCj282qjLUv
-	 X12HoEJBWdomzbOGtbTfEnr4DHmfqMdVjpeCveN6Vy92yiX+WnFF1XcPOW/gwB+5TZ
-	 nivskJqIHEwU9OCnAX8QJfjQJdV1IeaYuKEHiPwPoKBCeGT886l7/ySl03CBn3WPgX
-	 +OIxWmonSnziiWICAjLU4cXZX086dUh8lGlp0NjEe7iGLAZjoWHd+v6v6USEZFQvk4
-	 zCaQigBpXocHw==
+	b=K0pmoB4sIaAtnW/8LtMzfmH8IZIfrNmVg/AVhO7MXbIx6RrjbU599e53Bs0mS1BKH
+	 3DSc70eWBWfktmoDpOChvcwfpiLL2omYvGwDnuCKyT8mQRNnNjsqhOs6KDAMvQ1VTv
+	 iQsaJIn4odNg5Bz88fW8mFuiQYa50j1sy59NnCnJOKyM4giLhllmcJoZ8LG4RnAINQ
+	 UcGVoM8v3wkzhpHyWaS8QXQLjJih/VYE/W9zWih4bYS+lsc+Ym9F/BjWN3P0yLzOEt
+	 YI1fsrIDjXaSpSN6NuvHahKFvfw8TIrtuWgOABmcNQMbqJJiBJMNNZzEWsJmdCx45F
+	 ym9b+E7OdTyog==
 From: fdmanana@kernel.org
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
 	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 03/10] btrfs/028: removed redundant sync and scratch filesystem unmount
-Date: Wed, 27 Mar 2024 17:11:37 +0000
-Message-ID: <b8c6456cf2e61309ca5347c403c96feb876da48b.1711558345.git.fdmanana@suse.com>
+Subject: [PATCH 04/10] btrfs: add helper to kill background process running _btrfs_stress_scrub
+Date: Wed, 27 Mar 2024 17:11:38 +0000
+Message-ID: <091a8f4e0211299e21c3a3231584d0e8dac49ed1.1711558345.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1711558345.git.fdmanana@suse.com>
 References: <cover.1711558345.git.fdmanana@suse.com>
@@ -61,35 +61,171 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-There's no need to have an explicit scratch filesystem sync and unmount
-at the of the test, as the fstests framework automatically unmounts the
-filesystem and the unmount naturally syncs any data and metadata.
+Killing a background process running _btrfs_stress_scrub() is not as
+simple as sending a signal to the process and waiting for it to die.
+Therefore we have the following logic to terminate such process:
 
-So remove them and update the comment to be more clear.
+   kill $pid
+   wait $pid
+   while ps aux | grep "scrub start" | grep -qv grep; do
+       sleep 1
+   done
+
+Since this is repeated in several test cases, move this logic to a common
+helper and use it in all affected test cases. This will help to avoid
+repeating the same code again several times in upcoming changes.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- tests/btrfs/028 | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ common/btrfs    | 14 ++++++++++++++
+ tests/btrfs/061 |  7 +------
+ tests/btrfs/066 |  8 ++------
+ tests/btrfs/069 | 11 +++++------
+ tests/btrfs/072 | 11 +++++------
+ tests/btrfs/073 | 11 +++++------
+ 6 files changed, 32 insertions(+), 30 deletions(-)
 
-diff --git a/tests/btrfs/028 b/tests/btrfs/028
-index 8fbe8887..0c96b2fe 100755
---- a/tests/btrfs/028
-+++ b/tests/btrfs/028
-@@ -48,11 +48,8 @@ kill $fsstress_pid &> /dev/null
- wait $fsstress_pid &> /dev/null
- _btrfs_kill_stress_balance_pid $balance_pid
+diff --git a/common/btrfs b/common/btrfs
+index e95cff7f..d0adeea1 100644
+--- a/common/btrfs
++++ b/common/btrfs
+@@ -349,6 +349,20 @@ _btrfs_stress_scrub()
+ 	done
+ }
  
--_run_btrfs_util_prog filesystem sync $SCRATCH_MNT
--
--_scratch_unmount
--
--# qgroup will be checked at _check_scratch_fs() by fstest.
-+# The qgroups accounting will be checked by 'btrfs check' (fsck) after the
-+# fstests framework unmounts the filesystem.
- echo "Silence is golden"
- status=0
++# Kill a background process running _btrfs_stress_scrub()
++_btrfs_kill_stress_scrub_pid()
++{
++       local scrub_pid=$1
++
++       # Ignore if process already died.
++       kill $scrub_pid &> /dev/null
++       wait $scrub_pid &> /dev/null
++       # Wait for the scrub operation to finish.
++       while ps aux | grep "scrub start" | grep -qv grep; do
++               sleep 1
++       done
++}
++
+ # stress btrfs by defragmenting every file/dir in a loop and compress file
+ # contents while defragmenting if second argument is not "nocompress"
+ _btrfs_stress_defrag()
+diff --git a/tests/btrfs/061 b/tests/btrfs/061
+index d0b55e48..b8b2706c 100755
+--- a/tests/btrfs/061
++++ b/tests/btrfs/061
+@@ -52,12 +52,7 @@ run_test()
+ 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
+ 	wait $fsstress_pid
+ 	_btrfs_kill_stress_balance_pid $balance_pid
+-	kill $scrub_pid
+-	wait $scrub_pid
+-	# wait for the crub operation to finish
+-	while ps aux | grep "scrub start" | grep -qv grep; do
+-		sleep 1
+-	done
++	_btrfs_kill_stress_scrub_pid $scrub_pid
  
+ 	echo "Scrub the filesystem" >>$seqres.full
+ 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
+diff --git a/tests/btrfs/066 b/tests/btrfs/066
+index a29034bb..29821fdd 100755
+--- a/tests/btrfs/066
++++ b/tests/btrfs/066
+@@ -57,12 +57,8 @@ run_test()
+ 	wait $fsstress_pid
+ 
+ 	touch $stop_file
+-	kill $scrub_pid
+-	wait
+-	# wait for the scrub operation to finish
+-	while ps aux | grep "scrub start" | grep -qv grep; do
+-		sleep 1
+-	done
++	wait $subvol_pid
++	_btrfs_kill_stress_scrub_pid $scrub_pid
+ 
+ 	echo "Scrub the filesystem" >>$seqres.full
+ 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
+diff --git a/tests/btrfs/069 b/tests/btrfs/069
+index 139dde48..20f44b39 100755
+--- a/tests/btrfs/069
++++ b/tests/btrfs/069
+@@ -59,17 +59,16 @@ run_test()
+ 
+ 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
+ 	wait $fsstress_pid
+-	kill $replace_pid $scrub_pid
+-	wait
++	kill $replace_pid
++	wait $replace_pid
+ 
+-	# wait for the scrub and replace operations to finish
+-	while ps aux | grep "scrub start" | grep -qv grep; do
+-		sleep 1
+-	done
++	# wait for the replace operation to finish
+ 	while ps aux | grep "replace start" | grep -qv grep; do
+ 		sleep 1
+ 	done
+ 
++	_btrfs_kill_stress_scrub_pid $scrub_pid
++
+ 	echo "Scrub the filesystem" >>$seqres.full
+ 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
+ 	if [ $? -ne 0 ]; then
+diff --git a/tests/btrfs/072 b/tests/btrfs/072
+index 4b6b6fb5..6c15b51f 100755
+--- a/tests/btrfs/072
++++ b/tests/btrfs/072
+@@ -52,16 +52,15 @@ run_test()
+ 
+ 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
+ 	wait $fsstress_pid
+-	kill $scrub_pid $defrag_pid
+-	wait
+-	# wait for the scrub and defrag operations to finish
+-	while ps aux | grep "scrub start" | grep -qv grep; do
+-		sleep 1
+-	done
++	kill $defrag_pid
++	wait $defrag_pid
++	# wait for the defrag operation to finish
+ 	while ps aux | grep "btrfs filesystem defrag" | grep -qv grep; do
+ 		sleep 1
+ 	done
+ 
++	_btrfs_kill_stress_scrub_pid $scrub_pid
++
+ 	echo "Scrub the filesystem" >>$seqres.full
+ 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
+ 	if [ $? -ne 0 ]; then
+diff --git a/tests/btrfs/073 b/tests/btrfs/073
+index b1604f94..49a4abd1 100755
+--- a/tests/btrfs/073
++++ b/tests/btrfs/073
+@@ -51,16 +51,15 @@ run_test()
+ 
+ 	echo "Wait for fsstress to exit and kill all background workers" >>$seqres.full
+ 	wait $fsstress_pid
+-	kill $scrub_pid $remount_pid
+-	wait
+-	# wait for the scrub and remount operations to finish
+-	while ps aux | grep "scrub start" | grep -qv grep; do
+-		sleep 1
+-	done
++	kill $remount_pid
++	wait $remount_pid
++	# wait for the remount operation to finish
+ 	while ps aux | grep "mount.*$SCRATCH_MNT" | grep -qv grep; do
+ 		sleep 1
+ 	done
+ 
++	_btrfs_kill_stress_scrub_pid $scrub_pid
++
+ 	echo "Scrub the filesystem" >>$seqres.full
+ 	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
+ 	if [ $? -ne 0 ]; then
 -- 
 2.43.0
 
