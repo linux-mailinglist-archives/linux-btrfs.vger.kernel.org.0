@@ -1,141 +1,212 @@
-Return-Path: <linux-btrfs+bounces-3730-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3731-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90096890260
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 15:56:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B52789047C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 17:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49FFC292D17
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 14:56:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5BD01F25A14
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 16:05:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776887E56E;
-	Thu, 28 Mar 2024 14:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30BC8004E;
+	Thu, 28 Mar 2024 16:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b="qUFYMjjJ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DzRRc/vw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0T17xhGT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455D47D41B
-	for <linux-btrfs@vger.kernel.org>; Thu, 28 Mar 2024 14:55:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2692682870
+	for <linux-btrfs@vger.kernel.org>; Thu, 28 Mar 2024 16:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711637749; cv=none; b=VgBdg5z3OXJbj1EMPERbn9PHtOjqXVQzshlF8cKN58fWH/Lt12TqodtXm+A3uRN7Xe/NZneEoTKv8gwe3F+rs0WOkLS+Jtz5k+AJhB94x2If9hsTt7D6792OCrvAPu6wirjOKblAZmBAeqjTDNhG36udReI5RkGvU8toB1tm0jU=
+	t=1711641912; cv=none; b=Z1U0G7pWh5PfwQBzc4j7w5XTnl5HntAMpIpY9q1nhZavV0d2dcszujJdowCpMSsWWjZrQSk5IUMxtLwFNwQ6SoKgaa5CYVSIlpPDCFAdIz/LnQIUDQS03vAVHz8EpAiV3zDiGy9NuSByF6rLrEPLpBh22N/d7HnTXUl7WKsUhZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711637749; c=relaxed/simple;
-	bh=QYHCgSLjdhx1YM4bbdbUccP95C2ZmlHzL9gwglrhY5Q=;
-	h=Message-ID:Subject:From:To:In-Reply-To:References:Content-Type:
-	 Date:MIME-Version; b=Q+/mIalEZt8DQxraIVEMsmwuVCSP2a4OrukorTFs/by9SZOscJ4RyLsO8rscQb4vVxqtpx9EnvvSpKu/Gca86fpZ26yc9E/j+VBUqcv2UxSrxIBWVHTynM1yiEYN/fur00yS3icwiEGxcFtqk4ANUhWnuFI5WIWzrVMQPNQuhAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b=qUFYMjjJ; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
-	s=s31663417; t=1711637745; x=1712242545; i=massimo.b@gmx.net;
-	bh=fyEMO52Zjap6lywcay89PsqsAK141YA5ZZlaFECzVdY=;
-	h=X-UI-Sender-Class:Subject:From:To:In-Reply-To:References:Date;
-	b=qUFYMjjJqX3zeRBM2Lcn+pjHobEXPLnzTvZ0TzrdDM9MVUQC8p42z3UckPmnwokL
-	 dgMPYvXR6j6TbL/CDzJTzCrnRwnWNAncNP+VUTjZ3ciQUncXIGx13UxlBBZYm3RuK
-	 fNNaVFmKzvtE+EHxpCFaxizkZBGY7Gf7F3OPuNYego64ciBsps8UL6NDmBlciCFpj
-	 MYhMfa7TF7lTf2mHuh8Qfi/vpjR3NgEXMNo7fYXocluKdLzunlllmn4iH2LAIhbDi
-	 rJGjNGtGtkp+THAyMCEOrQ2bogIzQAOzqzf/4jXSIRB4NUewMgE9H+q6oSZ1mrv1Q
-	 5bKQYkMAwMNFQGbQew==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from gentoo ([77.3.87.21]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MsHns-1sjLP03iTi-00tgfB; Thu, 28
- Mar 2024 15:55:44 +0100
-Message-ID: <94addf02f0eac5e5f402f48f41d16cb80d17470b.camel@gmx.net>
-Subject: Re: I/O blocked after booting
-From: "Massimo B." <massimo.b@gmx.net>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs
-	 <linux-btrfs@vger.kernel.org>
-In-Reply-To: <47440995279bdba442678e807499fff05ee49302.camel@gmx.net>
-References: <238dc2b36f27838baf02425b364705c58fcc5de5.camel@gmx.net>
-	 <22650868-6777-41ae-a068-37821929be7c@gmx.com>
-	 <47440995279bdba442678e807499fff05ee49302.camel@gmx.net>
-Face:
- iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABGUlEQVQYlUWQsUoDQRCGv71LjB7KSSBwwZCTgFhY2EYIHmJnZRMLo5AXUMRCBMHcE6iPoGBlINpoZXGVeQTFKqSxMgYtTBFcZw7EKfZn2Z2Z7//hr2ysZ+5tqFLmWKVaKKs0vWd9TJx2AibmoQcupj6CCZirqTgzA5hmsdtQWe5/xAREX7uJ3MLP9x4lyieNO5mcOxyM8HH79y/4Cdn9R3JDsts/uGO82yOMJf/ah1Y8tfQEIQt7Z7rCawtNiUpHFgYUdgTxgI1NAW6SvxoqWabbw0Bd5jpQibTNBC1F4nIMk2TWhTqIs+fSVpzfCsVR9eaiJf5W6mtWXK7O+vKR4nWkSYSuFbP4No3Ht6dpSN9pSMYmaXI1/usXT0FM3SoTKAAAAAAASUVORK5CYII=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 28 Mar 2024 15:55:15 +0100
+	s=arc-20240116; t=1711641912; c=relaxed/simple;
+	bh=JiiA7sW9T3PKI55xrDZeFTEIM8JCpXd3FDpCBjmeKJQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L7d5mOIZ9QykZZ3S4qFmIHvr5HI4YncPUuoQZLL/0jrq+1vY6cGVlq+X7iUrrMrT0Ew8unXheXVsOnurI8gQaM0m6MXA7Z793EUk2Naw49dFhXoy8E9d4XYeOjYaSB9ltDbEKdNQl4dfKhXeuraBrurhnVFUUpLl4psI8Xz+PtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DzRRc/vw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0T17xhGT; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C823320B5F;
+	Thu, 28 Mar 2024 16:05:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1711641905;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LFVonQetH1ard+Xf5Rs4IFJMbaT2YM0TM9484Vr5csc=;
+	b=DzRRc/vwP0IVBuUnR0FAxTEb4z1o8RmFffROOOKKTKXqBf3rV3br2zfVlKRzVUC1LTg1AQ
+	lL7C7myXuffYwktvAXJAVI+qnP+m1+B9++oIihnRzDl6HU7lO/9KFwYHHxMFg6kbCFpiAC
+	zCYuLAPTOWrBzJUoJ/7nQsHsZOOPdi8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1711641905;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LFVonQetH1ard+Xf5Rs4IFJMbaT2YM0TM9484Vr5csc=;
+	b=0T17xhGT6apCA0il+vhTV1fqj7TC4u2QyVp9pGYFJCD/VTiC6rlcxNde/NFPVZ05IIT6vg
+	k+jzr8R1ugOHXaAA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A58C113A92;
+	Thu, 28 Mar 2024 16:05:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id IhMcKDGVBWaHcAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Thu, 28 Mar 2024 16:05:05 +0000
+Date: Thu, 28 Mar 2024 16:57:46 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, Julian Taylor <julian.taylor@1und1.de>,
+	Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH v2] btrfs: do not wait for short bulk allocation
+Message-ID: <20240328155746.GY14596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <3484c7d6ad25872c59039702f4a7c08ae72771a2.1711406789.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Evolution 3.50.2 
-X-Provags-ID: V03:K1:+amTk3dmmmMozgHq4Lgk8MhPGxnZvQhx1t0dTWMF0oc7vBdb5hG
- cHmUySIGkXw0yFKw015IeBQVgKpnSSMmz9ztelpqP/S+/hzoaHvghcbScWJCH/mTSwIUEXn
- U8JjlnShYtOs2IpluXtAx2/zkAMZSX41/B3ztD4RPTb0tK3/WtQ6SsVbLsm4ar5KKnpfaUr
- 1rgyXOxQ30Elu12x3rOVA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3484c7d6ad25872c59039702f4a7c08ae72771a2.1711406789.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -2.31
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:bvpqUg/YOOc=;qewJ8p13uEupGBatMEy613JITvh
- POXFf3QZnkhSwIDr0JKJwOZGghqT1XtaMkO9mmPE0tPTiMnsbHw5LeTxO+7vl5nPHbvmhVOJF
- kAWMeh3mKr9u8K829lDPmEcnD5YMRLEipHDpzHrItr+QrXoJzYi1f+YNuynCA21BwwSpea12D
- rpfCges/2aTsIXjaW8STYhtCSCgYLzBvb4GJCXugR6SUA6wokqsXNB82BSYnWVGdlJtnZWYkB
- 8YFimM8hceiFKOYb2Udli4JVFbYxzzrQUMxlJVPRobUI/usEe6vx3/uQFH6zHJxmATd5wnrov
- l9bKVw+jH1ViSBS5CbyC/RooihIMFuzLBEBQUpSMphix24H4Im04Fdy8beoLNVf25Lnkv7KJE
- eeVYrDUVl88HLiOaZSuUXhQYVCHwntemT33c/4dlMc3qApBhs+0gXxzIc/epqzMIbUpySz07m
- eAzvFqvbRYgybOkl8OHdos1CL/MxlRhZGhXN7Ah020Crkn53csCKK/S+RW7NDpQca4bQprzuf
- IRXHGTHlZHQOXtHnKQMks7/W98jrY2+cBqhAvPv+xDyDlehjsNcNxkkel2eXPAalnGE8+Y7ht
- Mx/SP+CI7wSrTaI9F3e7NuBnOv+kg7Lvc6oQfhfJazSY8Pnuib4d9NKAAYjtmSgw5Q3ZeSCaf
- PixDKsizgKkyAI/i/duOdce7HTp+UaDG+pCZtV/+eJW2bAgrF6KsAGfwIualK8c+4Gd5Fx+aq
- PC1E763JSkmVJgrVKQFMtHh9PWnZ2a0fZ80ZiVwjegROsxM52rTMqAoJpmOZ+oNIMQjzO/b6j
- v6xUuizgrVlUUFUBdChd2Dc+BxrBg/J8xbpsxza0OY94Q=
+X-Spamd-Result: default: False [-2.31 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:106:10:150:64:167:received];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Level: 
+X-Rspamd-Queue-Id: C823320B5F
 
-On Thu, 2024-03-28 at 11:39 +0100, Massimo B. wrote:
+On Tue, Mar 26, 2024 at 09:16:46AM +1030, Qu Wenruo wrote:
+> [BUG]
+> There is a recent report that when memory pressure is high (including
+> cached pages), btrfs can spend most of its time on memory allocation in
+> btrfs_alloc_page_array() for compressed read/write.
+> 
+> [CAUSE]
+> For btrfs_alloc_page_array() we always go alloc_pages_bulk_array(), and
+> even if the bulk allocation failed (fell back to single page
+> allocation) we still retry but with extra memalloc_retry_wait().
+> 
+> If the bulk alloc only returned one page a time, we would spend a lot of
+> time on the retry wait.
+> 
+> The behavior was introduced in commit 395cb57e8560 ("btrfs: wait between
+> incomplete batch memory allocations").
+> 
+> [FIX]
+> Although the commit mentioned that other filesystems do the wait, it's
+> not the case at least nowadays.
+> 
+> All the mainlined filesystems only call memalloc_retry_wait() if they
+> failed to allocate any page (not only for bulk allocation).
+> If there is any progress, they won't call memalloc_retry_wait() at all.
+> 
+> For example, xfs_buf_alloc_pages() would only call memalloc_retry_wait()
+> if there is no allocation progress at all, and the call is not for
+> metadata readahead.
+> 
+> So I don't believe we should call memalloc_retry_wait() unconditionally
+> for short allocation.
+> 
+> This patch would only call memalloc_retry_wait() if failed to allocate
+> any page for tree block allocation (which goes with __GFP_NOFAIL and may
+> not need the special handling anyway), and reduce the latency for
+> btrfs_alloc_page_array().
 
-> Mar 28 11:38:26 [kernel] [14826.740669] BTRFS warning (device dm-0): fail=
-ed to
-> trim 698 block group(s), last error -512
-> Mar 28 11:38:26 [kernel] [14826.741731] BTRFS warning (device dm-0): fail=
-ed to
-> trim 1 device(s), last error -512
+Is this saying that it can fail with GFP_NOFAIL?
 
+> Reported-by: Julian Taylor <julian.taylor@1und1.de>
+> Tested-by: Julian Taylor <julian.taylor@1und1.de>
+> Link: https://lore.kernel.org/all/8966c095-cbe7-4d22-9784-a647d1bf27c3@1und1.de/
+> Fixes: 395cb57e8560 ("btrfs: wait between incomplete batch memory allocations")
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Still use bulk allocation function
+>   Since alloc_pages_bulk_array() would fall back to single page
+>   allocation by itself, there is no need to go alloc_page() manually.
+> 
+> - Update the commit message to indicate other fses do not call
+>   memalloc_retry_wait() unconditionally
+>   In fact, they only call it when they need to retry hard and can not
+>   really fail.
+> ---
+>  fs/btrfs/extent_io.c | 22 +++++++++-------------
+>  1 file changed, 9 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 7441245b1ceb..c96089b6f388 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -681,31 +681,27 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
+>  int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
+>  			   gfp_t extra_gfp)
+>  {
+> +	const gfp_t gfp = GFP_NOFS | extra_gfp;
+>  	unsigned int allocated;
+>  
+>  	for (allocated = 0; allocated < nr_pages;) {
+>  		unsigned int last = allocated;
+>  
+> -		allocated = alloc_pages_bulk_array(GFP_NOFS | extra_gfp,
+> -						   nr_pages, page_array);
+> +		allocated = alloc_pages_bulk_array(gfp, nr_pages, page_array);
+> +		if (unlikely(allocated == last)) {
+> +			/* Can not fail, wait and retry. */
+> +			if (extra_gfp & __GFP_NOFAIL) {
+> +				memalloc_retry_wait(GFP_NOFS);
 
-I have set nodiscard now on all my btrfs on SSDs...
-For not rebooting I did  mount -o remount,nodiscard /
-and I see in the syslog: turning off async discard
+Can this happen? alloc_pages_bulk_array() should not fail when
+GFP_NOFAIL is passed, there are two allocation phases in
+__alloc_pages_bulk() and if it falls back to __alloc_pages() + NOFAIL it
+will not fail ... so what's the point of the retry?
 
- Eventhough fstrim was finishing one time with
-/: 157,3 GiB (168907370496 bytes) trimmed on /dev/mapper/luks-6745....
-
-... now running again, it does not return, and in the syslog I see:
-[kernel] BTRFS warning (device dm-0): failed to trim 143 block group(s), la=
-st
-error -512
-
-dmsetup table
-shows allow_discards on that device.
-
-
-Again I did  mount -o remount,nodiscard /
-
-But this time I don't see in the syslog  "turning off async discard"   so i=
-t
-seems to be still disabled.
-
-grep " / " /proc/mounts
-shows nothing about discard or nodiscard in the options.
-
-What can I do about that failed to trim?
-I have tried this on different disks like
-
-Samsung SSD 970 EVO Plus 1TB NVMe
-and
-Samsung SSD 860 EVO 1TB SATA
-
-Trying again after the failed to trim, I got it finished again with
-156,8 GiB (168413265920 bytes) trimmed
-
-Should fstrim be fast if it was just finished some minutes before? Why ther=
-e are
-again more than 100GiB to be trimmed shortly after the last run?
-
-Is there anything broken with the trim on these devices?
-
-Best regards,
-Massimo
+Anyway the whole thing with NOFAIL flag that's passed only from
+alloc_extent_buffer() could be made a bit more straightforward. The gfp
+flags replaced by a bool with 'nofail' semantics or 2 helpers one that
+is for normal use an the one for the special purpose.
 
