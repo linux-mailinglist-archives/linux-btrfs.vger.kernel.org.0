@@ -1,313 +1,193 @@
-Return-Path: <linux-btrfs+bounces-3692-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3694-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A579688F49C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 02:30:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF44188F54C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 03:24:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9C271C2B3A8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 01:30:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D07F1F2B26D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 02:24:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D61DA2943A;
-	Thu, 28 Mar 2024 01:30:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFEE23A1AB;
+	Thu, 28 Mar 2024 02:22:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="aduGABxW"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="GEt4AnPl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from box.fidei.email (box.fidei.email [71.19.144.250])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530FE208C1;
-	Thu, 28 Mar 2024 01:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.144.250
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4A939AE7
+	for <linux-btrfs@vger.kernel.org>; Thu, 28 Mar 2024 02:22:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711589408; cv=none; b=oFqvq1IafdbW03m250IW0g4QC57NIlnHKTOSNbpRLAaqj0X3BFzNb7aDT4KcoE9o9tlu2/dYi8TfSL1hvN16plB6S7L2VfnBVwuL/GOZ/lMBOGCNADpSaWfYemCCH+PSLmdR4l5mVy6WsSaKUz0muUCBNKqH3LrX8JO0iWoA/hI=
+	t=1711592569; cv=none; b=lLbhz8gqJAQsgO7islxO/cKdydfTM6/74tBBv6N9kCZUea7JPTcO0h71EVbrNb8k9JABxU3Osi/fAuyR9rI3ayhX53wh9mc6GArRbKikMOBm2bgbDsaDNFcrf/0gs9UnW8Xlhme/nkyMzwu3sQk/uaN6KW1I1L/A6QPdA99XH88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711589408; c=relaxed/simple;
-	bh=yWcbsUZELeQA21L3wIoPVhVw/tkcUP8fMSPRMJWRbcE=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VW7RYa03Y27PUo8lL6p/Sene4zuNJb8WYPLgVrZymh0i9kqNvmpV/M2QySnHPuGr8sX6fWRNKfyHcHDSi+0+ekcx5raA+a0P3mY4qPb35KhqRvi3MOyOeU45rNBu7yHMfx+kRJqnA7iuLvfDwgmAsUEjtFo8U7ttuMxfQqHX0NQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me; spf=pass smtp.mailfrom=dorminy.me; dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b=aduGABxW; arc=none smtp.client-ip=71.19.144.250
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
-Received: from authenticated-user (box.fidei.email [71.19.144.250])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	by box.fidei.email (Postfix) with ESMTPSA id 5CBA0827CE;
-	Wed, 27 Mar 2024 21:30:00 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
-	t=1711589400; bh=yWcbsUZELeQA21L3wIoPVhVw/tkcUP8fMSPRMJWRbcE=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=aduGABxWKK84h1Cf6+B5n7yHOh+xvTujiJ38Za1meaLkp461kHfG3k3X/X6Zo3qGA
-	 C2ZxjdeV2vFERqGJxgcb/yx3xqNtnfBGicvA+ceP9QNxjFTd0irTgjgdM4ScsV3kAs
-	 B/jVAGOJUlpUnpaT+yPhKfkrasiXnvBRxZfdkBjICAH1ls0SQ7WWFn5ekrfyawKKs0
-	 npIFRTjowxPeI+Rb7Z1gHzMLElLkQls1bj3GLiwq/7mmAaSc/b5rUj1XP9X37d9iE1
-	 rFvZ2NiB2fY3pa2dl9IXO34EOuxsldcDgt/9mJRzU7etXKnLrIL+QmVUxrZADMZI6g
-	 gBvzU4QdeaeLQ==
-From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-To: Jonathan Corbet <corbet@lwn.net>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-	linux-doc@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH v2 5/5] btrfs: fiemap: return extent physical size
-Date: Wed, 27 Mar 2024 21:22:23 -0400
-Message-ID: <93686d5c4467befe12f76e4921bfc20a13a74e2d.1711588701.git.sweettea-kernel@dorminy.me>
-In-Reply-To: <cover.1711588701.git.sweettea-kernel@dorminy.me>
-References: <cover.1711588701.git.sweettea-kernel@dorminy.me>
+	s=arc-20240116; t=1711592569; c=relaxed/simple;
+	bh=I+0xNAEnZAE2e8ytDXOjqvSGv4JLuL5g7okJAHTBbsU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HJHvGJwJIKHbAuggpUJHTGG4XCkbgDjTcYIQotoKyt06bRI37a+iG+OlvRMwvGkWsTXP6lOqJMWwK+3fJk92LLnlC9qfE528RxYOb1ST969EzeG7BRN4tDZDpMW42CsE89o6bONCWCmI4bQU/aJdGt6f4EzLLBCdBtgcRzwrMcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=GEt4AnPl; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1711592563; x=1712197363; i=quwenruo.btrfs@gmx.com;
+	bh=+1/ixRFuqyJTXaMpAYLIGuw/meaWtU4nsHCviANBXuQ=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=GEt4AnPlm1h2vEIAo3raB4zj6ZbFfS8sKvYH5/0KKp/TJajrQ2ByXpJiJXK/kqor
+	 BeSXESc2ATsviQTuqV+QgoYUfXSoICOM/RMK8fMmDSubcmQSUrBzSIuv77jrq7H3V
+	 dbhPP6L83NZutNEpgp5IX61HKtrvr5lYtNBuGfElJYWNIzuX36jGnhHcNEriAs/g8
+	 PjEmMGGYUCiotScczD0jMhKbnzbqV4L5dNUOG/4rLnNK5kw5YgzGhABUn5m4Nj1Ua
+	 iud7S0/2Y9TrfSPSh52fosQXkwIQ0MFKgEj+GtPn+luohaGWphxAdt0Kd5a1oIOmQ
+	 Qg/zwO4J5vAG9d+lJg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1fii-1srIeA3WlU-011wQ1; Thu, 28
+ Mar 2024 03:22:43 +0100
+Message-ID: <750c6ff1-8d33-4470-b914-be8e10a9e678@gmx.com>
+Date: Thu, 28 Mar 2024 12:52:39 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/6] btrfs: compression: migrate to folio interfaces
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1706521511.git.wqu@suse.com>
+ <20240326233335.GV14596@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240326233335.GV14596@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:2DEoeH7ZN8q+NZOVbC+PlI/gaQKZdflUHUJ5ECrsL92BVgT6UB0
+ QjdGrefNuSqWROgZPIRl0udbMz1HG3MRKn1VuYnWkbpU4zbl0bEngbUkwfPOq+o4tejDv0D
+ /OhHtS9c0ISeix8bxiy0R1VHeUd5yRPq0c1l8frNDym255HMTpiE6GA4ix85dMiDVvDNTmD
+ ujrbd5l1wd+LR1SvXvr7A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:rzVBQmLX9js=;BAUScCJNc/CP8ciCAiRaiuo9GsJ
+ FjKz5DwaGzqbo+bpkr/IbhqeuOyIhTV5mOS0UISv3lgq1zj6muEzOb74o6ZBN0dR/p/gNj8qn
+ xiyD8vZYBreufXE0gmjECZfOio6Zug968qrlMxpp1ei1Y50K/TqGZqnZDBWFw+Unvn+mbA6Zk
+ MECe7uMoIHJczrlSki0KWsp9t6ooUzVQIxjBlvP9flrEf6+8xI8t0UfuGfXFVx1Rqa3IyB/RR
+ GXpm9vsq3heO5pIoMPjWsv5dg3r28S+W+DiAO+0I6fP/V2j0PxAXrhrwXv3PNnLcekdnLZ6sg
+ kKA/JhonU0Zw9zgfMSPaP+iLA3iYO0wxzua5VRJMg/YIAl/G9N5uPGLiu8kjijTd7cDAlojxC
+ 7jU0oyWohygfUv4O6eo1b6KZDFZKoB4VEZwUAkWpKjM72ntC/Tb3KikRM4VJWgi+SgkGD0hTs
+ 1skbPI9lcM3nKoxzoVRPtyh2lnHtkkFoqsQ3I3ByR8T//pVNeCdoGPeTw9kuLgqMbQKa9UW0b
+ r/YabvlkBvMpnPOlmEdblbGrRfkxghR2ST9WyHZzjtUNtb36yVXSRLp4JUSDcni3fVleWi3wo
+ iNqc95tG4guGmfa0b+qEK3aHFkpZwOTbjz4q4jDNgMtd/Rm8OprpTHeWQd0RF4JpnRYgrYuOo
+ un+zma9hWXAdXiL3XUgaagzGqvGE73p9NPf2v/wehUcvgXRJBtOvgqQT9cJSpCqD8yzqiRQO7
+ kQi4fC0XWGcTGHpoaKSC0koWcutV0ebAy1BS/4d3hf9PWpqG2Pk4QRnLPCot53TSk6UPvv6iS
+ CSZAaxhiG2LRf5zgZfBC21qXJTypepwzM2UisQcyRxsMk=
 
-Now that fiemap allows returning extent physical size, make btrfs return
-the appropriate extent's actual disk size.
 
-Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
----
- fs/btrfs/extent_io.c | 70 ++++++++++++++++++++++++++++----------------
- 1 file changed, 45 insertions(+), 25 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 30fcbb9393fe..9921dc1567d6 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2456,7 +2456,8 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
- struct btrfs_fiemap_entry {
- 	u64 offset;
- 	u64 phys;
--	u64 len;
-+	u64 log_len;
-+	u64 phys_len;
- 	u32 flags;
- };
- 
-@@ -2514,7 +2515,8 @@ struct fiemap_cache {
- 	/* Fields for the cached extent (unsubmitted, not ready, extent). */
- 	u64 offset;
- 	u64 phys;
--	u64 len;
-+	u64 log_len;
-+	u64 phys_len;
- 	u32 flags;
- 	bool cached;
- };
-@@ -2527,8 +2529,8 @@ static int flush_fiemap_cache(struct fiemap_extent_info *fieinfo,
- 		int ret;
- 
- 		ret = fiemap_fill_next_extent(fieinfo, entry->offset,
--					      entry->phys, entry->len, 0,
--					      entry->flags);
-+					      entry->phys, entry->log_len,
-+					      entry->phys_len, entry->flags);
- 		/*
- 		 * Ignore 1 (reached max entries) because we keep track of that
- 		 * ourselves in emit_fiemap_extent().
-@@ -2553,7 +2555,8 @@ static int flush_fiemap_cache(struct fiemap_extent_info *fieinfo,
-  */
- static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 				struct fiemap_cache *cache,
--				u64 offset, u64 phys, u64 len, u32 flags)
-+				u64 offset, u64 phys, u64 log_len,
-+				u64 phys_len, u32 flags)
- {
- 	struct btrfs_fiemap_entry *entry;
- 	u64 cache_end;
-@@ -2561,6 +2564,9 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 	/* Set at the end of extent_fiemap(). */
- 	ASSERT((flags & FIEMAP_EXTENT_LAST) == 0);
- 
-+	/* We always set the correct physical length. */
-+	flags |= FIEMAP_EXTENT_HAS_PHYS_LEN;
-+
- 	if (!cache->cached)
- 		goto assign;
- 
-@@ -2596,7 +2602,7 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 	 * or equals to what we have in cache->offset. We deal with this as
- 	 * described below.
- 	 */
--	cache_end = cache->offset + cache->len;
-+	cache_end = cache->offset + cache->log_len;
- 	if (cache_end > offset) {
- 		if (offset == cache->offset) {
- 			/*
-@@ -2620,10 +2626,10 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 			 * where a previously found file extent item was split
- 			 * due to an ordered extent completing.
- 			 */
--			cache->len = offset - cache->offset;
-+			cache->log_len = offset - cache->offset;
- 			goto emit;
- 		} else {
--			const u64 range_end = offset + len;
-+			const u64 range_end = offset + log_len;
- 
- 			/*
- 			 * The offset of the file extent item we have just found
-@@ -2656,11 +2662,13 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 			if (range_end <= cache_end)
- 				return 0;
- 
--			if (!(flags & (FIEMAP_EXTENT_DATA_COMPRESSED | FIEMAP_EXTENT_DELALLOC)))
-+			if (!(flags & (FIEMAP_EXTENT_DATA_COMPRESSED | FIEMAP_EXTENT_DELALLOC))) {
- 				phys += cache_end - offset;
-+				phys_len -= cache_end - offset;
-+			}
- 
- 			offset = cache_end;
--			len = range_end - cache_end;
-+			log_len = range_end - cache_end;
- 			goto emit;
- 		}
- 	}
-@@ -2670,15 +2678,17 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 	 * 1) Their logical addresses are continuous
- 	 *
- 	 * 2) Their physical addresses are continuous
--	 *    So truly compressed (physical size smaller than logical size)
--	 *    extents won't get merged with each other
- 	 *
- 	 * 3) Share same flags
-+	 *
-+	 * 4) Not compressed
- 	 */
--	if (cache->offset + cache->len  == offset &&
--	    cache->phys + cache->len == phys  &&
--	    cache->flags == flags) {
--		cache->len += len;
-+	if (cache->offset + cache->log_len  == offset &&
-+	    cache->phys + cache->log_len == phys  &&
-+	    cache->flags == flags &&
-+	    !(flags & FIEMAP_EXTENT_DATA_COMPRESSED)) {
-+		cache->log_len += log_len;
-+		cache->phys_len += phys_len;
- 		return 0;
- 	}
- 
-@@ -2695,7 +2705,7 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 		 * to miss it.
- 		 */
- 		entry = &cache->entries[cache->entries_size - 1];
--		cache->next_search_offset = entry->offset + entry->len;
-+		cache->next_search_offset = entry->offset + entry->log_len;
- 		cache->cached = false;
- 
- 		return BTRFS_FIEMAP_FLUSH_CACHE;
-@@ -2704,7 +2714,8 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 	entry = &cache->entries[cache->entries_pos];
- 	entry->offset = cache->offset;
- 	entry->phys = cache->phys;
--	entry->len = cache->len;
-+	entry->log_len = cache->log_len;
-+	entry->phys_len = cache->phys_len;
- 	entry->flags = cache->flags;
- 	cache->entries_pos++;
- 	cache->extents_mapped++;
-@@ -2717,7 +2728,8 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 	cache->cached = true;
- 	cache->offset = offset;
- 	cache->phys = phys;
--	cache->len = len;
-+	cache->log_len = log_len;
-+	cache->phys_len = phys_len;
- 	cache->flags = flags;
- 
- 	return 0;
-@@ -2743,7 +2755,8 @@ static int emit_last_fiemap_cache(struct fiemap_extent_info *fieinfo,
- 		return 0;
- 
- 	ret = fiemap_fill_next_extent(fieinfo, cache->offset, cache->phys,
--				      cache->len, 0, cache->flags);
-+				      cache->log_len, cache->phys_len,
-+				      cache->flags);
- 	cache->cached = false;
- 	if (ret > 0)
- 		ret = 0;
-@@ -2937,13 +2950,15 @@ static int fiemap_process_hole(struct btrfs_inode *inode,
- 			}
- 			ret = emit_fiemap_extent(fieinfo, cache, prealloc_start,
- 						 disk_bytenr + extent_offset,
--						 prealloc_len, prealloc_flags);
-+						 prealloc_len, prealloc_len,
-+						 prealloc_flags);
- 			if (ret)
- 				return ret;
- 			extent_offset += prealloc_len;
- 		}
- 
- 		ret = emit_fiemap_extent(fieinfo, cache, delalloc_start, 0,
-+					 delalloc_end + 1 - delalloc_start,
- 					 delalloc_end + 1 - delalloc_start,
- 					 FIEMAP_EXTENT_DELALLOC |
- 					 FIEMAP_EXTENT_UNKNOWN);
-@@ -2984,7 +2999,8 @@ static int fiemap_process_hole(struct btrfs_inode *inode,
- 		}
- 		ret = emit_fiemap_extent(fieinfo, cache, prealloc_start,
- 					 disk_bytenr + extent_offset,
--					 prealloc_len, prealloc_flags);
-+					 prealloc_len, prealloc_len,
-+					 prealloc_flags);
- 		if (ret)
- 			return ret;
- 	}
-@@ -3130,6 +3146,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		u64 extent_offset = 0;
- 		u64 extent_gen;
- 		u64 disk_bytenr = 0;
-+		u64 disk_size = 0;
- 		u64 flags = 0;
- 		int extent_type;
- 		u8 compression;
-@@ -3192,7 +3209,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 			flags |= FIEMAP_EXTENT_DATA_INLINE;
- 			flags |= FIEMAP_EXTENT_NOT_ALIGNED;
- 			ret = emit_fiemap_extent(fieinfo, &cache, key.offset, 0,
--						 extent_len, flags);
-+						 extent_len, extent_len, flags);
- 		} else if (extent_type == BTRFS_FILE_EXTENT_PREALLOC) {
- 			ret = fiemap_process_hole(inode, fieinfo, &cache,
- 						  &delalloc_cached_state,
-@@ -3207,6 +3224,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 						  backref_ctx, 0, 0, 0,
- 						  key.offset, extent_end - 1);
- 		} else {
-+			disk_size = btrfs_file_extent_disk_num_bytes(leaf, ei);
- 			/* We have a regular extent. */
- 			if (fieinfo->fi_extents_max) {
- 				ret = btrfs_is_data_extent_shared(inode,
-@@ -3221,7 +3239,9 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 
- 			ret = emit_fiemap_extent(fieinfo, &cache, key.offset,
- 						 disk_bytenr + extent_offset,
--						 extent_len, flags);
-+						 extent_len,
-+						 disk_size - extent_offset,
-+						 flags);
- 		}
- 
- 		if (ret < 0) {
-@@ -3259,7 +3279,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		prev_extent_end = range_end;
- 	}
- 
--	if (cache.cached && cache.offset + cache.len >= last_extent_end) {
-+	if (cache.cached && cache.offset + cache.log_len >= last_extent_end) {
- 		const u64 i_size = i_size_read(&inode->vfs_inode);
- 
- 		if (prev_extent_end < i_size) {
--- 
-2.43.0
+=E5=9C=A8 2024/3/27 10:03, David Sterba =E5=86=99=E9=81=93:
+> On Mon, Jan 29, 2024 at 08:16:05PM +1030, Qu Wenruo wrote:
+>> This is the conversion for btrfs compression paths to use folio
+>> interfaces.
+>>
+>> For now, it's a pure intrefaces change, just with some variable names
+>> also changed from "page" to "folio".
+>>
+>> There is no utilization of possible larger folio size yet, thus we're
+>> still using a lot of PAGE_SIZE/PAGE_SHIFT in the existing code.
+>>
+>> But it's still a good first step towards large folio for btrfs data.
+>>
+>> The first patch is in fact independent from the series, to slightly
+>> enhance the page cache missing error handling, but all later patches
+>> relies on it, to make later folio change a little smoother.
+>>
+>> The third patch is also a good cleanup, as it allows we to pass a singl=
+e
+>> page to inline creation path.
+>> Although during tests, it turns out that under heavy race we can try to
+>> insert an empty inline extent, but since the old code can handle it
+>> well, I just added one comment for it.
+>>
+>> The remaining but the last one are some preparation before the final
+>> conversion.
+>>
+>> And the final patch is the core conversion, as we have several structur=
+e
+>> relying on page array, it's impossible to just convert one algorithm to
+>> folio meanwhile keep all the other using pages.
+>>
+>>
+>> Qu Wenruo (6):
+>>    btrfs: compression: add error handling for missed page cache
+>>    btrfs: compression: convert page allocation to folio interfaces
+>>    btrfs: make insert_inline_extent() to accept one page directly
+>>    btrfs: migrate insert_inline_extent() to folio interfaces
+>>    btrfs: introduce btrfs_alloc_folio_array()
+>>    btrfs: compression: migrate compression/decompression paths to folio=
+s
+>
+> I added this patchset to my misc-next and it was in linux-next until
+> now. The bug that was a blocker for folio conversions is now fixed,
+> also thanks to you, so we can continue with the conversions. As this
+> patchset is 2 months old I'm not sure if it would be helpful to start
+> commenting and do the normal iteration round, I did a review and style
+> fixup round and moved it to for-next. Please have a look and let me know
+> if you find something wrong. I did mostly whitespace changes, though I
+> did remove the ASSERT(0), if there's btrfs_crit message it's quite
+> noticeable, and removed the local variable for fs_info in the first one.
+>
+> The conversions are all direct and seem safe to me, we won't do
+> multi-page folios yet, so the intemediate steps are the right way to go.
+> Thanks.
+>
 
+Well, since I'm reading through all the commits in misc-next, I found
+some typos from myself:
+
+- btrfs: prefer to allocate larger folio for metadata
+   * No longer no smaller, must be an exact fit.
+     No larger no smaller, ...
+
+   * So here we go a different workaround, allocate a order 2 folio first
+                                       ... allocate an order 2 ...
+
+And these patches must be dropped:
+
+- btrfs: defrag: prepare defrag for larger data folio size
+- btrfs: introduce cached folio size
+
+   These two introduced and utilize fs_info->folio_shift, for filemap
+   code, which is completely wrong. As filemap always expect an index
+   with PAGE_SHIFT.
+
+Otherwise the commits look fine to me.
+
+Thanks,
+Qu
 
