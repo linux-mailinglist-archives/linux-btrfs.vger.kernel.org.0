@@ -1,63 +1,52 @@
-Return-Path: <linux-btrfs+bounces-3739-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3740-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 371EE890AA8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 21:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6B7E890B41
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 21:25:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE0471F28470
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 20:10:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5315D1F27F1D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 20:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A12139CF1;
-	Thu, 28 Mar 2024 20:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043F113AD07;
+	Thu, 28 Mar 2024 20:24:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kr4kmRks"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="sXpLabkp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B99B135A4D;
-	Thu, 28 Mar 2024 20:10:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 674E613AA22
+	for <linux-btrfs@vger.kernel.org>; Thu, 28 Mar 2024 20:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711656603; cv=none; b=aPZZPD0ZxZu8esOU7PLuOb5z3/vVDCh9c+kPhvyPl8WX26PgLu4Mv07a5VXT6pAguORkSztIGbmp1oP5O7W//s79D0ZHdTslwOEVDgx8bIgvuyLF55WxDUELaKKrzhspvN/ROzvSBiEbENz3YfeAt20WqAHAfOkHqy7ZUHJsYU8=
+	t=1711657441; cv=none; b=Mt491Lvc3QsM3nNd6H4ObjLIxssqmGpRdUB0qhfcYsyU9VypBGMZDj1QbyGKA/I4eCymlCwbZykb1wJeSplj5RZnWeynEqknn6x6c+JqpgHpa14cKp8dDr+IAlzl+63a2Xyr3BrkcqjHygvPewZYZ9n/MsT/gtjBkeuHBrYFfzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711656603; c=relaxed/simple;
-	bh=B0boc5nHCqXEMmaaCwtZm9t/Mtn0OCgA0SpVDAjwwB0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bAdMZiNkxJVn4amjD+akpbwZjOMwnZsEW7JKyAzEDAjp7p/pOsEBtmJybB4AxIwmBbamXPs3DVirBFqbrC04tRDB0CqbDiFyKM1vQFDaO7p6laqHTmZwzXaHWcgtO6UFGWL5uk3D+BqhU+diCrX3ZZriXIQgweLrR8/YJm7KBuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kr4kmRks; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711656601; x=1743192601;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=B0boc5nHCqXEMmaaCwtZm9t/Mtn0OCgA0SpVDAjwwB0=;
-  b=kr4kmRkscLEaxzJht2ojccT2z6JlyIgh5EqOzIsrSUc9XTJ4J6G31EAh
-   8DvO/EjWlbhaRjq+xbwjPq1rXaVVCkiZZcb1V7ZU4V6Lq/ZzlpW5/u9Ef
-   FhXE+v7YrG1Do+iLy3vOLkzfIdALmO6+QlUFLU9ISWXGpUNmf3PH0+Aol
-   RZsHjrB82QO0f/gG6Wft6Mjih1f8jMXtJH0O54N4EZwU2GvvcgZdrzx3S
-   z6fGdQHn1nreudEbJDOmUCdJEF/8lQljk01pOkin2XgYUHDGollWA/p4/
-   VSSfJMeWNHH3aa0loKf1c1cr6P5aUf6LWd0gjpbm4mFPal6v1n+kQju9t
-   g==;
-X-CSE-ConnectionGUID: snKe/knISP6l9VsurJsrEg==
-X-CSE-MsgGUID: a+oiXOLGQeGMvwDoL7FsHg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11027"; a="24326334"
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="24326334"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 13:10:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,162,1708416000"; 
-   d="scan'208";a="16633871"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.212.81.17]) ([10.212.81.17])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2024 13:09:59 -0700
-Message-ID: <3cfc1dd4-e1a1-4d87-86f6-0f1833185172@intel.com>
-Date: Thu, 28 Mar 2024 13:09:59 -0700
+	s=arc-20240116; t=1711657441; c=relaxed/simple;
+	bh=OGixinJxAUZspwvtFXdqMxL77SnIGI7R+YN8YsdQmyM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ex9XE1HNQ9w0OBHSFcxj0dypI2ixmxjZetOQ/OrkDvjA0vv91LpX0Dcv9UuHLDHTushpPeNXe3kuPofAizAaLjtJS6x4DkjtatikO8oRtfEDiSK9ws5pXlRA8D60oQfa1Mf7pQ0OPBk2Z49zxdgbOoqvgisfv2M2bIqoI2E2Cis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=sXpLabkp; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1711657436; x=1712262236; i=quwenruo.btrfs@gmx.com;
+	bh=xLjX/8hjbdR/HgjSonT+sXXh7Rsdcm6ZFEmSqcXMvNE=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=sXpLabkp7xk5kQRWdtudi96sw8rObyHRWzVe2VgD7EUQzYENlzO5k8oqOb/kuhQm
+	 flSYl/1IiSZrwQOeGl9lS1Vq+klj5rAJU4QtdjjVQkXvD9GwkQrHiSxwG868N4bMX
+	 X1WhSf/bjDSBn1mNVvwUgYLBNsB9Nz2/UMOowfQvd9uydCp0nRHhiS3yHBgL21frM
+	 IUGU1V+sKg+Hl4r1Y6OXI+BFNTMf1+R+yVGn6wCaiJGCD4ykWVUTds9u15r8o6zDl
+	 XaM7YlmNZ+wUHr+T2S3ZJziqUxw5+mWLKSxSEha/AjRx/67p1aOhRXYqiu1icStOS
+	 cUFomplLx388po1Avg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MEFvp-1rxOww3PvB-00AHYw; Thu, 28
+ Mar 2024 21:23:56 +0100
+Message-ID: <874a2dc5-191f-4e20-9f18-998a107b09a5@gmx.com>
+Date: Fri, 29 Mar 2024 06:53:52 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -65,114 +54,123 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/26] range: Add range_overlaps()
+Subject: Re: I/O blocked after booting
+To: "Massimo B." <massimo.b@gmx.net>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <238dc2b36f27838baf02425b364705c58fcc5de5.camel@gmx.net>
+ <22650868-6777-41ae-a068-37821929be7c@gmx.com>
+ <47440995279bdba442678e807499fff05ee49302.camel@gmx.net>
+ <94addf02f0eac5e5f402f48f41d16cb80d17470b.camel@gmx.net>
 Content-Language: en-US
-To: Ira Weiny <ira.weiny@intel.com>, Fan Ni <fan.ni@samsung.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Navneet Singh <navneet.singh@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>,
- Davidlohr Bueso <dave@stgolabs.net>,
- Alison Schofield <alison.schofield@intel.com>,
- Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
- linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
- Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-15-b7b00d623625@intel.com>
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-15-b7b00d623625@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <94addf02f0eac5e5f402f48f41d16cb80d17470b.camel@gmx.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9RLlIHOAED1b1p0a7MJnwjSfB7wFKw54pDosiL8UymGTs59sv9H
+ ZsKvoajG2d5w1v319MVw/DOr0wCvrE20RdwMmRWerRflQP9sZD26ytXKkJYBYiFX2KJCMiJ
+ xywhejcPPRLXlsqDDfFJIyxMFzbCizyayE7vqsIt3obiuq0Fhnvw5ERDktjd278zgTnaQUz
+ RjxbOstLxxCikV9db9U7w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:kcwasbH0NO4=;ZMVhqJSWxye7+WUfn05LqW8a+sH
+ SeJpMeBdOn8I6HNywfbTKWUM3/sglivm+cAAdWRr/swluIoCvKwY12D/pF2PYz9GFnH9FlzQA
+ wcXMzTlC3ctuH3MqsB18UbBnHPSV+O8v4gDVPsw1PbAA9RcYYhk+79pCa/+Wuhj+4YCpb11yq
+ 10VfHN2OwB3legKxKlZP6K6HXnfs+GL4YqDz6iwcD+8CL42B1ztYPdkNyKEIsM33WWpEAMSCo
+ Rsm+MECz0oB1Hl33T3ChjFRxc2cIeKMoIhPTp2sqNuF+CCtGCrSQB2k28g6XISir5JSOuUcc7
+ lfGcCQdpy2l57gchg0sGQSSO+puawyiW2MQFtPoRKbfcuKbCs+B+jlVHFzaexc+5PaTKH49ck
+ WStoix+7hCtiOy7xvV4ChYluwBQ4cGljO9r9RdmmhrKBs9DnYq0D7jsxdT9IbrDhcXYV0C7u0
+ OjnR0hG7Y+u5zrXx9q86F4mXkg8YrVdp9ux9ozODXvlk5X9w9qjJiXXynUmgT3MQYBHpVMKf1
+ rHPG40FRuFBskmEoZ74PNoA/XgJgNJGhoMpOKOkym6ifP5uro3QnXnCMZmeG8T5L9aXBP1RjA
+ EVPMVkfUVJEFz8oKzZHHpWDVSgexzSYBM7NUugAMND1hs4S0/SSHuBhmIl4f7gXU6W05a81ry
+ nh6diX7TNm0s6j/6ERG9bSnveeUWMPQBNtyqWmVTerAuy7Nu0ry2TMBoMmMOa4gVQYcZLzHB3
+ jHo9txKYJ+MlqtjLaBv3/TZvOmgc9ZlTvhf4w8XFQb1s5Oiu79TpjX072KpGI8QNCOYlWTT00
+ 1/6J4vVRx4olZX9gBCGH6VHj/Es+4SHLF4VLRy2T+HKy8=
 
 
 
-On 3/24/24 4:18 PM, Ira Weiny wrote:
-> Code to support CXL Dynamic Capacity devices will have extent ranges
-> which need to be compared for intersection not a subset as is being
-> checked in range_contains().
-> 
-> range_overlaps() is defined in btrfs with a different meaning from what
-> is required in the standard range code.  Dan Williams pointed this out
-> in [1].  Adjust the btrfs call according to his suggestion there.
-> 
-> Then add a generic range_overlaps().
-> 
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Chris Mason <clm@fb.com>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: David Sterba <dsterba@suse.com>
-> Cc: linux-btrfs@vger.kernel.org
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+=E5=9C=A8 2024/3/29 01:25, Massimo B. =E5=86=99=E9=81=93:
+> On Thu, 2024-03-28 at 11:39 +0100, Massimo B. wrote:
+>
+>> Mar 28 11:38:26 [kernel] [14826.740669] BTRFS warning (device dm-0): fa=
+iled to
+>> trim 698 block group(s), last error -512
+>> Mar 28 11:38:26 [kernel] [14826.741731] BTRFS warning (device dm-0): fa=
+iled to
+>> trim 1 device(s), last error -512
+>
+>
+> I have set nodiscard now on all my btrfs on SSDs...
+> For not rebooting I did  mount -o remount,nodiscard /
+> and I see in the syslog: turning off async discard
 
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> 
-> [1] https://lore.kernel.org/all/65949f79ef908_8dc68294f2@dwillia2-xfh.jf.intel.com.notmuch/
-> ---
->  fs/btrfs/ordered-data.c | 10 +++++-----
->  include/linux/range.h   |  7 +++++++
->  2 files changed, 12 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index 59850dc17b22..032d30a49edc 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -111,8 +111,8 @@ static struct rb_node *__tree_search(struct rb_root *root, u64 file_offset,
->  	return NULL;
->  }
->  
-> -static int range_overlaps(struct btrfs_ordered_extent *entry, u64 file_offset,
-> -			  u64 len)
-> +static int btrfs_range_overlaps(struct btrfs_ordered_extent *entry, u64 file_offset,
-> +				u64 len)
->  {
->  	if (file_offset + len <= entry->file_offset ||
->  	    entry->file_offset + entry->num_bytes <= file_offset)
-> @@ -914,7 +914,7 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_range(
->  
->  	while (1) {
->  		entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
-> -		if (range_overlaps(entry, file_offset, len))
-> +		if (btrfs_range_overlaps(entry, file_offset, len))
->  			break;
->  
->  		if (entry->file_offset >= file_offset + len) {
-> @@ -1043,12 +1043,12 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
->  	}
->  	if (prev) {
->  		entry = rb_entry(prev, struct btrfs_ordered_extent, rb_node);
-> -		if (range_overlaps(entry, file_offset, len))
-> +		if (btrfs_range_overlaps(entry, file_offset, len))
->  			goto out;
->  	}
->  	if (next) {
->  		entry = rb_entry(next, struct btrfs_ordered_extent, rb_node);
-> -		if (range_overlaps(entry, file_offset, len))
-> +		if (btrfs_range_overlaps(entry, file_offset, len))
->  			goto out;
->  	}
->  	/* No ordered extent in the range */
-> diff --git a/include/linux/range.h b/include/linux/range.h
-> index 6ad0b73cb7ad..9a46f3212965 100644
-> --- a/include/linux/range.h
-> +++ b/include/linux/range.h
-> @@ -13,11 +13,18 @@ static inline u64 range_len(const struct range *range)
->  	return range->end - range->start + 1;
->  }
->  
-> +/* True if r1 completely contains r2 */
->  static inline bool range_contains(struct range *r1, struct range *r2)
->  {
->  	return r1->start <= r2->start && r1->end >= r2->end;
->  }
->  
-> +/* True if any part of r1 overlaps r2 */
-> +static inline bool range_overlaps(struct range *r1, struct range *r2)
-> +{
-> +	return r1->start <= r2->end && r1->end >= r2->start;
-> +}
-> +
->  int add_range(struct range *range, int az, int nr_range,
->  		u64 start, u64 end);
->  
-> 
+I mean you should not do any fstrim/discard to see if everything works
+fine first.
+
+This is to make sure the problem is really from the trim/discard part.
+
+Thanks,
+Qu
+>
+>   Eventhough fstrim was finishing one time with
+> /: 157,3 GiB (168907370496 bytes) trimmed on /dev/mapper/luks-6745....
+>
+> ... now running again, it does not return, and in the syslog I see:
+> [kernel] BTRFS warning (device dm-0): failed to trim 143 block group(s),=
+ last
+> error -512
+>
+> dmsetup table
+> shows allow_discards on that device.
+>
+>
+> Again I did  mount -o remount,nodiscard /
+>
+> But this time I don't see in the syslog  "turning off async discard"   s=
+o it
+> seems to be still disabled.
+>
+> grep " / " /proc/mounts
+> shows nothing about discard or nodiscard in the options.
+>
+> What can I do about that failed to trim?
+> I have tried this on different disks like
+>
+> Samsung SSD 970 EVO Plus 1TB NVMe
+> and
+> Samsung SSD 860 EVO 1TB SATA
+>
+> Trying again after the failed to trim, I got it finished again with
+> 156,8 GiB (168413265920 bytes) trimmed
+>
+> Should fstrim be fast if it was just finished some minutes before? Why t=
+here are
+> again more than 100GiB to be trimmed shortly after the last run?
+>
+> Is there anything broken with the trim on these devices?
+>
+> Best regards,
+> Massimo
 
