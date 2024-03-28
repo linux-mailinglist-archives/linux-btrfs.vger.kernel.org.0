@@ -1,117 +1,141 @@
-Return-Path: <linux-btrfs+bounces-3729-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3730-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 063158900EA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 14:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90096890260
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 15:56:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEDCD2958AB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 13:57:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49FFC292D17
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Mar 2024 14:56:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B0CB12D1E9;
-	Thu, 28 Mar 2024 13:56:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776887E56E;
+	Thu, 28 Mar 2024 14:55:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b="qUFYMjjJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7830083A08;
-	Thu, 28 Mar 2024 13:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455D47D41B
+	for <linux-btrfs@vger.kernel.org>; Thu, 28 Mar 2024 14:55:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711634201; cv=none; b=I3r3tbAVop4pt/5unkDJWQZWvcOZtNJopMNFrhm4OCme78SoFzbUreJeK7KacH3+Ctxc5m1VhizZcCyXiQvo2BkbFa7Q+4WEZ8XL9+sisXi68i0X3rRJUjOjMm2f+qVZaOHo16TQso9iAJlrMiv2ydZk7A0+/8ViDbD5egH0tEo=
+	t=1711637749; cv=none; b=VgBdg5z3OXJbj1EMPERbn9PHtOjqXVQzshlF8cKN58fWH/Lt12TqodtXm+A3uRN7Xe/NZneEoTKv8gwe3F+rs0WOkLS+Jtz5k+AJhB94x2If9hsTt7D6792OCrvAPu6wirjOKblAZmBAeqjTDNhG36udReI5RkGvU8toB1tm0jU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711634201; c=relaxed/simple;
-	bh=zCWARO4cU6ipBjqQ0ides2u7RHSpySTD3YjFyt5mff8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZK8KWiHn/uqa3YPojoRqSOSrqR+GptlNXuY8Vtzf3LgLRs+hOoEiKbHR2B4XVXOPiyJFPiuEJqt8SQGBpuusC+LY15jofBP/o2qEOKr8OmtUz+YUbftkW5dHO4AiARC8EBj7tbnz4ws3yJDzfFNNAgUgAMJpMj071Ht1qvX0a84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4141156f245so6984525e9.2;
-        Thu, 28 Mar 2024 06:56:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711634198; x=1712238998;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jnf2sQ/2dHHFn3aPbM4EqErtjtbBBjy2+Un0IzylCkY=;
-        b=qgoxpadkEXWNa6MEDG52puX7geva75oJQGLgWSuHjjwTg6Xl4EjUL4289sWkJRlrni
-         FIQgWUnLbXkq99O1ns/MPdfXhuHP6Vo9pOQjx80MVpgmq9pXAT2pKMzLP2j8NeGqa4mn
-         ot8n+CE0tRIcAAj2HQi5HJq+x1ifAf+pbJ0W63/XwG6/9lccolrZJ+A2bevBLhZeC2tB
-         eRiUZF1hJdfAb9FJzIc4LYiLlhuTstKq1+XDCG8sYmw8fPXtTQWsnXPcoD6gCDpg5Jng
-         899G24aVF761CJssJ9u49wuMyHAqZgMow44AmpEh8r1WFKJwRxMhztlrBn5MGnwHcmlU
-         x33g==
-X-Forwarded-Encrypted: i=1; AJvYcCWmVkd8XM38uiAf4nYDyIJNDOtGrzjMyeM5YrgRdgG7C5sV5K7LQFJymqmSLXGor4ejfp6GenMrs8qUX9YQYQVcHQ7NXviiGSBcnDIH
-X-Gm-Message-State: AOJu0YwkvY8x15Hrm7ONYHXBxDFmsBhXuiyckhNfmVMtkFvidDxT3D9q
-	ndn1Sm9Fe5VXwCq6cTMIhqjJydYS4hxoS5ixmQWQJ6iNf+pVF+IA
-X-Google-Smtp-Source: AGHT+IHSc0Ag57wUydtZUmvEIUV8BIzYY3xcCT7jti83u0Y+vnsmmK+sU5mP7C00IW8aorHW0nWMBg==
-X-Received: by 2002:a05:600c:4593:b0:414:9456:2f61 with SMTP id r19-20020a05600c459300b0041494562f61mr2215120wmo.14.1711634197795;
-        Thu, 28 Mar 2024 06:56:37 -0700 (PDT)
-Received: from [127.0.0.1] (p200300f6f7068b00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f706:8b00:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id o10-20020a05600c510a00b004148a5e3188sm5519570wms.25.2024.03.28.06.56.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 06:56:37 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-Date: Thu, 28 Mar 2024 14:56:33 +0100
-Subject: [PATCH RFC PATCH 3/3] btrfs: zoned: kick cleaner kthread if low on
- space
+	s=arc-20240116; t=1711637749; c=relaxed/simple;
+	bh=QYHCgSLjdhx1YM4bbdbUccP95C2ZmlHzL9gwglrhY5Q=;
+	h=Message-ID:Subject:From:To:In-Reply-To:References:Content-Type:
+	 Date:MIME-Version; b=Q+/mIalEZt8DQxraIVEMsmwuVCSP2a4OrukorTFs/by9SZOscJ4RyLsO8rscQb4vVxqtpx9EnvvSpKu/Gca86fpZ26yc9E/j+VBUqcv2UxSrxIBWVHTynM1yiEYN/fur00yS3icwiEGxcFtqk4ANUhWnuFI5WIWzrVMQPNQuhAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b=qUFYMjjJ; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1711637745; x=1712242545; i=massimo.b@gmx.net;
+	bh=fyEMO52Zjap6lywcay89PsqsAK141YA5ZZlaFECzVdY=;
+	h=X-UI-Sender-Class:Subject:From:To:In-Reply-To:References:Date;
+	b=qUFYMjjJqX3zeRBM2Lcn+pjHobEXPLnzTvZ0TzrdDM9MVUQC8p42z3UckPmnwokL
+	 dgMPYvXR6j6TbL/CDzJTzCrnRwnWNAncNP+VUTjZ3ciQUncXIGx13UxlBBZYm3RuK
+	 fNNaVFmKzvtE+EHxpCFaxizkZBGY7Gf7F3OPuNYego64ciBsps8UL6NDmBlciCFpj
+	 MYhMfa7TF7lTf2mHuh8Qfi/vpjR3NgEXMNo7fYXocluKdLzunlllmn4iH2LAIhbDi
+	 rJGjNGtGtkp+THAyMCEOrQ2bogIzQAOzqzf/4jXSIRB4NUewMgE9H+q6oSZ1mrv1Q
+	 5bKQYkMAwMNFQGbQew==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from gentoo ([77.3.87.21]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MsHns-1sjLP03iTi-00tgfB; Thu, 28
+ Mar 2024 15:55:44 +0100
+Message-ID: <94addf02f0eac5e5f402f48f41d16cb80d17470b.camel@gmx.net>
+Subject: Re: I/O blocked after booting
+From: "Massimo B." <massimo.b@gmx.net>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs
+	 <linux-btrfs@vger.kernel.org>
+In-Reply-To: <47440995279bdba442678e807499fff05ee49302.camel@gmx.net>
+References: <238dc2b36f27838baf02425b364705c58fcc5de5.camel@gmx.net>
+	 <22650868-6777-41ae-a068-37821929be7c@gmx.com>
+	 <47440995279bdba442678e807499fff05ee49302.camel@gmx.net>
+Face:
+ iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABGUlEQVQYlUWQsUoDQRCGv71LjB7KSSBwwZCTgFhY2EYIHmJnZRMLo5AXUMRCBMHcE6iPoGBlINpoZXGVeQTFKqSxMgYtTBFcZw7EKfZn2Z2Z7//hr2ysZ+5tqFLmWKVaKKs0vWd9TJx2AibmoQcupj6CCZirqTgzA5hmsdtQWe5/xAREX7uJ3MLP9x4lyieNO5mcOxyM8HH79y/4Cdn9R3JDsts/uGO82yOMJf/ah1Y8tfQEIQt7Z7rCawtNiUpHFgYUdgTxgI1NAW6SvxoqWabbw0Bd5jpQibTNBC1F4nIMk2TWhTqIs+fSVpzfCsVR9eaiJf5W6mtWXK7O+vKR4nWkSYSuFbP4No3Ht6dpSN9pSMYmaXI1/usXT0FM3SoTKAAAAAAASUVORK5CYII=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 28 Mar 2024 15:55:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-hans-v1-3-4cd558959407@kernel.org>
-References: <20240328-hans-v1-0-4cd558959407@kernel.org>
-In-Reply-To: <20240328-hans-v1-0-4cd558959407@kernel.org>
-To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
- David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Hans Holmberg <Hans.Holmberg@wdc.com>, Naohiro Aota <Naohiro.Aota@wdc.com>, 
- hch@lst.de, Damien LeMoal <dlemoal@kernel.org>, Boris Burkov <boris@bur.io>, 
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-X-Mailer: b4 0.12.4
+User-Agent: Evolution 3.50.2 
+X-Provags-ID: V03:K1:+amTk3dmmmMozgHq4Lgk8MhPGxnZvQhx1t0dTWMF0oc7vBdb5hG
+ cHmUySIGkXw0yFKw015IeBQVgKpnSSMmz9ztelpqP/S+/hzoaHvghcbScWJCH/mTSwIUEXn
+ U8JjlnShYtOs2IpluXtAx2/zkAMZSX41/B3ztD4RPTb0tK3/WtQ6SsVbLsm4ar5KKnpfaUr
+ 1rgyXOxQ30Elu12x3rOVA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:bvpqUg/YOOc=;qewJ8p13uEupGBatMEy613JITvh
+ POXFf3QZnkhSwIDr0JKJwOZGghqT1XtaMkO9mmPE0tPTiMnsbHw5LeTxO+7vl5nPHbvmhVOJF
+ kAWMeh3mKr9u8K829lDPmEcnD5YMRLEipHDpzHrItr+QrXoJzYi1f+YNuynCA21BwwSpea12D
+ rpfCges/2aTsIXjaW8STYhtCSCgYLzBvb4GJCXugR6SUA6wokqsXNB82BSYnWVGdlJtnZWYkB
+ 8YFimM8hceiFKOYb2Udli4JVFbYxzzrQUMxlJVPRobUI/usEe6vx3/uQFH6zHJxmATd5wnrov
+ l9bKVw+jH1ViSBS5CbyC/RooihIMFuzLBEBQUpSMphix24H4Im04Fdy8beoLNVf25Lnkv7KJE
+ eeVYrDUVl88HLiOaZSuUXhQYVCHwntemT33c/4dlMc3qApBhs+0gXxzIc/epqzMIbUpySz07m
+ eAzvFqvbRYgybOkl8OHdos1CL/MxlRhZGhXN7Ah020Crkn53csCKK/S+RW7NDpQca4bQprzuf
+ IRXHGTHlZHQOXtHnKQMks7/W98jrY2+cBqhAvPv+xDyDlehjsNcNxkkel2eXPAalnGE8+Y7ht
+ Mx/SP+CI7wSrTaI9F3e7NuBnOv+kg7Lvc6oQfhfJazSY8Pnuib4d9NKAAYjtmSgw5Q3ZeSCaf
+ PixDKsizgKkyAI/i/duOdce7HTp+UaDG+pCZtV/+eJW2bAgrF6KsAGfwIualK8c+4Gd5Fx+aq
+ PC1E763JSkmVJgrVKQFMtHh9PWnZ2a0fZ80ZiVwjegROsxM52rTMqAoJpmOZ+oNIMQjzO/b6j
+ v6xUuizgrVlUUFUBdChd2Dc+BxrBg/J8xbpsxza0OY94Q=
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Thu, 2024-03-28 at 11:39 +0100, Massimo B. wrote:
 
-Kick the cleaner kthread on chunk allocation if we're slowly running out
-of usable space on a zoned filesystem.
+> Mar 28 11:38:26 [kernel] [14826.740669] BTRFS warning (device dm-0): fail=
+ed to
+> trim 698 block group(s), last error -512
+> Mar 28 11:38:26 [kernel] [14826.741731] BTRFS warning (device dm-0): fail=
+ed to
+> trim 1 device(s), last error -512
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/zoned.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index fb8707f4cab5..25c1a17873db 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1040,6 +1040,7 @@ int btrfs_reset_sb_log_zones(struct block_device *bdev, int mirror)
- u64 btrfs_find_allocatable_zones(struct btrfs_device *device, u64 hole_start,
- 				 u64 hole_end, u64 num_bytes)
- {
-+	struct btrfs_fs_info *fs_info = device->fs_info;
- 	struct btrfs_zoned_device_info *zinfo = device->zone_info;
- 	const u8 shift = zinfo->zone_size_shift;
- 	u64 nzones = num_bytes >> shift;
-@@ -1051,6 +1052,11 @@ u64 btrfs_find_allocatable_zones(struct btrfs_device *device, u64 hole_start,
- 	ASSERT(IS_ALIGNED(hole_start, zinfo->zone_size));
- 	ASSERT(IS_ALIGNED(num_bytes, zinfo->zone_size));
- 
-+	if (!test_bit(BTRFS_FS_CLEANER_RUNNING, &fs_info->flags) &&
-+	    btrfs_zoned_should_reclaim(fs_info)) {
-+		wake_up_process(fs_info->cleaner_kthread);
-+	}
-+
- 	while (pos < hole_end) {
- 		begin = pos >> shift;
- 		end = begin + nzones;
+I have set nodiscard now on all my btrfs on SSDs...
+For not rebooting I did  mount -o remount,nodiscard /
+and I see in the syslog: turning off async discard
 
--- 
-2.35.3
+ Eventhough fstrim was finishing one time with
+/: 157,3 GiB (168907370496 bytes) trimmed on /dev/mapper/luks-6745....
 
+... now running again, it does not return, and in the syslog I see:
+[kernel] BTRFS warning (device dm-0): failed to trim 143 block group(s), la=
+st
+error -512
+
+dmsetup table
+shows allow_discards on that device.
+
+
+Again I did  mount -o remount,nodiscard /
+
+But this time I don't see in the syslog  "turning off async discard"   so i=
+t
+seems to be still disabled.
+
+grep " / " /proc/mounts
+shows nothing about discard or nodiscard in the options.
+
+What can I do about that failed to trim?
+I have tried this on different disks like
+
+Samsung SSD 970 EVO Plus 1TB NVMe
+and
+Samsung SSD 860 EVO 1TB SATA
+
+Trying again after the failed to trim, I got it finished again with
+156,8 GiB (168413265920 bytes) trimmed
+
+Should fstrim be fast if it was just finished some minutes before? Why ther=
+e are
+again more than 100GiB to be trimmed shortly after the last run?
+
+Is there anything broken with the trim on these devices?
+
+Best regards,
+Massimo
 
