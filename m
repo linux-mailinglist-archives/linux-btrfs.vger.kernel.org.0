@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-3756-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3757-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A562E891ABE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 14:09:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D348D891AC2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 14:09:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 604A6287D34
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 13:09:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 737D11F27D3D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 13:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 058BC15E7F9;
-	Fri, 29 Mar 2024 12:32:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC1415E819;
+	Fri, 29 Mar 2024 12:32:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lWVMkYu1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gqF8bAuS"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E21915E5DE;
-	Fri, 29 Mar 2024 12:32:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F2215E7FF;
+	Fri, 29 Mar 2024 12:32:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711715577; cv=none; b=tLrUeadjYWpzZgb/HzP2SqmbAKwL0NmQmOG0LBqi1R0yU4zO70xqDA4VODGsdFIIJiL+4FmquaNuNMjNB43TV1ENYbw1u/8aYhNlsvM7kC9eEpT9gvTqLRuGby3KUsDC/+VWMiTiOgN2fwobLk++P+rfcRD4kkMBpewFGMRT0ho=
+	t=1711715578; cv=none; b=afOXmowqqR7ffRIdqe8+wPlRIgIQ9tGXJZf6q7dxi4XsP5+kAH+DfCQAFQWjIQjI4mwsJCrSuWa7IOs60AYRCwv6r9hWt5cPv7XrTN06UVce4RABBsGfMFWf7l8VJtWcBKd4/PIU55EizU3vuSt3aZW7x4tXqKVjwcnlwL57/+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711715577; c=relaxed/simple;
-	bh=KWF5woA40Y3P0zjBP6wmfQIo/JmwcFCBoVMPAt+k7cU=;
+	s=arc-20240116; t=1711715578; c=relaxed/simple;
+	bh=d5DArg/0hqWJGePnz1+kSxWB/3LWOiBxH1jRuA5RlpU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ej15uXEyNcyS5RrM0FwWqPHS9XONYBNJ+lXEsbjaDy4ix7uuSov1ACZ/uPOBOn+5dbUR6CGYK8+aSroSJUUrbuDJ37JZnsdAuFUJhbC5RYlOoqrUCVvhOxnpSK+iX0L/Y7EQtHQYdhohciDsaaPq8Ae+oIjRKVWN6Gt8cVHVRds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lWVMkYu1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B409C43390;
-	Fri, 29 Mar 2024 12:32:56 +0000 (UTC)
+	 MIME-Version; b=n1VIuvEREBZ/0u3mVilManvtahNnMIK3xWylQTjWWu8F8D2y+2w5+KZ4m8//MPAcdjQCK/YLkU2+ykqeD0Pg/jGFroWrtTR1pdZfJjxOQZlwxdOIjt8W7Zm1H+wM1HS3KXXUO5Fk0YiKFMqvam9yBRydvX0MaeychsyAKiWHnSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gqF8bAuS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65355C43399;
+	Fri, 29 Mar 2024 12:32:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711715577;
-	bh=KWF5woA40Y3P0zjBP6wmfQIo/JmwcFCBoVMPAt+k7cU=;
+	s=k20201202; t=1711715578;
+	bh=d5DArg/0hqWJGePnz1+kSxWB/3LWOiBxH1jRuA5RlpU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lWVMkYu19pRlsdNOlTOGrJGHSNjwp0Zy4HSoZ8nRyRdzmeZOjoEbrJxdZk3kErq4E
-	 2hWt5VQIhPQACIOZy6tCk3SKGoNEpPJCbbilzr21RJzQv0u2cX1rnCjBPwZS8T1OJX
-	 5VGRU+McR7FaAhxlwUPKeV4YLbKgg7EBomEJT0FtwX7iQO8UWl4niXbb+LORHmCDUN
-	 83cB+9wtJLHpBKqx75P+jSBxkzljJ2iavv2tXo3uUFhnM5wx8d1ATXPGDJbNzv03Ra
-	 /wpp4DLDLehem3cf7ljuSz2yHJPq3+ONAL+ipdbRCtmEHj0RNiMCSoUnU9CZWHMZJG
-	 PkPRf0HzW+WNQ==
+	b=gqF8bAuSj2eCZkST3GrCE3YGLXHpHJq7tio345dTS+APyhNN4w7SBOusZUHr2Ro5l
+	 /Fjx4HQAcVjYMANcIBNxkn9EOwW5d5ySyuwOX8zl3Wg1bMHdq5c7RUf71Kh1N40PLQ
+	 +oAhGhzm9rbTQIr25WAGOcg6qE4yD9IMuFRyiGGRrGhpRB857XjIpd/hbMefW0D2ts
+	 VrYPkGy3zNeTYvNjSt0JDcbKw7PW5Yk3jpZqQZrBCgc2jHj2I/ELmCCtvRFFoxO7hu
+	 /HX6adfaExYA9qtO0jmYTBFKpBuHGPVvoKn96c8iOnmlgAeabG2Tq8/7fDnilS3uxF
+	 gMfVofPs+9Y5w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,9 +50,9 @@ Cc: David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 25/31] btrfs: handle chunk tree lookup error in btrfs_relocate_sys_chunks()
-Date: Fri, 29 Mar 2024 08:31:44 -0400
-Message-ID: <20240329123207.3085013-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 26/31] btrfs: export: handle invalid inode or root reference in btrfs_get_parent()
+Date: Fri, 29 Mar 2024 08:31:45 -0400
+Message-ID: <20240329123207.3085013-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123207.3085013-1-sashal@kernel.org>
 References: <20240329123207.3085013-1-sashal@kernel.org>
@@ -69,52 +69,43 @@ Content-Transfer-Encoding: 8bit
 
 From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit 7411055db5ce64f836aaffd422396af0075fdc99 ]
+[ Upstream commit 26b66d1d366a375745755ca7365f67110bbf6bd5 ]
 
-The unhandled case in btrfs_relocate_sys_chunks() loop is a corruption,
-as it could be caused only by two impossible conditions:
-
-- at first the search key is set up to look for a chunk tree item, with
-  offset -1, this is an inexact search and the key->offset will contain
-  the correct offset upon a successful search, a valid chunk tree item
-  cannot have an offset -1
-
-- after first successful search, the found_key corresponds to a chunk
-  item, the offset is decremented by 1 before the next loop, it's
-  impossible to find a chunk item there due to alignment and size
-  constraints
+The get_parent handler looks up a parent of a given dentry, this can be
+either a subvolume or a directory. The search is set up with offset -1
+but it's never expected to find such item, as it would break allowed
+range of inode number or a root id. This means it's a corruption (ext4
+also returns this error code).
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 Reviewed-by: Anand Jain <anand.jain@oracle.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/volumes.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ fs/btrfs/export.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 6fc2d99270c18..06db09c20df2d 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -3381,7 +3381,17 @@ static int btrfs_relocate_sys_chunks(struct btrfs_fs_info *fs_info)
- 			mutex_unlock(&fs_info->reclaim_bgs_lock);
- 			goto error;
- 		}
--		BUG_ON(ret == 0); /* Corruption */
-+		if (ret == 0) {
-+			/*
-+			 * On the first search we would find chunk tree with
-+			 * offset -1, which is not possible. On subsequent
-+			 * loops this would find an existing item on an invalid
-+			 * offset (one less than the previous one, wrong
-+			 * alignment and size).
-+			 */
-+			ret = -EUCLEAN;
-+			goto error;
-+		}
+diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
+index fab7eb76e53b2..58b0f04d7123f 100644
+--- a/fs/btrfs/export.c
++++ b/fs/btrfs/export.c
+@@ -161,8 +161,15 @@ struct dentry *btrfs_get_parent(struct dentry *child)
+ 	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+ 	if (ret < 0)
+ 		goto fail;
++	if (ret == 0) {
++		/*
++		 * Key with offset of -1 found, there would have to exist an
++		 * inode with such number or a root with such id.
++		 */
++		ret = -EUCLEAN;
++		goto fail;
++	}
  
- 		ret = btrfs_previous_item(chunk_root, path, key.objectid,
- 					  key.type);
+-	BUG_ON(ret == 0); /* Key with offset of -1 found */
+ 	if (path->slots[0] == 0) {
+ 		ret = -ENOENT;
+ 		goto fail;
 -- 
 2.43.0
 
