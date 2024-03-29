@@ -1,58 +1,58 @@
-Return-Path: <linux-btrfs+bounces-3775-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3776-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A98891D47
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 15:13:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16BE2891D4A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 15:14:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8F051F266B1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 14:13:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3EA02867BB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 14:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11C31CE6DB;
-	Fri, 29 Mar 2024 12:45:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22CAC1D1D54;
+	Fri, 29 Mar 2024 12:45:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nR+UeqIr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DEsHjt8Q"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D90CC1CE6C4;
-	Fri, 29 Mar 2024 12:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E82514A61A;
+	Fri, 29 Mar 2024 12:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716320; cv=none; b=iBy84zXpREY1FcMj9lK7y1jvPFDPe2iWLI70QnmXGcRXmuL7HuEIANutNJahIpp5b3XMThbGoqp+7OkOsTSwuZRnq+UqRT01aMkzDBUWc1voPwmdgCYaoyK3B5jipg9x3PeA9NdnqvNsR8TrFyei/iX25mYmiDHzQ9raHSlqEDU=
+	t=1711716321; cv=none; b=nrjSzo4RBnSXFQhxWtEnqdP7iFv8t/qQiRm4rB9W3TZU/NhSifDNBncLC/UpFr+g4EUE4nEv6IHeeCo6+DCxbAHqo40gUfEd5JXXAnTDiOXD7kFbX1MZ96gzzvxFNV4/cpMYnJhy/8NomvMBbczPec6S0MZ8AXyMyH5WElr9ixw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716320; c=relaxed/simple;
-	bh=2OXrj8pdjP/cFaSKQFC10cyVukXIyvqpoBsTMboDDm8=;
+	s=arc-20240116; t=1711716321; c=relaxed/simple;
+	bh=l3Psi5Y188FysbyMVKHvE/2s4Z+BDxi15ATKpUq23kI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VljuKBhB3F+HdF1NmCLi0WD53+eEK56OnlFUOpl51f/cDDJyh5qtH8Df1wmXzWLoxTNRuKypHnzdAojWYVe7wcnan1nfPDwIux7n6cbz6nxk6X0zZDLoBHHIHpF4M3di5cSE9lBjiPf6a6hh5ATPGUiT0imjLCnIK3lJ+YJHEak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nR+UeqIr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2D82C43394;
-	Fri, 29 Mar 2024 12:45:18 +0000 (UTC)
+	 MIME-Version; b=LbHsNJpRAeIN1ErNgMicwpN+N+L9yATfl62o4GVXqCb+Yk6V/pZedXDJlWZgeZX1jrzKPKmqQ3M3/EFvwuR1iMuCy07biTcPdR7e/dFEZ7cGQGtcbfcew7XK4G3OaPhajjrvy8XQraPZVQNJ4xXSLlsJz7p+eBHdEesTJ4bwcEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DEsHjt8Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BC65C433F1;
+	Fri, 29 Mar 2024 12:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716319;
-	bh=2OXrj8pdjP/cFaSKQFC10cyVukXIyvqpoBsTMboDDm8=;
+	s=k20201202; t=1711716321;
+	bh=l3Psi5Y188FysbyMVKHvE/2s4Z+BDxi15ATKpUq23kI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nR+UeqIrd1R10PIWBl7Sn3rbOS5rKuCHXgYJnCvCJ+xo9YMxg8z/K+8KpCsjssxX4
-	 Q6EIzt5wka8F+BCBS0LN05Sqbacunewd/zfTcU9dAD7LTGRWGNM7NLyQAQHbyB7LU6
-	 pMwIc6B1Td+Y/Pm0L2WkMwUR3YUJ1TJ0O75WfzouvZjcGNZPirCGLhPocLLKzBhl7R
-	 nE9oJMgtAhA4TtbV3qEkHhpovam7w4GLW1MXqXCfM2m0CycTTL+675E+9khvtZ3NvU
-	 tlLK1/o0RKKSrGbIMqUobpIiG74VuFSbwbj/us21s0Kyg5NleEz3kByOmfLVhQagcm
-	 6IMw2b9Tt0bzA==
+	b=DEsHjt8QJlbJFhOHB0F52LIPOL/sPrz4z9eDqoiVMZwuGonhEwrVpB6sqTRTYtniw
+	 mGOBk3+ZN+f+LOrrxYMirHqIclfrkWcxKpz1Tv8r9Ntlmbz/GNWMg7uBGyfVlExcAz
+	 xl0uxldxdVwC4gR4RXMxAViBF+h4VF60JEVnVzcycbZnh7GzWiuevCdLH9OwsWLuRZ
+	 eMtjJExOzRCLmLzui5firCl01MDJKcA3AYPx8k6diWRJogbuWRRAN1UNy6fcJqZlom
+	 YUWj+hs/CXfONEQtfck0dWoA1n4V9zg7tuSXCKfsl0pQ4pY8SyM5YJtm+7ZpLP/cSs
+	 +iCqk3H8m8+Xg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
+Cc: David Sterba <dsterba@suse.com>,
 	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
+	Anand Jain <anand.jain@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 60/75] btrfs: preallocate temporary extent buffer for inode logging when needed
-Date: Fri, 29 Mar 2024 08:42:41 -0400
-Message-ID: <20240329124330.3089520-60-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 61/75] btrfs: handle chunk tree lookup error in btrfs_relocate_sys_chunks()
+Date: Fri, 29 Mar 2024 08:42:42 -0400
+Message-ID: <20240329124330.3089520-61-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329124330.3089520-1-sashal@kernel.org>
 References: <20240329124330.3089520-1-sashal@kernel.org>
@@ -67,461 +67,54 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.23
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit e383e158ed1b6abc2d2d3e6736d77a46393f80fa ]
+[ Upstream commit 7411055db5ce64f836aaffd422396af0075fdc99 ]
 
-When logging an inode and we require to copy items from subvolume leaves
-to the log tree, we clone each subvolume leaf and than use that clone to
-copy items to the log tree. This is required to avoid possible deadlocks
-as stated in commit 796787c978ef ("btrfs: do not modify log tree while
-holding a leaf from fs tree locked").
+The unhandled case in btrfs_relocate_sys_chunks() loop is a corruption,
+as it could be caused only by two impossible conditions:
 
-The cloning requires allocating an extent buffer (struct extent_buffer)
-and then allocating pages (folios) to attach to the extent buffer. This
-may be slow in case we are under memory pressure, and since we are doing
-the cloning while holding a read lock on a subvolume leaf, it means we
-can be blocking other operations on that leaf for significant periods of
-time, which can increase latency on operations like creating other files,
-renaming files, etc. Similarly because we're under a log transaction, we
-may also cause extra delay on other tasks doing an fsync, because syncing
-the log requires waiting for tasks that joined a log transaction to exit
-the transaction.
+- at first the search key is set up to look for a chunk tree item, with
+  offset -1, this is an inexact search and the key->offset will contain
+  the correct offset upon a successful search, a valid chunk tree item
+  cannot have an offset -1
 
-So to improve this, for any inode logging operation that needs to copy
-items from a subvolume leaf ("full sync" or "copy everything" bit set
-in the inode), preallocate a dummy extent buffer before locking any
-extent buffer from the subvolume tree, and even before joining a log
-transaction, add it to the log context and then use it when we need to
-copy items from a subvolume leaf to the log tree. This avoids making
-other operations get extra latency when waiting to lock a subvolume
-leaf that is used during inode logging and we are under heavy memory
-pressure.
-
-The following test script with bonnie++ was used to test this:
-
-  $ cat test.sh
-  #!/bin/bash
-
-  DEV=/dev/sdh
-  MNT=/mnt/sdh
-  MOUNT_OPTIONS="-o ssd"
-
-  MEMTOTAL_BYTES=`free -b | grep Mem: | awk '{ print $2 }'`
-  NR_DIRECTORIES=20
-  NR_FILES=20480
-  DATASET_SIZE=$((MEMTOTAL_BYTES * 2 / 1048576))
-  DIRECTORY_SIZE=$((MEMTOTAL_BYTES * 2 / NR_FILES))
-  NR_FILES=$((NR_FILES / 1024))
-
-  echo "performance" | \
-      tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-
-  umount $DEV &> /dev/null
-  mkfs.btrfs -f $MKFS_OPTIONS $DEV
-  mount $MOUNT_OPTIONS $DEV $MNT
-
-  bonnie++ -u root -d $MNT \
-      -n $NR_FILES:$DIRECTORY_SIZE:$DIRECTORY_SIZE:$NR_DIRECTORIES \
-      -r 0 -s $DATASET_SIZE -b
-
-  umount $MNT
-
-The results of this test on a 8G VM running a non-debug kernel (Debian's
-default kernel config), were the following.
-
-Before this change:
-
-  Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
-                      -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
-  Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-  debian0       7501M  376k  99  1.4g  96  117m  14 1510k  99  2.5g  95 +++++ +++
-  Latency             35068us   24976us    2944ms   30725us   71770us   26152us
-  Version 2.00a       ------Sequential Create------ --------Random Create--------
-  debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
-  files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-  20:384100:384100/20 20480  32 20480  58 20480  48 20480  39 20480  56 20480  61
-  Latency               411ms   11914us     119ms     617ms   10296us     110ms
-
-After this change:
-
-  Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
-                      -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
-  Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-  debian0       7501M  375k  99  1.4g  97  117m  14 1546k  99  2.3g  98 +++++ +++
-  Latency             35975us  20945us    2144ms   10297us    2217us    6004us
-  Version 2.00a       ------Sequential Create------ --------Random Create--------
-  debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
-  files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-  20:384100:384100/20 20480  35 20480  58 20480  48 20480  40 20480  57 20480  59
-  Latency               320ms   11237us   77779us     518ms    6470us   86389us
+- after first successful search, the found_key corresponds to a chunk
+  item, the offset is decremented by 1 before the next loop, it's
+  impossible to find a chunk item there due to alignment and size
+  constraints
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/file.c     | 12 ++++++
- fs/btrfs/tree-log.c | 93 +++++++++++++++++++++++++++------------------
- fs/btrfs/tree-log.h | 25 ++++++++++++
- 3 files changed, 94 insertions(+), 36 deletions(-)
+ fs/btrfs/volumes.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index c997b790568fa..ac697568887e8 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1906,6 +1906,8 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 		goto out_release_extents;
- 	}
- 
-+	btrfs_init_log_ctx_scratch_eb(&ctx);
-+
- 	/*
- 	 * We use start here because we will need to wait on the IO to complete
- 	 * in btrfs_sync_log, which could require joining a transaction (for
-@@ -1925,6 +1927,15 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	trans->in_fsync = true;
- 
- 	ret = btrfs_log_dentry_safe(trans, dentry, &ctx);
-+	/*
-+	 * Scratch eb no longer needed, release before syncing log or commit
-+	 * transaction, to avoid holding unnecessary memory during such long
-+	 * operations.
-+	 */
-+	if (ctx.scratch_eb) {
-+		free_extent_buffer(ctx.scratch_eb);
-+		ctx.scratch_eb = NULL;
-+	}
- 	btrfs_release_log_ctx_extents(&ctx);
- 	if (ret < 0) {
- 		/* Fallthrough and commit/free transaction. */
-@@ -2000,6 +2011,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 
- 	ret = btrfs_commit_transaction(trans);
- out:
-+	free_extent_buffer(ctx.scratch_eb);
- 	ASSERT(list_empty(&ctx.list));
- 	ASSERT(list_empty(&ctx.conflict_inodes));
- 	err = file_check_and_advance_wb_err(file);
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 9fb64af608d12..8eb5c725052b4 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3627,6 +3627,30 @@ static int flush_dir_items_batch(struct btrfs_trans_handle *trans,
- 	return ret;
- }
- 
-+static int clone_leaf(struct btrfs_path *path, struct btrfs_log_ctx *ctx)
-+{
-+	const int slot = path->slots[0];
-+
-+	if (ctx->scratch_eb) {
-+		copy_extent_buffer_full(ctx->scratch_eb, path->nodes[0]);
-+	} else {
-+		ctx->scratch_eb = btrfs_clone_extent_buffer(path->nodes[0]);
-+		if (!ctx->scratch_eb)
-+			return -ENOMEM;
-+	}
-+
-+	btrfs_release_path(path);
-+	path->nodes[0] = ctx->scratch_eb;
-+	path->slots[0] = slot;
-+	/*
-+	 * Add extra ref to scratch eb so that it is not freed when callers
-+	 * release the path, so we can reuse it later if needed.
-+	 */
-+	atomic_inc(&ctx->scratch_eb->refs);
-+
-+	return 0;
-+}
-+
- static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
- 				  struct btrfs_inode *inode,
- 				  struct btrfs_path *path,
-@@ -3641,23 +3665,20 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
- 	bool last_found = false;
- 	int batch_start = 0;
- 	int batch_size = 0;
--	int i;
-+	int ret;
- 
- 	/*
- 	 * We need to clone the leaf, release the read lock on it, and use the
- 	 * clone before modifying the log tree. See the comment at copy_items()
- 	 * about why we need to do this.
- 	 */
--	src = btrfs_clone_extent_buffer(path->nodes[0]);
--	if (!src)
--		return -ENOMEM;
-+	ret = clone_leaf(path, ctx);
-+	if (ret < 0)
-+		return ret;
- 
--	i = path->slots[0];
--	btrfs_release_path(path);
--	path->nodes[0] = src;
--	path->slots[0] = i;
-+	src = path->nodes[0];
- 
--	for (; i < nritems; i++) {
-+	for (int i = path->slots[0]; i < nritems; i++) {
- 		struct btrfs_dir_item *di;
- 		struct btrfs_key key;
- 		int ret;
-@@ -4267,17 +4288,16 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
- 			       struct btrfs_path *dst_path,
- 			       struct btrfs_path *src_path,
- 			       int start_slot, int nr, int inode_only,
--			       u64 logged_isize)
-+			       u64 logged_isize, struct btrfs_log_ctx *ctx)
- {
- 	struct btrfs_root *log = inode->root->log_root;
- 	struct btrfs_file_extent_item *extent;
- 	struct extent_buffer *src;
--	int ret = 0;
-+	int ret;
- 	struct btrfs_key *ins_keys;
- 	u32 *ins_sizes;
- 	struct btrfs_item_batch batch;
- 	char *ins_data;
--	int i;
- 	int dst_index;
- 	const bool skip_csum = (inode->flags & BTRFS_INODE_NODATASUM);
- 	const u64 i_size = i_size_read(&inode->vfs_inode);
-@@ -4310,14 +4330,11 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
- 	 * while the other is holding the delayed node's mutex and wants to
- 	 * write lock the same subvolume leaf for flushing delayed items.
- 	 */
--	src = btrfs_clone_extent_buffer(src_path->nodes[0]);
--	if (!src)
--		return -ENOMEM;
-+	ret = clone_leaf(src_path, ctx);
-+	if (ret < 0)
-+		return ret;
- 
--	i = src_path->slots[0];
--	btrfs_release_path(src_path);
--	src_path->nodes[0] = src;
--	src_path->slots[0] = i;
-+	src = src_path->nodes[0];
- 
- 	ins_data = kmalloc(nr * sizeof(struct btrfs_key) +
- 			   nr * sizeof(u32), GFP_NOFS);
-@@ -4332,7 +4349,7 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
- 	batch.nr = 0;
- 
- 	dst_index = 0;
--	for (i = 0; i < nr; i++) {
-+	for (int i = 0; i < nr; i++) {
- 		const int src_slot = start_slot + i;
- 		struct btrfs_root *csum_root;
- 		struct btrfs_ordered_sum *sums;
-@@ -4439,7 +4456,7 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
- 		goto out;
- 
- 	dst_index = 0;
--	for (i = 0; i < nr; i++) {
-+	for (int i = 0; i < nr; i++) {
- 		const int src_slot = start_slot + i;
- 		const int dst_slot = dst_path->slots[0] + dst_index;
- 		struct btrfs_key key;
-@@ -4710,7 +4727,8 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
-  */
- static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
- 				      struct btrfs_inode *inode,
--				      struct btrfs_path *path)
-+				      struct btrfs_path *path,
-+				      struct btrfs_log_ctx *ctx)
- {
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_key key;
-@@ -4776,7 +4794,7 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
- 		if (slot >= btrfs_header_nritems(leaf)) {
- 			if (ins_nr > 0) {
- 				ret = copy_items(trans, inode, dst_path, path,
--						 start_slot, ins_nr, 1, 0);
-+						 start_slot, ins_nr, 1, 0, ctx);
- 				if (ret < 0)
- 					goto out;
- 				ins_nr = 0;
-@@ -4826,7 +4844,7 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
- 	}
- 	if (ins_nr > 0)
- 		ret = copy_items(trans, inode, dst_path, path,
--				 start_slot, ins_nr, 1, 0);
-+				 start_slot, ins_nr, 1, 0, ctx);
- out:
- 	btrfs_release_path(path);
- 	btrfs_free_path(dst_path);
-@@ -4905,7 +4923,7 @@ static int btrfs_log_changed_extents(struct btrfs_trans_handle *trans,
- 	write_unlock(&tree->lock);
- 
- 	if (!ret)
--		ret = btrfs_log_prealloc_extents(trans, inode, path);
-+		ret = btrfs_log_prealloc_extents(trans, inode, path, ctx);
- 	if (ret)
- 		return ret;
- 
-@@ -4986,7 +5004,8 @@ static int logged_inode_size(struct btrfs_root *log, struct btrfs_inode *inode,
- static int btrfs_log_all_xattrs(struct btrfs_trans_handle *trans,
- 				struct btrfs_inode *inode,
- 				struct btrfs_path *path,
--				struct btrfs_path *dst_path)
-+				struct btrfs_path *dst_path,
-+				struct btrfs_log_ctx *ctx)
- {
- 	struct btrfs_root *root = inode->root;
- 	int ret;
-@@ -5015,7 +5034,7 @@ static int btrfs_log_all_xattrs(struct btrfs_trans_handle *trans,
- 		if (slot >= nritems) {
- 			if (ins_nr > 0) {
- 				ret = copy_items(trans, inode, dst_path, path,
--						 start_slot, ins_nr, 1, 0);
-+						 start_slot, ins_nr, 1, 0, ctx);
- 				if (ret < 0)
- 					return ret;
- 				ins_nr = 0;
-@@ -5041,7 +5060,7 @@ static int btrfs_log_all_xattrs(struct btrfs_trans_handle *trans,
- 	}
- 	if (ins_nr > 0) {
- 		ret = copy_items(trans, inode, dst_path, path,
--				 start_slot, ins_nr, 1, 0);
-+				 start_slot, ins_nr, 1, 0, ctx);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -5853,7 +5872,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 				}
- 				ret = copy_items(trans, inode, dst_path, path,
- 						 ins_start_slot, ins_nr,
--						 inode_only, logged_isize);
-+						 inode_only, logged_isize, ctx);
- 				if (ret < 0)
- 					return ret;
- 				ins_nr = 0;
-@@ -5872,7 +5891,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 				goto next_slot;
- 			ret = copy_items(trans, inode, dst_path, path,
- 					 ins_start_slot,
--					 ins_nr, inode_only, logged_isize);
-+					 ins_nr, inode_only, logged_isize, ctx);
- 			if (ret < 0)
- 				return ret;
- 			ins_nr = 0;
-@@ -5889,7 +5908,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 722a1dde75636..18b12cc4df68a 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -3352,7 +3352,17 @@ static int btrfs_relocate_sys_chunks(struct btrfs_fs_info *fs_info)
+ 			mutex_unlock(&fs_info->reclaim_bgs_lock);
+ 			goto error;
  		}
+-		BUG_ON(ret == 0); /* Corruption */
++		if (ret == 0) {
++			/*
++			 * On the first search we would find chunk tree with
++			 * offset -1, which is not possible. On subsequent
++			 * loops this would find an existing item on an invalid
++			 * offset (one less than the previous one, wrong
++			 * alignment and size).
++			 */
++			ret = -EUCLEAN;
++			goto error;
++		}
  
- 		ret = copy_items(trans, inode, dst_path, path, ins_start_slot,
--				 ins_nr, inode_only, logged_isize);
-+				 ins_nr, inode_only, logged_isize, ctx);
- 		if (ret < 0)
- 			return ret;
- 		ins_nr = 1;
-@@ -5904,7 +5923,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 		if (ins_nr) {
- 			ret = copy_items(trans, inode, dst_path, path,
- 					 ins_start_slot, ins_nr, inode_only,
--					 logged_isize);
-+					 logged_isize, ctx);
- 			if (ret < 0)
- 				return ret;
- 			ins_nr = 0;
-@@ -5929,7 +5948,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 	}
- 	if (ins_nr) {
- 		ret = copy_items(trans, inode, dst_path, path, ins_start_slot,
--				 ins_nr, inode_only, logged_isize);
-+				 ins_nr, inode_only, logged_isize, ctx);
- 		if (ret)
- 			return ret;
- 	}
-@@ -5940,7 +5959,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
- 		 * lock the same leaf with btrfs_log_prealloc_extents() below.
- 		 */
- 		btrfs_release_path(path);
--		ret = btrfs_log_prealloc_extents(trans, inode, dst_path);
-+		ret = btrfs_log_prealloc_extents(trans, inode, dst_path, ctx);
- 	}
- 
- 	return ret;
-@@ -6532,7 +6551,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 
- 	btrfs_release_path(path);
- 	btrfs_release_path(dst_path);
--	ret = btrfs_log_all_xattrs(trans, inode, path, dst_path);
-+	ret = btrfs_log_all_xattrs(trans, inode, path, dst_path, ctx);
- 	if (ret)
- 		goto out_unlock;
- 	xattrs_logged = true;
-@@ -6559,7 +6578,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 		 * BTRFS_INODE_COPY_EVERYTHING set.
- 		 */
- 		if (!xattrs_logged && inode->logged_trans < trans->transid) {
--			ret = btrfs_log_all_xattrs(trans, inode, path, dst_path);
-+			ret = btrfs_log_all_xattrs(trans, inode, path, dst_path, ctx);
- 			if (ret)
- 				goto out_unlock;
- 			btrfs_release_path(path);
-@@ -7510,6 +7529,7 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
- 
- 	btrfs_init_log_ctx(&ctx, &inode->vfs_inode);
- 	ctx.logging_new_name = true;
-+	btrfs_init_log_ctx_scratch_eb(&ctx);
- 	/*
- 	 * We don't care about the return value. If we fail to log the new name
- 	 * then we know the next attempt to sync the log will fallback to a full
-@@ -7518,6 +7538,7 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
- 	 * inconsistent state after a rename operation.
- 	 */
- 	btrfs_log_inode_parent(trans, inode, parent, LOG_INODE_EXISTS, &ctx);
-+	free_extent_buffer(ctx.scratch_eb);
- 	ASSERT(list_empty(&ctx.conflict_inodes));
- out:
- 	/*
-diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
-index a550a8a375cd1..af219e8840d28 100644
---- a/fs/btrfs/tree-log.h
-+++ b/fs/btrfs/tree-log.h
-@@ -36,6 +36,15 @@ struct btrfs_log_ctx {
- 	struct list_head conflict_inodes;
- 	int num_conflict_inodes;
- 	bool logging_conflict_inodes;
-+	/*
-+	 * Used for fsyncs that need to copy items from the subvolume tree to
-+	 * the log tree (full sync flag set or copy everything flag set) to
-+	 * avoid allocating a temporary extent buffer while holding a lock on
-+	 * an extent buffer of the subvolume tree and under the log transaction.
-+	 * Also helps to avoid allocating and freeing a temporary extent buffer
-+	 * in case we need to process multiple leaves from the subvolume tree.
-+	 */
-+	struct extent_buffer *scratch_eb;
- };
- 
- static inline void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx,
-@@ -53,6 +62,22 @@ static inline void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx,
- 	INIT_LIST_HEAD(&ctx->conflict_inodes);
- 	ctx->num_conflict_inodes = 0;
- 	ctx->logging_conflict_inodes = false;
-+	ctx->scratch_eb = NULL;
-+}
-+
-+static inline void btrfs_init_log_ctx_scratch_eb(struct btrfs_log_ctx *ctx)
-+{
-+	struct btrfs_inode *inode = BTRFS_I(ctx->inode);
-+
-+	if (!test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags) &&
-+	    !test_bit(BTRFS_INODE_COPY_EVERYTHING, &inode->runtime_flags))
-+		return;
-+
-+	/*
-+	 * Don't care about allocation failure. This is just for optimization,
-+	 * if we fail to allocate here, we will try again later if needed.
-+	 */
-+	ctx->scratch_eb = alloc_dummy_extent_buffer(inode->root->fs_info, 0);
- }
- 
- static inline void btrfs_release_log_ctx_extents(struct btrfs_log_ctx *ctx)
+ 		ret = btrfs_previous_item(chunk_root, path, key.objectid,
+ 					  key.type);
 -- 
 2.43.0
 
