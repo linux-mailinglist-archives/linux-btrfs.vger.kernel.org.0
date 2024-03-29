@@ -1,58 +1,57 @@
-Return-Path: <linux-btrfs+bounces-3773-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3774-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6B01891C90
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 14:52:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96CBF891C94
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 14:53:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDA8D1C267D8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 13:52:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50944289B23
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Mar 2024 13:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B97CB18B5EC;
-	Fri, 29 Mar 2024 12:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3FE18BC21;
+	Fri, 29 Mar 2024 12:42:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W9N7uhMW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oz0qfMR1"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE71148839;
-	Fri, 29 Mar 2024 12:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8F718B5FC;
+	Fri, 29 Mar 2024 12:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716147; cv=none; b=MvpxbO6kFxPOIUWBaOkLOrAc8ctNJbmAGTXC18eYrzMZ3+N10ZEcjsD9mxG6d8Y+Cdy9TrrlFK2rpm/q2W/4e3IrJpZ/LlWmJ9hP6OQb1Jre8ybMmvvI9tO+4I0ejyNutXwx0MJUV9H/l0NZxy0Ugg/ojXKdK0ze5KXwEnZrU94=
+	t=1711716149; cv=none; b=FNU2quHqxW7Ue5/XKE6iKn+eJ54rzEZwoa8PPrs1rbkg8x5OQ8QqoYq5xov4xkjNrXm1TT0cxRYd9l/ZMIqIEQFwOccTdge65rVr2YqCgP7t13VaGoGMiJAvZ1d7eNCTNhauRJuFymBzOdiAUw4go8AsYaYbUkI7eV8W3LuENlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716147; c=relaxed/simple;
-	bh=CBLJ62ZdxOVQDTLj11F5FJn+stz1NKJMv4S1wqAkH4k=;
+	s=arc-20240116; t=1711716149; c=relaxed/simple;
+	bh=T07ykANRiSqZ127sWwnwShI1QgsOuD8uUzy1UKgsxBo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PltzN6gNfH6yB/+q0TIdAKL56jau+Mcp1y4cclWCu2GT7DR9hBB3wUhSMTrkb6PGJofqXdoKv93YR0e3wo7faa4D9WMD3vEczz2cPYZF+4rzK3It6l1GM9ZS1fHFrPRgVYib4mlwxJb4x0XDsjqVDPHUP1xRP4PK18t3Nkn9gqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W9N7uhMW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE71CC43394;
-	Fri, 29 Mar 2024 12:42:26 +0000 (UTC)
+	 MIME-Version; b=TUToFUpKwLeaHDutuaWFT4l4Xy43ihi+BBDMyNTUTEDM6+sMbkhE9RJFuj4QRh5oaeyA3gmteIpzq7gENoxAs9zD7pp0CMWHBYcYTgBHgTniNhjO39LxOvynlMnBVXNUhR1O2rz6jr4LQCC0nlVYkDu7rL3UVQZgMm3kQhdEnRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oz0qfMR1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EED49C433C7;
+	Fri, 29 Mar 2024 12:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716147;
-	bh=CBLJ62ZdxOVQDTLj11F5FJn+stz1NKJMv4S1wqAkH4k=;
+	s=k20201202; t=1711716148;
+	bh=T07ykANRiSqZ127sWwnwShI1QgsOuD8uUzy1UKgsxBo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=W9N7uhMWRGVdxWsMQcpoA3S9J4+3M0IlwKl9J6l4c2+tBisLwr7THUaTTM1yqCGKt
-	 ucBvxKvedC6H2XpPRZUvoUM+iXd8lww39QshzTnWEQEOUSkKfQygVTNQngbDspaXdg
-	 cUXDG0lmMoHQg8n0j1EnxAdHZp/96+Q5L/aiPdhovW/UmJh/vwZxI1wKE+nRZ7qJb8
-	 bZq2ytsSgtXPFWss5wNThSj69cCi8wdSWXizawaQpQPJfTEFvkBfWKX7mJ/gw9rAok
-	 q1oFRm2OXm/e2AqGC1Y1E/0Sl8TG8nrs93XI5Fw0gugA7TF5wIEWYvbNOyMg2Z0Cow
-	 jy46rxOdioHrw==
+	b=Oz0qfMR1XemVm7Mx2hTw03ANnYjjJoiLIOBgVSktFEMg0FPWZiFPTUOm0PIg/vBkJ
+	 /wXKDt6CbWTBBCmLlmqBjJG5p5/BKTQr8EGXgBgHljlrCURLyAYO0VKL2E3ikcYOfA
+	 B/L5lo7b/PqzISrQvsAWxG4HMhvkUSG/uTaRi26xfzAeYt3Umi5uOUdNqsGyNjboPB
+	 SQEIMQypiPba6DeYd/RK25cJgRwYL9g5Aw8lGm4eSfiHJdKkrE7SSOoszqOn1IGjVW
+	 Y0omEQr2PlKP2CjtURE0EAt2L7Xuf89loE5L/1ydR3rKRenApxa5CjsLIu4zDfolSt
+	 PPhk2n0dgm62A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Anand Jain <anand.jain@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
+	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 82/98] btrfs: export: handle invalid inode or root reference in btrfs_get_parent()
-Date: Fri, 29 Mar 2024 08:37:53 -0400
-Message-ID: <20240329123919.3087149-82-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 83/98] btrfs: send: handle path ref underflow in header iterate_inode_ref()
+Date: Fri, 29 Mar 2024 08:37:54 -0400
+Message-ID: <20240329123919.3087149-83-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
 References: <20240329123919.3087149-1-sashal@kernel.org>
@@ -69,43 +68,39 @@ Content-Transfer-Encoding: 8bit
 
 From: David Sterba <dsterba@suse.com>
 
-[ Upstream commit 26b66d1d366a375745755ca7365f67110bbf6bd5 ]
+[ Upstream commit 3c6ee34c6f9cd12802326da26631232a61743501 ]
 
-The get_parent handler looks up a parent of a given dentry, this can be
-either a subvolume or a directory. The search is set up with offset -1
-but it's never expected to find such item, as it would break allowed
-range of inode number or a root id. This means it's a corruption (ext4
-also returns this error code).
+Change BUG_ON to proper error handling if building the path buffer
+fails. The pointers are not printed so we don't accidentally leak kernel
+addresses.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/export.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ fs/btrfs/send.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
-index 744a02b7fd671..203e5964c9b0f 100644
---- a/fs/btrfs/export.c
-+++ b/fs/btrfs/export.c
-@@ -174,8 +174,15 @@ struct dentry *btrfs_get_parent(struct dentry *child)
- 	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
- 	if (ret < 0)
- 		goto fail;
-+	if (ret == 0) {
-+		/*
-+		 * Key with offset of -1 found, there would have to exist an
-+		 * inode with such number or a root with such id.
-+		 */
-+		ret = -EUCLEAN;
-+		goto fail;
-+	}
- 
--	BUG_ON(ret == 0); /* Key with offset of -1 found */
- 	if (path->slots[0] == 0) {
- 		ret = -ENOENT;
- 		goto fail;
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index e48a063ef0851..e9bafc73c621e 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -1070,7 +1070,15 @@ static int iterate_inode_ref(struct btrfs_root *root, struct btrfs_path *path,
+ 					ret = PTR_ERR(start);
+ 					goto out;
+ 				}
+-				BUG_ON(start < p->buf);
++				if (unlikely(start < p->buf)) {
++					btrfs_err(root->fs_info,
++			"send: path ref buffer underflow for key (%llu %u %llu)",
++						  found_key->objectid,
++						  found_key->type,
++						  found_key->offset);
++					ret = -EINVAL;
++					goto out;
++				}
+ 			}
+ 			p->start = start;
+ 		} else {
 -- 
 2.43.0
 
