@@ -1,184 +1,211 @@
-Return-Path: <linux-btrfs+bounces-3801-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3802-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 512FE892DA0
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Mar 2024 23:25:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8ED7893104
+	for <lists+linux-btrfs@lfdr.de>; Sun, 31 Mar 2024 11:03:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A17B5B21C0C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Mar 2024 22:25:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 501EEB21934
+	for <lists+linux-btrfs@lfdr.de>; Sun, 31 Mar 2024 09:03:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F734F5FD;
-	Sat, 30 Mar 2024 22:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03AA1757EF;
+	Sun, 31 Mar 2024 09:03:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Tq2KoW+O"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UT4ERiH6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63E3E42061
-	for <linux-btrfs@vger.kernel.org>; Sat, 30 Mar 2024 22:24:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA84064CD0
+	for <linux-btrfs@vger.kernel.org>; Sun, 31 Mar 2024 09:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711837500; cv=none; b=SM5P04d/4ATgCfZkshcxAtEHpYugkvQQ4H9EZyzVyiCjM94Gcl2ffG3+d/iYyjgfqQICqi38O3h1tiLAYh7gEJ5EQKy063U4MxWTWwkgQ5DD5mfPsTfUBlEUfvCWuxGd1qDFl66hMjL5HF8Ty8SURseVjIeqG6DFw+fkoCxRwYs=
+	t=1711875825; cv=none; b=afa2VZRjYGWabbayxKCAPOyCIphMPBnrmB6ZlvlylXKzGxow2/aa6UNPrLvX1AhLX3X5EAHQNBM5Ud1WQWxjy8yiIXuEthySzvsEzCM95GRH3RYo+5mnVnmjv4HbA5zXD+Ag1Ez0m5q9rZaqg9OOw7ivaN3+4lsg0Ey9CD2h+ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711837500; c=relaxed/simple;
-	bh=UdW29bVSxalt82V3NySWZV8mbrEquKjYbOJYIl1AOBc=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=R7UveeA56aTbr6ST6+eHni1eddMSfxO02B+i/YuPyFpctEY+MgZ/MlkQxORhoyYsn+WJ/ffUkOmiWEkfjj11r6PH9mRSYm7SJy/5pqFMNjn3sSAhyJGztLuZv+hjdMh9I5y9CQPNBb1iymrgEeV+qjpNoZVA/k7wtV7aoZO2M5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Tq2KoW+O; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1711875825; c=relaxed/simple;
+	bh=+GUX9N7KTWqDazQlkr4dOjvGUXRVNVbAjc11ZWEUXfM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=j8fNQ7f+9lMEYwQCxTQHrtFbyn7ZGXTQNtKi9O0oXgEp8yZPvJ0jWfNttcnrFl8mmPFceeiYc+ocSvFFRiowEVguLRwTv2o1fD+FCMR+I0mIRcW3R0bGH/pGgmo08Cs+eeOWVrogRl/qjLpOdxK7mIgtv6d8QtjB0vflBBaCD3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UT4ERiH6; arc=none smtp.client-ip=209.85.167.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3BCA737FA9
-	for <linux-btrfs@vger.kernel.org>; Sat, 30 Mar 2024 22:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1711837488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2yAv4KRvb5CTvGzIxoZkqZvIunqbnArIVdUHkQc7pJc=;
-	b=Tq2KoW+OPOlzY6/7ePitMMruK8xN3ks49eZ2AwiFEUXrtUYmySXprVIAQSjD3MSzfMh/AD
-	2gEpmDIMpzM9NY/KfcWtg1eGmrp5L87yZ1Q+BRC7Qq5/cHUtd8n0lwIdLfIxYOW4G7cJV3
-	V/ZlY4Tp+i880WRv+KdDL35rhl6rznU=
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4916413A9F
-	for <linux-btrfs@vger.kernel.org>; Sat, 30 Mar 2024 22:24:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id uGhEOy6RCGb7QQAAn2gu4w
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sat, 30 Mar 2024 22:24:46 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs-progs: library-test: header and BTRFS_FLAT_INCLUDES cleanups
-Date: Sun, 31 Mar 2024 08:54:26 +1030
-Message-ID: <daa6866b4b135c8befec9c2c30b7857a5e50392c.1711837050.git.wqu@suse.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1711837050.git.wqu@suse.com>
-References: <cover.1711837050.git.wqu@suse.com>
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-513d599dbabso4067534e87.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 31 Mar 2024 02:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1711875821; x=1712480621; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=enqKlhrqJxOY+Eg7jfBUlxt+b2cgWgCVyMnuUniyPjo=;
+        b=UT4ERiH6Acl0kCe3NDuaNz4AOWi5uiNlFubfWdqc0qZ9GCrlER04mO4bgwdeoOt+4B
+         CLCgJXhBSjTp5BhSbDMW95V6f1aC4OanknHTkuaG2YDy7APn2DshXJSh7LxfgZZxt/dG
+         28FyOMFQw46OxtYUcGoXKLtcodK/8oSrU6yjKdIIs1MHYKvtrF89vZ3neK/dhMdK/pA6
+         fdz0uN1WOAV6m1NjuLvPw3OLaPQHPbxnxvBdeGkIe6RIbiSnDGe+L6DfA0bR6JLHMe5o
+         xE7YSJX+ix5hy5AUo+6zsVcoR22BagvDIrSm1jX2bit+AR8mURBzpG8qwrSTxAs5mE3M
+         qj+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711875821; x=1712480621;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=enqKlhrqJxOY+Eg7jfBUlxt+b2cgWgCVyMnuUniyPjo=;
+        b=wPJuL2BWihQvWP0l3Yt9n8Hr7Rj2N5ICGADyYXX6qvtaPSdIdgP9re4PkFlAi60d+w
+         /Vw4opLXLjfZTyTjvLx9plvU9eBrcujCa8SYVQKd9pzNWvkckO7GRsmZxk/7t4t7NDcj
+         QNFL9l3Oo9I+kVY0KtTztwlp5+6a0PlB6QuMeYj39H11G65AaEj2N2wdhbPCZ1pWVLhO
+         yzj1amSJKWEtNT0+LX1W9ltMqBNI5bve4wW+b8D8WuPfmtr9R1EXLREXTCsWMjDzosZr
+         AuAPYvutRS10O4OCsjGygVTHhkXjVYF00pBRNNW5fdHYIs+oNoyqqaBIxYg/5Mdn2XsR
+         ZDTg==
+X-Forwarded-Encrypted: i=1; AJvYcCXnpbJX/yq66De4pyeYMLVaXFqGwSKM22n9rvoVKvFAYPzeV7A9X/xuYfRJI2hGTmOC+yI+V76XwO4/IJqoz3ADYG6Sq6YF1Q3V/xU=
+X-Gm-Message-State: AOJu0YwrozBvMZOKz2TRRL3klayjk999WLAzB88rdHMMPOjjIypxSQTL
+	EkbJGRxMjGd1nJdiQxzKVMLuSO7yKUNJodB5ODleURu4xbocloBXSnx7+OZZXl4=
+X-Google-Smtp-Source: AGHT+IEFl+fHjFxKCqXr1wfcw/tZ0o11CMu7VI22034XxsfuzUlS3bN1GEeMhfM4+5PMbXFTPtYY+Q==
+X-Received: by 2002:a19:ac03:0:b0:516:a213:46d2 with SMTP id g3-20020a19ac03000000b00516a21346d2mr1775370lfc.69.1711875820967;
+        Sun, 31 Mar 2024 02:03:40 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id cp12-20020a170902e78c00b001e245c5afbfsm92671plb.155.2024.03.31.02.03.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Mar 2024 02:03:40 -0700 (PDT)
+Message-ID: <a2d3cdef-ed4e-41f0-b0d9-801c781f9512@suse.com>
+Date: Sun, 31 Mar 2024 19:33:32 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/5] btrfs: fiemap: return extent physical size
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+ Jonathan Corbet <corbet@lwn.net>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ linux-doc@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, kernel-team@meta.com
+References: <cover.1711588701.git.sweettea-kernel@dorminy.me>
+ <93686d5c4467befe12f76e4921bfc20a13a74e2d.1711588701.git.sweettea-kernel@dorminy.me>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <93686d5c4467befe12f76e4921bfc20a13a74e2d.1711588701.git.sweettea-kernel@dorminy.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: 0.79
-X-Spamd-Result: default: False [0.79 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCPT_COUNT_ONE(0.00)[1];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_DN_NONE(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.11)[-0.557];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,libbtrfs.so:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-X-Spam-Flag: NO
 
-Macro BTRFS_FLAT_INCLUDES is utilized to indicate if we should include
-files directly from the source code headers, or libbtrfsutil headers.
 
-Normally it should only be utlized by libbtrfsutil headers, for
-programs they should either rely on the source code headers, or the
-libbtrfsutil headers, not both.
 
-The only exception is tests/library-test.c, which during tests we
-would prepare a temporary directory and populate it with compiled
-libbtrfsutil library and its headers, and compile library-test program
-against the libbtrfsutil we built (not the system one).
+在 2024/3/28 11:52, Sweet Tea Dorminy 写道:
+> Now that fiemap allows returning extent physical size, make btrfs return
+> the appropriate extent's actual disk size.
+> 
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+[...]
+> @@ -3221,7 +3239,9 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+>   
+>   			ret = emit_fiemap_extent(fieinfo, &cache, key.offset,
+>   						 disk_bytenr + extent_offset,
+> -						 extent_len, flags);
+> +						 extent_len,
+> +						 disk_size - extent_offset,
 
-So library-test is never utilizing any headers inside the source tree,
-thus BTRFS_FLAT_INCLUDES is never set for it.
+This means, we will emit a entry that uses the end to the physical 
+extent end.
 
-This can be verified by Makefile:
+Considering a file layout like this:
 
-  library-test: tests/library-test.c libbtrfs.so
-  	@echo "    [TEST PREP]  $@"$(eval TMPD=$(shell mktemp -d))
-  	$(Q)mkdir -p $(TMPD)/include/btrfs && \
-  	cp $(libbtrfs_headers) $(TMPD)/include/btrfs && \
-  	cp libbtrfs.so.0.1 $(TMPD) && \
-  	cd $(TMPD) && $(CC) -I$(TMPD)/include -o $@ $(addprefix $(ABSTOPDIR)/,$^) -Wl,-rpath=$(ABSTOPDIR)
-  	@echo "    [TEST RUN]   $@"
-  	$(Q)cd $(TMPD) && LD_PRELOAD=libbtrfs.so.0.1 ./$@
-  	@echo "    [TEST CLEAN] $@"
-  	$(Q)$(RM) -rf -- $(TMPD)
+	item 6 key (257 EXTENT_DATA 0) itemoff 15816 itemsize 53
+		generation 7 type 1 (regular)
+		extent data disk byte 13631488 nr 65536
+		extent data offset 0 nr 4096 ram 65536
+		extent compression 0 (none)
+	item 7 key (257 EXTENT_DATA 4096) itemoff 15763 itemsize 53
+		generation 8 type 1 (regular)
+		extent data disk byte 13697024 nr 4096
+		extent data offset 0 nr 4096 ram 4096
+		extent compression 0 (none)
+	item 8 key (257 EXTENT_DATA 8192) itemoff 15710 itemsize 53
+		generation 7 type 1 (regular)
+		extent data disk byte 13631488 nr 65536
+		extent data offset 8192 nr 57344 ram 65536
+		extent compression 0 (none)
 
-Note that, -DBTRFS_FLAT_INCLUDES is only defined in $CFLAGS, and we do
-not pass $CFLAGS for the compiling of library-test at all.
+For fiemap, we would got something like this:
 
-So this patch would remove the BTRFS_FLAT_INCLUDES related checks,
-replace it with a comment, then cleanup the unused headers.
+fileoff 0, logical len 4k, phy 13631488, phy len 64K
+fileoff 4k, logical len 4k, phy 13697024, phy len 4k
+fileoff 8k, logical len 56k, phy 13631488 + 8k, phylen 56k
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/library-test.c | 22 +++-------------------
- 1 file changed, 3 insertions(+), 19 deletions(-)
+[HOW TO CALCULATE WASTED SPACE IN USER SPACE]
+My concern is on the first entry. It indicates that we have wasted 60K 
+(phy len is 64K, while logical len is only 4K)
 
-diff --git a/tests/library-test.c b/tests/library-test.c
-index 3a09044a7d85..87dbba9f219f 100644
---- a/tests/library-test.c
-+++ b/tests/library-test.c
-@@ -16,31 +16,15 @@
-  * Boston, MA 021110-1307, USA.
-  */
- 
--#if BTRFS_FLAT_INCLUDES
--#include "libbtrfs/kerncompat.h"
--#include "libbtrfs/version.h"
--#include "libbtrfs/ioctl.h"
--#include "kernel-lib/rbtree.h"
--#include "kernel-lib/list.h"
--#include "kernel-shared/ctree.h"
--#include "kernel-shared/send.h"
--#include "common/send-stream.h"
--#include "common/send-utils.h"
--#else
- /*
-- * This needs to include headers the same way as an external program but must
-- * not use the existing system headers, so we use "...".
-+ * This program is only linked to libbtrfsutil library, and only include
-+ * headers from libbtrfsutil, so we do not use the filepath inside btrfs-progs
-+ * source code.
-  */
- #include "btrfs/kerncompat.h"
- #include "btrfs/version.h"
--#include "btrfs/rbtree.h"
--#include "btrfs/list.h"
--#include "btrfs/ctree.h"
--#include "btrfs/ioctl.h"
--#include "btrfs/send.h"
- #include "btrfs/send-stream.h"
- #include "btrfs/send-utils.h"
--#endif
- 
- /*
-  * Reduced code snippet from snapper.git/snapper/Btrfs.cc
--- 
-2.44.0
+But that information is not correct, as in reality we only wasted 4K, 
+the remaining 56K is still referred by file range [8K, 64K).
 
+Do you mean that user space program should maintain a mapping of each 
+utilized physical range, and when handling the reported file range [8K, 
+64K), the user space program should find that the physical range covers 
+with one existing extent, and do calculation correctly?
+
+[COMPRESSION REPRESENTATION]
+The biggest problem other than the complexity in user space is the 
+handling of compressed extents.
+
+Should we return the physical bytenr (disk_bytenr of file extent item) 
+directly or with the extent offset added?
+Either way it doesn't look consistent to me, compared to non-compressed 
+extents.
+
+[ALTERNATIVE FORMAT]
+The other alternative would be following the btrfs ondisk format, 
+providing a unique physical bytenr for any file extent, then the 
+offset/referred length inside the uncompressed extent.
+
+That would handle compressed and regular extents more consistent, and a 
+little easier for user space tool to handle (really just a tiny bit 
+easier, no range overlap check needed), but more complex to represent, 
+and I'm not sure if any other filesystem would be happy to accept the 
+extra members they don't care.
+
+Thanks,
+Qu
+
+> +						 flags);
+>   		}
+>   
+>   		if (ret < 0) {
+> @@ -3259,7 +3279,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+>   		prev_extent_end = range_end;
+>   	}
+>   
+> -	if (cache.cached && cache.offset + cache.len >= last_extent_end) {
+> +	if (cache.cached && cache.offset + cache.log_len >= last_extent_end) {
+>   		const u64 i_size = i_size_read(&inode->vfs_inode);
+>   
+>   		if (prev_extent_end < i_size) {
 
