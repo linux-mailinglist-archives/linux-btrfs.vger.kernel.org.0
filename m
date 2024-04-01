@@ -1,63 +1,63 @@
-Return-Path: <linux-btrfs+bounces-3810-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3811-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9D428943A7
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Apr 2024 19:06:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0382B8943C5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Apr 2024 19:08:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EE8DB220EE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Apr 2024 17:06:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79A371F26C2D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Apr 2024 17:08:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59B24AEFD;
-	Mon,  1 Apr 2024 17:06:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4AD14AEFA;
+	Mon,  1 Apr 2024 17:07:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="clcOuVE/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RjUZvz4s"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EFC938DE5;
-	Mon,  1 Apr 2024 17:06:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B1847A64;
+	Mon,  1 Apr 2024 17:07:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711991185; cv=none; b=GU1RjIrWFVidnJ3qkTG1j/oUwLnTeXH2oKFGLtXCWcHbDtmNNb2TNrXk+o1rMsLqA8hVoE+D/kyAQoC3Wz5H0ND3VCjz0F3nuen21/imOBznes16++CqxapKFihzYzNkTIbhBZQVnHN8QZxYe9Us+BbeqBOK+7DQtwldwUndh3I=
+	t=1711991271; cv=none; b=c/oYOnLflWNdDRTmgEw7JLgCPIVrTqzpM1YvGsNGSfa6nIOT9G3rcYKW9jH98jN83hdqpZIDOzjf9dE/gazfy47d/qqHkM9rS4HAUxqs5SlcMgidocDe2jR4KS9Hti5tKv0FeZub3wKJIdcfjt3O7/b0Z/H0zkx8kOcU23BeL/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711991185; c=relaxed/simple;
-	bh=h2ZbhaU11eEghZqE4zHAMIx15+WcYQ2BJyK0q6cIcwk=;
+	s=arc-20240116; t=1711991271; c=relaxed/simple;
+	bh=fAORdwCJ6cWoA/Nlrq+Jlb00Y+L+FLHUMh9x9qNLohk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ILTpTPWAgLsCvZXTUzODE8KO+3ByrHBF5EUl1Sg+osS7mCBAR+qDd6sXpIHoRf/2Nb/92o/0AFbJWM6wHvybFWgLCKRrVZQNY7w1EIIryHhKk3jm4LrUlNByXXIB/4GG4Ae91zqz5AAewx8aVVKtZ6E8GIy7MXNHtf2YkWnoQzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=clcOuVE/; arc=none smtp.client-ip=192.198.163.15
+	 In-Reply-To:Content-Type; b=kPe16mLvPXgLTbmdbm+DFC9lgfFMcVPE+AjPzD5Ru2Ikq/35PA9wWTRAQAVebBR+DTIDuN3dPtD+qJLWi3RgvjvZjAFw6xpw1sih8UGqVv4epTBURX6576aK6/jbZaIVk6ABwqJSaeq0E9Z4zxvAKMSO0GzApUuNKT0DARaZ7LI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RjUZvz4s; arc=none smtp.client-ip=192.198.163.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711991183; x=1743527183;
+  t=1711991270; x=1743527270;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=h2ZbhaU11eEghZqE4zHAMIx15+WcYQ2BJyK0q6cIcwk=;
-  b=clcOuVE/RBtawWH7sfEkqBDARTulWI7HzCpZQXA4iIYZhO7rrT6FxmTa
-   +VXXOUG2S4Ec0eYq6ub7HC5QxiOYNXmCA1niv33d7UciQuKTNjQK2A6Dh
-   VqHIpe3AvgX61fnrW2FmqXCxAslyK6zQP8B+vE+DHjQZG8aweay9WtwDS
-   Wdw75xWP5/MHU29X9B1ijh2sn40EhcSRIQpxuJ89mOQ//LXoGqp7KPMpJ
-   qipY9z4efH4Cw5ZOXVsXc+0JI+xdGFiuENrhOjcyE+msO3lPuInmzh8Ul
-   kwaxrlxrizoaEFo6QjlNTYInBipumNqF7xJANQ66/ek1CxMgPbR+pP9r5
-   w==;
-X-CSE-ConnectionGUID: 5Utz2o90Qsui2vFFT0MkVg==
-X-CSE-MsgGUID: xWAlSUpgTUGituzhbit2rw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7317554"
+  bh=fAORdwCJ6cWoA/Nlrq+Jlb00Y+L+FLHUMh9x9qNLohk=;
+  b=RjUZvz4sH5PmKKx81UIg4Uq4aICyuwdOodB5s3ZHg6azDKKOMtVv504v
+   LvGYPIBcvejnGQ21TzZGRIBt9UyWvVgRKk2EdR95hRwqlYYQj0pP1QqCM
+   lVUL2VEMwDBry2E/5cG4wC6uq27zEFElgwS4kMc4MPzvcUARz9qsbPKcf
+   k9aJB6/2fmoLdte6YSJVdqbSzIPfYSxUUHCz/GlAqgKNrq7+htVMxTeiH
+   TwMQI+NElRO0HXT2CAF0wAPRkkrVS680N9j6bY2miA9u1d8uYfn5BKk13
+   1y5zqyAvjZJycMXxUyfx5wJS94NNebi9oExScKDQowr51W4C86x29RBZ6
+   Q==;
+X-CSE-ConnectionGUID: 68MB2Cm4QFWLB7APJ3EAVQ==
+X-CSE-MsgGUID: SgwJM+JhRYy6QEHsYMy7UQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7317773"
 X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
-   d="scan'208";a="7317554"
+   d="scan'208";a="7317773"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 10:06:17 -0700
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 10:07:49 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
-   d="scan'208";a="22256672"
+   d="scan'208";a="22257093"
 Received: from mthansen-mobl.amr.corp.intel.com (HELO [10.212.113.134]) ([10.212.113.134])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 10:06:16 -0700
-Message-ID: <64a43062-b78b-472f-92be-82ff60eeb70c@intel.com>
-Date: Mon, 1 Apr 2024 10:06:15 -0700
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 10:07:48 -0700
+Message-ID: <31b6d5c2-281c-4eee-ba8a-5344eda23041@intel.com>
+Date: Mon, 1 Apr 2024 10:07:48 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -65,7 +65,8 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 20/26] dax: Document dax dev range tuple
+Subject: Re: [PATCH 21/26] dax/region: Prevent range mapping allocation on
+ sparse regions
 Content-Language: en-US
 To: Ira Weiny <ira.weiny@intel.com>, Fan Ni <fan.ni@samsung.com>,
  Jonathan Cameron <Jonathan.Cameron@huawei.com>,
@@ -76,47 +77,41 @@ Cc: Dan Williams <dan.j.williams@intel.com>,
  Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
  linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-20-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-21-b7b00d623625@intel.com>
 From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-20-b7b00d623625@intel.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-21-b7b00d623625@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
 On 3/24/24 4:18 PM, Ira Weiny wrote:
-> The device DAX structure is being enhanced to track additional DCD
-> information.
+> Sparse regions are not fully populated with memory and this complicates
+> range mapping of dax devices on those regions.  There is no use case for
+> range mapping on sparse regions.
 > 
-> The current range tuple was not fully documented.  Document it prior to
-> adding information for DC.
+> Avoid the complication by prevent range mapping of dax devices on sparse
+> regions.
 > 
-> Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> 
+
 > ---
-> Changes for v1
-> [iweiny: new patch]
-> ---
->  drivers/dax/dax-private.h | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>  drivers/dax/bus.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-> index c6319c6567fb..ac1ccf158650 100644
-> --- a/drivers/dax/dax-private.h
-> +++ b/drivers/dax/dax-private.h
-> @@ -70,7 +70,10 @@ struct dax_mapping {
->   * @dev - device core
->   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
->   * @nr_range: size of @ranges
-> - * @ranges: resource-span + pgoff tuples for the instance
-> + * @ranges: range tuples of memory used
-> + * @pgoff: page offset
-> + * @range: resource-span
-> + * @mapping: device to assist in interrogating the range layout
->   */
->  struct dev_dax {
->  	struct dax_region *region;
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index bab19fc578d0..56dddaceeccb 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -1452,6 +1452,8 @@ static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
+>  		return 0;
+>  	if (a == &dev_attr_mapping.attr && is_static(dax_region))
+>  		return 0;
+> +	if (a == &dev_attr_mapping.attr && is_sparse(dax_region))
+> +		return 0;
+>  	if ((a == &dev_attr_align.attr ||
+>  	     a == &dev_attr_size.attr) && is_static(dax_region))
+>  		return 0444;
 > 
 
