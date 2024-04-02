@@ -1,68 +1,68 @@
-Return-Path: <linux-btrfs+bounces-3824-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3825-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ED93895891
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Apr 2024 17:48:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDBBE8958E1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Apr 2024 17:53:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C27C61C23F9C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Apr 2024 15:48:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EB571C24856
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Apr 2024 15:53:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD96134730;
-	Tue,  2 Apr 2024 15:46:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84E51350D2;
+	Tue,  2 Apr 2024 15:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KxFSCniK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jtIULnhk"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50A1131756
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Apr 2024 15:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E0913175D
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Apr 2024 15:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712072760; cv=none; b=UXD2YF0zV8slsr54IIwe3O10XJSpSKlq9yasqzdb+Rt+7Lwb1Hb+4aLP6P9n/b6Gp3/XVYL0nIyzDx3NfpwqTPP2nYljytNwk/ca+BznnIngXOUN8zhldPdLBm6eI7qgiRr0FJrAYM2dixmVh+eQS3REjxL/zp8VUkV/nOeazSU=
+	t=1712073091; cv=none; b=NQG7jXBc/1K6RxA6bF91LabpvkKDeMS8LqmUmdAuVWjPEd20rSgaKmEUldzXnA5bxG1UZT4C8U9OMBM/51+it1RZOslmgQmSrI+olE7g1rYn8PtiUCieK/r9jl4EJ9VSk38e1Fs+lGyRpxv633cMW9zSMaUum6W2sVOC+VoTzLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712072760; c=relaxed/simple;
-	bh=8PWWmnFwmb2gXlNudfw6DY5rpQxXTKKuARhzmUcKwG4=;
+	s=arc-20240116; t=1712073091; c=relaxed/simple;
+	bh=Wu8mTuSwoyNkd9JQGGCxKVJm/lDcQcp1ULh6laOAPVw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jhlfAmdJsLQlrRVsARiv8iShqXfW5EF143DKZ4mQn/iXW0JAunrTLHaukaDwDEHn/VUvboZD7dqHYTcBwoF/AUmLmljYpqKwMy3yf5IKfc0N+O/PbwdqlVuw9RmC5qbIh690W70fLICZ1Z/Fei0qmjPVbwERBneyN1TJUfroB6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KxFSCniK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75B94C43390
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Apr 2024 15:45:59 +0000 (UTC)
+	 To:Cc:Content-Type; b=jw0r4UW0s7e/LipCXuwD8rifp5jKSFFfItSntUX+09Dc2tWuWGqbHmgnVVeT9HJW+yVasD10G5Z1cPS6Z7razMwH9x3dfX6pz6MjZVeBkDwdRuEZGtaHHism7fqKfMxnnKg6bg9hTmRme0AyIWdrQQ8sLlTxT6GGleo7+ycW1fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jtIULnhk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33CFEC433F1
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Apr 2024 15:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712072759;
-	bh=8PWWmnFwmb2gXlNudfw6DY5rpQxXTKKuARhzmUcKwG4=;
+	s=k20201202; t=1712073091;
+	bh=Wu8mTuSwoyNkd9JQGGCxKVJm/lDcQcp1ULh6laOAPVw=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=KxFSCniKqnLK8X3wZrXZ9b8uLGRZ764uIdOq33ifLID7DTg/TCf8LMZDIJAzp9PP2
-	 0AO+L3VxNvGlGyd/EueadBt9NW5H/l2Hc4hJnVAWop060n+q704nSJET7WHVbVPyFm
-	 l+lTvqsiPQW+E6DLn7+p8F5FEsceIY7qFnllxt6kwQCnQYRN453XW81W8jjfRGS07S
-	 PSV96z/RH85kpipn2onDN/f3Ptronac0DD4E76vXmuGRdfHamrgX3K7y6yzRqDDi9e
-	 65ascExaJVx2ewDklgAGqY1tMjWz66EURr2srmrd8CVBa8gVDoWTZOyjE6n+bl5+qm
-	 1zUAVXQu0KH2g==
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56df377bd13so924953a12.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Apr 2024 08:45:59 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzUlsAEOfZY1his+MZFg2wnRG2WqX082cJSqmoDUhss1XiUoo2a
-	i9G5A9O1w15adJZBY7MjFdgujNunI5JCozkchmB/rKDnc1oQKuDCmT6M5XXXxK1IRZladpMNCR1
-	ur6IIep7+ueMaJgURFpVnZW6x9Ac=
-X-Google-Smtp-Source: AGHT+IH7/wE+Agyj3ppdWuSRpx//8lOCrhOTKYXLLyBZsuRsx3JLsPRDBCDlK03gh8VzqEvFURNh3V67jMXGpt5+gVY=
-X-Received: by 2002:a17:906:b151:b0:a46:5d40:eb97 with SMTP id
- bt17-20020a170906b15100b00a465d40eb97mr7083827ejb.70.1712072758023; Tue, 02
- Apr 2024 08:45:58 -0700 (PDT)
+	b=jtIULnhkIEZAqXnuEZ6yaD593vad/xR/VJjPqMLc8dM8xh6/swZVHspdfwx8se0os
+	 sb5d0S2P1SgbxaIiW64j5F3xMuKKnNWMGjVSzpiSYE+9JAwbwQcL9dPYTEQzKBMop2
+	 wFtaSkfmTOsM00J4zPWMeIrAEzkxsUdEQQLpq8Z85xF34hhgXOWabhuoPuzajp/hk7
+	 fyCrLlpVpBapiVTBqQBXS5nvpHtnE4YR+2ZhmZPaCRQL7xym8bwS1KVVm0QON60sHz
+	 4Z3SjbBC0ViAWO0vZ5XqUtWdSd5MLUkrHz2TW/YMsJS24a/fx8+InGIzsFbmeW+nlo
+	 SfiNynyp2qi2w==
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513d23be0b6so5850831e87.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 Apr 2024 08:51:31 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwIukqbT83W3c6P2v/Q5GsWe3rNogoyq15Z0OkCFcC0BXIjG0eY
+	fap6iMP8YqSRcr8WwmvbrPYhFUEIGgF+PaH8Szl4zGeqjhH38iIp4JklbDVqj3glMxzD2Kwtj+W
+	zmqkDb8RKfgcBnpp6qOD17TyyJdA=
+X-Google-Smtp-Source: AGHT+IEn4J9u87KBWS+JYUGfkNLy3vquNEVBygDbsdjOT9G3pT8eQT71PXXFoP7820cD7od/3Ca8zSDM6uIfVN31LJk=
+X-Received: by 2002:a05:6512:3284:b0:516:a01c:87ca with SMTP id
+ p4-20020a056512328400b00516a01c87camr7198393lfe.12.1712073089439; Tue, 02 Apr
+ 2024 08:51:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712038308.git.wqu@suse.com> <50b37f24a3ac5a2c68529a2373ad98d9c45e6f33.1712038308.git.wqu@suse.com>
-In-Reply-To: <50b37f24a3ac5a2c68529a2373ad98d9c45e6f33.1712038308.git.wqu@suse.com>
+References: <cover.1712038308.git.wqu@suse.com> <da18eebca4fdff1e0be286c18aee0359c074d3f8.1712038308.git.wqu@suse.com>
+In-Reply-To: <da18eebca4fdff1e0be286c18aee0359c074d3f8.1712038308.git.wqu@suse.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 2 Apr 2024 15:45:21 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5tYKCRPWbYF+jCjMWr7-78NtH4umcw2OnKVa4uvjQ=PA@mail.gmail.com>
-Message-ID: <CAL3q7H5tYKCRPWbYF+jCjMWr7-78NtH4umcw2OnKVa4uvjQ=PA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] btrfs: add extra comments on extent_map members
+Date: Tue, 2 Apr 2024 15:50:52 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7V2tzJP3udgEO2zQw=G_yu=M9mKNwO9y_-sybMQTqtOQ@mail.gmail.com>
+Message-ID: <CAL3q7H7V2tzJP3udgEO2zQw=G_yu=M9mKNwO9y_-sybMQTqtOQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] btrfs: simplify the inline extent map creation
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -70,180 +70,86 @@ Content-Transfer-Encoding: quoted-printable
 
 On Tue, Apr 2, 2024 at 7:24=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >
-> The extent_map structure is very critical to btrfs, as it is involved
-> for both read and write paths.
->
-> Unfortunately the structure is not properly explained, making it pretty
-> hard to understand nor to do further improvement.
->
-> This patch would add extra comments explaining the major numbers base on
-
-would add -> adds
-
-And by "numbers" I think you wanted to say "members"?
-
-base -> based
-
-> my code reading.
-> Hopefully we can find more members to cleanup in the future.
+> With the tree-checker ensuring all inline file extents starts at file
+> offset 0 and has a length no larger than sectorsize, we can simplify the
+> calculation to assigned those fixes values directly.
 >
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/extent_map.h | 62 ++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 61 insertions(+), 1 deletion(-)
+>  fs/btrfs/file-item.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
 >
-> diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-> index c5a098c99cc6..30322defcd03 100644
-> --- a/fs/btrfs/extent_map.h
-> +++ b/fs/btrfs/extent_map.h
-> @@ -37,21 +37,81 @@ enum {
->  };
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index e58fb5347e65..de3ccee38572 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -1265,18 +1265,19 @@ void btrfs_extent_item_to_extent_map(struct btrfs=
+_inode *inode,
+>         struct extent_buffer *leaf =3D path->nodes[0];
+>         const int slot =3D path->slots[0];
+>         struct btrfs_key key;
+> -       u64 extent_start, extent_end;
+> +       u64 extent_start;
+>         u64 bytenr;
+>         u8 type =3D btrfs_file_extent_type(leaf, fi);
+>         int compress_type =3D btrfs_file_extent_compression(leaf, fi);
 >
->  /*
-> + * This extent_map structure is an in-memory representation of file exte=
-nts,
-> + * it would represent all file extents (including holes, no matter if we=
- have
-> + * hole file extents).
+>         btrfs_item_key_to_cpu(leaf, &key, slot);
+>         extent_start =3D key.offset;
+> -       extent_end =3D btrfs_file_extent_end(path);
+>         em->ram_bytes =3D btrfs_file_extent_ram_bytes(leaf, fi);
+>         em->generation =3D btrfs_file_extent_generation(leaf, fi);
+>         if (type =3D=3D BTRFS_FILE_EXTENT_REG ||
+>             type =3D=3D BTRFS_FILE_EXTENT_PREALLOC) {
+> +               u64 extent_end =3D btrfs_file_extent_end(path);
+> +
 
-This can simply be:
+This can be made const or better, since it's only used in one place
+now and fits within 80 characters, just use the expression directly
+instead of using a variable.
 
-"This structure represents file extents and holes."
+>                 em->start =3D extent_start;
+>                 em->len =3D extent_end - extent_start;
 
-Which also fixes some grammar (it would represent -> it represents)
-and the stuff between parentheses is confusing.
+Which is here:   em->len =3D btrfs_file_extent_end(path) - extent_start;
 
-> + *
->   * Keep this structure as compact as possible, as we can have really lar=
-ge
->   * amounts of allocated extent maps at any time.
->   */
->  struct extent_map {
->         struct rb_node rb_node;
+>                 em->orig_start =3D extent_start -
+> @@ -1299,9 +1300,12 @@ void btrfs_extent_item_to_extent_map(struct btrfs_=
+inode *inode,
+>                                 em->flags |=3D EXTENT_FLAG_PREALLOC;
+>                 }
+>         } else if (type =3D=3D BTRFS_FILE_EXTENT_INLINE) {
+> +               /* Tree-checker has ensured this. */
+> +               ASSERT(extent_start =3D=3D 0);
+> +
+>                 em->block_start =3D EXTENT_MAP_INLINE;
+> -               em->start =3D extent_start;
+> -               em->len =3D extent_end - extent_start;
+> +               em->start =3D 0;
+> +               em->len =3D fs_info->sectorsize;
+>                 /*
+>                  * Initialize orig_start and block_len with the same valu=
+es
+>                  * as in inode.c:btrfs_get_extent().
+> @@ -1336,7 +1340,7 @@ u64 btrfs_file_extent_end(const struct btrfs_path *=
+path)
 >
-> -       /* all of these are in bytes */
-> +       /* All of these are in bytes */
+>         if (btrfs_file_extent_type(leaf, fi) =3D=3D BTRFS_FILE_EXTENT_INL=
+INE) {
+>                 end =3D btrfs_file_extent_ram_bytes(leaf, fi);
+> -               end =3D ALIGN(key.offset + end, leaf->fs_info->sectorsize=
+);
+> +               end =3D leaf->fs_info->sectorsize;
 
-Please add punctuation as well.
-
-> +
-> +       /*
-> +        * File offset of the file extent. matching key.offset of
-> +        * (INO EXTENT_DATA FILEPOS) key.
-> +        */
-
-"File offset matching the offset of a BTRFS_EXTENT_ITEM_KEY key."
-
-That's a lot more clear than using the shortened format from tree-dump.
-Also note that "matching" should start with a capital letter
-(beginning of sentence.
-
->         u64 start;
-> +
-> +       /*
-> +        * Length of the file extent.
-> +        * For non-inlined file extents it's btrfs_file_extent_item::num_=
-bytes.
-> +        * For inlined file extents it's sectorsize. (as there is no reli=
-able
-> +        * btrfs_file_extent::num_bytes).
-
-Don't put whole sentences in parentheses after a punctuation mark.
-This can also be rephrased in a more clear way:
-
-"For inline extents it's sectorsize and
-btrfs_file_extent_item::num_bytes has data and not a valid length,
-because inline data starts at offsetof(struct btrfs_file_extent_item,
-disk_bytenr)."
-
-> +        */
->         u64 len;
-> +
-> +       /*
-> +        * The modified range start/length, these are in-memory-only
-> +        * members for fsync/logtree optimization.
-> +        */
-
-These were initially used to avoid logging the same csum ranges
-multiple times when extent maps get merged.
-But from a quick look and experiment we don't actually need them in
-order to avoid that (we don't merge new modified extents).
-I'll send a patch to remove them and update the fsync logic.
-
->         u64 mod_start;
->         u64 mod_len;
-> +
-> +       /*
-> +        * The file offset of the original file extent before splitting.
-> +        *
-> +        * This is an in-memory-only member, mathcing
-
-in-memory-only -> in-memory only
-mathcing -> matching
-
-> +        * em::start - btrfs_file_extent_item::offset for regular/preallo=
-cated
-
-Instead of em, which is only a typical variable name we use for extent
-maps, use 'extent_map' so that it's precise and leaves no room for
-confusion.
-
-> +        * extents. EXTENT_MAP_HOLE otherwise.
-> +        */
->         u64 orig_start;
-> +
-> +       /*
-> +        * The full on-disk extent length, matching
-> +        * btrfs_file_extent_item::disk_num_bytes.
-> +        */
->         u64 orig_block_len;
-> +
-> +       /*
-> +        * The decompressed size of the whole on-disk extent, matching
-> +        * btrfs_file_extent_item::ram_bytes.
-> +        *
-> +        * For non-compressed extents, this matches orig_block_len.
-> +        */
->         u64 ram_bytes;
-> +
-> +       /*
-> +        * The on-disk logical bytenr for the file extent.
-> +        *
-> +        * For compressed extents it matches btrfs_file_extent_item::disk=
-_bytenr.
-> +        * For uncompressed extents it matches
-> +        * btrfs_file_extent_item::disk_bytenr + btrfs_file_extent_item::=
-offset
-> +        *
-> +        * For hole extents it is EXTENT_MAP_HOLE and for inline extents =
-it is
-> +        * EXTENT_MAP_INLINE.
-> +        */
->         u64 block_start;
-> +
-> +       /*
-> +        * The on-disk length for the file extent.
-> +        *
-> +        * For compressed extents it matches btrfs_file_extent_item::disk=
-_num_bytes.
-> +        * For uncompressed extents it matches em::len.
-
-Same as before, use 'extent_map::len' instead of 'em::len'.
-
-> +        * Otherwise -1 (aka doesn't make much sense).
-
-That is cryptic...
-Should be something like:  "If the extent map represents a hole, then
-it's -1 and shouldn't be used."
+So both assignments to "end" should be removed, not just the second
+one, as the new one doesn't need the previous and makes it pointless.
 
 Thanks.
 
-
-
-> +        */
->         u64 block_len;
->
->         /*
+>         } else {
+>                 end =3D key.offset + btrfs_file_extent_num_bytes(leaf, fi=
+);
+>         }
 > --
 > 2.44.0
 >
