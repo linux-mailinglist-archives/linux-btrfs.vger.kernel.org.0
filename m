@@ -1,363 +1,292 @@
-Return-Path: <linux-btrfs+bounces-3868-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3869-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 993E7896D7D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 12:58:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46394896DFB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 13:21:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFF3EB22610
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 10:56:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA04A281D05
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 11:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D522C145B20;
-	Wed,  3 Apr 2024 10:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20EB8142E7C;
+	Wed,  3 Apr 2024 11:21:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SHY76g3A"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ug9PMAPC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C561411DA
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 10:55:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995F11420C4
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 11:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712141759; cv=none; b=A8WoKFJRwbgN9/QgLWnKJTtPQ2MSHbV5cFfKQxidRRbwQsADle0qONv5IbsfygVaGw/Cf7/NmVkksXEHpJYUOV9QtxGNryb9bvldxY60dmHF79SdEiDFXg/K4Abu8piffyy0KOlpzPlt0yJ/ZKDK2GnaB7s1gmpFKoc8oqhoXlI=
+	t=1712143260; cv=none; b=ERwd5Hw/RYVxuxvGZsB/Y4BqVpspnx+vbgThpJJqXbdmLeXDYMi+/uKBcUTI0cMR6qnBHNLrQaoOJUfeSqdRRvBnTQFGq2FessvQpxBCzAyLq36LgMEaM2fd30l6WaN2VXRZa5jRVyi+/P8ytgMS70Whz733lRRo0/wVnLRxKCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712141759; c=relaxed/simple;
-	bh=mvT8xiKS9qAAwred7yHtKYaSD4NIBlg4zQyOcId5mro=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i4HVRtjqBIHfDWT2fEei/9kZbxwnTLtlV5se9dXgWYG8GDGfx3eT0B7Eo2Khy0EyUz6OOB+JijJc+0AHBVO9aoR1bFixQlq3DXgIfzjeuradhr3++HzZAr9Lq9Fh/XDEUApzESuOjt9JljZvx/yL4Lq1l6iKKGGyYXXEharFEYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SHY76g3A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C7BCC43390
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 10:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712141758;
-	bh=mvT8xiKS9qAAwred7yHtKYaSD4NIBlg4zQyOcId5mro=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=SHY76g3AhO+/wvPeDI99aHqwrs3y/R6DB+RsjYDa9CPAVOVQyCyaTlwwd8pn9vA+L
-	 7zmjTtFmOV6IYeBWfFJi9C/As1ELFRtS7VddlUAedgtWAoW9KW0mXFvCqFDJi4J3SI
-	 4AL4NhzPJOmjjOH8cp7AJgEGzDA7Qgn8bvu6c3LGjCrI4g2oL+fNAwDOQfqkr1N+uI
-	 u3P8pYEYikZsW+ACmtmAlLh0ehDo4QgSJFvQPYf4tjQq0EiuHoRGJlAmT2FmM+o+M/
-	 KK6zJ1CTlQ+ik7fUBbdWdg9uwZKGK1C8xYlklv/AXhEcMijhYUvAoXS7tiMOwl511k
-	 V5Xs0fnNorCZg==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a46a7208eedso807390266b.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Apr 2024 03:55:58 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw0KzNz8Eqfk6hangnwSXCl32PzH+MBwzEnC94uEZJkoxEygO/P
-	RWccH0S1r9SAWU6hsUlsJm1UmLktEQN3XQG07cdaxplSZRs9xfJeCq994XuD00RuXHrldqmp+li
-	oJo3bxXHAXFJjhY5VqixF4SEfi5s=
-X-Google-Smtp-Source: AGHT+IH+3IK7ULu4yjGPTpijuiKun7pANfbE5luHHCRZ9Yni/TJTjrBRkIuXhFv60aj9kDGiCtfbnhRPm/hI1w9L56A=
-X-Received: by 2002:a17:906:5592:b0:a47:3b21:161a with SMTP id
- y18-20020a170906559200b00a473b21161amr1532306ejp.37.1712141757060; Wed, 03
- Apr 2024 03:55:57 -0700 (PDT)
+	s=arc-20240116; t=1712143260; c=relaxed/simple;
+	bh=SxuRDEE43AmdGAHjZ75XhPtG49iOqobU9JdG396+J6g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VTY+YMvZuQwonYyjYp2SilM/0PLJl0o02Omsk03UJgTWyj1NDAixSUisi/O9nJc62Ept2x3f6AMazbsmK/w1hIml+E/8TjzxotitLl2rtG4cbApER+PSE/nGSPYcaNbbEovc7D8aqrxfaqtqU/Oa7EebcF3DdpMuSTDrLSvl4MM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ug9PMAPC; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712143257;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KREh2dqyEacrAl+2F5FOzFyXaUiu2kZA6fO1nkDtqNU=;
+	b=Ug9PMAPCLfKf1Dkq/XYeA+MXqKxWtAOi2FD5vywqVql88fhnyVviijY6u3F9mgEZa/mu0t
+	5CiJhZWsJ1YpPYSna++wB7X9h8LBkDI/2e8lnRlxQSbvaaSyHYdvcPI6n8hTRmvsbaG9vS
+	vNGFhu5LcIbmQwB8TqjtnraqSrHxiDM=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-554-GzIh6IZEN1y-4ygRm1PFkQ-1; Wed, 03 Apr 2024 07:20:56 -0400
+X-MC-Unique: GzIh6IZEN1y-4ygRm1PFkQ-1
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5dbddee3694so518910a12.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Apr 2024 04:20:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712143255; x=1712748055;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KREh2dqyEacrAl+2F5FOzFyXaUiu2kZA6fO1nkDtqNU=;
+        b=sU2CPOm5aWkc+wNm9wavHjG9ckVGmqWO8q4jWfHBgUi9a6H7xfNsuhbqJbuoCVl0z2
+         kh1LFPvcDodCaYOqf9Ntpt4wpBj6kbTFehr96l9vnWnZdRE7Td66PpHo3H1RNvO/c9CZ
+         EPC/vT7vkRshmt7+GcyKDcOpe6jZ9gctMYk7RB1lWOlepuJ9vjaynJVtPFEMSJC5Jxqe
+         kPqCDWNZqFrPOtYSsLmIWAQv35JOO4NOzYasSW5r7ZDttEoRibty+94UiQtGETYSr8Rl
+         lVTXgXgXxAprDK3PnUpBFk1EmghlC5vrBJWimDEyHkq88THsZ24dbaEwF1dWH02lwAvg
+         jfQw==
+X-Gm-Message-State: AOJu0Yzxa+MEZq3eDO3VQzNQrvPsOJTK8hrSNScwtGlzYiQbx4osQrEo
+	x6MA05UkynfMdWbrnrW4nC9ny6M6J3NM0xXQQhyDTzfYBSFg+zUfQcrNZM3c42Vl9cyra1q3ZFh
+	ZzIuR0IeWVjX0tfR4zAYuLcKE8S61CCLD8N8nVepqxV8RB+49QI+2p3SWAI06IFJlP+yOBt3Pxg
+	==
+X-Received: by 2002:a17:902:ea09:b0:1e2:8f1d:6f98 with SMTP id s9-20020a170902ea0900b001e28f1d6f98mr2224685plg.31.1712143254771;
+        Wed, 03 Apr 2024 04:20:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFaOEmBmMO4HQwCpLtzg464+JVCd3k1I2apvUuiFMsuclmBoHgJPn7rIicEfuJxTiAyZe4Ffw==
+X-Received: by 2002:a17:902:ea09:b0:1e2:8f1d:6f98 with SMTP id s9-20020a170902ea0900b001e28f1d6f98mr2224661plg.31.1712143254239;
+        Wed, 03 Apr 2024 04:20:54 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id k10-20020a170902694a00b001e088a9e2bcsm12931736plt.292.2024.04.03.04.20.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 04:20:53 -0700 (PDT)
+Date: Wed, 3 Apr 2024 19:20:49 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+	fstests@vger.kernel.org
+Subject: Re: [PATCH v4] btrfs: new test for devt change between mounts
+Message-ID: <20240403112049.awm3kvsl2zeukjvr@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <ab39a4385d586a0b82dafdec73f625cf434fe026.1710184289.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2b5929e96bbede278f63c68a149cb50645b094d6.1712074768.git.fdmanana@suse.com>
- <ddd3fbbc-612a-45b1-955b-bc938c4ddb7f@gmx.com> <CAL3q7H51p8nyusrAi6dbR3RR4YxtXBHxGUVALt+Xj2Z8EPvZjQ@mail.gmail.com>
- <000d9059-f896-429c-b69e-9b9910f6d421@gmx.com>
-In-Reply-To: <000d9059-f896-429c-b69e-9b9910f6d421@gmx.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 3 Apr 2024 10:55:20 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7AM5wkgL=d5+7ohh25Q787f89NGKP_FoZdLKVaftH7_w@mail.gmail.com>
-Message-ID: <CAL3q7H7AM5wkgL=d5+7ohh25Q787f89NGKP_FoZdLKVaftH7_w@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: remove not needed mod_start and mod_len from
- struct extent_map
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab39a4385d586a0b82dafdec73f625cf434fe026.1710184289.git.boris@bur.io>
 
-On Tue, Apr 2, 2024 at 10:53=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
->
->
->
-> =E5=9C=A8 2024/4/3 08:13, Filipe Manana =E5=86=99=E9=81=93:
-> > On Tue, Apr 2, 2024 at 10:18=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.c=
-om> wrote:
-> >>
-> >>
-> >>
-> >> =E5=9C=A8 2024/4/3 03:10, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> >>> From: Filipe Manana <fdmanana@suse.com>
-> >>>
-> >>> The mod_start and mod_len fields of struct extent_map were introduced=
- by
-> >>> commit 4e2f84e63dc1 ("Btrfs: improve fsync by filtering extents that =
-we
-> >>> want") in order to avoid too low performance when fsyncing a file tha=
-t
-> >>> keeps getting extent maps merge, because it resulted in each fsync lo=
-gging
-> >>> again csum ranges that were already merged before.
-> >>>
-> >>> We don't need this anymore as extent maps in the modified list of ext=
-ents
-> >>> that get merged with other extents and once we log an extent map we r=
-emove
-> >>> it from the list of modified extent maps.
-> >>>
-> >>> So remove the mod_start and mod_len fields from struct extent_map and=
- use
-> >>> instead the start and len fields when logging checksums in the fast f=
-sync
-> >>> path. This also makes EXTENT_FLAG_FILLING unused so remove it as well=
-.
-> >>>
-> >>> Running the reproducer from the commit mentioned before, with a large=
-r
-> >>> number of extents and against a null block device, so that IO is fast
-> >>> and we can better see any impact from searching checkums items and lo=
-gging
-> >>> them, gave the following results from dd:
-> >>>
-> >>> Before this change:
-> >>>
-> >>>      409600000 bytes (410 MB, 391 MiB) copied, 22.948 s, 17.8 MB/s
-> >>>
-> >>> After this change:
-> >>>
-> >>>      409600000 bytes (410 MB, 391 MiB) copied, 22.9997 s, 17.8 MB/s
-> >>>
-> >>> So no changes in throughput.
-> >>> The test was done in a release kernel (non-debug, Debian's default ke=
-rnel
-> >>> config) and its steps are the following:
-> >>>
-> >>>      $ mkfs.btrfs -f /dev/nullb0
-> >>>      $ mount /dev/sdb /mnt
-> >>>      $ dd if=3D/dev/zero of=3D/mnt/foobar bs=3D4k count=3D100000 ofla=
-g=3Dsync
-> >>>      $ umount /mnt
-> >>>
-> >>> This also reduce the size of struct extent_map from 128 bytes down to=
- 112
-> >>> bytes, so now we can have 36 extents maps per 4K page instead of 32.
-> >>>
-> >>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> >>
-> >> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> >>
-> >> Great we can start cleaning up the extent map members.
-> >>
-> >> Mind this patch to be included in my upcoming extent map cleaning seri=
-es?
-> >
-> > Well, the second paragraph needs to be updated to:
-> >
-> > "We don't need this anymore as extent maps in the modified list of exte=
-nts
-> > are never merged with other extent maps and once we log an extent map w=
-e
-> > remove it from the list of modified extent maps, so it's never logged t=
-wice."
-> >
-> > Plus s/reduce/reduces/ in the last paragraph of the changelog.
-> >
-> > Why does it need to be included in your series? Can't I just push this
-> > to misc-next (with the updated changelog)?
-> >
-> > I've also been working on a large patchset for extent maps for quite
-> > some time, which I hope it's ready in 1 to 2 weeks.
-> > Several refactorings and a shrinker.
-> >
-> > What kind of cleanups do you have?
->
-> My plan is to sync the em members with the file extent item members, so
-> that there is no/less confusion on how to convert a file extent to
-> extent map.
-> Orig_start/block_start/block_len/orig_block_len to be replaced by
-> disk_bytenr/disk_num_bytes/offset, and keep the old members which are
-> already the more-or-less the same as the file extent items.
-> (ram_bytes, start, len, generation)
+On Mon, Mar 11, 2024 at 12:13:44PM -0700, Boris Burkov wrote:
+> It is possible to confuse the btrfs device cache (fs_devices) by
+> starting with a multi-device filesystem, then removing and re-adding a
+> device in a way which changes its dev_t while the filesystem is
+> unmounted. After this procedure, if we remount, then we are in a funny
+> state where struct btrfs_device's "devt" field does not match the bd_dev
+> of the "bdev" field. I would say this is bad enough, as we have violated
+> a pretty clear invariant.
+> 
+> But for style points, we can then remove the extra device from the fs,
+> making it a single device fs, which enables the "temp_fsid" feature,
+> which permits multiple separate mounts of different devices with the
+> same fsid. Since btrfs is confused and *thinks* there are different
+> devices (based on device->devt), it allows a second redundant mount of
+> the same device (not a bind mount!). This then allows us to corrupt the
+> original mount by doing stuff to the one that should be a bind mount.
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+> Changelog:
+> v4:
+> - add tempfsid group
+> - remove fail check on mount command
+> - btrfs/311 -> btrfs/318
+> - add fixed_by annotation
+> v3:
+> - fstests convention improvements (helpers, output, comments, etc...)
+> v2:
+> - fix numerous fundamental issues, v1 wasn't really ready
+> 
+>  common/config       |   1 +
+>  tests/btrfs/318     | 108 ++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/318.out |   2 +
+>  3 files changed, 111 insertions(+)
+>  create mode 100755 tests/btrfs/318
+>  create mode 100644 tests/btrfs/318.out
+> 
+> diff --git a/common/config b/common/config
+> index 2a1434bb1..d8a4508f4 100644
+> --- a/common/config
+> +++ b/common/config
+> @@ -235,6 +235,7 @@ export BLKZONE_PROG="$(type -P blkzone)"
+>  export GZIP_PROG="$(type -P gzip)"
+>  export BTRFS_IMAGE_PROG="$(type -P btrfs-image)"
+>  export BTRFS_MAP_LOGICAL_PROG=$(type -P btrfs-map-logical)
+> +export PARTED_PROG="$(type -P parted)"
+>  
+>  # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
+>  # newer systems have udevadm command but older systems like RHEL5 don't.
+> diff --git a/tests/btrfs/318 b/tests/btrfs/318
+> new file mode 100755
+> index 000000000..796f09d13
+> --- /dev/null
+> +++ b/tests/btrfs/318
+> @@ -0,0 +1,108 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2024 Meta, Inc. All Rights Reserved.
+> +#
+> +# FS QA Test 318
+> +#
+> +# Test an edge case of multi device volume management in btrfs.
+> +# If a device changes devt between mounts of a multi device fs, we can trick
+> +# btrfs into mounting the same device twice fully (not as a bind mount). From
+> +# there, it is trivial to induce corruption.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick volume scrub tempfsid
+> +
+> +_fixed_by_kernel_commit XXXXXXXXXXXX \
+> +	"btrfs: validate device maj:min during open"
+> +
+> +# real QA test starts here
+> +_supported_fs btrfs
+> +_require_test
+> +_require_command "$PARTED_PROG" parted
+> +_require_batched_discard "$TEST_DIR"
+> +
+> +_cleanup() {
+> +	cd /
+> +	$UMOUNT_PROG $MNT
+> +	$UMOUNT_PROG $BIND
+> +	losetup -d $DEV0
+> +	losetup -d $DEV1
+> +	losetup -d $DEV2
+> +	rm $IMG0
+> +	rm $IMG1
+> +	rm $IMG2
 
-Ok, I see. I'm not completely sure because orig_block_len is a max
-value across splits.
-It may work to always set it to block_len of the original extent that
-was split, this is just from a quick look, so I may be wrong about it.
+losetup -d $DEV0 $DEV1 $DEV2
+rm -f $IMG0 $IMG1 $IMG2
 
->
-> Unfortunately this would result quite some name changes, and would
-> definitely going to conflict with your changes.
+> +}
+> +
+> +IMG0=$TEST_DIR/$$.img0
+> +IMG1=$TEST_DIR/$$.img1
+> +IMG2=$TEST_DIR/$$.img2
+> +truncate -s 1G $IMG0
+> +truncate -s 1G $IMG1
+> +truncate -s 1G $IMG2
+> +DEV0=$(losetup -f $IMG0 --show)
+> +DEV1=$(losetup -f $IMG1 --show)
+> +DEV2=$(losetup -f $IMG2 --show)
 
-That would be a huge change, touching lines everywhere due to member rename=
-s.
+_create_loop_device ?
 
->
-> My bad as I'm not aware of your em work, I'm totally fine to wait for
-> your patch and re-base my work then.
 
-I'm not going to change anything in the extent_map structure itself,
-but all major operations like adding/removing/replacing/merging/etc
-are being changed,
-mostly changing function parameters and updating a percpu counter, and
-some tiny change for fsync to avoid races and data loss with the
-shrinker itself.
 
-So all potential conflicts are likely simple to resolve.
+> +D0P1=$DEV0"p1"
+> +D1P1=$DEV1"p1"
+> +MNT=$TEST_DIR/mnt
+> +BIND=$TEST_DIR/bind
 
-I pushed the patch to for-next with the fixed changelog.
+Not sure if these two directories will be taken, better to remove
+them at first. And use "$seq" (or others) to be a prefix or suffix,
+e.g.
 
-Thanks.
+  $TEST_DIR/mnt-${seq}
 
->
-> Thanks,
-> Qu
->
-> >
-> >
-> >>
-> >> Thanks,
-> >> Qu
-> >>> ---
-> >>>    fs/btrfs/extent_map.c        | 18 ------------------
-> >>>    fs/btrfs/extent_map.h        |  4 ----
-> >>>    fs/btrfs/inode.c             |  4 +---
-> >>>    fs/btrfs/tree-log.c          |  4 ++--
-> >>>    include/trace/events/btrfs.h |  3 +--
-> >>>    5 files changed, 4 insertions(+), 29 deletions(-)
-> >>>
-> >>> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-> >>> index 445f7716f1e2..471654cb65b0 100644
-> >>> --- a/fs/btrfs/extent_map.c
-> >>> +++ b/fs/btrfs/extent_map.c
-> >>> @@ -252,8 +252,6 @@ static void try_merge_map(struct extent_map_tree =
-*tree, struct extent_map *em)
-> >>>                        em->len +=3D merge->len;
-> >>>                        em->block_len +=3D merge->block_len;
-> >>>                        em->block_start =3D merge->block_start;
-> >>> -                     em->mod_len =3D (em->mod_len + em->mod_start) -=
- merge->mod_start;
-> >>> -                     em->mod_start =3D merge->mod_start;
-> >>>                        em->generation =3D max(em->generation, merge->=
-generation);
-> >>>                        em->flags |=3D EXTENT_FLAG_MERGED;
-> >>>
-> >>> @@ -271,7 +269,6 @@ static void try_merge_map(struct extent_map_tree =
-*tree, struct extent_map *em)
-> >>>                em->block_len +=3D merge->block_len;
-> >>>                rb_erase_cached(&merge->rb_node, &tree->map);
-> >>>                RB_CLEAR_NODE(&merge->rb_node);
-> >>> -             em->mod_len =3D (merge->mod_start + merge->mod_len) - e=
-m->mod_start;
-> >>>                em->generation =3D max(em->generation, merge->generati=
-on);
-> >>>                em->flags |=3D EXTENT_FLAG_MERGED;
-> >>>                free_extent_map(merge);
-> >>> @@ -300,7 +297,6 @@ int unpin_extent_cache(struct btrfs_inode *inode,=
- u64 start, u64 len, u64 gen)
-> >>>        struct extent_map_tree *tree =3D &inode->extent_tree;
-> >>>        int ret =3D 0;
-> >>>        struct extent_map *em;
-> >>> -     bool prealloc =3D false;
-> >>>
-> >>>        write_lock(&tree->lock);
-> >>>        em =3D lookup_extent_mapping(tree, start, len);
-> >>> @@ -325,21 +321,9 @@ int unpin_extent_cache(struct btrfs_inode *inode=
-, u64 start, u64 len, u64 gen)
-> >>>
-> >>>        em->generation =3D gen;
-> >>>        em->flags &=3D ~EXTENT_FLAG_PINNED;
-> >>> -     em->mod_start =3D em->start;
-> >>> -     em->mod_len =3D em->len;
-> >>> -
-> >>> -     if (em->flags & EXTENT_FLAG_FILLING) {
-> >>> -             prealloc =3D true;
-> >>> -             em->flags &=3D ~EXTENT_FLAG_FILLING;
-> >>> -     }
-> >>>
-> >>>        try_merge_map(tree, em);
-> >>>
-> >>> -     if (prealloc) {
-> >>> -             em->mod_start =3D em->start;
-> >>> -             em->mod_len =3D em->len;
-> >>> -     }
-> >>> -
-> >>>    out:
-> >>>        write_unlock(&tree->lock);
-> >>>        free_extent_map(em);
-> >>> @@ -361,8 +345,6 @@ static inline void setup_extent_mapping(struct ex=
-tent_map_tree *tree,
-> >>>                                        int modified)
-> >>>    {
-> >>>        refcount_inc(&em->refs);
-> >>> -     em->mod_start =3D em->start;
-> >>> -     em->mod_len =3D em->len;
-> >>>
-> >>>        ASSERT(list_empty(&em->list));
-> >>>
-> >>> diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-> >>> index c5a098c99cc6..10e9491865c9 100644
-> >>> --- a/fs/btrfs/extent_map.h
-> >>> +++ b/fs/btrfs/extent_map.h
-> >>> @@ -30,8 +30,6 @@ enum {
-> >>>        ENUM_BIT(EXTENT_FLAG_PREALLOC),
-> >>>        /* Logging this extent */
-> >>>        ENUM_BIT(EXTENT_FLAG_LOGGING),
-> >>> -     /* Filling in a preallocated extent */
-> >>> -     ENUM_BIT(EXTENT_FLAG_FILLING),
-> >>>        /* This em is merged from two or more physically adjacent ems =
-*/
-> >>>        ENUM_BIT(EXTENT_FLAG_MERGED),
-> >>>    };
-> >>> @@ -46,8 +44,6 @@ struct extent_map {
-> >>>        /* all of these are in bytes */
-> >>>        u64 start;
-> >>>        u64 len;
-> >>> -     u64 mod_start;
-> >>> -     u64 mod_len;
-> >>>        u64 orig_start;
-> >>>        u64 orig_block_len;
-> >>>        u64 ram_bytes;
-> >>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> >>> index 3442dedff53d..c6f2b5d1dee1 100644
-> >>> --- a/fs/btrfs/inode.c
-> >>> +++ b/fs/btrfs/inode.c
-> >>> @@ -7338,9 +7338,7 @@ static struct extent_map *create_io_em(struct b=
-trfs_inode *inode, u64 start,
-> >>>        em->ram_bytes =3D ram_bytes;
-> >>>        em->generation =3D -1;
-> >>>        em->flags |=3D EXTENT_FLAG_PINNED;
-> >>> -     if (type =3D=3D BTRFS_ORDERED_PREALLOC)
-> >>> -             em->flags |=3D EXTENT_FLAG_FILLING;
-> >>> -     else if (type =3D=3D BTRFS_ORDERED_COMPRESSED)
-> >>> +     if (type =3D=3D BTRFS_ORDERED_COMPRESSED)
-> >>>                extent_map_set_compression(em, compress_type);
-> >>>
-> >>>        ret =3D btrfs_replace_extent_map_range(inode, em, true);
-> >>> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> >>> index 472918a5bc73..d9777649e170 100644
-> >>> --- a/fs/btrfs/tree-log.c
-> >>> +++ b/fs/btrfs/tree-log.c
-> >>> @@ -4574,8 +4574,8 @@ static int log_extent_csums(struct btrfs_trans_=
-handle *trans,
-> >>>        struct btrfs_root *csum_root;
-> >>>        u64 csum_offset;
-> >>>        u64 csum_len;
-> >>> -     u64 mod_start =3D em->mod_start;
-> >>> -     u64 mod_len =3D em->mod_len;
-> >>> +     u64 mod_start =3D em->start;
-> >>> +     u64 mod_len =3D em->len;
-> >>>        LIST_HEAD(ordered_sums);
-> >>>        int ret =3D 0;
-> >>>
-> >>> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrf=
-s.h
-> >>> index 90b0222390e5..766cfd48386c 100644
-> >>> --- a/include/trace/events/btrfs.h
-> >>> +++ b/include/trace/events/btrfs.h
-> >>> @@ -277,8 +277,7 @@ DEFINE_EVENT(btrfs__inode, btrfs_inode_evict,
-> >>>                { EXTENT_FLAG_COMPRESS_LZO,     "COMPRESS_LZO"  },\
-> >>>                { EXTENT_FLAG_COMPRESS_ZSTD,    "COMPRESS_ZSTD" },\
-> >>>                { EXTENT_FLAG_PREALLOC,         "PREALLOC"      },\
-> >>> -             { EXTENT_FLAG_LOGGING,          "LOGGING"       },\
-> >>> -             { EXTENT_FLAG_FILLING,          "FILLING"       })
-> >>> +             { EXTENT_FLAG_LOGGING,          "LOGGING"       })
-> >>>
-> >>>    TRACE_EVENT_CONDITION(btrfs_get_extent,
-> >>>
+Others look good to me.
+
+Thanks,
+Zorro
+
+
+> +
+> +# Setup partition table with one partition on each device.
+> +$PARTED_PROG $DEV0 'mktable gpt' --script
+> +$PARTED_PROG $DEV1 'mktable gpt' --script
+> +$PARTED_PROG $DEV0 'mkpart mypart 1M 100%' --script
+> +$PARTED_PROG $DEV1 'mkpart mypart 1M 100%' --script
+> +
+> +# mkfs with two devices to avoid clearing devices on close
+> +# single raid to allow removing DEV2.
+> +$MKFS_BTRFS_PROG -f -msingle -dsingle $D0P1 $DEV2 >>$seqres.full 2>&1 || _fail "failed to mkfs.btrfs"
+> +
+> +# Cycle mount the two device fs to populate both devices into the
+> +# stale device cache.
+> +mkdir -p $MNT
+> +_mount $D0P1 $MNT
+> +$UMOUNT_PROG $MNT
+> +
+> +# Swap the partition dev_ts. This leaves the dev_t in the cache out of date.
+> +$PARTED_PROG $DEV0 'rm 1' --script
+> +$PARTED_PROG $DEV1 'rm 1' --script
+> +$PARTED_PROG $DEV1 'mkpart mypart 1M 100%' --script
+> +$PARTED_PROG $DEV0 'mkpart mypart 1M 100%' --script
+> +
+> +# Mount with mismatched dev_t!
+> +_mount $D0P1 $MNT
+> +
+> +# Remove the extra device to bring temp-fsid back in the fray.
+> +$BTRFS_UTIL_PROG device remove $DEV2 $MNT
+> +
+> +# Create the would be bind mount.
+> +mkdir -p $BIND
+> +_mount $D0P1 $BIND
+> +mount_show=$($BTRFS_UTIL_PROG filesystem show $MNT)
+> +bind_show=$($BTRFS_UTIL_PROG filesystem show $BIND)
+> +# If they're different, we are in trouble.
+> +[ "$mount_show" = "$bind_show" ] || echo "$mount_show != $bind_show"
+> +
+> +# Now really prove it by corrupting the first mount with the second.
+> +for i in $(seq 20); do
+> +	$XFS_IO_PROG -f -c "pwrite 0 50M" $MNT/foo.$i >>$seqres.full 2>&1
+> +done
+> +for i in $(seq 20); do
+> +	$XFS_IO_PROG -f -c "pwrite 0 50M" $BIND/foo.$i >>$seqres.full 2>&1
+> +done
+> +
+> +# sync so that we really write the large file data out to the shared device
+> +sync
+> +
+> +# now delete from one view of the shared device
+> +find $BIND -type f -delete
+> +# sync so that fstrim definitely has deleted data to trim
+> +sync
+> +# This should blow up both mounts, if the writes somehow didn't overlap at all.
+> +$FSTRIM_PROG $BIND
+> +# drop caches to improve the odds we read from the corrupted device while scrubbing.
+> +echo 3 > /proc/sys/vm/drop_caches
+> +$BTRFS_UTIL_PROG scrub start -B $MNT | grep "Error summary:"
+> +
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/318.out b/tests/btrfs/318.out
+> new file mode 100644
+> index 000000000..2798c4ba7
+> --- /dev/null
+> +++ b/tests/btrfs/318.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 318
+> +Error summary:    no errors found
+> -- 
+> 2.43.0
+> 
+> 
+
 
