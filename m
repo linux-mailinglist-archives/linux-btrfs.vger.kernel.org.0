@@ -1,90 +1,93 @@
-Return-Path: <linux-btrfs+bounces-3886-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3887-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39016897917
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 21:37:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4AD897918
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 21:37:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9F8E1F21D94
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 19:37:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BC641C267FB
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 19:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6499155314;
-	Wed,  3 Apr 2024 19:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2160415539B;
+	Wed,  3 Apr 2024 19:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="VVqv4DtN";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SNl7bIDv"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="kdKRJ6Vu";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XQH0FjNZ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33611401C
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 19:37:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D71014885B
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 19:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712173030; cv=none; b=CYahja2AQje1dRzzVdp2VX3fV/Afco0fodT/wMMbNnEQuGzLT4f5WufG3WtTXUPdv3YZ97Rk9RFHOYKNL9nHFUP3beYKO+ZGGfAFbZh/XsR3+DyBOfOtARUrMCdz9AHxDc+0+Nm2fFcrQSZvJPvyoy0FaP1uL7Cm0TQGvULO6+0=
+	t=1712173032; cv=none; b=RgK4/RAvCqWjotgvXXNx1spq7CGqHGdZHj3IdVAHLW0TOGsFm3Wfu0bR1vrybcFyd3Bf+ClViW4ezAn3o4yXT3JVuDWP9Ir3NkY4Ouq3a9rJQJBJ8FX/4u9jW7d9Eojm0hzfojwL723M3l5u45kGh3qyA+jbKg2HfqmbmhBGoKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712173030; c=relaxed/simple;
-	bh=7Z7mizBUrnFk6TUAKpQv8gjpHHow7redeLNb7XBD8gk=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=mO+501oo7fJnZmQe+fyGPbP6Ni8mIAQwlxL7czf/38XShv2AnB/yBHpJoTu06pf79+hQcJh/kLfnhau5H2DblWF1AAg2qJM7C+uuAj8GS0tQGThgD0KCS3pPp844FP79Ev0jZzRNpPdx7ILFcvxJrRMFYJWHKcbsnxnDoz93mAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=VVqv4DtN; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SNl7bIDv; arc=none smtp.client-ip=64.147.123.19
+	s=arc-20240116; t=1712173032; c=relaxed/simple;
+	bh=oD0RFZTfbfGcxlIBSBqIOWI4Y+l13QV4xGid1BrLTMc=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=EVsK0KQ/BtZnKIcqJTLy5hwUwt9IM6/vsB2/vqxoOyTQ+Rw04InibbvA8IzC+GCYo6LvllYbVxXv5o984Kb0YjimPEe76P+xmjyg2wvgjd9TX9CEaCDaUFQkdK7M0dhD2sXjTl/llk9h1A2SBYXyp5EpFzfWcqpABlbH3lduzeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=kdKRJ6Vu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XQH0FjNZ; arc=none smtp.client-ip=64.147.123.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.west.internal (Postfix) with ESMTP id B12A33200A4D;
-	Wed,  3 Apr 2024 15:37:06 -0400 (EDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.west.internal (Postfix) with ESMTP id 664DC3200A59;
+	Wed,  3 Apr 2024 15:37:09 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 03 Apr 2024 15:37:07 -0400
+  by compute1.internal (MEProxy); Wed, 03 Apr 2024 15:37:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
 	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1712173026; x=1712259426; bh=C+ygCefgQgFYO0ZLEToY1
-	PyocM0Qk5QsmBqkoy1q51Q=; b=VVqv4DtNlbEbU4AxvxVbuE52k6Y0PiV0+MCzY
-	OoMAlgMf7Hrlpc4FzYwPoeY5DYRvAptySkkf+VibwfNDg5kLJUixa0p71f5Zbujf
-	32ZzlGUwX2v9XWMji0+URElNQyNvYGOy9EEhPClm29C7eJYSTisXx5RhYw0Nk43j
-	hhrWuFO2v324xrghUEc6ect2PEkN5IQlTuA7uyoURWkn8WOyApbHoH2flSozZqwI
-	WyWG/tILXU9EuB9g8E5Lqpf2D/X7VokLyxH45PCWRszJjozIsJz3/cB13VmVQlnO
-	U/hTOcwJvEln7D76rCtQmTRl1S5MAP7I9AbN13YaeggsCDkAg==
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1712173028; x=
+	1712259428; bh=agyvQiwfEEzHG1IgP3HCGQnRFlRAILl6xaGkONpPqlM=; b=k
+	dKRJ6VuBhEei14J6My+iIX9xpz0lvswuDyHVDuN3miDQSGZVVQpC1J93dr8yOLEy
+	jDtiYMPAgWTFezRUm+VFiLL9bNEksa4BO4P2zPjSahdY6AqXCk8sqN1ocSMqel2H
+	BowcPamm+Gzu1Z61C7wDsekaB8swSNAEOPH9h5xfQI9V8T802v27s87XoU2ln1iV
+	mgJRmieg/vCBwapMpRkT90ONC35Lk/PhmJs0IMjHnddhTnuLKDLb9hyrhnmmbBAv
+	p73NMJKIgvP8yW2lTgSRqcRBSQ24srJYe5ePT3fJK7HbpeAJQu8fkPo/JUG7I5gI
+	EG36XXydZQxf1SWI9kuww==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:content-transfer-encoding:content-type
 	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712173026; x=1712259426; bh=C+ygCefgQgFYO0ZLEToY1PyocM0Q
-	k5QsmBqkoy1q51Q=; b=SNl7bIDv4PJ7N7eC2ztE33um5OS/Purzy9164iyZG9uG
-	IFtnlh57RYlMe68dsVAgaoanAjGjj6G/ru/ltddXi+hk9769eETLezU7xX8lqUuN
-	Ozj9pWZvrYFCBLRzUzqGxTxffL2ZOeDE0PJVzWB9QcdpeIC+UIF5wVN0VUoyYQNL
-	Bwn122+nCbNFIwwvWg+BY/xcSUdLxfRcOy9xn+E2As/0adZp/+QbeXH4YA4zbErb
-	qcODLWsoNwevXjdJ3p2GqpP2jL4OxC2nDW7h+vt3dU3fnItY26J9V3Bt6FOzkBEg
-	N7sHYmHoe+010xtidEoBIqYNcD2wR6g+jSeNKkmsmg==
-X-ME-Sender: <xms:4a8NZgQDJzod5LXTYCLNhnw0QRwiuKT7oF_ktlnKISOcqVUosQZTlg>
-    <xme:4a8NZtz891ZGD4TCSMSymTzqvUqaIDxR5sqU5ghSuIreZSompBLh0HnE79bYq7B93
-    DKDH5sIY3DTz1x8iW4>
-X-ME-Received: <xmr:4a8NZt2p9K7f9ocEwln8YDw-8_dOvtvQ-yGDWwJieV84wIVqJbssJLf3A5hrh2l8kdLzyVa_d8elppdRzcxqFasVPSw>
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1712173028; x=1712259428; bh=agyvQiwfEEzHG
+	1IgP3HCGQnRFlRAILl6xaGkONpPqlM=; b=XQH0FjNZevWvQj3eTNlIU+kQzqNmh
+	PhkZU1ZsbJJueZO1Er06p+TXrdAp0OpaWd56GSXWrBcbKe1gdjwOCrxDMHSIYQAG
+	XvMuiPtn2mhSmnG9MaiXJ9OYe67rT1WFXyGNJa8a19+z8GNE/Yl5w5jXEjavrMuA
+	GWuW1yVi9Qe1gDnPCoqpDBqm+8e+IgJs3ZBQQIqsoJyu4q/lKYK98okvr/m/EPPD
+	q8EU3hDKmLME6E89qQQwyVfgkItZJuDr1sCeP0EkWSUhZVDWalZMVhzROolvdtX+
+	oEhd/Pua22Hs7I/x6/m4FTwJJZG4yYl6DguI40erFlAYzxjnZMXLAws3g==
+X-ME-Sender: <xms:5K8NZifO8y2IzerVF5neve4SMQR1APpSJl32KjLOzB3dkYJZBQ86Yw>
+    <xme:5K8NZsPs78EYX08Np3ezRJEjdfmJjimZdwU_v-noREzxSXa5qHSzAeRLbuBP5lgQs
+    ijSBgMVKczXBYpjMMU>
+X-ME-Received: <xmr:5K8NZjhZA3eI2I68fN2W8ucjRdc8uP9EFDnQkpLuetb6dOTU1FmeXWZmrfOgFShdV2BToRBnsGABySEagJ3NMyrz8gw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefiedgleeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeehudehieelvdekgfduleeggfekveelteethffhudfgie
-    elueeuteefkeelteefffenucffohhmrghinhepghhithhhuhgsrdgtohhmpdgsuhhrrdhi
-    ohenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
-    hrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:4a8NZkBNaNFOjzBzqZPRJ8QqIu80lXK276JQu3kuH-zxwsK9qVfj2g>
-    <xmx:4a8NZpgoFNJaTfnusQvKeFJFhvqvVHrFawdywR0svxHD4V7wWbnVUQ>
-    <xmx:4a8NZgp1FEynJd_-ODD8VfMiWQPbuI9pmtRBG5OuYdrkkS4uvB-sYA>
-    <xmx:4a8NZshissmUFyPVzwAXarMl6bYE2y-o-x04kDlN9Pu5WsbrOApsYg>
-    <xmx:4q8NZsuwkpwbbYbhBJxNuM20X8Rc4l1SOwX0qXo4woj3ATYIuGTatx0ohYHd>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+    dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
+    ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
+    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:5K8NZv-4GMMmLriTGFrXl1lmijsUwk0h3PpFuC6iVXF5CWpweF04qQ>
+    <xmx:5K8NZuuiEzGXKs8eB5zlVXjXwvmHxYVhKljkM29q6GLDmXpzW0KrEA>
+    <xmx:5K8NZmEcRgUig88nwGaG4UAiUtm5BsZ72qiJAKTSzqXPO_nrslpXUA>
+    <xmx:5K8NZtPMYvaEmrJqnjJUpC4EwDMYCeI3RDssnpxUkfT1ZkZIO1JXUQ>
+    <xmx:5K8NZn4CesMVMOviGJVtrZA1xdL48zZ8Qv2IqUDlC79w_0f6oO58drHr9z2S>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 3 Apr 2024 15:37:05 -0400 (EDT)
+ 3 Apr 2024 15:37:08 -0400 (EDT)
 From: Boris Burkov <boris@bur.io>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 0/6] btrfs: dynamic and periodic block_group reclaim
-Date: Wed,  3 Apr 2024 12:38:46 -0700
-Message-ID: <cover.1712168477.git.boris@bur.io>
+Subject: [PATCH 1/6] btrfs: report reclaim stats in sysfs
+Date: Wed,  3 Apr 2024 12:38:47 -0700
+Message-ID: <b685cc587cee3fcd6e67f969a2f58063e80e38d1.1712168477.git.boris@bur.io>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <cover.1712168477.git.boris@bur.io>
+References: <cover.1712168477.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -93,86 +96,95 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Btrfs's block_group allocator suffers from a well known problem, that
-it is capable of eagerly allocating too much space to either data or
-metadata (most often data, absent bugs) and then later be unable to
-allocate more space for the other, when needed. When data starves
-metadata, this can extra painfully result in read only filesystems that
-need careful manual balancing to fix.
+When evaluating various reclaim strategies/thresholds against each
+other, it is useful to collect data about the amount of reclaim
+happening. Expose a count and byte count via sysfs per space_info.
 
-This can be worked around by:
-- enabling automatic reclaim
-- periodically running balance
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/block-group.c | 10 ++++++++++
+ fs/btrfs/space-info.h  | 12 ++++++++++++
+ fs/btrfs/sysfs.c       |  4 ++++
+ 3 files changed, 26 insertions(+)
 
-The latter is widely deployed via btrfsmaintenance
-(https://github.com/kdave/btrfsmaintenance) and the former is used at
-scale at Meta with good results. However, neither of those solutions is
-perfect, as they both currently use a fixed threshold. A fixed threshold
-is vulnerable to workloads that trigger high amounts of reclaim. This
-has led to btrfsmaintenance setting very conservative thresholds of 5
-and 10 percent of data block groups.
-(https://github.com/kdave/btrfsmaintenance/commit/edbbfffe592f47c2849a8825f523e2ccc38b15f5)
-At Meta, we deal with an elevated level of reclaim which would be
-desirable to reduce.
-
-This patch set expands on automatic reclaim, adding the ability to set a
-dynamic reclaim threshold that appropriately scales with the global file
-system allocation conditions as well as periodic reclaim which runs that
-reclaim sweep in the cleaner thread. Together, I believe they constitute
-a robust and general automatic reclaim system that should avoid
-unfortunate read only filesystems in all but extreme conditions, where
-space is running quite low anyway and failure is more reasonable.
-
-At a very high level, the dynamic threshold's strategy is to set a fixed
-target of unallocated block groups (10 block groups) and linearly scale
-its aggression the further we are from that target. That way we do no
-automatic reclaim until we actually press against the unallocated
-target, allowing the allocator to gradually fill fragmented space with
-new extents, but do claw back space after  workloads that use and free a
-bunch of space, perhaps with fragmentation.
-
-I ran it on three workloads (described in detail on the dynamic reclaim
-patch) but they are:
-1. bounce allocations around X% full.
-2. fill up all the way and introduce full fragmentation.
-3. write in a fragmented way until the filesystem is just about full.
-script can be found here:
-https://github.com/boryas/scripts/tree/main/fio/reclaim
-
-The important results can be seen here (full results explorable at
-https://bur.io/dyn-rec/)
-
-bounce at 30%, higher relocations with a fixed threshold:
-https://bur.io/dyn-rec/bounce/reclaims.png
-https://bur.io/dyn-rec/bounce/reclaim_bytes.png
-https://bur.io/dyn-rec/bounce/unalloc_bytes.png
-
-hard 30% fragmentation, dynamic actually reclaims, relocs not crazy:
-https://bur.io/dyn-rec/strict_frag/reclaims.png
-https://bur.io/dyn-rec/strict_frag/reclaim_bytes.png
-https://bur.io/dyn-rec/strict_frag/unalloc_bytes.png
-
-fill it all the way up in a fragmented way, then keep making
-allocations: 
-https://bur.io/dyn-rec/last_gig/reclaims.png
-https://bur.io/dyn-rec/last_gig/reclaim_bytes.png
-https://bur.io/dyn-rec/last_gig/unalloc_bytes.png
-
-Boris Burkov (6):
-  btrfs: report reclaim stats in sysfs
-  btrfs: store fs_info on space_info
-  btrfs: dynamic block_group reclaim threshold
-  btrfs: periodic block_group reclaim
-  btrfs: prevent pathological periodic reclaim loops
-  btrfs: urgent periodic reclaim pass
-
- fs/btrfs/block-group.c |  42 ++++++--
- fs/btrfs/block-group.h |   1 +
- fs/btrfs/space-info.c  | 240 +++++++++++++++++++++++++++++++++++++++--
- fs/btrfs/space-info.h  |  42 ++++++++
- fs/btrfs/sysfs.c       |  81 +++++++++++++-
- 5 files changed, 383 insertions(+), 23 deletions(-)
-
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 1e09aeea69c2..fd10e3b3f4f2 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1821,6 +1821,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 	list_sort(NULL, &fs_info->reclaim_bgs, reclaim_bgs_cmp);
+ 	while (!list_empty(&fs_info->reclaim_bgs)) {
+ 		u64 zone_unusable;
++		u64 reclaimed;
+ 		int ret = 0;
+ 
+ 		bg = list_first_entry(&fs_info->reclaim_bgs,
+@@ -1913,11 +1914,20 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 				div64_u64(bg->used * 100, bg->length),
+ 				div64_u64(zone_unusable * 100, bg->length));
+ 		trace_btrfs_reclaim_block_group(bg);
++		reclaimed = bg->used;
+ 		ret = btrfs_relocate_chunk(fs_info, bg->start);
+ 		if (ret) {
+ 			btrfs_dec_block_group_ro(bg);
+ 			btrfs_err(fs_info, "error relocating chunk %llu",
+ 				  bg->start);
++			spin_lock(&space_info->lock);
++			space_info->reclaim_count++;
++			spin_unlock(&space_info->lock);
++		} else {
++			spin_lock(&space_info->lock);
++			space_info->reclaim_count++;
++			space_info->reclaim_bytes += reclaimed;
++			spin_unlock(&space_info->lock);
+ 		}
+ 
+ next:
+diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+index a733458fd13b..b42db020eba6 100644
+--- a/fs/btrfs/space-info.h
++++ b/fs/btrfs/space-info.h
+@@ -165,6 +165,18 @@ struct btrfs_space_info {
+ 
+ 	struct kobject kobj;
+ 	struct kobject *block_group_kobjs[BTRFS_NR_RAID_TYPES];
++
++	/*
++	 * Monotonically increasing counter of block group reclaim attempts
++	 * Exposed in /sys/fs/<uuid>/allocation/<type>/reclaim_count
++	 */
++	u64 reclaim_count;
++
++	/*
++	 * Monotonically increasing counter of reclaimed bytes
++	 * Exposed in /sys/fs/<uuid>/allocation/<type>/reclaim_bytes
++	 */
++	u64 reclaim_bytes;
+ };
+ 
+ struct reserve_ticket {
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index c6387a8ddb94..0f3675c0f64f 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -894,6 +894,8 @@ SPACE_INFO_ATTR(bytes_readonly);
+ SPACE_INFO_ATTR(bytes_zone_unusable);
+ SPACE_INFO_ATTR(disk_used);
+ SPACE_INFO_ATTR(disk_total);
++SPACE_INFO_ATTR(reclaim_count);
++SPACE_INFO_ATTR(reclaim_bytes);
+ BTRFS_ATTR_RW(space_info, chunk_size, btrfs_chunk_size_show, btrfs_chunk_size_store);
+ BTRFS_ATTR(space_info, size_classes, btrfs_size_classes_show);
+ 
+@@ -949,6 +951,8 @@ static struct attribute *space_info_attrs[] = {
+ 	BTRFS_ATTR_PTR(space_info, bg_reclaim_threshold),
+ 	BTRFS_ATTR_PTR(space_info, chunk_size),
+ 	BTRFS_ATTR_PTR(space_info, size_classes),
++	BTRFS_ATTR_PTR(space_info, reclaim_count),
++	BTRFS_ATTR_PTR(space_info, reclaim_bytes),
+ #ifdef CONFIG_BTRFS_DEBUG
+ 	BTRFS_ATTR_PTR(space_info, force_chunk_alloc),
+ #endif
 -- 
 2.44.0
 
