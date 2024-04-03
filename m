@@ -1,188 +1,123 @@
-Return-Path: <linux-btrfs+bounces-3892-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3893-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D75D389791D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 21:37:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B62CA897A32
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 22:45:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCBD8B25B5D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 19:37:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70BFE28D447
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 20:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 009A015572D;
-	Wed,  3 Apr 2024 19:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="KFmTx1SE";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="np8VFtPQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE80156999;
+	Wed,  3 Apr 2024 20:40:07 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90951524DC
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 19:37:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4341715697E;
+	Wed,  3 Apr 2024 20:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712173047; cv=none; b=F8trnNie0MlgFPHReaHcdV+A+Cw7yb4KaIHf/l64EEz6uc8xwx3cU/IyIz2/yCi+2ZYTU8fUgUzoh6lOYE4zCNjAL6ZnJ3gTytiTPwBxQKoNYRfsHiLBY3NLd607qFb216NTXs21vRdYSFy75aSi6HRiazNvkiqqe5PHL2PPvkg=
+	t=1712176806; cv=none; b=TMPILrkRuj2JCSILkz4Yf9A0dBNVciEff8BjNHtGlWwWSZ/5MIk9+sQabhZYiDo8r8KiRlVWhbx5xqyaByKFQ5yBF0PFOKnvh65oTXcxBcB7O6A6HEbdg4gg9EMGuuGyY7LYsY6Uq4Nart9+Eua5lOYULkJe02X3boH3Z8qXxpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712173047; c=relaxed/simple;
-	bh=xCAB1dz0G60fkwKoGzRwNA+R6E2Zwl69rvjxYvHOEO0=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eZCR0Y5yM8FxZDf02jORASoYLnUFLyaIa12B0SvxgBgpWTOIL+yDn+PaGTbx9p210uA5GXqemPzZsnZCnLD7mdhPw7lw2inxTkXXLQCoLKb1HmPb+zZi8d3M2Xkh+B2Zt2npkn9ZGxnvwowrY+mZUcgnHpCd94HlfF74wqONC0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=KFmTx1SE; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=np8VFtPQ; arc=none smtp.client-ip=64.147.123.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.west.internal (Postfix) with ESMTP id A32103200A4D;
-	Wed,  3 Apr 2024 15:37:23 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 03 Apr 2024 15:37:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1712173043; x=
-	1712259443; bh=v5X+W5b6ba3edalkMnml9tOiy5Ds+VhC4vp4iVhCoAA=; b=K
-	FmTx1SE9q2SUT3J6Y06A7vuKcle4ajX1+DLtXLI8yUgh+9TAF0RVqR7sHZo0H+TU
-	BviWqF4n8rixX1JH/FXmOf4WPLpz1K8eJWwYCexeQhh/CJk+vEd2TEVBSPSi/GZp
-	MFpj6+CLWp7rGOrh46wuJQzZDOAKOlbiwWIcmJv/f/usMVpPt8s06+Qw446gBhj5
-	vAdr4AmZzFPi9BwMauywEk/DDe6gXEiaTsYktRXmMs1V6fWaqzj84IINHsKTDoDp
-	tkQ841RLBkkXYRvN9kQBOyzwWtAptVExfT2qCwuF+7aAznV2Fsrb4RxFDF2laWu5
-	cbsqmmxWF2WwZ2E1VmVyw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1712173043; x=1712259443; bh=v5X+W5b6ba3ed
-	alkMnml9tOiy5Ds+VhC4vp4iVhCoAA=; b=np8VFtPQFhQ+QnrXzocNpfH9pNHpV
-	vfmVJaok8wZnk6+dkOSVURqgFBZKnxzbrHGw8+qmEx8RaAz7rQKL9HQzXYLSZIks
-	9JLXZDLmu0x9zpG55HhmwMFJ+v5822LbbywuFQX6vx1opH/43HTqwPmYhplORXnf
-	5cwF5+/eJ3gfyhW8Fl24RdnAxYkWHn9zuB+ZOznm8/uhllowBt8kbLVOWnk+iRi9
-	a1/VNyMq+mtO1pNxv5agA0Q2x+J+5gFDO07r1cETAF37fpJNmIXkgRA28U8dg9a4
-	w4rNCVRFgGu6M3xBuiyc6IcoOouDtEbghQJ5bhByM2Pi95SjmkYB9gYYA==
-X-ME-Sender: <xms:8q8NZibbCcuCozakP0Pbkuaf-tnCG-hBP8gDkTtkDRI9p1hlO7OlSg>
-    <xme:8q8NZlaPFJFsfH-HzvD5a9oUlp9ptscdedtM9hSjW-SEYhkCPJl0lgDeFsJW6FFz2
-    Rathlgb7OeoU9wUcaA>
-X-ME-Received: <xmr:8q8NZs-jMO29CPR23u0U-80eWoV_FtqohlhVAvdDizbCSKDkUA2A3L2Kf1ww1d-UFM48wIUp9Mlu_Tnar09GepPsrss>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefiedgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
-    ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
-    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:8q8NZkolmXqkx7klKvu2LEEOV1SiR72-cnzHBBML6oH7iRIbaxyYGg>
-    <xmx:8q8NZtogMZM3183tpVIhWlXF8cy2d4Rzqw9-XVAnhr7yXETOMF_IPg>
-    <xmx:8q8NZiR1TaX5hVpcxr3uW90e94S_mdveW7xEn3sxb2rE4Ig8DbSnPw>
-    <xmx:8q8NZtrJBqGbU_6U9iPwRWhOFTDEj_ivmpEOCzjGH01r5KTmcuwqcQ>
-    <xmx:868NZk2vCV-vxRYkrjYnTvvTs4iiKpDkTm85hYB1Axi3bTiY7cC8o2XcGr7t>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 3 Apr 2024 15:37:22 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH 6/6] btrfs: urgent periodic reclaim pass
-Date: Wed,  3 Apr 2024 12:38:52 -0700
-Message-ID: <7d32872b06daf6f9d8b79acde2e762bd5840e94b.1712168477.git.boris@bur.io>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1712168477.git.boris@bur.io>
-References: <cover.1712168477.git.boris@bur.io>
+	s=arc-20240116; t=1712176806; c=relaxed/simple;
+	bh=qgljfKihg3TTZ+DcxNAtMO2QNJhWdpZgN0ADjmVw1dw=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=e9aoZIHDE7JqS+8PZ9YpwILaoboTxlI4ZWRtFQ0ToA3gncR+ym6IwbCw0MS0XMkFaj0Ly0KprFQoV/U+9FNrk74IRV/ngMCzZ+gh/vpl0FmUhyUyg5a0NF+i3Fy2loyuACOXP0gqrjGoF+i5ySmZRKK8JfcTKBvhUian+g5SKU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V8xMZ35Cnz6DBMD;
+	Thu,  4 Apr 2024 04:35:22 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 92FDB140B67;
+	Thu,  4 Apr 2024 04:40:00 +0800 (CST)
+Received: from localhost (10.126.171.13) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 3 Apr
+ 2024 21:39:59 +0100
+Date: Wed, 3 Apr 2024 21:39:58 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: fan <nifan.cxl@gmail.com>, Dave Jiang <dave.jiang@intel.com>, Fan Ni
+	<fan.ni@samsung.com>, Navneet Singh <navneet.singh@intel.com>, Dan Williams
+	<dan.j.williams@intel.com>, Davidlohr Bueso <dave@stgolabs.net>, "Alison
+ Schofield" <alison.schofield@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, <linux-btrfs@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Chris Mason
+	<clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
+	<dsterba@suse.com>
+Subject: Re: [PATCH 00/26] DCD: Add support for Dynamic Capacity Devices
+ (DCD)
+Message-ID: <20240403213958.00000f0d@Huawei.com>
+In-Reply-To: <6604fe2dae8ea_2089029486@iweiny-mobl.notmuch>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	<ZgHPUggTfSCIx8cI@debian>
+	<6604fe2dae8ea_2089029486@iweiny-mobl.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Periodic reclaim attempts to avoid block_groups seeing active use with a
-sweep mark that gets cleared on allocation and set on a sweep. In urgent
-conditions where we have very little unallocated space (less than one
-chunk used by the threshold calculation for the unallocated target), we
-want to be able to override this mechanism.
+On Wed, 27 Mar 2024 22:20:45 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-Introduce a second pass that only happens if we fail to find a reclaim
-candidate and reclaim is urgent. In that case, do a second pass where
-all block groups are eligible.
+> fan wrote:
+> > On Sun, Mar 24, 2024 at 04:18:03PM -0700, ira.weiny@intel.com wrote:  
+> > > A git tree of this series can be found here:  
+> 
+> [snip]
+> 
+> > >   
+> > 
+> > Hi Ira,
+> > Have not got a chance to check the code yet, but I noticed one thing
+> > when testing with my DCD emulation code.
+> > Currently, if we do partial release, it seems the whole extent will be
+> > removed. Is it designed intentionally?
+> >   
+> 
+> Yes that is my intent.  I specifically called that out in patch 18.
+> 
+> https://lore.kernel.org/all/20240324-dcd-type2-upstream-v1-18-b7b00d623625@intel.com/
+> 
+> I thought we discussed this in one of the collaboration calls.  Mainly
+> this is to simplify by not attempting any split of the extents the host is
+> tracking.  It really is expected that the FM/device is going to keep those
+> extents offered and release them in their entirety.  I understand this may
+> complicate the device because it may see a release of memory prior to the
+> request of that release.  And perhaps this complicates the device.  But in
+> that case it (or the FM really) should not attempt to release partial
+> extents.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/space-info.c | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+It was discussed at some point as you say. Feels like something that might not
+be set in stone for ever, but for now it is a reasonable simplifying assumption.
+The device might not maintain the separation of neighboring extents
+but the FM probably will.  If it turns out real use models are different,
+then we 'guessed' wrong and get to write more complex code. 
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 149623cbd2d4..fa42668d3fc3 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -1965,17 +1965,35 @@ int btrfs_calc_reclaim_threshold(struct btrfs_space_info *space_info)
- 	return READ_ONCE(space_info->bg_reclaim_threshold);
- }
- 
-+/*
-+ * Under "urgent" reclaim, we will reclaim even fresh block groups that have
-+ * recently seen successful allocations, as we are desperate to reclaim
-+ * whatever we can to avoid ENOSPC in a transaction leading to a readonly fs.
-+ */
-+static bool is_reclaim_urgent(struct btrfs_space_info *space_info)
-+{
-+	struct btrfs_fs_info *fs_info = space_info->fs_info;
-+	u64 unalloc = atomic64_read(&fs_info->free_chunk_space);
-+	u64 data_chunk_size = calc_effective_data_chunk_size(fs_info);
-+
-+	return unalloc < data_chunk_size;
-+}
-+
- static int do_reclaim_sweep(struct btrfs_fs_info *fs_info,
- 			    struct btrfs_space_info *space_info, int raid)
- {
- 	struct btrfs_block_group *bg;
- 	int thresh_pct;
-+	bool try_again = true;
-+	bool urgent;
- 
- 	spin_lock(&space_info->lock);
-+	urgent = is_reclaim_urgent(space_info);
- 	thresh_pct = btrfs_calc_reclaim_threshold(space_info);
- 	spin_unlock(&space_info->lock);
- 
- 	down_read(&space_info->groups_sem);
-+again:
- 	list_for_each_entry(bg, &space_info->block_groups[raid], list) {
- 		u64 thresh;
- 		bool reclaim = false;
-@@ -1983,14 +2001,29 @@ static int do_reclaim_sweep(struct btrfs_fs_info *fs_info,
- 		btrfs_get_block_group(bg);
- 		spin_lock(&bg->lock);
- 		thresh = mult_perc(bg->length, thresh_pct);
--		if (bg->used < thresh && bg->reclaim_mark)
-+		if (bg->used < thresh && bg->reclaim_mark) {
-+			try_again = false;
- 			reclaim = true;
-+		}
- 		bg->reclaim_mark++;
- 		spin_unlock(&bg->lock);
- 		if (reclaim)
- 			btrfs_mark_bg_to_reclaim(bg);
- 		btrfs_put_block_group(bg);
- 	}
-+
-+	/*
-+	 * In situations where we are very motivated to reclaim (low unalloc)
-+	 * use two passes to make the reclaim mark check best effort.
-+	 *
-+	 * If we have any staler groups, we don't touch the fresher ones, but if we
-+	 * really need a block group, do take a fresh one.
-+	 */
-+	if (try_again && urgent) {
-+		try_again = false;
-+		goto again;
-+	}
-+
- 	up_read(&space_info->groups_sem);
- 	return 0;
- }
--- 
-2.44.0
+Device always has to cope with unsolicited release so don't think this adds
+any burden.  That includes a race where the host releases capacity when
+it hasn't yet seen the event the device has sent to release part of the same
+capacity.  There is text about async release always being possible in the
+spec to cover these overlapping cases but upshot of that one is it must be
+permissible to release a containing capacity as you are doing.
+
+Jonathan
+
+> Ira
+> 
+> [snip]
 
 
