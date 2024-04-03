@@ -1,87 +1,64 @@
-Return-Path: <linux-btrfs+bounces-3848-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3849-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 288F5896441
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 07:52:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A02896453
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 08:02:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D994B21B5A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 05:52:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC2861F24983
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 06:02:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF1B4D595;
-	Wed,  3 Apr 2024 05:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0E1950241;
+	Wed,  3 Apr 2024 06:02:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="K+uUaojR"
+	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="OQr4Z5gg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDA624D9E3
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 05:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E834D117;
+	Wed,  3 Apr 2024 06:02:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.144.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712123543; cv=none; b=iBa2Pfw+kuWwsO5FZsd1A6IKb9pwYmA0tHo2CdvGlR+5nutB8RLsvIrvXwfCl/U9DSLLvw1VYca26gOjbylbj//G36TORaOj1OWKUJqSE1O0qXB6ozaiycfzW490+6MbvBnpcB8CuO++0MiNWkWE18IRyhw4zAVLuB7v1YY8NHk=
+	t=1712124153; cv=none; b=KHPv2VHGRTk/4YXTT+x17ZbKgBdGEPHDkCrEMNScD2dW9OeeC/alS+Exm2uU1bON9NoKoaLVEZEW3PmLh9epJEUn+h/Gu1PkAP5+ShH7v9GfsP6n8myVgn8K+luFLPatwIEMaa7xLavEDWjXtc0HjNYbeAFb1i7YueEuf5fAjTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712123543; c=relaxed/simple;
-	bh=au+raaVKbX1jQKKXn891U3zO9Q4Pgp0W5C444VSlB/Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=qdEpmuyJ5aVsjw3g48L3qrQ7ag8OYg2B/yw4Yjl22v+/GKVa9BaghOOm4dz4zQXpXFuqQRlTCjCiXcJjYnh2ajzLe56m6dkLxH1Qw8S76ajVTCQIXNTKDvmVQhf86ZmjUbmt1+nNVo3qwgvbZYAvgocrjwn8/ljywZuktAxrVz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=K+uUaojR; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d6c9678cbdso80282961fa.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Apr 2024 22:52:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1712123539; x=1712728339; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=qy+3n1QCV9lICWk9IKzr1g9NsOrhM3hYEbipct4rUzc=;
-        b=K+uUaojR+bPnEFCOFLpo1M5ivTs5qH3+qpdnQ1qQL27MlNxWi2pS9oG7Qk1qYuM1Wt
-         Z5IdFVWtaWLZD49UaqPfoCbtidtlVtUzzELoHeD0PayhD13vGovpQRnBGWHHiIWNF9uO
-         Z66828vhDxgGRIFxnrNcF0qzNeu8RdE3ybAwufWNIW9d3ddEOVKrHmQdfF0kws5Zy/qV
-         Arrm1PEbYxYLTy4s+vCwlXSl0ZB4Tt+iLtbAAN98dJG0oZDspPeShK55v4lV8YTFzAMZ
-         XC7qP0r/hmsys/i3ABmIH3bYn3JMbxfpYAv4eRyV/x1pDJKnpyqQv1eurNTPUGoO6lfD
-         emhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712123539; x=1712728339;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qy+3n1QCV9lICWk9IKzr1g9NsOrhM3hYEbipct4rUzc=;
-        b=gzvoSAwPYjTkpB5B5m9oKB1TIZZCQ++zcocCKXXIMAhxcGn1T2hAAd9thJpbHZar7J
-         74gwAUQZZvcCnnuBQ1kx6p2qEOHkZ6UHQ7rxJkevDP+OTxTpv+FH35VWklwiAoVrpzVJ
-         EbSFm6Y0JkPHVdYvpLPrn86u9GIYt9Ao1SdKlTrAZsoetAG7BWWTJJjdzaxIPxIe2/+r
-         SYMInQAjaAPH6YaRK0dw6ov6tS48UgarjBV2jFmnl4+Xlx006Hrd3e7uMZAjasxheZ1x
-         y2BbXNs8ZQhf0h7XaqBi/HkArcgw5Zie/3gsWoYaZZebQnPUOACELmP3wfrP95wODPfl
-         jujA==
-X-Forwarded-Encrypted: i=1; AJvYcCUWnhovENMN9WJqCH2eNAXPszyAZZ+816ZO1lDTW85mCRZ+llZBJBMVL8DlMvMLL2Z7OSJDy0Vphy2OixLKETwFy//gRuXqOPsoVJo=
-X-Gm-Message-State: AOJu0YxhVcXnH67WUXoUw9iQ6K1e0mLwi+JHwyGq4HDrs9kLIWQHsPaq
-	qBJhe6K1+smsDLG9LAGznmH9KiICU2fgwjj9jgmDwJcRc6zYN1Ax5rzmKlKnPEc=
-X-Google-Smtp-Source: AGHT+IFmvBZ6VoJlXKEwgJEoqiULEeKNPf4CaElA6N9VlSA4Ec4aT9grkWNhxdYqbBsnWXh4NnPQbQ==
-X-Received: by 2002:a2e:920d:0:b0:2d8:4169:3a58 with SMTP id k13-20020a2e920d000000b002d841693a58mr51352ljg.41.1712123538857;
-        Tue, 02 Apr 2024 22:52:18 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id v62-20020a626141000000b006e73f400295sm11258315pfb.61.2024.04.02.22.52.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 22:52:18 -0700 (PDT)
-Message-ID: <821adc74-1c35-4003-aa31-a2562791dde8@suse.com>
-Date: Wed, 3 Apr 2024 16:22:10 +1030
+	s=arc-20240116; t=1712124153; c=relaxed/simple;
+	bh=rzXbHeyJ/9o+6UEDEOJYVqyrbxJV+Tcf6YMwKwFBkBQ=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=h8+hSB+QBrUeZlngcATZf52Q7Q4yHCa+c5IftGDW2embJjAhUSPyxiMOBBg7NSTRoDAacmWU2TCGZy98h6IWziQPv3jFfWQJuYeEuvnXPlwMk2Eyvq2YBH2YSEOjkZizfKh/5/tmpbqmB0sR7jOkCUa0TQBfd5Hfp/uIti+l1xk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me; spf=pass smtp.mailfrom=dorminy.me; dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b=OQr4Z5gg; arc=none smtp.client-ip=71.19.144.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	(No client certificate requested)
+	by box.fidei.email (Postfix) with ESMTPSA id C0E7080818;
+	Wed,  3 Apr 2024 02:02:28 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+	t=1712124150; bh=rzXbHeyJ/9o+6UEDEOJYVqyrbxJV+Tcf6YMwKwFBkBQ=;
+	h=Date:Subject:From:To:References:In-Reply-To:From;
+	b=OQr4Z5ggeR/gh79M0z9MJwXoIMiY8Lp+Z3jHON0B+EeHFQ5QQbSdyIdz3fhhhe+OC
+	 kK56COJmGDpWFvgXgLDK7UgQndSNp447NDlTbQcUdAR9OSefTCogo18TQNunYaZ63c
+	 vOYaK4V6jX4Ll8fR4pQ0hcf1qycRqoM/RfIn+TSUOkQqsYuVmrvmcPt1ZolGdbc5TQ
+	 05RQfBA+pMswHMlPPHWY65Y0r1Gkq1YKtqmlTvRPcrNsUMu0OeHALLAO7QsXrWdJLi
+	 wGe7zfn9Hc8Zr6bZQibHfFmQ6lKxi/CbrcpvqKYKweEF/SaRcoMGEy+Ce9jPkdBTBD
+	 rBX8pR+K8Kmiw==
+Message-ID: <d01b4606-38fa-4f27-8fbd-31de505ba3a3@dorminy.me>
+Date: Wed, 3 Apr 2024 02:02:27 -0400
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 5/5] btrfs: fiemap: return extent physical size
-To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
- Jonathan Corbet <corbet@lwn.net>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
+Content-Language: en-US
+From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+To: Qu Wenruo <wqu@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Alexander Viro <viro@zeniv.linux.org.uk>,
  Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
  linux-doc@vger.kernel.org, linux-btrfs@vger.kernel.org,
  linux-fsdevel@vger.kernel.org, kernel-team@meta.com
@@ -89,40 +66,32 @@ References: <cover.1711588701.git.sweettea-kernel@dorminy.me>
  <93686d5c4467befe12f76e4921bfc20a13a74e2d.1711588701.git.sweettea-kernel@dorminy.me>
  <a2d3cdef-ed4e-41f0-b0d9-801c781f9512@suse.com>
  <ff320741-0516-410f-9aba-fc2d9d7a6b01@dorminy.me>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
 In-Reply-To: <ff320741-0516-410f-9aba-fc2d9d7a6b01@dorminy.me>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-
-
-在 2024/4/3 16:02, Sweet Tea Dorminy 写道:
-[...]
+>> This means, we will emit a entry that uses the end to the physical 
+>> extent end.
+>>
+>> Considering a file layout like this:
+>>
+>>      item 6 key (257 EXTENT_DATA 0) itemoff 15816 itemsize 53
+>>          generation 7 type 1 (regular)
+>>          extent data disk byte 13631488 nr 65536
+>>          extent data offset 0 nr 4096 ram 65536
+>>          extent compression 0 (none)
+>>      item 7 key (257 EXTENT_DATA 4096) itemoff 15763 itemsize 53
+>>          generation 8 type 1 (regular)
+>>          extent data disk byte 13697024 nr 4096
+>>          extent data offset 0 nr 4096 ram 4096
+>>          extent compression 0 (none)
+>>      item 8 key (257 EXTENT_DATA 8192) itemoff 15710 itemsize 53
+>>          generation 7 type 1 (regular)
+>>          extent data disk byte 13631488 nr 65536
+>>          extent data offset 8192 nr 57344 ram 65536
+>>          extent compression 0 (none)
+>>
+>> For fiemap, we would got something like this:
 >>
 >> fileoff 0, logical len 4k, phy 13631488, phy len 64K
 >> fileoff 4k, logical len 4k, phy 13697024, phy len 4k
@@ -153,98 +122,36 @@ Content-Transfer-Encoding: 8bit
 > tree-search based interface. Reporting whole extents gives more 
 > flexibility for userspace to figure out how to report bookend extents, 
 > or shared extents, or ...
-
-That's totally fine, no matter what solution you go, (reporting exactly 
-as the on-disk file extent, or with offset into consideration), user 
-space always need to maintain some type of mapping to calculate the 
-wasted space by bookend extents.
-
 > 
 > It does seem a little weird where if you request with fiemap only e.g. 
 > 4k-16k range in that example file you'll get reported all 68k involved, 
 > but I can't figure out a way to fix that without having the kernel keep 
 > track of used parts of the extents as part of reporting, which sounds 
 > expensive.
-
-I do not think mapping 4k-16K is a common scenario either, but since you 
-mentioned, at least we need a consistent way to emit a filemap entry.
-
-The tracking part can be done in the user space.
-
 > 
 > You're right that I'm being inconsistent, taking off extent_offset from 
 > the reported disk size when that isn't what I should be doing, so I 
 > fixed that in v3.
-> 
->>
->> [COMPRESSION REPRESENTATION]
->> The biggest problem other than the complexity in user space is the 
->> handling of compressed extents.
->>
->> Should we return the physical bytenr (disk_bytenr of file extent item) 
->> directly or with the extent offset added?
->> Either way it doesn't look consistent to me, compared to 
->> non-compressed extents.
->>
-> 
-> As I understand it, the goal of reporting physical bytenr is to provide 
-> a number which we could theoretically then resolve into a disk location 
-> or few if we cared, but which doesn't necessarily have any physical 
-> meaning. To quote the fiemap documentation page: "It is always undefined 
-> to try to update the data in-place by writing to the indicated location 
-> without the assistance of the filesystem". So I think I'd prefer to 
-> always report the entire size of the entire extent being referenced.
 
-The concern is, if we have a compressed file extent, reflinked to 
-different part of the file.
+Ah, I think I grasp a point I'd missed before.
+- Without setting disk_bytenr to the actual start of the data on disk, 
+there's no way to find the location of the actual data on disk within 
+the extent from fiemap alone
+- But reporting disk_bytenr + offset, to get actual start of data on 
+disk, means we need to report a physical size to figure out the end of 
+the extent and we can't know the beginning.
 
-Then the fiemap returns all different physical bytenr (since offset is 
-added), user space tool have no idea they are the same extent on-disk.
-Furthermore, if we emit the physical + offset directly to user space 
-(which can be beyond the compressed extent), then we also have another 
-uncompressed extent at previous physical + offset.
+We can't convey both actual location, start, and end of the extent in 
+just two pieces of information.
 
-Would that lead to bad calculation in user space to determine how many 
-bytes are really used?
+On the other hand, if someone really needs to know the actual location 
+on disk of their data, they could use the tree_search ioctl as root to 
+do so?
 
-> 
->> [ALTERNATIVE FORMAT]
->> The other alternative would be following the btrfs ondisk format, 
->> providing a unique physical bytenr for any file extent, then the 
->> offset/referred length inside the uncompressed extent.
->>
->> That would handle compressed and regular extents more consistent, and 
->> a little easier for user space tool to handle (really just a tiny bit 
->> easier, no range overlap check needed), but more complex to represent, 
->> and I'm not sure if any other filesystem would be happy to accept the 
->> extra members they don't care.
-> 
-> I really want to make sure that this interface reports the unused space 
-> in e.g bookend extents well -- compsize has been an important tool for 
-> me in this respect, e.g. a time when a 10g file was taking up 110g of 
-> actual disk space. If we report the entire length of the entire extent, 
-> then when used on whole files one can establish the space referenced by 
-> that file but not used; similarly on multiple files. So while I like the 
-> simplicity of just reporting the used length, I don't think there's a 
-> way to make compsize unprivileged with that approach.
+So I still think we should be reporting entire extents but am less 
+confident that it doesn't break existing users. I am not sure how common 
+it is to take fiemap output on btrfs and use it to try to get to 
+physical data on disk - do you know of a tool that does so?
 
-Why not? In user space we just need to maintain a mapping of each 
-referred range.
-
-Then we get the real actual disk space, meanwhile the fiemap report is 
-no different than "btrfs ins dump-tree" for file extents (we have all 
-the things we need, filepos, length (num_bytes), disk_bytenr, 
-disk_num_bytes, offset, and ram_bytes.
-
-For unused space, since we have the mapping, we can iterate through the 
-mapping, finding out all the sectors not referred by any file extents.
-
-It should really just be a fiemap based (and unprivilleged) compsize.
-Or did I miss some important things?
-
-Thanks,
-Qu
-
-> 
-> Thank you!!
+Thank you!
 
