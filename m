@@ -1,173 +1,194 @@
-Return-Path: <linux-btrfs+bounces-3846-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3847-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 591A4896187
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 02:34:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE8D589640D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 07:32:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D52A32854CA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 00:34:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1C301C2264B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 05:32:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C02FC01;
-	Wed,  3 Apr 2024 00:33:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFABD4AEE3;
+	Wed,  3 Apr 2024 05:32:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vO1S4Lh6"
+	dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b="MlpXF1Lc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from box.fidei.email (box.fidei.email [71.19.144.250])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359081BF20;
-	Wed,  3 Apr 2024 00:33:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2153C46425;
+	Wed,  3 Apr 2024 05:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.144.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712104436; cv=none; b=F0JKjC2SDNCT1ya+k1rd6witCei6I/v83TXfGNY1X6UL1i5sMRd3gUER/oDfWl7atSnCkUE6bI5YAQIq4H2A/FvLv2mqBD1n2fO6ImR+sV4Nbl4Nl8+FySPY2GPfjcJuo5FFNH7ozwMDbBvIvGP1eKq44x4wisv7PFyYohSAvTQ=
+	t=1712122363; cv=none; b=Z9G2ctFlO0GOgsjoJkalbJ2rLBBAwkzxD3rMXbbrX9kqjkLFPVwboIyn6EE/XMF7SH7fiPl0KDycYPuytAvsH5C9R2H4fKkTQwDB4bCquDdZ4PNfpmY0d59WFoU1vXrSB1O6Gl45UvZIL6xJFT2Rfr3xrb+Sun4eZqdDFJgGI0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712104436; c=relaxed/simple;
-	bh=klEagrQlHOJ1VL1CB6eLV3nxtQjaEnWxsl/7W0ysDw4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kczTzB6meSU8R4BW+ltaUggQzI8M74mWnzotRYAOpvAxNXz4+9Kq7UXIOgDwwWfV5iY5rZvNygWaRt6YYcBlgSEGcUJ3bv7cZ1wAZ1ggdQEUc7f3JpMlnzP+s5RB2QDDv2mUofntIojPO00bcdBPViEwz5O3tDyUH+MLu/em/vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vO1S4Lh6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79852C433F1;
-	Wed,  3 Apr 2024 00:33:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712104435;
-	bh=klEagrQlHOJ1VL1CB6eLV3nxtQjaEnWxsl/7W0ysDw4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vO1S4Lh634Pax1oTwLdDx6S5jW3ZVFRdYxDuYmRJGt2ZKUhwopatIM4xd08+gM8v/
-	 UGYsV3kVODscJOa3s+1uNpg5IaDy2Z9ddRGk5eR8MHWDCUYGG80o4wYJ6MHX0Gz/+o
-	 f96ItQ2rhj3AGJqAC453khLk/OgbUX57RalalUMpdS7AQG6xrtFH+sMPmk4O3TuqsE
-	 CSJkNKi8RkehUxJlxemMhgutDKb2bm9ShZaJK/A/RO5wUFUe/0SYzLyPOqPNteQDEw
-	 9W2z9lCVOeNOyTd1N4gef/QTqm1lO11eZBmL8BwGlC1F+/jjdCOtP3PBGqdX1u/jMd
-	 apcI3Nq7JvI/A==
-Date: Tue, 2 Apr 2024 20:33:55 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: David Sterba <dsterba@suse.cz>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	clm@fb.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.8 59/68] btrfs: preallocate temporary extent
- buffer for inode logging when needed
-Message-ID: <Zgyj800yVkeKmbmq@sashalap>
-References: <20240329122652.3082296-1-sashal@kernel.org>
- <20240329122652.3082296-59-sashal@kernel.org>
- <20240402133518.GD14596@suse.cz>
+	s=arc-20240116; t=1712122363; c=relaxed/simple;
+	bh=NRiy2LGJHBtCVOE6rfX9SqNFWfLvoY+5HcH/4vLD7bQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=jrMvUN/VlrhJ90jrObtWeKT5ZS8anqO37WmbtCnC371w0Exw2ehM7NSnn5L09jzXK2hgbtx2YMl3oLg1urTqS1AdeE789CRSOnyQmXQkNoQF78RKHxi+YU/TTzp/69c5DClv1OCWwI4dTD0n3aBBPwWJZceLpDkOnPDY1yZQLfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me; spf=pass smtp.mailfrom=dorminy.me; dkim=pass (2048-bit key) header.d=dorminy.me header.i=@dorminy.me header.b=MlpXF1Lc; arc=none smtp.client-ip=71.19.144.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dorminy.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorminy.me
+Received: from authenticated-user (box.fidei.email [71.19.144.250])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	(No client certificate requested)
+	by box.fidei.email (Postfix) with ESMTPSA id B5D63807C8;
+	Wed,  3 Apr 2024 01:32:32 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorminy.me; s=mail;
+	t=1712122354; bh=NRiy2LGJHBtCVOE6rfX9SqNFWfLvoY+5HcH/4vLD7bQ=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=MlpXF1LcmKpE26Q6X3yy3eCYlZqQU2KcgdjnVJSAEKvnY8rHu8l5pFY+AQaMYRRuj
+	 gIee5zuj7ETV/9qWlFN9+cpuspm4vkFJYddmWJ59/HiDTExS79MzpUr1ce9hOv162K
+	 zvvOfCizde1o9nK39WuLBNfhaZoy9yxtXD844EQpxeoD3RK5SSGloaw0sYWwIfAZAR
+	 srwqZzl2ScCqTN+VBjx4WggowP7gc0XFCSqHV0+wFNFsy2RRSSkKf3usSKCEokP9CM
+	 TSicEaw0nYMN0DTg0CUMcYa1XLiSbU0LnzZ0inDv0b6YnuaHxiF8Ef5uB3GN2gswPb
+	 NNM/Rz9TghlDA==
+Message-ID: <ff320741-0516-410f-9aba-fc2d9d7a6b01@dorminy.me>
+Date: Wed, 3 Apr 2024 01:32:31 -0400
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240402133518.GD14596@suse.cz>
+Subject: Re: [PATCH v2 5/5] btrfs: fiemap: return extent physical size
+Content-Language: en-US
+To: Qu Wenruo <wqu@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ linux-doc@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, kernel-team@meta.com
+References: <cover.1711588701.git.sweettea-kernel@dorminy.me>
+ <93686d5c4467befe12f76e4921bfc20a13a74e2d.1711588701.git.sweettea-kernel@dorminy.me>
+ <a2d3cdef-ed4e-41f0-b0d9-801c781f9512@suse.com>
+From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+In-Reply-To: <a2d3cdef-ed4e-41f0-b0d9-801c781f9512@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 02, 2024 at 03:35:18PM +0200, David Sterba wrote:
->On Fri, Mar 29, 2024 at 08:25:55AM -0400, Sasha Levin wrote:
->> From: Filipe Manana <fdmanana@suse.com>
->>
->> [ Upstream commit e383e158ed1b6abc2d2d3e6736d77a46393f80fa ]
->>
->> When logging an inode and we require to copy items from subvolume leaves
->> to the log tree, we clone each subvolume leaf and than use that clone to
->> copy items to the log tree. This is required to avoid possible deadlocks
->> as stated in commit 796787c978ef ("btrfs: do not modify log tree while
->> holding a leaf from fs tree locked").
->>
->> The cloning requires allocating an extent buffer (struct extent_buffer)
->> and then allocating pages (folios) to attach to the extent buffer. This
->> may be slow in case we are under memory pressure, and since we are doing
->> the cloning while holding a read lock on a subvolume leaf, it means we
->> can be blocking other operations on that leaf for significant periods of
->> time, which can increase latency on operations like creating other files,
->> renaming files, etc. Similarly because we're under a log transaction, we
->> may also cause extra delay on other tasks doing an fsync, because syncing
->> the log requires waiting for tasks that joined a log transaction to exit
->> the transaction.
->>
->> So to improve this, for any inode logging operation that needs to copy
->> items from a subvolume leaf ("full sync" or "copy everything" bit set
->> in the inode), preallocate a dummy extent buffer before locking any
->> extent buffer from the subvolume tree, and even before joining a log
->> transaction, add it to the log context and then use it when we need to
->> copy items from a subvolume leaf to the log tree. This avoids making
->> other operations get extra latency when waiting to lock a subvolume
->> leaf that is used during inode logging and we are under heavy memory
->> pressure.
->>
->> The following test script with bonnie++ was used to test this:
->>
->>   $ cat test.sh
->>   #!/bin/bash
->>
->>   DEV=/dev/sdh
->>   MNT=/mnt/sdh
->>   MOUNT_OPTIONS="-o ssd"
->>
->>   MEMTOTAL_BYTES=`free -b | grep Mem: | awk '{ print $2 }'`
->>   NR_DIRECTORIES=20
->>   NR_FILES=20480
->>   DATASET_SIZE=$((MEMTOTAL_BYTES * 2 / 1048576))
->>   DIRECTORY_SIZE=$((MEMTOTAL_BYTES * 2 / NR_FILES))
->>   NR_FILES=$((NR_FILES / 1024))
->>
->>   echo "performance" | \
->>       tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
->>
->>   umount $DEV &> /dev/null
->>   mkfs.btrfs -f $MKFS_OPTIONS $DEV
->>   mount $MOUNT_OPTIONS $DEV $MNT
->>
->>   bonnie++ -u root -d $MNT \
->>       -n $NR_FILES:$DIRECTORY_SIZE:$DIRECTORY_SIZE:$NR_DIRECTORIES \
->>       -r 0 -s $DATASET_SIZE -b
->>
->>   umount $MNT
->>
->> The results of this test on a 8G VM running a non-debug kernel (Debian's
->> default kernel config), were the following.
->>
->> Before this change:
->>
->>   Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
->>                       -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
->>   Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
->>   debian0       7501M  376k  99  1.4g  96  117m  14 1510k  99  2.5g  95 +++++ +++
->>   Latency             35068us   24976us    2944ms   30725us   71770us   26152us
->>   Version 2.00a       ------Sequential Create------ --------Random Create--------
->>   debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
->>   files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
->>   20:384100:384100/20 20480  32 20480  58 20480  48 20480  39 20480  56 20480  61
->>   Latency               411ms   11914us     119ms     617ms   10296us     110ms
->>
->> After this change:
->>
->>   Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
->>                       -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
->>   Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
->>   debian0       7501M  375k  99  1.4g  97  117m  14 1546k  99  2.3g  98 +++++ +++
->>   Latency             35975us  20945us    2144ms   10297us    2217us    6004us
->>   Version 2.00a       ------Sequential Create------ --------Random Create--------
->>   debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
->>   files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
->>   20:384100:384100/20 20480  35 20480  58 20480  48 20480  40 20480  57 20480  59
->>   Latency               320ms   11237us   77779us     518ms    6470us   86389us
->>
->> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
->> Signed-off-by: Filipe Manana <fdmanana@suse.com>
->> Reviewed-by: David Sterba <dsterba@suse.com>
->> Signed-off-by: David Sterba <dsterba@suse.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->This is a performance improvement, how does this qualify for stable? I
->read only about notable perfromance fixes but this is not one.
 
-No objection to dropping it. Description of the commit states that it
-fixes blocking for "significant amount of time".
 
--- 
-Thanks,
-Sasha
+On 3/31/24 05:03, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/3/28 11:52, Sweet Tea Dorminy 写道:
+>> Now that fiemap allows returning extent physical size, make btrfs return
+>> the appropriate extent's actual disk size.
+>>
+>> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> [...]
+>> @@ -3221,7 +3239,9 @@ int extent_fiemap(struct btrfs_inode *inode, 
+>> struct fiemap_extent_info *fieinfo,
+>>               ret = emit_fiemap_extent(fieinfo, &cache, key.offset,
+>>                            disk_bytenr + extent_offset,
+>> -                         extent_len, flags);
+>> +                         extent_len,
+>> +                         disk_size - extent_offset,
+> 
+> This means, we will emit a entry that uses the end to the physical 
+> extent end.
+> 
+> Considering a file layout like this:
+> 
+>      item 6 key (257 EXTENT_DATA 0) itemoff 15816 itemsize 53
+>          generation 7 type 1 (regular)
+>          extent data disk byte 13631488 nr 65536
+>          extent data offset 0 nr 4096 ram 65536
+>          extent compression 0 (none)
+>      item 7 key (257 EXTENT_DATA 4096) itemoff 15763 itemsize 53
+>          generation 8 type 1 (regular)
+>          extent data disk byte 13697024 nr 4096
+>          extent data offset 0 nr 4096 ram 4096
+>          extent compression 0 (none)
+>      item 8 key (257 EXTENT_DATA 8192) itemoff 15710 itemsize 53
+>          generation 7 type 1 (regular)
+>          extent data disk byte 13631488 nr 65536
+>          extent data offset 8192 nr 57344 ram 65536
+>          extent compression 0 (none)
+> 
+> For fiemap, we would got something like this:
+> 
+> fileoff 0, logical len 4k, phy 13631488, phy len 64K
+> fileoff 4k, logical len 4k, phy 13697024, phy len 4k
+> fileoff 8k, logical len 56k, phy 13631488 + 8k, phylen 56k
+> 
+> [HOW TO CALCULATE WASTED SPACE IN USER SPACE]
+> My concern is on the first entry. It indicates that we have wasted 60K 
+> (phy len is 64K, while logical len is only 4K)
+> 
+> But that information is not correct, as in reality we only wasted 4K, 
+> the remaining 56K is still referred by file range [8K, 64K).
+> 
+> Do you mean that user space program should maintain a mapping of each 
+> utilized physical range, and when handling the reported file range [8K, 
+> 64K), the user space program should find that the physical range covers 
+> with one existing extent, and do calculation correctly?
+
+My goal is to give an unprivileged interface for tools like compsize to 
+figure out how much space is used by a particular set of files. They 
+report the total disk space referenced by the provided list of files, 
+currently by doing a tree search (CAP_SYS_ADMIN) for all the extents 
+pertaining to the requested files and deduplicating extents based on 
+disk_bytenr.
+
+It seems simplest to me for userspace for the kernel to emit the entire 
+extent for each part of it referenced in a file, and let userspace deal 
+with deduplicating extents. This is also most similar to the existing 
+tree-search based interface. Reporting whole extents gives more 
+flexibility for userspace to figure out how to report bookend extents, 
+or shared extents, or ...
+
+It does seem a little weird where if you request with fiemap only e.g. 
+4k-16k range in that example file you'll get reported all 68k involved, 
+but I can't figure out a way to fix that without having the kernel keep 
+track of used parts of the extents as part of reporting, which sounds 
+expensive.
+
+You're right that I'm being inconsistent, taking off extent_offset from 
+the reported disk size when that isn't what I should be doing, so I 
+fixed that in v3.
+
+> 
+> [COMPRESSION REPRESENTATION]
+> The biggest problem other than the complexity in user space is the 
+> handling of compressed extents.
+> 
+> Should we return the physical bytenr (disk_bytenr of file extent item) 
+> directly or with the extent offset added?
+> Either way it doesn't look consistent to me, compared to non-compressed 
+> extents.
+> 
+
+As I understand it, the goal of reporting physical bytenr is to provide 
+a number which we could theoretically then resolve into a disk location 
+or few if we cared, but which doesn't necessarily have any physical 
+meaning. To quote the fiemap documentation page: "It is always undefined 
+to try to update the data in-place by writing to the indicated location 
+without the assistance of the filesystem". So I think I'd prefer to 
+always report the entire size of the entire extent being referenced.
+
+> [ALTERNATIVE FORMAT]
+> The other alternative would be following the btrfs ondisk format, 
+> providing a unique physical bytenr for any file extent, then the 
+> offset/referred length inside the uncompressed extent.
+> 
+> That would handle compressed and regular extents more consistent, and a 
+> little easier for user space tool to handle (really just a tiny bit 
+> easier, no range overlap check needed), but more complex to represent, 
+> and I'm not sure if any other filesystem would be happy to accept the 
+> extra members they don't care.
+
+I really want to make sure that this interface reports the unused space 
+in e.g bookend extents well -- compsize has been an important tool for 
+me in this respect, e.g. a time when a 10g file was taking up 110g of 
+actual disk space. If we report the entire length of the entire extent, 
+then when used on whole files one can establish the space referenced by 
+that file but not used; similarly on multiple files. So while I like the 
+simplicity of just reporting the used length, I don't think there's a 
+way to make compsize unprivileged with that approach.
+
+Thank you!!
 
