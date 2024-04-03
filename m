@@ -1,53 +1,79 @@
-Return-Path: <linux-btrfs+bounces-3875-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3876-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FDCA896EA8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 14:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 420F089717A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 15:47:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B7BB1C23FE6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 12:06:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 578E51C20803
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 13:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A7C146595;
-	Wed,  3 Apr 2024 12:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EDC148826;
+	Wed,  3 Apr 2024 13:46:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hJ/yuMfy"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZROkaKVV";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MeK1dNqH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 549CD146018
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 12:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D091487FF
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 13:46:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712145955; cv=none; b=sAypVKhdFMz5Hk7hF8jhFakbx3CrLaKEBXcd5w+FSRVjoaDf4RLl+TMBbAac/tlmJZuqXi1ztkZlZt+4y1aUd/hrfF+WOOjL8ETjtWPHSdLV5oRSEhL4VaFw9yVKdnonotg0vSqk1niMYt5vNBMtQyfSDODvnpKLSliwO8VOFfs=
+	t=1712152006; cv=none; b=CEPdiGVBcr5s57Jt/TaOgYFqg735t9VOrpR1EqJY2UEzklfnqfOmQHPsMCDqKdUb6p0guJNFTJwP0MgZI1WJs4vn7YyHg0vuZ9knnVvVserkv/Ach0YWLpiZ3GnLvUnUo0Iuypdj28h5VnHSnBp5hdFgbbRAnTVWKJlkhX/edsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712145955; c=relaxed/simple;
-	bh=b+iwCjPZD8qteOnIXHyv/CW3LKmy8IgiMu7pQh/scgY=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qSMB9ZRgoRfW/+ZtuezxP/056B9Qx8TMTacjhkVxw5kBkLNB6QqdhYcDxAnSa1IzNEIxWnp3bzRZXRHKjGCj6/LgIXKmBDfRR9bvMweBVADPkAkeMk6EkMukNo3XASObowp0IBCj99dosPSv4DEY8vs5ft/JacR11NWTgeaF8Kw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hJ/yuMfy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B36C43394
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 12:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712145955;
-	bh=b+iwCjPZD8qteOnIXHyv/CW3LKmy8IgiMu7pQh/scgY=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=hJ/yuMfyECE8i/dtPReomCmu1g3X/VR4LOzKIVR1V5hEyXJdPMbyUbFcHwlcazLsE
-	 ihhH6f7xIZKY8FUmVOlii/77ExryZSErTyGWliJlahy0O33lh9r8on+Aex9TjL+IXF
-	 O7gnOLD3jZXm7Y26hqxsG1pd0pgmCMaDiWUmyCNG1ZUkYvuQjXF45jpTatPyuRxaeL
-	 /oT1yzE1F569CDbTCRSuUal/TerCfF4D3MYZnRnL4Q1ZkfDPEKEhSjAIxMO8Ts3CYG
-	 p+pqGcCCuaxYsOufZk6c9u7iLNkCJp1tuDjUZOR42WKRM14SOcUsPM6OXGiG0wiPdR
-	 fhNRyyFr9pVnw==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: remove no longer used btrfs_clone_chunk_map()
-Date: Wed,  3 Apr 2024 13:05:48 +0100
-Message-Id: <8274f4976218dc1186edabbfe22a6bd3e55b961a.1712145320.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1712145320.git.fdmanana@suse.com>
+	s=arc-20240116; t=1712152006; c=relaxed/simple;
+	bh=MzK10fxOwjrS7RTIrVg51MZKTiQk3YGyzK8IsMhVE6c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MbZCCGJKgYNYcPDBmA1yoOURuc3R0wXP8ZFtUZrD6X1qCiulDtaCGwu7LaWfZNvE0z3fOmQ1H0UUIipS6k0lhWHshazgnDn0sM4xkE2xK/jgMsltJ74dG46S3RvSdvGXdH70sNzr7lfnYCM8XDMniIvTHMgTXGkxCQ9thzotesg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZROkaKVV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MeK1dNqH; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A7770353CC;
+	Wed,  3 Apr 2024 13:46:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712151995;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y/K5sd3rPPIFEN72AVAjqx9KhsbMQdnVI+ZbHHpmZ4E=;
+	b=ZROkaKVVfWTcwxsrdc4fNb3CUvEw6qpxGz/3zvYxloutmTnGHoq59xmbvbxvbHoLr9GYZC
+	CxSF1QFrWiYLvlDTKAOz6nqKwv8OPLrrRK32b4TCyCYiU0GmTk2Q7oLibA2idhlH9zoR2T
+	IYOgChDsOcsFFtoRms1Coa/jhske3zU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712151995;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y/K5sd3rPPIFEN72AVAjqx9KhsbMQdnVI+ZbHHpmZ4E=;
+	b=MeK1dNqHSv3gi1+8N4gNQal8shduXDe5jgM/TPucI1HZMDCpJ7GScCvUyiAlcvsu5EL1lr
+	x0wv0yQrxWGy7PCw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 98AB01331E;
+	Wed,  3 Apr 2024 13:46:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id PiLXJLtdDWZbUQAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Wed, 03 Apr 2024 13:46:35 +0000
+Date: Wed, 3 Apr 2024 15:39:14 +0200
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs: remove some unused and pointless code
+Message-ID: <20240403133914.GF14596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
 References: <cover.1712145320.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -55,59 +81,50 @@ List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1712145320.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: A7770353CC
+X-Spamd-Result: default: False [-2.49 / 50.00];
+	BAYES_HAM(-2.51)[97.81%];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.17)[-0.842];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	R_DKIM_NA(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap2.dmz-prg2.suse.org:rdns,imap2.dmz-prg2.suse.org:helo,suse.com:email]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Score: -2.49
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Apr 03, 2024 at 01:05:45PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Details in the change logs. Trivial changes.
+> 
+> Filipe Manana (3):
+>   btrfs: remove pointless return value assignment at btrfs_finish_one_ordered()
+>   btrfs: remove list emptyness check at warn_about_uncommitted_trans()
+>   btrfs: remove no longer used btrfs_clone_chunk_map()
 
-There are no more users of btrfs_clone_chunk_map(), the last one (and
-only one ever) was removed in commit 1ec17ef59168 ("btrfs: zoned: fix
-use-after-free in do_zone_finish()"). So remove btrfs_clone_chunk_map().
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/volumes.c | 15 ---------------
- fs/btrfs/volumes.h |  1 -
- 2 files changed, 16 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index f15591f3e54f..a3dc88e420d1 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5614,21 +5614,6 @@ struct btrfs_chunk_map *btrfs_alloc_chunk_map(int num_stripes, gfp_t gfp)
- 	return map;
- }
- 
--struct btrfs_chunk_map *btrfs_clone_chunk_map(struct btrfs_chunk_map *map, gfp_t gfp)
--{
--	const int size = btrfs_chunk_map_size(map->num_stripes);
--	struct btrfs_chunk_map *clone;
--
--	clone = kmemdup(map, size, gfp);
--	if (!clone)
--		return NULL;
--
--	refcount_set(&clone->refs, 1);
--	RB_CLEAR_NODE(&clone->rb_node);
--
--	return clone;
--}
--
- static struct btrfs_block_group *create_chunk(struct btrfs_trans_handle *trans,
- 			struct alloc_chunk_ctl *ctl,
- 			struct btrfs_device_info *devices_info)
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 93854609a4d5..cf555f5b47ce 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -743,7 +743,6 @@ struct btrfs_chunk_map *btrfs_alloc_chunk_map(int num_stripes, gfp_t gfp);
- int btrfs_add_chunk_map(struct btrfs_fs_info *fs_info, struct btrfs_chunk_map *map);
- #endif
- 
--struct btrfs_chunk_map *btrfs_clone_chunk_map(struct btrfs_chunk_map *map, gfp_t gfp);
- struct btrfs_chunk_map *btrfs_find_chunk_map(struct btrfs_fs_info *fs_info,
- 					     u64 logical, u64 length);
- struct btrfs_chunk_map *btrfs_find_chunk_map_nolock(struct btrfs_fs_info *fs_info,
--- 
-2.43.0
-
+Reviewed-by: David Sterba <dsterba@suse.com>
 
