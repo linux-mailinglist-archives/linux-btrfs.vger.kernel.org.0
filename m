@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-3873-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3874-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F963896EA6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 14:06:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E57B896EA7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 14:06:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B2F22885A7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 12:06:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47A9F28A686
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Apr 2024 12:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D90A145FF8;
-	Wed,  3 Apr 2024 12:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B976146019;
+	Wed,  3 Apr 2024 12:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AFRDsF2N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K5n8JlSN"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8704B145FE1
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 12:05:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D9214386F
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 12:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712145953; cv=none; b=RGVZQni4RfqoqXI8tWDAJFNjwTDOU1iCzLCzvXN0QE2VYJOQlsJfbD5fGLF2v8H2F0hxO5m90qWiOHQ65gxMes0ne6WMJkNBZHUsNZQhPj8XKVyIl9RNQvj2KJPG0MRHMQ3CddnmrWg9C3QtuW1TFsLwsW+MldFx/LrCWVyXjQw=
+	t=1712145954; cv=none; b=r36V2jNarSK26EG4fiwpJZ04ryftL7QJzTz4z+t6U0A1VFuCBKm/45fdnlUgNdK+bGq3T7pxIgr7EEzyrZZBdNpYaQTIzMid7kQ4tWSyzy11n/4dgwfQQEKKd7REl6JlYBdqr9v/otQbw4j5xqUgd2xrcEAKpukOY+Q7Fg0ZGYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712145953; c=relaxed/simple;
-	bh=TnYmwu5GwQR9qIA51rv7wkwu5eOnYQXjWSoHU/rybms=;
+	s=arc-20240116; t=1712145954; c=relaxed/simple;
+	bh=R6cO8tFReWCHcORZfhqj5uL3A2DtCPgjyytCp6edQSQ=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DdJCIHzhHzaif80qJq1iVCdi6IQoAi75wboZ+yjPfTcaJD+cSMIX1GwJS6YYDK4bVm5NVPpuhTy1oR83Z4DhjXLAily1YTWTQ0cEXy9gDH4k/dhponHgYEidSK/o8+IQRa7k9DtezUUw8xgBoiWUFigBPcU1tD8IIXYQgtwfvQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AFRDsF2N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90A8CC433C7
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 12:05:52 +0000 (UTC)
+	 MIME-Version; b=aoKB8c8Fi3kqG92gK0pvbxC9w96KR07+vuST9DN5iy9k2YGbpjTlmQ9JjYTLc16TIe8mFJCWP0BCvTgMvXO8C5a4C4IlJNb99FaYjkxfbURXFaTiio6+e8eyOKBq7K2fPfucBzJgbU9MknMK0H67qvwV/m+cdn804dGnRaL6lM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K5n8JlSN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9671BC433F1
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Apr 2024 12:05:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712145953;
-	bh=TnYmwu5GwQR9qIA51rv7wkwu5eOnYQXjWSoHU/rybms=;
+	s=k20201202; t=1712145954;
+	bh=R6cO8tFReWCHcORZfhqj5uL3A2DtCPgjyytCp6edQSQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=AFRDsF2NB/WFiICJ1EmoNKCoH2pM74rdHl0+gT5HLe5zLXqpGeb39lOXD2yRrbim3
-	 zfrkRLo+LI6JKAZ1ifCmuE9s8hEXghdeKnEyTehV7eoGl/uG5abA8pqk/1tFBxM8Dd
-	 7Zu9HCmraz8G/5eJoZnv7SOy+IntU9PVnoB3IDXltEvdVPWllL9IBxllCs5LewGRp5
-	 YeyyVrlqRmZyuP7URzngJenwd55V233/M/2JVrKcTVlsih6v6F8kiPSOXUPRy37hVF
-	 o9fq2VQzQR4bkkPlwJB7qSQwyJgP0Cl5BXd8D5TlYYdzPy2rYi0mq2nt5cCA8QkMIX
-	 JCofKNEpCiNhg==
+	b=K5n8JlSNp7n6Sp6PiKQvKW7dXLn6FBU5QMFa/gRU07sqOMH5GmUnMBfPzItB3MZMd
+	 sXf1QFolD3h/9tsW8fUVu53w2MV0WmT/JKwuF83XQsH9KPwT0skgMh8jFYVV9KCKC1
+	 RMCMFP9gC3jj+jZAPNIX+ZgV8abZx5h5I3bYGwiX9TTHOrauNH+ne8sH/SichPMd/h
+	 homVxp+14D1vBTwinxnQ9tZv5wnCYMYUmeXSoHfhvf6UXJKVTnCTlD3/6Y7Tj+1GYk
+	 V9rbFNXgiejqfpUUkByo4bbW18TVNQ7FXB/Uc8ckWq7jC3ug2wA5ZsIY/yslgN1chU
+	 v6HPHDyw3hURA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs: remove pointless return value assignment at btrfs_finish_one_ordered()
-Date: Wed,  3 Apr 2024 13:05:46 +0100
-Message-Id: <8618abb228019ca2fd331a993fb9461d76cce471.1712145320.git.fdmanana@suse.com>
+Subject: [PATCH 2/3] btrfs: remove list emptyness check at warn_about_uncommitted_trans()
+Date: Wed,  3 Apr 2024 13:05:47 +0100
+Message-Id: <2499553abf53fc8bfd112a0c16f07b225de01aba.1712145320.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1712145320.git.fdmanana@suse.com>
 References: <cover.1712145320.git.fdmanana@suse.com>
@@ -59,27 +59,29 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At btrfs_finish_one_ordered() it's pointless to assign 0 to the 'ret'
-variable because if it has a non-zero value (error), we have already
-jumped to the 'out' label. So remove that redundant assignment.
+At warn_about_uncommitted_trans(), there's no need to check if the list
+is empty and return, because list_for_each_entry_safe() is safe to call
+for an empty list, it simply does nothing. So remove the check.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 1 -
- 1 file changed, 1 deletion(-)
+ fs/btrfs/disk-io.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index c6f2b5d1dee1..94ac20e62e13 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3185,7 +3185,6 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 		btrfs_abort_transaction(trans, ret);
- 		goto out;
- 	}
--	ret = 0;
- out:
- 	clear_extent_bit(&inode->io_tree, start, end, clear_bits,
- 			 &cached_state);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 5a35c2c0bbc9..0474e9b6d302 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4182,9 +4182,6 @@ static void warn_about_uncommitted_trans(struct btrfs_fs_info *fs_info)
+ 	struct btrfs_transaction *tmp;
+ 	bool found = false;
+ 
+-	if (list_empty(&fs_info->trans_list))
+-		return;
+-
+ 	/*
+ 	 * This function is only called at the very end of close_ctree(),
+ 	 * thus no other running transaction, no need to take trans_lock.
 -- 
 2.43.0
 
