@@ -1,59 +1,59 @@
-Return-Path: <linux-btrfs+bounces-3920-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3921-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31BAB898BC3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 18:05:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C31C898BCF
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 18:07:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51FCC1C22851
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 16:05:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB2171C2196C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 16:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2472312C819;
-	Thu,  4 Apr 2024 16:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8679812B145;
+	Thu,  4 Apr 2024 16:06:56 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B13B12AAD1;
-	Thu,  4 Apr 2024 16:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7702312AACB;
+	Thu,  4 Apr 2024 16:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712246676; cv=none; b=DfOfgJkHkSbdGbSy683EtkeLUF1mYt9AFEneRnLuh70oyiUuC1CUXJdI+MMP6BxHgDhJrAFt+QfxfKUUGX7A8f7fzZsihPnoB5RJQJzzs2P9NinPWdGO5E3GH9Oe9fsBN50uYN50rUcMxOKZuxk/Nwo6dUcqJWacWBfY2UsKhUc=
+	t=1712246816; cv=none; b=oDH0gtD4ADmwmvAuegDbeJp9kf5lps15sYtrD7RM9FIetxjKrryc2Bah7imGQpMy97dweIv6lRc97rTePPFOm2xLEsD2r+kooPHCje5/cVQQDWbiHQnYnnQiY3EN7mFFVJ1l8tNxt6WggsIFMjCexr9QyfV6smUksog+pqHC1N4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712246676; c=relaxed/simple;
-	bh=0LQNpNf3RQ8YeS3e0cvnSiYysJO91XApeqbIUrs+VtQ=;
+	s=arc-20240116; t=1712246816; c=relaxed/simple;
+	bh=bFdC5cp6PSfWrEoupk04gWdS9M4Y0/x6VuDfdYcJZ/k=;
 	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IGitsJfh+FJlGtRTRK4e7I5UFVc6Yk4YfFEMUE1I8iqiJdzjuxhzQw6pRtwxwMKCTDbC9uprmRTjRXFuLQo4qYbEfHryPcAY7d0TPwuRt2Q7QDP9PNXwtSyedTZQAwMx61AB+zxhMnQwiYyL2OHKmuMSmdJnpy1Hx0Ublo4Q6Y8=
+	 MIME-Version:Content-Type; b=ayhZBwlWxzxRaevrsZLf/325jCHqTxrZCA1xlheAtpu0dXfpm2v+JTlWFvJbnkCSDeHTAbEjD8EvKcwdWXnO6MaCZgehT77RdCiJFoLO5RMpRJh1css7Bx1Sa/t+TiRSOWyhVCqJSuHEZ9OlMhX9ieBkoiYwNO2c/RMIoy1hQ/E=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9RC31XFxz6K6j4;
-	Thu,  4 Apr 2024 23:59:43 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9RFt4wTXz67kr9;
+	Fri,  5 Apr 2024 00:02:10 +0800 (CST)
 Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8A06D1400D4;
-	Fri,  5 Apr 2024 00:04:22 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 15076141546;
+	Fri,  5 Apr 2024 00:06:50 +0800 (CST)
 Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
  (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
- 2024 17:04:22 +0100
-Date: Thu, 4 Apr 2024 17:04:21 +0100
+ 2024 17:06:49 +0100
+Date: Thu, 4 Apr 2024 17:06:48 +0100
 From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: <ira.weiny@intel.com>
+To: Ira Weiny <ira.weiny@intel.com>
 CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
  Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
 	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
 	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
 	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 14/26] cxl/region: Read existing extents on region
- creation
-Message-ID: <20240404170421.0000440f@Huawei.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-14-b7b00d623625@intel.com>
+	<linux-kernel@vger.kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik
+	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 15/26] range: Add range_overlaps()
+Message-ID: <20240404170648.00002dbe@Huawei.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-15-b7b00d623625@intel.com>
 References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-	<20240324-dcd-type2-upstream-v1-14-b7b00d623625@intel.com>
+	<20240324-dcd-type2-upstream-v1-15-b7b00d623625@intel.com>
 Organization: Huawei Technologies Research and Development (UK) Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
@@ -67,216 +67,97 @@ Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
  lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Sun, 24 Mar 2024 16:18:17 -0700
-ira.weiny@intel.com wrote:
+On Sun, 24 Mar 2024 16:18:18 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-> From: Navneet Singh <navneet.singh@intel.com>
+> Code to support CXL Dynamic Capacity devices will have extent ranges
+> which need to be compared for intersection not a subset as is being
+> checked in range_contains().
 > 
-> Dynamic capacity device extents may be left in an accepted state on a
-> device due to an unexpected host crash.  In this case creation of a new
-> region on top of the DC partition (region) is expected to expose those
-> extents for continued use.
+> range_overlaps() is defined in btrfs with a different meaning from what
+> is required in the standard range code.  Dan Williams pointed this out
+> in [1].  Adjust the btrfs call according to his suggestion there.
 > 
-> Once all endpoint decoders are part of a region and the region is being
-> realized read the device extent list.  For ease of review, this patch
-> stops after reading the extent list and leaves realization of the region
-> extents to a future patch.
+> Then add a generic range_overlaps().
 > 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Chris Mason <clm@fb.com>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: linux-btrfs@vger.kernel.org
 > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+FWIW given it's well review already.
 
-A few things inline.
-
-J
->  static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
->  				    enum cxl_event_log_type type)
->  {
-> @@ -1406,6 +1462,142 @@ int cxl_dev_dynamic_capacity_identify(struct cxl_memdev_state *mds)
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> 
+> [1] https://lore.kernel.org/all/65949f79ef908_8dc68294f2@dwillia2-xfh.jf.intel.com.notmuch/
+> ---
+>  fs/btrfs/ordered-data.c | 10 +++++-----
+>  include/linux/range.h   |  7 +++++++
+>  2 files changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index 59850dc17b22..032d30a49edc 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -111,8 +111,8 @@ static struct rb_node *__tree_search(struct rb_root *root, u64 file_offset,
+>  	return NULL;
 >  }
->  EXPORT_SYMBOL_NS_GPL(cxl_dev_dynamic_capacity_identify, CXL);
 >  
-> +static int cxl_dev_get_dc_extent_cnt(struct cxl_memdev_state *mds,
-> +				     unsigned int *extent_gen_num)
-> +{
-> +	struct cxl_mbox_get_dc_extent_in get_dc_extent;
-> +	struct cxl_mbox_get_dc_extent_out dc_extents;
-> +	struct cxl_mbox_cmd mbox_cmd;
-> +	unsigned int count;
-> +	int rc;
-> +
-> +	get_dc_extent = (struct cxl_mbox_get_dc_extent_in) {
-> +		.extent_cnt = cpu_to_le32(0),
-> +		.start_extent_index = cpu_to_le32(0),
-> +	};
-> +
-> +	mbox_cmd = (struct cxl_mbox_cmd) {
-> +		.opcode = CXL_MBOX_OP_GET_DC_EXTENT_LIST,
-> +		.payload_in = &get_dc_extent,
-> +		.size_in = sizeof(get_dc_extent),
-> +		.size_out = sizeof(dc_extents),
-> +		.payload_out = &dc_extents,
-> +		.min_out = 1,
-
-Why 1?
-
-> +	};
-> +
-> +	rc = cxl_internal_send_cmd(mds, &mbox_cmd);
-> +	if (rc < 0)
-> +		return rc;
-> +
-> +	count = le32_to_cpu(dc_extents.total_extent_cnt);
-> +	*extent_gen_num = le32_to_cpu(dc_extents.extent_list_num);
-> +
-> +	return count;
-> +}
-> +
-> +static int cxl_dev_get_dc_extents(struct cxl_endpoint_decoder *cxled,
-> +				  unsigned int start_gen_num,
-> +				  unsigned int exp_cnt)
-> +{
-> +	struct cxl_memdev_state *mds = cxled_to_mds(cxled);
-> +	unsigned int start_index, total_read;
-> +	struct device *dev = mds->cxlds.dev;
-> +	struct cxl_mbox_cmd mbox_cmd;
-> +
-> +	struct cxl_mbox_get_dc_extent_out *dc_extents __free(kfree) =
-> +				kvmalloc(mds->payload_size, GFP_KERNEL);
-> +	if (!dc_extents)
-> +		return -ENOMEM;
-> +
-> +	total_read = 0;
-> +	start_index = 0;
-> +	do {
-> +		unsigned int nr_ext, total_extent_cnt, gen_num;
-> +		struct cxl_mbox_get_dc_extent_in get_dc_extent;
-> +		int rc;
-> +
-> +		get_dc_extent = (struct cxl_mbox_get_dc_extent_in) {
-> +			.extent_cnt = cpu_to_le32(exp_cnt - start_index),
-> +			.start_extent_index = cpu_to_le32(start_index),
-> +		};
-> +
-> +		mbox_cmd = (struct cxl_mbox_cmd) {
-> +			.opcode = CXL_MBOX_OP_GET_DC_EXTENT_LIST,
-> +			.payload_in = &get_dc_extent,
-> +			.size_in = sizeof(get_dc_extent),
-> +			.size_out = mds->payload_size,
-> +			.payload_out = dc_extents,
-> +			.min_out = 1,
-
-Why 1?
-
-> +		};
-> +
-> +		rc = cxl_internal_send_cmd(mds, &mbox_cmd);
-> +		if (rc < 0)
-> +			return rc;
-> +
-> +		nr_ext = le32_to_cpu(dc_extents->ret_extent_cnt);
-> +		total_read += nr_ext;
-> +		total_extent_cnt = le32_to_cpu(dc_extents->total_extent_cnt);
-> +		gen_num = le32_to_cpu(dc_extents->extent_list_num);
-> +
-> +		dev_dbg(dev, "Get extent list count:%d generation Num:%d\n",
-> +			total_extent_cnt, gen_num);
-> +
-> +		if (gen_num != start_gen_num || exp_cnt != total_extent_cnt) {
-> +			dev_err(dev, "Possible incomplete extent list; gen %u != %u : cnt %u != %u\n",
-> +				gen_num, start_gen_num, exp_cnt, total_extent_cnt);
-> +			return -EIO;
-> +		}
-> +
-> +		for (int i = 0; i < nr_ext ; i++) {
-> +			dev_dbg(dev, "Processing extent %d/%d\n",
-> +				start_index + i, exp_cnt);
-> +			rc = cxl_validate_extent(mds, &dc_extents->extent[i]);
-> +			if (rc)
-> +				continue;
-
-A blank line here
-
-> +			if (!cxl_dc_extent_in_ed(cxled, &dc_extents->extent[i]))
-> +				continue;
-and here would make this more readable I think.
-
-> +			rc = cxl_ed_add_one_extent(cxled, &dc_extents->extent[i]);
-> +			if (rc)
-> +				return rc;
-> +		}
-> +
-> +		start_index += nr_ext;
-> +	} while (exp_cnt > total_read);
-> +
-> +	return 0;
-> +}
-
-> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-> index 0d7b09a49dcf..3e563ab29afe 100644
-> --- a/drivers/cxl/core/region.c
-> +++ b/drivers/cxl/core/region.c
-
+> -static int range_overlaps(struct btrfs_ordered_extent *entry, u64 file_offset,
+> -			  u64 len)
+> +static int btrfs_range_overlaps(struct btrfs_ordered_extent *entry, u64 file_offset,
+> +				u64 len)
+>  {
+>  	if (file_offset + len <= entry->file_offset ||
+>  	    entry->file_offset + entry->num_bytes <= file_offset)
+> @@ -914,7 +914,7 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_range(
 >  
-> +static int cxl_region_read_extents(struct cxl_region *cxlr)
+>  	while (1) {
+>  		entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
+> -		if (range_overlaps(entry, file_offset, len))
+> +		if (btrfs_range_overlaps(entry, file_offset, len))
+>  			break;
+>  
+>  		if (entry->file_offset >= file_offset + len) {
+> @@ -1043,12 +1043,12 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
+>  	}
+>  	if (prev) {
+>  		entry = rb_entry(prev, struct btrfs_ordered_extent, rb_node);
+> -		if (range_overlaps(entry, file_offset, len))
+> +		if (btrfs_range_overlaps(entry, file_offset, len))
+>  			goto out;
+>  	}
+>  	if (next) {
+>  		entry = rb_entry(next, struct btrfs_ordered_extent, rb_node);
+> -		if (range_overlaps(entry, file_offset, len))
+> +		if (btrfs_range_overlaps(entry, file_offset, len))
+>  			goto out;
+>  	}
+>  	/* No ordered extent in the range */
+> diff --git a/include/linux/range.h b/include/linux/range.h
+> index 6ad0b73cb7ad..9a46f3212965 100644
+> --- a/include/linux/range.h
+> +++ b/include/linux/range.h
+> @@ -13,11 +13,18 @@ static inline u64 range_len(const struct range *range)
+>  	return range->end - range->start + 1;
+>  }
+>  
+> +/* True if r1 completely contains r2 */
+>  static inline bool range_contains(struct range *r1, struct range *r2)
+>  {
+>  	return r1->start <= r2->start && r1->end >= r2->end;
+>  }
+>  
+> +/* True if any part of r1 overlaps r2 */
+> +static inline bool range_overlaps(struct range *r1, struct range *r2)
 > +{
-> +	struct cxl_region_params *p = &cxlr->params;
-> +	int i;
-> +
-> +	for (i = 0; i < p->nr_targets; i++) {
-> +		int rc;
-Maybe worth giving up early if we see nr_targets > 1?
-
-If nothing else it saves people trying to figure out what happens if we
-reboot into an older kernel that doesn't support interleave (from one
-that does)
-
-> +
-> +		rc = cxl_read_dc_extents(p->targets[i]);
-> +		if (rc)
-> +			return rc;
-> +	}
-> +
-> +	return 0;
+> +	return r1->start <= r2->end && r1->end >= r2->start;
 > +}
 > +
-
-> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-> index 01bee6eedff3..8f2d8944d334 100644
-> --- a/drivers/cxl/cxlmem.h
-> +++ b/drivers/cxl/cxlmem.h
-
-> +/*
-> + * CXL rev 3.1 section 8.2.9.2.1.6; Table 8-51
-
-Throw a table name or section name into the reference so people
-can find it in CXL rNext.
-
-> + */
-> +#define CXL_DC_EXTENT_TAG_LEN 0x10
-> +struct cxl_dc_extent {
-> +	__le64 start_dpa;
-> +	__le64 length;
-> +	u8 tag[CXL_DC_EXTENT_TAG_LEN];
-> +	__le16 shared_extn_seq;
-> +	u8 reserved[6];
-> +} __packed;
-> +
-
-> +/*
-> + * Get Dynamic Capacity Extent List; Output Payload
-> + * CXL rev 3.1 section 8.2.9.9.9.2; Table 8-167
-> + */
-> +struct cxl_mbox_get_dc_extent_out {
-> +	__le32 ret_extent_cnt;
-> +	__le32 total_extent_cnt;
-> +	__le32 extent_list_num;
-
-Naming isn't that clear given generation bit missing.
-
-> +	u8 rsvd[4];
-> +	struct cxl_dc_extent extent[];
-> +} __packed;
-> +
+>  int add_range(struct range *range, int az, int nr_range,
+>  		u64 start, u64 end);
+>  
+> 
 
 
