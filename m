@@ -1,379 +1,326 @@
-Return-Path: <linux-btrfs+bounces-3909-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3910-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A26018984EB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 12:20:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BD618984ED
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 12:23:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 301051F25C4E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 10:20:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A13FA1F258C0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 10:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1873762F7;
-	Thu,  4 Apr 2024 10:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A818E76044;
+	Thu,  4 Apr 2024 10:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GLfmANDK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ACDE757F3;
-	Thu,  4 Apr 2024 10:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B2C59B7F
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Apr 2024 10:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712226046; cv=none; b=DrrvnWyHVPCLE2Xp7qPQZyvonKFWr7kw94mOlBXJupXZUFiZRpc+VsqJmTLyTd+JxEC3A9LyW1cAQpEv3dgNbf2uVYqz3T+Ol8tD0IYo7W3V1vp4LSu5C+5jsKBCGI/5c0U++dXEKSRHGfAnPzDbucn7qJaG+eAUqmbK1Rzvm4w=
+	t=1712226186; cv=none; b=FoozxMjfLoNonD9+Qt+XnjpzsYKTsgRka/5kWOg8XCnmsiIR2iBg4Fc3QjgsUlNf715adKUkGoYlH7PTuqBajEN3cv21k/dGqS8XBWh+SbvkDyirTwWOA9/pCqJ5Ue2nkpAdyijoMbslXFbzmQjbJPWY9b5oauU17MDfgdILnOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712226046; c=relaxed/simple;
-	bh=puj4wN8g1EJ1zYi2PbJr+lmtZs+UB6/tEx0jc2UANVU=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sR+kjmxrppiyBJJjbCLcEsB3gPqncdLIAuCOtAmoJ+UGrHn27UeH4p9YESCfwqhePGuEfgnZtIHnvIa0Zor1ey/7lk4oanA/0rZ+jUIDsunUssgqmTodLoUruOmKSDIPpeptDwJvrRgfuTphuzA/dDo/L6YU99u1XRMGqgizLdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9HfG4q82z6GBtl;
-	Thu,  4 Apr 2024 18:19:18 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id D7B37140C72;
-	Thu,  4 Apr 2024 18:20:37 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
- 2024 11:20:37 +0100
-Date: Thu, 4 Apr 2024 11:20:36 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik
-	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 00/26] DCD: Add support for Dynamic Capacity Devices
- (DCD)
-Message-ID: <20240404112036.00001551@Huawei.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712226186; c=relaxed/simple;
+	bh=R4h9sjotaytWSGngoPvUTHnT7lHylMgjpdmfHaQolfY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gnc5xLltlMcmbBOg0slueFwZv8kW0Ku9fTcHevwWw6a6eTFYKNvkVX/YqJ98jwH5iiK1NEDnpcqgDSlFVMSOS0can1W2dV01WYCbRbFv56QzDZbru44TDK6eep3zH4TGueba9q7d6rSnyvwvmgWSfWTGVBs/KOyaMBf+KGSQWpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GLfmANDK; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d4360ab3daso9146381fa.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 04 Apr 2024 03:23:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1712226182; x=1712830982; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=dGBltXGpmNQSVgrktlzuMz6D1dm0Lbh8dO9r7WpB0JY=;
+        b=GLfmANDK0mT565ogukhA8EgDeZVHjEqoVstFB6QkJmPoqYUDAvMM33HtAK68yg6ad7
+         lzvlOga8tcGn+E2JT3mgdXYJ1+kvYxerIv76R5DhEw0G0apbM8z4k6Bh9TRcWirRR70H
+         hBthw438HTHWULmECqMA3JWa5tFJ/UQI2TJMWgFSQam3fmsfasa+ELBNymboPrI84xYy
+         wASHEK7DGWx5toINXoZQaHSHQI53B+0hNwLkyI+yIdCA9OjChwNd9djwlbRv+49hr/cV
+         uC/UHIvMOm5p9L6zdmo0Ypx7+Slou0Xh1vhK0qAZLj4JtjgoczAVaiQwvWRKSqd1o4Gy
+         Pqeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712226182; x=1712830982;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dGBltXGpmNQSVgrktlzuMz6D1dm0Lbh8dO9r7WpB0JY=;
+        b=Wp1qED9vaelJ7Dhb3T72D8zTQ0WBZcY961OZHm9hl4mxdN1YrDa3DTaYwJZZiyGLuV
+         b+VKBD+A9/ID+Jpxvft10v9OPPnSgA1M7tGMg0xwIq7C72kiN2uVOAxZ17/IxsTVzEbZ
+         eoYFZpHx2xWdT7NuT6WakDsXjE1PCc0VEsF7fwjE42XwK/fQ6xl7nqqcTIY7bJRiZwV1
+         m1XEMZgHwGY9KbGGe0wZFyR896FaP38cavJzMdExCOoIt5II6w/oa7HCUBfftC8FYGaX
+         ZDYbHIe20RGoh3j4TbhjCzXnqWbD5huP2aj/vPIny8eTjc3tqF8OVAeQOUoVTvWT4KpD
+         bXZw==
+X-Gm-Message-State: AOJu0YyGdE5zykA6lY5nautzsK/1rLuMSiNCsYz66uWIm48phODZ4amS
+	Aww3QKZurMnAgAUe356RzBO4xNVnaiLg8rYOQduqDmwgeGW5tB6CghBZx+JrbIBx6flWGsbHVfj
+	x
+X-Google-Smtp-Source: AGHT+IFWuBwl13v467im1WMw3BykiO4hdg8kBJVspRhoeAdVf4ZHI0H9hHjbt1LFpVRqcNd1NeXSpw==
+X-Received: by 2002:a2e:864c:0:b0:2d6:8cba:c90b with SMTP id i12-20020a2e864c000000b002d68cbac90bmr1575246ljj.52.1712226182522;
+        Thu, 04 Apr 2024 03:23:02 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id ju10-20020a170903428a00b001e2bdd8e071sm167329plb.75.2024.04.04.03.22.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 03:23:01 -0700 (PDT)
+Message-ID: <6c326f9c-2a6f-475a-8329-2d6840be1ba6@suse.com>
+Date: Thu, 4 Apr 2024 20:52:56 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] btrfs: remove not needed mod_start and mod_len
+ from struct extent_map
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+ David Sterba <dsterba@suse.com>
+References: <cover.1712187452.git.wqu@suse.com>
+ <03bec7e0f57c902714e2c947fc6720d92c43e995.1712187452.git.wqu@suse.com>
+ <CAL3q7H6Do32YN-VV_JQG59vuJL-U-kkYvqLBi86MbYwJr1=iDA@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <CAL3q7H6Do32YN-VV_JQG59vuJL-U-kkYvqLBi86MbYwJr1=iDA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-I haven't quite gone through the whole patch set yet, so ignore me
-if you already have this somewhere, but I'd like to see this info
-captured somewhere other than the cover letter. Either some Documentation
-files or maybe a bit code comment in appropriate location?
 
-> A Dynamic Capacity Device (DCD) (CXL 3.1 sec 9.13.3) is a CXL memory
-> device that allows the memory capacity to change dynamically, without
-> the need for resetting the device, reconfiguring HDM decoders, or
-> reconfiguring software DAX regions.
->=20
-> One of the biggest use cases for Dynamic Capacity is to allow hosts to
-> share memory dynamically within a data center without increasing the
+在 2024/4/4 20:28, Filipe Manana 写道:
+> On Thu, Apr 4, 2024 at 12:46 AM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> From: Filipe Manana <fdmanana@suse.com>
+>>
+>> The mod_start and mod_len fields of struct extent_map were introduced by
+>> commit 4e2f84e63dc1 ("Btrfs: improve fsync by filtering extents that we
+>> want") in order to avoid too low performance when fsyncing a file that
+>> keeps getting extent maps merge, because it resulted in each fsync logging
+>> again csum ranges that were already merged before.
+>>
+>> We don't need this anymore as extent maps in the list of modified extents
+>> are never merged with other extent maps and once we log an extent map we
+>> remove it from the list of modified extent maps, so it's never logged
+>> twice.
+>>
+>> So remove the mod_start and mod_len fields from struct extent_map and use
+>> instead the start and len fields when logging checksums in the fast fsync
+>> path. This also makes EXTENT_FLAG_FILLING unused so remove it as well.
+>>
+>> Running the reproducer from the commit mentioned before, with a larger
+>> number of extents and against a null block device, so that IO is fast
+>> and we can better see any impact from searching checksums items and
+>> logging them, gave the following results from dd:
+>>
+>> Before this change:
+>>
+>>     409600000 bytes (410 MB, 391 MiB) copied, 22.948 s, 17.8 MB/s
+>>
+>> After this change:
+>>
+>>     409600000 bytes (410 MB, 391 MiB) copied, 22.9997 s, 17.8 MB/s
+>>
+>> So no changes in throughput.
+>> The test was done in a release kernel (non-debug, Debian's default kernel
+>> config) and its steps are the following:
+>>
+>>     $ mkfs.btrfs -f /dev/nullb0
+>>     $ mount /dev/sdb /mnt
+>>     $ dd if=/dev/zero of=/mnt/foobar bs=4k count=100000 oflag=sync
+>>     $ umount /mnt
+>>
+>> This also reduces the size of struct extent_map from 128 bytes down to 112
+>> bytes, so now we can have 36 extents maps per 4K page instead of 32.
+>>
+>> Reviewed-by: Qu Wenruo <wqu@suse.com>
+>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>> Signed-off-by: David Sterba <dsterba@suse.com>
+> 
+> Why are you resending this?
+> This was already in the for-next branch.
+> 
+> And given the SOB tag from David, your local for-next branch was up to date.
 
-Probably good to rephrase to avoid share - given 'sharing' isn't
-yet supported.=20
-"to access a common pool of memory dynamically ..." maybe?
+Sorry, I still didn't really get how the whole btrfs/for-next branch 
+should work.
 
-> per-host attached memory.
->=20
-> The general flow for the addition or removal of memory is to have an
-> orchestrator coordinate the use of the memory.  Generally there are 5
-> actors in such a system, the Orchestrator, Fabric Manager, the Device
-> the host sees, the Host Kernel, and a Host User.
->=20
-> Typical work flows are shown below.
->=20
-> Orchestrator      FM         Device       Host Kernel    Host User
->=20
->     |             |           |            |              |
->     |-------------- Create region ----------------------->|
->     |             |           |            |              |
->     |             |           |            |<-- Create ---|
->     |             |           |            |    Region    |
->     |<------------- Signal done --------------------------|
->     |             |           |            |              |
->     |-- Add ----->|-- Add --->|--- Add --->|              |
->     |  Capacity   |  Extent   |   Extent   |              |
->     |             |           |            |              |
->     |             |<- Accept -|<- Accept  -|              |
->     |             |   Extent  |   Extent   |              |
->     |             |           |            |<- Create --->|
->     |             |           |            |   DAX dev    |-- Use memory
->     |             |           |            |              |   |
->     |             |           |            |              |   |
->     |             |           |            |<- Release ---| <-+
->     |             |           |            |   DAX dev    |
->     |             |           |            |              |
->     |<------------- Signal done --------------------------|
->     |             |           |            |              |
->     |-- Remove -->|- Release->|- Release ->|              |
->     |  Capacity   |  Extent   |   Extent   |              |
->     |             |           |            |              |
->     |             |<- Release-|<- Release -|              |
->     |             |   Extent  |   Extent   |              |
+Should all our patches based on the latest for-next? Since every member 
+has write permission to the branch, and the branch can change in a daily 
+base, rebasing it daily doesn't look solid to me.
 
-Missing a signal from the FM to orchestrator to say release done.
+And I still do not know what's the requirement to push a patch into 
+misc-next.
+Like just after fstests runs? Reviewed-by tag? or both or something more?
 
->     |             |           |            |              |
->     |-- Add ----->|-- Add --->|--- Add --->|              |
->     |  Capacity   |  Extent   |   Extent   |              |
->     |             |           |            |              |
->     |             |<- Accept -|<- Accept  -|              |
->     |             |   Extent  |   Extent   |              |
->     |             |           |            |<- Create ----|
->     |             |           |            |   DAX dev    |-- Use memory
->     |             |           |            |              |   |
->     |             |           |            |<- Release ---| <-+
->     |             |           |            |   DAX dev    |
->     |<------------- Signal done --------------------------|
->     |             |           |            |              |
->     |-- Remove -->|- Release->|- Release ->|              |
->     |  Capacity   |  Extent   |   Extent   |              |
->     |             |           |            |              |
->     |             |<- Release-|<- Release -|              |
->     |             |   Extent  |   Extent   |              |
-
-As above, need to let the Orchestrator know it's done (the FM
-knows so can pass the info onwards
-
->     |             |           |            |              |
->     |-- Add ----->|-- Add --->|--- Add --->|              |
->     |  Capacity   |  Extent   |   Extent   |              |
->     |             |           |            |<- Create ----|
->     |             |           |            |   DAX dev    |-- Use memory
->     |             |           |            |              |   |
->     |-- Remove -->|- Release->|- Release ->|              |   |
->     |  Capacity   |  Extent   |   Extent   |              |   |
->     |             |           |            |              |   |
->     |             |           |     (Release Ignored)     |   |
->     |             |           |            |              |   |
->     |             |           |            |<- Release ---| <-+
->     |             |           |            |   DAX dev    |
->     |<------------- Signal done --------------------------|
->     |             |           |            |              |
->     |             |- Release->|- Release ->|              |
->     |             |  Extent   |   Extent   |              |
->     |             |           |            |              |
->     |             |<- Release-|<- Release -|              |
->     |             |   Extent  |   Extent   |              |
-
-My guess is FM would let the orchestrator know it had some capacity
-back?
-
->     |             |           |            |<- Destroy ---|
->     |             |           |            |   Region     |
->     |             |           |            |              |
-
-No path for async release yet?  I think we will want to add that
-soon.  Host rebooting etc may not care to talk directly to the
-orchestrator.
-
->=20
-> Previous RFCs of this series[0] resulted in significant architectural
-> comments.  Previous versions allowed memory capacity to be accepted by
-> the host regardless of the existence of a software region being mapped.
->=20
-> With this new patch set the order of the create region and DAX device
-> creation must be synchronized with the Orchestrator adding/removing
-> capacity.  The host kernel will reject an add extent event if the region
-> is not created yet.  It will also ignore a release if the DAX device is
-> created and referencing an extent.
->=20
-> Neither of these synchronizations are anticipated to be an issue with
-> real applications.
->=20
-> In order to allow for capacity to be added and removed a new concept of
-> a sparse DAX region is introduced.  A sparse DAX region may have 0 or
-> more bytes of available space.  The total space depends on the number
-> and size of the extents which have been added.
->=20
-> Initially it is anticipated that users of the memory will carefully
-> coordinate the surfacing of additional capacity with the creation of DAX
-> devices which use that capacity.  Therefore, the allocation of the
-> memory to DAX devices does not allow for specific associations between
-> DAX device and extent.  This keeps allocations very similar to existing
-> DAX region behavior.
-
-I don't quite follow.  Is the point that there is only one active dax
-dev to which any new extents are added?  Or that a particular set
-of extents offered together get put into a new device and next set get
-another new device?
-
->=20
-> Great care was taken to greatly simplify extent tracking.  Specifically,
-> in comparison to previous versions of the patch set, all extent tracking
-> xarrays have been eliminated from the code.  In addition, most of the
-> extra software objects and associated referenced counts have been
-> eliminated.
->=20
-> In this version, extents are tracked purely as sub-devices of the
-> region.  This ensures that the region destruction cleans up all extent
-> allocations properly.  Device managed callbacks are wired to ensure any
-> additional data required for DAX device references are handled
-> correctly.
->=20
-> Due to these major changes I'm setting this new series to V1.
->=20
-> In summary the major functionality of this series includes:
->=20
-> - Getting the dynamic capacity (DC) configuration information from cxl
->   devices
->=20
-> - Configuring the DC regions reported by hardware
->=20
-> - Enhancing the CXL and DAX regions for dynamic capacity support
-> 	a. Maintain a logical separation between hardware extents and
-> 	   software managed region extents.  This provides an
-> 	   abstraction between the layers and should allow for
-> 	   interleaving in the future
->=20
-> - Get hardware extent lists for endpoint decoders upon
->   region creation.
->=20
-> - Adjust extent/region memory available on the following events.
->         a. Add capacity Events
-> 	b. Release capacity events
-Trivial but fix the indent
-
->=20
-> - Host response for add capacity
-> 	a. do not accept the extent if:
-> 		If the region does not exist
-> 		or an error occurs realizing the extent
-> 	B. If the region does exist
-b.
-> 		realize a DAX region extent with 1:1 mapping (no
-> 		interleave yet)
->=20
-> - Host response for remove capacity
-> 	a. If no DAX devices reference the extent release the extent
-> 	b. If a reference does exist, ignore the request.
-> 	   (Require FM to issue release again.)
->=20
-> - Modify DAX device creation/resize to account for extents within a
->   sparse DAX region
->=20
-> - Trace Dynamic Capacity events for debugging
->=20
-> - Add cxl-test infrastructure to allow for faster unit testing
->   (See new ndctl branch for cxl-dcd.sh test[1])
->=20
-> Fan Ni's latest v5 of Qemu DCD was used for testing.[2]
->=20
-> Remaining work:
->=20
-> 	1) Integrate the QoS work from Dave Jiang
-> 	2) Interleave support
->=20
-> Possible additional work depending on requirements:
->=20
-> 	1) Allow mapping to specific extents (perhaps based on
-> 	   label/tag)
-> 	2) Release extents when DAX devices are released if a release
-> 	   was previously seen from the device
-> 	3) Accept a new extent which extends (but overlaps) an existing
-> 	   extent(s)
-
->=20
-> [0] RFC v2: https://lore.kernel.org/r/20230604-dcd-type2-upstream-v2-0-f7=
-40c47e7916@intel.com
-> [1] https://github.com/weiny2/ndctl/tree/dcd-region2-2024-03-22
-> [2] https://lore.kernel.org/all/20240304194331.1586191-1-nifan.cxl@gmail.=
-com/
->=20
-> ---
-> Changes for v1:
-> - iweiny: Largely new series
-> - iweiny: Remove review tags due to the series being a major rework
-> - iweiny: Fix authorship for Navneet patches
-> - iweiny: Remove extent xarrays
-> - iweiny: Remove kreferences, replace with 1 use count protected under da=
-x_rwsem
-> - iweiny: Mark all sysfs entries for the 6.10 June 2024 kernel
-> - iweiny: Remove gotos
-> - iweiny: Fix 0day issues
-> - Jonathan Cameron: address comments
-> - Navneet Singh: address comments
-> - Dan Williams: address comments
-> - Dave Jiang: address comments
-> - Fan Ni: address comments
-> - J=F8rgen Hansen: address comments
-> - Link to RFC v2: https://lore.kernel.org/r/20230604-dcd-type2-upstream-v=
-2-0-f740c47e7916@intel.com
->=20
-> ---
-> Ira Weiny (12):
->       cxl/core: Simplify cxl_dpa_set_mode()
->       cxl/events: Factor out event msgnum configuration
->       cxl/pci: Delay event buffer allocation
->       cxl/pci: Factor out interrupt policy check
->       range: Add range_overlaps()
->       dax/bus: Factor out dev dax resize logic
->       dax: Document dax dev range tuple
->       dax/region: Prevent range mapping allocation on sparse regions
->       dax/region: Support DAX device creation on sparse DAX regions
->       tools/testing/cxl: Make event logs dynamic
->       tools/testing/cxl: Add DC Regions to mock mem data
->       tools/testing/cxl: Add Dynamic Capacity events
->=20
-> Navneet Singh (14):
->       cxl/mbox: Flag support for Dynamic Capacity Devices (DCD)
->       cxl/core: Separate region mode from decoder mode
->       cxl/mem: Read dynamic capacity configuration from the device
->       cxl/region: Add dynamic capacity decoder and region modes
->       cxl/port: Add Dynamic Capacity mode support to endpoint decoders
->       cxl/port: Add dynamic capacity size support to endpoint decoders
->       cxl/mem: Expose device dynamic capacity capabilities
->       cxl/region: Add Dynamic Capacity CXL region support
->       cxl/mem: Configure dynamic capacity interrupts
->       cxl/region: Read existing extents on region creation
->       cxl/extent: Realize extent devices
->       dax/region: Create extent resources on DAX region driver load
->       cxl/mem: Handle DCD add & release capacity events.
->       cxl/mem: Trace Dynamic capacity Event Record
->=20
->  Documentation/ABI/testing/sysfs-bus-cxl |  60 ++-
->  drivers/cxl/core/Makefile               |   1 +
->  drivers/cxl/core/core.h                 |  10 +
->  drivers/cxl/core/extent.c               | 145 +++++
->  drivers/cxl/core/hdm.c                  | 254 +++++++--
->  drivers/cxl/core/mbox.c                 | 591 ++++++++++++++++++++-
->  drivers/cxl/core/memdev.c               |  76 +++
->  drivers/cxl/core/port.c                 |  19 +
->  drivers/cxl/core/region.c               | 334 +++++++++++-
->  drivers/cxl/core/trace.h                |  65 +++
->  drivers/cxl/cxl.h                       | 127 ++++-
->  drivers/cxl/cxlmem.h                    | 114 ++++
->  drivers/cxl/mem.c                       |  45 ++
->  drivers/cxl/pci.c                       | 122 +++--
->  drivers/dax/bus.c                       | 353 +++++++++---
->  drivers/dax/bus.h                       |   4 +-
->  drivers/dax/cxl.c                       | 127 ++++-
->  drivers/dax/dax-private.h               |  40 +-
->  drivers/dax/hmem/hmem.c                 |   2 +-
->  drivers/dax/pmem.c                      |   2 +-
->  fs/btrfs/ordered-data.c                 |  10 +-
->  include/linux/cxl-event.h               |  31 ++
->  include/linux/range.h                   |   7 +
->  tools/testing/cxl/Kbuild                |   1 +
->  tools/testing/cxl/test/mem.c            | 914 ++++++++++++++++++++++++++=
-++----
->  25 files changed, 3152 insertions(+), 302 deletions(-)
-> ---
-> base-commit: dff54316795991e88a453a095a9322718a34034a
-> change-id: 20230604-dcd-type2-upstream-0cd15f6216fd
->=20
-> Best regards,
-
+Thanks,
+Qu
+> 
+>> ---
+>>   fs/btrfs/extent_map.c        | 18 ------------------
+>>   fs/btrfs/extent_map.h        |  4 ----
+>>   fs/btrfs/inode.c             |  4 +---
+>>   fs/btrfs/tree-log.c          |  4 ++--
+>>   include/trace/events/btrfs.h |  3 +--
+>>   5 files changed, 4 insertions(+), 29 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+>> index 445f7716f1e2..471654cb65b0 100644
+>> --- a/fs/btrfs/extent_map.c
+>> +++ b/fs/btrfs/extent_map.c
+>> @@ -252,8 +252,6 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+>>                          em->len += merge->len;
+>>                          em->block_len += merge->block_len;
+>>                          em->block_start = merge->block_start;
+>> -                       em->mod_len = (em->mod_len + em->mod_start) - merge->mod_start;
+>> -                       em->mod_start = merge->mod_start;
+>>                          em->generation = max(em->generation, merge->generation);
+>>                          em->flags |= EXTENT_FLAG_MERGED;
+>>
+>> @@ -271,7 +269,6 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
+>>                  em->block_len += merge->block_len;
+>>                  rb_erase_cached(&merge->rb_node, &tree->map);
+>>                  RB_CLEAR_NODE(&merge->rb_node);
+>> -               em->mod_len = (merge->mod_start + merge->mod_len) - em->mod_start;
+>>                  em->generation = max(em->generation, merge->generation);
+>>                  em->flags |= EXTENT_FLAG_MERGED;
+>>                  free_extent_map(merge);
+>> @@ -300,7 +297,6 @@ int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len, u64 gen)
+>>          struct extent_map_tree *tree = &inode->extent_tree;
+>>          int ret = 0;
+>>          struct extent_map *em;
+>> -       bool prealloc = false;
+>>
+>>          write_lock(&tree->lock);
+>>          em = lookup_extent_mapping(tree, start, len);
+>> @@ -325,21 +321,9 @@ int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len, u64 gen)
+>>
+>>          em->generation = gen;
+>>          em->flags &= ~EXTENT_FLAG_PINNED;
+>> -       em->mod_start = em->start;
+>> -       em->mod_len = em->len;
+>> -
+>> -       if (em->flags & EXTENT_FLAG_FILLING) {
+>> -               prealloc = true;
+>> -               em->flags &= ~EXTENT_FLAG_FILLING;
+>> -       }
+>>
+>>          try_merge_map(tree, em);
+>>
+>> -       if (prealloc) {
+>> -               em->mod_start = em->start;
+>> -               em->mod_len = em->len;
+>> -       }
+>> -
+>>   out:
+>>          write_unlock(&tree->lock);
+>>          free_extent_map(em);
+>> @@ -361,8 +345,6 @@ static inline void setup_extent_mapping(struct extent_map_tree *tree,
+>>                                          int modified)
+>>   {
+>>          refcount_inc(&em->refs);
+>> -       em->mod_start = em->start;
+>> -       em->mod_len = em->len;
+>>
+>>          ASSERT(list_empty(&em->list));
+>>
+>> diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+>> index c5a098c99cc6..10e9491865c9 100644
+>> --- a/fs/btrfs/extent_map.h
+>> +++ b/fs/btrfs/extent_map.h
+>> @@ -30,8 +30,6 @@ enum {
+>>          ENUM_BIT(EXTENT_FLAG_PREALLOC),
+>>          /* Logging this extent */
+>>          ENUM_BIT(EXTENT_FLAG_LOGGING),
+>> -       /* Filling in a preallocated extent */
+>> -       ENUM_BIT(EXTENT_FLAG_FILLING),
+>>          /* This em is merged from two or more physically adjacent ems */
+>>          ENUM_BIT(EXTENT_FLAG_MERGED),
+>>   };
+>> @@ -46,8 +44,6 @@ struct extent_map {
+>>          /* all of these are in bytes */
+>>          u64 start;
+>>          u64 len;
+>> -       u64 mod_start;
+>> -       u64 mod_len;
+>>          u64 orig_start;
+>>          u64 orig_block_len;
+>>          u64 ram_bytes;
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 3442dedff53d..c6f2b5d1dee1 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -7338,9 +7338,7 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
+>>          em->ram_bytes = ram_bytes;
+>>          em->generation = -1;
+>>          em->flags |= EXTENT_FLAG_PINNED;
+>> -       if (type == BTRFS_ORDERED_PREALLOC)
+>> -               em->flags |= EXTENT_FLAG_FILLING;
+>> -       else if (type == BTRFS_ORDERED_COMPRESSED)
+>> +       if (type == BTRFS_ORDERED_COMPRESSED)
+>>                  extent_map_set_compression(em, compress_type);
+>>
+>>          ret = btrfs_replace_extent_map_range(inode, em, true);
+>> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+>> index 472918a5bc73..d9777649e170 100644
+>> --- a/fs/btrfs/tree-log.c
+>> +++ b/fs/btrfs/tree-log.c
+>> @@ -4574,8 +4574,8 @@ static int log_extent_csums(struct btrfs_trans_handle *trans,
+>>          struct btrfs_root *csum_root;
+>>          u64 csum_offset;
+>>          u64 csum_len;
+>> -       u64 mod_start = em->mod_start;
+>> -       u64 mod_len = em->mod_len;
+>> +       u64 mod_start = em->start;
+>> +       u64 mod_len = em->len;
+>>          LIST_HEAD(ordered_sums);
+>>          int ret = 0;
+>>
+>> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+>> index 90b0222390e5..766cfd48386c 100644
+>> --- a/include/trace/events/btrfs.h
+>> +++ b/include/trace/events/btrfs.h
+>> @@ -277,8 +277,7 @@ DEFINE_EVENT(btrfs__inode, btrfs_inode_evict,
+>>                  { EXTENT_FLAG_COMPRESS_LZO,     "COMPRESS_LZO"  },\
+>>                  { EXTENT_FLAG_COMPRESS_ZSTD,    "COMPRESS_ZSTD" },\
+>>                  { EXTENT_FLAG_PREALLOC,         "PREALLOC"      },\
+>> -               { EXTENT_FLAG_LOGGING,          "LOGGING"       },\
+>> -               { EXTENT_FLAG_FILLING,          "FILLING"       })
+>> +               { EXTENT_FLAG_LOGGING,          "LOGGING"       })
+>>
+>>   TRACE_EVENT_CONDITION(btrfs_get_extent,
+>>
+>> --
+>> 2.44.0
+>>
+>>
 
