@@ -1,240 +1,220 @@
-Return-Path: <linux-btrfs+bounces-3939-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3940-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24ADE898FEA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 23:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 881F5899091
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 23:43:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98FDB1F222C7
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 21:11:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 007AD1F2A05C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Apr 2024 21:43:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109BE13B298;
-	Thu,  4 Apr 2024 21:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5195E13BC3B;
+	Thu,  4 Apr 2024 21:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="rhJvPpL9"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RmpTlK/x";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="endfxQ4m"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E609E13AA51
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Apr 2024 21:11:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4F082D90
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Apr 2024 21:43:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712265102; cv=none; b=PPFczR+SS5jbvB9McW/XBs2KC78RiQwny3HW9MuobM9t7ea4CdHYw9fzOywtzNmKyveWWOL65zD9EwMR6JckVFWHdENX9UL7vxLPy5a3aBPbK+HtCZsvvXvaNwgKSxUQM3eXjY0o6BIG3GqSLEzVeNHgjBcY/tTW1FmFLYEAmiQ=
+	t=1712267020; cv=none; b=qTjJ00QlJ+YpK+t7O9kCPxD8RmbNFZylkGTkoP66EZsBp0LgyMrp+YWDGGkMzBDYp1yozXuIWnJfEUXwE4lV0tfBwwOcoWtM8kpl6zfUpFEMgx6O5fsBx7In4PmvoAqdYmA5gFYfUeLUMnstZ1lw8nUkyJy6YzqBDh29D7yNvow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712265102; c=relaxed/simple;
-	bh=sVCBgr3+FajwrzFUuJ9NAXf+och6PUPcQR8YlVVs5F0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d0pHPuUBCyBjxCK0MVa4Z2Q4iMP6lZEZuARhJZhklzlUtCpYpePZa23gE16kJu6nSfJBfPJUzspO4JKdicXL5cKqNXw4XnJG33My9Gkxm725POyFzo3UMEMAHlWf9Jgm3RuYc1SFiaisoaI+1saZFswO3spDP+tSRmSf7NSr938=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=rhJvPpL9; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1712265093; x=1712869893; i=quwenruo.btrfs@gmx.com;
-	bh=2M63ydNBJpT6PJDNeESUEWtEgVFG2NkrJHqoNxe4z78=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=rhJvPpL9dAmLengod1BNAoXqAU7f4aqm/FUXmsnGBenATfFjuMps8QG2seh0r3+Q
-	 ovqdLdqMQq8Wm+JMrkLFoAfiTL8cjgeQdGNA72UOYTjAfG9EvH+4vG17eZY2Bs6Jm
-	 qoZjtvCHauiJnDKW4aPOh+F/7M7nn68uqz28siGhzl+7FRAjPtCFlQdqRVrryp09T
-	 dp/dsL1VZeoPbI8V2S1Rsknifl4ybpNiKhIqHidNOQ4TqauPAJmYr78yWNQEvWw9w
-	 Po0YXk7pfBy+iitzsrnCXxBQ/11xfoK8KARWNFQQYnt7NJA5iFGGZypQl7qvKa9Zu
-	 kQollAnmmvT/YoMCxw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHG8m-1s5hnI2EKm-00DJc8; Thu, 04
- Apr 2024 23:11:33 +0200
-Message-ID: <9a9ce07b-d9ab-4200-b242-0f63daf96c48@gmx.com>
-Date: Fri, 5 Apr 2024 07:41:29 +1030
+	s=arc-20240116; t=1712267020; c=relaxed/simple;
+	bh=XSaPGujhZcMO6/PW7ZzA0xM3w3dlKK/pXub1M/qt+Ho=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=puxNwvndQ+sS01P92MlKl4R368HGvt+NBgf6JHFuCooABsrmQW8PUeI8jpzZnAp1qzAkXbl6VGA0yMglevbg4osX4xJ9JAFm3ExibwjyboMM4wq7dHSUVv6i1mwzfwqjRlh2FFU2KzImqsKEmTf3+cXSetjxLWZWY9j6rn4menY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RmpTlK/x; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=endfxQ4m; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DE200219D0;
+	Thu,  4 Apr 2024 21:43:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712267016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Rr0i390481EMohSB3hRudVpWm9ZyqBaYs/QCRjFXZx4=;
+	b=RmpTlK/xyzAFxEcRv94iWnUToy3ztEUN19+EN8ehprmyTSIDLoVQMnYw2eYgztYzDQ17pj
+	vZGbr5opcZ1MC3pOQtFnQZ4qVxwQ/gBw3aYvAYVh8oqwOJihTrEcxHpswKEGaWi/UeMJNr
+	ZZ1LDtXvEgdy+/OT2R//dYJnDcPrFic=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=endfxQ4m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712267014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Rr0i390481EMohSB3hRudVpWm9ZyqBaYs/QCRjFXZx4=;
+	b=endfxQ4mH9DjvdO+LwTcAcZT/gc2MaTVU7+rwK+lPTxMEJG7RxTVLouMGySwbm2NULdpTE
+	DSniyxFUR5coeeyFo2MSV6A3zBkCzVsXpPxx0eHJdmLmFKEfTaf419JiT3TaySKIT13+HI
+	msU7DE3EeMoYWQtSiiKwJ41rq7hkLas=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 96DAB139E8;
+	Thu,  4 Apr 2024 21:43:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id +SruEwUfD2YBDAAAn2gu4w
+	(envelope-from <wqu@suse.com>); Thu, 04 Apr 2024 21:43:33 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Julian Taylor <julian.taylor@1und1.de>,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: do not wait for short bulk allocation
+Date: Fri,  5 Apr 2024 08:13:11 +1030
+Message-ID: <78e109cdbec7b11b1832822143d483509abb059e.1712266967.git.wqu@suse.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] btrfs: add extra comments on extent_map members
-To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1712187452.git.wqu@suse.com>
- <98da90ba55445f69030a7664ae5029d710e4efbd.1712187452.git.wqu@suse.com>
- <CAL3q7H5bCtoPR09vK0LJhPqw1qv8Jz4T5nRT5dSznajzz1+yqg@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H5bCtoPR09vK0LJhPqw1qv8Jz4T5nRT5dSznajzz1+yqg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ggrXvW4eyd78FEcmdJWeWx/xqUi5dQkeg5Ps85AG+sPiGzhCbCX
- pj7ocHiFWFBY6G1zP6+/cwv8vS3wzSh0tvyCvtkrnnwBWO5/HNKK0sEh/KdU58CXfrknemM
- 42fUhRKaJBrS/VQRyQaDa94TvSUpCn55TofnuVKScwPFHjgKrLD8aRlxUuHwYnGwMCMykAa
- NchGymyYNgVtVYxDFIqkg==
+Content-Transfer-Encoding: 8bit
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:WAUi1N63gOc=;21oXiU7SVamcEM5upXAjnDdJmGc
- VnOG+6v3SNaTGbSL8aDU8ApZ0n+6i4cjTj0y4j0uVvr1+hJzLkN3Eat/QJncebmZ+Ti/p/7ap
- paXtW8uKDZ5uoREWJp30qce/4QNCHbu74k+fWb5Abu5YvRQsf4NZoxyu76I3LcHnvjtW1Ons2
- uQrdFBDs643A5MYmWHhkqAFxlT9Ux4l7k22roCGgJlI+Saodo8iDAIxmgBwLUt2Pa0C8PKori
- Py7mgZlfsSc29wlgndRegaVKpHASooKh4IeB5+kE77bg1AJg5HT07wkpXbeMfKdtJvkenY8UI
- saEFyrcL/sQJGay50Ho6AN4iHo0vCXg3krBsLf62Mk2EQzZYxLwUMZ8VgvOQnD3V4dPFx9bzb
- YSGfsMO+rHzx1ULcx3v9Ix5qvBMUAjHxR4Pazk+fJXEpTBZlhEjVb5vHJBbCxcEX+t5/Et4uQ
- sQKjj+9yo6GZhUZeFpLaTDgjF4/GVxSRWmZn2Xlj7BbNk9rUtfCy+CQP76Kt6iPZBsmqoT/qG
- WJUxxHasWchElzNmHUJp8gO76/NUNES7hAfjWrKDZ70v6g9s71R1eDpw/Y/Flp7mjYz5jk8z5
- r/N1SemmtOkauWZbze54SPM5HKh+i/5dvV6NfTXWvJozngCkndwTcStZVajIrw2He6L0yGUcW
- zJCIbnOSrmu8/SO3eGoDJ1v/TR9K+l1pa5OHw6VXApvcbLYpuUW+AuZuwwjtj5ay2CZTKz/3M
- 111m5E5wbbUpuZFuxkn0NRyuDLVaFcfvDFb7/HMd+7gAzPW+LFYJTFL4I5P1ZXTHEK7odX/L2
- djKKrB710yjPnFqd8KY/J4tlnFzuJmfumXMyXrJ0DAtBs=
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: DE200219D0
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email]
 
+[BUG]
+There is a recent report that when memory pressure is high (including
+cached pages), btrfs can spend most of its time on memory allocation in
+btrfs_alloc_page_array() for compressed read/write.
 
+[CAUSE]
+For btrfs_alloc_page_array() we always go alloc_pages_bulk_array(), and
+even if the bulk allocation failed (fell back to single page
+allocation) we still retry but with extra memalloc_retry_wait().
 
-=E5=9C=A8 2024/4/4 21:03, Filipe Manana =E5=86=99=E9=81=93:
-> On Thu, Apr 4, 2024 at 12:47=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->>
->> The extent_map structure is very critical to btrfs, as it is involved
->> for both read and write paths.
->>
->> Unfortunately the structure is not properly explained, making it pretty
->> hard to understand nor to do further improvement.
->>
->> This patch adds extra comments explaining the major members based on
->> my code reading.
->> Hopefully we can find more members to cleanup in the future.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/extent_map.h | 54 ++++++++++++++++++++++++++++++++++++++++++=
+If the bulk alloc only returned one page a time, we would spend a lot of
+time on the retry wait.
+
+The behavior was introduced in commit 395cb57e8560 ("btrfs: wait between
+incomplete batch memory allocations").
+
+[FIX]
+Although the commit mentioned that other filesystems do the wait, it's
+not the case at least nowadays.
+
+All the mainlined filesystems only call memalloc_retry_wait() if they
+failed to allocate any page (not only for bulk allocation).
+If there is any progress, they won't call memalloc_retry_wait() at all.
+
+For example, xfs_buf_alloc_pages() would only call memalloc_retry_wait()
+if there is no allocation progress at all, and the call is not for
+metadata readahead.
+
+So I don't believe we should call memalloc_retry_wait() unconditionally
+for short allocation.
+
+This patch would only call memalloc_retry_wait() if failed to allocate
+any page for tree block allocation (which goes with __GFP_NOFAIL and may
+not need the special handling anyway), and reduce the latency for
+btrfs_alloc_page_array().
+
+Reported-by: Julian Taylor <julian.taylor@1und1.de>
+Tested-by: Julian Taylor <julian.taylor@1und1.de>
+Link: https://lore.kernel.org/all/8966c095-cbe7-4d22-9784-a647d1bf27c3@1und1.de/
+Fixes: 395cb57e8560 ("btrfs: wait between incomplete batch memory allocations")
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v3:
+- Remove wait part completely
+  For NOFAIL metadata allocation, the allocation itself should not fail.
+  For regular allocation, we can afford the failure anyway.
+
+v2:
+- Still use bulk allocation function
+  Since alloc_pages_bulk_array() would fall back to single page
+  allocation by itself, there is no need to go alloc_page() manually.
+
+- Update the commit message to indicate other fses do not call
+  memalloc_retry_wait() unconditionally
+  In fact, they only call it when they need to retry hard and can not
+  really fail.
+---
+ fs/btrfs/extent_io.c | 18 ++++--------------
+ 1 file changed, 4 insertions(+), 14 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index bbdcb7475cea..48476f8fcf79 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -712,31 +712,21 @@ int btrfs_alloc_folio_array(unsigned int nr_folios, struct folio **folio_array,
+ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
+ 			   gfp_t extra_gfp)
+ {
++	const gfp_t gfp = GFP_NOFS | extra_gfp;
+ 	unsigned int allocated;
+ 
+ 	for (allocated = 0; allocated < nr_pages;) {
+ 		unsigned int last = allocated;
+ 
+-		allocated = alloc_pages_bulk_array(GFP_NOFS | extra_gfp,
+-						   nr_pages, page_array);
 -
->>   1 file changed, 53 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
->> index 10e9491865c9..82768288c6da 100644
->> --- a/fs/btrfs/extent_map.h
->> +++ b/fs/btrfs/extent_map.h
->> @@ -35,19 +35,71 @@ enum {
->>   };
->>
->>   /*
->> + * This structure represents file extents and holes.
->> + *
->>    * Keep this structure as compact as possible, as we can have really =
-large
->>    * amounts of allocated extent maps at any time.
->>    */
->>   struct extent_map {
->>          struct rb_node rb_node;
->>
->> -       /* all of these are in bytes */
->> +       /* All of these are in bytes. */
->> +
->> +       /* File offset matching the offset of a BTRFS_EXTENT_ITEM_KEY k=
-ey. */
->>          u64 start;
->> +
->> +       /*
->> +        * Length of the file extent.
->> +        *
->> +        * For non-inlined file extents it's btrfs_file_extent_item::nu=
-m_bytes.
->> +        * For inline extents it's sectorsize, since inline data starts=
- at
->> +        * offsetof(struct , disk_bytenr) thus
->
-> Missing the structure's name (btrfs_file_extent_item).
->
->> +        * btrfs_file_extent_item::num_bytes is not valid.
->> +        */
->>          u64 len;
->> +
->> +       /*
->> +        * The file offset of the original file extent before splitting=
-.
->> +        *
->> +        * This is an in-memory only member, matching
->> +        * extent_map::start - btrfs_file_extent_item::offset for
->> +        * regular/preallocated extents. EXTENT_MAP_HOLE otherwise.
->> +        */
->>          u64 orig_start;
->> +
->> +       /*
->> +        * The full on-disk extent length, matching
->> +        * btrfs_file_extent_item::disk_num_bytes.
->> +        */
->>          u64 orig_block_len;
->> +
->> +       /*
->> +        * The decompressed size of the whole on-disk extent, matching
->> +        * btrfs_file_extent_item::ram_bytes.
->> +        *
->> +        * For non-compressed extents, this matches orig_block_len.
->
-> It always matches btrfs_file_extent_item::ram_bytes, regardless of compr=
-ession.
+-		if (allocated == nr_pages)
+-			return 0;
+-
+-		/*
+-		 * During this iteration, no page could be allocated, even
+-		 * though alloc_pages_bulk_array() falls back to alloc_page()
+-		 * if  it could not bulk-allocate. So we must be out of memory.
+-		 */
+-		if (allocated == last) {
++		allocated = alloc_pages_bulk_array(gfp, nr_pages, page_array);
++		if (unlikely(allocated == last)) {
++			/* Fail and do cleanup. */
+ 			for (int i = 0; i < allocated; i++) {
+ 				__free_page(page_array[i]);
+ 				page_array[i] = NULL;
+ 			}
+ 			return -ENOMEM;
+ 		}
+-
+-		memalloc_retry_wait(GFP_NOFS);
+ 	}
+ 	return 0;
+ }
+-- 
+2.44.0
 
-It always matches btrfs_file_extent_item::ram_bytes, but for
-non-compressed extents it also matches em::orig_block_len.
-
-Or should I just remove it as it doesn't provide extra info?
-
-Thanks,
-Qu
->
-> Thanks.
->
->> +        */
->>          u64 ram_bytes;
->> +
->> +       /*
->> +        * The on-disk logical bytenr for the file extent.
->> +        *
->> +        * For compressed extents it matches btrfs_file_extent_item::di=
-sk_bytenr.
->> +        * For uncompressed extents it matches
->> +        * btrfs_file_extent_item::disk_bytenr + btrfs_file_extent_item=
-::offset
->> +        *
->> +        * For holes it is EXTENT_MAP_HOLE and for inline extents it is
->> +        * EXTENT_MAP_INLINE.
->> +        */
->>          u64 block_start;
->> +
->> +       /*
->> +        * The on-disk length for the file extent.
->> +        *
->> +        * For compressed extents it matches btrfs_file_extent_item::di=
-sk_num_bytes.
->> +        * For uncompressed extents it matches extent_map::len.
->> +        * For holes and inline extents it's -1 and shouldn't be used.
->> +        */
->>          u64 block_len;
->>
->>          /*
->> --
->> 2.44.0
->>
->>
->
 
