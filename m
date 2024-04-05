@@ -1,217 +1,136 @@
-Return-Path: <linux-btrfs+bounces-3978-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3979-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC65189A538
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 21:51:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 094E089A546
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 21:56:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C0F01C219A9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 19:51:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A82B1F23057
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 19:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC7017335F;
-	Fri,  5 Apr 2024 19:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4BEB173347;
+	Fri,  5 Apr 2024 19:56:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h/9pP9fD"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="LvduprAs"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9625173353;
-	Fri,  5 Apr 2024 19:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712346665; cv=fail; b=A16oXcqi8jWWImhIBiTWofxSGOqkN9dzezgJhse+WvCaP8B2UorGgVc58nyg6av0ba4UaGI5tRluO/y3b1u7cdUlc3HeQ4O7fF/PgzPJDNSY3MlYw8vwDKCiwwhGx6gq8YwQWo/IlOeUbejykB1pIcHf/0YLITU3JO7orAJPJvU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712346665; c=relaxed/simple;
-	bh=L4Wwr12NPIXxuXCbHoEPXDcG+X/narjBvFxijx78Zcw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=D6e1wHCUJuf6tTNCuR+BPpNJuszIrzu0qaQkaqrvV6cUC6JJFUTbX0eCcbMgJWKlLiuCMWQQndpWqVCmW8PW1RDTkqnoY3FxdmXpAwfRwi+SznZ9jXl76CYXk6Llxj+KSu88EW1kj5AcwM8VVjyx+2aKlY/jqdeHW3YmauhMfFs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h/9pP9fD; arc=fail smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712346664; x=1743882664;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=L4Wwr12NPIXxuXCbHoEPXDcG+X/narjBvFxijx78Zcw=;
-  b=h/9pP9fDe8ZbPkedDM29KHBYp/rUCHn+Eo3rpyMsvDhOXGfzHAJjaqj/
-   pMSBq2cNXynrY9m1fUlzCsqLO2f6AzbXCG0eSyt9nDZlxRJi8/DO1gO5J
-   yjchL+9oc2i1k6v3kCm/DVmXCwACzkJnPP5ncB/qZ8Wl371ZRVv44Hn8x
-   0nEvQOwT6Ww8BojF8YMtv3E4p3221V+63qTlMa+rQ5yoUmtzjqfPK9W3R
-   lCIVXeYrByaBZspg0oDCItBdBVujx5wZdIVGwiAvfNQJNopt8N+wItH1u
-   vtKTykQGBuTUa8BZluCh7DixAc6ZXhagcVrK6XmeISOQyzGLCmRBbSBNj
-   w==;
-X-CSE-ConnectionGUID: z6w7iFtaSiqH0JRh+hBpYA==
-X-CSE-MsgGUID: J67R+p90TV2YYg21YSPJIQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="7785745"
-X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
-   d="scan'208";a="7785745"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 12:50:18 -0700
-X-CSE-ConnectionGUID: Pq29WuW8QfuK/89JG1YzgA==
-X-CSE-MsgGUID: TvGaCKcbSu6424mB0Niocg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
-   d="scan'208";a="23989522"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Apr 2024 12:50:18 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 5 Apr 2024 12:50:18 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 5 Apr 2024 12:50:17 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 5 Apr 2024 12:50:17 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.172)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 5 Apr 2024 12:50:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gai9eUdowe23GzVagNrbiJ8DmYjmhXYHLlg+mXugVBLvZqA+9J4zIaovXdRVXM9LwC5znwfCkA8nAatr6nntdpySzRzBPi2wm4U+xZACzX9CVRHPe7CDeCRZUziI5eTt4R7d8rBmw6K7kUvEvpZyJaMV3cj1uK2yh9SvAQVbmQpHtOx0EWs9BqzltsB/Yy9g8OZ2BDpUL9cpdY7ZEnNx5reyLsFlEb+wzCX2w/Prdb6CtSGkGko+9E0us/0knbnF219oCqRMmriwfEOUC567VTb7ERZ9c0CA33MlGT6fjPF67ztRZRV8xaJp6FVWpr0KxWYjskH7mhM8X4CK7WxOrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0aw+GUsaaDQKYSKcC5e4eHdiBLDu7tguTAMmCsnP4T8=;
- b=BzyOtg21VwEK1WGpiZcfYE90ZNmkHQgNNghA9/Kv918Xanw0Y9FR/fFePMFanhPHAzeFwKNYiPPTDSeonK48AtDLGswwV0l+lhevDngXuhGHp/H/IUAfJeyelDNpPeanrWJ75TjxbUGvudmL4ULcnlXa0XeByVSw3JzWiHFlVzrZTNk3mv3ZUOvkww/rymAIVrayxFny/G+APEXNJnb1V+su0uvObpWoOcCbI0No2bZH4pk1MyUAFY19eWMZqIibNtBFXi5CSv1dy0lLq3aDt3LChxO2YUNWDBAlptG61rYRLtWT/mKdHN8iIUgpRCnGiOHMWckMlOY1WSAKXlUbmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by DS0PR11MB8052.namprd11.prod.outlook.com (2603:10b6:8:122::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.32; Fri, 5 Apr
- 2024 19:50:10 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::5c74:8206:b635:e10e]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::5c74:8206:b635:e10e%7]) with mapi id 15.20.7452.019; Fri, 5 Apr 2024
- 19:50:10 +0000
-Date: Fri, 5 Apr 2024 12:50:06 -0700
-From: Ira Weiny <ira.weiny@intel.com>
-To: fan <nifan.cxl@gmail.com>, <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Jonathan
- Cameron" <Jonathan.Cameron@huawei.com>, Navneet Singh
-	<navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>, Davidlohr
- Bueso <dave@stgolabs.net>, Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>, <linux-btrfs@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 06/26] cxl/port: Add Dynamic Capacity mode support to
- endpoint decoders
-Message-ID: <661055ee8c5aa_e9f9f29481@iweiny-mobl.notmuch>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-6-b7b00d623625@intel.com>
- <ZgL5SdGCori3Dh3O@debian>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZgL5SdGCori3Dh3O@debian>
-X-ClientProxiedBy: SJ0PR13CA0061.namprd13.prod.outlook.com
- (2603:10b6:a03:2c4::6) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A681173342
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Apr 2024 19:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712346986; cv=none; b=X2vOxemWyHFpSvi7fHKnbC5O6aTIDwdrGyM9XOArwPK7cjhWtMDnCdWANNliXdyF9a0BsKpIT2h4LHTLd9WhMf7EoyuVOyPGpGHv5Q6JvSPzarPqcrh3uQu6qZXiMtOMxCmeBBtV17Oz82nOVwesv9OlKVkXy2oTjzSC6pQvdz8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712346986; c=relaxed/simple;
+	bh=IftFNAyGMW0+PC4UaymkIiJKu1SRGfJ2M7zYBEQQiOM=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=GmH7r5tdamHtXPHAONPL1SKJPCqzMXXQolnlXs/nOBUcolJOpSorN2teHCFGnQspVD1U7AYS44M5RCk9UqzLsYZ52V7mfwFo+iEXHjioZAg0LamBv2SFk6znHR1CVArCckiXH9Z3dTeGq98LYeJd7cmBl9Z+aG6nNE9ktbLwI5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=LvduprAs; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-699312b101fso12275836d6.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 05 Apr 2024 12:56:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1712346983; x=1712951783; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JDCIjcfLg5/A+ZSk8y5tQbAFPHorahyNXBBJAhi7Wtk=;
+        b=LvduprAsB6e40uSX9dSMtQZzTeVoq+oXuTIBaKRnmz/Zpl6dqiehuiKRrzlcR9VyjT
+         HClxRXAsssBx9NDGHtHjAoH/BHXEOqDihJxeiCKMd+h4S5ayKscaUz6uhMIeTcWl2F7P
+         CdI+s/9CuN7axlIFl8p8P92IWd5tDRe3RiyW1eUlk7lyUw8mH8JMI/Xr3ZBIWTxy6401
+         OTU7QmGyvLdqKrcG/ABPWPTExBJGSkibtWT0rx/Zx+R6nY0z/2JZPy/B5U+EsW2TeR8i
+         l7qwwgfG+6LAFkT3B8cXvRo8iINm8vqGRQ3Bq56Gvb3H5YlQebWkxPo4Y2hgeEbc4i9C
+         P7iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712346983; x=1712951783;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JDCIjcfLg5/A+ZSk8y5tQbAFPHorahyNXBBJAhi7Wtk=;
+        b=RN7tVzzjF9uEAGuCk8B9P3U07QNw9ARtHSv5F4veURfoyfIrEAb9CNzdWFImrjrBx8
+         UJ2wPqjAd4/y9SePFje0qUEuMliQ1UXZGnj0NxizbXq8l0c1win7uwGc12Yd9GgD0wxp
+         qOGsf/BYiIr9L70516UCZLz5xwCn5KBPzgwGvHw7d2fSPXSMSQXQQ20jwvZOoP8q52Wp
+         iN5FRbyXOfFdYZVfG5GR2kp6zYFJaLasNb81gw+/j6aBB+3r5VbYzb2LrtwQ0wZMetsy
+         AxJjWVDmrWt268BzW6ywUh+bqexiCkqw9RiwMg/eVgQqO4eT7BR4JAlpN3CtgMkfifML
+         AVeA==
+X-Forwarded-Encrypted: i=1; AJvYcCUcUvQVEP7hO/EhwNDKJlxrYgEFyLJjAPffJfUm+2g0emBjbP7n+NCIG1+lPb5Aq1vY7v7H5LwRR4R8InkXTiGxKaNpYJ1CGZRePyQ=
+X-Gm-Message-State: AOJu0YxB/clakl+jFYHFSGCSSrvnP/4Pw0C+CfKAqo8CY3d6IOfSa4JA
+	yTSoywEM5uJF2rxn93qQ+ZYCBJxxqQrWje5kSQhZEClV3k/tlteyexd8VChT//oa+fpVrrGmYvU
+	I
+X-Google-Smtp-Source: AGHT+IFn8EGoGAx6UlDJiFtZmMVsPPatBp/kAQ3QgwLYF/mxCjpgwHtlmNbejCmRRXx6ZdN0n4QSRA==
+X-Received: by 2002:ad4:5d6c:0:b0:699:3025:566f with SMTP id fn12-20020ad45d6c000000b006993025566fmr3384305qvb.38.1712346982873;
+        Fri, 05 Apr 2024 12:56:22 -0700 (PDT)
+Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id f2-20020a0cf7c2000000b006991a92642esm876550qvo.138.2024.04.05.12.56.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 12:56:22 -0700 (PDT)
+From: Josef Bacik <josef@toxicpanda.com>
+To: fstests@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH v2 0/3] fstests: various RAID56 related fixes for btrfs
+Date: Fri,  5 Apr 2024 15:56:11 -0400
+Message-ID: <cover.1712346845.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|DS0PR11MB8052:EE_
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RGJDrbptLrSFkamdiVKNqemNYA0ujAe8S+CcCfpLMfswhdUeUGlG4p52uYtdPx+0oDgh0cYJtpPl6mvdz69I4MXNHae8v9DOuzGJABjZ+ZVFW5sKKx3Lp18FAvxSOpyYW/K4Yxl1/axYVPCUXwLlKpXfn/Mynt3Skp/v2dxsRa+yP0k/JvY5lLfFn368fuq2sw4xfXMjESrHfqGDjZon/ku2x3mq76vjSCTijPBpurGx5s4/p4RwfRnab8VIfz9Q5SPK6yTXwUXW4Kh1bWe1OqjvAWmNducErkgzPfXhET5GPbeIRQMZ3nAia8rNaKV5TvorV1wd6yuPkb/9RKqQBDsu6NmnT5RhQbKm/7KfyGUcfWKclwZUEZsKyvfGtmzpQVdRolSSMIdwcep+X+eDVNSjJxYFbgryXSETUa0xJmyqCd06Y8LaHhzSmg4KYpgzBLw4ngPQDXdYmwaVTNBRfyp+Xv2NUmJt0L23T43tfbKq89Kn3J2h121yHg1y+W+3fmrwou9ZtgS6KAny9nqmKMO3w78qZcvsv71Y9U4b/SdkZmtMtuSnZTZWh4xxhps6oySQRy7wLHievuD4mxxCM0bpPU7wNGdZtVjwb/rG5tJzFv0IGZuG5wt4EvC6GRWx/pXD+LyF1tClTanmCg/45OBpWWC1cLecUdasxfoVfpM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VDJYY+aPmjg6S32OC4ACcMiZqs6n3va3HfgEV0gRIeSxoVivS+65cxahwOAj?=
- =?us-ascii?Q?c8v+/hjFIH7jwC7e10vkPi3LL4TIH+8GPztSy4bruTPS6DCNs3upvxrITphZ?=
- =?us-ascii?Q?Fe6UNbvRlWRYgvzvIqQ50Jq7wlDlHpw9RSm2Rd5YHyh6vgfYjPvx0Wvsu6XF?=
- =?us-ascii?Q?taEXhKqnTwKnjtp8wuQWh93dgVPACfZpIDhVeK2h1KNjv8UOnPuTAK2BqWEz?=
- =?us-ascii?Q?qe8ZXHqAlidBYczaabj7wdPth8HZp9cULMvseka+gMN6Bv+3NvYhrXFJtGzM?=
- =?us-ascii?Q?Stppq73UBmUTBRZfsE6NPhS1TQaPKPdTATxGGNyTCLt+ow6eToYiUtqoKq1+?=
- =?us-ascii?Q?vB0ka3WSRlosveKaT98Fapuank7Bo5Yv5p1bqKSbgy7pqR6NPTvY7Xmc7j4T?=
- =?us-ascii?Q?UTrO98i/gBkdsiI25IXwYjmAHFwJYLc9yXYpR5ueDKQB4ZDqsy6lauBjgNyM?=
- =?us-ascii?Q?1xqD/P0ykrzEjTx1d/nJCtuoHArG2GW5R+6wp763S444KbfXguNkJTn5Z4Ot?=
- =?us-ascii?Q?V+jBwGZQcowOzMfgzOKHRMsBi6ST+unEFOtGD/P7QcTjEL1ZTna+WycLWflN?=
- =?us-ascii?Q?T4GcG13t2H/wAUxU2ws32DMuEhQBmXcTYSnNk8YjVhxB1sOcvVccVHkaNQxc?=
- =?us-ascii?Q?EgTxW3bM8csJh2sIQt6SpfQ8zBvq3ZSQpMJppssp9snkge3CeGCkREr1gygB?=
- =?us-ascii?Q?lhQr/oUuyj1wJ4NxUNRrpActf0jvayj6+hZ10OW5N9r5LAU/T2uSyib02B2R?=
- =?us-ascii?Q?6nn900rfqf9FLizDGnAMl8S5yzQigSJkm8pR33gSMNw61OOYzBXUN8HxQjKa?=
- =?us-ascii?Q?TIZ3pYOL5qjQM2ywFLWz3dSeSV6f2eTaq5u5L75RrkET8+stAZA8F+GKhcCX?=
- =?us-ascii?Q?760WgmxXFTHcFCVAWv5ACNjXXZ0kdgUFJL49VxhAs5kCeZRmSZdvJ3XgMyJ5?=
- =?us-ascii?Q?hCGyV8Nz82PK5ltczjXA6LMtpgYdvFISsENa+6YRqfMB0jOZb31ChO/C4P5Q?=
- =?us-ascii?Q?w92Wq1N7JHFPvWKDFkesnYYB34W3/d1w1Qh2fqjAiwb/L0XNs1UNwDWFXQqX?=
- =?us-ascii?Q?fjqO89epzoGC6h4Xa6giu4/k+X5rRwJ3Rh6FeD65/5B+3XJinecltbGyXIb1?=
- =?us-ascii?Q?hcShqR4rqn7FzuuAUJdbevgMilfDcgOXdTdQlpP7o6+H4bdZf3YA9f+u94Kc?=
- =?us-ascii?Q?6PLudGN+PfaLxwS6vCJrUAldhn+wX5nwe9peqxLkVVX8pIOGnAylmmqOUK94?=
- =?us-ascii?Q?KkYCjQBL29b5Ygx5wB+HvFZnbCl8/REYkI0gnjpCnDVk8a4KlrElWlRUYgtJ?=
- =?us-ascii?Q?YXyeOeLpOHWscMVqWVSEplDDKPlkyhw5GsBQzDIeQDzLsewoVF3NioxmeTd7?=
- =?us-ascii?Q?6+vPnqtG+2xpYY7w5eD4UubKXqRrMpX9veYKWssqziv+zkE3HRGlS3c5BOEb?=
- =?us-ascii?Q?7XQpkEzCUkjOfsofPp1IsslGJnLgQEks3E/I0Q9klfJpMHjq/ZrXRsI1qKPM?=
- =?us-ascii?Q?zfOAmqyJftzPSkEbBhEyGiMi2mDToq4oRvxqehGe9lOch4BGpRjTtVd3lUdS?=
- =?us-ascii?Q?jDVFtoQdcxKx+FfqsMzrPK+swZiDJiUYLbgCYi/D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb966056-1364-474c-55dc-08dc55a999ea
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2024 19:50:10.1375
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hEqVOOSSHGVP2YDHhN1wdMyPx0KsuBK7rq8dvfDU330pRrGZ/fDXvJ2iXMTd4i1efJMpGoRFpFVfI8xhI9lfyg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8052
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-fan wrote:
-> On Sun, Mar 24, 2024 at 04:18:09PM -0700, ira.weiny@intel.com wrote:
-> > From: Navneet Singh <navneet.singh@intel.com>
-> > 
+v1: https://lore.kernel.org/linux-btrfs/cover.1710867187.git.josef@toxicpanda.com/
 
-[snip]
+v1->v2:
+- Reworked the golden output of btrfs/197 and btrfs/198 to handle running some
+  of the RAID profiles.
+- Added a new way to require RAID profiles in the tests, updated all the
+  different tests.
+- Changed btrfs/197, btrfs/198, and btrfs/297 to skip any RAID profiles that
+  aren't supported by our RAID profile settings.
 
-> > diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
-> > index 66b8419fd0c3..e22b6f4f7145 100644
-> > --- a/drivers/cxl/core/hdm.c
-> > +++ b/drivers/cxl/core/hdm.c
-> > @@ -255,6 +255,14 @@ static void devm_cxl_dpa_release(struct cxl_endpoint_decoder *cxled)
-> >  	__cxl_dpa_release(cxled);
-> >  }
-> >  
-> > +static int dc_mode_to_region_index(enum cxl_decoder_mode mode)
-> > +{
-> > +	if (mode < CXL_DECODER_DC0 || CXL_DECODER_DC7 < mode)
-> 
-> To me, it is more natural to have something like x<a || x>b other than
-> x<a || b < x for out of range check.
+--- Original email ---
+Hello,
 
-Ok.
+While trying to get CI setup internally I noticed that we were sometimes failing
+raid56 tests even though I had specified BTRFS_PROFILE_CONFIGS without raid56 in
+them.
 
+This is because tests where we require raid56 to work only check to see if it's
+enabled by the kernel, not to check and see if we're configured to use it with
+our profile configs.
 
-[snip]
+One test needed to be updated to skip any configurations that weren't in our
+profile configs, and then a few tests didn't use the 
 
-> >  
-> >  	guard(rwsem_write)(&cxl_dpa_rwsem);
-> >  	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE)
-> > @@ -433,6 +442,16 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
-> >  			return -ENXIO;
-> >  		}
-> >  		break;
-> > +	case CXL_DECODER_DC0 ... CXL_DECODER_DC7:
-> > +		rc = dc_mode_to_region_index(mode);
-> > +		if (rc < 0)
-> > +			return rc;
-> > +
-> > +		if (resource_size(&cxlds->dc_res[rc]) == 0) {
-> 
-> The other similar checks above use "!resource_size(...)".
-> 
+_require_btrfs_fs_feature raid56
 
-Yea good catch.
-Ira
+check in the top of their test.  This series fixes everything up and honors the
+user settings which makes my internal CI runs clean where we don't want to test
+raid56.  Thanks,
+
+Josef
+
+Josef Bacik (3):
+  fstests: change btrfs/197 and btrfs/198 golden output
+  fstests: change how we test for supported raid configs
+  fstests: update tests to skip unsupported raid profile types
+
+ common/btrfs        | 29 ++++++++++++++++++++++++-----
+ tests/btrfs/125     |  2 +-
+ tests/btrfs/148     |  3 ++-
+ tests/btrfs/157     |  2 +-
+ tests/btrfs/158     |  2 +-
+ tests/btrfs/197     | 17 +++++++++++++----
+ tests/btrfs/197.out | 25 +------------------------
+ tests/btrfs/198     | 17 +++++++++++++----
+ tests/btrfs/198.out | 25 +------------------------
+ tests/btrfs/297     | 10 ++++++++++
+ 10 files changed, 67 insertions(+), 65 deletions(-)
+
+-- 
+2.43.0
+
 
