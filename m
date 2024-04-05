@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-3966-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3968-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 190CA89A405
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 20:18:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CA9989A464
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 20:45:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1D8C28ADBB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 18:18:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 507311C209D1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 18:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC239172773;
-	Fri,  5 Apr 2024 18:18:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A72F17277F;
+	Fri,  5 Apr 2024 18:45:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="pDfz/pHp"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="zbQC4+8J"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18EF1171E66
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Apr 2024 18:18:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC011EB36
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Apr 2024 18:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712341097; cv=none; b=fmMga3lSyqaKC5ABkWaq0TTxTlTvQ0qy0p96Mif/eTomE8FiM16IkeSdKXiuyjxqkD5+Pw010HcEE3UzPxZZOqFx+O2WkdCxWHFhoz0elN9/t6W3+of1fdEBY5YFklIQ7lM17E8vjS82WlKW2wczx7ivwXVsCt1NHlvgAEsc5qc=
+	t=1712342737; cv=none; b=S9eGXbEsUiTrdZ9A6gg/QTUIUZL2fW11DjZ7ERxnAPho54JGoWTbzASh3zZPk0y2djaqMHTUdS8XdWWEePnT82cMqUGFvd96sfEmISmXNTmBPpBQDvaRlB+aH8uCyQu0a2QNiv6OWOabIUDMvtWqneuMeSfB8v6Uaq/yzvLBxFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712341097; c=relaxed/simple;
-	bh=wdMJhgg03J9ToLHXaFixR/36utzApFawE0KvfzXoqHs=;
+	s=arc-20240116; t=1712342737; c=relaxed/simple;
+	bh=/FCPihbWn9eIg+Y0AzTbDJut0QYvSPXzbyDJt8yAYeA=;
 	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=kC/GhFghSl3UXJj9jyCC6OVQ4zkzwO4x5iVMiGi+vsq3zb4dc0P0dZLnm0K3IECJzxhzlWcZDBNalbD8ECXHW7lji9AhOiQFAphdtAH0wG12o6foR83wgAqdsfdlaLEEZyLz3plVa3ZLcqkSjSjjjbuPNZgRRiOZJoPZqtF8XWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=pDfz/pHp; arc=none smtp.client-ip=209.85.215.177
+	 In-Reply-To:Cc:To:References; b=DU8nTsQBo4OTyo/PLxBAam72cdHOZ70W2YC0lLtm0j6ACpBgMvhHYHn3T4RsKM8u0dJbvv7L+iSd+Au3XhKEGSn+djibrm+OkB/L8pg+fWadnyOb9aNZhD9luPrkkCOllEyss6g1NLwvyPnIx9D+8MZWjUzzIcdviAcO42kb6XY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=zbQC4+8J; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d8b519e438so2018785a12.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Apr 2024 11:18:14 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e36b7e7dd2so9412655ad.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 05 Apr 2024 11:45:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712341094; x=1712945894; darn=vger.kernel.org;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712342733; x=1712947533; darn=vger.kernel.org;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Yt5fFOUcQfwmred9ry2pM1oK9JKeRbA+BTjVzFtQRM=;
-        b=pDfz/pHpB9sII143/jXXuhAPupP2d7QqElx2yN6GP5mJZLDzlEq2j3+FkgpvDG8R70
-         bByMj5Xf7C/7OBEFOHZJHxMZaAaeKda+7qN4Wqz17N0FoTKvF7NR+2bZhPvLtMV/EOhy
-         sGkxkLM1kj/Dnl5jKKvuGakKCPr3uUo4pKbYZMoRn9IpjWhB1qqqSSRqoOx07X/YaMjY
-         c3AixXB7DPaoEBUwJUZGapwQnmdKMrBJqoTGe6YglQ6eNqP3C6Cp+2GOJU1Vaq3wOAFN
-         ted3ttFSX/T1A1av5p3hdiK9+mzxI4Qd54n3bf7Ybmz3cmSvBuArKYuLL7sZuYgsBIHi
-         HNJA==
+        bh=YlBmmeOJnSN3JFYBQXBy/qIRI+48VBuCQo8cLWjg7HM=;
+        b=zbQC4+8J+xoqY2Au8D98He/41oHMZY7ZdgvXFYyawz6X0sIXTx76RMGR9oxPKE1bsF
+         F335B7zUx9N3Ud3/cAO5hmwQFRY53TIsQl/7geeIFVY88ykZuPyC3RnvKUAsiwOHK1Fn
+         JXzRXDkpyMf32jjuSFv6u0ByRn5pX6sdDAHwKseziiVEy4486oipvKYodLrlhPeRYt4f
+         W7v65E987Ue6a36B2a85iW8wvD1pHDkk/UmJ1yyvJTmPyPl19szGQVgeNRxfft9kWWjh
+         1v1UTIfyFz+f7SvrRyTnbWx7hqqH2aESC+lm7jhTLaLQsFuh4Ab51scxINnL48ryMvr7
+         1daw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712341094; x=1712945894;
+        d=1e100.net; s=20230601; t=1712342733; x=1712947533;
         h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Yt5fFOUcQfwmred9ry2pM1oK9JKeRbA+BTjVzFtQRM=;
-        b=azu6Cuu/PqHu2csadJRl5AGqtOLUo7EHnlTaLPxVL4RJQaV2CZOumNUkaj6F/L89dn
-         EvwxDg9QVT0qYrYhNlg25jhFE9Xn/rBMHdxA5ZJcaCVIE6mSsVrTazSxTQoCHnvaYLwF
-         Zp48eAKEb/WexDBB7/YOEWa24t9IXGQU7tpdx3gEEdTgpI3gtQL9igGCyiKWCH63/4kG
-         iwhKQakAY3GxcENK3RIwPc+Z2IcaooVTXcs/Rju/Xv6vf3OMPkvLPG2Wy/ytsY8gHw5m
-         ts8XrNcwH+KO1A0YDOg1vIOcLSTYESX74+IYZAXj0d2VBjvWba0qJsmJkzqQq0q6yFp3
-         FI+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWXorFfLK2t8Gkc+SjQkRWxvOyt8EyoY6/gJbj7jwNI/AHGmBbbnG6Rd/SNIYCFNRUKcobVqgkk5iwq2uXk6g7daKFGlY/8287Ow2g=
-X-Gm-Message-State: AOJu0YwSYvAeT/dGrX4lpDw7s9o3nchTK8/y5I4lSop6LZwEd3Mma6wi
-	itCRkf+1z/kGzxzgydX547Xo3ZN/UiyZPB+Ok3rBP8nxujHAP0cPKUKmcYGeOOg=
-X-Google-Smtp-Source: AGHT+IEDn0os+fUgFYATLn+Iq6FZjbfsk3zOmEGVgE/EWJZEoD0wnOYoH0jftB7HpCio2JhiLuD6iA==
-X-Received: by 2002:a17:90a:1648:b0:2a1:f455:c3d7 with SMTP id x8-20020a17090a164800b002a1f455c3d7mr2069740pje.16.1712341094316;
-        Fri, 05 Apr 2024 11:18:14 -0700 (PDT)
+        bh=YlBmmeOJnSN3JFYBQXBy/qIRI+48VBuCQo8cLWjg7HM=;
+        b=qvMOmy9Rb+PJLzHqNPeJ8n2wileR6nLpFA78kft5fqazyPdPqymCYA0bXfQMW0jVR9
+         Wlh52f5JdFaacSorvtvTVstX4fpUdES5LAVP46Ue48oFEj6weuVzM+4YiBj2xmKOh4sH
+         rJSRFQDYp203c407kK/gtsH/bm/ZcVcvcNAYzU8lyWwhjDJvRabnDHShUpu9gQBP3qJa
+         y2xwwjpwxD/QwjbXPgMrOiRXWFCA1YuLCDVHDkGrMyFBXMNeEAApzFr0k6QUWLseo61m
+         R1lrcx+Sqmepfq9DGDkLtu08fECBrMXV5MtYlfOwBdn1SzQFaOWqaBYQdYyEpRy/0GPD
+         BOBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUqL6to0Itf5AGlV1EbPVkFqNTXpaA5p/3MGLU9qvEyuAXUqfrrl7ubN50LEKmt63mKgN8r8Xzz/4r4Nr78WvjL20lLBaEMaY78Q1g=
+X-Gm-Message-State: AOJu0Yww4aELHAd6SjCCbYKYGwVrTy93602CAzzndOa3nzsJ0bsUKIYp
+	NQMbhjxPHKlPlOqDv85rPr3xQNlrDe0nOcv1i4Vove5pyqhYS6akVXWsfQUWRh0=
+X-Google-Smtp-Source: AGHT+IGbZFAzIFfYD6auuNZ/ItSPWzflNUulnWZOWfZjCss+4ukyWoI64u0JDm6pfEpH7xCKhF5H2A==
+X-Received: by 2002:a17:902:f7c4:b0:1e0:157a:846c with SMTP id h4-20020a170902f7c400b001e0157a846cmr2133198plw.55.1712342733409;
+        Fri, 05 Apr 2024 11:45:33 -0700 (PDT)
 Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id bb20-20020a17090b009400b002a46d73ebdcsm1525837pjb.46.2024.04.05.11.18.12
+        by smtp.gmail.com with ESMTPSA id q7-20020a17090311c700b001dee4a22c2bsm1917775plh.34.2024.04.05.11.45.31
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Apr 2024 11:18:13 -0700 (PDT)
+        Fri, 05 Apr 2024 11:45:32 -0700 (PDT)
 From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <BF24ACE8-3644-4378-8E7A-AFAF82C0CDD3@dilger.ca>
+Message-Id: <9DEBC627-6878-47EA-8404-3185803F262E@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8";
+ boundary="Apple-Mail=_449AFE1A-E6A4-42ED-AAA0-EB3E1B49C7D5";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -76,11 +76,11 @@ List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v3 00/13] fiemap extension for more physical information
-Date: Fri, 5 Apr 2024 12:20:21 -0600
-In-Reply-To: <vf4k3yagvb6vf3vfu7st7uj7asv4zbf5c3b2tef2g2xic5fkvj@olqxfakmkoew>
-Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
- Jonathan Corbet <corbet@lwn.net>,
+Subject: Re: [PATCH v3 01/13] fiemap: add physical_length field to extents
+Date: Fri, 5 Apr 2024 12:47:40 -0600
+In-Reply-To: <1ba5bfccccbf4ff792f178268badde056797d0c4.1712126039.git.sweettea-kernel@dorminy.me>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
  Brian Foster <bfoster@redhat.com>,
  Chris Mason <clm@fb.com>,
  Josef Bacik <josef@toxicpanda.com>,
@@ -97,74 +97,193 @@ Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
  linux-btrfs <linux-btrfs@vger.kernel.org>,
  linux-f2fs-devel@lists.sourceforge.net,
  linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- kernel-team@meta.com,
- djwong@kernel.org
-To: Kent Overstreet <kent.overstreet@linux.dev>
+ kernel-team@meta.com
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
- <vf4k3yagvb6vf3vfu7st7uj7asv4zbf5c3b2tef2g2xic5fkvj@olqxfakmkoew>
+ <1ba5bfccccbf4ff792f178268badde056797d0c4.1712126039.git.sweettea-kernel@dorminy.me>
 X-Mailer: Apple Mail (2.3273)
 
 
---Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8
+--Apple-Mail=_449AFE1A-E6A4-42ED-AAA0-EB3E1B49C7D5
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Apr 3, 2024, at 12:17 PM, Kent Overstreet <kent.overstreet@linux.dev> =
-wrote:
+On Apr 3, 2024, at 1:22 AM, Sweet Tea Dorminy =
+<sweettea-kernel@dorminy.me> wrote:
 >=20
-> On Wed, Apr 03, 2024 at 03:22:41AM -0400, Sweet Tea Dorminy wrote:
->> For many years, various btrfs users have written programs to discover
->> the actual disk space used by files, using root-only interfaces.
->> However, this information is a great fit for fiemap: it is inherently
->> tied to extent information, all filesystems can use it, and the
->> capabilities required for FIEMAP make sense for this additional
->> information also.
->>=20
->> Hence, this patchset adds various additional information to fiemap,
->> and extends filesystems (but not iomap) to return it.  This uses some =
-of
->> the reserved padding in the fiemap extent structure, so programs =
-unaware
->> of the changes will be unaffected.
->>=20
->> This is based on next-20240403. I've tested the btrfs part of this =
-with
->> the standard btrfs testing matrix locally and manually, and done =
-minimal
->> testing of the non-btrfs parts.
->>=20
->> I'm unsure whether btrfs should be returning the entire physical =
-extent
->> referenced by a particular logical range, or just the part of the
->> physical extent referenced by that range. The v2 thread has a =
-discussion
->> of this.
+> Some filesystems support compressed extents which have a larger =
+logical
+> size than physical, and for those filesystems, it can be useful for
+> userspace to know how much space those extents actually use. For
+> instance, the compsize [1] tool for btrfs currently uses =
+btrfs-internal,
+> root-only ioctl to find the actual disk space used by a file; it would
+> be better and more useful for this information to require fewer
+> privileges and to be usable on more filesystems. Therefore, use one of
+> the padding u64s in the fiemap extent structure to return the actual
+> physical length; and, for now, return this as equal to the logical
+> length.
 >=20
-> I believe there was some talk of using the padding for a device ID, so
-> that fiemap could properly support multi device filesystems. Are we =
-sure
-> this is the best use of those bytes?
-
-The current (pre-patch) fiemap_extent struct is:
-
-struct fiemap_extent {
-        __u64 fe_logical;  /* logical offset in bytes for the start of
-                            * the extent from the beginning of the file =
+> [1] https://github.com/kilobyte/compsize
+>=20
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+> Documentation/filesystems/fiemap.rst | 28 +++++++++++++++++-------
+> fs/ioctl.c                           |  3 ++-
+> include/uapi/linux/fiemap.h          | 32 ++++++++++++++++++++++------
+> 3 files changed, 47 insertions(+), 16 deletions(-)
+>=20
+> diff --git a/Documentation/filesystems/fiemap.rst =
+b/Documentation/filesystems/fiemap.rst
+> index 93fc96f760aa..c2bfa107c8d7 100644
+> --- a/Documentation/filesystems/fiemap.rst
+> +++ b/Documentation/filesystems/fiemap.rst
+> @@ -80,14 +80,24 @@ Each extent is described by a single fiemap_extent =
+structure as
+> returned in fm_extents::
+>=20
+>     struct fiemap_extent {
+> -	    __u64	fe_logical;  /* logical offset in bytes for the =
+start of
+> -				* the extent */
+> -	    __u64	fe_physical; /* physical offset in bytes for the =
+start
+> -				* of the extent */
+> -	    __u64	fe_length;   /* length in bytes for the extent =
 */
-        __u64 fe_physical; /* physical offset in bytes for the start
-                            * of the extent from the beginning of the =
-disk */
-        __u64 fe_length;   /* length in bytes for this extent */
-        __u64 fe_reserved64[2];
-        __u32 fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
-        __u32 fe_reserved[3];
-};
+> -	    __u64	fe_reserved64[2];
+> -	    __u32	fe_flags;    /* FIEMAP_EXTENT_* flags for this =
+extent */
+> -	    __u32	fe_reserved[3];
+> +            /*
+> +             * logical offset in bytes for the start of
+> +             * the extent from the beginning of the file
+> +             */
+> +            __u64 fe_logical;
+> +            /*
+> +             * physical offset in bytes for the start
+> +             * of the extent from the beginning of the disk
+> +             */
+> +            __u64 fe_physical;
+> +            /* logical length in bytes for this extent */
+> +            __u64 fe_logical_length;
+> +            /* physical length in bytes for this extent */
+> +            __u64 fe_physical_length;
+> +            __u64 fe_reserved64[1];
+> +            /* FIEMAP_EXTENT_* flags for this extent */
+> +            __u32 fe_flags;
+> +            __u32 fe_reserved[3];
+>     };
+>=20
+> All offsets and lengths are in bytes and mirror those on disk.  It is =
+valid
+> @@ -175,6 +185,8 @@ FIEMAP_EXTENT_MERGED
+>   userspace would be highly inefficient, the kernel will try to merge =
+most
+>   adjacent blocks into 'extents'.
+>=20
+> +FIEMAP_EXTENT_HAS_PHYS_LEN
+> +  This will be set if the file system populated the physical length =
+field.
+>=20
+> VFS -> File System Implementation
+> ---------------------------------
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 661b46125669..8afd32e1a27a 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -138,7 +138,8 @@ int fiemap_fill_next_extent(struct =
+fiemap_extent_info *fieinfo, u64 logical,
+> 	memset(&extent, 0, sizeof(extent));
+> 	extent.fe_logical =3D logical;
+> 	extent.fe_physical =3D phys;
+> -	extent.fe_length =3D len;
+> +	extent.fe_logical_length =3D len;
+> +	extent.fe_physical_length =3D len;
 
-and this series is only changing fe_reserved64[0] to fe_phys_length.
-There was discussion in the past of using "fe_reserved[0]" for the =
-device
-ID, which is still OK.
+I think Jan mentioned this already, and I agree, that fe_physical_length =
+should
+be left =3D 0 initially, and be set only when FIEMAP_EXTENT_HAS_PHYS_LEN =
+is set
+(either explicitly passed from the filesystem, OR possibly set =
+internally by
+the common fiemap code along with FIEMAP_EXTENT_HAS_PHYS_LEN if the =
+filesystem
+didn't set this flag itself.
+
+I don't think it makes sense to set fe_physical length in this patch =
+before
+FIEMAP_EXTENT_HAS_PHYS_LEN is set, nor in the later filesystem-specific =
+patches
+that are passing "0" for the physical length instead of "len".
+
+Cheers, Andreas
+
+> 	extent.fe_flags =3D flags;
+>=20
+> 	dest +=3D fieinfo->fi_extents_mapped;
+> diff --git a/include/uapi/linux/fiemap.h b/include/uapi/linux/fiemap.h
+> index 24ca0c00cae3..3079159b8e94 100644
+> --- a/include/uapi/linux/fiemap.h
+> +++ b/include/uapi/linux/fiemap.h
+> @@ -14,14 +14,30 @@
+>=20
+> #include <linux/types.h>
+>=20
+> +/*
+> + * For backward compatibility, where the member of the struct was =
+called
+> + * fe_length instead of fe_logical_length.
+> + */
+> +#define fe_length fe_logical_length
+> +
+> struct fiemap_extent {
+> -	__u64 fe_logical;  /* logical offset in bytes for the start of
+> -			    * the extent from the beginning of the file =
+*/
+> -	__u64 fe_physical; /* physical offset in bytes for the start
+> -			    * of the extent from the beginning of the =
+disk */
+> -	__u64 fe_length;   /* length in bytes for this extent */
+> -	__u64 fe_reserved64[2];
+> -	__u32 fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
+> +	/*
+> +	 * logical offset in bytes for the start of
+> +	 * the extent from the beginning of the file
+> +	 */
+> +	__u64 fe_logical;
+> +	/*
+> +	 * physical offset in bytes for the start
+> +	 * of the extent from the beginning of the disk
+> +	 */
+> +	__u64 fe_physical;
+> +	/* logical length in bytes for this extent */
+> +	__u64 fe_logical_length;
+> +	/* physical length in bytes for this extent */
+> +	__u64 fe_physical_length;
+> +	__u64 fe_reserved64[1];
+> +	/* FIEMAP_EXTENT_* flags for this extent */
+> +	__u32 fe_flags;
+> 	__u32 fe_reserved[3];
+> };
+>=20
+> @@ -66,5 +82,7 @@ struct fiemap {
+> 						    * merged for =
+efficiency. */
+> #define FIEMAP_EXTENT_SHARED		0x00002000 /* Space shared with =
+other
+> 						    * files. */
+> +#define FIEMAP_EXTENT_HAS_PHYS_LEN	0x00004000 /* Physical length is =
+valid
+> +						    * and set by FS. */
+>=20
+> #endif /* _UAPI_LINUX_FIEMAP_H */
+> --
+> 2.43.0
+>=20
+>=20
+
 
 Cheers, Andreas
 
@@ -173,7 +292,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8
+--Apple-Mail=_449AFE1A-E6A4-42ED-AAA0-EB3E1B49C7D5
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -184,20 +303,20 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYQQOUACgkQcqXauRfM
-H+CHWg/+ImmZQ6Nzwva0Efg63ioqP0pS3airRAPWj+bfSnsIXaituGulL3hG2Lt5
-IORycBQ5w1uifrkGHdmcpOjoIsPuaQrjAdC700vt5TRhqLojhU6ZnLz/eZMFUSIe
-oS0f9OPJPx3vDKBfMBeVTZbrzka94z5Wl0pUohNFSshNfYOrAKyGiBc0KLzpslFo
-eQODjM5SpgwhN7Te0Wcpklr8JMQXI5e+QXkAnor25ImqCHB7PPL4BEt40/HS6hH/
-MfDLh7WHcatQFHB4prRJrULNDnOSJz+LD2UAu602/s03c2lIEHiVkTb8AATrFE8O
-FZvfEdge3gjEXaK1zO1/eNScUgHH8eESBDbWk2ACkU/p7Ip9MS5FgcWXVBxEUoDl
-46VkGOuqWFwGgY020Q+Tvo7I6r1+MahDttyCKe34bzu0WB/t19del0moZyHhicgS
-oNyZN8rIM5QPmuwi1glNkPi8uL23QLb3frSVmrTflx1GxKBhB+fyN/TQP+42Y1zJ
-eBbSWPgWoWHC7u3ULQYA1Mjbi5DUh8dAjwWIJXsFIJwL4oGb54mX/vE2ef9YAHpI
-x1p+7ds2vdDYqG2o5UXaI9YPg45kDNVm+/Io5+DXNMKGVH6XIyhr/Uy5dzx6tVHK
-CdPBC3K4hWSLU6rlwFhwXJ0d5kc2AuRrcmDi8Q+FzSOHlLyt9zM=
-=UxlY
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYQR00ACgkQcqXauRfM
+H+BtVRAAjZSyrxYwIWwtfdIIQWHYjf6ABCujS/GGHL4Uf2MsKs8EKlrFCLyrIFvU
+gUk3Gq7XiJiXFwGCRjkfqd3JJ5wM3qXqtYDdJuSmXcwJerX2ElqpA6eqWTWgYTIw
+qZPxhCDfXMCafhx/EWLdyCECXz5Xl2j0VXnpi3zY9bmqhr3iEwJjGoSMlauA4FXr
+lNdmoj2w5OWpJzavyEJ52EKh4wjkCVkV9D4wfEspjkTQb6JgjcDAM1l+xlVTzjDV
+LDdRos8z5zL/5g+E6s7voG4gJwy1hxKEn6NnOozrmqRTJoED7MXrMIQwqaeqvpJC
+myMk/UhK2M9dQ6j3yXlqagQsA9vydCGXT4/8eRoMR4xrXPXX26ATsMu73jn/GSH1
+vJYrEgEOCsuj6D6V1gXmZWR3aVerd6rXfJ3RsO1rHEF8UJeH/3oBRCK9+yEScvll
+iVb9F6PZX43Dcz3D2Daf/pFd8yMxuGfbNYx7cx8iEQp/pTHzE2D+gAmG12TSheTr
+QYnDvHK/ZdDj037ev0dzLeUjkRNvC0eBwEhfflTtLQq9kSGymsfkQZ2XJUlubgdh
+MDtTTHjZEXD6F4ClYkCJObs7rE/UB7UCPOii/yTJZUy6Siy7s3MUq14JBTm0zemw
+HDpcDScFCVogyOsXETtVeraxVRg8+DdJAYA925VZ7vcP3uv026k=
+=lDtd
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8--
+--Apple-Mail=_449AFE1A-E6A4-42ED-AAA0-EB3E1B49C7D5--
 
