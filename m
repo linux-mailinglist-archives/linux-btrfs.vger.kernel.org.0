@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-3985-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3986-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D78389A61B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 23:37:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A75D89A649
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 23:45:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A75A1C21451
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 21:37:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E62E91F2100E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 21:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8953C17554A;
-	Fri,  5 Apr 2024 21:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCCFF175551;
+	Fri,  5 Apr 2024 21:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RW+OKQFD"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="N8N5215G"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A427174EF3
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Apr 2024 21:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA25172BCE;
+	Fri,  5 Apr 2024 21:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712353020; cv=none; b=O+y/1FCOrQYq55rArG87nbwpa42r6ZwL90MUL+5r80Bkb4JZaoiPi0RtaGncRn9br+qBD5IWdjPyyrHaXTdwSbsMRZ3JwrbnaO1P4KKuHTFSnpeqL1ntC4jBwGn/KlRP0toQL828SxioMQt69tivBWlfpRJJSfo7iWS8Sb33kXs=
+	t=1712353528; cv=none; b=G1w9cjmv4gJOT0mxjUu4rdWP/tjIezgwzMRe/nBRR7J4C/p8F+t+PYhnH87sJYH08drZwbjhFbbrHyeFL407qGy+cR9mQiPcylfaMh4+VUjyHup6ujrz4rQKcc6JBfXvX2aKiQzNZZ0UEpL+l6X+5OjYvtBaM+oLF7uUoZtlh1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712353020; c=relaxed/simple;
-	bh=CDUHDFBvKt7mCK3wpeUYr96v+KrgpXs2lsUofeU8nHc=;
+	s=arc-20240116; t=1712353528; c=relaxed/simple;
+	bh=U4SnzH0LI5BlHjG9w7zW187oVfZGD3FgUHgiNFTHjYA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qdvuNHMCOePmU/4WKF0q5e7CFcI+nwihv+P5UIwGT27L6H+e+8lrD6qtdk8dtTmQbvcvM3TGGLjBTIOoMgURJzsVZxyCg6Zgx/q2VqntKsA484mgqY26yhiwCiW4VhzzV9QsytmSJ9kvdGPWQuYO3w7CZx50sliuCe4/kG+zT44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RW+OKQFD; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=dF+3+CNWELxWC8P165d5THxK9iZtfqU+ldJVbi4tKpu9Z4BcUC32JwSlw2Uw+xMaULob50VVJTG8nUPWRV5F0yNqke0wAr72/VCVPVm+fT5A0O/kSQznB0N1dMruR/mrudzxAB7ZBUNzqUWu5JWuVYN1bLiEUI/aEFfLF6TzxoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=N8N5215G; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1712353011; x=1712957811; i=quwenruo.btrfs@gmx.com;
-	bh=k8m1PTQ1o1rn+xd5S/qAlgemDR7R9re3cN2ndtpwj7Q=;
+	s=s31663417; t=1712353487; x=1712958287; i=quwenruo.btrfs@gmx.com;
+	bh=HdCdzyHJk8oumqI2kSdsT3jJKv+9dSgC6Dk8q43uevI=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=RW+OKQFDDCR21amWeO2xWyGcA1+TuU9mkFXsxKn9eraYKaHJGBHCKplppGNIiRHw
-	 rg7DdoeWQWxxQVlIlwtKD2cJqadPm2hfmAWplTaqUgHtvBJ8Sarm+1W34JcQ3cg9J
-	 QKCUAI2XW33EztZuNT80Y2lKvci8v9JhuoVR0CvXh60T4ei3rk3oD/Cny8bPUWlpw
-	 dEbQtrHe1hZ9n2PECqyhY8oVMLpXCbJE0HFdwqfGqrOFm4PDYR9szzi5aCeGc6O91
-	 QPJZv43LQC7YuZCBn019INxbi4YJSias/OzeSNUoOPKv619Br4I/BHFKgZcMZqI9M
-	 iuQtw2NUIXDdq5bFfQ==
+	b=N8N5215G6yeBdTu8LXCHJJKHXPdKv0oTCiXogL+GwJpRPPPPJ08fcOeShhzTXzmT
+	 0EA2IOz5jYctG9jB9ygdJMxAeh61cO0JySjvGw3OFGjiFRZTpJ4vKFIgLLlwXnA7x
+	 kc/QOK3u+lf8ATIG8noisXm857nooXVMg1r/p2/4urt1YlFb6lhqzag9kEKfbADTt
+	 weeGsUIlONKNxh5T1YUPk+cyckuKuVO4NMhRcfxqMACxUk/dfMWXKMp1s7TfifZBV
+	 miDNm/N3oFW8lpj1IzH/83SgpEnyS4XjxMjxCmlPonEzQBCYPTyr2eL/9GZ8pKCLk
+	 rIu2/HPt12YVgeS6Lw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mnpns-1sZJWK0zBS-00pPGj; Fri, 05
- Apr 2024 23:36:50 +0200
-Message-ID: <bbc9acb4-a8a3-4fde-9e55-6b49a009dc00@gmx.com>
-Date: Sat, 6 Apr 2024 08:06:46 +1030
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N8GQy-1so4Z41RIm-014Bc6; Fri, 05
+ Apr 2024 23:44:46 +0200
+Message-ID: <006cd98d-1e4e-43e5-8f8d-88a8840232d7@gmx.com>
+Date: Sat, 6 Apr 2024 08:14:41 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,12 +55,17 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] btrfs: add extra comments on extent_map members
-To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1712287421.git.wqu@suse.com>
- <261cf7744120a2312ce2cdb22dbbfe439a11268a.1712287421.git.wqu@suse.com>
- <CAL3q7H5-2gfkd7xjy9QVrtgDZGv34jhQrTTtuNL8Qs08rNimrA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] common/filter.btrfs: add a new _filter_snapshot
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Anand Jain <anand.jain@oracle.com>, zlang@kernel.org,
+ fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, josef@toxicpanda.com,
+ dsterba@suse.cz
+References: <cover.1712306454.git.anand.jain@oracle.com>
+ <3d035b4355abc0cf9e95da134d89e3fbb58939d0.1712306454.git.anand.jain@oracle.com>
+ <a62dbef2-0371-49e7-b5eb-9bb5fed32a17@gmx.com>
+ <37e0ae3f-54b0-45a4-b62a-7caca994c38a@oracle.com>
+ <eb9530e1-7626-41fb-978e-b830b46a04f4@gmx.com>
+ <20240405164643.GA634366@frogsfrogsfrogs>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -87,118 +92,303 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H5-2gfkd7xjy9QVrtgDZGv34jhQrTTtuNL8Qs08rNimrA@mail.gmail.com>
+In-Reply-To: <20240405164643.GA634366@frogsfrogsfrogs>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:M6yXVL/+CCfTLD+OUU2TkaUwayMn+p/PT1VqRi1Omf3QtbjBxRy
- ir6mcxlO0VFSp5xkNuBrcMqn8c+JqhcFw7jw8mDD27Qcr230zLg/hpyKURz89NxSwtAC9fI
- TDYYEHZXkuT/PWy7x4jzaprBJnfHCWfsge/Adoa8gDiPRA/0UpJzZ7OG/aujvDNL/1i50Y4
- lIP91BSnaXnPr9rmpnaVg==
+X-Provags-ID: V03:K1:UBvO4+SenwoneiEQNgxEt/8afmikZDN/K8AJTDtYGxrWH4bySnZ
+ cum9CkPGg3DBqpZDcgyVp/5PUNhFVaRI/0fRA+9vaBVQHB2BrmJrJSQEV/Pki5/ujdysD32
+ q3neT/Lc3YU/MwgsyFnC0pRPhPQQbq5a0OD4G5rPImGitdYVqMx5brUIyX/18yQoUtiv1FU
+ TlIkiJkYxU3dUodW2aYNw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:jOFC+JcVoR8=;EARlXqJ4vsSsOMFDeXK07mFX0yb
- AivdHV46yiXKDnGmoCwn77VIf8GOOAcNZmSwsGfon1CLGb9PQCykmUsUr+MFfgNqBDPsLCKwc
- T6PXo1Rwg364ESh1jSMWi7Ri77goto2mkGdNXqnHkeURJMop8OCqhsIzF2LDOrQQ4ZES/4SCc
- KG3ajuDxGNnRHGDGvGLpn6d/hw6oIYgq6vETeRqTvfs1E0xI85kmx+wcoCS5cE8YgAhL805B8
- IH6Ek8rv/lfcu8w1Kx0Quevfi7GeYEjQGgsitDZRMoBCCC64uTyfAO/64bGdZXMrMfVyXRl/Y
- tuBCkaly7P0B3n0vswpV+KHpbKf4iME2ALGo7400whPV0XvrUYGPZ6/io44P5AI8o13/zWB72
- cQeEeWO4fP6HTa+iyXtZUoKOu1ulOZR4OvulVBxsANHkltf6dSvsdlSgO2o0adCrmxGiYjRCP
- MX1BPxUXsXRFBeKa+LMcKqiAZmtAPUOJScYzLjAGpNv5c3XwTYo+skIMBmguwiyW8sO+P1Tex
- z1J3uycB0DHjEIh2V/kJ980+8OfyC+PcMQFIkp6NnvNXndATvVDDmOaE7q9NAZC02r7SDKSVG
- zBxItW43fjANpSvOUXrOzbP3YEhc49RbiqgC5mTFDmJpiYIFRY4RAWFqqPhwA7wyTmfBDEFqD
- syQaRLBq/Cg/INanKnMyXrEr5bV0AthdC41I30SQy8nvUcfw5B2GtmftHy5D5CsdRCkOuOMyO
- aYZu1sTvKRF4kK33Sc1OFjhaLpmUcWhWrKnPSNkpP8i7162+g31jYZuaxec+H0fzxSiynEOxQ
- ZM8b2T1CX3Jk7wfPygL2NPjbMVCZ9I2x1Dky7Mbyb5nhg=
+UI-OutboundReport: notjunk:1;M01:P0:5hZpygIjm9A=;ebF+6/SvarjnTubSCTTwMkOh4My
+ p3DkcEcFBBZ1BtQfrlvh5oU6MD7tLrrC3i5+Rgd/r5u5osIxBPPdhsRLQJ1U6at9KhleyqdTh
+ 5dXHlqFXjkZ9ltlUIPvceYiciwmO7t2c2DIqGUjiTeUWB4CbFPnAmh7iljVXDnIn6SXjATiUZ
+ GIvyriZ58mbpxC1PLIp53iFl3SAQJ0RWpXLY+rNnSz5wdwXNVW3btwWO/BT0I9SU1rSlR2ULs
+ 6NH+ydRBKm1EU0O7xGW0bRJ4jJkH1R5hRC1vnCy3puFLaggeaE+HNNfxzdWRAWKBqpCgvwXKW
+ PKV0rJxM/LqnM0hCPzEO0kO5wcTtWifANVH2i3Ecf2di/gHK6Igl0a21dONtJ06I8dYG2PhZ/
+ oiN5T0PEovH4Gjvyq6HhYyADbQJ0e4bYm3B+84jwkxnq469qdnAhV5KeSPgBUSCmqfiCN+3Uh
+ yNdDKj7u7kpkGR+TKBOj19EeNly+FZvxArV+TMd6vWjN+R76cniMLYvz1JM1cM+b79KukKtrz
+ e2PzdxsQOnZ5NGSCbfxY6xNtA2MDnk7+dGxQq7cMQierYt8JNhYG5uY4JTRXbtWR+vkG5JspO
+ PIEJcAllZXAMtNFfTHwuwDIGrV3xK5NZqgaNkO/A/ILgphaX7IdtPMqiOFpwVxwvguNDPAU2X
+ nV5eDSp4eMHOG0w5xQeTPgRUcVCRs53Mi8f2JBISY4KRWnZWPSVlJP/9nYmpNVQVonuph52rA
+ H04EFogIbYXJ1Kh4/tlg4ZRDWe6xn+23kygB0j4PA16v4m33ubkbsh++aTtYa8AfMMQwHn3/L
+ mvmhLCJZimyiyBuhaFZPdt58DMJOrVXCAwiD8g0zeSUBY=
 
 
 
-=E5=9C=A8 2024/4/5 22:54, Filipe Manana =E5=86=99=E9=81=93:
-> On Fri, Apr 5, 2024 at 4:28=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+=E5=9C=A8 2024/4/6 03:16, Darrick J. Wong =E5=86=99=E9=81=93:
+> On Fri, Apr 05, 2024 at 08:20:59PM +1030, Qu Wenruo wrote:
 >>
->> The extent_map structure is very critical to btrfs, as it is involved
->> for both read and write paths.
 >>
->> Unfortunately the structure is not properly explained, making it pretty
->> hard to understand nor to do further improvement.
+>> =E5=9C=A8 2024/4/5 19:55, Anand Jain =E5=86=99=E9=81=93:
+>>>
+>>>
+>>> On 4/5/24 16:52, Qu Wenruo wrote:
+>>>>
+>>>>
+>>>> =E5=9C=A8 2024/4/5 19:15, Anand Jain =E5=86=99=E9=81=93:
+>>>>> As the newer btrfs-progs have changed the output of the command
+>>>>> "btrfs subvolume snapshot," which is part of the golden output,
+>>>>> create a helper filter to ensure the test cases pass on older
+>>>>> btrfs-progs.
+>>>>>
+>>>>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>>>>
+>>>> Can we stop the golden output filter game?
+>>>>
+>>>>  =C2=A0From day one I'm not a big fan of the golden output idea.
+>>>> For snapshot/subvolume creation, we don't really care about what the
+>>>> output is, we only care if there is any error (which would come from
+>>>> stderr).
+>>>>
+>>>> In that case, why not just redirect the stdout to null?
+>>>>
+>>>> To me, if we really care something from the stdout, we can still save=
+ it
+>>>> and let bash/awk/grep to process it, like what we did for various tes=
+t
+>>>> cases, and then save the result to seqres.full.
+>
+> That sums up what output filters do; I don't understand the objection
+> here...
+
+Well, I have seen quite some cases where we need to verify the speed of
+scrub to be inside a reasonable range.
+
+In that case, I do not thing any simple filter is good enough.
+
+And for a lot of cases, we just want to make sure the IO finishes, in
+that case simply redirect to seqres.full looks more reasonable other
+than call _xfs_io_filter.
+
+But I guess this is to personal tastes.
+
+>
+>>>>
+>>>
+>>> This is a bug-fix patch; it's not a good idea to change the concept of
+>>> fstests' golden output. Perhaps an RFC patch about your idea can help
+>>> to discuss and achieve consensus.
 >>
->> This patch adds extra comments explaining the major members based on
->> my code reading.
->> Hopefully we can find more members to cleanup in the future.
+>> Even as bug-fix, a simple redirect to seqres.full and remove the
+>> corresponding line from golden output is very valid to me.
 >>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/extent_map.h | 52 ++++++++++++++++++++++++++++++++++++++++++=
--
->>   1 file changed, 51 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
->> index 10e9491865c9..0b938e12cc78 100644
->> --- a/fs/btrfs/extent_map.h
->> +++ b/fs/btrfs/extent_map.h
->> @@ -35,19 +35,69 @@ enum {
->>   };
->>
->>   /*
->> + * This structure represents file extents and holes.
+>> In fact, introducing a filter looks very over-engineered in this
+>> particular case.
 >
-> So I clearly forgot this before, but we should add the caveat that
-> it's guaranteed that it represents a single file extent only if the
-> extent is new and not persisted (in the list of modified extents and
-> not fsynced).
-> Otherwise it can represent 2 or more extents that were merged (to save
-> memory), which adds some caveats I mention below.
+> ...but having said that , I also dislike overfixation on golden output.
+> Patches welcome. ;)
 
-In fact I also wanted to address this, especially if I'm going to
-introduce disk_bytenr/disk_num_bytes, as they can be merged, the merged
-disk_bytenr/disk_num_bytes would not exist on-disk.
-
-But on the other hand, it's a little too obvious, thus I didn't mention
-through the whole series.
-
->
-> Holes can also be merged of course (e.g. read part of a hole, we
-> create an extent map for that part, read the remainder of the hole,
-> create another extent map for that remainder, which then merges with
-> the former).
->
-[...]
->> +
->> +       /*
->> +        * The full on-disk extent length, matching
->> +        * btrfs_file_extent_item::disk_num_bytes.
->> +        */
->
-> So yes and no.
-> When merging extent maps, it's not updated, so it's tricky.
-
-And that's already found in my sanity checks.
-
-> But that's ok because an extent map only needs to represent exactly
-> one file extent item if it's new and was not fsynced yet.
-
-I can update the comments to add extra comments on merged behavior, and
-fix the unexpected handling for merging/split.
-
->
->>          u64 orig_block_len;
->> +
->> +       /*
->> +        * The decompressed size of the whole on-disk extent, matching
->> +        * btrfs_file_extent_item::ram_bytes.
->> +        */
->>          u64 ram_bytes;
->
-> Same here regarding the merging.
->
-> Sorry I forgot this before.
-
-No big deal, as my super strict sanity checks are crashing everywhere, I
-have already experienced this quirk.
-
-So I would add extra comments on the merging behaviors, but I'm afraid
-since the current code doesn't handle certain members correctly (and a
-lot of callers even do not populate things like ram_bytes), I'm afraid
-those extra comments would only come after I fixed all of them.
+Sure, one simple patch for evaluation.
 
 Thanks,
 Qu
+>
+> --D
+>
+>>
+>>>
+>>> Thanks, Anand
+>>>
+>>>
+>>>> Thanks,
+>>>> Qu
+>>>>> ---
+>>>>>  =C2=A0 common/filter.btrfs | 9 +++++++++
+>>>>>  =C2=A0 tests/btrfs/001=C2=A0=C2=A0=C2=A0=C2=A0 | 3 ++-
+>>>>>  =C2=A0 tests/btrfs/152=C2=A0=C2=A0=C2=A0=C2=A0 | 6 +++---
+>>>>>  =C2=A0 tests/btrfs/168=C2=A0=C2=A0=C2=A0=C2=A0 | 6 +++---
+>>>>>  =C2=A0 tests/btrfs/202=C2=A0=C2=A0=C2=A0=C2=A0 | 4 ++--
+>>>>>  =C2=A0 tests/btrfs/302=C2=A0=C2=A0=C2=A0=C2=A0 | 4 ++--
+>>>>>  =C2=A0 6 files changed, 21 insertions(+), 11 deletions(-)
+>>>>>
+>>>>> diff --git a/common/filter.btrfs b/common/filter.btrfs
+>>>>> index 9ef9676175c9..415ed6dfd088 100644
+>>>>> --- a/common/filter.btrfs
+>>>>> +++ b/common/filter.btrfs
+>>>>> @@ -156,5 +156,14 @@ _filter_device_add()
+>>>>>
+>>>>>  =C2=A0 }
+>>>>>
+>>>>> +_filter_snapshot()
+>>>>> +{
+>>>>> +=C2=A0=C2=A0=C2=A0 # btrfs-progs commit 5f87b467a9e7 ("btrfs-progs:=
+ subvolume:
+>>>>> output the
+>>>>> +=C2=A0=C2=A0=C2=A0 # prompt line only when the ioctl succeeded") ch=
+anged the output
+>>>>> for
+>>>>> +=C2=A0=C2=A0=C2=A0 # btrfs subvolume snapshot, ensure that the late=
+st fstests
+>>>>> continue to
+>>>>> +=C2=A0=C2=A0=C2=A0 # work on older btrfs-progs without the above co=
+mmit.
+>>>>> +=C2=A0=C2=A0=C2=A0 _filter_scratch | sed -e "s/Create a/Create/g"
+>>>>> +}
+>>>>> +
+>>>>>  =C2=A0 # make sure this script returns success
+>>>>>  =C2=A0 /bin/true
+>>>>> diff --git a/tests/btrfs/001 b/tests/btrfs/001
+>>>>> index 6c2639990373..cfcf2ade4590 100755
+>>>>> --- a/tests/btrfs/001
+>>>>> +++ b/tests/btrfs/001
+>>>>> @@ -26,7 +26,8 @@ dd if=3D/dev/zero of=3D$SCRATCH_MNT/foo bs=3D1M co=
+unt=3D1
+>>>>> &> /dev/null
+>>>>>  =C2=A0 echo "List root dir"
+>>>>>  =C2=A0 ls $SCRATCH_MNT
+>>>>>  =C2=A0 echo "Creating snapshot of root dir"
+>>>>> -$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap =
+|
+>>>>> _filter_scratch
+>>>>> +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap =
+| \
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 _filter_snapshot
+>>>>>  =C2=A0 echo "List root dir after snapshot"
+>>>>>  =C2=A0 ls $SCRATCH_MNT
+>>>>>  =C2=A0 echo "List snapshot dir"
+>>>>> diff --git a/tests/btrfs/152 b/tests/btrfs/152
+>>>>> index 75f576c3cfca..b89fe361e84e 100755
+>>>>> --- a/tests/btrfs/152
+>>>>> +++ b/tests/btrfs/152
+>>>>> @@ -11,7 +11,7 @@
+>>>>>  =C2=A0 _begin_fstest auto quick metadata qgroup send
+>>>>>
+>>>>>  =C2=A0 # Import common functions.
+>>>>> -. ./common/filter
+>>>>> +. ./common/filter.btrfs
+>>>>>
+>>>>>  =C2=A0 # real QA test starts here
+>>>>>  =C2=A0 _supported_fs btrfs
+>>>>> @@ -32,9 +32,9 @@ touch $SCRATCH_MNT/subvol{1,2}/foo
+>>>>>
+>>>>>  =C2=A0 # Create base snapshots and send them
+>>>>>  =C2=A0 $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol1 =
+\
+>>>>> -=C2=A0=C2=A0=C2=A0 $SCRATCH_MNT/subvol1/.snapshots/1 | _filter_scra=
+tch
+>>>>> +=C2=A0=C2=A0=C2=A0 $SCRATCH_MNT/subvol1/.snapshots/1 | _filter_snap=
+shot
+>>>>>  =C2=A0 $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol2 =
+\
+>>>>> -=C2=A0=C2=A0=C2=A0 $SCRATCH_MNT/subvol2/.snapshots/1 | _filter_scra=
+tch
+>>>>> +=C2=A0=C2=A0=C2=A0 $SCRATCH_MNT/subvol2/.snapshots/1 | _filter_snap=
+shot
+>>>>>  =C2=A0 for recv in recv1_1 recv1_2 recv2_1 recv2_2; do
+>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 $BTRFS_UTIL_PROG send $SCRATCH_MNT/s=
+ubvol1/.snapshots/1 2>
+>>>>> /dev/null | \
+>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 $BTRFS_UTIL_=
+PROG receive $SCRATCH_MNT/${recv} |
+>>>>> _filter_scratch
+>>>>> diff --git a/tests/btrfs/168 b/tests/btrfs/168
+>>>>> index acc58b51ee39..78bc9b8f81bb 100755
+>>>>> --- a/tests/btrfs/168
+>>>>> +++ b/tests/btrfs/168
+>>>>> @@ -20,7 +20,7 @@ _cleanup()
+>>>>>  =C2=A0 }
+>>>>>
+>>>>>  =C2=A0 # Import common functions.
+>>>>> -. ./common/filter
+>>>>> +. ./common/filter.btrfs
+>>>>>
+>>>>>  =C2=A0 # real QA test starts here
+>>>>>  =C2=A0 _supported_fs btrfs
+>>>>> @@ -74,7 +74,7 @@ $BTRFS_UTIL_PROG property set $SCRATCH_MNT/sv1 ro
+>>>>> false
+>>>>>  =C2=A0 # Create a snapshot of the subvolume, to be used later as th=
+e
+>>>>> parent snapshot
+>>>>>  =C2=A0 # for an incremental send operation.
+>>>>>  =C2=A0 $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/sv1
+>>>>> $SCRATCH_MNT/snap1 \
+>>>>> -=C2=A0=C2=A0=C2=A0 | _filter_scratch
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 | _filter_snapshot
+>>>>>
+>>>>>  =C2=A0 # First do a full send of this snapshot.
+>>>>>  =C2=A0 $FSSUM_PROG -A -f -w $send_files_dir/snap1.fssum $SCRATCH_MN=
+T/snap1
+>>>>> @@ -88,7 +88,7 @@ $XFS_IO_PROG -c "pwrite -S 0x19 4K 8K"
+>>>>> $SCRATCH_MNT/sv1/baz >>$seqres.full
+>>>>>  =C2=A0 # Create a second snapshot of the subvolume, to be used late=
+r as
+>>>>> the send
+>>>>>  =C2=A0 # snapshot of an incremental send operation.
+>>>>>  =C2=A0 $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/sv1
+>>>>> $SCRATCH_MNT/snap2 \
+>>>>> -=C2=A0=C2=A0=C2=A0 | _filter_scratch
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 | _filter_snapshot
+>>>>>
+>>>>>  =C2=A0 # Temporarily turn the second snapshot to read-write mode an=
+d then
+>>>>> open a file
+>>>>>  =C2=A0 # descriptor on its foo file.
+>>>>> diff --git a/tests/btrfs/202 b/tests/btrfs/202
+>>>>> index 5f0429f18bf9..57ecbe47c0bb 100755
+>>>>> --- a/tests/btrfs/202
+>>>>> +++ b/tests/btrfs/202
+>>>>> @@ -8,7 +8,7 @@
+>>>>>  =C2=A0 . ./common/preamble
+>>>>>  =C2=A0 _begin_fstest auto quick subvol snapshot
+>>>>>
+>>>>> -. ./common/filter
+>>>>> +. ./common/filter.btrfs
+>>>>>
+>>>>>  =C2=A0 _supported_fs btrfs
+>>>>>  =C2=A0 _require_scratch
+>>>>> @@ -28,7 +28,7 @@ _scratch_mount
+>>>>>  =C2=A0 $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a | _filter_s=
+cratch
+>>>>>  =C2=A0 $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a/b | _filter=
+_scratch
+>>>>>  =C2=A0 $BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/a $SCRATCH_=
+MNT/c \
+>>>>> -=C2=A0=C2=A0=C2=A0 | _filter_scratch
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 | _filter_snapshot
+>>>>>
+>>>>>  =C2=A0 # Need the dummy entry created so that we get the invalid re=
+moval
+>>>>> when we rmdir
+>>>>>  =C2=A0 ls $SCRATCH_MNT/c/b
+>>>>> diff --git a/tests/btrfs/302 b/tests/btrfs/302
+>>>>> index f3e6044b5251..52d712ac50de 100755
+>>>>> --- a/tests/btrfs/302
+>>>>> +++ b/tests/btrfs/302
+>>>>> @@ -15,7 +15,7 @@
+>>>>>  =C2=A0 . ./common/preamble
+>>>>>  =C2=A0 _begin_fstest auto quick snapshot subvol
+>>>>>
+>>>>> -. ./common/filter
+>>>>> +. ./common/filter.btrfs
+>>>>>
+>>>>>  =C2=A0 _supported_fs btrfs
+>>>>>  =C2=A0 _require_scratch
+>>>>> @@ -46,7 +46,7 @@ $FSSUM_PROG -A -f -w $fssum_file $SCRATCH_MNT/subv=
+ol
+>>>>>  =C2=A0 # Now create a snapshot of the subvolume and make it accessi=
+ble
+>>>>> from within the
+>>>>>  =C2=A0 # subvolume.
+>>>>>  =C2=A0 $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol \
+>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 $SCRATCH_MNT/subvo=
+l/snap | _filter_scratch
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 $SCRATCH_MNT/subvol/snap | _filter_snapshot
+>>>>>
+>>>>>  =C2=A0 # Now unmount and mount again the fs. We want to verify we a=
+re able
+>>>>> to read all
+>>>>>  =C2=A0 # metadata for the snapshot from disk (no IO failures, etc).
+>>>
+>>
+>
 
