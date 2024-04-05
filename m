@@ -1,141 +1,139 @@
-Return-Path: <linux-btrfs+bounces-3987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3988-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0938089A710
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Apr 2024 00:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 24C5889A74C
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Apr 2024 00:32:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B25521F21975
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 22:05:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE5AD1F24F02
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 22:32:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7911B17555A;
-	Fri,  5 Apr 2024 22:05:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="qzDjW8hg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2E4521362;
+	Fri,  5 Apr 2024 22:32:01 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from buffalo.tulip.relay.mailchannels.net (buffalo.tulip.relay.mailchannels.net [23.83.218.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8465B1C6A8;
-	Fri,  5 Apr 2024 22:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712354746; cv=none; b=tQRCQwJhrFROH7HlUM+V1EVAe0w9gNbal4I7sWFBOzu9MAWCJRYhecnqKKKVrbynGx5t+hY7TLtD88d7HRcYtb+GaDUkUNbTXWcoywE4IgPIlEdfMjNn1BwwGtilb0FlpJmumHVNtm1Uw25C4JNtdzZOyRAj11r6FjORKtmAH0o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712354746; c=relaxed/simple;
-	bh=GbZeBF8lbF+hNNUujZ1Q41HtBUBLFde8zaHcOIt2mlY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UgcGE9TMbmnfJF3Lciq4vpYHepRxKygDXiQcIzAdp7W7F+CenZD4BSB/u/JoOX0hOsA/Os/YAZosrVj4J8uh1eXcuWnLBMc/wccNSpeWR+yfjRonfOy8674iZjsembDJ6EMKn9lLdxFTpkwT7HqESpiJL4L79akt1jbXL7vJ9zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=qzDjW8hg; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1712354733; x=1712959533; i=quwenruo.btrfs@gmx.com;
-	bh=JMI4p6oYjxLbsRUaIzOTLgwitdV/wSYXBF8SOYRFMsA=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=qzDjW8hgbyHJWUn4Xh9TOm7ur0JntNYmkriWF9miFDOcWz/2ughhIZKsz5vaIcUi
-	 FKAu9oJ5FEYR3vLv7Zxpkgw7MyJDD8RqNUv+WERHuftaL/Qyv5/iV/cp3i3yqPE11
-	 ecy/HtFeTGNJQxJD5/kFxuTGL1duuJTgdeR2F3tm9ex1H4mqpfqfqfUVFNN5Xe6Ab
-	 3jOv2zgxncoAESk8e2UjClGM00DerYWIzFR5bn97LqFmeLf0foAF3nWAmu0XrisqV
-	 I7NpAqsGpmXtibahkMczQkJWpBb8ohFzTi8NoR9dNszdU3y6g68OmELgDed3U/0bd
-	 gzkqu7zREpRJ/C+78g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHXBp-1rxUFg05XV-00Dasz; Sat, 06
- Apr 2024 00:05:33 +0200
-Message-ID: <a4ec0dcf-677a-4f84-aebe-851203ae0f4a@gmx.com>
-Date: Sat, 6 Apr 2024 08:35:28 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A013911718
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Apr 2024 22:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.24
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712356321; cv=pass; b=rim+YhOsb+IxRXU7ltRCCNkDMTp5jaxiZgSESFtH6GyG3DvYAt/efxDx+s5nnoPzLGd9aBeaQH54MvxfczYtERlmaV5Ccs4UTXrfuGg1+wgC4fJ4a75isNJZHt6yxwMceSKNLKQsqaOz6BIbU4SUU+L0N1B0S1FKdroOJtYk59U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712356321; c=relaxed/simple;
+	bh=v1yHfuaXLgVAuTt0QKRTVKi3dcN6gQobR1nlHmJg0aI=;
+	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version; b=GZPJaH1NzkVMgim3Mr/Cdcdju60OJaG02/60/IiXIFERjcIkJO/3KulGaiZVYkmG8t8ZKd8kMbpkHWi0NJRQrjaxN0ymHvxZIe/a3AOa0+ETk6rULRSJdM2JAAihEKCIGh0YA/CEiCEFP9guVdRfrIfA51NIrQuU7zVtJ2uZLNQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.218.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 6F23E102406
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Apr 2024 22:22:59 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id C4C551024E2
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Apr 2024 22:22:58 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1712355779; a=rsa-sha256;
+	cv=none;
+	b=+XKMn/nbZa1Ckz8e/o4sD/GA6/sJbM8Mq0IJ/3nq98229fJ3BCm8eRBVMLozc55yS++BxX
+	oDxP+5hKTJnZQGinxdgTyD49M+eWeCgkChRy1/l3P41nnQlgdc5shE0d/Eg2GRUp8AfwMd
+	HE2GDYEKk9da/tprRvWsmsyxqWxIlVqMBzhNoHyoLVC6/u/YcSLbHjWyK0L6+zVKZJRAvE
+	VmCCrNCNyNHrZbHmZFHPUJet7/FHr8+HiNsyVkTJhLc8lZXWSWEfPF0gBmhy3Pqrr8nwka
+	dsmdl0VYbLOvg6dAL8p8yvBw5RpgHUquIJTBQaBi9yxkh0uQjnij7n97v7pg1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1712355779;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=zvNwLLJxSJ78rVbu0dxLtC5xeJY1jy9Ra+jJjqZR2VM=;
+	b=UKQgMZ4dvuE93xXcscbPr6hROsUkEOw7Dc8gYw1FTicfIX/YsBdM8zI5Bg3zL9fCxSkcKF
+	lD2elxmtbnLGOAdoEBKbe0wBDjk/fpJu6MTxCtPJ1yvIPGF3DdEEjYru94iWBRh0BlaPYM
+	PIquy2unjaqGDhHoRqZ+mwGXNCwutnDewFUKtSsrekRNP/cqOYCE8Li3WfnkuqTgGj88T7
+	Lpas6JDTmr+nbwqo9+LoYMi+N17+WYH1RFy9WfDZdbu5g3i5gkvLGnVenFbXxSTBiSEJ8l
+	Ws0UPMWqPKRJ4eHKBC5yODiz1VnBHC2879u4oXSBmWZhiIL+D91l+d9xh+4N0Q==
+ARC-Authentication-Results: i=1;
+	rspamd-687b9dd446-f88kd;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Tank-Hook: 286f584d0b0ad7b3_1712355779294_1227226886
+X-MC-Loop-Signature: 1712355779294:311039943
+X-MC-Ingress-Time: 1712355779294
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+	by 100.117.91.86 (trex/6.9.2);
+	Fri, 05 Apr 2024 22:22:59 +0000
+Received: from p5b0eda68.dip0.t-ipconnect.de ([91.14.218.104]:56732 helo=heisenberg.fritz.box)
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <calestyo@scientia.org>)
+	id 1rsrxX-0004Yh-2K
+	for linux-btrfs@vger.kernel.org;
+	Fri, 05 Apr 2024 22:22:57 +0000
+Message-ID: <896a5d36071a30605c38779dd03103b6429ebcae.camel@scientia.org>
+Subject: exactly shrinking btrfs on a device?
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Date: Sat, 06 Apr 2024 00:22:52 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3-1+b1 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] fstests: btrfs: subvolume snapshot fix golden output
-To: Anand Jain <anand.jain@oracle.com>, zlang@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
- josef@toxicpanda.com, dsterba@suse.cz
-References: <cover.1712306454.git.anand.jain@oracle.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <cover.1712306454.git.anand.jain@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4uFmU/fsmdJgZPrsoPDffsF2e3b5cZlacsEhiFdaCH8kA+/wPlN
- gnP0xr817sheIZSUn3ykYp2a51xT+1VibCwRvJgfPTHfv4lt3WoRWBPWfYqNaxJBMXyiz3z
- u3yblAukRdEWhlpJfyIW5hVK6u3b4hqk2qer7sMEysxy3Osb7hvagA6L4EyoVyXJI3QWg3n
- K0hIPOIl0WBigaZUVtJdQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:BFezGFuQw2E=;FSACn4voXRjg6T4CUMV7V00IBOY
- pTihalbaBLfJshdpZOWC6ryeoksd72Hd3JT3u8+Y7jE+/bzhCZBIgEDVr81D9ilG5uMCjZZzG
- GwbBvmcCZCXSXl8i/74lhI1+nKRaNEp+s4+dNMktFemmP8iX43nsU1X7Eja9M+lhWjmWVzk2M
- wgTT4rlGqEQ/2+oz9b0UIFSaYKE/J/kbGX0vPrfaKoA48ADaC5708jqGOB91UffjNKtn/TJMx
- n5PBzJsgH44Bp6PReEa1GG52SXQhUw+d3NwzDGaPpUDo5AObR39Ldv3ptB+VS48YF4Zjlz7Z7
- Sx/0TAb80olKaY+itIuPogWpq7QNKTD4yAe4tTSLJIpqhCmI5ZP1ihmd5qchc5RL/l+Yy0Byt
- vmyvrOjue5Nd0uUDqg1TpZg8w3jbx1FAtbFfmuTZUBS3rp4El8cB3//dfA13TK2HkJV5hQIN0
- 0xD/66BNSVqQAp7O/g/uip4eu0OYf+KWwOAeOvdAGiethdFtovE1bipT2I9jypk2bculCBRnm
- IbqO7GFOAUUz6R0FvBoKRa4HG8SUdtIVkoiK6Jhy42dG6Aog2pKE8cojX8JhfT0vhc012UwDy
- CFfKs/2N/VG2ESk0gZjMqBwXHj/NSzN/E82e3kUJLFJeU0LtfW1nHhqTUiyfk1SIOquFcvczG
- 0h6ajN0/ziykyTkuBEjFAXI+yCw1zm9zOaa9NRDGhx8tDGGGThWpwNmUf/6UFy6KG/DmXW2y1
- 7KCGcAHgeZlWL68a4t+Wqc4XTzb84nYutBTfotNjz46WVaKWAdKJ/pc6mEao6YZccdpkgafvV
- 0659ARRl2aKVWNINb6SbGfpbOJNWwbr7QXoRwgVz2eOCs=
+X-AuthUser: calestyo@scientia.org
+
+Hey.
+
+Assuming one has a btrfs (e.g. even on multiple devices)... one can
+shrink the total fs via:
+   btrfs filesystem resize
+
+(or even it's usage on a specific device via
+ btrfs filesystem resize devid:=E2=80=A6 )
+
+
+If that btrfs on some given device was placed within some other
+container (e.g. a partition, LUKS, LVM, etc.) one likely wants to next
+shrink that outer container.
+
+How does one do that? I mean, how do I find out the exact last by that
+btrfs uses on a particular device?
+
+
+Is it what btrfs inspect-internal dump-super /dev/<particular device>
+gives me as:
+   dev_item.total_bytes	...
+?
+
+Is that always a multiple of 512?
+
+And I'd assume that's the length, so the address of the last used byte
+would be dev_item.total_bytes - 1 ?
 
 
 
-=E5=9C=A8 2024/4/5 19:15, Anand Jain =E5=86=99=E9=81=93:
-> Update test cases with the new golden output for the command btrfs
-> subvolume snapshot, further introduce a helper _filter_snapshot() to
-> make it compatible with older btrfs-progs.
+Respectively if I have that fs in a partition like:
+Number  Start (sector)    End (sector)  Size       Code  Name
+   2         2097152       976773119   464.8 GiB   8300  Linux filesystem
 
-BTW, you're missing quite a lot of other test cases.
+That would mean, the last used / end sector is :
+2097152 + ceil(dev_item.total_bytes/512) - 1
 
-At least there should be around 20 test cases affected.
 
->
-> Anand Jain (2):
->    common/filter.btrfs: add a new _filter_snapshot
->    btrfs: create snapshot fix golden output
->
->   common/filter.btrfs | 9 +++++++++
->   tests/btrfs/001     | 3 ++-
->   tests/btrfs/001.out | 2 +-
->   tests/btrfs/152     | 6 +++---
->   tests/btrfs/152.out | 4 ++--
->   tests/btrfs/168     | 6 +++---
->   tests/btrfs/168.out | 4 ++--
->   tests/btrfs/202     | 4 ++--
->   tests/btrfs/202.out | 2 +-
->   tests/btrfs/300.out | 2 +-
->   tests/btrfs/302     | 4 ++--
->   tests/btrfs/302.out | 2 +-
->   12 files changed, 29 insertions(+), 19 deletions(-)
->
+Does that sound right?
+
+
+Cheers,
+Chris.
 
