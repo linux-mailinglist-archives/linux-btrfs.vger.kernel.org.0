@@ -1,286 +1,235 @@
-Return-Path: <linux-btrfs+bounces-3964-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-3965-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACE7389A2D3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 18:46:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54C0589A3E1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 20:09:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A849286088
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 16:46:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE28D1F23AF6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Apr 2024 18:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F03B17166A;
-	Fri,  5 Apr 2024 16:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85F7171E76;
+	Fri,  5 Apr 2024 18:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VICq3Rk3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FMNUUjVu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6E3171658;
-	Fri,  5 Apr 2024 16:46:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712335604; cv=none; b=uCtaZd7sQxegKhFrP3kXsnTlg+wzChUS9zzPD7BMX3HN6/rxAbl+GUYcZxY/LmBhR9g+sccEiB88c7dcDtR86o7QC7B4WaUIewkm26Lgut5YwsJ9CE9l6vbyLRfgDPi2apJhg1H301xHy/34ZC4SL5axEiPXAmo4rIGP+NQuuvA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712335604; c=relaxed/simple;
-	bh=9xN+QFnJfEH0uo3iEiBotij/j5TUI4NkAqYKS+lENfg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ThHo5bPXsDGj1FAapkKc7Rn5TDDszbtnmZjSJmRavmrSjnovUsDfm0CmpdOk5UVHtiG++EvWCRKEXNDtMZaemRfxdKykgP6MaMvpoyWclTl+++jo5usvfrVMog1oGVQ1btTtsQHgRRRvrcC91Nzesc/8KHwIWtCQ1jN61s1btPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VICq3Rk3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 787C9C433F1;
-	Fri,  5 Apr 2024 16:46:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712335604;
-	bh=9xN+QFnJfEH0uo3iEiBotij/j5TUI4NkAqYKS+lENfg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VICq3Rk3TjzwgE1GXOERM315gIHnZUh6x6IxuG/j3TM81X2fc0zi/CPdXuUz+o7t8
-	 gIlwlXUpcJ8+uWMjzlPih/SAt/28fiY5Ey2dzNRXhYTJNkPTocO6kk4W4iyvdkY+I8
-	 hE2jOFt7iakWURsSJ0DIUScr/DH39HAzpIAW5VLtfbZVLxO8tEbJr4oUwNaocsodQV
-	 ojUe2zTEL2iTGpvdOAJK/fI006o7HTcQgaxKKA43TUJRvQVcsh/0F5p5ZKUzM3FiK3
-	 c8FpK732crC7cHww+EMXbVAvi3gqJxt7B9wb6Z4dxVxjfFHFnkxJuKo3qExj1Yg5Qa
-	 b7ZqAGfIkYDjg==
-Date: Fri, 5 Apr 2024 09:46:43 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Anand Jain <anand.jain@oracle.com>, zlang@kernel.org,
-	fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	josef@toxicpanda.com, dsterba@suse.cz
-Subject: Re: [PATCH 1/2] common/filter.btrfs: add a new _filter_snapshot
-Message-ID: <20240405164643.GA634366@frogsfrogsfrogs>
-References: <cover.1712306454.git.anand.jain@oracle.com>
- <3d035b4355abc0cf9e95da134d89e3fbb58939d0.1712306454.git.anand.jain@oracle.com>
- <a62dbef2-0371-49e7-b5eb-9bb5fed32a17@gmx.com>
- <37e0ae3f-54b0-45a4-b62a-7caca994c38a@oracle.com>
- <eb9530e1-7626-41fb-978e-b830b46a04f4@gmx.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1A31D530;
+	Fri,  5 Apr 2024 18:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712340576; cv=fail; b=e/wDK70S140/lZ5eg81KQtem2uOQ83OGSvH+oX09TReyIk3XPW0DtQgKbJaEMdEB3ZLo7s2AEA8LsTOVdDNvKuofWIbf3Yj25cAjpl7WVJJR3AVKK+pPx+pKHyxbafRDiBLt4gesEWOn2EjCVJZBGnGJeGTy5Yi2HQx2RLVkSik=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712340576; c=relaxed/simple;
+	bh=G6eZWPGdC5ngoxlCOmVTh4SvlCMUybIODKMgon1wgAQ=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Z0ct8wtxrZqv++i6ZVWAvkwL+eRrm4kpoCJHXcoAkH1xyp+EzazyYq9G2EKUdMtt1WW+4QE+hbCYjCjBmD8e/1mLHGy2AsyaJokJfLrx50d2FRCHH7fzfWZGR86k0x/XJzWAZUC09Uauv6x3522+yCQPc8Ak9cIGhXDDkRAEmuA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FMNUUjVu; arc=fail smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712340575; x=1743876575;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=G6eZWPGdC5ngoxlCOmVTh4SvlCMUybIODKMgon1wgAQ=;
+  b=FMNUUjVu4VCZ0KCiGc/Kd65dTFhfBkDVH6X31lWEOpPT9fEYjeJ1Obs0
+   XrqIUpDwnoTKQIaKh6e4fmIfDEhy7Wt64vUmMkpABvyQoUjFArs8LTCTP
+   VXEo1p7GsfhEueDdlYM3SvYnNOstacR8qY2BWssZWg4XrhIY6Ustud+oc
+   hKUNukxvOn5228IcmkO34JDO7aCgIp411Cj8DvSw8ZubrVzgCGM7DeWiz
+   B1fd9RRmBWPWfCnZmgrm54d50sCXRHIrb6k7fhuQrTz1P3qzXwhHUg96n
+   mOeEB6sBj8Y1g+32LcVGLX2Cw4izQsgJDwcQZcS7EWuvmIfZCxbQigTT8
+   Q==;
+X-CSE-ConnectionGUID: /0TREOiKR1eXUvw6wrUtdw==
+X-CSE-MsgGUID: 02TbXa36QfqWh3uvcNSRBA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="19116580"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="19116580"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 11:09:33 -0700
+X-CSE-ConnectionGUID: KDYUzzsZTOicmHEL3UPuDg==
+X-CSE-MsgGUID: OaWr9XNkSL2h9ijNRBu+Yg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="23739763"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Apr 2024 11:09:33 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 5 Apr 2024 11:09:32 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 5 Apr 2024 11:09:32 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 5 Apr 2024 11:09:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YfhLDru1U6+kAbXiiWTT4/krkowmU23/4Zk/3xZi7fxZsSy3QvBvwmNfB4aNtKidMbHnbLzbzTLWzvXOL4Rk601C3BnTkJvMs0YLBh8CJY/1VlM4YDjIJxi7W3TwL3dnqgA2dpIcrMEKMw6L8MyC9JXUpmX5+bWONe8zLl58ZMbsTcgoicn5Btk/LNSo2dHyd7vvWeOz/XAn6uAMqIORc0pXrMSgpBHthYT/Tj5YnYGz3IdThDrcfIS19lG4SdnZoTNxsxbFsLdr7roZsVAYkQL4iU1mefBD77faSIfYaQ/VVsNysO+dJ3BxXAh/UoiBGphvZ45/Xxeu0fL9doOEfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x3IfNraDyGSjmAntnBVBy9F7gPi7K+CIvm1D7mxA9yw=;
+ b=YzXNZop3OCvSjvkzl4oDxUgZVnJhuXBhOOMult8MPC+OS1MyPhsYRWRpn9lYjKWDxYltIYyPzTc5fQRS+NTzSDYhB1iunnNOvUfLPLxcTSrxbBCKIW1kxK9PawVEWEl02+GPMFDtFPq8HPui6Unp0DfiVf9JYxyzhotlbDgbPdOR04v5n8GwXo1iXBTxPCyxhpYWBTbNr+gvIUoVsW3/NzETy5XnjUxZlntt49LDP35RfaKniThSKr5yv1N6fnKjTI9ngSf5IwZMtIGG2upfLBDZjoC0hJTTm/fBniFeLMgxde3dLGitEvYJ9ktKkW/rpWnVYGa4JnOrXE2XUEvPXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by SJ2PR11MB8537.namprd11.prod.outlook.com (2603:10b6:a03:56f::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.31; Fri, 5 Apr
+ 2024 18:09:29 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::5c74:8206:b635:e10e]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::5c74:8206:b635:e10e%7]) with mapi id 15.20.7452.019; Fri, 5 Apr 2024
+ 18:09:29 +0000
+Date: Fri, 5 Apr 2024 11:09:20 -0700
+From: Ira Weiny <ira.weiny@intel.com>
+To: =?iso-8859-1?Q?J=F8rgen?= Hansen <Jorgen.Hansen@wdc.com>,
+	"ira.weiny@intel.com" <ira.weiny@intel.com>, Dave Jiang
+	<dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, Jonathan Cameron
+	<Jonathan.Cameron@huawei.com>, Navneet Singh <navneet.singh@intel.com>
+CC: Dan Williams <dan.j.williams@intel.com>, Davidlohr Bueso
+	<dave@stgolabs.net>, Alison Schofield <alison.schofield@intel.com>, "Vishal
+ Verma" <vishal.l.verma@intel.com>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>, "linux-cxl@vger.kernel.org"
+	<linux-cxl@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/26] cxl/mem: Read dynamic capacity configuration from
+ the device
+Message-ID: <66103e5045e1c_e9f9f2941@iweiny-mobl.notmuch>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-3-b7b00d623625@intel.com>
+ <79ebeecc-1650-4fcc-a5c5-db64ac16316d@wdc.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <79ebeecc-1650-4fcc-a5c5-db64ac16316d@wdc.com>
+X-ClientProxiedBy: SJ0PR05CA0090.namprd05.prod.outlook.com
+ (2603:10b6:a03:332::35) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <eb9530e1-7626-41fb-978e-b830b46a04f4@gmx.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SJ2PR11MB8537:EE_
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5Fby75vxprpYEqU+S7YYBjsSsnt7gAOmBWjcFJXxrVmslRgbYdCKVj4iDn8jM6AUKBbWcsqejhvw2Wt1rnh/SN95hLJhmEVsBSFGO0iSQjTAaJ74GH0o4kmddjBrcCSrBLp5hVFet/uwDApCJxEQtCPQzBtbHstH4su3SSbHzdlZSVKv04dwnoVfaGFplNDaE4oNU2Iynap5s05y/iQw+mU8eOr1AiaEx39SufOasy4wyycOh3AyPMxSph4/Qc8eoGZEs2j9I2KeXean9BWq6jRJg1k22Qv/2TKXvGAT/IE5J8WB5ZMWM3gi6f6KtcZorhIMFbN23zGt5Xxl0oH1ExSP0XWx2vVPhLSVHO+Q7tHMWChDZwX3OOm1p+Ec34pEhPfrwEfKVys80oWYkaQEgkmvE6hItcP6nL3WbQt81MY4MceGUkbYxyb7N4t7xCIvczIqAzxVe73JHrV1PXWoveFfzNKrcn0Hb9EDYaAlVQ+sF5WK7dIIFIhyme7gL+ITvShRaaV9xv3N//Oe2vaRXroS+6QtmilAwa7rkY3Yr+8AceqUD0eKp7gFIWj3QI+RikvlRkOpdlm7sEdqJmmy6QXJhz4EyxUmbe9XUXpMxvwLCkPmBXhc3vVSbW7dZ0Z1ZocZBXaZ9ihoqBbTwSPmkAw2LM6XKkTWXWb8hKimeNQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?rnhZ8J1Uhd2xJJgBKXyBkkD9siLu29bfmBUymUq1CWb4yGcgk7Y4QpE7OO?=
+ =?iso-8859-1?Q?olxDT7SChfAO5uRq7qECXBbhjMrteNS8ImdKd88kdGnO2PEI2nlHgkwZne?=
+ =?iso-8859-1?Q?tZ3RENMx6eQ8siflYIEnieF5+jp7E1F+5r2O4bp0/NIkOy/tEfVyAKo71/?=
+ =?iso-8859-1?Q?ZSPLT1NjUE+w/hYv0JuAuWc7vt3SIKZ1O9duPBfSA7W4edj6oF78NohZ7u?=
+ =?iso-8859-1?Q?dYKq1XDrEB71GlMH11su0y1guM+JeFAaxWg1LONOujCb/LMh+yZKuvEmTj?=
+ =?iso-8859-1?Q?ws4im7E2OEqKP59hWv602EYU05Q4IT0UO+9dVq3GgDVCtv0N2810lZsmkX?=
+ =?iso-8859-1?Q?Ha3btWXi57AGigdjXIQ5TxOtyHJ2Vhr0Tfxq2t06ergjWnb5eN6fO2YMuv?=
+ =?iso-8859-1?Q?Ocg9aJHno/E0i70w23xCGVe2Kw/A8IvKdg61g/rLgXcu29bvZqTDcuDQpu?=
+ =?iso-8859-1?Q?ScM4LrsCtKK7ym5cgX/T4vIN2frxMKVi8Tir2zj5yvq5CCJ8Xv79ioJRfQ?=
+ =?iso-8859-1?Q?5HEZW3Fofz/4t+dHOFQiUcIgG3lc84Zd6rIaGJzl2vQZzSr8v5URWWdP8R?=
+ =?iso-8859-1?Q?1D9PQi5TO9s1lCLhbCvJweXIu9ZtQU7UxzAMofZrgGtTI9mNK/JET/jZDv?=
+ =?iso-8859-1?Q?0xN3vS1nELE0Au8gnvZMbuHFa9GV+DTiBNzI5c2eHXaC0A3ectcs3zluJW?=
+ =?iso-8859-1?Q?dRZLZsH60EsDTZk4y940qeeJ7gZ59Wwjr/cPDfp40Jfph5t1TJeSRJNPiD?=
+ =?iso-8859-1?Q?OhY7n5vCByJMQ9YQQTxKhQtI4E8IBGe5JERhdnANGW4/AGIpFBMLVETXVn?=
+ =?iso-8859-1?Q?yR056S0aKEm6k1g7V6X6FXH/t2LYfUp/BE6OUiuImq7qEUcHz2JZ7XYoo0?=
+ =?iso-8859-1?Q?48SZehQUm94xcPWL7ocuknoSVQ5xpqjUNRUIPLaghVA+BclHKojBFDdsZ+?=
+ =?iso-8859-1?Q?6Mo7rkl5jjQjRu6TdaXZvsbV37G1aSHUpgeuerrXe4B/yW9INIRIGVbmQE?=
+ =?iso-8859-1?Q?6U82yuSk3iSJC2dMMZ7AV900mWA771FN4Z+77jkF0cJajW+WZtdLs3ngYW?=
+ =?iso-8859-1?Q?06TrhzqM5NJnfTzS1VVAzgIc9/+H/5tCy8eKyJThyfdv6II/1983m2qK6H?=
+ =?iso-8859-1?Q?RA/ZodP0Irffyu+VzBjK/yXLwtrgdARgfJtghfdyl23ATsO8tLHvIhyLUa?=
+ =?iso-8859-1?Q?//oFeiuaP3l0+3+RqouABI/5QEyevxGVlpvaK94sQJc2vAeid8bf/vQSQ6?=
+ =?iso-8859-1?Q?DKDJS8NisJCKcSm17HSFCja92QXQ4AM8fAvEbLKG309GNV/X0fbsFzX3+a?=
+ =?iso-8859-1?Q?BnjQDtMqoyfocoY2xoA3cbcu0BB04/fwH+/oPzoRzPQrl4n19swu5qVRX2?=
+ =?iso-8859-1?Q?hpq1ZNfRQQN70AVNpCCHLQGqy8PMr4TBiM1BT4pgH3vTf6OXN2DX7XKPv3?=
+ =?iso-8859-1?Q?GULExCZh6OEVZSubtcznhwi+iRGDde49ZQu9OnAhUn6RMoqhbjffAVvFgK?=
+ =?iso-8859-1?Q?cHTj7urD4HteWlCy5IjkuXaou+ff4AHEQTKNTTcRkNam0cVNNRcBUotCwW?=
+ =?iso-8859-1?Q?oRMXxmHSA6S6Tvsr1QVxEhIg2qi7ImCtT8JtWjn6PEPIAv3I46zqSyp76u?=
+ =?iso-8859-1?Q?KsvP75IGSmGs92WaTKaHsCwpEuOx0pGNu9?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e496445a-bb31-474e-4f5e-08dc559b892b
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2024 18:09:29.1536
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /FwFnN6PpqDql5p37Ea+2tD1/tNB9rKbJ3TyMaequSeePZ5F452pxSHgjjmfTa48+5RvsJbhuJ6Ykd4+vVmqug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB8537
+X-OriginatorOrg: intel.com
 
-On Fri, Apr 05, 2024 at 08:20:59PM +1030, Qu Wenruo wrote:
+J�rgen Hansen wrote:
+> On 3/25/24 00:18, ira.weiny@intel.com wrote:
 > 
-> 
-> 在 2024/4/5 19:55, Anand Jain 写道:
+> > From: Navneet Singh <navneet.singh@intel.com>
 > > 
-> > 
-> > On 4/5/24 16:52, Qu Wenruo wrote:
-> > > 
-> > > 
-> > > 在 2024/4/5 19:15, Anand Jain 写道:
-> > > > As the newer btrfs-progs have changed the output of the command
-> > > > "btrfs subvolume snapshot," which is part of the golden output,
-> > > > create a helper filter to ensure the test cases pass on older
-> > > > btrfs-progs.
-> > > > 
-> > > > Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> > > 
-> > > Can we stop the golden output filter game?
-> > > 
-> > >  From day one I'm not a big fan of the golden output idea.
-> > > For snapshot/subvolume creation, we don't really care about what the
-> > > output is, we only care if there is any error (which would come from
-> > > stderr).
-> > > 
-> > > In that case, why not just redirect the stdout to null?
-> > > 
-> > > To me, if we really care something from the stdout, we can still save it
-> > > and let bash/awk/grep to process it, like what we did for various test
-> > > cases, and then save the result to seqres.full.
 
-That sums up what output filters do; I don't understand the objection
-here...
+[snip]
 
-> > > 
-> > 
-> > This is a bug-fix patch; it's not a good idea to change the concept of
-> > fstests' golden output. Perhaps an RFC patch about your idea can help
-> > to discuss and achieve consensus.
+> >   /**
+> >    * struct cxl_memdev_state - Generic Type-3 Memory Device Class driver data
+> >    *
+> > @@ -467,6 +482,8 @@ struct cxl_dev_state {
+> >    * @enabled_cmds: Hardware commands found enabled in CEL.
+> >    * @exclusive_cmds: Commands that are kernel-internal only
+> >    * @total_bytes: sum of all possible capacities
+> > + * @static_cap: Sum of static RAM and PMEM capacities
+> > + * @dynamic_cap: Complete DPA range occupied by DC regions
 > 
-> Even as bug-fix, a simple redirect to seqres.full and remove the
-> corresponding line from golden output is very valid to me.
-> 
-> In fact, introducing a filter looks very over-engineered in this
-> particular case.
+> How about naming these total_range, static_cap and dynamic_range to make 
+> it clear that the DPA range occupied by DC regions isn't necessarily 
+> usable capacity (as opposed to the static_cap where the spec defines it 
+> as usable capacity).
 
-...but having said that , I also dislike overfixation on golden output.
-Patches welcome. ;)
+I thought this was a good idea but on second thought these are not range
+variables at all.  They really represent the various lengths of the
+resources.
 
---D
+For total_bytes the documentation already says 'sum of all __possible__
+capacities'.
 
-> 
-> > 
-> > Thanks, Anand
-> > 
-> > 
-> > > Thanks,
-> > > Qu
-> > > > ---
-> > > >   common/filter.btrfs | 9 +++++++++
-> > > >   tests/btrfs/001     | 3 ++-
-> > > >   tests/btrfs/152     | 6 +++---
-> > > >   tests/btrfs/168     | 6 +++---
-> > > >   tests/btrfs/202     | 4 ++--
-> > > >   tests/btrfs/302     | 4 ++--
-> > > >   6 files changed, 21 insertions(+), 11 deletions(-)
-> > > > 
-> > > > diff --git a/common/filter.btrfs b/common/filter.btrfs
-> > > > index 9ef9676175c9..415ed6dfd088 100644
-> > > > --- a/common/filter.btrfs
-> > > > +++ b/common/filter.btrfs
-> > > > @@ -156,5 +156,14 @@ _filter_device_add()
-> > > > 
-> > > >   }
-> > > > 
-> > > > +_filter_snapshot()
-> > > > +{
-> > > > +    # btrfs-progs commit 5f87b467a9e7 ("btrfs-progs: subvolume:
-> > > > output the
-> > > > +    # prompt line only when the ioctl succeeded") changed the output
-> > > > for
-> > > > +    # btrfs subvolume snapshot, ensure that the latest fstests
-> > > > continue to
-> > > > +    # work on older btrfs-progs without the above commit.
-> > > > +    _filter_scratch | sed -e "s/Create a/Create/g"
-> > > > +}
-> > > > +
-> > > >   # make sure this script returns success
-> > > >   /bin/true
-> > > > diff --git a/tests/btrfs/001 b/tests/btrfs/001
-> > > > index 6c2639990373..cfcf2ade4590 100755
-> > > > --- a/tests/btrfs/001
-> > > > +++ b/tests/btrfs/001
-> > > > @@ -26,7 +26,8 @@ dd if=/dev/zero of=$SCRATCH_MNT/foo bs=1M count=1
-> > > > &> /dev/null
-> > > >   echo "List root dir"
-> > > >   ls $SCRATCH_MNT
-> > > >   echo "Creating snapshot of root dir"
-> > > > -$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap |
-> > > > _filter_scratch
-> > > > +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap | \
-> > > > +                            _filter_snapshot
-> > > >   echo "List root dir after snapshot"
-> > > >   ls $SCRATCH_MNT
-> > > >   echo "List snapshot dir"
-> > > > diff --git a/tests/btrfs/152 b/tests/btrfs/152
-> > > > index 75f576c3cfca..b89fe361e84e 100755
-> > > > --- a/tests/btrfs/152
-> > > > +++ b/tests/btrfs/152
-> > > > @@ -11,7 +11,7 @@
-> > > >   _begin_fstest auto quick metadata qgroup send
-> > > > 
-> > > >   # Import common functions.
-> > > > -. ./common/filter
-> > > > +. ./common/filter.btrfs
-> > > > 
-> > > >   # real QA test starts here
-> > > >   _supported_fs btrfs
-> > > > @@ -32,9 +32,9 @@ touch $SCRATCH_MNT/subvol{1,2}/foo
-> > > > 
-> > > >   # Create base snapshots and send them
-> > > >   $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol1 \
-> > > > -    $SCRATCH_MNT/subvol1/.snapshots/1 | _filter_scratch
-> > > > +    $SCRATCH_MNT/subvol1/.snapshots/1 | _filter_snapshot
-> > > >   $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol2 \
-> > > > -    $SCRATCH_MNT/subvol2/.snapshots/1 | _filter_scratch
-> > > > +    $SCRATCH_MNT/subvol2/.snapshots/1 | _filter_snapshot
-> > > >   for recv in recv1_1 recv1_2 recv2_1 recv2_2; do
-> > > >       $BTRFS_UTIL_PROG send $SCRATCH_MNT/subvol1/.snapshots/1 2>
-> > > > /dev/null | \
-> > > >           $BTRFS_UTIL_PROG receive $SCRATCH_MNT/${recv} |
-> > > > _filter_scratch
-> > > > diff --git a/tests/btrfs/168 b/tests/btrfs/168
-> > > > index acc58b51ee39..78bc9b8f81bb 100755
-> > > > --- a/tests/btrfs/168
-> > > > +++ b/tests/btrfs/168
-> > > > @@ -20,7 +20,7 @@ _cleanup()
-> > > >   }
-> > > > 
-> > > >   # Import common functions.
-> > > > -. ./common/filter
-> > > > +. ./common/filter.btrfs
-> > > > 
-> > > >   # real QA test starts here
-> > > >   _supported_fs btrfs
-> > > > @@ -74,7 +74,7 @@ $BTRFS_UTIL_PROG property set $SCRATCH_MNT/sv1 ro
-> > > > false
-> > > >   # Create a snapshot of the subvolume, to be used later as the
-> > > > parent snapshot
-> > > >   # for an incremental send operation.
-> > > >   $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/sv1
-> > > > $SCRATCH_MNT/snap1 \
-> > > > -    | _filter_scratch
-> > > > +                            | _filter_snapshot
-> > > > 
-> > > >   # First do a full send of this snapshot.
-> > > >   $FSSUM_PROG -A -f -w $send_files_dir/snap1.fssum $SCRATCH_MNT/snap1
-> > > > @@ -88,7 +88,7 @@ $XFS_IO_PROG -c "pwrite -S 0x19 4K 8K"
-> > > > $SCRATCH_MNT/sv1/baz >>$seqres.full
-> > > >   # Create a second snapshot of the subvolume, to be used later as
-> > > > the send
-> > > >   # snapshot of an incremental send operation.
-> > > >   $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/sv1
-> > > > $SCRATCH_MNT/snap2 \
-> > > > -    | _filter_scratch
-> > > > +                            | _filter_snapshot
-> > > > 
-> > > >   # Temporarily turn the second snapshot to read-write mode and then
-> > > > open a file
-> > > >   # descriptor on its foo file.
-> > > > diff --git a/tests/btrfs/202 b/tests/btrfs/202
-> > > > index 5f0429f18bf9..57ecbe47c0bb 100755
-> > > > --- a/tests/btrfs/202
-> > > > +++ b/tests/btrfs/202
-> > > > @@ -8,7 +8,7 @@
-> > > >   . ./common/preamble
-> > > >   _begin_fstest auto quick subvol snapshot
-> > > > 
-> > > > -. ./common/filter
-> > > > +. ./common/filter.btrfs
-> > > > 
-> > > >   _supported_fs btrfs
-> > > >   _require_scratch
-> > > > @@ -28,7 +28,7 @@ _scratch_mount
-> > > >   $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a | _filter_scratch
-> > > >   $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a/b | _filter_scratch
-> > > >   $BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/a $SCRATCH_MNT/c \
-> > > > -    | _filter_scratch
-> > > > +                            | _filter_snapshot
-> > > > 
-> > > >   # Need the dummy entry created so that we get the invalid removal
-> > > > when we rmdir
-> > > >   ls $SCRATCH_MNT/c/b
-> > > > diff --git a/tests/btrfs/302 b/tests/btrfs/302
-> > > > index f3e6044b5251..52d712ac50de 100755
-> > > > --- a/tests/btrfs/302
-> > > > +++ b/tests/btrfs/302
-> > > > @@ -15,7 +15,7 @@
-> > > >   . ./common/preamble
-> > > >   _begin_fstest auto quick snapshot subvol
-> > > > 
-> > > > -. ./common/filter
-> > > > +. ./common/filter.btrfs
-> > > > 
-> > > >   _supported_fs btrfs
-> > > >   _require_scratch
-> > > > @@ -46,7 +46,7 @@ $FSSUM_PROG -A -f -w $fssum_file $SCRATCH_MNT/subvol
-> > > >   # Now create a snapshot of the subvolume and make it accessible
-> > > > from within the
-> > > >   # subvolume.
-> > > >   $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol \
-> > > > -         $SCRATCH_MNT/subvol/snap | _filter_scratch
-> > > > +                 $SCRATCH_MNT/subvol/snap | _filter_snapshot
-> > > > 
-> > > >   # Now unmount and mount again the fs. We want to verify we are able
-> > > > to read all
-> > > >   # metadata for the snapshot from disk (no IO failures, etc).
-> > 
-> 
+I think you have a point for the new fields though.  They should all be
+named in some consistent manner and documented as such.
+
+So I propose:
+
+diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+index 94531af018f8..9c18b229f69a 100644
+--- a/drivers/cxl/cxlmem.h
++++ b/drivers/cxl/cxlmem.h
+@@ -481,9 +481,9 @@ struct cxl_dc_region_info {
+  * @dcd_cmds: List of DCD commands implemented by memory device
+  * @enabled_cmds: Hardware commands found enabled in CEL.
+  * @exclusive_cmds: Commands that are kernel-internal only
+- * @total_bytes: sum of all possible capacities
+- * @static_cap: Sum of static RAM and PMEM capacities
+- * @dynamic_cap: Complete DPA range occupied by DC regions
++ * @total_bytes: length of all possible capacities
++ * @static_bytes: length of possible static RAM and PMEM partitions
++ * @dynamic_bytes: length of possible DC partitions (DC Regions)
+  * @volatile_only_bytes: hard volatile capacity
+  * @persistent_only_bytes: hard persistent capacity
+  * @partition_align_bytes: alignment size for partition-able capacity
+@@ -515,8 +515,8 @@ struct cxl_memdev_state {
+        DECLARE_BITMAP(exclusive_cmds, CXL_MEM_COMMAND_ID_MAX);
+ 
+        u64 total_bytes;
+-       u64 static_cap;
+-       u64 dynamic_cap;
++       u64 static_bytes;
++       u64 dynamic_bytes;
+        u64 volatile_only_bytes;
+        u64 persistent_only_bytes;
+        u64 partition_align_bytes;
 
