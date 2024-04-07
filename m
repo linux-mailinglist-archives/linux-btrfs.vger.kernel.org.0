@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-4007-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4008-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CC6989B1DB
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Apr 2024 15:33:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A26289B1FE
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Apr 2024 15:36:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 242D21F211EE
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Apr 2024 13:33:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42A01281CD3
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Apr 2024 13:36:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3110212FF7C;
-	Sun,  7 Apr 2024 13:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF66134CD3;
+	Sun,  7 Apr 2024 13:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dOztTaYb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O2P7G1PX"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543D512FB3C;
-	Sun,  7 Apr 2024 13:13:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A13A1332AD;
+	Sun,  7 Apr 2024 13:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495615; cv=none; b=t8F3hDi9Bher+oxVmkVxDS8umFFxgUebhTZAZQ6H7YY5KnQa/fwJ/7uPsjPHBeMVH51xNH9UEhdWtnoZT0fi8onS1gV+ZeP0B3dXxZK190uooLUYX8BM0Yu9wOUMFSUKO9z6Z9SJnBQOirK2cubqX3khPzRt7JXhSFmsuMUONX0=
+	t=1712495636; cv=none; b=OQ8n6ZEhgbcx3X2qQtRsGma2bN2nBIbtPcv113oie8Jd1GYkLHkuTLQARWIhezk2AFNJaUdLSqB2+pJnMI9hVkguW1sfrZZG3gGOktamxkM1JfSQUWvBzDe1wFxsED6FIQowaz7j1zweICkbELI9P97pYGV+YRosdakFLsqUb54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495615; c=relaxed/simple;
-	bh=l3LLm6PiuBl9fYukzhmGZIc8CCpsaX4qL55yeK5J/YA=;
+	s=arc-20240116; t=1712495636; c=relaxed/simple;
+	bh=j93m5rRcB0ZwVVF22P855CDkTz/uCdJAY2FUZZCWVP0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Pf4cRJlk9bpoI2i0HJiLNsm17CbDxjLVFi3NlskSiDL1yNue8hRZmrGcOpbSPRBRAuqHbcXAaSr/0oEaYllN97S2k6VelvSg+3+ZqUPoewQxErV1nyzO8WuB8en06TL3YzfGlPsfLYwFhz4MO78BYobNwR2DNfQbuC0OO9odaRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dOztTaYb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F27F3C433C7;
-	Sun,  7 Apr 2024 13:13:33 +0000 (UTC)
+	 MIME-Version; b=SBiUfp4H9fPqS0lLRutIBFb7XeED7RqRaGSsAVAFFytg2nacMeIk0RtabXhfYceB8TzbxoxOoLxb8qQmyxZcj3JJqNO4/tV/sVFdgvWK8cZzMWTfiqQUtE1AqpnirFsjZgPDk46uv9yqrbVHCd6qzGgEHna67wZ3dP1DjW4d5sM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O2P7G1PX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC152C433F1;
+	Sun,  7 Apr 2024 13:13:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495615;
-	bh=l3LLm6PiuBl9fYukzhmGZIc8CCpsaX4qL55yeK5J/YA=;
+	s=k20201202; t=1712495635;
+	bh=j93m5rRcB0ZwVVF22P855CDkTz/uCdJAY2FUZZCWVP0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dOztTaYbeU0YOj2eG4JdBOT+ms9VYt2/R4iWpPVxsOAxH3pLZaw3ZkiUjCw42v8kW
-	 Q84mZCwJ/IfGxQAjocjxNf8s8iRnqa8Y6rrXtj9KDg7eNAEd3nq1XpIcBuJMizE2/K
-	 Z7NAH/VrmF7AxAFLuvWY+JbAf3JbRsy75EMuQ0zN5FbiatHbIOG+2UwwQVIrVz9tmR
-	 5JC6+WBlEyYYXLbksIiBtJ8uTasjhFvzB0ouM8G12WKHSJq9AlFdlYHgDzrsY7ySfj
-	 cQ3mwNZBq9vdjkvJR9Ihu97iieBW/kmq8z/yYam5M3JgIJGxCMx3J6y4aOU+uxEXC9
-	 sptYFZm0EowMA==
+	b=O2P7G1PXHYkmWEh7WYhWdxFck8U8poSJa0j7lRBhdAEk2AzFBx0rK3leCpm83D4xb
+	 xNiOYiLGRQwff+nmkYWcL0NSI0Xd1CBzv/A/QCwJHfllXU9x29Gnkw17dZgOdjPamN
+	 blcT83eB1vCi24lQV0YcjodyO37Pg0ajwY3eqU+jVXdMc+BBzOroBNm76zplmoA9t+
+	 y3DAPxljh1g7VL/CaXGrFyylHhf6zr5ctS/xwv9Sw2S9JF+RotHAZhMq03wP9991Fc
+	 zEk1j4iM3fMTLQmD3EgfxO0h/tRf/P1Gdv0Il7yTJS/BC4dLzfMYgpQLFJ4NSwUddJ
+	 lfnlg/rBtgm1A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,12 +51,12 @@ Cc: Anand Jain <anand.jain@oracle.com>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 11/13] btrfs: return accurate error code on open failure in open_fs_devices()
-Date: Sun,  7 Apr 2024 09:13:10 -0400
-Message-ID: <20240407131316.1052393-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 09/10] btrfs: return accurate error code on open failure in open_fs_devices()
+Date: Sun,  7 Apr 2024 09:13:39 -0400
+Message-ID: <20240407131341.1052960-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240407131316.1052393-1-sashal@kernel.org>
-References: <20240407131316.1052393-1-sashal@kernel.org>
+In-Reply-To: <20240407131341.1052960-1-sashal@kernel.org>
+References: <20240407131341.1052960-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.84
+X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
 From: Anand Jain <anand.jain@oracle.com>
@@ -94,10 +94,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 12 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 6fc2d99270c18..a9b44755fc6f0 100644
+index cc18ba50a61cf..79541c5b3d752 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -1233,25 +1233,32 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
+@@ -1260,25 +1260,32 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
  	struct btrfs_device *device;
  	struct btrfs_device *latest_dev = NULL;
  	struct btrfs_device *tmp_device;
