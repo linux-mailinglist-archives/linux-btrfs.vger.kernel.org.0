@@ -1,232 +1,174 @@
-Return-Path: <linux-btrfs+bounces-4027-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4028-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25F3D89CE34
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 00:05:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B20A789CE71
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 00:34:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 571F5B219C2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Apr 2024 22:05:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DC4D1F234F4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Apr 2024 22:34:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77340149002;
-	Mon,  8 Apr 2024 22:05:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 609941EEF7;
+	Mon,  8 Apr 2024 22:34:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="tPT0BsPT"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IAhIztC3";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IAhIztC3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2450D7E8
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Apr 2024 22:05:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83EF7383A5
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Apr 2024 22:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712613941; cv=none; b=plsPKrXxFIbZB3kwilUbs65SFGR8GK4R7V3MwVMerLcnTCEKZE7J44falv/mesK/O3jq/EB1zkl/J0Dv/jYswifZlPKZ1ia4rkBsLQXKIZCR34WNvdZXMsjsrJzhlqCReCx5vKiNcWN60y4qj+ZMezP2eQUSAB5QAwbJaUzEJ+4=
+	t=1712615644; cv=none; b=hcyGV/QkIRW0sExfLv9C3V+ligikauOcWl1iFJ+oFzZgXZA58A1/SlcwGBmsURcJKoZoErj3zPNSmPsStRr/EVcAsbeTc+dCI/Iu7Ko1Z580B6I7a4dNIhagI+eNuET6OQiDZhjlPpaKgJaLQlPcHBkvEKPPPHCM5xyGNOiEd74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712613941; c=relaxed/simple;
-	bh=uzftG0c8XBWCsuPr8yVjWIwOTJ5rePkWxGUZX7RQQsk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gcxeRtoi0rM3yQ4WZ4pTyJn4QNh0wscf0nazlWlyr+xXrVaHauDIpYvnuLXOVm6SHBCZ5wcH4/sga/Srmns5nuTJ57VMeT7TI5h+nEjlkNEg9eNy7OK9KtLqDl5Lw8ujJpo0fSsKVTho9pdC1vSiEUCtzixoM3JjlFb/Y9RsbDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=tPT0BsPT; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1712613932; x=1713218732; i=quwenruo.btrfs@gmx.com;
-	bh=QjjKODahMJfWvu65nqbF0hNp3uwvJnVWfYvOWPuGTLE=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=tPT0BsPT4RINBjlcRAzYtrTyvrZqxJMdU3h5l8CCUKiyjn5bOE4ljJN30isrw5CO
-	 7Cnrk8GcKPtgp0c6nsB7n55mj+0QrYUECWJb9kx6jLAoxj2c0z5IsZP+OrvnJBdjq
-	 BM3IuVOKdAP0rsvcKVG61I1SL3X6UQ4ECt21YzuaqG1CyLNKgWcSZwpkhxNNe46Fs
-	 c1kjH2a2EZVZbFEE0L1941rVJnue8BD6dGTPgUL4LNSRfO1eCCE481HF3v0NP3zbx
-	 Lj7XsiQYW2usubSX2gDCFvxMz72+XxeYIuZBiZOUChtkUyRTNWFX7qxKq5R5zfScA
-	 NHGMgD+/xAR9bLcPUA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mt79P-1snHn82R1l-00tPTB; Tue, 09
- Apr 2024 00:05:32 +0200
-Message-ID: <2c546dcb-25eb-488c-9ebe-718d268d721b@gmx.com>
-Date: Tue, 9 Apr 2024 07:35:28 +0930
+	s=arc-20240116; t=1712615644; c=relaxed/simple;
+	bh=sEq1VwhhG52OxZMO7DIgCPZYqc2GPhfi5GJhiq9qCX0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=GeeUsy/Qpwvk+bv8BiBGxc5aF2re+yZPrKx3VthuSTkyS3P5O/JdPTqV2vRnRKSBLn7BHPDrliBWxqZ0MWhbR48IbMfHQ0PlCYfbcsgdMgADu3s/LO+85NDZ8Ws/kJWsxiomuBEqYsV14iCphYZs4kBH2xO1RmCQmAeupb6iO/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=IAhIztC3; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=IAhIztC3; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A4BD122DA8
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Apr 2024 22:33:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712615639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=C4Uf/7s7vkK623wwRfK2BbFLcD/INd0Boq+RhRzoslo=;
+	b=IAhIztC3aIGKChCB6XhJYQLPP+a7vJdn9Rc6Ghxa6REg2eBEKhlbAJbtOkgo7YOgBWhjcV
+	XpnCwuVi7M65ZJB95Y6/zzlvL0663R+/drCjx5pPc9IXawlOTkoNB0WAYseKISSgd0VL0j
+	62bbZcvQ+ycKFSMEDGSDqb3o+GchDaY=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712615639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=C4Uf/7s7vkK623wwRfK2BbFLcD/INd0Boq+RhRzoslo=;
+	b=IAhIztC3aIGKChCB6XhJYQLPP+a7vJdn9Rc6Ghxa6REg2eBEKhlbAJbtOkgo7YOgBWhjcV
+	XpnCwuVi7M65ZJB95Y6/zzlvL0663R+/drCjx5pPc9IXawlOTkoNB0WAYseKISSgd0VL0j
+	62bbZcvQ+ycKFSMEDGSDqb3o+GchDaY=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C1F751332F
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Apr 2024 22:33:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id pZtMHdZwFGaSTQAAn2gu4w
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 08 Apr 2024 22:33:58 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/8] btrfs: extent-map: use disk_bytenr/offset to replace block_start/block_len/orig_start
+Date: Tue,  9 Apr 2024 08:03:39 +0930
+Message-ID: <cover.1712614770.git.wqu@suse.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] btrfs: add extra comments on extent_map members
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1712287421.git.wqu@suse.com>
- <261cf7744120a2312ce2cdb22dbbfe439a11268a.1712287421.git.wqu@suse.com>
- <CAL3q7H5-2gfkd7xjy9QVrtgDZGv34jhQrTTtuNL8Qs08rNimrA@mail.gmail.com>
- <bbc9acb4-a8a3-4fde-9e55-6b49a009dc00@gmx.com>
- <CAL3q7H41R98aw5V=sOw8VedObDJL3XaqWkRNcOD73hLdjUf-=Q@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H41R98aw5V=sOw8VedObDJL3XaqWkRNcOD73hLdjUf-=Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HkpkOrJkug7oOGNd2tta3z6KXz6QZQ+TbLB35dAYIfXC5KlGKBk
- A1XUKdAhheaSvKuik5gY/9n5vAOYakRrpLfmrVoAYfatPa7M3HTpJJg1EvZkqhQ9ynH4g0k
- LWvIP0Bva6r/Sbue1EDQz5BCrDyU0pruSuXgZ21jUA+fXBNpXrsMyiHwndqeBvoTmE2iADr
- 3KslwMkrQuNYrnAIg3uWw==
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:SuQbCV7sQlc=;Ds46WzBLviT/zliusA5yLpq22J3
- +uqwpRwiCP/E4lKGCth/0hRGZF58JYF1myY/0ULfhbc/GYC8cyIoCUb77Whd1loAxllJ/pNRE
- ZMRNca7UXgbWz3kPtOBeJgkG8a1oXB85H17Hhr/t008hNY+ZcPBVfrycIzWhuwZxlkMyTC6DY
- TEW0v/+2VKjssCxoHP+dSEA8Ef0dA+PZDOWPTolfM4hj5QwN1qREl94W3GEvq8Soh2syeHL0j
- awAruCM4D/XsMpm+0akV0JefLOlNyNOiVQAu2W7amW6+pFH1LkpYBmvzT5xyY3gfq+/sQrBf7
- 70hX8rqMJbQBc1fAaF4biDWhzJLmVW2cTo/dAIyVgp4jk4ptCF/Op0nEeWvGcasD0KNMbYMLP
- 8e/DZl36gqYTPyoN0RZAVciYwDx7hkA4JXCXN4Y8VP71X3JYisaxD/JdH89f60AytoLrOce0r
- JmVzTcqpuO/Wz1sB1DsgJ3JKiNCNCF0r93GJoRwm0kVMd6rIKKwI8EF2/Rem/j8XC02/D2zW6
- 23ZiMjRwsvEsjC8zt7oxDNwOJrMrQdidbhz/Jvwo1evITVpeMZ9vXPHhfylos0fbv1tBh7J3c
- 4HYqGpOMa/QVzSalaX8daQP2o3Sej6778DyceywgdW9Osb1XtEoju4bPuigORdpfjUjEd66zW
- FnkTB4rhPFX0e+/zRl4THfXkNpo6/BX/D34JlYFyGdhzn55ZlOkZASbSx06Ek2Tip2trR/vi0
- oYz1qfY0L/sSOeezUr11SOKUjesayelHhp43GTSHBLAxQFEri8b6qVniWlqqlYWTHyXE5K+5c
- 55c1AsuQbwn1d1cVVuZwY9tL2ySisFGHLA2sVCyhXu31I=
 
+[REASON FOR RFC]
+Not all sanity checks are implemented, there is a missing check for
+ram_bytes on non-compressed extent.
+Because even without this series, generic/311 can generate a file extent
+with ram_bytes larger than disk_num_bytes.
 
+This seems harmless, but I still want to fix it and implement a full
+version of the em sanity check.
 
-=E5=9C=A8 2024/4/8 20:41, Filipe Manana =E5=86=99=E9=81=93:
-> On Fri, Apr 5, 2024 at 10:36=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.co=
-m> wrote:
-[...]
->>
->> But on the other hand, it's a little too obvious, thus I didn't mention
->> through the whole series.
->
-> Well, a lot of the comments this patch is adding are too obvious as well=
-.
-> So I don't see why mentioning an extent map may represent merged
-> extents is too obvious, if anything, it's less obvious than the
-> comments for some of the fields the patch is adding.
+[REPO]
+https://github.com/adam900710/linux/tree/em_cleanup
 
-Well, considering how many members are not properly populated (for tests
-though), and other members like "orig_start" only makes sense for
-non-mergeable extents (compressed), I strongly doubt if the extent_map
-itself designed is that obvious.
+Which relies on previous changes on extent maps.
 
->
->>
->>>
->>> Holes can also be merged of course (e.g. read part of a hole, we
->>> create an extent map for that part, read the remainder of the hole,
->>> create another extent map for that remainder, which then merges with
->>> the former).
->>>
->> [...]
->>>> +
->>>> +       /*
->>>> +        * The full on-disk extent length, matching
->>>> +        * btrfs_file_extent_item::disk_num_bytes.
->>>> +        */
->>>
->>> So yes and no.
->>> When merging extent maps, it's not updated, so it's tricky.
->>
->> And that's already found in my sanity checks.
->>
->>> But that's ok because an extent map only needs to represent exactly
->>> one file extent item if it's new and was not fsynced yet.
->>
->> I can update the comments to add extra comments on merged behavior, and
->> fix the unexpected handling for merging/split.
->
-> Fix what?
-> It's only important to be accurate for extents that need to be logged
-> (in the modified list of extents), and those are never merged or
-> split.
+This series introduce two new members (disk_bytenr/offset) to
+extent_map, and removes three old members
+(block_start/block_len/offset), finally rename one member
+(orig_block_len -> disk_num_bytes).
 
-My bad, the "merged/split handling" is for my new sanity checks on the
-extent map structure, which cross checks the old members
-(orig_start/block_start/block_len) against the new members
-(disk_bytenr/offset).
+This should save us one u64 for extent_map.
 
-It turns out certain members do not really much sense after merging.
-E.g. orig_start.
+But to make things safe to migrate, I introduce extra sanity checks for
+extent_map, and do cross check for both old and new members.
 
->
-> Otherwise it doesn't affect use cases other than fsync.
->
->>
->>>
->>>>           u64 orig_block_len;
->>>> +
->>>> +       /*
->>>> +        * The decompressed size of the whole on-disk extent, matchin=
-g
->>>> +        * btrfs_file_extent_item::ram_bytes.
->>>> +        */
->>>>           u64 ram_bytes;
->>>
->>> Same here regarding the merging.
->>>
->>> Sorry I forgot this before.
->>
->> No big deal, as my super strict sanity checks are crashing everywhere, =
-I
->> have already experienced this quirk.
->>
->> So I would add extra comments on the merging behaviors, but I'm afraid
->> since the current code doesn't handle certain members correctly (and a
->> lot of callers even do not populate things like ram_bytes), I'm afraid
->> those extra comments would only come after I fixed all of them.
->
-> Well, as mentioned before it's ok for some fields to not be updated
-> after merging, and to a lesser extent, splitted.
-> Having all fields correct only makes sense when the mapping to a file
-> extent item is exactly 1 to 1 and the extent is new and needs to be
-> logged.
+The extra sanity checks already exposed one bug (thankfully harmless)
+causing em::block_start to be incorrect.
 
-I'd say, even only for the sake of consistence, we should populate every
-member correctly no matter what.
+There is another bug related to bad btrfs_file_extent_item::ram_bytes,
+which can be larger than disk_num_bytes for non-compressed file extents.
+(Generated by generic/311 test case, but it seems to be created on-disk
+ first)
 
-That's why I'm adding strict sanity checks for all extent maps (only for
-DEBUG build).
+But so far, the patchset is fine for default fstests run.
 
-And it already exposed several bugs:
+The patchset would do two renames as preparation.
+Then introduce the new member, the extra sanity checks.
+Finally do the migration by remove the old member one-by-one, to make
+sure everything is fine.
 
-- The @block_start mis-calculation fix you just commented on
-   Thankfully it's harmless
+Qu Wenruo (8):
+  btrfs: rename extent_map::orig_block_len to disk_num_bytes
+  btrfs: rename members of can_nocow_file_extent_args
+  btrfs: introduce new members for extent_map
+  btrfs: introduce extra sanity checks for extent maps
+  btrfs: remove extent_map::orig_start member
+  btrfs: remove extent_map::block_len member
+  btrfs: remove extent_map::block_start member
+  btrfs: reorder disk_bytenr/disk_num_bytes/ram_bytes/offset parameters
 
-- Weird ram_bytes generated by g/311 test case
-   We can create a file extent whose ram_bytes is double its
-   disk_num_bytes, and is not compressed.
+ fs/btrfs/btrfs_inode.h            |   5 +-
+ fs/btrfs/compression.c            |   7 +-
+ fs/btrfs/defrag.c                 |  14 +-
+ fs/btrfs/extent_io.c              |  10 +-
+ fs/btrfs/extent_map.c             | 187 ++++++++++++++++--------
+ fs/btrfs/extent_map.h             |  51 +++----
+ fs/btrfs/file-item.c              |  23 +--
+ fs/btrfs/file.c                   |  18 +--
+ fs/btrfs/inode.c                  | 234 ++++++++++++++++--------------
+ fs/btrfs/relocation.c             |   5 +-
+ fs/btrfs/tests/extent-map-tests.c | 114 ++++++++-------
+ fs/btrfs/tests/inode-tests.c      | 177 +++++++++++-----------
+ fs/btrfs/tree-log.c               |  27 ++--
+ fs/btrfs/zoned.c                  |   4 +-
+ include/trace/events/btrfs.h      |  20 +--
+ 15 files changed, 487 insertions(+), 409 deletions(-)
 
-I'll spend time on pinning down the ram_bytes anomaly later, even it
-doesn't cause data corruption.
+-- 
+2.44.0
 
-Thanks,
-Qu
-
->
->>
->> Thanks,
->> Qu
 
