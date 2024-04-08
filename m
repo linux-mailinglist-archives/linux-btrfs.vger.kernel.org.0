@@ -1,190 +1,207 @@
-Return-Path: <linux-btrfs+bounces-4023-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4024-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C88B289BDD6
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Apr 2024 13:12:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4594689CB5F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Apr 2024 20:00:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C86C282485
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Apr 2024 11:12:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8794B27B94
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Apr 2024 17:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E904651A1;
-	Mon,  8 Apr 2024 11:12:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304291448E2;
+	Mon,  8 Apr 2024 17:50:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OXaNHlp9"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="P24GjNhM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99EA45958
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Apr 2024 11:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661271E489;
+	Mon,  8 Apr 2024 17:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712574743; cv=none; b=mRJ/eS75WJ4jbfMDVPdcxpE42hhQiT/q/p1OhL2xdWYzoTfMhU4A/xuMQsC1/hVugvfyiqgR9gZIvBXpcfYIBk1kZul820BUCSmmVzjKVWj5e/RJgkwaKy7qaQNayGitG7wZVm5XRY0hl+b07QNCVYtfX5+ulb7wwQoUqEnJzvI=
+	t=1712598658; cv=none; b=PuKsa9Ynp7KC0trXFVsf5BX0cCd8xm1A0ZMJaNN64CI6h6ne2lTZWzoTVR/BghlULNgempesDMHplZrMnWwYQFlD4HgbPR/R2GnsoUvHXSpsN39N7iZjSK//iOAUbVE5ywf40zvziWnkBm78QgJGgp2LMTaNz86ZckFqV3Lk/74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712574743; c=relaxed/simple;
-	bh=E4j8VlYdKGbPxfLu8TzKrd+5wZu2tHuBdh76w/xE6d4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EgpmBKJ5GKjkImTJOk/+bRRx5AZH5h17fv2EyCpDXTPUj8U/whCz6iziTBU92odL+X+fiYjNTskhqKajocjRGixyLQHLCBprZrHySzj7G+WFTyVQo0Ww2VfojFlJfevSwQ09Dd76BU54L2vASBS2cFHnirftiYe3TnFkyN1fJXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OXaNHlp9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57167C43390
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Apr 2024 11:12:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712574743;
-	bh=E4j8VlYdKGbPxfLu8TzKrd+5wZu2tHuBdh76w/xE6d4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=OXaNHlp9RwSnkHcUDOIiey63m3owcBrPNbue0k1y+CQ2mRazBmA6kfTH4ZCcnifGd
-	 cD810QMeJLkKHxtgJUbHpvIx583hmJmJfpRHNvCzIg9eKv45EW/CbCvicAjJ7hFY1g
-	 Gr7fhgPKZit8TSjdpLkaKHtnBRLrVLgWvR6mYjc47LKKxoClABBf7ol6qrFjAG3Yxr
-	 Vx5ty56FTiH54ZqUjYQgr56P+sIz9P0ZrHMiSwKju9Qb27zoIAJEdniZW9B+G3P7we
-	 d62xgqj3ChLJOSX5SWklv5SmWSy8vnHyAZZLuCPclvjpWuToXEOpkl8pUV5l5TnwEr
-	 yjfdiSpBD7NBQ==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a51b008b3aeso255699266b.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 08 Apr 2024 04:12:23 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUwmE+3rIVI5aBkxJ/Uxn+pJuDEsNSSOQdKaRO4AdULeDGaxxbLgkdbsgIT/Ey/ZyHL2qJL9Zr//n/0/L8KRzPLhxMA5S1iR04PNAU=
-X-Gm-Message-State: AOJu0YwdM5g3kAkhP97o5A5mR3TvbR6ow+273kn1evJzG8cIbRu7RYAD
-	Huj+3UBlVc5gL4EVFIiQ68fBiu4hvpRMiWDBT+k4sTURkDxrEHDX9reaagA0rH7uwiqv3cypqzK
-	uqM3zqb4SVJGovIfYTloHVjjBhWY=
-X-Google-Smtp-Source: AGHT+IG4aM7jFdvMNzwznpZ2c8bQSpf7J6lrb/Hr87e/4mPjunCrMn7DKWN1qwvadOyYgUOrqzfA8bA6muKvUQBA5MU=
-X-Received: by 2002:a17:906:70e:b0:a4e:9970:aee7 with SMTP id
- y14-20020a170906070e00b00a4e9970aee7mr5773040ejb.50.1712574741855; Mon, 08
- Apr 2024 04:12:21 -0700 (PDT)
+	s=arc-20240116; t=1712598658; c=relaxed/simple;
+	bh=hMSsV4hhO/Vfk3AcQkgzg1GidVri54SqYdrlQPYIQ4A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s3qdd0qeuSeOS0h4COPtuL5wulu9uPMUl1JHqIBGXQ5UL1mfEs/kOKaQEgWzaJLzr6CqMyS4kMPoExkfvGkzUHN8Yz9jpGKER7LJoOD3KzyefwQOn1I5rtk42dQ0/YVdXojJoXdbJHs4mexrOa8+rK/bRI6b80Ykh7DqHfM5xGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=P24GjNhM; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=FDDqbeNGhoXcnFk6nkXqY1HUDUdyMKYatROs/wiu+Jo=; b=P24GjNhMaw6vUYUb8COhMvk2An
+	Lxregwp4jXT0W+/9Vywm6B1WQsruBZHLSHfl8YnBTo3I3t2EHYSvS0VNaEKyU5DDytq59hbEY+afo
+	yBKy0S0uVq1MMxHzlD0160IwP4xxT1MYLGLEdvST7S+s7udgWA9n11N0txup4Aba4NfgMP6fDacZc
+	9a0gmU3xMWbWvw0UdSoSnJqr2sSv3sbKKDa7yJt+dNNw27SZqf3YpRw8RjE2K+ayOC96fQyWCZgVJ
+	iVWL56inha+/+3m7wmfgXqN6JOuz0kzM6u+OaC5I9o8JItgHwHXhpPRSwUyuKMcWM191mR4muHEUl
+	cZk8xt4A==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rtt8p-0000000GObq-3IQ1;
+	Mon, 08 Apr 2024 17:50:47 +0000
+Date: Mon, 8 Apr 2024 10:50:47 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: Matthew Wilcox <willy@infradead.org>,
+	Pankaj Raghav <p.raghav@samsung.com>,
+	Daniel Gomez <da.gomez@samsung.com>,
+	Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
+	axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+	jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com
+Subject: Re: [PATCH v6 00/10] block atomic writes
+Message-ID: <ZhQud1NbO4aMt0MH@bombadil.infradead.org>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <ZgOXb_oZjsUU12YL@casper.infradead.org>
+ <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
+ <Zg7Z4aJtn3SxY5w1@casper.infradead.org>
+ <f3c1d321-0dfc-466f-9f6a-fe2f0513d944@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712287421.git.wqu@suse.com> <261cf7744120a2312ce2cdb22dbbfe439a11268a.1712287421.git.wqu@suse.com>
- <CAL3q7H5-2gfkd7xjy9QVrtgDZGv34jhQrTTtuNL8Qs08rNimrA@mail.gmail.com> <bbc9acb4-a8a3-4fde-9e55-6b49a009dc00@gmx.com>
-In-Reply-To: <bbc9acb4-a8a3-4fde-9e55-6b49a009dc00@gmx.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 8 Apr 2024 12:11:45 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H41R98aw5V=sOw8VedObDJL3XaqWkRNcOD73hLdjUf-=Q@mail.gmail.com>
-Message-ID: <CAL3q7H41R98aw5V=sOw8VedObDJL3XaqWkRNcOD73hLdjUf-=Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] btrfs: add extra comments on extent_map members
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f3c1d321-0dfc-466f-9f6a-fe2f0513d944@oracle.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Fri, Apr 5, 2024 at 10:36=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
->
->
->
-> =E5=9C=A8 2024/4/5 22:54, Filipe Manana =E5=86=99=E9=81=93:
-> > On Fri, Apr 5, 2024 at 4:28=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
-> >>
-> >> The extent_map structure is very critical to btrfs, as it is involved
-> >> for both read and write paths.
-> >>
-> >> Unfortunately the structure is not properly explained, making it prett=
-y
-> >> hard to understand nor to do further improvement.
-> >>
-> >> This patch adds extra comments explaining the major members based on
-> >> my code reading.
-> >> Hopefully we can find more members to cleanup in the future.
-> >>
-> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >> ---
-> >>   fs/btrfs/extent_map.h | 52 +++++++++++++++++++++++++++++++++++++++++=
-+-
-> >>   1 file changed, 51 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-> >> index 10e9491865c9..0b938e12cc78 100644
-> >> --- a/fs/btrfs/extent_map.h
-> >> +++ b/fs/btrfs/extent_map.h
-> >> @@ -35,19 +35,69 @@ enum {
-> >>   };
-> >>
-> >>   /*
-> >> + * This structure represents file extents and holes.
-> >
-> > So I clearly forgot this before, but we should add the caveat that
-> > it's guaranteed that it represents a single file extent only if the
-> > extent is new and not persisted (in the list of modified extents and
-> > not fsynced).
-> > Otherwise it can represent 2 or more extents that were merged (to save
-> > memory), which adds some caveats I mention below.
->
-> In fact I also wanted to address this, especially if I'm going to
-> introduce disk_bytenr/disk_num_bytes, as they can be merged, the merged
-> disk_bytenr/disk_num_bytes would not exist on-disk.
->
-> But on the other hand, it's a little too obvious, thus I didn't mention
-> through the whole series.
+On Fri, Apr 05, 2024 at 11:06:00AM +0100, John Garry wrote:
+> On 04/04/2024 17:48, Matthew Wilcox wrote:
+> > > > The thing is that there's no requirement for an interface as complex as
+> > > > the one you're proposing here.  I've talked to a few database people
+> > > > and all they want is to increase the untorn write boundary from "one
+> > > > disc block" to one database block, typically 8kB or 16kB.
+> > > > 
+> > > > So they would be quite happy with a much simpler interface where they
+> > > > set the inode block size at inode creation time,
+> > > We want to support untorn writes for bdev file operations - how can we set
+> > > the inode block size there? Currently it is based on logical block size.
+> > ioctl(BLKBSZSET), I guess?  That currently limits to PAGE_SIZE, but I
+> > think we can remove that limitation with the bs>PS patches.
 
-Well, a lot of the comments this patch is adding are too obvious as well.
-So I don't see why mentioning an extent map may represent merged
-extents is too obvious, if anything, it's less obvious than the
-comments for some of the fields the patch is adding.
+I can say a bit more on this, as I explored that. Essentially Matthew,
+yes, I got that to work but it requires a set of different patches. We have
+what we tried and then based on feedback from Chinner we have a
+direction on what to try next. The last effort on that front was having the
+iomap aops for bdev be used and lifting the PAGE_SIZE limit up to the
+page cache limits. The crux on that front was that we end requiring
+disabling BUFFER_HEAD and that is pretty limitting, so my old
+implementation had dynamic aops so to let us use the buffer-head aops
+only when using filesystems which require it and use iomap aops
+otherwise. But as Chinner noted we learned through the DAX experience
+that's not a route we want to again try, so the real solution is to
+extend iomap bdev aops code with buffer-head compatibility.
 
->
-> >
-> > Holes can also be merged of course (e.g. read part of a hole, we
-> > create an extent map for that part, read the remainder of the hole,
-> > create another extent map for that remainder, which then merges with
-> > the former).
-> >
-> [...]
-> >> +
-> >> +       /*
-> >> +        * The full on-disk extent length, matching
-> >> +        * btrfs_file_extent_item::disk_num_bytes.
-> >> +        */
-> >
-> > So yes and no.
-> > When merging extent maps, it's not updated, so it's tricky.
->
-> And that's already found in my sanity checks.
->
-> > But that's ok because an extent map only needs to represent exactly
-> > one file extent item if it's new and was not fsynced yet.
->
-> I can update the comments to add extra comments on merged behavior, and
-> fix the unexpected handling for merging/split.
+> We want a consistent interface for bdev and regular files, so that would
+> need to work for FSes also. FSes(XFS) work based on a homogeneous inode
+> blocksize, which is the SB blocksize.
 
-Fix what?
-It's only important to be accurate for extents that need to be logged
-(in the modified list of extents), and those are never merged or
-split.
+There are two aspects to this and it is important to differentiate them.
 
-Otherwise it doesn't affect use cases other than fsync.
+1) LBA formats used
+2) When a large atomic is supported and you want to use smaller LBA formats
 
->
-> >
-> >>          u64 orig_block_len;
-> >> +
-> >> +       /*
-> >> +        * The decompressed size of the whole on-disk extent, matching
-> >> +        * btrfs_file_extent_item::ram_bytes.
-> >> +        */
-> >>          u64 ram_bytes;
-> >
-> > Same here regarding the merging.
-> >
-> > Sorry I forgot this before.
->
-> No big deal, as my super strict sanity checks are crashing everywhere, I
-> have already experienced this quirk.
->
-> So I would add extra comments on the merging behaviors, but I'm afraid
-> since the current code doesn't handle certain members correctly (and a
-> lot of callers even do not populate things like ram_bytes), I'm afraid
-> those extra comments would only come after I fixed all of them.
+When the LBA format, and so logical block size is say 16k, the LBS
+patches with the above mentioned patches enable IOs to the block device
+to be atomic to say 16k.
 
-Well, as mentioned before it's ok for some fields to not be updated
-after merging, and to a lesser extent, splitted.
-Having all fields correct only makes sense when the mapping to a file
-extent item is exactly 1 to 1 and the extent is new and needs to be
-logged.
+But to remain flexible we want to support a world where 512 byte and 4k
+LBA formats are still used, and you *optionally* want to leverage say
+16k atomics. Today's block device topology enables this only with a knob
+to userspace to allow userspace to override the sector size for the
+filesystem. In practice today if you want to use 4k IOs you just format
+the drive to use 4k LBA format. However, an alternative at laest for
+NVMe today is to support say 16k atomic with an 4k or 512 LBA format.
+This essentially *lifts* the physical block size to 16k while keeping
+the logical block size at the LBA format, so 4k or 512 bytes. What you
+*could* do with this, from the userspace side of things is at mkfs you
+can *opt* in to use a larger sector size up to the physical block size.
+When you do this the block device still has a logical block size of the
+LBA format, but all IOs the filesystem would use use the larger sector
+size you opted in for.
 
->
-> Thanks,
-> Qu
+I suspect this is a use case where perhaps the max folio order could be
+set for the bdev in the future, the logical block size the min order,
+and max order the large atomic.
+
+> Furthermore, we would seem to be mixing different concepts here. Currently
+> in Linux we say that a logical block size write is atomic. In the block
+> layer, we split BIOs on LBS boundaries. iomap creates BIOs based on LBS
+> boundaries. But writing a FS block is not always guaranteed to be atomic, as
+> far as I'm concerned.
+
+True. To be clear above paragraph refers to LBS as logical block size.
+
+However when a filesystem sets the min order, and it should be respected.
+I agree that when you don't set the sector size to 16k you are not forcing the
+filesystem to use 16k IOs, the metadata can still be 4k. But when you
+use a 16k sector size, the 16k IOs should be respected by the
+filesystem.
+
+Do we break BIOs to below a min order if the sector size is also set to
+16k?  I haven't seen that and its unclear when or how that could happen.
+
+At least for NVMe we don't need to yell to a device to inform it we want
+a 16k IO issued to it to be atomic, if we read that it has the
+capability for it, it just does it. The IO verificaiton can be done with
+blkalgn [0].
+
+Does SCSI *require* an 16k atomic prep work, or can it be done implicitly?
+Does it need WRITE_ATOMIC_16?
+
+[0] https://github.com/dagmcr/bcc/tree/blkalgn
+
+> So just increasing the inode block size / FS block size does not
+> really change anything, in itself.
+
+If we're breaking up IOs when a min order is set for an inode, that
+would need to be looked into, but we're not seeing that.
+
+> > Do untorn writes actually exist in SCSI?  I was under the impression
+> > nobody had actually implemented them in SCSI hardware.
+> 
+> I know that some SCSI targets actually atomically write data in chunks >
+> LBS. Obviously atomic vs non-atomic performance is a moot point there, as
+> data is implicitly always atomically written.
+> 
+> We actually have an mysql/innodb port of this API working on such a SCSI
+> target.
+
+I suspect IO verification with the above tool should prove to show the
+same if you use a filesystem with a larger sector size set too, and you
+just would not have to do any changes to userspace other than the
+filesystem creation with say mkfs.xfs params of -b size=16k -s size=16k
+
+> However I am not sure about atomic write support for other SCSI targets.
+
+Good to know!
+
+> > > We saw untorn writes as not being a property of the file or even the inode
+> > > itself, but rather an attribute of the specific IO being issued from the
+> > > userspace application.
+> > The problem is that keeping track of that is expensive for buffered
+> > writes.  It's a model that only works for direct IO.  Arguably we
+> > could make it work for O_SYNC buffered IO, but that'll require some
+> > surgery.
+> 
+> To me, O_ATOMIC would be required for buffered atomic writes IO, as we want
+> a fixed-sized IO, so that would mean no mixing of atomic and non-atomic IO.
+
+Would using the same min and max order for the inode work instead?
+
+  Luis
 
