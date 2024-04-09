@@ -1,70 +1,74 @@
-Return-Path: <linux-btrfs+bounces-4059-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4060-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5476B89DC0E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 16:19:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4A8089DC30
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 16:27:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A1441F23CDC
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 14:19:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 116CD1C21C3D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 14:27:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6191304A5;
-	Tue,  9 Apr 2024 14:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B7FC12FF67;
+	Tue,  9 Apr 2024 14:27:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="aO5+wYCc"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GaAXinL6";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GaAXinL6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D69C12FB0B
-	for <linux-btrfs@vger.kernel.org>; Tue,  9 Apr 2024 14:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9A612FB16
+	for <linux-btrfs@vger.kernel.org>; Tue,  9 Apr 2024 14:27:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712672347; cv=none; b=BgtCKb3EOWEuY0rg27IkGTbLcM05HH212ahF68h0x9DrxI2FI29WqbcOOlmAs5NBx0pPvc58SgdRFdoCb1OFLDjoKjfGnmIAdX96EHobDJ7CS4sjq53wrlH73b1P7BiI8i1WKxVLWldZK5QYpjU2bSAiwNhTYAIBRZKdWesrK0k=
+	t=1712672843; cv=none; b=OGeTIO4m3ADuOT0IP3ZGFKlkw3BwCnQX503EXik4bJzwYKvTSiZbbVuM9/qQyU7PjjQcD875HlULzwoA8+hm2vSuxoBhcl2DsrhIktMcuJtjkg67h7W6WxNr0lMlxRIlQg6tWvmn8u8s08sObtfeq/vumieqp3FeDPwIv5NJZyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712672347; c=relaxed/simple;
-	bh=m4h/LbbC39lU4SNP0l4vbJNDrYYuGbW+NRggHY2sAFM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iCYym9fm8HxpzXX41D1mv6i77MWiDInFUFAY0ow36JE+uuyD8TX0JNXPq1Jka78h4D1GD3i2+vEecHA/YjiLsspGMZ7qeRoykqLSa60cQzNac/cKg2rLT7vS0Q/+LgdPrKE31QZqXBk+FmE6szDyADXWS5n17joRQrYdoZmFOmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=aO5+wYCc; arc=none smtp.client-ip=216.71.154.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1712672345; x=1744208345;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=m4h/LbbC39lU4SNP0l4vbJNDrYYuGbW+NRggHY2sAFM=;
-  b=aO5+wYCcsmsxqWct5Yq7PELNpOqpFrdHs6MDDxuGR0pyq2XcBdld3UOv
-   I8HfhFL0+fm8oIfFJ67NjrdtQbsnAXZTzx4UWlMZh8UFE4gEP0Dg/Uzsx
-   e3v+/pd25rF2DRg8VQTHCE0GQ1XzwtTdsLEzSo2NGCV+e8GLHTTDDxZnE
-   fA+TDalVPLDo+0ZaBwiFNCM2pAVOAPPnK2ZuNqurLGVEaZsc4Z8Rz9UoQ
-   JRsuyAqEhQOwMO7heo1KxPbhWBF4Spb6/1QV1iDigTEmJ4EToOCXioRDw
-   vDq4bBWGPbVN8ZWvExtHMpRH575eiBvIUrndcLCO1/6ZJM6f4Ns9SPqIf
-   g==;
-X-CSE-ConnectionGUID: p0VHX6J2Sg2xAz17h/UU5g==
-X-CSE-MsgGUID: 6n1PUaVhSji5HYobKxtROQ==
-X-IronPort-AV: E=Sophos;i="6.07,189,1708358400"; 
-   d="scan'208";a="13071040"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Apr 2024 22:18:58 +0800
-IronPort-SDR: rfVkcao0hKUca/fBse1MEmQnMzYzrdOxmN82lCV2sOpHOoPhisN+PmgmFW/mNL2gm0fd8HHJ0g
- cZNO8ZV0Prrw==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Apr 2024 06:27:27 -0700
-IronPort-SDR: DLx0dMO+b0jWdJ29NiB4U4dRSJTQNbx8Jf+tfmMcxF/ys78oLtr8WF26AM7jq9hE4cj+gYmezv
- fVzxlUnWrs3A==
-WDCIronportException: Internal
-Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.107])
-  by uls-op-cesaip02.wdc.com with ESMTP; 09 Apr 2024 07:18:57 -0700
-From: Naohiro Aota <naohiro.aota@wdc.com>
+	s=arc-20240116; t=1712672843; c=relaxed/simple;
+	bh=swgpWewYdl0vXacBLuMHT0i4Xgx/NvdRyAt8o3RTphc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=svqKMuFk4rdrY/eDLYALiWVKb9RHDi1sIMATPgfPRXsxabR49UTV6D76dnbxf7H+1L98mSIcy235iTxWiyYwTI/Z+PeEUbBrzwhTnbWNZTRbPHbSy2ADveYPW/yNtqWJNDFmsIPu/mgvgjvFHw05rOpw269Liw7PV1KeUMmWZVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GaAXinL6; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GaAXinL6; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 97E4E20A46;
+	Tue,  9 Apr 2024 14:27:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712672839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Pi7mFlpJhug8sKMT9SE4fmEdPpz65QT9XUkIJ00MRVk=;
+	b=GaAXinL6Qjr4FgOZBRWH4HBvgTtTLPSshDMEDvzhMpjEBppzyDbEdjeZt/g6BkCWaj31VT
+	kkAmx7AN6R0/0Xv+MH1bDIa5vv4BiyIKDA91sgeCGiRAS7SxpFbdIeSUfM6mWUcpE7KUYW
+	R8yOuCxL1aF9urIWIwKin2FTSZx/id8=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=GaAXinL6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712672839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Pi7mFlpJhug8sKMT9SE4fmEdPpz65QT9XUkIJ00MRVk=;
+	b=GaAXinL6Qjr4FgOZBRWH4HBvgTtTLPSshDMEDvzhMpjEBppzyDbEdjeZt/g6BkCWaj31VT
+	kkAmx7AN6R0/0Xv+MH1bDIa5vv4BiyIKDA91sgeCGiRAS7SxpFbdIeSUfM6mWUcpE7KUYW
+	R8yOuCxL1aF9urIWIwKin2FTSZx/id8=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9222A13253;
+	Tue,  9 Apr 2024 14:27:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id C2SkI0dQFWbgCwAAn2gu4w
+	(envelope-from <dsterba@suse.com>); Tue, 09 Apr 2024 14:27:19 +0000
+From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: wqu@suse.com,
-	Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: scrub: run relocation repair when/only needed
-Date: Tue,  9 Apr 2024 23:18:52 +0900
-Message-ID: <4f457478390d84f5ecdc3818e239cdb652654ea0.1712672186.git.naohiro.aota@wdc.com>
+Cc: David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: remove colon from messages with state
+Date: Tue,  9 Apr 2024 16:19:54 +0200
+Message-ID: <20240409141954.16446-1-dsterba@suse.com>
 X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -73,65 +77,70 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.01 / 50.00];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	BAYES_HAM(-0.00)[31.78%];
+	DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
+X-Rspamd-Queue-Id: 97E4E20A46
+X-Spam-Flag: NO
+X-Spam-Score: -0.01
+X-Spamd-Bar: /
 
-When btrfs scrub finds an error, it reads mirrors to find correct data. If
-all the errors are fixed, sctx->error_bitmap is cleared for the stripe
-range. However, in the zoned mode, it runs relocation to repair scrub
-errors when the bitmap is *not* empty, which is a flipped condition.
+The message format in syslog is usually made of two parts:
 
-Also, it runs the relocation even if the scrub is read-only. This is missed
-by a fix in commit 1f2030ff6e49 ("btrfs: scrub: respect the read-only flag
-during repair").
+  prefix ":" message
 
-The repair is only necessary when there is a repaired sector and should be
-done on read-write scrub. So, tweak the condition for both regular and
-zoned case.
+Various tools parse the prefix up to the first ":". When there's
+an additional status of a btrfs filesystem like
 
-Fixes: 54765392a1b9 ("btrfs: scrub: introduce helper to queue a stripe for scrub")
-Fixes: 1f2030ff6e49 ("btrfs: scrub: respect the read-only flag during repair")
-CC: stable@vger.kernel.org # 6.6+
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+  [5.199782] BTRFS info (device nvme1n1p1: state M): use zstd compression, level 9
+
+where 'M' is for remount, there's one more ":" that does not conform to
+the format. Remove it.
+
+Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/scrub.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ fs/btrfs/messages.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index fa25004ab04e..4b22cfe9a98c 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -1012,6 +1012,7 @@ static void scrub_stripe_read_repair_worker(struct work_struct *work)
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
- 	int num_copies = btrfs_num_copies(fs_info, stripe->bg->start,
- 					  stripe->bg->length);
-+	unsigned long repaired;
- 	int mirror;
- 	int i;
+diff --git a/fs/btrfs/messages.c b/fs/btrfs/messages.c
+index c96dd66fd0f7..210d9c82e2ae 100644
+--- a/fs/btrfs/messages.c
++++ b/fs/btrfs/messages.c
+@@ -7,7 +7,7 @@
  
-@@ -1078,16 +1079,15 @@ static void scrub_stripe_read_repair_worker(struct work_struct *work)
- 	 * Submit the repaired sectors.  For zoned case, we cannot do repair
- 	 * in-place, but queue the bg to be relocated.
- 	 */
--	if (btrfs_is_zoned(fs_info)) {
--		if (!bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors))
-+	bitmap_andnot(&repaired, &stripe->init_error_bitmap, &stripe->error_bitmap,
-+		      stripe->nr_sectors);
-+	if (!sctx->readonly && !bitmap_empty(&repaired, stripe->nr_sectors)) {
-+		if (btrfs_is_zoned(fs_info)) {
- 			btrfs_repair_one_zone(fs_info, sctx->stripes[0].bg->start);
--	} else if (!sctx->readonly) {
--		unsigned long repaired;
--
--		bitmap_andnot(&repaired, &stripe->init_error_bitmap,
--			      &stripe->error_bitmap, stripe->nr_sectors);
--		scrub_write_sectors(sctx, stripe, repaired, false);
--		wait_scrub_stripe_io(stripe);
-+		} else {
-+			scrub_write_sectors(sctx, stripe, repaired, false);
-+			wait_scrub_stripe_io(stripe);
-+		}
- 	}
+ #ifdef CONFIG_PRINTK
  
- 	scrub_stripe_report_errors(sctx, stripe);
+-#define STATE_STRING_PREFACE	": state "
++#define STATE_STRING_PREFACE	" state "
+ #define STATE_STRING_BUF_LEN	(sizeof(STATE_STRING_PREFACE) + BTRFS_FS_STATE_COUNT + 1)
+ 
+ /*
 -- 
 2.44.0
 
