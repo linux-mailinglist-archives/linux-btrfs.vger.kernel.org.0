@@ -1,224 +1,201 @@
-Return-Path: <linux-btrfs+bounces-4038-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4039-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B8AD89CF2B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 02:06:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89A6F89CF86
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 02:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 156131F233EE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 00:06:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 161AE284F6E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 00:43:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE550376;
-	Tue,  9 Apr 2024 00:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D0F5660;
+	Tue,  9 Apr 2024 00:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WNV5wAyG";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WNV5wAyG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lRsLvak+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E1A370;
-	Tue,  9 Apr 2024 00:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D162A15C3;
+	Tue,  9 Apr 2024 00:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712621181; cv=none; b=Dqd//k9UKJRcJZMGKrxey765oHAb/2MG6DUJRZQc+Fup2hQe9QY87NGhw8SjA5freYHTsWBjziRh78VBI7Zvpscw9YUTeds89PUcyHzwUz/fxMTWi0MjyjrxkFksnt61ylJleLa/JF8Sx7Yn2cvU83j7eVUGRM+gj7gN1UQYfX8=
+	t=1712623405; cv=none; b=YZO4bn29OwEAMjmgiPrwusjLu5QjXOtPO7aGnSoOZFxyKgFWdrOpjvrDfAWSFu7UhymVGLxH5aGnj8w4rV0xz7NpIUqLPi/9EpFhwNA7qy6hpwBr5i1jPo+Bt5sO2hTNLXFKo8TLKbELGdYX8bAuAOGZ3MnKIVjS8kq9gSiEl7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712621181; c=relaxed/simple;
-	bh=y27PhrCaVviptffe0v4Ndes0B1MlEF2u32PvBAqdJwA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PQWmwQjnxgOPXVfSPP+nCFvGOxPRl6+ykGLajg46YRu2jsTgtP8rnkQ13lQpwUPSJub/h7iEo/40HR4u8IRW3p/5zINesMGuLNI/5qSC8eNXTxlicSkZUcbgDNDq0ASN+oPPdgQc3jbuWMW1VG33f87I64/DfNOViwHA98URBKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WNV5wAyG; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WNV5wAyG; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id F31AE20666;
-	Tue,  9 Apr 2024 00:06:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712621177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=DGpvuEssG0+e8y0f5Ti0Sl29gMmDI+6BYc8lFPvzKJ0=;
-	b=WNV5wAyGQcd/Pv4L8Ti0olwsPqpZbB3OAiKwe5Nu5VzKPbSg3tPULzOqxRH6/6HPnwWeg9
-	SjpiCXf2VbE65N02YEwphlQtoPfPa+Mn+JP59ikWnXrlh5gP5z8iH0EeRxF99w93SKqDJ5
-	j8WAa3usqxPvc2mqGlpkTLmOn3ALfto=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=WNV5wAyG
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712621177; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=DGpvuEssG0+e8y0f5Ti0Sl29gMmDI+6BYc8lFPvzKJ0=;
-	b=WNV5wAyGQcd/Pv4L8Ti0olwsPqpZbB3OAiKwe5Nu5VzKPbSg3tPULzOqxRH6/6HPnwWeg9
-	SjpiCXf2VbE65N02YEwphlQtoPfPa+Mn+JP59ikWnXrlh5gP5z8iH0EeRxF99w93SKqDJ5
-	j8WAa3usqxPvc2mqGlpkTLmOn3ALfto=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AE4141376F;
-	Tue,  9 Apr 2024 00:06:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id LP7CFXeGFGZ8XQAAn2gu4w
-	(envelope-from <wqu@suse.com>); Tue, 09 Apr 2024 00:06:15 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH v2] btrfs: fix wrong block_start calculation for btrfs_drop_extent_map_range()
-Date: Tue,  9 Apr 2024 09:36:12 +0930
-Message-ID: <f6e36de0cc45247c30c645764f3ffe4f6a487007.1712621026.git.wqu@suse.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712623405; c=relaxed/simple;
+	bh=1aI4ho1DPT61jrjNxaxtPRo7yIfF3GJHyqhXxYEgWW4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HLw5A6GE3Mo7gLj3jj0HYPTomPfFIVNzxeNb0apAVW+22FXB9xO13YPNF3GhosE86L3uy0d3QM6UrwOYsp6DEA5r/dhoCrzYQ59qdhhX8XSF8LD8N807GykbdCo7VbZF3EzubdBR8ZaylaxEKkiBIOWr7YAG/aHxNZaxFmD87zI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lRsLvak+; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712623403; x=1744159403;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1aI4ho1DPT61jrjNxaxtPRo7yIfF3GJHyqhXxYEgWW4=;
+  b=lRsLvak+taU5UISTP2XaKB+2PhqarYSPLOK5Ky2gliAh9Y66ii6FD0Cx
+   pv7ALibJecD+oo9XM+Gg6g0IZFQQIq4g8uFb/axnVt4PQY7XWIBu5xj6w
+   /QDKv5NF3/1kTdwsv3V3NhsuX7BzSaIuepu01C1TYIp0r+AWiRlQCmJDj
+   mwdmYCqkBpkmcXsDJiXqczdAqMdsLcoxlshHpt/pcOp/BQP3JA31laNwn
+   j7uJKLpJgmGkvibz7oJj7cvRRjbDYldxdBEJZa87a8BZZCkTT8NmvqTg3
+   1fZ1lwDqNoHRSECPV23+yY32plLO8Am9dAYUFqn4dlxetUuKLJkc1lVin
+   A==;
+X-CSE-ConnectionGUID: 7o0jA+HNTC6ou6hKSBK6RQ==
+X-CSE-MsgGUID: jg2FauJBRweVxKAUwGGFKA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="19075140"
+X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
+   d="scan'208";a="19075140"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 17:43:17 -0700
+X-CSE-ConnectionGUID: ASMfITtESEWg+r1BXJk1PQ==
+X-CSE-MsgGUID: LTqIP4DKSSqjEp1GmnW6AA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
+   d="scan'208";a="24763419"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.209.37.24])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 17:43:11 -0700
+Date: Mon, 8 Apr 2024 17:43:10 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: Ira Weiny <ira.weiny@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/26] cxl/core: Simplify cxl_dpa_set_mode()
+Message-ID: <ZhSPHvoTHl28GXt1@aschofie-mobl2>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-5-b7b00d623625@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: F31AE20666
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240324-dcd-type2-upstream-v1-5-b7b00d623625@intel.com>
 
-[BUG]
-During my extent_map cleanup/refactor, with extra sanity checks,
-extent-map-tests::test_case_7() would not pass the checks.
+On Sun, Mar 24, 2024 at 04:18:08PM -0700, Ira Weiny wrote:
+> cxl_dpa_set_mode() checks the mode for validity two times, once outside
+> of the DPA RW semaphore and again within.
 
-The problem is, after btrfs_drop_extent_map_range(), the resulted
-extent_map has a @block_start way too large.
-Meanwhile my btrfs_file_extent_item based members are returning a
-correct @disk_bytenr/@offset combination.
+Not true. It only checks mode once before the lock. It checks for
+capacity after the lock. If it didn't check mode before the lock,
+then unsupported modes would fall through.
 
-The extent map layout looks like this:
+> The function is not in a critical path.
 
-     0        16K    32K       48K
-     | PINNED |      | Regular |
+Implying what here?  OK to check twice (even though it wasn't)
+or OK to expand scope of locking.
 
-The regular em at [32K, 48K) also has 32K @block_start.
+> Prior to Dynamic Capacity the extra check was not much
+> of an issue.  The addition of DC modes increases the complexity of
+> the check.
+> 
+> Simplify the mode check before adding the more complex DC modes.
+> 
 
-Then drop range [0, 36K), which should shrink the regular one to be
-[36K, 48K).
-However the @block_start is incorrect, we expect 32K + 4K, but got 52K.
+The addition of the DC mode check doesn't seem complex.
 
-[CAUSE]
-Inside btrfs_drop_extent_map_range() function, if we hit an extent_map
-that covers the target range but is still beyond it, we need to split
-that extent map into half:
+Pardon my picking at the words, but if you'd like to refactor the
+function, just say so. The final result is a bit more readable, but
+also adding the DC mode checks without refactoring would read fine
+also.
 
-	|<-- drop range -->|
-		 |<----- existing extent_map --->|
+and...a bit spacing nit below -
 
-And if the extent map is not compressed, we need to forward
-extent_map::block_start by the difference between the end of drop range
-and the extent map start.
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes for v1:
+> [iweiny: new patch]
+> [Jonathan: based on getting rid of the loop in cxl_dpa_set_mode]
+> [Jonathan: standardize on resource_size() == 0]
+> ---
+>  drivers/cxl/core/hdm.c | 45 ++++++++++++++++++---------------------------
+>  1 file changed, 18 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
+> index 7d97790b893d..66b8419fd0c3 100644
+> --- a/drivers/cxl/core/hdm.c
+> +++ b/drivers/cxl/core/hdm.c
+> @@ -411,44 +411,35 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
+>  	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
+>  	struct cxl_dev_state *cxlds = cxlmd->cxlds;
+>  	struct device *dev = &cxled->cxld.dev;
+> -	int rc;
+>  
+> +	guard(rwsem_write)(&cxl_dpa_rwsem);
+> +	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE)
+> +		return -EBUSY;
+> +
+> +	/*
+> +	 * Check that the mode is supported by the current partition
+> +	 * configuration
+> +	 */
+>  	switch (mode) {
+>  	case CXL_DECODER_RAM:
+> +		if (!resource_size(&cxlds->ram_res)) {
+> +			dev_dbg(dev, "no available ram capacity\n");
+> +			return -ENXIO;
+> +		}
+> +		break;
+>  	case CXL_DECODER_PMEM:
+> +		if (!resource_size(&cxlds->pmem_res)) {
+> +			dev_dbg(dev, "no available pmem capacity\n");
+> +			return -ENXIO;
+> +		}
+>  		break;
+>  	default:
+>  		dev_dbg(dev, "unsupported mode: %d\n", mode);
+>  		return -EINVAL;
+>  	}
+>  
 
-However in that particular case, the difference is calculated using
-(start + len - em->start).
+delete extra line
 
-The problem is @start can be modified if the drop range covers any
-pinned extent.
-
-This leads to wrong calculation, and would be caught by my later
-extent_map sanity checks, which checks the em::block_start against
-btrfs_file_extent_item::disk_bytenr + btrfs_file_extent_item::offset.
-
-This is a regression caused by commit c962098ca4af ("btrfs: fix
-incorrect splitting in btrfs_drop_extent_map_range"), which removed the
-@len update for pinned extents.
-
-[FIX]
-Fix it by avoiding using @start completely, and use @end - em->start
-instead, which @end is exclusive bytenr number.
-
-And update the test case to verify the @block_start to prevent such
-problem from happening.
-
-Thankfully this is not going to lead to any data corruption, as IO path
-does not utilize btrfs_drop_extent_map_range() with @skip_pinned set.
-
-So this fix is only here for the sake of consistency/correctness.
-
-CC: stable@vger.kernel.org # 6.5+
-Fixes: c962098ca4af ("btrfs: fix incorrect splitting in btrfs_drop_extent_map_range")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Remove the mention of possible corruption
-  Thankfully this bug does not affect IO path thus it's fine.
-
-- Explain why c962098ca4af is the cause
----
- fs/btrfs/extent_map.c             | 2 +-
- fs/btrfs/tests/extent-map-tests.c | 6 +++++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 471654cb65b0..955ce300e5a1 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -799,7 +799,7 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *inode, u64 start, u64 end,
- 					split->block_len = em->block_len;
- 					split->orig_start = em->orig_start;
- 				} else {
--					const u64 diff = start + len - em->start;
-+					const u64 diff = end - em->start;
- 
- 					split->block_len = split->len;
- 					split->block_start += diff;
-diff --git a/fs/btrfs/tests/extent-map-tests.c b/fs/btrfs/tests/extent-map-tests.c
-index 253cce7ffecf..80e71c5cb7ab 100644
---- a/fs/btrfs/tests/extent-map-tests.c
-+++ b/fs/btrfs/tests/extent-map-tests.c
-@@ -818,7 +818,6 @@ static int test_case_7(struct btrfs_fs_info *fs_info)
- 		test_err("em->len is %llu, expected 16K", em->len);
- 		goto out;
- 	}
--
- 	free_extent_map(em);
- 
- 	read_lock(&em_tree->lock);
-@@ -847,6 +846,11 @@ static int test_case_7(struct btrfs_fs_info *fs_info)
- 		goto out;
- 	}
- 
-+	if (em->block_start != SZ_32K + SZ_4K) {
-+		test_err("em->block_start is %llu, expected 36K", em->block_start);
-+		goto out;
-+	}
-+
- 	free_extent_map(em);
- 
- 	read_lock(&em_tree->lock);
--- 
-2.44.0
-
+> -	down_write(&cxl_dpa_rwsem);
+> -	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE) {
+> -		rc = -EBUSY;
+> -		goto out;
+> -	}
+> -
+> -	/*
+> -	 * Only allow modes that are supported by the current partition
+> -	 * configuration
+> -	 */
+> -	if (mode == CXL_DECODER_PMEM && !resource_size(&cxlds->pmem_res)) {
+> -		dev_dbg(dev, "no available pmem capacity\n");
+> -		rc = -ENXIO;
+> -		goto out;
+> -	}
+> -	if (mode == CXL_DECODER_RAM && !resource_size(&cxlds->ram_res)) {
+> -		dev_dbg(dev, "no available ram capacity\n");
+> -		rc = -ENXIO;
+> -		goto out;
+> -	}
+> -
+>  	cxled->mode = mode;
+> -	rc = 0;
+> -out:
+> -	up_write(&cxl_dpa_rwsem);
+> -
+> -	return rc;
+insert blank line
+> +	return 0;
+>  }
+>  
+>  int cxl_dpa_alloc(struct cxl_endpoint_decoder *cxled, unsigned long long size)
+> 
+> -- 
+> 2.44.0
+> 
 
