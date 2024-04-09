@@ -1,214 +1,191 @@
-Return-Path: <linux-btrfs+bounces-4051-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4052-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C26989D78C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 13:03:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AFFC89D7C3
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 13:21:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DDC81F25064
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 11:03:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFBE9B23D63
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 11:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97B898565E;
-	Tue,  9 Apr 2024 11:02:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF5386242;
+	Tue,  9 Apr 2024 11:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sefPRXwB";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sefPRXwB"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hj/lgSxK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jF5VPWyf";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AVJ5pYWa";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0Qd3MePn"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D176F7C0B0;
-	Tue,  9 Apr 2024 11:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79A385954;
+	Tue,  9 Apr 2024 11:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712660577; cv=none; b=sTAWdoc0S9eG9YyXIwz7XiqknpLsHOAve5Aes8/KtljTLUFAuf8M8HT5tBfYiY9NYA7Co9l0L8UVyWZ+OAudt0LaU2daisNpY6TCHdGhBW820T5URbVnPM27IUDVKhXz8KCz91O/MUxP9BU7lPKD4yKi8i2Qw4tz9Q2vTseuoFE=
+	t=1712661648; cv=none; b=BXZgb1q66ekpX4dGRjcLQIZ781zcfxZMcGM5vOTUbIJlxX1kgw5yDdLoghsLq2fAR+w/AtLJ7Bq/kIbXVhFKqSI8yVNXr8WdCYE0Wesxb5VQkikMMkAk8a5krYAzNDo2oKGWFTRD17TULrkBVa4dcI2GcF9j9FcU6MEhWhJC+gE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712660577; c=relaxed/simple;
-	bh=pYyuJ9ISMWsuY+oEZ/aX4xJmk9+Fpawxw2k2/RaUYfU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EU2xqSg+fB+M/0JVzQcopfqOlTpE0rfCNER9Uy0dZAS0r+tLhBRRVHomFCtkXTH6KFpiWan4IH1JTKRA+HArhDQ9lsKfgGR3fwv2I46HX8y/daF5mCwLowV3iyaD4AW1PCY4Bia1VQr0hziOEda6uJdAdihqCdz22fUItp96Soc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sefPRXwB; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sefPRXwB; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	s=arc-20240116; t=1712661648; c=relaxed/simple;
+	bh=8e5KM7LDCGv6Vaf2cfnG/O4ResxMWjR4xqsf8dTep2g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uh5wyBWmXJ8dKuoQQhftlxKUcQ2I8pkH4kI3eX0Oagar7m2i3zn5wMPfO121Xh3HriJKDItuV+XaloHKllYDNals2mFj8Teuc87bO5Pe5x6V23HSa0XnVgQwaab6Ek6tyUvqWMQSnQiy7sGMMuJH/H6MDSvaeJo24YLPcQcx/kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hj/lgSxK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jF5VPWyf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AVJ5pYWa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0Qd3MePn; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1749F2094B;
-	Tue,  9 Apr 2024 11:02:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712660574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=R+soQub59ruqI3xbzBPsOOqvCkHX2sSGQ4UJI06UDKY=;
-	b=sefPRXwBub57fyY5WpRLQmAVae+xMzuPKjETDSIGiGuYBPuYqAagyL+h0HaeNcheO4Wtnc
-	1TYkGckIOjwlELeA0sAlaa6MlY8hiPMk0dlDX50SzuW97A6sypGzJhBSZ4mEr5LARufgDw
-	YlUNmX8xnsK10VJ11oJbvuFqvNyqtD8=
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E140B20963;
+	Tue,  9 Apr 2024 11:20:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712661645;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3LodrMtaby7zow8S0/Shuk8HHX1B0xsGoQLnrgz0bWc=;
+	b=hj/lgSxKrXPUl6CQFMH5SlnNrj6jcEFltdKHbJpE6tuyeFvyoT2Nt1I5fsPmZTAJQ3PDif
+	LpSh6LOXSp8vUubMyVoLUfWk5tBk6erPI7LpNfzpYhHkPR5VAJtegA/gCDKINIaQ05KHVP
+	xVW0NF8UK8SWFSsx2TAre4fMbBUm0g8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712661645;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3LodrMtaby7zow8S0/Shuk8HHX1B0xsGoQLnrgz0bWc=;
+	b=jF5VPWyfUa9z4Gj8pD9EhZMtSyHOMlA0JbyTCcCwTIH1gm16QkB2MCZ3AzLaNPI/N5kllY
+	egV02+u1fl+ghhDA==
 Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712660574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=R+soQub59ruqI3xbzBPsOOqvCkHX2sSGQ4UJI06UDKY=;
-	b=sefPRXwBub57fyY5WpRLQmAVae+xMzuPKjETDSIGiGuYBPuYqAagyL+h0HaeNcheO4Wtnc
-	1TYkGckIOjwlELeA0sAlaa6MlY8hiPMk0dlDX50SzuW97A6sypGzJhBSZ4mEr5LARufgDw
-	YlUNmX8xnsK10VJ11oJbvuFqvNyqtD8=
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AVJ5pYWa;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=0Qd3MePn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712661644;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3LodrMtaby7zow8S0/Shuk8HHX1B0xsGoQLnrgz0bWc=;
+	b=AVJ5pYWaSPOv362zqXtInTxWk5erJsgXlnd/9Rb/g1jn9zBD4R8iGSyXKUtFuIajRP8G8H
+	o4Ye+RFhp2KJ11Y0QuWW1S5DIQ5PLkm24UXUmsK8SYyHk2KSvaoGKeiRAMlqZ3u2Lzg2S6
+	TNqrDsTv9BgrHS4YCabduIlm4LwTKfE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712661644;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3LodrMtaby7zow8S0/Shuk8HHX1B0xsGoQLnrgz0bWc=;
+	b=0Qd3MePnhxQxVJIQBcFPMfITSd3pGHaAvJS9PBT8smIrdNMwQCHu7tgKwlIuvl3UhrW9j8
+	1DaQhX3aATzROkAw==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 80F761332F;
-	Tue,  9 Apr 2024 11:02:52 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C50391332F;
+	Tue,  9 Apr 2024 11:20:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id dep1DVwgFWYoWwAAn2gu4w
-	(envelope-from <wqu@suse.com>); Tue, 09 Apr 2024 11:02:52 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v3] btrfs: fix wrong block_start calculation for btrfs_drop_extent_map_range()
-Date: Tue,  9 Apr 2024 20:32:34 +0930
-Message-ID: <2975263064f93759a96eb36e5795b9f3cc2ce423.1712660483.git.wqu@suse.com>
-X-Mailer: git-send-email 2.44.0
+	id amHxL4wkFWY6XwAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Tue, 09 Apr 2024 11:20:44 +0000
+Date: Tue, 9 Apr 2024 13:13:19 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: Re: [PATCH v2] fstests: btrfs: redirect stdout of "btrfs subvolume
+ snapshot" to fix output change
+Message-ID: <20240409111319.GA3492@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240406051847.75347-1-wqu@suse.com>
+ <8824a2ee-7325-4a14-ac64-dcedc03c14b9@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8824a2ee-7325-4a14-ac64-dcedc03c14b9@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -4.21
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: E140B20963
 X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.21 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
 	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
+	DKIM_TRACE(0.00)[suse.cz:+]
 
-[BUG]
-During my extent_map cleanup/refactor, with extra sanity checks,
-extent-map-tests::test_case_7() would not pass the checks.
+On Mon, Apr 08, 2024 at 12:46:18PM +0800, Anand Jain wrote:
+> On 4/6/24 13:18, Qu Wenruo wrote:
+> > [BUG]
+> > All the touched test cases would fail after btrfs-progs commit
+> > 5f87b467a9e7 ("btrfs-progs: subvolume: output the prompt line only when
+> > the ioctl succeeded") due to golden output mismatch.
+> > 
+> > [CAUSE]
+> > Although the patch I sent to the mail list doesn't change the output at
+> > all but only a timing change, David uses this patch to unify the output
+> > of "btrfs subvolume create" and "btrfs subvolume snapshot".
+> > 
+> > Unfortunately this changes the output and causes mismatch with
+> > golden output.
+> > 
+> > [FIX]
+> > Just redirect stdout of "btrfs subvolume snapshot" to $seqres.full.
+> > Any error from "btrfs subvolume" subgroup would lead to error messages
+> > into stderr, and cause golden output mismatch.
+> > 
+> > This can be comprehensively greped by
+> > 'grep -IR "Create a" tests/btrfs/*.out' command.
+> > 
+> > In fact, we have around 274 "btrfs subvolume snapshot|create" calls in the
+> > existing test cases, meanwhile only around 61 calls are populating
+> > golden output (22 for subvolume creation, and 39 for snapshot creation).
+> > 
+> > Thus majority of the snapshot/subvolume creation is not populating
+> > golden output already.
+> > 
+> 
+> While golden output is better verification method in terms of
+> accuracy, but, it falls short in verifying command exit codes.
+> I personally think the run_btrfs_progs approach is better for
+> 'btrfs subvolume snapshot'. It allows us to verify the command
+> status without relying on the stdout.
+> But, past discussions favored the golden output verification
+> method instead of run_btrfs_progs.
 
-The problem is, after btrfs_drop_extent_map_range(), the resulted
-extent_map has a @block_start way too large.
-Meanwhile my btrfs_file_extent_item based members are returning a
-correct @disk_bytenr/@offset combination.
+I thought the whole point here was to depart from the golden output, at
+least in selected cases, and only in btrfs/ subdirectory so it does not
+accidentally break other filesystems' testing.
 
-The extent map layout looks like this:
-
-     0        16K    32K       48K
-     | PINNED |      | Regular |
-
-The regular em at [32K, 48K) also has 32K @block_start.
-
-Then drop range [0, 36K), which should shrink the regular one to be
-[36K, 48K).
-However the @block_start is incorrect, we expect 32K + 4K, but got 52K.
-
-[CAUSE]
-Inside btrfs_drop_extent_map_range() function, if we hit an extent_map
-that covers the target range but is still beyond it, we need to split
-that extent map into half:
-
-	|<-- drop range -->|
-		 |<----- existing extent_map --->|
-
-And if the extent map is not compressed, we need to forward
-extent_map::block_start by the difference between the end of drop range
-and the extent map start.
-
-However in that particular case, the difference is calculated using
-(start + len - em->start).
-
-The problem is @start can be modified if the drop range covers any
-pinned extent.
-
-This leads to wrong calculation, and would be caught by my later
-extent_map sanity checks, which checks the em::block_start against
-btrfs_file_extent_item::disk_bytenr + btrfs_file_extent_item::offset.
-
-This is a regression caused by commit c962098ca4af ("btrfs: fix
-incorrect splitting in btrfs_drop_extent_map_range"), which removed the
-@len update for pinned extents.
-
-[FIX]
-Fix it by avoiding using @start completely, and use @end - em->start
-instead, which @end is exclusive bytenr number.
-
-And update the test case to verify the @block_start to prevent such
-problem from happening.
-
-Thankfully this is not going to lead to any data corruption, as IO path
-does not utilize btrfs_drop_extent_map_range() with @skip_pinned set.
-
-So this fix is only here for the sake of consistency/correctness.
-
-CC: stable@vger.kernel.org # 6.5+
-Fixes: c962098ca4af ("btrfs: fix incorrect splitting in btrfs_drop_extent_map_range")
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Remove the mention of possible corruption
-  Thankfully this bug does not affect IO path thus it's fine.
-
-- Explain why c962098ca4af is the cause
-
-v3:
-- Fix an accidental removal of a newline
----
- fs/btrfs/extent_map.c             | 2 +-
- fs/btrfs/tests/extent-map-tests.c | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 471654cb65b0..955ce300e5a1 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -799,7 +799,7 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *inode, u64 start, u64 end,
- 					split->block_len = em->block_len;
- 					split->orig_start = em->orig_start;
- 				} else {
--					const u64 diff = start + len - em->start;
-+					const u64 diff = end - em->start;
- 
- 					split->block_len = split->len;
- 					split->block_start += diff;
-diff --git a/fs/btrfs/tests/extent-map-tests.c b/fs/btrfs/tests/extent-map-tests.c
-index 253cce7ffecf..47b5d301038e 100644
---- a/fs/btrfs/tests/extent-map-tests.c
-+++ b/fs/btrfs/tests/extent-map-tests.c
-@@ -847,6 +847,11 @@ static int test_case_7(struct btrfs_fs_info *fs_info)
- 		goto out;
- 	}
- 
-+	if (em->block_start != SZ_32K + SZ_4K) {
-+		test_err("em->block_start is %llu, expected 36K", em->block_start);
-+		goto out;
-+	}
-+
- 	free_extent_map(em);
- 
- 	read_lock(&em_tree->lock);
--- 
-2.44.0
-
+What past discussions favored does not seem to satisfy our needs and as
+btrfs-progs are evolving we're hitting random test breakage just because
+some message has changed. The testsuite should verify what matters, ie.
+return code, state of the filesystem etc, not exact command output.
+There's high correlation between output and correctness, yes, but this
+is too fragile.
 
