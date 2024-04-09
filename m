@@ -1,89 +1,65 @@
-Return-Path: <linux-btrfs+bounces-4070-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4071-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EDEA89E04E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 18:25:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0646A89E045
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 18:23:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5476B2EA65
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 16:22:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0A592821F9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 16:23:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5844A13E05B;
-	Tue,  9 Apr 2024 16:22:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ABD013E88A;
+	Tue,  9 Apr 2024 16:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="izuwsy8o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uOf15R97"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4A0137C2A;
-	Tue,  9 Apr 2024 16:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34F013E3EF;
+	Tue,  9 Apr 2024 16:22:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712679743; cv=none; b=WfU6A/s9490rbaAlMLuNN9GtIIyAqJCLhG3SexJjWw1VWzT3K3cjLIIYKmFvAQo2i8JlBBG4jYohVCg/NT+68nrJq0tsoENL/IugkRGVWUxn0kYtmMI7E+KIWjvtQybgExvRKQYUCl4iXlEVYxYRVfdFA3DCkSm8Pu06EtATJdY=
+	t=1712679753; cv=none; b=GVIDf/Rau8FvjBI5wDdXtGAhsiQQN3hTcIGgB5toGTb+HqSmKtCTKD7Eq+zl/XclKExfkRH1qR6Juo+RO5Ggssa9nflCG2zYIsTA0mG/noQIss1IVpiwtdpB001wEIxOcOzONo0p/oqXoCN929ioc0LIeOE37ACMuPGHck1Fq58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712679743; c=relaxed/simple;
-	bh=JxIZLeYYKA5Iqp3UIL0+XuqsHCRG8TQtQnZnQZxVDrQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iuO+hPHrv42iUYeGdSDBVYU3J1C5ATm4YmOP1OL2Be+25ZHnjeoRRuracCR2ccV1xvr0XnxPgXSdmWbn5BnjEXfduvFUFpCOPsHLa8PjEKXknUix5qUQ+tr0u8PSy0xOYZHFr0FaHzeEWfTp53PgQ97ZVdg1Jl/2Me+2MpgAyNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=izuwsy8o; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e3f6f03594so16487945ad.0;
-        Tue, 09 Apr 2024 09:22:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712679741; x=1713284541; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tD47IJ6kQxTtIB88NMneMVe86ozyK03KRGipxA4mLDw=;
-        b=izuwsy8obxhYNMUNfa1V9hTbc6eu0GOzCMmYlHxxRgOeEJbBQECdMrPiJxXwdMh4Fg
-         xSWlaCKLjDDvobmLB3IS5RiqDQ4BM+75GpkOJpM7ljG+Itbp55Ikn+th4L+VqtTQnoJX
-         nKv7Z/Y6TY+E4ddcEXb9xIRRrDX9Mdr5e0wTgFjvdrQc1p4Xql/3/wb2HhRg2/qyT8jy
-         PzWlmz2JduZTsAiNNiVDkoQKUBql6WLKkdbO1KQJaUKBVavxC6o7Xn9+/PMUMlu5M+7h
-         qSGc+JAv/lRAWe4PIfIY2zmDHQXTGNxMILfu34E8zSiZM6SHfmq8ga2W6jLeBTFgNjx5
-         0kjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712679741; x=1713284541;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tD47IJ6kQxTtIB88NMneMVe86ozyK03KRGipxA4mLDw=;
-        b=BiJ7x0xwlDdFZ0psTUqSmG98RQqNlQjoPqRQ7qmKBV1KBnBEzLJ4kKf791ZPxyulds
-         Zqx1V4WtvWuU5UGU2QKcCOnhYbbhMZU/THEqZDZc6skKtxSceq2RwWtSZvFQ9qfTBTes
-         2dw0XSUkuTltorXN9oT+OXc3NHR3CsH/492VHI4ZtPkvR3MKCutIuM7DptMjH6yCUz9c
-         vqNzLNJTVr+RUSSCqWvCu7gDUuapnDZ+3Hu3/qZ3NGaH2XSm1fc05I8C3ddC8/z9lwYL
-         xzLoEJT+EdcvsJkmvJ9qjXV9O4MF1uq3jnRr3r6mU5fsOr9E7LwtYrpgGeD7MawT359A
-         0/yw==
-X-Forwarded-Encrypted: i=1; AJvYcCVj3kXhgv4qRJJKebD+kLpBO/AiaEehMp4u0CWFp13PqXKdiV06Wi3yJO2VsTQ+UBvgBG/YBLiJ9YdOEn/Zar51sfQvl8Emafo4lm8Iaw/dJCvoKRXmAdDRI9kI7gUGPTCjni/fjL/591v79i2GEftco1qz6+TahHXIwyrLpGvewUzc1uU=
-X-Gm-Message-State: AOJu0Yxkbds+k3E4yoPLc0nKkMt0xChuwgEsJWoDP/Nca6T/B8VKNTAg
-	74dmAcVbz4l3ch4FDnzMuyl24UVz8J1vagyUMgcxh1f8eCMbAYfX
-X-Google-Smtp-Source: AGHT+IEpvJvIGTSdUOXn55foN6dxhGocH7+e1yBuo1jkO0TWg0FAeahSCO2QqKfRiDXM8w0fA38H3g==
-X-Received: by 2002:a17:902:d587:b0:1e4:9ad5:7522 with SMTP id k7-20020a170902d58700b001e49ad57522mr273599plh.21.1712679741025;
-        Tue, 09 Apr 2024 09:22:21 -0700 (PDT)
-Received: from debian ([2601:641:300:14de:df2a:d319:d307:86c9])
-        by smtp.gmail.com with ESMTPSA id l6-20020a170903120600b001e2814e08b9sm9048820plh.32.2024.04.09.09.22.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 09:22:20 -0700 (PDT)
-From: fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date: Tue, 9 Apr 2024 09:22:00 -0700
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 17/26] dax/region: Create extent resources on DAX region
- driver load
-Message-ID: <ZhVrKGHbR032FxS1@debian>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-17-b7b00d623625@intel.com>
+	s=arc-20240116; t=1712679753; c=relaxed/simple;
+	bh=s81ceGOY/UaeALO8XB1vF4xIKP6ybz9DnJl/IEpTMSM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UIbPt3n29SPe3OM1HQr4vEBpyYGCfPIVdAkE2fllySvx4PYg/zapleLTCLHq9O7WUlasVq0hkEbOVJZCGnYCs3cXVHb4znHD7OQ39zHRu6eps8Xu2KwO2XeI2ZpU2jZjG1lXChXjVEliMPJoBvpapLfa3TBbf3yG/h6F22g5P5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uOf15R97; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 783B4C433F1;
+	Tue,  9 Apr 2024 16:22:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712679753;
+	bh=s81ceGOY/UaeALO8XB1vF4xIKP6ybz9DnJl/IEpTMSM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uOf15R97CfO4NRrpGlR+ut/EZaH8gJePsx76fVYZ2CwpkY6p2z9oJg8boVPOdOoce
+	 WETlWuf5gfSinxoonTC04g5Kc3Sj2wZe9v17KvknHY3kunNrQaSO0L6nThQ5p/8nRJ
+	 nKKPh7+OV5XuHOCgKUobpVWsMEUosqNN+Oy7MtOavp44t3NaOWktoHNU3flF3rj12P
+	 bxvOmVWzXpwkP+BPmdlgreV35svfYgm5TTPVIxw45uz3NeIFb27nURTpm/B4vJffGz
+	 rHBMtsPRwqA5Of0yoDXPSPXCbiEUfKL6dAA1Ko3ghM2b9lkhjl0APrqbDbXL3wc/MZ
+	 nHjQ03z4Hsjsg==
+Date: Tue, 9 Apr 2024 09:22:32 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v3 01/13] fs: fiemap: add physical_length field to extents
+Message-ID: <20240409162232.GA6367@frogsfrogsfrogs>
+References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+ <1ba5bfccccbf4ff792f178268badde056797d0c4.1712126039.git.sweettea-kernel@dorminy.me>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -92,202 +68,157 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-17-b7b00d623625@intel.com>
+In-Reply-To: <1ba5bfccccbf4ff792f178268badde056797d0c4.1712126039.git.sweettea-kernel@dorminy.me>
 
-On Sun, Mar 24, 2024 at 04:18:20PM -0700, ira.weiny@intel.com wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
+On Wed, Apr 03, 2024 at 03:22:42AM -0400, Sweet Tea Dorminy wrote:
+> Some filesystems support compressed extents which have a larger logical
+> size than physical, and for those filesystems, it can be useful for
+> userspace to know how much space those extents actually use. For
+> instance, the compsize [1] tool for btrfs currently uses btrfs-internal,
+> root-only ioctl to find the actual disk space used by a file; it would
+> be better and more useful for this information to require fewer
+> privileges and to be usable on more filesystems. Therefore, use one of
+> the padding u64s in the fiemap extent structure to return the actual
+> physical length; and, for now, return this as equal to the logical
+> length.
 > 
-> DAX regions mapping dynamic capacity partitions introduce a requirement
-> for the memory backing the region to come and go as required.  This
-> results in a DAX region with sparse areas of memory backing.  To track
-> the sparseness of the region, DAX extent objects need to track
-> sub-resource information as a new layer between the DAX region resource
-> and DAX device range resources.
+> [1] https://github.com/kilobyte/compsize
 > 
-> Recall that DCD extents may be accepted when a region is first created.
-> Extend this support on region driver load.  Scan existing extents and
-> create DAX extent resources as a first step to DAX extent realization.
-> 
-> The lifetime of a DAX extent is tricky to manage because the extent life
-> may end in one of two ways.  First, the device may request the extent be
-> released.  Second, the region may release the extent when it is
-> destroyed without hardware involvement.  Support extent release without
-> hardware involvement first.  Subsequent patches will provide for
-> hardware to request extent removal.
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-Trivial comments inline.
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 > ---
-> Changes for v1
-> [iweiny: remove xarrays]
-> [iweiny: remove as much of extra reference stuff as possible]
-> [iweiny: Move extent resource handling to core DAX code]
-> ---
->  drivers/dax/bus.c         | 55 +++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/dax/cxl.c         | 43 ++++++++++++++++++++++++++++++++++--
->  drivers/dax/dax-private.h | 12 +++++++++++
->  3 files changed, 108 insertions(+), 2 deletions(-)
+>  Documentation/filesystems/fiemap.rst | 28 +++++++++++++++++-------
+>  fs/ioctl.c                           |  3 ++-
+>  include/uapi/linux/fiemap.h          | 32 ++++++++++++++++++++++------
+>  3 files changed, 47 insertions(+), 16 deletions(-)
 > 
-> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> index 903566aff5eb..4d5ed7ab6537 100644
-> --- a/drivers/dax/bus.c
-> +++ b/drivers/dax/bus.c
-> @@ -186,6 +186,61 @@ static bool is_sparse(struct dax_region *dax_region)
->  	return (dax_region->res.flags & IORESOURCE_DAX_SPARSE_CAP) != 0;
->  }
+> diff --git a/Documentation/filesystems/fiemap.rst b/Documentation/filesystems/fiemap.rst
+> index 93fc96f760aa..c2bfa107c8d7 100644
+> --- a/Documentation/filesystems/fiemap.rst
+> +++ b/Documentation/filesystems/fiemap.rst
+> @@ -80,14 +80,24 @@ Each extent is described by a single fiemap_extent structure as
+>  returned in fm_extents::
 >  
-> +static int dax_region_add_resource(struct dax_region *dax_region,
-> +				   struct dax_extent *dax_ext,
-> +				   resource_size_t start,
-> +				   resource_size_t length)
-> +{
-> +	struct resource *ext_res;
-> +
-> +	dev_dbg(dax_region->dev, "DAX region resource %pr\n", &dax_region->res);
-> +	ext_res = __request_region(&dax_region->res, start, length, "extent", 0);
-> +	if (!ext_res) {
-> +		dev_err(dax_region->dev, "Failed to add region s:%pa l:%pa\n",
-> +			&start, &length);
-> +		return -ENOSPC;
-> +	}
-> +
-> +	dax_ext->region = dax_region;
-> +	dax_ext->res = ext_res;
-> +	dev_dbg(dax_region->dev, "Extent add resource %pr\n", ext_res);
-> +
-> +	return 0;
-> +}
-> +
-> +static void dax_region_release_extent(void *ext)
-> +{
-> +	struct dax_extent *dax_ext = ext;
-> +	struct dax_region *dax_region = dax_ext->region;
-> +
-> +	dev_dbg(dax_region->dev, "Extent release resource %pr\n", dax_ext->res);
-> +	if (dax_ext->res)
-> +		__release_region(&dax_region->res, dax_ext->res->start,
-> +				 resource_size(dax_ext->res));
-> +
-> +	kfree(dax_ext);
-> +}
-> +
-> +int dax_region_add_extent(struct dax_region *dax_region, struct device *ext_dev,
-> +			  resource_size_t start, resource_size_t length)
-> +{
-> +	int rc;
-> +
-> +	struct dax_extent *dax_ext __free(kfree) = kzalloc(sizeof(*dax_ext),
-> +							   GFP_KERNEL);
-> +	if (!dax_ext)
-> +		return -ENOMEM;
-> +
-> +	guard(rwsem_write)(&dax_region_rwsem);
-> +	rc = dax_region_add_resource(dax_region, dax_ext, start, length);
-> +	if (rc)
-> +		return rc;
-> +
-> +	return devm_add_action_or_reset(ext_dev, dax_region_release_extent,
-> +					no_free_ptr(dax_ext));
-> +}
-> +EXPORT_SYMBOL_GPL(dax_region_add_extent);
-> +
->  bool static_dev_dax(struct dev_dax *dev_dax)
->  {
->  	return is_static(dev_dax->region);
-> diff --git a/drivers/dax/cxl.c b/drivers/dax/cxl.c
-> index 415d03fbf9b6..70bdc7a878ab 100644
-> --- a/drivers/dax/cxl.c
-> +++ b/drivers/dax/cxl.c
-> @@ -5,6 +5,42 @@
+>      struct fiemap_extent {
+> -	    __u64	fe_logical;  /* logical offset in bytes for the start of
+> -				* the extent */
+> -	    __u64	fe_physical; /* physical offset in bytes for the start
+> -				* of the extent */
+> -	    __u64	fe_length;   /* length in bytes for the extent */
+> -	    __u64	fe_reserved64[2];
+> -	    __u32	fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
+> -	    __u32	fe_reserved[3];
+> +            /*
+> +             * logical offset in bytes for the start of
+> +             * the extent from the beginning of the file
+> +             */
+> +            __u64 fe_logical;
+> +            /*
+> +             * physical offset in bytes for the start
+> +             * of the extent from the beginning of the disk
+> +             */
+> +            __u64 fe_physical;
+> +            /* logical length in bytes for this extent */
+> +            __u64 fe_logical_length;
+> +            /* physical length in bytes for this extent */
+> +            __u64 fe_physical_length;
+> +            __u64 fe_reserved64[1];
+> +            /* FIEMAP_EXTENT_* flags for this extent */
+> +            __u32 fe_flags;
+> +            __u32 fe_reserved[3];
+>      };
 >  
->  #include "../cxl/cxl.h"
->  #include "bus.h"
-> +#include "dax-private.h"
-> +
-> +static int __cxl_dax_region_add_extent(struct dax_region *dax_region,
-> +				       struct region_extent *reg_ext)
-> +{
-> +	struct device *ext_dev = &reg_ext->dev;
-> +	resource_size_t start, length;
-> +
-> +	dev_dbg(dax_region->dev, "Adding extent HPA %#llx - %#llx\n",
-> +		reg_ext->hpa_range.start, reg_ext->hpa_range.end);
-> +
-> +	start = dax_region->res.start + reg_ext->hpa_range.start;
-> +	length = reg_ext->hpa_range.end - reg_ext->hpa_range.start + 1;
-use range_len() instead?
+>  All offsets and lengths are in bytes and mirror those on disk.  It is valid
+> @@ -175,6 +185,8 @@ FIEMAP_EXTENT_MERGED
+>    userspace would be highly inefficient, the kernel will try to merge most
+>    adjacent blocks into 'extents'.
+>  
+> +FIEMAP_EXTENT_HAS_PHYS_LEN
+> +  This will be set if the file system populated the physical length field.
 
-Fan
+Just out of curiosity, should filesystems set this flag and
+fe_physical_length if fe_physical_length == fe_logical_length?
+Or just leave both blank?
 
-> +
-> +	return dax_region_add_extent(dax_region, ext_dev, start, length);
-> +}
-> +
-> +static int cxl_dax_region_add_extent(struct device *dev, void *data)
-> +{
-> +	struct dax_region *dax_region = data;
-> +	struct region_extent *reg_ext;
-> +
-> +	if (!is_region_extent(dev))
-> +		return 0;
-> +
-> +	reg_ext = to_region_extent(dev);
-> +
-> +	return __cxl_dax_region_add_extent(dax_region, reg_ext);
-> +}
-> +
-> +static void cxl_dax_region_add_extents(struct cxl_dax_region *cxlr_dax,
-> +				      struct dax_region *dax_region)
-> +{
-> +	dev_dbg(&cxlr_dax->dev, "Adding extents\n");
-> +	device_for_each_child(&cxlr_dax->dev, dax_region, cxl_dax_region_add_extent);
-> +}
+>  VFS -> File System Implementation
+>  ---------------------------------
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 661b46125669..8afd32e1a27a 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -138,7 +138,8 @@ int fiemap_fill_next_extent(struct fiemap_extent_info *fieinfo, u64 logical,
+>  	memset(&extent, 0, sizeof(extent));
+>  	extent.fe_logical = logical;
+>  	extent.fe_physical = phys;
+> -	extent.fe_length = len;
+> +	extent.fe_logical_length = len;
+> +	extent.fe_physical_length = len;
+>  	extent.fe_flags = flags;
 >  
->  static int cxl_dax_region_probe(struct device *dev)
->  {
-> @@ -29,9 +65,12 @@ static int cxl_dax_region_probe(struct device *dev)
->  		return -ENOMEM;
+>  	dest += fieinfo->fi_extents_mapped;
+> diff --git a/include/uapi/linux/fiemap.h b/include/uapi/linux/fiemap.h
+> index 24ca0c00cae3..3079159b8e94 100644
+> --- a/include/uapi/linux/fiemap.h
+> +++ b/include/uapi/linux/fiemap.h
+> @@ -14,14 +14,30 @@
 >  
->  	dev_size = range_len(&cxlr_dax->hpa_range);
-> -	/* Add empty seed dax device */
-> -	if (cxlr->mode == CXL_REGION_DC)
-> +	if (cxlr->mode == CXL_REGION_DC) {
-> +		/* NOTE: Depends on dax_region being set in driver data */
-> +		cxl_dax_region_add_extents(cxlr_dax, dax_region);
-> +		/* Add empty seed dax device */
->  		dev_size = 0;
-> +	}
+>  #include <linux/types.h>
 >  
->  	data = (struct dev_dax_data) {
->  		.dax_region = dax_region,
-> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-> index 446617b73aea..c6319c6567fb 100644
-> --- a/drivers/dax/dax-private.h
-> +++ b/drivers/dax/dax-private.h
-> @@ -16,6 +16,18 @@ struct inode *dax_inode(struct dax_device *dax_dev);
->  int dax_bus_init(void);
->  void dax_bus_exit(void);
->  
-> +/**
-> + * struct dax_extent - For sparse regions; an active extent
-> + * @region: dax_region this resources is in
-> + * @res: resource this extent covers
+> +/*
+> + * For backward compatibility, where the member of the struct was called
+> + * fe_length instead of fe_logical_length.
 > + */
-> +struct dax_extent {
-> +	struct dax_region *region;
-> +	struct resource *res;
-> +};
-> +int dax_region_add_extent(struct dax_region *dax_region, struct device *ext_dev,
-> +			  resource_size_t start, resource_size_t length);
+> +#define fe_length fe_logical_length
+
+This #define has global scope; are you sure this isn't going to cause a
+weird build problem downstream with some program that declares an
+unrelated fe_length symbol?
+
 > +
->  /**
->   * struct dax_region - mapping infrastructure for dax devices
->   * @id: kernel-wide unique region for a memory range
-> 
+>  struct fiemap_extent {
+> -	__u64 fe_logical;  /* logical offset in bytes for the start of
+> -			    * the extent from the beginning of the file */
+> -	__u64 fe_physical; /* physical offset in bytes for the start
+> -			    * of the extent from the beginning of the disk */
+> -	__u64 fe_length;   /* length in bytes for this extent */
+> -	__u64 fe_reserved64[2];
+> -	__u32 fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
+> +	/*
+> +	 * logical offset in bytes for the start of
+> +	 * the extent from the beginning of the file
+> +	 */
+> +	__u64 fe_logical;
+> +	/*
+> +	 * physical offset in bytes for the start
+> +	 * of the extent from the beginning of the disk
+> +	 */
+> +	__u64 fe_physical;
+> +	/* logical length in bytes for this extent */
+> +	__u64 fe_logical_length;
+
+Or why not just leave the field name the same since the "logical length
+in bytes" comment is present both here in the header and again in the
+documentation?
+
+--D
+
+> +	/* physical length in bytes for this extent */
+> +	__u64 fe_physical_length;
+> +	__u64 fe_reserved64[1];
+> +	/* FIEMAP_EXTENT_* flags for this extent */
+> +	__u32 fe_flags;
+>  	__u32 fe_reserved[3];
+>  };
+>  
+> @@ -66,5 +82,7 @@ struct fiemap {
+>  						    * merged for efficiency. */
+>  #define FIEMAP_EXTENT_SHARED		0x00002000 /* Space shared with other
+>  						    * files. */
+> +#define FIEMAP_EXTENT_HAS_PHYS_LEN	0x00004000 /* Physical length is valid
+> +						    * and set by FS. */
+>  
+>  #endif /* _UAPI_LINUX_FIEMAP_H */
 > -- 
-> 2.44.0
+> 2.43.0
+> 
 > 
 
