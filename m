@@ -1,182 +1,185 @@
-Return-Path: <linux-btrfs+bounces-4076-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4077-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A952E89E433
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 22:11:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B75B89E504
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 23:35:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 354F51F22166
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 20:11:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE7AA282686
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 21:35:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDB7158202;
-	Tue,  9 Apr 2024 20:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E101158A1C;
+	Tue,  9 Apr 2024 21:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tJwGHGeB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qoAYXa17";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gmruwtvu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xnmgCK9/"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="DTbSETZP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7F3157E79
-	for <linux-btrfs@vger.kernel.org>; Tue,  9 Apr 2024 20:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 494B87C6D4
+	for <linux-btrfs@vger.kernel.org>; Tue,  9 Apr 2024 21:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712693513; cv=none; b=jRc7uM0EZGu2DnzAC4kW7fRLagCQ7QTd99F1xK0rizJO5P3a5QlTK1Dv11OrNUh4N9zV1hSU+b7+HHvX2nCJYYyXH94wKPS3jL+Y+D5xObpL6Y+qstCpFEm42vP8vw/lpWKrKVaKmdAzLBxRNWDh5euHPswFLp2BjdbBgFM3zf8=
+	t=1712698547; cv=none; b=thmf4Zy2ja/+NRAbLrnXrO8oAjf4GVkRv/uW/bHG/JAv2sW2Z9pgI8EYx8G9J0E9ISv6Ze6zFfNuddkhh3sk2ebH2E7ZQn7VwXsocgC9oQRZ1GKWQxi3ELIWzEjeiJ87G46E3fzUsDnCLxAbUdclc3u+deeFUZeUClhS08fRhgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712693513; c=relaxed/simple;
-	bh=5v20anIEqVDazhQCu9E7vQZi8BbakPuZ5aVCmu8buBA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kJy5lsJnM3rGbYOFmPXKL2v1ClEDfrrfUG75bGfx/UooJhVDHxd0xsXuZ3vYkbY5zkBCB4v8mmRK4Vzm9VCP3pTjhFRarGb543t+l2beNrDlNDA9cNaFUclJwBNGwlEnnYa1drUlW37eBMbZQ34GeOXh3PjinjJy16LgFjl+K+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tJwGHGeB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qoAYXa17; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gmruwtvu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xnmgCK9/; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 36A3620E5F;
-	Tue,  9 Apr 2024 20:11:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712693509;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NV/Ht7oyG1vjeYxvUoQCQYhd/PpyH7qzdbblDIqVG/Y=;
-	b=tJwGHGeBI8X5O8BPCFsxSyA4gNaIy2HfjlqAIKeMiYuiyZo8DSmY1yNvGBBnh0uXZ2XL6y
-	R6X3AjzQRyWjKU+V4epY0hVkw4TS65t1zcYWuqjxJ1rLXqFhGw2l9QYpGKvGty5QxKr1O4
-	qw43lb6GiVH1HK6bbVinCJnjouMQDFI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712693509;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NV/Ht7oyG1vjeYxvUoQCQYhd/PpyH7qzdbblDIqVG/Y=;
-	b=qoAYXa17mC14zMcew8MKcT7j1pSAQWCklViM0vxgWuD3OJN0afdiShOOZ+mZBu6AFga6yz
-	Cr0v9qUX/YXJh1DA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712693508;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NV/Ht7oyG1vjeYxvUoQCQYhd/PpyH7qzdbblDIqVG/Y=;
-	b=gmruwtvuuLyFV44hX03QlGBz9KbFthMYEqstbp7ZB3f9YeRFsxpftyogD+6d88H4Gg19oF
-	GzSIjc8ZXnLjEZo3n8gG1JSWQJsnBhBvMCEcRTYEeXxdFjes9wnL4OAvZ12hiw9PfSnHXa
-	tgms92XdS3juYwPPjLhgLJku7lFzsaY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712693508;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NV/Ht7oyG1vjeYxvUoQCQYhd/PpyH7qzdbblDIqVG/Y=;
-	b=xnmgCK9/hIjYG8/JE2BpcNaEz+Fvz5Gs1l/8VMtwWs7oTV1rVd20Z1xAC2fMCSGyoOGsKe
-	nhCMy0S6tdYK4GAw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 20CDA1332F;
-	Tue,  9 Apr 2024 20:11:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id kyt6BwShFWZKTwAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Tue, 09 Apr 2024 20:11:48 +0000
-Date: Tue, 9 Apr 2024 22:04:18 +0200
-From: David Sterba <dsterba@suse.cz>
-To: "David F." <df7729@gmail.com>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Subject: Re: Preconfigured BTRFS Virtual Drives for testing?
-Message-ID: <20240409200418.GK3492@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <CAGRSmLtrH7GNzAE2o69qvfEMk9mTR1a=zUq36dzwkCeQTz7F8A@mail.gmail.com>
- <f1e7424c-64a8-4752-8a36-fa08f902ce7b@gmx.com>
- <CAGRSmLuKoYmxVJ+w=Bb2RxXUi6Z79mU+yLmxhc_OfWtmkhFg8Q@mail.gmail.com>
+	s=arc-20240116; t=1712698547; c=relaxed/simple;
+	bh=RjYwVBeSjQEANCApEFnuJ9/P0ISucl6bE5GrFJT/bog=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Obv/J3Jhv/p6NRIUO0N/G/+Q+8RCGa08IIV5PM6wNGqe1GurrCfizUGXOaq1+QyKeq7uYlO6+WUfin+cz5qUEEWP76yksrHMnGAWl2YA/u3/HjZJF19qT6iIYLHnRv3b/e7nzwa8EogpMEo5tzMJmFAafloJKN5myJsLSefojq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=DTbSETZP; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1712698540; x=1713303340; i=quwenruo.btrfs@gmx.com;
+	bh=U7I4aW/M96EKO5SoEyhUghsQhMXjhltWL/B9PRgXIfM=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=DTbSETZPECybWBC9Vy3RAmHOZGRIF/mXwFOlR21PSakTl/fWVmXYVMcLgzgRS7F1
+	 jsu45hmjxbnRBq5xyE+65oM0Q/lpCu72l3eqIgJ3PKQTbTXvGM31Ag6dN1dp21wrE
+	 3cmbki3zj604kpkSLCZ2bA6tvMNNGBLumtwAa3TVKsLkjve5pvvmHAHCslPk3QogO
+	 I22XZ392qnGxtCc/JES47UaWoK4ag/6Bzuz+LKawHPev9E7IYrFzYNacmKdpJ44VL
+	 akXhdQuHSbyyhd+d0+G0tlf5Cfs2NyEWBprW505ldRRBI+UWkgDb34wk31761j/4H
+	 Cz4DpTgxNobsd6DquQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M9Wyy-1romp53ygG-005agR; Tue, 09
+ Apr 2024 23:35:40 +0200
+Message-ID: <c13f0fe7-c70d-4ce9-a821-11a6acbdfc2f@gmx.com>
+Date: Wed, 10 Apr 2024 07:05:36 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGRSmLuKoYmxVJ+w=Bb2RxXUi6Z79mU+yLmxhc_OfWtmkhFg8Q@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-0.00 / 50.00];
-	SUBJECT_ENDS_QUESTION(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	BAYES_HAM(-0.00)[22.89%];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmx.com,vger.kernel.org];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
-X-Spam-Score: -0.00
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: scrub: run relocation repair when/only needed
+To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+Cc: wqu@suse.com
+References: <4f457478390d84f5ecdc3818e239cdb652654ea0.1712672186.git.naohiro.aota@wdc.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <4f457478390d84f5ecdc3818e239cdb652654ea0.1712672186.git.naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vkfCOgUutpN7hDyjj9TnwL7NC4by+zN3rNPQF4U/RcsWnGVgS7m
+ Gh7md/bHTLyVwNms4Z3hxQKG6lMoAOVIQWcPUU1CP9lYHQPSKyJIJRGoWnX+wf1qD8dUbG+
+ 1fxbGrA1QNnJishbZnxdnV9kYt9cxpqDhdq9fuYyYvF3uHHkcaXfubLWbsPfUx38tgHIF0b
+ 0IP+DQTdWV/ZeetrN+iaQ==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:S8tiMuUG2/8=;oJkUoFi68ltl6QNSrt/xtTgXMGS
+ pvay7QsD6GE7fpHYuQu+MiSsMomBKKIOgOcmEMPKgascivafBlXHAYugsLFt8iMx+3SfAv0b8
+ XJ/V/gC2gkkaxpmk2nhyTwQz2yheNKAlPM3dz3aW04giH8y9J9Tx2yqtDn34UCQU05kD1jTLX
+ rJHlgZUI4ktqHJasI+CHuj7c1nZezv3sfnul/OetHsdcNek529s0x2FVyM/bTUdgWZLqzYvBu
+ I0OYfrQlSpzsL2vEIWqwOiC6jdFGSu5LEKvfXGxF8sS7Dqz4du4p6rKSyHEbFhaKKL0WtWim1
+ w028rXQMDvbHKrRwNlfmdlyhHM8JK8ZzNREtylLz11AqeHZnWnCwHqEjK6PLB2wKqAzt3qm5x
+ NCztW4kUD/c6k/7rHSXORjurVHcKXOhHEsiNintelxH0j+Pasd5LlyT3Ja/ci1TgNvQF4Wk9L
+ InuON+RPN1XX2enqhFcH8ZvWgkcdbs/mfFmtg13frk8vNjusduDsEaXyWJyJ3kvn1Giv2GrEu
+ +VYkx0IsoFtFCPwXeWjGDMw7tDImXa/hBWQqcaipwXk7nRcZdIgfjFxwR8M0ggmld72z0Mrzd
+ OpFruyOjSvMUW6M/IfsLYJQp9cryyfot+J6qaX/U7Ux/A15s9hyTdxlk/6Cdq0jAqIh9+gGxh
+ lrG6iq39PToJjVtiCcBqYNX6gnRKW/uQHSb/ILM0vXsLm2iDU6i+koVc5c3lG4ocZrw1bkgf6
+ 7TQogGL35GngLhPAuQptrRvHTYwvku/ZDM0o003z0Lljmry2tmc1N2ETFpZfUpunFb3yhbIDv
+ B11tvLKsnvnHORjQ+LsS9yFN0eq3fwl8tD6wvbEf3t878=
 
-On Sat, Apr 06, 2024 at 12:31:14AM -0700, David F. wrote:
-> How can I set up btrfs so that the chunk_tree, extent_tree, and root
-> of roots all exist with all 8 levels (0-7) in use (or say I only want
-> 4 levels)?
 
-Not all roots are filled with enough data that would lead to tree height
-more than 2, the extent tree usually is the highest one.
 
-Reaching high levels by incrementally inserting items would be quite
-time consuming, best would be to build the trees from bottom but then
-it's a bit artificial and all the constraints would have to be
-satisfied.
+=E5=9C=A8 2024/4/9 23:48, Naohiro Aota =E5=86=99=E9=81=93:
+> When btrfs scrub finds an error, it reads mirrors to find correct data. =
+If
+> all the errors are fixed, sctx->error_bitmap is cleared for the stripe
+> range. However, in the zoned mode, it runs relocation to repair scrub
+> errors when the bitmap is *not* empty, which is a flipped condition.
+>
+> Also, it runs the relocation even if the scrub is read-only. This is mis=
+sed
+> by a fix in commit 1f2030ff6e49 ("btrfs: scrub: respect the read-only fl=
+ag
+> during repair").
+>
+> The repair is only necessary when there is a repaired sector and should =
+be
+> done on read-write scrub. So, tweak the condition for both regular and
+> zoned case.
+>
+> Fixes: 54765392a1b9 ("btrfs: scrub: introduce helper to queue a stripe f=
+or scrub")
+> Fixes: 1f2030ff6e49 ("btrfs: scrub: respect the read-only flag during re=
+pair")
+> CC: stable@vger.kernel.org # 6.6+
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-I did a quick calculation how much space would be consumed by one tree
-with 4096 node size, each node half filled (so they're not merged). I
-don't think you'd be able to store images of filesystems above level 4:
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Node size: 4096
-Node keys per level max: 121
-Node keys per level min: 60
-
-level 0 nodemin=             1 nodemax=               1 (sizemin=   4.000K) (sizemax=   4.000K)
-level 1 nodemin=            60 nodemax=             121 (sizemin= 240.000K) (sizemax= 484.000K)
-level 2 nodemin=          3600 nodemax=           14641 (sizemin=  14.062M) (sizemax=  57.191M)
-level 3 nodemin=        216000 nodemax=         1771561 (sizemin= 843.750M) (sizemax=   6.758G)
-level 4 nodemin=      12960000 nodemax=       214358881 (sizemin=  49.438G) (sizemax= 817.714G)
-level 5 nodemin=     777600000 nodemax=     25937424601 (sizemin=   2.897T) (sizemax=  96.624T)
-level 6 nodemin=   46656000000 nodemax=   3138428376721 (sizemin= 173.807T) (sizemax=  11.418P)
-level 7 nodemin= 2799360000000 nodemax= 379749833583241 (sizemin=  10.184P) (sizemax=   1.349E)
-
-The min means the nodes are half filled, max is using the full capacity.
-
-For comparison with 16K node size:
-
-Node keys per level max: 493
-Node keys per level min: 246
-
-level 0 nodemin=                 1 nodemax=                   1 (sizemin=  16.000K) (sizemax=     16.000K)
-level 1 nodemin=               246 nodemax=                 493 (sizemin=   3.844M) (sizemax=      7.703M)
-level 2 nodemin=             60516 nodemax=              243049 (sizemin= 945.562M) (sizemax=      3.709G)
-level 3 nodemin=          14886936 nodemax=           119823157 (sizemin= 227.157G) (sizemax=      1.786T)
-level 4 nodemin=        3662186256 nodemax=         59072816401 (sizemin=  54.571T) (sizemax=    880.254T)
-level 5 nodemin=      900897818976 nodemax=      29122898485693 (sizemin=  13.110P) (sizemax=    423.794P)
-level 6 nodemin=   221620863468096 nodemax=   14357588953446649 (sizemin=   3.149E) (sizemax=    204.034E)
-level 7 nodemin= 54518732413151616 nodemax= 7078291354049197957 (sizemin= 774.758E) (sizemax= 100588.570E)
+Thanks,
+Qu
+> ---
+>   fs/btrfs/scrub.c | 18 +++++++++---------
+>   1 file changed, 9 insertions(+), 9 deletions(-)
+>
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index fa25004ab04e..4b22cfe9a98c 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -1012,6 +1012,7 @@ static void scrub_stripe_read_repair_worker(struct=
+ work_struct *work)
+>   	struct btrfs_fs_info *fs_info =3D sctx->fs_info;
+>   	int num_copies =3D btrfs_num_copies(fs_info, stripe->bg->start,
+>   					  stripe->bg->length);
+> +	unsigned long repaired;
+>   	int mirror;
+>   	int i;
+>
+> @@ -1078,16 +1079,15 @@ static void scrub_stripe_read_repair_worker(stru=
+ct work_struct *work)
+>   	 * Submit the repaired sectors.  For zoned case, we cannot do repair
+>   	 * in-place, but queue the bg to be relocated.
+>   	 */
+> -	if (btrfs_is_zoned(fs_info)) {
+> -		if (!bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors))
+> +	bitmap_andnot(&repaired, &stripe->init_error_bitmap, &stripe->error_bi=
+tmap,
+> +		      stripe->nr_sectors);
+> +	if (!sctx->readonly && !bitmap_empty(&repaired, stripe->nr_sectors)) {
+> +		if (btrfs_is_zoned(fs_info)) {
+>   			btrfs_repair_one_zone(fs_info, sctx->stripes[0].bg->start);
+> -	} else if (!sctx->readonly) {
+> -		unsigned long repaired;
+> -
+> -		bitmap_andnot(&repaired, &stripe->init_error_bitmap,
+> -			      &stripe->error_bitmap, stripe->nr_sectors);
+> -		scrub_write_sectors(sctx, stripe, repaired, false);
+> -		wait_scrub_stripe_io(stripe);
+> +		} else {
+> +			scrub_write_sectors(sctx, stripe, repaired, false);
+> +			wait_scrub_stripe_io(stripe);
+> +		}
+>   	}
+>
+>   	scrub_stripe_report_errors(sctx, stripe);
 
