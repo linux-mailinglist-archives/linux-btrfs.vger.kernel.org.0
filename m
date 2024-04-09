@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-4077-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4078-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B75B89E504
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 23:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BB8389E50D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 23:38:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE7AA282686
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 21:35:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 055112829C0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 21:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E101158A1C;
-	Tue,  9 Apr 2024 21:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7765615887D;
+	Tue,  9 Apr 2024 21:38:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="DTbSETZP"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="PEtMCeYG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 494B87C6D4
-	for <linux-btrfs@vger.kernel.org>; Tue,  9 Apr 2024 21:35:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D714157466
+	for <linux-btrfs@vger.kernel.org>; Tue,  9 Apr 2024 21:38:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712698547; cv=none; b=thmf4Zy2ja/+NRAbLrnXrO8oAjf4GVkRv/uW/bHG/JAv2sW2Z9pgI8EYx8G9J0E9ISv6Ze6zFfNuddkhh3sk2ebH2E7ZQn7VwXsocgC9oQRZ1GKWQxi3ELIWzEjeiJ87G46E3fzUsDnCLxAbUdclc3u+deeFUZeUClhS08fRhgs=
+	t=1712698720; cv=none; b=gE5iBsA0F58X3DDMKcGDrh67HNhXvNS/y6ZVAU3iIz4GMFZNDHUgJ9xwutSCLW/VF+zRIqVvepWCKkJmF1W9Q6c7xovipa64Z8VLUBJ/VDk50ICCaFQ82Y4J5b5j8GbvqKWkkPUMLwIQlYSd/3WQeOn5/Eir+QWWd265YBdO7uM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712698547; c=relaxed/simple;
-	bh=RjYwVBeSjQEANCApEFnuJ9/P0ISucl6bE5GrFJT/bog=;
+	s=arc-20240116; t=1712698720; c=relaxed/simple;
+	bh=dYIa7HHUxd4QKeXj6ZRggcmB/HWNukylGV9wqAe7byc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Obv/J3Jhv/p6NRIUO0N/G/+Q+8RCGa08IIV5PM6wNGqe1GurrCfizUGXOaq1+QyKeq7uYlO6+WUfin+cz5qUEEWP76yksrHMnGAWl2YA/u3/HjZJF19qT6iIYLHnRv3b/e7nzwa8EogpMEo5tzMJmFAafloJKN5myJsLSefojq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=DTbSETZP; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=ABzhPxc2p0RAaw2o3ZLVHdQmKrUTT1h87V1L4LrZ3AWU37uSW42C+cCxcy1FOrGXRnqCA6yVtvXrwX45OWiLI0AotUoa07TOZshe3dOJjWDP3HPTQRbb55DU/RD9j18CFxEpmDVYC7Ns7gBb1MOrvIVloEjVSmgZxvAAAQzrziw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=PEtMCeYG; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1712698540; x=1713303340; i=quwenruo.btrfs@gmx.com;
-	bh=U7I4aW/M96EKO5SoEyhUghsQhMXjhltWL/B9PRgXIfM=;
+	s=s31663417; t=1712698715; x=1713303515; i=quwenruo.btrfs@gmx.com;
+	bh=jQZWWTMYUACkCxabdyDfWgdHDqIk0FnBDzLbnipXV+c=;
 	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
 	 In-Reply-To;
-	b=DTbSETZPECybWBC9Vy3RAmHOZGRIF/mXwFOlR21PSakTl/fWVmXYVMcLgzgRS7F1
-	 jsu45hmjxbnRBq5xyE+65oM0Q/lpCu72l3eqIgJ3PKQTbTXvGM31Ag6dN1dp21wrE
-	 3cmbki3zj604kpkSLCZ2bA6tvMNNGBLumtwAa3TVKsLkjve5pvvmHAHCslPk3QogO
-	 I22XZ392qnGxtCc/JES47UaWoK4ag/6Bzuz+LKawHPev9E7IYrFzYNacmKdpJ44VL
-	 akXhdQuHSbyyhd+d0+G0tlf5Cfs2NyEWBprW505ldRRBI+UWkgDb34wk31761j/4H
-	 Cz4DpTgxNobsd6DquQ==
+	b=PEtMCeYGJVcP1Kn7e4+lQyqhcvIbJKs83v2F6o0ruTV+1xs/o3o9/0TH1luOWcX2
+	 VmsO626f/r5V4mQ7CnQ1eX3mABPhgPi+PAQoEZBIUaXSpb02RbEyWorzwGsK7eOqZ
+	 O7gBRzOI8RXELvTjSudjT7tVnSTg2f71LrZD3AvJswWf4yktchdR+TTK1tVuaus9R
+	 0MeT7QGwzIUN7p1RYir+OZTMKrEifgV4zoW/+KLFcIoPD1AJujfIFJWtwcukLyBET
+	 vMbVUftZdp3Km2y5/TkHfC+V+thcQkYalM5qxQ6jA9pBe/lsc8CubVUH39aXsZOpP
+	 hT15cO0zH7y6Z3w6ww==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M9Wyy-1romp53ygG-005agR; Tue, 09
- Apr 2024 23:35:40 +0200
-Message-ID: <c13f0fe7-c70d-4ce9-a821-11a6acbdfc2f@gmx.com>
-Date: Wed, 10 Apr 2024 07:05:36 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6lpG-1rrY0q2gla-008LqI; Tue, 09
+ Apr 2024 23:38:35 +0200
+Message-ID: <2d00cb7b-6dca-4a35-9532-e7b5749cdbff@gmx.com>
+Date: Wed, 10 Apr 2024 07:08:31 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,10 +55,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: scrub: run relocation repair when/only needed
-To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
-Cc: wqu@suse.com
-References: <4f457478390d84f5ecdc3818e239cdb652654ea0.1712672186.git.naohiro.aota@wdc.com>
+Subject: Re: [PATCH RFC 1/8] btrfs: rename extent_map::orig_block_len to
+ disk_num_bytes
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1712614770.git.wqu@suse.com>
+ <4087de32eabbf9f14988f69e33240db2d5576f5d.1712614770.git.wqu@suse.com>
+ <20240409145832.GH3492@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -85,101 +88,51 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <4f457478390d84f5ecdc3818e239cdb652654ea0.1712672186.git.naohiro.aota@wdc.com>
+In-Reply-To: <20240409145832.GH3492@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vkfCOgUutpN7hDyjj9TnwL7NC4by+zN3rNPQF4U/RcsWnGVgS7m
- Gh7md/bHTLyVwNms4Z3hxQKG6lMoAOVIQWcPUU1CP9lYHQPSKyJIJRGoWnX+wf1qD8dUbG+
- 1fxbGrA1QNnJishbZnxdnV9kYt9cxpqDhdq9fuYyYvF3uHHkcaXfubLWbsPfUx38tgHIF0b
- 0IP+DQTdWV/ZeetrN+iaQ==
+X-Provags-ID: V03:K1:bluP/1oUWnfaKTbLxr79q7FOpVGOmV2nB1mrhD7+nWzMzzSWrZ2
+ 4nzZDddBoG4bwccAkWkKtTvPdwcWBDDybnI35NhiLXses57hJE2egeDO+ca4jRsEF950vtr
+ oBTtP+5vh1jUmVwXxYvByAGly6luifU4DQS4R1tAhre4ozPyVevWOxXG2BORH25nt5bIoyf
+ hPs8cbpzLKm576G4bx/Aw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:S8tiMuUG2/8=;oJkUoFi68ltl6QNSrt/xtTgXMGS
- pvay7QsD6GE7fpHYuQu+MiSsMomBKKIOgOcmEMPKgascivafBlXHAYugsLFt8iMx+3SfAv0b8
- XJ/V/gC2gkkaxpmk2nhyTwQz2yheNKAlPM3dz3aW04giH8y9J9Tx2yqtDn34UCQU05kD1jTLX
- rJHlgZUI4ktqHJasI+CHuj7c1nZezv3sfnul/OetHsdcNek529s0x2FVyM/bTUdgWZLqzYvBu
- I0OYfrQlSpzsL2vEIWqwOiC6jdFGSu5LEKvfXGxF8sS7Dqz4du4p6rKSyHEbFhaKKL0WtWim1
- w028rXQMDvbHKrRwNlfmdlyhHM8JK8ZzNREtylLz11AqeHZnWnCwHqEjK6PLB2wKqAzt3qm5x
- NCztW4kUD/c6k/7rHSXORjurVHcKXOhHEsiNintelxH0j+Pasd5LlyT3Ja/ci1TgNvQF4Wk9L
- InuON+RPN1XX2enqhFcH8ZvWgkcdbs/mfFmtg13frk8vNjusduDsEaXyWJyJ3kvn1Giv2GrEu
- +VYkx0IsoFtFCPwXeWjGDMw7tDImXa/hBWQqcaipwXk7nRcZdIgfjFxwR8M0ggmld72z0Mrzd
- OpFruyOjSvMUW6M/IfsLYJQp9cryyfot+J6qaX/U7Ux/A15s9hyTdxlk/6Cdq0jAqIh9+gGxh
- lrG6iq39PToJjVtiCcBqYNX6gnRKW/uQHSb/ILM0vXsLm2iDU6i+koVc5c3lG4ocZrw1bkgf6
- 7TQogGL35GngLhPAuQptrRvHTYwvku/ZDM0o003z0Lljmry2tmc1N2ETFpZfUpunFb3yhbIDv
- B11tvLKsnvnHORjQ+LsS9yFN0eq3fwl8tD6wvbEf3t878=
+UI-OutboundReport: notjunk:1;M01:P0:DamfXTod0dY=;2CEtoA0DOS5Gq44E8FNs2LA8saD
+ AMI5QIM7Vv5lHTZsf8UQvA1EF25FLKhQy6ixGidHmnZWuYFjzhlplvd2W3BUU4NfhcRkt5he3
+ Af8fKXFNgcLRcMKWrI4cGucvzNvN+Psic3Z1dGZMi45GRwOmgZjoIHIHll0Vx/ZcobEybb0fw
+ zAqlf2BB5PfHSgAnPzqcPwtr4S8ggyEbHqQl1MoD7cUdQGNyFpFYWZOb8vUASvECO+1+OYyhs
+ GulermWMNzVdGvmDH+OnMeQuCGDb/l+mnmMxAltKehYbzADJajxLX3E0lzhE8sGvReW/U8SE0
+ /VGuH9MkMXLhRKC7XEt3o+euCIXBIBqvqF3M4AByIzBL3akWDnLR97Z/dZsFJuFt61dQI2NpS
+ E/+k2DpGK/yCeEdQfRxByAQL2C/3OtgVJ9t2Chbh2os2aFjIzByjHXzunRfWimj2bOYE1ucsv
+ kuMSHH5z3nfybDNpPri1RZ/zwTX0wGpNmP7hGQ1jnCADxmFVKSpmzkj7mlBDobA84fHrmuk8p
+ 0mkB465Gqt95LkNmk5JgYp9MBvl3UmnUoKKynXgZf5NJTho1N1IjBr3g5LKvFQRvH849D3E+J
+ bdnlzoYVVAsm2foT5N3Gp9Xhg9C/IIVM0cOCHGYzQMgrLdGiCMF3pIM44hJ7v4WXrIxVIR+oe
+ 7ziFV0rx5v7UQ7TTI5Xtd9CnUWcib6M980brN4M5Ao5bHnb9lRtaSagaWeppW+mH+w3ivH9/0
+ zLcKZql6y1CDKndSO0OEJjGZPwyWsdTkxvtosXENFEDRgYq9moELMFJIltrYQb+ii5J4Ukf9K
+ AL6YW6uRTu0n08Eq1LPegSXibdjrXB3yP3S+2qaTiefvU=
 
 
 
-=E5=9C=A8 2024/4/9 23:48, Naohiro Aota =E5=86=99=E9=81=93:
-> When btrfs scrub finds an error, it reads mirrors to find correct data. =
-If
-> all the errors are fixed, sctx->error_bitmap is cleared for the stripe
-> range. However, in the zoned mode, it runs relocation to repair scrub
-> errors when the bitmap is *not* empty, which is a flipped condition.
+=E5=9C=A8 2024/4/10 00:28, David Sterba =E5=86=99=E9=81=93:
+> On Tue, Apr 09, 2024 at 08:03:40AM +0930, Qu Wenruo wrote:
+>> --- a/fs/btrfs/tree-log.c
+>> +++ b/fs/btrfs/tree-log.c
+>> @@ -2872,7 +2872,7 @@ static inline void btrfs_remove_log_ctx(struct bt=
+rfs_root *root,
+>>   	mutex_unlock(&root->log_mutex);
+>>   }
+>>
+>> -/*
+>> +/*
 >
-> Also, it runs the relocation even if the scrub is read-only. This is mis=
-sed
-> by a fix in commit 1f2030ff6e49 ("btrfs: scrub: respect the read-only fl=
-ag
-> during repair").
+> There is a whitespace change but please check your patches that they
+> don't contain such fixups unless it's in the modified code. Thanks.
 >
-> The repair is only necessary when there is a repaired sector and should =
-be
-> done on read-write scrub. So, tweak the condition for both regular and
-> zoned case.
->
-> Fixes: 54765392a1b9 ("btrfs: scrub: introduce helper to queue a stripe f=
-or scrub")
-> Fixes: 1f2030ff6e49 ("btrfs: scrub: respect the read-only flag during re=
-pair")
-> CC: stable@vger.kernel.org # 6.6+
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+It turns out to be LSP server.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Every time I modified a file, clangd seems to fix all whitespaces.
+
+I'll need to find out the option not to do that.
 
 Thanks,
 Qu
-> ---
->   fs/btrfs/scrub.c | 18 +++++++++---------
->   1 file changed, 9 insertions(+), 9 deletions(-)
->
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index fa25004ab04e..4b22cfe9a98c 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1012,6 +1012,7 @@ static void scrub_stripe_read_repair_worker(struct=
- work_struct *work)
->   	struct btrfs_fs_info *fs_info =3D sctx->fs_info;
->   	int num_copies =3D btrfs_num_copies(fs_info, stripe->bg->start,
->   					  stripe->bg->length);
-> +	unsigned long repaired;
->   	int mirror;
->   	int i;
->
-> @@ -1078,16 +1079,15 @@ static void scrub_stripe_read_repair_worker(stru=
-ct work_struct *work)
->   	 * Submit the repaired sectors.  For zoned case, we cannot do repair
->   	 * in-place, but queue the bg to be relocated.
->   	 */
-> -	if (btrfs_is_zoned(fs_info)) {
-> -		if (!bitmap_empty(&stripe->error_bitmap, stripe->nr_sectors))
-> +	bitmap_andnot(&repaired, &stripe->init_error_bitmap, &stripe->error_bi=
-tmap,
-> +		      stripe->nr_sectors);
-> +	if (!sctx->readonly && !bitmap_empty(&repaired, stripe->nr_sectors)) {
-> +		if (btrfs_is_zoned(fs_info)) {
->   			btrfs_repair_one_zone(fs_info, sctx->stripes[0].bg->start);
-> -	} else if (!sctx->readonly) {
-> -		unsigned long repaired;
-> -
-> -		bitmap_andnot(&repaired, &stripe->init_error_bitmap,
-> -			      &stripe->error_bitmap, stripe->nr_sectors);
-> -		scrub_write_sectors(sctx, stripe, repaired, false);
-> -		wait_scrub_stripe_io(stripe);
-> +		} else {
-> +			scrub_write_sectors(sctx, stripe, repaired, false);
-> +			wait_scrub_stripe_io(stripe);
-> +		}
->   	}
->
->   	scrub_stripe_report_errors(sctx, stripe);
 
