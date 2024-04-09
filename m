@@ -1,199 +1,182 @@
-Return-Path: <linux-btrfs+bounces-4075-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4076-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F2BC89E3FE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 21:57:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A952E89E433
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 22:11:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9CBF281CDC
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 19:57:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 354F51F22166
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 20:11:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E375E1581EF;
-	Tue,  9 Apr 2024 19:57:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDB7158202;
+	Tue,  9 Apr 2024 20:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="wMRZbgIO"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tJwGHGeB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qoAYXa17";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gmruwtvu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xnmgCK9/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 420DD157E9F
-	for <linux-btrfs@vger.kernel.org>; Tue,  9 Apr 2024 19:57:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7F3157E79
+	for <linux-btrfs@vger.kernel.org>; Tue,  9 Apr 2024 20:11:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712692639; cv=none; b=uIzxAdgQrJZKOmfE0M9DvQptaFSmfc16UgS70/wf4SUo11QJEAtruXPx8+rLZVcfu9RSxJtnJA50Qq9V+rNdZqNFsos5vwoqrdwW2F3bbmiPqV2HlrndP44eK63TtkaLKjKCrDYrltKgQMuBJFRdbXpqDF5EV1kesIQ5/sjxhYk=
+	t=1712693513; cv=none; b=jRc7uM0EZGu2DnzAC4kW7fRLagCQ7QTd99F1xK0rizJO5P3a5QlTK1Dv11OrNUh4N9zV1hSU+b7+HHvX2nCJYYyXH94wKPS3jL+Y+D5xObpL6Y+qstCpFEm42vP8vw/lpWKrKVaKmdAzLBxRNWDh5euHPswFLp2BjdbBgFM3zf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712692639; c=relaxed/simple;
-	bh=ZFU8p2UDWz+Lst45TmN3KpIzvXulf7s/dX2gWZBUyN4=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=D0Kwt0s9tpSQdjDaafRZbfOpM0A67lSZcvIcOo0ZpTApj+22eGjCLwUFodTFrJB7cHioHxI+fx8rHPxhYfMauZAy4aPW8ry7LRPsTG66v7zqcIWRhQEs5OuL3bcjBTxYreh38xTL9x4QdXErE8AMId0JggrwkDN3kbs2GtZVUeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=wMRZbgIO; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6eced6fd98aso5334876b3a.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 09 Apr 2024 12:57:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712692636; x=1713297436; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lf5oD1YJAqRWQcO+qVEbuqOOPtB538xNFgGiHmq1JF4=;
-        b=wMRZbgIOsBDVVT3EydX8zGNgmQqj78pfFQ1915OF/HjErq3PQRH83CiijGU8eCLccp
-         YO4N0hRkYe8a1o2ilQKNBlHC6S3zVyFWuaLQiP0UfdOQfbZWl60UgmM1FAnCGv964Zfl
-         B/Lq6bGOCEY206fcXmj+3QQ2YMsGnSJy+EFj0GXQTe3XBW7AhtT+zbE04Kaw4WPe/4t7
-         0XBE7t5IilbVEfv68Gks/D6eW4VRo+yIESm/ZVv2d/I+VKa+wSSGV0zZMKLtTbXEmUI/
-         WfiiFGGGAzbSPTPVleuTVr3SzVw21PMNqW0Lyt8pQ0++eCmnYksMZPdVe36f5q7I4je2
-         4hfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712692636; x=1713297436;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lf5oD1YJAqRWQcO+qVEbuqOOPtB538xNFgGiHmq1JF4=;
-        b=trrPOW3vO1rBahPqLakOezmu2Wb3qw0GuRjvPATw8cKk6Na3CL+ciSlm5wHEc34I3S
-         bXbWCgjSFY7LUtDl2lKU5wMcDo4PgRAgFel+g7GW9t1CoYJlJoNqrzB114IDBg1k76q0
-         f6jb6F/UYbnMn2adEtAPXuLDdLRi6QwjZUo2cAwW5pnjbCqn/jMS+XmRVQ3k8IFp6r9R
-         JC46xmg9A44z0fYVWlcv4z/T0mX7ZYvOppF5bF/T0XgUxZ8qxFslWOH/QrKwpRxxJ/qz
-         OHSSgQSojQkTofyNgDmVHeFK9cm+QZyYWf5Y2n1Rswe44rxU+gWmhzCglS7UOGxOMxNH
-         F4xg==
-X-Forwarded-Encrypted: i=1; AJvYcCX1tLdXtXib5QLI99NGGnRAmqsEGzGn8Gyqk3Lgu1Ko3y4WA/MKZDhYby+8AcBvCpLvmvdJidkugOrAtZux+gys4q8Df5+wkxhO2bE=
-X-Gm-Message-State: AOJu0Yz179S3ea4ynsVlihnPkP2u812YINjGBX5FIqwhD0/amyIufNE1
-	y55BH7PnCfgZWMML7t9wjBmudZAPFnmsqcSi3Vdfeem4O8mIpiSwAWyLUb446B8=
-X-Google-Smtp-Source: AGHT+IG6mzksh1fFDdfMTB7/ZswNaf+55up0ECCTURq8a0pTe3gjPb0pivVBQWSpzMDdMub6RG+ytA==
-X-Received: by 2002:a05:6a00:c91:b0:6e7:29dd:84db with SMTP id a17-20020a056a000c9100b006e729dd84dbmr659776pfv.31.1712692636190;
-        Tue, 09 Apr 2024 12:57:16 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id gr26-20020a056a004d1a00b006ecfc7f651bsm8734606pfb.58.2024.04.09.12.57.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Apr 2024 12:57:15 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <86369AC8-3AAF-43C4-BB46-267A3EFDD293@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_6FAB8924-4A79-42AF-9FD3-39EBBA23DA64";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	s=arc-20240116; t=1712693513; c=relaxed/simple;
+	bh=5v20anIEqVDazhQCu9E7vQZi8BbakPuZ5aVCmu8buBA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kJy5lsJnM3rGbYOFmPXKL2v1ClEDfrrfUG75bGfx/UooJhVDHxd0xsXuZ3vYkbY5zkBCB4v8mmRK4Vzm9VCP3pTjhFRarGb543t+l2beNrDlNDA9cNaFUclJwBNGwlEnnYa1drUlW37eBMbZQ34GeOXh3PjinjJy16LgFjl+K+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tJwGHGeB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qoAYXa17; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gmruwtvu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xnmgCK9/; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 36A3620E5F;
+	Tue,  9 Apr 2024 20:11:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712693509;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NV/Ht7oyG1vjeYxvUoQCQYhd/PpyH7qzdbblDIqVG/Y=;
+	b=tJwGHGeBI8X5O8BPCFsxSyA4gNaIy2HfjlqAIKeMiYuiyZo8DSmY1yNvGBBnh0uXZ2XL6y
+	R6X3AjzQRyWjKU+V4epY0hVkw4TS65t1zcYWuqjxJ1rLXqFhGw2l9QYpGKvGty5QxKr1O4
+	qw43lb6GiVH1HK6bbVinCJnjouMQDFI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712693509;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NV/Ht7oyG1vjeYxvUoQCQYhd/PpyH7qzdbblDIqVG/Y=;
+	b=qoAYXa17mC14zMcew8MKcT7j1pSAQWCklViM0vxgWuD3OJN0afdiShOOZ+mZBu6AFga6yz
+	Cr0v9qUX/YXJh1DA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712693508;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NV/Ht7oyG1vjeYxvUoQCQYhd/PpyH7qzdbblDIqVG/Y=;
+	b=gmruwtvuuLyFV44hX03QlGBz9KbFthMYEqstbp7ZB3f9YeRFsxpftyogD+6d88H4Gg19oF
+	GzSIjc8ZXnLjEZo3n8gG1JSWQJsnBhBvMCEcRTYEeXxdFjes9wnL4OAvZ12hiw9PfSnHXa
+	tgms92XdS3juYwPPjLhgLJku7lFzsaY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712693508;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NV/Ht7oyG1vjeYxvUoQCQYhd/PpyH7qzdbblDIqVG/Y=;
+	b=xnmgCK9/hIjYG8/JE2BpcNaEz+Fvz5Gs1l/8VMtwWs7oTV1rVd20Z1xAC2fMCSGyoOGsKe
+	nhCMy0S6tdYK4GAw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 20CDA1332F;
+	Tue,  9 Apr 2024 20:11:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id kyt6BwShFWZKTwAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Tue, 09 Apr 2024 20:11:48 +0000
+Date: Tue, 9 Apr 2024 22:04:18 +0200
+From: David Sterba <dsterba@suse.cz>
+To: "David F." <df7729@gmail.com>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: Preconfigured BTRFS Virtual Drives for testing?
+Message-ID: <20240409200418.GK3492@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <CAGRSmLtrH7GNzAE2o69qvfEMk9mTR1a=zUq36dzwkCeQTz7F8A@mail.gmail.com>
+ <f1e7424c-64a8-4752-8a36-fa08f902ce7b@gmx.com>
+ <CAGRSmLuKoYmxVJ+w=Bb2RxXUi6Z79mU+yLmxhc_OfWtmkhFg8Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 0/3] fiemap extension to add physical extent length
-Date: Tue, 9 Apr 2024 13:57:13 -0600
-In-Reply-To: <20240321185803.GH14596@suse.cz>
-Cc: "Darrick J. Wong" <djwong@kernel.org>,
- Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
- corbet@lwn.net,
- viro@zeniv.linux.org.uk,
- brauner@kernel.org,
- jack@suse.cz,
- linux-doc@vger.kernel.org,
- linux-fsdevel@vger.kernel.org,
- linux-btrfs@vger.kernel.org,
- clm@meta.com,
- dsterba@suse.com,
- josef@toxicpanda.com,
- jbacik@toxicpanda.com,
- kernel-team@meta.com
-To: dsterba@suse.cz
-References: <cover.1709918025.git.sweettea-kernel@dorminy.me>
- <20240315030334.GQ6184@frogsfrogsfrogs> <20240321185803.GH14596@suse.cz>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGRSmLuKoYmxVJ+w=Bb2RxXUi6Z79mU+yLmxhc_OfWtmkhFg8Q@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.00 / 50.00];
+	SUBJECT_ENDS_QUESTION(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	BAYES_HAM(-0.00)[22.89%];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmx.com,vger.kernel.org];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -0.00
+X-Spam-Flag: NO
 
+On Sat, Apr 06, 2024 at 12:31:14AM -0700, David F. wrote:
+> How can I set up btrfs so that the chunk_tree, extent_tree, and root
+> of roots all exist with all 8 levels (0-7) in use (or say I only want
+> 4 levels)?
 
---Apple-Mail=_6FAB8924-4A79-42AF-9FD3-39EBBA23DA64
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Not all roots are filled with enough data that would lead to tree height
+more than 2, the extent tree usually is the highest one.
 
-On Mar 21, 2024, at 12:58 PM, David Sterba <dsterba@suse.cz> wrote:
->=20
-> On Thu, Mar 14, 2024 at 08:03:34PM -0700, Darrick J. Wong wrote:
->> On Fri, Mar 08, 2024 at 01:03:17PM -0500, Sweet Tea Dorminy wrote:
->>> For many years, various btrfs users have written programs to =
-discover
->>> the actual disk space used by files, using root-only interfaces.
->>> However, this information is a great fit for fiemap: it is =
-inherently
->>> tied to extent information, all filesystems can use it, and the
->>> capabilities required for FIEMAP make sense for this additional
->>> information also.
->>>=20
->>> Hence, this patchset adds physical extent length information to =
-fiemap,
->>> and extends btrfs to return it.  This uses some of the reserved =
-padding
->>> in the fiemap extent structure, so programs unaware of the new field
->>> will be unaffected by its presence.
->>>=20
->>> This is based on next-20240307. I've tested the btrfs part of this =
-with
->>> the standard btrfs testing matrix locally, and verified that the =
-physical extent
->>> information returned there is correct, but I'm still waiting on more
->>> tests. Please let me know what you think of the general idea!
->>=20
->> Seems useful!  Any chance you'd be willing to pick up this old =
-proposal
->> to report the dev_t through iomap?  iirc the iomap wrappers for =
-fiemap
->> can export that pretty easily.
->>=20
->> =
-https://lore.kernel.org/linux-fsdevel/20190211094306.fjr6gfehcstm7eqq@hade=
-s.usersys.redhat.com/
->=20
-> I think this is not too useful for btrfs (in general) due to the block
-> group profiles that store copies on multiple devices, we'd need more
-> than one device identifier per extent.
+Reaching high levels by incrementally inserting items would be quite
+time consuming, best would be to build the trees from bottom but then
+it's a bit artificial and all the constraints would have to be
+satisfied.
 
-My thought would be that there are multiple overlapping extents with the
-same logical offset returned in this case.  It wouldn't just be the =
-device
-that would be different in this case, but also the physical offset may =
-be
-different on each device (depending on how allocation is done), and =
-maybe
-even the length and flags are different if one device stores compressed
-data and another one does not.
+I did a quick calculation how much space would be consumed by one tree
+with 4096 node size, each node half filled (so they're not merged). I
+don't think you'd be able to store images of filesystems above level 4:
 
-Having multiple overlapping extents for files with built-in mirrors =
-allows
-freedom for all of the extent parameters to be different, doesn't have =
-any
-limits on the number of copies/devices that could fit in one extent, =
-etc.
+Node size: 4096
+Node keys per level max: 121
+Node keys per level min: 60
 
-Cheers, Andreas
+level 0 nodemin=             1 nodemax=               1 (sizemin=   4.000K) (sizemax=   4.000K)
+level 1 nodemin=            60 nodemax=             121 (sizemin= 240.000K) (sizemax= 484.000K)
+level 2 nodemin=          3600 nodemax=           14641 (sizemin=  14.062M) (sizemax=  57.191M)
+level 3 nodemin=        216000 nodemax=         1771561 (sizemin= 843.750M) (sizemax=   6.758G)
+level 4 nodemin=      12960000 nodemax=       214358881 (sizemin=  49.438G) (sizemax= 817.714G)
+level 5 nodemin=     777600000 nodemax=     25937424601 (sizemin=   2.897T) (sizemax=  96.624T)
+level 6 nodemin=   46656000000 nodemax=   3138428376721 (sizemin= 173.807T) (sizemax=  11.418P)
+level 7 nodemin= 2799360000000 nodemax= 379749833583241 (sizemin=  10.184P) (sizemax=   1.349E)
 
+The min means the nodes are half filled, max is using the full capacity.
 
+For comparison with 16K node size:
 
+Node keys per level max: 493
+Node keys per level min: 246
 
-
-
---Apple-Mail=_6FAB8924-4A79-42AF-9FD3-39EBBA23DA64
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYVnZoACgkQcqXauRfM
-H+B6rw//bAbIzB/vqxb8UHC9CPh3aICucWfOZw4nawnjo/zXA0RMJh6w2hsI43A6
-nfisuNPRkdEI/g1yZu74a46ZgdtuOUYZKB718F42iBr3I62kCJ02pgVViDUC3feM
-4+zLiW8ZOG+itmeJE8v+RP9T5c7dDpVFRb6uavHf70+eEGwPMqDjbIbusXYUuHB6
-6mv1oCCbk+naWZ+UUEvqBy63prr1diuq4Z1aL4biqG92YRNjSGM27yRsWNhZgr35
-xfasEOR0YbOgwEvGp6hdIejgFjzakIfNZpkb+wEhDordUI3IGnJyY/FEQnsxYGeA
-VFn3BKU3pGxLByGEgXHOTrjS5g4cY5EokV44UhrzL6YOk7IyhW15w9MLIATgE9AW
-AWDln7Q5mNCKA8/3U6Gn2U7ULhvIrbe6iYYvkmHAANYwyhWKHfjvG1iQSSKKjj3j
-qkpGNBqhaEYtTiIQcrDEcsWEfFvxJUALoyrr4HH4C5XkDoYZObEs0bGHK8ekkHNi
-tBV/9lfOfRk2w7A3SgkJbsqGzZIyTCQfgbEDaR3WLYQMZErEq/twfoPRmPLGHrHu
-cPzsefo4QXxYbX7Du4l1mSR7Thx+Eh4AQ19jIahNd700gtNyVcbkBFf1qfnRBQzY
-Eudtyuy7neaFge0g9T6m1Hc7W/3qvd4ABSI6bUPCKlZd0GsVlyI=
-=t5A5
------END PGP SIGNATURE-----
-
---Apple-Mail=_6FAB8924-4A79-42AF-9FD3-39EBBA23DA64--
+level 0 nodemin=                 1 nodemax=                   1 (sizemin=  16.000K) (sizemax=     16.000K)
+level 1 nodemin=               246 nodemax=                 493 (sizemin=   3.844M) (sizemax=      7.703M)
+level 2 nodemin=             60516 nodemax=              243049 (sizemin= 945.562M) (sizemax=      3.709G)
+level 3 nodemin=          14886936 nodemax=           119823157 (sizemin= 227.157G) (sizemax=      1.786T)
+level 4 nodemin=        3662186256 nodemax=         59072816401 (sizemin=  54.571T) (sizemax=    880.254T)
+level 5 nodemin=      900897818976 nodemax=      29122898485693 (sizemin=  13.110P) (sizemax=    423.794P)
+level 6 nodemin=   221620863468096 nodemax=   14357588953446649 (sizemin=   3.149E) (sizemax=    204.034E)
+level 7 nodemin= 54518732413151616 nodemax= 7078291354049197957 (sizemin= 774.758E) (sizemax= 100588.570E)
 
