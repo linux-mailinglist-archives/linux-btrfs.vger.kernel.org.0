@@ -1,225 +1,293 @@
-Return-Path: <linux-btrfs+bounces-4066-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4070-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1AA589DD94
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 17:02:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EDEA89E04E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 18:25:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00F1A1C2312B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 15:02:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5476B2EA65
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 16:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C4B1327E9;
-	Tue,  9 Apr 2024 15:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5844A13E05B;
+	Tue,  9 Apr 2024 16:22:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="gVVHdlu4";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Q63gLNbh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="izuwsy8o"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A271311BD;
-	Tue,  9 Apr 2024 15:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712674888; cv=fail; b=mwO70FkILNr9hl4H1T9sJvuhCRlMHlGFgdw4gdZChXEf6BXhz3WPKEizcEKL/c4Zs6J5ZypS8IcLDndrS/fQGVgQMWH8BQLJm6CDM0ki9yPLnYj4UbWW0Jt6qSIuzbw08v+Q94Xli6wcRqQopD3Fk5icTaCdJ4LrHlCrLtEH3HU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712674888; c=relaxed/simple;
-	bh=Col5DYGIIYOgCsbVx/1An3xkKtGsyG+wHMcmFKO6BBo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SV0kK6ptPFUQXBL1sQ9s731yjqDsOoPUcq7NDJaqZTv91yZ2HnBznjWs7FInD4DgRRyV1633KutpZBPluYlSzCgO1hIz9cSZhvx83R8kM8xZHCNMsDLRUBgb5EKv7vZtEJiDkJffkzcKRC1SxsWs8Su7w3nICG/6gSyToGO2T7s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=gVVHdlu4; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Q63gLNbh; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 439BYIM9031282;
-	Tue, 9 Apr 2024 15:01:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=zULiWfpP8LGoagvehE1Ys3faZy+H0y9GJmqpMW3DFOA=;
- b=gVVHdlu4sjfkuvi5I4tzIfUoutF9DP+MJOAcNLAGRtLt38ssAmJoQIprjWUVoxbIG5DO
- /ISSRBztT/FHA25xr3oAy0wPLRNI/JhkE2oiQCQLUzmQ5mGhsWSlizwtKsee4hNmZQj2
- DVjeqfYGFmypFuTP37lAJ2QB93qzCfQ9xyXq3yonjkML03iRX8hKx8dnPGuAGgHhI8uZ
- oVxPlx9IeQXEpy2GR7zXEAXLXpYHSjBlXcIZ/4sdkjIeTCEJ3jT1reC4MFxuwlnpgNXx
- Apyl5Wk4hfDZlUxaWQIJHgwPAi2Yk4N4OpOW0ak5C9+8jDgB1Nlk5sJ2R2rMUnOdOGBc mA== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xax9b55ke-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 09 Apr 2024 15:01:17 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 439E8jve032535;
-	Tue, 9 Apr 2024 15:01:17 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xavu7a54s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 09 Apr 2024 15:01:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=awCQhgWxdCWSezMpHKVPt7IlQXxlHtfnEu4cR0+uApXgOgE1LhyuRXpRmlvvruvMRGO/bgINRCFLYHRcbcs5i1/3+v6rNV5MzqmaEOe1CypxMOQmK1Os8DByUcIL21mVaVkQ0NN2utJez5TkdoPa7Qo6Ki8Y9/q9A6Nycblo5uAi3PmhYC0U3AzUmyAUqCCMPWYdqdMLtI27BEOF6h+d4sKxW1a6L2OSgglIzj8FFYEYfeoEmZsO2kPRAxgMaQMDMpMn1GI0PlI8+Jzi3z3RckM3mzYiK3dSbR72SA4XGlOatXaZrLbGrDkHDA1bdca11obWYPeS/TOrSDC0lbVj2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zULiWfpP8LGoagvehE1Ys3faZy+H0y9GJmqpMW3DFOA=;
- b=fDsRxFqKAxeh8iK6bfcPOznZeTO5I7cb3+8lr0Kt/suHrHFMxl74fxD2n5HH7X29DPUmRRXSkBVFOVijUlARHYanbVY4cp0bjG+S4r8UVVHu3pFI9enr1F04U/guyk9t9frBY30yz3Yyd8IRto8GWhnb+f5MZ8PpRXuQMFNW9V6cj7BR5C5DrI/XjiUIjcLx/2eniKm/yCltic0ulI61AB0GJFUPVvrQz718xiL8mzqr3Hg2Sl9wYgLGj6HOo+6NmwKiesIpiWTJ1hXT13AnjInWrt3j4PcEZvaFKHU3RO8j7hRPu6jmYUdDy7Si5x52fQhlJAtFB3/wydxxIJOA0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4A0137C2A;
+	Tue,  9 Apr 2024 16:22:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712679743; cv=none; b=WfU6A/s9490rbaAlMLuNN9GtIIyAqJCLhG3SexJjWw1VWzT3K3cjLIIYKmFvAQo2i8JlBBG4jYohVCg/NT+68nrJq0tsoENL/IugkRGVWUxn0kYtmMI7E+KIWjvtQybgExvRKQYUCl4iXlEVYxYRVfdFA3DCkSm8Pu06EtATJdY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712679743; c=relaxed/simple;
+	bh=JxIZLeYYKA5Iqp3UIL0+XuqsHCRG8TQtQnZnQZxVDrQ=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iuO+hPHrv42iUYeGdSDBVYU3J1C5ATm4YmOP1OL2Be+25ZHnjeoRRuracCR2ccV1xvr0XnxPgXSdmWbn5BnjEXfduvFUFpCOPsHLa8PjEKXknUix5qUQ+tr0u8PSy0xOYZHFr0FaHzeEWfTp53PgQ97ZVdg1Jl/2Me+2MpgAyNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=izuwsy8o; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e3f6f03594so16487945ad.0;
+        Tue, 09 Apr 2024 09:22:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zULiWfpP8LGoagvehE1Ys3faZy+H0y9GJmqpMW3DFOA=;
- b=Q63gLNbhXeN4F7ARf0Y0Fh1+j7DBDfxCaMEZ0GK29Ga4NUm9fiSf44QFeM06BgV+tKuefppoQCcBZwOp3E85aNAQI1aZCeNyyHGQsHSpQSZVzFDM5FgGEGKY1fTEWNihgpeSDOndt4ruC14Z46JnLzWs0iRAqWCYnluODv386cI=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by IA1PR10MB6782.namprd10.prod.outlook.com (2603:10b6:208:42a::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 9 Apr
- 2024 15:01:14 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::814:3d5c:443b:17b%7]) with mapi id 15.20.7409.042; Tue, 9 Apr 2024
- 15:01:14 +0000
-Message-ID: <3b67bdd5-8579-47fa-aec0-898d4750b064@oracle.com>
-Date: Tue, 9 Apr 2024 23:01:03 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] generic/733: disable for btrfs
-To: dsterba@suse.cz
-Cc: Zorro Lang <zlang@redhat.com>, David Sterba <dsterba@suse.com>,
-        fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>
-References: <20240222095048.14211-1-dsterba@suse.com>
- <20240225154123.pswx5nznphszonns@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <20240226113340.GA17966@suse.cz>
- <20240226180723.v4vwjts4dxndifaq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <91ff6357-7b21-49dc-93e5-14f2f4e3efab@oracle.com>
- <20240409144600.GF3492@twin.jikos.cz>
-Content-Language: en-US
-From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20240409144600.GF3492@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2P153CA0047.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::16)
- To PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+        d=gmail.com; s=20230601; t=1712679741; x=1713284541; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tD47IJ6kQxTtIB88NMneMVe86ozyK03KRGipxA4mLDw=;
+        b=izuwsy8obxhYNMUNfa1V9hTbc6eu0GOzCMmYlHxxRgOeEJbBQECdMrPiJxXwdMh4Fg
+         xSWlaCKLjDDvobmLB3IS5RiqDQ4BM+75GpkOJpM7ljG+Itbp55Ikn+th4L+VqtTQnoJX
+         nKv7Z/Y6TY+E4ddcEXb9xIRRrDX9Mdr5e0wTgFjvdrQc1p4Xql/3/wb2HhRg2/qyT8jy
+         PzWlmz2JduZTsAiNNiVDkoQKUBql6WLKkdbO1KQJaUKBVavxC6o7Xn9+/PMUMlu5M+7h
+         qSGc+JAv/lRAWe4PIfIY2zmDHQXTGNxMILfu34E8zSiZM6SHfmq8ga2W6jLeBTFgNjx5
+         0kjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712679741; x=1713284541;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tD47IJ6kQxTtIB88NMneMVe86ozyK03KRGipxA4mLDw=;
+        b=BiJ7x0xwlDdFZ0psTUqSmG98RQqNlQjoPqRQ7qmKBV1KBnBEzLJ4kKf791ZPxyulds
+         Zqx1V4WtvWuU5UGU2QKcCOnhYbbhMZU/THEqZDZc6skKtxSceq2RwWtSZvFQ9qfTBTes
+         2dw0XSUkuTltorXN9oT+OXc3NHR3CsH/492VHI4ZtPkvR3MKCutIuM7DptMjH6yCUz9c
+         vqNzLNJTVr+RUSSCqWvCu7gDUuapnDZ+3Hu3/qZ3NGaH2XSm1fc05I8C3ddC8/z9lwYL
+         xzLoEJT+EdcvsJkmvJ9qjXV9O4MF1uq3jnRr3r6mU5fsOr9E7LwtYrpgGeD7MawT359A
+         0/yw==
+X-Forwarded-Encrypted: i=1; AJvYcCVj3kXhgv4qRJJKebD+kLpBO/AiaEehMp4u0CWFp13PqXKdiV06Wi3yJO2VsTQ+UBvgBG/YBLiJ9YdOEn/Zar51sfQvl8Emafo4lm8Iaw/dJCvoKRXmAdDRI9kI7gUGPTCjni/fjL/591v79i2GEftco1qz6+TahHXIwyrLpGvewUzc1uU=
+X-Gm-Message-State: AOJu0Yxkbds+k3E4yoPLc0nKkMt0xChuwgEsJWoDP/Nca6T/B8VKNTAg
+	74dmAcVbz4l3ch4FDnzMuyl24UVz8J1vagyUMgcxh1f8eCMbAYfX
+X-Google-Smtp-Source: AGHT+IEpvJvIGTSdUOXn55foN6dxhGocH7+e1yBuo1jkO0TWg0FAeahSCO2QqKfRiDXM8w0fA38H3g==
+X-Received: by 2002:a17:902:d587:b0:1e4:9ad5:7522 with SMTP id k7-20020a170902d58700b001e49ad57522mr273599plh.21.1712679741025;
+        Tue, 09 Apr 2024 09:22:21 -0700 (PDT)
+Received: from debian ([2601:641:300:14de:df2a:d319:d307:86c9])
+        by smtp.gmail.com with ESMTPSA id l6-20020a170903120600b001e2814e08b9sm9048820plh.32.2024.04.09.09.22.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 09:22:20 -0700 (PDT)
+From: fan <nifan.cxl@gmail.com>
+X-Google-Original-From: fan <fan@debian>
+Date: Tue, 9 Apr 2024 09:22:00 -0700
+To: ira.weiny@intel.com
+Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/26] dax/region: Create extent resources on DAX region
+ driver load
+Message-ID: <ZhVrKGHbR032FxS1@debian>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-17-b7b00d623625@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|IA1PR10MB6782:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	XFSwr1h0/5sLOjJb2uEaGek4yxdZEpbKxYKqzYT7TK997K8g61FQPZHPdLvSw8c49/7FZhPK7BFEoTyTi/CdEtDvhl3+6BUd5T3FcuhCCnJlY4rKbdAwfbDt4amPk46f2MtaxAKHb/6do7UkhAbwAJl/5IdpvmCONxB8TIde8JUcr2dRFxmnJg7KB3l/LdNno5dyPWwQ3Qy1AUHuXjoDiuKYn1Pj0En6LsFPvUrR+OY6gQqIPSLH+Ikaq/BSM9F2ot6skx9pj9HTyy2TC0Q4mZ/up3AeTuuxP8Z0cog72LdANK5X2dVZsAGpFtucumd87dJeYIjOV9GdnH54boRSqCsjJPpGlZhsVuq7EiyvsPOOU4vY20lNWb8qWRmnesqeaki33xhFRIDfqrMDN7NwT2UwnzqJLO2Orx3ByyZdVw9s4qXgqmqtgk6r8U3iwRlPEnejbZCtv6SeqflLyxugduEmLpqeXNx0mirwdjC2cTFxF802aZCc/8CkWW3hwTlQpOidTeYEKu9e/gmALVsZUptQD4PGgsan17LuStzbQ3OgmIz2+67XxJt19FYn6c8Y8FktgAl51Emcq0gminCTAUofXk0FAUq7oR2PqcmvXFZiOKjckQPOor7xcweouGuDeFKTBNW/un690edqNXOG8OAc2zz44cFlHiesZ7lZwN8=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?ZFlCWlVVT21tR0RiN2xLRTJPQ1BjTzkrSnNsdWY2WWpLOVFOZGprK0syMlR2?=
- =?utf-8?B?L3I2S2tVUnhCV2dSdWFnbTg5d2xWSWxUb3kvZ2NEclE2Zy9VbndIRXNxeWUv?=
- =?utf-8?B?V1R5Si9lbnh0dGRFcndKVlo5WHdwT09PV0d3YnkvZ1hBSUNQcHRlMmFTSEo4?=
- =?utf-8?B?NTdhaUJvYlEwUGloSVNCT1AwWEtIQjhBVEw2dXRxN2RUcy9HSEZVeW5kelZY?=
- =?utf-8?B?NXNxNXdJaElKUFVxdmQ1RFAzQmdxNHhldG9YUXcvY25YblZ1TTdSS1JjeVVn?=
- =?utf-8?B?dko0R0JKVkRSSVRwbUZTUm5BZm9TN0RYMEtaVmQ5anNWWC9ydU03SXllTnhX?=
- =?utf-8?B?RHZ2bGZWamw0MCtvZ1hPdXRCbnQxYnpYRFVUZ3JKb2Rsb0NWZEJYWWxCMzZO?=
- =?utf-8?B?L0ZML3FQaUdTUy9YNkwycjRRQVJtY0pvWXFBaStxUjNqdWF6RE50Mi81QzNQ?=
- =?utf-8?B?eDQ1ZnU3aHdwNlY2VWJ3dzkwSG5kaVF6K25WTlAzTHlrOFBneW45NGFWaEVG?=
- =?utf-8?B?VmZKRE5BTVlHRUs3OGhuM0dVamZKTG4wNUJuKzdmeVR0OGkwV3JJMFFKVjRD?=
- =?utf-8?B?YVova3VNcVgxZ2diOXZjNllTc2dpUWN3dUxHVkRFMllPNURpbUcrNkxYelVB?=
- =?utf-8?B?UDg2bzhqc0YzRE9Sd3c1OE93RlJCNW4zUWJyNG4rMDlnYTdyb2duZnQxRjlu?=
- =?utf-8?B?RnpiOWt3MGdFK2FtTThFbHdRMk1BQ204Z2VBdnRXOWNFVU9lUW1nZ2xkUFg5?=
- =?utf-8?B?aXVnQ0xmdW1ON3k0WGo1cTNiZlJiZ01YUFhkYWhrbHFiclFHU0lvV2lkUWcz?=
- =?utf-8?B?OVBaK2lFbnJPeEw2SnREOVZjWDUwWWZXQzc2REJpdzdoY05lTk1zOXRsS3dH?=
- =?utf-8?B?MW1tT0psdHdHUjdiNllUTnZqTS9FbWFuYTZJTlhZSUd4RU5xMC9IQnRQdzdP?=
- =?utf-8?B?eW9nU2pTeFBKbXBWZ3RCOE4rcnFGQkNBbW1NTWVRSHdvRVRmNmN6UllkYU9v?=
- =?utf-8?B?RTBFdHF0QjlDQXd6YzAraVhWTVJOZzhoR3RURXF2bzdvUGdvS2tiVlQ1TEJT?=
- =?utf-8?B?ZnlpTTlacCt6MXFVK3hKdzNIWUxTNEdRMnNZK3gxRmhSYTQwTnFEKzNjcHhq?=
- =?utf-8?B?elAwV1laamlmWTBqaytjKzBrRTdRUnVwYUZidElFek5wV3gyQWFNQklDVDNn?=
- =?utf-8?B?MTUwN3U0d2IwcCs0Z1EzcVI3aTdveE15a29SbFBTeE54V2ZjcDR2QWRRTjNj?=
- =?utf-8?B?MFMvQmN5WmpEZEpaQmQwaGVmWXFjejJnSWhQK1N5NXF3L3BuSHJCSlJ3T1Nu?=
- =?utf-8?B?TWNNcVNGM3hvRmtLM3RxTktvU0RwTSs3SXRyVTFBZnZDRWI2dnZQSDUzNlNr?=
- =?utf-8?B?SHRlM2V2RThjY3E0VG1LOEVhNFpzYjVkUGpQRC8vNlhKWVMyMklGVXFnWWFo?=
- =?utf-8?B?cVNRdkJtdWZ5N3lHWVBFNkNCTUR2dlZja25IOFAza24rdjlOK2ZIWmtudlVr?=
- =?utf-8?B?ZkpFckFVUjhtSml3VFZXYk95N2VTM1ZKR0U3eE41SlVoRjd6U29xeDY2VnE5?=
- =?utf-8?B?MTY1MFY2VWlGV3NYQjV2YzIvdGxRNkFTUy9kK0JPeW9OMWE2TlNzKzJyU2ZY?=
- =?utf-8?B?S3ovV0xIZ1JHTW1UY1BTTXM5TjcxUVFJQjdOeHdxM3hhK01YdDdlc0VRM0h0?=
- =?utf-8?B?MStOSWp4UXJERmxYbXhseFBPT3BkU3NkV1RLMlY5cUlPN3c4U1FPc0VGZm50?=
- =?utf-8?B?T01uL3hZZlduZ1hOUXpLU0xWUUt4djZTcWFjblc4ZHI1MnB4dWlodXIyOVZO?=
- =?utf-8?B?S2taNEdMbllGZEU1TTJISUhlYW5ISW50Sll3R08xdnAwdGdXTElMajVoNHBV?=
- =?utf-8?B?VkFGK0R2VWt3RHBBYmtuczZOZFE0aHd6QlJPY09CT0dMdXpyV2lHYjZvRXhQ?=
- =?utf-8?B?TTlQeXlMODVCUzZUdGRia0lOM2xXSElFWFMvMWZBVHhzN1Joa2hVbGxJRFkx?=
- =?utf-8?B?ZmJ4TWIraU8xNncxUU1vYjgza0cyenFJb29oODJsZTMwNnJyV1Q3bzNKRTlI?=
- =?utf-8?B?R3RiN3ZPNGUvYUZZTHI1ZU5EUDFCSU1JWEJXaGIrY3VCVnBqNUtsU2NTclRM?=
- =?utf-8?B?WjBPMjRwVGJpL2xLSmFVSmtYUW03NzBsSitiMHpNVEpsNmExRDgvMlA3VkZW?=
- =?utf-8?B?eFE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	Mz/x8OO66g3tXfclkUXSAVeV1PsusseN3SEe0/G6Xi7oqR1VdcCjtbY6Q3SjWN4rPBrvi4tMKwMgIaWRKfave8pRGC3Oa5yDT6DZBHcGRW2HutzGNlwkgXJBGu0WEDFUYNsKp7EvuXJlzNRMMPm6UA9rbBVYWnLRWU9/HHCQW747ghhPaCWL3gl51Iij7S06kO9azH1jy1WgpBo1ZX9AvMcSbxS3gse2yn9yl+Xyokt+7d7BUBE4jbjYSbxQBJVwWMN5pdKDolMmaqOWTyS2OtN2YaDS9wVldpZnUgQHD4xHqzpGroJbWU5vI04w/9nl+snLIC0WeJPNSYolMdT3LTtmdym1ctlQqrep71eODCPc2tmO05dNXUTSqHTfvKxgbJd/NDAcnIMLv0v/dyHYuDzoySqQjLFqspYnYQv2Ojtz7wi8r9XDEuaAwiQ9pflqI8FREh8gTvHUP36pycf1E8oMU+X0sKCR8fKipBm766yjsaOoGwJWuy+2BhQT89rySN9qDR1QztKK2vGQTx514UH3GokP+8uYjYo9+pP19i7nH3PvGsZJNQct1xpKn/m4HwxgouapEzf1oVDAUSJDlQ6g44ybpHOhlqqqBtCU02Q=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b5d5011-26d5-4914-aa7f-08dc58a5e653
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2024 15:01:13.9664
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JnJ1BgZRrjE2vfuXBSnk49/jZJInZ6SmmZ4ZAfOCZFyvEj71iNZFl6gMiC5/+XWWxzXG+IHOEMDjWv9/6Zt7Fg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB6782
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-09_10,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- bulkscore=0 mlxlogscore=939 mlxscore=0 adultscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404090098
-X-Proofpoint-GUID: N9fG4NG2O02F_SuaFcsPCNVJ8a5i9soV
-X-Proofpoint-ORIG-GUID: N9fG4NG2O02F_SuaFcsPCNVJ8a5i9soV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240324-dcd-type2-upstream-v1-17-b7b00d623625@intel.com>
 
-
->>>>>> This tests if a clone source can be read but in btrfs there's an
->>>>>> exclusive lock and the test always fails. The functionality might be
->>>>>> implemented in btrfs in the future but for now disable the test.
->>>>>>
->>>>>> CC: Josef Bacik <josef@toxicpanda.com>
->>>>>> Signed-off-by: David Sterba <dsterba@suse.com>
->>>>>> ---
->>>>>>    tests/generic/733 | 2 +-
->>>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/tests/generic/733 b/tests/generic/733
->>>>>> index d88d92a4705add..b26fa47dad776f 100755
->>>>>> --- a/tests/generic/733
->>>>>> +++ b/tests/generic/733
->>>>>> @@ -18,7 +18,7 @@ _begin_fstest auto clone punch
->>>>>>    . ./common/reflink
->>>>>>    
->>>>>>    # real QA test starts here
->>>>>> -_supported_fs generic
->>>>>> +_supported_fs generic ^btrfs
->>>>>
->>>>> If only need a blacklist, you can write "^btrfs" directly, e.g.
->>>>>
->>>>>     _supported_fs ^btrfs
->>>>>
->>>>> then others (except btrfs) are in whitelist, don't need the "generic".
->>>>
->>>> Ok thanks, do I need to resend or would you update the commit?
->>>
->>> I can help to change that, it's simple enough.
->>>
->>
->> Applied for the PR with this changed.
+On Sun, Mar 24, 2024 at 04:18:20PM -0700, ira.weiny@intel.com wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
 > 
-> The test generic/733 works after patch
+> DAX regions mapping dynamic capacity partitions introduce a requirement
+> for the memory backing the region to come and go as required.  This
+> results in a DAX region with sparse areas of memory backing.  To track
+> the sparseness of the region, DAX extent objects need to track
+> sub-resource information as a new layer between the DAX region resource
+> and DAX device range resources.
 > 
-> https://lore.kernel.org/linux-btrfs/5fe82cceb3b6f3434172a7fb0e85a21a2f07e99c.1711199153.git.fdmanana@suse.com/
+> Recall that DCD extents may be accepted when a region is first created.
+> Extend this support on region driver load.  Scan existing extents and
+> create DAX extent resources as a first step to DAX extent realization.
 > 
-> so please keep it.
+> The lifetime of a DAX extent is tricky to manage because the extent life
+> may end in one of two ways.  First, the device may request the extent be
+> released.  Second, the region may release the extent when it is
+> destroyed without hardware involvement.  Support extent release without
+> hardware involvement first.  Subsequent patches will provide for
+> hardware to request extent removal.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+Trivial comments inline.
+> ---
+> Changes for v1
+> [iweiny: remove xarrays]
+> [iweiny: remove as much of extra reference stuff as possible]
+> [iweiny: Move extent resource handling to core DAX code]
+> ---
+>  drivers/dax/bus.c         | 55 +++++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/dax/cxl.c         | 43 ++++++++++++++++++++++++++++++++++--
+>  drivers/dax/dax-private.h | 12 +++++++++++
+>  3 files changed, 108 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index 903566aff5eb..4d5ed7ab6537 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -186,6 +186,61 @@ static bool is_sparse(struct dax_region *dax_region)
+>  	return (dax_region->res.flags & IORESOURCE_DAX_SPARSE_CAP) != 0;
+>  }
+>  
+> +static int dax_region_add_resource(struct dax_region *dax_region,
+> +				   struct dax_extent *dax_ext,
+> +				   resource_size_t start,
+> +				   resource_size_t length)
+> +{
+> +	struct resource *ext_res;
+> +
+> +	dev_dbg(dax_region->dev, "DAX region resource %pr\n", &dax_region->res);
+> +	ext_res = __request_region(&dax_region->res, start, length, "extent", 0);
+> +	if (!ext_res) {
+> +		dev_err(dax_region->dev, "Failed to add region s:%pa l:%pa\n",
+> +			&start, &length);
+> +		return -ENOSPC;
+> +	}
+> +
+> +	dax_ext->region = dax_region;
+> +	dax_ext->res = ext_res;
+> +	dev_dbg(dax_region->dev, "Extent add resource %pr\n", ext_res);
+> +
+> +	return 0;
+> +}
+> +
+> +static void dax_region_release_extent(void *ext)
+> +{
+> +	struct dax_extent *dax_ext = ext;
+> +	struct dax_region *dax_region = dax_ext->region;
+> +
+> +	dev_dbg(dax_region->dev, "Extent release resource %pr\n", dax_ext->res);
+> +	if (dax_ext->res)
+> +		__release_region(&dax_region->res, dax_ext->res->start,
+> +				 resource_size(dax_ext->res));
+> +
+> +	kfree(dax_ext);
+> +}
+> +
+> +int dax_region_add_extent(struct dax_region *dax_region, struct device *ext_dev,
+> +			  resource_size_t start, resource_size_t length)
+> +{
+> +	int rc;
+> +
+> +	struct dax_extent *dax_ext __free(kfree) = kzalloc(sizeof(*dax_ext),
+> +							   GFP_KERNEL);
+> +	if (!dax_ext)
+> +		return -ENOMEM;
+> +
+> +	guard(rwsem_write)(&dax_region_rwsem);
+> +	rc = dax_region_add_resource(dax_region, dax_ext, start, length);
+> +	if (rc)
+> +		return rc;
+> +
+> +	return devm_add_action_or_reset(ext_dev, dax_region_release_extent,
+> +					no_free_ptr(dax_ext));
+> +}
+> +EXPORT_SYMBOL_GPL(dax_region_add_extent);
+> +
+>  bool static_dev_dax(struct dev_dax *dev_dax)
+>  {
+>  	return is_static(dev_dax->region);
+> diff --git a/drivers/dax/cxl.c b/drivers/dax/cxl.c
+> index 415d03fbf9b6..70bdc7a878ab 100644
+> --- a/drivers/dax/cxl.c
+> +++ b/drivers/dax/cxl.c
+> @@ -5,6 +5,42 @@
+>  
+>  #include "../cxl/cxl.h"
+>  #include "bus.h"
+> +#include "dax-private.h"
+> +
+> +static int __cxl_dax_region_add_extent(struct dax_region *dax_region,
+> +				       struct region_extent *reg_ext)
+> +{
+> +	struct device *ext_dev = &reg_ext->dev;
+> +	resource_size_t start, length;
+> +
+> +	dev_dbg(dax_region->dev, "Adding extent HPA %#llx - %#llx\n",
+> +		reg_ext->hpa_range.start, reg_ext->hpa_range.end);
+> +
+> +	start = dax_region->res.start + reg_ext->hpa_range.start;
+> +	length = reg_ext->hpa_range.end - reg_ext->hpa_range.start + 1;
+use range_len() instead?
 
-Ah, appreciate the heads-up!
+Fan
 
-Thanks, Anand
+> +
+> +	return dax_region_add_extent(dax_region, ext_dev, start, length);
+> +}
+> +
+> +static int cxl_dax_region_add_extent(struct device *dev, void *data)
+> +{
+> +	struct dax_region *dax_region = data;
+> +	struct region_extent *reg_ext;
+> +
+> +	if (!is_region_extent(dev))
+> +		return 0;
+> +
+> +	reg_ext = to_region_extent(dev);
+> +
+> +	return __cxl_dax_region_add_extent(dax_region, reg_ext);
+> +}
+> +
+> +static void cxl_dax_region_add_extents(struct cxl_dax_region *cxlr_dax,
+> +				      struct dax_region *dax_region)
+> +{
+> +	dev_dbg(&cxlr_dax->dev, "Adding extents\n");
+> +	device_for_each_child(&cxlr_dax->dev, dax_region, cxl_dax_region_add_extent);
+> +}
+>  
+>  static int cxl_dax_region_probe(struct device *dev)
+>  {
+> @@ -29,9 +65,12 @@ static int cxl_dax_region_probe(struct device *dev)
+>  		return -ENOMEM;
+>  
+>  	dev_size = range_len(&cxlr_dax->hpa_range);
+> -	/* Add empty seed dax device */
+> -	if (cxlr->mode == CXL_REGION_DC)
+> +	if (cxlr->mode == CXL_REGION_DC) {
+> +		/* NOTE: Depends on dax_region being set in driver data */
+> +		cxl_dax_region_add_extents(cxlr_dax, dax_region);
+> +		/* Add empty seed dax device */
+>  		dev_size = 0;
+> +	}
+>  
+>  	data = (struct dev_dax_data) {
+>  		.dax_region = dax_region,
+> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> index 446617b73aea..c6319c6567fb 100644
+> --- a/drivers/dax/dax-private.h
+> +++ b/drivers/dax/dax-private.h
+> @@ -16,6 +16,18 @@ struct inode *dax_inode(struct dax_device *dax_dev);
+>  int dax_bus_init(void);
+>  void dax_bus_exit(void);
+>  
+> +/**
+> + * struct dax_extent - For sparse regions; an active extent
+> + * @region: dax_region this resources is in
+> + * @res: resource this extent covers
+> + */
+> +struct dax_extent {
+> +	struct dax_region *region;
+> +	struct resource *res;
+> +};
+> +int dax_region_add_extent(struct dax_region *dax_region, struct device *ext_dev,
+> +			  resource_size_t start, resource_size_t length);
+> +
+>  /**
+>   * struct dax_region - mapping infrastructure for dax devices
+>   * @id: kernel-wide unique region for a memory range
+> 
+> -- 
+> 2.44.0
+> 
 
