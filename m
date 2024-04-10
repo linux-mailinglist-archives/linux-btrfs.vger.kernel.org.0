@@ -1,55 +1,74 @@
-Return-Path: <linux-btrfs+bounces-4081-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4082-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B34589E64D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 01:44:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F5EB89E8B0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 06:05:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B481B2827AD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Apr 2024 23:44:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2C021F25BD9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 04:05:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B09715B128;
-	Tue,  9 Apr 2024 23:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7454C10961;
+	Wed, 10 Apr 2024 04:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AjDaqnqc"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ClEKjZyn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769C8159212;
-	Tue,  9 Apr 2024 23:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D400B4C94;
+	Wed, 10 Apr 2024 04:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712706145; cv=none; b=W1Hw2Qo1ENXhjaJnzzHdF7WZXQK0JVSdR5Vrli9YgnIdzoncpwS0D+K5UaH2WlHYe3sgBKYBOEIwhncH1uEuTryhjQd6FrrvGSATxtmT0b60cIx5Id/gEk4enWd9MKxnZJKzNIlqxm09EN1l+4MnwB3dOg9gwkcTpFilBpPnCrk=
+	t=1712721940; cv=none; b=RKJggihAd7jubdzLs23ck7tNRa/p01TXZlV8G2rr8cSQLqvTMIyXYz6ltKpT8UKGF573CUO/r6XkfGgnNOEF9m+qE8fbKpR/8fNgTnKTNXyQcKiQ78YzcHF9c0CxyW2PFLA34Ib5HP/33LtQREXUkgOOg6D+9oQKrVifHOUPfjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712706145; c=relaxed/simple;
-	bh=M3NTKoz6i/MfH0Y0+kKbB9mYAFxrKaCM+rlSSUxc7M4=;
+	s=arc-20240116; t=1712721940; c=relaxed/simple;
+	bh=KWJYcJImYSZUHfkkZGcSRS3Vw/Qv1TU4MIWBb6oY7/E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y6zAkG6JtrkirGqaKWvywwES64mNPOcsM/DvzNFSX0kwAaBHFI8mCULAxseCDnuLMPVjLQnqLtN4yxQ/mLAvzeroNfel/U99UQcWcWdQnU9ZariVed2ZQldrsELvBpaR+KSviEUqZVqMoUtdlSAVgbuJOjqcy76Xxt7HKcKbvwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AjDaqnqc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99552C433F1;
-	Tue,  9 Apr 2024 23:42:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712706145;
-	bh=M3NTKoz6i/MfH0Y0+kKbB9mYAFxrKaCM+rlSSUxc7M4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AjDaqnqcuXe8ohv4nh7prZjV0GZFm+gO4dh1m+mCiQfPGPUV52uwKMjcZgV5Vq2u6
-	 6IE/rvUfReGjttz3KwGMiiOyXuBO7+4dhIPt/EAsDySKdR6mkq8uAgvr74KYvS7sjz
-	 VIdNmhLz6XcZEVpBmTwgnuBhL/G5scU1qYojBAPkl+EIeK7qE4Wk6O37l8O7dFP+rL
-	 086vdZPHzxnL13o71EH+IfiqVu5r5ps5oqsj8ZRDkaexR3qvAlyDb9MQqdln33sXs0
-	 yI8IpPaAEQxXxjlcXJsK/XIw9hcisOFX0OJOVlVwcE3OEU7VR8mrRoBd/Toubd2RRZ
-	 spBW45xqc625A==
-Date: Tue, 9 Apr 2024 19:42:22 -0400
-From: Eric Biggers <ebiggers@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>,
-	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v4 00/46] btrfs: add fscrypt support
-Message-ID: <20240409234222.GB1609@quark.localdomain>
-References: <cover.1701468305.git.josef@toxicpanda.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SdyxgRB2U1vtDZdoPEsaoz6Ww7u5oSGfspOr8Q52/L/oNtkRHo33X641D6CVGo+EyeOMI8n70bH3rJwicGFyebIgPIodLFHBZJXiw13JJtMbPTrA+vIWrkrtb+vn00KUNSQvrC6Ja3BVNxfuQ5oI4wB4OG9QOKXpy/x6zfGHkxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ClEKjZyn; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=qs5zPeAsEcTuuvWHCl8rO9RDQhxhl31TRFIHSeLuueU=; b=ClEKjZyn0q+YoWT29QBVUZv3x4
+	7ISBLoo3ezuPgISr4g1j134YmhOhC3bGqp/zBcIxc/aIa2f1wbY3tEj4KA35QtdzIjwNvWTmykbXZ
+	DFP3fKW2rcC1gxLGBJ4PkcEZIPKb+26gGieZFatmm0nFBXNkjWN3rVkCGdIPy9wmstcMXjWPMILP1
+	oDIIbPGGkcggayy9BUb5XOLhqvRRiJjzZmgA5Ox3pXKzSoPue9vqLgwAQz+r+RAbBwoC+mSzhUM7z
+	xG/FpDxPzMuVfmcrJ8mIaztiG4XhivtLEK/40Tx7XFqq8UKlf/wodX/BukW2wTCz599syOPVXetah
+	7vprz9MQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ruPD6-00000003bR4-2bWn;
+	Wed, 10 Apr 2024 04:05:20 +0000
+Date: Wed, 10 Apr 2024 05:05:20 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: John Garry <john.g.garry@oracle.com>,
+	Pankaj Raghav <p.raghav@samsung.com>,
+	Daniel Gomez <da.gomez@samsung.com>,
+	Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
+	axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+	jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com
+Subject: Re: [PATCH v6 00/10] block atomic writes
+Message-ID: <ZhYQANQATz82ytl1@casper.infradead.org>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <ZgOXb_oZjsUU12YL@casper.infradead.org>
+ <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
+ <Zg7Z4aJtn3SxY5w1@casper.infradead.org>
+ <f3c1d321-0dfc-466f-9f6a-fe2f0513d944@oracle.com>
+ <ZhQud1NbO4aMt0MH@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,38 +77,65 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1701468305.git.josef@toxicpanda.com>
+In-Reply-To: <ZhQud1NbO4aMt0MH@bombadil.infradead.org>
 
-Hi Josef and Sweet Tea,
+On Mon, Apr 08, 2024 at 10:50:47AM -0700, Luis Chamberlain wrote:
+> On Fri, Apr 05, 2024 at 11:06:00AM +0100, John Garry wrote:
+> > On 04/04/2024 17:48, Matthew Wilcox wrote:
+> > > > > The thing is that there's no requirement for an interface as complex as
+> > > > > the one you're proposing here.  I've talked to a few database people
+> > > > > and all they want is to increase the untorn write boundary from "one
+> > > > > disc block" to one database block, typically 8kB or 16kB.
+> > > > > 
+> > > > > So they would be quite happy with a much simpler interface where they
+> > > > > set the inode block size at inode creation time,
+> > > > We want to support untorn writes for bdev file operations - how can we set
+> > > > the inode block size there? Currently it is based on logical block size.
+> > > ioctl(BLKBSZSET), I guess?  That currently limits to PAGE_SIZE, but I
+> > > think we can remove that limitation with the bs>PS patches.
+> 
+> I can say a bit more on this, as I explored that. Essentially Matthew,
+> yes, I got that to work but it requires a set of different patches. We have
+> what we tried and then based on feedback from Chinner we have a
+> direction on what to try next. The last effort on that front was having the
+> iomap aops for bdev be used and lifting the PAGE_SIZE limit up to the
+> page cache limits. The crux on that front was that we end requiring
+> disabling BUFFER_HEAD and that is pretty limitting, so my old
+> implementation had dynamic aops so to let us use the buffer-head aops
+> only when using filesystems which require it and use iomap aops
+> otherwise. But as Chinner noted we learned through the DAX experience
+> that's not a route we want to again try, so the real solution is to
+> extend iomap bdev aops code with buffer-head compatibility.
 
-On Fri, Dec 01, 2023 at 05:10:57PM -0500, Josef Bacik wrote:
-> Hello,
-> 
-> v3 can be found here
-> 
-> https://lore.kernel.org/linux-btrfs/cover.1697480198.git.josef@toxicpanda.com/
-> 
-> There's been a longer delay between versions than I'd like, this was mostly due
-> to Plumbers, Holidays, and then uncovering a bunch of new issues with '-o
-> test_dummy_encryption'.  I'm still working through some of the btrfs specific
-> failures, but the fscrypt side appears to be stable.  I had to add a few changes
-> to fscrypt since the last time, but nothing earth shattering, just moving the
-> keyring destruction and adding a helper we need for btrfs send to work properly.
-> 
-> This is passing a good chunk of the fstests, at this point the majority appear
-> to be cases where I need to exclude the test when using test_dummy_encryption
-> because of various limitations of our tools or other infrastructure related
-> things.
-> 
-> I likely will have a follow-up series with more fixes, but the bulk of this is
-> unchanged since the last posting.  There were some bug fixes and such but the
-> overall design remains the same.  Thanks,
-> 
+Have you tried just using the buffer_head code?  I think you heard bad
+advice at last LSFMM.  Since then I've landed a bunch of patches which
+remove PAGE_SIZE assumptions throughout the buffer_head code, and while
+I haven't tried it, it might work.  And it might be easier to make work
+than adding more BH hacks to the iomap code.
 
-Is there a plan for someone to keep working on this?  I think it was finally
-getting somewhere, but the work on it seems to have stopped.
+A quick audit for problems ...
 
-Thanks,
+__getblk_slow:
+       if (unlikely(size & (bdev_logical_block_size(bdev)-1) ||
+                        (size < 512 || size > PAGE_SIZE))) {
 
-- Eric
+cont_expand_zero (not used by bdev code)
+cont_write_begin (ditto)
+
+That's all I spot from a quick grep for PAGE, offset_in_page() and kmap.
+
+You can't do a lot of buffer_heads per folio, because you'll overrun
+        struct buffer_head *bh, *head, *arr[MAX_BUF_PER_PAGE];
+in block_read_full_folio(), but you can certainly do _one_ buffer_head
+per folio, and that's all you need for bs>PS.
+
+> I suspect this is a use case where perhaps the max folio order could be
+> set for the bdev in the future, the logical block size the min order,
+> and max order the large atomic.
+
+No, that's not what we want to do at all!  Minimum writeback size needs
+to be the atomic size, otherwise we have to keep track of which writes
+are atomic and which ones aren't.  So, just set the logical block size
+to the atomic size, and we're done.
+
 
