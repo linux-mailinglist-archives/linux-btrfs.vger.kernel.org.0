@@ -1,208 +1,196 @@
-Return-Path: <linux-btrfs+bounces-4090-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4091-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5331889E9F3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 07:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C19E389EA06
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 07:49:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA6C51F23DD3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 05:46:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 395C91F2360C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 05:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6F6200CD;
-	Wed, 10 Apr 2024 05:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E97701CA94;
+	Wed, 10 Apr 2024 05:48:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PuPaGRK8"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fjGbWsiq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B94C129;
-	Wed, 10 Apr 2024 05:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.13
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712728011; cv=fail; b=GKwVEthkae9m7fg88t3VzYiXMJywNPWVmRQfXg80Amdnu8L6mxBFhyRSgdkcz6b5HgBTDwleRWXCbxqcbgIOTCAmj52TBpwB4/0NdogqZ6IvNg3VaMpbEJCCFxULpjpQviwJ6XCuFkN+oj389lDNSdIH6d+blpfAEIz90u+X3Wg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712728011; c=relaxed/simple;
-	bh=8US5YAD7Rvxpx3BCbuyBopZh1vuCuYHT6EXXGNaMi6w=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=LeNM3sc8c67KsFAlRPM252FAQ7pEszv1MOvON2LnpeJUQ0MXdcdh71Ht3baXFoso6IxXYTCd1v7Nc5TfySxJg34Qvng0fKy4EdzD5Xmvph1tvmakpAzDS6WXAU61AK2CfrLpt028x9wDnYrQxzgrCs2gM4pZ1hIQ5DxGEOCoX5o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PuPaGRK8; arc=fail smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712728010; x=1744264010;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=8US5YAD7Rvxpx3BCbuyBopZh1vuCuYHT6EXXGNaMi6w=;
-  b=PuPaGRK8OKSXwf0yUmlTTgKtKqS2EsGcJYKlj3ikYXGB06Xzh0D12f75
-   0ogdyXzc28zm6J9I4LZLsElyfkS6oaHMjRk5OWi8MJuNWt2gpmHkKJQO9
-   QEzIhWG4M7/bwAFi/ecz8A4yW7QpLfkBtyzDiSDg9Q56QIHPIEk5NlAvH
-   kpGzmPMkx2Rp4pjJo75E/Dy2uQSkvct5uAa7mRygzZ0NAnlrQ7unVGc1m
-   czOONdLlt64aANgzi8VvOSCq+34RQRVKqJzU/elh20m4OJ6Zvh7vuGSwW
-   5o+8jhwPILG8hwsH+SI5b/Dy6AXrq+y6i/M0YUxHsU6F07DKhNd7g2hoJ
-   g==;
-X-CSE-ConnectionGUID: t+VYfV02RmS9Em1gTLzcMQ==
-X-CSE-MsgGUID: wjFlMKONT5e3gKlF3AJy1Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11038192"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="11038192"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 22:46:49 -0700
-X-CSE-ConnectionGUID: fFJcirA6SvO0Sr8RlMvKqg==
-X-CSE-MsgGUID: FMpBvB7yTNy6cjy+X1hmNQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="24943009"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Apr 2024 22:46:48 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 9 Apr 2024 22:46:47 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 9 Apr 2024 22:46:47 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 9 Apr 2024 22:46:47 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bCAYXFYK2HWmjyt/2w891ppIRe7eDn7oJ3sH1POtqEtBNISAWjjZKguPlF2cH7BlP5LOCzDssWcMAD1GNu7bDyWXphDTQJm6DNL/zVYJpakt2QKwi3FO/rFFU7XHIJ7yukJHucJLMyDsZKPUuABD4UvZAlMB4ioSISA+yhQPRUqsHci5ZRFJFmrIfojblkCj8KRx8vi8yoNyEekN8wX/46+A9nOB8HVo1KATokxSMseutUNcJcPgTbwL6O5ff8fI+EzJ+ImqSvi3R8EN7ziElEIh8j92xv7sHVVXikpJFQW4WC9AEKBYG8mO1VCWuPODCCsBkkqUlI7K3w9LYcfRmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8uyMmA0zd7cUBfDbHHVxCxzW0hlM15o1NBn8cHfSoeE=;
- b=nalSEpl4u9UJhGftlQC9c5GvIjnZU60He6N7QDCYqYM+9SSr8LWYUyDztwm32RAD0qybDnMrPEAx3ehz+mhnJPi0JlC6x2L1//F8tzFXoNbhjEXaLzeMv2mwV+yVFVpavdtNtjErdhbm7PEvCC0U/eI0xM55Z8b/C/KECfdq2xw4jwMX8bnHG9QHUQltq4joNbeqXncLHAaijE959yLMV/8vZHRNntqpK/3vkhOO0d/iVDcgs/QuhpJ4oQ0B9PcRzItlJSXMNshc7CJ4gHy4lIhRJhPNQC9Fw02+wcX45exSqM34Sg+0q5W2eCRSsUbFf44d4ATv8TomHa+6JXpFuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by CY8PR11MB7924.namprd11.prod.outlook.com (2603:10b6:930:7a::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.38; Wed, 10 Apr
- 2024 05:46:41 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::5c74:8206:b635:e10e]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::5c74:8206:b635:e10e%7]) with mapi id 15.20.7452.019; Wed, 10 Apr 2024
- 05:46:40 +0000
-Date: Tue, 9 Apr 2024 22:46:38 -0700
-From: Ira Weiny <ira.weiny@intel.com>
-To: fan <nifan.cxl@gmail.com>, <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Jonathan
- Cameron" <Jonathan.Cameron@huawei.com>, Navneet Singh
-	<navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	"Davidlohr Bueso" <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 14/26] cxl/region: Read existing extents on region
- creation
-Message-ID: <661627bec82e_e9f9f29416@iweiny-mobl.notmuch>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-14-b7b00d623625@intel.com>
- <ZgNZ2Fl8vdW_qm_I@debian>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZgNZ2Fl8vdW_qm_I@debian>
-X-ClientProxiedBy: SJ0PR05CA0174.namprd05.prod.outlook.com
- (2603:10b6:a03:339::29) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A500415AF9
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Apr 2024 05:48:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712728139; cv=none; b=fEFHustvB+FOur48JXnimcxcb/ZpiAW+rPJKilTbpUP4FRsngkaMhNnuNO/1StuXE2+uW7oNDzNhZqrEIwDTT4G23huSf3r2xVRadJDPk/NMmp1+MJ87CdG5aEk+D6JexqT0CPc1inxaoNn2mSpkAGJVpP1b5z3xopTG+ubU8dg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712728139; c=relaxed/simple;
+	bh=vVHDkv+GAYRBt6jx3r6avXs+zurXHPIpHLiVvKnwJgQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lwAqWZaQax31+AYG4ZxKy8v9Kq855Zxe6dmZ8POMCuf/k4qlSsj1eMj3pRqPdCgDqckV/6Yfu10+GIKwLYVNy2hNz/Dbzf66EGQkYpEn+BkLrtzLVPMqWgjWJxSQFMCS8+e4sfrJo8/XJsta1gpF8GkhdZSFK6SqGQv+iLdfP3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fjGbWsiq; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d476d7972aso81528371fa.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 09 Apr 2024 22:48:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1712728135; x=1713332935; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=x2eLTG84Zos4xQkD74W9nLClnUlj0mQ50Bpr9rOON/U=;
+        b=fjGbWsiqSSiO9PNSTJt53w8Fb/FBIwvKpzaC2rVtLmFPSAbienNmFK6/6juR5nYeOh
+         /i6YVEwPadt8MKM+ETOaQ/MFTRL/9a+7rRnPMb9odeDO6pRr0gEt3Ws4OD7MzB3sT/6a
+         bJqsCAE7umY7Mp8oyAkFdpHdqZAzWJPRAVSu4L0Robf8u0qOC0m8Zz6bGERCMUa2Ul83
+         4w8PCXsNkOT357pUD5Ym03p03KV29eigE/jxPCru7iFuJzWTpK1UUWudUmPXyw0k/iVM
+         FmVvsa81xLtS5tqeFg2FofKBodtODb5dnFs/PJ6TBbaBJYMViNFlrC1s0zJu0GmgEJOs
+         lhOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712728135; x=1713332935;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x2eLTG84Zos4xQkD74W9nLClnUlj0mQ50Bpr9rOON/U=;
+        b=h+5A7aP1NogR7O+MGNSA7C3Gl//OlL6CE6+gSn4eMpEZGkA6DNVMR0Fwzch6eWGGYL
+         /reSmV7APkb82Qcd+dZd1vFAjJ7Iv5Hgxx7scge0SqlZEqrU3ynfE7dXkezIOjuOk6G4
+         Gz2a/Nnu0vM0WerY3NPogqsJqmtnD32I+PLmUSy/vKW/n4UFO4UC5mZtoIiWaY6MADQv
+         qjB+OoG9Xoe80Tb8Rcu/8m/rIC/GfgChyqncCKM2pTO9JpHDpp7ySblwjhx8Umhxl41S
+         VtsuGFZUwijC1CAZ4sijkZ36BbookEj6iz8/2+J1kHrT1MM8lrcQlZUSepZKUp/zG3Q9
+         WI7Q==
+X-Gm-Message-State: AOJu0Yy7fxiYHgOOlkv46ixHmKFhjnHk1FqowYx3AdhA+KX4cKZ3M7Wk
+	TAf7/HpSykpVlT0t38JM45Msrvi/nmMYjSnXFsUafiq7gmDuF6WsUSNErNWwuvA=
+X-Google-Smtp-Source: AGHT+IFoRQz0aCbyde7qLTYTFa6fOtvq3JbdjPkvUcpcfX+cmHCtlO7A40g+jPCwPyY3UqR4jCnsNg==
+X-Received: by 2002:a05:651c:9:b0:2d4:a8cf:e798 with SMTP id n9-20020a05651c000900b002d4a8cfe798mr1504610lja.14.1712728134736;
+        Tue, 09 Apr 2024 22:48:54 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id y6-20020a62f246000000b006e6c74eac34sm9314207pfl.151.2024.04.09.22.48.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 22:48:54 -0700 (PDT)
+Message-ID: <e9576dfb-c3ce-4adc-bb32-f7efa235907a@suse.com>
+Date: Wed, 10 Apr 2024 15:18:49 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|CY8PR11MB7924:EE_
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lj0mDANxZckMQyOzp/wuaR9PqSMXrL9F0b5hDlO+a5EEPITlwFG23CYwR2zqZilrM23Sca9KgDyIbRRnWtnyg4OwuDVFwTruO+9YvEvYdN1N+LjmEh5OTKlUlXvmzM9EX9KqBHXNBWHhoAPEY2xh+2dr5vECEfeJmT6F/pnwQOb2F4rRVwr9sLO3H+kUIKq1gbIncImO2n9ZCfcqPW4+ZhXmQZUtYdy1cpT712txtZZXHMbL5/pybTtC49WPwTc9P+DMHIccdxz4O13RZP/HupVhspQinXZdWgNm8vGhxUBhAcmRkYigNaJQcfguiJpDosAe/+oXojoAlu1P/JkZvsZIqYlVvu/1NQnpWw2ZyufawUsoFZ1P0sEkxiEGGD1NWgG2Jm5yrNyKr5tqnxvnzafpqz+3rGR2m1h4ODGCQBqd+CJkgYrKMZ1TH74X9ZYz1wY7uSF4vvzDFy59+/FN5+/Y9A0xqu9Dvjsi67Tio7StdyoA69Gx+lu+1IThqPxb2ijd0VGjIRqDlTmo3K4WUeulaIh+OcLi1RI/WkFgT19/K2Hff/d8hwBUuaMdvq7ybWzJCIWyLDYcJl2Rm9JWPDM+nArNeV72M4kKqfmlkg+j1stJ3wAuCSV0VC+gYOfiI2+Qau0PPsAxKLMKUqPXHQfmqGib8wa+gci6mwofd+M=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sp68NsdIsbCXD95ymZMHSnPZr/4oMlia+9ttg9auDX8NSQufcpryOXCCSYsb?=
- =?us-ascii?Q?zSkdiQczsLEh8VtDGpozqIgMmPOTJl5l/t9vZpczSmPfVmrCSPfZJ7d2Lcej?=
- =?us-ascii?Q?yWC7KTxLigf9SYlvEvqUVvQFoNj/2zhQcRHlNgTFnqWT2gQOepS0A3sumLiC?=
- =?us-ascii?Q?J7h6z8vbQvdpdn3JoUsb3Ug0N7I2Gd5QqECzdKJv1qCs8LR3604pEfAsgDyb?=
- =?us-ascii?Q?XMUPaW2q0cc/iO8D5f+pvLaWweyVpemwxweYf963nS1pAgV1GbI5QDky6aap?=
- =?us-ascii?Q?QN7VfRYosT4RLspwMDffRYifGmBhq4DmUOnrM7bZm/UQhAjG1ZhgwCP5WUKE?=
- =?us-ascii?Q?xhZfMUoJoPxl4la+3dtWZMB6qmJjhhP1kmcf1McaG+yT+RdhOnWWO3U/Wa4E?=
- =?us-ascii?Q?NCzQ9rKspHbvrTzOCjdIsUebw21gr8GICPezgstJ84cmLFerzaGA46MQKiqf?=
- =?us-ascii?Q?S881OYsPxg7/+dDkLQKbPSMjEZM7nZWPYIsa3kGuqDFXfP4gR1z1IbpwaBwK?=
- =?us-ascii?Q?mrcivMde3Bzha7ap2sYogwvXsoLFjZ3QB+l24INWBOO6cGNt2xkYeAxV+4kH?=
- =?us-ascii?Q?POyha+3QoUbbu8+PHek3ciJck26J4nRdEmG9wBderhOLLlCtq7suOpsTOj61?=
- =?us-ascii?Q?n1xXZvvQdIJejOwCfALwQ16P9Xxa+b88adTnTvK2V8Jh076lu0nwrL7l67j9?=
- =?us-ascii?Q?xtiOteg2gyRjWefkcoR9EmFEyoAeeGlWH4g4habmZ1UP9PiaGZ/RPLzEzMYx?=
- =?us-ascii?Q?LSQl1DkSnyJzsmcr8SHCB5ERUf5Tv4oJHzkbG5/gqKNhZNJmXEX7x8F/eSnu?=
- =?us-ascii?Q?zMxM5e063MQGdYS5YH9D+gzkqH2AwACHDsygdI1FURMOZGLmxL0MBxunRTo0?=
- =?us-ascii?Q?puRJ77vLRRRxbGb6Rc0W2FVfFzfgO7cHiyAbdqnTXlOIClaB8LLsac5sTNwI?=
- =?us-ascii?Q?5mAQ3sZV0V7uH/0Gn41/8N2i3TMtjodl9C3FEeGVg2kdkjTaLM/m/ILBG0Te?=
- =?us-ascii?Q?TXHIAFTKcYNqh79c0eA+cadPurfRjwE/Z5B3IgXL2pchNsm9uRfMbRNqtsRs?=
- =?us-ascii?Q?578OgAQIaKD6IW4ERlTniBaRwFIagDkzB7loveV44S4G2kD11+5MBlWjfNMn?=
- =?us-ascii?Q?WXxpwUkl9bwewd5/N/qvKxg0EgfIyJCrQCsvmnSAi4VJVuofpODCR8I+686w?=
- =?us-ascii?Q?5J/mleqQ6P/OYyHsfv1T50ODMbkClppxhoCStapucPJhUFow/eWKdYwh433B?=
- =?us-ascii?Q?hPP4cH3BVVu03S18/IZpP115SL1If9DjZYg+e+nmI7bOvRedDt4K/J8Dy6ca?=
- =?us-ascii?Q?FbSv1SMtH2pphvb5tKfnW0H3v20u6EA+FM0ndIaM4KBmKmjGsX5riOQdPzqA?=
- =?us-ascii?Q?JTxJ/I0bEVMJZINmKH+r5j81M4gQdDKjvDh7dlbZ7TVsyxvlhub12w5e2n4L?=
- =?us-ascii?Q?1b5aszV2RGXtTFyURc0tFoNpFpIMqB0bmcx5FZvuUYq54foCLJvhyJz5O2OS?=
- =?us-ascii?Q?9y9ga0XpfPyDha3K5B/Q6WshmdVoSQCam8v9nMShxs1gEETfOt/zJQIFrsIE?=
- =?us-ascii?Q?v2+uPx4iO6y4I57YA0UfeS+chGlJpOhnJ8itEcfp?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52541052-7057-41ed-ad12-08dc59219878
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 05:46:40.8156
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 58139wzUrdpUVRLP3V2/8hitUBYU6ymN19DtFH3STltsvafEqs5Rtq2NtMcS+aOAjDIhnWYSuzxNS0fRf+3TWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7924
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] fstests: btrfs: redirect stdout of "btrfs subvolume
+ snapshot" to fix output change
+To: Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+References: <20240406051847.75347-1-wqu@suse.com>
+ <8824a2ee-7325-4a14-ac64-dcedc03c14b9@oracle.com>
+ <20240409111319.GA3492@twin.jikos.cz>
+ <f113ab1f-58b4-453b-a6eb-7b4cce765287@oracle.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <f113ab1f-58b4-453b-a6eb-7b4cce765287@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-fan wrote:
-> On Sun, Mar 24, 2024 at 04:18:17PM -0700, ira.weiny@intel.com wrote:
-> > From: Navneet Singh <navneet.singh@intel.com>
-> > 
 
-[snip]
 
-> > diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> > index 58b31fa47b93..9e33a0976828 100644
-> > --- a/drivers/cxl/core/mbox.c
-> > +++ b/drivers/cxl/core/mbox.c
-> > @@ -870,6 +870,53 @@ int cxl_enumerate_cmds(struct cxl_memdev_state *mds)
-> >  }
-> >  EXPORT_SYMBOL_NS_GPL(cxl_enumerate_cmds, CXL);
-> >  
-> > +static int cxl_validate_extent(struct cxl_memdev_state *mds,
-> > +			       struct cxl_dc_extent *dc_extent)
-> > +{
-> > +	struct device *dev = mds->cxlds.dev;
-> > +	uint64_t start, len;
-> > +
-> > +	start = le64_to_cpu(dc_extent->start_dpa);
-> > +	len = le64_to_cpu(dc_extent->length);
-> > +
-> > +	/* Extents must not cross region boundary's */
-> > +	for (int i = 0; i < mds->nr_dc_region; i++) {
-> > +		struct cxl_dc_region_info *dcr = &mds->dc_region[i];
-> > +
-> > +		if (dcr->base <= start &&
-> > +		    (start + len) <= (dcr->base + dcr->decode_len)) {
+在 2024/4/10 13:46, Anand Jain 写道:
 > 
-> Why not use range_contains here as below?
+> 
+> On 4/9/24 19:13, David Sterba wrote:
+>> On Mon, Apr 08, 2024 at 12:46:18PM +0800, Anand Jain wrote:
+>>> On 4/6/24 13:18, Qu Wenruo wrote:
+>>>> [BUG]
+>>>> All the touched test cases would fail after btrfs-progs commit
+>>>> 5f87b467a9e7 ("btrfs-progs: subvolume: output the prompt line only when
+>>>> the ioctl succeeded") due to golden output mismatch.
+>>>>
+>>>> [CAUSE]
+>>>> Although the patch I sent to the mail list doesn't change the output at
+>>>> all but only a timing change, David uses this patch to unify the output
+>>>> of "btrfs subvolume create" and "btrfs subvolume snapshot".
+>>>>
+>>>> Unfortunately this changes the output and causes mismatch with
+>>>> golden output.
+>>>>
+>>>> [FIX]
+>>>> Just redirect stdout of "btrfs subvolume snapshot" to $seqres.full.
+>>>> Any error from "btrfs subvolume" subgroup would lead to error messages
+>>>> into stderr, and cause golden output mismatch.
+>>>>
+>>>> This can be comprehensively greped by
+>>>> 'grep -IR "Create a" tests/btrfs/*.out' command.
+>>>>
+>>>> In fact, we have around 274 "btrfs subvolume snapshot|create" calls 
+>>>> in the
+>>>> existing test cases, meanwhile only around 61 calls are populating
+>>>> golden output (22 for subvolume creation, and 39 for snapshot 
+>>>> creation).
+>>>>
+>>>> Thus majority of the snapshot/subvolume creation is not populating
+>>>> golden output already.
+>>>>
+>>>
+>>> While golden output is better verification method in terms of
+>>> accuracy, but, it falls short in verifying command exit codes.
+>>> I personally think the run_btrfs_progs approach is better for
+>>> 'btrfs subvolume snapshot'. It allows us to verify the command
+>>> status without relying on the stdout.
+>>> But, past discussions favored the golden output verification
+>>> method instead of run_btrfs_progs.
+>>
+>> I thought the whole point here was to depart from the golden output, at
+>> least in selected cases, and only in btrfs/ subdirectory so it does not
+>> accidentally break other filesystems' testing.
+>>
+>> What past discussions favored does not seem to satisfy our needs and as
+>> btrfs-progs are evolving we're hitting random test breakage just because
+>> some message has changed. The testsuite should verify what matters, ie.
+>> return code, state of the filesystem etc, not exact command output.
+>> There's high correlation between output and correctness, yes, but this
+>> is too fragile.
+> 
+> Agreed. So, why don't we use `_run_btrfs_util_prog subvolume
+> snapshot`, which makes it consistent with the rest of the test cases,
+> and also remove the golden output for this command?
 
-Because when I initially wrote this I (or perhaps Navneet, I can't remember) we
-were not using ranges.  This version I tried to convert to ranges and I missed
-this one.
+For `_run_btrfs_util_prog`, the only thing I do not like is the name itself.
 
-Good catch!
+I also do not like how fstests always go $BTRFS_UTIL_PROG neither, 
+however I understand it's there to make sure we do not got weird bash 
+function name like "btrfs()" overriding the real "btrfs".
 
-Ira
+If we can make the name shorter like `_btrfs` or something like it, I'm 
+totally fine with that, and would be happy to move to the new interface.
+
+In fact, `_run_btrfs_util_prog` is pretty helpful to generate a debug 
+friendly seqres.full, which is another good point.
+
+Thanks,
+Qu
+
+> 
+> Thanks, Anand
 
