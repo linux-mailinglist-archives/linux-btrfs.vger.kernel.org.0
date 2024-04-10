@@ -1,78 +1,120 @@
-Return-Path: <linux-btrfs+bounces-4113-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4114-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46B6289FDB0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 19:04:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC3FC89FEB6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 19:36:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C69AB1F21AF4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 17:04:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2137C1F24B57
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 17:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574661802B3;
-	Wed, 10 Apr 2024 17:03:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D429217F395;
+	Wed, 10 Apr 2024 17:36:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cMBEOvam"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wo/su6ux";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pwQ8usD0";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wo/su6ux";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pwQ8usD0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C803F17F384;
-	Wed, 10 Apr 2024 17:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12ED11779B4;
+	Wed, 10 Apr 2024 17:36:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712768610; cv=none; b=YCrF7tiKZWp8AAGvnkIz1CUQNHL4PBEXfjVnvudkyS3S/7p+zxzy7XRmw640ND9j6Yher2s/jAYvmywZPLl7f3T6n8HeKqAl4+M9Ljl6tX3vjRlPkvGA5kz1h3d8UkxVUzsOadTwUwwt8h+KkcSL4Sh4qValBzQfT5FbJlDOhh0=
+	t=1712770571; cv=none; b=ufmzr/kxYKt4NTP9Vv/eyTUSMaAz2nDiGNT+ZRYVTmMm1G/mQsE14HMOrFdWgvhHIM5FJDKArOnrFEXbSj0bgtL4EKpga4XvUrbH1K7UQLRwes1vtQswpNIqRC9ztZKUYjB7XbjU8znidFZTGR/kkgr3JHiRrWt6kt9tmREXylg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712768610; c=relaxed/simple;
-	bh=lq5Wl2+Nx/P1XJbW6AnAEtWNNXOhlT5G1jfm1WEuLfU=;
+	s=arc-20240116; t=1712770571; c=relaxed/simple;
+	bh=s7AlPHnjW1gFs3weqR//JnIAW3hG+/Mp+aTuvYmxgTU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=icHVsB4dC+x2VHCW0O5AIHToA2BIXkmYRbB86jE3Jotm6S1IM2npSuObXmqaOvWhbdylXeFIxQLpjHCtxmLB9/h3+mvuvlnIhQyAdvmBeIBeX2YBWrthxNYVmed+zX22gc6JxfmoeINnN/ZqBcVqZvxrlPpkUr64RfBxREXMFD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cMBEOvam; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712768608; x=1744304608;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lq5Wl2+Nx/P1XJbW6AnAEtWNNXOhlT5G1jfm1WEuLfU=;
-  b=cMBEOvam8Esy8E8e1JEScBcYnr1dOfvIuqNnhQ7fXyuDiYWchoeK4ha4
-   BJWdZ/I7MRVIQlLr2f57Do7nJT07mEKpgPwW2834PH2Ld4nEAp2nt6fpq
-   zXYSQLNGaGb79b7FCBJNWNgd4GGUMKBFSo+FgxmaU9nSN+3YQpEC5PdVa
-   oMwosMjNrxIGUiTZq9EkNoCJMwJkkJkMN1P5ScP4L1nuM/1fqL+NfD/ND
-   uIyCRhHRfekPAmIvkoR7fX+F753W4eOwB2o6q1VJK0+ee36p7RXOAV4s1
-   vLM5yz72HeTDTJY3/jjnCXAUToJGSyMnsqOqBCPndG3sDt2IWqB3xRT+I
-   g==;
-X-CSE-ConnectionGUID: utnWHNjwQVOBkmhXcIKUAA==
-X-CSE-MsgGUID: iWPcOT2US1qbHxY9XSxKZA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18858507"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="18858507"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:03:27 -0700
-X-CSE-ConnectionGUID: wlfn6evvSG6s0Um4MA+UeQ==
-X-CSE-MsgGUID: tAWPm7jcSmSkDcpua7cm3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="25111440"
-Received: from rsterlin-mobl.amr.corp.intel.com (HELO aschofie-mobl2) ([10.255.230.146])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:03:26 -0700
-Date: Wed, 10 Apr 2024 10:03:24 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 23/26] cxl/mem: Trace Dynamic capacity Event Record
-Message-ID: <ZhbGXMh4q3+7ymKS@aschofie-mobl2>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-23-b7b00d623625@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=p2+x3X32CoKrZ801XtkYFNGmkdaDWfFjB3IA9loQOFj+haLX+43yX/Qrqx0UVHKz2mKYkJhVdUEuz67bSAPtr4mMpb+FH5h03XTzcdKa4Z0aPLJ98l6kBSsGYiWHwwnMnpqbGgQrgr1WO8tVj0ye7KrJMr1S9CA6R6ITlRItAw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wo/su6ux; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pwQ8usD0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wo/su6ux; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pwQ8usD0; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3395033A89;
+	Wed, 10 Apr 2024 17:36:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=Wo/su6uxAz3KDCet7sG1IMbLmZNu/s492NxBN+stUG6oo2qYtuABn+4iFfLZA7KwEty81H
+	IdrOqxowTjwdMcGmvVJuVhd3KhUwlHGwlvUKUWet7620GxVeKx3CiehY9/HodlAMarXBGu
+	QKA3ILsUtN07gfz8aoS5W8ffx3zw7mU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=pwQ8usD0NAyGD6U1k6UXV+bVfsviAAMcwHC0rXMTXFxYTDSQht5I5OMD0LYFtofyWnG5ZB
+	JIolcEC5hlnuCvCg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=Wo/su6uxAz3KDCet7sG1IMbLmZNu/s492NxBN+stUG6oo2qYtuABn+4iFfLZA7KwEty81H
+	IdrOqxowTjwdMcGmvVJuVhd3KhUwlHGwlvUKUWet7620GxVeKx3CiehY9/HodlAMarXBGu
+	QKA3ILsUtN07gfz8aoS5W8ffx3zw7mU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=pwQ8usD0NAyGD6U1k6UXV+bVfsviAAMcwHC0rXMTXFxYTDSQht5I5OMD0LYFtofyWnG5ZB
+	JIolcEC5hlnuCvCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFAAD13691;
+	Wed, 10 Apr 2024 17:36:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 20hgOgbOFmZrWQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 10 Apr 2024 17:36:06 +0000
+Date: Wed, 10 Apr 2024 19:28:37 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Jan Kara <jack@suse.cz>
+Cc: Matthew Wilcox <willy@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>,
+	axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.com, konishi.ryusuke@gmail.com,
+	akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v3 for-6.8/block 09/17] btrfs: use bdev apis
+Message-ID: <20240410172837.GO3492@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+ <20231221085712.1766333-10-yukuai1@huaweicloud.com>
+ <ZYcZi5YYvt5QHrG9@casper.infradead.org>
+ <20240104114958.f3cit5q7syp3tn3a@quack3>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -81,136 +123,77 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-23-b7b00d623625@intel.com>
+In-Reply-To: <20240104114958.f3cit5q7syp3tn3a@quack3>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -2.50
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[49];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLtpaten8pmzgjg419jubxqoa7)];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[infradead.org,huaweicloud.com,kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,huawei.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TAGGED_RCPT(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-On Sun, Mar 24, 2024 at 04:18:26PM -0700, Ira Weiny wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
+On Thu, Jan 04, 2024 at 12:49:58PM +0100, Jan Kara wrote:
+> On Sat 23-12-23 17:31:55, Matthew Wilcox wrote:
+> > On Thu, Dec 21, 2023 at 04:57:04PM +0800, Yu Kuai wrote:
+> > > @@ -3674,16 +3670,17 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
+> > >  		 * Drop the page of the primary superblock, so later read will
+> > >  		 * always read from the device.
+> > >  		 */
+> > > -		invalidate_inode_pages2_range(mapping,
+> > > -				bytenr >> PAGE_SHIFT,
+> > > +		invalidate_bdev_range(bdev, bytenr >> PAGE_SHIFT,
+> > >  				(bytenr + BTRFS_SUPER_INFO_SIZE) >> PAGE_SHIFT);
+> > >  	}
+> > >  
+> > > -	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
+> > > -	if (IS_ERR(page))
+> > > -		return ERR_CAST(page);
+> > > +	nofs_flag = memalloc_nofs_save();
+> > > +	folio = bdev_read_folio(bdev, bytenr);
+> > > +	memalloc_nofs_restore(nofs_flag);
+> > 
+> > This is the wrong way to use memalloc_nofs_save/restore.  They should be
+> > used at the point that the filesystem takes/releases whatever lock is
+> > also used during reclaim.  I don't know btrfs well enough to suggest
+> > what lock is missing these annotations.
 > 
-> CXL rev 3.1 section 8.2.9.2.1 adds the Dynamic Capacity Event Records.
-> Notify the host of extents being added or removed.  User space has
-> little use for these events other than for debugging.
+> In principle I agree with you but in this particular case I agree the ask
+> is just too big. I suspect it is one of btrfs btree locks or maybe
+> chunk_mutex but I doubt even btrfs developers know and maybe it is just a
+> cargo cult. And it is not like this would be the first occurence of this
+> anti-pattern in btrfs - see e.g. device_list_add(), add_missing_dev(),
+> btrfs_destroy_delalloc_inodes() (here the wrapping around
+> invalidate_inode_pages2() looks really weird), and many others...
 
-Is there really any 'Notify' going on here?
-
-Can you state the usage in the positive, rather than saying it has
-little use. Is this the only method for users to track this activity.
-
-If it were just for your kernel debugging, I'd guess you'd just throw
-in more dev_dbg() messages.
-
-I see 'dpa_start'. Will we need to do any dpa->hpa translation work
-here?
-
---Alison
-
-
-> 
-> Add DC trace points to the trace log for debugging purposes.
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes for v1
-> [iweiny: Adjust to new trace code]
-> ---
->  drivers/cxl/core/mbox.c  |  4 +++
->  drivers/cxl/core/trace.h | 65 ++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 69 insertions(+)
-> 
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index 7babac2d1c95..cb4576890187 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -978,6 +978,10 @@ static void __cxl_event_trace_record(const struct cxl_memdev *cxlmd,
->  		ev_type = CXL_CPER_EVENT_DRAM;
->  	else if (uuid_equal(uuid, &CXL_EVENT_MEM_MODULE_UUID))
->  		ev_type = CXL_CPER_EVENT_MEM_MODULE;
-> +	else if (uuid_equal(uuid, &CXL_EVENT_DC_EVENT_UUID)) {
-> +		trace_cxl_dynamic_capacity(cxlmd, type, &record->event.dcd);
-> +		return;
-> +	}
->  
->  	cxl_event_trace_record(cxlmd, type, ev_type, uuid, &record->event);
->  }
-> diff --git a/drivers/cxl/core/trace.h b/drivers/cxl/core/trace.h
-> index bdf117a33744..7646fdd9aee3 100644
-> --- a/drivers/cxl/core/trace.h
-> +++ b/drivers/cxl/core/trace.h
-> @@ -707,6 +707,71 @@ TRACE_EVENT(cxl_poison,
->  	)
->  );
->  
-> +/*
-> + * DYNAMIC CAPACITY Event Record - DER
-> + *
-> + * CXL rev 3.0 section 8.2.9.2.1.5 Table 8-47
-> + */
-> +
-> +#define CXL_DC_ADD_CAPACITY			0x00
-> +#define CXL_DC_REL_CAPACITY			0x01
-> +#define CXL_DC_FORCED_REL_CAPACITY		0x02
-> +#define CXL_DC_REG_CONF_UPDATED			0x03
-> +#define show_dc_evt_type(type)	__print_symbolic(type,		\
-> +	{ CXL_DC_ADD_CAPACITY,	"Add capacity"},		\
-> +	{ CXL_DC_REL_CAPACITY,	"Release capacity"},		\
-> +	{ CXL_DC_FORCED_REL_CAPACITY,	"Forced capacity release"},	\
-> +	{ CXL_DC_REG_CONF_UPDATED,	"Region Configuration Updated"	} \
-> +)
-> +
-> +TRACE_EVENT(cxl_dynamic_capacity,
-> +
-> +	TP_PROTO(const struct cxl_memdev *cxlmd, enum cxl_event_log_type log,
-> +		 struct cxl_event_dcd *rec),
-> +
-> +	TP_ARGS(cxlmd, log, rec),
-> +
-> +	TP_STRUCT__entry(
-> +		CXL_EVT_TP_entry
-> +
-> +		/* Dynamic capacity Event */
-> +		__field(u8, event_type)
-> +		__field(u16, hostid)
-> +		__field(u8, region_id)
-> +		__field(u64, dpa_start)
-> +		__field(u64, length)
-> +		__array(u8, tag, CXL_DC_EXTENT_TAG_LEN)
-> +		__field(u16, sh_extent_seq)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		CXL_EVT_TP_fast_assign(cxlmd, log, rec->hdr);
-> +
-> +		/* Dynamic_capacity Event */
-> +		__entry->event_type = rec->event_type;
-> +
-> +		/* DCD event record data */
-> +		__entry->hostid = le16_to_cpu(rec->host_id);
-> +		__entry->region_id = rec->region_index;
-> +		__entry->dpa_start = le64_to_cpu(rec->extent.start_dpa);
-> +		__entry->length = le64_to_cpu(rec->extent.length);
-> +		memcpy(__entry->tag, &rec->extent.tag, CXL_DC_EXTENT_TAG_LEN);
-> +		__entry->sh_extent_seq = le16_to_cpu(rec->extent.shared_extn_seq);
-> +	),
-> +
-> +	CXL_EVT_TP_printk("event_type='%s' host_id='%d' region_id='%d' " \
-> +		"starting_dpa=%llx length=%llx tag=%s " \
-> +		"shared_extent_sequence=%d",
-> +		show_dc_evt_type(__entry->event_type),
-> +		__entry->hostid,
-> +		__entry->region_id,
-> +		__entry->dpa_start,
-> +		__entry->length,
-> +		__print_hex(__entry->tag, CXL_DC_EXTENT_TAG_LEN),
-> +		__entry->sh_extent_seq
-> +	)
-> +);
-> +
->  #endif /* _CXL_EVENTS_H */
->  
->  #define TRACE_INCLUDE_FILE trace
-> 
-> -- 
-> 2.44.0
-> 
+The pattern is intentional and a temporary solution before we could
+implement the scoped NOFS. Functions calling allocations get converted
+from GFP_NOFS to GFP_KERNEL but in case they're called from a context
+that either holds big locks or can recursively enter the filesystem then
+it's protected by the memalloc calls. This should not be surprising.
+What may not be obvious is which locks or kmalloc calling functions it
+could be, this depends on the analysis of the function call chain and
+usually there's enough evidence why it's needed.
 
