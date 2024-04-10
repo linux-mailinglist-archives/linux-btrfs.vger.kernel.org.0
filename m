@@ -1,106 +1,78 @@
-Return-Path: <linux-btrfs+bounces-4112-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4113-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382A689FCFF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 18:34:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B6289FDB0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 19:04:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E549D287E3A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 16:34:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C69AB1F21AF4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Apr 2024 17:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9DE17BB1B;
-	Wed, 10 Apr 2024 16:34:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574661802B3;
+	Wed, 10 Apr 2024 17:03:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AtnSz66G";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RYQmYYZg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AtnSz66G";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RYQmYYZg"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cMBEOvam"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31FB617B4F3;
-	Wed, 10 Apr 2024 16:34:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C803F17F384;
+	Wed, 10 Apr 2024 17:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712766849; cv=none; b=K410kaSspZgeHgZKwD4GdkhsLnhmAOqRNyjTrjROz1ZYqWN3A+KSAoWceeNH6QzeAFDaCllapHsxD7wZqDRV4ge71ysoMeKF4MFw2m/IvE5VJa8lyyje2/CWsGnXB0wey9vToIx6H3uplRiKhu83lJsiNxbEzgaA/naOZZYwQmE=
+	t=1712768610; cv=none; b=YCrF7tiKZWp8AAGvnkIz1CUQNHL4PBEXfjVnvudkyS3S/7p+zxzy7XRmw640ND9j6Yher2s/jAYvmywZPLl7f3T6n8HeKqAl4+M9Ljl6tX3vjRlPkvGA5kz1h3d8UkxVUzsOadTwUwwt8h+KkcSL4Sh4qValBzQfT5FbJlDOhh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712766849; c=relaxed/simple;
-	bh=M4kgcsbWvOG6JukQgDy4eXSmlWkf4f//IsHAzNa3ggk=;
+	s=arc-20240116; t=1712768610; c=relaxed/simple;
+	bh=lq5Wl2+Nx/P1XJbW6AnAEtWNNXOhlT5G1jfm1WEuLfU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bAG0qVbw7q/4BPlOzcjGmaLIZH20Q1hzxhiySDZppjEGd+zoRthqoIRsSIUWfpFs2L7zPpjYKvOAdijlPKyxgrNGyYcQxiyDQ5mrS+PtGGAPGP5NrPlkx2wprfImR29xvYmsXmAFqzNk1muSRJ2XgheMh4FPGNkHbHn8v1sPEFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AtnSz66G; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RYQmYYZg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AtnSz66G; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RYQmYYZg; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1A15D202E0;
-	Wed, 10 Apr 2024 16:34:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712766845;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IXsEPu0dL+VYw7dsKf2XjoiVbIWRW1LG0dozOa11638=;
-	b=AtnSz66GfT2i9NcR5gPpvGbljRwP8YcW6ORjfSUBsJkIvDjM2s0GnUE0XArHB5+G5Qhb91
-	b/rxJ+e7k26ab37Awumn3/UsbQApRPXCcqiSeoYaHTZXI2lxkr9j71DQPqwDHwUyGDkC1G
-	2dl3qnVRrCL7Jy7ijr09G+99BTp4Yu0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712766845;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IXsEPu0dL+VYw7dsKf2XjoiVbIWRW1LG0dozOa11638=;
-	b=RYQmYYZg7+PAafRqsJw/1QOYnntXNTXPBWg6QEo4QB0KEEllnzL+oHz/4K4u7J4LgaxaaA
-	uYYa2jwVD5ONX9AQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AtnSz66G;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=RYQmYYZg
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712766845;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IXsEPu0dL+VYw7dsKf2XjoiVbIWRW1LG0dozOa11638=;
-	b=AtnSz66GfT2i9NcR5gPpvGbljRwP8YcW6ORjfSUBsJkIvDjM2s0GnUE0XArHB5+G5Qhb91
-	b/rxJ+e7k26ab37Awumn3/UsbQApRPXCcqiSeoYaHTZXI2lxkr9j71DQPqwDHwUyGDkC1G
-	2dl3qnVRrCL7Jy7ijr09G+99BTp4Yu0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712766845;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IXsEPu0dL+VYw7dsKf2XjoiVbIWRW1LG0dozOa11638=;
-	b=RYQmYYZg7+PAafRqsJw/1QOYnntXNTXPBWg6QEo4QB0KEEllnzL+oHz/4K4u7J4LgaxaaA
-	uYYa2jwVD5ONX9AQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B3BF13942;
-	Wed, 10 Apr 2024 16:34:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HVlOAn2/Fma5RwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 10 Apr 2024 16:34:05 +0000
-Date: Wed, 10 Apr 2024 18:26:35 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: Re: [PATCH v2] fstests: btrfs: redirect stdout of "btrfs subvolume
- snapshot" to fix output change
-Message-ID: <20240410162635.GN3492@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20240406051847.75347-1-wqu@suse.com>
- <8824a2ee-7325-4a14-ac64-dcedc03c14b9@oracle.com>
- <20240409111319.GA3492@twin.jikos.cz>
- <f113ab1f-58b4-453b-a6eb-7b4cce765287@oracle.com>
- <e9576dfb-c3ce-4adc-bb32-f7efa235907a@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=icHVsB4dC+x2VHCW0O5AIHToA2BIXkmYRbB86jE3Jotm6S1IM2npSuObXmqaOvWhbdylXeFIxQLpjHCtxmLB9/h3+mvuvlnIhQyAdvmBeIBeX2YBWrthxNYVmed+zX22gc6JxfmoeINnN/ZqBcVqZvxrlPpkUr64RfBxREXMFD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cMBEOvam; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712768608; x=1744304608;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lq5Wl2+Nx/P1XJbW6AnAEtWNNXOhlT5G1jfm1WEuLfU=;
+  b=cMBEOvam8Esy8E8e1JEScBcYnr1dOfvIuqNnhQ7fXyuDiYWchoeK4ha4
+   BJWdZ/I7MRVIQlLr2f57Do7nJT07mEKpgPwW2834PH2Ld4nEAp2nt6fpq
+   zXYSQLNGaGb79b7FCBJNWNgd4GGUMKBFSo+FgxmaU9nSN+3YQpEC5PdVa
+   oMwosMjNrxIGUiTZq9EkNoCJMwJkkJkMN1P5ScP4L1nuM/1fqL+NfD/ND
+   uIyCRhHRfekPAmIvkoR7fX+F753W4eOwB2o6q1VJK0+ee36p7RXOAV4s1
+   vLM5yz72HeTDTJY3/jjnCXAUToJGSyMnsqOqBCPndG3sDt2IWqB3xRT+I
+   g==;
+X-CSE-ConnectionGUID: utnWHNjwQVOBkmhXcIKUAA==
+X-CSE-MsgGUID: iWPcOT2US1qbHxY9XSxKZA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18858507"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="18858507"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:03:27 -0700
+X-CSE-ConnectionGUID: wlfn6evvSG6s0Um4MA+UeQ==
+X-CSE-MsgGUID: tAWPm7jcSmSkDcpua7cm3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="25111440"
+Received: from rsterlin-mobl.amr.corp.intel.com (HELO aschofie-mobl2) ([10.255.230.146])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:03:26 -0700
+Date: Wed, 10 Apr 2024 10:03:24 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: ira.weiny@intel.com
+Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 23/26] cxl/mem: Trace Dynamic capacity Event Record
+Message-ID: <ZhbGXMh4q3+7ymKS@aschofie-mobl2>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-23-b7b00d623625@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -109,66 +81,136 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e9576dfb-c3ce-4adc-bb32-f7efa235907a@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.28 / 50.00];
-	BAYES_HAM(-2.07)[95.48%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCPT_COUNT_THREE(0.00)[4];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 1A15D202E0
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -3.28
+In-Reply-To: <20240324-dcd-type2-upstream-v1-23-b7b00d623625@intel.com>
 
-On Wed, Apr 10, 2024 at 03:18:49PM +0930, Qu Wenruo wrote:
-> >> What past discussions favored does not seem to satisfy our needs and as
-> >> btrfs-progs are evolving we're hitting random test breakage just because
-> >> some message has changed. The testsuite should verify what matters, ie.
-> >> return code, state of the filesystem etc, not exact command output.
-> >> There's high correlation between output and correctness, yes, but this
-> >> is too fragile.
-> > 
-> > Agreed. So, why don't we use `_run_btrfs_util_prog subvolume
-> > snapshot`, which makes it consistent with the rest of the test cases,
-> > and also remove the golden output for this command?
+On Sun, Mar 24, 2024 at 04:18:26PM -0700, Ira Weiny wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
 > 
-> For `_run_btrfs_util_prog`, the only thing I do not like is the name itself.
-> 
-> I also do not like how fstests always go $BTRFS_UTIL_PROG neither, 
-> however I understand it's there to make sure we do not got weird bash 
-> function name like "btrfs()" overriding the real "btrfs".
-> 
-> If we can make the name shorter like `_btrfs` or something like it, I'm 
-> totally fine with that, and would be happy to move to the new interface.
-> 
-> In fact, `_run_btrfs_util_prog` is pretty helpful to generate a debug 
-> friendly seqres.full, which is another good point.
+> CXL rev 3.1 section 8.2.9.2.1 adds the Dynamic Capacity Event Records.
+> Notify the host of extents being added or removed.  User space has
+> little use for these events other than for debugging.
 
-I did not realize the _run_btrfs_util_prog helper was there and actually
-the run_check as well. I vaguely remember this from many years ago and
-this somehow landed in btrfs-progs testsuite but fstests was against it.
-Using such helpers sounds like a plan to me (with renames etc).
+Is there really any 'Notify' going on here?
+
+Can you state the usage in the positive, rather than saying it has
+little use. Is this the only method for users to track this activity.
+
+If it were just for your kernel debugging, I'd guess you'd just throw
+in more dev_dbg() messages.
+
+I see 'dpa_start'. Will we need to do any dpa->hpa translation work
+here?
+
+--Alison
+
+
+> 
+> Add DC trace points to the trace log for debugging purposes.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes for v1
+> [iweiny: Adjust to new trace code]
+> ---
+>  drivers/cxl/core/mbox.c  |  4 +++
+>  drivers/cxl/core/trace.h | 65 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 69 insertions(+)
+> 
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index 7babac2d1c95..cb4576890187 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -978,6 +978,10 @@ static void __cxl_event_trace_record(const struct cxl_memdev *cxlmd,
+>  		ev_type = CXL_CPER_EVENT_DRAM;
+>  	else if (uuid_equal(uuid, &CXL_EVENT_MEM_MODULE_UUID))
+>  		ev_type = CXL_CPER_EVENT_MEM_MODULE;
+> +	else if (uuid_equal(uuid, &CXL_EVENT_DC_EVENT_UUID)) {
+> +		trace_cxl_dynamic_capacity(cxlmd, type, &record->event.dcd);
+> +		return;
+> +	}
+>  
+>  	cxl_event_trace_record(cxlmd, type, ev_type, uuid, &record->event);
+>  }
+> diff --git a/drivers/cxl/core/trace.h b/drivers/cxl/core/trace.h
+> index bdf117a33744..7646fdd9aee3 100644
+> --- a/drivers/cxl/core/trace.h
+> +++ b/drivers/cxl/core/trace.h
+> @@ -707,6 +707,71 @@ TRACE_EVENT(cxl_poison,
+>  	)
+>  );
+>  
+> +/*
+> + * DYNAMIC CAPACITY Event Record - DER
+> + *
+> + * CXL rev 3.0 section 8.2.9.2.1.5 Table 8-47
+> + */
+> +
+> +#define CXL_DC_ADD_CAPACITY			0x00
+> +#define CXL_DC_REL_CAPACITY			0x01
+> +#define CXL_DC_FORCED_REL_CAPACITY		0x02
+> +#define CXL_DC_REG_CONF_UPDATED			0x03
+> +#define show_dc_evt_type(type)	__print_symbolic(type,		\
+> +	{ CXL_DC_ADD_CAPACITY,	"Add capacity"},		\
+> +	{ CXL_DC_REL_CAPACITY,	"Release capacity"},		\
+> +	{ CXL_DC_FORCED_REL_CAPACITY,	"Forced capacity release"},	\
+> +	{ CXL_DC_REG_CONF_UPDATED,	"Region Configuration Updated"	} \
+> +)
+> +
+> +TRACE_EVENT(cxl_dynamic_capacity,
+> +
+> +	TP_PROTO(const struct cxl_memdev *cxlmd, enum cxl_event_log_type log,
+> +		 struct cxl_event_dcd *rec),
+> +
+> +	TP_ARGS(cxlmd, log, rec),
+> +
+> +	TP_STRUCT__entry(
+> +		CXL_EVT_TP_entry
+> +
+> +		/* Dynamic capacity Event */
+> +		__field(u8, event_type)
+> +		__field(u16, hostid)
+> +		__field(u8, region_id)
+> +		__field(u64, dpa_start)
+> +		__field(u64, length)
+> +		__array(u8, tag, CXL_DC_EXTENT_TAG_LEN)
+> +		__field(u16, sh_extent_seq)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		CXL_EVT_TP_fast_assign(cxlmd, log, rec->hdr);
+> +
+> +		/* Dynamic_capacity Event */
+> +		__entry->event_type = rec->event_type;
+> +
+> +		/* DCD event record data */
+> +		__entry->hostid = le16_to_cpu(rec->host_id);
+> +		__entry->region_id = rec->region_index;
+> +		__entry->dpa_start = le64_to_cpu(rec->extent.start_dpa);
+> +		__entry->length = le64_to_cpu(rec->extent.length);
+> +		memcpy(__entry->tag, &rec->extent.tag, CXL_DC_EXTENT_TAG_LEN);
+> +		__entry->sh_extent_seq = le16_to_cpu(rec->extent.shared_extn_seq);
+> +	),
+> +
+> +	CXL_EVT_TP_printk("event_type='%s' host_id='%d' region_id='%d' " \
+> +		"starting_dpa=%llx length=%llx tag=%s " \
+> +		"shared_extent_sequence=%d",
+> +		show_dc_evt_type(__entry->event_type),
+> +		__entry->hostid,
+> +		__entry->region_id,
+> +		__entry->dpa_start,
+> +		__entry->length,
+> +		__print_hex(__entry->tag, CXL_DC_EXTENT_TAG_LEN),
+> +		__entry->sh_extent_seq
+> +	)
+> +);
+> +
+>  #endif /* _CXL_EVENTS_H */
+>  
+>  #define TRACE_INCLUDE_FILE trace
+> 
+> -- 
+> 2.44.0
+> 
 
