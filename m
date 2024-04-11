@@ -1,434 +1,215 @@
-Return-Path: <linux-btrfs+bounces-4131-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4132-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98E078A07EF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 07:58:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFBC28A0AD9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 10:07:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBCDE1C21D19
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 05:58:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DCE41F26118
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 08:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0E013CA86;
-	Thu, 11 Apr 2024 05:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D5E13FD9F;
+	Thu, 11 Apr 2024 08:07:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="uFJa4608"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="XmROqLru";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="srElMAH9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825C313C806
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 05:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712815109; cv=none; b=dJzJ0HQnNA47IDRlu5tqtwdbUk8hRVPdiD34JEfhcN0D4kPwg2x8yd18srbFSrufVdg7rDae+CnoepPnTPA0eHSiq9ihsCoRAnVpzkNkcx1BPjVXb592pVhKypk+1bnkELNRDkAz/U6a6MDQR3WqqhCcsz4Zebcs2ugF4h0jpa4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712815109; c=relaxed/simple;
-	bh=/Qpe5lsM8pGY8JTgUNtKXsVsr2UUNYbC0DmqxWipCas=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KLfLiYnAsVjQTA0YWA18YqsFqlDsD/7N/qY7a7SfLVFJIeDlKksHoWkp1q9W5V8KjK/OFuezBfWRdFKI1S2LMxdVWimLglekqPgbX6sv2/ZHN5T8VmAV2oeDAAvrEG2xNxIw8dkZ2Wlt0EWhH8aHMVEgewDVbyMmbw73q7Hd200=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=uFJa4608; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1712815099; x=1713419899; i=quwenruo.btrfs@gmx.com;
-	bh=hev4+/8w+ZpjP1CIjKj+R0NSEpefcIcd0TOxqT4yqKU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=uFJa4608exsclsWMyM1eCkd3gNCYW4onLEmsQbGDIr4FiY7/Cmc2Wr9x5vDpI0RT
-	 KjC+qqp8AawI1PsBVNb9EHcP4CBxcCBUINsWWlGXsHPslHaukSgXIOzBWU0rcNVrp
-	 FJfQ6POofeEVCg6ntw4As/NuXz9bg5FOtbny54I0V/3S+/JnCEVQGfjMoU/RVehM9
-	 GQW5/nc+BicwbrPiRdhJyd8CBKowr1+QON9Ii2qjswLf096HhMVugcVWHkpK96vaM
-	 QDgP3yWe6aeApo8KQULmf+X65N157dR3jkHkG3wHQeYtqkPM7ZMKuOwR3oV1e6uYG
-	 1nKkPXdFZWP3KhOe3A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MG9g4-1s0Ex43J8O-00GbNl; Thu, 11
- Apr 2024 07:58:19 +0200
-Message-ID: <ae52bfc9-ea64-4079-a98a-acd1750fe7ab@gmx.com>
-Date: Thu, 11 Apr 2024 15:28:16 +0930
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1047C664DD;
+	Thu, 11 Apr 2024 08:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712822823; cv=fail; b=OWhOl82IzjNO8aO7UzAKmEItlUMk6D9rIQkdTnl4Snips3sLQHh1h8RT0/xxoINNkKIEkvSTt0vx06sktXkX6+WqA//JwYhKT6QXKdE+MrVZ/rgmvnPLBZfRAnexJhHvzf5NddNdAAUZ6cl4L04PE52cPifV6xbdDEUqOMjh/fs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712822823; c=relaxed/simple;
+	bh=LZZ9PfwBFY7w/QvSQsKrHpH+bj89pqYkTqy1Xogn+ok=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=hx3xUpC4c3x+1ypXVo+jtugztMGYaqUl3d1gWMH22pS6UHiRRbib/sR5CPivjiRQrxkD4eXMUZoBJaSPr3xMFb94ij9BavOi44Z1xszzJac0zjw3NrMHf4FKA7ME3NHSi85Q66NZhdzw6p17vFh6YySO7VjXTcWTPkUZfmD5RTg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=XmROqLru; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=srElMAH9; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43B70SDY008867;
+	Thu, 11 Apr 2024 08:06:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=vcXcA4ffpHZ/rqS6D2KgwABq1LjKHmq4RdQIs/RJ244=;
+ b=XmROqLrub8kqzFDNd8aSrk+2ISPJmF4FrOn5XqRVM7CG0wVNW4+ZU7WuVJi7j3CTWnXg
+ WoszkLzipczEn5OZEy7p4baaArQV9fFJ2JQ6oB/oCdAE5RYmMPnuCZ82ygyEt2jfGK4P
+ rmtDS4TdblT+rPbkBJE6iwoSDOvQxbgx27R0OwCMVKFaDW7UrCuWxAjJna8iAY8lG4kd
+ Vm04T2Qs/YQJ2Z3D25XKJSd6SR0RXhoAKIMZ5HxwbVDgYSABIkTwYKFhTlrCQVwRbIfJ
+ SmuDraqKJu8wYxsPXtoRVhE+weTP6S2SQ8HBuTjC92WBSoWiTzm3vIllqR3EQ0dP6SkK gA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xaxxvh28a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Apr 2024 08:06:33 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43B6L4Di010514;
+	Thu, 11 Apr 2024 08:06:32 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xavu97m0u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Apr 2024 08:06:32 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ebOXx6KybQt5GsCwL03jKz64CqacfCMUV9vnVyuxFv3Zu2gn0N7QKSyz+cNOoMhSZRqf70p3bfIHEafwEFRHJecNGIdFFLJN2Dw1mdV9a8vc2zQCYNenbGTP2kKJ/ChAOLml9WfF06ve1lW8it6IoYISxR63+Muw87LoKWyhQqNaIHZRseg9nLHkkLAP2CcbOJPjLw9wq2CnZF+L5hpoqmnQAZept7n0f2IP/pXjaOgTABeMTpeij+h538Xkmn9nzyTJSPe4nWAp0f39gXvuCrm1/Ns+qvw5a5xdfQc35c8wCuq5d9S6ov6H12zEbbWzuAwneVFfxoVufPD9xr9T9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vcXcA4ffpHZ/rqS6D2KgwABq1LjKHmq4RdQIs/RJ244=;
+ b=Kyin0E5ShkfQqliwNTjUUfWfOke2KbaozhOJUwj7hq5RUe14WJNNnVGPTgy45bWLXd5HTNEl4LLXCSewML3+JShJj71x+ykqL7jU3+BDqF3yXNyVRPHZJhuRKpjWqXcd3AwYBhibfI41aLuGSZn1HoI8lxQfttxfOE1d7zhMq6BNWQokr0nCPSGyFCCnjh6sjAEoNLlwefO/MD/oN9lifIKtw5pBT3XLCQHFz26EpNcvtkB1Ki48zJztUjl+mQb7hOeAHpPe8bMj7HZi5Nexzo91KhDLenEhXCwXj5LqfO/R20h9FWIc3NBwL0JuB9HghHmVVwbmVGG6OezG37nyyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vcXcA4ffpHZ/rqS6D2KgwABq1LjKHmq4RdQIs/RJ244=;
+ b=srElMAH969J0MWU/HCgKL/6c6FHEW/Sq5vmacWf4VLJVF9/OF3sEwRdk/nNzpJMhpiPBpvKYteb4jzWQrJGzB6swzh7MuHw5KZh9U8bBs7TAc+cnJo85KYVW5ETUnSzE8XR0g7pHs55BfKDINsahgAz7+rQmZUgnyEMaM9n25vE=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by PH0PR10MB5756.namprd10.prod.outlook.com (2603:10b6:510:146::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 11 Apr
+ 2024 08:06:29 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::ae68:7d51:133f:324]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::ae68:7d51:133f:324%4]) with mapi id 15.20.7409.042; Thu, 11 Apr 2024
+ 08:06:29 +0000
+Message-ID: <849639fa-e672-40ed-ad5a-fd1f72f4180c@oracle.com>
+Date: Thu, 11 Apr 2024 09:06:23 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 02/10] block: Call blkdev_dio_unaligned() from
+ blkdev_direct_IO()
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+        jack@suse.cz, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org,
+        nilay@linux.ibm.com, ritesh.list@gmail.com, willy@infradead.org
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <20240326133813.3224593-3-john.g.garry@oracle.com>
+ <ZhcYddRtAoMghtvr@bombadil.infradead.org>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <ZhcYddRtAoMghtvr@bombadil.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0466.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1aa::21) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/11] btrfs: add a shrinker for extent maps
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1712748143.git.fdmanana@suse.com>
- <5d1743b20f84e0262a2c229cd5e877ed0f0596a0.1712748143.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <5d1743b20f84e0262a2c229cd5e877ed0f0596a0.1712748143.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2z86pCmGjwv7QAuY1r/WbRFvRVvkj4W7pJouroGqThGI62kabjZ
- 9e6/nsbGJnJYGN0gX17rFmGeof/L6smMiXYtbNsPR6wnnf13TXsW8zt2kZ6zr8ncLge4T6T
- tlGHRjgtKdecfLk3jy7cjKonz0pNI1WNt2lKuMNRkbDJmIaRKM8m2/8xVWZzDajsnMGMXvY
- krktnhE0Sh3YtSzjN7Cnw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:CFfkFtnL14Y=;84EY34iKKLaXriJrsIfQZI+t09U
- jKxADtDcQ9rE8Pvm8qhCqpjUMRdnmNObLKZTX/gDnlcqYtNNDRf+Es+VoVTeES3JTAGmB0xJr
- +MJhqdt8x10CP0WSH3BuOem72KEnuixKiN3kaN0L3G7LuOcNVIjjLGE8Qj0TipaY956hEBf/l
- YCTM1zoC5vElh9ZanMAGwZgGHXRXb/OZ8C+0OTde37hQGiC6iCefcZdluWzScL9WQsga6d5XI
- WEaPoCHynBR6RQd7VpqwZU1jywl+Rns6pKtxWHjIZFI54fVrIiui6PwX34PMzWFWRI8P0SWmz
- gSrVzKgBCDzQBULXYF88bqBtHLlSvkA/KgjQw+orkb/SjiB16Rhs04DhsEAqF7EnS3zekEKxq
- MSJCeCSzBvQ6bjCKAbzxoj46ZsVGpwQBl/zsC6Xl8mlT6OLrbB35HokPGt+aV2vHhFTCAgL7L
- Hu9E1Ugy6opPd6Yz7qLWcQwBJMB5nwqeNKxpncR1paD+DoZ8Jf5mwjMfduzWeBgl9NSFTxO5r
- RJp63fNkOhWuCy2peI3X21owQdv1BV5Q+0S4VfYa71MujFUqtnWv9ZF5eb0+JwZNRIs4Wt5ki
- FhJlby4hOV65W+DBZmKPaV55NO6cXwDcvN5Doq7tFE7mWsSYPT6ndjisyjBE6B7VtVNfhHfCY
- rTAj9OXE3cfyr4Hsg6Fkywn2Ot+EPgRgHVU4+PiZPSm700NCaDzYVkFpwLs96grt8TZPjNm8v
- XuRp83A7emM5yH/WcfEENmpEIDwz9BpajAvOT+wRWylQhkFi+qLZue92VBGmtSuklEXy7N5xe
- eppcks/a9eF32eKtcf0wkI6bZReLmxFKE6ItmY1i7RsdQ=
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|PH0PR10MB5756:EE_
+X-MS-Office365-Filtering-Correlation-Id: a586c645-4486-4a6a-a177-08dc59fe4ae0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	0agl5rq83Z7WafSRCVusBu+Y/DuJQeKydTdcUpgl+Kfqj3lJTJJA96eshKh8thj4PAj9I7rspABB7nKSAiF7DOfErrGFP+kvvBro2KJ+IPFJstJ1IRQdkdLYtl+ckS0emFPxPAuIzSyRYkxSUtXMeyFCC1i16Myws85HE7ciyA4xVaVJb1EaJsY7LAEYh/TvMwlr1QDBrqigdVWB/hdAcW98I2rgW/JYtcR2n6Ku32eZYylLJMt9e53+2b5bBygUVYElFYL+l66R3gtMbPXd099ITcLJaJBkGQUiFP/9nM0WKpOP0JLwOBxXFMTL6iMMdDR76eV85tFlCzz8H9YwnT527F7ziPfOhZQSJHdhRNf1sM1YJW5N0BnOIBDHaQ32/P+nWGHVxgdlMNzy1gZC+JuaRJvubQocRw3xBYcNX+8k48wqbrRHjuXekRC4D0eugw5HJLVjdWLiefp8CwK6buI3VCaG6XkEHY4S5NLmnoTd/zv6AK7/YvsMIG+w01HdWigNOSd8O+Mtv6Wwtg8DMb8NO5APwrzAuAlnMBXlcXmQBDqt9n+srAxfnjg07oqICJL/O4yIBzb44wq2MFXlJ4hu9WMHkqyFaUEdQt0JTtP2vXRsgVzKhM4ul65Dlvbl58ydWRR41MpgUwxrNdMynZDQiYanXt7zAIRy2JIUPS4=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?c29Ebk5aM3BLQ0RySXI5QmN2bDcrLy94MHRoaVlLSlNSTmord2l3MUc0T1Ey?=
+ =?utf-8?B?QmxUS1VjNitGMnJqUGN4SFJVQThybSs1aEl4QTA4TzNIT2ZaRTdIemhYRE44?=
+ =?utf-8?B?eGV0NWtPUU9aUERXN01OTG0rMkFCanJNbHQ2SHA0eWwxUm1IS2xEcXdxZzJx?=
+ =?utf-8?B?UDJPQWJMRHgxbzgyOGRrdks4b3RaTXZEZmt6QTZqQmlUSmRKS2hpeUFvTGEw?=
+ =?utf-8?B?b3FHNGJBU0pNNHgyaW9RYXE2VzJxNmJCN3B0dHJjeWJ3bGR2dnlzcXpNMVRj?=
+ =?utf-8?B?b2EyYkJDYXJnMUxCV2lKaFFOSUdrNmNRc1gzMmdnenp5a25wT243b21pS1pS?=
+ =?utf-8?B?UFhONGVieDQrMENDTjNlZk1kSExQMmpVbXB2MjlQZlM1MTQ4UUlYeFljUmJS?=
+ =?utf-8?B?NWpKQW44NnAyVkhrYVZneENBQmFaSjB2a1pTWVBPVHF6bjdHdHdDQjhTVkI3?=
+ =?utf-8?B?bkhZZFRDVEU3Vk5pdG9QMzVCMXI5OCswRWhTbHNBYjZsWDE1OTd2bUtFMlhL?=
+ =?utf-8?B?TDVBT0o0b2pSbTh0eEpMeHNLSFo1M0EvcEEwSitJam1VUzcrVVQ4b2pCL1FD?=
+ =?utf-8?B?TGd6RWEwOGswU1BsRnVFTFZtWnlkNmh4UHFFczFoVS9WcG54OUYxTGd5c09I?=
+ =?utf-8?B?M0tSSjE2TVg1U3psU3hlQTBKbmJPUjQyTGp0OWdYTmJQY3RPcEp0R1g4dERh?=
+ =?utf-8?B?RWE2Q2UwVmljZmtjRUhyS1RZMFNnNlM1ODdyV052RkRuSm1zN3BKSUdXalZm?=
+ =?utf-8?B?US9vT1c2QzlzNUo0d0o1Nzl1d2xDVmJXeUlieGRUZnZCbzNXWml6bHFBYkJh?=
+ =?utf-8?B?TFRaZ2ZUUEFMRTc1dEdBV1lJWVhBM1hWU1RLZzMrMUxjNzhNS05sSEVUR1Vm?=
+ =?utf-8?B?UldNNlp0SllRdkswTFBJbHRZQWlWL3dxWkU2RDBIK0J3N083QXBGUE9DNW93?=
+ =?utf-8?B?dGwvbThZMU5BVkExSDIrdUdEZVZPWFltL1ZNQ1NVQWsxbUNyZS85cEFTMDB3?=
+ =?utf-8?B?SHFZTWVOSWpBMmJPa2ZZZG52aFkwWlU5cFVLR09OUnpadXhkcjdYQlRudHhF?=
+ =?utf-8?B?UlJlSHFPNGtSYnUrRWhnOHVxM3VFNUhqeHBualFFRlhXaktMRnVjTit5SXBO?=
+ =?utf-8?B?S1lMQlBLRVE0dmlSNVJaUHhnYVZhbXpaTnVob0tWUjBBUVhvN2ZYOFVscUxh?=
+ =?utf-8?B?QTlnU09pNFd3SC90MlFHWkhSSFQ5Q0VqK1N1R2ppcnBkRFFqQVlOVHFIYWpm?=
+ =?utf-8?B?alNhTTdRdG02ZWtKOEs1R3NiMjZwWnpvOW5PZDRBckJ0M2FKUUh5UzVBZ2Zi?=
+ =?utf-8?B?UUFZVVV1OTRlNkVQYmsyUVlwQldZa3B1RWYzS0NXY3RLdG5mbERGMVBPREgw?=
+ =?utf-8?B?c1FVTVVXYm1LK0VrRHA0TzBBd0JsTG9ORmhjNWk5YmNLVU93VXNkL3kyN0dF?=
+ =?utf-8?B?QzgxRnBvUEhlYy82cm0xckRNR1BvZDRLQW9HRjRsSlh2WU15enB1amprb3JJ?=
+ =?utf-8?B?QUtKWGlBOTl0R1gvQm9yeVFDaDJnRlhyK3lIRktRdklvekNJRE5Ic2JZSW9Y?=
+ =?utf-8?B?dlpuSEc1QVRjY09KYWNvQ29qU0NTdjRLMzFOMFpEeVZDcEhmOEhvVXBINmov?=
+ =?utf-8?B?ZHZVNFdsVHQ0cEhWMHByOUFDbkNPWSttNHEyaW1sa1lrVlRGeHdOUUl5WTc5?=
+ =?utf-8?B?YnM3SWZVMys2N0U3VTEzKzV6UFlMNVY4cDRWVEVCRE5mWHBnVVRLbXBzd2tk?=
+ =?utf-8?B?cVdwaG9kMjdWUlpFSlYrQjJrTEdILzR6ZFpUYnIrM2hTR0hWVHp3OFdLZk5y?=
+ =?utf-8?B?WkZFUGVDVWVmV2dYZXNnWk1hdFprSndiZnhmZ21mdHN4ZzRlejJLMXV0bkM0?=
+ =?utf-8?B?ZTJoeTN0ZHN4UXRGejB3U1FHbjZOOTdQN3RVb3pEQnVXVlVUbTdkTFIzNExu?=
+ =?utf-8?B?UXpmYnM3bGxpVFlTbEFmUFpxL1orTGFFS3BQNTJCcldpdnoxeDZLSVZ2R3hQ?=
+ =?utf-8?B?a29tRllxUGk2N0ROMHhqUWdpZzVOdnE1ckJvb2hrbFBibGZMTGZTTVJ0QllR?=
+ =?utf-8?B?Tnl0cW5oeUN5RitaK3ZkazJRNlliSk9UekphVzhlMUtnSlJoU2xGWGI3Y3h6?=
+ =?utf-8?Q?0vBIkH34GWI6yIM0mqu+cK1cc?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	6UIn6XtXbwyHzzWqPqhGBeKJvXTA8pYPBbFzO5573QYShIzOjeXKZ/UmrY3rnMUzNYOVd3zJnlL/d/xU0dewgl99BdZsj/0KQiXqEns+l1eY8ijvU63yV78CR65HntgGzsu7s+IMzBPt6tr573li2Qp4su7tt6DyVxvfdQCrkK4hwaDKhrb+4R/ldUEyJnuOxPF/He7yd2F+0i4thnMjqSKaLJQWTAOeh9oZv2ExzKwnEfHz8cKJaC4tkfGQmqdPQQAVdTkeV7ZFaaXsP2Q5DvzdFsFexiqNwUdhct43coPju4hI8AV+vBtuJrQJO516ZwpCO7g3I3R4v9hQwPZYS5NSfowd1sNp2FpcjwwIAorzz4V9uYsT2SzvvfzXLjvdBBv/l/Z5s1Jp4Z21UPaBkCXxxM0LlPXYSlHbvdWPYJhdbHQ4qXGGXoEyqX9L/ms06A18NL+7j3TT7Lzxu2mmW+M+7zqE4X972cSedy980SpzXvYREii7xCyKSMmcfwjpEuwYiAcR6p8hGkKVlSaI7EUg1lyJ69YyUN1+NeaojOF8yVg93IPNYpeFnnLz/wY0E+Etg07a/6cRqY23jOcEF1004hYFyk54RFi+LLumcaI=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a586c645-4486-4a6a-a177-08dc59fe4ae0
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 08:06:29.4775
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W1gdXHF/ihkxwiTxK/DP8AcXfof4brM2e6uvmKExRmlOtRMdOl2PCmCd5o4W6SaGffXudUJbpyDQ/CnBikVLAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5756
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-11_02,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ suspectscore=0 spamscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404110057
+X-Proofpoint-ORIG-GUID: VPpjFEQ4ZS4Wu9jAR2OgBzJNy7UBd7qK
+X-Proofpoint-GUID: VPpjFEQ4ZS4Wu9jAR2OgBzJNy7UBd7qK
 
+On 10/04/2024 23:53, Luis Chamberlain wrote:
+> On Tue, Mar 26, 2024 at 01:38:05PM +0000, John Garry wrote:
+>> blkdev_dio_unaligned() is called from __blkdev_direct_IO(),
+>> __blkdev_direct_IO_simple(), and __blkdev_direct_IO_async(), and all these
+>> are only called from blkdev_direct_IO().
+>>
+>> Move the blkdev_dio_unaligned() call to the common callsite,
+>> blkdev_direct_IO().
+>>
+>> Pass those functions the bdev pointer from blkdev_direct_IO() as it is non-
+>> trivial to calculate.
+>>
+>> Reviewed-by: Keith Busch<kbusch@kernel.org>
+>> Reviewed-by: Christoph Hellwig<hch@lst.de>
+>> Signed-off-by: John Garry<john.g.garry@oracle.com>
+> Reviewed-by: Luis Chamberlain<mcgrof@kernel.org>
+> 
 
+cheers
 
-=E5=9C=A8 2024/4/10 20:58, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> Extent maps are used either to represent existing file extent items, or =
-to
-> represent new extents that are going to be written and the respective fi=
-le
-> extent items are created when the ordered extent completes.
->
-> We currently don't have any limit for how many extent maps we can have,
-> neither per inode nor globally. Most of the time this not too noticeable
-> because extent maps are removed in the following situations:
->
-> 1) When evicting an inode;
->
-> 2) When releasing folios (pages) through the btrfs_release_folio() addre=
-ss
->     space operation callback.
->
->     However we won't release extent maps in the folio range if the folio=
- is
->     either dirty or under writeback or if the inode's i_size is less tha=
-n
->     or equals to 16M (see try_release_extent_mapping(). This 16M i_size
->     constraint was added back in 2008 with commit 70dec8079d78 ("Btrfs:
->     extent_io and extent_state optimizations"), but there's no explanati=
-on
->     about why we have it or why the 16M value.
->
-> This means that for buffered IO we can reach an OOM situation due to too
-> many extent maps if either of the following happens:
->
-> 1) There's a set of tasks constantly doing IO on many files with a size
->     not larger than 16M, specially if they keep the files open for very
->     long periods, therefore preventing inode eviction.
->
->     This requires a really high number of such files, and having many no=
-n
->     mergeable extent maps (due to random 4K writes for example) and a
->     machine with very little memory;
->
-> 2) There's a set tasks constantly doing random write IO (therefore
->     creating many non mergeable extent maps) on files and keeping them
->     open for long periods of time, so inode eviction doesn't happen and
->     there's always a lot of dirty pages or pages under writeback,
->     preventing btrfs_release_folio() from releasing the respective exten=
-t
->     maps.
->
-> This second case was actually reported in the thread pointed by the Link
-> tag below, and it requires a very large file under heavy IO and a machin=
-e
-> with very little amount of RAM, which is probably hard to happen in
-> practice in a real world use case.
->
-> However when using direct IO this is not so hard to happen, because the
-> page cache is not used, and therefore btrfs_release_folio() is never
-> called. Which means extent maps are dropped only when evicting the inode=
-,
-> and that means that if we have tasks that keep a file descriptor open an=
-d
-> keep doing IO on a very large file (or files), we can exhaust memory due
-> to an unbounded amount of extent maps. This is especially easy to happen
-> if we have a huge file with millions of small extents and their extent
-> maps are not mergeable (non contiguous offsets and disk locations).
-> This was reported in that thread with the following fio test:
->
->     $ cat test.sh
->     #!/bin/bash
->
->     DEV=3D/dev/sdj
->     MNT=3D/mnt/sdj
->     MOUNT_OPTIONS=3D"-o ssd"
->     MKFS_OPTIONS=3D""
->
->     cat <<EOF > /tmp/fio-job.ini
->     [global]
->     name=3Dfio-rand-write
->     filename=3D$MNT/fio-rand-write
->     rw=3Drandwrite
->     bs=3D4K
->     direct=3D1
->     numjobs=3D16
->     fallocate=3Dnone
->     time_based
->     runtime=3D90000
->
->     [file1]
->     size=3D300G
->     ioengine=3Dlibaio
->     iodepth=3D16
->
->     EOF
->
->     umount $MNT &> /dev/null
->     mkfs.btrfs -f $MKFS_OPTIONS $DEV
->     mount $MOUNT_OPTIONS $DEV $MNT
->
->     fio /tmp/fio-job.ini
->     umount $MNT
->
-> Monitoring the btrfs_extent_map slab while running the test with:
->
->     $ watch -d -n 1 'cat /sys/kernel/slab/btrfs_extent_map/objects \
->                          /sys/kernel/slab/btrfs_extent_map/total_objects=
-'
->
-> Shows the number of active and total extent maps skyrocketing to tens of
-> millions, and on systems with a short amount of memory it's easy and qui=
-ck
-> to get into an OOM situation, as reported in that thread.
->
-> So to avoid this issue add a shrinker that will remove extents maps, as
-> long as they are not pinned, and takes proper care with any concurrent
-> fsync to avoid missing extents (setting the full sync flag while in the
-> middle of a fast fsync). This shrinker is similar to the one ext4 uses
-> for its extent_status structure, which is analogous to btrfs' extent_map
-> structure.
->
-> Link: https://lore.kernel.org/linux-btrfs/13f94633dcf04d29aaf1f0a43d42c5=
-5e@amazon.com/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-[...]
-> +
-> +static unsigned long btrfs_scan_root(struct btrfs_root *root,
-> +				     unsigned long *scanned,
-> +				     unsigned long nr_to_scan)
-> +{
-> +	unsigned long nr_dropped =3D 0;
-> +	u64 ino =3D 0;
-> +
-> +	while (*scanned < nr_to_scan) {
-> +		struct rb_node *node;
-> +		struct rb_node *prev =3D NULL;
-> +		struct btrfs_inode *inode;
-> +		bool stop_search =3D true;
-> +
-> +		spin_lock(&root->inode_lock);
-> +		node =3D root->inode_tree.rb_node;
-> +
-> +		while (node) {
-> +			prev =3D node;
-> +			inode =3D rb_entry(node, struct btrfs_inode, rb_node);
-> +			if (ino < btrfs_ino(inode))
-> +				node =3D node->rb_left;
-> +			else if (ino > btrfs_ino(inode))
-> +				node =3D node->rb_right;
-> +			else
-> +				break;
-> +		}
-> +
-> +		if (!node) {
-> +			while (prev) {
-> +				inode =3D rb_entry(prev, struct btrfs_inode, rb_node);
-> +				if (ino <=3D btrfs_ino(inode)) {
-> +					node =3D prev;
-> +					break;
-> +				}
-> +				prev =3D rb_next(prev);
-> +			}
-> +		}
+> I think this patch should just be sent separately already and not part
+> of this series.
 
-The "while (node) {}" loop and above "if (!node) {}" is to locate the
-first inode after @ino (which is the last scanned inode number).
+That just creates a merge dependency, since I have later changes which 
+depend on this. I suppose that since we're nearly at rc4, I could do that.
 
-Maybe extract them into a helper, with some name like
-"find_next_inode_to_scan()" could be a little easier to read?
+John
 
-> +
-> +		while (node) {
-> +			inode =3D rb_entry(node, struct btrfs_inode, rb_node);
-> +			ino =3D btrfs_ino(inode) + 1;
-> +			if (igrab(&inode->vfs_inode)) {
-> +				spin_unlock(&root->inode_lock);
-> +				stop_search =3D false;
-> +
-> +				nr_dropped +=3D btrfs_scan_inode(inode, scanned,
-> +							       nr_to_scan);
-> +				iput(&inode->vfs_inode);
-> +				cond_resched();
-> +				break;
-> +			}
-> +			node =3D rb_next(node);
-> +		}
-> +
-> +		if (stop_search) {
-> +			spin_unlock(&root->inode_lock);
-> +			break;
-> +		}
-> +	}
-> +
-> +	return nr_dropped;
-> +}
-> +
-> +static unsigned long btrfs_extent_maps_scan(struct shrinker *shrinker,
-> +					    struct shrink_control *sc)
-> +{
-> +	struct btrfs_fs_info *fs_info =3D shrinker->private_data;
-> +	unsigned long nr_dropped =3D 0;
-> +	unsigned long scanned =3D 0;
-> +	u64 next_root_id =3D 0;
-> +
-> +	while (scanned < sc->nr_to_scan) {
-> +		struct btrfs_root *root;
-> +		unsigned long count;
-> +
-> +		spin_lock(&fs_info->fs_roots_radix_lock);
-> +		count =3D radix_tree_gang_lookup(&fs_info->fs_roots_radix,
-> +					       (void **)&root, next_root_id, 1);
-> +		if (count =3D=3D 0) {
-> +			spin_unlock(&fs_info->fs_roots_radix_lock);
-> +			break;
-> +		}
-> +		next_root_id =3D btrfs_root_id(root) + 1;
-> +		root =3D btrfs_grab_root(root);
-> +		spin_unlock(&fs_info->fs_roots_radix_lock);
-> +
-> +		if (!root)
-> +			continue;
-> +
-> +		if (is_fstree(btrfs_root_id(root)))
-> +			nr_dropped +=3D btrfs_scan_root(root, &scanned, sc->nr_to_scan);
-> +
-> +		btrfs_put_root(root);
-> +	}
-> +
-> +	return nr_dropped;
-> +}
-> +
-> +static unsigned long btrfs_extent_maps_count(struct shrinker *shrinker,
-> +					     struct shrink_control *sc)
-> +{
-> +	struct btrfs_fs_info *fs_info =3D shrinker->private_data;
-> +	const s64 total =3D percpu_counter_sum_positive(&fs_info->evictable_ex=
-tent_maps);
-> +
-> +	/* The unsigned long type is 32 bits on 32 bits platforms. */
-> +#if BITS_PER_LONG =3D=3D 32
-> +	if (total > ULONG_MAX)
-> +		return ULONG_MAX;
-> +#endif
-
-Can this be a simple min_t(unsigned long, total, ULONG_MAX)?
-
-Another question is, since total is s64, wouldn't any negative number go
-ULONG_MAX directly for 32bit systems?
-
-And since the function is just a shrink hook, I'm not sure what would
-happen if we return ULONG_MAX for negative values.
-
-Otherwise the idea looks pretty good, it's just me not qualified to give
-a good review.
-
-Thanks,
-Qu
-> +	return total;
-> +}
-> +
-> +int btrfs_register_extent_map_shrinker(struct btrfs_fs_info *fs_info)
-> +{
-> +	int ret;
-> +
-> +	ret =3D percpu_counter_init(&fs_info->evictable_extent_maps, 0, GFP_KE=
-RNEL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	fs_info->extent_map_shrinker =3D shrinker_alloc(0, "em-btrfs:%s", fs_i=
-nfo->sb->s_id);
-> +	if (!fs_info->extent_map_shrinker) {
-> +		percpu_counter_destroy(&fs_info->evictable_extent_maps);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	fs_info->extent_map_shrinker->scan_objects =3D btrfs_extent_maps_scan;
-> +	fs_info->extent_map_shrinker->count_objects =3D btrfs_extent_maps_coun=
-t;
-> +	fs_info->extent_map_shrinker->private_data =3D fs_info;
-> +
-> +	shrinker_register(fs_info->extent_map_shrinker);
-> +
-> +	return 0;
-> +}
-> +
-> +void btrfs_unregister_extent_map_shrinker(struct btrfs_fs_info *fs_info=
-)
-> +{
-> +	shrinker_free(fs_info->extent_map_shrinker);
-> +	ASSERT(percpu_counter_sum_positive(&fs_info->evictable_extent_maps) =
-=3D=3D 0);
-> +	percpu_counter_destroy(&fs_info->evictable_extent_maps);
-> +}
-> diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-> index c3707461ff62..8a6be2f7a0e2 100644
-> --- a/fs/btrfs/extent_map.h
-> +++ b/fs/btrfs/extent_map.h
-> @@ -140,5 +140,7 @@ void btrfs_drop_extent_map_range(struct btrfs_inode =
-*inode,
->   int btrfs_replace_extent_map_range(struct btrfs_inode *inode,
->   				   struct extent_map *new_em,
->   				   bool modified);
-> +int btrfs_register_extent_map_shrinker(struct btrfs_fs_info *fs_info);
-> +void btrfs_unregister_extent_map_shrinker(struct btrfs_fs_info *fs_info=
-);
->
->   #endif
-> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> index 534d30dafe32..f1414814bd69 100644
-> --- a/fs/btrfs/fs.h
-> +++ b/fs/btrfs/fs.h
-> @@ -857,6 +857,8 @@ struct btrfs_fs_info {
->   	struct lockdep_map btrfs_trans_pending_ordered_map;
->   	struct lockdep_map btrfs_ordered_extent_map;
->
-> +	struct shrinker *extent_map_shrinker;
-> +
->   #ifdef CONFIG_BTRFS_FS_REF_VERIFY
->   	spinlock_t ref_verify_lock;
->   	struct rb_root block_tree;
 
