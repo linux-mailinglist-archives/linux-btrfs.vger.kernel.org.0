@@ -1,228 +1,162 @@
-Return-Path: <linux-btrfs+bounces-4158-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4159-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A6C8A1C66
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 19:47:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E83FA8A1CC3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 19:55:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9E471F22E5D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 17:47:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E27C7B2ADBB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 17:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4DB190692;
-	Thu, 11 Apr 2024 16:19:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44EB71A0B0F;
+	Thu, 11 Apr 2024 16:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aoEK7XGM"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XIsGPPx3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67341190684
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 16:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 156CA1A0AE7;
+	Thu, 11 Apr 2024 16:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712852372; cv=none; b=FbfmLzLCNT0IBgD/45IapJ9fJVB6bb4XmqZCknJa6hDLn4sgmVbX9EfOlCpPKdaJaYE5Yi8NjtjwOvyIYopVU3+cziNKpHhHsfC2QFy728zjZ6dAU61YeAGUzAp8Tq4oSxOkTO9EcnY8LsVp2LW4Jb4tLYomNiiBY6f4ISi2jp8=
+	t=1712852604; cv=none; b=oQn7tJgrdFHQ3nqLFBhStEqjZ+u9YqToXIhcoCRtlmAxbBioEDFfAtXBbh9qpc1L0MAPgO2i9jJcbTk7a2AsNrT41MPabIZesFB+7qZV8FKqFnx2vJGq9J/swZM1uJt+7YJRWUqvBbK66Nia+B1YGPy56RwHGjGhJ8dE6kyG8uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712852372; c=relaxed/simple;
-	bh=Zzh8G9Ktno/CPunpZz99wWJA9ns+H0V6qjxJUzvCzVo=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TehdeTM1Nf0cMxpva3Crg6+gEJnzN72A3IKP6KQGJW3Wrrn+EXGpaVIU6h+8KW0g/UpTi/KOJDxWRBZoub20QPnSZ53AnppWgBFb2yMg3ibrbdxv7q4lGC35vf0K51RlTKONHMlK8Rrc797tyMfkGHkfSdCEHT6Bi8ou9HLadDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aoEK7XGM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 700F4C113CD
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 16:19:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712852372;
-	bh=Zzh8G9Ktno/CPunpZz99wWJA9ns+H0V6qjxJUzvCzVo=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=aoEK7XGMzVCVYFgafzh7qlX+K3EZmEgBE/5VOMG0ma3q7xpwC5Fe4pec9EamBZcFT
-	 VJH72EqvNozKO5q7EyvnTHBAka08XAQ2SGbygdRaWWAVGW+p9xgw4IrHIswww0yRQT
-	 gOhKvGumKqoE9T3bvfxmkdqirLreT3AzAVzvJxYe6d6HVKJNNBiJfAOusoBVNoiaGK
-	 zjzX15g3H+H3t6Am9S6DcTZaRVgHoOVE/jqjlYCh5RityTM+zmGaeNf3j8FcXleWzJ
-	 PStPFNXzk5SOTMzOEEZdFURfC+2pb8kAdHzx8Bp+rUX7BZxHrmKMvxOCgIcDIp9Yny
-	 L4pqdkCzBxcpA==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 15/15] btrfs: add tracepoints for extent map shrinker events
-Date: Thu, 11 Apr 2024 17:19:09 +0100
-Message-Id: <f291471384c2b3819f2dcf4eeb9d11158aa11e84.1712837044.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1712837044.git.fdmanana@suse.com>
-References: <cover.1712837044.git.fdmanana@suse.com>
+	s=arc-20240116; t=1712852604; c=relaxed/simple;
+	bh=nN/Hr+UlT6emx/RUIJVSa74QG/O0VgJ/byKbQpUfmyY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VWVaNTMrArzwXpUAPHTmX9pqckVf8Y9iEtFipuXz7cMNaIXCIqHf/GgUa7hmk+GHQ4qVqOJ2dS/2zrRgt0iPNlEDUG7Xtxh9OW7yoVsaz55FTL2ANhPZ2NsqZAxdRf+HPKGhb+VaVxmAouLKeTQP8C3h/UcUXuKOQxqloIgOpy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XIsGPPx3; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+	bh=w8fDcPBM4Ze2RPgrAoXs/w5z2M5QE6GW5bGItfgRyJ8=; b=XIsGPPx3mZgUgXDqmsW3zFEUMM
+	hrAF6AwyKjg5u/7JpKuZqbRzY4v8HjoVwEuBNAQVw14POMEREkb9sOqKwAN3ZchA3+E1NH+q43G9i
+	h89UzTlMT34ILaOSNIjqzh/1hopUZTMHNrak55UHbof7sc3viEOIyBCwxIJ6BThh3W7K7EUlGy4np
+	TJb5EIRDb4TXgd7PW5tv8xQPgKoVmMRy+YgpCoXVAMMOQ9WQZGo/nl38Gs8Cc4AV4c2NEYmM7UFcA
+	N6nfqhSWnnj5rSE7+/wwPBIg+h68sSddrjQYwRJvDbTOvqfFAn0OFruiNIfUzQl1/VooT2EV9uDuG
+	6YpTaT4w==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ruxCN-0000000D38A-1CHz;
+	Thu, 11 Apr 2024 16:22:51 +0000
+Date: Thu, 11 Apr 2024 09:22:51 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: Dan Helmick <dan.helmick@samsung.com>, axboe@kernel.dk,
+	kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com, willy@infradead.org,
+	Alan Adamson <alan.adamson@oracle.com>
+Subject: Re: [PATCH v6 10/10] nvme: Atomic write support
+Message-ID: <ZhgOW8yBPuuae4ni@bombadil.infradead.org>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <20240326133813.3224593-11-john.g.garry@oracle.com>
+ <Zhcu5m8fmwD1W5bG@bombadil.infradead.org>
+ <143e3d55-773f-4fcb-889c-bb24c0acabba@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <143e3d55-773f-4fcb-889c-bb24c0acabba@oracle.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, Apr 11, 2024 at 09:59:57AM +0100, John Garry wrote:
+> On 11/04/2024 01:29, Luis Chamberlain wrote:
+> > On Tue, Mar 26, 2024 at 01:38:13PM +0000, John Garry wrote:
+> > > From: Alan Adamson <alan.adamson@oracle.com>
+> > > 
+> > > Add support to set block layer request_queue atomic write limits. The
+> > > limits will be derived from either the namespace or controller atomic
+> > > parameters.
+> > > 
+> > > NVMe atomic-related parameters are grouped into "normal" and "power-fail"
+> > > (or PF) class of parameter. For atomic write support, only PF parameters
+> > > are of interest. The "normal" parameters are concerned with racing reads
+> > > and writes (which also applies to PF). See NVM Command Set Specification
+> > > Revision 1.0d section 2.1.4 for reference.
+> > > 
+> > > Whether to use per namespace or controller atomic parameters is decided by
+> > > NSFEAT bit 1 - see Figure 97: Identify – Identify Namespace Data
+> > > Structure, NVM Command Set.
+> > > 
+> > > NVMe namespaces may define an atomic boundary, whereby no atomic guarantees
+> > > are provided for a write which straddles this per-lba space boundary. The
+> > > block layer merging policy is such that no merges may occur in which the
+> > > resultant request would straddle such a boundary.
+> > > 
+> > > Unlike SCSI, NVMe specifies no granularity or alignment rules, apart from
+> > > atomic boundary rule.
+> > 
+> > Larger IU drives a larger alignment *preference*, and it can be multiples
+> > of the LBA format, it's called Namespace Preferred Write Granularity (NPWG)
+> > and the NVMe driver already parses it. So say you have a 4k LBA format
+> > but a 16k NPWG. I suspect this means we'd want atomics writes to align to 16k
+> > but I can let Dan confirm.
+> 
+> If we need to be aligned to NPWG, then the min atomic write unit would also
+> need to be NPWG. Any NPWG relation to atomic writes is not defined in the
+> spec, AFAICS.
 
-Add some tracepoints for the extent map shrinker to help debug and analyse
-main events. These have proved useful during development of the shrinker.
+NPWG is just a preference, not a requirement, so it is different than
+logical block size. As far as I can tell we have no block topology
+information to represent it. LBS will help users opt-in to align to
+the NPWG, and a respective NAWUPF will ensure you can also atomically
+write the respective sector size.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/extent_map.c        | 18 ++++++-
- include/trace/events/btrfs.h | 92 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 109 insertions(+), 1 deletion(-)
+For atomics, NABSPF is what we want to use.
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 9791acda5b57..5c40efe39e70 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -1064,6 +1064,7 @@ static unsigned long btrfs_scan_inode(struct btrfs_inode *inode,
- 			btrfs_set_inode_full_sync(inode);
- 
- 		remove_extent_mapping(inode, em);
-+		trace_btrfs_extent_map_shrinker_remove_em(inode, em);
- 		/* Drop the reference for the tree. */
- 		free_extent_map(em);
- 		nr_dropped++;
-@@ -1118,6 +1119,12 @@ static unsigned long btrfs_extent_maps_scan(struct shrinker *shrinker,
- 	unsigned long scanned = 0;
- 	u64 next_root_id = 0;
- 
-+	if (trace_btrfs_extent_map_shrinker_scan_enter_enabled()) {
-+		s64 nr = percpu_counter_sum_positive(&fs_info->evictable_extent_maps);
-+
-+		trace_btrfs_extent_map_shrinker_scan_enter(fs_info, sc->nr_to_scan, nr);
-+	}
-+
- 	while (scanned < sc->nr_to_scan) {
- 		struct btrfs_root *root;
- 		unsigned long count;
-@@ -1142,6 +1149,12 @@ static unsigned long btrfs_extent_maps_scan(struct shrinker *shrinker,
- 		btrfs_put_root(root);
- 	}
- 
-+	if (trace_btrfs_extent_map_shrinker_scan_exit_enabled()) {
-+		s64 nr = percpu_counter_sum_positive(&fs_info->evictable_extent_maps);
-+
-+		trace_btrfs_extent_map_shrinker_scan_exit(fs_info, nr_dropped, nr);
-+	}
-+
- 	return nr_dropped;
- }
- 
-@@ -1149,8 +1162,11 @@ static unsigned long btrfs_extent_maps_count(struct shrinker *shrinker,
- 					     struct shrink_control *sc)
- {
- 	struct btrfs_fs_info *fs_info = shrinker->private_data;
-+	const s64 nr = percpu_counter_sum_positive(&fs_info->evictable_extent_maps);
-+
-+	trace_btrfs_extent_map_shrinker_count(fs_info, sc->nr_to_scan, nr);
- 
--	return percpu_counter_sum_positive(&fs_info->evictable_extent_maps);
-+	return nr;
- }
- 
- int btrfs_register_extent_map_shrinker(struct btrfs_fs_info *fs_info)
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 766cfd48386c..ba49efa2bc74 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -2551,6 +2551,98 @@ TRACE_EVENT(btrfs_get_raid_extent_offset,
- 			__entry->devid)
- );
- 
-+TRACE_EVENT(btrfs_extent_map_shrinker_count,
-+
-+	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 nr_to_scan, u64 nr),
-+
-+	TP_ARGS(fs_info, nr_to_scan, nr),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	nr_to_scan	)
-+		__field(	u64,	nr		)
-+	),
-+
-+	TP_fast_assign_btrfs(fs_info,
-+		__entry->nr_to_scan	= nr_to_scan;
-+		__entry->nr		= nr;
-+	),
-+
-+	TP_printk_btrfs("nr_to_scan=%llu nr=%llu",
-+			__entry->nr_to_scan, __entry->nr)
-+);
-+
-+TRACE_EVENT(btrfs_extent_map_shrinker_scan_enter,
-+
-+	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 nr_to_scan, u64 nr),
-+
-+	TP_ARGS(fs_info, nr_to_scan, nr),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	nr_to_scan	)
-+		__field(	u64,	nr		)
-+	),
-+
-+	TP_fast_assign_btrfs(fs_info,
-+		__entry->nr_to_scan	= nr_to_scan;
-+		__entry->nr		= nr;
-+	),
-+
-+	TP_printk_btrfs("nr_to_scan=%llu nr=%llu",
-+			__entry->nr_to_scan, __entry->nr)
-+);
-+
-+TRACE_EVENT(btrfs_extent_map_shrinker_scan_exit,
-+
-+	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 nr_dropped, u64 nr),
-+
-+	TP_ARGS(fs_info, nr_dropped, nr),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	nr_dropped	)
-+		__field(	u64,	nr		)
-+	),
-+
-+	TP_fast_assign_btrfs(fs_info,
-+		__entry->nr_dropped	= nr_dropped;
-+		__entry->nr		= nr;
-+	),
-+
-+	TP_printk_btrfs("nr_dropped=%llu nr=%llu",
-+			__entry->nr_dropped, __entry->nr)
-+);
-+
-+TRACE_EVENT(btrfs_extent_map_shrinker_remove_em,
-+
-+	TP_PROTO(const struct btrfs_inode *inode, const struct extent_map *em),
-+
-+	TP_ARGS(inode, em),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	ino		)
-+		__field(	u64,	root_id		)
-+		__field(	u64,	start		)
-+		__field(	u64,	len		)
-+		__field(	u64,	block_start	)
-+		__field(	u32,	flags		)
-+	),
-+
-+	TP_fast_assign_btrfs(inode->root->fs_info,
-+		__entry->ino		= btrfs_ino(inode);
-+		__entry->root_id	= inode->root->root_key.objectid;
-+		__entry->start		= em->start;
-+		__entry->len		= em->len;
-+		__entry->block_start	= em->block_start;
-+		__entry->flags		= em->flags;
-+	),
-+
-+	TP_printk_btrfs(
-+"ino=%llu root=%llu(%s) start=%llu len=%llu block_start=%llu(%s) flags=%s",
-+			__entry->ino, show_root_type(__entry->root_id),
-+			__entry->start, __entry->len,
-+			show_map_type(__entry->block_start),
-+			show_map_flags(__entry->flags))
-+);
-+
- #endif /* _TRACE_BTRFS_H */
- 
- /* This part must be outside protection */
--- 
-2.43.0
+The above statement on the commit log just seems a bit misleading then.
 
+> We simply use the LBA data size as the min atomic unit in this patch.
+
+I thought NABSPF is used.
+
+> > > Note on NABSPF:
+> > > There seems to be some vagueness in the spec as to whether NABSPF applies
+> > > for NSFEAT bit 1 being unset. Figure 97 does not explicitly mention NABSPF
+> > > and how it is affected by bit 1. However Figure 4 does tell to check Figure
+> > > 97 for info about per-namespace parameters, which NABSPF is, so it is
+> > > implied. However currently nvme_update_disk_info() does check namespace
+> > > parameter NABO regardless of this bit.
+> > 
+> > Yeah that its quirky.
+> > 
+> > Also today we set the physical block size to min(npwg, atomic) and that
+> > means for a today's average 4k IU drive if they get 16k atomic the
+> > physical block size would still be 4k. As the physical block size in
+> > practice can also lift the sector size filesystems used it would seem
+> > odd only a larger npwg could lift it.
+> It seems to me that if you want to provide atomic guarantees for this large
+> "physical block size", then it needs to be based on (N)AWUPF and NPWG.
+
+For atomicity, I read it as needing to use NABSPF. Aligning to NPWG will just
+help performance.
+
+The NPWG comes from an internal mapping table constructed and kept on
+DRAM on a drive in units of an IU size [0], and so not aligning to the
+IU just causes having to work with entries in the able rather than just
+one, and also incurs a read-modify-write. Contrary to the logical block
+size, a write below NPWG but respecting the logical block size is allowed,
+its just not optimal.
+
+[0] https://kernelnewbies.org/KernelProjects/large-block-size#Indirection_Unit_size_increases
+
+  Luis
 
