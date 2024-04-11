@@ -1,56 +1,52 @@
-Return-Path: <linux-btrfs+bounces-4170-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4171-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D52168A2225
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 01:15:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A166B8A2226
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 01:16:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 878612881EC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 23:15:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0B4AB220D4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 23:16:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9987947A79;
-	Thu, 11 Apr 2024 23:15:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8358B47A7C;
+	Thu, 11 Apr 2024 23:16:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="YbLXkdDe"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="MwCyIiTj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F6634779E
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 23:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD214779E
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 23:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712877305; cv=none; b=ei2TSLxDGwWMIYEymPb+Xlv7bU2EBedzNzGFkUmUXgIj/jA1EaEHxCERJxtIiuCVu7DCjJyDrXoQn5vTSMJQQb35DX7uPO0GusWJWi5N8fsaIfkVJaM+o306XhYo+ONGTHpKfSzQ2aH5CbFxFNzHEQu22R4eaA0d+vzyAx6uCqw=
+	t=1712877365; cv=none; b=BbUk4D4eeqHobva6HIu+5l4QQ/yW7a+2KCLICx1ENwTQEGrsanSWRhLeOrENpMRETHcypCZW8uP7Zm7NtKMz5O0tC0WSB3hwU/cq3nMwtJbl2j2x53qK7jMSH3rLwyrJekWTYiNyFaLHWBzl76a6E2ArY96I53RIEbhVIT8jZKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712877305; c=relaxed/simple;
-	bh=vQc6N3SQ3WS8ujf7Tzea0ghWVIEaX2FxfFtnzLiMdQk=;
+	s=arc-20240116; t=1712877365; c=relaxed/simple;
+	bh=ZFAPC0dOrsXeA5pj8PEqU0f++A+gbzXq7V03M5DrqVA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=X7ewmnBnHp8ak1dwmt6dP72OX2aB3zxJCN5g0fs0oXp12paqDe/TrZezVDwkhJG14heOfCBcseIm/p95Ipv2g6XnAWNZ+kWZsRkErNIYmmLCLmPJfAlJq/vsbblsXUT7LWciioDbMc9o+X6HJ4t0F8RWGYlrru/xyvyAkNG4i/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=YbLXkdDe; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=mx8yVB6ElJVKcSbmFGR5e8XMrRJVf2pm3L5LrzV/qsG/r2iTI+5OGHc4pMIS/Ptu+f1WgQnR3jtGKNWnFFf78Kz09q20r7cWZoxddemS7ntM9v36bJeU22QpsFbwg73pwvVnza9OrNyeDSbUk9wN6t3vAquF+3ayDpUppdo4/BU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=MwCyIiTj; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1712877296; x=1713482096; i=quwenruo.btrfs@gmx.com;
-	bh=XHfNiInczrP38SpUI8Yr0Lal8lCyFnTztLFXM5fTCC8=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=YbLXkdDe2TaPrIRWXQ19BFIoiz7RRbYnS7UwvQTlVj4TI71G7ilmPZVwztep6Oc8
-	 6xy9H0eU7AWecqRcpByVbMWg+DAUb7TCz9pmeHxS+iQoJc9H2Ddi7QV3Cxs0X/bdJ
-	 XOOKzyq1d88YRvJ95+4SNJ4psGRU+r/BQb8amLIb9SbAS4tTyEHmXem98jUfjBZpX
-	 OWHOFGZ0uFc8H8iSiHdl6Ad0nsU6N8HLLWcO3uQbUZ7jAG6cOjwOtOowUW8MZEygd
-	 L3ecDfy2rW+JT8cpsUOB15KmJbIlNG8wmyjEXFSXlF9b7BJt9lLR7dfJMTsLrjxXa
-	 aAwLINM5n/Vk77osLw==
+	s=s31663417; t=1712877357; x=1713482157; i=quwenruo.btrfs@gmx.com;
+	bh=frqqnAcd7DTwUoMUL0O1xXiANzTdBc7JgbVSz3f3IW0=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=MwCyIiTjLEVtF6qax3WD8lqqt3Qozse1Pnsh4IczqxRedVw6NR0niPkl/54AphnI
+	 mADoeBVjw9XF6OesVWPRTn1CTruZTK/qmpw3U7M6lBkLcYE+vqqm04SueYPN0ALQ2
+	 gOPZZPDgshL8J1DXN84+FH3f3kCT9cu0DkV54tEbtl6+Wnd63teXbIrwC8VAmbH23
+	 dESF0h8peiaxleXr0z+x3i1AAPaLkmijEYzJtPIr5ulMLNhvvV6gBsPKDKNbcl0Pd
+	 Fd2hy1eeF94y28gy0b1GYZXules0XzOjtGSicTQTLyjPocgGZ3FUce0H8cb5wOCi0
+	 ItnPWw5fyfwzoW5Xog==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MS3il-1sJy3o45IR-00TVyC; Fri, 12
- Apr 2024 01:14:56 +0200
-Message-ID: <cafbc026-9b94-4dd4-be89-577f416a2624@gmx.com>
-Date: Fri, 12 Apr 2024 08:44:52 +0930
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMXUN-1sEVPG0mIh-00JYE4; Fri, 12
+ Apr 2024 01:15:57 +0200
+Message-ID: <719f6901-8505-44e2-80c1-56f967ade9b1@gmx.com>
+Date: Fri, 12 Apr 2024 08:45:54 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +54,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/15] btrfs: export find_next_inode() as
- btrfs_find_first_inode()
+Subject: Re: [PATCH v2 12/15] btrfs: use btrfs_find_first_inode() at
+ btrfs_prune_dentries()
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1712837044.git.fdmanana@suse.com>
- <f6020d8c33aeea495917c26b26812dda8eb27a12.1712837044.git.fdmanana@suse.com>
+ <787204cda3fa8259bb7763c558a910cf7a2e609b.1712837044.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,38 +85,37 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <f6020d8c33aeea495917c26b26812dda8eb27a12.1712837044.git.fdmanana@suse.com>
+In-Reply-To: <787204cda3fa8259bb7763c558a910cf7a2e609b.1712837044.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7IVqaUCvl21NuJD6GBu5QA/Mi176MjV2leshdo7nM/35/2vrd7B
- B5cWiU4nuKFIRiVhqtjxDFwxV69SfVHn5RpOi8rc6ZN+Xf5h6d+YfLXPrYnmekJHRu9PBT7
- uFq+x0uhWYKdjG0Sv8n71XZEjQXdbVcQXEuI7hcedj7NX9or6+ZYPGZLp6ztSHVo1bA7IIQ
- ZXXULi4iSY9NAAtOz9Gzw==
+X-Provags-ID: V03:K1:6aWZFAb0NS/6UKr2pWRL8aS0IcoOTsMg6pAMBImLw/LoImaNG7W
+ VFsnopAkdAIrE234V9GjBLsEZSfSLxR6v/SpAkMNQMyw25w3tAhkzmGGx2hAqv1TxCJlzfa
+ dZHn0ziPSY2PAhPtPVOPuhP0x5YAqvfGnfQJWHj/kWNqOqNu4mSvzMsN/ihL2To0FN3NZGP
+ qDLDcDF1VGnpcIHaSb5/w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:yahrmocqJOc=;QyIBsWddLMKRFLWrolHJ64K786Q
- ByllAAoIxAxtogVSq8K/Nvypo0/WjtS54BKp4nfFM7/4lJI6B4j5ND4IB1MYeAp6D6opwX3Xu
- OyMfKkX3V2asjYdyxEXw/bgm6svzBUQMM61emYIUYBV8FG9/tjR2OMwoPexILo0jV9S01MZSw
- FbSEEfSA7LxRESSYBwi3E2UlTfPW0CVDf/17J00INlsfCGC5blAgQT+0arSiieUke7kfgtHAo
- j/irO9xm3YGwiiAB+D4wOpv7TBPsmdEbWS9yFC1/wwRuuCLOPnhv+6mgWJnnkNOWSh7BcfKh/
- Jl9PeHlF+RsZ3Nu1w9+qC1RgNRMpShXBzanbxLTdh+LNSC5h9j4je8qxfoB2N9ild55IQKz43
- Y6oPobiWQFzBTnsJ4bWH/D8h2IT8/L69geq2TvyVk2zcWmQfjAuGirfTvauma71W3PAgXhPy7
- FOEVJApN+MeYcOrFkyn0HWYkCRnZCOvShXxswBedUVcYAKCH27IYISRKNednHdDZ5ft712MbM
- dfgsg+EotdaJ5wQi+DuWPz80W5NXEcbigBhFvaA/mokL3Am3zmjrWzovO/Mx0tQkItQWR+zjz
- AL7MlppxcmN4d3dUyRFAf2t45y8uK4d3/8uXCwZE1a8xcBeMdY9LttyjNnTtPJ2Vpj+Kz/P2X
- lQUPhU9uYp/tq6Y+/JtRrEHaQ6XjC1mSGEXVqy+hmFlF36poG7lZ0eEznP0KkDZdJ4I0qOLwb
- fgASDPnVJkoO0F3ZkJsORxARV3Brkpa1+yfnrX8bE8u9uoNEmAjnnPArKufMBGi+R5bobpiLy
- kQ6UfUgGTUXg13UZPgx0/I1z3W+521bmvtAWzLCiqE0aQ=
+UI-OutboundReport: notjunk:1;M01:P0:Fl8MocUNv+I=;YCKhq7p4Tt/fJXQMY+wOmKXaSh6
+ EzHVbpi29C7jRCGo++4sS7Lb2hjcTk2XW+mUABLlAdMD41pt6iFUQ2kNm3lyGXSfhnHGxLGRZ
+ jN4RxlFDUdg+M5L87L1c7TbXY/jI7wzNvbV7HtoLZWBIN2CTqWeeincTJXSv1+qJOIou9ciHB
+ 75bxL/BQ3fz7Tk2Cbe41+6xRv9dK/WkvkFpgCNXjPOXJKaPgaSH8V/ja2XPjb/y0fR/yKZcAa
+ yIJz3mQOUnE4z82E9td5PepcZlFSNOisK9JcKlT8eHYWyuVbgEZThLqCssOXlZQX8xtpWfUbv
+ gMPTnKpahCB1063L5f67JQ1y9O4jL4OF2PajjVSkwokISTXhRuWms9gcnDkkKkUuOfkiLH72v
+ Y8q2Yd1OclDL47cwIPnkYDMuFoAChZRL37K2sDOLzGXEzH/L9mFlciy1kInMJeSmeU5atcrjq
+ VCnow7ad51ynifyiERg3KYO6jOr8OrYaYUt950n3LpRQzL0y5vM5b5OFm+PfN0WbOjf+9BrkP
+ dnWdzt7duRYECh3vs4HBBT5B484nyibxsz4A+hEH23UxZk6wYwg/O+zvH6KCOeYLjIlT3tUn6
+ tp9YvVBO2qjLR5UCPriOWy+40QPrYgHdQwPD8R0Kz6fSfSZBnLRktniIX8CNb1nAJLC1lMcIm
+ u859CYpxDPglQzjWi3NBldKyWkqt8xiUzziDPxJBI4OL2uZrit2sPu7wT3W+FJzo3AxafDfXE
+ v3mwNKeZZOsZMDOsGlSAgrp+ndCfEfieBehsSl13eonZVbEMiA5mbSOFodbXwkSnenNMHzE3E
+ SAWEWDfLACeJFG7K3oIHom8HU1N23yVFH0MTFTb+K7gz8=
 
 
 
 =E5=9C=A8 2024/4/12 01:49, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> Export the relocation private helper find_next_inode() to inode.c, as th=
-is
-> same logic is also used at btrfs_prune_dentries() and will be used by an
-> upcoming change that adds an extent map shrinker. The next patch will
-> change btrfs_prune_dentries() to use this helper.
+> Currently btrfs_prune_dentries() has open code to find the first inode i=
+n
+> a root with a minimum inode number. Remove that code and make it use the
+> helper btrfs_find_first_inode() for that task.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -128,120 +123,31 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+
 > ---
->   fs/btrfs/btrfs_inode.h |   1 +
->   fs/btrfs/inode.c       |  58 +++++++++++++++++++++++
->   fs/btrfs/relocation.c  | 105 ++++++++++-------------------------------
->   3 files changed, 84 insertions(+), 80 deletions(-)
->
-> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-> index ed8bd15aa3e2..9a87ada7fe52 100644
-> --- a/fs/btrfs/btrfs_inode.h
-> +++ b/fs/btrfs/btrfs_inode.h
-> @@ -543,6 +543,7 @@ ssize_t btrfs_dio_read(struct kiocb *iocb, struct io=
-v_iter *iter,
->   		       size_t done_before);
->   struct iomap_dio *btrfs_dio_write(struct kiocb *iocb, struct iov_iter =
-*iter,
->   				  size_t done_before);
-> +struct btrfs_inode *btrfs_find_first_inode(struct btrfs_root *root, u64=
- min_ino);
->
->   extern const struct dentry_operations btrfs_dentry_operations;
+>   fs/btrfs/inode.c | 66 ++++++++++--------------------------------------
+>   1 file changed, 14 insertions(+), 52 deletions(-)
 >
 > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index d4539b4b8148..9dc41334c3a3 100644
+> index 9dc41334c3a3..2dae4e975e80 100644
 > --- a/fs/btrfs/inode.c
 > +++ b/fs/btrfs/inode.c
-> @@ -10827,6 +10827,64 @@ void btrfs_assert_inode_range_clean(struct btrf=
-s_inode *inode, u64 start, u64 en
->   	ASSERT(ordered =3D=3D NULL);
->   }
->
-> +/*
-> + * Find the first inode with a minimum number.
-> + *
-> + * @root:	The root to search for.
-> + * @min_ino:	The minimum inode number.
-> + *
-> + * Find the first inode in the @root with a number >=3D @min_ino and re=
-turn it.
-> + * Returns NULL if no such inode found.
-> + */
-> +struct btrfs_inode *btrfs_find_first_inode(struct btrfs_root *root, u64=
- min_ino)
-> +{
-> +	struct rb_node *node;
-> +	struct rb_node *prev =3D NULL;
-> +	struct btrfs_inode *inode;
-> +
-> +	spin_lock(&root->inode_lock);
-> +again:
-> +	node =3D root->inode_tree.rb_node;
-> +	while (node) {
-> +		prev =3D node;
-> +		inode =3D rb_entry(node, struct btrfs_inode, rb_node);
-> +		if (min_ino < btrfs_ino(inode))
-> +			node =3D node->rb_left;
-> +		else if (min_ino > btrfs_ino(inode))
-> +			node =3D node->rb_right;
-> +		else
-> +			break;
-> +	}
-> +
-> +	if (!node) {
-> +		while (prev) {
-> +			inode =3D rb_entry(prev, struct btrfs_inode, rb_node);
-> +			if (min_ino <=3D btrfs_ino(inode)) {
-> +				node =3D prev;
-> +				break;
-> +			}
-> +			prev =3D rb_next(prev);
-> +		}
-> +	}
-> +
-> +	while (node) {
-> +		inode =3D rb_entry(prev, struct btrfs_inode, rb_node);
-> +		if (igrab(&inode->vfs_inode)) {
-> +			spin_unlock(&root->inode_lock);
-> +			return inode;
-> +		}
-> +
-> +		min_ino =3D btrfs_ino(inode) + 1;
-> +		if (cond_resched_lock(&root->inode_lock))
-> +			goto again;
-> +
-> +		node =3D rb_next(node);
-> +	}
-> +	spin_unlock(&root->inode_lock);
-> +
-> +	return NULL;
-> +}
-> +
->   static const struct inode_operations btrfs_dir_inode_operations =3D {
->   	.getattr	=3D btrfs_getattr,
->   	.lookup		=3D btrfs_lookup,
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 5c9ef6717f84..5b19b41f64a2 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -951,60 +951,6 @@ int btrfs_update_reloc_root(struct btrfs_trans_hand=
-le *trans,
->   	return ret;
->   }
->
-> -/*
-> - * helper to find first cached inode with inode number >=3D objectid
-> - * in a subvolume
-> - */
-> -static struct inode *find_next_inode(struct btrfs_root *root, u64 objec=
-tid)
-> -{
+> @@ -4436,64 +4436,26 @@ static noinline int may_destroy_subvol(struct bt=
+rfs_root *root)
+>   static void btrfs_prune_dentries(struct btrfs_root *root)
+>   {
+>   	struct btrfs_fs_info *fs_info =3D root->fs_info;
 > -	struct rb_node *node;
 > -	struct rb_node *prev;
 > -	struct btrfs_inode *entry;
 > -	struct inode *inode;
-> -
+> -	u64 objectid =3D 0;
+> +	struct btrfs_inode *inode;
+> +	u64 min_ino =3D 0;
+>
+>   	if (!BTRFS_FS_ERROR(fs_info))
+>   		WARN_ON(btrfs_root_refs(&root->root_item) !=3D 0);
+>
 > -	spin_lock(&root->inode_lock);
 > -again:
 > -	node =3D root->inode_tree.rb_node;
@@ -269,149 +175,42 @@ tid)
 > -	}
 > -	while (node) {
 > -		entry =3D rb_entry(node, struct btrfs_inode, rb_node);
+> -		objectid =3D btrfs_ino(entry) + 1;
 > -		inode =3D igrab(&entry->vfs_inode);
 > -		if (inode) {
 > -			spin_unlock(&root->inode_lock);
-> -			return inode;
+> -			if (atomic_read(&inode->i_count) > 1)
+> -				d_prune_aliases(inode);
+> -			/*
+> -			 * btrfs_drop_inode will have it removed from the inode
+> -			 * cache when its usage count hits zero.
+> -			 */
+> -			iput(inode);
+> -			cond_resched();
+> -			spin_lock(&root->inode_lock);
+> -			goto again;
 > -		}
 > -
-> -		objectid =3D btrfs_ino(entry) + 1;
 > -		if (cond_resched_lock(&root->inode_lock))
 > -			goto again;
-> -
+> +	inode =3D btrfs_find_first_inode(root, min_ino);
+> +	while (inode) {
+> +		if (atomic_read(&inode->vfs_inode.i_count) > 1)
+> +			d_prune_aliases(&inode->vfs_inode);
+>
 > -		node =3D rb_next(node);
-> -	}
-> -	spin_unlock(&root->inode_lock);
-> -	return NULL;
-> -}
-> -
->   /*
->    * get new location of data
->    */
-> @@ -1065,7 +1011,7 @@ int replace_file_extents(struct btrfs_trans_handle=
- *trans,
->   	struct btrfs_fs_info *fs_info =3D root->fs_info;
->   	struct btrfs_key key;
->   	struct btrfs_file_extent_item *fi;
-> -	struct inode *inode =3D NULL;
-> +	struct btrfs_inode *inode =3D NULL;
->   	u64 parent;
->   	u64 bytenr;
->   	u64 new_bytenr =3D 0;
-> @@ -1112,13 +1058,13 @@ int replace_file_extents(struct btrfs_trans_hand=
-le *trans,
->   		 */
->   		if (root->root_key.objectid !=3D BTRFS_TREE_RELOC_OBJECTID) {
->   			if (first) {
-> -				inode =3D find_next_inode(root, key.objectid);
-> +				inode =3D btrfs_find_first_inode(root, key.objectid);
->   				first =3D 0;
-> -			} else if (inode && btrfs_ino(BTRFS_I(inode)) < key.objectid) {
-> -				btrfs_add_delayed_iput(BTRFS_I(inode));
-> -				inode =3D find_next_inode(root, key.objectid);
-> +			} else if (inode && btrfs_ino(inode) < key.objectid) {
-> +				btrfs_add_delayed_iput(inode);
-> +				inode =3D btrfs_find_first_inode(root, key.objectid);
->   			}
-> -			if (inode && btrfs_ino(BTRFS_I(inode)) =3D=3D key.objectid) {
-> +			if (inode && btrfs_ino(inode) =3D=3D key.objectid) {
->   				struct extent_state *cached_state =3D NULL;
->
->   				end =3D key.offset +
-> @@ -1128,21 +1074,19 @@ int replace_file_extents(struct btrfs_trans_hand=
-le *trans,
->   				WARN_ON(!IS_ALIGNED(end, fs_info->sectorsize));
->   				end--;
->   				/* Take mmap lock to serialize with reflinks. */
-> -				if (!down_read_trylock(&BTRFS_I(inode)->i_mmap_lock))
-> +				if (!down_read_trylock(&inode->i_mmap_lock))
->   					continue;
-> -				ret =3D try_lock_extent(&BTRFS_I(inode)->io_tree,
-> -						      key.offset, end,
-> -						      &cached_state);
-> +				ret =3D try_lock_extent(&inode->io_tree, key.offset,
-> +						      end, &cached_state);
->   				if (!ret) {
-> -					up_read(&BTRFS_I(inode)->i_mmap_lock);
-> +					up_read(&inode->i_mmap_lock);
->   					continue;
->   				}
->
-> -				btrfs_drop_extent_map_range(BTRFS_I(inode),
-> -							    key.offset, end, true);
-> -				unlock_extent(&BTRFS_I(inode)->io_tree,
-> -					      key.offset, end, &cached_state);
-> -				up_read(&BTRFS_I(inode)->i_mmap_lock);
-> +				btrfs_drop_extent_map_range(inode, key.offset, end, true);
-> +				unlock_extent(&inode->io_tree, key.offset, end,
-> +					      &cached_state);
-> +				up_read(&inode->i_mmap_lock);
->   			}
->   		}
->
-> @@ -1185,7 +1129,7 @@ int replace_file_extents(struct btrfs_trans_handle=
- *trans,
->   	if (dirty)
->   		btrfs_mark_buffer_dirty(trans, leaf);
->   	if (inode)
-> -		btrfs_add_delayed_iput(BTRFS_I(inode));
-> +		btrfs_add_delayed_iput(inode);
->   	return ret;
->   }
->
-> @@ -1527,7 +1471,7 @@ static int invalidate_extent_cache(struct btrfs_ro=
-ot *root,
->   				   const struct btrfs_key *max_key)
->   {
->   	struct btrfs_fs_info *fs_info =3D root->fs_info;
-> -	struct inode *inode =3D NULL;
-> +	struct btrfs_inode *inode =3D NULL;
->   	u64 objectid;
->   	u64 start, end;
->   	u64 ino;
-> @@ -1537,23 +1481,24 @@ static int invalidate_extent_cache(struct btrfs_=
-root *root,
->   		struct extent_state *cached_state =3D NULL;
->
->   		cond_resched();
-> -		iput(inode);
-> +		if (inode)
-> +			iput(&inode->vfs_inode);
->
->   		if (objectid > max_key->objectid)
->   			break;
->
-> -		inode =3D find_next_inode(root, objectid);
-> +		inode =3D btrfs_find_first_inode(root, objectid);
->   		if (!inode)
->   			break;
-> -		ino =3D btrfs_ino(BTRFS_I(inode));
-> +		ino =3D btrfs_ino(inode);
->
->   		if (ino > max_key->objectid) {
-> -			iput(inode);
-> +			iput(&inode->vfs_inode);
->   			break;
->   		}
->
->   		objectid =3D ino + 1;
-> -		if (!S_ISREG(inode->i_mode))
-> +		if (!S_ISREG(inode->vfs_inode.i_mode))
->   			continue;
->
->   		if (unlikely(min_key->objectid =3D=3D ino)) {
-> @@ -1586,9 +1531,9 @@ static int invalidate_extent_cache(struct btrfs_ro=
-ot *root,
->   		}
->
->   		/* the lock_extent waits for read_folio to complete */
-> -		lock_extent(&BTRFS_I(inode)->io_tree, start, end, &cached_state);
-> -		btrfs_drop_extent_map_range(BTRFS_I(inode), start, end, true);
-> -		unlock_extent(&BTRFS_I(inode)->io_tree, start, end, &cached_state);
-> +		lock_extent(&inode->io_tree, start, end, &cached_state);
-> +		btrfs_drop_extent_map_range(inode, start, end, true);
-> +		unlock_extent(&inode->io_tree, start, end, &cached_state);
+> +		min_ino =3D btrfs_ino(inode) + 1;
+> +		/*
+> +		 * btrfs_drop_inode() will have it removed from the inode
+> +		 * cache when its usage count hits zero.
+> +		 */
+> +		iput(&inode->vfs_inode);
+> +		cond_resched();
+> +		inode =3D btrfs_find_first_inode(root, min_ino);
 >   	}
->   	return 0;
+> -	spin_unlock(&root->inode_lock);
 >   }
+>
+>   int btrfs_delete_subvolume(struct btrfs_inode *dir, struct dentry *den=
+try)
 
