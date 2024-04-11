@@ -1,52 +1,56 @@
-Return-Path: <linux-btrfs+bounces-4130-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4131-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 009878A07CE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 07:39:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98E078A07EF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 07:58:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CEAC1C2192F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 05:39:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBCDE1C21D19
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 05:58:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F0413C9CD;
-	Thu, 11 Apr 2024 05:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0E013CA86;
+	Thu, 11 Apr 2024 05:58:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="K4oJ6nGa"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="uFJa4608"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9E0EADD
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 05:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825C313C806
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 05:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712813984; cv=none; b=kC2j8svvkdZ9bFyA8OYCii3WxB5P/QqoCzQHL3tyCIlT2DLqrga/GRXcC/aFLfWzsA28h9QT96bL3YlFTxBD1DpIWccClP7sHacDzP/WxCj3rDyF6G0KBqPravwnrz1ig9rHdSqA2cLPFCCkbw0xXSqdh/5FT9KhnmHh0kbnNko=
+	t=1712815109; cv=none; b=dJzJ0HQnNA47IDRlu5tqtwdbUk8hRVPdiD34JEfhcN0D4kPwg2x8yd18srbFSrufVdg7rDae+CnoepPnTPA0eHSiq9ihsCoRAnVpzkNkcx1BPjVXb592pVhKypk+1bnkELNRDkAz/U6a6MDQR3WqqhCcsz4Zebcs2ugF4h0jpa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712813984; c=relaxed/simple;
-	bh=c/rU6rcfcWisDk2NE3brar1JNk0IwQssMeHnXCY/RuA=;
+	s=arc-20240116; t=1712815109; c=relaxed/simple;
+	bh=/Qpe5lsM8pGY8JTgUNtKXsVsr2UUNYbC0DmqxWipCas=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=fT9ZIq66Qb/h3Z8Z/LujQKB5UQ0Ut5p+WKJMJOlOtElUS4MI12HwMKhVnPU0lMBiFNE9vT64UI7FqRTalnbD4HougaHx2Oc2L7I1/BxeqZZAbIEKLLPfFn6kuHAp5F4bdow4fDGPDi2tfteiFJ2a3aZTmSYUYlSW8ZFyj8F+nvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=K4oJ6nGa; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=KLfLiYnAsVjQTA0YWA18YqsFqlDsD/7N/qY7a7SfLVFJIeDlKksHoWkp1q9W5V8KjK/OFuezBfWRdFKI1S2LMxdVWimLglekqPgbX6sv2/ZHN5T8VmAV2oeDAAvrEG2xNxIw8dkZ2Wlt0EWhH8aHMVEgewDVbyMmbw73q7Hd200=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=uFJa4608; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1712813975; x=1713418775; i=quwenruo.btrfs@gmx.com;
-	bh=3ITvoTn0nq2xM0wYL7/AscjnLv2AM40itiLqrIcfpvg=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=K4oJ6nGagIx9yrpihuDU5DwNBLEzDCrmByzz+lWxZBWXziL51bVgCXS4cnu6wrYY
-	 Ia6KPtz5H+ZZ06m0RO/lNjdu7YvYI4MSc1Z7FlTokuJzQgleKv/rdYoivd/huo/vg
-	 Ny9OmVrz9FbSmH7cLWSP7/oaNDCtWe91QdnAphoARW9Vwp3X9k6hMZfdTOp4KFpL3
-	 yr6SZnoqElfeQaPzMKj+CjoBgvKNPNfRWqtZ9Z9RWvWXj2AcQ77Lqq4NItuEUucUs
-	 9zP5FGzy3Mg5O2yPIIpv4+2Xc437Eeo+fLBmpMNd8ExJsnJW23Dht5k3pvBA5Dmjn
-	 WbpY+nY0c5PeWfLedA==
+	s=s31663417; t=1712815099; x=1713419899; i=quwenruo.btrfs@gmx.com;
+	bh=hev4+/8w+ZpjP1CIjKj+R0NSEpefcIcd0TOxqT4yqKU=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=uFJa4608exsclsWMyM1eCkd3gNCYW4onLEmsQbGDIr4FiY7/Cmc2Wr9x5vDpI0RT
+	 KjC+qqp8AawI1PsBVNb9EHcP4CBxcCBUINsWWlGXsHPslHaukSgXIOzBWU0rcNVrp
+	 FJfQ6POofeEVCg6ntw4As/NuXz9bg5FOtbny54I0V/3S+/JnCEVQGfjMoU/RVehM9
+	 GQW5/nc+BicwbrPiRdhJyd8CBKowr1+QON9Ii2qjswLf096HhMVugcVWHkpK96vaM
+	 QDgP3yWe6aeApo8KQULmf+X65N157dR3jkHkG3wHQeYtqkPM7ZMKuOwR3oV1e6uYG
+	 1nKkPXdFZWP3KhOe3A==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1My32F-1shW3d2jgF-00zYzL; Thu, 11
- Apr 2024 07:39:35 +0200
-Message-ID: <4ff14e1a-964b-45e0-885f-1e86386c7924@gmx.com>
-Date: Thu, 11 Apr 2024 15:09:31 +0930
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MG9g4-1s0Ex43J8O-00GbNl; Thu, 11
+ Apr 2024 07:58:19 +0200
+Message-ID: <ae52bfc9-ea64-4079-a98a-acd1750fe7ab@gmx.com>
+Date: Thu, 11 Apr 2024 15:28:16 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,11 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/11] btrfs: add a global per cpu counter to track number
- of used extent maps
+Subject: Re: [PATCH 09/11] btrfs: add a shrinker for extent maps
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1712748143.git.fdmanana@suse.com>
- <0f1a834bcb67f4c57885706b54e19d22e64b9ce7.1712748143.git.fdmanana@suse.com>
+ <5d1743b20f84e0262a2c229cd5e877ed0f0596a0.1712748143.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -85,85 +88,347 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <0f1a834bcb67f4c57885706b54e19d22e64b9ce7.1712748143.git.fdmanana@suse.com>
+In-Reply-To: <5d1743b20f84e0262a2c229cd5e877ed0f0596a0.1712748143.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:EcqYaHAwNakwWqMFR3vdjX1yHhJCetfgok3hB3PV5sU5lC+GZWU
- +lcBPRozQ0xT1LrbggcMMKglMIOBBPNder9qFPvy/RW2RT+HUV7fzeX1UJD6jC/0jK7NtIf
- oTaJJyn3M47v+ywDkTbwxD4ljed02EqemjTB1ePlsVB8JjOjPNGTlAO7qbCHTMqUfYxrL5c
- MJlg6saSooQLraSiXozpg==
+X-Provags-ID: V03:K1:2z86pCmGjwv7QAuY1r/WbRFvRVvkj4W7pJouroGqThGI62kabjZ
+ 9e6/nsbGJnJYGN0gX17rFmGeof/L6smMiXYtbNsPR6wnnf13TXsW8zt2kZ6zr8ncLge4T6T
+ tlGHRjgtKdecfLk3jy7cjKonz0pNI1WNt2lKuMNRkbDJmIaRKM8m2/8xVWZzDajsnMGMXvY
+ krktnhE0Sh3YtSzjN7Cnw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:belZq67++/k=;jmI5vJ+v+7GAwsP71HT3vcOZard
- hpZEvCinO2xYvsLIE6H2uUJNlBCY/ITl2PGeDTmtpCgpBJs2hvMD2mUhKPYuvBHCkR7hb1y6a
- VWqYtTmWHvY9BowGCZaoNuaSI2RzoreiUiLMqyfFrs7fBz6/JN9YtxS00LuJEvw+URLyCbLzk
- SF1CtDR1tQqg1Ruv1jYjNbTAdgRiUdN19lnAbgeWJqlWC8c2iTjpJTCoyrXYCOe6NaS5/mTcu
- ZvFHaldToHkS52gPKOYbmZI/gKOphxCsmcukjF3E8XpjLZpYh9OZzKpCzuHKYflN4XB2tqDm+
- u6nISZD8mehFu3cgCP5BQ5jUg7gl2/IFPuscB/5d4FpJlrqA7uD7kLFQyKH+gksn2A2DHgM0F
- zq2a0FX0DM97F9M32kwBlS2nbrb7ye2cQqlc5MS4lMyY1SEOeEJQVV/00ChJVKIB5Zl9p2hSq
- z155qCfOP6d4RqVFUTcctS2MRAL6Ghfb/0bbky/hHZFO5+0rJS/9Ku3CF5SqHyS6+LEmyy9II
- VYFKuintf5Hj0JRrD0hRN17zdsnAgpd160m0cYOY5i7GqiYvOIdNkaW5jIGcIpwEjXYSLPOuL
- bw1MsLLBZNiTuFxWeHxNDzBme/4mBuyxBpH9gV966QYxJV3ZbdCbrLYjsEtwgFoMd6ydtAlM9
- diw0H1y8XCVp2X6e6CH+pI1kdu948R23S1d8e5L4hWzk96io+JUTP5TjCriWY0H3JRzqPMBR/
- Fr1btE/leATl56CMiDBS/2uL1qw0+i1Mj4AyOzZKNUS6RWwEzxtMiT1C7FeTl6710RGHsUyZg
- wGAHr/z4JYGisFpVUwtpE9UrWjMKmbZxysYnrUXolB/Xk=
+UI-OutboundReport: notjunk:1;M01:P0:CFfkFtnL14Y=;84EY34iKKLaXriJrsIfQZI+t09U
+ jKxADtDcQ9rE8Pvm8qhCqpjUMRdnmNObLKZTX/gDnlcqYtNNDRf+Es+VoVTeES3JTAGmB0xJr
+ +MJhqdt8x10CP0WSH3BuOem72KEnuixKiN3kaN0L3G7LuOcNVIjjLGE8Qj0TipaY956hEBf/l
+ YCTM1zoC5vElh9ZanMAGwZgGHXRXb/OZ8C+0OTde37hQGiC6iCefcZdluWzScL9WQsga6d5XI
+ WEaPoCHynBR6RQd7VpqwZU1jywl+Rns6pKtxWHjIZFI54fVrIiui6PwX34PMzWFWRI8P0SWmz
+ gSrVzKgBCDzQBULXYF88bqBtHLlSvkA/KgjQw+orkb/SjiB16Rhs04DhsEAqF7EnS3zekEKxq
+ MSJCeCSzBvQ6bjCKAbzxoj46ZsVGpwQBl/zsC6Xl8mlT6OLrbB35HokPGt+aV2vHhFTCAgL7L
+ Hu9E1Ugy6opPd6Yz7qLWcQwBJMB5nwqeNKxpncR1paD+DoZ8Jf5mwjMfduzWeBgl9NSFTxO5r
+ RJp63fNkOhWuCy2peI3X21owQdv1BV5Q+0S4VfYa71MujFUqtnWv9ZF5eb0+JwZNRIs4Wt5ki
+ FhJlby4hOV65W+DBZmKPaV55NO6cXwDcvN5Doq7tFE7mWsSYPT6ndjisyjBE6B7VtVNfhHfCY
+ rTAj9OXE3cfyr4Hsg6Fkywn2Ot+EPgRgHVU4+PiZPSm700NCaDzYVkFpwLs96grt8TZPjNm8v
+ XuRp83A7emM5yH/WcfEENmpEIDwz9BpajAvOT+wRWylQhkFi+qLZue92VBGmtSuklEXy7N5xe
+ eppcks/a9eF32eKtcf0wkI6bZReLmxFKE6ItmY1i7RsdQ=
 
 
 
 =E5=9C=A8 2024/4/10 20:58, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> Add a per cpu counter that tracks the total number of extent maps that a=
-re
-> in extent trees of inodes that belong to fs trees. This is going to be
-> used in an upcoming change that adds a shrinker for extent maps. Only
-> extent maps for fs trees are considered, because for special trees such =
-as
-> the data relocation tree we don't want to evict their extent maps which
-> are critical for the relocation to work, and since those are limited, it=
-'s
-> not a concern to have them in memory during the relocation of a block
-> group. Another case are extent maps for free space cache inodes, which
-> must always remain in memory, but those are limited (there's only one pe=
-r
-> free space cache inode, which means one per block group).
+> Extent maps are used either to represent existing file extent items, or =
+to
+> represent new extents that are going to be written and the respective fi=
+le
+> extent items are created when the ordered extent completes.
 >
+> We currently don't have any limit for how many extent maps we can have,
+> neither per inode nor globally. Most of the time this not too noticeable
+> because extent maps are removed in the following situations:
+>
+> 1) When evicting an inode;
+>
+> 2) When releasing folios (pages) through the btrfs_release_folio() addre=
+ss
+>     space operation callback.
+>
+>     However we won't release extent maps in the folio range if the folio=
+ is
+>     either dirty or under writeback or if the inode's i_size is less tha=
+n
+>     or equals to 16M (see try_release_extent_mapping(). This 16M i_size
+>     constraint was added back in 2008 with commit 70dec8079d78 ("Btrfs:
+>     extent_io and extent_state optimizations"), but there's no explanati=
+on
+>     about why we have it or why the 16M value.
+>
+> This means that for buffered IO we can reach an OOM situation due to too
+> many extent maps if either of the following happens:
+>
+> 1) There's a set of tasks constantly doing IO on many files with a size
+>     not larger than 16M, specially if they keep the files open for very
+>     long periods, therefore preventing inode eviction.
+>
+>     This requires a really high number of such files, and having many no=
+n
+>     mergeable extent maps (due to random 4K writes for example) and a
+>     machine with very little memory;
+>
+> 2) There's a set tasks constantly doing random write IO (therefore
+>     creating many non mergeable extent maps) on files and keeping them
+>     open for long periods of time, so inode eviction doesn't happen and
+>     there's always a lot of dirty pages or pages under writeback,
+>     preventing btrfs_release_folio() from releasing the respective exten=
+t
+>     maps.
+>
+> This second case was actually reported in the thread pointed by the Link
+> tag below, and it requires a very large file under heavy IO and a machin=
+e
+> with very little amount of RAM, which is probably hard to happen in
+> practice in a real world use case.
+>
+> However when using direct IO this is not so hard to happen, because the
+> page cache is not used, and therefore btrfs_release_folio() is never
+> called. Which means extent maps are dropped only when evicting the inode=
+,
+> and that means that if we have tasks that keep a file descriptor open an=
+d
+> keep doing IO on a very large file (or files), we can exhaust memory due
+> to an unbounded amount of extent maps. This is especially easy to happen
+> if we have a huge file with millions of small extents and their extent
+> maps are not mergeable (non contiguous offsets and disk locations).
+> This was reported in that thread with the following fio test:
+>
+>     $ cat test.sh
+>     #!/bin/bash
+>
+>     DEV=3D/dev/sdj
+>     MNT=3D/mnt/sdj
+>     MOUNT_OPTIONS=3D"-o ssd"
+>     MKFS_OPTIONS=3D""
+>
+>     cat <<EOF > /tmp/fio-job.ini
+>     [global]
+>     name=3Dfio-rand-write
+>     filename=3D$MNT/fio-rand-write
+>     rw=3Drandwrite
+>     bs=3D4K
+>     direct=3D1
+>     numjobs=3D16
+>     fallocate=3Dnone
+>     time_based
+>     runtime=3D90000
+>
+>     [file1]
+>     size=3D300G
+>     ioengine=3Dlibaio
+>     iodepth=3D16
+>
+>     EOF
+>
+>     umount $MNT &> /dev/null
+>     mkfs.btrfs -f $MKFS_OPTIONS $DEV
+>     mount $MOUNT_OPTIONS $DEV $MNT
+>
+>     fio /tmp/fio-job.ini
+>     umount $MNT
+>
+> Monitoring the btrfs_extent_map slab while running the test with:
+>
+>     $ watch -d -n 1 'cat /sys/kernel/slab/btrfs_extent_map/objects \
+>                          /sys/kernel/slab/btrfs_extent_map/total_objects=
+'
+>
+> Shows the number of active and total extent maps skyrocketing to tens of
+> millions, and on systems with a short amount of memory it's easy and qui=
+ck
+> to get into an OOM situation, as reported in that thread.
+>
+> So to avoid this issue add a shrinker that will remove extents maps, as
+> long as they are not pinned, and takes proper care with any concurrent
+> fsync to avoid missing extents (setting the full sync flag while in the
+> middle of a fast fsync). This shrinker is similar to the one ext4 uses
+> for its extent_status structure, which is analogous to btrfs' extent_map
+> structure.
+>
+> Link: https://lore.kernel.org/linux-btrfs/13f94633dcf04d29aaf1f0a43d42c5=
+5e@amazon.com/
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 [...]
-> --- a/fs/btrfs/extent_map.c
-> +++ b/fs/btrfs/extent_map.c
-> @@ -76,6 +76,14 @@ static u64 range_end(u64 start, u64 len)
->   	return start + len;
->   }
->
-> +static void dec_evictable_extent_maps(struct btrfs_inode *inode)
-> +{
-> +	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
 > +
-> +	if (!btrfs_is_testing(fs_info) && is_fstree(btrfs_root_id(inode->root)=
-))
-> +		percpu_counter_dec(&fs_info->evictable_extent_maps);
+> +static unsigned long btrfs_scan_root(struct btrfs_root *root,
+> +				     unsigned long *scanned,
+> +				     unsigned long nr_to_scan)
+> +{
+> +	unsigned long nr_dropped =3D 0;
+> +	u64 ino =3D 0;
+> +
+> +	while (*scanned < nr_to_scan) {
+> +		struct rb_node *node;
+> +		struct rb_node *prev =3D NULL;
+> +		struct btrfs_inode *inode;
+> +		bool stop_search =3D true;
+> +
+> +		spin_lock(&root->inode_lock);
+> +		node =3D root->inode_tree.rb_node;
+> +
+> +		while (node) {
+> +			prev =3D node;
+> +			inode =3D rb_entry(node, struct btrfs_inode, rb_node);
+> +			if (ino < btrfs_ino(inode))
+> +				node =3D node->rb_left;
+> +			else if (ino > btrfs_ino(inode))
+> +				node =3D node->rb_right;
+> +			else
+> +				break;
+> +		}
+> +
+> +		if (!node) {
+> +			while (prev) {
+> +				inode =3D rb_entry(prev, struct btrfs_inode, rb_node);
+> +				if (ino <=3D btrfs_ino(inode)) {
+> +					node =3D prev;
+> +					break;
+> +				}
+> +				prev =3D rb_next(prev);
+> +			}
+> +		}
+
+The "while (node) {}" loop and above "if (!node) {}" is to locate the
+first inode after @ino (which is the last scanned inode number).
+
+Maybe extract them into a helper, with some name like
+"find_next_inode_to_scan()" could be a little easier to read?
+
+> +
+> +		while (node) {
+> +			inode =3D rb_entry(node, struct btrfs_inode, rb_node);
+> +			ino =3D btrfs_ino(inode) + 1;
+> +			if (igrab(&inode->vfs_inode)) {
+> +				spin_unlock(&root->inode_lock);
+> +				stop_search =3D false;
+> +
+> +				nr_dropped +=3D btrfs_scan_inode(inode, scanned,
+> +							       nr_to_scan);
+> +				iput(&inode->vfs_inode);
+> +				cond_resched();
+> +				break;
+> +			}
+> +			node =3D rb_next(node);
+> +		}
+> +
+> +		if (stop_search) {
+> +			spin_unlock(&root->inode_lock);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return nr_dropped;
 > +}
 > +
->   static int tree_insert(struct rb_root_cached *root, struct extent_map =
-*em)
->   {
->   	struct rb_node **p =3D &root->rb_root.rb_node;
-> @@ -223,8 +231,9 @@ static bool mergeable_maps(const struct extent_map *=
-prev, const struct extent_ma
->   	return next->block_start =3D=3D prev->block_start;
->   }
->
-> -static void try_merge_map(struct extent_map_tree *tree, struct extent_m=
-ap *em)
-> +static void try_merge_map(struct btrfs_inode *inode, struct extent_map =
-*em)
+> +static unsigned long btrfs_extent_maps_scan(struct shrinker *shrinker,
+> +					    struct shrink_control *sc)
+> +{
+> +	struct btrfs_fs_info *fs_info =3D shrinker->private_data;
+> +	unsigned long nr_dropped =3D 0;
+> +	unsigned long scanned =3D 0;
+> +	u64 next_root_id =3D 0;
+> +
+> +	while (scanned < sc->nr_to_scan) {
+> +		struct btrfs_root *root;
+> +		unsigned long count;
+> +
+> +		spin_lock(&fs_info->fs_roots_radix_lock);
+> +		count =3D radix_tree_gang_lookup(&fs_info->fs_roots_radix,
+> +					       (void **)&root, next_root_id, 1);
+> +		if (count =3D=3D 0) {
+> +			spin_unlock(&fs_info->fs_roots_radix_lock);
+> +			break;
+> +		}
+> +		next_root_id =3D btrfs_root_id(root) + 1;
+> +		root =3D btrfs_grab_root(root);
+> +		spin_unlock(&fs_info->fs_roots_radix_lock);
+> +
+> +		if (!root)
+> +			continue;
+> +
+> +		if (is_fstree(btrfs_root_id(root)))
+> +			nr_dropped +=3D btrfs_scan_root(root, &scanned, sc->nr_to_scan);
+> +
+> +		btrfs_put_root(root);
+> +	}
+> +
+> +	return nr_dropped;
+> +}
+> +
+> +static unsigned long btrfs_extent_maps_count(struct shrinker *shrinker,
+> +					     struct shrink_control *sc)
+> +{
+> +	struct btrfs_fs_info *fs_info =3D shrinker->private_data;
+> +	const s64 total =3D percpu_counter_sum_positive(&fs_info->evictable_ex=
+tent_maps);
+> +
+> +	/* The unsigned long type is 32 bits on 32 bits platforms. */
+> +#if BITS_PER_LONG =3D=3D 32
+> +	if (total > ULONG_MAX)
+> +		return ULONG_MAX;
+> +#endif
 
-Maybe it would be a little easier to read if the extent_map_tree to
-btrfs_inode conversion happens in a dedicated patch, just like all the
-previous ones?
+Can this be a simple min_t(unsigned long, total, ULONG_MAX)?
 
-Otherwise the introduction of the per-cpu counter looks good to me.
+Another question is, since total is s64, wouldn't any negative number go
+ULONG_MAX directly for 32bit systems?
+
+And since the function is just a shrink hook, I'm not sure what would
+happen if we return ULONG_MAX for negative values.
+
+Otherwise the idea looks pretty good, it's just me not qualified to give
+a good review.
 
 Thanks,
 Qu
+> +	return total;
+> +}
+> +
+> +int btrfs_register_extent_map_shrinker(struct btrfs_fs_info *fs_info)
+> +{
+> +	int ret;
+> +
+> +	ret =3D percpu_counter_init(&fs_info->evictable_extent_maps, 0, GFP_KE=
+RNEL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	fs_info->extent_map_shrinker =3D shrinker_alloc(0, "em-btrfs:%s", fs_i=
+nfo->sb->s_id);
+> +	if (!fs_info->extent_map_shrinker) {
+> +		percpu_counter_destroy(&fs_info->evictable_extent_maps);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	fs_info->extent_map_shrinker->scan_objects =3D btrfs_extent_maps_scan;
+> +	fs_info->extent_map_shrinker->count_objects =3D btrfs_extent_maps_coun=
+t;
+> +	fs_info->extent_map_shrinker->private_data =3D fs_info;
+> +
+> +	shrinker_register(fs_info->extent_map_shrinker);
+> +
+> +	return 0;
+> +}
+> +
+> +void btrfs_unregister_extent_map_shrinker(struct btrfs_fs_info *fs_info=
+)
+> +{
+> +	shrinker_free(fs_info->extent_map_shrinker);
+> +	ASSERT(percpu_counter_sum_positive(&fs_info->evictable_extent_maps) =
+=3D=3D 0);
+> +	percpu_counter_destroy(&fs_info->evictable_extent_maps);
+> +}
+> diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+> index c3707461ff62..8a6be2f7a0e2 100644
+> --- a/fs/btrfs/extent_map.h
+> +++ b/fs/btrfs/extent_map.h
+> @@ -140,5 +140,7 @@ void btrfs_drop_extent_map_range(struct btrfs_inode =
+*inode,
+>   int btrfs_replace_extent_map_range(struct btrfs_inode *inode,
+>   				   struct extent_map *new_em,
+>   				   bool modified);
+> +int btrfs_register_extent_map_shrinker(struct btrfs_fs_info *fs_info);
+> +void btrfs_unregister_extent_map_shrinker(struct btrfs_fs_info *fs_info=
+);
+>
+>   #endif
+> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+> index 534d30dafe32..f1414814bd69 100644
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -857,6 +857,8 @@ struct btrfs_fs_info {
+>   	struct lockdep_map btrfs_trans_pending_ordered_map;
+>   	struct lockdep_map btrfs_ordered_extent_map;
+>
+> +	struct shrinker *extent_map_shrinker;
+> +
+>   #ifdef CONFIG_BTRFS_FS_REF_VERIFY
+>   	spinlock_t ref_verify_lock;
+>   	struct rb_root block_tree;
 
