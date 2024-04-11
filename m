@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-4148-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4149-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28B938A1C5C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 19:46:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCC608A1C5D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 19:46:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 581C01C22F2E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 17:46:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7896F283704
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 17:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5B8F1836EF;
-	Thu, 11 Apr 2024 16:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E40BB17B4E9;
+	Thu, 11 Apr 2024 16:19:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VNUUCIhn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ekgf/w1F"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD0617A92C
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 16:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2A4217A920
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 16:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712852361; cv=none; b=oUIHBZTLUFn0ErvwK0YzbW16rOOvHkbdlmsVKuvb2s/EZo4dWhrI1BCoBCQR0I4VviGaMzGgsAYkc4r2+HkHCyAMnFLkKdsFITXk/vKw5as1QZchbeN2Qvis3blsEco+5QiG6QAfNDDs14StVl2rVNANxSs5JrZpfGMfx5VwaSs=
+	t=1712852362; cv=none; b=EnoN5jRl/H3HvMFGp4WBO9jcmBdO39FIUVVKFZE88OwBLXYkLnryva2AYNlBTqtBbX5HR3lHa1AWmxsgIvVPaITKdIFXYggICsBKKRygDZRUeiRMf6cfG4Ign+MRLbuBBSXUfO4GMyoaG2ZwTXwO3oc8k2VqQ3QM+czpAU+55yE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712852361; c=relaxed/simple;
-	bh=O0Z5um7QpcTBedjY24YaUsXBJtWtbkRdf9MDiLMcJEI=;
+	s=arc-20240116; t=1712852362; c=relaxed/simple;
+	bh=tYs55B/TO+QMshxCMeKKXmlZaXCxoxcHaQjEdMD6QG8=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=J9quUzAbRhvNwQg63aG3gC/gEosj4vj3cA8zWx5IzphPX/HL+YVnw6pJmlMjQCF2i5ksmrw8+kunvE0tTCMMBFywFfCP4SdhTcn7LKQixy9wmRSObIxsF79ti/GVjEF7eN/4F26FD5g4yIG2xPSldRwLCz4YE2MPQt8MIUEOwKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VNUUCIhn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87733C113CE
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 16:19:20 +0000 (UTC)
+	 MIME-Version; b=rFxiD8fb1ZmJrLDcYNOwtwSHKyj+wY1/+f9wpwjHEo4TMVo+W0/TH3E3kQkD91fv5tmohXEKi/DA3aXUUqwWkJTwfxN+t4R95IcsRL6Tzwfad0Sc4+uu6BM4ffhI0FroC3uVJhsKicnsfvJcQ3T0QbxPBWBN+afQl5AgN7JdJF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ekgf/w1F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DDB7C2BBFC
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 16:19:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712852361;
-	bh=O0Z5um7QpcTBedjY24YaUsXBJtWtbkRdf9MDiLMcJEI=;
+	s=k20201202; t=1712852362;
+	bh=tYs55B/TO+QMshxCMeKKXmlZaXCxoxcHaQjEdMD6QG8=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=VNUUCIhnO0vQvdbumcHpMYzRxvBKjaqoVAzfCMrz1T7e0dkO7u3EmhrwHaBj18ibY
-	 DIAb/k8J/vEt9gt7Jh/SUlA9mc0xkLL3YO2SyFdfHgNt6PiGxYUyVXcAsdaQFIr5qG
-	 mENa1Hg+DBu4HoHly40n+LQIebradvwFvCuA2DUmF1bo3z2ffQwnBYwPy7dI2qAT83
-	 1u0cbxNlNBs2WgpOH206JqS8/ROTv+TDkSVkN1M1HlG+pLzv//YaJWA8ySqlshqwwU
-	 tierQenfEYfLSY5pKdfzWPh7JnoSZsFCMTT3PnhH/vD3MbLCoBRnqaXW/syo08aUiZ
-	 xzxkYrAslX3lQ==
+	b=Ekgf/w1FLIF8mtAhLaFLrB3bhhyXMPVwXEz8yBkRBJw59qnmF1+JN3ri6rmjO4IKE
+	 f8pF3kXXkCvHvGbMaLtbjcAPJxw1B7hUZ47iPK11m8ljWRWFKpiVdTyn+Ov4jP5TYB
+	 t+fqPruLw4LYqyAo9yLfvGtn43CRql0He+8hKwv9dL8E8PvLgcIddZ9y65jPRH3DOv
+	 hcjmGzMr71XBj8mX1NDvdI4XEp8siz4v0PCtRat9+QyaaLzBN21OshYTCMgpv7R7yl
+	 bzYWaZm9J9nyw4Oq+crSOM5lJG45N9GU4kI1LWdGFjiyFwGqbeN22AbDlxK7cExzz9
+	 5i7CSVDtgI16w==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 05/15] btrfs: pass the extent map tree's inode to clear_em_logging()
-Date: Thu, 11 Apr 2024 17:18:59 +0100
-Message-Id: <90d5c3c334dabaefb26b58488074213840434336.1712837044.git.fdmanana@suse.com>
+Subject: [PATCH v2 06/15] btrfs: pass the extent map tree's inode to remove_extent_mapping()
+Date: Thu, 11 Apr 2024 17:19:00 +0100
+Message-Id: <86e4cadc222ba2d404afa5d174809f78151d12a4.1712837044.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1712837044.git.fdmanana@suse.com>
 References: <cover.1712837044.git.fdmanana@suse.com>
@@ -61,71 +61,201 @@ From: Filipe Manana <fdmanana@suse.com>
 
 Extent maps are always associated to an inode's extent map tree, so
 there's no need to pass the extent map tree explicitly to
-clear_em_logging().
+remove_extent_mapping().
 
 In order to facilitate an upcoming change that adds a shrinker for extent
-maps, change clear_em_logging() to receive the inode instead of its extent
-map tree.
+maps, change remove_extent_mapping() to receive the inode instead of its
+extent map tree.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_map.c | 4 +++-
- fs/btrfs/extent_map.h | 2 +-
- fs/btrfs/tree-log.c   | 4 ++--
- 3 files changed, 6 insertions(+), 4 deletions(-)
+ fs/btrfs/extent_io.c              |  2 +-
+ fs/btrfs/extent_map.c             | 22 +++++++++++++---------
+ fs/btrfs/extent_map.h             |  2 +-
+ fs/btrfs/tests/extent-map-tests.c | 19 ++++++++++---------
+ 4 files changed, 25 insertions(+), 20 deletions(-)
 
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index d90330f26827..1b236fc3f411 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2457,7 +2457,7 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
+ 			 * hurts the fsync performance for workloads with a data
+ 			 * size that exceeds or is close to the system's memory).
+ 			 */
+-			remove_extent_mapping(map, em);
++			remove_extent_mapping(btrfs_inode, em);
+ 			/* once for the rb tree */
+ 			free_extent_map(em);
+ next:
 diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index d0e0c4e5415e..7cda78d11d75 100644
+index 7cda78d11d75..289669763965 100644
 --- a/fs/btrfs/extent_map.c
 +++ b/fs/btrfs/extent_map.c
-@@ -331,8 +331,10 @@ int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len, u64 gen)
- 
+@@ -449,16 +449,18 @@ struct extent_map *search_extent_mapping(struct extent_map_tree *tree,
  }
  
--void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em)
-+void clear_em_logging(struct btrfs_inode *inode, struct extent_map *em)
+ /*
+- * Remove an extent_map from the extent tree.
++ * Remove an extent_map from its inode's extent tree.
+  *
+- * @tree:	extent tree to remove from
++ * @inode:	the inode the extent map belongs to
+  * @em:		extent map being removed
+  *
+- * Remove @em from @tree.  No reference counts are dropped, and no checks
+- * are done to see if the range is in use.
++ * Remove @em from the extent tree of @inode.  No reference counts are dropped,
++ * and no checks are done to see if the range is in use.
+  */
+-void remove_extent_mapping(struct extent_map_tree *tree, struct extent_map *em)
++void remove_extent_mapping(struct btrfs_inode *inode, struct extent_map *em)
  {
 +	struct extent_map_tree *tree = &inode->extent_tree;
 +
  	lockdep_assert_held_write(&tree->lock);
  
- 	em->flags &= ~EXTENT_FLAG_LOGGING;
+ 	WARN_ON(em->flags & EXTENT_FLAG_PINNED);
+@@ -633,8 +635,10 @@ int btrfs_add_extent_mapping(struct btrfs_inode *inode,
+  * if needed. This avoids searching the tree, from the root down to the first
+  * extent map, before each deletion.
+  */
+-static void drop_all_extent_maps_fast(struct extent_map_tree *tree)
++static void drop_all_extent_maps_fast(struct btrfs_inode *inode)
+ {
++	struct extent_map_tree *tree = &inode->extent_tree;
++
+ 	write_lock(&tree->lock);
+ 	while (!RB_EMPTY_ROOT(&tree->map.rb_root)) {
+ 		struct extent_map *em;
+@@ -643,7 +647,7 @@ static void drop_all_extent_maps_fast(struct extent_map_tree *tree)
+ 		node = rb_first_cached(&tree->map);
+ 		em = rb_entry(node, struct extent_map, rb_node);
+ 		em->flags &= ~(EXTENT_FLAG_PINNED | EXTENT_FLAG_LOGGING);
+-		remove_extent_mapping(tree, em);
++		remove_extent_mapping(inode, em);
+ 		free_extent_map(em);
+ 		cond_resched_rwlock_write(&tree->lock);
+ 	}
+@@ -676,7 +680,7 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *inode, u64 start, u64 end,
+ 	WARN_ON(end < start);
+ 	if (end == (u64)-1) {
+ 		if (start == 0 && !skip_pinned) {
+-			drop_all_extent_maps_fast(em_tree);
++			drop_all_extent_maps_fast(inode);
+ 			return;
+ 		}
+ 		len = (u64)-1;
+@@ -854,7 +858,7 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *inode, u64 start, u64 end,
+ 				ASSERT(!split);
+ 				btrfs_set_inode_full_sync(inode);
+ 			}
+-			remove_extent_mapping(em_tree, em);
++			remove_extent_mapping(inode, em);
+ 		}
+ 
+ 		/*
 diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-index f287ab46e368..732fc8d7e534 100644
+index 732fc8d7e534..c3707461ff62 100644
 --- a/fs/btrfs/extent_map.h
 +++ b/fs/btrfs/extent_map.h
-@@ -129,7 +129,7 @@ void free_extent_map(struct extent_map *em);
- int __init extent_map_init(void);
- void __cold extent_map_exit(void);
- int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len, u64 gen);
--void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em);
-+void clear_em_logging(struct btrfs_inode *inode, struct extent_map *em);
- struct extent_map *search_extent_mapping(struct extent_map_tree *tree,
+@@ -120,7 +120,7 @@ static inline u64 extent_map_end(const struct extent_map *em)
+ void extent_map_tree_init(struct extent_map_tree *tree);
+ struct extent_map *lookup_extent_mapping(struct extent_map_tree *tree,
  					 u64 start, u64 len);
- int btrfs_add_extent_mapping(struct btrfs_inode *inode,
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index d9777649e170..4a4fca841510 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -4945,7 +4945,7 @@ static int btrfs_log_changed_extents(struct btrfs_trans_handle *trans,
- 		 * private list.
- 		 */
- 		if (ret) {
--			clear_em_logging(tree, em);
-+			clear_em_logging(inode, em);
- 			free_extent_map(em);
- 			continue;
- 		}
-@@ -4954,7 +4954,7 @@ static int btrfs_log_changed_extents(struct btrfs_trans_handle *trans,
+-void remove_extent_mapping(struct extent_map_tree *tree, struct extent_map *em);
++void remove_extent_mapping(struct btrfs_inode *inode, struct extent_map *em);
+ int split_extent_map(struct btrfs_inode *inode, u64 start, u64 len, u64 pre,
+ 		     u64 new_logical);
  
- 		ret = log_one_extent(trans, inode, em, path, ctx);
- 		write_lock(&tree->lock);
--		clear_em_logging(tree, em);
-+		clear_em_logging(inode, em);
- 		free_extent_map(em);
+diff --git a/fs/btrfs/tests/extent-map-tests.c b/fs/btrfs/tests/extent-map-tests.c
+index 9e9cb591c0f1..db6fb1a2c78f 100644
+--- a/fs/btrfs/tests/extent-map-tests.c
++++ b/fs/btrfs/tests/extent-map-tests.c
+@@ -11,8 +11,9 @@
+ #include "../disk-io.h"
+ #include "../block-group.h"
+ 
+-static int free_extent_map_tree(struct extent_map_tree *em_tree)
++static int free_extent_map_tree(struct btrfs_inode *inode)
+ {
++	struct extent_map_tree *em_tree = &inode->extent_tree;
+ 	struct extent_map *em;
+ 	struct rb_node *node;
+ 	int ret = 0;
+@@ -21,7 +22,7 @@ static int free_extent_map_tree(struct extent_map_tree *em_tree)
+ 	while (!RB_EMPTY_ROOT(&em_tree->map.rb_root)) {
+ 		node = rb_first_cached(&em_tree->map);
+ 		em = rb_entry(node, struct extent_map, rb_node);
+-		remove_extent_mapping(em_tree, em);
++		remove_extent_mapping(inode, em);
+ 
+ #ifdef CONFIG_BTRFS_DEBUG
+ 		if (refcount_read(&em->refs) != 1) {
+@@ -142,7 +143,7 @@ static int test_case_1(struct btrfs_fs_info *fs_info, struct btrfs_inode *inode)
  	}
- 	WARN_ON(!list_empty(&extents));
+ 	free_extent_map(em);
+ out:
+-	ret2 = free_extent_map_tree(em_tree);
++	ret2 = free_extent_map_tree(inode);
+ 	if (ret == 0)
+ 		ret = ret2;
+ 
+@@ -237,7 +238,7 @@ static int test_case_2(struct btrfs_fs_info *fs_info, struct btrfs_inode *inode)
+ 	}
+ 	free_extent_map(em);
+ out:
+-	ret2 = free_extent_map_tree(em_tree);
++	ret2 = free_extent_map_tree(inode);
+ 	if (ret == 0)
+ 		ret = ret2;
+ 
+@@ -313,7 +314,7 @@ static int __test_case_3(struct btrfs_fs_info *fs_info,
+ 	}
+ 	free_extent_map(em);
+ out:
+-	ret2 = free_extent_map_tree(em_tree);
++	ret2 = free_extent_map_tree(inode);
+ 	if (ret == 0)
+ 		ret = ret2;
+ 
+@@ -435,7 +436,7 @@ static int __test_case_4(struct btrfs_fs_info *fs_info,
+ 	}
+ 	free_extent_map(em);
+ out:
+-	ret2 = free_extent_map_tree(em_tree);
++	ret2 = free_extent_map_tree(inode);
+ 	if (ret == 0)
+ 		ret = ret2;
+ 
+@@ -679,7 +680,7 @@ static int test_case_5(struct btrfs_fs_info *fs_info, struct btrfs_inode *inode)
+ 	if (ret)
+ 		goto out;
+ out:
+-	ret2 = free_extent_map_tree(&inode->extent_tree);
++	ret2 = free_extent_map_tree(inode);
+ 	if (ret == 0)
+ 		ret = ret2;
+ 
+@@ -738,7 +739,7 @@ static int test_case_6(struct btrfs_fs_info *fs_info, struct btrfs_inode *inode)
+ 	ret = 0;
+ out:
+ 	free_extent_map(em);
+-	ret2 = free_extent_map_tree(em_tree);
++	ret2 = free_extent_map_tree(inode);
+ 	if (ret == 0)
+ 		ret = ret2;
+ 
+@@ -871,7 +872,7 @@ static int test_case_7(struct btrfs_fs_info *fs_info, struct btrfs_inode *inode)
+ 	ret2 = unpin_extent_cache(inode, 0, SZ_16K, 0);
+ 	if (ret == 0)
+ 		ret = ret2;
+-	ret2 = free_extent_map_tree(em_tree);
++	ret2 = free_extent_map_tree(inode);
+ 	if (ret == 0)
+ 		ret = ret2;
+ 
 -- 
 2.43.0
 
