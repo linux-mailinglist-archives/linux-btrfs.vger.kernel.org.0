@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-4151-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4152-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64DFD8A1C5F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 19:46:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 009A98A1CB9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 19:54:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C12F1F24332
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 17:46:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22EEDB2B9C4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 17:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424F318413F;
-	Thu, 11 Apr 2024 16:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F0F181BA7;
+	Thu, 11 Apr 2024 16:19:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q+MchUYV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NdiPxl5B"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25540184113
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 16:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B3B180A73
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 16:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712852365; cv=none; b=aajBPyPZwVoVZsl+k4RgUYvxMNQ0HDdaG3Ka2e9b2eYnfyGALNDHJ7U3oXnrMZCTvT252eiGrNfBtHtm25fXGlIStynP8DetcMSvLJkde64aR7kT+CMWH1VNwjtSGEJoMVaIhoG2ODAvLI1LD+gjn1x4LTRYsj9A8m3HgBAfHA8=
+	t=1712852366; cv=none; b=j3B27USezwuPdDb0wWmCWnAsMrWc+qRnYeReaZAdrjroRh2gWlOBSCZY1kRW1idVpGiGKb2Ubairr3fnUeeIxDHcE3bageS9YnvWYF8Y87j9pYvA0IPTjIr1y7pzLd9k606QYAhLAYl6n594FWKYgeY/LcD8fB/mYVEVBb7YOls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712852365; c=relaxed/simple;
-	bh=WEOs238PXlFyLYxlpU8huS8p/TvCwvsSg+SMm+wz+Oc=;
+	s=arc-20240116; t=1712852366; c=relaxed/simple;
+	bh=TJwFNHUjYoJ+JCI3wVQ+01oev1ZWlC8DHs1UdVlyE/M=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NWMQP3yr8ucHPVNxhpUjDx0ptpjpFdceAFDmRVBAbsKMBKC9Sx5CsQ46tEkI9aW0CItvOpxT9c6V+c8l3fZmGRQZjMWDBEtpi0H1PmBWr60PBGegDKvHemXwZE0FZMdyoWCcHOAFQwSZ7lpGDOkivEC/ihW+pcdKnZbZ6dxsW8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q+MchUYV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00369C072AA
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 16:19:23 +0000 (UTC)
+	 MIME-Version; b=QquEq8YClqYTwZ1Ij6py6jYAIRAsKsdKpzsnrzTw33JAhwWmJJptrg/RB+ZFnINOquyS5EWN9stGuymYdCiBvXB4Jm7Hk6YIERsug1hFx3TaM0aXKEROR8W0evgkPThqGUspd1NYE3r0O8qpU/Ua65F9s5UwmeZ/5rrGdaiFmkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NdiPxl5B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F77FC113CE
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 16:19:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712852364;
-	bh=WEOs238PXlFyLYxlpU8huS8p/TvCwvsSg+SMm+wz+Oc=;
+	s=k20201202; t=1712852365;
+	bh=TJwFNHUjYoJ+JCI3wVQ+01oev1ZWlC8DHs1UdVlyE/M=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=q+MchUYVJJU+B05npPx87x828Xqva7W/NEPCMpbeLe31Qol9esWO8rZfw8gwPQj3H
-	 y/1IIJWuenrJHwsbp+74eaw+UL2rI/ftNxTNUFHVBUxwojnktZGCdmYtnx9KSj07GB
-	 1A7tNwshtd5fI1G/gdf4G7H8l47SteMOr8+JFWDICplKNHOQqM1D14qC7IwOFpUE4p
-	 pZdN81sc7NxDhIdYZdTGaPf2YXbcJ3pcDOYkN+m3Iy/WP9Snvh8U3luhAz/GbYVLcx
-	 aiW7yBRhZ8i5W2FleEeQY72e79LhPDMHcOXB9yALsi1GQ9NITMPwraxNRh165Dk6vH
-	 hcPqCKP1aCCJw==
+	b=NdiPxl5BFWa0j9O9MrEH0d4SniN6KMx0DfkcSU0FMHhiJ4NZBom3gvUyuyObyKi6z
+	 OMJiFN7+48AtrSIrz3BpGyP60yyNkgIBW0Eea907Ra0hvznJzAUz25xzEHRqgVMrEt
+	 cPMQjxyjQL7uKTPuH94hO7M6Yk6NdfMvGTNkzrGSFN4uLlePh7fNtaCi2nxNgrIcvI
+	 IaM3DlwK6gnKiO2yadC4UNeaB2BJ9PFszctspnV95hL/KxkY/PrRZMSLOEFLIo7htK
+	 O+eFqaSP6kCN3dk3VSutziC0mmL6ISX+5TceiiM5p8TEAwsv5XcuhBkC+TROJKPMcS
+	 XbL9gTQ8fCRGQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 08/15] btrfs: pass the extent map tree's inode to setup_extent_mapping()
-Date: Thu, 11 Apr 2024 17:19:02 +0100
-Message-Id: <7e8a8cc96cc25b31df62ce8a3492c690dc25608d.1712837044.git.fdmanana@suse.com>
+Subject: [PATCH v2 09/15] btrfs: pass the extent map tree's inode to try_merge_map()
+Date: Thu, 11 Apr 2024 17:19:03 +0100
+Message-Id: <81628b9abb3ece8fd7e35a521068cfa958aca112.1712837044.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1712837044.git.fdmanana@suse.com>
 References: <cover.1712837044.git.fdmanana@suse.com>
@@ -60,61 +60,66 @@ Content-Transfer-Encoding: 8bit
 From: Filipe Manana <fdmanana@suse.com>
 
 Extent maps are always associated to an inode's extent map tree, so
-there's no need to pass the extent map tree explicitly to
-setup_extent_mapping().
+there's no need to pass the extent map tree explicitly to try_merge_map().
 
 In order to facilitate an upcoming change that adds a shrinker for extent
-maps, change setup_extent_mapping() to receive the inode instead of its
-extent map tree.
+maps, change try_merge_map() to receive the inode instead of its extent
+map tree.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_map.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/btrfs/extent_map.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 15817b842c24..2753bf2964cb 100644
+index 2753bf2964cb..97a8e0484415 100644
 --- a/fs/btrfs/extent_map.c
 +++ b/fs/btrfs/extent_map.c
-@@ -342,7 +342,7 @@ void clear_em_logging(struct btrfs_inode *inode, struct extent_map *em)
- 		try_merge_map(tree, em);
+@@ -223,8 +223,9 @@ static bool mergeable_maps(const struct extent_map *prev, const struct extent_ma
+ 	return next->block_start == prev->block_start;
  }
  
--static inline void setup_extent_mapping(struct extent_map_tree *tree,
-+static inline void setup_extent_mapping(struct btrfs_inode *inode,
- 					struct extent_map *em,
- 					int modified)
+-static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
++static void try_merge_map(struct btrfs_inode *inode, struct extent_map *em)
  {
-@@ -351,9 +351,9 @@ static inline void setup_extent_mapping(struct extent_map_tree *tree,
- 	ASSERT(list_empty(&em->list));
++	struct extent_map_tree *tree = &inode->extent_tree;
+ 	struct extent_map *merge = NULL;
+ 	struct rb_node *rb;
  
- 	if (modified)
--		list_add(&em->list, &tree->modified_extents);
-+		list_add(&em->list, &inode->extent_tree.modified_extents);
- 	else
+@@ -322,7 +323,7 @@ int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len, u64 gen)
+ 	em->generation = gen;
+ 	em->flags &= ~EXTENT_FLAG_PINNED;
+ 
+-	try_merge_map(tree, em);
++	try_merge_map(inode, em);
+ 
+ out:
+ 	write_unlock(&tree->lock);
+@@ -333,13 +334,11 @@ int unpin_extent_cache(struct btrfs_inode *inode, u64 start, u64 len, u64 gen)
+ 
+ void clear_em_logging(struct btrfs_inode *inode, struct extent_map *em)
+ {
+-	struct extent_map_tree *tree = &inode->extent_tree;
+-
+-	lockdep_assert_held_write(&tree->lock);
++	lockdep_assert_held_write(&inode->extent_tree.lock);
+ 
+ 	em->flags &= ~EXTENT_FLAG_LOGGING;
+ 	if (extent_map_in_tree(em))
 -		try_merge_map(tree, em);
-+		try_merge_map(&inode->extent_tree, em);
++		try_merge_map(inode, em);
+ }
+ 
+ static inline void setup_extent_mapping(struct btrfs_inode *inode,
+@@ -353,7 +352,7 @@ static inline void setup_extent_mapping(struct btrfs_inode *inode,
+ 	if (modified)
+ 		list_add(&em->list, &inode->extent_tree.modified_extents);
+ 	else
+-		try_merge_map(&inode->extent_tree, em);
++		try_merge_map(inode, em);
  }
  
  /*
-@@ -381,7 +381,7 @@ static int add_extent_mapping(struct btrfs_inode *inode,
- 	if (ret)
- 		return ret;
- 
--	setup_extent_mapping(tree, em, modified);
-+	setup_extent_mapping(inode, em, modified);
- 
- 	return 0;
- }
-@@ -486,7 +486,7 @@ static void replace_extent_mapping(struct btrfs_inode *inode,
- 	rb_replace_node_cached(&cur->rb_node, &new->rb_node, &tree->map);
- 	RB_CLEAR_NODE(&cur->rb_node);
- 
--	setup_extent_mapping(tree, new, modified);
-+	setup_extent_mapping(inode, new, modified);
- }
- 
- static struct extent_map *next_extent_map(const struct extent_map *em)
 -- 
 2.43.0
 
