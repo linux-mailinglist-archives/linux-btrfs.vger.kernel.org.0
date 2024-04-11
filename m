@@ -1,215 +1,303 @@
-Return-Path: <linux-btrfs+bounces-4140-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4141-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B30388A17AE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 16:44:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 644B48A17C9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 16:47:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 400C81F211FB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 14:44:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8843C1C22EFA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 14:47:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DC9211187;
-	Thu, 11 Apr 2024 14:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4579FDF5C;
+	Thu, 11 Apr 2024 14:47:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QrkildVI";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+aO1DBcT";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QrkildVI";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+aO1DBcT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LIezUnkq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D1DDCA73;
-	Thu, 11 Apr 2024 14:41:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717AEDDCB
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 14:47:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712846485; cv=none; b=EN5na6bzh1TIM/HGQEPGrp1g6W8sOOartIGfGBU8GWuqwfB9AViVxXC6HTN4Wrqx8cB7T/F1VUPYpCVvDyVyaGmHP8pd+zIJPStC7VdwYLwcJ/w+4zeB+7EixZsypYavBZYbfady61/KgA0juE4TQ6sH3HQTx9l2XNEK1EHntzM=
+	t=1712846854; cv=none; b=IMb1OGxhUJxsX6QK5V65PhWPuw95Dk4DDFJW2xvQpnu/B0Uk3lH/nWpvcjTsAzPj6o8jX/emQazsHjukP2xowwPc7wTFQSz036tNWFG4EFTwwH0T2ngiJYkwddwAhm/blhcFSPpSSqyAo47qcX877SNXO8Z/gOdGyZqNQj9nbnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712846485; c=relaxed/simple;
-	bh=vPgdivHYRSSd/O6IaYR6sg/jdjc8RLY8P9HV/kir/i4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Eww/7+tiyORK/KHmcUhnH1eHUEzapIh4t6mselvxseX5Cck6/Km99klC31g/YdoGFWLF0CNz0D7B5SyB8CZflBCT+Volwf70auavi41u2ytzVbpOmAPyKVFxRwCd6+BiHWFzV4cl55xu5tCqMxZK87Z7AAAauhTXAu0vBO0rakA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QrkildVI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+aO1DBcT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QrkildVI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+aO1DBcT; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 73370375C4;
-	Thu, 11 Apr 2024 14:41:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712846480;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s45HoZnzBmH3Zbd1qQZJXNygT/wqotCRulnTGMhB9vs=;
-	b=QrkildVIgr4FksIH9fhMXMDXPO71nPt3D5Z7irv30Fe5rEGTK0RDCEbEZU5FwhaukyLI9Y
-	R3ygSIIN84V3t2oMKZF4z9VB6ib6fmQnkkF9JwXDPFGqKnQ1rQ7CQFAMTSqrNwoudJXDDV
-	9ZY16X1NzPSshfJYb9MsEQmTtEJPq8Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712846480;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s45HoZnzBmH3Zbd1qQZJXNygT/wqotCRulnTGMhB9vs=;
-	b=+aO1DBcThUzuGWiNZwOyqOusyZuFfRBuuokSPDRB85PDMHINffrRmV+6gHwD1C+Khli3HU
-	5JxCpJ4SDL5o8dBA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=QrkildVI;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+aO1DBcT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712846480;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s45HoZnzBmH3Zbd1qQZJXNygT/wqotCRulnTGMhB9vs=;
-	b=QrkildVIgr4FksIH9fhMXMDXPO71nPt3D5Z7irv30Fe5rEGTK0RDCEbEZU5FwhaukyLI9Y
-	R3ygSIIN84V3t2oMKZF4z9VB6ib6fmQnkkF9JwXDPFGqKnQ1rQ7CQFAMTSqrNwoudJXDDV
-	9ZY16X1NzPSshfJYb9MsEQmTtEJPq8Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712846480;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s45HoZnzBmH3Zbd1qQZJXNygT/wqotCRulnTGMhB9vs=;
-	b=+aO1DBcThUzuGWiNZwOyqOusyZuFfRBuuokSPDRB85PDMHINffrRmV+6gHwD1C+Khli3HU
-	5JxCpJ4SDL5o8dBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 513C313685;
-	Thu, 11 Apr 2024 14:41:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MzysE5D2F2Y+SgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 11 Apr 2024 14:41:20 +0000
-Date: Thu, 11 Apr 2024 16:33:50 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-	linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH v2] fstests: btrfs: redirect stdout of "btrfs subvolume
- snapshot" to fix output change
-Message-ID: <20240411143350.GP3492@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20240406051847.75347-1-wqu@suse.com>
- <8824a2ee-7325-4a14-ac64-dcedc03c14b9@oracle.com>
- <20240409111319.GA3492@twin.jikos.cz>
- <f113ab1f-58b4-453b-a6eb-7b4cce765287@oracle.com>
- <e9576dfb-c3ce-4adc-bb32-f7efa235907a@suse.com>
- <20240410162635.GN3492@suse.cz>
- <d756b8f2-5f55-4482-9a83-e2ab740e11ed@oracle.com>
- <ac9c80d0-bc78-459b-aa38-4f2b6ed34b65@gmx.com>
+	s=arc-20240116; t=1712846854; c=relaxed/simple;
+	bh=7YDyI9d4miIcW9oKPRe0P5Uiy2byaFEhIoK5Au7OTB4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ogxb9Pm55YMRofywRI8eh1SP9w8y0h/A1gPv/RMk+bDQQ91bWcuGh0jX1bdEmrm/JA0UaNIR5nK5tGX4DlIUP1ScRY+5mfbZYZ1PpsVI8KyzdkLsAwKzwuDAh2XN3y8tHXWS8xnmEdPy/mU4Q+uwBbi+uZZgISJ6B+RKufA3eQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LIezUnkq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FE76C2BD11
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 14:47:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712846854;
+	bh=7YDyI9d4miIcW9oKPRe0P5Uiy2byaFEhIoK5Au7OTB4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=LIezUnkqP2hR5LEH/u3p3M+8Lj9TVZWHCw0UvnZ0G651SXYygxIOXi3Rni/CDrzrW
+	 8JVRBIRIDXCHMMUbeSXM49wNDvIbocoPW2GjFeKb9PbHLnw0VgI2WEukaWGn7CsNzF
+	 exA2i1PUXDtaSUwHl6mr9OARtH3DvxRMjIq1pTAn3NFxEUR2U2QKWFnbAdQZv082/F
+	 8/7CSVvGMlspcSz1Z4jKWL0wERlieSojXEZ7xVLK+TwdOnDzj2A5NXTP+7isVXdW5V
+	 o52hIA9tSLB6Lwbxv1JPczkYWFvILMLh1Fj6qhohVHhAT+asUc5Enk3hDBJXrOvEzo
+	 Mdo/tS11gNlrg==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a44f2d894b7so900158266b.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Apr 2024 07:47:34 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwL1kUQwAkhloHxk328S5UXrGYKoSQmHnPGpmumEw+tO0yRMIHo
+	aLnf20exNjM12lcMDw8v9HOkFZUPnoZpM+ZZYAcAt3aqvQlK7gdwQgV05c6E74Ycts0QQ109Yzc
+	TVEigiNs0MUngqofCKqminaUnxdg=
+X-Google-Smtp-Source: AGHT+IHhCozNWvDO0LH0lM00klosfNpA8MrPX0Efn2KvDf7E7qMhlywsYdffLbnPwkQTFuXxbr132gD1tkHFpLMcrQI=
+X-Received: by 2002:a17:907:930e:b0:a4e:23a1:9ede with SMTP id
+ bu14-20020a170907930e00b00a4e23a19edemr4401039ejc.36.1712846852709; Thu, 11
+ Apr 2024 07:47:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ac9c80d0-bc78-459b-aa38-4f2b6ed34b65@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 73370375C4
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[gmx.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FREEMAIL_TO(0.00)[gmx.com];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5]
+References: <cover.1712614770.git.wqu@suse.com> <5780c450b3b5a642773bf3981bcfd49d1a6080b0.1712614770.git.wqu@suse.com>
+In-Reply-To: <5780c450b3b5a642773bf3981bcfd49d1a6080b0.1712614770.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 11 Apr 2024 15:46:55 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H77oYtaf4_M3mWYsdSucwi-gTu+wgpEsJhft1vQjwajig@mail.gmail.com>
+Message-ID: <CAL3q7H77oYtaf4_M3mWYsdSucwi-gTu+wgpEsJhft1vQjwajig@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/8] btrfs: rename members of can_nocow_file_extent_args
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2024 at 06:19:03PM +0930, Qu Wenruo wrote:
-> 
-> 
-> 在 2024/4/11 18:14, Anand Jain 写道:
-> >
-> >
-> > On 4/11/24 00:26, David Sterba wrote:
-> >> On Wed, Apr 10, 2024 at 03:18:49PM +0930, Qu Wenruo wrote:
-> >>>>> What past discussions favored does not seem to satisfy our needs
-> >>>>> and as
-> >>>>> btrfs-progs are evolving we're hitting random test breakage just
-> >>>>> because
-> >>>>> some message has changed. The testsuite should verify what matters,
-> >>>>> ie.
-> >>>>> return code, state of the filesystem etc, not exact command output.
-> >>>>> There's high correlation between output and correctness, yes, but this
-> >>>>> is too fragile.
-> >>>>
-> >>>> Agreed. So, why don't we use `_run_btrfs_util_prog subvolume
-> >>>> snapshot`, which makes it consistent with the rest of the test cases,
-> >>>> and also remove the golden output for this command?
-> >>>
-> >>> For `_run_btrfs_util_prog`, the only thing I do not like is the name
-> >>> itself.
-> >>>
-> >>> I also do not like how fstests always go $BTRFS_UTIL_PROG neither,
-> >>> however I understand it's there to make sure we do not got weird bash
-> >>> function name like "btrfs()" overriding the real "btrfs".
-> >>>
-> >>> If we can make the name shorter like `_btrfs` or something like it, I'm
-> >>> totally fine with that, and would be happy to move to the new interface.
-> >>>
-> >>> In fact, `_run_btrfs_util_prog` is pretty helpful to generate a debug
-> >>> friendly seqres.full, which is another good point.
-> >>
-> >> I did not realize the _run_btrfs_util_prog helper was there and actually
-> >> the run_check as well. I vaguely remember this from many years ago and
-> >> this somehow landed in btrfs-progs testsuite but fstests was against it.
-> >> Using such helpers sounds like a plan to me (with renames etc).
-> >
-> > We can do the renaming part in the separate patch. Qu, are
-> > you sending the revised patch?
-> 
-> Sure, I can prepare them pretty soon.
-> 
-> Just to be noticed, if we really determine to rename
-> `_run_btrfs_util_prog`, it would be pretty large as there are tons of
-> such calls still there.
-> 
-> And I really hope we can get a good naming before doing the conversion.
-> Updating it again and again for a different name may not be a good use
-> of time.
-> 
-> My candidate is `_btrfs` or `_run_btrfs`. Any good candidates?
+On Mon, Apr 8, 2024 at 11:34=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+> The structure can_nocow_file_extent_args is utilized to provide the
+> needed info for a NOCOW writes.
+>
+> However some of its members are pretty confusing.
+> For example, @disk_bytenr is not btrfs_file_extent_item::disk_bytenr,
+> but with extra offset, thus it works more like extent_map::block_start.
+>
+> This patch would:
+>
+> - Rename members directly fetched from btrfs_file_extent_item
+>   The new name would have "orig_" prefix, with the same member name from
+>   btrfs_file_extent_item.
+>
+> - For the old @disk_bytenr, rename it to @block_start
+>   As it's directly passed into create_io_em() as @block_start.
 
-I'd use the one with prefix.
+So I find these new names more confusing actually.
+
+So the existing names reflect fields from struct
+btrfs_file_extent_item, because NOCOW checks are always done against
+the range of a file extent item, therefore the existing naming.
+
+Sometimes it may be against the whole range of the extent item,
+sometimes only a part of it, in which case disk_bytenr is incremented
+by offsets.
+
+This is the same logic with struct btrfs_ordered_extent: for a NOCOW
+write disk_bytenr may either match the disk_bytenr of an existing file
+extent item or it's adjusted by some offset in case it covers only
+part of the extent item.
+
+So currently we are both consistent with btrfs_ordered_extent besides
+the fact the NOCOW checks are done against a file extent item.
+
+I particularly find block_start not intuitive - block? Is it a block
+number? What's the size of the block? Etc.
+disk_bytenr is a lot more clear - it's a disk address in bytes.
+
+>
+> - Add extra comments explaining those members
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/inode.c | 51 ++++++++++++++++++++++++++++--------------------
+>  1 file changed, 30 insertions(+), 21 deletions(-)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 2e0156943c7c..4d207c3b38d9 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -1847,11 +1847,20 @@ struct can_nocow_file_extent_args {
+>          */
+>         bool free_path;
+>
+> -       /* Output fields. Only set when can_nocow_file_extent() returns 1=
+. */
+> +       /*
+> +        * Output fields. Only set when can_nocow_file_extent() returns 1=
+.
+> +        *
+> +        * @block_start:        The bytenr of the new nocow write should =
+be at.
+> +        * @orig_disk_bytenr:   The original data extent's disk_bytenr.
+
+This orig_disk_bytenr field is not defined anywhere in this patch.
+
+Thanks.
+
+> +        * @orig_disk_num_bytes:The original data extent's disk_num_bytes=
+.
+> +        * @orig_offset:        The original offset inside the old data e=
+xtent.
+> +        *                      Caller should calculate their own
+> +        *                      btrfs_file_extent_item::offset base on th=
+is.
+> +        */
+>
+> -       u64 disk_bytenr;
+> -       u64 disk_num_bytes;
+> -       u64 extent_offset;
+> +       u64 block_start;
+> +       u64 orig_disk_num_bytes;
+> +       u64 orig_offset;
+>         /* Number of bytes that can be written to in NOCOW mode. */
+>         u64 num_bytes;
+>  };
+> @@ -1887,9 +1896,9 @@ static int can_nocow_file_extent(struct btrfs_path =
+*path,
+>                 goto out;
+>
+>         /* Can't access these fields unless we know it's not an inline ex=
+tent. */
+> -       args->disk_bytenr =3D btrfs_file_extent_disk_bytenr(leaf, fi);
+> -       args->disk_num_bytes =3D btrfs_file_extent_disk_num_bytes(leaf, f=
+i);
+> -       args->extent_offset =3D btrfs_file_extent_offset(leaf, fi);
+> +       args->block_start =3D btrfs_file_extent_disk_bytenr(leaf, fi);
+> +       args->orig_disk_num_bytes =3D btrfs_file_extent_disk_num_bytes(le=
+af, fi);
+> +       args->orig_offset =3D btrfs_file_extent_offset(leaf, fi);
+>
+>         if (!(inode->flags & BTRFS_INODE_NODATACOW) &&
+>             extent_type =3D=3D BTRFS_FILE_EXTENT_REG)
+> @@ -1906,7 +1915,7 @@ static int can_nocow_file_extent(struct btrfs_path =
+*path,
+>                 goto out;
+>
+>         /* An explicit hole, must COW. */
+> -       if (args->disk_bytenr =3D=3D 0)
+> +       if (args->block_start =3D=3D 0)
+>                 goto out;
+>
+>         /* Compressed/encrypted/encoded extents must be COWed. */
+> @@ -1925,8 +1934,8 @@ static int can_nocow_file_extent(struct btrfs_path =
+*path,
+>         btrfs_release_path(path);
+>
+>         ret =3D btrfs_cross_ref_exist(root, btrfs_ino(inode),
+> -                                   key->offset - args->extent_offset,
+> -                                   args->disk_bytenr, args->strict, path=
+);
+> +                                   key->offset - args->orig_offset,
+> +                                   args->block_start, args->strict, path=
+);
+>         WARN_ON_ONCE(ret > 0 && is_freespace_inode);
+>         if (ret !=3D 0)
+>                 goto out;
+> @@ -1947,15 +1956,15 @@ static int can_nocow_file_extent(struct btrfs_pat=
+h *path,
+>             atomic_read(&root->snapshot_force_cow))
+>                 goto out;
+>
+> -       args->disk_bytenr +=3D args->extent_offset;
+> -       args->disk_bytenr +=3D args->start - key->offset;
+> +       args->block_start +=3D args->orig_offset;
+> +       args->block_start +=3D args->start - key->offset;
+>         args->num_bytes =3D min(args->end + 1, extent_end) - args->start;
+>
+>         /*
+>          * Force COW if csums exist in the range. This ensures that csums=
+ for a
+>          * given extent are either valid or do not exist.
+>          */
+> -       ret =3D csum_exist_in_range(root->fs_info, args->disk_bytenr, arg=
+s->num_bytes,
+> +       ret =3D csum_exist_in_range(root->fs_info, args->block_start, arg=
+s->num_bytes,
+>                                   nowait);
+>         WARN_ON_ONCE(ret > 0 && is_freespace_inode);
+>         if (ret !=3D 0)
+> @@ -2112,7 +2121,7 @@ static noinline int run_delalloc_nocow(struct btrfs=
+_inode *inode,
+>                         goto must_cow;
+>
+>                 ret =3D 0;
+> -               nocow_bg =3D btrfs_inc_nocow_writers(fs_info, nocow_args.=
+disk_bytenr);
+> +               nocow_bg =3D btrfs_inc_nocow_writers(fs_info, nocow_args.=
+block_start);
+>                 if (!nocow_bg) {
+>  must_cow:
+>                         /*
+> @@ -2151,14 +2160,14 @@ static noinline int run_delalloc_nocow(struct btr=
+fs_inode *inode,
+>                 nocow_end =3D cur_offset + nocow_args.num_bytes - 1;
+>                 is_prealloc =3D extent_type =3D=3D BTRFS_FILE_EXTENT_PREA=
+LLOC;
+>                 if (is_prealloc) {
+> -                       u64 orig_start =3D found_key.offset - nocow_args.=
+extent_offset;
+> +                       u64 orig_start =3D found_key.offset - nocow_args.=
+orig_offset;
+>                         struct extent_map *em;
+>
+>                         em =3D create_io_em(inode, cur_offset, nocow_args=
+.num_bytes,
+>                                           orig_start,
+> -                                         nocow_args.disk_bytenr, /* bloc=
+k_start */
+> +                                         nocow_args.block_start, /* bloc=
+k_start */
+>                                           nocow_args.num_bytes, /* block_=
+len */
+> -                                         nocow_args.disk_num_bytes, /* o=
+rig_block_len */
+> +                                         nocow_args.orig_disk_num_bytes,=
+ /* orig_block_len */
+>                                           ram_bytes, BTRFS_COMPRESS_NONE,
+>                                           BTRFS_ORDERED_PREALLOC);
+>                         if (IS_ERR(em)) {
+> @@ -2171,7 +2180,7 @@ static noinline int run_delalloc_nocow(struct btrfs=
+_inode *inode,
+>
+>                 ordered =3D btrfs_alloc_ordered_extent(inode, cur_offset,
+>                                 nocow_args.num_bytes, nocow_args.num_byte=
+s,
+> -                               nocow_args.disk_bytenr, nocow_args.num_by=
+tes, 0,
+> +                               nocow_args.block_start, nocow_args.num_by=
+tes, 0,
+>                                 is_prealloc
+>                                 ? (1 << BTRFS_ORDERED_PREALLOC)
+>                                 : (1 << BTRFS_ORDERED_NOCOW),
+> @@ -7189,7 +7198,7 @@ noinline int can_nocow_extent(struct inode *inode, =
+u64 offset, u64 *len,
+>         }
+>
+>         ret =3D 0;
+> -       if (btrfs_extent_readonly(fs_info, nocow_args.disk_bytenr))
+> +       if (btrfs_extent_readonly(fs_info, nocow_args.block_start))
+>                 goto out;
+>
+>         if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATACOW) &&
+> @@ -7206,9 +7215,9 @@ noinline int can_nocow_extent(struct inode *inode, =
+u64 offset, u64 *len,
+>         }
+>
+>         if (orig_start)
+> -               *orig_start =3D key.offset - nocow_args.extent_offset;
+> +               *orig_start =3D key.offset - nocow_args.orig_offset;
+>         if (orig_block_len)
+> -               *orig_block_len =3D nocow_args.disk_num_bytes;
+> +               *orig_block_len =3D nocow_args.orig_disk_num_bytes;
+>
+>         *len =3D nocow_args.num_bytes;
+>         ret =3D 1;
+> --
+> 2.44.0
+>
+>
 
