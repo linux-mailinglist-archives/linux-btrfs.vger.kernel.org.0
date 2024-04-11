@@ -1,162 +1,109 @@
-Return-Path: <linux-btrfs+bounces-4159-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4160-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E83FA8A1CC3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 19:55:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B0EF8A1E20
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 20:28:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E27C7B2ADBB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 17:49:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BBD31C24C2C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Apr 2024 18:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44EB71A0B0F;
-	Thu, 11 Apr 2024 16:23:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD60137744;
+	Thu, 11 Apr 2024 17:49:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XIsGPPx3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aI/Km0ji"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 156CA1A0AE7;
-	Thu, 11 Apr 2024 16:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D8C38FA3;
+	Thu, 11 Apr 2024 17:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712852604; cv=none; b=oQn7tJgrdFHQ3nqLFBhStEqjZ+u9YqToXIhcoCRtlmAxbBioEDFfAtXBbh9qpc1L0MAPgO2i9jJcbTk7a2AsNrT41MPabIZesFB+7qZV8FKqFnx2vJGq9J/swZM1uJt+7YJRWUqvBbK66Nia+B1YGPy56RwHGjGhJ8dE6kyG8uc=
+	t=1712857773; cv=none; b=t6upJ5YsiQXB8syRfgFeyqB9p8DNmsqmPlCJyM9Drmv4U+jj0Yx+/gJ+sax6rl5Ysvc/qm1lRYuUVn1ZbCt5gFleVpqLiIhFpshwi6f9OUIdbFfOIq1XZ/yRHp9OQP/uXdfVcjoVQF98FIGSxHtHahF3/6jNFB609qyVvZL6rD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712852604; c=relaxed/simple;
-	bh=nN/Hr+UlT6emx/RUIJVSa74QG/O0VgJ/byKbQpUfmyY=;
+	s=arc-20240116; t=1712857773; c=relaxed/simple;
+	bh=JMTdAGD8MD/pbkdj+J+tnzBU2KPanJ0Go33kBW0D9C0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VWVaNTMrArzwXpUAPHTmX9pqckVf8Y9iEtFipuXz7cMNaIXCIqHf/GgUa7hmk+GHQ4qVqOJ2dS/2zrRgt0iPNlEDUG7Xtxh9OW7yoVsaz55FTL2ANhPZ2NsqZAxdRf+HPKGhb+VaVxmAouLKeTQP8C3h/UcUXuKOQxqloIgOpy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XIsGPPx3; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-	bh=w8fDcPBM4Ze2RPgrAoXs/w5z2M5QE6GW5bGItfgRyJ8=; b=XIsGPPx3mZgUgXDqmsW3zFEUMM
-	hrAF6AwyKjg5u/7JpKuZqbRzY4v8HjoVwEuBNAQVw14POMEREkb9sOqKwAN3ZchA3+E1NH+q43G9i
-	h89UzTlMT34ILaOSNIjqzh/1hopUZTMHNrak55UHbof7sc3viEOIyBCwxIJ6BThh3W7K7EUlGy4np
-	TJb5EIRDb4TXgd7PW5tv8xQPgKoVmMRy+YgpCoXVAMMOQ9WQZGo/nl38Gs8Cc4AV4c2NEYmM7UFcA
-	N6nfqhSWnnj5rSE7+/wwPBIg+h68sSddrjQYwRJvDbTOvqfFAn0OFruiNIfUzQl1/VooT2EV9uDuG
-	6YpTaT4w==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruxCN-0000000D38A-1CHz;
-	Thu, 11 Apr 2024 16:22:51 +0000
-Date: Thu, 11 Apr 2024 09:22:51 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: Dan Helmick <dan.helmick@samsung.com>, axboe@kernel.dk,
-	kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	io-uring@vger.kernel.org, nilay@linux.ibm.com,
-	ritesh.list@gmail.com, willy@infradead.org,
-	Alan Adamson <alan.adamson@oracle.com>
-Subject: Re: [PATCH v6 10/10] nvme: Atomic write support
-Message-ID: <ZhgOW8yBPuuae4ni@bombadil.infradead.org>
-References: <20240326133813.3224593-1-john.g.garry@oracle.com>
- <20240326133813.3224593-11-john.g.garry@oracle.com>
- <Zhcu5m8fmwD1W5bG@bombadil.infradead.org>
- <143e3d55-773f-4fcb-889c-bb24c0acabba@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SeUMhxjCjYayrfBdKWfVmSM12YKMXwA1nS7e4hx0Mobq6/oyTS3Y8d/aEg+AJMR6RlfeSb0ekZis+TwvqmR7QlGCvHIFgb0BPmqFsD3aeMnloXbmDAftuTHzYLP+VTNl2Vo4bCVHdTIOsH14RzMKCcC5VJ2y2iKM88wKlWsDDQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aI/Km0ji; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 11 Apr 2024 13:49:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712857769;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V/TZdE1FK3O4qkESTbUB1nUL6z8CdzrLZmjris90VHw=;
+	b=aI/Km0jiSMVL4A1tCs8hlsrV66vbuWxJKZ+EgkonCW2LmuJAGBaIivtgu4+3HhSKhbSBh3
+	uS3+3l/YqK0GsHToDiJSOy8jQgouByPKNokiyLYxRwngjkex1lryU/nDL4TDH7+GmcHLtc
+	35AcbG0Y+MpEd8VLadpzkGxeP5lZ1Bo=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de, 
+	kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at, 
+	vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com, 
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com, 
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
+	viro@zeniv.linux.org.uk, brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org, 
+	chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com, 
+	konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org, hare@suse.de, 
+	p.raghav@samsung.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
+	linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org, yukuai3@huawei.com, 
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v3 for-6.8/block 07/17] bcachefs: remove dead
+ function bdev_sectors()
+Message-ID: <2pat6ombemqnq5wjl6eb4lbip2pfgg5tkubmbwqphvcvpdc6cu@poiexziaa2q4>
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+ <20231221085712.1766333-8-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <143e3d55-773f-4fcb-889c-bb24c0acabba@oracle.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20231221085712.1766333-8-yukuai1@huaweicloud.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 11, 2024 at 09:59:57AM +0100, John Garry wrote:
-> On 11/04/2024 01:29, Luis Chamberlain wrote:
-> > On Tue, Mar 26, 2024 at 01:38:13PM +0000, John Garry wrote:
-> > > From: Alan Adamson <alan.adamson@oracle.com>
-> > > 
-> > > Add support to set block layer request_queue atomic write limits. The
-> > > limits will be derived from either the namespace or controller atomic
-> > > parameters.
-> > > 
-> > > NVMe atomic-related parameters are grouped into "normal" and "power-fail"
-> > > (or PF) class of parameter. For atomic write support, only PF parameters
-> > > are of interest. The "normal" parameters are concerned with racing reads
-> > > and writes (which also applies to PF). See NVM Command Set Specification
-> > > Revision 1.0d section 2.1.4 for reference.
-> > > 
-> > > Whether to use per namespace or controller atomic parameters is decided by
-> > > NSFEAT bit 1 - see Figure 97: Identify – Identify Namespace Data
-> > > Structure, NVM Command Set.
-> > > 
-> > > NVMe namespaces may define an atomic boundary, whereby no atomic guarantees
-> > > are provided for a write which straddles this per-lba space boundary. The
-> > > block layer merging policy is such that no merges may occur in which the
-> > > resultant request would straddle such a boundary.
-> > > 
-> > > Unlike SCSI, NVMe specifies no granularity or alignment rules, apart from
-> > > atomic boundary rule.
-> > 
-> > Larger IU drives a larger alignment *preference*, and it can be multiples
-> > of the LBA format, it's called Namespace Preferred Write Granularity (NPWG)
-> > and the NVMe driver already parses it. So say you have a 4k LBA format
-> > but a 16k NPWG. I suspect this means we'd want atomics writes to align to 16k
-> > but I can let Dan confirm.
+On Thu, Dec 21, 2023 at 04:57:02PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> If we need to be aligned to NPWG, then the min atomic write unit would also
-> need to be NPWG. Any NPWG relation to atomic writes is not defined in the
-> spec, AFAICS.
+> bdev_sectors() is not used hence remove it.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-NPWG is just a preference, not a requirement, so it is different than
-logical block size. As far as I can tell we have no block topology
-information to represent it. LBS will help users opt-in to align to
-the NPWG, and a respective NAWUPF will ensure you can also atomically
-write the respective sector size.
+Acked-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-For atomics, NABSPF is what we want to use.
-
-The above statement on the commit log just seems a bit misleading then.
-
-> We simply use the LBA data size as the min atomic unit in this patch.
-
-I thought NABSPF is used.
-
-> > > Note on NABSPF:
-> > > There seems to be some vagueness in the spec as to whether NABSPF applies
-> > > for NSFEAT bit 1 being unset. Figure 97 does not explicitly mention NABSPF
-> > > and how it is affected by bit 1. However Figure 4 does tell to check Figure
-> > > 97 for info about per-namespace parameters, which NABSPF is, so it is
-> > > implied. However currently nvme_update_disk_info() does check namespace
-> > > parameter NABO regardless of this bit.
-> > 
-> > Yeah that its quirky.
-> > 
-> > Also today we set the physical block size to min(npwg, atomic) and that
-> > means for a today's average 4k IU drive if they get 16k atomic the
-> > physical block size would still be 4k. As the physical block size in
-> > practice can also lift the sector size filesystems used it would seem
-> > odd only a larger npwg could lift it.
-> It seems to me that if you want to provide atomic guarantees for this large
-> "physical block size", then it needs to be based on (N)AWUPF and NPWG.
-
-For atomicity, I read it as needing to use NABSPF. Aligning to NPWG will just
-help performance.
-
-The NPWG comes from an internal mapping table constructed and kept on
-DRAM on a drive in units of an IU size [0], and so not aligning to the
-IU just causes having to work with entries in the able rather than just
-one, and also incurs a read-modify-write. Contrary to the logical block
-size, a write below NPWG but respecting the logical block size is allowed,
-its just not optimal.
-
-[0] https://kernelnewbies.org/KernelProjects/large-block-size#Indirection_Unit_size_increases
-
-  Luis
+> ---
+>  fs/bcachefs/util.h | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+> index 2984b57b2958..22a0acc1704f 100644
+> --- a/fs/bcachefs/util.h
+> +++ b/fs/bcachefs/util.h
+> @@ -516,11 +516,6 @@ static inline unsigned fract_exp_two(unsigned x, unsigned fract_bits)
+>  void bch2_bio_map(struct bio *bio, void *base, size_t);
+>  int bch2_bio_alloc_pages(struct bio *, size_t, gfp_t);
+>  
+> -static inline sector_t bdev_sectors(struct block_device *bdev)
+> -{
+> -	return bdev->bd_inode->i_size >> 9;
+> -}
+> -
+>  #define closure_bio_submit(bio, cl)					\
+>  do {									\
+>  	closure_get(cl);						\
+> -- 
+> 2.39.2
+> 
 
