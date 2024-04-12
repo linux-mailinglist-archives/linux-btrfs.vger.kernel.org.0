@@ -1,219 +1,408 @@
-Return-Path: <linux-btrfs+bounces-4199-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4200-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EC558A36B9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 22:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1BA48A386F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Apr 2024 00:01:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A16128360D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 20:07:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99186285EC0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 22:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AA801509B5;
-	Fri, 12 Apr 2024 20:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A77615218B;
+	Fri, 12 Apr 2024 22:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="rVhPfGXr"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="cAWLVJL8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C1D14F9D6
-	for <linux-btrfs@vger.kernel.org>; Fri, 12 Apr 2024 20:07:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B4639FD5
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Apr 2024 22:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712952422; cv=none; b=spAyW7xowQFcWGnLG39RvQsjnr+nLrl10qHQXG2v5+u5uqdUwfnylQIuP08UC6yQlxc2R6h6FOysfz/tygSsQ1yXe029ozALNQujADH7okJiRZMP9GUhJ+t8/BxAVJ0kfo7VG1RfYYqGWwVLXhV6vkyJS6tJM+vh86wYkcx72Rg=
+	t=1712959266; cv=none; b=MBvd1BWWzbFkLEqwwrYUxQp9BVj4jc2CGoKeo45olhxHEV3RBewauOag5Gf0X6wyYCWgAeX6qU8koXX1MOiENg1pxS8MlQ0Y9QGo2SHjYR7QcTSkdlANYYaBD4QoDN9HWLw5fnLhHEd+rVwViEtv3b9ptycYpDXl/guwmJ4w7sY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712952422; c=relaxed/simple;
-	bh=wNGPd6zmxsSOZvB1Y9+rixXvra8fmaco8/6xNltH2Z0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qncs1do89GGqDyWUBZWl0Jj0nXuiHnjqDTIF+E5p1gIvjhVPbAko3emySQLST+eA3aR2yHH5COuixoWUkuS9wcSz7teXL7+wW7TKi9nsd4AYMnuW8tT3K0fmSHbQH5/tb6wSTHEck8Z46ETNk2JgwRhnaTOYnrd+CKTGPyd35I0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=rVhPfGXr; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-78d5751901bso88143385a.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Apr 2024 13:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1712952419; x=1713557219; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2adXF7SakD5Sp9oQK7Fg5NWHJFJq783c1g6ZtzWtXWs=;
-        b=rVhPfGXreer+M4kMlhQlpR68Miwdt+6DPkl+c14/LQr2uk3h7oSXlH3pbetW/wFuhC
-         F4vcrmVoW4m+OpVe4+MK3SzZU88o5aVXBne5Yk8oHfXvhdfSZqhHnPJC+V6KvqNshbLM
-         +RqZqnE/C1HHwkOqIkCUCeR7TyzvqV/vh0PU9brJjoRvP6fEoEathjA4ZVo4LaV5VwW+
-         7fZSnCu+cPSGPhlxdU8VPA/3rVfn/9ZIVMvT8B/3brF56CcZM60irGWK6VBYo+OZS0K8
-         q9x/D76wANsQyqUV01P2p8EVDsiMuEMtncHMEFY8VbYFZXzq42Rk5o1jdw2Al1thPhbk
-         p+Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712952419; x=1713557219;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2adXF7SakD5Sp9oQK7Fg5NWHJFJq783c1g6ZtzWtXWs=;
-        b=r0fxPfk5yebyxjNYJe4SUbKo9kHC24IxA1+ZVh3M4JTKwzbaC5qq3OHkYDhyjJ6oab
-         dX0yRQR85fmWHTruTWQNbgPYpxUWLPYelz/Br3MPjDdiIv6YICDqNIdYDwg74FYv/lta
-         KLBihVwtppxMWgqX/D5LRdCeY19GiWUsjAPDKO5V/DWLYtMAmWgVm6CI77z2h6dNE4rR
-         Ihbx0xFSXi6NdjvkrXgzcTLu9T3xD8I1Ek3d6EqbisYgNU2jG6MgtsHB2tzInbjn4OW4
-         xGzsk3zjieOsRPrYX0BrBMLmqib7Sta0cZNLlbXXF3tIvuWYr46PaIAm1lYjMiEIbxFQ
-         YzxQ==
-X-Gm-Message-State: AOJu0YwiC5rZOVWHBJ/uyc2WGGsAmGSoDLoPG/zt+3ZFNiG+dCvxQaXj
-	7q295mes6R3tiH58nJqOPcp8mXwYssfExn7W48LEM0Q9BdvDFJ7aWithWuNArT7ODd2uPmVs+m9
-	q
-X-Google-Smtp-Source: AGHT+IGYmtb8GHFoZCf1Fx2xF3uJbgSNmtHlw1Kd/8BAkVciqts5hJbOiDKDcKbQYOflUo6R0mgZNA==
-X-Received: by 2002:ae9:e201:0:b0:78d:61e8:7421 with SMTP id c1-20020ae9e201000000b0078d61e87421mr4055886qkc.5.1712952419297;
-        Fri, 12 Apr 2024 13:06:59 -0700 (PDT)
-Received: from localhost (076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id m3-20020ae9e003000000b0078d4bca760asm2818046qkk.34.2024.04.12.13.06.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 13:06:58 -0700 (PDT)
-Date: Fri, 12 Apr 2024 16:06:57 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 13/15] btrfs: add a shrinker for extent maps
-Message-ID: <20240412200657.GA1222511@perftesting>
-References: <cover.1712837044.git.fdmanana@suse.com>
- <1cb649870b6cad4411da7998735ab1141bb9f2f0.1712837044.git.fdmanana@suse.com>
+	s=arc-20240116; t=1712959266; c=relaxed/simple;
+	bh=wzMCEoX2bj/PAZBKD7gMxSRMDruBDAt67E9yl93I8XU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bv6DXkplo/1h5zYsk3PCbWav5/ze6vOeiwyfVWZyMbgBugtnFq3sh6IXeRNTgCYZTEsWT78UN8ZAkl6Klki+kTJpRcJTrIUHjaThhZIyvuJ/Xa4lkLKR5DaKG1Y7y2b+egz4OLxBVLkQkfoF7Q749mbf6cZZG6cSdKbJkMOoTMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=cAWLVJL8; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1712959257; x=1713564057; i=quwenruo.btrfs@gmx.com;
+	bh=6XzbIhjVpI+FXqvChn/Owt9WN5uvhGZkkUmDER5kpB0=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=cAWLVJL8lkLHivsgI7i26qAuAdl/N64aSf1rbNJMKpPY86ujWo7GaGSXQaVvmq3m
+	 rogjpJ8I4l4xSjW31inNl/otvYYPv/Q6n7l91TFEbNyh8eHLmAKCdNxpngL/jaNkg
+	 2YGME2Z7YXaoqfwSfffVoZvu6KpSf/BrfRX9b1mTrJKewGUGPc0nUu9CBRF+upz8U
+	 TFDUlGpT2bL5toSea0msbfKP5l+nh3hiiCCGgpML/sSz0+6vzB9HN1m8KiUXIKpLl
+	 bmz/2W14rD2sJV/jMcgrq2VD0YIXwivbUBjke1GsmT+hSx2/n3CjLDxBRD2SDH0A5
+	 vtZn97aGmGIcmrEA0Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAONX-1s2EJn3dAx-00BtyD; Sat, 13
+ Apr 2024 00:00:57 +0200
+Message-ID: <766b8e1e-0c04-4fdb-ae76-b92cd8f85bc3@gmx.com>
+Date: Sat, 13 Apr 2024 07:30:53 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1cb649870b6cad4411da7998735ab1141bb9f2f0.1712837044.git.fdmanana@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 2/8] btrfs: rename members of
+ can_nocow_file_extent_args
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1712614770.git.wqu@suse.com>
+ <5780c450b3b5a642773bf3981bcfd49d1a6080b0.1712614770.git.wqu@suse.com>
+ <CAL3q7H77oYtaf4_M3mWYsdSucwi-gTu+wgpEsJhft1vQjwajig@mail.gmail.com>
+ <65a7c2b6-9700-4d52-bd5e-9bfc2e32327d@gmx.com>
+ <CAL3q7H7U087v0t3N_fpdsqCBXJGm9dr5oFft5m6jaGEhS1b=5w@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <CAL3q7H7U087v0t3N_fpdsqCBXJGm9dr5oFft5m6jaGEhS1b=5w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:JvsiZDbMHe97nZPtH8sY53QwA1sPM4JkxxQCGL63PuwZf6KTRAD
+ h48+/JlA0U9CZo5NzuzE2smi9PhgbRwJFZcVOifN1DBqaCIxJcZ4b5f/JaQnWqXieLDUfHy
+ VMi2lt4JyoW0m1FzVPRfuiyrsclLNhg1Wqsi0QHmLqLPlZ+0Q/JrR7JlE3+aM4R5R1KXWxI
+ nsv0SMEJpgyfgUQrExV/Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:MuQbeeyznUQ=;T6+ALWTkKF+ZKpS7Jd3C0U3unx9
+ ihOeF4E3Yd8a1GSLu3i9cWWljcR7MPxoyq+fEEgZJh7k4ldKrapJz5xghlFet40l/VVQVz+jU
+ omd/haosfAPR+wdm9ehI/a76szpWCSBsIcrT2/Np52+d8jQO9sqg5awVQJxZgngeEXGfDcEDi
+ MU/fACJI5FC1Q3LnFxO3a05MwGv9GoPq9qtMb8XgRwwuER5rT8MBGXfnKs7EeY7tEQvZIrgXk
+ zT1buOvD1I0GbVZoGwYn5SW+v4s2elIYhZQFTlS/cj8SzKGrHo9niHlTeJeMUTVZwmFE16Y8i
+ 88xAidPEORh+XNqLiQxIwkeVNnjJ3aCYGW8klFqdqelwvqhgqaM7Wr5nG7x0aLvgGzsFHIA80
+ oSrvHMMisgnBjHIKDkq0qxYN10ReBL5kafEKUTB4yGVnU2r5D5UQHqR31ZUK1aQBQ2MxrjR/o
+ VeJVL/wTgRn5dhwWyf0sEQHO2XCdiV8n/0TPqQeRdSjZXLTwJOKLJo2sUIRooZFSYwNDqvfTu
+ JnbT3ppy/5XIUAktfhgKOWrZR8IAqt2hhabUciXTpVLZP/iRZf/h16A8RVin7kE5X01kdkjsi
+ /jqCTAa2ry9s9g8oYRUWVhUo+iXzZRViHG0K3c9x3DGdaBwWo1exWC9XG1q395E3mvQ/lbySx
+ HSgNG1crE8ocEMsgGRmYCjmaDqKY6WJskAqtbtfc8KT3cIe2QaNgOXPt9n9mn3Zg6W0ymtSc2
+ CIdFHuZ5h9oqcoj9Q+D/H8yqyJ0RGA0aVwGt6cFoIzZ/uwyI0HUTqBGEPBMuoNOCpYlIaNyi0
+ shgvdY4JuPUfryQ2xTXKdLs+PpKBy2QVLdRcEGcsQqxd0=
 
-On Thu, Apr 11, 2024 at 05:19:07PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Extent maps are used either to represent existing file extent items, or to
-> represent new extents that are going to be written and the respective file
-> extent items are created when the ordered extent completes.
-> 
-> We currently don't have any limit for how many extent maps we can have,
-> neither per inode nor globally. Most of the time this not too noticeable
-> because extent maps are removed in the following situations:
-> 
-> 1) When evicting an inode;
-> 
-> 2) When releasing folios (pages) through the btrfs_release_folio() address
->    space operation callback.
-> 
->    However we won't release extent maps in the folio range if the folio is
->    either dirty or under writeback or if the inode's i_size is less than
->    or equals to 16M (see try_release_extent_mapping(). This 16M i_size
->    constraint was added back in 2008 with commit 70dec8079d78 ("Btrfs:
->    extent_io and extent_state optimizations"), but there's no explanation
->    about why we have it or why the 16M value.
-> 
-> This means that for buffered IO we can reach an OOM situation due to too
-> many extent maps if either of the following happens:
-> 
-> 1) There's a set of tasks constantly doing IO on many files with a size
->    not larger than 16M, specially if they keep the files open for very
->    long periods, therefore preventing inode eviction.
-> 
->    This requires a really high number of such files, and having many non
->    mergeable extent maps (due to random 4K writes for example) and a
->    machine with very little memory;
-> 
-> 2) There's a set tasks constantly doing random write IO (therefore
->    creating many non mergeable extent maps) on files and keeping them
->    open for long periods of time, so inode eviction doesn't happen and
->    there's always a lot of dirty pages or pages under writeback,
->    preventing btrfs_release_folio() from releasing the respective extent
->    maps.
-> 
-> This second case was actually reported in the thread pointed by the Link
-> tag below, and it requires a very large file under heavy IO and a machine
-> with very little amount of RAM, which is probably hard to happen in
-> practice in a real world use case.
-> 
-> However when using direct IO this is not so hard to happen, because the
-> page cache is not used, and therefore btrfs_release_folio() is never
-> called. Which means extent maps are dropped only when evicting the inode,
-> and that means that if we have tasks that keep a file descriptor open and
-> keep doing IO on a very large file (or files), we can exhaust memory due
-> to an unbounded amount of extent maps. This is especially easy to happen
-> if we have a huge file with millions of small extents and their extent
-> maps are not mergeable (non contiguous offsets and disk locations).
-> This was reported in that thread with the following fio test:
-> 
->    $ cat test.sh
->    #!/bin/bash
-> 
->    DEV=/dev/sdj
->    MNT=/mnt/sdj
->    MOUNT_OPTIONS="-o ssd"
->    MKFS_OPTIONS=""
-> 
->    cat <<EOF > /tmp/fio-job.ini
->    [global]
->    name=fio-rand-write
->    filename=$MNT/fio-rand-write
->    rw=randwrite
->    bs=4K
->    direct=1
->    numjobs=16
->    fallocate=none
->    time_based
->    runtime=90000
-> 
->    [file1]
->    size=300G
->    ioengine=libaio
->    iodepth=16
-> 
->    EOF
-> 
->    umount $MNT &> /dev/null
->    mkfs.btrfs -f $MKFS_OPTIONS $DEV
->    mount $MOUNT_OPTIONS $DEV $MNT
-> 
->    fio /tmp/fio-job.ini
->    umount $MNT
-> 
-> Monitoring the btrfs_extent_map slab while running the test with:
-> 
->    $ watch -d -n 1 'cat /sys/kernel/slab/btrfs_extent_map/objects \
->                         /sys/kernel/slab/btrfs_extent_map/total_objects'
-> 
-> Shows the number of active and total extent maps skyrocketing to tens of
-> millions, and on systems with a short amount of memory it's easy and quick
-> to get into an OOM situation, as reported in that thread.
-> 
-> So to avoid this issue add a shrinker that will remove extents maps, as
-> long as they are not pinned, and takes proper care with any concurrent
-> fsync to avoid missing extents (setting the full sync flag while in the
-> middle of a fast fsync). This shrinker is similar to the one ext4 uses
-> for its extent_status structure, which is analogous to btrfs' extent_map
-> structure.
-> 
-> Link: https://lore.kernel.org/linux-btrfs/13f94633dcf04d29aaf1f0a43d42c55e@amazon.com/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-I don't like this for a few reasons
 
-1. We're always starting with the first root and the first inode.  We're just
-   going to constantly screw that first inode over and over again.
-2. I really, really hate our inode rb-tree, I want to reduce it's use, not add
-   more users.  It would be nice if we could just utilize ->s_inodes_lru instead
-   for this, which would also give us the nice advantage of not having to think
-   about order since it's already in LRU order.
-3. We're registering our own shrinker without a proper LRU setup.  I think it
-   would make sense if we wanted to have a LRU for our extent maps, but I think
-   that's not a great idea.  We could get the same benefit by adding our own
-   ->nr_cached_objects() and ->free_cached_objects(), I think that's a better
-   approach no matter what other changes you make instead of registering our own
-   shrinker.
+=E5=9C=A8 2024/4/12 22:51, Filipe Manana =E5=86=99=E9=81=93:
+> On Thu, Apr 11, 2024 at 11:03=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.c=
+om> wrote:
+[...]
+>>
+>> Well, the new @block_start matches the old extent_map::block_start.
+>
+> So it becomes a single exception, different from everywhere else.
+> Doesn't seem like a good thing in general.
 
-The concept I whole heartedly agree with, this just needs some tweaks to be more
-fair and cleaner.  The rest of the code is fine, you can add
+OK, I can get rid of the @block_start name.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>
+>>
+>> I have to say, we do not have a solid definition on "disk_bytenr" in th=
+e
+>> first place.
+>
+> Well I find the name clear, it is a disk location measured by a byte add=
+ress.
+> block_start is not so clear for anyone not familiar with btrfs'
+> internals, it makes me think of a block number and wonder what's the
+> block size, etc.
+>
+>>
+>> Should it always match ondisk file_extent_item::disk_bytenr, or should
+>> it act like "block_start" of the old extent_map?
+>
+> It's always about a range of a file extent item, be it the whole range
+> or just a part of it.
+> I don't see why it's confusing to use disk_bytenr, etc.
+> I find it more confusing to use something else, or at least what's
+> being proposed in this patch.
 
-to the rest of it.  Thanks,
+Well, IMHO since we take the name @disk_bytenr from btrfs file extent
+item, and btrfs file extent uses @disk_bytenr to uniquely locate a data
+extent, then we should also follow it to use @disk_bytenr for the same
+purpose.
 
-Josef
+So that every time we see the name @disk_bytenr, we know it can be used
+to locate a data extent, without any need for weird offset calculation.
+
+That's why I'm strongly against adding any offset into @disk_bytenr.
+And I believe that's the biggest difference in our points of view.
+
+Although in this particular case, I can use some extra prefixs like
+"orig_" or "fe_" (for file extent), so that those members can be later
+directly passed to create_io_em() without extra offset calculation.
+
+Would that be a acceptable trade-off?
+
+
+Another solution would be just drop this patch, and do extra calulation
+resulting something like this:
+
+	create_io_em(...,
+		     disk_bytenr - whatever_offset, /* disk_bytenr */
+		     offset - whatever_offset, /* offset */
+		     PREALLOC, ...);
+
+At least that does not sound sane to me, and can be bug prune.
+You won't believe how many different crashes I hit just due to the weird
+disk_bytenr calculation here, and that's the biggest reason I have
+
+Thanks,
+Qu
+
+
+>
+>>
+>> And if we have separate definitions, one to always match file extent
+>> item disk_bytenr, and one to match the real IO start bytenr, what shoul=
+d
+>> be their names?
+>>
+>> I hope we can get a good naming to solve the confusion, any good idea?
+>
+> For me the current naming is fine and I don't find it confusing... So,
+> I'm not sure what to tell you.
+>
+>>
+>> Thanks,
+>> Qu
+>>>
+>>>>
+>>>> - Add extra comments explaining those members
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>> ---
+>>>>    fs/btrfs/inode.c | 51 ++++++++++++++++++++++++++++----------------=
+----
+>>>>    1 file changed, 30 insertions(+), 21 deletions(-)
+>>>>
+>>>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>>>> index 2e0156943c7c..4d207c3b38d9 100644
+>>>> --- a/fs/btrfs/inode.c
+>>>> +++ b/fs/btrfs/inode.c
+>>>> @@ -1847,11 +1847,20 @@ struct can_nocow_file_extent_args {
+>>>>            */
+>>>>           bool free_path;
+>>>>
+>>>> -       /* Output fields. Only set when can_nocow_file_extent() retur=
+ns 1. */
+>>>> +       /*
+>>>> +        * Output fields. Only set when can_nocow_file_extent() retur=
+ns 1.
+>>>> +        *
+>>>> +        * @block_start:        The bytenr of the new nocow write sho=
+uld be at.
+>>>> +        * @orig_disk_bytenr:   The original data extent's disk_byten=
+r.
+>>>
+>>> This orig_disk_bytenr field is not defined anywhere in this patch.
+>>>
+>>> Thanks.
+>>>
+>>>> +        * @orig_disk_num_bytes:The original data extent's disk_num_b=
+ytes.
+>>>> +        * @orig_offset:        The original offset inside the old da=
+ta extent.
+>>>> +        *                      Caller should calculate their own
+>>>> +        *                      btrfs_file_extent_item::offset base o=
+n this.
+>>>> +        */
+>>>>
+>>>> -       u64 disk_bytenr;
+>>>> -       u64 disk_num_bytes;
+>>>> -       u64 extent_offset;
+>>>> +       u64 block_start;
+>>>> +       u64 orig_disk_num_bytes;
+>>>> +       u64 orig_offset;
+>>>>           /* Number of bytes that can be written to in NOCOW mode. */
+>>>>           u64 num_bytes;
+>>>>    };
+>>>> @@ -1887,9 +1896,9 @@ static int can_nocow_file_extent(struct btrfs_p=
+ath *path,
+>>>>                   goto out;
+>>>>
+>>>>           /* Can't access these fields unless we know it's not an inl=
+ine extent. */
+>>>> -       args->disk_bytenr =3D btrfs_file_extent_disk_bytenr(leaf, fi)=
+;
+>>>> -       args->disk_num_bytes =3D btrfs_file_extent_disk_num_bytes(lea=
+f, fi);
+>>>> -       args->extent_offset =3D btrfs_file_extent_offset(leaf, fi);
+>>>> +       args->block_start =3D btrfs_file_extent_disk_bytenr(leaf, fi)=
+;
+>>>> +       args->orig_disk_num_bytes =3D btrfs_file_extent_disk_num_byte=
+s(leaf, fi);
+>>>> +       args->orig_offset =3D btrfs_file_extent_offset(leaf, fi);
+>>>>
+>>>>           if (!(inode->flags & BTRFS_INODE_NODATACOW) &&
+>>>>               extent_type =3D=3D BTRFS_FILE_EXTENT_REG)
+>>>> @@ -1906,7 +1915,7 @@ static int can_nocow_file_extent(struct btrfs_p=
+ath *path,
+>>>>                   goto out;
+>>>>
+>>>>           /* An explicit hole, must COW. */
+>>>> -       if (args->disk_bytenr =3D=3D 0)
+>>>> +       if (args->block_start =3D=3D 0)
+>>>>                   goto out;
+>>>>
+>>>>           /* Compressed/encrypted/encoded extents must be COWed. */
+>>>> @@ -1925,8 +1934,8 @@ static int can_nocow_file_extent(struct btrfs_p=
+ath *path,
+>>>>           btrfs_release_path(path);
+>>>>
+>>>>           ret =3D btrfs_cross_ref_exist(root, btrfs_ino(inode),
+>>>> -                                   key->offset - args->extent_offset=
+,
+>>>> -                                   args->disk_bytenr, args->strict, =
+path);
+>>>> +                                   key->offset - args->orig_offset,
+>>>> +                                   args->block_start, args->strict, =
+path);
+>>>>           WARN_ON_ONCE(ret > 0 && is_freespace_inode);
+>>>>           if (ret !=3D 0)
+>>>>                   goto out;
+>>>> @@ -1947,15 +1956,15 @@ static int can_nocow_file_extent(struct btrfs=
+_path *path,
+>>>>               atomic_read(&root->snapshot_force_cow))
+>>>>                   goto out;
+>>>>
+>>>> -       args->disk_bytenr +=3D args->extent_offset;
+>>>> -       args->disk_bytenr +=3D args->start - key->offset;
+>>>> +       args->block_start +=3D args->orig_offset;
+>>>> +       args->block_start +=3D args->start - key->offset;
+>>>>           args->num_bytes =3D min(args->end + 1, extent_end) - args->=
+start;
+>>>>
+>>>>           /*
+>>>>            * Force COW if csums exist in the range. This ensures that=
+ csums for a
+>>>>            * given extent are either valid or do not exist.
+>>>>            */
+>>>> -       ret =3D csum_exist_in_range(root->fs_info, args->disk_bytenr,=
+ args->num_bytes,
+>>>> +       ret =3D csum_exist_in_range(root->fs_info, args->block_start,=
+ args->num_bytes,
+>>>>                                     nowait);
+>>>>           WARN_ON_ONCE(ret > 0 && is_freespace_inode);
+>>>>           if (ret !=3D 0)
+>>>> @@ -2112,7 +2121,7 @@ static noinline int run_delalloc_nocow(struct b=
+trfs_inode *inode,
+>>>>                           goto must_cow;
+>>>>
+>>>>                   ret =3D 0;
+>>>> -               nocow_bg =3D btrfs_inc_nocow_writers(fs_info, nocow_a=
+rgs.disk_bytenr);
+>>>> +               nocow_bg =3D btrfs_inc_nocow_writers(fs_info, nocow_a=
+rgs.block_start);
+>>>>                   if (!nocow_bg) {
+>>>>    must_cow:
+>>>>                           /*
+>>>> @@ -2151,14 +2160,14 @@ static noinline int run_delalloc_nocow(struct=
+ btrfs_inode *inode,
+>>>>                   nocow_end =3D cur_offset + nocow_args.num_bytes - 1=
+;
+>>>>                   is_prealloc =3D extent_type =3D=3D BTRFS_FILE_EXTEN=
+T_PREALLOC;
+>>>>                   if (is_prealloc) {
+>>>> -                       u64 orig_start =3D found_key.offset - nocow_a=
+rgs.extent_offset;
+>>>> +                       u64 orig_start =3D found_key.offset - nocow_a=
+rgs.orig_offset;
+>>>>                           struct extent_map *em;
+>>>>
+>>>>                           em =3D create_io_em(inode, cur_offset, noco=
+w_args.num_bytes,
+>>>>                                             orig_start,
+>>>> -                                         nocow_args.disk_bytenr, /* =
+block_start */
+>>>> +                                         nocow_args.block_start, /* =
+block_start */
+>>>>                                             nocow_args.num_bytes, /* =
+block_len */
+>>>> -                                         nocow_args.disk_num_bytes, =
+/* orig_block_len */
+>>>> +                                         nocow_args.orig_disk_num_by=
+tes, /* orig_block_len */
+>>>>                                             ram_bytes, BTRFS_COMPRESS=
+_NONE,
+>>>>                                             BTRFS_ORDERED_PREALLOC);
+>>>>                           if (IS_ERR(em)) {
+>>>> @@ -2171,7 +2180,7 @@ static noinline int run_delalloc_nocow(struct b=
+trfs_inode *inode,
+>>>>
+>>>>                   ordered =3D btrfs_alloc_ordered_extent(inode, cur_o=
+ffset,
+>>>>                                   nocow_args.num_bytes, nocow_args.nu=
+m_bytes,
+>>>> -                               nocow_args.disk_bytenr, nocow_args.nu=
+m_bytes, 0,
+>>>> +                               nocow_args.block_start, nocow_args.nu=
+m_bytes, 0,
+>>>>                                   is_prealloc
+>>>>                                   ? (1 << BTRFS_ORDERED_PREALLOC)
+>>>>                                   : (1 << BTRFS_ORDERED_NOCOW),
+>>>> @@ -7189,7 +7198,7 @@ noinline int can_nocow_extent(struct inode *ino=
+de, u64 offset, u64 *len,
+>>>>           }
+>>>>
+>>>>           ret =3D 0;
+>>>> -       if (btrfs_extent_readonly(fs_info, nocow_args.disk_bytenr))
+>>>> +       if (btrfs_extent_readonly(fs_info, nocow_args.block_start))
+>>>>                   goto out;
+>>>>
+>>>>           if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATACOW) &&
+>>>> @@ -7206,9 +7215,9 @@ noinline int can_nocow_extent(struct inode *ino=
+de, u64 offset, u64 *len,
+>>>>           }
+>>>>
+>>>>           if (orig_start)
+>>>> -               *orig_start =3D key.offset - nocow_args.extent_offset=
+;
+>>>> +               *orig_start =3D key.offset - nocow_args.orig_offset;
+>>>>           if (orig_block_len)
+>>>> -               *orig_block_len =3D nocow_args.disk_num_bytes;
+>>>> +               *orig_block_len =3D nocow_args.orig_disk_num_bytes;
+>>>>
+>>>>           *len =3D nocow_args.num_bytes;
+>>>>           ret =3D 1;
+>>>> --
+>>>> 2.44.0
+>>>>
+>>>>
+>>>
+>
 
