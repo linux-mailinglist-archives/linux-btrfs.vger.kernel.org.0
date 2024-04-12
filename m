@@ -1,898 +1,242 @@
-Return-Path: <linux-btrfs+bounces-4177-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4179-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAF3B8A2540
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 06:41:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E9618A2912
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 10:17:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F9AC1F2295C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 04:41:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF7191F2194B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 08:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A28134CC;
-	Fri, 12 Apr 2024 04:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8989351C5B;
+	Fri, 12 Apr 2024 08:16:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oapX8oCM";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RFby3H1z"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Xr2RAHRm";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="kh3qUrJS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06300D51E;
-	Fri, 12 Apr 2024 04:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712896906; cv=none; b=RjZ7bXHgsNVAgnpEQVY+gnxP2RHh9Y8GsXnSECz8KQcKcwZTDyK0eroJnHTU1UPkPFvmpmWI3RJqT8+ZsYv4J15iZUX7EaBlaOXXEKDVqvaageSwxVK5/IW6qTpiFAKVXZJxFPYz7z8j3ZxJOy8j4lxfn3/+3pIjgQ0eGDMCDSs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712896906; c=relaxed/simple;
-	bh=PszrNJg+fdAi3VFLwqhrrEUVwtHHArbNKRfyG0fKq5w=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=s10cPA4k+k8sYgnrhUsIbhIQ4KXs4PzVS5R45lT38m7+c9YgfOmDLzIGJJwDkRr3bF1mEVRLXUTM6al2rzKx7ImYKooryislubL1r3b1QvoASNKQDf+Lg+zKeVlClaPlqqTQnH8SUj6OGoidATbC51bNofJ5Hd+sBsYQInWFBP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oapX8oCM; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RFby3H1z; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E9B1637E32;
-	Fri, 12 Apr 2024 04:41:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712896901; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=szGtdEU+Wv8pzN6GB+yXxT3gtLlzWP8T83f52M6Mf24=;
-	b=oapX8oCMTEFVaBLYbW9pWz+BPcuKtrpdAwK+lFpQxI3CEJhGWRzGCU7AlIws08wmmHfCOU
-	Pss2xqr9ajjnGxUFhYy3P8197XFR/AlY6lWZ7ah7lKG1Ouhpi/6W12CXB+0q5ylnoYc62t
-	UwvYHn5B1sVZQZrwtIrepfXP/jwXiT8=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712896900; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=szGtdEU+Wv8pzN6GB+yXxT3gtLlzWP8T83f52M6Mf24=;
-	b=RFby3H1ze6mBq/U0LyQ7zew4q0U80d5y1WVEUO3XGRnFg8DN1DH/DRJg6Gl0PHTSdx30hp
-	FTq+XgPT1gJoUuV6NA+F5MJwXHDmkXXuvBqqv/s6KXnx3crZXuNI7V1CbFkIEbEuOqkd2k
-	eanQ7YZwE3wt/oRS33hYFsdgH7tXs5Y=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D763D1368B;
-	Fri, 12 Apr 2024 04:41:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id SL+MJYO7GGYcOgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Fri, 12 Apr 2024 04:41:39 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: [PATCH v2 2/2] fstests: btrfs: use _btrfs for 'subvolume snapshot' command
-Date: Fri, 12 Apr 2024 14:11:17 +0930
-Message-ID: <6dc43e0811a2aa3a632f7dbb616684d5f0d4432e.1712896667.git.wqu@suse.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1712896667.git.wqu@suse.com>
-References: <cover.1712896667.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C9461B977;
+	Fri, 12 Apr 2024 08:16:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712909810; cv=fail; b=nz6AQLhWYYbkMQBcIoibHwaa/0zU7qpgUaHOynxV+T63m0/6K9ur51QORE7fDHnMxBZzswt4LfJ0+TKJ+8e07+nYT/+BdrPmsjNGXjgFA+dONceEcT3VaC/SyUtnsaZvYNgHfYX4GJX6mg+UElMYSXIKmQri3mF8i+lquah5d3c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712909810; c=relaxed/simple;
+	bh=Rc5Quu1vq9L+RAlhaA4uEGuh62+Hc7Nt5bjeAoHXvP4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=NlpsnL1ZUHcAZqMx1xf+wWvc39A/YsyEAhXer4MLbZPH82P0vgjkGGhokqO8EUNRPmDVPwiUZ5/RBUtnkR3v2d5XTf/ErfheqwvU5hfsa1x7RqU7JH2fcF7bJyeB5EPD3PWE2bZm7lPAY+aQMayVa8DCo773PmGMXog5nk1J9tM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Xr2RAHRm; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=kh3qUrJS; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43C6nc0C007034;
+	Fri, 12 Apr 2024 08:16:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=HEemCtoiLR+50PffjGMIhpGEkBqGYo98UQP8FHUxmUQ=;
+ b=Xr2RAHRmzr5V6MKamblP72ujyFwYncTVXQDIPatPlXkUYzV/ngcJPvfjZ3CT52gwpwOU
+ uojhtGU4EWoPi+yEnkQtRJa3vDe6Al4JVcJkSJSsYAnO/v/7ZAu3yqUFDHF/RdZ5MZ48
+ LVbJguNmjGm1pA5ELMtTzjJgR4xiZf90AQRN8sbyWRaMKOUzIj1By+wf2OI9DKfFPodw
+ e1Cndp60EUYGbD0ZEcLiSdHN3Gg6jcSc+jEiFkAf1vRu0YRkasmrH/eRq+FNUYNm2B7R
+ 5qyqBluaImE3alm0GcAboqrn0kA3KkMt5Eo6ivLaqKQvK9Hb3uiOYBheKStHQur0EbHD Kg== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xax0uuaf7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 12 Apr 2024 08:16:07 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43C7IAqw007848;
+	Fri, 12 Apr 2024 08:16:06 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xavuanpay-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 12 Apr 2024 08:16:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gzxw/cJfCN38qDhbvvHyCd5+jjspD/wEuVW4y2MhLDqyHV8HrOPW7pbxsP53ql42ewyBIyxyjp/RK019mg0WFKGed/1m1L7ymzCLZOOpAIyVV6bpJ3HEXP92LMUj/xOFL6fOVOtDme7Oxmw0DnN2AHdW6sTEknt8OUslXZk1iY+Y3ASRJuJcM3yTdsPjGqEDXsuUrm3s83IBEpgJy3w9AxidteMQjGC67EHXkGmnmzdjraVBw0YmKUumx3LrZ20O20efnz9dDcqY5Do5SHB2xB7ise31LcX5Y+K/OiAhuDR1ripu4ZHc0T71kajVKQJHRJG2sXAC8JLIYj+9Mm+cpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HEemCtoiLR+50PffjGMIhpGEkBqGYo98UQP8FHUxmUQ=;
+ b=V/M8A3EWDzHR/pl4BsVoUHgoU2/QxKRtt5pvPqJm1nU8yLLUCprFB8HtKh90j9jkUvn4goHJzyGZtE1nSfI2z3wcaAuZtocazs4ayf/U9UEDEg99swxgPLsT3BhF5Yh1vmtqE9r6NJm0Mv64aAn0NsIxn4wx3ZwiaDEVg4jCM3GGmdvw7mWJedOyGPGzKCbCdwUXQ+lRHLhTeV8Sqni8HxEhHkHPm/2/h0yIq54A1sq2/X2o5GaQ35yehxuw2a3lOZr/UK2+iErRxf5oulRfaGYddUtVpQ8jvYV6EkjmIvSbNNlh181Bl7DjyUgf5ggdG+Qv/vU4BmzTNWNpyfBz2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HEemCtoiLR+50PffjGMIhpGEkBqGYo98UQP8FHUxmUQ=;
+ b=kh3qUrJSoE7wrT2YWgUtr3rghyK8SJgRCGvfV90sj4wLH6L5dP88CP7MV74WT9ip0m9rEF9OUylFVKO73EUOfyOOl55zq9IoJFGLtHPX7aS/4wax3+qa2DUA3hulSs2hXTlZcjVu+KdSBCjY5I44i7qrruWy/PsAcS+WdvfxCKE=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by SA1PR10MB7555.namprd10.prod.outlook.com (2603:10b6:806:378::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Fri, 12 Apr
+ 2024 08:16:03 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::ae68:7d51:133f:324]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::ae68:7d51:133f:324%4]) with mapi id 15.20.7409.042; Fri, 12 Apr 2024
+ 08:16:03 +0000
+Message-ID: <6d8e98bb-24d1-49be-8965-b6afa97dfdaa@oracle.com>
+Date: Fri, 12 Apr 2024 09:15:57 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 00/10] block atomic writes
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>,
+        Pankaj Raghav
+ <p.raghav@samsung.com>,
+        Daniel Gomez <da.gomez@samsung.com>,
+        =?UTF-8?Q?Javier_Gonz=C3=A1lez?= <javier.gonz@samsung.com>,
+        axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+        jack@suse.cz, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org,
+        nilay@linux.ibm.com, ritesh.list@gmail.com
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <ZgOXb_oZjsUU12YL@casper.infradead.org>
+ <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
+ <Zg7Z4aJtn3SxY5w1@casper.infradead.org>
+ <f3c1d321-0dfc-466f-9f6a-fe2f0513d944@oracle.com>
+ <ZhQud1NbO4aMt0MH@bombadil.infradead.org>
+ <b0789a97-7dcf-48aa-9980-8525942dabfa@oracle.com>
+ <Zhg0_Pvlh9zy4zzG@bombadil.infradead.org>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <Zhg0_Pvlh9zy4zzG@bombadil.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR10CA0012.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:17c::22) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SA1PR10MB7555:EE_
+X-MS-Office365-Filtering-Correlation-Id: 07f1ecfb-0229-4294-0cbf-08dc5ac8cb7e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	dG7KhSz3u7wczz9YsYa1tNlfFgNqpBaa14sBXBM7DkXHS8+k3E7A5xEEBArq4imm4bL3tXoRZRrl7azGySVarP5quUfcENV6jhTV3eDGidw6/QA8O/k1QoGxJcti3nOvnI1okm46k+VF4UAaGgr/dd/fwbIbhZCYg4HifEYEfzG9TL44OZe3MZO5wG3QzjMT+ex6ii0Qu//qNuxfXOWBF4IMh5ml1gtvajIIqqgYLFLV0VDHIDxohjSrKhbk+phdAHFTwNXKzOngM+E5bhoxqxmNaACDmX6exOShag06Sl9oomYzVzpuQnltPyNRJ9Dnf6xk/RsunQf25nFWYJxQyJxi4aDHEmsK7GvD1IbtMy19Heq1hK7HlTTjwka8GWfhj/XHOCfeSlo8W98+fu0NbwWjxvU4y1tfl95UMDkBID/AjsU3kpZYuvKbL+2AuSF1Cc9ZgMEWHoC9kbFXZKxd/E034fL6RqIylLMDqhmRoHFLoz6z8+sqsk7o9je572khqVeqJr1sr9c+K1eYcHmJgXZ9sPmnyDB0ztSNR96yqVTwzdKCIYcz3E5vwF8kRX+i5viLfjuqmiLWCCItYt9eFYm1FGax28HFl2kpvPHomfIZ0ia8a6gFGH9akkTd81tnLF0m0dfFWHOHfa9FEZ5A/i2PrqiH+f/KsWAlwvthm8k=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?RDdPai9SNFNYbzVhenBoenY3NFIybEkxZzIvb3RicWtlcFJ4WE02aFFPNy9G?=
+ =?utf-8?B?YjZRSWRDY2FIOWFjWUsvU0dlNk5lcjFRTVBKT0o3VWNVc281WVd2bk4ycVVt?=
+ =?utf-8?B?MHlHU0hsY3VQNldmTW96L3RGRnJhREFXaFdRYklGaXpuRzRxdlFTTjF5TUlW?=
+ =?utf-8?B?TCsrNkpsOUlXaHBpSzJaN3crSksyRzV3VGQxR3dSYWdRSW5EelFXSkFQdDh3?=
+ =?utf-8?B?R0tSV3BhZTRzbmMreXlWNVpYdnJqQ3NDd3FWM3lXcndteDd0Y0ZscHFYMmZU?=
+ =?utf-8?B?aHVscFJ0ZTIvMzROUzRZUzFnOWV6bHFwbGVIdDB1UHY5eGlGcEFzWGVhQ2dQ?=
+ =?utf-8?B?RmVMNlBpQnU5MDJDWllERHlsdzlVM3FNdGRzeHVHakR6TTdGSG5raVpFZXJZ?=
+ =?utf-8?B?YVlxbmFnT24veEJZYTdSdk9rVlJkcnZhaXdmMUlseTZSNjhZd1FHUVZkcXF1?=
+ =?utf-8?B?SnIzVVBHVU9DNXZKbG5DZzFZdVVjKzREMEVsekw4SG1ybEtlbnVIKzN6UHE4?=
+ =?utf-8?B?OGVMOEx0QkxNV01NRCtybWJCNmJxeXFOYWtTRm5nODdBbWRXSW00MkdnWmtz?=
+ =?utf-8?B?QmFnMVoxUVU2OGtPWnoxSUNvMjFibFNFMWYvdEVDTFlaUmhSa2ZlaTg2ZjVh?=
+ =?utf-8?B?Z1RvWCtXTFp4YTJvaWFRcXB4RFFlWTIyQ2lXYjVOeWlDQ285eDZHU1NkTW9U?=
+ =?utf-8?B?aFRjUTRQN2pDbC9UdVdNS2VMVDdBQ3VTRFYvYnVGbTVxOFAxTCtmZ0dCTzkx?=
+ =?utf-8?B?SEdKdkl3d3RCaGJyTVhHTmlTYWlLK203SHJGVnp6Z3dtTU5oaSt2QWJaSWls?=
+ =?utf-8?B?OUo1eDhuYlY3akRleU5uMkRUbzl1WFdxam9kSmQxY1phS0lGUDAxeGpIZGdF?=
+ =?utf-8?B?UVUvcFNlQjFNTmV0QlgvNG9iTEg3VHNHQndCM2NyMW9mMXRqT2xMTjExeGZ3?=
+ =?utf-8?B?UFF4OEJUU2MvWEgvMFNENUVqLzhXbWJ1QnZ1SjJhWG4reStnUW1BUFErS0xk?=
+ =?utf-8?B?YUVjSGZNUDFsQlp6T1BxanVXVnlQaEhLbXI0RHFMWXdrWUJ4TnhRTWtkSjBN?=
+ =?utf-8?B?N0ZlWjJDQzNFei9hQnQxbEFVcHljL3orOTdLZWpoYTdjTlpzaTZJSWhtVWV0?=
+ =?utf-8?B?VUhmVVVOVmhhaEJ0NnEwOWs2R3R2R3FYZ1FCODQ1cU1jRzM3OG9lOTFtd1VX?=
+ =?utf-8?B?RWovaFlHMDRlTm1oY2k3ZmdzZ0RpeHNSOGVYTElncTFqNlZoaTlDbjU3YVFQ?=
+ =?utf-8?B?UlhkUFFSakdlSnNHUnoxZmFvM05HWGZaMm4yVThOWmtSTW1WZFJEeGRWMUZK?=
+ =?utf-8?B?eVdqcUgxdXpqdjUwRkcrdVhRZlozcERPMjRyOHMrVFNab3YvUjFna3N0R1Zk?=
+ =?utf-8?B?R2lnKzNWa0xCZi9QeXk0NVMwUlliWXpJSU1wbDBCUHVlOWNaa2p0ZlJ6YmNs?=
+ =?utf-8?B?Sm1QcTRnUmlXRXdPcHU1QVoyQVVuWkJnYklQUzIxa05MVVRjTWlRMnB4QXNq?=
+ =?utf-8?B?QWgxcGMwMDlCeVBwOW9SbWFrc3hjU2N4NzZSYzFUeVVZTjQrZXliTmtRTkR3?=
+ =?utf-8?B?dFFVOXRTaThjTGpCN0RheGRTTFJYWEVuVm9MQ2lMeDRZN0ZucXRFK0NCQURI?=
+ =?utf-8?B?bUNlcEVPRjFScFh2Y3YzdjNwYk9KRXFaak5ab1huZkFzYUZRaWVZVFpkQlhR?=
+ =?utf-8?B?eWZBY1RpNjRLSmNWWFJPSkpRUHhMV3hpQXpzSGt2eDNXTFFsUS9HS2NQbCs1?=
+ =?utf-8?B?YkovU2ZNZWd5L1dtTGhSWmR1aStsZENtNUdlbDQrVkFWUS9IV01VaXU2OGF0?=
+ =?utf-8?B?Q2Z5MFpUSWJlT2p3SzczWEdwYWFnYkpRczhkb1hyUHBUT3UyZFY3UGdDRVNZ?=
+ =?utf-8?B?YW9IVlovOC95U2ViV0lWQlJ5RDJJbFRMWVViS0dPcG92c0VhM0RMM2dIU0tS?=
+ =?utf-8?B?MFMwTUNGVDAwWDF4U1pETjA5OEI5c2drQzhVZ3lJeGp5UDR1dVJ0OUhveE81?=
+ =?utf-8?B?SXdodFVHY1ZjczJNSDFERFB3RU80Zi9obWd4eFdlSjMwMEJZQzFhNnBpNWNk?=
+ =?utf-8?B?YXhobzgrMVVldlczN0l5bkZMdnNrSS9nMncvRUlIa3RtSDhoT2Ficms4dXZp?=
+ =?utf-8?Q?oQ1PLceR8ehtkPbWNuhiR9JmM?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	3WlG+l/We/t0HMVMeQYO+SrQaeymf2DI1ej6+6jlirtxMwmjjorA81SaHyePWFlcs0P/OWavkv63tLzBJRt0ZemgDnKsKiLHAQXIhG89toHij65LnEJ75gFhkHqWNk3dctvYn4+S2w5F5Fl6pl1//OMqnoCdxDts+EPy/k2gmhpsoNIpGq5tJRcLw7S8iKtlY0ilPeJl6+g64dIAZIH4EDIvibwC6cXGmBW+vF6Z6P966uS7InNq9r7WSLPHifx3MybGy7kaXs/gik/XK+ct+Ir1qXpkAIhZEGyA2DeneCtdqoC5LizUeHg2EFjlwDITNZsPNwTbK0uU9b/3QSycXgBnt3AMfML5BZIP8megwxLG1zJU3sGGwa8OVcA0lBA2m2ZbubY3jYboTXtD05Ycbj9iMLo0T29pBVUHvokD7iPk0P68+sp4Qrg4WI2mG0AZEb1SAI3UL80hcWBuTZro1jfdI8ilZeifPqB+pFv0VXhGsZ/NMAEloPvcblLzz/kmy5tVhq4sL8qVJdfRr6IdH1OquP6LQqPJWl1NDl6DkBzJk4i2BuJGpq3JuPys+hiQsJ/1x1meFrF0vWQa2E3Mt/bpwYaOdaxuGzNgDjbbaUs=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07f1ecfb-0229-4294-0cbf-08dc5ac8cb7e
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 08:16:03.6181
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6S1h54wcT5aHYDJFiAM5zO7kGDGipcw94Mgzha205G9GGS4YN8vlm8bpLuG5Kiv7TZm66nAQ1B+wPiI78f1iUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB7555
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-12_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ mlxscore=0 adultscore=0 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404120058
+X-Proofpoint-GUID: NNPnLAGDX3RvV8GaIRSRFyv6dB95B2E1
+X-Proofpoint-ORIG-GUID: NNPnLAGDX3RvV8GaIRSRFyv6dB95B2E1
 
-[BUG]
-All the touched test cases would fail after btrfs-progs commit
-5f87b467a9e7 ("btrfs-progs: subvolume: output the prompt line only when
-the ioctl succeeded") due to golden output mismatch.
+On 11/04/2024 20:07, Luis Chamberlain wrote:
+>> So if you
+>> have a 4K PBS and 512B LBS, then WRITE_ATOMIC_16 would be required to write
+>> 16KB atomically.
+> Ugh. Why does SCSI requires a special command for this?
 
-[CAUSE]
-Although the patch I sent to the mail list doesn't change the output at
-all but only a timing change, David uses this patch to unify the output
-of "btrfs subvolume create" and "btrfs subvolume snapshot".
+The actual question from others is why does NVMe not have a dedicated 
+command for this, like:
+https://lore.kernel.org/linux-nvme/20240129062035.GB19796@lst.de/
 
-Unfortunately this changes the output and causes mismatch with
-golden output.
+It's a data integrity feature, and we want to know if it works properly.
 
-[FIX]
-Just use the recommended way to run simple btrfs command, _btrfs, for
-those all "btrfs subvolume snapshot" call sites, and remove the line
-from golden output.
+> 
+> Now we know what would be needed to bump the physical block size, it is
+> certainly a different feature, however I think it would be good to
+> evaluate that world too. For NVMe we don't have such special write
+> requirements.
+> 
+> I put together this kludge with the last patches series of LBS + the
+> bdev cache aops stuff (which as I said before needs an alternative
+> solution) and just the scsi atomics topology + physical block size
+> change to easily experiment to see what would break:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=20240408-lbs-scsi-kludge
+> 
+> Using a larger sector size works but it does not use the special scsi
+> atomic write.
 
-The only case not utilizing `_btrfs` is btrfs/300, which utilize
-user_do(), which doesn't have the fstests functions.
+If you are using scsi_debug driver, then you can just pass the desired 
+physblk_exp and sector_size args - they both default to 512B. Then you 
+don't need bother with sd.c atomic stuff, which I think is what you want.
 
-The "_btrfs()" helper has the following advantages:
+> 
+>>>> To me, O_ATOMIC would be required for buffered atomic writes IO, as we want
+>>>> a fixed-sized IO, so that would mean no mixing of atomic and non-atomic IO.
+>>> Would using the same min and max order for the inode work instead?
+>> Maybe, I would need to check further.
+> I'd be happy to help review too.
 
-- Save the command line arguments and output into $seqres.full
-  For easier debugging
+Yeah, I'm starting to think that min and max inode would make life 
+easier, as we don't need to deal with the scenario of an atomic write to 
+a folio > atomic write size.
 
-- Check the return value of the btrfs command
-
-This would ensure future informative output change would not trigger
-such situation any more.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/btrfs/001     |  2 +-
- tests/btrfs/001.out |  1 -
- tests/btrfs/152     | 14 ++++++--------
- tests/btrfs/152.out |  2 --
- tests/btrfs/168     |  6 ++----
- tests/btrfs/168.out |  2 --
- tests/btrfs/169     |  6 ++----
- tests/btrfs/169.out |  2 --
- tests/btrfs/170     |  3 +--
- tests/btrfs/170.out |  1 -
- tests/btrfs/187     |  6 ++----
- tests/btrfs/187.out |  2 --
- tests/btrfs/188     |  6 ++----
- tests/btrfs/188.out |  2 --
- tests/btrfs/189     |  6 ++----
- tests/btrfs/189.out |  2 --
- tests/btrfs/191     |  6 ++----
- tests/btrfs/191.out |  2 --
- tests/btrfs/200     |  6 ++----
- tests/btrfs/200.out |  2 --
- tests/btrfs/202     |  3 +--
- tests/btrfs/202.out |  1 -
- tests/btrfs/203     |  6 ++----
- tests/btrfs/203.out |  2 --
- tests/btrfs/226     |  3 +--
- tests/btrfs/226.out |  1 -
- tests/btrfs/276     |  2 +-
- tests/btrfs/276.out |  1 -
- tests/btrfs/280     |  2 +-
- tests/btrfs/280.out |  1 -
- tests/btrfs/281     |  3 +--
- tests/btrfs/281.out |  1 -
- tests/btrfs/283     |  3 +--
- tests/btrfs/283.out |  1 -
- tests/btrfs/287     |  6 ++----
- tests/btrfs/287.out |  2 --
- tests/btrfs/293     |  4 ++--
- tests/btrfs/293.out |  2 --
- tests/btrfs/300     |  2 +-
- tests/btrfs/300.out |  1 -
- tests/btrfs/302     |  3 +--
- tests/btrfs/302.out |  1 -
- tests/btrfs/314     |  3 +--
- tests/btrfs/314.out |  2 --
- 44 files changed, 37 insertions(+), 98 deletions(-)
-
-diff --git a/tests/btrfs/001 b/tests/btrfs/001
-index 6c2639990373..5d2707c7c09d 100755
---- a/tests/btrfs/001
-+++ b/tests/btrfs/001
-@@ -26,7 +26,7 @@ dd if=/dev/zero of=$SCRATCH_MNT/foo bs=1M count=1 &> /dev/null
- echo "List root dir"
- ls $SCRATCH_MNT
- echo "Creating snapshot of root dir"
--$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap | _filter_scratch
-+_btrfs subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap
- echo "List root dir after snapshot"
- ls $SCRATCH_MNT
- echo "List snapshot dir"
-diff --git a/tests/btrfs/001.out b/tests/btrfs/001.out
-index c782bde96091..9b493fab3891 100644
---- a/tests/btrfs/001.out
-+++ b/tests/btrfs/001.out
-@@ -3,7 +3,6 @@ Creating file foo in root dir
- List root dir
- foo
- Creating snapshot of root dir
--Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
- List root dir after snapshot
- foo
- snap
-diff --git a/tests/btrfs/152 b/tests/btrfs/152
-index 75f576c3cfca..63e69d104c68 100755
---- a/tests/btrfs/152
-+++ b/tests/btrfs/152
-@@ -31,10 +31,8 @@ mkdir $SCRATCH_MNT/subvol{1,2}/.snapshots
- touch $SCRATCH_MNT/subvol{1,2}/foo
- 
- # Create base snapshots and send them
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol1 \
--	$SCRATCH_MNT/subvol1/.snapshots/1 | _filter_scratch
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol2 \
--	$SCRATCH_MNT/subvol2/.snapshots/1 | _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT/subvol1 $SCRATCH_MNT/subvol1/.snapshots/1
-+_btrfs subvolume snapshot -r $SCRATCH_MNT/subvol2 $SCRATCH_MNT/subvol2/.snapshots/1
- for recv in recv1_1 recv1_2 recv2_1 recv2_2; do
- 	$BTRFS_UTIL_PROG send $SCRATCH_MNT/subvol1/.snapshots/1 2> /dev/null | \
- 		$BTRFS_UTIL_PROG receive $SCRATCH_MNT/${recv} | _filter_scratch
-@@ -45,8 +43,8 @@ for i in `seq 1 10`; do
- 	prev=$i
- 	curr=$((i+1))
- 
--	$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol1 \
--		$SCRATCH_MNT/subvol1/.snapshots/${curr} > /dev/null
-+	_btrfs subvolume snapshot -r $SCRATCH_MNT/subvol1 \
-+		$SCRATCH_MNT/subvol1/.snapshots/${curr}
- 	($BTRFS_UTIL_PROG send -p $SCRATCH_MNT/subvol1/.snapshots/${prev} \
- 		$SCRATCH_MNT/subvol1/.snapshots/${curr} 2> /dev/null | \
- 		$BTRFS_UTIL_PROG receive $SCRATCH_MNT/recv1_1) > /dev/null &
-@@ -54,8 +52,8 @@ for i in `seq 1 10`; do
- 		$SCRATCH_MNT/subvol1/.snapshots/${curr} 2> /dev/null | \
- 		$BTRFS_UTIL_PROG receive $SCRATCH_MNT/recv1_2) > /dev/null &
- 
--	$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol2 \
--		$SCRATCH_MNT/subvol2/.snapshots/${curr} > /dev/null
-+	_btrfs subvolume snapshot -r $SCRATCH_MNT/subvol2 \
-+		$SCRATCH_MNT/subvol2/.snapshots/${curr}
- 	($BTRFS_UTIL_PROG send -p $SCRATCH_MNT/subvol2/.snapshots/${prev} \
- 		$SCRATCH_MNT/subvol2/.snapshots/${curr} 2> /dev/null | \
- 		$BTRFS_UTIL_PROG receive $SCRATCH_MNT/recv2_1) > /dev/null &
-diff --git a/tests/btrfs/152.out b/tests/btrfs/152.out
-index a95bb5797162..33dd36e840e3 100644
---- a/tests/btrfs/152.out
-+++ b/tests/btrfs/152.out
-@@ -5,8 +5,6 @@ Create subvolume 'SCRATCH_MNT/recv1_1'
- Create subvolume 'SCRATCH_MNT/recv1_2'
- Create subvolume 'SCRATCH_MNT/recv2_1'
- Create subvolume 'SCRATCH_MNT/recv2_2'
--Create a readonly snapshot of 'SCRATCH_MNT/subvol1' in 'SCRATCH_MNT/subvol1/.snapshots/1'
--Create a readonly snapshot of 'SCRATCH_MNT/subvol2' in 'SCRATCH_MNT/subvol2/.snapshots/1'
- At subvol 1
- At subvol 1
- At subvol 1
-diff --git a/tests/btrfs/168 b/tests/btrfs/168
-index acc58b51ee39..994121d49bd0 100755
---- a/tests/btrfs/168
-+++ b/tests/btrfs/168
-@@ -73,8 +73,7 @@ $BTRFS_UTIL_PROG property set $SCRATCH_MNT/sv1 ro false
- 
- # Create a snapshot of the subvolume, to be used later as the parent snapshot
- # for an incremental send operation.
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/sv1 $SCRATCH_MNT/snap1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT/sv1 $SCRATCH_MNT/snap1
- 
- # First do a full send of this snapshot.
- $FSSUM_PROG -A -f -w $send_files_dir/snap1.fssum $SCRATCH_MNT/snap1
-@@ -87,8 +86,7 @@ $XFS_IO_PROG -c "pwrite -S 0x19 4K 8K" $SCRATCH_MNT/sv1/baz >>$seqres.full
- 
- # Create a second snapshot of the subvolume, to be used later as the send
- # snapshot of an incremental send operation.
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/sv1 $SCRATCH_MNT/snap2 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT/sv1 $SCRATCH_MNT/snap2
- 
- # Temporarily turn the second snapshot to read-write mode and then open a file
- # descriptor on its foo file.
-diff --git a/tests/btrfs/168.out b/tests/btrfs/168.out
-index 6cfce8cd666c..f7eca2d7c421 100644
---- a/tests/btrfs/168.out
-+++ b/tests/btrfs/168.out
-@@ -1,9 +1,7 @@
- QA output created by 168
- Create subvolume 'SCRATCH_MNT/sv1'
- At subvol SCRATCH_MNT/sv1
--Create a readonly snapshot of 'SCRATCH_MNT/sv1' in 'SCRATCH_MNT/snap1'
- At subvol SCRATCH_MNT/snap1
--Create a readonly snapshot of 'SCRATCH_MNT/sv1' in 'SCRATCH_MNT/snap2'
- At subvol SCRATCH_MNT/snap2
- At subvol sv1
- OK
-diff --git a/tests/btrfs/169 b/tests/btrfs/169
-index 009fdaee7c46..0570e7ce1aa6 100755
---- a/tests/btrfs/169
-+++ b/tests/btrfs/169
-@@ -43,8 +43,7 @@ $XFS_IO_PROG -f -c "falloc -k 0 4M" \
- 	     -c "pwrite -S 0xea 0 1M" \
- 	     $SCRATCH_MNT/foobar | _filter_xfs_io
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1 2>&1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1
- $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/snap1 2>&1 \
-     | _filter_scratch
- 
-@@ -53,8 +52,7 @@ $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/snap1 2>&1 \
- # extent we allocated earlier (3Mb < 4Mb).
- $XFS_IO_PROG -c "fpunch 1M 2M" $SCRATCH_MNT/foobar
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2 2>&1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2
- $BTRFS_UTIL_PROG send -p $SCRATCH_MNT/snap1 -f $send_files_dir/2.snap \
- 		 $SCRATCH_MNT/snap2 2>&1 | _filter_scratch
- 
-diff --git a/tests/btrfs/169.out b/tests/btrfs/169.out
-index ba77bf0adbe3..a6df713aceed 100644
---- a/tests/btrfs/169.out
-+++ b/tests/btrfs/169.out
-@@ -1,9 +1,7 @@
- QA output created by 169
- wrote 1048576/1048576 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap1'
- At subvol SCRATCH_MNT/snap1
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap2'
- At subvol SCRATCH_MNT/snap2
- File digest in the original filesystem:
- d31659e82e87798acd4669a1e0a19d4f  SCRATCH_MNT/snap2/foobar
-diff --git a/tests/btrfs/170 b/tests/btrfs/170
-index ab105d36fb96..4b4569e9c3cd 100755
---- a/tests/btrfs/170
-+++ b/tests/btrfs/170
-@@ -45,8 +45,7 @@ echo "File digest after write:"
- md5sum $SCRATCH_MNT/foobar | _filter_scratch
- 
- # Create a snapshot of the subvolume where our file is.
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap 2>&1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap
- 
- # Cleanly unmount the filesystem.
- _scratch_unmount
-diff --git a/tests/btrfs/170.out b/tests/btrfs/170.out
-index 4c5fd87a8b17..8ad959f31ba2 100644
---- a/tests/btrfs/170.out
-+++ b/tests/btrfs/170.out
-@@ -3,6 +3,5 @@ wrote 131072/131072 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- File digest after write:
- 85054e9e74bc3ae186d693890106b71f  SCRATCH_MNT/foobar
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
- File digest after mounting the filesystem again:
- 85054e9e74bc3ae186d693890106b71f  SCRATCH_MNT/foobar
-diff --git a/tests/btrfs/187 b/tests/btrfs/187
-index d3cf05a1bd92..0a6f92b3eb3c 100755
---- a/tests/btrfs/187
-+++ b/tests/btrfs/187
-@@ -151,8 +151,7 @@ for ((n = 0; n < 4; n++)); do
- done
- wait ${create_pids[@]}
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1
- 
- # Add some more files, so that that are substantial differences between the
- # two test snapshots used for an incremental send later.
-@@ -183,8 +182,7 @@ for ((n = 0; n < 4; n++)); do
- done
- wait ${setxattr_pids[@]}
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2
- 
- full_send_loop 5 &
- full_send_pid=$!
-diff --git a/tests/btrfs/187.out b/tests/btrfs/187.out
-index ab522cfe7e8c..8e65c281e8e7 100644
---- a/tests/btrfs/187.out
-+++ b/tests/btrfs/187.out
-@@ -1,3 +1 @@
- QA output created by 187
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap1'
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap2'
-diff --git a/tests/btrfs/188 b/tests/btrfs/188
-index fcaf84b15053..e09cf1ecfda8 100755
---- a/tests/btrfs/188
-+++ b/tests/btrfs/188
-@@ -44,8 +44,7 @@ _scratch_mount
- $XFS_IO_PROG -f -c "pwrite -S 0xab 0 500K" $SCRATCH_MNT/foobar | _filter_xfs_io
- $XFS_IO_PROG -c "falloc -k 1200K 800K" $SCRATCH_MNT/foobar
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/base 2>&1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/base
- 
- $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/base 2>&1 \
- 	| _filter_scratch
-@@ -53,8 +52,7 @@ $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/base 2>&1 \
- # Now punch a hole that drops all the extents within the file's size.
- $XFS_IO_PROG -c "fpunch 0 500K" $SCRATCH_MNT/foobar
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/incr 2>&1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/incr
- 
- $BTRFS_UTIL_PROG send -p $SCRATCH_MNT/base -f $send_files_dir/2.snap \
- 	$SCRATCH_MNT/incr 2>&1 | _filter_scratch
-diff --git a/tests/btrfs/188.out b/tests/btrfs/188.out
-index 260988e60084..99eb3133ca0a 100644
---- a/tests/btrfs/188.out
-+++ b/tests/btrfs/188.out
-@@ -1,9 +1,7 @@
- QA output created by 188
- wrote 512000/512000 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/base'
- At subvol SCRATCH_MNT/base
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/incr'
- At subvol SCRATCH_MNT/incr
- File digest in the original filesystem:
- 816df6f64deba63b029ca19d880ee10a  SCRATCH_MNT/incr/foobar
-diff --git a/tests/btrfs/189 b/tests/btrfs/189
-index ec6e56fa0020..eda280ab82a9 100755
---- a/tests/btrfs/189
-+++ b/tests/btrfs/189
-@@ -45,8 +45,7 @@ $XFS_IO_PROG -f -c "pwrite -S 0xc7 0 2M" $SCRATCH_MNT/bar | _filter_xfs_io
- $XFS_IO_PROG -f -c "pwrite -S 0x4d 0 2M" $SCRATCH_MNT/baz | _filter_xfs_io
- $XFS_IO_PROG -f -c "pwrite -S 0xe2 0 2M" $SCRATCH_MNT/zoo | _filter_xfs_io
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/base 2>&1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/base
- 
- $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/base 2>&1 \
- 	| _filter_scratch
-@@ -70,8 +69,7 @@ $XFS_IO_PROG -c "reflink $SCRATCH_MNT/bar 1600K 0 128K" $SCRATCH_MNT/zoo \
- # operations.
- $XFS_IO_PROG -c "truncate 710K" $SCRATCH_MNT/bar
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/incr 2>&1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/incr
- 
- $BTRFS_UTIL_PROG send -p $SCRATCH_MNT/base -f $send_files_dir/2.snap \
- 	$SCRATCH_MNT/incr 2>&1 | _filter_scratch
-diff --git a/tests/btrfs/189.out b/tests/btrfs/189.out
-index 79c70b03a1ba..b4984d37cfab 100644
---- a/tests/btrfs/189.out
-+++ b/tests/btrfs/189.out
-@@ -7,13 +7,11 @@ wrote 2097152/2097152 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- wrote 2097152/2097152 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/base'
- At subvol SCRATCH_MNT/base
- linked 131072/131072 bytes at offset 655360
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- linked 131072/131072 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/incr'
- At subvol SCRATCH_MNT/incr
- At subvol base
- At snapshot incr
-diff --git a/tests/btrfs/191 b/tests/btrfs/191
-index 3c565d0ad209..d15b2313b9c2 100755
---- a/tests/btrfs/191
-+++ b/tests/btrfs/191
-@@ -43,8 +43,7 @@ $XFS_IO_PROG -f -s -c "pwrite -S 0xb8 -b 64K 0 512K" $SCRATCH_MNT/foo \
- $XFS_IO_PROG -c "pwrite -S 0xb8 512K 512K" $SCRATCH_MNT/foo | _filter_xfs_io
- 
- # Create the base snapshot and the parent send stream from it.
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/mysnap1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/mysnap1
- 
- $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/mysnap1 2>&1 \
- 	| _filter_scratch
-@@ -54,8 +53,7 @@ $XFS_IO_PROG -f -c "pwrite -S 0xb8 0 1M" $SCRATCH_MNT/bar | _filter_xfs_io
- 
- # Create the second snapshot, used for the incremental send, before doing the
- # file deduplication.
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/mysnap2 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/mysnap2
- 
- # Now before creating the incremental send stream:
- #
-diff --git a/tests/btrfs/191.out b/tests/btrfs/191.out
-index 4269803cce1e..471c05da4b03 100644
---- a/tests/btrfs/191.out
-+++ b/tests/btrfs/191.out
-@@ -3,11 +3,9 @@ wrote 524288/524288 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- wrote 524288/524288 bytes at offset 524288
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/mysnap1'
- At subvol SCRATCH_MNT/mysnap1
- wrote 1048576/1048576 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/mysnap2'
- deduped 524288/524288 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- deduped 524288/524288 bytes at offset 524288
-diff --git a/tests/btrfs/200 b/tests/btrfs/200
-index 5ce3775f2222..b32f3139e307 100755
---- a/tests/btrfs/200
-+++ b/tests/btrfs/200
-@@ -51,8 +51,7 @@ $XFS_IO_PROG -c "reflink $SCRATCH_MNT/foo 0 64K 64K" $SCRATCH_MNT/foo \
- $XFS_IO_PROG -f -c "pwrite -S 0xc7 -b 64K 0 64K" $SCRATCH_MNT/bar \
- 	| _filter_xfs_io
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/base 2>&1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/base
- 
- $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/base 2>&1 \
- 	| _filter_scratch
-@@ -63,8 +62,7 @@ $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/base 2>&1 \
- $XFS_IO_PROG -c "reflink $SCRATCH_MNT/bar 0 64K 64K" $SCRATCH_MNT/bar \
- 	| _filter_xfs_io
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/incr 2>&1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/incr
- 
- $BTRFS_UTIL_PROG send -p $SCRATCH_MNT/base -f $send_files_dir/2.snap \
- 	$SCRATCH_MNT/incr 2>&1 | _filter_scratch
-diff --git a/tests/btrfs/200.out b/tests/btrfs/200.out
-index 3eec567e97fe..306d9b24a16c 100644
---- a/tests/btrfs/200.out
-+++ b/tests/btrfs/200.out
-@@ -5,11 +5,9 @@ linked 65536/65536 bytes at offset 65536
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- wrote 65536/65536 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/base'
- At subvol SCRATCH_MNT/base
- linked 65536/65536 bytes at offset 65536
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/incr'
- At subvol SCRATCH_MNT/incr
- At subvol base
- At snapshot incr
-diff --git a/tests/btrfs/202 b/tests/btrfs/202
-index 5f0429f18bf9..d6077853af22 100755
---- a/tests/btrfs/202
-+++ b/tests/btrfs/202
-@@ -27,8 +27,7 @@ _scratch_mount
- 
- $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a | _filter_scratch
- $BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/a/b | _filter_scratch
--$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/a $SCRATCH_MNT/c \
--	| _filter_scratch
-+_btrfs subvolume snapshot $SCRATCH_MNT/a $SCRATCH_MNT/c
- 
- # Need the dummy entry created so that we get the invalid removal when we rmdir
- ls $SCRATCH_MNT/c/b
-diff --git a/tests/btrfs/202.out b/tests/btrfs/202.out
-index 7f33d49f889c..28d52e3f27c7 100644
---- a/tests/btrfs/202.out
-+++ b/tests/btrfs/202.out
-@@ -1,4 +1,3 @@
- QA output created by 202
- Create subvolume 'SCRATCH_MNT/a'
- Create subvolume 'SCRATCH_MNT/a/b'
--Create a snapshot of 'SCRATCH_MNT/a' in 'SCRATCH_MNT/c'
-diff --git a/tests/btrfs/203 b/tests/btrfs/203
-index e506118e2cd2..11a34d20ae31 100755
---- a/tests/btrfs/203
-+++ b/tests/btrfs/203
-@@ -43,8 +43,7 @@ _scratch_mount
- # file in the parent snapshot.
- $XFS_IO_PROG -f -c "pwrite -S 0xf1 0 64K" $SCRATCH_MNT/foobar | _filter_xfs_io
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/base 2>&1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/base
- 
- $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/base 2>&1 \
- 	| _filter_scratch
-@@ -69,8 +68,7 @@ $XFS_IO_PROG -c "pwrite -S 0xab 512K 64K" \
- 	     -c "reflink $SCRATCH_MNT/foobar 448K 192K 192K" \
- 	     $SCRATCH_MNT/foobar | _filter_xfs_io
- 
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/incr 2>&1 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/incr 2>&1
- 
- $BTRFS_UTIL_PROG send -p $SCRATCH_MNT/base -f $send_files_dir/2.snap \
- 		 $SCRATCH_MNT/incr 2>&1 | _filter_scratch
-diff --git a/tests/btrfs/203.out b/tests/btrfs/203.out
-index 58739a98cd1b..67ec1bd7c13d 100644
---- a/tests/btrfs/203.out
-+++ b/tests/btrfs/203.out
-@@ -1,7 +1,6 @@
- QA output created by 203
- wrote 65536/65536 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/base'
- At subvol SCRATCH_MNT/base
- wrote 65536/65536 bytes at offset 524288
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-@@ -15,7 +14,6 @@ wrote 65536/65536 bytes at offset 786432
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- linked 196608/196608 bytes at offset 196608
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/incr'
- At subvol SCRATCH_MNT/incr
- File foobar digest in the original filesystem:
- 2b76b23b62fdbbbcae1ee37eec84fd7d
-diff --git a/tests/btrfs/226 b/tests/btrfs/226
-index 7034fcc7b2a5..a2bfe9770167 100755
---- a/tests/btrfs/226
-+++ b/tests/btrfs/226
-@@ -50,8 +50,7 @@ $XFS_IO_PROG -s -c "pwrite -S 0xab 0 64K" \
- 	     -c "pwrite -S 0xcd 64K 64K" \
- 	     $SCRATCH_MNT/f2 | _filter_xfs_io
- 
--$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap \
--    | _filter_scratch
-+_btrfs subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap
- 
- # Write into the range of the first extent so that that range no longer has a
- # shared extent.
-diff --git a/tests/btrfs/226.out b/tests/btrfs/226.out
-index c63982b0ba4a..815217ac5129 100644
---- a/tests/btrfs/226.out
-+++ b/tests/btrfs/226.out
-@@ -13,7 +13,6 @@ wrote 65536/65536 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- wrote 65536/65536 bytes at offset 65536
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
- wrote 65536/65536 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- pwrite: Resource temporarily unavailable
-diff --git a/tests/btrfs/276 b/tests/btrfs/276
-index f15f20824350..70dadd93fdd2 100755
---- a/tests/btrfs/276
-+++ b/tests/btrfs/276
-@@ -105,7 +105,7 @@ sync
- echo "Number of non-shared extents in the whole file: $(count_not_shared_extents)"
- 
- # Creating a snapshot.
--$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap | _filter_scratch
-+_btrfs subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap
- 
- # We have a snapshot, so now all extents should be reported as shared.
- echo "Number of shared extents in the whole file: $(count_shared_extents)"
-diff --git a/tests/btrfs/276.out b/tests/btrfs/276.out
-index 352e06b4d4b2..e30ca1886adf 100644
---- a/tests/btrfs/276.out
-+++ b/tests/btrfs/276.out
-@@ -1,6 +1,5 @@
- QA output created by 276
- Number of non-shared extents in the whole file: 2000
--Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
- Number of shared extents in the whole file: 2000
- wrote 65536/65536 bytes at offset 524288
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-diff --git a/tests/btrfs/280 b/tests/btrfs/280
-index fc049adb0b19..d4f613cedc2d 100755
---- a/tests/btrfs/280
-+++ b/tests/btrfs/280
-@@ -37,7 +37,7 @@ _scratch_mount -o compress
- $XFS_IO_PROG -f -c "pwrite -b 1M 0 128M" $SCRATCH_MNT/foo | _filter_xfs_io
- 
- # Create a RW snapshot of the default subvolume.
--$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap | _filter_scratch
-+_btrfs subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap
- 
- echo
- echo "File foo fiemap before COWing extent:"
-diff --git a/tests/btrfs/280.out b/tests/btrfs/280.out
-index 5371f3b01551..c5ecf6882745 100644
---- a/tests/btrfs/280.out
-+++ b/tests/btrfs/280.out
-@@ -1,7 +1,6 @@
- QA output created by 280
- wrote 134217728/134217728 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
- 
- File foo fiemap before COWing extent:
- 
-diff --git a/tests/btrfs/281 b/tests/btrfs/281
-index ddc7d9e8b06d..290ccaca6235 100755
---- a/tests/btrfs/281
-+++ b/tests/btrfs/281
-@@ -52,8 +52,7 @@ $XFS_IO_PROG -c "reflink $SCRATCH_MNT/bar 0 0 64K" $SCRATCH_MNT/foo \
- 	| _filter_xfs_io
- 
- echo "Creating snapshot and a send stream for it..."
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap
- $BTRFS_UTIL_PROG send --compressed-data -f $send_stream $SCRATCH_MNT/snap 2>&1 \
- 	| _filter_scratch
- 
-diff --git a/tests/btrfs/281.out b/tests/btrfs/281.out
-index 2585e3e567db..0b775689d8c8 100644
---- a/tests/btrfs/281.out
-+++ b/tests/btrfs/281.out
-@@ -6,7 +6,6 @@ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- linked 65536/65536 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- Creating snapshot and a send stream for it...
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
- At subvol SCRATCH_MNT/snap
- Creating a new filesystem to receive the send stream...
- At subvol snap
-diff --git a/tests/btrfs/283 b/tests/btrfs/283
-index 118df08b8958..8fa282ee4145 100755
---- a/tests/btrfs/283
-+++ b/tests/btrfs/283
-@@ -57,8 +57,7 @@ _cp_reflink $SCRATCH_MNT/foo $SCRATCH_MNT/baz
- $XFS_IO_PROG -c "pwrite -S 0xcd -b 64K 64K 64K" $SCRATCH_MNT/foo | _filter_xfs_io
- 
- echo "Creating snapshot and a send stream for it..."
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap
- 
- $BTRFS_UTIL_PROG send -f $send_stream $SCRATCH_MNT/snap 2>&1 | _filter_scratch
- 
-diff --git a/tests/btrfs/283.out b/tests/btrfs/283.out
-index 286dae332eff..7c7d9f730bd4 100644
---- a/tests/btrfs/283.out
-+++ b/tests/btrfs/283.out
-@@ -4,7 +4,6 @@ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- wrote 65536/65536 bytes at offset 65536
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- Creating snapshot and a send stream for it...
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap'
- At subvol SCRATCH_MNT/snap
- Creating a new filesystem to receive the send stream...
- At subvol snap
-diff --git a/tests/btrfs/287 b/tests/btrfs/287
-index 64e6ef35250c..24d8e66a7a42 100755
---- a/tests/btrfs/287
-+++ b/tests/btrfs/287
-@@ -111,10 +111,8 @@ echo "resolve first extent +3M offset with ignore offset option:"
- query_logical_ino -o $bytenr
- 
- # Now create two snapshots and then do some queries.
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1 \
--	| _filter_scratch
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2 \
--	| _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2
- 
- snap1_id=$(_btrfs_get_subvolid $SCRATCH_MNT snap1)
- snap2_id=$(_btrfs_get_subvolid $SCRATCH_MNT snap2)
-diff --git a/tests/btrfs/287.out b/tests/btrfs/287.out
-index 30eac8fa444c..4814594fc224 100644
---- a/tests/btrfs/287.out
-+++ b/tests/btrfs/287.out
-@@ -41,8 +41,6 @@ resolve first extent +3M offset with ignore offset option:
- inode 257 offset 16777216 root 5
- inode 257 offset 8388608 root 5
- inode 257 offset 2097152 root 5
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap1'
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap2'
- resolve first extent:
- inode 257 offset 16777216 snap2
- inode 257 offset 8388608 snap2
-diff --git a/tests/btrfs/293 b/tests/btrfs/293
-index 06f96dc414b0..09139f195d12 100755
---- a/tests/btrfs/293
-+++ b/tests/btrfs/293
-@@ -32,9 +32,9 @@ swap_file="$SCRATCH_MNT/swapfile"
- _format_swapfile $swap_file $(($(_get_page_size) * 64)) >> $seqres.full
- 
- echo "Creating first snapshot..."
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1 | _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1
- echo "Creating second snapshot..."
--$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap2 | _filter_scratch
-+_btrfs subvolume snapshot $SCRATCH_MNT $SCRATCH_MNT/snap2
- 
- echo "Activating swap file... (should fail due to snapshots)"
- _swapon_file $swap_file 2>&1 | _filter_scratch
-diff --git a/tests/btrfs/293.out b/tests/btrfs/293.out
-index fd04ac9139b8..5da7accc9535 100644
---- a/tests/btrfs/293.out
-+++ b/tests/btrfs/293.out
-@@ -1,8 +1,6 @@
- QA output created by 293
- Creating first snapshot...
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap1'
- Creating second snapshot...
--Create a snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap2'
- Activating swap file... (should fail due to snapshots)
- swapon: SCRATCH_MNT/swapfile: swapon failed: Invalid argument
- Deleting first snapshot...
-diff --git a/tests/btrfs/300 b/tests/btrfs/300
-index 8a0eaecf87f7..4ea22a01c8ec 100755
---- a/tests/btrfs/300
-+++ b/tests/btrfs/300
-@@ -43,7 +43,7 @@ $BTRFS_UTIL_PROG subvolume create subvol;
- touch subvol/{1,2,3};
- $BTRFS_UTIL_PROG subvolume create subvol/subsubvol;
- touch subvol/subsubvol/{4,5,6};
--$BTRFS_UTIL_PROG subvolume snapshot subvol snapshot;
-+$BTRFS_UTIL_PROG subvolume snapshot subvol snapshot > /dev/null;
- "
- 
- find $test_dir/. -printf "%M %u %g ./%P\n"
-diff --git a/tests/btrfs/300.out b/tests/btrfs/300.out
-index 6e94447e87ac..8611f606aaf7 100644
---- a/tests/btrfs/300.out
-+++ b/tests/btrfs/300.out
-@@ -1,7 +1,6 @@
- QA output created by 300
- Create subvolume './subvol'
- Create subvolume 'subvol/subsubvol'
--Create a snapshot of 'subvol' in './snapshot'
- drwxr-xr-x fsgqa fsgqa ./
- drwxr-xr-x fsgqa fsgqa ./subvol
- -rw-r--r-- fsgqa fsgqa ./subvol/1
-diff --git a/tests/btrfs/302 b/tests/btrfs/302
-index f3e6044b5251..3b52892d56ee 100755
---- a/tests/btrfs/302
-+++ b/tests/btrfs/302
-@@ -45,8 +45,7 @@ $FSSUM_PROG -A -f -w $fssum_file $SCRATCH_MNT/subvol
- 
- # Now create a snapshot of the subvolume and make it accessible from within the
- # subvolume.
--$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT/subvol \
--		 $SCRATCH_MNT/subvol/snap | _filter_scratch
-+_btrfs subvolume snapshot -r $SCRATCH_MNT/subvol $SCRATCH_MNT/subvol/snap
- 
- # Now unmount and mount again the fs. We want to verify we are able to read all
- # metadata for the snapshot from disk (no IO failures, etc).
-diff --git a/tests/btrfs/302.out b/tests/btrfs/302.out
-index 8770aefc99c8..e89d12977c62 100644
---- a/tests/btrfs/302.out
-+++ b/tests/btrfs/302.out
-@@ -1,4 +1,3 @@
- QA output created by 302
- Create subvolume 'SCRATCH_MNT/subvol'
--Create a readonly snapshot of 'SCRATCH_MNT/subvol' in 'SCRATCH_MNT/subvol/snap'
- OK
-diff --git a/tests/btrfs/314 b/tests/btrfs/314
-index 887cb69eb79c..da594d396ca6 100755
---- a/tests/btrfs/314
-+++ b/tests/btrfs/314
-@@ -42,8 +42,7 @@ send_receive_tempfsid()
- 	_mount ${SCRATCH_DEV_NAME[1]} ${tempfsid_mnt}
- 
- 	$XFS_IO_PROG -fc 'pwrite -S 0x61 0 9000' ${src}/foo | _filter_xfs_io
--	$BTRFS_UTIL_PROG subvolume snapshot -r ${src} ${src}/snap1 | \
--						_filter_testdir_and_scratch
-+	_btrfs subvolume snapshot -r ${src} ${src}/snap1
- 
- 	echo Send ${src} | _filter_testdir_and_scratch
- 	$BTRFS_UTIL_PROG send -f ${sendfile} ${src}/snap1 2>&1 | \
-diff --git a/tests/btrfs/314.out b/tests/btrfs/314.out
-index 21963899c2b2..8a311671b8f9 100644
---- a/tests/btrfs/314.out
-+++ b/tests/btrfs/314.out
-@@ -3,7 +3,6 @@ QA output created by 314
- From non-tempfsid SCRATCH_MNT to tempfsid TEST_DIR/314/tempfsid_mnt
- wrote 9000/9000 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap1'
- Send SCRATCH_MNT
- At subvol SCRATCH_MNT/snap1
- Receive TEST_DIR/314/tempfsid_mnt
-@@ -14,7 +13,6 @@ Recv:	42d69d1a6d333a7ebdf64792a555e392  TEST_DIR/314/tempfsid_mnt/snap1/foo
- From tempfsid TEST_DIR/314/tempfsid_mnt to non-tempfsid SCRATCH_MNT
- wrote 9000/9000 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--Create a readonly snapshot of 'TEST_DIR/314/tempfsid_mnt' in 'TEST_DIR/314/tempfsid_mnt/snap1'
- Send TEST_DIR/314/tempfsid_mnt
- At subvol TEST_DIR/314/tempfsid_mnt/snap1
- Receive SCRATCH_MNT
--- 
-2.44.0
+Thanks,
+John
 
 
