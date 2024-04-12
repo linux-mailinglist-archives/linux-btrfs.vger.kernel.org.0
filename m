@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-4192-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4193-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 970F88A31C4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 17:03:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9D858A31C5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 17:04:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25FA1B26063
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 15:03:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70EBA1F22B1E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 15:04:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE8A01482F3;
-	Fri, 12 Apr 2024 15:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D3FD1487CD;
+	Fri, 12 Apr 2024 15:03:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e/dLZZdh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n5nI3+jp"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28CF7148301
-	for <linux-btrfs@vger.kernel.org>; Fri, 12 Apr 2024 15:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B91F148301
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Apr 2024 15:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712934207; cv=none; b=UVr8omWQtOMAFi8+cT/3LiUrxzHnscHsCybEjT2JxmK5V94IUwNtrzX+mhOcfknZdnjxZy3XrmsXTheH9fEXiwNq15DNSuikqZ7MyA2Yo+D4r0J95X3D3i8phrePIy2fN2JtVbrSPXIzdJASZx6Cacl4DfchnTK6YivxyDR685M=
+	t=1712934208; cv=none; b=MzzGHr3JgNGDKiUC1tyfWyjKZn5FVWuAZrAovH5txa5R0POiuKT8qJufhkicbpZm3zCTzP55/sKJSaTxvb01P4iWd+Um25qTywh0uqWZdMAkee/3VDINewmQkd93yAvJrKLRmoy4Be6Y0w8c2Bwg9jd2db9tRo1hdMm9jb9q6xE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712934207; c=relaxed/simple;
-	bh=L1t3oV64TAPzIEmjZCLUcCiGTWRRY93I3arHq2o4Co4=;
+	s=arc-20240116; t=1712934208; c=relaxed/simple;
+	bh=/nzaOUhmq7/6PUwsnScjWmwj23J7xSX9eYlSBzu66Fg=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lwqJkZMpiHe20sWO2yLuH1fFm9A7wAyUda8uCFJCoHpVeoYmCqDXGgbL4fUGXxrFkwhpe125YpLldoFOSKDO+l7BRgYVEEBMd2q4X2Vf4WSaJkO8qw/3tG6mc5hoDA67HGAmz4YOSs+4RxYaJ2ZiniVN+daiTfxeE0eh8TVI1mg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e/dLZZdh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA4EDC3277B
-	for <linux-btrfs@vger.kernel.org>; Fri, 12 Apr 2024 15:03:26 +0000 (UTC)
+	 MIME-Version; b=OOJzDS9+aQ37XL78iBc0BvKycdfeQ1Xx02kr1uxK2Fk8817vC9fcuG9fu4Fnk4/gyb1vxNYy9uiLA/rZcHZsOXoLnxe03ImoylmZRrGPUon/qCt4UlnF9atTT0GLpPaSh876PUisbUMrycvhU0AKBO08L+pXEvGgGBS4LnldBwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n5nI3+jp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AC3FC2BBFC
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Apr 2024 15:03:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712934207;
-	bh=L1t3oV64TAPzIEmjZCLUcCiGTWRRY93I3arHq2o4Co4=;
+	s=k20201202; t=1712934208;
+	bh=/nzaOUhmq7/6PUwsnScjWmwj23J7xSX9eYlSBzu66Fg=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=e/dLZZdhzYtFh36BUgwEirD3bjKQo016+Pf5Rp5cTsNndIoREtq5y38PjxfahLUmg
-	 9ixAWX+FnV+cdrO+zu4p1HJg0BM48O3tUwRNgJSQQZLLs6lORMQgKcTGamu8rQAHaJ
-	 58ytyLwMVMn5ARG1/DGeM09nDMuTaTpRYHW5RRHvNZCVWRlk035w957p2DagSvtyln
-	 nRVMg1WhZWLpeM0VvaPophqu7dJEkr/rO/3udlK/LeBpd1b72GmfK2IBZKZDKeIydJ
-	 tDqPOks+wptapaWYygsUkJOBC+T3P5nguyT86KUt+wjBe83ZwTo2N6xjLLqtn3ElWy
-	 COWZgQbj/aMZg==
+	b=n5nI3+jppxJ47hoxI6f7WtHCc7PgLHpM/ZX8ZNVVyG1EpJA1/bWvWI1lUqKRJDWsx
+	 k4lhg0ucoeilfFU4T9WJJWCyuPpYhadtAytKWVRPBE3LtjsXu70ucLW2pK/3wP/b7P
+	 +KH28ADiqUE0tMwwHutSbYrvCTJYCMd6D+M8r2cwhUoarHKFx6L+72xCNryfFSYf+A
+	 Be1fj1cVNSBD5JyXmSOvFYNMG6S09tFxzJzEqS8F9HNe4OB0Ut1xg0lAls8W5e/1L7
+	 +uzw/6x3zp4Km4S/cTTMH5lEVawcfSnAapWoLS73O6gr3V7gvl+3MeyjJUMUxumB0R
+	 Ow8rjXEQSiMcA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/6] btrfs: remove search_commit parameter from btrfs_lookup_csums_list()
-Date: Fri, 12 Apr 2024 16:03:16 +0100
-Message-Id: <8f31c8dcf6d09d42079b9bb4164a87450d2f0adf.1712933005.git.fdmanana@suse.com>
+Subject: [PATCH 3/6] btrfs: remove use of a temporary list at btrfs_lookup_csums_list()
+Date: Fri, 12 Apr 2024 16:03:17 +0100
+Message-Id: <5ba3b6e48c1e7433b1e38ae315713d7b31813730.1712933005.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1712933003.git.fdmanana@suse.com>
 References: <cover.1712933003.git.fdmanana@suse.com>
@@ -59,123 +59,49 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-All the callers of btrfs_lookup_csums_list() pass a value of 0 as the
-"search_commit" parameter. So remove it and make the function behave as
-to always search from the regular root.
+There's no need to use a temporary list to add the checksums, we can just
+add them to input list and then on error delete and free any checksums
+that were added. So simplify and remove the temporary list.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/file-item.c  | 10 +---------
- fs/btrfs/file-item.h  |  3 +--
- fs/btrfs/inode.c      |  2 +-
- fs/btrfs/relocation.c |  2 +-
- fs/btrfs/tree-log.c   |  6 +++---
- 5 files changed, 7 insertions(+), 16 deletions(-)
+ fs/btrfs/file-item.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 909438540119..0712a0aa2dd0 100644
+index 0712a0aa2dd0..c2799325706f 100644
 --- a/fs/btrfs/file-item.c
 +++ b/fs/btrfs/file-item.c
-@@ -457,15 +457,12 @@ blk_status_t btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
-  * @start:		Logical address of target checksum range.
-  * @end:		End offset (inclusive) of the target checksum range.
-  * @list:		List for adding each checksum that was found.
-- * @search_commit:	Indicate if the commit root of the @root should be used
-- *			for the search.
-  * @nowait:		Indicate if the search must be non-blocking or not.
-  *
-  * Return < 0 on error and 0 on success.
-  */
- int btrfs_lookup_csums_list(struct btrfs_root *root, u64 start, u64 end,
--			    struct list_head *list, int search_commit,
--			    bool nowait)
-+			    struct list_head *list, bool nowait)
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_key key;
-@@ -484,11 +481,6 @@ int btrfs_lookup_csums_list(struct btrfs_root *root, u64 start, u64 end,
- 		return -ENOMEM;
+@@ -470,7 +470,6 @@ int btrfs_lookup_csums_list(struct btrfs_root *root, u64 start, u64 end,
+ 	struct extent_buffer *leaf;
+ 	struct btrfs_ordered_sum *sums;
+ 	struct btrfs_csum_item *item;
+-	LIST_HEAD(tmplist);
+ 	int ret;
  
- 	path->nowait = nowait;
--	if (search_commit) {
--		path->skip_locking = 1;
--		path->reada = READA_FORWARD;
--		path->search_commit_root = 1;
--	}
+ 	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+@@ -572,18 +571,17 @@ int btrfs_lookup_csums_list(struct btrfs_root *root, u64 start, u64 end,
+ 					   bytes_to_csum_size(fs_info, size));
  
- 	key.objectid = BTRFS_EXTENT_CSUM_OBJECTID;
- 	key.offset = start;
-diff --git a/fs/btrfs/file-item.h b/fs/btrfs/file-item.h
-index 15c05cc0fce6..557dc43d7142 100644
---- a/fs/btrfs/file-item.h
-+++ b/fs/btrfs/file-item.h
-@@ -68,8 +68,7 @@ int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
- 			     struct list_head *list, int search_commit,
- 			     bool nowait);
- int btrfs_lookup_csums_list(struct btrfs_root *root, u64 start, u64 end,
--			    struct list_head *list, int search_commit,
--			    bool nowait);
-+			    struct list_head *list, bool nowait);
- int btrfs_lookup_csums_bitmap(struct btrfs_root *root, struct btrfs_path *path,
- 			      u64 start, u64 end, u8 *csum_buf,
- 			      unsigned long *csum_bitmap);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2dae4e975e80..4e67470d847a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1746,7 +1746,7 @@ static noinline int csum_exist_in_range(struct btrfs_fs_info *fs_info,
- 	LIST_HEAD(list);
+ 			start += size;
+-			list_add_tail(&sums->list, &tmplist);
++			list_add_tail(&sums->list, list);
+ 		}
+ 		path->slots[0]++;
+ 	}
+ 	ret = 0;
+ fail:
+-	while (ret < 0 && !list_empty(&tmplist)) {
+-		sums = list_entry(tmplist.next, struct btrfs_ordered_sum, list);
++	while (ret < 0 && !list_empty(list)) {
++		sums = list_entry(list->next, struct btrfs_ordered_sum, list);
+ 		list_del(&sums->list);
+ 		kfree(sums);
+ 	}
+-	list_splice_tail(&tmplist, list);
  
- 	ret = btrfs_lookup_csums_list(csum_root, bytenr, bytenr + num_bytes - 1,
--				      &list, 0, nowait);
-+				      &list, nowait);
- 	if (ret == 0 && list_empty(&list))
- 		return 0;
- 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 5b19b41f64a2..4e60364b5289 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -4391,7 +4391,7 @@ int btrfs_reloc_clone_csums(struct btrfs_ordered_extent *ordered)
- 
- 	ret = btrfs_lookup_csums_list(csum_root, disk_bytenr,
- 				      disk_bytenr + ordered->num_bytes - 1,
--				      &list, 0, false);
-+				      &list, false);
- 	if (ret)
- 		return ret;
- 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 4a4fca841510..e9ad2971fc7c 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -797,7 +797,7 @@ static noinline int replay_one_extent(struct btrfs_trans_handle *trans,
- 
- 			ret = btrfs_lookup_csums_list(root->log_root,
- 						csum_start, csum_end - 1,
--						&ordered_sums, 0, false);
-+						&ordered_sums, false);
- 			if (ret)
- 				goto out;
- 			/*
-@@ -4460,7 +4460,7 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
- 		disk_bytenr += extent_offset;
- 		ret = btrfs_lookup_csums_list(csum_root, disk_bytenr,
- 					      disk_bytenr + extent_num_bytes - 1,
--					      &ordered_sums, 0, false);
-+					      &ordered_sums, false);
- 		if (ret)
- 			goto out;
- 
-@@ -4655,7 +4655,7 @@ static int log_extent_csums(struct btrfs_trans_handle *trans,
- 	csum_root = btrfs_csum_root(trans->fs_info, em->block_start);
- 	ret = btrfs_lookup_csums_list(csum_root, em->block_start + csum_offset,
- 				      em->block_start + csum_offset +
--				      csum_len - 1, &ordered_sums, 0, false);
-+				      csum_len - 1, &ordered_sums, false);
- 	if (ret)
- 		return ret;
- 
+ 	btrfs_free_path(path);
+ 	return ret;
 -- 
 2.43.0
 
