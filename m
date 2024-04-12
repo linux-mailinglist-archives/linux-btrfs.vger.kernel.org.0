@@ -1,205 +1,353 @@
-Return-Path: <linux-btrfs+bounces-4188-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4189-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7474F8A3036
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 16:14:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3E068A304F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 16:17:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02583285D23
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 14:14:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EEB21F21BAE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Apr 2024 14:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2288614D;
-	Fri, 12 Apr 2024 14:14:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E08D86120;
+	Fri, 12 Apr 2024 14:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="B0UAcoNQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Po1O5KRC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9065E219FF
-	for <linux-btrfs@vger.kernel.org>; Fri, 12 Apr 2024 14:14:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712931278; cv=fail; b=GNvdhVV6kbJ14SCaXoNlLCFUbqVHTAnic/JwZiRPEGieI2zXSRUt0U2mDSbY4y6FHI6YFBWyMMbBslxeEE+KeY1kf3lOLE1mP2TxPorIQE+m4juszJfISTaIdQ/kehVOyPwjZwq3C+mVyQnQChZoPEt257fUnayeCC1p8cNe6Zk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712931278; c=relaxed/simple;
-	bh=bwYcHk66PSwfdYPBFKbGoeX09xZbqcuxmcGSU4rsWjI=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=H5ubbmvOsUzYyhy6NZ8dprrxWh9n8/mQbFRzYOEHj5OurMBrdv5EKc+oraEto/ugyywo+W18g+K5k27vaQ2kFj37GWgrTIiNJ4i8SFgG9JH0ox5Wze+YtLZ/iD/QqaxFD7duaH/sdoqS6A5f4iT5Gg5L+LqgmuvQTg/oSwchPPc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=B0UAcoNQ; arc=fail smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43CAGLSu011297;
-	Fri, 12 Apr 2024 07:14:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=jnLfKOEqY34vf2f4PGMcP1T3Kj9z4OojKesj660Vh4I=;
- b=B0UAcoNQ3gTmtl/gIZWAj5ehmz2sXG/3Ya1AmIQqnnFk6VMSUV/qpVVAevDC/g941hHF
- 5zYwEc7qH+vSTHVBmok59cSFge1GctQy5J5A9HHpkNctyiwkqcPd/pPSrxnxWgmf2Uyd
- T3rrmMxe8Q0YY6+TJjNsvWB121FFtKSxAG1rntkNsSoe+OAp+Z6C2nEYslyjnnqp3Tma
- cr3GC+547UuaKdYtZVUc4ZupCZNfeZuyek68Xd4jLPQ7tbZfH61UXlIWybp2ZOj+ln2+
- OPkTck3+OZVo+Bl0DfW/cEApMdQZ93trUbHhQZhDfF1C0NlNf9EsFGQkpc8Vg/aHWqem VA== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3xf3250ysq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 07:14:32 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PEGi5zotCtCNv55EyibPF6sZWB6Z/2oWtCwIiJmAbtOlCkeMni0rxFZy8/QG+6oX+2gFsjG30su1s4wjB9TQxxR0ausy5fq4OXbEvIk0idTCYeG1HE2KPXd/fpwmAA1yZWdBdGbov/z5RIx3l263rZYgL9LU6JB5BlVsXolQBv2Qej1FF//Xk6VvuWgtU6GKHfUbTzNVRYh4yPQ9lNqOvK6mBb9A77pM7ceAa1pPjJKa+BEcarBcgLNv95REknKZgyMdm/BwJ/sYqSFZPzEt3McTVfrbw4RmkIH5BXzV5zbRHkJmB81J+r2knLHKuElVrxDCA7flE9y4xa6NMGc/Zg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jnLfKOEqY34vf2f4PGMcP1T3Kj9z4OojKesj660Vh4I=;
- b=Oy6ea8FH3eJVfnbBoH3LHWqKoyfD+TAroUmBRKAdy86wgajoaV9BOXj6k+dSJs7BdBiaQX7F9so56FqsFHBE17bW6mKZaVmN0muZZRwTYGizxHRkzksk7kPQchQiBujqYV6kmWkITk5tYJspQ9EeCTBOswjtOkH+sZKQ3ZwFOd6gcSsbmomTcbMRQuBYvK4ONeoyTv99ZVef+KdJVOkqJzjPaARQ97hM1/KrarWqvhFer2pK7MiJivQSDebTzkYDjRtA2FGfcBZ8ZYXVSrWWSiyAHiQDEWCQAsTBlcVYCzH3jH2gWQDthmHua/C+KqJXkucOdekA2vDmcaFiDR1+dw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from LV3PR15MB6455.namprd15.prod.outlook.com (2603:10b6:408:1ad::10)
- by BY3PR15MB5089.namprd15.prod.outlook.com (2603:10b6:a03:3cc::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 12 Apr
- 2024 14:14:23 +0000
-Received: from LV3PR15MB6455.namprd15.prod.outlook.com
- ([fe80::fb9a:11b5:8f10:3474]) by LV3PR15MB6455.namprd15.prod.outlook.com
- ([fe80::fb9a:11b5:8f10:3474%5]) with mapi id 15.20.7409.042; Fri, 12 Apr 2024
- 14:14:23 +0000
-Message-ID: <fe4ab1da-3c72-4d98-8af8-05221ac7d65b@meta.com>
-Date: Fri, 12 Apr 2024 10:14:18 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: check delayed refs when we're checking if a ref
- exists
-To: Filipe Manana <fdmanana@kernel.org>, Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <dc43a26265d37c71a53d6415ae2d352035fa6847.1712869574.git.josef@toxicpanda.com>
- <CAL3q7H4RFSr3GEohQ=mLA2Tm0Us0spCk6je1o8iJFKEmhr4N5Q@mail.gmail.com>
-From: Chris Mason <clm@meta.com>
-Content-Language: en-US
-In-Reply-To: <CAL3q7H4RFSr3GEohQ=mLA2Tm0Us0spCk6je1o8iJFKEmhr4N5Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MN2PR12CA0031.namprd12.prod.outlook.com
- (2603:10b6:208:a8::44) To LV3PR15MB6455.namprd15.prod.outlook.com
- (2603:10b6:408:1ad::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BB77219FF
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Apr 2024 14:17:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712931444; cv=none; b=GH4iOzRRR8IaC54v24tyggBN6N4nCelcvKL2BNKxjmuIJRSeoIq1ahuS7S0KlPhJJ+nbu+4sKaKw+n2rhrvJ7weUF8yQ3NedsoD+4WuFJ0rzsv2ylbcmPcz9aECFQ9nGSU/pU9LVa7JeWg1UU8ow2lTc1RAvpxBt/jOgy22c7uI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712931444; c=relaxed/simple;
+	bh=oPvZKR/trDGTonYqZ8fbBSF1iwDYF7rrKdlBMJ3ZK08=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UuWTnvU/ddjnUaHOkwSTRNL4xdC2e5NmaNuGJJ5TIEF/cxGTKW1vyckoCnwBWManNszT+KAyvV8qnIboJnNU10ybNINGdLLmjtKg8UP3ZBBIepB9oT3KloJCYIh1T8uX8KFkvYIU4ynKhMaVc3wJTW1XaUn4Y0CsZ2Fk5qBPpwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Po1O5KRC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 470B4C2BD10
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Apr 2024 14:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712931444;
+	bh=oPvZKR/trDGTonYqZ8fbBSF1iwDYF7rrKdlBMJ3ZK08=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Po1O5KRCZ5wtYYnH/GHlasAPIReZn7ESQsAeKerm2Az248OLG+dpxpGrxTQkC276L
+	 vJwlM1bsNWy4V2+Ycy9SeyPCq9wuCfa+WTgYEorMoC4fk6FCfSuePH9oIqrKSqOd0b
+	 26ljZLAjw3bPj90ZyhdhlO36RQrbfuFQWzuBgCWA2/m32yyY4yyAcbG1pe/CvQE/Ex
+	 0CmjJWfJMEW8xSHOprgdVmYns3RsA9Q1zYSVJ0drVJAl+NL8rJGwPaivezHoeKUSZp
+	 CzLDepuxEc5ITqyMF79fbCc6es9SZ+bvJvgB9I21KtnbQKAON1Xt3L0FH5ZN+8Y1LA
+	 tPjEBNVMx8qBw==
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a519e1b0e2dso123005966b.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Apr 2024 07:17:24 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yyw47B7hXvgIAJSnKVkdxyd+LsU5Odr5NV8g7ieXIKSHwEcS7w6
+	ZXC5yKaD0rvk0NI96BY2N8lzrCyfKBvVRhsO2YOJETj+hue/tkIb488m8WL0xP8zmy4Goitqemh
+	wpo6oi0fgEtsHWql0DyYrijmchcI=
+X-Google-Smtp-Source: AGHT+IFdXaANtD6gp9u+atulDsfWzhUJjBXyW0Q+JC08EtWqkDDVvvdro8Cox8u/JP34Lcyf3EamVLj3rD//6NoWE9I=
+X-Received: by 2002:a17:907:2cc4:b0:a52:2e97:190d with SMTP id
+ hg4-20020a1709072cc400b00a522e97190dmr2316459ejc.69.1712931442635; Fri, 12
+ Apr 2024 07:17:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR15MB6455:EE_|BY3PR15MB5089:EE_
-X-MS-Office365-Filtering-Correlation-Id: e67d081e-5041-4f96-276e-08dc5afada6c
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	aZ6qALN8qvYZFCokvTCHYkE0ZCaQixKBCFzJAwaFQR43lg4M2Ch54qaGDdc/d6LBbCAiIPtnCGQfjroPU2WQb/LpKex2X512yxlFhL/iLzxiXsrEZfhS81MYkbY2j855ZvpS6v6DaJXsR6B8Ot17Pn/ufbOMJQa28yL8k3Cmx7eqgra3iJ8A4EKvUxpbAPfsiactsDHdR4rUXs88fNroMcGIAWLra2OJ5oY9Of/XR54h9vD67rVUjUxV5jOlz7eT1IxqegF5YbAlLW8oWdnGaJq8jk+BfOPGi3memkDR8G1T0aS55jzQ8DmPqopOy3w7t+tJcgOPmfE2RHbHRAuEidUxjR6eZnuTJpaIpWtTTV6Eo2Pw0OLMWmaHmcWU6cKtlgGn7SMxtfRXYkuillqtTYw5rh4vtKH/EnsBK814DVncxXIsw24tOKvA5v0QTJbYP+c6xzA3JdqHBCWqb0cI6ednegMqEHNftNGOmHjkumFR+w59AbTMDsOslHbo1Uhmiim9Q4U7/LhFxS0omgrr2leoXAQq0mM3x6TSZ7eNbffSGRAYFMaH1vsXBLVC7vehawhJMDL7wraCN0I7hG1bdPs4XkLWpKO2gjT1onwtJ4mdRw/xpZbziHkS5PXaFOOOUtqeTkTYrgmlq+VZwLql2qMJIRz3SuLlB4W+IEZ/8Nk=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR15MB6455.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?ZEJ3SjlvbWFILzVEa2hjMzVMekdWSHhBQlAyam9qNDRuM2NpejIzdkFCNk9r?=
- =?utf-8?B?VjY5SG1FZFNtM1dqQkoxd3plYXB0dFhpdWdwY0tSekdkL1cyUllzV1dxMUFn?=
- =?utf-8?B?cDBUWHVuM0VRVnI0Yy85K1hTb1Q1d0dVTy9oVXNQeTI2VUNkcHRuVTNBOCtP?=
- =?utf-8?B?M0hhWjRLbHdDclA1RHIzb0pHT3lYNWwvTHF6d3h2aWZCdkxETkVFaGFQS09E?=
- =?utf-8?B?VmNHU05tdHY1cEU1MUNCaXlYUzF1clJuL3Zpbmg2V2tjWDdPQmpZZWhLMHB2?=
- =?utf-8?B?eHQ3TE5hT0N1YURyVlFMNUl3b01LRjd2TjdibkwyNjRTMXk0Z0UrTW9lQmJ6?=
- =?utf-8?B?VTd0UDZVQUE2eXMyN29BRnVhQVZPYkJMVEcyb00yU2VmeGpsSExRR21zOWFs?=
- =?utf-8?B?T0xyTmdzc2tvb1Q4R1pNS3pvWSt5UTU4bTkzQm1sWXAxb0xTakFEd2kzRGIv?=
- =?utf-8?B?ZUpNSXIzMXloaHNWR28rOFF6aWthLzdudUdwdjM2UXJDR1JuT2RLTkFpSW9n?=
- =?utf-8?B?MjlXZDBGYk1XTHA4VGwvNURCT1REWnpPcFp0YVgxellJeEpiT0pWZncxTG9p?=
- =?utf-8?B?Y08yU2JDOW5SNTF3b21mVDNFMGxyMU5SRmZXQVI5YVZ0TlF1aFgxUHBRWTk0?=
- =?utf-8?B?YWRibFdZMEMvNXJpSjRHODF2K0VTWHFJT1ljUTdDaW0xcitETTdJeGVyWWRl?=
- =?utf-8?B?dDdOV1NjU1hmSVlodkYxVlFDeWRVbWNDYXFHeU9zMDNNVk5qUmhydHM0SGg1?=
- =?utf-8?B?a3B3bUV0dEd1Yi9DcnJ1dVZoV081bzFSdWRnbTBPOTBha3Bxbml0cUxpVGN3?=
- =?utf-8?B?S2NtOS9aQnRqWWlvdENxUGlISlE0WGJMYTJocUc5ZjRwWGIreHRPWk1Ya3hO?=
- =?utf-8?B?dE1ZZTAxRmt5cUtLWFE0bkZtM0xsejJJdkVXL2p1Qmt1cDRRQnBEK3gzMExa?=
- =?utf-8?B?WERnRDErdExZV2hneE5XRTZqL3ovL29nVW1wZ2k3RElNSzZpVkFBUm93aERT?=
- =?utf-8?B?aGIrN0RQUWd1aVd0aGpmTmVvRnlPa2s5aUFKLzllSkdVZ0VXdi8xSlFFVkd1?=
- =?utf-8?B?S2VKSzNHWGRyNC9jUVJla2Z0dTVvQjcxZUlVeitSZUMwVzJCOG5RL25KWTBq?=
- =?utf-8?B?K0NNOXhvYm1zdGhOMjlsdzhNSDRuczJvRWpOa2pEWTBqR2VUMWRyWDdscExF?=
- =?utf-8?B?aHJ4aEdPZ3VMb2lWeTdrOUFnUWUvbURsNnF2N2w1b3dHazdGMk8wMjJvc0tS?=
- =?utf-8?B?Ri9PWThkNDUwT3Z5WGFEczkvZTE4M0R1aVd4S2JONWZkd1kzeHpFa1lKc1VZ?=
- =?utf-8?B?TmNQemFJVVBlZ3JOZmFuNU9MTXQ2SUMvcHF0SGErK3NpdWs1aCtOV3F2dk1Q?=
- =?utf-8?B?a25ZVDBqNTdhS3l6dXBwcHM2M09BMTg3cjhWUFFwZW41enpKUk0vQkt4bVRE?=
- =?utf-8?B?L0VWRCtCeXpoV0FMNTFoWlN3THExaWJqWWUzQ1IzQVZzUDdYOEtQYUVMaDNi?=
- =?utf-8?B?bjlOTTlKQkk4UzlIMTI0SmMyNmxIY1FSSXQzMDE0T3JueE10YWtpUGVpNVBk?=
- =?utf-8?B?eDB6cXEzQ0xJQjlHS2pUbWt1RFlJcENobWU4cER0Tm5rQUl4QTkxRlZSYVF0?=
- =?utf-8?B?UnB2bU5GUVlUMjdBRElScEpueUppNk9hTVFvaWtSWVFBa1VFYXBKVGdGbG1E?=
- =?utf-8?B?YmhWZU1TbWtsZXhQa3I1OWFUeHZjMGpBeVdlbWZINlZkdXF3Y1VTRFZFbnpB?=
- =?utf-8?B?Q01YalFsZnhjeFVsNUVvRm9DUzRhVkZCK1YrNUdoRTN4N1ZXdkpiTi9LS3Fy?=
- =?utf-8?B?NS8xbDBBcWFmQUEzbDR3QktJZ1dSamt0YXNoU05MWjZPNmJDS0YzejhwdHdx?=
- =?utf-8?B?WTZUZ3BReFhKZWgvUk0vQi8zYWhGSjdJbUFSRTZJN3hHYWhvcytwaEVSU0sx?=
- =?utf-8?B?WjJzakMzUkpxclc0WmExUWtBT3I4empnUHh6cDFQSDQ1VnhRWE05bXJ5bXEw?=
- =?utf-8?B?ZUlnclJ6WlVUQkk5cHpDMzNNK3pGZzlIOEhSbDd3NEYvQitrOWh2VDhDYVJn?=
- =?utf-8?B?bDUxdHJvVzM3RGdzRjgxVFdWaitibzBQUEp5bk15U3FJQXF3VEd5a2ZOWmx0?=
- =?utf-8?Q?hpok8i6P4eRVYa7TcTj01rKBn?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e67d081e-5041-4f96-276e-08dc5afada6c
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR15MB6455.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 14:14:23.4000
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F6HJfg1u4eHwF2tsgQBEbvp3sUakcN0sFcjp3CEn9LtUmBvpRQOIW4YQ0WEyXU6X
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB5089
-X-Proofpoint-ORIG-GUID: HRE1xSIuAxOuDgcVDZkO3XTWe3H2kFi1
-X-Proofpoint-GUID: HRE1xSIuAxOuDgcVDZkO3XTWe3H2kFi1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-12_10,2024-04-09_01,2023-05-22_02
+References: <3937cbcdf53440dcda98b64ce5e0e1cf8b15803d.1712929998.git.josef@toxicpanda.com>
+In-Reply-To: <3937cbcdf53440dcda98b64ce5e0e1cf8b15803d.1712929998.git.josef@toxicpanda.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 12 Apr 2024 15:16:45 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H48n9exXQ2vMLm5Do92N-BQAhaXT0JE+XcSNtKYqTnv1g@mail.gmail.com>
+Message-ID: <CAL3q7H48n9exXQ2vMLm5Do92N-BQAhaXT0JE+XcSNtKYqTnv1g@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: check delayed refs when we're checking if a ref exists
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Apr 12, 2024 at 2:55=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
+wrote:
+>
+> In the patch 78c52d9eb6b7 ("btrfs: check for refs on snapshot delete
+> resume") I added some code to handle file systems that had been
+> corrupted by a bug that incorrectly skipped updating the drop progress
+> key while dropping a snapshot.  This code would check to see if we had
+> already deleted our reference for a child block, and skip the deletion
+> if we had already.
+>
+> Unfortunately there is a bug, as the check would only check the on-disk
+> references.  I made an incorrect assumption that blocks in an already
+> deleted snapshot that was having the deletion resume on mount wouldn't
+> be modified.
+>
+> If we have 2 pending deleted snapshots that share blocks, we can easily
+> modify the rules for a block.  Take the following example
+>
+> subvolume a exists, and subvolume b is a snapshot of subvolume a.  They
+> share references to block 1.  Block 1 will have 2 full references, one
+> for subvolume a and one for subvolume b, and it belongs to subvolume a
+> (btrfs_header_owner(block 1) =3D=3D subvolume a).
+>
+> When deleting subvolume a, we will drop our full reference for block 1,
+> and because we are the owner we will drop our full reference for all of
+> block 1's children, convert block 1 to FULL BACKREF, and add a shared
+> reference to all of block 1's children.
+>
+> Then we will start the snapshot deletion of subvolume b.  We look up the
+> extent info for block 1, which checks delayed refs and tells us that
+> FULL BACKREF is set, so sets parent to the bytenr of block 1.  However
+> because this is a resumed snapshot deletion, we call into
+> check_ref_exists().  Because check_ref_exists() only looks at the disk,
+> it doesn't find the shared backref for the child of block 1, and thus
+> returns 0 and we skip deleting the reference for the child of block 1
+> and continue.  This orphans the child of block 1.
+>
+> The fix is to lookup the delayed refs, similar to what we do in
+> btrfs_lookup_extent_info().  However we only care about whether the
+> reference exists or not.  If we fail to find our reference on disk, go
+> look up the bytenr in the delayed refs, and if it exists look for an
+> existing ref in the delayed ref head.  If that exists then we know we
+> can delete the reference safely and carry on.  If it doesn't exist we
+> know we have to skip over this block.
+>
+> This bug has existed since I introduced this fix, however requires
+> having multiple deleted snapshots pending when we unmount.  We noticed
+> this in production because our shutdown path stops the container on the
+> system, which deletes a bunch of subvolumes, and then reboots the box.
+> This gives us plenty of opportunities to hit this issue.  Looking at the
+> history we've seen this occasionally in production, but we had a big
+> spike recently thanks to faster machines getting jobs with multiple
+> subvolumes in the job.
+>
+> Chris Mason wrote a reproducer which does the following
+>
+> mount /dev/nvme4n1 /btrfs
+> btrfs subvol create /btrfs/s1
+> simoop -E -f 4k -n 200000 -z /btrfs/s1
+> while(true) ; do
+>         btrfs subvol snap /btrfs/s1 /btrfs/s2
+>         simoop -f 4k -n 200000 -r 10 -z /btrfs/s2
+>         btrfs subvol snap /btrfs/s2 /btrfs/s3
+>         btrfs balance start -dusage=3D80 /btrfs
+>         btrfs subvol del /btrfs/s2 /btrfs/s3
+>         umount /btrfs
+>         btrfsck /dev/nvme4n1 || exit 1
+>         mount /dev/nvme4n1 /btrfs
+> done
+>
+> On the second loop this would fail consistently, with my patch it has
+> been running for hours and hasn't failed.
+>
+> I also used dm-log-writes to capture the state of the failure so I could
+> debug the problem.  Using the existing failure case to test my patch
+> validated that it fixes the problem.
+>
+> Fixes: 78c52d9eb6b7 ("btrfs: check for refs on snapshot delete resume")
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-On 4/12/24 8:58 AM, Filipe Manana wrote:
-> On Thu, Apr 11, 2024 at 10:12 PM Josef Bacik <josef@toxicpanda.com> wrote:
-[ ... ]
->> Chris Mason wrote a reproducer which does the following
->>
->> mount /dev/nvme4n1 /btrfs
->> btrfs subvol create /btrfs/s1
->> simoop -E -f 4k -n 200000 -z /btrfs/s1
->> while(true) ; do
->>         btrfs subvol snap /btrfs/s1 /btrfs/s2
->>         simoop -f 4k -n 200000 -r 10 -z /btrfs/s2
->>         btrfs subvol snap /btrfs/s2 /btrfs/s3
->>         btrfs balance start -dusage=80 /btrfs
->>         btrfs subvol del /btrfs/s2 /btrfs/s3
->>         umount /btrfs
->>         btrfsck /dev/nvme4n1 || exit 1
->>         mount /dev/nvme4n1 /btrfs
->> done
->>
->> On the second loop this would fail consistently, with my patch it has
->> been running for hours and hasn't failed.
-> 
-> Is there a way to exercise this with fstests, using fsstress for example?
-> 
+Looks good, thanks.
 
-Probably?  In this case, simoop is making a directory tree with 200,000
-files, 4K in size, with fallocate.  The fallocate part doesn't matter,
-it's just faster.
-
-The first simoop (with -E) exits immediately after creating the files.
-
-The simoop inside the loop:
-  - reuses the directory tree.
-  - runs for 10 seconds.
-  - has 16 threads doing 2MB reads and writes into the subvolume.
-  - basically translates to: cow some things.
-
-I experimented a little with smaller repros, but they didn't
-consistently hit the corruption.  On all the machines I've tried, the
-simoop version only needs two loops to trigger.
-
-As far as I know, fs_mark is the only other similar utility focused on
-quickly creating big directory trees, but I'm sure there are others.
-
--chris
+> ---
+> v1->v2:
+> - Fixed up style nits pointed out by Filipe.
+> - Fixed up the changelog to fix some wrong words and make things more cle=
+ar.
+>
+>  fs/btrfs/delayed-ref.c | 69 ++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/delayed-ref.h |  2 ++
+>  fs/btrfs/extent-tree.c | 51 +++++++++++++++++++++++++++----
+>  3 files changed, 116 insertions(+), 6 deletions(-)
+>
+> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+> index e44e62cf76bc..8c0970980acb 100644
+> --- a/fs/btrfs/delayed-ref.c
+> +++ b/fs/btrfs/delayed-ref.c
+> @@ -1297,6 +1297,75 @@ btrfs_find_delayed_ref_head(struct btrfs_delayed_r=
+ef_root *delayed_refs, u64 byt
+>         return find_ref_head(delayed_refs, bytenr, false);
+>  }
+>
+> +static int find_comp(struct btrfs_delayed_ref_node *entry, u64 root, u64=
+ parent)
+> +{
+> +       struct btrfs_delayed_tree_ref *ref;
+> +       int type =3D parent ? BTRFS_SHARED_BLOCK_REF_KEY : BTRFS_TREE_BLO=
+CK_REF_KEY;
+> +
+> +       if (type < entry->type)
+> +               return -1;
+> +       if (type > entry->type)
+> +               return 1;
+> +
+> +       ref =3D btrfs_delayed_node_to_tree_ref(entry);
+> +       if (type =3D=3D BTRFS_TREE_BLOCK_REF_KEY) {
+> +               if (root < ref->root)
+> +                       return -1;
+> +               if (root > ref->root)
+> +                       return 1;
+> +       } else {
+> +               if (parent < ref->parent)
+> +                       return -1;
+> +               if (parent > ref->parent)
+> +                       return 1;
+> +       }
+> +       return 0;
+> +}
+> +
+> +/*
+> + * Check to see if a given root/parent reference is attached to the head=
+.  This
+> + * only checks for BTRFS_ADD_DELAYED_REF references that match, as that
+> + * indicates the reference exists for the given root or parent.  This is=
+ for
+> + * tree blocks only.
+> + *
+> + * @head: the head of the bytenr we're searching.
+> + * @root: the root objectid of the reference if it is a normal reference=
+.
+> + * @parent: the parent if this is a shared backref.
+> + */
+> +bool btrfs_find_delayed_tree_ref(struct btrfs_delayed_ref_head *head,
+> +                                u64 root, u64 parent)
+> +{
+> +       struct rb_node *node;
+> +       bool found =3D false;
+> +
+> +       lockdep_assert_held(&head->mutex);
+> +
+> +       spin_lock(&head->lock);
+> +       node =3D head->ref_tree.rb_root.rb_node;
+> +       while (node) {
+> +               struct btrfs_delayed_ref_node *entry;
+> +               int ret;
+> +
+> +               entry =3D rb_entry(node, struct btrfs_delayed_ref_node, r=
+ef_node);
+> +               ret =3D find_comp(entry, root, parent);
+> +               if (ret < 0) {
+> +                       node =3D node->rb_left;
+> +               } else if (ret > 0) {
+> +                       node =3D node->rb_right;
+> +               } else {
+> +                       /*
+> +                        * We only want to count ADD actions, as drops me=
+an the
+> +                        * ref doesn't exist.
+> +                        */
+> +                       if (entry->action =3D=3D BTRFS_ADD_DELAYED_REF)
+> +                               found =3D true;
+> +                       break;
+> +               }
+> +       }
+> +       spin_unlock(&head->lock);
+> +       return found;
+> +}
+> +
+>  void __cold btrfs_delayed_ref_exit(void)
+>  {
+>         kmem_cache_destroy(btrfs_delayed_ref_head_cachep);
+> diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+> index b291147cb8ab..34c34db01cc6 100644
+> --- a/fs/btrfs/delayed-ref.h
+> +++ b/fs/btrfs/delayed-ref.h
+> @@ -397,6 +397,8 @@ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_inf=
+o *fs_info,
+>  void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
+>                                        u64 num_bytes);
+>  bool btrfs_check_space_for_delayed_refs(struct btrfs_fs_info *fs_info);
+> +bool btrfs_find_delayed_tree_ref(struct btrfs_delayed_ref_head *head,
+> +                                u64 root, u64 parent);
+>
+>  /*
+>   * helper functions to cast a node into its container
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 42314604906a..b21998c1e33f 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -5428,23 +5428,62 @@ static int check_ref_exists(struct btrfs_trans_ha=
+ndle *trans,
+>                             struct btrfs_root *root, u64 bytenr, u64 pare=
+nt,
+>                             int level)
+>  {
+> +       struct btrfs_delayed_ref_root *delayed_refs;
+> +       struct btrfs_delayed_ref_head *head;
+>         struct btrfs_path *path;
+>         struct btrfs_extent_inline_ref *iref;
+>         int ret;
+> +       bool exists =3D false;
+>
+>         path =3D btrfs_alloc_path();
+>         if (!path)
+>                 return -ENOMEM;
+> -
+> +again:
+>         ret =3D lookup_extent_backref(trans, path, &iref, bytenr,
+>                                     root->fs_info->nodesize, parent,
+>                                     root->root_key.objectid, level, 0);
+> +       if (ret !=3D -ENOENT) {
+> +               /*
+> +                * If we get 0 then we found our reference, return 1, els=
+e
+> +                * return the error if it's not -ENOENT;
+> +                */
+> +               btrfs_free_path(path);
+> +               return (ret < 0 ) ? ret : 1;
+> +       }
+> +
+> +       /*
+> +        * We could have a delayed ref with this reference, so look it up=
+ while
+> +        * we're holding the path open to make sure we don't race with th=
+e
+> +        * delayed ref running.
+> +        */
+> +       delayed_refs =3D &trans->transaction->delayed_refs;
+> +       spin_lock(&delayed_refs->lock);
+> +       head =3D btrfs_find_delayed_ref_head(delayed_refs, bytenr);
+> +       if (!head)
+> +               goto out;
+> +       if (!mutex_trylock(&head->mutex)) {
+> +               /*
+> +                * We're contended, means that the delayed ref is running=
+, get a
+> +                * reference and wait for the ref head to be complete and=
+ then
+> +                * try again.
+> +                */
+> +               refcount_inc(&head->refs);
+> +               spin_unlock(&delayed_refs->lock);
+> +
+> +               btrfs_release_path(path);
+> +
+> +               mutex_lock(&head->mutex);
+> +               mutex_unlock(&head->mutex);
+> +               btrfs_put_delayed_ref_head(head);
+> +               goto again;
+> +       }
+> +
+> +       exists =3D btrfs_find_delayed_tree_ref(head, root->root_key.objec=
+tid, parent);
+> +       mutex_unlock(&head->mutex);
+> +out:
+> +       spin_unlock(&delayed_refs->lock);
+>         btrfs_free_path(path);
+> -       if (ret =3D=3D -ENOENT)
+> -               return 0;
+> -       if (ret < 0)
+> -               return ret;
+> -       return 1;
+> +       return exists ? 1 : 0;
+>  }
+>
+>  /*
+> --
+> 2.43.0
+>
+>
 
