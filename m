@@ -1,76 +1,81 @@
-Return-Path: <linux-btrfs+bounces-4213-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4214-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8B0F8A3FA3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Apr 2024 01:53:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E61278A3FA4
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Apr 2024 01:53:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19B78282038
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Apr 2024 23:53:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32C02B216E9
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Apr 2024 23:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015455823C;
-	Sat, 13 Apr 2024 23:53:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28DDF58AB2;
+	Sat, 13 Apr 2024 23:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="svx5ZfJk"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="wY9+F7xS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B0418E06
-	for <linux-btrfs@vger.kernel.org>; Sat, 13 Apr 2024 23:53:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 675483FB1C
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Apr 2024 23:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713052417; cv=none; b=L8tL3Pl3BAvoiGTwLy5hcXDGcZI8BAPgyVZ7/tjdanYUEiyuAhklBXcAE+AH3wQMtNXGe2mpEAh09HUX98vGzOwuhvmTKzn0xE8drAeis/JL5/m9SwqqGyRV5ABegyHf9J30SqMPZ0g9kCkFDtzzBNcuvNZgkkToxolAMNrhFds=
+	t=1713052418; cv=none; b=X0A1yg/OuZ7Eq8tOAOTpTu7SIEsTTxlk87/e7LRn1RtFs7jFKIw4sI9TbL64IrpfRg2XL7B+ABx/CZeWXweXCAnqu8k11jHTNQitlTjz3iytGZYtKOmJETNsib5yart8KuFIthfJOQD1RlIOuyU6aKFfJaGw3NR0wIb462QONjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713052417; c=relaxed/simple;
-	bh=NgU29ycOL8aSsx67gB/M/Ds5RbzKztWhij+P5u0va6k=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=oSMe7KGeeJB2ALhuTL71IGFUZ+O9S+2UIg3jz4hMkTGLxQ8+7JhjD6aNv1gmz/z3uRJ5DVrhUDG5wLBwtXKoV84Kg3MS6l/MFUNjesGzqGvJHo7gI5t6dRm9VO/yGZW+O1BY4ESZ8xDXPWaeEFUuNqSBnB0j2a+5sCANEgoo9dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=svx5ZfJk; arc=none smtp.client-ip=209.85.219.53
+	s=arc-20240116; t=1713052418; c=relaxed/simple;
+	bh=4p+p96OwrJ2DnU625JuqUOT2IDCLAcMP1ZMnFYjhPIs=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Igyh+jtCvh8D/RNUmgKL9Z037L5Lfm2XIh22Q7ZS2Bs3qeVcm+IJ5RbktJNbvS56/TzrqlxXGqIpmqHCfhhBdXySZHWZd9b/5DPqPDvWY/OzHvi3svc+HiEykyBSFt//XxFN6X/VOCh2trPva1DYWRBsd8BlZNEA4V2rHmKiik8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=wY9+F7xS; arc=none smtp.client-ip=209.85.222.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-69b10c9cdf4so11754236d6.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 13 Apr 2024 16:53:34 -0700 (PDT)
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-78d62c1e82bso141405285a.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 13 Apr 2024 16:53:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1713052413; x=1713657213; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3XpxEjePlvgq6DB3gENdH6LdV1sEXQzpKwtA7Lqwyvc=;
-        b=svx5ZfJklyIxj5NiCsdnf0EVN3i2WwTavOKZ0kHNmstomd1wpEnTOPyUYKo/rX9PuQ
-         mitZKWFV5/Cca0LZH10p7tEs7OdtLX9rpPLm7mRT/ZWMl9N00qdu2/43YWeaKUXbs8Lu
-         4343Ae5bnvqubsGGcIVF+D6QeAIjYvG5nGOi1csjUeL7DUIFMZRw+F1J5RmLw0GgdT8X
-         ob/MvzdrECMaflKyAElARv8qYMjoKpkaFh2zF7dt8sl9wKgx/BtYYUr6t+TjtSpPM/VY
-         NMyHyxFoiGcDwm/lS9YgXc+nRvNcbRltxgaKKtigOOaZWdQiGTfc+Dl8Ok8wTm+TYrCh
-         BziQ==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1713052415; x=1713657215; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u44kHaaJGUhFV2geodQRccc/1EmODR5o/ni0lNUJ8LM=;
+        b=wY9+F7xSzbwG6Q/53fun0/ImfWqlqKQ1VZYq9T2XZOFXBKUMM4HgdRtwXdvnnOcCdJ
+         m7tUAvPoIpJVBAQbo5mUmnd8DiAthCnpSLyTGxo3t8mKBlA7PKT8MRiUHNIeejB6y4Lm
+         HZ1nWALMKEVzde70as6ljVWUweeGbwyl/VU1sR7TR9S0SLMIEaPpGH77XPZ+Fr2oNgc8
+         A2Lws49pZyrIwzlvPbXACukXggztxrdsC6pHhk4iXa5E4Jvg2hoZh0ayajuHgWF4RvTk
+         mCXd4h6AJRSfQTH6FhDnGExYdAEqCGFv0L2Je+gmlcxL23xR/zI8nbz25qRjcW9maEU7
+         AURw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713052413; x=1713657213;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3XpxEjePlvgq6DB3gENdH6LdV1sEXQzpKwtA7Lqwyvc=;
-        b=gUGtrhmY1X3hfZ+QQE4vppY6IFVOFywN0Uju6fjAU4FTbuLcbtusH0RNtfUJ2omGO3
-         /k33Wgzf1pSsx/+vlgEXonNQSc/UBAup0Xp/UwxeOnDCInFH2ZR2qv1AsH9/ple463CD
-         PLD1jlgKRVsQ3ensrm7iH98uxPpCTiE6h/tbukj0eLiXUOA6bA/wJNvVkKuMOB5eXAh7
-         63FJbvNIpZfPyy21Z4NAn4Wh35+4hoZFGglsJHSTY6Xu3ji6J5wmfZcAw0bzP47C4Pm/
-         8qCvbMXY2RUzM+EhKTDSLotLzbzgUYj7xKgae07yoIkyJCdbjxFokxw6STfDpfmpnhZk
-         +epg==
-X-Gm-Message-State: AOJu0YwPOUZ18RxU8jG27/idklDThCuhcepiub47p+BofmaeCQ9IeAi0
-	rtfAMzmxFQ/KulYNbXMv3GZaq8Y6V0Uh758sQ2tbG5e4E02j21Rlw0iGR2UYQ7UjRh+tE9FBrGw
-	U
-X-Google-Smtp-Source: AGHT+IH0Ab90SwJfNaEAwix+furlTpp76PQO2uemjUgXXMB5vZfQ58VD2M6/RxKlnEEH2BgiWfFwxQ==
-X-Received: by 2002:ad4:4050:0:b0:69b:59c1:f259 with SMTP id r16-20020ad44050000000b0069b59c1f259mr5631246qvp.17.1713052413640;
-        Sat, 13 Apr 2024 16:53:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713052415; x=1713657215;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u44kHaaJGUhFV2geodQRccc/1EmODR5o/ni0lNUJ8LM=;
+        b=JNPporvtNwqeH0z4xlNWBb9Smqw+ohR4FikhyvPTfnVz87VMxX/2YHrQE+fTYWELKm
+         CuTPiEvsZEXO55Zs7L84Se7Ig71rghCNztRrf7owCeeeZn6D+u31fjEl7fphQw13yd+h
+         pNUDwgnFbCuFpHALRdzw3UdmoTgzEX3wzdDDqa5z19KKWHwWgNWEJj4vvOL/YbCNOAS7
+         nzCFF9sPp2u1xEFYUnBV2JoX+K1QohOAAfOsvdMVJVT47JlCJX5syeVnRRMhjsQ1vR84
+         UJiWK4YDkJJxlSaZ0xs9Aj//W7226fzunPpmroa9gYQQv3lGoKotAI6eWix4i1JFp4bk
+         a5mw==
+X-Gm-Message-State: AOJu0Yy2dTn9roTpNEBFCSWiL2hakcwW03SBF5b0prYtpIuYUwpf5uqf
+	s2FyOzJT+60cme7rbwT6UQ8OohvCgBrU6rY/GF1tYqnloa9cTw6kk9a9tjVkAnKGLNpcS0w7+2r
+	+
+X-Google-Smtp-Source: AGHT+IFnGtna8BvnnFGvHG9uG4+0IQZvmnhEcaDCIAM73VCRbCXHVCAdEmVQividC9FpZo3wUC7MHA==
+X-Received: by 2002:a05:620a:c04:b0:78d:5f2c:9a19 with SMTP id l4-20020a05620a0c0400b0078d5f2c9a19mr6757570qki.40.1713052414978;
+        Sat, 13 Apr 2024 16:53:34 -0700 (PDT)
 Received: from localhost ([76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id gs15-20020a056214226f00b0069942a53f46sm1408796qvb.53.2024.04.13.16.53.32
+        by smtp.gmail.com with ESMTPSA id o12-20020a05620a110c00b0078d67886632sm4340777qkk.37.2024.04.13.16.53.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Apr 2024 16:53:33 -0700 (PDT)
+        Sat, 13 Apr 2024 16:53:34 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 00/19] btrfs: delayed refs cleanups
-Date: Sat, 13 Apr 2024 19:53:10 -0400
-Message-ID: <cover.1713052088.git.josef@toxicpanda.com>
+Subject: [PATCH 01/19] btrfs: add a helper to get the delayed ref node from the data/tree ref
+Date: Sat, 13 Apr 2024 19:53:11 -0400
+Message-ID: <2b6d5c91e6d8d25c9a8d4d21d7ce46df6ddba7f8.1713052088.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1713052088.git.josef@toxicpanda.com>
+References: <cover.1713052088.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -79,64 +84,153 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello,
+We have several different ways we refer to references throughout the
+code and it's not consistent and there's a bit of duplication.  In order
+to clean this up I want to have one structure we use to define reference
+information, and one structure we use for the delayed reference
+information.  Start this process by adding a helper to get from the
+btrfs_delayed_data_ref/btrfs_delayed_tree_ref to the
+btrfs_delayed_ref_node so that it'll make moving these structures around
+simpler.
 
-While I was fixing the snapshot deletion corruption I noticed a lot of silly
-duplication when it comes to delayed refs.  We have two things to refer to
-references, and use different names for the same thing, anybody who doesn't know
-what this code does would understandably be confused.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/delayed-ref.c | 28 +++++++++++++++++++---------
+ fs/btrfs/delayed-ref.h | 12 ++++++++++++
+ 2 files changed, 31 insertions(+), 9 deletions(-)
 
-I reworked all of this to consolidate everything into btrfs_delayed_ref_node,
-and got rid of the type specific wrapper structs.  I made the initialization of
-the btrfs_ref for the actions clearer instead of a 6 argument initialization
-function.  I used this simplification to reduce the duplicated code around
-adding new delayed refs.  The result is a net removal of 130 lines of code, and
-makes several of the call chains clearer as we just pass the
-btrfs_delayed_ref_node around where we can.
-
-I want to cleanup how we lookup delayed ref heads and how we handle those cases,
-but I'm much more cautious around that code because there's some guarantees
-about parallel modifications that are maintained by the current status quo, and
-I'm afraid cleaning that code up will result in subtle bugs.
-
-These cleanups should be relatively safe as they have no behavior changes.  I've
-run it through fstests to validate nothing broke.  Thanks,
-
-Josef
-
-Josef Bacik (19):
-  btrfs: add a helper to get the delayed ref node from the data/tree ref
-  btrfs: embed data_ref and tree_ref in btrfs_delayed_ref_node
-  btrfs: do not use a function to initialize btrfs_ref
-  btrfs: move ref_root into btrfs_ref
-  btrfs: pass btrfs_ref to init_delayed_ref_common
-  btrfs: initialize btrfs_delayed_ref_head with btrfs_ref
-  btrfs: move ref specific initialization into init_delayed_ref_common
-  btrfs: simplify delayed ref tracepoints
-  btrfs: unify the btrfs_add_delayed_*_ref helpers into one helper
-  btrfs: rename ->len to ->num_bytes in btrfs_ref
-  btrfs: move ->parent and ->ref_root into btrfs_delayed_ref_node
-  btrfs: rename btrfs_data_ref->ino to ->objectid
-  btrfs: make __btrfs_inc_extent_ref take a btrfs_delayed_ref_node
-  btrfs: drop unnecessary arguments from __btrfs_free_extent
-  btrfs: make the insert backref helpers take a btrfs_delayed_ref_node
-  btrfs: stop referencing btrfs_delayed_data_ref directly
-  btrfs: stop referencing btrfs_delayed_tree_ref directly
-  btrfs: remove the btrfs_delayed_ref_node container helpers
-  btrfs: replace btrfs_delayed_*_ref with btrfs_*_ref
-
- fs/btrfs/backref.c           |  40 ++--
- fs/btrfs/delayed-ref.c       | 369 +++++++++++------------------------
- fs/btrfs/delayed-ref.h       | 148 +++++++-------
- fs/btrfs/extent-tree.c       | 273 ++++++++++++--------------
- fs/btrfs/file.c              |  79 ++++----
- fs/btrfs/inode-item.c        |  16 +-
- fs/btrfs/ref-verify.c        |   8 +-
- fs/btrfs/relocation.c        |  84 +++++---
- fs/btrfs/tree-log.c          |  17 +-
- include/trace/events/btrfs.h |  56 ++----
- 10 files changed, 479 insertions(+), 611 deletions(-)
-
+diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+index e44e62cf76bc..d920663a18fd 100644
+--- a/fs/btrfs/delayed-ref.c
++++ b/fs/btrfs/delayed-ref.c
+@@ -310,7 +310,9 @@ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
+ static int comp_tree_refs(struct btrfs_delayed_tree_ref *ref1,
+ 			  struct btrfs_delayed_tree_ref *ref2)
+ {
+-	if (ref1->node.type == BTRFS_TREE_BLOCK_REF_KEY) {
++	struct btrfs_delayed_ref_node *node = btrfs_delayed_tree_ref_to_node(ref1);
++
++	if (node->type == BTRFS_TREE_BLOCK_REF_KEY) {
+ 		if (ref1->root < ref2->root)
+ 			return -1;
+ 		if (ref1->root > ref2->root)
+@@ -330,7 +332,9 @@ static int comp_tree_refs(struct btrfs_delayed_tree_ref *ref1,
+ static int comp_data_refs(struct btrfs_delayed_data_ref *ref1,
+ 			  struct btrfs_delayed_data_ref *ref2)
+ {
+-	if (ref1->node.type == BTRFS_EXTENT_DATA_REF_KEY) {
++	struct btrfs_delayed_ref_node *node = btrfs_delayed_data_ref_to_node(ref1);
++
++	if (node->type == BTRFS_EXTENT_DATA_REF_KEY) {
+ 		if (ref1->root < ref2->root)
+ 			return -1;
+ 		if (ref1->root > ref2->root)
+@@ -1061,6 +1065,7 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_handle *trans,
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_delayed_tree_ref *ref;
++	struct btrfs_delayed_ref_node *node;
+ 	struct btrfs_delayed_ref_head *head_ref;
+ 	struct btrfs_delayed_ref_root *delayed_refs;
+ 	struct btrfs_qgroup_extent_record *record = NULL;
+@@ -1096,12 +1101,14 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_handle *trans,
+ 		}
+ 	}
+ 
++	node = btrfs_delayed_tree_ref_to_node(ref);
++
+ 	if (parent)
+ 		ref_type = BTRFS_SHARED_BLOCK_REF_KEY;
+ 	else
+ 		ref_type = BTRFS_TREE_BLOCK_REF_KEY;
+ 
+-	init_delayed_ref_common(fs_info, &ref->node, bytenr, num_bytes,
++	init_delayed_ref_common(fs_info, node, bytenr, num_bytes,
+ 				generic_ref->tree_ref.ref_root, action,
+ 				ref_type);
+ 	ref->root = generic_ref->tree_ref.ref_root;
+@@ -1123,7 +1130,7 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_handle *trans,
+ 	head_ref = add_delayed_ref_head(trans, head_ref, record,
+ 					action, &qrecord_inserted);
+ 
+-	merged = insert_delayed_ref(trans, head_ref, &ref->node);
++	merged = insert_delayed_ref(trans, head_ref, node);
+ 	spin_unlock(&delayed_refs->lock);
+ 
+ 	/*
+@@ -1132,7 +1139,7 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_handle *trans,
+ 	 */
+ 	btrfs_update_delayed_refs_rsv(trans);
+ 
+-	trace_add_delayed_tree_ref(fs_info, &ref->node, ref,
++	trace_add_delayed_tree_ref(fs_info, node, ref,
+ 				   action == BTRFS_ADD_DELAYED_EXTENT ?
+ 				   BTRFS_ADD_DELAYED_REF : action);
+ 	if (merged)
+@@ -1153,6 +1160,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_handle *trans,
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_delayed_data_ref *ref;
++	struct btrfs_delayed_ref_node *node;
+ 	struct btrfs_delayed_ref_head *head_ref;
+ 	struct btrfs_delayed_ref_root *delayed_refs;
+ 	struct btrfs_qgroup_extent_record *record = NULL;
+@@ -1172,12 +1180,14 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_handle *trans,
+ 	if (!ref)
+ 		return -ENOMEM;
+ 
++	node = btrfs_delayed_data_ref_to_node(ref);
++
+ 	if (parent)
+ 	        ref_type = BTRFS_SHARED_DATA_REF_KEY;
+ 	else
+ 	        ref_type = BTRFS_EXTENT_DATA_REF_KEY;
+-	init_delayed_ref_common(fs_info, &ref->node, bytenr, num_bytes,
+-				ref_root, action, ref_type);
++	init_delayed_ref_common(fs_info, node, bytenr, num_bytes, ref_root,
++				action, ref_type);
+ 	ref->root = ref_root;
+ 	ref->parent = parent;
+ 	ref->objectid = owner;
+@@ -1214,7 +1224,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_handle *trans,
+ 	head_ref = add_delayed_ref_head(trans, head_ref, record,
+ 					action, &qrecord_inserted);
+ 
+-	merged = insert_delayed_ref(trans, head_ref, &ref->node);
++	merged = insert_delayed_ref(trans, head_ref, node);
+ 	spin_unlock(&delayed_refs->lock);
+ 
+ 	/*
+@@ -1223,7 +1233,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_handle *trans,
+ 	 */
+ 	btrfs_update_delayed_refs_rsv(trans);
+ 
+-	trace_add_delayed_data_ref(trans->fs_info, &ref->node, ref,
++	trace_add_delayed_data_ref(trans->fs_info, node, ref,
+ 				   action == BTRFS_ADD_DELAYED_EXTENT ?
+ 				   BTRFS_ADD_DELAYED_REF : action);
+ 	if (merged)
+diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+index b291147cb8ab..b3a78bf7b072 100644
+--- a/fs/btrfs/delayed-ref.h
++++ b/fs/btrfs/delayed-ref.h
+@@ -413,4 +413,16 @@ btrfs_delayed_node_to_data_ref(struct btrfs_delayed_ref_node *node)
+ 	return container_of(node, struct btrfs_delayed_data_ref, node);
+ }
+ 
++static inline struct btrfs_delayed_ref_node *
++btrfs_delayed_tree_ref_to_node(struct btrfs_delayed_tree_ref *ref)
++{
++	return &ref->node;
++}
++
++static inline struct btrfs_delayed_ref_node *
++btrfs_delayed_data_ref_to_node(struct btrfs_delayed_data_ref *ref)
++{
++	return &ref->node;
++}
++
+ #endif
 -- 
 2.43.0
 
