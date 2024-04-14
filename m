@@ -1,363 +1,206 @@
-Return-Path: <linux-btrfs+bounces-4239-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4240-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AD038A41D9
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Apr 2024 12:38:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9ABA8A424A
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Apr 2024 14:32:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCCEA1C209FC
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Apr 2024 10:38:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31E91B21463
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Apr 2024 12:32:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2812BCF9;
-	Sun, 14 Apr 2024 10:38:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B04501E4AE;
+	Sun, 14 Apr 2024 12:32:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BfsbqciC"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="OFXbpZX9";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="aPv/43U9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231FE17C73
-	for <linux-btrfs@vger.kernel.org>; Sun, 14 Apr 2024 10:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713091130; cv=none; b=PHWOkMeJGcMTodDHsYobwgVg9Qyr6P6p93n16rovj3h8vM/2StnHb4+dT26+VwXh9Lj+5o4iTotC+lc7yvMBT0z+6MYT66WMcBCdpwrCZl/ynhbr0bDP1Xsv55T2uSgp/SEOF6XMya49zoyhg0CAgX914eT0j7SWwmKRPFOVS+8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713091130; c=relaxed/simple;
-	bh=bT7+JZcLqMnk9cEG0aBToqKND3Ss88G2nnJSaOWQ2Eo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LEFBltBQpSm9BQblzIN48mD0y9BQkrxeiew5JETjYy0IvI2ZLgbWTBn0b6e7HBjOjVA/6HVJl9vzLupieEGW1yNwL9Y4sk9LLdq5jD3Hiof6OOMMQwm7Bjzb35MioRV4SkAQ5Qz2Jkl3t9DJEk37PEUvhmt+MWxcOnssGu8d2nY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BfsbqciC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B99E3C3277B
-	for <linux-btrfs@vger.kernel.org>; Sun, 14 Apr 2024 10:38:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713091129;
-	bh=bT7+JZcLqMnk9cEG0aBToqKND3Ss88G2nnJSaOWQ2Eo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=BfsbqciCSG3G6pmtTbSqwPuUFUjWfeK2jUelck0ckWaOGG5gOYBj0SM2oyvPXG3+b
-	 cAqK0M0HpViE1xzI8gp5ueK/QAt/Ld1+3VEpD/stlfy4aKsP/uB4vjgAJnKUsXJ1vM
-	 g2UHOCKe2pxhfKc98NlWGVtZrfo6gWN34iWEaZn/IQUTdYnTlSqxkVkzoUnv2b2MPm
-	 tLk0xgkpuhp/J3FIP5AZicMt7RHThvFbEyn204nD80XJx7BDmzZNWSrhmPWh/pwJ9A
-	 sFuqAjLXZB2AYKy/ADHu9JgUr6hynWs8nxtsfiFyOMWqs9va58vTcy7+k2QUrKYySa
-	 0YuoOeoa70uLQ==
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a526a200879so482866b.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 Apr 2024 03:38:49 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzuCDgxiT/mb0WWb33oxIonFxkCcseoNHHvfJR16ZNNr6k8Pczg
-	dY1mUYT+T7s+cFUpKNAj8zm5IM4qBDmyGJXDZNnbl0ZQDONh0XySCbKMcIu+CI/DLuv4Pz3Ipn0
-	xQjrLYasAkQdOVMBMLQbcNkY+vZ4=
-X-Google-Smtp-Source: AGHT+IEPu6JkC8jrWdNX9Uxa8bJ9WWhjW3D4lc4fN5HlBU5LoPy2RCOL/JNwmXsIId/xdClqp3HofWnEGqezLdVemyg=
-X-Received: by 2002:a17:906:dc92:b0:a4a:aaa9:8b3b with SMTP id
- cs18-20020a170906dc9200b00a4aaaa98b3bmr5284349ejc.77.1713091128117; Sun, 14
- Apr 2024 03:38:48 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D342903;
+	Sun, 14 Apr 2024 12:32:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713097939; cv=fail; b=fGG/R4j89XoMALDKyiVZYCKYNk+E6Rht0nd6drdX2J4JX8Su6gqgXCJUoITyXAYdUYeKxvyWKGctJ8LEgNfBSWgsFhVfoqTxWmbwBmyq7rrcOz560numjCvOFzsrXcYeVH/rqQlzwLAWuce5Tz1RcndUsLenI5aBswbhzvktwEU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713097939; c=relaxed/simple;
+	bh=MwcWaK/0i+mJ3SegMWm+ZFbeEe0wFlLb2Itxq49NzEM=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=PJmpYAe7h2kobs5H9sTOUaLxZrIiQKv7bqxTHs3E19YGo7DB7WPGVwlD/fRzrFR75+0ZzIPOB9BjD2f4UfPy3NT/rppWgQ4MLDXS4ImkDWKdmxsbNw+v7kFdwAPtTmglDJWOQfoQUeg/7uA+s/ut6Nj1sRjQV1o72I9uJIBYeZI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=OFXbpZX9; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=aPv/43U9; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43EBlOle016427;
+	Sun, 14 Apr 2024 12:32:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=kf5oqmgq8jtMacLqHbsl72N+3gAqVY32wDqvJGw1eio=;
+ b=OFXbpZX9pp8rwtntQLI8sMsA9bDOhCi7kxlg48A7Tavh9sXBYE0mT1a86YGM56N5PWXu
+ N3Sr5OgxuLZDkr3l2+XopsljTs8MFcf0imi6vebVrtRMMmityMKPIM0K9g+PxU6NFEUq
+ I6YvdOlv+CFXZDQ3b8mwIPtDGJW36A216ldtj+xjRuUKq3p8ZPiPZ2LyyLHMcMEPCZKa
+ uDh1qA4pMgjfzMIVmOXsQYEzJJWubxgIGZyxZ90G93QoZBrT2nIcVb6AEAdDJ1k3Dj12
+ KnMX81vil1TOrYXEToWRoqBfbwRh4fWm6hZzDHUlfBjnxKY7SYysUPhqk9oxCY06jAfG 9w== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfj3e1beh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 14 Apr 2024 12:32:08 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43E913ph029283;
+	Sun, 14 Apr 2024 12:32:07 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xfgg4sf44-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 14 Apr 2024 12:32:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W+oZSiNwSlC7VqbzRAm5NImu6vXv+hoSEEiWOy/0UJF/86YlfMX5qZH+LZI0vxkDq5QTNgQ/sHJ7c9C5S2LM+EWrWJBIVBWvdzBE6InNzwRX/y5oHBu3uq1Z8t8HohqVHEnQOodQmQmcmFkYIEgHIaCN+pzm/i7/MSvTpcfwidybbHSCisAwHGVHK1hNXVHtNG79nCqxzNTApOehSESKZWCXWNGbe85FvcxHCbO7qOmUa2H+hWWyDwp5NGBnJdRLbq3ygWT45+ajxC7+sZymRircpdQWukyjUSIoUu8BY2RsZKXNvz6TZHt2OsWyKqKkcRydC/zo8Q+552verH0FAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kf5oqmgq8jtMacLqHbsl72N+3gAqVY32wDqvJGw1eio=;
+ b=bf4hHDqibKY2YGV9HwsE9RlMsQ3PuYJxM0hZePSHXHDL+sTqBnDZh0RlCRuKyZh35KW0EMMvYTfKwcis6M+tKvB7jqQkKu7ROPZPanvYHRktEDHAT557lx7hGhyLDnBkjNhVA6/qDHCdqwsOkh4dvP3gcsYGn2MeiyBpwFi4sTfM+DHmOtKDCQxsQSYbJvE1RT21KHS1c6M7fyywe3l5/nvakQTr6IT3F5C+003cI7/IFuL1ZxH4PuuGgeKQRNTdk5o2aGYQwCxZHPYQBcK/0Wi6f9g/l4oZbnk/0+VCRNu+8lJWZt8rj9pM0itfLCJ/d9qLRWZKFPdLI80BqBeMOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kf5oqmgq8jtMacLqHbsl72N+3gAqVY32wDqvJGw1eio=;
+ b=aPv/43U9mYCQGF1AXCsGxQK1AtoSZRZQBTGGHoQfrudyw6YAr1sBrqu5NXCxYSA4XszRC1QpgUQubYPyysGADKZApIi1bZCubmdVuG1amRBOD5vB/YMVm7pWkzuC4TPJIR5N+MkqgyRJGJWCnvFbNX+KzqNsED+FWsft5k8xDtU=
+Received: from SJ0PR10MB5694.namprd10.prod.outlook.com (2603:10b6:a03:3ed::15)
+ by BY5PR10MB4258.namprd10.prod.outlook.com (2603:10b6:a03:208::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.49; Sun, 14 Apr
+ 2024 12:32:05 +0000
+Received: from SJ0PR10MB5694.namprd10.prod.outlook.com
+ ([fe80::1050:a638:7147:a0d9]) by SJ0PR10MB5694.namprd10.prod.outlook.com
+ ([fe80::1050:a638:7147:a0d9%4]) with mapi id 15.20.7452.049; Sun, 14 Apr 2024
+ 12:32:04 +0000
+Message-ID: <be6e14ca-fbb6-46fe-81e4-dcbe23fa18a4@oracle.com>
+Date: Sun, 14 Apr 2024 20:31:57 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] fstests: btrfs changes staged-20240414
+To: Zorro Lang <zlang@kernel.org>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20240414011212.1297-1-anand.jain@oracle.com>
+ <20240414070848.cpr4micelcs24qsw@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Content-Language: en-US
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20240414070848.cpr4micelcs24qsw@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2P153CA0030.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::17)
+ To SJ0PR10MB5694.namprd10.prod.outlook.com (2603:10b6:a03:3ed::15)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712837044.git.fdmanana@suse.com> <1cb649870b6cad4411da7998735ab1141bb9f2f0.1712837044.git.fdmanana@suse.com>
- <20240412200657.GA1222511@perftesting> <CAL3q7H7VHRCKgh444KiAHYNg0ac8B+q9J1t7b_5zbd065=1ABw@mail.gmail.com>
-In-Reply-To: <CAL3q7H7VHRCKgh444KiAHYNg0ac8B+q9J1t7b_5zbd065=1ABw@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sun, 14 Apr 2024 11:38:11 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7aj=Zrj+En2u=yy5+_p=8o8u5D5EO9Tdh1pxXXA=Kcjw@mail.gmail.com>
-Message-ID: <CAL3q7H7aj=Zrj+En2u=yy5+_p=8o8u5D5EO9Tdh1pxXXA=Kcjw@mail.gmail.com>
-Subject: Re: [PATCH v2 13/15] btrfs: add a shrinker for extent maps
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB5694:EE_|BY5PR10MB4258:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9ec61240-0dc5-44ab-cb2b-08dc5c7ee411
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	4km65gYg3w0FE3mbDhKF6+bZuKsqhePqI7Z4+kNnlt0/bH2BwuvxzGFHlOzqU/1ip9yTVHodxAhxLZUy1K0wjEbWmBLP9hyhc/scCfa+o2kcA9rpt200jqzQK3LZRwJGhci7fnWG7pPPQqQGN2oNwT2Nl2RfTWnJ4tM1qlDk8zWjXD1PwDOa3gqqxgZr3wI/IoYYhQUI0PmOZHb4TN0NOwqgYsyGVHbp33TFrDKJJ9u1M+XdPxbWdgtVXVrQcNxcUF+dNIDMDgNNEG+QjnLYB9CGF+7UQiWDvCUgdWr2z1PZWQutf+av2RZ4Eah/weW8SJ1pTq6bJF8mPjfMnZTtXhXg7x3DG8W3sTUijKwPvY1zwB5kOQ+U1hOymPxUmpC8CwL9zgAjpJ4VJBEKerXw+1GR4vbCHkVOvITbIJL/kJLox+MOlEXQlP7DiGkil4m/JKJnoYBUO43Nnzk9CXsfT7C+m5s9XV/Th4FOEwyPqd/KzolYvZ3wiNMn2qXS7Z1EQb2apNW9274lpm/spSmXzFGGFkYQQUzWswo+cLjXxtwhAOvrEfxC78ATbd9ZEUNMQr6KddXOMeClGbul6WCk2r9iFGnwGHlKoDDj6w1rzSQspvWBZscUGx6SipG+e/02EhtFpYdVDXHBjYd104URDAdNP2cixQfjuZR2rVGAggc=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB5694.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?L1NMci9zSmgrdHZQNHZmdHk0bElTNTQ3ZTVCTHBXMHJnTmFxZmdoS2wxam9p?=
+ =?utf-8?B?S252ZStxRkFWWEErNlhMMnlPdDRlbnJweDBIUEYrVUUrUjhSaUNoWFpIMmpZ?=
+ =?utf-8?B?TGkyaytqeHpNRTZOL1NPZWxUamhrZDhIcUFmckc2bjN6K3I5b0k3QW9CTjhq?=
+ =?utf-8?B?VmpKNG1pRFMvajNrU25VL0lFNG12R3VaRldCdTRRT3BTcDlWVkw1VitUSHZv?=
+ =?utf-8?B?elZXQzZzc2hoK3RmVjgwejVTZzIzS1hydUxDRldWRVYycEEyQVMyZGo1S3oy?=
+ =?utf-8?B?UEsyNk50cVpVUkFEaGdHYUZzcEJudXN6L3lacHMvRTBLczFwczJkWktOTnZ0?=
+ =?utf-8?B?dUNCL2xRYkhiMTNuSlJxdEpRaVRubGlJc0FDVERwNWJIZ3lxUFZFU2xJL1JK?=
+ =?utf-8?B?UkE2cXg0SUhHMFgyV2thdzcwMUhyVE9zR295aGNNMVBzc3JrV0RGTlQrc1Fk?=
+ =?utf-8?B?dWtocHdNanh2OUtacXlxRHRxVTRaelRVZS9XcURvTExhTityWmVsMVF2b2VY?=
+ =?utf-8?B?Z1pSd0J2NDIvRjladzNpcmI4djFwZ0szYTF1YW9oNVJlZTUyQVFVSkxPNklY?=
+ =?utf-8?B?WlhvYnlLL3Y1RzAyZlRyVmlrUHYzQ2NkdUt5YnhzL1lWUHNVa2R3aTBodFo5?=
+ =?utf-8?B?dmRkaGN5OHBSR21PYzJIYUZxZlNQMkJVclFkRVlTK0xHalRBQk5ROFN5cTNq?=
+ =?utf-8?B?dG5lM2xNM1lPWVd0SkY3bHRSbmZ6Z1VLMFBUTDcybEF1R1hFQmpheE1Yenhn?=
+ =?utf-8?B?ZktVZk90SGxQME1YcVh0NlhqTFl5TzhsWFlvREJTc0xVa3hvQnhZRTR0Wkx3?=
+ =?utf-8?B?MHFLV2NNOGM3SFNXN01FbDAycXJ1VDBXZjN6UEk0cWRManV5R0QvMUxtSnIz?=
+ =?utf-8?B?Y1lNOTRsZEhTN3k4VTZoOEJjelhCWVZCWEo4M3NBblpTVHpoTlQ5cElnVmZJ?=
+ =?utf-8?B?NjNCbDF5bXNZMFI2WUt0Q0cyNWVUdHQ0Zjk4TDNoRHY0RHZtL3JwdGp2MGZV?=
+ =?utf-8?B?eDNGNEVoRS9zL2Y4WngzbHd0K1JoUmN0NkpKRkhhbFdXbElqUmNIZVd3dk1v?=
+ =?utf-8?B?QXRwOWZkbWxiVFdIRXZkQ1E1WVFXTWdoVmZsWUUvcDJrUTNxUEdnbGJIQW04?=
+ =?utf-8?B?VE5kbDdyajUzUEU0V2w1RjhUK2JQMnVoankvZk1wa1BueXVlZDlkRWdWVitR?=
+ =?utf-8?B?cVpERmt2RXVMQWRobk5YaVN2MkMzMGNoM1VHai9MbUxUUWdlMmhWYzk0NGlt?=
+ =?utf-8?B?Rk9sWWZsSUVQbG8xdnYyZWNCT2pOdEtaWWJ0N1Y5RTduVjRtaFVKcDZ0Wmdw?=
+ =?utf-8?B?NDBYMXlKejVXWWZOeXFBTTZqV3drZVZCT1BZNm9BMzFyR01kYWVnQzhYVjZt?=
+ =?utf-8?B?VW1vSERrM0xoZm1JSFgwYmV1dUd2TmM2MjA4RzVVanpRU3Y5SXFDZUIxZDAx?=
+ =?utf-8?B?MXpsZTduc09GK1VkUmEyYnJXR1RYcHVFNW1HWWZZUWVKNTlsYm1PRjhGb0Nr?=
+ =?utf-8?B?VFRyV2RUU294aFZWaGxTc2hzbXBHTXREMithM05Hb2Y5Y3Yrblc0UzV5d2xL?=
+ =?utf-8?B?RmtNUjV2Zmg1bEorM2pyOUJNQTRqb1huRkJ1MXFEUThGcWROYlhEUEU0Y0t0?=
+ =?utf-8?B?STZxZ09wTXdRWEM4aHRiYzVwYjdKdTZPT203TGJ0U3pwZGJqaG9uMHJEMVV5?=
+ =?utf-8?B?YmZMVVpNTVpPaGMyYkdTUHRKdDloWGNJWE03eUJOamd0bkpDbCtqOXR1YzNY?=
+ =?utf-8?B?UjEvbkpiL0J1SU1vaHpvc1FZY2U3L3lWZlF6TS9xNEpjOSszaDBqdFZ3Q2ZF?=
+ =?utf-8?B?N3BUVkkzMEVEOFlMcU1Cd2N0R0xObWRvUlpiTFZzWUlMaWV4MC9KbnJMZ1dF?=
+ =?utf-8?B?NVQ2dVMzZ0NEYnhRcTlNdjJVdjV3ejdpWHB3TnhDVHovTnphWVZNUXFTRTgy?=
+ =?utf-8?B?UXllenlPNkhMclZ3SWNxOHc4TEJKTXhUSkhmY0ZPcGpvVysrZTdYamxnS0Yx?=
+ =?utf-8?B?aS9YbU5SUlFXMjl6MGluN1JlSTB4NFlCdFBWRm1CQW1XekpVbFZwcnh3YTdD?=
+ =?utf-8?B?dk9ic2o4ZlVWYVFjcmw3TDA5NEo1NEhHSU8zRHgyNFVhREV6TWJGbVY5VmRx?=
+ =?utf-8?B?TDlJMnM5V2ZvMEFENlYwUUg0N3VDajFtN3FudkxXRW80bk5XT1o5MjMvb3Rm?=
+ =?utf-8?B?VkE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	vCB7QvgCCYJ8IeL7aeLgE802SdoHOr4JwPrYV+Dwrl2MZ3JPGa7/MIeUuxJPmr6fzqZo9kOD5Q04C4kB0M3aa8TcnH5U5Jfqx5ASugwhIQhPyMjoEr1LslXdK6x1EzrSzqTgTpYxctLh1HcVa/izqJmvMT99EuwLGA/PAP6xs7ibJN5/T+QGalD+EopOJyp/2+gZCJKIAEuSd6Vb8QYSu7O9WpwxUftr/URSZohMFRWvssASfJCyKoNWiatp5A5xFNGv8Y4K3z64HqWFJVx/9R/LCMrcwynKSlYmgsyWHubYsKyXlonr/mehUF6kFGnoa9jeQNfUwgsLga3xBR8NPFmETsCRLIrqMSuHkgHkW0MwSnDoMEcX9a0uBZvr2w0Dz+M5CVrswbi/2g0iMXWDvuktS0p/3gD5QPN5Q6IEZ/oGemItOmwhidKlsZZjiYxvnNvfayKnJrrL/Zz4n8mxE29R45a7wcDFdT0QA7GjprejBw9G01hsLX2YmeJHvCrrWTA5Pk2SNHurQkK2zdAsyFKh4T4eS0YJIhbs9wghAkvDqiNxZtSAK5I+M+IZrh+AkHEbYmpClVxeiberV0BIO7xp/TxiImUp6Kacqqjb16I=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ec61240-0dc5-44ab-cb2b-08dc5c7ee411
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB5694.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2024 12:32:04.4549
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BQXhNA+R0JcYGBCa1eYe2/8Rpi3LDJ8iljlW/uccHayLey0NB6jCIJv4cdsuulxosLsOVgjx5Oficmgp0UqFvA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4258
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-14_02,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404140090
+X-Proofpoint-GUID: 5JZW0ySKmHwhafayYfdiggB7QENHsQ5Z
+X-Proofpoint-ORIG-GUID: 5JZW0ySKmHwhafayYfdiggB7QENHsQ5Z
 
-On Sat, Apr 13, 2024 at 12:07=E2=80=AFPM Filipe Manana <fdmanana@kernel.org=
-> wrote:
->
-> On Fri, Apr 12, 2024 at 9:07=E2=80=AFPM Josef Bacik <josef@toxicpanda.com=
-> wrote:
-> >
-> > On Thu, Apr 11, 2024 at 05:19:07PM +0100, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > Extent maps are used either to represent existing file extent items, =
-or to
-> > > represent new extents that are going to be written and the respective=
- file
-> > > extent items are created when the ordered extent completes.
-> > >
-> > > We currently don't have any limit for how many extent maps we can hav=
-e,
-> > > neither per inode nor globally. Most of the time this not too noticea=
-ble
-> > > because extent maps are removed in the following situations:
-> > >
-> > > 1) When evicting an inode;
-> > >
-> > > 2) When releasing folios (pages) through the btrfs_release_folio() ad=
-dress
-> > >    space operation callback.
-> > >
-> > >    However we won't release extent maps in the folio range if the fol=
-io is
-> > >    either dirty or under writeback or if the inode's i_size is less t=
-han
-> > >    or equals to 16M (see try_release_extent_mapping(). This 16M i_siz=
-e
-> > >    constraint was added back in 2008 with commit 70dec8079d78 ("Btrfs=
-:
-> > >    extent_io and extent_state optimizations"), but there's no explana=
-tion
-> > >    about why we have it or why the 16M value.
-> > >
-> > > This means that for buffered IO we can reach an OOM situation due to =
-too
-> > > many extent maps if either of the following happens:
-> > >
-> > > 1) There's a set of tasks constantly doing IO on many files with a si=
-ze
-> > >    not larger than 16M, specially if they keep the files open for ver=
-y
-> > >    long periods, therefore preventing inode eviction.
-> > >
-> > >    This requires a really high number of such files, and having many =
-non
-> > >    mergeable extent maps (due to random 4K writes for example) and a
-> > >    machine with very little memory;
-> > >
-> > > 2) There's a set tasks constantly doing random write IO (therefore
-> > >    creating many non mergeable extent maps) on files and keeping them
-> > >    open for long periods of time, so inode eviction doesn't happen an=
-d
-> > >    there's always a lot of dirty pages or pages under writeback,
-> > >    preventing btrfs_release_folio() from releasing the respective ext=
-ent
-> > >    maps.
-> > >
-> > > This second case was actually reported in the thread pointed by the L=
-ink
-> > > tag below, and it requires a very large file under heavy IO and a mac=
-hine
-> > > with very little amount of RAM, which is probably hard to happen in
-> > > practice in a real world use case.
-> > >
-> > > However when using direct IO this is not so hard to happen, because t=
-he
-> > > page cache is not used, and therefore btrfs_release_folio() is never
-> > > called. Which means extent maps are dropped only when evicting the in=
-ode,
-> > > and that means that if we have tasks that keep a file descriptor open=
- and
-> > > keep doing IO on a very large file (or files), we can exhaust memory =
-due
-> > > to an unbounded amount of extent maps. This is especially easy to hap=
-pen
-> > > if we have a huge file with millions of small extents and their exten=
-t
-> > > maps are not mergeable (non contiguous offsets and disk locations).
-> > > This was reported in that thread with the following fio test:
-> > >
-> > >    $ cat test.sh
-> > >    #!/bin/bash
-> > >
-> > >    DEV=3D/dev/sdj
-> > >    MNT=3D/mnt/sdj
-> > >    MOUNT_OPTIONS=3D"-o ssd"
-> > >    MKFS_OPTIONS=3D""
-> > >
-> > >    cat <<EOF > /tmp/fio-job.ini
-> > >    [global]
-> > >    name=3Dfio-rand-write
-> > >    filename=3D$MNT/fio-rand-write
-> > >    rw=3Drandwrite
-> > >    bs=3D4K
-> > >    direct=3D1
-> > >    numjobs=3D16
-> > >    fallocate=3Dnone
-> > >    time_based
-> > >    runtime=3D90000
-> > >
-> > >    [file1]
-> > >    size=3D300G
-> > >    ioengine=3Dlibaio
-> > >    iodepth=3D16
-> > >
-> > >    EOF
-> > >
-> > >    umount $MNT &> /dev/null
-> > >    mkfs.btrfs -f $MKFS_OPTIONS $DEV
-> > >    mount $MOUNT_OPTIONS $DEV $MNT
-> > >
-> > >    fio /tmp/fio-job.ini
-> > >    umount $MNT
-> > >
-> > > Monitoring the btrfs_extent_map slab while running the test with:
-> > >
-> > >    $ watch -d -n 1 'cat /sys/kernel/slab/btrfs_extent_map/objects \
-> > >                         /sys/kernel/slab/btrfs_extent_map/total_objec=
-ts'
-> > >
-> > > Shows the number of active and total extent maps skyrocketing to tens=
- of
-> > > millions, and on systems with a short amount of memory it's easy and =
-quick
-> > > to get into an OOM situation, as reported in that thread.
-> > >
-> > > So to avoid this issue add a shrinker that will remove extents maps, =
-as
-> > > long as they are not pinned, and takes proper care with any concurren=
-t
-> > > fsync to avoid missing extents (setting the full sync flag while in t=
-he
-> > > middle of a fast fsync). This shrinker is similar to the one ext4 use=
-s
-> > > for its extent_status structure, which is analogous to btrfs' extent_=
-map
-> > > structure.
-> > >
-> > > Link: https://lore.kernel.org/linux-btrfs/13f94633dcf04d29aaf1f0a43d4=
-2c55e@amazon.com/
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> >
-> > I don't like this for a few reasons
-> >
-> > 1. We're always starting with the first root and the first inode.  We'r=
-e just
-> >    going to constantly screw that first inode over and over again.
-> > 2. I really, really hate our inode rb-tree, I want to reduce it's use, =
-not add
-> >    more users.  It would be nice if we could just utilize ->s_inodes_lr=
-u instead
-> >    for this, which would also give us the nice advantage of not having =
-to think
-> >    about order since it's already in LRU order.
-> > 3. We're registering our own shrinker without a proper LRU setup.  I th=
-ink it
-> >    would make sense if we wanted to have a LRU for our extent maps, but=
- I think
-> >    that's not a great idea.  We could get the same benefit by adding ou=
-r own
-> >    ->nr_cached_objects() and ->free_cached_objects(), I think that's a =
-better
-> >    approach no matter what other changes you make instead of registerin=
-g our own
-> >    shrinker.
->
-> Ok, so some comments about all that.
->
-> Using sb->s_inode_lru, which has the struct list_lru type is complicated.
-> I had considered that some time ago, and here are the problems with it:
->
-> 1) List iteration, done with list_lru_walk() (or one of its variants),
-> is done while holding the lru list's spinlock.
->
-> This means we can't remove all extents maps in one go as that will
-> take too much time if we have millions of them for example, and make
-> other tasks spin for too long on the lock.
->
-> We will also need to take the inode's mmap semaphore which is a
-> blocking operation, so we can't do it while under the spinlock.
->
-> Sure, the lru list iteration's callback (the "isolate" argument of
-> type list_lru_walk_cb) can release that lru list spinlock, do the
-> extent map iteration and removal, then lock it again and return
-> LRU_RETRY.
-> But that will restart the search from the first element in the lru
-> list. This means we can be iterating over the same inodes over and
-> over.
->
-> 2) You may hate the inode rb-tree, but we don't have another way to
-> iterate over the inodes and be efficient to search for inodes starting
-> at a particular number.
->
-> 3)  ->nr_cached_objects() and ->free_cached_objects() of the super
-> operations are a good alternative to registering our own shrinker.
-> I went with our own shrinker because it's what ext4 is doing and it's
-> simple. Changing to the super operations is fairly simple and I
-> embrace it.
->
-> 4) That concern about LRU is not really that relevant as you think.
->
-> Look at fs/super.c:super_cache_scan() (for when we define our
-> ->nr_cached_objects() and ->free_cached_objects() callbacks).
->
-> Every time ->free_cached_objects() is called we do it for a number of
-> items we returned with ->nr_cached_objects().
-> That means we all go over all inodes and so going in LRU order or any
-> other order ends up being irrelevant.
->
-> The same goes for the shrinker solution.
->
-> Sure you can argue that in the time between calling
-> ->nr_cached_objects() and calling ->free_cached_objects() more extent
-> maps may have been created.
-> But that's not a big time window, not enough to add that many extent
-> maps to make any practical difference.
-> Plus when the shrinking is performed it's because we are under heavy
-> memory pressure and removing extent maps won't have that much impact
-> anyway, since page cache was freed amongst other things that have more
-> impact on performance than extent maps.
->
-> This is probably why ext4 is following the same approach for its
-> extent_status structures as I did here (well, I followed their way of
-> doing things).
-> Those structures are in a rb tree of the inode, just like we do with
-> our extent maps.
-> And the inodes are in a regular linked list (struct
-> ext4_sb_info::s_es_list) and added with list_add_tail to that list -
-> they're never moved within the list (no LRU).
-> When the scan callback of the shrinker is invoked, it always iterates
-> the inodes in that list order - not LRU or anything "fancy".
+On 4/14/24 15:08, Zorro Lang wrote:
+> On Sun, Apr 14, 2024 at 09:12:02AM +0800, Anand Jain wrote:
+>> Please pull this branch containing changes as below.
+>> These patches are on top of my last PR branch staged-20240403.
+>>
+>> Thank you.
+>>
+>> The following changes since commit 8aab1f1663031cccb326ffbcb087b81bfb629df8:
+>>
+>>    common/btrfs: lookup running processes using pgrep (2024-04-03 15:09:01 +0800)
+>>
+>> are available in the Git repository at:
+>>
+>>    https://github.com/asj/fstests.git staged-20240414
+> 
+> Hi Anand,
+> 
+> I've nearly done the upcoming fstests release of this weekend, I generally start
+> my testing jobs on Friday night, and done on Sunday. So, sorry, this PR missed
+> this merge window, I'll push them in next release if you don't mind. Or if some
+> patches are hurry to be merged, I can increase an extra release in the middle of
+> next week.
 
-Another example is xfs, which implements a ->nr_cached_objects() and
-->free_cached_objects().
-From xfs_fs_free_cached_objects() we end up at xfs_icwalk_ag, where it
-walks inodes in the order they are in a radix tree, not in LRU order.
-It does however keep track of the last index processed so that the
-next time it is called, it starts from that index, but definitely not
-LRU.
+Yeah, this set, and another one in the ML, are larger changes which
+almost touch most of the files. It will be better if we could get
+both of these sets out as early as possible so that the next patch
+being submitted, if any, will have fewer conflicts to fix. Plus, the
+CI test cycles will be clearer. I'll submit another PR by midweek.
 
->
->
-> So I'm okay with moving to an implementation based on
-> ->nr_cached_objects() and calling ->free_cached_objects(), that's
-> simple.
-> But iterating the inodes will have to be with the rb-tree, as we don't
-> have anything else that allows us to iterate and start at any given
-> number.
-> I can make it to remember the last scanned inode (and root) so that
-> the next time the shrinking happens it will start after that last
-> scanned inode.
->
-> And adding our own lru implementation wouldn't make much difference
-> because of all that, and would also have 2 downsides to it:
->
-> 1) We would need a struct list_head  (16 bytes) plus a pointer to the
-> inode (so that we can remove an extent map from the rb tree) added to
-> the extent_map structure, so 24 bytes overhead.
->
-> 2) All the maintenance of the list, adding to it, removing from it,
-> moving elements, etc, all requires locking and overhead from lock
-> contention (using the struct list_lru API or our own).
->
-> So my proposal is to do this:
->
-> 1) Keep using the rb tree to search for inodes - this is abstracted by
-> an helper function used in 2 other places.
-> 2) Remember the last scanned inode/root, and on every scan start after
-> that inode.
-> 3) Use ->nr_cached_objects() and calling ->free_cached_objects()
-> instead of registering a shrinker.
->
-> What do you think?
-> Thanks.
->
-> >
-> > The concept I whole heartedly agree with, this just needs some tweaks t=
-o be more
-> > fair and cleaner.  The rest of the code is fine, you can add
-> >
-> > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> >
-> > to the rest of it.  Thanks,
-> >
-> > Josef
+Thanks, Anand
 
