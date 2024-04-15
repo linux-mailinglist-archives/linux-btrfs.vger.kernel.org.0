@@ -1,304 +1,357 @@
-Return-Path: <linux-btrfs+bounces-4265-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4266-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94AB88A4F66
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 14:45:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525698A4F6D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 14:47:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07DA91F21610
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 12:45:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 098B3281E5A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 12:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C776FE2D;
-	Mon, 15 Apr 2024 12:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C4370CD7;
+	Mon, 15 Apr 2024 12:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MXh0um9N"
+	dkim=pass (1024-bit key) header.d=mail.big.or.jp header.i=@mail.big.or.jp header.b="Vm9emoVL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.big.or.jp (mail.big.or.jp [210.197.72.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D6F6FE15
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 12:45:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530006FE3D;
+	Mon, 15 Apr 2024 12:47:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.197.72.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185149; cv=none; b=TBTEA/0FGsBvq9ucAd1VFWfi4wO89293WURXOMbBl2kdPOgFUkb5Elq/fADnx9gRnw0SI7MQV9ECN1FzrqjM41CjdNkoYLT56h6kLA4FjEcS30QWbPcvrrd4JriEJ8Zo8aVT+yAQuL85ynQYN6rc1UBlOSSCv/riHH9CNp8mMpo=
+	t=1713185236; cv=none; b=Olgh7OBdrVWdk2soaDC8Gqr+j5PVmulue3WKh9wpuvCDtqOzCfJBfAY+OorXSJgyXlSNtDWp8JaOUTrawz+U4S4ZkMuO+KULLvFzr1jl8ciOc85eAOzx/d5RUSw35ds5DoDFofv+INenHt19O1EAIHwE6KLvYPrrpk/4wGHmucM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185149; c=relaxed/simple;
-	bh=9IWk7MmiDZLGVlRs9Pt6lCFZ9Rm4eDP31SLyIktnaTk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UXy7/wpbm1BNa0Ur5DGdK9vD/YG0N8BnuXAy9rVoQcNbpqBn1k2loOWfQqR64WC4px7ladQBWLdP2dQEaOt0aqCtTWVQP/Lfj7aGQG8eC1nwtISCqiSE6sB90fZhSO4NN2zYhNADp6Wp8AEj8CX3EyD4taxpGWTxhJK4gSSXMws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MXh0um9N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AB22C113CC
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 12:45:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185149;
-	bh=9IWk7MmiDZLGVlRs9Pt6lCFZ9Rm4eDP31SLyIktnaTk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MXh0um9Nei9E8w2JL95o+NGBwvrC0q5sQFMiiXmV7dpQBUNSRgfRVZXrpoKzmm2vr
-	 jNhRyJ7o3Eo7BWhGcn99tqC5xC+I0iIQQPh1d7UenQ4nDesaXGpY9SGzq8XzoAiROy
-	 MuohNi9sXEmbIfLg8YTF+xEcX/HZNN6RpDF5ljqFa40Up7jHpOM5MfvHQxLZ1F8FpU
-	 5kDIMKWb2yUbt2B+8N+57ngKTONjKSxwj2XMy5S2FPG85Sq9wyQhTQwGLrdIX2+d6m
-	 5PPZz+3yIuS54V0LIucZjsRrEV7iRZdMbzwMdclytz1Lq1dDJYtjfMhzv3Xk1spIQh
-	 Q6bsGeNZCB1bg==
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e2c1650d8so2903765a12.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 05:45:49 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzXb07/7lnhWfm0BDdc+MgAeIhJaYrZ1r9CBisNDg/bAWvg0Kvq
-	wPy0SfsSpEjszkL+wjxvTVvGZXzDGM4fwyqDbxp6UPAxyItt8XRza7mUDkOEJPT3ZYqxQ8KFfHc
-	wsRYbUPPuNyHftKi84qxFMd8EIDI=
-X-Google-Smtp-Source: AGHT+IEbUbHtJnDLm3GFDX/br5xcEvBl+KmeiCwxFunfhx5YnJ5WLVr3ba+0GwuDn/I3ATICWCXvh/uKbvvNAHfIKL8=
-X-Received: by 2002:a17:907:9717:b0:a51:c88e:e95a with SMTP id
- jg23-20020a170907971700b00a51c88ee95amr7115794ejc.23.1713185147610; Mon, 15
- Apr 2024 05:45:47 -0700 (PDT)
+	s=arc-20240116; t=1713185236; c=relaxed/simple;
+	bh=nOvavCeBcTWwyTpYhiRfhLBO3noy5XdlXFWcJAaTGec=;
+	h=Date:Message-Id:To:Cc:Subject:From:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=H3U8DRCHxKm/rJQ2W9jWE54s9PzfIXIrh0SF/lWbzqC0mhnv2TCYfmvs/nYqVBlihpkFhEi1bE1mRVE7lFG/otDzYuaHvT6l7df6EvXKEfjQsEJ229V9ThFD+cM5+Ao4+UZB8wYa5yEI0/GDOdLewYkfmfG6Lac6zscvG1SbpDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=big.or.jp; spf=pass smtp.mailfrom=big.or.jp; dkim=pass (1024-bit key) header.d=mail.big.or.jp header.i=@mail.big.or.jp header.b=Vm9emoVL; arc=none smtp.client-ip=210.197.72.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=big.or.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=big.or.jp
+Received: from localhost (unknown [IPv6:2409:250:40:1a00:d65d:64ff:fef1:3a80])
+	by mail.big.or.jp (Postfix) with ESMTPA id 3B8BD16044B;
+	Mon, 15 Apr 2024 21:47:09 +0900 (JST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mail.big.or.jp;
+	s=_dkimselector; t=1713185229;
+	bh=iqvE17BmHxvMsfeYKvlGITccJalVleSlR/Y3VWC4ZBA=;
+	h=Date:To:Cc:Subject:From:In-Reply-To:References;
+	b=Vm9emoVLmE0lAJ6dHuaRWzJ1Ib9m8urTsTE1qJA2fDFk8eYZvEw9kgkbOtNcSUQqK
+	 QaukQWIAZG/qRKT9/m2lczEMXiHyA4kbDVc/N++4gJLaAhL3uPC6WGbWMuEZXpK9Rz
+	 YXNI8ZemDrFExofwWHc3LzgIn5YEZLw6AIv06o30=
+Date: Mon, 15 Apr 2024 21:47:04 +0900 (JST)
+Message-Id: <20240415.214704.2195618259755902678.sian@big.or.jp>
+To: greg@kroah.com
+Cc: holger@applied-asynchrony.com, Naohiro.Aota@wdc.com,
+ regressions@lists.linux.dev, dsterba@suse.com, wqu@suse.com,
+ linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: btrfs: sanity tests fails on 6.8.3
+From: Hiroshi Takekawa <sian@big.or.jp>
+In-Reply-To: <2024041508-refocus-cycling-09e8@gregkh>
+References: <igqfzsnyclopilimyy27ualcf2g5g44x3ru5v3tkjpb3ukgabs@2yuc57sxoxvv>
+	<3b2d9a1c-37d2-47f4-b0b4-a9d6c34d2c7d@applied-asynchrony.com>
+	<2024041508-refocus-cycling-09e8@gregkh>
+X-Mailer: Mew version 6.8 on Emacs 29.3
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <cover.1713052088.git.josef@toxicpanda.com> <ecd41b71527519744c006919ded25a3d70d6b51d.1713052088.git.josef@toxicpanda.com>
-In-Reply-To: <ecd41b71527519744c006919ded25a3d70d6b51d.1713052088.git.josef@toxicpanda.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 15 Apr 2024 13:45:10 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H56ay4j+LtXNNx_aJayL-+F5RapQQhjH-u6VzN4GwoVFQ@mail.gmail.com>
-Message-ID: <CAL3q7H56ay4j+LtXNNx_aJayL-+F5RapQQhjH-u6VzN4GwoVFQ@mail.gmail.com>
-Subject: Re: [PATCH 08/19] btrfs: simplify delayed ref tracepoints
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 14, 2024 at 12:54=E2=80=AFAM Josef Bacik <josef@toxicpanda.com>=
- wrote:
->
-> Now that all of the delayed ref information is in the delayed ref node,
-> drastically simplify the delayed ref tracepoints by simply passing in
-> the btrfs_delayed_ref_node and populating the tracepoints with the
-> values from the structure itself.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Hi,
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Thank you for all your replies.
+I cherry-picked b2136cc288fc and the ssanity tests work well.
 
-Looks good, thanks.
 
-> ---
->  fs/btrfs/delayed-ref.c       | 14 ++--------
->  fs/btrfs/extent-tree.c       |  4 +--
->  include/trace/events/btrfs.h | 54 ++++++++++++++----------------------
->  3 files changed, 25 insertions(+), 47 deletions(-)
+From: Greg KH <greg@kroah.com>
+Subject: Re: btrfs: sanity tests fails on 6.8.3
+Date: Mon, 15 Apr 2024 09:33:27 +0200
+
+> On Mon, Apr 15, 2024 at 09:25:58AM +0200, Holger Hoffst=E4tte wrote:
+>> On 2024-04-15 07:24, Naohiro Aota wrote:
+>> > On Mon, Apr 15, 2024 at 07:11:15AM +0200, Linux regression trackin=
+g (Thorsten Leemhuis) wrote:
+>> > > [adding the authors of the two commits mentioned as well as the =
+Btrfs
+>> > > maintainers and the regressions & stable list to the list of rec=
+ipients]
+>> > > =
+
+>> > > On 15.04.24 05:56, Hiroshi Takekawa wrote:
+>> > > > =
+
+>> > > > Module loading fails with CONFIG_BTRFS_FS_RUN_SANITY_TESTS ena=
+bled on
+>> > > > 6.8.3-6.8.6.
+>> > > > =
+
+>> > > > Bisected:
+>> > > > Reverting these commits, then module loading succeeds.
+>> > > > 70f49f7b9aa3dfa70e7a2e3163ab4cae7c9a457a
+>> > > =
+
+>> > > FWIW, that is a linux-stable commit-id for 41044b41ad2c8c ("btrf=
+s: add
+>> > > helper to get fs_info from struct inode pointer") [v6.9-rc1, v6.=
+8.3
+>> > > (70f49f7b9aa3df)]
+>> > > =
+
+>> > > > 86211eea8ae1676cc819d2b4fdc8d995394be07d
+>> > =
+
+>> > It looks like the stable tree lacks this commit, which is necessar=
+y for the
+>> > commit above.
+>> > =
+
+>> > b2136cc288fc ("btrfs: tests: allocate dummy fs_info and root in te=
+st_find_delalloc()")
+>> > =
+
+>> =
+
+>> This was previously reported during the last stable cycle, and the m=
+issing
+>> patch is already queued up. You can see the queue here:
+>> =
+
+>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.=
+git/tree/queue-6.8
+> =
+
+> Thanks for confirming this, the next 6.8 release should resolve this
+> issue.
+> =
+
+> greg k-h
+> =
+
 >
-> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-> index 743cc52c30af..cc1510d7eee8 100644
-> --- a/fs/btrfs/delayed-ref.c
-> +++ b/fs/btrfs/delayed-ref.c
-> @@ -1064,7 +1064,6 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_h=
-andle *trans,
->                                struct btrfs_delayed_extent_op *extent_op)
->  {
->         struct btrfs_fs_info *fs_info =3D trans->fs_info;
-> -       struct btrfs_delayed_tree_ref *ref;
->         struct btrfs_delayed_ref_node *node;
->         struct btrfs_delayed_ref_head *head_ref;
->         struct btrfs_delayed_ref_root *delayed_refs;
-> @@ -1093,8 +1092,6 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_h=
-andle *trans,
->                 }
->         }
->
-> -       ref =3D btrfs_delayed_node_to_tree_ref(node);
-> -
->         init_delayed_ref_common(fs_info, node, generic_ref);
->
->         init_delayed_ref_head(head_ref, generic_ref, record, 0);
-> @@ -1119,9 +1116,7 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_h=
-andle *trans,
->          */
->         btrfs_update_delayed_refs_rsv(trans);
->
-> -       trace_add_delayed_tree_ref(fs_info, node, ref,
-> -                                  action =3D=3D BTRFS_ADD_DELAYED_EXTENT=
- ?
-> -                                  BTRFS_ADD_DELAYED_REF : action);
-> +       trace_add_delayed_tree_ref(fs_info, node);
->         if (merged)
->                 kmem_cache_free(btrfs_delayed_ref_node_cachep, node);
->
-> @@ -1139,7 +1134,6 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_h=
-andle *trans,
->                                u64 reserved)
->  {
->         struct btrfs_fs_info *fs_info =3D trans->fs_info;
-> -       struct btrfs_delayed_data_ref *ref;
->         struct btrfs_delayed_ref_node *node;
->         struct btrfs_delayed_ref_head *head_ref;
->         struct btrfs_delayed_ref_root *delayed_refs;
-> @@ -1153,8 +1147,6 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_h=
-andle *trans,
->         if (!node)
->                 return -ENOMEM;
->
-> -       ref =3D btrfs_delayed_node_to_data_ref(node);
-> -
->         init_delayed_ref_common(fs_info, node, generic_ref);
->
->         head_ref =3D kmem_cache_alloc(btrfs_delayed_ref_head_cachep, GFP_=
-NOFS);
-> @@ -1195,9 +1187,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_h=
-andle *trans,
->          */
->         btrfs_update_delayed_refs_rsv(trans);
->
-> -       trace_add_delayed_data_ref(trans->fs_info, node, ref,
-> -                                  action =3D=3D BTRFS_ADD_DELAYED_EXTENT=
- ?
-> -                                  BTRFS_ADD_DELAYED_REF : action);
-> +       trace_add_delayed_data_ref(trans->fs_info, node);
->         if (merged)
->                 kmem_cache_free(btrfs_delayed_ref_node_cachep, node);
->
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 275e3141dc1e..805e3e904368 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -1574,7 +1574,7 @@ static int run_delayed_data_ref(struct btrfs_trans_=
-handle *trans,
->         u64 flags =3D 0;
->
->         ref =3D btrfs_delayed_node_to_data_ref(node);
-> -       trace_run_delayed_data_ref(trans->fs_info, node, ref, node->actio=
-n);
-> +       trace_run_delayed_data_ref(trans->fs_info, node);
->
->         if (node->type =3D=3D BTRFS_SHARED_DATA_REF_KEY)
->                 parent =3D ref->parent;
-> @@ -1737,7 +1737,7 @@ static int run_delayed_tree_ref(struct btrfs_trans_=
-handle *trans,
->         u64 ref_root =3D 0;
->
->         ref =3D btrfs_delayed_node_to_tree_ref(node);
-> -       trace_run_delayed_tree_ref(trans->fs_info, node, ref, node->actio=
-n);
-> +       trace_run_delayed_tree_ref(trans->fs_info, node);
->
->         if (node->type =3D=3D BTRFS_SHARED_BLOCK_REF_KEY)
->                 parent =3D ref->parent;
-> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-> index 766cfd48386c..dae29f6d6b4c 100644
-> --- a/include/trace/events/btrfs.h
-> +++ b/include/trace/events/btrfs.h
-> @@ -868,11 +868,9 @@ TRACE_EVENT(btrfs_add_block_group,
->  DECLARE_EVENT_CLASS(btrfs_delayed_tree_ref,
->
->         TP_PROTO(const struct btrfs_fs_info *fs_info,
-> -                const struct btrfs_delayed_ref_node *ref,
-> -                const struct btrfs_delayed_tree_ref *full_ref,
-> -                int action),
-> +                const struct btrfs_delayed_ref_node *ref),
->
-> -       TP_ARGS(fs_info, ref, full_ref, action),
-> +       TP_ARGS(fs_info, ref),
->
->         TP_STRUCT__entry_btrfs(
->                 __field(        u64,  bytenr            )
-> @@ -888,10 +886,10 @@ DECLARE_EVENT_CLASS(btrfs_delayed_tree_ref,
->         TP_fast_assign_btrfs(fs_info,
->                 __entry->bytenr         =3D ref->bytenr;
->                 __entry->num_bytes      =3D ref->num_bytes;
-> -               __entry->action         =3D action;
-> -               __entry->parent         =3D full_ref->parent;
-> -               __entry->ref_root       =3D full_ref->root;
-> -               __entry->level          =3D full_ref->level;
-> +               __entry->action         =3D ref->action;
-> +               __entry->parent         =3D ref->tree_ref.parent;
-> +               __entry->ref_root       =3D ref->tree_ref.root;
-> +               __entry->level          =3D ref->tree_ref.level;
->                 __entry->type           =3D ref->type;
->                 __entry->seq            =3D ref->seq;
->         ),
-> @@ -911,31 +909,25 @@ DECLARE_EVENT_CLASS(btrfs_delayed_tree_ref,
->  DEFINE_EVENT(btrfs_delayed_tree_ref,  add_delayed_tree_ref,
->
->         TP_PROTO(const struct btrfs_fs_info *fs_info,
-> -                const struct btrfs_delayed_ref_node *ref,
-> -                const struct btrfs_delayed_tree_ref *full_ref,
-> -                int action),
-> +                const struct btrfs_delayed_ref_node *ref),
->
-> -       TP_ARGS(fs_info, ref, full_ref, action)
-> +       TP_ARGS(fs_info, ref)
->  );
->
->  DEFINE_EVENT(btrfs_delayed_tree_ref,  run_delayed_tree_ref,
->
->         TP_PROTO(const struct btrfs_fs_info *fs_info,
-> -                const struct btrfs_delayed_ref_node *ref,
-> -                const struct btrfs_delayed_tree_ref *full_ref,
-> -                int action),
-> +                const struct btrfs_delayed_ref_node *ref),
->
-> -       TP_ARGS(fs_info, ref, full_ref, action)
-> +       TP_ARGS(fs_info, ref)
->  );
->
->  DECLARE_EVENT_CLASS(btrfs_delayed_data_ref,
->
->         TP_PROTO(const struct btrfs_fs_info *fs_info,
-> -                const struct btrfs_delayed_ref_node *ref,
-> -                const struct btrfs_delayed_data_ref *full_ref,
-> -                int action),
-> +                const struct btrfs_delayed_ref_node *ref),
->
-> -       TP_ARGS(fs_info, ref, full_ref, action),
-> +       TP_ARGS(fs_info, ref),
->
->         TP_STRUCT__entry_btrfs(
->                 __field(        u64,  bytenr            )
-> @@ -952,11 +944,11 @@ DECLARE_EVENT_CLASS(btrfs_delayed_data_ref,
->         TP_fast_assign_btrfs(fs_info,
->                 __entry->bytenr         =3D ref->bytenr;
->                 __entry->num_bytes      =3D ref->num_bytes;
-> -               __entry->action         =3D action;
-> -               __entry->parent         =3D full_ref->parent;
-> -               __entry->ref_root       =3D full_ref->root;
-> -               __entry->owner          =3D full_ref->objectid;
-> -               __entry->offset         =3D full_ref->offset;
-> +               __entry->action         =3D ref->action;
-> +               __entry->parent         =3D ref->data_ref.parent;
-> +               __entry->ref_root       =3D ref->data_ref.root;
-> +               __entry->owner          =3D ref->data_ref.objectid;
-> +               __entry->offset         =3D ref->data_ref.offset;
->                 __entry->type           =3D ref->type;
->                 __entry->seq            =3D ref->seq;
->         ),
-> @@ -978,21 +970,17 @@ DECLARE_EVENT_CLASS(btrfs_delayed_data_ref,
->  DEFINE_EVENT(btrfs_delayed_data_ref,  add_delayed_data_ref,
->
->         TP_PROTO(const struct btrfs_fs_info *fs_info,
-> -                const struct btrfs_delayed_ref_node *ref,
-> -                const struct btrfs_delayed_data_ref *full_ref,
-> -                int action),
-> +                const struct btrfs_delayed_ref_node *ref),
->
-> -       TP_ARGS(fs_info, ref, full_ref, action)
-> +       TP_ARGS(fs_info, ref)
->  );
->
->  DEFINE_EVENT(btrfs_delayed_data_ref,  run_delayed_data_ref,
->
->         TP_PROTO(const struct btrfs_fs_info *fs_info,
-> -                const struct btrfs_delayed_ref_node *ref,
-> -                const struct btrfs_delayed_data_ref *full_ref,
-> -                int action),
-> +                const struct btrfs_delayed_ref_node *ref),
->
-> -       TP_ARGS(fs_info, ref, full_ref, action)
-> +       TP_ARGS(fs_info, ref)
->  );
->
->  DECLARE_EVENT_CLASS(btrfs_delayed_ref_head,
-> --
-> 2.43.0
->
->
+
+cherry-picked on top of 6.8.6
+
+$ git log -2
+commit 12d79cec1083658f23f4566fcea40463549c5a54 (HEAD -> refs/heads/lin=
+ux-6.8.6-btrfs-selftest-fix)
+Author: David Sterba <dsterba@suse.com>
+Date:   Mon Jan 29 19:04:33 2024 +0100
+
+    btrfs: tests: allocate dummy fs_info and root in test_find_delalloc=
+()
+    =
+
+    Allocate fs_info and root to have a valid fs_info pointer in case i=
+t's
+    dereferenced by a helper outside of tests, like find_lock_delalloc_=
+range().
+    =
+
+    Signed-off-by: David Sterba <dsterba@suse.com>
+
+commit 1f7d392571dfec1c47b306a32bbe60be05a51160 (tag: refs/tags/v6.8.6,=
+ refs/remotes/origin/linux-6.8.y, refs/heads/linux-6.8.y)
+Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Sat Apr 13 13:10:12 2024 +0200
+
+    Linux 6.8.6
+    =
+
+    Link: https://lore.kernel.org/r/20240411095420.903937140@linuxfound=
+ation.org
+    Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+    Tested-by: SeongJae Park <sj@kernel.org>
+    Tested-by: Ronald Warsow <rwarsow@gmx.de>
+    Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+    Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+    Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+    Tested-by: Ron Economos <re@w6rz.net>
+    Tested-by: Jon Hunter <jonathanh@nvidia.com>
+    Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+$ cat /proc/version =
+
+Linux version 6.8.6+ (user@host) (clang version 18.1.3, LLD 18.1.3) #1 =
+SMP PREEMPT Mon Apr 15 21:31:32 JST 2024
+
+sanity tests are enabled:
+$ zgrep BTRFS_FS_RUN /proc/config.gz =
+
+CONFIG_BTRFS_FS_RUN_SANITY_TESTS=3Dy
+
+dmesg, which indicates the success.
+[  105.926765] xor: automatically using best checksumming function   av=
+x       =
+
+[  105.928174] raid6: skipped pq benchmark and selected avx2x4
+[  105.928175] raid6: using avx2x2 recovery algorithm
+[  106.017111] Btrfs loaded, zoned=3Dno, fsverity=3Dno
+[  106.017125] BTRFS: selftest: sectorsize: 4096  nodesize: 4096
+[  106.017126] BTRFS: selftest: running btrfs free space cache tests
+[  106.017131] BTRFS: selftest: running extent only tests
+[  106.017133] BTRFS: selftest: running bitmap only tests
+[  106.017136] BTRFS: selftest: running bitmap and extent tests
+[  106.017139] BTRFS: selftest: running space stealing from bitmap to e=
+xtent tests
+[  106.017278] BTRFS: selftest: running bytes index tests
+[  106.017283] BTRFS: selftest: running extent buffer operation tests
+[  106.017283] BTRFS: selftest: running btrfs_split_item tests
+[  106.017287] BTRFS: selftest: running extent I/O tests
+[  106.017288] BTRFS: selftest: running find delalloc tests
+[  106.051988] BTRFS: selftest: running find_first_clear_extent_bit tes=
+t
+[  106.051991] BTRFS: selftest: running extent buffer bitmap tests
+[  106.058653] BTRFS: selftest: running extent buffer memory operation =
+tests
+[  106.058664] BTRFS: selftest: running inode tests
+[  106.058665] BTRFS: selftest: running btrfs_get_extent tests
+[  106.058680] BTRFS: selftest: running hole first btrfs_get_extent tes=
+t
+[  106.058685] BTRFS: selftest: running outstanding_extents tests
+[  106.058693] BTRFS: selftest: running qgroup tests
+[  106.058694] BTRFS: selftest: running qgroup add/remove tests
+[  106.058701] BTRFS: selftest: running qgroup multiple refs test
+[  106.058709] BTRFS: selftest: running free space tree tests
+[  106.065024] BTRFS: selftest: sectorsize: 4096  nodesize: 8192
+[  106.065025] BTRFS: selftest: running btrfs free space cache tests
+[  106.065027] BTRFS: selftest: running extent only tests
+[  106.065029] BTRFS: selftest: running bitmap only tests
+[  106.065032] BTRFS: selftest: running bitmap and extent tests
+[  106.065035] BTRFS: selftest: running space stealing from bitmap to e=
+xtent tests
+[  106.065174] BTRFS: selftest: running bytes index tests
+[  106.065179] BTRFS: selftest: running extent buffer operation tests
+[  106.065180] BTRFS: selftest: running btrfs_split_item tests
+[  106.065183] BTRFS: selftest: running extent I/O tests
+[  106.065183] BTRFS: selftest: running find delalloc tests
+[  106.099325] BTRFS: selftest: running find_first_clear_extent_bit tes=
+t
+[  106.099327] BTRFS: selftest: running extent buffer bitmap tests
+[  106.116359] BTRFS: selftest: running extent buffer memory operation =
+tests
+[  106.116380] BTRFS: selftest: running inode tests
+[  106.116381] BTRFS: selftest: running btrfs_get_extent tests
+[  106.116395] BTRFS: selftest: running hole first btrfs_get_extent tes=
+t
+[  106.116398] BTRFS: selftest: running outstanding_extents tests
+[  106.116405] BTRFS: selftest: running qgroup tests
+[  106.116406] BTRFS: selftest: running qgroup add/remove tests
+[  106.116413] BTRFS: selftest: running qgroup multiple refs test
+[  106.116420] BTRFS: selftest: running free space tree tests
+[  106.122685] BTRFS: selftest: sectorsize: 4096  nodesize: 16384
+[  106.122686] BTRFS: selftest: running btrfs free space cache tests
+[  106.122688] BTRFS: selftest: running extent only tests
+[  106.122690] BTRFS: selftest: running bitmap only tests
+[  106.122693] BTRFS: selftest: running bitmap and extent tests
+[  106.122697] BTRFS: selftest: running space stealing from bitmap to e=
+xtent tests
+[  106.122837] BTRFS: selftest: running bytes index tests
+[  106.122842] BTRFS: selftest: running extent buffer operation tests
+[  106.122843] BTRFS: selftest: running btrfs_split_item tests
+[  106.122847] BTRFS: selftest: running extent I/O tests
+[  106.122847] BTRFS: selftest: running find delalloc tests
+[  106.156175] BTRFS: selftest: running find_first_clear_extent_bit tes=
+t
+[  106.156177] BTRFS: selftest: running extent buffer bitmap tests
+[  106.190038] BTRFS: selftest: running extent buffer memory operation =
+tests
+[  106.190076] BTRFS: selftest: running inode tests
+[  106.190076] BTRFS: selftest: running btrfs_get_extent tests
+[  106.190091] BTRFS: selftest: running hole first btrfs_get_extent tes=
+t
+[  106.190095] BTRFS: selftest: running outstanding_extents tests
+[  106.190102] BTRFS: selftest: running qgroup tests
+[  106.190102] BTRFS: selftest: running qgroup add/remove tests
+[  106.190110] BTRFS: selftest: running qgroup multiple refs test
+[  106.190117] BTRFS: selftest: running free space tree tests
+[  106.196389] BTRFS: selftest: sectorsize: 4096  nodesize: 32768
+[  106.196390] BTRFS: selftest: running btrfs free space cache tests
+[  106.196391] BTRFS: selftest: running extent only tests
+[  106.196394] BTRFS: selftest: running bitmap only tests
+[  106.196397] BTRFS: selftest: running bitmap and extent tests
+[  106.196400] BTRFS: selftest: running space stealing from bitmap to e=
+xtent tests
+[  106.196539] BTRFS: selftest: running bytes index tests
+[  106.196544] BTRFS: selftest: running extent buffer operation tests
+[  106.196544] BTRFS: selftest: running btrfs_split_item tests
+[  106.196549] BTRFS: selftest: running extent I/O tests
+[  106.196549] BTRFS: selftest: running find delalloc tests
+[  106.230530] BTRFS: selftest: running find_first_clear_extent_bit tes=
+t
+[  106.230534] BTRFS: selftest: running extent buffer bitmap tests
+[  106.297904] BTRFS: selftest: running extent buffer memory operation =
+tests
+[  106.297981] BTRFS: selftest: running inode tests
+[  106.297982] BTRFS: selftest: running btrfs_get_extent tests
+[  106.297997] BTRFS: selftest: running hole first btrfs_get_extent tes=
+t
+[  106.298001] BTRFS: selftest: running outstanding_extents tests
+[  106.298008] BTRFS: selftest: running qgroup tests
+[  106.298009] BTRFS: selftest: running qgroup add/remove tests
+[  106.298016] BTRFS: selftest: running qgroup multiple refs test
+[  106.298023] BTRFS: selftest: running free space tree tests
+[  106.304312] BTRFS: selftest: sectorsize: 4096  nodesize: 65536
+[  106.304313] BTRFS: selftest: running btrfs free space cache tests
+[  106.304315] BTRFS: selftest: running extent only tests
+[  106.304317] BTRFS: selftest: running bitmap only tests
+[  106.304320] BTRFS: selftest: running bitmap and extent tests
+[  106.304324] BTRFS: selftest: running space stealing from bitmap to e=
+xtent tests
+[  106.304462] BTRFS: selftest: running bytes index tests
+[  106.304468] BTRFS: selftest: running extent buffer operation tests
+[  106.304468] BTRFS: selftest: running btrfs_split_item tests
+[  106.304473] BTRFS: selftest: running extent I/O tests
+[  106.304473] BTRFS: selftest: running find delalloc tests
+[  106.338587] BTRFS: selftest: running find_first_clear_extent_bit tes=
+t
+[  106.338589] BTRFS: selftest: running extent buffer bitmap tests
+[  106.472975] BTRFS: selftest: running extent buffer memory operation =
+tests
+[  106.473127] BTRFS: selftest: running inode tests
+[  106.473127] BTRFS: selftest: running btrfs_get_extent tests
+[  106.473143] BTRFS: selftest: running hole first btrfs_get_extent tes=
+t
+[  106.473148] BTRFS: selftest: running outstanding_extents tests
+[  106.473155] BTRFS: selftest: running qgroup tests
+[  106.473156] BTRFS: selftest: running qgroup add/remove tests
+[  106.473164] BTRFS: selftest: running qgroup multiple refs test
+[  106.473172] BTRFS: selftest: running free space tree tests
+[  106.479514] BTRFS: selftest: running extent_map tests
+[  106.479517] BTRFS: selftest: Running btrfs_drop_extent_map_range tes=
+ts
+[  106.479520] BTRFS: selftest: Running btrfs_drop_extent_cache with pi=
+nned
+[  106.479521] BTRFS: selftest: running rmap tests
+[  126.436989] modprobe: FATAL: Module ikconfig not found in directory =
+/lib/modules/6.8.6+
+[  170.100869] udevd[9881]: conflicting device node '/dev/mapper/data-e=
+ncrypted' found, link to '/dev/dm-0' will not be created
+[  170.861020] EXT4-fs (dm-0): mounted filesystem 22071832-a730-492a-a1=
+1f-2bc502437c08 r/w with ordered data mode. Quota mode: disabled.
+[  176.037983] udevd[9902]: conflicting device node '/dev/mapper/pool-e=
+ncrypted' found, link to '/dev/dm-1' will not be created
+[  177.780518] BTRFS: device label pool devid 1 transid 16145 /dev/mapp=
+er/pool-encrypted scanned by mount (9904)
+[  177.780955] BTRFS info (device dm-1): first mount of filesystem 2548=
+bfee-1ac9-4894-bd68-47e128d7af9b
+[  177.780963] BTRFS info (device dm-1): using crc32c (crc32c-intel) ch=
+ecksum algorithm
+[  177.780965] BTRFS info (device dm-1): disk space caching is enabled
+[  177.865416] BTRFS warning (device dm-1): devid 1 physical 0 len 4194=
+304 inside the reserved space
+[  183.347633] udevd[10073]: conflicting device node '/dev/mapper/backu=
+p-encrypted' found, link to '/dev/dm-2' will not be created
+
+Best regards,
+
+--
+Hiroshi Takekawa <sian@big.or.jp>
 
